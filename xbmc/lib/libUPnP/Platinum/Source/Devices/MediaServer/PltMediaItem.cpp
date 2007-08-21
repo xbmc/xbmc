@@ -123,6 +123,11 @@ PLT_MediaObject::Reset()
     m_ExtraInfo.album_art_uri = "";
     m_ExtraInfo.artist_discography_uri = "";
 
+    m_MiscInfo.original_track_number = 0;
+    m_MiscInfo.dvdregioncode = 0;
+    m_MiscInfo.toc = "";
+    m_MiscInfo.user_annotation = "";
+
     m_Resources.Clear();
 
     m_Didl = "";
@@ -268,6 +273,9 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
     PLT_XmlHelper::GetChildText(entry, "genre", m_Affiliation.genre, didl_namespace_upnp);
     PLT_XmlHelper::GetChildText(entry, "albumArtURI", m_ExtraInfo.album_art_uri, didl_namespace_upnp);
     PLT_XmlHelper::GetChildText(entry, "longDescription", m_Description.long_description, didl_namespace_upnp);
+    PLT_XmlHelper::GetChildText(entry, "originalTrackNumber", str, didl_namespace_upnp);
+    if( NPT_FAILED(str.ToInteger((long&)m_MiscInfo.original_track_number)) )
+        m_MiscInfo.original_track_number = 0;
 
     PLT_XmlHelper::GetChildren(entry, resources, "res");
     if (resources.GetItemCount() > 0) {
