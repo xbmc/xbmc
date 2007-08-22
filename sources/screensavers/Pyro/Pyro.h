@@ -64,8 +64,8 @@ LPDIRECT3DVERTEXBUFFER8 g_pVertexBuffer = NULL; // Vertices Buffer
 
 struct MYCUSTOMVERTEX
 {
-    FLOAT x, y, z; // The transformed position for the vertex.
-	//FLOAT x, y, z, rhw; // The transformed position for the vertex.
+//    FLOAT x, y, z; // The transformed position for the vertex.
+	FLOAT x, y, z, rhw; // The transformed position for the vertex.
     DWORD colour; // The vertex colour.
 };
 

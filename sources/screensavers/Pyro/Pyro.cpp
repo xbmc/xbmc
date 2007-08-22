@@ -203,42 +203,31 @@ static struct projectile *shrapnel(struct projectile *parent)
 
 void DrawRectangle(int x, int y, int w, int h, D3DCOLOR dwColour)
 {
-	VOID* pVertices;
-    
     //Store each point of the triangle together with it's colour
     MYCUSTOMVERTEX cvVertices[] =
     {
-        {(float) x, (float) y, 0.0f, dwColour,},
-        {(float) x+w, (float) y, 0.0f, dwColour,},
-		    {(float) x+w, (float) y+h, 0.0f, dwColour,},
-        {(float) x, (float) y+h, 0.0f, dwColour,}
+        {(float) x, (float) y+h, 0.0f, 1.0f, dwColour,},
+        {(float) x, (float) y, 0.0f, 1.0f, dwColour,},
+		{(float) x+w, (float) y, 0.0f, 1.0f, dwColour,},
+        {(float) x+w, (float) y+h, 0.0f, 1.0f, dwColour,},
     };
-
-	//Create the vertex buffer from our device
-    m_pd3dDevice->CreateVertexBuffer(4 * sizeof(MYCUSTOMVERTEX),
-                                               0, 
-											   D3DFVF_CUSTOMVERTEX,
-                                               D3DPOOL_DEFAULT, 
-											   &g_pVertexBuffer);
-
-    //Get a pointer to the vertex buffer vertices and lock the vertex buffer
-    g_pVertexBuffer->Lock(0, sizeof(cvVertices), (BYTE**)&pVertices, 0);
-
-    //Copy our stored vertices values into the vertex buffer
-    memcpy(pVertices, cvVertices, sizeof(cvVertices));
-
-    //Unlock the vertex buffer
-    g_pVertexBuffer->Unlock();
 
 	// Draw it
 	m_pd3dDevice->SetVertexShader(D3DFVF_CUSTOMVERTEX);
-    m_pd3dDevice->SetStreamSource(0, g_pVertexBuffer, sizeof(MYCUSTOMVERTEX));
-	m_pd3dDevice->DrawPrimitive(D3DPT_QUADLIST, 0, 1);
+	m_pd3dDevice->SetPixelShader(0);
+	m_pd3dDevice->SetTexture(0, NULL);
+    d3dSetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_DIFFUSE );
+    d3dSetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_SELECTARG1);
+    d3dSetTextureStageState( 0, D3DTSS_ALPHAOP,   D3DTOP_SELECTARG1);
+    d3dSetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE );
+	d3dSetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+	d3dSetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 
-	// Every time we Create a vertex buffer, we must release one!.
-	g_pVertexBuffer->Release();
+	m_pd3dDevice->DrawPrimitiveUP(D3DPT_QUADLIST, 1, &cvVertices, sizeof(MYCUSTOMVERTEX));
+
 	return;
 }
+
 
 // Load settings from the Pyro.xml configuration file
 void LoadSettings()
