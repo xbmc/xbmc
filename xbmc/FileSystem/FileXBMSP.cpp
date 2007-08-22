@@ -145,7 +145,7 @@ bool CFileXBMSP::Open(const CURL& urlUtf8, bool bBinary)
           if (cc_xstream_client_setcwd(m_connection, strDir.c_str()) != CC_XSTREAM_CLIENT_OK)
           {
             CLog::Log(LOGDEBUG, "xbms:unable set dir");
-            if (m_connection != NULL) cc_xstream_client_disconnect(m_connection);
+            if (m_connection != 0) cc_xstream_client_disconnect(m_connection);
             return false;
           }
         }
@@ -160,7 +160,7 @@ bool CFileXBMSP::Open(const CURL& urlUtf8, bool bBinary)
   else
   {
     CLog::Log(LOGDEBUG, "xbms:unable set dir");
-    if (m_connection != NULL) cc_xstream_client_disconnect(m_connection);
+    if (m_connection != 0) cc_xstream_client_disconnect(m_connection);
     return false;
   }
   if (strDir.size() > 0)
@@ -171,7 +171,7 @@ bool CFileXBMSP::Open(const CURL& urlUtf8, bool bBinary)
     if (cc_xstream_client_setcwd(m_connection, strDir.c_str()) != CC_XSTREAM_CLIENT_OK)
     {
       CLog::Log(LOGDEBUG, "xbms:unable set dir");
-      if (m_connection != NULL) cc_xstream_client_disconnect(m_connection);
+      if (m_connection != 0) cc_xstream_client_disconnect(m_connection);
       return false;
     }
   }
