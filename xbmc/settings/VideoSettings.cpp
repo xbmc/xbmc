@@ -16,6 +16,7 @@ CVideoSettings::CVideoSettings()
   m_NonInterleaved = false;
   m_bForceIndex = false;
   m_InterlaceMethod = VS_INTERLACEMETHOD_NONE;
+  m_ScalingMethod = VS_SCALINGMETHOD_LINEAR;
   m_FilmGrain = 0;
   m_ViewMode = VIEW_MODE_NORMAL;
   m_CustomZoomAmount = 1.0f;
@@ -44,6 +45,7 @@ bool CVideoSettings::operator!=(const CVideoSettings &right) const
   if (m_NoCache != right.m_NoCache) return true;
   if (m_NonInterleaved != right.m_NonInterleaved) return true;
   if (m_InterlaceMethod != right.m_InterlaceMethod) return true;
+  if (m_ScalingMethod != right.m_ScalingMethod) return true;
   if (m_FilmGrain != right.m_FilmGrain) return true;
   if (m_ViewMode != right.m_ViewMode) return true;
   if (m_CustomZoomAmount != right.m_CustomZoomAmount) return true;
