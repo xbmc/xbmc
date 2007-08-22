@@ -56,6 +56,7 @@ CGUIDialogVideoSettings::~CGUIDialogVideoSettings(void)
 #define VIDEO_SETTINGS_NON_INTERLEAVED    15
 #define VIDEO_SETTINGS_NO_CACHE           16
 #define VIDEO_SETTINGS_FORCE_INDEX        17
+#define VIDEO_SETTINGS_SCALINGMETHOD      18
 
 void CGUIDialogVideoSettings::CreateSettings()
 {
@@ -65,6 +66,10 @@ void CGUIDialogVideoSettings::CreateSettings()
   {
     const int entries[] = { 16018, 16019, 16020, 16021, 16022, 20129, 20130, 20131 };
     AddSpin(VIDEO_SETTINGS_INTERLACEMETHOD, 16023, (int*)&g_stSettings.m_currentVideoSettings.m_InterlaceMethod, 8, entries);
+  }
+  {
+    const int entries[] = { 160301, 16302, 16303, 16304, 16305, 16306 };
+    AddSpin(VIDEO_SETTINGS_INTERLACEMETHOD, 16300, (int*)&g_stSettings.m_currentVideoSettings.m_ScalingMethod, 6, entries);
   }
   AddBool(VIDEO_SETTINGS_CROP, 644, &g_stSettings.m_currentVideoSettings.m_Crop);
   {
