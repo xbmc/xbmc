@@ -146,7 +146,9 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
     if (iSize > 1024*1024 || iSize == -2) // 1MB
       bShowProgress=true;
 
-    iRes = urarlib_get(const_cast<char*>(strRarPath.c_str()), const_cast<char*>(strDir.c_str()),const_cast<char*>(strPath.c_str()),NULL,&iOffset,bShowProgress);
+    CStdString strDir2(strDir);
+    CUtil::RemoveSlashAtEnd(strDir2);
+    iRes = urarlib_get(const_cast<char*>(strRarPath.c_str()), const_cast<char*>(strDir2.c_str()),const_cast<char*>(strPath.c_str()),NULL,&iOffset,bShowProgress);
   }
   if (iRes == 0)
   {
