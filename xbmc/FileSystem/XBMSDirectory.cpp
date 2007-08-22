@@ -53,7 +53,7 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPathUtf8, CFileItemList &
   CFileItemList vecCacheItems;
   g_directoryCache.ClearDirectory(strPathUtf8);
 
-  CcXstreamServerConnection conn = NULL;
+  CcXstreamServerConnection conn = 0;
 
   if (strPath == "xbms://")
   {
@@ -78,14 +78,14 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPathUtf8, CFileItemList &
   if (cc_xstream_client_connect(url.GetHostName().c_str(),
                                 (url.HasPort()) ? url.GetPort() : 1400, &conn) != CC_XSTREAM_CLIENT_OK)
   {
-    if (conn != NULL) cc_xstream_client_disconnect(conn);
+    if (conn != 0) cc_xstream_client_disconnect(conn);
 
     return false;
   }
 
   if (cc_xstream_client_version_handshake(conn) != CC_XSTREAM_CLIENT_OK)
   {
-    if (conn != NULL) cc_xstream_client_disconnect(conn);
+    if (conn != 0) cc_xstream_client_disconnect(conn);
 
     return false;
   }
@@ -116,7 +116,7 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPathUtf8, CFileItemList &
         {
           if (cc_xstream_client_setcwd(conn, strDir.c_str()) != CC_XSTREAM_CLIENT_OK)
           {
-            if (conn != NULL) cc_xstream_client_disconnect(conn);
+            if (conn != 0) cc_xstream_client_disconnect(conn);
             return false;
           }
         }
@@ -130,14 +130,14 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPathUtf8, CFileItemList &
   }
   else
   {
-    if (conn != NULL) cc_xstream_client_disconnect(conn);
+    if (conn != 0) cc_xstream_client_disconnect(conn);
     return false;
   }
   if (strDir.size() > 0)
   {
     if (cc_xstream_client_setcwd(conn, strDir.c_str()) != CC_XSTREAM_CLIENT_OK)
     {
-      if (conn != NULL) cc_xstream_client_disconnect(conn);
+      if (conn != 0) cc_xstream_client_disconnect(conn);
 
       return false;
     }
@@ -145,7 +145,7 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPathUtf8, CFileItemList &
 
   if (cc_xstream_client_dir_open(conn, &handle) != CC_XSTREAM_CLIENT_OK)
   {
-    if (conn != NULL) cc_xstream_client_disconnect(conn);
+    if (conn != 0) cc_xstream_client_disconnect(conn);
 
     return false;
   }
@@ -219,7 +219,7 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPathUtf8, CFileItemList &
   cc_xstream_client_close_all(conn);
   rv = true;
 
-  if (conn != NULL)
+  if (conn != 0)
     cc_xstream_client_disconnect(conn);
 
   if (m_cacheDirectory)
