@@ -12,8 +12,8 @@ error() {
 usage() {
   echo " build.sh by default checks that your source is up-to-date, updates it"
   echo "  if not, compile, and create a working build of XBMC in ./BUILD."
-  echo "  UserData and scripts dirs will be backed up if existing."
-  echo " TODO: backup non PM3 skins."
+  echo "  UserData and scripts dirs as well as 3rd party skins will be backed"
+  echo "  up if existing."
   echo " Usage: build.sh [OPTIONS]"
   echo "  OPTIONS:"
   echo "   --help [-h]                      : Display this text."
@@ -102,8 +102,6 @@ parse_args() {
 }
 
 update() {
-  rm -f .build.sh.svn &> /dev/null
-  LOCAL_REVISION=$(expr "$(svn info "$SOURCEDIR" 2>&1 | grep "Revision")" : '.*: \(.*\)')
   echo " Local source revision : $LOCAL_REVISION"
   echo -n " Repository revision : Checking..."
   HEAD_REVISION=$(expr "$(svn info "$SOURCEDIR" -r HEAD 2>&1 | grep "Revision")" : '.*: \(.*\)')
@@ -154,6 +152,7 @@ update() {
         then
           CONFIGURE=1
         fi
+        LOCAL_REVISION="$HEADREVISION"
       fi
     else
       echo " Your source is up to date."
@@ -313,7 +312,7 @@ copy() {
   mkdir "$BUILDDIR" &> /dev/null
   error
 
-  for I in credits language media screensavers scripts skin sounds system userdata visualisations web XboxMediaCenter
+  for I in credits language media screensavers scripts skin sounds system userdata visualisations web XboxMediaCenter README.linux demo-asoundrc copying.txt Changelog.txt
   do
     printf "\r Copying %-16.16s" $I 
     if [[ $I == "skin" ]]
@@ -425,6 +424,33 @@ CONFIGOPTS=""
 (( SHOW_MAKE=1 ))
 (( CONFIGURE=0 ))
 
+if ! [[ -e "$SOURCEDIR/.firstrun" ]]
+then
+  touch "$SOURCEDIR/.firstrun"
+  echo
+  echo "*** FIRST RUN DETECTED. YOU'D BETTER READ THIS CAREFULLY! ***"
+  echo
+  usage
+fi
+
+touch "/root/.test" &> /dev/null
+
+if ! (( $? )) 
+then
+  PROMPT=""
+  echo " There is really no reason to run this as root or with sudo."
+  while [[ $PROMPT != "y" && $PROMPT != "n" ]]
+  do
+    printf "\r Run anyway? (y/n) :  \b"
+    read -n 1 PROMPT
+  done
+  echo
+  if [[ $PROMPT = "n" ]]
+  then
+    exit
+  fi
+fi
+
 echo -ne "]0;Building XBMC"
 
 if [[ -e ~/.xbmc-build-settings ]]
@@ -439,6 +465,8 @@ if [[ "${BUILDDIR:(-1)}" = "/" ]]
 then
   BUILDDIR="${BUILDDIR%/}"
 fi
+
+LOCAL_REVISION=$(expr "$(svn info "$SOURCEDIR" 2>&1 | grep "Revision")" : '.*: \(.*\)')
 
 if [[ -e "$BUILDDIR" ]]
 then
@@ -476,6 +504,12 @@ else
   echo " Skipping compile."
 fi
 
+if (( UPDATE || COMPILE || COPY ))
+then
+  echo " Generating Changelog.txt"
+  "$SOURCEDIR/tools/Changelog/Changelog.py" -r $LOCAL_REVISION -d "$SOURCEDIR"
+fi
+
 if (( COPY ))
 then
   copy
@@ -492,7 +526,7 @@ then
   rm -rf "$BACKUPDIR" &> /dev/null
 fi
 
-if (( COMPILE ))
+if (( COMPILE && !CONFIRM))
 then
   view_log
 fi
