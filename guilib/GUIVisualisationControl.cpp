@@ -143,7 +143,7 @@ void CGUIVisualisationControl::LoadVisualisation()
   m_pVisualisation = factory.LoadVisualisation(strVisz);
   if (m_pVisualisation)
   {
-    g_graphicsContext.CaptureStateBlock();
+	g_graphicsContext.ApplyStateBlock();
     float x = g_graphicsContext.ScaleFinalXCoord(GetXPosition(), GetYPosition());
     float y = g_graphicsContext.ScaleFinalYCoord(GetXPosition(), GetYPosition());
     float w = g_graphicsContext.ScaleFinalXCoord(GetXPosition() + GetWidth(), GetYPosition() + GetHeight()) - x;
@@ -224,7 +224,9 @@ void CGUIVisualisationControl::Render()
       g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height);
       try
       {
+        g_graphicsContext.ApplyStateBlock();
         m_pVisualisation->Render();
+        g_graphicsContext.ApplyStateBlock();
       }
       catch (...)
       {
