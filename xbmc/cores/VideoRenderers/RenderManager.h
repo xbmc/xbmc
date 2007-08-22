@@ -98,7 +98,7 @@ public:
   CXBoxRenderer *m_pRenderer;
   #endif
 
-  inline void Present();
+  void Present();
 
 protected:
 
