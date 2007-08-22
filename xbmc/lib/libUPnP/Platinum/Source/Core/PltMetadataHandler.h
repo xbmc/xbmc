@@ -13,10 +13,7 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#include "NptTypes.h"
-#include "NptStreams.h"
-#include "NptStrings.h"
-#include "NptTime.h"
+#include "Neptune.h"
 
 /*----------------------------------------------------------------------
 |   PLT_MetadataHandler class

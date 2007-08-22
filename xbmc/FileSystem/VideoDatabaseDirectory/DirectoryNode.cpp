@@ -14,6 +14,8 @@
 #include "DirectoryNodeTvShowsOverview.h"
 #include "DirectoryNodeSeasons.h"
 #include "DirectoryNodeEpisodes.h"
+#include "DirectoryNodeRecentlyAddedMovies.h"
+#include "DirectoryNodeRecentlyAddedEpisodes.h"
 
 using namespace DIRECTORY::VIDEODATABASEDIRECTORY;
 
@@ -99,6 +101,10 @@ CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const CStdString& str
     return new CDirectoryNodeSeasons(strName, pParent);
   case NODE_TYPE_EPISODES:
     return new CDirectoryNodeEpisodes(strName, pParent);
+  case NODE_TYPE_RECENTLY_ADDED_MOVIES:
+    return new CDirectoryNodeRecentlyAddedMovies(strName,pParent);
+  case NODE_TYPE_RECENTLY_ADDED_EPISODES:
+    return new CDirectoryNodeRecentlyAddedEpisodes(strName,pParent);
   }
 
   return NULL;
@@ -223,7 +229,10 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
   if (items.Size() == 0 || items.Size() == 1 || items.Size() == 2 && items[0]->IsParentFolder())
     return;
 
-  switch (GetChildType())
+  // hack - as the season node might return episodes
+  auto_ptr<CDirectoryNode> pNode(ParseURL(items.m_strPath));
+
+  switch (pNode->GetChildType())
   {
     case NODE_TYPE_SEASONS:
       pItem = new CFileItem(g_localizeStrings.Get(20366));  // "All Seasons"

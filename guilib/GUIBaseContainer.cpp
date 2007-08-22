@@ -190,7 +190,9 @@ CGUIListItem *CGUIBaseContainer::GetListItem(int offset) const
 {
   if (!m_items.size())
     return NULL;
-  return m_items[(GetSelectedItem() + offset) % m_items.size()];
+  int item = (GetSelectedItem() + offset) % ((int)m_items.size());
+  if (item < 0) item += m_items.size();
+  return m_items[item];
 }
 
 bool CGUIBaseContainer::SelectItemFromPoint(const CPoint &point)
@@ -246,9 +248,17 @@ bool CGUIBaseContainer::OnClick(DWORD actionID)
     if (selected >= 0 && selected < (int)m_items.size())
     {
       CFileItem *item = (CFileItem *)m_items[selected];
-      CGUIMessage message(GUI_MSG_EXECUTE, GetID(), GetParentID());
-      message.SetStringParam(item->m_strPath);
-      g_graphicsContext.SendMessage(message);
+      // multiple action strings are concat'd together, separated with " , "
+      vector<CStdString> actions;
+      StringUtils::SplitString(item->m_strPath, " , ", actions);
+      for (unsigned int i = 0; i < actions.size(); i++)
+      {
+        CStdString action = actions[i];
+        action.Replace(",,", ",");
+        CGUIMessage message(GUI_MSG_EXECUTE, GetID(), GetParentID());
+        message.SetStringParam(action);
+        g_graphicsContext.SendMessage(message);
+      }
     }
     return true;
   }
@@ -318,12 +328,10 @@ void CGUIBaseContainer::FreeResources()
   CGUIControl::FreeResources();
   if (m_staticContent)
   { // free any static content
-    for (iItems it = m_items.begin(); it != m_items.end(); it++)
-    {
-      CGUIListItem *item = *it;
-      delete item;
-    }
     m_items.clear();
+    for (iItems it = m_staticItems.begin(); it != m_staticItems.end(); it++)
+      delete *it;
+    m_staticItems.clear();
   }
   m_scrollSpeed = 0;
 }
@@ -331,8 +339,28 @@ void CGUIBaseContainer::FreeResources()
 void CGUIBaseContainer::UpdateLayout()
 {
   CalculateLayout();
-  CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, GetRows());
-  SendWindowMessage(msg);
+  if (m_pageControl)
+  {
+    CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, GetRows());
+    SendWindowMessage(msg);
+  }
+}
+
+void CGUIBaseContainer::UpdateVisibility()
+{
+  CGUIControl::UpdateVisibility();
+  if (m_staticContent)
+  { // update our item list with our new content, but only add those items that should
+    // be visible.
+    m_items.clear();
+    for (unsigned int i = 0; i < m_staticItems.size(); ++i)
+    {
+      CFileItem *item = (CFileItem *)m_staticItems[i];
+      // m_idepth is used to store the visibility condition
+      if (!item->m_idepth || g_infoManager.GetBool(item->m_idepth, GetParentID()))
+        m_items.push_back(item);
+    }
+  }
 }
 
 void CGUIBaseContainer::CalculateLayout()
@@ -428,11 +456,21 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
         XMLUtils::GetString(item, "label2", label2);
         XMLUtils::GetString(item, "thumb", thumb);
         XMLUtils::GetString(item, "icon", icon);
+        const char *id = item->Attribute("id");
+        int visibleCondition = 0;
+        CGUIControlFactory::GetConditionalVisibility(item, visibleCondition);
         newItem = new CFileItem(CGUIControlFactory::GetLabel(label));
-        newItem->m_strPath = click->FirstChild()->Value();
+        // multiple action strings are concat'd together, separated with " , "
+        vector<CStdString> actions;
+        CGUIControlFactory::GetMultipleString(item, "onclick", actions);
+        for (vector<CStdString>::iterator it = actions.begin(); it != actions.end(); ++it)
+          (*it).Replace(",", ",,");
+        StringUtils::JoinString(actions, " , ", newItem->m_strPath);
         newItem->SetLabel2(CGUIControlFactory::GetLabel(label2));
         newItem->SetThumbnailImage(thumb);
         newItem->SetIconImage(icon);
+        if (id) newItem->m_iprogramCount = atoi(id);
+        newItem->m_idepth = visibleCondition;
       }
       else
       {
@@ -440,16 +478,21 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
         const char *label2 = item->Attribute("label2");
         const char *thumb = item->Attribute("thumb");
         const char *icon = item->Attribute("icon");
+        const char *id = item->Attribute("id");
         newItem = new CFileItem(label ? CGUIControlFactory::GetLabel(label) : "");
         newItem->m_strPath = item->FirstChild()->Value();
         if (label2) newItem->SetLabel2(CGUIControlFactory::GetLabel(label2));
         if (thumb) newItem->SetThumbnailImage(thumb);
         if (icon) newItem->SetIconImage(icon);
+        if (id) newItem->m_iprogramCount = atoi(id);
+        newItem->m_idepth = 0;  // no visibility condition
       }
-      m_items.push_back(newItem);
+      m_staticItems.push_back(newItem);
     }
     item = item->NextSiblingElement("item");
   }
+  // and make sure m_items is setup initially as well, so that initial item selection works as expected
+  UpdateVisibility();
   return;
 }
 

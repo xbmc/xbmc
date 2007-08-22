@@ -115,7 +115,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   strHeading.Format(g_localizeStrings.Get(13401),g_localizeStrings.Get(iLabel));
   pDialog->SetHeading(strHeading);
   pDialog->DoModal();
-  if (!pDialog->IsConfirmed())
+  if (pDialog->GetSelectedLabel() > -1)
   {
     m_rule.m_parameter = pDialog->GetSelectedLabelText();
     UpdateButtons();
@@ -158,6 +158,10 @@ void CGUIDialogSmartPlaylistRule::OnValue()
         m_rule.m_parameter = dateTime.GetAsDBDate();
       }
     }
+    break;
+  case SECONDS_FIELD:
+    if (CGUIDialogNumeric::ShowAndGetSeconds(value, g_localizeStrings.Get(21420)))
+      m_rule.m_parameter = value;
     break;
   case NUMERIC_FIELD:
     if (CGUIDialogNumeric::ShowAndGetNumber(value, g_localizeStrings.Get(21420)))
@@ -234,6 +238,7 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
     break;
 
   case NUMERIC_FIELD:
+  case SECONDS_FIELD:
     // numerical fields - less than greater than
     AddOperatorLabel(CSmartPlaylistRule::OPERATOR_EQUALS);
     AddOperatorLabel(CSmartPlaylistRule::OPERATOR_DOES_NOT_EQUAL);
@@ -319,11 +324,13 @@ CGUIDialogSmartPlaylistRule::FIELD CGUIDialogSmartPlaylistRule::GetFieldType(CSm
     return TEXT_FIELD;
 
   case CSmartPlaylistRule::SONG_YEAR:
-  case CSmartPlaylistRule::SONG_TIME:
   case CSmartPlaylistRule::SONG_TRACKNUMBER:
   case CSmartPlaylistRule::SONG_PLAYCOUNT:
   case CSmartPlaylistRule::SONG_RATING:
     return NUMERIC_FIELD;
+
+  case CSmartPlaylistRule::SONG_TIME:
+    return SECONDS_FIELD;
 
   case CSmartPlaylistRule::SONG_LASTPLAYED:
     return DATE_FIELD;

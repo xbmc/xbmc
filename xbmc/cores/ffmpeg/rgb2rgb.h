@@ -20,13 +20,13 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with FFmpeg; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 #ifndef RGB2RGB_INCLUDED
 #define RGB2RGB_INCLUDED
 
-// Note: do not fix the dependence on stdio.h
+#include <inttypes.h>
 
 /* A full collection of rgb to rgb(bgr) convertors */
 extern void (*rgb24to32)   (const uint8_t *src, uint8_t *dst, long src_size);

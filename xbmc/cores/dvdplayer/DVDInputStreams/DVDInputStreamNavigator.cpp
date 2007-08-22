@@ -61,7 +61,7 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
   {
     free(strDVDFile);
 
-    CLog::Log(LOGDEBUG,"Error on dvdnav_open\n");
+    CLog::Log(LOGERROR,"Error on dvdnav_open\n");
     Close();
     return false;
   }
@@ -124,7 +124,7 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
   // set read ahead cache usage
   if (m_dll.dvdnav_set_readahead_flag(m_dvdnav, 1) != DVDNAV_STATUS_OK)
   {
-    CLog::Log(LOGDEBUG,"Error on dvdnav_set_readahead_flag: %s\n", m_dll.dvdnav_err_to_string(m_dvdnav));
+    CLog::Log(LOGERROR,"Error on dvdnav_set_readahead_flag: %s\n", m_dll.dvdnav_err_to_string(m_dvdnav));
     Close();
     return false;
   }
@@ -133,7 +133,7 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
   // whole feature instead of just relatively to the current chapter
   if (m_dll.dvdnav_set_PGC_positioning_flag(m_dvdnav, 1) != DVDNAV_STATUS_OK)
   {
-    CLog::Log(LOGDEBUG,"Error on dvdnav_set_PGC_positioning_flag: %s\n", m_dll.dvdnav_err_to_string(m_dvdnav));
+    CLog::Log(LOGERROR,"Error on dvdnav_set_PGC_positioning_flag: %s\n", m_dll.dvdnav_err_to_string(m_dvdnav));
     Close();
     return false;
   }
@@ -159,7 +159,7 @@ void CDVDInputStreamNavigator::Close()
   // finish off by closing the dvdnav device
   if (m_dll.dvdnav_close(m_dvdnav) != DVDNAV_STATUS_OK)
   {
-    CLog::Log(LOGDEBUG,"Error on dvdnav_close: %s\n", m_dll.dvdnav_err_to_string(m_dvdnav));
+    CLog::Log(LOGERROR,"Error on dvdnav_close: %s\n", m_dll.dvdnav_err_to_string(m_dvdnav));
     return ;
   }
 
@@ -248,7 +248,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
 
   if (result == DVDNAV_STATUS_ERR)
   {
-    CLog::Log(LOGDEBUG,"Error getting next block: %s\n", m_dll.dvdnav_err_to_string(m_dvdnav));
+    CLog::Log(LOGERROR,"Error getting next block: %s\n", m_dll.dvdnav_err_to_string(m_dvdnav));
     return NAVRESULT_ERROR;
   }
 
@@ -405,6 +405,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
 
         dvdnav_cell_change_event_t* cell_change_event = (dvdnav_cell_change_event_t*)buf;
         m_iCellStart = cell_change_event->cell_start; // store cell time as we need that for time later
+        m_iTime = (int)(cell_change_event->cell_start / 90);
         m_iTotalTime = (int) (cell_change_event->pgc_length / 90);
         
         iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_CELL_CHANGE);

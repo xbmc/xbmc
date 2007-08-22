@@ -10,13 +10,15 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#include "NptUtils.h"
-#include "NptResults.h"
-#include "NptUri.h"
 #include "PltDidl.h"
-#include "PltLog.h"
 #include "PltXmlHelper.h"
 #include "PltService.h"
+
+NPT_SET_LOCAL_LOGGER("platinum.media.server.didl")
+
+/*----------------------------------------------------------------------
+|   globals
++---------------------------------------------------------------------*/
 
 const char* didl_header         = "<DIDL-Lite xmlns=\"urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:upnp=\"urn:schemas-upnp-org:metadata-1-0/upnp/\">";
 const char* didl_footer         = "\r\n</DIDL-Lite>";
@@ -56,6 +58,8 @@ PLT_Didl::ConvertFilterToMask(NPT_String filter)
             mask |= PLT_FILTER_MASK_ALBUMARTURI;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_DESCRIPTION, len) == 0) {
             mask |= PLT_FILTER_MASK_DESCRIPTION;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_ORIGINALTRACK, len) == 0) {
+            mask |= PLT_FILTER_MASK_ORIGINALTRACK;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_SEARCHABLE, len) == 0) {
             mask |= PLT_FILTER_MASK_SEARCHABLE;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_CONTAINER_SEARCHABLE, len) == 0) {
@@ -269,7 +273,7 @@ PLT_Didl::FromDidl(const char* xml, PLT_MediaObjectListReference& objects)
     NPT_XmlNode*        node = NULL;
     NPT_XmlElementNode* didl = NULL;
 
-    PLT_Log(PLT_LOG_LEVEL_1, "Parsing Didl...\r\n");
+    NPT_LOG_FINE("Parsing Didl...");
 
     NPT_XmlParser parser;
     if (NPT_FAILED(parser.Parse(xml, node)) || !node || !node->AsElementNode()) {
@@ -278,7 +282,7 @@ PLT_Didl::FromDidl(const char* xml, PLT_MediaObjectListReference& objects)
 
     didl = node->AsElementNode();
 
-    PLT_Log(PLT_LOG_LEVEL_1, "Processing Didl xml...\r\n");
+    NPT_LOG_FINE("Processing Didl xml...");
     if (didl->GetTag().Compare("DIDL-Lite", true)) {
         goto cleanup;
     }

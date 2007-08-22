@@ -62,72 +62,48 @@ namespace VIDEO
 
       m_bCanInterrupt = true;
 
-      // check whether we have content set for the path.
-      int iFound;
-      m_database.GetScraperForPath(m_strStartDir,m_info.strPath,m_info.strContent,iFound);
-
       CLog::Log(LOGDEBUG, "%s - Starting scan", __FUNCTION__);
 
-      bool bOKtoScan = true;
-      if (m_bUpdateAll)
-      {
-        if (m_pObserver)
-          m_pObserver->OnStateChanged(REMOVING_OLD);
+      // Reset progress vars
+      m_currentItem=0;
+      m_itemCount=-1;
 
-        m_database.RemoveContentForPath(m_strStartDir);
+      // Create the thread to count all files to be scanned
+      CThread fileCountReader(this);
+      if (m_pObserver)
+        fileCountReader.Create();
+
+      // Database operations should not be canceled
+      // using Interupt() while scanning as it could
+      // result in unexpected behaviour.
+      m_bCanInterrupt = false;
+
+      bool bCancelled = false;
+      for(std::map<CStdString,VIDEO::SScanSettings>::iterator it = m_pathsToScan.begin(); it != m_pathsToScan.end(); it++)
+      {
+        if(!DoScan(it->first, it->second))
+        {
+          bCancelled = true;
+          break;
+        }
       }
 
-      if (bOKtoScan)
+      if (!bCancelled)
       {
-        if (m_pObserver)
-          m_pObserver->OnStateChanged(FETCHING_VIDEO_INFO);
+        m_database.CommitTransaction();
 
-        // Reset progress vars
-        m_currentItem=0;
-        m_itemCount=-1;
-
-        // Create the thread to count all files to be scanned
-        CThread fileCountReader(this);
-        if (m_pObserver)
-          fileCountReader.Create();
-
-        // Database operations should not be canceled
-        // using Interupt() while scanning as it could
-        // result in unexpected behaviour.
-        m_bCanInterrupt = false;
-
-        bool bCommit = false;
-        bool bCancelled = false;
-        if (bOKtoScan)
+        if (m_bUpdateAll)
         {
-          while (!bCancelled && m_pathsToScan.size())
-          {
-            if (!DoScan(m_pathsToScan.begin()->first,m_pathsToScan.begin()->second))
-              bCancelled = true;
-            bCommit = !bCancelled;
-          }
+          if (m_pObserver)
+            m_pObserver->OnStateChanged(COMPRESSING_DATABASE);
+
+          m_database.Compress();
         }
-
-        if (bCommit)
-        {
-          m_database.CommitTransaction();
-
-          if (m_bUpdateAll)
-          {
-            if (m_pObserver)
-              m_pObserver->OnStateChanged(COMPRESSING_DATABASE);
-
-            m_database.Compress();
-          }
-        }
-        else
-          m_database.RollbackTransaction();
-
-        fileCountReader.StopThread();
-
       }
       else
         m_database.RollbackTransaction();
+
+      fileCountReader.StopThread();
 
       m_database.Close();
       CLog::Log(LOGDEBUG, "%s - Finished scan", __FUNCTION__);
@@ -190,14 +166,22 @@ namespace VIDEO
 
   bool CVideoInfoScanner::DoScan(const CStdString& strDirectory, SScanSettings settings)
   {
+    if (m_bUpdateAll)
+    {
+      if (m_pObserver)
+        m_pObserver->OnStateChanged(REMOVING_OLD);
+
+      m_database.RemoveContentForPath(strDirectory);
+    }
+
     if (m_pObserver)
       m_pObserver->OnDirectoryChanged(strDirectory);
 
     // load subfolder
     CFileItemList items;
     int iFound;
-    bool bSkip=false,bDummy;
-    m_database.GetScraperForPath(strDirectory,m_info.strPath,m_info.strContent,settings.parent_name_root,bDummy,iFound);
+    bool bSkip=false;
+    m_database.GetScraperForPath(strDirectory,m_info,settings, iFound);
     if (m_info.strContent.IsEmpty() || m_info.strContent.Equals("None"))
       bSkip = true;
 
@@ -238,6 +222,15 @@ namespace VIDEO
       if (iFound == 1 && !settings.parent_name_root)
       {
         CDirectory::GetDirectory(strDirectory,items,g_stSettings.m_videoExtensions);
+        GetPathHash(items, hash);
+        bSkip = true;
+        if (!m_database.GetPathHash(strDirectory, dbHash) || dbHash != hash)
+        {
+          m_database.SetPathHash(strDirectory, hash);
+          bSkip = false;
+        }
+        else
+          items.Clear();
       }
       else
       {
@@ -250,6 +243,9 @@ namespace VIDEO
     }
     if (!bSkip)
     {
+      if (m_pObserver)
+        m_pObserver->OnStateChanged(FETCHING_VIDEO_INFO);
+
       RetrieveVideoInfo(items,settings.parent_name_root,m_info);
       if (m_info.strContent.Equals("movies"))
         m_database.SetPathHash(strDirectory, hash);
@@ -258,11 +254,6 @@ namespace VIDEO
       m_pObserver->OnDirectoryScanned(strDirectory);
     CLog::Log(LOGDEBUG, "%s - Finished dir: %s", __FUNCTION__, strDirectory.c_str());
 
-    // remove this path from the list we're processing
-    map<CStdString,SScanSettings>::iterator it = m_pathsToScan.find(strDirectory);
-    if (it != m_pathsToScan.end())
-      m_pathsToScan.erase(it);
-
     for (int i = 0; i < items.Size(); ++i)
     {
       CFileItem *pItem = items[i];
@@ -270,7 +261,7 @@ namespace VIDEO
       if (m_bStop)
         break;
       // if we have a directory item (non-playlist) we then recurse into that folder
-      if (pItem->m_bIsFolder && !pItem->GetLabel().Equals("sample") && !pItem->IsParentFolder() && !pItem->IsPlayList() && settings.recurse && !m_info.strContent.Equals("tvshows")) // do not recurse for tv shows - we have already looked recursively for episodes
+      if (pItem->m_bIsFolder && !pItem->GetLabel().Equals("sample") && !pItem->IsParentFolder() && !pItem->IsPlayList() && settings.recurse > 0 && !m_info.strContent.Equals("tvshows")) // do not recurse for tv shows - we have already looked recursively for episodes
       {
         CStdString strPath=pItem->m_strPath;
         SScanSettings settings2;
@@ -321,15 +312,10 @@ namespace VIDEO
     {
       CFileItem* pItem = items[i];
       SScraperInfo info2;
-      int iFound;
       if (pItem->m_bIsFolder)
-      {
-        m_database.GetScraperForPath(pItem->m_strPath,info2.strPath,info2.strContent,iFound);
-        if (m_pObserver)
-          m_pObserver->OnDirectoryChanged(pItem->m_strPath);
-      }
+        m_database.GetScraperForPath(pItem->m_strPath,info2);
       else
-        m_database.GetScraperForPath(items.m_strPath,info2.strPath,info2.strContent,iFound);
+        m_database.GetScraperForPath(items.m_strPath,info2);
 
       if (info2.strContent.Equals("None")) // skip
         continue;

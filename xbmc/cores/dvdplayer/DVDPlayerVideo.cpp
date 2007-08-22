@@ -12,6 +12,7 @@
 #include "DVDPerformanceCounter.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/Overlay/DVDOverlayCodecCC.h"
+#include <sstream>
 
 #ifndef _LINUX
 static __forceinline __int64 abs(__int64 value)
@@ -33,7 +34,6 @@ CDVDPlayerVideo::CDVDPlayerVideo(CDVDClock* pClock, CDVDOverlayContainer* pOverl
   m_pTempOverlayPicture = NULL;
   m_pVideoCodec = NULL;
   m_pOverlayCodecCC = NULL;
-  m_bInitializedOutputDevice = false;
   
   SetSpeed(DVD_PLAYSPEED_NORMAL);
   m_bRenderSubs = false;
@@ -398,7 +398,7 @@ void CDVDPlayerVideo::Process()
               //flushing the video codec things break for some reason
               //i think the decoder (libmpeg2 atleast) still has a pointer
               //to the data, and when the packet is freed that will fail.
-              iDecoderState = m_pVideoCodec->Decode(NULL, NULL, DVD_NOPTS_VALUE);
+              iDecoderState = m_pVideoCodec->Decode(NULL, 0, DVD_NOPTS_VALUE);
               break;
             }
             
@@ -438,7 +438,7 @@ void CDVDPlayerVideo::Process()
           break;
 
         // the decoder didn't need more data, flush the remaning buffer
-        iDecoderState = m_pVideoCodec->Decode(NULL, NULL, DVD_NOPTS_VALUE);
+        iDecoderState = m_pVideoCodec->Decode(NULL, 0, DVD_NOPTS_VALUE);
       }
 
       // if decoder had an error, tell it to reset to avoid more problems
@@ -789,12 +789,12 @@ void CDVDPlayerVideo::UpdateMenuPicture()
   }
 }
 
-__int64 CDVDPlayerVideo::GetDelay()
+string CDVDPlayerVideo::GetPlayerInfo()
 {
-  return m_iVideoDelay;
+  std::ostringstream s;
+  s << "vq size:" << 100 * m_messageQueue.GetDataSize() / m_messageQueue.GetMaxDataSize() << "%";
+  s << ", ";
+  s << "cpu: " << (int)(100 * CThread::GetRelativeUsage()) << "%";
+  return s.str();
 }
 
-void CDVDPlayerVideo::SetDelay(__int64 delay)
-{
-  m_iVideoDelay = delay;
-}

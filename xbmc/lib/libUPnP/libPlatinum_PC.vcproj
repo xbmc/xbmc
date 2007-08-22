@@ -20,7 +20,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".\Platinum\ThirdParty\Neptune\Source\Core;.\Platinum\Source\Core;.\Platinum\Source\Devices\MediaServer;.\Platinum\ThirdParty\Neptune\Source\System\Win32"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;NPT_CONFIG_ENABLE_LOGGING"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -61,7 +61,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories=".\Platinum\ThirdParty\Neptune\Source\Core;.\Platinum\Source\Core;.\Platinum\Source\Devices\MediaServer;.\Platinum\ThirdParty\Neptune\Source\System\Win32"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;;NPT_CONFIG_ENABLE_LOGGING"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -276,12 +276,6 @@
 					RelativePath=".\Platinum\Source\Core\PltLeaks.h">
 				</File>
 				<File
-					RelativePath=".\Platinum\Source\Core\PltLog.cpp">
-				</File>
-				<File
-					RelativePath=".\Platinum\Source\Core\PltLog.h">
-				</File>
-				<File
 					RelativePath=".\Platinum\Source\Core\PltMetadataHandler.cpp">
 				</File>
 				<File
@@ -394,6 +388,28 @@
 					RelativePath=".\Platinum\Source\Devices\MediaServer\PltSyncMediaBrowser.h">
 				</File>
 			</Filter>
+			<Filter
+				Name="MediaRenderer"
+				Filter="">
+				<File
+					RelativePath=".\Platinum\Source\Devices\MediaRenderer\PltMediaController.cpp">
+				</File>
+				<File
+					RelativePath=".\Platinum\Source\Devices\MediaRenderer\PltMediaController.h">
+				</File>
+				<File
+					RelativePath=".\Platinum\Source\Devices\MediaRenderer\PltMediaControllerListener.h">
+				</File>
+				<File
+					RelativePath=".\Platinum\Source\Devices\MediaRenderer\PltMediaRenderer.cpp">
+				</File>
+				<File
+					RelativePath=".\Platinum\Source\Devices\MediaRenderer\PltMediaRenderer.h">
+				</File>
+				<File
+					RelativePath=".\Platinum\Source\Devices\MediaRenderer\PltMediaRendererSCPDs.cpp">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Neptune"
@@ -430,6 +446,12 @@
 				</File>
 				<File
 					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptConfig.h">
+				</File>
+				<File
+					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptConsole.cpp">
+				</File>
+				<File
+					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptConsole.h">
 				</File>
 				<File
 					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptConstants.h">
@@ -472,6 +494,12 @@
 				</File>
 				<File
 					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptList.h">
+				</File>
+				<File
+					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptLogging.cpp">
+				</File>
+				<File
+					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptLogging.h">
 				</File>
 				<File
 					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptMap.h">

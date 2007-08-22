@@ -1,12 +1,6 @@
 
 #pragma once
 
-#ifndef _LINUX
-enum CodecID;
-#else
-#include "../ffmpeg/avcodec.h"
-#endif
-
 class CDVDVideoCodec;
 class CDVDAudioCodec;
 
@@ -24,3 +18,4 @@ public:
   static CDVDAudioCodec* OpenCodec(CDVDAudioCodec* pCodec,  CDVDStreamInfo &hint );
   static CDVDVideoCodec* OpenCodec(CDVDVideoCodec* pCodec,  CDVDStreamInfo &hint, CDVDCodecOptions &options );
 };
+

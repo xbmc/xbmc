@@ -441,6 +441,7 @@ void CCharsetConverter::wToUTF8(const CStdStringW& strSource, CStdStringA &strDe
     if (iconv(m_iconvWtoUtf8, &src, &inBytes, &dst, &outBytes))
 #endif
     { // failed :(
+      ASSERT(0);
       strDest.ReleaseBuffer();
       strDest = strSource;
       return;

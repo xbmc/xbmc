@@ -11,6 +11,7 @@
 #include <SDL/SDL_mixer.h>
 #endif
 
+
 CGUIAudioManager g_audioManager;
 
 CGUIAudioManager::CGUIAudioManager()

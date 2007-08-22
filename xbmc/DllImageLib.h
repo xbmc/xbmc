@@ -63,6 +63,7 @@ struct ImageInfo
   EXIFINFO exifInfo;
   BYTE* texture;
   void* context;
+  BYTE* alpha;
 };
 
 class DllImageLibInterface

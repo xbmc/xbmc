@@ -18,7 +18,6 @@
 +---------------------------------------------------------------------*/
 int main(void)
 {
-    PLT_SetLogLevel(3);
     PLT_UPnP upnp;
     PLT_CtrlPointReference ctrlPoint(new PLT_CtrlPoint());
     upnp.AddCtrlPoint(ctrlPoint);

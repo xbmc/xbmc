@@ -110,6 +110,13 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
   XMLUtils::GetInt(movie, "episode", m_iEpisode);
   XMLUtils::GetInt(movie, "displayseason", m_iSpecialSortSeason);
   XMLUtils::GetInt(movie, "displayepisode", m_iSpecialSortEpisode);
+  int after=0;
+  XMLUtils::GetInt(movie, "displayafterseason",after);
+  if (after > 0)
+  {
+    m_iSpecialSortSeason = after;
+    m_iSpecialSortEpisode = 2^13; // should be more than any realistic episode number
+  }
   XMLUtils::GetString(movie, "votes", m_strVotes);
   XMLUtils::GetString(movie, "outline", m_strPlotOutline);
   XMLUtils::GetString(movie, "plot", m_strPlot);

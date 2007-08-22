@@ -13,11 +13,7 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#include "NptStrings.h"
-#include "NptList.h"
-#include "NptArray.h"
-#include "NptReferences.h"
-#include "NptXml.h"
+#include "Neptune.h"
 
 /*----------------------------------------------------------------------
 |   forward declarations
@@ -88,6 +84,13 @@ typedef struct {
 } PLT_ExtraInfo;
 
 typedef struct {
+  NPT_UInt32 dvdregioncode;
+  NPT_UInt32 original_track_number;
+  NPT_String toc;
+  NPT_String user_annotation;
+} PLT_MiscInfo;
+
+typedef struct {
     NPT_Integer total;
     NPT_Integer used;
     NPT_Integer free;
@@ -154,6 +157,9 @@ public:
 
     /* extras */
     PLT_ExtraInfo m_ExtraInfo;
+
+    /* miscelaneous info */
+    PLT_MiscInfo m_MiscInfo;
 
     /* resources related */
     NPT_Array<PLT_MediaItemResource> m_Resources;

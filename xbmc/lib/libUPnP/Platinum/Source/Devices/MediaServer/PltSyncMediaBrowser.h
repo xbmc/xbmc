@@ -70,13 +70,13 @@ private:
     NPT_String m_UUID;
 };
 
-
 /*----------------------------------------------------------------------
 |   PLT_MediaContainerListener
 +---------------------------------------------------------------------*/
 class PLT_MediaContainerChangesListener
 {
 public:
+    virtual ~PLT_MediaContainerChangesListener() {}
     virtual void OnContainerChanged(PLT_DeviceDataReference& device, const char* item_id, const char* update_id) = 0;
 };
 

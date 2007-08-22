@@ -3,6 +3,7 @@
 #include "Util.h"
 #include "utils/md5.h"
 #include "xbox/XKGeneral.h"
+#include "../guilib/GUIAudioManager.h"
 
 CGUIDialogGamepad::CGUIDialogGamepad(void)
     : CGUIDialogBoxBase(WINDOW_DIALOG_GAMEPAD, "DialogGamepad.xml")
@@ -255,7 +256,9 @@ bool CGUIDialogGamepad::ShowAndVerifyInput(CStdString& strToVerify, const CStdSt
   else
     pDialog->SetLine( 2, atoi(dlgLine2.c_str()) );
 
+  g_audioManager.Enable(false); // dont do sounds during pwd input
   pDialog->DoModal();
+  g_audioManager.Enable(true);
 
   if (bGetUserInput && !pDialog->IsCanceled())
   {

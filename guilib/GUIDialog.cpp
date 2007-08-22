@@ -141,7 +141,11 @@ void CGUIDialog::DoModal(int iWindowID /*= WINDOW_INVALID */)
 
 //  m_bRunning = true;
 
+  if (!m_windowLoaded)
+    Close(true);
+
   lock.Leave();
+
   while (m_bRunning && !g_application.m_bStop)
   {
     m_gWindowManager.Process();

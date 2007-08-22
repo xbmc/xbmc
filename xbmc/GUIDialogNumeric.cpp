@@ -177,6 +177,18 @@ void CGUIDialogNumeric::OnBackSpace()
       m_dirty = false;
     }
   }
+  else if (m_mode == INPUT_TIME_SECONDS)
+  {
+    if (m_block == 0) // minutes
+      m_datetime.wMinute /= 10;
+    else if (m_datetime.wSecond)
+      m_datetime.wSecond /= 10;
+    else
+    {
+      m_block = 0;
+      m_dirty = false;
+    }
+  }
   else if (m_mode == INPUT_DATE)
   {
     if (m_block == 0)
@@ -237,6 +249,12 @@ void CGUIDialogNumeric::Render()
   else if (m_mode == INPUT_TIME)
   { // format up the time
     strLabel.Format("%2d:%02d", m_datetime.wHour, m_datetime.wMinute);
+    start = m_block * 3;
+    end = m_block * 3 + 2;
+  }
+  else if (m_mode == INPUT_TIME_SECONDS)
+  { // format up the time
+    strLabel.Format("%2d:%02d", m_datetime.wMinute, m_datetime.wSecond);
     start = m_block * 3;
     end = m_block * 3 + 2;
   }
@@ -317,6 +335,45 @@ void CGUIDialogNumeric::OnNumber(unsigned int num)
         if (num > 5)
         {
           m_block = 0;           // move to hours
+          m_dirty = false;
+        }
+        else
+          m_dirty = true;
+      }
+    }
+  }
+  else if (m_mode == INPUT_TIME_SECONDS)
+  {
+    if (m_block == 0) // minute
+    {
+      if (m_dirty) // have input the first digit
+      {
+        m_datetime.wMinute *= 10;
+        m_datetime.wMinute += num;
+        m_block = 1;             // move to seconds - allows up to 99 minutes
+        m_dirty = false;
+      }
+      else  // this is the first digit
+      {
+        m_datetime.wMinute = num;
+        m_dirty = true;
+      }
+    }
+    else  // seconds
+    {
+      if (m_dirty) // have input the first digit
+      {
+        m_datetime.wSecond *= 10;
+        m_datetime.wSecond += num;
+        m_block = 0;             // move to minutes
+        m_dirty = false;
+      }
+      else  // this is the first digit
+      {
+        m_datetime.wSecond = num;
+        if (num > 5)
+        {
+          m_block = 0;           // move to minutes
           m_dirty = false;
         }
         else
@@ -405,10 +462,10 @@ void CGUIDialogNumeric::SetMode(INPUT_MODE mode, void *initial)
   m_mode = mode;
   m_block = 0;
   m_lastblock = 0;
-  if (m_mode == INPUT_TIME || m_mode == INPUT_DATE)
+  if (m_mode == INPUT_TIME || m_mode == INPUT_TIME_SECONDS || m_mode == INPUT_DATE)
   {
     m_datetime = *(SYSTEMTIME *)initial;
-    m_lastblock = (m_mode == INPUT_TIME) ? 1 : 2;
+    m_lastblock = (m_mode == INPUT_DATE) ? 2 : 1;
   }
   if (m_mode == INPUT_IP_ADDRESS)
   {
@@ -452,7 +509,7 @@ void CGUIDialogNumeric::SetMode(INPUT_MODE mode, void *initial)
 void CGUIDialogNumeric::GetOutput(void *output)
 {
   if (!output) return;
-  if (m_mode == INPUT_TIME || m_mode == INPUT_DATE)
+  if (m_mode == INPUT_TIME || m_mode == INPUT_TIME_SECONDS || m_mode == INPUT_DATE)
     *(SYSTEMTIME*)output = m_datetime;
   if (m_mode == INPUT_IP_ADDRESS)
   {
@@ -469,6 +526,26 @@ void CGUIDialogNumeric::GetOutput(void *output)
     CStdString *pass = (CStdString *)output;
     *pass = m_password;
   }
+}
+
+bool CGUIDialogNumeric::ShowAndGetSeconds(CStdString &timeString, const CStdString &heading)
+{
+  CGUIDialogNumeric *pDialog = (CGUIDialogNumeric *)m_gWindowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
+  if (!pDialog) return false;
+  int seconds = StringUtils::TimeStringToSeconds(timeString);
+  SYSTEMTIME time = {0};
+  time.wHour = seconds / 3600;
+  time.wMinute = (seconds - time.wHour * 3600) / 60;
+  time.wSecond = seconds - time.wHour * 3600 - time.wMinute * 60;
+  pDialog->SetMode(INPUT_TIME_SECONDS, (void *)&time);
+  pDialog->SetHeading(heading);
+  pDialog->DoModal();
+  if (!pDialog->IsConfirmed() || pDialog->IsCanceled())
+    return false;
+  pDialog->GetOutput(&time);
+  seconds = time.wHour * 3600 + time.wMinute * 60 + time.wSecond;
+  StringUtils::SecondsToTimeString(seconds, timeString);
+  return true;
 }
 
 bool CGUIDialogNumeric::ShowAndGetTime(SYSTEMTIME &time, const CStdString &heading)

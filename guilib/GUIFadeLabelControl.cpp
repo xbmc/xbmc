@@ -5,7 +5,7 @@
 
 
 CGUIFadeLabelControl::CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo)
-    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height), m_scrollInfo(50, labelInfo.offsetX)
 {
   m_label = labelInfo;
   m_iCurrentLabel = 0;
@@ -56,7 +56,7 @@ void CGUIFadeLabelControl::Render()
 	int iLabelCount = (int)m_infoLabels.size();
 	if (iLabelCount > 0)
 	{
-		strRenderLabel = g_infoManager.GetMultiLabel(m_infoLabels[m_iCurrentLabel]);
+		strRenderLabel = g_infoManager.GetMultiInfo(m_infoLabels[m_iCurrentLabel], m_dwParentID);
 	}
 
 	if (m_vecInfo.size())
@@ -75,10 +75,10 @@ void CGUIFadeLabelControl::Render()
 
   if (iLabelCount == 1)
   {
-    DWORD iWidth = (DWORD)m_label.font->GetTextWidth(strLabelUnicode.c_str());
-    if (iWidth < m_width)
+    float width = m_label.font->GetTextWidth(strLabelUnicode.c_str());
+    if (width + m_label.offsetX < m_width)
     {
-      m_label.font->DrawText(m_posX, m_posY, m_label.textColor, m_label.shadowColor, strLabelUnicode.c_str());
+      m_label.font->DrawText(m_posX + m_label.offsetX, m_posY, m_label.textColor, m_label.shadowColor, strLabelUnicode.c_str());
       CGUIControl::Render();
       return ;
     }
@@ -88,7 +88,7 @@ void CGUIFadeLabelControl::Render()
     DWORD dwAlpha = 21 * m_iCurrentFrame;
     dwAlpha <<= 24;
     dwAlpha += ( m_label.textColor & 0x00ffffff);
-    m_label.font->DrawTextWidth(m_posX, m_posY, dwAlpha, m_label.shadowColor, strLabelUnicode.c_str(), m_width);
+    m_label.font->DrawTextWidth(m_posX + m_label.offsetX, m_posY, dwAlpha, m_label.shadowColor, strLabelUnicode.c_str(), m_width - m_label.offsetX);
 
     m_iCurrentFrame++;
     if (m_iCurrentFrame >= 12)

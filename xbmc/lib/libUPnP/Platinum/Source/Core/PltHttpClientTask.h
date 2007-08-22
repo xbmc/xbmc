@@ -13,8 +13,7 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#include "PltLog.h"
-#include "NptSockets.h"
+#include "Neptune.h"
 #include "PltHttp.h"
 #include "PltThreadTask.h"
 
@@ -91,14 +90,7 @@ protected:
     NPT_Result ProcessResponse(NPT_Result        res, 
                                NPT_HttpRequest*  request, 
                                NPT_SocketInfo&   info, 
-                               NPT_HttpResponse* response) {
-        NPT_COMPILER_UNUSED(request);
-        NPT_COMPILER_UNUSED(info);
-        NPT_COMPILER_UNUSED(response);
-
-        PLT_Log(PLT_LOG_LEVEL_3, "PLT_FileHttpClientTask::ProcessResponse (status=%d)\n", res);
-        return NPT_SUCCESS;
-    }
+                               NPT_HttpResponse* response);
 };
 
 #endif /* _PLT_HTTP_CLIENT_TASK_H_ */

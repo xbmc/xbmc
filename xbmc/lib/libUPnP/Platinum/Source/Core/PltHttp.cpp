@@ -10,16 +10,11 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#include "NptThreads.h"
-#include "NptUtils.h"
-#include "NptXml.h"
-#include "NptVersion.h"
 #include "PltHttp.h"
-#include "PltLog.h"
 #include "PltDatagramStream.h"
 #include "PltVersion.h"
 
-static NPT_Mutex Lock;
+NPT_SET_LOCAL_LOGGER("platinum.core.http")
 
 /*----------------------------------------------------------------------
 |   NPT_HttpHeaderFinder
@@ -70,13 +65,19 @@ class NPT_HttpHeaderLogger
 {
 public:
     // methods
-    NPT_HttpHeaderLogger(unsigned long level = PLT_LOG_LEVEL_3) : m_level(level) {}
+    NPT_HttpHeaderLogger(NPT_LoggerReference& logger, int level) : 
+      m_Logger(logger), m_Level(level) {}
 	NPT_Result operator()(NPT_HttpHeader*& header) const {
-        PLT_Log(m_level, "%s: %s\r\n", (const char*)header->GetName(), (const char*)header->GetValue());
+        NPT_COMPILER_UNUSED(header);
+
+        NPT_LOG_L2(m_Logger, m_Level, "%s: %s", 
+            (const char*)header->GetName(), 
+            (const char*)header->GetValue());
         return NPT_SUCCESS;
     }
 
-    unsigned long m_level;
+    NPT_LoggerReference& m_Logger;
+    int                  m_Level;
 };
 
 
@@ -86,7 +87,7 @@ public:
 NPT_Result
 PLT_HttpHelper::GetContentType(NPT_HttpMessage* message, NPT_String& type) 
 { 
-    return message->GetHeaders().GetHeaderValue("Content-Type", type);
+    return message->GetHeaders().GetHeaderValue(NPT_HTTP_HEADER_CONTENT_TYPE, type);
 }
 
 /*----------------------------------------------------------------------
@@ -95,7 +96,7 @@ PLT_HttpHelper::GetContentType(NPT_HttpMessage* message, NPT_String& type)
 void
 PLT_HttpHelper::SetContentType(NPT_HttpMessage* message, const char* type)   
 {
-    message->GetHeaders().SetHeader("Content-Type", type);
+    message->GetHeaders().SetHeader(NPT_HTTP_HEADER_CONTENT_TYPE, type);
 }
 
 /*----------------------------------------------------------------------
@@ -106,7 +107,7 @@ PLT_HttpHelper::GetContentLength(NPT_HttpMessage* message, NPT_Size& len)
 { 
     long out;
     NPT_String value;
-    if (NPT_FAILED(message->GetHeaders().GetHeaderValue("Content-Length", value))) {
+    if (NPT_FAILED(message->GetHeaders().GetHeaderValue(NPT_HTTP_HEADER_CONTENT_LENGTH, value))) {
         return NPT_FAILURE;
     }
 
@@ -121,7 +122,7 @@ PLT_HttpHelper::GetContentLength(NPT_HttpMessage* message, NPT_Size& len)
 void
 PLT_HttpHelper::SetContentLength(NPT_HttpMessage* message, NPT_Size len)   
 {
-    message->GetHeaders().SetHeader("Content-Length", NPT_String::FromInteger(len));
+    message->GetHeaders().SetHeader(NPT_HTTP_HEADER_CONTENT_LENGTH, NPT_String::FromInteger(len));
 }
 
 /*----------------------------------------------------------------------
@@ -160,7 +161,7 @@ NPT_Result
 PLT_HttpHelper::SetBody(NPT_HttpMessage* message, NPT_InputStreamReference& stream, NPT_Size len)
 {
     if (len == 0) {
-        NPT_CHECK(stream->GetAvailable(len));
+        NPT_CHECK_SEVERE(stream->GetAvailable(len));
     }
 
     // get the entity
@@ -180,13 +181,15 @@ PLT_HttpHelper::SetBody(NPT_HttpMessage* message, NPT_InputStreamReference& stre
 |   PLT_HttpHelper::GetBody
 +---------------------------------------------------------------------*/
 NPT_Result 
-PLT_HttpHelper::GetBody(NPT_HttpMessage& message, NPT_String& body) 
+PLT_HttpHelper::GetBody(NPT_HttpMessage* message, NPT_String& body) 
 {
     NPT_Result res;
     NPT_InputStreamReference stream;
 
+    if (!message) return NPT_ERROR_INTERNAL;
+
     // get stream
-    NPT_HttpEntity* entity = message.GetEntity();
+    NPT_HttpEntity* entity = message->GetEntity();
     if (!entity || NPT_FAILED(entity->GetInputStream(stream))) {
         return NPT_FAILURE;
     }
@@ -202,19 +205,19 @@ PLT_HttpHelper::GetBody(NPT_HttpMessage& message, NPT_String& body)
 |   PLT_HttpHelper::ParseBody
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_HttpHelper::ParseBody(NPT_HttpMessage& message, NPT_XmlElementNode*& tree) 
+PLT_HttpHelper::ParseBody(NPT_HttpMessage* message, NPT_XmlElementNode*& tree) 
 {
     // reset tree
     tree = NULL;
 
     // read body
     NPT_String body;
-    NPT_CHECK(GetBody(message, body));
+    NPT_CHECK_WARNING(GetBody(message, body));
 
     // parse body
     NPT_XmlParser parser;
     NPT_XmlNode*  node;
-    NPT_CHECK(parser.Parse(body, node));
+    NPT_CHECK_WARNING(parser.Parse(body, node));
     
     tree = node->AsElementNode();
     if (!tree) {
@@ -226,22 +229,6 @@ PLT_HttpHelper::ParseBody(NPT_HttpMessage& message, NPT_XmlElementNode*& tree)
 }
 
 /*----------------------------------------------------------------------
-|   PLT_HttpHelper::ToLog
-+---------------------------------------------------------------------*/
-NPT_Result
-PLT_HttpHelper::ToLog(NPT_HttpMessage* message, unsigned long level)
-{
-    //NPT_AutoLock lock(Lock);
-    message->GetHeaders().GetHeaders().Apply(NPT_HttpHeaderLogger(level));
-    PLT_Log(level, "\r\n");
-    //if (!m_Body.IsNull()) {
-    //    m_Body->Log(level);
-    //}
-    PLT_Log(level, "\r\n");
-    return NPT_SUCCESS;
-}
-
-/*----------------------------------------------------------------------
 |   PLT_HttpHelper::IsConnectionKeepAlive
 +---------------------------------------------------------------------*/
 bool
@@ -249,8 +236,8 @@ PLT_HttpHelper::IsConnectionKeepAlive(NPT_HttpMessage* message)
 {
     NPT_String protocol = message->GetProtocol();
     NPT_String connection;
-    if (NPT_FAILED(message->GetHeaders().GetHeaderValue("Connection", connection))) {
-        if (!protocol.Compare("HTTP/1.1", true))
+    if (NPT_FAILED(message->GetHeaders().GetHeaderValue(NPT_HTTP_HEADER_CONNECTION, connection))) {
+        if (!protocol.Compare(NPT_HTTP_PROTOCOL_1_1, true))
             return true;
 
         return false;
@@ -258,7 +245,7 @@ PLT_HttpHelper::IsConnectionKeepAlive(NPT_HttpMessage* message)
 
     // if we have the keep-alive header then no matter what protocol version we want keep-alive
     // if we are in HTTP 1.1 and we don't have the keep-alive header, make sure we also don't have the Connection: close header.
-    if ((!protocol.Compare("HTTP/1.1", true) && connection.Compare("Close", true)) || !connection.Compare("keep-alive", true)) {
+    if ((!protocol.Compare(NPT_HTTP_PROTOCOL_1_1, true) && connection.Compare("Close", true)) || !connection.Compare("keep-alive", true)) {
         return true; 
     }
 
@@ -271,7 +258,7 @@ PLT_HttpHelper::IsConnectionKeepAlive(NPT_HttpMessage* message)
 NPT_Result
 PLT_HttpHelper::GetHost(NPT_HttpRequest* request, NPT_String& value)    
 { 
-    return request->GetHeaders().GetHeaderValue("HOST", value);
+    return request->GetHeaders().GetHeaderValue(NPT_HTTP_HEADER_HOST, value);
 }
 
 /*----------------------------------------------------------------------
@@ -280,7 +267,7 @@ PLT_HttpHelper::GetHost(NPT_HttpRequest* request, NPT_String& value)
 void         
 PLT_HttpHelper::SetHost(NPT_HttpRequest* request, const char* host)
 { 
-    request->GetHeaders().SetHeader("HOST", host); 
+    request->GetHeaders().SetHeader(NPT_HTTP_HEADER_HOST, host); 
 }
 
 /*----------------------------------------------------------------------
@@ -293,7 +280,7 @@ PLT_HttpHelper::GetRange(NPT_HttpRequest* request, NPT_Integer& start, NPT_Integ
     end = -1;    
     
     NPT_String range;
-    if (NPT_FAILED(request->GetHeaders().GetHeaderValue("Range", range))) {
+    if (NPT_FAILED(request->GetHeaders().GetHeaderValue(NPT_HTTP_HEADER_RANGE, range))) {
         return NPT_FAILURE;
     }
 
@@ -328,28 +315,40 @@ PLT_HttpHelper::SetRange(NPT_HttpRequest* request, NPT_Integer start, NPT_Intege
     if (end != -1) {
         range += NPT_String::FromInteger(end);
     }
-    request->GetHeaders().SetHeader("Range", range);
+    request->GetHeaders().SetHeader(NPT_HTTP_HEADER_RANGE, range);
 }
 
 /*----------------------------------------------------------------------
 |   PLT_HttpHelper::ToLog
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_HttpHelper::ToLog(NPT_HttpRequest* request, unsigned long level)
+PLT_HttpHelper::ToLog(NPT_LoggerReference logger, int level, NPT_HttpRequest* request)
 {
-    //NPT_AutoLock lock(Lock);
-    PLT_Log(level, "%s %s %s\r\n", (const char*)request->GetMethod(), (const char*)request->GetUrl().ToRequestString(true), (const char*)request->GetProtocol());
-    return PLT_HttpHelper::ToLog((NPT_HttpMessage*)request, level);
+    NPT_COMPILER_UNUSED(logger);
+    NPT_COMPILER_UNUSED(level);
+
+    NPT_StringOutputStreamReference stream(new NPT_StringOutputStream);
+    request->GetHeaders().GetHeaders().Apply(NPT_HttpHeaderPrinter((NPT_OutputStreamReference&)stream));
+
+    NPT_LOG_L4(logger, level, "\n%s %s %s\n%s", 
+        (const char*)request->GetMethod(), 
+        (const char*)request->GetUrl().ToRequestString(true), 
+        (const char*)request->GetProtocol(),
+        (const char*)stream->GetString());
+    return NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------
 |   PLT_HttpHelper::GetContentRange
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_HttpHelper::GetContentRange(NPT_HttpResponse* response, NPT_Integer& start, NPT_Integer& end, NPT_Integer& length)
+PLT_HttpHelper::GetContentRange(NPT_HttpResponse* response, 
+                                NPT_Integer&      start, 
+                                NPT_Integer&      end, 
+                                NPT_Integer&      length)
 {
     NPT_String range;
-    if (NPT_FAILED(response->GetHeaders().GetHeaderValue("Content-Range", range))) {
+    if (NPT_FAILED(response->GetHeaders().GetHeaderValue(NPT_HTTP_HEADER_CONTENT_RANGE, range))) {
         return NPT_FAILURE;
     }
 
@@ -381,10 +380,13 @@ PLT_HttpHelper::GetContentRange(NPT_HttpResponse* response, NPT_Integer& start, 
 |   PLT_HttpHelper::SetContentRange
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_HttpHelper::SetContentRange(NPT_HttpResponse* response, NPT_Integer start, NPT_Integer end, NPT_Integer length)
+PLT_HttpHelper::SetContentRange(NPT_HttpResponse* response, 
+                                NPT_Integer       start, 
+                                NPT_Integer       end, 
+                                NPT_Integer       length)
 {
     if (start < 0 || end < 0 || length < 0) {
-        PLT_Log(PLT_LOG_LEVEL_1, "ERROR: Invalid Content Range!\n");
+        NPT_LOG_SEVERE("ERROR: Invalid Content Range!");
         return NPT_FAILURE;
     }
 
@@ -394,7 +396,7 @@ PLT_HttpHelper::SetContentRange(NPT_HttpResponse* response, NPT_Integer start, N
     range += NPT_String::FromInteger(end);
     range += '/';
     range += NPT_String::FromInteger(length);
-    response->GetHeaders().SetHeader("Content-Range", range);
+    response->GetHeaders().SetHeader(NPT_HTTP_HEADER_CONTENT_RANGE, range);
     return NPT_SUCCESS;
 }
 
@@ -402,11 +404,20 @@ PLT_HttpHelper::SetContentRange(NPT_HttpResponse* response, NPT_Integer start, N
 |   NPT_HttpResponse::ToLog
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_HttpHelper::ToLog(NPT_HttpResponse* response, unsigned long level)
+PLT_HttpHelper::ToLog(NPT_LoggerReference logger, int level, NPT_HttpResponse* response)
 {
-    //NPT_AutoLock lock(Lock);
-    PLT_Log(level, "%s %d %s\r\n", (const char*)response->GetProtocol(), response->GetStatusCode(), (const char*)response->GetReasonPhrase());
-    return PLT_HttpHelper::ToLog((NPT_HttpMessage*)response, level);
+    NPT_COMPILER_UNUSED(logger);
+    NPT_COMPILER_UNUSED(level);
+
+    NPT_StringOutputStreamReference stream(new NPT_StringOutputStream);
+    response->GetHeaders().GetHeaders().Apply(NPT_HttpHeaderPrinter((NPT_OutputStreamReference&)stream));
+
+    NPT_LOG_L4(logger, level, "\n%s %d %s\n%s", 
+        (const char*)response->GetProtocol(), 
+        response->GetStatusCode(), 
+        (const char*)response->GetReasonPhrase(),
+        (const char*)stream->GetString());
+    return NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------
@@ -417,12 +428,12 @@ PLT_HttpClient::Connect(NPT_Socket* connection, NPT_HttpRequest& request, NPT_Ti
 {
     // get the address of the server
     NPT_IpAddress server_address;
-    NPT_CHECK(server_address.ResolveName(request.GetUrl().GetHost(), timeout));
+    NPT_CHECK_SEVERE(server_address.ResolveName(request.GetUrl().GetHost(), timeout));
     NPT_SocketAddress address(server_address, request.GetUrl().GetPort());
 
     // connect to the server
-    NPT_Debug("CreateConnection: will connect to %s:%d\n", (const char*)request.GetUrl().GetHost(), request.GetUrl().GetPort());
-    NPT_CHECK(connection->Connect(address, timeout));
+    NPT_LOG_FINER_2("Connecting to %s:%d\n", (const char*)request.GetUrl().GetHost(), request.GetUrl().GetPort());
+    NPT_CHECK_SEVERE(connection->Connect(address, timeout));
 
     return NPT_SUCCESS;
 }
@@ -436,6 +447,10 @@ PLT_HttpClient::SendRequest(NPT_OutputStreamReference& output_stream,
                             NPT_Timeout                timeout)
 {
     NPT_COMPILER_UNUSED(timeout);
+
+    // connect to the server
+    NPT_LOG_FINE("Sending:");
+    PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINE, &request);
 
     // add any headers that may be missing
     NPT_HttpHeaders& headers = request.GetHeaders();
@@ -486,15 +501,17 @@ PLT_HttpClient::SendRequest(NPT_OutputStreamReference& output_stream,
     request.Emit(header_stream);
 
     // send the headers
-    NPT_CHECK(output_stream->WriteFully(header_stream.GetData(), header_stream.GetDataSize()));
+    NPT_CHECK_SEVERE(output_stream->WriteFully(header_stream.GetData(), header_stream.GetDataSize()));
 
     // send request body
     if (!body_stream.IsNull()) {
-        NPT_CHECK(NPT_StreamToStreamCopy(*body_stream.AsPointer(), *output_stream.AsPointer()));
+        NPT_CHECK_SEVERE(NPT_StreamToStreamCopy(*body_stream.AsPointer(), *output_stream.AsPointer()));
     }
 
     // flush the output stream so that everything is sent to the server
-    return output_stream->Flush();
+    output_stream->Flush();
+
+    return NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------

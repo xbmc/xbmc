@@ -191,15 +191,17 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
   data += copied;
   len -= copied;
 
-  CSingleLock lock (m_critSection);
   // if we have more data left, save it for the next call to this funtion
   if (len > 0 && !m_bStop && m_pBuffer)
   {
+  	CSingleLock lock (m_critSection);
 	if(len > m_dwPacketSize)
-	CLog::Log(LOGERROR, "%s - More bytes left than can be stored in buffer", __FUNCTION__);
+	  	CLog::Log(LOGERROR, "%s - More bytes left than can be stored in buffer", __FUNCTION__);
 
-	m_iBufferSize = min(len, m_dwPacketSize);
-	memcpy(m_pBuffer, data, m_iBufferSize);
+	if (m_pBuffer) {
+		m_iBufferSize = min(len, m_dwPacketSize);
+		memcpy(m_pBuffer, data, m_iBufferSize);
+	}
   }
 
   return total - len;

@@ -32,6 +32,7 @@
 #include "GUIFixedListContainer.h"
 #include "GUIWrappingListContainer.h"
 #include "GUIPanelContainer.h"
+#include "GUILargeImage.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
 #include "../xbmc/Util.h"
@@ -189,10 +190,11 @@ bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strT
       image.border.bottom = (float)atof(borders[3].c_str());
     }
   }
+  image.orientation = 0;
   const char *flipX = pNode->Attribute("flipx");
-  if (flipX && strcmpi(flipX, "true") == 0) image.flipX = true;
+  if (flipX && strcmpi(flipX, "true") == 0) image.orientation = 1;
   const char *flipY = pNode->Attribute("flipy");
-  if (flipY && strcmpi(flipY, "true") == 0) image.flipY = true;
+  if (flipY && strcmpi(flipY, "true") == 0) image.orientation = 3 - image.orientation;  // either 3 or 2
   const char *diffuse = pNode->Attribute("diffuse");
   if (diffuse) image.diffuse = diffuse;
   image.file = pNode->FirstChild() ? pNode->FirstChild()->Value() : "";
@@ -358,7 +360,7 @@ CStdString CGUIControlFactory::GetLabel(const CStdString &label)
   // translate the label
   vector<CInfoPortion> info;
   g_infoManager.ParseLabel(viewLabel, info);
-  return g_infoManager.GetMultiLabel(info);
+  return g_infoManager.GetMultiInfo(info, 0);
 }
 
 CStdString CGUIControlFactory::GetType(const TiXmlElement *pControlNode)
@@ -1101,6 +1103,13 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       dwParentId, id, posX, posY, width, height, texture, dwColorKey);
     ((CGUIImage *)control)->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     ((CGUIImage *)control)->SetAspectRatio(aspectRatio, aspectAlign);
+  }
+  else if (strType == "largeimage")
+  {
+    control = new CGUILargeImage(
+      dwParentId, id, posX, posY, width, height, texture);
+    ((CGUILargeImage *)control)->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
+    ((CGUILargeImage *)control)->SetAspectRatio(aspectRatio, aspectAlign);
   }
   else if (strType == "multiimage")
   {

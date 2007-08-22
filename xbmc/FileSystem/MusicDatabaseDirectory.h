@@ -19,7 +19,7 @@ namespace DIRECTORY
     bool HasAlbumInfo(const CStdString& strDirectory);
     void ClearDirectoryCache(const CStdString& strDirectory);
     static bool IsAllItem(const CStdString& strDirectory);
-    bool GetLabel(const CStdString& strDirectory, CStdString& strLabel);
+    static bool GetLabel(const CStdString& strDirectory, CStdString& strLabel);
     bool ContainsSongs(const CStdString &path);
     static bool CanCache(const CStdString& strPath);
   };

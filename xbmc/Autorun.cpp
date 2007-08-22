@@ -391,10 +391,8 @@ void CAutorun::HandleAutorun()
     return ;
   }
 
-  if ( ::WaitForSingleObject( CDetectDVDMedia::m_evAutorun.GetHandle(), 10 ) == WAIT_OBJECT_0 )
-  {
+  if (CDetectDVDMedia::m_evAutorun.WaitMSec(0))
     ExecuteAutorun();
-  }
 }
 
 void CAutorun::Enable()

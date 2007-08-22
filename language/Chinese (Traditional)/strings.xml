@@ -11,6 +11,7 @@
   <string id="6">Xbox Media Center SVN</string>
   <string id="7">檔案總管</string>
   <string id="8">氣象</string>
+  <string id="9">xbox 媒體中心</string>
 
   <string id="11">星期一</string>
   <string id="12">星期二</string>
@@ -86,7 +87,7 @@
   <string id="148">自動(動態分配)</string>
   <string id="149">網卡位址(MAC)</string>
   <string id="150">IP 位址</string>
-  <string id="151">連線：</string>
+  <string id="151">連接：</string>
   <string id="152">半雙工</string>
   <string id="153">全雙工</string>
   <string id="154">儲存裝置</string>
@@ -94,7 +95,7 @@
   <string id="156">可用</string>
   <string id="157">影片</string>
   <string id="158">可用記憶體</string>
-  <string id="159">未連線</string>
+  <string id="159">未連接</string>
   <string id="160">可用</string>
   <string id="161">沒有</string>
   <string id="162">托盤開啟</string>
@@ -664,6 +665,11 @@
   <string id="1034">子選單</string>
   <string id="1035">啟用 子選單按鈕</string>
   <string id="1036">我的最愛</string>
+  <string id="1037">影片插件</string>
+  <string id="1038">音樂插件</string>
+  <string id="1039">圖片插件</string>
+  <string id="1040">載入目錄</string>
+  <string id="1041">檢索 %i 項目</string>
 
   <string id="1200">SMB 共享設定</string>
   <string id="1202">工作群組</string>
@@ -685,7 +691,7 @@
   <string id="1220">圖片和檔案</string>
   <string id="1221">音樂和影片和圖片</string>
   <string id="1222">音樂和影片和圖片和檔案</string>
-  <string id="1223">禁用</string>
+  <string id="1223">停用</string>
   <string id="1226">檔案和音樂和影片</string>
   <string id="1227">檔案和圖片和音樂</string>
   <string id="1228">檔案和圖片和影片</string>
@@ -896,6 +902,10 @@
   <string id="13007">使用自訂原廠系統路徑</string>
 
   <string id="13100">閃爍過濾</string>
+  <string id="13105">垂直空白同步</string>
+  <string id="13106">停用</string>
+  <string id="13107">啟用 在影片播放時</string>
+  <string id="13108">強制啟用</string>
 
   <string id="13150">硬碟金鑰：</string>
   <string id="13151">硬碟溫度：</string>
@@ -1046,7 +1056,7 @@
   <string id="13385">語音特效 - 第 4 埠</string>
   <string id="13386">使用時間搜尋</string>
   <string id="13387">音軌命名格式</string>
-  <string id="13388">%s 預設</string>
+  <string id="13388">預設</string>
   <string id="13389">沒有預設&#10;該視覺效果</string>
   <string id="13390">沒有設定&#10;該視覺效果</string>
   <string id="13391">托盤開/關</string>
@@ -1064,6 +1074,8 @@
   <string id="13403">清除預設值</string>
   <string id="13404">恢復</string>
   <string id="13405">取得縮圖</string>
+  <string id="13406">圖片資訊</string>
+  <string id="13407">%s 預設</string>
 
   <string id="14000">堆疊開啟</string>
   <string id="14001">堆疊關閉</string>
@@ -1422,7 +1434,7 @@
   <string id="20097">取得專輯資訊</string>
   <string id="20098">正在取得專輯資訊</string>
   <string id="20099">當 CD 播放時不能擷取該 CD</string>
-  <string id="20100">管理員密碼與鎖定</string>
+  <string id="20100">管理員密碼與鎖定</string> 
   <string id="20101">輸入管理員密碼後，永遠啟用管理員模式</string>
   <string id="20102">或是從預設值中複製？</string>
   <string id="20103">儲存預設檔變更？</string>
@@ -1505,7 +1517,7 @@
   <string id="20181">退格</string>
   <string id="20182">空格</string>
   <string id="20183">重新載入桌面</string>
-  <string id="20184">使用 EXIF 資訊旋轉圖片</string>
+  <string id="20184">根據 EXIF 資訊旋轉圖片</string>
   <string id="20185">檢測硬體數據</string>
   <string id="20186">請稍後…</string>
   <string id="20187">備份 EEPROM</string>
@@ -1606,6 +1618,11 @@
   <string id="20380">將資料夾排除搜尋</string>
   <string id="20381">特別</string>
   <string id="20382">自動擷取影集的縮圖</string>
+  <string id="20383">資料夾包含一個影片</string>
+  <string id="20384">電視節目連接</string>
+  <string id="20385">移除電視節目連接</string>
+  <string id="20386">最近加入的電影</string>
+  <string id="20387">最近加入的影集</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">顯示隱藏檔案和目錄</string>
@@ -1648,11 +1665,10 @@
   <string id="21383">啟用 頁面捲軸</string>
   <string id="21384">影片資料庫使用瀏覽過濾按鈕</string>
   <string id="21385">打開</string>
-
   <string id="21386">噪音管理</string>
   <string id="21387">快速</string>
   <string id="21388">安靜</string>
-
+  <string id="21389">啟用 自訂背景</string>
   <string id="21390">電源管理</string>
   <string id="21391">高功率</string>
   <string id="21392">低功率</string>
@@ -1660,11 +1676,9 @@
   <string id="21394">低待機</string>
   <string id="21395">暫存檔不能超過4GB</string>
   <string id="21396">章節</string>
-
   <string id="21397">高品質像素著色器 V2</string>
-
   <string id="21398">啟用 啟動時播放列表</string>
-
+  <string id="21399">使用 Tween 動畫效果</string>
   <string id="21400">包含</string>
   <string id="21401">未包含</string>
   <string id="21402">是</string>
@@ -1697,6 +1711,67 @@
   <string id="21436">%i首歌曲</string>
   <string id="21437">新的智慧播放列表…</string>
   <string id="21438">%c裝置</string>
+  <string id="21439">編輯派對模式規則</string>
+
+  <string id="21800">檔案名稱</string>
+  <string id="21801">檔案路徑</string>
+  <string id="21802">檔案大小</string>
+  <string id="21803">檔案日期/時間</string>
+  <string id="21804">幻燈片索引</string>
+  <string id="21805">解析度</string>
+  <string id="21806">評論</string>
+  <string id="21807">彩色/黑白</string>
+  <string id="21808">JPEG 影像處理</string>
+
+  <string id="21820">拍攝時間</string>
+  <string id="21821">描述</string>
+  <string id="21822">製造廠商</string>
+  <string id="21823">相機型號</string>
+  <string id="21824">註解</string>
+  <string id="21825">韌體</string>
+  <string id="21826">光圈值</string>
+  <string id="21827">鏡頭焦長</string>
+  <string id="21828">焦點距離</string>
+  <string id="21829">曝光</string>
+  <string id="21830">曝光時間</string>
+  <string id="21831">曝光傾向</string>
+  <string id="21832">曝光模式</string>
+  <string id="21833">閃光燈</string>
+  <string id="21834">白平衡</string>
+  <string id="21835">光源</string>
+  <string id="21836">測光模式</string>
+  <string id="21837">ISO 感光值</string>
+  <string id="21838">數位變焦</string>
+  <string id="21839">CCD 寬度</string>
+  <string id="21840">GPS 緯度</string>
+  <string id="21841">GPS 經度</string>
+  <string id="21842">GPS 高度</string>
+  <string id="21843">方位</string>
+
+  <string id="21860">補充類別</string>
+  <string id="21861">關鍵字</string>
+  <string id="21862">說明</string>
+  <string id="21863">作者</string>
+  <string id="21864">標題</string>
+  <string id="21865">特別指令</string>
+  <string id="21866">類別</string>
+  <string id="21867">署名報導</string>
+  <string id="21868">署名報導標題</string>
+  <string id="21869">信用</string>
+  <string id="21870">來源</string>
+  <string id="21871">版權條款</string>
+  <string id="21872">物件名稱</string>
+  <string id="21873">城市</string>
+  <string id="21874">州</string>
+  <string id="21875">國家</string>
+  <string id="21876">原始的 Tx 引用</string>
+  <string id="21877">日期建立</string>
+  <string id="21878">版權標誌</string>
+  <string id="21879">國家代碼</string>
+  <string id="21880">參考服務</string>
+  <string id="21881">啟用 UPnP 播放器</string>
+
+  <!-- strings 21900 thru 21999 reserved for slideshow info -->
 
   <string id="29999">遊戲應用閃爍過濾</string>
 </strings>

@@ -279,6 +279,10 @@ CStdString CGUIWindowVideoNav::GetQuickpathName(const CStdString& strPath) const
     return "TvShowActors";
   else if (strPath.Equals("videodb://2/"))
     return "TvShows";
+    else if (strPath.Equals("videodb://3/"))
+    return "RecentlyAddedMovies";
+  else if (strPath.Equals("videodb://4/"))
+    return "RecentlyAddedEpisodes";
   else if (strPath.Equals("special://videoplaylists/"))
     return "Playlists";
   else
@@ -312,17 +316,17 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     {
       DIRECTORY::CVideoDatabaseDirectory dir;
       CQueryParams params;
-      dir.GetQueryParams(strDirectory,params);
-      VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(strDirectory);
+      dir.GetQueryParams(items.m_strPath,params);
+      VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(items.m_strPath);
       
       items.SetThumbnailImage("");
-      if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_EPISODES || node == NODE_TYPE_SEASONS)
+      if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_EPISODES || node == NODE_TYPE_SEASONS || node == NODE_TYPE_RECENTLY_ADDED_EPISODES)
       {
         CFileItem item;
-        if (node == NODE_TYPE_EPISODES)
+        if (node == NODE_TYPE_EPISODES || node == NODE_TYPE_RECENTLY_ADDED_EPISODES)
         {
           g_infoManager.m_content = "episodes";
-          item.m_strPath = strDirectory;
+          item.m_strPath = items.m_strPath;
           item.SetCachedSeasonThumb();
         }
         else
@@ -335,7 +339,7 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         }
         items.SetThumbnailImage(item.GetThumbnailImage());
       }
-      else if (node == NODE_TYPE_TITLE_MOVIES)
+      else if (node == NODE_TYPE_TITLE_MOVIES || node == NODE_TYPE_RECENTLY_ADDED_MOVIES)
         g_infoManager.m_content = "movies";
       else if (node == NODE_TYPE_TITLE_TVSHOWS)
         g_infoManager.m_content = "tvshows";
@@ -572,12 +576,12 @@ void CGUIWindowVideoNav::OnInfo(int iItem, const SScraperInfo& info)
   CStdString strPath,strFile;
   if (m_vecItems[iItem]->IsVideoDb())
   {
-    m_database.GetScraperForPath(m_vecItems[iItem]->GetVideoInfoTag()->m_strPath,info2.strPath,info2.strContent);
+    m_database.GetScraperForPath(m_vecItems[iItem]->GetVideoInfoTag()->m_strPath,info2);
   }
   else
   {
     CUtil::Split(m_vecItems[iItem]->m_strPath,strPath,strFile);
-    m_database.GetScraperForPath(strPath,info2.strPath,info2.strContent);
+    m_database.GetScraperForPath(strPath,info2);
   }
   CGUIWindowVideoBase::OnInfo(iItem,info2);
 }
@@ -775,7 +779,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
 
           buttons.Add(CONTEXT_BUTTON_EDIT, 16105);
         }
-        else if (node == NODE_TYPE_TITLE_MOVIES || node == NODE_TYPE_EPISODES)
+        else if (item->HasVideoInfoTag() && !item->m_bIsFolder)
         {
           if (item->GetVideoInfoTag()->m_bWatched)
             buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
@@ -783,11 +787,18 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
             buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
           buttons.Add(CONTEXT_BUTTON_EDIT, 16105); //Edit Title
         }
+        if (item->HasVideoInfoTag() && !item->m_bIsFolder && item->GetVideoInfoTag()->m_iEpisode > -1) // movie entry
+        {
+          if (m_database.IsLinkedToTvshow(item->GetVideoInfoTag()->m_iDbId))
+            buttons.Add(CONTEXT_BUTTON_UNLINK_MOVIE,20385);
+          else
+            buttons.Add(CONTEXT_BUTTON_LINK_MOVIE,20384);
+        }
 
-        if (dir.GetDirectoryChildType(m_vecItems.m_strPath) == NODE_TYPE_SEASONS && !dir.IsAllItem(item->m_strPath))
+        if (dir.GetDirectoryChildType(m_vecItems.m_strPath) == NODE_TYPE_SEASONS && !dir.IsAllItem(item->m_strPath) && item->m_bIsFolder)
           buttons.Add(CONTEXT_BUTTON_SET_SEASON_THUMB, 20371);
         
-        if (node == NODE_TYPE_TITLE_MOVIES || node == NODE_TYPE_EPISODES || node == NODE_TYPE_TITLE_TVSHOWS)
+        if (item->HasVideoInfoTag() && (!item->m_bIsFolder || node == NODE_TYPE_TITLE_TVSHOWS))
           buttons.Add(CONTEXT_BUTTON_DELETE, 646);
 
         // this should ideally be non-contextual (though we need some context for non-tv show node I guess)
@@ -905,11 +916,11 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           CFile::Cache(strFile, cachedThumb);
         else
           result = "thumb://None";
-        CUtil::DeleteVideoDatabaseDirectoryCache();
       }
-
-      if (result == "thumb://None")
+      else if (result == "thumb://None")
         CFile::Delete(m_vecItems[itemNumber]->GetCachedSeasonThumb());
+      else
+        CFile::Cache(result,cachedThumb);
 
       CUtil::DeleteVideoDatabaseDirectoryCache();
       Update(m_vecItems.m_strPath);
@@ -923,7 +934,35 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       OnScan("",info,settings);
       return true;
     }
+  case CONTEXT_BUTTON_UNLINK_MOVIE:
+    {
+      m_database.LinkMovieToTvshow(m_vecItems[itemNumber]->GetVideoInfoTag()->m_iDbId,-1);
+      CUtil::DeleteVideoDatabaseDirectoryCache();
+      return true;
+    }
+  case CONTEXT_BUTTON_LINK_MOVIE:
+    {
+      OnLinkMovieToTvShow(itemNumber);
+      return true;
+    }
   }
   return CGUIWindowVideoBase::OnContextButton(itemNumber, button);
+}
+
+void CGUIWindowVideoNav::OnLinkMovieToTvShow(int itemnumber)
+{
+  CFileItemList list;
+  m_database.GetTvShowsNav("videodb://2/2",list);
+  list.Sort(SORT_METHOD_LABEL,SORT_ORDER_ASC);
+  CGUIDialogSelect* pDialog = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  pDialog->Reset();
+  pDialog->SetItems(&list);
+  pDialog->SetHeading(20356);
+  pDialog->DoModal();
+  if (pDialog->GetSelectedLabel() > -1)
+  {
+    m_database.LinkMovieToTvshow(m_vecItems[itemnumber]->GetVideoInfoTag()->m_iDbId,pDialog->GetSelectedItem().GetVideoInfoTag()->m_iDbId);
+    CUtil::DeleteVideoDatabaseDirectoryCache();
+  }
 }
 

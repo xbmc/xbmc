@@ -596,7 +596,7 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem)
       g_application.StopPlaying();
 
     pSlideShow->Reset();
-    pSlideShow->Add(pItem->m_strPath);
+    pSlideShow->Add(pItem);
     pSlideShow->Select(pItem->m_strPath);
 
     m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);

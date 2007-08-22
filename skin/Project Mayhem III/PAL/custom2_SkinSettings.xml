@@ -74,803 +74,847 @@
 			</control>
 		</control>
 		<!-- Global Options -->
-		<control type="grouplist" id="9002">
-			<posx>190</posx>
-			<posy>100</posy>
-			<onleft>9001</onleft>
-			<onright>9001</onright>
-			<onup>9002</onup>
-			<ondown>9002</ondown>
-			<visible>Skin.String(SkinSettings,1)</visible>
+		<control type="group">
 			<include>contentpanelslide</include>
-			<control type="radiobutton" id="20">
-				<description>enable animations</description>
-				<width>485</width>
-				<label>20079</label>
-				<onclick>Skin.ToggleSetting(animated)</onclick>
-				<selected>!Skin.HasSetting(animated)</selected>
-				<textoffsetx>7</textoffsetx>
-				<texturefocus>list-focus.png</texturefocus>
-				<texturenofocus>-</texturenofocus>
-			</control>
-			<control type="radiobutton" id="21">
-				<description>enable tween animations</description>
-				<width>485</width>
-				<label>21399</label>
-				<onclick>Skin.ToggleSetting(tween_animated)</onclick>
-				<selected>Skin.HasSetting(tween_animated)</selected>
-				<textoffsetx>7</textoffsetx>
-				<texturefocus>list-focus.png</texturefocus>
-				<texturenofocus>-</texturenofocus>
-				<enable>!Skin.HasSetting(animated)</enable>
-			</control>
-			<control type="image" id="22">
-				<width>510</width>
-				<height>10</height>
-				<texture>separator.png</texture>
-			</control>
-			<control type="radiobutton" id="23">
-				<description>enable scrollbars</description>
-				<width>485</width>
-				<label>21383</label>
-				<onclick>Skin.ToggleSetting(UseScrollbars)</onclick>
-				<selected>!Skin.HasSetting(UseScrollbars)</selected>
-				<textoffsetx>7</textoffsetx>
-				<texturefocus>list-focus.png</texturefocus>
-				<texturenofocus>-</texturenofocus>
-			</control>
-			<control type="radiobutton" id="24">
-				<description>QWERTY Keyboard Button</description>
-				<width>485</width>
-				<label>QWERTY $LOCALIZE[15028]</label>
-				<onclick>Skin.ToggleSetting(QWERTYKeys)</onclick>
-				<selected>Skin.HasSetting(QWERTYKeys)</selected>
-				<textoffsetx>7</textoffsetx>
-				<texturefocus>list-focus.png</texturefocus>
-				<texturenofocus>-</texturenofocus>
-			</control>
-			<control type="radiobutton" id="25">
-				<description>make watched filtering a toggle in video library Button</description>
-				<width>485</width>
-				<label>21384</label>
-				<onclick>Skin.ToggleSetting(watched_filtering_toggle)</onclick>
-				<selected>Skin.HasSetting(watched_filtering_toggle)</selected>
-				<textoffsetx>7</textoffsetx>
-				<texturefocus>list-focus.png</texturefocus>
-				<texturenofocus>-</texturenofocus>
-			</control>
-			<control type="image" id="26">
-				<width>510</width>
-				<height>10</height>
-				<texture>separator.png</texture>
-			</control>
-			<control type="radiobutton" id="27">
-				<description>Enable Playlist Toggle</description>
-				<width>485</width>
-				<label>21398</label>
-				<onclick>Skin.ToggleSetting(Use_Startup_Playlist)</onclick>
-				<selected>Skin.HasSetting(Use_Startup_Playlist)</selected>
-				<textoffsetx>7</textoffsetx>
-				<texturefocus>list-focus.png</texturefocus>
-				<texturenofocus>-</texturenofocus>
-			</control>
-			<control type="group" id="241">
-				<height>37</height>
-				<control type="button" id="28">
-					<posx>0</posx>
-					<posy>0</posy>
-					<description>Starup Playlist Path</description>
+			<control type="grouplist" id="9002">
+				<posx>190</posx>
+				<posy>100</posy>
+				<onleft>9001</onleft>
+				<onright>9001</onright>
+				<onup>9002</onup>
+				<ondown>9002</ondown>
+				<visible>Skin.String(SkinSettings,1)</visible>
+				<control type="radiobutton" id="120">
+					<description>enable animations</description>
 					<width>485</width>
-					<label>15311</label>
-					<onclick>Skin.SetFile(Startup_Playlist_Path,.m3u,Q:\UserData\playlists\music\)</onclick>
+					<label>20079</label>
+					<onclick>Skin.ToggleSetting(animated)</onclick>
+					<selected>!Skin.HasSetting(animated)</selected>
 					<textoffsetx>7</textoffsetx>
 					<texturefocus>list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
-					<enable>Skin.HasSetting(Use_Startup_Playlist)</enable>
-					<onup>27</onup>
-					<ondown>20</ondown>
 				</control>
-				<control type="label">
-					<posx>480</posx>
-					<posy>0</posy>
-					<height>33</height>
-					<description>Starup Playlist Path label</description>
-					<width>380</width>
-					<align>right</align>
-					<aligny>center</aligny>
-					<scroll>true</scroll>
-					<info>Skin.String(Startup_Playlist_Path)</info>
-					<enable>Skin.HasSetting(Use_Startup_Playlist)</enable>
+				<control type="radiobutton" id="121">
+					<description>enable tween animations</description>
+					<width>485</width>
+					<label>21399</label>
+					<onclick>Skin.ToggleSetting(tween_animated)</onclick>
+					<selected>Skin.HasSetting(tween_animated)</selected>
+					<textoffsetx>7</textoffsetx>
+					<texturefocus>list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<enable>!Skin.HasSetting(animated)</enable>
+				</control>
+				<control type="image" id="122">
+					<width>510</width>
+					<height>10</height>
+					<texture>separator.png</texture>
+				</control>
+				<control type="radiobutton" id="123">
+					<description>enable scrollbars</description>
+					<width>485</width>
+					<label>21383</label>
+					<onclick>Skin.ToggleSetting(UseScrollbars)</onclick>
+					<selected>!Skin.HasSetting(UseScrollbars)</selected>
+					<textoffsetx>7</textoffsetx>
+					<texturefocus>list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+				</control>
+				<control type="radiobutton" id="124">
+					<description>QWERTY Keyboard Button</description>
+					<width>485</width>
+					<label>QWERTY $LOCALIZE[15028]</label>
+					<onclick>Skin.ToggleSetting(QWERTYKeys)</onclick>
+					<selected>Skin.HasSetting(QWERTYKeys)</selected>
+					<textoffsetx>7</textoffsetx>
+					<texturefocus>list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+				</control>
+				<control type="radiobutton" id="125">
+					<description>make watched filtering a toggle in video library Button</description>
+					<width>485</width>
+					<label>21384</label>
+					<onclick>Skin.ToggleSetting(watched_filtering_toggle)</onclick>
+					<selected>Skin.HasSetting(watched_filtering_toggle)</selected>
+					<textoffsetx>7</textoffsetx>
+					<texturefocus>list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+				</control>
+				<control type="image" id="126">
+					<width>510</width>
+					<height>10</height>
+					<texture>separator.png</texture>
+				</control>
+				<control type="radiobutton" id="127">
+					<description>Enable Playlist Toggle</description>
+					<width>485</width>
+					<label>21398</label>
+					<onclick>Skin.ToggleSetting(Use_Startup_Playlist)</onclick>
+					<selected>Skin.HasSetting(Use_Startup_Playlist)</selected>
+					<textoffsetx>7</textoffsetx>
+					<texturefocus>list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+				</control>
+				<control type="group" id="241">
+					<height>37</height>
+					<control type="button" id="128">
+						<posx>0</posx>
+						<posy>0</posy>
+						<description>Startup Playlist Path</description>
+						<width>485</width>
+						<label>15311</label>
+						<onclick>Skin.SetFile(Startup_Playlist_Path,.m3u,Q:\UserData\playlists\music\)</onclick>
+						<textoffsetx>7</textoffsetx>
+						<texturefocus>list-focus.png</texturefocus>
+						<texturenofocus>-</texturenofocus>
+						<enable>Skin.HasSetting(Use_Startup_Playlist)</enable>
+						<onup>127</onup>
+						<ondown>130</ondown>
+					</control>
+					<control type="label">
+						<posx>480</posx>
+						<posy>0</posy>
+						<height>33</height>
+						<description>Startup Playlist Path label</description>
+						<width>380</width>
+						<align>right</align>
+						<aligny>center</aligny>
+						<scroll>true</scroll>
+						<info>Skin.String(Startup_Playlist_Path)</info>
+						<enable>Skin.HasSetting(Use_Startup_Playlist)</enable>
+					</control>
+				</control>
+				<control type="image" id="129">
+					<width>510</width>
+					<height>10</height>
+					<texture>separator.png</texture>
+				</control>
+				<control type="radiobutton" id="130">
+					<description>Enable Custom Background Toggle</description>
+					<width>485</width>
+					<label>21389</label>
+					<onclick>Skin.ToggleSetting(Use_Custom_Background)</onclick>
+					<selected>Skin.HasSetting(Use_Custom_Background)</selected>
+					<textoffsetx>7</textoffsetx>
+					<texturefocus>list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+				</control>
+				<control type="group" id="242">
+					<height>37</height>
+					<control type="button" id="131">
+						<posx>0</posx>
+						<posy>0</posy>
+						<description>Custom_Background Path</description>
+						<width>485</width>
+						<label>15311</label>
+						<onclick>Skin.SetImage(Custom_Background)</onclick>
+						<textoffsetx>7</textoffsetx>
+						<texturefocus>list-focus.png</texturefocus>
+						<texturenofocus>-</texturenofocus>
+						<enable>Skin.HasSetting(Use_Custom_Background)</enable>
+						<onup>130</onup>
+						<ondown>120</ondown>
+					</control>
+					<control type="label">
+						<posx>480</posx>
+						<posy>0</posy>
+						<height>33</height>
+						<description>Custom_Background label</description>
+						<width>380</width>
+						<align>right</align>
+						<aligny>center</aligny>
+						<scroll>true</scroll>
+						<info>Skin.String(Custom_Background)</info>
+						<enable>Skin.HasSetting(Use_Custom_Background)</enable>
+					</control>
+				</control>
+				<control type="image" id="132">
+					<width>510</width>
+					<height>10</height>
+					<texture>separator.png</texture>
 				</control>
 			</control>
-			<control type="image" id="29">
-				<width>510</width>
-				<height>10</height>
-				<texture>separator.png</texture>
-			</control>
-		</control>
-		<!-- Homescreen Options -->
-		<control type="group" id="9003">
-			<visible>Skin.String(SkinSettings,2)</visible>
-			<include>contentpanelslide</include>
-			<control type="radiobutton" id="30">
-				<description>enable RSS</description>
-				<posx>190</posx>
-				<posy>100</posy>
-				<width>485</width>
-				<label>20080</label>
-				<onclick>Skin.ToggleSetting(NoAudioRSS)</onclick>
-				<selected>!Skin.HasSetting(NoAudioRSS)</selected>
-				<onleft>9001</onleft>
-				<onright>9001</onright>
-				<onup>36</onup>
-				<ondown>31</ondown>
-				<textoffsetx>7</textoffsetx>
-				<texturefocus>list-focus.png</texturefocus>
-				<texturenofocus>-</texturenofocus>
-			</control>
-			<control type="radiobutton" id="31">
-				<description>enable video info</description>
-				<posx>190</posx>
-				<posy>137</posy>
-				<width>485</width>
-				<label>20176</label>
-				<onclick>Skin.ToggleSetting(homepageVideoinfo)</onclick>
-				<selected>!Skin.HasSetting(homepageVideoinfo)</selected>
-				<onleft>9001</onleft>
-				<onright>9001</onright>
-				<onup>30</onup>
-				<ondown>32</ondown>
-				<textoffsetx>7</textoffsetx>
-				<texturefocus>list-focus.png</texturefocus>
-				<texturenofocus>-</texturenofocus>
-			</control>
-			<control type="radiobutton" id="32">
-				<description>enable music info</description>
-				<posx>190</posx>
-				<posy>174</posy>
-				<width>485</width>
-				<label>20083</label>
-				<onclick>Skin.ToggleSetting(homepageMusicinfo)</onclick>
-				<selected>!Skin.HasSetting(homepageMusicinfo)</selected>
-				<onleft>9001</onleft>
-				<onright>9001</onright>
-				<onup>31</onup>
-				<ondown>33</ondown>
-				<textoffsetx>7</textoffsetx>
-				<texturefocus>list-focus.png</texturefocus>
-				<texturenofocus>-</texturenofocus>
-			</control>
-			<control type="radiobutton" id="33">
-				<description>enable weather info</description>
-				<posx>190</posx>
-				<posy>211</posy>
-				<width>485</width>
-				<label>20084</label>
-				<onclick>Skin.ToggleSetting(homepageWeatherinfo)</onclick>
-				<selected>!Skin.HasSetting(homepageWeatherinfo)</selected>
-				<onleft>9001</onleft>
-				<onright>9001</onright>
-				<onup>32</onup>
-				<ondown>34</ondown>
-				<textoffsetx>7</textoffsetx>
-				<texturefocus>list-focus.png</texturefocus>
-				<texturenofocus>-</texturenofocus>
-			</control>
-			<control type="radiobutton" id="34">
-				<description>enable System info</description>
-				<posx>190</posx>
-				<posy>248</posy>
-				<width>485</width>
-				<label>20085</label>
-				<onclick>Skin.ToggleSetting(homepageSysteminfo)</onclick>
-				<selected>!Skin.HasSetting(homepageSysteminfo)</selected>
-				<onleft>9001</onleft>
-				<onright>9001</onright>
-				<onup>33</onup>
-				<ondown>35</ondown>
-				<textoffsetx>7</textoffsetx>
-				<texturefocus>list-focus.png</texturefocus>
-				<texturenofocus>-</texturenofocus>
-			</control>
-			<control type="radiobutton" id="35">
-				<description>enable homepage drive stats C: E: F:</description>
-				<posx>190</posx>
-				<posy>285</posy>
-				<width>485</width>
-				<label>20086</label>
-				<selected>!Skin.HasSetting(homepageDriveinfo1)</selected>
-				<onclick>Skin.ToggleSetting(homepageDriveinfo1)</onclick>
-				<onclick>Skin.ResetSetting(homepageDriveinfo2)</onclick>
-				<onleft>9001</onleft>
-				<onright>9001</onright>
-				<onup>34</onup>
-				<ondown>36</ondown>
-				<textoffsetx>7</textoffsetx>
-				<texturefocus>list-focus.png</texturefocus>
-				<texturenofocus>-</texturenofocus>
-				<enable>!Skin.HasSetting(homepageDriveinfo2)</enable>
-			</control>
-			<control type="radiobutton" id="36">
-				<description>enable homepage drive stats E: F: G:</description>
-				<posx>190</posx>
-				<posy>322</posy>
-				<width>485</width>
-				<label>20087</label>
-				<selected>Skin.HasSetting(homepageDriveinfo2)</selected>
-				<onclick>Skin.ToggleSetting(homepageDriveinfo2)</onclick>
-				<onclick>Skin.ResetSetting(homepageDriveinfo1)</onclick>
-				<onleft>9001</onleft>
-				<onright>9001</onright>
-				<onup>35</onup>
-				<ondown>30</ondown>
-				<textoffsetx>7</textoffsetx>
-				<texturefocus>list-focus.png</texturefocus>
-				<texturenofocus>-</texturenofocus>
-				<enable>Skin.HasSetting(homepageDriveinfo1)</enable>
-			</control>
-		</control>
-		<!-- Bookmark button Options -->
-		<control type="group" id="9004">
-			<visible>Skin.String(SkinSettings,3)</visible>
-			<include>contentpanelslide</include>
-			<control type="radiobutton" id="40">
-				<description>enable bookmarks button</description>
-				<posx>190</posx>
-				<posy>100</posy>
-				<width>485</width>
-				<label>20081</label>
-				<onclick>Skin.ToggleSetting(bookmarkbuttons)</onclick>
-				<selected>Skin.HasSetting(bookmarkbuttons)</selected>
-				<onleft>9001</onleft>
-				<onright>9001</onright>
-				<onup>47</onup>
-				<ondown>41</ondown>
-				<textoffsetx>7</textoffsetx>
-				<texturefocus>list-focus.png</texturefocus>
-				<texturenofocus>-</texturenofocus>
-			</control>
-			<control type="group" id="9005">
-				<visible>Skin.HasSetting(bookmarkbuttons)</visible>
-				<!-- Programs Bookmarks -->
-				<control type="image" id="1">
-					<description>Programs BM background</description>
-					<posx>218</posx>
-					<posy>157</posy>
-					<height>190</height>
-					<width>197</width>
-					<texture>black.png</texture>
-				</control>
-				<control type="button" id="1">
-					<description>Programs label</description>
-					<posx>218</posx>
-					<posy>157</posy>
-					<width>197</width>
-					<height>30</height>
-					<align>center</align>
-					<label>0</label>
-					<font>font10</font>
-					<texturefocus>-</texturefocus>
-					<texturenofocus>black.png</texturenofocus>
-				</control>
-				<control type="button" id="41">
-					<description>Programs Bookmark String Set 1</description>
-					<posx>223</posx>
-					<posy>194</posy>
-					<width>150</width>
-					<textwidth>125</textwidth>
-					<label>$INFO[Skin.String(ProgramsBookmark1)]</label>
-					<onclick>Skin.SetString(ProgramsBookmark1)</onclick>
+			<!-- Homescreen Options -->
+			<control type="group" id="9003">
+				<visible>Skin.String(SkinSettings,2)</visible>
+				<control type="radiobutton" id="30">
+					<description>enable RSS</description>
+					<posx>190</posx>
+					<posy>100</posy>
+					<width>485</width>
+					<label>20080</label>
+					<onclick>Skin.ToggleSetting(NoAudioRSS)</onclick>
+					<selected>!Skin.HasSetting(NoAudioRSS)</selected>
 					<onleft>9001</onleft>
-					<onright>51</onright>
-					<onup>40</onup>
-					<ondown>42</ondown>
-				</control>
-				<control type="label">
-					<description>Programs Bookmark 1 String NOT SET label</description>
-					<posx>240</posx>
-					<posy>209</posy>
-					<width>150</width>
-					<aligny>center</aligny>
-					<label>20078</label>
-					<visible>!Skin.String(ProgramsBookmark1)</visible>
-					<textcolor>grey</textcolor>
-				</control>
-				<control type="radiobutton" id="51">
-					<description>enable Programs Bookmark 1</description>
-					<posx>378</posx>
-					<posy>194</posy>
-					<width>32</width>
-					<label>-</label>
-					<onclick>Skin.ToggleSetting(ProgramsBM1)</onclick>
-					<selected>Skin.HasSetting(ProgramsBM1)</selected>
-					<onleft>41</onleft>
-					<onright>61</onright>
-					<onup>40</onup>
-					<ondown>52</ondown>
-					<texturefocus border="5">list-focus.png</texturefocus>
+					<onright>9001</onright>
+					<onup>36</onup>
+					<ondown>31</ondown>
+					<textoffsetx>7</textoffsetx>
+					<texturefocus>list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
 				</control>
-				<control type="button" id="42">
-					<description>Programs Bookmark String Set 2</description>
-					<posx>223</posx>
-					<posy>231</posy>
-					<width>150</width>
-					<textwidth>125</textwidth>
-					<label>$INFO[Skin.String(ProgramsBookmark2)]</label>
-					<onclick>Skin.SetString(ProgramsBookmark2)</onclick>
+				<control type="radiobutton" id="31">
+					<description>enable video info</description>
+					<posx>190</posx>
+					<posy>137</posy>
+					<width>485</width>
+					<label>20176</label>
+					<onclick>Skin.ToggleSetting(homepageVideoinfo)</onclick>
+					<selected>!Skin.HasSetting(homepageVideoinfo)</selected>
 					<onleft>9001</onleft>
-					<onright>52</onright>
-					<onup>41</onup>
-					<ondown>43</ondown>
-				</control>
-				<control type="label">
-					<description>Programs Bookmark 2 String NOT SET label</description>
-					<posx>240</posx>
-					<posy>246</posy>
-					<width>150</width>
-					<aligny>center</aligny>
-					<label>20078</label>
-					<visible>!Skin.String(ProgramsBookmark2)</visible>
-					<textcolor>grey</textcolor>
-				</control>
-				<control type="radiobutton" id="52">
-					<description>enable Programs Bookmark 2</description>
-					<posx>378</posx>
-					<posy>231</posy>
-					<width>32</width>
-					<label>-</label>
-					<onclick>Skin.ToggleSetting(ProgramsBM2)</onclick>
-					<selected>Skin.HasSetting(ProgramsBM2)</selected>
-					<onleft>42</onleft>
-					<onright>62</onright>
-					<onup>51</onup>
-					<ondown>53</ondown>
-					<texturefocus border="5">list-focus.png</texturefocus>
+					<onright>9001</onright>
+					<onup>30</onup>
+					<ondown>32</ondown>
+					<textoffsetx>7</textoffsetx>
+					<texturefocus>list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
 				</control>
-				<control type="button" id="43">
-					<description>Programs Bookmark String Set 3</description>
-					<posx>223</posx>
-					<posy>268</posy>
-					<width>150</width>
-					<textwidth>125</textwidth>
-					<label>$INFO[Skin.String(ProgramsBookmark3)]</label>
-					<onclick>Skin.SetString(ProgramsBookmark3)</onclick>
+				<control type="radiobutton" id="32">
+					<description>enable music info</description>
+					<posx>190</posx>
+					<posy>174</posy>
+					<width>485</width>
+					<label>20083</label>
+					<onclick>Skin.ToggleSetting(homepageMusicinfo)</onclick>
+					<selected>!Skin.HasSetting(homepageMusicinfo)</selected>
 					<onleft>9001</onleft>
-					<onright>53</onright>
-					<onup>42</onup>
-					<ondown>45</ondown>
-				</control>
-				<control type="label">
-					<description>Programs Bookmark 3 String NOT SET label</description>
-					<posx>240</posx>
-					<posy>283</posy>
-					<width>150</width>
-					<aligny>center</aligny>
-					<label>20078</label>
-					<visible>!Skin.String(ProgramsBookmark3)</visible>
-					<textcolor>grey</textcolor>
-				</control>
-				<control type="radiobutton" id="53">
-					<description>enable Programs Bookmark 3</description>
-					<posx>378</posx>
-					<posy>268</posy>
-					<width>32</width>
-					<label>-</label>
-					<onclick>Skin.ToggleSetting(ProgramsBM3)</onclick>
-					<selected>Skin.HasSetting(ProgramsBM3)</selected>
-					<onleft>43</onleft>
-					<onright>63</onright>
-					<onup>52</onup>
-					<ondown>55</ondown>
-					<texturefocus border="5">list-focus.png</texturefocus>
+					<onright>9001</onright>
+					<onup>31</onup>
+					<ondown>33</ondown>
+					<textoffsetx>7</textoffsetx>
+					<texturefocus>list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
 				</control>
-				<!-- Video Bookmarks -->
-				<control type="image" id="1">
-					<description>Video BM background</description>
-					<posx>218</posx>
-					<posy>352</posy>
-					<height>153</height>
-					<width>197</width>
-					<texture>black.png</texture>
-				</control>
-				<control type="button" id="1">
-					<description>Video label</description>
-					<posx>218</posx>
-					<posy>352</posy>
-					<width>197</width>
-					<height>30</height>
-					<align>center</align>
-					<label>3</label>
-					<font>font10</font>
-					<texturefocus>-</texturefocus>
-					<texturenofocus>black.png</texturenofocus>
-				</control>
-				<control type="button" id="45">
-					<description>Video Bookmark String Set 1</description>
-					<posx>223</posx>
-					<posy>389</posy>
-					<width>150</width>
-					<textwidth>125</textwidth>
-					<label>$INFO[Skin.String(VideoBookmark1)]</label>
-					<onclick>Skin.SetString(VideoBookmark1)</onclick>
+				<control type="radiobutton" id="33">
+					<description>enable weather info</description>
+					<posx>190</posx>
+					<posy>211</posy>
+					<width>485</width>
+					<label>20084</label>
+					<onclick>Skin.ToggleSetting(homepageWeatherinfo)</onclick>
+					<selected>!Skin.HasSetting(homepageWeatherinfo)</selected>
 					<onleft>9001</onleft>
-					<onright>55</onright>
-					<onup>43</onup>
-					<ondown>46</ondown>
-				</control>
-				<control type="label">
-					<description>Video Bookmark 1 String NOT SET label</description>
-					<posx>240</posx>
-					<posy>404</posy>
-					<width>150</width>
-					<aligny>center</aligny>
-					<label>20078</label>
-					<visible>!Skin.String(VideoBookmark1)</visible>
-					<textcolor>grey</textcolor>
-				</control>
-				<control type="radiobutton" id="55">
-					<description>enable Video Bookmark 1</description>
-					<posx>378</posx>
-					<posy>389</posy>
-					<width>32</width>
-					<label>-</label>
-					<onclick>Skin.ToggleSetting(VideoBM1)</onclick>
-					<selected>Skin.HasSetting(VideoBM1)</selected>
-					<onleft>45</onleft>
-					<onright>65</onright>
-					<onup>53</onup>
-					<ondown>56</ondown>
-					<texturefocus border="5">list-focus.png</texturefocus>
+					<onright>9001</onright>
+					<onup>32</onup>
+					<ondown>34</ondown>
+					<textoffsetx>7</textoffsetx>
+					<texturefocus>list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
 				</control>
-				<control type="button" id="46">
-					<description>Video Bookmark String Set 2</description>
-					<posx>223</posx>
-					<posy>426</posy>
-					<width>150</width>
-					<textwidth>125</textwidth>
-					<label>$INFO[Skin.String(VideoBookmark2)]</label>
-					<onclick>Skin.SetString(VideoBookmark2)</onclick>
+				<control type="radiobutton" id="34">
+					<description>enable System info</description>
+					<posx>190</posx>
+					<posy>248</posy>
+					<width>485</width>
+					<label>20085</label>
+					<onclick>Skin.ToggleSetting(homepageSysteminfo)</onclick>
+					<selected>!Skin.HasSetting(homepageSysteminfo)</selected>
 					<onleft>9001</onleft>
-					<onright>56</onright>
-					<onup>45</onup>
-					<ondown>47</ondown>
-				</control>
-				<control type="label">
-					<description>Video Bookmark 2 String NOT SET label</description>
-					<posx>240</posx>
-					<posy>441</posy>
-					<width>150</width>
-					<aligny>center</aligny>
-					<label>20078</label>
-					<visible>!Skin.String(VideoBookmark2)</visible>
-					<textcolor>grey</textcolor>
-				</control>
-				<control type="radiobutton" id="56">
-					<description>enable Video Bookmark 2</description>
-					<posx>378</posx>
-					<posy>426</posy>
-					<width>32</width>
-					<label>-</label>
-					<onclick>Skin.ToggleSetting(VideoBM2)</onclick>
-					<selected>Skin.HasSetting(VideoBM2)</selected>
-					<onleft>46</onleft>
-					<onright>66</onright>
-					<onup>55</onup>
-					<ondown>57</ondown>
-					<texturefocus border="5">list-focus.png</texturefocus>
+					<onright>9001</onright>
+					<onup>33</onup>
+					<ondown>35</ondown>
+					<textoffsetx>7</textoffsetx>
+					<texturefocus>list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
 				</control>
-				<control type="button" id="47">
-					<description>Video Bookmark String Set 3</description>
-					<posx>223</posx>
-					<posy>463</posy>
-					<width>150</width>
-					<textwidth>125</textwidth>
-					<label>$INFO[Skin.String(VideoBookmark3)]</label>
-					<onclick>Skin.SetString(VideoBookmark3)</onclick>
+				<control type="radiobutton" id="35">
+					<description>enable homepage drive stats C: E: F:</description>
+					<posx>190</posx>
+					<posy>285</posy>
+					<width>485</width>
+					<label>20086</label>
+					<selected>!Skin.HasSetting(homepageDriveinfo1)</selected>
+					<onclick>Skin.ToggleSetting(homepageDriveinfo1)</onclick>
+					<onclick>Skin.ResetSetting(homepageDriveinfo2)</onclick>
 					<onleft>9001</onleft>
-					<onright>57</onright>
-					<onup>46</onup>
-					<ondown>40</ondown>
+					<onright>9001</onright>
+					<onup>34</onup>
+					<ondown>36</ondown>
+					<textoffsetx>7</textoffsetx>
+					<texturefocus>list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<enable>!Skin.HasSetting(homepageDriveinfo2)</enable>
 				</control>
-				<control type="label">
-					<description>Video Bookmark 3 String NOT SET label</description>
-					<posx>240</posx>
-					<posy>478</posy>
-					<width>150</width>
-					<aligny>center</aligny>
-					<label>20078</label>
-					<visible>!Skin.String(VideoBookmark3)</visible>
-					<textcolor>grey</textcolor>
+				<control type="radiobutton" id="36">
+					<description>enable homepage drive stats E: F: G:</description>
+					<posx>190</posx>
+					<posy>322</posy>
+					<width>485</width>
+					<label>20087</label>
+					<selected>Skin.HasSetting(homepageDriveinfo2)</selected>
+					<onclick>Skin.ToggleSetting(homepageDriveinfo2)</onclick>
+					<onclick>Skin.ResetSetting(homepageDriveinfo1)</onclick>
+					<onleft>9001</onleft>
+					<onright>9001</onright>
+					<onup>35</onup>
+					<ondown>30</ondown>
+					<textoffsetx>7</textoffsetx>
+					<texturefocus>list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<enable>Skin.HasSetting(homepageDriveinfo1)</enable>
 				</control>
-				<control type="radiobutton" id="57">
-					<description>enable Video Bookmark 3</description>
-					<posx>378</posx>
-					<posy>463</posy>
-					<width>32</width>
-					<label>-</label>
-					<onclick>Skin.ToggleSetting(VideoBM3)</onclick>
-					<selected>Skin.HasSetting(VideoBM3)</selected>
-					<onleft>47</onleft>
-					<onright>67</onright>
-					<onup>56</onup>
-					<ondown>50</ondown>
-					<texturefocus border="5">list-focus.png</texturefocus>
+			</control>
+			<!-- Bookmark button Options -->
+			<control type="group" id="9004">
+				<visible>Skin.String(SkinSettings,3)</visible>
+				<control type="radiobutton" id="40">
+					<description>enable bookmarks button</description>
+					<posx>190</posx>
+					<posy>100</posy>
+					<width>485</width>
+					<label>20081</label>
+					<onclick>Skin.ToggleSetting(bookmarkbuttons)</onclick>
+					<selected>Skin.HasSetting(bookmarkbuttons)</selected>
+					<onleft>9001</onleft>
+					<onright>9001</onright>
+					<onup>47</onup>
+					<ondown>41</ondown>
+					<textoffsetx>7</textoffsetx>
+					<texturefocus>list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
 				</control>
-				<!-- Music Bookmarks -->
-				<control type="image" id="1">
-					<description>Music BM background</description>
-					<posx>438</posx>
-					<posy>157</posy>
-					<height>190</height>
-					<width>197</width>
-					<texture>black.png</texture>
-				</control>
-				<control type="button" id="1">
-					<description>Music label</description>
-					<posx>438</posx>
-					<posy>157</posy>
-					<width>197</width>
-					<height>30</height>
-					<align>center</align>
-					<label>2</label>
-					<font>font10</font>
-					<texturefocus>-</texturefocus>
-					<texturenofocus>black.png</texturenofocus>
-				</control>
-				<control type="button" id="61">
-					<description>Music Bookmark String Set 1</description>
-					<posx>443</posx>
-					<posy>194</posy>
-					<width>150</width>
-					<textwidth>125</textwidth>
-					<label>$INFO[Skin.String(MusicBookmark1)]</label>
-					<onclick>Skin.SetString(MusicBookmark1)</onclick>
-					<onleft>51</onleft>
-					<onright>71</onright>
-					<onup>40</onup>
-					<ondown>62</ondown>
-				</control>
-				<control type="label">
-					<description>Music Bookmark 1 String NOT SET label</description>
-					<posx>458</posx>
-					<posy>209</posy>
-					<width>150</width>
-					<aligny>center</aligny>
-					<label>20078</label>
-					<visible>!Skin.String(MusicBookmark1)</visible>
-					<textcolor>grey</textcolor>
-				</control>
-				<control type="radiobutton" id="71">
-					<description>enable Music Bookmark 1</description>
-					<posx>598</posx>
-					<posy>194</posy>
-					<width>32</width>
-					<label>-</label>
-					<onclick>Skin.ToggleSetting(MusicBM1)</onclick>
-					<selected>Skin.HasSetting(MusicBM1)</selected>
-					<onleft>61</onleft>
-					<onright>71</onright>
-					<onup>40</onup>
-					<ondown>72</ondown>
-					<texturefocus border="5">list-focus.png</texturefocus>
-					<texturenofocus>-</texturenofocus>
-				</control>
-				<control type="button" id="62">
-					<description>Music Bookmark String Set 2</description>
-					<posx>443</posx>
-					<posy>231</posy>
-					<width>150</width>
-					<textwidth>125</textwidth>
-					<label>$INFO[Skin.String(MusicBookmark2)]</label>
-					<onclick>Skin.SetString(MusicBookmark2)</onclick>
-					<onleft>52</onleft>
-					<onright>72</onright>
-					<onup>61</onup>
-					<ondown>63</ondown>
-				</control>
-				<control type="label">
-					<description>Music Bookmark 2 String NOT SET label</description>
-					<posx>458</posx>
-					<posy>246</posy>
-					<width>150</width>
-					<aligny>center</aligny>
-					<label>20078</label>
-					<visible>!Skin.String(MusicBookmark2)</visible>
-					<textcolor>grey</textcolor>
-				</control>
-				<control type="radiobutton" id="72">
-					<description>enable Music Bookmark 2</description>
-					<posx>598</posx>
-					<posy>231</posy>
-					<width>32</width>
-					<label>-</label>
-					<onclick>Skin.ToggleSetting(MusicBM2)</onclick>
-					<selected>Skin.HasSetting(MusicBM2)</selected>
-					<onleft>62</onleft>
-					<onright>72</onright>
-					<onup>71</onup>
-					<ondown>73</ondown>
-					<texturefocus border="5">list-focus.png</texturefocus>
-					<texturenofocus>-</texturenofocus>
-				</control>
-				<control type="button" id="63">
-					<description>Music Bookmark String Set 3</description>
-					<posx>443</posx>
-					<posy>268</posy>
-					<width>150</width>
-					<textwidth>125</textwidth>
-					<label>$INFO[Skin.String(MusicBookmark3)]</label>
-					<onclick>Skin.SetString(MusicBookmark3)</onclick>
-					<onleft>53</onleft>
-					<onright>73</onright>
-					<onup>62</onup>
-					<ondown>64</ondown>
-				</control>
-				<control type="label">
-					<description>Music Bookmark 3 String NOT SET label</description>
-					<posx>458</posx>
-					<posy>283</posy>
-					<width>150</width>
-					<aligny>center</aligny>
-					<label>20078</label>
-					<visible>!Skin.String(MusicBookmark3)</visible>
-					<textcolor>grey</textcolor>
-				</control>
-				<control type="radiobutton" id="73">
-					<description>enable Music Bookmark 3</description>
-					<posx>598</posx>
-					<posy>268</posy>
-					<width>32</width>
-					<label>-</label>
-					<onclick>Skin.ToggleSetting(MusicBM3)</onclick>
-					<selected>Skin.HasSetting(MusicBM3)</selected>
-					<onleft>63</onleft>
-					<onright>73</onright>
-					<onup>72</onup>
-					<ondown>74</ondown>
-					<texturefocus border="5">list-focus.png</texturefocus>
-					<texturenofocus>-</texturenofocus>
-				</control>
-				<control type="button" id="64">
-					<description>Music Bookmark String Set 4</description>
-					<posx>443</posx>
-					<posy>305</posy>
-					<width>150</width>
-					<textwidth>125</textwidth>
-					<label>$INFO[Skin.String(MusicBookmark4)]</label>
-					<onclick>Skin.SetString(MusicBookmark4)</onclick>
-					<onleft>54</onleft>
-					<onright>74</onright>
-					<onup>63</onup>
-					<ondown>65</ondown>
-				</control>
-				<control type="label">
-					<description>Music Bookmark 4 String NOT SET label</description>
-					<posx>458</posx>
-					<posy>320</posy>
-					<width>150</width>
-					<aligny>center</aligny>
-					<label>20078</label>
-					<visible>!Skin.String(MusicBookmark4)</visible>
-					<textcolor>grey</textcolor>
-				</control>
-				<control type="radiobutton" id="74">
-					<description>enable Music Bookmark 4</description>
-					<posx>598</posx>
-					<posy>305</posy>
-					<width>32</width>
-					<label>-</label>
-					<onclick>Skin.ToggleSetting(MusicBM4)</onclick>
-					<selected>Skin.HasSetting(MusicBM4)</selected>
-					<onleft>64</onleft>
-					<onright>74</onright>
-					<onup>73</onup>
-					<ondown>75</ondown>
-					<texturefocus border="5">list-focus.png</texturefocus>
-					<texturenofocus>-</texturenofocus>
-				</control>
-				<!-- Pictures Bookmarks -->
-				<control type="image" id="1">
-					<description>Pictures BM background</description>
-					<posx>438</posx>
-					<posy>352</posy>
-					<height>114</height>
-					<width>197</width>
-					<texture>black.png</texture>
-				</control>
-				<control type="button" id="1">
-					<description>Pictures label</description>
-					<posx>438</posx>
-					<posy>352</posy>
-					<width>197</width>
-					<height>30</height>
-					<align>center</align>
-					<label>1</label>
-					<font>font10</font>
-					<texturefocus>-</texturefocus>
-					<texturenofocus>black.png</texturenofocus>
-				</control>
-				<control type="button" id="65">
-					<description>Pictures Bookmark String Set 1</description>
-					<posx>443</posx>
-					<posy>389</posy>
-					<width>150</width>
-					<textwidth>125</textwidth>
-					<label>$INFO[Skin.String(PicturesBookmark1)]</label>
-					<onclick>Skin.SetString(PicturesBookmark1)</onclick>
-					<onleft>55</onleft>
-					<onright>75</onright>
-					<onup>64</onup>
-					<ondown>66</ondown>
-				</control>
-				<control type="label">
-					<description>Pictures Bookmark 1 String NOT SET label</description>
-					<posx>458</posx>
-					<posy>404</posy>
-					<width>150</width>
-					<aligny>center</aligny>
-					<label>20078</label>
-					<visible>!Skin.String(PicturesBookmark1)</visible>
-					<textcolor>grey</textcolor>
-				</control>
-				<control type="radiobutton" id="75">
-					<description>enable Pictures Bookmark 1</description>
-					<posx>598</posx>
-					<posy>389</posy>
-					<width>32</width>
-					<label>-</label>
-					<onclick>Skin.ToggleSetting(PicturesBM1)</onclick>
-					<selected>Skin.HasSetting(PicturesBM1)</selected>
-					<onleft>65</onleft>
-					<onright>75</onright>
-					<onup>74</onup>
-					<ondown>76</ondown>
-					<texturefocus border="5">list-focus.png</texturefocus>
-					<texturenofocus>-</texturenofocus>
-				</control>
-				<control type="button" id="66">
-					<description>Pictures Bookmark String Set 2</description>
-					<posx>443</posx>
-					<posy>426</posy>
-					<width>150</width>
-					<textwidth>125</textwidth>
-					<label>$INFO[Skin.String(PicturesBookmark2)]</label>
-					<onclick>Skin.SetString(PicturesBookmark2)</onclick>
-					<onleft>56</onleft>
-					<onright>76</onright>
-					<onup>65</onup>
-					<ondown>61</ondown>
-				</control>
-				<control type="label">
-					<description>Pictures Bookmark 1 String NOT SET label</description>
-					<posx>458</posx>
-					<posy>441</posy>
-					<width>150</width>
-					<aligny>center</aligny>
-					<label>20078</label>
-					<visible>!Skin.String(PicturesBookmark2)</visible>
-					<textcolor>grey</textcolor>
-				</control>
-				<control type="radiobutton" id="76">
-					<description>enable Pictures Bookmark 2</description>
-					<posx>598</posx>
-					<posy>426</posy>
-					<width>32</width>
-					<label>-</label>
-					<onclick>Skin.ToggleSetting(PicturesBM2)</onclick>
-					<selected>Skin.HasSetting(PicturesBM2)</selected>
-					<onleft>66</onleft>
-					<onright>76</onright>
-					<onup>75</onup>
-					<ondown>71</ondown>
-					<texturefocus border="5">list-focus.png</texturefocus>
-					<texturenofocus>-</texturenofocus>
+				<control type="group" id="9005">
+					<visible>Skin.HasSetting(bookmarkbuttons)</visible>
+					<!-- Programs Bookmarks -->
+					<control type="image" id="1">
+						<description>Programs BM background</description>
+						<posx>218</posx>
+						<posy>157</posy>
+						<height>190</height>
+						<width>197</width>
+						<texture>black.png</texture>
+					</control>
+					<control type="button" id="1">
+						<description>Programs label</description>
+						<posx>218</posx>
+						<posy>157</posy>
+						<width>197</width>
+						<height>30</height>
+						<align>center</align>
+						<label>0</label>
+						<font>font10</font>
+						<texturefocus>-</texturefocus>
+						<texturenofocus>black.png</texturenofocus>
+					</control>
+					<control type="button" id="41">
+						<description>Programs Bookmark String Set 1</description>
+						<posx>223</posx>
+						<posy>194</posy>
+						<width>150</width>
+						<textwidth>125</textwidth>
+						<label>$INFO[Skin.String(ProgramsBookmark1)]</label>
+						<onclick>Skin.SetString(ProgramsBookmark1)</onclick>
+						<onleft>9001</onleft>
+						<onright>51</onright>
+						<onup>40</onup>
+						<ondown>42</ondown>
+					</control>
+					<control type="label">
+						<description>Programs Bookmark 1 String NOT SET label</description>
+						<posx>240</posx>
+						<posy>209</posy>
+						<width>150</width>
+						<aligny>center</aligny>
+						<label>20078</label>
+						<visible>!Skin.String(ProgramsBookmark1)</visible>
+						<textcolor>grey</textcolor>
+					</control>
+					<control type="radiobutton" id="51">
+						<description>enable Programs Bookmark 1</description>
+						<posx>378</posx>
+						<posy>194</posy>
+						<width>32</width>
+						<label>-</label>
+						<onclick>Skin.ToggleSetting(ProgramsBM1)</onclick>
+						<selected>Skin.HasSetting(ProgramsBM1)</selected>
+						<onleft>41</onleft>
+						<onright>61</onright>
+						<onup>40</onup>
+						<ondown>52</ondown>
+						<texturefocus border="5">list-focus.png</texturefocus>
+						<texturenofocus>-</texturenofocus>
+					</control>
+					<control type="button" id="42">
+						<description>Programs Bookmark String Set 2</description>
+						<posx>223</posx>
+						<posy>231</posy>
+						<width>150</width>
+						<textwidth>125</textwidth>
+						<label>$INFO[Skin.String(ProgramsBookmark2)]</label>
+						<onclick>Skin.SetString(ProgramsBookmark2)</onclick>
+						<onleft>9001</onleft>
+						<onright>52</onright>
+						<onup>41</onup>
+						<ondown>43</ondown>
+					</control>
+					<control type="label">
+						<description>Programs Bookmark 2 String NOT SET label</description>
+						<posx>240</posx>
+						<posy>246</posy>
+						<width>150</width>
+						<aligny>center</aligny>
+						<label>20078</label>
+						<visible>!Skin.String(ProgramsBookmark2)</visible>
+						<textcolor>grey</textcolor>
+					</control>
+					<control type="radiobutton" id="52">
+						<description>enable Programs Bookmark 2</description>
+						<posx>378</posx>
+						<posy>231</posy>
+						<width>32</width>
+						<label>-</label>
+						<onclick>Skin.ToggleSetting(ProgramsBM2)</onclick>
+						<selected>Skin.HasSetting(ProgramsBM2)</selected>
+						<onleft>42</onleft>
+						<onright>62</onright>
+						<onup>51</onup>
+						<ondown>53</ondown>
+						<texturefocus border="5">list-focus.png</texturefocus>
+						<texturenofocus>-</texturenofocus>
+					</control>
+					<control type="button" id="43">
+						<description>Programs Bookmark String Set 3</description>
+						<posx>223</posx>
+						<posy>268</posy>
+						<width>150</width>
+						<textwidth>125</textwidth>
+						<label>$INFO[Skin.String(ProgramsBookmark3)]</label>
+						<onclick>Skin.SetString(ProgramsBookmark3)</onclick>
+						<onleft>9001</onleft>
+						<onright>53</onright>
+						<onup>42</onup>
+						<ondown>45</ondown>
+					</control>
+					<control type="label">
+						<description>Programs Bookmark 3 String NOT SET label</description>
+						<posx>240</posx>
+						<posy>283</posy>
+						<width>150</width>
+						<aligny>center</aligny>
+						<label>20078</label>
+						<visible>!Skin.String(ProgramsBookmark3)</visible>
+						<textcolor>grey</textcolor>
+					</control>
+					<control type="radiobutton" id="53">
+						<description>enable Programs Bookmark 3</description>
+						<posx>378</posx>
+						<posy>268</posy>
+						<width>32</width>
+						<label>-</label>
+						<onclick>Skin.ToggleSetting(ProgramsBM3)</onclick>
+						<selected>Skin.HasSetting(ProgramsBM3)</selected>
+						<onleft>43</onleft>
+						<onright>63</onright>
+						<onup>52</onup>
+						<ondown>55</ondown>
+						<texturefocus border="5">list-focus.png</texturefocus>
+						<texturenofocus>-</texturenofocus>
+					</control>
+					<!-- Video Bookmarks -->
+					<control type="image" id="1">
+						<description>Video BM background</description>
+						<posx>218</posx>
+						<posy>352</posy>
+						<height>153</height>
+						<width>197</width>
+						<texture>black.png</texture>
+					</control>
+					<control type="button" id="1">
+						<description>Video label</description>
+						<posx>218</posx>
+						<posy>352</posy>
+						<width>197</width>
+						<height>30</height>
+						<align>center</align>
+						<label>3</label>
+						<font>font10</font>
+						<texturefocus>-</texturefocus>
+						<texturenofocus>black.png</texturenofocus>
+					</control>
+					<control type="button" id="45">
+						<description>Video Bookmark String Set 1</description>
+						<posx>223</posx>
+						<posy>389</posy>
+						<width>150</width>
+						<textwidth>125</textwidth>
+						<label>$INFO[Skin.String(VideoBookmark1)]</label>
+						<onclick>Skin.SetString(VideoBookmark1)</onclick>
+						<onleft>9001</onleft>
+						<onright>55</onright>
+						<onup>43</onup>
+						<ondown>46</ondown>
+					</control>
+					<control type="label">
+						<description>Video Bookmark 1 String NOT SET label</description>
+						<posx>240</posx>
+						<posy>404</posy>
+						<width>150</width>
+						<aligny>center</aligny>
+						<label>20078</label>
+						<visible>!Skin.String(VideoBookmark1)</visible>
+						<textcolor>grey</textcolor>
+					</control>
+					<control type="radiobutton" id="55">
+						<description>enable Video Bookmark 1</description>
+						<posx>378</posx>
+						<posy>389</posy>
+						<width>32</width>
+						<label>-</label>
+						<onclick>Skin.ToggleSetting(VideoBM1)</onclick>
+						<selected>Skin.HasSetting(VideoBM1)</selected>
+						<onleft>45</onleft>
+						<onright>65</onright>
+						<onup>53</onup>
+						<ondown>56</ondown>
+						<texturefocus border="5">list-focus.png</texturefocus>
+						<texturenofocus>-</texturenofocus>
+					</control>
+					<control type="button" id="46">
+						<description>Video Bookmark String Set 2</description>
+						<posx>223</posx>
+						<posy>426</posy>
+						<width>150</width>
+						<textwidth>125</textwidth>
+						<label>$INFO[Skin.String(VideoBookmark2)]</label>
+						<onclick>Skin.SetString(VideoBookmark2)</onclick>
+						<onleft>9001</onleft>
+						<onright>56</onright>
+						<onup>45</onup>
+						<ondown>47</ondown>
+					</control>
+					<control type="label">
+						<description>Video Bookmark 2 String NOT SET label</description>
+						<posx>240</posx>
+						<posy>441</posy>
+						<width>150</width>
+						<aligny>center</aligny>
+						<label>20078</label>
+						<visible>!Skin.String(VideoBookmark2)</visible>
+						<textcolor>grey</textcolor>
+					</control>
+					<control type="radiobutton" id="56">
+						<description>enable Video Bookmark 2</description>
+						<posx>378</posx>
+						<posy>426</posy>
+						<width>32</width>
+						<label>-</label>
+						<onclick>Skin.ToggleSetting(VideoBM2)</onclick>
+						<selected>Skin.HasSetting(VideoBM2)</selected>
+						<onleft>46</onleft>
+						<onright>66</onright>
+						<onup>55</onup>
+						<ondown>57</ondown>
+						<texturefocus border="5">list-focus.png</texturefocus>
+						<texturenofocus>-</texturenofocus>
+					</control>
+					<control type="button" id="47">
+						<description>Video Bookmark String Set 3</description>
+						<posx>223</posx>
+						<posy>463</posy>
+						<width>150</width>
+						<textwidth>125</textwidth>
+						<label>$INFO[Skin.String(VideoBookmark3)]</label>
+						<onclick>Skin.SetString(VideoBookmark3)</onclick>
+						<onleft>9001</onleft>
+						<onright>57</onright>
+						<onup>46</onup>
+						<ondown>40</ondown>
+					</control>
+					<control type="label">
+						<description>Video Bookmark 3 String NOT SET label</description>
+						<posx>240</posx>
+						<posy>478</posy>
+						<width>150</width>
+						<aligny>center</aligny>
+						<label>20078</label>
+						<visible>!Skin.String(VideoBookmark3)</visible>
+						<textcolor>grey</textcolor>
+					</control>
+					<control type="radiobutton" id="57">
+						<description>enable Video Bookmark 3</description>
+						<posx>378</posx>
+						<posy>463</posy>
+						<width>32</width>
+						<label>-</label>
+						<onclick>Skin.ToggleSetting(VideoBM3)</onclick>
+						<selected>Skin.HasSetting(VideoBM3)</selected>
+						<onleft>47</onleft>
+						<onright>67</onright>
+						<onup>56</onup>
+						<ondown>50</ondown>
+						<texturefocus border="5">list-focus.png</texturefocus>
+						<texturenofocus>-</texturenofocus>
+					</control>
+					<!-- Music Bookmarks -->
+					<control type="image" id="1">
+						<description>Music BM background</description>
+						<posx>438</posx>
+						<posy>157</posy>
+						<height>190</height>
+						<width>197</width>
+						<texture>black.png</texture>
+					</control>
+					<control type="button" id="1">
+						<description>Music label</description>
+						<posx>438</posx>
+						<posy>157</posy>
+						<width>197</width>
+						<height>30</height>
+						<align>center</align>
+						<label>2</label>
+						<font>font10</font>
+						<texturefocus>-</texturefocus>
+						<texturenofocus>black.png</texturenofocus>
+					</control>
+					<control type="button" id="61">
+						<description>Music Bookmark String Set 1</description>
+						<posx>443</posx>
+						<posy>194</posy>
+						<width>150</width>
+						<textwidth>125</textwidth>
+						<label>$INFO[Skin.String(MusicBookmark1)]</label>
+						<onclick>Skin.SetString(MusicBookmark1)</onclick>
+						<onleft>51</onleft>
+						<onright>71</onright>
+						<onup>40</onup>
+						<ondown>62</ondown>
+					</control>
+					<control type="label">
+						<description>Music Bookmark 1 String NOT SET label</description>
+						<posx>458</posx>
+						<posy>209</posy>
+						<width>150</width>
+						<aligny>center</aligny>
+						<label>20078</label>
+						<visible>!Skin.String(MusicBookmark1)</visible>
+						<textcolor>grey</textcolor>
+					</control>
+					<control type="radiobutton" id="71">
+						<description>enable Music Bookmark 1</description>
+						<posx>598</posx>
+						<posy>194</posy>
+						<width>32</width>
+						<label>-</label>
+						<onclick>Skin.ToggleSetting(MusicBM1)</onclick>
+						<selected>Skin.HasSetting(MusicBM1)</selected>
+						<onleft>61</onleft>
+						<onright>71</onright>
+						<onup>40</onup>
+						<ondown>72</ondown>
+						<texturefocus border="5">list-focus.png</texturefocus>
+						<texturenofocus>-</texturenofocus>
+					</control>
+					<control type="button" id="62">
+						<description>Music Bookmark String Set 2</description>
+						<posx>443</posx>
+						<posy>231</posy>
+						<width>150</width>
+						<textwidth>125</textwidth>
+						<label>$INFO[Skin.String(MusicBookmark2)]</label>
+						<onclick>Skin.SetString(MusicBookmark2)</onclick>
+						<onleft>52</onleft>
+						<onright>72</onright>
+						<onup>61</onup>
+						<ondown>63</ondown>
+					</control>
+					<control type="label">
+						<description>Music Bookmark 2 String NOT SET label</description>
+						<posx>458</posx>
+						<posy>246</posy>
+						<width>150</width>
+						<aligny>center</aligny>
+						<label>20078</label>
+						<visible>!Skin.String(MusicBookmark2)</visible>
+						<textcolor>grey</textcolor>
+					</control>
+					<control type="radiobutton" id="72">
+						<description>enable Music Bookmark 2</description>
+						<posx>598</posx>
+						<posy>231</posy>
+						<width>32</width>
+						<label>-</label>
+						<onclick>Skin.ToggleSetting(MusicBM2)</onclick>
+						<selected>Skin.HasSetting(MusicBM2)</selected>
+						<onleft>62</onleft>
+						<onright>72</onright>
+						<onup>71</onup>
+						<ondown>73</ondown>
+						<texturefocus border="5">list-focus.png</texturefocus>
+						<texturenofocus>-</texturenofocus>
+					</control>
+					<control type="button" id="63">
+						<description>Music Bookmark String Set 3</description>
+						<posx>443</posx>
+						<posy>268</posy>
+						<width>150</width>
+						<textwidth>125</textwidth>
+						<label>$INFO[Skin.String(MusicBookmark3)]</label>
+						<onclick>Skin.SetString(MusicBookmark3)</onclick>
+						<onleft>53</onleft>
+						<onright>73</onright>
+						<onup>62</onup>
+						<ondown>64</ondown>
+					</control>
+					<control type="label">
+						<description>Music Bookmark 3 String NOT SET label</description>
+						<posx>458</posx>
+						<posy>283</posy>
+						<width>150</width>
+						<aligny>center</aligny>
+						<label>20078</label>
+						<visible>!Skin.String(MusicBookmark3)</visible>
+						<textcolor>grey</textcolor>
+					</control>
+					<control type="radiobutton" id="73">
+						<description>enable Music Bookmark 3</description>
+						<posx>598</posx>
+						<posy>268</posy>
+						<width>32</width>
+						<label>-</label>
+						<onclick>Skin.ToggleSetting(MusicBM3)</onclick>
+						<selected>Skin.HasSetting(MusicBM3)</selected>
+						<onleft>63</onleft>
+						<onright>73</onright>
+						<onup>72</onup>
+						<ondown>74</ondown>
+						<texturefocus border="5">list-focus.png</texturefocus>
+						<texturenofocus>-</texturenofocus>
+					</control>
+					<control type="button" id="64">
+						<description>Music Bookmark String Set 4</description>
+						<posx>443</posx>
+						<posy>305</posy>
+						<width>150</width>
+						<textwidth>125</textwidth>
+						<label>$INFO[Skin.String(MusicBookmark4)]</label>
+						<onclick>Skin.SetString(MusicBookmark4)</onclick>
+						<onleft>54</onleft>
+						<onright>74</onright>
+						<onup>63</onup>
+						<ondown>65</ondown>
+					</control>
+					<control type="label">
+						<description>Music Bookmark 4 String NOT SET label</description>
+						<posx>458</posx>
+						<posy>320</posy>
+						<width>150</width>
+						<aligny>center</aligny>
+						<label>20078</label>
+						<visible>!Skin.String(MusicBookmark4)</visible>
+						<textcolor>grey</textcolor>
+					</control>
+					<control type="radiobutton" id="74">
+						<description>enable Music Bookmark 4</description>
+						<posx>598</posx>
+						<posy>305</posy>
+						<width>32</width>
+						<label>-</label>
+						<onclick>Skin.ToggleSetting(MusicBM4)</onclick>
+						<selected>Skin.HasSetting(MusicBM4)</selected>
+						<onleft>64</onleft>
+						<onright>74</onright>
+						<onup>73</onup>
+						<ondown>75</ondown>
+						<texturefocus border="5">list-focus.png</texturefocus>
+						<texturenofocus>-</texturenofocus>
+					</control>
+					<!-- Pictures Bookmarks -->
+					<control type="image" id="1">
+						<description>Pictures BM background</description>
+						<posx>438</posx>
+						<posy>352</posy>
+						<height>114</height>
+						<width>197</width>
+						<texture>black.png</texture>
+					</control>
+					<control type="button" id="1">
+						<description>Pictures label</description>
+						<posx>438</posx>
+						<posy>352</posy>
+						<width>197</width>
+						<height>30</height>
+						<align>center</align>
+						<label>1</label>
+						<font>font10</font>
+						<texturefocus>-</texturefocus>
+						<texturenofocus>black.png</texturenofocus>
+					</control>
+					<control type="button" id="65">
+						<description>Pictures Bookmark String Set 1</description>
+						<posx>443</posx>
+						<posy>389</posy>
+						<width>150</width>
+						<textwidth>125</textwidth>
+						<label>$INFO[Skin.String(PicturesBookmark1)]</label>
+						<onclick>Skin.SetString(PicturesBookmark1)</onclick>
+						<onleft>55</onleft>
+						<onright>75</onright>
+						<onup>64</onup>
+						<ondown>66</ondown>
+					</control>
+					<control type="label">
+						<description>Pictures Bookmark 1 String NOT SET label</description>
+						<posx>458</posx>
+						<posy>404</posy>
+						<width>150</width>
+						<aligny>center</aligny>
+						<label>20078</label>
+						<visible>!Skin.String(PicturesBookmark1)</visible>
+						<textcolor>grey</textcolor>
+					</control>
+					<control type="radiobutton" id="75">
+						<description>enable Pictures Bookmark 1</description>
+						<posx>598</posx>
+						<posy>389</posy>
+						<width>32</width>
+						<label>-</label>
+						<onclick>Skin.ToggleSetting(PicturesBM1)</onclick>
+						<selected>Skin.HasSetting(PicturesBM1)</selected>
+						<onleft>65</onleft>
+						<onright>75</onright>
+						<onup>74</onup>
+						<ondown>76</ondown>
+						<texturefocus border="5">list-focus.png</texturefocus>
+						<texturenofocus>-</texturenofocus>
+					</control>
+					<control type="button" id="66">
+						<description>Pictures Bookmark String Set 2</description>
+						<posx>443</posx>
+						<posy>426</posy>
+						<width>150</width>
+						<textwidth>125</textwidth>
+						<label>$INFO[Skin.String(PicturesBookmark2)]</label>
+						<onclick>Skin.SetString(PicturesBookmark2)</onclick>
+						<onleft>56</onleft>
+						<onright>76</onright>
+						<onup>65</onup>
+						<ondown>61</ondown>
+					</control>
+					<control type="label">
+						<description>Pictures Bookmark 1 String NOT SET label</description>
+						<posx>458</posx>
+						<posy>441</posy>
+						<width>150</width>
+						<aligny>center</aligny>
+						<label>20078</label>
+						<visible>!Skin.String(PicturesBookmark2)</visible>
+						<textcolor>grey</textcolor>
+					</control>
+					<control type="radiobutton" id="76">
+						<description>enable Pictures Bookmark 2</description>
+						<posx>598</posx>
+						<posy>426</posy>
+						<width>32</width>
+						<label>-</label>
+						<onclick>Skin.ToggleSetting(PicturesBM2)</onclick>
+						<selected>Skin.HasSetting(PicturesBM2)</selected>
+						<onleft>66</onleft>
+						<onright>76</onright>
+						<onup>75</onup>
+						<ondown>71</ondown>
+						<texturefocus border="5">list-focus.png</texturefocus>
+						<texturenofocus>-</texturenofocus>
+					</control>
 				</control>
 			</control>
 		</control>

@@ -10,11 +10,12 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#include "NptUtils.h"
 #include "PltDeviceData.h"
 #include "PltService.h"
 #include "PltUPnP.h"
 #include "PltXmlHelper.h"
+
+NPT_SET_LOCAL_LOGGER("platinum.core.devicedata")
 
 /*----------------------------------------------------------------------
 |   PLT_DeviceData::PLT_DeviceData
@@ -126,12 +127,24 @@ PLT_DeviceData::GetLeaseTimeLastUpdate()
 |   PLT_DeviceData::ToLog
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_DeviceData::ToLog()
+PLT_DeviceData::ToLog(int level /* = NPT_LOG_LEVEL_FINE */)
 {
-    PLT_Log(PLT_LOG_LEVEL_1, "Device GUID: %s\n", (const char*)m_UUID);
-    PLT_Log(PLT_LOG_LEVEL_1, "Device Type: %s\n", (const char*)m_DeviceType);
-    PLT_Log(PLT_LOG_LEVEL_1, "Device Base Url: %s\n", (const char*)GetURLBase().ToString());
-    PLT_Log(PLT_LOG_LEVEL_1, "Device Friendly Name: %s\n\n", (const char*)m_FriendlyName);
+    NPT_COMPILER_UNUSED(level);
+
+    NPT_StringOutputStreamReference stream(new NPT_StringOutputStream);
+    stream->WriteString("Device GUID: ");
+    stream->WriteString((const char*)m_UUID);
+
+    stream->WriteString("Device Type: ");
+    stream->WriteString((const char*)m_DeviceType);
+
+    stream->WriteString("Device Base Url: ");
+    stream->WriteString((const char*)GetURLBase().ToString());
+
+    stream->WriteString("Device Friendly Name: ");
+    stream->WriteString((const char*)m_FriendlyName);
+
+    NPT_LOG_1(level, "%s", (const char*)stream->GetString());
     return NPT_SUCCESS;
 }
 
@@ -193,52 +206,52 @@ PLT_DeviceData::GetDescription(NPT_XmlElementNode* root, NPT_XmlElementNode** de
         *device_out = device;
     }
 
-    NPT_CHECK(root->AddChild(device));
+    NPT_CHECK_SEVERE(root->AddChild(device));
 
     // device properties
-    NPT_CHECK(PLT_XmlHelper::AddChildText(device, "deviceType", m_DeviceType));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(device, "friendlyName", m_FriendlyName));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(device, "manufacturer", m_Manufacturer));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(device, "manufacturerURL", m_ManufacturerURL));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(device, "modelDescription", m_ModelDescription));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(device, "modelName", m_ModelName));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(device, "modelURL", m_ModelURL));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(device, "modelNumber", m_ModelNumber));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(device, "serialNumber", m_SerialNumber));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(device, "UDN", "uuid:" + m_UUID));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(device, "presentationURL", m_PresentationURL));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(device, "deviceType", m_DeviceType));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(device, "friendlyName", m_FriendlyName));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(device, "manufacturer", m_Manufacturer));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(device, "manufacturerURL", m_ManufacturerURL));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(device, "modelDescription", m_ModelDescription));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(device, "modelName", m_ModelName));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(device, "modelURL", m_ModelURL));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(device, "modelNumber", m_ModelNumber));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(device, "serialNumber", m_SerialNumber));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(device, "UDN", "uuid:" + m_UUID));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(device, "presentationURL", m_PresentationURL));
 
     // hack for now:
     NPT_XmlElementNode* icons = new NPT_XmlElementNode("iconList");
-    NPT_CHECK(device->AddChild(icons));
+    NPT_CHECK_SEVERE(device->AddChild(icons));
     NPT_XmlElementNode* icon = new NPT_XmlElementNode("icon");
-    NPT_CHECK(icons->AddChild(icon));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(icon, "mimetype", "image/png"));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(icon, "width", "48"));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(icon, "height", "48"));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(icon, "depth", "24"));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(icon, "url", "/logo48.png"));
+    NPT_CHECK_SEVERE(icons->AddChild(icon));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(icon, "mimetype", "image/png"));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(icon, "width", "48"));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(icon, "height", "48"));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(icon, "depth", "24"));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(icon, "url", "/logo48.png"));
 
     icon = new NPT_XmlElementNode("icon");
-    NPT_CHECK(icons->AddChild(icon));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(icon, "mimetype", "image/png"));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(icon, "width", "32"));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(icon, "height", "32"));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(icon, "depth", "24"));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(icon, "url", "/logo32.png"));
+    NPT_CHECK_SEVERE(icons->AddChild(icon));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(icon, "mimetype", "image/png"));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(icon, "width", "32"));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(icon, "height", "32"));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(icon, "depth", "24"));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(icon, "url", "/logo32.png"));
 
     // services
     NPT_XmlElementNode* services = new NPT_XmlElementNode("serviceList");
-    NPT_CHECK(device->AddChild(services));
-    NPT_CHECK(m_Services.ApplyUntil(PLT_GetDescriptionIterator<PLT_Service*>(services), 
+    NPT_CHECK_SEVERE(device->AddChild(services));
+    NPT_CHECK_SEVERE(m_Services.ApplyUntil(PLT_GetDescriptionIterator<PLT_Service*>(services), 
         NPT_UntilResultNotEquals(NPT_SUCCESS)));
 
     // embedded devices
     if (m_EmbeddedDevices.GetItemCount()) {
         NPT_XmlElementNode* deviceList = new NPT_XmlElementNode("deviceList");
-        NPT_CHECK(device->AddChild(deviceList));
+        NPT_CHECK_SEVERE(device->AddChild(deviceList));
 
-        NPT_CHECK(m_EmbeddedDevices.ApplyUntil(PLT_GetDescriptionIterator<PLT_DeviceDataReference>(deviceList), 
+        NPT_CHECK_SEVERE(m_EmbeddedDevices.ApplyUntil(PLT_GetDescriptionIterator<PLT_DeviceDataReference>(deviceList), 
             NPT_UntilResultNotEquals(NPT_SUCCESS)));
     }
 
@@ -252,20 +265,20 @@ NPT_Result
 PLT_DeviceData::GetDescription(NPT_String& desc)
 {
     NPT_XmlElementNode* root = new NPT_XmlElementNode("root");
-    NPT_CHECK(root->SetNamespaceUri("", "urn:schemas-upnp-org:device-1-0"));
+    NPT_CHECK_SEVERE(root->SetNamespaceUri("", "urn:schemas-upnp-org:device-1-0"));
 
     // add spec version
     NPT_XmlElementNode* spec = new NPT_XmlElementNode("specVersion");
-    NPT_CHECK(root->AddChild(spec));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(spec, "major", "1"));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(spec, "minor", "0"));
+    NPT_CHECK_SEVERE(root->AddChild(spec));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(spec, "major", "1"));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(spec, "minor", "0"));
 
     // get device xml
-    NPT_CHECK(GetDescription(root));
+    NPT_CHECK_SEVERE(GetDescription(root));
 
     // serialize node
     NPT_String tmp;
-    NPT_CHECK(PLT_XmlHelper::Serialize(*root, tmp));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::Serialize(*root, tmp));
     delete root;
 
     // add preprocessor
@@ -323,8 +336,8 @@ PLT_DeviceData::SetDescriptionDevice(NPT_XmlElementNode* device_node)
 {
     NPT_Result res;
 
-    NPT_CHECK(PLT_XmlHelper::GetChildText(device_node, "deviceType", m_DeviceType));
-    NPT_CHECK(PLT_XmlHelper::GetChildText(device_node, "UDN", m_UUID));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::GetChildText(device_node, "deviceType", m_DeviceType));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::GetChildText(device_node, "UDN", m_UUID));
 
     // jump uuid:, we should probably check first
     m_UUID = ((const char*)m_UUID)+5;
@@ -364,7 +377,7 @@ PLT_DeviceData::SetDescriptionDevice(NPT_XmlElementNode* device_node)
         PLT_XmlHelper::GetChildren(deviceList, devices, "device");
         for( int k = 0 ; k < (int)devices.GetItemCount(); k++) {    
             PLT_DeviceDataReference device(new PLT_DeviceData());
-            NPT_CHECK(device->SetDescriptionDevice(devices[k]));
+            NPT_CHECK_SEVERE(device->SetDescriptionDevice(devices[k]));
             AddDevice(device);
         }
     }

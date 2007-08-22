@@ -8,6 +8,7 @@
 #include "../FileSystem/CDDADirectory.h"
 #include "../DetectDVDType.h"
 #include "../musicInfoTagLoaderFactory.h"
+#include "../utils/LabelFormatter.h"
 
 using namespace XFILE;
 
@@ -362,7 +363,8 @@ CStdString CCDDARipper::GetTrackName(CFileItem *item, bool isFatX)
   // Format up our ripped file label
   CFileItem destItem(*item);
   destItem.SetLabel("");
-  destItem.FormatLabel(g_guiSettings.GetString("cddaripper.trackformat"));
+  CLabelFormatter formatter(g_guiSettings.GetString("cddaripper.trackformat"), "");
+  formatter.FormatLabel(&destItem);
 
   // grab the label to use it as our ripped filename
   CStdString track = destItem.GetLabel();

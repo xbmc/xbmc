@@ -2124,9 +2124,15 @@ NPT_XmlNodeCanonicalWriter::operator()(NPT_XmlNode*& node) const
                 }
             } else {
                 // default namespace already rendered
-                if (*rendered != (namespace_uri?*namespace_uri:"")) {
+                const char* compare;
+                if (namespace_uri) {
+                    compare = namespace_uri->GetChars();
+                } else {
+                    compare = "";
+                }
+                if (*rendered != compare) {
                     // the rendered default namespace had a different uri
-                    map_link.m_RenderedNamespaces.Put("", namespace_uri?*namespace_uri:"");
+                    map_link.m_RenderedNamespaces.Put("", compare);
                 } 
             }
         } else {

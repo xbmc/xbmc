@@ -1091,7 +1091,7 @@ bool CGUIWindowMusicBase::OnPlayMedia(int iItem)
   }
 
   // party mode
-  if (g_partyModeManager.IsEnabled())
+  if (g_partyModeManager.IsEnabled() && !pItem->IsLastFM())
   {
     CPlayList playlistTemp;
     CPlayList::CPlayListItem playlistItem;

@@ -14,7 +14,7 @@
 #include "GUIDialogMediaSource.h"
 #include "GUIDialogContentSettings.h"
 #include "GUIDialogVideoScan.h"
-#include "FileSystem/StackDirectory.h"
+#include "FileSystem/MultiPathDirectory.h"
 #include "utils/RegExp.h"
 
 using namespace XFILE;
@@ -237,7 +237,7 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
   g_stSettings.m_iMyVideoStack &= ~STACK_UNAVAILABLE;
   g_infoManager.m_content = "files";
 
-  if (m_database.GetScraperForPath(strDirectory,info2.strPath,info2.strContent) && info2.strContent.Equals("tvshows"))
+  if (m_database.GetScraperForPath(strDirectory,info2) && info2.strContent.Equals("tvshows"))
   { // dont stack in tv dirs
     g_stSettings.m_iMyVideoStack |= STACK_UNAVAILABLE;
   }
@@ -440,39 +440,39 @@ void CGUIWindowVideoFiles::OnUnAssignContent(int iItem)
   {
     if (!bCanceled)
     {
-      m_database.SetScraperForPath(m_vecItems[iItem]->m_strPath,"","");
+      SScraperInfo info;
+      SScanSettings settings;
+      m_database.SetScraperForPath(m_vecItems[iItem]->m_strPath,info,settings);
     }
   }
 }
 
-void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, SScraperInfo& info)
+void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, SScraperInfo& info, SScanSettings& settings)
 {
-  bool bScan=false, bScanRecursive, bUseDirNames;
+  bool bScan=false;
   if (iFound == 0)
   {
-    m_database.GetScraperForPath(m_vecItems[iItem]->m_strPath,info.strPath,info.strContent,bUseDirNames,bScanRecursive,iFound);
+    m_database.GetScraperForPath(m_vecItems[iItem]->m_strPath,info, settings,iFound);
   }
   SScraperInfo info2 = info;
-  if (info.strContent.Equals("tvshows") && iFound == 2) // 'folder contains a single tvshow'
-    bUseDirNames = true;
+  SScanSettings settings2 = settings;
   
-  if (CGUIDialogContentSettings::Show(info2,bScan,bScanRecursive,bUseDirNames))
+  if (CGUIDialogContentSettings::Show(info2, settings2, bScan))
   {
-    if (info2.strContent.IsEmpty() || info2.strContent.Equals("None"))
+    if((info2.strContent.IsEmpty() || info2.strContent.Equals("None")) 
+    && (!info.strContent.IsEmpty() && !info.strContent.Equals("None")))
     {
-      if (!info.strContent.IsEmpty() && !info.strContent.Equals("None"))
-        OnUnAssignContent(iItem);
+      OnUnAssignContent(iItem);
     }
 
     m_database.Open();
-    m_database.SetScraperForPath(m_vecItems[iItem]->m_strPath,info2.strPath,info2.strContent,bUseDirNames,bScanRecursive);
+    m_database.SetScraperForPath(m_vecItems[iItem]->m_strPath,info2,settings2);
     m_database.Close();
-    
+
     if (bScan)
     {
-      VIDEO::SScanSettings settings;
-      GetScraperForItem(m_vecItems[iItem],info2,settings);
-      OnScan(m_vecItems[iItem]->m_strPath,info2,settings);
+      GetScraperForItem(m_vecItems[iItem],info2,settings2);
+      OnScan(m_vecItems[iItem]->m_strPath,info2,settings2);
     }
   }
 }
@@ -549,7 +549,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
         CVideoDatabase database;
         database.Open();
         SScraperInfo info;
-        if (database.GetScraperForPath(share->strPath,info.strPath,info.strContent))
+        if (database.GetScraperForPath(share->strPath,info))
         {
           if (!info.strPath.IsEmpty() && !info.strContent.IsEmpty())
             if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
@@ -659,15 +659,15 @@ bool CGUIWindowVideoFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button
   case CONTEXT_BUTTON_SET_CONTENT:
     {
       SScraperInfo info;
-      int iFound = 0;
+      SScanSettings settings;
       if (item->HasVideoInfoTag())  // files view shouldn't need this check I think?
-        m_database.GetScraperForPath(item->GetVideoInfoTag()->m_strPath,info.strPath,info.strContent,iFound);
+        m_database.GetScraperForPath(item->GetVideoInfoTag()->m_strPath, info, settings);
       else
-        m_database.GetScraperForPath(item->m_strPath,info.strPath,info.strContent,iFound);
+        m_database.GetScraperForPath(item->m_strPath, info, settings);
       CScraperParser parser;
       if (parser.Load("q:\\system\\scrapers\\video\\"+info.strPath))
         info.strTitle = parser.GetName();
-      OnAssignContent(itemNumber,0,info);
+      OnAssignContent(itemNumber,0, info, settings);
       return true;
     }
 

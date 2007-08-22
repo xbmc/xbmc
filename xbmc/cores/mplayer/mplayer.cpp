@@ -122,6 +122,7 @@ CMPlayer::Options::Options()
   m_bLimitedHWAC3 = false;
   m_bDeinterlace = false;
   m_subcp = "";
+  m_strEdl = "";
   m_synccomp = 0.0f;
 }
 void CMPlayer::Options::SetFPS(float fFPS)
@@ -279,6 +280,11 @@ void CMPlayer::Options::SetAutoSync(int iAutoSync)
   m_iAutoSync = iAutoSync;
 }
 
+void CMPlayer::Options::SetEdl(const string& strEdl)
+{
+  m_strEdl = strEdl;
+}
+
 void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 {
   CStdString strTmp;
@@ -330,6 +336,12 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
       m_vecOptions.push_back(strTmp);
       CLog::Log(LOGINFO, "Using -subcp %s to detect the subtitle charset", strTmp.c_str());
     }
+  }
+
+  if (m_strEdl.length() > 0)
+  {
+    m_vecOptions.push_back("-edl");
+    m_vecOptions.push_back( m_strEdl.c_str());
   }
 
   //MOVED TO mplayer.conf
@@ -858,6 +870,16 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
     m_iPTS = 0;
     m_bPaused = false;
 
+    CStdString strEdlFileName;
+    if (!bFileOnInternet && bIsVideo && !bIsDVD )
+    {
+      CUtil::ReplaceExtension(strFile, ".edl", strEdlFileName);
+      if ( CFile::Exists(strEdlFileName) )
+      {
+        options.SetEdl(strEdlFileName);
+      }
+    }
+    
     // first init mplayer. This is needed 2 find out all information
     // like audio channels, fps etc
     load();

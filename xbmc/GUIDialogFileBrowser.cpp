@@ -106,7 +106,6 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
         bFool = true;
         if (iSource > -1)
         {
-          CUtil::RemoveSlashAtEnd(m_selectedPath);
           if (m_shares[iSource].strPath.Equals(m_selectedPath))
             bFool = false;
         }
@@ -547,12 +546,12 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, VECSHARE
   return confirmed;
 }
 
-bool CGUIDialogFileBrowser::ShowAndGetImage(VECSHARES &shares, const CStdString &heading, CStdString &path)
+bool CGUIDialogFileBrowser::ShowAndGetImage(const VECSHARES &shares, const CStdString &heading, CStdString &path)
 {
   return ShowAndGetFile(shares, ".png|.jpg|.bmp|.gif|.tbn", heading, path, true); // true for use thumbs
 }
 
-bool CGUIDialogFileBrowser::ShowAndGetDirectory(VECSHARES &shares, const CStdString &heading, CStdString &path, bool bWriteOnly)
+bool CGUIDialogFileBrowser::ShowAndGetDirectory(const VECSHARES &shares, const CStdString &heading, CStdString &path, bool bWriteOnly)
 {
   // an extension mask of "/" ensures that no files are shown
   if (bWriteOnly)
@@ -570,7 +569,7 @@ bool CGUIDialogFileBrowser::ShowAndGetDirectory(VECSHARES &shares, const CStdStr
   return ShowAndGetFile(shares, "/", heading, path);
 }
 
-bool CGUIDialogFileBrowser::ShowAndGetFile(VECSHARES &shares, const CStdString &mask, const CStdString &heading, CStdString &path, bool useThumbs /* = false */, bool useFileDirectories /* = false */)
+bool CGUIDialogFileBrowser::ShowAndGetFile(const VECSHARES &shares, const CStdString &mask, const CStdString &heading, CStdString &path, bool useThumbs /* = false */, bool useFileDirectories /* = false */)
 {
   CGUIDialogFileBrowser *browser = new CGUIDialogFileBrowser();
   if (!browser)
@@ -726,7 +725,7 @@ bool CGUIDialogFileBrowser::ShowAndGetShare(CStdString &path, bool allowNetworkS
   return confirmed;
 }
 
-void CGUIDialogFileBrowser::SetShares(VECSHARES &shares)
+void CGUIDialogFileBrowser::SetShares(const VECSHARES &shares)
 {
   m_shares = shares;
   if (!m_shares.size() && m_addSourceType.IsEmpty())

@@ -32,6 +32,7 @@
 #include "GUIDialogMediaSource.h"
 #include "GUIWindowFileManager.h"
 #include "Favourites.h"
+#include "utils/LabelFormatter.h"
 
 #include "guiImage.h"
 #include "GUIMultiImage.h"
@@ -101,7 +102,7 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_PARENT_DIR)
   {
-    if (m_vecItems.IsVirtualDirectoryRoot())
+    if (m_vecItems.IsVirtualDirectoryRoot() && g_advancedSettings.m_bUseEvilB)
       m_gWindowManager.PreviousWindow();
     else
       GoParentFolder();
@@ -368,8 +369,10 @@ void CGUIMediaWindow::SortItems(CFileItemList &items)
 }
 
 // \brief Formats item labels based on the formatting provided by guiViewState
-void CGUIMediaWindow::FormatItemLabels(CFileItemList &items, const CGUIViewState::LABEL_MASKS &labelMasks)
+void CGUIMediaWindow::FormatItemLabels(CFileItemList &items, const LABEL_MASKS &labelMasks)
 {
+  CLabelFormatter fileFormatter(labelMasks.m_strLabelFile, labelMasks.m_strLabel2File);
+  CLabelFormatter folderFormatter(labelMasks.m_strLabelFolder, labelMasks.m_strLabel2Folder);
   for (int i=0; i<items.Size(); ++i)
   {
     CFileItem* pItem=items[i];
@@ -377,8 +380,10 @@ void CGUIMediaWindow::FormatItemLabels(CFileItemList &items, const CGUIViewState
     if (pItem->IsLabelPreformated())
       continue;
 
-    pItem->FormatLabel(pItem->m_bIsFolder ? labelMasks.m_strLabelFolder : labelMasks.m_strLabelFile);
-    pItem->FormatLabel2(pItem->m_bIsFolder ? labelMasks.m_strLabel2Folder : labelMasks.m_strLabel2File);
+    if (pItem->m_bIsFolder)
+      folderFormatter.FormatLabels(pItem);
+    else
+      fileFormatter.FormatLabels(pItem);
   }
 }
 
@@ -387,7 +392,7 @@ void CGUIMediaWindow::OnSort()
 {
   if (m_guiState.get())
   {
-    CGUIViewState::LABEL_MASKS labelMasks;
+    LABEL_MASKS labelMasks;
     m_guiState->GetSortMethodLabelMasks(labelMasks);
     FormatItemLabels(m_vecItems, labelMasks);
   }
@@ -423,8 +428,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
   CFileItemList cachedItems(strDirectory);
   if (!strDirectory.IsEmpty() && cachedItems.Load())
   {
-    items.m_strPath = cachedItems.m_strPath;
-    items.AppendPointer(cachedItems);
+    items.AssignPointer(cachedItems);
     cachedItems.ClearKeepPointer();
   }
   else
@@ -544,7 +548,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   if (!bSelectedFound)
     m_viewControl.SetSelectedItem(0);
 
-  m_history.AddPath(strDirectory);
+  m_history.AddPath(m_vecItems.m_strPath);
 
   //m_history.DumpPathHistory();
 
@@ -961,6 +965,7 @@ void CGUIMediaWindow::OnDeleteItem(int iItem)
 
   if (!CGUIWindowFileManager::DeleteItem(&item))
     return;
+  m_vecItems.RemoveDiscCache();
   Update(m_vecItems.m_strPath);
   m_viewControl.SetSelectedItem(iItem);
 }
@@ -975,6 +980,7 @@ void CGUIMediaWindow::OnRenameItem(int iItem)
 
   if (!CGUIWindowFileManager::RenameFile(m_vecItems[iItem]->m_strPath))
     return;
+  m_vecItems.RemoveDiscCache();
   Update(m_vecItems.m_strPath);
   m_viewControl.SetSelectedItem(iItem);
 }

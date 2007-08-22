@@ -7,7 +7,8 @@ def generate(env, gcc_cross_prefix=None, gcc_extra_options='', gcc_relaxed_warni
         cxx_compiler_warnings       = '-Wall'
     else:
 	c_compiler_compliance_flags = '-pedantic'
-        cxx_compiler_warnings       = '-Werror -Wall -W -Wundef -Wno-long-long'
+        ###cxx_compiler_warnings       = '-Werror -Wall -W -Wundef -Wno-long-long'
+        cxx_compiler_warnings       = '-Wall -W -Wundef -Wno-long-long'
 
     c_compiler_warnings         = cxx_compiler_warnings + ' -Wmissing-prototypes -Wmissing-declarations'
     c_compiler_defines          = '-D_REENTRANT'

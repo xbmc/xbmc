@@ -639,7 +639,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInScreenSavers(pSetting);
     }
-    else if (strSetting.Equals("videoplayer.displayresolution"))
+    else if (strSetting.Equals("videoplayer.displayresolution") || strSetting.Equals("pictures.displayresolution"))
     {
       FillInResolutions(pSetting, true);
     }
@@ -1725,8 +1725,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(pSettingString->m_iHeadingString), path, bWriteOnly))
     {
       pSettingString->SetData(path);
-      if (strSetting.Equals("subtitles.custompath"))
-        iAdditionalChecked = -1; // force recheck
 
       if (strSetting.Equals("myprograms.trainerpath"))
       {
@@ -1820,6 +1818,15 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       g_application.StartUPnPServer();
     else
       g_application.StopUPnPServer();
+#endif
+  }
+  else if (strSetting.Equals("upnp.renderer"))
+  {
+#ifdef HAS_UPNP
+    if (g_guiSettings.GetBool("upnp.renderer"))
+      g_application.StartUPnPRenderer();
+    else
+      g_application.StopUPnPRenderer();
 #endif
   }
   else if (strSetting.Equals("upnp.musicshares"))
@@ -1969,18 +1976,18 @@ void CGUIWindowSettingsCategory::Render()
   UpdateRealTimeSettings();
   // update alpha status of current button
   bool bAlphaFaded = false;
-  CGUIButtonControl *pButton = (CGUIButtonControl *)GetControl(CONTROL_START_BUTTONS + m_iSection);
-  if (pButton && !pButton->HasFocus())
+  CGUIControl *control = GetFirstFocusableControl(CONTROL_START_BUTTONS + m_iSection);
+  if (control && !control->HasFocus() && control->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
   {
-    pButton->SetFocus(true);
-    pButton->SetAlpha(0x80);
+    control->SetFocus(true);
+    ((CGUIButtonControl *)control)->SetAlpha(0x80);
     bAlphaFaded = true;
   }
   CGUIWindow::Render();
   if (bAlphaFaded)
   {
-    pButton->SetFocus(false);
-    pButton->SetAlpha(0xFF);
+    control->SetFocus(false);
+    ((CGUIButtonControl *)control)->SetAlpha(0xFF);
   }
   // render the error message if necessary
   if (m_strErrorMessage.size())

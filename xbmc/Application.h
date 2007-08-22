@@ -59,6 +59,8 @@ public:
   void StopTimeServer();
   void StartUPnP();
   void StopUPnP();
+  void StartUPnPRenderer();
+  void StopUPnPRenderer();
   void StartUPnPClient();
   void StopUPnPClient();
   void StartUPnPServer();

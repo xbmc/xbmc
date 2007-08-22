@@ -22,6 +22,7 @@
 #ifdef HAS_FILESYSTEM_CDDA
 #include "CDDADirectory.h"
 #endif
+#include "PluginDirectory.h"
 #ifdef HAS_FILESYSTEM
 #include "ISO9660Directory.h"
 #include "XBMSDirectory.h"
@@ -76,6 +77,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
   if (strProtocol == "soundtrack") return new CSndtrkDirectory();
 #endif
 #endif
+  if (strProtocol == "plugin") return new CPluginDirectory();
   if (strProtocol == "zip") return new CZipDirectory();
   if (strProtocol == "rar") return new CRarDirectory();
   if (strProtocol == "virtualpath") return new CVirtualPathDirectory();
