@@ -383,7 +383,9 @@ void CRarManager::ClearCachedFile(const CStdString& strRarPath, const CStdString
 
 void CRarManager::ExtractArchive(const CStdString& strArchive, const CStdString& strPath)
 {
-  if (!urarlib_get(const_cast<char*>(strArchive.c_str()), const_cast<char*>(strPath.c_str()),NULL))
+  CStdString strPath2(strPath);
+  CUtil::RemoveSlashAtEnd(strPath2);
+  if (!urarlib_get(const_cast<char*>(strArchive.c_str()), const_cast<char*>(strPath2.c_str()),NULL))
   {
     CLog::Log(LOGERROR,"rarmanager::extractarchive error while extracting %s",strArchive.c_str());
     return;
