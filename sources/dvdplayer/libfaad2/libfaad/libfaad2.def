@@ -1,0 +1,14 @@
+LIBRARY  libfaad2.dll
+EXPORTS
+;
+; libfaad exports
+;
+faacDecOpen                      @1
+faacDecGetCurrentConfiguration   @2
+faacDecSetConfiguration          @3
+faacDecInit                      @4
+faacDecInit2                     @5
+faacDecDecode                    @6
+faacDecClose                     @7
+faacDecGetErrorMessage           @8
+AudioSpecificConfig              @9

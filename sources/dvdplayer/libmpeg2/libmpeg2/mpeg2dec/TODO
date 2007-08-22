@@ -1,0 +1,37 @@
+* plain bugs
+	* fix VIS IDCT code (handling of nonprogressive frame pictures)
+
+* things we dont implement yet
+	* more verbose error reporting
+	* export MC information (for XvMC or for error resilience)
+	* export quantizer information (for postprocessing filters)
+	* dont crash on bad streams, make sure we can resync after a while
+		* possible chunk buffer overflow while reading bits
+	* synchronization stuff (play at correct speed)
+	* IDCT precision with sparse matrixes
+	* sparc IDCT optimizations
+	* support for still pictures (decode before receiving next startcode !)
+
+* structural optimizations
+	* do yuv per sub-slice (probably big speed boost)
+	* try different memory arrangements for pictures (yuyv, stride, ...)
+	* once we have sync, call draw_frame before decoding I or P not after
+
+* local optimizations
+	* put most common fields at start of decoder_t structure
+	* fix code that uses multiples of the stride (use preshifted value ?)
+	* avoid 8-bit accesses particularly on alpha
+	* use 64-bit shift register for parsing on 64-bit arches
+	* use restrict (__restrict__) pointers: int * restrict p;
+	* try feig IDCT ?
+	* review the use of static inline functions
+	* improve MMX motion comp inner routines
+	* optimize IDCT for very sparse input matrixes ?
+	* optimize startcode search loop ?
+	* bit parsing / DCT parsing optimizations
+
+* clean up
+	* clean up header file usage
+	* clean up yuv2rgb for interlaced pictures (handling of uv)
+	* clean up decoder_t structure (some variables should be local ?)
+	* clean up slice_init

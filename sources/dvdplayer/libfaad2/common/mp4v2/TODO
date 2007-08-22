@@ -1,0 +1,11 @@
+
+Extended format (v2) support
+
+Means to dump all possible atoms/properties with types
+
+Wrap printf's for verbosity - see example is player/lib/http/http_util.c
+
+Distinguish cases of no ES Config and error parsing esds
+
+Improve error recovery when length of atom/descriptor is larger than parent/file, resync on parent.
+

@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: liba52
+Description: A decoding library for ATSC A/52 streams.
+Version: @VERSION@
+Libs: -L${libdir} -la52
+Cflags: -I${includedir}/@PACKAGE@

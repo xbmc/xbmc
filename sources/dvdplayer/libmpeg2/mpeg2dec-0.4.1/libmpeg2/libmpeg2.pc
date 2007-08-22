@@ -1,0 +1,10 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libmpeg2
+Description: A decoding library for MPEG-1 and MPEG-2 streams.
+Version: 0.4.1
+Libs: -L${libdir} -lmpeg2
+Cflags: -I${includedir}/mpeg2dec

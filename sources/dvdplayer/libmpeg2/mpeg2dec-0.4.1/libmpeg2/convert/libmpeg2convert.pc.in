@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: libmpeg2convert
+Description: libmpeg2 helper functions for converting to various formats.
+Version: @VERSION@
+Libs: -L${libdir} -lmpeg2convert
+Cflags: -I${includedir}/@PACKAGE@

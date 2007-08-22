@@ -59,14 +59,14 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 libid3tag_la_LIBADD =
 am__libid3tag_la_SOURCES_DIST = version.c ucs4.c latin1.c utf16.c \
 	utf8.c parse.c render.c field.c frametype.c compat.c genre.c \
-	frame.c crc.c util.c tag.c file.c version.h ucs4.h latin1.h \
+	frame.c crc.c util.c tag.c file.c metadata.c version.h ucs4.h latin1.h \
 	utf16.h utf8.h parse.h render.h field.h frametype.h compat.h \
-	genre.h frame.h crc.h util.h tag.h file.h id3tag.h global.h \
+	genre.h metadata.h frame.h crc.h util.h tag.h file.h id3tag.h global.h \
 	genre.dat debug.c debug.h
 @DEBUG_TRUE@am__objects_1 = debug.lo
 am_libid3tag_la_OBJECTS = version.lo ucs4.lo latin1.lo utf16.lo \
 	utf8.lo parse.lo render.lo field.lo frametype.lo compat.lo \
-	genre.lo frame.lo crc.lo util.lo tag.lo file.lo \
+	metadata.lo genre.lo frame.lo crc.lo util.lo tag.lo file.lo \
 	$(am__objects_1)
 libid3tag_la_OBJECTS = $(am_libid3tag_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I.
@@ -225,10 +225,10 @@ EXTRA_DIST = genre.dat.sed  \
 @DEBUG_TRUE@debug = debug.c debug.h
 libid3tag_la_SOURCES = version.c ucs4.c latin1.c utf16.c utf8.c  \
 			parse.c render.c field.c frametype.c compat.c  \
-			genre.c frame.c crc.c util.c tag.c file.c  \
+			genre.c frame.c metadata.c crc.c util.c tag.c file.c  \
 			version.h ucs4.h latin1.h utf16.h utf8.h  \
 			parse.h render.h field.h frametype.h compat.h  \
-			genre.h frame.h crc.h util.h tag.h file.h  \
+			genre.h frame.h metadata.h crc.h util.h tag.h file.h  \
 			id3tag.h global.h genre.dat $(debug)
 
 EXTRA_libid3tag_la_SOURCES = \

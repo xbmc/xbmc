@@ -1,0 +1,9 @@
+/.cvsignore////
+/Makefile.am////
+/README////
+/compile////
+/globals////
+/regression////
+/tek-525////
+/tek-625////
+/tests////

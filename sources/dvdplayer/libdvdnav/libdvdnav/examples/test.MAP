@@ -1,0 +1,771 @@
+Archive member included because of file (symbol)
+
+../src/.libs/libdvdnav.dll.a(d000023.o)
+                              menus.o (dvdnav_close)
+../src/.libs/libdvdnav.dll.a(d000027.o)
+                              menus.o (dvdnav_free_cache_block)
+../src/.libs/libdvdnav.dll.a(d000022.o)
+                              menus.o (dvdnav_button_select_and_activate)
+../src/.libs/libdvdnav.dll.a(d000037.o)
+                              menus.o (dvdnav_get_current_nav_dsi)
+../src/.libs/libdvdnav.dll.a(d000038.o)
+                              menus.o (dvdnav_get_current_nav_pci)
+../src/.libs/libdvdnav.dll.a(d000048.o)
+                              menus.o (dvdnav_get_position)
+../src/.libs/libdvdnav.dll.a(d000025.o)
+                              menus.o (dvdnav_current_title_info)
+../src/.libs/libdvdnav.dll.a(d000100.o)
+                              menus.o (dvdnav_wait_skip)
+../src/.libs/libdvdnav.dll.a(d000092.o)
+                              menus.o (dvdnav_still_skip)
+../src/.libs/libdvdnav.dll.a(d000042.o)
+                              menus.o (dvdnav_get_next_cache_block)
+../src/.libs/libdvdnav.dll.a(d000087.o)
+                              menus.o (dvdnav_set_PGC_positioning_flag)
+../src/.libs/libdvdnav.dll.a(d000090.o)
+                              menus.o (dvdnav_spu_language_select)
+../src/.libs/libdvdnav.dll.a(d000017.o)
+                              menus.o (dvdnav_audio_language_select)
+../src/.libs/libdvdnav.dll.a(d000069.o)
+                              menus.o (dvdnav_menu_language_select)
+../src/.libs/libdvdnav.dll.a(d000026.o)
+                              menus.o (dvdnav_err_to_string)
+../src/.libs/libdvdnav.dll.a(d000088.o)
+                              menus.o (dvdnav_set_readahead_flag)
+../src/.libs/libdvdnav.dll.a(d000073.o)
+                              menus.o (dvdnav_open)
+../src/.libs/libdvdnav.dll.a(d000002.o)
+                              ../src/.libs/libdvdnav.dll.a(d000023.o) (_head_libdvdnav_4_dll)
+../src/.libs/libdvdnav.dll.a(d000149.o)
+                              ../src/.libs/libdvdnav.dll.a(d000002.o) (libdvdnav_4_dll_iname)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a(CRTglob.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../crt2.o (_CRT_glob)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a(CRTfmode.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../crt2.o (_CRT_fmode)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a(txtmode.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../crt2.o (_fmode)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a(pseudo-reloc.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../crt2.o (_pei386_runtime_relocator)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a(CRT_fp10.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../crt2.o (_fpreset)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a(gccmain.o)
+                              menus.o (__main)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a(pseudo-reloc-list.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a(pseudo-reloc.o) (__RUNTIME_PSEUDO_RELOC_LIST__)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(w32-shared-ptr.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/crtbegin.o (__w32_sharedptr_initialize)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(_chkstk.o)
+                              menus.o (_alloca)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(_ctors.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a(gccmain.o) (__CTOR_LIST__)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(_eprintf.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(w32-shared-ptr.o) (__eprintf)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmoldname.a(dghcs00007.o)
+                              menus.o (close)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmoldname.a(dghcs00113.o)
+                              menus.o (write)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmoldname.a(dghcs00059.o)
+                              menus.o (open)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmoldname.a(dghch.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmoldname.a(dghcs00007.o) (_head_libmoldname_a)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmoldname.a(dghct.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmoldname.a(dghch.o) (_libmoldname_a_iname)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00233.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../crt2.o (_imp___iob)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00080.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../crt2.o (_imp____set_app_type)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00540.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../crt2.o (_imp__atexit)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00350.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../crt2.o (_imp___onexit)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00121.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../crt2.o (_cexit)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00060.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../crt2.o (__p__environ)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00656.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../crt2.o (signal)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00062.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../crt2.o (__p__fmode)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00388.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../crt2.o (_setmode)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00039.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../crt2.o (__getmainargs)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00642.o)
+                              menus.o (puts)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00652.o)
+                              menus.o (scanf)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00560.o)
+                              menus.o (fflush)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00639.o)
+                              menus.o (printf)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00575.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(w32-shared-ptr.o) (free)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00626.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(w32-shared-ptr.o) (malloc)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00533.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(w32-shared-ptr.o) (abort)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00569.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(_eprintf.o) (fprintf)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxh.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00233.o) (_head_libmsvcrt_a)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxt.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxh.o) (_libmsvcrt_a_iname)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00735.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../crt2.o (SetUnhandledExceptionFilter@4)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00155.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../crt2.o (ExitProcess@4)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00220.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(w32-shared-ptr.o) (_imp__GetAtomNameA@12)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00175.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(w32-shared-ptr.o) (_imp__FindAtomA@4)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00001.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(w32-shared-ptr.o) (_imp__AddAtomA@4)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbh.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00735.o) (_head_libkernel32_a)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbt.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbh.o) (_libkernel32_a_iname)
+
+Allocating common symbols
+Common symbol       size              file
+
+__DTOR_LIST__       0x10              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(_ctors.o)
+__w32_sharedptr_terminate
+                    0x10              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(w32-shared-ptr.o)
+__w32_sharedptr     0x10              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(w32-shared-ptr.o)
+__CTOR_LIST__       0x10              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(_ctors.o)
+__w32_sharedptr_unexpected
+                    0x10              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(w32-shared-ptr.o)
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+                0x00400000                __image_base__ = 0x400000
+                0x00000000                __dll__ = 0x0
+                0x00001000                __section_alignment__ = 0x1000
+                0x00000200                __file_alignment__ = 0x200
+                0x00000004                __major_os_version__ = 0x4
+                0x00000000                __minor_os_version__ = 0x0
+                0x00000001                __major_image_version__ = 0x1
+                0x00000000                __minor_image_version__ = 0x0
+                0x00000004                __major_subsystem_version__ = 0x4
+                0x00000000                __minor_subsystem_version__ = 0x0
+                0x00000003                __subsystem__ = 0x3
+                0x00200000                __size_of_stack_reserve__ = 0x200000
+                0x00001000                __size_of_stack_commit__ = 0x1000
+                0x00100000                __size_of_heap_reserve__ = 0x100000
+                0x00001000                __size_of_heap_commit__ = 0x1000
+                0x00000000                __loader_flags__ = 0x0
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../crt2.o
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/crtbegin.o
+LOAD menus.o
+LOAD ../src/.libs/libdvdnav.dll.a
+LOAD d:/programeren/xbmc/XBMC/docs/sources/dvdplayer/libdvdnav/libdvdnav/xbox/lib/libdvdcss.dll.a
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmoldname.a
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingwex.a
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libuser32.a
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libadvapi32.a
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libshell32.a
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmoldname.a
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingwex.a
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/crtend.o
+
+.text           0x00401000     0x1200
+ *(.init)
+ *(.text)
+ .text          0x00401000      0x280 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../crt2.o
+                0x00401240                WinMainCRTStartup
+                0x00401220                mainCRTStartup
+                0x00401260                atexit
+                0x00401270                _onexit
+ .text          0x00401280       0x10 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/crtbegin.o
+                0x00401280                __do_sjlj_init
+ .text          0x00401290      0x6c0 menus.o
+                0x00401290                main
+ .text          0x00401950        0x8 ../src/.libs/libdvdnav.dll.a(d000023.o)
+                0x00401950                dvdnav_close
+ *fill*         0x00401958        0x8 00
+ .text          0x00401960        0x8 ../src/.libs/libdvdnav.dll.a(d000027.o)
+                0x00401960                dvdnav_free_cache_block
+ *fill*         0x00401968        0x8 00
+ .text          0x00401970        0x8 ../src/.libs/libdvdnav.dll.a(d000022.o)
+                0x00401970                dvdnav_button_select_and_activate
+ *fill*         0x00401978        0x8 00
+ .text          0x00401980        0x8 ../src/.libs/libdvdnav.dll.a(d000037.o)
+                0x00401980                dvdnav_get_current_nav_dsi
+ *fill*         0x00401988        0x8 00
+ .text          0x00401990        0x8 ../src/.libs/libdvdnav.dll.a(d000038.o)
+                0x00401990                dvdnav_get_current_nav_pci
+ *fill*         0x00401998        0x8 00
+ .text          0x004019a0        0x8 ../src/.libs/libdvdnav.dll.a(d000048.o)
+                0x004019a0                dvdnav_get_position
+ *fill*         0x004019a8        0x8 00
+ .text          0x004019b0        0x8 ../src/.libs/libdvdnav.dll.a(d000025.o)
+                0x004019b0                dvdnav_current_title_info
+ *fill*         0x004019b8        0x8 00
+ .text          0x004019c0        0x8 ../src/.libs/libdvdnav.dll.a(d000100.o)
+                0x004019c0                dvdnav_wait_skip
+ *fill*         0x004019c8        0x8 00
+ .text          0x004019d0        0x8 ../src/.libs/libdvdnav.dll.a(d000092.o)
+                0x004019d0                dvdnav_still_skip
+ *fill*         0x004019d8        0x8 00
+ .text          0x004019e0        0x8 ../src/.libs/libdvdnav.dll.a(d000042.o)
+                0x004019e0                dvdnav_get_next_cache_block
+ *fill*         0x004019e8        0x8 00
+ .text          0x004019f0        0x8 ../src/.libs/libdvdnav.dll.a(d000087.o)
+                0x004019f0                dvdnav_set_PGC_positioning_flag
+ *fill*         0x004019f8        0x8 00
+ .text          0x00401a00        0x8 ../src/.libs/libdvdnav.dll.a(d000090.o)
+                0x00401a00                dvdnav_spu_language_select
+ *fill*         0x00401a08        0x8 00
+ .text          0x00401a10        0x8 ../src/.libs/libdvdnav.dll.a(d000017.o)
+                0x00401a10                dvdnav_audio_language_select
+ *fill*         0x00401a18        0x8 00
+ .text          0x00401a20        0x8 ../src/.libs/libdvdnav.dll.a(d000069.o)
+                0x00401a20                dvdnav_menu_language_select
+ *fill*         0x00401a28        0x8 00
+ .text          0x00401a30        0x8 ../src/.libs/libdvdnav.dll.a(d000026.o)
+                0x00401a30                dvdnav_err_to_string
+ *fill*         0x00401a38        0x8 00
+ .text          0x00401a40        0x8 ../src/.libs/libdvdnav.dll.a(d000088.o)
+                0x00401a40                dvdnav_set_readahead_flag
+ *fill*         0x00401a48        0x8 00
+ .text          0x00401a50        0x8 ../src/.libs/libdvdnav.dll.a(d000073.o)
+                0x00401a50                dvdnav_open
+ *fill*         0x00401a58        0x8 00
+ .text          0x00401a60       0x30 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a(pseudo-reloc.o)
+                0x00401a60                _pei386_runtime_relocator
+ .text          0x00401a90       0x10 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a(CRT_fp10.o)
+                0x00401a90                _fpreset
+                0x00401a90                fpreset
+ .text          0x00401aa0      0x110 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a(gccmain.o)
+                0x00401b40                __main
+                0x00401aa0                __do_global_dtors
+                0x00401ae0                __do_global_ctors
+ .text          0x00401bb0      0x2f0 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(w32-shared-ptr.o)
+                0x00401c60                __w32_sharedptr_initialize
+ .text          0x00401ea0       0x30 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(_chkstk.o)
+                0x00401ea0                __chkstk
+                0x00401ea0                _alloca
+ .text          0x00401ed0       0x50 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(_eprintf.o)
+                0x00401ed0                __eprintf
+ .text          0x00401f20        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmoldname.a(dghcs00007.o)
+                0x00401f20                close
+ *fill*         0x00401f28        0x8 00
+ .text          0x00401f30        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmoldname.a(dghcs00113.o)
+                0x00401f30                write
+ *fill*         0x00401f38        0x8 00
+ .text          0x00401f40        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmoldname.a(dghcs00059.o)
+                0x00401f40                open
+ *fill*         0x00401f48        0x8 00
+ .text          0x00401f50        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00080.o)
+                0x00401f50                __set_app_type
+ *fill*         0x00401f58        0x8 00
+ .text          0x00401f60        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00121.o)
+                0x00401f60                _cexit
+ *fill*         0x00401f68        0x8 00
+ .text          0x00401f70        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00060.o)
+                0x00401f70                __p__environ
+ *fill*         0x00401f78        0x8 00
+ .text          0x00401f80        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00656.o)
+                0x00401f80                signal
+ *fill*         0x00401f88        0x8 00
+ .text          0x00401f90        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00062.o)
+                0x00401f90                __p__fmode
+ *fill*         0x00401f98        0x8 00
+ .text          0x00401fa0        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00388.o)
+                0x00401fa0                _setmode
+ *fill*         0x00401fa8        0x8 00
+ .text          0x00401fb0        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00039.o)
+                0x00401fb0                __getmainargs
+ *fill*         0x00401fb8        0x8 00
+ .text          0x00401fc0        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00642.o)
+                0x00401fc0                puts
+ *fill*         0x00401fc8        0x8 00
+ .text          0x00401fd0        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00652.o)
+                0x00401fd0                scanf
+ *fill*         0x00401fd8        0x8 00
+ .text          0x00401fe0        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00560.o)
+                0x00401fe0                fflush
+ *fill*         0x00401fe8        0x8 00
+ .text          0x00401ff0        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00639.o)
+                0x00401ff0                printf
+ *fill*         0x00401ff8        0x8 00
+ .text          0x00402000        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00575.o)
+                0x00402000                free
+ *fill*         0x00402008        0x8 00
+ .text          0x00402010        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00626.o)
+                0x00402010                malloc
+ *fill*         0x00402018        0x8 00
+ .text          0x00402020        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00533.o)
+                0x00402020                abort
+ *fill*         0x00402028        0x8 00
+ .text          0x00402030        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00569.o)
+                0x00402030                fprintf
+ *fill*         0x00402038        0x8 00
+ .text          0x00402040        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00735.o)
+                0x00402040                SetUnhandledExceptionFilter@4
+ *fill*         0x00402048        0x8 00
+ .text          0x00402050        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00155.o)
+                0x00402050                ExitProcess@4
+ *fill*         0x00402058        0x8 00
+ .text          0x00402060        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00220.o)
+                0x00402060                GetAtomNameA@12
+ *fill*         0x00402068        0x8 00
+ .text          0x00402070        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00175.o)
+                0x00402070                FindAtomA@4
+ *fill*         0x00402078        0x8 00
+ .text          0x00402080        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00001.o)
+                0x00402080                AddAtomA@4
+ *fill*         0x00402088        0x8 00
+ .text          0x00402090       0x10 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/crtend.o
+ *(SORT(.text$*))
+ *(.glue_7t)
+ *(.glue_7)
+                0x004020a0                ___CTOR_LIST__ = .
+                0x004020a0                __CTOR_LIST__ = .
+                0x004020a0        0x4 LONG 0xffffffff
+ *(EXCLUDE_FILE(*crtend.o) .ctors)
+ *(.ctor)
+ *(SORT(.ctors.*))
+ *crtend.o(.ctors)
+ .ctors         0x004020a4        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/crtend.o
+                0x004020a8        0x4 LONG 0x0
+                0x004020ac                ___DTOR_LIST__ = .
+                0x004020ac                __DTOR_LIST__ = .
+                0x004020ac        0x4 LONG 0xffffffff
+ *(EXCLUDE_FILE(*crtend.o) .dtors)
+ *(.dtor)
+ *(SORT(.dtors.*))
+ *crtend.o(.dtors)
+                0x004020b0        0x4 LONG 0x0
+ *(.fini)
+ *(.gcc_exc)
+                0x004020b4                PROVIDE (etext, .)
+ *(.gcc_except_table)
+
+.data           0x00403000      0x200
+                0x00403000                __data_start__ = .
+ *(.data)
+ .data          0x00403000       0x10 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a(CRTglob.o)
+                0x00403000                _CRT_glob
+ .data          0x00403010       0x10 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a(txtmode.o)
+                0x00403010                _fmode
+ .data          0x00403020       0x10 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a(gccmain.o)
+ .data          0x00403030       0x10 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(w32-shared-ptr.o)
+ *(.data2)
+ *(SORT(.data$*))
+                0x00403040                __data_end__ = .
+ *(.data_cygwin_nocopy)
+
+.rdata          0x00404000      0x400
+ *(.rdata)
+ .rdata         0x00404000      0x310 menus.o
+ .rdata         0x00404310       0xe0 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(w32-shared-ptr.o)
+ *(SORT(.rdata$*))
+ *(.eh_frame)
+                0x004043f0                ___RUNTIME_PSEUDO_RELOC_LIST__ = .
+                0x004043f0                __RUNTIME_PSEUDO_RELOC_LIST__ = .
+ *(.rdata_runtime_pseudo_reloc)
+                0x004043f0                ___RUNTIME_PSEUDO_RELOC_LIST_END__ = .
+                0x004043f0                __RUNTIME_PSEUDO_RELOC_LIST_END__ = .
+
+.pdata
+ *(.pdata)
+
+.bss            0x00405000       0xb0
+                0x00405000                __bss_start__ = .
+ *(.bss)
+ .bss           0x00405000       0x10 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../crt2.o
+                0x00405004                _argc
+                0x00405000                _argv
+ .bss           0x00405010       0x10 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a(CRTfmode.o)
+                0x00405010                _CRT_fmode
+ .bss           0x00405020       0x10 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a(gccmain.o)
+ .bss           0x00405030       0x10 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a(pseudo-reloc-list.o)
+ .bss           0x00405040       0x20 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(w32-shared-ptr.o)
+ *(COMMON)
+ COMMON         0x00405060       0x30 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(w32-shared-ptr.o)
+                0x00405060                __w32_sharedptr_terminate
+                0x00405070                __w32_sharedptr
+                0x00405080                __w32_sharedptr_unexpected
+ COMMON         0x00405090       0x20 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(_ctors.o)
+                0x004050b0                __bss_end__ = .
+
+.edata
+ *(.edata)
+
+/DISCARD/
+ *(.debug$S)
+ *(.debug$T)
+ *(.debug$F)
+ *(.drectve)
+
+.idata          0x00406000      0x800
+ SORT(*)(.idata$2)
+ .idata$2       0x00406000       0x14 ../src/.libs/libdvdnav.dll.a(d000002.o)
+                0x00406000                _head_libdvdnav_4_dll
+ .idata$2       0x00406014       0x14 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbh.o)
+                0x00406014                _head_libkernel32_a
+ .idata$2       0x00406028       0x14 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmoldname.a(dghch.o)
+                0x00406028                _head_libmoldname_a
+ .idata$2       0x0040603c       0x14 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxh.o)
+                0x0040603c                _head_libmsvcrt_a
+ SORT(*)(.idata$3)
+                0x00406050        0x4 LONG 0x0
+                0x00406054        0x4 LONG 0x0
+                0x00406058        0x4 LONG 0x0
+                0x0040605c        0x4 LONG 0x0
+                0x00406060        0x4 LONG 0x0
+ SORT(*)(.idata$4)
+ .idata$4       0x00406064        0x4 ../src/.libs/libdvdnav.dll.a(d000002.o)
+ .idata$4       0x00406068        0x4 ../src/.libs/libdvdnav.dll.a(d000017.o)
+ .idata$4       0x0040606c        0x4 ../src/.libs/libdvdnav.dll.a(d000022.o)
+ .idata$4       0x00406070        0x4 ../src/.libs/libdvdnav.dll.a(d000023.o)
+ .idata$4       0x00406074        0x4 ../src/.libs/libdvdnav.dll.a(d000025.o)
+ .idata$4       0x00406078        0x4 ../src/.libs/libdvdnav.dll.a(d000026.o)
+ .idata$4       0x0040607c        0x4 ../src/.libs/libdvdnav.dll.a(d000027.o)
+ .idata$4       0x00406080        0x4 ../src/.libs/libdvdnav.dll.a(d000037.o)
+ .idata$4       0x00406084        0x4 ../src/.libs/libdvdnav.dll.a(d000038.o)
+ .idata$4       0x00406088        0x4 ../src/.libs/libdvdnav.dll.a(d000042.o)
+ .idata$4       0x0040608c        0x4 ../src/.libs/libdvdnav.dll.a(d000048.o)
+ .idata$4       0x00406090        0x4 ../src/.libs/libdvdnav.dll.a(d000069.o)
+ .idata$4       0x00406094        0x4 ../src/.libs/libdvdnav.dll.a(d000073.o)
+ .idata$4       0x00406098        0x4 ../src/.libs/libdvdnav.dll.a(d000087.o)
+ .idata$4       0x0040609c        0x4 ../src/.libs/libdvdnav.dll.a(d000088.o)
+ .idata$4       0x004060a0        0x4 ../src/.libs/libdvdnav.dll.a(d000090.o)
+ .idata$4       0x004060a4        0x4 ../src/.libs/libdvdnav.dll.a(d000092.o)
+ .idata$4       0x004060a8        0x4 ../src/.libs/libdvdnav.dll.a(d000100.o)
+ .idata$4       0x004060ac        0x4 ../src/.libs/libdvdnav.dll.a(d000149.o)
+ .idata$4       0x004060b0        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbh.o)
+ .idata$4       0x004060b4        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00001.o)
+ .idata$4       0x004060b8        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00155.o)
+ .idata$4       0x004060bc        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00175.o)
+ .idata$4       0x004060c0        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00220.o)
+ .idata$4       0x004060c4        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00735.o)
+ .idata$4       0x004060c8        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbt.o)
+ .idata$4       0x004060cc        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmoldname.a(dghch.o)
+ .idata$4       0x004060d0        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmoldname.a(dghcs00007.o)
+ .idata$4       0x004060d4        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmoldname.a(dghcs00059.o)
+ .idata$4       0x004060d8        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmoldname.a(dghcs00113.o)
+ .idata$4       0x004060dc        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmoldname.a(dghct.o)
+ .idata$4       0x004060e0        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxh.o)
+ .idata$4       0x004060e4        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00039.o)
+ .idata$4       0x004060e8        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00060.o)
+ .idata$4       0x004060ec        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00062.o)
+ .idata$4       0x004060f0        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00080.o)
+ .idata$4       0x004060f4        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00121.o)
+ .idata$4       0x004060f8        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00233.o)
+ .idata$4       0x004060fc        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00350.o)
+ .idata$4       0x00406100        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00388.o)
+ .idata$4       0x00406104        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00533.o)
+ .idata$4       0x00406108        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00540.o)
+ .idata$4       0x0040610c        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00560.o)
+ .idata$4       0x00406110        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00569.o)
+ .idata$4       0x00406114        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00575.o)
+ .idata$4       0x00406118        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00626.o)
+ .idata$4       0x0040611c        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00639.o)
+ .idata$4       0x00406120        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00642.o)
+ .idata$4       0x00406124        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00652.o)
+ .idata$4       0x00406128        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00656.o)
+ .idata$4       0x0040612c        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxt.o)
+ SORT(*)(.idata$5)
+ .idata$5       0x00406130        0x4 ../src/.libs/libdvdnav.dll.a(d000002.o)
+ .idata$5       0x00406134        0x4 ../src/.libs/libdvdnav.dll.a(d000017.o)
+                0x00406134                _imp__dvdnav_audio_language_select
+ .idata$5       0x00406138        0x4 ../src/.libs/libdvdnav.dll.a(d000022.o)
+                0x00406138                _imp__dvdnav_button_select_and_activate
+ .idata$5       0x0040613c        0x4 ../src/.libs/libdvdnav.dll.a(d000023.o)
+                0x0040613c                _imp__dvdnav_close
+ .idata$5       0x00406140        0x4 ../src/.libs/libdvdnav.dll.a(d000025.o)
+                0x00406140                _imp__dvdnav_current_title_info
+ .idata$5       0x00406144        0x4 ../src/.libs/libdvdnav.dll.a(d000026.o)
+                0x00406144                _imp__dvdnav_err_to_string
+ .idata$5       0x00406148        0x4 ../src/.libs/libdvdnav.dll.a(d000027.o)
+                0x00406148                _imp__dvdnav_free_cache_block
+ .idata$5       0x0040614c        0x4 ../src/.libs/libdvdnav.dll.a(d000037.o)
+                0x0040614c                _imp__dvdnav_get_current_nav_dsi
+ .idata$5       0x00406150        0x4 ../src/.libs/libdvdnav.dll.a(d000038.o)
+                0x00406150                _imp__dvdnav_get_current_nav_pci
+ .idata$5       0x00406154        0x4 ../src/.libs/libdvdnav.dll.a(d000042.o)
+                0x00406154                _imp__dvdnav_get_next_cache_block
+ .idata$5       0x00406158        0x4 ../src/.libs/libdvdnav.dll.a(d000048.o)
+                0x00406158                _imp__dvdnav_get_position
+ .idata$5       0x0040615c        0x4 ../src/.libs/libdvdnav.dll.a(d000069.o)
+                0x0040615c                _imp__dvdnav_menu_language_select
+ .idata$5       0x00406160        0x4 ../src/.libs/libdvdnav.dll.a(d000073.o)
+                0x00406160                _imp__dvdnav_open
+ .idata$5       0x00406164        0x4 ../src/.libs/libdvdnav.dll.a(d000087.o)
+                0x00406164                _imp__dvdnav_set_PGC_positioning_flag
+ .idata$5       0x00406168        0x4 ../src/.libs/libdvdnav.dll.a(d000088.o)
+                0x00406168                _imp__dvdnav_set_readahead_flag
+ .idata$5       0x0040616c        0x4 ../src/.libs/libdvdnav.dll.a(d000090.o)
+                0x0040616c                _imp__dvdnav_spu_language_select
+ .idata$5       0x00406170        0x4 ../src/.libs/libdvdnav.dll.a(d000092.o)
+                0x00406170                _imp__dvdnav_still_skip
+ .idata$5       0x00406174        0x4 ../src/.libs/libdvdnav.dll.a(d000100.o)
+                0x00406174                _imp__dvdnav_wait_skip
+ .idata$5       0x00406178        0x4 ../src/.libs/libdvdnav.dll.a(d000149.o)
+ .idata$5       0x0040617c        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbh.o)
+ .idata$5       0x00406180        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00001.o)
+                0x00406180                _imp__AddAtomA@4
+ .idata$5       0x00406184        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00155.o)
+                0x00406184                _imp__ExitProcess@4
+ .idata$5       0x00406188        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00175.o)
+                0x00406188                _imp__FindAtomA@4
+ .idata$5       0x0040618c        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00220.o)
+                0x0040618c                _imp__GetAtomNameA@12
+ .idata$5       0x00406190        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00735.o)
+                0x00406190                _imp__SetUnhandledExceptionFilter@4
+ .idata$5       0x00406194        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbt.o)
+ .idata$5       0x00406198        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmoldname.a(dghch.o)
+ .idata$5       0x0040619c        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmoldname.a(dghcs00007.o)
+                0x0040619c                _imp__close
+ .idata$5       0x004061a0        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmoldname.a(dghcs00059.o)
+                0x004061a0                _imp__open
+ .idata$5       0x004061a4        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmoldname.a(dghcs00113.o)
+                0x004061a4                _imp__write
+ .idata$5       0x004061a8        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmoldname.a(dghct.o)
+ .idata$5       0x004061ac        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxh.o)
+ .idata$5       0x004061b0        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00039.o)
+                0x004061b0                _imp____getmainargs
+ .idata$5       0x004061b4        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00060.o)
+                0x004061b4                _imp____p__environ
+ .idata$5       0x004061b8        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00062.o)
+                0x004061b8                _imp____p__fmode
+ .idata$5       0x004061bc        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00080.o)
+                0x004061bc                _imp____set_app_type
+ .idata$5       0x004061c0        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00121.o)
+                0x004061c0                _imp___cexit
+ .idata$5       0x004061c4        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00233.o)
+                0x004061c4                _imp___iob
+ .idata$5       0x004061c8        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00350.o)
+                0x004061c8                _imp___onexit
+ .idata$5       0x004061cc        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00388.o)
+                0x004061cc                _imp___setmode
+ .idata$5       0x004061d0        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00533.o)
+                0x004061d0                _imp__abort
+ .idata$5       0x004061d4        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00540.o)
+                0x004061d4                _imp__atexit
+ .idata$5       0x004061d8        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00560.o)
+                0x004061d8                _imp__fflush
+ .idata$5       0x004061dc        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00569.o)
+                0x004061dc                _imp__fprintf
+ .idata$5       0x004061e0        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00575.o)
+                0x004061e0                _imp__free
+ .idata$5       0x004061e4        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00626.o)
+                0x004061e4                _imp__malloc
+ .idata$5       0x004061e8        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00639.o)
+                0x004061e8                _imp__printf
+ .idata$5       0x004061ec        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00642.o)
+                0x004061ec                _imp__puts
+ .idata$5       0x004061f0        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00652.o)
+                0x004061f0                _imp__scanf
+ .idata$5       0x004061f4        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00656.o)
+                0x004061f4                _imp__signal
+ .idata$5       0x004061f8        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxt.o)
+ SORT(*)(.idata$6)
+ .idata$6       0x004061fc       0x20 ../src/.libs/libdvdnav.dll.a(d000017.o)
+ .idata$6       0x0040621c       0x24 ../src/.libs/libdvdnav.dll.a(d000022.o)
+ .idata$6       0x00406240       0x10 ../src/.libs/libdvdnav.dll.a(d000023.o)
+ .idata$6       0x00406250       0x1c ../src/.libs/libdvdnav.dll.a(d000025.o)
+ .idata$6       0x0040626c       0x18 ../src/.libs/libdvdnav.dll.a(d000026.o)
+ .idata$6       0x00406284       0x1c ../src/.libs/libdvdnav.dll.a(d000027.o)
+ .idata$6       0x004062a0       0x20 ../src/.libs/libdvdnav.dll.a(d000037.o)
+ .idata$6       0x004062c0       0x20 ../src/.libs/libdvdnav.dll.a(d000038.o)
+ .idata$6       0x004062e0       0x20 ../src/.libs/libdvdnav.dll.a(d000042.o)
+ .idata$6       0x00406300       0x18 ../src/.libs/libdvdnav.dll.a(d000048.o)
+ .idata$6       0x00406318       0x20 ../src/.libs/libdvdnav.dll.a(d000069.o)
+ .idata$6       0x00406338       0x10 ../src/.libs/libdvdnav.dll.a(d000073.o)
+ .idata$6       0x00406348       0x24 ../src/.libs/libdvdnav.dll.a(d000087.o)
+ .idata$6       0x0040636c       0x1c ../src/.libs/libdvdnav.dll.a(d000088.o)
+ .idata$6       0x00406388       0x20 ../src/.libs/libdvdnav.dll.a(d000090.o)
+ .idata$6       0x004063a8       0x14 ../src/.libs/libdvdnav.dll.a(d000092.o)
+ .idata$6       0x004063bc       0x14 ../src/.libs/libdvdnav.dll.a(d000100.o)
+ .idata$6       0x004063d0        0xc c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00001.o)
+ .idata$6       0x004063dc        0xe c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00155.o)
+ *fill*         0x004063ea        0x2 00
+ .idata$6       0x004063ec        0xc c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00175.o)
+ .idata$6       0x004063f8       0x10 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00220.o)
+ .idata$6       0x00406408       0x1e c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00735.o)
+ *fill*         0x00406426        0x2 00
+ .idata$6       0x00406428        0xa c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmoldname.a(dghcs00007.o)
+ *fill*         0x00406432        0x2 00
+ .idata$6       0x00406434        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmoldname.a(dghcs00059.o)
+ .idata$6       0x0040643c        0xa c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmoldname.a(dghcs00113.o)
+ *fill*         0x00406446        0x2 00
+ .idata$6       0x00406448       0x10 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00039.o)
+ .idata$6       0x00406458       0x10 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00060.o)
+ .idata$6       0x00406468        0xe c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00062.o)
+ *fill*         0x00406476        0x2 00
+ .idata$6       0x00406478       0x12 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00080.o)
+ *fill*         0x0040648a        0x2 00
+ .idata$6       0x0040648c        0xa c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00121.o)
+ *fill*         0x00406496        0x2 00
+ .idata$6       0x00406498        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00233.o)
+ .idata$6       0x004064a0        0xa c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00350.o)
+ *fill*         0x004064aa        0x2 00
+ .idata$6       0x004064ac        0xc c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00388.o)
+ .idata$6       0x004064b8        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00533.o)
+ .idata$6       0x004064c0        0xa c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00540.o)
+ *fill*         0x004064ca        0x2 00
+ .idata$6       0x004064cc        0xa c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00560.o)
+ *fill*         0x004064d6        0x2 00
+ .idata$6       0x004064d8        0xa c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00569.o)
+ *fill*         0x004064e2        0x2 00
+ .idata$6       0x004064e4        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00575.o)
+ .idata$6       0x004064ec        0xa c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00626.o)
+ *fill*         0x004064f6        0x2 00
+ .idata$6       0x004064f8        0xa c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00639.o)
+ *fill*         0x00406502        0x2 00
+ .idata$6       0x00406504        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00642.o)
+ .idata$6       0x0040650c        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00652.o)
+ .idata$6       0x00406514        0xa c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00656.o)
+ SORT(*)(.idata$7)
+ *fill*         0x0040651e        0x2 00
+ .idata$7       0x00406520        0x4 ../src/.libs/libdvdnav.dll.a(d000017.o)
+ .idata$7       0x00406524        0x4 ../src/.libs/libdvdnav.dll.a(d000022.o)
+ .idata$7       0x00406528        0x4 ../src/.libs/libdvdnav.dll.a(d000023.o)
+ .idata$7       0x0040652c        0x4 ../src/.libs/libdvdnav.dll.a(d000025.o)
+ .idata$7       0x00406530        0x4 ../src/.libs/libdvdnav.dll.a(d000026.o)
+ .idata$7       0x00406534        0x4 ../src/.libs/libdvdnav.dll.a(d000027.o)
+ .idata$7       0x00406538        0x4 ../src/.libs/libdvdnav.dll.a(d000037.o)
+ .idata$7       0x0040653c        0x4 ../src/.libs/libdvdnav.dll.a(d000038.o)
+ .idata$7       0x00406540        0x4 ../src/.libs/libdvdnav.dll.a(d000042.o)
+ .idata$7       0x00406544        0x4 ../src/.libs/libdvdnav.dll.a(d000048.o)
+ .idata$7       0x00406548        0x4 ../src/.libs/libdvdnav.dll.a(d000069.o)
+ .idata$7       0x0040654c        0x4 ../src/.libs/libdvdnav.dll.a(d000073.o)
+ .idata$7       0x00406550        0x4 ../src/.libs/libdvdnav.dll.a(d000087.o)
+ .idata$7       0x00406554        0x4 ../src/.libs/libdvdnav.dll.a(d000088.o)
+ .idata$7       0x00406558        0x4 ../src/.libs/libdvdnav.dll.a(d000090.o)
+ .idata$7       0x0040655c        0x4 ../src/.libs/libdvdnav.dll.a(d000092.o)
+ .idata$7       0x00406560        0x4 ../src/.libs/libdvdnav.dll.a(d000100.o)
+ .idata$7       0x00406564       0x10 ../src/.libs/libdvdnav.dll.a(d000149.o)
+                0x00406564                libdvdnav_4_dll_iname
+ .idata$7       0x00406574        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00001.o)
+ .idata$7       0x00406578        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00155.o)
+ .idata$7       0x0040657c        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00175.o)
+ .idata$7       0x00406580        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00220.o)
+ .idata$7       0x00406584        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00735.o)
+ .idata$7       0x00406588       0x10 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbt.o)
+                0x00406588                _libkernel32_a_iname
+ .idata$7       0x00406598        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmoldname.a(dghcs00007.o)
+ .idata$7       0x0040659c        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmoldname.a(dghcs00059.o)
+ .idata$7       0x004065a0        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmoldname.a(dghcs00113.o)
+ .idata$7       0x004065a4        0xc c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmoldname.a(dghct.o)
+                0x004065a4                _libmoldname_a_iname
+ .idata$7       0x004065b0        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00039.o)
+ .idata$7       0x004065b4        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00060.o)
+ .idata$7       0x004065b8        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00062.o)
+ .idata$7       0x004065bc        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00080.o)
+ .idata$7       0x004065c0        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00121.o)
+ .idata$7       0x004065c4        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00233.o)
+ .idata$7       0x004065c8        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00350.o)
+ .idata$7       0x004065cc        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00388.o)
+ .idata$7       0x004065d0        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00533.o)
+ .idata$7       0x004065d4        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00540.o)
+ .idata$7       0x004065d8        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00560.o)
+ .idata$7       0x004065dc        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00569.o)
+ .idata$7       0x004065e0        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00575.o)
+ .idata$7       0x004065e4        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00626.o)
+ .idata$7       0x004065e8        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00639.o)
+ .idata$7       0x004065ec        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00642.o)
+ .idata$7       0x004065f0        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00652.o)
+ .idata$7       0x004065f4        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00656.o)
+ .idata$7       0x004065f8        0xc c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxt.o)
+                0x004065f8                _libmsvcrt_a_iname
+
+.CRT            0x00407000        0x0
+                0x00407000                ___crt_xc_start__ = .
+ *(SORT(.CRT$XC*))
+                0x00407000                ___crt_xc_end__ = .
+                0x00407000                ___crt_xi_start__ = .
+ *(SORT(.CRT$XI*))
+                0x00407000                ___crt_xi_end__ = .
+                0x00407000                ___crt_xl_start__ = .
+ *(SORT(.CRT$XL*))
+                0x00407000                ___crt_xp_start__ = .
+ *(SORT(.CRT$XP*))
+                0x00407000                ___crt_xp_end__ = .
+                0x00407000                ___crt_xt_start__ = .
+ *(SORT(.CRT$XT*))
+                0x00407000                ___crt_xt_end__ = .
+
+.tls            0x00407000        0x0
+                0x00407000                ___tls_start__ = .
+ *(.tls)
+ *(.tls$)
+ *(SORT(.tls$*))
+                0x00407000                ___tls_end__ = .
+
+.endjunk        0x00407000        0x0
+                0x00407000                PROVIDE (end, .)
+                0x00407000                PROVIDE (_end, .)
+                0x00407000                __end__ = .
+
+.rsrc
+ *(.rsrc)
+ *(SORT(.rsrc$*))
+
+.reloc
+ *(.reloc)
+
+.stab
+ *(.stab)
+
+.stabstr
+ *(.stabstr)
+
+.debug_aranges
+ *(.debug_aranges)
+
+.debug_pubnames
+ *(.debug_pubnames)
+
+.debug_info
+ *(.debug_info)
+ *(.gnu.linkonce.wi.*)
+
+.debug_abbrev
+ *(.debug_abbrev)
+
+.debug_line
+ *(.debug_line)
+
+.debug_frame
+ *(.debug_frame)
+
+.debug_str
+ *(.debug_str)
+
+.debug_loc
+ *(.debug_loc)
+
+.debug_macinfo
+ *(.debug_macinfo)
+
+.debug_weaknames
+ *(.debug_weaknames)
+
+.debug_funcnames
+ *(.debug_funcnames)
+
+.debug_typenames
+ *(.debug_typenames)
+
+.debug_varnames
+ *(.debug_varnames)
+
+.debug_ranges
+ *(.debug_ranges)
+OUTPUT(.libs/menus.exe pei-i386)

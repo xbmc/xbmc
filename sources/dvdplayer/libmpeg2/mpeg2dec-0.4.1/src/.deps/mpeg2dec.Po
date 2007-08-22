@@ -1,0 +1,224 @@
+mpeg2dec.o mpeg2dec.o: mpeg2dec.c ../include/config.h \
+  /usr/include/stdio.h /usr/include/features.h /usr/include/sys/cdefs.h \
+  /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h \
+  /usr/include/gnu/stubs-32.h \
+  /usr/lib/gcc/i486-linux-gnu/4.1.2/include/stddef.h \
+  /usr/include/bits/types.h /usr/include/bits/typesizes.h \
+  /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h \
+  /usr/include/bits/wchar.h /usr/include/gconv.h \
+  /usr/lib/gcc/i486-linux-gnu/4.1.2/include/stdarg.h \
+  /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
+  /usr/include/bits/stdio.h /usr/include/stdlib.h \
+  /usr/include/bits/waitflags.h /usr/include/bits/waitstatus.h \
+  /usr/include/endian.h /usr/include/bits/endian.h /usr/include/xlocale.h \
+  /usr/include/sys/types.h /usr/include/time.h /usr/include/sys/select.h \
+  /usr/include/bits/select.h /usr/include/bits/sigset.h \
+  /usr/include/bits/time.h /usr/include/sys/sysmacros.h \
+  /usr/include/bits/pthreadtypes.h /usr/include/alloca.h \
+  /usr/include/string.h /usr/include/bits/string.h \
+  /usr/include/bits/string2.h /usr/include/errno.h \
+  /usr/include/bits/errno.h /usr/include/linux/errno.h \
+  /usr/include/asm/errno.h /usr/include/asm-i386/errno.h \
+  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
+  /usr/include/signal.h /usr/include/bits/signum.h \
+  /usr/include/bits/siginfo.h /usr/include/bits/sigaction.h \
+  /usr/include/bits/sigcontext.h /usr/include/asm/sigcontext.h \
+  /usr/include/asm-i386/sigcontext.h /usr/include/bits/sigstack.h \
+  /usr/include/sys/ucontext.h /usr/include/bits/sigthread.h getopt.h \
+  /usr/include/SDL/SDL.h /usr/include/SDL/SDL_main.h \
+  /usr/include/SDL/SDL_stdinc.h /usr/include/SDL/SDL_config.h \
+  /usr/include/SDL/SDL_platform.h /usr/include/strings.h \
+  /usr/include/inttypes.h /usr/include/stdint.h /usr/include/ctype.h \
+  /usr/include/iconv.h /usr/include/SDL/begin_code.h \
+  /usr/include/SDL/close_code.h /usr/include/SDL/SDL_audio.h \
+  /usr/include/SDL/SDL_error.h /usr/include/SDL/SDL_endian.h \
+  /usr/include/SDL/SDL_mutex.h /usr/include/SDL/SDL_thread.h \
+  /usr/include/SDL/SDL_rwops.h /usr/include/SDL/SDL_cdrom.h \
+  /usr/include/SDL/SDL_cpuinfo.h /usr/include/SDL/SDL_events.h \
+  /usr/include/SDL/SDL_active.h /usr/include/SDL/SDL_keyboard.h \
+  /usr/include/SDL/SDL_keysym.h /usr/include/SDL/SDL_mouse.h \
+  /usr/include/SDL/SDL_video.h /usr/include/SDL/SDL_joystick.h \
+  /usr/include/SDL/SDL_quit.h /usr/include/SDL/SDL_loadso.h \
+  /usr/include/SDL/SDL_timer.h /usr/include/SDL/SDL_version.h \
+  ../include/mpeg2.h ../include/video_out.h gettimeofday.h \
+  /usr/include/sys/time.h
+
+../include/config.h:
+
+/usr/include/stdio.h:
+
+/usr/include/features.h:
+
+/usr/include/sys/cdefs.h:
+
+/usr/include/bits/wordsize.h:
+
+/usr/include/gnu/stubs.h:
+
+/usr/include/gnu/stubs-32.h:
+
+/usr/lib/gcc/i486-linux-gnu/4.1.2/include/stddef.h:
+
+/usr/include/bits/types.h:
+
+/usr/include/bits/typesizes.h:
+
+/usr/include/libio.h:
+
+/usr/include/_G_config.h:
+
+/usr/include/wchar.h:
+
+/usr/include/bits/wchar.h:
+
+/usr/include/gconv.h:
+
+/usr/lib/gcc/i486-linux-gnu/4.1.2/include/stdarg.h:
+
+/usr/include/bits/stdio_lim.h:
+
+/usr/include/bits/sys_errlist.h:
+
+/usr/include/bits/stdio.h:
+
+/usr/include/stdlib.h:
+
+/usr/include/bits/waitflags.h:
+
+/usr/include/bits/waitstatus.h:
+
+/usr/include/endian.h:
+
+/usr/include/bits/endian.h:
+
+/usr/include/xlocale.h:
+
+/usr/include/sys/types.h:
+
+/usr/include/time.h:
+
+/usr/include/sys/select.h:
+
+/usr/include/bits/select.h:
+
+/usr/include/bits/sigset.h:
+
+/usr/include/bits/time.h:
+
+/usr/include/sys/sysmacros.h:
+
+/usr/include/bits/pthreadtypes.h:
+
+/usr/include/alloca.h:
+
+/usr/include/string.h:
+
+/usr/include/bits/string.h:
+
+/usr/include/bits/string2.h:
+
+/usr/include/errno.h:
+
+/usr/include/bits/errno.h:
+
+/usr/include/linux/errno.h:
+
+/usr/include/asm/errno.h:
+
+/usr/include/asm-i386/errno.h:
+
+/usr/include/asm-generic/errno.h:
+
+/usr/include/asm-generic/errno-base.h:
+
+/usr/include/signal.h:
+
+/usr/include/bits/signum.h:
+
+/usr/include/bits/siginfo.h:
+
+/usr/include/bits/sigaction.h:
+
+/usr/include/bits/sigcontext.h:
+
+/usr/include/asm/sigcontext.h:
+
+/usr/include/asm-i386/sigcontext.h:
+
+/usr/include/bits/sigstack.h:
+
+/usr/include/sys/ucontext.h:
+
+/usr/include/bits/sigthread.h:
+
+getopt.h:
+
+/usr/include/SDL/SDL.h:
+
+/usr/include/SDL/SDL_main.h:
+
+/usr/include/SDL/SDL_stdinc.h:
+
+/usr/include/SDL/SDL_config.h:
+
+/usr/include/SDL/SDL_platform.h:
+
+/usr/include/strings.h:
+
+/usr/include/inttypes.h:
+
+/usr/include/stdint.h:
+
+/usr/include/ctype.h:
+
+/usr/include/iconv.h:
+
+/usr/include/SDL/begin_code.h:
+
+/usr/include/SDL/close_code.h:
+
+/usr/include/SDL/SDL_audio.h:
+
+/usr/include/SDL/SDL_error.h:
+
+/usr/include/SDL/SDL_endian.h:
+
+/usr/include/SDL/SDL_mutex.h:
+
+/usr/include/SDL/SDL_thread.h:
+
+/usr/include/SDL/SDL_rwops.h:
+
+/usr/include/SDL/SDL_cdrom.h:
+
+/usr/include/SDL/SDL_cpuinfo.h:
+
+/usr/include/SDL/SDL_events.h:
+
+/usr/include/SDL/SDL_active.h:
+
+/usr/include/SDL/SDL_keyboard.h:
+
+/usr/include/SDL/SDL_keysym.h:
+
+/usr/include/SDL/SDL_mouse.h:
+
+/usr/include/SDL/SDL_video.h:
+
+/usr/include/SDL/SDL_joystick.h:
+
+/usr/include/SDL/SDL_quit.h:
+
+/usr/include/SDL/SDL_loadso.h:
+
+/usr/include/SDL/SDL_timer.h:
+
+/usr/include/SDL/SDL_version.h:
+
+../include/mpeg2.h:
+
+../include/video_out.h:
+
+gettimeofday.h:
+
+/usr/include/sys/time.h:

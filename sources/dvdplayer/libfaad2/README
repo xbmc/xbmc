@@ -1,0 +1,122 @@
+
+Freeware Advanced Audio (AAC) Decoder including SBR decoding
+http://www.audiocoding.com/
+
+FAAD2 is a HE, LC, MAIN and LTP profile, MPEG2 and MPEG-4 AAC decoder.
+FAAD2 includes code for SBR (HE AAC) decoding.
+FAAD2 is licensed under the GPL.
+
+
+__________
+COPYRIGHTS
+
+For FAAD2 the following license applies:
+
+******************************************************************************
+** FAAD2 - Freeware Advanced Audio (AAC) Decoder including SBR decoding
+** Copyright (C) 2003 M. Bakker (mbakker(at)nero.com), Ahead Software AG
+**  
+** This program is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+** 
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+** 
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software 
+** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+**
+** Commercial non-GPL licensing of this software is also possible.
+** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
+******************************************************************************
+
+
+Please note that the use of this software may require the payment of
+patent royalties. You need to consider this issue before you start
+building derivative works. We are not warranting or indemnifying you in
+any way for patent royalities! YOU ARE SOLELY RESPONSIBLE FOR YOUR OWN
+ACTIONS!
+
+
+______
+PEOPLE
+
+FAAD2 is written by:
+ - M. Bakker (mbakker(at)nero.com).
+
+
+_______________
+VERSION HISTORY
+
+Sorry, try building a ChangeLog from CVS.
+
+__________________________________
+REDISTRIBUTED OPEN SOURCE PACKAGES
+
+This is the list of redistributed open source packages that are included 
+in FAAD2:
+
+Name:       mp4v2
+Version:    0.9.8.6
+Origin:     http://www.mpeg4ip.net
+Author:     David Mackie
+Directory:  common/mp4v2
+License:    MPL, Mozilla Public License, version 1.1
+
+Name:       mp4av
+Version:    0.9.8.6
+Origin:     http://www.mpeg4ip.net
+Author:     David Mackie
+Directory:  common/mp4av
+License:    MPL, Mozilla Public License, version 1.1
+
+
+___________________
+DIRECTORY STRUCTURE
+
+faad2 - top level directory.
+
+   aacDECdrop - windows decoder/player with drag'n'drop functionality
+
+   common - generally used libraries and code.
+
+      faad - general common functions like filereading and streaming
+             as well as getting info from aac files.
+
+      mp4v2 - MPEG-4 file reading library.
+      
+      mp4av - MPEG-4 file general function library.
+      
+      mp4ff - Small MP4 file format library (includes tagging abilities).
+      
+   CoreAAC - AAC DirectShow filter.
+
+   frontend - command line frontend to the FAAD2 library, also supports
+              MPEG-4 file decoding.
+
+   include - inlude file for the FAAD2 library.
+
+   libfaad - the FAAD2 AAC decoder library including SBR.
+   
+      codebook - Huffman codebooks
+
+   plugins - plugins for all kinds of pograms.
+   
+      in_mp4 - winamp MPEG-4 AAC file input plugin.
+      
+      QCD - Quintessential player AAC plugin.
+
+      QCDMp4 - Quintessential player MP4 plugin.
+
+      winamp - winamp2 AAC input plugin.
+
+      winamp3 - winamp3 AAC input plugin.
+      
+      xmms - xmms AAC plugin
+
+      mpeg4ip - plugin for the mpeg4ip player
+

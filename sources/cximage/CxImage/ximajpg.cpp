@@ -84,8 +84,8 @@ bool CxImageJPG::GetExifThumbnail(const char *filename, const char *outname)
     {
       if (image.GetWidth() > 256 || image.GetHeight() > 256)
       { // resize the image
-        float amount = 256.0f / max(image.GetWidth(), image.GetHeight());
-        image.Resample((long)(image.GetWidth() * amount), (long)(image.GetHeight() * amount), 0);
+//        float amount = 256.0f / max(image.GetWidth(), image.GetHeight());
+//        image.Resample((long)(image.GetWidth() * amount), (long)(image.GetHeight() * amount), 0);
       }
       if (m_exifinfo.Orientation != 1)
         image.RotateExif(m_exifinfo.Orientation);
@@ -107,7 +107,8 @@ bool CxImageJPG::GetExifThumbnail(const char *filename, const char *outname)
 #endif //CXIMAGEJPG_SUPPORT_EXIF
 ////////////////////////////////////////////////////////////////////////////////
 #ifdef XBMC
-#define RESAMPLE_ON_LOAD 1
+#define RESAMPLE_FACTOR_OF_2_ON_LOAD
+#undef RESAMPLE_ON_LOAD
 bool CxImageJPG::Decode(CxFile * hFile, int &iMaxWidth, int &iMaxHeight)
 #else
 bool CxImageJPG::Decode(CxFile * hFile)
@@ -197,7 +198,7 @@ bool CxImageJPG::Decode(CxFile * hFile)
  */ //</DP>
 
   // check if we should load it downsampled by a factor of 2,4 or 8
-#ifdef RESAMPLE_ON_LOAD
+#ifdef RESAMPLE_FACTOR_OF_2_ON_LOAD
 	int iWidth = cinfo.image_width;
 	int iHeight = cinfo.image_height;
 	float fAR = (float)iWidth/(float)iHeight;
@@ -246,6 +247,8 @@ bool CxImageJPG::Decode(CxFile * hFile)
   iMaxWidth = cinfo.image_width;
   iMaxHeight = cinfo.image_height;
 	Create(iWidth, iHeight, 8*cinfo.num_components, CXIMAGE_FORMAT_JPG);
+#elif defined(RESAMPLE_FACTOR_OF_2_ON_LOAD)
+	Create(cinfo.output_width, cinfo.output_height, 8*cinfo.num_components, CXIMAGE_FORMAT_JPG);
 #else
 	Create(cinfo.image_width, cinfo.image_height, 8*cinfo.num_components, CXIMAGE_FORMAT_JPG);
 #endif

@@ -1,0 +1,8 @@
+/.cvsignore////
+/Makefile.am////
+/convert_internal.h////
+/libmpeg2convert.pc.in////
+/rgb.c////
+/rgb_mmx.c////
+/rgb_vis.c////
+/uyvy.c////

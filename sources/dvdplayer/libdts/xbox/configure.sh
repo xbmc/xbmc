@@ -1,0 +1,1 @@
+./configure --disable-oss --disable-solaris-audio --disable-al-audio --disable-win

@@ -24,6 +24,7 @@ extern "C" struct ImageInfo
   EXIFINFO exifInfo;
   BYTE *texture;
   void *context;
+  BYTE *alpha;
 };
 
 #ifdef _LINUX
@@ -294,6 +295,7 @@ extern "C"
     // create our texture
     info->context = image;
     info->texture = image->GetBits();
+    info->alpha = image->AlphaGetBits();
     return (info->texture != NULL);
   };
 

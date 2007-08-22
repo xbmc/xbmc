@@ -1,0 +1,128 @@
+Summary:    C library and frontend for decoding MPEG2/4 AAC
+Name:       faad2
+Version:    2.0
+Release:    1
+License:    GPL
+Group:      Applications/Multimedia
+Source0:    http://download.sourceforge.net/faad/%{name}-%{version}.tar.gz
+#Patch:                faad2-%{version}.patch
+BuildRequires: autoconf, automake, libtool, gcc-c++
+BuildRequires: xmms-devel, id3lib-devel, gtk-devel
+URL:        http://www.audiocoding.com/
+BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-root
+Packager:   a.kurpiers@nt.tu-darmstadt.de
+
+%description
+FAAD 2 is a LC, MAIN and LTP profile, MPEG2 and MPEG-4 AAC decoder, completely
+written from scratch. FAAD 2 is licensed under the GPL.
+
+Includes libmp4ff, a Quicktime library for UNIX in a freely redistributable,
+statically linkable library.
+
+%package devel
+Summary: Development libraries the FAAD 2 AAC decoder.
+Group: Development/Libraries
+Requires: %{name}
+
+%description devel
+Header files and development documentation for libfaad.
+
+%package xmms
+Group: Applications/Multimedia
+Summary: AAC and MP4 input plugin for xmms
+Requires: %{name}, %{name}-libmp4v2, xmms, id3lib
+
+
+%description xmms
+The AAC xmms input plugin for xmms recognizes AAC files by an
+.aac extension.
+This MP4 xmms plugin reads AAC files with and without ID3 tags (version 2.x).
+AAC files are MPEG2 or MPEG4 files that can be found in MPEG4 audio files
+(.mp4). MPEG4 files with AAC inside can be read by RealPlayer or Quicktime.
+
+
+%package libmp4v2
+Summary: C++ library to handle MP4 (Quicktime) content
+Group: Development/Libraries
+
+%description libmp4v2
+C++ library to handle MP4 (Quicktime) content
+
+%prep
+#%setup -n %{name}
+%setup -n %{name}-%{version}
+#%patch -p0
+
+%build
+#sh bootstrap
+./configure --with-drm --with-xmms --prefix=/usr
+make
+
+%install
+rm -rf %{buildroot}
+# Hack to work around a problem with DESTDIR in libtool 1.4.x
+LIBRARY_PATH="%{buildroot}/usr/lib:${LIBRARY_PATH}" make install DESTDIR=%{buildroot}
+
+%post -p /sbin/ldconfig
+
+%postun -p /sbin/ldconfig
+
+%clean
+rm -rf %{buildroot}
+
+%files
+%defattr(-, root, root)
+%doc AUTHORS COPYING ChangeLog NEWS README TODO
+%{_bindir}/*
+%{_libdir}/libfaad.so*
+%{_libdir}/libmp4ff.so*
+
+%files devel
+%defattr(-, root, root)
+%{_libdir}/libfaad.a
+%{_libdir}/libfaad.la
+%{_libdir}/libmp4ff.a
+%{_libdir}/libmp4ff.la
+%{_includedir}/faad.h
+%{_includedir}/mp4ff.h
+
+%files xmms
+%defattr(-,root,root)
+%doc plugins/xmms/README
+%_libdir/xmms/Input/*
+
+%files libmp4v2
+%defattr(-, root, root)
+%{_libdir}/libmp4v2.*
+%{_includedir}/mp4.h
+%{_includedir}/mpeg4ip.h
+%{_includedir}/systems.h
+
+%changelog
+* Fri Feb 06 2004 Alexander Kurpiers <a.kurpiers@nt.tu-darmstadt.de>
+- remove seperate libmp4ff target
+
+* Wed Nov 05 2003 Alexander Kurpiers <a.kurpiers@nt.tu-darmstadt.de>
+- include xmms plugins/libmp4v2/libmp4ff into RPM
+
+* Tue Aug 12 2003 Matthias Saou <matthias.saou@est.une.marmotte.net>
+- Update to 2.0rc1.
+- Introduced LD_LIBRARY_PATH workaround.
+- Removed optional xmms plugin build, it seems mandatory now.
+- Added gtk+ build dep for the xmms plugin.
+
+* Wed May 14 2003 Matthias Saou <matthias.saou@est.une.marmotte.net>
+- Added xmms plugin build.
+
+* Wed Apr  9 2003 Matthias Saou <matthias.saou@est.une.marmotte.net>
+- Spec file cleanup.
+- Now exclude .la file.
+- Update to latest CVS checkout to fix compile problem.
+
+
+* Fri Aug 10 2002 Alexander Kurpiers <a.kurpiers@nt.tu-darmstadt.de>
+- changes to compile v1.1 release
+
+* Tue Jun 18 2002 Alexander Kurpiers <a.kurpiers@nt.tu-darmstadt.de>
+- First RPM.
+

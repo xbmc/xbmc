@@ -38,7 +38,11 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <errno.h>
+#ifdef __linux__
 #include <inttypes.h>
+#else
+#include "inttypes.h"
+#endif
 
 #include "ccutil.h"
 

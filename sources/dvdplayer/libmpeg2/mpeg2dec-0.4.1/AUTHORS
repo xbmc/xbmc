@@ -1,0 +1,36 @@
+Aaron Holtzman <aholtzma@ess.engr.uvic.ca> started the project and
+made the initial working implementation.
+
+Michel Lespinasse <walken@zoy.org> did major changes for speed and
+mpeg conformance and has been the maintainer for a long time. Most
+of the current code was (re)written by him.
+
+Sam Hocevar <sam@zoy.org> and Christophe Massiot <massiot@via.ecp.fr>
+are the current maintainers.
+
+Other contributors include:
+	Bruno Barreyra <barreyra@ufl.edu> - build fixes
+	Gildas Bazin <gbazin@netcourrier.com> - mingw32 port
+	Alexander W. Chin <alexc@newt.phys.unsw.edu.au> - progressive_seq fix
+	Stephen Crowley <stephenc@dns2.digitalpassage.com> - build fixes
+	Didier Gautheron <dgautheron@magic.fr> - bug fixes
+	Ryan C. Gordon <icculus@lokigames.com> - SDL support
+	Peter Gubanov <peter@elecard.net.ru> - MMX IDCT scheduling
+	Håkan Hjort <d95hjort@dtek.chalmers.se> - Solaris fixes, mlib code
+	Nicolas Joly <njoly@pasteur.fr> - assorted bug fixes
+	Gerd Knorr <kraxel@goldbach.in-berlin.de> - Xv support
+	David I. Lehn <dlehn@vt.edu> - motion_comp mmx code
+	Olie Lho <ollie@sis.com.tw> - MMX yuv2rgb routine
+	David S. Miller <davem@redhat.com> - sparc VIS optimizations
+	Rick Niles <niles@scyld.com> - build fixes
+	Real Ouellet <realo@sympatico.ca> - g200 fixes
+	Bajusz Peter <hyp-x@inf.bme.hu> - motion comp fixes
+	Franck Sicard <Franck.Sicard@miniruth.solsoft.fr> - x11 fixes
+	Brion Vibber <brion@gizmo.usc.edu> - x11 fixes
+	Martin Vogt <mvogt@rhrk.uni-kl.de> - reentrancy fixes
+	Fredrik Vraalsen <vraalsen@cs.uiuc.edu> - general hackage and stuff
+
+(let me know if I forgot anyone)
+
+Thanks to David Schleef for creating me an account on his ppc g4
+machine and making it possible for me to work on the altivec code.

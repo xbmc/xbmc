@@ -1,0 +1,124 @@
+AC_INIT
+AM_INIT_AUTOMAKE(faad2, 2.0)
+
+AC_PROG_LIBTOOL
+AC_SUBST(LIBTOOL_DEPS)
+
+dnl Checks for programs.
+AC_PROG_CXX
+AC_PROG_CC
+AC_PROG_CPP
+AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
+AC_CHECK_PROGS(RPMBUILD, rpmbuild, rpm)
+
+AM_CONFIG_HEADER(config.h)
+
+AC_ARG_WITH( xmms,   [  --with-xmms             compile XMMS plugins],WITHXMMS=$withval, WITHXMMS=no)
+
+AC_ARG_WITH( drm,    [  --with-drm              compile libfaad with DRM support],WITHDRM=$withval, WITHDRM=no)
+
+AC_ARG_WITH( mp4v2,  [  --with-mp4v2            compile libmp4v2],WITHMP4V2=$withval, WITHMP4V2=no)
+
+dnl Checks for header files required for mp4.h
+AC_HEADER_STDC
+AC_CHECK_HEADERS(stdint.h inttypes.h)
+AC_CHECK_HEADERS(mathf.h)
+AC_CHECK_HEADERS(float.h)
+AC_CHECK_FUNCS(strchr memcpy)
+AC_CHECK_HEADERS(sys/time.h)
+AC_HEADER_TIME
+
+AC_C_INLINE
+AC_C_BIGENDIAN
+
+AC_TYPE_OFF_T
+
+AC_DEFUN(MY_CHECK_TYPEDEF_FROM_INCLUDE,
+[
+   AC_MSG_CHECKING([for $1])
+   AC_TRY_COMPILE([$2],
+                  [$1;],
+                  libfaad_ok=yes, libfaad_ok=no)
+   if test $libfaad_ok = yes; then
+      AC_DEFINE($3, 1, [Define if needed])
+      AC_MSG_RESULT([yes])
+   else
+      AC_MSG_RESULT([no])
+fi
+])
+
+
+MY_CHECK_TYPEDEF_FROM_INCLUDE([float32_t temp],
+        [#include <sys/types.h>,
+        #include <sys/float.h>], [HAVE_FLOAT32_T])
+
+AC_CHECK_FUNCS(strsep)
+
+MY_CHECK_TYPEDEF_FROM_INCLUDE([in_port_t temp],
+        [#include <sys/types.h>
+         #include <netinet/in.h>], [HAVE_IN_PORT_T])
+MY_CHECK_TYPEDEF_FROM_INCLUDE([socklen_t temp],
+        [#include <sys/types.h>
+         #include <sys/socket.h>], HAVE_SOCKLEN_T)
+MY_CHECK_TYPEDEF_FROM_INCLUDE([fpos_t foo; foo.__pos = 0;],
+        [#include <stdio.h>],
+        [HAVE_FPOS_T_POS])
+
+
+external_mp4v2=yes
+AC_CHECK_LIB(mp4v2, MP4Create, , external_mp4v2=no, -lstdc++)
+AC_CHECK_LIB(mp4v2, MP4MetadataDelete, , external_mp4v2=no, -lstdc++)
+AC_CHECK_HEADER(mp4.h, , external_mp4v2=no)
+
+AM_CONDITIONAL(WITH_MP4V2, false)
+
+if test x$external_mp4v2 = xyes; then
+  AM_CONDITIONAL(HAVE_MPEG4IP, true)
+  MPEG4IP_PLAYER_PLUGIN_DIR=`mpeg4ip-config --player-plugin-dir`  
+  AC_SUBST(MPEG4IP_PLAYER_PLUGIN_DIR)
+  AC_MSG_NOTICE([*** Building with external mp4v2 ***])
+else
+  AC_MSG_NOTICE([*** Building with internal mp4v2 ***])
+  AM_CONDITIONAL(HAVE_MPEG4IP, false)
+  if test x$WITHMP4V2 = xyes; then
+     AM_CONDITIONAL(WITH_MP4V2, true)
+  fi
+fi
+
+if test x$WITHXMMS = xyes; then
+  AC_CHECK_PROGS(XMMS_CONFIG, xmms-config,"not_found")
+  if test "$XMMS_CONFIG" = "not_found"; then
+    AC_MSG_ERROR("*** xmms-config not found - xmms plugin can't be build")
+  fi
+  AC_CHECK_HEADER(pthread.h,,
+           AC_MSG_ERROR(*** pthread headers support not installed or not found))
+  AC_CHECK_HEADER(id3.h,,
+       AC_MSG_ERROR(*** id3lib headers support not installed or not found))
+  AC_CHECK_PROGS(GTK_CONFIG, gtk-config, "not_found")
+  if test "$XGTK_CONFIG" = "not_found"; then
+    AC_MSG_ERROR("*** gtk-config not found - xmms plugin can't be build without")
+  fi
+
+  AM_CONDITIONAL(HAVE_XMMS, true)
+  AC_MSG_NOTICE("xmms plugin requires libmp4v2 to be build")
+  AM_CONDITIONAL(WITH_MP4V2, true)
+  AC_CONFIG_FILES(plugins/xmms/Makefile plugins/xmms/src/Makefile)
+else
+ AC_MSG_NOTICE(no xmms build configured)
+ AM_CONDITIONAL(HAVE_XMMS, false)
+fi
+
+if test x$WITHDRM = xyes; then
+  AC_DEFINE(DRM, 1, [Define if you want to use libfaad together with Digital Radio Mondiale (DRM)])
+fi
+
+AC_CONFIG_FILES(libfaad/Makefile frontend/Makefile common/Makefile plugins/Makefile Makefile )
+
+AC_CONFIG_FILES(plugins/mpeg4ip/Makefile)
+
+AC_CONFIG_FILES(common/mp4ff/Makefile common/mp4v2/Makefile)
+
+AC_CONFIG_FILES(faad2.spec)
+AC_OUTPUT

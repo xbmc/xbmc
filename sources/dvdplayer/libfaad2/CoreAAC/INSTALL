@@ -1,0 +1,57 @@
+CoreAAC build instructions
+==========================
+
+
+Requirements :
+--------------
+
+Visual C++ 6 (or later but there is no project file up to date)
+DX SDK9 (probably compile with DX SDK8 also)
+faad2 module in the FAAC CVS (http://sourceforge.net/projects/faac/)
+
+
+How to compile the filter :
+---------------------------
+
+First you need to compile the DirectShow BaseClasses available in the
+SDK ($DXSDK\Samples\C++\DirectShow\BaseClasses).
+
+Make sure you have the path to the include files and to the library in
+your Visual C++ options (they must be at the top of the list).
+- Include :
+$DXSDK\Include
+$DXSDK\Samples\C++\DirectShow\BaseClasses\
+- Library :
+$DXSDK\Lib
+$DXSDK\Samples\C++\DirectShow\BaseClasses\Debug
+$DXSDK\Samples\C++\DirectShow\BaseClasses\Release
+
+The faad2 directory must be at the same level as the CoreAAC directory.
+
+Now you can open the project workspace CoreAAC.dsw and compile the filter.
+
+
+Registering the filter :
+------------------------
+
+The filter is automatically registered with the project file provided.
+If you want to register/unregister the filter manually you can use the
+following commands :
+To register : regsvr32 CoreAAC.ax
+To unregister : regsvr32 /u CoreAAC.ax
+
+Also some .bat files are provided :
+register_release.bat
+unregister_release.bat
+register_debug.bat
+unregister_debug.bat
+
+
+Installer
+---------
+
+To create the installer you need to install NSIS
+(http://nsis.sourceforge.net/)
+
+Just right click on the file CoreAAC.nsi and select "Compile NSI".
+The file Redist\CoreAAC.exe should be created.

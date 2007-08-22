@@ -1,0 +1,103 @@
+libdvdcss (1.2.9-1) unstable; urgency=low
+
+  * New upstream release.
+  * debian/control:
+    + Set policy to 3.6.2.1.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Mon, 11 Jul 2005 15:05:38 +0300
+
+libdvdcss (1.2.8-2) unstable; urgency=low
+
+  * debian/control:
+    + Set policy to 3.6.0. No changes required.
+    + Set debhelper build-dependency to (>= 4.0) because of debian/compat.
+    + Build-depend on doxygen.
+    + Build-depend on tetex-bin so we have latex and dvips.
+  * debian/rules:
+    + Copy the HTML and PostScript documentation to the binary package.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Wed,  6 Aug 2003 16:57:46 +0200
+
+libdvdcss (1.2.8-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Tue, 29 Jul 2003 01:45:04 +0200
+
+libdvdcss (1.2.7-1) unstable; urgency=low
+
+  * New upstream release.
+  * debian/control:
+    + Set policy to 3.5.10.
+    + Removed the leading "a" in the package description.
+    + Set the source section to libs.
+    + Set the -dev package section to libdevel.
+    + Changed the debhelper build dependency to (>=3.0).
+  * debian/rules:
+    + Added magic to avoid autotools timestamp skews on autobuilders (as if
+      libdvdcss was ever going to hit the Debian autobuilders anyway).
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Fri, 13 Jun 2003 02:25:49 +0200
+
+libdvdcss (1.2.6-2) unstable; urgency=low
+
+  * Removed libc6-dev from libdvdcss2-dev's dependencies because it is
+    part of build-essential and it isn't even called libc6-dev on all
+    architectures.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Tue, 27 May 2003 19:09:27 +0200
+
+libdvdcss (1.2.6-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Samuel Hocevar <sam@zoy.org>  Mon, 10 Mar 2003 18:56:16 +0100
+
+libdvdcss (1.2.5-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Samuel Hocevar <sam@zoy.org>  Tue, 28 Jan 2003 01:24:15 +0100
+
+libdvdcss (1.2.4-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Samuel Hocevar <sam@zoy.org>  Thu, 14 Nov 2002 16:15:00 +0200
+
+libdvdcss (1.2.3-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Samuel Hocevar <sam@zoy.org>  Sun, 13 Oct 2002 01:01:03 +0200
+
+libdvdcss (1.2.2-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Samuel Hocevar <sam@zoy.org>  Sat, 10 Aug 2002 22:15:57 +0200
+
+libdvdcss (1.2.1-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Samuel Hocevar <sam@zoy.org>  Sun,  2 Jun 2002 18:17:55 +0200
+
+libdvdcss (1.2.0-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Samuel Hocevar <sam@zoy.org>  Mon, 20 May 2002 19:48:42 +0200
+
+libdvdcss (1.1.1-1) unstable; urgency=low
+
+  * Minor release.
+
+ -- Samuel Hocevar <sam@zoy.org>  Sat,  6 Apr 2002 03:24:20 +0200
+
+libdvdcss (1.1.0-1) unstable; urgency=low
+
+  * First release outside the vlc tree.
+
+ -- Samuel Hocevar <sam@zoy.org>  Wed,  3 Apr 2002 18:26:23 +0200
+

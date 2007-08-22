@@ -1,0 +1,209 @@
+January 7, 2002
+
+MP4V2 LIBRARY INTERNALS
+=======================
+
+This document provides an overview of the interals of the mp4v2 library 
+to aid those who wish to modify and extend it. Before reading this document,
+I recommend familiarizing yourself with the MP4 (or Quicktime) file format 
+standard and the mp4v2 library API. The API is described in a set of man pages
+in mpeg4ip/doc/mp4v2, or if you prefer by looking at mp4.h.
+
+All the library code is written in C++, however the library API follows uses
+C calling conventions hence is linkable by both C and C++ programs. The
+library has been compiled and used on Linux, BSD, Windows, and Mac OS X.
+Other than libc, the library has no external dependencies, and hence can
+be used independently of the mpeg4ip package if desired.  The library is 
+used for both real-time recording and playback in mpeg4ip, and its runtime 
+performance is up to those tasks. On the IA32 architecture compiled with gcc,
+the stripped library is approximately 600 KB code and initialized data.
+
+It is useful to think of the mp4v2 library as consisting of four layers:
+infrastructure, file format, generic tracks, and type specific track helpers.
+A description of each layer follows, from the fundamental to the optional.
+
+
+Infrastructure
+==============
+
+The infrastructure layer provides basic file I/O, memory allocation, 
+error handling, string utilities, and protected arrays. The source files 
+for this layer are mp4file_io, mp4util, and mp4array. 
+
+Note that the array classes uses preprocessor macros instead of C++ 
+templates. The rationale for this is to increase portability given the 
+sometimes incomplete support by some compilers for templates.
+
+
+File Format
+===========
+
+The file format layer provides the translation from the on-disk MP4 file 
+format to in-memory C++ structures and back to disk. It is intended 
+to exactly match the MP4 specification in syntax and semantics. It 
+represents the majority of the code.
+
+There are three key structures at the file format layer: atoms, properties,
+and descriptors. 
+
+Atoms are the primary containers within an mp4 file. They can contain 
+any combination of properties, other atoms, or descriptors.
+
+The mp4atom files contain the base class for all the atoms, and provide 
+generic functions that cover most cases. However, each atom has it's own 
+subclass contained in file atom_<name>.cpp, where <name> is the four 
+letter name of the atom defined in the MP4 specification. Typically this 
+atom file just specifies the properties of the atom or the possible child 
+atoms in the case of a container atom. In more specialized cases the atom 
+specific file provides routines to initialize, read, or write the atom.
+
+Properties are the atomic pieces of information. The basic types of 
+properties are integers, floats, strings, and byte arrays. For integers 
+and floats there are subclasses that represent the different storage sizes,
+e.g. 8, 16, 24, 32, and 64 bit integers. For strings, there is 1 property 
+class with a number of options regarding exact storage details, e.g. null 
+terminated, fixed length, counted. 
+
+For implementation reasons, there are also two special properties, table 
+and descriptor, that are actually containers for groups of properties. 
+I.e by making these containers provide a property interface much code can 
+be written in a generic fashion.
+
+The mp4property files contain all the property related classes. 
+
+Descriptors are containers that derive from the MPEG conventions and use 
+different encoding rules than the atoms derived from the QuickTime file
+format. This means more use of bitfields and conditional existence with 
+an emphasis on bit efficiency at the cost of encoding/decoding complexity.
+Descriptors can contain other descriptors and/or properties.
+
+The mp4descriptor files contain the generic base class for descriptors. 
+Also the mp4property files have a descriptor wrapper class that allows a 
+descriptor to behave as if it were a property. The specific descriptors 
+are implemented as subclasses of the base class descriptor in manner similar 
+to that of atoms. The descriptors, ocidescriptors, and qosqualifiers files 
+contain these implementations.
+
+Each atom/property/descriptor has a name closely related to that in the 
+MP4 specification. The difference being that the mp4v2 library doesn't 
+use '-' or '_' in property names and capitalizes the first letter of each 
+word, e.g. "thisIsAPropertyName". A complete name specifies the complete 
+container path.  The names follow the C/C++ syntax for elements and array 
+indices. 
+
+Examples are:
+	"moov.mvhd.duration"
+	"moov.trak[2].tkhd.duration"
+	"moov.trak[3].minf.mdia.stbl.stsz[101].sampleSize"
+
+Note "*" can be used as a wildcard for an atom name (only). This is most 
+useful when dealing with the stsd atom which contains child atoms with 
+various names, but shared property names.
+
+Note that internally when performance matters the code looks up a property
+by name once, and then stores the returned pointer to the property class.
+
+
+Generic Tracks
+==============
+
+The two entities at this level are the mp4 file as a whole and the tracks 
+which are contained with it. The mp4file and mp4track files contain the 
+implementation.
+
+The critical work done by this layer is to map the collection of atoms,
+properties, and descriptors that represent a media track into a useful,
+and consistent set of operations. For example, reading or writing a media 
+sample of a track is a relatively simple operation from the library API
+perspective. However there are numerous pieces of information in the mp4
+file that need to be properly used and updated to do this. This layer
+handles all those details.
+
+Given familiarity with the mp4 spec, the code should be straight-forward.
+What may not be immediately obvious are the functions to handle chunks of
+media samples. These exist to allow optimization of the mp4 file layout by
+reordering the chunks on disk to interleave the media sample chunks of
+multiple tracks in time order. (See MP4Optimize API doc).
+
+
+Type Specific Track Helpers 
+===========================
+
+This specialized code goes beyond the meta-information about tracks in
+the mp4 file to understanding and manipulating the information in the
+track samples. There are currently two helpers in the library: 
+the MPEG-4 Systems Helper, and the RTP Hint Track Helper.
+ 
+The MPEG-4 Systems Helper is currently limited to creating the OD, BIFS,
+and SDP information about a minimal audio/video scene consistent with
+the Internet Streaming Media Alliance (ISMA) specifications. We will be
+evaluating how best to generalize the library's helper functions for
+MPEG-4 Systems without overburdening the implementation. The code for 
+this helper is found in the isma and odcommands files.
+
+The RTP Hint Track Helper is more extensive in its support. The hint 
+tracks contain the track packetization information needed to build 
+RTP packets for streaming. The library can construct RTP packets based 
+on the hint track making RTP based servers significantly easier to write.
+
+All code related to rtp hint tracks is in the rtphint files. It would also
+be useful to look at test/mp4broadcaster and mpeg4ip/server/mp4creator for
+examples of how this part of the library API can be used.
+
+
+Library API
+===========
+
+The library API is defined and implemented in the mp4 files. The API uses
+C linkage conventions, and the mp4.h file adapts itself according to whether
+C or C++ is the compilation mode.
+
+All API calls are implemented in mp4.cpp and basically pass thru's to the
+MP4File member functions. This ensures that the library has internal access
+to the same functions as available via the API. All the calls in mp4.cpp use
+C++ try/catch blocks to protect against any runtime errors in the library.
+Upon error the library will print a diagnostic message if the verbostiy level
+has MP4_DETAILS_ERROR set, and return a distinguished error value, typically
+0 or -1.
+
+The test and util subdirectories contain useful examples of how to
+use the library. Also the mp4creator and mp4live programs within
+mpeg4ip demonstrate more complete usage of the library API.
+
+
+Debugging
+=========
+
+Since mp4 files are fairly complicated, extensive debugging support is
+built into the library. Multi-level diagnostic messages are available 
+under the control of a verbosity bitmask described in the API.
+
+Also the library provides the MP4Dump() call which provides an ASCII
+version of the mp4 file meta-information. The mp4dump utilitity is a
+wrapper executable around this function.
+
+The mp4extract program is also provided in the utilities directory
+which is useful for extracting a track from an mp4file and putting the
+media data back into it's own file. It can also extract each sample of
+a track into its own file it that is desired.
+
+When all else fails, mp4 files are amenable to debugging by direct
+examination. Since the atom names are four letter ASCII codes finding
+reference points in a hex dump is feasible. On UNIX, the od command
+is your friend: "od -t x1z -A x [-j 0xXXXXXX] foo.mp4" will print
+a hex and ASCII dump, with hex addresses, starting optionally from
+a specified offset. The library diagnostic messages can provide
+information on where the library is reading or writing.
+
+
+General caveats
+===============
+	
+The coding convention is to use the C++ throw operator whenever an 
+unrecoverable error occurs. This throw is caught at the API layer 
+in mp4.cpp and translated into an error value. 
+
+Be careful about indices. Internally, we follow the C/C++ convention 
+to use zero-based indices. However the MP4 spec uses one-based indices 
+for things like samples and hence the library API uses this convention.
+

@@ -34,6 +34,7 @@
 #else
 #include <memory.h>
 #define min(a,b) (a)>(b)?(b):(a)
+#define max(a,b) (a)<(b)?(b):(a)
 #endif
 #include <math.h>
 #include <stdio.h>
@@ -450,7 +451,9 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
       case TAG_USERCOMMENT:
       {
         const int EXIF_COMMENT_HDR_LENGTH = 8;        // All comment tags have 8 bytes of header info
-        strncpy(m_ExifInfo->Comments, (char *)ValuePtr+EXIF_COMMENT_HDR_LENGTH, min(2000, ByteCount-EXIF_COMMENT_HDR_LENGTH));
+        int length = max(ByteCount - EXIF_COMMENT_HDR_LENGTH, 0);
+        length = min(length, 2000);
+        strncpy(m_ExifInfo->Comments, (char *)ValuePtr+EXIF_COMMENT_HDR_LENGTH, length);
 //        FixComment(comment);                          // Ensure comment is printable
       }
       break;
@@ -513,12 +516,12 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
       break;
 
       case TAG_ORIENTATION:
-//        orientation = (int)ConvertAnyFormat(ValuePtr, Format);
-//          if (orientation < 0 || orientation > 8)
-//          {
-//            ErrNonfatal("Undefined rotation value %d", orientation, 0);
-//            orientation = 0;
-//          }
+        m_ExifInfo->Orientation = (int)ConvertAnyFormat(ValuePtr, Format);
+        if (m_ExifInfo->Orientation < 0 || m_ExifInfo->Orientation > 8)
+        {
+          ErrNonfatal("Undefined rotation value %d", m_ExifInfo->Orientation, 0);
+          m_ExifInfo->Orientation = 0;
+        }
       break;
 
       case TAG_EXIF_IMAGELENGTH:

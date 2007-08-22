@@ -1,0 +1,11 @@
+/.cvsignore////
+/Makefile.am////
+/alpha_asm.h////
+/attributes.h////
+/mmx.h////
+/mpeg2.h////
+/mpeg2convert.h////
+/sse.h////
+/tendra.h////
+/video_out.h////
+/vis.h////

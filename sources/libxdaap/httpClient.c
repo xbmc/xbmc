@@ -51,14 +51,12 @@
 #include "httpClient.h"
 #include "debug.h"
 
-#include <netinet/in.h>
-
 #define DEFAULT_DEBUG_CHANNEL "http_client"
 
 #ifdef _LINUX
 typedef int SOCKET;
 #include <netdb.h>
-/*extern int errno;*/
+#include <netinet/in.h>
 #endif
 
 struct HTTP_ConnectionTAG

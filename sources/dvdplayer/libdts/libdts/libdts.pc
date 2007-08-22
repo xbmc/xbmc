@@ -1,0 +1,10 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libdts
+Description: A decoding library for DTS Coherent Acoustics streams.
+Version: 0.0.2
+Libs: -L${libdir} -ldts
+Cflags: -I${includedir}/libdts

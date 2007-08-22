@@ -5,7 +5,7 @@ RM = rm -f
 CXX=g++
 CC=gcc
 
-DEFINES := -D_LINUX
+DEFINES := -D_LINUX 
 OBJS := daap.o debug.o dmap_generics.o global.o httpClient.o ioloop.o libXDAAP.o threadpool.o Authentication/hasher.o Authentication/md5.o
 
 .c.o:

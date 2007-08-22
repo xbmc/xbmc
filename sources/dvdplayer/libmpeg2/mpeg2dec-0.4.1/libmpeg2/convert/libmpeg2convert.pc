@@ -1,0 +1,10 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libmpeg2convert
+Description: libmpeg2 helper functions for converting to various formats.
+Version: 0.4.1
+Libs: -L${libdir} -lmpeg2convert
+Cflags: -I${includedir}/mpeg2dec

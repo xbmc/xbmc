@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<WinampAbstractionLayer version="0.7">
+   <groupdef id="FAAD.Config.Content">
+	<Wasabi:Text id="static" text="Profile" x="0" y="0" w="80" h="15" />
+	<Wasabi:Dropdownlist id="profile" feed="PROFILE" x="70" y="0" w="-80" relatw="1" h="20" cfgattrib="{3AF667AD-3CF8-459e-8C7C-BD8CD1D6F8C2};Profile" />
+	<Wasabi:Text id="static" text="Samplerate" x="0" y="28" w="80" h="15" />
+	<Wasabi:Combobox id="samplerate" feed="SAMPLERATE" x="70" y="28" w="-80" relatw="1" h="20" cfgattrib="{3AF667AD-3CF8-459e-8C7C-BD8CD1D6F8C2};Samplerate" />
+	<Wasabi:Text id="static" text="Bps" x="0" y="56" w="80" h="15" />
+	<Wasabi:Dropdownlist id="bps" feed="BPS" x="70" y="56" w="-80" relatw="1" h="20" cfgattrib="{3AF667AD-3CF8-459e-8C7C-BD8CD1D6F8C2};Bps" />
+   </groupdef>
+
+   <groupdef id="FAAD.About.Content">
+	<Wasabi:Text id="About.Title" text="MP4-AAC decoder by Antonio Foranna" x="0" y="0" w="0" h="16" relatw="1" />
+	<Wasabi:Text id="About.Copyright" text="Parts based on FAAD2 and MPEG4IP" x="0" y="20" w="0" h="16" relatw="1" />
+	<Wasabi:Text id="About.URL" text="FAAD home: http://www.audiocoding.com" x="0" y="40" w="0" h="16" relatw="1" />
+	<Wasabi:Text id="About.URL2" text="MPEG4IP home: http://www.mpeg4ip.net" x="0" y="60" w="0" h="16" relatw="1" />
+	<Wasabi:Text id="About.Email" text="You can contact me at: kreel@tiscali.it" x="0" y="80" w="0" h="16" relatw="1" />
+   </groupdef>
+
+   <groupdef id="FAAD.About">
+	
+   </groupdef>
+  
+   <groupdef id="FAAD.Options">
+	<Wasabi:TitleBox x="0" y="0" w="0" h="0" relatw="1" relath="1" title="MP4-AAC decoder" content="FAAD.Options.Content" />
+   </groupdef>
+
+   <groupdef id="FAAD.Options.Content">
+	<Wasabi:TitleBox x="0" y="0" w="0" h="100" relatw="1" relath="0" title="Options" content="FAAD.Config.Content" />
+	<Wasabi:TitleBox x="0" y="108" w="0" h="120" relatw="1" relath="0" title="About" content="FAAD.About.Content" />
+   </groupdef>
+
+</WinampAbstractionLayer>

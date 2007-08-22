@@ -1,0 +1,31 @@
+; C:\MinGW\bin\dlltool.exe --export-all-symbols -z ./libdvdcss.def src/libdvdcss.o src/css.o src/device.o src/error.o src/ioctl.o
+EXPORTS
+	_dvdcss_close @ 1
+	_dvdcss_disckey @ 2
+	_dvdcss_open @ 3
+	_dvdcss_test @ 4
+	_dvdcss_title @ 5
+	_dvdcss_titlekey @ 6
+	_dvdcss_unscramble @ 7
+	_dvdcss_use_ioctls @ 8
+	_print_error @ 9
+	dvdcss_close @ 10
+	dvdcss_error @ 11
+	dvdcss_interface_2 @ 12 DATA
+	dvdcss_open @ 13
+	dvdcss_read @ 14
+	dvdcss_readv @ 15
+	dvdcss_seek @ 16
+	dvdcss_title @ 17
+	ioctl_InvalidateAgid @ 18
+	ioctl_ReadCopyright @ 19
+	ioctl_ReadDiscKey @ 20
+	ioctl_ReadTitleKey @ 21
+	ioctl_ReportASF @ 22
+	ioctl_ReportAgid @ 23
+	ioctl_ReportChallenge @ 24
+	ioctl_ReportKey1 @ 25
+	ioctl_ReportRPC @ 26
+	ioctl_SendChallenge @ 27
+	ioctl_SendKey2 @ 28
+	ioctl_SendRPC @ 29
