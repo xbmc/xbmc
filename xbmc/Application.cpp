@@ -2488,7 +2488,6 @@ void CApplication::DoRender()
 #ifndef HAS_XBOX_D3D
 void CApplication::Render()
 {
-  g_graphicsContext.Lock();
   { // frame rate limiter (really bad, but it does the trick :p)
     const static unsigned int singleFrameTime = 10;
     static unsigned int lastFrameTime = 0;
@@ -2497,6 +2496,7 @@ void CApplication::Render()
       Sleep(lastFrameTime + singleFrameTime - currentTime);
     lastFrameTime = timeGetTime();
   }
+  g_graphicsContext.Lock();
   RenderNoPresent();
   // Present the backbuffer contents to the display
 #ifndef HAS_SDL
