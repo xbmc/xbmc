@@ -1336,6 +1336,14 @@
   <string id="16205">Delete failed</string>
   <string id="16206">Failed to delete atleast one file</string>
 
+  <string id="16300">Video Scaling Method</string>
+  <string id="16301">Nearest Neighbour</string>
+  <string id="16302">Bilinear</string>
+  <string id="16303">Bicubic</string>
+  <string id="16304">Lanczos2</string>
+  <string id="16305">Lanczos3</string>
+  <string id="16306">Sinc8</string>
+
   <string id="20000">CDDA Rip Folder</string>
   <string id="20001">Use external DVD Player</string>
   <string id="20002">External DVD Player</string>

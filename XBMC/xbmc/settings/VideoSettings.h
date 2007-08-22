@@ -24,6 +24,17 @@ enum EINTERLACEMETHOD
   VS_INTERLACEMETHOD_RENDER_BLEND=7,
 };
 
+enum ESCALINGMETHOD
+{
+  VS_SCALINGMETHOD_NEAREST=0,
+  VS_SCALINGMETHOD_LINEAR,
+  VS_SCALINGMETHOD_CUBIC,
+  VS_SCALINGMETHOD_LANCZOS2,
+  VS_SCALINGMETHOD_LANCZOS3,
+  VS_SCALINGMETHOD_SINC8,
+  VS_SCALINGMETHOD_NEDI
+};
+
 class CVideoSettings
 {
 public:
@@ -36,6 +47,7 @@ public:
   bool m_NonInterleaved;
   bool m_bForceIndex;
   EINTERLACEMETHOD m_InterlaceMethod;
+  ESCALINGMETHOD   m_ScalingMethod;
   int m_FilmGrain;
   int m_ViewMode;   // current view mode
   float m_CustomZoomAmount; // custom setting zoom amount
