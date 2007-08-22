@@ -253,7 +253,7 @@ void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdSt
 
 void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, FriBidiCharSet fribidiCharset, FriBidiCharType base)
 {
-  int sourceLen = strlen(strSource.c_str());
+  int sourceLen = strSource.length();
   FriBidiChar* logical = (FriBidiChar*) malloc((sourceLen + 1) * sizeof(FriBidiChar));
   FriBidiChar* visual = (FriBidiChar*) malloc((sourceLen + 1) * sizeof(FriBidiChar));
   // Convert from the selected charset to Unicode
@@ -264,10 +264,14 @@ void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdSt
     // Removes bidirectional marks
     //len = fribidi_remove_bidi_marks(visual, len, NULL, NULL, NULL);
 
-    char *result = strDest.GetBuffer(sourceLen);
+    // Apperently a string can get longer during this transformation
+    // so make sure we allocate the maximum possible character utf8
+    // can generate atleast, should cover all bases
+    char *result = strDest.GetBuffer(len*4);
 
     // Convert back from Unicode to the charset
-    fribidi_unicode_to_charset(fribidiCharset, visual, len, result);
+    int len2 = fribidi_unicode_to_charset(fribidiCharset, visual, len, result);
+    ASSERT(len2 <= len*4);
     strDest.ReleaseBuffer();
   }
 
