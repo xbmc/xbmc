@@ -1,7 +1,7 @@
-import xbmc, xbmcgui, nt
+import xbmc, xbmcgui, os
 
-dir = 'f:\\music\\mp3\\'
-list = nt.listdir(dir)
+dir = '/mnt/audio/misc/' #sample music dir, do not forget trailing /
+list = os.listdir(dir)
 
 dialog = xbmcgui.Dialog()
 selected = dialog.select('select a song to play, no directory!!!', list)
