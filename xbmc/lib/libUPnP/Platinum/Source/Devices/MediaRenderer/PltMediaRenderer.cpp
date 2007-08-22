@@ -10,12 +10,11 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#include "NptTypes.h"
-#include "PltLog.h"
-#include "NptUtils.h"
+#include "Neptune.h"
 #include "PltMediaRenderer.h"
-#include "NptFile.h"
 #include "PltService.h"
+
+//NPT_SET_LOCAL_LOGGER("platinum.media.renderer")
 
 /*----------------------------------------------------------------------
 |   external references
@@ -32,8 +31,7 @@ PLT_MediaRenderer::PLT_MediaRenderer(PlaybackCmdListener* listener,
                                      bool                 show_ip, 
                                      const char*          uuid, 
                                      unsigned int         port) :	
-    PLT_DeviceHost("/", uuid, "urn:schemas-upnp-org:device:MediaRenderer:1", friendly_name, port),
-    m_ShowIP(show_ip)
+    PLT_DeviceHost("/", uuid, "urn:schemas-upnp-org:device:MediaRenderer:1", friendly_name, show_ip, port)
 {
     NPT_COMPILER_UNUSED(listener);
 
@@ -116,49 +114,6 @@ PLT_MediaRenderer::PLT_MediaRenderer(PlaybackCmdListener* listener,
 +---------------------------------------------------------------------*/
 PLT_MediaRenderer::~PLT_MediaRenderer()
 {
-}
-
-/*----------------------------------------------------------------------
-|   PLT_MediaRenderer::Start
-+---------------------------------------------------------------------*/
-NPT_Result
-PLT_MediaRenderer::Start(PLT_TaskManager* task_manager)
-{
-    NPT_String ip;
-    NPT_List<NPT_NetworkInterface*> if_list;
-    NPT_NetworkInterface::GetNetworkInterfaces(if_list);
-    NPT_List<NPT_NetworkInterface*>::Iterator iface = if_list.GetFirstItem();
-    while (iface) {
-        NPT_String tmp = (*(*iface)->GetAddresses().GetFirstItem()).GetPrimaryAddress().ToString();
-        if (tmp.Compare("0.0.0.0") && tmp.Compare("127.0.0.1")) {
-            ip = tmp;
-            PLT_Log(PLT_LOG_LEVEL_1, "IP addr: %s\n", (const char*)ip);
-            break;
-        }
-        ++iface;
-    }
-    if_list.Apply(NPT_ObjectDeleter<NPT_NetworkInterface>());
-    
-    // use localhost if no ip found
-    if (ip.GetLength() == 0) {
-        ip = "127.0.0.1";
-    }
-
-    // update Friendlyname with ip
-    if (m_ShowIP) {
-        m_FriendlyName += " (" + ip + ")";
-    }
-
-    return PLT_DeviceHost::Start(task_manager);
-}
-
-/*----------------------------------------------------------------------
-|   PLT_MediaRenderer::Stop
-+---------------------------------------------------------------------*/
-NPT_Result
-PLT_MediaRenderer::Stop()
-{
-    return PLT_DeviceHost::Stop();
 }
 
 /*----------------------------------------------------------------------
@@ -255,7 +210,7 @@ PLT_MediaRenderer::OnAction(PLT_ActionReference& action, NPT_SocketInfo* info /*
     if (name.Compare("Stop", true) == 0) {
         return OnStop(action);
     }
-    if (name.Compare("SetAVTranportURI", true) == 0) {
+    if (name.Compare("SetAVTransportURI", true) == 0) {
         return OnSetAVTransportURI(action);
     }
     if (name.Compare("SetPlayMode", true) == 0) {

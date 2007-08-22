@@ -5,6 +5,7 @@
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "DVDPerformanceCounter.h"
+#include <sstream>
 
 #ifndef _LINUX
 static inline __int64 abs(__int64 x)
@@ -165,7 +166,6 @@ bool CDVDPlayerAudio::OpenDecoder(CDVDStreamInfo &hints, BYTE* buffer /* = NULL*
 int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 {
   CDVDDemux::DemuxPacket* pPacket = pAudioPacket;
-  int n=m_streaminfo.samplerate*m_streaminfo.channels*16/8, len;
 
   unsigned int bytesconsumed = 0;
   if(m_pAudioCodec)
@@ -198,7 +198,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
         m_audioClock = pPacket->dts;
       }
 
-      len = m_pAudioCodec->Decode(audio_pkt_data, audio_pkt_size);
+      int len = m_pAudioCodec->Decode(audio_pkt_data, audio_pkt_size);
       if (len < 0)
       {
         /* if error, we skip the packet */
@@ -234,7 +234,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 
 
       // compute duration.
-      n = (audioframe.channels * audioframe.bits_per_sample * audioframe.sample_rate)>>3;
+      int n = (audioframe.channels * audioframe.bits_per_sample * audioframe.sample_rate)>>3;
       if (n > 0)
       {
         // safety check, if channels == 0, n will result in 0, and that will result in a nice devide exception
@@ -517,3 +517,13 @@ void CDVDPlayerAudio::WaitForBuffers()
     Sleep(5);
   }
 }
+
+string CDVDPlayerAudio::GetPlayerInfo()
+{
+  std::ostringstream s;
+  s << "vq size:" << 100 * m_messageQueue.GetDataSize() / m_messageQueue.GetMaxDataSize() << "%";
+  s << ", ";
+  s << "cpu: " << (int)(100 * CThread::GetRelativeUsage()) << "%";
+  return s.str();
+}
+

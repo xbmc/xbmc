@@ -19,6 +19,7 @@
 
 #include "emu_msvcrt.h"
 #include "emu_dummy.h"
+#include "util/EmuFileWrapper.h"
 
 #include "util/EmuFileWrapper.h"
 
@@ -262,7 +263,7 @@ extern "C"
     _vsnprintf(tmp, 2048, format, va);
     va_end(va);
     tmp[2048 - 1] = 0;
-#ifdef HAS_MPLAYER
+#if defined(HAS_VIDEO_PLAYBACK) && defined(HAS_XBOX_HARDWARE)
     update_cache_dialog(tmp);
 #endif
     CLog::Log(LOGDEBUG, "  msg: %s", tmp);

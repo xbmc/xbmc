@@ -26,14 +26,12 @@
 			<name>special12</name>
 			<filename>FrancophilSans.ttf</filename>
 			<size>17</size>
-			<aspect>0.85</aspect>
 		</font>
 		<font>
 			<name>special13</name>
 			<filename>FrancophilSans.ttf</filename>
 			<size>17</size>
 			<style>bold</style>
-			<aspect>0.80</aspect>
 		</font>
 	</fontset>
 	<fontset id="Arial TTF" unicode="true">

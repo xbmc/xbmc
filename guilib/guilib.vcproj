@@ -67,7 +67,7 @@
 				FavorSizeOrSpeed="2"
 				OmitFramePointers="FALSE"
 				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="freetype2\include;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
+				AdditionalIncludeDirectories="xbmc;freetype2\include;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
 				PreprocessorDefinitions="NDEBUG;_XBOX;PROFILE;_LIB"
 				StringPooling="FALSE"
 				ExceptionHandling="FALSE"
@@ -107,7 +107,7 @@
 				FavorSizeOrSpeed="2"
 				OmitFramePointers="FALSE"
 				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="freetype2\include;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
+				AdditionalIncludeDirectories="xbmc;freetype2\include;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
 				PreprocessorDefinitions="NDEBUG;_XBOX;PROFILE;FASTCAP;_LIB"
 				StringPooling="FALSE"
 				ExceptionHandling="FALSE"
@@ -150,7 +150,7 @@
 				FavorSizeOrSpeed="2"
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="freetype2\include;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
+				AdditionalIncludeDirectories="xbmc;freetype2\include;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
 				PreprocessorDefinitions="NDEBUG;_XBOX;_LIB"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
@@ -192,7 +192,7 @@
 				FavorSizeOrSpeed="2"
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="freetype2\include;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
+				AdditionalIncludeDirectories="xbmc;freetype2\include;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
 				PreprocessorDefinitions="NDEBUG;_XBOX;LTCG;_LIB"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
@@ -306,6 +306,9 @@
 			</File>
 			<File
 				RelativePath=".\GUILabelControl.cpp">
+			</File>
+			<File
+				RelativePath=".\GUILargeImage.cpp">
 			</File>
 			<File
 				RelativePath=".\GUIList.cpp">
@@ -518,6 +521,9 @@
 			</File>
 			<File
 				RelativePath=".\GUILabelControl.h">
+			</File>
+			<File
+				RelativePath=".\GUILargeImage.h">
 			</File>
 			<File
 				RelativePath=".\GUIList.h">

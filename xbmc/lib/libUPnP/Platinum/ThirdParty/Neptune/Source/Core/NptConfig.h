@@ -17,6 +17,7 @@
 #define NPT_CONFIG_HAVE_STD_C
 #define NPT_CONFIG_HAVE_STDLIB_H
 #define NPT_CONFIG_HAVE_STDIO_H
+#define NPT_CONFIG_HAVE_STDARG_H
 #define NPT_CONFIG_HAVE_STRING_H
 
 /*----------------------------------------------------------------------
@@ -30,6 +31,7 @@
 #define NPT_CONFIG_HAVE_MEMCPY
 #define NPT_CONFIG_HAVE_MEMSET
 #define NPT_CONFIG_HAVE_MEMCMP
+#define NPT_CONFIG_HAVE_GETENV
 #endif /* NPT_CONFIG_HAS_STD_C */
 
 #if defined(NPT_CONFIG_HAVE_STRING_H)
@@ -62,7 +64,7 @@
 |   platform specifics
 +---------------------------------------------------------------------*/
 /* Windows 32 */
-#if defined(WIN32) || defined(_XBOX)
+#if defined(_WIN32) || defined(_XBOX)
 #if !defined(STRICT)
 #define STRICT
 #endif
@@ -112,13 +114,20 @@
 
 /* Microsoft C/C++ Compiler */
 #if defined(_MSC_VER)
-#if _MSC_VER >= 1400
+#if defined(_WIN64)
+typedef __int64 NPT_PointerLong;
+#else
 typedef __w64 long NPT_PointerLong;
-#define NPT_POINTER_TO_LONG(_p) ((long)(NPT_PointerLong) (_p) )
+#endif
+#define NPT_POINTER_TO_LONG(_p) ((NPT_PointerLong) (_p) )
+#if _MSC_VER >= 1400 && !defined(_WIN32_WCE)
 #define NPT_CONFIG_HAVE_FOPEN_S
 #define NPT_vsnprintf(s,c,f,a)  _vsnprintf_s(s,c,_TRUNCATE,f,a)
 #define NPT_snprintf(s,c,f,...) _snprintf_s(s,c,_TRUNCATE,f,__VA_ARGS__)
 #define NPT_strncpy(d,s,c)       strncpy_s(d,c,s,_TRUNCATE)
+#undef NPT_CONFIG_HAVE_GETENV
+#define NPT_CONFIG_HAVE_DUPENV_S
+#define dupenv_s _dupenv_s
 #else
 #define NPT_vsnprintf  _vsnprintf
 #define NPT_snprintf   _snprintf
@@ -129,17 +138,19 @@ typedef __w64 long NPT_PointerLong;
 #endif
 
 /* Windows CE */
-#if defined(UNDER_CE)
+#if defined(_WIN32_WCE)
 #if defined(NPT_CONFIG_HAVE_FOPEN_S)
 #undef NPT_CONFIG_HAVE_FOPEN_S
 #endif
 #endif
 
 /* Symbian */
-#if defined(__symbian__)
+#if defined(__SYMBIAN32__)
 #undef NPT_CONFIG_HAVE_NEW_H
 #include "e32std.h"
 #define explicit
+#undef NPT_CONFIG_HAVE_VSNPRINTF
+#undef NPT_CONFIG_HAVE_SNPRINTF
 #endif
 
 /*----------------------------------------------------------------------
@@ -147,6 +158,16 @@ typedef __w64 long NPT_PointerLong;
 +---------------------------------------------------------------------*/
 #ifndef NPT_POINTER_TO_LONG
 #define NPT_POINTER_TO_LONG(_p) ((long)(_p))
+#endif
+
+#if !defined(NPT_snprintf)
+#define NPT_snprintf snprintf
+#endif
+#if !defined(NPT_strncpy)
+#define NPT_strncpy strncpy
+#endif
+#if !defined(NPT_vsnprintf)
+#define NPT_vsnprintf vsnprintf
 #endif
 
 /*----------------------------------------------------------------------

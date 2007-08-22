@@ -1198,31 +1198,16 @@
 				Name="VideoRenderers"
 				Filter="">
 				<File
-					RelativePath="..\..\xbmc\cores\VideoRenderers\LinuxRenderer.cpp">
+					RelativePath="..\..\xbmc\cores\VideoRenderers\WinRenderer.cpp">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\VideoRenderers\LinuxRenderer.h">
+					RelativePath="..\..\xbmc\cores\VideoRenderers\WinRenderer.h">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\VideoRenderers\LinuxRendererATI.cpp">
+					RelativePath="..\..\xbmc\cores\VideoRenderers\WinRenderManager.cpp">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\VideoRenderers\LinuxRendererATI.h">
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\VideoRenderers\LinuxRendererGL.cpp">
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\VideoRenderers\LinuxRendererGL.h">
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\VideoRenderers\RenderManager.cpp">
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\VideoRenderers\RenderManager.h">
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\VideoRenderers\XBoxRenderer.h">
+					RelativePath="..\..\xbmc\cores\VideoRenderers\WinRenderManager.h">
 				</File>
 			</Filter>
 		</Filter>
@@ -1578,6 +1563,22 @@
 				<File
 					RelativePath="..\..\xbmc\VorbisTag.h">
 				</File>
+				<Filter
+					Name="Pictures"
+					Filter="">
+					<File
+						RelativePath="..\..\xbmc\PictureInfoLoader.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\PictureInfoLoader.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\PictureInfoTag.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\PictureInfoTag.h">
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Utils"
@@ -1685,10 +1686,22 @@
 					RelativePath="..\..\xbmc\KaiVector.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\LabelFormatter.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\LabelFormatter.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\LangCodeExpander.cpp">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\LangInfo.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\LastFmManager.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\LastFmManager.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\log.cpp">
@@ -1951,6 +1964,12 @@
 					RelativePath="..\..\xbmc\GUIDialogOK.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\GUIDialogPictureInfo.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPictureInfo.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\GUIDialogPlayerControls.cpp">
 				</File>
 				<File
@@ -2023,6 +2042,12 @@
 			<Filter
 				Name="GUI Other"
 				Filter="">
+				<File
+					RelativePath="..\..\xbmc\GUILargeTextureManager.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUILargeTextureManager.h">
+				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIMediaWindow.cpp">
 				</File>
@@ -2297,6 +2322,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\PlaylistFileDirectory.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\PluginDirectory.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\PluginDirectory.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\RarDirectory.cpp">
@@ -2637,6 +2668,18 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeOverview.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeRecentlyAddedEpisodes.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeRecentlyAddedEpisodes.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeRecentlyAddedMovies.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeRecentlyAddedMovies.h">
 					</File>
 					<File
 						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeRoot.cpp">
@@ -3423,6 +3466,9 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\xbmcmodule.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\xbmcplugin.cpp">
 					</File>
 				</Filter>
 				<Filter

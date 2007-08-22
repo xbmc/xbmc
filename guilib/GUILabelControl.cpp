@@ -49,7 +49,7 @@ void CGUILabelControl::Render()
 	}
 	else
 	{
-    m_renderLabel = g_infoManager.GetMultiLabel(m_multiInfo);
+    m_renderLabel = g_infoManager.GetMultiInfo(m_multiInfo, m_dwParentID);
 	}
   // reset scrolling if we have a new label
   if (m_renderLabel != lastLabel)

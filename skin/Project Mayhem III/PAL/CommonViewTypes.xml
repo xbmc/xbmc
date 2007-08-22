@@ -726,7 +726,7 @@
 		</control>
 		<control type="label">
 			<posx>200</posx>
-			<posy>500</posy>
+			<posy>505</posy>
 			<width>420</width>
 			<height>22</height>
 			<font>special13</font>
@@ -736,7 +736,7 @@
 		</control>
 		<control type="label">
 			<posx>680</posx>
-			<posy>500</posy>
+			<posy>505</posy>
 			<width>420</width>
 			<height>22</height>
 			<font>special13</font>
@@ -747,7 +747,7 @@
 		</control>
 		<control type="label">
 			<posx>680</posx>
-			<posy>500</posy>
+			<posy>505</posy>
 			<width>420</width>
 			<height>22</height>
 			<font>special13</font>
@@ -758,7 +758,7 @@
 		</control>
 		<control type="label">
 			<posx>200</posx>
-			<posy>500</posy>
+			<posy>505</posy>
 			<width>420</width>
 			<height>22</height>
 			<font>special13</font>

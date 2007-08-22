@@ -61,7 +61,6 @@ protected:
     PLT_CtrlPointReference                m_CtrlPoint;
     PLT_MediaBrowserListener*             m_Listener;
     NPT_Lock<PLT_DeviceDataReferenceList> m_MediaServers;
-    NPT_Lock<PLT_DeviceDataReferenceList> m_OldMediaServers;
 };
 
 #endif /* _PLT_MEDIA_BROWSER_H_ */

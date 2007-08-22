@@ -15,7 +15,7 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with FFmpeg; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 #ifndef SWSCALE_H
@@ -58,8 +58,8 @@
 
 #define SWS_PRINT_INFO              0x1000
 
-//the following 3 flags are not completly implemented
-//internal chrominace subsamling info
+//the following 3 flags are not completely implemented
+//internal chrominace subsampling info
 #define SWS_FULL_CHR_H_INT    0x2000
 //input subsampling info
 #define SWS_FULL_CHR_H_INP    0x4000

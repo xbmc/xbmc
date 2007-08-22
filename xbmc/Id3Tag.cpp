@@ -272,9 +272,23 @@ CStdString CID3Tag::GetYear() const
 CStdString CID3Tag::GetGenre() const
 {
   id3_field_textencoding encoding=ID3_FIELD_TEXTENCODING_ISO_8859_1;
-  const id3_ucs4_t* ucs4=m_dll.id3_metadata_getgenre(m_tag, &encoding);
-  CStdString strGenre=ToStringCharset(ucs4, encoding);
-  return ParseMP3Genre(strGenre);
+  id3_ucs4_list_t* list=m_dll.id3_metadata_getgenres(m_tag, &encoding);
+  CStdString genre;
+  if (list)
+  {
+    for (unsigned int i = 0; i < list->nstrings; i++)
+    {
+      CStdString strGenre=ToStringCharset(list->strings[i], encoding);
+      if (!strGenre.IsEmpty())
+      {
+        if (!genre.IsEmpty())
+          genre += g_advancedSettings.m_musicItemSeparator;
+        genre += ParseMP3Genre(strGenre);
+      }
+    }
+    m_dll.id3_ucs4_list_free(list);
+  }
+  return genre;
 }
 
 CStdString CID3Tag::GetComment() const

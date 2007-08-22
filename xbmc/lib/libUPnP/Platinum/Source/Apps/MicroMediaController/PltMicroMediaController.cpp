@@ -120,7 +120,6 @@ PLT_MicroMediaController::ChooseIDFromTable(PLT_StringMap& table)
     return NULL;
 }
 
-
 /*----------------------------------------------------------------------
 |   PLT_MicroMediaController::PopDirectoryStackToRoot
 +---------------------------------------------------------------------*/
@@ -132,7 +131,6 @@ PLT_MicroMediaController::PopDirectoryStackToRoot(void)
         m_CurBrowseDirectoryStack.Pop(val);
     }
 }
-
 
 /*----------------------------------------------------------------------
 |   PLT_MicroMediaController::OnMRAddedRemoved

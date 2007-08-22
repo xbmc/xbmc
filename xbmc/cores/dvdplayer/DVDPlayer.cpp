@@ -32,8 +32,6 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
 
   memset(&m_dvd, 0, sizeof(DVDInfo));
   m_dvd.iCurrentCell = -1;
-  m_dvd.iNAVPackStart = -1;
-  m_dvd.iNAVPackFinish = -1;
   m_dvd.iFlagSentStart = 0;
   m_dvd.iSelectedAudioStream = -1;
   m_dvd.iSelectedSPUStream = -1;
@@ -343,12 +341,13 @@ void CDVDPlayer::Process()
           // stills will be skipped
           if(m_dvd.state == DVDSTATE_STILL)
           {
-            if (m_dvd.iDVDStillTime < 0xff)
+            if (m_dvd.iDVDStillTime > 0)
             {
-              if (GetTickCount() >= (m_dvd.iDVDStillStartTime + m_dvd.iDVDStillTime * 1000 ))
+              if (GetTickCount() >= (m_dvd.iDVDStillStartTime + m_dvd.iDVDStillTime))
               {
                 m_dvd.iDVDStillTime = 0;
                 m_dvd.iDVDStillStartTime = 0;
+                m_dvd.state = DVDSTATE_NORMAL;
                 pStream->SkipStill();
                 continue;
               }
@@ -604,25 +603,12 @@ void CDVDPlayer::CheckContinuity(CDVDDemux::DemuxPacket* pPacket, unsigned int s
   if( pPacket->dts == DVD_NOPTS_VALUE )
     return;
 
-
-  unsigned __int64 mindts, maxdts;
-  if(m_CurrentAudio.dts == DVD_NOPTS_VALUE)
-    maxdts = mindts = m_CurrentVideo.dts;
-  else if(m_CurrentVideo.dts == DVD_NOPTS_VALUE)
-    maxdts = mindts = m_CurrentAudio.dts;
-  else
-  {
-    maxdts = max(m_CurrentAudio.dts, m_CurrentVideo.dts);
-    mindts = min(m_CurrentAudio.dts, m_CurrentVideo.dts);
-  }
-
-#ifndef _LINUX
-  // the checks below causes "hickups" in the video playback of h264 and mpeg2ts (hd). 
-  // it may cause problems with THX discs... 
-  if (source == DVDPLAYER_VIDEO)
+  if (source == DVDPLAYER_VIDEO
+  && m_CurrentAudio.dts != DVD_NOPTS_VALUE 
+  && m_CurrentVideo.dts != DVD_NOPTS_VALUE)
   {
     /* check for looping stillframes on non dvd's, dvd's will be detected by long duration check later */
-    if( !(m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD)) )
+    if( m_pInputStream && !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
     {
       /* special case for looping stillframes THX test discs*/
       /* only affect playback when not from dvd */
@@ -645,9 +631,18 @@ void CDVDPlayer::CheckContinuity(CDVDDemux::DemuxPacket* pPacket, unsigned int s
       SyncronizePlayers(SYNCSOURCE_VIDEO);
       return;
     }
-
   }
-#endif
+
+  __int64 mindts, maxdts;
+  if(m_CurrentAudio.dts == DVD_NOPTS_VALUE)
+    maxdts = mindts = m_CurrentVideo.dts;
+  else if(m_CurrentVideo.dts == DVD_NOPTS_VALUE)
+    maxdts = mindts = m_CurrentAudio.dts;
+  else
+  {
+    maxdts = max(m_CurrentAudio.dts, m_CurrentVideo.dts);
+    mindts = min(m_CurrentAudio.dts, m_CurrentVideo.dts);
+  }
 
   /* if we don't have max and min, we can't do anything more */
   if( mindts == DVD_NOPTS_VALUE || maxdts == DVD_NOPTS_VALUE )
@@ -663,8 +658,7 @@ void CDVDPlayer::CheckContinuity(CDVDDemux::DemuxPacket* pPacket, unsigned int s
  
     if (m_dvdPlayerVideo.IsStalled() && m_CurrentVideo.dts != DVD_NOPTS_VALUE)
       SyncronizePlayers(SYNCSOURCE_VIDEO);
-
-    if (m_dvdPlayerAudio.IsStalled() && m_CurrentAudio.dts != DVD_NOPTS_VALUE)
+    else if (m_dvdPlayerAudio.IsStalled() && m_CurrentAudio.dts != DVD_NOPTS_VALUE)
       SyncronizePlayers(SYNCSOURCE_AUDIO);
 
     m_dvd.iFlagSentStart  = 0;
@@ -986,22 +980,17 @@ void CDVDPlayer::ToggleFrameDrop()
 
 void CDVDPlayer::GetAudioInfo(CStdString& strAudioInfo)
 {
+  if( m_bStop ) return;
+
   string strDemuxerInfo;
-  CStdString strPlayerInfo;
   if (!m_bStop && m_CurrentAudio.id >= 0)
   {
     CDemuxStream* pStream = m_pDemuxer->GetStream(m_CurrentAudio.id);
     if (pStream && pStream->type == STREAM_AUDIO)
-    {
       ((CDemuxStreamAudio*)pStream)->GetStreamInfo(strDemuxerInfo);
-    }
   }
 
-  int bsize = m_dvdPlayerAudio.m_messageQueue.GetDataSize();
-  if (bsize > 0) bsize = (int)(((double)m_dvdPlayerAudio.m_messageQueue.GetDataSize() / m_dvdPlayerAudio.m_messageQueue.GetMaxDataSize()) * 100);
-  if (bsize > 99) bsize = 99;
-  strPlayerInfo.Format("aq size: %i, cpu: %i%%", bsize, (int)(m_dvdPlayerAudio.GetRelativeUsage()*100));
-  strAudioInfo.Format("D( %s ), P( %s )", strDemuxerInfo.c_str(), strPlayerInfo.c_str());
+  strAudioInfo.Format("D( %s ), P( %s )", strDemuxerInfo.c_str(), m_dvdPlayerAudio.GetPlayerInfo().c_str());
 }
 
 void CDVDPlayer::GetVideoInfo(CStdString& strVideoInfo)
@@ -1009,21 +998,14 @@ void CDVDPlayer::GetVideoInfo(CStdString& strVideoInfo)
   if( m_bStop ) return;
 
   string strDemuxerInfo;
-  CStdString strPlayerInfo;
   if (m_CurrentVideo.id >= 0)
   {
     CDemuxStream* pStream = m_pDemuxer->GetStream(m_CurrentVideo.id);
     if (pStream && pStream->type == STREAM_VIDEO)
-    {
       ((CDemuxStreamVideo*)pStream)->GetStreamInfo(strDemuxerInfo);
-    }
   }
 
-  int bsize = m_dvdPlayerVideo.m_messageQueue.GetDataSize();
-  if (bsize > 0) bsize = (int)(((double)m_dvdPlayerVideo.m_messageQueue.GetDataSize() / m_dvdPlayerVideo.m_messageQueue.GetMaxDataSize()) * 100);
-  if (bsize > 99) bsize = 99;
-  strPlayerInfo.Format("vq size: %i, cpu: %i%%", bsize, (int)(m_dvdPlayerVideo.GetRelativeUsage()*100));
-  strVideoInfo.Format("D( %s ), P( %s )", strDemuxerInfo.c_str(), strPlayerInfo.c_str());
+  strVideoInfo.Format("D( %s ), P( %s )", strDemuxerInfo.c_str(), m_dvdPlayerVideo.GetPlayerInfo().c_str());
 }
 
 void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
@@ -1096,8 +1078,9 @@ int CDVDPlayer::GetSubtitleCount()
   }
 
   // for external subtitle files
-  int count = 0;
-  if (count=m_dvdPlayerSubtitle.GetSubtitleCount() > 0) return count;
+  int count = m_dvdPlayerSubtitle.GetSubtitleCount();
+  if (count > 0) 
+    return count;
 
   // last one is the demuxer
   if (m_pDemuxer) return m_pDemuxer->GetNrOfSubtitleStreams();
@@ -1272,7 +1255,10 @@ __int64 CDVDPlayer::GetTime()
   // get timing and seeking from libdvdnav for dvd's
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
-    return ((CDVDInputStreamNavigator*)m_pInputStream)->GetTime(); // we should take our buffers into account
+    if(m_dvd.state == DVDSTATE_STILL)
+      return GetTickCount() - m_dvd.iDVDStillStartTime;
+    else
+      return ((CDVDInputStreamNavigator*)m_pInputStream)->GetTime(); // we should take our buffers into account
   }
 
   __int64 iMsecs = (m_clock.GetClock() / (DVD_TIME_BASE / 1000));
@@ -1291,7 +1277,10 @@ __int64 CDVDPlayer::GetTotalTimeInMsec()
   // get timing and seeking from libdvdnav for dvd's
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
-    return ((CDVDInputStreamNavigator*)m_pInputStream)->GetTotalTime(); // we should take our buffers into account
+    if(m_dvd.state == DVDSTATE_STILL && m_dvd.iDVDStillTime > 0)
+      return m_dvd.iDVDStillTime;
+    else
+      return ((CDVDInputStreamNavigator*)m_pInputStream)->GetTotalTime(); // we should take our buffers into account
   }
 
   if (m_pDemuxer) return m_pDemuxer->GetStreamLenght();
@@ -1448,7 +1437,7 @@ bool CDVDPlayer::OpenVideoStream(int iStream)
 
   /* set aspect ratio as requested by navigator for dvd's */
   if( m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) )
-    m_dvdPlayerVideo.m_messageQueue.Put(new CDVDMsgVideoSetAspect(static_cast<CDVDInputStreamNavigator*>(m_pInputStream)->GetVideoAspectRatio()));
+    m_dvdPlayerVideo.SendMessage(new CDVDMsgVideoSetAspect(static_cast<CDVDInputStreamNavigator*>(m_pInputStream)->GetVideoAspectRatio()));
 
   /* store information about stream */
   m_CurrentVideo.id = iStream;
@@ -1572,16 +1561,20 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
         {
           // else notify the player we have recieved a still frame
 
-          m_dvd.iDVDStillTime = still_event->length;
+          if(still_event->length < 0xff)
+            m_dvd.iDVDStillTime = still_event->length * 1000;
+          else
+            m_dvd.iDVDStillTime = 0;
+
           m_dvd.iDVDStillStartTime = GetTickCount();
 
           /* adjust for the output delay in the video queue */
           DWORD time = 0;
-          if( m_CurrentVideo.stream )
+          if( m_CurrentVideo.stream && m_dvd.iDVDStillTime > 0 )
           {
             time = (DWORD)(m_dvdPlayerVideo.GetOutputDelay() / ( DVD_TIME_BASE / 1000 ));
             if( time < 10000 && time > 0 ) 
-              m_dvd.iDVDStillStartTime += time;
+              m_dvd.iDVDStillTime += time;
           }
           m_dvd.state = DVDSTATE_STILL;
           CLog::Log(LOGDEBUG, "DVDNAV_STILL_FRAME - waiting %i sec, with delay of %d sec", still_event->length, time / 1000);
@@ -1916,9 +1909,11 @@ bool CDVDPlayer::HasMenu()
 bool CDVDPlayer::GetCurrentSubtitle(CStdString& strSubtitle)
 {
   __int64 pts = m_clock.GetClock();
-  bool bGotSubtitle = m_dvdPlayerSubtitle.GetCurrentSubtitle(strSubtitle, pts);
-  //bool bGotSubtitle = false;//m_dvdPlayerSubtitle.GetCurrentSubtitle(strSubtitle, pts);
-  return bGotSubtitle;
+
+  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+    return false;
+
+  return m_dvdPlayerSubtitle.GetCurrentSubtitle(strSubtitle, pts);
 }
 
 CStdString CDVDPlayer::GetPlayerState()

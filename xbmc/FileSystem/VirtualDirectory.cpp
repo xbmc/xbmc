@@ -219,16 +219,14 @@ void CVirtualDirectory::GetShares(VECSHARES &shares) const
 {
   shares = *m_vecShares;
   // add our plug n play shares
-#ifdef HAS_XBOX_HARDWARE
+
   if (m_allowNonLocalShares)
   {
+#ifdef HAS_XBOX_HARDWARE
     g_memoryUnitManager.GetMemoryUnitShares(shares);
-    // XBOX Autodetection
-    CShare Share;
-    if(CUtil::XboxAutoDetectionGetShare(Share))
-      shares.push_back(Share);
-  }
 #endif
+    CUtil::AutoDetectionGetShare(shares);
+  }
 
   // and update our dvd share
   for (unsigned int i = 0; i < shares.size(); ++i)

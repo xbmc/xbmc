@@ -27,6 +27,7 @@
 #include "GUIWindowVideoFiles.h"
 #include "VideoInfoScanner.h"
 #include "Util.h"
+#include "FileSystem/PluginDirectory.h"
 
 using namespace DIRECTORY;
 
@@ -83,14 +84,16 @@ bool CGUIDialogMediaSource::OnMessage(CGUIMessage& message)
         CShare share;
         share.FromNameAndPaths("video", m_name, GetPaths());
         
-        CGUIDialogContentSettings::ShowForDirectory(share.strPath,m_info,m_bRunScan,m_bScanRecursively,m_bUseDirNames);
+        CGUIDialogContentSettings::ShowForDirectory(share.strPath,m_info,m_settings,m_bRunScan);
       }
       return true;
     }
     break;
   case GUI_MSG_WINDOW_INIT:
     {
-      m_bRunScan = m_bScanRecursively = m_bUseDirNames = false;
+      m_bRunScan = false;
+      m_settings.parent_name = false;
+      m_settings.recurse = 0;
       UpdateButtons();
     }
     break;
@@ -147,27 +150,8 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
     if (type == "video")
     {
       if (dialog->m_bRunScan)
-      {
-        VIDEO::SScanSettings settings;
-        if (dialog->m_bUseDirNames)
-        {
-          if (dialog->m_info.strContent.Equals("tvshows"))
-            settings.parent_name_root = true;
-          else
-            settings.parent_name_root = false;
-          
-          settings.parent_name = true;
-        }
-        else
-        {
-          settings.parent_name = settings.parent_name_root = false;
-        }
-        if (dialog->m_bScanRecursively)
-          settings.recurse = INT_MAX;
-        else
-          settings.recurse = 1;
-        CGUIWindowVideoBase::OnScan(share.strPath,dialog->m_info,settings);
-      }
+        CGUIWindowVideoBase::OnScan(share.strPath,dialog->m_info,dialog->m_settings);
+
     }
   }
   dialog->m_paths.Clear();
@@ -281,7 +265,15 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
         extraShares.push_back(share4);
       }
     }
-  }
+    // add the plugins dir as needed
+    if (CPluginDirectory::HasPlugins("music"))
+    {
+      CShare share2;
+      share2.strPath = "plugin://music/";
+      share2.strName = g_localizeStrings.Get(1038); // Music Plugins
+      extraShares.push_back(share2);
+    }
+ }
   else if (m_type == "video" || m_type == "upnpvideo")
   { // add the music playlist location
     CShare share1;
@@ -293,6 +285,15 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     share2.strPath = "rtv://*/";
     share2.strName = "ReplayTV";
     extraShares.push_back(share2);
+
+    // add the plugins dir as needed
+    if (CPluginDirectory::HasPlugins("video"))
+    {
+      CShare share3;
+      share3.strPath = "plugin://video/";
+      share3.strName = g_localizeStrings.Get(1037); // Video Plugins
+      extraShares.push_back(share3);
+    }
   }
   else if ((m_type == "pictures" || m_type == "upnpictures") && g_guiSettings.GetString("pictures.screenshotpath",false)!= "")
   {
@@ -300,6 +301,15 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     share1.strPath = "special://screenshots/";
     share1.strName = g_localizeStrings.Get(20008);
     extraShares.push_back(share1);
+
+    // add the plugins dir as needed
+    if (CPluginDirectory::HasPlugins("pictures"))
+    {
+      CShare share2;
+      share2.strPath = "plugin://pictures/";
+      share2.strName = g_localizeStrings.Get(1039); // Picture Plugins
+      extraShares.push_back(share2);
+    }
   }
   if (CGUIDialogFileBrowser::ShowAndGetShare(path, allowNetworkShares, extraShares.size()==0?NULL:&extraShares))
   {

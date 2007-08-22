@@ -21,10 +21,10 @@ class CTextureBundle
 #endif  
   std::map<CStdString, FileHeader_t> m_FileHeaders;
   std::map<CStdString, FileHeader_t>::iterator m_CurFileHeader[2];
-  BYTE* 		m_PreLoadBuffer[2];
-  int 		m_PreloadIdx;
-  int 		m_LoadIdx;
-  bool 		m_themeBundle;
+  BYTE* m_PreLoadBuffer[2];
+  int m_PreloadIdx;
+  int m_LoadIdx;
+  bool m_themeBundle;
 
   bool OpenBundle();
   HRESULT LoadFile(const CStdString& Filename, CAutoTexBuffer& UnpackedBuf);

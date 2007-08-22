@@ -66,6 +66,7 @@
 #define WEATHER_LOCATION            102
 #define WEATHER_IS_FETCHED          103
 
+#define SYSTEM_LANGUAGE             108
 #define SYSTEM_LAUNCHING_XBE        109
 #define SYSTEM_TIME                 110
 #define SYSTEM_DATE                 111
@@ -87,7 +88,6 @@
 #define SYSTEM_MEDIA_DVD            127
 #define SYSTEM_DVDREADY             128
 #define SYSTEM_HAS_ALARM            129
-#define SYSTEM_AUTODETECTION        130
 #define SYSTEM_SCREEN_MODE          132
 #define SYSTEM_SCREEN_WIDTH         133
 #define SYSTEM_SCREEN_HEIGHT        134
@@ -212,15 +212,11 @@
 #define LISTITEM_PREMIERED          335
 #define LISTITEM_COMMENT            336
 #define LISTITEM_ACTUAL_ICON        337
-#define LISTITEM_END                340
-
-#define MUSICPM_ENABLED             350
-#define MUSICPM_SONGSPLAYED         351
-#define MUSICPM_MATCHINGSONGS       352
-#define MUSICPM_MATCHINGSONGSPICKED 353
-#define MUSICPM_MATCHINGSONGSLEFT   354
-#define MUSICPM_RELAXEDSONGSPICKED  355
-#define MUSICPM_RANDOMSONGSPICKED   356
+#define LISTITEM_PATH               338
+#define LISTITEM_PICTURE_PATH       339
+#define LISTITEM_PICTURE_DATETIME   340
+#define LISTITEM_PICTURE_RESOLUTION 341
+#define LISTITEM_END                350
 
 #define CONTAINER_FOLDERTHUMB       360
 #define CONTAINER_FOLDERPATH        361
@@ -229,6 +225,15 @@
 #define CONTAINER_SORT_METHOD       364
 #define CONTAINER_ON_NEXT           365
 #define CONTAINER_ON_PREVIOUS       366
+#define CONTAINER_HAS_FOCUS         367
+
+#define MUSICPM_ENABLED             380
+#define MUSICPM_SONGSPLAYED         381
+#define MUSICPM_MATCHINGSONGS       382
+#define MUSICPM_MATCHINGSONGSPICKED 383
+#define MUSICPM_MATCHINGSONGSLEFT   384
+#define MUSICPM_RELAXEDSONGSPICKED  385
+#define MUSICPM_RANDOMSONGSPICKED   386
 
 #define PLAYLIST_LENGTH             390
 #define PLAYLIST_POSITION           391
@@ -316,6 +321,9 @@
 #define XLINK_KAI_USERNAME          750
 #define SKIN_THEME                  800
 
+#define SLIDE_INFO_START            900
+#define SLIDE_INFO_END              980
+
 #define WINDOW_IS_TOPMOST           9994
 #define WINDOW_IS_VISIBLE           9995
 #define WINDOW_NEXT                 9996
@@ -378,9 +386,9 @@ public:
   int TranslateString(const CStdString &strCondition);
   bool GetBool(int condition, DWORD dwContextWindow = 0);
   int GetInt(int info) const;
-  string GetLabel(int info);
+  CStdString GetLabel(int info);
 
-  CStdString GetImage(int info, int contextWindow);
+  CStdString GetImage(int info, DWORD contextWindow);
 
   CStdString GetTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
   CStdString GetDate(bool bNumbersOnly = false);
@@ -393,6 +401,9 @@ public:
   void SetCurrentSong(CFileItem &item);
   void SetCurrentAlbumThumb(const CStdString thumbFileName);
   void SetCurrentMovie(CFileItem &item);
+  void SetCurrentSlide(CFileItem &item);
+  const CFileItem &GetCurrentSlide() const { return m_currentSlide; };
+  void ResetCurrentSlide();
   void SetCurrentSongTag(const CMusicInfoTag &tag) 
   {     
     *m_currentFile.GetMusicInfoTag() = tag; 
@@ -423,7 +434,8 @@ public:
   CStdString GetVideoLabel(int item);
   CStdString GetPlaylistLabel(int item);
   CStdString GetMusicPartyModeLabel(int item);
-  
+  CStdString GetPictureLabel(int item) const;
+
   __int64 GetPlayTime() const;  // in ms
   CStdString GetCurrentPlayTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
   int GetPlayTimeRemaining() const;
@@ -447,18 +459,15 @@ public:
   void UpdateFPS();
   inline float GetFPS() const { return m_fps; };
 
-  void SetAutodetectedXbox(bool set) { m_hasAutoDetectedXbox = set; };
-  bool HasAutodetectedXbox() const { return m_hasAutoDetectedXbox; };
-
   void SetNextWindow(int windowID) { m_nextWindowID = windowID; };
   void SetPreviousWindow(int windowID) { m_prevWindowID = windowID; };
 
   void ParseLabel(const CStdString &strLabel, vector<CInfoPortion> &multiInfo);
-  CStdString GetMultiLabel(const vector<CInfoPortion> &multiInfo);
+  CStdString GetMultiInfo(const vector<CInfoPortion> &multiInfo, DWORD contextWindow, bool preferImage = false);
 
   void ResetCache();
 
-  CStdString GetItemLabel(const CFileItem *item, int info);
+  CStdString GetItemLabel(const CFileItem *item, int info) const;
   CStdString GetItemMultiLabel(const CFileItem *item, const vector<CInfoPortion> &multiInfo);
   CStdString GetItemImage(const CFileItem *item, int info) const;
   bool       GetItemBool(const CFileItem *item, int info, DWORD contextWindow);
@@ -498,6 +507,7 @@ protected:
   CStdString m_currentMovieThumb;
   unsigned int m_lastMusicBitrateTime;
   unsigned int m_MusicBitrate;
+  CFileItem m_currentSlide;
   int i_SmartRequest;
  
   // fan stuff
@@ -518,8 +528,6 @@ protected:
   unsigned int m_frameCounter;
   unsigned int m_lastFPSTime;
 
-  // Xbox Autodetect stuff
-  bool m_hasAutoDetectedXbox;
   CStdString m_launchingXBE;
 
   map<int, int> m_containerMoves;  // direction of list moving

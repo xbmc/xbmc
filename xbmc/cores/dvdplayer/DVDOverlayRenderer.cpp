@@ -4,6 +4,7 @@
 #include "DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
 
+
 void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlay* pOverlay)
 {
   if (pOverlay->IsOverlayType(DVDOVERLAY_TYPE_SPU))
@@ -15,7 +16,7 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlay* pOve
   {
     CDVDOverlayText* pOverlayText = (CDVDOverlayText*)pOverlay;
     
-    //CLog::Log(LOGDEBUG," - s: %i, e: %i", (int)(pOverlayText->iPTSStartTime / 1000), (int)(pOverlayText->iPTSStopTime / 1000));
+    //CLog::Log(LOGDEBUG, " - s: %i, e: %i", (int)(pOverlayText->iPTSStartTime / 1000), (int)(pOverlayText->iPTSStopTime / 1000));
     
     CDVDOverlayText::CElement* e = pOverlayText->m_pHead;
     while (e)
@@ -23,7 +24,7 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlay* pOve
       if (e->IsElementType(CDVDOverlayText::ELEMENT_TYPE_TEXT))
       {
         CDVDOverlayText::CElementText* t = (CDVDOverlayText::CElementText*)e;
-        CLog::Log(LOGDEBUG," - %S", t->m_wszText);
+        CLog::Log(LOGDEBUG," - %S", t->m_text);
       }
       e = e->pNext;
     }

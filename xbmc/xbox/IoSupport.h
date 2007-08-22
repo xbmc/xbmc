@@ -43,11 +43,11 @@
 #define MODE2_DATA_SIZE    2324 // And has 2324 usable bytes
 #define RAW_SECTOR_SIZE    2352 // Raw sector size
 
-// Xbox extended partition numbers, 6-15
+// Xbox extended partition numbers, 6-7.  Note that up to 15 can normally be used, but we reserve 8->15 for memcards.
 #define EXTEND_PARTITION_BEGIN  6
-#define EXTEND_PARTITION_END   15
+#define EXTEND_PARTITION_END    7
 #define EXTEND_DRIVE_BEGIN     'F'
-#define EXTEND_DRIVE_END       'O'
+#define EXTEND_DRIVE_END       'G'
 
 // This flag (part of PARTITION_ENTRY.pe_flags) tells you whether/not a
 // partition is being used (whether/not drive G is active, for example)

@@ -27,6 +27,8 @@
 #include "Application.h"
 #include "PlayListPlayer.h"
 #include "PartyModeManager.h"
+#include "LastFmManager.h"
+#include "utils/LabelFormatter.h"
 
 using namespace PLAYLIST;
 
@@ -369,7 +371,7 @@ void CGUIWindowMusicPlayList::UpdateButtons()
   CGUIWindowMusicBase::UpdateButtons();
 
   // Update playlist buttons
-  if (m_vecItems.Size() && !g_partyModeManager.IsEnabled())
+  if (m_vecItems.Size() && !g_partyModeManager.IsEnabled() && !CLastFmManager::GetInstance()->IsRadioEnabled())
   {
     CONTROL_ENABLE(CONTROL_BTNSHUFFLE);
     CONTROL_ENABLE(CONTROL_BTNSAVE);
@@ -470,8 +472,8 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
     CStdString strTrackRight=g_guiSettings.GetString("musicfiles.nowplayingtrackformatright");
     if (strTrackRight.IsEmpty())
       strTrackRight = g_guiSettings.GetString("musicfiles.trackformatright");
-    pItem->FormatLabel(strTrackLeft);
-    pItem->FormatLabel2(strTrackRight);
+    CLabelFormatter formatter(strTrackLeft, strTrackRight);
+    formatter.FormatLabels(pItem);
   } // if (pItem->m_musicInfoTag.Loaded())
   else
   {

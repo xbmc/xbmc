@@ -15,6 +15,8 @@
 #include "PltXmlHelper.h"
 #include "PltAction.h"
 
+NPT_SET_LOCAL_LOGGER("platinum.core.argument")
+
 /*----------------------------------------------------------------------
 |   PLT_ArgumentDesc::PLT_ArgumentDesc
 +---------------------------------------------------------------------*/
@@ -36,13 +38,13 @@ NPT_Result
 PLT_ArgumentDesc::GetSCPDXML(NPT_XmlElementNode* node)
 {
     NPT_XmlElementNode* argument = new NPT_XmlElementNode("argument");
-    NPT_CHECK(node->AddChild(argument));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(argument, "name", m_Name));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(argument, "direction", m_Direction));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(argument, "relatedStateVariable", m_RelatedStateVariable->GetName()));
+    NPT_CHECK_SEVERE(node->AddChild(argument));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(argument, "name", m_Name));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(argument, "direction", m_Direction));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(argument, "relatedStateVariable", m_RelatedStateVariable->GetName()));
 
     if (m_HasReturnValue) {
-        NPT_CHECK(argument->AddChild(new NPT_XmlElementNode("retval")));
+        NPT_CHECK_SEVERE(argument->AddChild(new NPT_XmlElementNode("retval")));
     }
     
     return NPT_SUCCESS;
@@ -88,7 +90,7 @@ PLT_Argument::PLT_Argument(PLT_ArgumentDesc* arg_desc) :
 NPT_Result
 PLT_Argument::SetValue(const char* value) 
 {
-    NPT_CHECK(ValidateValue(value));
+    NPT_CHECK_SEVERE(ValidateValue(value));
 
     m_Value = value;
     return NPT_SUCCESS;

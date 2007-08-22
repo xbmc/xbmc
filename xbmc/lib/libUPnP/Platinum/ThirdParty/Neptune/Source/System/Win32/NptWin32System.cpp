@@ -16,7 +16,7 @@
 #include <windows.h>
 #endif
 
-#if !defined(UNDER_CE)
+#if !defined(_WIN32_WCE)
 #include <sys/timeb.h>
 #endif
 
@@ -37,7 +37,7 @@ NPT_System::GetProcessId(NPT_Integer& id)
     return NPT_SUCCESS;
 }
 
-#if defined(UNDER_CE)
+#if defined(_WIN32_WCE)
 /*----------------------------------------------------------------------
 |   NPT_System::GetCurrentTimeStamp
 +---------------------------------------------------------------------*/

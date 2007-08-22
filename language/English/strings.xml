@@ -664,6 +664,12 @@
   <string id="1034">Submenu</string>
   <string id="1035">Enable Submenu Buttons</string>
   <string id="1036">Favourites</string>
+  <string id="1037">Video Plugins</string>
+  <string id="1038">Music Plugins</string>
+  <string id="1039">Picture Plugins</string>
+  <string id="1040">Loading directory</string>
+  <string id="1041">Retrieved %i items</string>
+  <string id="1042">Retrieved %i of %i items</string>
 
   <string id="1200">SMB Client</string>
   <string id="1202">Workgroup</string>
@@ -1049,7 +1055,7 @@
   <string id="13385">Voice Mask - Port 4</string>
   <string id="13386">Use Time Based Seeking</string>
   <string id="13387">Track Naming Template Right</string>
-  <string id="13388">%s Presets</string>
+  <string id="13388">Preset</string>
   <string id="13389">There are no presets available&#10;for this visualisation</string>
   <string id="13390">There are no settings available&#10;for this visualisation</string>
   <string id="13391">Eject/Load</string>
@@ -1067,6 +1073,8 @@
   <string id="13403">Clear Default</string>
   <string id="13404">Resume</string>
   <string id="13405">Get Thumb</string>
+  <string id="13406">Picture Information</string>
+  <string id="13407">%s Presets</string>
 
   <string id="14000">Stack</string>
   <string id="14001">Unstack</string>
@@ -1617,6 +1625,11 @@
   <string id="20380">Exclude folder from scans</string>
   <string id="20381">Specials</string>
   <string id="20382">Automatically grab season thumbs</string>
+  <string id="20383">Folder contains a single Video</string>
+  <string id="20384">Link to TV Show</string>
+  <string id="20385">Remove Link to TV Show</string>
+  <string id="20386">Recently Added Movies</string>
+  <string id="20387">Recently Added Episodes</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
@@ -1662,7 +1675,7 @@
   <string id="21386">Acoustic Management Level</string>
   <string id="21387">Fast</string>
   <string id="21388">Quiet</string>
-  
+  <string id="21389">Enable Custom Background</string>  
   <string id="21390">Power Management Level</string>
   <string id="21391">High Power</string>
   <string id="21392">Low Power</string>
@@ -1706,6 +1719,66 @@
   <string id="21437">New Smart Playlist...</string>
   <string id="21438">%c Drive</string>
   <string id="21439">Edit Party Mode Rules</string>
+
+  <string id="21800">File Name</string>
+  <string id="21801">File Path</string>
+  <string id="21802">File Size</string>
+  <string id="21803">File Date/Time</string>
+  <string id="21804">Slide Index</string>
+  <string id="21805">Resolution</string>
+  <string id="21806">Comment</string>
+  <string id="21807">Colour/bw</string>
+  <string id="21808">Jpeg Process</string>
+
+  <string id="21820">Date/Time</string>
+  <string id="21821">Description</string>
+  <string id="21822">Camera Make</string>
+  <string id="21823">Camera Model</string>
+  <string id="21824">Exif Comment</string>
+  <string id="21825">Firmware</string>
+  <string id="21826">Aperture</string>
+  <string id="21827">Focal Length</string>
+  <string id="21828">Focus Distance</string>
+  <string id="21829">Exposure</string>
+  <string id="21830">Exposure Time</string>
+  <string id="21831">Exposure Bias</string>
+  <string id="21832">Exposure Mode</string>
+  <string id="21833">Flash Used</string>
+  <string id="21834">Whitebalance</string>
+  <string id="21835">Light Source</string>
+  <string id="21836">Metering Mode</string>
+  <string id="21837">ISO</string>
+  <string id="21838">Digital Zoom</string>
+  <string id="21839">CCD Width</string>
+  <string id="21840">GPS Latitude</string>
+  <string id="21841">GPS Longitude</string>
+  <string id="21842">GPS Altitude</string>
+  <string id="21843">Orientation</string>
+
+  <string id="21860">Supplemental Categories</string>
+  <string id="21861">Keywords</string>
+  <string id="21862">Caption</string>
+  <string id="21863">Author</string>
+  <string id="21864">Headline</string>
+  <string id="21865">Special Instructions</string>
+  <string id="21866">Category</string>
+  <string id="21867">Byline</string>
+  <string id="21868">Byline Title</string>
+  <string id="21869">Credit</string>
+  <string id="21870">Source</string>
+  <string id="21871">Copyright Notice</string>
+  <string id="21872">Object Name</string>
+  <string id="21873">City</string>
+  <string id="21874">State</string>
+  <string id="21875">Country</string>
+  <string id="21876">Original Tx Reference</string>
+  <string id="21877">Date Created</string>
+  <string id="21878">Copyright Flag</string>
+  <string id="21879">Country Code</string>
+  <string id="21880">Reference Service</string>
+  <string id="21881">Enable UPnP Renderer</string>
+
+  <!-- strings 21900 thru 21999 reserved for slideshow info -->
 
   <string id="29999">Apply Flicker Filter Setting to Games</string>
 </strings>

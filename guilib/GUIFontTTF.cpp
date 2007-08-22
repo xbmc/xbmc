@@ -73,12 +73,15 @@ private:
 
 CFreeTypeLibrary g_freeTypeLibrary; // our freetype library
 
-#define ROUND(x) floorf(x + 0.5f)
+namespace MathUtils {
+  inline int round_int (double x);
+}
 
+#define ROUND(x) (float)(MathUtils::round_int(x))
 #if defined(HAS_XBOX_D3D) || defined(HAS_SDL_OPENGL)
-#define ROUND_TO_PIXEL(x) floorf(x + 0.5f)
+#define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x))
 #else
-#define ROUND_TO_PIXEL(x) floorf(x + 0.5f) - 0.5f
+#define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x)) - 0.5f
 #endif
 
 #define CHARS_PER_TEXTURE_LINE 20 // number of characters to cache per texture line
@@ -626,7 +629,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
   // set the character in our table
   ch->letter = letter;
   ch->offsetX = (short)bitGlyph->left;
-  ch->offsetY = (short)max(m_cellBaseLine - bitGlyph->top, 0);
+  ch->offsetY = (short)max((short)m_cellBaseLine - bitGlyph->top, 0);
   ch->left = (float)m_posX + ch->offsetX;
   ch->top = (float)m_posY + ch->offsetY;
   ch->right = ch->left + bitmap.width;

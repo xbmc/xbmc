@@ -37,6 +37,7 @@ public:
   void GetURLWithoutFilename(CStdString& strURL) const;
   CURL& operator= (const CURL& source);
   bool IsLocal() const;
+  static bool IsFileOnly(const CStdString &url);
 
 protected:
   int m_iPort;

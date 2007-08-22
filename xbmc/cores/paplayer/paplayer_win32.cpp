@@ -34,6 +34,7 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
   m_bPaused = false;
   m_cachingNextFile = false;
   m_currentlyCrossFading = false;
+  m_bQueueFailed = false;
 
   m_currentDecoder = 0;
 
@@ -140,6 +141,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   m_cachingNextFile = false;
   m_currentlyCrossFading = false;
   m_forceFadeToNext = false;
+  m_bQueueFailed = false;
 
   m_decoder[m_currentDecoder].Start();  // start playback
 #ifdef HAS_XBOX_AUDIO
@@ -159,6 +161,7 @@ void PAPlayer::UpdateCrossFadingTime(const CFileItem& file)
       m_crossFading &&
       (
         file.IsCDDA() ||
+        file.IsLastFM() ||
         (
           file.HasMusicInfoTag() && !g_guiSettings.GetBool("musicplayer.crossfadealbumtracks") &&
           (m_currentFile.GetMusicInfoTag()->GetAlbum() != "") &&
@@ -172,6 +175,11 @@ void PAPlayer::UpdateCrossFadingTime(const CFileItem& file)
       m_crossFading = 0;
     }
   }
+}
+void PAPlayer::OnNothingToQueueNotify()
+{
+  //nothing to queue, stop playing
+  m_bQueueFailed = true;
 }
 
 bool PAPlayer::QueueNextFile(const CFileItem &file)
@@ -195,10 +203,14 @@ bool PAPlayer::QueueNextFile(const CFileItem &file, bool checkCrossFading)
   int decoder = 1 - m_currentDecoder;
   __int64 seekOffset = (file.m_lStartOffset * 1000) / 75;
   if (!m_decoder[decoder].Create(file, seekOffset, m_crossFading))
+  {
+    m_bQueueFailed = true;
     return false;
+  }
   // ok, we're good to go on queuing this one up
   CLog::Log(LOGINFO, "PAP Player: Queuing next file %s", file.m_strPath.c_str());
 
+  m_bQueueFailed = false;
   if (checkCrossFading)
   {
     UpdateCrossFadingTime(file);
@@ -672,10 +684,21 @@ bool PAPlayer::ProcessPAP()
         }
         else
         {
-          // no track queued - return and get another one once we are finished
-          // with the current stream
-          WaitForStream();
-          return false;
+          if (GetTotalTime64() <= 0 && !m_bQueueFailed)
+          { //we did not know the duration so didn't queue the next song, try queueing it now
+            if (!m_cachingNextFile)
+            {// request the next file from our application
+              m_callback.OnQueueNextItem();
+              m_cachingNextFile = true;
+            }
+          }
+          else
+          {
+            // no track queued - return and get another one once we are finished
+            // with the current stream
+            WaitForStream();
+            return false;
+          }
         }
       }
       else

@@ -26,6 +26,12 @@ bool CDirectoryNodeSeasons::GetContent(CFileItemList& items)
   CollectQueryParams(params);
 
   bool bSuccess=videodatabase.GetSeasonsNav(BuildPath(), items, params.GetActorId(), params.GetDirectorId(), params.GetGenreId(), params.GetYear(), params.GetTvShowId());
+  if (items.Size() == 1)
+  {
+    items.Clear();
+    videodatabase.GetEpisodesNav(BuildPath()+"-1/",items,params.GetGenreId(),params.GetYear(),params.GetActorId(),params.GetDirectorId(),params.GetTvShowId());
+    items.m_strPath = BuildPath()+"-1/";
+  }
 
   videodatabase.Close();
 

@@ -15,7 +15,7 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with FFmpeg; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 #ifndef AVCODEC_H
@@ -33,8 +33,8 @@
 #define AV_STRINGIFY(s)         AV_TOSTRING(s)
 #define AV_TOSTRING(s) #s
 
-#define LIBAVCODEC_VERSION_INT  ((51<<16)+(40<<8)+4)
-#define LIBAVCODEC_VERSION      51.40.4
+#define LIBAVCODEC_VERSION_INT  ((51<<16)+(41<<8)+0)
+#define LIBAVCODEC_VERSION      51.41.0
 #define LIBAVCODEC_BUILD        LIBAVCODEC_VERSION_INT
 
 #define LIBAVCODEC_IDENT        "Lavc" AV_STRINGIFY(LIBAVCODEC_VERSION)
@@ -44,6 +44,12 @@
 #define AV_TIME_BASE_Q          (AVRational){1, AV_TIME_BASE}
 
 /**
+ * Identifies the syntax and semantics of the bitstream.
+ * The principle is roughly:
+ * Two decoders with the same ID can decode the same streams.
+ * Two encoders with the same ID can encode compatible streams.
+ * There may be slight deviations from the principle due to implementation
+ * details.
  *
  * If you add a codec ID to this list, add it so that
  * 1. no value of a existing codec ID changes (that would break ABI),
@@ -179,6 +185,7 @@ enum CodecID {
     CODEC_ID_PCM_U24LE,
     CODEC_ID_PCM_U24BE,
     CODEC_ID_PCM_S24DAUD,
+    CODEC_ID_PCM_ZORK,
 
     /* various ADPCM codecs */
     CODEC_ID_ADPCM_IMA_QT= 0x11000,
@@ -252,10 +259,13 @@ enum CodecID {
     CODEC_ID_MLP,
     CODEC_ID_GSM_MS, /* as found in WAV */
     CODEC_ID_ATRAC3,
+    CODEC_ID_VOXWARE,
 
     /* subtitle codecs */
     CODEC_ID_DVD_SUBTITLE= 0x17000,
     CODEC_ID_DVB_SUBTITLE,
+    CODEC_ID_TEXT,  /* raw UTF-8 text */
+    CODEC_ID_XSUB,
 
     CODEC_ID_MPEG2TS= 0x20000, /* _FAKE_ codec to indicate a raw MPEG-2 TS
                                 * stream (only used by libavformat) */
@@ -2119,6 +2129,12 @@ typedef struct AVCodecContext {
  * AVCodec.
  */
 typedef struct AVCodec {
+    /**
+     * Name of the codec implementation.
+     * The name is globally unique among encoders and among decoders (but an
+     * encoder and a decoder can share the same name).
+     * This is the primary way to find a codec from the user perspective.
+     */
     const char *name;
     enum CodecType type;
     enum CodecID id;
@@ -2211,11 +2227,6 @@ void av_resample_close(struct AVResampleContext *c);
 /**
  * @deprecated Use the software scaler (swscale) instead.
  */
-struct ImgReSampleContext attribute_deprecated;
-
-/**
- * @deprecated Use the software scaler (swscale) instead.
- */
 typedef struct ImgReSampleContext ImgReSampleContext attribute_deprecated;
 
 /**
@@ -2237,13 +2248,13 @@ attribute_deprecated ImgReSampleContext *img_resample_full_init(int owidth, int 
 /**
  * @deprecated Use the software scaler (swscale) instead.
  */
-attribute_deprecated void img_resample(ImgReSampleContext *s,
+attribute_deprecated void img_resample(struct ImgReSampleContext *s,
                   AVPicture *output, const AVPicture *input);
 
 /**
  * @deprecated Use the software scaler (swscale) instead.
  */
-attribute_deprecated void img_resample_close(ImgReSampleContext *s);
+attribute_deprecated void img_resample_close(struct ImgReSampleContext *s);
 
 #endif
 
@@ -2517,6 +2528,7 @@ int avcodec_default_execute(AVCodecContext *c, int (*func)(AVCodecContext *c2, v
  * @warning This function is not thread safe!
  *
  * @code
+ * avcodec_register_all();
  * codec = avcodec_find_decoder(CODEC_ID_H264);
  * if (!codec)
  *     exit(1);
@@ -2694,6 +2706,14 @@ char av_get_pict_type_char(int pict_type);
  */
 int av_get_bits_per_sample(enum CodecID codec_id);
 
+/**
+ * Returns sample format bits per sample.
+ *
+ * @param[in] sample_fmt the sample format
+ * @return Number of bits per sample or zero if unknown for the given sample format.
+ */
+int av_get_bits_per_sample_format(enum SampleFormat sample_fmt);
+
 /* frame parsing */
 typedef struct AVCodecParserContext {
     void *priv_data;
@@ -2754,22 +2774,6 @@ int av_parser_change(AVCodecParserContext *s,
                      const uint8_t *buf, int buf_size, int keyframe);
 void av_parser_close(AVCodecParserContext *s);
 
-extern AVCodecParser aac_parser;
-extern AVCodecParser ac3_parser;
-extern AVCodecParser cavsvideo_parser;
-extern AVCodecParser dca_parser;
-extern AVCodecParser dvbsub_parser;
-extern AVCodecParser dvdsub_parser;
-extern AVCodecParser h261_parser;
-extern AVCodecParser h263_parser;
-extern AVCodecParser h264_parser;
-extern AVCodecParser mjpeg_parser;
-extern AVCodecParser mpeg4video_parser;
-extern AVCodecParser mpegaudio_parser;
-extern AVCodecParser mpegvideo_parser;
-extern AVCodecParser pnm_parser;
-extern AVCodecParser vc1_parser;
-
 
 typedef struct AVBitStreamFilterContext {
     void *priv_data;
@@ -2799,14 +2803,6 @@ int av_bitstream_filter_filter(AVBitStreamFilterContext *bsfc,
                                const uint8_t *buf, int buf_size, int keyframe);
 void av_bitstream_filter_close(AVBitStreamFilterContext *bsf);
 
-extern AVBitStreamFilter dump_extradata_bsf;
-extern AVBitStreamFilter remove_extradata_bsf;
-extern AVBitStreamFilter noise_bsf;
-extern AVBitStreamFilter mp3_header_compress_bsf;
-extern AVBitStreamFilter mp3_header_decompress_bsf;
-extern AVBitStreamFilter mjpega_dump_header_bsf;
-extern AVBitStreamFilter imx_dump_header_bsf;
-
 
 /* memory */
 
@@ -2824,7 +2820,7 @@ void *av_fast_realloc(void *ptr, unsigned int *size, unsigned int min_size);
  * Frees all static arrays and resets their pointers to 0.
  * Call this function to release all statically allocated tables.
  *
- * @deprecated. Code which uses av_free_static is broken/missdesigned
+ * @deprecated. Code which uses av_free_static is broken/misdesigned
  * and should correctly use static arrays
  *
  */
@@ -2837,7 +2833,7 @@ attribute_deprecated void av_free_static(void);
  *
  * @param[in] size The amount of memory you need in bytes.
  * @return block of memory of the requested size
- * @deprecated. Code which uses av_mallocz_static is broken/missdesigned
+ * @deprecated. Code which uses av_mallocz_static is broken/misdesigned
  * and should correctly use static arrays
  */
 attribute_deprecated void *av_mallocz_static(unsigned int size);
@@ -2882,6 +2878,30 @@ attribute_deprecated int img_pad(AVPicture *dst, const AVPicture *src, int heigh
 
 extern unsigned int av_xiphlacing(unsigned char *s, unsigned int v);
 
+/**
+ * Parses \p str and put in \p width_ptr and \p height_ptr the detected values.
+ *
+ * @return 0 in case of a successful parsing, a negative value otherwise
+ * @param[in] str the string to parse: it has to be a string in the format
+ * <width>x<height> or a valid video frame size abbreviation.
+ * @param[in,out] width_ptr pointer to the variable which will contain the detected
+ * frame width value
+ * @param[in,out] height_ptr pointer to the variable which will contain the detected
+ * frame height value
+ */
+int av_parse_video_frame_size(int *width_ptr, int *height_ptr, const char *str);
+
+/**
+ * Parses \p str and put in \p frame_rate the detected values.
+ *
+ * @return 0 in case of a successful parsing, a negative value otherwise
+ * @param[in] str the string to parse: it has to be a string in the format
+ * <frame_rate_nom>/<frame_rate_den>, a float number or a valid video rate abbreviation
+ * @param[in,out] frame_rate pointer to the AVRational which will contain the detected
+ * frame rate
+ */
+int av_parse_video_frame_rate(AVRational *frame_rate, const char *str);
+
 /* error handling */
 #if EINVAL > 0
 #define AVERROR(e) (-(e)) /**< Returns a negative error code from a POSIX error code, to return from library functions. */
@@ -2899,5 +2919,6 @@ extern unsigned int av_xiphlacing(unsigned char *s, unsigned int v);
 #define AVERROR_NOFMT       AVERROR(EILSEQ)  /**< unknown format */
 #define AVERROR_NOTSUPP     AVERROR(ENOSYS)  /**< Operation not supported. */
 #define AVERROR_NOENT       AVERROR(ENOENT)  /**< No such file or directory. */
+#define AVERROR_PATCHWELCOME    -MKTAG('P','A','W','E') /**< Not yet implemented in FFmpeg. Patches welcome. */
 
 #endif /* AVCODEC_H */

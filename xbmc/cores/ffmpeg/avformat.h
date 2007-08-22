@@ -21,8 +21,8 @@
 #ifndef AVFORMAT_H
 #define AVFORMAT_H
 
-#define LIBAVFORMAT_VERSION_INT ((51<<16)+(12<<8)+1)
-#define LIBAVFORMAT_VERSION     51.12.1
+#define LIBAVFORMAT_VERSION_INT ((51<<16)+(12<<8)+2)
+#define LIBAVFORMAT_VERSION     51.12.2
 #define LIBAVFORMAT_BUILD       LIBAVFORMAT_VERSION_INT
 
 #define LIBAVFORMAT_IDENT       "Lavf" AV_STRINGIFY(LIBAVFORMAT_VERSION)
@@ -158,7 +158,7 @@ typedef struct AVFormatParameters {
 #define AVFMT_RAWPICTURE    0x0020 /**< format wants AVPicture structure for
                                       raw picture data */
 #define AVFMT_GLOBALHEADER  0x0040 /**< format wants global header */
-#define AVFMT_NOTIMESTAMPS  0x0080 /**< format doesnt need / has any timestamps */
+#define AVFMT_NOTIMESTAMPS  0x0080 /**< format does not need / have any timestamps */
 #define AVFMT_GENERIC_INDEX 0x0100 /**< use generic index building code */
 
 typedef struct AVOutputFormat {
@@ -186,6 +186,8 @@ typedef struct AVOutputFormat {
      */
     const struct AVCodecTag **codec_tag;
 
+    enum CodecID subtitle_codec; /**< default subtitle codec */
+
     /* private fields */
     struct AVOutputFormat *next;
 } AVOutputFormat;
@@ -195,7 +197,11 @@ typedef struct AVInputFormat {
     const char *long_name;
     /** size of private data so that it can be allocated in the wrapper */
     int priv_data_size;
-    /** tell if a given file has a chance of being parsed by this format */
+    /**
+     * tell if a given file has a chance of being parsed by this format.
+     * The buffer provided is guranteed to be AVPROBE_PADDING_SIZE bytes big
+     * so you dont have to check for that unless you need more.
+     */
     int (*read_probe)(AVProbeData *);
     /** read the format header and initialize the AVFormatContext
        structure. Return 0 if OK. 'ap' if non NULL contains
@@ -216,6 +222,7 @@ typedef struct AVInputFormat {
      * @param stream_index must not be -1
      * @param flags selects which direction should be preferred if no exact
      *              match is available
+     * @return >= 0 on success (but not necessarily the new offset)
      */
     int (*read_seek)(struct AVFormatContext *,
                      int stream_index, int64_t timestamp, int flags);
@@ -259,7 +266,7 @@ typedef struct AVIndexEntry {
     int64_t timestamp;
 #define AVINDEX_KEYFRAME 0x0001
     int flags:2;
-    int size:30; //yeah trying to keep the size of this small to reduce memory requirements (its 24 vs 32 byte due to possible 8byte align)
+    int size:30; //Yeah, trying to keep the size of this small to reduce memory requirements (it is 24 vs 32 byte due to possible 8byte align).
     int min_distance;         /**< min distance between this and the previous keyframe, used to avoid unneeded searching */
 } AVIndexEntry;
 
@@ -277,13 +284,14 @@ typedef struct AVStream {
      */
     AVRational r_frame_rate;
     void *priv_data;
-#if LIBAVFORMAT_VERSION_INT < (52<<16)
+
     /* internal data used in av_find_stream_info() */
-    int64_t codec_info_duration;
+    int64_t first_dts;
+#if LIBAVFORMAT_VERSION_INT < (52<<16)
     int codec_info_nb_frames;
 #endif
     /** encoding: PTS generation when outputing stream */
-    AVFrac pts;
+    struct AVFrac pts;
 
     /**
      * this is the fundamental unit of time (in seconds) in terms
@@ -295,14 +303,25 @@ typedef struct AVStream {
     int pts_wrap_bits; /**< number of bits in pts (used for wrapping control) */
     /* ffmpeg.c private use */
     int stream_copy; /**< if set, just copy stream */
-    enum AVDiscard discard; ///< selects which packets can be discarded at will and dont need to be demuxed
+    enum AVDiscard discard; ///< selects which packets can be discarded at will and do not need to be demuxed
     //FIXME move stuff to a flags field?
     /** quality, as it has been removed from AVCodecContext and put in AVVideoFrame
-     * MN:dunno if thats the right place, for it */
+     * MN: dunno if that is the right place for it */
     float quality;
-    /** decoding: pts of the first frame of the stream, in stream time base. */
+    /**
+     * decoding: pts of the first frame of the stream, in stream time base.
+     * only set this if you are absolutely 100% sure that the value you set
+     * it to really is the pts of the first frame
+     * This may be undefined (AV_NOPTS_VALUE).
+     * @note the ASF header does NOT contain a correct start_time the ASF
+     * demuxer must NOT set this
+     */
     int64_t start_time;
-    /** decoding: duration of the stream, in stream time base. */
+    /**
+     * decoding: duration of the stream, in stream time base.
+     * If a source file does not specify a duration, but does specify
+     * a bitrate, this value will be estimates from bit rate and file size.
+     */
     int64_t duration;
 
     char language[4]; /** ISO 639 3-letter language code (empty string if undefined) */
@@ -329,11 +348,12 @@ typedef struct AVStream {
 #define AVFMTCTX_NOHEADER      0x0001 /**< signal that no header is present
                                          (streams are added dynamically) */
 
-// ffmpeg seems to be compiled with MAX_STREAMS defined as 42, not 20.
-// Inconsistency here results in an invalid offset being used in the demuxer
-// for reporting stream length, etc
-
+#ifdef _XBOX
+/* dvd's can have maximally 41 streams */
 #define MAX_STREAMS 42
+#else
+#define MAX_STREAMS 20
+#endif
 
 /* format I/O context */
 typedef struct AVFormatContext {
@@ -402,6 +422,7 @@ typedef struct AVFormatContext {
     int flags;
 #define AVFMT_FLAG_GENPTS       0x0001 ///< generate pts if missing even if it requires parsing future frames
 #define AVFMT_FLAG_IGNIDX       0x0002 ///< ignore index
+#define AVFMT_FLAG_NONBLOCK     0x0004 ///< do not block when reading packets from input
 
     int loop_input;
     /** decoding: size of data to probe; encoding unused */
@@ -550,7 +571,7 @@ AVFormatContext *av_alloc_format_context(void);
  *
  * @param ic media file handle
  * @return >=0 if OK. AVERROR_xxx if error.
- * @todo let user decide somehow what information is needed so we dont waste time geting stuff the user doesnt need
+ * @todo Let user decide somehow what information is needed so we do not waste time geting stuff the user does not need.
  */
 int av_find_stream_info(AVFormatContext *ic);
 
@@ -670,7 +691,7 @@ int av_add_index_entry(AVStream *st,
 
 /**
  * Does a binary search using av_index_search_timestamp() and AVCodec.read_timestamp().
- * this isnt supposed to be called directly by a user application, but by demuxers
+ * This is not supposed to be called directly by a user application, but by demuxers.
  * @param target_ts target timestamp in the time base of the given stream
  * @param stream_index stream number
  */
@@ -680,7 +701,7 @@ int av_seek_frame_binary(AVFormatContext *s, int stream_index, int64_t target_ts
  * Updates cur_dts of all streams based on given timestamp and AVStream.
  *
  * Stream ref_st unchanged, others set cur_dts in their native timebase
- * only needed for timestamp wrapping or if (dts not set and pts!=dts)
+ * only needed for timestamp wrapping or if (dts not set and pts!=dts).
  * @param timestamp new dts expressed in time_base of param ref_st
  * @param ref_st reference stream giving time_base of param timestamp
  */
@@ -688,7 +709,7 @@ void av_update_cur_dts(AVFormatContext *s, AVStream *ref_st, int64_t timestamp);
 
 /**
  * Does a binary search using read_timestamp().
- * this isnt supposed to be called directly by a user application, but by demuxers
+ * This is not supposed to be called directly by a user application, but by demuxers.
  * @param target_ts target timestamp in the time base of the given stream
  * @param stream_index stream number
  */
@@ -698,8 +719,8 @@ int64_t av_gen_search(AVFormatContext *s, int stream_index, int64_t target_ts, i
 int av_set_parameters(AVFormatContext *s, AVFormatParameters *ap);
 
 /**
- * allocate the stream private data and write the stream header to an
- * output media file
+ * Allocate the stream private data and write the stream header to an
+ * output media file.
  *
  * @param s media file handle
  * @return 0 if OK. AVERROR_xxx if error.
@@ -724,10 +745,10 @@ int av_write_frame(AVFormatContext *s, AVPacket *pkt);
  *
  * The packet must contain one audio or video frame.
  * If the packets are already correctly interleaved the application should
- * call av_write_frame() instead as it is slightly faster, it is also important
- * to keep in mind that completly non interleaved input will need huge amounts
- * of memory to interleave with this, so its prefereable to interleave at the
- * demuxer level
+ * call av_write_frame() instead as it is slightly faster. It is also important
+ * to keep in mind that completely non-interleaved input will need huge amounts
+ * of memory to interleave with this, so it is preferable to interleave at the
+ * demuxer level.
  *
  * @param s media file handle
  * @param pkt the packet, which contains the stream_index, buf/buf_size, dts/pts, ...
@@ -767,13 +788,15 @@ void dump_format(AVFormatContext *ic,
 
 /**
  * parses width and height out of string str.
+ * @deprecated Use av_parse_video_frame_size instead.
  */
-int parse_image_size(int *width_ptr, int *height_ptr, const char *str);
+attribute_deprecated int parse_image_size(int *width_ptr, int *height_ptr, const char *str);
 
 /**
  * Converts frame rate from string to a fraction.
+ * @deprecated Use av_parse_video_frame_rate instead.
  */
-int parse_frame_rate(int *frame_rate, int *frame_rate_base, const char *arg);
+attribute_deprecated int parse_frame_rate(int *frame_rate, int *frame_rate_base, const char *arg);
 
 /**
  * Converts date string to number of seconds since Jan 1st, 1970.
@@ -831,22 +854,25 @@ int av_get_frame_filename(char *buf, int buf_size,
  */
 int av_filename_number_test(const char *filename);
 
-/* grab specific */
-int video_grab_init(void);
-int audio_init(void);
-
-/* DV1394 */
-int dv1394_init(void);
-int dc1394_init(void);
+/**
+ * Generate an SDP for an RTP session.
+ *
+ * @param ac array of AVFormatContexts describing the RTP streams. If the
+ *           array is composed by only one context, such context can contain
+ *           multiple AVStreams (one AVStream per RTP stream). Otherwise,
+ *           all the contexts in the array (an AVCodecContext per RTP stream)
+ *           must contain only one AVStream
+ * @param n_files number of AVCodecContexts contained in ac
+ * @param buff buffer where the SDP will be stored (must be allocated by
+ *             the caller
+ * @param size the size of the buffer
+ * @return 0 if OK. AVERROR_xxx if error.
+ */
+int avf_sdp_create(AVFormatContext *ac[], int n_files, char *buff, int size);
 
 #ifdef HAVE_AV_CONFIG_H
 
 #include "os_support.h"
-
-int strstart(const char *str, const char *val, const char **ptr);
-int stristart(const char *str, const char *val, const char **ptr);
-void pstrcpy(char *buf, int buf_size, const char *str);
-char *pstrcat(char *buf, int buf_size, const char *s);
 
 void __dynarray_add(unsigned long **tab_ptr, int *nb_ptr, unsigned long elem);
 

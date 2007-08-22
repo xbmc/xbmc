@@ -17,8 +17,7 @@
       <datelong>D. MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
       <tempunit>C</tempunit>
-      <speedunit>kmh</speedunit>
+      <speedunit>mps</speedunit>
     </region>
   </regions>
 </language>
-

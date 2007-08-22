@@ -24,7 +24,7 @@ protected:
   void AddOperatorLabel(CSmartPlaylistRule::SEARCH_OPERATOR op);
   void OnBrowse();
 
-  enum FIELD { TEXT_FIELD, NUMERIC_FIELD, DATE_FIELD, PLAYLIST_FIELD };
+  enum FIELD { TEXT_FIELD, NUMERIC_FIELD, DATE_FIELD, PLAYLIST_FIELD, SECONDS_FIELD };
   FIELD GetFieldType(CSmartPlaylistRule::DATABASE_FIELD field);
 
   CSmartPlaylistRule m_rule;

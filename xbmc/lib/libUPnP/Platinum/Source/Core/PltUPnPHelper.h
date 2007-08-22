@@ -13,9 +13,9 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#include "NptHttp.h"
-#include "NptList.h"
-#include "NptSystem.h"
+#include "Neptune.h"
+
+//NPT_SET_LOCAL_LOGGER("platinum.core.upnp.helper")
 
 /*----------------------------------------------------------------------
 |   NPT_StringFinder
@@ -163,11 +163,9 @@ public:
         NPT_List<NPT_NetworkInterface*> if_list;
         NPT_CHECK(NPT_NetworkInterface::GetNetworkInterfaces(if_list));
 
-        NPT_String ip;
         NPT_List<NPT_NetworkInterface*>::Iterator iface = if_list.GetFirstItem();
-
         while (iface) {
-            ip = (*(*iface)->GetAddresses().GetFirstItem()).GetPrimaryAddress().ToString();
+            NPT_String ip = (*(*iface)->GetAddresses().GetFirstItem()).GetPrimaryAddress().ToString();
             if (ip.Compare("0.0.0.0") && ip.Compare("127.0.0.1")) {
                 ips.Add(ip);
             }

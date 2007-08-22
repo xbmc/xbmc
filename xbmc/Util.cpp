@@ -49,7 +49,11 @@
 #include "PlayListPlayer.h"
 #include "PartyModeManager.h"
 #ifdef HAS_VIDEO_PLAYBACK
+#if defined(HAS_XBOX_HARDWARE) || defined(_LINUX)
 #include "cores/VideoRenderers/RenderManager.h"
+#else
+#include "cores/VideoRenderers/WinRenderManager.h"
+#endif
 #endif
 #ifdef HAS_PYTHON
 #include "lib/libPython/XBPython.h"
@@ -89,6 +93,88 @@
 #include "DirectXGraphics.h"
 #endif
 
+namespace MathUtils {
+
+inline int round_int (double x)
+{
+  assert (x > static_cast <double>(INT_MIN / 2) - 1.0);
+  assert (x < static_cast <double>(INT_MAX / 2) + 1.0);
+  const float round_to_nearest = 0.5f;
+  int i;
+#ifndef _LINUX
+  __asm
+  {
+    fld x
+    fadd st, st (0)
+    fadd round_to_nearest
+    fistp i
+    sar i, 1
+  }
+  return (i);
+#else
+#warning TODO: port _asm code for round_int
+  return (int)(round(x));
+#endif
+}
+
+inline int ceil_int (double x)
+{
+  assert (x > static_cast <double>(INT_MIN / 2) - 1.0);
+  assert (x < static_cast <double>(INT_MAX / 2) + 1.0);
+  const float round_towards_p_i = -0.5f;
+  int i;
+#ifndef _LINUX
+  __asm
+  {
+    fld x
+    fadd st, st (0)
+    fsubr round_towards_p_i
+    fistp i
+    sar i, 1
+  }
+  return (-i);
+#else
+#warning TODO: port _asm code for ceil_int
+  return (int)(ceil(x));
+#endif
+}
+
+inline int truncate_int(double x)
+{
+  assert (x > static_cast <double>(INT_MIN / 2) - 1.0);
+  assert (x < static_cast <double>(INT_MAX / 2) + 1.0);
+  const float round_towards_m_i = -0.5f;
+  int i;
+#ifndef _LINUX
+  __asm
+  {
+    fld x
+    fadd st, st (0)
+    fabs
+    fadd round_towards_m_i
+    fistp i
+    sar i, 1
+  }
+  if (x < 0)
+    i = -i;
+  return (i);
+#else
+#warning TODO: port _asm code for truncate_int
+  return (int)(x);
+#endif
+}
+
+void hack()
+{
+  // stupid hack to keep compiler from dropping these
+  // functions as unused
+  MathUtils::round_int(0.0);
+  MathUtils::truncate_int(0.0);
+  MathUtils::ceil_int(0.0);  
+}
+
+} // CMathUtils namespace
+
 using namespace DIRECTORY;
 
 #define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f)) // Valid ranges: brightness[-1 -> 1 (0 is default)] contrast[0 -> 2 (1 is default)]  gamma[0.5 -> 3.5 (1 is default)] default[ramp is linear]
@@ -97,7 +183,6 @@ static const __int64 SECS_TO_100NS = 10000000;
 
 HANDLE CUtil::m_hCurrentCpuUsage = NULL;
 
-CStdString strHasClientIP="",strHasClientInfo="",strNewClientIP,strNewClientInfo;
 using namespace AUTOPTR;
 using namespace MEDIA_DETECT;
 using namespace XFILE;
@@ -114,12 +199,179 @@ static Uint16 flashrampGreen[256];
 static Uint16 flashrampBlue[256];
 #endif
 
+XBOXDETECTION v_xboxclients;
+
 #ifdef HAS_XBOX_HARDWARE
-extern "C"
+// This are 70 Original Data Bytes because we have to restore 70 patched Bytes, not just 57
+static BYTE rawData[70] =
 {
-  extern bool WINAPI NtSetSystemTime(LPFILETIME SystemTime , LPFILETIME PreviousTime );
+    0x55, 0x8B, 0xEC, 0x81, 0xEC, 0x04, 0x01, 0x00, 0x00, 0x8B, 0x45, 0x08, 0x3D, 0x04, 0x01, 0x00, 
+    0x00, 0x53, 0x75, 0x32, 0x8B, 0x4D, 0x18, 0x85, 0xC9, 0x6A, 0x04, 0x58, 0x74, 0x02, 0x89, 0x01, 
+    0x39, 0x45, 0x14, 0x73, 0x0A, 0xB8, 0x23, 0x00, 0x00, 0xC0, 0xE9, 0x59, 0x01, 0x00, 0x00, 0x8B, 
+    0x4D, 0x0C, 0x89, 0x01, 0x8B, 0x45, 0x10, 0x8B, 0x0D, 0x9C, 0xFB, 0x04, 0x80, 0x89, 0x08, 0x33, 
+    0xC0, 0xE9, 0x42, 0x01, 0x00, 0x00, 
+};
+static BYTE OriginalData[57]=
+{
+  0x55,0x8B,0xEC,0x81,0xEC,0x04,0x01,0x00,0x00,0x8B,0x45,0x08,0x3D,0x04,0x01,0x00,
+  0x00,0x53,0x75,0x32,0x8B,0x4D,0x18,0x85,0xC9,0x6A,0x04,0x58,0x74,0x02,0x89,0x01,
+  0x39,0x45,0x14,0x73,0x0A,0xB8,0x23,0x00,0x00,0xC0,0xE9,0x59,0x01,0x00,0x00,0x8B,
+  0x4D,0x0C,0x89,0x01,0x8B,0x45,0x10,0x8B,0x0D
+};
+
+static BYTE PatchData[70]=
+{
+  0x55,0x8B,0xEC,0xB9,0x04,0x01,0x00,0x00,0x2B,0xE1,0x8B,0x45,0x08,0x53,0x3B,0xC1,
+  0x74,0x0C,0x49,0x3B,0xC1,0x75,0x2F,0xB8,0x00,0x03,0x80,0x00,0xEB,0x05,0xB8,0x04,
+  0x00,0x00,0x00,0x50,0x8B,0x4D,0x18,0x6A,0x04,0x58,0x85,0xC9,0x74,0x02,0x89,0x01,
+  0x8B,0x4D,0x0C,0x89,0x01,0x59,0x8B,0x45,0x10,0x89,0x08,0x33,0xC0,0x5B,0xC9,0xC2,
+  0x14,0x00,0x00,0x00,0x00,0x00
+};
+
+
+// for trainers
+#define KERNEL_STORE_ADDRESS 0x8000000C // this is address in kernel we store the address of our allocated memory block
+#define KERNEL_START_ADDRESS 0x80010000 // base addy of kernel
+#define KERNEL_ALLOCATE_ADDRESS 0x7FFD2200 // where we want to put our allocated memory block (under kernel so it works retail)
+#define KERNEL_SEARCH_RANGE 0x02AF90 // used for loop control base + search range to look xbe entry point bytes
+
+#define XBTF_HEAP_SIZE 15360 // plenty of room for trainer + xbtf support functions
+#define ETM_HEAP_SIZE 2400  // just enough room to match evox's etm spec limit (no need to give them more room then evox does)
+// magic kernel patch (asm included w/ source)
+static unsigned char trainerloaderdata[167] =
+{
+       0x60, 0xBA, 0x34, 0x12, 0x00, 0x00, 0x60, 0x6A, 0x01, 0x6A, 0x07, 0xE8, 0x67, 0x00, 0x00, 0x00,
+       0x6A, 0x0C, 0x6A, 0x08, 0xE8, 0x5E, 0x00, 0x00, 0x00, 0x61, 0x8B, 0x35, 0x18, 0x01, 0x01, 0x00,
+       0x83, 0xC6, 0x08, 0x8B, 0x06, 0x8B, 0x72, 0x12, 0x03, 0xF2, 0xB9, 0x03, 0x00, 0x00, 0x00, 0x3B,
+       0x06, 0x74, 0x0C, 0x83, 0xC6, 0x04, 0xE2, 0xF7, 0x68, 0xF0, 0x00, 0x00, 0x00, 0xEB, 0x29, 0x8B,
+       0xEA, 0x83, 0x7A, 0x1A, 0x00, 0x74, 0x05, 0x8B, 0x4A, 0x1A, 0xEB, 0x03, 0x8B, 0x4A, 0x16, 0x03,
+       0xCA, 0x0F, 0x20, 0xC0, 0x50, 0x25, 0xFF, 0xFF, 0xFE, 0xFF, 0x0F, 0x22, 0xC0, 0xFF, 0xD1, 0x58,
+       0x0F, 0x22, 0xC0, 0x68, 0xFF, 0x00, 0x00, 0x00, 0x6A, 0x08, 0xE8, 0x08, 0x00, 0x00, 0x00, 0x61,
+       0xFF, 0x15, 0x28, 0x01, 0x01, 0x00, 0xC3, 0x55, 0x8B, 0xEC, 0x66, 0xBA, 0x04, 0xC0, 0xB0, 0x20,
+       0xEE, 0x66, 0xBA, 0x08, 0xC0, 0x8A, 0x45, 0x08, 0xEE, 0x66, 0xBA, 0x06, 0xC0, 0x8A, 0x45, 0x0C,
+       0xEE, 0xEE, 0x66, 0xBA, 0x02, 0xC0, 0xB0, 0x1A, 0xEE, 0x50, 0xB8, 0x40, 0x42, 0x0F, 0x00, 0x48,
+       0x75, 0xFD, 0x58, 0xC9, 0xC2, 0x08, 0x00,
+};
+
+#define SIZEOFLOADERDATA 167// loaderdata is our kernel hack to handle if trainer (com file) is executed for title about to run
+
+static unsigned char trainerdata[XBTF_HEAP_SIZE] = { NULL }; // buffer to hold trainer in mem - needs to be global?
+// SM_Bus function for xbtf trainers
+static unsigned char sm_bus[48] =
+{
+	0x55, 0x8B, 0xEC, 0x66, 0xBA, 0x04, 0xC0, 0xB0, 0x20, 0xEE, 0x66, 0xBA, 0x08, 0xC0, 0x8A, 0x45, 
+	0x08, 0xEE, 0x66, 0xBA, 0x06, 0xC0, 0x8A, 0x45, 0x0C, 0xEE, 0xEE, 0x66, 0xBA, 0x02, 0xC0, 0xB0, 
+	0x1A, 0xEE, 0x50, 0xB8, 0x40, 0x42, 0x0F, 0x00, 0x48, 0x75, 0xFD, 0x58, 0xC9, 0xC2, 0x08, 0x00, 
+};
+ 
+// PatchIt dynamic patching
+static unsigned char patch_it_toy[33] =
+{
+	0x55, 0x8B, 0xEC, 0x60, 0x0F, 0x20, 0xC0, 0x50, 0x25, 0xFF, 0xFF, 0xFE, 0xFF, 0x0F, 0x22, 0xC0, 
+	0x8B, 0x4D, 0x0C, 0x8B, 0x55, 0x08, 0x89, 0x0A, 0x58, 0x0F, 0x22, 0xC0, 0x61, 0xC9, 0xC2, 0x08, 
+	0x00, 
+};
+
+// HookIt
+static unsigned char hookit_toy[43] =
+{
+	0x55, 0x8B, 0xEC, 0x60, 0x8B, 0x55, 0x08, 0x8B, 0x45, 0x0C, 0xBD, 0x0C, 0x00, 0x00, 0x80, 0x8B, 
+	0x6D, 0x00, 0x83, 0xC5, 0x02, 0x8B, 0x6D, 0x00, 0x8D, 0x44, 0x05, 0x00, 0xC6, 0x02, 0x68, 0x89, 
+	0x42, 0x01, 0xC6, 0x42, 0x05, 0xC3, 0x61, 0xC9, 0xC2, 0x08, 0x00, 
+};
+
+// in game keys (main)
+static unsigned char igk_main_toy[403] =
+{
+	0x81, 0x3D, 0x4C, 0x01, 0x01, 0x00, 0xA4, 0x01, 0x00, 0x00, 0x74, 0x30, 0xC7, 0x05, 0x4C, 0x01, 
+	0x01, 0x00, 0xA4, 0x01, 0x00, 0x00, 0xC7, 0x05, 0x14, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00, 0x00, 
+	0x60, 0xBA, 0x50, 0x01, 0x01, 0x00, 0xB9, 0x05, 0x00, 0x00, 0x00, 0xC7, 0x02, 0x00, 0x00, 0x00, 
+	0x00, 0x83, 0xC2, 0x04, 0xE2, 0xF5, 0x61, 0xE9, 0x4B, 0x01, 0x00, 0x00, 0x51, 0x8D, 0x4A, 0x08, 
+	0x60, 0x33, 0xC0, 0x8A, 0x41, 0x0C, 0x50, 0x8D, 0x15, 0x14, 0x00, 0x00, 0x80, 0x8B, 0x0A, 0x89, 
+	0x42, 0x04, 0x3B, 0xC1, 0x0F, 0x84, 0x1F, 0x01, 0x00, 0x00, 0x66, 0x25, 0x81, 0x00, 0x66, 0x3D, 
+	0x81, 0x00, 0x75, 0x0C, 0x80, 0x35, 0x51, 0x01, 0x01, 0x00, 0x01, 0xE9, 0x09, 0x01, 0x00, 0x00, 
+	0x58, 0x50, 0x66, 0x25, 0x82, 0x00, 0x66, 0x3D, 0x82, 0x00, 0x75, 0x0C, 0x80, 0x35, 0x52, 0x01, 
+	0x01, 0x00, 0x01, 0xE9, 0xF1, 0x00, 0x00, 0x00, 0x58, 0x50, 0x66, 0x25, 0x84, 0x00, 0x66, 0x3D, 
+	0x84, 0x00, 0x75, 0x0C, 0x80, 0x35, 0x53, 0x01, 0x01, 0x00, 0x01, 0xE9, 0xD9, 0x00, 0x00, 0x00, 
+	0x58, 0x50, 0x66, 0x25, 0x88, 0x00, 0x66, 0x3D, 0x88, 0x00, 0x75, 0x0C, 0x80, 0x35, 0x54, 0x01, 
+	0x01, 0x00, 0x01, 0xE9, 0xC1, 0x00, 0x00, 0x00, 0x58, 0x50, 0x66, 0x83, 0xE0, 0x41, 0x66, 0x83, 
+	0xF8, 0x41, 0x75, 0x0C, 0x80, 0x35, 0x55, 0x01, 0x01, 0x00, 0x01, 0xE9, 0xA9, 0x00, 0x00, 0x00, 
+	0x58, 0x50, 0x66, 0x83, 0xE0, 0x42, 0x66, 0x83, 0xF8, 0x42, 0x75, 0x0C, 0x80, 0x35, 0x56, 0x01, 
+	0x01, 0x00, 0x01, 0xE9, 0x91, 0x00, 0x00, 0x00, 0x58, 0x50, 0x66, 0x83, 0xE0, 0x44, 0x66, 0x83, 
+	0xF8, 0x44, 0x75, 0x09, 0x80, 0x35, 0x57, 0x01, 0x01, 0x00, 0x01, 0xEB, 0x7C, 0x58, 0x50, 0x66, 
+	0x83, 0xE0, 0x48, 0x66, 0x83, 0xF8, 0x48, 0x75, 0x09, 0x80, 0x35, 0x58, 0x01, 0x01, 0x00, 0x01, 
+	0xEB, 0x67, 0x58, 0x50, 0x66, 0x25, 0xC0, 0x00, 0x66, 0x3D, 0xC0, 0x00, 0x75, 0x09, 0x80, 0x35, 
+	0x59, 0x01, 0x01, 0x00, 0x01, 0xEB, 0x52, 0x58, 0x50, 0x66, 0x83, 0xE0, 0x60, 0x66, 0x83, 0xF8, 
+	0x60, 0x75, 0x09, 0x80, 0x35, 0x5A, 0x01, 0x01, 0x00, 0x01, 0xEB, 0x3D, 0x58, 0x50, 0x66, 0x83, 
+	0xE0, 0x50, 0x66, 0x83, 0xF8, 0x50, 0x75, 0x09, 0x80, 0x35, 0x5B, 0x01, 0x01, 0x00, 0x01, 0xEB, 
+	0x28, 0x58, 0x50, 0x66, 0x25, 0xA0, 0x00, 0x66, 0x3D, 0xA0, 0x00, 0x75, 0x09, 0x80, 0x35, 0x5C, 
+	0x01, 0x01, 0x00, 0x01, 0xEB, 0x13, 0x58, 0x50, 0x66, 0x25, 0x90, 0x00, 0x66, 0x3D, 0x90, 0x00, 
+	0x75, 0x07, 0x80, 0x35, 0x5D, 0x01, 0x01, 0x00, 0x01, 0x58, 0x8D, 0x15, 0x14, 0x00, 0x00, 0x80, 
+	0x8B, 0x42, 0x04, 0x89, 0x02, 0x61, 0x59, 0x5B, 0xB9, 0x10, 0x00, 0x00, 0x80, 0xFF, 0x11, 0x53, 
+	0x33, 0xDB, 0xC3, 
+};
+
+// HOOKIGK (moves stock pad call and patches game igk_main to use correct register)
+static unsigned char hook_igk_toy[76] =
+{
+	0x55, 0x8B, 0xEC, 0x60, 0xBA, 0x34, 0x12, 0x00, 0x00, 0x8B, 0x45, 0x08, 0xB9, 0x20, 0x00, 0x00, 
+	0x00, 0x8A, 0x18, 0x80, 0xFB, 0x50, 0x7C, 0x07, 0x80, 0xFB, 0x53, 0x7F, 0x02, 0xEB, 0x05, 0x48, 
+	0xE2, 0xEF, 0xEB, 0x23, 0x80, 0xEB, 0x08, 0x88, 0x5A, 0x3E, 0x83, 0x45, 0x08, 0x01, 0x8B, 0x45, 
+	0x08, 0x50, 0x03, 0x00, 0x83, 0xC0, 0x04, 0x2B, 0x55, 0x08, 0x83, 0xEA, 0x04, 0xBB, 0x10, 0x00, 
+	0x00, 0x80, 0x89, 0x03, 0x58, 0x89, 0x10, 0x61, 0xC9, 0xC2, 0x04, 0x00, 
+};
+
+// SmartXX / Aladin4 functions
+static unsigned char lcd_toy_xx[378] =
+{
+	0x55, 0x8B, 0xEC, 0x90, 0x66, 0x8B, 0x55, 0x08, 0x90, 0x8A, 0x45, 0x0C, 0x90, 0xEE, 0x90, 0x90, 
+	0xC9, 0xC2, 0x08, 0x00, 0x55, 0x8B, 0xEC, 0x60, 0x33, 0xC0, 0x33, 0xDB, 0x0F, 0xB6, 0x45, 0x08, 
+	0xC1, 0xF8, 0x02, 0x83, 0xE0, 0x28, 0xA2, 0x40, 0x01, 0x01, 0x00, 0x0F, 0xB6, 0x45, 0x08, 0x83, 
+	0xE0, 0x50, 0x0F, 0xB6, 0x0D, 0x40, 0x01, 0x01, 0x00, 0x0B, 0xC8, 0x88, 0x0D, 0x40, 0x01, 0x01, 
+	0x00, 0x0F, 0xB6, 0x45, 0x08, 0xC1, 0xE0, 0x02, 0x83, 0xE0, 0x28, 0xA2, 0x41, 0x01, 0x01, 0x00, 
+	0x0F, 0xB6, 0x45, 0x08, 0xC1, 0xE0, 0x04, 0x83, 0xE0, 0x50, 0x0F, 0xB6, 0x0D, 0x41, 0x01, 0x01, 
+	0x00, 0x0B, 0xC8, 0x88, 0x0D, 0x41, 0x01, 0x01, 0x00, 0x0F, 0xB6, 0x45, 0x0C, 0x83, 0xE0, 0x02, 
+	0x0F, 0xB6, 0x0D, 0x40, 0x01, 0x01, 0x00, 0x0B, 0xC1, 0x50, 0x68, 0x00, 0xF7, 0x00, 0x00, 0xE8, 
+	0x7C, 0xFF, 0xFF, 0xFF, 0x0F, 0xB6, 0x45, 0x0C, 0x83, 0xE0, 0x02, 0x83, 0xC8, 0x04, 0x0F, 0xB6, 
+	0x0D, 0x40, 0x01, 0x01, 0x00, 0x0B, 0xC1, 0x50, 0x68, 0x00, 0xF7, 0x00, 0x00, 0xE8, 0x5E, 0xFF, 
+	0xFF, 0xFF, 0x0F, 0xB6, 0x45, 0x0C, 0x83, 0xE0, 0x02, 0x0F, 0xB6, 0x0D, 0x40, 0x01, 0x01, 0x00, 
+	0x0B, 0xC1, 0x50, 0x68, 0x00, 0xF7, 0x00, 0x00, 0xE8, 0x43, 0xFF, 0xFF, 0xFF, 0x0F, 0xB6, 0x45, 
+	0x0C, 0x83, 0xE0, 0x01, 0x75, 0x6A, 0x0F, 0xB6, 0x45, 0x0C, 0x83, 0xE0, 0x02, 0x0F, 0xB6, 0x0D, 
+	0x41, 0x01, 0x01, 0x00, 0x0B, 0xC1, 0x50, 0x68, 0x00, 0xF7, 0x00, 0x00, 0xE8, 0x1F, 0xFF, 0xFF, 
+	0xFF, 0x0F, 0xB6, 0x45, 0x0C, 0x83, 0xE0, 0x02, 0x83, 0xC8, 0x04, 0x0F, 0xB6, 0x0D, 0x41, 0x01, 
+	0x01, 0x00, 0x0B, 0xC1, 0x50, 0x68, 0x00, 0xF7, 0x00, 0x00, 0xE8, 0x01, 0xFF, 0xFF, 0xFF, 0x0F, 
+	0xB6, 0x45, 0x0C, 0x83, 0xE0, 0x02, 0x0F, 0xB6, 0x0D, 0x41, 0x01, 0x01, 0x00, 0x0B, 0xC1, 0x50, 
+	0x68, 0x00, 0xF7, 0x00, 0x00, 0xE8, 0xE6, 0xFE, 0xFF, 0xFF, 0x0F, 0xB6, 0x45, 0x08, 0x25, 0xFC, 
+	0x00, 0x00, 0x00, 0x75, 0x0B, 0xF4, 0x90, 0x90, 0x90, 0x90, 0x90, 0xF4, 0x90, 0x90, 0x90, 0x90, 
+	0xF4, 0x90, 0x90, 0x90, 0x90, 0x90, 0xF4, 0x90, 0x90, 0x90, 0x90, 0x90, 0x61, 0xC9, 0xC2, 0x08, 
+	0x00, 0x6A, 0x00, 0x6A, 0x01, 0xE8, 0xCA, 0xFE, 0xFF, 0xFF, 0xC3, 0x55, 0x8B, 0xEC, 0x60, 0xB1, 
+	0x80, 0x0A, 0x4D, 0x0C, 0x6A, 0x00, 0x8A, 0xC1, 0x50, 0xE8, 0xB6, 0xFE, 0xFF, 0xFF, 0x33, 0xC9, 
+	0x8B, 0x55, 0x08, 0x8A, 0x04, 0x11, 0x3C, 0x00, 0x74, 0x0B, 0x6A, 0x02, 0x50, 0xE8, 0xA2, 0xFE, 
+	0xFF, 0xFF, 0x41, 0xEB, 0xEE, 0x61, 0xC9, 0xC2, 0x08, 0x00, 
+};
+
+// X3 LCD functions
+static unsigned char lcd_toy_x3[246] =
+{
+	0x55, 0x8B, 0xEC, 0x90, 0x66, 0x8B, 0x55, 0x08, 0x90, 0x8A, 0x45, 0x0C, 0x90, 0xEE, 0x90, 0x90, 
+	0xC9, 0xC2, 0x08, 0x00, 0x55, 0x8B, 0xEC, 0x60, 0x50, 0x33, 0xC0, 0x8A, 0x45, 0x0C, 0x24, 0x02, 
+	0x3C, 0x00, 0x74, 0x05, 0x32, 0xE4, 0x80, 0xCC, 0x01, 0x8A, 0x45, 0x08, 0x24, 0xF0, 0x50, 0x68, 
+	0x04, 0xF5, 0x00, 0x00, 0xE8, 0xC7, 0xFF, 0xFF, 0xFF, 0x8A, 0xC4, 0x50, 0x68, 0x05, 0xF5, 0x00, 
+	0x00, 0xE8, 0xBA, 0xFF, 0xFF, 0xFF, 0x50, 0x80, 0xCC, 0x04, 0x8A, 0xC4, 0x50, 0x68, 0x05, 0xF5, 
+	0x00, 0x00, 0xE8, 0xA9, 0xFF, 0xFF, 0xFF, 0x58, 0x8A, 0xC4, 0x50, 0x68, 0x05, 0xF5, 0x00, 0x00, 
+	0xE8, 0x9B, 0xFF, 0xFF, 0xFF, 0x8A, 0x45, 0x0C, 0x24, 0x01, 0x3C, 0x00, 0x75, 0x3D, 0x8A, 0x45, 
+	0x08, 0xC0, 0xE0, 0x04, 0x50, 0x68, 0x04, 0xF5, 0x00, 0x00, 0xE8, 0x81, 0xFF, 0xFF, 0xFF, 0x8A, 
+	0xC4, 0x50, 0x68, 0x05, 0xF5, 0x00, 0x00, 0xE8, 0x74, 0xFF, 0xFF, 0xFF, 0x50, 0x80, 0xCC, 0x04, 
+	0x8A, 0xC4, 0x50, 0x68, 0x05, 0xF5, 0x00, 0x00, 0xE8, 0x63, 0xFF, 0xFF, 0xFF, 0x58, 0x8A, 0xC4, 
+	0x50, 0x68, 0x05, 0xF5, 0x00, 0x00, 0xE8, 0x55, 0xFF, 0xFF, 0xFF, 0x58, 0xF4, 0x90, 0x90, 0x90, 
+	0x90, 0x90, 0xF4, 0x90, 0x90, 0x90, 0x90, 0x90, 0x61, 0xC9, 0xC2, 0x08, 0x00, 0x6A, 0x00, 0x6A, 
+	0x01, 0xE8, 0x4E, 0xFF, 0xFF, 0xFF, 0xC3, 0x55, 0x8B, 0xEC, 0x60, 0xB1, 0x80, 0x0A, 0x4D, 0x0C, 
+	0x6A, 0x00, 0x8A, 0xC1, 0x50, 0xE8, 0x3A, 0xFF, 0xFF, 0xFF, 0x33, 0xC9, 0x8B, 0x55, 0x08, 0x8A, 
+	0x04, 0x11, 0x3C, 0x00, 0x74, 0x0B, 0x6A, 0x02, 0x50, 0xE8, 0x26, 0xFF, 0xFF, 0xFF, 0x41, 0xEB, 
+	0xEE, 0x61, 0xC9, 0xC2, 0x08, 0x00, 
 };
 #endif
+
 
 CUtil::CUtil(void)
 {
@@ -495,6 +747,28 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
   {
     // get the parent path of the first item
     return GetParentPath(CMultiPathDirectory::GetFirstPath(strPath), strParent);
+  }
+  else if (url.GetProtocol() == "plugin")
+  {
+    if (!url.GetOptions().IsEmpty())
+    {
+      url.SetOptions("");
+      url.GetURL(strParent);
+      return true;
+    }
+    if (!url.GetFileName().IsEmpty())
+    {
+      url.SetFileName("");
+      url.GetURL(strParent);
+      return true;
+    }
+    if (!url.GetHostName().IsEmpty())
+    {
+      url.SetHostName("");
+      url.GetURL(strParent);
+      return true;
+    }
+    return true;  // already at root
   }
   else if (strFile.size() == 0)
   {
@@ -3222,6 +3496,7 @@ const BUILT_IN commands[] = {
   "Skin.SetPath",       true,   "Prompts and sets a skin path",
   "Skin.Theme",         true,   "Control skin theme",
   "Skin.SetImage",      true,   "Prompts and sets a skin image",
+  "Skin.SetLargeImage", true,   "Prompts and sets a large skin images",
   "Skin.SetFile",       true,   "Prompts and sets a file",
   "Skin.SetBool",       true,   "Sets a skin setting on",
   "Skin.Reset",         true,   "Resets a skin setting to default",
@@ -3372,34 +3647,6 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       strWindow = strParameterCaseIntact.Left(iPos);
       strPath = strParameterCaseIntact.Mid(iPos + 1);
     }
-    if (strPath.Equals("autodetection"))
-    {
-      //Open the AutoDetect XBOX FTP in filemanager
-      if (g_guiSettings.GetBool("autodetect.onoff"))
-      {
-        //Autodetection String: NickName;FTP_USER;FTP_Password;FTP_PORT;BOOST_MODE
-        CStdString strFTPPath, strNickName, strFtpUserName, strFtpPassword, strFtpPort, strBoosMode;
-        CStdStringArray arSplit;
-        StringUtils::SplitString(strNewClientInfo,";", arSplit);
-        if ((int)arSplit.size() > 1)
-        {
-          strNickName     = arSplit[0].c_str();
-          strFtpUserName  = arSplit[1].c_str();
-          strFtpPassword  = arSplit[2].c_str();
-          strFtpPort      = arSplit[3].c_str();
-          strBoosMode     = arSplit[4].c_str();
-          strFTPPath.Format("ftp://%s:%s@%s:%s/",strFtpUserName.c_str(),strFtpPassword.c_str(),strHasClientIP.c_str(),strFtpPort.c_str());
-
-          strPath  = strFTPPath;
-        }
-        else
-        {
-          CLog::Log(LOGERROR, "ActivateWindow: Autodetection returned with invalid parameter : %s", strNewClientInfo.c_str());
-          return -7;
-        }
-      }
-    }
-
     // confirm the window destination is actually a number
     // before switching
     int iWindow = g_buttonTranslator.TranslateWindowString(strWindow.c_str());
@@ -3894,7 +4141,8 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 
     g_application.DelayLoadSkin();
   }
-  else if (execute.Equals("skin.setstring") || execute.Equals("skin.setimage") || execute.Equals("skin.setfile") || execute.Equals("skin.setpath") || execute.Equals("skin.setnumeric"))
+  else if (execute.Equals("skin.setstring") || execute.Equals("skin.setimage") || execute.Equals("skin.setfile") ||
+           execute.Equals("skin.setpath") || execute.Equals("skin.setnumeric") || execute.Equals("skin.setlargeimage"))
   {
     // break the parameter up if necessary
     // only search for the first "," and use that to break the string up
@@ -3913,8 +4161,8 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     else
       string = g_settings.TranslateSkinString(strParameterCaseIntact);
     CStdString value = g_settings.GetSkinString(string);
-    VECSHARES shares;
-    g_mediaManager.GetLocalDrives(shares);
+    VECSHARES localShares;
+    g_mediaManager.GetLocalDrives(localShares);
     if (execute.Equals("skin.setstring"))
     {
       if (CGUIDialogKeyboard::ShowAndGetInput(value, g_localizeStrings.Get(1029), true))
@@ -3927,7 +4175,14 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     }
     else if (execute.Equals("skin.setimage"))
     {
-      if (CGUIDialogFileBrowser::ShowAndGetImage(shares, g_localizeStrings.Get(1030), value))
+      if (CGUIDialogFileBrowser::ShowAndGetImage(localShares, g_localizeStrings.Get(1030), value))
+        g_settings.SetSkinString(string, value);
+    }
+    else if (execute.Equals("skin.setlargeimage"))
+    {
+      VECSHARES *shares = g_settings.GetSharesFromType("pictures");
+      if (!shares) shares = &localShares;
+      if (CGUIDialogFileBrowser::ShowAndGetImage(*shares, g_localizeStrings.Get(1030), value))
         g_settings.SetSkinString(string, value);
     }
     else if (execute.Equals("skin.setfile"))
@@ -3942,24 +4197,24 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         value = CUtil::TranslateSpecialPath(strMask.Mid(iEnd+1)); // translate here to start inside (or path wont match the fileitem in the filebrowser so it wont find it)
         CUtil::AddSlashAtEnd(value);
         bool bIsSource;
-        if (GetMatchingShare(value,shares,bIsSource) < 0) // path is outside shares - add it as a separate one
+        if (GetMatchingShare(value,localShares,bIsSource) < 0) // path is outside shares - add it as a separate one
         {
           CShare share;
           share.strName = g_localizeStrings.Get(13278);
           share.strPath = value;
-          shares.push_back(share);
+          localShares.push_back(share);
         }
         CStdString strTemp = strMask;
         strMask = strTemp.Left(iEnd);
       }
       else
         iEnd = strMask.size();
-      if (CGUIDialogFileBrowser::ShowAndGetFile(shares, strMask, g_localizeStrings.Get(1033), value))
+      if (CGUIDialogFileBrowser::ShowAndGetFile(localShares, strMask, g_localizeStrings.Get(1033), value))
         g_settings.SetSkinString(string, value);
     }
     else // execute.Equals("skin.setpath"))
     {
-      if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(1031), value))
+      if (CGUIDialogFileBrowser::ShowAndGetDirectory(localShares, g_localizeStrings.Get(1031), value))
         g_settings.SetSkinString(string, value);
     }
     g_settings.Save();
@@ -4106,7 +4361,8 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
     strPath = checkURL.GetHostName();
   if (checkURL.GetProtocol() == "tuxbox")
     return 1;
-
+  if (checkURL.GetProtocol() == "plugin")
+    return 1;
   if (checkURL.GetProtocol() == "multipath")
     strPath = CMultiPathDirectory::GetFirstPath(strPath);
 
@@ -4423,7 +4679,7 @@ bool CUtil::SetSysDateTimeYear(int iYear, int iMonth, int iDay, int iHour, int i
   SystemTimeToFileTime(&NewTime, &stNewTime);
   SystemTimeToFileTime(&CurTime, &stCurTime);
 #ifdef HAS_XBOX_HARDWARE
-  bool bReturn=NtSetSystemTime(&stNewTime, &stCurTime); //NtSetSystemTime(IN PLARGE_INTEGER SystemTime, OUT PLARGE_INTEGER PreviousTime OPTIONAL );
+  bool bReturn=NT_SUCCESS(NtSetSystemTime(&stNewTime, &stCurTime));
 #else
   bool bReturn(false);
 #endif
@@ -4461,93 +4717,336 @@ int CUtil::GMTZoneCalc(int iRescBiases, int iHour, int iMinute, int &iMinuteNew)
   }
   return iHourUTC;
 }
-bool CUtil::XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStdString strFTPPass, CStdString strNickName, int iFTPPort, CStdString &strHasClientIP, CStdString &strHasClientInfo, CStdString &strNewClientIP, CStdString &strNewClientInfo )
+bool CUtil::AutoDetection()
 {
-  bool bState= false;
-#ifdef HAS_XBOX_HARDWARE
-  CStdString strWorkTemp;
+bool bReturn=false;
+if (g_guiSettings.GetBool("autodetect.onoff"))
+{
+  static DWORD pingTimer = 0;
+  if( timeGetTime() - pingTimer < (DWORD)g_advancedSettings.m_autoDetectPingTime * 1000)
+    return false;
+  pingTimer = timeGetTime();
+
+  // send ping and request new client info
+  if ( CUtil::AutoDetectionPing(
+    g_guiSettings.GetBool("Autodetect.senduserpw") ? g_guiSettings.GetString("servers.ftpserveruser"):"anonymous",
+    g_guiSettings.GetBool("Autodetect.senduserpw") ? g_guiSettings.GetString("servers.ftpserverpassword"):"anonymous",
+    g_guiSettings.GetString("autodetect.nickname"),21 /*Our FTP Port! TODO: Extract FTP from FTP Server settings!*/) )
+  {
+    CStdString strFTPPath, strNickName, strFtpUserName, strFtpPassword, strFtpPort, strBoosMode;
+    CStdStringArray arSplit;
+    // do we have clients in our list ?
+    for(unsigned int i=0; i < v_xboxclients.client_ip.size(); i++)
+    {
+      // extract client informations
+      StringUtils::SplitString(v_xboxclients.client_info[i],";", arSplit);
+      if ((int)arSplit.size() > 1 && !v_xboxclients.client_informed[i])
+      {
+        //extract client info and build the ftp link!
+        strNickName     = arSplit[0].c_str();
+        strFtpUserName  = arSplit[1].c_str();
+        strFtpPassword  = arSplit[2].c_str();
+        strFtpPort      = arSplit[3].c_str();
+        strBoosMode     = arSplit[4].c_str();
+        strFTPPath.Format("ftp://%s:%s@%s:%s/",strFtpUserName.c_str(),strFtpPassword.c_str(),v_xboxclients.client_ip[i],strFtpPort.c_str());
+
+        //Do Notification for this Client
+        CStdString strtemplbl;
+        strtemplbl.Format("%s %s",strNickName, v_xboxclients.client_ip[i]);
+        g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(1251), strtemplbl);
+        
+        //Debug Log
+        CLog::Log(LOGDEBUG,"%s: %s FTP-Link: %s", g_localizeStrings.Get(1251).c_str(), strNickName.c_str(), strFTPPath.c_str());
+
+        //set the client_informed to TRUE, to prevent loop Notification
+        v_xboxclients.client_informed[i]=true;
+
+        //YES NO PopUP: ask for connecting to the detected client via Filemanger!
+        if (g_guiSettings.GetBool("autodetect.popupinfo") && CGUIDialogYesNo::ShowAndGetInput(1251, 0, 1257, 0))
+        {
+          m_gWindowManager.ActivateWindow(WINDOW_FILES, strFTPPath); //Open in MyFiles
+        }
+        bReturn = true;
+      }
+    }
+  }
+}
+return bReturn;
+}
+bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, CStdString strNickName, int iFTPPort)
+{
+  bool bFoundNewClient= false;
+  CStdString strTmp;
   CStdString strSendMessage = "ping\0";
   CStdString strReceiveMessage = "ping";
   int iUDPPort = 4905;
-  char  sztmp[512], szTemp[512];
-	static int	udp_server_socket, inited=0;
-	int  cliLen, t1,t2,t3,t4, init_counter=0, life=0;
+  char sztmp[512];
+  static int udp_server_socket, inited=0;
+#ifndef _LINUX
+  int cliLen;
+#else
+  socklen_t cliLen;
+#endif
+  int t1,t2,t3,t4, init_counter=0, life=0;
   struct sockaddr_in	server;
   struct sockaddr_in	cliAddr;
   struct timeval timeout={0,500};
-  XNADDR xna;
-	DWORD dwState;
   fd_set readfds;
-	if( ( !inited )  || ( bRefresh ) )
-	{
-		dwState = XNetGetTitleXnAddr(&xna);
-		XNetInAddrToString(xna.ina,(char *)strWorkTemp.c_str(),64);
-
-		// Get IP address
-		sscanf( (char *)strWorkTemp.c_str(), "%d.%d.%d.%d", &t1, &t2, &t3, &t4 );
-    if( !t1 ) return false;
-    cliLen = sizeof( cliAddr);
-    if( !inited )
+#ifdef HAS_XBOX_HARDWARE
+    XNADDR xna;
+    DWORD dwState = XNetGetTitleXnAddr(&xna);
+    XNetInAddrToString(xna.ina,(char *)strTmp.c_str(),64);
+#else
+    char hostname[255];
+#ifndef _LINUX
+    WORD wVer;
+    WSADATA wData;
+    PHOSTENT hostinfo;
+    wVer = MAKEWORD( 2, 0 );
+    if (WSAStartup(wVer,&wData) == 0)
     {
-      int tUDPsocket  = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
-	    char value      = 1;
-	    setsockopt( tUDPsocket, SOL_SOCKET, SO_BROADCAST, &value, value );
-	    struct sockaddr_in addr;
-	    memset(&(addr),0,sizeof(addr));
-	    addr.sin_family       = AF_INET;
-	    addr.sin_addr.s_addr  = INADDR_ANY;
-	    addr.sin_port         = htons(iUDPPort);
-	    bind(tUDPsocket,(struct sockaddr *)(&addr),sizeof(addr));
-      udp_server_socket = tUDPsocket;
-      inited = 1;
+#else
+    struct hostent * hostinfo;
+#endif
+      if(gethostname(hostname,sizeof(hostname)) == 0)
+      {
+        if((hostinfo = gethostbyname(hostname)) != NULL)
+        {
+          strTmp = inet_ntoa (*(struct in_addr *)*hostinfo->h_addr_list);
+          strNickName.Format("%s",hostname);
+        }
+      }
+#ifndef _LINUX
+      WSACleanup();
     }
-    FD_ZERO(&readfds);
-		FD_SET(udp_server_socket, &readfds);
-		life = select( 0,&readfds, NULL, NULL, &timeout );
-		if (life == -1 )  return false;
-    memset(&(server),0,sizeof(server));
-		server.sin_family           = AF_INET;
-		server.sin_addr.S_un.S_addr = INADDR_BROADCAST;
-		server.sin_port             = htons(iUDPPort);
-    sendto(udp_server_socket,(char *)strSendMessage.c_str(),5,0,(struct sockaddr *)(&server),sizeof(server));
-	}
+#endif
+#endif
+  // get IP address
+  sscanf( (char *)strTmp.c_str(), "%d.%d.%d.%d", &t1, &t2, &t3, &t4 );
+  if( !t1 ) return false;
+  cliLen = sizeof( cliAddr);
+  // setup UDP socket
+  if( !inited )
+  {
+    int tUDPsocket  = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	  char value      = 1;
+	  setsockopt( tUDPsocket, SOL_SOCKET, SO_BROADCAST, &value, value );
+	  struct sockaddr_in addr;
+	  memset(&(addr),0,sizeof(addr));
+	  addr.sin_family       = AF_INET;
+	  addr.sin_addr.s_addr  = INADDR_ANY;
+	  addr.sin_port         = htons(iUDPPort);
+	  bind(tUDPsocket,(struct sockaddr *)(&addr),sizeof(addr));
+    udp_server_socket = tUDPsocket;
+    inited = 1;
+  }
+  FD_ZERO(&readfds);
+  FD_SET(udp_server_socket, &readfds);
+  life = select( 0,&readfds, NULL, NULL, &timeout );
+  if (life == SOCKET_ERROR )
+    return false;
+  memset(&(server),0,sizeof(server));
+  server.sin_family = AF_INET;
+#ifndef _LINUX
+  server.sin_addr.S_un.S_addr = INADDR_BROADCAST;
+#else
+  server.sin_addr.s_addr = INADDR_BROADCAST;
+#endif
+  server.sin_port = htons(iUDPPort);
+  sendto(udp_server_socket,(char *)strSendMessage.c_str(),5,0,(struct sockaddr *)(&server),sizeof(server));
 	FD_ZERO(&readfds);
 	FD_SET(udp_server_socket, &readfds);
 	life = select( 0,&readfds, NULL, NULL, &timeout );
-  if (life == 0 ) // Do we have a Ping able xbox ? 0:no 1:yes
+  
+  unsigned int iLookUpCountMax = 2;
+  unsigned int i=0;
+  bool bUpdateShares=false;
+
+  // Ping able clients? 0:false
+  if (life == 0 )
   {
-    strNewClientIP ="";
-    strNewClientInfo ="";
-    g_infoManager.SetAutodetectedXbox(false);
+    if(v_xboxclients.client_ip.size() > 0)
+    {
+      // clients in list without life signal!
+      // calculate iLookUpCountMax value counter dependence on clients size!
+      if(v_xboxclients.client_ip.size() > iLookUpCountMax)
+        iLookUpCountMax += (v_xboxclients.client_ip.size()-iLookUpCountMax);
+
+      for (i=0; i<v_xboxclients.client_ip.size(); i++)
+      {
+        bUpdateShares=false;
+        //only 1 client, clear our list
+        if(v_xboxclients.client_lookup_count[i] >= iLookUpCountMax && v_xboxclients.client_ip.size() == 1 )
+        {
+          v_xboxclients.client_ip.clear();
+          v_xboxclients.client_info.clear();
+          v_xboxclients.client_lookup_count.clear();
+          v_xboxclients.client_informed.clear();
+          
+          // debug log, clients removed from our list 
+          CLog::Log(LOGDEBUG,"Autodetection: all Clients Removed! (mode LIFE 0)");
+          bUpdateShares = true;
+        }
+        else 
+        {
+          // check client lookup counter! Not reached the CountMax, Add +1!
+          if(v_xboxclients.client_lookup_count[i] < iLookUpCountMax ) 
+            v_xboxclients.client_lookup_count[i] = v_xboxclients.client_lookup_count[i]+1;
+          else
+          {
+            // client lookup counter REACHED CountMax, remove this client
+            v_xboxclients.client_ip.erase(v_xboxclients.client_ip.begin()+i);
+            v_xboxclients.client_info.erase(v_xboxclients.client_info.begin()+i);
+            v_xboxclients.client_lookup_count.erase(v_xboxclients.client_lookup_count.begin()+i);
+            v_xboxclients.client_informed.erase(v_xboxclients.client_informed.begin()+i);
+            
+            // debug log, clients removed from our list 
+            CLog::Log(LOGDEBUG,"Autodetection: Client ID:[%i] Removed! (mode LIFE 0)",i );
+            bUpdateShares = true;
+          }
+        }
+        if(bUpdateShares)
+        {
+          // a client is removed from our list, update our shares
+          CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
+          m_gWindowManager.SendThreadMessage(msg);
+        }
+      }
+    }
   }
+  // life !=0 we are online and ready to receive and send
   while( life )
 	{
-    recvfrom(udp_server_socket, sztmp, 512, 0,(struct sockaddr *) &cliAddr, &cliLen);
-    strWorkTemp.Format("%s",sztmp);
-    if( strWorkTemp == strReceiveMessage )
-		{
-      strWorkTemp.Format("%s;%s;%s;%d;%d\r\n\0",strNickName.c_str(),strFTPUserName.c_str(),strFTPPass.c_str(),iFTPPort,0 );
-      sendto(udp_server_socket,(char *)strWorkTemp.c_str(),strlen((char *)strWorkTemp.c_str())+1,0,(struct sockaddr *)(&cliAddr),sizeof(cliAddr));
-      strWorkTemp.Format("%d.%d.%d.%d",cliAddr.sin_addr.S_un.S_un_b.s_b1,cliAddr.sin_addr.S_un.S_un_b.s_b2,cliAddr.sin_addr.S_un.S_un_b.s_b3,cliAddr.sin_addr.S_un.S_un_b.s_b4 );
-
-			bool bPing = ( bool )false; // Check if we have this client in our list already, and if not respond with a ping // todo: a code to check the list of other clients
-			if( bPing ) sendto(udp_server_socket,strSendMessage.c_str(),5,0,(struct sockaddr *)(&cliAddr),sizeof(cliAddr));
-		}
-		else
-		{
-      sprintf( szTemp, "%d.%d.%d.%d", cliAddr.sin_addr.S_un.S_un_b.s_b1,cliAddr.sin_addr.S_un.S_un_b.s_b2,cliAddr.sin_addr.S_un.S_un_b.s_b3,cliAddr.sin_addr.S_un.S_un_b.s_b4 );
-      if (strHasClientIP != szTemp && strHasClientInfo != strWorkTemp)
-      {
-        strHasClientIP = szTemp, strHasClientInfo  = strWorkTemp;
-        if (!strHasClientIP.IsEmpty()&& !strHasClientInfo.IsEmpty())
-        {
-          strNewClientIP = szTemp;        //This is the Client IP Adress!
-          strNewClientInfo = strWorkTemp; // This is the Client Informations!
-          bState = true;
-        } //todo: add it to a list of clients after parsing out user id, password, port, boost capable, etc.
+    bFoundNewClient = false;
+    bUpdateShares = false;
+    // Receive ping request or Info
+    int iSockRet = recvfrom(udp_server_socket, sztmp, 512, 0,(struct sockaddr *) &cliAddr, &cliLen); 
+    if (iSockRet != SOCKET_ERROR)
+    {
+      // do we received a new Client info or just a "ping" request
+      if(strReceiveMessage.Equals(sztmp))
+	    {
+        // we received a "ping" request, sending our informations
+        strTmp.Format("%s;%s;%s;%d;%d\r\n\0",
+          strNickName.c_str(),  // Our Nick-, Device Name!
+          strFTPUserName.c_str(), // User Name for our FTP Server 
+          strFTPPass.c_str(), // Password for our FTP Server 
+          iFTPPort, // FTP PORT Adress for our FTP Server 
+          0 ); // BOOSMODE, for our FTP Server!
+        sendto(udp_server_socket,(char *)strTmp.c_str(),strlen((char *)strTmp.c_str())+1,0,(struct sockaddr *)(&cliAddr),sizeof(cliAddr));
       }
       else
-        g_infoManager.SetAutodetectedXbox(true);
+      {
+        //We received new client information, extracting information
+        CStdString strInfo, strIP;
+        strInfo.Format("%s",sztmp); //this is the client info
+        strIP.Format("%d.%d.%d.%d", 
+#ifndef _LINUX
+          cliAddr.sin_addr.S_un.S_un_b.s_b1,
+          cliAddr.sin_addr.S_un.S_un_b.s_b2,
+          cliAddr.sin_addr.S_un.S_un_b.s_b3,
+          cliAddr.sin_addr.S_un.S_un_b.s_b4 
+#else
+          (int)((char *)(cliAddr.sin_addr.s_addr))[0],
+          (int)((char *)(cliAddr.sin_addr.s_addr))[1],
+          (int)((char *)(cliAddr.sin_addr.s_addr))[2],
+          (int)((char *)(cliAddr.sin_addr.s_addr))[3]
+#endif
+        ); //this is the client IP
+        
+        //is our list empty?
+        if(v_xboxclients.client_ip.size() <= 0 )
+        {
+          // the list is empty, add. this client to the list!
+          v_xboxclients.client_ip.push_back(strIP);
+          v_xboxclients.client_info.push_back(strInfo);
+          v_xboxclients.client_lookup_count.push_back(0);
+          v_xboxclients.client_informed.push_back(false);
+          bFoundNewClient = true;
+          bUpdateShares = true;
+        }
+        // our list is not empty, check if we allready have this client in our list!
+        else 
+        {
+          // this should be a new client or?
+          // check list
+          bFoundNewClient = true;
+          for (i=0; i<v_xboxclients.client_ip.size(); i++)
+          {
+            if(strIP.Equals(v_xboxclients.client_ip[i].c_str()))
+              bFoundNewClient=false;
+          }
+          if(bFoundNewClient)
+          {
+            // bFoundNewClient is still true, the client is not in our list!
+            // add. this client to our list!
+            v_xboxclients.client_ip.push_back(strIP);
+            v_xboxclients.client_info.push_back(strInfo);
+            v_xboxclients.client_lookup_count.push_back(0);
+            v_xboxclients.client_informed.push_back(false);
+            bUpdateShares = true;
+          }
+          else // this is a existing client! check for LIFE & lookup counter
+          {
+            // calculate iLookUpCountMax value counter dependence on clients size!
+            if(v_xboxclients.client_ip.size() > iLookUpCountMax)
+              iLookUpCountMax += (v_xboxclients.client_ip.size()-iLookUpCountMax);
+
+            for (i=0; i<v_xboxclients.client_ip.size(); i++)
+            {
+              if(strIP.Equals(v_xboxclients.client_ip[i].c_str()))
+              {
+                // found client in list, reset looup_Count and the client_info
+                v_xboxclients.client_info[i]=strInfo;
+                v_xboxclients.client_lookup_count[i] = 0;
+              }
+              else 
+              {
+                // check client lookup counter! Not reached the CountMax, Add +1!
+                if(v_xboxclients.client_lookup_count[i] < iLookUpCountMax )
+                  v_xboxclients.client_lookup_count[i] = v_xboxclients.client_lookup_count[i]+1;
+                else
+                {
+                  // client lookup counter REACHED CountMax, remove this client
+                  v_xboxclients.client_ip.erase(v_xboxclients.client_ip.begin()+i);
+                  v_xboxclients.client_info.erase(v_xboxclients.client_info.begin()+i);
+                  v_xboxclients.client_lookup_count.erase(v_xboxclients.client_lookup_count.begin()+i);
+                  v_xboxclients.client_informed.erase(v_xboxclients.client_informed.begin()+i);
+                  
+                  // debug log, clients removed from our list 
+                  CLog::Log(LOGDEBUG,"Autodetection: Client ID:[%i] Removed! (mode LIFE 1)",i );  
+
+                  // client is removed from our list, update our shares
+                  CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
+                  m_gWindowManager.SendThreadMessage(msg);
+                }
+              }
+            }
+            // here comes our list for debug log
+            for (i=0; i<v_xboxclients.client_ip.size(); i++)
+            {
+              CLog::Log(LOGDEBUG,"Autodetection: Client ID:[%i] (mode LIFE=1)",i );
+              CLog::Log(LOGDEBUG,"----------------------------------------------------------------" );
+              CLog::Log(LOGDEBUG,"IP:%s Info:%s LookUpCount:%i Informed:%s",
+                v_xboxclients.client_ip[i].c_str(),
+                v_xboxclients.client_info[i].c_str(), 
+                v_xboxclients.client_lookup_count[i],
+                v_xboxclients.client_informed[i] ? "true":"false");
+              CLog::Log(LOGDEBUG,"----------------------------------------------------------------" );
+            }
+          }
+        }
+        if(bUpdateShares)
+        {
+          // a client is add or removed from our list, update our shares
+          CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
+          m_gWindowManager.SendThreadMessage(msg);
+        }
+      }
+    }
+    else
+    {
+       CLog::Log(LOGDEBUG, "Autodetection: Socket error %u", WSAGetLastError());
     }
     timeout.tv_sec=0;
     timeout.tv_usec = 5000;
@@ -4555,36 +5054,21 @@ bool CUtil::XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStd
     FD_SET(udp_server_socket, &readfds);
     life = select( 0,&readfds, NULL, NULL, &timeout );
   }
-#endif
-  return bState;
+  return bFoundNewClient;
 }
 
-bool CUtil::XboxAutoDetection()
+void CUtil::AutoDetectionGetShare(VECSHARES &shares)
 {
-#ifdef HAS_XBOX_HARDWARE
-  if (g_guiSettings.GetBool("autodetect.onoff"))
+  if(v_xboxclients.client_ip.size() > 0)
   {
-    static DWORD pingTimer = 0;
-    if( timeGetTime() - pingTimer < (DWORD)g_advancedSettings.m_autoDetectPingTime * 1000)
-      return false;
-    pingTimer = timeGetTime();
-
-    CStdString strLabel      = g_localizeStrings.Get(1251); // lbl Xbox Autodetection
-    CStdString strNickName   = g_guiSettings.GetString("autodetect.nickname");
-    CStdString strSysFtpName = g_guiSettings.GetString("servers.ftpserveruser");
-    CStdString strSysFtpPw   = g_guiSettings.GetString("servers.ftpserverpassword");
-
-    if(!g_guiSettings.GetBool("Autodetect.senduserpw")) //Send anon login names!
+    // client list is not empty, add to shares
+    CShare share;
+    for (unsigned int i=0; i< v_xboxclients.client_ip.size(); i++)
     {
-      strSysFtpName = "anonymous"; strSysFtpPw = "anonymous";
-    }
-    int iSysFtpPort = 21;
-    if ( CUtil::XboxAutoDetectionPing(true, strSysFtpName, strSysFtpPw, strNickName, iSysFtpPort,strHasClientIP,strHasClientInfo, strNewClientIP , strNewClientInfo ) )
-    {
-      //Autodetection String: NickName;FTP_USER;FTP_Password;FTP_PORT;BOOST_MODE
+      //extract client info string: NickName;FTP_USER;FTP_Password;FTP_PORT;BOOST_MODE
       CStdString strFTPPath, strNickName, strFtpUserName, strFtpPassword, strFtpPort, strBoosMode;
       CStdStringArray arSplit;
-      StringUtils::SplitString(strNewClientInfo,";", arSplit);
+      StringUtils::SplitString(v_xboxclients.client_info[i],";", arSplit);
       if ((int)arSplit.size() > 1)
       {
         strNickName     = arSplit[0].c_str();
@@ -4592,63 +5076,19 @@ bool CUtil::XboxAutoDetection()
         strFtpPassword  = arSplit[2].c_str();
         strFtpPort      = arSplit[3].c_str();
         strBoosMode     = arSplit[4].c_str();
-        strFTPPath.Format("ftp://%s:%s@%s:%s/",strFtpUserName.c_str(),strFtpPassword.c_str(),strHasClientIP.c_str(),strFtpPort.c_str());
+        strFTPPath.Format("ftp://%s:%s@%s:%s/",strFtpUserName.c_str(),strFtpPassword.c_str(),v_xboxclients.client_ip[i].c_str(),strFtpPort.c_str());
 
-        //PopUp Notification (notify anytime if a box is found! no switch needed)
-        CStdString strtemplbl;
-        strtemplbl.Format("%s %s",strNickName, strNewClientIP);
-        g_application.m_guiDialogKaiToast.QueueNotification(strLabel, strtemplbl);
-        CLog::Log(LOGDEBUG,"%s: %s FTP-Link: %s", strLabel.c_str(), strNickName.c_str(), strFTPPath.c_str());
-
-        if (g_guiSettings.GetBool("autodetect.popupinfo")) //PopUP Ask window to connect to the detected XBOX via Filemanger!
-        {
-          if (CGUIDialogYesNo::ShowAndGetInput(1251, 0, 1257, 0))
-          {
-            g_infoManager.SetAutodetectedXbox(true);
-            CStdString strTemp;
-            strNickName.TrimRight(' ');
-            strTemp.Format("FTP XBOX (%s)", strNickName.c_str());
-            m_gWindowManager.ActivateWindow(WINDOW_FILES, strFTPPath); //Open in MyFiles
-          }
-        }
+        strNickName.TrimRight(' ');
+#ifdef HAS_XBOX_HARDWARE
+        share.strName.Format("FTP XBMC (%s)", strNickName.c_str());
+#else
+        share.strName.Format("FTP XBMC_PC (%s)", strNickName.c_str());
+#endif
+        share.strPath.Format("%s",strFTPPath.c_str());
+        shares.push_back(share);
       }
     }
-    strHasClientIP = strNewClientIP, strHasClientInfo = strNewClientInfo;
   }
-  else
-  {
-    strHasClientIP ="", strHasClientInfo = "";
-    g_infoManager.SetAutodetectedXbox(false);
-  }
-#endif
-  return true;
-}
-bool CUtil::XboxAutoDetectionGetShare(CShare& share)
-{
-#ifdef HAS_XBOX_HARDWARE
-  if( !strNewClientIP.IsEmpty() && !strNewClientInfo.IsEmpty())
-  {
-    //Autodetection String: NickName;FTP_USER;FTP_Password;FTP_PORT;BOOST_MODE
-    CStdString strFTPPath, strNickName, strFtpUserName, strFtpPassword, strFtpPort, strBoosMode;
-    CStdStringArray arSplit;
-    StringUtils::SplitString(strNewClientInfo,";", arSplit);
-    if ((int)arSplit.size() > 1)
-    {
-      strNickName     = arSplit[0].c_str();
-      strFtpUserName  = arSplit[1].c_str();
-      strFtpPassword  = arSplit[2].c_str();
-      strFtpPort      = arSplit[3].c_str();
-      strBoosMode     = arSplit[4].c_str();
-      strFTPPath.Format("ftp://%s:%s@%s:%s/",strFtpUserName.c_str(),strFtpPassword.c_str(),strNewClientIP.c_str(),strFtpPort.c_str());
-
-      strNickName.TrimRight(' ');
-      share.strName.Format("FTP XBOX (%s)", strNickName.c_str());
-      share.strPath.Format("%s",strFTPPath.c_str());
-    }
-    return true;
-  }
-#endif
-  return false;
 }
 bool CUtil::IsFTP(const CStdString& strFile)
 {
@@ -4925,24 +5365,7 @@ bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTex
 
 float CUtil::CurrentCpuUsage()
 {
-  return 0.0f;
-
-//  float fCpuUsage = -1.0;
-//
-//  if (!m_hCurrentCpuUsage)
-//  {
-//    DmOpenPerformanceCounter("% CPU:total", &m_hCurrentCpuUsage);
-//  }
-//
-//  if (m_hCurrentCpuUsage)
-//  {
-//    DM_COUNTDATA data;
-//
-//    DmQueryPerformanceCounterHandle(m_hCurrentCpuUsage, DMCOUNT_PRATIO, &data);
-//    fCpuUsage = (float)data.CountValue.LowPart / (float)data.RateValue.LowPart * 100.0f;
-//  }
-//
-//  return fCpuUsage;
+  return (1.0f - g_application.m_idleThread.GetRelativeUsage())*100;
 }
 
 bool CUtil::SupportsFileOperations(const CStdString& strPath)

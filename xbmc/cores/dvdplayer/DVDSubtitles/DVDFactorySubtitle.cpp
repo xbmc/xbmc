@@ -4,7 +4,7 @@
 
 //#include "DVDSubtitleParserSpu.h"
 #include "DVDSubtitleParserSubrip.h"
-#include "../../../Util.h"
+#include "Util.h"
 
 bool CDVDFactorySubtitle::GetSubtitles(VecSubtitleFiles& vecSubtitles, const char* strFile)
 {

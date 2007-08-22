@@ -92,7 +92,7 @@ public:
   virtual ~CShare() {};
 
   void FromNameAndPaths(const CStdString &category, const CStdString &name, const vector<CStdString> &paths);
-  bool isWritable();
+  bool isWritable() const;
   CStdString strName; ///< Name of the share, can be choosen freely.
   CStdString strStatus; ///< Status of the share (eg has disk etc.)
   CStdString strPath; ///< Path of the share, eg. iso9660:// or F:
@@ -295,6 +295,7 @@ public:
     bool m_bVideoLibraryHideAllItems;
     bool m_bVideoLibraryAllItemsOnBottom;
 
+    bool m_bUseEvilB;
     std::vector<CStdString> m_vecTokens; // cleaning strings tied to language
     //TuxBox
     bool m_bTuxBoxSubMenuSelection;
@@ -407,7 +408,7 @@ public:
   VECSHARES m_vecUPnPPictureShares;
 
   CStdString m_UPnPUUID;
-  CStdString m_UPnPServerFriendlyName;
+  CStdString m_UPnPUUIDRenderer;
 
   //VECFILETYPEICONS m_vecIcons;
   VECPROFILES m_vecProfiles;

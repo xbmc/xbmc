@@ -272,7 +272,7 @@ BOOL CControlSocket::GetCommandFromString(const CStdString& source, CStdString &
 		command=source;
 	if (command=="")
 		return FALSE;
-	command.MakeUpper();
+	//command.MakeUpper(); // oh no we dont, breaks e.g. site playmedia(http://foo)
 	return TRUE;
 }
 #endif
