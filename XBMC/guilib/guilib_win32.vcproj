@@ -65,7 +65,7 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="freetype2\include"
+				AdditionalIncludeDirectories="../xbmc/;freetype2/include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="2"
@@ -278,6 +278,9 @@
 			</File>
 			<File
 				RelativePath=".\GUILabelControl.cpp">
+			</File>
+			<File
+				RelativePath=".\GUILargeImage.cpp">
 			</File>
 			<File
 				RelativePath=".\GUIList.cpp">
@@ -496,6 +499,9 @@
 			</File>
 			<File
 				RelativePath=".\GUILabelControl.h">
+			</File>
+			<File
+				RelativePath=".\GUILargeImage.h">
 			</File>
 			<File
 				RelativePath=".\GUIList.h">

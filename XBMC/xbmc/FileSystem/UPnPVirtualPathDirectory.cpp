@@ -42,8 +42,7 @@ CUPnPVirtualPathDirectory::FindSharePath(const char* share_name, const char* pat
     for (unsigned int i = 0; i < paths.size(); i++) {
         if (begin) {
             if (NPT_StringsEqualN(path, paths[i].c_str(), NPT_StringLength(paths[i].c_str()))) {
-                if (NPT_StringLength(path) <= NPT_StringLength(paths[i].c_str()) || path[NPT_StringLength(paths[i].c_str())] == '\\')
-                    return true;
+                return true;
             }
         } else if (NPT_StringsEqual(path, paths[i].c_str())) {
             return true;
@@ -61,12 +60,15 @@ CUPnPVirtualPathDirectory::SplitPath(const char* object_id, NPT_String& share_na
 {
     int index = 0;
     NPT_String id = object_id;
+    id.TrimRight("/");
 
     // reset output params first
     share_name = "";
     path = "";
 
-    if (id.StartsWith("virtualpath://upnpmusic")) {
+    if (id.StartsWith("virtualpath://upnproot")) {
+        index = 22;
+    } else if (id.StartsWith("virtualpath://upnpmusic")) {
         index = 23;
     } else if (id.StartsWith("virtualpath://upnpvideo")) {
         index = 23;
@@ -107,21 +109,37 @@ CUPnPVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList
     CShare     share;
     CFileItem* item;
     vector<CStdString> paths;
+    path.TrimRight("/");
 
-    if (path == "0") {
+    if (path == "virtualpath://upnproot") {
         // music
-        item = new CFileItem("virtualpath://upnpmusic", true);
-        item->SetLabel("Music");
+        item = new CFileItem("virtualpath://upnpmusic/", true);
+        item->SetLabel("Music Files");
+        item->SetLabelPreformated(true);
         items.Add(item);
 
         // video
-        item = new CFileItem("virtualpath://upnpvideo", true);
-        item->SetLabel("Video");
+        item = new CFileItem("virtualpath://upnpvideo/", true);
+        item->SetLabel("Video Files");
+        item->SetLabelPreformated(true);
         items.Add(item);
 
         // pictures
-        item = new CFileItem("virtualpath://upnppictures", true);
-        item->SetLabel("Pictures");
+        item = new CFileItem("virtualpath://upnppictures/", true);
+        item->SetLabel("Picture Files");
+        item->SetLabelPreformated(true);
+        items.Add(item);
+
+        // music library
+        item = new CFileItem("musicdb://", true);
+        item->SetLabel("Music Library");
+        item->SetLabelPreformated(true);
+        items.Add(item);
+
+        // video library
+        item = new CFileItem("videodb://", true);
+        item->SetLabel("Video Library");
+        item->SetLabelPreformated(true);
         items.Add(item);
 
         return true;
@@ -144,10 +162,11 @@ CUPnPVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList
                 // reconstruct share name as it could have been replaced by
                 // a path if there was just one entry
                 NPT_String share_name = path + "/";
-                share_name += share.strName;
+                share_name += share.strName + "/";
                 if (GetMatchingShare((const char*)share_name, share, paths) && paths.size()) {
                     item = new CFileItem((const char*)share_name, true);
                     item->SetLabel(share.strName);
+                    item->SetLabelPreformated(true);
                     items.Add(item);
                 }
             }
@@ -168,41 +187,51 @@ CUPnPVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList
 
         // use the share name to figure out what extensions to use
         if (share_name.StartsWith("virtualpath://upnpmusic")) {
-            return CDirectory::GetDirectory(
+            CDirectory::GetDirectory(
                 (const char*)file_path, 
                 items, 
                 g_stSettings.m_musicExtensions);
         } else if (share_name.StartsWith("virtualpath://upnpvideo")) {
-            return CDirectory::GetDirectory(
+            CDirectory::GetDirectory(
                 (const char*)file_path, 
                 items, 
                 g_stSettings.m_videoExtensions);
         } else if (share_name.StartsWith("virtualpath://upnppictures")) {
-            return CDirectory::GetDirectory(
+            CDirectory::GetDirectory(
                 (const char*)file_path, 
                 items, 
                 g_stSettings.m_pictureExtensions);
         }
 
-        // weird!
-        return false;
+        // paths should be prefixed
+        for (int i=0; i < (int) items.Size(); ++i) {
+            items[i]->m_strPath = share_name + "/" + items[i]->m_strPath.c_str();
+        }
+
+    } else {
+
+        // use the path to figure out what extensions to use
+        if (path.StartsWith("virtualpath://upnpmusic")) {
+            SetMask(g_stSettings.m_musicExtensions);
+        } else if (path.StartsWith("virtualpath://upnpvideo")) {
+            SetMask(g_stSettings.m_videoExtensions);
+        } else if (path.StartsWith("virtualpath://upnppictures")) {
+            SetMask(g_stSettings.m_pictureExtensions);
+        }
+
+        // dont allow prompting, this is a background task
+        // although I don't think it matters here
+        SetAllowPrompting(false);
+
+        // it's a virtual path, get all items
+        CVirtualPathDirectory::GetDirectory(strPath, items);
+
+        // paths should be prefixed
+        for (int i=0; i < (int) items.Size(); ++i) {
+            items[i]->m_strPath = strPath + "/" + items[i]->m_strPath.c_str();
+        }
+
     }
-
-    // use the path to figure out what extensions to use
-    if (path.StartsWith("virtualpath://upnpmusic")) {
-        SetMask(g_stSettings.m_musicExtensions);
-    } else if (path.StartsWith("virtualpath://upnpvideo")) {
-        SetMask(g_stSettings.m_videoExtensions);
-    } else if (path.StartsWith("virtualpath://upnppictures")) {
-        SetMask(g_stSettings.m_pictureExtensions);
-    }
-
-    // dont allow prompting, this is a background task
-    // although I don't think it matters here
-    SetAllowPrompting(false);
-
-    // it's a virtual path, get all items
-    CVirtualPathDirectory::GetDirectory(strPath, items);
 
     // always return true
     // this will make sure that even if nothing is found in a share

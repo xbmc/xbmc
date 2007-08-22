@@ -234,7 +234,6 @@ namespace PYXBMC
       return NULL;
     }
     vector<CAnimation> animations;
-    CGUIControlFactory factory;
     for (int anim = 0; anim < PyList_Size(pList); anim++)
     {
       PyObject *pTuple = NULL;
@@ -275,8 +274,8 @@ namespace PYXBMC
     const FRECT animRect = { (float)self->dwPosX, (float)self->dwPosY, (float)self->dwWidth, (float)self->dwHeight };
     PyGUILock();
     if (self->pGUIControl)
-      factory.GetAnimations(pRoot, animRect, animations);
-      self->pGUIControl->SetAnimations(animations);
+      CGUIControlFactory::GetAnimations(pRoot, animRect, animations);
+    self->pGUIControl->SetAnimations(animations);
     PyGUIUnlock();
 
     Py_INCREF(Py_None);

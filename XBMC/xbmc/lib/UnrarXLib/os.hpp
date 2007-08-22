@@ -38,6 +38,7 @@
 
 #if !defined(_XBOX)
 #include "include.h"
+#include "include.h"
 #include <windows.h>                        /* WIN32 definitions            */
 #include <prsht.h>
 #elif defined(_LINUX)

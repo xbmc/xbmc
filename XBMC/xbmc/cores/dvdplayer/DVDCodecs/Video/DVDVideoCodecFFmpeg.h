@@ -3,6 +3,7 @@
 
 #include "DVDVideoCodec.h"
 #include "../../../ffmpeg/DllAvCodec.h"
+#include "../../../ffmpeg/DllAvFormat.h"
 #include "../../../ffmpeg/DllSwScale.h"
 
 class CDVDVideoCodecFFmpeg : public CDVDVideoCodec
@@ -37,3 +38,4 @@ protected:
   DllAvUtil  m_dllAvUtil;
   DllSwScale m_dllSwScale;
 };
+

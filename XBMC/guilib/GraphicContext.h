@@ -182,7 +182,7 @@ public:
   void RestoreCameraPosition();
   bool SetClipRegion(float x, float y, float w, float h);
   void RestoreClipRegion();
-  void ClipRect(CRect &vertex, CRect &texture);
+  void ClipRect(CRect &vertex, CRect &texture, CRect *diffuse = NULL);
   inline void SetWindowTransform(const TransformMatrix &matrix)
   { // reset the group transform stack
     while (m_groupTransform.size())

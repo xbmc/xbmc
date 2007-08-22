@@ -212,8 +212,7 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement)
     }
     else if (strValue == "visible" && pChild->FirstChild())
     {
-      CGUIControlFactory factory;
-      factory.GetConditionalVisibility(pRootElement, m_visibleCondition);
+      CGUIControlFactory::GetConditionalVisibility(pRootElement, m_visibleCondition);
     }
     else if (strValue == "animation" && pChild->FirstChild())
     {
@@ -597,7 +596,11 @@ void CGUIWindow::OnInitWindow()
 {
   // set our rendered state
   m_hasRendered = false;
-
+  // set our initial control visibility before restoring control state and
+  // focusing the default control, and again afterward to make sure that
+  // any controls that depend on the state of the focused control (and or on
+  // control states) are active.
+  SetControlVisibility();
   RestoreControlStates();
   SetControlVisibility();
   QueueAnimation(ANIM_TYPE_WINDOW_OPEN);
@@ -1133,10 +1136,6 @@ void CGUIWindow::RestoreControlStates()
     CGUIMessage message(GUI_MSG_ITEM_SELECT, GetID(), (*it).m_id, (*it).m_data);
     OnMessage(message);
   }
-  // set our initial control visibility before focusing the default control
-  // note that we then set it again after this to make sure any controls
-  // that depend on the focused control are active.
-  SetControlVisibility();
   int focusControl = (m_saveLastControl && m_lastControlID) ? m_lastControlID : m_dwDefaultFocusControlID;
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   if (g_SkinInfo.GetVersion() < 2.1)

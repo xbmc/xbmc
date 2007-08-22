@@ -132,14 +132,26 @@ bool CVideoDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
     {
     case NODE_TYPE_TITLE_MOVIES:
     case NODE_TYPE_TITLE_TVSHOWS:
-      strLabel = g_localizeStrings.Get(132);
-      break;
-    case NODE_TYPE_GENRE:
-      strLabel = g_localizeStrings.Get(135); // Genres
-      break;
-    case NODE_TYPE_YEAR:
-      strLabel = g_localizeStrings.Get(133); // Year
-      break;
+      strLabel = g_localizeStrings.Get(369); break;
+    case NODE_TYPE_ACTOR: // Actor
+      strLabel = g_localizeStrings.Get(344); break;
+    case NODE_TYPE_GENRE: // Genres
+      strLabel = g_localizeStrings.Get(135); break;
+    case NODE_TYPE_YEAR: // Year
+      strLabel = g_localizeStrings.Get(345); break;
+    case NODE_TYPE_DIRECTOR: // Director
+      strLabel = g_localizeStrings.Get(20348); break;
+    case NODE_TYPE_MOVIES_OVERVIEW: // Movies
+      strLabel = g_localizeStrings.Get(342); break;
+    case NODE_TYPE_TVSHOWS_OVERVIEW: // TV Shows
+      strLabel = g_localizeStrings.Get(20343); break;
+    case NODE_TYPE_RECENTLY_ADDED_MOVIES: // Recently Added Movies
+      strLabel = g_localizeStrings.Get(20386); break;
+    case NODE_TYPE_RECENTLY_ADDED_EPISODES: // Recently Added Episodes
+      strLabel = g_localizeStrings.Get(20387); break;
+    default:
+      CLog::Log(LOGWARNING, CStdString(__FUNCTION__) + " - Unknown nodetype requested %d", pNode->GetChildType());
+      return false;
     }
   }
 

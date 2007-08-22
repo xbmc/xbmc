@@ -143,7 +143,7 @@ void CGraphicContext::RestoreClipRegion()
   // here we could reset the hardware clipping, if applicable
 }
 
-void CGraphicContext::ClipRect(CRect &vertex, CRect &texture)
+void CGraphicContext::ClipRect(CRect &vertex, CRect &texture, CRect *texture2)
 {
   // this is the software clipping routine.  If the graphics hardware is set to do the clipping
   // (eg via SetClipPlane in D3D for instance) then this routine is unneeded.
@@ -159,12 +159,21 @@ void CGraphicContext::ClipRect(CRect &vertex, CRect &texture)
     // and use the original to compute the texture coordinates
     if (original != vertex)
     {
-      const float scaleX = texture.Width() / original.Width();
-      const float scaleY = texture.Height() / original.Height();
+      float scaleX = texture.Width() / original.Width();
+      float scaleY = texture.Height() / original.Height();
       texture.x1 += (vertex.x1 - original.x1) * scaleX;
       texture.y1 += (vertex.y1 - original.y1) * scaleY;
       texture.x2 += (vertex.x2 - original.x2) * scaleX;
       texture.y2 += (vertex.y2 - original.y2) * scaleY;
+      if (texture2)
+      {
+        scaleX = texture2->Width() / original.Width();
+        scaleY = texture2->Height() / original.Height();
+        texture2->x1 += (vertex.x1 - original.x1) * scaleX;
+        texture2->y1 += (vertex.y1 - original.y1) * scaleY;
+        texture2->x2 += (vertex.x2 - original.x2) * scaleX;
+        texture2->y2 += (vertex.y2 - original.y2) * scaleY;
+      }
     }
   }
 }
@@ -1239,7 +1248,6 @@ void CGraphicContext::AcquireCurrentContext(Surface::CSurface* ctx)
   Unlock();
 #endif
 }
-
 
 void CGraphicContext::BeginPaint(CSurface *dest)
 {

@@ -162,6 +162,7 @@ CURL::CURL(const CStdString& strURL)
     || m_strProtocol.Equals("shout")
     || m_strProtocol.Equals("tuxbox")
     || m_strProtocol.Equals("daap")
+    || m_strProtocol.Equals("plugin")
     || m_strProtocol.Equals("hdhomerun"))
   {
     int iOptions = strURL.find_first_of("?;#", iPos);
@@ -584,7 +585,7 @@ void CURL::GetURLWithoutFilename(CStdString& strURL) const
 
   if (m_strHostName != "")
   {
-    if( m_strProtocol.Equals("rar") || m_strProtocol.Equals("zip"))
+    if( m_strProtocol.Equals("rar") || m_strProtocol.Equals("zip") || m_strProtocol.Equals("musicsearch"))
       strURL += URLEncodeInline(m_strHostName);
     else
       strURL += m_strHostName;
@@ -603,3 +604,9 @@ bool CURL::IsLocal() const
 {
   return m_strProtocol.IsEmpty();
 }
+
+bool CURL::IsFileOnly(const CStdString &url)
+{
+  return url.find_first_of("/\\") == -1;
+}
+

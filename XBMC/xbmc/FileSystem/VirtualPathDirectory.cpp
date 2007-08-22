@@ -126,6 +126,7 @@ bool CVirtualPathDirectory::GetTypeAndSource(const CStdString& strPath, CStdStri
     int iPos = strTemp.Find('/');
     if (iPos < 1)
       return false;
+    strType = strTemp.Mid(0, iPos);
     strSource = strTemp.Mid(iPos + 1);
     //CLog::Log(LOGDEBUG,"CVirtualPathDirectory::GetTypeAndSource(%s) = [%s],[%s]", strPath.c_str(), strType.c_str(), strSource.c_str());
     return true;

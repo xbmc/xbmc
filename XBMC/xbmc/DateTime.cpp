@@ -812,7 +812,9 @@ void CDateTime::SetFromDBDate(const CStdString &date)
   // assumes format:
   // YYYY-MM-DD
   int year = 0, month = 0, day = 0;
-  sscanf(date.c_str(), "%04i-%02i-%02i", &year, &month, &day);
+  year = atoi(date.Mid(0,4).c_str());
+  month = atoi(date.Mid(5,2).c_str());
+  day = atoi(date.Mid(8,2).c_str());
   SetDate(year, month, day);
 }
 

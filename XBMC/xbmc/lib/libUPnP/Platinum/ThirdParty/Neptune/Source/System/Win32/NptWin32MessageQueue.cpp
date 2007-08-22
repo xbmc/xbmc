@@ -67,10 +67,13 @@ NPT_Win32WindowMessageQueue::NPT_Win32WindowMessageQueue()
         NULL);
 
     // set a pointer to ourself as user data */
+#pragma warning( push )
+#pragma warning( disable: 4244) // we have to test for this because SetWindowLongPtr
+                                // is incorrectly defined, so we'll get a C4244 warning
     if (m_WindowHandle) {
-        SetWindowLong(m_WindowHandle, GWL_USERDATA, (LONG)this);
+        SetWindowLongPtr(m_WindowHandle, GWL_USERDATA, NPT_POINTER_TO_LONG(this));
     }
-
+#pragma warning( pop )
     m_hInstance = wclass.hInstance;
 }
 
@@ -104,7 +107,11 @@ NPT_Win32WindowMessageQueue::WindowProcedure(HWND   window,
     }
 
     // dispatch the message to the handler
-    NPT_Win32WindowMessageQueue* queue = (NPT_Win32WindowMessageQueue *)GetWindowLong(window, GWL_USERDATA);
+#pragma warning( push )
+#pragma warning( disable: 4312) // we have to test for this because GetWindowLongPtr
+                                // is incorrectly defined, so we'll get a C4244 warning
+    NPT_Win32WindowMessageQueue* queue = reinterpret_cast<NPT_Win32WindowMessageQueue *>(GetWindowLongPtr(window, GWL_USERDATA));
+#pragma warning( pop )  
     if (queue == NULL) {
         return 0; 
     }

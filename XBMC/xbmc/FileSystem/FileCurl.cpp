@@ -188,11 +188,11 @@ void CFileCurl::Close()
 	m_fileSize = 0;
   m_opened = false;
 
-
-  ASSERT(!(!m_easyHandle ^ !m_multiHandle));
   if( m_easyHandle )
   {
-    g_curlInterface.multi_remove_handle(m_multiHandle, m_easyHandle);
+    if(m_multiHandle)
+      g_curlInterface.multi_remove_handle(m_multiHandle, m_easyHandle);
+
     g_curlInterface.easy_release(m_easyHandle, m_multiHandle);
     m_multiHandle = NULL;
     m_easyHandle = NULL;
@@ -319,7 +319,7 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
   CURL url2(url);
   if( url2.GetProtocol().Equals("ftpx") )
     url2.SetProtocol("ftp");
-  else if (url2.GetProtocol().Equals("shout") || url2.GetProtocol().Equals("daap") || url2.GetProtocol().Equals("upnp") || url2.GetProtocol().Equals("tuxbox"))
+  else if (url2.GetProtocol().Equals("shout") || url2.GetProtocol().Equals("daap") || url2.GetProtocol().Equals("upnp") || url2.GetProtocol().Equals("tuxbox") || url2.GetProtocol().Equals("lastfm"))
     url2.SetProtocol("http");    
 
   if( url2.GetProtocol().Equals("ftp") )
@@ -354,7 +354,7 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
 
     url2.SetFileName(filename);
   }
-  else if( url2.GetProtocol().Equals("http") )
+  else if( url2.GetProtocol().Equals("http"))
   {
     if (g_guiSettings.GetBool("network.usehttpproxy") && m_proxy.IsEmpty())
     {
@@ -474,9 +474,6 @@ bool CFileCurl::Exists(const CURL& url)
 
 __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
 {
-  /* if we don't have a filesize this is most likely unseekable */
-  if( !m_seekable ) return -1;
-
   __int64 nextPos = m_filePos;
 	switch(iWhence) 
 	{
@@ -490,14 +487,15 @@ __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
 			if (m_fileSize)
         nextPos = m_fileSize + iFilePosition;
       else
-        nextPos = 0;
+        return -1;
 			break;
 	}
 //  CLog::Log(LOGDEBUG, "FileCurl::Seek(%p) - current pos %i, new pos %i", this, (unsigned int)m_filePos, (unsigned int)nextPos);
   // see if nextPos is within our buffer
   if (!m_buffer.SkipBytes((int)(nextPos - m_filePos)))
   {
-    // bummer - seeking outside our buffers
+    // if we can't be sure we can seek, abort here
+    if( !m_seekable ) return -1;
 
     /* halt transaction */
     g_curlInterface.multi_remove_handle(m_multiHandle, m_easyHandle);
@@ -556,7 +554,7 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
   CURL url2(url);
   if( url2.GetProtocol().Equals("ftpx") )
     url2.SetProtocol("ftp");
-  else if (url2.GetProtocol().Equals("shout") || url2.GetProtocol().Equals("daap") || url2.GetProtocol().Equals("upnp"))
+  else if (url2.GetProtocol().Equals("shout") || url2.GetProtocol().Equals("daap") || url2.GetProtocol().Equals("upnp") || url2.GetProtocol().Equals("lastfm"))
     url2.SetProtocol("http");
   
   /* ditch options as it's not supported on ftp */

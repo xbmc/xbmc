@@ -184,6 +184,7 @@ void XBPython::Initialize()
       PySys_SetArgv(1, python_argv);
 
       initxbmc(); // init xbmc modules
+      initxbmcplugin(); // init plugin modules
       initxbmcgui(); // init xbmcgui modules
       // redirecting default output to debug console
       if (PyRun_SimpleString(""

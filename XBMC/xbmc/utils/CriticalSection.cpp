@@ -52,7 +52,7 @@ BOOL NTAPI OwningCriticalSection(LPCRITICAL_SECTION section)
 #elif defined(_LINUX)
   return section->OwningThread == GetCurrentThreadId();
 #else
-  return false;
+  return section->OwningThread == (HANDLE)GetCurrentThreadId();
 #endif
 }
 

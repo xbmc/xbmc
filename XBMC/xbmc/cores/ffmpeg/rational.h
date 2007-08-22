@@ -17,7 +17,6 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- *
  */
 
 /**
@@ -28,6 +27,8 @@
 
 #ifndef RATIONAL_H
 #define RATIONAL_H
+
+#include <stdint.h>
 
 /**
  * Rational number num/den.
@@ -99,7 +100,7 @@ AVRational av_add_q(AVRational b, AVRational c);
  * Subtracts one rational from another.
  * @param b first rational.
  * @param c second rational.
- * returns b-c.
+ * @return b-c.
  */
 AVRational av_sub_q(AVRational b, AVRational c);
 

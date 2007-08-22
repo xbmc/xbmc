@@ -7,7 +7,11 @@
 #include "DVDCodecs/Video/DVDVideoCodec.h"
 #include "DVDClock.h"
 #include "DVDOverlayContainer.h"
+#if defined( HAS_XBOX_HARDWARE) || defined(_LINUX)
 #include "../VideoRenderers/RenderManager.h"
+#else
+#include "../VideoRenderers/WinRenderManager.h"
+#endif
 
 enum CodecID;
 class CDemuxStreamVideo;
@@ -57,8 +61,8 @@ public:
   float GetAspectRatio()                            { return 4.0f / 3.0f; }
 #endif
 
-  __int64 GetDelay();
-  void SetDelay(__int64 delay);
+  __int64 GetDelay()                                { return m_iVideoDelay; }
+  void SetDelay(__int64 delay)                      { m_iVideoDelay = delay; }
 
   bool IsStalled()                                  { return m_DetectedStill;  }
   int GetNrOfDroppedFrames()                        { return m_iDroppedFrames; }
@@ -68,6 +72,7 @@ public:
   __int64 GetCurrentPts()                           { return m_iCurrentPts; }
 
   __int64 GetOutputDelay(); /* returns the expected delay, from that a packet is put in queue */
+  string GetPlayerInfo();
 
   void SetSpeed(int iSpeed);
 
@@ -97,7 +102,6 @@ protected:
   int m_iDroppedFrames;
   bool m_bDropFrames;
 
-  bool m_bInitializedOutputDevice;  
   float m_fFrameRate;
 
   struct SOutputConfiguration

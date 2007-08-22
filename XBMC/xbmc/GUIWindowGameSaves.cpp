@@ -29,6 +29,7 @@
 #include <fstream>
 //#include "Utils/HTTP.h"  // For Download Function
 #include "MediaManager.h"
+#include "utils/LabelFormatter.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -101,12 +102,11 @@ bool CGUIWindowGameSaves::OnMessage(CGUIMessage& message)
       {
         if (CGUIMediaWindow::OnMessage(message))
         {
+          LABEL_MASKS labelMasks;
+          m_guiState->GetSortMethodLabelMasks(labelMasks);
+          CLabelFormatter formatter("", labelMasks.m_strLabel2File);
           for (int i=0;i<m_vecItems.Size();++i)
-          {
-            CGUIViewState::LABEL_MASKS labelMasks;
-            m_guiState->GetSortMethodLabelMasks(labelMasks);
-            m_vecItems[i]->FormatLabel2(labelMasks.m_strLabel2File);
-          }
+            formatter.FormatLabel2(m_vecItems[i]);
           return true;
         }
         else
@@ -182,6 +182,9 @@ bool CGUIWindowGameSaves::GetDirectory(const CStdString& strDirectory, CFileItem
   DWORD dwTick=timeGetTime();
   bool bProgressVisible = false;
   CGUIDialogProgress* m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  LABEL_MASKS labelMasks;
+  m_guiState->GetSortMethodLabelMasks(labelMasks);
+  CLabelFormatter formatter("", labelMasks.m_strLabel2File);
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItem *item = items[i];
@@ -229,7 +232,7 @@ bool CGUIWindowGameSaves::GetDirectory(const CStdString& strDirectory, CFileItem
       {
         WCHAR *yo = new WCHAR[(int)newfile.GetLength()+1];
         newfile.Read(yo,newfile.GetLength());
-
+        yo[newfile.GetLength()] = L'\0';
         CStdString strDescription;
         g_charsetConverter.wToUTF8(yo, strDescription);
         int poss = strDescription.find("Name=");
@@ -279,10 +282,7 @@ bool CGUIWindowGameSaves::GetDirectory(const CStdString& strDirectory, CFileItem
         item->GetMusicInfoTag()->SetTitle(item->GetLabel());  // Note we set ID as the TITLE to save code makign a SORT ID and a ID varible to the FileItem
         item->SetLabel(strDescription);
         item->SetIconImage("defaultProgram.png");
-        CGUIViewState::LABEL_MASKS labelMasks;
-        m_guiState->GetSortMethodLabelMasks(labelMasks);
-
-        item->FormatLabel2(labelMasks.m_strLabel2File);
+        formatter.FormatLabel2(item);
         item->SetLabelPreformated(true);
       }
     }

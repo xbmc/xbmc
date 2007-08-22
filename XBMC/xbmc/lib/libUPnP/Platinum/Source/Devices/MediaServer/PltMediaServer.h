@@ -13,7 +13,7 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#include "NptDirectory.h"
+#include "Neptune.h"
 #include "PltDeviceHost.h"
 #include "PltMediaItem.h"
 
@@ -68,35 +68,18 @@ protected:
     virtual NPT_Result OnBrowse(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
     virtual NPT_Result OnSearch(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
 
+    // X_MS_MediaReceiverRegistrar
+    virtual NPT_Result OnIsAuthorized(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
+    virtual NPT_Result OnIsValidated(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
+    virtual NPT_Result OnRegisterDevice(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
+
     // overridable methods
     virtual NPT_Result OnBrowseMetadata(PLT_ActionReference& action, const char* object_id, NPT_SocketInfo* info = NULL);
     virtual NPT_Result OnBrowseDirectChildren(PLT_ActionReference& action, const char* object_id, NPT_SocketInfo* info = NULL);
-    virtual NPT_Result ProcessFileRequest(NPT_HttpRequest* request, NPT_SocketInfo info, NPT_HttpResponse*& response);
+    virtual NPT_Result OnSearch(PLT_ActionReference& action, const NPT_String& object_id, const NPT_String& searchCriteria, NPT_SocketInfo* info = NULL);
 
-protected:
-    friend class PLT_HttpFileServerHandler;
 
-    bool                           m_ShowIP;
-    PLT_HttpFileServerHandler*     m_FileServerHandler;
-    PLT_HttpServer*                m_FileServer;
-};
-
-/*----------------------------------------------------------------------
-|   PLT_HttpFileServerHandler
-+---------------------------------------------------------------------*/
-class PLT_HttpFileServerHandler : public PLT_HttpServerListener
-{
-public:
-    PLT_HttpFileServerHandler(PLT_MediaServer* server) : m_Server(server) {}
-    virtual ~PLT_HttpFileServerHandler() {}
-
-    // PLT_HttpServerListener methods
-    NPT_Result ProcessHttpRequest(NPT_HttpRequest* request, NPT_SocketInfo info, NPT_HttpResponse*& response) {
-        return m_Server->ProcessFileRequest(request, info, response);
-    }
-
-private:
-    PLT_MediaServer* m_Server;
+    PLT_HttpServer* m_FileServer;
 };
 
 #endif /* _PLT_MEDIA_SERVER_H_ */

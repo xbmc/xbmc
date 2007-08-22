@@ -59,6 +59,9 @@ CIMDB::~CIMDB()
 }
 bool CIMDB::Get(CScraperUrl& scrURL, string& strHTML)
 {
+  if(scrURL.m_url.size()==0)
+    return false;
+
   CURL url(scrURL.m_url[0].m_url);
   m_http.SetReferer(scrURL.m_url[0].m_spoof);
 
@@ -383,53 +386,53 @@ void CIMDB::RemoveAllAfter(char* szMovie, const char* szSearch)
 // TODO: Make this user-configurable?
 void CIMDB::GetURL(const CStdString &strMovie, CScraperUrl& scrURL, CStdString& strYear)
 {
-  char szMovie[1024];
-  char szYear[5];
+#define SEP " _\\.\\(\\)\\[\\]\\-"
 
-  CStdString strMovieNoExtension = strMovie;
-  //don't assume movie name is a file with an extension
-  //CUtil::RemoveExtension(strMovieNoExtension);
 
-  // replace whitespace with +
-  strMovieNoExtension.Replace(".","+");
-  strMovieNoExtension.Replace("-","+");
-  strMovieNoExtension.Replace(" ","+");
-
-  // lowercase
-  strMovieNoExtension = strMovieNoExtension.ToLower();
-
-  // default to movie name begin complete filename, no year
-  strcpy(szMovie, strMovieNoExtension.c_str());
-  strcpy(szYear,"");
+  CStdString strSearch1, strSearch2;
+  strSearch1 = strMovie;
+  strSearch1.ToLower();
 
   CRegExp reYear;
-  reYear.RegComp("(.+)\\+\\(?(19[0-9][0-9]|200[0-9])\\)?(\\+.*)?");
-  if (reYear.RegFind(szMovie) >= 0)
+  reYear.RegComp("(.+[^"SEP"])["SEP"]+(19[0-9][0-9]|20[0-1][0-9])(["SEP"]|$)");
+  if (reYear.RegFind(strSearch1.c_str()) >= 0)
   {
     char *pMovie = reYear.GetReplaceString("\\1");
     char *pYear = reYear.GetReplaceString("\\2");
-    strcpy(szMovie,pMovie);
-    strcpy(szYear,pYear);
 
-    if (pMovie) free(pMovie);
-    if (pYear) free(pYear);
+    if(pMovie)
+    {      
+      strSearch1 = pMovie;
+      free(pMovie);
+    }
+    if(pYear)
+    {
+      strYear = pYear;
+      free(pYear);
+    }
   }
 
   CRegExp reTags;
-  reTags.RegComp("\\+(ac3|custom|dc|divx|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|fragment|fs|hdtv|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|se|svcd|swedish|unrated|ws|xvid|xxx|cd[1-9]|\\[.*\\])(\\+|$)");
-
-  CStdString strTemp;
-  int i=0;
-  CStdString strSearch = szMovie;
-  if ((i=reTags.RegFind(strSearch.c_str())) >= 0) // new logic - select the crap then drop anything to the right of it
-  {
-    m_parser.m_param[0] = strSearch.Mid(0,i);
- }
+  reTags.RegComp("["SEP"](ac3|custom|dc|divx|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|fragment|fs|hdtv|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|se|svcd|swedish|unrated|ws|xvid|xxx|cd[1-9]|\\[.*\\])(["SEP"]|$)");
+  
+  int i=0;  
+  if ((i=reTags.RegFind(strSearch1.c_str())) >= 0) // new logic - select the crap then drop anything to the right of it
+    strSearch2 = strSearch1.Mid(0, i);
   else
-    m_parser.m_param[0] = szMovie;
+    strSearch2 = strSearch1;
+
+
+  strSearch2.Trim();
+  if(strSearch2.find(' ') < 0)
+  {
+    strSearch2.Replace('.', ' ');
+    strSearch2.Replace('-', ' ');
+  }
+  CUtil::URLEncode(strSearch2);
+
+  m_parser.m_param[0] = strSearch2;
 
   scrURL.ParseString(m_parser.Parse("CreateSearchUrl"));
-  strYear = szYear;
 }
 
 // threaded functions

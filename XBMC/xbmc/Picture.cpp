@@ -65,7 +65,7 @@ SDL_Surface* CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iM
     {
       DWORD destPitch = lr.Pitch;
       // CxImage aligns rows to 4 byte boundaries
-      DWORD srcPitch = ((m_info.width + 1)* 3 / 4) * 4; 
+      DWORD srcPitch = ((m_info.width + 1)* 3 / 4) * 4;
       BYTE *pixels = (BYTE *)lr.pBits;
 #else
     if (SDL_LockSurface(pTexture) == 0)
@@ -79,12 +79,13 @@ SDL_Surface* CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iM
       {
         BYTE *dst = pixels + y * destPitch;
         BYTE *src = m_info.texture + (m_info.height - 1 - y) * srcPitch;
+        BYTE *alpha = m_info.alpha + (m_info.height - 1 - y) * m_info.width;
         for (unsigned int x = 0; x < m_info.width; x++)
         {
           *dst++ = *src++;
           *dst++ = *src++;
           *dst++ = *src++;
-          *dst++ = 0xff;  // alpha
+          *dst++ = (m_info.alpha) ? *alpha++ : 0xff;  // alpha
         }
       }
   

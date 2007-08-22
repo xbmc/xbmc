@@ -138,8 +138,27 @@ namespace PYXBMC
     return Py_None;
   }
 
+  // getLabel() Method
+  PyDoc_STRVAR(getLabel__doc__,
+    "getLabel() -- Returns the text value for this label.\n"
+    "\n"
+    "example:\n"
+    "  - label = self.label.getLabel()\n");
+
+  PyObject* ControlLabel_GetLabel(ControlLabel *self, PyObject *args)
+  {
+    if (!self->pGUIControl) return NULL;
+    
+    PyGUILock();
+    const char *cLabel = self->strText.c_str();
+    PyGUIUnlock();
+
+    return Py_BuildValue("s", cLabel);
+  }
+
   PyMethodDef ControlLabel_methods[] = {
     {"setLabel", (PyCFunction)ControlLabel_SetLabel, METH_VARARGS, setLabel__doc__},
+    {"getLabel", (PyCFunction)ControlLabel_GetLabel, METH_VARARGS, getLabel__doc__},
     {NULL, NULL, 0, NULL}
   };
 

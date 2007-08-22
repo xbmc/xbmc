@@ -73,6 +73,26 @@ NPT_String::FromInteger(long value)
 }
 
 /*----------------------------------------------------------------------
+|   NPT_String::FromIntegerU
++---------------------------------------------------------------------*/
+NPT_String
+NPT_String::FromIntegerU(unsigned long value)
+{
+    char str[32];
+    char* c = &str[31];
+    *c = '\0';
+
+    // process the digits
+    do {
+        int digit = value%10;
+        *--c = '0'+digit;
+        value /= 10;
+    } while(value);
+
+    return NPT_String(c);
+}
+
+/*----------------------------------------------------------------------
 |   NPT_String::NPT_String
 +---------------------------------------------------------------------*/
 NPT_String::NPT_String(const char* str)
@@ -396,7 +416,7 @@ NPT_StringStartsWith(const char* str, const char* sub, bool ignore_case)
 bool 
 NPT_String::StartsWith(const char *s, bool ignore_case) const
 {
-    if (s == NULL || *s == '\0') return false;
+    if (s == NULL) return false;
     return NPT_StringStartsWith(GetChars(), s, ignore_case) == 1;
 }
 
@@ -406,7 +426,7 @@ NPT_String::StartsWith(const char *s, bool ignore_case) const
 bool 
 NPT_String::EndsWith(const char *s, bool ignore_case) const
 {
-    if (s == NULL || *s == '\0') return false;
+    if (s == NULL) return false;
     NPT_Size str_length = NPT_StringLength(s);
     if (str_length > GetLength()) return false;
     return NPT_StringStartsWith(GetChars()+GetLength()-str_length, s, ignore_case) == 1;

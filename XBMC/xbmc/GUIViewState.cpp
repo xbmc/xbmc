@@ -41,6 +41,9 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
 
   const CURL& url=items.GetAsUrl();
 
+  if (items.HasSortDetails())
+    return new CGUIViewStateFromItems(items);
+
   if (url.GetProtocol()=="musicdb")
     return new CGUIViewStateMusicDatabase(items);
 
@@ -194,7 +197,7 @@ void CGUIViewState::GetSortMethodLabelMasks(LABEL_MASKS& masks) const
 
 void CGUIViewState::AddSortMethod(SORT_METHOD sortMethod, int buttonLabel, LABEL_MASKS labelmasks)
 {
-  SORT sort;
+  SORT_METHOD_DETAILS sort;
   sort.m_sortMethod=sortMethod;
   sort.m_buttonLabel=buttonLabel;
   sort.m_labelMasks=labelmasks;
@@ -344,5 +347,27 @@ void CGUIViewState::SaveViewToDb(const CStdString &path, int windowID, CViewStat
     if (saveSettings)
       g_settings.Save();
   }
+}
+
+CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGUIViewState(items)
+{
+  const vector<SORT_METHOD_DETAILS> &details = items.GetSortDetails();
+  for (unsigned int i = 0; i < details.size(); i++)
+  {
+    const SORT_METHOD_DETAILS sort = details[i];
+    AddSortMethod(sort.m_sortMethod, sort.m_buttonLabel, sort.m_labelMasks);
+  }
+  // TODO: Should default sort/view mode be specified?
+  SetSortMethod(SORT_METHOD_LABEL);
+
+  SetViewAsControl(DEFAULT_VIEW_LIST);
+
+  SetSortOrder(SORT_ORDER_ASC);
+  LoadViewState(items.m_strPath, m_gWindowManager.GetActiveWindow());
+}
+
+void CGUIViewStateFromItems::SaveViewState()
+{
+  SaveViewToDb(m_items.m_strPath, m_gWindowManager.GetActiveWindow());
 }
 

@@ -8,6 +8,7 @@
 #include "GuiControlFactory.h"
 #include "../xbmc/Util.h"
 
+
 GUIFontManager g_fontManager;
 
 GUIFontManager::GUIFontManager(void)

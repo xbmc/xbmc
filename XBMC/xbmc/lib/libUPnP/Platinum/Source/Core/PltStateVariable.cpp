@@ -15,6 +15,8 @@
 #include "PltXmlHelper.h"
 #include "PltUPnP.h"
 
+NPT_SET_LOCAL_LOGGER("platinum.core.statevariable")
+
 /*----------------------------------------------------------------------
 |   PLT_StateVariable::PLT_StateVariable
 +---------------------------------------------------------------------*/
@@ -40,27 +42,27 @@ NPT_Result
 PLT_StateVariable::GetSCPDXML(NPT_XmlElementNode* node)
 {
     NPT_XmlElementNode* variable = new NPT_XmlElementNode("stateVariable");
-    NPT_CHECK(node->AddChild(variable));
+    NPT_CHECK_SEVERE(node->AddChild(variable));
 
-    NPT_CHECK(variable->SetAttribute("sendEvents", m_IsSendingEvents?"yes":"no"));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(variable, "name", m_Name));
-    NPT_CHECK(PLT_XmlHelper::AddChildText(variable, "dataType", m_DataType));
+    NPT_CHECK_SEVERE(variable->SetAttribute("sendEvents", m_IsSendingEvents?"yes":"no"));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(variable, "name", m_Name));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(variable, "dataType", m_DataType));
     if (m_DefaultValue.GetLength()) {
-        NPT_CHECK(PLT_XmlHelper::AddChildText(variable, "defaultValue", m_DefaultValue));
+        NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(variable, "defaultValue", m_DefaultValue));
     }
 
     if (m_AllowedValues.GetItemCount()) {
         NPT_XmlElementNode* allowedValueList = new NPT_XmlElementNode("allowedValueList");
-        NPT_CHECK(variable->AddChild(allowedValueList));
+        NPT_CHECK_SEVERE(variable->AddChild(allowedValueList));
 	    for( int l = 0 ; l < (int)m_AllowedValues.GetItemCount(); l++) {
-            NPT_CHECK(PLT_XmlHelper::AddChildText(allowedValueList, "allowedValue", (*m_AllowedValues[l])));
+            NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(allowedValueList, "allowedValue", (*m_AllowedValues[l])));
         }
     } else if (m_AllowedValueRange) {
         NPT_XmlElementNode* range = new NPT_XmlElementNode("allowedValueRange");
-        NPT_CHECK(variable->AddChild(range));
-        NPT_CHECK(PLT_XmlHelper::AddChildText(range, "minimum", NPT_String::FromInteger(m_AllowedValueRange->min_value)));
-        NPT_CHECK(PLT_XmlHelper::AddChildText(range, "maximum", NPT_String::FromInteger(m_AllowedValueRange->max_value)));
-        NPT_CHECK(PLT_XmlHelper::AddChildText(range, "step",    NPT_String::FromInteger(m_AllowedValueRange->step)));
+        NPT_CHECK_SEVERE(variable->AddChild(range));
+        NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(range, "minimum", NPT_String::FromInteger(m_AllowedValueRange->min_value)));
+        NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(range, "maximum", NPT_String::FromInteger(m_AllowedValueRange->max_value)));
+        NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(range, "step",    NPT_String::FromInteger(m_AllowedValueRange->step)));
     }
 
     return NPT_SUCCESS;

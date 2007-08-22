@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "PictureThumbLoader.h"
 #include "Picture.h"
+#include "Util.h"
 
 using namespace XFILE;
 
@@ -38,11 +39,33 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
 {
   if (pItem->m_bIsShareOrDrive) return true;
   pItem->SetCachedPictureThumb();
-  if (m_regenerateThumbs && pItem->HasThumbnail())
+  
+  if(pItem->HasThumbnail())
   {
-    CFile::Delete(pItem->GetThumbnailImage());
-    pItem->SetThumbnailImage("");
+    CStdString thumb(pItem->GetThumbnailImage());
+
+    // look for remote thumbs    
+    if (!CURL::IsFileOnly(thumb) && !CUtil::IsHD(thumb))
+    {
+      CStdString cachedThumb(pItem->GetCachedPictureThumb());
+      if(CFile::Exists(cachedThumb))
+        pItem->SetThumbnailImage(cachedThumb);
+      else
+      {
+        CPicture pic;
+        if(pic.DoCreateThumbnail(thumb, cachedThumb))
+          pItem->SetThumbnailImage(cachedThumb);
+        else
+          pItem->SetThumbnailImage("");
+      }
+    }
+    else if (m_regenerateThumbs)
+    {
+      CFile::Delete(thumb);
+      pItem->SetThumbnailImage("");
+    }
   }
+
   if ((pItem->IsPicture() && !pItem->IsZIP() && !pItem->IsRAR() && !pItem->IsCBZ() && !pItem->IsCBR() && !pItem->IsPlayList()) && !pItem->HasThumbnail())
   { // load the thumb from the image file
     CPicture pic;

@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 07/21/2007-->
+<!--Date of translation: 08/19/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 9647-->
+<!--Based on english strings version 9956-->
 <strings>
   <string id="0">Programmer</string>
   <string id="1">Billeder</string>
@@ -12,6 +12,7 @@
   <string id="5">Indstillinger</string>
   <string id="7">Filhåndtering</string>
   <string id="8">Vejret</string>
+  <string id="9">xbox media center</string>
   <string id="11">Mandag</string>
   <string id="12">Tirsdag</string>
   <string id="13">Onsdag</string>
@@ -187,7 +188,7 @@
   <string id="255">CDDB</string>
   <string id="256">Forespørger freedb efter CDDB-info</string>
   <string id="257">Fejl</string>
-  <string id="258">Aktiver ID3-info</string>
+  <string id="258">Læs filbeskrivelser</string>
   <string id="259">Åbner</string>
   <string id="260">Internetradio</string>
   <string id="261">Venter på opstart....</string>
@@ -307,7 +308,7 @@
   <string id="386">skyfrit</string>
   <string id="387">skyer</string>
   <string id="388">tidligt</string>
-  <string id="389">regn</string>
+  <string id="389">byge</string>
   <string id="390">fnug</string>
   <string id="391">Lav</string>
   <string id="392">Medium</string>
@@ -590,9 +591,9 @@
   <string id="746">Skift til filvisning</string>
   <string id="747">Billede kunne ikke hentes</string>
   <string id="748">Rediger sti</string>
-  <string id="749">Tilføj netværksmappe</string>
+  <string id="749">Tilføj kilde</string>
   <string id="750">Er du sikker?</string>
-  <string id="751">Fjerner netværksmappe</string>
+  <string id="751">Fjerner kilde</string>
   <string id="752">Rediger netværksmappesti</string>
   <string id="753">Rediger netværksmappenavn</string>
   <string id="754">Tilføj programlink</string>
@@ -641,7 +642,7 @@
   <string id="1020">Tilføj kilde til %s</string>
   <string id="1021">Tilføj stier eller søg efter medieplaceringer.</string>
   <string id="1022">Vælg navn til mediekilde</string>
-  <string id="1023">Søg efter ny delt mappe</string>
+  <string id="1023">Søg efter ny kilde</string>
   <string id="1024">Søg</string>
   <string id="1025">Kunne ikke hente information om mappe</string>
   <string id="1026">Tilføj kilde</string>
@@ -703,8 +704,8 @@
   <string id="1401">uvejr</string>
   <string id="1402">torden</string>
   <string id="1403">sol</string>
-  <string id="1404">hårdt</string>
-  <string id="1405"></string>
+  <string id="1404">kraftig</string>
+  <string id="1405">er</string>
   <string id="1406">i</string>
   <string id="1407">nærheden</string>
   <string id="1408">is</string>
@@ -814,10 +815,10 @@
   <string id="12329">eller tryk C for at annullere</string>
   <string id="12330">Indtast XBOX gamepad knapkombination og tryk start</string>
   <string id="12331">vælg Start, eller Tilbage for at annullere</string>
-  <string id="12332">Lås netværksmappe</string>
-  <string id="12333">Lås netværksmappe op</string>
-  <string id="12334">Nulstil netværksmappelås</string>
-  <string id="12335">Fjern netværksmappelås</string>
+  <string id="12332">Sæt lås</string>
+  <string id="12333">Lås op</string>
+  <string id="12334">Nulstil lås</string>
+  <string id="12335">Fjern lås</string>
   <string id="12337">Numerisk adgangskode</string>
   <string id="12338">Gamepad knapkombination</string>
   <string id="12339">Tekst adgangskode</string>
@@ -1014,7 +1015,7 @@
   <string id="13385">Stemmemaske - Port 4</string>
   <string id="13386">Brug tidsbaseret søgning</string>
   <string id="13387">Spornavngivningsmønster højre</string>
-  <string id="13388">%s standarder</string>
+  <string id="13388">Standard</string>
   <string id="13389">Der er ingen presets tilgængelige&#10;til denne visualisering</string>
   <string id="13390">Der er ingen indstillinger tilgængelige&#10;til denne visualisering</string>
   <string id="13391">Åben/Start</string>
@@ -1032,6 +1033,8 @@
   <string id="13403">Ryd standard</string>
   <string id="13404">Fortsæt</string>
   <string id="13405">Hent ikon</string>
+  <string id="13406">Informationer om billede</string>
+  <string id="13407">%s-standarder</string>
   <string id="14000">Stakning</string>
   <string id="14001">Ingen stakning</string>
   <string id="14003">Henter afspilningsliste...</string>
@@ -1368,7 +1371,7 @@
   <string id="20087">Vis ledig plads på E: F: G:</string>
   <string id="20088">Vejrudsigt</string>
   <string id="20089">Ledig plads</string>
-  <string id="20090">Indtast navn på eksisterende delt mappe</string>
+  <string id="20090">Indtast navn på eksisterende kilde</string>
   <string id="20091">Adgangskode</string>
   <string id="20092">Indlæs profil</string>
   <string id="20093">Profilnavn</string>
@@ -1510,7 +1513,7 @@
   <string id="20330">Brug mappenavn ved søgninger</string>
   <string id="20331">Fil</string>
   <string id="20332">Brug fil eller mappenavn ved søgninger?</string>
-  <string id="20333">Vælg indhold</string>
+  <string id="20333">Indholdstype</string>
   <string id="20334">Mappe</string>
   <string id="20335">Søg efter indhold rekursivt?</string>
   <string id="20336">Lås kilder op</string>
@@ -1537,7 +1540,7 @@
   <string id="20357">Indtast TV-showets navn</string>
   <string id="20358">Sæson %i</string>
   <string id="20359">Episode</string>
-  <string id="20360">Episoder</string>
+  <string id="20360">episoder</string>
   <string id="20361">Indlæser detaljer om episode</string>
   <string id="20362">Fjern episode fra database</string>
   <string id="20363">Fjern TV-show fra database</string>
@@ -1560,6 +1563,11 @@
   <string id="20380">Udeluk mappe fra skanning</string>
   <string id="20381">Specials</string>
   <string id="20382">Hent sæsonikoner automatisk</string>
+  <string id="20383">Mappen indeholder en enkelt video</string>
+  <string id="20384">Føj til TV-show</string>
+  <string id="20385">Fjern fra TV-show</string>
+  <string id="20386">Nyligt tilføjne film</string>
+  <string id="20387">Nyligt tilføjne episoder</string>
   <string id="21330">Vis skjulte filer og mapper</string>
   <string id="21331">TuxBox-klient</string>
   <string id="21332">ADVARSEL: den valgte TuxBox er i optagetilstand!</string>
@@ -1599,6 +1607,7 @@
   <string id="21386">Styring af støjniveau</string>
   <string id="21387">Hurtig</string>
   <string id="21388">Stille</string>
+  <string id="21389">Aktiver selvvalgt baggrund</string>
   <string id="21390">Styring af strømforbrug</string>
   <string id="21391">Højt strømforbrug</string>
   <string id="21392">Lavt strømforbrug</string>
@@ -1638,7 +1647,64 @@
   <string id="21434">Find sange der matcher</string>
   <string id="21435">Rediger</string>
   <string id="21436">%i sange</string>
-  <string id="21437">Ny smart afspilningsliste</string>
+  <string id="21437">Ny smart afspilningsliste...</string>
+  <string id="21438">%c-drev</string>
+  <string id="21439">Rediger regler for Party Mode</string>
+  <string id="21800">Filnavn</string>
+  <string id="21801">Filsti</string>
+  <string id="21802">Filstørrelse</string>
+  <string id="21803">Fil-dato/-tid</string>
+  <string id="21804">Plads i indeks</string>
+  <string id="21805">Opløsning</string>
+  <string id="21806">Kommentar</string>
+  <string id="21807">Farve/sh</string>
+  <string id="21808">Jpeg-proces</string>
+  <string id="21820">Dato/tid</string>
+  <string id="21821">Beskrivelse</string>
+  <string id="21822">Kameramærke</string>
+  <string id="21823">Kameramodel</string>
+  <string id="21824">EXIF-kommentar</string>
+  <string id="21825">Firmware</string>
+  <string id="21826">Blænde</string>
+  <string id="21827">Brændvidde</string>
+  <string id="21828">Fokusafstand</string>
+  <string id="21829">Eksponering</string>
+  <string id="21830">Eksponeringstid</string>
+  <string id="21831">Eksponeringskompensation</string>
+  <string id="21832">Eksponeringstype</string>
+  <string id="21833">Flash brugt</string>
+  <string id="21834">Hvidbalance</string>
+  <string id="21835">Lyskilde</string>
+  <string id="21836">Målemetode</string>
+  <string id="21837">ISO</string>
+  <string id="21838">Digital zoom</string>
+  <string id="21839">CCD-størrelse</string>
+  <string id="21840">Breddegrad</string>
+  <string id="21841">Højdegrad</string>
+  <string id="21842">Højde</string>
+  <string id="21843">Retning</string>
+  <string id="21860">Yderligere kategorier</string>
+  <string id="21861">Nøgleord</string>
+  <string id="21862">Titel</string>
+  <string id="21863">Forfatter</string>
+  <string id="21864">Overskrift</string>
+  <string id="21865">Særlig vejledning</string>
+  <string id="21866">Kategori</string>
+  <string id="21867">Byline</string>
+  <string id="21868">Byline-titel</string>
+  <string id="21869">Credit</string>
+  <string id="21870">Kilde</string>
+  <string id="21871">Besked om ophavsret</string>
+  <string id="21872">Objektnavn</string>
+  <string id="21873">By</string>
+  <string id="21874">Stat</string>
+  <string id="21875">Land</string>
+  <string id="21876">Original reference til Tx</string>
+  <string id="21877">Oprettelsesdato</string>
+  <string id="21878">Ophavsret</string>
+  <string id="21879">Landekode</string>
+  <string id="21880">Referencetjeneste</string>
+  <string id="21881">Aktiver UPnP-renderer</string>
   <string id="21438">%c-drev</string>
   <string id="21439">Rediger regler for Party Mode</string>
   <string id="29999">Brug flimmerfilter på spil</string>

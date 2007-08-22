@@ -184,6 +184,12 @@ void PAPlayer::UpdateCrossFadingTime(const CFileItem& file)
   }
 }
 
+void PAPlayer::OnNothingToQueueNotify()
+{
+  //nothing to queue, stop playing
+  m_bQueueFailed = true;
+}
+
 bool PAPlayer::QueueNextFile(const CFileItem &file)
 {
   return QueueNextFile(file, true);

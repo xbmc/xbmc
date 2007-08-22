@@ -32,6 +32,10 @@ namespace PYXBMC
 
     self = (ControlSpin*)type->tp_alloc(type, 0);
     if (!self) return NULL;
+    new(&self->strTextureUp) string();    
+    new(&self->strTextureDown) string();    
+    new(&self->strTextureUpFocus) string();    
+    new(&self->strTextureDownFocus) string();      
 
     if (!PyArg_ParseTuple(args, "llll|Oss", &self->dwPosX, &self->dwPosY, &self->dwWidth, &self->dwHeight,
       &pObjectText, &cTextureFocus, &cTextureNoFocus)) return NULL;

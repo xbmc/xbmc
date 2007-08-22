@@ -304,7 +304,10 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
     pItem->GetMusicInfoTag()->SetGenre(strFake);
     pItem->SetCanQueue(false);
     pItem->SetLabelPreformated(true);
-    items.Add(pItem);
+    if (g_advancedSettings.m_bMusicLibraryAllItemsOnBottom)
+      items.Add(pItem);
+    else
+      items.AddFront(pItem,0);
   }
 }
 

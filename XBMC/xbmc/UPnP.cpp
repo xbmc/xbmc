@@ -23,17 +23,28 @@
 
 #include "stdafx.h"
 #include "Util.h"
+#include "Application.h"
 
 #include "xbox/Network.h"
 #include "UPnP.h"
 #include "FileSystem/UPnPVirtualPathDirectory.h"
+#include "FileSystem/MusicDatabaseDirectory.h"
+#include "FileSystem/VideoDatabaseDirectory.h"
+#include "MusicDatabase.h"
+#include "VideoDatabase.h"
+#include "FileSystem/VideoDatabaseDirectory/DirectoryNode.h"
+#include "FileSystem/VideoDatabaseDirectory/QueryParams.h"
 #include "Platinum.h"
 #include "PltFileMediaServer.h"
 #include "PltMediaServer.h"
 #include "PltMediaBrowser.h"
+#include "../MediaRenderer/PltMediaRenderer.h"
 #include "PltSyncMediaBrowser.h"
 #include "PltDidl.h"
 #include "NptNetwork.h"
+#include "NptConsole.h"
+
+NPT_SET_LOCAL_LOGGER("xbmc.upnp")
 
 /*----------------------------------------------------------------------
 |   static
@@ -128,6 +139,21 @@ NPT_NetworkInterface::GetNetworkInterfaces(NPT_List<NPT_NetworkInterface*>& inte
 }
 #endif
 
+
+/*----------------------------------------------------------------------
+|   NPT_Console::Output and NPT_GetEnvironment
++---------------------------------------------------------------------*/
+
+void NPT_Console::Output(const char* message)
+{
+    CLog::Log(LOGDEBUG, message);
+}
+
+NPT_Result NPT_GetEnvironment(const char* name, NPT_String& value)
+{
+    return NPT_FAILURE;
+}
+
 /*----------------------------------------------------------------------
 |   CDeviceHostReferenceHolder class
 +---------------------------------------------------------------------*/
@@ -182,6 +208,11 @@ public:
         PLT_ActionReference& action, 
         const char*          object_id, 
         NPT_SocketInfo*      info = NULL);
+    virtual NPT_Result OnSearch(
+        PLT_ActionReference& action, 
+        const NPT_String& object_id, 
+        const NPT_String& searchCriteria,
+        NPT_SocketInfo* info = NULL);
 
 private:
     PLT_MediaObject* BuildObject(
@@ -216,15 +247,87 @@ CUPnPServer::BuildObject(CFileItem*      item,
     PLT_MediaItemResource resource;
     PLT_MediaObject*      object = NULL;
 
+    // some usefull buffers
+    CStdStringArray strings;
+    CStdString buffer;
+
+    // get list of ip addresses
+    NPT_List<NPT_String> ips;
+    NPT_CHECK_LABEL(PLT_UPnPMessageHelper::GetIPAddresses(ips), failure);
+
+    // if we're passed an interface where we received the request from
+    // move the ip to the top
+    if (info && info->local_address.GetIpAddress().ToString() != "0.0.0.0") {
+        ips.Remove(info->local_address.GetIpAddress().ToString());
+        ips.Insert(ips.GetFirstItem(), info->local_address.GetIpAddress().ToString());
+    }
+
     if (!item->m_bIsFolder) {
         object = new PLT_MediaItem();
 
-        /* Set the title using the filename for now */
-        object->m_Title = item->GetLabel();
-        if (object->m_Title.GetLength() == 0) goto failure;
+        object->m_ObjectID = item->m_strPath;
+
+        /* Setup object type */
+        if( item->IsMusicDb() ) {
+            object->m_ObjectClass.type = "object.item.audioitem";
+          
+            if( item->HasMusicInfoTag() ) {
+                CMusicInfoTag *tag = item->GetMusicInfoTag();
+                if( !tag->GetURL().IsEmpty() )
+                  file_path = tag->GetURL();
+
+                StringUtils::SplitString(tag->GetGenre(), " / ", strings);
+                StringUtils::JoinString(strings, ",", buffer);
+                object->m_Affiliation.genre = buffer;
+
+                object->m_Affiliation.album = tag->GetAlbum();
+                object->m_People.artist = tag->GetArtist();
+                object->m_Creator = tag->GetArtist();
+                object->m_MiscInfo.original_track_number = tag->GetTrackNumber();
+                resource.m_Duration = tag->GetDuration();                
+            }
+
+        } else if( item->IsVideoDb() ) {
+            object->m_ObjectClass.type = "object.item.videoitem";
+
+            if( item->HasVideoInfoTag() ) {
+                CVideoInfoTag *tag = item->GetVideoInfoTag();
+                if( !tag->m_strFileNameAndPath.IsEmpty() )
+                  file_path = tag->m_strFileNameAndPath;
+
+                StringUtils::SplitString(tag->m_strGenre, " / ", strings);
+                StringUtils::JoinString(strings, ",", buffer);
+                object->m_Affiliation.genre = buffer;
+
+                for(CVideoInfoTag::iCast it = tag->m_cast.begin();it != tag->m_cast.end();it++) {
+                    object->m_People.actor += it->first + ",";
+                    object->m_People.actor_role += it->second + ",";
+                }
+                object->m_People.actor.TrimRight(",");
+                object->m_People.actor_role.TrimRight(",");
+
+                object->m_People.director = tag->m_strDirector;
+                object->m_Description.description = tag->m_strTagLine;
+                object->m_Description.long_description = tag->m_strPlot;
+                //TODO - this is wrong, imdb gives it as minute string ie, "116 min"
+                //resource.m_Duration = StringUtils::TimeStringToSeconds(tag->m_strRuntime.c_str());
+            }
+
+        } else if( item->IsAudio() ) {
+            object->m_ObjectClass.type = "object.item.audioitem";
+        } else if( item->IsVideo() ) {
+            object->m_ObjectClass.type = "object.item.videoitem";
+        } else if( item->IsPicture() ) {
+            object->m_ObjectClass.type = "object.item.imageitem";
+        }
 
         /* we need a valid extension to retrieve the mimetype for the protocol info */
         CStdString ext = CUtil::GetExtension((const char*)file_path);
+
+        /* if we still miss a object class, try set it now from extension */
+        if( object->m_ObjectClass.type == "object.item" || object->m_ObjectClass.type == "" ) {
+            object->m_ObjectClass.type = PLT_MediaItem::GetUPnPClassFromExt(ext);
+        }
 
         /* Set the protocol Info from the extension */
         resource.m_ProtocolInfo = PLT_MediaItem::GetProtInfoFromExt(ext);
@@ -233,53 +336,76 @@ CUPnPServer::BuildObject(CFileItem*      item,
         /* Set the resource file size */
         resource.m_Size = (NPT_Integer)item->m_dwSize;
 
-        // get list of ip addresses
-        NPT_List<NPT_String> ips;
-        NPT_CHECK_LABEL(PLT_UPnPMessageHelper::GetIPAddresses(ips), failure);
-
-        // if we're passed an interface where we received the request from
-        // move the ip to the top
-        if (info && info->local_address.GetIpAddress().ToString() != "0.0.0.0") {
-            ips.Remove(info->local_address.GetIpAddress().ToString());
-            ips.Insert(ips.GetFirstItem(), info->local_address.GetIpAddress().ToString());
-        }
-
-        // iterate through list and build list of resources
-        NPT_List<NPT_String>::Iterator ip = ips.GetFirstItem();
-        while (ip) {
-            NPT_HttpUrl uri = m_FileBaseUri;
-            NPT_HttpUrlQuery query;
-            query.AddField("path", file_path);
-            uri.SetHost(*ip);
-            uri.SetQuery(query.ToString());
-            resource.m_Uri = uri.ToString();
-
-            object->m_ObjectClass.type = PLT_MediaItem::GetUPnPClassFromExt(ext);
+        // if the item is remote, add a direct link to the item
+        if( CUtil::IsRemote ( (const char*)file_path ) ) {
+            resource.m_Uri = file_path;
             object->m_Resources.Add(resource);
+        } else {
 
-            ++ip;
-        }
+            // iterate through list and build list of resources
+            NPT_List<NPT_String>::Iterator ip = ips.GetFirstItem();
+            while (ip) {
+                NPT_HttpUrl uri = m_FileBaseUri;
+                NPT_HttpUrlQuery query;
+                query.AddField("path", file_path);
+                uri.SetHost(*ip);
+                uri.SetQuery(query.ToString());
+                resource.m_Uri = uri.ToString();
+                
+                object->m_Resources.Add(resource);
+
+                ++ip;
+            }
+        }        
     } else {
-        object = new PLT_MediaContainer;
+        PLT_MediaContainer* container = new PLT_MediaContainer;
+        object = container;
 
-        /* Assign a title for this container */
-        object->m_Title = item->GetLabel();
-        if (object->m_Title.GetLength() == 0) goto failure;
-       
+        /* Assign a title and id for this container */
+        container->m_ObjectID = item->m_strPath;
+        container->m_ObjectClass.type = "object.container";
+        container->m_ChildrenCount = -1;
+
+        if(item->IsMusicDb()) {
+        } else if(item->IsVideoDb()) {
+        }
+
         /* Get the number of children for this container */
         if (with_count) {
-            NPT_Cardinal count = 0;
-            NPT_CHECK_LABEL(GetEntryCount(file_path, count), failure);
-            ((PLT_MediaContainer*)object)->m_ChildrenCount = count;
+            if( object->m_ObjectID.StartsWith("virtualpath://") ) {
+                NPT_Cardinal count = 0;
+                NPT_CHECK_LABEL(GetEntryCount(file_path, count), failure);
+                container->m_ChildrenCount = count;
+            } else {
+                /* this should be a standard path */
+                // TODO - get file count of this directory
+            }
         }
+        
+    }
+    
+    // set a title for the object
+    if( !item->GetLabel().IsEmpty() /* item->IsLabelPreformated() */ ) {
+        object->m_Title = item->GetLabel();
+    } else {
+        object->m_Title = CUtil::GetTitleFromPath(item->m_strPath, item->m_bIsFolder);
+    }
 
-        object->m_ObjectClass.type = "object.container";
+    // set a thumbnail if we have one
+    if( item->HasThumbnail() ) {
+        NPT_HttpUrl uri = m_FileBaseUri;
+        NPT_HttpUrlQuery query;
+        query.AddField("path", item->GetThumbnailImage() );
+        uri.SetHost(*ips.GetFirstItem());
+        uri.SetQuery(query.ToString());
+        object->m_ExtraInfo.album_art_uri = uri.ToString();
     }
 
     return object;
 
 failure:
-    delete object;
+    if(object)
+      delete object;
     return NULL;
 }
 
@@ -300,9 +426,88 @@ CUPnPServer::Build(CFileItem*        item,
     //HACK: temporary disabling count as it thrashes HDD
     with_count = false;
 
-    bool ret = CUPnPVirtualPathDirectory::SplitPath(path, share_name, file_path);
-    if (!ret && path != "0") goto failure;
+    if(!CUPnPVirtualPathDirectory::SplitPath(path, share_name, file_path))
+    {
+      file_path = item->m_strPath;
+      share_name = "";
 
+      if (path.StartsWith("musicdb://")) {
+          CStdString label;
+          if( path == "musicdb://" ) {              
+              item->SetLabel("Music Library");
+              item->SetLabelPreformated(true);
+          } else {
+
+              if( !item->HasMusicInfoTag() || !item->GetMusicInfoTag()->Loaded() )
+                  item->LoadMusicTag();
+
+              if( !item->HasThumbnail() )
+                  item->SetCachedMusicThumb();
+
+              if( item->GetLabel().IsEmpty() ) {
+                  /* if no label try to grab it from node type */
+                  if( CMusicDatabaseDirectory::GetLabel((const char*)path, label) ) {
+                      item->SetLabel(label);
+                      item->SetLabelPreformated(true);
+                  }
+              }
+          }
+      } else if (file_path.StartsWith("videodb://")) {
+          CStdString label;
+          if( path == "videodb://" ) {
+              item->SetLabel("Video Library");
+              item->SetLabelPreformated(true);
+          } else {
+
+
+              if( !item->HasVideoInfoTag() ) {
+                  DIRECTORY::VIDEODATABASEDIRECTORY::CQueryParams params;
+                  DIRECTORY::VIDEODATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo((const char*)path, params);
+
+                  CVideoDatabase db;
+                  if( !db.Open() )
+                      return NULL;
+
+                  if( params.GetMovieId() >= 0 )
+                      db.GetMovieInfo((const char*)path, *item->GetVideoInfoTag(), params.GetMovieId());
+                  else if( params.GetEpisodeId() >= 0 )
+                      db.GetEpisodeInfo((const char*)path, *item->GetVideoInfoTag(), params.GetEpisodeId());
+                  else if( params.GetTvShowId() >= 0 )
+                      db.GetTvShowInfo((const char*)path, *item->GetVideoInfoTag(), params.GetTvShowId());
+              }
+
+              // try to grab title from tag
+              if( item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strTitle.IsEmpty() ) {
+                  item->SetLabel( item->GetVideoInfoTag()->m_strTitle );
+                  item->SetLabelPreformated(true);
+              }
+
+              // try to grab it from the folder
+              if( item->GetLabel().IsEmpty() ) {
+                  if( CVideoDatabaseDirectory::GetLabel((const char*)path, label) ) {
+                      item->SetLabel(label);
+                      item->SetLabelPreformated(true);
+                  }
+              }
+
+              if( !item->HasThumbnail() )
+                  item->SetCachedVideoThumb();
+          }
+          
+      }
+
+      //not a virtual path directory, new system
+      object = BuildObject(item, file_path, with_count, info);
+      if(!object)
+        return NULL;
+
+      if(parent_id)
+        object->m_ParentID = parent_id;
+
+      return object;
+    }
+
+    path.TrimRight("/");
     if (file_path.GetLength()) {
         // make sure the path starts with something that is shared given the share
         if (!CUPnPVirtualPathDirectory::FindSharePath(share_name, file_path, true)) goto failure;
@@ -311,23 +516,15 @@ CUPnPServer::Build(CFileItem*        item,
         object = BuildObject(item, file_path, with_count, info);
         if (!object) goto failure;
 
-        // prepend back the share name in front
-        object->m_ObjectID = share_name + "/" + file_path;
-
         // override object id & change the class if it's an item
         // and it's not been set previously
-        if (object->m_ObjectID.StartsWith("virtualpath://upnpmusic")) {
-            if (object->m_ObjectClass.type == "object.item") {
+        if (object->m_ObjectClass.type == "object.item") {
+            if (share_name == "virtualpath://upnpmusic")
                 object->m_ObjectClass.type = "object.item.audioitem";
-            }
-        } else if (object->m_ObjectID.StartsWith("virtualpath://upnpvideo")) {
-            if (object->m_ObjectClass.type == "object.item") {
+            else if (share_name == "virtualpath://upnpvideo")
                 object->m_ObjectClass.type = "object.item.videoitem";
-            }
-        } else if (object->m_ObjectID.StartsWith("virtualpath://upnppictures")) {
-            if (object->m_ObjectClass.type == "object.item") {
+            else if (share_name == "virtualpath://upnppictures")
                 object->m_ObjectClass.type = "object.item.imageitem";
-            }
         }
 
         if (parent_id) {
@@ -353,21 +550,27 @@ CUPnPServer::Build(CFileItem*        item,
                 }
             }
         }
+
+        // old style, needs virtual path prefix
+        if( !object->m_ObjectID.StartsWith("virtualpath://") )
+            object->m_ObjectID = share_name + "/" + object->m_ObjectID;
+
     } else {
         object = new PLT_MediaContainer;
         object->m_Title = item->GetLabel();
         object->m_ObjectClass.type = "object.container";
         object->m_ObjectID = path;
 
-        if (path == "0") {
+        if (path == "virtualpath://upnproot") {
             // root
+            object->m_ObjectID = "0";
             object->m_ParentID = "-1";
-            // root has 3 children
-            if (with_count) ((PLT_MediaContainer*)object)->m_ChildrenCount = 3;
+            // root has 5 children
+            if (with_count) ((PLT_MediaContainer*)object)->m_ChildrenCount = 5;
         } else if (share_name.GetLength() == 0) {
             // no share_name means it's virtualpath://X where X=music, video or pictures
             object->m_ParentID = "0";
-            if (with_count) {
+            if (with_count || true) { // we can always count these, it's quick
                 ((PLT_MediaContainer*)object)->m_ChildrenCount = 0;
 
                 // look up number of shares
@@ -441,7 +644,8 @@ CUPnPServer::Build(CFileItem*        item,
     return object;
 
 failure:
-    delete object;
+    if(object)
+      delete object;
     return NULL;
 }
 
@@ -463,46 +667,77 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference& action,
     CFileItem* item = NULL;
 
     if (id == "0") {
-        item = new CFileItem("0", true);
-        item->SetLabel("Root");
-        object = Build(item, true, info);
-    } else if (id == "virtualpath://upnpmusic") {
-        item = new CFileItem((const char*)id, true);
-        item->SetLabel("Music");
-        object = Build(item, true, info);
-    } else if (id == "virtualpath://upnpvideo") {
-        item = new CFileItem((const char*)id, true);
-        item->SetLabel("Video");
-        object = Build(item, true, info);
-    } else if (id == "virtualpath://upnppictures") {
-        item = new CFileItem((const char*)id, true);
-        item->SetLabel("Pictures");
-        object = Build(item, true, info);
-    } else if (dir.GetMatchingShare((const char*)id, share, paths)) {
-        item = new CFileItem((const char*)id, true);
-        item->SetLabel(share.strName);
-        object = Build(item, true, info);
-    } else {
-        NPT_String share_name, file_path;
-        if (!CUPnPVirtualPathDirectory::SplitPath(id, share_name, file_path)) 
-            return NPT_FAILURE;
+        id = "virtualpath://upnproot/";
+    }
 
-        NPT_String parent_path = GetParentFolder(file_path);
-        if (parent_path.IsEmpty()) return NPT_FAILURE;
+    if (id.StartsWith("virtualpath://")) {
 
-        NPT_DirectoryEntryInfo entry_info;
-        NPT_CHECK(NPT_DirectoryEntry::GetInfo(file_path, entry_info));
+        id.TrimRight("/");
+        if (id == "virtualpath://upnproot") {
+            id += "/";
+            item = new CFileItem((const char*)id, true);
+            item->SetLabel("Root");
+            item->SetLabelPreformated(true);
+            object = Build(item, true, info);
+        } else if (id == "virtualpath://upnpmusic") {
+            id += "/";
+            item = new CFileItem((const char*)id, true);
+            item->SetLabel("Music Files");
+            item->SetLabelPreformated(true);
+            object = Build(item, true, info);
+        } else if (id == "virtualpath://upnpvideo") {
+            id += "/";
+            item = new CFileItem((const char*)id, true);
+            item->SetLabel("Video Files");
+            item->SetLabelPreformated(true);
+            object = Build(item, true, info);
+        } else if (id == "virtualpath://upnppictures") {
+            id += "/";
+            item = new CFileItem((const char*)id, true);
+            item->SetLabel("Picture Files");
+            item->SetLabelPreformated(true);
+            object = Build(item, true, info);
+        } else if (dir.GetMatchingShare((const char*)id, share, paths)) {
+            id += "/";
+            item = new CFileItem((const char*)id, true);
+            item->SetLabel(share.strName);
+            item->SetLabelPreformated(true);
+            object = Build(item, true, info);
+        } else {
+            NPT_String share_name, file_path;
+            if (!CUPnPVirtualPathDirectory::SplitPath(id, share_name, file_path)) 
+                return NPT_FAILURE;
 
-        item = new CFileItem((const char*)id, (entry_info.type==NPT_DIRECTORY_TYPE)?true:false);
-        item->SetLabel((const char*)file_path.SubString(parent_path.GetLength()+1));
+            NPT_String parent_path = GetParentFolder(file_path);
+            if (parent_path.IsEmpty()) return NPT_FAILURE;
 
-        // get file size
-        if (entry_info.type == NPT_FILE_TYPE) {
-            item->m_dwSize = entry_info.size;
+            NPT_DirectoryEntryInfo entry_info;
+            NPT_CHECK(NPT_DirectoryEntry::GetInfo(file_path, entry_info));
+
+            item = new CFileItem((const char*)id, (entry_info.type==NPT_DIRECTORY_TYPE)?true:false);
+            item->SetLabel((const char*)file_path.SubString(parent_path.GetLength()+1));
+            item->SetLabelPreformated(true);
+
+            // get file size
+            if (entry_info.type == NPT_FILE_TYPE) {
+                item->m_dwSize = entry_info.size;
+            }
+
+            object = Build(item, true, info);
+            if (!object.IsNull()) object->m_ObjectID = id;
         }
+    } else {
 
-        object = Build(item, true, info);
-        if (!object.IsNull()) object->m_ObjectID = id;
+        if( CDirectory::Exists((const char*)id) ) {
+            item = new CFileItem((const char*)id, true);
+        } else {
+            item = new CFileItem((const char*)id, false);            
+        }
+        CStdString parent;
+        if(!CUtil::GetParentPath((const char*)id, parent))
+          parent = "0";
+
+        object = Build(item, true, info, parent.c_str());
     }
 
     delete item;
@@ -535,26 +770,45 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference& action,
                                     const char*          object_id, 
                                     NPT_SocketInfo*      info /* = NULL */)
 {
-    CUPnPVirtualPathDirectory dir;
+    NPT_String id = object_id;    
     CFileItemList items;
-    if (!dir.GetDirectory(object_id, items)) {
-        /* error */
-        PLT_Log(PLT_LOG_LEVEL_1, "CUPnPServer::OnBrowseDirectChildren - ObjectID not found.");
-        action->SetError(701, "No Such Object.");
-        return NPT_SUCCESS;
+
+    if (id == "0") {
+        id = "virtualpath://upnproot/";
     }
 
-    NPT_String share_name;
-    NPT_String file_path;
-    CUPnPVirtualPathDirectory::SplitPath(object_id, share_name, file_path);
+    if (id.StartsWith("virtualpath://")) {
+        CUPnPVirtualPathDirectory dir;
+        if (!dir.GetDirectory((const char*)id, items)) {
+            /* error */
+            NPT_LOG_FINE("CUPnPServer::OnBrowseDirectChildren - ObjectID not found.")
+            action->SetError(701, "No Such Object.");
+            return NPT_SUCCESS;
+        }
+    } else {
+        items.m_strPath = id;
+        if (!items.Load()) {
+            // cache anything that takes more than a second to retreive
+            DWORD time = GetTickCount() + 1000;
+
+            if (!CDirectory::GetDirectory((const char*)id, items)) {
+                /* error */
+                NPT_LOG_FINE("CUPnPServer::OnBrowseDirectChildren - ObjectID not found.")
+                action->SetError(701, "No Such Object.");
+                return NPT_SUCCESS;
+            }
+            if(items.GetCacheToDisc() || time < GetTickCount())
+              items.Save();
+        }
+    }
 
     NPT_String filter;
     NPT_String startingInd;
     NPT_String reqCount;
 
-    NPT_CHECK(action->GetArgumentValue("Filter", filter));
-    NPT_CHECK(action->GetArgumentValue("StartingIndex", startingInd));
-    NPT_CHECK(action->GetArgumentValue("RequestedCount", reqCount));   
+    NPT_CHECK_SEVERE(action->GetArgumentValue("Filter", filter));
+    NPT_CHECK_SEVERE(action->GetArgumentValue("StartingIndex", startingInd));
+    NPT_CHECK_SEVERE(action->GetArgumentValue("RequestedCount", reqCount));   
 
     unsigned long start_index, req_count;
     if (NPT_FAILED(startingInd.ToInteger(start_index)) ||
@@ -569,12 +823,6 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference& action,
     NPT_String didl = didl_header;
     PLT_MediaObjectReference item;
     for (int i=0; i < (int) items.Size(); ++i) {
-        // if the item doesn't start by virtualpath://
-        // we need to prepend the sharename
-        if (!NPT_String(items[i]->m_strPath.c_str()).StartsWith("virtualpath://")) {
-            if (share_name.GetLength() == 0) return NPT_FAILURE; // weird!
-            items[i]->m_strPath = (const char*) NPT_String(share_name + "/" + items[i]->m_strPath.c_str());
-        }
         item = Build(items[i], true, info, object_id);
         if (!item.IsNull()) {
             if ((cur_index >= start_index) && ((num_returned < req_count) || (req_count == 0))) {
@@ -598,15 +846,147 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference& action,
     return NPT_SUCCESS;
 }
 
+NPT_Result
+CUPnPServer::OnSearch(PLT_ActionReference& action, 
+                      const NPT_String& object_id, 
+                      const NPT_String& searchCriteria,
+                      NPT_SocketInfo* info /*= NULL*/)
+
+{
+  // uggly hack to get windows media player to show stuff
+  if(searchCriteria.Find("""object.item.audioItem""") >= 0)
+      return OnBrowseDirectChildren(action, "musicdb://4", info);
+  else if(searchCriteria.Find("""object.item.videoItem""") >= 0)
+      return OnBrowseDirectChildren(action, "videodb://1/2", info);
+
+  return NPT_FAILURE;
+}
+
+/*----------------------------------------------------------------------
+|   CUPnP::CMediaRenderer
++---------------------------------------------------------------------*/
+class CUPnPRenderer : 
+    public PLT_MediaRenderer
+{
+public:
+    CUPnPRenderer(const char*          friendly_name,
+                  bool                 show_ip = false,
+                  const char*          uuid = NULL,
+                  unsigned int         port = 0) :
+        PLT_MediaRenderer(NULL, friendly_name, show_ip, uuid, port)
+    {
+    }
+
+    void UpdateState()
+    {
+        PLT_Service* avt;
+        if(NPT_FAILED(FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", avt)))
+          return;
+
+        bool publish = true;
+        CStdString buffer;
+
+        StringUtils::SecondsToTimeString((long)g_application.GetTime(), buffer, TIME_FORMAT_HH_MM_SS);
+        avt->SetStateVariable("RelativeTimePosition", buffer.c_str(), publish);
+
+        StringUtils::SecondsToTimeString((long)g_application.GetTotalTime(), buffer, TIME_FORMAT_HH_MM_SS);
+        avt->SetStateVariable("CurrentTrackDuration", buffer.c_str(), publish);
+
+        // TODO - these states don't generate events, LastChange state needs to be fixed
+        if (g_application.IsPlaying()) {
+            avt->SetStateVariable("TransportState", "PLAYING", publish);
+            avt->SetStateVariable("TransportStatus", "OK", publish);
+            avt->SetStateVariable("TransportPlaySpeed", "1", publish);
+            avt->SetStateVariable("NumberOfTracks", "1", publish);
+            avt->SetStateVariable("CurrentTrack", "1", publish);
+        } else {
+            avt->SetStateVariable("TransportState", "STOPPED", publish);
+            avt->SetStateVariable("TransportStatus", "OK", publish);
+            avt->SetStateVariable("TransportPlaySpeed", "1", publish);
+            avt->SetStateVariable("NumberOfTracks", "0", publish);
+            avt->SetStateVariable("CurrentTrack", "0", publish);
+        }
+    }
+
+    // AVTransport
+    virtual NPT_Result OnNext(PLT_ActionReference& action)
+    {
+        g_applicationMessenger.PlayListPlayerNext();
+        return NPT_SUCCESS;
+    }
+    virtual NPT_Result OnPause(PLT_ActionReference& action)
+    {
+        if(!g_application.IsPaused())
+          g_applicationMessenger.MediaPause();
+        return NPT_SUCCESS;
+    }
+    virtual NPT_Result OnPlay(PLT_ActionReference& action)
+    {
+        if(g_application.IsPaused())
+            g_applicationMessenger.MediaPause();
+        return NPT_SUCCESS;
+    }
+    virtual NPT_Result OnPrevious(PLT_ActionReference& action)
+    {
+        g_applicationMessenger.PlayListPlayerPrevious();
+        return NPT_SUCCESS;
+    }
+    virtual NPT_Result OnStop(PLT_ActionReference& action)
+    {
+        g_applicationMessenger.MediaStop();
+        return NPT_SUCCESS;
+    }
+    virtual NPT_Result OnSetAVTransportURI(PLT_ActionReference& action)
+    {
+        NPT_String uri, meta;
+        PLT_Service* service;
+
+        NPT_CHECK_SEVERE(action->GetArgumentValue("CurrentURI",uri));
+        NPT_CHECK_SEVERE(action->GetArgumentValue("CurrentURIMetaData",meta));
+
+        NPT_CHECK_SEVERE(FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", service));
+
+        service->SetStateVariable("TransportState", "TRANSITIONING", false);
+        service->SetStateVariable("TransportStatus", "OK", false);
+        service->SetStateVariable("TransportPlaySpeed", "1", false);
+
+        service->SetStateVariable("AVTransportURI", uri, false);
+        service->SetStateVariable("AVTransportURIMetaData", meta, false);
+        NPT_CHECK_SEVERE(action->SetArgumentsOutFromStateVariable());
+
+        g_applicationMessenger.MediaPlay((const char*)uri);
+        
+        return NPT_SUCCESS;
+    }
+
+};
+
+/*----------------------------------------------------------------------
+|   CCtrlPointReferenceHolder class
++---------------------------------------------------------------------*/
+class CRendererReferenceHolder
+{
+public:
+    PLT_DeviceHostReference m_Device;
+};
+
+
 /*----------------------------------------------------------------------
 |   CUPnP::CUPnP
 +---------------------------------------------------------------------*/
 CUPnP::CUPnP() :
     m_ServerHolder(new CDeviceHostReferenceHolder()),
-    m_CtrlPointHolder(new CCtrlPointReferenceHolder())
+    m_CtrlPointHolder(new CCtrlPointReferenceHolder()),
+    m_RendererHolder(new CRendererReferenceHolder())
 {
-    //PLT_SetLogLevel(PLT_LOG_LEVEL_4);
-
+//#ifdef HAS_XBOX_HARDWARE
+//    broadcast = true;
+//#else
+//    broadcast = false;
+//#endif
+    // xbox can't receive multicast, but it can send it
+    broadcast = false;
+    
     // initialize upnp in broadcast listening mode for xbmc
     m_UPnP = new PLT_UPnP(1900, !broadcast);
 
@@ -625,6 +1005,7 @@ CUPnP::~CUPnP()
 
     delete m_UPnP;
     delete m_ServerHolder;
+    delete m_RendererHolder;
     delete m_CtrlPointHolder;
 }
 
@@ -677,14 +1058,13 @@ CUPnP::StartClient()
 
     // start browser
     m_MediaBrowser = new PLT_SyncMediaBrowser(m_CtrlPointHolder->m_CtrlPoint, true);
-    
-    // Issue a search request on the broadcast address instead of the upnp multicast address 239.255.255.250
-    // since the xbox does not support multicast. UPnP devices will still receive our request and respond to us
-    // since they're listening on port 1900 in multicast
-    // Repeat every 6 seconds
-    if (broadcast) {
-        m_CtrlPointHolder->m_CtrlPoint->Discover(NPT_HttpUrl("255.255.255.255", 1900, "*"), "upnp:rootdevice", 1, 6000);
-    }
+
+#ifdef _XBOX
+    // Issue a search request on the every 6 seconds, both on broadcast and multicast
+    // xbox can't receive multicast, but it can send it so upnp clients know we are here
+    m_CtrlPointHolder->m_CtrlPoint->Discover(NPT_HttpUrl("255.255.255.255", 1900, "*"), "upnp:rootdevice", 1, 6000);
+    m_CtrlPointHolder->m_CtrlPoint->Discover(NPT_HttpUrl("239.255.255.250", 1900, "*"), "upnp:rootdevice", 1, 6000);
+#endif
 }
 
 /*----------------------------------------------------------------------
@@ -710,11 +1090,12 @@ CUPnP::StartServer()
     if (!m_ServerHolder->m_Device.IsNull()) return;
 
     // load upnpserver.xml so that g_settings.m_vecUPnPMusicShares, etc.. are loaded
-    g_settings.LoadUPnPXml("q:\\system\\upnpserver.xml");
+    CStdString filename;
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
+    g_settings.LoadUPnPXml(filename);
 
     // create the server with the friendlyname and UUID from upnpserver.xml if found
-    m_ServerHolder->m_Device = new CUPnPServer(
-        g_settings.m_UPnPServerFriendlyName.length()?g_settings.m_UPnPServerFriendlyName.c_str():"Xbox Media Center",
+    m_ServerHolder->m_Device = new CUPnPServer("XBMC - Media Server",
         g_settings.m_UPnPUUID.length()?g_settings.m_UPnPUUID.c_str():NULL);
 
     // trying to set optional upnp values for XP UPnP UI Icons to detect us
@@ -728,7 +1109,7 @@ CUPnP::StartServer()
 #endif
     m_ServerHolder->m_Device->m_PresentationURL = NPT_HttpUrl(ip, atoi(g_guiSettings.GetString("servers.webserverport")), "/").ToString();
     m_ServerHolder->m_Device->m_ModelName = "Xbox Media Center";
-    m_ServerHolder->m_Device->m_ModelDescription = "Xbox Media Center";
+    m_ServerHolder->m_Device->m_ModelDescription = "Xbox Media Center - Media Server";
     m_ServerHolder->m_Device->m_ModelURL = "http://www.xboxmediacenter.com/";
     m_ServerHolder->m_Device->m_ModelNumber = "2.0";
     m_ServerHolder->m_Device->m_ModelName = "XBMC";
@@ -749,7 +1130,7 @@ CUPnP::StartServer()
 
     // save UUID
     g_settings.m_UPnPUUID = m_ServerHolder->m_Device->GetUUID();
-    g_settings.SaveUPnPXml("q:\\system\\upnpserver.xml");
+    g_settings.SaveUPnPXml(filename);
 }
 
 /*----------------------------------------------------------------------
@@ -762,4 +1143,54 @@ CUPnP::StopServer()
 
     m_UPnP->RemoveDevice(m_ServerHolder->m_Device);
     m_ServerHolder->m_Device = NULL;
+}
+
+void CUPnP::StartRenderer()
+{
+    if (!m_RendererHolder->m_Device.IsNull()) return;
+
+    CStdString filename;
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
+    g_settings.LoadUPnPXml(filename);
+
+    NPT_String ip = g_network.m_networkinfo.ip;
+#ifndef HAS_XBOX_NETWORK
+    NPT_List<NPT_String> list;
+    if (NPT_SUCCEEDED(PLT_UPnPMessageHelper::GetIPAddresses(list))) {
+        ip = *(list.GetFirstItem());
+    }
+#endif
+
+    m_RendererHolder->m_Device = new CUPnPRenderer("XBMC - Media Renderer", true, 
+          (g_settings.m_UPnPUUIDRenderer.length() ? g_settings.m_UPnPUUIDRenderer.c_str() : NULL) );
+
+    m_RendererHolder->m_Device->m_PresentationURL = NPT_HttpUrl(ip, atoi(g_guiSettings.GetString("servers.webserverport")), "/").ToString();
+    m_RendererHolder->m_Device->m_ModelName = "Xbox Media Center";
+    m_RendererHolder->m_Device->m_ModelDescription = "Xbox Media Center - Media Renderer";
+    m_RendererHolder->m_Device->m_ModelURL = "http://www.xboxmediacenter.com/";
+    m_RendererHolder->m_Device->m_ModelNumber = "2.0";
+    m_RendererHolder->m_Device->m_Manufacturer = "Xbox Team";
+    m_RendererHolder->m_Device->m_ManufacturerURL = "http://www.xboxmediacenter.com/";
+
+    m_RendererHolder->m_Device->SetBroadcast(broadcast);
+
+    m_UPnP->AddDevice(m_RendererHolder->m_Device);
+
+    // save UUID
+    g_settings.m_UPnPUUIDRenderer = m_RendererHolder->m_Device->GetUUID();
+    g_settings.SaveUPnPXml(filename);
+}
+
+void CUPnP::StopRenderer()
+{
+    if (m_RendererHolder->m_Device.IsNull()) return;
+
+    m_UPnP->RemoveDevice(m_RendererHolder->m_Device);
+    m_RendererHolder->m_Device = NULL;
+}
+
+void CUPnP::UpdateState()
+{
+  if (!m_RendererHolder->m_Device.IsNull())
+      ((CUPnPRenderer*)m_RendererHolder->m_Device.AsPointer())->UpdateState();  
 }

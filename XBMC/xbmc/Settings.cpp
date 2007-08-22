@@ -52,7 +52,7 @@ class CSettings g_settings;
 
 extern CStdString g_LoadErrorStr;
 
-bool CShare::isWritable()
+bool CShare::isWritable() const
 {
 #ifndef _LINUX
   if (strPath[1] == ':' && (strPath[0] != 'D' && strPath[0] != 'd'))
@@ -283,6 +283,8 @@ CSettings::CSettings(void)
 
   g_advancedSettings.m_bVideoLibraryHideAllItems = false;
   g_advancedSettings.m_bVideoLibraryAllItemsOnBottom = false;
+
+  g_advancedSettings.m_bUseEvilB = true;
 
   g_advancedSettings.m_bTuxBoxAudioChannelSelection = false;
   g_advancedSettings.m_bTuxBoxSubMenuSelection = false;
@@ -1216,6 +1218,8 @@ void CSettings::LoadAdvancedSettings()
   GetInteger(pRootElement, "songinfoduration", g_advancedSettings.m_songInfoDuration, 2, 1, 15);
   GetInteger(pRootElement, "busydialogdelay", g_advancedSettings.m_busyDialogDelay, 2000, 0, 5000);
 
+  XMLUtils::GetBoolean(pRootElement,"rootovershoot",g_advancedSettings.m_bUseEvilB);
+
   //Tuxbox
   pElement = pRootElement->FirstChildElement("tuxbox");
   if (pElement)
@@ -1823,6 +1827,9 @@ bool CSettings::LoadProfile(int index)
       strThumbLoc = g_settings.GetMusicThumbFolder();
       strThumbLoc += "\\" + strHex;
       CreateDirectory(strThumbLoc.c_str(),NULL);
+      strThumbLoc = g_settings.GetVideoThumbFolder();
+      strThumbLoc += "\\" + strHex;
+      CreateDirectory(strThumbLoc.c_str(),NULL);
     }
 
     g_infoManager.ResetCache();
@@ -2130,18 +2137,9 @@ bool CSettings::LoadUPnPXml(const CStdString& strSettingsFile)
     CLog::Log(LOGERROR, "Error loading %s, no <upnpserver> node", strSettingsFile.c_str());
     return false;
   }
-
-  // load UUID
-  TiXmlElement* eUUID = pRootElement->FirstChildElement("UUID");
-  if (eUUID && eUUID->FirstChild()) {
-      g_settings.m_UPnPUUID = eUUID->FirstChild()->Value();
-  }
-
-  // load FriendlyName
-  TiXmlElement* eFN = pRootElement->FirstChildElement("FriendlyName");
-  if (eFN && eFN->FirstChild()) {
-      g_settings.m_UPnPServerFriendlyName = eFN->FirstChild()->Value();
-  }
+  // load settings
+  XMLUtils::GetString(pRootElement, "UUID", g_settings.m_UPnPUUID);
+  XMLUtils::GetString(pRootElement, "UUIDRenderer", g_settings.m_UPnPUUIDRenderer);
 
   CStdString strDefault;
   GetShares(pRootElement,"music",g_settings.m_vecUPnPMusicShares,strDefault);
@@ -2159,16 +2157,8 @@ bool CSettings::SaveUPnPXml(const CStdString& strSettingsFile) const
   if (!pRoot) return false;
 
   // create a new Element for UUID
-  TiXmlText xmlUUID(g_settings.m_UPnPUUID);
-  TiXmlElement eUUID("UUID");
-  eUUID.InsertEndChild(xmlUUID);
-  pRoot->ToElement()->InsertEndChild(eUUID);
-
-  // create a new Element for Server friendly name
-  TiXmlText xmlFriendlyName(g_settings.m_UPnPServerFriendlyName);
-  TiXmlElement eFN("FriendlyName");
-  eFN.InsertEndChild(xmlFriendlyName);
-  pRoot->ToElement()->InsertEndChild(eFN);
+  XMLUtils::SetString(pRoot, "UUID", g_settings.m_UPnPUUID);
+  XMLUtils::SetString(pRoot, "UUIDRenderer", g_settings.m_UPnPUUIDRenderer);
   
   VECSHARES* pShares[3];
   pShares[0] = &g_settings.m_vecUPnPMusicShares;

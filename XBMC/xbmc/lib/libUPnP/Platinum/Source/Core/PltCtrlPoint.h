@@ -13,8 +13,7 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#include "NptDefs.h"
-#include "NptStrings.h"
+#include "Neptune.h"
 #include "PltService.h"
 #include "PltHttpServerListener.h"
 #include "PltSsdpListener.h"
@@ -46,8 +45,7 @@ typedef NPT_List<PLT_CtrlPointListener*> PLT_CtrlPointListenerList;
 /*----------------------------------------------------------------------
 |   PLT_CtrlPoint class
 +---------------------------------------------------------------------*/
-class PLT_CtrlPoint : public PLT_HttpServerListener,
-                      public PLT_SsdpPacketListener,
+class PLT_CtrlPoint : public PLT_SsdpPacketListener,
                       public PLT_SsdpSearchResponseListener
 {
 public:
@@ -67,19 +65,20 @@ public:
     NPT_Result   InvokeAction(PLT_ActionReference& action, void* userdata = NULL);
     NPT_Result   Subscribe(PLT_Service* service, bool cancel = false, void* userdata = NULL);
 
-    // PLT_HttpServerListener methods
-    virtual NPT_Result ProcessHttpRequest(NPT_HttpRequest*   request, 
-                                          NPT_SocketInfo     info, 
-                                          NPT_HttpResponse*& response);
+    // NPT_HttpRequestHandler methods
+    virtual NPT_Result ProcessHttpRequest(NPT_HttpRequest&  request,
+                                          NPT_HttpResponse& response,
+                                          NPT_SocketInfo&   client_info);
+
     // PLT_SsdpSearchResponseListener methods
     virtual NPT_Result ProcessSsdpSearchResponse(NPT_Result        res, 
                                                  NPT_SocketInfo&   info, 
                                                  NPT_HttpResponse* response);
     // PLT_SsdpPacketListener method
-    virtual NPT_Result OnSsdpPacket(NPT_HttpRequest* request, NPT_SocketInfo info);
+    virtual NPT_Result OnSsdpPacket(NPT_HttpRequest& request, NPT_SocketInfo info);
     
     // helper methods
-    NPT_Result  FindDevice(NPT_String& uuid, PLT_DeviceDataReference& device);
+    NPT_Result  FindDevice(const char* uuid, PLT_DeviceDataReference& device);
 
 protected:
     virtual ~PLT_CtrlPoint();
@@ -87,10 +86,10 @@ protected:
     NPT_Result   Start(PLT_TaskManager* task_manager);
     NPT_Result   Stop();
 
-    NPT_Result   ProcessSsdpNotify(NPT_HttpRequest* request, NPT_SocketInfo info);
-    NPT_Result   ProcessSsdpMessage(NPT_HttpMessage*   message, 
-                                    NPT_SocketInfo&    info, 
-                                    NPT_String&        uuid);
+    NPT_Result   ProcessSsdpNotify(NPT_HttpRequest& request, NPT_SocketInfo info);
+    NPT_Result   ProcessSsdpMessage(NPT_HttpMessage* message, 
+                                    NPT_SocketInfo&  info, 
+                                    NPT_String&      uuid);
     NPT_Result   ProcessGetDescriptionResponse(NPT_Result               res, 
                                                NPT_HttpResponse*        response,
                                                PLT_DeviceDataReference& device);
@@ -135,6 +134,7 @@ private:
     NPT_List<PLT_SsdpSearchTask*>                   m_SsdpSearchTasks;
     NPT_Lock<PLT_CtrlPointListenerList>             m_ListenerList;
     PLT_HttpServer*                                 m_EventHttpServer;
+    NPT_HttpRequestHandler*                         m_EventHttpServerHandler;
     PLT_TaskManager*                                m_TaskManager;
     NPT_Lock<NPT_List<PLT_DeviceDataReference> >    m_Devices;
     NPT_Lock<NPT_List<PLT_EventSubscriber*> >       m_Subscribers;

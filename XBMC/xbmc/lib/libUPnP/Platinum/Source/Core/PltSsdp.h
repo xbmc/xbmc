@@ -13,8 +13,7 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#include "NptNetwork.h"
-#include "NptThreads.h"
+#include "Neptune.h"
 #include "PltSsdpListener.h"
 #include "PltThreadTask.h"
 #include "PltHttpServerTask.h"
@@ -125,12 +124,16 @@ public:
         NPT_IpAddress addr;
         addr.ResolveName("239.255.255.250");
 
+#if 0
         NPT_List<NPT_NetworkInterfaceAddress>::Iterator niaddr = if_addr->GetAddresses().GetFirstItem();
         if (!niaddr) return NPT_FAILURE;
 
         //FIXME: Should we iterate through all addresses or at least check for disconnected ones ("0.0.0.0")?
 
         return m_Socket->JoinGroup(addr, (*niaddr).GetPrimaryAddress());
+#else
+        return m_Socket->JoinGroup(addr, NPT_IpAddress::Any);
+#endif
     }
 
 private:
@@ -188,7 +191,7 @@ private:
 class PLT_SsdpPacketListenerIterator
 {
 public:
-    PLT_SsdpPacketListenerIterator(NPT_HttpRequest* request, NPT_SocketInfo info) :
+    PLT_SsdpPacketListenerIterator(NPT_HttpRequest& request, NPT_SocketInfo info) :
       m_Request(request), m_Info(info) {}
 
     NPT_Result operator()(PLT_SsdpPacketListener*& listener) const {
@@ -196,7 +199,7 @@ public:
     }
 
 private:
-    NPT_HttpRequest* m_Request;
+    NPT_HttpRequest& m_Request;
     NPT_SocketInfo   m_Info;
 };
 
@@ -231,9 +234,10 @@ protected:
     // PLT_HttpServerSocketTask methods
     NPT_Result GetInputStream(NPT_InputStreamReference& stream);
     NPT_Result GetInfo(NPT_SocketInfo& info);
-    NPT_Result ProcessRequest(NPT_HttpRequest*   request, 
+    NPT_Result ProcessRequest(NPT_HttpRequest&   request, 
                               NPT_SocketInfo     info, 
-                              NPT_HttpResponse*& response);
+                              NPT_HttpResponse*& response,
+                              bool&              headers_only);
 
 protected:
     PLT_InputDatagramStreamReference  m_Datagram;

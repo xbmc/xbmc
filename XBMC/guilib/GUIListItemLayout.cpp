@@ -258,8 +258,7 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
   g_SkinInfo.ResolveIncludes(child);
 
   // grab the type...
-  CGUIControlFactory factory;
-  CStdString type = factory.GetType(child);
+  CStdString type = CGUIControlFactory::GetType(child);
 
   // resolve again with strType set so that <default> tags are added
   g_SkinInfo.ResolveIncludes(child, type);
@@ -288,23 +287,23 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
     CLog::Log(LOGERROR, " Invalid item info %s", infoString.c_str());
     return NULL;
   }
-  factory.GetTexture(child, "texture", image);
-  factory.GetAlignment(child, "align", label.align);
+  CGUIControlFactory::GetTexture(child, "texture", image);
+  CGUIControlFactory::GetAlignment(child, "align", label.align);
   FRECT rect = { posX, posY, width, height };
   vector<CAnimation> animations;
-  factory.GetAnimations(child, rect, animations);
+  CGUIControlFactory::GetAnimations(child, rect, animations);
   D3DCOLOR colorDiffuse(0xffffffff);
   CGUIControlFactory::GetColor(child, "colordiffuse", colorDiffuse);
   DWORD alignY = 0;
-  if (factory.GetAlignmentY(child, "aligny", alignY))
+  if (CGUIControlFactory::GetAlignmentY(child, "aligny", alignY))
     label.align |= alignY;
   CStdString content;
   XMLUtils::GetString(child, "label", content);
   CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio = CGUIImage::ASPECT_RATIO_KEEP;
   DWORD aspectAlign = ASPECT_ALIGN_CENTER | ASPECT_ALIGNY_CENTER;
-  factory.GetAspectRatio(child, "aspectratio", aspectRatio, aspectAlign);
+  CGUIControlFactory::GetAspectRatio(child, "aspectratio", aspectRatio, aspectAlign);
   int visibleCondition = 0;
-  factory.GetConditionalVisibility(child, visibleCondition);
+  CGUIControlFactory::GetConditionalVisibility(child, visibleCondition);
   if (type == "label")
   { // info label
     return new CListLabel(posX, posY, width, height, visibleCondition, label, info, content);

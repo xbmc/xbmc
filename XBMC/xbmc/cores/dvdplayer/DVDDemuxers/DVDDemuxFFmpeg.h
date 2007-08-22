@@ -66,7 +66,7 @@ protected:
   void Unlock() { LeaveCriticalSection(&m_critSection); }
 
   bool ContextInit(const char* strFile, int chunksize, bool seekable);
-  unsigned __int64 ConvertTimestamp(__int64 pts, int den, int num);
+  __int64 ConvertTimestamp(__int64 pts, int den, int num);
 
   CRITICAL_SECTION m_critSection;
   // #define MAX_STREAMS 42 // from avformat.h
@@ -78,6 +78,6 @@ protected:
   DllAvCodec  m_dllAvCodec;
   DllAvUtil   m_dllAvUtil;
   
-  unsigned __int64 m_iCurrentPts; // used for stream length estimation
+  __int64 m_iCurrentPts; // used for stream length estimation
   bool m_bDiscardDts;
 };

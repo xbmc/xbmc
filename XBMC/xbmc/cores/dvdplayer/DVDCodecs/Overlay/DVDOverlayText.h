@@ -37,32 +37,17 @@ public:
   class CElementText : public CElement
   {
   public:
-    CElementText(const wchar_t* wszText) : CElement(ELEMENT_TYPE_TEXT)
-    {
-      m_wszText = wcsdup(wszText);
-    }
-
     CElementText(const char* strText) : CElement(ELEMENT_TYPE_TEXT)
     {
-#ifndef _LINUX
-      // ansi to unicode
-      int iNeeded = MultiByteToWideChar(CP_ACP, 0, strText, -1, NULL, 0) + 2;
-
-      m_wszText = (WCHAR*)malloc(sizeof(WCHAR) * iNeeded);
-      MultiByteToWideChar(CP_ACP, 0, strText, -1, m_wszText, iNeeded);
-#else
-      CStdStringW strTextW;
-      g_charsetConverter.utf8ToW(strText, strTextW, false); 
-      m_wszText = wcsdup(strTextW.c_str());
-#endif
+      m_text = strdup(strText);
     }
     
     virtual ~CElementText()
     {
-      if (m_wszText) free(m_wszText);
+      if (m_text) free(m_text);
     }
     
-    wchar_t* m_wszText;
+    char* m_text;
   };
   
   class CElementProperty : public CElement

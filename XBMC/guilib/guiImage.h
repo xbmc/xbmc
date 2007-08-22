@@ -10,6 +10,7 @@
 
 #include "GUIControl.h"
 #include "TextureManager.h"
+#include "GUILabelControl.h"  // for CInfoPortion
 
 struct FRECT
 {
@@ -36,27 +37,25 @@ public:
   {
     file = fileName;
     memset(&border, 0, sizeof(FRECT));
-    flipX = flipY = false;
+    orientation = 0;
   };
 
   CImage()
   {
     memset(&border, 0, sizeof(FRECT));
-    flipX = flipY = false;
+    orientation = 0;
   };
 
   void operator=(const CImage &left)
   {
     file = left.file;
     memcpy(&border, &left.border, sizeof(FRECT));
-    flipX = left.flipX;
-    flipY = left.flipY;
+    orientation = left.orientation;
     diffuse = left.diffuse;
   };
   CStdString file;
   FRECT      border;  // scaled  - unneeded if we get rid of scale on load
-  bool       flipX;   // flip horizontally
-  bool       flipY;   // flip vertically
+  int        orientation; // orientation of the texture (0 - 7 == EXIForientation - 1)
   CStdString diffuse; // diffuse overlay texture (unimplemented)
 };
 
@@ -99,11 +98,11 @@ public:
   virtual bool IsAllocated() const;
 
   void PythonSetColorKey(DWORD dwColorKey);
-  void SetFileName(const CStdString& strFileName);
-  void SetAspectRatio(GUIIMAGE_ASPECT_RATIO ratio, DWORD align = ASPECT_ALIGN_CENTER | ASPECT_ALIGNY_CENTER);
+  virtual void SetFileName(const CStdString& strFileName);
+  virtual void SetAspectRatio(GUIIMAGE_ASPECT_RATIO ratio, DWORD align = ASPECT_ALIGN_CENTER | ASPECT_ALIGNY_CENTER);
   void SetAlpha(unsigned char alpha);
   void SetAlpha(unsigned char a0, unsigned char a1, unsigned char a2, unsigned char a3);
-  void SetInfo(int info) { m_Info = info; };
+  void SetInfo(int info);
 
   const CStdString& GetFileName() const { return m_strFileName;};
   int GetTextureWidth() const;
@@ -114,10 +113,13 @@ public:
   virtual void DumpTextureUse();
 #endif
 protected:
-  void AllocateOnDemand();
-  void FreeTextures();
+  void LoadDiffuseImage();
+  virtual void AllocateOnDemand();
+  virtual void FreeTextures();
   void Process();
   void Render(float left, float top, float bottom, float right, float u1, float v1, float u2, float v2);
+  virtual int GetOrientation() const { return m_image.orientation; };
+  void OrientateTexture(CRect &rect, int orientation);
 
   DWORD m_dwColorKey;
   unsigned char m_alpha[4];
@@ -136,6 +138,7 @@ protected:
   LPDIRECT3DTEXTURE8 m_diffuseTexture;
   LPDIRECT3DPALETTE8 m_diffusePalette;
   LPDIRECT3DPALETTE8 m_pPalette;
+  float m_diffuseScaleU, m_diffuseScaleV;
 #elif defined(HAS_SDL_2D)
   void CalcBoundingBox(float *x, float *y, int n, int *b);
   void GetTexel(float u, float v, SDL_Surface *src, BYTE *texel);
@@ -168,7 +171,8 @@ protected:
   bool m_linearTexture; // true if it's a linear 32bit texture
 
   // conditional info
-  int m_Info;
+  vector<CInfoPortion> m_multiInfo;
+  int m_singleInfo;
 
   // border
   CImage m_image;

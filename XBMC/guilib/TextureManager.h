@@ -133,7 +133,7 @@ public:
   void PreLoad(const CStdString& strTextureName);
   void EndPreLoad();
   void FlushPreLoad();
-  int Load(const CStdString& strTextureName, DWORD dwColorKey = 0);
+  int Load(const CStdString& strTextureName, DWORD dwColorKey = 0, bool checkBundleOnly = false);
 #ifndef HAS_SDL  
   LPDIRECT3DTEXTURE8 GetTexture(const CStdString& strTextureName, int iItem, int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal, bool &linearTexture);
 #elif defined(HAS_SDL_2D)

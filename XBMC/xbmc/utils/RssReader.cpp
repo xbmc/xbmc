@@ -18,7 +18,7 @@ using namespace XFILE;
 CRssReader::CRssReader() : CThread()
 {
   m_pObserver = NULL;
-  m_iLeadingSpaces = 0;
+  m_spacesBetweenFeeds = 0;
   m_bIsRunning = false;
   m_iconv = (iconv_t) -1;
   m_shouldFlip = false;
@@ -35,10 +35,10 @@ CRssReader::~CRssReader()
     delete m_vecTimeStamps[i];
 }
 
-void CRssReader::Create(IRssObserver* aObserver, const vector<string>& aUrls, const vector<int> &times, INT iLeadingSpaces)
+void CRssReader::Create(IRssObserver* aObserver, const vector<string>& aUrls, const vector<int> &times, int spacesBetweenFeeds)
 {
   m_pObserver = aObserver;
-  m_iLeadingSpaces = iLeadingSpaces;
+  m_spacesBetweenFeeds = spacesBetweenFeeds; 
   m_vecUrls = aUrls;
   m_strFeed.resize(aUrls.size());
   m_strColors.resize(aUrls.size());
@@ -73,7 +73,6 @@ void CRssReader::OnExit()
 
 void CRssReader::Process()
 {
-  int tempLeading = m_iLeadingSpaces;
   while (m_vecQueue.size())
   {
     int iFeed = m_vecQueue.front();
@@ -81,15 +80,6 @@ void CRssReader::Process()
 
     m_strFeed[iFeed] = "";
     m_strColors[iFeed] = "";
-
-    if (iFeed > 0)
-    {
-      m_iLeadingSpaces = tempLeading / 2;
-    }
-    else
-    {
-      m_iLeadingSpaces = tempLeading;
-    }
 
     CHTTP http;
     http.SetUserAgent("XBMC/pre-2.1 (http://www.xboxmediacenter.com)");
@@ -151,22 +141,31 @@ void CRssReader::Process()
     }
   }
   UpdateObserver();
-  m_iLeadingSpaces = tempLeading;
 }
 
 void CRssReader::getFeed(CStdStringW& strText, LPBYTE& pbColors)
 {
   strText.Empty();
+  // double the spaces at the start of the set
+  strText.append(m_spacesBetweenFeeds, L' ');
   for (unsigned int i=0;i<m_strFeed.size();++i)
+  {
+    strText.append(m_spacesBetweenFeeds, L' ');
     strText += m_strFeed[i];
+  }
   int nTextLength = strText.GetLength();
   pbColors = new BYTE[nTextLength];
   int k=0;
+  // double the spaces at the start of the set
+  for (int i = 0; i < m_spacesBetweenFeeds; i++)
+    pbColors[k++] = 0;
   for (unsigned int j=0;j<m_strColors.size();++j)
+  {
+    for (int i = 0; i < m_spacesBetweenFeeds; i++)
+      pbColors[k++] = 0;
     for (unsigned int i = 0; i < m_strColors[j].size(); i++)
-    {
       pbColors[k++] = m_strColors[j][i] - 48;
-    }
+  }
 }
 
 void CRssReader::AddTag(const CStdString aString)
@@ -347,12 +346,6 @@ bool CRssReader::Parse(LPSTR szBuffer, int iFeed)
 
 bool CRssReader::Parse(int iFeed)
 {
-  CStdString strLeadingSpace = " ";
-  for (int i = 0; i < m_iLeadingSpaces; i++)
-  {
-    AddString(strLeadingSpace, 0, iFeed);
-  }
-
   TiXmlElement* rootXmlNode = m_xml.RootElement();
 
   if (!rootXmlNode)

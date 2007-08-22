@@ -1,6 +1,7 @@
 #pragma once
 #include "GUIDialog.h"
 #include "utils/IMDB.h"
+#include "VideoInfoScanner.h"
 
 class CGUIDialogMediaSource :
       public CGUIDialog
@@ -39,8 +40,8 @@ protected:
   bool m_confirmed;
   SScraperInfo m_info;
   bool m_bRunScan;
-  bool m_bScanRecursively;
-  bool m_bUseDirNames;
+
+  VIDEO::SScanSettings m_settings;
 
   bool m_hasMultiPath;
 };
