@@ -740,13 +740,13 @@ void CIoSupport::MapExtendedPartitions()
   char driveletter;
   // we start at 5 - the first 5 partitions are the mandatory standard Xbox partitions
   // we don't deal with those here.
-  for (int i = 5; i < 7; i++) // ONLY deal with F and G
+  for (int i = EXTEND_PARTITION_BEGIN; i <= EXTEND_PARTITION_END; i++)
   {
-    if (m_partitionTable.pt_entries[i].pe_flags & PE_PARTFLAGS_IN_USE)
+    if (m_partitionTable.pt_entries[i - 1].pe_flags & PE_PARTFLAGS_IN_USE)
     {
-      driveletter = 'A' + i;
+      driveletter = 'A' + i - 1;
       CLog::Log(LOGINFO, "  map drive %c:", driveletter);
-      szDevice[20] = '1' + i;
+      szDevice[20] = '1' + i - 1;
       MapDriveLetter(driveletter, szDevice);
     }
   }

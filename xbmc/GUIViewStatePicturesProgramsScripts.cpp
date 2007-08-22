@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "GUIViewStatePicturesProgramsScripts.h"
+#include "GUIBaseContainer.h"
 
 using namespace DIRECTORY;
 

@@ -34,8 +34,8 @@ public:
 
     // overridables
     virtual bool       HandleResource(const char* prot_info, const char* url) = 0;
-    virtual NPT_Result ModifyResource(NPT_XmlElementNode* resource) = 0;
-    virtual NPT_Result ProcessFileRequest(NPT_HttpRequest* request, NPT_HttpResponse*& response) = 0;
+    virtual NPT_Result ModifyResource(NPT_XmlElementNode* resource, NPT_SocketInfo* info = NULL) = 0;
+    virtual NPT_Result ProcessFileRequest(NPT_HttpRequest& request, NPT_HttpResponse*& response) = 0;
 
 protected:
     CMediaCrawler* m_MediaCrawler;
@@ -73,17 +73,17 @@ public:
         return true;
     }
 
-    virtual NPT_Result ModifyResource(NPT_XmlElementNode* resource) {
+    virtual NPT_Result ModifyResource(NPT_XmlElementNode* resource, 
+                                      NPT_SocketInfo*     info = NULL) {
         NPT_COMPILER_UNUSED(resource);
+        NPT_COMPILER_UNUSED(info);
         return NPT_SUCCESS;
     }
 
-    virtual NPT_Result ProcessFileRequest(NPT_HttpRequest*   request, 
+    virtual NPT_Result ProcessFileRequest(NPT_HttpRequest&   request, 
                                           NPT_HttpResponse*& response) {
-        if (!request) return NPT_FAILURE;
-
         NPT_HttpClient client;
-        return client.SendRequest(*request, response);
+        return client.SendRequest(request, response);
     }
 
 };

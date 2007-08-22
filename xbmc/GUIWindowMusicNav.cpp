@@ -227,6 +227,14 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
       }
     }
     break;
+  case GUI_MSG_PLAYBACK_STOPPED:
+  case GUI_MSG_PLAYBACK_ENDED:
+  case GUI_MSG_PLAYLISTPLAYER_STOPPED:
+  case GUI_MSG_PLAYBACK_STARTED:
+    {
+      SET_CONTROL_SELECTED(GetID(),CONTROL_BTNPARTYMODE, g_partyModeManager.IsEnabled());
+    }
+    break;
   case GUI_MSG_NOTIFY_ALL:
     {
       if (message.GetParam1() == GUI_MSG_FILTER_ITEMS && IsActive())
@@ -273,6 +281,8 @@ CStdString CGUIWindowMusicNav::GetQuickpathName(const CStdString& strPath) const
     return "RecentlyPlayedAlbums";
   else if (strPath.Equals("musicdb://8/"))
     return "Compilations";
+  else if (strPath.Equals("musicdb://9/"))
+    return "Years";
   else if (strPath.Equals("special://musicplaylists/"))
     return "Playlists";
   else

@@ -72,6 +72,8 @@
 #include "utils/TuxBoxUtil.h"
 #include "utils/SystemInfo.h"
 #include "ApplicationRenderer.h"
+#include "GUILargeTextureManager.h"
+#include "LastFmManager.h"
 
 #if defined(FILESYSTEM) && !defined(_LINUX)
 #include "FileSystem/FileDAAP.h"
@@ -81,8 +83,10 @@
 #include "FileSystem/UPnPDirectory.h"
 #endif
 #include "PartyModeManager.h"
-#ifdef HAS_VIDEO_PLAYBACK
+#if defined(HAS_VIDEO_PLAYBACK) || defined(HAS_XBOX_HARDWARE)
 #include "cores/VideoRenderers/RenderManager.h"
+#else
+#include "cores/VideoRenderers/WinRenderManager.h"
 #endif
 #ifdef HAS_KARAOKE
 #include "CdgParser.h"
@@ -177,6 +181,7 @@
 #include "GUIDialogSongInfo.h"
 #include "GUIDialogSmartPlaylistEditor.h"
 #include "GUIDialogSmartPlaylistRule.h"
+#include "GUIDialogPictureInfo.h"
 
 #ifdef HAS_SDL
 #include <SDL/SDL_mixer.h>
@@ -257,20 +262,16 @@ using namespace PLAYLIST;
 CStdString g_LoadErrorStr;
 static int iBlinkRecord = 0;
 
-#ifdef HAS_XBOX_HARDWARE
-extern "C"
-{
-  extern bool WINAPI NtSetSystemTime(LPFILETIME SystemTime , LPFILETIME PreviousTime );
-};
-#endif
-
 #ifdef HAS_XBOX_D3D
 static void WaitCallback(DWORD flags)
 {
 #ifndef PROFILE
   /* if cpu is far ahead of gpu, sleep instead of yield */
-  if(flags & D3DWAIT_PRESENT)
+  if( flags & D3DWAIT_PRESENT )
     while(D3DDevice::GetPushDistance(D3DDISTANCE_FENCES_TOWAIT) > 0)
+      Sleep(1);
+  else if( flags & (D3DWAIT_OBJECTLOCK | D3DWAIT_BLOCKONFENCE | D3DWAIT_BLOCKUNTILIDLE) )
+    while(D3DDevice::GetPushDistance(D3DDISTANCE_FENCES_TOWAIT) > 1)
       Sleep(1);
 #endif
 }
@@ -1340,10 +1341,17 @@ HRESULT CApplication::Initialize()
     strThumbLoc += "/" + strHex;
 #endif
     CreateDirectory(strThumbLoc.c_str(),NULL);
+    strThumbLoc = g_settings.GetVideoThumbFolder();
+    strThumbLoc += "\\" + strHex;
+    CreateDirectory(strThumbLoc.c_str(),NULL);
   }
 
   CreateDirectory(_P("Z:\\temp"), NULL); // temp directory for python and dllGetTempPathA
   CreateDirectory(_P("Q:\\scripts"), NULL);
+  CreateDirectory(_P("Q:\\plugins"), NULL);
+  CreateDirectory(_P("Q:\\plugins\\music"), NULL);
+  CreateDirectory(_P("Q:\\plugins\\video"), NULL);
+  CreateDirectory(_P("Q:\\plugins\\pictures"), NULL);
   CreateDirectory(_P("Q:\\language"), NULL);
   CreateDirectory(_P("Q:\\visualisations"), NULL);
   CreateDirectory(_P("Q:\\sounds"), NULL);
@@ -1415,6 +1423,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogSmartPlaylistEditor);       // window id = 136
   m_gWindowManager.Add(new CGUIDialogSmartPlaylistRule);       // window id = 137
   m_gWindowManager.Add(new CGUIDialogBusy);      // window id = 138
+  m_gWindowManager.Add(new CGUIDialogPictureInfo);      // window id = 139
 
   CGUIDialogLockSettings* pDialog = NULL;
   CStdString strPath;
@@ -1720,6 +1729,7 @@ void CApplication::StartUPnP()
 #ifdef HAS_UPNP
     StartUPnPClient();
     StartUPnPServer();
+    StartUPnPRenderer();
 #endif
 }
 
@@ -1730,6 +1740,28 @@ void CApplication::StopUPnP()
   {
     CLog::Log(LOGNOTICE, "stopping upnp");
     CUPnP::ReleaseInstance();
+  }
+#endif
+}
+
+void CApplication::StartUPnPRenderer()
+{
+#ifdef HAS_UPNP
+  if (g_guiSettings.GetBool("upnp.renderer"))
+  {
+    CLog::Log(LOGNOTICE, "starting upnp renderer");
+    CUPnP::GetInstance()->StartRenderer();
+  }
+#endif
+}
+
+void CApplication::StopUPnPRenderer()
+{
+#ifdef HAS_UPNP
+  if (CUPnP::IsInstantiated())
+  {
+    CLog::Log(LOGNOTICE, "stopping upnp renderer");
+    CUPnP::GetInstance()->StopRenderer();
   }
 #endif
 }
@@ -1917,9 +1949,8 @@ void CApplication::StopServices()
   CLog::Log(LOGNOTICE, "stop fancontroller");
   CFanController::Instance()->Stop();
   CFanController::RemoveInstance();
-#endif
-
   StopIdleThread();
+#endif  
 }
 
 void CApplication::DelayLoadSkin()
@@ -2287,7 +2318,7 @@ void CApplication::RenderNoPresent()
 
   // don't do anything that would require graphiccontext to be locked before here in fullscreen.
   // that stuff should go into renderfullscreen instead as that is called from the renderin thread
-
+#ifdef HAS_XBOX_HARDWARE
   // dont show GUI when playing full screen video
   if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && !IsPaused())
   {
@@ -2314,6 +2345,7 @@ void CApplication::RenderNoPresent()
 #endif
     return;
   }
+#endif
 
   g_graphicsContext.AcquireCurrentContext();
 
@@ -2457,6 +2489,14 @@ void CApplication::DoRender()
 void CApplication::Render()
 {
   g_graphicsContext.Lock();
+  { // frame rate limiter (really bad, but it does the trick :p)
+    const static unsigned int singleFrameTime = 10;
+    static unsigned int lastFrameTime = 0;
+    unsigned int currentTime = timeGetTime();
+    if (lastFrameTime + singleFrameTime > currentTime)
+      Sleep(lastFrameTime + singleFrameTime - currentTime);
+    lastFrameTime = timeGetTime();
+  }
   RenderNoPresent();
   // Present the backbuffer contents to the display
 #ifndef HAS_SDL
@@ -3530,6 +3570,7 @@ void CApplication::Stop()
     m_gWindowManager.Delete(WINDOW_DIALOG_SMART_PLAYLIST_EDITOR);
     m_gWindowManager.Delete(WINDOW_DIALOG_SMART_PLAYLIST_RULE);
     m_gWindowManager.Delete(WINDOW_DIALOG_BUSY);
+    m_gWindowManager.Delete(WINDOW_DIALOG_PICTURE_INFO);
 
     m_gWindowManager.Delete(WINDOW_STARTUP);
     m_gWindowManager.Delete(WINDOW_VISUALISATION);
@@ -3591,6 +3632,7 @@ void CApplication::Stop()
     g_buttonTranslator.Clear();
     CKaiClient::RemoveInstance();
     CScrobbler::RemoveInstance();
+    CLastFmManager::RemoveInstance();
     g_infoManager.Clear();
 #ifdef HAS_LCD
     if (g_lcd)
@@ -3618,6 +3660,11 @@ void CApplication::Stop()
 
 bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
 {
+  if (item.IsLastFM())
+  {
+    g_partyModeManager.Disable();
+    return CLastFmManager::GetInstance()->ChangeStation(item.GetAsUrl());
+  }
   if (item.IsPlayList() || item.IsInternetStream())
   {
     //is or could be a playlist
@@ -4667,6 +4714,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         m_itemCurrentFile = item;
       }
       g_infoManager.SetCurrentItem(m_itemCurrentFile);
+      CLastFmManager::GetInstance()->OnSongChange(m_itemCurrentFile.IsLastFM());
       g_partyModeManager.OnSongChange(true);
 
       if (IsPlayingAudio())
@@ -4692,7 +4740,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         }
 #endif
         //  Activate audio scrobbler
-        if (!m_itemCurrentFile.IsInternetStream())
+        if (CLastFmManager::GetInstance()->CanScrobble(m_itemCurrentFile))
         {
           CScrobbler::GetInstance()->SetSongStartTime();
           CScrobbler::GetInstance()->SetSubmitSong(true);
@@ -4711,7 +4759,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
       int iNext = g_playlistPlayer.GetNextSong();
       CPlayList& playlist = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist());
       if (iNext < 0 || iNext >= playlist.size())
+      {
+        if (m_pPlayer) m_pPlayer->OnNothingToQueueNotify();
         return true; // nothing to do
+      }
       // ok, grab the next song
       CFileItem item = playlist[iNext];
       // ok - send the file to the player if it wants it
@@ -4827,6 +4878,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       m_itemCurrentFile.Reset();
       g_infoManager.ResetCurrentItem();
       m_currentStack.Clear();
+      CLastFmManager::GetInstance()->StopRadio();
 
 #ifdef HAS_KARAOKE
       if(m_pCdgParser)
@@ -4849,7 +4901,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       CLog::Log(LOGDEBUG,"%s : Translating %s", __FUNCTION__, message.GetStringParam().c_str());
       vector<CInfoPortion> info;
       g_infoManager.ParseLabel(message.GetStringParam(), info);
-      message.SetStringParam(g_infoManager.GetMultiLabel(info));
+      message.SetStringParam(g_infoManager.GetMultiInfo(info, 0));
       CLog::Log(LOGDEBUG,"%s : To %s", __FUNCTION__, message.GetStringParam().c_str());
 
       // user has asked for something to be executed
@@ -4905,9 +4957,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
 void CApplication::Process()
 {
-  // checks whats in the DVD drive and tries to autostart the content (xbox games, dvd, cdda, avi files...)
-  m_Autorun.HandleAutorun();
-
   // check if we need to load a new skin
   if (m_dwSkinTime && timeGetTime() >= m_dwSkinTime)
   {
@@ -4982,7 +5031,7 @@ void CApplication::ProcessSlow()
 
   // Xbox Autodetection - Send in X sec PingTime Interval
   if (m_gWindowManager.GetActiveWindow() != WINDOW_LOGIN_SCREEN) // sorry jm ;D
-    CUtil::XboxAutoDetection();
+    CUtil::AutoDetection();
 
   // check for any idle curl connections
   g_curlInterface.CheckIdle();
@@ -5002,6 +5051,15 @@ void CApplication::ProcessSlow()
       DimLCDOnPlayback(m_bIsPaused);
     m_bIsPaused = IsPaused();
   }
+
+  g_largeTextureManager.CleanupUnusedImages();
+
+  // checks whats in the DVD drive and tries to autostart the content (xbox games, dvd, cdda, avi files...)
+  m_Autorun.HandleAutorun();
+
+  // update upnp server/renderer states
+  if(CUPnP::IsInstantiated())
+    CUPnP::GetInstance()->UpdateState();
 }
 
 // Global Idle Time in Seconds
@@ -5393,7 +5451,7 @@ void CApplication::CheckPlayingProgress()
 
 void CApplication::CheckAudioScrobblerStatus()
 {
-  if (IsPlayingAudio() && !m_itemCurrentFile.IsInternetStream() &&
+  if (IsPlayingAudio() && CLastFmManager::GetInstance()->CanScrobble(m_itemCurrentFile) &&
       !CScrobbler::GetInstance()->ShouldSubmit() && GetTime()==0.0)
   {
     //  We seeked to the beginning of the file

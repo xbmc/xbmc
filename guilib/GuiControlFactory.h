@@ -22,21 +22,21 @@ class CGUIControlFactory
 public:
   CGUIControlFactory(void);
   virtual ~CGUIControlFactory(void);
-  CStdString GetType(const TiXmlElement *pControlNode);
+  static CStdString GetType(const TiXmlElement *pControlNode);
   CGUIControl* Create(DWORD dwParentId, const FRECT &rect, TiXmlElement* pControlNode);
-  bool GetConditionalVisibility(const TiXmlNode* control, int &condition);
   void ScaleElement(TiXmlElement *element, RESOLUTION fileRes, RESOLUTION destRes);
-  bool GetAspectRatio(const TiXmlNode* pRootNode, const char* strTag, CGUIImage::GUIIMAGE_ASPECT_RATIO &aspectRatio, DWORD &aspectAlign);
-  bool GetTexture(const TiXmlNode* pRootNode, const char* strTag, CImage &image);
-  bool GetAlignment(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment);
-  bool GetAlignmentY(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment);
-  bool GetAnimations(const TiXmlNode *control, const FRECT &rect, vector<CAnimation> &animation);
+  static bool GetAspectRatio(const TiXmlNode* pRootNode, const char* strTag, CGUIImage::GUIIMAGE_ASPECT_RATIO &aspectRatio, DWORD &aspectAlign);
+  static bool GetTexture(const TiXmlNode* pRootNode, const char* strTag, CImage &image);
+  static bool GetAlignment(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment);
+  static bool GetAlignmentY(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment);
+  static bool GetAnimations(const TiXmlNode *control, const FRECT &rect, vector<CAnimation> &animation);
   static bool GetColor(const TiXmlNode* pRootNode, const char* strTag, DWORD &value);
   static CStdString GetLabel(const CStdString &label);
+  static bool GetConditionalVisibility(const TiXmlNode* control, int &condition);
+  static bool GetMultipleString(const TiXmlNode* pRootNode, const char* strTag, vector<CStdString>& vecStringValue);
 private:
   bool GetCondition(const TiXmlNode *control, const char *tag, int &condition);
-  bool GetConditionalVisibility(const TiXmlNode* control, int &condition, bool &allowHiddenFocus);
-  bool GetMultipleString(const TiXmlNode* pRootNode, const char* strTag, vector<CStdString>& vecStringValue);
+  static bool GetConditionalVisibility(const TiXmlNode* control, int &condition, bool &allowHiddenFocus);
   bool GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringPath);
   bool GetFloatRange(const TiXmlNode* pRootNode, const char* strTag, float& iMinValue, float& iMaxValue, float& iIntervalValue);
   bool GetIntRange(const TiXmlNode* pRootNode, const char* strTag, int& iMinValue, int& iMaxValue, int& iIntervalValue);

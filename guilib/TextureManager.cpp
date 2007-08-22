@@ -8,6 +8,7 @@
 #include "../xbmc/StringUtils.h"
 #include "../xbmc/utils/CharsetConverter.h"
 #include "../xbmc/Util.h"
+
 #ifdef HAS_XBOX_D3D
 #include <XGraphics.h>
 #endif
@@ -509,9 +510,11 @@ void CGUITextureManager::FlushPreLoad()
   }
 }
 
-int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
+int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey, bool checkBundleOnly /*= false */)
 {
   if (strTextureName == "-")
+    return 0;
+  if (strTextureName.Find("://") >= 0)
     return 0;
 
   // first check of texture exists...
@@ -569,6 +572,9 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
   }
 
   CStdString strPath;
+
+  if (checkBundleOnly && bundle == -1)
+    return 0;
 
   if (bundle == -1)
     strPath = GetTexturePath(strTextureName);
@@ -829,6 +835,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
         if (!strnicmp(strPath.c_str(), "q:\\skin", 7))
           CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());
         return 0;
+
       }
 #else
 	

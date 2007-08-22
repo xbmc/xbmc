@@ -173,8 +173,16 @@ bool CMusicDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
       break;
     case NODE_TYPE_SONG_TOP100:
       strLabel = g_localizeStrings.Get(10504); // Top 100 Songs
+      break;
     case NODE_TYPE_YEAR:
       strLabel = g_localizeStrings.Get(652);  // Years
+      break;
+    case NODE_TYPE_ALBUM_COMPILATIONS:
+      strLabel = g_localizeStrings.Get(521);
+      break;
+    default:
+      CLog::Log(LOGWARNING, CStdString(__FUNCTION__) +" - Unknown nodetype requested %d", pNode->GetChildType());
+      return false;
     }
   }
 

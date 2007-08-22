@@ -1,13 +1,7 @@
 
 #include "stdafx.h"
 #include "PlayerCoreFactory.h"
-#ifdef HAS_DVDPLAYER
 #include "dvdplayer/DVDPlayer.h"
-#endif
-#ifdef HAS_MPLAYER
-#include "mplayer/mplayer.h"
-#endif
-#include "DummyVideoPlayer.h"
 #ifdef HAS_MODPLAYER
 #include "modplayer.h"
 #endif
@@ -46,13 +40,9 @@ IPlayer* CPlayerCoreFactory::CreatePlayer(const EPLAYERCORES eCore, IPlayerCallb
 {
   switch( eCore )
   {
-#ifdef HAS_DVDPLAYER
     case EPC_MPLAYER: 
     case EPC_DVDPLAYER: return new CDVDPlayer(callback);
-#else
-    case EPC_DVDPLAYER: return new CDummyVideoPlayer(callback);
-#endif
-#ifdef HAS_MPLAYER
+#ifdef HAS_MPLAYER:
     case EPC_MPLAYER: return new CMPlayer(callback);
 #else
 //    case EPC_MPLAYER: return new CDummyVideoPlayer(callback);

@@ -50,3 +50,4 @@ __int64 CDVDInputStreamFFmpeg::Seek(__int64 offset, int whence)
 {
   return -1;
 }
+

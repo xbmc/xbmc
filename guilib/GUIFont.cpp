@@ -3,7 +3,10 @@
 #include "GraphicContext.h"
 #include "../xbmc/utils/SingleLock.h"
 
-#define ROUND(x) floorf(x + 0.5f)
+namespace MathUtils {
+  inline int round_int (double x);
+}
+#define ROUND(x) (float)(MathUtils::round_int(x))
 
 CGUIFont::CGUIFont(const CStdString& strFontName, DWORD textColor, DWORD shadowColor, CGUIFontBase *font)
 {
@@ -134,8 +137,10 @@ void CGUIFont::DrawScrollingText(float x, float y, float angle, DWORD *color, in
   float sw = 0;
   GetTextExtent(L" ", &sw, &unneeded);
   unsigned int maxChars = min(text.size() + scrollInfo.suffix.size(), (unsigned int)((w*1.05f)/sw)); //max chars on screen + extra marginchars
-  GetTextExtent(L"W", &unneeded, &h);
-  if (text.IsEmpty() || !g_graphicsContext.SetClipRegion(x, y, w, h))
+  GetTextExtent(L"W", &unneeded, &h); // This effectively sets h = m_cellHeight for TTF fonts but we don't care about
+                                      // truncating height - only width, and as some fonts have some glyphs that may
+                                      // dip under the normal cellheight, we should make room for them.
+  if (text.IsEmpty() || !g_graphicsContext.SetClipRegion(x, y, w, 2*h))
     return; // nothing to render
   w = ROUND(w / g_graphicsContext.GetGUIScaleX());
 

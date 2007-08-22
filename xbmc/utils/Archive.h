@@ -18,6 +18,7 @@ public:
   CArchive& operator<<(float f);
   CArchive& operator<<(double d);
   CArchive& operator<<(int i);
+  CArchive& operator<<(unsigned int i);
   CArchive& operator<<(__int64 i64);
   CArchive& operator<<(long l);
   CArchive& operator<<(bool b);
@@ -31,6 +32,7 @@ public:
   CArchive& operator>>(float& f);
   CArchive& operator>>(double& d);
   CArchive& operator>>(int& i);
+  CArchive& operator>>(unsigned int& i);
   CArchive& operator>>(__int64& i64);
   CArchive& operator>>(long& l);
   CArchive& operator>>(bool& b);

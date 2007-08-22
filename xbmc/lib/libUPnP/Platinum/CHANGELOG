@@ -1,3 +1,55 @@
+Platinum 0.3.8
+---------------
+
+fixed: crash in MicroMediaController (ctrlpoint really) when devices go away and a new one reappear. The control point was not removing subscribers from its list for the removed device.
+added: Visual Studio 2005 project files
+changed: switched to using new Neptune Logging system
+changed: PLT_DeviceHost now appends the ip address to friendly name if asked
+
+Platinum 0.3.7
+---------------
+changed: removed projects in the works from solution
+changed: dont restrict an interface to have the MULTICAST flag to send multicast data. If it's not multicast, it just won't send it. Cygwin doesn't report MULTICAST flag properly on interfaces that are multicast so that's why.
+fixed: clear SyncMediaBrowser cache for a device when it disappears
+changed: put back interface matching in proxy using netmask
+fixed: linux build
+fixed: workaround Windows Media Player bug that replaces back slashes to forward slashes in a url query !
+fixed: duplicate headers in crawler response
+changed: fileserver now defaults to serving root "/" with all children so that crawler can use /foo.wma
+changed: made ProcessFileRequest overridable for Crawler
+changed: Mega update:
+ - revamped to use http handlers from Neptune
+ - extensive switch to using address instead of pointers for NPT_HttpRequest & NPT_HttpResponse
+ - using eventhandlers now in devicehost (static for desc & scpds + dynamic for control/event) and controlpoint (event notifications)
+ - fixed host advertising twice byebye on exit
+ - Moved DeviceHost and Ctrlpoint Start/Stop into protected. It's PLT_UPnP now that starts and stop a device (via Add/Remove..)
+ - Created templated PLT_HttpRequestHandler
+fixed: 10 secs to get a M-SEARCH response is fine
+fixed: make it possible to pass an address to send the response back from a search, this is necessary when the udp.connect didn't actually find out which local interface to use
+fixed: now advertises on all interfaces even in broadcast
+fixed: setting MX to 1 in proxy, setting extra header to make sure we don't loop more
+changed: new ssdp proxy using broadcast instead of unicast, no need to keep track of unicasters anymore
+changed: when using broadcast mode, try to use interface broadcast address instead of 255.255.255.255
+changed: made presentation url public (so it can be overridden from the outside)
+hacked: device icons
+changed: better advertising in broadcast mode (less verbose)
+fixed: crash when a device disappears while trying to unsubscribe
+fixed: subscribers being added twice
+fixed: no need to set random seed in task, must be done in threads instead (using thread id)
+changed: added a media cache to cache data responses from servers to speed up
+fixed: better event support (fixed a couple of bugs), unsubscribe on device remove, still need to implement subscription renewal
+changed: improved NPT_Directory to read size & type with 1 call
+fixed: assuming forward unix style delimiters in resource urls was wrong, we want to keep whatever we're passed, it may matter
+changed: now can specify to keep file extension in item title
+changed: can now put a list of UUIDs to ignore in a ctrl point
+changed: now sends a search on localhost if no valid interfaces were found
+changed: now supports broadcast announcements for devices (mainly used by XBOX)
+fixed: changed callbackurls list to be NPT_List<NPT_String> instead of NPT_List<NPT_String*> for event subscribers to fix a weird crash
+fixed: SsdpListenTask takes a true UdpSocket if broadcast mode set
+changed: adding support of NPT_StringFinder for NPT_List<NPT_String> containers
+changed: using a HttpUrl for base urls instead of string
+changed: StreamHandler interface, now passing socket info to ModifyResource
+
 Platinum 0.3.6
 ---------------
 - fixed list of devices not being cleared when ctrl point is stopped

@@ -166,7 +166,7 @@ bool CDVDPlayerSubtitle::GetCurrentSubtitle(CStdString& strSubtitle, __int64 pts
           if (e->IsElementType(CDVDOverlayText::ELEMENT_TYPE_TEXT))
           {
             CDVDOverlayText::CElementText* t = (CDVDOverlayText::CElementText*)e;
-            strSubtitle += t->m_wszText; // FIXME: currently cast to char * instead of wchar* since StdString is spewing ASSERTs
+            strSubtitle += t->m_text; // FIXME: currently cast to char * instead of wchar* since StdString is spewing ASSERTs
             if (e->pNext) strSubtitle += "\n";
           }
           e = e->pNext;

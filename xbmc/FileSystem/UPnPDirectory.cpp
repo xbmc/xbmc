@@ -29,6 +29,7 @@
 #include "PltSyncMediaBrowser.h"
 
 using namespace DIRECTORY;
+using namespace XFILE;
 
 namespace DIRECTORY
 {
@@ -76,7 +77,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
     // start client if it hasn't been done yet
     upnp->StartClient();
                      
-    // We accept upnp://devuuid[/item_id]
+    // We accept upnp://devuuid/[item_id/]
     NPT_String path = strPath.c_str();
     if (path.Left(7).Compare("upnp://", true) != 0) {
         return false;
@@ -105,6 +106,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
         }
     } else {
         // look for nextslash 
+        path.TrimRight('/');
         int next_slash = path.Find('/', 7);
 
         NPT_String uuid = (next_slash==-1)?path.SubString(7):path.SubString(7, next_slash-7);
@@ -187,6 +189,15 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                 continue;
             }
 
+            // never show empty containers in media views
+            if((*entry)->IsContainer()) {
+              if( (audio || video || image) 
+              && ((PLT_MediaContainer*)(*entry))->m_ChildrenCount == 0) {
+                ++entry;
+                continue;
+              }
+            }
+
             CFileItem *pItem = new CFileItem((const char*)(*entry)->m_Title);
             pItem->m_bIsFolder = (*entry)->IsContainer();
 
@@ -194,7 +205,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             if (pItem->m_bIsFolder) {
                 CStdString object_id = (char*) (*entry)->m_ObjectID;
                 CUtil::URLEncode(object_id);
-                pItem->m_strPath = (const char*) NPT_String("upnp://") + uuid + "/" + object_id.c_str();
+                pItem->m_strPath = (const char*) NPT_String("upnp://") + uuid + "/" + object_id.c_str() + "/";
             } else {
                 if ((*entry)->m_Resources.GetItemCount()) {
                     // if it's an item, path is the first url to the item
@@ -206,18 +217,6 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                     if ((*entry)->m_Resources[0].m_Size > 0) {
                         pItem->m_dwSize  = (*entry)->m_Resources[0].m_Size;
                     }
-                    pItem->GetMusicInfoTag()->SetDuration((*entry)->m_Resources[0].m_Duration);
-                    pItem->GetMusicInfoTag()->SetGenre((const char*) (*entry)->m_Affiliation.genre);
-                    pItem->GetMusicInfoTag()->SetAlbum((const char*) (*entry)->m_Affiliation.album);
-                    
-                    // some servers (like WMC) use upnp:artist instead of dc:creator
-                    if ((*entry)->m_Creator.GetLength() == 0) {
-                        pItem->GetMusicInfoTag()->SetArtist((const char*) (*entry)->m_People.artist);
-                    } else {
-                        pItem->GetMusicInfoTag()->SetArtist((const char*) (*entry)->m_Creator);
-                    }
-                    pItem->GetMusicInfoTag()->SetTitle((const char*) (*entry)->m_Title);                    
-                    pItem->GetMusicInfoTag()->SetLoaded();
 
                     // look for content type in protocol info
                     if ((*entry)->m_Resources[0].m_ProtocolInfo.GetLength()) {
@@ -231,14 +230,6 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                         }
                     }
 
-                    //TODO, current thumbnail and icon of CFileItem is expected to be a local
-                    //      image file in the normal thumbnail directories, we have no way to
-                    //      specify an external filename on the filelayer
-                    //if((*entry)->m_ExtraInfo.album_art_uri.GetLength())
-                    //  pItem->SetThumbnailImage((const char*) (*entry)->m_ExtraInfo.album_art_uri);
-                    //else
-                    //  pItem->SetThumbnailImage((const char*) (*entry)->m_Description.icon_uri);
-
                     // look for date?
                     if((*entry)->m_Description.date.GetLength()) {
                       SYSTEMTIME time = {};
@@ -246,9 +237,55 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                                           &time.wYear, &time.wMonth, &time.wDay, &time.wHour, &time.wMinute, &time.wSecond);
                       pItem->m_dateTime = time;
                     }
-                    
+
+                    if( (*entry)->m_ObjectClass.type.CompareN("object.item.videoitem", 21,true) == 0 )
+                    {
+                      CVideoInfoTag* tag = pItem->GetVideoInfoTag();
+                      CStdStringArray strings, strings2;
+                      CStdString buffer;
+
+                      tag->m_strTitle = (*entry)->m_Title;
+                      StringUtils::SplitString((const char*) (*entry)->m_Affiliation.genre, ",", strings);
+                      StringUtils::JoinString(strings, " / ", tag->m_strGenre);
+                      tag->m_strDirector = (*entry)->m_People.director;
+                      tag->m_strTagLine = (*entry)->m_Description.description;
+                      tag->m_strPlot = (*entry)->m_Description.long_description;
+                      tag->m_strRuntime.Format("%d",(*entry)->m_Resources[0].m_Duration);
+                    }
+                    else if( (*entry)->m_ObjectClass.type.CompareN("object.item.audioitem", 21,true) == 0 )
+                    {
+                      CMusicInfoTag* tag = pItem->GetMusicInfoTag();
+                      CStdStringArray strings;
+                      CStdString buffer;
+
+                      tag->SetDuration((*entry)->m_Resources[0].m_Duration);
+                      tag->SetTitle((const char*) (*entry)->m_Title);
+                      StringUtils::SplitString((const char*) (*entry)->m_Affiliation.genre, ",", strings);
+                      StringUtils::JoinString(strings, " / ", buffer);
+                      tag->SetGenre(buffer);
+                      tag->SetAlbum((const char*) (*entry)->m_Affiliation.album);
+                      tag->SetTrackNumber((*entry)->m_MiscInfo.original_track_number);
+                      
+                      // some servers (like WMC) use upnp:artist instead of dc:creator
+                      if ((*entry)->m_Creator.GetLength() == 0)
+                        tag->SetArtist((const char*) (*entry)->m_People.artist);
+                      else
+                        tag->SetArtist((const char*) (*entry)->m_Creator);
+                      
+                      tag->SetLoaded();
+                    }
+                    else if( (*entry)->m_ObjectClass.type.CompareN("object.item.imageitem", 21,true) == 0 )
+                    {
+                      //CPictureInfoTag* tag = pItem->GetPictureInfoTag();
+                    }
                 }
             }
+
+            // if there is a thumbnail available set it here
+            if((*entry)->m_ExtraInfo.album_art_uri.GetLength())
+              pItem->SetThumbnailImage((const char*) (*entry)->m_ExtraInfo.album_art_uri);
+            else if((*entry)->m_Description.icon_uri.GetLength())
+              pItem->SetThumbnailImage((const char*) (*entry)->m_Description.icon_uri);
 
             pItem->SetLabelPreformated(true);
             vecCacheItems.Add(pItem);

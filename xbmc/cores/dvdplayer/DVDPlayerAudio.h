@@ -71,6 +71,8 @@ public:
   void SetVolume(long nVolume)                          { m_dvdAudio.SetVolume(nVolume); }
   void SetDynamicRangeCompression(long drc)             { m_dvdAudio.SetDynamicRangeCompression(drc); }
 
+  string GetPlayerInfo();
+
   // holds stream information for current playing stream
   CDVDStreamInfo m_streaminfo;
   
@@ -91,7 +93,6 @@ protected:
   // tries to open a decoder for the given data. 
   bool OpenDecoder(CDVDStreamInfo &hint, BYTE* buffer = NULL, unsigned int size = 0);
 
-    bool m_bInitializedOutputDevice;
   __int64 m_audioClock;
   
   // for audio decoding
@@ -118,3 +119,4 @@ protected:
   bool m_Stalled;
   CRITICAL_SECTION m_critCodecSection;
 };
+

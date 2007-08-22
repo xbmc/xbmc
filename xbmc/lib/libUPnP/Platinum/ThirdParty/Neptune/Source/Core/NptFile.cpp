@@ -24,10 +24,11 @@ NPT_File::Load(const char* filename, NPT_DataBuffer& buffer)
 {
     // create and open the file
     NPT_File file(filename);
-    NPT_CHECK(file.Open(NPT_FILE_OPEN_MODE_READ));
+    NPT_Result result = file.Open(NPT_FILE_OPEN_MODE_READ);
+    if (NPT_FAILED(result)) return result;
     
     // load the file
-    NPT_Result result = file.Load(buffer);
+    result = file.Load(buffer);
 
     // close the file
     file.Close();

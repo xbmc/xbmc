@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../utils/SharedSection.h"
+
 #define DVD_TIME_BASE 1000000
 #ifndef _LINUX
 #define DVD_NOPTS_VALUE (0x8000000000000000 ## i64)

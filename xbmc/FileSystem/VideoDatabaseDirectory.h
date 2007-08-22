@@ -18,7 +18,7 @@ namespace DIRECTORY
     bool GetQueryParams(const CStdString& strPath, VIDEODATABASEDIRECTORY::CQueryParams& params);
     void ClearDirectoryCache(const CStdString& strDirectory);
     static bool IsAllItem(const CStdString& strDirectory);
-    bool GetLabel(const CStdString& strDirectory, CStdString& strLabel);
+    static bool GetLabel(const CStdString& strDirectory, CStdString& strLabel);
     bool ContainsMovies(const CStdString &path);
     static bool CanCache(const CStdString &path);
   };

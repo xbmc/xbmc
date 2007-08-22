@@ -31,6 +31,8 @@
 #include "utils/Trainer.h"
 #include "utils/KaiClient.h"
 #include "Autorun.h"
+#include "utils/LabelFormatter.h"
+#include "Autorun.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -151,15 +153,13 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
         // need to update shortcuts manually
         if (CGUIMediaWindow::OnMessage(message))
         {
+          LABEL_MASKS labelMasks;
+          m_guiState->GetSortMethodLabelMasks(labelMasks);
+          CLabelFormatter formatter("", labelMasks.m_strLabel2File);
           for (int i=0;i<m_vecItems.Size();++i)
           {
             if (m_vecItems[i]->IsShortCut())
-            {
-              CGUIViewState::LABEL_MASKS labelMasks;
-              m_guiState->GetSortMethodLabelMasks(labelMasks);
-
-              m_vecItems[i]->FormatLabel2(labelMasks.m_strLabel2File);
-            }
+              formatter.FormatLabel2(m_vecItems[i]);
           }
           return true;
         }
@@ -730,6 +730,10 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
         shortcutPath = item->m_strPath;
         item->m_strPath = cut.m_strPath;
         item->SetThumbnailImage(cut.m_strThumb);
+
+        LABEL_MASKS labelMasks;
+        m_guiState->GetSortMethodLabelMasks(labelMasks);
+        CLabelFormatter formatter("", labelMasks.m_strLabel2File);
         if (!cut.m_strLabel.IsEmpty())
         {
           item->SetLabel(cut.m_strLabel);
@@ -737,10 +741,7 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
           if (CFile::Stat(item->m_strPath,&stat) == 0)
             item->m_dwSize = stat.st_size;
 
-          CGUIViewState::LABEL_MASKS labelMasks;
-          m_guiState->GetSortMethodLabelMasks(labelMasks);
-
-          item->FormatLabel2(labelMasks.m_strLabel2File);
+          formatter.FormatLabel2(item);
           item->SetLabelPreformated(true);
         }
       }

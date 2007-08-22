@@ -18,14 +18,14 @@ public:
   bool IsConfirmed() { return m_bConfirmed; };
   void SetHeading(const CStdString &heading);
 
-  static bool ShowAndGetDirectory(VECSHARES &shares, const CStdString &heading, CStdString &path, bool bWriteOnly=false);
-  static bool ShowAndGetFile(VECSHARES &shares, const CStdString &mask, const CStdString &heading, CStdString &path, bool useThumbs = false, bool useFileDirectories = false);
+  static bool ShowAndGetDirectory(const VECSHARES &shares, const CStdString &heading, CStdString &path, bool bWriteOnly=false);
+  static bool ShowAndGetFile(const VECSHARES &shares, const CStdString &mask, const CStdString &heading, CStdString &path, bool useThumbs = false, bool useFileDirectories = false);
   static bool ShowAndGetFile(const CStdString &directory, const CStdString &mask, const CStdString &heading, CStdString &path, bool useThumbs = false, bool useFileDirectories = false);
   static bool ShowAndGetShare(CStdString &path, bool allowNetworkShares, VECSHARES* additionalShare = NULL, const CStdString& strType="");
-  static bool ShowAndGetImage(VECSHARES &shares, const CStdString &heading, CStdString &path);
+  static bool ShowAndGetImage(const VECSHARES &shares, const CStdString &heading, CStdString &path);
   static bool ShowAndGetImage(const CFileItemList &items, VECSHARES &shares, const CStdString &heading, CStdString &path);
 
-  void SetShares(VECSHARES &shares);
+  void SetShares(const VECSHARES &shares);
 
   virtual void OnItemLoaded(CFileItem *item) {};
 

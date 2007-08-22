@@ -181,6 +181,10 @@ protected:
   RECT rs;          // source rect
   unsigned int m_iSourceWidth;    // width
   unsigned int m_iSourceHeight;   // height
+  unsigned int m_iFlags; // flags given to configure
+
+  YUVRANGE m_yuvrange;
+  YUVCOEF  m_yuvcoef;
 
   bool m_bConfigured;
 

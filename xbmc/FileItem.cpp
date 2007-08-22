@@ -48,6 +48,7 @@ CFileItem::CFileItem(const CSong& song)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_pictureInfoTag = NULL;
   Reset();
   m_strLabel = song.strTitle;
   m_strPath = _P(song.strFileName);
@@ -61,6 +62,7 @@ CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_pictureInfoTag = NULL;
   Reset();
   m_strLabel = album.strAlbum;
   m_strPath = _P(path);
@@ -75,6 +77,7 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_pictureInfoTag = NULL;
   Reset();
   m_strLabel = movie.m_strTitle;
   if (movie.m_strFileNameAndPath.IsEmpty())
@@ -99,6 +102,7 @@ CFileItem::CFileItem(const CArtist& artist)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_pictureInfoTag = NULL;
   Reset();
   m_strLabel = artist.strArtist;
   m_strPath = _P(artist.strArtist);
@@ -111,6 +115,7 @@ CFileItem::CFileItem(const CGenre& genre)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_pictureInfoTag = NULL;
   Reset();
   m_strLabel = genre.strGenre;
   m_strPath = _P(genre.strGenre);
@@ -123,6 +128,7 @@ CFileItem::CFileItem(const CFileItem& item)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_pictureInfoTag = NULL;
   *this = item;
 }
 
@@ -130,6 +136,7 @@ CFileItem::CFileItem(const CGUIListItem& item)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_pictureInfoTag = NULL;
   Reset();
   // not particularly pretty, but it gets around the issue of Reset() defaulting
   // parameters in the CGUIListItem base class.
@@ -140,6 +147,7 @@ CFileItem::CFileItem(void)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_pictureInfoTag = NULL;
   Reset();
 }
 
@@ -148,6 +156,7 @@ CFileItem::CFileItem(const CStdString& strLabel)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_pictureInfoTag = NULL;
   Reset();
   SetLabel(strLabel);
 }
@@ -156,6 +165,7 @@ CFileItem::CFileItem(const CStdString& strPath, bool bIsFolder)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_pictureInfoTag = NULL;
   Reset();
   m_strPath = _P(strPath);
   m_bIsFolder = bIsFolder;
@@ -172,6 +182,7 @@ CFileItem::CFileItem(const CShare& share)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_pictureInfoTag = NULL;
   Reset();
   m_bIsFolder = true;
   m_bIsShareOrDrive = true;
@@ -195,9 +206,12 @@ CFileItem::~CFileItem(void)
     delete m_musicInfoTag;
   if (m_videoInfoTag)
     delete m_videoInfoTag;
+  if (m_pictureInfoTag)
+    delete m_pictureInfoTag;
 
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_pictureInfoTag = NULL;
 }
 
 const CFileItem& CFileItem::operator=(const CFileItem& item)
@@ -250,6 +264,20 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
     m_videoInfoTag = NULL;
   }
 
+  if (item.HasPictureInfoTag())
+  {
+    m_pictureInfoTag = GetPictureInfoTag();
+    if (m_pictureInfoTag)
+      *m_pictureInfoTag = *item.m_pictureInfoTag;
+  }
+  else
+  {
+    if (m_pictureInfoTag)
+      delete m_pictureInfoTag;
+
+    m_pictureInfoTag = NULL;
+  }
+
   m_lStartOffset = item.m_lStartOffset;
   m_lEndOffset = item.m_lEndOffset;
   m_fRating = item.m_fRating;
@@ -300,6 +328,9 @@ void CFileItem::Reset()
   if (m_videoInfoTag)
     delete m_videoInfoTag;
   m_videoInfoTag=NULL;
+  if (m_pictureInfoTag)
+    delete m_pictureInfoTag;
+  m_pictureInfoTag=NULL;
   SetInvalid();
 }
 
@@ -349,6 +380,13 @@ void CFileItem::Serialize(CArchive& ar)
     }
     else 
       ar << 0;
+    if (m_pictureInfoTag)
+    {
+      ar << 1;
+      ar << *m_pictureInfoTag;
+    }
+    else 
+      ar << 0;
   }
   else
   {
@@ -387,6 +425,9 @@ void CFileItem::Serialize(CArchive& ar)
     ar >> iType;
     if (iType == 1)
       ar >> *GetVideoInfoTag();
+    ar >> iType;
+    if (iType == 1)
+      ar >> *GetPictureInfoTag();
     SetInvalid();
   }
 }
@@ -520,13 +561,15 @@ bool CFileItem::IsFileFolder() const
 {
   return (
     m_bIsFolder && (
+    IsPluginFolder() ||
     IsSmartPlayList() ||
     IsPlayList() ||
     IsZIP() ||
     IsRAR() ||
     IsType("ogg") ||
     IsType("nsf") ||
-    IsType("sid")
+    IsType("sid") ||
+    IsShoutCast()
     )
     );
 }
@@ -629,6 +672,12 @@ bool CFileItem::IsStack() const
 {
   CURL url(m_strPath);
   return url.GetProtocol().Equals("stack");
+}
+
+bool CFileItem::IsPluginFolder() const
+{
+  CURL url(m_strPath);
+  return url.GetProtocol().Equals("plugin") && !url.GetFileName().IsEmpty();
 }
 
 bool CFileItem::IsMultiPath() const
@@ -831,8 +880,10 @@ CStdString CFileItem::GetCachedSeasonThumb()
 {
   Crc32 crc;
   crc.ComputeFromLowerCase("season" + m_strPath);
+  CStdString hex;
+  hex.Format("%08x", (__int32)crc);
   CStdString cachedThumb;
-  cachedThumb.Format("%s\\%08x.tbn", g_settings.GetVideoThumbFolder().c_str(), (unsigned __int32)crc);
+  cachedThumb.Format("%s\\%c\\%08x.tbn", g_settings.GetVideoThumbFolder().c_str(), hex[0], (unsigned __int32)crc);
   return _P(cachedThumb);
 }
 
@@ -922,222 +973,6 @@ void CFileItem::SetCanQueue(bool bYesNo)
 bool CFileItem::IsParentFolder() const
 {
   return m_bIsParentFolder;
-}
-
-// %N - TrackNumber
-// %S - DiscNumber
-// %A - Artist
-// %T - Titel
-// %B - Album
-// %G - Genre
-// %Y - Year
-// %F - FileName
-// %D - Duration
-// %% - % sign
-// %I - Size
-// %J - Date
-// %R - Movie rating
-// %C - Programs count
-// %K - Movie/Game title
-// %L - existing Label
-// %M - number of episodes
-// %E - episode number
-// %P - production code
-// %H - season*100+episode
-
-void CFileItem::FormatLabel(const CStdString& strMask)
-{
-  if (!strMask.IsEmpty())
-  {
-    const CStdString& strLabel=ParseFormat(strMask);
-    if (!strLabel.IsEmpty())
-      SetLabel(strLabel);
-    else if (!m_bIsFolder && g_guiSettings.GetBool("filelists.hideextensions"))
-      RemoveExtension();
-  }
-  else
-    SetLabel(strMask);
-}
-
-void CFileItem::FormatLabel2(const CStdString& strMask)
-{
-  if (!strMask.IsEmpty())
-  {
-    const CStdString& strLabel2=ParseFormat(strMask);
-    //if (!strLabel2.IsEmpty()) // allow label2 to be empty
-    SetLabel2(strLabel2);
-  }
-  else
-    SetLabel2(strMask);
-}
-
-CStdString CFileItem::ParseFormat(const CStdString& strMask)
-{
-  if (strMask.IsEmpty())
-    return "";
-
-  CStdString strLabel = "";
-  CMusicInfoTag* tag = m_musicInfoTag;
-  CVideoInfoTag* movie = m_videoInfoTag;
-  int iPos1 = 0;
-  int iPos2 = strMask.Find('%', iPos1);
-  if (iPos2 > iPos1)
-    strLabel += strMask.Mid(iPos1, iPos2 - iPos1);
-
-  /*
-  bool bDoneSomething = !(iPos1 == iPos2); // stuff in front should be applied - everything using this bool is added by spiff
-                                           // when true, it should add in anything extra in the mask (ie the content before the next %)
-  */
-
-  bool hasContent = false; // when true, we've actually added some content
-  while (iPos2 >= 0)
-  { 
-    CStdString str;
-    if (strMask[iPos2 + 1] == 'N' && tag && tag->GetTrackNumber() > 0)
-    { // track number
-      str.Format("%02.2i", tag->GetTrackNumber());
-    }
-    else if (strMask[iPos2 + 1] == 'M' && movie && movie->m_iEpisode > 0)
-    { // number of episodes 
-      str.Format("%02.2i %s", movie->m_iEpisode,g_localizeStrings.Get(20360));
-    }
-    else if (strMask[iPos2 + 1] == 'E' && movie && movie->m_iEpisode > 0)
-    { // episode number
-      if (movie->m_iSpecialSortEpisode > 0)
-        str.Format("S%02.2i", movie->m_iEpisode);
-      else
-        str.Format("%02.2i", movie->m_iEpisode);
-    }
-    else if (strMask[iPos2 + 1] == 'H' && movie && movie->m_iEpisode > 0)
-    { // season*100+episode number
-      if (movie->m_iSpecialSortSeason > 0)
-        str.Format("Sx%02.2i", movie->m_iEpisode);
-      else
-        str.Format("%ix%02.2i", movie->m_iSeason,movie->m_iEpisode);
-    }
-    else if (strMask[iPos2 + 1] == 'P' && movie)
-    { // tvshow production code
-      str = movie->m_strProductionCode;
-    }
-    else if (strMask[iPos2 + 1] == 'S' && tag && tag->GetDiscNumber() > 0)
-    { // disc number
-      str.Format("%02.2i", tag->GetDiscNumber());
-    }
-    else if (strMask[iPos2 + 1] == 'A' && tag && tag->GetArtist().size())
-    { // artist
-      str = tag->GetArtist();
-    }
-    else if (strMask[iPos2 + 1] == 'T')
-    { // title
-      if (tag && tag->GetTitle().size())
-        str = tag->GetTitle();
-      if (movie && movie->m_strTitle.size())
-        str = movie->m_strTitle;
-    }
-    else if (strMask[iPos2 + 1] == 'B' && tag && tag->GetAlbum().size())
-    { // album
-      str = tag->GetAlbum();
-    }
-    else if (strMask[iPos2 + 1] == 'G')
-    { // genre
-      if (tag && tag->GetGenre().size())
-        str = tag->GetGenre();
-      if (movie && movie->m_strGenre.size())
-        str = movie->m_strGenre;
-    }
-    else if (strMask[iPos2 + 1] == 'Y')
-    { // year
-      if (tag)
-        str = tag->GetYear();
-      if (movie)
-      {
-        if (movie->m_iYear > 0)
-          str.Format("%i",movie->m_iYear);
-        if (!movie->m_strPremiered.IsEmpty())
-          str = movie->m_strPremiered;
-        if (!movie->m_strFirstAired.IsEmpty())
-          str = movie->m_strFirstAired;
-      }
-    }
-    else if (strMask[iPos2 + 1] == 'F')
-    { // filename
-      str = CUtil::GetTitleFromPath(m_strPath, m_bIsFolder && !IsFileFolder());
-    }
-    else if (strMask[iPos2 + 1] == 'L')
-    { // pre-existing label
-      str = GetLabel();
-      // is the label the actual file or folder name?
-      if (str == m_strPath.Right(str.GetLength()))
-      { // label is the same as filename, clean it up as appropriate
-        str = CUtil::GetTitleFromPath(m_strPath, m_bIsFolder && !IsFileFolder());
-      }
-    }
-    else if (strMask[iPos2 + 1] == 'D')
-    { // duration
-      int nDuration=0;
-      if (tag)
-        nDuration = tag->GetDuration();
-      if (movie)
-        nDuration = StringUtils::TimeStringToSeconds(movie->m_strRuntime);
-      if (nDuration > 0)
-        StringUtils::SecondsToTimeString(nDuration, str);
-      else if (m_dwSize > 0)
-        str = StringUtils::SizeToString(m_dwSize);
-    }
-    else if (strMask[iPos2 + 1] == 'I')
-    { // size
-      if( m_bIsFolder && m_dwSize == 0 )
-        str="";
-      else
-        str=StringUtils::SizeToString(m_dwSize);
-    }
-    else if (strMask[iPos2 + 1] == 'J' && m_dateTime.IsValid())
-    { // date
-      str = m_dateTime.GetAsLocalizedDate();
-    }
-    else if (strMask[iPos2 + 1] == 'R')
-    {
-      if (tag && tag->GetRating() != '0') // We will probably remove this and replace with infoimages
-      { // non-zero song rating
-        str = tag->GetRating();
-      }
-      else if (movie)
-      { // movie rating
-        str.Format("%2.2f", m_fRating);
-      }
-    }
-    else if (strMask[iPos2 + 1] == 'C')
-    { // programs count
-      str.Format("%i", m_iprogramCount);
-    }
-    else if (strMask[iPos2 + 1] == 'K')
-    { // moview/game title
-      str=m_strTitle;
-    }
-    else if (strMask[iPos2 + 1] == '%')
-    { // %% to print %
-      // not actual content so just add it directly to the output string
-      strLabel += '%';
-    }
-    // did we translate anything?
-    if (str.size())
-    {
-      hasContent = true;
-      if (iPos2 > iPos1)
-        strLabel += strMask.Mid(iPos1, iPos2 - iPos1);
-      strLabel += str;
-    }
-    // advance to the next position
-    iPos1 = iPos2 + 2;
-    iPos2 = strMask.Find('%', iPos1);
-  }
-  if (iPos1 < (int)strMask.size())
-    strLabel += strMask.Right(strMask.size() - iPos1);
-
-  if (!hasContent)
-    return "";  // no content was added (only stuff from the mask string)
-
-  return strLabel;
 }
 
 const CStdString& CFileItem::GetContentType() const
@@ -1315,6 +1150,7 @@ void CFileItemList::Clear()
   m_sortMethod=SORT_METHOD_NONE;
   m_sortOrder=SORT_ORDER_NONE;
   m_bCacheToDisc=false;
+  m_sortDetails.clear();
 }
 
 void CFileItemList::ClearKeepPointer()
@@ -1328,6 +1164,7 @@ void CFileItemList::ClearKeepPointer()
   m_sortMethod=SORT_METHOD_NONE;
   m_sortOrder=SORT_ORDER_NONE;
   m_bCacheToDisc=false;
+  m_sortDetails.clear();
 }
 
 void CFileItemList::Add(CFileItem* pItem)
@@ -1406,6 +1243,14 @@ void CFileItemList::AppendPointer(const CFileItemList& itemlist)
     CFileItem* pItem = const_cast<CFileItem*>(itemlist[i]);
     Add(pItem);
   }
+}
+
+void CFileItemList::AssignPointer(const CFileItemList& itemlist)
+{
+  Clear();
+  AppendPointer(itemlist);
+  m_strPath = itemlist.m_strPath;
+  m_sortDetails = itemlist.m_sortDetails;
 }
 
 CFileItem* CFileItemList::Get(int iItem)
@@ -1564,6 +1409,9 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   case SORT_METHOD_SONG_RATING:
     Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::SongRatingAscending : SSortFileItem::SongRatingDescending);
     break;
+  case SORT_METHOD_MPAA_RATING:
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::MPAARatingAscending : SSortFileItem::MPAARatingDescending);
+    break;
   default:
     break;
   }
@@ -1594,6 +1442,18 @@ void CFileItemList::Serialize(CArchive& ar)
     ar << (int)m_sortMethod;
     ar << (int)m_sortOrder;
     ar << m_bCacheToDisc;
+
+    ar << m_sortDetails.size();
+    for (unsigned int j = 0; j < m_sortDetails.size(); ++j)
+    {
+      const SORT_METHOD_DETAILS &details = m_sortDetails[j];
+      ar << (int)details.m_sortMethod;
+      ar << details.m_buttonLabel;
+      ar << details.m_labelMasks.m_strLabelFile;
+      ar << details.m_labelMasks.m_strLabelFolder;
+      ar << details.m_labelMasks.m_strLabel2File;
+      ar << details.m_labelMasks.m_strLabel2Folder;
+    }
 
     for (i; i < (int)m_items.size(); ++i)
     {
@@ -1636,6 +1496,20 @@ void CFileItemList::Serialize(CArchive& ar)
     ar >> (int&)m_sortMethod;
     ar >> (int&)m_sortOrder;
     ar >> m_bCacheToDisc;
+
+    unsigned int detailSize = 0;
+    ar >> detailSize;
+    for (unsigned int j = 0; j < detailSize; ++j)
+    {
+      SORT_METHOD_DETAILS details;
+      ar >> (int&)details.m_sortMethod;
+      ar >> details.m_buttonLabel;
+      ar >> details.m_labelMasks.m_strLabelFile;
+      ar >> details.m_labelMasks.m_strLabelFolder;
+      ar >> details.m_labelMasks.m_strLabel2File;
+      ar >> details.m_labelMasks.m_strLabel2Folder;
+      m_sortDetails.push_back(details);
+    }
 
     for (int i = 0; i < iSize; ++i)
     {
@@ -2279,8 +2153,11 @@ CStdString CFileItem::GetCachedVideoThumb()
   }
   else
     crc.ComputeFromLowerCase(m_strPath);
+
+  CStdString hex;
+  hex.Format("%08x", (__int32)crc);
   CStdString thumb;
-  thumb.Format("%s\\%08x.tbn", g_settings.GetVideoThumbFolder().c_str(), (unsigned __int32)crc);
+  thumb.Format("%s\\%c\\%08x.tbn", g_settings.GetVideoThumbFolder().c_str(), hex[0],(unsigned __int32)crc);
   return _P(thumb);
 }
 
@@ -2669,5 +2546,15 @@ void CFileItemList::UpdateItem(const CFileItem *item)
   CFileItem *oldItem = Get(item->m_strPath);
   if (oldItem)
     *oldItem = *item;
+}
+
+void CFileItemList::AddSortMethod(SORT_METHOD sortMethod, int buttonLabel, const LABEL_MASKS &labelMasks)
+{
+  SORT_METHOD_DETAILS sort;
+  sort.m_sortMethod=sortMethod;
+  sort.m_buttonLabel=buttonLabel;
+  sort.m_labelMasks=labelMasks;
+
+  m_sortDetails.push_back(sort);
 }
 

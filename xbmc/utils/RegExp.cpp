@@ -382,8 +382,8 @@ char *CRegExp::regatom(int *flagp)
 			regc((char)c);
 			regparse++;
 		}
-		while ((c = *regparse++) != '\0' && c != ']') {
-			if (c != '-')
+		while ((c = *regparse++) != '\0' && ( c != ']' || *(regparse-2) == '\\') ) {
+			if (c != '-' || *(regparse-2) == '\\')
 				regc((char)c);
 			else if ((c = *regparse) == ']' || c == '\0')
 				regc('-');
@@ -582,7 +582,7 @@ int CRegExp::RegFind(const char *str)
 	if (regstart != '\0') 
 	{
 		// We know what char it must start with. 
-		for (s = string; s != NULL; s = strchr(s+1, regstart))
+		for (s = string; s != NULL && *s != '\0'; s = strchr(s+1, regstart)) // fixed by JM to include the *s != '\0' 
 			if (regtry(s))
 			{
 				int nPos = s-str;

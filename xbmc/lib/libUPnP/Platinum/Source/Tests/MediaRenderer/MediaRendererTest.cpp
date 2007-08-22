@@ -61,10 +61,7 @@ ParseCommandLine(char** args)
 +---------------------------------------------------------------------*/
 int
 main(int /* argc */, char** argv)
-{
-    PLT_SetLogLevel(PLT_LOG_LEVEL_4);
-    PLT_Log(PLT_LOG_LEVEL_1, "Starting ...\n");
-    
+{   
     PLT_UPnP upnp;
 
     /* parse command line */

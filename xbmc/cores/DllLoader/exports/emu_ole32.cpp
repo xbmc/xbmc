@@ -2,7 +2,9 @@
 #include "stdafx.h"
 #include "emu_dummy.h"
 #include "emu_ole32.h"
+#if defined(HAS_VIDEO_PLAYBACK) && defined(HAS_XBOX_HARDWARE)
 #include "../../mplayer/mplayer.h"
+#endif
 
 static const CLSID CLSID_MemoryAllocator =  {0x1e651cc0, 0xb199, 0x11d0, {0x82, 0x12, 0x00, 0xc0, 0x4f, 0xc3, 0x2c, 0x45}};
 
@@ -20,7 +22,7 @@ extern "C" HRESULT WINAPI dllCoCreateInstance( REFCLSID rclsid, LPUNKNOWN pUnkOu
   {
     CLog::Log(LOGDEBUG, __FUNCTION__" - CLSID_MemoryAllocator");
     /* use the mplayer version if that is available */
-#if defined(HAS_VIDEO_PLAYBACK) && defined(HAS_MPLAYER)
+#if defined(HAS_VIDEO_PLAYBACK) && defined(HAS_XBOX_HARDWARE)
     IUnknown *obj = mplayer_MemAllocatorCreate();
 #else
     IUnknown *obj = NULL;

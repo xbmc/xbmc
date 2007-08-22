@@ -1,5 +1,5 @@
 #pragma once
-#include "../../../DynamicDll.h"
+#include "DynamicDll.h"
 
 #define DVDNAV_COMPILE
  #include "dvdnav/dvdnav.h"

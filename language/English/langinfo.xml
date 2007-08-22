@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
 <!-- Possible values for <charsets>                     -->
 <!-- ==============================                     -->
@@ -72,7 +72,7 @@
       <datelong>DDDD, D MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
       <tempunit>C</tempunit>
-      <speedunit>kmh</speedunit>
+      <speedunit>mph</speedunit>
       <timezone>GMT</timezone>
     </region>
 
@@ -92,6 +92,16 @@
       <speedunit>kmh</speedunit>
       <timezone>GMT</timezone>
     </region>
+    
+    <region name="Central Europe">
+	  <dateshort>YYYY-MM-DD</dateshort>
+      <datelong>DDDD, D MMMM YYYY</datelong>
+      <time symbolAM="" symbolPM="">H:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+      <timezone>CET</timezone>
+    </region>
+    
   </regions>
 
   <sorttokens>

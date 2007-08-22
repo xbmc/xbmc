@@ -13,6 +13,7 @@
 #define PyInt_Type (*((PyTypeObject*)pointer_PyInt_Type))
 #define PyUnicode_Type (*((PyTypeObject*)pointer_PyUnicode_Type))
 #define PyTuple_Type (*((PyTypeObject*)pointer_PyTuple_Type))
+#define PyDict_Type (*((PyTypeObject*)pointer_PyDict_Type))
 
 #define PyExc_SystemError ((PyObject*)(*(long*)pointer_PyExc_SystemError))
 #define PyExc_ValueError ((PyObject*)(*(long*)pointer_PyExc_ValueError))
@@ -39,6 +40,7 @@ class LibraryLoader;
   extern DATA_OBJECT(PyInt_Type);
   extern DATA_OBJECT(PyUnicode_Type);
   extern DATA_OBJECT(PyTuple_Type);
+  extern DATA_OBJECT(PyDict_Type);
 
   extern DATA_OBJECT(PyExc_SystemError);
   extern DATA_OBJECT(PyExc_ValueError);

@@ -8,7 +8,7 @@
 
 CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, D3DCOLOR dwChannelColor, D3DCOLOR dwHeadlineColor, CStdString& strRSSTags)
 : CGUIControl(dwParentID, dwControlId, posX, posY, width, height),
-  m_scrollInfo((DWORD) -1,1.0f,"")
+  m_scrollInfo(0,0,1.0f,"")
 {
   m_label = labelInfo;
   m_dwChannelColor = dwChannelColor;
@@ -67,13 +67,14 @@ void CGUIRSSControl::Render()
         for (i = 0;i < (int)vecSplitTags.size();i++)
           m_pReader->AddTag(vecSplitTags[i]);
       }
+      // use half the width of the control as spacing between feeds, and double this between feed sets
       WCHAR wTmp[2];
       wTmp[0] = L' ';
       wTmp[1] = 0;
-      float fWidth = 15, fHeight;
+      float spaceWidth = 15;
       if (m_label.font)
-        m_label.font->GetTextExtent(wTmp, &fWidth, &fHeight);
-      m_pReader->Create(this, m_vecUrls, m_vecIntervals, (int) (GetWidth() / fWidth) + 1);
+        spaceWidth = m_label.font->GetTextWidth(wTmp);
+      m_pReader->Create(this, m_vecUrls, m_vecIntervals, (int)(0.5f*GetWidth() / spaceWidth) + 1);
     }
 
     if (m_label.font && m_pwzText)
@@ -115,12 +116,6 @@ void CGUIRSSControl::RenderText()
   dwPalette[0]=m_label.textColor;
   dwPalette[1]=m_dwHeadlineColor;
   dwPalette[2]=m_dwChannelColor;
-
-  if (m_scrollInfo.initialWait == -1)
-  {
-    m_scrollInfo.initialWait = 0;
-    m_scrollInfo.Reset();
-  }
   
   m_label.font->DrawScrollingText(m_posX, m_posY, dwPalette, 3, m_label.shadowColor, m_pwzText, m_width, m_scrollInfo, m_pbColors);
 }

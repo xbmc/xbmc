@@ -44,7 +44,6 @@ protected:
 
   CLabelInfo m_label;
 
-  int m_iLeadingSpaces;
   std::vector<string> m_vecUrls;
   std::vector<int> m_vecIntervals;
   CScrollInfo m_scrollInfo;

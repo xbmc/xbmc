@@ -3,16 +3,16 @@
 	<include>dialogeffect</include>
 	<coordinates>
 		<system>1</system>
-		<posx>232</posx>
-		<posy>140</posy>
+		<posx>220</posx>
+		<posy>110</posy>
 	</coordinates>
 	<controls>
 		<control type="image" id="1">
 			<description>background image</description>
 			<posx>-25</posx>
 			<posy>-11</posy>
-			<width>446</width>
-			<height>405</height>
+			<width>480</width>
+			<height>410</height>
 			<texture>dialog-panel2.png</texture>
 			<colordiffuse>AAFFFFFF</colordiffuse>
 		</control>
@@ -38,7 +38,7 @@
 			<description>Preset List</description>
 			<posx>-1</posx>
 			<posy>40</posy>
-			<width>407</width>
+			<width>438</width>
 			<height>340</height>
 			<spinposx>371</spinposx>
 			<spinposy>-30</spinposy>

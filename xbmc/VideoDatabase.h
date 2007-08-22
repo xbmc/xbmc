@@ -280,8 +280,10 @@ public:
 
   bool GetStackTimes(const CStdString &filePath, vector<long> &times);
   void SetStackTimes(const CStdString &filePath, vector<long> &times);
-  void SetScraperForPath(const CStdString& filePath, const CStdString& strScraper, const CStdString& strContent, bool bUseFolderNames=false, bool bScanRecursive=false);
+  void SetScraperForPath(const CStdString& filePath, const SScraperInfo& info, const VIDEO::SScanSettings& settings);
   bool SetPathHash(const CStdString &path, const CStdString &hash);
+  bool LinkMovieToTvshow(long idMovie, long idShow);
+  bool IsLinkedToTvshow(long idMovie);
 
   bool GetArbitraryQuery(const CStdString& strQuery, const CStdString& strOpenRecordSet, const CStdString& strCloseRecordSet, 
                          const CStdString& strOpenRecord, const CStdString& strCloseRecord, const CStdString& strOpenField, const CStdString& strCloseField, CStdString& strResult);
@@ -294,15 +296,18 @@ public:
   bool GetYearsNav(const CStdString& strBaseDir, CFileItemList& items, long idContent=-1);
   bool GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& items, long idActor=-1, long idDirector=-1, long idGenre=-1, long idYear=-1, long idShow=-1);
   bool GetEpisodesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idActor=-1, long idDirector=-1, long idShow=-1, long idSeason=-1);
+  bool GetRecentlyAddedMoviesNav(const CStdString& strBaseDir, CFileItemList& items);
+  bool GetRecentlyAddedEpisodesNav(const CStdString& strBaseDir, CFileItemList& items);
   
   int GetMovieCount();
   int GetTvShowCount();
 
   bool GetGenreById(long lIdGenre, CStdString& strGenre);
 
-  bool GetScraperForPath(const CStdString& strPath, CStdString& strScraper, CStdString& strContent);
-  bool GetScraperForPath(const CStdString& strPath, CStdString& strScraper, CStdString& strContent, int& iFound);
-  bool GetScraperForPath(const CStdString& strPath, CStdString& strScraper, CStdString& strContent, bool& bUseFolderNames, bool& bScanRecursive, int& iFound);
+  bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info);
+  bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info, int& iFound);
+  bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info, VIDEO::SScanSettings& settings);
+  bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info, VIDEO::SScanSettings& settings, int& iFound);
 
   void CleanDatabase();
   

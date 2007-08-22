@@ -28,6 +28,7 @@
 #include "GUIInfoManager.h"
 #include <stack>
 #include "../xbox/Network.h"
+#include "GUIWindowSlideShow.h"
 
 // stuff for current song
 #if defined(HAS_FILESYSTEM) && defined(HAS_XBOX_HARDWARE)
@@ -158,8 +159,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("player.showinfo")) ret = PLAYER_SHOWINFO;
     else if (strTest.Left(15).Equals("player.seektime")) return AddMultiInfo(GUIInfo(PLAYER_SEEKTIME, TranslateTimeFormat(strTest.Mid(15))));
     else if (strTest.Left(20).Equals("player.timeremaining")) return AddMultiInfo(GUIInfo(PLAYER_TIME_REMAINING, TranslateTimeFormat(strTest.Mid(20))));
-    else if (strTest.Left(11).Equals("player.time")) return AddMultiInfo(GUIInfo(PLAYER_TIME, TranslateTimeFormat(strTest.Mid(11))));
     else if (strTest.Left(16).Equals("player.timespeed")) return AddMultiInfo(GUIInfo(PLAYER_TIME_SPEED, TranslateTimeFormat(strTest.Mid(16))));
+    else if (strTest.Left(11).Equals("player.time")) return AddMultiInfo(GUIInfo(PLAYER_TIME, TranslateTimeFormat(strTest.Mid(11))));
     else if (strTest.Left(15).Equals("player.duration")) return AddMultiInfo(GUIInfo(PLAYER_DURATION, TranslateTimeFormat(strTest.Mid(15))));
     else if (strTest.Left(17).Equals("player.finishtime")) return AddMultiInfo(GUIInfo(PLAYER_FINISH_TIME, TranslateTimeFormat(strTest.Mid(17))));
     else if (strTest.Equals("player.volume")) ret = PLAYER_VOLUME;
@@ -253,7 +254,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.dvdready")) ret = SYSTEM_DVDREADY;
     else if (strTest.Equals("system.trayopen")) ret = SYSTEM_TRAYOPEN;
     else if (strTest.Equals("system.dvdtraystate")) ret = SYSTEM_DVD_TRAY_STATE;
-    else if (strTest.Equals("system.autodetection")) ret = SYSTEM_AUTODETECTION;
     
     else if (strTest.Equals("system.memory(free)") || strTest.Equals("system.freememory")) ret = SYSTEM_FREE_MEMORY;
     else if (strTest.Equals("system.memory(free.percent)")) ret = SYSTEM_FREE_MEMORY_PERCENT;
@@ -261,6 +261,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.memory(used.percent)")) ret = SYSTEM_USED_MEMORY_PERCENT;
     else if (strTest.Equals("system.memory(total)")) ret = SYSTEM_TOTAL_MEMORY;
 
+    else if (strTest.Equals("system.language")) ret = SYSTEM_LANGUAGE;
     else if (strTest.Equals("system.screenmode")) ret = SYSTEM_SCREEN_MODE;
     else if (strTest.Equals("system.screenwidth")) ret = SYSTEM_SCREEN_WIDTH;
     else if (strTest.Equals("system.screenheight")) ret = SYSTEM_SCREEN_HEIGHT;
@@ -350,14 +351,23 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strCategory.Equals("network"))
   {
     if (strTest.Equals("network.ipaddress")) ret = NETWORK_IP_ADDRESS;
-    if (strTest.Equals("network.macadress")) ret = NETWORK_MAC_ADDRESS;
     if (strTest.Equals("network.isdhcp")) ret = NETWORK_IS_DHCP;
     if (strTest.Equals("network.linkstate")) ret = NETWORK_LINK_STATE;
-    if (strTest.Equals("network.subetadress")) ret = NETWORK_SUBNET_ADDRESS;
-    if (strTest.Equals("network.gatewayadress")) ret = NETWORK_GATEWAY_ADDRESS;
-    if (strTest.Equals("network.dns1adress")) ret = NETWORK_DNS1_ADDRESS;
-    if (strTest.Equals("network.dns2adress")) ret = NETWORK_DNS2_ADDRESS;
-    if (strTest.Equals("network.dhcpadress")) ret = NETWORK_DHCP_ADDRESS;
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+    if (strTest.Equals("network.macadress") || strTest.Equals("network.macaddress")) ret = NETWORK_MAC_ADDRESS;
+    if (strTest.Equals("network.subetadress") || strTest.Equals("network.subnetaddress")) ret = NETWORK_SUBNET_ADDRESS;
+    if (strTest.Equals("network.gatewayadress") || strTest.Equals("network.gatewayaddress")) ret = NETWORK_GATEWAY_ADDRESS;
+    if (strTest.Equals("network.dns1adress") || strTest.Equals("network.dns1address")) ret = NETWORK_DNS1_ADDRESS;
+    if (strTest.Equals("network.dns2adress") || strTest.Equals("network.dns2address")) ret = NETWORK_DNS2_ADDRESS;
+    if (strTest.Equals("network.dhcpadress") || strTest.Equals("network.dhcpaddress")) ret = NETWORK_DHCP_ADDRESS;
+#else
+    if (strTest.Equals("network.macaddress")) ret = NETWORK_MAC_ADDRESS;
+    if (strTest.Equals("network.subnetaddress")) ret = NETWORK_SUBNET_ADDRESS;
+    if (strTest.Equals("network.gatewayaddress")) ret = NETWORK_GATEWAY_ADDRESS;
+    if (strTest.Equals("network.dns1address")) ret = NETWORK_DNS1_ADDRESS;
+    if (strTest.Equals("network.dns2address")) ret = NETWORK_DNS2_ADDRESS;
+    if (strTest.Equals("network.dhcpaddress")) ret = NETWORK_DHCP_ADDRESS;
+#endif
   }
   else if (strCategory.Equals("musicplayer"))
   {
@@ -366,9 +376,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("musicplayer.artist")) ret = MUSICPLAYER_ARTIST;
     else if (strTest.Equals("musicplayer.year")) ret = MUSICPLAYER_YEAR;
     else if (strTest.Equals("musicplayer.genre")) ret = MUSICPLAYER_GENRE;
-    else if (strTest.Left(16).Equals("musicplayer.time")) ret = AddMultiInfo(GUIInfo(PLAYER_TIME, TranslateTimeFormat(strTest.Mid(16))));
     else if (strTest.Left(25).Equals("musicplayer.timeremaining")) ret = AddMultiInfo(GUIInfo(PLAYER_TIME_REMAINING, TranslateTimeFormat(strTest.Mid(25))));
     else if (strTest.Left(21).Equals("musicplayer.timespeed")) ret = AddMultiInfo(GUIInfo(PLAYER_TIME_SPEED, TranslateTimeFormat(strTest.Mid(21))));
+    else if (strTest.Left(16).Equals("musicplayer.time")) ret = AddMultiInfo(GUIInfo(PLAYER_TIME, TranslateTimeFormat(strTest.Mid(16))));
     else if (strTest.Left(20).Equals("musicplayer.duration")) ret = AddMultiInfo(GUIInfo(PLAYER_DURATION, TranslateTimeFormat(strTest.Mid(20))));
     else if (strTest.Equals("musicplayer.tracknumber")) ret = MUSICPLAYER_TRACK_NUMBER;
     else if (strTest.Equals("musicplayer.cover")) ret = MUSICPLAYER_COVER;
@@ -390,9 +400,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.originaltitle")) ret = VIDEOPLAYER_ORIGINALTITLE;
     else if (strTest.Equals("videoplayer.director")) ret = VIDEOPLAYER_DIRECTOR;
     else if (strTest.Equals("videoplayer.year")) ret = VIDEOPLAYER_YEAR;
-    else if (strTest.Left(16).Equals("videoplayer.time")) ret = AddMultiInfo(GUIInfo(PLAYER_TIME, TranslateTimeFormat(strTest.Mid(16))));
     else if (strTest.Left(25).Equals("videoplayer.timeremaining")) ret = AddMultiInfo(GUIInfo(PLAYER_TIME_REMAINING, TranslateTimeFormat(strTest.Mid(25))));
     else if (strTest.Left(21).Equals("videoplayer.timespeed")) ret = AddMultiInfo(GUIInfo(PLAYER_TIME_SPEED, TranslateTimeFormat(strTest.Mid(21))));
+    else if (strTest.Left(16).Equals("videoplayer.time")) ret = AddMultiInfo(GUIInfo(PLAYER_TIME, TranslateTimeFormat(strTest.Mid(16))));
     else if (strTest.Left(20).Equals("videoplayer.duration")) ret = AddMultiInfo(GUIInfo(PLAYER_DURATION, TranslateTimeFormat(strTest.Mid(20))));
     else if (strTest.Equals("videoplayer.cover")) ret = VIDEOPLAYER_COVER;
     else if (strTest.Equals("videoplayer.usingoverlays")) ret = VIDEOPLAYER_USING_OVERLAYS;
@@ -437,6 +447,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("audioscrobbler.filescached")) ret = AUDIOSCROBBLER_FILES_CACHED;
     else if (strTest.Equals("audioscrobbler.submitstate")) ret = AUDIOSCROBBLER_SUBMIT_STATE;
   }
+  else if (strCategory.Equals("slideshow"))
+    ret = CPictureInfoTag::TranslateString(strTest.Mid(strCategory.GetLength() + 1));
   else if (strCategory.Left(9).Equals("container"))
   {
     int id = atoi(strCategory.Mid(10, strCategory.GetLength() - 11));
@@ -462,6 +474,11 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       if (method.Equals("songrating")) sort = SORT_METHOD_SONG_RATING;
       if (sort != SORT_METHOD_NONE)
         return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_SORT_METHOD : CONTAINER_SORT_METHOD, sort));
+    }
+    else if (id && info.Left(9).Equals("hasfocus("))
+    {
+      int itemID = atoi(info.Mid(9, info.GetLength() - 10));
+      return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_HAS_FOCUS : CONTAINER_HAS_FOCUS, id, itemID));
     }
     if (id && (ret == CONTAINER_ON_NEXT || ret == CONTAINER_ON_PREVIOUS))
       return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, id));
@@ -620,6 +637,10 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("tvshowtitle")) return LISTITEM_TVSHOW;
   else if (info.Equals("premiered")) return LISTITEM_PREMIERED;
   else if (info.Equals("comment")) return LISTITEM_COMMENT;
+  else if (info.Equals("path")) return LISTITEM_PATH;
+  else if (info.Equals("picturepath")) return LISTITEM_PICTURE_PATH;
+  else if (info.Equals("pictureresolution")) return LISTITEM_PICTURE_RESOLUTION;
+  else if (info.Equals("picturedatetime")) return LISTITEM_PICTURE_DATETIME;
   return 0;
 }
 
@@ -635,13 +656,15 @@ TIME_FORMAT CGUIInfoManager::TranslateTimeFormat(const CStdString &format)
   return TIME_FORMAT_GUESS;
 }
 
-string CGUIInfoManager::GetLabel(int info)
+CStdString CGUIInfoManager::GetLabel(int info)
 {
   CStdString strLabel;
   if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
-  {
-    strLabel = GetMultiInfoLabel(m_multiInfo[info - MULTI_INFO_START]);
-  }
+    return GetMultiInfoLabel(m_multiInfo[info - MULTI_INFO_START]);
+
+  if (info >= SLIDE_INFO_START && info <= SLIDE_INFO_END)
+    return GetPictureLabel(info);
+
   switch (info)
   {
   case WEATHER_CONDITIONS:
@@ -925,6 +948,9 @@ string CGUIInfoManager::GetLabel(int info)
   case SYSTEM_PROFILENAME:
     strLabel = g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getName();
     break;
+  case SYSTEM_LANGUAGE:
+    strLabel = g_guiSettings.GetString("locale.language");
+    break;
   case XLINK_KAI_USERNAME:
     strLabel = g_guiSettings.GetString("xlinkkai.username");
     break;
@@ -1081,6 +1107,10 @@ string CGUIInfoManager::GetLabel(int info)
   case LISTITEM_SEASON:
   case LISTITEM_TVSHOW:
   case LISTITEM_COMMENT:
+  case LISTITEM_PATH:
+  case LISTITEM_PICTURE_PATH:
+  case LISTITEM_PICTURE_DATETIME:
+  case LISTITEM_PICTURE_RESOLUTION:
     {
       CGUIWindow *pWindow;
       int iDialog = m_gWindowManager.GetTopMostModalDialogID();
@@ -1252,8 +1282,6 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
     CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
     bReturn = (pWindow && pWindow->IsMediaWindow());
   }
-  else if (condition == SYSTEM_AUTODETECTION)
-    bReturn = HasAutodetectedXbox();
   else if (condition == PLAYER_MUTED)
     bReturn = g_stSettings.m_bMute;
   else if (condition == SYSTEM_KAI_CONNECTED)
@@ -1599,6 +1627,21 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
           bReturn = condition == CONTAINER_ON_NEXT ? it->second > 0 : it->second < 0;
       }
       break;
+    case CONTAINER_HAS_FOCUS:
+      { // grab our container
+        CGUIWindow *window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+        if (window)
+        {
+          const CGUIControl *control = window->GetControl(info.m_data1);
+          if (control && control->IsContainer())
+          {
+            CFileItem *item = (CFileItem *)((CGUIBaseContainer *)control)->GetListItem(0);
+            if (item && item->m_iprogramCount == info.m_data2)  // programcount used to store item id
+              return true;
+          }
+        }
+        break;
+      }
     case LISTITEM_ISSELECTED:
     case LISTITEM_ISPLAYING:
       {
@@ -1682,7 +1725,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
       }
     }
     if (item)
-      return GetItemImage(item, info.m_info);
+      return GetItemImage(item, info.m_info); // Image prioritizes images over labels (in the case of music item ratings for instance)
   }
   else if (info.m_info == PLAYER_TIME)
   {
@@ -1725,7 +1768,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
 }
 
 /// \brief Obtains the filename of the image to show from whichever subsystem is needed
-CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
+CStdString CGUIInfoManager::GetImage(int info, DWORD contextWindow)
 {
   if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
   {
@@ -1768,14 +1811,17 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
       CFileItem* item;
 
       if (info == CONTAINER_FOLDERTHUMB)
+      {
         item = &const_cast<CFileItemList&>(((CGUIMediaWindow*)window)->CurrentDirectory());
+        info = LISTITEM_THUMB;
+      }
       else
         item = window->GetCurrentListItem();
       if (item)
         return GetItemImage(item, info);
     }
   }
-  return "";
+  return GetLabel(info);
 }
 
 CStdString CGUIInfoManager::GetDate(bool bNumbersOnly)
@@ -2179,7 +2225,6 @@ void CGUIInfoManager::ResetCurrentItem()
 
 void CGUIInfoManager::SetCurrentItem(CFileItem &item)
 {
-  if (item.IsLastFM()) return; //last.fm handles it's own songinfo
   ResetCurrentItem();
 
   if (item.IsAudio())
@@ -2656,7 +2701,7 @@ const CStdString &CorrectAllItemsSortHack(const CStdString &item)
   return item;
 }
 
-CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
+CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
 {
   if (!item) return "";
   switch (info)
@@ -2763,7 +2808,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
   case LISTITEM_PLOT:
     if (item->HasVideoInfoTag())
     {
-      if (!(!item->GetVideoInfoTag()->m_strShowTitle.IsEmpty() && item->GetVideoInfoTag()->m_iSeason == 0)) // dont apply to tvshows
+      if (!(!item->GetVideoInfoTag()->m_strShowTitle.IsEmpty() && item->GetVideoInfoTag()->m_iSeason == -1)) // dont apply to tvshows
         if (!item->GetVideoInfoTag()->m_bWatched && g_guiSettings.GetBool("myvideos.hideplots"))
           return g_localizeStrings.Get(20370);
 
@@ -2804,6 +2849,39 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
     if (item->HasMusicInfoTag())
       return item->GetMusicInfoTag()->GetComment();
     break;
+  case LISTITEM_ACTUAL_ICON:
+    return item->GetIconImage();
+    break;
+  case LISTITEM_ICON:
+    if (!item->HasThumbnail() && item->HasIcon())
+    {
+      CStdString strThumb = item->GetIconImage();
+      if (info == LISTITEM_ICON)
+        strThumb.Insert(strThumb.Find("."), "Big");
+      return strThumb;
+    }
+    return item->GetThumbnailImage();
+    break;
+  case LISTITEM_OVERLAY:
+    return item->GetOverlayImage();
+    break;
+  case LISTITEM_THUMB:
+    return item->GetThumbnailImage();
+    break;
+  case LISTITEM_PATH:
+    return item->m_strPath;
+  case LISTITEM_PICTURE_PATH:
+    if (item->IsPicture() && (!item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR()))
+      return item->m_strPath;
+    break;
+  case LISTITEM_PICTURE_DATETIME:
+    if (item->HasPictureInfoTag())
+      return item->GetPictureInfoTag()->GetInfo(SLIDE_EXIF_DATE_TIME);
+    break;
+  case LISTITEM_PICTURE_RESOLUTION:
+    if (item->HasPictureInfoTag())
+      return item->GetPictureInfoTag()->GetInfo(SLIDE_RESOLUTION);
+    break;
   }
   return "";
 }
@@ -2828,7 +2906,7 @@ bool CGUIInfoManager::GetItemBool(const CFileItem *item, int info, DWORD context
   return (info < 0) ? !ret : ret;
 }
 
-CStdString CGUIInfoManager::GetMultiLabel(const vector<CInfoPortion> &multiInfo)
+CStdString CGUIInfoManager::GetMultiInfo(const vector<CInfoPortion> &multiInfo, DWORD contextWindow, bool preferImage)
 {
   CStdString label;
   for (unsigned int i = 0; i < multiInfo.size(); i++)
@@ -2836,7 +2914,11 @@ CStdString CGUIInfoManager::GetMultiLabel(const vector<CInfoPortion> &multiInfo)
     const CInfoPortion &portion = multiInfo[i];
     if (portion.m_info)
     {
-      CStdString infoLabel = g_infoManager.GetLabel(portion.m_info);
+      CStdString infoLabel;
+      if (preferImage)
+        infoLabel = g_infoManager.GetImage(portion.m_info, contextWindow);
+      if (infoLabel.IsEmpty())
+        infoLabel = g_infoManager.GetLabel(portion.m_info);
       if (!infoLabel.IsEmpty())
       {
         label += portion.m_prefix;
@@ -2947,20 +3029,8 @@ bool CGUIInfoManager::IsCached(int condition, DWORD contextWindow, bool &result)
   return false;
 }
 
-
 CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info) const
 {
-  if (!item) return "";
-  if ((info == LISTITEM_ICON && !item->HasThumbnail() && item->HasIcon()) ||
-      info == LISTITEM_ACTUAL_ICON)
-  {
-    CStdString strThumb = item->GetIconImage();
-    if (info == LISTITEM_ICON)
-      strThumb.Insert(strThumb.Find("."), "Big");
-    return strThumb;
-  }
-  if (info == LISTITEM_OVERLAY)
-    return item->GetOverlayImage();
   if (info == LISTITEM_RATING)
   {
     if (item->HasMusicInfoTag())
@@ -2971,7 +3041,8 @@ CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info) const
     }
     return "";
   }
-  return item->GetThumbnailImage();
+  else
+    return GetItemLabel(item, info);
 }
 
 // Called from tuxbox service thread to update current status
@@ -3015,6 +3086,50 @@ void CGUIInfoManager::UpdateFromTuxBox()
     !g_tuxbox.sCurSrvData.current_event_details.IsEmpty())
   {
     m_currentFile.GetVideoInfoTag()->m_strDirector = g_tuxbox.sCurSrvData.current_event_details;
-  }  
-  return;
+  }
+}
+
+CStdString CGUIInfoManager::GetPictureLabel(int info) const
+{
+  if (info == SLIDE_FILE_NAME)
+    return GetItemLabel(&m_currentSlide, LISTITEM_FILENAME);
+  else if (info == SLIDE_FILE_PATH)
+  {
+    CStdString path, displayPath;
+    CUtil::GetDirectory(m_currentSlide.m_strPath, path);
+    CURL(path).GetURLWithoutUserDetails(displayPath);
+    return displayPath;
+  }
+  else if (info == SLIDE_FILE_SIZE)
+    return GetItemLabel(&m_currentSlide, LISTITEM_SIZE);
+  else if (info == SLIDE_FILE_DATE)
+    return GetItemLabel(&m_currentSlide, LISTITEM_DATE);
+  else if (info == SLIDE_INDEX)
+  {
+    CGUIWindowSlideShow *slideshow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+    if (slideshow && slideshow->NumSlides())
+    {
+      CStdString index;
+      index.Format("%d/%d", slideshow->CurrentSlide(), slideshow->NumSlides());
+      return index;
+    }
+  }
+  if (m_currentSlide.HasPictureInfoTag())
+    return m_currentSlide.GetPictureInfoTag()->GetInfo(info);
+  return "";
+}
+
+void CGUIInfoManager::SetCurrentSlide(CFileItem &item)
+{
+  if (m_currentSlide.m_strPath != item.m_strPath)
+  {
+    if (!item.HasPictureInfoTag() && !item.GetPictureInfoTag()->Loaded())
+      item.GetPictureInfoTag()->Load(item.m_strPath);
+    m_currentSlide = item;
+  }
+}
+
+void CGUIInfoManager::ResetCurrentSlide()
+{
+  m_currentSlide.Reset();
 }

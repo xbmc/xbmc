@@ -191,8 +191,10 @@ CGUISettings::CGUISettings(void)
   AddBool(4, "pictures.savefolderviews", 583, true);
   AddSeparator(5,"pictures.sep1");
   AddBool(6, "pictures.useexifrotation", 20184, true);
-  AddSeparator(7,"pictures.sep2");
-  AddString(8,"pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
+  AddBool(7, "pictures.usetags", 258, true);
+  AddInt(8, "pictures.displayresolution", 169, (int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
+  AddSeparator(9,"pictures.sep2");
+  AddString(10,"pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
 
   AddCategory(0, "slideshow", 108);
   AddInt(1, "slideshow.staytime", 12378, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
@@ -264,7 +266,7 @@ CGUISettings::CGUISettings(void)
 
   AddCategory(3, "musicfiles", 744);
   AddBool(1, "musicfiles.usetags", 258, true);
-  AddString(2, "musicfiles.trackformat", 13307, "%N. %A - %T", BUTTON_CONTROL_INPUT, false, 16016);
+  AddString(2, "musicfiles.trackformat", 13307, "[%N. ]%A - %T", BUTTON_CONTROL_INPUT, false, 16016);
   AddString(3, "musicfiles.trackformatright", 13387, "%D", BUTTON_CONTROL_INPUT, false, 16016);
   // advanced per-view trackformats.
   AddString(0, "musicfiles.nowplayingtrackformat", 13307, "", BUTTON_CONTROL_INPUT, false, 16016);
@@ -288,7 +290,7 @@ CGUISettings::CGUISettings(void)
 
   AddCategory(3, "cddaripper", 620);
   AddString(1, "cddaripper.path", 20000, "select writable folder", BUTTON_CONTROL_PATH_INPUT, false, 657);
-  AddString(2, "cddaripper.trackformat", 13307, "%N. %T - %A", BUTTON_CONTROL_INPUT, false, 16016);
+  AddString(2, "cddaripper.trackformat", 13307, "[%N. ]%T - %A", BUTTON_CONTROL_INPUT, false, 16016);
   AddInt(3, "cddaripper.encoder", 621, CDDARIP_ENCODER_LAME, CDDARIP_ENCODER_LAME, 1, CDDARIP_ENCODER_WAV, SPIN_CONTROL_TEXT);
   AddInt(4, "cddaripper.quality", 622, CDDARIP_QUALITY_CBR, CDDARIP_QUALITY_CBR, 1, CDDARIP_QUALITY_EXTREME, SPIN_CONTROL_TEXT);
   AddInt(5, "cddaripper.bitrate", 623, 192, 128, 32, 320, SPIN_CONTROL_INT_PLUS, MASK_KBPS);
@@ -485,10 +487,12 @@ CGUISettings::CGUISettings(void)
 
   AddCategory(6, "upnp", 20110);
   AddBool(1,    "upnp.client", 20111, false);
-  AddBool(2, "upnp.server", 21360, false);
-  AddString(3, "upnp.musicshares", 21361, "", BUTTON_CONTROL_STANDARD);
-  AddString(4, "upnp.videoshares", 21362, "", BUTTON_CONTROL_STANDARD);
-  AddString(5, "upnp.pictureshares", 21363, "", BUTTON_CONTROL_STANDARD);
+  AddBool(2, "upnp.renderer", 21881, false);
+  AddSeparator(3,"upnp.sep1");
+  AddBool(4, "upnp.server", 21360, false);  
+  AddString(5, "upnp.musicshares", 21361, "", BUTTON_CONTROL_STANDARD);
+  AddString(6, "upnp.videoshares", 21362, "", BUTTON_CONTROL_STANDARD);
+  AddString(7, "upnp.pictureshares", 21363, "", BUTTON_CONTROL_STANDARD);
 
   // appearance settings
   AddGroup(7, 480);
@@ -908,6 +912,7 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
       SetInt("videoscreen.resolution", newRes);
     }
   }
+  
   // Move replaygain settings into our struct
   m_replayGain.iPreAmp = GetInt("musicplayer.replaygainpreamp");
   m_replayGain.iNoGainPreAmp = GetInt("musicplayer.replaygainnogainpreamp");

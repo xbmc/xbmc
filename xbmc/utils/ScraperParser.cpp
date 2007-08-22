@@ -195,7 +195,11 @@ bool CScraperParser::Load(const CStdString& strXMLFile)
     }
   }
   else
+  {
+    delete m_document;
+    m_document = NULL;
     return false;
+  }
 
   return true;
 }

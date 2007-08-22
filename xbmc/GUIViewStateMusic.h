@@ -58,6 +58,9 @@ public:
 protected:
   virtual void SaveViewState();
   virtual VECSHARES& GetShares();
+
+private:
+  void AddOnlineShares();
 };
 
 class CGUIViewStateWindowMusicSongs : public CGUIViewStateWindowMusic

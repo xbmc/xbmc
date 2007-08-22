@@ -207,7 +207,7 @@ void ILCD::Render(LCD_MODE mode)
   unsigned int inLine = 0;
   while (outLine < 4 && inLine < m_lcdMode[mode].size())
   {
-    CStdString utf8Line = g_infoManager.GetMultiLabel(m_lcdMode[mode][inLine++]);
+    CStdString utf8Line = g_infoManager.GetMultiInfo(m_lcdMode[mode][inLine++], 0);
     if (!utf8Line.IsEmpty())
     {
       // convert to the user char set

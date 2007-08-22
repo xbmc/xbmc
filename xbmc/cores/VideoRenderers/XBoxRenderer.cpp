@@ -78,6 +78,8 @@ CXBoxRenderer::CXBoxRenderer()
   memset(m_image, 0, sizeof(m_image));
 
   memset(m_YUVTexture, 0, sizeof(m_YUVTexture));
+  m_yuvcoef = yuv_coef_bt709;
+  m_yuvrange = yuv_range_lim;
 }
 
 CXBoxRenderer::~CXBoxRenderer()
@@ -761,6 +763,27 @@ bool CXBoxRenderer::Configure(unsigned int width, unsigned int height, unsigned 
   m_fps = fps;
   m_iSourceWidth = width;
   m_iSourceHeight = height;
+  m_iFlags = flags;
+  
+  // setup what colorspace we live in
+  if(flags & CONF_FLAGS_YUV_FULLRANGE)
+    m_yuvrange = yuv_range_full;
+  else
+    m_yuvrange = yuv_range_lim;
+
+  switch(CONF_FLAGS_YUVCOEF_MASK(flags))
+  {
+    case CONF_FLAGS_YUVCOEF_240M:
+      m_yuvcoef = yuv_coef_smtp240m; break;
+    case CONF_FLAGS_YUVCOEF_BT709:
+      m_yuvcoef = yuv_coef_bt709; break;
+    case CONF_FLAGS_YUVCOEF_BT601:    
+      m_yuvcoef = yuv_coef_bt601; break;
+    case CONF_FLAGS_YUVCOEF_EBU:
+      m_yuvcoef = yuv_coef_ebu; break;
+    default:
+      m_yuvcoef = yuv_coef_bt601; break;
+  }
 
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(d_width, d_height);

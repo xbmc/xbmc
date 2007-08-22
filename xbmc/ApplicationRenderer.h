@@ -23,6 +23,9 @@ private:
   virtual void OnExit();
   virtual void Process();
   void UpdateBusyCount();
+#ifndef HAS_SDL
+  bool CopySurface(LPDIRECT3DSURFACE8 pSurfaceSource, const RECT* rcSource, LPDIRECT3DSURFACE8 pSurfaceDest, const RECT* rcDest);
+#endif
 
   DWORD m_time;
   bool m_enabled;
@@ -35,5 +38,7 @@ private:
   LPDIRECT3DSURFACE8 m_lpSurface;
 #endif
   CGUIDialogBusy* m_pWindow;
+  RESOLUTION m_Resolution;
 };
 extern CApplicationRenderer g_ApplicationRenderer;
+

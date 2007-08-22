@@ -31,3 +31,4 @@ protected:
   DllAvUtil m_dllAvUtil;
 
 };
+

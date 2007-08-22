@@ -14,6 +14,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
 
 protected:
+  virtual void OnInfo(int item);
   virtual bool OnClick(int iItem);
   virtual void UpdateButtons();
   virtual void OnPrepareFileItems(CFileItemList& items);
