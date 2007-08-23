@@ -12,13 +12,14 @@ namespace DIRECTORY
     virtual ~CVideoDatabaseDirectory(void);
     virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
     virtual bool Exists(const char* strPath);
-    VIDEODATABASEDIRECTORY::NODE_TYPE GetDirectoryChildType(const CStdString& strPath);
-    VIDEODATABASEDIRECTORY::NODE_TYPE GetDirectoryType(const CStdString& strPath);
-    VIDEODATABASEDIRECTORY::NODE_TYPE GetDirectoryParentType(const CStdString& strPath);
+    static VIDEODATABASEDIRECTORY::NODE_TYPE GetDirectoryChildType(const CStdString& strPath);
+    static VIDEODATABASEDIRECTORY::NODE_TYPE GetDirectoryType(const CStdString& strPath);
+    static VIDEODATABASEDIRECTORY::NODE_TYPE GetDirectoryParentType(const CStdString& strPath);
     bool GetQueryParams(const CStdString& strPath, VIDEODATABASEDIRECTORY::CQueryParams& params);
     void ClearDirectoryCache(const CStdString& strDirectory);
     static bool IsAllItem(const CStdString& strDirectory);
     static bool GetLabel(const CStdString& strDirectory, CStdString& strLabel);
+    static CStdString GetIcon(const CStdString& strDirectory);
     bool ContainsMovies(const CStdString &path);
     static bool CanCache(const CStdString &path);
   };
