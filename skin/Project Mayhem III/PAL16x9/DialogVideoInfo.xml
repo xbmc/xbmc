@@ -420,10 +420,19 @@
 				<aspectratio aligny="bottom">keep</aspectratio>
 				<visible>container.content(episodes)</visible>
 			</control>
+			<control type="fadelabel" id="1">
+				<description>Tv ShowTitle value</description>
+				<posx>200</posx>
+				<posy>110</posy>
+				<width>330</width>
+				<info>ListItem.tvshowtitle</info>
+				<font>special13</font>
+				<visible>container.content(episodes)</visible>
+			</control>
 			<control type="fadelabel" id="20">
 				<description>Title value</description>
 				<posx>200</posx>
-				<posy>120</posy>
+				<posy>140</posy>
 				<width>330</width>
 				<label>-</label>
 				<font>special13</font>
@@ -432,25 +441,25 @@
 			<control type="label" id="1">
 				<description>Episode txt</description>
 				<posx>200</posx>
-				<posy>150</posy>
+				<posy>175</posy>
 				<width>90</width>
-				<label>$LOCALIZE[20359] :</label>
+				<label>$LOCALIZE[20359]:</label>
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
 			</control>
 			<control type="label" id="1">
 				<description>Season txt</description>
 				<posx>200</posx>
-				<posy>170</posy>
+				<posy>195</posy>
 				<width>90</width>
-				<label>Season :</label>
+				<label>$LOCALIZE[20373]:</label>
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
 			</control>
 			<control type="label" id="1">
 				<description>Director txt</description>
 				<posx>200</posx>
-				<posy>190</posy>
+				<posy>215</posy>
 				<width>90</width>
 				<label>199</label>
 				<font>font12</font>
@@ -459,7 +468,7 @@
 			<control type="label" id="1">
 				<description>Writing Credits txt</description>
 				<posx>200</posx>
-				<posy>210</posy>
+				<posy>235</posy>
 				<width>90</width>
 				<label>200</label>
 				<font>font12</font>
@@ -468,7 +477,7 @@
 			<control type="label" id="1">
 				<description>Genre txt</description>
 				<posx>200</posx>
-				<posy>230</posy>
+				<posy>255</posy>
 				<width>90</width>
 				<label>174</label>
 				<font>font12</font>
@@ -477,7 +486,7 @@
 			<control type="label" id="1">
 				<description>Year</description>
 				<posx>200</posx>
-				<posy>250</posy>
+				<posy>275</posy>
 				<width>90</width>
 				<label>20376</label>
 				<font>font12</font>
@@ -486,7 +495,7 @@
 			<control type="label" id="1">
 				<description>Rating txt</description>
 				<posx>200</posx>
-				<posy>270</posy>
+				<posy>295</posy>
 				<width>90</width>
 				<label>204</label>
 				<font>font12</font>
@@ -495,7 +504,7 @@
 			<control type="fadelabel" id="1">
 				<description>Episode value</description>
 				<posx>300</posx>
-				<posy>153</posy>
+				<posy>178</posy>
 				<width>230</width>
 				<info>Listitem.Episode</info>
 				<font>font12</font>
@@ -504,7 +513,7 @@
 			<control type="fadelabel" id="1">
 				<description>Sesson value</description>
 				<posx>300</posx>
-				<posy>170</posy>
+				<posy>195</posy>
 				<width>230</width>
 				<info>Listitem.Season</info>
 				<font>font12</font>
@@ -513,7 +522,7 @@
 			<control type="fadelabel" id="21">
 				<description>Director value</description>
 				<posx>300</posx>
-				<posy>190</posy>
+				<posy>215</posy>
 				<width>230</width>
 				<label>-</label>
 				<font>font12</font>
@@ -522,7 +531,7 @@
 			<control type="fadelabel" id="22">
 				<description>Writing Credits value</description>
 				<posx>300</posx>
-				<posy>210</posy>
+				<posy>235</posy>
 				<width>230</width>
 				<label>-</label>
 				<font>font12</font>
@@ -531,7 +540,7 @@
 			<control type="fadelabel" id="23">
 				<description>Genre value</description>
 				<posx>300</posx>
-				<posy>230</posy>
+				<posy>255</posy>
 				<width>230</width>
 				<label>-</label>
 				<font>font12</font>
@@ -540,7 +549,7 @@
 			<control type="fadelabel" id="24">
 				<description>Year value</description>
 				<posx>300</posx>
-				<posy>250</posy>
+				<posy>275</posy>
 				<width>252</width>
 				<label>-</label>
 				<font>font12</font>
@@ -549,7 +558,7 @@
 			<control type="fadelabel" id="30">
 				<description>Rating and votes value</description>
 				<posx>300</posx>
-				<posy>270</posy>
+				<posy>295</posy>
 				<width>230</width>
 				<label>-</label>
 				<font>font12</font>
@@ -558,30 +567,30 @@
 			<control type="textbox" id="4">
 				<description>textarea</description>
 				<posx>200</posx>
-				<posy>310</posy>
+				<posy>335</posy>
 				<width>480</width>
-				<height>230</height>
+				<height>205</height>
 				<onleft>5</onleft>
 				<onright>50</onright>
 				<onup>5</onup>
 				<ondown>5</ondown>
 				<spinposx>430</spinposx>
-				<spinposy>235</spinposy>
+				<spinposy>210</spinposy>
 				<visible>container.content(episodes)</visible>
 			</control>
 			<control type="listcontrol" id="50">
 				<description>cast listcontrol</description>
 				<posx>200</posx>
-				<posy>310</posy>
+				<posy>335</posy>
 				<width>480</width>
-				<height>230</height>
+				<height>205</height>
 				<onleft>5</onleft>
 				<onright>4</onright>
 				<onup>5</onup>
 				<ondown>8</ondown>
 				<textxoff>-15</textxoff>
 				<spinposx>430</spinposx>
-				<spinposy>235</spinposy>
+				<spinposy>210</spinposy>
 				<visible>container.content(episodes)</visible>
 			</control>
 		</control>
