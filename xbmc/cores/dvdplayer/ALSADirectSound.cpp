@@ -53,7 +53,6 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   m_amp.SetVolume(m_nCurrentVolume);
 
   m_dwPacketSize = iChannels*(uiBitsPerSample/8)*512;
-  m_BufferSize = m_dwPacketSize * 6; // buffer big enough - but not too big...
   m_dwNumPackets = 16;
 
   snd_pcm_hw_params_t *hw_params=NULL;
@@ -89,7 +88,7 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   nErr = snd_pcm_hw_params_set_period_size_near(m_pPlayHandle, hw_params, &m_maxFrames, 0);
   CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_period_size",nErr);
 
-  m_BufferSize = m_dwPacketSize * 20; // buffer big enough - but not too big...
+  m_BufferSize = snd_pcm_bytes_to_frames(m_pPlayHandle,m_dwPacketSize * 20); // buffer big enough - but not too big...
   nErr = snd_pcm_hw_params_set_buffer_size_near(m_pPlayHandle, hw_params, &m_BufferSize);
   CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_buffer_size",nErr);
 
@@ -124,7 +123,6 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   CHECK_ALSA(LOGERROR,"sw_params",nErr);
 
   snd_pcm_sw_params_free(swparams);
-  CHECK_ALSA(LOGERROR,"snd_pcm_sw_params_free",nErr);
 
   nErr = snd_pcm_prepare (m_pPlayHandle);
   CHECK_ALSA(LOGERROR,"snd_pcm_prepare",nErr);
@@ -148,7 +146,7 @@ HRESULT CALSADirectSound::Deinitialize()
   m_bIsAllocated = false;
   if (m_pPlayHandle)
   {
-    snd_pcm_drain(m_pPlayHandle);
+    snd_pcm_drop(m_pPlayHandle);
     snd_pcm_close(m_pPlayHandle);
   }
 
@@ -162,7 +160,7 @@ void CALSADirectSound::Flush() {
   if (m_pPlayHandle == NULL)
      return;
 
-  int nErr = snd_pcm_drain(m_pPlayHandle);
+  int nErr = snd_pcm_drop(m_pPlayHandle);
   CHECK_ALSA(LOGERROR,"flush-drain",nErr); 
   nErr = snd_pcm_prepare(m_pPlayHandle);
   CHECK_ALSA(LOGERROR,"flush-prepare",nErr);  
@@ -198,7 +196,7 @@ HRESULT CALSADirectSound::Stop()
      return S_OK;
   
   if (m_pPlayHandle)
-     snd_pcm_drain(m_pPlayHandle);
+     snd_pcm_drop(m_pPlayHandle);
 
   return S_OK;
 }
@@ -263,18 +261,18 @@ DWORD CALSADirectSound::AddPackets(unsigned char *data, DWORD len)
   }
 
   // if there is no room in the buffer - even for one frame, return 
-  if ( GetSpace() < ( len / (2*m_uiChannels)) )
+  if ( snd_pcm_frames_to_bytes(m_pPlayHandle,GetSpace()) < len )
        return 0;
 
   unsigned char *pcmPtr = data;
 
   while (pcmPtr < data + (int)len){  
-	int nPeriodSize = (m_maxFrames * 2 * m_uiChannels); // write max frames.
+	int nPeriodSize = snd_pcm_frames_to_bytes(m_pPlayHandle,m_maxFrames); // write max frames.
 	if ( pcmPtr + nPeriodSize > data + (int)len) {
 		nPeriodSize = data + (int)len - pcmPtr;
 	}
 	
-	int framesToWrite = nPeriodSize / (2 * m_uiChannels);
+	int framesToWrite = snd_pcm_bytes_to_frames(m_pPlayHandle,nPeriodSize);
 
 	// handle volume de-amp 
 	m_amp.DeAmplify((short *)pcmPtr, framesToWrite * m_uiChannels);
@@ -293,9 +291,9 @@ DWORD CALSADirectSound::AddPackets(unsigned char *data, DWORD len)
 	}
 
     if (writeResult>0)
-		pcmPtr += writeResult * 2 * m_uiChannels;
+		pcmPtr += snd_pcm_frames_to_bytes(m_pPlayHandle,writeResult);
 	else
-		pcmPtr += framesToWrite * 2 * m_uiChannels;
+		pcmPtr += snd_pcm_frames_to_bytes(m_pPlayHandle,framesToWrite); 
   }
 
   return len;
@@ -304,8 +302,25 @@ DWORD CALSADirectSound::AddPackets(unsigned char *data, DWORD len)
 //***********************************************************************************************
 FLOAT CALSADirectSound::GetDelay()
 {
-  long bytes = m_BufferSize - GetSpace();
-  double delay = (double)bytes / (double)( m_uiChannels * m_uiSamplesPerSec * (m_uiBitsPerSample / 8) );
+  double delay = 0.0;
+
+  double fbps = (double)m_uiSamplesPerSec * 2.0 * (double)m_uiChannels;
+  snd_pcm_sframes_t frames = 0;
+    
+  int nErr = snd_pcm_delay(m_pPlayHandle, &frames);
+  CHECK_ALSA(LOGERROR,"snd_pcm_delay",nErr); 
+  if (nErr < 0)
+     return (double)snd_pcm_frames_to_bytes(m_pPlayHandle,m_BufferSize) / fbps;
+
+  if (frames < 0) {
+#if SND_LIB_VERSION >= 0x000901 /* snd_pcm_forward() exists since 0.9.0rc8 */
+    snd_pcm_forward(m_pPlayHandle, -frames);
+#endif
+    frames = 0;
+  }
+
+  int nBytes = snd_pcm_frames_to_bytes(m_pPlayHandle,frames);
+  delay = (double)nBytes / fbps;
 
   if (g_audioContext.IsAC3EncoderActive())
     delay += 0.049;
