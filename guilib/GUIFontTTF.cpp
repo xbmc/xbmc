@@ -74,7 +74,7 @@ private:
 CFreeTypeLibrary g_freeTypeLibrary; // our freetype library
 
 namespace MathUtils {
-  inline int round_int (double x);
+  int round_int (double x);
 }
 
 #define ROUND(x) (float)(MathUtils::round_int(x))
