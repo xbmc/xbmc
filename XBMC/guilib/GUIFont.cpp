@@ -4,7 +4,7 @@
 #include "../xbmc/utils/SingleLock.h"
 
 namespace MathUtils {
-  inline int round_int (double x);
+  int round_int (double x);
 }
 #define ROUND(x) (float)(MathUtils::round_int(x))
 
