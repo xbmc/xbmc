@@ -21,6 +21,8 @@ public:
     // filter our prefix and postfix for comma's and $$
     m_prefix.Replace("$COMMA", ","); m_prefix.Replace("$$", "$");
     m_postfix.Replace("$COMMA", ","); m_postfix.Replace("$$", "$");
+    m_prefix.Replace("$LBRACKET", "["); m_prefix.Replace("$RBRACKET", "]");
+    m_postfix.Replace("$LBRACKET", "["); m_postfix.Replace("$RBRACKET", "]");
   };
 
   int m_info;

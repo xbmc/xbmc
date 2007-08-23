@@ -853,7 +853,7 @@ void CGraphicContext::CaptureStateBlock()
     Get3DDevice()->DeleteStateBlock(m_stateBlock);
   }
 
-  if (D3D_OK != Get3DDevice()->CreateStateBlock(D3DSBT_ALL, &m_stateBlock))
+  if (D3D_OK != Get3DDevice()->CreateStateBlock(D3DSBT_PIXELSTATE, &m_stateBlock))
   {
     // Creation failure
     m_stateBlock = 0xffffffff;

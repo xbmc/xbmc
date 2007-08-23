@@ -3,6 +3,7 @@
 #include "../Util.h"
 #include "VideoDatabaseDirectory/QueryParams.h"
 #include "../VideoDatabase.h"
+#include "TextureManager.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -23,7 +24,21 @@ bool CVideoDatabaseDirectory::GetDirectory(const CStdString& strPath, CFileItemL
   if (!pNode.get())
     return false;
 
-  return pNode->GetChilds(items);
+  bool bResult = pNode->GetChilds(items);
+  for (int i=0;i<items.Size();++i)
+  {
+    if (items[i]->m_bIsFolder && !items[i]->HasThumbnail())
+    {
+      CStdString strImage = GetIcon(items[i]->m_strPath);
+      if (g_TextureManager.Load(strImage))
+      {
+        items[i]->SetThumbnailImage(strImage);
+        g_TextureManager.ReleaseTexture(strImage);
+      }
+    }
+  }
+
+  return bResult;
 }
 
 NODE_TYPE CVideoDatabaseDirectory::GetDirectoryChildType(const CStdString& strPath)
@@ -98,7 +113,7 @@ bool CVideoDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
   strLabel = "";
 
   auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strDirectory));
-  if (!pNode.get())
+  if (!pNode.get() || strDirectory.IsEmpty())
     return false;
 
   // first see if there's any filter criteria
@@ -156,6 +171,42 @@ bool CVideoDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
   }
 
   return true;
+}
+
+CStdString CVideoDatabaseDirectory::GetIcon(const CStdString& strDirectory)
+{
+  switch (GetDirectoryChildType(strDirectory))
+  {
+  case NODE_TYPE_TITLE_MOVIES:
+    if (strDirectory.Equals("videodb://1/2/"))
+      return "DefaultMovieTitle.png";
+    return "";
+  case NODE_TYPE_TITLE_TVSHOWS:
+    if (strDirectory.Equals("videodb://2/2/"))
+      return "DefaultTvshowTitle.png";
+    return "";
+  case NODE_TYPE_ACTOR: // Actor
+    return "DefaultActor.png";
+  case NODE_TYPE_GENRE: // Genres
+    return "DefaultGenre.png";
+  case NODE_TYPE_YEAR: // Year
+    return "DefaultYear.png";
+  case NODE_TYPE_DIRECTOR: // Director
+    return "DefaultDirector.png";
+  case NODE_TYPE_MOVIES_OVERVIEW: // Movies
+    return "DefaultMovies.png";
+  case NODE_TYPE_TVSHOWS_OVERVIEW: // TV Shows
+    return "DefaultTvshows.png";
+  case NODE_TYPE_RECENTLY_ADDED_MOVIES: // Recently Added Movies
+    return "DefaultRecentlyAddedMovies.png";
+  case NODE_TYPE_RECENTLY_ADDED_EPISODES: // Recently Added Episodes
+    return "DefaultRecentlyAddedEpisodes.png";
+  default:
+    CLog::Log(LOGWARNING, "%s - Unknown nodetype requested %s", __FUNCTION__, strDirectory.c_str());
+    break;
+  }
+
+  return "";
 }
 
 bool CVideoDatabaseDirectory::ContainsMovies(const CStdString &path)
