@@ -229,6 +229,15 @@ bool CShaderProgram::Enable()
   {
     glGetIntegerv(GL_CURRENT_PROGRAM, &m_lastProgram);
     glUseProgram((GLuint)m_shaderProgram);
+    if (OnEnabled())
+    {
+      return true;
+    }
+    else
+    {
+      glUseProgram(m_lastProgram);
+      return false;
+    }
     return true;
   }
   return false;
