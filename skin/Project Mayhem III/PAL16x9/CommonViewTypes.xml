@@ -2281,7 +2281,7 @@
 			</focusedlayout>
 		</control>
 	</include>
-	<include name="ScriptThumbWrapView">
+	<include name="ProgramsThumbWrapView">
 		<control type="fixedlist" id="56">
 			<posx>190</posx>
 			<posy>100</posy>
@@ -2316,7 +2316,7 @@
 					<aspectratio aligny="top">keep</aspectratio>
 				</control>
 				<control type="image">
-					<posx>70</posx>
+					<posx>80</posx>
 					<posy>225</posy>
 					<width>32</width>
 					<height>32</height>
@@ -2344,8 +2344,8 @@
 					<animation effect="zoom" end="-20,280,190,300" time="150">focus</animation>
 				</control>
 				<control type="image">
-					<posx>70</posx>
-					<posy>225</posy>
+					<posx>100</posx>
+					<posy>235</posy>
 					<width>32</width>
 					<height>32</height>
 					<info>ListItem.Overlay</info>
@@ -2372,20 +2372,20 @@
 			<font>font13</font>
 			<textcolor>lightgrey</textcolor>
 			<scroll>true</scroll>
-			<info>ListItem.Date</info>
-			<visible>Control.IsVisible(56)</visible>
+			<info>ListItem.Label2</info>
+			<visible>[Control.IsVisible(56) + !Window.IsVisible(Scripts)]</visible>
 			<include>contentpanelslide</include>
 		</control>
 		<control type="label">
 			<posx>260</posx>
-			<posy>470</posy>
+			<posy>445</posy>
 			<width>410</width>
 			<height>16</height>
 			<font>font13</font>
 			<textcolor>lightgrey</textcolor>
 			<scroll>true</scroll>
-			<info>ListItem.Label2</info>
-			<visible>Control.IsVisible(56)</visible>
+			<info>ListItem.Date</info>
+			<visible>[Control.IsVisible(56) + Window.IsVisible(Scripts)]</visible>
 			<include>contentpanelslide</include>
 		</control>
 	</include>
