@@ -410,14 +410,25 @@
 				<info>container.folderthumb</info>
 				<visible>container.content(episodes)</visible>
 			</control>
-			<control type="image" id="3">
+			<control type="image">
 				<description>Cover image</description>
 				<posx>555</posx>
 				<posy>110</posy>
 				<width>130</width>
 				<height>140</height>
-				<texture>-</texture>
+				<info>ListItem.Icon</info>
 				<aspectratio aligny="bottom">keep</aspectratio>
+				<visible>container.content(episodes)</visible>
+			</control>
+			<control type="image">
+				<description>Cover image reflection</description>
+				<posx>555</posx>
+				<posy>250</posy>
+				<width>130</width>
+				<height>140</height>
+				<aspectratio aligny="top">keep</aspectratio>
+				<info>ListItem.Icon</info>
+				<texture flipy="true" diffuse="diffuse_mirror.png" /> 
 				<visible>container.content(episodes)</visible>
 			</control>
 			<control type="fadelabel" id="1">
