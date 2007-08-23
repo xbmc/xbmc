@@ -101,6 +101,10 @@ namespace Shaders {
     // and linkage. E.g. obtaining handles to shader attributes.
     virtual void OnCompiledAndLinked() {}
 
+    // override to to perform custom tasks before shader is enabled
+    // E.g. setting attributes. return false to disable shader
+    virtual bool OnEnabled() { return true; }
+
     // sets the vertex shader's source (in GLSL)
     void SetVertexShaderSource(const char* src) { m_VP.SetSource(src); }
     void SetVertexShaderSource(string& src) { m_VP.SetSource(src); }
@@ -108,6 +112,8 @@ namespace Shaders {
     // sets the pixel shader's source (in GLSL)
     void SetPixelShaderSource(const char* src) { m_FP.SetSource(src); }
     void SetPixelShaderSource(string& src) { m_FP.SetSource(src); }
+
+    GLuint ProgramHandle() { return m_shaderProgram; }
   
   protected:
     CVertexShader m_VP;
