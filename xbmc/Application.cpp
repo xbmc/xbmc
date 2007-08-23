@@ -2494,6 +2494,8 @@ void CApplication::Render()
     unsigned int currentTime = timeGetTime();
     if (lastFrameTime + singleFrameTime > currentTime)
       Sleep(lastFrameTime + singleFrameTime - currentTime);
+    else
+      Sleep(1);
     lastFrameTime = timeGetTime();
   }
   g_graphicsContext.Lock();
