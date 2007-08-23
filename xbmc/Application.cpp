@@ -1205,6 +1205,7 @@ HRESULT CApplication::Create(HWND hWnd)
     }
   }
   g_graphicsContext.SetD3DDevice(m_pd3dDevice);
+  g_graphicsContext.CaptureStateBlock();
   // set filters
   g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTEXF_LINEAR /*g_stSettings.m_minFilter*/ );
   g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
