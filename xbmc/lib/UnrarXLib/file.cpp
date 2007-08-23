@@ -159,7 +159,7 @@ bool File::Create(const char *Name,const wchar *NameW)
 #endif*/
   CStdString strPath;
   CUtil::GetDirectory(Name,strPath);
-  DIRECTORY::CDirectory::Create(strPath);
+  CUtil::CreateDirectoryEx(strPath);
   m_File.OpenForWrite(Name,true,true);
   NewFile=true;
   HandleType=FILE_HANDLENORMAL;

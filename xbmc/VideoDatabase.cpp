@@ -1349,7 +1349,7 @@ bool CVideoDatabase::GetEpisodeInfo(const CStdString& strFilenameAndPath, CVideo
       lEpisodeId = GetEpisodeInfo(strFilenameAndPath);
     if (lEpisodeId < 0) return false;
 
-    CStdString sql = FormatSQL("select episode.*,files.strFileName,path.strPath from episode join files on files.idFile=episode.idFile join path on files.idPath=path.idPath where episode.idEpisode=%i", lEpisodeId);
+    CStdString sql = FormatSQL("select episode.*,files.strFileName,path.strPath,tvshow.c%02d from episode join files on files.idFile=episode.idFile join tvshowlinkepisode on episode.idepisode=tvshowlinkepisode.idepisode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join path on files.idPath=path.idPath where episode.idepisode=%u",VIDEODB_ID_TV_TITLE,lEpisodeId);
     if (!m_pDS->query(sql.c_str()))
       return false;
     details = GetDetailsForEpisode(m_pDS, true);
