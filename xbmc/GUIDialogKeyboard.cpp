@@ -31,7 +31,7 @@
 #include "xbox/xkgeneral.h"
 
 // Symbol mapping (based on MS virtual keyboard - may need improving)
-static char symbol_map[37] = "!@#$%^&*()[]{}-_=+;:\'\",.<>/?\\|`~    ";
+static char symbol_map[37] = ")!@#$%^&*([]{}-_=+;:\'\",.<>/?\\|`~    ";
 
 #define CTL_BUTTON_DONE  300
 #define CTL_BUTTON_CANCEL 301
