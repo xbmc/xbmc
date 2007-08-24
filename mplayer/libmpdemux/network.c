@@ -830,7 +830,7 @@ http_seek( stream_t *stream, off_t pos ) {
 			break;
 		default:
 			mp_msg(MSGT_NETWORK,MSGL_ERR,MSGTR_MPDEMUX_NW_ErrServerReturned, http_hdr->status_code, http_hdr->reason_phrase );
-			close( fd );
+			closesocket( fd );
 			fd = -1;
 	}
 	stream->fd = fd;
@@ -1545,7 +1545,7 @@ try_livedotcom:
                                 if ( !strcasecmp(stream->streaming_ctrl->url->protocol, "http") ) {
                                 mp_msg(MSGT_NETWORK,MSGL_STATUS,"Trying default streaming for http protocol\n ");
                                 //reset stream
-                                close(stream->fd);
+                                closesocket(stream->fd);
 		                stream->fd=-1;
                                 ret=nop_streaming_start(stream);
                                 }
