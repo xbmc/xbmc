@@ -22,6 +22,7 @@ usage() {
   echo "   NOCOMPILE                        : Don't compile."
   echo "   NOCLEAN                          : Don't run \"make clean\" first."
   echo "   NOCOPY                           : Don't create XBMC file structure."
+  echo "   NODEBUG                          : Don't create debugging info, strip binary."
   echo "   CONFIRM                          : Don't ask about anything"
 #  echo "   SHOWMAKE                         : Don't suppress make output"
 ## SHOWMAKE requires changes to Makefile.in
@@ -83,6 +84,10 @@ parse_args() {
       CONFIGOPT)
         (( CONFIGURE=1 ))
         CONFIGOPTS="$CONFIGOPTS $PAR"
+        ;;
+      NODEBUG)
+        (( DEBUG=0 ))
+	CONFIGOPTS="$CONFIGOPTS --disable-debug"
         ;;
       WEB)
         if [[ -e $PAR ]]
@@ -365,7 +370,12 @@ copy() {
     fi
     error
   done
-  
+  if ! (( DEBUG ))
+    then
+      echo " Stripping binary."
+      strip "$BUILDDIR/XboxMediaCenter"
+  fi
+
   printf "\r Copying %-16.16s\n" "complete!" 
   if [[ $RAR == "" ]]
   then
@@ -423,6 +433,7 @@ CONFIGOPTS=""
 (( CONFIRM=0 ))
 (( SHOW_MAKE=1 ))
 (( CONFIGURE=0 ))
+(( DEBUG=1 ))
 
 if ! [[ -e "$SOURCEDIR/.firstrun" ]]
 then
