@@ -36,6 +36,12 @@ typedef struct {
     mpeg2dec_t *mpeg2dec;
     int quant_store_idx;
     char *quant_store[3];
+#ifdef _XBOX
+    int picture_width;
+    int picture_height;
+    long fmt;
+    float aspect;
+#endif
 } vd_libmpeg2_ctx_t;
 
 // to set/get/query special features/parameters
@@ -180,14 +186,46 @@ static mp_image_t* decode(sh_video_t *sh,void* data,int len,int flags){
 	    // video parameters inited/changed, (re)init libvo:
 	    if (info->sequence->width >> 1 == info->sequence->chroma_width &&
 		info->sequence->height >> 1 == info->sequence->chroma_height) {
+#ifdef _XBOX
+		if (context->picture_width == info->sequence->picture_width 
+		&& context->picture_height == info->sequence->picture_height
+		&& context->aspect == sh->aspect
+		&& context->fmt == IMGFMT_YV12)
+			break;
+#endif
+
 		if(!mpcodecs_config_vo(sh,
 				       info->sequence->picture_width,
 				       info->sequence->picture_height, IMGFMT_YV12)) return 0;
+
+#ifdef _XBOX
+		context->picture_width = info->sequence->picture_width;
+		context->picture_height = info->sequence->picture_height;
+		context->aspect == sh->aspect;
+		context->fmt = IMGFMT_YV12;
+#endif
+
 	    } else if (info->sequence->width >> 1 == info->sequence->chroma_width &&
 		info->sequence->height == info->sequence->chroma_height) {
+#ifdef _XBOX
+		if (context->picture_width == info->sequence->picture_width 
+		&& context->picture_height == info->sequence->picture_height
+		&& context->aspect == sh->aspect
+		&& context->fmt == IMGFMT_422P)
+			break;
+#endif
+
 		if(!mpcodecs_config_vo(sh,
 				       info->sequence->picture_width,
 				       info->sequence->picture_height, IMGFMT_422P)) return 0;
+
+#ifdef _XBOX
+		context->picture_width = info->sequence->picture_width;
+		context->picture_height = info->sequence->picture_height;
+		context->aspect == sh->aspect;
+		context->fmt = IMGFMT_422P;
+#endif
+
 	    } else return 0;
 	    break;
 	case STATE_PICTURE:
