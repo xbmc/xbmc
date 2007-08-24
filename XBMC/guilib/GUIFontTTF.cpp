@@ -438,6 +438,8 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(WCHAR letter)
     if (!CacheCharacter(letter, m_char + low))
     {
       CLog::Log(LOGERROR, "GUIFontTTF::GetCharacter: Unable to cache character (out of memory?)");
+      if (dwNestedBeginCount) Begin();
+      m_dwNestedBeginCount = dwNestedBeginCount;
       return NULL;
     }
   }
