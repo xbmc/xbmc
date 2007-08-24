@@ -191,7 +191,7 @@ static mp_image_t* decode(sh_video_t *sh,void* data,int len,int flags){
 		&& context->picture_height == info->sequence->picture_height
 		&& context->aspect == sh->aspect
 		&& context->fmt == IMGFMT_YV12)
-			break;
+			continue;
 #endif
 
 		if(!mpcodecs_config_vo(sh,
@@ -212,7 +212,7 @@ static mp_image_t* decode(sh_video_t *sh,void* data,int len,int flags){
 		&& context->picture_height == info->sequence->picture_height
 		&& context->aspect == sh->aspect
 		&& context->fmt == IMGFMT_422P)
-			break;
+			continue;
 #endif
 
 		if(!mpcodecs_config_vo(sh,
