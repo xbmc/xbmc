@@ -304,3 +304,4 @@ void CLabelFormatter::AssembleMask(unsigned int label, const CStdString& mask)
   SplitMask(label, work);
   assert(m_staticContent[label].size() == m_dynamicContent[label].size() + 1);
 }
+
