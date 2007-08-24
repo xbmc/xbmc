@@ -1194,3 +1194,4 @@ void CUPnP::UpdateState()
   if (!m_RendererHolder->m_Device.IsNull())
       ((CUPnPRenderer*)m_RendererHolder->m_Device.AsPointer())->UpdateState();  
 }
+
