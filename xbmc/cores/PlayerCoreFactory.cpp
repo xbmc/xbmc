@@ -42,7 +42,7 @@ IPlayer* CPlayerCoreFactory::CreatePlayer(const EPLAYERCORES eCore, IPlayerCallb
   {
     case EPC_MPLAYER: 
     case EPC_DVDPLAYER: return new CDVDPlayer(callback);
-#ifdef HAS_MPLAYER:
+#ifdef HAS_MPLAYER
     case EPC_MPLAYER: return new CMPlayer(callback);
 #else
 //    case EPC_MPLAYER: return new CDummyVideoPlayer(callback);

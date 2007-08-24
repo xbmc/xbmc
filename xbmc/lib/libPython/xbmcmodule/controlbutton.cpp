@@ -57,7 +57,7 @@ namespace PYXBMC
     self->dwTextColor = 0xffffffff;
     self->dwDisabledColor = 0x60ffffff;
     self->iAngle = 0;
-    self->dwShadowColor = NULL;
+    self->dwShadowColor = 0;
     self->dwFocusedColor = 0xffffffff;
 
     if (!PyArg_ParseTupleAndKeywords(
