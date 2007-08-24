@@ -1821,14 +1821,12 @@ bool CSettings::LoadProfile(int index)
     {
       CStdString strHex;
       strHex.Format("%x",hex);
-      CStdString strThumbLoc = g_settings.GetPicturesThumbFolder();
-      strThumbLoc += "\\" + strHex;
+      CStdString strThumbLoc;
+      CUtil::AddFileToFolder(g_settings.GetPicturesThumbFolder(), strHex, strThumbLoc);
       CreateDirectory(strThumbLoc.c_str(),NULL);
-      strThumbLoc = g_settings.GetMusicThumbFolder();
-      strThumbLoc += "\\" + strHex;
+      CUtil::AddFileToFolder(g_settings.GetMusicThumbFolder(), strHex, strThumbLoc);
       CreateDirectory(strThumbLoc.c_str(),NULL);
-      strThumbLoc = g_settings.GetVideoThumbFolder();
-      strThumbLoc += "\\" + strHex;
+      CUtil::AddFileToFolder(g_settings.GetVideoThumbFolder(), strHex, strThumbLoc);
       CreateDirectory(strThumbLoc.c_str(),NULL);
     }
 
