@@ -174,7 +174,7 @@ void FLACCodec::FreeDecoder()
   }
 }
 
-FLAC__StreamDecoderReadStatus FLACCodec::DecoderReadCallback(const FLAC__StreamDecoder *decoder, FLAC__byte buffer[], unsigned *bytes, void *client_data)
+FLAC__StreamDecoderReadStatus FLACCodec::DecoderReadCallback(const FLAC__StreamDecoder *decoder, FLAC__byte buffer[], size_t *bytes, void *client_data)
 {
   FLACCodec* pThis=(FLACCodec*)client_data;
   if (!pThis)

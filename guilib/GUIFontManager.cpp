@@ -36,8 +36,8 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   if (strFilename[1] != ':')
   {
     strPath = g_graphicsContext.GetMediaDir();
-    strPath += "\\Fonts\\";
-    strPath += strFilename;
+    strPath += "\\fonts\\";
+    strPath += CUtil::GetFileName(strFilename);
   }
   else
     strPath = strFilename;
@@ -55,8 +55,8 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
       // Now try to load it from media\fonts
       if (strFilename[1] != ':')
       {
-        strPath = "Q:\\media\\Fonts\\";
-        strPath += strFilename;
+        strPath = _P("Q:\\media\\Fonts\\");
+        strPath += CUtil::GetFileName(strFilename);
       }
 
       bFontLoaded = ((CGUIFontTTF *)pFontFile)->Load(_P(strPath), iSize, iStyle, aspect);

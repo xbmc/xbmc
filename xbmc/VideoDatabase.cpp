@@ -34,7 +34,7 @@ using namespace XFILE;
 using namespace DIRECTORY;
 using namespace VIDEO;
 
-#define VIDEO_DATABASE_VERSION 9
+#define VIDEO_DATABASE_VERSION 10
 #define VIDEO_DATABASE_OLD_VERSION 3.f
 #define VIDEO_DATABASE_NAME "MyVideos34.db"
 #define RECENTLY_ADDED_LIMIT  25
@@ -200,6 +200,14 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE TABLE movielinktvshow ( idMovie integer, IdShow integer)\n");
     m_pDS->exec("CREATE UNIQUE INDEX ix_movielinktvshow_1 ON movielinktvshow ( idShow, idMovie)\n");
     m_pDS->exec("CREATE UNIQUE INDEX ix_movielinktvshow_2 ON movielinktvshow ( idMovie, idShow)\n");
+
+    CLog::Log(LOGINFO, "create studio table");
+    m_pDS->exec("CREATE TABLE studio ( idStudio integer primary key, strStudio text)\n");
+
+    CLog::Log(LOGINFO, "create studiolinkmovie table");
+    m_pDS->exec("CREATE TABLE studiolinkmovie ( idStudio integer, idMovie integer)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_studiolinkmovie_1 ON studiolinkmovie ( idStudio, idMovie)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_studiolinkmovie_2 ON studiolinkmovie ( idMovie, idStudio)\n");
   }
   catch (...)
   {
@@ -884,7 +892,6 @@ long CVideoDatabase::AddGenre(const CStdString& strGenre)
   return -1;
 }
 
-
 //********************************************************************************************************************************
 long CVideoDatabase::AddActor(const CStdString& strActor)
 {
@@ -916,6 +923,40 @@ long CVideoDatabase::AddActor(const CStdString& strActor)
   {
     CLog::Log(LOGERROR, "CVideoDatabase::AddActor(%s) failed", strActor.c_str() );
   }
+  return -1;
+}
+
+long CVideoDatabase::AddStudio(const CStdString& strStudio)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return -1;
+    if (NULL == m_pDS.get()) return -1;
+
+    CStdString strSQL=FormatSQL("select idStudio from studio where strStudio like '%s'", strStudio.c_str());
+    m_pDS->query(strSQL.c_str());
+    if (m_pDS->num_rows() == 0)
+    {
+      m_pDS->close();
+      // doesnt exists, add it
+      strSQL=FormatSQL("insert into studio (idStudio, strStudio) values( NULL, '%s')", strStudio.c_str());
+      m_pDS->exec(strSQL.c_str());
+      long lStudioId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      return lStudioId;
+    }
+    else
+    {
+      const field_value value = m_pDS->fv("idStudio");
+      long lStudioId = value.get_asLong() ;
+      m_pDS->close();
+      return lStudioId;
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CVideoDatabase::AddStudio(%s) failed", strStudio.c_str() );
+  }
+
   return -1;
 }
 //********************************************************************************************************************************
@@ -1125,6 +1166,29 @@ void CVideoDatabase::AddDirectorToEpisode(long lEpisodeId, long lDirectorId)
   catch (...)
   {
     CLog::Log(LOGERROR, "CVideoDatabase::AddDirectorToEpisode() failed");
+  }
+}
+
+void CVideoDatabase::AddStudioToMovie(long lMovieId, long lStudioId)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return ;
+    if (NULL == m_pDS.get()) return ;
+
+    CStdString strSQL=FormatSQL("select * from studiolinkmovie where idStudio=%i and idMovie=%i", lStudioId, lMovieId);
+    m_pDS->query(strSQL.c_str());
+    if (m_pDS->num_rows() == 0)
+    {
+      // doesnt exists, add it
+      strSQL=FormatSQL("insert into studiolinkmovie (idStudio, idMovie) values( %i,%i)", lStudioId, lMovieId);
+      m_pDS->exec(strSQL.c_str());
+    }
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CVideoDatabase::AddStudioToMovie() failed");
   }
 }
 
@@ -1362,7 +1426,7 @@ bool CVideoDatabase::GetEpisodeInfo(const CStdString& strFilenameAndPath, CVideo
   return false;
 }
 
-void CVideoDatabase::AddGenreAndDirectors(const CVideoInfoTag& details, vector<long>& vecDirectors, vector<long>& vecGenres)
+void CVideoDatabase::AddGenreAndDirectorsAndStudios(const CVideoInfoTag& details, vector<long>& vecDirectors, vector<long>& vecGenres, vector<long>& vecStudios)
 {
   // add all directors
   char szDirector[1024];
@@ -1409,6 +1473,28 @@ void CVideoDatabase::AddGenreAndDirectors(const CVideoInfoTag& details, vector<l
     long lGenreId = AddGenre(strGenre);
     vecGenres.push_back(lGenreId);
   }
+    // add all studios
+  char szStudios[1024];
+  strcpy(szStudios, details.m_strStudio.c_str());
+  if (strstr(szStudios, "/"))
+  {
+    char *pToken = strtok(szStudios, "/");
+    while ( pToken != NULL )
+    {
+      CStdString strStudio = pToken;
+      strStudio.Trim();
+      long lStudioId = AddStudio(strStudio);
+      vecStudios.push_back(lStudioId);
+      pToken = strtok( NULL, "/" );
+    }
+  }
+  else if (!details.m_strStudio.IsEmpty())
+  {
+    CStdString strStudio = details.m_strStudio;
+    strStudio.Trim();
+    long lStudioId = AddStudio(strStudio);
+    vecStudios.push_back(lStudioId);
+  }
 }
 
 //********************************************************************************************************************************
@@ -1432,7 +1518,8 @@ void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, co
 
     vector<long> vecDirectors;
     vector<long> vecGenres;
-    AddGenreAndDirectors(details,vecDirectors,vecGenres);
+    vector<long> vecStudios;
+    AddGenreAndDirectorsAndStudios(details,vecDirectors,vecGenres,vecStudios);
     
     // add cast...
     for (CVideoInfoTag::iCast it = details.m_cast.begin(); it != details.m_cast.end(); ++it)
@@ -1441,14 +1528,20 @@ void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, co
       AddActorToMovie(lMovieId, lActor, it->second);
     }
     
-    for (int i = 0; i < (int)vecGenres.size(); ++i)
+    int i = 0;
+    for (i = 0; i < (int)vecGenres.size(); ++i)
     {
       AddGenreToMovie(lMovieId, vecGenres[i]);
     }
 
-    for (int i = 0; i < (int)vecDirectors.size(); ++i)
+    for (i = 0; i < (int)vecDirectors.size(); ++i)
     {
       AddDirectorToMovie(lMovieId, vecDirectors[i]);
+    }
+    
+    for (i = 0; i < (int)vecDirectors.size(); ++i)
+    {
+      AddStudioToMovie(lMovieId, vecStudios[i]);
     }
 
     // update our movie table (we know it was added already above)
@@ -1497,7 +1590,8 @@ long CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideo
 
     vector<long> vecDirectors;
     vector<long> vecGenres;
-    AddGenreAndDirectors(details,vecDirectors,vecGenres);
+    vector<long> vecStudios;
+    AddGenreAndDirectorsAndStudios(details,vecDirectors,vecGenres,vecStudios);
   
     // add cast...
     for (CVideoInfoTag::iCast it = details.m_cast.begin(); it != details.m_cast.end(); ++it)
@@ -1576,7 +1670,8 @@ long CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, 
 
     vector<long> vecDirectors;
     vector<long> vecGenres;
-    AddGenreAndDirectors(details,vecDirectors,vecGenres);
+    vector<long> vecStudios;
+    AddGenreAndDirectorsAndStudios(details,vecDirectors,vecGenres,vecStudios);
     
     // add cast...
     for (CVideoInfoTag::iCast it = details.m_cast.begin(); it != details.m_cast.end(); ++it)
@@ -2515,6 +2610,16 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       m_pDS->exec("CREATE UNIQUE INDEX ix_movielinktvshow_1 ON movielinktvshow ( idShow, idMovie)\n");
       m_pDS->exec("CREATE UNIQUE INDEX ix_movielinktvshow_2 ON movielinktvshow ( idMovie, idShow)\n");
     }
+    if (iVersion < 10)
+    {
+      CLog::Log(LOGINFO, "create studio table");
+      m_pDS->exec("CREATE TABLE studio ( idStudio integer primary key, strStudio text)\n");
+
+      CLog::Log(LOGINFO, "create studiolinkmovie table");
+      m_pDS->exec("CREATE TABLE studiolinkmovie ( idStudio integer, idMovie integer)\n");
+      m_pDS->exec("CREATE UNIQUE INDEX ix_studiolinkmovie_1 ON studiolinkmovie ( idStudio, idMovie)\n");
+      m_pDS->exec("CREATE UNIQUE INDEX ix_studiolinkmovie_2 ON studiolinkmovie ( idMovie, idStudio)\n");
+    }
   }
   catch (...)
   {
@@ -2745,6 +2850,117 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
   catch (...)
   {
     CLog::Log(LOGERROR, "CVideoDatabase:GetGenresNav() failed");
+  }
+  return false;
+}
+
+bool CVideoDatabase::GetStudiosNav(const CStdString& strBaseDir, CFileItemList& items, long idContent)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+//    DWORD time = timeGetTime();
+    // get primary genres for movies
+    CStdString strSQL;
+    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
+    {
+      if (idContent == VIDEODB_CONTENT_MOVIES)
+      {
+        strSQL=FormatSQL("select studio.idstudio,studio.strstudio,path.strPath,movie.c%02d from studio,studiolinkmovie,movie,path,files where studio.idStudio=genrelinkstudio.idstudio and studiolinkMovie.idMovie = movie.idMovie and files.idFile=movie.idFile and path.idPath = files.idPath",VIDEODB_ID_WATCHED);
+      }
+/*      else if (idContent == VIDEODB_CONTENT_TVSHOWS) // TODO?
+      {
+        strSQL=FormatSQL("select genre.idgenre,genre.strgenre,path.strPath from genre,genrelinktvshow,tvshow,tvshowlinkpath,files,path where genre.idGenre=genrelinkTvShow.idGenre and genrelinkTvShow.idShow = tvshow.idshow and files.idPath=tvshowlinkpath.idPath and tvshowlinkpath.idShow=tvshow.idShow and path.idPath = files.idPath");
+      }*/
+    }
+    else
+    {
+      if (idContent == VIDEODB_CONTENT_MOVIES)
+      {
+        strSQL=FormatSQL("select distinct studio.idstudio,studio.strstudio,movie.c%02d from studio,studiolinkmovie,movie where studio.idstudio=studiolinkMovie.idstudio and studiolinkMovie.idMovie = movie.idMovie",VIDEODB_ID_WATCHED);
+      }
+/*      else if (idContent == VIDEODB_CONTENT_TVSHOWS) // TODO?
+      {
+        strSQL=FormatSQL("select distinct genre.idgenre,genre.strgenre from genre,genrelinktvshow,tvshow where genre.idGenre=genrelinkTvShow.idGenre and genrelinkTvShow.idShow = tvshow.idshow");
+      }*/
+    }
+
+    // run query
+    CLog::Log(LOGDEBUG, "CVideoDatabase::GetStudiosNav() query: %s", strSQL.c_str());
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return true;
+    }
+
+    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
+    {
+      map<long, pair<CStdString,bool> > mapStudios;
+      map<long, pair<CStdString,bool> >::iterator it;
+      while (!m_pDS->eof())
+      {
+        long lStudioId = m_pDS->fv("studio.idstudio").get_asLong();
+        CStdString strStudio = m_pDS->fv("studio.strstudio").get_asString();
+        it = mapStudios.find(lStudioId);
+        // was this genre already found?
+        if (it == mapStudios.end())
+        {
+          // check path
+          CStdString strPath;
+          if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
+            if (idContent == VIDEODB_CONTENT_MOVIES)
+              mapStudios.insert(pair<long, pair<CStdString,bool> >(lStudioId, pair<CStdString,bool>(strStudio,m_pDS->fv(3).get_asBool())));
+            /*else
+              mapGenres.insert(pair<long, pair<CStdString,bool> >(lGenreId, pair<CStdString,bool>(strGenre,false)));*/
+        }
+        m_pDS->next();
+      }
+      m_pDS->close();
+
+      for (it=mapStudios.begin();it != mapStudios.end();++it)
+      {
+        CFileItem* pItem=new CFileItem(it->second.first);
+        CStdString strDir;
+        strDir.Format("%ld/", it->first);
+        pItem->m_strPath=strBaseDir + strDir;
+        pItem->m_bIsFolder=true;
+        if (idContent == VIDEODB_CONTENT_MOVIES)
+          pItem->GetVideoInfoTag()->m_bWatched = it->second.second;
+        if (!items.Contains(pItem->m_strPath))
+        {
+          pItem->SetLabelPreformated(true);
+          items.Add(pItem);
+        }
+      }
+    }
+    else
+    {
+      while (!m_pDS->eof())
+      {
+        CFileItem* pItem=new CFileItem(m_pDS->fv("studio.strstudio").get_asString());
+        CStdString strDir;
+        strDir.Format("%ld/", m_pDS->fv("studio.idstudio").get_asLong());
+        pItem->m_strPath=strBaseDir + strDir;
+        pItem->m_bIsFolder=true;
+        pItem->SetLabelPreformated(true);
+        if (idContent == VIDEODB_CONTENT_MOVIES)
+          pItem->GetVideoInfoTag()->m_bWatched = m_pDS->fv(2).get_asBool();
+        items.Add(pItem);
+        m_pDS->next();
+      }
+      m_pDS->close();
+    }
+
+//    CLog::Log(LOGDEBUG, __FUNCTION__" Time: %d ms", timeGetTime() - time);
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CVideoDatabase:GetStudiosNav() failed");
   }
   return false;
 }
@@ -3229,7 +3445,7 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
   return false;
 }
 
-bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idYear, long idActor, long idDirector)
+bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idYear, long idActor, long idDirector, long idStudio)
 {
   try
   {
@@ -3245,6 +3461,11 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
     if (idGenre != -1)
     {
       strSQL=FormatSQL("select movie.*,files.strFileName,path.strPath from movie join files on files.idFile=movie.idFile join path on files.idPath=path.idPath join genrelinkmovie on genrelinkmovie.idmovie=movie.idmovie where genrelinkmovie.idGenre=%u", idGenre);
+    }
+
+    if (idStudio != -1)
+    {
+      strSQL=FormatSQL("select movie.*,files.strFileName,path.strPath from movie join files on files.idFile=movie.idFile join path on files.idPath=path.idPath join studiolinkmovie on studiolinkmovie.idmovie=movie.idmovie where studiolinkmovie.idstudio=%u", idStudio);
     }
 
     if (idDirector != -1)

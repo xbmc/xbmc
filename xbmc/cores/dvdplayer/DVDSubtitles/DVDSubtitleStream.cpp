@@ -1,6 +1,8 @@
 
 #include "stdafx.h"
 #include "DVDSubtitleStream.h"
+#include "../DVDInputStreams/DVDFactoryInputStream.h"
+#include "../DVDInputStreams/DVDInputStream.h"
 
 char* strnchr(char *s, size_t len, char c)
 {
@@ -28,9 +30,9 @@ char* strnrchr(const char *sp, int c, size_t n)
 }
 
 
-CDVDSubtitleStream::CDVDSubtitleStream(CDVDInputStream* pInputStream)
+CDVDSubtitleStream::CDVDSubtitleStream()
 {
-  m_pInputStream = pInputStream;
+  m_pInputStream = NULL;
   m_buffer = NULL;
   m_iMaxBufferSize = 0;
   m_iBufferSize = 0;
@@ -40,11 +42,13 @@ CDVDSubtitleStream::CDVDSubtitleStream(CDVDInputStream* pInputStream)
 CDVDSubtitleStream::~CDVDSubtitleStream()
 {
   if (m_buffer) delete[] m_buffer;
+  if (m_pInputStream) delete m_pInputStream;
 }
 
-bool CDVDSubtitleStream::Open(const char* strFile)
+bool CDVDSubtitleStream::Open(const string& strFile)
 {
-  if (m_pInputStream && m_pInputStream->Open(strFile, ""))
+  m_pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, strFile, "");
+  if (m_pInputStream && m_pInputStream->Open(strFile.c_str(), ""))
   {
     // set up our buffers
     int iBlockSize = m_pInputStream->GetBlockSize();
@@ -65,11 +69,10 @@ bool CDVDSubtitleStream::Open(const char* strFile)
 
 void CDVDSubtitleStream::Close()
 {
-  if (m_pInputStream) m_pInputStream->Close();
-  //m_pInputStream = NULL;
-  
-  if (m_buffer) delete[] m_buffer;
-  m_buffer = NULL;
+  if (m_pInputStream)
+    SAFE_DELETE(m_pInputStream);
+  if (m_buffer) 
+    SAFE_DELETE_ARRAY(m_buffer);
   
   m_iMaxBufferSize = 0;
 }
