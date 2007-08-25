@@ -164,6 +164,8 @@ bool CVideoDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
       strLabel = g_localizeStrings.Get(20386); break;
     case NODE_TYPE_RECENTLY_ADDED_EPISODES: // Recently Added Episodes
       strLabel = g_localizeStrings.Get(20387); break;
+    case NODE_TYPE_STUDIO: // Studios
+      strLabel = g_localizeStrings.Get(20388); break;
     default:
       CLog::Log(LOGWARNING, __FUNCTION__" - Unknown nodetype requested %d", pNode->GetChildType());
       return false;
@@ -201,6 +203,8 @@ CStdString CVideoDatabaseDirectory::GetIcon(const CStdString& strDirectory)
     return "DefaultRecentlyAddedMovies.png";
   case NODE_TYPE_RECENTLY_ADDED_EPISODES: // Recently Added Episodes
     return "DefaultRecentlyAddedEpisodes.png";
+  case NODE_TYPE_STUDIO: // Recently Added Episodes
+    return "DefaultStudios.png";
   default:
     CLog::Log(LOGWARNING, __FUNCTION__" - Unknown nodetype requested %s", strDirectory.c_str());
     break;
