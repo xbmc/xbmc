@@ -123,7 +123,7 @@ void CBackgroundPicLoader::LoadPic(int iPic, int iSlideNumber, const CStdString 
 }
 
 CGUIWindowSlideShow::CGUIWindowSlideShow(void)
-    : CGUIWindow(WINDOW_SLIDESHOW, "Slideshow.xml")
+    : CGUIWindow(WINDOW_SLIDESHOW, "SlideShow.xml")
 {
   m_pBackgroundLoader = NULL;
   Reset();
