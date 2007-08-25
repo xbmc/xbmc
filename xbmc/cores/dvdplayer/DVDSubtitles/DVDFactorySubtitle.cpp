@@ -6,7 +6,7 @@
 #include "DVDSubtitleParserSubrip.h"
 #include "Util.h"
 
-bool CDVDFactorySubtitle::GetSubtitles(VecSubtitleFiles& vecSubtitles, const char* strFile)
+bool CDVDFactorySubtitle::GetSubtitles(VecSubtitleFiles& vecSubtitles, string& strFile)
 {
   CLog::Log(LOGINFO, "CDVDFactorySubtitle::GetSubtitles, searching subtitles");
   
@@ -38,13 +38,15 @@ bool CDVDFactorySubtitle::GetSubtitles(VecSubtitleFiles& vecSubtitles, const cha
   return true;
 }
 
-CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(CDVDSubtitleStream* pStream, const char* strFile)
+CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(CDVDSubtitleStream* pStream, string& strFile)
 {
   char line[1024];
   int i;
   CDVDSubtitleParser* pParser = NULL;
   
-  pStream->Open(strFile);
+  if(!pStream->Open(strFile))
+    return false;
+
   for (int t = 0; !pParser && t < 256; t++)
   {
     if (pStream->ReadLine(line, sizeof(line)))
@@ -59,7 +61,7 @@ CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(CDVDSubtitleStream* pStrea
 
       if (sscanf(line, "%d:%d:%d,%d --> %d:%d:%d,%d", &i, &i, &i, &i, &i, &i, &i, &i) == 8)
       {
-        pParser = new CDVDSubtitleParserSubrip(pStream, strFile);
+        pParser = new CDVDSubtitleParserSubrip(pStream, strFile.c_str());
       }
 
    //   if (sscanf (line, "%d:%d:%d.%d,%d:%d:%d.%d",     &i, &i, &i, &i, &i, &i, &i, &i)==8){

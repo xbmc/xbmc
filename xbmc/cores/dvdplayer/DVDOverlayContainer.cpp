@@ -1,6 +1,7 @@
 
 #include "stdafx.h"
 #include "DVDOverlayContainer.h"
+#include "DVDInputStreams/DVDInputStreamNavigator.h"
 
 
 CDVDOverlayContainer::CDVDOverlayContainer()
@@ -37,7 +38,7 @@ void CDVDOverlayContainer::Add(CDVDOverlay* pOverlay)
       back->iPTSStopTime = pOverlay->iPTSStartTime;
     }
   }
-  
+
   m_overlays.push_back(pOverlay);
   
   LeaveCriticalSection(&m_critSection);
@@ -172,3 +173,25 @@ bool CDVDOverlayContainer::ContainsOverlayType(DVDOverlayType type)
   return result;
 }
 
+/*
+ * iAction should be LIBDVDNAV_BUTTON_NORMAL or LIBDVDNAV_BUTTON_CLICKED
+ */
+void CDVDOverlayContainer::UpdateOverlayInfo(CDVDInputStreamNavigator* pStream, CDVDDemuxSPU *pSpu, int iAction)
+{
+  EnterCriticalSection(&m_critSection);
+
+  //Update any forced overlays.
+  for(VecOverlays::iterator it = m_overlays.begin(); it != m_overlays.end(); it++ )     
+  {
+    if ((*it)->IsOverlayType(DVDOVERLAY_TYPE_SPU))
+    {
+      CDVDOverlaySpu* pOverlaySpu = (CDVDOverlaySpu*)(*it);
+
+      // make sure its a forced (menu) overlay
+      // set menu spu color and alpha data if there is a valid menu overlay
+      if (pOverlaySpu->bForced && pStream->GetCurrentGroupId() == pOverlaySpu->iGroupId)
+        pStream->GetCurrentButtonInfo(pOverlaySpu, pSpu, iAction);
+    }
+  }
+  LeaveCriticalSection(&m_critSection);
+}
