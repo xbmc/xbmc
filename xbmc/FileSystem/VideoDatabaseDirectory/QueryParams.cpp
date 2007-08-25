@@ -14,6 +14,7 @@ CQueryParams::CQueryParams()
   m_idShow = -1;
   m_idSeason = -1;
   m_idEpisode = -1;
+  m_idStudio = -1;
 }
 
 void CQueryParams::SetQueryParam(NODE_TYPE NodeType, const CStdString& strNodeName)
@@ -48,6 +49,9 @@ void CQueryParams::SetQueryParam(NODE_TYPE NodeType, const CStdString& strNodeNa
     break;
   case NODE_TYPE_EPISODES:
     m_idEpisode = idDb;
+    break;
+  case NODE_TYPE_STUDIO:
+    m_idStudio = idDb;
     break;
   }
 }

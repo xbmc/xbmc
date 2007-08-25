@@ -40,7 +40,9 @@ public:
     
     VIDEO_NOSKIP,                   // next pictures is not to be skipped by the video renderer
     VIDEO_SET_ASPECT,                // set aspectratio of video
-    
+
+    // subtitle related messages
+    SUBTITLE_CLUTCHANGE,
   };
   
   CDVDMsg(Message msg)
@@ -257,4 +259,18 @@ public:
   float GetAspect() { return m_aspect; }
 private:
   float m_aspect;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+//////
+////// SUBTITLE_ Messages
+//////
+////////////////////////////////////////////////////////////////////////////////
+
+class CDVDMsgSubtitleClutChange : public CDVDMsg
+{
+public:
+  CDVDMsgSubtitleClutChange(BYTE* data) : CDVDMsg(SUBTITLE_CLUTCHANGE) { memcpy(m_data, data, 16*4); }
+  BYTE m_data[16][4];
+private:
 };

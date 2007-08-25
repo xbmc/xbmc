@@ -418,6 +418,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.tvshowtitle")) ret = VIDEOPLAYER_TVSHOW;
     else if (strTest.Equals("videoplayer.premiered")) ret = VIDEOPLAYER_PREMIERED;
     else if (strTest.Left(19).Equals("videoplayer.content")) return AddMultiInfo(GUIInfo(bNegate ? -VIDEOPLAYER_CONTENT : VIDEOPLAYER_CONTENT, ConditionalStringParameter(strTest.Mid(20,strTest.size()-21)), 0));
+    else if (strTest.Equals("videoplayer.studio")) ret = VIDEOPLAYER_STUDIO;
+    else if (strTest.Equals("videoplayer.mpaa")) return VIDEOPLAYER_MPAA;
   }
   else if (strCategory.Equals("playlist"))
   {
@@ -641,6 +643,8 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("picturepath")) return LISTITEM_PICTURE_PATH;
   else if (info.Equals("pictureresolution")) return LISTITEM_PICTURE_RESOLUTION;
   else if (info.Equals("picturedatetime")) return LISTITEM_PICTURE_DATETIME;
+  else if (info.Equals("studio")) return LISTITEM_STUDIO;
+  else if (info.Equals("mpaa")) return LISTITEM_MPAA;
   return 0;
 }
 
@@ -731,6 +735,8 @@ CStdString CGUIInfoManager::GetLabel(int info)
   case VIDEOPLAYER_RATING:
   case VIDEOPLAYER_TVSHOW:
   case VIDEOPLAYER_PREMIERED:
+  case VIDEOPLAYER_STUDIO:
+  case VIDEOPLAYER_MPAA:
     strLabel = GetVideoLabel(info);
   break;
   case PLAYLIST_LENGTH:
@@ -1111,6 +1117,8 @@ CStdString CGUIInfoManager::GetLabel(int info)
   case LISTITEM_PICTURE_PATH:
   case LISTITEM_PICTURE_DATETIME:
   case LISTITEM_PICTURE_RESOLUTION:
+  case LISTITEM_STUDIO:
+  case LISTITEM_MPAA:
     {
       CGUIWindow *pWindow;
       int iDialog = m_gWindowManager.GetTopMostModalDialogID();
@@ -2164,6 +2172,10 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
         return GetPlaylistLabel(PLAYLIST_POSITION);
     }
     break;
+  case VIDEOPLAYER_STUDIO:
+    return m_currentFile.GetVideoInfoTag()->m_strPlot;
+  case VIDEOPLAYER_MPAA:
+    return m_currentFile.GetVideoInfoTag()->m_strMPAARating;
   }
   return "";
 }
@@ -2882,6 +2894,13 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     if (item->HasPictureInfoTag())
       return item->GetPictureInfoTag()->GetInfo(SLIDE_RESOLUTION);
     break;
+  case LISTITEM_STUDIO:
+    if (item->HasVideoInfoTag())
+      return item->GetVideoInfoTag()->m_strStudio;
+    break;
+  case LISTITEM_MPAA:
+    if (item->HasVideoInfoTag())
+      return item->GetVideoInfoTag()->m_strMPAARating;
   }
   return "";
 }

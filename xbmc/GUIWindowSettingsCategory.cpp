@@ -2140,7 +2140,7 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
   {
     CHDDirectory directory;
     CFileItemList items;
-    CStdString strPath = _P("Q:\\media\\fonts\\");
+    CStdString strPath = _P("Q:\\media\\Fonts\\");
     if (directory.GetDirectory(strPath, items))
     {
       for (int i = 0; i < items.Size(); ++i)

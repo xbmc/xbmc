@@ -18,6 +18,7 @@ namespace DIRECTORY
       long GetTvShowId() { return m_idShow; }
       long GetSeason() { return m_idSeason; }
       long GetEpisodeId() { return m_idEpisode; }
+      long GetStudioId() { return m_idStudio; }
 
     protected:
       void SetQueryParam(NODE_TYPE NodeType, const CStdString& strNodeName);
@@ -33,6 +34,7 @@ namespace DIRECTORY
       long m_idShow;
       long m_idSeason;
       long m_idEpisode;
+      long m_idStudio;
     };
   };
 };

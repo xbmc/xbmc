@@ -21,6 +21,8 @@ NODE_TYPE CDirectoryNodeMoviesOverview::GetChildType()
     return NODE_TYPE_ACTOR;
   else if (GetName()=="5")
     return NODE_TYPE_DIRECTOR;
+  else if (GetName()=="6")
+    return NODE_TYPE_STUDIO;
 
   return NODE_TYPE_NONE;
 }
@@ -33,6 +35,7 @@ bool CDirectoryNodeMoviesOverview::GetContent(CFileItemList& items)
   vecRoot.push_back(g_localizeStrings.Get(345));  // Year
   vecRoot.push_back(g_localizeStrings.Get(344));  // Actors
   vecRoot.push_back(g_localizeStrings.Get(20348));  // Directors
+  vecRoot.push_back(g_localizeStrings.Get(20388));  // Studios
 
   for (int i = 0; i < (int)vecRoot.size(); ++i)
   {

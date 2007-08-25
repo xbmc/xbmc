@@ -2329,7 +2329,3 @@ xbmc/Favourites.cpp
 xbmc/Favourites.h
 xbmc/GUIDialogFavourites.cpp
 xbmc/GUIDialogFavourites.h
-xbmc/FileSystem/CacheStrategy.h
-xbmc/FileSystem/CacheStrategy.cpp
-xbmc/FileSystem/FileCache.h
-xbmc/FileSystem/FileCache.cpp

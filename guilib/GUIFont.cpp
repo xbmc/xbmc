@@ -136,7 +136,7 @@ void CGUIFont::DrawScrollingText(float x, float y, float angle, DWORD *color, in
   float unneeded, h;
   float sw = 0;
   GetTextExtent(L" ", &sw, &unneeded);
-  unsigned int maxChars = min(text.size() + scrollInfo.suffix.size(), (unsigned int)((w*1.05f)/sw)); //max chars on screen + extra marginchars
+  unsigned int maxChars = min((long unsigned int)(text.size() + scrollInfo.suffix.size()), (long unsigned int)((w*1.05f)/sw)); //max chars on screen + extra marginchars
   GetTextExtent(L"W", &unneeded, &h); // This effectively sets h = m_cellHeight for TTF fonts but we don't care about
                                       // truncating height - only width, and as some fonts have some glyphs that may
                                       // dip under the normal cellheight, we should make room for them.

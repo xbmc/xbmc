@@ -397,16 +397,16 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         m_dll.dvdnav_get_number_of_titles(m_dvdnav, &m_iTitleCount);
         m_dll.dvdnav_get_number_of_parts(m_dvdnav, m_iTitle, &m_iPartCount);        
         m_dll.dvdnav_get_position(m_dvdnav, &pos, &len);
+
         CLog::Log(LOGDEBUG, "%s - Cell change: Title %d, Chapter %d\n", __FUNCTION__, m_iTitle, m_iPart);
         CLog::Log(LOGDEBUG, "%s - At position %.0f%% inside the feature\n", __FUNCTION__, 100 * (double)pos / (double)len);
-        m_icurrentGroupId = (m_iTitle * 1000) + m_iPart;
         //Get total segment time        
-        
 
         dvdnav_cell_change_event_t* cell_change_event = (dvdnav_cell_change_event_t*)buf;
         m_iCellStart = cell_change_event->cell_start; // store cell time as we need that for time later
         m_iTime = (int)(cell_change_event->cell_start / 90);
         m_iTotalTime = (int) (cell_change_event->pgc_length / 90);
+        m_icurrentGroupId = cell_change_event->pgN * 1000 + cell_change_event->cellN;
         
         iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_CELL_CHANGE);
       }
@@ -1060,7 +1060,6 @@ bool CDVDInputStreamNavigator::SetNavigatorState(std::string &xmlstate)
       return false;
     }
   }
-
   return true;
 }
 
