@@ -1198,13 +1198,7 @@ extern "C"
     void *arglist 
   )
   {
-#ifndef _LINUX
     return _beginthread(start_address, stack_size, arglist);
-#else
-    HANDLE m_ThreadHandle  = new CXHandle(CXHandle::HND_THREAD);
-    m_ThreadHandle->m_hThread = SDL_CreateThread((int (*)(void*))start_address, (void*)arglist);
-    return (uintptr_t)m_ThreadHandle;
-#endif
   }
 
   HANDLE dll_beginthreadex(LPSECURITY_ATTRIBUTES lpThreadAttributes, DWORD dwStackSize,
@@ -1212,13 +1206,8 @@ extern "C"
                            LPDWORD lpThreadId)
   {
     // FIXME        --possible use xbox createthread function?
-#ifndef _LINUX
     HANDLE hThread = CreateThread(lpThreadAttributes, dwStackSize, lpStartAddress, lpParameter, dwCreationFlags, lpThreadId);
     return hThread;
-#else
-    HANDLE m_ThreadHandle  = new CXHandle(CXHandle::HND_THREAD);
-    m_ThreadHandle->m_hThread = SDL_CreateThread((int (*)(void*)) lpStartAddress, (void*)lpParameter);
-#endif
   }
 
   //SLOW CODE SHOULD BE REVISED

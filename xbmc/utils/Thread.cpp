@@ -95,9 +95,13 @@ int CThread::staticThread(void* data)
 DWORD WINAPI CThread::staticThread(LPVOID* data)
 #endif
 {
-  //DBG"thread start");
-
   CThread* pThread = (CThread*)(data);
+  if (!pThread) {
+    CLog::Log(LOGERROR,"%s, sanity failed. thread is NULL.",__FUNCTION__);
+    return 1;
+  }
+
+  CLog::Log(LOGDEBUG,"thread start, auto delete: %d",pThread->IsAutoDelete());
 
 #ifndef _LINUX
   /* install win32 exception translator */
@@ -122,7 +126,7 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
 #endif
   catch(...)
   {
-    //CLog::Log(LOGERROR, "%s - Unhandled exception caught in thread startup, aborting", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s - Unhandled exception caught in thread startup, aborting. auto delete: %d", __FUNCTION__, pThread->IsAutoDelete());
     if( pThread->IsAutoDelete() )
     {
       delete pThread;
@@ -173,10 +177,12 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
 
   if ( pThread->IsAutoDelete() )
   {
+    CLog::Log(LOGDEBUG,"%s, deleting thread object", __FUNCTION__);
     delete pThread;
     pThread = NULL;
   }
 
+  CLog::Log(LOGDEBUG,"%s, deleting thread graphic context", __FUNCTION__);
   g_graphicsContext.DeleteThreadContext();
 
   CLog::Log(LOGDEBUG,"Thread %lu terminating",GetCurrentThreadId());
@@ -200,12 +206,7 @@ void CThread::Create(bool bAutoDelete, unsigned stacksize)
   m_bStop = false;
   ::ResetEvent(m_StopEvent);
  
-#ifndef _LINUX
   m_ThreadHandle = (HANDLE)_beginthreadex(NULL, stacksize, (PBEGINTHREADEX_THREADFUNC)staticThread, (void*)this, 0, &m_ThreadId);
-#else
-  m_ThreadHandle = new CXHandle(CXHandle::HND_THREAD);
-  m_ThreadHandle->m_hThread = SDL_CreateThread(staticThread, (void*)this);
-#endif
 
 }
 
@@ -221,12 +222,7 @@ void CThread::StopThread()
   SetEvent(m_StopEvent);
   if (m_ThreadHandle)
   {
-#ifndef _LINUX
     WaitForThreadExit(INFINITE);
-#else
-    int status;
-    SDL_WaitThread(m_ThreadHandle->m_hThread, &status);
-#endif
     CloseHandle(m_ThreadHandle);
     m_ThreadHandle = NULL;
   }

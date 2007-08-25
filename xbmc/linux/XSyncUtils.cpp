@@ -10,236 +10,232 @@
 SDL_mutex *g_mutex = SDL_CreateMutex();
 
 bool InitializeRecursiveMutex(HANDLE hMutex, BOOL bInitialOwner) {
-	if (!hMutex)
-		return false;
+  if (!hMutex)
+    return false;
 
-	// we use semaphores instead of the mutex because in SDL we CANT wait for a mutex
-	// to lock with timeout.
-	hMutex->m_hSem		= SDL_CreateSemaphore(bInitialOwner?0:1);
-	hMutex->m_hMutex	= SDL_CreateMutex();
-	hMutex->m_type		= CXHandle::HND_MUTEX;
+  // we use semaphores instead of the mutex because in SDL we CANT wait for a mutex
+  // to lock with timeout.
+  hMutex->m_hSem    = SDL_CreateSemaphore(bInitialOwner?0:1);
+  hMutex->m_hMutex  = SDL_CreateMutex();
+  hMutex->ChangeType(CXHandle::HND_MUTEX);
 
-	if (bInitialOwner) {
-		hMutex->OwningThread	= SDL_ThreadID();
-		hMutex->RecursionCount	= 1;
-	}
+  if (bInitialOwner) {
+    hMutex->OwningThread  = SDL_ThreadID();
+    hMutex->RecursionCount  = 1;
+  }
 
-	return true;
+  return true;
 }
 
-bool	DestroyRecursiveMutex(HANDLE hMutex) {
-	if (hMutex == NULL || hMutex->m_hMutex == NULL || hMutex->m_hSem == NULL) 
-		return false;
+bool  DestroyRecursiveMutex(HANDLE hMutex) {
+  if (hMutex == NULL || hMutex->m_hMutex == NULL || hMutex->m_hSem == NULL) 
+    return false;
 
-	SDL_DestroySemaphore(hMutex->m_hSem);
-	SDL_DestroyMutex(hMutex->m_hMutex);
+  SDL_DestroySemaphore(hMutex->m_hSem);
+  SDL_DestroyMutex(hMutex->m_hMutex);
 
-	hMutex->m_hMutex = NULL;
-	hMutex->m_hSem = NULL;
+  hMutex->m_hMutex = NULL;
+  hMutex->m_hSem = NULL;
 }
 
-HANDLE	WINAPI CreateMutex( LPSECURITY_ATTRIBUTES lpMutexAttributes,  BOOL bInitialOwner,  LPCTSTR lpName ) {
-	HANDLE hMutex = new CXHandle(CXHandle::HND_MUTEX);
+HANDLE  WINAPI CreateMutex( LPSECURITY_ATTRIBUTES lpMutexAttributes,  BOOL bInitialOwner,  LPCTSTR lpName ) {
+  HANDLE hMutex = new CXHandle(CXHandle::HND_MUTEX);
 
-	InitializeRecursiveMutex(hMutex,bInitialOwner);
+  InitializeRecursiveMutex(hMutex,bInitialOwner);
 
-	return hMutex;
+  return hMutex;
 }
 
 bool WINAPI ReleaseMutex( HANDLE hMutex ) {
-	if (hMutex == NULL || hMutex->m_hSem == NULL || hMutex->m_hMutex == NULL)
-		return false;
+  if (hMutex == NULL || hMutex->m_hSem == NULL || hMutex->m_hMutex == NULL)
+    return false;
 
-	BOOL bOk = false;
+  BOOL bOk = false;
 
-	SDL_mutexP(hMutex->m_hMutex);
-	if (hMutex->OwningThread == SDL_ThreadID() && hMutex->RecursionCount > 0) {
-		bOk = true;
-		if (--hMutex->RecursionCount == 0) {
-			hMutex->OwningThread = 0;
-			SDL_SemPost(hMutex->m_hSem);
-		}
-	}
-	SDL_mutexV(hMutex->m_hMutex);
+  SDL_mutexP(hMutex->m_hMutex);
+  if (hMutex->OwningThread == SDL_ThreadID() && hMutex->RecursionCount > 0) {
+    bOk = true;
+    if (--hMutex->RecursionCount == 0) {
+      hMutex->OwningThread = 0;
+      SDL_SemPost(hMutex->m_hSem);
+    }
+  }
+  SDL_mutexV(hMutex->m_hMutex);
 
-	return bOk;
+  return bOk;
 }
 
 void WINAPI InitializeCriticalSection(LPCRITICAL_SECTION lpCriticalSection) {
-	if (lpCriticalSection)
-		InitializeRecursiveMutex(lpCriticalSection,false);
+  if (lpCriticalSection)
+    InitializeRecursiveMutex(lpCriticalSection,false);
 }
 
 void WINAPI DeleteCriticalSection(LPCRITICAL_SECTION lpCriticalSection) {
-	if (lpCriticalSection) 
-		DestroyRecursiveMutex(lpCriticalSection);
+  if (lpCriticalSection) 
+    DestroyRecursiveMutex(lpCriticalSection);
 }
 
 void WINAPI EnterCriticalSection(LPCRITICAL_SECTION lpCriticalSection) {
-	WaitForSingleObject(lpCriticalSection, INFINITE);
+  WaitForSingleObject(lpCriticalSection, INFINITE);
 }
 
 void WINAPI LeaveCriticalSection(LPCRITICAL_SECTION lpCriticalSection) {
-	ReleaseMutex(lpCriticalSection);
+  ReleaseMutex(lpCriticalSection);
 }
 
 void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer) {
-	if (!lpBuffer)
-		return;
+  if (!lpBuffer)
+    return;
 
-	memset(lpBuffer,0,sizeof(MEMORYSTATUS));
+  memset(lpBuffer,0,sizeof(MEMORYSTATUS));
 
 #ifdef _LINUX
-	struct sysinfo info;
-	sysinfo(&info);
+  struct sysinfo info;
+  sysinfo(&info);
 
-	lpBuffer->dwLength = sizeof(MEMORYSTATUS);
-	lpBuffer->dwAvailPageFile	= (info.freeswap * info.mem_unit);
-	lpBuffer->dwAvailPhys		= (info.freeram * info.mem_unit);
-	lpBuffer->dwAvailVirtual	= (info.freeram * info.mem_unit);
-	lpBuffer->dwTotalPhys		= (info.totalram * info.mem_unit); 
-	lpBuffer->dwTotalVirtual	= (info.totalram * info.mem_unit);
+  lpBuffer->dwLength = sizeof(MEMORYSTATUS);
+  lpBuffer->dwAvailPageFile  = (info.freeswap * info.mem_unit);
+  lpBuffer->dwAvailPhys    = (info.freeram * info.mem_unit);
+  lpBuffer->dwAvailVirtual  = (info.freeram * info.mem_unit);
+  lpBuffer->dwTotalPhys    = (info.totalram * info.mem_unit); 
+  lpBuffer->dwTotalVirtual  = (info.totalram * info.mem_unit);
 #endif
 }
 
 DWORD WINAPI WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds ) {
-	if (hHandle == NULL ||  hHandle == (HANDLE)-1)
-		return WAIT_FAILED;
+  if (hHandle == NULL ||  hHandle == (HANDLE)-1)
+    return WAIT_FAILED;
 
-	DWORD dwRet = WAIT_FAILED;
-	BOOL bNeedWait = true;
+  DWORD dwRet = WAIT_FAILED;
+  BOOL bNeedWait = true;
 
-	switch (hHandle->m_type) {
-		case CXHandle::HND_MUTEX:
+  switch (hHandle->GetType()) {
+    case CXHandle::HND_MUTEX:
 
-			SDL_mutexP(hHandle->m_hMutex);
-			if (hHandle->OwningThread == SDL_ThreadID() && 
-				hHandle->RecursionCount > 0) {
-				hHandle->RecursionCount++;
-				dwRet = WAIT_OBJECT_0;
-				bNeedWait = false;
-			}
-			SDL_mutexV(hHandle->m_hMutex);
+      SDL_mutexP(hHandle->m_hMutex);
+      if (hHandle->OwningThread == SDL_ThreadID() && 
+        hHandle->RecursionCount > 0) {
+        hHandle->RecursionCount++;
+        dwRet = WAIT_OBJECT_0;
+        bNeedWait = false;
+      }
+      SDL_mutexV(hHandle->m_hMutex);
 
-			if (!bNeedWait)
-				break; // no need for the wait.
+      if (!bNeedWait)
+        break; // no need for the wait.
 
-		case CXHandle::HND_EVENT:
-			if (hHandle->m_hSem) {					
-				int nRet = 0;
-				if (dwMilliseconds == INFINITE)
-					nRet = SDL_SemWait(hHandle->m_hSem);
-				else
-					nRet = SDL_SemWaitTimeout(hHandle->m_hSem, dwMilliseconds);
+    case CXHandle::HND_THREAD:
+    case CXHandle::HND_EVENT:
+      if (hHandle->m_hSem) {          
+        int nRet = 0;
+        if (dwMilliseconds == INFINITE)
+          nRet = SDL_SemWait(hHandle->m_hSem);
+        else
+          nRet = SDL_SemWaitTimeout(hHandle->m_hSem, dwMilliseconds);
 
-				if (nRet == 0)
-					dwRet = WAIT_OBJECT_0;
-				else if (nRet == SDL_MUTEX_TIMEDOUT)
-					dwRet = WAIT_TIMEOUT;
+        if (nRet == 0)
+          dwRet = WAIT_OBJECT_0;
+        else if (nRet == SDL_MUTEX_TIMEDOUT)
+          dwRet = WAIT_TIMEOUT;
 
-				// in case of successful wait with manual event - we post to the semaphore again so that
-				// all threads that are waiting will wake up.
-				if (dwRet == WAIT_OBJECT_0 && hHandle->m_type == CXHandle::HND_EVENT && hHandle->m_bManualEvent) {
-					SDL_SemPost(hHandle->m_hSem);
-				}
-				else if (dwRet == WAIT_OBJECT_0 && hHandle->m_type == CXHandle::HND_MUTEX) {
-					SDL_mutexP(hHandle->m_hMutex);
-					hHandle->OwningThread = SDL_ThreadID();
-					hHandle->RecursionCount = 1;
-					SDL_mutexV(hHandle->m_hMutex);
-				}
-			}
+        // in case of successful wait with manual event - we post to the semaphore again so that
+        // all threads that are waiting will wake up.
+        if (dwRet == WAIT_OBJECT_0 && (hHandle->GetType() == CXHandle::HND_EVENT || hHandle->GetType() == CXHandle::HND_THREAD) && hHandle->m_bManualEvent) {
+          SDL_SemPost(hHandle->m_hSem);
+        }
+        else if (dwRet == WAIT_OBJECT_0 && hHandle->GetType() == CXHandle::HND_MUTEX) {
+          SDL_mutexP(hHandle->m_hMutex);
+          hHandle->OwningThread = SDL_ThreadID();
+          hHandle->RecursionCount = 1;
+          SDL_mutexV(hHandle->m_hMutex);
+        }
+      }
 
-			break;
-		case CXHandle::HND_THREAD:
-			if (hHandle->m_hThread) {
-				SDL_WaitThread(hHandle->m_hThread, NULL);
-			}
-			break;
-		default:
-			XXLog(ERROR, "cant wait for this type of object");
-	}
+      break;
+    default:
+      XXLog(ERROR, "cant wait for this type of object");
+  }
 
-	return dwRet;
+  return dwRet;
 }
 
 DWORD WINAPI WaitForMultipleObjects( DWORD nCount, HANDLE* lpHandles, BOOL bWaitAll,  DWORD dwMilliseconds) {
-	DWORD dwRet = WAIT_FAILED;
+  DWORD dwRet = WAIT_FAILED;
 
-	if (nCount < 1 || lpHandles == NULL)
-		return dwRet;
+  if (nCount < 1 || lpHandles == NULL)
+    return dwRet;
 
-	BOOL bWaitEnded		= FALSE;
-	DWORD dwStartTime   = SDL_GetTicks();
-	BOOL *bDone = new BOOL[nCount];
-	
-	for (int nFlag=0; nFlag<nCount; nFlag++ ) 
-		bDone[nFlag] = FALSE;
+  BOOL bWaitEnded    = FALSE;
+  DWORD dwStartTime   = SDL_GetTicks();
+  BOOL *bDone = new BOOL[nCount];
+  
+  for (int nFlag=0; nFlag<nCount; nFlag++ ) 
+    bDone[nFlag] = FALSE;
 
-	int nSignalled = 0;
-	while (!bWaitEnded) {
-	
-		for (int i=0; i < nCount; i++) {
+  int nSignalled = 0;
+  while (!bWaitEnded) {
+  
+    for (int i=0; i < nCount; i++) {
 
-			if (!bDone[i]) {
-				DWORD dwWaitRC = WaitForSingleObject(lpHandles[i], 20);
-				if (dwWaitRC == WAIT_OBJECT_0) {
-					dwRet = WAIT_OBJECT_0 + i;
+      if (!bDone[i]) {
+        DWORD dwWaitRC = WaitForSingleObject(lpHandles[i], 20);
+        if (dwWaitRC == WAIT_OBJECT_0) {
+          dwRet = WAIT_OBJECT_0 + i;
 
-					nSignalled++;
+          nSignalled++;
 
-					bDone[i] = TRUE;
+          bDone[i] = TRUE;
 
-					if ( (bWaitAll && nSignalled == nCount) || !bWaitAll ) {
-						bWaitEnded = TRUE;
-						break;
-					}
-				}
-				else if (dwWaitRC == WAIT_FAILED) {
-					bWaitEnded = TRUE;
-					break;
-				}
-			}
+          if ( (bWaitAll && nSignalled == nCount) || !bWaitAll ) {
+            bWaitEnded = TRUE;
+            break;
+          }
+        }
+        else if (dwWaitRC == WAIT_FAILED) {
+          bWaitEnded = TRUE;
+          break;
+        }
+      }
 
-		}
+    }
 
-		DWORD dwElapsed = SDL_GetTicks() - dwStartTime;
-		if (dwMilliseconds != INFINITE && dwElapsed >= dwMilliseconds) {
-			dwRet = WAIT_TIMEOUT;
-			bWaitEnded = TRUE;
-			break;
-		}
+    DWORD dwElapsed = SDL_GetTicks() - dwStartTime;
+    if (dwMilliseconds != INFINITE && dwElapsed >= dwMilliseconds) {
+      dwRet = WAIT_TIMEOUT;
+      bWaitEnded = TRUE;
+      break;
+    }
 
-		// wait 100ms between rounds
-		SDL_Delay(100);
-	}
+    // wait 100ms between rounds
+    SDL_Delay(100);
+  }
 
-	delete [] bDone;
-	return dwRet;
+  delete [] bDone;
+  return dwRet;
 }
 
 LONG InterlockedIncrement(  LONG * Addend ) {
-	if (Addend == NULL)
-		return 0;
+  if (Addend == NULL)
+    return 0;
 
-	SDL_mutexP(g_mutex);
-	(* Addend)++;
-	LONG nKeep = *Addend;
-	SDL_mutexV(g_mutex);
+  SDL_mutexP(g_mutex);
+  (* Addend)++;
+  LONG nKeep = *Addend;
+  SDL_mutexV(g_mutex);
 
-	return nKeep;
+  return nKeep;
 }
 
 LONG InterlockedDecrement(  LONG * Addend ) {
-	if (Addend == NULL)
-		return 0;
+  if (Addend == NULL)
+    return 0;
 
-	SDL_mutexP(g_mutex);
-	(* Addend)--;
-	LONG nKeep = *Addend;
-	SDL_mutexV(g_mutex);
+  SDL_mutexP(g_mutex);
+  (* Addend)--;
+  LONG nKeep = *Addend;
+  SDL_mutexV(g_mutex);
 
-	return nKeep;
+  return nKeep;
 }
 
 LONG InterlockedCompareExchange(
@@ -247,15 +243,15 @@ LONG InterlockedCompareExchange(
   LONG Exchange,
   LONG Comparand
 ) {
-	if (Destination == NULL)
-		return 0;
-	SDL_mutexP(g_mutex);
-	LONG nKeep = *Destination;
-	if (*Destination == Comparand)
-		*Destination = Exchange;
-	SDL_mutexV(g_mutex);
-	
-	return nKeep;
+  if (Destination == NULL)
+    return 0;
+  SDL_mutexP(g_mutex);
+  LONG nKeep = *Destination;
+  if (*Destination == Comparand)
+    *Destination = Exchange;
+  SDL_mutexV(g_mutex);
+  
+  return nKeep;
 }
 
 LONG InterlockedExchange(
@@ -263,15 +259,15 @@ LONG InterlockedExchange(
   LONG Value
 )
 {
-	if (Target == NULL)
-		return 0;
+  if (Target == NULL)
+    return 0;
 
-	SDL_mutexP(g_mutex);
-	LONG nKeep = *Target;
-	*Target = Value;
-	SDL_mutexV(g_mutex);
-	
-	return nKeep;
+  SDL_mutexP(g_mutex);
+  LONG nKeep = *Target;
+  *Target = Value;
+  SDL_mutexV(g_mutex);
+  
+  return nKeep;
 }
 
 

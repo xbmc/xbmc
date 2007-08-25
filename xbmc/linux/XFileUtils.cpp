@@ -82,7 +82,7 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData) {
 }
 
 BOOL   FindNextFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindData) {
-	if (lpFindData == NULL || hHandle == NULL || hHandle->m_type != CXHandle::HND_FIND_FILE)
+	if (lpFindData == NULL || hHandle == NULL || hHandle->GetType() != CXHandle::HND_FIND_FILE)
 		return FALSE;
 
 	if (hHandle->m_nFindFileIterator >= hHandle->m_FindFileResults.size())
