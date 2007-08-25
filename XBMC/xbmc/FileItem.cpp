@@ -1443,7 +1443,7 @@ void CFileItemList::Serialize(CArchive& ar)
     ar << (int)m_sortOrder;
     ar << m_bCacheToDisc;
 
-    ar << m_sortDetails.size();
+    ar << (int)m_sortDetails.size();
     for (unsigned int j = 0; j < m_sortDetails.size(); ++j)
     {
       const SORT_METHOD_DETAILS &details = m_sortDetails[j];
