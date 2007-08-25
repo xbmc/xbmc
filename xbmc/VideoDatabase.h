@@ -57,6 +57,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_DIRECTOR = 15,
   VIDEODB_ID_ORIGINALTITLE = 16,
   VIDEODB_ID_THUMBURL_SPOOF = 17,
+  VIDEODB_ID_STUDIOS = 18,
   VIDEODB_ID_MAX
 } VIDEODB_IDS;
 
@@ -82,8 +83,9 @@ const struct SDbTableOffsets
   { VIDEODB_TYPE_INT, offsetof(CVideoInfoTag,m_iTop250) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strGenre) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strDirector) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strOriginalTitle)},
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPictureURL.m_spoof) }
+  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strOriginalTitle) },
+  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPictureURL.m_spoof) },
+  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strStudio) }
 };
 
 typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
@@ -272,9 +274,10 @@ public:
                          const CStdString& strOpenRecord, const CStdString& strCloseRecord, const CStdString& strOpenField, const CStdString& strCloseField, CStdString& strResult);
 
   bool GetGenresNav(const CStdString& strBaseDir, CFileItemList& items, long idContent=-1);
+  bool GetStudiosNav(const CStdString& strBaseDir, CFileItemList& items, long idContent=-1);
   bool GetActorsNav(const CStdString& strBaseDir, CFileItemList& items, long idContent=-1);
   bool GetDirectorsNav(const CStdString& strBaseDir, CFileItemList& items, long idContent=-1);
-  bool GetTitlesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idActor=-1, long idDirector=-1);
+  bool GetTitlesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idActor=-1, long idDirector=-1, long idStudio=-1);
   bool GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idActor=-1, long idDirector=-1);
   bool GetYearsNav(const CStdString& strBaseDir, CFileItemList& items, long idContent=-1);
   bool GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& items, long idActor=-1, long idDirector=-1, long idGenre=-1, long idYear=-1, long idShow=-1);
@@ -305,6 +308,7 @@ protected:
   long AddPath(const CStdString& strPath);
   long AddGenre(const CStdString& strGenre1);
   long AddActor(const CStdString& strActor);
+  long AddStudio(const CStdString& strStudio1);
 
   void AddActorToMovie(long lMovieId, long lActorId, const CStdString& strRole);
   void AddActorToTvShow(long lTvShowId, long lActorId, const CStdString& strRole);
@@ -318,7 +322,9 @@ protected:
   void AddGenreToTvShow(long lTvShowId, long lGenreId);
   void AddGenreToEpisode(long lEpisodeId, long lGenreId);
 
-  void AddGenreAndDirectors(const CVideoInfoTag& details, vector<long>& vecDirectors, vector<long>& vecGenres);
+  void AddStudioToMovie(long lMovieId, long lStudioId);
+  
+  void AddGenreAndDirectorsAndStudios(const CVideoInfoTag& details, vector<long>& vecDirectors, vector<long>& vecGenres, vector<long>& vecStudios);
 
   CVideoInfoTag GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool needsCast = false);
   CVideoInfoTag GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool needsCast = false);
