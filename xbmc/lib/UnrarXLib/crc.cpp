@@ -20,7 +20,7 @@ uint CRC(uint StartCRC,const void *Addr,uint Size)
     InitCRC();
   byte *Data=(byte *)Addr;
 #if defined(LITTLE_ENDIAN) && defined(PRESENT_INT32)
-  while (Size>0 && ((int)Data & 7))
+  while (Size>0 && ((intptr_t)Data & 7))
   {
     StartCRC=CRCTab[(byte)(StartCRC^Data[0])]^(StartCRC>>8);
     Size--;
