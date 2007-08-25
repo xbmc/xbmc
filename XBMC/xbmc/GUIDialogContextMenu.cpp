@@ -283,7 +283,22 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, CShare *sh
 
 bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CShare *share, CONTEXT_BUTTON button)
 {
+  // Add Source doesn't require a valid share
+  if (button == CONTEXT_BUTTON_ADD_SOURCE)
+  {
+    if (g_settings.m_iLastLoadedProfileIndex == 0)
+    {
+      if (!g_passwordManager.IsMasterLockUnlocked(true))
+        return false;
+    }
+    else if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
+      return false;
+
+    return CGUIDialogMediaSource::ShowAndAddMediaSource(type);
+  }
+  // the rest of the operations require a valid share
   if (!share) return false;
+
   switch (button)
   {
   case CONTEXT_BUTTON_EDIT_SOURCE:
@@ -325,17 +340,6 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CShare *shar
       return true;
     }
     break;
-
-  case CONTEXT_BUTTON_ADD_SOURCE:
-    if (g_settings.m_iLastLoadedProfileIndex == 0)
-    {
-      if (!g_passwordManager.IsMasterLockUnlocked(true))
-        return false;
-    }
-    else if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
-      return false;
-
-    return CGUIDialogMediaSource::ShowAndAddMediaSource(type);
 
   case CONTEXT_BUTTON_SET_DEFAULT:
     if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())

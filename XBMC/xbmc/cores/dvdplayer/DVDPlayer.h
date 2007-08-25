@@ -5,7 +5,6 @@
 #include "IDVDPlayer.h"
 
 #include "DVDMessageQueue.h"
-#include "DVDDemuxSPU.h"
 #include "DVDClock.h"
 #include "DVDPlayerAudio.h"
 #include "DVDPlayerVideo.h"
@@ -138,6 +137,7 @@ private:
   void ProcessVideoData(CDemuxStream* pStream, CDVDDemux::DemuxPacket* pPacket);
   void ProcessSubData(CDemuxStream* pStream, CDVDDemux::DemuxPacket* pPacket);
   
+  void FindExternalSubtitles();
   /**
    * one of the DVD_PLAYSPEED defines
    */
@@ -149,7 +149,6 @@ private:
 
   void HandleMessages();
   bool IsInMenu() const;
-  void UpdateOverlayInfo(int iAction);
 
   void SyncronizePlayers(DWORD sources);
   void CheckContinuity(CDVDDemux::DemuxPacket* pPacket, unsigned int source);
@@ -165,6 +164,8 @@ private:
   SCurrentStream m_CurrentVideo;
   SCurrentStream m_CurrentSubtitle;
 
+  std::vector<std::string>  m_vecSubtitleFiles; // external subtitle files
+
   int m_playSpeed;
   
   unsigned int m_packetcount; // packet count from demuxer, may wrap around. used during startup
@@ -176,8 +177,7 @@ private:
   
   CDVDMessageQueue m_messenger;     // thread messenger, only the dvdplayer.cpp class itself may send message to this!
   
-  CDVDClock m_clock;                // master clock
-  CDVDDemuxSPU m_dvdspus;           // dvd subtitle demuxer
+  CDVDClock m_clock;                // master clock  
   CDVDOverlayContainer m_overlayContainer;
   
   CDVDInputStream* m_pInputStream;  // input stream for current playing file

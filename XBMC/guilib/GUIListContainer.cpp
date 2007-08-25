@@ -43,10 +43,16 @@ void CGUIListContainer::Render()
   g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height);
   float posX = m_posX;
   float posY = m_posY;
+  // we offset our draw position to take into account scrolling and whether or not our focused
+  // item is offscreen "above" the list.
+  float drawOffset = offset * m_layout.Size(m_orientation) - m_scrollOffset;
+  if (offset > m_offset + m_cursor)
+    drawOffset += m_focusedLayout.Size(m_orientation) - m_layout.Size(m_orientation);
+
   if (m_orientation == VERTICAL)
-    posY += (offset * m_layout.Size(m_orientation) - m_scrollOffset);
+    posY += drawOffset;
   else
-    posX += (offset * m_layout.Size(m_orientation) - m_scrollOffset);;
+    posX += drawOffset;
 
   float focusedPosX = 0;
   float focusedPosY = 0;
