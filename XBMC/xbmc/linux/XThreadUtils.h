@@ -19,6 +19,13 @@ HANDLE _beginthreadex(
    unsigned *thrdaddr 
 );
 
+uintptr_t _beginthread(
+    void( *start_address )( void * ),
+    unsigned stack_size,
+    void *arglist
+);
+
+
 DWORD WINAPI GetCurrentThreadId(void);
 
 HANDLE WINAPI GetCurrentThread(void);

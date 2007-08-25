@@ -63,12 +63,7 @@ CScrobbler::CScrobbler()
   m_hHttpMutex = CreateMutex(NULL, false, NULL);
   if (!m_hHttpMutex)
     throw EOutOfMemory();
-#ifdef _WIN32
   m_hWorkerThread = CreateThread(NULL, 0, threadProc, (LPVOID)this, 0, &threadid);
-#else
-  m_hWorkerThread = new CXHandle;
-  m_hWorkerThread->m_hThread = SDL_CreateThread(threadProc, (void*)this);
-#endif
   if (!m_hWorkerThread)
     throw EOutOfMemory();
 }
@@ -78,6 +73,7 @@ CScrobbler::~CScrobbler()
   m_bCloseThread = true;
   SetEvent(m_hWorkerEvent);
   WaitForSingleObject(m_hHttpMutex, INFINITE);
+  ReleaseMutex(m_hHttpMutex);
   CloseHandle(m_hHttpMutex);
   Sleep(0);
 }

@@ -159,13 +159,7 @@ extern "C" HANDLE WINAPI dllCreateThread(
   param->lpParameter = lpParameter;
   param->lpDLL = tracker_getdllname(loc);
 
-#ifdef _LINUX
-  HANDLE h = new CXHandle(CXHandle::HND_THREAD);
-  h->m_hThread = SDL_CreateThread(dllThreadWrapper, (void*)param);
-  return h;
-#else
   return (HANDLE)_beginthreadex(lpThreadAttributes, dwStackSize, dllThreadWrapper, param, dwCreationFlags, (unsigned int *)lpThreadId);
-#endif
 }
 
 
