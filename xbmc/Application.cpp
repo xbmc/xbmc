@@ -3645,6 +3645,10 @@ void CApplication::Stop()
   catch (...)
   {}
 
+#ifdef _LINUX
+  CXHandle::DumpObjectTracker();
+#endif
+
 #ifdef _CRTDBG_MAP_ALLOC
     _CrtDumpMemoryLeaks();
     while(1); // execution ends
