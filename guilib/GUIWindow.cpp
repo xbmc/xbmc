@@ -171,7 +171,7 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 #else
   DWORD end = timeGetTime();
 
-  CLog::Log(LOGDEBUG,"Load %s: %.2fms (%.2f ms xml load)", m_xmlFile.c_str(), end - start, lend - start);
+  CLog::Log(LOGDEBUG,"Load %s: %d ms (%d ms xml load)", m_xmlFile.c_str(), end - start, lend - start);
 #endif  
   return ret;
 }
