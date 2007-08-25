@@ -7,16 +7,14 @@
 class CDVDSubtitleParser
 {
 public:
-  CDVDSubtitleParser(CDVDSubtitleStream* pStream, const char* strFile)
+  CDVDSubtitleParser(CDVDSubtitleStream* pStream, const string& strFile)
   {
     m_pStream = pStream;
-    m_strFileName = strdup(strFile);
+    m_strFileName = strFile;
   }
   
   virtual ~CDVDSubtitleParser()
   {
-    //DeInit();
-    if (m_strFileName) free(m_strFileName);
   }
   
   virtual bool Init() = 0;
@@ -27,6 +25,6 @@ public:
   
 protected:
   CDVDSubtitleStream* m_pStream;
-  char* m_strFileName;
+  string m_strFileName;
 };
 
