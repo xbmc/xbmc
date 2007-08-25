@@ -432,7 +432,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
           m_subtitleFont = NULL;
         }
 
-        CStdString fontPath = "Q:\\media\\Fonts\\";
+        CStdString fontPath = _P("Q:\\media\\Fonts\\");
         fontPath += g_guiSettings.GetString("subtitles.font");
         m_subtitleFont = g_fontManager.LoadTTF("__subtitle__", fontPath, color[g_guiSettings.GetInt("subtitles.color")], 0, g_guiSettings.GetInt("subtitles.height"), g_guiSettings.GetInt("subtitles.style"));
         if (!m_subtitleFont)

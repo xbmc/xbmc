@@ -48,6 +48,7 @@ public:
   CStdString m_strProductionCode;
   CStdString m_strFirstAired;
   CStdString m_strShowTitle;
+  CStdString m_strStudio;
   bool m_bWatched;
   int m_iTop250;
   int m_iYear;

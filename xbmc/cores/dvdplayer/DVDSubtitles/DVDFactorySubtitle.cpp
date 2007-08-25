@@ -6,13 +6,13 @@
 #include "DVDSubtitleParserSubrip.h"
 #include "Util.h"
 
-bool CDVDFactorySubtitle::GetSubtitles(VecSubtitleFiles& vecSubtitles, const char* strFile)
+bool CDVDFactorySubtitle::GetSubtitles(VecSubtitleFiles& vecSubtitles, string& strFile)
 {
   CLog::Log(LOGINFO, "CDVDFactorySubtitle::GetSubtitles, searching subtitles");
   
   vecSubtitles.clear();
   
-  std::string subtitlePrefix = "Z:\\subtitle.";
+  std::string subtitlePrefix = _P("Z:\\subtitle.");
   //std::string filenameWithoutExtension = strFile;
   //int iExtension = filenameWithoutExtension.find_last_of(".");
   //if (iExtension > 0) filenameWithoutExtension.erase(iExtension + 1, filenameWithoutExtension.size());
@@ -26,7 +26,7 @@ bool CDVDFactorySubtitle::GetSubtitles(VecSubtitleFiles& vecSubtitles, const cha
   while (iStart < iSize)
   {
     int iEnd = strExtensionCached.Find(" ", iStart);
-    std::string strExtension = strExtensionCached.substr(iStart, iEnd);
+    std::string strExtension = strExtensionCached.substr(iStart, iEnd-iStart);
     iStart = iEnd + 1;
     
     std::string subtitleFile = subtitlePrefix + strExtension;;
@@ -38,13 +38,15 @@ bool CDVDFactorySubtitle::GetSubtitles(VecSubtitleFiles& vecSubtitles, const cha
   return true;
 }
 
-CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(CDVDSubtitleStream* pStream, const char* strFile)
+CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(CDVDSubtitleStream* pStream, string& strFile)
 {
   char line[1024];
   int i;
   CDVDSubtitleParser* pParser = NULL;
   
-  pStream->Open(strFile);
+  if(!pStream->Open(strFile))
+    return false;
+
   for (int t = 0; !pParser && t < 256; t++)
   {
     if (pStream->ReadLine(line, sizeof(line)))
@@ -59,7 +61,7 @@ CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(CDVDSubtitleStream* pStrea
 
       if (sscanf(line, "%d:%d:%d,%d --> %d:%d:%d,%d", &i, &i, &i, &i, &i, &i, &i, &i) == 8)
       {
-        pParser = new CDVDSubtitleParserSubrip(pStream, strFile);
+        pParser = new CDVDSubtitleParserSubrip(pStream, strFile.c_str());
       }
 
    //   if (sscanf (line, "%d:%d:%d.%d,%d:%d:%d.%d",     &i, &i, &i, &i, &i, &i, &i, &i)==8){
