@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: jutski (->7/2006) Mikko70 (1/2007->)-->
-<!--Date of translation: 16/08/2007-->
+<!--Date of translation: 25/08/2007-->
 <!--$Revision$: -->
-<!--Based on english strings version 9956 -->
+<!--Based on english strings version 10031 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -136,13 +136,13 @@
   <string id="194">Etsitään...</string>
   <string id="195">Tietoja ei löytynyt!</string>
   <string id="196">Valitse elokuva:</string>
-  <string id="197">Etsitään %sin tietoja</string>
+  <string id="197">Etsitään tietoja %sta</string>
   <string id="198">Haetaan elokuvan tiedot</string>
   <string id="199">Ohjaaja:</string>
-  <string id="200">Kirjoittanut:</string>
+  <string id="200">Kirjoittaja:</string>
   <string id="201">Vuosi: </string>
   <string id="202">Iskulause:</string>
-  <string id="203">Juonilyhenne:</string>
+  <string id="203">Juoni:</string>
   <string id="204">Arvostus:</string>
   <string id="205">Äänestysmäärä:</string>
   <string id="206">Näyttelijät</string>
@@ -241,11 +241,11 @@
   <string id="310">Autom. kirkkaus/kontrasti</string>
   <string id="311">Dering</string>
   <string id="312">(0=auto)</string>
-  <string id="313">Järjestä tietokanta</string>
+  <string id="313">Tietokannan järjestely</string>
   <string id="314">Valmistellaan...</string>
   <string id="315">Tietokantavirhe</string>
   <string id="316">Etsitään kappaleet...</string>
-  <string id="317">Tietokanta järjestetty</string>
+  <string id="317">Tietokannan järjestely valmis</string>
   <string id="318">Järjestellään kappaleita...</string>
   <string id="319">Virhe kappaleiden päivityksessä</string>
   <string id="320">Järjestellään esittäjät...</string>
@@ -261,8 +261,8 @@
   <string id="330">Odota, tämä kestää jonkin aikaa</string>
   <string id="331">Tiivistetään tietokantaa...</string>
   <string id="332">Virhe tietokannan tiivistyksessä</string>
-  <string id="333">Haluatko järjestää tietokannan?</string>
-  <string id="334">Järjestä tietokanta...</string>
+  <string id="333">Haluatko järjestellä tietokannan?</string>
+  <string id="334">Järjestele tietokanta...</string>
   <string id="335">Aloita</string>
   <string id="336">Kuvataajuuden muunto</string>
   <string id="337">Audiolähtö</string>
@@ -668,6 +668,12 @@
   <string id="1034">Alivalikko</string>
   <string id="1035">Alivalikon painikkeet käytössä</string>
   <string id="1036">Suosikit</string>
+  <string id="1037">Video-lisäkkeet</string>
+  <string id="1038">Musiikki-lisäkkeet</string>
+  <string id="1039">Kuva-lisäkkeet</string>
+  <string id="1040">Ladataan kansiota</string>
+  <string id="1041">Noudettu %i kohdetta</string>
+  <string id="1042">Noudettu %i/%i kohdetta</string>
   
   <string id="1200">SMB-asiakas</string>
   <string id="1202">Työryhmä</string>
@@ -733,11 +739,6 @@
   <string id="1412">tuulista</string>
   <string id="1413">tihkusadetta</string>
   <string id="1414">ukkosmyrskyä</string>
-  
-  
-  
-  
-  
   <!-- strings through to 1450 reserved for weather translation -->
 
   <string id="2050">Kesto:</string>
@@ -1285,7 +1286,7 @@
   <string id="15284">Kuuntele %name%n suositukset Last.FM radiosta</string>
   <string id="15285">Käyttäjän %name% parhaat tunnisteet</string>
   <string id="15286">Kuuntele %name%n soittolista Last.FM radiosta</string>
-
+  
   <string id="15300">Määriteltyä polkua ei löydy</string>
   <string id="15301">Palvelimeen ei saada yhteyttä</string>
   <string id="15302">Palvelimia ei löytynyt</string>
@@ -1410,7 +1411,7 @@
   <string id="20071">Käynnistä uuden media sijainnin kanssa</string>
   <string id="20072">varmista että valittu kansio on kirjoitettava</string>
   <string id="20073">ja kansion nimi on käyttökelpoinen</string>
-  <string id="20074">MPAA arvostus:</string>
+  <string id="20074">MPAA luokitus:</string>
   <string id="20075">Anna pääkäyttäjän lukituskoodi</string>
   <string id="20076">Kysy pääkäyttäjän lukituskoodia käynnistyessä</string>
   <string id="20077">Skinin asetukset</string>
@@ -1587,7 +1588,7 @@
   <string id="20347">on</string>
   <string id="20348">Ohjaajat</string>
   <string id="20349">Videoita ei löytynyt tästä polusta!</string>
-  <string id="20350">äänestykset</string>
+  <string id="20350">äänestystä</string>
   <string id="20351">TV-ohjelman tiedot</string>
   <string id="20352">Jakson tiedot</string>
   <string id="20353">Ladataan TV-ohjelman tietoja</string>
@@ -1611,7 +1612,7 @@
   <string id="20371">Aseta tuotantokauden kuvake</string>
   <string id="20372">Tuotantokauden kuva</string>
   <string id="20373">Tuotantokausi</string>
-  <string id="20374">Lataa videon tiedot</string>
+  <string id="20374">Ladataan videon tiedot</string>
   <string id="20375">Määrittelemätön sisältö</string>
   <string id="20376">Ensimmäisenä tehty:</string>
   <string id="20377">Päivitä TV-ohjelman tiedot</string>
@@ -1712,7 +1713,7 @@
   <string id="21435">Muokkaa</string>
   <string id="21436">%i kappaletta</string>
   <string id="21437">Uusi älykäs soittolista...</string>
-  <string id="21438">%c Asema</string>
+  <string id="21438">%c: Asema</string>
   <string id="21439">Muokkaa jukeboksin asetuksia</string>
  
   <string id="21800">Tiedostonimi</string>
@@ -1723,7 +1724,7 @@
   <string id="21805">Resoluutio</string>
   <string id="21806">Kommentti</string>
   <string id="21807">Väri/MV</string>
-  <string id="21808">Jpeg Prosessi</string>
+  <string id="21808">Jpeg-Prosessi</string>
   
   <string id="21820">Päiväys</string>
   <string id="21821">Selite</string>
@@ -1749,7 +1750,7 @@
   <string id="21841">GPS-Pituusaste</string>
   <string id="21842">GPS-Korkeus</string>
   <string id="21843">Suunta</string>
-  
+
   <string id="21860">Lisäkategoriat</string>
   <string id="21861">Avainsanat</string>
   <string id="21862">Kuvan sisältö</string>
@@ -1771,8 +1772,9 @@
   <string id="21878">Tekijänoikeus</string>
   <string id="21879">Maakoodi</string>
   <string id="21880">Kuvapalvelu</string>
- <string id="21881">UPnP toisto käytössä</string> 
-<!-- strings 21900 thru 21999 reserved for slideshow info -->
+  <string id="21881">UPnP toisto käytössä</string>
+
+  <!-- strings 21900 thru 21999 reserved for slideshow info -->
 
   <string id="29999">Näytön välkynnän poisto</string>
 </strings>
