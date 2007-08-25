@@ -80,6 +80,9 @@
 			<RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
 				<expression repeat="yes">&quot;/Sections/Genres/[^/]*/&quot;&gt;([^&lt;]*)&lt;/a&gt;</expression>
 			</RegExp>
+			<RegExp input="$$1" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="5+">
+				<expression repeat="yes">&quot;/company/[^/]*/&quot;&gt;([^&lt;]*)&lt;/a&gt;</expression>
+			</RegExp>
 			<RegExp input="$$1" output="\1" dest="7">
 				<expression noclean="1">first billed only: &lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;(.*)</expression>
 			</RegExp>

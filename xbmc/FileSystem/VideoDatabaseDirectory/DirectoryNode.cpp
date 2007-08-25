@@ -16,6 +16,7 @@
 #include "DirectoryNodeEpisodes.h"
 #include "DirectoryNodeRecentlyAddedMovies.h"
 #include "DirectoryNodeRecentlyAddedEpisodes.h"
+#include "DirectoryNodeStudio.h"
 
 using namespace DIRECTORY::VIDEODATABASEDIRECTORY;
 
@@ -105,6 +106,8 @@ CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const CStdString& str
     return new CDirectoryNodeRecentlyAddedMovies(strName,pParent);
   case NODE_TYPE_RECENTLY_ADDED_EPISODES:
     return new CDirectoryNodeRecentlyAddedEpisodes(strName,pParent);
+  case NODE_TYPE_STUDIO:
+    return new CDirectoryNodeStudio(strName,pParent);
   }
 
   return NULL;
