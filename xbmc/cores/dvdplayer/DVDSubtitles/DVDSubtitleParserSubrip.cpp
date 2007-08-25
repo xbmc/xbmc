@@ -4,7 +4,7 @@
 #include "../DVDCodecs/Overlay/DVDOverlayText.h"
 #include "../DVDClock.h"
 
-CDVDSubtitleParserSubrip::CDVDSubtitleParserSubrip(CDVDSubtitleStream* pStream, const char* strFile)
+CDVDSubtitleParserSubrip::CDVDSubtitleParserSubrip(CDVDSubtitleStream* pStream, const string& strFile)
     : CDVDSubtitleParser(pStream, strFile)
 {
 
@@ -85,9 +85,13 @@ int CDVDSubtitleParserSubrip::ParseFile()
 
       		// empty line, next subtitle is about to start
 		      if (strlen(pLineStart) <= 0) break;
-     
+
+          CStdStringW strUTF16;
+          CStdStringA strUTF8;
+          g_charsetConverter.subtitleCharsetToUTF16(line, strUTF16);
+          g_charsetConverter.utf16toUTF8(strUTF16, strUTF8);
       		// add a new text element to our container
-      		pOverlay->AddElement(new CDVDOverlayText::CElementText(line));
+      		pOverlay->AddElement(new CDVDOverlayText::CElementText(strUTF8.c_str()));
         }
         
         m_collection.Add(pOverlay);

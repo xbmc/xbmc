@@ -71,7 +71,7 @@ public:
   int GetActiveSubtitleStream();
   std::string GetSubtitleStreamLanguage(int iId);
   int GetSubTitleStreamCount();
- 
+
   bool SetActiveSubtitleStream(int iId, bool bDisplay = true);
   void EnableSubtitleStream(bool bEnable);
 
@@ -82,7 +82,7 @@ public:
 
   bool GetNavigatorState(std::string &xmlstate);
   bool SetNavigatorState(std::string &xmlstate);
-  
+
   int GetChapter()      { return m_iPart; }      // the current part in the current title
   int GetChapterCount() { return m_iPartCount; } // the number of parts in the current title
 
@@ -93,14 +93,14 @@ public:
 
   bool Seek(int iTimeInMsec); //seek within current pg(c)
   virtual int GetCurrentGroupId() { return m_icurrentGroupId; }
-  
+
   __int64 GetTimeStampCorrection() { return (m_iVobUnitCorrection * 1000) / 90; }
 protected:
 
   int ProcessBlock(BYTE* buffer, int* read);
-  
+
   void CheckButtons();
-  
+
   /**
    * XBMC     : the audio stream id we use in xbmc
    * external : the audio stream id that is used in libdvdnav
@@ -114,7 +114,7 @@ protected:
    */
   int ConvertSubtitleStreamId_XBMCToExternal(int id);
   int ConvertSubtitleStreamId_ExternalToXBMC(int id);
-  
+
   DllDvdNav m_dll;
   bool m_bCheckButtons;
   bool m_bEOF;
@@ -136,12 +136,12 @@ protected:
   int m_iTitle;
 
   int m_iPartCount;
-  int m_iPart;  
+  int m_iPart;
 
   struct dvdnav_s* m_dvdnav;
 
   IDVDPlayer* m_pDVDPlayer;
-  
+
   BYTE m_lastblock[DVD_VIDEO_BLOCKSIZE];
   int  m_lastevent;
 };

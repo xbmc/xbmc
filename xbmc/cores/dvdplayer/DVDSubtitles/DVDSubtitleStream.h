@@ -1,17 +1,18 @@
 
 #pragma once
 
-#include "../DVDInputStreams/DVDInputStream.h"
+
+class CDVDInputStream;
 
 // buffered class for subtitle reading
 
 class CDVDSubtitleStream
 {
 public:
-  CDVDSubtitleStream(CDVDInputStream* pInputStream);
+  CDVDSubtitleStream();
   virtual ~CDVDSubtitleStream();
   
-  bool Open(const char* strFile);
+  bool Open(const string& strFile);
   void Close();
   int Read(BYTE* buf, int buf_size);
   __int64 Seek(__int64 offset, int whence);
