@@ -131,7 +131,6 @@ protected:
   unsigned int m_autosync;
   
   // classes
-  CDVDDemuxSPU* m_pDVDSpu;
   CDVDVideoCodec* m_pVideoCodec;
   CDVDOverlayCodecCC* m_pOverlayCodecCC;
   
