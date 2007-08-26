@@ -357,7 +357,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
       // not change inside a VTS. Therefore this event can be used to query such
       // information only when necessary and update the decoding/displaying
       // accordingly.
-      {
+      {        
         if(m_holdmode == HOLDMODE_NONE)
         {
           CLog::Log(LOGDEBUG, " - DVDNAV_VTS_CHANGE (HOLDING)");
@@ -365,7 +365,9 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
           iNavresult = NAVRESULT_HOLD;
         }
         else
-          iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_VTS_CHANGE);        
+          iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_VTS_CHANGE);
+
+        m_bInMenu = (0 == m_dll.dvdnav_is_domain_vts(m_dvdnav));
       }
       break;
 
@@ -534,7 +536,7 @@ bool CDVDInputStreamNavigator::SetActiveAudioStream(int iId)
   return true;
 }
 
-bool CDVDInputStreamNavigator::SetActiveSubtitleStream(int iId, bool bDisplay)
+bool CDVDInputStreamNavigator::SetActiveSubtitleStream(int iId)
 {
   int streamId = ConvertSubtitleStreamId_XBMCToExternal(iId);
   CLog::Log(LOGDEBUG, __FUNCTION__" - id: %d, stream: %d", iId, streamId);
@@ -557,9 +559,8 @@ bool CDVDInputStreamNavigator::SetActiveSubtitleStream(int iId, bool bDisplay)
   if (vm->state.domain != VTS_DOMAIN && streamId != 0)
     return false;
 
-  vm->state.SPST_REG = streamId;
-  if(bDisplay)
-    vm->state.SPST_REG |= 0x40;
+  /* set subtitle stream without modifying visibility */
+  vm->state.SPST_REG = streamId | (vm->state.SPST_REG & 0x40);
 
   return true;
 }
@@ -994,16 +995,33 @@ float CDVDInputStreamNavigator::GetVideoAspectRatio()
 
 void CDVDInputStreamNavigator::EnableSubtitleStream(bool bEnable)
 {
-  int iCurrentStream = GetActiveSubtitleStream();
-  
-  /* if nothing is selected */
-  /* we have to force first stream */
-  /* otherwise the set function will */
-  /* set dvdregs in a very odd way */
-  if (iCurrentStream < 0)
-    iCurrentStream = 0;
+  if (!m_dvdnav)
+    return;
 
-  SetActiveSubtitleStream(iCurrentStream, bEnable);
+  vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
+  if (!vm)
+    return;
+
+  if(bEnable)  
+    vm->state.SPST_REG |= 0x40;
+  else
+    vm->state.SPST_REG &= ~0x40;
+}
+
+bool CDVDInputStreamNavigator::IsSubtitleStreamEnabled()
+{
+  if (!m_dvdnav)
+    return false;
+
+  vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
+  if (!vm)
+    return false;
+
+  
+  if(vm->state.SPST_REG & 0x40)
+    return true;
+  else
+    return false;
 }
 
 bool CDVDInputStreamNavigator::GetNavigatorState(std::string &xmlstate)
