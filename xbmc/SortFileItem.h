@@ -88,4 +88,15 @@ struct SSortFileItem
   // Sort by Song Rating (0 -> 5)
   static bool SongRatingAscending(CFileItem *left, CFileItem *right);
   static bool SongRatingDescending(CFileItem *left, CFileItem *right);
+
+  // Sort by Movie Runtime, and if equal, sort by label
+  static bool MovieRuntimeAscending(CFileItem *left, CFileItem *right);
+  static bool MovieRuntimeDescending(CFileItem *left, CFileItem *right);
+
+  // Sort by Studio, and if equal, sort by label
+  static bool StudioAscending(CFileItem *left, CFileItem *right);
+  static bool StudioDescending(CFileItem *left, CFileItem *right);
+  static bool StudioAscendingNoThe(CFileItem *left, CFileItem *right);
+  static bool StudioDescendingNoThe(CFileItem *left, CFileItem *right);
+
 };
