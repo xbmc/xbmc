@@ -2275,38 +2275,6 @@ void CApplication::Render()
 void CApplication::RenderNoPresent()
 {
 #endif
-  // update sound
-  if (m_pPlayer)
-  {
-    m_pPlayer->DoAudioWork();
-  }
-  // process karaoke
-#ifdef HAS_KARAOKE
-  if (m_pCdgParser)
-    m_pCdgParser->ProcessVoice();
-#endif
-
-  // check if we haven't rewound past the start of the file
-  if (IsPlaying())
-  {
-    int iSpeed = g_application.GetPlaySpeed();
-    if (iSpeed < 1)
-    {
-      iSpeed *= -1;
-      int iPower = 0;
-      while (iSpeed != 1)
-      {
-        iSpeed >>= 1;
-        iPower++;
-      }
-      if (g_infoManager.GetPlayTime() / 1000 < iPower)
-      {
-        g_application.SetPlaySpeed(1);
-        g_application.SeekTime(0);
-      }
-    }
-  }
-
   // don't do anything that would require graphiccontext to be locked before here in fullscreen.
   // that stuff should go into renderfullscreen instead as that is called from the renderin thread
 #ifdef HAS_XBOX_HARDWARE
@@ -4993,6 +4961,16 @@ void CApplication::Process()
   // and do anything that needs doing (lastfm submission, playcount updates etc)
   CheckPlayingProgress();
 
+  // update sound
+  if (m_pPlayer)
+    m_pPlayer->DoAudioWork();
+
+  // process karaoke
+#ifdef HAS_KARAOKE
+  if (m_pCdgParser)
+    m_pCdgParser->ProcessVoice();
+#endif
+
   // do any processing that isn't needed on each run
   if( m_slowTimer.GetElapsedMilliseconds() > 500 )
   {
@@ -5417,6 +5395,27 @@ void CApplication::RestoreMusicScanSettings()
 
 void CApplication::CheckPlayingProgress()
 {
+  // check if we haven't rewound past the start of the file
+  if (IsPlaying())
+  {
+    int iSpeed = g_application.GetPlaySpeed();
+    if (iSpeed < 1)
+    {
+      iSpeed *= -1;
+      int iPower = 0;
+      while (iSpeed != 1)
+      {
+        iSpeed >>= 1;
+        iPower++;
+      }
+      if (g_infoManager.GetPlayTime() / 1000 < iPower)
+      {
+        g_application.SetPlaySpeed(1);
+        g_application.SeekTime(0);
+      }
+    }
+  }
+
   if (!IsPlayingAudio()) return;
 
   CheckAudioScrobblerStatus();

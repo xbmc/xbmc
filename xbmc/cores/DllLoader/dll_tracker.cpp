@@ -50,7 +50,7 @@ void tracker_dll_free(DllLoader* pDll)
       }
       // free all functions which where created at the time we loaded the dll
 	    DummyListIter dit = (*it)->dummyList.begin();
-	    while (dit != (*it)->dummyList.end()) { free(*dit); dit++;	}
+	    while (dit != (*it)->dummyList.end()) { free((void*)*dit); dit++;	}
 	    (*it)->dummyList.clear();
 	
       delete (*it);
@@ -59,7 +59,7 @@ void tracker_dll_free(DllLoader* pDll)
   }
 }
 
-void tracker_dll_set_addr(DllLoader* pDll, unsigned int min, unsigned int max)
+void tracker_dll_set_addr(DllLoader* pDll, uintptr_t min, uintptr_t max)
 {
   for (TrackedDllsIter it = g_trackedDlls.begin(); it != g_trackedDlls.end(); ++it)
   {
@@ -72,7 +72,7 @@ void tracker_dll_set_addr(DllLoader* pDll, unsigned int min, unsigned int max)
   }
 }
 
-char* tracker_getdllname(unsigned long caller)
+char* tracker_getdllname(uintptr_t caller)
 {
   DllTrackInfo *track = tracker_get_dlltrackinfo(caller);
   if(track)
@@ -80,7 +80,7 @@ char* tracker_getdllname(unsigned long caller)
   return "";
 }
 
-DllTrackInfo* tracker_get_dlltrackinfo(unsigned long caller)
+DllTrackInfo* tracker_get_dlltrackinfo(uintptr_t caller)
 {
   for (TrackedDllsIter it = g_trackedDlls.begin(); it != g_trackedDlls.end(); ++it)
   {
@@ -116,13 +116,13 @@ DllTrackInfo* tracker_get_dlltrackinfo_byobject(DllLoader* pDll)
   return NULL;
 }
 
-void tracker_dll_data_track(DllLoader* pDll, unsigned long addr)
+void tracker_dll_data_track(DllLoader* pDll, uintptr_t addr)
 {
   for (TrackedDllsIter it = g_trackedDlls.begin(); it != g_trackedDlls.end(); ++it)
   {
     if (pDll == (*it)->pDll)
     {
-      (*it)->dummyList.push_back((unsigned long*)addr);
+      (*it)->dummyList.push_back((uintptr_t)addr);
       break;
     }
   }

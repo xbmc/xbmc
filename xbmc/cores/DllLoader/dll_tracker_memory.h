@@ -4,7 +4,7 @@
 
 #include "dll_tracker.h"
 
-extern "C" inline void tracker_memory_track(unsigned long caller, void* data_addr, unsigned long size);
+extern "C" inline void tracker_memory_track(uintptr_t caller, void* data_addr, size_t size);
 extern "C" void tracker_memory_free_all(DllTrackInfo* pInfo);
 extern "C" void tracker_heapobjects_free_all(DllTrackInfo* pInfo);
 
