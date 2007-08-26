@@ -6,7 +6,7 @@
 #include "DllLoader.h"
 #include "exports/emu_kernel32.h"
 
-extern "C" inline void tracker_critical_section_track(unsigned long caller, LPCRITICAL_SECTION cs)
+extern "C" inline void tracker_critical_section_track(uintptr_t caller, LPCRITICAL_SECTION cs)
 {
   DllTrackInfo* pInfo = tracker_get_dlltrackinfo(caller);
   if (pInfo && cs)
@@ -15,7 +15,7 @@ extern "C" inline void tracker_critical_section_track(unsigned long caller, LPCR
   }
 }
 
-extern "C" inline void tracker_critical_section_free(unsigned long caller, LPCRITICAL_SECTION cs)
+extern "C" inline void tracker_critical_section_free(uintptr_t caller, LPCRITICAL_SECTION cs)
 {
   DllTrackInfo* pInfo = tracker_get_dlltrackinfo(caller);
   if (pInfo && cs)
@@ -49,7 +49,7 @@ extern "C" void tracker_critical_section_free_all(DllTrackInfo* pInfo)
 
 extern "C" void __stdcall track_InitializeCriticalSection(LPCRITICAL_SECTION cs)
 {
-  unsigned loc = (unsigned)_ReturnAddress();
+  uintptr_t loc = (uintptr_t)_ReturnAddress();
   
   dllInitializeCriticalSection(cs);
   
@@ -58,7 +58,7 @@ extern "C" void __stdcall track_InitializeCriticalSection(LPCRITICAL_SECTION cs)
 
 extern "C" void __stdcall track_DeleteCriticalSection(LPCRITICAL_SECTION cs)
 {
-  unsigned loc = (unsigned)_ReturnAddress();
+  uintptr_t loc = (uintptr_t)_ReturnAddress();
 
   tracker_critical_section_free(loc, cs);
 

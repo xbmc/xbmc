@@ -82,9 +82,11 @@
  *  %P - production code
  *  %H - season*100+episode
  *  %Z - tvshow title
+ *  %O - mpaa rating
+ *  %U - studio
  */
 
-#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZO"
+#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZOU"
 
 CLabelFormatter::CLabelFormatter(const CStdString &mask, const CStdString &mask2)
 {
@@ -257,6 +259,12 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
     if (movie && movie->m_strMPAARating)
     {// MPAA Rating
       value = movie->m_strMPAARating;
+    }
+    break;
+  case 'U':
+    if (movie && movie->m_strStudio)
+    {// MPAA Rating
+      value = movie ->m_strStudio;
     }
     break;
   }

@@ -6,8 +6,8 @@ class DllLoader;
 
 struct AllocLenCaller
 {
-  unsigned size;
-  unsigned calleraddr;
+  size_t   size;
+  uintptr_t calleraddr;
 };
 
 enum TrackedFileType
@@ -25,8 +25,8 @@ typedef struct _TrackedFile
   char* name;
 } TrackedFile;
 
-typedef std::map<unsigned, AllocLenCaller> DataList;
-typedef std::map<unsigned, AllocLenCaller>::iterator DataListIter;
+typedef std::map<uintptr_t, AllocLenCaller> DataList;
+typedef std::map<uintptr_t, AllocLenCaller>::iterator DataListIter;
 
 typedef std::list<TrackedFile*> FileList;
 typedef std::list<TrackedFile*>::iterator FileListIter;
@@ -34,8 +34,8 @@ typedef std::list<TrackedFile*>::iterator FileListIter;
 typedef std::list<HMODULE> DllList;
 typedef std::list<HMODULE>::iterator DllListIter;
 
-typedef std::list<unsigned long*> DummyList;
-typedef std::list<unsigned long*>::iterator DummyListIter;
+typedef std::list<uintptr_t> DummyList;
+typedef std::list<uintptr_t>::iterator DummyListIter;
 
 typedef std::list<LPCRITICAL_SECTION> CriticalSectionList;
 typedef std::list<LPCRITICAL_SECTION>::iterator CriticalSectionListIter;
@@ -46,14 +46,14 @@ typedef std::list<SOCKET>::iterator SocketListIter;
 typedef std::list<HANDLE> HeapObjectList;
 typedef std::list<HANDLE>::iterator HeapObjectListIter;
 
-typedef std::map<unsigned, AllocLenCaller> VAllocList;
-typedef std::map<unsigned, AllocLenCaller>::iterator  VAllocListIter;
+typedef std::map<uintptr_t, AllocLenCaller> VAllocList;
+typedef std::map<uintptr_t, AllocLenCaller>::iterator  VAllocListIter;
 
 typedef struct _DllTrackInfo
 {
   DllLoader* pDll;
-  unsigned long lMinAddr;
-  unsigned long lMaxAddr;
+  uintptr_t lMinAddr;
+  uintptr_t lMaxAddr;
   
   DataList dataList;
 
@@ -89,19 +89,19 @@ void tracker_dll_add(DllLoader* pDll);
 void tracker_dll_free(DllLoader* pDll);
 
 // sets the dll base address and size
-void tracker_dll_set_addr(DllLoader* pDll, unsigned int min, unsigned int max);
+void tracker_dll_set_addr(DllLoader* pDll, uintptr_t min, uintptr_t max);
 
 // returns the name from the dll that contains this addres or "" if not found
-char* tracker_getdllname(unsigned long caller);
+char* tracker_getdllname(uintptr_t caller);
 
 // returns a function pointer if there is one available for it, or NULL if not ofund
 void* tracker_dll_get_function(DllLoader* pDll, char* sFunctionName);
 
 DllTrackInfo* tracker_get_dlltrackinfo_byobject(DllLoader* pDll);
 
-DllTrackInfo* tracker_get_dlltrackinfo(unsigned long caller);
+DllTrackInfo* tracker_get_dlltrackinfo(uintptr_t caller);
 
-void tracker_dll_data_track(DllLoader* pDll, unsigned long addr);
+void tracker_dll_data_track(DllLoader* pDll, uintptr_t addr);
 
 #ifdef _LINUX
 #define _ReturnAddress() __builtin_return_address(0)

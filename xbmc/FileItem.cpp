@@ -1412,6 +1412,15 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   case SORT_METHOD_MPAA_RATING:
     Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::MPAARatingAscending : SSortFileItem::MPAARatingDescending);
     break;
+  case SORT_METHOD_VIDEO_RUNTIME:
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::MovieRuntimeAscending : SSortFileItem::MovieRuntimeDescending);
+    break;
+  case SORT_METHOD_STUDIO:
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::StudioAscending : SSortFileItem::StudioDescending);
+    break;
+  case SORT_METHOD_STUDIO_IGNORE_THE:
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::StudioAscendingNoThe : SSortFileItem::StudioDescendingNoThe);
+    break;
   default:
     break;
   }
