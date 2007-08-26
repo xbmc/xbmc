@@ -7,7 +7,7 @@ extern "C"
 {
 #endif
 
-unsigned long create_dummy_function(const char* strDllName, const char* strFunctionName);
+uintptr_t create_dummy_function(const char* strDllName, const char* strFunctionName);
 
 #ifdef _cplusplus
 }

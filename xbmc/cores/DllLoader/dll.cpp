@@ -133,7 +133,7 @@ extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule)
 
 extern "C" FARPROC __stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function)
 {
-  unsigned loc = (unsigned)_ReturnAddress();
+  uintptr_t loc = (uintptr_t)_ReturnAddress();
   
   void* address = NULL;
   LibraryLoader* dll = DllLoaderContainer::GetModule(hModule);
@@ -161,7 +161,7 @@ extern "C" FARPROC __stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function)
       /* add to tracklist if we are tracking this source dll */
       DllTrackInfo* track = tracker_get_dlltrackinfo(loc);
       if( track )
-        tracker_dll_data_track(track->pDll, (unsigned long)address);
+        tracker_dll_data_track(track->pDll, (uintptr_t)address);
 
       CLog::Log(LOGDEBUG, "%s - created dummy function %s!%s",__FUNCTION__, dll->GetName(), ordinal);
     }
@@ -186,7 +186,7 @@ extern "C" FARPROC __stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function)
        && stricmp(track->pDll->GetName(), "CoreAVCDecoder.ax") == 0 )
       {
         address = (void*)create_dummy_function(dll->GetName(), function);
-        tracker_dll_data_track(track->pDll, (unsigned long)address);
+        tracker_dll_data_track(track->pDll, (uintptr_t)address);
         CLog::Log(LOGDEBUG, "%s - created dummy function %s!%s", __FUNCTION__, dll->GetName(), function);
       }
       else
