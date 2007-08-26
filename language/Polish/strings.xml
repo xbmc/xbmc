@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: smuto-->
 <!--Email: smuto@gazeta.pl-->
-<!--Date of translation: 08/19/2007-->
+<!--Date of translation: 08/26/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 9956-->
+<!--Based on english strings version 10090-->
 <strings>
   <string id="0">Gry i Programy</string>
   <string id="1">Zdjęcia</string>
@@ -152,7 +152,7 @@
   <string id="217">Rozciągnij</string>
   <string id="218">Napęd DVD</string>
   <string id="219">Proszę włożyć dysk</string>
-  <string id="220">Źródło z uziałem zdalnym</string>
+  <string id="220">Źródło z udziałem zdalnym</string>
   <string id="221">Sieć nie jest podłączona</string>
   <string id="222">Anuluj</string>
   <string id="224">Czas wyświetlania slajdu</string>
@@ -332,7 +332,7 @@
   <string id="411">Pobieram pogodę dla:</string>
   <string id="412">Nie mogę uzyskać danych pogodowych</string>
   <string id="413">Ręcznie</string>
-  <string id="414">Brak recenzji  tego albumu</string>
+  <string id="414">Brak recenzji tego albumu</string>
   <string id="415">Pobieram miniaturki...</string>
   <string id="416">Niedostępne</string>
   <string id="417">Widok: Duże ikony</string>
@@ -473,6 +473,7 @@
   <string id="569">Komentarz</string>
   <string id="570">Data dodania</string>
   <string id="571">Domyślny</string>
+  <string id="572">Wytwórnia</string>
   <string id="580">Kierunek sortowania</string>
   <string id="581">Metoda sortowania</string>
   <string id="582">Tryby widoku</string>
@@ -650,6 +651,12 @@
   <string id="1034">Menu szybkiego dostępu</string>
   <string id="1035">Uaktywnij przyciski szybkiego dostępu</string>
   <string id="1036">Ulubione</string>
+  <string id="1037">Filmy - Wtyczki </string>
+  <string id="1038">Muzyka - Wtyczki</string>
+  <string id="1039">Zdjęcia - Wtyczki</string>
+  <string id="1040">Wczytuję katalogi</string>
+  <string id="1041">Odzyskano %i pozycji</string>
+  <string id="1042">Odzyskano %i z %i pozycji</string>
   <string id="1200">SMB Udział</string>
   <string id="1202">Grupa robocza</string>
   <string id="1203">Domyślny użytkownik</string>
@@ -686,7 +693,7 @@
   <string id="1251">Autodetekcja Xboksa</string>
   <string id="1252">Nick</string>
   <string id="1254">Pytaj czy połączyć</string>
-  <string id="1255">Automatycznie wysyłaj login i hasło !!</string>
+  <string id="1255">Automatycznie wysyłaj login i hasło</string>
   <string id="1256">Opóźnienie pingu</string>
   <string id="1257">Połączyć z wykrytym Xboksem?</string>
   <string id="1396">zamiecie</string>
@@ -854,15 +861,15 @@ naciśnij  Back, aby anulować</string>
   <string id="13106">Wyłączona</string>
   <string id="13107">Włączona podczas odtwarzania filmów</string>
   <string id="13108">Zawsze włączona</string>
-  <string id="13150">HDD Klucz:</string>
-  <string id="13151">HDD Temperatura:</string>
-  <string id="13152">DVD Model:</string>
-  <string id="13153">DVD Firmware:</string>
-  <string id="13154">HDD Model:</string>
-  <string id="13155">HDD Nr seryjny:</string>
-  <string id="13156">HDD Firmware:</string>
-  <string id="13157">HDD Hasło:</string>
-  <string id="13158">HDD Stan blokady:</string>
+  <string id="13150">Klucz:</string>
+  <string id="13151">Temperatura:</string>
+  <string id="13152">Model:</string>
+  <string id="13153">Firmware:</string>
+  <string id="13154">Model:</string>
+  <string id="13155">Nr seryjny:</string>
+  <string id="13156">Firmware:</string>
+  <string id="13157">Hasło:</string>
+  <string id="13158">Stan blokady:</string>
   <string id="13159">Maska podsieci</string>
   <string id="13160">Brama</string>
   <string id="13161"> Główne DNS:</string>
@@ -873,7 +880,7 @@ naciśnij  Back, aby anulować</string>
   <string id="13166">Słuchawki/Mikrofon</string>
   <string id="13167">Karta pamięci</string>
   <string id="13168">Odbiornik IR</string>
-  <string id="13169">Kontoler Port</string>
+  <string id="13169">Kontroler Port</string>
   <string id="13170">Nigdy</string>
   <string id="13171">Natychmiast</string>
   <string id="13172">Po %i sekundach</string>
@@ -1210,7 +1217,7 @@ dla tej wizualizacji</string>
   <string id="15273">Tygodniowy wykaz artystów dla %name%</string>
   <string id="15274">Tygodniowy wykaz albumów dla %name%</string>
   <string id="15275">Tygodniowy wykaz ścieżek dla %name%</string>
-  <string id="15276">Słuchaj  radia sąsiadów użytkownika - %name%</string>
+  <string id="15276">Słuchaj radia sąsiadów użytkownika - %name%</string>
   <string id="15277">Słuchaj osobistego radia użytkownika - %name%</string>
   <string id="15278">Słuchaj ulubionych utworów użytkownika - %name%</string>
   <string id="15279">Pobieranie listy z Last.FM...</string>
@@ -1218,9 +1225,9 @@ dla tej wizualizacji</string>
   <string id="15281">Wpisz nazwę artysty, aby wyszukać pokrewnych</string>
   <string id="15282">Wpisz nazwę grupy, aby znaleźć podobne</string>
   <string id="15283">Ostatnio słuchane ścieżki użytkownika %name%</string>
-  <string id="15284">Słuchaj radia polecanego przez  %name% </string>
+  <string id="15284">Słuchaj radia polecanego przez %name% </string>
   <string id="15285">Tagi najczęściej używane przez %name%</string>
-  <string id="15286">Słuchaj playlist użytkownika -  %name%</string>
+  <string id="15286">Słuchaj playlist użytkownika - %name%</string>
   <string id="15300">Niepoprawna ścieżka</string>
   <string id="15301">Nie mogę połączyć się z serwerem</string>
   <string id="15302">Nie znaleziono żadnego serwera</string>
@@ -1462,7 +1469,7 @@ dla tej wizualizacji</string>
   <string id="20315">Stany Gier</string>
   <string id="20316">Sortuj: ID</string>
   <string id="20317">Ściągnij stan gry z Internetu</string>
-  <string id="20318">Stan wgrany i zainstalowanyny dysku</string>
+  <string id="20318">Stan wgrany i zainstalowany na dysku</string>
   <string id="20319">Ściąganie nie powiodło się!</string>
   <string id="20320">Wybierz ten, który chcesz ściągnąć i zainstalować</string>
   <string id="20321">nie ma dostępnych stanów dla tej gry</string>
@@ -1476,7 +1483,7 @@ dla tej wizualizacji</string>
   <string id="20330">Nazwa folderu jako podstawa szukania</string>
   <string id="20331">Plik</string>
   <string id="20332">Użyć nazwy pliku lub folderu jako podstawy szukania?</string>
-  <string id="20333">Określ typ zawartości</string>
+  <string id="20333">Określ zawartość</string>
   <string id="20334">Folder</string>
   <string id="20335">Uwzględnić zawartość podkatalogów ?</string>
   <string id="20336">Odblokuj źródła</string>
@@ -1484,7 +1491,7 @@ dla tej wizualizacji</string>
   <string id="20338">Film</string>
   <string id="20339">Reżyser</string>
   <string id="20340">Chcesz usunąć z biblioteki wszystkie pozycje</string>
-  <string id="20341">związane z tę scieżką?</string>
+  <string id="20341">związane z tę ścieżką?</string>
   <string id="20342">Filmy</string>
   <string id="20343">Seriale telewizyjne</string>
   <string id="20344">Zawartość katalogu</string>
@@ -1514,12 +1521,12 @@ dla tej wizualizacji</string>
   <string id="20368">Numer porządkowy</string>
   <string id="20369">Ukryj opis dla nieoglądanych pozycji</string>
   <string id="20370">* Ukryte, gdyż poznanie fabuły psuje przyjemność oglądania *</string>
-  <string id="20371">Ustaw ikonę tego sazonu</string>
+  <string id="20371">Ustaw ikonę tego sezonu</string>
   <string id="20372">Miniaturka dla sezonu</string>
   <string id="20373">Sezon</string>
   <string id="20374">Pobieram informacje o filmie </string>
-  <string id="20375">Nieokreślono typu zawartości</string>
-  <string id="20376">Wstepnie otrzymano</string>
+  <string id="20375">Nieokreślono zawartości</string>
+  <string id="20376">Wstępnie otrzymano:</string>
   <string id="20377">Odśwież informację o serialu</string>
   <string id="20378">Odświeżyć dane dla wszystkich odcinków?</string>
   <string id="20379">Katalog zawiera jeden serial</string>
@@ -1531,6 +1538,7 @@ dla tej wizualizacji</string>
   <string id="20385">Usuń link do serialu</string>
   <string id="20386">Ostatnio dodane filmy</string>
   <string id="20387">Ostatnio dodane odcinki</string>
+  <string id="20388">Wytwórnie</string>
   <string id="21330">Pokazuj ukryte pliki i foldery</string>
   <string id="21331">Klient TuxBox</string>
   <string id="21332">UWAGA: Urządzenie TuxBox jest w trybie nagrywania!</string>
@@ -1563,15 +1571,15 @@ dla tej wizualizacji</string>
   <string id="21379">Uaktywnij 720p</string>
   <string id="21380">Uaktywnij 1080i</string>
   <string id="21381">Wprowadź nazwę nowej playlisty</string>
-  <string id="21382">Lista  - ukryj przycisk Dodaj źródło</string>
-  <string id="21383">Pokazuj paseki przewijania</string>
+  <string id="21382">Lista - ukryj przycisk Dodaj źródło</string>
+  <string id="21383">Pokazuj pasek przewijania</string>
   <string id="21384">Filtrowanie oglądanych pozycji jako przełącznik w trybie biblioteki</string>
   <string id="21385">Otwórz</string>
   <string id="21386">Zarządzanie poziomem głośności pracy</string>
   <string id="21387">szybki</string>
   <string id="21388">cichy</string>
   <string id="21389">Ustaw zdjęcie jako własne tło</string>
-  <string id="21390">Zarządzanie poziomem użycia energi</string>
+  <string id="21390">Zarządzanie poziomem użycia energii</string>
   <string id="21391">wysokie zużycie</string>
   <string id="21392">niskie zużycie</string>
   <string id="21393">działanie natychmiastowe</string>
@@ -1599,7 +1607,7 @@ dla tej wizualizacji</string>
   <string id="21423">Nowe kryteria...</string>
   <string id="21424">Utwory muszą spełniać</string>
   <string id="21425">wszystkie kryteria</string>
-  <string id="21426">przynajmniej jadno kryterium</string>
+  <string id="21426">przynajmniej jedno kryterium</string>
   <string id="21427">ogranicz do</string>
   <string id="21428">bez ograniczeń</string>
   <string id="21429">Sortuj</string>
@@ -1646,6 +1654,7 @@ dla tej wizualizacji</string>
   <string id="21841">Długość geograficzna (GPS)</string>
   <string id="21842">Wysokość bezwzględna (GPS)</string>
   <string id="21843">Orientacja zdjęcia</string>
+  <string id="21860">Kategorie dodatkowe</string>
   <string id="21861">Słowa kluczowe</string>
   <string id="21862">Podpis</string>
   <string id="21863">Autor</string>
@@ -1654,14 +1663,19 @@ dla tej wizualizacji</string>
   <string id="21866">Kategorie</string>
   <string id="21867">Łącze autora</string>
   <string id="21868">Nazwa łącza</string>
+  <string id="21869">Lista zasług</string>
   <string id="21870">Źródło</string>
   <string id="21871">Prawa autorskie</string>
   <string id="21872">Nazwa obiektu</string>
   <string id="21873">Miasto</string>
   <string id="21874">Prowincja/stan</string>
   <string id="21875">Kraj</string>
+  <string id="21876">Wybór odwołania do źródła</string>
   <string id="21877">Data utworzenia</string>
   <string id="21878">Identyfikator przynależności</string>
   <string id="21879">Kod kraju</string>
+  <string id="21880">Odwołanie do usługi</string>
+  <string id="21881">Włącz UPnP Renderer</string>
   <string id="29999">Filtr migotania (Auto Flicker Filter Patch)</string>
 </strings>
+ 	  	 
