@@ -133,6 +133,21 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
     return false;
   }
 
+  // jump directly to title menu
+  if(g_guiSettings.GetBool("videoplayer.dvdautomenu"))
+  {
+    int len, event;
+    uint8_t buf[2048];
+    uint8_t* buf_ptr = buf;
+
+    // must startup vm and pgc
+    m_dll.dvdnav_get_next_cache_block(m_dvdnav,&buf_ptr,&event,&len);
+    m_dll.dvdnav_sector_search(m_dvdnav, 0, SEEK_SET);
+
+    if(m_dll.dvdnav_menu_call(m_dvdnav, DVD_MENU_Title) != DVDNAV_STATUS_OK)
+      CLog::Log(LOGERROR,"Error on dvdnav_menu_call(Title): %s\n", m_dll.dvdnav_err_to_string(m_dvdnav));
+  }
+
   m_bEOF = false;
   m_bCheckButtons = false;
   m_iCellStart = 0;
