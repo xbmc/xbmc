@@ -482,6 +482,7 @@
   <string id="569">評論</string>
   <string id="570">加入日期</string>
   <string id="571">預設</string>
+  <string id="572">影片製作公司</string>
 
   <string id="580">排序方向</string>
   <string id="581">排序方法</string>
@@ -620,7 +621,7 @@
   <string id="767">保留</string>
   <string id="768">保留</string>
   <string id="769">保留</string>
-  <string id="770">錯誤 %i：無法共享</string>
+  <string id="770">錯誤%i：無法共享</string>
   <string id="771">- FTP 伺服器限定工作在 FATX 格式</string>
   <string id="772">音效硬體</string>
   <string id="773">搜尋中</string>
@@ -669,7 +670,8 @@
   <string id="1038">音樂插件</string>
   <string id="1039">圖片插件</string>
   <string id="1040">載入目錄</string>
-  <string id="1041">檢索 %i 項目</string>
+  <string id="1041">檢索%i項目</string>
+  <string id="1042">檢索%i在%i項目</string>
 
   <string id="1200">SMB 共享設定</string>
   <string id="1202">工作群組</string>
@@ -943,7 +945,7 @@
   <string id="13206">覆蓋</string>
   <string id="13208">鬧鈴</string>
   <string id="13209">鬧鈴間隔(分鐘)</string>
-  <string id="13210">鬧鈴啟動，%i分鐘倒數計時。</string>
+  <string id="13210">鬧鈴啟動，倒數計時%i分鐘。</string>
   <string id="13211">響鈴！</string>
   <string id="13212">鬧鈴取消，剩下%i分%i秒。</string>
 
@@ -1448,7 +1450,7 @@
   <string id="20111">自動開啟 UPnP 客戶端</string>
   <string id="20112">上次登入：%s</string>
   <string id="20113">從未登入</string>
-  <string id="20114">預設檔 %i / %i</string>
+  <string id="20114">預設檔%i / %i</string>
   <string id="20115">使用者登入 / 選擇預設檔</string>
   <string id="20116">在登入畫面中使用鎖定</string>
   <string id="20117">密碼無效</string>
@@ -1485,7 +1487,7 @@
   <string id="20149">120分鐘後自動關機</string>
   <string id="20150">自訂關機時間</string>
   <string id="20151">取消自動關機</string>
-  <string id="20152">鎖定偏好設定檔 %s</string>
+  <string id="20152">鎖定偏好設定檔%s</string>
   <string id="20153">瀏覽…</string>
   <string id="20154">基本資訊</string>
   <string id="20155">儲存裝置資訊</string>
@@ -1623,6 +1625,7 @@
   <string id="20385">移除電視節目連接</string>
   <string id="20386">最近加入的電影</string>
   <string id="20387">最近加入的影集</string>
+  <string id="20388">影片製作公司</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">顯示隱藏檔案和目錄</string>
@@ -1775,3 +1778,4 @@
 
   <string id="29999">遊戲應用閃爍過濾</string>
 </strings>
+ 	  	 
