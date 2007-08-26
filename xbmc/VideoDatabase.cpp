@@ -1538,7 +1538,7 @@ void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, co
       AddDirectorToMovie(lMovieId, vecDirectors[i]);
     }
     
-    for (i = 0; i < (int)vecDirectors.size(); ++i)
+    for (i = 0; i < (int)vecStudios.size(); ++i)
     {
       AddStudioToMovie(lMovieId, vecStudios[i]);
     }
