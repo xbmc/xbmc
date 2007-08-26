@@ -184,6 +184,20 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
         dir->m_listItems.AddSortMethod(SORT_METHOD_MPAA_RATING, 563, LABEL_MASKS("%T", "%O"));
         break;
       }
+    case SORT_METHOD_VIDEO_RUNTIME:
+      {
+        dir->m_listItems.AddSortMethod(SORT_METHOD_VIDEO_RUNTIME, 555, LABEL_MASKS("%T", "%D"));
+        break;
+      }
+    case SORT_METHOD_STUDIO:
+    case SORT_METHOD_STUDIO_IGNORE_THE:
+      {
+        if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+          dir->m_listItems.AddSortMethod(SORT_METHOD_STUDIO_IGNORE_THE, 572, LABEL_MASKS("%T", "%U"));
+        else
+          dir->m_listItems.AddSortMethod(SORT_METHOD_STUDIO, 572, LABEL_MASKS("%T", "%U"));
+        break;
+      }
   }
 }
 

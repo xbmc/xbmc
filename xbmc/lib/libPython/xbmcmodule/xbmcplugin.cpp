@@ -24,20 +24,20 @@ namespace PYXBMC
  * start of xbmc methods
  *****************************************************************/
   PyDoc_STRVAR(addDirectoryItem__doc__,
-    "addDirectoryItem(handle, url, listitem [,isFolder, totlalItems]) -- Callback function to pass directory contents back to XBMC.\n"
+    "addDirectoryItem(handle, url, listitem [,isFolder, totalItems]) -- Callback function to pass directory contents back to XBMC.\n"
+    " - Returns a bool for successful completion.\n"
     "\n"
     "handle      : Integer - handle the plugin was started with.\n"
     "url         : string - url of the entry. would be plugin:// for another virtual directory\n"
     "listitem    : ListItem - item to add.\n"
     "isFolder    : [opt] bool - True=folder / False=not a folder(default).\n"
-    "totlaItems  : [opt] Integer - Total number of items that will be passed.(used for progressbar)\n"
+    "totalItems  : [opt] Integer - Total number of items that will be passed.(used for progressbar)\n"
     "\n"
     "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
     "       Once you use a keyword, all following arguments require the keyword.\n"
     "\n"
     "example:\n"
-    "  - ok = xbmcplugin.addDirectoryItem(int(sys.argv[1]), 'F:\\\\Trailers\\\\300.mov', listitem)\n"
-    "  - if not ok: break\n");
+    "  - if not xbmcplugin.addDirectoryItem(int(sys.argv[1]), 'F:\\\\Trailers\\\\300.mov', listitem, totalItems=50): break\n");
 
   PyObject* XBMCPLUGIN_AddDirectoryItem(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {
@@ -81,6 +81,9 @@ namespace PYXBMC
     "handle      : Integer - handle the plugin was started with.\n"
     "succeeded   : [opt] bool - True=script completed successfully(Default)/False=Script did not.\n"
     "\n"
+    "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
+    "\n"
     "example:\n"
     "  - xbmcplugin.endOfDirectory(int(sys.argv[1]))\n");
 
@@ -115,8 +118,11 @@ namespace PYXBMC
     "handle      : Integer - handle the plugin was started with.\n"
     "sortMethod  : Integer - Number for sortmethod see FileItem.h.\n"
     "\n"
+    "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
+    "\n"
     "example:\n"
-    "  - xbmcplugin.addSortMethod(int(sys.argv[1]), 17)\n");
+    "  - xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_TITLE)\n");
 
   PyObject* XBMCPLUGIN_AddSortMethod(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {
@@ -199,8 +205,10 @@ namespace PYXBMC
     PyModule_AddIntConstant(pXbmcPluginModule, "SORT_METHOD_PRODUCTIONCODE", SORT_METHOD_PRODUCTIONCODE);
     PyModule_AddIntConstant(pXbmcPluginModule, "SORT_METHOD_SONG_RATING", SORT_METHOD_SONG_RATING);
     PyModule_AddIntConstant(pXbmcPluginModule, "SORT_METHOD_MPAA_RATING", SORT_METHOD_MPAA_RATING);
+    PyModule_AddIntConstant(pXbmcPluginModule, "SORT_METHOD_VIDEO_RUNTIME", SORT_METHOD_VIDEO_RUNTIME);
+    PyModule_AddIntConstant(pXbmcPluginModule, "SORT_METHOD_STUDIO", SORT_METHOD_STUDIO);
+    PyModule_AddIntConstant(pXbmcPluginModule, "SORT_METHOD_STUDIO_IGNORE_THE", SORT_METHOD_STUDIO_IGNORE_THE);
     PyModule_AddIntConstant(pXbmcPluginModule, "SORT_METHOD_UNSORTED", SORT_METHOD_UNSORTED);
-
   }
 }
 
