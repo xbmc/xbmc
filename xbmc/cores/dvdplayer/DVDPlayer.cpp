@@ -1170,10 +1170,11 @@ bool CDVDPlayer::GetSubtitleVisible()
 {
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
-    // for dvd's when we are in the menu, just return users preference
     CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
     if(pStream->IsInMenu())
       return g_stSettings.m_currentVideoSettings.m_SubtitleOn;
+    else
+      return pStream->IsSubtitleStreamEnabled();
   }
 
   return m_dvdPlayerVideo.IsSubtitleEnabled();
@@ -1631,11 +1632,6 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
 
         int iStream = event->physical_wide;
         bool visible = !(iStream & 0x80);
-
-        // only modify user preference if we are not in menu
-        // and we actually have a subtitle stream
-        if(!pStream->IsInMenu() && iStream != -1)
-          g_stSettings.m_currentVideoSettings.m_SubtitleOn = visible;
 
         m_dvdPlayerVideo.EnableSubtitle(visible);
 
