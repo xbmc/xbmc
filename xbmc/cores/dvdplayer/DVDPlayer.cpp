@@ -1749,7 +1749,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
     CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
 
 
-    if( m_dvd.state == DVDSTATE_STILL && pStream->GetTotalButtons() == 0 )
+    if( m_dvd.state == DVDSTATE_STILL && m_dvd.iDVDStillTime != 0 && pStream->GetTotalButtons() == 0 )
     {
       switch(action.wID)
       {
@@ -1761,7 +1761,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
             /* this will force us out of the stillframe */
             CLog::Log(LOGDEBUG, __FUNCTION__ " - User asked to exit stillframe");
             m_dvd.iDVDStillStartTime = 0;
-            m_dvd.iDVDStillTime = 0;
+            m_dvd.iDVDStillTime = 1;
             return true;
           }
           break;
