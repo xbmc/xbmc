@@ -49,9 +49,9 @@ protected:
   Export* GetExportByOrdinal(unsigned long ordinal);
   Export* GetExportByFunctionName(const char* sFunctionName);
   
-  void AddExport(unsigned long ordinal, unsigned long function, void* track_function = NULL);
-  void AddExport(char* sFunctionName, unsigned long ordinal, unsigned long function, void* track_function = NULL);
-  void AddExport(char* sFunctionName, unsigned long function, void* track_function = NULL);
+  void AddExport(unsigned long ordinal, void* function, void* track_function = NULL);
+  void AddExport(char* sFunctionName, unsigned long ordinal, void* function, void* track_function = NULL);
+  void AddExport(char* sFunctionName, void* function, void* track_function = NULL);
   void SetExports(Export* exports) { m_pStaticExports = exports; }
 
 private:

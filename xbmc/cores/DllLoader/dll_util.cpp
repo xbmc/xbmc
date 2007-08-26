@@ -38,11 +38,11 @@ unsigned char dummy_func[] = {
  * 5 string                    (string of chars representing dll name)
  * 6 string                    (string of chars representing function name)
  */
-unsigned long create_dummy_function(const char* strDllName, const char* strFunctionName)
+uintptr_t create_dummy_function(const char* strDllName, const char* strFunctionName)
 {
-  unsigned int iFunctionSize = sizeof(dummy_func);
-  unsigned int iDllNameSize = strlen(strDllName) + 1;
-  unsigned int iFunctionNameSize = strlen(strFunctionName) + 1;
+  size_t iFunctionSize = sizeof(dummy_func);
+  size_t iDllNameSize = strlen(strDllName) + 1;
+  size_t iFunctionNameSize = strlen(strFunctionName) + 1;
 
   // allocate memory for function + strings + 3 x 4 bytes for three datapointers
   char* pData = (char*)malloc(iFunctionSize + 12 + iDllNameSize + iFunctionNameSize);
@@ -72,7 +72,7 @@ unsigned long create_dummy_function(const char* strDllName, const char* strFunct
   memcpy(offStringDll, strDllName, iDllNameSize);
   memcpy(offStringFunc, strFunctionName, iFunctionNameSize);
 
-  return (unsigned long)pData;
+  return (uintptr_t)pData;
 }
 
 #ifdef _cplusplus

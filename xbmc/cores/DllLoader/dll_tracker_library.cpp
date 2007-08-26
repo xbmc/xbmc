@@ -6,7 +6,7 @@
 #include "DllLoader.h"
 #include "DllLoaderContainer.h"
 
-extern "C" inline void tracker_library_track(unsigned long caller, HMODULE hHandle)
+extern "C" inline void tracker_library_track(uintptr_t caller, HMODULE hHandle)
 {
   DllTrackInfo* pInfo = tracker_get_dlltrackinfo(caller);
   if (pInfo && hHandle)
@@ -15,7 +15,7 @@ extern "C" inline void tracker_library_track(unsigned long caller, HMODULE hHand
   }
 }
 
-extern "C" inline void tracker_library_free(unsigned long caller, HMODULE hHandle)
+extern "C" inline void tracker_library_free(uintptr_t caller, HMODULE hHandle)
 {
   DllTrackInfo* pInfo = tracker_get_dlltrackinfo(caller);
   if (pInfo && hHandle)
@@ -72,7 +72,7 @@ extern "C" void tracker_library_free_all(DllTrackInfo* pInfo)
  
 extern "C" HMODULE __stdcall track_LoadLibraryA(LPCSTR file)
 {
-  unsigned loc = (unsigned)_ReturnAddress();
+  uintptr_t loc = (uintptr_t)_ReturnAddress();
 
   DllTrackInfo* pInfo = tracker_get_dlltrackinfo(loc);
   char* path = NULL;
@@ -86,7 +86,7 @@ extern "C" HMODULE __stdcall track_LoadLibraryA(LPCSTR file)
 
 extern "C" HMODULE __stdcall track_LoadLibraryExA(LPCSTR lpLibFileName, HANDLE hFile, DWORD dwFlags)
 {
-  unsigned loc = (unsigned)_ReturnAddress();
+  uintptr_t loc = (uintptr_t)_ReturnAddress();
 
   DllTrackInfo* pInfo = tracker_get_dlltrackinfo(loc);
   char* path = NULL;
@@ -100,7 +100,7 @@ extern "C" HMODULE __stdcall track_LoadLibraryExA(LPCSTR lpLibFileName, HANDLE h
 
 extern "C" BOOL __stdcall track_FreeLibrary(HINSTANCE hLibModule)
 {
-  unsigned loc = (unsigned)_ReturnAddress();
+  uintptr_t loc = (uintptr_t)_ReturnAddress();
 
   tracker_library_free(loc, hLibModule);
 

@@ -133,7 +133,7 @@ extern "C" HANDLE WINAPI dllCreateThread(
   LPDWORD lpThreadId                        // thread identifier
 )
 {
-  unsigned loc = (unsigned)_ReturnAddress();
+  uintptr_t loc = (uintptr_t)_ReturnAddress();
   
   SThreadWrapper *param = new SThreadWrapper;
   param->lpStartAddress = lpStartAddress;
