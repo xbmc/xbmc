@@ -843,3 +843,99 @@ bool SSortFileItem::SongRatingDescending(CFileItem *left, CFileItem *right)
   }
   return left->m_bIsFolder;
 }
+
+bool SSortFileItem::MovieRuntimeAscending(CFileItem *left, CFileItem *right)
+{
+  // special cases
+  if (left->IsParentFolder()) return true;
+  if (right->IsParentFolder()) return false;
+  // only if they're both folders or both files do we do the full comparison
+  if (left->m_bIsFolder == right->m_bIsFolder)
+  {
+    char *l = (char *)left->GetVideoInfoTag()->m_strRuntime.c_str();
+    char *r = (char *)right->GetVideoInfoTag()->m_strRuntime.c_str();
+    return StringUtils::AlphaNumericCompare(l, r) <= 0;
+  }
+  return left->m_bIsFolder;
+}
+
+bool SSortFileItem::MovieRuntimeDescending(CFileItem *left, CFileItem *right)
+{
+  // special cases
+  if (left->IsParentFolder()) return true;
+  if (right->IsParentFolder()) return false;
+  // only if they're both folders or both files do we do the full comparison
+  if (left->m_bIsFolder == right->m_bIsFolder)
+  {
+    char *l = (char *)left->GetVideoInfoTag()->m_strRuntime.c_str();
+    char *r = (char *)right->GetVideoInfoTag()->m_strRuntime.c_str();
+    return StringUtils::AlphaNumericCompare(l, r) >= 0;
+  }
+  return left->m_bIsFolder;
+}
+
+bool SSortFileItem::StudioAscending(CFileItem *left, CFileItem *right)
+{
+  // special cases
+  if (left->IsParentFolder()) return true;
+  if (right->IsParentFolder()) return false;
+  // only if they're both folders or both files do we do the full comparison
+  if (left->m_bIsFolder == right->m_bIsFolder)
+  {
+    char *l = (char *)left->GetVideoInfoTag()->m_strStudio.c_str();
+    char *r = (char *)right->GetVideoInfoTag()->m_strStudio.c_str();
+    return StringUtils::AlphaNumericCompare(l, r) <= 0;
+  }
+  return left->m_bIsFolder;
+}
+
+bool SSortFileItem::StudioDescending(CFileItem *left, CFileItem *right)
+{
+  // special cases
+  if (left->IsParentFolder()) return true;
+  if (right->IsParentFolder()) return false;
+  // only if they're both folders or both files do we do the full comparison
+  if (left->m_bIsFolder == right->m_bIsFolder)
+  {
+    char *l = (char *)left->GetVideoInfoTag()->m_strStudio.c_str();
+    char *r = (char *)right->GetVideoInfoTag()->m_strStudio.c_str();
+    return StringUtils::AlphaNumericCompare(l, r) >= 0;
+  }
+  return left->m_bIsFolder;
+}
+
+bool SSortFileItem::StudioAscendingNoThe(CFileItem *left, CFileItem *right)
+{
+  // special cases
+  if (left->IsParentFolder()) return true;
+  if (right->IsParentFolder()) return false;
+  // only if they're both folders or both files do we do the full comparison
+  if (left->m_bIsFolder == right->m_bIsFolder)
+  {
+    char *l = (char *)left->GetVideoInfoTag()->m_strStudio.c_str();
+    char *r = (char *)right->GetVideoInfoTag()->m_strStudio.c_str();
+    l += StartsWithToken(left->GetVideoInfoTag()->m_strStudio);
+    r += StartsWithToken(right->GetVideoInfoTag()->m_strStudio);
+    
+    return StringUtils::AlphaNumericCompare(l, r) <= 0;
+  }
+  return left->m_bIsFolder;
+}
+
+bool SSortFileItem::StudioDescendingNoThe(CFileItem *left, CFileItem *right)
+{
+  // special cases
+  if (left->IsParentFolder()) return true;
+  if (right->IsParentFolder()) return false;
+  // only if they're both folders or both files do we do the full comparison
+  if (left->m_bIsFolder == right->m_bIsFolder)
+  {
+    char *l = (char *)left->GetVideoInfoTag()->m_strStudio.c_str();
+    char *r = (char *)right->GetVideoInfoTag()->m_strStudio.c_str();
+    l += StartsWithToken(left->GetVideoInfoTag()->m_strStudio);
+    r += StartsWithToken(right->GetVideoInfoTag()->m_strStudio);
+    
+    return StringUtils::AlphaNumericCompare(l, r) >= 0;
+  }
+  return left->m_bIsFolder;
+}
