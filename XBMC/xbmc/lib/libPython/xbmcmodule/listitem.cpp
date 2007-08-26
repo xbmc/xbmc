@@ -326,6 +326,14 @@ namespace PYXBMC
         else if (strcmpi(PyString_AsString(key), "size") == 0)
           self->item->m_dwSize = PyInt_AsLong(value);
         // TODO: Add a python list of cast members to m_cast
+        /*else if (strcmpi(PyString_AsString(key), "cast") == 0)
+        {
+          if (!PyObject_TypeCheck(value, &PyList_Type)) continue;
+          for (int i = 0; i < PyList_Size(value); i++)
+          {
+            if (!PyGetUnicodeString(tmp, PyList_GetItem(value, i), 1)) continue;
+          }
+        }*/
         else
         {
           if (!PyGetUnicodeString(tmp, value, 1)) continue;
@@ -346,6 +354,8 @@ namespace PYXBMC
             self->item->GetVideoInfoTag()->m_strTitle = tmp;
           else if (strcmpi(PyString_AsString(key), "duration") == 0)
             self->item->GetVideoInfoTag()->m_strRuntime = tmp;
+          else if (strcmpi(PyString_AsString(key), "studio") == 0)
+            self->item->GetVideoInfoTag()->m_strStudio = tmp;
           else if (strcmpi(PyString_AsString(key), "date") == 0)
           {
             if (strlen(tmp) == 10)
