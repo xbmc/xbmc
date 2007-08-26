@@ -5,14 +5,14 @@
 
 struct MSizeCount
 {
-  unsigned size;
+  size_t size;
   unsigned count;
 };
 
-typedef std::map<unsigned, MSizeCount> CallerMap;
-typedef std::map<unsigned, MSizeCount>::iterator CallerMapIter;
+typedef std::map<uintptr_t, MSizeCount> CallerMap;
+typedef std::map<uintptr_t, MSizeCount>::iterator CallerMapIter;
 
-extern "C" inline void tracker_memory_track(unsigned long caller, void* data_addr, unsigned long size)
+extern "C" inline void tracker_memory_track(uintptr_t caller, void* data_addr, size_t size)
 {
   DllTrackInfo* pInfo = tracker_get_dlltrackinfo(caller);
   if (pInfo)
@@ -20,13 +20,13 @@ extern "C" inline void tracker_memory_track(unsigned long caller, void* data_add
     AllocLenCaller temp;
     temp.size = size;
     temp.calleraddr = caller;
-    pInfo->dataList[(unsigned)data_addr] = temp;
+    pInfo->dataList[(uintptr_t)data_addr] = temp;
   }
 }
 
 extern "C" inline bool tracker_memory_free(DllTrackInfo* pInfo, void* data_addr)
 {
-  if (!pInfo || pInfo->dataList.erase((unsigned)data_addr) < 1)
+  if (!pInfo || pInfo->dataList.erase((uintptr_t)data_addr) < 1)
   {
     // unable to delete the pointer from one of the trackers, but track_free is called!!
     // This will happen when memory is freed by another dll then the one which allocated the memory.
@@ -36,7 +36,7 @@ extern "C" inline bool tracker_memory_free(DllTrackInfo* pInfo, void* data_addr)
     for (TrackedDllsIter it = g_trackedDlls.begin(); it != g_trackedDlls.end(); ++it)
     {
       // try to free the pointer from this list, and break if success
-      if ((*it)->dataList.erase((unsigned)data_addr) > 0) return true;
+      if ((*it)->dataList.erase((uintptr_t)data_addr) > 0) return true;
     }
     return false;
   }
@@ -48,7 +48,7 @@ extern "C" void tracker_memory_free_all(DllTrackInfo* pInfo)
   if (!pInfo->dataList.empty() || !pInfo->virtualList.empty())
   {
     CLog::DebugLog("%s (base %8x): Detected memory leaks: %d leaks", pInfo->pDll->GetFileName(), pInfo->pDll->hModule, pInfo->dataList.size() + pInfo->virtualList.size());
-    unsigned total = 0;
+    size_t total = 0;
     CallerMap tempMap;
     CallerMapIter itt;
     for (DataListIter p = pInfo->dataList.begin(); p != pInfo->dataList.end(); ++p)
@@ -107,7 +107,7 @@ extern "C" void tracker_memory_free_all(DllTrackInfo* pInfo)
 
 extern "C" void* __cdecl track_malloc(size_t s)
 {
-  unsigned loc = (unsigned)_ReturnAddress();
+  uintptr_t loc = (uintptr_t)_ReturnAddress();
 
   void* p = malloc(s);
   if (!p) 
@@ -123,7 +123,7 @@ extern "C" void* __cdecl track_malloc(size_t s)
 
 extern "C" void* __cdecl track_calloc(size_t n, size_t s)
 {
-  unsigned loc = (unsigned)_ReturnAddress();
+  uintptr_t loc = (uintptr_t)_ReturnAddress();
 
   void* p = calloc(n, s);
   if (!p) 
@@ -139,7 +139,7 @@ extern "C" void* __cdecl track_calloc(size_t n, size_t s)
 
 extern "C" void* __cdecl track_realloc(void* p, size_t s)
 {
-  unsigned loc = (unsigned)_ReturnAddress();
+  uintptr_t loc = (uintptr_t)_ReturnAddress();
 
   DllTrackInfo* pInfo = tracker_get_dlltrackinfo(loc);
 
@@ -157,7 +157,7 @@ extern "C" void* __cdecl track_realloc(void* p, size_t s)
     AllocLenCaller temp;
     temp.size = s;
     temp.calleraddr = loc;
-    pInfo->dataList[(unsigned)q] = temp;
+    pInfo->dataList[(uintptr_t)q] = temp;
   }
 
   return q;
@@ -165,7 +165,7 @@ extern "C" void* __cdecl track_realloc(void* p, size_t s)
 
 extern "C" void __cdecl track_free(void* p)
 {
-  unsigned loc = (unsigned)_ReturnAddress();
+  uintptr_t loc = (uintptr_t)_ReturnAddress();
 
   //Only call free if this is actually something that has been allocated
   if( tracker_memory_free(tracker_get_dlltrackinfo(loc), p) )
@@ -190,7 +190,7 @@ extern "C" void __cdecl track_free(void* p)
 
 extern "C" char* __cdecl track_strdup(const char* str)
 {
-  unsigned loc = (unsigned)_ReturnAddress();
+  uintptr_t loc = (uintptr_t)_ReturnAddress();
 
   char* pdup = strdup(str);
 
@@ -228,7 +228,7 @@ track_HeapCreate(
     IN SIZE_T dwMaximumSize
     )
 {
-  unsigned loc = (unsigned)_ReturnAddress();
+  uintptr_t loc = (uintptr_t)_ReturnAddress();
 
   DllTrackInfo* pInfo = tracker_get_dlltrackinfo(loc);
   HANDLE hHeap = HeapCreate(flOptions, dwInitialSize, dwMaximumSize);
@@ -247,7 +247,7 @@ track_HeapDestroy(
     IN OUT HANDLE hHeap
     )
 {
-  unsigned loc = (unsigned)_ReturnAddress();
+  uintptr_t loc = (uintptr_t)_ReturnAddress();
 
 
   DllTrackInfo* pInfo = tracker_get_dlltrackinfo(loc);
@@ -269,13 +269,13 @@ track_HeapDestroy(
 
 BOOL WINAPI track_VirtualFreeEx(HANDLE hProcess, LPVOID lpAddress, SIZE_T dwSize, DWORD dwFreeType)
 {
-  unsigned loc = (unsigned)_ReturnAddress();
+  uintptr_t loc = (uintptr_t)_ReturnAddress();
 
   if(dwFreeType == MEM_RELEASE)
   {    
     DllTrackInfo* pInfo = tracker_get_dlltrackinfo(loc);
     if (pInfo)
-      pInfo->virtualList.erase((unsigned)lpAddress);
+      pInfo->virtualList.erase((uintptr_t)lpAddress);
   }
   return VirtualFreeEx(hProcess, lpAddress, dwSize, dwFreeType);
 }
@@ -283,7 +283,7 @@ BOOL WINAPI track_VirtualFreeEx(HANDLE hProcess, LPVOID lpAddress, SIZE_T dwSize
 
 LPVOID WINAPI track_VirtualAllocEx(HANDLE hProcess, LPVOID lpAddress, SIZE_T dwSize, DWORD flAllocationType, DWORD flProtect)
 {
-  unsigned loc = (unsigned)_ReturnAddress();
+  uintptr_t loc = (uintptr_t)_ReturnAddress();
 
   LPVOID address = VirtualAllocEx(hProcess, lpAddress, dwSize, flAllocationType, flProtect);
   
@@ -295,9 +295,9 @@ LPVOID WINAPI track_VirtualAllocEx(HANDLE hProcess, LPVOID lpAddress, SIZE_T dwS
     if(VirtualQueryEx(hProcess, address, &info, sizeof(info)))
     {
       AllocLenCaller temp;
-      temp.size = (unsigned int)info.AllocationBase;
+      temp.size = (uintptr_t)info.AllocationBase;
       temp.calleraddr = loc;    
-      pInfo->virtualList[(unsigned)address] = temp;
+      pInfo->virtualList[(uintptr_t)address] = temp;
     }
   }
   return address;
@@ -305,7 +305,7 @@ LPVOID WINAPI track_VirtualAllocEx(HANDLE hProcess, LPVOID lpAddress, SIZE_T dwS
 
 LPVOID WINAPI track_VirtualAlloc( LPVOID lpAddress, SIZE_T dwSize, DWORD flAllocationType, DWORD flProtect)
 {
-  unsigned loc = (unsigned)_ReturnAddress();
+  uintptr_t loc = (uintptr_t)_ReturnAddress();
 
   LPVOID address = VirtualAlloc(lpAddress, dwSize, flAllocationType, flProtect);
   
@@ -317,9 +317,9 @@ LPVOID WINAPI track_VirtualAlloc( LPVOID lpAddress, SIZE_T dwSize, DWORD flAlloc
     if(VirtualQuery(address, &info, sizeof(info)))
     {
       AllocLenCaller temp;
-      temp.size = (unsigned int)dwSize;
+      temp.size = (size_t)dwSize;
       temp.calleraddr = loc;    
-      pInfo->virtualList[(unsigned)info.AllocationBase] = temp;
+      pInfo->virtualList[(uintptr_t)info.AllocationBase] = temp;
     }
   }
   return address;
@@ -327,13 +327,13 @@ LPVOID WINAPI track_VirtualAlloc( LPVOID lpAddress, SIZE_T dwSize, DWORD flAlloc
 
 BOOL WINAPI track_VirtualFree(LPVOID lpAddress, SIZE_T dwSize, DWORD dwFreeType)
 {
-  unsigned loc = (unsigned)_ReturnAddress();
+  uintptr_t loc = (uintptr_t)_ReturnAddress();
 
   if(dwFreeType == MEM_RELEASE)
   {    
     DllTrackInfo* pInfo = tracker_get_dlltrackinfo(loc);
     if (pInfo)
-      pInfo->virtualList.erase((unsigned)lpAddress);
+      pInfo->virtualList.erase((uintptr_t)lpAddress);
   }
   return VirtualFree(lpAddress, dwSize, dwFreeType);
 }
