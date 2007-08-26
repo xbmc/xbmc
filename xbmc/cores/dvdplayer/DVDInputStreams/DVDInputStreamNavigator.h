@@ -72,8 +72,9 @@ public:
   std::string GetSubtitleStreamLanguage(int iId);
   int GetSubTitleStreamCount();
 
-  bool SetActiveSubtitleStream(int iId, bool bDisplay = true);
+  bool SetActiveSubtitleStream(int iId);
   void EnableSubtitleStream(bool bEnable);
+  bool IsSubtitleStreamEnabled();
 
   int GetActiveAudioStream();
   std::string GetAudioStreamLanguage(int iId);
