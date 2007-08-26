@@ -9,6 +9,8 @@
 #include <regex.h>
 #include <dirent.h>
 
+#include "../utils/log.h"
+
 HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData) {
 	if (lpFindData == NULL || szPath == NULL)
 		return NULL;
@@ -137,13 +139,13 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
   // Fail on unsupported items
   if (lpSecurityAttributes != NULL )
   {
-    XXLog(ERROR, "CreateFile does not support security attributes");
+    CLog::Log(LOGERROR, "CreateFile does not support security attributes");
     return INVALID_HANDLE_VALUE;
   } 
   
   if (hTemplateFile != (HANDLE) 0)
   {
-    XXLog(ERROR, "CreateFile does not support template file");
+    CLog::Log(LOGERROR, "CreateFile does not support template file");
     return INVALID_HANDLE_VALUE;
   }
   
@@ -156,7 +158,7 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
     flags = O_WRONLY;
   else
   {
-    XXLog(ERROR, "CreateFile does not desired access other than read and/or write");
+    CLog::Log(LOGERROR, "CreateFile does not desired access other than read and/or write");
     return INVALID_HANDLE_VALUE;
   }
 
@@ -250,7 +252,7 @@ BOOL CopyFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName, BOOL bFailIfExi
   if (sf == -1)
     return 0;
     
-  int df = open(lpNewFileName, O_CREAT|O_WRONLY|O_TRUNC);
+  int df = open(lpNewFileName, O_CREAT|O_WRONLY|O_TRUNC,S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP);
   if (df == -1)
   {
     close(sf);
@@ -284,7 +286,7 @@ BOOL ReadFile(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead,
 {
   if (lpOverlapped)
   {
-    XXLog(ERROR, "ReadFile does not support overlapped I/O");
+    CLog::Log(LOGERROR, "ReadFile does not support overlapped I/O");
     return 0;
  }
   
@@ -303,7 +305,7 @@ BOOL WriteFile(HANDLE hFile, const void * lpBuffer, DWORD nNumberOfBytesToWrite,
 {
   if (lpOverlapped)
   {
-    XXLog(ERROR, "ReadFile does not support overlapped I/O");
+    CLog::Log(LOGERROR, "ReadFile does not support overlapped I/O");
     return 0;
  }
   
