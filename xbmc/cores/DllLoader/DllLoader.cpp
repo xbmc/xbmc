@@ -4,6 +4,7 @@
 #include "DllLoaderContainer.h"
 #include "dll_tracker.h"
 #include "dll_util.h"
+#include <limits>
 #ifdef _XBOX
 #include "../../xbox/undocumented.h"
 #include "XbDm.h"
@@ -15,6 +16,13 @@ typedef struct _UNICODE_STRING {
 } UNICODE_STRING, *PUNICODE_STRING;
 #endif
 #include "../../utils/win32exception.h"
+
+#ifdef min
+#undef min
+#endif
+#ifdef max
+#undef max
+#endif
 
 #define DLL_PROCESS_DETACH   0
 #define DLL_PROCESS_ATTACH   1
@@ -229,21 +237,21 @@ int DllLoader::Parse()
     if (CoffLoader::ParseCoff(fp))
     {
       if(WindowsHeader)
-        tracker_dll_set_addr(this, (unsigned)hModule, (unsigned)hModule + WindowsHeader->SizeOfImage - 1);
+        tracker_dll_set_addr(this, (uintptr_t)hModule, (uintptr_t)hModule + WindowsHeader->SizeOfImage - 1);
       else
       {
-        unsigned int iMinAddr = UINT_MAX;
-        unsigned int iMaxAddr = 0;
+        uintptr_t iMinAddr = std::numeric_limits<uintptr_t>::max();
+        uintptr_t iMaxAddr = 0;
         // dll is loaded now, this means we also know the base address of it and its size
         for (int i = 0; i < NumOfSections; ++i)
         {
-          iMinAddr = min(iMinAddr, SectionHeader[i].VirtualAddress);
-          iMaxAddr = max(iMaxAddr, SectionHeader[i].VirtualAddress +SectionHeader[i].VirtualSize);
+          iMinAddr = std::min(iMinAddr, (uintptr_t)SectionHeader[i].VirtualAddress);
+          iMaxAddr = std::max(iMaxAddr, (uintptr_t)(SectionHeader[i].VirtualAddress+SectionHeader[i].VirtualSize));
         }
         if(iMaxAddr > iMinAddr)
         {
-          iMinAddr += (unsigned)hModule;
-          iMaxAddr += (unsigned)hModule;
+          iMinAddr += (uintptr_t)hModule;
+          iMaxAddr += (uintptr_t)hModule;
           tracker_dll_set_addr(this, iMinAddr, iMaxAddr - 1);
         }
       }
@@ -459,7 +467,7 @@ int DllLoader::LoadExports()
     for (unsigned int i = 0; i < ExportDirTable->NumNamePtrs; i++)
     {
       char *Name = (char*)RVA2Data(NamePointerTable[i]);
-      unsigned long Addr = (unsigned long)RVA2Data(ExportAddressTable[OrdinalTable[i]]);
+      void* Addr = (void*)RVA2Data(ExportAddressTable[OrdinalTable[i]]);
       AddExport(Name, OrdinalTable[i]+ExportDirTable->OrdinalBase, Addr);
     }
   }
@@ -605,10 +613,10 @@ int DllLoader::ResolveName(char *sName, char* sFunction, void **fixup)
   return 0;
 }
 
-void DllLoader::AddExport(unsigned long ordinal, unsigned long function, void* track_function)
+void DllLoader::AddExport(unsigned long ordinal, void* function, void* track_function)
 {
   ExportEntry* entry = (ExportEntry*)malloc(sizeof(ExportEntry));
-  entry->exp.function = (void*)function;
+  entry->exp.function = function;
   entry->exp.ordinal = ordinal;
   entry->exp.track_function = track_function;
   entry->exp.name = NULL;
@@ -617,12 +625,12 @@ void DllLoader::AddExport(unsigned long ordinal, unsigned long function, void* t
   m_pExportHead = entry;
 }
 
-void DllLoader::AddExport(char* sFunctionName, unsigned long ordinal, unsigned long function, void* track_function)
+void DllLoader::AddExport(char* sFunctionName, unsigned long ordinal, void* function, void* track_function)
 {
   int len = sizeof(ExportEntry);
 
   ExportEntry* entry = (ExportEntry*)malloc(len + strlen(sFunctionName) + 1);
-  entry->exp.function = (void*)function;
+  entry->exp.function = function;
   entry->exp.ordinal = ordinal;
   entry->exp.track_function = track_function;
   entry->exp.name = ((char*)(entry)) + len;
@@ -632,7 +640,7 @@ void DllLoader::AddExport(char* sFunctionName, unsigned long ordinal, unsigned l
   m_pExportHead = entry;
 }
 
-void DllLoader::AddExport(char* sFunctionName, unsigned long function, void* track_function)
+void DllLoader::AddExport(char* sFunctionName, void* function, void* track_function)
 {
   int len = sizeof(ExportEntry);
 
