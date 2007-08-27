@@ -348,12 +348,9 @@ typedef struct AVStream {
 #define AVFMTCTX_NOHEADER      0x0001 /**< signal that no header is present
                                          (streams are added dynamically) */
 
-#ifdef _XBOX
+// XBMC
 /* dvd's can have maximally 41 streams */
 #define MAX_STREAMS 42
-#else
-#define MAX_STREAMS 20
-#endif
 
 /* format I/O context */
 typedef struct AVFormatContext {
