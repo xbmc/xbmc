@@ -2204,7 +2204,10 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
       strFileName = vecSkinPath[i]+"/"+FindFileData.cFileName;
 #endif
       CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
-      if (!xmlDoc.LoadFile(strFileName.c_str()))
+      CStdString strLower(FindFileData.cFileName);
+      strLower.MakeLower();
+      strLower = vecSkinPath[i] + "/" + strLower;
+      if (!xmlDoc.LoadFile(strFileName.c_str()) && !xmlDoc.LoadFile(strLower.c_str()))
       {
         CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strFileName.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
         continue;
