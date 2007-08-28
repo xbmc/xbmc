@@ -575,7 +575,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
   // Grab the thumbnails from the web
   CStdString strPath;
   CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"imdbthumbs",strPath);
-  CUtil::WipeDir(strPath);
+  CUtil::WipeDir(_P(strPath));
   DIRECTORY::CDirectory::Create(strPath);
   int i=1;
   for (std::vector<CScraperUrl::SUrlEntry>::iterator iter=m_movieItem.GetVideoInfoTag()->m_strPictureURL.m_url.begin();iter != m_movieItem.GetVideoInfoTag()->m_strPictureURL.m_url.end();++iter)

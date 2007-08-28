@@ -130,12 +130,15 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   TiXmlDocument xmlDoc;
   // Find appropriate skin folder + resolution to load from
   CStdString strPath;
+  CStdString strLowerPath;
   if (bContainsPath)
     strPath = strFileName;
-  else
+  else {
     strPath = g_SkinInfo.GetSkinPath(strFileName, &resToUse);
+    strLowerPath =  g_SkinInfo.GetSkinPath(CStdString(strFileName).ToLower(), &resToUse);
+  }
 
-  if ( !xmlDoc.LoadFile(strPath.c_str()) )
+  if ( !xmlDoc.LoadFile(strPath.c_str()) && !xmlDoc.LoadFile(strPath.ToLower().c_str()) && !xmlDoc.LoadFile(strLowerPath.c_str()))
   {
     CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
