@@ -1,5 +1,6 @@
 
 #include "XTimeUtils.h"
+#include "../utils/log.h"
 #include <time.h>
 
 #define WIN32_TIME_OFFSET ((unsigned long long)(369 * 365 + 89) * 24 * 3600 * 10000000)
@@ -18,7 +19,7 @@ DWORD timeGetTime(void)
 
 void WINAPI Sleep(DWORD dwMilliSeconds)
 {
-  SDL_Delay(dwMilliSeconds);
+  usleep(dwMilliSeconds*1000);
 }
 
 VOID GetLocalTime(LPSYSTEMTIME sysTime) 
@@ -40,21 +41,27 @@ DWORD GetTickCount(void)
   return SDL_GetTicks();
 }
 
-// "Load Skin XML: %.2fms", 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart
 BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount) {
-	if (lpPerformanceCount == NULL)
-		return false;
+  if (lpPerformanceCount == NULL)
+    return false;
 
-	lpPerformanceCount->QuadPart = GetTickCount();
-	return true;
+  struct timezone tz;
+  struct timeval tim;
+  if (gettimeofday(&tim, &tz) != 0) {
+    CLog::Log(LOGERROR,"%s - error getting timer", __FUNCTION__);
+    return false;
+  }
+
+  lpPerformanceCount->QuadPart = tim.tv_usec + (tim.tv_sec * 1000000);
+  return true;
 }
 
 BOOL QueryPerformanceFrequency(LARGE_INTEGER *lpFrequency) {
-	if (lpFrequency == NULL)
-		return false;
+  if (lpFrequency == NULL)
+    return false;
 
-	lpFrequency->QuadPart = 1000; // millisecond resolution
-	return true;
+  lpFrequency->QuadPart = 1000000; // microseconds resolution
+  return true;
 }
 
 BOOL FileTimeToLocalFileTime(const FILETIME* lpFileTime, LPFILETIME lpLocalFileTime) 
