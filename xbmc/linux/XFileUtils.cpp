@@ -8,6 +8,7 @@
 #include <sys/vfs.h> 
 #include <regex.h>
 #include <dirent.h>
+#include <errno.h>
 
 #include "../utils/log.h"
 
@@ -47,6 +48,8 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData) {
 	strFiles.Replace("*",".*");
 	strFiles.Replace("?",".");
 
+	strFiles.MakeLower();
+
 	int status;
 	regex_t re;
 	if (regcomp(&re, strFiles, REG_EXTENDED|REG_NOSUB) != 0) {
@@ -60,9 +63,11 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData) {
 		pHandle->m_FindFileDir = strDir;
 
 	while (n-- > 0) {
-			status = regexec(&re, namelist[n]->d_name, (size_t) 0, NULL, 0);
+		CStdString strComp(namelist[n]->d_name);
+		strComp.MakeLower();
+
+		status = regexec(&re, strComp.c_str(), (size_t) 0, NULL, 0);
 		if (status == 0) {
-			//pHandle->m_FindFileResults.push_back(strDir + CStdString("/") + namelist[n]->d_name);
 			pHandle->m_FindFileResults.push_back(namelist[n]->d_name);
 		}
 		free(namelist[n]);
@@ -149,16 +154,16 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
     return INVALID_HANDLE_VALUE;
   }
   
-  int flags;
-  if (dwDesiredAccess & FILE_WRITE_DATA)  
+  int flags = 0, mode=S_IRUSR;
+  if (dwDesiredAccess & FILE_WRITE_DATA) {
     flags = O_RDWR;
-  else if (dwDesiredAccess & FILE_READ_DATA == FILE_READ_DATA) 
+    mode |= S_IWUSR;
+  }
+  else if ( (dwDesiredAccess & FILE_READ_DATA) == FILE_READ_DATA) 
     flags = O_RDONLY;
-  else if (dwDesiredAccess & FILE_WRITE_DATA == FILE_WRITE_DATA) 
-    flags = O_WRONLY;
   else
   {
-    CLog::Log(LOGERROR, "CreateFile does not desired access other than read and/or write");
+    CLog::Log(LOGERROR, "CreateFile does not permit access other than read and/or write");
     return INVALID_HANDLE_VALUE;
   }
 
@@ -169,12 +174,15 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
       break;
     case TRUNCATE_EXISTING:
       flags |= O_TRUNC;
+      mode  |= S_IWUSR;
       break;
     case CREATE_ALWAYS:
       flags |= O_CREAT|O_TRUNC;
+      mode  |= S_IWUSR;
       break;
     case CREATE_NEW:
       flags |= O_CREAT|O_TRUNC|O_EXCL;
+      mode  |= S_IWUSR;
       break;
     case OPEN_EXISTING:
       break;
@@ -186,6 +194,8 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
   if (dwFlagsAndAttributes & FILE_FLAG_NO_BUFFERING)
     flags |= O_SYNC;
 
+  CStdString strResultFile(lpFileName);
+
   // special case for opening the cdrom device
   if (strcmp(lpFileName, "/dev/cdrom")==0)
   {
@@ -195,11 +205,24 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
   }
   else
   {
-    fd = open(lpFileName, flags, S_IRUSR);
+    CStdString strLower(lpFileName);
+    strLower.MakeLower(); 
+    fd = open(lpFileName, flags, mode);
+    if (fd == -1 && errno == ENOENT) // important to check reason for fail. only if its "file does not exist" shall we try lower case.
+    {
+      // failed to open file. maybe due to case sensitivity. try opening the same name in lower case.
+      CLog::Log(LOGWARNING,"%s, cant open file <%s>. trying to use lowercase <%s>", __FUNCTION__, lpFileName, strLower.c_str());
+      fd = open(strLower.c_str(), flags, mode);
+      if (fd != -1) {
+        CLog::Log(LOGDEBUG,"%s, successfuly opened <%s>", __FUNCTION__, strLower.c_str());
+        strResultFile = strLower;
+      }
+    }
   }
   
   if (fd == -1)
   {
+    CLog::Log(LOGWARNING,"%s, error %d opening file <%s>. ", __FUNCTION__, errno, lpFileName);
     return INVALID_HANDLE_VALUE;
   }
 
@@ -218,7 +241,7 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
   // if FILE_FLAG_DELETE_ON_CLOSE then "unlink" the file (delete)
   // the file will be deleted when the last open descriptor is closed.  
   if (dwFlagsAndAttributes & FILE_FLAG_DELETE_ON_CLOSE)
-	unlink(lpFileName);
+	unlink(strResultFile);
 
   return result;
 }
@@ -227,16 +250,60 @@ BOOL DeleteFile(LPCTSTR lpFileName)
 {
   if (unlink(lpFileName) == 0)
     return 1;
-  else 
-    return 0;
+  
+  if (errno == EACCES) {
+    CLog::Log(LOGWARNING,"%s - cant delete file, trying to change mode <%s>", __FUNCTION__, lpFileName);
+    if (chmod(lpFileName, 0600) != 0) {
+      CLog::Log(LOGWARNING,"%s - failed to change mode <%s>", __FUNCTION__, lpFileName);
+      return 0;
+    }
+
+    CLog::Log(LOGDEBUG,"%s - reattempt to delete file",__FUNCTION__);
+
+    if (unlink(lpFileName) == 0)
+      return 1;
+  }
+  else if (errno == ENOENT) {
+    CStdString strLower(lpFileName);
+    strLower.MakeLower();
+    CLog::Log(LOGWARNING,"%s - cant delete file <%s>. trying lower case <%s>", __FUNCTION__, lpFileName, strLower.c_str());
+    if (unlink(strLower.c_str()) == 0) {
+      CLog::Log(LOGDEBUG,"%s - successfuly removed file <%s>", __FUNCTION__, strLower.c_str());
+      return 1;
+    }
+  }
+
+  return 0;
 }
 
 BOOL MoveFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName) 
 {
   if (rename(lpExistingFileName, lpNewFileName) == 0)
     return 1;
-  else
-    return 0;
+
+  if (errno == EACCES) {
+    CLog::Log(LOGWARNING,"%s - cant move file, trying to change mode <%s>", __FUNCTION__, lpExistingFileName);
+    if (chmod(lpExistingFileName, 0600) != 0) {
+      CLog::Log(LOGWARNING,"%s - failed to change mode <%s>", __FUNCTION__, lpExistingFileName);
+      return 0;
+    }
+
+    CLog::Log(LOGDEBUG,"%s - reattempt to move file",__FUNCTION__);
+
+    if (rename(lpExistingFileName, lpNewFileName) == 0)
+      return 1;
+  }
+  else if (errno == ENOENT) {
+    CStdString strLower(lpExistingFileName);
+    strLower.MakeLower();
+    CLog::Log(LOGWARNING,"%s - cant move file <%s>. trying lower case <%s>", __FUNCTION__, lpExistingFileName, strLower.c_str());
+    if (rename(strLower.c_str(), lpNewFileName) == 0) {
+      CLog::Log(LOGDEBUG,"%s - successfuly moved file <%s>", __FUNCTION__, strLower.c_str());
+      return 1;
+    }
+  }
+
+  return 0;
 }
 
 BOOL CopyFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName, BOOL bFailIfExists)
@@ -244,19 +311,59 @@ BOOL CopyFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName, BOOL bFailIfExi
   // If the destination file exists and we should fail...guess what? we fail!
   struct stat destStat;
   bool isDestExists = (stat(lpNewFileName, &destStat) == 0);
-  if (isDestExists && bFailIfExists)
+  if (isDestExists && bFailIfExists) 
+  {
     return 0;
+  }
   
+  CStdString strResultFile(lpExistingFileName);
+
   // Open the files
   int sf = open(lpExistingFileName, O_RDONLY);
-  if (sf == -1)
+  if (sf == -1 && errno == ENOENT) // important to check reason for fail. only if its "file does not exist" shall we try lower case.
+  {
+    CStdString strLower(lpExistingFileName);
+    strLower.MakeLower();
+
+    // failed to open file. maybe due to case sensitivity. try opening the same name in lower case.
+    CLog::Log(LOGWARNING,"%s, cant open file <%s>. trying to use lowercase <%s>", __FUNCTION__, lpExistingFileName, strLower.c_str());
+    sf = open(strLower.c_str(), O_RDONLY);
+    if (sf != -1) {
+      CLog::Log(LOGDEBUG,"%s, successfuly opened <%s>", __FUNCTION__, strLower.c_str());
+      strResultFile = strLower;
+    }
+  }
+
+  if (sf == -1) 
+  {
+    CLog::Log(LOGERROR,"%s - cant open source file <%s>", __FUNCTION__, lpExistingFileName);
     return 0;
+  }
     
-  int df = open(lpNewFileName, O_CREAT|O_WRONLY|O_TRUNC,S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP);
+  int df = open(lpNewFileName, O_CREAT|O_WRONLY|O_TRUNC, S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP);
   if (df == -1)
   {
-    close(sf);
-    return 0;
+    if (errno == EACCES) {
+      CLog::Log(LOGWARNING,"%s - cant write to dest file, trying to change mode <%s>", __FUNCTION__, lpNewFileName);
+      if (chmod(lpNewFileName, 0600) != 0) {
+        CLog::Log(LOGWARNING,"%s - failed to change mode <%s>", __FUNCTION__, lpNewFileName);
+        close(sf);
+        return 0;
+      }
+
+      CLog::Log(LOGDEBUG,"%s - reattempt to open dest file",__FUNCTION__);
+
+      df = open(lpNewFileName, O_CREAT|O_WRONLY|O_TRUNC, S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP);
+      if (df == -1)
+      {
+        CLog::Log(LOGERROR,"%s - cant open dest file <%s>", __FUNCTION__, lpNewFileName);
+        close(sf);
+        return 0;
+      }
+
+      CLog::Log(LOGDEBUG,"%s - successfuly opened dest file",__FUNCTION__);
+
+    }
   }
   
   // Read and write chunks of 16K
@@ -323,16 +430,33 @@ BOOL   CreateDirectory(LPCTSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttri
 {
   if (mkdir(lpPathName, 0755) == 0)
     return 1;
-  else
-    return 0;
+
+  if (errno == ENOENT) {
+    CLog::Log(LOGWARNING,"%s, cant create dir <%s>. trying lower case.", __FUNCTION__, lpPathName);
+    CStdString strLower(lpPathName);
+    strLower.MakeLower();
+
+    if (mkdir(strLower.c_str(), 0755) == 0)
+      return 1;
+  }
+
+  return 0;
 }
 
 BOOL   RemoveDirectory(LPCTSTR lpPathName) 
 {
   if (rmdir(lpPathName) == 0)
     return 1;
-  else
-    return 0;
+
+  if (errno == ENOENT) {
+    CLog::Log(LOGWARNING,"%s, cant remove dir <%s>. trying lower case.", __FUNCTION__, lpPathName);
+    CStdString strLower(lpPathName);
+    strLower.MakeLower();
+
+    if (rmdir(strLower.c_str()) == 0)
+      return 1;
+  }
+  return 0;
 }
 
 DWORD  SetFilePointer(HANDLE hFile, LONG lDistanceToMove, PLONG lpDistanceToMoveHigh, DWORD dwMoveMethod) {
@@ -540,3 +664,4 @@ DWORD  GetCurrentDirectory(DWORD nBufferLength, LPSTR lpBuffer)
   	return strlen(lpBuffer);
 }
 #endif
+

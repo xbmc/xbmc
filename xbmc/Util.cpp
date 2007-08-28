@@ -2709,7 +2709,7 @@ __int64 CUtil::ToInt64(DWORD dwHigh, DWORD dwLow)
 
 void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult)
 {
-  strResult = strFolder;
+  strResult = _P(strFolder);
   // remove the stack:// as it screws up the logic below
   if (IsStack(strFolder))
     strResult = strResult.Mid(8);
@@ -2730,7 +2730,7 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
     strResult += strFile.Mid(1);
   else
 #endif  
-    strResult += strFile;
+    strResult += _P(strFile);
   // re-add the stack:// protocol
   if (IsStack(strFolder))
     strResult = "stack://" + strResult;
