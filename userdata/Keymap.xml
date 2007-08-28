@@ -326,8 +326,10 @@
       <z>AspectRatio</z>
       <s>ShowSubtitles</s>
       <l>NextSubtitle</l>      
-      <left>Left</left>
-      <right>Right</right>
+      <left>StepBack</left>
+      <right>StepForward</right>
+      <up>BigStepForward</up>
+      <down>BigStepBack</down>
     </keyboard>
   </FullscreenVideo>
 
