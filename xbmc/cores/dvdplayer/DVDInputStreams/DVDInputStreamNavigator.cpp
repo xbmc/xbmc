@@ -23,6 +23,7 @@ CDVDInputStreamNavigator::CDVDInputStreamNavigator(IDVDPlayer* player) : CDVDInp
   m_holdmode = HOLDMODE_NONE;
   m_iTitle = m_iTitleCount = 0;
   m_iPart = m_iPartCount = 0;
+  m_iTime = m_iTotalTime = 0;
 }
 
 CDVDInputStreamNavigator::~CDVDInputStreamNavigator()
@@ -158,6 +159,7 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
   m_holdmode = HOLDMODE_NONE;
   m_iTitle = m_iTitleCount = 0;
   m_iPart = m_iPartCount = 0;
+  m_iTime = m_iTotalTime = 0;
 
   return true;
 }
