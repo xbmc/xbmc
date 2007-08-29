@@ -423,7 +423,7 @@ void CLastFmManager::CacheTrackThumb(const int nrInitialTracksToAdd)
         Crc32 crc;
         crc.ComputeFromLowerCase(coverUrl);
         crcFile.Format("%08x.tbn", (__int32)crc);
-        CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, crcFile, cachedFile);
+        CUtil::AddFileToFolder(_P(g_advancedSettings.m_cachePath), crcFile, cachedFile);
         CUtil::AddFileToFolder(g_settings.GetLastFMThumbFolder(), crcFile, thumbFile);
         item.SetThumbnailImage("");
         try
