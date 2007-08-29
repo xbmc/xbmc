@@ -43,7 +43,7 @@ bool CLastFMDirectory::RetrieveList(CStdString url)
 
   CThread thread(this);
   m_strSource = url;
-  m_strDestination = "Z:\\lastfm.xml";
+  m_strDestination = _P("Z:\\lastfm.xml");
   thread.Create();
 
   while (!m_Downloaded)
