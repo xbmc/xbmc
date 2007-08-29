@@ -542,7 +542,7 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
       if (m_gWindowManager.GetActiveWindow() != WINDOW_LOGIN_SCREEN)
         g_application.StartKai();
 #endif
-#ifndef HAS_UPNP
+#ifdef HAS_UPNP
       g_application.StartUPnP();
 #endif
       CScrobbler::GetInstance()->Init();
