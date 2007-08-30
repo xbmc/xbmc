@@ -215,7 +215,7 @@ CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res, co
   strPath = _P(strPath);
   // check if we don't have any subdirectories
   if (*res == INVALID) *res = PAL_4x3;
-  return strPath;
+  return _P(strPath);
 }
 
 CStdString CSkinInfo::GetDirFromRes(RESOLUTION res)
