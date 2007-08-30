@@ -17,6 +17,7 @@
 #include "NptVersion.h"
 #include "NptUtils.h"
 #include "NptFile.h"
+#include <stdlib.h>
 
 /*----------------------------------------------------------------------
 |   constants
@@ -604,6 +605,12 @@ NPT_HttpEntity::NPT_HttpEntity(const NPT_HttpHeaders& headers) :
     header = headers.GetHeader(NPT_HTTP_HEADER_CONTENT_ENCODING);
     if (header != NULL) {
         m_ContentEncoding = header->GetValue();
+    }
+
+    // Transfer-Encoding
+    header = headers.GetHeader(NPT_HTTP_HEADER_TRANSFER_ENCODING);
+    if (header != NULL) {
+        m_TransferEncoding = header->GetValue();
     }
 }
 
@@ -1730,4 +1737,66 @@ NPT_HttpFileRequestHandler::GetContentType(const NPT_String& filename)
     }
 
     return m_DefaultMimeType;
+}
+
+
+/*----------------------------------------------------------------------
+|   NPT_HttpChunkedInputStream::FillBuffer
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_HttpChunkedInputStream::FillBuffer()
+{
+    // shortcut
+    if (m_Eos) return NPT_ERROR_EOS;
+
+    // check that there is nothing left in the buffer and the buffer
+    // size is not 0
+    NPT_ASSERT(m_Buffer.valid == m_Buffer.offset);
+    NPT_ASSERT(m_Buffer.size != 0);
+
+    // allocate the read buffer if it has not been done yet
+    if (m_Buffer.data == NULL) {
+        m_Buffer.data = new NPT_Byte[m_Buffer.size];
+        if (m_Buffer.data == NULL) return NPT_ERROR_OUT_OF_MEMORY;
+    }
+    NPT_Result result = NPT_SUCCESS;
+    if(m_ChunkRemain == 0) {
+        // read next chunk size
+        char data[16], *p = data;
+        NPT_Size size_read = 1;
+        while((p - data) < sizeof(data)) {
+            result = m_Source->Read(p, 1, &size_read);
+            if(NPT_FAILED(result)) goto error;
+
+            if(*p == '\r' || *p == ';') {
+                *p = '\0';
+                m_ChunkRemain = strtol(data, NULL, 16);
+                // read this full line
+                while(*p != '\n' && size_read > 0) {
+                    result = m_Source->Read(p, 1, &size_read);
+                    if(NPT_FAILED(result)) goto error;
+                }
+                // restore data pointer
+                p = data-1;
+
+                // if we got a chunksize we are done
+                if (m_ChunkRemain > 0)
+                    break;
+            }
+            p++;
+        }
+    }
+
+    // refill the buffer
+    m_Buffer.valid = m_Buffer.size > m_ChunkRemain ? m_ChunkRemain : m_Buffer.size;
+    m_Buffer.offset = 0;
+    result = m_Source->Read(m_Buffer.data, m_Buffer.valid, &m_Buffer.valid);
+    if(NPT_FAILED(result)) goto error;
+
+    m_ChunkRemain -= m_Buffer.valid;
+
+    return result;
+error:
+    m_Buffer.valid = 0;
+    return result;
 }
