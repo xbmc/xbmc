@@ -340,22 +340,22 @@ CUPnPServer::BuildObject(CFileItem*      item,
         if( CUtil::IsRemote ( (const char*)file_path ) ) {
             resource.m_Uri = file_path;
             object->m_Resources.Add(resource);
-        } else {
+        }
 
-            // iterate through list and build list of resources
-            NPT_List<NPT_String>::Iterator ip = ips.GetFirstItem();
-            while (ip) {
-                NPT_HttpUrl uri = m_FileBaseUri;
-                NPT_HttpUrlQuery query;
-                query.AddField("path", file_path);
-                uri.SetHost(*ip);
-                uri.SetQuery(query.ToString());
-                resource.m_Uri = uri.ToString();
-                
-                object->m_Resources.Add(resource);
+        // iterate through ip addresses and build list of resources
+        // throught http file server
+        NPT_List<NPT_String>::Iterator ip = ips.GetFirstItem();
+        while (ip) {
+            NPT_HttpUrl uri = m_FileBaseUri;
+            NPT_HttpUrlQuery query;
+            query.AddField("path", file_path);
+            uri.SetHost(*ip);
+            uri.SetQuery(query.ToString());
+            resource.m_Uri = uri.ToString();
+            
+            object->m_Resources.Add(resource);
 
-                ++ip;
-            }
+            ++ip;
         }        
     } else {
         PLT_MediaContainer* container = new PLT_MediaContainer;
@@ -906,6 +906,7 @@ public:
             avt->SetStateVariable("NumberOfTracks", "0", publish);
             avt->SetStateVariable("CurrentTrack", "0", publish);
         }
+        avt->NotifyChanged();
     }
 
     // AVTransport

@@ -1582,6 +1582,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\FileSystem\MusicSearchDirectory.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\FileSystem\NptXbmcFile.cpp">
+				</File>
+				<File
 					RelativePath=".\xbmc\FileSystem\NSFFileDirectory.cpp">
 				</File>
 				<File
