@@ -104,8 +104,8 @@ PLT_StateVariable::SetValue(const char* value, bool publish)
         }
 
         m_Value = value;
-        if (m_IsSendingEvents == true && publish == true) {
-            m_Service->NotifySubs(this);
+        if (publish == true) {
+            m_Service->AddChanged(this);
         }    
     }
 
