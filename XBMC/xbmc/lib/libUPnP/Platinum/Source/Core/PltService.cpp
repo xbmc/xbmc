@@ -76,6 +76,18 @@ PLT_ServiceTypeFinder::operator()(PLT_Service* const & service) const
 }
 
 /*----------------------------------------------------------------------
+|   PLT_GetLastChangeXMLIterator::operator()
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_LastChangeXMLIterator::operator()(PLT_StateVariable* const &var) const
+{    
+    NPT_XmlElementNode* variable = new NPT_XmlElementNode((const char*)var->GetName());
+    NPT_CHECK_SEVERE(m_Node->AddChild(variable));
+    NPT_CHECK_SEVERE(variable->SetAttribute("val", var->GetValue()));
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
 |   PLT_Service::PLT_Service
 +---------------------------------------------------------------------*/
 PLT_Service::PLT_Service(PLT_DeviceData* device,
@@ -606,4 +618,57 @@ PLT_Service::NotifySub(PLT_EventSubscriber* sub, PLT_StateVariable* var /* = NUL
     }
 
     return sub->Notify(*vars);
+}
+
+/*----------------------------------------------------------------------
+|   PLT_Service::AddChanged
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_Service::AddChanged(PLT_StateVariable* var /* = NULL */)
+{
+    if (var->IsSendingEvents()) {
+        return NotifySubs(var);
+    }
+
+    if (!m_StateChanged.Contains(var)) {
+        m_StateChanged.Add(var);
+    }
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_Service::NotifyChanged
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_Service::NotifyChanged()
+{
+    PLT_StateVariable* var = FindStateVariable("LastChange");
+    if (var == NULL)
+        return NPT_FAILURE;
+
+    if (m_StateChanged.GetItemCount() == 0)
+        return NPT_SUCCESS;
+
+    NPT_XmlElementNode* top = new NPT_XmlElementNode("Event");
+    NPT_CHECK_SEVERE(top->SetNamespaceUri("", "urn:schemas-upnp-org:metadata-1-0/AVT_RCS"));
+
+    NPT_XmlElementNode* instance = new NPT_XmlElementNode("InstanceID");
+    NPT_CHECK_SEVERE(top->AddChild(instance));
+    NPT_CHECK_SEVERE(instance->SetAttribute("val", "0"));
+    
+    // build list of changes
+    NPT_CHECK_SEVERE(m_StateChanged.Apply(PLT_LastChangeXMLIterator(instance)));
+    m_StateChanged.Clear();
+
+     // serialize node
+    NPT_String tmp;
+    NPT_CHECK_SEVERE(PLT_XmlHelper::Serialize(*top, tmp));
+    delete top;
+
+    // add preprocessor
+    tmp.Insert("<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n", 0);
+
+    // set the state change
+    var->SetValue((const char*)tmp, true);
+    return NPT_SUCCESS;
 }
