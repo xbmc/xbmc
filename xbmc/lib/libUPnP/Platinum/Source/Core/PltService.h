@@ -70,6 +70,8 @@ public:
     bool                IsSubscribable();
     NPT_Result          NotifySubs(PLT_StateVariable* var = NULL);
     NPT_Result          NotifySub(PLT_EventSubscriber* sub, PLT_StateVariable* var = NULL);
+    NPT_Result          AddChanged(PLT_StateVariable* var = NULL);
+    NPT_Result          NotifyChanged();
 
     // Actions
     PLT_ActionDesc*     FindActionDesc(const char* name);
@@ -112,6 +114,7 @@ protected:
     
     NPT_Array<PLT_ActionDesc*>       m_ActionDescs;
     NPT_Array<PLT_StateVariable*>    m_StateVariables;
+    NPT_Array<PLT_StateVariable*>    m_StateChanged;
     NPT_List<PLT_EventSubscriber*>   m_Subscribers;
 };
 
@@ -195,5 +198,20 @@ private:
     NPT_String m_type;
 };
 
+/*----------------------------------------------------------------------
+|    PLT_LastChangeXMLIterator
++---------------------------------------------------------------------*/
+class PLT_LastChangeXMLIterator
+{
+public:
+    // methods
+    PLT_LastChangeXMLIterator(NPT_XmlElementNode* node) 
+      : m_Node(node) {}
+    virtual ~PLT_LastChangeXMLIterator() {}
+    NPT_Result operator()(PLT_StateVariable* const & var) const;
+
+private:
+    NPT_XmlElementNode* m_Node;
+};
 
 #endif /* _PLT_SERVICE_H_ */
