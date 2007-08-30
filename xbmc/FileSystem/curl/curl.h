@@ -151,7 +151,7 @@ extern "C" {
 /* HP-UX systems version 9, 10 and 11 lack sys/select.h and so does oldish
    libc5-based Linux systems. Only include it on system that are known to
    require it! */
-#if defined(_AIX) || defined(NETWARE) || defined(__NetBSD__) || defined(__minix)
+#if defined(_AIX) || defined(__NOVELL_LIBC__) || defined(__NetBSD__) || defined(__minix)
 #include <sys/select.h>
 #endif
 
@@ -210,9 +210,13 @@ typedef int (*curl_progress_callback)(void *clientp,
                                       double ultotal,
                                       double ulnow);
 
+#ifndef CURL_MAX_WRITE_SIZE
   /* Tests have proven that 20K is a very bad buffer size for uploads on
-     Windows, while 16K for some odd reason performed a lot better. */
+     Windows, while 16K for some odd reason performed a lot better.
+     We do the ifndef check to allow this value to easier be changed at build
+     time for those who feel adventurous. */
 #define CURL_MAX_WRITE_SIZE 16384
+#endif
 
 typedef size_t (*curl_write_callback)(char *buffer,
                                       size_t size,
@@ -327,7 +331,7 @@ typedef enum {
   CURLE_HTTP_RETURNED_ERROR,     /* 22 */
   CURLE_WRITE_ERROR,             /* 23 */
   CURLE_MALFORMAT_USER,          /* 24 - NOT USED */
-  CURLE_FTP_COULDNT_STOR_FILE,   /* 25 - failed FTP upload */
+  CURLE_UPLOAD_FAILED,           /* 25 - failed upload "command" */
   CURLE_READ_ERROR,              /* 26 - could open/read from file */
   CURLE_OUT_OF_MEMORY,           /* 27 */
   /* Note: CURLE_OUT_OF_MEMORY may sometimes indicate a conversion error
@@ -418,6 +422,7 @@ typedef CURLcode (*curl_ssl_ctx_callback)(CURL *curl,    /* easy handle */
 /* backwards compatibility with older names */
 #define CURLE_HTTP_NOT_FOUND CURLE_HTTP_RETURNED_ERROR
 #define CURLE_HTTP_PORT_FAILED CURLE_INTERFACE_FAILED
+#define CURLE_FTP_COULDNT_STOR_FILE CURLE_UPLOAD_FAILED
 #endif
 
 typedef enum {
@@ -464,6 +469,14 @@ typedef enum {
   CURLFTPSSL_ALL,     /* SSL for all communication or fail */
   CURLFTPSSL_LAST     /* not an option, never use */
 } curl_ftpssl;
+
+/* parameter for the CURLOPT_FTP_SSL_CCC option */
+typedef enum {
+  CURLFTPSSL_CCC_NONE,    /* do not send CCC */
+  CURLFTPSSL_CCC_PASSIVE, /* Let the server initiate the shutdown */
+  CURLFTPSSL_CCC_ACTIVE,  /* Initiate the shutdown */
+  CURLFTPSSL_CCC_LAST     /* not an option, never use */
+} curl_ftpccc;
 
 /* parameter for the CURLOPT_FTPSSLAUTH option */
 typedef enum {
@@ -723,10 +736,12 @@ typedef enum {
   /* Set the interface string to use as outgoing network interface */
   CINIT(INTERFACE, OBJECTPOINT, 62),
 
-  /* Set the krb4 security level, this also enables krb4 awareness.  This is a
-   * string, 'clear', 'safe', 'confidential' or 'private'.  If the string is
-   * set but doesn't match one of these, 'private' will be used.  */
-  CINIT(KRB4LEVEL, OBJECTPOINT, 63),
+  /* Set the krb4/5 security level, this also enables krb4/5 awareness.  This
+   * is a string, 'clear', 'safe', 'confidential' or 'private'.  If the string
+   * is set but doesn't match one of these, 'private' will be used.  */
+  CINIT(KRBLEVEL, OBJECTPOINT, 63),
+  /* This is for compatibility with older curl releases */
+#define CURLOPT_KRB4LEVEL CURLOPT_KRBLEVEL
 
   /* Set if we should verify the peer in ssl handshake, set 1 to verify. */
   CINIT(SSL_VERIFYPEER, LONG, 64),
@@ -1053,6 +1068,20 @@ typedef enum {
 
   /* Send CCC (Clear Command Channel) after authentication */
   CINIT(FTP_SSL_CCC, LONG, 154),
+
+  /* Same as TIMEOUT and CONNECTTIMEOUT, but with ms resolution */
+  CINIT(TIMEOUT_MS, LONG, 155),
+  CINIT(CONNECTTIMEOUT_MS, LONG, 156),
+
+  /* set to zero to disable the libcurl's decoding and thus pass the raw body
+     data to the appliction even when it is encoded/compressed */
+  CINIT(HTTP_TRANSFER_DECODING, LONG, 157),
+  CINIT(HTTP_CONTENT_DECODING, LONG, 158),
+
+  /* Permission used when creating new files and directories on the remote
+     server for protocols that support it, SFTP/SCP/FILE */
+  CINIT(NEW_FILE_PERMS, LONG, 159),
+  CINIT(NEW_DIRECTORY_PERMS, LONG, 160),
 
   CURLOPT_LASTENTRY /* the last unused */
 } CURLoption;
