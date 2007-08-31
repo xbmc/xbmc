@@ -4,10 +4,8 @@
 #include "DVDCodecs/Video/DVDVideoCodec.h"
 #include "DVDCodecs/Overlay/DVDOverlay.h"
 
-#ifdef HAS_XBOX_HARDWARE
-#include "../VideoRenderers/XBoxRenderer.h" // for YV12Image definition
-#else
-#include "../VideoRenderers/WinRenderer.h" // for YV12Image definition
+#ifdef HAS_VIDEO_PLAYBACK
+#include "cores/VideoRenderers/RenderManager.h"
 #endif
 
 typedef struct stDVDPictureRenderer
