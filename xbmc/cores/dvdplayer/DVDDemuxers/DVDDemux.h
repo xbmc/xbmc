@@ -125,6 +125,12 @@ public:
   virtual void Reset() = 0;
   
   /*
+   * Aborts any internal reading that might be stalling main thread
+   * NOTICE - this can be called from another thread
+   */
+  virtual void Abort() = 0;
+
+  /*
    * Flush the demuxer, if any data is kept in buffers, this should be freed now
    */
   virtual void Flush() = 0;
@@ -141,11 +147,11 @@ public:
   virtual bool Seek(int iTime) = 0;
 
   /*
-   * returns the start time of this stream in msec
-   * needed for e.g. vob files that are part of a dvd
+   * Set the playspeed, if demuxer can handle different
+   * speeds of playback
    */
-  //virtual int GetStreamStart() { return 0; }
-  
+  virtual void SetSpeed(int iSpeed) = 0;
+
   /*
    * returns the total time in msec
    */
@@ -160,7 +166,7 @@ public:
    * return nr of streams, 0 if none
    */
   virtual int GetNrOfStreams() = 0;
-
+  
   /*
    * return nr of audio streams, 0 if none
    */
