@@ -19,6 +19,7 @@ public:
   virtual void av_close_input_file(AVFormatContext *s)=0;
   virtual int av_read_frame(AVFormatContext *s, AVPacket *pkt)=0;
   virtual int av_read_play(AVFormatContext *s)=0;
+  virtual int av_read_pause(AVFormatContext *s)=0;
   virtual int av_seek_frame(AVFormatContext *s, int stream_index, int64_t timestamp, int flags)=0;
   virtual int av_find_stream_info(AVFormatContext *ic)=0;
   virtual int av_open_input_file(AVFormatContext **ic_ptr, const char *filename, AVInputFormat *fmt, int buf_size, AVFormatParameters *ap)=0;
@@ -49,6 +50,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_METHOD1(void, av_close_input_file, (AVFormatContext *p1))
   DEFINE_FUNC_ALIGNED2(int, __cdecl, av_read_frame, AVFormatContext *, AVPacket *)
   DEFINE_METHOD1(int, av_read_play, (AVFormatContext *p1))
+  DEFINE_METHOD1(int, av_read_pause, (AVFormatContext *p1))
   DEFINE_FUNC_ALIGNED4(int, __cdecl, av_seek_frame, AVFormatContext*, int, int64_t, int)
   DEFINE_FUNC_ALIGNED1(int, __cdecl, av_find_stream_info, AVFormatContext*)
   DEFINE_FUNC_ALIGNED5(int, __cdecl, av_open_input_file, AVFormatContext**, const char *, AVInputFormat *, int, AVFormatParameters *)
@@ -75,6 +77,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
     RESOLVE_METHOD(av_close_input_file)
     RESOLVE_METHOD(av_read_frame)
     RESOLVE_METHOD(av_read_play)
+    RESOLVE_METHOD(av_read_pause)
     RESOLVE_METHOD(av_seek_frame)
     RESOLVE_METHOD(av_find_stream_info)
     RESOLVE_METHOD(av_open_input_file)
