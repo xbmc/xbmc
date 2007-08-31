@@ -3,9 +3,9 @@
 #include "DVDVideoCodecFFmpeg.h"
 #include "../../DVDDemuxers/DVDDemux.h"
 #include "../../DVDStreamInfo.h"
+#include "../../DVDClock.h"
 #include "../DVDCodecs.h"
 #include "../../../../utils/Win32Exception.h"
-#include "../../DVDClock.h"
 
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
 
