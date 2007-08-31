@@ -236,7 +236,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     // open our virtual file device
     if(m_dllAvFormat.url_fdopen(&m_ioContext, context) < 0)
     {
-      CLog::Log(LOGERROR, __FUNCTION__" - Unable to init io context");
+      CLog::Log(LOGERROR, "%s - Unable to init io context", __FUNCTION__);
       m_dllAvUtil.av_free(context);
       Dispose();
       return false;
@@ -258,14 +258,14 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       
       if (pd.buf_size == 0)
       {
-        CLog::Log(LOGERROR, __FUNCTION__" - error reading from input stream, %s", strFile);
+        CLog::Log(LOGERROR, "%s - error reading from input stream, %s", __FUNCTION__, strFile);
         return false;
       }
       
       iformat = m_dllAvFormat.av_probe_input_format(&pd, 1);
       if (!iformat)
       {
-        CLog::Log(LOGERROR, __FUNCTION__" - error probing input format, %s", strFile);
+        CLog::Log(LOGERROR, "%s - error probing input format, %s", __FUNCTION__, strFile);
         return false;
       }
     }
