@@ -146,12 +146,6 @@ PLT_FileMediaServer::ProcessFileRequest(NPT_HttpRequest&  request,
     NPT_String file_path = query.GetField("path");
     if (file_path.GetLength() == 0) goto failure;
 
-    // HACK for wmp: somehow they inverse our slashes !
-    // do it only if we're on windows
-    if (m_DirDelimiter == NPT_WIN32_DIR_DELIMITER_STR) {
-        file_path.Replace(NPT_UNIX_DIR_DELIMITER_CHR, NPT_WIN32_DIR_DELIMITER_CHR);
-    }
-
     if (path.Compare(strUri.Left(path.GetLength()), true) == 0) {
         NPT_Integer start, end;
         PLT_HttpHelper::GetRange(&request, start, end);

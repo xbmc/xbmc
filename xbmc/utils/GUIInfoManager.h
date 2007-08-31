@@ -66,6 +66,7 @@
 #define WEATHER_LOCATION            102
 #define WEATHER_IS_FETCHED          103
 
+#define SYSTEM_PROGRESS_BAR         107
 #define SYSTEM_LANGUAGE             108
 #define SYSTEM_LAUNCHING_XBE        109
 #define SYSTEM_TIME                 110

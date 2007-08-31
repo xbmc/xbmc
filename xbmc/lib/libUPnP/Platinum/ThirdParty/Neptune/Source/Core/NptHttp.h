@@ -51,6 +51,7 @@ const int NPT_HTTP_PROTOCOL_MAX_HEADER_COUNT = 100;
 #define NPT_HTTP_HEADER_LOCATION            "Location"
 #define NPT_HTTP_HEADER_RANGE               "Range"
 #define NPT_HTTP_HEADER_CONTENT_RANGE       "Content-Range"
+#define NPT_HTTP_HEADER_TRANSFER_ENCODING   "Transfer-Encoding"
 
 const int NPT_ERROR_HTTP_INVALID_RESPONSE_LINE = NPT_ERROR_BASE_HTTP - 0;
 const int NPT_ERROR_HTTP_INVALID_REQUEST_LINE  = NPT_ERROR_BASE_HTTP - 1;
@@ -217,6 +218,7 @@ public:
     NPT_Size          GetContentLength()   { return m_ContentLength;   }
     const NPT_String& GetContentType()     { return m_ContentType;     }
     const NPT_String& GetContentEncoding() { return m_ContentEncoding; }
+    const NPT_String& GetTransferEncoding(){ return m_TransferEncoding; }
 
 private:
     // members
@@ -224,6 +226,7 @@ private:
     NPT_Size                 m_ContentLength;
     NPT_String               m_ContentType;
     NPT_String               m_ContentEncoding;
+    NPT_String               m_TransferEncoding;
 };
 
 /*----------------------------------------------------------------------
@@ -529,4 +532,21 @@ protected:
     NPT_OutputStreamReference        m_Output;
 };
 
+/*----------------------------------------------------------------------
+|   NPT_HttpChunkedInputStream
++---------------------------------------------------------------------*/
+class NPT_HttpChunkedInputStream : public NPT_BufferedInputStream
+{
+public:
+    // constructors and destructor
+    NPT_HttpChunkedInputStream(NPT_InputStreamReference& stream,
+                            NPT_Size buffer_size = NPT_BUFFERED_BYTE_STREAM_DEFAULT_SIZE)
+                            : NPT_BufferedInputStream(stream, buffer_size < 512 ? 512 : buffer_size)
+      , m_ChunkRemain(0)
+    {}
+    virtual NPT_Result SetBufferSize(NPT_Size size);
+protected:
+    virtual NPT_Result FillBuffer();
+    NPT_Size m_ChunkRemain;
+};
 #endif // _NPT_HTTP_H_

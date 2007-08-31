@@ -24,6 +24,7 @@ CDVDInputStreamNavigator::CDVDInputStreamNavigator(IDVDPlayer* player) : CDVDInp
   m_holdmode = HOLDMODE_NONE;
   m_iTitle = m_iTitleCount = 0;
   m_iPart = m_iPartCount = 0;
+  m_iTime = m_iTotalTime = 0;
 }
 
 CDVDInputStreamNavigator::~CDVDInputStreamNavigator()
@@ -138,6 +139,21 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
     return false;
   }
 
+  // jump directly to title menu
+  if(g_guiSettings.GetBool("videoplayer.dvdautomenu"))
+  {
+    int len, event;
+    uint8_t buf[2048];
+    uint8_t* buf_ptr = buf;
+
+    // must startup vm and pgc
+    m_dll.dvdnav_get_next_cache_block(m_dvdnav,&buf_ptr,&event,&len);
+    m_dll.dvdnav_sector_search(m_dvdnav, 0, SEEK_SET);
+
+    if(m_dll.dvdnav_menu_call(m_dvdnav, DVD_MENU_Title) != DVDNAV_STATUS_OK)
+      CLog::Log(LOGERROR,"Error on dvdnav_menu_call(Title): %s\n", m_dll.dvdnav_err_to_string(m_dvdnav));
+  }
+
   m_bEOF = false;
   m_bCheckButtons = false;
   m_iCellStart = 0;
@@ -148,6 +164,7 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
   m_holdmode = HOLDMODE_NONE;
   m_iTitle = m_iTitleCount = 0;
   m_iPart = m_iPartCount = 0;
+  m_iTime = m_iTotalTime = 0;
 
   return true;
 }
@@ -362,7 +379,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
       // not change inside a VTS. Therefore this event can be used to query such
       // information only when necessary and update the decoding/displaying
       // accordingly.
-      {
+      {        
         if(m_holdmode == HOLDMODE_NONE)
         {
           CLog::Log(LOGDEBUG, " - DVDNAV_VTS_CHANGE (HOLDING)");
@@ -370,7 +387,9 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
           iNavresult = NAVRESULT_HOLD;
         }
         else
-          iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_VTS_CHANGE);        
+          iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_VTS_CHANGE);
+
+        m_bInMenu = (0 == m_dll.dvdnav_is_domain_vts(m_dvdnav));
       }
       break;
 
@@ -539,7 +558,7 @@ bool CDVDInputStreamNavigator::SetActiveAudioStream(int iId)
   return true;
 }
 
-bool CDVDInputStreamNavigator::SetActiveSubtitleStream(int iId, bool bDisplay)
+bool CDVDInputStreamNavigator::SetActiveSubtitleStream(int iId)
 {
   int streamId = ConvertSubtitleStreamId_XBMCToExternal(iId);
   CLog::Log(LOGDEBUG, "%s - id: %d, stream: %d", __FUNCTION__, iId, streamId);
@@ -562,9 +581,8 @@ bool CDVDInputStreamNavigator::SetActiveSubtitleStream(int iId, bool bDisplay)
   if (vm->state.domain != VTS_DOMAIN && streamId != 0)
     return false;
 
-  vm->state.SPST_REG = streamId;
-  if(bDisplay)
-    vm->state.SPST_REG |= 0x40;
+  /* set subtitle stream without modifying visibility */
+  vm->state.SPST_REG = streamId | (vm->state.SPST_REG & 0x40);
 
   return true;
 }
@@ -999,16 +1017,33 @@ float CDVDInputStreamNavigator::GetVideoAspectRatio()
 
 void CDVDInputStreamNavigator::EnableSubtitleStream(bool bEnable)
 {
-  int iCurrentStream = GetActiveSubtitleStream();
-  
-  /* if nothing is selected */
-  /* we have to force first stream */
-  /* otherwise the set function will */
-  /* set dvdregs in a very odd way */
-  if (iCurrentStream < 0)
-    iCurrentStream = 0;
+  if (!m_dvdnav)
+    return;
 
-  SetActiveSubtitleStream(iCurrentStream, bEnable);
+  vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
+  if (!vm)
+    return;
+
+  if(bEnable)  
+    vm->state.SPST_REG |= 0x40;
+  else
+    vm->state.SPST_REG &= ~0x40;
+}
+
+bool CDVDInputStreamNavigator::IsSubtitleStreamEnabled()
+{
+  if (!m_dvdnav)
+    return false;
+
+  vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
+  if (!vm)
+    return false;
+
+  
+  if(vm->state.SPST_REG & 0x40)
+    return true;
+  else
+    return false;
 }
 
 bool CDVDInputStreamNavigator::GetNavigatorState(std::string &xmlstate)

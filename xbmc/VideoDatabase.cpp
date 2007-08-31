@@ -4812,6 +4812,15 @@ void CVideoDatabase::CleanDatabase()
     sql = "delete from actors where idActor not in (select distinct idActor from actorlinkmovie) and idActor not in (select distinct idDirector from directorlinkmovie) and idActor not in (select distinct idActor from actorlinktvshow) and idActor not in (select distinct idActor from actorlinkepisode) and idActor not in (select distinct idDirector from directorlinktvshow) and idActor not in (select distinct idDirector from directorlinkepisode)";
     m_pDS->exec(sql.c_str());
  
+    CLog::Log(LOGDEBUG, "%s Updating episode counts", __FUNCTION__);
+    m_pDS->query("select idshow from tvshow");
+    while (!m_pDS->eof())
+    {
+      CStdString strSQL=FormatSQL("update tvshow set c%02d=(select count(idEpisode) from tvshowlinkepisode where idshow=%u) where idshow=%u",VIDEODB_ID_TV_EPISODES,m_pDS->fv("tvshow.idshow").get_asInteger(),m_pDS->fv("tvshow.idshow").get_asInteger());
+      m_pDS2->exec(strSQL.c_str());
+      m_pDS->next();
+    }
+
     CommitTransaction();
 
     Compress();

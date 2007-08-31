@@ -1174,10 +1174,11 @@ bool CDVDPlayer::GetSubtitleVisible()
 {
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
-    // for dvd's when we are in the menu, just return users preference
     CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
     if(pStream->IsInMenu())
       return g_stSettings.m_currentVideoSettings.m_SubtitleOn;
+    else
+      return pStream->IsSubtitleStreamEnabled();
   }
 
   return m_dvdPlayerVideo.IsSubtitleEnabled();
@@ -1637,11 +1638,6 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
         int iStream = event->physical_wide;
         bool visible = !(iStream & 0x80);
 
-        // only modify user preference if we are not in menu
-        // and we actually have a subtitle stream
-        if(!pStream->IsInMenu() && iStream != -1)
-          g_stSettings.m_currentVideoSettings.m_SubtitleOn = visible;
-
         m_dvdPlayerVideo.EnableSubtitle(visible);
 
         if (iStream >= 0)
@@ -1758,7 +1754,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
     CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
 
 
-    if( m_dvd.state == DVDSTATE_STILL && pStream->GetTotalButtons() == 0 )
+    if( m_dvd.state == DVDSTATE_STILL && m_dvd.iDVDStillTime != 0 && pStream->GetTotalButtons() == 0 )
     {
       switch(action.wID)
       {
@@ -1770,7 +1766,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
             /* this will force us out of the stillframe */
             CLog::Log(LOGDEBUG, "%s - User asked to exit stillframe", __FUNCTION__);
             m_dvd.iDVDStillStartTime = 0;
-            m_dvd.iDVDStillTime = 0;
+            m_dvd.iDVDStillTime = 1;
             return true;
           }
           break;

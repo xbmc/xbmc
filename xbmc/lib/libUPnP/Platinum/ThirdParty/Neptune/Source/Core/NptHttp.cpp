@@ -17,6 +17,7 @@
 #include "NptVersion.h"
 #include "NptUtils.h"
 #include "NptFile.h"
+#include <stdlib.h>
 
 /*----------------------------------------------------------------------
 |   constants
@@ -604,6 +605,12 @@ NPT_HttpEntity::NPT_HttpEntity(const NPT_HttpHeaders& headers) :
     header = headers.GetHeader(NPT_HTTP_HEADER_CONTENT_ENCODING);
     if (header != NULL) {
         m_ContentEncoding = header->GetValue();
+    }
+
+    // Transfer-Encoding
+    header = headers.GetHeader(NPT_HTTP_HEADER_TRANSFER_ENCODING);
+    if (header != NULL) {
+        m_TransferEncoding = header->GetValue();
     }
 }
 
@@ -1730,4 +1737,81 @@ NPT_HttpFileRequestHandler::GetContentType(const NPT_String& filename)
     }
 
     return m_DefaultMimeType;
+}
+
+
+/*----------------------------------------------------------------------
+|   NPT_HttpChunkedInputStream::FillBuffer
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_HttpChunkedInputStream::FillBuffer()
+{
+    // shortcut
+    if (m_Eos) return NPT_ERROR_EOS;
+
+    // check that there is nothing left in the buffer and the buffer
+    // size is not 0
+    NPT_ASSERT(m_Buffer.valid == m_Buffer.offset);
+    NPT_ASSERT(m_Buffer.size != 0);
+
+    // allocate the read buffer if it has not been done yet
+    if (m_Buffer.data == NULL) {
+        m_Buffer.data = new NPT_Byte[m_Buffer.size];
+        if (m_Buffer.data == NULL) return NPT_ERROR_OUT_OF_MEMORY;
+    }
+    NPT_Result result = NPT_SUCCESS;
+    if(m_ChunkRemain == 0) {
+        // read next chunk size
+        NPT_Byte *p = m_Buffer.data;
+        NPT_Size size;
+        do {
+            result = m_Source->Read(p, 1, &size);
+            if(NPT_FAILED(result)) goto error;
+
+            if(*p == '\r' || *p == '\n' || *p == ';') {
+                m_ChunkRemain = strtol((const char*)m_Buffer.data, NULL, 16);                
+                while(*p != '\n') { // read this full line
+                    result = m_Source->Read(p, 1, &size);
+                    if(NPT_FAILED(result)) goto error;
+                }
+                break;
+            }
+        } while((++p - m_Buffer.data) < (NPT_Offset)m_Buffer.size);
+    }
+
+    // if the chunk size is 0, we are at the end of the file
+    if(m_ChunkRemain == 0) {
+        return NPT_ERROR_EOS;
+    }
+
+    // refill the buffer
+    m_Buffer.valid = m_Buffer.size > m_ChunkRemain ? m_ChunkRemain : m_Buffer.size;
+    m_Buffer.offset = 0;
+    result = m_Source->Read(m_Buffer.data, m_Buffer.valid, &m_Buffer.valid);
+    if(NPT_FAILED(result)) goto error;
+
+    m_ChunkRemain -= m_Buffer.valid;
+
+    // when a chunk ends, it is followed by \r\n, strip that here
+    if(m_ChunkRemain == 0) {
+        NPT_Byte c;
+        NPT_Size size;
+        do {
+            result = m_Source->Read(&c, 1, &size);
+            if(NPT_FAILED(result)) goto error;
+        } while(c != '\n');
+
+    }
+
+    return result;
+error:
+    m_Buffer.valid = 0;
+    return result;
+}
+
+NPT_Result
+NPT_HttpChunkedInputStream::SetBufferSize(NPT_Size size)
+{
+    if(size < 512) size = 512;
+    return NPT_BufferedInputStream::SetBufferSize(size);
 }
