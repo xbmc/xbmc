@@ -18,3 +18,4 @@ public:
   static CDVDAudioCodec* OpenCodec(CDVDAudioCodec* pCodec,  CDVDStreamInfo &hint );
   static CDVDVideoCodec* OpenCodec(CDVDVideoCodec* pCodec,  CDVDStreamInfo &hint, CDVDCodecOptions &options );
 };
+

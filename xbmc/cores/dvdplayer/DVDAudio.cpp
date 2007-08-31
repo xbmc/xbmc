@@ -173,7 +173,7 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
     if(AddPacketsRenderer(m_pBuffer, m_iBufferSize) != m_iBufferSize)
     {
       m_iBufferSize = 0;
-      CLog::Log(LOGERROR, __FUNCTION__" - failed to add leftover bytes to render");
+      CLog::Log(LOGERROR, "%s - failed to add leftover bytes to render", __FUNCTION__);
       return copied;
     }
 
@@ -189,7 +189,7 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
   {
     CSingleLock lock (m_critSection);
     if(len > m_dwPacketSize)
-      CLog::Log(LOGERROR, __FUNCTION__" - More bytes left than can be stored in buffer");
+      CLog::Log(LOGERROR, "%s - More bytes left than can be stored in buffer", __FUNCTION__);
 
     if(m_pBuffer)
     {

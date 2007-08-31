@@ -77,7 +77,7 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
   if(!mask) 
     mask = 0xff;
 
-  CLog::Log(LOGDEBUG, __FUNCTION__" - Setting region mask %02x", mask);
+  CLog::Log(LOGDEBUG, "%s - Setting region mask %02x", __FUNCTION__, mask);
   m_dll.dvdnav_set_region_mask(m_dvdnav, mask);
 
   // get default language settings
@@ -354,7 +354,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         if(event->logical<0)
         {
           /* this will not take effect in this event */
-          CLog::Log(LOGINFO, __FUNCTION__" - none or invalid audio stream selected, defaulting to first");
+          CLog::Log(LOGINFO, "%s - none or invalid audio stream selected, defaulting to first", __FUNCTION__);
           SetActiveAudioStream(0);
         }
 
@@ -411,10 +411,10 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         m_dll.dvdnav_get_number_of_titles(m_dvdnav, &m_iTitleCount);
         m_dll.dvdnav_get_number_of_parts(m_dvdnav, m_iTitle, &m_iPartCount);        
         m_dll.dvdnav_get_position(m_dvdnav, &pos, &len);
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Cell change: Title %d, Chapter %d\n", m_iTitle, m_iPart);
-        CLog::Log(LOGDEBUG, __FUNCTION__" - At position %.0f%% inside the feature\n", 100 * (double)pos / (double)len);        
+
+        CLog::Log(LOGDEBUG, "%s - Cell change: Title %d, Chapter %d\n", __FUNCTION__, m_iTitle, m_iPart);
+        CLog::Log(LOGDEBUG, "%s - At position %.0f%% inside the feature\n", __FUNCTION__, 100 * (double)pos / (double)len);
         //Get total segment time        
-        
 
         dvdnav_cell_change_event_t* cell_change_event = (dvdnav_cell_change_event_t*)buf;
         m_iCellStart = cell_change_event->cell_start; // store cell time as we need that for time later
@@ -529,7 +529,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
 bool CDVDInputStreamNavigator::SetActiveAudioStream(int iId)
 {
   int streamId = ConvertAudioStreamId_XBMCToExternal(iId);
-  CLog::Log(LOGDEBUG, __FUNCTION__" - id: %d, stream: %d", iId, streamId);
+  CLog::Log(LOGDEBUG, "%s - id: %d, stream: %d", __FUNCTION__, iId, streamId);
 
   if (!m_dvdnav)
     return false;
@@ -556,7 +556,7 @@ bool CDVDInputStreamNavigator::SetActiveAudioStream(int iId)
 bool CDVDInputStreamNavigator::SetActiveSubtitleStream(int iId)
 {
   int streamId = ConvertSubtitleStreamId_XBMCToExternal(iId);
-  CLog::Log(LOGDEBUG, __FUNCTION__" - id: %d, stream: %d", iId, streamId);
+  CLog::Log(LOGDEBUG, "%s - id: %d, stream: %d", __FUNCTION__, iId, streamId);
 
   if (!m_dvdnav)
     return false;
@@ -996,7 +996,7 @@ float CDVDInputStreamNavigator::GetVideoAspectRatio()
   //and such. should be able to give us info that we can zoom in automatically
   //not sure what to do with it currently
 
-  CLog::Log(LOGINFO, __FUNCTION__" - Aspect wanted: %d, Scale permissions: %d", iAspect, iPerm);
+  CLog::Log(LOGINFO, "%s - Aspect wanted: %d, Scale permissions: %d", __FUNCTION__, iAspect, iPerm);
   switch(iAspect)
   {
     case 2: //4:3
@@ -1134,7 +1134,7 @@ int CDVDInputStreamNavigator::ConvertAudioStreamId_ExternalToXBMC(int id)
     /* VTS domain can only have limited number of streams */
     if (id >= 8)
     {
-      CLog::Log(LOGWARNING, __FUNCTION__" - incorrect id : %d", id);
+      CLog::Log(LOGWARNING, "%s - incorrect id : %d", __FUNCTION__, id);
       return -1;
     }
 
@@ -1150,20 +1150,20 @@ int CDVDInputStreamNavigator::ConvertAudioStreamId_ExternalToXBMC(int id)
     }
     else
     {
-      CLog::Log(LOGWARNING, __FUNCTION__" - non existing id %d", id);
+      CLog::Log(LOGWARNING, "%s - non existing id %d", __FUNCTION__, id);
       return -1;
     }
   }
   else
   {
     if( id != 0 )
-      CLog::Log(LOGWARNING, __FUNCTION__" - non vts domain can't have id %d", id);
+      CLog::Log(LOGWARNING, "%s - non vts domain can't have id %d", __FUNCTION__, id);
 
     // non VTS_DOMAIN, only one stream is available
     return 0;
   }
   
-  CLog::Log(LOGWARNING, __FUNCTION__" - no stream found %d", id);
+  CLog::Log(LOGWARNING, "%s - no stream found %d", __FUNCTION__, id);
   return -1;
 }
 
@@ -1208,7 +1208,7 @@ int CDVDInputStreamNavigator::ConvertSubtitleStreamId_ExternalToXBMC(int id)
     /* VTS domain can only have limited number of streams */
     if (id >= 32)
     {
-      CLog::Log(LOGWARNING, __FUNCTION__" - incorrect id : %d", id);
+      CLog::Log(LOGWARNING, "%s - incorrect id : %d", __FUNCTION__, id);
       return -1;
     }
 
@@ -1224,19 +1224,19 @@ int CDVDInputStreamNavigator::ConvertSubtitleStreamId_ExternalToXBMC(int id)
     }
     else
     {
-      CLog::Log(LOGWARNING, __FUNCTION__" - non existing id %d", id);
+      CLog::Log(LOGWARNING, "%s - non existing id %d", __FUNCTION__, id);
       return -1;
     }
   }
   else
   {
     if( id != 0 )
-      CLog::Log(LOGWARNING, __FUNCTION__" - non vts domain can't have id %d", id);
+      CLog::Log(LOGWARNING, "%s - non vts domain can't have id %d", __FUNCTION__, id);
 
     // non VTS_DOMAIN, only one stream is available
     return 0;
   }
   
-  CLog::Log(LOGWARNING, __FUNCTION__" - no stream found %d", id);
+  CLog::Log(LOGWARNING, "%s - no stream found %d", __FUNCTION__, id);
   return -1;
 }
