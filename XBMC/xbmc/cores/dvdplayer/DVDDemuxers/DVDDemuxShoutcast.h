@@ -21,6 +21,8 @@ public:
   void Dispose();
   void Reset();
   void Flush();
+  void Abort(){}
+  void SetSpeed(int iSpeed){};
 
   CDVDDemux::DemuxPacket* Read();
 
