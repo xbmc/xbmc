@@ -231,7 +231,6 @@ public:
 public: // XXX, test : should be private
   CDVDDemux::DemuxPacket* m_pPacket;
   unsigned int m_packetSize;
-  bool m_bPacketFreed;
 };
 
 class CDVDMsgDemuxerReset : public CDVDMsg
