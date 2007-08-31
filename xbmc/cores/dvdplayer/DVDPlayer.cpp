@@ -254,8 +254,6 @@ void CDVDPlayer::Process()
 
   m_callback.OnPlayBackStarted();
 
-  int iErrorCounter = 0;
-
   while (!m_bAbortRequest)
   {
     // if the queues are full, no need to read more
@@ -361,23 +359,12 @@ void CDVDPlayer::Process()
         }
 
         // keep on trying until user wants us to stop.
-        iErrorCounter++;
+        // another option would be to check if the input stream
+        // is advancing, and if it isn't, then abort
         CLog::Log(LOGERROR, "Error reading data from demuxer");
-
-        // maybe reseting the demuxer at this point would be a good idea, should it have failed in some way.
-        // probably not a good idea, the dvdplayer can get stuck (and it does sometimes) in a loop this way.
-        if (iErrorCounter > 50)
-        {
-          CLog::Log(LOGERROR, "got 50 read errors in a row, quiting");
-          return;
-          //m_pDemuxer->Reset();
-          //iErrorCounter = 0;
-        }
-
         continue;
       }
 
-      iErrorCounter = 0;
       m_packetcount++;
 
       if(m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
@@ -782,10 +769,10 @@ void CDVDPlayer::HandleMessages()
           CLog::Log(LOGDEBUG, "CDVDInputStreamNavigator seek to: %d", pMsgPlayerSeek->GetTime());
           if (((CDVDInputStreamNavigator*)m_pInputStream)->Seek(pMsgPlayerSeek->GetTime()))
           {
-            CLog::Log(LOGDEBUG, "CDVDInputStreamNavigator seek to: %d, succes", pMsgPlayerSeek->GetTime());
+            CLog::Log(LOGDEBUG, "CDVDInputStreamNavigator seek to: %d, success", pMsgPlayerSeek->GetTime());
             FlushBuffers();
           }
-          else 
+          else
             CLog::Log(LOGWARNING, "error while seeking");
         }
         else
@@ -793,10 +780,20 @@ void CDVDPlayer::HandleMessages()
           CLog::Log(LOGDEBUG, "demuxer seek to: %d", pMsgPlayerSeek->GetTime());
           if (m_pDemuxer && m_pDemuxer->Seek(pMsgPlayerSeek->GetTime()))
           {
-            CLog::Log(LOGDEBUG, "demuxer seek to: %d, succes", pMsgPlayerSeek->GetTime());
+            CLog::Log(LOGDEBUG, "demuxer seek to: %d, success", pMsgPlayerSeek->GetTime());
             FlushBuffers();
           }
-          else CLog::Log(LOGWARNING, "error while seeking");
+          else
+          {
+            // demuxer will return failure, if you seek to eof
+            if (m_pInputStream && m_pInputStream->IsEOF())
+            {
+              FlushBuffers();
+              CLog::Log(LOGDEBUG, "demuxer seek to: eof");
+            }
+            else
+              CLog::Log(LOGWARNING, "error while seeking");            
+          }
         }
         // make sure video player displays next frame
         m_dvdPlayerVideo.StepFrame();
