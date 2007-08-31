@@ -49,11 +49,7 @@
 #include "PlayListPlayer.h"
 #include "PartyModeManager.h"
 #ifdef HAS_VIDEO_PLAYBACK
-#if defined(HAS_XBOX_HARDWARE) || defined(_LINUX)
 #include "cores/VideoRenderers/RenderManager.h"
-#else
-#include "cores/VideoRenderers/WinRenderManager.h"
-#endif
 #endif
 #ifdef HAS_PYTHON
 #include "lib/libPython/XBPython.h"
