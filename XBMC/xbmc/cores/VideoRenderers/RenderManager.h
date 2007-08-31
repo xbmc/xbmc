@@ -1,5 +1,11 @@
-#ifndef XBOX_VIDEO_RENDERER
-#define XBOX_VIDEO_RENDERER
+#pragma once
+
+#if !defined(HAS_XBOX_HARDWARE)
+
+// we use this manager instead
+#include "WinRenderManager.h"
+
+#else
 
 #include "XBoxRenderer.h"
 #include "..\..\utils\SharedSection.h"
