@@ -21,4 +21,5 @@ protected:
   int m_audioStream;
   int m_subtitleStream;
   int m_outputmode;
+  bool m_subtitleVisible;
 };

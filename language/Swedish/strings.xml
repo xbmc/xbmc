@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmcscripts.com-->
-<!--Date of translation: 08/20/2007-->
+<!--Date of translation: 08/28/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 10008-->
+<!--Based on english strings version 10101-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -472,6 +472,7 @@
   <string id="569">Kommentar</string>
   <string id="570">Datum tillagt</string>
   <string id="571">Standard</string>
+  <string id="572">Studio</string>
   <string id="580">Sorteringsriktning</string>
   <string id="581">Sorteringsmetod</string>
   <string id="582">Visningsläge</string>
@@ -654,6 +655,7 @@
   <string id="1039">Bildinsticksprogram</string>
   <string id="1040">Laddar mapp</string>
   <string id="1041">Hämtade %i objekt</string>
+  <string id="1042">Hämtade %i av %i objekt</string>
   <string id="1200">SMB Utdelning</string>
   <string id="1202">SMB Arbetsgrupp</string>
   <string id="1203">SMB Användarnamn</string>
@@ -1530,6 +1532,7 @@ den här visualiseringen</string>
   <string id="20385">Ta bort länk till TV serie</string>
   <string id="20386">Nyligen tillagda filmer</string>
   <string id="20387">Nyligen tillagda avsnitt</string>
+  <string id="20388">Studior</string>
   <string id="21330">Visa dolda filer och mappar</string>
   <string id="21331">TuxBox klient</string>
   <string id="21332">VARNING: Vald TuxBox enhet är i inspelningsläge!</string>
@@ -1566,9 +1569,15 @@ den här visualiseringen</string>
   <string id="21383">Aktivera skrollhandtag</string>
   <string id="21384">Gör seddfilter ett val i filmbibliotek</string>
   <string id="21385">Öppna</string>
+  <string id="21386">Ljudnivåshantering</string>
   <string id="21387">Snabb</string>
   <string id="21388">Tyst</string>
   <string id="21389">Aktivera egen bakgrund</string>
+  <string id="21390">Strömbesparingshantering</string>
+  <string id="21391">Hög strömförbrukning</string>
+  <string id="21392">Låg strömförbrukning</string>
+  <string id="21393">Hög standby</string>
+  <string id="21394">Låg standby</string>
   <string id="21395">Kan inte cacha filer större än 4gb</string>
   <string id="21396">Kapitel</string>
   <string id="21397">Högkvalitets Pixel Shader V2</string>
@@ -1620,6 +1629,7 @@ den här visualiseringen</string>
   <string id="21822">Kameramärke</string>
   <string id="21823">Kameramodell</string>
   <string id="21824">Exif kommentar</string>
+  <string id="21825">Fast program</string>
   <string id="21826">Bländare</string>
   <string id="21827">Brännvidd</string>
   <string id="21828">Fokuseringsavstånd</string>
@@ -1653,9 +1663,12 @@ den här visualiseringen</string>
   <string id="21873">Stad</string>
   <string id="21874">Delstat</string>
   <string id="21875">Land</string>
+  <string id="21876">Originalreferens till Tx</string>
   <string id="21877">Skapad datum</string>
   <string id="21878">Upphovsrättsflagga</string>
   <string id="21879">Landskod</string>
+  <string id="21880">Referenstjänst</string>
   <string id="21881">Aktivera UPnP renderare</string>
+  <string id="21882">Försök hoppa över introduktion före DVD menyn</string>
   <string id="29999">Aktivera fladderfilter lagningsinställning till spel</string>
 </strings>

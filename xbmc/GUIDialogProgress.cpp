@@ -23,7 +23,7 @@
 #include "GUIDialogProgress.h"
 #include "GUIProgressControl.h"
 #include "Application.h"
-
+#include "utils/GUIInfoManager.h"
 
 #define CONTROL_PROGRESS_BAR 20
 
@@ -33,6 +33,7 @@ CGUIDialogProgress::CGUIDialogProgress(void)
   m_bCanceled = false;
   m_iCurrent=0;
   m_iMax=0;
+  m_percentage = 0;
 }
 
 CGUIDialogProgress::~CGUIDialogProgress(void)
@@ -128,15 +129,25 @@ bool CGUIDialogProgress::OnAction(const CAction &action)
   return CGUIDialog::OnAction(action);
 }
 
+void CGUIDialogProgress::OnWindowLoaded()
+{
+  CGUIDialog::OnWindowLoaded();
+  const CGUIControl *control = GetControl(CONTROL_PROGRESS_BAR);
+  if (control && control->GetControlType() == CGUIControl::GUICONTROL_PROGRESS)
+  {
+    // make sure we have the appropriate info set
+    CGUIProgressControl *progress = (CGUIProgressControl *)control;
+    if (!progress->GetInfo())
+      progress->SetInfo(SYSTEM_PROGRESS_BAR);
+  }
+}
+
 void CGUIDialogProgress::SetPercentage(int iPercentage)
 {
   if (iPercentage < 0) iPercentage = 0;
   if (iPercentage > 100) iPercentage = 100;
 
-  g_graphicsContext.Lock();
-  CGUIProgressControl* pControl = (CGUIProgressControl*)GetControl(CONTROL_PROGRESS_BAR);
-  if (pControl) pControl->SetPercentage((float)iPercentage);
-  g_graphicsContext.Unlock();
+  m_percentage = iPercentage;
 }
 
 void CGUIDialogProgress::SetProgressMax(int iMax)

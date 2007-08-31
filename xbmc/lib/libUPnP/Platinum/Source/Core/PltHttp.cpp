@@ -544,6 +544,10 @@ PLT_HttpClient::WaitForResponse(NPT_InputStreamReference& input_stream,
     // create an entity if one is expected in the response
     if (request.GetMethod() == NPT_HTTP_METHOD_GET || request.GetMethod() == NPT_HTTP_METHOD_POST) {
         NPT_HttpEntity* response_entity = new NPT_HttpEntity(response->GetHeaders());
+        if (response_entity->GetTransferEncoding() == "chunked") {
+            NPT_InputStreamReference tmpRef = (NPT_InputStreamReference)buffered_input_stream;
+            buffered_input_stream = new NPT_HttpChunkedInputStream(tmpRef);
+        }
         response_entity->SetInputStream((NPT_InputStreamReference)buffered_input_stream);
         response->SetEntity(response_entity);
     }
