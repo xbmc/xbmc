@@ -1,11 +1,7 @@
 
 #include "stdafx.h"
 #include "DVDCodecUtils.h"
-#ifdef HAS_XBOX_HARDWARE
-#include "../../VideoRenderers/XBoxRenderer.h" // for YV12Image definition
-#else
-#include "../../VideoRenderers/WinRenderer.h" // for YV12Image definition
-#endif
+#include "cores/VideoRenderers/RenderManager.h"
 
 // allocate a new picture (PIX_FMT_YUV420P)
 DVDVideoPicture* CDVDCodecUtils::AllocatePicture(int iWidth, int iHeight)

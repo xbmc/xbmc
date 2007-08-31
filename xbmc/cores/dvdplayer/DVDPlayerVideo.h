@@ -7,10 +7,8 @@
 #include "DVDCodecs/Video/DVDVideoCodec.h"
 #include "DVDClock.h"
 #include "DVDOverlayContainer.h"
-#ifdef HAS_XBOX_HARDWARE
-#include "../VideoRenderers/RenderManager.h"
-#else
-#include "../VideoRenderers/WinRenderManager.h"
+#ifdef HAS_VIDEO_PLAYBACK
+#include "cores/VideoRenderers/RenderManager.h"
 #endif
 
 enum CodecID;
