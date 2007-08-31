@@ -240,12 +240,12 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
         m_audioClock += audioframe.duration;
         datatimeout = audioframe.duration*2;
 
-        // calculate an bitrate
+        // calculate a bitrate
         m_bps_i = (double)bytesconsumed / audioframe.duration * DVD_TIME_BASE;
         m_bps_o = 1.0f / n;
       }
 
-      // calucate starting pts of next audio frame
+      // calculate starting pts of next audio frame
       if (pPacket->dts != DVD_NOPTS_VALUE && m_bps_i)
       {
         int bytes = (pPacket->iSize - audio_pkt_size) - m_pAudioCodec->GetBufferSize();
@@ -412,7 +412,7 @@ void CDVDPlayerAudio::Process()
     {
       m_dvdAudio.Destroy();
       if(!m_dvdAudio.Create(audioframe, m_streaminfo.codec))
-        CLog::Log(LOGERROR, __FUNCTION__" - failed to create audio renderer");
+        CLog::Log(LOGERROR, "%s - failed to create audio renderer", __FUNCTION__);
     }
 
     // add any packets play

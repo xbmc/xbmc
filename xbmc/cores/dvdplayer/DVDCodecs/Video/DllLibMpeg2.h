@@ -64,3 +64,4 @@ class DllLibMpeg2 : public DllDynamic, DllLibMpeg2Interface
     RESOLVE_METHOD(mpeg2_skip)
   END_METHOD_RESOLVE()
 };
+

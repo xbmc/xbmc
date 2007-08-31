@@ -377,7 +377,7 @@ void CDVDPlayerVideo::Process()
               }
               catch (...)
               {
-                CLog::Log(LOGERROR, __FUNCTION__" - Exception caught when outputing picture");
+                CLog::Log(LOGERROR, "%s - Exception caught when outputing picture", __FUNCTION__);
                 iResult = EOS_ABORT;
               }
 
@@ -394,7 +394,7 @@ void CDVDPlayerVideo::Process()
               //flushing the video codec things break for some reason
               //i think the decoder (libmpeg2 atleast) still has a pointer
               //to the data, and when the packet is freed that will fail.
-              iDecoderState = m_pVideoCodec->Decode(NULL, NULL, DVD_NOPTS_VALUE);
+              iDecoderState = m_pVideoCodec->Decode(NULL, 0, DVD_NOPTS_VALUE);
               break;
             }
             
@@ -434,7 +434,7 @@ void CDVDPlayerVideo::Process()
           break;
 
         // the decoder didn't need more data, flush the remaning buffer
-        iDecoderState = m_pVideoCodec->Decode(NULL, NULL, DVD_NOPTS_VALUE);
+        iDecoderState = m_pVideoCodec->Decode(NULL, 0, DVD_NOPTS_VALUE);
       }
 
       // if decoder had an error, tell it to reset to avoid more problems
@@ -637,7 +637,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts)
 #ifdef HAS_VIDEO_PLAYBACK
     if(!g_renderManager.Configure(pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight, m_fFrameRate, flags))
     {
-      CLog::Log(LOGERROR, __FUNCTION__" - failed to configure renderer");
+      CLog::Log(LOGERROR, "%s - failed to configure renderer", __FUNCTION__);
       return EOS_ABORT;
     }
 #endif
@@ -652,8 +652,10 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts)
   }
   
 #ifdef HAS_VIDEO_PLAYBACK
-  if (!g_renderManager.IsStarted())
+  if (!g_renderManager.IsStarted()) {
+    CLog::Log(LOGERROR, "%s - renderer not started", __FUNCTION__);
     return EOS_ABORT;
+  }
 
   if( !(pPicture->iFlags & DVP_FLAG_DROPPED) )
   {
