@@ -4,6 +4,8 @@
 #include "../DVDInputStreams/DVDInputStream.h"
 #include "DVDDemuxUtils.h"
 #include "../DVDClock.h" // for DVD_TIME_BASE
+#include "utils/Win32Exception.h"
+
 
 // class CDemuxStreamVideoFFmpeg
 void CDemuxStreamVideoFFmpeg::GetStreamInfo(std::string& strInfo)
@@ -404,10 +406,25 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
 
     // timeout reads after 100ms
     g_urltimeout = GetTickCount() + 100;
-    int result = m_dllAvFormat.av_read_frame(m_pFormatContext, &pkt);
+    //g_urltimeout = 0;
+    int result = 0;
+    try
+    {
+      result = m_dllAvFormat.av_read_frame(m_pFormatContext, &pkt);
+    }
+    catch(const win32_exception &e)
+    {
+      e.writelog(__FUNCTION__);
+      result = -1;
+    }
     g_urltimeout = 0;
 
-    if (result < 0)
+    if (result == AVERROR(EINTR))
+    {
+      // timeout, probably no real error
+      // TODO - fix ffmpeg to always return this
+    }
+    else if (result < 0)
     {
       // we are likely atleast at an discontinuity
       m_dllAvFormat.av_read_frame_flush(m_pFormatContext);
