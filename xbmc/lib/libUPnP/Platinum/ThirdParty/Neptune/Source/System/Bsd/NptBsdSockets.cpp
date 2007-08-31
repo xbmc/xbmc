@@ -1203,7 +1203,9 @@ NPT_BsdUdpSocket::NPT_BsdUdpSocket() :
 
 #ifdef _XBOX
     // set flag on the socket the allows sending of multicast
-    *(DWORD*)((char*)m_SocketFdReference->GetSocketFd()+0xc) |= 0x02000000;
+    if (!NPT_BSD_SOCKET_IS_INVALID(m_SocketFdReference->GetSocketFd())) {
+        *(DWORD*)((char*)m_SocketFdReference->GetSocketFd()+0xc) |= 0x02000000;
+    }
 #endif
 
 }

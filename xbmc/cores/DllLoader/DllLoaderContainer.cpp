@@ -37,13 +37,13 @@ Export export_gdi32[];
 Export export_ddraw[];
 Export export_comctl32[];
 Export export_msvcrt[];
-Export export_msvcr71[];
 Export export_pncrt[];
 Export export_iconvx[];
 Export export_xbp[];
 
 DllLoader kernel32("kernel32.dll",        false, true, false, export_kernel32);
-DllLoader msvcr71("msvcr71.dll",          false, true, false, export_msvcr71);
+DllLoader msvcr80("msvcr80.dll",          false, true, false, export_msvcrt);
+DllLoader msvcr71("msvcr71.dll",          false, true, false, export_msvcrt);
 DllLoader msvcrt("msvcrt.dll",            false, true, false, export_msvcrt);
 DllLoader wsock32("wsock32.dll",          false, true, false, export_wsock32);
 DllLoader ws2_32("ws2_32.dll",            false, true, false, export_ws2_32);

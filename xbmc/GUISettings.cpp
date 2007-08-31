@@ -418,6 +418,7 @@ CGUISettings::CGUISettings(void)
   AddBool(12, "videoplayer.useexternaldvdplayer", 20001, false);
   AddString(13, "videoplayer.externaldvdplayer", 20002, "",  BUTTON_CONTROL_PATH_INPUT, true, 655);
   AddInt(14, "videoplayer.dvdplayerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
+  AddBool(15, "videoplayer.dvdautomenu", 21882, false);
 
   AddCategory(5, "subtitles", 287);
   AddString(1, "subtitles.font", 288, "Arial.ttf", SPIN_CONTROL_TEXT);
