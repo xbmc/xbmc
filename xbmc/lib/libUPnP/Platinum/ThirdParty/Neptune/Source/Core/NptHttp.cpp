@@ -1762,29 +1762,26 @@ NPT_HttpChunkedInputStream::FillBuffer()
     NPT_Result result = NPT_SUCCESS;
     if(m_ChunkRemain == 0) {
         // read next chunk size
-        char data[16], *p = data;
-        NPT_Size size_read = 1;
-        while((p - data) < sizeof(data)) {
-            result = m_Source->Read(p, 1, &size_read);
+        NPT_Byte *p = m_Buffer.data;
+        NPT_Size size;
+        do {
+            result = m_Source->Read(p, 1, &size);
             if(NPT_FAILED(result)) goto error;
 
-            if(*p == '\r' || *p == ';') {
-                *p = '\0';
-                m_ChunkRemain = strtol(data, NULL, 16);
-                // read this full line
-                while(*p != '\n' && size_read > 0) {
-                    result = m_Source->Read(p, 1, &size_read);
+            if(*p == '\r' || *p == '\n' || *p == ';') {
+                m_ChunkRemain = strtol((const char*)m_Buffer.data, NULL, 16);                
+                while(*p != '\n') { // read this full line
+                    result = m_Source->Read(p, 1, &size);
                     if(NPT_FAILED(result)) goto error;
                 }
-                // restore data pointer
-                p = data-1;
-
-                // if we got a chunksize we are done
-                if (m_ChunkRemain > 0)
-                    break;
+                break;
             }
-            p++;
-        }
+        } while((++p - m_Buffer.data) < (NPT_Offset)m_Buffer.size);
+    }
+
+    // if the chunk size is 0, we are at the end of the file
+    if(m_ChunkRemain == 0) {
+        return NPT_ERROR_EOS;
     }
 
     // refill the buffer
@@ -1795,8 +1792,26 @@ NPT_HttpChunkedInputStream::FillBuffer()
 
     m_ChunkRemain -= m_Buffer.valid;
 
+    // when a chunk ends, it is followed by \r\n, strip that here
+    if(m_ChunkRemain == 0) {
+        NPT_Byte c;
+        NPT_Size size;
+        do {
+            result = m_Source->Read(&c, 1, &size);
+            if(NPT_FAILED(result)) goto error;
+        } while(c != '\n');
+
+    }
+
     return result;
 error:
     m_Buffer.valid = 0;
     return result;
+}
+
+NPT_Result
+NPT_HttpChunkedInputStream::SetBufferSize(NPT_Size size)
+{
+    if(size < 512) size = 512;
+    return NPT_BufferedInputStream::SetBufferSize(size);
 }
