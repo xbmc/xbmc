@@ -1198,16 +1198,31 @@
 				Name="VideoRenderers"
 				Filter="">
 				<File
-					RelativePath="..\..\xbmc\cores\VideoRenderers\WinRenderer.cpp">
+					RelativePath="..\..\xbmc\cores\VideoRenderers\LinuxRenderer.cpp">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\VideoRenderers\WinRenderer.h">
+					RelativePath="..\..\xbmc\cores\VideoRenderers\LinuxRenderer.h">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\VideoRenderers\WinRenderManager.cpp">
+					RelativePath="..\..\xbmc\cores\VideoRenderers\LinuxRendererATI.cpp">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\VideoRenderers\WinRenderManager.h">
+					RelativePath="..\..\xbmc\cores\VideoRenderers\LinuxRendererATI.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\LinuxRendererGL.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\LinuxRendererGL.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\RenderManager.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\RenderManager.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\XBoxRenderer.h">
 				</File>
 			</Filter>
 		</Filter>
