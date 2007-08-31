@@ -13,7 +13,7 @@ void CDVDDemuxUtils::FreeDemuxPacket(CDVDDemux::DemuxPacket* pPacket)
       delete pPacket;
     }
     catch(...) {
-      CLog::Log(LOGERROR, __FUNCTION__" - Exception thrown while freeing packet");
+      CLog::Log(LOGERROR, "%s - Exception thrown while freeing packet", __FUNCTION__);
     }
   }
 }
@@ -51,7 +51,7 @@ CDVDDemux::DemuxPacket* CDVDDemuxUtils::AllocateDemuxPacket(int iDataSize)
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Exception thrown");
+    CLog::Log(LOGERROR, "%s - Exception thrown", __FUNCTION__);
     FreeDemuxPacket(pPacket);
     pPacket = NULL;
   }  

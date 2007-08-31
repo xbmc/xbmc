@@ -84,3 +84,4 @@ __int64 CDVDInputStreamMemory::GetLength()
 {
   return m_iDataSize;
 }
+

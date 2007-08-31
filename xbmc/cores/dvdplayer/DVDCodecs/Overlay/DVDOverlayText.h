@@ -96,3 +96,4 @@ public:
   CElement* m_pHead;
   CElement* m_pEnd;
 };
+

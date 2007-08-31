@@ -119,3 +119,4 @@ protected:
   bool m_Stalled;
   CRITICAL_SECTION m_critCodecSection;
 };
+

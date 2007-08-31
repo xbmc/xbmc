@@ -26,3 +26,4 @@ protected:
   CHttpHeader m_httpHeader;
   bool m_eof;
 };
+
