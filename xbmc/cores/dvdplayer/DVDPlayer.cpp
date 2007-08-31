@@ -146,6 +146,10 @@ bool CDVDPlayer::CloseFile()
   // unpause the player
   SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
 
+  // tell demuxer to abort
+  if(m_pDemuxer)
+      m_pDemuxer->Abort();
+
   CLog::Log(LOGNOTICE, "DVDPlayer: waiting for threads to exit");
 
   // wait for the main thread to finish up
@@ -319,6 +323,10 @@ void CDVDPlayer::Process()
 
       if (!pPacket)
       {
+        // when paused, demuxer could be be returning empty
+        if (m_playSpeed == DVD_PLAYSPEED_PAUSE)
+          continue;
+
         if (!m_pInputStream) break;
         if (m_pInputStream->IsEOF()) break;
 
@@ -885,6 +893,25 @@ void CDVDPlayer::HandleMessages()
       {
         FlushBuffers();
       }
+      else if (pMsg->IsType(CDVDMsg::PLAYER_SETSPEED))
+      {
+        int speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
+        // if playspeed is different then DVD_PLAYSPEED_NORMAL or DVD_PLAYSPEED_PAUSE
+        // audioplayer, stops outputing audio to audiorendere, but still tries to
+        // sleep an correct amount for each packet
+        // videoplayer just plays faster after the clock speed has been increased
+        // 1. disable audio
+        // 2. skip frames and adjust their pts or the clock
+        m_playSpeed = speed;        
+        m_clock.SetSpeed(speed);
+        m_dvdPlayerAudio.SetSpeed(speed);
+        m_dvdPlayerVideo.SetSpeed(speed);
+
+        // TODO - we really shouldn't pause demuxer 
+        //        untill our buffers are somewhat filled
+        if(m_pDemuxer)
+          m_pDemuxer->SetSpeed(speed);
+      }
     }
     catch (...)
     {
@@ -900,17 +927,8 @@ void CDVDPlayer::HandleMessages()
 
 void CDVDPlayer::SetPlaySpeed(int speed)
 {
-  m_playSpeed = speed;  
-
-  // if playspeed is different then DVD_PLAYSPEED_NORMAL or DVD_PLAYSPEED_PAUSE
-  // audioplayer, stops outputing audio to audiorendere, but still tries to
-  // sleep an correct amount for each packet
-  // videoplayer just plays faster after the clock speed has been increased
-  // 1. disable audio
-  // 2. skip frames and adjust their pts or the clock
-  m_clock.SetSpeed(speed); 
-  m_dvdPlayerAudio.SetSpeed(speed);
-  m_dvdPlayerVideo.SetSpeed(speed);
+  m_playSpeed = speed;
+  m_messenger.Put(new CDVDMsgInt(CDVDMsg::PLAYER_SETSPEED, speed));
 }
 
 void CDVDPlayer::Pause()
