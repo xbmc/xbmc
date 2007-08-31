@@ -1,7 +1,7 @@
 
 #include "stdafx.h"
 #include "DVDCodecUtils.h"
-#include "../../VideoRenderers/RendererManager.h" // for YV12Image definition
+#include "../../VideoRenderers/RenderManager.h" // for YV12Image definition
 
 // allocate a new picture (PIX_FMT_YUV420P)
 DVDVideoPicture* CDVDCodecUtils::AllocatePicture(int iWidth, int iHeight)
