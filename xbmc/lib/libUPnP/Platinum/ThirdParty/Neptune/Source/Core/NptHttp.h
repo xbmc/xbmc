@@ -541,10 +541,10 @@ public:
     // constructors and destructor
     NPT_HttpChunkedInputStream(NPT_InputStreamReference& stream,
                             NPT_Size buffer_size = NPT_BUFFERED_BYTE_STREAM_DEFAULT_SIZE)
-      : NPT_BufferedInputStream(stream, buffer_size)
+                            : NPT_BufferedInputStream(stream, buffer_size < 512 ? 512 : buffer_size)
       , m_ChunkRemain(0)
     {}
-
+    virtual NPT_Result SetBufferSize(NPT_Size size);
 protected:
     virtual NPT_Result FillBuffer();
     NPT_Size m_ChunkRemain;
