@@ -415,7 +415,7 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
     catch(const win32_exception &e)
     {
       e.writelog(__FUNCTION__);
-      result = -1;
+      result = AVERROR(EFAULT);
     }
     g_urltimeout = 0;
 
