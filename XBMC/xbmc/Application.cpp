@@ -83,10 +83,8 @@
 #include "FileSystem/UPnPDirectory.h"
 #endif
 #include "PartyModeManager.h"
-#if defined(HAS_VIDEO_PLAYBACK) || defined(HAS_XBOX_HARDWARE)
+#ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
-#else
-#include "cores/VideoRenderers/WinRenderManager.h"
 #endif
 #ifdef HAS_KARAOKE
 #include "CdgParser.h"

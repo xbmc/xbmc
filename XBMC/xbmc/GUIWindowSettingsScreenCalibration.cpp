@@ -5,11 +5,7 @@
 #include "GUIResizeControl.h"
 #include "GUILabelControl.h"
 #ifdef HAS_VIDEO_PLAYBACK
-#ifdef HAS_XBOX_HARDWARE
 #include "cores/VideoRenderers/RenderManager.h"
-#else
-#include "cores/VideoRenderers/WinRenderManager.h"
-#endif
 #endif
 #include "Application.h"
 #include "Util.h"

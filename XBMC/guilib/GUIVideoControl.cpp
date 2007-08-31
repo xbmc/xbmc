@@ -3,11 +3,7 @@
 #include "GUIWindowManager.h"
 #include "../xbmc/Application.h"
 #ifdef HAS_VIDEO_PLAYBACK
-#if defined(HAS_XBOX_HARDWARE) || defined(_LINUX)
 #include "../xbmc/cores/VideoRenderers/RenderManager.h"
-#else
-#include "../xbmc/cores/VideoRenderers/WinRenderManager.h"
-#endif
 #else
 #include "../xbmc/cores/DummyVideoPlayer.h"
 #endif

@@ -2,15 +2,11 @@
 #pragma once
 
 #include "DVDCodecs/Video/DVDVideoCodec.h"
-#ifdef HAS_XBOX_HARDWARE
-#include "../VideoRenderers/XBoxRenderer.h" // YV12Image definition
-#elif defined(_LINUX)
-#include "../VideoRenderers/LinuxRenderer.h" // YV12Image definition
-#else
-#include "../VideoRenderers/WinRenderer.h" // for YV12Image definition
-#endif
-
 #include "DVDCodecs/Overlay/DVDOverlay.h"
+
+#ifdef HAS_VIDEO_PLAYBACK
+#include "../VideoRenderers/RenderManager.h"
+#endif
 
 typedef struct stDVDPictureRenderer
 {
