@@ -2,8 +2,6 @@
 #include "stdafx.h"
 #include "DVDInputStreamHttp.h"
 
-#include "../../../Util.h"
-
 using namespace XFILE;
 
 CDVDInputStreamHttp::CDVDInputStreamHttp() : CDVDInputStream(DVDSTREAM_TYPE_HTTP)

@@ -14,8 +14,6 @@ static inline __int64 abs(__int64 x)
 }
 #endif
 
-#include "../../Util.h"
-
 CPTSQueue::CPTSQueue()
 {
   Flush();

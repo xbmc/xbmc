@@ -879,9 +879,6 @@ void CDVDPlayer::HandleMessages()
           m_dvd.state = DVDSTATE_NORMAL;
           m_dvd.iDVDStillStartTime = 0;
           m_dvd.iDVDStillTime = 0;
-          m_dvd.state = DVDSTATE_NORMAL;
-          m_dvd.iDVDStillStartTime = 0;
-          m_dvd.iDVDStillTime = 0;
         }
       }
       else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH))

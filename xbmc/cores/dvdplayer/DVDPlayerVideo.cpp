@@ -189,7 +189,6 @@ void CDVDPlayerVideo::Process()
     }
     else if (ret == MSGQ_TIMEOUT)
     {
-      CLog::Log(LOGINFO, "Got MSGQ_TIMEOUT");
       //Okey, start rendering at stream fps now instead, we are likely in a stillframe
       if( !m_DetectedStill )
       {
@@ -657,7 +656,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts)
   
 #ifdef HAS_VIDEO_PLAYBACK
   if (!g_renderManager.IsStarted()) {
-    CLog::Log(LOGERROR, "CDVDPlayerVideo::OutputPicture - renderer not started");
+    CLog::Log(LOGERROR, "%s - renderer not started", __FUNCTION__);
     return EOS_ABORT;
   }
 
@@ -676,10 +675,6 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts)
     // post processing before FlipPage() is called.)
     g_renderManager.ReleaseImage(index);
   }
-  else { 
-     CLog::Log(LOGDEBUG, "CDVDPlayerVideo::OutputPicture - picture dropped");
-  }
-
 #else
   // no video renderer, let's mark it as dropped
   pPicture->iFlags |= DVP_FLAG_DROPPED;
@@ -746,10 +741,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts)
   m_iFlipTimeStamp += pPicture->iDuration;
 
   if( (pPicture->iFlags & DVP_FLAG_DROPPED) ) 
-  {
-    CLog::Log(LOGNOTICE, "Frame has been dropped");
     return result | EOS_DROPPED;
-  }
 
   // set fieldsync if picture is interlaced
   EFIELDSYNC mDisplayField = FS_NONE;
@@ -764,12 +756,12 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts)
   // present this image after the given delay
   __int64 delay = iCurrentClock + iSleepTime - m_pClock->GetAbsoluteClock();
 
-  if(delay<0) 
-  {
+#ifdef HAS_VIDEO_PLAYBACK
+  if(delay<0)
     g_renderManager.FlipPage( 0, -1, mDisplayField);
-  } else {
+  else
     g_renderManager.FlipPage( (DWORD)(delay * 1000 / DVD_TIME_BASE), -1, mDisplayField);
-  }
+#endif
 
   return result;
 }
