@@ -419,7 +419,8 @@ void CDVDPlayerAudio::Process()
     m_dvdAudio.AddPackets(audioframe);
 
     // store the delay for this pts value so we can calculate the current playing
-    m_ptsQueue.Add(audioframe.pts, m_dvdAudio.GetDelay() - audioframe.duration);
+    if(m_speed != DVD_PLAYSPEED_PAUSE)
+      m_ptsQueue.Add(audioframe.pts, m_dvdAudio.GetDelay() - audioframe.duration);
 
     // if we wanted to resync, we resync on this packet
     if( result & DECODE_FLAG_RESYNC )
