@@ -1,5 +1,11 @@
-#ifndef XBOX_VIDEO_RENDERER
-#define XBOX_VIDEO_RENDERER
+#pragma once
+
+#if defined(WIN32) && !defined(HAS_SDL)
+
+// we use this manager instead
+#include "WinRenderManager.h"
+
+#else
 
 #ifdef HAS_SDL_OPENGL
 #include "LinuxRendererGL.h"
