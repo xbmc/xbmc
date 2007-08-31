@@ -2312,6 +2312,9 @@
 					RelativePath="..\..\xbmc\FileSystem\MusicSearchDirectory.h">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\FileSystem\NptXbmcFile.cpp">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileSystem\PlaylistDirectory.cpp">
 				</File>
 				<File

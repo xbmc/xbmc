@@ -12,10 +12,12 @@ public:
   void StartModal();
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
+  virtual void OnWindowLoaded();
   void Progress();
   void ProgressKeys();
   bool IsCanceled() const { return m_bCanceled; }
   void SetPercentage(int iPercentage);
+  int GetPercentage() const { return m_percentage; };
   void ShowProgressBar(bool bOnOff);
   void SetHeading(const string& strLine);
   void SetHeading(int iString);             // for convenience to lookup in strings.xml
@@ -31,4 +33,5 @@ protected:
 
   int  m_iCurrent;
   int  m_iMax;
+  int m_percentage;
 };

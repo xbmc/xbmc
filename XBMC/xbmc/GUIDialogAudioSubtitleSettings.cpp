@@ -80,7 +80,8 @@ void CGUIDialogAudioSubtitleSettings::CreateSettings()
   }
 
   AddSeparator(7);
-  AddBool(SUBTITLE_SETTINGS_ENABLE, 13397, &g_stSettings.m_currentVideoSettings.m_SubtitleOn);
+  m_subtitleVisible = g_application.m_pPlayer->GetSubtitleVisible();
+  AddBool(SUBTITLE_SETTINGS_ENABLE, 13397, &m_subtitleVisible);
   AddSlider(SUBTITLE_SETTINGS_DELAY, 303, &g_stSettings.m_currentVideoSettings.m_SubtitleDelay, -g_advancedSettings.m_videoSubsDelayRange, 0.1f, g_advancedSettings.m_videoSubsDelayRange, "%2.1fs");
   AddSubtitleStreams(SUBTITLE_SETTINGS_STREAM);
   if (g_application.GetCurrentPlayer() != EPC_DVDPLAYER)
@@ -250,6 +251,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
   }
   else if (setting.id == SUBTITLE_SETTINGS_ENABLE)
   {
+    g_stSettings.m_currentVideoSettings.m_SubtitleOn = m_subtitleVisible;
     g_application.m_pPlayer->SetSubtitleVisible(g_stSettings.m_currentVideoSettings.m_SubtitleOn);
     if (!g_stSettings.m_currentVideoSettings.m_SubtitleCached && g_stSettings.m_currentVideoSettings.m_SubtitleOn)
     {

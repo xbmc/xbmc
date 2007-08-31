@@ -127,15 +127,19 @@ PLT_DeviceHost::Start(PLT_TaskManager* task_manager)
     // we should not advertise right away, spec says randomly less than 100ms
     NPT_TimeInterval delay(0, NPT_System::GetRandomInteger() % 100000000);
 
-    // calculate when we should send another announcement
-    // if we're using broadcast mode (XBOX), we send every 7 secs
+    // calculate when we should send another announcement    
     NPT_Size         leaseTime = (NPT_Size)(float)GetLeaseTime();
     NPT_TimeInterval repeat;
-    if (m_Broadcast) {
+    repeat.m_Seconds = leaseTime?(int)((leaseTime >> 1) + ((unsigned short)NPT_System::GetRandomInteger() % (leaseTime >> 2))):30;
+
+#ifdef _XBOX
+    // since we can't hear multicast, but send it
+    // we announce every 7 seconds to keep clients happy
+    if (repeat.m_Seconds > 7) {
         repeat.m_Seconds = 7;
-    } else {
-        repeat.m_Seconds = leaseTime?(int)((leaseTime >> 1) + ((unsigned short)NPT_System::GetRandomInteger() % (leaseTime >> 2))):30;
     }
+#endif
+
 
     m_SsdpAnnounceTask = new PLT_SsdpDeviceAnnounceTask(this, repeat, true, m_Broadcast);
     m_TaskManager->StartTask(m_SsdpAnnounceTask, &delay, false);

@@ -321,14 +321,11 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     }
     else if (strTest.Left(16).Equals("system.hasalarm("))
       return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_HAS_ALARM : SYSTEM_HAS_ALARM, ConditionalStringParameter(strTest.Mid(16,strTest.size()-17)), 0));
-    //else if (strTest.Left(16).Equals("system.alarmpos("))
-    else if (strTest.Equals("system.alarmpos"))
-      ret = SYSTEM_ALARM_POS;
-    else if (strTest.Equals("system.profilename"))
-      ret = SYSTEM_PROFILENAME;
-    else if (strTest.Equals("system.profilethumb"))
-      ret = SYSTEM_PROFILETHUMB;
+    else if (strTest.Equals("system.alarmpos")) ret = SYSTEM_ALARM_POS;
+    else if (strTest.Equals("system.profilename")) ret = SYSTEM_PROFILENAME;
+    else if (strTest.Equals("system.profilethumb")) ret = SYSTEM_PROFILETHUMB;
     else if (strTest.Equals("system.launchxbe")) ret = SYSTEM_LAUNCHING_XBE;
+    else if (strTest.Equals("system.progressbar")) ret = SYSTEM_PROGRESS_BAR;
   }
   else if (strCategory.Equals("xlinkkai"))
   {
@@ -957,6 +954,13 @@ CStdString CGUIInfoManager::GetLabel(int info)
   case SYSTEM_LANGUAGE:
     strLabel = g_guiSettings.GetString("locale.language");
     break;
+  case SYSTEM_PROGRESS_BAR:
+    {
+      int percent = GetInt(SYSTEM_PROGRESS_BAR);
+      if (percent)
+        strLabel.Format("%i", percent);
+    }
+    break;
   case XLINK_KAI_USERNAME:
     strLabel = g_guiSettings.GetString("xlinkkai.username");
     break;
@@ -1140,14 +1144,10 @@ CStdString CGUIInfoManager::GetLabel(int info)
 // tries to get a integer value for use in progressbars/sliders and such
 int CGUIInfoManager::GetInt(int info) const
 {
-  int iret = 0;
   switch( info )
   {
     case PLAYER_VOLUME:
-      {
-        iret = g_application.GetVolume();
-      }
-      break;
+      return g_application.GetVolume();
     case PLAYER_PROGRESS:
     case PLAYER_SEEKBAR:
     case PLAYER_CACHING:
@@ -1159,27 +1159,18 @@ int CGUIInfoManager::GetInt(int info) const
           switch( info )
           {
           case PLAYER_PROGRESS:
-            {
-              iret = (int)(g_application.GetPercentage());
-            }
-            break;
+            return (int)(g_application.GetPercentage());
           case PLAYER_SEEKBAR:
             {
               CGUIDialogSeekBar *seekBar = (CGUIDialogSeekBar*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
-              iret = seekBar ? (int)seekBar->GetPercentage() : 0;
+              return seekBar ? (int)seekBar->GetPercentage() : 0;
             }
-            break;
           case PLAYER_CACHING:
-            {
-              iret = (int)(g_application.m_pPlayer->GetCacheLevel());
-            }
-            break;
+            return (int)(g_application.m_pPlayer->GetCacheLevel());
           case PLAYER_CHAPTER:
-            iret = g_application.m_pPlayer->GetChapter();
-            break;
+            return g_application.m_pPlayer->GetChapter();
           case PLAYER_CHAPTERCOUNT:
-            iret = g_application.m_pPlayer->GetChapterCount();
-            break;
+            return g_application.m_pPlayer->GetChapterCount();
           }
         }
       }
@@ -1189,36 +1180,26 @@ int CGUIInfoManager::GetInt(int info) const
       {
         MEMORYSTATUS stat;
         GlobalMemoryStatus(&stat);
-        int iMemPercentFree = 100 - ((int)( 100.0f* (stat.dwTotalPhys - stat.dwAvailPhys)/stat.dwTotalPhys + 0.5f ));
-        int iMemPercentUsed = 100 - iMemPercentFree;
+        int memPercentUsed = (int)( 100.0f* (stat.dwTotalPhys - stat.dwAvailPhys)/stat.dwTotalPhys + 0.5f );
         if (info == SYSTEM_FREE_MEMORY)
-          iret = iMemPercentFree;
-        else
-          iret = iMemPercentUsed;
+          return 100 - memPercentUsed;
+        return memPercentUsed;
       }
-      break;
+    case SYSTEM_PROGRESS_BAR:
+      {
+        CGUIDialogProgress *bar = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+        if (bar && bar->IsDialogRunning())
+          return bar->GetPercentage();
+      }
 #ifdef HAS_XBOX_HARDWARE
     case SYSTEM_HDD_TEMPERATURE:
-      {
-        // hack to make info rutine give us a value that can be converted
-        iret = atoi(g_sysinfo.GetInfo(LCD_HDD_TEMPERATURE));
-      }
-      break;
+      return atoi(g_sysinfo.GetInfo(LCD_HDD_TEMPERATURE));
     case SYSTEM_CPU_TEMPERATURE:
-      {
-        iret = atoi(CFanController::Instance()->GetCPUTemp().ToString());
-      }
-      break;
+      return atoi(CFanController::Instance()->GetCPUTemp().ToString());
     case SYSTEM_GPU_TEMPERATURE:
-      {
-        iret = atoi(CFanController::Instance()->GetGPUTemp().ToString());
-      }
-      break;
+      return atoi(CFanController::Instance()->GetGPUTemp().ToString());
     case SYSTEM_FAN_SPEED:
-      {
-        iret = CFanController::Instance()->GetFanSpeed() * 2;
-      }
-      break;
+      return CFanController::Instance()->GetFanSpeed() * 2;
 #endif
     case SYSTEM_FREE_SPACE:
     case SYSTEM_FREE_SPACE_C:
@@ -1236,17 +1217,15 @@ int CGUIInfoManager::GetInt(int info) const
     case SYSTEM_USED_SPACE_Y:
     case SYSTEM_FREE_SPACE_Z:
     case SYSTEM_USED_SPACE_Z:
-      g_sysinfo.GetHddSpaceInfo(iret, info, true);
-      break;
+      {
+        int ret = 0;
+        g_sysinfo.GetHddSpaceInfo(ret, info, true);
+        return ret;
+      }
     case SYSTEM_CPU_USAGE:
-#ifndef _LINUX
-      iret = 100 - ((int)(100.0f *g_application.m_idleThread.GetRelativeUsage()));
-#else
-      iret = g_cpuInfo.getUsedPercentage();
-#endif
-      break;
+      return 100 - ((int)(100.0f *g_application.m_idleThread.GetRelativeUsage()));
   }
-  return iret;
+  return 0;
 }
 // checks the condition and returns it as necessary.  Currently used
 // for toggle button controls and visibility of images.
