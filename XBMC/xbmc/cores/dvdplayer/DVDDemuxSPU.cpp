@@ -468,7 +468,7 @@ CSPUInfo* CDVDDemuxSPU::ParseRLE(CSPUInfo* pSPU, BYTE* pUnparsedData)
     // we only set it if there is a valid i_border color
     if (!pSPU->bHasColor)
     {
-      CLog::Log(LOGINFO, __FUNCTION__" - no color palett found, using default");
+      CLog::Log(LOGINFO, "%s - no color palett found, using default", __FUNCTION__);
       FindSubtitleColor(i_border, stats, pSPU);
     }
 
@@ -480,7 +480,7 @@ CSPUInfo* CDVDDemuxSPU::ParseRLE(CSPUInfo* pSPU, BYTE* pUnparsedData)
       // thus if there are no pixels to display, we assume the alphas are incorrect.
       if (!pSPU->CanDisplayWithAlphas(pSPU->alpha))
       {
-        CLog::Log(LOGINFO, __FUNCTION__" - no  matching color and alpha found, resetting alpha");
+        CLog::Log(LOGINFO, "%s - no  matching color and alpha found, resetting alpha", __FUNCTION__);
          
         pSPU->alpha[0] = 0x00; // back ground
         pSPU->alpha[1] = 0x0f;
@@ -490,7 +490,7 @@ CSPUInfo* CDVDDemuxSPU::ParseRLE(CSPUInfo* pSPU, BYTE* pUnparsedData)
     }
     else
     {
-      CLog::Log(LOGINFO, __FUNCTION__" - ignoring blank alpha palette, using default");
+      CLog::Log(LOGINFO, "%s - ignoring blank alpha palette, using default", __FUNCTION__);
       
       pSPU->alpha[0] = 0x00; // back ground
       pSPU->alpha[1] = 0x0f;
