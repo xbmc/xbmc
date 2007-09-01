@@ -185,7 +185,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         Sleep(200);
 #ifdef _XBOX
 #ifndef _DEBUG  // don't actually shut off if debug build, it hangs VS for a long time
-        XKUtils::XBOXPowerCycle();
+        XKUtils::XBOXReset();
 #endif
 #elif !defined(_LINUX)
         // send the WM_CLOSE window message

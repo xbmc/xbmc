@@ -79,6 +79,7 @@ void CRGBRendererV2::Clear444PTexture(bool full, bool field)
 #endif
     m_444PTextureField->UnlockRect(0);
   }
+  m_444GeneratedFull = false;
 }
 
 bool CRGBRendererV2::Create444PTexture(bool full, bool field)

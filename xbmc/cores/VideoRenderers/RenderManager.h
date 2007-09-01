@@ -1,18 +1,13 @@
 #pragma once
 
-#if defined(WIN32) && !defined(HAS_SDL)
-
-// we use this manager instead
+#if defined(HAS_XBOX_HARDWARE)
+#include "XBoxRenderer.h"
+#elif defined (WIN32)
 #include "WinRenderManager.h"
-
-#else
-
-#ifdef HAS_SDL_OPENGL
+#elif defined (HAS_SDL_OPENGL)
 #include "LinuxRendererGL.h"
 #elif defined(HAS_SDL)
 #include "LinuxRenderer.h"
-#else
-#include "XBoxRenderer.h"
 #endif
 
 #include "../../utils/SharedSection.h"
@@ -134,5 +129,4 @@ protected:
 
 extern CXBoxRenderManager g_renderManager;
 
-#endif
 
