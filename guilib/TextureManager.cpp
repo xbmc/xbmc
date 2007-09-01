@@ -83,7 +83,7 @@ void CTexture::FreeTexture()
 #elif defined(HAS_SDL_2D)
       SDL_FreeSurface(m_pTexture);
 #elif defined(HAS_SDL_OPENGL)
-      delete m_pTexture;      
+      delete m_pTexture;
 #else
       m_pTexture->Release();
 #endif
@@ -687,10 +687,32 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
       pPal->Unlock();
 #endif
       pMap = new CTextureMap(strTextureName);
+      static int npot = -1;
+#ifdef HAS_SDL_OPENGL
+      if ((npot==-1) && g_graphicsContext.getScreenSurface())
+      {
+        int vmaj,vmin;
+        g_graphicsContext.getScreenSurface()->GetGLVersion(vmaj, vmin);    
+        if (vmaj>=2)
+          npot = 1;
+        else
+          npot = 0;
+      }
+#endif
       for (int iImage = 0; iImage < iImages; iImage++)
       {
-        int w = PadPow2(iWidth);
-        int h = PadPow2(iHeight);
+        int w;
+        int h;
+        if (npot==1)
+        {
+          w = iWidth;
+          h = iHeight;
+        }
+        else
+        {
+          w = PadPow2(iWidth);
+          h = PadPow2(iHeight);
+        }
 #ifdef HAS_XBOX_D3D
         if (D3DXCreateTexture(g_graphicsContext.Get3DDevice(), w, h, 1, 0, D3DFMT_P8, D3DPOOL_MANAGED, &pTexture) == D3D_OK)
 #elif defined(HAS_SDL)
@@ -1162,6 +1184,8 @@ void CGLTexture::LoadToGPU()
   // Set the texture's stretching properties
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
  
@@ -1177,21 +1201,40 @@ void CGLTexture::LoadToGPU()
 }
 
 void CGLTexture::Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU) {
+  static int vmaj=0;
+  int vmin,tpitch;
+
    if (m_pixels)
       delete [] m_pixels;
 
   imageWidth = w;
   imageHeight = h;
-  textureWidth = PadPow2(imageWidth);
-  textureHeight = PadPow2(imageHeight);
+
+
+  if ((vmaj==0) && g_graphicsContext.getScreenSurface())
+  {
+    g_graphicsContext.getScreenSurface()->GetGLVersion(vmaj, vmin);    
+  }
+  if (vmaj<2)
+  {
+    textureWidth = PadPow2(imageWidth);
+    textureHeight = PadPow2(imageHeight);
+  }
+  else
+  {
+    textureWidth = imageWidth;
+    textureHeight = imageHeight;
+  }
   
   // Resize texture to POT
   const unsigned char *src = pixels;
+  tpitch = min(pitch,textureWidth*4);
   m_pixels = new unsigned char[textureWidth * textureHeight * 4];
   unsigned char* resized = m_pixels;
+  
   for (int y = 0; y < h; y++)
   {
-    memcpy(resized, src, min(pitch,textureWidth*4)); // make sure pitch is not bigger than our width
+    memcpy(resized, src, tpitch); // make sure pitch is not bigger than our width
     src += pitch;
     resized += (textureWidth * 4);
   }
