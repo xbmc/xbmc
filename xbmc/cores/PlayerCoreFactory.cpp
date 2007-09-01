@@ -116,6 +116,12 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   {
     vecCores.push_back(EPC_DVDPLAYER);
   }
+  
+  // dvdplayer can play standard rtsp streams, mplayer can't
+  if (url.GetProtocol().Equals("rtsp") 
+  && !url.GetFileType().Equals("rm") 
+  && !url.GetFileType().Equals("ra"))
+    vecCores.push_back(EPC_DVDPLAYER);
 
   if ( item.IsInternetStream() )
   {

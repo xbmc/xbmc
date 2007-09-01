@@ -12,6 +12,8 @@
 #include "../DVDInputStreams/DVDInputStream.h"
 #include "DVDDemuxUtils.h"
 #include "../DVDClock.h" // for DVD_TIME_BASE
+#include "utils/Win32Exception.h"
+
 
 // class CDemuxStreamVideoFFmpeg
 void CDemuxStreamVideoFFmpeg::GetStreamInfo(std::string& strInfo)
@@ -154,7 +156,8 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 {
   AVInputFormat* iformat = NULL;
   const char* strFile;
-  m_iCurrentPts = 0LL;    
+  m_iCurrentPts = 0LL;
+  m_speed = DVD_PLAYSPEED_NORMAL;
 
   if (!pInput) return false;
 
@@ -329,6 +332,7 @@ void CDVDDemuxFFmpeg::Dispose()
 
   memset(&m_ioContext, 0, sizeof(ByteIOContext));
   m_pFormatContext = NULL;
+  m_speed = DVD_PLAYSPEED_NORMAL;
 
   for (int i = 0; i < MAX_STREAMS; i++)
   {
@@ -355,6 +359,24 @@ void CDVDDemuxFFmpeg::Flush()
   {
     m_dllAvFormat.av_read_frame_flush(m_pFormatContext);
   }
+}
+
+void CDVDDemuxFFmpeg::Abort()
+{
+  g_urltimeout = 1;
+}
+
+void CDVDDemuxFFmpeg::SetSpeed(int iSpeed)
+{
+  if(!m_pFormatContext)
+    return;
+
+  if(m_speed != DVD_PLAYSPEED_PAUSE && iSpeed == DVD_PLAYSPEED_PAUSE)
+    m_dllAvFormat.av_read_pause(m_pFormatContext);
+  else if(m_speed == DVD_PLAYSPEED_PAUSE && iSpeed != DVD_PLAYSPEED_PAUSE)
+    m_dllAvFormat.av_read_play(m_pFormatContext);
+
+  m_speed = iSpeed;
 }
 
 __int64 CDVDDemuxFFmpeg::ConvertTimestamp(__int64 pts, int den, int num)
@@ -385,14 +407,31 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
   Lock();
   if (m_pFormatContext)
   {
-    int result = m_dllAvFormat.av_read_frame(m_pFormatContext, &pkt);
-    if (result < 0)
-    {
-      // error reading from stream
-      // XXX, just reset eof for now, and let the dvd player decide what todo
-      m_pFormatContext->pb.eof_reached = 0;
-      pPacket = NULL;
+    // assume we are not eof
+    m_pFormatContext->pb.eof_reached = 0;
 
+    // timeout reads after 100ms
+    g_urltimeout = GetTickCount() + 100;
+    //g_urltimeout = 0;
+    int result = 0;
+    try
+    {
+      result = m_dllAvFormat.av_read_frame(m_pFormatContext, &pkt);
+    }
+    catch(const win32_exception &e)
+    {
+      e.writelog(__FUNCTION__);
+      result = AVERROR(EFAULT);
+    }
+    g_urltimeout = 0;
+
+    if (result == AVERROR(EINTR))
+    {
+      // timeout, probably no real error
+      // TODO - fix ffmpeg to always return this
+    }
+    else if (result < 0)
+    {
       // we are likely atleast at an discontinuity
       m_dllAvFormat.av_read_frame_flush(m_pFormatContext);
 

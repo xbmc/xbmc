@@ -49,6 +49,8 @@ public:
   void Dispose();
   void Reset();
   void Flush();
+  void Abort();
+  void SetSpeed(int iSpeed);
 
   CDVDDemux::DemuxPacket* Read();
 
@@ -80,4 +82,5 @@ protected:
   
   __int64 m_iCurrentPts; // used for stream length estimation
   bool m_bDiscardDts;
+  int m_speed;
 };
