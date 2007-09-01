@@ -28,6 +28,7 @@ public:
     PLAYER_SET_SUBTITLESTREAM_VISIBLE, //
     PLAYER_SET_STATE,               // restore the dvdplayer to a certain state
     PLAYER_SEEK,                    // 
+    PLAYER_SETSPEED,                // set the playback speed
     
     
     // demuxer related messages
@@ -166,12 +167,20 @@ private:
   unsigned int m_timeout;
 };
 
-class CDVDMsgBool : public CDVDMsg
+template <typename T>
+class CDVDMsgType : public CDVDMsg
 {
 public:
-  CDVDMsgBool(Message type, bool value) : CDVDMsg(type) { m_value = value; }
-  bool m_value;
+  CDVDMsgType(Message type, T value) 
+    : CDVDMsg(type) 
+    , m_value(value)
+  {}
+  operator T() { return m_value; }
+  T m_value;
 };
+
+typedef CDVDMsgType<bool> CDVDMsgBool;
+typedef CDVDMsgType<int> CDVDMsgInt;
 
 ////////////////////////////////////////////////////////////////////////////////
 //////

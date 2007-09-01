@@ -5,7 +5,7 @@
 #include "DVDCodecs/Overlay/DVDOverlay.h"
 
 #ifdef HAS_VIDEO_PLAYBACK
-#include "../VideoRenderers/RenderManager.h"
+#include "cores/VideoRenderers/RenderManager.h"
 #endif
 
 typedef struct stDVDPictureRenderer
