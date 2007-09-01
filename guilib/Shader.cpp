@@ -20,6 +20,7 @@
 
 #include "stdafx.h"
 #include <GL/glew.h>
+#include "include.h"
 #include "../xbmc/Settings.h"
 #include "Shader.h"
 
@@ -56,7 +57,7 @@ bool CVertexShader::Compile()
   if (params[0]!=GL_TRUE) 
   {
     GLchar log[512];
-    CLog::Log(LOGERROR, "Error compiling shader");
+    CLog::Log(LOGERROR, "GL: Error compiling shader");
     glGetShaderInfoLog(m_vertexShader, 512, NULL, log);
     CLog::Log(LOGERROR, (const char*)log);
     m_lastLog = log;
@@ -65,13 +66,14 @@ bool CVertexShader::Compile()
   else
   {
     GLchar log[512];
-    CLog::Log(LOGDEBUG, "Shader compilation log:");
+    CLog::Log(LOGDEBUG, "GL: Shader compilation log:");
     glGetShaderInfoLog(m_vertexShader, 512, NULL, log);
     CLog::Log(LOGDEBUG, (const char*)log);
     m_lastLog = log;
     m_compiled = true;
   }
   setlocale(LC_NUMERIC, currentLocale);
+  return m_compiled;
 }
 
 void CVertexShader::Free()
@@ -113,7 +115,7 @@ bool CPixelShader::Compile()
   if (params[0]!=GL_TRUE) 
   {
     GLchar log[512];
-    CLog::Log(LOGERROR, "Error compiling shader");
+    CLog::Log(LOGERROR, "GL: Error compiling shader");
     glGetShaderInfoLog(m_pixelShader, 512, NULL, log);
     CLog::Log(LOGERROR, (const char*)log);
     m_lastLog = log;
@@ -122,13 +124,14 @@ bool CPixelShader::Compile()
   else
   {
     GLchar log[512];
-    CLog::Log(LOGDEBUG, "Shader compilation log:");
+    CLog::Log(LOGDEBUG, "GL: Shader compilation log:");
     glGetShaderInfoLog(m_pixelShader, 512, NULL, log);
     CLog::Log(LOGDEBUG, (const char*)log);
     m_lastLog = log;
     m_compiled = true;
   }
   setlocale(LC_NUMERIC, currentLocale);
+  return m_compiled;
 }
 
 void CPixelShader::Free()
@@ -179,7 +182,10 @@ bool CShaderProgram::CompileAndLink()
   
   // create program object
   if (!(m_shaderProgram = glCreateProgram()))
+  {
+    CLog::Log(LOGERROR, "GL: Error creating shader program handle");
     goto error;
+  }
 
   // attach the vertex shader
   glAttachShader(m_shaderProgram, m_VP.Handle());

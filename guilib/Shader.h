@@ -40,7 +40,7 @@ namespace Shaders {
   class CVertexShader : public CShader
   {
   public:
-    virtual ~CVertexShader();
+    virtual ~CVertexShader() { Free(); }
     virtual void Free();
     virtual GLuint Handle() { return m_vertexShader; }
     bool Compile();
@@ -56,7 +56,7 @@ namespace Shaders {
   class CPixelShader : public CShader
   {
   public:
-    virtual ~CPixelShader();
+    virtual ~CPixelShader() { Free(); }
     virtual void Free();
     virtual GLuint Handle() { return m_pixelShader; }
     bool Compile();
@@ -74,7 +74,7 @@ namespace Shaders {
   {
   public:
     CShaderProgram() { m_ok = false; m_shaderProgram = 0; }
-    virtual ~CShaderProgram();
+    virtual ~CShaderProgram() { Free(); }
 
     // enable the shader
     virtual bool Enable();

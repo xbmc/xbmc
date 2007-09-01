@@ -215,6 +215,8 @@ void CGUIImage::Render()
       glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
       VerifyGLState();
     }
+    //glDisable(GL_TEXTURE_2D); // uncomment these 2 lines to switch to wireframe rendering
+    //glBegin(GL_LINE_LOOP);
     glBegin(GL_QUADS);
 #endif
     
@@ -334,15 +336,26 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
 
   if (vertex.IsEmpty())
     return; // nothing to render
+  /*
+  float x1 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y1) + 0.5f);// - 0.5f;
+  float y1 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1) + 0.5f);// - 0.5f;
+  float x2 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y1) + 0.5f);// - 0.5f;
+  float y2 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1) + 0.5f);// - 0.5f;
+  float x3 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y2) + 0.5f);// - 0.5f;
+  float y3 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2) + 0.5f);// - 0.5f;
+  float x4 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y2) + 0.5f);// - 0.5f;
+  float y4 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2) + 0.5f);// - 0.5f;
+  */
 
-  float x1 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y1) + 0.5f) - 0.5f;
-  float y1 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1) + 0.5f) - 0.5f;
-  float x2 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y1) + 0.5f) - 0.5f;
-  float y2 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1) + 0.5f) - 0.5f;
-  float x3 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y2) + 0.5f) - 0.5f;
-  float y3 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2) + 0.5f) - 0.5f;
-  float x4 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y2) + 0.5f) - 0.5f;
-  float y4 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2) + 0.5f) - 0.5f;
+  float x1 = g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y1);
+  float y1 = g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1);
+  float x2 = g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y1);
+  float y2 = g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1);
+  float x3 = g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y2);
+  float y3 = g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2);
+  float x4 = g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y2);
+  float y4 = g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2);
+
   float z1 = g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y1);
   float z2 = g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y1);
   float z3 = g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y2);
