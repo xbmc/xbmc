@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 08/19/2007-->
+<!--Date of translation: 08/29/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 9956-->
+<!--Based on english strings version 10101-->
 <strings>
   <string id="0">Programmer</string>
   <string id="1">Billeder</string>
@@ -478,6 +478,7 @@
   <string id="569">Kommentar</string>
   <string id="570">Tilføjet den</string>
   <string id="571">Standard</string>
+  <string id="572">Studio</string>
   <string id="580">Sorteringsretning</string>
   <string id="581">Sorteringsmetode</string>
   <string id="582">Visningsmåde</string>
@@ -656,6 +657,12 @@
   <string id="1034">Undermenu</string>
   <string id="1035">Aktiver knapper til undermenuer</string>
   <string id="1036">Favoritter</string>
+  <string id="1037">Video-plugins</string>
+  <string id="1038">Musik-plugins</string>
+  <string id="1039">Billede-plugins</string>
+  <string id="1040">Indlæser mappe</string>
+  <string id="1041">Hentede %i objekter</string>
+  <string id="1042">Hentede %i af %i objekter</string>
   <string id="1200">SMB-klient</string>
   <string id="1202">Arbejdsgruppe</string>
   <string id="1203">Standard brugernavn</string>
@@ -1568,6 +1575,7 @@
   <string id="20385">Fjern fra TV-show</string>
   <string id="20386">Nyligt tilføjne film</string>
   <string id="20387">Nyligt tilføjne episoder</string>
+  <string id="20388">Studioer</string>
   <string id="21330">Vis skjulte filer og mapper</string>
   <string id="21331">TuxBox-klient</string>
   <string id="21332">ADVARSEL: den valgte TuxBox er i optagetilstand!</string>
@@ -1705,5 +1713,6 @@
   <string id="21879">Landekode</string>
   <string id="21880">Referencetjeneste</string>
   <string id="21881">Aktiver UPnP-renderer</string>
+  <string id="21882">Forsøg at gå direkte til DVD-menuen</string>
   <string id="29999">Brug flimmerfilter på spil</string>
 </strings>
