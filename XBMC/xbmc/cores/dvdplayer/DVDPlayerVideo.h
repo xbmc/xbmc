@@ -8,7 +8,7 @@
 #include "DVDClock.h"
 #include "DVDOverlayContainer.h"
 #ifdef HAS_VIDEO_PLAYBACK
-#include "../VideoRenderers/RenderManager.h"
+#include "cores/VideoRenderers/RenderManager.h"
 #endif
 
 enum CodecID;

@@ -146,6 +146,10 @@ bool CDVDPlayer::CloseFile()
   // unpause the player
   SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
 
+  // tell demuxer to abort
+  if(m_pDemuxer)
+      m_pDemuxer->Abort();
+
   CLog::Log(LOGNOTICE, "DVDPlayer: waiting for threads to exit");
 
   // wait for the main thread to finish up
@@ -250,8 +254,6 @@ void CDVDPlayer::Process()
 
   m_callback.OnPlayBackStarted();
 
-  int iErrorCounter = 0;
-
   while (!m_bAbortRequest)
   {
     // if the queues are full, no need to read more
@@ -319,6 +321,10 @@ void CDVDPlayer::Process()
 
       if (!pPacket)
       {
+        // when paused, demuxer could be be returning empty
+        if (m_playSpeed == DVD_PLAYSPEED_PAUSE)
+          continue;
+
         if (!m_pInputStream) break;
         if (m_pInputStream->IsEOF()) break;
 
@@ -353,23 +359,12 @@ void CDVDPlayer::Process()
         }
 
         // keep on trying until user wants us to stop.
-        iErrorCounter++;
+        // another option would be to check if the input stream
+        // is advancing, and if it isn't, then abort
         CLog::Log(LOGERROR, "Error reading data from demuxer");
-
-        // maybe reseting the demuxer at this point would be a good idea, should it have failed in some way.
-        // probably not a good idea, the dvdplayer can get stuck (and it does sometimes) in a loop this way.
-        if (iErrorCounter > 50)
-        {
-          CLog::Log(LOGERROR, "got 50 read errors in a row, quiting");
-          return;
-          //m_pDemuxer->Reset();
-          //iErrorCounter = 0;
-        }
-
         continue;
       }
 
-      iErrorCounter = 0;
       m_packetcount++;
 
       if(m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
@@ -774,10 +769,10 @@ void CDVDPlayer::HandleMessages()
           CLog::Log(LOGDEBUG, "CDVDInputStreamNavigator seek to: %d", pMsgPlayerSeek->GetTime());
           if (((CDVDInputStreamNavigator*)m_pInputStream)->Seek(pMsgPlayerSeek->GetTime()))
           {
-            CLog::Log(LOGDEBUG, "CDVDInputStreamNavigator seek to: %d, succes", pMsgPlayerSeek->GetTime());
+            CLog::Log(LOGDEBUG, "CDVDInputStreamNavigator seek to: %d, success", pMsgPlayerSeek->GetTime());
             FlushBuffers();
           }
-          else 
+          else
             CLog::Log(LOGWARNING, "error while seeking");
         }
         else
@@ -785,10 +780,20 @@ void CDVDPlayer::HandleMessages()
           CLog::Log(LOGDEBUG, "demuxer seek to: %d", pMsgPlayerSeek->GetTime());
           if (m_pDemuxer && m_pDemuxer->Seek(pMsgPlayerSeek->GetTime()))
           {
-            CLog::Log(LOGDEBUG, "demuxer seek to: %d, succes", pMsgPlayerSeek->GetTime());
+            CLog::Log(LOGDEBUG, "demuxer seek to: %d, success", pMsgPlayerSeek->GetTime());
             FlushBuffers();
           }
-          else CLog::Log(LOGWARNING, "error while seeking");
+          else
+          {
+            // demuxer will return failure, if you seek to eof
+            if (m_pInputStream && m_pInputStream->IsEOF())
+            {
+              FlushBuffers();
+              CLog::Log(LOGDEBUG, "demuxer seek to: eof");
+            }
+            else
+              CLog::Log(LOGWARNING, "error while seeking");            
+          }
         }
         // make sure video player displays next frame
         m_dvdPlayerVideo.StepFrame();
@@ -885,6 +890,25 @@ void CDVDPlayer::HandleMessages()
       {
         FlushBuffers();
       }
+      else if (pMsg->IsType(CDVDMsg::PLAYER_SETSPEED))
+      {
+        int speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
+        // if playspeed is different then DVD_PLAYSPEED_NORMAL or DVD_PLAYSPEED_PAUSE
+        // audioplayer, stops outputing audio to audiorendere, but still tries to
+        // sleep an correct amount for each packet
+        // videoplayer just plays faster after the clock speed has been increased
+        // 1. disable audio
+        // 2. skip frames and adjust their pts or the clock
+        m_playSpeed = speed;        
+        m_clock.SetSpeed(speed);
+        m_dvdPlayerAudio.SetSpeed(speed);
+        m_dvdPlayerVideo.SetSpeed(speed);
+
+        // TODO - we really shouldn't pause demuxer 
+        //        untill our buffers are somewhat filled
+        if(m_pDemuxer)
+          m_pDemuxer->SetSpeed(speed);
+      }
     }
     catch (...)
     {
@@ -900,17 +924,8 @@ void CDVDPlayer::HandleMessages()
 
 void CDVDPlayer::SetPlaySpeed(int speed)
 {
-  m_playSpeed = speed;  
-
-  // if playspeed is different then DVD_PLAYSPEED_NORMAL or DVD_PLAYSPEED_PAUSE
-  // audioplayer, stops outputing audio to audiorendere, but still tries to
-  // sleep an correct amount for each packet
-  // videoplayer just plays faster after the clock speed has been increased
-  // 1. disable audio
-  // 2. skip frames and adjust their pts or the clock
-  m_clock.SetSpeed(speed); 
-  m_dvdPlayerAudio.SetSpeed(speed);
-  m_dvdPlayerVideo.SetSpeed(speed);
+  m_playSpeed = speed;
+  m_messenger.Put(new CDVDMsgInt(CDVDMsg::PLAYER_SETSPEED, speed));
 }
 
 void CDVDPlayer::Pause()
