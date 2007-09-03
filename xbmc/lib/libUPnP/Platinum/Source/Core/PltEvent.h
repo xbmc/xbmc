@@ -23,6 +23,7 @@ class PLT_StateVariable;
 class PLT_DeviceData;
 class PLT_Service;
 class PLT_TaskManager;
+class PLT_EventSubscriberTask;
 
 /*----------------------------------------------------------------------
 |   PLT_EventSubscriber class
@@ -49,6 +50,7 @@ public:
 protected:
     //members
     PLT_TaskManager*       m_TaskManager;
+    PLT_EventSubscriberTask* m_SubscriberTask;
     PLT_Service*           m_Service;
     NPT_Ordinal            m_EventKey;
     NPT_String             m_SID;
@@ -108,6 +110,30 @@ public:
 private:
     // members
     PLT_Service* m_Service;
+};
+
+/*----------------------------------------------------------------------
+|   PLT_EventSubscriberTask class
++---------------------------------------------------------------------*/
+class PLT_EventSubscriberTask : public PLT_ThreadTask
+{
+public:
+    PLT_EventSubscriberTask();
+    virtual ~PLT_EventSubscriberTask();
+
+    NPT_Result AddRequest(NPT_HttpRequest* request) { return m_Requests.Push(request); }
+protected:
+    // PLT_ThreadTask methods
+    virtual void DoAbort();
+    virtual void DoRun();
+
+    virtual NPT_Result ProcessResponse(NPT_HttpRequest*  request, 
+                                       NPT_SocketInfo&   info, 
+                                       NPT_HttpResponse* response);
+
+private:
+    NPT_Queue<NPT_HttpRequest> m_Requests;
+    NPT_Reference<NPT_Socket>  m_Socket;
 };
 
 #endif /* _PLT_EVENT_H_ */
