@@ -196,7 +196,11 @@ PLT_EventSubscriber::Notify(NPT_Array<PLT_StateVariable*>& vars)
     xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" + xml;
     PLT_HttpHelper::SetBody(request, xml);
 
-    return m_SubscriberTask->AddRequest(request);;
+    if (NPT_FAILED(m_SubscriberTask->AddRequest(request))) {
+        delete request;
+        return NPT_FAILURE;
+    }        
+    return NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------
@@ -212,7 +216,7 @@ PLT_EventSubscriberFinderByService::operator()(PLT_EventSubscriber* const & even
 |   PLT_EventSubscriberTask::PLT_EventSubscriberTask()
 +---------------------------------------------------------------------*/
 PLT_EventSubscriberTask::PLT_EventSubscriberTask()
-//    : m_Requests(10)
+    : m_Requests(10)
 {
 }
 
@@ -239,7 +243,7 @@ void PLT_EventSubscriberTask::DoRun()
     NPT_OutputStreamReference output_stream;
     NPT_InputStreamReference  input_stream;
 
-    NPT_HttpRequest*               request;
+    NPT_HttpRequest* request;    
 
     NPT_String host;
     NPT_UInt16 port = 0;
@@ -250,7 +254,10 @@ void PLT_EventSubscriberTask::DoRun()
         NPT_HttpResponse*               response;
         NPT_Reference<NPT_HttpResponse> response_holder;
         NPT_Reference<NPT_HttpRequest>  request_holder(request);
+        NPT_Result res = NPT_SUCCESS;
+        NPT_Integer count = 0;
 
+retry:
         // check if we should abort
         if(IsAborting(0)) return;
 
@@ -259,11 +266,11 @@ void PLT_EventSubscriberTask::DoRun()
         ||  request->GetUrl().GetPort() != port 
         ||  request->GetUrl().GetHost() != host ) {
             m_Socket = new NPT_TcpClientSocket();
-            m_Socket->SetReadTimeout(30000);
-            m_Socket->SetWriteTimeout(30000);
-            NPT_CHECK_LABEL(client.Connect(m_Socket.AsPointer(), *request), failed);
-            NPT_CHECK_LABEL(m_Socket->GetOutputStream(output_stream), failed);
-            NPT_CHECK_LABEL(m_Socket->GetInputStream(input_stream), failed);
+            m_Socket->SetReadTimeout(5000);
+            m_Socket->SetWriteTimeout(5000);
+            NPT_CHECK_LABEL_SEVERE(res = client.Connect(m_Socket.AsPointer(), *request), failed);
+            NPT_CHECK_LABEL_SEVERE(res = m_Socket->GetOutputStream(output_stream), failed);
+            NPT_CHECK_LABEL_SEVERE(res = m_Socket->GetInputStream(input_stream), failed);
             port = request->GetUrl().GetPort();
             host = request->GetUrl().GetHost();
 
@@ -272,14 +279,14 @@ void PLT_EventSubscriberTask::DoRun()
         NPT_LOG_FINER("PLT_EventSubscriberTask sending:");
         PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINER, request);
     
-        NPT_CHECK_LABEL(client.SendRequest(output_stream, *request), failed);
-        NPT_CHECK_LABEL(client.WaitForResponse(input_stream, *request, info, response), failed);
+        NPT_CHECK_LABEL_SEVERE(res = client.SendRequest(output_stream, *request), failed);
+        NPT_CHECK_LABEL_SEVERE(res = client.WaitForResponse(input_stream, *request, info, response), failed);
         response_holder = response;        
 
         NPT_LOG_FINE("PLT_EventSubscriberTask receiving:");
         PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINE, response);        
 
-        NPT_CHECK_LABEL(ProcessResponse(request, info, response), failed);
+        NPT_CHECK_LABEL_SEVERE(ProcessResponse(request, info, response), failed);
 
         // if it's no keep alive, we reopen on next attempt
         if (!PLT_HttpHelper::IsConnectionKeepAlive(response)) {
@@ -288,7 +295,14 @@ void PLT_EventSubscriberTask::DoRun()
 
         continue;
 failed:
+        output_stream = NULL;
+        input_stream = NULL;
         m_Socket = NULL;
+        // server may have closed socket for us
+        if((res == NPT_ERROR_EOS || res == NPT_ERROR_TIMEOUT) && count < 2) {
+            count++;
+            goto retry;
+        }
     }
 
 }

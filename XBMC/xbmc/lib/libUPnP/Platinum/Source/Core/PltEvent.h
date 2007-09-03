@@ -121,7 +121,7 @@ public:
     PLT_EventSubscriberTask();
     virtual ~PLT_EventSubscriberTask();
 
-    NPT_Result AddRequest(NPT_HttpRequest* request) { return m_Requests.Push(request); }
+    NPT_Result AddRequest(NPT_HttpRequest* request) { return m_Requests.Push(request, false); }
 protected:
     // PLT_ThreadTask methods
     virtual void DoAbort();
