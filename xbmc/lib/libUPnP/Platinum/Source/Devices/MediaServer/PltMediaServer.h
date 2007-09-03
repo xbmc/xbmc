@@ -41,7 +41,7 @@ class PLT_MediaServer : public PLT_DeviceHost
 {
 public:
     // PLT_DeviceHost methods
-    virtual NPT_Result Start(PLT_TaskManager* task_manager);
+    virtual NPT_Result Start(PLT_TaskManager* task_manager, PLT_DeviceHostReference& self);
     virtual NPT_Result Stop();
     virtual NPT_Result OnAction(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
 
