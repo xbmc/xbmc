@@ -2247,7 +2247,7 @@ void CGUIWindowSettingsCategory::FillInSkins(CSetting *pSetting)
   }
 
   sort(vecSkins.begin(), vecSkins.end(), sortstringbyname());
-  for (i = 0; i < (int) vecSkins.size(); ++i)
+  for (unsigned int i = 0; i < vecSkins.size(); ++i)
   {
     CStdString strSkin = vecSkins[i];
     if (strcmpi(strSkin.c_str(), g_guiSettings.GetString("lookandfeel.skin").c_str()) == 0)
@@ -2297,7 +2297,7 @@ void CGUIWindowSettingsCategory::FillInSoundSkins(CSetting *pSetting)
     iCurrentSoundSkin=1;
 
   sort(vecSoundSkins.begin(), vecSoundSkins.end(), sortstringbyname());
-  for (i = 0; i < (int) vecSoundSkins.size(); ++i)
+  for (unsigned int i = 0; i < vecSoundSkins.size(); ++i)
   {
     CStdString strSkin = vecSoundSkins[i];
     if (strcmpi(strSkin.c_str(), g_guiSettings.GetString("lookandfeel.soundskin").c_str()) == 0)
@@ -2600,7 +2600,7 @@ void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
   }
 
   sort(vecLanguage.begin(), vecLanguage.end(), sortstringbyname());
-  for (i = 0; i < (int) vecLanguage.size(); ++i)
+  for (unsigned int i = 0; i < vecLanguage.size(); ++i)
   {
     CStdString strLanguage = vecLanguage[i];
     if (strcmpi(strLanguage.c_str(), pSettingString->GetData().c_str()) == 0)
@@ -2653,7 +2653,7 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
     strDefaultScr.Delete(strDefaultScr.size() - 4, 4);
 
   sort(vecScr.begin(), vecScr.end(), sortstringbyname());
-  for (i = 0; i < (int) vecScr.size(); ++i)
+  for (unsigned int i = 0; i < vecScr.size(); ++i)
   {
     CStdString strScr = vecScr[i];
 

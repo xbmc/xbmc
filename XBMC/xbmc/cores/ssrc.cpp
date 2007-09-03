@@ -2879,7 +2879,7 @@ bool Cssrc::InitFilters(void)
     }
 
     f1inc = new int [n1y * osf];
-    for (i = 0;i < n1y*osf;i++)
+    for (int i = 0;i < n1y*osf;i++)
     {
       f1inc[i] = f1order[i] < fs1 / (dfrq * osf) ? nch : 0;
       if (f1order[i] == fs1 / sfrq) f1order[i] = 0;
@@ -2888,13 +2888,13 @@ bool Cssrc::InitFilters(void)
     stage1US = new REAL * [n1y];
     stage1US[0] = new REAL[n1x * n1y];
 
-    for (i = 1;i < n1y;i++)
+    for (int i = 1;i < n1y;i++)
     {
       stage1US[i] = &(stage1US[0][n1x * i]);
       for (int j = 0;j < n1x;j++) stage1US[i][j] = 0;
     }
 
-    for (i = -(n1 / 2);i <= n1 / 2;i++)
+    for (int i = -(n1 / 2);i <= n1 / 2;i++)
     {
       stage1US[(i + n1 / 2) % n1y][(i + n1 / 2) / n1y] = REAL(win(i, n1, alp, iza) * hn_lpf(i, lpf, fs1) * fs1 / sfrq);
     }
@@ -2937,9 +2937,9 @@ bool Cssrc::InitFilters(void)
 
     stage1DS = new REAL[n1b];
 
-    for (i = 0;i < n1b;i++) stage1DS[i] = 0;
+    for (int i = 0;i < n1b;i++) stage1DS[i] = 0;
 
-    for (i = -(n1 / 2);i <= n1 / 2;i++)
+    for (int i = -(n1 / 2);i <= n1 / 2;i++)
     {
       stage1DS[i + n1 / 2] = REAL(win(i, n1, alp, iza) * hn_lpf(i, lpf, fs1) * fs1 / sfrq / n1b * 2);
     }
@@ -2984,9 +2984,9 @@ bool Cssrc::InitFilters(void)
 
     stage2US = new REAL[n2b];
 
-    for (i = 0;i < n2b;i++) stage2US[i] = 0;
+    for (int i = 0;i < n2b;i++) stage2US[i] = 0;
 
-    for (i = -(n2 / 2);i <= n2 / 2;i++)
+    for (int i = -(n2 / 2);i <= n2 / 2;i++)
     {
       stage2US[i + n2 / 2] = REAL(win(i, n2, alp, iza) * hn_lpf(i, lpf, fs2) / n2b * 2);
     }
@@ -3045,7 +3045,7 @@ bool Cssrc::InitFilters(void)
       }
 
       f2inc = new int[n2y];
-      for (i = 0;i < n2y;i++)
+      for (int i = 0;i < n2y;i++)
       {
         f2inc[i] = (fs2 / dfrq - f2order[i]) / (fs2 / fs1) + 1;
         if (f2order[i + 1 == n2y ? 0 : i + 1] == 0) f2inc[i]--;
@@ -3054,13 +3054,13 @@ bool Cssrc::InitFilters(void)
       stage2DS = new REAL * [n2y];
       stage2DS[0] = new REAL[n2x * n2y];
 
-      for (i = 1;i < n2y;i++)
+      for (int i = 1;i < n2y;i++)
       {
         stage2DS[i] = &(stage2DS[0][n2x * i]);
         for (int j = 0;j < n2x;j++) stage2DS[i][j] = 0;
       }
 
-      for (i = -(n2 / 2);i <= n2 / 2;i++)
+      for (int i = -(n2 / 2);i <= n2 / 2;i++)
       {
         stage2DS[(i + n2 / 2) % n2y][(i + n2 / 2) / n2y] = REAL(win(i, n2, alp, iza) * hn_lpf(i, lpf, fs2) * fs2 / fs1);
       }
@@ -3082,7 +3082,7 @@ bool Cssrc::InitFilters(void)
     }
 
     buf2 = new REAL * [nch];
-    for (i = 0;i < nch;i++) buf2[i] = new REAL[n2b];
+    for (int i = 0;i < nch;i++) buf2[i] = new REAL[n2b];
 
     //  rawinbuf  = new unsigned char [nch*(n2b2+n1x) * bps]; //calloc(nch*(n2b2+n1x),bps);
     //  ZeroMemory(rawinbuf, nch*(n2b2+n1x) * bps);
@@ -3134,7 +3134,7 @@ bool Cssrc::InitFilters(void)
       buf1[i] = new REAL[n1b];
 
     buf2 = new REAL * [nch];
-    for (i = 0;i < nch;i++)
+    for (int i = 0;i < nch;i++)
     {
       buf2[i] = new REAL[n2x + 1 + n1b2];
       for (int j = 0;j < n2x + 1 + n1b2;j++) buf2[i][j] = 0;

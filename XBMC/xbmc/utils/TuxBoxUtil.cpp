@@ -1301,7 +1301,7 @@ bool CTuxBoxUtil::GetVideoSubChannels(CStdString& strVideoSubChannelName, CStdSt
     pMenu->DoModal();
     // get selected Video Sub Channel name and reference zap
     int btnid = pMenu->GetButton();
-    for(i=0; btn[i] >0; i++)
+    for(int i=0; btn[i] >0; i++)
     {
       if(btnid == btn[i])
       {
