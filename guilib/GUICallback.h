@@ -30,7 +30,7 @@ public:
   }
 
   // Assign an EventHandler (EventHandler's are derived from Event)
-  operator=(GUIEvent<Cookie> &aEvent)
+  GUIEvent<Cookie> &operator=(GUIEvent<Cookie> &aEvent)
   {
     if (&aEvent)
     {
@@ -42,7 +42,7 @@ public:
       GUIEvent();
     }
 
-    return 0;
+    return *this;
   }
 
   // Are the class instance and method pointers initialised?
@@ -99,7 +99,7 @@ public:
   }
 
   // Assign a CallbackHandler (CallbackHandler's are derived from Callback)
-  operator=(Callback<Result, Cookie> &aCallback)
+  Callback<Result, Cookie> &operator=(Callback<Result, Cookie> &aCallback)
   {
     if (&aCallback)
     {
@@ -111,7 +111,7 @@ public:
       Callback();
     }
 
-    return 0;
+    return *this;
   }
 
   // Are the class instance and method pointers initialised?
