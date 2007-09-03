@@ -212,6 +212,7 @@ PLT_EventSubscriberFinderByService::operator()(PLT_EventSubscriber* const & even
 |   PLT_EventSubscriberTask::PLT_EventSubscriberTask()
 +---------------------------------------------------------------------*/
 PLT_EventSubscriberTask::PLT_EventSubscriberTask()
+    : m_Requests(10)
 {
 }
 
@@ -258,6 +259,8 @@ void PLT_EventSubscriberTask::DoRun()
         ||  request->GetUrl().GetPort() != port 
         ||  request->GetUrl().GetHost() != host ) {
             m_Socket = new NPT_TcpClientSocket();
+            m_Socket->SetReadTimeout(30000);
+            m_Socket->SetWriteTimeout(30000);
             NPT_CHECK_LABEL(client.Connect(m_Socket.AsPointer(), *request), failed);
             NPT_CHECK_LABEL(m_Socket->GetOutputStream(output_stream), failed);
             NPT_CHECK_LABEL(m_Socket->GetInputStream(input_stream), failed);
