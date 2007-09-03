@@ -93,12 +93,12 @@ PLT_MediaServer::~PLT_MediaServer()
 |   PLT_MediaServer::Start
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_MediaServer::Start(PLT_TaskManager* task_manager)
+PLT_MediaServer::Start(PLT_TaskManager* task_manager, PLT_DeviceHostReference& self)
 {
     // start our file server
     NPT_CHECK_SEVERE(m_FileServer->Start());
 
-    return PLT_DeviceHost::Start(task_manager);
+    return PLT_DeviceHost::Start(task_manager, self);
 }
 
 /*----------------------------------------------------------------------

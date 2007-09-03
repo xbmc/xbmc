@@ -589,12 +589,13 @@ PLT_Service::NotifySubs(PLT_StateVariable* var /* = NULL */)
             m_Subscribers.Add(sub);
 
             // for now subscribers never expire
-//            if ((expiration.GetSeconds() != 0 && expiration < now ) || NPT_FAILED(res)) {
-//                delete sub;
-//            } else {
-//                // add back subscriber to end of list
-//                m_Subscribers.Add(sub);
-//            }
+            // renabled to keep down overhead  -- elupus
+            if (expiration != NPT_TimeStamp() && expiration < now) {
+                delete sub;
+            } else {
+                // add back subscriber to end of list
+                m_Subscribers.Add(sub);
+            }
         }
     }
 
