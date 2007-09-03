@@ -2166,7 +2166,7 @@ void CApplication::DoRender()
   {
     if (m_pPlayer->IsRecording() )
     {
-      static iBlinkRecord = 0;
+      static int iBlinkRecord = 0;
       CGUIFont* pFont = g_fontManager.GetFont("font13");
       if (pFont)
       {

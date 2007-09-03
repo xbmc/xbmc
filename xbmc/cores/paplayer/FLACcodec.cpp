@@ -238,7 +238,8 @@ FLAC__StreamDecoderWriteStatus FLACCodec::DecoderWriteCallback(const FLAC__Strea
   const int bytes_per_sample = frame->header.bits_per_sample/8;
   BYTE* outptr = pThis->m_pBuffer+pThis->m_BufferSize;
 
-  for(unsigned int current_sample = 0; current_sample < frame->header.blocksize; current_sample++)
+  unsigned int current_sample;
+  for(current_sample = 0; current_sample < frame->header.blocksize; current_sample++)
   {
     for(unsigned int channel = 0; channel < frame->header.channels; channel++)
     {
