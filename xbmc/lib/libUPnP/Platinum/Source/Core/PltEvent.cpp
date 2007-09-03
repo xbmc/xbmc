@@ -212,7 +212,7 @@ PLT_EventSubscriberFinderByService::operator()(PLT_EventSubscriber* const & even
 |   PLT_EventSubscriberTask::PLT_EventSubscriberTask()
 +---------------------------------------------------------------------*/
 PLT_EventSubscriberTask::PLT_EventSubscriberTask()
-    : m_Requests(10)
+//    : m_Requests(10)
 {
 }
 
