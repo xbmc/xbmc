@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: scape@xboxmediacenter.com-->
-<!--Date of translation: 08/02/2007-->
+<!--Date of translation: 09/03/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 9672-->
+<!--Based on english strings version 10101-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -475,6 +475,7 @@
   <string id="569">Kommentar</string>
   <string id="570">Datum (Hinzugefügt)</string>
   <string id="571">Standard</string>
+  <string id="572">Studio</string>
   <string id="580">Sortierrichtung</string>
   <string id="581">Sortiermethode</string>
   <string id="582">Ansicht</string>
@@ -652,6 +653,12 @@
   <string id="1034">Untermenü</string>
   <string id="1035">Untermenü-Einträge aktivieren</string>
   <string id="1036">Favoriten</string>
+  <string id="1037">Video Plugins</string>
+  <string id="1038">Musik Plugins</string>
+  <string id="1039">Bilder Plugins</string>
+  <string id="1040">Ordner wird geladen...</string>
+  <string id="1041">%i Einträge geladen</string>
+  <string id="1042">%i von %i Einträgen geladen</string>
   <string id="1200">SMB-Client</string>
   <string id="1202">Arbeitsgruppe</string>
   <string id="1203">Standard Benutzername</string>
@@ -997,7 +1004,7 @@
   <string id="13385">Stimmen-Maske - Port 4</string>
   <string id="13386">Zeitbasiertes Vor-/Zurückspulen</string>
   <string id="13387">Formatvorlage für Musiktitel-Dateinamen rechts</string>
-  <string id="13388">%s Presets</string>
+  <string id="13388">Voreingestellt</string>
   <string id="13389">Es sind keine Presets für diese Visualisierung verfügbar</string>
   <string id="13390">Es sind keine Einstellungen für diese Visualisierung verfügbar</string>
   <string id="13391">Laufwerk öffnen/schließen</string>
@@ -1015,6 +1022,8 @@
   <string id="13403">Standard entfernen</string>
   <string id="13404">Fortsetzen</string>
   <string id="13405">Cover Download</string>
+  <string id="13406">Bild-Information</string>
+  <string id="13407">%s Voreinstellungen</string>
   <string id="14000">Videos Stapeln</string>
   <string id="14001">Stapeln deaktivieren</string>
   <string id="14003">Playlist wird heruntergeladen...</string>
@@ -1540,6 +1549,12 @@
   <string id="20380">Ordner vom Scan ausschließen</string>
   <string id="20381">Besondere</string>
   <string id="20382">Staffel-Covers von TV-Serien automatisch downloaden</string>
+  <string id="20383">Ordner enthält ein einziges Video</string>
+  <string id="20384">Link zur TV-Serie</string>
+  <string id="20385">Link zur TV-Serie entfernen</string>
+  <string id="20386">Kürzlich hinzugefügte Filme</string>
+  <string id="20387">Kürzlich hinzugefügte Episoden</string>
+  <string id="20388">Studios</string>
   <string id="21330">Versteckte Ordner und Dateien anzeigen</string>
   <string id="21331">TuxBox Client</string>
   <string id="21332">WARNUNG: Ziel-TuxBox-Laufwerk ist im Aufnahme-Modus!</string>
@@ -1579,6 +1594,7 @@
   <string id="21386">Acoustic Management Stufe</string>
   <string id="21387">Schnell</string>
   <string id="21388">Leise</string>
+  <string id="21389">Eigenen Hintergrund aktivieren</string>
   <string id="21390">Power Management Stufe</string>
   <string id="21391">Hoher Stromverbrauch</string>
   <string id="21392">Niedriger Stromverbrauch</string>
@@ -1621,5 +1637,61 @@
   <string id="21437">Neue Smart Playlist...</string>
   <string id="21438">%c Laufwerk</string>
   <string id="21439">Party-Modus Regeln editieren</string>
+  <string id="21800">Dateiname</string>
+  <string id="21801">Dateipfad</string>
+  <string id="21802">Dateigröße</string>
+  <string id="21803">Datei Datum/Uhrzeit</string>
+  <string id="21804">Dia-Index</string>
+  <string id="21805">Auflösung</string>
+  <string id="21806">Kommentar</string>
+  <string id="21807">Farbe/BW</string>
+  <string id="21808">JPEG Prozess</string>
+  <string id="21820">Datum/Uhrzeit</string>
+  <string id="21821">Beschreibung</string>
+  <string id="21822">Kamera-Hersteller</string>
+  <string id="21823">Kamera-Modell</string>
+  <string id="21824">Exif Kommentar</string>
+  <string id="21825">Firmware</string>
+  <string id="21826">Blendeneinstellung</string>
+  <string id="21827">Brennweite</string>
+  <string id="21828">Fokus Distanz</string>
+  <string id="21829">Belichtung</string>
+  <string id="21830">Belichtungszeit</string>
+  <string id="21831">Belichtungsausrichtung</string>
+  <string id="21832">Belichtungsmodus</string>
+  <string id="21833">Blitz</string>
+  <string id="21834">Weißabgleich</string>
+  <string id="21835">Lichtquelle</string>
+  <string id="21836">Mess-Modus</string>
+  <string id="21837">ISO</string>
+  <string id="21838">Digitalzoom</string>
+  <string id="21839">CCD Weite</string>
+  <string id="21840">GPS-Breitengrad</string>
+  <string id="21841">GPS-Längengrad</string>
+  <string id="21842">GPS-Höhe</string>
+  <string id="21843">Ausrichtung</string>
+  <string id="21860">Zusätzliche Kategorien</string>
+  <string id="21861">Stichwörter</string>
+  <string id="21862">Bildtext</string>
+  <string id="21863">Autor</string>
+  <string id="21864">Kopfzeile</string>
+  <string id="21865">Besondere Anweisungen</string>
+  <string id="21866">Kategorie</string>
+  <string id="21867">Verfasserzeile</string>
+  <string id="21868">Titel der Verfasserzeile</string>
+  <string id="21869">Credit</string>
+  <string id="21870">Quelle</string>
+  <string id="21871">Urheberrechtshinweis</string>
+  <string id="21872">Objekt Name</string>
+  <string id="21873">Stadt</string>
+  <string id="21874">Staat</string>
+  <string id="21875">Land</string>
+  <string id="21876">Originale Tx Abhängigkeit</string>
+  <string id="21877">Erstellungsdatum</string>
+  <string id="21878">Urheberrechtskennzeichnung</string>
+  <string id="21879">Länderkennzahl</string>
+  <string id="21880">Auskunftsdienst</string>
+  <string id="21881">UPnP Renderer aktivieren</string>
+  <string id="21882">Film-Einleitung vor dem DVD-Menü überspringen</string>
   <string id="29999">Automatische Videofilter Korrektur für Spiele</string>
 </strings>
