@@ -264,6 +264,9 @@ void PLT_EventSubscriberTask::DoRun()
             NPT_CHECK_LABEL(client.Connect(m_Socket.AsPointer(), *request), failed);
             NPT_CHECK_LABEL(m_Socket->GetOutputStream(output_stream), failed);
             NPT_CHECK_LABEL(m_Socket->GetInputStream(input_stream), failed);
+            port = request->GetUrl().GetPort();
+            host = request->GetUrl().GetHost();
+
         }
 
         NPT_LOG_FINER("PLT_EventSubscriberTask sending:");
