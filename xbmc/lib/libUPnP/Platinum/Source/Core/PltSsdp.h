@@ -22,6 +22,7 @@
 |   forward declarations
 +---------------------------------------------------------------------*/
 class PLT_DeviceHost;
+typedef NPT_Reference<PLT_DeviceHost> PLT_DeviceHostReference;
 
 /*----------------------------------------------------------------------
 |   PLT_SsdpSender class
@@ -58,7 +59,7 @@ class PLT_SsdpDeviceSearchResponseInterfaceIterator
 {
 public:
     PLT_SsdpDeviceSearchResponseInterfaceIterator(NPT_SocketAddress* remote_addr,
-                                                  PLT_DeviceHost*    device, 
+                                                  PLT_DeviceHostReference& device, 
                                                   const char*        st) :
         m_RemoteAddr(remote_addr), m_Device(device), m_ST(st)  {}
     virtual ~PLT_SsdpDeviceSearchResponseInterfaceIterator() {}
@@ -67,7 +68,7 @@ public:
 
 private:
     NPT_SocketAddress* m_RemoteAddr;
-    PLT_DeviceHost*    m_Device;
+    PLT_DeviceHostReference m_Device;
     NPT_String         m_ST;
 };
 
@@ -77,7 +78,7 @@ private:
 class PLT_SsdpDeviceSearchResponseTask : public PLT_ThreadTask
 {
 public:
-    PLT_SsdpDeviceSearchResponseTask(PLT_DeviceHost*   device, 
+    PLT_SsdpDeviceSearchResponseTask(PLT_DeviceHostReference& device, 
                                      NPT_SocketAddress addr,
                                      const char*       st) : 
         m_Device(device), m_Addr(addr), m_ST(st) {}
@@ -89,7 +90,7 @@ protected:
     virtual void DoRun();
     
 protected:
-    PLT_DeviceHost*     m_Device;
+    PLT_DeviceHostReference m_Device;
     NPT_SocketAddress   m_Addr;
     NPT_String          m_ST;
 };
@@ -100,13 +101,13 @@ protected:
 class PLT_SsdpAnnounceInterfaceIterator
 {
 public:
-    PLT_SsdpAnnounceInterfaceIterator(PLT_DeviceHost* device, bool is_byebye = false, bool broadcast = false) :
+    PLT_SsdpAnnounceInterfaceIterator(PLT_DeviceHostReference& device, bool is_byebye = false, bool broadcast = false) :
         m_Device(device), m_IsByeBye(is_byebye), m_Broadcast(broadcast) {}
       
     NPT_Result operator()(NPT_NetworkInterface*& if_addr) const;
     
 private:
-    PLT_DeviceHost* m_Device;
+    PLT_DeviceHostReference& m_Device;
     bool            m_IsByeBye;
     bool            m_Broadcast;
 };
@@ -146,7 +147,7 @@ private:
 class PLT_SsdpDeviceAnnounceTask : public PLT_ThreadTask
 {
 public:
-    PLT_SsdpDeviceAnnounceTask(PLT_DeviceHost*  device, 
+    PLT_SsdpDeviceAnnounceTask(PLT_DeviceHostReference& device, 
                                NPT_TimeInterval repeat,
                                bool             is_byebye_first = false,
                                bool             broadcast = false) : 
@@ -159,7 +160,7 @@ protected:
     virtual void DoRun();
 
 protected:
-    PLT_DeviceHost*             m_Device;
+    PLT_DeviceHostReference     m_Device;
     NPT_TimeInterval            m_Repeat;
     bool                        m_IsByeByeFirst;
     bool                        m_IsBroadcast;
