@@ -15,7 +15,7 @@
 char* getpath(char *buf, const char *full)
 {
   char* pos;
-  if (pos = strrchr(full, '\\'))
+  if (pos = (char *)strrchr(full, '\\'))
   {
     strncpy(buf, full, pos - full + 1 );
     buf[pos - full + 1] = 0;
@@ -35,7 +35,7 @@ extern "C" HMODULE __stdcall dllLoadLibraryExtended(LPCSTR lib_file, LPCSTR sour
   LibraryLoader* dll = NULL; 
 
   /* extract name */  
-  char* p = strrchr(lib_file, '\\');
+  char* p = (char *)strrchr(lib_file, '\\');
   if (p) 
     strcpy(libname, p+1);
   else 
