@@ -70,10 +70,11 @@ PLT_DeviceHost::~PLT_DeviceHost()
 |   PLT_DeviceHost::Start
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_DeviceHost::Start(PLT_TaskManager* task_manager)
+PLT_DeviceHost::Start(PLT_TaskManager* task_manager, PLT_DeviceHostReference& self)
 {
     // keep the task manager around
     m_TaskManager = task_manager;
+    m_Self = self;
 
     // start the server
     NPT_CHECK_SEVERE(m_HttpServer->Start());
@@ -141,7 +142,7 @@ PLT_DeviceHost::Start(PLT_TaskManager* task_manager)
 #endif
 
 
-    m_SsdpAnnounceTask = new PLT_SsdpDeviceAnnounceTask(this, repeat, true, m_Broadcast);
+    m_SsdpAnnounceTask = new PLT_SsdpDeviceAnnounceTask(m_Self, repeat, true, m_Broadcast);
     m_TaskManager->StartTask(m_SsdpAnnounceTask, &delay, false);
     
     return NPT_SUCCESS;
@@ -162,10 +163,11 @@ PLT_DeviceHost::Stop()
 
         NPT_List<NPT_NetworkInterface*> if_list;
         NPT_NetworkInterface::GetNetworkInterfaces(if_list);
-        if_list.Apply(PLT_SsdpAnnounceInterfaceIterator(this, true, m_Broadcast));
+        if_list.Apply(PLT_SsdpAnnounceInterfaceIterator(m_Self, true, m_Broadcast));
         if_list.Apply(NPT_ObjectDeleter<NPT_NetworkInterface>());
     }
 
+    m_Self = NULL;
     return NPT_SUCCESS;
 }
 
@@ -556,7 +558,7 @@ PLT_DeviceHost::ProcessSsdpSearchRequest(NPT_HttpRequest& request,
 
         // create a task to respond to the request
         NPT_TimeInterval timer((MX==0)?0:((int)(0 + ((unsigned short)NPT_System::GetRandomInteger() % ((MX>10)?10:MX)))), 0);
-        PLT_SsdpDeviceSearchResponseTask* task = new PLT_SsdpDeviceSearchResponseTask(this, info.remote_address, st);
+        PLT_SsdpDeviceSearchResponseTask* task = new PLT_SsdpDeviceSearchResponseTask(m_Self, info.remote_address, st);
         m_TaskManager->StartTask(task, &timer);
         return NPT_SUCCESS;
     }
