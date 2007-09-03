@@ -1372,7 +1372,7 @@ extern "C"
     
     if (envstring != NULL)
     {
-      char *value_start = strchr(envstring, '=');
+      char *value_start = (char *)strchr(envstring, '=');
       
       if (value_start != NULL)
       {

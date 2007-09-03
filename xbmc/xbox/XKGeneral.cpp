@@ -74,8 +74,8 @@ void XKGeneral::BytesToHexStr(LPBYTE SrcBytes, DWORD byteCount, LPSTR DstString)
 void XKGeneral::BytesToHexStr(LPBYTE SrcBytes, DWORD byteCount, LPSTR DstString, UCHAR Seperator)
 {
   USHORT Inc = (Seperator == 0x00) ? 2 : 3;
-
-  for (ULONG i = 0; i < byteCount; i++)
+  ULONG i;
+  for (i = 0; i < byteCount; i++)
   {
     BYTE nybble = (SrcBytes[i] >> 4) & 0x0f;
     if (nybble > 9)
@@ -128,7 +128,7 @@ void XKGeneral::MixedStrToDecStr(LPSTR StringData, LPDWORD StrLen, CHAR Base, BO
 
   for (DWORD i = 0; i < dwSize; i++)
   {
-    LPSTR ChrOffset = strchr((LPCSTR) & DecChars, *(sData + i));
+    LPSTR ChrOffset = (char *)strchr((LPCSTR) & DecChars, *(sData + i));
     if ((ChrOffset != NULL) && ((ChrOffset - (LPSTR)&DecChars) <= Base - 1))
     {
       memcpy(StringData + currentOffset, ChrOffset, 1);
@@ -224,10 +224,10 @@ BOOL XKGeneral::ReadINIFileItem(LPCSTR INIFileName, LPCSTR INISection, LPCSTR IN
 
     do
     {
-      sTempSection = strchr((LPCSTR)iniData + sectionOffset, '[');
+      sTempSection = (char *)strchr((LPCSTR)iniData + sectionOffset, '[');
       if ((sTempSection != NULL) && (strncmp(sTempSection + 1, INISection, strlen(INISection)) == 0))
       {
-        sNextSection = strchr((LPCSTR)sTempSection + strlen(INISection), '[');
+        sNextSection = (char *)strchr((LPCSTR)sTempSection + strlen(INISection), '[');
         sNextSection = (sNextSection != NULL) ? sNextSection : (LPSTR)iniData + filesize;
 
         foundSection = TRUE;
@@ -314,8 +314,8 @@ void XKGeneral::StripEnclosedChars(LPSTR sString, LPDWORD strLen, CHAR EncloseCh
   strcpy((LPSTR)tmpString, sString);
   ZeroMemory(sString, *strLen);
 
-  LPSTR tmpFirst = strchr((LPCSTR)tmpString, EncloseChar);
-  LPSTR tmpLast = strrchr((LPCSTR)tmpString, EncloseChar);
+  LPSTR tmpFirst = (char *)strchr((LPCSTR)tmpString, EncloseChar);
+  LPSTR tmpLast = (char *)strrchr((LPCSTR)tmpString, EncloseChar);
 
   //check if Null, if null then just beginning of string..
   tmpFirst = (tmpFirst != NULL) ? tmpFirst + 1 : (LPSTR)tmpString;
