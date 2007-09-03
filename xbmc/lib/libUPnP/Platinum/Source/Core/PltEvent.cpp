@@ -299,7 +299,7 @@ failed:
         input_stream = NULL;
         m_Socket = NULL;
         // server may have closed socket for us
-        if((res == NPT_ERROR_EOS || res == NPT_ERROR_TIMEOUT) && count < 2) {
+        if(count < 1) {
             count++;
             goto retry;
         }
