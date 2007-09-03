@@ -69,7 +69,7 @@ public:
     virtual ~PLT_UPnP_DeviceStartIterator() {}
 
     NPT_Result operator()(PLT_DeviceHostReference& device_host) const {
-        NPT_CHECK_SEVERE(device_host->Start(m_TaskManager));
+        NPT_CHECK_SEVERE(device_host->Start(m_TaskManager, device_host));
         return m_ListenTask->AddListener(device_host.AsPointer());
     }
 
@@ -186,7 +186,7 @@ PLT_UPnP::AddDevice(PLT_DeviceHostReference& device)
 
     if (m_Started) {
         NPT_LOG_INFO("Starting Device...");
-        NPT_Result res = device->Start(this);
+        NPT_Result res = device->Start(this, device);
         if (NPT_SUCCEEDED(res)) {
             // add listener after device is started since it
             // needs to be aware of the task manager (this)
@@ -211,6 +211,10 @@ PLT_UPnP::RemoveDevice(PLT_DeviceHostReference& device)
 
     // HACK: we keep the device in the list just in case it's being used by threads/tasks
     // without a reference
+    // Should not be done here, can be done by called if it want's to, otherwise 
+    // there is no way to cleanup properly
+    m_SsdpListenTask->RemoveListener(device.AsPointer());
+    m_Devices.Remove(device);
     return device->Stop();
 }
 
