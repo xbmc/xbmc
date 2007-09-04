@@ -330,6 +330,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.profilethumb")) ret = SYSTEM_PROFILETHUMB;
     else if (strTest.Equals("system.launchxbe")) ret = SYSTEM_LAUNCHING_XBE;
     else if (strTest.Equals("system.progressbar")) ret = SYSTEM_PROGRESS_BAR;
+    else if (strTest.Equals("system.platform.linux")) ret = SYSTEM_PLATFORM_LINUX;
+    else if (strTest.Equals("system.platform.xbox")) ret = SYSTEM_PLATFORM_XBOX;
+    else if (strTest.Equals("system.platform.windows")) ret = SYSTEM_PLATFORM_WINDOWS;
   }
 #ifdef HAS_KAI
   else if (strCategory.Equals("xlinkkai"))
@@ -1284,6 +1287,24 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
     bReturn = g_network.IsAvailable(false) && g_guiSettings.GetBool("xlinkkai.enabled") && CKaiClient::GetInstance()->IsEngineConnected();
   else if (condition == SYSTEM_KAI_ENABLED)
     bReturn = g_network.IsAvailable(false) && g_guiSettings.GetBool("xlinkkai.enabled");
+#endif
+  else if (condition == SYSTEM_PLATFORM_LINUX)
+#ifdef _LINUX
+    bReturn = true;
+#else
+    bReturn = false;
+#endif
+  else if (condition == SYSTEM_PLATFORM_WINDOWS)
+#ifdef WIN32
+    bReturn = true;
+#else
+    bReturn = false;
+#endif
+  else if (condition == SYSTEM_PLATFORM_XBOX)
+#ifdef HAS_XBOX_HARDWARE
+    bReturn = true;
+#else
+    bReturn = false;
 #endif
   else if (condition == SYSTEM_MEDIA_DVD)
   {
