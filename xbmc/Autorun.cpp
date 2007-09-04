@@ -28,9 +28,13 @@
 #include "PlayListPlayer.h"
 #include "xbox/xbeheader.h"
 #include "FileSystem/StackDirectory.h"
+#ifdef HAS_KAI
 #include "utils/KaiClient.h"
+#endif
 #include "ProgramDatabase.h"
+#ifdef HAS_TRAINER
 #include "utils/Trainer.h"
+#endif
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -96,6 +100,7 @@ void CAutorun::ExecuteXBE(const CStdString &xbeFile)
   else
     iRegion = 0;
 
+#ifdef HAS_TRAINER
   CProgramDatabase database;
   database.Open();
   DWORD dwTitleId = CUtil::GetXbeID(xbeFile);
@@ -129,8 +134,8 @@ void CAutorun::ExecuteXBE(const CStdString &xbeFile)
         }
       }
   }
-
   database.Close();
+#endif
   CUtil::RunXBE(xbeFile.c_str(), NULL,F_VIDEO(iRegion));
 }
 

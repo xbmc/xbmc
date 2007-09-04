@@ -9,7 +9,9 @@
 typedef void CUSTOM_LAUNCH_DATA;
 #endif
 
+#ifdef HAS_TRAINER
 class CTrainer;
+#endif
 
 // for 'cherry' patching
 typedef enum
@@ -85,8 +87,10 @@ public:
   static int ExecBuiltIn(const CStdString& execString);
   static bool GetParentPath(const CStdString& strPath, CStdString& strParent);
   static void GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename);
+#ifdef HAS_TRAINER
   static bool InstallTrainer(CTrainer& trainer);
   static bool RemoveTrainer();
+#endif
   static bool PatchCountryVideo(F_COUNTRY Country, F_VIDEO Video);
   static void RunShortcut(const char* szPath);
   static void RunXBE(const char* szPath, char* szParameters = NULL, F_VIDEO ForceVideo=VIDEO_NULL, F_COUNTRY ForceCountry=COUNTRY_NULL, CUSTOM_LAUNCH_DATA* pData=NULL);

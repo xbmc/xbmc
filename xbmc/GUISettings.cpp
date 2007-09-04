@@ -209,8 +209,10 @@ CGUISettings::CGUISettings(void)
   AddSeparator(2,"myprograms.sep1");
   AddBool(3, "myprograms.gameautoregion",511,false);
   AddInt(4, "myprograms.ntscmode", 16110, 0, 0, 1, 3, SPIN_CONTROL_TEXT);
+#ifdef HAS_TRAINER
   AddSeparator(5,"myprograms.sep2");
   AddString(6, "myprograms.trainerpath", 20003, "select folder", BUTTON_CONTROL_PATH_INPUT, false, 657);
+#endif
   AddSeparator(7,"myprograms.sep3");
   AddBool(8, "myprograms.usedashpath", 13007, true);
   AddString(9, "myprograms.dashboard", 13006, "C:\\xboxdash.xbe", BUTTON_CONTROL_PATH_INPUT, false, 655);
@@ -221,12 +223,14 @@ CGUISettings::CGUISettings(void)
   AddInt(3, "programfiles.sortorder", 580, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_DESC, SPIN_CONTROL_TEXT);
   AddBool(4, "programfiles.savefolderviews", 583, true);
 
+#ifdef HAS_KAI
   AddCategory(1, "xlinkkai", 714);
   AddBool(1, "xlinkkai.enabled", 14072, false);
   AddBool(2, "xlinkkai.enablenotifications", 14008, true);
   AddString(4, "xlinkkai.username", 709, "", BUTTON_CONTROL_INPUT, false, 709);
   AddString(5, "xlinkkai.password", 710, "", BUTTON_CONTROL_HIDDEN_INPUT, false, 710);
   AddString(6, "xlinkkai.server", 14042, "", BUTTON_CONTROL_IP_INPUT);
+#endif
 
   // My Weather settings
   AddGroup(2, 8);

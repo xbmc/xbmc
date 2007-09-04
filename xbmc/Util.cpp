@@ -78,7 +78,9 @@
 #endif
 #include "xbox/Network.h"
 #include "GUIPassword.h"
+#ifdef HAS_KAI
 #include "utils/KaiClient.h"
+#endif
 #ifdef HAS_FTP_SERVER
 #include "lib/libfilezilla/xbfilezilla.h"
 #endif
@@ -1009,6 +1011,7 @@ bool CUtil::PatchCountryVideo(F_COUNTRY Country, F_VIDEO Video)
   return( true );
 }
 
+#ifdef HAS_TRAINER
 bool CUtil::InstallTrainer(CTrainer& trainer)
 {
   bool Found = false;
@@ -1348,6 +1351,7 @@ bool CUtil::RemoveTrainer()
 #endif
   return Found;
 }
+#endif
 
 void CUtil::RunShortcut(const char* szShortcutPath)
 {
@@ -3482,7 +3486,9 @@ const BUILT_IN commands[] = {
   "EjectTray",          false,  "Close or open the DVD tray",
   "AlarmClock",         true,   "Prompt for a length of time and start an alarm clock",
   "CancelAlarm",        true,   "Cancels an alarm",
+#ifdef HAS_KAI
   "KaiConnection",      false,  "Change kai connection status (connect/disconnect)",
+#endif
   "Action",             true,   "Executes an action for the active window (same as in keymap)",
   "Notification",       true,   "Shows a notification on screen, specify header, then message, and optionally time in milliseconds and a icon.",
   "PlayDVD",            false,  "Plays the inserted CD or DVD media from the DVD-ROM Drive!",
@@ -3588,13 +3594,17 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     {
       g_passwordManager.bMasterUser = false;
       g_passwordManager.LockSources(true);
+#ifdef HAS_KAI
       g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(20052),g_localizeStrings.Get(20053));
+#endif
     }
     else if (g_passwordManager.IsMasterLockUnlocked(true))
     {
       g_passwordManager.LockSources(false);
       g_passwordManager.bMasterUser = true;
+#ifdef HAS_KAI
       g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(20052),g_localizeStrings.Get(20054));
+#endif
     }
 
     DeleteVideoDatabaseDirectoryCache();
@@ -4029,6 +4039,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 
     g_alarmClock.start(strName,fSecs,strCommand);
   }
+#ifdef HAS_KAI
   else if (execute.Equals("notification"))
   {
     std::vector<CStdString> params;
@@ -4042,10 +4053,12 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     else
       g_application.m_guiDialogKaiToast.QueueNotification(params[0],params[1]);
   }
+#endif
   else if (execute.Equals("cancelalarm"))
   {
     g_alarmClock.stop(parameter);
   }
+#ifdef HAS_KAI
   else if (execute.Equals("kaiconnection"))
   {
     if (CKaiClient::GetInstance())
@@ -4068,6 +4081,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       CGUIDialogOK::ShowAndGetInput(15000, 0, 14073, 0);
     }
   }
+#endif
   else if (execute.Equals("playdvd"))
   {
     CAutorun::PlayDisc();
@@ -4746,11 +4760,12 @@ if (g_guiSettings.GetBool("autodetect.onoff"))
         strBoosMode     = arSplit[4].c_str();
         strFTPPath.Format("ftp://%s:%s@%s:%s/",strFtpUserName.c_str(),strFtpPassword.c_str(),v_xboxclients.client_ip[i],strFtpPort.c_str());
 
+#ifdef HAS_KAI
         //Do Notification for this Client
         CStdString strtemplbl;
         strtemplbl.Format("%s %s",strNickName, v_xboxclients.client_ip[i]);
         g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(1251), strtemplbl);
-        
+#endif        
         //Debug Log
         CLog::Log(LOGDEBUG,"%s: %s FTP-Link: %s", g_localizeStrings.Get(1251).c_str(), strNickName.c_str(), strFTPPath.c_str());
 

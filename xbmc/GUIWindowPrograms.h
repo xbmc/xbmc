@@ -12,7 +12,9 @@ public:
   virtual ~CGUIWindowPrograms(void);
   virtual bool OnMessage(CGUIMessage& message);
 
+#ifdef HAS_TRAINER
   void PopulateTrainersList();
+#endif
 protected:
   virtual void OnItemLoaded(CFileItem* pItem) {};
   virtual bool Update(const CStdString& strDirectory);
