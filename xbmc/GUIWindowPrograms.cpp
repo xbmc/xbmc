@@ -25,11 +25,17 @@
 #include "Shortcut.h"
 #include "FileSystem/HDDirectory.h"
 #include "GUIPassword.h"
+#ifdef HAS_TRAINER
 #include "GUIDialogTrainerSettings.h"
+#endif
 #include "GUIDialogMediaSource.h"
 #include "xbox/xbeheader.h"
+#ifdef HAS_TRAINER
 #include "utils/Trainer.h"
+#endif
+#ifdef HAS_KAI
 #include "utils/KaiClient.h"
+#endif
 #include "Autorun.h"
 #include "utils/LabelFormatter.h"
 #include "Autorun.h"
@@ -230,9 +236,10 @@ void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &butt
         else
           buttons.Add(CONTEXT_BUTTON_RENAME, 520); // edit xbe title
       }
-
+#ifdef HAS_TRAINER
       if (m_database.ItemHasTrainer(dwTitleId))
         buttons.Add(CONTEXT_BUTTON_TRAINER_OPTIONS, 12015); // trainer options
+#endif
     }
     buttons.Add(CONTEXT_BUTTON_SCAN_TRAINERS, 12012); // scan trainers
 
@@ -287,6 +294,7 @@ bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       return true;
     }
 
+#ifdef HAS_TRAINER
   case CONTEXT_BUTTON_TRAINER_OPTIONS:
     {
       DWORD dwTitleId = CUtil::GetXbeID(item->m_strPath);
@@ -301,6 +309,7 @@ bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       Update(m_vecItems.m_strPath);
       return true;
     }
+#endif
 
   case CONTEXT_BUTTON_SETTINGS:
     m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPROGRAMS);
@@ -448,6 +457,7 @@ bool CGUIWindowPrograms::OnPlayMedia(int iItem)
     dwTitleId = m_database.GetTitleId(pItem->m_strPath);
   if (!dwTitleId)
     dwTitleId = CUtil::GetXbeID(pItem->m_strPath);
+#ifdef HAS_TRAINER
   CStdString strTrainer = m_database.GetActiveTrainer(dwTitleId);
   if (strTrainer != "")
   {
@@ -472,6 +482,7 @@ bool CGUIWindowPrograms::OnPlayMedia(int iItem)
       }
     }
   }
+#endif
 
   m_database.Close();
   memset(szParameters, 0, sizeof(szParameters));
@@ -528,6 +539,7 @@ int CGUIWindowPrograms::GetRegion(int iItem, bool bReload)
     return CXBE::FilterRegion(iRegion);
 }
 
+#ifdef HAS_TRAINER
 void CGUIWindowPrograms::PopulateTrainersList()
 {
   CDirectory directory;
@@ -664,6 +676,7 @@ void CGUIWindowPrograms::PopulateTrainersList()
   else
     Update(m_vecItems.m_strPath);
 }
+#endif
 
 bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
