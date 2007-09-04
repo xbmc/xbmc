@@ -26,6 +26,8 @@
 
 #ifdef HAS_SDL_OPENGL
 
+#define LOG_SIZE 1024
+
 using namespace Shaders;
 using namespace std;
 
@@ -42,6 +44,8 @@ bool CVertexShader::Compile()
 {
   GLint params[4]; 
 
+  Free();
+
   /* 
      Workaround for locale bug in nVidia's shader compiler.
      Save the current locale, set to a neutral locale while compiling and switch back afterwards.
@@ -54,20 +58,21 @@ bool CVertexShader::Compile()
   glShaderSource(m_vertexShader, 1, &ptr, 0);
   glCompileShader(m_vertexShader);
   glGetShaderiv(m_vertexShader, GL_COMPILE_STATUS, params);
+  VerifyGLState();
   if (params[0]!=GL_TRUE) 
   {
-    GLchar log[512];
+    GLchar log[LOG_SIZE];
     CLog::Log(LOGERROR, "GL: Error compiling shader");
-    glGetShaderInfoLog(m_vertexShader, 512, NULL, log);
+    glGetShaderInfoLog(m_vertexShader, LOG_SIZE, NULL, log);
     CLog::Log(LOGERROR, (const char*)log);
     m_lastLog = log;
     m_compiled = false;
   }
   else
   {
-    GLchar log[512];
+    GLchar log[LOG_SIZE];
     CLog::Log(LOGDEBUG, "GL: Shader compilation log:");
-    glGetShaderInfoLog(m_vertexShader, 512, NULL, log);
+    glGetShaderInfoLog(m_vertexShader, LOG_SIZE, NULL, log);
     CLog::Log(LOGDEBUG, (const char*)log);
     m_lastLog = log;
     m_compiled = true;
@@ -114,18 +119,18 @@ bool CPixelShader::Compile()
   glGetShaderiv(m_pixelShader, GL_COMPILE_STATUS, params);
   if (params[0]!=GL_TRUE) 
   {
-    GLchar log[512];
+    GLchar log[LOG_SIZE];
     CLog::Log(LOGERROR, "GL: Error compiling shader");
-    glGetShaderInfoLog(m_pixelShader, 512, NULL, log);
+    glGetShaderInfoLog(m_pixelShader, LOG_SIZE, NULL, log);
     CLog::Log(LOGERROR, (const char*)log);
     m_lastLog = log;
     m_compiled = false;
   }
   else
   {
-    GLchar log[512];
+    GLchar log[LOG_SIZE];
     CLog::Log(LOGDEBUG, "GL: Shader compilation log:");
-    glGetShaderInfoLog(m_pixelShader, 512, NULL, log);
+    glGetShaderInfoLog(m_pixelShader, LOG_SIZE, NULL, log);
     CLog::Log(LOGDEBUG, (const char*)log);
     m_lastLog = log;
     m_compiled = true;
@@ -148,7 +153,9 @@ void CPixelShader::Free()
 void CShaderProgram::Free()
 {
   m_VP.Free();
+  VerifyGLState();
   m_FP.Free();
+  VerifyGLState();
   if (m_shaderProgram)
   {
     glDeleteProgram(m_shaderProgram);
@@ -189,38 +196,45 @@ bool CShaderProgram::CompileAndLink()
 
   // attach the vertex shader
   glAttachShader(m_shaderProgram, m_VP.Handle());
+  VerifyGLState();
 
   // if we have a pixel shader, attach it. If not, fixed pipeline
   // will be used.
   if (m_FP.Handle())
+  {
     glAttachShader(m_shaderProgram, m_FP.Handle());
+    VerifyGLState();
+  }
 
   // link the program
   glLinkProgram(m_shaderProgram);
   glGetProgramiv(m_shaderProgram, GL_LINK_STATUS, params);
   if (params[0]!=GL_TRUE) 
   {
-    GLchar log[512];
+    GLchar log[LOG_SIZE];
     CLog::Log(LOGERROR, "GL: Error linking shader");
-    glGetProgramInfoLog(m_shaderProgram, 512, NULL, log);
+    glGetProgramInfoLog(m_shaderProgram, LOG_SIZE, NULL, log);
     CLog::Log(LOGERROR, (const char*)log);
     goto error;
   }
+  VerifyGLState();
 
   // validate the program
   glValidateProgram(m_shaderProgram);
   glGetProgramiv(m_shaderProgram, GL_VALIDATE_STATUS, params);
   if (params[0]!=GL_TRUE) 
   {
-    GLchar log[512];
+    GLchar log[LOG_SIZE];
     CLog::Log(LOGERROR, "GL: Error validating shader");
-    glGetProgramInfoLog(m_shaderProgram, 512, NULL, log);
+    glGetProgramInfoLog(m_shaderProgram, LOG_SIZE, NULL, log);
     CLog::Log(LOGERROR, (const char*)log);
     goto error;
   }
+  VerifyGLState();
   
   m_ok = true;
   OnCompiledAndLinked();
+  VerifyGLState();
   return true;
 
  error:
@@ -237,6 +251,7 @@ bool CShaderProgram::Enable()
     glUseProgram((GLuint)m_shaderProgram);
     if (OnEnabled())
     {
+      VerifyGLState();
       return true;
     }
     else
@@ -254,6 +269,7 @@ void CShaderProgram::Disable()
   if (OK())
   {
     glUseProgram((GLuint)m_lastProgram);
+    OnDisabled();
   }
 }
 

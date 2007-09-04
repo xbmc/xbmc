@@ -368,6 +368,7 @@ void CDVDPlayerAudio::Process()
 
   while (!m_bStop)
   {
+    Sleep(0);
     //make sure player doesn't keep processing data while paused
     while (m_speed == DVD_PLAYSPEED_PAUSE && !m_messageQueue.RecievedAbortRequest()) Sleep(5);
 
