@@ -256,7 +256,7 @@
 		<control type="group">
 			<posx>365</posx>
 			<posy>360</posy>
-			<visible>Control.HasFocus(6) + !Skin.HasSetting(homepageDriveinfo1)</visible>
+			<visible>System.Platform.XBOX + Control.HasFocus(6) + !Skin.HasSetting(homepageDriveinfo1)</visible>
 			<include>homestatsinfo</include>
 			<control type="image">
 				<description>gradient</description>
