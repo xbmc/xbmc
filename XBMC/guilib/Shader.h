@@ -40,6 +40,7 @@ namespace Shaders {
   class CVertexShader : public CShader
   {
   public:
+    CVertexShader() { m_vertexShader = 0; }
     virtual ~CVertexShader() { Free(); }
     virtual void Free();
     virtual GLuint Handle() { return m_vertexShader; }
@@ -56,6 +57,7 @@ namespace Shaders {
   class CPixelShader : public CShader
   {
   public:
+    CPixelShader() { m_pixelShader = 0; }
     virtual ~CPixelShader() { Free(); }
     virtual void Free();
     virtual GLuint Handle() { return m_pixelShader; }
@@ -73,7 +75,7 @@ namespace Shaders {
   class CShaderProgram
   {
   public:
-    CShaderProgram() { m_ok = false; m_shaderProgram = 0; }
+    CShaderProgram() { m_ok = false; m_shaderProgram = 0; m_lastProgram = 0; }
     virtual ~CShaderProgram() { Free(); }
 
     // enable the shader
@@ -102,8 +104,11 @@ namespace Shaders {
     virtual void OnCompiledAndLinked() {}
 
     // override to to perform custom tasks before shader is enabled
-    // E.g. setting attributes. return false to disable shader
+    // and after it is disabled. Return false in OnDisabled() to 
+    // disable shader.
+    // E.g. setting attributes, disabling texture unites, etc
     virtual bool OnEnabled() { return true; }
+    virtual void OnDisabled() { }
 
     // sets the vertex shader's source (in GLSL)
     void SetVertexShaderSource(const char* src) { m_VP.SetSource(src); }

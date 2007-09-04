@@ -34,6 +34,7 @@
 #ifdef HAS_SDL_OPENGL
 
 using namespace Surface;
+using namespace Shaders;
 
 CLinuxRendererGL::CLinuxRendererGL()
 {
@@ -53,6 +54,7 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_shaderProgram = 0;
   m_fragmentShader = 0;
   m_renderMethod = RENDER_GLSL;
+  m_renderQuality = RQ_SINGLEPASS;
   m_yTex = 0;
   m_uTex = 0;
   m_vTex = 0;
@@ -62,6 +64,9 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_pOSDABuffer = NULL;
   m_currentField = FIELD_FULL;
   m_reloadShaders = 0;
+  m_pYUVShader = NULL;
+  m_pVideoFilterShader = NULL;
+  m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
 
   memset(m_image, 0, sizeof(m_image));
   memset(m_YUVTexture, 0, sizeof(m_YUVTexture));
@@ -203,6 +208,10 @@ void CLinuxRendererGL::CalculateFrameAspectRatio(int desired_width, int desired_
 //***********************************************************************************************************
 void CLinuxRendererGL::CopyAlpha(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dst, unsigned char* dsta, int dststride)
 {
+  // DISABLED !!
+  // As it is only used by mplayer
+  return;
+
   for (int y = 0; y < h; ++y)
   {
     memcpy(dst, src, w);
@@ -216,6 +225,10 @@ void CLinuxRendererGL::CopyAlpha(int w, int h, unsigned char* src, unsigned char
 
 void CLinuxRendererGL::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, unsigned char *srca, int stride)
 {
+  // DISABLED !!
+  // As it is only used by mplayer
+  return;
+
   // OSD is drawn after draw_slice / put_image
   // this means that the buffer has already been handed off to the RGB converter
   // solution: have separate OSD textures
@@ -361,6 +374,10 @@ void CLinuxRendererGL::DrawAlpha(int x0, int y0, int w, int h, unsigned char *sr
 //********************************************************************************************************
 void CLinuxRendererGL::RenderOSD()
 {
+  // DISABLED !!
+  // As it is only used by mplayer
+  return;
+
   int iRenderBuffer = m_iOSDRenderBuffer;
   
   if (!m_pOSDYTexture[iRenderBuffer] || !m_pOSDATexture[iRenderBuffer])
@@ -723,12 +740,14 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
    
   source = 0;
 
-  if (!m_image[source].plane[0]) {
+  if (!m_image[source].plane[0]) 
+  {
      CLog::Log(LOGDEBUG, "CLinuxRenderer::GetImage - image planes not allocated");
      return -1;
   }
 
-  if (m_image[source].flags != 0) {
+  if (m_image[source].flags != 0) 
+  {
      CLog::Log(LOGDEBUG, "CLinuxRenderer::GetImage - request image but none to give");
      return -1;
   }
@@ -736,7 +755,8 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
   m_image[source].flags = readonly?IMAGE_FLAG_READING:IMAGE_FLAG_WRITING;
 
   // copy the image - should be operator of YV12Image
-  for (int p=0;p<MAX_PLANES;p++) {
+  for (int p=0;p<MAX_PLANES;p++) 
+  {
      image->plane[p]=m_image[source].plane[p];
      image->stride[p] = m_image[source].stride[p];
   }
@@ -1022,8 +1042,110 @@ unsigned int CLinuxRendererGL::PreInit()
   return true;
 }
 
+void CLinuxRendererGL::UpdateVideoFilter()
+{
+  if (m_scalingMethod == g_stSettings.m_currentVideoSettings.m_ScalingMethod)
+    return;
+
+  m_scalingMethod = g_stSettings.m_currentVideoSettings.m_ScalingMethod;
+  switch (g_stSettings.m_currentVideoSettings.m_ScalingMethod)
+  {
+  case VS_SCALINGMETHOD_NEAREST:
+  case VS_SCALINGMETHOD_LINEAR:
+    m_renderQuality = RQ_SINGLEPASS;
+    if (m_pVideoFilterShader)
+    {
+      m_pVideoFilterShader->Free();
+      delete m_pVideoFilterShader;
+      m_pVideoFilterShader = NULL;
+    }
+    break;
+        
+  case VS_SCALINGMETHOD_CUBIC:
+    VerifyGLState();
+    m_renderQuality = RQ_MULTIPASS;
+    if (m_pVideoFilterShader)
+    {
+      m_pVideoFilterShader->Free();
+      delete m_pVideoFilterShader;
+      m_pVideoFilterShader = NULL;
+    }
+    VerifyGLState();
+    m_pVideoFilterShader = new BicubicFilterShader(0.0, 0.75);
+    if (m_pVideoFilterShader && m_pVideoFilterShader->CompileAndLink())
+    {
+      VerifyGLState();
+      if (!m_pVideoFilterShader->CompileAndLink())
+      {
+        CLog::Log(LOGERROR, "GL: Error compiling and linking video filter shader");
+        m_pVideoFilterShader->Free();
+        delete m_pVideoFilterShader;
+        m_pVideoFilterShader = NULL;
+      }
+    }
+    break;
+
+  case VS_SCALINGMETHOD_LANCZOS2:
+  case VS_SCALINGMETHOD_LANCZOS3:
+  case VS_SCALINGMETHOD_SINC8:
+  case VS_SCALINGMETHOD_NEDI:
+    CLog::Log(LOGERROR, "GL: TODO: This scaler has not yet been implemented");
+    m_renderQuality = RQ_SINGLEPASS;
+    if (m_pVideoFilterShader)
+    {
+      m_pVideoFilterShader->Free();
+      delete m_pVideoFilterShader;
+      m_pVideoFilterShader = NULL;
+    }
+    break;
+  }
+}
+
 void CLinuxRendererGL::LoadShaders(int renderMethod)
 {
+  bool err = false;  
+  if (glCreateProgram)
+  {
+    g_graphicsContext.BeginPaint(m_pBuffer);
+    if (m_pYUVShader)
+    {
+      m_pYUVShader->Free();
+      delete m_pYUVShader;
+      m_pYUVShader = NULL;
+    }
+    if (renderMethod & (FIELD_ODD|FIELD_EVEN))
+      m_pYUVShader = new YUV2RGBBobShader(); // create bob deinterlacing shader
+    else
+      m_pYUVShader = new YUV2RGBProgressiveShader(); // create regular progressive scan shader
+
+    if (m_pYUVShader && m_pYUVShader->CompileAndLink())
+    {
+      m_renderMethod = RENDER_GLSL;
+      UpdateVideoFilter();
+    }
+    else
+    {
+      m_pYUVShader->Free();
+      delete m_pYUVShader;
+      m_pYUVShader = NULL;
+      err = true;
+      CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB GLSL shader");
+    }
+    g_graphicsContext.EndPaint(m_pBuffer);
+  }
+  else if (err && glewIsSupported("GL_ARB_fragment_shader")) 
+  {    
+    // TODO
+    CLog::Log(LOGNOTICE, "GL: ARB shaders support detected but unimplementated at this time, falling back to software YUV2RGB");
+    m_renderMethod = RENDER_SW ;
+  } 
+  else 
+  {
+    m_renderMethod = RENDER_SW ;
+    CLog::Log(LOGNOTICE, "GL: Shaders support not present, falling back to SW mode");
+  }
+  return;
+
   bool error = false;
   if (!m_shaderProgram && glCreateProgram)
   {
@@ -1064,7 +1186,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
         "gl_FragColor = rgb;"
         "}";
     }
-    else if (m_renderMethod == FIELD_ODD || m_renderMethod == FIELD_EVEN)
+    else if (renderMethod == FIELD_ODD || renderMethod == FIELD_EVEN)
     {
 /*
       shaderf = 
@@ -1334,6 +1456,8 @@ void CLinuxRendererGL::UnInit()
 
 void CLinuxRendererGL::Render(DWORD flags)
 {
+
+  // obtain current field, if interlaced
   if( flags & RENDER_FLAG_ODD)
   {
     if (m_currentField == FIELD_FULL)
@@ -1341,7 +1465,7 @@ void CLinuxRendererGL::Render(DWORD flags)
       m_reloadShaders = 1;
     }
     m_currentField = FIELD_ODD;
-  }
+  } // even field
   else if (flags & RENDER_FLAG_EVEN)
   {
     if (m_currentField == FIELD_FULL)
@@ -1349,7 +1473,7 @@ void CLinuxRendererGL::Render(DWORD flags)
       m_reloadShaders = 1;
     }
     m_currentField = FIELD_EVEN;
-  }
+  } // not interlaced
   else
   {
     if (m_currentField != FIELD_FULL)
@@ -1358,6 +1482,7 @@ void CLinuxRendererGL::Render(DWORD flags)
     }
     m_currentField = FIELD_FULL;
   }
+
   g_graphicsContext.BeginPaint();
   
   if( flags & RENDER_FLAG_NOOSD ) 
@@ -1367,14 +1492,35 @@ void CLinuxRendererGL::Render(DWORD flags)
   }
 
   if (m_renderMethod & RENDER_GLSL)
-    RenderLowMem(flags);
-    //RenderMultiPass(flags);
-  else
-    RenderLowMem(flags);
+  {
+    switch(m_renderQuality)
+    {
+    case RQ_LOW:
+    case RQ_SINGLEPASS:
+      RenderLowMem(flags);
+      VerifyGLState();
+      break;
 
-  VerifyGLState();
+    case RQ_MULTIPASS:
+      UpdateVideoFilter();
+      RenderMultiPass(flags);
+      VerifyGLState();
+      break;
+
+    case RQ_SOFTWARE:
+      RenderSoftware(flags);
+      VerifyGLState();
+      break;
+    }
+  }
+  else
+  {
+    RenderSoftware(flags);
+    VerifyGLState();
+  }
 
   /* general stuff */
+
   RenderOSD();
 
   if (g_graphicsContext.IsFullScreenVideo())
@@ -1525,6 +1671,7 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags)
   g_graphicsContext.BeginPaint();
 
   glDisable(GL_DEPTH_TEST);
+  VerifyGLState();
 
   //See RGB renderer for comment on this
 #define CHROMAOFFSET_HORIZ 0.25f
@@ -1540,16 +1687,19 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags)
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][0]);
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+  VerifyGLState();
 
   // U
   glActiveTexture(GL_TEXTURE1);
   glEnable(m_textureTarget);
   glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][1]);
+  VerifyGLState();
     
   // V
   glActiveTexture(GL_TEXTURE2);
   glEnable(m_textureTarget);
   glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][2]);
+  VerifyGLState();
     
   glActiveTexture(GL_TEXTURE0);
   VerifyGLState();
@@ -1558,27 +1708,20 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags)
   {
     m_reloadShaders = 0;
     m_fbo.Cleanup();
-    if (m_shaderProgram)
-    {
-      glDeleteShader(m_vertexShader);
-      glDeleteShader(m_fragmentShader);
-      glDeleteProgram(m_shaderProgram);
-      VerifyGLState();
-      m_shaderProgram = 0;
-      LoadShaders(m_currentField);
-      
-      if (!m_shaderProgram)
-      {
-        CLog::Log(LOGERROR, "GL: Error loading during shaders during render method change");
-        return;
-      }
-    }
-    if (m_currentField==FIELD_FULL)
-      SetTextureFilter(GL_LINEAR);
-    else
-      SetTextureFilter(GL_LINEAR); //GL_NEAREST
+    LoadShaders(m_currentField);
+    VerifyGLState();
+    SetTextureFilter(GL_LINEAR);
+    VerifyGLState();
+  }
+  
+  // make sure the yuv shader is loaded and ready to go
+  if (!m_pYUVShader || (!m_pYUVShader->OK()))
+  {
+    CLog::Log(LOGERROR, "GL: YUV shader not active, cannot do multipass render");
+    return;
   }
 
+  // make sure FBO is valid and ready to go
   if (!m_fbo.IsValid())
   {
     m_fbo.Initialize();
@@ -1599,42 +1742,48 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags)
   }
   
   m_fbo.BeginRender();
+  VerifyGLState();
   
-  glUseProgram(m_shaderProgram);
+  m_pYUVShader->SetYTexture(0);
+  m_pYUVShader->SetUTexture(1);
+  m_pYUVShader->SetVTexture(2);
   VerifyGLState();
-  glUniform1i(m_yTex, 0);
+  m_pYUVShader->SetWidth(im.width);
+  m_pYUVShader->SetHeight(im.height);
   VerifyGLState();
-  glUniform1i(m_uTex, 1);
-  VerifyGLState();
-  glUniform1i(m_vTex, 2);
-  VerifyGLState();
-  glUniform1f(m_brightness, brightness);
-  glUniform1f(m_contrast, contrast);
 
   glPushAttrib(GL_VIEWPORT_BIT);
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
   glLoadIdentity();
+  VerifyGLState();
 
   glMatrixMode(GL_PROJECTION);
   glPushMatrix();
   glLoadIdentity();
+  VerifyGLState();
   
   int imgheight;
 
   switch (m_currentField)
   {
   case FIELD_ODD:
+    /*
     glUniform1f(m_stepY, 1/(float)im.height);
     glUniform1f(m_stepX, 1/(float)im.width);
     glUniform1i(m_shaderField, 1);
+    */
+    m_pYUVShader->SetField(1);
     imgheight = im.height/2;
     break;
 
   case FIELD_EVEN:
+    /*
     glUniform1f(m_stepY, 1/(float)im.height);
     glUniform1f(m_stepX, 1/(float)im.width);
     glUniform1i(m_shaderField, 0);
+    */
+    m_pYUVShader->SetField(1);
     imgheight = im.height/2;
     break;
 
@@ -1645,8 +1794,15 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags)
 
   gluOrtho2D(0, im.width, 0, imgheight);
   glViewport(0, 0, im.width, imgheight);
-
   glMatrixMode(GL_MODELVIEW);
+  VerifyGLState();
+
+  if (!m_pYUVShader->Enable())
+  {
+    CLog::Log(LOGERROR, "GL: Error enabling YUV shader");
+  }
+
+  // 1st Pass to video frame size
 
   glBegin(GL_QUADS);
 
@@ -1654,48 +1810,58 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags)
   glMultiTexCoord2f(GL_TEXTURE1, 0, 0);
   glMultiTexCoord2f(GL_TEXTURE2, 0, 0);
   glVertex2f((float)0, (float)0);
-  //glVertex2f((float)0, (float)imgheight);
   
   glMultiTexCoord2f(GL_TEXTURE0, 1, 0);
   glMultiTexCoord2f(GL_TEXTURE1, 1, 0);
   glMultiTexCoord2f(GL_TEXTURE2, 1, 0);
   glVertex2f((float)im.width, (float)0);
-  //glVertex2f((float)im.width, (float)imgheight);
   
   glMultiTexCoord2f(GL_TEXTURE0, 1, 1);
   glMultiTexCoord2f(GL_TEXTURE1, 1, 1);
   glMultiTexCoord2f(GL_TEXTURE2, 1, 1);
   glVertex2f((float)im.width, (float)imgheight);
-  //glVertex2f((float)im.width, (float)0);
   
   glMultiTexCoord2f(GL_TEXTURE0, 0, 1);
   glMultiTexCoord2f(GL_TEXTURE1, 0, 1);
   glMultiTexCoord2f(GL_TEXTURE2, 0, 1);
   glVertex2f((float)0, (float)imgheight);
-  //glVertex2f((float)0, (float)0);
 
   glEnd();
+  VerifyGLState();
+
+  m_pYUVShader->Disable();
 
   glPopMatrix(); // pop modelview
   glMatrixMode(GL_PROJECTION);
   glPopMatrix(); // pop projection
   glPopAttrib(); // pop viewport
   glMatrixMode(GL_MODELVIEW);
+  VerifyGLState();
 
   m_fbo.EndRender();
 
-  glUseProgram(0);
-  VerifyGLState();
   glActiveTexture(GL_TEXTURE1);
   glDisable(m_textureTarget);
   glActiveTexture(GL_TEXTURE2);
   glDisable(m_textureTarget);
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, m_fbo.Texture());
-
-  glBegin(GL_QUADS);
+  VerifyGLState();
   
   // Use regular normalized texture coordinates
+
+  // 2nd Pass to screen size with optional video filter
+
+  if (m_pVideoFilterShader)
+  {
+    m_pVideoFilterShader->SetSourceTexture(0);
+    m_pVideoFilterShader->SetWidth(im.width);
+    m_pVideoFilterShader->SetHeight(imgheight);
+    m_pVideoFilterShader->Enable();
+  }
+
+  VerifyGLState();
+  glBegin(GL_QUADS);
 
   glMultiTexCoord2f(GL_TEXTURE0, 0, 0);
   glVertex4f((float)rd.left, (float)rd.top, 0, 1.0f );
@@ -1713,17 +1879,12 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags)
 
   VerifyGLState();
 
-  /*
-  glUseProgram(0);
-  VerifyGLState();
-  glActiveTexture(GL_TEXTURE1);
-  glDisable(m_textureTarget);
-  glActiveTexture(GL_TEXTURE2);
-  glDisable(m_textureTarget);
-  
+  if (m_pVideoFilterShader)
+  {
+    m_pVideoFilterShader->Disable();
+  }
 
-  glActiveTexture(GL_TEXTURE0);
-  */
+  VerifyGLState();
 
   glDisable(m_textureTarget);
   VerifyGLState();
@@ -1926,6 +2087,73 @@ void CLinuxRendererGL::RenderLowMem(DWORD flags)
   g_graphicsContext.EndPaint();
 }
 
+void CLinuxRendererGL::RenderSoftware(DWORD flags)
+{
+  int index = 0;
+  YV12Image &im = m_image[index];
+
+  // set scissors if we are not in fullscreen video
+  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
+  {
+    g_graphicsContext.ClipToViewWindow();
+  }
+
+  g_graphicsContext.BeginPaint();
+
+  glDisable(GL_DEPTH_TEST);
+
+  // Y
+  glEnable(m_textureTarget);
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][0]);
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+  glBegin(GL_QUADS);
+  
+  if (m_textureTarget==GL_TEXTURE_2D)
+  {
+    // Use regular normalized texture coordinates
+
+    glTexCoord2f(0, 0);
+    glVertex4f((float)rd.left, (float)rd.top, 0, 1.0f );
+    
+    glTexCoord2f(im.texcoord_x, 0);
+    glVertex4f((float)rd.right, (float)rd.top, 0, 1.0f);
+    
+    glTexCoord2f(im.texcoord_x, im.texcoord_y);
+    glVertex4f((float)rd.right, (float)rd.bottom, 0, 1.0f);
+    
+    glTexCoord2f(0, im.texcoord_y);
+    glVertex4f((float)rd.left, (float)rd.bottom, 0, 1.0f);
+
+  }  
+  else 
+  {
+    // Use supported rectangle texture extension (texture coordinates
+    // are not normalized)
+
+    glTexCoord2f((float)rs.left, (float)rs.top );
+    glVertex4f((float)rd.left, (float)rd.top, 0, 1.0f );
+    
+    glTexCoord2f((float)rs.right, (float)rs.top );
+    glVertex4f((float)rd.right, (float)rd.top, 0, 1.0f);
+    
+    glTexCoord2f((float)rs.right, (float)rs.bottom );
+    glVertex4f((float)rd.right, (float)rd.bottom, 0, 1.0f);
+    
+    glTexCoord2f((float)rs.left, (float)rs.bottom );
+    glVertex4f((float)rd.left, (float)rd.bottom, 0, 1.0f);
+  }
+
+  glEnd();
+
+  VerifyGLState();
+
+  glDisable(m_textureTarget);
+  VerifyGLState();
+  g_graphicsContext.EndPaint();
+}
+
 void CLinuxRendererGL::CreateThumbnail(SDL_Surface * surface, unsigned int width, unsigned int height)
 {
   //CSingleLock lock(g_graphicsContext);
@@ -2101,6 +2329,7 @@ void CLinuxRendererGL::TextureCallback(DWORD dwContext)
 {
   SetEvent((HANDLE)dwContext);
 }
+
 #endif
 
 #endif

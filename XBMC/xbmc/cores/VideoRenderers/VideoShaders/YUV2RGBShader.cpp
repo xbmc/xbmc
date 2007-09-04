@@ -19,10 +19,11 @@
 */
 
 
-#ifdef HAS_SDL_OPENGL
-
+#include "include.h"
 #include "YUV2RGBShader.h"
 #include <string>
+
+#ifdef HAS_SDL_OPENGL
 
 using namespace Shaders;
 using namespace std;
@@ -33,8 +34,8 @@ using namespace std;
 
 BaseYUV2RGBShader::BaseYUV2RGBShader()
 {
-  m_width    = 0;
-  m_height   = 0;
+  m_width    = 1;
+  m_height   = 1;
   m_stepX    = 0;
   m_stepY    = 0;
   m_field    = 0;
@@ -72,23 +73,23 @@ BaseYUV2RGBShader::BaseYUV2RGBShader()
 YUV2RGBProgressiveShader::YUV2RGBProgressiveShader()
 {
   string shaderf = 
-    "uniform sampler2D ytex;"
-    "uniform sampler2D utex;"
-    "uniform sampler2D vtex;"
-    "void main()"
-    "{"
-    "vec4 yuv, rgb;"
-    "mat4 yuvmat = { 1.0,      1.0,     1.0,     0.0, "
-    "                0,       -0.39465, 2.03211, 0.0, "
-    "                1.13983, -0.58060, 0.0,     0.0, "
-    "                0.0,     0.0,      0.0,     0.0 }; "
-    "yuv.rgba = vec4(texture2D(ytex, gl_TexCoord[0].xy).r,"
-    "                0.436 * (texture2D(utex, gl_TexCoord[1].xy).r * 2.0 - 1.0),"
-    "                0.615 * (texture2D(vtex, gl_TexCoord[2].xy).r * 2.0 - 1.0),"
-    "                0.0);"
-    "rgb = yuvmat * yuv;"
-    "rgb.a = 1.0;"
-    "gl_FragColor = rgb;"
+    "uniform sampler2D ytex;\n"
+    "uniform sampler2D utex;\n"
+    "uniform sampler2D vtex;\n"
+    "void main()\n"
+    "{\n"
+    "vec4 yuv, rgb;\n"
+    "mat4 yuvmat = { 1.0,      1.0,     1.0,     0.0, \n"
+    "                0.0,       -0.39465, 2.03211, 0.0, \n"
+    "                1.13983, -0.58060, 0.0,     0.0, \n"
+    "                0.0,     0.0,      0.0,     0.0 }; \n"
+    "yuv.rgba = vec4(texture2D(ytex, gl_TexCoord[0].xy).r,\n"
+    "                0.436 * (texture2D(utex, gl_TexCoord[1].xy).r * 2.0 - 1.0),\n"
+    "                0.615 * (texture2D(vtex, gl_TexCoord[2].xy).r * 2.0 - 1.0),\n"
+    "                0.0);\n"
+    "rgb = yuvmat * yuv;\n"
+    "rgb.a = 1.0;\n"
+    "gl_FragColor = rgb;\n"
     "}";
   SetPixelShaderSource(shaderf);
 }
@@ -99,6 +100,7 @@ void YUV2RGBProgressiveShader::OnCompiledAndLinked()
   m_hYTex = glGetUniformLocation(ProgramHandle(), "ytex");
   m_hUTex = glGetUniformLocation(ProgramHandle(), "utex");
   m_hVTex = glGetUniformLocation(ProgramHandle(), "vtex");
+  VerifyGLState();
 }
 
 bool YUV2RGBProgressiveShader::OnEnabled()
@@ -107,6 +109,8 @@ bool YUV2RGBProgressiveShader::OnEnabled()
   glUniform1i(m_hYTex, m_yTexUnit);
   glUniform1i(m_hUTex, m_uTexUnit);
   glUniform1i(m_hVTex, m_vTexUnit);
+  VerifyGLState();
+  return true;
 }
 
 
@@ -133,7 +137,7 @@ YUV2RGBBobShader::YUV2RGBBobShader()
     "offsetY.y  -= (temp1 - stepY/2 + float(field)*stepY);"
     "offsetUV.y -= (temp1 - stepY/2 + float(field)*stepY)/2;"
     "mat4 yuvmat = { 1.0,      1.0,     1.0,     0.0, "
-    "                0,       -0.39465, 2.03211, 0.0, "
+    "                0.0,       -0.39465, 2.03211, 0.0, "
     "                1.13983, -0.58060, 0.0,     0.0, "
     "                0.0,     0.0,      0.0,     0.0 }; "
     "yuv = vec4(texture2D(ytex, offsetY).r,"
@@ -158,6 +162,7 @@ void YUV2RGBBobShader::OnCompiledAndLinked()
   m_hStepX = glGetUniformLocation(ProgramHandle(), "stepX");
   m_hStepY = glGetUniformLocation(ProgramHandle(), "stepY");
   m_hField = glGetUniformLocation(ProgramHandle(), "field");
+  VerifyGLState();
 }
 
 bool YUV2RGBBobShader::OnEnabled()
@@ -169,6 +174,8 @@ bool YUV2RGBBobShader::OnEnabled()
   glUniform1i(m_hField, m_field);
   glUniform1f(m_hStepX, 1.0 / (float)m_width);
   glUniform1f(m_hStepY, 1.0 / (float)m_height);
+  VerifyGLState();
+  return true;
 }
 
 
