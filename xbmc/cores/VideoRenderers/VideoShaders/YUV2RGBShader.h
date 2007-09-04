@@ -42,7 +42,7 @@ namespace Shaders {
   public:
     YUV2RGBProgressiveShader();
     void OnCompiledAndLinked();
-    void OnEnabled();
+    bool OnEnabled();
   };
 
   class YUV2RGBBobShader : public BaseYUV2RGBShader
@@ -50,7 +50,7 @@ namespace Shaders {
   public:
     YUV2RGBBobShader();
     void OnCompiledAndLinked();
-    void OnEnabled();
+    bool OnEnabled();
   };
 
 } // end namespace
