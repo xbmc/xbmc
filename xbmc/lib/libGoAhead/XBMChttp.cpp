@@ -2371,9 +2371,9 @@ int CXbmcHttp::xbmcSpinDownHardDisk()
 {
   if (m_gWindowManager.HasModalDialog())
 	return SetResponse(openTag+"Error:Can't spin down now");
+#ifdef HAS_XBOX_HARDWARE
   if (g_application.MustBlockHDSpinDown())
 	return SetResponse(openTag+"Error:Can't spin down now");
-#ifdef HAS_XBOX_HARDWARE
   XKHDD::SpindownHarddisk();
 #endif
   return SetResponse(openTag+"OK");
