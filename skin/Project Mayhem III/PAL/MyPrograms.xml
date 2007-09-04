@@ -97,7 +97,7 @@
 				<onright>50</onright>
 				<onup>98</onup>
 				<ondown>31</ondown>
-				<visible>System.KaiEnabled</visible>
+				<visible>System.Platform.XBOX + System.KaiEnabled</visible>
 			</control>
 			<control type="image">
 				<description>Kai disconnected icon</description>
@@ -106,7 +106,7 @@
 				<width>19</width>
 				<height>19</height>
 				<texture>Kai_disconnected.png</texture>
-				<visible>!System.KaiConnected + System.KaiEnabled</visible>
+				<visible>System.Platform.XBOX + !System.KaiConnected + System.KaiEnabled</visible>
 			</control>
 			<control type="image">
 				<description>Kai connected icon</description>
@@ -115,7 +115,7 @@
 				<width>19</width>
 				<height>19</height>
 				<texture>Kai_connected.png</texture>
-				<visible>System.KaiConnected</visible>
+				<visible>System.Platform.XBOX + System.KaiConnected</visible>
 			</control>
 			<control type="group">
 				<visible>Skin.HasSetting(bookmarkbuttons)</visible>

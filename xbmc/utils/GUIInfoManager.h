@@ -322,6 +322,9 @@
 #define SYSTEM_TOTAL_SPACE_Y        702
 #define SYSTEM_TOTAL_SPACE_Z        703
 
+#define SYSTEM_PLATFORM_XBOX	    740
+#define SYSTEM_PLATFORM_LINUX	    741
+#define SYSTEM_PLATFORM_WINDOWS	    742
 
 #define XLINK_KAI_USERNAME          750
 #define SKIN_THEME                  800
