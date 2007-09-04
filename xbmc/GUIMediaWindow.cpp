@@ -1071,7 +1071,7 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   // check if the skin even supports favourites
   RESOLUTION res;
-  CStdString favourites(g_SkinInfo.GetSkinPath("dialogfavourites.xml", &res));
+  CStdString favourites(g_SkinInfo.GetSkinPath("DialogFavourites.xml", &res));
   if (XFILE::CFile::Exists(favourites))
   {
 #endif
