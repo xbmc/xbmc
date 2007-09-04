@@ -530,7 +530,9 @@ void CScrobbler::StatusUpdate(ScrobbleStatus status, const CStdString& strText)
 void CScrobbler::StatusUpdate(const CStdString& strText)
 {
   CStdString strAudioScrobbler=g_localizeStrings.Get(15200);  // AudioScrobbler
+#ifdef HAS_KAI
   g_application.m_guiDialogKaiToast.QueueNotification("", strAudioScrobbler, strText, 10000);
+#endif
 }
 
 void CScrobbler::WorkerThread()
