@@ -107,9 +107,11 @@ public:
   bool OnKey(CKey& key);
   bool OnAction(const CAction &action);
   void RenderMemoryStatus();
+#ifdef HAS_XBOX_HARDWARE
   bool MustBlockHDSpinDown(bool bCheckThisForNormalSpinDown = true);
   void CheckNetworkHDSpinDown(bool playbackStarted = false);
   void CheckHDSpindown();
+#endif
   void CheckShutdown();
   void CheckScreenSaver();   // CB: SCREENSAVER PATCH
   void CheckPlayingProgress();

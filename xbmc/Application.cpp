@@ -286,9 +286,11 @@ CApplication::CApplication(void)
     : m_ctrDpad(220, 220)
 {
   m_iPlaySpeed = 1;
+#ifdef HAS_XBOX_HARDWARE
   m_bSpinDown = false;
   m_bNetworkSpinDown = false;
   m_dwSpinDownTime = timeGetTime();
+#endif
 #ifdef HAS_WEB_SERVER
   m_pWebServer = NULL;
   pXbmcHttp = NULL;
@@ -2546,9 +2548,11 @@ bool CApplication::OnKey(CKey& key)
   // but not for the analog thumbsticks/triggers
   if (!key.IsAnalogButton())
   {
+#ifdef HAS_XBOX_HARDWARE
     // reset harddisk spindown timer
     m_bSpinDown = false;
     m_bNetworkSpinDown = false;
+#endif
 
     // reset Idle Timer
     m_idleTimer.StartZero();
@@ -4026,9 +4030,11 @@ void CApplication::OnPlayBackStarted()
   CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0, 0, 0, NULL);
   m_gWindowManager.SendThreadMessage(msg);
 
+#ifdef HAS_XBOX_HARDWARE
   CheckNetworkHDSpinDown(true);
 
   StartLEDControl(true);
+#endif
   DimLCDOnPlayback(true);
 }
 
@@ -4519,10 +4525,10 @@ void CApplication::CheckShutdown()
 #endif
 }
 
+#ifdef HAS_XBOX_HARDWARE
 //Check if hd spindown must be blocked
 bool CApplication::MustBlockHDSpinDown(bool bCheckThisForNormalSpinDown)
 {
-#ifdef HAS_XBOX_HARDWARE
   if (IsPlayingVideo())
   {
     //block immediate spindown when playing a video non-fullscreen (videocontrol is playing)
@@ -4542,7 +4548,6 @@ bool CApplication::MustBlockHDSpinDown(bool bCheckThisForNormalSpinDown)
       return (strSubTitelExtension == ".idx");
     }
   }
-#endif
   return false;
 }
 
@@ -4674,6 +4679,7 @@ void CApplication::CheckHDSpindown()
     }
   }
 }
+#endif
 
 bool CApplication::OnMessage(CGUIMessage& message)
 {
@@ -5018,10 +5024,12 @@ void CApplication::ProcessSlow()
   // update our network state
   g_network.UpdateState();
 
+#ifdef HAS_XBOX_HARDWARE
   // check if we need 2 spin down the harddisk
   CheckNetworkHDSpinDown();
   if (!m_bNetworkSpinDown)
     CheckHDSpindown();
+#endif
 
   // check if we need to activate the screensaver (if enabled)
   if (g_guiSettings.GetString("screensaver.mode") != "None")
