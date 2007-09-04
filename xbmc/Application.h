@@ -7,7 +7,9 @@
 #include "FileItem.h"
 
 #include "GUIDialogSeekBar.h"
+#ifdef HAS_KAI
 #include "GUIDialogKaiToast.h"
+#endif
 #include "GUIDialogVolumeBar.h"
 #include "GUIDialogMuteBug.h"
 #include "GUIWindowPointer.h"   // Mouse pointer
@@ -49,8 +51,10 @@ public:
   void StopServices();
   void StartIdleThread();
   void StopIdleThread();
+#ifdef HAS_KAI
   void StartKai();
   void StopKai();
+#endif
   void StartWebServer();
   void StopWebServer();
   void StartFtpServer();
@@ -123,7 +127,9 @@ public:
   bool IsButtonDown(DWORD code);
   bool AnyButtonDown();
   bool ResetScreenSaverWindow();
+#ifdef HAS_KAI
   void SetKaiNotification(const CStdString& aCaption, const CStdString& aDescription, CGUIImage* aIcon=NULL);
+#endif
   double GetTotalTime() const;
   double GetTime() const;
   float GetPercentage() const;
@@ -137,7 +143,9 @@ public:
 
   CGUIDialogVolumeBar m_guiDialogVolumeBar;
   CGUIDialogSeekBar m_guiDialogSeekBar;
+#ifdef HAS_KAI
   CGUIDialogKaiToast m_guiDialogKaiToast;
+#endif
   CGUIDialogMuteBug m_guiDialogMuteBug;
   CGUIWindowPointer m_guiPointer;
 

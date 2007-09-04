@@ -42,7 +42,9 @@ void CAlarmClock::start(const CStdString& strName, float n_secs, const CStdStrin
   CStdString strMessage;
 
   strMessage.Format(strStarted.c_str(),static_cast<int>(event.m_fSecs)/60);
+#ifdef HAS_KAI
   g_application.m_guiDialogKaiToast.QueueNotification(strAlarmClock,strMessage);
+#endif
   event.watch.StartZero();
   m_event.insert(std::make_pair<CStdString,SAlarmClockEvent>(lowerName,event));
   CLog::Log(LOGDEBUG,"started alarm with name: %s",lowerName.c_str());
@@ -74,7 +76,11 @@ void CAlarmClock::stop(const CStdString& strName)
     strMessage.Format(strStarted.c_str(),static_cast<int>(remaining)/60,static_cast<int>(remaining)%60);
   }
   if (iter->second.m_strCommand.IsEmpty() || iter->second.m_fSecs > iter->second.watch.GetElapsedSeconds())
+#ifdef HAS_KAI
     g_application.m_guiDialogKaiToast.QueueNotification(strAlarmClock,strMessage);
+#else
+    ;
+#endif
   else
     CUtil::ExecBuiltIn(iter->second.m_strCommand);
 

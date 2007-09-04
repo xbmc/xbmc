@@ -7,7 +7,9 @@
 #include "../Util.h"
 #include "../lib/libscrobbler/scrobbler.h"
 #include "../utils/TuxBoxUtil.h"
+#ifdef HAS_KAI
 #include "KaiClient.h"
+#endif
 #include "Weather.h"
 #include "../PlayListPlayer.h"
 #include "../PartyModeManager.h"
@@ -248,8 +250,10 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.builddate")) ret = SYSTEM_BUILD_DATE;
     else if (strTest.Equals("system.hasnetwork")) ret = SYSTEM_ETHERNET_LINK_ACTIVE;
     else if (strTest.Equals("system.fps")) ret = SYSTEM_FPS;
+#ifdef HAS_KAI
     else if (strTest.Equals("system.kaiconnected")) ret = SYSTEM_KAI_CONNECTED;
     else if (strTest.Equals("system.kaienabled")) ret = SYSTEM_KAI_ENABLED;
+#endif
     else if (strTest.Equals("system.hasmediadvd")) ret = SYSTEM_MEDIA_DVD;
     else if (strTest.Equals("system.dvdready")) ret = SYSTEM_DVDREADY;
     else if (strTest.Equals("system.trayopen")) ret = SYSTEM_TRAYOPEN;
@@ -327,10 +331,12 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.launchxbe")) ret = SYSTEM_LAUNCHING_XBE;
     else if (strTest.Equals("system.progressbar")) ret = SYSTEM_PROGRESS_BAR;
   }
+#ifdef HAS_KAI
   else if (strCategory.Equals("xlinkkai"))
   {
     if (strTest.Equals("xlinkkai.username")) ret = XLINK_KAI_USERNAME;
   }
+#endif
   else if (strCategory.Equals("lcd"))
   {
     if (strTest.Equals("lcd.playicon")) ret = LCD_PLAY_ICON;
@@ -961,9 +967,11 @@ CStdString CGUIInfoManager::GetLabel(int info)
         strLabel.Format("%i", percent);
     }
     break;
+#ifdef HAS_KAI
   case XLINK_KAI_USERNAME:
     strLabel = g_guiSettings.GetString("xlinkkai.username");
     break;
+#endif
   case LCD_PLAY_ICON:
     {
       int iPlaySpeed = g_application.GetPlaySpeed();
@@ -1271,10 +1279,12 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
   }
   else if (condition == PLAYER_MUTED)
     bReturn = g_stSettings.m_bMute;
+#ifdef HAS_KAI
   else if (condition == SYSTEM_KAI_CONNECTED)
     bReturn = g_network.IsAvailable(false) && g_guiSettings.GetBool("xlinkkai.enabled") && CKaiClient::GetInstance()->IsEngineConnected();
   else if (condition == SYSTEM_KAI_ENABLED)
     bReturn = g_network.IsAvailable(false) && g_guiSettings.GetBool("xlinkkai.enabled");
+#endif
   else if (condition == SYSTEM_MEDIA_DVD)
   {
     // we must: 1.  Check tray state.

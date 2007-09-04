@@ -1053,12 +1053,14 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videoplayer.useexternaldvdplayer"));
     }
+#ifdef HAS_TRAINER
     else if (strSetting.Equals("myprograms.trainerpath") || strSetting.Equals("cddaripper.path") || strSetting.Equals("mymusic.recordingpath") || strSetting.Equals("pictures.screenshotpath"))
     {
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
       if (pControl && g_guiSettings.GetString(strSetting, false).IsEmpty())
         pControl->SetLabel2("");
     }
+#endif
     else if (strSetting.Equals("myprograms.dashboard"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -1273,6 +1275,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_guiSettings.m_replayGain.iNoGainPreAmp = g_guiSettings.GetInt("musicplayer.replaygainnogainpreamp");
     g_guiSettings.m_replayGain.bAvoidClipping = g_guiSettings.GetBool("musicplayer.replaygainavoidclipping");
   }
+#ifdef HAS_KAI
   else if (strSetting.Equals("xlinkkai.enabled"))
   {
     if (g_guiSettings.GetBool("xlinkkai.enabled"))
@@ -1280,6 +1283,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     else
       g_application.StopKai();
   }
+#endif
 #ifdef HAS_LCD
   else if (strSetting.Equals("lcd.type"))
   {
@@ -1714,8 +1718,10 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_mediaManager.GetLocalDrives(shares);
     UpdateSettings();
     bool bWriteOnly = true;
+#ifdef HAS_TRAINER
     if (strSetting.Equals("myprograms.trainerpath"))
       bWriteOnly = false;
+#endif
 
     if (strSetting.Equals("subtitles.custompath"))
     {
@@ -1726,6 +1732,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     {
       pSettingString->SetData(path);
 
+#ifdef HAS_TRAINER
       if (strSetting.Equals("myprograms.trainerpath"))
       {
         if (CGUIDialogYesNo::ShowAndGetInput(12012,20135,20022,20022))
@@ -1735,6 +1742,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
             pWindow->PopulateTrainersList();
         }
       }
+#endif
     }
   }
   else if (strSetting.Left(22).Equals("MusicPlayer.ReplayGain"))

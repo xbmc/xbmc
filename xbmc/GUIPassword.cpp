@@ -320,7 +320,9 @@ bool CGUIPassword::IsMasterLockUnlocked(bool bPromptUser, bool& bCanceled)
   {
       LockSources(false);
       bMasterUser = true;
+#ifdef HAS_KAI
       g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(20052),g_localizeStrings.Get(20054));
+#endif
   }
   return true;
 }

@@ -255,8 +255,10 @@ void CMemoryUnitManager::Notify(unsigned long port, unsigned long slot, bool suc
   CStdString portSlot;
   portSlot.Format(g_localizeStrings.Get(20139).c_str(), port, slot);
 
+#ifdef HAS_KAI
   if (success)
     g_application.SetKaiNotification(g_localizeStrings.Get(20137), portSlot, NULL);
   else
     g_application.SetKaiNotification(g_localizeStrings.Get(20138), portSlot, NULL);
+#endif
 }
