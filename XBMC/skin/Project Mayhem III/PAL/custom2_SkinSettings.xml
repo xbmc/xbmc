@@ -323,6 +323,7 @@
 					<posy>285</posy>
 					<width>485</width>
 					<label>20086</label>
+					<visible>System.Platform.XBOX</visible>
 					<selected>!Skin.HasSetting(homepageDriveinfo1)</selected>
 					<onclick>Skin.ToggleSetting(homepageDriveinfo1)</onclick>
 					<onclick>Skin.ResetSetting(homepageDriveinfo2)</onclick>
@@ -341,6 +342,7 @@
 					<posy>322</posy>
 					<width>485</width>
 					<label>20087</label>
+					<visible>System.Platform.XBOX</visible>
 					<selected>Skin.HasSetting(homepageDriveinfo2)</selected>
 					<onclick>Skin.ToggleSetting(homepageDriveinfo2)</onclick>
 					<onclick>Skin.ResetSetting(homepageDriveinfo1)</onclick>
