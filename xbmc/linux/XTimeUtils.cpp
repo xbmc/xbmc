@@ -125,7 +125,7 @@ BOOL   FileTimeToSystemTime( const FILETIME* lpFileTime, LPSYSTEMTIME lpSystemTi
   time_t ft = fileTime.QuadPart;
 
   struct tm tm_ft;
-  gmtime_r(&ft,&tm_ft);  
+  localtime_r(&ft,&tm_ft);  
 
   lpSystemTime->wYear = tm_ft.tm_year + 1900;
   lpSystemTime->wMonth = tm_ft.tm_mon + 1;
@@ -168,7 +168,7 @@ BOOL	FileTimeToTimeT(const FILETIME* lpLocalFileTime, time_t *pTimeT) {
   time_t ft = fileTime.QuadPart;
 
   struct tm tm_ft;
-  gmtime_r(&ft,&tm_ft);
+  localtime_r(&ft,&tm_ft);
 
   *pTimeT = mktime(&tm_ft);
   return true;
