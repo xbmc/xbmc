@@ -214,5 +214,6 @@ void _VerifyGLState(const char* szfile, const char* szfunction, int lineno){
   glGetFloatv(GL_MODELVIEW_MATRIX, matrix);
   CLog::Log(LOGDEBUG, "Modelview Matrix:");
   printMatrix(matrix);
+//  abort();
 #endif
 }

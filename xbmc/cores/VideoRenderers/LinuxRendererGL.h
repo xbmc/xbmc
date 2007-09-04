@@ -8,6 +8,8 @@
 #include "../../../guilib/Shader.h"
 #include "../ffmpeg/DllSwScale.h"
 #include "../ffmpeg/DllAvCodec.h"
+#include "VideoShaders/YUV2RGBShader.h"
+#include "VideoShaders/VideoFilterShader.h"
 
 using namespace Surface;
 using namespace Shaders;
@@ -104,6 +106,14 @@ enum RenderMethod
   RENDER_POT=0x8
 };
 
+enum RenderQuality
+{
+  RQ_LOW=1,
+  RQ_SINGLEPASS,
+  RQ_MULTIPASS,
+  RQ_SOFTWARE
+};
+
 #define PLANE_Y 0
 #define PLANE_U 1
 #define PLANE_V 2
@@ -167,10 +177,12 @@ protected:
   virtual bool ValidateRenderTarget();
   virtual void LoadShaders(int renderMethod=FIELD_FULL);
   void SetTextureFilter(GLenum method);
+  void UpdateVideoFilter();
 
-  // low memory renderer (default PixelShaderRenderer)
-  void RenderLowMem(DWORD flags);
-  void RenderMultiPass(DWORD flags);
+  // renderers
+  void RenderLowMem(DWORD flags);    // single pass glsl renderer
+  void RenderMultiPass(DWORD flags); // multi pass glsl renderer
+  void RenderSoftware(DWORD flags);  // single pass s/w yuv2rgb renderer
 
   CFrameBufferObject m_fbo;
   CSurface *m_pBuffer;;
@@ -189,6 +201,7 @@ protected:
   bool m_bConfigured;
   GLenum m_textureTarget;
   unsigned short m_renderMethod;
+  RenderQuality m_renderQuality;
 
   // OSD stuff
   GLuint m_pOSDYTexture[NUM_BUFFERS];
@@ -220,16 +233,24 @@ protected:
 
   // pixel shader params
   GLuint m_shaderProgram;
+  BaseYUV2RGBShader     *m_pYUVShader;
+  BaseVideoFilterShader *m_pVideoFilterShader;
+  ESCALINGMETHOD m_scalingMethod;
+
+//  /*
   GLuint m_fragmentShader;
   GLuint m_vertexShader;
+//  */
   GLint m_yTex;
   GLint m_uTex;
   GLint m_vTex;
+//  /*
   GLint m_brightness;
   GLint m_contrast;
   GLint m_stepX;
   GLint m_stepY;
   GLint m_shaderField;
+//  */
 
   // clear colour for "black" bars
   DWORD m_clearColour;
