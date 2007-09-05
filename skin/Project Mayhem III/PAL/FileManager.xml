@@ -186,7 +186,7 @@
 		</control>
 		<control type="group">
 			<include>contentpanelslide</include>
-			<visible>!System.HasDriveF + !System.HasDriveG</visible>
+			<visible>System.Platform.XBOX + !System.HasDriveF + !System.HasDriveG</visible>
 			<control type="label">
 				<description>free space label</description>
 				<posx>140</posx>
