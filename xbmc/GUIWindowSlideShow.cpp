@@ -155,6 +155,7 @@ void CGUIWindowSlideShow::Reset()
   m_iNextSlide = 1;
   m_iCurrentPic = 0;
   m_slides.Clear();
+  m_Resolution = INVALID;
 }
 
 void CGUIWindowSlideShow::FreeResources()
