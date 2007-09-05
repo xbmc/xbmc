@@ -97,6 +97,7 @@ inline int round_int (double x)
 {
   assert (x > static_cast <double>(INT_MIN / 2) - 1.0);
   assert (x < static_cast <double>(INT_MAX / 2) + 1.0);
+
   const float round_to_nearest = 0.5f;
   int i;
 #ifndef _LINUX
@@ -110,8 +111,9 @@ inline int round_int (double x)
   }
   return (i);
 #else
-#warning TODO: port _asm code for round_int
-  return (int)(round(x));
+  __asm__ ("fistpl %0"
+           : "=m" (i) : "t" (x) : "st");
+  return i;
 #endif
 }
 
