@@ -385,6 +385,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       m_bShowCurrentTime = false;
       g_infoManager.SetDisplayAfterSeek(0); // Make sure display after seek is off.
 
+#ifdef HAS_XBOX_HARDWARE
       //  Disable nav sounds if spindown is active as they are loaded
       //  from HDD all the time.
       if (
@@ -395,7 +396,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
           g_audioManager.Enable(false);
       }
-
+#endif
 
       // setup the brightness, contrast and resolution
       CUtil::SetBrightnessContrastGammaPercent(g_stSettings.m_currentVideoSettings.m_Brightness, g_stSettings.m_currentVideoSettings.m_Contrast, g_stSettings.m_currentVideoSettings.m_Gamma, false);

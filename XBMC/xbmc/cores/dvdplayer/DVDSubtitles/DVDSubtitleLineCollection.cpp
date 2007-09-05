@@ -50,10 +50,13 @@ CDVDOverlay* CDVDSubtitleLineCollection::Get(__int64 iPts)
       m_pCurrent = m_pCurrent->pNext;
     }
     
-    pOverlay = m_pCurrent->pOverlay;
+    if (m_pCurrent)
+    {
+      pOverlay = m_pCurrent->pOverlay;
 
-    // advance to the next overlay
-    m_pCurrent = m_pCurrent->pNext;
+      // advance to the next overlay
+      m_pCurrent = m_pCurrent->pNext;
+    }
   }
   return pOverlay;
 }
