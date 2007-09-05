@@ -54,7 +54,7 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_shaderProgram = 0;
   m_fragmentShader = 0;
   m_renderMethod = RENDER_GLSL;
-  m_renderQuality = RQ_SINGLEPASS;
+  m_renderQuality = RQ_MULTIPASS;
   m_yTex = 0;
   m_uTex = 0;
   m_vTex = 0;
@@ -1053,6 +1053,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
   case VS_SCALINGMETHOD_NEAREST:
   case VS_SCALINGMETHOD_LINEAR:
     m_renderQuality = RQ_SINGLEPASS;
+    //m_renderQuality = RQ_MULTIPASS;
     if (m_pVideoFilterShader)
     {
       m_pVideoFilterShader->Free();
@@ -1071,7 +1072,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
       m_pVideoFilterShader = NULL;
     }
     VerifyGLState();
-    m_pVideoFilterShader = new BicubicFilterShader(0.0, 0.75);
+    m_pVideoFilterShader = new BicubicFilterShader(0.3, 0.3);
     if (m_pVideoFilterShader && m_pVideoFilterShader->CompileAndLink())
     {
       VerifyGLState();
@@ -1091,6 +1092,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
   case VS_SCALINGMETHOD_NEDI:
     CLog::Log(LOGERROR, "GL: TODO: This scaler has not yet been implemented");
     m_renderQuality = RQ_SINGLEPASS;
+    //m_renderQuality = RQ_MULTIPASS;
     if (m_pVideoFilterShader)
     {
       m_pVideoFilterShader->Free();
@@ -1493,16 +1495,17 @@ void CLinuxRendererGL::Render(DWORD flags)
 
   if (m_renderMethod & RENDER_GLSL)
   {
+    UpdateVideoFilter();
     switch(m_renderQuality)
     {
     case RQ_LOW:
     case RQ_SINGLEPASS:
-      RenderLowMem(flags);
+      RenderMultiPass(flags);
+      //RenderLowMem(flags);
       VerifyGLState();
       break;
 
     case RQ_MULTIPASS:
-      UpdateVideoFilter();
       RenderMultiPass(flags);
       VerifyGLState();
       break;
@@ -1854,10 +1857,15 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags)
 
   if (m_pVideoFilterShader)
   {
+    m_fbo.SetFiltering(GL_TEXTURE_2D, GL_NEAREST);
     m_pVideoFilterShader->SetSourceTexture(0);
     m_pVideoFilterShader->SetWidth(im.width);
     m_pVideoFilterShader->SetHeight(imgheight);
     m_pVideoFilterShader->Enable();
+  }
+  else
+  {
+    m_fbo.SetFiltering(GL_TEXTURE_2D, GL_LINEAR);
   }
 
   VerifyGLState();
