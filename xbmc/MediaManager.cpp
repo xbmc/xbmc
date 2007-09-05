@@ -98,6 +98,7 @@ bool CMediaManager::SaveSources()
 
 void CMediaManager::GetLocalDrives(VECSHARES &localDrives, bool includeQ)
 {
+#ifndef _LINUX
   // Local shares
   CShare share;
   share.strPath = _P("C:\\");
@@ -105,10 +106,24 @@ void CMediaManager::GetLocalDrives(VECSHARES &localDrives, bool includeQ)
   share.m_ignore = true;
   share.m_iDriveType = SHARE_TYPE_LOCAL;
   localDrives.push_back(share);
+#endif
+
+#ifdef _LINUX
+  // Home directory
+  CShare share;
+  share.strPath = getenv("HOME");
+  share.strName = g_localizeStrings.Get(21440);
+  share.m_ignore = true;
+  share.m_iDriveType = SHARE_TYPE_LOCAL;
+  localDrives.push_back(share);
+#endif
+
   share.strPath = _P("D:\\");
   share.strName = g_localizeStrings.Get(218);
   share.m_iDriveType = SHARE_TYPE_DVD;
   localDrives.push_back(share);
+
+#ifndef _LINUX
   share.strPath = _P("E:\\");
   share.m_iDriveType = SHARE_TYPE_LOCAL;
   share.strName.Format(g_localizeStrings.Get(21438),'E');
@@ -132,6 +147,7 @@ void CMediaManager::GetLocalDrives(VECSHARES &localDrives, bool includeQ)
     share.m_ignore = true;
     localDrives.push_back(share) ;
   }
+#endif
 }
 
 void CMediaManager::GetNetworkLocations(VECSHARES &locations)
