@@ -10,6 +10,7 @@
 #include "../ffmpeg/DllAvCodec.h"
 #include "VideoShaders/YUV2RGBShader.h"
 #include "VideoShaders/VideoFilterShader.h"
+#include "../settings/VideoSettings.h"
 
 using namespace Surface;
 using namespace Shaders;
