@@ -49,6 +49,9 @@ public:
   // Bind to an exiting texture
   bool BindToTexture(GLenum target, GLuint texid);
 
+  // Set texture filtering
+  void SetFiltering(GLenum target, GLenum mode);
+
   // Create a new texture and bind to it
   bool CreateAndBindToTexture(GLenum target, int width, int height, GLenum format);
 

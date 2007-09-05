@@ -616,8 +616,8 @@ bool CGUISettings::GetBool(const char *strSetting) const
     return ((CSettingBool*)(*it).second)->GetData();
   }
   // Assert here and write debug output
-  ASSERT(false);
   CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
+  //ASSERT(false);
   return false;
 }
 
