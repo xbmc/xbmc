@@ -50,7 +50,6 @@ BaseVideoFilterShader::BaseVideoFilterShader()
     "gl_TexCoord[0] = gl_MultiTexCoord0;"
     "gl_TexCoord[1] = gl_MultiTexCoord1;"
     "gl_TexCoord[2] = gl_MultiTexCoord2;"
-    "gl_TexCoord[3] = gl_MultiTexCoord3;"
     "gl_Position = ftransform();"
     "}";
   SetVertexShaderSource(shaderv);
@@ -70,7 +69,7 @@ BicubicFilterShader::BicubicFilterShader(float B, float C)
     
     "vec4 cubicFilter(float xValue, vec4 c0, vec4 c1, vec4 c2, vec4 c3)"
     "{"
-    " vec4 h = texture2D(kernelTex, vec2(xValue, 0.5));"
+    " vec4 h = texture2D(kernelTex, vec2(xValue, 0.0));"
     " vec4 r = c0 * h.r;"
     " r += c1 * h.g;"
     " r += c2 * h.b;"
@@ -80,8 +79,8 @@ BicubicFilterShader::BicubicFilterShader(float B, float C)
     ""
     "void main()"
     "{"
-    ""
-    "vec2 f = fract(gl_TexCoord[0].xy);"
+    "vec2 f = vec2(gl_TexCoord[0].x / stepx , gl_TexCoord[0].y / stepy);"
+    "f = fract(f);"
     "vec4 t0 = cubicFilter(f.x,"
     "texture2D(img, gl_TexCoord[0].xy + vec2(-stepx, -stepy)),"
     "texture2D(img, gl_TexCoord[0].xy + vec2(0.0, -stepy)),"
@@ -106,7 +105,7 @@ BicubicFilterShader::BicubicFilterShader(float B, float C)
     "texture2D(img, gl_TexCoord[0].xy + vec2(stepx, 2.0*stepy)),"
     "texture2D(img, gl_TexCoord[0].xy + vec2(2.0*stepx, 2.0*stepy)));"
     
-    "gl_FragColor = cubicFilter(f.y, t0, t1, t2, t3);"    
+    "gl_FragColor = cubicFilter(f.y, t0, t1, t2, t3) ;"    
     "gl_FragColor.a = 1.0;"
     "}";
   SetPixelShaderSource(shaderf);
@@ -208,8 +207,8 @@ bool BicubicFilterShader::CreateKernels(int size, float B, float C)
   glBindTexture(GL_TEXTURE_2D, m_kernelTex1);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F_ARB, size, 1, 0, GL_RGBA, GL_FLOAT, img);
 
   glActiveTexture(GL_TEXTURE0);
@@ -249,7 +248,7 @@ float BicubicFilterShader::MitchellNetravali(float x, float B, float C)
   {
     val = 0;
   }
-  //val = ((val + 0.5) / 2);
+//  val = ((val + 0.5) / 2);
   return val;
 }
 

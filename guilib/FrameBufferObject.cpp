@@ -100,6 +100,13 @@ bool CFrameBufferObject::CreateAndBindToTexture(GLenum target, int width, int he
   return BindToTexture(target, m_texid);
 }
 
+void CFrameBufferObject::SetFiltering(GLenum target, GLenum mode)
+{
+  glBindTexture(target, m_texid);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mode);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, mode);
+}
+
 bool CFrameBufferObject::BindToTexture(GLenum target, GLuint texid)
 {
   if (!IsValid())
