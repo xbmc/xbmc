@@ -138,8 +138,8 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
     case TMSG_SHUTDOWN:
       {
         g_application.Stop();
-        Sleep(200);
 #ifdef _XBOX
+        Sleep(200);
 #ifndef _DEBUG  // don't actually shut off if debug build, it hangs VS for a long time
         XKHDD::SpindownHarddisk(); // Spindown the Harddisk
         XKUtils::XBOXPowerOff();
