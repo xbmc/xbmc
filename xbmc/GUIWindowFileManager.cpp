@@ -718,6 +718,7 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
         m_dlgProgress->Progress();
       }
 
+#ifndef _LINUX
       if (strFile[1] == ':' && strFile[0] == strDestFile[0])
       {
         // quick move on same drive
@@ -732,6 +733,9 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
         else
           return false;
       }
+#else
+      CFile::Rename(strFile, strDestFile);
+#endif
     }
     break;
 
