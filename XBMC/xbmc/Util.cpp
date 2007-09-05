@@ -5565,7 +5565,7 @@ CStdString CUtil::TranslatePath(const CStdString& path)
 {
 	CStdString result;
 		
-	if (path[1] == ':')
+	if (path.length() > 0 && path[1] == ':')
 	{
 	   const char *p = CIoSupport::GetPartition(path[0]);
 	   if (p != NULL)
