@@ -272,7 +272,9 @@ void CNetwork::NetworkDown()
   m_lastlink = 0;
   m_laststate = 0;
   m_networkup = false;
+#ifndef _LINUX
   g_applicationMessenger.NetworkMessage(SERVICES_DOWN, 0);
+#endif
   m_inited = false;
 }
 
