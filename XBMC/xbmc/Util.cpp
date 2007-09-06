@@ -24,8 +24,8 @@
 #include "GUIWindowVideoBase.h"
 #include "Util.h"
 #include "xbox/IoSupport.h"
-#include "xbox/xbeheader.h"
 #ifdef HAS_XBOX_HARDWARE
+#include "xbox/xbeheader.h"
 #include "xbox/Undocumented.h"
 #include "xbresource.h"
 #endif
@@ -1357,6 +1357,7 @@ bool CUtil::RemoveTrainer()
 
 void CUtil::RunShortcut(const char* szShortcutPath)
 {
+#ifdef HAS_XBOX_HARDWARE
   CShortcut shortcut;
   char szPath[1024];
   char szParameters[1024];
@@ -1398,7 +1399,6 @@ void CUtil::RunShortcut(const char* szShortcutPath)
     if (bUsa)
       video = (F_VIDEO)CXBE::FilterRegion(VIDEO_NTSCM);
 
-#ifdef HAS_XBOX_HARDWARE
     CUSTOM_LAUNCH_DATA data;
     if (!shortcut.m_strCustomGame.IsEmpty())
     {
@@ -1428,12 +1428,13 @@ void CUtil::RunShortcut(const char* szShortcutPath)
     }
 
     CUtil::RunXBE(szPath,strcmp(szParameters,"")?szParameters:NULL,video,COUNTRY_NULL,shortcut.m_strCustomGame.IsEmpty()?NULL:&data);
-#endif
   }
+#endif
 }
 
 bool CUtil::RunFFPatchedXBE(CStdString szPath1, CStdString& szNewPath)
 {
+#ifdef HAS_XBOX_HARDWARE
   if (!g_guiSettings.GetBool("myprograms.autoffpatch"))
   {
     CLog::Log(LOGDEBUG, "%s - Auto Filter Flicker is off. Skipping Filter Flicker Patching.", __FUNCTION__);
@@ -1476,14 +1477,14 @@ bool CUtil::RunFFPatchedXBE(CStdString szPath1, CStdString& szNewPath)
     CLog::Log(LOGDEBUG, "%s - Not Patchable xbe detected (Homebrew?)! Skipping Filter Flicker Patching.", __FUNCTION__);
     return false;
   }
-#ifdef HAS_XBOX_HARDWARE
+
   CGFFPatch m_ffp;
   if (!m_ffp.FFPatch(szPath1, szNewPath))
   {
     CLog::Log(LOGDEBUG, "%s - ERROR during Filter Flicker Patching. Falling back to the original source.", __FUNCTION__);
     return false;
   }
-#endif
+
   if(szNewPath.IsEmpty())
   {
     CLog::Log(LOGDEBUG, "%s - ERROR NO Patchfile Path is empty! Falling back to the original source.", __FUNCTION__);
@@ -1491,10 +1492,14 @@ bool CUtil::RunFFPatchedXBE(CStdString szPath1, CStdString& szNewPath)
   }
   CLog::Log(LOGDEBUG, "%s - Filter Flicker Patching done. Starting %s.", __FUNCTION__, szNewPath.c_str());
   return true;
+#else
+  return false;
+#endif
 }
 
 void CUtil::RunXBE(const char* szPath1, char* szParameters, F_VIDEO ForceVideo, F_COUNTRY ForceCountry, CUSTOM_LAUNCH_DATA* pData)
 {
+#ifdef HAS_XBOX_HARDWARE
   // check if locked
   if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].programsLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
     if (!g_passwordManager.IsMasterLockUnlocked(true))
@@ -1545,29 +1550,24 @@ void CUtil::RunXBE(const char* szPath1, char* szParameters, F_VIDEO ForceVideo, 
       CIoSupport::GetPartition(szDrive[0], szDevicePath);
 
       strcat(szDevicePath, szDirectory);
-#ifndef _LINUX      
       wsprintf(szXbePath, "d:\\%s", szXbe);
-#else
-      sprintf(szXbePath, "d:\\%s", szXbe);
-#endif      
 
-#ifdef HAS_XBOX_HARDWARE
       g_application.Stop();
 
       CUtil::LaunchXbe(szDevicePath, szXbePath, szParameters, ForceVideo, ForceCountry, pData);
-#endif
     }
   }
 
   CLog::Log(LOGERROR, "Unable to run xbe : %s", szPath);
+#endif
 }
 
 void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParameters, F_VIDEO ForceVideo, F_COUNTRY ForceCountry, CUSTOM_LAUNCH_DATA* pData)
 {
+#ifdef HAS_XBOX_HARDWARE
   CLog::Log(LOGINFO, "launch xbe:%s %s", szPath, szXbe);
   CLog::Log(LOGINFO, " mount %s as D:", szPath);
 
-#ifdef HAS_XBOX_HARDWARE
   CIoSupport::RemapDriveLetter('D', const_cast<char*>(szPath));
 
   CLog::Log(LOGINFO, "launch xbe:%s", szXbe);
@@ -1962,6 +1962,7 @@ bool CUtil::GetDirectoryName(const CStdString& strFileName, CStdString& strDescr
 
 bool CUtil::GetXBEDescription(const CStdString& strFileName, CStdString& strDescription)
 {
+#ifdef HAS_XBOX_HARDWARE
   _XBE_CERTIFICATE HC;
   _XBE_HEADER HS;
 
@@ -1989,11 +1990,13 @@ bool CUtil::GetXBEDescription(const CStdString& strFileName, CStdString& strDesc
     return true;
   }
   strDescription = CUtil::GetFileName(strFileName);
+#endif
   return false;
 }
 
 bool CUtil::SetXBEDescription(const CStdString& strFileName, const CStdString& strDescription)
 {
+#ifdef HAS_XBOX_HARDWARE
   _XBE_CERTIFICATE HC;
   _XBE_HEADER HS;
 
@@ -2012,6 +2015,7 @@ bool CUtil::SetXBEDescription(const CStdString& strFileName, const CStdString& s
   wcsncpy(HC.TitleName, shortDescription.c_str(), 40);  // only allow 40 chars*/
   fwrite(&HC,1,sizeof(HC),hFile);
   fclose(hFile);
+#endif
   return true;
 }
 
@@ -2019,6 +2023,7 @@ DWORD CUtil::GetXbeID( const CStdString& strFilePath)
 {
   DWORD dwReturn = 0;
 
+#ifdef HAS_XBOX_HARDWARE
   DWORD dwCertificateLocation;
   DWORD dwLoadAddress;
   DWORD dwRead;
@@ -2059,11 +2064,14 @@ DWORD CUtil::GetXbeID( const CStdString& strFilePath)
       }
     }
   }
+#endif
+
   return dwReturn;
 }
 
 void CUtil::CreateShortcut(CFileItem* pItem)
 {
+#ifdef HAS_XBOX_HARDWARE
   if ( pItem->IsXBE() )
   {
     // xbe
@@ -2089,6 +2097,7 @@ void CUtil::CreateShortcut(CFileItem* pItem)
       }
     }
   }
+#endif
 }
 
 void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
@@ -3745,6 +3754,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     else
       CLog::Log(LOGERROR, "CUtil::ExecuteBuiltin: No archive given");
   }
+#ifdef HAS_XBOX_HARDWARE
   else if (execute.Equals("runxbe"))
   {
     // only usefull if there is actualy a xbe to execute
@@ -3776,6 +3786,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       CLog::Log(LOGERROR, "CUtil::ExecBuiltIn, runxbe called with no arguments.");
     }
   }
+#endif
   else if (execute.Equals("playmedia"))
   {
     if (strParameterCaseIntact.IsEmpty())
