@@ -26,8 +26,8 @@
 #include "utils/LCD.h"
 #include "xbox/IoSupport.h"
 #include "xbox/XKHDD.h"
-#endif
 #include "xbox/xbeheader.h"
+#endif
 #include "Util.h"
 #include "TextureManager.h"
 #include "cores/PlayerCoreFactory.h"
@@ -4931,6 +4931,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         }
         else 
 #endif
+#ifdef HAS_XBOX_HARDWARE
         if (item.IsXBE())
         { // an XBE
           int iRegion;
@@ -4946,7 +4947,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
             iRegion = 0;
           CUtil::RunXBE(item.m_strPath.c_str(),NULL,F_VIDEO(iRegion));
         }
-        else if (item.IsAudio() || item.IsVideo())
+        else 
+#endif
+        if (item.IsAudio() || item.IsVideo())
         { // an audio or video file
           PlayFile(item);
         }
