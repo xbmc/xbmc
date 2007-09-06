@@ -29,7 +29,9 @@
 #include "GUIDialogTrainerSettings.h"
 #endif
 #include "GUIDialogMediaSource.h"
+#ifdef HAS_XBOX_HARDWARE
 #include "xbox/xbeheader.h"
+#endif
 #ifdef HAS_TRAINER
 #include "utils/Trainer.h"
 #endif
@@ -507,6 +509,7 @@ int CGUIWindowPrograms::GetRegion(int iItem, bool bReload)
   if (!g_guiSettings.GetBool("myprograms.gameautoregion"))
     return 0;
 
+#ifdef HAS_XBOX_HARDWARE
   int iRegion;
   if (bReload || m_vecItems[iItem]->IsOnDVD())
   {
@@ -537,6 +540,9 @@ int CGUIWindowPrograms::GetRegion(int iItem, bool bReload)
     return CXBE::FilterRegion(iRegion,true);
   else
     return CXBE::FilterRegion(iRegion);
+#else
+  return 0;
+#endif
 }
 
 #ifdef HAS_TRAINER

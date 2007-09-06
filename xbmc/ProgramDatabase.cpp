@@ -23,7 +23,9 @@
 #include "./ProgramDatabase.h"
 #include "utils/fstrcmp.h"
 #include "Util.h"
+#ifdef HAS_XBOX_HARDWARE
 #include "xbox/xbeheader.h"
+#endif
 #include "GUIWindowFileManager.h"
 
 using namespace XFILE;
@@ -512,9 +514,11 @@ bool CProgramDatabase::AddProgramInfo(CFileItem *item, unsigned int titleID)
     int iRegion = -1;
     if (g_guiSettings.GetBool("myprograms.gameautoregion"))
     {
+#ifdef HAS_XBOX_HARDWARE
       CXBE xbe;
       iRegion = xbe.ExtractGameRegion(item->m_strPath);
       if (iRegion < 1 || iRegion > 7)
+#endif
         iRegion = 0;
     }
     FILETIME time;
