@@ -26,7 +26,9 @@
 #include "Util.h"
 #include "GUIPassword.h"
 #include "PlayListPlayer.h"
+#ifdef HAS_XBOX_HARDWARE
 #include "xbox/xbeheader.h"
+#endif
 #include "FileSystem/StackDirectory.h"
 #ifdef HAS_KAI
 #include "utils/KaiClient.h"
@@ -88,6 +90,7 @@ void CAutorun::ExecuteAutorun( bool bypassSettings, bool ignoreplaying )
 
 void CAutorun::ExecuteXBE(const CStdString &xbeFile)
 {
+#ifdef HAS_XBOX_HARDWARE
   int iRegion;
   if (g_guiSettings.GetBool("myprograms.gameautoregion"))
   {
@@ -137,10 +140,12 @@ void CAutorun::ExecuteXBE(const CStdString &xbeFile)
   database.Close();
 #endif
   CUtil::RunXBE(xbeFile.c_str(), NULL,F_VIDEO(iRegion));
+#endif
 }
 
 void CAutorun::RunXboxCd(bool bypassSettings)
 {
+#ifdef HAS_XBOX_HARDWARE
   if ( CFile::Exists("D:\\default.xbe") )
   {
     if (!g_guiSettings.GetBool("autorun.xbox") && !bypassSettings)
@@ -153,6 +158,7 @@ void CAutorun::RunXboxCd(bool bypassSettings)
     ExecuteXBE("D:\\default.xbe");
     return;
   }
+#endif
 
   if ( !g_guiSettings.GetBool("autorun.dvd") && !g_guiSettings.GetBool("autorun.vcd") && !g_guiSettings.GetBool("autorun.video") && !g_guiSettings.GetBool("autorun.music") && !g_guiSettings.GetBool("autorun.pictures") )
     return ;
