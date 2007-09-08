@@ -145,6 +145,9 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
         bConfirmed = true;
     }
     share.FromNameAndPaths(type, strName, dialog->GetPaths());
+    if (dialog->m_paths.Size() > 0) {
+      share.m_strThumbnailImage = dialog->m_paths.Get(0)->GetThumbnailImage();
+    }
     g_settings.AddShare(type, share);
 
     if (type == "video")
@@ -295,12 +298,15 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
       extraShares.push_back(share3);
     }
   }
-  else if ((m_type == "pictures" || m_type == "upnpictures") && g_guiSettings.GetString("pictures.screenshotpath",false)!= "")
+  else if (m_type == "pictures" || m_type == "upnpictures")
   {
-    CShare share1;
-    share1.strPath = "special://screenshots/";
-    share1.strName = g_localizeStrings.Get(20008);
-    extraShares.push_back(share1);
+    if (g_guiSettings.GetString("pictures.screenshotpath",false)!= "")
+    {
+      CShare share1;
+      share1.strPath = "special://screenshots/";
+      share1.strName = g_localizeStrings.Get(20008);
+      extraShares.push_back(share1);
+    }
 
     // add the plugins dir as needed
     if (CPluginDirectory::HasPlugins("pictures"))
