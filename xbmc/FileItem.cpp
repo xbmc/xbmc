@@ -1379,7 +1379,7 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
     break;
   case SORT_METHOD_ARTIST_IGNORE_THE:
     if (m_items.size() && (m_items[0]->HasMusicInfoTag()) || (m_items[0]->IsParentFolder() && m_items.size() > 1 && m_items[1]->HasMusicInfoTag()))
-      Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::MusicVideoArtistAscendingNoThe : SSortFileItem::MusicVideoArtistDescendingNoThe);
+      Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::SongArtistAscendingNoThe : SSortFileItem::SongArtistDescendingNoThe);
     else
       Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::MusicVideoArtistAscendingNoThe : SSortFileItem::MusicVideoArtistDescendingNoThe);
     break;

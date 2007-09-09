@@ -200,7 +200,7 @@ void CGUIDialogContentSettings::SetupPage()
       CONTROL_SELECT_ITEM(CONTROL_CONTENT_TYPE, 2);
     }
   }
-//  if (m_scrapers.find("musicvideos") != m_scrapers.end())
+  if (m_scrapers.find("musicvideos") != m_scrapers.end())
   {
     msg2.SetLabel(g_localizeStrings.Get(20389));
     msg2.SetParam1(3);
