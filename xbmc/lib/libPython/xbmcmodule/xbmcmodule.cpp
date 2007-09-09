@@ -571,6 +571,8 @@ namespace PYXBMC
 
     CStdString strPath;
     strPath = strText;
+    if (strPath.Left(3).Equals("P:\\"))
+      CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(),strPath.Mid(3),strPath);
 
     return Py_BuildValue("s", strPath.c_str());
   }
