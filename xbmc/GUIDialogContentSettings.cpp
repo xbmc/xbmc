@@ -139,6 +139,15 @@ void CGUIDialogContentSettings::OnWindowLoaded()
       }
     }
   }
+  // hack to get music video category to show
+  SScraperInfo info;
+  info.strContent = "musicvideos";
+  info.strPath = "placeholder.xml";
+  info.strTitle = "NFO only scraper";
+  std::vector<SScraperInfo> vec;
+  vec.push_back(info);
+  m_scrapers.insert(std::pair<CStdString,std::vector<SScraperInfo> >("musicvideos",vec));
+
   // now select the correct scraper
   if (!m_info.strContent.IsEmpty())
   {
