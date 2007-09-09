@@ -276,9 +276,11 @@ CSettings::CSettings(void)
   g_advancedSettings.m_strMusicLibraryAlbumFormatRight = "";
   g_advancedSettings.m_prioritiseAPEv2tags = false;
   g_advancedSettings.m_musicItemSeparator = " / ";
+  g_advancedSettings.m_videoItemSeparator = " / ";
 
   g_advancedSettings.m_bVideoLibraryHideAllItems = false;
   g_advancedSettings.m_bVideoLibraryAllItemsOnBottom = false;
+  g_advancedSettings.m_bVideoLibraryHideRecentlyAddedItems = false;
 
   g_advancedSettings.m_bUseEvilB = true;
 
@@ -1020,6 +1022,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetViewState(pElement, "videonavepisodes", g_stSettings.m_viewStateVideoNavEpisodes);
     GetViewState(pElement, "videonavtvshows", g_stSettings.m_viewStateVideoNavTvShows);
     GetViewState(pElement, "videonavseasons", g_stSettings.m_viewStateVideoNavSeasons);
+    GetViewState(pElement, "videonavmusicvideos", g_stSettings.m_viewStateVideoNavMusicVideos);
   }
 
   // general settings
@@ -1159,6 +1162,8 @@ void CSettings::LoadAdvancedSettings()
   {
     XMLUtils::GetBoolean(pElement, "hideallitems", g_advancedSettings.m_bVideoLibraryHideAllItems);
     XMLUtils::GetBoolean(pElement, "allitemsonbottom", g_advancedSettings.m_bVideoLibraryAllItemsOnBottom);
+    XMLUtils::GetBoolean(pElement, "hiderecentlyaddeditems", g_advancedSettings.m_bVideoLibraryHideRecentlyAddedItems);
+    GetString(pElement, "itemseparator", g_advancedSettings.m_videoItemSeparator, " / ");
   }
 
   pElement = pRootElement->FirstChildElement("slideshow");
@@ -1715,6 +1720,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
     SetViewState(pNode, "videonavepisodes", g_stSettings.m_viewStateVideoNavEpisodes);
     SetViewState(pNode, "videonavseasons", g_stSettings.m_viewStateVideoNavSeasons);
     SetViewState(pNode, "videonavtvshows", g_stSettings.m_viewStateVideoNavTvShows);
+    SetViewState(pNode, "videonavmusicvideos", g_stSettings.m_viewStateVideoNavMusicVideos);
   }
 
   // general settings

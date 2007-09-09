@@ -3267,6 +3267,8 @@ void CUtil::ConvertFileItemToPlayListItem(const CFileItem *pItem, CPlayList::CPl
     playlistitem.SetMusicTag(*pItem->GetMusicInfoTag());
   if (pItem->HasVideoInfoTag())
     playlistitem.SetVideoTag(*pItem->GetVideoInfoTag());
+  if (pItem->IsVideoDb())
+    playlistitem.m_strPath = pItem->GetVideoInfoTag()->m_strFileNameAndPath;
   playlistitem.SetThumbnailImage(pItem->GetThumbnailImage());
 }
 

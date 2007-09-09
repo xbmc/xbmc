@@ -417,6 +417,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Left(19).Equals("videoplayer.content")) return AddMultiInfo(GUIInfo(bNegate ? -VIDEOPLAYER_CONTENT : VIDEOPLAYER_CONTENT, ConditionalStringParameter(strTest.Mid(20,strTest.size()-21)), 0));
     else if (strTest.Equals("videoplayer.studio")) ret = VIDEOPLAYER_STUDIO;
     else if (strTest.Equals("videoplayer.mpaa")) return VIDEOPLAYER_MPAA;
+    else if (strTest.Equals("videoplayer.artist")) return VIDEOPLAYER_ARTIST;
+    else if (strTest.Equals("videoplayer.album")) return VIDEOPLAYER_ALBUM;
   }
   else if (strCategory.Equals("playlist"))
   {
@@ -734,6 +736,8 @@ CStdString CGUIInfoManager::GetLabel(int info)
   case VIDEOPLAYER_PREMIERED:
   case VIDEOPLAYER_STUDIO:
   case VIDEOPLAYER_MPAA:
+  case VIDEOPLAYER_ARTIST:
+  case VIDEOPLAYER_ALBUM:
     strLabel = GetVideoLabel(info);
   break;
   case PLAYLIST_LENGTH:
@@ -2155,6 +2159,12 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     return m_currentFile.GetVideoInfoTag()->m_strPlot;
   case VIDEOPLAYER_MPAA:
     return m_currentFile.GetVideoInfoTag()->m_strMPAARating;
+  case VIDEOPLAYER_ARTIST:
+    if (m_currentFile.GetVideoInfoTag()->m_artist.size() > 0)
+      return m_currentFile.GetVideoInfoTag()->GetArtist();
+    break;
+  case VIDEOPLAYER_ALBUM:
+    return m_currentFile.GetVideoInfoTag()->m_strAlbum;
   }
   return "";
 }
@@ -2708,6 +2718,9 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_ARTIST:
     if (item->HasMusicInfoTag())
       return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetArtist());
+    if (item->HasVideoInfoTag())
+      if (item->GetVideoInfoTag()->m_artist.size() > 0)
+        return item->GetVideoInfoTag()->GetArtist();
     break;
   case LISTITEM_DIRECTOR:
     if (item->HasVideoInfoTag())
@@ -2715,6 +2728,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_ALBUM:
     if (item->HasMusicInfoTag())
       return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetAlbum());
+    if (item->HasVideoInfoTag())
+      return item->GetVideoInfoTag()->m_strAlbum;
     break;
   case LISTITEM_YEAR:
     if (item->HasMusicInfoTag())

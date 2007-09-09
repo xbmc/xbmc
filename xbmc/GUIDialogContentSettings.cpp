@@ -80,6 +80,11 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
               CreateSettings();
               SetupPage();
               break;
+      case 3: strLabel = g_localizeStrings.Get(20389);
+              m_info = m_scrapers["musicvideos"][0];
+              CreateSettings();
+              SetupPage();
+              break;
       }  
     }
     if (iControl == CONTROL_SCRAPER_LIST)
@@ -186,6 +191,17 @@ void CGUIDialogContentSettings::SetupPage()
       CONTROL_SELECT_ITEM(CONTROL_CONTENT_TYPE, 2);
     }
   }
+//  if (m_scrapers.find("musicvideos") != m_scrapers.end())
+  {
+    msg2.SetLabel(g_localizeStrings.Get(20389));
+    msg2.SetParam1(3);
+    g_graphicsContext.SendMessage(msg2);
+    if (m_info.strContent.Equals("musicvideos"))
+    {
+      SET_CONTROL_LABEL(CONTROL_CONTENT_TYPE,g_localizeStrings.Get(20389));
+      CONTROL_SELECT_ITEM(CONTROL_CONTENT_TYPE, 3);
+    }
+  }
   SET_CONTROL_VISIBLE(CONTROL_CONTENT_TYPE);
   // now add them scrapers to the list control
   if (m_info.strContent.IsEmpty() || m_info.strContent.Equals("None"))
@@ -223,6 +239,11 @@ void CGUIDialogContentSettings::CreateSettings()
   {
     AddBool(1,20345,&m_bRunScan);
     AddBool(2,20379,&m_bSingleItem);
+  }
+  if (m_info.strContent.Equals("musicvideos"))
+  {
+    AddBool(1,20345,&m_bRunScan);
+    AddBool(2,20346,&m_bScanRecursive);    
   }
 }
 
@@ -336,7 +357,7 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, VIDEO::SScanSettings
       
       bRunScan = dialog->m_bRunScan;
     }
-    else if(scraper.strContent.Equals("movies"))
+    else if (scraper.strContent.Equals("movies"))
     {            
       if( dialog->m_bUseDirNames )
       {
@@ -356,6 +377,14 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, VIDEO::SScanSettings
         settings.parent_name_root = false;
         settings.recurse = dialog->m_bScanRecursive ? INT_MAX : 0;
       }
+
+      bRunScan = dialog->m_bRunScan;
+    }
+    else if (scraper.strContent.Equals("musicvideos"))
+    {            
+      settings.parent_name = false;
+      settings.parent_name_root = false;
+      settings.recurse = dialog->m_bScanRecursive ? INT_MAX : 0;
 
       bRunScan = dialog->m_bRunScan;
     }

@@ -1624,6 +1624,12 @@
   <string id="20386">Recently Added Movies</string>
   <string id="20387">Recently Added Episodes</string>
   <string id="20388">Studios</string>
+  <string id="20389">Music Videos</string>
+  <string id="20390">Recently Added Music Videos</string>
+  <string id="20391">Music Video</string>
+  <string id="20392">Remove Music Video from library</string>
+  <string id="20393">Music Video Information</string>
+  <string id="20394">Loading Music Video information</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>

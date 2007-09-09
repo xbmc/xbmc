@@ -379,6 +379,16 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
       }
     }
   }
+  if (info.strContent.Equals("musicvideos"))
+  {
+    g_infoManager.m_content = "musicvideos";
+    if (m_database.HasMusicVideoInfo(item->m_strPath))
+    {
+      bHasInfo = true;
+      m_database.GetMusicVideoInfo(item->m_strPath, movieDetails);
+    }
+  }
+
   if (bHasInfo)
   {
     if (info.strContent.IsEmpty()) // disable refresh button
@@ -399,7 +409,10 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
   bool hasDetails(false);
 
   // 2. Look for a nfo File to get the search URL
-  CStdString nfoFile = CVideoInfoScanner::GetnfoFile(item);
+  SScanSettings settings;
+  SScraperInfo info2;
+  m_database.GetScraperForPath(item->m_strPath,info2,settings);
+  CStdString nfoFile = CVideoInfoScanner::GetnfoFile(item,settings.parent_name_root);
   if ( !nfoFile.IsEmpty() )
   {
     CLog::Log(LOGDEBUG,"Found matching nfo file: %s", nfoFile.c_str());
@@ -409,11 +422,14 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
       if (nfoReader.m_strScraper == "NFO")
       {
         CLog::Log(LOGDEBUG, __FUNCTION__" Got details from nfo");
-        nfoReader.GetDetails(movieDetails);
+//        nfoReader.GetDetails(movieDetails); // will be loaded later
         hasDetails = true;
       }
       else
       {
+        if (info2.strContent.Equals("musicvideos"))
+          return;
+   
         CScraperUrl scrUrl(nfoReader.m_strImDbUrl); 
 	      url.m_scrURL.push_back(scrUrl);
         url.m_strID = nfoReader.m_strImDbNr;
@@ -534,6 +550,8 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
         else
           iString = 20361;
       }
+      if (info.strContent.Equals("musicvideos"))
+        iString = 20394;
       pDlgProgress->SetHeading(iString);
       pDlgProgress->SetLine(0, movieName);
       pDlgProgress->SetLine(1, url.m_strTitle);
@@ -546,6 +564,8 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
           m_database.DeleteMovie(item->m_strPath);
         if (info.strContent.Equals("tvshows") && !item->m_bIsFolder)
           m_database.DeleteEpisode(item->m_strPath,movieDetails.m_iDbId);
+        if (info.strContent.Equals("musicvideos"))
+          m_database.DeleteMusicVideo(item->m_strPath);
         if (info.strContent.Equals("tvshows") && item->m_bIsFolder)
         {
           if (pDlgInfo->RefreshAll())
@@ -1203,6 +1223,8 @@ void CGUIWindowVideoBase::UpdateVideoTitle(int iItem)
     iType = 2;
   if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder) // episode
     iType = 1;
+  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_artist.size() > 0) // music video
+    iType = 3;
 
   if (iType == 0) // movies
     m_database.GetMovieInfo("", detail, pItem->GetVideoInfoTag()->m_iDbId);
@@ -1210,6 +1232,8 @@ void CGUIWindowVideoBase::UpdateVideoTitle(int iItem)
     m_database.GetEpisodeInfo(pItem->m_strPath,detail,pItem->GetVideoInfoTag()->m_iDbId);
   if (iType == 2) // tvshows
     m_database.GetTvShowInfo(pItem->GetVideoInfoTag()->m_strFileNameAndPath,detail,pItem->GetVideoInfoTag()->m_iDbId);
+  if (iType == 3) // music video
+    m_database.GetMusicVideoInfo(pItem->GetVideoInfoTag()->m_strFileNameAndPath,detail,pItem->GetVideoInfoTag()->m_iDbId);
 
   CStdString strInput;
   strInput = detail.m_strTitle;

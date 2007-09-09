@@ -572,6 +572,8 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
         int infoString = 13346;
         if (info.strContent.Equals("tvshows"))
           infoString = item->m_bIsFolder ? 20351 : 20352;
+        if (info.strContent.Equals("musicvideos"))
+          infoString = 20393;
 
         if (item->m_bIsFolder)
         {
@@ -589,7 +591,8 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
           }
           else
           { // scraper found - allow to add to library, scan for new content, or set different type of content
-            buttons.Add(CONTEXT_BUTTON_INFO, infoString);
+            if (!info.strContent.Equals("musicvideos"))
+              buttons.Add(CONTEXT_BUTTON_INFO, infoString);
             CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
             if (pScanDlg && pScanDlg->IsScanning())
               buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
@@ -603,7 +606,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
         else
         {
           // single file
-          if ((info.strContent.Equals("movies") && (iFound > 0 || m_database.HasMovieInfo(item->m_strPath))) || m_database.HasEpisodeInfo(item->m_strPath))
+          if ((info.strContent.Equals("movies") && (iFound > 0 || m_database.HasMovieInfo(item->m_strPath))) || m_database.HasEpisodeInfo(item->m_strPath) || info.strContent.Equals("musicvideos"))
             buttons.Add(CONTEXT_BUTTON_INFO, infoString);
           m_database.Open();
           if (!item->IsParentFolder())

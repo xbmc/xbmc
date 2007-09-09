@@ -1,5 +1,6 @@
 #include "VideoInfoTag.h"
 #include "XMLUtils.h"
+#include "Settings.h"
 
 #include <sstream>
 
@@ -16,6 +17,7 @@ void CVideoInfoTag::Reset()
   m_strOriginalTitle = "";
   m_strVotes = "";
   m_cast.clear();
+  m_artist.clear();
   m_strFile = "";
   m_strPath = "";
   m_strIMDBNumber = "";
@@ -77,6 +79,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag)
   XMLUtils::SetString(movie, "code", m_strProductionCode);
   XMLUtils::SetString(movie, "aired", m_strFirstAired);
   XMLUtils::SetString(movie, "studio", m_strStudio);
+  XMLUtils::SetString(movie, "album", m_strAlbum);
 
   // cast
   for (iCast it = m_cast.begin(); it != m_cast.end(); ++it)
@@ -93,6 +96,18 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag)
     TiXmlText character(it->second);
     roleNode->InsertEndChild(character);
   }
+  // artists
+  for (std::vector<CStdString>::const_iterator it = m_artist.begin(); it != m_artist.end(); ++it)
+  {
+    // add a <actor> tag
+    TiXmlElement cast("artist");
+    TiXmlNode *node = movie->InsertEndChild(cast);
+    TiXmlElement actor("name");
+    TiXmlNode *actorNode = node->InsertEndChild(actor);
+    TiXmlText name(*it);
+    actorNode->InsertEndChild(name);
+  }
+
   return true;
 }
 
@@ -134,6 +149,7 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
   XMLUtils::GetString(movie, "status", m_strStatus);
   XMLUtils::GetString(movie, "code", m_strProductionCode);
   XMLUtils::GetString(movie, "aired", m_strFirstAired);
+  XMLUtils::GetString(movie, "album", m_strAlbum);
 
   m_strPictureURL.ParseElement(movie->FirstChildElement("thumbs"));
   if (m_strPictureURL.m_url.size() == 0)
@@ -149,7 +165,7 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
       if (m_strGenre.IsEmpty())
         m_strGenre = strTemp;
       else
-        m_strGenre += " / "+strTemp;
+        m_strGenre += g_advancedSettings.m_videoItemSeparator+strTemp;
     }
     node = node->NextSibling("genre");
   }
@@ -163,7 +179,7 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
       if (m_strWritingCredits.IsEmpty())
         m_strWritingCredits = strTemp;
       else
-        m_strWritingCredits += " / "+strTemp;
+        m_strWritingCredits += g_advancedSettings.m_videoItemSeparator+strTemp;
     }
     node = node->NextSibling("credits");
   }
@@ -177,7 +193,7 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
       if (m_strDirector.IsEmpty())
         m_strDirector = strTemp;
       else
-        m_strDirector += " / "+strTemp;
+        m_strDirector += g_advancedSettings.m_videoItemSeparator+strTemp;
     }
     node = node->NextSibling("director");
   }
@@ -208,9 +224,21 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
       if (m_strStudio.IsEmpty())
         m_strStudio = strTemp;
       else
-        m_strStudio += " / "+strTemp;
+        m_strStudio += g_advancedSettings.m_videoItemSeparator+strTemp;
     }
     node = node->NextSibling("studio");
+  }
+  // artists
+  node = movie->FirstChild("artist");
+  while (node)
+  {
+    if (node->FirstChild())
+    {
+      strTemp = node->FirstChild()->Value();
+      if (!strTemp.IsEmpty())
+        m_artist.push_back(strTemp);
+    }
+    node = node->NextSibling("artist");
   }
 
   const TiXmlElement *epguide = movie->FirstChildElement("episodeguide");
@@ -245,6 +273,10 @@ void CVideoInfoTag::Serialize(CArchive& ar)
       ar << m_cast[i].first;
       ar << m_cast[i].second;
     }
+    ar << (int)m_artist.size();
+    for (unsigned int i=0;i<m_artist.size();++i)
+      ar << m_artist[i];
+
     ar << m_strRuntime;
     ar << m_strFile;
     ar << m_strPath;
@@ -258,6 +290,7 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar << m_strProductionCode;
     ar << m_strFirstAired;
     ar << m_strShowTitle;
+    ar << m_strAlbum;
     ar << m_bWatched;
     ar << m_iTop250;
     ar << m_iYear;
@@ -291,6 +324,15 @@ void CVideoInfoTag::Serialize(CArchive& ar)
       ar >> strSecond;
       m_cast.push_back(make_pair<CStdString,CStdString>(strFirst,strSecond));
     }
+    int iArtistSize;
+    ar >> iArtistSize;
+    for (int i=0;i<iArtistSize;++i)
+    {
+      CStdString strFirst;
+      ar >> strFirst;
+      m_artist.push_back(strFirst);
+    }
+
     ar >> m_strRuntime;
     ar >> m_strFile;
     ar >> m_strPath;
@@ -304,6 +346,7 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar >> m_strProductionCode;
     ar >> m_strFirstAired;
     ar >> m_strShowTitle;
+    ar >> m_strAlbum;
     ar >> m_bWatched;
     ar >> m_iTop250;
     ar >> m_iYear;
@@ -314,4 +357,15 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar >> m_iSpecialSortSeason;
     ar >> m_iSpecialSortEpisode;
   }
+
+}
+
+CStdString CVideoInfoTag::GetArtist() const
+{
+  CStdString result;
+  for (unsigned int i=0;i<m_artist.size();++i)
+    result += m_artist[i]+g_advancedSettings.m_videoItemSeparator;
+  result.TrimRight(g_advancedSettings.m_videoItemSeparator);
+
+  return result;
 }

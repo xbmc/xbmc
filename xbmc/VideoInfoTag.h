@@ -31,6 +31,8 @@ public:
   CScraperUrl m_strPictureURL;
   CStdString m_strTitle;
   CStdString m_strVotes;
+  vector< CStdString> m_artist;
+  CStdString GetArtist() const;
   vector< pair<CStdString, CStdString> > m_cast;
   typedef vector< pair<CStdString, CStdString> >::const_iterator iCast;
 
@@ -48,6 +50,7 @@ public:
   CStdString m_strFirstAired;
   CStdString m_strShowTitle;
   CStdString m_strStudio;
+  CStdString m_strAlbum;
   bool m_bWatched;
   int m_iTop250;
   int m_iYear;
@@ -58,4 +61,5 @@ public:
   int m_iSpecialSortEpisode;
   float m_fRating;
 };
+
 

@@ -33,7 +33,8 @@ namespace VIDEO
 typedef enum 
 {
   VIDEODB_CONTENT_MOVIES = 1,
-  VIDEODB_CONTENT_TVSHOWS = 2
+  VIDEODB_CONTENT_TVSHOWS = 2,
+  VIDEODB_CONTENT_MUSICVIDEOS = 3
 } VIDEODB_CONTENT_IDS;
 
 typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
@@ -166,6 +167,36 @@ const struct SDbTableOffsets DbEpisodeOffsets[] =
   { VIDEODB_TYPE_INT, offsetof(CVideoInfoTag,m_iSpecialSortEpisode) },
 };
 
+typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
+{
+  VIDEODB_ID_MUSICVIDEO_MIN = -1,
+  VIDEODB_ID_MUSICVIDEO_TITLE = 0,
+  VIDEODB_ID_MUSICVIDEO_THUMBURL = 1,
+  VIDEODB_ID_MUSICVIDEO_THUMBURL_SPOOF = 2,
+  VIDEODB_ID_MUSICVIDEO_WATCHED = 3,
+  VIDEODB_ID_MUSICVIDEO_RUNTIME = 4,
+  VIDEODB_ID_MUSICVIDEO_DIRECTOR = 5,
+  VIDEODB_ID_MUSICVIDEO_STUDIOS = 6,
+  VIDEODB_ID_MUSICVIDEO_YEAR = 7,
+  VIDEODB_ID_MUSICVIDEO_PLOT = 8,
+  VIDEODB_ID_MUSICVIDEO_ALBUM = 9,
+  VIDEODB_ID_MUSICVIDEO_MAX
+} VIDEODB_MUSICVIDEO_IDS;
+
+const struct SDbTableOffsets DbMusicVideoOffsets[] = 
+{
+  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strTitle) },
+  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPictureURL.m_xml) },
+  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPictureURL.m_spoof) },
+  { VIDEODB_TYPE_BOOL, offsetof(CVideoInfoTag,m_bWatched) },
+  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strRuntime) },
+  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strDirector) },
+  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strStudio) },
+  { VIDEODB_TYPE_INT, offsetof(CVideoInfoTag,m_iYear) },
+  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPlot) },
+  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strAlbum) },
+};
+
 class CBookmark
 {
 public:
@@ -197,51 +228,61 @@ public:
   long AddMovie(const CStdString& strFilenameAndPath);
   long AddTvShow(const CStdString& strPath);
   long AddEpisode(long idShow, const CStdString& strFilenameAndPath);
+  long AddMusicVideo(const CStdString& strFilenameAndPath);
 
   void MarkAsWatched(const CFileItem &item);
-  void MarkAsWatched(long lMovieId, bool bEpisode=false);
+  void MarkAsWatched(long lMovieId, int iType=0); // 0=movie,1=episode,2=tvshow,3=musicvideo
 
-  void MarkAsUnWatched(long lMovieId, bool bEpisode=false);
-  void UpdateMovieTitle(long lMovieId, const CStdString& strNewMovieTitle, int iType=0); // 0=movie,1=episode,2=tvshow
+  void MarkAsUnWatched(long lMovieId, int iType=0); // 0=movie,1=episode,2=tvshow,3=musicvideo
+  void UpdateMovieTitle(long lMovieId, const CStdString& strNewMovieTitle, int iType=0); // 0=movie,1=episode,2=tvshow,3=musicvideo
 
   bool HasMovieInfo(const CStdString& strFilenameAndPath);
   bool HasTvShowInfo(const CStdString& strFilenameAndPath);
   bool HasEpisodeInfo(const CStdString& strFilenameAndPath);
+  bool HasMusicVideoInfo(const CStdString& strFilenameAndPath);
   
   void DeleteDetailsForTvShow(const CStdString& strPath);
 
-  void GetFilePath(long lMovieId, CStdString &filePath, int iType=0); // 0=movies, 1=episodes, 2=tvshows
+  void GetFilePath(long lMovieId, CStdString &filePath, int iType=0); // 0=movies, 1=episodes, 2=tvshows, 3=musicvideo
   bool GetPathHash(const CStdString &path, CStdString &hash);
   bool GetPaths(map<CStdString,VIDEO::SScanSettings> &paths);
 
   void GetMovieInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, long lMovieId = -1);
   void GetTvShowInfo(const CStdString& strPath, CVideoInfoTag& details, long lTvShowId = -1);
   bool GetEpisodeInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, long lEpisodeId = -1);
-  
+  void GetMusicVideoInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, long idMVideo=-1);
+
   long GetMovieInfo(const CStdString& strFilenameAndPath);
   long GetTvShowInfo(const CStdString& strPath);
   long GetEpisodeInfo(const CStdString& strFilenameAndPath, long lEpisodeId=-1); // lEpisodeId is used for hinting due to two parters...
+  long GetMusicVideoInfo(const CStdString& strFilenameAndPath);
 
   void SetDetailsForMovie(const CStdString& strFilenameAndPath, const CVideoInfoTag& details);
   long SetDetailsForTvShow(const CStdString& strPath, const CVideoInfoTag& details);
   long SetDetailsForEpisode(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, long idShow, long lEpisodeId=-1);
+  void SetDetailsForMusicVideo(const CStdString& strFilenameAndPath, const CVideoInfoTag& details);
 
   void GetMoviesByActor(const CStdString& strActor, VECMOVIES& movies);
   void GetTvShowsByActor(const CStdString& strActor, VECMOVIES& movies);
   void GetEpisodesByActor(const CStdString& strActor, VECMOVIES& movies);
+  void GetMusicVideosByArtist(const CStdString& strArtist, VECMOVIES& movies);
 
   void GetMovieGenresByName(const CStdString& strSearch, CFileItemList& items);
   void GetTvShowGenresByName(const CStdString& strSearch, CFileItemList& items);
+  void GetMusicVideoGenresByName(const CStdString& strSearch, CFileItemList& items);
 
   void GetMovieActorsByName(const CStdString& strSearch, CFileItemList& items);
   void GetTvShowsActorsByName(const CStdString& strSearch, CFileItemList& items);
+  void GetMusicVideoArtistsByName(const CStdString& strSearch, CFileItemList& items);
 
   void GetMovieDirectorsByName(const CStdString& strSearch, CFileItemList& items);
   void GetTvShowsDirectorsByName(const CStdString& strSearch, CFileItemList& items);
+  void GetMusicVideoDirectorsByName(const CStdString& strSearch, CFileItemList& items);
 
   void GetMoviesByName(const CStdString& strSearch, CFileItemList& items);
   void GetTvShowsByName(const CStdString& strSearch, CFileItemList& items);
   void GetEpisodesByName(const CStdString& strSearch, CFileItemList& items);
+  void GetMusicVideosByName(const CStdString& strSearch, CFileItemList& items);
 
   void GetEpisodesByPlot(const CStdString& strSearch, CFileItemList& items);
 
@@ -256,7 +297,8 @@ public:
   void DeleteMovie(const CStdString& strFilenameAndPath);
   void DeleteTvShow(const CStdString& strPath);
   void DeleteEpisode(const CStdString& strFilenameAndPath, long lEpisodeId=-1);
-
+  void DeleteMusicVideo(const CStdString& strFilenameAndPath);
+  
   int GetRecentMovies(long* pMovieIdArray, int nSize);
 
   bool GetVideoSettings(const CStdString &strFilenameAndPath, CVideoSettings &settings);
@@ -284,9 +326,12 @@ public:
   bool GetEpisodesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idActor=-1, long idDirector=-1, long idShow=-1, long idSeason=-1);
   bool GetRecentlyAddedMoviesNav(const CStdString& strBaseDir, CFileItemList& items);
   bool GetRecentlyAddedEpisodesNav(const CStdString& strBaseDir, CFileItemList& items);
+  bool GetRecentlyAddedMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items);
+  bool GetMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idYear, long idArtist, long idDirector, long idStudio);
   
   int GetMovieCount();
   int GetTvShowCount();
+  int GetMusicVideoCount();
 
   bool GetGenreById(long lIdGenre, CStdString& strGenre);
 
@@ -313,22 +358,27 @@ protected:
   void AddActorToMovie(long lMovieId, long lActorId, const CStdString& strRole);
   void AddActorToTvShow(long lTvShowId, long lActorId, const CStdString& strRole);
   void AddActorToEpisode(long lEpisode, long lActorId, const CStdString& strRole);
+  void AddArtistToMusicVideo(long lMVideo, long lArtistId);
 
   void AddDirectorToMovie(long lMovieId, long lDirectorId);
   void AddDirectorToTvShow(long lTvShowId, long lDirectorId);
   void AddDirectorToEpisode(long lEpisodeId, long lDirectorId);
+  void AddDirectorToMusicVideo(long lMVideo, long lDirectorId);
 
   void AddGenreToMovie(long lMovieId, long lGenreId);
   void AddGenreToTvShow(long lTvShowId, long lGenreId);
   void AddGenreToEpisode(long lEpisodeId, long lGenreId);
+  void AddGenreToMusicVideo(long lMVideoId, long lGenreId);
 
   void AddStudioToMovie(long lMovieId, long lStudioId);
-  
+  void AddStudioToMusicVideo(long lMVideoId, long lStudioId);
+
   void AddGenreAndDirectorsAndStudios(const CVideoInfoTag& details, vector<long>& vecDirectors, vector<long>& vecGenres, vector<long>& vecStudios);
 
   CVideoInfoTag GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool needsCast = false);
   CVideoInfoTag GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool needsCast = false);
   CVideoInfoTag GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool needsCast = false);
+  CVideoInfoTag GetDetailsForMusicVideo(auto_ptr<Dataset> &pDS);
 
 private:
   virtual bool CreateTables();
