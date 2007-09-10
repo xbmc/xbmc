@@ -53,5 +53,8 @@ void CQueryParams::SetQueryParam(NODE_TYPE NodeType, const CStdString& strNodeNa
   case NODE_TYPE_STUDIO:
     m_idStudio = idDb;
     break;
+  case NODE_TYPE_TITLE_MUSICVIDEOS:
+    m_idMVideo = idDb;
+    break;
   }
 }

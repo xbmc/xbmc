@@ -39,6 +39,7 @@
 #include "ThumbnailCache.h"
 #include "FileSystem/ZipManager.h"
 #include "FileSystem/RarManager.h"
+#include "FileSystem/VideoDatabaseDirectory.h"
 #ifdef HAS_UPNP
 #include "FileSystem/UPnPDirectory.h"
 #endif
@@ -3596,6 +3597,20 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       return -3;
     }
     CFileItem item(strParameterCaseIntact, false);
+    if (item.IsVideoDb())
+    {
+      CVideoDatabase database;
+      database.Open();
+      DIRECTORY::VIDEODATABASEDIRECTORY::CQueryParams params;
+      DIRECTORY::CVideoDatabaseDirectory::GetQueryParams(item.m_strPath,params);
+      if (params.GetContentType() == VIDEODB_CONTENT_MOVIES)
+        database.GetMovieInfo("",*item.GetVideoInfoTag(),params.GetMovieId());
+      if (params.GetContentType() == VIDEODB_CONTENT_TVSHOWS)
+        database.GetEpisodeInfo("",*item.GetVideoInfoTag(),params.GetEpisodeId());
+      if (params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS)
+        database.GetMusicVideoInfo("",*item.GetVideoInfoTag(),params.GetMVideoId());
+      item.m_strPath = item.GetVideoInfoTag()->m_strFileNameAndPath;
+    }
     if (!g_application.PlayMedia(item, item.IsAudio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO))
     {
       CLog::Log(LOGERROR, "XBMC.PlayMedia could not play media: %s", strParameterCaseIntact.c_str());
