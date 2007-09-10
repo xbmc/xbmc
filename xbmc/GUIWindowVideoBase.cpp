@@ -1191,7 +1191,9 @@ void CGUIWindowVideoBase::MarkUnWatched(int iItem)
   int iType=0;
   if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder) // episode
     iType = 1;
-  m_database.MarkAsUnWatched(pItem->GetVideoInfoTag()->m_iDbId,iType>0);
+  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_artist.size() > 0)
+    iType = 3;
+  m_database.MarkAsUnWatched(pItem->GetVideoInfoTag()->m_iDbId,iType);
   CUtil::DeleteVideoDatabaseDirectoryCache();
   m_viewControl.SetSelectedItem(iItem);
   Update(m_vecItems.m_strPath);
@@ -1205,7 +1207,9 @@ void CGUIWindowVideoBase::MarkWatched(int iItem)
   int iType=0;
   if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder) // episode
     iType = 1;
-  m_database.MarkAsWatched(pItem->GetVideoInfoTag()->m_iDbId,iType>0);
+  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_artist.size() > 0)
+    iType = 3;
+  m_database.MarkAsWatched(pItem->GetVideoInfoTag()->m_iDbId,iType);
   CUtil::DeleteVideoDatabaseDirectoryCache();
   m_viewControl.SetSelectedItem(iItem);
   Update(m_vecItems.m_strPath);
