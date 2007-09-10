@@ -560,7 +560,7 @@ bool CHTTP::BreakURL(const string &strURL, string &strHostName, string &strUsern
 //*********************************************************************************************
 
 #define TIMEOUT (30*1000)
-#define BUFSIZE (32768)
+#define BUFSIZE (32767)
 
 bool CHTTP::Send(char* pBuffer, int iLen)
 {
@@ -633,8 +633,15 @@ bool CHTTP::Recv(int iLen)
   if (iLen > (BUFSIZE - m_RecvBytes) || bUnknown)
     iLen = (BUFSIZE - m_RecvBytes);
 
-  if (!m_RecvBuffer)
+  // sanity
+  if (iLen == -1)
+    iLen = BUFSIZE;
+
+  if (!m_RecvBuffer) 
+  {
     m_RecvBuffer = new char[BUFSIZE + 1];
+    memset(m_RecvBuffer,0,BUFSIZE + 1);
+  }
 
   while (iLen > 0)
   {
@@ -678,6 +685,8 @@ bool CHTTP::Recv(int iLen)
 #else
     char *buf = &m_RecvBuffer[m_RecvBytes];
     n = recv(m_socket, buf, iLen, 0);
+    if (n == -1)
+      return false;
 #endif
 
     if (n == 0)
@@ -687,9 +696,8 @@ bool CHTTP::Recv(int iLen)
 #else      
       shutdown(m_socket, SHUT_RDWR);
 #endif
-      m_RecvBuffer[m_RecvBytes] = 0;
       WSASetLastError(0);
-      return bUnknown; // graceful close
+      return true; // graceful close
     }
 
     m_RecvBytes += n;
