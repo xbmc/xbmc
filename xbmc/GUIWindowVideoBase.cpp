@@ -578,6 +578,8 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
       {
         if (info.strContent.Equals("movies"))
           m_database.GetMovieInfo(item->m_strPath,movieDetails);
+        if (info.strContent.Equals("musicvideos"))
+          m_database.GetMusicVideoInfo(item->m_strPath,movieDetails);
         if (info.strContent.Equals("tvshows"))
         {
           // update tvshow info to get updated episode numbers
