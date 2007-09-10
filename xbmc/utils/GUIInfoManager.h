@@ -176,6 +176,8 @@
 #define VIDEOPLAYER_CONTENT         273
 #define VIDEOPLAYER_STUDIO          274
 #define VIDEOPLAYER_MPAA            275
+#define VIDEOPLAYER_CAST            276
+#define VIDEOPLAYER_CAST_AND_ROLE   277
 
 #define AUDIOSCROBBLER_ENABLED      300
 #define AUDIOSCROBBLER_CONN_STATE   301
@@ -218,6 +220,8 @@
 #define LISTITEM_PICTURE_RESOLUTION 341
 #define LISTITEM_STUDIO             342
 #define LISTITEM_MPAA               343
+#define LISTITEM_CAST               344
+#define LISTITEM_CAST_AND_ROLE      345
 #define LISTITEM_END                350
 
 #define CONTAINER_FOLDERTHUMB       360
