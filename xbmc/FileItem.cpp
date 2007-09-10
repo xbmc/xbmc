@@ -1384,10 +1384,16 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
       Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::MusicVideoArtistAscendingNoThe : SSortFileItem::MusicVideoArtistDescendingNoThe);
     break;
   case SORT_METHOD_ALBUM:
-    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::SongAlbumAscending : SSortFileItem::SongAlbumDescending);
+    if (m_items.size() && (m_items[0]->HasMusicInfoTag()) || (m_items[0]->IsParentFolder() && m_items.size() > 1 && m_items[1]->HasMusicInfoTag()))
+      Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::SongAlbumAscending : SSortFileItem::SongAlbumDescending);
+    else
+      Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::MusicVideoAlbumAscending : SSortFileItem::MusicVideoAlbumDescending);
     break;
   case SORT_METHOD_ALBUM_IGNORE_THE:
-    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::SongAlbumAscendingNoThe : SSortFileItem::SongAlbumDescendingNoThe);
+    if (m_items.size() && (m_items[0]->HasMusicInfoTag()) || (m_items[0]->IsParentFolder() && m_items.size() > 1 && m_items[1]->HasMusicInfoTag()))
+      Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::SongAlbumAscendingNoThe : SSortFileItem::SongAlbumDescendingNoThe);
+    else
+      Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::MusicVideoAlbumAscendingNoThe : SSortFileItem::MusicVideoAlbumDescendingNoThe);
     break;
   case SORT_METHOD_GENRE:
     Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::SongGenreAscending : SSortFileItem::SongGenreDescending);

@@ -743,6 +743,120 @@ bool SSortFileItem::SongAlbumDescendingNoThe(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
+bool SSortFileItem::MusicVideoAlbumAscending(CFileItem *left, CFileItem *right)
+{
+  // special cases
+  if (left->IsParentFolder()) return true;
+  if (right->IsParentFolder()) return false;
+  // only if they're both folders or both files do we do the full comparison
+  if (left->m_bIsFolder == right->m_bIsFolder)
+  {
+    int result = StringUtils::AlphaNumericCompare(left->GetVideoInfoTag()->m_strAlbum.c_str(), right->GetVideoInfoTag()->m_strAlbum.c_str());
+    if (result < 0) return true;
+    if (result > 0) return false;
+    // album names match, try the artist
+    result = StringUtils::AlphaNumericCompare(left->GetVideoInfoTag()->GetArtist().c_str(), right->GetVideoInfoTag()->GetArtist().c_str());
+    if (result < 0) return true;
+    if (result > 0) return false;
+    // album and artist match - sort by title
+    result = StringUtils::AlphaNumericCompare(left->GetVideoInfoTag()->m_strTitle.c_str(), right->GetVideoInfoTag()->m_strTitle.c_str());
+    if (result < 0) return true;
+    if (result > 0) return false;
+  }
+  return left->m_bIsFolder;
+}
+
+bool SSortFileItem::MusicVideoAlbumDescending(CFileItem *left, CFileItem *right)
+{
+  // special cases
+  if (left->IsParentFolder()) return true;
+  if (right->IsParentFolder()) return false;
+  // only if they're both folders or both files do we do the full comparison
+  if (left->m_bIsFolder == right->m_bIsFolder)
+  {
+    int result = StringUtils::AlphaNumericCompare(left->GetVideoInfoTag()->m_strAlbum.c_str(), right->GetVideoInfoTag()->m_strAlbum.c_str());
+    if (result > 0) return true;
+    if (result < 0) return false;
+    // album names match, try the artist
+    result = StringUtils::AlphaNumericCompare(left->GetVideoInfoTag()->GetArtist().c_str(), right->GetVideoInfoTag()->GetArtist().c_str());
+    if (result > 0) return true;
+    if (result < 0) return false;
+    // album and artist match - sort by title
+    result = StringUtils::AlphaNumericCompare(left->GetVideoInfoTag()->m_strTitle.c_str(), right->GetVideoInfoTag()->m_strTitle.c_str());
+    if (result > 0) return true;
+    if (result < 0) return false;
+  }
+  return left->m_bIsFolder;
+}
+
+bool SSortFileItem::MusicVideoAlbumAscendingNoThe(CFileItem *left, CFileItem *right)
+{
+  // special cases
+  if (left->IsParentFolder()) return true;
+  if (right->IsParentFolder()) return false;
+  // only if they're both folders or both files do we do the full comparison
+  if (left->m_bIsFolder == right->m_bIsFolder)
+  {
+    int lOffs = StartsWithToken(left->GetVideoInfoTag()->m_strAlbum);
+    int rOffs = StartsWithToken(right->GetVideoInfoTag()->m_strAlbum);
+
+    int result = StringUtils::AlphaNumericCompare(left->GetVideoInfoTag()->m_strAlbum.Mid(lOffs).c_str(), right->GetVideoInfoTag()->m_strAlbum.Mid(rOffs).c_str());
+    if (result < 0) return true;
+    if (result > 0) return false;
+    // album names match, try the artist
+    CStdString l = left->GetVideoInfoTag()->GetArtist();
+    CStdString r = right->GetVideoInfoTag()->GetArtist();
+    lOffs = StartsWithToken(l);
+    rOffs = StartsWithToken(r);
+
+    result = StringUtils::AlphaNumericCompare(l.Mid(lOffs).c_str(), r.Mid(rOffs).c_str());
+    if (result < 0) return true;
+    if (result > 0) return false;
+    // album and artist match - sort by title
+    lOffs = StartsWithToken(left->GetVideoInfoTag()->m_strTitle);
+    rOffs = StartsWithToken(right->GetVideoInfoTag()->m_strTitle);
+
+    result = StringUtils::AlphaNumericCompare(left->GetVideoInfoTag()->m_strTitle.Mid(lOffs).c_str(), right->GetVideoInfoTag()->m_strTitle.Mid(rOffs).c_str());
+    if (result < 0) return true;
+    if (result > 0) return false;
+  }
+  return left->m_bIsFolder;
+}
+
+bool SSortFileItem::MusicVideoAlbumDescendingNoThe(CFileItem *left, CFileItem *right)
+{
+  // special cases
+  if (left->IsParentFolder()) return true;
+  if (right->IsParentFolder()) return false;
+  // only if they're both folders or both files do we do the full comparison
+  if (left->m_bIsFolder == right->m_bIsFolder)
+    {
+    int lOffs = StartsWithToken(left->GetVideoInfoTag()->m_strAlbum);
+    int rOffs = StartsWithToken(right->GetVideoInfoTag()->m_strAlbum);
+
+    int result = StringUtils::AlphaNumericCompare(left->GetVideoInfoTag()->m_strAlbum.Mid(lOffs).c_str(), right->GetVideoInfoTag()->m_strAlbum.Mid(rOffs).c_str());
+    if (result > 0) return true;
+    if (result < 0) return false;
+    // album names match, try the artist
+    CStdString l = left->GetVideoInfoTag()->GetArtist();
+    CStdString r = right->GetVideoInfoTag()->GetArtist();
+    lOffs = StartsWithToken(l);
+    rOffs = StartsWithToken(r);
+
+    result = StringUtils::AlphaNumericCompare(l.Mid(lOffs).c_str(), r.Mid(rOffs).c_str());
+    if (result > 0) return true;
+    if (result < 0) return false;
+    // album and artist match - sort by title
+    lOffs = StartsWithToken(left->GetVideoInfoTag()->m_strTitle);
+    rOffs = StartsWithToken(right->GetVideoInfoTag()->m_strTitle);
+
+    result = StringUtils::AlphaNumericCompare(left->GetVideoInfoTag()->m_strTitle.Mid(lOffs).c_str(), right->GetVideoInfoTag()->m_strTitle.Mid(rOffs).c_str());
+    if (result > 0) return true;
+    if (result < 0) return false;
+  }
+  return left->m_bIsFolder;
+}
+
 bool SSortFileItem::SongGenreAscending(CFileItem *left, CFileItem *right)
 {
   // special items
