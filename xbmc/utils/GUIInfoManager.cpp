@@ -1663,6 +1663,8 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
           strContent = "files";
         if (m_currentFile.HasVideoInfoTag() && m_currentFile.GetVideoInfoTag()->m_iSeason > -1) // episode
           strContent = "episodes";
+        if (m_currentFile.HasVideoInfoTag() && m_currentFile.GetVideoInfoTag()->m_artist.size() > 0)
+          strContent = "musicvideos";
         bReturn = m_stringParameters[info.m_data1].Equals(strContent);
       }
       break;
