@@ -3599,7 +3599,10 @@ void CApplication::Stop()
     m_gWindowManager.Remove(WINDOW_SETTINGS_NETWORK);
     m_gWindowManager.Remove(WINDOW_SETTINGS_APPEARANCE);
 
+#ifdef HAS_KAI
     m_gWindowManager.Remove(WINDOW_DIALOG_KAI_TOAST);
+#endif
+
     m_gWindowManager.Remove(WINDOW_DIALOG_SEEK_BAR);
     m_gWindowManager.Remove(WINDOW_DIALOG_VOLUME_BAR);
 
