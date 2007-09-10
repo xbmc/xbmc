@@ -1154,13 +1154,13 @@ int CXbmcHttp::xbmcGetMovieDetails(int numParas, CStdString paras[])
         strRating.Format("%3.3f", aMovieRec.m_fRating);
         if (strRating=="") strRating="0.0";
         output += closeTag+openTag+"Rating:" + strRating;
-        CStdString cast;
-        for (CVideoInfoTag::iCast it = aMovieRec.m_cast.begin(); it != aMovieRec.m_cast.end(); ++it)
+        CStdString cast = aMovieRec.GetCast(true);
+        /*for (CVideoInfoTag::iCast it = aMovieRec.m_cast.begin(); it != aMovieRec.m_cast.end(); ++it)
         {
           CStdString character;
           character.Format("%s %s %s\n", it->first.c_str(), g_localizeStrings.Get(20347).c_str(), it->second.c_str());
           cast += character;
-        }
+        }*/
         output += closeTag+openTag+"Cast:" + cast;
         item->SetVideoThumb();
         if (!item->HasThumbnail())
