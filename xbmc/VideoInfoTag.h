@@ -21,6 +21,7 @@ public:
   bool Load(const TiXmlElement *movie, bool chained = false);
   bool Save(TiXmlNode *node, const CStdString &tag);
   virtual void Serialize(CArchive& ar);
+  const CStdString GetCast(bool bIncludeRole = false) const;
 
   CStdString m_strDirector;
   CStdString m_strWritingCredits;
