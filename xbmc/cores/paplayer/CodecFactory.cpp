@@ -90,17 +90,18 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 
 ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdString& strContent, unsigned int filecache)
 {
+  CURL urlFile(strFile);
+  if (urlFile.GetProtocol() == "lastfm" || urlFile.GetProtocol() == "shout" )
+  {
+    return new MP3Codec();
+  }
+
   if( strContent.Equals("audio/mpeg") )
     return new MP3Codec();
   else if( strContent.Equals("audio/aac") 
     || strContent.Equals("audio/aacp") )
     return new AACCodec();
 
-  CURL urlFile(strFile);
-  if (urlFile.GetProtocol() == "lastfm")
-  {
-    return new MP3Codec();
-  }
   if (urlFile.GetFileType().Equals("wav"))
   {
     ICodec* codec;

@@ -106,7 +106,8 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   if (url.GetProtocol().Equals("hdhomerun"))
     vecCores.push_back(EPC_DVDPLAYER);
 
-  if (url.GetProtocol().Equals("lastfm"))
+  if (url.GetProtocol().Equals("lastfm") ||
+      url.GetProtocol().Equals("shout") )
   {
     vecCores.push_back(EPC_PAPLAYER);    
   }
