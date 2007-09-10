@@ -545,15 +545,11 @@ bool SSortFileItem::MusicVideoArtistAscending(CFileItem *left, CFileItem *right)
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
-    char *l = (char *)left->GetVideoInfoTag()->GetArtist().c_str();
-    char *r = (char *)right->GetVideoInfoTag()->GetArtist().c_str();
-    int result = StringUtils::AlphaNumericCompare(l, r);
+    int result = StringUtils::AlphaNumericCompare(left->GetVideoInfoTag()->GetArtist().c_str(), right->GetVideoInfoTag()->GetArtist().c_str());
     if (result < 0) return true;
     if (result > 0) return false;
     // artist agree, test the title
-    l = (char *)left->GetVideoInfoTag()->m_strTitle.c_str();
-    r = (char *)right->GetVideoInfoTag()->m_strTitle.c_str();
-    result = StringUtils::AlphaNumericCompare(l, r);
+    result = StringUtils::AlphaNumericCompare(left->GetVideoInfoTag()->m_strTitle.c_str(), right->GetVideoInfoTag()->m_strTitle.c_str());
     if (result < 0) return true;
     if (result > 0) return false;
   }
@@ -566,17 +562,13 @@ bool SSortFileItem::MusicVideoArtistDescending(CFileItem *left, CFileItem *right
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
   // only if they're both folders or both files do we do the full comparison
-  if (left->m_bIsFolder == right->m_bIsFolder)
+  if (left->m_bIsFolder == right->m_bIsFolder && left->HasVideoInfoTag() && right->HasVideoInfoTag())
   {
-    char *l = (char *)left->GetVideoInfoTag()->GetArtist().c_str();
-    char *r = (char *)right->GetVideoInfoTag()->GetArtist().c_str();
-    int result = StringUtils::AlphaNumericCompare(l, r);
+    int result = StringUtils::AlphaNumericCompare(left->GetVideoInfoTag()->GetArtist().c_str(), right->GetVideoInfoTag()->GetArtist().c_str());
     if (result > 0) return true;
     if (result < 0) return false;
     // artist agree, test the title
-    l = (char *)left->GetVideoInfoTag()->m_strTitle.c_str();
-    r = (char *)right->GetVideoInfoTag()->m_strTitle.c_str();
-    result = StringUtils::AlphaNumericCompare(l, r);
+    result = StringUtils::AlphaNumericCompare(left->GetVideoInfoTag()->m_strTitle.c_str(), right->GetVideoInfoTag()->m_strTitle.c_str());
     if (result > 0) return true;
     if (result < 0) return false;
   }
@@ -591,20 +583,20 @@ bool SSortFileItem::MusicVideoArtistAscendingNoThe(CFileItem *left, CFileItem *r
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
-    char *l = (char *)left->GetVideoInfoTag()->GetArtist().c_str();
-    char *r = (char *)right->GetVideoInfoTag()->GetArtist().c_str();
-    l += StartsWithToken(left->GetVideoInfoTag()->GetArtist());
-    r += StartsWithToken(right->GetVideoInfoTag()->GetArtist());
+    CStdString l = left->GetVideoInfoTag()->GetArtist();
+    CStdString r = right->GetVideoInfoTag()->GetArtist();
+    int lOffs = StartsWithToken(l);
+    int rOffs = StartsWithToken(r);
 
-    int result = StringUtils::AlphaNumericCompare(l, r);
+    int result = StringUtils::AlphaNumericCompare(l.Mid(lOffs).c_str(), r.Mid(rOffs).c_str());
     if (result < 0) return true;
     if (result > 0) return false;
 
-    l = (char *)left->GetVideoInfoTag()->m_strTitle.c_str();
-    r = (char *)right->GetVideoInfoTag()->m_strTitle.c_str();
-    l += StartsWithToken(left->GetMusicInfoTag()->GetAlbum());
-    r += StartsWithToken(right->GetMusicInfoTag()->GetAlbum());
-    result = StringUtils::AlphaNumericCompare(l, r);
+    l = left->GetVideoInfoTag()->m_strTitle;
+    r = right->GetVideoInfoTag()->m_strTitle;
+    lOffs = StartsWithToken(l);
+    rOffs = StartsWithToken(r);
+    result = StringUtils::AlphaNumericCompare(l.Mid(lOffs).c_str(), r.Mid(rOffs).c_str());
     if (result < 0) return true;
     if (result > 0) return false;
   }
@@ -617,22 +609,22 @@ bool SSortFileItem::MusicVideoArtistDescendingNoThe(CFileItem *left, CFileItem *
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
   // only if they're both folders or both files do we do the full comparison
-  if (left->m_bIsFolder == right->m_bIsFolder)
+  if (left->m_bIsFolder == right->m_bIsFolder && left->HasVideoInfoTag() && right->HasVideoInfoTag())
   {
-    char *l = (char *)left->GetVideoInfoTag()->GetArtist().c_str();
-    char *r = (char *)right->GetVideoInfoTag()->GetArtist().c_str();
-    l += StartsWithToken(left->GetVideoInfoTag()->GetArtist());
-    r += StartsWithToken(right->GetVideoInfoTag()->GetArtist());
+    CStdString l = left->GetVideoInfoTag()->GetArtist();
+    CStdString r = right->GetVideoInfoTag()->GetArtist();
+    int lOffs = StartsWithToken(l);
+    int rOffs = StartsWithToken(r);
 
-    int result = StringUtils::AlphaNumericCompare(l, r);
+    int result = StringUtils::AlphaNumericCompare(l.Mid(lOffs).c_str(), r.Mid(rOffs).c_str());
     if (result > 0) return true;
     if (result < 0) return false;
 
-    l = (char *)left->GetVideoInfoTag()->m_strTitle.c_str();
-    r = (char *)right->GetVideoInfoTag()->m_strTitle.c_str();
-    l += StartsWithToken(left->GetMusicInfoTag()->GetAlbum());
-    r += StartsWithToken(right->GetMusicInfoTag()->GetAlbum());
-    result = StringUtils::AlphaNumericCompare(l, r);
+    l = left->GetVideoInfoTag()->m_strTitle;
+    r = right->GetVideoInfoTag()->m_strTitle;
+    lOffs = StartsWithToken(l);
+    rOffs = StartsWithToken(r);
+    result = StringUtils::AlphaNumericCompare(l.Mid(lOffs).c_str(), r.Mid(rOffs).c_str());
     if (result > 0) return true;
     if (result < 0) return false;
   }
