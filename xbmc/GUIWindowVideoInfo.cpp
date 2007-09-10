@@ -149,7 +149,9 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       // dont allow refreshing of manual info
       if (m_movieItem.GetVideoInfoTag()->m_strIMDBNumber.Left(2).Equals("xx"))
         CONTROL_DISABLE(CONTROL_BTN_REFRESH);
-
+      // dont allow get thumb for plugin entries
+      if (m_movieItem.GetVideoInfoTag()->m_strIMDBNumber.Mid(2).Equals("plugin"))
+        CONTROL_DISABLE(CONTROL_BTN_GET_THUMB);
       return true;
     }
     break;
@@ -543,6 +545,8 @@ void CGUIWindowVideoInfo::AddItemsToList(const vector<CStdString> &vecStr)
 void CGUIWindowVideoInfo::Play(bool resume)
 {
   CFileItem movie(m_movieItem.GetVideoInfoTag()->m_strFileNameAndPath, false);
+  if (m_movieItem.GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
+    movie.m_strPath = m_movieItem.m_strPath;
   CGUIWindowVideoFiles* pWindow = (CGUIWindowVideoFiles*)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
   if (pWindow)
   {
