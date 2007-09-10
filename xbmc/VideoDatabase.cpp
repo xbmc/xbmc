@@ -5204,6 +5204,47 @@ void CVideoDatabase::GetMusicVideoGenresByName(const CStdString& strSearch, CFil
   }
 }
 
+void CVideoDatabase::GetMusicVideosByAlbum(const CStdString& strSearch, CFileItemList& items)
+{
+  CStdString strSQL;
+
+  try
+  {
+    if (NULL == m_pDB.get()) return;
+    if (NULL == m_pDS.get()) return;
+
+    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
+      strSQL = FormatSQL("select musicvideo.idmvideo,musicvideo.c%02d,musicvideo.c%02d,path.strPath from musicvideo,file,path where file.idfile=musicvideo.idfile and file.idPath=path.idPath and musicvideo.%c02d like '%%%s%%'",VIDEODB_ID_MUSICVIDEO_ALBUM,VIDEODB_ID_MUSICVIDEO_TITLE,VIDEODB_ID_MUSICVIDEO_ALBUM,strSearch.c_str());
+    else
+      strSQL = FormatSQL("select musicvideo.idmvideo,musicvideo.c%02d,musicvideo.c%02d from musicvideo where musicvideo.c%02d like '%%%s%%'",VIDEODB_ID_MUSICVIDEO_ALBUM,VIDEODB_ID_MUSICVIDEO_TITLE,VIDEODB_ID_MUSICVIDEO_ALBUM,strSearch.c_str());
+    m_pDS->query( strSQL.c_str() );
+
+    while (!m_pDS->eof())
+    {
+      if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
+        if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
+        {
+          m_pDS->next();
+          continue;
+        }
+
+      CFileItem* pItem=new CFileItem(m_pDS->fv(1).get_asString()+" - "+m_pDS->fv(2).get_asString());
+      CStdString strDir;
+      strDir.Format("3/2/%ld",m_pDS->fv("musicvideo.idmvideo").get_asLong());
+      
+      pItem->m_strPath="videodb://"+ strDir;
+      pItem->m_bIsFolder=false;
+      items.Add(pItem);
+      m_pDS->next();
+    }
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CVideoDatabase::GetMusicVideosByAlbums(%s) failed",strSQL.c_str());
+  }
+}
+
 void CVideoDatabase::GetMoviesByName(const CStdString& strSearch, CFileItemList& items)
 {
   CStdString strSQL;
@@ -5233,7 +5274,7 @@ void CVideoDatabase::GetMoviesByName(const CStdString& strSearch, CFileItemList&
       strDir.Format("1/2/%ld",m_pDS->fv("movie.idMovie").get_asLong());
       
       pItem->m_strPath="videodb://"+ strDir;
-      pItem->m_bIsFolder=true;
+      pItem->m_bIsFolder=false;
       items.Add(pItem);
       m_pDS->next();
     }
@@ -5271,7 +5312,7 @@ void CVideoDatabase::GetTvShowsByName(const CStdString& strSearch, CFileItemList
 
       CFileItem* pItem=new CFileItem(m_pDS->fv(1).get_asString());
       CStdString strDir;
-      strDir.Format("2/2/%ld", m_pDS->fv("tvshow.idshow").get_asLong());
+      strDir.Format("2/2/%ld/", m_pDS->fv("tvshow.idshow").get_asLong());
       
       pItem->m_strPath="videodb://"+ strDir;
       pItem->m_bIsFolder=true;
@@ -5353,7 +5394,7 @@ void CVideoDatabase::GetMusicVideosByName(const CStdString& strSearch, CFileItem
       strDir.Format("3/1/%ld",m_pDS->fv("musicvideo.idmvideo").get_asLong());
       
       pItem->m_strPath="videodb://"+ strDir;
-      pItem->m_bIsFolder=true;
+      pItem->m_bIsFolder=false;
       items.Add(pItem);
       m_pDS->next();
     }

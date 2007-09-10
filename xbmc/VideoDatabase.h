@@ -267,6 +267,8 @@ public:
   void GetEpisodesByActor(const CStdString& strActor, VECMOVIES& movies);
   void GetMusicVideosByArtist(const CStdString& strArtist, VECMOVIES& movies);
 
+  void GetMusicVideosByAlbum(const CStdString& strAlbum, CFileItemList& items);
+
   void GetMovieGenresByName(const CStdString& strSearch, CFileItemList& items);
   void GetTvShowGenresByName(const CStdString& strSearch, CFileItemList& items);
   void GetMusicVideoGenresByName(const CStdString& strSearch, CFileItemList& items);
@@ -327,7 +329,7 @@ public:
   bool GetRecentlyAddedMoviesNav(const CStdString& strBaseDir, CFileItemList& items);
   bool GetRecentlyAddedEpisodesNav(const CStdString& strBaseDir, CFileItemList& items);
   bool GetRecentlyAddedMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items);
-  bool GetMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idYear, long idArtist, long idDirector, long idStudio);
+  bool GetMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idArtist=-1, long idDirector=-1, long idStudio=-1);
   
   int GetMovieCount();
   int GetTvShowCount();
