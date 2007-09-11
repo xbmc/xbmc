@@ -3605,17 +3605,13 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     {
       g_passwordManager.bMasterUser = false;
       g_passwordManager.LockSources(true);
-#ifdef HAS_KAI
       g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(20052),g_localizeStrings.Get(20053));
-#endif
     }
     else if (g_passwordManager.IsMasterLockUnlocked(true))
     {
       g_passwordManager.LockSources(false);
       g_passwordManager.bMasterUser = true;
-#ifdef HAS_KAI
       g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(20052),g_localizeStrings.Get(20054));
-#endif
     }
 
     DeleteVideoDatabaseDirectoryCache();
@@ -4052,7 +4048,6 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 
     g_alarmClock.start(strName,fSecs,strCommand);
   }
-#ifdef HAS_KAI
   else if (execute.Equals("notification"))
   {
     std::vector<CStdString> params;
@@ -4066,7 +4061,6 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     else
       g_application.m_guiDialogKaiToast.QueueNotification(params[0],params[1]);
   }
-#endif
   else if (execute.Equals("cancelalarm"))
   {
     g_alarmClock.stop(parameter);
@@ -4773,12 +4767,11 @@ if (g_guiSettings.GetBool("autodetect.onoff"))
         strBoosMode     = arSplit[4].c_str();
         strFTPPath.Format("ftp://%s:%s@%s:%s/",strFtpUserName.c_str(),strFtpPassword.c_str(),v_xboxclients.client_ip[i],strFtpPort.c_str());
 
-#ifdef HAS_KAI
         //Do Notification for this Client
         CStdString strtemplbl;
         strtemplbl.Format("%s %s",strNickName, v_xboxclients.client_ip[i]);
         g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(1251), strtemplbl);
-#endif        
+
         //Debug Log
         CLog::Log(LOGDEBUG,"%s: %s FTP-Link: %s", g_localizeStrings.Get(1251).c_str(), strNickName.c_str(), strFTPPath.c_str());
 
