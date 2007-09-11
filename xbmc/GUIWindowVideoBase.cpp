@@ -427,11 +427,8 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
       }
       else
       {
-        if (info2.strContent.Equals("musicvideos"))
-          return;
-   
         CScraperUrl scrUrl(nfoReader.m_strImDbUrl); 
-	      url.m_scrURL.push_back(scrUrl);
+        url.m_scrURL.push_back(scrUrl);
         url.m_strID = nfoReader.m_strImDbNr;
         SScraperInfo info2(info);
         info2.strPath = nfoReader.m_strScraper;
@@ -442,6 +439,13 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
     }
     else
       CLog::Log(LOGERROR,"Unable to find an imdb url in nfo file: %s", nfoFile.c_str());
+  }
+  if (info2.strContent.Equals("musicvideos") && !hasDetails)
+  {
+    if (CVideoInfoScanner::ScrapeFilename(item->m_strPath,info2,movieDetails))
+      hasDetails = true;
+    else
+      return;
   }
 
   CStdString movieName = item->GetLabel();

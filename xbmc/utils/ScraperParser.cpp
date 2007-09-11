@@ -181,7 +181,7 @@ bool CScraperParser::Load(const CStdString& strXMLFile)
       return false;
     }
     // check for known content
-    if (stricmp(m_content,"tvshows") && stricmp(m_content,"movies"))
+    if (stricmp(m_content,"tvshows") && stricmp(m_content,"movies") && stricmp(m_content,"musicvideos"))
     {
       delete m_document;
       m_document = NULL;

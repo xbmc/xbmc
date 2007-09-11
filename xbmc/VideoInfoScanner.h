@@ -43,7 +43,7 @@ namespace VIDEO
     bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, bool bRefresh=false, CIMDBUrl *pURL=NULL, CGUIDialogProgress* m_dlgProgress  = NULL);
     static void ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbThumb);
     static bool DownloadThumbnail(const CStdString &thumb, const CScraperUrl::SUrlEntry& entry);
-
+    static bool ScrapeFilename(const CStdString& strFileName, const SScraperInfo& info, CVideoInfoTag& details);
   protected:
     virtual void Process();
     bool DoScan(const CStdString& strDirectory, SScanSettings settings);
