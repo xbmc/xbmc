@@ -1400,8 +1400,8 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(&m_guiDialogSeekBar);            // window id = 115
   m_gWindowManager.Add(new CGUIDialogSubMenu);            // window id = 105
   m_gWindowManager.Add(new CGUIDialogContextMenu);        // window id = 106
-#ifdef HAS_KAI
   m_gWindowManager.Add(&m_guiDialogKaiToast);           // window id = 107
+#ifdef HAS_KAI
   m_gWindowManager.Add(new CGUIDialogHost);               // window id = 108
 #endif
   m_gWindowManager.Add(new CGUIDialogNumeric);            // window id = 109
@@ -2100,9 +2100,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_guiPointer.AllocResources(true);
   m_guiDialogVolumeBar.AllocResources(true);
   m_guiDialogSeekBar.AllocResources(true);
-#ifdef HAS_KAI
   m_guiDialogKaiToast.AllocResources(true);
-#endif
   m_guiDialogMuteBug.AllocResources(true);
   m_gWindowManager.AddMsgTarget(this);
   m_gWindowManager.AddMsgTarget(&g_playlistPlayer);
@@ -2970,6 +2968,7 @@ void CApplication::FrameMove()
   {
     CKaiClient::GetInstance()->DoWork();
   }
+#endif
 
   // check if there are notifications to display
   if (m_guiDialogKaiToast.DoWork())
@@ -2979,7 +2978,6 @@ void CApplication::FrameMove()
       m_guiDialogKaiToast.Show();
     }
   }
-#endif
 
   UpdateLCD();
 
