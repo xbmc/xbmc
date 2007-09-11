@@ -220,7 +220,7 @@ bool CVideoDatabase::CreateTables()
     columns += ",idFile integer)";
     m_pDS->exec(columns.c_str());
     m_pDS->exec("CREATE UNIQUE INDEX ix_musicvideo_file_1 on musicvideo (idMVideo, idFile)");
-    m_pDS->exec("CREATE UNIQUE INDEX id_musicvideo_file_2 on episode (idFile, idMVideo)");
+    m_pDS->exec("CREATE UNIQUE INDEX id_musicvideo_file_2 on musicvideo (idFile, idMVideo)");
     
     CLog::Log(LOGINFO, "create artistlinkmusicvideo table");
     m_pDS->exec("CREATE TABLE artistlinkmusicvideo ( idArtist integer, idMVideo integer)\n");
