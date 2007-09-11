@@ -2593,6 +2593,16 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(auto_ptr<Dataset> &pDS)
   }
   castTime += timeGetTime() - time; time = timeGetTime();
 
+  // create genre string
+  strSQL = FormatSQL("select genre.strGenre from genrelinkmusicvideo,genre where genrelinkmusicvideo.idmvideo=%u and genrelinkmusicvideo.idgenre = genre.idGenre",lMovieId);
+  m_pDS2->query(strSQL.c_str());
+  while (!m_pDS2->eof())
+  {
+    details.m_strGenre += m_pDS2->fv("genre.strGenre").get_asString()+g_advancedSettings.m_videoItemSeparator;
+    m_pDS2->next();
+  }
+  details.m_strGenre.TrimRight(g_advancedSettings.m_videoItemSeparator);
+
   details.m_strPictureURL.Parse();
   return details;
 }
