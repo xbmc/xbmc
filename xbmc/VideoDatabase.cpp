@@ -3765,6 +3765,8 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
     
       for (it=mapYears.begin();it != mapYears.end();++it)
       {
+        if (it->first == 0)
+          continue;
         CFileItem* pItem=new CFileItem(it->second.first);
         CStdString strDir;
         strDir.Format("%ld/", it->first);
@@ -3792,6 +3794,11 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
         {
           lYear = m_pDS->fv(0).get_asLong();
           strLabel = m_pDS->fv(0).get_asString();
+        }
+        if (lYear == 0)
+        {
+          m_pDS->next();
+          continue;
         }
         CFileItem* pItem=new CFileItem(strLabel);
         CStdString strDir;
