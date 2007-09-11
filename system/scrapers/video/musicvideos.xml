@@ -27,8 +27,11 @@
 		</RegExp>
 	</NfoScrape>
 	<FileNameScrape dest="3">
-		<RegExp input="$$1" output="&lt;musicvideo&gt;&lt;artist&gt;\1&lt;/artist&gt;&lt;title&gt;\2&lt;/title&gt;&lt;year&gt;\4&lt;/year&gt;&lt;/musicvideo&gt;" dest="3">
-			<expression>([^-]*)-([^-]*)(-[^-]*-[^-]*-)?([0-9]+)?</expression>
+		<RegExp input="$$1" output="&lt;musicvideo&gt;&lt;artist&gt;\1&lt;/artist&gt;&lt;title&gt;\2&lt;/title&gt;&lt;year&gt;\3&lt;/year&gt;&lt;/musicvideo&gt;" dest="3">
+			<expression>([^-]*)-([^-]*)-[^-]*-[^-]*-([0-9]+)</expression>
+		</RegExp>
+		<RegExp input="$$1" output="&lt;musicvideo&gt;&lt;artist&gt;\1&lt;/artist&gt;&lt;title&gt;\2&lt;/title&gt;&lt;year&gt;\3&lt;/year&gt;&lt;/musicvideo&gt;" dest="3+">
+			<expression>([^-]*)-([^-]*)[^[0-9]*([0-9]+)?</expression>
 		</RegExp>
 	</FileNameScrape>
 </scraper>

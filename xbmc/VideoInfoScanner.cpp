@@ -1036,8 +1036,8 @@ namespace VIDEO
     if (!parser.Load("q:\\system\\scrapers\\video\\"+info.strPath))
       return false;
     parser.m_param[0] = CUtil::GetFileName(strFileName);
-    CUtil::CleanFileName(parser.m_param[0]);
     CUtil::RemoveExtension(parser.m_param[0]);
+    parser.m_param[0].Replace("_"," ");
     CStdString strResult = parser.Parse("FileNameScrape");
     TiXmlDocument doc;
     doc.Parse(strResult.c_str());
