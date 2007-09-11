@@ -154,7 +154,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
 
       //  base class has opened the database, do our check
       m_database.Open();
-      DisplayEmptyDatabaseMessage(m_database.GetMovieCount() <= 0 && m_database.GetTvShowCount() <= 0);
+      DisplayEmptyDatabaseMessage(m_database.GetMovieCount() <= 0 && m_database.GetTvShowCount() <= 0 && m_database.GetMusicVideoCount() <= 0);
 
       if (m_bDisplayEmptyDatabaseMessage)
       {
