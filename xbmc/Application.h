@@ -7,9 +7,7 @@
 #include "FileItem.h"
 
 #include "GUIDialogSeekBar.h"
-#ifdef HAS_KAI
 #include "GUIDialogKaiToast.h"
-#endif
 #include "GUIDialogVolumeBar.h"
 #include "GUIDialogMuteBug.h"
 #include "GUIWindowPointer.h"   // Mouse pointer
@@ -145,9 +143,7 @@ public:
 
   CGUIDialogVolumeBar m_guiDialogVolumeBar;
   CGUIDialogSeekBar m_guiDialogSeekBar;
-#ifdef HAS_KAI
   CGUIDialogKaiToast m_guiDialogKaiToast;
-#endif
   CGUIDialogMuteBug m_guiDialogMuteBug;
   CGUIWindowPointer m_guiPointer;
 
