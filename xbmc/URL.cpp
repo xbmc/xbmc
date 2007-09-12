@@ -76,7 +76,7 @@ CURL::CURL(const CStdString& strURL)
     }
     else
     {
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Url has no protocol %s, empty CURL created", strURL.c_str());
+//      CLog::Log(LOGDEBUG, __FUNCTION__" - Url has no protocol %s, empty CURL created", strURL.c_str());
       return;
     }
   }
@@ -152,7 +152,8 @@ CURL::CURL(const CStdString& strURL)
     || m_strProtocol.Equals("tuxbox")
     || m_strProtocol.Equals("daap")
     || m_strProtocol.Equals("plugin")
-    || m_strProtocol.Equals("hdhomerun"))
+    || m_strProtocol.Equals("hdhomerun")
+    || m_strProtocol.Equals("rtsp"))
   {
     int iOptions = strURL.find_first_of("?;#", iPos);
     if (iOptions >= 0 )
