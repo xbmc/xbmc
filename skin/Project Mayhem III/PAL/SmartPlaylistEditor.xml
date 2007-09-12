@@ -259,7 +259,7 @@
 				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
 				<label>186</label>
 				<onup>18</onup>
-				<onleft>21</onleft>
+				<onleft>22</onleft>
 				<onright>21</onright>
 				<ondown>12</ondown>
 			</control>
@@ -281,6 +281,20 @@
 				<onright>20</onright>
 				<ondown>12</ondown>
 			</control>
+			<control type="spincontrolex" id="22">
+				<posx>10</posx>
+				<posy>355</posy>
+				<width>280</width>
+				<label>467</label>
+				<font>font12</font>
+				<texturefocus border="3">input-focus.png</texturefocus>
+				<texturenofocus  border="3">input-nofocus.png</texturenofocus>
+				<onright>20</onright>
+				<onleft>21</onleft>
+				<onup>18</onup>
+				<ondown>10</ondown>
+			</control>
+
 		</control>
 	</controls>
 </window>

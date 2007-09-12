@@ -1630,6 +1630,7 @@
   <string id="20392">Remove Music Video from library</string>
   <string id="20393">Music Video Information</string>
   <string id="20394">Loading Music Video information</string>
+  <string id="20395">Mixed</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>

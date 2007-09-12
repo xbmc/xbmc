@@ -587,7 +587,8 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
 
             CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
             if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
-              buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
+              if (!item->IsPlayList())
+                buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
           }
           else
           { // scraper found - allow to add to library, scan for new content, or set different type of content
@@ -598,8 +599,11 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
               buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
             else
             {
-              buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
-              buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
+              if (!item->IsPlayList())
+              {
+                buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
+                buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
+              }
             }
           }
         }
@@ -651,10 +655,6 @@ bool CGUIWindowVideoFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button
 
   switch (button)
   {
-  case CONTEXT_BUTTON_RENAME:
-    OnRenameItem(itemNumber);
-    return true;
-
   case CONTEXT_BUTTON_SWITCH_MEDIA:
     CGUIDialogContextMenu::SwitchMedia("video", m_vecItems.m_strPath);
     return true;

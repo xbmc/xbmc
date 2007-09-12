@@ -29,6 +29,7 @@
 #include "GUIWindowVideoInfo.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogVideoScan.h"
+#include "GUIDialogSmartPlaylistEditor.h"
 #include "PlayListFactory.h"
 #include "Application.h"
 #include "NFOFile.h"
@@ -45,6 +46,7 @@
 #include "GUIDialogMediaSource.h"
 #include "GUIWindowFileManager.h"
 #include "FileSystem/VideoDatabaseDirectory.h"
+#include "PartyModeManager.h"
 
 #include "SkinInfo.h"
 
@@ -734,6 +736,13 @@ void CGUIWindowVideoBase::OnQueueItem(int iItem)
 
   CFileItemList queuedItems;
   AddItemToPlayList(&item, queuedItems);
+  // if party mode, add items but DONT start playing
+  if (g_partyModeManager.IsEnabled())
+  {
+    g_partyModeManager.AddUserSongs(queuedItems, false);
+    return;
+  }
+
   g_playlistPlayer.Add(PLAYLIST_VIDEO, queuedItems);
   // video does not auto play on queue like music
   m_viewControl.SetSelectedItem(iItem + 1);
@@ -899,11 +908,11 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
           buttons.Add(CONTEXT_BUTTON_PLAY_PART, 20324);
       }
 
-      if (GetID() != WINDOW_VIDEO_NAV || !m_vecItems.m_strPath.IsEmpty())
+      if (GetID() != WINDOW_VIDEO_NAV || (!m_vecItems.m_strPath.IsEmpty() && !item->m_strPath.Equals("newsmartplaylist://video")))
         buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347);      // Add to Playlist
 
       // allow a folder to be ad-hoc queued and played by the default player
-      if (GetID() != WINDOW_VIDEO_NAV && item->m_bIsFolder)
+      if (item->m_bIsFolder || (item->IsPlayList() && !g_advancedSettings.m_playlistAsFolders))
         buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208);
       else
       { // get players
@@ -920,6 +929,9 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
           buttons.Add(CONTEXT_BUTTON_RESTART_ITEM, 20132);    // Restart Video
         else
           buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, 13381);     // Resume Video
+      
+      if (item->IsSmartPlayList() || m_vecItems.IsSmartPlayList())
+        buttons.Add(CONTEXT_BUTTON_EDIT_SMART_PLAYLIST, 586);
     }
   }
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
@@ -1037,6 +1049,19 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_DELETE:
     OnDeleteItem(itemNumber);
     return true;
+  case CONTEXT_BUTTON_EDIT_SMART_PLAYLIST:
+    {
+      CStdString playlist = m_vecItems[itemNumber]->IsSmartPlayList() ? m_vecItems[itemNumber]->m_strPath : m_vecItems.m_strPath; // save path as activatewindow will destroy our items
+      if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist))
+      { // need to update
+        m_vecItems.RemoveDiscCache();
+        Update(m_vecItems.m_strPath);
+      }
+      return true;
+    }
+  case CONTEXT_BUTTON_RENAME:
+    OnRenameItem(itemNumber);
+    return true;
   }
   return CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
@@ -1062,13 +1087,24 @@ void CGUIWindowVideoBase::GetStackedFiles(const CStdString &strFilePath1, vector
 
 bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
 {
+  if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return false;
+  CFileItem* pItem = m_vecItems[iItem];
+
+    // party mode
+  if (g_partyModeManager.IsEnabled())
+  {
+    CPlayList playlistTemp;
+    CPlayList::CPlayListItem playlistItem;
+    CUtil::ConvertFileItemToPlayListItem(m_vecItems[iItem], playlistItem);
+    playlistTemp.Add(playlistItem);
+    g_partyModeManager.AddUserSongs(playlistTemp, true);
+    return true;
+  }
+
   // Reset Playlistplayer, playback started now does
   // not use the playlistplayer.
   g_playlistPlayer.Reset();
   g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
-
-  if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return false;
-  CFileItem* pItem = m_vecItems[iItem];
 
   if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026)) // 'add source button' in empty root
   {
@@ -1258,6 +1294,10 @@ void CGUIWindowVideoBase::UpdateVideoTitle(int iItem)
 
 void CGUIWindowVideoBase::LoadPlayList(const CStdString& strPlayList, int iPlayList /* = PLAYLIST_VIDEO */)
 {
+  // if partymode is active, we disable it
+  if (g_partyModeManager.IsEnabled())
+    g_partyModeManager.Disable();
+
   // load a playlist like .m3u, .pls
   // first get correct factory to load playlist
   auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPlayList));
@@ -1332,6 +1372,27 @@ bool CGUIWindowVideoBase::Update(const CStdString &strDirectory)
   m_thumbLoader.Load(m_vecItems);
 
   return true;
+}
+
+bool CGUIWindowVideoBase::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
+{
+  bool bResult = CGUIMediaWindow::GetDirectory(strDirectory,items);
+ 
+  // add in the "New Playlist" item if we're in the playlists folder
+  if (items.m_strPath == "special://videoplaylists/" && !items.Contains("newplaylist://"))
+  {
+/*    CFileItem *newPlaylist = new CFileItem("newplaylist://", false);
+    newPlaylist->SetLabel(g_localizeStrings.Get(525));
+    newPlaylist->SetLabelPreformated(true);
+    items.Add(newPlaylist);
+*/
+    CFileItem* newPlaylist = new CFileItem("newsmartplaylist://video", false);
+    newPlaylist->SetLabel(g_localizeStrings.Get(21437));
+    newPlaylist->SetLabelPreformated(true);
+    items.Add(newPlaylist);
+  }
+
+  return bResult;
 }
 
 void CGUIWindowVideoBase::OnPrepareFileItems(CFileItemList &items)

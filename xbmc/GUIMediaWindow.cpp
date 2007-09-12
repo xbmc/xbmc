@@ -618,9 +618,9 @@ bool CGUIMediaWindow::OnClick(int iItem)
       m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST_EDITOR);
       return true;
     }
-    else if (pItem->m_strPath == "newsmartplaylist://")
+    else if (pItem->m_strPath.Left(19).Equals("newsmartplaylist://"))
     {
-      if (CGUIDialogSmartPlaylistEditor::NewPlaylist())
+      if (CGUIDialogSmartPlaylistEditor::NewPlaylist(pItem->m_strPath.Mid(19)))
         Update(m_vecItems.m_strPath);
       return true;
     }
@@ -1076,7 +1076,7 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
   {
 #endif
   // TODO: FAVOURITES Conditions on masterlock and localisation
-  if (item && !item->IsParentFolder() && !item->m_strPath.Equals("add"))
+    if (item && !item->IsParentFolder() && !item->m_strPath.Equals("add") && !item->m_strPath.Equals("newplaylist://") && !item->m_strPath.Left(19).Equals("newsmartplaylist://"))
   {
     if (CFavourites::IsFavourite(item, GetID()))
       buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14077);     // Remove Favourite

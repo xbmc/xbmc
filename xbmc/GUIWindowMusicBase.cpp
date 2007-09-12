@@ -1263,7 +1263,7 @@ bool CGUIWindowMusicBase::GetDirectory(const CStdString &strDirectory, CFileItem
     newPlaylist->SetLabelPreformated(true);
     items.Add(newPlaylist);
 
-    newPlaylist = new CFileItem("newsmartplaylist://", false);
+    newPlaylist = new CFileItem("newsmartplaylist://music", false);
     newPlaylist->SetLabel(g_localizeStrings.Get(21437));
     newPlaylist->SetLabelPreformated(true);
     items.Add(newPlaylist);

@@ -44,11 +44,11 @@ public:
                          OPERATOR_END
                        };
 
-  CStdString GetWhereClause();
+  CStdString GetWhereClause(const CStdString& strType);
   void TranslateStrings(const char *field, const char *oper, const char *parameter);
   static DATABASE_FIELD TranslateField(const char *field);
   static CStdString     TranslateField(DATABASE_FIELD field);
-  static CStdString     GetDatabaseField(DATABASE_FIELD field);
+  static CStdString     GetDatabaseField(DATABASE_FIELD field, const CStdString& strType);
   static CStdString     TranslateOperator(SEARCH_OPERATOR oper);
 
   static CStdString     GetLocalizedField(DATABASE_FIELD field);
@@ -75,7 +75,9 @@ public:
   TiXmlElement *OpenAndReadName(const CStdString &path);
 
   void SetName(const CStdString &name);
+  void SetType(const CStdString &type); // music, video, mixed
   const CStdString& GetName() const { return m_playlistName; };
+  const CStdString& GetType() const { return m_playlistType; };
 
   void SetMatchAllRules(bool matchAll) { m_matchAllRules = matchAll; };
   bool GetMatchAllRules() const { return m_matchAllRules; };
@@ -100,6 +102,7 @@ private:
 
   vector<CSmartPlaylistRule> m_playlistRules;
   CStdString m_playlistName;
+  CStdString m_playlistType;
   bool m_matchAllRules;
   // order information
   unsigned int m_limit;

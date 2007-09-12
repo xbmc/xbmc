@@ -27,6 +27,7 @@
 #include "utils/CharsetConverter.h"
 #include "XMLUtils.h"
 #include "Database.h"
+#include "VideoDatabase.h"
 #include "LocalizeStrings.h"
 #include "Util.h"
 
@@ -156,7 +157,7 @@ CStdString CSmartPlaylistRule::GetLocalizedRule()
   return rule;
 }
 
-CStdString CSmartPlaylistRule::GetWhereClause()
+CStdString CSmartPlaylistRule::GetWhereClause(const CStdString& strType)
 {
   // the comparison piece
   CStdString operatorString;
@@ -203,15 +204,26 @@ CStdString CSmartPlaylistRule::GetWhereClause()
 
   // now the query parameter
   CStdString query;
-  if (m_field == SONG_GENRE)
-    query = "(strGenre" + parameter + ") or (idsong IN (select idsong from genre,exgenresong where exgenresong.idgenre = genre.idgenre and genre.strGenre" + parameter + "))";
-  else if (m_field == SONG_ARTIST)
-    query = "(strArtist" + parameter + ") or (idsong IN (select idsong from artist,exartistsong where exartistsong.idartist = artist.idartist and artist.strArtist" + parameter + "))";
-  else if (m_field == SONG_ALBUM_ARTIST)
-    query = "idalbum in (select idalbum from artist,album where album.idartist=artist.idartist and artist.strArtist" + parameter + ") or idalbum in (select idalbum from artist,exartistalbum where exartistalbum.idartist = artist.idartist and artist.strArtist" + parameter + ")";
-  else if (m_field == SONG_LASTPLAYED && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
-    query = "lastPlayed is NULL or lastPlayed" + parameter;
-  else if (m_field == FIELD_PLAYLIST)
+  if (strType == "music")
+  {
+    if (m_field == SONG_GENRE)
+      query = "(strGenre" + parameter + ") or (idsong IN (select idsong from genre,exgenresong where exgenresong.idgenre = genre.idgenre and genre.strGenre" + parameter + "))";
+    else if (m_field == SONG_ARTIST)
+      query = "(strArtist" + parameter + ") or (idsong IN (select idsong from artist,exartistsong where exartistsong.idartist = artist.idartist and artist.strArtist" + parameter + "))";
+    else if (m_field == SONG_ALBUM_ARTIST)
+      query = "idalbum in (select idalbum from artist,album where album.idartist=artist.idartist and artist.strArtist" + parameter + ") or idalbum in (select idalbum from artist,exartistalbum where exartistalbum.idartist = artist.idartist and artist.strArtist" + parameter + ")";
+    else if (m_field == SONG_LASTPLAYED && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
+      query = "lastPlayed is NULL or lastPlayed" + parameter;
+  }
+  if (strType == "video")
+  {
+    if (m_field == SONG_GENRE)
+      query = "(strGenre" + parameter + ") or (idmvideo IN (select genrelinkmusicvideo.idmvideo from genre,genrelinkmusicvideo where genrelinkmusicvideo.idgenre = genre.idgenre and genre.strGenre" + parameter + "))";
+    else if (m_field == SONG_ARTIST)
+      query = "(strArtist" + parameter + ") or (idmvideo IN (select genrelinkmusicvideo.idmvideo from actors,artistlinkmusicvideo where artistlinkmusicvideo.idartist = actors.idActor and actors.strActor" + parameter + "))";
+
+  }
+  if (m_field == FIELD_PLAYLIST)
   { // playlist field - grab our playlist and add to our where clause
     CStdString playlistFile = CSmartPlaylistDirectory::GetPlaylistByName(m_parameter);
     if (!playlistFile.IsEmpty())
@@ -226,26 +238,50 @@ CStdString CSmartPlaylistRule::GetWhereClause()
     }
   }
   else if (m_field != FIELD_NONE)
-    query = GetDatabaseField(m_field) + parameter;
+    query = GetDatabaseField(m_field,strType) + parameter;
   return query;
 }
 
-CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field)
+CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStdString& type)
 {
-  if (field == SONG_TITLE) return "strTitle";
-  else if (field == SONG_GENRE) return "strGenre";
-  else if (field == SONG_ALBUM) return "strAlbum";
-  else if (field == SONG_YEAR) return "iYear";
-  else if (field == SONG_ARTIST || field == SONG_ALBUM_ARTIST) return "strArtist";
-  else if (field == SONG_TIME) return "iDuration";
-  else if (field == SONG_PLAYCOUNT) return "iTimesPlayed";
-  else if (field == SONG_FILENAME) return "strFilename";
-  else if (field == SONG_TRACKNUMBER) return "iTrack";
-  else if (field == SONG_LASTPLAYED) return "lastplayed";
-  else if (field == SONG_RATING) return "rating";
-  else if (field == SONG_COMMENT) return "comment";
-  else if (field == FIELD_RANDOM) return "random()";      // only used for order clauses
-  else if (field == SONG_DATEADDED) return "idsong";         // only used for order clauses
+  if (type == "music")
+  {
+    if (field == SONG_TITLE) return "strTitle";
+    else if (field == SONG_GENRE) return "strGenre";
+    else if (field == SONG_ALBUM) return "strAlbum";
+    else if (field == SONG_YEAR) return "iYear";
+    else if (field == SONG_ARTIST || field == SONG_ALBUM_ARTIST) return "strArtist";
+    else if (field == SONG_TIME) return "iDuration";
+    else if (field == SONG_PLAYCOUNT) return "iTimesPlayed";
+    else if (field == SONG_FILENAME) return "strFilename";
+    else if (field == SONG_TRACKNUMBER) return "iTrack";
+    else if (field == SONG_LASTPLAYED) return "lastplayed";
+    else if (field == SONG_RATING) return "rating";
+    else if (field == SONG_COMMENT) return "comment";
+    else if (field == FIELD_RANDOM) return "random()";      // only used for order clauses
+    else if (field == SONG_DATEADDED) return "idsong";         // only used for order clauses
+  }
+  if (type == "video")
+  {
+    CStdString result;
+    if (field == SONG_TITLE) result.Format("musicvideo.c%02d",VIDEODB_ID_MUSICVIDEO_TITLE);
+    else if (field == SONG_GENRE) result = "genre.strgenre";
+    else if (field == SONG_ALBUM) result.Format("musicvideo.c%02d",VIDEODB_ID_MUSICVIDEO_ALBUM);
+    else if (field == SONG_YEAR) result.Format("musicvideo.c%02d",VIDEODB_ID_MUSICVIDEO_YEAR);
+    else if (field == SONG_ARTIST) result.Format("actors.strActor");
+//    else if (field == SONG_TIME) return "iDuration";
+//    else if (field == SONG_PLAYCOUNT) return "iTimesPlayed";
+    else if (field == SONG_FILENAME) result = "strFilename";
+//    else if (field == SONG_TRACKNUMBER) return "iTrack";
+//    else if (field == SONG_LASTPLAYED) return "lastplayed";
+//    else if (field == SONG_RATING) return "rating";
+//    else if (field == SONG_COMMENT) return "comment";
+    else if (field == FIELD_RANDOM) result = "random()";      // only used for order clauses
+//    else if (field == SONG_DATEADDED) return "idsong";         // only used for order clauses
+  
+    return result;
+  }
+  
   return "";
 }
 
@@ -271,6 +307,8 @@ TiXmlElement *CSmartPlaylist::OpenAndReadName(const CStdString &path)
     CLog::Log(LOGERROR, "Error loading Smart playlist %s", path.c_str());
     return NULL;
   }
+  // load the playlist type
+  m_playlistType = root->Attribute("type");
   // load the playlist name
   TiXmlHandle name = ((TiXmlHandle)root->FirstChild("name")).FirstChild();
   if (name.Node())
@@ -337,6 +375,7 @@ bool CSmartPlaylist::Save(const CStdString &path)
   TiXmlDocument doc;
   // TODO: Format strings in UTF8?
   TiXmlElement xmlRootElement("smartplaylist");
+  xmlRootElement.SetAttribute("type",m_playlistType.c_str());
   TiXmlNode *pRoot = doc.InsertEndChild(xmlRootElement);
   if (!pRoot) return false;
   // add the <name> tag
@@ -381,6 +420,11 @@ void CSmartPlaylist::SetName(const CStdString &name)
   m_playlistName = name;
 }
 
+void CSmartPlaylist::SetType(const CStdString &type)
+{
+  m_playlistType = type;
+}
+
 void CSmartPlaylist::AddRule(const CSmartPlaylistRule &rule)
 {
   m_playlistRules.push_back(rule);
@@ -396,7 +440,7 @@ CStdString CSmartPlaylist::GetWhereClause(bool needWhere /* = true */)
     else if (needWhere)
       rule += "WHERE ";
     rule += "(";
-    rule += (*it).GetWhereClause();
+    rule += (*it).GetWhereClause(GetType());
     rule += ")";
   }
   return rule;
@@ -406,7 +450,7 @@ CStdString CSmartPlaylist::GetOrderClause()
 {
   CStdString order;
   if (m_orderField != CSmartPlaylistRule::FIELD_NONE)
-    order.Format("ORDER BY %s%s", CSmartPlaylistRule::GetDatabaseField(m_orderField), m_orderAscending ? "" : " DESC");
+    order.Format("ORDER BY %s%s", CSmartPlaylistRule::GetDatabaseField(m_orderField,GetType()), m_orderAscending ? "" : " DESC");
   if (m_limit)
   {
     CStdString limit;

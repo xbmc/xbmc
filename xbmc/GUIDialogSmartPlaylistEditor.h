@@ -13,7 +13,7 @@ public:
   virtual void OnWindowLoaded();
 
   static bool EditPlaylist(const CStdString &path);
-  static bool NewPlaylist();
+  static bool NewPlaylist(const CStdString &type);
 
 protected:
   void OnRuleList(int item);
@@ -22,6 +22,7 @@ protected:
   void OnName();
   void OnMatch();
   void OnLimit();
+  void OnType();
   void OnOrder();
   void OnOrderDirection();
   void OnOK();

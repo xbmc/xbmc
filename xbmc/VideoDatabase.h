@@ -265,13 +265,14 @@ public:
   void GetMoviesByActor(const CStdString& strActor, VECMOVIES& movies);
   void GetTvShowsByActor(const CStdString& strActor, VECMOVIES& movies);
   void GetEpisodesByActor(const CStdString& strActor, VECMOVIES& movies);
-  void GetMusicVideosByArtist(const CStdString& strArtist, VECMOVIES& movies);
+  void GetMusicVideosByArtist(const CStdString& strArtist, CFileItemList& items);
 
   void GetMusicVideosByAlbum(const CStdString& strAlbum, CFileItemList& items);
 
   void GetMovieGenresByName(const CStdString& strSearch, CFileItemList& items);
   void GetTvShowGenresByName(const CStdString& strSearch, CFileItemList& items);
   void GetMusicVideoGenresByName(const CStdString& strSearch, CFileItemList& items);
+  void GetMusicVideoAlbumsByName(const CStdString& strSearch, CFileItemList& items);
 
   void GetMovieActorsByName(const CStdString& strSearch, CFileItemList& items);
   void GetTvShowsActorsByName(const CStdString& strSearch, CFileItemList& items);
@@ -330,10 +331,14 @@ public:
   bool GetRecentlyAddedEpisodesNav(const CStdString& strBaseDir, CFileItemList& items);
   bool GetRecentlyAddedMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items);
   bool GetMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idArtist=-1, long idDirector=-1, long idStudio=-1);
-  
+  bool GetMusicVideosByWhere(const CStdString &baseDir, const CStdString &whereClause, CFileItemList& items);
+  unsigned int GetMusicVideoIDs(const CStdString& strWhere, vector<long> &songIDs);
+  bool GetRandomMusicVideo(CFileItem* item, long& lSongId, const CStdString& strWhere);
+
   int GetMovieCount();
   int GetTvShowCount();
   int GetMusicVideoCount();
+  int GetMusicVideoCount(const CStdString& strWhere);
 
   bool GetGenreById(long lIdGenre, CStdString& strGenre);
 

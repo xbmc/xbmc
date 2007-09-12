@@ -3,6 +3,7 @@
 #include "../utils/log.h"
 #include "../SmartPlaylist.h"
 #include "../MusicDatabase.h"
+#include "../VideoDatabase.h"
 #include "../Util.h"
 
 using namespace PLAYLIST;
@@ -23,11 +24,24 @@ namespace DIRECTORY
     CSmartPlaylist playlist;
     if (!playlist.Load(strPath))
       return false;
-    CMusicDatabase db;
-    db.Open();
-    CStdString whereOrder = playlist.GetWhereClause() + " " + playlist.GetOrderClause();
-    bool success = db.GetSongsByWhere("", whereOrder, items);
-    db.Close();
+    bool success;
+    if (playlist.GetType().Equals("music"))
+    {
+      CMusicDatabase db;
+      db.Open();
+      CStdString whereOrder = playlist.GetWhereClause() + " " + playlist.GetOrderClause();
+      success = db.GetSongsByWhere("", whereOrder, items);
+      db.Close();
+    }
+    if (playlist.GetType().Equals("video"))
+    {
+      CVideoDatabase db;
+      db.Open();
+      CStdString whereOrder = playlist.GetWhereClause() + " " + playlist.GetOrderClause();
+      success = db.GetMusicVideosByWhere("videodb://3/2/", whereOrder, items);
+      db.Close();
+    }
+
     return success;
   }
 

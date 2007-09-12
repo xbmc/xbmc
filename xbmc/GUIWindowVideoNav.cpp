@@ -35,6 +35,7 @@
 #include "PlaylistFactory.h"
 #include "GUIFontManager.h"
 #include "GUIDialogVideoScan.h"
+#include "PartyModeManager.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -56,6 +57,7 @@ using namespace VIDEODATABASEDIRECTORY;
 #define CONTROL_UNLOCK            11
 
 #define CONTROL_FILTER            15
+#define CONTROL_BTNPARTYMODE      16
 #define CONTROL_LABELEMPTY        18
 
 CGUIWindowVideoNav::CGUIWindowVideoNav(void)
@@ -170,6 +172,22 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
+      if (iControl == CONTROL_BTNPARTYMODE)
+      {
+        if (g_partyModeManager.IsEnabled())
+          g_partyModeManager.Disable();
+        else
+        {
+          g_partyModeManager.Enable();
+
+          // Playlist directory is the root of the playlist window
+          if (m_guiState.get()) m_guiState->SetPlaylistDirectory("playlistvideo://");
+
+          return true;
+        }
+        UpdateButtons();
+      }
+
       if (iControl == CONTROL_BTNSEARCH)
       {
         OnSearch();
@@ -392,6 +410,8 @@ void CGUIWindowVideoNav::UpdateButtons()
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNSHOWALL,g_stSettings.m_iMyVideoWatchMode != VIDEO_SHOW_ALL);
 
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTN_FILTER, !m_filter.IsEmpty());
+
+  SET_CONTROL_SELECTED(GetID(),CONTROL_BTNPARTYMODE, g_partyModeManager.IsEnabled());
 }
 
 /// \brief Search for genres, artists and albums with search string \e strSearch in the musicdatabase and return the found \e items
@@ -627,6 +647,12 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
 {
   if (iItem < 0 || iItem >= (int)m_vecItems.Size()) return;
 
+  if (m_vecItems.m_strPath.Equals("special://videoplaylists/"))
+  {
+    CGUIWindowVideoBase::OnDeleteItem(iItem);
+    return;
+  }
+
   CFileItem* pItem = m_vecItems[iItem];
 
   int iType=0;
@@ -800,7 +826,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
       buttons.Add(CONTEXT_BUTTON_INFO, item->m_bIsFolder ? 20351 : 20352);
     else if (info.strContent.Equals("musicvideos"))
       buttons.Add(CONTEXT_BUTTON_INFO,20393);
-    else if (!item->m_bIsFolder)
+    else if (!item->m_bIsFolder && !item->m_strPath.Left(19).Equals("newsmartplaylist://"))
       buttons.Add(CONTEXT_BUTTON_INFO, 13346);
 
     if (!item->IsParentFolder())
@@ -861,6 +887,15 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 13335); // set default
         if (strcmp(g_stSettings.m_szDefaultVideoLibView, ""))
           buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // clear default
+      }
+
+      if (m_vecItems.m_strPath.Equals("special://videoplaylists/"))
+      { // video playlists, file operations are allowed
+        if (!item->IsReadOnly())
+        {
+          buttons.Add(CONTEXT_BUTTON_DELETE, 117);
+          buttons.Add(CONTEXT_BUTTON_RENAME, 118);
+        }
       }
     }
   }

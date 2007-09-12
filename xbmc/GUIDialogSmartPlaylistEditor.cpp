@@ -38,6 +38,7 @@
 
 #define CONTROL_OK              20
 #define CONTROL_CANCEL          21
+#define CONTROL_TYPE            22
 
 using namespace PLAYLIST;
 
@@ -88,6 +89,8 @@ bool CGUIDialogSmartPlaylistEditor::OnMessage(CGUIMessage& message)
         OnOrder();
       else if (iControl == CONTROL_ORDER_DIRECTION)
         OnOrderDirection();
+      else if (iControl == CONTROL_TYPE)
+        OnType();
       else
         return CGUIDialog::OnMessage(message);
       return true;
@@ -125,7 +128,7 @@ void CGUIDialogSmartPlaylistEditor::OnRuleList(int item)
 
   CSmartPlaylistRule rule = m_playlist.m_playlistRules[item];
 
-  if (CGUIDialogSmartPlaylistRule::EditRule(rule))
+  if (CGUIDialogSmartPlaylistRule::EditRule(rule,m_playlist.GetType()))
     m_playlist.m_playlistRules[item] = rule;
 
   UpdateButtons();
@@ -145,7 +148,12 @@ void CGUIDialogSmartPlaylistEditor::OnOK()
     CStdString filename(m_playlist.m_playlistName);
     CStdString path;
     if (CGUIDialogKeyboard::ShowAndGetInput(filename, g_localizeStrings.Get(16013), false))
-      CUtil::AddFileToFolder("special://musicplaylists/", filename, path);
+    {
+      if (m_playlist.GetType().Equals("video"))
+        CUtil::AddFileToFolder("special://videoplaylists/", filename, path);
+      else
+        CUtil::AddFileToFolder("special://musicplaylists/", filename, path);
+    }
     else
       return;
     if (CUtil::GetExtension(path) != ".xsp")
@@ -180,6 +188,19 @@ void CGUIDialogSmartPlaylistEditor::OnLimit()
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_LIMIT);
   OnMessage(msg);
   m_playlist.m_limit = msg.GetParam1();
+  UpdateButtons();
+}
+
+void CGUIDialogSmartPlaylistEditor::OnType()
+{
+  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_TYPE);
+  OnMessage(msg);
+  if (msg.GetParam1() == 1)
+    m_playlist.SetType("music");
+  if (msg.GetParam1() == 2)
+    m_playlist.SetType("video");
+  if (msg.GetParam1() == 3)
+    m_playlist.SetType("mixed");
   UpdateButtons();
 }
 
@@ -297,6 +318,36 @@ void CGUIDialogSmartPlaylistEditor::OnWindowLoaded()
     CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_ORDER_FIELD, m_playlist.m_orderField);
     OnMessage(msg);
   }
+  // type
+  {
+    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_TYPE, 1);
+    CStdString label = g_localizeStrings.Get(2);
+    msg.SetLabel(label);
+    OnMessage(msg);
+  }
+  {
+    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_TYPE, 2);
+    CStdString label = g_localizeStrings.Get(3);
+    msg.SetLabel(label);
+    OnMessage(msg);
+  }
+  {
+    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_TYPE, 3);
+    CStdString label= g_localizeStrings.Get(20395);
+    msg.SetLabel(label);
+    OnMessage(msg);
+  }
+  {
+    int iType=1;
+    CStdString type = m_playlist.GetType();
+    if (m_playlist.GetType() == "video")
+      iType = 2;
+    if (m_playlist.GetType() == "mixed")
+      iType = 3;
+    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_TYPE, iType);
+    OnMessage(msg);
+  }
+
 }
 
 int CGUIDialogSmartPlaylistEditor::GetSelectedItem()
@@ -335,7 +386,7 @@ void CGUIDialogSmartPlaylistEditor::OnRuleRemove(int item)
 void CGUIDialogSmartPlaylistEditor::OnRuleAdd()
 {
   CSmartPlaylistRule rule;
-  if (CGUIDialogSmartPlaylistRule::EditRule(rule))
+  if (CGUIDialogSmartPlaylistRule::EditRule(rule,m_playlist.GetType()))
   {
     if (m_playlist.m_playlistRules.size() == 1 && m_playlist.m_playlistRules[0].m_field == CSmartPlaylistRule::FIELD_NONE)
       m_playlist.m_playlistRules[0] = rule;
@@ -345,7 +396,7 @@ void CGUIDialogSmartPlaylistEditor::OnRuleAdd()
   UpdateButtons();
 }
 
-bool CGUIDialogSmartPlaylistEditor::NewPlaylist()
+bool CGUIDialogSmartPlaylistEditor::NewPlaylist(const CStdString &type)
 {
   CGUIDialogSmartPlaylistEditor *editor = (CGUIDialogSmartPlaylistEditor *)m_gWindowManager.GetWindow(WINDOW_DIALOG_SMART_PLAYLIST_EDITOR);
   if (!editor) return false;
@@ -353,6 +404,7 @@ bool CGUIDialogSmartPlaylistEditor::NewPlaylist()
   editor->m_path = "";
   editor->m_playlist = CSmartPlaylist();
   editor->m_playlist.m_playlistRules.push_back(CSmartPlaylistRule());
+  editor->m_playlist.SetType(type);
   editor->Initialize();
   editor->DoModal(m_gWindowManager.GetActiveWindow());
   return !editor->m_cancelled;

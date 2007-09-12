@@ -42,6 +42,7 @@ private:
   bool m_bEnabled;
   int m_iLastUserSong;
   CStdString m_strCurrentFilter;
+  CStdString m_type;
 
   // statistics
   int m_iSongsPlayed;
