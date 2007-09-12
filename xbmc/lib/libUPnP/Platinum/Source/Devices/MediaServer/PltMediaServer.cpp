@@ -71,7 +71,7 @@ PLT_MediaServer::PLT_MediaServer(const char*  friendly_name,
 
     service = new PLT_Service(
         this,
-        "urn:microsoft.com:serviceId:X_MS_MediaReceiverRegistrar:1", 
+        "urn:microsoft.com:service:X_MS_MediaReceiverRegistrar:1", 
         "urn:microsoft.com:serviceId:X_MS_MediaReceiverRegistrar");
     if (NPT_SUCCEEDED(service->SetSCPDXML((const char*) X_MS_MediaReceiverRegistrarSCPD))) {
         service->InitURLs("X_MS_MediaReceiverRegistrar", m_UUID);
