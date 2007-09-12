@@ -3255,19 +3255,12 @@ char CUtil::GetDirectorySeperator(const CStdString &strFilename)
 
 void CUtil::ConvertFileItemToPlayListItem(const CFileItem *pItem, CPlayList::CPlayListItem &playlistitem)
 {
-  playlistitem.SetDescription(pItem->GetLabel());
-  playlistitem.SetFileName(pItem->m_strPath);
+  *(CFileItem*)&playlistitem = *pItem;
+
   if (pItem->HasMusicInfoTag())
     playlistitem.SetDuration(pItem->GetMusicInfoTag()->GetDuration());
   if (playlistitem.HasVideoInfoTag())
     playlistitem.SetDuration(StringUtils::TimeStringToSeconds(pItem->GetVideoInfoTag()->m_strRuntime));
-  playlistitem.SetStartOffset(pItem->m_lStartOffset);
-  playlistitem.SetEndOffset(pItem->m_lEndOffset);
-  if (pItem->HasMusicInfoTag())
-    playlistitem.SetMusicTag(*pItem->GetMusicInfoTag());
-  if (pItem->HasVideoInfoTag())
-    playlistitem.SetVideoTag(*pItem->GetVideoInfoTag());
-  playlistitem.SetThumbnailImage(pItem->GetThumbnailImage());
 }
 
 bool CUtil::IsUsingTTFSubtitles()
