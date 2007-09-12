@@ -140,6 +140,8 @@ void CPlayListPlayer::PlayNext(bool bAutoPlay)
     }
   }
   Play(iSong, bAutoPlay);
+  if (playlist[iSong].IsAudio() && m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+    m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
   //g_partyModeManager.OnSongChange();
 }
 

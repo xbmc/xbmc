@@ -825,10 +825,10 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
         buttons.Add(CONTEXT_BUTTON_PLAY_WITH, 15213); // Play With...
     }
 
-    if (item->IsPlayList() || m_vecItems.IsPlayList())
-      buttons.Add(CONTEXT_BUTTON_EDIT, 586);
-    else if (item->IsSmartPlayList() || m_vecItems.IsSmartPlayList())
+    if (item->IsSmartPlayList() || m_vecItems.IsSmartPlayList())
       buttons.Add(CONTEXT_BUTTON_EDIT_SMART_PLAYLIST, 586);
+    else if (item->IsPlayList() || m_vecItems.IsPlayList())
+      buttons.Add(CONTEXT_BUTTON_EDIT, 586);  
   }
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
 }
