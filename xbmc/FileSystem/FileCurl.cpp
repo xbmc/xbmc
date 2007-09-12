@@ -417,7 +417,7 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
     if(url2.GetProtocol().Equals("http") || url2.GetProtocol().Equals("https"))
     {
       // only assume server is seekable if it provides Accept-Ranges
-      if(!m_httpheader.GetValue("Accept-Ranges").IsEmpty())
+      if(m_httpheader.GetValue("Accept-Ranges") == "bytes")
         m_seekable = true;
     }
     else
