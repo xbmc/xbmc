@@ -5446,6 +5446,39 @@ bool CVideoDatabase::GetRandomMusicVideo(CFileItem* item, long& lSongId, const C
   return false;
 }
 
+long CVideoDatabase::GetMusicVideoArtistByName(const CStdString& strArtist)
+{
+  CStdString strSQL;
+
+  try
+  {
+    if (NULL == m_pDB.get()) return -1;
+    if (NULL == m_pDS.get()) return -1;
+
+    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
+      strSQL=FormatSQL("select distinct actors.idactor,path.strPath from artistlinkmusicvideo,actors,musicvideo,files,path where actors.idActor=artistlinkmusicvideo.idartist and artistlinkmusicvideo.idmvideo=musicvideo.idmvideo and files.idFile = musicvideo.idFile and files.idPath = path.idPath and actors.strActor like '%s'",strArtist.c_str());
+    else
+      strSQL=FormatSQL("select distinct actors.idactor from artistlinkmusicvideo,actors,musicvideo where actors.idActor=artistlinkmusicvideo.idartist and artistlinkmusicvideo.idmvideo=musicvideo.idmvideo and actors.strActor like '%s'",strArtist.c_str());
+    m_pDS->query( strSQL.c_str() );
+
+    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
+      if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
+      {
+        m_pDS->close();
+        return -1;
+      }
+
+    long lResult = m_pDS->fv(0).get_asLong();
+    m_pDS->close();
+    return lResult;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__"(%s) failed",strSQL.c_str());
+  }
+  return -1;
+}
+
 void CVideoDatabase::GetMoviesByName(const CStdString& strSearch, CFileItemList& items)
 {
   CStdString strSQL;
@@ -5605,6 +5638,39 @@ void CVideoDatabase::GetMusicVideosByName(const CStdString& strSearch, CFileItem
   {
     CLog::Log(LOGERROR, "CVideoDatabase::GetMusicVideosByName(%s) failed",strSQL.c_str());
   }
+}
+
+long CVideoDatabase::GetMusicVideoByArtistAndAlbumAndTitle(const CStdString& strArtist, const CStdString& strAlbum, const CStdString& strTitle)
+{
+  CStdString strSQL;
+
+  try
+  {
+    if (NULL == m_pDB.get()) return -1;
+    if (NULL == m_pDS.get()) return -1;
+
+    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
+      strSQL = FormatSQL("select musicvideo.idmvideo from musicvideo,file,path,artistlinkmusicvideo,actors where file.idfile=musicvideo.idfile and file.idPath=path.idPath and musicvideo.%c02d like '%s' and musicvideo.%c02d like '%s' and artistlinkmusicvideo.idmvideo=musicvideo.idmvideo and artistlinkmusicvideo.idartist = actors.idactors and actors.strActor like '%s'",VIDEODB_ID_MUSICVIDEO_ALBUM,strAlbum.c_str(),VIDEODB_ID_MUSICVIDEO_TITLE,strTitle.c_str(),strArtist.c_str());
+    else
+      strSQL = FormatSQL("select musicvideo.idmvideo from musicvideo join artistlinkmusicvideo on artistlinkmusicvideo.idmvideo=musicvideo.idmvideo join actors on actors.idactor=artistlinkmusicvideo.idartist where musicvideo.c%02d like '%s' and musicvideo.c%02d like '%s' and actors.strActor like '%s'",VIDEODB_ID_MUSICVIDEO_ALBUM,strAlbum.c_str(),VIDEODB_ID_MUSICVIDEO_TITLE,strTitle.c_str(),strArtist.c_str());
+    m_pDS->query( strSQL.c_str() );
+
+    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
+      if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
+      {
+        m_pDS->close();
+        return -1;
+      }
+    
+    long lResult = m_pDS->fv(0).get_asLong();
+    m_pDS->close();
+    return lResult;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CVideoDatabase::GetMusicVideosByName(%s) failed",strSQL.c_str());
+  }
+  return -1;
 }
 
 void CVideoDatabase::GetEpisodesByPlot(const CStdString& strSearch, CFileItemList& items)

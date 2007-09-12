@@ -37,6 +37,7 @@
 #include "PartyModeManager.h"
 #include "PlaylistFactory.h"
 #include "GUIDialogMusicScan.h"
+#include "VideoDatabase.h"
 
 using namespace DIRECTORY;
 using namespace PLAYLIST;
@@ -466,6 +467,21 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
       if (strcmp(g_stSettings.m_szDefaultMusicLibView, ""))
         buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // clear default
     }
+
+    if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetArtist().size() > 0)
+    {
+      CVideoDatabase database;
+      database.Open();
+      if (database.GetMusicVideoArtistByName(item->GetMusicInfoTag()->GetArtist()) > -1)
+        buttons.Add(CONTEXT_BUTTON_GO_TO_ARTIST, 20400);
+    }
+    if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetArtist().size() > 0 && item->GetMusicInfoTag()->GetAlbum().size() > 0 && item->GetMusicInfoTag()->GetTitle().size() > 0)
+    {
+      CVideoDatabase database;
+      database.Open();
+      if (database.GetMusicVideoByArtistAndAlbumAndTitle(item->GetMusicInfoTag()->GetArtist(),item->GetMusicInfoTag()->GetAlbum(),item->GetMusicInfoTag()->GetTitle()) > -1)
+        buttons.Add(CONTEXT_BUTTON_PLAY_OTHER, 20401);
+    }
   }
   // noncontextual buttons
 
@@ -506,6 +522,25 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     strcpy(g_stSettings.m_szDefaultMusicLibView, "");
     g_settings.Save();
     return true;
+
+  case CONTEXT_BUTTON_GO_TO_ARTIST:
+    {
+      CStdString strPath;
+      CVideoDatabase database;
+      database.Open();
+      strPath.Format("videodb://3/4/%ld/",database.GetMusicVideoArtistByName(m_vecItems[itemNumber]->GetMusicInfoTag()->GetArtist()));
+      m_gWindowManager.ActivateWindow(WINDOW_VIDEO_NAV,strPath);
+      return true;
+    }
+  case CONTEXT_BUTTON_PLAY_OTHER:
+    {
+      CVideoDatabase database;
+      database.Open();
+      CVideoInfoTag details;
+      database.GetMusicVideoInfo("",details,database.GetMusicVideoByArtistAndAlbumAndTitle(m_vecItems[itemNumber]->GetMusicInfoTag()->GetArtist(),m_vecItems[itemNumber]->GetMusicInfoTag()->GetAlbum(),m_vecItems[itemNumber]->GetMusicInfoTag()->GetTitle()));
+      g_applicationMessenger.PlayFile(CFileItem(details));
+      return true;
+    }
   }
 
   return CGUIWindowMusicBase::OnContextButton(itemNumber, button);

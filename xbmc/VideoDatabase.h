@@ -334,6 +334,8 @@ public:
   bool GetMusicVideosByWhere(const CStdString &baseDir, const CStdString &whereClause, CFileItemList& items);
   unsigned int GetMusicVideoIDs(const CStdString& strWhere, vector<long> &songIDs);
   bool GetRandomMusicVideo(CFileItem* item, long& lSongId, const CStdString& strWhere);
+  long GetMusicVideoArtistByName(const CStdString& strArtist);
+  long GetMusicVideoByArtistAndAlbumAndTitle(const CStdString& strArtist, const CStdString& strAlbum, const CStdString& strTitle);
 
   int GetMovieCount();
   int GetTvShowCount();

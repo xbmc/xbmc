@@ -143,6 +143,10 @@ public:
   bool GetArtistById(long idArtist, CStdString& strArtist);
   bool GetAlbumById(long idAlbum, CStdString& strAlbum);
 
+  long GetArtistByName(const CStdString& strArtist);
+  long GetAlbumByName(const CStdString& strAlbum);
+  long GetSongByArtistAndAlbumAndTitle(const CStdString& strArtist, const CStdString& strAlbum, const CStdString& strTitle);
+
   bool GetVariousArtistsAlbums(const CStdString& strBaseDir, CFileItemList& items);
   bool GetVariousArtistsAlbumsSongs(const CStdString& strBaseDir, CFileItemList& items);
 

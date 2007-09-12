@@ -1631,6 +1631,12 @@
   <string id="20393">Music Video Information</string>
   <string id="20394">Loading Music Video information</string>
   <string id="20395">Mixed</string>
+  <string id="20396">Go To Albums by Artist</string>
+  <string id="20397">Go To Album</string>
+  <string id="20398">Play Song</string>
+  <string id="20399">Go To Music Videos from Album</string>
+  <string id="20400">Go To Music Videos by Artist</string>
+  <string id="20401">Play Music Video</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>

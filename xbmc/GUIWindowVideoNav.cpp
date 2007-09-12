@@ -36,6 +36,7 @@
 #include "GUIFontManager.h"
 #include "GUIDialogVideoScan.h"
 #include "PartyModeManager.h"
+#include "MusicDatabase.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -115,6 +116,8 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
           m_vecItems.m_strPath = "videodb://1/4/";
         else if (strDestination.Equals("MovieDirectors"))
           m_vecItems.m_strPath = "videodb://1/5/";
+        else if (strDestination.Equals("MovieStudios"))
+          m_vecItems.m_strPath = "videodb://1/6/";
         else if (strDestination.Equals("Movies"))
           m_vecItems.m_strPath = "videodb://1/";
         else if (strDestination.Equals("TvShowGenres"))
@@ -137,6 +140,8 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
           m_vecItems.m_strPath = "videodb://3/4/";
         else if (strDestination.Equals("MusicVideoDirectors"))
           m_vecItems.m_strPath = "videodb://3/5/";
+        else if (strDestination.Equals("MusicVideoStudios"))
+          m_vecItems.m_strPath = "videodb://3/6/";
         else if (strDestination.Equals("MusicVideos"))
           m_vecItems.m_strPath = "videodb://3/";
         else if (strDestination.Equals("Playlists"))
@@ -829,6 +834,27 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
     else if (!item->m_bIsFolder && !item->m_strPath.Left(19).Equals("newsmartplaylist://"))
       buttons.Add(CONTEXT_BUTTON_INFO, 13346);
 
+    if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->GetArtist().size() > 0)
+    {
+      CMusicDatabase database;
+      database.Open();
+      if (database.GetArtistByName(item->GetVideoInfoTag()->GetArtist()) > -1)
+        buttons.Add(CONTEXT_BUTTON_GO_TO_ARTIST, 20396);
+    }
+    if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_strAlbum.size() > 0)
+    {
+      CMusicDatabase database;
+      database.Open();
+      if (database.GetAlbumByName(item->GetVideoInfoTag()->m_strAlbum) > -1)
+        buttons.Add(CONTEXT_BUTTON_GO_TO_ALBUM, 20397);
+    }
+    if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_strAlbum.size() > 0 && item->GetVideoInfoTag()->GetArtist().size() > 0 && item->GetVideoInfoTag()->m_strTitle.size() > 0)
+    {
+      CMusicDatabase database;
+      database.Open();
+      if (database.GetSongByArtistAndAlbumAndTitle(item->GetVideoInfoTag()->GetArtist(),item->GetVideoInfoTag()->m_strAlbum,item->GetVideoInfoTag()->m_strTitle) > -1)
+        buttons.Add(CONTEXT_BUTTON_PLAY_OTHER, 20398);
+    }
     if (!item->IsParentFolder())
     {
       // can we update the database?
@@ -1019,6 +1045,34 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       OnLinkMovieToTvShow(itemNumber);
       return true;
     }
+  case CONTEXT_BUTTON_GO_TO_ARTIST:
+    {
+      CStdString strPath;
+      CMusicDatabase database;
+      database.Open();
+      strPath.Format("musicdb://2/%ld/",database.GetArtistByName(m_vecItems[itemNumber]->GetVideoInfoTag()->GetArtist()));
+      m_gWindowManager.ActivateWindow(WINDOW_MUSIC_NAV,strPath);
+      return true;
+    }
+  case CONTEXT_BUTTON_GO_TO_ALBUM:
+    {
+      CStdString strPath;
+      CMusicDatabase database;
+      database.Open();
+      strPath.Format("musicdb://3/%ld/",database.GetAlbumByName(m_vecItems[itemNumber]->GetVideoInfoTag()->m_strAlbum));
+      m_gWindowManager.ActivateWindow(WINDOW_MUSIC_NAV,strPath);
+      return true;
+    }
+  case CONTEXT_BUTTON_PLAY_OTHER:
+    {
+      CMusicDatabase database;
+      database.Open();
+      CSong song;
+      if (database.GetSongById(database.GetSongByArtistAndAlbumAndTitle(m_vecItems[itemNumber]->GetVideoInfoTag()->GetArtist(),m_vecItems[itemNumber]->GetVideoInfoTag()->m_strAlbum,m_vecItems[itemNumber]->GetVideoInfoTag()->m_strTitle),song))
+        g_applicationMessenger.PlayFile(song);
+      return true;
+    }
+
   }
   return CGUIWindowVideoBase::OnContextButton(itemNumber, button);
 }
