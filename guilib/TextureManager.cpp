@@ -693,7 +693,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
       {
         int vmaj,vmin;
         g_graphicsContext.getScreenSurface()->GetGLVersion(vmaj, vmin);    
-        if (vmaj>=2)
+        if (vmaj>=2 && GLEW_ARB_texture_non_power_of_two)
           npot = 1;
         else
           npot = 0;
@@ -716,8 +716,8 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
 #ifdef HAS_XBOX_D3D
         if (D3DXCreateTexture(g_graphicsContext.Get3DDevice(), w, h, 1, 0, D3DFMT_P8, D3DPOOL_MANAGED, &pTexture) == D3D_OK)
 #elif defined(HAS_SDL)
-		    pTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, w, h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
-		    if (pTexture)
+          pTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, w, h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+        if (pTexture)
 #else
         if (D3DXCreateTexture(g_graphicsContext.Get3DDevice(), w, h, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &pTexture) == D3D_OK)
 #endif
@@ -1215,15 +1215,15 @@ void CGLTexture::Update(int w, int h, int pitch, const unsigned char *pixels, bo
   {
     g_graphicsContext.getScreenSurface()->GetGLVersion(vmaj, vmin);    
   }
-  if (vmaj<2)
-  {
-    textureWidth = PadPow2(imageWidth);
-    textureHeight = PadPow2(imageHeight);
-  }
-  else
+  if (vmaj>=2 && GLEW_ARB_texture_non_power_of_two)
   {
     textureWidth = imageWidth;
     textureHeight = imageHeight;
+  }
+  else
+  {
+    textureWidth = PadPow2(imageWidth);
+    textureHeight = PadPow2(imageHeight);
   }
   
   // Resize texture to POT
