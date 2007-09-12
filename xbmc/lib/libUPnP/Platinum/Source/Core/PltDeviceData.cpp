@@ -287,6 +287,23 @@ PLT_DeviceData::GetDescription(NPT_String& desc)
 }
 
 /*----------------------------------------------------------------------
+|   PLT_DeviceData::SetDescriptionUrl
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_DeviceData::SetDescriptionUrl(NPT_HttpUrl description_url)
+{
+    if (!description_url.IsValid()) return NPT_FAILURE;
+    m_URLDescription = description_url;
+
+    // remove trailing file according to RFC 2396
+    m_URLBasePath = m_URLDescription.GetPath();
+    if (!m_URLBasePath.EndsWith("/")) {
+        int index = m_URLBasePath.ReverseFind('/');
+        if (index >= 0) m_URLBasePath.SetLength(index+1);
+    }
+}
+
+/*----------------------------------------------------------------------
 |   PLT_DeviceData::SetDescription
 +---------------------------------------------------------------------*/
 NPT_Result
