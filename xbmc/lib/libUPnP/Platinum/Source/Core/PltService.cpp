@@ -117,6 +117,10 @@ PLT_Service::~PLT_Service()
      m_ActionDescs.Apply(NPT_ObjectDeleter<PLT_ActionDesc>());
      m_StateVariables.Apply(NPT_ObjectDeleter<PLT_StateVariable>());
      m_Subscribers.Apply(NPT_ObjectDeleter<PLT_EventSubscriber>());
+
+     m_ActionDescs.Clear();
+     m_StateVariables.Clear();
+     m_Subscribers.Clear();
  }
 
 /*----------------------------------------------------------------------
