@@ -89,7 +89,7 @@ public:
 protected:
     virtual ~PLT_DeviceHost();
     
-    virtual NPT_Result Start(PLT_TaskManager* task_manager);
+    virtual NPT_Result Start(PLT_TaskManager* task_manager, NPT_Reference<PLT_DeviceHost>& self);
     virtual NPT_Result Stop();
 
     virtual NPT_Result ProcessHttpPostRequest(NPT_HttpRequest&  request,
@@ -113,6 +113,7 @@ private:
     PLT_SsdpDeviceAnnounceTask*       m_SsdpAnnounceTask;
     bool                              m_Broadcast;
     NPT_List<NPT_HttpRequestHandler*> m_RequestHandlers;
+    NPT_Reference<PLT_DeviceHost>     m_Self;
 };
 
 typedef NPT_Reference<PLT_DeviceHost> PLT_DeviceHostReference;

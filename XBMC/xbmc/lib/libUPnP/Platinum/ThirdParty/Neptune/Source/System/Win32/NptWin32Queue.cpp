@@ -33,7 +33,7 @@ public:
     // methods
                NPT_Win32Queue(NPT_Cardinal max_items);
               ~NPT_Win32Queue();
-    NPT_Result Push(NPT_QueueItem* item); 
+    NPT_Result Push(NPT_QueueItem* item, bool blocking); 
     NPT_Result Pop(NPT_QueueItem*& item, bool blocking);
 
 
@@ -68,7 +68,7 @@ NPT_Win32Queue::~NPT_Win32Queue()
 |   NPT_Win32Queue::Push
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_Win32Queue::Push(NPT_QueueItem* item)
+NPT_Win32Queue::Push(NPT_QueueItem* item, bool blocking)
 {
     // lock the mutex that protects the list
     NPT_CHECK(m_Mutex.Lock());
@@ -76,6 +76,11 @@ NPT_Win32Queue::Push(NPT_QueueItem* item)
     // check that we have not exceeded the max
     if (m_MaxItems) {
         while (m_Items.GetItemCount() >= m_MaxItems) {
+            if (!blocking) {
+                m_Mutex.Unlock();
+                return NPT_FAILURE;
+            }
+
             // we must wait until some items have been removed
 
             // unlock the mutex so that another thread can pop

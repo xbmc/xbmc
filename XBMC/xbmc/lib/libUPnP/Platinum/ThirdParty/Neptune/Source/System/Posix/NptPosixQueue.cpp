@@ -28,7 +28,7 @@ public:
     // methods
                NPT_PosixQueue(NPT_Cardinal max_items);
               ~NPT_PosixQueue();
-    NPT_Result Push(NPT_QueueItem* item); 
+    NPT_Result Push(NPT_QueueItem* item, bool blocking); 
     NPT_Result Pop(NPT_QueueItem*& item, bool blocking);
 
 
@@ -66,7 +66,7 @@ NPT_PosixQueue::~NPT_PosixQueue()
 |       NPT_PosixQueue::Push
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_PosixQueue::Push(NPT_QueueItem* item)
+NPT_PosixQueue::Push(NPT_QueueItem* item, bool blocking)
 {
     // lock the mutex that protects the list
     if (pthread_mutex_lock(&m_Mutex)) {
@@ -75,6 +75,11 @@ NPT_PosixQueue::Push(NPT_QueueItem* item)
 
     // check that we have not exceeded the max
     if (m_MaxItems) {
+        if (!blocking) {
+            pthread_mutex_unlock(&m_Mutex);
+            return NPT_FAILURE;
+        }
+
         while (m_Items.GetItemCount() >= m_MaxItems) {
             // wait until some items have been removed
             //NPT_Debug(":: NPT_PosixQueue::Push - waiting for queue to empty\n");

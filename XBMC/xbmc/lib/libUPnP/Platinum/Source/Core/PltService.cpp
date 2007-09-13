@@ -80,7 +80,8 @@ PLT_ServiceTypeFinder::operator()(PLT_Service* const & service) const
 +---------------------------------------------------------------------*/
 NPT_Result
 PLT_LastChangeXMLIterator::operator()(PLT_StateVariable* const &var) const
-{    
+{   
+    if(var->IsSendingEvents()) return NPT_SUCCESS;
     NPT_XmlElementNode* variable = new NPT_XmlElementNode((const char*)var->GetName());
     NPT_CHECK_SEVERE(m_Node->AddChild(variable));
     NPT_CHECK_SEVERE(variable->SetAttribute("val", var->GetValue()));
@@ -116,6 +117,10 @@ PLT_Service::~PLT_Service()
      m_ActionDescs.Apply(NPT_ObjectDeleter<PLT_ActionDesc>());
      m_StateVariables.Apply(NPT_ObjectDeleter<PLT_StateVariable>());
      m_Subscribers.Apply(NPT_ObjectDeleter<PLT_EventSubscriber>());
+
+     m_ActionDescs.Clear();
+     m_StateVariables.Clear();
+     m_Subscribers.Clear();
  }
 
 /*----------------------------------------------------------------------
@@ -491,12 +496,18 @@ PLT_Service::ProcessNewSubscription(PLT_TaskManager*   task_manager,
     PLT_UPnPMessageHelper::GenerateUUID(19, sid);
     subscriber->SetSID("uuid:" + sid);
 
-    m_Subscribers.Add(subscriber);
-
     PLT_UPnPMessageHelper::SetSID(&response, subscriber->GetSID());
     PLT_UPnPMessageHelper::SetTimeOut(&response, timeout);
 
+    // we must set LastChanged state to all non evented
+    // variables, by doing this first, we will get all data
+    // in one event to the new subscriber
+    m_StateChanged = m_StateVariables;
+    NotifyChanged();
+
+    m_Subscribers.Add(subscriber);
     subscriber->Notify(m_StateVariables);
+
     return NPT_SUCCESS;
 }
 
@@ -586,15 +597,15 @@ PLT_Service::NotifySubs(PLT_StateVariable* var /* = NULL */)
             expiration = sub->GetExpirationTime();
 
             sub->Notify(*vars);
-            m_Subscribers.Add(sub);
 
             // for now subscribers never expire
-//            if ((expiration.GetSeconds() != 0 && expiration < now ) || NPT_FAILED(res)) {
-//                delete sub;
-//            } else {
-//                // add back subscriber to end of list
-//                m_Subscribers.Add(sub);
-//            }
+            // renabled to keep down overhead  -- elupus
+            if (expiration != NPT_TimeStamp() && expiration < now) {
+                delete sub;
+            } else {
+                // add back subscriber to end of list
+                m_Subscribers.Add(sub);
+            }
         }
     }
 

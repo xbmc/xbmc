@@ -2384,7 +2384,7 @@ void CApplication::DoRender()
   {
     if (m_pPlayer->IsRecording() )
     {
-      iBlinkRecord = 0;
+      static int iBlinkRecord = 0;
       CGUIFont* pFont = g_fontManager.GetFont("font13");
       if (pFont)
       {
@@ -4149,7 +4149,10 @@ void CApplication::StopPlaying()
         // mark as watched if we are passed the usual amount
         if (GetPercentage() >= g_advancedSettings.m_playCountMinimumPercent)
         {
-          dbs.MarkAsWatched(m_itemCurrentFile);
+          if (m_itemCurrentFile.HasVideoInfoTag() && m_itemCurrentFile.GetVideoInfoTag()->m_iEpisode > -1)
+            dbs.MarkAsWatched(m_itemCurrentFile.GetVideoInfoTag()->m_iDbId,1);
+          else
+            dbs.MarkAsWatched(m_itemCurrentFile);
           CUtil::DeleteVideoDatabaseDirectoryCache();
         }
 
@@ -4802,7 +4805,12 @@ bool CApplication::OnMessage(CGUIMessage& message)
       {
         CVideoDatabase dbs;
         dbs.Open();
-        dbs.MarkAsWatched(m_itemCurrentFile);
+
+        if (m_itemCurrentFile.HasVideoInfoTag() && m_itemCurrentFile.GetVideoInfoTag()->m_iEpisode > -1)
+          dbs.MarkAsWatched(m_itemCurrentFile.GetVideoInfoTag()->m_iDbId,1);
+        else
+          dbs.MarkAsWatched(m_itemCurrentFile);
+
         CUtil::DeleteVideoDatabaseDirectoryCache();
         dbs.ClearBookMarksOfFile(m_itemCurrentFile.m_strPath, CBookmark::RESUME);
         dbs.Close();

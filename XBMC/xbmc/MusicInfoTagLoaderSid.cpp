@@ -108,7 +108,7 @@ bool CMusicInfoTagLoaderSid::Load(const CStdString& strFileName, CMusicInfoTag& 
     strLower.MakeLower();
 
     if (!szStart)
-      szStart= strstr(strLower.c_str(),strHVSCpath.c_str());
+      szStart= (char *)strstr(strLower.c_str(),strHVSCpath.c_str());
     if (szStart)
     {
       szEnd = strstr(szStart+strHVSCpath.size(),".sid");
@@ -248,5 +248,4 @@ bool CMusicInfoTagLoaderSid::Load(const CStdString& strFileName, CMusicInfoTag& 
   tag.SetLoaded(false);
   return( false );
 }
-
 

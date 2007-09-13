@@ -330,15 +330,31 @@ namespace PYXBMC
           self->item->GetVideoInfoTag()->m_fRating = (float)PyFloat_AsDouble(value);
         else if (strcmpi(PyString_AsString(key), "size") == 0)
           self->item->m_dwSize = PyInt_AsLong(value);
-        // TODO: Add a python list of cast members to m_cast
-        /*else if (strcmpi(PyString_AsString(key), "cast") == 0)
+        else if (strcmpi(PyString_AsString(key), "cast") == 0 || strcmpi(PyString_AsString(key), "castandrole") == 0)
         {
           if (!PyObject_TypeCheck(value, &PyList_Type)) continue;
+          self->item->GetVideoInfoTag()->m_cast.clear();
           for (int i = 0; i < PyList_Size(value); i++)
           {
-            if (!PyGetUnicodeString(tmp, PyList_GetItem(value, i), 1)) continue;
+            PyObject *pTuple = NULL;
+            pTuple = PyList_GetItem(value, i);
+            if (pTuple == NULL) continue;
+            PyObject *pActor = NULL;
+            PyObject *pRole = NULL;
+            if (PyObject_TypeCheck(pTuple, &PyTuple_Type))
+            {
+              if (!PyArg_ParseTuple(pTuple, "O|O", &pActor, &pRole)) continue;
+            }
+            else
+              pActor = pTuple;
+            CStdString strActor = "";
+            CStdString strRole = "";
+            if (!PyGetUnicodeString(strActor, pActor, 1)) continue;
+            if (!pRole == NULL)
+              PyGetUnicodeString(strRole, pRole, 1);
+            self->item->GetVideoInfoTag()->m_cast.push_back(make_pair<CStdString,CStdString>(strActor, strRole));
           }
-        }*/
+        }
         else
         {
           if (!PyGetUnicodeString(tmp, value, 1)) continue;
