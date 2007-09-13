@@ -6,38 +6,41 @@
 
 #define FRAME_DELAY 5
 
-CKeyboard g_Keyboard; // global
-
-CKeyboard::CKeyboard()
+CLowLevelKeyboard::CLowLevelKeyboard()
 {
   Reset();
 }
 
-void CKeyboard::Initialize(HWND hWnd)
+void CLowLevelKeyboard::Initialize(HWND hWnd)
 {
   SDL_EnableUNICODE(1);
   SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 }
 
-void CKeyboard::Reset()
+void CLowLevelKeyboard::Reset()
 {
   m_bShift = false;
   m_bCtrl = false;
   m_bAlt = false;
+  m_bRAlt = false;
   m_cAscii = '\0';
+  m_wUnicode = '\0';
   m_VKey = 0;
 }
 
-void CKeyboard::Update(SDL_Event& m_keyEvent)
-{  
+void CLowLevelKeyboard::Update(SDL_Event& m_keyEvent)
+{
   if (m_keyEvent.type == SDL_KEYDOWN)
   {
     m_cAscii = 0;
     m_VKey = 0;
 
+    m_wUnicode = m_keyEvent.key.keysym.unicode;
+
     m_bCtrl = (m_keyEvent.key.keysym.mod & KMOD_CTRL) != 0;
     m_bShift = (m_keyEvent.key.keysym.mod & KMOD_SHIFT) != 0;
     m_bAlt = (m_keyEvent.key.keysym.mod & KMOD_ALT) != 0;
+    m_bRAlt = (m_keyEvent.key.keysym.mod & KMOD_RALT) != 0;
 
     if ((m_keyEvent.key.keysym.unicode >= 'A' && m_keyEvent.key.keysym.unicode <= 'Z') ||
         (m_keyEvent.key.keysym.unicode >= 'a' && m_keyEvent.key.keysym.unicode <= 'z'))
@@ -76,16 +79,16 @@ void CKeyboard::Update(SDL_Event& m_keyEvent)
       else if (m_keyEvent.key.keysym.unicode == '_') { m_VKey = 0xbd; m_cAscii = '_'; }
       else if (m_keyEvent.key.keysym.unicode == '>') { m_VKey = 0xbe; m_cAscii = '>'; }
       else if (m_keyEvent.key.keysym.unicode == '.') { m_VKey = 0xbe; m_cAscii = '.'; }
-      else if (m_keyEvent.key.keysym.unicode == '?') { m_VKey = 0xbf; m_cAscii = '?'; }
+      else if (m_keyEvent.key.keysym.unicode == '?') { m_VKey = 0xbf; m_cAscii = '?'; } // 0xbf is OEM 2 Why is it assigned here?
       else if (m_keyEvent.key.keysym.unicode == '/') { m_VKey = 0xbf; m_cAscii = '/'; }
       else if (m_keyEvent.key.keysym.unicode == '~') { m_VKey = 0xc0; m_cAscii = '~'; }
       else if (m_keyEvent.key.keysym.unicode == '`') { m_VKey = 0xc0; m_cAscii = '`'; }
       else if (m_keyEvent.key.keysym.unicode == '{') { m_VKey = 0xeb; m_cAscii = '{'; }
-      else if (m_keyEvent.key.keysym.unicode == '[') { m_VKey = 0xeb; m_cAscii = '['; }
+      else if (m_keyEvent.key.keysym.unicode == '[') { m_VKey = 0xeb; m_cAscii = '['; } // 0xeb is not defined by MS. Why is it assigned here?
       else if (m_keyEvent.key.keysym.unicode == '|') { m_VKey = 0xec; m_cAscii = '|'; }
       else if (m_keyEvent.key.keysym.unicode == '\\') { m_VKey = 0xec; m_cAscii = '\\'; }
       else if (m_keyEvent.key.keysym.unicode == '}') { m_VKey = 0xed; m_cAscii = '}'; }
-      else if (m_keyEvent.key.keysym.unicode == ']') { m_VKey = 0xed; m_cAscii = ']'; }
+      else if (m_keyEvent.key.keysym.unicode == ']') { m_VKey = 0xed; m_cAscii = ']'; } // 0xed is not defined by MS. Why is it assigned here?
       else if (m_keyEvent.key.keysym.unicode == '"') { m_VKey = 0xee; m_cAscii = '"'; }
       else if (m_keyEvent.key.keysym.unicode == '\'') { m_VKey = 0xee; m_cAscii = '\''; }
       else if (m_keyEvent.key.keysym.sym == SDLK_BACKSPACE) m_VKey = 0x08;
@@ -135,6 +138,61 @@ void CKeyboard::Update(SDL_Event& m_keyEvent)
       else if (m_keyEvent.key.keysym.sym == SDLK_LSUPER) m_VKey = 0x5b;
       else if (m_keyEvent.key.keysym.sym == SDLK_RSUPER) m_VKey = 0x5c;
       else if (m_keyEvent.key.keysym.scancode==117) m_VKey = 0x5d; // right click
+
+      // following scancode infos are
+      // 1. from ubuntu keyboard shortcut (hex) -> predefined 
+      // 2. from unix tool xev and my keyboards (decimal)
+      // m_VKey infos from CharProbe tool
+      // Can we do the same for XBoxKeyboard and DirectInputKeyboard? Can we access the scancode of them? By the way how does SDL do it? I can't find it. (Automagically? But how exactly?)
+      // Some pairs of scancode and virtual keys are only known half
+
+      // special "keys" above F1 till F12 on my MS natural keyboard mapped to virtual keys "F13" till "F24"):
+      else if (m_keyEvent.key.keysym.scancode == 0xf5) m_VKey = 0x7c; // F13 Launch help browser
+      else if (m_keyEvent.key.keysym.scancode == 0x87) m_VKey = 0x7d; // F14 undo
+      else if (m_keyEvent.key.keysym.scancode == 0x8a) m_VKey = 0x7e; // F15 redo
+      else if (m_keyEvent.key.keysym.scancode == 0x89) m_VKey = 0x7f; // F16 new
+      else if (m_keyEvent.key.keysym.scancode == 0xbf) m_VKey = 0x80; // F17 open
+      else if (m_keyEvent.key.keysym.scancode == 0xaf) m_VKey = 0x81; // F18 close
+      else if (m_keyEvent.key.keysym.scancode == 0xe4) m_VKey = 0x82; // F19 reply
+      else if (m_keyEvent.key.keysym.scancode == 0x8e) m_VKey = 0x83; // F20 forward
+      else if (m_keyEvent.key.keysym.scancode == 0xda) m_VKey = 0x84; // F21 send
+//      else if (m_keyEvent.key.keysym.scancode == 0x) m_VKey = 0x85; // F22 check spell (doesn't work for me with ubuntu)
+      else if (m_keyEvent.key.keysym.scancode == 0xd5) m_VKey = 0x86; // F23 save
+      else if (m_keyEvent.key.keysym.scancode == 0xb9) m_VKey = 0x87; // 0x2a?? F24 print
+      // end of special keys above F1 till F12
+
+      else if (m_keyEvent.key.keysym.scancode == 234) m_VKey = 0xa6; // Browser back
+      else if (m_keyEvent.key.keysym.scancode == 233) m_VKey = 0xa7; // Browser forward
+//      else if (m_keyEvent.key.keysym.scancode == ) m_VKey = 0xa8; // Browser refresh
+//      else if (m_keyEvent.key.keysym.scancode == ) m_VKey = 0xa9; // Browser stop
+      else if (m_keyEvent.key.keysym.scancode == 122) m_VKey = 0xaa; // Browser search
+      else if (m_keyEvent.key.keysym.scancode == 0xe5) m_VKey = 0xaa; // Browser search
+//      else if (m_keyEvent.key.keysym.scancode == ) m_VKey = 0xab; // Browser favorites
+      else if (m_keyEvent.key.keysym.scancode == 130) m_VKey = 0xac; // Browser home
+      else if (m_keyEvent.key.keysym.scancode == 0xa0) m_VKey = 0xad; // Volume mute
+      else if (m_keyEvent.key.keysym.scancode == 0xae) m_VKey = 0xae; // Volume down
+      else if (m_keyEvent.key.keysym.scancode == 0xb0) m_VKey = 0xaf; // Volume up
+      else if (m_keyEvent.key.keysym.scancode == 0x99) m_VKey = 0xb0; // Next track
+      else if (m_keyEvent.key.keysym.scancode == 0x90) m_VKey = 0xb1; // Prev track
+      else if (m_keyEvent.key.keysym.scancode == 0xa4) m_VKey = 0xb2; // Stop
+      else if (m_keyEvent.key.keysym.scancode == 0xa2) m_VKey = 0xb3; // Play_Pause
+      else if (m_keyEvent.key.keysym.scancode == 0xec) m_VKey = 0xb4; // Launch mail
+//      else if (m_keyEvent.key.keysym.scancode == ) m_VKey = 0xb5; // Launch media_select
+      else if (m_keyEvent.key.keysym.scancode == 198) m_VKey = 0xb6; // Launch App1/PC icon
+      else if (m_keyEvent.key.keysym.scancode == 0xa1) m_VKey = 0xb7; // Launch App2/Calculator
+      else if (m_keyEvent.key.keysym.scancode == 34) m_VKey = 0xba; // OEM 1: [ on us keyboard
+      else if (m_keyEvent.key.keysym.scancode == 51) m_VKey = 0xbf; // OEM 2: additional key on european keyboards between enter and ' on us keyboards
+      else if (m_keyEvent.key.keysym.scancode == 47) m_VKey = 0xc0; // OEM 3: ; on us keyboards
+      else if (m_keyEvent.key.keysym.scancode == 20) m_VKey = 0xdb; // OEM 4: - on us keyboards (between 0 and =)
+      else if (m_keyEvent.key.keysym.scancode == 49) m_VKey = 0xdc; // OEM 5: ` on us keyboards (below ESC)
+      else if (m_keyEvent.key.keysym.scancode == 21) m_VKey = 0xdd; // OEM 6: =??? on us keyboards (between - and backspace)
+      else if (m_keyEvent.key.keysym.scancode == 48) m_VKey = 0xde; // OEM 7: ' on us keyboards (on right side of ;)
+//       else if (m_keyEvent.key.keysym.scancode == ) m_VKey = 0xdf; // OEM 8
+      else if (m_keyEvent.key.keysym.scancode == 94) m_VKey = 0xe2; // OEM 102: additional key on european keyboards between left shift and z on us keyboards
+//      else if (m_keyEvent.key.keysym.scancode == 0xb2) m_VKey = 0x; // Ubuntu default setting for launch browser
+//       else if (m_keyEvent.key.keysym.scancode == 0x76) m_VKey = 0x; // Ubuntu default setting for launch music player
+//       else if (m_keyEvent.key.keysym.scancode == 0xcc) m_VKey = 0x; // Ubuntu default setting for eject
+
       else if (m_keyEvent.key.keysym.mod & KMOD_LSHIFT) m_VKey = 0xa0;
       else if (m_keyEvent.key.keysym.mod & KMOD_RSHIFT) m_VKey = 0xa1;
       else if (m_keyEvent.key.keysym.mod & KMOD_LALT) m_VKey = 0xa4;
@@ -142,7 +200,9 @@ void CKeyboard::Update(SDL_Event& m_keyEvent)
       else if (m_keyEvent.key.keysym.mod & KMOD_LCTRL) m_VKey = 0xa2;
       else if (m_keyEvent.key.keysym.mod & KMOD_RCTRL) m_VKey = 0xa3;
       else if (m_keyEvent.key.keysym.unicode > 32 && m_keyEvent.key.keysym.unicode < 128)
-        m_cAscii = (char)(m_keyEvent.key.keysym.unicode & 0xff);      // try and catch everything
+        // only TRUE ASCII! (Otherwise XBMC crashes! No unicode not even latin 1!)
+        m_cAscii = (char)(m_keyEvent.key.keysym.unicode & 0xff);
+      else CLog::Log(LOGDEBUG, "SDLKeyboard found something unknown (unicode <> printable ASCII): scancode: %d, sym: %d, unicode: %d, modifier: %d ", m_keyEvent.key.keysym.scancode, m_keyEvent.key.keysym.sym, m_keyEvent.key.keysym.unicode, m_keyEvent.key.keysym.mod);
     }
   }
 /*
