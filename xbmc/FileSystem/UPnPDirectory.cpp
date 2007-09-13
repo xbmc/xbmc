@@ -199,6 +199,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             }
 
             CFileItem *pItem = new CFileItem((const char*)(*entry)->m_Title);
+            pItem->SetLabelPreformated(true);
             pItem->m_bIsFolder = (*entry)->IsContainer();
 
             // if it's a container, format a string as upnp://uuid/object_id/ 
@@ -240,6 +241,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 
                     if( (*entry)->m_ObjectClass.type.CompareN("object.item.videoitem", 21,true) == 0 )
                     {
+                      pItem->SetLabelPreformated(false);
                       CVideoInfoTag* tag = pItem->GetVideoInfoTag();
                       CStdStringArray strings, strings2;
                       CStdString buffer;
@@ -254,6 +256,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                     }
                     else if( (*entry)->m_ObjectClass.type.CompareN("object.item.audioitem", 21,true) == 0 )
                     {
+                      pItem->SetLabelPreformated(false);
                       CMusicInfoTag* tag = pItem->GetMusicInfoTag();
                       CStdStringArray strings;
                       CStdString buffer;
@@ -287,7 +290,6 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             else if((*entry)->m_Description.icon_uri.GetLength())
               pItem->SetThumbnailImage((const char*) (*entry)->m_Description.icon_uri);
 
-            pItem->SetLabelPreformated(true);
             vecCacheItems.Add(pItem);
             items.Add(new CFileItem(*pItem));
 
