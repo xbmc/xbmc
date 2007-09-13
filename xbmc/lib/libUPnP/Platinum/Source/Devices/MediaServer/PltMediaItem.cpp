@@ -16,6 +16,7 @@
 #include "PltDidl.h"
 #include "PltXmlHelper.h"
 #include "PltService.h"
+#include "../MediaRenderer/PltMediaController.h"
 
 NPT_SET_LOCAL_LOGGER("platinum.media.server.item")
 
@@ -173,10 +174,18 @@ PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
     }
 
     // genre
-    if (mask & PLT_FILTER_MASK_GENRE && m_Affiliation.genre.GetLength() > 0) {
-        didl += "<upnp:genre>";
-        PLT_Didl::AppendXmlEscape(didl, m_Affiliation.genre);
-        didl += "</upnp:genre>";
+    if (mask & PLT_FILTER_MASK_GENRE) {
+        if (m_Affiliation.genre_extended.GetItemCount() > 0) {
+            for (NPT_List<NPT_String>::Iterator it = m_Affiliation.genre_extended.GetFirstItem(); it; ++it) {
+                didl += "<upnp:genre>";
+                PLT_Didl::AppendXmlEscape(didl, (*it));
+                didl += "</upnp:genre>";        
+            }
+        } else if (m_Affiliation.genre.GetLength() > 0) {
+            didl += "<upnp:genre>";
+            PLT_Didl::AppendXmlEscape(didl, m_Affiliation.genre);
+            didl += "</upnp:genre>";
+        }
     }
 
     // album art URI
