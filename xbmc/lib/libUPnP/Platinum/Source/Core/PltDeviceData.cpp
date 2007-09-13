@@ -301,6 +301,7 @@ PLT_DeviceData::SetDescriptionUrl(NPT_HttpUrl description_url)
         int index = m_URLBasePath.ReverseFind('/');
         if (index >= 0) m_URLBasePath.SetLength(index+1);
     }
+    return NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------
