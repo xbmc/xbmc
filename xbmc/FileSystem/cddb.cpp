@@ -671,10 +671,10 @@ void Xcddb::addTitle(const char *buffer)
   char title[1024];
   unsigned int len = (unsigned int)strlen(value);
   bool found = false;
-  unsigned int i;
-  for (i = 0;i < len;i++)
+  unsigned int index;
+  for (index = 0;index < len;index++)
   {
-    if ((i + 2) <= len && value[i] == ' ' && value[i + 1] == '/' && value[i + 2] == ' ')
+    if ((index + 2) <= len && value[index] == ' ' && value[index + 1] == '/' && value[index + 2] == ' ')
     {
       // Jep found
       found = true;
@@ -683,9 +683,9 @@ void Xcddb::addTitle(const char *buffer)
   }
   if (found)
   {
-    strncpy(artist, value, i);
-    artist[i] = '\0';
-    strcpy(title, value + i + 3);
+    strncpy(artist, value, index);
+    artist[index] = '\0';
+    strcpy(title, value + index + 3);
   }
   else
   {
@@ -1416,6 +1416,7 @@ bool Xcddb::isCDCached( CCdInfo* pInfo )
 
   return false;
 }
+
 
 
 

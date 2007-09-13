@@ -7,6 +7,7 @@ using namespace XFILE;
 CDVDInputStreamFile::CDVDInputStreamFile() : CDVDInputStream(DVDSTREAM_TYPE_FILE)
 {
   m_pFile = NULL;
+  m_eof = true;
 }
 
 CDVDInputStreamFile::~CDVDInputStreamFile()
@@ -16,16 +17,7 @@ CDVDInputStreamFile::~CDVDInputStreamFile()
 
 bool CDVDInputStreamFile::IsEOF()
 {
-  if(m_pFile)
-  {
-    __int64 size = m_pFile->GetLength();
-    if( size > 0 && m_pFile->GetPosition() >= size )
-      return true;
-
-    return false;
-  }
-
-  return true;
+  return !m_pFile || m_eof;
 }
 
 bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content)
@@ -50,7 +42,7 @@ bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content)
     m_pFile = NULL;
     return false;
   }
-
+  m_eof = true;
   // if we are caching - allow some buffer to fill up.
   if (nFlags & READ_CACHED)
     Sleep(3000);
@@ -68,14 +60,18 @@ void CDVDInputStreamFile::Close()
   }
 
   CDVDInputStream::Close();
-  m_pFile = NULL;  
+  m_pFile = NULL;
+  m_eof = true;
 }
 
 int CDVDInputStreamFile::Read(BYTE* buf, int buf_size)
 {
-  int ret = 0;
-  if (m_pFile) ret = m_pFile->Read(buf, buf_size);
-  else return -1;
+  if(!m_pFile) return -1;
+
+  unsigned int ret = m_pFile->Read(buf, buf_size);
+
+  /* we currently don't support non completing reads */
+  if( ret <= 0 ) m_eof = true;
 
   /* on error close file */
   if( ret < 0 ) Close();
@@ -85,9 +81,11 @@ int CDVDInputStreamFile::Read(BYTE* buf, int buf_size)
 
 __int64 CDVDInputStreamFile::Seek(__int64 offset, int whence)
 {
-  __int64 ret = 0;
-  if (m_pFile) ret = m_pFile->Seek(offset, whence);
-  else return -1;
+  if(!m_pFile) return -1;
+  __int64 ret = m_pFile->Seek(offset, whence);
+
+  /* if we succeed, we are not eof anymore */
+  if( ret >= 0 ) m_eof = false;
 
   return ret;
 }

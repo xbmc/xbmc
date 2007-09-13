@@ -1,5 +1,6 @@
 #include "VideoInfoTag.h"
 #include "XMLUtils.h"
+#include "LocalizeStrings.h"
 
 #include <sstream>
 
@@ -314,4 +315,19 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar >> m_iSpecialSortSeason;
     ar >> m_iSpecialSortEpisode;
   }
+}
+
+const CStdString CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const
+{
+  CStdString strLabel;
+  for (iCast it = m_cast.begin(); it != m_cast.end(); ++it)
+  {
+    CStdString character;
+    if (it->second.IsEmpty() || !bIncludeRole)
+      character.Format("%s\n", it->first.c_str());
+    else
+      character.Format("%s %s %s\n", it->first.c_str(), g_localizeStrings.Get(20347).c_str(), it->second.c_str());
+    strLabel += character;
+  }
+  return strLabel.TrimRight("\n");
 }

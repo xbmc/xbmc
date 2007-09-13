@@ -426,6 +426,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Left(19).Equals("videoplayer.content")) return AddMultiInfo(GUIInfo(bNegate ? -VIDEOPLAYER_CONTENT : VIDEOPLAYER_CONTENT, ConditionalStringParameter(strTest.Mid(20,strTest.size()-21)), 0));
     else if (strTest.Equals("videoplayer.studio")) ret = VIDEOPLAYER_STUDIO;
     else if (strTest.Equals("videoplayer.mpaa")) return VIDEOPLAYER_MPAA;
+    else if (strTest.Equals("videoplayer.cast")) return VIDEOPLAYER_CAST;
+    else if (strTest.Equals("videoplayer.castandrole")) return VIDEOPLAYER_CAST_AND_ROLE;
   }
   else if (strCategory.Equals("playlist"))
   {
@@ -651,6 +653,8 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("picturedatetime")) return LISTITEM_PICTURE_DATETIME;
   else if (info.Equals("studio")) return LISTITEM_STUDIO;
   else if (info.Equals("mpaa")) return LISTITEM_MPAA;
+  else if (info.Equals("cast")) return LISTITEM_CAST;
+  else if (info.Equals("castandrole")) return LISTITEM_CAST_AND_ROLE;
   return 0;
 }
 
@@ -743,6 +747,8 @@ CStdString CGUIInfoManager::GetLabel(int info)
   case VIDEOPLAYER_PREMIERED:
   case VIDEOPLAYER_STUDIO:
   case VIDEOPLAYER_MPAA:
+  case VIDEOPLAYER_CAST:
+  case VIDEOPLAYER_CAST_AND_ROLE:
     strLabel = GetVideoLabel(info);
   break;
   case PLAYLIST_LENGTH:
@@ -1134,6 +1140,8 @@ CStdString CGUIInfoManager::GetLabel(int info)
   case LISTITEM_PICTURE_RESOLUTION:
   case LISTITEM_STUDIO:
   case LISTITEM_MPAA:
+  case LISTITEM_CAST:
+  case LISTITEM_CAST_AND_ROLE:
     {
       CGUIWindow *pWindow;
       int iDialog = m_gWindowManager.GetTopMostModalDialogID();
@@ -2186,6 +2194,10 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     return m_currentFile.GetVideoInfoTag()->m_strPlot;
   case VIDEOPLAYER_MPAA:
     return m_currentFile.GetVideoInfoTag()->m_strMPAARating;
+  case VIDEOPLAYER_CAST:
+    return m_currentFile.GetVideoInfoTag()->GetCast();
+  case VIDEOPLAYER_CAST_AND_ROLE:
+    return m_currentFile.GetVideoInfoTag()->GetCast(true);
   }
   return "";
 }
@@ -2911,6 +2923,14 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_MPAA:
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strMPAARating;
+    break;
+  case LISTITEM_CAST:
+    if (item->HasVideoInfoTag())
+      return item->GetVideoInfoTag()->GetCast();
+    break;
+  case LISTITEM_CAST_AND_ROLE:
+    if (item->HasVideoInfoTag())
+      return item->GetVideoInfoTag()->GetCast(true);
   }
   return "";
 }

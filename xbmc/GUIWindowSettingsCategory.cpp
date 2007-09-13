@@ -2275,7 +2275,7 @@ void CGUIWindowSettingsCategory::FillInSkins(CSetting *pSetting)
   }
 
   sort(vecSkins.begin(), vecSkins.end(), sortstringbyname());
-  for (int i = 0; i < (int) vecSkins.size(); ++i)
+  for (unsigned int i = 0; i < vecSkins.size(); ++i)
   {
     CStdString strSkin = vecSkins[i];
     if (strcmpi(strSkin.c_str(), g_guiSettings.GetString("lookandfeel.skin").c_str()) == 0)
@@ -2306,7 +2306,8 @@ void CGUIWindowSettingsCategory::FillInSoundSkins(CSetting *pSetting)
   int iCurrentSoundSkin = 0;
   int iSoundSkin = 0;
   vector<CStdString> vecSoundSkins;
-  for (int i = 0; i < items.Size(); ++i)
+  int i;
+  for (i = 0; i < items.Size(); ++i)
   {
     CFileItem* pItem = items[i];
     if (pItem->m_bIsFolder)
@@ -2325,7 +2326,7 @@ void CGUIWindowSettingsCategory::FillInSoundSkins(CSetting *pSetting)
     iCurrentSoundSkin=1;
 
   sort(vecSoundSkins.begin(), vecSoundSkins.end(), sortstringbyname());
-  for (int i = 0; i < (int) vecSoundSkins.size(); ++i)
+  for (i = 0; i < (int) vecSoundSkins.size(); ++i)
   {
     CStdString strSkin = vecSoundSkins[i];
     if (strcmpi(strSkin.c_str(), g_guiSettings.GetString("lookandfeel.soundskin").c_str()) == 0)
@@ -2636,7 +2637,8 @@ void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
   int iCurrentLang = 0;
   int iLanguage = 0;
   vector<CStdString> vecLanguage;
-  for (int i = 0; i < items.Size(); ++i)
+  unsigned int i = 0;
+  for (i = 0; i < items.Size(); ++i)
   {
     CFileItem* pItem = items[i];
     if (pItem->m_bIsFolder)
@@ -2649,7 +2651,7 @@ void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
   }
 
   sort(vecLanguage.begin(), vecLanguage.end(), sortstringbyname());
-  for (int i = 0; i < (int) vecLanguage.size(); ++i)
+  for (i = 0; i < vecLanguage.size(); ++i)
   {
     CStdString strLanguage = vecLanguage[i];
     if (strcmpi(strLanguage.c_str(), pSettingString->GetData().c_str()) == 0)
@@ -2680,7 +2682,8 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
   int iCurrentScr = -1;
   int iScr = 0;
   vector<CStdString> vecScr;
-  for (int i = 0; i < items.Size(); ++i)
+  int i = 0;
+  for (i = 0; i < items.Size(); ++i)
   {
     CFileItem* pItem = items[i];
     if (!pItem->m_bIsFolder)
@@ -2708,7 +2711,7 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
     strDefaultScr.Delete(strDefaultScr.size() - 4, 4);
 
   sort(vecScr.begin(), vecScr.end(), sortstringbyname());
-  for (int i = 0; i < (int) vecScr.size(); ++i)
+  for (i = 0; i < (int) vecScr.size(); ++i)
   {
     CStdString strScr = vecScr[i];
 

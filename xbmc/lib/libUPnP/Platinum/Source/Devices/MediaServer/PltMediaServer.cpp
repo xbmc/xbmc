@@ -71,7 +71,7 @@ PLT_MediaServer::PLT_MediaServer(const char*  friendly_name,
 
     service = new PLT_Service(
         this,
-        "urn:microsoft.com:serviceId:X_MS_MediaReceiverRegistrar:1", 
+        "urn:microsoft.com:service:X_MS_MediaReceiverRegistrar:1", 
         "urn:microsoft.com:serviceId:X_MS_MediaReceiverRegistrar");
     if (NPT_SUCCEEDED(service->SetSCPDXML((const char*) X_MS_MediaReceiverRegistrarSCPD))) {
         service->InitURLs("X_MS_MediaReceiverRegistrar", m_UUID);
@@ -93,12 +93,12 @@ PLT_MediaServer::~PLT_MediaServer()
 |   PLT_MediaServer::Start
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_MediaServer::Start(PLT_TaskManager* task_manager)
+PLT_MediaServer::Start(PLT_TaskManager* task_manager, PLT_DeviceHostReference& self)
 {
     // start our file server
     NPT_CHECK_SEVERE(m_FileServer->Start());
 
-    return PLT_DeviceHost::Start(task_manager);
+    return PLT_DeviceHost::Start(task_manager, self);
 }
 
 /*----------------------------------------------------------------------
