@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <map>
+
 /*!
  \ingroup strings
  \brief 
@@ -21,8 +23,8 @@ public:
   const CStdString& Get(DWORD dwCode) const;
   void Clear();
 protected:
-  map<DWORD, CStdString> m_vecStrings;
-  typedef map<DWORD, CStdString>::const_iterator ivecStrings;
+  std::map<DWORD, CStdString> m_vecStrings;
+  typedef std::map<DWORD, CStdString>::const_iterator ivecStrings;
 };
 
 /*!

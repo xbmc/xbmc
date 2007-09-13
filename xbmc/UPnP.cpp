@@ -79,61 +79,42 @@ NPT_WinsockSystem NPT_WinsockSystem::Initializer;
 NPT_Result
 NPT_NetworkInterface::GetNetworkInterfaces(NPT_List<NPT_NetworkInterface*>& interfaces)
 {
-    XNADDR xna;
-    DWORD  state;
-    do {
-        state = XNetGetTitleXnAddr(&xna);
-        Sleep(100);
-    } while (state == XNET_GET_XNADDR_PENDING);
+    if (!g_network.IsAvailable(true))
+        return NPT_ERROR_NETWORK_DOWN;
 
-    if (state & XNET_GET_XNADDR_STATIC || state & XNET_GET_XNADDR_DHCP) {
-        NPT_IpAddress primary_address;
-        primary_address.ResolveName(g_network.m_networkinfo.ip);
+    NPT_IpAddress primary_address;
+    primary_address.ResolveName(g_network.m_networkinfo.ip);
 
-        NPT_IpAddress netmask;
-        netmask.ResolveName(g_network.m_networkinfo.subnet);
+    NPT_IpAddress netmask;
+    netmask.ResolveName(g_network.m_networkinfo.subnet);
 
-        NPT_IpAddress broadcast_address;        
-        broadcast_address.ResolveName("255.255.255.255");
+    NPT_IpAddress broadcast_address;        
+    broadcast_address.ResolveName("255.255.255.255");
 
-//        {
-//            // broadcast address is incorrect
-//            unsigned char addr[4];
-//            for(int i=0; i<4; i++) {
-//                addr[i] = (primary_address.AsBytes()[i] & netmask.AsBytes()[i]) | 
-//                    ~netmask.AsBytes()[i];
-//            }
-//            broadcast_address.Set(addr);
-//        }
+    NPT_Flags     flags = NPT_NETWORK_INTERFACE_FLAG_BROADCAST | NPT_NETWORK_INTERFACE_FLAG_MULTICAST;
 
+    NPT_MacAddress mac;
+    //mac.SetAddress(NPT_MacAddress::TYPE_ETHERNET, g_network.m_networkinfo.mac, 6);
 
-        NPT_Flags     flags = NPT_NETWORK_INTERFACE_FLAG_BROADCAST | NPT_NETWORK_INTERFACE_FLAG_MULTICAST;
+    // create an interface object
+    char iface_name[5];
+    iface_name[0] = 'i';
+    iface_name[1] = 'f';
+    iface_name[2] = '0';
+    iface_name[3] = '0';
+    iface_name[4] = '\0';
+    NPT_NetworkInterface* iface = new NPT_NetworkInterface(iface_name, mac, flags);
 
-        NPT_MacAddress mac;
-        if (state & XNET_GET_XNADDR_ETHERNET) {
-            mac.SetAddress(NPT_MacAddress::TYPE_ETHERNET, xna.abEnet, 6);
-        }
+    // set the interface address
+    NPT_NetworkInterfaceAddress iface_address(
+        primary_address,
+        broadcast_address,
+        NPT_IpAddress::Any,
+        netmask);
+    iface->AddAddress(iface_address);  
 
-        // create an interface object
-        char iface_name[5];
-        iface_name[0] = 'i';
-        iface_name[1] = 'f';
-        iface_name[2] = '0';
-        iface_name[3] = '0';
-        iface_name[4] = '\0';
-        NPT_NetworkInterface* iface = new NPT_NetworkInterface(iface_name, mac, flags);
-
-        // set the interface address
-        NPT_NetworkInterfaceAddress iface_address(
-            primary_address,
-            broadcast_address,
-            NPT_IpAddress::Any,
-            netmask);
-        iface->AddAddress(iface_address);  
-
-        // add the interface to the list
-        interfaces.Add(iface);  
-    }
+    // add the interface to the list
+    interfaces.Add(iface);  
 
     return NPT_SUCCESS;
 }
@@ -277,8 +258,9 @@ CUPnPServer::BuildObject(CFileItem*      item,
                   file_path = tag->GetURL();
 
                 StringUtils::SplitString(tag->GetGenre(), " / ", strings);
-                StringUtils::JoinString(strings, ",", buffer);
-                object->m_Affiliation.genre = buffer;
+                for(CStdStringArray::iterator it = strings.begin(); it != strings.end(); it++) {
+                    object->m_Affiliation.genre_extended.Add((*it).c_str());
+                }
 
                 object->m_Affiliation.album = tag->GetAlbum();
                 object->m_People.artist = tag->GetArtist();
@@ -295,9 +277,10 @@ CUPnPServer::BuildObject(CFileItem*      item,
                 if( !tag->m_strFileNameAndPath.IsEmpty() )
                   file_path = tag->m_strFileNameAndPath;
 
-                StringUtils::SplitString(tag->m_strGenre, " / ", strings);
-                StringUtils::JoinString(strings, ",", buffer);
-                object->m_Affiliation.genre = buffer;
+                StringUtils::SplitString(tag->m_strGenre, " / ", strings);                
+                for(CStdStringArray::iterator it = strings.begin(); it != strings.end(); it++) {
+                    object->m_Affiliation.genre_extended.Add((*it).c_str());
+                }
 
                 for(CVideoInfoTag::iCast it = tag->m_cast.begin();it != tag->m_cast.end();it++) {
                     object->m_People.actor += it->first + ",";
@@ -828,6 +811,11 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference& action,
             if ((cur_index >= start_index) && ((num_returned < req_count) || (req_count == 0))) {
                 NPT_String tmp;
                 NPT_CHECK(PLT_Didl::ToDidl(*item.AsPointer(), filter, tmp));
+
+                // Neptunes string growing is dead slow for small additions
+                if(didl.GetCapacity() < tmp.GetLength() + didl.GetLength()) {
+                    didl.Reserve(didl.GetCapacity()*4);
+                }
 
                 didl += tmp;
                 num_returned++;

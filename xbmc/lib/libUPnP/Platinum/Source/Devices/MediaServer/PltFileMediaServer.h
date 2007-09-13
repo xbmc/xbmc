@@ -41,7 +41,7 @@ public:
                         unsigned int fileserver_port = 0);
 
     // PLT_DeviceHost methods
-    virtual NPT_Result Start(PLT_TaskManager* task_manager);
+    virtual NPT_Result Start(PLT_TaskManager* task_manager, PLT_DeviceHostReference& self);
 
     NPT_Result AddMetadataHandler(PLT_MetadataHandler* handler);
 

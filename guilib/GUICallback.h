@@ -30,7 +30,7 @@ public:
   }
 
   // Assign an EventHandler (EventHandler's are derived from Event)
-  GUIEvent<Cookie>& operator=(GUIEvent<Cookie> &aEvent)
+  GUIEvent<Cookie> &operator=(GUIEvent<Cookie> &aEvent)
   {
     if (&aEvent)
     {
@@ -110,7 +110,7 @@ public:
   }
 
   // Assign a CallbackHandler (CallbackHandler's are derived from Callback)
-  Callback<Result, Cookie>& operator=(Callback<Result, Cookie> &aCallback)
+  Callback<Result, Cookie> &operator=(Callback<Result, Cookie> &aCallback)
   {
     if (&aCallback)
     {

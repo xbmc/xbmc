@@ -66,6 +66,7 @@ protected:
     NPT_Result    AddDevice(PLT_DeviceDataReference& device);
     NPT_Result    AddService(PLT_Service* service);
     NPT_Result    SetDescription(const char* szDescription);
+    NPT_Result    SetDescriptionUrl(NPT_HttpUrl description_url);
 
 
 private:

@@ -174,7 +174,8 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
           CStdString strDir;
           if (iItem < 0 || iItem >= m_vecItems.Size())
             return false;
-
+          if (!m_vecItems.IsPluginFolder())
+          {
           if (m_vecItems[iItem]->IsVideoDb() && m_vecItems[iItem]->HasVideoInfoTag() && !m_vecItems[iItem]->GetVideoInfoTag()->m_strPath.IsEmpty())
           {
             strDir = m_vecItems[iItem]->GetVideoInfoTag()->m_strPath;
@@ -200,6 +201,9 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 
           if (info.strContent.Equals("tvshows") && iFound == 1 && !settings.parent_name_root) // dont lookup on root tvshow folder
             return true;
+          }
+          else
+            info.strContent = "plugin";
 
           OnInfo(iItem,info);
 
@@ -290,7 +294,8 @@ void CGUIWindowVideoBase::OnInfo(int iItem, const SScraperInfo& info)
       item.m_strPath = item.GetVideoInfoTag()->m_strFileNameAndPath;
   }
   ShowIMDB(&item, info);
-  Update(m_vecItems.m_strPath);
+  if (!info.strContent.Equals("plugin"))
+    Update(m_vecItems.m_strPath);
 }
 
 // ShowIMDB is called as follows:
@@ -379,14 +384,24 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
       }
     }
   }
+  if (info.strContent.Equals("plugin"))
+  {
+    if (!item->HasVideoInfoTag()) 
+      return;
+    movieDetails = *item->GetVideoInfoTag();
+    bHasInfo = true;
+  }
   if (bHasInfo)
   {
     if (info.strContent.IsEmpty()) // disable refresh button
       movieDetails.m_strIMDBNumber = "xx"+movieDetails.m_strIMDBNumber;
+    if (info.strContent.Equals("plugin")) // disable refresh+get thumb button
+      movieDetails.m_strIMDBNumber = "xxplugin";
     *item->GetVideoInfoTag() = movieDetails;
     pDlgInfo->SetMovie(item);
     pDlgInfo->DoModal();
-    item->SetThumbnailImage(pDlgInfo->GetThumbnail());
+    if (!info.strContent.Equals("plugin"))
+      item->SetThumbnailImage(pDlgInfo->GetThumbnail());
     if ( !pDlgInfo->NeedRefresh() ) return ;
   }
   
@@ -981,8 +996,14 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_INFO:
     {
       SScraperInfo info;
-      VIDEO::SScanSettings settings;
-      int iFound = GetScraperForItem(item, info, settings);
+      if (!m_vecItems.IsPluginFolder())
+      {
+        VIDEO::SScanSettings settings;
+        int iFound = GetScraperForItem(item, info, settings);
+      }
+      else
+        info.strContent = "plugin";      
+
       OnInfo(itemNumber,info);
       return true;
     }
