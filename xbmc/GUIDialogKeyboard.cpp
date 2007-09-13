@@ -152,7 +152,7 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
   else if (action.wID >= KEY_ASCII)
   { // input from the keyboard
     char ch = action.wID & 0xFF;
-    switch (ch)
+    switch (action.unicode)
     {
     case 10:  // enter
       OnOK();
@@ -164,7 +164,7 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
       Close();
       break;
     default:  //use character input
-      Character(ch);
+      Character(action.unicode);
       break;
     }
     return true;
@@ -245,11 +245,11 @@ CStdString CGUIDialogKeyboard::GetText() const
   return utf8String;
 }
 
-void CGUIDialogKeyboard::Character(char ch)
+void CGUIDialogKeyboard::Character(WCHAR ch)
 {
   if (!ch) return;
   // TODO: May have to make this routine take a WCHAR for the symbols?
-  m_strEdit.Insert(GetCursorPos(), WCHAR(ch));
+  m_strEdit.Insert(GetCursorPos(), ch);
   UpdateLabel();
   MoveCursor(1);
 }
@@ -268,7 +268,7 @@ void CGUIDialogKeyboard::Render()
   CGUIDialog::Render();
 }
 
-void CGUIDialogKeyboard::UpdateLabel()
+void CGUIDialogKeyboard::UpdateLabel() // FIXME seems to be called twice for one USB SDL keyboard action/character
 {
   CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
   if (pEdit)

@@ -840,6 +840,8 @@ WORD CButtonTranslator::TranslateKeyboardString(const char *szButton)
   if (strlen(szButton) == 1)
   { // single character
     wButtonCode = (WORD)toupper(szButton[0]) | KEY_VKEY;
+    // FIXME It is a printable character, printable should be ASCII not VKEY! Till now it works, but how (long)? 
+    // FIXME support unicode: additional parameter necessary since unicode can not be embedded into key/action-ID.
   }
   else
   { // for keys such as return etc. etc.
