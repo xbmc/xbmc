@@ -51,8 +51,10 @@ CLastFmManager::CLastFmManager()
 
 CLastFmManager::~CLastFmManager()
 {
+  StopRadio(true);
   CloseHandle(m_hWorkerEvent);
   StopThread();
+  CLog::Log(LOGINFO,"lastfm destroyed");
 }
 
 void CLastFmManager::RemoveInstance()
@@ -593,6 +595,7 @@ void CLastFmManager::Process()
     iNrCachedTracks = m_RadioTrackQueue.size();
     CacheTrackThumb(iNrCachedTracks);
   }
+  CLog::Log(LOGINFO,"LastFM thread terminated");
 }
 
 void CLastFmManager::StopRadio(bool bKillSession /*= true*/)
