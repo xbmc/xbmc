@@ -36,10 +36,19 @@ CKey::CKey(const CKey& key)
   *this = key;
 }
 
-DWORD CKey::GetButtonCode() const
+DWORD CKey::GetButtonCode() const // for backwards compatibility only
 {
   return m_dwButtonCode;
 }
+
+DWORD CKey::GetUnicode() const
+{  
+  if (m_dwButtonCode>=KEY_ASCII && m_dwButtonCode < KEY_UNICODE) // will need to change when Unicode is fully implemented
+    return m_dwButtonCode-KEY_ASCII;
+  else
+    return 0;
+}
+
 const CKey& CKey::operator=(const CKey& key)
 {
   if (&key == this) return * this;

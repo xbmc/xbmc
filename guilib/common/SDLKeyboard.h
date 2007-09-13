@@ -5,10 +5,10 @@
 
 #ifdef HAS_SDL
 
-class CKeyboard
+class CLowLevelKeyboard
 {
 public:
-  CKeyboard();
+  CLowLevelKeyboard();
 
   void Initialize(HWND hwnd);
   void Reset();
@@ -16,21 +16,23 @@ public:
   bool GetShift() { return m_bShift;};
   bool GetCtrl() { return m_bCtrl;};
   bool GetAlt() { return m_bAlt;};
-  char GetAscii() { return m_cAscii;};
+  bool GetRAlt() { return m_bRAlt;};
+  char GetAscii() { return m_cAscii;}; // FIXME should be replaced completly by GetUnicode() 
+  WCHAR GetUnicode() { return m_wUnicode;};
   BYTE GetKey() { return m_VKey;};
 
 private:
   bool m_bShift;
   bool m_bCtrl;
   bool m_bAlt;
+  bool m_bRAlt;
   char m_cAscii;
+  WCHAR m_wUnicode;
   BYTE m_VKey;
 #ifdef HAS_SDL_JOYSTICK
   SDL_Joystick* m_pJoy;
 #endif
 };
-
-extern CKeyboard g_Keyboard;
 
 #endif
 

@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "Settings.h"
 #include "Application.h"
+#include "KeyboardLayoutConfiguration.h"
 #include "Util.h"
 #include "GUIWindowFileManager.h"
 #include "GUIDialogButtonMenu.h"
@@ -1867,6 +1868,12 @@ bool CSettings::LoadProfile(int index)
     strLangInfoPath = _P(strLangInfoPath);
     CLog::Log(LOGINFO, "load language info file:%s", strLangInfoPath.c_str());
     g_langInfo.Load(strLangInfoPath);
+
+    CStdString strKeyboardLayoutConfigurationPath;
+    strKeyboardLayoutConfigurationPath.Format("Q:\\language\\%s\\keyboardmap.xml", g_guiSettings.GetString("locale.language"));
+    strKeyboardLayoutConfigurationPath = _P(strKeyboardLayoutConfigurationPath);
+    CLog::Log(LOGINFO, "load keyboard layout configuration info file: %s", strKeyboardLayoutConfigurationPath.c_str());
+    g_keyboardLayoutConfiguration.Load(strKeyboardLayoutConfigurationPath);
 
     CStdString strLanguagePath;
     strLanguagePath.Format("Q:\\language\\%s\\strings.xml", g_guiSettings.GetString("locale.language"));
