@@ -60,7 +60,7 @@ typedef struct {
 typedef struct {
     NPT_String genre;
     NPT_String genre_id;
-    NPT_String genre_extended; // (CSV)
+    NPT_List<NPT_String> genre_extended;
     NPT_String album;
     NPT_String playlist; // dc:title of the playlist item the content belongs too
 } PLT_AffiliationInfo;
