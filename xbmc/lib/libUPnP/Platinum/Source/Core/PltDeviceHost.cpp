@@ -44,7 +44,11 @@ PLT_DeviceHost::PLT_DeviceHost(const char*  description_path,
     m_SsdpAnnounceTask(NULL),
     m_Broadcast(false)
 {
-    m_HttpServer = new PLT_HttpServer(port);  
+#ifdef _XBOX
+    m_HttpServer = new PLT_HttpServer(port, 5);
+#else
+    m_HttpServer = new PLT_HttpServer(port);
+#endif
 
     if (show_ip) {
         NPT_List<NPT_String> ips;
