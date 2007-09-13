@@ -759,6 +759,19 @@ PLT_CtrlPoint::ProcessSsdpMessage(NPT_HttpMessage* message, NPT_SocketInfo& info
     } else {
         // renew expiration time
         data->SetLeaseTime(NPT_TimeInterval(leasetime, 0));
+
+        // the url may have changed
+        if (data->GetDescriptionUrl() != url.ToString()) {
+            data->SetDescriptionUrl(url);
+
+            // Start a task to retrieve the description
+            PLT_CtrlPointGetDescriptionTask* task = new PLT_CtrlPointGetDescriptionTask(
+                url,
+                this, 
+                data);
+            m_TaskManager->StartTask(task);
+        }
+
         NPT_LOG_INFO_1("Device (%s) expiration time renewed..", (const char*)uuid);
         return NPT_SUCCESS;
     }

@@ -196,14 +196,14 @@ char *GetExt(const char *Name)
 {
   CStdString strExtension;
   CUtil::GetExtension(Name,strExtension);
-  return(strstr((char *)Name,strExtension.c_str()));
+  return((char *)strstr((char *)Name,strExtension.c_str()));
 }
 
 wchar *GetExt(const wchar *Name)
 {
   CStdString strExtension;
   CUtil::GetExtension(Name,strExtension);
-  return(wcsstr((wchar_t *)Name,CStdStringW(strExtension).c_str()));
+  return((wchar *)wcsstr((wchar_t *)Name,CStdStringW(strExtension).c_str()));
 }
 
 

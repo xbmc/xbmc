@@ -484,7 +484,19 @@ bool CGUIWindow::OnAction(const CAction &action)
 void CGUIWindow::OnMouseAction()
 {
   // we need to convert the mouse coordinates to window coordinates
-  g_graphicsContext.SetScalingResolution(m_coordsRes, m_posX, m_posY, m_needsScaling);
+  float posX = m_posX;
+  float posY = m_posY;
+  for (unsigned int i = 0; i < m_origins.size(); i++)
+  {
+    // no condition implies true
+    if (!m_origins[i].condition || g_infoManager.GetBool(m_origins[i].condition, GetID()))
+    { // found origin
+      posX = m_origins[i].x;
+      posY = m_origins[i].y;
+      break;
+    }
+  }
+  g_graphicsContext.SetScalingResolution(m_coordsRes, posX, posY, m_needsScaling);
   CPoint mousePoint(g_Mouse.posX, g_Mouse.posY);
   g_graphicsContext.InvertFinalCoords(mousePoint.x, mousePoint.y);
 

@@ -395,13 +395,19 @@ void CGUIWindowVideoFiles::OnInfo(int iItem, const SScraperInfo& info)
   if (!item.HasThumbnail()) // inherit from the original item if it exists
     item.SetThumbnailImage(pItem->GetThumbnailImage());
 
-  AddFileToDatabase(&item);
-
+  if (!info.strContent.Equals("plugin"))
+    AddFileToDatabase(&item);
+  else
+  {
+    if (pItem->HasVideoInfoTag())
+      *item.GetVideoInfoTag() = *pItem->GetVideoInfoTag();
+  }
   ShowIMDB(&item,info);
   // apply any IMDb icon to our item
   if (pItem->m_bIsFolder)
     CVideoInfoScanner::ApplyIMDBThumbToFolder(pItem->m_strPath, item.GetThumbnailImage());
-  Update(m_vecItems.m_strPath);
+  if (!info.strContent.Equals("plugin"))
+    Update(m_vecItems.m_strPath);
 }
 
 void CGUIWindowVideoFiles::AddFileToDatabase(const CFileItem* pItem)
@@ -625,6 +631,8 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
           }
         }
       }
+      if (m_vecItems.IsPluginFolder() && item->HasVideoInfoTag())
+        buttons.Add(CONTEXT_BUTTON_INFO,13346); // only movie information for now
     }
   }
   if (!m_vecItems.IsVirtualDirectoryRoot())

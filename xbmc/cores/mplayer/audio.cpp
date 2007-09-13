@@ -6,7 +6,7 @@
 #include "Ac97DirectSound.h"
 #include "ResampleDirectSound.h"
 #include "IAudioCallback.h"
-#include "mplayer.h"
+#include "MPlayer.h"
 #include "../VideoRenderers/RenderManager.h"
 
 

@@ -74,7 +74,6 @@ void XKGeneral::BytesToHexStr(LPBYTE SrcBytes, DWORD byteCount, LPSTR DstString)
 void XKGeneral::BytesToHexStr(LPBYTE SrcBytes, DWORD byteCount, LPSTR DstString, UCHAR Seperator)
 {
   USHORT Inc = (Seperator == 0x00) ? 2 : 3;
-
   ULONG i;
   for (i = 0; i < byteCount; i++)
   {
@@ -225,10 +224,10 @@ BOOL XKGeneral::ReadINIFileItem(LPCSTR INIFileName, LPCSTR INISection, LPCSTR IN
 
     do
     {
-      sTempSection = strchr((LPCSTR)iniData + sectionOffset, '[');
+      sTempSection = (char *)strchr((LPCSTR)iniData + sectionOffset, '[');
       if ((sTempSection != NULL) && (strncmp(sTempSection + 1, INISection, strlen(INISection)) == 0))
       {
-        sNextSection = strchr((LPCSTR)sTempSection + strlen(INISection), '[');
+        sNextSection = (char *)strchr((LPCSTR)sTempSection + strlen(INISection), '[');
         sNextSection = (sNextSection != NULL) ? sNextSection : (LPSTR)iniData + filesize;
 
         foundSection = TRUE;

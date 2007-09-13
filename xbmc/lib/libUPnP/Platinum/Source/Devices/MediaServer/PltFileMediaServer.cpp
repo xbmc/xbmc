@@ -100,9 +100,9 @@ PLT_FileMediaServer::AddMetadataHandler(PLT_MetadataHandler* handler)
 |   PLT_FileMediaServer::Start
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_FileMediaServer::Start(PLT_TaskManager* task_manager)
+PLT_FileMediaServer::Start(PLT_TaskManager* task_manager, PLT_DeviceHostReference& self)
 {
-    NPT_CHECK_SEVERE(PLT_MediaServer::Start(task_manager));
+    NPT_CHECK_SEVERE(PLT_MediaServer::Start(task_manager, self));
 
     // FIXME: hack for now: find the first valid non local ip address
     // to use in item resources. TODO: we should advertise all ips as

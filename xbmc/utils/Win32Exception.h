@@ -35,11 +35,11 @@ public:
     virtual void writelog(const char *prefix) const;
 protected:
     win32_exception(const EXCEPTION_RECORD& info);
-	static void translate(unsigned code, EXCEPTION_POINTERS* info);
+    static void translate(unsigned code, EXCEPTION_POINTERS* info);
 private:
     const char* mWhat;
     Address mWhere;
-    unsigned mCode;    
+    unsigned mCode;
 };
 
 class access_violation: public win32_exception
