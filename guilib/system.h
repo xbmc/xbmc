@@ -147,6 +147,8 @@
 #define HAS_AC3_CODEC
 #define HAS_DTS_CODEC
 #define HAS_CDDA_RIPPER
+#define HAS_FILESYSTEM_RTV
+#define HAS_FILESYSTEM_DAAP
 #undef HAS_KAI
 
 #include <unistd.h>
