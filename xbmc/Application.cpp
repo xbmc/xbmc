@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "Application.h"
+#include "KeyboardLayoutConfiguration.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "xbox/XKEEPROM.h"
 #include "utils/LCD.h"
@@ -1234,8 +1235,14 @@ HRESULT CApplication::Create(HWND hWnd)
   strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", strLangugage.c_str());
   strLangInfoPath = _P(strLangInfoPath);
 
-  CLog::Log(LOGINFO, "load language info file:%s", strLangInfoPath.c_str());
+  CLog::Log(LOGINFO, "load language info file: %s", strLangInfoPath.c_str());
   g_langInfo.Load(strLangInfoPath);
+
+  CStdString strKeyboardLayoutConfigurationPath;
+  strKeyboardLayoutConfigurationPath.Format("Q:\\language\\%s\\keyboardmap.xml", strLangugage.c_str());
+  strKeyboardLayoutConfigurationPath = _P(strKeyboardLayoutConfigurationPath);
+  CLog::Log(LOGINFO, "load keyboard layout configuration info file: %s", strKeyboardLayoutConfigurationPath.c_str());
+  g_keyboardLayoutConfiguration.Load(strKeyboardLayoutConfigurationPath);
 
   m_splash = new CSplash(_P("Q:\\media\\splash.png"));
 #ifndef HAS_SDL_OPENGL
@@ -2319,6 +2326,7 @@ void CApplication::RenderNoPresent()
     // Video rendering occuring from main thread for OpenGL
     //g_renderManager.RenderUpdate(true, 0, 0);
     g_renderManager.Present();
+Sleep(0);
     ResetScreenSaver();
     g_infoManager.ResetCache();
 #else
@@ -2592,13 +2600,20 @@ bool CApplication::OnKey(CKey& key)
       {
         if (key.GetButtonCode() != KEY_INVALID)
           action.wID = (WORD) key.GetButtonCode();
+          action.unicode = key.GetUnicode();
       }
       else
       { // see if we've got an ascii key
-        if (g_Keyboard.GetAscii() != 0)
-          action.wID = (WORD)g_Keyboard.GetAscii() | KEY_ASCII;
+        if (g_Keyboard.GetUnicode()) 
+        {
+          action.wID = (WORD)g_Keyboard.GetAscii() | KEY_ASCII; // Only for backwards compatibility
+          action.unicode = g_Keyboard.GetUnicode();
+        }
         else
+        {
           action.wID = (WORD)g_Keyboard.GetKey() | KEY_VKEY;
+          action.unicode = 0;
+        }
       }
     }
     else
@@ -3411,10 +3426,15 @@ bool CApplication::ProcessKeyboard()
 {
   // process the keyboard buttons etc.
   BYTE vkey = g_Keyboard.GetKey();
-  if (vkey)
+  WCHAR unicode = g_Keyboard.GetUnicode();
+  if (vkey || unicode)
   {
     // got a valid keypress - convert to a key code
-    WORD wkeyID = (WORD)vkey | KEY_VKEY;
+    WORD wkeyID;
+    if (vkey) // FIXME, every ascii has a vkey so vkey would always and ascii would never be processed, but fortunately OnKey uses wkeyID only to detect keyboard use and the real key is recalculated correctly.
+      wkeyID = (WORD)vkey | KEY_VKEY; 
+    else
+      wkeyID = KEY_UNICODE;
     //  CLog::Log(LOGDEBUG,"Keyboard: time=%i key=%i", timeGetTime(), vkey);
     CKey key(wkeyID);
     return OnKey(key);

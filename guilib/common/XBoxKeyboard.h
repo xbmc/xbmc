@@ -4,11 +4,11 @@
 #define DEBUG_KEYBOARD
 #include <xkbd.h>
 
-class CKeyboard
+class CLowLevelKeyboard
 {
 public:
-  CKeyboard();
-  ~CKeyboard();
+  CLowLevelKeyboard();
+  ~CLowLevelKeyboard();
 
   void Initialize(HWND hWnd);
 
@@ -16,7 +16,9 @@ public:
   bool GetShift() { return m_bShift;};
   bool GetCtrl() { return m_bCtrl;};
   bool GetAlt() { return m_bAlt;};
-  char GetAscii() { return m_cAscii;};
+  bool GetRAlt() { return m_bRAlt;};
+  char GetAscii() { return m_cAscii;}; // FIXME should be replaced completly by GetUnicode() 
+  WCHAR GetUnicode() { return GetAscii();}; // FIXME HELPME is there any unicode feature available?
   BYTE GetKey() { return m_VKey;};
 
 private:
@@ -29,14 +31,13 @@ private:
   bool m_bShift;
   bool m_bCtrl;
   bool m_bAlt;
+  bool m_bRAlt;
   char m_cAscii;
   BYTE m_VKey;
 
   bool m_bInitialized;
   bool m_bKeyDown;
 };
-
-extern CKeyboard g_Keyboard;
 
 #endif
 

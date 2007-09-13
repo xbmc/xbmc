@@ -76,14 +76,13 @@ bool CGUIDialogNumeric::OnAction(const CAction &action)
     else if (b == 0x08) OnBackSpace();    // backspace
     else if (b == 0x1B) OnCancel();        // escape
   }
-  else if (action.wID >= KEY_ASCII)
+  else if (action.wID >= KEY_ASCII) // FIXME make it KEY_UNICODE
   { // input from the keyboard
-    char ch = action.wID & 0xFF;
-    if (ch == 10) OnOK(); // enter
-    else if (ch == 8) OnBackSpace(); // backspace
-    else if (ch == 27) OnCancel(); // escape
-    else if (ch >= 48 && ch < 58)  // number
-      OnNumber(ch - 48);
+    if (action.unicode == 10) OnOK(); // enter
+    else if (action.unicode == 8) OnBackSpace(); // backspace
+    else if (action.unicode == 27) OnCancel(); // escape
+    else if (action.unicode >= 48 && action.unicode < 58)  // number
+      OnNumber(action.unicode - 48);
   }
   else
     return CGUIDialog::OnAction(action);

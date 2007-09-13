@@ -1,0 +1,148 @@
+<!-- This configuration file was developed to be able to map an english layout keyboard to a german layout keyboard in XBMC.
+    The problem: if I press the key that is labeled with "Z" on my german keyboard (next to the key labeled with "T" -> QWERTZ!) 
+    I get an "Y" on my XBMC screen because till now XBMC always assumes an english layout keyboard (QWERTY). 
+    If I press the "," on the numpad i get a ".". 
+    This applies for nearly all keys on my german keyboard besides "A"-"Z" and "0"-"9".
+    With the following mapping I can configure XBMC to replace the "Y" through an "Z" and so forth!
+        
+    This demands a map for printable characters (ascii and/or unicode) and logical keys (virtual keys or other names).
+    The map for printable characters and the map for logical keys must be separated 
+    since they can contain same values that should be mapped different.
+    
+    Of course, you should never reassign the same printable character 
+    without (or with the same) modifiers more than once.
+    
+    More specific mappings, i.e. with virtual keys and/or with one or even more modifiers,
+    are handled first/prioritized over less specific mappings! Why?
+    Example: an us keyboard has: "]" on one key, the german keyboard has "+" on the same key,
+    additionally the german keyboard has "~" on the same key, but the "~" 
+    can only be reached with the special modifier "AltGr" (right alt).
+    If "+" is handled first, the key is already consumed and "~" can never be reached.
+    The least specific mappings, e.g. "regardless modifiers" are done at last/least prioritized.
+    
+    I assume that once a configuration is "complete", it is useful for everybody with that language, platform or model.    
+    So let's start configuring keyboards for xbmc, collect and exchange them :o).
+    
+    We should collect them all in a structure like:
+    * XBMCdefault 
+      * standardkeyboard (this could be the standard language folder in the XBMC)
+        * english
+        * german
+        * ...
+    If needed, additionally:
+    * producer (this could be the root folder on some server for exchange)
+      * keyboard model
+        * language a
+        * language b
+    
+    For details of keyboard layouts see: http://en.wikipedia.org/wiki/Keyboard_layout (thx Gamester17 for this link)
+    
+    For details of further development see: http://www.xboxmediacenter.com/forum/showthread.php?t=26796
+-->
+<keyboard_layout> 
+    <!-- following topics are independent of all plattforms and the "last" chance in the processing chain -->
+    <!-- Some keys are reached with combinations that do not exist on english keyboards, 
+	 therefore there does not exist a specific english ascii that can be replaced 
+	 (simple ascii replacement is not possible). Both the key and the modifier must be specified, e.g. 
+	 in the third following case the key 7 is pressed in combination with right alt to reach {.
+	 -->
+    <char2char_ralt> 
+	<!-- key line with numbers, every key with right alt -->
+	<entry inchar="2" outchar="²"/>
+	<entry inchar="3" outchar="³"/>
+	<entry inchar="7" outchar="{"/>
+	<entry inchar="8" outchar="["/>
+	<entry inchar="9" outchar="]"/>
+	<entry inchar="0" outchar="}"/>
+	<entry inchar="-" outchar="\"/>
+	
+	<!-- line beginning with tab with right alt -->
+	<entry inchar="q" outchar="@"/>
+	<entry inchar="e" outchar="€"/>
+	<entry inchar="]" outchar="~"/>
+	
+	<!-- line beginning with shift (below capslock) with right alt -->
+	<entry inchar="\" outchar="|"/> <!-- does it work? -->
+	<entry inchar="m" outchar="µ"/>
+    </char2char_ralt>
+    
+    <char2char> 
+        <!-- key line with numbers, every key without modifier -->
+	<entry inchar="`" outchar="^"/>
+        <entry inchar="-" outchar="ß"/>
+	<entry inchar="=" outchar="´"/>
+        
+        <!-- key line with numbers, every key with shift -->
+        <entry inchar="~" outchar="°"/>
+        <entry inchar="@" outchar="&quot;"/>
+        <entry inchar="#" outchar="§"/>
+        <entry inchar="^" outchar="&amp;"/>
+        <entry inchar="&amp;" outchar="/"/>
+        <entry inchar="*" outchar="("/>
+        <entry inchar="(" outchar=")"/>
+        <entry inchar=")" outchar="="/>
+        <entry inchar="_" outchar="?"/>
+	<entry inchar="+" outchar="`"/>
+        
+        <!-- line beginning with tab without modifier -->
+        <entry inchar="[" outchar="ü"/>
+        <entry inchar="]" outchar="+"/>
+        
+        <!-- line beginning with tab with shift -->
+        <entry inchar="{" outchar="Ü"/>
+        <entry inchar="}" outchar="*"/>
+        
+        <!-- line beginning with capslock without modifier -->
+        <entry inchar=";" outchar="ö"/>
+	<entry inchar="'" outchar="ä"/>
+        <entry inchar="\" outchar="#"/>
+        
+        <!-- line beginning with capslock with shift -->
+        <entry inchar=":" outchar="Ö"/>
+        <entry inchar="&quot;" outchar="Ä"/>
+        <entry inchar="|" outchar="'"/>
+        
+        <!-- line beginning with shift (below capslock) without modifier -->
+	<entry inchar="\" outchar="&lt;"/> <!-- does it work? -->
+	<entry inchar="/" outchar="-"/>
+        
+        <!-- line beginning with shift (below capslock) with shift -->
+        <entry inchar="|" outchar="&gt;"/>
+        <entry inchar="&lt;" outchar=";"/>
+        <entry inchar="&gt;" outchar=":"/>
+        <entry inchar="?" outchar="_"/>
+        
+    </char2char> 
+    
+    <!-- The following maps allows for reassigning special standardardized multimedia keys,
+	 e.g. assign the [ > play > ] button to ascii "p" that is assign to action "play".
+         But support of the vkey by XBMC is presumed.
+	 -->
+    <vkey2char> 
+        <!-- line beginning with shift (below capslock) without modifier -->
+	<entry inhex="0xe2" outchar="&lt;"/> <!-- This is the 105th key of typical european keyboards! Usually it is not assigned in english XBMC -->
+    </vkey2char>
+    
+    <vkey2char_shift> 
+        <!-- line beginning with shift (below capslock) without modifier -->
+	<entry inhex="0xe2" outchar="&gt;"/> <!-- This is the 105th key of typical european keyboards! Usually it is not assigned in english XBMC -->
+    </vkey2char_shift>
+    
+    <vkey2char_ralt> 
+	<entry inhex="0xe2" outchar="|" /> <!-- This is the 105th key of typical european keyboards! Usually it is not assigned in english XBMC -->
+    </vkey2char_ralt>
+                        
+    <!-- 
+    further topics possible, but not yet implemented: 
+    <vkey2vkey> 
+    </vkey2vkey>
+    topics dependent of plattforms and the "first" chance in the processing chain:
+    <sdllogical2vkey>
+    </sdllogical2vkey>
+    <sdlscan2unicode>
+    </sdlscan2unicode>
+    <sdlscan2vkey>
+    </sdlscan2vkey>
+    ...
+                -->
+</keyboard_layout>
