@@ -2099,7 +2099,7 @@ CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */)
   if (IsMusicDb()) return "";
   CURL url(m_strPath);
   if (url.GetProtocol() == "rar" || url.GetProtocol() == "zip") return "";
-  if (url.GetProtocol() == "upnp" || url.GetProtocol() == "ftp") return "";
+  if (url.GetProtocol() == "upnp" || url.GetProtocol() == "ftp" || url.GetProtocol() == "ftps") return "";
 
   // we first check for <filename>.tbn or <foldername>.tbn
   CStdString fileThumb(GetTBNFile());

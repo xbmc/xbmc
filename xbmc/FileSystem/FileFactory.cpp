@@ -57,8 +57,11 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #endif
   if( g_network.IsAvailable() )
   {
-    if (strProtocol == "http" || strProtocol == "https") return new CFileCurl();
-    else if (strProtocol == "ftp" || strProtocol == "ftpx") return new CFileCurl();
+    if (strProtocol == "http" 
+    ||  strProtocol == "https") return new CFileCurl();
+    else if (strProtocol == "ftp" 
+         ||  strProtocol == "ftpx"
+         ||  strProtocol == "ftps") return new CFileCurl();
     else if (strProtocol == "upnp") return new CFileCurl();
     else if (strProtocol == "shout") return new CFileShoutcast();
     else if (strProtocol == "lastfm") return new CFileLastFM();
