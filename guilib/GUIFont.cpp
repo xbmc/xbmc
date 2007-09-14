@@ -1,12 +1,19 @@
 #include "include.h"
 #include "GUIFont.h"
 #include "GraphicContext.h"
+
+#include <math.h>
+
 #include "../xbmc/utils/SingleLock.h"
 
 namespace MathUtils {
   int round_int (double x);
 }
+#ifndef _LINUX
 #define ROUND(x) (float)(MathUtils::round_int(x))
+#else
+#define ROUND roundf
+#endif
 
 CGUIFont::CGUIFont(const CStdString& strFontName, DWORD textColor, DWORD shadowColor, CGUIFontBase *font)
 {
