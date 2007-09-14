@@ -808,38 +808,38 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
   brightness =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Brightness - 50.0)/100.0;
   contrast =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Contrast)/50.0;
 
-  if (m_renderMethod & RENDER_SW) 
+  if (imaging==-1)
   {
-    if (imaging==-1)
+    imaging = 0;
+    if (glewIsSupported("GL_ARB_imaging"))
     {
-      imaging = 0;
-      if (glewIsSupported("GL_ARB_imaging"))
+      CLog::Log(LOGINFO, "GL: ARB Imaging extension supported");
+      imaging = 1;
+    }
+    else 
+    {
+      int maj=0, min=0;
+      g_graphicsContext.getScreenSurface()->GetGLVersion(maj, min);
+      if (maj>=2)
       {
-        CLog::Log(LOGINFO, "GL: ARB Imaging extension supported");
+        imaging = 1;
+      } 
+      else if (min>=2) 
+      {
         imaging = 1;
       }
-      else 
-      {
-        int maj=0, min=0;
-        g_graphicsContext.getScreenSurface()->GetGLVersion(maj, min);
-        if (maj>=2)
-        {
-          imaging = 1;
-        } else if (min>=2) {
-          imaging = 1;
-        }
-      }
     }
-    if (imaging)
-    {
-      glPixelTransferf(GL_RED_SCALE, contrast);
-      glPixelTransferf(GL_GREEN_SCALE, contrast);
-      glPixelTransferf(GL_BLUE_SCALE, contrast);
-      glPixelTransferf(GL_RED_BIAS, brightness);
-      glPixelTransferf(GL_GREEN_BIAS, brightness);
-      glPixelTransferf(GL_BLUE_BIAS, brightness);
-      VerifyGLState();
-    }
+  }
+ 
+  if (imaging==1) 
+  {
+    glPixelTransferf(GL_RED_SCALE, contrast);
+    glPixelTransferf(GL_GREEN_SCALE, contrast);
+    glPixelTransferf(GL_BLUE_SCALE, contrast);
+    glPixelTransferf(GL_RED_BIAS, brightness);
+    glPixelTransferf(GL_GREEN_BIAS, brightness);
+    glPixelTransferf(GL_BLUE_BIAS, brightness);
+    VerifyGLState();
   }
 
   glEnable(GL_TEXTURE_2D);
@@ -852,6 +852,18 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
     glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[0]);
 
   VerifyGLState();
+
+  if (imaging==1)
+  {
+    glPixelTransferf(GL_RED_SCALE, 1.0);
+    glPixelTransferf(GL_GREEN_SCALE, 1.0);
+    glPixelTransferf(GL_BLUE_SCALE, 1.0);
+    glPixelTransferf(GL_RED_BIAS, 0.0);
+    glPixelTransferf(GL_GREEN_BIAS, 0.0);
+    glPixelTransferf(GL_BLUE_BIAS, 0.0);
+    VerifyGLState();
+  }
+
   if (m_renderMethod & RENDER_GLSL)
   {    
     glBindTexture(m_textureTarget, fields[0][1]);
@@ -864,16 +876,6 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
     VerifyGLState();
   }
   
-  if (imaging)
-  {
-    glPixelTransferf(GL_RED_SCALE, 1.0);
-    glPixelTransferf(GL_GREEN_SCALE, 1.0);
-    glPixelTransferf(GL_BLUE_SCALE, 1.0);
-    glPixelTransferf(GL_RED_BIAS, 0.0);
-    glPixelTransferf(GL_GREEN_BIAS, 0.0);
-    glPixelTransferf(GL_BLUE_BIAS, 0.0);
-    VerifyGLState();
-  }
   g_graphicsContext.EndPaint(m_pBuffer);
 }
 
@@ -1786,7 +1788,7 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags)
     glUniform1f(m_stepX, 1/(float)im.width);
     glUniform1i(m_shaderField, 0);
     */
-    m_pYUVShader->SetField(1);
+    m_pYUVShader->SetField(0);
     imgheight = im.height/2;
     break;
 
