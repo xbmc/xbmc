@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <math.h>
 #include "PlayList.h"
 #include "FileSystem/RarManager.h"
 #include "Settings.h"
@@ -65,10 +66,75 @@ struct XBOXDETECTION
 
 namespace MathUtils
 {
-  inline int round_int (double x);
-  inline int ceil_int (double x);
-  inline int truncate_int(double x);
-}
+
+#ifndef _LINUX
+  inline int round_int (double x)
+  {
+    assert (x > static_cast <double>(INT_MIN / 2) - 1.0);
+    assert (x < static_cast <double>(INT_MAX / 2) + 1.0);
+
+    const float round_to_nearest = 0.5f;
+    int i;
+    __asm
+    {
+      fld x
+      fadd st, st (0)
+      fadd round_to_nearest
+      fistp i
+      sar i, 1
+    }
+    return (i);
+  }
+#else
+  inline int round_int (float x) { return lrintf(x); }
+  inline int round_int (double x) { return lrint(x); }
+#endif
+
+  inline int ceil_int (double x)
+  {
+    assert (x > static_cast <double>(INT_MIN / 2) - 1.0);
+    assert (x < static_cast <double>(INT_MAX / 2) + 1.0);
+    const float round_towards_p_i = -0.5f;
+    int i;
+  #ifndef _LINUX
+    __asm
+    {
+      fld x
+      fadd st, st (0)
+      fsubr round_towards_p_i
+      fistp i
+      sar i, 1
+    }
+    return (-i);
+  #else
+    return (int)(ceil(x));
+  #endif
+  }
+
+  inline int truncate_int(double x)
+  {
+    assert (x > static_cast <double>(INT_MIN / 2) - 1.0);
+    assert (x < static_cast <double>(INT_MAX / 2) + 1.0);
+    const float round_towards_m_i = -0.5f;
+    int i;
+  #ifndef _LINUX
+    __asm
+    {
+      fld x
+      fadd st, st (0)
+      fabs
+      fadd round_towards_m_i
+      fistp i
+      sar i, 1
+    }
+    if (x < 0)
+      i = -i;
+    return (i);
+  #else
+    return (int)(x);
+  #endif
+  }
+} // namespace MathUtils
 
 class CUtil
 {

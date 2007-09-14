@@ -91,79 +91,6 @@
 #include "DirectXGraphics.h"
 #endif
 
-namespace MathUtils {
-
-inline int round_int (double x)
-{
-  assert (x > static_cast <double>(INT_MIN / 2) - 1.0);
-  assert (x < static_cast <double>(INT_MAX / 2) + 1.0);
-
-  const float round_to_nearest = 0.5f;
-  int i;
-#ifndef _LINUX
-  __asm
-  {
-    fld x
-    fadd st, st (0)
-    fadd round_to_nearest
-    fistp i
-    sar i, 1
-  }
-  return (i);
-#else
-  __asm__ ("fistpl %0"
-           : "=m" (i) : "t" (x) : "st");
-  return i;
-#endif
-}
-
-inline int ceil_int (double x)
-{
-  assert (x > static_cast <double>(INT_MIN / 2) - 1.0);
-  assert (x < static_cast <double>(INT_MAX / 2) + 1.0);
-  const float round_towards_p_i = -0.5f;
-  int i;
-#ifndef _LINUX
-  __asm
-  {
-    fld x
-    fadd st, st (0)
-    fsubr round_towards_p_i
-    fistp i
-    sar i, 1
-  }
-  return (-i);
-#else
-#warning TODO: port _asm code for ceil_int
-  return (int)(ceil(x));
-#endif
-}
-
-inline int truncate_int(double x)
-{
-  assert (x > static_cast <double>(INT_MIN / 2) - 1.0);
-  assert (x < static_cast <double>(INT_MAX / 2) + 1.0);
-  const float round_towards_m_i = -0.5f;
-  int i;
-#ifndef _LINUX
-  __asm
-  {
-    fld x
-    fadd st, st (0)
-    fabs
-    fadd round_towards_m_i
-    fistp i
-    sar i, 1
-  }
-  if (x < 0)
-    i = -i;
-  return (i);
-#else
-#warning TODO: port _asm code for truncate_int
-  return (int)(x);
-#endif
-}
-
 void hack()
 {
   // stupid hack to keep compiler from dropping these
@@ -172,8 +99,6 @@ void hack()
   MathUtils::truncate_int(0.0);
   MathUtils::ceil_int(0.0);  
 }
-
-} // CMathUtils namespace
 
 using namespace DIRECTORY;
 

@@ -2,6 +2,8 @@
 #include "GUIFontTTF.h"
 #include "GraphicContext.h"
 
+#include <math.h>
+
 // stuff for freetype
 #ifndef _LINUX
 #include "ft2build.h"
@@ -77,11 +79,16 @@ namespace MathUtils {
   int round_int (double x);
 }
 
+#ifndef _LINUX
 #define ROUND(x) (float)(MathUtils::round_int(x))
-#if defined(HAS_XBOX_D3D) || defined(HAS_SDL_OPENGL)
+#if defined(HAS_XBOX_D3D) 
 #define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x))
 #else
 #define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x)) - 0.5f
+#endif
+#else
+#define ROUND roundf
+#define ROUND_TO_PIXEL roundf
 #endif
 
 #define CHARS_PER_TEXTURE_LINE 20 // number of characters to cache per texture line

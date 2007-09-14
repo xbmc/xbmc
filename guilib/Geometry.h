@@ -62,7 +62,7 @@ public:
     return false;
   };
 
-  const CRect &operator -=(const CPoint &point)
+  inline const CRect &operator -=(const CPoint &point)
   {
     x1 -= point.x;
     y1 -= point.y;
@@ -71,7 +71,7 @@ public:
     return *this;
   };
 
-  const CRect &operator +=(const CPoint &point)
+  inline const CRect &operator +=(const CPoint &point)
   {
     x1 += point.x;
     y1 += point.y;
@@ -90,7 +90,7 @@ public:
     if (y1 > y2) y1 = y2;
   };
 
-  bool IsEmpty() const
+  inline bool IsEmpty() const
   {
     return (x2 - x1) * (y2 - y1) == 0;
   };
