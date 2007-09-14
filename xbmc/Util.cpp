@@ -431,7 +431,7 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
   {
     strFilename = g_localizeStrings.Get(260); // Shoutcast
   }
-  else if (strFileNameAndPath.Compare("ftp://") == 0)
+  else if (strFileNameAndPath.Compare("ftp://") == 0 || strFileNameAndPath.Compare("ftps://") == 0)
   {
     strFilename = g_localizeStrings.Get(20174); // FTP Server
   }
@@ -4880,6 +4880,7 @@ bool CUtil::IsFTP(const CStdString& strFile)
 {
   if( strFile.Left(6).Equals("ftp://") ) return true;
   else if( strFile.Left(7).Equals("ftpx://") ) return true;
+  else if( strFile.Left(7).Equals("ftps://") ) return true;
   else return false;
 }
 
