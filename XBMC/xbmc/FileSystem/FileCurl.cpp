@@ -249,6 +249,7 @@ void CFileCurl::SetCommonOptions()
 
   // never verify peer, we don't have any certificates to do this
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_SSL_VERIFYPEER, 0);
+  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_SSL_VERIFYHOST, 0);
 
   // setup any requested authentication
   if( m_ftpauth.length() > 0 )
