@@ -267,14 +267,10 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                       StringUtils::JoinString(strings, " / ", buffer);
                       tag->SetGenre(buffer);
                       tag->SetAlbum((const char*) (*entry)->m_Affiliation.album);
-                      tag->SetTrackNumber((*entry)->m_MiscInfo.original_track_number);
-                      
-                      // some servers (like WMC) use upnp:artist instead of dc:creator
-                      if ((*entry)->m_Creator.GetLength() == 0)
-                        tag->SetArtist((const char*) (*entry)->m_People.artist);
-                      else
-                        tag->SetArtist((const char*) (*entry)->m_Creator);
-                      
+                      tag->SetTrackNumber((*entry)->m_MiscInfo.original_track_number); 
+                      tag->SetAlbumArtist((const char*)(*entry)->m_People.artist);
+                      tag->SetArtist((const char*)(*entry)->m_Creator);
+
                       tag->SetLoaded();
                     }
                     else if( (*entry)->m_ObjectClass.type.CompareN("object.item.imageitem", 21,true) == 0 )

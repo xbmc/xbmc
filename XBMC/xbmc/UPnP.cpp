@@ -328,7 +328,7 @@ CUPnPServer::BuildObject(CFileItem*      item,
                 }
 
                 object->m_Affiliation.album = tag->GetAlbum();
-                object->m_People.artist = tag->GetArtist();
+                object->m_People.artist = tag->GetAlbumArtist();
                 object->m_Creator = tag->GetArtist();
                 object->m_MiscInfo.original_track_number = tag->GetTrackNumber();
                 resource.m_Duration = tag->GetDuration();                
