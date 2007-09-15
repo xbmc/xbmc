@@ -46,6 +46,24 @@
 
 NPT_SET_LOCAL_LOGGER("xbmc.upnp")
 
+typedef struct {
+  const char* extension;
+  const char* mimetype;
+} mimetype_extension_struct;
+
+static const mimetype_extension_struct mimetype_extension_map[] = {
+    {"mp3",  "audio/mpeg"},
+    {"wma",  "audio/x-ms-wma"},
+    {"wav",  "audio/wav"},
+    {"wmv",  "video/x-ms-wmv"},
+    {"mpg",  "video/mpeg"},
+    {"mpeg", "video/mpeg"},
+    {"avi",  "video/avi"},
+    {"jpg",  "image/jpeg"},
+    {"png",  "image/png"},
+    {NULL, NULL}
+};
+
 /*----------------------------------------------------------------------
 |   static
 +---------------------------------------------------------------------*/
@@ -214,7 +232,54 @@ private:
 
         return file_path.Left(index);
     }
+
+    static NPT_String GetProtocolInfo(const CFileItem* item, const NPT_String& protocol);
 };
+
+NPT_String
+CUPnPServer::GetProtocolInfo(const CFileItem* item, const NPT_String& protocol)
+{
+    NPT_String proto = protocol;
+    /* fixup the protocol */
+    if (proto.IsEmpty()) {
+        proto = item->GetAsUrl().GetProtocol();
+        if (proto == "http") {
+            proto = "http-get";
+        }
+    }
+    NPT_String ext = CUtil::GetExtension(item->m_strPath);
+    if( item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty() ) {
+        ext = CUtil::GetExtension(item->GetVideoInfoTag()->m_strFileNameAndPath);
+    } else if( item->HasMusicInfoTag() && !item->GetMusicInfoTag()->GetURL().IsEmpty() ) {
+        ext = CUtil::GetExtension(item->GetMusicInfoTag()->GetURL());
+    }
+    ext.TrimLeft('.');
+    ext.ToLowercase();
+
+
+    /* we need a valid extension to retrieve the mimetype for the protocol info */
+    NPT_String content = item->GetContentType();
+    if( content.IsEmpty() || content == "application/octet-stream" ) {
+        content == "application/octet-stream";
+        const mimetype_extension_struct* mapping = mimetype_extension_map;
+        while( mapping->extension ) {
+            if( ext == mapping->extension ) {
+                content = mapping->mimetype;
+                break;
+            }
+            mapping++;
+        }
+    }
+
+    /* setup dlna strings, wish i knew what all of they mean */
+    NPT_String extra = "DLNA.ORG_OP=01;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01500000000000000000000000000000";
+    if( ext == "mp3" || content == "audio/mpeg" ) {
+        extra.Insert("DLNA.ORG_PN=MP3;");
+    }
+
+    NPT_String info = proto + ":*:" + content + ":" + extra;
+    return info;
+}
 
 /*----------------------------------------------------------------------
 |   PLT_FileMediaServer::BuildObject
@@ -302,25 +367,17 @@ CUPnPServer::BuildObject(CFileItem*      item,
             object->m_ObjectClass.type = "object.item.videoitem";
         } else if( item->IsPicture() ) {
             object->m_ObjectClass.type = "object.item.imageitem";
+        } else {
+            object->m_ObjectClass.type = "object.item";
         }
 
-        /* we need a valid extension to retrieve the mimetype for the protocol info */
-        CStdString ext = CUtil::GetExtension((const char*)file_path);
-
-        /* if we still miss a object class, try set it now from extension */
-        if( object->m_ObjectClass.type == "object.item" || object->m_ObjectClass.type == "" ) {
-            object->m_ObjectClass.type = PLT_MediaItem::GetUPnPClassFromExt(ext);
-        }
-
-        /* Set the protocol Info from the extension */
-        resource.m_ProtocolInfo = PLT_MediaItem::GetProtInfoFromExt(ext);
-        if (resource.m_ProtocolInfo.GetLength() == 0)  goto failure;
 
         /* Set the resource file size */
         resource.m_Size = (NPT_Integer)item->m_dwSize;
 
         // if the item is remote, add a direct link to the item
         if( CUtil::IsRemote ( (const char*)file_path ) ) {
+            resource.m_ProtocolInfo = GetProtocolInfo(item, "");
             resource.m_Uri = file_path;
             object->m_Resources.Add(resource);
         }
@@ -334,8 +391,8 @@ CUPnPServer::BuildObject(CFileItem*      item,
             query.AddField("path", file_path);
             uri.SetHost(*ip);
             uri.SetQuery(query.ToString());
+            resource.m_ProtocolInfo = GetProtocolInfo(item, "http-get");
             resource.m_Uri = uri.ToString();
-            
             object->m_Resources.Add(resource);
 
             ++ip;
