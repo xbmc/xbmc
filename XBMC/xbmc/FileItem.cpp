@@ -991,23 +991,11 @@ const CStdString& CFileItem::GetContentType() const
     else if( m_strPath.Left(8).Equals("shout://")
           || m_strPath.Left(7).Equals("http://")
           || m_strPath.Left(8).Equals("https://")
-          || m_strPath.Left(7).Equals("upnp://"))
+          || m_strPath.Left(7).Equals("upnp://")
+          || m_strPath.Left(9).Equals("lastfm://"))
     {
-      CURL url(m_strPath);
-      url.SetProtocol("http");
-      CFileCurl::GetContent(url, m_ref);
-    }
-    else if( m_strPath.Left(8).Equals("https://") )
-    {
-      CURL url(m_strPath);
-      CFileCurl::GetContent(url, m_ref);    
-    }
+      CFileCurl::GetContent(GetAsUrl(), m_ref);
 
-    // if it's still empty set to an unknown type
-    if( m_ref.IsEmpty() )
-      m_ref = "application/octet-stream";
-    else
-    {
       // make sure there are no options set in content type
       // content type can look like "video/x-ms-asf ; charset=utf8"
       int i = m_ref.Find(';');
@@ -1016,6 +1004,9 @@ const CStdString& CFileItem::GetContentType() const
       m_ref.Trim();
     }
 
+    // if it's still empty set to an unknown type
+    if( m_ref.IsEmpty() )
+      m_ref = "application/octet-stream";
   }
 
   return m_contenttype;
