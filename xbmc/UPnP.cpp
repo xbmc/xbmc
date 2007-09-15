@@ -406,8 +406,28 @@ CUPnPServer::BuildObject(CFileItem*      item,
         container->m_ObjectClass.type = "object.container";
         container->m_ChildrenCount = -1;
 
+        /* this might be overkill, but hey */
         if(item->IsMusicDb()) {
+            MUSICDATABASEDIRECTORY::NODE_TYPE node = CMusicDatabaseDirectory::GetDirectoryChildType(item->m_strPath);
+            switch(node) {
+                case MUSICDATABASEDIRECTORY::NODE_TYPE_ARTIST:
+                  container->m_ObjectClass.type += "persion.artist";
+                  break;
+                case MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM:
+                case MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM_COMPILATIONS:
+                case MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM_RECENTLY_ADDED:
+                case MUSICDATABASEDIRECTORY::NODE_TYPE_YEAR_ALBUM:
+                  container->m_ObjectClass.type += "album.musicAlbum";
+                  break;
+                case MUSICDATABASEDIRECTORY::NODE_TYPE_GENRE:
+                  container->m_ObjectClass.type += "genre.musicGenre";
+            }
         } else if(item->IsVideoDb()) {
+            VIDEODATABASEDIRECTORY::NODE_TYPE node = CVideoDatabaseDirectory::GetDirectoryChildType(item->m_strPath);
+            switch(node) {
+                case VIDEODATABASEDIRECTORY::NODE_TYPE_GENRE:
+                  container->m_ObjectClass.type += "genre.movieGenre";
+            }
         }
 
         /* Get the number of children for this container */
