@@ -315,7 +315,7 @@ CUPnPServer::BuildObject(CFileItem*      item,
 
         /* Setup object type */
         if( item->IsMusicDb() ) {
-            object->m_ObjectClass.type = "object.item.audioitem";
+            object->m_ObjectClass.type = "object.item.audioItem.musicTrack";
           
             if( item->HasMusicInfoTag() ) {
                 CMusicInfoTag *tag = item->GetMusicInfoTag();
@@ -335,7 +335,7 @@ CUPnPServer::BuildObject(CFileItem*      item,
             }
 
         } else if( item->IsVideoDb() ) {
-            object->m_ObjectClass.type = "object.item.videoitem";
+            object->m_ObjectClass.type = "object.item.videoItem.movie";
 
             if( item->HasVideoInfoTag() ) {
                 CVideoInfoTag *tag = item->GetVideoInfoTag();
@@ -362,11 +362,11 @@ CUPnPServer::BuildObject(CFileItem*      item,
             }
 
         } else if( item->IsAudio() ) {
-            object->m_ObjectClass.type = "object.item.audioitem";
+            object->m_ObjectClass.type = "object.item.audioItem.musicTrack";
         } else if( item->IsVideo() ) {
-            object->m_ObjectClass.type = "object.item.videoitem";
+            object->m_ObjectClass.type = "object.item.videoItem.movie";
         } else if( item->IsPicture() ) {
-            object->m_ObjectClass.type = "object.item.imageitem";
+            object->m_ObjectClass.type = "object.item.imageItem.photo";
         } else {
             object->m_ObjectClass.type = "object.item";
         }
