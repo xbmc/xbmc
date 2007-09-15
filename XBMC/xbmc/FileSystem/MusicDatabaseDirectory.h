@@ -12,9 +12,9 @@ namespace DIRECTORY
     virtual ~CMusicDatabaseDirectory(void);
     virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
     virtual bool Exists(const char* strPath);
-    MUSICDATABASEDIRECTORY::NODE_TYPE GetDirectoryChildType(const CStdString& strPath);
-    MUSICDATABASEDIRECTORY::NODE_TYPE GetDirectoryType(const CStdString& strPath);
-    MUSICDATABASEDIRECTORY::NODE_TYPE GetDirectoryParentType(const CStdString& strPath);
+    static MUSICDATABASEDIRECTORY::NODE_TYPE GetDirectoryChildType(const CStdString& strPath);
+    static MUSICDATABASEDIRECTORY::NODE_TYPE GetDirectoryType(const CStdString& strPath);
+    static MUSICDATABASEDIRECTORY::NODE_TYPE GetDirectoryParentType(const CStdString& strPath);
     bool IsArtistDir(const CStdString& strDirectory);
     bool HasAlbumInfo(const CStdString& strDirectory);
     void ClearDirectoryCache(const CStdString& strDirectory);
