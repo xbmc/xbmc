@@ -19,11 +19,16 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
   CFileCurl reader;
 
-  CStdString path = strPath;
-  if( !path.Right(1).Equals("/") )
-    path += "/";
+  CURL url(strPath);
 
-  if (!reader.Open(path, false))
+  CStdString path = url.GetFileName();
+  if( !path.IsEmpty() && !path.Right(1).Equals("/") )
+  {
+    path += "/";
+    url.SetFileName(path);
+  }
+
+  if (!reader.Open(url, false))
     return false;
 
 
@@ -55,10 +60,16 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       g_charsetConverter.stringCharsetToUtf8(name);
 
       CFileItem* pItem = new CFileItem(name);
+      
       pItem->m_strPath = path + name;
       pItem->m_bIsFolder = (bool)(lp.flagtrycwd != 0);
       if (pItem->m_bIsFolder)
         CUtil::AddSlashAtEnd(pItem->m_strPath);
+
+      /* qualify the url with host and all */
+      url.SetFileName(pItem->m_strPath);
+      url.GetURL(pItem->m_strPath);
+
       pItem->m_dwSize = lp.size;
       pItem->m_dateTime=lp.mtime;
 
