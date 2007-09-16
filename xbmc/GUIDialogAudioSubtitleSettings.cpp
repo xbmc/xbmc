@@ -84,8 +84,7 @@ void CGUIDialogAudioSubtitleSettings::CreateSettings()
   AddBool(SUBTITLE_SETTINGS_ENABLE, 13397, &m_subtitleVisible);
   AddSlider(SUBTITLE_SETTINGS_DELAY, 303, &g_stSettings.m_currentVideoSettings.m_SubtitleDelay, -g_advancedSettings.m_videoSubsDelayRange, 0.1f, g_advancedSettings.m_videoSubsDelayRange, "%2.1fs");
   AddSubtitleStreams(SUBTITLE_SETTINGS_STREAM);
-  if (g_application.GetCurrentPlayer() != EPC_DVDPLAYER)
-    AddButton(SUBTITLE_SETTINGS_BROWSER,13250);
+  AddButton(SUBTITLE_SETTINGS_BROWSER,13250);
   AddButton(AUDIO_SETTINGS_MAKE_DEFAULT, 12376);
 }
 
@@ -277,7 +276,9 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
     else
       strPath = g_application.CurrentFileItem().m_strPath;
 
-    const CStdString strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.ifo|.rar|.zip";
+    CStdString strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.ifo|.rar|.zip";
+    if (g_application.GetCurrentPlayer() == EPC_DVDPLAYER)
+      strMask = ".srt|.rar|.zip";
     VECSHARES shares(g_settings.m_vecMyVideoShares);
     if (g_stSettings.iAdditionalSubtitleDirectoryChecked != -1 && !g_guiSettings.GetString("subtitles.custompath").IsEmpty())
     {
