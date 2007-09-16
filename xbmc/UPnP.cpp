@@ -870,43 +870,37 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference& action,
     NPT_CHECK_SEVERE(action->GetArgumentValue("StartingIndex", startingInd));
     NPT_CHECK_SEVERE(action->GetArgumentValue("RequestedCount", reqCount));   
 
-    unsigned long start_index, req_count;
-    if (NPT_FAILED(startingInd.ToInteger(start_index)) ||
-        NPT_FAILED(reqCount.ToInteger(req_count))) {
-        return NPT_FAILURE;
-    }
+    unsigned long start_index, stop_index, req_count;
+    NPT_CHECK_SEVERE(startingInd.ToInteger(start_index));
+    NPT_CHECK_SEVERE(reqCount.ToInteger(req_count));
         
-    unsigned long cur_index = 0;
-    unsigned long num_returned = 0;
-    unsigned long total_matches = 0;
-    //unsigned long update_id = 0;
+    stop_index = min(start_index + req_count, (unsigned long)items.Size());
+
     NPT_String didl = didl_header;
     PLT_MediaObjectReference item;
-    for (int i=0; i < (int) items.Size(); ++i) {
+    for (unsigned long i=start_index; i < stop_index; ++i) {
         item = Build(items[i], true, info, object_id);
-        if (!item.IsNull()) {
-            if ((cur_index >= start_index) && ((num_returned < req_count) || (req_count == 0))) {
-                NPT_String tmp;
-                NPT_CHECK(PLT_Didl::ToDidl(*item.AsPointer(), filter, tmp));
-
-                // Neptunes string growing is dead slow for small additions
-                if(didl.GetCapacity() < tmp.GetLength() + didl.GetLength()) {
-                    didl.Reserve(didl.GetCapacity()*4);
-                }
-
-                didl += tmp;
-                num_returned++;
-            }
-            cur_index++;
-            total_matches++;        
+        if (item.IsNull()) {
+            /* create a dummy object */
+            item = new PLT_MediaObject();
+            item->m_Title = items[i]->GetLabel();
         }
+
+        NPT_String tmp;
+        NPT_CHECK(PLT_Didl::ToDidl(*item.AsPointer(), filter, tmp));
+
+        // Neptunes string growing is dead slow for small additions
+        if(didl.GetCapacity() < tmp.GetLength() + didl.GetLength()) {
+            didl.Reserve((tmp.GetLength() + didl.GetLength())*2);
+        }
+        didl += tmp;
     }
 
     didl += didl_footer;
 
     NPT_CHECK(action->SetArgumentValue("Result", didl));
-    NPT_CHECK(action->SetArgumentValue("NumberReturned", NPT_String::FromInteger(num_returned)));
-    NPT_CHECK(action->SetArgumentValue("TotalMatches", NPT_String::FromInteger(total_matches)));
+    NPT_CHECK(action->SetArgumentValue("NumberReturned", NPT_String::FromInteger(stop_index - start_index)));
+    NPT_CHECK(action->SetArgumentValue("TotalMatches", NPT_String::FromInteger(items.Size())));
     NPT_CHECK(action->SetArgumentValue("UpdateId", "1"));
     return NPT_SUCCESS;
 }
