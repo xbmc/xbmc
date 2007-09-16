@@ -226,6 +226,13 @@ private:
         NPT_SocketInfo* info = NULL,
         const char*     parent_id = NULL);
 
+    NPT_Result       BuildResponse(
+        PLT_ActionReference& action,
+        CFileItemList& items,
+        NPT_SocketInfo* info,
+        NPT_String &object_id);
+
+
     static NPT_String GetParentFolder(NPT_String file_path) {       
         int index = file_path.ReverseFind("\\");
         if (index == -1) return "";
@@ -837,19 +844,22 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference& action,
         id = "virtualpath://upnproot/";
     }
 
-    if (id.StartsWith("virtualpath://")) {
-        CUPnPVirtualPathDirectory dir;
-        if (!dir.GetDirectory((const char*)id, items)) {
-            /* error */
-            NPT_LOG_FINE("CUPnPServer::OnBrowseDirectChildren - ObjectID not found.")
-            action->SetError(701, "No Such Object.");
-            return NPT_SUCCESS;
-        }
-    } else {
-        items.m_strPath = id;
-        if (!items.Load()) {
-            // cache anything that takes more than a second to retreive
-            DWORD time = GetTickCount() + 1000;
+    items.m_strPath = id;
+    if (!items.Load()) {
+        // cache anything that takes more than a second to retreive
+        DWORD time = GetTickCount() + 1000;
+
+        if (id.StartsWith("virtualpath://")) {
+
+            CUPnPVirtualPathDirectory dir;
+            if (!dir.GetDirectory((const char*)id, items)) {
+                /* error */
+                NPT_LOG_FINE("CUPnPServer::OnBrowseDirectChildren - ObjectID not found.")
+                action->SetError(701, "No Such Object.");
+                return NPT_SUCCESS;
+            }
+
+        } else {
 
             if (!CDirectory::GetDirectory((const char*)id, items)) {
                 /* error */
@@ -857,11 +867,19 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference& action,
                 action->SetError(701, "No Such Object.");
                 return NPT_SUCCESS;
             }
-            if(items.GetCacheToDisc() || time < GetTickCount())
-              items.Save();
+
         }
+        if(items.GetCacheToDisc() || time < GetTickCount())
+          items.Save();
     }
 
+
+    return BuildResponse(action, items, info, id);
+}
+
+NPT_Result
+CUPnPServer::BuildResponse(PLT_ActionReference &action, CFileItemList &items, NPT_SocketInfo *info, NPT_String &object_id)
+{
     NPT_String filter;
     NPT_String startingInd;
     NPT_String reqCount;
