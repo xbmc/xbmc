@@ -426,10 +426,10 @@ CGUIViewStateWindowMusicNav::CGUIViewStateWindowMusicNav(const CFileItemList& it
   }
   else
   {
-    if (items.IsVideoDb() && items.Size())
+    if (items.IsVideoDb() && items.Size() > (g_guiSettings.GetBool("filelists.hideparentdiritems")?1:0))
     {
       DIRECTORY::VIDEODATABASEDIRECTORY::CQueryParams params;
-      DIRECTORY::CVideoDatabaseDirectory::GetQueryParams(items[0]->m_strPath,params);
+      DIRECTORY::CVideoDatabaseDirectory::GetQueryParams(items[g_guiSettings.GetBool("filelists.hideparentdiritems")?1:0]->m_strPath,params);
       if (params.GetMVideoId() != -1)
       {
         if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
@@ -447,6 +447,11 @@ CGUIViewStateWindowMusicNav::CGUIViewStateWindowMusicNav(const CFileItemList& it
           AddSortMethod(SORT_METHOD_ARTIST,557, LABEL_MASKS("%A - %T", "%Y"));
           AddSortMethod(SORT_METHOD_ALBUM,483, LABEL_MASKS("%B - %T", "%Y"));
         }
+      }
+      else
+      {
+        AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%F", "%D", "%L", ""));  // Filename, Duration | Foldername, empty
+        SetSortMethod(SORT_METHOD_LABEL);
       }
     }
     else
