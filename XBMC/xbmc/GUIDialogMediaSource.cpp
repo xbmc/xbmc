@@ -247,7 +247,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     {
       CShare share2;
       share2.strPath = "special://cdrips/";
-      share2.strName = g_localizeStrings.Get(20007);
+      share2.strName = g_localizeStrings.Get(21883);
       extraShares.push_back(share2);
     }
     share1.strPath = "soundtrack://";
