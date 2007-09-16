@@ -426,10 +426,10 @@ CGUIViewStateWindowMusicNav::CGUIViewStateWindowMusicNav(const CFileItemList& it
   }
   else
   {
-    if (items.IsVideoDb() && items.Size() > (g_guiSettings.GetBool("filelists.hideparentdiritems")?1:0))
+    if (items.IsVideoDb() && items.Size() > (g_guiSettings.GetBool("filelists.hideparentdiritems")?0:1))
     {
       DIRECTORY::VIDEODATABASEDIRECTORY::CQueryParams params;
-      DIRECTORY::CVideoDatabaseDirectory::GetQueryParams(items[g_guiSettings.GetBool("filelists.hideparentdiritems")?1:0]->m_strPath,params);
+      DIRECTORY::CVideoDatabaseDirectory::GetQueryParams(items[g_guiSettings.GetBool("filelists.hideparentdiritems")?0:1]->m_strPath,params);
       if (params.GetMVideoId() != -1)
       {
         if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
