@@ -1772,7 +1772,8 @@
   <string id="21880">Reference Service</string>
   <string id="21881">Enable UPnP Renderer</string>
   <string id="21882">Attempt to skip introduction before DVD Menu</string>
-
+  <string id="21883">Ripped Audio CDs</string>
+ 
   <!-- strings 21900 thru 21999 reserved for slideshow info -->
 
   <string id="29999">Apply Flicker Filter Setting to Games</string>
