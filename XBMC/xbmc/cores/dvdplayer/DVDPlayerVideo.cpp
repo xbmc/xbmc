@@ -781,7 +781,7 @@ void CDVDPlayerVideo::UpdateMenuPicture()
 string CDVDPlayerVideo::GetPlayerInfo()
 {
   std::ostringstream s;
-  s << "vq size:" << 100 * m_messageQueue.GetDataSize() / m_messageQueue.GetMaxDataSize() << "%";
+  s << "vq size:" << max(100,100 * m_messageQueue.GetDataSize() / m_messageQueue.GetMaxDataSize()) << "%";
   s << ", ";
   s << "cpu: " << (int)(100 * CThread::GetRelativeUsage()) << "%";
   return s.str();
