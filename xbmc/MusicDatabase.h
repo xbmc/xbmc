@@ -133,7 +133,7 @@ public:
   bool GetRandomSong(CFileItem* item, long& lSongId, const CStdString& strWhere);
   int GetSongsCount();
   int GetSongsCount(const CStdString& strWhere);
-  unsigned int GetSongIDs(const CStdString& strWhere, vector<long> &songIDs);
+  unsigned int GetSongIDs(const CStdString& strWhere, std::vector<std::pair<int,long> > &songIDs);
 
   bool GetAlbumPath(long idAlbum, CStdString &path);
   bool SaveAlbumThumb(long idAlbum, const CStdString &thumb);

@@ -4859,7 +4859,7 @@ int CVideoDatabase::GetMusicVideoCount(const CStdString& strWhere)
     if (NULL == m_pDS.get()) return 0;
 
     CStdString strSQL; 
-    strSQL.Format("select count (idMVideo) as nummovies from musicvideo %s",strWhere.c_str());
+    strSQL.Format("select count (musicvideo.idMVideo) as nummovies from musicvideo join artistlinkmusicvideo on artistlinkmusicvideo.idmvideo = musicvideo.idmvideo join actors on actors.idactor = artistlinkmusicvideo.idartist join files on files.idFile=musicvideo.idFile join genrelinkmusicvideo on genrelinkmusicvideo.idmvideo=musicvideo.idmvideo %s",strWhere.c_str());
     m_pDS->query( strSQL.c_str() );
 
     int iResult = 0;
@@ -5371,7 +5371,7 @@ bool CVideoDatabase::GetMusicVideosByWhere(const CStdString &baseDir, const CStd
   return false;
 }
 
-unsigned int CVideoDatabase::GetMusicVideoIDs(const CStdString& strWhere, vector<long> &songIDs)
+unsigned int CVideoDatabase::GetMusicVideoIDs(const CStdString& strWhere, vector<pair<int,long> > &songIDs)
 {
   try
   {
@@ -5389,7 +5389,7 @@ unsigned int CVideoDatabase::GetMusicVideoIDs(const CStdString& strWhere, vector
     songIDs.reserve(m_pDS->num_rows());
     while (!m_pDS->eof())
     {
-      songIDs.push_back(m_pDS->fv(0).get_asLong());
+      songIDs.push_back(make_pair<int,long>(2,m_pDS->fv(0).get_asLong()));
       m_pDS->next();
     }    // cleanup
     m_pDS->close();
@@ -5421,7 +5421,7 @@ bool CVideoDatabase::GetRandomMusicVideo(CFileItem* item, long& lSongId, const C
 
     // We don't use FormatSQL here, as the WHERE clause is already formatted.
     CStdString strSQL;
-    strSQL.Format("select musicvideo.*,files.strFileName,path.strPath from musicvideo join files on files.idFile=musicvideo.idFile join path on files.idPath=path.idPath %s order by idMVideo limit 1 offset %i",strWhere.c_str(),iRandom);
+    strSQL.Format("select musicvideo.*,files.strFileName,path.strPath from musicvideo join files on files.idFile=musicvideo.idFile join path on files.idPath=path.idPath join artistlinkmusicvideo on artistlinkmusicvideo.idmvideo = musicvideo.idmvideo join actors on actors.idactor = artistlinkmusicvideo.idartist join genrelinkmusicvideo on genrelinkmusicvideo.idmvideo=musicvideo.idmvideo %s order by musicvideo.idMVideo limit 1 offset %i",strWhere.c_str(),iRandom);
     CLog::Log(LOGDEBUG, __FUNCTION__" query = %s", strSQL.c_str());
     // run query
     if (!m_pDS->query(strSQL.c_str()))

@@ -2868,7 +2868,7 @@ long CMusicDatabase::AddThumb(const CStdString& strThumb1)
   return -1;
 }
 
-unsigned int CMusicDatabase::GetSongIDs(const CStdString& strWhere, vector<long> &songIDs)
+unsigned int CMusicDatabase::GetSongIDs(const CStdString& strWhere, vector<pair<int,long> > &songIDs)
 {
   try
   {
@@ -2886,7 +2886,7 @@ unsigned int CMusicDatabase::GetSongIDs(const CStdString& strWhere, vector<long>
     songIDs.reserve(m_pDS->num_rows());
     while (!m_pDS->eof())
     {
-      songIDs.push_back(m_pDS->fv(song_idSong).get_asLong());
+      songIDs.push_back(make_pair<int,long>(1,m_pDS->fv(song_idSong).get_asLong()));
       m_pDS->next();
     }    // cleanup
     m_pDS->close();
