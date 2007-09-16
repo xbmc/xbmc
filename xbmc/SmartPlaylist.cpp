@@ -291,6 +291,7 @@ CSmartPlaylist::CSmartPlaylist()
   m_limit = 0;
   m_orderField = CSmartPlaylistRule::FIELD_NONE;
   m_orderAscending = true;
+  m_playlistType = "music"; // sane default
 }
 
 TiXmlElement *CSmartPlaylist::OpenAndReadName(const CStdString &path)
@@ -308,7 +309,9 @@ TiXmlElement *CSmartPlaylist::OpenAndReadName(const CStdString &path)
     return NULL;
   }
   // load the playlist type
-  m_playlistType = root->Attribute("type");
+  const char* type = root->Attribute("type");
+  if (type)
+    m_playlistType = type;
   // load the playlist name
   TiXmlHandle name = ((TiXmlHandle)root->FirstChild("name")).FirstChild();
   if (name.Node())

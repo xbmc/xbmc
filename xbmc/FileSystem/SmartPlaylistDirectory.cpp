@@ -25,11 +25,13 @@ namespace DIRECTORY
     if (!playlist.Load(strPath))
       return false;
     bool success;
-    if (playlist.GetType().Equals("music") || playlist.GetType().Equals("mixed"))
+    if (playlist.GetType().Equals("music") || playlist.GetType().Equals("mixed") || playlist.GetType().IsEmpty())
     {
       CMusicDatabase db;
       db.Open();
       CStdString type=playlist.GetType();
+      if (type.IsEmpty())
+        type = "music";
       if (playlist.GetType().Equals("mixed"))
         playlist.SetType("music");
 
