@@ -238,6 +238,7 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
   m_cancelled = false;
   m_success = false;
   m_totalItems = 0;
+  m_listItems.Append(items); // to transfer the parent folder items
 
   // setup our parameters to send the script
   CStdString strHandle;
