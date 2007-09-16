@@ -152,7 +152,7 @@ bool CPartyModeManager::Enable()
   pDialog->SetLine(0,20124);
   pDialog->Progress();
   // add initial songs
-  if (!AddInitialSongs(songIDs,QUEUE_DEPTH))
+  if (!AddInitialSongs(songIDs))
   {
     pDialog->Close();
     return false;
@@ -545,14 +545,14 @@ void CPartyModeManager::UpdateStats()
   m_iRelaxedSongs = 0;  // unsupported at this stage
 }
 
-bool CPartyModeManager::AddInitialSongs(vector<pair<int,long> > &songIDs, int slots)
+bool CPartyModeManager::AddInitialSongs(vector<pair<int,long> > &songIDs)
 {
   int iPlaylist = PLAYLIST_MUSIC;
   if (m_type.Equals("video"))
     iPlaylist = PLAYLIST_VIDEO;
 
   CPlayList& playlist = g_playlistPlayer.GetPlaylist(iPlaylist);
-  int iMissingSongs = slots - playlist.size();
+  int iMissingSongs = QUEUE_DEPTH - playlist.size();
   if (iMissingSongs > 0)
   {
     // generate iMissingSongs random ids from songIDs
