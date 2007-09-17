@@ -317,6 +317,16 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
       extraShares.push_back(share2);
     }
   }
+  else if (m_type == "myprograms")
+  {
+    if (CPluginDirectory::HasPlugins("programs"))
+    {
+      CShare share2;
+      share2.strPath = "plugin://programs/";
+      share2.strName = g_localizeStrings.Get(1043); // Program Plugins
+      extraShares.push_back(share2);
+    }
+  }
   if (CGUIDialogFileBrowser::ShowAndGetShare(path, allowNetworkShares, extraShares.size()==0?NULL:&extraShares))
   {
     m_paths[item]->m_strPath = path;
