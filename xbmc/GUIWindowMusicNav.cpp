@@ -38,6 +38,7 @@
 #include "PlaylistFactory.h"
 #include "GUIDialogMusicScan.h"
 #include "VideoDatabase.h"
+#include "GUIWindowVideoNav.h"
 
 using namespace DIRECTORY;
 using namespace PLAYLIST;
@@ -445,6 +446,8 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     // enable music info button on an album or on a song.
     if (item->IsAudio() && !item->IsPlayList() && !item->IsSmartPlayList())
       buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658);
+    else if (item->IsVideoDb()) // music video
+      buttons.Add(CONTEXT_BUTTON_INFO, 20393);
     else if (!inPlaylists && dir.HasAlbumInfo(item->m_strPath) && !dir.IsAllItem(item->m_strPath))
       buttons.Add(CONTEXT_BUTTON_INFO, 13351);
 
@@ -498,6 +501,19 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
   switch (button)
   {
+  case CONTEXT_BUTTON_INFO:
+    {
+      if (!m_vecItems[itemNumber]->IsVideoDb())
+        return CGUIWindowMusicBase::OnContextButton(itemNumber,button);
+      CGUIWindowVideoNav* pWindow = (CGUIWindowVideoNav*)m_gWindowManager.GetWindow(WINDOW_VIDEO_NAV);
+      if (pWindow)
+      {
+        SScraperInfo info;
+        pWindow->OnInfo(m_vecItems[itemNumber],info);
+        Update(m_vecItems.m_strPath);
+      }
+      return true;
+    }
   case CONTEXT_BUTTON_INFO_ALL:
     OnInfoAll(itemNumber);
     return true;

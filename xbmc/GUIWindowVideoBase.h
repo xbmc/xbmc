@@ -18,6 +18,7 @@ public:
 
   void AddToDatabase(int iItem);
   static void OnScan(const CStdString& strPath, const SScraperInfo& info, const VIDEO::SScanSettings& settings);
+  virtual void OnInfo(CFileItem* pItem, const SScraperInfo& info);
 
 private:
   bool IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel);
@@ -31,7 +32,6 @@ protected:
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   void GetNonContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-  virtual void OnInfo(int iItem, const SScraperInfo& info);
   virtual void OnAssignContent(int iItem, int iFound, SScraperInfo& info, VIDEO::SScanSettings& settings) {};
   virtual void OnUnAssignContent(int iItem) {};
   virtual void OnQueueItem(int iItem);

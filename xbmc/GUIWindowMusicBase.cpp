@@ -286,6 +286,12 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
 {
   if (pItem->m_bIsFolder && pItem->IsParentFolder()) return ;
 
+  if (pItem->IsVideoDb())
+  {
+    OnContextButton(m_viewControl.GetSelectedItem(), CONTEXT_BUTTON_INFO); // nasty but it is the same item i promise :)
+    return;
+  }
+
   // show dialog box indicating we're searching the album name
   if (m_dlgProgress && bShowInfo)
   {

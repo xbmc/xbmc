@@ -270,7 +270,7 @@ bool CGUIWindowVideoFiles::OnClick(int iItem)
     info.strPath = "imdb.xml";
     info.strContent = "movies";
     info.strTitle = "IMDb";
-    OnInfo(iItem,info);
+    OnInfo(m_vecItems[iItem],info);
     return true;
   }
 
@@ -305,18 +305,16 @@ bool CGUIWindowVideoFiles::OnPlayMedia(int iItem)
   }
 }
 
-void CGUIWindowVideoFiles::OnInfo(int iItem, const SScraperInfo& info)
+void CGUIWindowVideoFiles::OnInfo(CFileItem* pItem, const SScraperInfo& info)
 {
-  if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return ;
+  if ( !pItem ) return ;
   bool bFolder(false);
   if (info.strContent.Equals("tvshows"))
   {
-    CGUIWindowVideoBase::OnInfo(iItem,info);
+    CGUIWindowVideoBase::OnInfo(pItem,info);
     return;
   }
   CStdString strFolder = "";
-  int iSelectedItem = m_viewControl.GetSelectedItem();
-  CFileItem* pItem = m_vecItems[iItem];
   CStdString strFile = pItem->m_strPath;
   if (pItem->m_bIsFolder && pItem->IsParentFolder()) return ;
   if (pItem->m_bIsShareOrDrive) // oh no u don't
@@ -378,7 +376,6 @@ void CGUIWindowVideoFiles::OnInfo(int iItem, const SScraperInfo& info)
       if (info.strContent.Equals("movies"))
         CGUIDialogOK::ShowAndGetInput(13346,20349,20022,20022);
 
-      m_viewControl.SetSelectedItem(iSelectedItem);
       return ;
     }
   }

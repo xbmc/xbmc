@@ -203,7 +203,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
           if (info.strContent.Equals("tvshows") && iFound == 1 && !settings.parent_name_root) // dont lookup on root tvshow folder
             return true;
 
-          OnInfo(iItem,info);
+          OnInfo(m_vecItems[iItem],info);
 
           return true;
         }
@@ -277,10 +277,9 @@ void CGUIWindowVideoBase::UpdateButtons()
   CGUIMediaWindow::UpdateButtons();
 }
 
-void CGUIWindowVideoBase::OnInfo(int iItem, const SScraperInfo& info)
+void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const SScraperInfo& info)
 {
-  if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
-  CFileItem* pItem = m_vecItems[iItem];
+  if ( !pItem ) return ;
   // ShowIMDB can kill the item as this window can be closed while we do it,
   // so take a copy of the item now
   CFileItem item(*pItem);
@@ -292,7 +291,8 @@ void CGUIWindowVideoBase::OnInfo(int iItem, const SScraperInfo& info)
       item.m_strPath = item.GetVideoInfoTag()->m_strFileNameAndPath;
   }
   ShowIMDB(&item, info);
-  Update(m_vecItems.m_strPath);
+  if (m_gWindowManager.GetActiveWindow() == WINDOW_VIDEO_FILES || m_gWindowManager.GetActiveWindow() == WINDOW_VIDEO_NAV) // since we can be called from the music library we need this check
+    Update(m_vecItems.m_strPath);
 }
 
 // ShowIMDB is called as follows:
@@ -347,6 +347,8 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
 
   CVideoInfoTag movieDetails;
   movieDetails.Reset();
+  m_database.Open(); // since we can be called from the music library
+
   if (info.strContent.Equals("movies"))
   {
     g_infoManager.m_content = "movies";
@@ -390,7 +392,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
       m_database.GetMusicVideoInfo(item->m_strPath, movieDetails);
     }
   }
-
+  m_database.Close();
   if (bHasInfo)
   {
     if (info.strContent.IsEmpty()) // disable refresh button
@@ -409,7 +411,8 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
 
   CIMDBUrl url;
   bool hasDetails(false);
-
+  
+  m_database.Open();
   // 2. Look for a nfo File to get the search URL
   SScanSettings settings;
   SScraperInfo info2;
@@ -447,7 +450,10 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
     if (CVideoInfoScanner::ScrapeFilename(item->m_strPath,info2,movieDetails))
       hasDetails = true;
     else
+    {
+      m_database.Close();
       return;
+    }
   }
 
   CStdString movieName = item->GetLabel();
@@ -501,6 +507,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
             url = movielist[iSelectedMovie];
           else if (!pDlgSelect->IsButtonPressed())
           {
+            m_database.Close();
             return; // user backed out
           }
         }
@@ -514,6 +521,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
       pDlgProgress->Close();
       if (pDlgProgress->IsCanceled())
       {
+        m_database.Close();
         return;
       }
 
@@ -523,6 +531,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
         iString = 20357;
       if (!CGUIDialogKeyboard::ShowAndGetInput(movieName, g_localizeStrings.Get(iString), false))
       {
+        m_database.Close();
         return; // user backed out
       }
 
@@ -622,6 +631,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
         pDlgProgress->Close();
         if (pDlgProgress->IsCanceled())
         {
+          m_database.Close();
           return; // user cancelled
         }
         OutputDebugString("failed to get details\n");
@@ -636,11 +646,13 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
           pDlgOK->SetLine(3, "");
           pDlgOK->DoModal();
         }
+        m_database.Close();
         return;
       }
     }
   // 6. Check for a refresh
   } while (needsRefresh);
+  m_database.Close();
 }
 
 void CGUIWindowVideoBase::Render()
@@ -1021,7 +1033,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       SScraperInfo info;
       VIDEO::SScanSettings settings;
       int iFound = GetScraperForItem(item, info, settings);
-      OnInfo(itemNumber,info);
+      OnInfo(m_vecItems[itemNumber],info);
       return true;
     }
   case CONTEXT_BUTTON_STOP_SCANNING:

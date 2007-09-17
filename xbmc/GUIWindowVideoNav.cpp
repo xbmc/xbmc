@@ -632,20 +632,20 @@ void CGUIWindowVideoNav::Render()
   CGUIWindowVideoBase::Render();
 }
 
-void CGUIWindowVideoNav::OnInfo(int iItem, const SScraperInfo& info)
+void CGUIWindowVideoNav::OnInfo(CFileItem* pItem, const SScraperInfo& info)
 {
   SScraperInfo info2(info);
   CStdString strPath,strFile;
-  if (m_vecItems[iItem]->IsVideoDb())
-  {
-    m_database.GetScraperForPath(m_vecItems[iItem]->GetVideoInfoTag()->m_strPath,info2);
-  }
+  m_database.Open(); // since we can be called from the music library without being inited
+  if (pItem->IsVideoDb())
+    m_database.GetScraperForPath(pItem->GetVideoInfoTag()->m_strPath,info2);
   else
   {
-    CUtil::Split(m_vecItems[iItem]->m_strPath,strPath,strFile);
+    CUtil::Split(pItem->m_strPath,strPath,strFile);
     m_database.GetScraperForPath(strPath,info2);
   }
-  CGUIWindowVideoBase::OnInfo(iItem,info2);
+  m_database.Close();
+  CGUIWindowVideoBase::OnInfo(pItem,info2);
 }
 
 void CGUIWindowVideoNav::OnDeleteItem(int iItem)
