@@ -269,6 +269,50 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
   return success;
 }
 
+
+bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
+{
+  CURL url(strPath);
+  if (url.GetFileName().IsEmpty()) // called with no script - should never happen
+    return false;
+
+  CStdString fileName;
+  CUtil::AddFileToFolder(url.GetFileName(), "default.py", fileName);
+
+  // path is Q:\plugins\<path from here>
+  CStdString pathToScript = "Q:\\plugins\\";
+  CUtil::AddFileToFolder(pathToScript, url.GetHostName(), pathToScript);
+  CUtil::AddFileToFolder(pathToScript, fileName, pathToScript);
+  pathToScript.Replace("/", "\\");
+
+  // options
+  CStdString options = url.GetOptions();
+  CUtil::RemoveSlashAtEnd(options); // This MAY kill some scripts (eg though with a URL ending with a slash), but
+                                    // is needed for all others, as XBMC adds slashes to "folders"
+  // base path
+  CStdString basePath = "plugin://";
+  CUtil::AddFileToFolder(basePath, url.GetHostName(), basePath);
+  CUtil::AddFileToFolder(basePath, url.GetFileName(), basePath);
+
+  // setup our parameters to send the script
+  CStdString strHandle;
+  strHandle.Format("%i", -1);
+  const char *argv[3];
+  argv[0] = basePath.c_str();
+  argv[1] = strHandle.c_str();
+  argv[2] = options.c_str();
+
+  // run the script
+  CLog::Log(LOGDEBUG, __FUNCTION__" - calling plugin %s('%s','%s','%s')", pathToScript.c_str(), argv[0], argv[1], argv[2]);
+  bool success = false;
+  if (g_pythonParser.evalFile(pathToScript.c_str(), 3, (const char**)argv) >= 0)
+    return true;
+  else
+    CLog::Log(LOGERROR, "Unable to run plugin %s", pathToScript.c_str());
+  
+  return false;
+}
+
 bool CPluginDirectory::HasPlugins(const CStdString &type)
 {
   CStdString path = "Q:\\plugins\\";
