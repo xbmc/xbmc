@@ -85,7 +85,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       // otherwise, is this the first time accessing this window?
       else if (m_vecItems.m_strPath == "?")
       {
-        m_vecItems.m_strPath = strDestination = g_stSettings.m_szDefaultPictures;
+        m_vecItems.m_strPath = strDestination = g_settings.m_defaultPictureSource;
         CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
       }
 
