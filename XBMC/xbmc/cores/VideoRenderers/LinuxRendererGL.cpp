@@ -831,7 +831,9 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
     }
   }
  
-  if (imaging==1) 
+  if (imaging==1 && 
+      ((g_stSettings.m_currentVideoSettings.m_Brightness!=50) || 
+       (g_stSettings.m_currentVideoSettings.m_Contrast!=50)))
   {
     glPixelTransferf(GL_RED_SCALE, contrast);
     glPixelTransferf(GL_GREEN_SCALE, contrast);
@@ -840,6 +842,7 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
     glPixelTransferf(GL_GREEN_BIAS, brightness);
     glPixelTransferf(GL_BLUE_BIAS, brightness);
     VerifyGLState();
+    imaging++;
   }
 
   glEnable(GL_TEXTURE_2D);
@@ -853,8 +856,9 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
 
   VerifyGLState();
 
-  if (imaging==1)
+  if (imaging==2)
   {
+    imaging--;
     glPixelTransferf(GL_RED_SCALE, 1.0);
     glPixelTransferf(GL_GREEN_SCALE, 1.0);
     glPixelTransferf(GL_BLUE_SCALE, 1.0);
@@ -1836,6 +1840,7 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags)
 
   m_pYUVShader->Disable();
 
+  glMatrixMode(GL_MODELVIEW);
   glPopMatrix(); // pop modelview
   glMatrixMode(GL_PROJECTION);
   glPopMatrix(); // pop projection
@@ -2277,11 +2282,15 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     }
     else
     {
+      CLog::Log(LOGDEBUG, "GL: Creating NPOT texture of size %d x %d", im.width, im.height);
       glTexImage2D(m_textureTarget, 0, GL_RGBA, im.width, im.height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
     }
   }
   else
+  {
+    CLog::Log(LOGDEBUG, "GL: Creating Y NPOT texture of size %d x %d", im.width, im.height);
     glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width, im.height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+  }
 
   glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -2291,6 +2300,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
 
   if (m_renderMethod & RENDER_GLSL)
   {
+    CLog::Log(LOGDEBUG, "GL: Creating U NPOT texture of size %d x %d", im.width/2, im.height/2);
     glBindTexture(m_textureTarget, fields[0][1]);
     glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
     glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -2299,6 +2309,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
     VerifyGLState();
     
+    CLog::Log(LOGDEBUG, "GL: Creating V NPOT texture of size %d x %d", im.width/2, im.height/2);
     glBindTexture(m_textureTarget, fields[0][2]);
     glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL); 
     glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
