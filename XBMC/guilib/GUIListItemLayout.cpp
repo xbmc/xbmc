@@ -270,10 +270,10 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
   CStdString infoString;
   CImage image;
   CLabelInfo label;
-  XMLUtils::GetFloat(child, "posx", posX);
-  XMLUtils::GetFloat(child, "posy", posY);
-  XMLUtils::GetFloat(child, "width", width);
-  XMLUtils::GetFloat(child, "height", height);
+  CGUIControlFactory::GetFloat(child, "posx", posX);
+  CGUIControlFactory::GetFloat(child, "posy", posY);
+  CGUIControlFactory::GetFloat(child, "width", width);
+  CGUIControlFactory::GetFloat(child, "height", height);
   XMLUtils::GetString(child, "info", infoString);
   CGUIControlFactory::GetColor(child, "textcolor", label.textColor);
   CGUIControlFactory::GetColor(child, "selectedcolor", label.selectedColor);
@@ -325,8 +325,8 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
 void CGUIListItemLayout::LoadLayout(TiXmlElement *layout, bool focused)
 {
   m_focused = focused;
-  layout->Attribute("width", &m_width);
-  layout->Attribute("height", &m_height);
+  g_SkinInfo.ResolveConstant(layout->Attribute("width"), m_width);
+  g_SkinInfo.ResolveConstant(layout->Attribute("height"), m_height);
   TiXmlElement *child = layout->FirstChildElement("control");
   while (child)
   {
