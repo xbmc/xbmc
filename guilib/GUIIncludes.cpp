@@ -14,6 +14,7 @@ void CGUIIncludes::ClearIncludes()
 {
   m_includes.clear();
   m_defaults.clear();
+  m_constants.clear();
   m_files.clear();
 }
 
@@ -70,6 +71,17 @@ bool CGUIIncludes::LoadIncludesFromXML(const TiXmlElement *root)
       m_defaults.insert(pair<CStdString, TiXmlElement>(tagName, *node));
     }
     node = node->NextSiblingElement("default");
+  }
+  // and finally constants
+  node = root->FirstChildElement("constant");
+  while (node)
+  {
+    if (node->Attribute("name") && node->FirstChild())
+    {
+      CStdString tagName = node->Attribute("name");
+      m_constants.insert(pair<CStdString, float>(tagName, (float)atof(node->FirstChild()->Value())));
+    }
+    node = node->NextSiblingElement("constant");
   }
   return true;
 }
@@ -136,4 +148,14 @@ void CGUIIncludes::ResolveIncludes(TiXmlElement *node, const CStdString &type)
       include = include->NextSiblingElement("include");
     }
   }
+}
+
+bool CGUIIncludes::ResolveConstant(const CStdString &constant, float &value)
+{
+  map<CStdString, float>::iterator it = m_constants.find(constant);
+  if (it == m_constants.end())
+    value = (float)atof(constant.c_str());
+  else
+    value = it->second;
+  return true;
 }
