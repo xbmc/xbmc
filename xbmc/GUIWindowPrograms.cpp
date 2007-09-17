@@ -86,7 +86,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
       // a quickpath overrides the a default parameter
       if (m_vecItems.m_strPath == "?" && strDestination.IsEmpty())
       {
-        m_vecItems.m_strPath = strDestination = g_stSettings.m_szDefaultPrograms;
+        m_vecItems.m_strPath = strDestination = g_settings.m_defaultProgramSource;
         CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
       }
 
@@ -116,7 +116,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
             if (shares[iIndex].m_iHasLock == 2)
             {
               CFileItem item(shares[iIndex]);
-              if (!g_passwordManager.IsItemUnlocked(&item,"myprograms"))
+              if (!g_passwordManager.IsItemUnlocked(&item,"programs"))
               {
                 m_vecItems.m_strPath = ""; // no u don't
                 bDoStuff = false;
@@ -188,8 +188,8 @@ void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &butt
   if ( m_vecItems.IsVirtualDirectoryRoot() )
   {
     // get the usual shares
-    CShare *share = CGUIDialogContextMenu::GetShare("myprograms", item);
-    CGUIDialogContextMenu::GetContextButtons("myprograms", share, buttons);
+    CShare *share = CGUIDialogContextMenu::GetShare("programs", item);
+    CGUIDialogContextMenu::GetContextButtons("programs", share, buttons);
   }
   else
   {
@@ -247,8 +247,8 @@ bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   if (item && m_vecItems.IsVirtualDirectoryRoot())
   {
-    CShare *share = CGUIDialogContextMenu::GetShare("myprograms", item);
-    if (CGUIDialogContextMenu::OnContextButton("myprograms", share, button))
+    CShare *share = CGUIDialogContextMenu::GetShare("programs", item);
+    if (CGUIDialogContextMenu::OnContextButton("programs", share, button))
     {
       Update("");
       return true;
@@ -421,7 +421,7 @@ bool CGUIWindowPrograms::OnPlayMedia(int iItem)
 
   if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026)) // 'add source button' in empty root
   {
-    if (CGUIDialogMediaSource::ShowAndAddMediaSource("myprograms"))
+    if (CGUIDialogMediaSource::ShowAndAddMediaSource("programs"))
     {
       Update("");
       return true;
