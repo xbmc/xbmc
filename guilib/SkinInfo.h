@@ -34,6 +34,7 @@ public:
   int GetStartWindow();
 
   void ResolveIncludes(TiXmlElement *node, const CStdString &type = "");
+  bool ResolveConstant(const CStdString &constant, float &value);
 
   double GetEffectsSlowdown() const { return m_effectsSlowDown; };
 
