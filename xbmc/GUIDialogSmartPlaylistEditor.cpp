@@ -149,10 +149,9 @@ void CGUIDialogSmartPlaylistEditor::OnOK()
     CStdString path;
     if (CGUIDialogKeyboard::ShowAndGetInput(filename, g_localizeStrings.Get(16013), false))
     {
-      if (m_playlist.GetType().Equals("video"))
-        CUtil::AddFileToFolder("special://videoplaylists/", filename, path);
-      else
-        CUtil::AddFileToFolder("special://musicplaylists/", filename, path);
+      CStdString strTmp;
+      CUtil::AddFileToFolder(m_playlist.m_playlistType,filename,strTmp);
+      CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"),strTmp,path);
     }
     else
       return;
@@ -162,8 +161,23 @@ void CGUIDialogSmartPlaylistEditor::OnOK()
     // should we check whether we should overwrite?
     m_path = path;
   }
+  else
+  {
+    if (m_path.Left(g_guiSettings.GetString("system.playlistspath").size()).Equals(g_guiSettings.GetString("system.playlistspath"))) // fugly, well aware
+    {
+      CStdString filename = CUtil::GetFileName(m_path);
+      CStdString strType = m_path.Mid(g_guiSettings.GetString("system.playlistspath").size(),m_path.size()-filename.size()-g_guiSettings.GetString("system.playlistspath").size()-1);
+      if (!strType.Equals(m_playlist.m_playlistType))
+      {
+        XFILE::CFile::Delete(m_path);
+        CStdString strTmp;
+        CUtil::AddFileToFolder(m_playlist.m_playlistType,filename,strTmp);
+        CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"),strTmp,m_path);
+      }
+    }
+  }
 
-  m_playlist.Save(CUtil::TranslateSpecialPath(m_path));
+  m_playlist.Save(m_path);
 
   m_cancelled = false;
   Close();

@@ -4387,16 +4387,24 @@ CStdString CUtil::TranslateSpecialSource(const CStdString &strSpecial)
 
 CStdString CUtil::MusicPlaylistsLocation()
 {
+  std::vector<CStdString> vec;
   CStdString strReturn;
   CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"), "music", strReturn);
-  return strReturn;
+  vec.push_back(strReturn);
+  CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"), "mixed", strReturn);
+  vec.push_back(strReturn);
+  return DIRECTORY::CMultiPathDirectory::ConstructMultiPath(vec);;
 }
 
 CStdString CUtil::VideoPlaylistsLocation()
 {
+  std::vector<CStdString> vec;
   CStdString strReturn;
   CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"), "video", strReturn);
-  return strReturn;
+  vec.push_back(strReturn);
+  CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"), "mixed", strReturn);
+  vec.push_back(strReturn);
+  return DIRECTORY::CMultiPathDirectory::ConstructMultiPath(vec);;
 }
 
 void CUtil::DeleteMusicDatabaseDirectoryCache()

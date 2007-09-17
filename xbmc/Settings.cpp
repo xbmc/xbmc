@@ -2579,29 +2579,21 @@ void CSettings::ResetSkinSettings()
 void CSettings::LoadUserFolderLayout()
 {
   // check them all
-  if (g_guiSettings.GetString("system.playlistspath") == "set default")
+  CStdString strDir = g_guiSettings.GetString("system.playlistspath");
+  if (strDir == "set default")
   {
-    CStdString strDir;
-    //CUtil::AddFileToFolder(GetUserDataFolder(), "playlists", strDir);
     CUtil::AddFileToFolder(GetProfileUserDataFolder(), "playlists", strDir);
     CUtil::AddSlashAtEnd(strDir);
     g_guiSettings.SetString("system.playlistspath",strDir.c_str());
-    CDirectory::Create(strDir);
-    CStdString strDir2;
-    CUtil::AddFileToFolder(strDir,"music",strDir2);
-      CDirectory::Create(strDir2);
-    CUtil::AddFileToFolder(strDir,"video",strDir2);
-      CDirectory::Create(strDir2);
   }
-  else
-  {
-    CDirectory::Create(g_guiSettings.GetString("system.playlistspath"));
-    CStdString strDir2;
-    CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"),"music",strDir2);
-    CDirectory::Create(strDir2);
-    CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"),"video",strDir2);
-    CDirectory::Create(strDir2);
-  }
+  CDirectory::Create(strDir);
+  CStdString strDir2;
+  CUtil::AddFileToFolder(strDir,"music",strDir2);
+  CDirectory::Create(strDir2);
+  CUtil::AddFileToFolder(strDir,"video",strDir2);
+  CDirectory::Create(strDir2);
+  CUtil::AddFileToFolder(strDir,"mixed",strDir2);
+  CDirectory::Create(strDir2);
 }
 
 CStdString CSettings::GetProfileUserDataFolder() const

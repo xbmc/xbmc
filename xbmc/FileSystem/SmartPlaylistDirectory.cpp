@@ -24,7 +24,7 @@ namespace DIRECTORY
     CSmartPlaylist playlist;
     if (!playlist.Load(strPath))
       return false;
-    bool success;
+    bool success,success2;
     if (playlist.GetType().Equals("music") || playlist.GetType().Equals("mixed") || playlist.GetType().IsEmpty())
     {
       CMusicDatabase db;
@@ -49,13 +49,17 @@ namespace DIRECTORY
         playlist.SetType("video");
       CStdString whereOrder = playlist.GetWhereClause() + " " + playlist.GetOrderClause();
       CFileItemList items2;
-      success = db.GetMusicVideosByWhere("videodb://3/2/", whereOrder, items2);
+      success2 = db.GetMusicVideosByWhere("videodb://3/2/", whereOrder, items2);
       db.Close();
       items.Append(items2);
       playlist.SetType(type);
     }
-
-    return success;
+    if (playlist.GetType().Equals("mixed"))
+      return success || success2;
+    else if (playlist.GetType().Equals("video"))
+      return success2;
+    else
+      return success;
   }
 
   bool CSmartPlaylistDirectory::ContainsFiles(const CStdString& strPath)
