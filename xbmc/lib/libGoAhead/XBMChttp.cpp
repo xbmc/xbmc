@@ -653,25 +653,25 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
   {
   case MUSIC:
     {
-      pShares = &g_settings.m_vecMyMusicShares;
+      pShares = &g_settings.m_musicSources;
       strMask = g_stSettings.m_musicExtensions;
     }
     break;
   case VIDEO:
     {
-      pShares = &g_settings.m_vecMyVideoShares;
+      pShares = &g_settings.m_videoSources;
       strMask = g_stSettings.m_videoExtensions;
     }
     break;
   case PICTURES:
     {
-      pShares = &g_settings.m_vecMyPictureShares;
+      pShares = &g_settings.m_pictureSources;
       strMask = g_stSettings.m_pictureExtensions;
     }
     break;
   case FILES:
     {
-      pShares = &g_settings.m_vecMyFilesShares;
+      pShares = &g_settings.m_fileSources;
       strMask = "";
     }
     break;
@@ -876,25 +876,25 @@ int CXbmcHttp::xbmcGetShares(int numParas, CStdString paras[])
     case MUSIC:
       {
         strType = "music";
-        pShares = &g_settings.m_vecMyMusicShares;
+        pShares = &g_settings.m_musicSources;
       }
       break;
     case VIDEO:
       {
         strType = "video";
-        pShares = &g_settings.m_vecMyVideoShares;
+        pShares = &g_settings.m_videoSources;
       }
       break;
     case PICTURES:
       {
         strType = "pictures";
-        pShares = &g_settings.m_vecMyPictureShares;
+        pShares = &g_settings.m_pictureSources;
       }
       break;
     case FILES:
       {
         strType = "files";
-        pShares = &g_settings.m_vecMyFilesShares;
+        pShares = &g_settings.m_fileSources;
       }
       break;
     }

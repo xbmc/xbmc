@@ -312,33 +312,33 @@ int CXbmcWeb::xbmcNavigate( int eid, webs_t wp, char_t *parameter)
         if (!strcmp(parameter, WEB_VIDEOS))
         {
           g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
-          strDirectory = g_stSettings.m_szDefaultVideos;
-          shares = &g_settings.m_vecMyVideoShares;
+          strDirectory = g_settings.m_defaultVideoSource;
+          shares = &g_settings.m_videoSources;
           directory->SetMask(g_stSettings.m_videoExtensions);
         }
         else if (!strcmp(parameter, WEB_MUSIC))
         {
           g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
-          strDirectory = g_stSettings.m_szDefaultMusic;
-          shares = &g_settings.m_vecMyMusicShares;
+          strDirectory = g_settings.m_defaultMusicSource;
+          shares = &g_settings.m_musicSources;
           directory->SetMask(g_stSettings.m_musicExtensions);
         }
         else if (!strcmp(parameter, WEB_PICTURES))
         {
-          strDirectory = g_stSettings.m_szDefaultPictures;
-          shares = &g_settings.m_vecMyPictureShares;
+          strDirectory = g_settings.m_defaultPictureSource;
+          shares = &g_settings.m_pictureSources;
           directory->SetMask(g_stSettings.m_pictureExtensions);
         }
         else if (!strcmp(parameter, WEB_PROGRAMS))
         {
-          strDirectory = g_stSettings.m_szDefaultFiles;
-          shares = &g_settings.m_vecMyFilesShares;
+          strDirectory = g_settings.m_defaultFileSource;
+          shares = &g_settings.m_fileSources;
           directory->SetMask("xbe|cut");
         }
         else if (!strcmp(parameter, WEB_FILES))
         {
-          strDirectory = g_stSettings.m_szDefaultFiles;
-          shares = &g_settings.m_vecMyFilesShares;
+          strDirectory = g_settings.m_defaultFileSource;
+          shares = &g_settings.m_fileSources;
           directory->SetMask("*");
         }
 
