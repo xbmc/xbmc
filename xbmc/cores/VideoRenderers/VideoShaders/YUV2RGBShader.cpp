@@ -44,12 +44,12 @@ BaseYUV2RGBShader::BaseYUV2RGBShader()
   m_vTexUnit = 0;
 
   // shader attribute handles
-  m_hYTex  = 0;
-  m_hUTex  = 0;
-  m_hVTex  = 0;
-  m_hStepX = 0;
-  m_hStepY = 0;
-  m_hField = 0;
+  m_hYTex  = -1;
+  m_hUTex  = -1;
+  m_hVTex  = -1;
+  m_hStepX = -1;
+  m_hStepY = -1;
+  m_hField = -1;
 
   // default passthrough vertex shader
   string shaderv = 
