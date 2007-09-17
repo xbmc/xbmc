@@ -25,6 +25,7 @@
 #include "detectdvdtype.h"
 #include "PlayListPlayer.h"
 #include "FileSystem/ZipManager.h"
+#include "FileSystem/PluginDirectory.h"
 #include "GUIPassword.h"
 #include "Application.h"
 #include "xbox/network.h"
@@ -614,6 +615,8 @@ bool CGUIMediaWindow::OnClick(int iItem)
 
     return true;
   }
+  else if (pItem->m_strPath.Left(9).Equals("plugin://"))
+    return DIRECTORY::CPluginDirectory::RunScriptWithParams(pItem->m_strPath);
   else
   {
     m_iSelectedItem = m_viewControl.GetSelectedItem();
