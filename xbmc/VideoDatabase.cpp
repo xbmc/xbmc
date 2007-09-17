@@ -2836,6 +2836,7 @@ void CVideoDatabase::RemoveContentForPath(const CStdString& strPath, CGUIDialogP
     int iMax = pDS->num_rows();
     while (!pDS->eof())
     {
+      bool bMvidsChecked=false;
       if (progress)
       {
         progress->SetPercentage((int)((float)(iCurr++)/iMax*100.f));
@@ -2847,14 +2848,29 @@ void CVideoDatabase::RemoveContentForPath(const CStdString& strPath, CGUIDialogP
         DeleteTvShow(strCurrPath);
       else
       {
-        strSQL=FormatSQL("select strFilename from files join movie on movie.idFile=files.idFile where files.idPath=%u",lPathId);
+        strSQL=FormatSQL("select files.strFilename from files join movie on movie.idFile=files.idFile where files.idPath=%u",lPathId);
         m_pDS2->query(strSQL.c_str());
+        if (m_pDS2->eof())
+        {
+          strSQL=FormatSQL("select files.strFilename from files join musicvideo on musicvideo.idFile=files.idFile where files.idPath=%u",lPathId);
+          m_pDS2->query(strSQL.c_str());
+          bMvidsChecked = true;
+        }
         while (!m_pDS2->eof())
         {
           CStdString strMoviePath;
           CUtil::AddFileToFolder(strCurrPath,m_pDS2->fv("files.strFilename").get_asString(),strMoviePath);
-          DeleteMovie(strMoviePath);
+          if (HasMovieInfo(strMoviePath))
+            DeleteMovie(strMoviePath);
+          if (HasMusicVideoInfo(strMoviePath))
+            DeleteMusicVideo(strMoviePath);
           m_pDS2->next();
+          if (m_pDS2->eof() && !bMvidsChecked)
+          {
+            strSQL=FormatSQL("select files.strFilename from files join musicvideo on musicvideo.idFile=files.idFile where files.idPath=%u",lPathId);
+            m_pDS2->query(strSQL.c_str());
+            bMvidsChecked = true;
+          }
         }
         m_pDS2->close();
       }
