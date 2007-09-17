@@ -80,7 +80,7 @@ void CGUIViewStateWindowVideoFiles::SaveViewState()
 
 VECSHARES& CGUIViewStateWindowVideoFiles::GetShares()
 {
-  return g_settings.m_vecMyVideoShares;
+  return g_settings.m_videoSources;
 }
 
 CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& items) : CGUIViewStateWindowVideo(items)

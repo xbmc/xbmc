@@ -94,7 +94,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       // is this the first time the window is opened?
       if (m_vecItems.m_strPath == "?" && strDestination.IsEmpty())
       {
-        strDestination = g_stSettings.m_szDefaultVideoLibView;
+        strDestination = g_settings.m_defaultVideoLibSource;
         m_vecItems.m_strPath = strDestination;
         CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
       }
@@ -818,9 +818,9 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
       if (!item->IsParentFolder() && !m_vecItems.m_strPath.Equals("special://videoplaylists/") &&
         (nodetype == NODE_TYPE_ROOT || nodetype == NODE_TYPE_OVERVIEW || nodetype == NODE_TYPE_TVSHOWS_OVERVIEW || nodetype == NODE_TYPE_MOVIES_OVERVIEW))
       {
-        if (!item->m_strPath.Equals(g_stSettings.m_szDefaultVideoLibView))
+        if (!item->m_strPath.Equals(g_settings.m_defaultVideoLibSource))
           buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 13335); // set default
-        if (strcmp(g_stSettings.m_szDefaultVideoLibView, ""))
+        if (strcmp(g_settings.m_defaultVideoLibSource, ""))
           buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // clear default
       }
     }
@@ -833,12 +833,12 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   switch (button)
   {
   case CONTEXT_BUTTON_SET_DEFAULT:
-    strcpy(g_stSettings.m_szDefaultVideoLibView, GetQuickpathName(m_vecItems[itemNumber]->m_strPath).c_str());
+    g_settings.m_defaultVideoLibSource = GetQuickpathName(m_vecItems[itemNumber]->m_strPath);
     g_settings.Save();
     return true;
 
   case CONTEXT_BUTTON_CLEAR_DEFAULT:
-    strcpy(g_stSettings.m_szDefaultVideoLibView, "");
+    g_settings.m_defaultVideoLibSource.Empty();
     g_settings.Save();
     return true;
 
@@ -898,7 +898,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       items.Add(item);
 
       CStdString result;
-      if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_vecMyVideoShares, g_localizeStrings.Get(20019), result))
+      if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_videoSources, g_localizeStrings.Get(20019), result))
         return false;   // user cancelled
 
       if (result == "thumb://Current")

@@ -547,16 +547,16 @@ CStdString CGUIDialogContextMenu::GetDefaultShareNameByType(const CStdString &st
 
 void CGUIDialogContextMenu::SetDefault(const CStdString &strType, const CStdString &strDefault)
 {
-  if (strType == "myprograms")
-    strcpy(g_stSettings.m_szDefaultPrograms, strDefault.c_str());
+  if (strType == "programs")
+    g_settings.m_defaultProgramSource = strDefault;
   else if (strType == "files")
-    strcpy(g_stSettings.m_szDefaultFiles, strDefault.c_str());
+    g_settings.m_defaultFileSource = strDefault;
   else if (strType == "music")
-    strcpy(g_stSettings.m_szDefaultMusic, strDefault.c_str());
+    g_settings.m_defaultMusicSource = strDefault;
   else if (strType == "video")
-    strcpy(g_stSettings.m_szDefaultVideos, strDefault.c_str());
+    g_settings.m_defaultVideoSource = strDefault;
   else if (strType == "pictures")
-    strcpy(g_stSettings.m_szDefaultPictures, strDefault.c_str());
+    g_settings.m_defaultPictureSource = strDefault;
   g_settings.SaveSources();
 }
 
