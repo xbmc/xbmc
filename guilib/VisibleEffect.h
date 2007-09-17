@@ -49,8 +49,8 @@ public:
 
   float m_amount;
 
-  void UpdateCondition();
-  void SetInitialCondition();
+  void UpdateCondition(DWORD contextWindow);
+  void SetInitialCondition(DWORD contextWindow);
 
 private:
   enum ANIM_REPEAT { ANIM_REPEAT_NONE = 0, ANIM_REPEAT_PULSE, ANIM_REPEAT_LOOP };
