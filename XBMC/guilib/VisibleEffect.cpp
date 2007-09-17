@@ -501,9 +501,9 @@ void CAnimation::ApplyAnimation()
   Calculate();
 }
 
-void CAnimation::UpdateCondition()
+void CAnimation::UpdateCondition(DWORD contextWindow)
 {
-  bool condition = g_infoManager.GetBool(m_condition);
+  bool condition = g_infoManager.GetBool(m_condition, contextWindow);
   if (condition && !m_lastCondition)
     m_queuedProcess = ANIM_PROCESS_NORMAL;
   else if (!condition && m_lastCondition)
@@ -516,9 +516,9 @@ void CAnimation::UpdateCondition()
   m_lastCondition = condition;
 }
 
-void CAnimation::SetInitialCondition()
+void CAnimation::SetInitialCondition(DWORD contextWindow)
 {
-  m_lastCondition = g_infoManager.GetBool(m_condition);
+  m_lastCondition = g_infoManager.GetBool(m_condition, contextWindow);
   if (m_lastCondition)
     ApplyAnimation();
   else
