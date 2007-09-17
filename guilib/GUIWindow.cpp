@@ -222,15 +222,15 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement)
         m_bRelativeCoords = (iCoordinateSystem == 1);
       }
 
-      XMLUtils::GetFloat(pChild, "posx", m_posX);
-      XMLUtils::GetFloat(pChild, "posy", m_posY);
+      CGUIControlFactory::GetFloat(pChild, "posx", m_posX);
+      CGUIControlFactory::GetFloat(pChild, "posy", m_posY);
 
       TiXmlElement *originElement = pChild->FirstChildElement("origin");
       while (originElement)
       {
         COrigin origin;
-        originElement->Attribute("x", &origin.x);
-        originElement->Attribute("y", &origin.y);
+        g_SkinInfo.ResolveConstant(originElement->Attribute("x"), origin.x);
+        g_SkinInfo.ResolveConstant(originElement->Attribute("y"), origin.y);
         if (originElement->FirstChild())
           origin.condition = g_infoManager.TranslateString(originElement->FirstChild()->Value());
         m_origins.push_back(origin);
@@ -239,8 +239,8 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement)
     }
     else if (strValue == "camera")
     { // z is fixed
-      pChild->Attribute("x", &m_camera.x);
-      pChild->Attribute("y", &m_camera.y);
+      g_SkinInfo.ResolveConstant(pChild->Attribute("x"), m_camera.x);
+      g_SkinInfo.ResolveConstant(pChild->Attribute("y"), m_camera.y);
       m_hasCamera = true;
     }
     else if (strValue == "controls")
