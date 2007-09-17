@@ -69,8 +69,8 @@ private:
   float m_endY;
   float m_centerX;
   float m_centerY;
-  int m_startAlpha;
-  int m_endAlpha;
+  float m_startAlpha;
+  float m_endAlpha;
 
   // timing variables
   unsigned int m_start;
