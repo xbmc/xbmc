@@ -279,7 +279,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
     CStdString strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.ifo|.rar|.zip";
     if (g_application.GetCurrentPlayer() == EPC_DVDPLAYER)
       strMask = ".srt|.rar|.zip";
-    VECSHARES shares(g_settings.m_vecMyVideoShares);
+    VECSHARES shares(g_settings.m_videoSources);
     if (g_stSettings.iAdditionalSubtitleDirectoryChecked != -1 && !g_guiSettings.GetString("subtitles.custompath").IsEmpty())
     {
       CShare share;
@@ -291,11 +291,11 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
       paths.push_back(g_guiSettings.GetString("subtitles.custompath"));
       share.FromNameAndPaths("video",g_localizeStrings.Get(21367),paths);
       // hack
-      g_settings.m_vecMyVideoShares.push_back(share);
+      g_settings.m_videoSources.push_back(share);
       strPath = share.strPath;
       CUtil::AddSlashAtEnd(strPath);
     }
-    if (CGUIDialogFileBrowser::ShowAndGetFile(g_settings.m_vecMyVideoShares,strMask,g_localizeStrings.Get(293),strPath,false,true)) // "subtitles"
+    if (CGUIDialogFileBrowser::ShowAndGetFile(g_settings.m_videoSources,strMask,g_localizeStrings.Get(293),strPath,false,true)) // "subtitles"
     {
       CStdString strExt;
       CUtil::GetExtension(strPath,strExt);
@@ -376,7 +376,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
       }
       g_stSettings.m_currentVideoSettings.m_SubtitleCached = true;
     }
-    g_settings.m_vecMyVideoShares = shares;
+    g_settings.m_videoSources = shares;
   }
   else if (setting.id == AUDIO_SETTINGS_MAKE_DEFAULT)
   {
