@@ -350,7 +350,7 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, VIDEO::SScanSettings
   {
     scraper = dialog->m_info;
 
-    if(scraper.strContent.Equals("tvshows"))
+    if (scraper.strContent.Equals("tvshows"))
     {
       settings.parent_name = dialog->m_bSingleItem;
       settings.parent_name_root = dialog->m_bSingleItem;
@@ -360,13 +360,13 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, VIDEO::SScanSettings
     }
     else if (scraper.strContent.Equals("movies"))
     {            
-      if( dialog->m_bUseDirNames )
+      if (dialog->m_bUseDirNames)
       {
         settings.parent_name = true;
         settings.parent_name_root = false;
         settings.recurse = dialog->m_bScanRecursive ? INT_MAX : 1;
 
-        if(dialog->m_bSingleItem)
+        if (dialog->m_bSingleItem)
         {
           settings.parent_name_root = true;
           settings.recurse = 0;
@@ -391,7 +391,7 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, VIDEO::SScanSettings
     }
     else if (scraper.strContent.IsEmpty() || scraper.strContent.Equals("None") )
     {
-      if(dialog->m_bExclude)
+      if (dialog->m_bExclude)
         scraper.strContent = "None";
       else
         scraper.strContent = "";
