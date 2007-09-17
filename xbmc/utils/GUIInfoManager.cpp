@@ -1643,7 +1643,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
         CGUIWindow *window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
         if (window)
         {
-          CFileItem *item;
+          CFileItem *item=NULL;
           if (!info.m_data1)
           { // assumes a media window
             if (window->IsMediaWindow())
