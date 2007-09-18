@@ -9,16 +9,17 @@ namespace DIRECTORY
     {
     public:
       CQueryParams();
-      long GetContentType() { return m_idContent; }
-      long GetMovieId() { return m_idMovie; }
-      long GetYear() { return m_idYear; }
-      long GetGenreId() { return m_idGenre; }
-      long GetActorId() { return m_idActor; }
-      long GetDirectorId() { return m_idDirector; }
-      long GetTvShowId() { return m_idShow; }
-      long GetSeason() { return m_idSeason; }
-      long GetEpisodeId() { return m_idEpisode; }
-      long GetStudioId() { return m_idStudio; }
+      long GetContentType() const { return m_idContent; }
+      long GetMovieId() const { return m_idMovie; }
+      long GetYear() const { return m_idYear; }
+      long GetGenreId() const { return m_idGenre; }
+      long GetActorId() const { return m_idActor; }
+      long GetDirectorId() const { return m_idDirector; }
+      long GetTvShowId() const { return m_idShow; }
+      long GetSeason() const { return m_idSeason; }
+      long GetEpisodeId() const { return m_idEpisode; }
+      long GetStudioId() const { return m_idStudio; }
+      long GetMVideoId() const { return m_idMVideo; }
 
     protected:
       void SetQueryParam(NODE_TYPE NodeType, const CStdString& strNodeName);
@@ -35,6 +36,7 @@ namespace DIRECTORY
       long m_idSeason;
       long m_idEpisode;
       long m_idStudio;
+      long m_idMVideo;
     };
   };
 };
