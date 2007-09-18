@@ -149,14 +149,6 @@ CSettings::CSettings(void)
   strcpy(g_stSettings.szOnlineArenaPassword, "");
   strcpy(g_stSettings.szOnlineArenaDescription, "It's Good To Play Together!");
 
-  strcpy( g_stSettings.m_szDefaultPrograms, "");
-  strcpy( g_stSettings.m_szDefaultMusic, "");
-  strcpy( g_stSettings.m_szDefaultPictures, "");
-  strcpy( g_stSettings.m_szDefaultFiles, "");
-  strcpy( g_stSettings.m_szDefaultVideos, "");
-  strcpy( g_stSettings.m_szDefaultMusicLibView, "");
-  strcpy( g_stSettings.m_szDefaultVideoLibView, "");
-
   g_stSettings.m_bMyMusicSongInfoInVis = true;    // UNUSED - depreciated.
   g_stSettings.m_bMyMusicSongThumbInVis = false;  // used for music info in vis screen
 
@@ -361,11 +353,11 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   }
 
   // clear sources, then load xml file...
-  m_vecMyFilesShares.clear();
-  m_vecMyMusicShares.clear();
-  m_vecMyPictureShares.clear();
-  m_vecMyProgramsShares.clear();
-  m_vecMyVideoShares.clear();
+  m_fileSources.clear();
+  m_musicSources.clear();
+  m_pictureSources.clear();
+  m_programSources.clear();
+  m_videoSources.clear();
   CStdString strXMLFile = GetSourcesFile();
   CLog::Log(LOGNOTICE, "%s",strXMLFile.c_str());
   TiXmlDocument xmlDoc;
@@ -432,24 +424,15 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   }
 
   if (pRootElement)
-  {
-    // parse my programs sources...
-    CStdString strDefault;
-    GetShares(pRootElement, "myprograms", m_vecMyProgramsShares, strDefault);
-    strcpy( g_stSettings.m_szDefaultPrograms, strDefault.c_str());
+  { // parse sources...
+    GetShares(pRootElement, "programs", m_programSources, m_defaultProgramSource);
+    if (!m_programSources.size()) // backward compatibility with "my" notation
+      GetShares(pRootElement, "myprograms", m_programSources, m_defaultProgramSource);
 
-    GetShares(pRootElement, "pictures", m_vecMyPictureShares, strDefault);
-    strcpy( g_stSettings.m_szDefaultPictures, strDefault.c_str());
-
-    // TODO: Get rid of filemanager sources eventually?
-    GetShares(pRootElement, "files", m_vecMyFilesShares, strDefault);
-    strcpy( g_stSettings.m_szDefaultFiles, strDefault.c_str());
-
-    GetShares(pRootElement, "music", m_vecMyMusicShares, strDefault);
-    strcpy( g_stSettings.m_szDefaultMusic, strDefault.c_str());
-
-    GetShares(pRootElement, "video", m_vecMyVideoShares, strDefault);
-    strcpy( g_stSettings.m_szDefaultVideos, strDefault.c_str());
+    GetShares(pRootElement, "pictures", m_pictureSources, m_defaultPictureSource);
+    GetShares(pRootElement, "files", m_fileSources, m_defaultFileSource);
+    GetShares(pRootElement, "music", m_musicSources, m_defaultMusicSource);
+    GetShares(pRootElement, "video", m_videoSources, m_defaultVideoSource);
   }
 
   bXboxMediacenter = true;
@@ -502,16 +485,16 @@ void CSettings::ConvertHomeVar(CStdString& strText)
 
 VECSHARES *CSettings::GetSharesFromType(const CStdString &type)
 {
-  if (type == "myprograms")
-    return &g_settings.m_vecMyProgramsShares;
+  if (type == "programs" || type == "myprograms")
+    return &g_settings.m_programSources;
   else if (type == "files")
   {
     // this nasty block of code is needed as we have to
     // call getlocaldrives after localize strings has been loaded
     bool bAdded=false;
-    for (unsigned int i=0;i<g_settings.m_vecMyFilesShares.size();++i) 
+    for (unsigned int i=0;i<g_settings.m_fileSources.size();++i) 
     {
-      if (g_settings.m_vecMyFilesShares[i].m_ignore)
+      if (g_settings.m_fileSources[i].m_ignore)
       {
         bAdded = true;
         break;
@@ -521,23 +504,23 @@ VECSHARES *CSettings::GetSharesFromType(const CStdString &type)
     {
       VECSHARES shares;
       g_mediaManager.GetLocalDrives(shares, true);  // true to include Q
-      m_vecMyFilesShares.insert(m_vecMyFilesShares.end(),shares.begin(),shares.end());
+      m_fileSources.insert(m_fileSources.end(),shares.begin(),shares.end());
     }
 
-    return &g_settings.m_vecMyFilesShares;
+    return &g_settings.m_fileSources;
   }
   else if (type == "music")
-    return &g_settings.m_vecMyMusicShares;
+    return &g_settings.m_musicSources;
   else if (type == "video")
-    return &g_settings.m_vecMyVideoShares;
+    return &g_settings.m_videoSources;
   else if (type == "pictures")
-    return &g_settings.m_vecMyPictureShares;
+    return &g_settings.m_pictureSources;
   else if (type == "upnpmusic")
-    return &g_settings.m_vecUPnPMusicShares;
+    return &g_settings.m_UPnPMusicSources;
   else if (type == "upnpvideo")
-    return &g_settings.m_vecUPnPVideoShares;
+    return &g_settings.m_UPnPVideoSources;
   else if (type == "upnppictures")
-    return &g_settings.m_vecUPnPPictureShares;
+    return &g_settings.m_UPnPPictureSources;
 
   return NULL;
 }
@@ -545,16 +528,16 @@ VECSHARES *CSettings::GetSharesFromType(const CStdString &type)
 CStdString CSettings::GetDefaultShareFromType(const CStdString &type)
 {
   CStdString defaultShare;
-  if (type == "myprograms")
-    defaultShare = g_stSettings.m_szDefaultPrograms;
+  if (type == "programs" || type == "myprograms")
+    defaultShare = g_settings.m_defaultProgramSource;
   else if (type == "files")
-    defaultShare = g_stSettings.m_szDefaultFiles;
+    defaultShare = g_settings.m_defaultFileSource;
   else if (type == "music")
-    defaultShare = g_stSettings.m_szDefaultMusic;
+    defaultShare = g_settings.m_defaultMusicSource;
   else if (type == "video")
-    defaultShare = g_stSettings.m_szDefaultVideos;
+    defaultShare = g_settings.m_defaultVideoSource;
   else if (type == "pictures")
-    defaultShare = g_stSettings.m_szDefaultPictures;
+    defaultShare = g_settings.m_defaultPictureSource;
   return defaultShare;
 }
 
@@ -672,7 +655,7 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *source, CS
         bool bIsInvalid = false;
 
         // for my programs
-        if (category.Equals("myprograms"))
+        if (category.Equals("programs") || category.Equals("myprograms"))
         {
           // only allow HD
           if (url.IsLocal())
@@ -988,7 +971,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetInteger(pElement, "startwindow", g_stSettings.m_iMyMusicStartWindow, WINDOW_MUSIC_FILES, WINDOW_MUSIC_FILES, WINDOW_MUSIC_NAV); //501; view songs
     XMLUtils::GetBoolean(pElement, "songinfoinvis", g_stSettings.m_bMyMusicSongInfoInVis);
     XMLUtils::GetBoolean(pElement, "songthumbinvis", g_stSettings.m_bMyMusicSongThumbInVis);
-    GetString(pElement, "defaultlibview", g_stSettings.m_szDefaultMusicLibView, g_stSettings.m_szDefaultMusicLibView);
+    GetString(pElement, "defaultlibview", g_settings.m_defaultMusicLibSource, g_settings.m_defaultMusicLibSource);
   }
   // myvideos settings
   pElement = pRootElement->FirstChildElement("myvideos");
@@ -1007,7 +990,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     for (int i = 0; i < (int)g_settings.m_szMyVideoCleanTokensArray.size(); i++)
       g_settings.m_szMyVideoCleanTokensArray[i].MakeLower();
 
-    GetString(pElement, "defaultlibview", g_stSettings.m_szDefaultVideoLibView, g_stSettings.m_szDefaultVideoLibView);
+    GetString(pElement, "defaultlibview", g_settings.m_defaultVideoLibSource, g_settings.m_defaultVideoLibSource);
     GetInteger(pElement, "watchmode", g_stSettings.m_iMyVideoWatchMode, VIDEO_SHOW_ALL, VIDEO_SHOW_ALL, VIDEO_SHOW_WATCHED);
 
     TiXmlElement *pChild = pElement->FirstChildElement("playlist");
@@ -1686,7 +1669,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
   SetInteger(pNode, "startwindow", g_stSettings.m_iMyMusicStartWindow);
   SetBoolean(pNode, "songinfoinvis", g_stSettings.m_bMyMusicSongInfoInVis);
   SetBoolean(pNode, "songthumbinvis", g_stSettings.m_bMyMusicSongThumbInVis);
-  SetString(pNode, "defaultlibview", g_stSettings.m_szDefaultMusicLibView);
+  SetString(pNode, "defaultlibview", g_settings.m_defaultMusicLibSource);
 
   // myvideos settings
   TiXmlElement videosNode("myvideos");
@@ -1699,7 +1682,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
   SetBoolean(pNode, "cleantitles", g_stSettings.m_bMyVideoCleanTitles);
   SetString(pNode, "cleantokens", g_stSettings.m_szMyVideoCleanTokens);
   SetString(pNode, "cleanseparators", g_stSettings.m_szMyVideoCleanSeparators);
-  SetString(pNode, "defaultlibview", g_stSettings.m_szDefaultVideoLibView);
+  SetString(pNode, "defaultlibview", g_settings.m_defaultVideoLibSource);
 
   SetInteger(pNode, "watchmode", g_stSettings.m_iMyVideoWatchMode);
 
@@ -2147,9 +2130,9 @@ bool CSettings::LoadUPnPXml(const CStdString& strSettingsFile)
   XMLUtils::GetString(pRootElement, "UUIDRenderer", g_settings.m_UPnPUUIDRenderer);
 
   CStdString strDefault;
-  GetShares(pRootElement,"music",g_settings.m_vecUPnPMusicShares,strDefault);
-  GetShares(pRootElement,"video",g_settings.m_vecUPnPVideoShares,strDefault);
-  GetShares(pRootElement,"pictures",g_settings.m_vecUPnPPictureShares,strDefault);
+  GetShares(pRootElement,"music",g_settings.m_UPnPMusicSources,strDefault);
+  GetShares(pRootElement,"video",g_settings.m_UPnPVideoSources,strDefault);
+  GetShares(pRootElement,"pictures",g_settings.m_UPnPPictureSources,strDefault);
 
   return true;
 }
@@ -2166,9 +2149,9 @@ bool CSettings::SaveUPnPXml(const CStdString& strSettingsFile) const
   XMLUtils::SetString(pRoot, "UUIDRenderer", g_settings.m_UPnPUUIDRenderer);
   
   VECSHARES* pShares[3];
-  pShares[0] = &g_settings.m_vecUPnPMusicShares;
-  pShares[1] = &g_settings.m_vecUPnPVideoShares;
-  pShares[2] = &g_settings.m_vecUPnPPictureShares;
+  pShares[0] = &g_settings.m_UPnPMusicSources;
+  pShares[1] = &g_settings.m_UPnPVideoSources;
+  pShares[2] = &g_settings.m_UPnPPictureSources;
   for (int k=0;k<3;++k)
   {
     if ((*pShares)[k].size()==0)
@@ -2339,11 +2322,11 @@ bool CSettings::SaveSources()
   if (!pRoot) return false;
 
   // ok, now run through and save each sources section
-  SetShares(pRoot, "myprograms", g_settings.m_vecMyProgramsShares, g_stSettings.m_szDefaultPrograms);
-  SetShares(pRoot, "video", g_settings.m_vecMyVideoShares, g_stSettings.m_szDefaultVideos);
-  SetShares(pRoot, "music", g_settings.m_vecMyMusicShares, g_stSettings.m_szDefaultMusic);
-  SetShares(pRoot, "pictures", g_settings.m_vecMyPictureShares, g_stSettings.m_szDefaultPictures);
-  SetShares(pRoot, "files", g_settings.m_vecMyFilesShares, g_stSettings.m_szDefaultFiles);
+  SetShares(pRoot, "programs", g_settings.m_programSources, g_settings.m_defaultProgramSource);
+  SetShares(pRoot, "video", g_settings.m_videoSources, g_settings.m_defaultVideoSource);
+  SetShares(pRoot, "music", g_settings.m_musicSources, g_settings.m_defaultMusicSource);
+  SetShares(pRoot, "pictures", g_settings.m_pictureSources, g_settings.m_defaultPictureSource);
+  SetShares(pRoot, "files", g_settings.m_fileSources, g_settings.m_defaultFileSource);
 
   return doc.SaveFile(g_settings.GetSourcesFile());
 }
@@ -2443,11 +2426,11 @@ void CSettings::SaveSkinSettings(TiXmlNode *pRootElement) const
 
 void CSettings::Clear()
 {
-  m_vecMyProgramsShares.clear();
-  m_vecMyPictureShares.clear();
-  m_vecMyFilesShares.clear();
-  m_vecMyMusicShares.clear();
-  m_vecMyVideoShares.clear();
+  m_programSources.clear();
+  m_pictureSources.clear();
+  m_fileSources.clear();
+  m_musicSources.clear();
+  m_videoSources.clear();
 //  m_vecIcons.clear();
   m_vecProfiles.clear();
   m_szMyVideoStackTokensArray.clear();

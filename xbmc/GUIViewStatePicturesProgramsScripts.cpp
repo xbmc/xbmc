@@ -73,7 +73,7 @@ CStdString CGUIViewStateWindowPictures::GetExtensions()
 
 VECSHARES& CGUIViewStateWindowPictures::GetShares()
 {
-  return g_settings.m_vecMyPictureShares;
+  return g_settings.m_pictureSources;
 }
 
 CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& items) : CGUIViewState(items)
@@ -101,7 +101,7 @@ void CGUIViewStateWindowPrograms::SaveViewState()
 
 CStdString CGUIViewStateWindowPrograms::GetLockType()
 {
-  return "myprograms";
+  return "programs";
 }
 
 CStdString CGUIViewStateWindowPrograms::GetExtensions()
@@ -111,7 +111,7 @@ CStdString CGUIViewStateWindowPrograms::GetExtensions()
 
 VECSHARES& CGUIViewStateWindowPrograms::GetShares()
 {
-  return g_settings.m_vecMyProgramsShares;
+  return g_settings.m_programSources;
 }
 
 CGUIViewStateWindowScripts::CGUIViewStateWindowScripts(const CFileItemList& items) : CGUIViewState(items)

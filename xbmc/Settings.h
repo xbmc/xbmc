@@ -322,14 +322,6 @@ public:
 
     CStdString m_logFolder;
 
-    char m_szDefaultPrograms[128];
-    char m_szDefaultMusic[128];
-    char m_szDefaultPictures[128];
-    char m_szDefaultFiles[128];
-    char m_szDefaultVideos[128];
-    char m_szDefaultMusicLibView[128];
-    char m_szDefaultVideoLibView[128];
-
     bool m_bMyMusicSongInfoInVis;
     bool m_bMyMusicSongThumbInVis;
 
@@ -397,15 +389,23 @@ public:
   CStdString m_szMyVideoCleanSeparatorsString;
   CStdStringArray m_szMyVideoCleanTokensArray;
 
-  VECSHARES m_vecMyProgramsShares;
-  VECSHARES m_vecMyPictureShares;
-  VECSHARES m_vecMyFilesShares;
-  VECSHARES m_vecMyMusicShares;
-  VECSHARES m_vecMyVideoShares;
+  VECSHARES m_programSources;
+  VECSHARES m_pictureSources;
+  VECSHARES m_fileSources;
+  VECSHARES m_musicSources;
+  VECSHARES m_videoSources;
 
-  VECSHARES m_vecUPnPMusicShares;
-  VECSHARES m_vecUPnPVideoShares;
-  VECSHARES m_vecUPnPPictureShares;
+  CStdString m_defaultProgramSource;
+  CStdString m_defaultMusicSource;
+  CStdString m_defaultPictureSource;
+  CStdString m_defaultFileSource;
+  CStdString m_defaultVideoSource;
+  CStdString m_defaultMusicLibSource;
+  CStdString m_defaultVideoLibSource;
+
+  VECSHARES m_UPnPMusicSources;
+  VECSHARES m_UPnPVideoSources;
+  VECSHARES m_UPnPPictureSources;
 
   CStdString m_UPnPUUID;
   CStdString m_UPnPUUIDRenderer;

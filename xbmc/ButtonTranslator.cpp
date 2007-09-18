@@ -626,6 +626,8 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   // window12345, for custom window to be keymapped
   if (strWindow.length() > 6 && strWindow.Left(6).Equals("window"))
     strWindow = strWindow.Mid(6);
+  if (strWindow.Left(2) == "my")  // drop "my" prefix
+    strWindow = strWindow.Mid(2);
   if (StringUtils::IsNaturalNumber(strWindow))
   {
     // allow a full window id or a delta id
@@ -636,29 +638,33 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
       wWindowID = WINDOW_HOME + iWindow;
   }
   else if (strWindow.Equals("home")) wWindowID = WINDOW_HOME;
-  else if (strWindow.Equals("myprograms")) wWindowID = WINDOW_PROGRAMS;
-  else if (strWindow.Equals("mypictures")) wWindowID = WINDOW_PICTURES;
-  else if (strWindow.Equals("myfiles")) wWindowID = WINDOW_FILES;
+  else if (strWindow.Equals("programs")) wWindowID = WINDOW_PROGRAMS;
+  else if (strWindow.Equals("pictures")) wWindowID = WINDOW_PICTURES;
+  else if (strWindow.Equals("files") || strWindow.Equals("filemanager")) wWindowID = WINDOW_FILES;
   else if (strWindow.Equals("settings")) wWindowID = WINDOW_SETTINGS_MENU;
-  else if (strWindow.Equals("mymusic")) wWindowID = WINDOW_MUSIC;
-  else if (strWindow.Equals("mymusicfiles")) wWindowID = WINDOW_MUSIC_FILES;
-  else if (strWindow.Equals("myvideos")) wWindowID = WINDOW_VIDEOS;
+  else if (strWindow.Equals("music")) wWindowID = WINDOW_MUSIC;
+  else if (strWindow.Equals("musicfiles")) wWindowID = WINDOW_MUSIC_FILES;
+  else if (strWindow.Equals("musiclibrary")) wWindowID = WINDOW_MUSIC_NAV;
+  else if (strWindow.Equals("musicplaylist")) wWindowID = WINDOW_MUSIC_PLAYLIST;
+  else if (strWindow.Equals("musicplaylisteditor")) wWindowID = WINDOW_MUSIC_PLAYLIST_EDITOR;
+  else if (strWindow.Equals("musicinformation")) wWindowID = WINDOW_MUSIC_INFO;
+  else if (strWindow.Equals("video") || strWindow.Equals("videos")) wWindowID = WINDOW_VIDEOS;
+  else if (strWindow.Equals("videofiles")) wWindowID = WINDOW_VIDEO_FILES;
+  else if (strWindow.Equals("videolibrary")) wWindowID = WINDOW_VIDEO_NAV;
+  else if (strWindow.Equals("videoplaylist")) wWindowID = WINDOW_VIDEO_PLAYLIST;
   else if (strWindow.Equals("systeminfo")) wWindowID = WINDOW_SYSTEM_INFORMATION;
   else if (strWindow.Equals("guicalibration")) wWindowID = WINDOW_SCREEN_CALIBRATION;
   else if (strWindow.Equals("screencalibration")) wWindowID = WINDOW_SCREEN_CALIBRATION;
-  else if (strWindow.Equals("mypicturessettings")) wWindowID = WINDOW_SETTINGS_MYPICTURES;
-  else if (strWindow.Equals("myprogramssettings")) wWindowID = WINDOW_SETTINGS_MYPROGRAMS;
-  else if (strWindow.Equals("myweathersettings")) wWindowID = WINDOW_SETTINGS_MYWEATHER;
-  else if (strWindow.Equals("mymusicsettings")) wWindowID = WINDOW_SETTINGS_MYMUSIC;
+  else if (strWindow.Equals("picturessettings")) wWindowID = WINDOW_SETTINGS_MYPICTURES;
+  else if (strWindow.Equals("programssettings")) wWindowID = WINDOW_SETTINGS_MYPROGRAMS;
+  else if (strWindow.Equals("weathersettings")) wWindowID = WINDOW_SETTINGS_MYWEATHER;
+  else if (strWindow.Equals("musicsettings")) wWindowID = WINDOW_SETTINGS_MYMUSIC;
   else if (strWindow.Equals("systemsettings")) wWindowID = WINDOW_SETTINGS_SYSTEM;
-  else if (strWindow.Equals("myvideossettings")) wWindowID = WINDOW_SETTINGS_MYVIDEOS;
+  else if (strWindow.Equals("videossettings")) wWindowID = WINDOW_SETTINGS_MYVIDEOS;
   else if (strWindow.Equals("networksettings")) wWindowID = WINDOW_SETTINGS_NETWORK;
   else if (strWindow.Equals("appearancesettings")) wWindowID = WINDOW_SETTINGS_APPEARANCE;
   else if (strWindow.Equals("scripts")) wWindowID = WINDOW_SCRIPTS;
   else if (strWindow.Equals("gamesaves")) wWindowID = WINDOW_GAMESAVES;
-  else if (strWindow.Equals("myvideofiles")) wWindowID = WINDOW_VIDEO_FILES;
-  else if (strWindow.Equals("myvideolibrary")) wWindowID = WINDOW_VIDEO_NAV;
-  else if (strWindow.Equals("myvideoplaylist")) wWindowID = WINDOW_VIDEO_PLAYLIST;
   else if (strWindow.Equals("profiles")) wWindowID = WINDOW_SETTINGS_PROFILES;
   else if (strWindow.Equals("yesnodialog")) wWindowID = WINDOW_DIALOG_YES_NO;
   else if (strWindow.Equals("progressdialog")) wWindowID = WINDOW_DIALOG_PROGRESS;
@@ -689,16 +695,9 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("contentsettings")) wWindowID = WINDOW_DIALOG_CONTENT_SETTINGS;
   else if (strWindow.Equals("networksetup")) wWindowID = WINDOW_DIALOG_NETWORK_SETUP;
   else if (strWindow.Equals("mediasource")) wWindowID = WINDOW_DIALOG_MEDIA_SOURCE;
-  else if (strWindow.Equals("mymusicplaylist")) wWindowID = WINDOW_MUSIC_PLAYLIST;
-  else if (strWindow.Equals("mymusicplaylisteditor")) wWindowID = WINDOW_MUSIC_PLAYLIST_EDITOR;
   else if (strWindow.Equals("smartplaylisteditor")) wWindowID = WINDOW_DIALOG_SMART_PLAYLIST_EDITOR;
   else if (strWindow.Equals("smartplaylistrule")) wWindowID = WINDOW_DIALOG_SMART_PLAYLIST_RULE;
-  else if (strWindow.Equals("mymusicfiles")) wWindowID = WINDOW_MUSIC_FILES;
-  else if (strWindow.Equals("mymusiclibrary")) wWindowID = WINDOW_MUSIC_NAV;
-  //else if (strWindow.Equals("mymusictop100")) wWindowID = WINDOW_MUSIC_TOP100;
-//  else if (strWindow.Equals("virtualkeyboard")) wWindowID = WINDOW_VIRTUAL_KEYBOARD;
   else if (strWindow.Equals("selectdialog")) wWindowID = WINDOW_DIALOG_SELECT;
-  else if (strWindow.Equals("musicinformation")) wWindowID = WINDOW_MUSIC_INFO;
   else if (strWindow.Equals("okdialog")) wWindowID = WINDOW_DIALOG_OK;
   else if (strWindow.Equals("movieinformation")) wWindowID = WINDOW_VIDEO_INFO;
   else if (strWindow.Equals("scriptsdebuginfo")) wWindowID = WINDOW_SCRIPTS_INFO;

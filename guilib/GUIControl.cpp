@@ -442,7 +442,7 @@ void CGUIControl::UpdateVisibility()
   {
     CAnimation &anim = m_animations[i];
     if (anim.GetType() == ANIM_TYPE_CONDITIONAL)
-      anim.UpdateCondition();
+      anim.UpdateCondition(GetParentID());
   }
   // and check for conditional enabling - note this overrides SetEnabled() from the code currently
   // this may need to be reviewed at a later date
@@ -466,7 +466,7 @@ void CGUIControl::SetInitialVisibility()
   {
     CAnimation &anim = m_animations[i];
     if (anim.GetType() == ANIM_TYPE_CONDITIONAL)
-      anim.SetInitialCondition();
+      anim.SetInitialCondition(GetParentID());
   }
 }
 

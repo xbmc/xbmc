@@ -1656,9 +1656,9 @@ bool CGUIWindowBuddies::GetGamePathFromTitleId(DWORD aTitleId, CStdString& aGame
 
   // Run through our sources and construct a multi folder path to search
   CStdStringArray gamesDirs;
-  for (unsigned int i = 0; i < g_settings.m_vecMyProgramsShares.size(); i++)
+  for (unsigned int i = 0; i < g_settings.m_programSources.size(); i++)
   {
-    CShare &share = g_settings.m_vecMyProgramsShares[i];
+    CShare &share = g_settings.m_programSources[i];
     for (unsigned int j = 0; j < share.vecPaths.size(); j++)
       gamesDirs.push_back(share.vecPaths[j]);
   }

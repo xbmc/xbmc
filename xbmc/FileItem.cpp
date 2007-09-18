@@ -993,21 +993,8 @@ const CStdString& CFileItem::GetContentType() const
           || m_strPath.Left(8).Equals("https://")
           || m_strPath.Left(7).Equals("upnp://"))
     {
-      CURL url(m_strPath);
-      url.SetProtocol("http");
-      CFileCurl::GetContent(url, m_ref);
-    }
-    else if( m_strPath.Left(8).Equals("https://") )
-    {
-      CURL url(m_strPath);
-      CFileCurl::GetContent(url, m_ref);    
-    }
+      CFileCurl::GetContent(GetAsUrl(), m_ref);
 
-    // if it's still empty set to an unknown type
-    if( m_ref.IsEmpty() )
-      m_ref = "application/octet-stream";
-    else
-    {
       // make sure there are no options set in content type
       // content type can look like "video/x-ms-asf ; charset=utf8"
       int i = m_ref.Find(';');
@@ -1016,6 +1003,9 @@ const CStdString& CFileItem::GetContentType() const
       m_ref.Trim();
     }
 
+    // if it's still empty set to an unknown type
+    if( m_ref.IsEmpty() )
+      m_ref = "application/octet-stream";
   }
 
   return m_contenttype;
@@ -2099,7 +2089,7 @@ CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */)
   if (IsMusicDb()) return "";
   CURL url(m_strPath);
   if (url.GetProtocol() == "rar" || url.GetProtocol() == "zip") return "";
-  if (url.GetProtocol() == "upnp" || url.GetProtocol() == "ftp") return "";
+  if (url.GetProtocol() == "upnp" || url.GetProtocol() == "ftp" || url.GetProtocol() == "ftps") return "";
 
   // we first check for <filename>.tbn or <foldername>.tbn
   CStdString fileThumb(GetTBNFile());
