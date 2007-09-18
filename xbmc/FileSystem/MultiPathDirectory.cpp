@@ -199,7 +199,8 @@ void CMultiPathDirectory::MergeItems(CFileItemList &items)
 {
   CLog::Log(LOGDEBUG, "CMultiPathDirectory::MergeItems, items = %i", (int)items.Size());
   DWORD dwTime=GetTickCount();
-
+  if (items.Size() == 0)
+    return;
   // sort items by label
   // folders are before files in this sort method
   items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
