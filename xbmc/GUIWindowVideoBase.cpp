@@ -1393,12 +1393,18 @@ bool CGUIWindowVideoBase::GetDirectory(const CStdString &strDirectory, CFileItem
   // add in the "New Playlist" item if we're in the playlists folder
   if (items.m_strPath == "special://videoplaylists/" && !items.Contains("newplaylist://"))
   {
+    CFileItem* newPlaylist = new CFileItem(g_settings.GetUserDataItem("PartyMode-Video.xsp"),false);
+    newPlaylist->SetLabel(g_localizeStrings.Get(16035));
+    newPlaylist->SetLabelPreformated(true);
+    newPlaylist->m_bIsFolder = true;
+    items.Add(newPlaylist);
+
 /*    CFileItem *newPlaylist = new CFileItem("newplaylist://", false);
     newPlaylist->SetLabel(g_localizeStrings.Get(525));
     newPlaylist->SetLabelPreformated(true);
     items.Add(newPlaylist);
 */
-    CFileItem* newPlaylist = new CFileItem("newsmartplaylist://video", false);
+    newPlaylist = new CFileItem("newsmartplaylist://video", false);
     newPlaylist->SetLabel(g_localizeStrings.Get(21437));
     newPlaylist->SetLabelPreformated(true);
     items.Add(newPlaylist);

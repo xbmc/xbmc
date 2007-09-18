@@ -1264,7 +1264,13 @@ bool CGUIWindowMusicBase::GetDirectory(const CStdString &strDirectory, CFileItem
   // add in the "New Playlist" item if we're in the playlists folder
   if (items.m_strPath == "special://musicplaylists/" && !items.Contains("newplaylist://"))
   {
-    CFileItem *newPlaylist = new CFileItem("newplaylist://", false);
+    CFileItem* newPlaylist = new CFileItem(g_settings.GetUserDataItem("PartyMode.xsp"),false);
+    newPlaylist->SetLabel(g_localizeStrings.Get(16035));
+    newPlaylist->SetLabelPreformated(true);
+    newPlaylist->m_bIsFolder = true;
+    items.Add(newPlaylist);
+
+    newPlaylist = new CFileItem("newplaylist://", false);
     newPlaylist->SetLabel(g_localizeStrings.Get(525));
     newPlaylist->SetLabelPreformated(true);
     items.Add(newPlaylist);
