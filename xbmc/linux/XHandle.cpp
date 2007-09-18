@@ -72,10 +72,6 @@ void CXHandle::Init()
   m_internalLock = SDL_CreateMutex();
 }
 
-CXHandle::HandleType CXHandle::GetType() {
-  return m_type;
-}
-
 void CXHandle::ChangeType(HandleType newType) {
   m_objectTracker[m_type]--;
   m_type = newType;

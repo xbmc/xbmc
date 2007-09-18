@@ -1,8 +1,7 @@
 
 #include "stdafx.h"
 #include "DVDDemuxUtils.h"
-
-#define INPUT_BUFFER_PADDING_SIZE 8
+#include "avcodec.h"
 
 void CDVDDemuxUtils::FreeDemuxPacket(CDVDDemux::DemuxPacket* pPacket)
 {
@@ -38,7 +37,7 @@ CDVDDemux::DemuxPacket* CDVDDemuxUtils::AllocateDemuxPacket(int iDataSize)
         * Note, if the first 23 bits of the additional bytes are not 0 then damaged
         * MPEG bitstreams could cause overread and segfault
         */ 
-      pPacket->pData =(BYTE*)_aligned_malloc(iDataSize + INPUT_BUFFER_PADDING_SIZE, 16);    
+      pPacket->pData =(BYTE*)_aligned_malloc(iDataSize + FF_INPUT_BUFFER_PADDING_SIZE, 16);    
       if (!pPacket->pData)
       {
         FreeDemuxPacket(pPacket);
@@ -46,7 +45,7 @@ CDVDDemux::DemuxPacket* CDVDDemuxUtils::AllocateDemuxPacket(int iDataSize)
       }
       
       // reset the last 8 bytes to 0;
-      memset(pPacket->pData + iDataSize, 0, INPUT_BUFFER_PADDING_SIZE);
+      memset(pPacket->pData + iDataSize, 0, FF_INPUT_BUFFER_PADDING_SIZE);
     }        
   }
   catch(...)

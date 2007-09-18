@@ -40,6 +40,6 @@ protected:
   int m_decodedDataSize;
   BYTE* m_pInputBuffer;
 
-  short m_decodedData[131072/2]; // could be a bit to big
+  int16_t m_decodedData[131072/2]; // could be a bit to big
   BYTE m_inputBuffer[4096];
 };
