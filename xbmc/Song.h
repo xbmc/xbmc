@@ -19,6 +19,7 @@ using namespace MUSIC_INFO;
 class CAlbum
 {
 public:
+  CAlbum() { idAlbum = 0; iRating = 0; iYear = 0; };
   bool operator<(const CAlbum &a) const
   {
     return strAlbum + strArtist < a.strAlbum + a.strArtist;
