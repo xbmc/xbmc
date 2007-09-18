@@ -131,10 +131,10 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
   else if (strcmpi(effect, "zoom") == 0)
     m_effect = EFFECT_TYPE_ZOOM;
   // time and delay
-  node->Attribute("time", (int *)&m_length);
-  node->Attribute("delay", (int *)&m_delay);
-  m_length = (unsigned int)(m_length * g_SkinInfo.GetEffectsSlowdown()) ;
-  m_delay = (unsigned int)(m_delay * g_SkinInfo.GetEffectsSlowdown()) ;
+
+  float temp;
+  if (g_SkinInfo.ResolveConstant(node->Attribute("time"), temp)) m_length = (unsigned int)(temp * g_SkinInfo.GetEffectsSlowdown());
+  if (g_SkinInfo.ResolveConstant(node->Attribute("delay"), temp)) m_delay = (unsigned int)(temp * g_SkinInfo.GetEffectsSlowdown());
 
   if (m_pTweener)
   {
@@ -173,15 +173,15 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
     }
   }
 
-  double accel;
-  node->Attribute("acceleration", &accel);
+  float accel;
+  g_SkinInfo.ResolveConstant(node->Attribute("acceleration"), accel);
 
   if (!m_pTweener)
   { // no tweener is specified - use a linear tweener
     // or quadratic if we have acceleration
     if (accel)
     {
-      m_pTweener = new QuadTweener((float)accel);
+      m_pTweener = new QuadTweener(accel);
       m_pTweener->SetEasing(EASE_IN);
     }
     else
@@ -209,44 +209,45 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
     const char *startPos = node->Attribute("start");
     if (startPos)
     {
-      m_startX = (float)atof(startPos);
-      const char *comma = strstr(startPos, ",");
-      if (comma)
-        m_startY = (float)atof(comma + 1);
+      vector<CStdString> commaSeparated;
+      StringUtils::SplitString(startPos, ",", commaSeparated);
+      if (commaSeparated.size() > 1)
+        g_SkinInfo.ResolveConstant(commaSeparated[1], m_startY);
+      g_SkinInfo.ResolveConstant(commaSeparated[0], m_startX);
     }
     const char *endPos = node->Attribute("end");
     if (endPos)
     {
-      m_endX = (float)atof(endPos);
-      const char *comma = strstr(endPos, ",");
-      if (comma)
-        m_endY = (float)atof(comma + 1);
+      vector<CStdString> commaSeparated;
+      StringUtils::SplitString(endPos, ",", commaSeparated);
+      if (commaSeparated.size() > 1)
+        g_SkinInfo.ResolveConstant(commaSeparated[1], m_endY);
+      g_SkinInfo.ResolveConstant(commaSeparated[0], m_endX);
     }
   }
   else if (m_effect == EFFECT_TYPE_FADE)
   {  // alpha parameters
     if (m_type < 0)
     { // out effect defaults
-      m_startAlpha = 100;
+      m_startAlpha = 100.0f;
       m_endAlpha = 0;
     }
     else
     { // in effect defaults
       m_startAlpha = 0;
-      m_endAlpha = 100;
+      m_endAlpha = 100.0f;
     }
-    if (node->Attribute("start")) node->Attribute("start", &m_startAlpha);
-    if (node->Attribute("end")) node->Attribute("end", &m_endAlpha);
-    if (m_startAlpha > 100) m_startAlpha = 100;
-    if (m_endAlpha > 100) m_endAlpha = 100;
+    if (node->Attribute("start")) g_SkinInfo.ResolveConstant(node->Attribute("start"), m_startAlpha);
+    if (node->Attribute("end")) g_SkinInfo.ResolveConstant(node->Attribute("end"), m_endAlpha);
+    if (m_startAlpha > 100.0f) m_startAlpha = 100.0f;
+    if (m_endAlpha > 100.0f) m_endAlpha = 100.0f;
     if (m_startAlpha < 0) m_startAlpha = 0;
     if (m_endAlpha < 0) m_endAlpha = 0;
   }
   else if (m_effect >= EFFECT_TYPE_ROTATE_X && m_effect <= EFFECT_TYPE_ROTATE_Z)
   {
-    double temp;
-    if (node->Attribute("start", &temp)) m_startX = (float)temp;
-    if (node->Attribute("end", &temp)) m_endX = (float)temp;
+    if (node->Attribute("start")) g_SkinInfo.ResolveConstant(node->Attribute("start"), m_startX);
+    if (node->Attribute("end")) g_SkinInfo.ResolveConstant(node->Attribute("end"), m_endX);
 
     // convert to a negative to account for our reversed Y axis (Needed for X and Z ???)
     m_startX *= -1;
@@ -255,10 +256,11 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
     const char *centerPos = node->Attribute("center");
     if (centerPos)
     {
-      m_centerX = (float)atof(centerPos); 
-      const char *comma = strstr(centerPos, ",");
-      if (comma)
-        m_centerY = (float)atof(comma + 1);
+      vector<CStdString> commaSeparated;
+      StringUtils::SplitString(centerPos, ",", commaSeparated);
+      if (commaSeparated.size() > 1)
+        g_SkinInfo.ResolveConstant(commaSeparated[1], m_centerY);
+      g_SkinInfo.ResolveConstant(commaSeparated[0], m_centerX);
     }
   }
   else // if (m_effect == EFFECT_TYPE_ZOOM)
@@ -279,19 +281,24 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
       CStdStringArray params;
       StringUtils::SplitString(start, ",", params);
       if (params.size() == 1)
-        m_startX = m_startY = (float)atof(start);
+      {
+        g_SkinInfo.ResolveConstant(params[0], m_startX);
+        m_startY = m_startX;
+      }
       else if (params.size() == 2)
       {
-        m_startX = (float)atof(params[0].c_str());
-        m_startY = (float)atof(params[1].c_str());
+        g_SkinInfo.ResolveConstant(params[0], m_startX);
+        g_SkinInfo.ResolveConstant(params[1], m_startY);
       }
       else if (params.size() == 4)
       { // format is start="x,y,width,height"
         // use width and height from our rect to calculate our sizing
-        startPosX = (float)atof(params[0].c_str());
-        startPosY = (float)atof(params[1].c_str());
-        m_startX = (float)atof(params[2].c_str()) / rect.right * 100.0f;
-        m_startY = (float)atof(params[3].c_str()) / rect.bottom * 100.0f;
+        g_SkinInfo.ResolveConstant(params[0], startPosX);
+        g_SkinInfo.ResolveConstant(params[1], startPosY);
+        g_SkinInfo.ResolveConstant(params[2], m_startX);
+        g_SkinInfo.ResolveConstant(params[3], m_startY);
+        m_startX *= 100.0f / rect.right;
+        m_startY *= 100.0f / rect.bottom;
       }
     }
     const char *end = node->Attribute("end");
@@ -300,28 +307,34 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
       CStdStringArray params;
       StringUtils::SplitString(end, ",", params);
       if (params.size() == 1)
-        m_endX = m_endY = (float)atof(end);
+      {
+        g_SkinInfo.ResolveConstant(params[0], m_endX);
+        m_endY = m_endX;
+      }
       else if (params.size() == 2)
       {
-        m_endX = (float)atof(params[0].c_str());
-        m_endY = (float)atof(params[1].c_str());
+        g_SkinInfo.ResolveConstant(params[0], m_endX);
+        g_SkinInfo.ResolveConstant(params[1], m_endY);
       }
       else if (params.size() == 4)
       { // format is start="x,y,width,height"
         // use width and height from our rect to calculate our sizing
-        endPosX = (float)atof(params[0].c_str());
-        endPosY = (float)atof(params[1].c_str());
-        m_endX = (float)atof(params[2].c_str()) / rect.right * 100.0f;
-        m_endY = (float)atof(params[3].c_str()) / rect.bottom * 100.0f;
+        g_SkinInfo.ResolveConstant(params[0], endPosX);
+        g_SkinInfo.ResolveConstant(params[1], endPosY);
+        g_SkinInfo.ResolveConstant(params[2], m_endX);
+        g_SkinInfo.ResolveConstant(params[3], m_endY);
+        m_endX *= 100.0f / rect.right;
+        m_endY *= 100.0f / rect.bottom;
       }
     }
     const char *centerPos = node->Attribute("center");
     if (centerPos)
     {
-      m_centerX = (float)atof(centerPos);
-      const char *comma = strstr(centerPos, ",");
-      if (comma)
-        m_centerY = (float)atof(comma + 1);
+      vector<CStdString> commaSeparated;
+      StringUtils::SplitString(centerPos, ",", commaSeparated);
+      if (commaSeparated.size() > 1)
+        g_SkinInfo.ResolveConstant(commaSeparated[1], m_centerY);
+      g_SkinInfo.ResolveConstant(commaSeparated[0], m_centerX);
     }
     else
     { // no center specified
@@ -444,7 +457,7 @@ void CAnimation::Calculate()
     offset = m_pTweener->Tween(m_amount, 0.0f, 1.0f, 1.0f);
   if (m_effect == EFFECT_TYPE_FADE)
   {
-    m_matrix.SetFader(((float)(m_endAlpha - m_startAlpha) * offset + m_startAlpha) * 0.01f);
+    m_matrix.SetFader(((m_endAlpha - m_startAlpha) * offset + m_startAlpha) * 0.01f);
   }
   else if (m_effect == EFFECT_TYPE_SLIDE)
   {
@@ -501,9 +514,9 @@ void CAnimation::ApplyAnimation()
   Calculate();
 }
 
-void CAnimation::UpdateCondition()
+void CAnimation::UpdateCondition(DWORD contextWindow)
 {
-  bool condition = g_infoManager.GetBool(m_condition);
+  bool condition = g_infoManager.GetBool(m_condition, contextWindow);
   if (condition && !m_lastCondition)
     m_queuedProcess = ANIM_PROCESS_NORMAL;
   else if (!condition && m_lastCondition)
@@ -516,9 +529,9 @@ void CAnimation::UpdateCondition()
   m_lastCondition = condition;
 }
 
-void CAnimation::SetInitialCondition()
+void CAnimation::SetInitialCondition(DWORD contextWindow)
 {
-  m_lastCondition = g_infoManager.GetBool(m_condition);
+  m_lastCondition = g_infoManager.GetBool(m_condition, contextWindow);
   if (m_lastCondition)
     ApplyAnimation();
   else

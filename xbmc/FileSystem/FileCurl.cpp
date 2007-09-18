@@ -258,6 +258,19 @@ void CFileCurl::SetCommonOptions()
 
   // never verify peer, we don't have any certificates to do this
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_SSL_VERIFYPEER, 0);
+  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_SSL_VERIFYHOST, 0);
+
+  // setup any requested authentication
+  if( m_ftpauth.length() > 0 )
+  {
+    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_FTP_SSL, CURLFTPSSL_TRY);
+    if( m_ftpauth.Equals("any") )
+      g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_FTPSSLAUTH, CURLFTPAUTH_DEFAULT);
+    else if( m_ftpauth.Equals("ssl") )
+      g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_FTPSSLAUTH, CURLFTPAUTH_SSL);
+    else if( m_ftpauth.Equals("tls") )
+      g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_FTPSSLAUTH, CURLFTPAUTH_TLS);
+  }
 
   // always allow gzip compression
   if( m_contentencoding.length() > 0 )
@@ -310,19 +323,19 @@ void CFileCurl::SetRequestHeaders()
 
 }
 
-bool CFileCurl::Open(const CURL& url, bool bBinary)
+void CFileCurl::ParseAndCorrectUrl(CURL &url2)
 {
-  m_buffer.Create(m_bufferSize * 3, m_bufferSize);  // 3 times our buffer size (2 in front, 1 behind)
-  m_overflowBuffer = 0;
-  m_overflowSize = 0;
-
-  CURL url2(url);
   if( url2.GetProtocol().Equals("ftpx") )
     url2.SetProtocol("ftp");
-  else if (url2.GetProtocol().Equals("shout") || url2.GetProtocol().Equals("daap") || url2.GetProtocol().Equals("upnp") || url2.GetProtocol().Equals("tuxbox") || url2.GetProtocol().Equals("lastfm"))
+  else if( url2.GetProtocol().Equals("shout") 
+       ||  url2.GetProtocol().Equals("daap") 
+       ||  url2.GetProtocol().Equals("upnp") 
+       ||  url2.GetProtocol().Equals("tuxbox") 
+       ||  url2.GetProtocol().Equals("lastfm"))
     url2.SetProtocol("http");    
 
-  if( url2.GetProtocol().Equals("ftp") )
+  if( url2.GetProtocol().Equals("ftp")
+  ||  url2.GetProtocol().Equals("ftps") )
   {
     /* this is uggly, depending on from where   */
     /* we get the link it may or may not be     */
@@ -353,8 +366,38 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
       filename += "/";
 
     url2.SetFileName(filename);
+
+    /* parse options given */
+    CUtil::Tokenize(url2.GetOptions().Mid(1), array, "&");
+    for(CStdStringArray::iterator it = array.begin(); it != array.end(); it++)
+    {
+      CStdString name, value;
+      int pos = it->Find('=');
+      if(pos >= 0)
+      {
+        name = it->Left(pos);
+        value = it->Mid(pos+1, it->size());
+      }
+      else
+      {
+        name = (*it);
+        value = "";
+      }
+
+      if(name.Equals("auth"))
+      {
+        m_ftpauth = value;
+        m_ftpauth.TrimRight('/'); // hack for trailing slashes being added from source
+        if(m_ftpauth.IsEmpty())
+          m_ftpauth = "any";
+      }
+    }
+
+    /* ftp has no options */
+    url2.SetOptions("");
   }
-  else if( url2.GetProtocol().Equals("http"))
+  else if( url2.GetProtocol().Equals("http")
+       ||  url2.GetProtocol().Equals("https"))
   {
     if (g_guiSettings.GetBool("network.usehttpproxy") && m_proxy.IsEmpty())
     {
@@ -363,6 +406,16 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
       CLog::Log(LOGDEBUG, "Using proxy %s", m_proxy.c_str());
     }
   }
+}
+
+bool CFileCurl::Open(const CURL& url, bool bBinary)
+{
+  m_buffer.Create(m_bufferSize * 3, m_bufferSize);  // 3 times our buffer size (2 in front, 1 behind)
+  m_overflowBuffer = 0;
+  m_overflowSize = 0;
+
+  CURL url2(url);
+  ParseAndCorrectUrl(url2);
 
   url2.GetURL(m_url);
 
@@ -377,7 +430,7 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
   SetCommonOptions();
 
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_URL, m_url.c_str());
-  if (!bBinary) g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_TRANSFERTEXT, TRUE);  
+  if (!bBinary) g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_TRANSFERTEXT, TRUE);
 
   g_curlInterface.multi_add_handle(m_multiHandle, m_easyHandle);
 
@@ -552,14 +605,7 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
   }
 
   CURL url2(url);
-  if( url2.GetProtocol().Equals("ftpx") )
-    url2.SetProtocol("ftp");
-  else if (url2.GetProtocol().Equals("shout") || url2.GetProtocol().Equals("daap") || url2.GetProtocol().Equals("upnp") || url2.GetProtocol().Equals("lastfm"))
-    url2.SetProtocol("http");
-  
-  /* ditch options as it's not supported on ftp */
-  if( url2.GetProtocol().Equals("ftp") )
-    url2.SetOptions("");
+  ParseAndCorrectUrl(url2);
 
   url2.GetURL(m_url);
 
@@ -689,9 +735,25 @@ bool CFileCurl::FillBuffer(unsigned int want)
     }
 
     CURLMcode result = g_curlInterface.multi_perform(m_multiHandle, &m_stillRunning);
-    if( !m_stillRunning ) 
-      return (CURLM_OK == result);
+    if( !m_stillRunning )
+    {
+      if( result == CURLM_OK )
+      {
+        /* if we still have stuff in buffer, we are fine */
+        if( m_buffer.GetMaxReadSize() )
+          return true;
 
+        /* verify that we are actually okey */
+        int msgs;
+        CURLMsg* msg;
+        while((msg = g_curlInterface.multi_info_read(m_multiHandle, &msgs)))
+        {
+          if(msg->msg = CURLMSG_DONE)
+            return (msg->data.result == CURLM_OK);
+        }
+      }
+      return false;
+    }
     switch(result)
     {
       case CURLM_OK:

@@ -25,6 +25,7 @@
 #include "DetectDVDType.h"
 #include "PlayListPlayer.h"
 #include "FileSystem/ZipManager.h"
+#include "FileSystem/PluginDirectory.h"
 #include "GUIPassword.h"
 #include "Application.h"
 #include "xbox/Network.h"
@@ -415,13 +416,13 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
   CLog::Log(LOGDEBUG,"CGUIMediaWindow::GetDirectory (%s)", strDirectory.c_str());
   CLog::Log(LOGDEBUG,"  ParentPath = [%s]", strParentPath.c_str());
 
+  CFileItem* pItem=NULL;
   if (m_guiState.get() && !m_guiState->HideParentDirItems())
   {
-    CFileItem *pItem = new CFileItem("..");
+    pItem = new CFileItem("..");
     pItem->m_strPath = strParentPath;
     pItem->m_bIsFolder = true;
     pItem->m_bIsShareOrDrive = false;
-    items.Add(pItem);
   }
 
   // see if we can load a previously cached folder
@@ -430,9 +431,14 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
   {
     items.AssignPointer(cachedItems);
     cachedItems.ClearKeepPointer();
+    if (pItem)
+      items.AddFront(pItem,0);
   }
   else
   {
+    if (pItem)
+      items.Add(pItem);
+
     DWORD time = timeGetTime();
 
     if (!m_rootDir.GetDirectory(strDirectory, items))
@@ -609,6 +615,8 @@ bool CGUIMediaWindow::OnClick(int iItem)
 
     return true;
   }
+  else if (pItem->m_strPath.Left(9).Equals("plugin://"))
+    return DIRECTORY::CPluginDirectory::RunScriptWithParams(pItem->m_strPath);
   else
   {
     m_iSelectedItem = m_viewControl.GetSelectedItem();

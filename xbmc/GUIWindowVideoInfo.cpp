@@ -632,7 +632,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
   }
 
   CStdString result;
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_vecMyVideoShares, g_localizeStrings.Get(20019), result))
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_videoSources, g_localizeStrings.Get(20019), result))
     return;   // user cancelled
 
   if (result == "thumb://Current")
