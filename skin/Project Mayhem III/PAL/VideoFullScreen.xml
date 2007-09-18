@@ -79,7 +79,7 @@
 				<font>special13</font>
 			</control>
 			<control type="group" id="1">
-				<visible>!videoplayer.content(episodes)</visible>
+				<visible>!videoplayer.content(episodes) + !videoplayer.content(musicvideos)</visible>
 				<control type="label" id="1">
 					<description>current_event_name</description>
 					<width>420</width>
@@ -134,6 +134,36 @@
 					<posx>160</posx>
 					<posy>60</posy>
 					<label>$LOCALIZE[20373] $INFO[VideoPlayer.Season] - $LOCALIZE[20359] $INFO[VideoPlayer.episode]</label>
+					<align>left</align>
+					<font>font10</font>
+				</control>
+			</control>
+			<control type="group" id="1">
+				<visible>videoplayer.content(musicvideos)</visible>
+				<control type="label" id="1">
+					<description>Artist label</description>
+					<width>400</width>
+					<posx>160</posx>
+					<posy>5</posy>
+					<info>VideoPlayer.Artist</info>
+					<align>left</align>
+					<font>special12</font>
+				</control>
+				<control type="label" id="1">
+					<description>Title label</description>
+					<width>500</width>
+					<posx>160</posx>
+					<posy>30</posy>
+					<info>VideoPlayer.Title</info>
+					<align>left</align>
+					<font>special13</font>
+				</control>
+				<control type="fadelabel" id="1">
+					<description>Album label</description>
+					<width>380</width>
+					<posx>160</posx>
+					<posy>60</posy>
+					<info>VideoPlayer.Album</info>
 					<align>left</align>
 					<font>font10</font>
 				</control>

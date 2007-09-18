@@ -286,6 +286,12 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
 {
   if (pItem->m_bIsFolder && pItem->IsParentFolder()) return ;
 
+  if (pItem->IsVideoDb())
+  {
+    OnContextButton(m_viewControl.GetSelectedItem(), CONTEXT_BUTTON_INFO); // nasty but it is the same item i promise :)
+    return;
+  }
+
   // show dialog box indicating we're searching the album name
   if (m_dlgProgress && bShowInfo)
   {
@@ -825,10 +831,10 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
         buttons.Add(CONTEXT_BUTTON_PLAY_WITH, 15213); // Play With...
     }
 
-    if (item->IsPlayList() || m_vecItems.IsPlayList())
-      buttons.Add(CONTEXT_BUTTON_EDIT, 586);
-    else if (item->IsSmartPlayList() || m_vecItems.IsSmartPlayList())
+    if (item->IsSmartPlayList() || m_vecItems.IsSmartPlayList())
       buttons.Add(CONTEXT_BUTTON_EDIT_SMART_PLAYLIST, 586);
+    else if (item->IsPlayList() || m_vecItems.IsPlayList())
+      buttons.Add(CONTEXT_BUTTON_EDIT, 586);  
   }
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
 }
@@ -1258,12 +1264,18 @@ bool CGUIWindowMusicBase::GetDirectory(const CStdString &strDirectory, CFileItem
   // add in the "New Playlist" item if we're in the playlists folder
   if (items.m_strPath == "special://musicplaylists/" && !items.Contains("newplaylist://"))
   {
-    CFileItem *newPlaylist = new CFileItem("newplaylist://", false);
+    CFileItem* newPlaylist = new CFileItem(g_settings.GetUserDataItem("PartyMode.xsp"),false);
+    newPlaylist->SetLabel(g_localizeStrings.Get(16035));
+    newPlaylist->SetLabelPreformated(true);
+    newPlaylist->m_bIsFolder = true;
+    items.Add(newPlaylist);
+
+    newPlaylist = new CFileItem("newplaylist://", false);
     newPlaylist->SetLabel(g_localizeStrings.Get(525));
     newPlaylist->SetLabelPreformated(true);
     items.Add(newPlaylist);
 
-    newPlaylist = new CFileItem("newsmartplaylist://", false);
+    newPlaylist = new CFileItem("newsmartplaylist://music", false);
     newPlaylist->SetLabel(g_localizeStrings.Get(21437));
     newPlaylist->SetLabelPreformated(true);
     items.Add(newPlaylist);

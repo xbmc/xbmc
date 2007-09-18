@@ -54,7 +54,7 @@
 				<align>right</align>
 				<label>9</label>
 				<font>special12</font>
-				<visible>!container.content(tvshows) + !container.content(episodes)</visible>
+				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
 			<control type="label" id="1">
 				<description>description label</description>
@@ -63,7 +63,7 @@
 				<align>left</align>
 				<label>10524</label>
 				<font>special13</font>
-				<visible>!container.content(tvshows) + !container.content(episodes)</visible>
+				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
 			<control type="fadelabel" id="20">
 				<description>Movie Title value</description>
@@ -72,7 +72,7 @@
 				<width>290</width>
 				<label>-</label>
 				<font>special13</font>
-				<visible>!container.content(tvshows) + !container.content(episodes)</visible>
+				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
 			<control type="label" id="1">
 				<description>Director txt</description>
@@ -81,7 +81,7 @@
 				<width>90</width>
 				<label>199</label>
 				<font>font12</font>
-				<visible>!container.content(tvshows) + !container.content(episodes)</visible>
+				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
 			<control type="label" id="1">
 				<description>Writing Credits txt</description>
@@ -90,7 +90,7 @@
 				<width>90</width>
 				<label>200</label>
 				<font>font12</font>
-				<visible>!container.content(tvshows) + !container.content(episodes)</visible>
+				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
 			<control type="label" id="1">
 				<description>Genre txt</description>
@@ -99,7 +99,7 @@
 				<width>90</width>
 				<label>174</label>
 				<font>font12</font>
-				<visible>!container.content(tvshows) + !container.content(episodes)</visible>
+				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
 			<control type="label" id="1">
 				<description>Year</description>
@@ -108,7 +108,7 @@
 				<width>90</width>
 				<label>201</label>
 				<font>font12</font>
-				<visible>!container.content(tvshows) + !container.content(episodes)</visible>
+				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
 			<control type="label" id="1">
 				<description>TagLine txt</description>
@@ -117,7 +117,7 @@
 				<width>90</width>
 				<label>202</label>
 				<font>font12</font>
-				<visible>!container.content(tvshows) + !container.content(episodes)</visible>
+				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
 			<control type="label" id="1">
 				<description>PlotOutline txt</description>
@@ -126,7 +126,7 @@
 				<width>90</width>
 				<label>203</label>
 				<font>font12</font>
-				<visible>!container.content(tvshows) + !container.content(episodes)</visible>
+				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
 			<control type="label" id="1">
 				<description>Rating txt</description>
@@ -135,7 +135,7 @@
 				<width>90</width>
 				<label>204</label>
 				<font>font12</font>
-				<visible>!container.content(tvshows) + !container.content(episodes)</visible>
+				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
 			<control type="label" id="1">
 				<description>Runtime txt</description>
@@ -144,7 +144,7 @@
 				<width>90</width>
 				<label>2050</label>
 				<font>font12</font>
-				<visible>!container.content(tvshows) + !container.content(episodes)</visible>
+				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
 			<control type="label" id="1">
 				<description>MPPA Rating txt</description>
@@ -153,7 +153,7 @@
 				<width>90</width>
 				<label>20074</label>
 				<font>font12</font>
-				<visible>!container.content(tvshows) + !container.content(episodes)</visible>
+				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
 			<control type="fadelabel" id="21">
 				<description>Director value</description>
@@ -162,7 +162,7 @@
 				<width>252</width>
 				<label>-</label>
 				<font>font12</font>
-				<visible>!container.content(tvshows) + !container.content(episodes)</visible>
+				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
 			<control type="fadelabel" id="22">
 				<description>Writing Credits value</description>
@@ -171,7 +171,7 @@
 				<width>252</width>
 				<label>-</label>
 				<font>font12</font>
-				<visible>!container.content(tvshows) + !container.content(episodes)</visible>
+				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
 			<control type="fadelabel" id="23">
 				<description>Genre value</description>
@@ -180,7 +180,7 @@
 				<width>252</width>
 				<label>-</label>
 				<font>font12</font>
-				<visible>!container.content(tvshows) + !container.content(episodes)</visible>
+				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
 			<control type="fadelabel" id="24">
 				<description>Year value</description>
@@ -189,7 +189,7 @@
 				<width>252</width>
 				<label>-</label>
 				<font>font12</font>
-				<visible>!container.content(tvshows) + !container.content(episodes)</visible>
+				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
 			<control type="fadelabel" id="25">
 				<description>TagLine value</description>
@@ -198,7 +198,7 @@
 				<width>252</width>
 				<label>-</label>
 				<font>font12</font>
-				<visible>!container.content(tvshows) + !container.content(episodes)</visible>
+				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
 			<control type="fadelabel" id="26">
 				<description>PlotOutline value</description>
@@ -207,7 +207,7 @@
 				<width>252</width>
 				<label>-</label>
 				<font>font12</font>
-				<visible>!container.content(tvshows) + !container.content(episodes)</visible>
+				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
 			<control type="fadelabel" id="30">
 				<description>Rating and votes value</description>
@@ -216,7 +216,7 @@
 				<width>252</width>
 				<label>-</label>
 				<font>font12</font>
-				<visible>!container.content(tvshows) + !container.content(episodes)</visible>
+				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
 			<control type="fadelabel" id="31">
 				<description>Runtime value</description>
@@ -225,7 +225,7 @@
 				<width>252</width>
 				<label>-</label>
 				<font>font12</font>
-				<visible>!container.content(tvshows) + !container.content(episodes)</visible>
+				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
 			<control type="fadelabel" id="32">
 				<description>MPPA Rating value</description>
@@ -234,7 +234,7 @@
 				<width>252</width>
 				<label>-</label>
 				<font>font12</font>
-				<visible>!container.content(tvshows) + !container.content(episodes)</visible>
+				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
 			<control type="image" id="3">
 				<description>Cover image</description>
@@ -244,7 +244,7 @@
 				<height>240</height>
 				<texture>-</texture>
 				<aspectratio>keep</aspectratio>
-				<visible>!container.content(tvshows) + !container.content(episodes)</visible>
+				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
 			<control type="textbox" id="4">
 				<description>textarea</description>
@@ -258,7 +258,7 @@
 				<ondown>5</ondown>
 				<spinposx>430</spinposx>
 				<spinposy>205</spinposy>
-				<visible>!container.content(tvshows) + !container.content(episodes)</visible>
+				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
 			<control type="listcontrol" id="50">
 				<description>cast listcontrol</description>
@@ -273,7 +273,7 @@
 				<textxoff>-15</textxoff>
 				<spinposx>430</spinposx>
 				<spinposy>195</spinposy>
-				<visible>!container.content(tvshows) + !container.content(episodes)</visible>
+				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
 		</control>
 		<control type="group">
@@ -603,6 +603,200 @@
 				<spinposx>430</spinposx>
 				<spinposy>210</spinposy>
 				<visible>container.content(episodes)</visible>
+			</control>
+		</control>
+		<control type="group">
+			<control type="label" id="1">
+				<description>xbox media center label</description>
+				<posx>200</posx>
+				<posy>43</posy>
+				<align>right</align>
+				<label>9</label>
+				<font>special12</font>
+				<visible>container.content(musicvideos)</visible>
+			</control>
+			<control type="label" id="1">
+				<description>description label</description>
+				<posx>207</posx>
+				<posy>43</posy>
+				<align>left</align>
+				<label>20391</label>
+				<font>special13</font>
+				<visible>container.content(musicvideos)</visible>
+			</control>
+			<control type="image">
+				<description>Cover image</description>
+				<posx>555</posx>
+				<posy>100</posy>
+				<width>130</width>
+				<height>232</height>
+				<aspectratio>keep</aspectratio>
+				<info>ListItem.Icon</info>
+				<visible>container.content(musicvideos)</visible>
+			</control>
+			<control type="fadelabel" id="1">
+				<description>Title value</description>
+				<posx>200</posx>
+				<posy>110</posy>
+				<width>330</width>
+				<info>Listitem.Title</info>
+				<font>special13</font>
+				<visible>container.content(musicvideos)</visible>
+			</control>
+			<control type="label" id="1">
+				<description>Artist txt</description>
+				<posx>200</posx>
+				<posy>160</posy>
+				<width>90</width>
+				<label>$LOCALIZE[171]</label>
+				<font>font12</font>
+				<visible>container.content(musicvideos)</visible>
+			</control>
+			<control type="label" id="1">
+				<description>Album txt</description>
+				<posx>200</posx>
+				<posy>185</posy>
+				<width>90</width>
+				<label>$LOCALIZE[170]</label>
+				<font>font12</font>
+				<visible>container.content(musicvideos)</visible>
+			</control>
+			<control type="label" id="1">
+				<description>Genre txt</description>
+				<posx>200</posx>
+				<posy>210</posy>
+				<width>90</width>
+				<label>$LOCALIZE[174]</label>
+				<font>font12</font>
+				<visible>container.content(musicvideos)</visible>
+			</control>
+			<control type="label" id="1">
+				<description>Year txt</description>
+				<posx>200</posx>
+				<posy>235</posy>
+				<width>90</width>
+				<label>$LOCALIZE[436]</label>
+				<font>font12</font>
+				<visible>container.content(musicvideos)</visible>
+			</control>
+			<control type="label" id="1">
+				<description>Runtime txt</description>
+				<posx>200</posx>
+				<posy>260</posy>
+				<width>90</width>
+				<label>$LOCALIZE[2050]</label>
+				<font>font12</font>
+				<visible>container.content(musicvideos)</visible>
+			</control>
+			<control type="label" id="1">
+				<description>Director Text</description>
+				<posx>200</posx>
+				<posy>285</posy>
+				<width>90</width>
+				<label>$LOCALIZE[199]</label>
+				<font>font12</font>
+				<visible>container.content(musicvideos)</visible>
+			</control>
+			<control type="label" id="1">
+				<description>Studio txt</description>
+				<posx>200</posx>
+				<posy>310</posy>
+				<width>90</width>
+				<label>$LOCALIZE[572]:</label>
+				<font>font12</font>
+				<visible>container.content(musicvideos)</visible>
+			</control>
+			<control type="fadelabel" id="1">
+				<description>Artist value</description>
+				<posx>300</posx>
+				<posy>160</posy>
+				<width>230</width>
+				<info>Listitem.Artist</info>
+				<font>font12</font>
+				<visible>container.content(musicvideos)</visible>
+			</control>
+			<control type="fadelabel" id="1">
+				<description>Album value</description>
+				<posx>300</posx>
+				<posy>185</posy>
+				<width>230</width>
+				<info>Listitem.Album</info>
+				<font>font12</font>
+				<visible>container.content(musicvideos)</visible>
+			</control>
+			<control type="fadelabel" id="1">
+				<description>Genre value</description>
+				<posx>300</posx>
+				<posy>210</posy>
+				<width>230</width>
+				<info>Listitem.Genre</info>
+				<font>font12</font>
+				<visible>container.content(musicvideos)</visible>
+			</control>
+			<control type="fadelabel" id="1">
+				<description>Year value</description>
+				<posx>300</posx>
+				<posy>235</posy>
+				<width>230</width>
+				<info>Listitem.Year</info>
+				<font>font12</font>
+				<visible>container.content(musicvideos)</visible>
+			</control>
+			<control type="fadelabel" id="1">
+				<description>Runtime value</description>
+				<posx>300</posx>
+				<posy>260</posy>
+				<width>230</width>
+				<info>Listitem.Duration</info>
+				<font>font12</font>
+				<visible>container.content(musicvideos)</visible>
+			</control>
+			<control type="fadelabel" id="1">
+				<description>Director value</description>
+				<posx>300</posx>
+				<posy>285</posy>
+				<width>252</width>
+				<info>Listitem.Director</info>
+				<font>font12</font>
+				<visible>container.content(musicvideos)</visible>
+			</control>
+			<control type="fadelabel" id="1">
+				<description>Studio value</description>
+				<posx>300</posx>
+				<posy>310</posy>
+				<width>230</width>
+				<info>Listitem.Studio</info>
+				<font>font12</font>
+				<visible>container.content(musicvideos)</visible>
+			</control>
+			<control type="textbox" id="4">
+				<description>textarea</description>
+				<posx>200</posx>
+				<posy>355</posy>
+				<width>480</width>
+				<height>205</height>
+				<onleft>5</onleft>
+				<onright>50</onright>
+				<onup>5</onup>
+				<ondown>5</ondown>
+				<spinposx>430</spinposx>
+				<spinposy>190</spinposy>
+				<visible>container.content(musicvideos)</visible>
+			</control>
+			<control type="listcontrol" id="50">
+				<description>cast listcontrol</description>
+				<posx>200</posx>
+				<posy>355</posy>
+				<width>480</width>
+				<height>205</height>
+				<onleft>5</onleft>
+				<onright>4</onright>
+				<onup>5</onup>
+				<ondown>8</ondown>
+				<textxoff>-15</textxoff>
+				<spinposx>430</spinposx>
+				<spinposy>190</spinposy>
+				<visible>container.content(musicvideos)</visible>
 			</control>
 		</control>
 		<control type="group">

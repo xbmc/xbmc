@@ -10,6 +10,7 @@ public:
 protected:
   virtual CStdString GetLockType();
   virtual bool UnrollArchives();
+  virtual int GetPlaylist();
   virtual CStdString GetExtensions();
 };
 
@@ -27,6 +28,7 @@ class CGUIViewStateWindowVideoNav : public CGUIViewStateWindowVideo
 {
 public:
   CGUIViewStateWindowVideoNav(const CFileItemList& items);
+  virtual bool AutoPlayNextItem();
 
 protected:
   virtual void SaveViewState();
@@ -40,7 +42,6 @@ public:
 
 protected:
   virtual void SaveViewState();
-  virtual int GetPlaylist();
   virtual bool HideExtensions();
   virtual bool HideParentDirItems();
   virtual VECSHARES& GetShares();

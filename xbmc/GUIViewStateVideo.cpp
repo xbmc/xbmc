@@ -24,6 +24,7 @@
 #include "playlistplayer.h"
 #include "FileSystem/VideoDatabaseDirectory.h"
 #include "GUIBaseContainer.h"
+#include "VideoDatabase.h"
 
 using namespace DIRECTORY;
 using namespace VIDEODATABASEDIRECTORY;
@@ -41,6 +42,11 @@ bool CGUIViewStateWindowVideo::UnrollArchives()
 CStdString CGUIViewStateWindowVideo::GetExtensions()
 {
   return g_stSettings.m_videoExtensions;
+}
+
+int CGUIViewStateWindowVideo::GetPlaylist()
+{
+  return PLAYLIST_VIDEO;
 }
 
 CGUIViewStateWindowVideoFiles::CGUIViewStateWindowVideoFiles(const CFileItemList& items) : CGUIViewStateWindowVideo(items)
@@ -96,16 +102,16 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
   }
   else if (items.IsVideoDb())
   {
-    CVideoDatabaseDirectory dir;
-    NODE_TYPE NodeType=dir.GetDirectoryChildType(items.m_strPath);
-    NODE_TYPE ParentNodeType=dir.GetDirectoryType(items.m_strPath);
+    NODE_TYPE NodeType=CVideoDatabaseDirectory::GetDirectoryChildType(items.m_strPath);
+    NODE_TYPE ParentNodeType=CVideoDatabaseDirectory::GetDirectoryType(items.m_strPath);
     CQueryParams params;
-    dir.GetQueryParams(items.m_strPath,params);
+    CVideoDatabaseDirectory::GetQueryParams(items.m_strPath,params);
     
     switch (NodeType)
     {
     case NODE_TYPE_MOVIES_OVERVIEW:
     case NODE_TYPE_TVSHOWS_OVERVIEW:
+    case NODE_TYPE_MUSICVIDEOS_OVERVIEW:
     case NODE_TYPE_OVERVIEW:
       {
         AddSortMethod(SORT_METHOD_NONE, 551, LABEL_MASKS("%F", "%I", "%L", ""));  // Filename, Size | Foldername, empty
@@ -130,7 +136,7 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
       break;
     case NODE_TYPE_YEAR:
       {
-        AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", "%R", "%L", ""));  // Filename, Duration | Foldername, empty
+        AddSortMethod(SORT_METHOD_LABEL, 345, LABEL_MASKS("%T", "%R", "%L", ""));  // Filename, Duration | Foldername, empty
         SetSortMethod(SORT_METHOD_LABEL);
 
         SetViewAsControl(g_stSettings.m_viewStateVideoNavYears.m_viewMode);
@@ -228,6 +234,31 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
         SetSortOrder(g_stSettings.m_viewStateVideoNavTitles.m_sortOrder);
       }
       break;
+      case NODE_TYPE_TITLE_MUSICVIDEOS:
+      {
+        if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+          AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 556, LABEL_MASKS("%T", "%Y"));  // Filename, Duration | Foldername, empty
+        else
+          AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", "%Y"));  // Filename, Duration | Foldername, empty
+        AddSortMethod(SORT_METHOD_VIDEO_YEAR,345, LABEL_MASKS("%T", "%Y"));
+        if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+        {
+          AddSortMethod(SORT_METHOD_ARTIST_IGNORE_THE,557, LABEL_MASKS("%A - %T", "%Y"));
+          AddSortMethod(SORT_METHOD_ALBUM_IGNORE_THE,483, LABEL_MASKS("%B - %T", "%Y"));
+        }
+        else
+        {
+          AddSortMethod(SORT_METHOD_ARTIST,557, LABEL_MASKS("%A - %T", "%Y"));
+          AddSortMethod(SORT_METHOD_ALBUM,483, LABEL_MASKS("%B - %T", "%Y"));
+        }
+        
+        SetSortMethod(g_stSettings.m_viewStateVideoNavMusicVideos.m_sortMethod);
+
+        SetViewAsControl(g_stSettings.m_viewStateVideoNavMusicVideos.m_viewMode);
+
+        SetSortOrder(g_stSettings.m_viewStateVideoNavMusicVideos.m_sortOrder);
+      }
+      break;
     case NODE_TYPE_RECENTLY_ADDED_MOVIES:
       {
         AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS("%T", "%R"));
@@ -238,7 +269,18 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
         SetSortOrder(SORT_ORDER_NONE);
       }
       break;
+    case NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS:
+      {
+        AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS("%A - %T", "%Y"));
+        SetSortMethod(SORT_METHOD_NONE);
+
+        SetViewAsControl(g_stSettings.m_viewStateVideoNavMusicVideos.m_viewMode);
+
+        SetSortOrder(SORT_ORDER_NONE);
+      }
+      break;
     } 
+
   }
   else
   {
@@ -253,8 +295,7 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
 
 void CGUIViewStateWindowVideoNav::SaveViewState()
 {
-  CVideoDatabaseDirectory dir;
-  NODE_TYPE NodeType = dir.GetDirectoryChildType(m_items.m_strPath);
+  NODE_TYPE NodeType = CVideoDatabaseDirectory::GetDirectoryChildType(m_items.m_strPath);
   switch (NodeType)
   {
   case NODE_TYPE_ACTOR:
@@ -278,6 +319,8 @@ void CGUIViewStateWindowVideoNav::SaveViewState()
   case NODE_TYPE_SEASONS:
     SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, g_stSettings.m_viewStateVideoNavSeasons);
     break;
+  case NODE_TYPE_TITLE_MUSICVIDEOS:
+    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, g_stSettings.m_viewStateVideoNavMusicVideos);
   default:
     SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV);
     break;
@@ -313,6 +356,17 @@ VECSHARES& CGUIViewStateWindowVideoNav::GetShares()
   return CGUIViewStateWindowVideo::GetShares();
 }
 
+bool CGUIViewStateWindowVideoNav::AutoPlayNextItem()
+{
+  CVideoDatabaseDirectory dir;
+  CQueryParams params;
+  CVideoDatabaseDirectory::GetQueryParams(m_items.m_strPath,params);
+  if (params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS || params.GetContentType() == 6) // recently added musicvideos
+    return g_guiSettings.GetBool("mymusic.autoplaynextitem");
+  
+  return false;
+}
+
 CGUIViewStateWindowVideoPlaylist::CGUIViewStateWindowVideoPlaylist(const CFileItemList& items) : CGUIViewStateWindowVideo(items)
 {
   AddSortMethod(SORT_METHOD_NONE, 551, LABEL_MASKS("%L", "", "%L", ""));  // Label, "" | Label, empty
@@ -328,11 +382,6 @@ CGUIViewStateWindowVideoPlaylist::CGUIViewStateWindowVideoPlaylist(const CFileIt
 void CGUIViewStateWindowVideoPlaylist::SaveViewState()
 {
   SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_PLAYLIST);
-}
-
-int CGUIViewStateWindowVideoPlaylist::GetPlaylist()
-{
-  return PLAYLIST_VIDEO;
 }
 
 bool CGUIViewStateWindowVideoPlaylist::HideExtensions()

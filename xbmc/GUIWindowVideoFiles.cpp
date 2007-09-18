@@ -270,7 +270,7 @@ bool CGUIWindowVideoFiles::OnClick(int iItem)
     info.strPath = "imdb.xml";
     info.strContent = "movies";
     info.strTitle = "IMDb";
-    OnInfo(iItem,info);
+    OnInfo(m_vecItems[iItem],info);
     return true;
   }
 
@@ -305,18 +305,16 @@ bool CGUIWindowVideoFiles::OnPlayMedia(int iItem)
   }
 }
 
-void CGUIWindowVideoFiles::OnInfo(int iItem, const SScraperInfo& info)
+void CGUIWindowVideoFiles::OnInfo(CFileItem* pItem, const SScraperInfo& info)
 {
-  if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return ;
+  if ( !pItem ) return ;
   bool bFolder(false);
   if (info.strContent.Equals("tvshows"))
   {
-    CGUIWindowVideoBase::OnInfo(iItem,info);
+    CGUIWindowVideoBase::OnInfo(pItem,info);
     return;
   }
   CStdString strFolder = "";
-  int iSelectedItem = m_viewControl.GetSelectedItem();
-  CFileItem* pItem = m_vecItems[iItem];
   CStdString strFile = pItem->m_strPath;
   if (pItem->m_bIsFolder && pItem->IsParentFolder()) return ;
   if (pItem->m_bIsShareOrDrive) // oh no u don't
@@ -378,7 +376,6 @@ void CGUIWindowVideoFiles::OnInfo(int iItem, const SScraperInfo& info)
       if (info.strContent.Equals("movies"))
         CGUIDialogOK::ShowAndGetInput(13346,20349,20022,20022);
 
-      m_viewControl.SetSelectedItem(iSelectedItem);
       return ;
     }
   }
@@ -578,6 +575,8 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
         int infoString = 13346;
         if (info.strContent.Equals("tvshows"))
           infoString = item->m_bIsFolder ? 20351 : 20352;
+        if (info.strContent.Equals("musicvideos"))
+          infoString = 20393;
 
         if (item->m_bIsFolder)
         {
@@ -591,25 +590,30 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
 
             CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
             if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
-              buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
+              if (!item->IsPlayList())
+                buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
           }
           else
           { // scraper found - allow to add to library, scan for new content, or set different type of content
-            buttons.Add(CONTEXT_BUTTON_INFO, infoString);
+            if (!info.strContent.Equals("musicvideos"))
+              buttons.Add(CONTEXT_BUTTON_INFO, infoString);
             CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
             if (pScanDlg && pScanDlg->IsScanning())
               buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
             else
             {
-              buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
-              buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
+              if (!item->IsPlayList())
+              {
+                buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
+                buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
+              }
             }
           }
         }
         else
         {
           // single file
-          if ((info.strContent.Equals("movies") && (iFound > 0 || m_database.HasMovieInfo(item->m_strPath))) || m_database.HasEpisodeInfo(item->m_strPath))
+          if ((info.strContent.Equals("movies") && (iFound > 0 || m_database.HasMovieInfo(item->m_strPath))) || m_database.HasEpisodeInfo(item->m_strPath) || info.strContent.Equals("musicvideos"))
             buttons.Add(CONTEXT_BUTTON_INFO, infoString);
           m_database.Open();
           if (!item->IsParentFolder())
@@ -656,10 +660,6 @@ bool CGUIWindowVideoFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button
 
   switch (button)
   {
-  case CONTEXT_BUTTON_RENAME:
-    OnRenameItem(itemNumber);
-    return true;
-
   case CONTEXT_BUTTON_SWITCH_MEDIA:
     CGUIDialogContextMenu::SwitchMedia("video", m_vecItems.m_strPath);
     return true;
