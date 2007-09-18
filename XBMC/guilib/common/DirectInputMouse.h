@@ -1,6 +1,8 @@
 #ifndef MOUSE_H
 #define MOUSE_H
 
+#include "..\system.h"  // only really need dinput.h
+
 #define MOUSE_DOUBLE_CLICK_LENGTH 500L
 #define MOUSE_ACTIVE_LENGTH   5000L
 

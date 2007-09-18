@@ -37,6 +37,8 @@
 #include "PartyModeManager.h"
 #include "PlaylistFactory.h"
 #include "GUIDialogMusicScan.h"
+#include "VideoDatabase.h"
+#include "GUIWindowVideoNav.h"
 
 using namespace DIRECTORY;
 using namespace PLAYLIST;
@@ -444,6 +446,8 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     // enable music info button on an album or on a song.
     if (item->IsAudio() && !item->IsPlayList() && !item->IsSmartPlayList())
       buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658);
+    else if (item->IsVideoDb()) // music video
+      buttons.Add(CONTEXT_BUTTON_INFO, 20393);
     else if (!inPlaylists && dir.HasAlbumInfo(item->m_strPath) && !dir.IsAllItem(item->m_strPath))
       buttons.Add(CONTEXT_BUTTON_INFO, 13351);
 
@@ -466,6 +470,21 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
       if (strcmp(g_settings.m_defaultMusicLibSource, ""))
         buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // clear default
     }
+
+    if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetArtist().size() > 0)
+    {
+      CVideoDatabase database;
+      database.Open();
+      if (database.GetMusicVideoArtistByName(item->GetMusicInfoTag()->GetArtist()) > -1)
+        buttons.Add(CONTEXT_BUTTON_GO_TO_ARTIST, 20400);
+    }
+    if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetArtist().size() > 0 && item->GetMusicInfoTag()->GetAlbum().size() > 0 && item->GetMusicInfoTag()->GetTitle().size() > 0)
+    {
+      CVideoDatabase database;
+      database.Open();
+      if (database.GetMusicVideoByArtistAndAlbumAndTitle(item->GetMusicInfoTag()->GetArtist(),item->GetMusicInfoTag()->GetAlbum(),item->GetMusicInfoTag()->GetTitle()) > -1)
+        buttons.Add(CONTEXT_BUTTON_PLAY_OTHER, 20401);
+    }
   }
   // noncontextual buttons
 
@@ -482,6 +501,20 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
   switch (button)
   {
+  case CONTEXT_BUTTON_INFO:
+    {
+      if (!m_vecItems[itemNumber]->IsVideoDb())
+        return CGUIWindowMusicBase::OnContextButton(itemNumber,button);
+      CGUIWindowVideoNav* pWindow = (CGUIWindowVideoNav*)m_gWindowManager.GetWindow(WINDOW_VIDEO_NAV);
+      if (pWindow)
+      {
+        SScraperInfo info;
+        pWindow->OnInfo(m_vecItems[itemNumber],info);
+        Update(m_vecItems.m_strPath);
+      }
+      return true;
+    }
+
   case CONTEXT_BUTTON_INFO_ALL:
     OnInfoAll(itemNumber);
     return true;
@@ -497,6 +530,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         scanner->StartScanning("");
       return true;
     }
+
   case CONTEXT_BUTTON_SET_DEFAULT:
     g_settings.m_defaultMusicLibSource = GetQuickpathName(m_vecItems[itemNumber]->m_strPath);
     g_settings.Save();
@@ -506,6 +540,26 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     g_settings.m_defaultMusicLibSource.Empty();
     g_settings.Save();
     return true;
+
+  case CONTEXT_BUTTON_GO_TO_ARTIST:
+    {
+      CStdString strPath;
+      CVideoDatabase database;
+      database.Open();
+      strPath.Format("videodb://3/4/%ld/",database.GetMusicVideoArtistByName(m_vecItems[itemNumber]->GetMusicInfoTag()->GetArtist()));
+      m_gWindowManager.ActivateWindow(WINDOW_VIDEO_NAV,strPath);
+      return true;
+    }
+
+  case CONTEXT_BUTTON_PLAY_OTHER:
+    {
+      CVideoDatabase database;
+      database.Open();
+      CVideoInfoTag details;
+      database.GetMusicVideoInfo("",details,database.GetMusicVideoByArtistAndAlbumAndTitle(m_vecItems[itemNumber]->GetMusicInfoTag()->GetArtist(),m_vecItems[itemNumber]->GetMusicInfoTag()->GetAlbum(),m_vecItems[itemNumber]->GetMusicInfoTag()->GetTitle()));
+      g_applicationMessenger.PlayFile(CFileItem(details));
+      return true;
+    }
   }
 
   return CGUIWindowMusicBase::OnContextButton(itemNumber, button);

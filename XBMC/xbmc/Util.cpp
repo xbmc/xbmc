@@ -39,6 +39,7 @@
 #include "ThumbnailCache.h"
 #include "FileSystem/ZipManager.h"
 #include "FileSystem/RarManager.h"
+#include "FileSystem/VideoDatabaseDirectory.h"
 #ifdef HAS_UPNP
 #include "FileSystem/UPnPDirectory.h"
 #endif
@@ -3587,6 +3588,20 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       return -3;
     }
     CFileItem item(strParameterCaseIntact, false);
+    if (item.IsVideoDb())
+    {
+      CVideoDatabase database;
+      database.Open();
+      DIRECTORY::VIDEODATABASEDIRECTORY::CQueryParams params;
+      DIRECTORY::CVideoDatabaseDirectory::GetQueryParams(item.m_strPath,params);
+      if (params.GetContentType() == VIDEODB_CONTENT_MOVIES)
+        database.GetMovieInfo("",*item.GetVideoInfoTag(),params.GetMovieId());
+      if (params.GetContentType() == VIDEODB_CONTENT_TVSHOWS)
+        database.GetEpisodeInfo("",*item.GetVideoInfoTag(),params.GetEpisodeId());
+      if (params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS)
+        database.GetMusicVideoInfo("",*item.GetVideoInfoTag(),params.GetMVideoId());
+      item.m_strPath = item.GetVideoInfoTag()->m_strFileNameAndPath;
+    }
     if (!g_application.PlayMedia(item, item.IsAudio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO))
     {
       CLog::Log(LOGERROR, "XBMC.PlayMedia could not play media: %s", strParameterCaseIntact.c_str());
@@ -3706,12 +3721,16 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         g_application.m_pPlayer->Record(!g_application.m_pPlayer->IsRecording());
       }
     }
-    else if (parameter.Equals("partymode"))
+    else if (parameter.Left(9).Equals("partymode"))
     {
+      bool bVideo=false;
+      if (parameter.size() > 9)
+        if (parameter.Mid(10).Equals("video)"))
+          bVideo = true;
       if (g_partyModeManager.IsEnabled())
         g_partyModeManager.Disable();
       else
-        g_partyModeManager.Enable();
+        g_partyModeManager.Enable(bVideo);
     }
     else if (parameter.Equals("random"))
     {
@@ -4363,16 +4382,24 @@ CStdString CUtil::TranslateSpecialSource(const CStdString &strSpecial)
 
 CStdString CUtil::MusicPlaylistsLocation()
 {
+  std::vector<CStdString> vec;
   CStdString strReturn;
   CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"), "music", strReturn);
-  return strReturn;
+  vec.push_back(strReturn);
+  CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"), "mixed", strReturn);
+  vec.push_back(strReturn);
+  return DIRECTORY::CMultiPathDirectory::ConstructMultiPath(vec);;
 }
 
 CStdString CUtil::VideoPlaylistsLocation()
 {
+  std::vector<CStdString> vec;
   CStdString strReturn;
   CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"), "video", strReturn);
-  return strReturn;
+  vec.push_back(strReturn);
+  CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"), "mixed", strReturn);
+  vec.push_back(strReturn);
+  return DIRECTORY::CMultiPathDirectory::ConstructMultiPath(vec);;
 }
 
 void CUtil::DeleteMusicDatabaseDirectoryCache()

@@ -766,6 +766,27 @@
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(51) + container.content(episodes)</visible>
 		</control>
+		<control type="label">
+			<posx>680</posx>
+			<posy>505</posy>
+			<width>420</width>
+			<height>22</height>
+			<font>special13</font>
+			<align>right</align>
+			<label>$INFO[ListItem.Duration,$LOCALIZE[2050] ]</label>
+			<include>contentpanelslide</include>
+			<visible>Control.IsVisible(51) + container.content(musicvideos)</visible>
+		</control>
+		<control type="label">
+			<posx>200</posx>
+			<posy>505</posy>
+			<width>420</width>
+			<height>22</height>
+			<font>special13</font>
+			<label>$INFO[ListItem.Artist]</label>
+			<include>contentpanelslide</include>
+			<visible>Control.IsVisible(51) + container.content(musicvideos)</visible>
+		</control>
 		<control type="textbox">
 			<posx>200</posx>
 			<posy>373</posy>

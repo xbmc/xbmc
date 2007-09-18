@@ -14,6 +14,7 @@ public:
 
   virtual void ClearFileItems();
   virtual void OnFinalizeFileItems(CFileItemList &items);
+  virtual void OnInfo(CFileItem* pItem, const SScraperInfo&info);
 protected:
   virtual void OnItemLoaded(CFileItem* pItem) {};
   void OnLinkMovieToTvShow(int itemnumber);
@@ -21,7 +22,6 @@ protected:
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual void UpdateButtons();
   virtual void DoSearch(const CStdString& strSearch, CFileItemList& items);
-  virtual void OnInfo(int iItem, const SScraperInfo&info);
   virtual void PlayItem(int iItem);
   virtual void OnDeleteItem(int iItem);
   virtual void OnWindowLoaded();
