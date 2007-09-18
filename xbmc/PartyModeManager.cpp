@@ -24,6 +24,7 @@
 #include "Application.h"
 #include "playlistplayer.h"
 #include "MusicDatabase.h"
+#include "VideoDatabase.h"
 #include "Util.h"
 #include "FileItem.h"
 #include "GUIWindowMusicPlayList.h"
@@ -39,7 +40,8 @@ CPartyModeManager g_partyModeManager;
 CPartyModeManager::CPartyModeManager(void)
 {
   m_bEnabled = false;
-  m_strCurrentFilter = "";
+  m_strCurrentFilterMusic.Empty();
+  m_strCurrentFilterVideo.Empty();
   ClearState();
 }
 
@@ -47,7 +49,7 @@ CPartyModeManager::~CPartyModeManager(void)
 {
 }
 //#define NEW_PARTY_MODE_METHOD 1
-bool CPartyModeManager::Enable()
+bool CPartyModeManager::Enable(bool bVideo /* = false */)
 {
   // Filter using our PartyMode xml file
   CSmartPlaylist playlist;
@@ -59,35 +61,79 @@ bool CPartyModeManager::Enable()
   pDialog->SetLine(1, "");
   pDialog->SetLine(2, "");
   pDialog->StartModal();
-  partyModePath = g_settings.GetUserDataItem("partymode.xml");
-  if (playlist.Load(partyModePath))
-    m_strCurrentFilter = playlist.GetWhereClause();
+  if (bVideo)
+    partyModePath = g_settings.GetUserDataItem("PartyMode-Video.xsp");
   else
-    m_strCurrentFilter.Empty();
-  CLog::Log(LOGINFO, "PARTY MODE MANAGER: Registering filter:[%s]", m_strCurrentFilter.c_str());
+    partyModePath = g_settings.GetUserDataItem("PartyMode.xsp");
+  if (playlist.Load(partyModePath))
+  {
+    m_type = playlist.GetType();
+    if (m_type.Equals("mixed"))
+      playlist.SetType("music");
+    m_strCurrentFilterMusic = playlist.GetWhereClause();
+    if (m_type.Equals("mixed"))
+      playlist.SetType("video");
+    m_strCurrentFilterVideo = playlist.GetWhereClause();
+    playlist.SetType(m_type);
+  }
+  else
+  {
+    m_strCurrentFilterMusic.Empty();
+    m_strCurrentFilterVideo.Empty();
+  }
 
   ClearState();
-  CMusicDatabase musicdatabase;
   DWORD time = timeGetTime();
-  vector<long> songIDs;
-  if (musicdatabase.Open())
+  vector<pair<int,long> > songIDs;
+  if (m_type.Equals("music") || m_type.Equals("mixed"))
   {
-    m_iMatchingSongs = (int)musicdatabase.GetSongIDs(m_strCurrentFilter, songIDs);
-    if (m_iMatchingSongs < 1)
+    CMusicDatabase musicdatabase;
+    if (musicdatabase.Open())
+    {
+      CLog::Log(LOGINFO, "PARTY MODE MANAGER: Registering filter:[%s]", m_strCurrentFilterMusic.c_str());
+      m_iMatchingSongs = (int)musicdatabase.GetSongIDs(m_strCurrentFilterMusic, songIDs);
+      if (m_iMatchingSongs < 1 && m_type.Equals("music"))
+      {
+        pDialog->Close();
+        musicdatabase.Close();
+        OnError(16031, (CStdString)"Party mode found no matching songs. Aborting.");
+        return false;
+      }
+    }
+    else
     {
       pDialog->Close();
-      musicdatabase.Close();
-      OnError(16031, (CStdString)"Party mode found no matching songs. Aborting.");
+      OnError(16033, (CStdString)"Party mode could not open database. Aborting.");
       return false;
     }
+    musicdatabase.Close();
   }
-  else
+  if (m_type.Equals("video") || m_type.Equals("mixed"))
   {
-    pDialog->Close();
-    OnError(16033, (CStdString)"Party mode could not open database. Aborting.");
-    return false;
+    vector<pair<int,long> > songIDs2;
+    CVideoDatabase database;
+    if (database.Open())
+    {
+      CLog::Log(LOGINFO, "PARTY MODE MANAGER: Registering filter:[%s]", m_strCurrentFilterVideo.c_str());
+      m_iMatchingSongs += (int)database.GetMusicVideoIDs(m_strCurrentFilterVideo, songIDs2);
+      if (m_iMatchingSongs < 1)
+      {
+        pDialog->Close();
+        database.Close();
+        OnError(16031, (CStdString)"Party mode found no matching songs. Aborting.");
+        return false;
+      }
+    }
+    else
+    {
+      pDialog->Close();
+      OnError(16033, (CStdString)"Party mode could not open database. Aborting.");
+      return false;
+    }
+    database.Close();
+    songIDs.insert(songIDs.end(),songIDs2.begin(),songIDs2.end());
   }
-  musicdatabase.Close();
+  m_bIsVideo = bVideo;
 
   // calculate history size
   if (m_iMatchingSongs < 50)
@@ -100,10 +146,13 @@ bool CPartyModeManager::Enable()
   CLog::Log(LOGINFO,"PARTY MODE MANAGER: Matching songs = %i, History size = %i", m_iMatchingSongs, m_songsInHistory);
   CLog::Log(LOGINFO,"PARTY MODE MANAGER: Party mode enabled!");
 
-  // setup the playlist
-  g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
-  g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, false);
-  g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, PLAYLIST::REPEAT_NONE);
+  int iPlaylist = PLAYLIST_MUSIC;
+  if (m_bIsVideo)
+    iPlaylist = PLAYLIST_VIDEO;
+
+  g_playlistPlayer.ClearPlaylist(iPlaylist);
+  g_playlistPlayer.SetShuffle(iPlaylist, false);
+  g_playlistPlayer.SetRepeat(iPlaylist, PLAYLIST::REPEAT_NONE);
 
   pDialog->SetLine(0,20124);
   pDialog->Progress();
@@ -113,15 +162,19 @@ bool CPartyModeManager::Enable()
     pDialog->Close();
     return false;
   }
+
   CLog::Log(LOGDEBUG, __FUNCTION__" time for song fetch: %i", timeGetTime() - time);
   // start playing
-  g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+  g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
   Play(0);
 
   pDialog->Close();
   // open now playing window
-  if (m_gWindowManager.GetActiveWindow() != WINDOW_MUSIC_PLAYLIST)
-    m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
+  if (m_type.Equals("music"))
+  {
+    if (m_gWindowManager.GetActiveWindow() != WINDOW_MUSIC_PLAYLIST)
+      m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
+  }
 
   // done
   m_bEnabled = true;
@@ -160,7 +213,10 @@ void CPartyModeManager::AddUserSongs(CPlayList& tempList, bool bPlay /* = false 
   int iNewUserSongs = tempList.size();
   CLog::Log(LOGINFO,"PARTY MODE MANAGER: Adding %i user selected songs at %i", iNewUserSongs, iAddAt);
 
-  g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Insert(tempList, iAddAt);
+  int iPlaylist = PLAYLIST_MUSIC;
+  if (m_bIsVideo)
+    iPlaylist = PLAYLIST_VIDEO;
+  g_playlistPlayer.GetPlaylist(iPlaylist).Insert(tempList, iAddAt);
 
   // update last user added song location
   if (m_iLastUserSong < 0)
@@ -186,7 +242,11 @@ void CPartyModeManager::AddUserSongs(CFileItemList& tempList, bool bPlay /* = fa
   int iNewUserSongs = tempList.Size();
   CLog::Log(LOGINFO,"PARTY MODE MANAGER: Adding %i user selected songs at %i", iNewUserSongs, iAddAt);
 
-  g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Insert(tempList, iAddAt);
+  int iPlaylist = PLAYLIST_MUSIC;
+  if (m_bIsVideo)
+    iPlaylist = PLAYLIST_VIDEO;
+
+  g_playlistPlayer.GetPlaylist(iPlaylist).Insert(tempList, iAddAt);
 
   // update last user added song location
   if (m_iLastUserSong < 0)
@@ -208,15 +268,40 @@ void CPartyModeManager::Process()
 
 bool CPartyModeManager::AddRandomSongs(int iSongs /* = 0 */)
 {
-  CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
+  int iPlaylist = PLAYLIST_MUSIC;
+  if (m_bIsVideo)
+    iPlaylist = PLAYLIST_VIDEO;
+
+  CPlayList& playlist = g_playlistPlayer.GetPlaylist(iPlaylist);
   int iMissingSongs = QUEUE_DEPTH - playlist.size();
   if (iSongs <= 0)
     iSongs = iMissingSongs;
-  if (iSongs > 0)
+  // distribute between types if mixed
+  int iSongsToAdd=iSongs;
+  int iVidsToAdd=iSongs;
+  if (m_type.Equals("mixed"))
   {
-    // add songs to fill queue
-    CMusicDatabase musicdatabase;
-    if (musicdatabase.Open())
+    if (iSongs == 1)
+    {
+      if (rand() % 10 < 7) // 70 % chance of grabbing a song
+        iVidsToAdd = 0;
+      else
+        iSongsToAdd = 0;
+    }
+    if (iSongs > 1) // grab 70 % songs, 30 % mvids
+    {
+      iSongsToAdd = (int).7f*iSongs;
+      iVidsToAdd = (int).3f*iSongs;
+      while (iSongsToAdd+iVidsToAdd < iSongs) // correct any rounding by adding songs
+        iSongsToAdd++;
+    }
+  }
+
+  // add songs to fill queue
+  if (m_type.Equals("music") || m_type.Equals("mixed"))
+  {
+    CMusicDatabase database;
+    if (database.Open())
     {
       // Method:
       // 1. Grab a random entry from the database using a where clause
@@ -229,16 +314,15 @@ bool CPartyModeManager::AddRandomSongs(int iSongs /* = 0 */)
       // to use the technique in AddInitialSongs.  As it's unlikely that we'll require
       // more than 1 song at a time here, this method is faster.
       bool error(false);
-      musicdatabase.BeginTransaction();
-      for (int i = 0; i < iSongs; i++)
+      for (int i = 0; i < iSongsToAdd; i++)
       {
-        CStdString whereClause = GetWhereClauseWithHistory();
+        pair<CStdString,CStdString> whereClause = GetWhereClauseWithHistory();
         CFileItem *item = new CFileItem;
         long songID;
-        if (musicdatabase.GetRandomSong(item, songID, GetWhereClauseWithHistory()))
+        if (database.GetRandomSong(item, songID, whereClause.first))
         { // success
           Add(item);
-          AddToHistory(songID);
+          AddToHistory(1,songID);
         }
         else
         {
@@ -247,11 +331,10 @@ bool CPartyModeManager::AddRandomSongs(int iSongs /* = 0 */)
           break;
         }
       }
-      musicdatabase.CommitTransaction();
 
       if (error)
       {
-        musicdatabase.Close();
+        database.Close();
         OnError(16034, (CStdString)"Cannot get songs from database. Aborting.");
         return false;
       }
@@ -261,16 +344,68 @@ bool CPartyModeManager::AddRandomSongs(int iSongs /* = 0 */)
       OnError(16033, (CStdString)"Party mode could not open database. Aborting.");
       return false;
     }
-    musicdatabase.Close();
+    database.Close();
+  }
+  if (m_type.Equals("video") || m_type.Equals("mixed"))
+  {
+    CVideoDatabase database;
+    if (database.Open())
+    {
+      // Method:
+      // 1. Grab a random entry from the database using a where clause
+      // 2. Iterate on iSongs.
+
+      // Note: At present, this method is faster than the alternative, which is to grab
+      // all valid songids, then select a random number of them (as done in AddInitialSongs()).
+      // The reason for this is simply the number of songs we are requesting - we generally
+      // only want one here.  Any more than about 3 songs and it is more efficient
+      // to use the technique in AddInitialSongs.  As it's unlikely that we'll require
+      // more than 1 song at a time here, this method is faster.
+      bool error(false);
+      for (int i = 0; i < iVidsToAdd; i++)
+      {
+        pair<CStdString,CStdString> whereClause = GetWhereClauseWithHistory();
+        CFileItem *item = new CFileItem;
+        long songID;
+        if (database.GetRandomMusicVideo(item, songID, whereClause.second))
+        { // success
+          Add(item);
+          AddToHistory(2,songID);
+        }
+        else
+        {
+          delete item;
+          error = true;
+          break;
+        }
+      }
+
+      if (error)
+      {
+        database.Close();
+        OnError(16034, (CStdString)"Cannot get songs from database. Aborting.");
+        return false;
+      }
+    }
+    else
+    {
+      OnError(16033, (CStdString)"Party mode could not open database. Aborting.");
+      return false;
+    }
+    database.Close();
   }
   return true;
 }
 
 void CPartyModeManager::Add(CFileItem *pItem)
 {
+  int iPlaylist = PLAYLIST_MUSIC;
+  if (m_bIsVideo)
+    iPlaylist = PLAYLIST_VIDEO;
+
   CPlayList::CPlayListItem playlistItem;
   CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
-  CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
+  CPlayList& playlist = g_playlistPlayer.GetPlaylist(iPlaylist);
   playlist.Add(playlistItem);
   CLog::Log(LOGINFO,"PARTY MODE MANAGER: Adding randomly selected song at %i:[%s]", playlist.size() - 1, pItem->m_strPath.c_str());
   m_iMatchingSongsPicked++;
@@ -278,16 +413,20 @@ void CPartyModeManager::Add(CFileItem *pItem)
 
 bool CPartyModeManager::ReapSongs()
 {
-  CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
+  int iPlaylist = PLAYLIST_MUSIC;
+  if (m_bIsVideo)
+    iPlaylist = PLAYLIST_VIDEO;
+
+  CPlayList& playlist = g_playlistPlayer.GetPlaylist(iPlaylist);
 
   // reap any played songs
   int iCurrentSong = g_playlistPlayer.GetCurrentSong();
   int i=0;
-  while (i < g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size())
+  while (i < g_playlistPlayer.GetPlaylist(iPlaylist).size())
   {
     if (i < iCurrentSong)
     {
-      g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Remove(i);
+      g_playlistPlayer.GetPlaylist(iPlaylist).Remove(i);
       iCurrentSong--;
       if (i <= m_iLastUserSong)
         m_iLastUserSong--;
@@ -304,10 +443,14 @@ bool CPartyModeManager::MovePlaying()
 {
   // move current song to the top if its not there
   int iCurrentSong = g_playlistPlayer.GetCurrentSong();
+  int iPlaylist = PLAYLIST_MUSIC;
+  if (m_bIsVideo)
+    iPlaylist = PLAYLIST_VIDEO;
+
   if (iCurrentSong > 0)
   {
     CLog::Log(LOGINFO,"PARTY MODE MANAGER: Moving currently playing song from %i to 0", iCurrentSong);
-    CPlayList &playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
+    CPlayList &playlist = g_playlistPlayer.GetPlaylist(iPlaylist);
     CPlayList playlistTemp;
     playlistTemp.Add(playlist[iCurrentSong]);
     playlist.Remove(iCurrentSong);
@@ -407,9 +550,13 @@ void CPartyModeManager::UpdateStats()
   m_iRelaxedSongs = 0;  // unsupported at this stage
 }
 
-bool CPartyModeManager::AddInitialSongs(vector<long> &songIDs)
+bool CPartyModeManager::AddInitialSongs(vector<pair<int,long> > &songIDs)
 {
-  CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
+  int iPlaylist = PLAYLIST_MUSIC;
+  if (m_bIsVideo)
+    iPlaylist = PLAYLIST_VIDEO;
+
+  CPlayList& playlist = g_playlistPlayer.GetPlaylist(iPlaylist);
   int iMissingSongs = QUEUE_DEPTH - playlist.size();
   if (iMissingSongs > 0)
   {
@@ -417,84 +564,90 @@ bool CPartyModeManager::AddInitialSongs(vector<long> &songIDs)
     if (iMissingSongs > (int)songIDs.size())
       return false; // can't do it if we have less songs than we need
 
-    vector<long> chosenSongIDs;
+    vector<pair<int,long> > chosenSongIDs;
     GetRandomSelection(songIDs, iMissingSongs, chosenSongIDs);
-    // construct the where clause
-    CStdString sqlWhere = "where songview.idsong in (";
-    for (vector<long>::iterator it = chosenSongIDs.begin(); it != chosenSongIDs.end(); it++)
+    CStdString sqlWhereMusic = "where songview.idsong in (";
+    CStdString sqlWhereVideo = "where musicvideo.idmvideo in (";
+
+    for (vector<pair<int,long> >::iterator it = chosenSongIDs.begin(); it != chosenSongIDs.end(); it++)
     {
       CStdString song;
-      song.Format("%i,", *it);
-      sqlWhere += song;
+      song.Format("%i,", it->second);
+      if (it->first == 1)
+        sqlWhereMusic += song;
+      if (it->first == 2)
+        sqlWhereVideo += song;
     }
-    // replace the last comma with closing bracket
-    sqlWhere[sqlWhere.size() - 1] = ')';
-
     // add songs to fill queue
-    CMusicDatabase musicdatabase;
-    if (musicdatabase.Open())
+    CFileItemList items;
+
+    if (sqlWhereMusic.size() > 26)
     {
-      CFileItemList items;
-      //musicdatabase.BeginTransaction();
-      if (musicdatabase.GetSongsByWhere("", sqlWhere, items))
-      {
-        m_history = chosenSongIDs;
-    		items.Randomize(); //randomizing the initial list or they will be in database order
-        for (int i = 0; i < items.Size(); i++)
-        {
-          Add(items[i]);
-          // TODO: Allow "relaxed restrictions" later?
-        }
-      }
-      else
-      {
-        //musicdatabase.CommitTransaction();
-        musicdatabase.Close();
-        OnError(16034, (CStdString)"Cannot get songs from database. Aborting.");
-        return false;
-      }
-      //musicdatabase.CommitTransaction();
+      sqlWhereMusic[sqlWhereMusic.size() - 1] = ')'; // replace the last comma with closing bracket
+      CMusicDatabase database;
+      database.Open();
+      database.GetSongsByWhere("", sqlWhereMusic, items);
     }
-    else
+    if (sqlWhereVideo.size() > 30)
     {
-      OnError(16033, (CStdString)"Party mode could not open database. Aborting.");
-      return false;
+      sqlWhereVideo[sqlWhereVideo.size() - 1] = ')'; // replace the last comma with closing bracket
+      CVideoDatabase database;
+      database.Open();
+      database.GetMusicVideosByWhere("videodb://3/2/", sqlWhereVideo, items);
     }
-    musicdatabase.Close();
+
+    m_history = chosenSongIDs;
+    items.Randomize(); //randomizing the initial list or they will be in database order
+    for (int i = 0; i < items.Size(); i++)
+    {
+      Add(items[i]);
+      // TODO: Allow "relaxed restrictions" later?
+    }
   }
   return true;
 }
 
-CStdString CPartyModeManager::GetWhereClauseWithHistory() const
+pair<CStdString,CStdString> CPartyModeManager::GetWhereClauseWithHistory() const
 {
-  CStdString historyWhere;
+  CStdString historyWhereMusic;
+  CStdString historyWhereVideo;
   // now add this on to the normal where clause
   if (m_history.size())
   {
-    if (m_strCurrentFilter.IsEmpty())
-      historyWhere = "where songview.idsong not in (";
+    if (m_strCurrentFilterMusic.IsEmpty())
+      historyWhereMusic = "where songview.idsong not in (";
     else
-      historyWhere = m_strCurrentFilter + " and songview.idsong not in (";
+      historyWhereMusic = m_strCurrentFilterMusic + " and songview.idsong not in (";
+    if (m_strCurrentFilterVideo.IsEmpty())
+      historyWhereVideo = "where musicvideo.idmvideo not in (";
+    else
+      historyWhereVideo = m_strCurrentFilterVideo + " and musicvideo.idmvideo not in (";
+
     for (unsigned int i = 0; i < m_history.size(); i++)
     {
       CStdString number;
-      number.Format("%i,", m_history[i]);
-      historyWhere += number;
+      number.Format("%i,", m_history[i].second);
+      if (m_history[i].first == 1)
+        historyWhereMusic += number;
+      if (m_history[i].first == 2)
+        historyWhereVideo += number;
     }
-    historyWhere.TrimRight(",");
-    historyWhere += ")";
+    historyWhereMusic.TrimRight(",");
+    historyWhereMusic += ")";
+    historyWhereVideo.TrimRight(",");
+    historyWhereVideo += ")";
   }
-  return historyWhere;
+  return make_pair(historyWhereMusic,historyWhereVideo);
 }
 
-void CPartyModeManager::AddToHistory(long songID)
+void CPartyModeManager::AddToHistory(int type, long songID)
 {
-  while (m_history.size() >= m_songsInHistory)
+  while (m_history.size() >= m_songsInHistory && m_songsInHistory)
     m_history.erase(m_history.begin());
-  m_history.push_back(songID);
+  m_history.push_back(make_pair<int,long>(type,songID));
 }
 
-void CPartyModeManager::GetRandomSelection(vector<long> &in, unsigned int number, vector<long> &out)
+void CPartyModeManager::GetRandomSelection(vector<pair<int,long> >& in, unsigned int number, vector<pair<int,long> >& out)
 {
   // only works if we have < 32768 in the in vector
   srand(timeGetTime());

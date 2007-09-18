@@ -241,13 +241,41 @@ namespace VIDEO
         CUtil::GetParentPath(item.m_strPath,items.m_strPath);
       }
     }
+    else if (m_info.strContent.Equals("musicvideos"))
+    {
+      CDirectory::GetDirectory(strDirectory,items,g_stSettings.m_videoExtensions);
+      int numFilesInFolder = GetPathHash(items, hash);
+
+      if (!m_database.GetPathHash(strDirectory, dbHash) || dbHash != hash)
+      { // path has changed - rescan
+        if (dbHash.IsEmpty())
+          CLog::Log(LOGDEBUG, __FUNCTION__" Scanning dir '%s' as not in the database", strDirectory.c_str());
+        else
+          CLog::Log(LOGDEBUG, __FUNCTION__" Rescanning dir '%s' due to change", strDirectory.c_str());
+      }
+      else
+      {
+        CLog::Log(LOGDEBUG, __FUNCTION__" Skipping dir '%s' due to no change", strDirectory.c_str());
+        m_currentItem += numFilesInFolder;
+
+        // notify our observer of our progress
+        if (m_pObserver)
+        {
+          if (m_itemCount>0)
+            m_pObserver->OnSetProgress(m_currentItem, m_itemCount);
+          m_pObserver->OnDirectoryScanned(strDirectory);
+        }
+        bSkip = true;
+      }
+    }
+    
     if (!bSkip)
     {
       if (m_pObserver)
         m_pObserver->OnStateChanged(FETCHING_VIDEO_INFO);
 
       RetrieveVideoInfo(items,settings.parent_name_root,m_info);
-      if (m_info.strContent.Equals("movies"))
+      if (m_info.strContent.Equals("movies") || m_info.strContent.Equals("musicvideos"))
         m_database.SetPathHash(strDirectory, hash);
     }
     if (m_pObserver)
@@ -322,7 +350,7 @@ namespace VIDEO
 
       IMDB.SetScraperInfo(info2);
 
-      if (info.strContent.Equals("movies"))
+      if (info.strContent.Equals("movies") || info.strContent.Equals("musicvideos"))
       {
         if (m_pObserver)
         {
@@ -406,7 +434,7 @@ namespace VIDEO
         {
           if (!bDirNames && !info.strContent.Equals("tvshows"))
           {
-            if(pItem->IsLabelPreformated())
+            if (pItem->IsLabelPreformated())
               strMovieName = pItem->GetLabel();
             else
             {
@@ -428,6 +456,8 @@ namespace VIDEO
               else
                 iString = 20361;
             }
+            if (info.strContent.Equals("musicvideos"))
+              iString = 20394;
             m_dlgProgress->SetHeading(iString);
             m_dlgProgress->SetLine(0, pItem->GetLabel());
             m_dlgProgress->SetLine(2,"");
@@ -451,7 +481,7 @@ namespace VIDEO
             if (!m_database.HasMovieInfo(pItem->m_strPath))
             {
               // handle .nfo files
-              CStdString strNfoFile = GetnfoFile(pItem);
+              CStdString strNfoFile = GetnfoFile(pItem,bDirNames);
               if (!strNfoFile.IsEmpty())
               {
                 CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfoFile.c_str());
@@ -486,6 +516,36 @@ namespace VIDEO
             }
             else
               continue;
+          }
+          else if (info.strContent.Equals("musicvideos"))
+          {
+            if (!m_database.HasMusicVideoInfo(pItem->m_strPath))
+            {
+              // handle .nfo files
+              CStdString strNfoFile = GetnfoFile(pItem,bDirNames);
+              if (!strNfoFile.IsEmpty())
+              {
+                CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfoFile.c_str());
+                CNfoFile nfoReader(info.strContent);
+                if (nfoReader.Create(strNfoFile) == S_OK)
+                {
+                  if (nfoReader.m_strScraper == "NFO")
+                  {
+                    CLog::Log(LOGDEBUG, __FUNCTION__" Got details from nfo");
+                    CVideoInfoTag movieDetails;
+                    nfoReader.GetDetails(movieDetails);
+                    AddMovieAndGetThumb(pItem, "musicvideos", movieDetails, -1, false, m_dlgProgress);
+                  }
+                }
+              }
+              else // Scrape based on filename
+              {
+                CVideoInfoTag movieDetails;
+                if (ScrapeFilename(pItem->m_strPath,info,movieDetails))
+                  AddMovieAndGetThumb(pItem, "musicvideos", movieDetails, -1, false, m_dlgProgress);
+              }
+            }
+            continue;
           }
 
           IMDB_MOVIELIST movielist;
@@ -669,6 +729,10 @@ namespace VIDEO
         lResult=m_database.SetDetailsForEpisode(pItem->m_strPath,movieDetails,idShow, lEpisodeId);
       }
     }
+    else if (content.Equals("musicvideos"))
+    {
+      m_database.SetDetailsForMusicVideo(pItem->m_strPath, movieDetails);
+    }
     // get & save thumbnail
     CStdString strThumb = "";
     CStdString strImage = movieDetails.m_strPictureURL.GetFirstThumb().m_url;
@@ -784,16 +848,78 @@ namespace VIDEO
     m_database.Close();
   }
 
-  CStdString CVideoInfoScanner::GetnfoFile(CFileItem *item)
+  CStdString CVideoInfoScanner::GetnfoFile(CFileItem *item, bool bGrabAny)
   {
     CStdString nfoFile;
     // Find a matching .nfo file
-    if (item->m_bIsFolder)
+    if (!item->m_bIsFolder)
+    {
+      // file
+      CStdString strExtension;
+      CUtil::GetExtension(item->m_strPath, strExtension);
+
+      if (CUtil::IsInRAR(item->m_strPath)) // we have a rarred item - we want to check outside the rars
+      {
+        CFileItem item2(*item);
+        CURL url(item->m_strPath);
+        CStdString strPath;
+        CUtil::GetDirectory(url.GetHostName(),strPath);
+        CUtil::AddFileToFolder(strPath,CUtil::GetFileName(item->m_strPath),item2.m_strPath);
+        return GetnfoFile(&item2);
+      }
+
+      // already an .nfo file?
+      if ( strcmpi(strExtension.c_str(), ".nfo") == 0 )
+        nfoFile = item->m_strPath;
+      // no, create .nfo file
+      else
+        CUtil::ReplaceExtension(item->m_strPath, ".nfo", nfoFile);
+
+      // test file existance
+      if (!nfoFile.IsEmpty() && !CFile::Exists(nfoFile))
+        nfoFile.Empty();
+
+      // try looking for .nfo file for a stacked item
+      if (item->IsStack())
+      {
+        // first try .nfo file matching first file in stack
+        CStackDirectory dir;
+        CStdString firstFile = dir.GetFirstStackedFile(item->m_strPath);
+        CFileItem item2;
+        item2.m_strPath = firstFile;
+        nfoFile = GetnfoFile(&item2,bGrabAny);
+        // else try .nfo file matching stacked title
+        if (nfoFile.IsEmpty())
+        {
+          CStdString stackedTitlePath = dir.GetStackedTitlePath(item->m_strPath);
+          item2.m_strPath = stackedTitlePath;
+          nfoFile = GetnfoFile(&item2,bGrabAny);
+        }
+      }
+
+      if (nfoFile.IsEmpty()) // final attempt - strip off any cd1 folders
+      {
+        CStdString strPath;
+        CUtil::GetDirectory(item->m_strPath,strPath);
+        CUtil::RemoveSlashAtEnd(strPath); // need no slash for the check that follows
+        CFileItem item2;
+        if (strPath.Mid(strPath.size()-3).Equals("cd1"))
+        {
+          strPath = strPath.Mid(0,strPath.size()-3);
+          CUtil::AddFileToFolder(strPath,CUtil::GetFileName(item->m_strPath),item2.m_strPath);
+          return GetnfoFile(&item2,bGrabAny);
+        }
+      }
+    }
+    if (item->m_bIsFolder || bGrabAny && nfoFile.IsEmpty())
     {
       // see if there is a unique nfo file in this folder, and if so, use that
       CFileItemList items;
       CDirectory dir;
-      if (dir.GetDirectory(item->m_strPath, items, ".nfo") && items.Size())
+      CStdString strPath = item->m_strPath;
+      if (!item->m_bIsFolder)
+        CUtil::GetDirectory(item->m_strPath,strPath);
+      if (dir.GetDirectory(strPath, items, ".nfo") && items.Size())
       {
         int numNFO = -1;
         for (int i = 0; i < items.Size(); i++)
@@ -813,64 +939,7 @@ namespace VIDEO
           return items[numNFO]->m_strPath;
       }
     }
-
-    // file
-    CStdString strExtension;
-    CUtil::GetExtension(item->m_strPath, strExtension);
-
-    if (CUtil::IsInRAR(item->m_strPath)) // we have a rarred item - we want to check outside the rars
-    {
-      CFileItem item2(*item);
-      CURL url(item->m_strPath);
-      CStdString strPath;
-      CUtil::GetDirectory(url.GetHostName(),strPath);
-      CUtil::AddFileToFolder(strPath,CUtil::GetFileName(item->m_strPath),item2.m_strPath);
-      return GetnfoFile(&item2);
-    }
-
-    // already an .nfo file?
-    if ( strcmpi(strExtension.c_str(), ".nfo") == 0 )
-      nfoFile = item->m_strPath;
-    // no, create .nfo file
-    else
-      CUtil::ReplaceExtension(item->m_strPath, ".nfo", nfoFile);
-
-    // test file existance
-    if (!nfoFile.IsEmpty() && !CFile::Exists(nfoFile))
-      nfoFile.Empty();
-
-    // try looking for .nfo file for a stacked item
-    if (item->IsStack())
-    {
-      // first try .nfo file matching first file in stack
-      CStackDirectory dir;
-      CStdString firstFile = dir.GetFirstStackedFile(item->m_strPath);
-      CFileItem item2;
-      item2.m_strPath = firstFile;
-      nfoFile = GetnfoFile(&item2);
-      // else try .nfo file matching stacked title
-      if (nfoFile.IsEmpty())
-      {
-        CStdString stackedTitlePath = dir.GetStackedTitlePath(item->m_strPath);
-        item2.m_strPath = stackedTitlePath;
-        nfoFile = GetnfoFile(&item2);
-      }
-    }
-
-    if (nfoFile.IsEmpty()) // final attempt - strip off any cd1 folders
-    {
-      CStdString strPath;
-      CUtil::GetDirectory(item->m_strPath,strPath);
-      CUtil::RemoveSlashAtEnd(strPath); // need no slash for the check that follows
-      CFileItem item2;
-      if (strPath.Mid(strPath.size()-3).Equals("cd1"))
-      {
-        strPath = strPath.Mid(0,strPath.size()-3);
-        CUtil::AddFileToFolder(strPath,CUtil::GetFileName(item->m_strPath),item2.m_strPath);
-        return GetnfoFile(&item2);
-      }
-    }
-
+    
     return nfoFile;
   }
 
@@ -958,5 +1027,25 @@ namespace VIDEO
       }
     }
     return true;
+  }
+
+  bool CVideoInfoScanner::ScrapeFilename(const CStdString& strFileName, const SScraperInfo& info, CVideoInfoTag& details)
+  {
+    CScraperParser parser;
+    if (!parser.Load("q:\\system\\scrapers\\video\\"+info.strPath))
+      return false;
+    parser.m_param[0] = CUtil::GetFileName(strFileName);
+    CUtil::RemoveExtension(parser.m_param[0]);
+    parser.m_param[0].Replace("_"," ");
+    CStdString strResult = parser.Parse("FileNameScrape");
+    TiXmlDocument doc;
+    doc.Parse(strResult.c_str());
+    if (doc.RootElement())
+    {
+      CNfoFile file(info.strContent);
+      if (file.GetDetails(details,strResult.c_str()))
+        return true;
+    }
+    return false;
   }
 }

@@ -162,7 +162,7 @@ CSettings::CSettings(void)
 
   g_stSettings.m_pictureExtensions = ".png|.jpg|.jpeg|.bmp|.gif|.ico|.tif|.tiff|.tga|.pcx|.cbz|.zip|.cbr|.rar|.m3u";
   g_stSettings.m_musicExtensions = ".nsv|.m4a|.flac|.aac|.strm|.pls|.rm|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u|.mod|.amf|.669|.dmf|.dsm|.far|.gdm|.imf|.it|.m15|.med|.okt|.s3m|.stm|.sfx|.ult|.uni|.xm|.sid|.ac3|.dts|.cue|.aif|.aiff|.wpl|.ape|.mac|.mpc|.mp+|.mpp|.shn|.zip|.rar|.wv|.nsf|.spc|.gym|.adplug|.adx|.dsp|.adp|.ymf|.ast|.afc|.hps|.xsp|.xwav|.waa|.wvs|.wam|.gcm|.idsp|.mpdsp|.mss|.spt|.rsd|.mid|.kar";
-  g_stSettings.m_videoExtensions = ".m4v|.3gp|.nsv|.ts|.ty|.strm|.pls|.rm|.rmvb|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.nrg|.img|.iso|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mp4|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli|.flv|.rar|.001|.wpl|.zip|.vdr|.dvr-ms";
+  g_stSettings.m_videoExtensions = ".m4v|.3gp|.nsv|.ts|.ty|.strm|.pls|.rm|.rmvb|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.nrg|.img|.iso|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mp4|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli|.flv|.rar|.001|.wpl|.zip|.vdr|.dvr-ms|.xsp";
   // internal music extensions
   g_stSettings.m_musicExtensions += "|.sidstream|.oggstream|.nsfstream|.cdda";
 
@@ -268,9 +268,11 @@ CSettings::CSettings(void)
   g_advancedSettings.m_strMusicLibraryAlbumFormatRight = "";
   g_advancedSettings.m_prioritiseAPEv2tags = false;
   g_advancedSettings.m_musicItemSeparator = " / ";
+  g_advancedSettings.m_videoItemSeparator = " / ";
 
   g_advancedSettings.m_bVideoLibraryHideAllItems = false;
   g_advancedSettings.m_bVideoLibraryAllItemsOnBottom = false;
+  g_advancedSettings.m_bVideoLibraryHideRecentlyAddedItems = false;
 
   g_advancedSettings.m_bUseEvilB = true;
 
@@ -1003,6 +1005,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetViewState(pElement, "videonavepisodes", g_stSettings.m_viewStateVideoNavEpisodes);
     GetViewState(pElement, "videonavtvshows", g_stSettings.m_viewStateVideoNavTvShows);
     GetViewState(pElement, "videonavseasons", g_stSettings.m_viewStateVideoNavSeasons);
+    GetViewState(pElement, "videonavmusicvideos", g_stSettings.m_viewStateVideoNavMusicVideos);
   }
 
   // general settings
@@ -1142,6 +1145,8 @@ void CSettings::LoadAdvancedSettings()
   {
     XMLUtils::GetBoolean(pElement, "hideallitems", g_advancedSettings.m_bVideoLibraryHideAllItems);
     XMLUtils::GetBoolean(pElement, "allitemsonbottom", g_advancedSettings.m_bVideoLibraryAllItemsOnBottom);
+    XMLUtils::GetBoolean(pElement, "hiderecentlyaddeditems", g_advancedSettings.m_bVideoLibraryHideRecentlyAddedItems);
+    GetString(pElement, "itemseparator", g_advancedSettings.m_videoItemSeparator, " / ");
   }
 
   pElement = pRootElement->FirstChildElement("slideshow");
@@ -1698,6 +1703,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
     SetViewState(pNode, "videonavepisodes", g_stSettings.m_viewStateVideoNavEpisodes);
     SetViewState(pNode, "videonavseasons", g_stSettings.m_viewStateVideoNavSeasons);
     SetViewState(pNode, "videonavtvshows", g_stSettings.m_viewStateVideoNavTvShows);
+    SetViewState(pNode, "videonavmusicvideos", g_stSettings.m_viewStateVideoNavMusicVideos);
   }
 
   // general settings
@@ -2556,29 +2562,21 @@ void CSettings::ResetSkinSettings()
 void CSettings::LoadUserFolderLayout()
 {
   // check them all
-  if (g_guiSettings.GetString("system.playlistspath") == "set default")
+  CStdString strDir = g_guiSettings.GetString("system.playlistspath");
+  if (strDir == "set default")
   {
-    CStdString strDir;
-    //CUtil::AddFileToFolder(GetUserDataFolder(), "playlists", strDir);
     CUtil::AddFileToFolder(GetProfileUserDataFolder(), "playlists", strDir);
     CUtil::AddSlashAtEnd(strDir);
     g_guiSettings.SetString("system.playlistspath",strDir.c_str());
-    CDirectory::Create(strDir);
-    CStdString strDir2;
-    CUtil::AddFileToFolder(strDir,"music",strDir2);
-      CDirectory::Create(strDir2);
-    CUtil::AddFileToFolder(strDir,"video",strDir2);
-      CDirectory::Create(strDir2);
   }
-  else
-  {
-    CDirectory::Create(g_guiSettings.GetString("system.playlistspath"));
-    CStdString strDir2;
-    CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"),"music",strDir2);
-    CDirectory::Create(strDir2);
-    CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"),"video",strDir2);
-    CDirectory::Create(strDir2);
-  }
+  CDirectory::Create(strDir);
+  CStdString strDir2;
+  CUtil::AddFileToFolder(strDir,"music",strDir2);
+  CDirectory::Create(strDir2);
+  CUtil::AddFileToFolder(strDir,"video",strDir2);
+  CDirectory::Create(strDir2);
+  CUtil::AddFileToFolder(strDir,"mixed",strDir2);
+  CDirectory::Create(strDir2);
 }
 
 CStdString CSettings::GetProfileUserDataFolder() const
