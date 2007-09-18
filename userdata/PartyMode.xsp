@@ -1,4 +1,4 @@
-<smartplaylist>
+<smartplaylist type="music">
     <name>Party Mode</name>
     <match>all</match>
     <!-- <rule field="genre" operator="contains">Rock</rule> -->

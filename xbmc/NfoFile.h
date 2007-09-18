@@ -18,7 +18,7 @@ public:
   virtual ~CNfoFile();
 
   HRESULT Create(const CStdString&);
-  bool GetDetails(CVideoInfoTag &details);
+  bool GetDetails(CVideoInfoTag &details,const char* document=NULL);
 
   CStdString m_strScraper;
   CStdString m_strImDbUrl;

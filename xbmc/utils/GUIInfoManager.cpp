@@ -419,6 +419,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.mpaa")) return VIDEOPLAYER_MPAA;
     else if (strTest.Equals("videoplayer.cast")) return VIDEOPLAYER_CAST;
     else if (strTest.Equals("videoplayer.castandrole")) return VIDEOPLAYER_CAST_AND_ROLE;
+    else if (strTest.Equals("videoplayer.artist")) return VIDEOPLAYER_ARTIST;
+    else if (strTest.Equals("videoplayer.album")) return VIDEOPLAYER_ALBUM;
   }
   else if (strCategory.Equals("playlist"))
   {
@@ -740,6 +742,8 @@ CStdString CGUIInfoManager::GetLabel(int info)
   case VIDEOPLAYER_MPAA:
   case VIDEOPLAYER_CAST:
   case VIDEOPLAYER_CAST_AND_ROLE:
+  case VIDEOPLAYER_ARTIST:
+  case VIDEOPLAYER_ALBUM:
     strLabel = GetVideoLabel(info);
   break;
   case PLAYLIST_LENGTH:
@@ -1667,6 +1671,8 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
           strContent = "files";
         if (m_currentFile.HasVideoInfoTag() && m_currentFile.GetVideoInfoTag()->m_iSeason > -1) // episode
           strContent = "episodes";
+        if (m_currentFile.HasVideoInfoTag() && m_currentFile.GetVideoInfoTag()->m_artist.size() > 0)
+          strContent = "musicvideos";
         bReturn = m_stringParameters[info.m_data1].Equals(strContent);
       }
       break;
@@ -2167,6 +2173,12 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     return m_currentFile.GetVideoInfoTag()->GetCast();
   case VIDEOPLAYER_CAST_AND_ROLE:
     return m_currentFile.GetVideoInfoTag()->GetCast(true);
+  case VIDEOPLAYER_ARTIST:
+    if (m_currentFile.GetVideoInfoTag()->m_artist.size() > 0)
+      return m_currentFile.GetVideoInfoTag()->GetArtist();
+    break;
+  case VIDEOPLAYER_ALBUM:
+    return m_currentFile.GetVideoInfoTag()->m_strAlbum;
   }
   return "";
 }
@@ -2720,6 +2732,9 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_ARTIST:
     if (item->HasMusicInfoTag())
       return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetArtist());
+    if (item->HasVideoInfoTag())
+      if (item->GetVideoInfoTag()->m_artist.size() > 0)
+        return item->GetVideoInfoTag()->GetArtist();
     break;
   case LISTITEM_DIRECTOR:
     if (item->HasVideoInfoTag())
@@ -2727,6 +2742,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_ALBUM:
     if (item->HasMusicInfoTag())
       return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetAlbum());
+    if (item->HasVideoInfoTag())
+      return item->GetVideoInfoTag()->m_strAlbum;
     break;
   case LISTITEM_YEAR:
     if (item->HasMusicInfoTag())

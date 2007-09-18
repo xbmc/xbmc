@@ -102,5 +102,6 @@ bool CPlayListFactory::IsPlaylist(const CStdString& filename)
   if (extension == ".wpl") return true;
   if (extension == ".asx") return true;
   if (extension == ".ram") return true;
+  if (extension == ".xsp") return true;
   return false;
 }

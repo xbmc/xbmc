@@ -1325,6 +1325,7 @@
   <string id="16032">Could not initialise database.</string>
   <string id="16033">Could not open database.</string>
   <string id="16034">Could not get songs from database.</string>
+  <string id="16035">Partymode Playlist</string>
 
   <string id="16100">All Videos</string>
   <string id="16101">UnWatched</string>
@@ -1625,6 +1626,19 @@
   <string id="20386">Recently Added Movies</string>
   <string id="20387">Recently Added Episodes</string>
   <string id="20388">Studios</string>
+  <string id="20389">Music Videos</string>
+  <string id="20390">Recently Added Music Videos</string>
+  <string id="20391">Music Video</string>
+  <string id="20392">Remove Music Video from library</string>
+  <string id="20393">Music Video Information</string>
+  <string id="20394">Loading Music Video information</string>
+  <string id="20395">Mixed</string>
+  <string id="20396">Go To Albums by Artist</string>
+  <string id="20397">Go To Album</string>
+  <string id="20398">Play Song</string>
+  <string id="20399">Go To Music Videos from Album</string>
+  <string id="20400">Go To Music Videos by Artist</string>
+  <string id="20401">Play Music Video</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
