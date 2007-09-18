@@ -1,16 +1,21 @@
 
 #include "stdafx.h"
 #include "DVDAudioCodecFFmpeg.h"
+#include "XMemUtils.h"
 
 CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg() : CDVDAudioCodec()
 {
   m_iBufferSize = 0;
+  m_buffer = (BYTE*)_aligned_malloc(AVCODEC_MAX_AUDIO_FRAME_SIZE + FF_INPUT_BUFFER_PADDING_SIZE, 8);
+  memset(m_buffer, 0, AVCODEC_MAX_AUDIO_FRAME_SIZE + FF_INPUT_BUFFER_PADDING_SIZE);
+
   m_pCodecContext = NULL;
   m_bOpenedCodec = false;
 }
 
 CDVDAudioCodecFFmpeg::~CDVDAudioCodecFFmpeg()
 {
+  _aligned_free(m_buffer);
   Dispose();
 }
 
@@ -84,7 +89,9 @@ int CDVDAudioCodecFFmpeg::Decode(BYTE* pData, int iSize)
   int iBytesUsed;
   if (!m_pCodecContext) return -1;
 
-  iBytesUsed = m_dllAvCodec.avcodec_decode_audio(m_pCodecContext, (int16_t *)m_buffer, &m_iBufferSize, pData, iSize);
+  m_iBufferSize = AVCODEC_MAX_AUDIO_FRAME_SIZE ;
+  memset(m_buffer + AVCODEC_MAX_AUDIO_FRAME_SIZE, 0, FF_INPUT_BUFFER_PADDING_SIZE);
+  iBytesUsed = m_dllAvCodec.avcodec_decode_audio2(m_pCodecContext, (int16_t*)m_buffer, &m_iBufferSize, pData, iSize);
 
   return iBytesUsed;
 }

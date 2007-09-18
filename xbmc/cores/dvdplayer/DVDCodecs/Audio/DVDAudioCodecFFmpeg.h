@@ -23,7 +23,7 @@ public:
 protected:
   AVCodecContext* m_pCodecContext;
 
-  unsigned char m_buffer[AVCODEC_MAX_AUDIO_FRAME_SIZE];
+  BYTE *m_buffer;
   int m_iBufferSize;
   bool m_bOpenedCodec;
   
