@@ -147,6 +147,7 @@ bool CVideoDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
     {
     case NODE_TYPE_TITLE_MOVIES:
     case NODE_TYPE_TITLE_TVSHOWS:
+    case NODE_TYPE_TITLE_MUSICVIDEOS:
       strLabel = g_localizeStrings.Get(369); break;
     case NODE_TYPE_ACTOR: // Actor
       strLabel = g_localizeStrings.Get(344); break;
@@ -166,6 +167,10 @@ bool CVideoDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
       strLabel = g_localizeStrings.Get(20387); break;
     case NODE_TYPE_STUDIO: // Studios
       strLabel = g_localizeStrings.Get(20388); break;
+    case NODE_TYPE_MUSICVIDEOS_OVERVIEW: // Music Videos
+      strLabel = g_localizeStrings.Get(20389); break;
+    case NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS: // Recently Added Music Videos
+      strLabel = g_localizeStrings.Get(20390); break;
     default:
       CLog::Log(LOGWARNING, __FUNCTION__" - Unknown nodetype requested %d", pNode->GetChildType());
       return false;
@@ -187,6 +192,10 @@ CStdString CVideoDatabaseDirectory::GetIcon(const CStdString& strDirectory)
     if (strDirectory.Equals("videodb://2/2/"))
       return "DefaultTvshowTitle.png";
     return "";
+  case NODE_TYPE_TITLE_MUSICVIDEOS:
+    if (strDirectory.Equals("videodb://3/2/"))
+      return "DefaultMusicVideoTitle.png";
+    return "";
   case NODE_TYPE_ACTOR: // Actor
     return "DefaultActor.png";
   case NODE_TYPE_GENRE: // Genres
@@ -203,8 +212,12 @@ CStdString CVideoDatabaseDirectory::GetIcon(const CStdString& strDirectory)
     return "DefaultRecentlyAddedMovies.png";
   case NODE_TYPE_RECENTLY_ADDED_EPISODES: // Recently Added Episodes
     return "DefaultRecentlyAddedEpisodes.png";
-  case NODE_TYPE_STUDIO: // Recently Added Episodes
+  case NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS: // Recently Added Episodes
+    return "DefaultRecentlyAddedMusicVideos.png";
+  case NODE_TYPE_STUDIO: // Studios
     return "DefaultStudios.png";
+  case NODE_TYPE_MUSICVIDEOS_OVERVIEW: // Music Videos
+    return "DefaultMusicVideos.png";
   default:
     CLog::Log(LOGWARNING, __FUNCTION__" - Unknown nodetype requested %s", strDirectory.c_str());
     break;
@@ -216,7 +229,7 @@ CStdString CVideoDatabaseDirectory::GetIcon(const CStdString& strDirectory)
 bool CVideoDatabaseDirectory::ContainsMovies(const CStdString &path)
 {
   VIDEODATABASEDIRECTORY::NODE_TYPE type = GetDirectoryChildType(path);
-  if (type == VIDEODATABASEDIRECTORY::NODE_TYPE_TITLE_MOVIES || type == VIDEODATABASEDIRECTORY::NODE_TYPE_EPISODES) return true;
+  if (type == VIDEODATABASEDIRECTORY::NODE_TYPE_TITLE_MOVIES || type == VIDEODATABASEDIRECTORY::NODE_TYPE_EPISODES || type == VIDEODATABASEDIRECTORY::NODE_TYPE_TITLE_MUSICVIDEOS) return true;
   return false;
 }
 

@@ -24,8 +24,10 @@
 #include "playlistplayer.h"
 #include "util.h"
 #include "GUIBaseContainer.h" // for VIEW_TYPE_*
+#include "VideoDatabase.h"
 
 #include "filesystem/musicdatabasedirectory.h"
+#include "FileSystem/VideoDatabaseDirectory.h"
 
 using namespace DIRECTORY;
 using namespace MUSICDATABASEDIRECTORY;
@@ -424,9 +426,39 @@ CGUIViewStateWindowMusicNav::CGUIViewStateWindowMusicNav(const CFileItemList& it
   }
   else
   {
-    AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%F", "%D", "%L", ""));  // Filename, Duration | Foldername, empty
-    SetSortMethod(SORT_METHOD_LABEL);
-
+    if (items.IsVideoDb() && items.Size() > (g_guiSettings.GetBool("filelists.hideparentdiritems")?0:1))
+    {
+      DIRECTORY::VIDEODATABASEDIRECTORY::CQueryParams params;
+      DIRECTORY::CVideoDatabaseDirectory::GetQueryParams(items[g_guiSettings.GetBool("filelists.hideparentdiritems")?0:1]->m_strPath,params);
+      if (params.GetMVideoId() != -1)
+      {
+        if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+          AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 556, LABEL_MASKS("%T", "%Y"));  // Filename, Duration | Foldername, empty
+        else
+          AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", "%Y"));  // Filename, Duration | Foldername, empty
+        AddSortMethod(SORT_METHOD_VIDEO_YEAR,345, LABEL_MASKS("%T", "%Y"));
+        if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+        {
+          AddSortMethod(SORT_METHOD_ARTIST_IGNORE_THE,557, LABEL_MASKS("%A - %T", "%Y"));
+          AddSortMethod(SORT_METHOD_ALBUM_IGNORE_THE,483, LABEL_MASKS("%B - %T", "%Y"));
+        }
+        else
+        {
+          AddSortMethod(SORT_METHOD_ARTIST,557, LABEL_MASKS("%A - %T", "%Y"));
+          AddSortMethod(SORT_METHOD_ALBUM,483, LABEL_MASKS("%B - %T", "%Y"));
+        }
+      }
+      else
+      {
+        AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%F", "%D", "%L", ""));  // Filename, Duration | Foldername, empty
+        SetSortMethod(SORT_METHOD_LABEL);
+      }
+    }
+    else
+    {
+      AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%F", "%D", "%L", ""));  // Filename, Duration | Foldername, empty
+      SetSortMethod(SORT_METHOD_LABEL);
+    }
     SetViewAsControl(DEFAULT_VIEW_LIST);
 
     SetSortOrder(SORT_ORDER_ASC);
@@ -492,6 +524,18 @@ VECSHARES& CGUIViewStateWindowMusicNav::GetShares()
   share.m_strThumbnailImage="defaultFolderBig.png";
   share.m_iDriveType = SHARE_TYPE_LOCAL;
   m_shares.push_back(share);
+
+  // music video share
+  CVideoDatabase database;
+  database.Open();
+  if (database.GetMusicVideoCount() > 0)
+  {
+    share.strName = g_localizeStrings.Get(20389);
+    share.strPath = "videodb://3/";
+    share.m_strThumbnailImage = "defaultFolderBig.png";
+    share.m_iDriveType = SHARE_TYPE_LOCAL;
+    m_shares.push_back(share);
+  }
 
   return CGUIViewStateWindowMusic::GetShares();
 }
