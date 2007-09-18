@@ -991,8 +991,7 @@ const CStdString& CFileItem::GetContentType() const
     else if( m_strPath.Left(8).Equals("shout://")
           || m_strPath.Left(7).Equals("http://")
           || m_strPath.Left(8).Equals("https://")
-          || m_strPath.Left(7).Equals("upnp://")
-          || m_strPath.Left(9).Equals("lastfm://"))
+          || m_strPath.Left(7).Equals("upnp://"))
     {
       CFileCurl::GetContent(GetAsUrl(), m_ref);
 
