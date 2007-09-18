@@ -38,4 +38,5 @@ protected:
 
   CStdString m_path;
   bool m_cancelled;
+  int m_isPartyMode; // 0 - no, 1 - music, 2 - videos
 };

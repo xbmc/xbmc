@@ -449,12 +449,12 @@ bool CGUIWindowVideoPlaylist::OnContextButton(int itemNumber, CONTEXT_BUTTON but
     g_partyModeManager.Disable();
     return true;
   case CONTEXT_BUTTON_EDIT_PARTYMODE:
-    CStdString playlist = "P:\\PartyMode.xml";
+    CStdString playlist = "P:\\PartyMode-Video.xsp";
     if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist))
     {
       // apply new rules
       g_partyModeManager.Disable();
-      g_partyModeManager.Enable();
+      g_partyModeManager.Enable(true);
     }
     return true;
   }

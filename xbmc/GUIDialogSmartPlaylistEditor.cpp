@@ -212,7 +212,7 @@ void CGUIDialogSmartPlaylistEditor::OnType()
   if (msg.GetParam1() == 1)
     m_playlist.SetType("music");
   if (msg.GetParam1() == 2)
-    m_playlist.SetType("video");
+      m_playlist.SetType("video");
   if (msg.GetParam1() == 3)
     m_playlist.SetType("mixed");
   UpdateButtons();
@@ -234,14 +234,7 @@ void CGUIDialogSmartPlaylistEditor::OnOrderDirection()
 
 void CGUIDialogSmartPlaylistEditor::UpdateButtons()
 {
-  if (m_playlist.m_playlistRules.size() == 0 || m_playlist.m_playlistRules[0].m_field == CSmartPlaylistRule::FIELD_NONE)
-  {
-    CONTROL_DISABLE(CONTROL_OK)
-  }
-  else
-  {
-    CONTROL_ENABLE(CONTROL_OK)
-  }
+  CONTROL_ENABLE(CONTROL_OK) // always enabled since we can have no rules -> match everything (as we do with default partymode playlists)
 
   if (m_playlist.m_playlistRules.size() <= 1)
   {
@@ -333,12 +326,14 @@ void CGUIDialogSmartPlaylistEditor::OnWindowLoaded()
     OnMessage(msg);
   }
   // type
+  if (m_isPartyMode != 2)
   {
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_TYPE, 1);
     CStdString label = g_localizeStrings.Get(2);
     msg.SetLabel(label);
     OnMessage(msg);
   }
+  if (m_isPartyMode != 1)
   {
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_TYPE, 2);
     CStdString label = g_localizeStrings.Get(3);
@@ -353,11 +348,27 @@ void CGUIDialogSmartPlaylistEditor::OnWindowLoaded()
   }
   {
     int iType=1;
-    CStdString type = m_playlist.GetType();
-    if (m_playlist.GetType() == "video")
-      iType = 2;
-    if (m_playlist.GetType() == "mixed")
+    if (m_playlist.GetType().Equals("music"))
+    {
+      if (m_isPartyMode == 2) // unallowed type - reset to video
+      {
+        m_playlist.SetType("video");
+        iType = 2;
+      }
+    }
+    if (m_playlist.GetType().Equals("video"))
+    {
+      if (m_isPartyMode == 1) // unallowed type - reset to music
+      {
+        m_playlist.SetType("music");
+        iType = 1;
+      }
+      else 
+        iType = 2;
+    }
+    if (m_playlist.GetType().Equals("mixed"))
       iType = 3;
+
     CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_TYPE, iType);
     OnMessage(msg);
   }
@@ -419,6 +430,7 @@ bool CGUIDialogSmartPlaylistEditor::NewPlaylist(const CStdString &type)
   editor->m_playlist = CSmartPlaylist();
   editor->m_playlist.m_playlistRules.push_back(CSmartPlaylistRule());
   editor->m_playlist.SetType(type);
+  editor->m_isPartyMode = 0;
   editor->Initialize();
   editor->DoModal(m_gWindowManager.GetActiveWindow());
   return !editor->m_cancelled;
@@ -434,6 +446,11 @@ bool CGUIDialogSmartPlaylistEditor::EditPlaylist(const CStdString &path)
 
   editor->m_playlist = playlist;
   editor->m_path = path;
+  editor->m_isPartyMode = 0;
+  if (path.Equals("P:\\PartyMode.xsp"))
+    editor->m_isPartyMode = 1;
+  if (path.Equals("P:\\PartyMode-Video.xsp"))
+    editor->m_isPartyMode = 2;
   editor->Initialize();
   editor->DoModal(m_gWindowManager.GetActiveWindow());
   return !editor->m_cancelled;

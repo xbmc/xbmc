@@ -49,7 +49,7 @@ CPartyModeManager::~CPartyModeManager(void)
 {
 }
 //#define NEW_PARTY_MODE_METHOD 1
-bool CPartyModeManager::Enable()
+bool CPartyModeManager::Enable(bool bVideo /* = false */)
 {
   // Filter using our PartyMode xml file
   CSmartPlaylist playlist;
@@ -61,7 +61,10 @@ bool CPartyModeManager::Enable()
   pDialog->SetLine(1, "");
   pDialog->SetLine(2, "");
   pDialog->StartModal();
-  partyModePath = g_settings.GetUserDataItem("partymode.xml");
+  if (bVideo)
+    partyModePath = g_settings.GetUserDataItem("PartyMode-Video.xsp");
+  else
+    partyModePath = g_settings.GetUserDataItem("PartyMode.xsp");
   if (playlist.Load(partyModePath))
   {
     m_type = playlist.GetType();
@@ -130,6 +133,8 @@ bool CPartyModeManager::Enable()
     database.Close();
     songIDs.insert(songIDs.end(),songIDs2.begin(),songIDs2.end());
   }
+  m_bIsVideo = bVideo;
+
   // calculate history size
   if (m_iMatchingSongs < 50)
     m_songsInHistory = 0;
@@ -142,7 +147,7 @@ bool CPartyModeManager::Enable()
   CLog::Log(LOGINFO,"PARTY MODE MANAGER: Party mode enabled!");
 
   int iPlaylist = PLAYLIST_MUSIC;
-  if (m_type.Equals("video"))
+  if (m_bIsVideo)
     iPlaylist = PLAYLIST_VIDEO;
 
   g_playlistPlayer.ClearPlaylist(iPlaylist);
@@ -209,7 +214,7 @@ void CPartyModeManager::AddUserSongs(CPlayList& tempList, bool bPlay /* = false 
   CLog::Log(LOGINFO,"PARTY MODE MANAGER: Adding %i user selected songs at %i", iNewUserSongs, iAddAt);
 
   int iPlaylist = PLAYLIST_MUSIC;
-  if (m_type.Equals("video"))
+  if (m_bIsVideo)
     iPlaylist = PLAYLIST_VIDEO;
   g_playlistPlayer.GetPlaylist(iPlaylist).Insert(tempList, iAddAt);
 
@@ -238,7 +243,7 @@ void CPartyModeManager::AddUserSongs(CFileItemList& tempList, bool bPlay /* = fa
   CLog::Log(LOGINFO,"PARTY MODE MANAGER: Adding %i user selected songs at %i", iNewUserSongs, iAddAt);
 
   int iPlaylist = PLAYLIST_MUSIC;
-  if (m_type.Equals("video"))
+  if (m_bIsVideo)
     iPlaylist = PLAYLIST_VIDEO;
 
   g_playlistPlayer.GetPlaylist(iPlaylist).Insert(tempList, iAddAt);
@@ -264,7 +269,7 @@ void CPartyModeManager::Process()
 bool CPartyModeManager::AddRandomSongs(int iSongs /* = 0 */)
 {
   int iPlaylist = PLAYLIST_MUSIC;
-  if (m_type.Equals("video"))
+  if (m_bIsVideo)
     iPlaylist = PLAYLIST_VIDEO;
 
   CPlayList& playlist = g_playlistPlayer.GetPlaylist(iPlaylist);
@@ -395,7 +400,7 @@ bool CPartyModeManager::AddRandomSongs(int iSongs /* = 0 */)
 void CPartyModeManager::Add(CFileItem *pItem)
 {
   int iPlaylist = PLAYLIST_MUSIC;
-  if (m_type.Equals("video"))
+  if (m_bIsVideo)
     iPlaylist = PLAYLIST_VIDEO;
 
   CPlayList::CPlayListItem playlistItem;
@@ -409,7 +414,7 @@ void CPartyModeManager::Add(CFileItem *pItem)
 bool CPartyModeManager::ReapSongs()
 {
   int iPlaylist = PLAYLIST_MUSIC;
-  if (m_type.Equals("video"))
+  if (m_bIsVideo)
     iPlaylist = PLAYLIST_VIDEO;
 
   CPlayList& playlist = g_playlistPlayer.GetPlaylist(iPlaylist);
@@ -439,7 +444,7 @@ bool CPartyModeManager::MovePlaying()
   // move current song to the top if its not there
   int iCurrentSong = g_playlistPlayer.GetCurrentSong();
   int iPlaylist = PLAYLIST_MUSIC;
-  if (m_type.Equals("video"))
+  if (m_bIsVideo)
     iPlaylist = PLAYLIST_VIDEO;
 
   if (iCurrentSong > 0)
@@ -548,7 +553,7 @@ void CPartyModeManager::UpdateStats()
 bool CPartyModeManager::AddInitialSongs(vector<pair<int,long> > &songIDs)
 {
   int iPlaylist = PLAYLIST_MUSIC;
-  if (m_type.Equals("video"))
+  if (m_bIsVideo)
     iPlaylist = PLAYLIST_VIDEO;
 
   CPlayList& playlist = g_playlistPlayer.GetPlaylist(iPlaylist);

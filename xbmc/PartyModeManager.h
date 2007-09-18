@@ -8,7 +8,7 @@ public:
   CPartyModeManager(void);
   virtual ~CPartyModeManager(void);
 
-  bool Enable();
+  bool Enable(bool bVideo=false);
   void Disable();
   void Play(int iPos);
   void OnSongChange(bool bUpdatePlayed = false);
@@ -40,6 +40,7 @@ private:
 
   // state
   bool m_bEnabled;
+  bool m_bIsVideo;
   int m_iLastUserSong;
   CStdString m_strCurrentFilterMusic;
   CStdString m_strCurrentFilterVideo;

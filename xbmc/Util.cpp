@@ -3730,12 +3730,16 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         g_application.m_pPlayer->Record(!g_application.m_pPlayer->IsRecording());
       }
     }
-    else if (parameter.Equals("partymode"))
+    else if (parameter.Left(9).Equals("partymode"))
     {
+      bool bVideo=false;
+      if (parameter.size() > 9)
+        if (parameter.Mid(10).Equals("video)"))
+          bVideo = true;
       if (g_partyModeManager.IsEnabled())
         g_partyModeManager.Disable();
       else
-        g_partyModeManager.Enable();
+        g_partyModeManager.Enable(bVideo);
     }
     else if (parameter.Equals("random"))
     {
