@@ -67,7 +67,7 @@ CXBoxRenderManager::CXBoxRenderManager()
 
   m_presentdelay = 5; //Just a guess to what delay we have
   m_presentfield = FS_NONE;
-  m_presenttime = 0L;
+  m_presenttime = 0;
   m_rendermethod = 0;
 }
 
@@ -355,7 +355,9 @@ void CXBoxRenderManager::PresentSingle()
 
   m_pRenderer->RenderUpdate(true, 0, 255);
 
-  while( m_presenttime > GetTickCount() && !CThread::m_bStop ) Sleep(1);
+  int nTicks = GetTickCount();
+  if (m_presenttime > nTicks) Sleep(m_presenttime - nTicks);
+  //while( m_presenttime > GetTickCount() && !CThread::m_bStop ) Sleep(1);
 
 #ifndef HAS_SDL
   D3DDevice::Present( NULL, NULL, NULL, NULL );

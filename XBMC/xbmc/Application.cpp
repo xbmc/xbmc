@@ -2326,7 +2326,7 @@ void CApplication::RenderNoPresent()
     // Video rendering occuring from main thread for OpenGL
     //g_renderManager.RenderUpdate(true, 0, 0);
     g_renderManager.Present();
-Sleep(0);
+    Sleep(0);
     ResetScreenSaver();
     g_infoManager.ResetCache();
 #else

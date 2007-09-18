@@ -21,8 +21,8 @@
 #ifndef AVFORMAT_H
 #define AVFORMAT_H
 
-#define LIBAVFORMAT_VERSION_INT ((51<<16)+(12<<8)+2)
-#define LIBAVFORMAT_VERSION     51.12.2
+#define LIBAVFORMAT_VERSION_INT ((51<<16)+(13<<8)+3)
+#define LIBAVFORMAT_VERSION     51.13.3
 #define LIBAVFORMAT_BUILD       LIBAVFORMAT_VERSION_INT
 
 #define LIBAVFORMAT_IDENT       "Lavf" AV_STRINGIFY(LIBAVFORMAT_VERSION)
@@ -348,6 +348,7 @@ typedef struct AVStream {
 #define AVFMTCTX_NOHEADER      0x0001 /**< signal that no header is present
                                          (streams are added dynamically) */
 
+/* dvd's can have maximally 41 streams */
 #define MAX_STREAMS 42
 
 /* format I/O context */

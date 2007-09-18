@@ -25,7 +25,7 @@ static inline __int16 convert(int32_t i)
  */
 static int resample_int16(sample_t * in, int16_t *out, int32_t channel_map)
 {
-    unsigned long i;
+    unsigned long i; 
     int16_t *p = out;
     for (i = 0; i != 256; i++) {
 	unsigned long map = channel_map;
@@ -63,7 +63,7 @@ bool CDVDAudioCodecLiba52::Open(CodecID codecID, int iChannels, int iSampleRate,
 
   SetDefault();
   
-  m_pState = m_dll.a52_init(0);
+  m_pState = m_dll.a52_init(MM_ACCEL_X86_MMX |MM_ACCEL_X86_MMXEXT);
   if (!m_pState)
   {
     Dispose();

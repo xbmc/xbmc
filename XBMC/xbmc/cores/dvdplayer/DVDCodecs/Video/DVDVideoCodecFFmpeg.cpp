@@ -7,7 +7,12 @@
 #include "../DVDCodecs.h"
 #include "../../../../utils/Win32Exception.h"
 
+#ifndef _LINUX
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
+#else
+#include <math.h>
+#define RINT lrint
+#endif
 
 CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
 {
