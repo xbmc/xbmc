@@ -181,9 +181,10 @@ protected:
   void UpdateVideoFilter();
 
   // renderers
-  void RenderLowMem(DWORD flags);    // single pass glsl renderer
-  void RenderMultiPass(DWORD flags); // multi pass glsl renderer
-  void RenderSoftware(DWORD flags);  // single pass s/w yuv2rgb renderer
+  //void RenderLowMem(DWORD flags);     // low mem renderer
+  void RenderMultiPass(DWORD flags);  // multi pass glsl renderer
+  void RenderSinglePass(DWORD flags); // single pass glsl renderer
+  void RenderSoftware(DWORD flags);   // single pass s/w yuv2rgb renderer
 
   CFrameBufferObject m_fbo;
   CSurface *m_pBuffer;;

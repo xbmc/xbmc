@@ -54,7 +54,7 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_shaderProgram = 0;
   m_fragmentShader = 0;
   m_renderMethod = RENDER_GLSL;
-  m_renderQuality = RQ_MULTIPASS;
+  m_renderQuality = RQ_SINGLEPASS;
   m_yTex = 0;
   m_uTex = 0;
   m_vTex = 0;
@@ -1059,7 +1059,6 @@ void CLinuxRendererGL::UpdateVideoFilter()
   case VS_SCALINGMETHOD_NEAREST:
   case VS_SCALINGMETHOD_LINEAR:
     m_renderQuality = RQ_SINGLEPASS;
-    //m_renderQuality = RQ_MULTIPASS;
     if (m_pVideoFilterShader)
     {
       m_pVideoFilterShader->Free();
@@ -1115,16 +1114,32 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
   if (glCreateProgram)
   {
     g_graphicsContext.BeginPaint(m_pBuffer);
+
     if (m_pYUVShader)
     {
       m_pYUVShader->Free();
       delete m_pYUVShader;
       m_pYUVShader = NULL;
     }
+
     if (renderMethod & (FIELD_ODD|FIELD_EVEN))
-      m_pYUVShader = new YUV2RGBBobShader(); // create bob deinterlacing shader
+    {
+      if (m_renderQuality == RQ_SINGLEPASS)
+      {
+        m_pYUVShader = new YUV2RGBBobShader(); // create bob deinterlacing shader
+        CLog::Log(LOGERROR, "GL: Selecting Single Pass YUV 2 RGB Bob deinterlacing shader");
+      }
+      else if (m_renderQuality == RQ_MULTIPASS)
+      {
+        m_pYUVShader = new YUV2RGBBobShader(); // create bob deinterlacing shader
+        CLog::Log(LOGERROR, "GL: Selecting Multipass Pass YUV 2 RGB Bob deinterlacing shader");
+      }
+    }
     else
+    {
       m_pYUVShader = new YUV2RGBProgressiveShader(); // create regular progressive scan shader
+      CLog::Log(LOGERROR, "GL: Selecting YUV 2 RGB Progressive Shader");
+    }
 
     if (m_pYUVShader && m_pYUVShader->CompileAndLink())
     {
@@ -1506,8 +1521,7 @@ void CLinuxRendererGL::Render(DWORD flags)
     {
     case RQ_LOW:
     case RQ_SINGLEPASS:
-      RenderMultiPass(flags);
-      //RenderLowMem(flags);
+      RenderSinglePass(flags);
       VerifyGLState();
       break;
 
@@ -1664,6 +1678,152 @@ void CLinuxRendererGL::AutoCrop(bool bCrop)
     g_stSettings.m_currentVideoSettings.m_CropBottom = 0;
   }
   SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
+}
+
+void CLinuxRendererGL::RenderSinglePass(DWORD flags)
+{
+  //CSingleLock lock(g_graphicsContext);
+  int index = 0; //m_iYV12RenderBuffer;
+  YV12Image &im = m_image[index];
+
+  // set scissors if we are not in fullscreen video
+  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
+  {
+    g_graphicsContext.ClipToViewWindow();
+  }
+
+  g_graphicsContext.BeginPaint();
+
+  glDisable(GL_DEPTH_TEST);
+
+  //See RGB renderer for comment on this
+#define CHROMAOFFSET_HORIZ 0.25f
+
+  static GLfloat brightness = 0;
+  static GLfloat contrast   = 0;
+
+  brightness =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Brightness - 50.0)/100.0;
+  contrast =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Contrast)/50.0;
+
+  // Y
+  glEnable(m_textureTarget);
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][0]);
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+  // U
+  glActiveTexture(GL_TEXTURE1);
+  glEnable(m_textureTarget);
+  glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][1]);
+  
+  // V
+  glActiveTexture(GL_TEXTURE2);
+  glEnable(m_textureTarget);
+  glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][2]);
+  
+  glActiveTexture(GL_TEXTURE0);
+  VerifyGLState();
+  
+  if (m_reloadShaders)
+  {
+    m_reloadShaders = 0;
+    LoadShaders(m_currentField);
+
+    if (m_currentField==FIELD_FULL)
+      SetTextureFilter(GL_LINEAR);
+    else
+      SetTextureFilter(GL_LINEAR);
+  }  
+
+  m_pYUVShader->SetYTexture(0);
+  m_pYUVShader->SetUTexture(1);
+  m_pYUVShader->SetVTexture(2);
+  
+  m_pYUVShader->SetWidth(im.width);
+  m_pYUVShader->SetHeight(im.height);
+
+  switch (m_currentField)
+  {
+  case FIELD_ODD:
+    m_pYUVShader->SetField(1);
+    break;
+    
+  case FIELD_EVEN:
+    m_pYUVShader->SetField(0);
+    break;
+    
+  default:
+    break;
+  }
+
+  m_pYUVShader->Enable();
+  
+  glBegin(GL_QUADS);
+  
+  if (m_textureTarget==GL_TEXTURE_2D)
+  {
+    // Use regular normalized texture coordinates
+
+    glMultiTexCoord2f(GL_TEXTURE0, 0, 0);
+    glMultiTexCoord2f(GL_TEXTURE1, 0, 0);
+    glMultiTexCoord2f(GL_TEXTURE2, 0, 0);
+    glVertex4f((float)rd.left, (float)rd.top, 0, 1.0f );
+    
+    glMultiTexCoord2f(GL_TEXTURE0, im.texcoord_x, 0);
+    glMultiTexCoord2f(GL_TEXTURE1, im.texcoord_x, 0);
+    glMultiTexCoord2f(GL_TEXTURE2, im.texcoord_x, 0);
+    glVertex4f((float)rd.right, (float)rd.top, 0, 1.0f);
+    
+    glMultiTexCoord2f(GL_TEXTURE0, im.texcoord_x, im.texcoord_y);
+    glMultiTexCoord2f(GL_TEXTURE1, im.texcoord_x, im.texcoord_y);
+    glMultiTexCoord2f(GL_TEXTURE2, im.texcoord_x, im.texcoord_y);
+    glVertex4f((float)rd.right, (float)rd.bottom, 0, 1.0f);
+    
+    glMultiTexCoord2f(GL_TEXTURE0, 0, im.texcoord_y);
+    glMultiTexCoord2f(GL_TEXTURE1, 0, im.texcoord_y);
+    glMultiTexCoord2f(GL_TEXTURE2, 0, im.texcoord_y);
+    glVertex4f((float)rd.left, (float)rd.bottom, 0, 1.0f);
+  }  
+  else 
+  {
+    // Use supported rectangle texture extension (texture coordinates
+    // are not normalized)
+
+    glMultiTexCoord2f(GL_TEXTURE0, (float)rs.left, (float)rs.top );
+    glMultiTexCoord2f(GL_TEXTURE1, (float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f);
+    glMultiTexCoord2f(GL_TEXTURE2, (float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f );
+    glVertex4f((float)rd.left, (float)rd.top, 0, 1.0f );
+    
+    glMultiTexCoord2f(GL_TEXTURE0, (float)rs.right, (float)rs.top );
+    glMultiTexCoord2f(GL_TEXTURE1, (float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f );
+    glMultiTexCoord2f(GL_TEXTURE2, (float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f );
+    glVertex4f((float)rd.right, (float)rd.top, 0, 1.0f);
+    
+    glMultiTexCoord2f(GL_TEXTURE0, (float)rs.right, (float)rs.bottom );
+    glMultiTexCoord2f(GL_TEXTURE1, (float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
+    glMultiTexCoord2f(GL_TEXTURE2, (float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
+    glVertex4f((float)rd.right, (float)rd.bottom, 0, 1.0f);
+    
+    glMultiTexCoord2f(GL_TEXTURE0, (float)rs.left, (float)rs.bottom );
+    glMultiTexCoord2f(GL_TEXTURE1, (float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
+    glMultiTexCoord2f(GL_TEXTURE2, (float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
+    glVertex4f((float)rd.left, (float)rd.bottom, 0, 1.0f);
+  }
+  glEnd();
+
+  VerifyGLState();
+
+  m_pYUVShader->Disable();
+  
+  glActiveTexture(GL_TEXTURE1);
+  glDisable(m_textureTarget);
+  glActiveTexture(GL_TEXTURE2);
+  glDisable(m_textureTarget);
+  glActiveTexture(GL_TEXTURE0);
+  glDisable(m_textureTarget);
+  VerifyGLState();
+
+  g_graphicsContext.EndPaint();
 }
 
 void CLinuxRendererGL::RenderMultiPass(DWORD flags)
@@ -1906,6 +2066,7 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags)
   g_graphicsContext.EndPaint();
 }
 
+/*
 void CLinuxRendererGL::RenderLowMem(DWORD flags)
 {
   //CSingleLock lock(g_graphicsContext);
@@ -2101,6 +2262,7 @@ void CLinuxRendererGL::RenderLowMem(DWORD flags)
   VerifyGLState();
   g_graphicsContext.EndPaint();
 }
+*/
 
 void CLinuxRendererGL::RenderSoftware(DWORD flags)
 {
