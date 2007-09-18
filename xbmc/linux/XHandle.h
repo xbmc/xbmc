@@ -19,7 +19,7 @@ public:
   CXHandle(HandleType nType);
   virtual ~CXHandle();
   void Init();
-  HandleType GetType();
+  inline HandleType GetType() { return m_type; }
   void ChangeType(HandleType newType);
   
   SDL_sem    *m_hSem;

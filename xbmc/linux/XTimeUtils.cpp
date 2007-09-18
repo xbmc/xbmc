@@ -1,6 +1,7 @@
 
 #include "XTimeUtils.h"
 #include "../utils/log.h"
+#include <errno.h>
 #include <time.h>
 
 #define WIN32_TIME_OFFSET ((unsigned long long)(369 * 365 + 89) * 24 * 3600 * 10000000)
@@ -9,17 +10,18 @@
 
 DWORD timeGetTime(void)
 {
-  struct timezone tz;
-  struct timeval tim;
-  gettimeofday(&tim, &tz);
-  DWORD result = tim.tv_usec / 1000;
-  result += ((DWORD) tim.tv_sec) * 1000;
-  return result;
+  return GetTickCount();
 }
 
 void WINAPI Sleep(DWORD dwMilliSeconds)
 {
-  usleep(dwMilliSeconds*1000);
+  struct timespec req;
+  req.tv_sec = dwMilliSeconds / 1000;
+  req.tv_nsec = (dwMilliSeconds % 1000) * 1000000;
+
+  // many calls will be interupted. so we keep looping till we're done.
+  while ( nanosleep(&req, &req) == -1 && errno == EINTR && (req.tv_nsec > 0 || req.tv_sec > 0))
+    ;
 }
 
 VOID GetLocalTime(LPSYSTEMTIME sysTime) 
@@ -45,14 +47,13 @@ BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount) {
   if (lpPerformanceCount == NULL)
     return false;
 
-  struct timezone tz;
-  struct timeval tim;
-  if (gettimeofday(&tim, &tz) != 0) {
-    CLog::Log(LOGERROR,"%s - error getting timer", __FUNCTION__);
+  struct timespec now;
+  if (clock_gettime(CLOCK_MONOTONIC,&now) != 0) {
+    CLog::Log(LOGERROR,"%s - error %d getting timer", __FUNCTION__, errno);
     return false;
   }
 
-  lpPerformanceCount->QuadPart = tim.tv_usec + (tim.tv_sec * 1000000);
+  lpPerformanceCount->QuadPart = ((__int64)now.tv_sec * 1000000000L) + now.tv_nsec;
   return true;
 }
 
@@ -60,7 +61,7 @@ BOOL QueryPerformanceFrequency(LARGE_INTEGER *lpFrequency) {
   if (lpFrequency == NULL)
     return false;
 
-  lpFrequency->QuadPart = 1000000; // microseconds resolution
+  lpFrequency->QuadPart = 1000000000L;
   return true;
 }
 
