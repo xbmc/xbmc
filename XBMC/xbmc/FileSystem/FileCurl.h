@@ -60,6 +60,7 @@ namespace XFILE
       static bool GetHttpHeader(const CURL &url, CHttpHeader &headers);
       static bool GetContent(const CURL &url, CStdString &content);
     protected:
+      void ParseAndCorrectUrl(CURL &url);
       void SetCommonOptions();
       void SetRequestHeaders();
 
@@ -74,6 +75,7 @@ namespace XFILE
       CStdString      m_proxy;
       CStdString      m_customrequest;
       CStdString      m_contentencoding;
+      CStdString      m_ftpauth;
       int             m_timeout;
 
 	    __int64					m_fileSize;

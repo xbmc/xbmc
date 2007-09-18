@@ -290,6 +290,8 @@ retry:
 
         // if it's no keep alive, we reopen on next attempt
         if (!PLT_HttpHelper::IsConnectionKeepAlive(response)) {
+            output_stream = NULL;
+            input_stream = NULL;
             m_Socket = NULL;
         }
 
@@ -299,10 +301,16 @@ failed:
         input_stream = NULL;
         m_Socket = NULL;
         // server may have closed socket for us
-        if(count < 1) {
-            count++;
+        if(count++ < 1) {
+            NPT_HttpEntity* entity = request->GetEntity();
+            NPT_InputStreamReference  input_stream;
+
+            if (entity == NULL) continue;
+            if (NPT_FAILED(entity->GetInputStream(input_stream))) continue;
+            if (NPT_FAILED(input_stream->Seek(0))) continue;
             goto retry;
         }
+
     }
 
 }

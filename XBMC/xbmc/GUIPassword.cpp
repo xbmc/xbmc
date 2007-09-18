@@ -529,16 +529,11 @@ bool CGUIPassword::LockSource(const CStdString& strType, const CStdString& strNa
 void CGUIPassword::LockSources(bool lock)
 {
   // lock or unlock all sources (those with locks)
-  const char* strType[5] = {"myprograms","music","video","pictures","files"};
-  VECSHARES* pShares[5];
-  pShares[0] = g_settings.GetSharesFromType("myprograms");
-  pShares[1] = g_settings.GetSharesFromType("music");
-  pShares[2] = g_settings.GetSharesFromType("video");
-  pShares[3] = g_settings.GetSharesFromType("pictures");
-  pShares[4] = g_settings.GetSharesFromType("files");
+  const char* strType[5] = {"programs","music","video","pictures","files"};
   for (int i=0;i<5;++i)
   {
-    for (IVECSHARES it=pShares[i]->begin();it != pShares[i]->end();++it)
+    VECSHARES *shares = g_settings.GetSharesFromType(strType[i]);
+    for (IVECSHARES it=shares->begin();it != shares->end();++it)
       if (it->m_iLockMode != LOCK_MODE_EVERYONE)
         it->m_iHasLock = lock ? 2 : 1;
   }
@@ -549,16 +544,11 @@ void CGUIPassword::LockSources(bool lock)
 void CGUIPassword::RemoveSourceLocks()
 {
   // remove lock from all sources
-  const char* strType[5] = {"myprograms","music","video","pictures","files"};
-  VECSHARES* pShares[5];
-  pShares[0] = g_settings.GetSharesFromType("myprograms");
-  pShares[1] = g_settings.GetSharesFromType("music");
-  pShares[2] = g_settings.GetSharesFromType("video");
-  pShares[3] = g_settings.GetSharesFromType("pictures");
-  pShares[4] = g_settings.GetSharesFromType("files");
+  const char* strType[5] = {"programs","music","video","pictures","files"};
   for (int i=0;i<5;++i)
   {
-    for (IVECSHARES it=pShares[i]->begin();it != pShares[i]->end();++it)
+    VECSHARES *shares = g_settings.GetSharesFromType(strType[i]);
+    for (IVECSHARES it=shares->begin();it != shares->end();++it)
       if (it->m_iLockMode != LOCK_MODE_EVERYONE) // remove old info
       {
         it->m_iHasLock = 0;

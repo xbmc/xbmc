@@ -25,6 +25,7 @@ public:
   static CStdString GetType(const TiXmlElement *pControlNode);
   CGUIControl* Create(DWORD dwParentId, const FRECT &rect, TiXmlElement* pControlNode);
   void ScaleElement(TiXmlElement *element, RESOLUTION fileRes, RESOLUTION destRes);
+  static bool GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value);
   static bool GetAspectRatio(const TiXmlNode* pRootNode, const char* strTag, CGUIImage::GUIIMAGE_ASPECT_RATIO &aspectRatio, DWORD &aspectAlign);
   static bool GetTexture(const TiXmlNode* pRootNode, const char* strTag, CImage &image);
   static bool GetAlignment(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment);

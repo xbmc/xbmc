@@ -94,7 +94,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
       // is this the first time the window is opened?
       if (m_vecItems.m_strPath == "?" && strDestination.IsEmpty())
       {
-        strDestination = g_stSettings.m_szDefaultMusicLibView;
+        strDestination = g_settings.m_defaultMusicLibSource;
         m_vecItems.m_strPath = strDestination;
         CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
       }
@@ -461,9 +461,9 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     if (!item->IsParentFolder() && !inPlaylists &&
         (nodetype == NODE_TYPE_ROOT || nodetype == NODE_TYPE_OVERVIEW || nodetype == NODE_TYPE_TOP100))
     {
-      if (!item->m_strPath.Equals(g_stSettings.m_szDefaultMusicLibView))
+      if (!item->m_strPath.Equals(g_settings.m_defaultMusicLibSource))
         buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 13335); // set default
-      if (strcmp(g_stSettings.m_szDefaultMusicLibView, ""))
+      if (strcmp(g_settings.m_defaultMusicLibSource, ""))
         buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // clear default
     }
   }
@@ -498,12 +498,12 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       return true;
     }
   case CONTEXT_BUTTON_SET_DEFAULT:
-    strcpy(g_stSettings.m_szDefaultMusicLibView, GetQuickpathName(m_vecItems[itemNumber]->m_strPath).c_str());
+    g_settings.m_defaultMusicLibSource = GetQuickpathName(m_vecItems[itemNumber]->m_strPath);
     g_settings.Save();
     return true;
 
   case CONTEXT_BUTTON_CLEAR_DEFAULT:
-    strcpy(g_stSettings.m_szDefaultMusicLibView, "");
+    g_settings.m_defaultMusicLibSource.Empty();
     g_settings.Save();
     return true;
   }
@@ -530,7 +530,7 @@ void CGUIWindowMusicNav::SetArtistImage(int iItem)
     m_musicdatabase.GetArtistPath(idArtist, picturePath);
   }
 
-  if (CGUIDialogFileBrowser::ShowAndGetImage(g_settings.m_vecMyMusicShares, g_localizeStrings.Get(1030), picturePath))
+  if (CGUIDialogFileBrowser::ShowAndGetImage(g_settings.m_musicSources, g_localizeStrings.Get(1030), picturePath))
   {
     CStdString thumb(pItem->GetCachedArtistThumb());
     CPicture picture;

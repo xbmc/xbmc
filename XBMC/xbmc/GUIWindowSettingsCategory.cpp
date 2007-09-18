@@ -1705,7 +1705,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CStdString path = pSettingString->GetData();
-    if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_vecMyPictureShares, g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
+    if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_pictureSources, g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
       pSettingString->SetData(path);
   }
   else if (strSetting.Equals("myprograms.dashboard"))
@@ -1733,7 +1733,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     if (strSetting.Equals("subtitles.custompath"))
     {
       bWriteOnly = false;
-      shares = g_settings.m_vecMyVideoShares;
+      shares = g_settings.m_videoSources;
     }
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(pSettingString->m_iHeadingString), path, bWriteOnly))
     {
@@ -1848,7 +1848,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     CStdString strDummy;
     g_settings.LoadUPnPXml(_P("q:\\system\\upnpserver.xml"));
-    if (CGUIDialogFileBrowser::ShowAndGetShare(strDummy,false,&g_settings.m_vecUPnPMusicShares,"upnpmusic"))
+    if (CGUIDialogFileBrowser::ShowAndGetShare(strDummy,false,&g_settings.m_UPnPMusicSources,"upnpmusic"))
       g_settings.SaveUPnPXml(_P("q:\\system\\upnpserver.xml"));
     else
       g_settings.LoadUPnPXml(_P("q:\\system\\upnpserver.xml"));
@@ -1857,7 +1857,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     CStdString strDummy;
     g_settings.LoadUPnPXml(_P("q:\\system\\upnpserver.xml"));
-    if (CGUIDialogFileBrowser::ShowAndGetShare(strDummy,false,&g_settings.m_vecUPnPVideoShares,"upnpvideo"))
+    if (CGUIDialogFileBrowser::ShowAndGetShare(strDummy,false,&g_settings.m_UPnPVideoSources,"upnpvideo"))
       g_settings.SaveUPnPXml(_P("q:\\system\\upnpserver.xml"));
     else
       g_settings.LoadUPnPXml(_P("q:\\system\\upnpserver.xml"));
@@ -1866,7 +1866,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     CStdString strDummy;
     g_settings.LoadUPnPXml(_P("q:\\system\\upnpserver.xml"));
-    if (CGUIDialogFileBrowser::ShowAndGetShare(strDummy,false,&g_settings.m_vecUPnPPictureShares,"upnppictures"))
+    if (CGUIDialogFileBrowser::ShowAndGetShare(strDummy,false,&g_settings.m_UPnPPictureSources,"upnppictures"))
       g_settings.SaveUPnPXml(_P("q:\\system\\upnpserver.xml"));
     else
       g_settings.LoadUPnPXml(_P("q:\\system\\upnpserver.xml"));

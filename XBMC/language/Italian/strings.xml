@@ -9,6 +9,7 @@
   <string id="5">Impostazioni</string>
   <string id="7">Files</string>
   <string id="8">Meteo</string>
+  <string id="9">xbox media center</string>
 
   <string id="11">Lunedi'</string>
   <string id="12">Martedi'</string>
@@ -264,7 +265,7 @@
   <string id="339">Digitale</string>
   <string id="340">Artisti Vari</string>
   <string id="341">Avvia Disco</string>
-  <string id="342">Filmati</string>
+  <string id="342">Film</string>
   <string id="343">Correggi Framerate</string>
   <string id="344">Attori</string>
   <string id="345">Anno</string>
@@ -374,7 +375,7 @@
   <string id="453">Indirizzo Riga 3</string>
   <string id="454">Indirizzo Riga 4</string>
   <string id="455">Righe</string>
-  <string id="456">Modalità</string>
+  <string id="456">Archivio</string>
   <string id="457">Cambia Vista</string>
   <string id="459">Subs</string>
   <string id="460">Traccia Audio</string>
@@ -477,11 +478,14 @@
   <string id="567">Conteggio Riproduzione</string>
   <string id="568">Ultimo Riprodotto</string>
   <string id="569">Commento</string>
+  <string id="570">Aggiunto in Data</string>
+  <string id="571">Default</string>
+  <string id="572">Studio</string>
 
   <string id="580">Direzione Ordinamento</string>
-  <string id="581">Metodo Ordinamento</string>
-  <string id="582">Modalità di veduta</string>
-  <string id="583">Ricorda veduta per ogni cartella</string>
+  <string id="581">Metodo di Ordinamento</string>
+  <string id="582">Modalità di visualizzazione File e Cartelle</string>
+  <string id="583">Ricorda modalità di visualizzazione di ogni cartella</string>
   <string id="584">Ascendente</string>
   <string id="585">Discendente</string>
   <string id="586">Modifica Playlist</string>
@@ -660,6 +664,12 @@
   <string id="1034">Submenu</string>
   <string id="1035">Attiva Pulsanti Submenu</string>
   <string id="1036">Preferiti</string>
+  <string id="1037">Video Plugins</string>
+  <string id="1038">Music Plugins</string>
+  <string id="1039">Picture Plugins</string>
+  <string id="1040">Caricamneto directory</string>
+  <string id="1041">Trovati %i elementi</string>
+  <string id="1042">Trovati %i di %i elementi</string>
 
   <string id="1200">SMB Client</string>
   <string id="1202">Workgroup</string>
@@ -724,6 +734,9 @@
   <string id="1411">con</string> 
   <string id="1412">ventilato</string> 
   <string id="1413">drizzle</string>
+  <string id="1414">Tempeste</string>
+<!-- strings through to 1450 reserved for weather translation -->
+
   <string id="2050">Durata:</string>
 
   <string id="4501">Tipo LCD</string>
@@ -889,6 +902,10 @@
   <string id="13007">Usa Percorso Dashboard Personale</string>
 
   <string id="13100">Filtro Sfarfallio</string>
+  <string id="13105">Vertical Blank Sync</string>
+  <string id="13106">Disattivato</string>
+  <string id="13107">Attivo Durante la Riproduzione Video</string>
+  <string id="13108">Sempre Attivo</string>
 
   <string id="13150">HDD Key:</string>
   <string id="13151">HDD Temp:</string>
@@ -930,7 +947,7 @@
   <string id="13211">Allarme!</string>
   <string id="13212">Annullato con ancora %im%is</string>
 
-  <string id="13249">Cerca Sottotili nei Rar</string>
+  <string id="13249">Cerca Sottotili nei file Rar</string>
   <string id="13250">Mostra sottotili...</string>
   <string id="13251">Sposta Oggetto</string>
   <string id="13252">Sposta Oggetto Qui</string>
@@ -1039,7 +1056,7 @@
   <string id="13385">Camuffa Voce - Porta 4</string>
   <string id="13386">Usa ricerca basata sul tempo</string>
   <string id="13387">Descrizione a destra della Traccia</string>
-  <string id="13388">Presets</string>
+  <string id="13388">Preset</string>
   <string id="13389">Nessun preset disponibile&#10;per questo effetto grafico</string>
   <string id="13390">Nessuna impostazione disponibile&#10;per questo effetto grafico</string>
   <string id="13391">Apri / Chiudi</string>
@@ -1049,14 +1066,16 @@
   <string id="13395">Impostazioni Video</string>
   <string id="13396">Impostazioni Audio and Sottotitoli</string>
   <string id="13397">Attiva Sottotitoli</string>
-  <string id="13398">Bookmarks</string>
-  <string id="13399">Ignora iniziali nell'ordinamento</string>
+  <string id="13398">Scorciatoie</string>
+  <string id="13399">Ignora le iniziali nell'ordinamento</string>
   <string id="13400">Dissolvenza tra le tracce dell'album</string>
   <string id="13401">Mostra per %s</string>
   <string id="13402">Mostra posizione traccia</string>
   <string id="13403">Cancella Default</string>
   <string id="13404">Riprendi</string>
   <string id="13405">Trova Icona</string>
+  <string id="13406">Informazioni Immagine</string>
+  <string id="13407">%s Presets</string>
 
   <string id="14000">Unisci Volumi</string>
   <string id="14001">Dividi Volumi</string>
@@ -1079,7 +1098,7 @@
   <string id="14019">Nome o Codice Città 1</string>
   <string id="14020">Nome o Codice Città 2</string>
   <string id="14021">Nome o Codice Città 3</string>
-  <string id="14022">Archivio</string>
+  <string id="14022">Modo</string>
   <string id="14023">No TV</string>
   <string id="14024">Inserisci la città più grande vicina a te</string>
   <string id="14025">Video/Audio/DVD Cache - Harddisk</string>
@@ -1203,9 +1222,9 @@
   <string id="15103">* Tutti gli Artisti</string>
   <string id="15104">* Tutte le Canzoni</string>
   <string id="15105">* Tutti i Generi</string>
-  <string id="15106">Ricorda selezione in navigazioni successive</string>
+  <string id="15106">Ricorda selezione nelle navigazioni successive</string>
   <string id="15107">Caricando...</string>
-  <string id="15108">Suoni Navigazione</string>
+  <string id="15108">Suoni di Navigazione</string>
   <string id="15109">Default della Skin</string>
   <string id="15111">Tema della Skin</string>
   <string id="15112">Tema di Default</string>
@@ -1262,13 +1281,15 @@
   <string id="15282">Inserire il nome di un etichetta per trovarne di simili</string>
   <string id="15283">Traccce recentemente ascoltate da %name%</string>
   <string id="15284">Ascolta le %name%'s raccomandazioni Last.FM radio</string>
+  <string id="15285">Etichette preferite per l'utente %name%</string>
+  <string id="15286">Ascolta la playlist Last.FM radio di %name%</string>
 
   <string id="15300">Percorso non trovato o invalido</string>
   <string id="15301">Non è stato possibile connettersi al server</string>
   <string id="15302">Nessun server trovato</string>
   <string id="15303">Nessun Workgroup trovato</string>
 
-  <string id="15310">Apertura  bookmark multipercorso</string>
+  <string id="15310">Apertura sorgente multipercorso</string>
   <string id="15311">Percorso:</string>
 
   <string id="16000">Generale</string>
@@ -1394,7 +1415,7 @@
   <string id="20078">- da impostare -</string>
   <string id="20079">Attiva Animazioni</string>
   <string id="20080">Disattiva RSS durante Musica</string>
-  <string id="20081">Attiva Pulsanti Preferiti</string>
+  <string id="20081">Attiva Pulsanti Scorciatoie</string>
   <string id="20082">Mostra Informazioni XLink Kai</string>
   <string id="20083">Mostra Informazioni Musica</string>
   <string id="20084">Mostra Informazione Meteo</string>
@@ -1595,6 +1616,14 @@
   <string id="20378">Aggiorna info per tutti gli episodi?</string>
   <string id="20379">La cartella  contiene una sola serie TV</string>
   <string id="20380">Escludi cartella dallo scan</string>
+  <string id="20381">Speciali</string>
+  <string id="20382">Scarica automaticamente le icone della stagione</string>
+  <string id="20383">La Cartella contiene un solo Video</string>
+  <string id="20384">Collega a Serie TV</string>
+  <string id="20385">Remuovi Collegamento a Serie TV</string>
+  <string id="20386">Film Aggiunti di Recente</string>
+  <string id="20387">Episodi Aggiunti di Recente</string>
+  <string id="20388">Studios</string>
 
   <!-- up to 21329 is reserved for the video db !! !-->
 
@@ -1622,7 +1651,7 @@
   <string id="21366">Directory Sottotitoli Personalizzata</string>
   <string id="21367">Film &amp; Directory Sottotitoli Alternativa</string>
   
-  <string id="21370">Suoni Navigazione Attivi Durante il Playback</string>  
+  <string id="21370">Suoni di Navigazione Attivi Durante il Playback</string>  
   <string id="21371">Icone</string>
   <string id="21372">Regione Player DVD Forzata</string>
   <string id="21373">Hardware Video</string>
@@ -1634,7 +1663,7 @@
   <string id="21379">Attiva 720p</string>
   <string id="21380">Attiva 1080i</string>
   <string id="21381">Inserire Nome di una Nuova Playlist</string>
-  <string id="21382">Disattiva pulsanti Aggiunta sorgenti nelle liste file</string>
+  <string id="21382">Disattiva pulsanti Aggiunta Sorgenti nelle liste file</string>
   <string id="21383">Attiva le Scrollbars</string>
   <string id="21384">Rendi filtro Già Visti alternabile nell'archivio video</string>
   <string id="21385">Apri</string>
@@ -1642,6 +1671,7 @@
   <string id="21386">Regolazione Livello Acustico</string>
   <string id="21387">Veloce</string>
   <string id="21388">Silenzioso</string>
+  <string id="21389">Attiva Sfondi Personalizzati</string>
   
   <string id="21390">Regolazione Livello Potenza</string>
   <string id="21391">Potenza Alta</string>
@@ -1654,6 +1684,7 @@
   <string id="21397">Pixel Shader Alta Qualità V2</string>	
   
   <string id="21398">Attiva Playlist all'Avvio</string>
+  <string id="21399">Usa Animazioni Tween</string>
 
   <string id="21400">contiene</string>
   <string id="21401">non contiene</string>
@@ -1686,7 +1717,67 @@
   <string id="21435">Modifica</string>
   <string id="21436">%i canzoni</string>
   <string id="21437">Nuova Smart Playlist...</string>
+  <string id="21438">%c Drive</string>
+  <string id="21439">Modifica Regole del Party Mode</string>
 
+  <string id="21800">Nome File</string>
+  <string id="21801">Percorso File</string>
+  <string id="21802">Dimensione File</string>
+  <string id="21803">Data/Ora File</string>
+  <string id="21804">Slide Index</string>
+  <string id="21805">Risoluzione</string>
+  <string id="21806">Commento</string>
+  <string id="21807">Colori/bn</string>
+  <string id="21808">Processo Jpeg</string>
+
+  <string id="21820">Data/Ora</string>
+  <string id="21821">Descrizione</string>
+  <string id="21822">Marca Fotocamera</string>
+  <string id="21823">Modello Fotocamera</string>
+  <string id="21824">Commento Exif</string>
+  <string id="21825">Firmware</string>
+  <string id="21826">Apertura</string>
+  <string id="21827">Lunghezza Focale</string>
+  <string id="21828">Distana di Fuoco</string>
+  <string id="21829">Esposizione</string>
+  <string id="21830">Tempo Esposizione</string>
+  <string id="21831">Bias Esposizione</string>
+  <string id="21832">Modalità Esposizione</string>
+  <string id="21833">Flash Usato</string>
+  <string id="21834">Bilanciamento dle Bianco</string>
+  <string id="21835">Sorgente di Luce</string>
+  <string id="21836">Modalità di Misura</string>
+  <string id="21837">ISO</string>
+  <string id="21838">Zoom Digitale</string>
+  <string id="21839">Ampiezza CCD</string>
+  <string id="21840">Latitudine GPS</string>
+  <string id="21841">Longitudine GPS</string>
+  <string id="21842">Altitudine GPS</string>
+  <string id="21843">Orientamento</string>
+
+  <string id="21860">Categorie Supplementari</string>
+  <string id="21861">Keywords</string>
+  <string id="21862">Titolo</string>
+  <string id="21863">Autore</string>
+  <string id="21864">Testata</string>
+  <string id="21865">Instruzioni Speciali</string>
+  <string id="21866">Categoria</string>
+  <string id="21867">Byline</string>
+  <string id="21868">Titolo Byline</string>
+  <string id="21869">Crediti</string>
+  <string id="21870">Sorgente</string>
+  <string id="21871">Avviso Copyright</string>
+  <string id="21872">Nome Oggetto</string>
+  <string id="21873">Città</string>
+  <string id="21874">Stato</string>
+  <string id="21875">Nazione</string>
+  <string id="21876">Referenza Originale Tx</string>
+  <string id="21877">Data Creazione</string>
+  <string id="21878">Copyright Flag</string>
+  <string id="21879">Country Code</string>
+  <string id="21880">Reference Service</string>
+  <string id="21881">Attiva UPnP Renderer</string>
+  <string id="21882">Prova a saltare l'introduzione prima del Menu DVD</string>
 
   <string id="29999">Applica Impostazioni Flicker Filter ai Giochi</string>
 </strings>

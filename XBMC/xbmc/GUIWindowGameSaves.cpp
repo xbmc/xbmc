@@ -132,7 +132,7 @@ bool CGUIWindowGameSaves::OnMessage(CGUIMessage& message)
         if (shares[iIndex].m_iHasLock == 2)
         {
           CFileItem item(shares[iIndex]);
-          if (!g_passwordManager.IsItemUnlocked(&item,"myprograms"))
+          if (!g_passwordManager.IsItemUnlocked(&item,"programs"))
           {
             m_vecItems.m_strPath = ""; // no u don't
             bDoStuff = false;

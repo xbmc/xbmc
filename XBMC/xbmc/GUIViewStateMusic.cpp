@@ -442,9 +442,9 @@ void CGUIViewStateWindowMusicNav::SaveViewState()
 void CGUIViewStateWindowMusicNav::AddOnlineShares()
 {
   if (!g_guiSettings.GetBool("network.enableinternet")) return;
-  for (int i = 0; i < (int)g_settings.m_vecMyMusicShares.size(); ++i)
+  for (int i = 0; i < (int)g_settings.m_musicSources.size(); ++i)
   {
-    CShare share = g_settings.m_vecMyMusicShares.at(i);
+    CShare share = g_settings.m_musicSources.at(i);
     if (share.strPath.Find("shout://www.shoutcast.com/sbin/newxml.phtml") == 0)//shoutcast shares
     {
       share.m_strThumbnailImage="defaultFolderBig.png";
@@ -531,7 +531,7 @@ void CGUIViewStateWindowMusicSongs::SaveViewState()
 
 VECSHARES& CGUIViewStateWindowMusicSongs::GetShares()
 {
-  return g_settings.m_vecMyMusicShares;
+  return g_settings.m_musicSources;
 }
 
 CGUIViewStateWindowMusicPlaylist::CGUIViewStateWindowMusicPlaylist(const CFileItemList& items) : CGUIViewStateWindowMusic(items)

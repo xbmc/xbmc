@@ -671,6 +671,7 @@
   <string id="1040">Loading directory</string>
   <string id="1041">Retrieved %i items</string>
   <string id="1042">Retrieved %i of %i items</string>
+  <string id="1043">Program Plugins</string>
 
   <string id="1200">SMB Client</string>
   <string id="1202">Workgroup</string>
@@ -1781,7 +1782,8 @@
   <string id="21880">Reference Service</string>
   <string id="21881">Enable UPnP Renderer</string>
   <string id="21882">Attempt to skip introduction before DVD Menu</string>
-
+  <string id="21883">Ripped Audio CDs</string>
+ 
   <!-- strings 21900 thru 21999 reserved for slideshow info -->
 
   <string id="29999">Apply Flicker Filter Setting to Games</string>

@@ -60,7 +60,7 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
       // a quickpath overrides the a default parameter
       if (m_vecItems.m_strPath == "?" && strDestination.IsEmpty())
       {
-        m_vecItems.m_strPath = strDestination = g_stSettings.m_szDefaultVideos;
+        m_vecItems.m_strPath = strDestination = g_settings.m_defaultVideoSource;
         CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
       }
 
