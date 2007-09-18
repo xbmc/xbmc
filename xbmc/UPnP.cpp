@@ -46,6 +46,24 @@
 
 NPT_SET_LOCAL_LOGGER("xbmc.upnp")
 
+typedef struct {
+  const char* extension;
+  const char* mimetype;
+} mimetype_extension_struct;
+
+static const mimetype_extension_struct mimetype_extension_map[] = {
+    {"mp3",  "audio/mpeg"},
+    {"wma",  "audio/x-ms-wma"},
+    {"wav",  "audio/wav"},
+    {"wmv",  "video/x-ms-wmv"},
+    {"mpg",  "video/mpeg"},
+    {"mpeg", "video/mpeg"},
+    {"avi",  "video/avi"},
+    {"jpg",  "image/jpeg"},
+    {"png",  "image/png"},
+    {NULL, NULL}
+};
+
 /*----------------------------------------------------------------------
 |   static
 +---------------------------------------------------------------------*/
@@ -208,13 +226,67 @@ private:
         NPT_SocketInfo* info = NULL,
         const char*     parent_id = NULL);
 
+    NPT_Result       BuildResponse(
+        PLT_ActionReference& action,
+        CFileItemList& items,
+        NPT_SocketInfo* info,
+        NPT_String &object_id);
+
+
     static NPT_String GetParentFolder(NPT_String file_path) {       
         int index = file_path.ReverseFind("\\");
         if (index == -1) return "";
 
         return file_path.Left(index);
     }
+
+    static NPT_String GetProtocolInfo(const CFileItem* item, const NPT_String& protocol);
 };
+
+NPT_String
+CUPnPServer::GetProtocolInfo(const CFileItem* item, const NPT_String& protocol)
+{
+    NPT_String proto = protocol;
+    /* fixup the protocol */
+    if (proto.IsEmpty()) {
+        proto = item->GetAsUrl().GetProtocol();
+        if (proto == "http") {
+            proto = "http-get";
+        }
+    }
+    NPT_String ext = CUtil::GetExtension(item->m_strPath).c_str();
+    if( item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty() ) {
+        ext = CUtil::GetExtension(item->GetVideoInfoTag()->m_strFileNameAndPath);
+    } else if( item->HasMusicInfoTag() && !item->GetMusicInfoTag()->GetURL().IsEmpty() ) {
+        ext = CUtil::GetExtension(item->GetMusicInfoTag()->GetURL());
+    }
+    ext.TrimLeft('.');
+    ext.ToLowercase();
+
+
+    /* we need a valid extension to retrieve the mimetype for the protocol info */
+    NPT_String content = item->GetContentType().c_str();
+    if( content.IsEmpty() || content == "application/octet-stream" ) {
+        content == "application/octet-stream";
+        const mimetype_extension_struct* mapping = mimetype_extension_map;
+        while( mapping->extension ) {
+            if( ext == mapping->extension ) {
+                content = mapping->mimetype;
+                break;
+            }
+            mapping++;
+        }
+    }
+
+    /* setup dlna strings, wish i knew what all of they mean */
+    NPT_String extra = "DLNA.ORG_OP=01;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01500000000000000000000000000000";
+    if( ext == "mp3" || content == "audio/mpeg" ) {
+        extra.Insert("DLNA.ORG_PN=MP3;");
+    }
+
+    NPT_String info = proto + ":*:" + content + ":" + extra;
+    return info;
+}
 
 /*----------------------------------------------------------------------
 |   PLT_FileMediaServer::BuildObject
@@ -250,7 +322,7 @@ CUPnPServer::BuildObject(CFileItem*      item,
 
         /* Setup object type */
         if( item->IsMusicDb() ) {
-            object->m_ObjectClass.type = "object.item.audioitem";
+            object->m_ObjectClass.type = "object.item.audioItem.musicTrack";
           
             if( item->HasMusicInfoTag() ) {
                 CMusicInfoTag *tag = item->GetMusicInfoTag();
@@ -263,14 +335,14 @@ CUPnPServer::BuildObject(CFileItem*      item,
                 }
 
                 object->m_Affiliation.album = tag->GetAlbum();
-                object->m_People.artist = tag->GetArtist();
+                object->m_People.artist = tag->GetAlbumArtist();
                 object->m_Creator = tag->GetArtist();
                 object->m_MiscInfo.original_track_number = tag->GetTrackNumber();
                 resource.m_Duration = tag->GetDuration();                
             }
 
         } else if( item->IsVideoDb() ) {
-            object->m_ObjectClass.type = "object.item.videoitem";
+            object->m_ObjectClass.type = "object.item.videoItem.movie";
 
             if( item->HasVideoInfoTag() ) {
                 CVideoInfoTag *tag = item->GetVideoInfoTag();
@@ -297,30 +369,22 @@ CUPnPServer::BuildObject(CFileItem*      item,
             }
 
         } else if( item->IsAudio() ) {
-            object->m_ObjectClass.type = "object.item.audioitem";
+            object->m_ObjectClass.type = "object.item.audioItem.musicTrack";
         } else if( item->IsVideo() ) {
-            object->m_ObjectClass.type = "object.item.videoitem";
+            object->m_ObjectClass.type = "object.item.videoItem.movie";
         } else if( item->IsPicture() ) {
-            object->m_ObjectClass.type = "object.item.imageitem";
+            object->m_ObjectClass.type = "object.item.imageItem.photo";
+        } else {
+            object->m_ObjectClass.type = "object.item";
         }
 
-        /* we need a valid extension to retrieve the mimetype for the protocol info */
-        CStdString ext = CUtil::GetExtension((const char*)file_path);
-
-        /* if we still miss a object class, try set it now from extension */
-        if( object->m_ObjectClass.type == "object.item" || object->m_ObjectClass.type == "" ) {
-            object->m_ObjectClass.type = PLT_MediaItem::GetUPnPClassFromExt(ext);
-        }
-
-        /* Set the protocol Info from the extension */
-        resource.m_ProtocolInfo = PLT_MediaItem::GetProtInfoFromExt(ext);
-        if (resource.m_ProtocolInfo.GetLength() == 0)  goto failure;
 
         /* Set the resource file size */
         resource.m_Size = (NPT_Integer)item->m_dwSize;
 
         // if the item is remote, add a direct link to the item
         if( CUtil::IsRemote ( (const char*)file_path ) ) {
+            resource.m_ProtocolInfo = GetProtocolInfo(item, "");
             resource.m_Uri = file_path;
             object->m_Resources.Add(resource);
         }
@@ -334,8 +398,8 @@ CUPnPServer::BuildObject(CFileItem*      item,
             query.AddField("path", file_path);
             uri.SetHost(*ip);
             uri.SetQuery(query.ToString());
+            resource.m_ProtocolInfo = GetProtocolInfo(item, "http-get");
             resource.m_Uri = uri.ToString();
-            
             object->m_Resources.Add(resource);
 
             ++ip;
@@ -349,8 +413,28 @@ CUPnPServer::BuildObject(CFileItem*      item,
         container->m_ObjectClass.type = "object.container";
         container->m_ChildrenCount = -1;
 
+        /* this might be overkill, but hey */
         if(item->IsMusicDb()) {
+            MUSICDATABASEDIRECTORY::NODE_TYPE node = CMusicDatabaseDirectory::GetDirectoryChildType(item->m_strPath);
+            switch(node) {
+                case MUSICDATABASEDIRECTORY::NODE_TYPE_ARTIST:
+                  container->m_ObjectClass.type += "persion.artist";
+                  break;
+                case MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM:
+                case MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM_COMPILATIONS:
+                case MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM_RECENTLY_ADDED:
+                case MUSICDATABASEDIRECTORY::NODE_TYPE_YEAR_ALBUM:
+                  container->m_ObjectClass.type += "album.musicAlbum";
+                  break;
+                case MUSICDATABASEDIRECTORY::NODE_TYPE_GENRE:
+                  container->m_ObjectClass.type += "genre.musicGenre";
+            }
         } else if(item->IsVideoDb()) {
+            VIDEODATABASEDIRECTORY::NODE_TYPE node = CVideoDatabaseDirectory::GetDirectoryChildType(item->m_strPath);
+            switch(node) {
+                case VIDEODATABASEDIRECTORY::NODE_TYPE_GENRE:
+                  container->m_ObjectClass.type += "genre.movieGenre";
+            }
         }
 
         /* Get the number of children for this container */
@@ -760,19 +844,22 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference& action,
         id = "virtualpath://upnproot/";
     }
 
-    if (id.StartsWith("virtualpath://")) {
-        CUPnPVirtualPathDirectory dir;
-        if (!dir.GetDirectory((const char*)id, items)) {
-            /* error */
-            NPT_LOG_FINE("CUPnPServer::OnBrowseDirectChildren - ObjectID not found.")
-            action->SetError(701, "No Such Object.");
-            return NPT_SUCCESS;
-        }
-    } else {
-        items.m_strPath = id;
-        if (!items.Load()) {
-            // cache anything that takes more than a second to retreive
-            DWORD time = GetTickCount() + 1000;
+    items.m_strPath = id;
+    if (!items.Load()) {
+        // cache anything that takes more than a second to retreive
+        DWORD time = GetTickCount() + 1000;
+
+        if (id.StartsWith("virtualpath://")) {
+
+            CUPnPVirtualPathDirectory dir;
+            if (!dir.GetDirectory((const char*)id, items)) {
+                /* error */
+                NPT_LOG_FINE("CUPnPServer::OnBrowseDirectChildren - ObjectID not found.")
+                action->SetError(701, "No Such Object.");
+                return NPT_SUCCESS;
+            }
+
+        } else {
 
             if (!CDirectory::GetDirectory((const char*)id, items)) {
                 /* error */
@@ -780,11 +867,19 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference& action,
                 action->SetError(701, "No Such Object.");
                 return NPT_SUCCESS;
             }
-            if(items.GetCacheToDisc() || time < GetTickCount())
-              items.Save();
+
         }
+        if(items.GetCacheToDisc() || time < GetTickCount())
+          items.Save();
     }
 
+
+    return BuildResponse(action, items, info, id);
+}
+
+NPT_Result
+CUPnPServer::BuildResponse(PLT_ActionReference &action, CFileItemList &items, NPT_SocketInfo *info, NPT_String &object_id)
+{
     NPT_String filter;
     NPT_String startingInd;
     NPT_String reqCount;
@@ -793,43 +888,37 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference& action,
     NPT_CHECK_SEVERE(action->GetArgumentValue("StartingIndex", startingInd));
     NPT_CHECK_SEVERE(action->GetArgumentValue("RequestedCount", reqCount));   
 
-    unsigned long start_index, req_count;
-    if (NPT_FAILED(startingInd.ToInteger(start_index)) ||
-        NPT_FAILED(reqCount.ToInteger(req_count))) {
-        return NPT_FAILURE;
-    }
+    unsigned long start_index, stop_index, req_count;
+    NPT_CHECK_SEVERE(startingInd.ToInteger(start_index));
+    NPT_CHECK_SEVERE(reqCount.ToInteger(req_count));
         
-    unsigned long cur_index = 0;
-    unsigned long num_returned = 0;
-    unsigned long total_matches = 0;
-    //unsigned long update_id = 0;
+    stop_index = min(start_index + req_count, (unsigned long)items.Size());
+
     NPT_String didl = didl_header;
     PLT_MediaObjectReference item;
-    for (int i=0; i < (int) items.Size(); ++i) {
+    for (unsigned long i=start_index; i < stop_index; ++i) {
         item = Build(items[i], true, info, object_id);
-        if (!item.IsNull()) {
-            if ((cur_index >= start_index) && ((num_returned < req_count) || (req_count == 0))) {
-                NPT_String tmp;
-                NPT_CHECK(PLT_Didl::ToDidl(*item.AsPointer(), filter, tmp));
-
-                // Neptunes string growing is dead slow for small additions
-                if(didl.GetCapacity() < tmp.GetLength() + didl.GetLength()) {
-                    didl.Reserve(didl.GetCapacity()*4);
-                }
-
-                didl += tmp;
-                num_returned++;
-            }
-            cur_index++;
-            total_matches++;        
+        if (item.IsNull()) {
+            /* create a dummy object */
+            item = new PLT_MediaObject();
+            item->m_Title = items[i]->GetLabel();
         }
+
+        NPT_String tmp;
+        NPT_CHECK(PLT_Didl::ToDidl(*item.AsPointer(), filter, tmp));
+
+        // Neptunes string growing is dead slow for small additions
+        if(didl.GetCapacity() < tmp.GetLength() + didl.GetLength()) {
+            didl.Reserve((tmp.GetLength() + didl.GetLength())*2);
+        }
+        didl += tmp;
     }
 
     didl += didl_footer;
 
     NPT_CHECK(action->SetArgumentValue("Result", didl));
-    NPT_CHECK(action->SetArgumentValue("NumberReturned", NPT_String::FromInteger(num_returned)));
-    NPT_CHECK(action->SetArgumentValue("TotalMatches", NPT_String::FromInteger(total_matches)));
+    NPT_CHECK(action->SetArgumentValue("NumberReturned", NPT_String::FromInteger(stop_index - start_index)));
+    NPT_CHECK(action->SetArgumentValue("TotalMatches", NPT_String::FromInteger(items.Size())));
     NPT_CHECK(action->SetArgumentValue("UpdateId", "1"));
     return NPT_SUCCESS;
 }

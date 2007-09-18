@@ -2804,7 +2804,7 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
         {
           // check path
           CStdString strPath;
-          if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
+          if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_videoSources))
             if (idContent == VIDEODB_CONTENT_MOVIES)
               mapGenres.insert(pair<long, pair<CStdString,bool> >(lGenreId, pair<CStdString,bool>(strGenre,m_pDS->fv(3).get_asBool())));
             else
@@ -2913,7 +2913,7 @@ bool CVideoDatabase::GetStudiosNav(const CStdString& strBaseDir, CFileItemList& 
         {
           // check path
           CStdString strPath;
-          if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
+          if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_videoSources))
             if (idContent == VIDEODB_CONTENT_MOVIES)
               mapStudios.insert(pair<long, pair<CStdString,bool> >(lStudioId, pair<CStdString,bool>(strStudio,m_pDS->fv(3).get_asBool())));
             /*else
@@ -3023,7 +3023,7 @@ bool CVideoDatabase::GetDirectorsNav(const CStdString& strBaseDir, CFileItemList
         {
           // check path
           CStdString strPath;
-          if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
+          if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_videoSources))
             if (idContent == VIDEODB_CONTENT_MOVIES)
               mapDirector.insert(pair<long, pair<CStdString,bool> >(lDirectorId, pair<CStdString,bool>(strDirector,m_pDS->fv(3).get_asBool())));
             else
@@ -3129,7 +3129,7 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
         if (it == mapActors.end())
         {
           // check path
-          if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
+          if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_videoSources))
             if (idContent == VIDEODB_CONTENT_MOVIES)
               mapActors.insert(pair<long, pair<CStdString,bool> >(lActorId, pair<CStdString,bool>(strActor,m_pDS->fv(3).get_asBool())));
             else
@@ -3228,7 +3228,7 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
         if (it == mapYears.end())
         {
           // check path
-          if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
+          if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_videoSources))
           {
             CStdString year;
             year.Format("%d", lYear);
@@ -3357,7 +3357,7 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
         long lYear = m_pDS->fv(0).get_asLong();
         it = mapYears.find(lYear);
         // check path
-        if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
+        if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_videoSources))
         {
           m_pDS->next();
           continue;
@@ -3522,7 +3522,7 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
             long lMovieId = m_pDS->fv("movie.idMovie").get_asLong();            
             CVideoInfoTag movie = GetDetailsForMovie(m_pDS);
             if (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE || g_passwordManager.bMasterUser ||
-                g_passwordManager.IsDatabasePathUnlocked(movie.m_strPath,g_settings.m_vecMyVideoShares))
+                g_passwordManager.IsDatabasePathUnlocked(movie.m_strPath,g_settings.m_videoSources))
             {
               CFileItem* pItem=new CFileItem(movie);
               CStdString strDir;
@@ -3568,7 +3568,7 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
       long lMovieId = m_pDS->fv("movie.idMovie").get_asLong();
       CVideoInfoTag movie = GetDetailsForMovie(m_pDS);
       if (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE || g_passwordManager.bMasterUser ||
-          g_passwordManager.IsDatabasePathUnlocked(movie.m_strPath,g_settings.m_vecMyVideoShares))
+          g_passwordManager.IsDatabasePathUnlocked(movie.m_strPath,g_settings.m_videoSources))
       {
         CFileItem* pItem=new CFileItem(movie);
         CStdString strDir;
@@ -3943,7 +3943,7 @@ bool CVideoDatabase::GetRecentlyAddedMoviesNav(const CStdString& strBaseDir, CFi
       long lMovieId = m_pDS->fv("movie.idMovie").get_asLong();
       CVideoInfoTag movie = GetDetailsForMovie(m_pDS);
       if (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE || g_passwordManager.bMasterUser ||
-          g_passwordManager.IsDatabasePathUnlocked(movie.m_strPath,g_settings.m_vecMyVideoShares))
+          g_passwordManager.IsDatabasePathUnlocked(movie.m_strPath,g_settings.m_videoSources))
       {
         CFileItem* pItem=new CFileItem(movie);
         CStdString strDir;
@@ -4233,7 +4233,7 @@ void CVideoDatabase::GetMovieGenresByName(const CStdString& strSearch, CFileItem
     while (!m_pDS->eof())
     {
       if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
-        if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
+        if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_videoSources))
         {
           m_pDS->next();
           continue;
@@ -4273,7 +4273,7 @@ void CVideoDatabase::GetTvShowGenresByName(const CStdString& strSearch, CFileIte
     while (!m_pDS->eof())
     {
       if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
-        if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
+        if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_videoSources))
         {
           m_pDS->next();
           continue;
@@ -4313,7 +4313,7 @@ void CVideoDatabase::GetMovieActorsByName(const CStdString& strSearch, CFileItem
     while (!m_pDS->eof())
     {
       if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
-        if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
+        if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_videoSources))
         {
           m_pDS->next();
           continue;
@@ -4353,7 +4353,7 @@ void CVideoDatabase::GetTvShowsActorsByName(const CStdString& strSearch, CFileIt
     while (!m_pDS->eof())
     {
       if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
-        if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
+        if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_videoSources))
         {
           m_pDS->next();
           continue;
@@ -4393,7 +4393,7 @@ void CVideoDatabase::GetMoviesByName(const CStdString& strSearch, CFileItemList&
     while (!m_pDS->eof())
     {
       if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
-        if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
+        if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_videoSources))
         {
           m_pDS->next();
           continue;
@@ -4436,7 +4436,7 @@ void CVideoDatabase::GetTvShowsByName(const CStdString& strSearch, CFileItemList
     while (!m_pDS->eof())
     {
       if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
-        if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
+        if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_videoSources))
         {
           m_pDS->next();
           continue;
@@ -4479,7 +4479,7 @@ void CVideoDatabase::GetEpisodesByName(const CStdString& strSearch, CFileItemLis
     while (!m_pDS->eof())
     {
       if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
-        if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
+        if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_videoSources))
         {
           m_pDS->next();
           continue;
@@ -4517,7 +4517,7 @@ void CVideoDatabase::GetEpisodesByPlot(const CStdString& strSearch, CFileItemLis
     while (!m_pDS->eof())
     {
       if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
-        if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
+        if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_videoSources))
         {
           m_pDS->next();
           continue;
@@ -4556,7 +4556,7 @@ void CVideoDatabase::GetMovieDirectorsByName(const CStdString& strSearch, CFileI
     while (!m_pDS->eof())
     {
       if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
-        if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
+        if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_videoSources))
         {
           m_pDS->next();
           continue;
@@ -4598,7 +4598,7 @@ void CVideoDatabase::GetTvShowsDirectorsByName(const CStdString& strSearch, CFil
     while (!m_pDS->eof())
     {
       if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
-        if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_vecMyVideoShares))
+        if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_videoSources))
         {
           m_pDS->next();
           continue;
@@ -4672,7 +4672,9 @@ void CVideoDatabase::CleanDatabase()
       if (CUtil::IsOnDVD(fullPath) ||
           CUtil::IsMemCard(fullPath) ||
           url.GetProtocol() == "http" ||
+          url.GetProtocol() == "https" ||
           url.GetProtocol() == "ftp" ||
+          url.GetProtocol() == "ftps" ||
           !CFile::Exists(fullPath))
       { // mark for deletion
         filesToDelete += m_pDS->fv("files.idFile").get_asString() + ",";

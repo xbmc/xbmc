@@ -49,8 +49,8 @@ public:
 
   float m_amount;
 
-  void UpdateCondition();
-  void SetInitialCondition();
+  void UpdateCondition(DWORD contextWindow);
+  void SetInitialCondition(DWORD contextWindow);
 
 private:
   enum ANIM_REPEAT { ANIM_REPEAT_NONE = 0, ANIM_REPEAT_PULSE, ANIM_REPEAT_LOOP };
@@ -69,8 +69,8 @@ private:
   float m_endY;
   float m_centerX;
   float m_centerY;
-  int m_startAlpha;
-  int m_endAlpha;
+  float m_startAlpha;
+  float m_endAlpha;
 
   // timing variables
   unsigned int m_start;

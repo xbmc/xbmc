@@ -95,6 +95,14 @@ bool CGUIControlFactory::GetFloatRange(const TiXmlNode* pRootNode, const char* s
   return true;
 }
 
+// TODO: Extend this to DWORD and Integer's ???
+bool CGUIControlFactory::GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value)
+{
+  const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
+  if (!pNode || !pNode->FirstChild()) return false;
+  return g_SkinInfo.ResolveConstant(pNode->FirstChild()->Value(), value);
+}
+
 bool CGUIControlFactory::GetMultipleString(const TiXmlNode* pRootNode, const char* strTag, vector<CStdString>& vecStringValue)
 {
   const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
@@ -176,18 +184,17 @@ bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strT
     StringUtils::SplitString(border, ",", borders);
     if (borders.size() == 1)
     {
-      float left = (float)atof(borders[0].c_str());
-      image.border.left = left;
-      image.border.top = left;
-      image.border.right = left;
-      image.border.bottom = left;
+      g_SkinInfo.ResolveConstant(borders[0], image.border.left);
+      image.border.top = image.border.left;
+      image.border.right = image.border.left;
+      image.border.bottom = image.border.left;
     }
     else if (borders.size() == 4)
     {
-      image.border.left = (float)atof(borders[0].c_str());
-      image.border.top = (float)atof(borders[1].c_str());
-      image.border.right = (float)atof(borders[2].c_str());
-      image.border.bottom = (float)atof(borders[3].c_str());
+      g_SkinInfo.ResolveConstant(borders[0], image.border.left);
+      g_SkinInfo.ResolveConstant(borders[1], image.border.top);
+      g_SkinInfo.ResolveConstant(borders[2], image.border.right);
+      g_SkinInfo.ResolveConstant(borders[3], image.border.bottom);
     }
   }
   image.orientation = 0;
@@ -326,11 +333,18 @@ bool CGUIControlFactory::GetHitRect(const TiXmlNode *control, CRect &rect)
   const TiXmlElement* node = control->FirstChildElement("hitrect");
   if (node)
   {
-    double val;
-    if (node->Attribute("x", &val)) rect.x1 = (float)val;
-    if (node->Attribute("y", &val)) rect.y1 = (float)val;
-    if (node->Attribute("w", &val)) rect.x2 = rect.x1 + (float)val;
-    if (node->Attribute("h", &val)) rect.y2 = rect.y1 + (float)val;
+    if (node->Attribute("x")) g_SkinInfo.ResolveConstant(node->Attribute("x"), rect.x1);
+    if (node->Attribute("y")) g_SkinInfo.ResolveConstant(node->Attribute("y"), rect.y1);
+    if (node->Attribute("w")) 
+    {
+      g_SkinInfo.ResolveConstant(node->Attribute("w"), rect.x2);
+      rect.x2 += rect.x1;
+    }
+    if (node->Attribute("h"))
+    {
+      g_SkinInfo.ResolveConstant(node->Attribute("h"), rect.y2);
+      rect.y2 += rect.y1;
+    }
     return true;
   }
   return false;
@@ -405,7 +419,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   int iUrlSet=0;
   int iToggleSelect;
 
-  DWORD dwItems;
   float spinWidth = 16;
   float spinHeight = 16;
   float spinPosX, spinPosY;
@@ -544,8 +557,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   // TODO: Perhaps we should check here whether id is valid for focusable controls
   // such as buttons etc.  For labels/fadelabels/images it does not matter
 
-  XMLUtils::GetFloat(pControlNode, "posx", posX);
-  XMLUtils::GetFloat(pControlNode, "posy", posY);
+  GetFloat(pControlNode, "posx", posX);
+  GetFloat(pControlNode, "posy", posY);
   // Convert these from relative coords
   CStdString pos;
   XMLUtils::GetString(pControlNode, "posx", pos);
@@ -555,8 +568,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   if (pos.Right(1) == "r")
     posY = (rect.bottom - rect.top) - posY;
 
-  XMLUtils::GetFloat(pControlNode, "width", width);
-  XMLUtils::GetFloat(pControlNode, "height", height);
+  GetFloat(pControlNode, "width", width);
+  GetFloat(pControlNode, "height", height);
 
   // adjust width and height accordingly for groups.  Groups should
   // take the width/height of the parent (adjusted for positioning)
@@ -572,8 +585,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   hitRect.SetRect(posX, posY, posX + width, posY + height);
   GetHitRect(pControlNode, hitRect);
 
-  XMLUtils::GetFloat(pControlNode, "controloffsetx", controlOffsetX);
-  XMLUtils::GetFloat(pControlNode, "controloffsety", controlOffsetY);
+  GetFloat(pControlNode, "controloffsetx", controlOffsetX);
+  GetFloat(pControlNode, "controloffsety", controlOffsetY);
 
   if (!XMLUtils::GetDWORD(pControlNode, "onup" , up ))
   {
@@ -609,12 +622,12 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetColor(pControlNode, "disabledcolor", labelInfo.disabledColor);
   GetColor(pControlNode, "shadowcolor", labelInfo.shadowColor);
   GetColor(pControlNode, "selectedcolor", labelInfo.selectedColor);
-  XMLUtils::GetFloat(pControlNode, "textoffsetx", labelInfo.offsetX);
-  XMLUtils::GetFloat(pControlNode, "textoffsety", labelInfo.offsetY);
-  XMLUtils::GetFloat(pControlNode, "textxoff", labelInfo.offsetX);
-  XMLUtils::GetFloat(pControlNode, "textyoff", labelInfo.offsetY);
-  XMLUtils::GetFloat(pControlNode, "textxoff2", labelInfo2.offsetX);
-  XMLUtils::GetFloat(pControlNode, "textyoff2", labelInfo2.offsetY);
+  GetFloat(pControlNode, "textoffsetx", labelInfo.offsetX);
+  GetFloat(pControlNode, "textoffsety", labelInfo.offsetY);
+  GetFloat(pControlNode, "textxoff", labelInfo.offsetX);
+  GetFloat(pControlNode, "textyoff", labelInfo.offsetY);
+  GetFloat(pControlNode, "textxoff2", labelInfo2.offsetX);
+  GetFloat(pControlNode, "textyoff2", labelInfo2.offsetY);
   int angle = 0;  // use the negative angle to compensate for our vertically flipped cartesian plane
   if (XMLUtils::GetInt(pControlNode, "angle", angle)) labelInfo.angle = (float)-angle;
   CStdString strFont;
@@ -624,7 +637,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   DWORD alignY = 0;
   if (GetAlignmentY(pControlNode, "aligny", alignY))
     labelInfo.align |= alignY;
-  if (XMLUtils::GetFloat(pControlNode, "textwidth", labelInfo.width))
+  if (GetFloat(pControlNode, "textwidth", labelInfo.width))
     labelInfo.align |= XBFONT_TRUNCATED;
   labelInfo2.selectedColor = labelInfo.selectedColor;
   GetColor(pControlNode, "selectedcolor2", labelInfo2.selectedColor);
@@ -669,7 +682,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   iToggleSelect = g_infoManager.TranslateString(strToggleSelect);
   XMLUtils::GetString(pControlNode, "selected", strToggleSelect);
   iToggleSelect = g_infoManager.TranslateString(strToggleSelect);
-  XMLUtils::GetDWORD(pControlNode, "bitmaps", dwItems);
 
   XMLUtils::GetBoolean(pControlNode, "haspath", bHasPath);
 
@@ -688,15 +700,15 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     spinInfo.font = g_fontManager.GetFont(strFont);
   if (!spinInfo.font) spinInfo.font = labelInfo.font;
 
-  XMLUtils::GetFloat(pControlNode, "spinwidth", spinWidth);
-  XMLUtils::GetFloat(pControlNode, "spinheight", spinHeight);
-  XMLUtils::GetFloat(pControlNode, "spinposx", spinPosX);
-  XMLUtils::GetFloat(pControlNode, "spinposy", spinPosY);
+  GetFloat(pControlNode, "spinwidth", spinWidth);
+  GetFloat(pControlNode, "spinheight", spinHeight);
+  GetFloat(pControlNode, "spinposx", spinPosX);
+  GetFloat(pControlNode, "spinposy", spinPosY);
 
-  XMLUtils::GetFloat(pControlNode, "markwidth", checkWidth);
-  XMLUtils::GetFloat(pControlNode, "markheight", checkHeight);
-  XMLUtils::GetFloat(pControlNode, "sliderwidth", sliderWidth);
-  XMLUtils::GetFloat(pControlNode, "sliderheight", sliderHeight);
+  GetFloat(pControlNode, "markwidth", checkWidth);
+  GetFloat(pControlNode, "markheight", checkHeight);
+  GetFloat(pControlNode, "sliderwidth", sliderWidth);
+  GetFloat(pControlNode, "sliderheight", sliderHeight);
   GetTexture(pControlNode, "texturecheckmark", textureCheckMark);
   GetTexture(pControlNode, "texturecheckmarknofocus", textureCheckMarkNF);
   GetTexture(pControlNode, "textureradiofocus", textureRadioFocus);
@@ -752,37 +764,37 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetTexture(pControlNode, "righttexture", textureRight);
   GetTexture(pControlNode, "overlaytexture", textureOverlay);
   GetTexture(pControlNode, "texture", texture);
-  XMLUtils::GetFloat(pControlNode, "rangemin", rMin);
-  XMLUtils::GetFloat(pControlNode, "rangemax", rMax);
+  GetFloat(pControlNode, "rangemin", rMin);
+  GetFloat(pControlNode, "rangemax", rMax);
   GetColor(pControlNode, "colorkey", dwColorKey);
 
   XMLUtils::GetString(pControlNode, "suffix", strSuffix);
 
-  XMLUtils::GetFloat(pControlNode, "itemwidth", itemWidth);
-  XMLUtils::GetFloat(pControlNode, "itemheight", itemHeight);
-  XMLUtils::GetFloat(pControlNode, "spacebetweenitems", spaceBetweenItems);
+  GetFloat(pControlNode, "itemwidth", itemWidth);
+  GetFloat(pControlNode, "itemheight", itemHeight);
+  GetFloat(pControlNode, "spacebetweenitems", spaceBetweenItems);
 
   GetTexture(pControlNode, "imagefolder", imageNoFocus);
   GetTexture(pControlNode, "imagefolderfocus", imageFocus);
-  XMLUtils::GetFloat(pControlNode, "texturewidth", textureWidth);
-  XMLUtils::GetFloat(pControlNode, "textureheight", textureHeight);
+  GetFloat(pControlNode, "texturewidth", textureWidth);
+  GetFloat(pControlNode, "textureheight", textureHeight);
 
-  XMLUtils::GetFloat(pControlNode, "thumbwidth", thumbWidth);
-  XMLUtils::GetFloat(pControlNode, "thumbheight", thumbHeight);
-  XMLUtils::GetFloat(pControlNode, "thumbposx", thumbXPos);
-  XMLUtils::GetFloat(pControlNode, "thumbposy", thumbYPos);
+  GetFloat(pControlNode, "thumbwidth", thumbWidth);
+  GetFloat(pControlNode, "thumbheight", thumbHeight);
+  GetFloat(pControlNode, "thumbposx", thumbXPos);
+  GetFloat(pControlNode, "thumbposy", thumbYPos);
 
   GetAlignment(pControlNode, "thumbalign", dwThumbAlign);
 
-  XMLUtils::GetFloat(pControlNode, "thumbwidthbig", thumbWidthBig);
-  XMLUtils::GetFloat(pControlNode, "thumbheightbig", thumbHeightBig);
-  XMLUtils::GetFloat(pControlNode, "thumbposxbig", thumbXPosBig);
-  XMLUtils::GetFloat(pControlNode, "thumbposybig", thumbYPosBig);
+  GetFloat(pControlNode, "thumbwidthbig", thumbWidthBig);
+  GetFloat(pControlNode, "thumbheightbig", thumbHeightBig);
+  GetFloat(pControlNode, "thumbposxbig", thumbXPosBig);
+  GetFloat(pControlNode, "thumbposybig", thumbYPosBig);
 
-  XMLUtils::GetFloat(pControlNode, "texturewidthbig", textureWidthBig);
-  XMLUtils::GetFloat(pControlNode, "textureheightbig", textureHeightBig);
-  XMLUtils::GetFloat(pControlNode, "itemwidthbig", itemWidthBig);
-  XMLUtils::GetFloat(pControlNode, "itemheightbig", itemHeightBig);
+  GetFloat(pControlNode, "texturewidthbig", textureWidthBig);
+  GetFloat(pControlNode, "textureheightbig", textureHeightBig);
+  GetFloat(pControlNode, "itemwidthbig", itemWidthBig);
+  GetFloat(pControlNode, "itemheightbig", itemHeightBig);
 
   int labelNumber = 0;
   if (XMLUtils::GetInt(pControlNode, "number", labelNumber))
@@ -843,8 +855,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       orientation = HORIZONTAL;
     }
   }
-  XMLUtils::GetFloat(pControlNode, "buttongap", buttonGap);
-  XMLUtils::GetFloat(pControlNode, "itemgap", buttonGap);
+  GetFloat(pControlNode, "buttongap", buttonGap);
+  GetFloat(pControlNode, "itemgap", buttonGap);
   XMLUtils::GetInt(pControlNode, "numbuttons", iNumSlots);
   XMLUtils::GetInt(pControlNode, "movement", iMovementRange);
   XMLUtils::GetInt(pControlNode, "defaultbutton", iDefaultSlot);
@@ -862,10 +874,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   XMLUtils::GetBoolean(pControlNode, "randomize", randomized);
   XMLUtils::GetBoolean(pControlNode, "loop", loop);
 
-  XMLUtils::GetFloat(pControlNode, "radiowidth", radioWidth);
-  XMLUtils::GetFloat(pControlNode, "radioheight", radioHeight);
-  XMLUtils::GetFloat(pControlNode, "radioposx", radioPosX);
-  XMLUtils::GetFloat(pControlNode, "radioposy", radioPosY);
+  GetFloat(pControlNode, "radiowidth", radioWidth);
+  GetFloat(pControlNode, "radioheight", radioHeight);
+  GetFloat(pControlNode, "radioposx", radioPosX);
+  GetFloat(pControlNode, "radioposy", radioPosY);
 
   XMLUtils::GetBoolean(pControlNode, "showonepage", showOnePage);
   XMLUtils::GetInt(pControlNode, "focusposition", focusPosition);
@@ -920,8 +932,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   if (cam)
   {
     hasCamera = true;
-    cam->Attribute("x", &camera.x);
-    cam->Attribute("y", &camera.y);
+    g_SkinInfo.ResolveConstant(cam->Attribute("x"), camera.x);
+    g_SkinInfo.ResolveConstant(cam->Attribute("x"), camera.y);
   }
 
   /////////////////////////////////////////////////////////////////////////////

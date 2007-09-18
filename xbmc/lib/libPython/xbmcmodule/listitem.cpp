@@ -350,7 +350,7 @@ namespace PYXBMC
             CStdString strActor = "";
             CStdString strRole = "";
             if (!PyGetUnicodeString(strActor, pActor, 1)) continue;
-            if (!pRole == NULL)
+            if (pRole != NULL)
               PyGetUnicodeString(strRole, pRole, 1);
             self->item->GetVideoInfoTag()->m_cast.push_back(make_pair<CStdString,CStdString>(strActor, strRole));
           }

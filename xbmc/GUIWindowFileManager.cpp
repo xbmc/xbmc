@@ -1274,7 +1274,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     // and do the popup menu
     if (CGUIDialogContextMenu::SourcesMenu("files", m_vecItems[list][item], posX, posY))
     {
-      m_rootDir.SetShares(g_settings.m_vecMyFilesShares);
+      m_rootDir.SetShares(g_settings.m_fileSources);
       if (m_Directory[1 - list].IsVirtualDirectoryRoot())
         Refresh();
       else
@@ -1419,7 +1419,7 @@ __int64 CGUIWindowFileManager::CalculateFolderSize(const CStdString &strDirector
   __int64 totalSize = 0;
   CFileItemList items;
   CVirtualDirectory rootDir;
-  rootDir.SetShares(g_settings.m_vecMyFilesShares);
+  rootDir.SetShares(g_settings.m_fileSources);
   rootDir.GetDirectory(strDirectory, items, false);
   for (int i=0; i < items.Size(); i++)
   {
@@ -1590,7 +1590,7 @@ void CGUIWindowFileManager::SetInitialPath(const CStdString &path)
   // otherwise, is this the first time accessing this window?
   else if (m_Directory[0].m_strPath == "?")
   {
-    m_Directory[0].m_strPath = strDestination = g_stSettings.m_szDefaultFiles;
+    m_Directory[0].m_strPath = strDestination = g_settings.m_defaultFileSource;
     CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
   }
   // try to open the destination path

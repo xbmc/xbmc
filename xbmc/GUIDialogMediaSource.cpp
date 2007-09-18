@@ -166,11 +166,11 @@ bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const
   VECSHARES* pShares=NULL;
   
   if (type.Equals("upnpmusic"))
-    pShares = &g_settings.m_vecUPnPMusicShares;
+    pShares = &g_settings.m_UPnPMusicSources;
   if (type.Equals("upnpvideo"))
-    pShares = &g_settings.m_vecUPnPVideoShares;
+    pShares = &g_settings.m_UPnPVideoSources;
   if (type.Equals("upnppictures"))
-    pShares = &g_settings.m_vecUPnPPictureShares;
+    pShares = &g_settings.m_UPnPPictureSources;
 
   if (pShares)
   {
@@ -227,7 +227,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
   // Browse is called.  Open the filebrowser dialog.
   // Ignore current path is best at this stage??
   CStdString path;
-  bool allowNetworkShares(m_type != "myprograms" && m_type.Left(4) != "upnp");
+  bool allowNetworkShares(m_type != "programs" && m_type.Left(4) != "upnp");
   VECSHARES extraShares;
 
   if (m_type == "music" || m_type == "upnpmusic")
@@ -247,7 +247,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     {
       CShare share2;
       share2.strPath = "special://cdrips/";
-      share2.strName = g_localizeStrings.Get(20007);
+      share2.strName = g_localizeStrings.Get(21883);
       extraShares.push_back(share2);
     }
     share1.strPath = "soundtrack://";
@@ -314,6 +314,16 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
       CShare share2;
       share2.strPath = "plugin://pictures/";
       share2.strName = g_localizeStrings.Get(1039); // Picture Plugins
+      extraShares.push_back(share2);
+    }
+  }
+  else if (m_type == "programs")
+  {
+    if (CPluginDirectory::HasPlugins("programs"))
+    {
+      CShare share2;
+      share2.strPath = "plugin://programs/";
+      share2.strName = g_localizeStrings.Get(1043); // Program Plugins
       extraShares.push_back(share2);
     }
   }
@@ -457,7 +467,7 @@ void CGUIDialogMediaSource::SetTypeOfMedia(const CStdString &type, bool editNotA
     typeStringID = 249; // "Music"
   else if (type == "video")
     typeStringID = 291;  // "Video"
-  else if (type == "myprograms")
+  else if (type == "programs")
     typeStringID = 350;  // "Programs"
   else if (type == "pictures")
     typeStringID = 1213;  // "Pictures"
