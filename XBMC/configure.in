@@ -62,6 +62,7 @@ AC_CHECK_LIB([lzo], [main],,
 AC_CHECK_LIB([smbclient], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux) )
 AC_CHECK_LIB([sqlite3], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
 AC_CHECK_LIB([asound], [main])      # check for asound library, fedora
+AC_CHECK_LIB([rt], [clock_gettime])      # check for rt library, required for clock_gettime
 
 # Checks for header files.
 AC_HEADER_DIRENT
