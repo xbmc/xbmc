@@ -95,7 +95,6 @@ bool CGUIControlFactory::GetFloatRange(const TiXmlNode* pRootNode, const char* s
   return true;
 }
 
-// TODO: Extend this to DWORD and Integer's ???
 bool CGUIControlFactory::GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value)
 {
   const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
