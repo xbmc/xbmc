@@ -1203,13 +1203,14 @@
 				</control>
 				<control type="label">
 					<posx>60</posx>
-					<posy>120</posy>
+					<posy>115</posy>
 					<width>110</width>
 					<height>22</height>
 					<font>font13</font>
 					<selectedcolor>green</selectedcolor>
 					<align>center</align>
 					<info>ListItem.Label</info>
+					<animation effect="slide" end="0,5" time="100">focus</animation>
 				</control>
 			</focusedlayout>
 		</control>
@@ -1281,13 +1282,14 @@
 				</control>
 				<control type="label">
 					<posx>75</posx>
-					<posy>175</posy>
+					<posy>165</posy>
 					<width>140</width>
 					<height>22</height>
 					<font>font13</font>
 					<selectedcolor>green</selectedcolor>
 					<align>center</align>
 					<info>ListItem.Label</info>
+					<animation effect="slide" end="0,5" time="100">focus</animation>
 				</control>
 			</focusedlayout>
 		</control>
