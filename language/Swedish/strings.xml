@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xboxmediacenter.com-->
-<!--Date of translation: 08/28/2007-->
+<!--Date of translation: 09/19/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 10101-->
+<!--Based on english strings version 10279-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -650,12 +650,13 @@
   <string id="1034">Undermeny</string>
   <string id="1035">Aktivera undermenyknappar</string>
   <string id="1036">Favoriter</string>
-  <string id="1037">Filminsticksprogram</string>
-  <string id="1038">Musikinsticksprogram</string>
-  <string id="1039">Bildinsticksprogram</string>
+  <string id="1037">Filminstickstillägg</string>
+  <string id="1038">Musikinstickstillägg</string>
+  <string id="1039">Bildinstickstillägg</string>
   <string id="1040">Laddar mapp</string>
   <string id="1041">Hämtade %i objekt</string>
   <string id="1042">Hämtade %i av %i objekt</string>
+  <string id="1043">Programinstickstillägg</string>
   <string id="1200">SMB Utdelning</string>
   <string id="1202">SMB Arbetsgrupp</string>
   <string id="1203">SMB Användarnamn</string>
@@ -1260,6 +1261,7 @@ den här visualiseringen</string>
   <string id="16032">Kunde inte initiera databasen.</string>
   <string id="16033">Kunde inte öppna databasen.</string>
   <string id="16034">Kunde inte hämta låtar från databasen.</string>
+  <string id="16035">Partylägespellista</string>
   <string id="16100">Alla filmer</string>
   <string id="16101">Inte sedd</string>
   <string id="16102">Sedd</string>
@@ -1533,6 +1535,19 @@ den här visualiseringen</string>
   <string id="20386">Nyligen tillagda filmer</string>
   <string id="20387">Nyligen tillagda avsnitt</string>
   <string id="20388">Studior</string>
+  <string id="20389">Musikvideor</string>
+  <string id="20390">Nyligen tillagda musikvideor</string>
+  <string id="20391">Musikvideo</string>
+  <string id="20392">Ta bort musikvideo från biblioteket</string>
+  <string id="20393">Musikvideoinformation</string>
+  <string id="20394">Laddar musikvideoinformation</string>
+  <string id="20395">Blandad</string>
+  <string id="20396">Gå till album av artis</string>
+  <string id="20397">Gå til album</string>
+  <string id="20398">Spela sång</string>
+  <string id="20399">Gå till musikvideor från album</string>
+  <string id="20400">Gå till musikvideor av artist</string>
+  <string id="20401">Spela musikvideo</string>
   <string id="21330">Visa dolda filer och mappar</string>
   <string id="21331">TuxBox klient</string>
   <string id="21332">VARNING: Vald TuxBox enhet är i inspelningsläge!</string>
@@ -1670,5 +1685,6 @@ den här visualiseringen</string>
   <string id="21880">Referenstjänst</string>
   <string id="21881">Aktivera UPnP renderare</string>
   <string id="21882">Försök hoppa över introduktion före DVD menyn</string>
+  <string id="21883">Rippade ljudcds</string>
   <string id="29999">Aktivera fladderfilter lagningsinställning till spel</string>
 </strings>
