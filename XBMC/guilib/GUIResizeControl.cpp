@@ -97,7 +97,7 @@ void CGUIResizeControl::OnRight()
 bool CGUIResizeControl::OnMouseDrag(const CPoint &offset, const CPoint &point)
 {
   g_Mouse.SetState(MOUSE_STATE_DRAG);
-  g_Mouse.SetExclusiveAccess(GetID(), GetParentID());
+  g_Mouse.SetExclusiveAccess(GetID(), GetParentID(), point);
   Resize(offset.x, offset.y);
   return true;
 }
