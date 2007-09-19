@@ -1,7 +1,7 @@
 #pragma once
 
 #include "guiImage.h"
-#include "GUILabelControl.h"
+#include "GUIListLabel.h"
 
 class CGUIListItem;
 class CFileItem;
@@ -11,12 +11,9 @@ class CGUIListItemLayout
   class CListBase
   {
   public:
-    CListBase(float posX, float posY, float width, float height, int visibleCondition);
+    CListBase(int visibleCondition);
     virtual ~CListBase();
-    float m_posX;
-    float m_posY;
-    float m_width;
-    float m_height;
+
     enum LIST_TYPE { LIST_LABEL, LIST_IMAGE, LIST_TEXTURE };
     LIST_TYPE m_type;
 
@@ -27,17 +24,10 @@ class CGUIListItemLayout
   class CListLabel : public CListBase
   {
   public:
-    CListLabel(float posX, float posY, float width, float height, int visibleCondition, const CLabelInfo &label, int info, const CStdString &contents);
+    CListLabel(float posX, float posY, float width, float height, int visibleCondition, const CLabelInfo &label, int info, const CStdString &contents, const vector<CAnimation> &animations);
     virtual ~CListLabel();
-    CLabelInfo m_label;
-    CStdStringW m_text;
-    float m_renderX;  // render location
-    float m_renderY;
-    float m_renderW;
-    float m_renderH;
-    float m_textW;    // text width
-    CScrollInfo m_scrollInfo;
 
+    CGUIListLabel m_label;
     int m_info;
     vector<CInfoPortion> m_multiInfo;
   };
@@ -83,6 +73,7 @@ protected:
   CListBase *CreateItem(TiXmlElement *child);
   void UpdateItem(CListBase *control, CFileItem *item, DWORD parentID);
   void RenderLabel(CListLabel *label, bool selected, bool scroll);
+  void Update(CFileItem *item, DWORD parentID);
 
   vector<CListBase*> m_controls;
   typedef vector<CListBase*>::iterator iControls;
