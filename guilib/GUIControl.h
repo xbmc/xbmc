@@ -129,6 +129,9 @@ public:
   virtual float GetWidth() const;
   virtual float GetHeight() const;
   virtual void SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWORD dwRight);
+  virtual void SetNavigationActions(const vector<CStdString> &up, const vector<CStdString> &down,
+                                    const vector<CStdString> &left, const vector<CStdString> &right);
+  void ExecuteActions(const vector<CStdString> &actions);
   DWORD GetControlIdUp() const { return m_dwControlUp;};
   DWORD GetControlIdDown() const { return m_dwControlDown;};
   DWORD GetControlIdLeft() const { return m_dwControlLeft;};
@@ -216,10 +219,17 @@ protected:
   virtual void Animate(DWORD currentTime);
   void UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState);
   bool SendWindowMessage(CGUIMessage &message);
+
+  // navigation
   DWORD m_dwControlLeft;
   DWORD m_dwControlRight;
   DWORD m_dwControlUp;
   DWORD m_dwControlDown;
+  vector<CStdString> m_leftActions;
+  vector<CStdString> m_rightActions;
+  vector<CStdString> m_upActions;
+  vector<CStdString> m_downActions;
+
   float m_posX;
   float m_posY;
   float m_height;

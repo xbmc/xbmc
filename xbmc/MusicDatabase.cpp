@@ -754,6 +754,33 @@ bool CMusicDatabase::GetSongByFileName(const CStdString& strFileName, CSong& son
   return false;
 }
 
+long CMusicDatabase::GetSongByArtistAndAlbumAndTitle(const CStdString& strArtist, const CStdString& strAlbum, const CStdString& strTitle)
+{
+  try
+  {
+    CStdString strSQL=FormatSQL("select idsong from songview "
+                                "where strArtist like '%s' and strAlbum like '%s' and "
+                                "strTitle like '%s'",strArtist.c_str(),strAlbum.c_str(),strTitle.c_str());
+
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return -1;
+    }
+    long lResult = m_pDS->fv(0).get_asLong();
+    m_pDS->close(); // cleanup recordset data
+    return lResult;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%s,%s,%s) failed", __FUNCTION__, strArtist.c_str(),strAlbum.c_str(),strTitle.c_str());
+  }
+
+  return -1;
+}
+
 bool CMusicDatabase::GetSongById(long idSong, CSong& song)
 {
   try
@@ -2843,7 +2870,7 @@ long CMusicDatabase::AddThumb(const CStdString& strThumb1)
   return -1;
 }
 
-unsigned int CMusicDatabase::GetSongIDs(const CStdString& strWhere, vector<long> &songIDs)
+unsigned int CMusicDatabase::GetSongIDs(const CStdString& strWhere, vector<pair<int,long> > &songIDs)
 {
   try
   {
@@ -2861,7 +2888,7 @@ unsigned int CMusicDatabase::GetSongIDs(const CStdString& strWhere, vector<long>
     songIDs.reserve(m_pDS->num_rows());
     while (!m_pDS->eof())
     {
-      songIDs.push_back(m_pDS->fv(song_idSong).get_asLong());
+      songIDs.push_back(make_pair<int,long>(1,m_pDS->fv(song_idSong).get_asLong()));
       m_pDS->next();
     }    // cleanup
     m_pDS->close();
@@ -3034,6 +3061,59 @@ bool CMusicDatabase::GetArtistPath(long idArtist, CStdString &basePath)
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
   return false;
+}
+
+long CMusicDatabase::GetArtistByName(const CStdString& strArtist)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL=FormatSQL("select idArtist from artist where artist.strArtist like '%s'", strArtist.c_str());
+
+    // run query
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound != 1)
+    {
+      m_pDS->close();
+      return -1;
+    }
+    long lResult = m_pDS->fv("artist.idArtist").get_asLong();
+    m_pDS->close();
+    return lResult;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return -1;
+}
+
+long CMusicDatabase::GetAlbumByName(const CStdString& strAlbum)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL=FormatSQL("select idAlbum from album where album.strAlbum like '%s'", strAlbum.c_str());
+    // run query
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound != 1)
+    {
+      m_pDS->close();
+      return -1;
+    }
+    return m_pDS->fv("album.idAlbum").get_asLong();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return -1;
 }
 
 bool CMusicDatabase::GetGenreById(long idGenre, CStdString& strGenre)

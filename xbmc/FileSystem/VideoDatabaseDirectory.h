@@ -15,7 +15,7 @@ namespace DIRECTORY
     static VIDEODATABASEDIRECTORY::NODE_TYPE GetDirectoryChildType(const CStdString& strPath);
     static VIDEODATABASEDIRECTORY::NODE_TYPE GetDirectoryType(const CStdString& strPath);
     static VIDEODATABASEDIRECTORY::NODE_TYPE GetDirectoryParentType(const CStdString& strPath);
-    bool GetQueryParams(const CStdString& strPath, VIDEODATABASEDIRECTORY::CQueryParams& params);
+    static bool GetQueryParams(const CStdString& strPath, VIDEODATABASEDIRECTORY::CQueryParams& params);
     void ClearDirectoryCache(const CStdString& strDirectory);
     static bool IsAllItem(const CStdString& strDirectory);
     static bool GetLabel(const CStdString& strDirectory, CStdString& strLabel);

@@ -506,6 +506,12 @@ void CGUIWindowFullScreen::Render()
 #ifdef HAS_VIDEO_PLAYBACK
   g_renderManager.RenderUpdate(true);
 #endif
+#ifndef HAS_XBOX_HARDWARE
+  // win32 video rendering uses this path all the time (it doesn't render from the player directly)
+  // so at this point we should renderfullscreen info as well.
+  if (NeedRenderFullScreen())
+    RenderFullScreen();
+#endif
 }
 
 bool CGUIWindowFullScreen::NeedRenderFullScreen()

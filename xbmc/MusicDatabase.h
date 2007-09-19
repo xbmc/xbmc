@@ -133,7 +133,7 @@ public:
   bool GetRandomSong(CFileItem* item, long& lSongId, const CStdString& strWhere);
   int GetSongsCount();
   int GetSongsCount(const CStdString& strWhere);
-  unsigned int GetSongIDs(const CStdString& strWhere, vector<long> &songIDs);
+  unsigned int GetSongIDs(const CStdString& strWhere, std::vector<std::pair<int,long> > &songIDs);
 
   bool GetAlbumPath(long idAlbum, CStdString &path);
   bool SaveAlbumThumb(long idAlbum, const CStdString &thumb);
@@ -142,6 +142,10 @@ public:
   bool GetGenreById(long idGenre, CStdString& strGenre);
   bool GetArtistById(long idArtist, CStdString& strArtist);
   bool GetAlbumById(long idAlbum, CStdString& strAlbum);
+
+  long GetArtistByName(const CStdString& strArtist);
+  long GetAlbumByName(const CStdString& strAlbum);
+  long GetSongByArtistAndAlbumAndTitle(const CStdString& strArtist, const CStdString& strAlbum, const CStdString& strTitle);
 
   bool GetVariousArtistsAlbums(const CStdString& strBaseDir, CFileItemList& items);
   bool GetVariousArtistsAlbumsSongs(const CStdString& strBaseDir, CFileItemList& items);

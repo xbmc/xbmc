@@ -628,7 +628,7 @@ bool CGUIWindowMusicPlayList::OnContextButton(int itemNumber, CONTEXT_BUTTON but
     g_partyModeManager.Disable();
     return true;
   case CONTEXT_BUTTON_EDIT_PARTYMODE:
-    CStdString playlist = "P:\\PartyMode.xml";
+    CStdString playlist = "P:\\PartyMode.xsp";
     if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist))
     {
       // apply new rules

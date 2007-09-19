@@ -315,10 +315,27 @@ void CGUIWindowVideoInfo::Update()
     m_vecStrCast.push_back(character);
   }
   AddItemsToList(m_vecStrCast);
+  if (m_movieItem.GetVideoInfoTag()->m_artist.size() > 0)
+  {
+      // setup artist list
+    m_vecStrCast.clear();
+    for (std::vector<CStdString>::const_iterator it = m_movieItem.GetVideoInfoTag()->m_artist.begin(); it != m_movieItem.GetVideoInfoTag()->m_artist.end(); ++it)
+    {
+      m_vecStrCast.push_back(*it);
+    }
+    AddItemsToList(m_vecStrCast);
+  }
 
   if (m_bViewReview)
   {
-    SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 206);
+    if (m_movieItem.GetVideoInfoTag()->m_artist.size() > 0)
+    {
+      SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 133);
+    }
+    else
+    {
+      SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 206);
+    }
 
     SET_CONTROL_HIDDEN(CONTROL_LIST);
     SET_CONTROL_VISIBLE(CONTROL_TEXTAREA);
@@ -504,6 +521,19 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
     pItem->m_strPath = movies[i].m_strFileNameAndPath;
     items.Add(pItem);
   }
+
+  CFileItemList mvids;
+  m_database.GetMusicVideosByArtist(strSearch, mvids);
+  for (int i = 0; i < (int)mvids.Size(); ++i)
+  {
+    CStdString strItem;
+    strItem.Format("[%s] %s", g_localizeStrings.Get(20391), mvids[i]->GetVideoInfoTag()->m_strTitle);  // Movie
+    CFileItem *pItem = new CFileItem(strItem);
+    *pItem->GetVideoInfoTag() = *mvids[i]->GetVideoInfoTag();
+    pItem->m_strPath = mvids[i]->GetVideoInfoTag()->m_strFileNameAndPath;
+    items.Add(pItem);
+  }
+
 }
 
 /// \brief React on the selected search item
@@ -515,6 +545,8 @@ void CGUIWindowVideoInfo::OnSearchItemFound(const CFileItem* pItem)
     iType = 2;
   if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder) // episode
     iType = 1;
+  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_artist.size() > 0)
+    iType = 3;
 
   CVideoInfoTag movieDetails;
   if (iType == 0)
@@ -523,6 +555,8 @@ void CGUIWindowVideoInfo::OnSearchItemFound(const CFileItem* pItem)
     m_database.GetEpisodeInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
   if (iType == 2)
     m_database.GetTvShowInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
+  if (iType == 3)
+    m_database.GetMusicVideoInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
 
   CFileItem item(*pItem);
   *item.GetVideoInfoTag() = movieDetails;

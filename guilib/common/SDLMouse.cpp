@@ -133,16 +133,17 @@ bool CMouse::HasMoved() const
   return (cMickeyX && cMickeyY);
 }
 
-void CMouse::SetExclusiveAccess(DWORD dwControlID, DWORD dwWindowID)
+void CMouse::SetExclusiveAccess(DWORD dwControlID, DWORD dwWindowID, const CPoint &point)
 {
   m_dwExclusiveControlID = dwControlID;
   m_dwExclusiveWindowID = dwWindowID;
+  m_exclusiveOffset = point - CPoint(posX, posY);
 }
 
 void CMouse::EndExclusiveAccess(DWORD dwControlID, DWORD dwWindowID)
 {
   if (m_dwExclusiveControlID == dwControlID && m_dwExclusiveWindowID == dwWindowID)
-    SetExclusiveAccess(WINDOW_INVALID, WINDOW_INVALID);
+    SetExclusiveAccess(WINDOW_INVALID, WINDOW_INVALID,CPoint(posX, posY));
 }
 
 void CMouse::Acquire()
