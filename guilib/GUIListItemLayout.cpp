@@ -9,12 +9,8 @@
 #include "../xbmc/utils/CharsetConverter.h"
 #include "../xbmc/FileItem.h"
 
-CGUIListItemLayout::CListBase::CListBase(float posX, float posY, float width, float height, int visibleCondition)
+CGUIListItemLayout::CListBase::CListBase(int visibleCondition)
 {
-  m_posX = posX;
-  m_posY = posY;
-  m_width = width;
-  m_height = height;
   m_visible = true;
   m_visibleCondition = visibleCondition;
 }
@@ -23,12 +19,13 @@ CGUIListItemLayout::CListBase::~CListBase()
 {
 }
 
-CGUIListItemLayout::CListLabel::CListLabel(float posX, float posY, float width, float height, int visibleCondition, const CLabelInfo &label, int info, const CStdString &content)
-: CGUIListItemLayout::CListBase(posX, posY, width, height, visibleCondition)
+CGUIListItemLayout::CListLabel::CListLabel(float posX, float posY, float width, float height, int visibleCondition, const CLabelInfo &label, int info, const CStdString &content, const vector<CAnimation> &animations)
+: CGUIListItemLayout::CListBase(visibleCondition),
+  m_label(0, 0, posX, posY, width, height, label)
 {
-  m_label = label;
-  m_info = info;
   m_type = LIST_LABEL;
+  m_label.SetAnimations(animations);
+  m_info = info;
   g_infoManager.ParseLabel(content, m_multiInfo);
 }
 
@@ -36,8 +33,9 @@ CGUIListItemLayout::CListLabel::~CListLabel()
 {
 }
 
+
 CGUIListItemLayout::CListTexture::CListTexture(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, DWORD aspectAlign, D3DCOLOR colorDiffuse, const vector<CAnimation> &animations)
-: CGUIListItemLayout::CListBase(posX, posY, width, height, visibleCondition),
+: CGUIListItemLayout::CListBase(visibleCondition),
   m_image(0, 0, posX, posY, width, height, image)
 {
   m_type = LIST_TEXTURE;
@@ -45,6 +43,7 @@ CGUIListItemLayout::CListTexture::CListTexture(float posX, float posY, float wid
   m_image.SetAnimations(animations);
   m_image.SetColorDiffuse(colorDiffuse);
 }
+
 
 CGUIListItemLayout::CListTexture::~CListTexture()
 {
@@ -105,54 +104,11 @@ float CGUIListItemLayout::Size(ORIENTATION orientation)
 void CGUIListItemLayout::Render(CGUIListItem *item, DWORD parentID, DWORD time)
 {
   if (m_invalidated)
-  {
+  { // need to update our item
     // could use a dynamic cast here if RTTI was enabled.  As it's not,
     // let's use a static cast with a virtual base function
     CFileItem *fileItem = item->IsFileItem() ? (CFileItem *)item : new CFileItem(*item);
-
-    // check for boolean conditions
-    m_isPlaying = g_infoManager.GetItemBool(fileItem, LISTITEM_ISPLAYING, parentID);
-    for (iControls it = m_controls.begin(); it != m_controls.end(); it++)
-      UpdateItem(*it, fileItem, parentID);
-    // now we have to check our overlapping label pairs
-    for (unsigned int i = 0; i < m_controls.size(); i++)
-    {
-      if (m_controls[i]->m_type == CListBase::LIST_LABEL && m_controls[i]->m_visible)
-      {
-        CListLabel *label1 = (CListLabel *)m_controls[i];
-        for (unsigned int j = i + 1; j < m_controls.size(); j++)
-        {
-          if (m_controls[j]->m_type == CListBase::LIST_LABEL && m_controls[j]->m_visible)
-          { // ok, now check if they overlap
-            CListLabel *label2 = (CListLabel *)m_controls[j];
-            if ((label1->m_renderY <= label2->m_renderY + label2->m_renderH*0.5f && label2->m_renderY + label2->m_renderH*0.5f <= label1->m_renderY + label1->m_renderH) ||
-                (label2->m_renderY <= label1->m_renderY + label1->m_renderH*0.5f && label1->m_renderY + label1->m_renderH*0.5f <= label2->m_renderY + label2->m_renderH))
-            { // overlap vertically - check horizontal
-              CListLabel *left = label1->m_renderX < label2->m_renderX ? label1 : label2;
-              CListLabel *right = label1->m_renderX < label2->m_renderX ? label2 : label1;
-              if ((left->m_label.align & 3) == 0 && right->m_label.align & XBFONT_RIGHT)
-              { // left is aligned left, right is aligned right, and they overlap vertically
-                if (left->m_renderX + left->m_renderW + 10 > right->m_renderX && left->m_renderX + left->m_renderW <= right->m_renderX + right->m_renderW)
-                { // overlap, so chop accordingly
-                  float chopPoint = (left->m_posX + left->m_width + right->m_posX - right->m_width) * 0.5f;
-// [1       [2...[2  1].|..........1]         2]
-// [1       [2.....[2   |      1]..1]         2]
-// [1       [2..........|.[2   1]..1]         2]
-                  if (right->m_renderX > chopPoint)
-                    chopPoint = right->m_renderX - 5;
-                  else if (left->m_renderX + left->m_renderW < chopPoint)
-                    chopPoint = left->m_renderX + left->m_renderW + 5;
-                  left->m_renderW = chopPoint - 5 - left->m_renderX;
-                  right->m_renderW -= (chopPoint + 5 - right->m_renderX);
-                  right->m_renderX = chopPoint + 5;
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    m_invalidated = false;
+    Update(fileItem, parentID);
     // delete our temporary fileitem
     if (!item->IsFileItem())
       delete fileItem;
@@ -166,7 +122,11 @@ void CGUIListItemLayout::Render(CGUIListItem *item, DWORD parentID, DWORD time)
     {
       if (layoutItem->m_type == CListBase::LIST_LABEL)
       {
-        RenderLabel((CListLabel *)layoutItem, item->IsSelected() || m_isPlaying, m_focused);
+        CGUIListLabel &label = ((CListLabel *)layoutItem)->m_label;
+        label.SetSelected(item->IsSelected() || m_isPlaying);
+        label.SetScrolling(m_focused);
+        label.UpdateVisibility();
+        label.DoRender(time);
       }
       else
       {
@@ -175,6 +135,53 @@ void CGUIListItemLayout::Render(CGUIListItem *item, DWORD parentID, DWORD time)
       }
     }
   }
+}
+
+void CGUIListItemLayout::Update(CFileItem *item, DWORD parentID)
+{
+  // check for boolean conditions
+  m_isPlaying = g_infoManager.GetItemBool(item, LISTITEM_ISPLAYING, parentID);
+  for (iControls it = m_controls.begin(); it != m_controls.end(); it++)
+    UpdateItem(*it, item, parentID);
+  // now we have to check our overlapping label pairs
+  for (unsigned int i = 0; i < m_controls.size(); i++)
+  {
+    if (m_controls[i]->m_type == CListBase::LIST_LABEL && m_controls[i]->m_visible)
+    {
+      CGUIListLabel &label1 = ((CListLabel *)m_controls[i])->m_label;
+      CRect rect1(label1.GetRenderRect());
+      for (unsigned int j = i + 1; j < m_controls.size(); j++)
+      {
+        if (m_controls[j]->m_type == CListBase::LIST_LABEL && m_controls[j]->m_visible)
+        { // ok, now check if they overlap
+          CGUIListLabel &label2 = ((CListLabel *)m_controls[j])->m_label;
+          if (!rect1.Intersect(label2.GetRenderRect()).IsEmpty())
+          { // overlap vertically and horizontally - check alignment
+            CGUIListLabel &left = label1.GetRenderRect().x1 < label2.GetRenderRect().x1 ? label1 : label2;
+            CGUIListLabel &right = label1.GetRenderRect().x1 < label2.GetRenderRect().x1 ? label2 : label1;
+            if ((left.GetLabelInfo().align & 3) == 0 && right.GetLabelInfo().align & XBFONT_RIGHT)
+            {
+              float chopPoint = (left.GetXPosition() + left.GetWidth() + right.GetXPosition() - right.GetWidth()) * 0.5f;
+// [1       [2...[2  1].|..........1]         2]
+// [1       [2.....[2   |      1]..1]         2]
+// [1       [2..........|.[2   1]..1]         2]
+              CRect leftRect(left.GetRenderRect());
+              CRect rightRect(right.GetRenderRect());
+              if (rightRect.x1 > chopPoint)
+                chopPoint = rightRect.x1 - 5;
+              else if (leftRect.x2 < chopPoint)
+                chopPoint = leftRect.x2 + 5;
+              leftRect.x2 = chopPoint - 5;
+              rightRect.x1 = chopPoint + 5;
+              left.SetRenderRect(leftRect);
+              right.SetRenderRect(rightRect);
+            }
+          }
+        }
+      }
+    }
+  }
+  m_invalidated = false;
 }
 
 void CGUIListItemLayout::UpdateItem(CGUIListItemLayout::CListBase *control, CFileItem *item, DWORD parentID)
@@ -190,44 +197,10 @@ void CGUIListItemLayout::UpdateItem(CGUIListItemLayout::CListBase *control, CFil
   else if (control->m_type == CListBase::LIST_LABEL)
   {
     CListLabel *label = (CListLabel *)control;
-    CStdStringW oldText = label->m_text;
     if (label->m_info)
-      g_charsetConverter.utf8ToUTF16(g_infoManager.GetItemLabel(item, label->m_info), label->m_text);
+      label->m_label.SetLabel(g_infoManager.GetItemLabel(item, label->m_info));
     else
-      g_charsetConverter.utf8ToUTF16(g_infoManager.GetItemMultiLabel(item, label->m_multiInfo), label->m_text);
-    if (oldText != label->m_text)
-    { // changed label - reset scrolling
-      label->m_scrollInfo.Reset();
-    }
-    if (label->m_label.font)
-    {
-      label->m_label.font->GetTextExtent(label->m_text, &label->m_textW, &label->m_renderH);
-      label->m_renderW = min(label->m_textW, label->m_width);
-      if (label->m_label.align & XBFONT_CENTER_Y)
-        label->m_renderY = label->m_posY + (label->m_height - label->m_renderH) * 0.5f;
-      else
-        label->m_renderY = label->m_posY;
-      if (label->m_label.align & XBFONT_RIGHT)
-        label->m_renderX = label->m_posX - label->m_renderW;
-      else if (label->m_label.align & XBFONT_CENTER_X)
-        label->m_renderX = label->m_posX - label->m_renderW * 0.5f;
-      else
-        label->m_renderX = label->m_posX;
-    }
-  }
-}
-
-void CGUIListItemLayout::RenderLabel(CListLabel *label, bool selected, bool scroll)
-{
-  if (label->m_label.font && !label->m_text.IsEmpty())
-  {
-    DWORD color = selected ? label->m_label.selectedColor : label->m_label.textColor;
-    if (scroll && label->m_renderW < label->m_textW)
-      label->m_label.font->DrawScrollingText(label->m_renderX, label->m_renderY, &color, 1,
-                                  label->m_label.shadowColor, label->m_text, label->m_renderW, label->m_scrollInfo);
-    else
-      label->m_label.font->DrawTextWidth(label->m_renderX, label->m_renderY, label->m_label.angle, color,
-                                  label->m_label.shadowColor, label->m_text, label->m_renderW);
+      label->m_label.SetLabel(g_infoManager.GetItemMultiLabel(item, label->m_multiInfo));
   }
 }
 
@@ -237,7 +210,7 @@ void CGUIListItemLayout::ResetScrolling()
   {
     CListBase *layoutItem = (*it);
     if (layoutItem->m_type == CListBase::LIST_LABEL)
-      ((CListLabel *)layoutItem)->m_scrollInfo.Reset();
+      ((CListLabel *)layoutItem)->m_label.SetScrolling(false);
   }
 }
 
@@ -249,6 +222,8 @@ void CGUIListItemLayout::QueueAnimation(ANIMATION_TYPE animType)
     if (layoutItem->m_type == CListBase::LIST_IMAGE ||
         layoutItem->m_type == CListBase::LIST_TEXTURE)
       ((CListTexture *)layoutItem)->m_image.QueueAnimation(animType);
+    else if (layoutItem->m_type == CListBase::LIST_LABEL)
+      ((CListLabel *)layoutItem)->m_label.QueueAnimation(animType);
   }
 }
 
@@ -306,7 +281,7 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
   CGUIControlFactory::GetConditionalVisibility(child, visibleCondition);
   if (type == "label")
   { // info label
-    return new CListLabel(posX, posY, width, height, visibleCondition, label, info, content);
+    return new CListLabel(posX, posY, width, height, visibleCondition, label, info, content, animations);
   }
   else if (type == "image")
   {
@@ -354,10 +329,10 @@ void CGUIListItemLayout::CreateListControlLayouts(float width, float height, boo
   CListImage *image = new CListImage(8, 0, iconWidth, texHeight, 0, CImage(""), CGUIImage::ASPECT_RATIO_KEEP, 0, 0xffffffff, blankAnims, LISTITEM_ICON);
   m_controls.push_back(image);
   float x = iconWidth + labelInfo.offsetX + 10;
-  CListLabel *label = new CListLabel(x, labelInfo.offsetY, width - x - 18, height, 0, labelInfo, LISTITEM_LABEL, "");
+  CListLabel *label = new CListLabel(x, labelInfo.offsetY, width - x - 18, height, 0, labelInfo, LISTITEM_LABEL, "", blankAnims);
   m_controls.push_back(label);
   x = labelInfo2.offsetX ? labelInfo2.offsetX : m_width - 16;
-  label = new CListLabel(x, labelInfo2.offsetY, x - iconWidth - 20, height, 0, labelInfo2, LISTITEM_LABEL2, "");
+  label = new CListLabel(x, labelInfo2.offsetY, x - iconWidth - 20, height, 0, labelInfo2, LISTITEM_LABEL2, "", blankAnims);
   m_controls.push_back(label);
 }
 
@@ -387,7 +362,7 @@ void CGUIListItemLayout::CreateThumbnailPanelLayouts(float width, float height, 
   m_controls.push_back(overlay);
   // label
   if (hideLabels) return;
-  CListLabel *label = new CListLabel(width*0.5f, texHeight, width, height, 0, labelInfo, LISTITEM_LABEL, "");
+  CListLabel *label = new CListLabel(width*0.5f, texHeight, width, height, 0, labelInfo, LISTITEM_LABEL, "", blankAnims);
   m_controls.push_back(label);
 }
 //#endif
