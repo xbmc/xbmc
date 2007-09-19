@@ -2197,6 +2197,8 @@ __int64 CGUIInfoManager::GetPlayTime() const
 CStdString CGUIInfoManager::GetCurrentPlayTime(TIME_FORMAT format) const
 {
   CStdString strTime;
+  if (format == TIME_FORMAT_GUESS && GetTotalPlayTime() >= 3600)
+    format = TIME_FORMAT_HH_MM_SS;
   if (g_application.IsPlayingAudio())
     StringUtils::SecondsToTimeString((int)(GetPlayTime()/1000), strTime, format);
   else if (g_application.IsPlayingVideo())
@@ -2218,6 +2220,8 @@ int CGUIInfoManager::GetPlayTimeRemaining() const
 
 CStdString CGUIInfoManager::GetCurrentPlayTimeRemaining(TIME_FORMAT format) const
 {
+  if (format == TIME_FORMAT_GUESS && GetTotalPlayTime() >= 3600)
+    format = TIME_FORMAT_HH_MM_SS;
   CStdString strTime;
   int timeRemaining = GetPlayTimeRemaining();
   if (timeRemaining)
