@@ -421,6 +421,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.castandrole")) return VIDEOPLAYER_CAST_AND_ROLE;
     else if (strTest.Equals("videoplayer.artist")) return VIDEOPLAYER_ARTIST;
     else if (strTest.Equals("videoplayer.album")) return VIDEOPLAYER_ALBUM;
+    else if (strTest.Equals("videoplayer.writer")) return VIDEOPLAYER_WRITER;
+    else if (strTest.Equals("videoplayer.tagline")) return VIDEOPLAYER_TAGLINE;
   }
   else if (strCategory.Equals("playlist"))
   {
@@ -648,6 +650,8 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("mpaa")) return LISTITEM_MPAA;
   else if (info.Equals("cast")) return LISTITEM_CAST;
   else if (info.Equals("castandrole")) return LISTITEM_CAST_AND_ROLE;
+  else if (info.Equals("writer")) return LISTITEM_WRITER;
+  else if (info.Equals("tagline")) return LISTITEM_TAGLINE;
   return 0;
 }
 
@@ -744,6 +748,8 @@ CStdString CGUIInfoManager::GetLabel(int info)
   case VIDEOPLAYER_CAST_AND_ROLE:
   case VIDEOPLAYER_ARTIST:
   case VIDEOPLAYER_ALBUM:
+  case VIDEOPLAYER_WRITER:
+  case VIDEOPLAYER_TAGLINE:
     strLabel = GetVideoLabel(info);
   break;
   case PLAYLIST_LENGTH:
@@ -1135,6 +1141,8 @@ CStdString CGUIInfoManager::GetLabel(int info)
   case LISTITEM_MPAA:
   case LISTITEM_CAST:
   case LISTITEM_CAST_AND_ROLE:
+  case LISTITEM_WRITER:
+  case LISTITEM_TAGLINE:
     {
       CGUIWindow *pWindow;
       int iDialog = m_gWindowManager.GetTopMostModalDialogID();
@@ -2179,6 +2187,10 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     break;
   case VIDEOPLAYER_ALBUM:
     return m_currentFile.GetVideoInfoTag()->m_strAlbum;
+  case VIDEOPLAYER_WRITER:
+    return m_currentFile.GetVideoInfoTag()->m_strWritingCredits;
+  case VIDEOPLAYER_TAGLINE:
+    return m_currentFile.GetVideoInfoTag()->m_strTagLine;
   }
   return "";
 }
@@ -2911,6 +2923,15 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_CAST_AND_ROLE:
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->GetCast(true);
+    break;
+  case LISTITEM_WRITER:
+    if (item->HasVideoInfoTag())
+      return item->GetVideoInfoTag()->m_strWritingCredits;;
+    break;
+  case LISTITEM_TAGLINE:
+    if (item->HasVideoInfoTag())
+      return item->GetVideoInfoTag()->m_strTagLine;
+    break;
   }
   return "";
 }
