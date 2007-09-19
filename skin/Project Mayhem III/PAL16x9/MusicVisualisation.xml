@@ -116,7 +116,7 @@
 				<width>420</width>
 				<posx>160</posx>
 				<posy>60</posy>
-				<info>MusicPlayer.Album</info>
+				<label>$INFO[MusicPlayer.Album]$INFO[musicplayer.discnumber, - $LOCALIZE[427]]</label>
 				<align>left</align>
 				<font>font10</font>
 			</control>
