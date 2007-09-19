@@ -1114,8 +1114,8 @@ bool SSortFileItem::MovieRatingAscending(CFileItem *left, CFileItem *right)
   if (right->IsParentFolder()) return false;
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
-    if (left->m_fRating < right->m_fRating) return true;
-    if (left->m_fRating > right->m_fRating) return false;
+    if (left->GetVideoInfoTag()->m_fRating < right->GetVideoInfoTag()->m_fRating) return true;
+    if (left->GetVideoInfoTag()->m_fRating > right->GetVideoInfoTag()->m_fRating) return false;
     return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(), right->GetLabel().c_str()) <= 0;
   }
   return left->m_bIsFolder;
@@ -1128,8 +1128,8 @@ bool SSortFileItem::MovieRatingDescending(CFileItem *left, CFileItem *right)
   if (right->IsParentFolder()) return false;
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
-    if (left->m_fRating < right->m_fRating) return false;
-    if (left->m_fRating > right->m_fRating) return true;
+    if (left->GetVideoInfoTag()->m_fRating < right->GetVideoInfoTag()->m_fRating) return false;
+    if (left->GetVideoInfoTag()->m_fRating > right->GetVideoInfoTag()->m_fRating) return true;
     return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(), right->GetLabel().c_str()) >= 0;
   }
   return left->m_bIsFolder;
