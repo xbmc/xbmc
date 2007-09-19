@@ -80,7 +80,7 @@ public:
     return *this;
   };
 
-  void Intersect(const CRect &rect)
+  const CRect &Intersect(const CRect &rect)
   { 
     if (rect.x2 < x2) x2 = rect.x2;
     if (rect.y2 < y2) y2 = rect.y2;
@@ -88,6 +88,7 @@ public:
     if (rect.y1 > y1) y1 = rect.y1;
     if (x1 > x2) x1 = x2;
     if (y1 > y2) y1 = y2;
+    return *this;
   };
 
   inline bool IsEmpty() const

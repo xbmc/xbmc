@@ -181,6 +181,8 @@
 #define VIDEOPLAYER_MPAA            275
 #define VIDEOPLAYER_CAST            276
 #define VIDEOPLAYER_CAST_AND_ROLE   277
+#define VIDEOPLAYER_ARTIST          278
+#define VIDEOPLAYER_ALBUM           279
 
 #define AUDIOSCROBBLER_ENABLED      300
 #define AUDIOSCROBBLER_CONN_STATE   301
@@ -575,4 +577,5 @@ protected:
  */
 extern CGUIInfoManager g_infoManager;
 #endif
+
 

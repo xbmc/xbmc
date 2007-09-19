@@ -26,6 +26,7 @@
 #include "GUIDialogFileBrowser.h"
 #include "Util.h"
 #include "MusicDatabase.h"
+#include "VideoDatabase.h"
 
 #define CONTROL_FIELD           15
 #define CONTROL_OPERATOR        16
@@ -91,20 +92,44 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   CFileItemList items;
   CMusicDatabase database;
   database.Open();
+  CVideoDatabase videodatabase;
+  videodatabase.Open();
+
   int iLabel;
   if (m_rule.m_field == CSmartPlaylistRule::SONG_GENRE)
   {
-    database.GetGenresNav("musicdb://4/",items);
+    if (m_type.Equals("music") || m_type.Equals("mixed"))
+      database.GetGenresNav("musicdb://4/",items);
+    if (m_type.Equals("video") || m_type.Equals("mixed"))
+    {
+      CFileItemList items2;
+      videodatabase.GetGenresNav("videodb://3/1/",items2,3);
+      items.Append(items2);
+    }
     iLabel = 515;
   }
   if (m_rule.m_field == CSmartPlaylistRule::SONG_ARTIST || m_rule.m_field == CSmartPlaylistRule::SONG_ALBUM_ARTIST)
   {
-    database.GetArtistsNav("musicdb://5/",items,-1,m_rule.m_field == CSmartPlaylistRule::SONG_ALBUM_ARTIST);
+    if (m_type.Equals("music") || m_type.Equals("mixed"))
+      database.GetArtistsNav("musicdb://5/",items,-1,m_rule.m_field == CSmartPlaylistRule::SONG_ALBUM_ARTIST);
+    if (m_type.Equals("video") || m_type.Equals("mixed"))
+    {
+      CFileItemList items2;
+      videodatabase.GetMusicVideoArtistsByName("",items2);
+      items.Append(items2);
+    }
     iLabel = 484;
   }
   if (m_rule.m_field == CSmartPlaylistRule::SONG_ALBUM)
   {
-    database.GetAlbumsNav("musicdb://6/",items,-1,-1);
+    if (m_type.Equals("music") || m_type.Equals("mixed"))
+      database.GetAlbumsNav("musicdb://6/",items,-1,-1);
+    if (m_type.Equals("video") || m_type.Equals("mixed"))
+    {
+      CFileItemList items2;
+      videodatabase.GetMusicVideoAlbumsByName("",items2);
+      items.Append(items2);
+    }
     iLabel = 483;
   }
 
@@ -174,7 +199,9 @@ void CGUIDialogSmartPlaylistRule::OnValue()
     //       think there's any decent way to deal with this, as the infinite loop may be an arbitrary
     //       number of playlists deep, eg playlist1 -> playlist2 -> playlist3 ... -> playlistn -> playlist1
     CStdString path = "special://musicplaylists/";
-    if (CGUIDialogFileBrowser::ShowAndGetFile("special://musicplaylists/", ".xsp", g_localizeStrings.Get(656), path))
+    if (m_type.Equals("video"))
+      path = "special://videoplaylists/";
+    if (CGUIDialogFileBrowser::ShowAndGetFile(path, ".xsp", g_localizeStrings.Get(656), path))
     {
       CSmartPlaylist playlist;
       if (playlist.Load(path))
@@ -292,6 +319,11 @@ void CGUIDialogSmartPlaylistRule::OnInitWindow()
   {
     if (field == CSmartPlaylistRule::SONG_DATEADDED)
       continue;   // TODO: We don't have dateadded field in the database, so can't filter on this yet
+    if (m_type.Equals("video"))
+    {
+      if (field == CSmartPlaylistRule::SONG_COMMENT || field == CSmartPlaylistRule::SONG_TRACKNUMBER || field == CSmartPlaylistRule::SONG_ALBUM_ARTIST || field == CSmartPlaylistRule::SONG_PLAYCOUNT || field == CSmartPlaylistRule::SONG_LASTPLAYED || field == CSmartPlaylistRule::SONG_TIME || field == CSmartPlaylistRule::SONG_RATING)
+        continue;
+    }
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_FIELD, field);
     msg.SetLabel(CSmartPlaylistRule::GetLocalizedField((CSmartPlaylistRule::DATABASE_FIELD)field));
     OnMessage(msg);
@@ -299,12 +331,13 @@ void CGUIDialogSmartPlaylistRule::OnInitWindow()
   UpdateButtons();
 }
 
-bool CGUIDialogSmartPlaylistRule::EditRule(CSmartPlaylistRule &rule)
+bool CGUIDialogSmartPlaylistRule::EditRule(CSmartPlaylistRule &rule, const CStdString& type)
 {
   CGUIDialogSmartPlaylistRule *editor = (CGUIDialogSmartPlaylistRule *)m_gWindowManager.GetWindow(WINDOW_DIALOG_SMART_PLAYLIST_RULE);
   if (!editor) return false;
   
   editor->m_rule = rule;
+  editor->m_type = type;
   editor->DoModal(m_gWindowManager.GetActiveWindow());
   rule = editor->m_rule;
   return !editor->m_cancelled;

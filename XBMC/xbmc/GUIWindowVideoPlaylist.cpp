@@ -26,6 +26,8 @@
 #include "PlayListM3U.h"
 #include "Application.h"
 #include "PlayListPlayer.h"
+#include "PartyModeManager.h"
+#include "GUIDialogSmartPlaylistEditor.h"
 
 using namespace PLAYLIST;
 
@@ -115,11 +117,14 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       if (iControl == CONTROL_BTNSHUFFLE)
       {
-        g_playlistPlayer.SetShuffle(PLAYLIST_VIDEO, !(g_playlistPlayer.IsShuffled(PLAYLIST_VIDEO)));
-        g_stSettings.m_bMyVideoPlaylistShuffle = g_playlistPlayer.IsShuffled(PLAYLIST_VIDEO);
-        g_settings.Save();
-        UpdateButtons();
-        Update(m_vecItems.m_strPath);
+        if (!g_partyModeManager.IsEnabled())
+        {
+          g_playlistPlayer.SetShuffle(PLAYLIST_VIDEO, !(g_playlistPlayer.IsShuffled(PLAYLIST_VIDEO)));
+          g_stSettings.m_bMyVideoPlaylistShuffle = g_playlistPlayer.IsShuffled(PLAYLIST_VIDEO);
+          g_settings.Save();
+          UpdateButtons();
+          Update(m_vecItems.m_strPath);
+        }
       }
       else if (iControl == CONTROL_BTNSAVE)
       {
@@ -305,11 +310,15 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
 bool CGUIWindowVideoPlaylist::OnPlayMedia(int iItem)
 {
   if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return false;
-  CFileItem* pItem = m_vecItems[iItem];
-  CStdString strPath = pItem->m_strPath;
-  g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
-  g_playlistPlayer.Play( iItem );
-
+  if (g_partyModeManager.IsEnabled())
+    g_partyModeManager.Play(iItem);
+  else
+  {
+    CFileItem* pItem = m_vecItems[iItem];
+    CStdString strPath = pItem->m_strPath;
+    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
+    g_playlistPlayer.Play( iItem );
+  }
   return true;
 }
 
@@ -343,6 +352,8 @@ void CGUIWindowVideoPlaylist::RemovePlayListItem(int iItem)
   {
     m_viewControl.SetSelectedItem(iItem - 1);
   }
+
+  g_partyModeManager.OnSongChange();
 }
 
 /// \brief Save current playlist to playlist folder
@@ -378,23 +389,30 @@ void CGUIWindowVideoPlaylist::SavePlayList()
 void CGUIWindowVideoPlaylist::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
   bool isPlaying = (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO) && (g_application.IsPlayingVideo());
-
+  int itemPlaying = g_playlistPlayer.GetCurrentSong();
   if (m_movingFrom >= 0)
   {
-    if (itemNumber != m_movingFrom)
+    if (itemNumber != m_movingFrom && (!g_partyModeManager.IsEnabled() || itemNumber > itemPlaying))
       buttons.Add(CONTEXT_BUTTON_MOVE_HERE, 13252);         // move item here
-    buttons.Add(CONTEXT_BUTTON_CANCEL_MOVE, 13253);         // cancel move
+    buttons.Add(CONTEXT_BUTTON_CANCEL_MOVE, 13253);
+
   }
   else
   {
-    buttons.Add(CONTEXT_BUTTON_MOVE_ITEM, 13251);
-    if (itemNumber > 0)
+    if (itemNumber > (g_partyModeManager.IsEnabled() ? 1 : 0))
       buttons.Add(CONTEXT_BUTTON_MOVE_ITEM_UP, 13332);
     if (itemNumber + 1 < m_vecItems.Size())
       buttons.Add(CONTEXT_BUTTON_MOVE_ITEM_DOWN, 13333);
+    if (!g_partyModeManager.IsEnabled() || itemNumber != itemPlaying)
+      buttons.Add(CONTEXT_BUTTON_MOVE_ITEM, 13251);
 
-    if (!isPlaying || itemNumber != g_playlistPlayer.GetCurrentSong())
+    if (itemNumber != itemPlaying)
       buttons.Add(CONTEXT_BUTTON_DELETE, 15015);
+  }
+  if (g_partyModeManager.IsEnabled())
+  {
+    buttons.Add(CONTEXT_BUTTON_EDIT_PARTYMODE, 21439);
+    buttons.Add(CONTEXT_BUTTON_CANCEL_PARTYMODE, 588);      // cancel party mode
   }
 }
 
@@ -427,7 +445,20 @@ bool CGUIWindowVideoPlaylist::OnContextButton(int itemNumber, CONTEXT_BUTTON but
   case CONTEXT_BUTTON_DELETE:
     RemovePlayListItem(itemNumber);
     return true;
+  case CONTEXT_BUTTON_CANCEL_PARTYMODE:
+    g_partyModeManager.Disable();
+    return true;
+  case CONTEXT_BUTTON_EDIT_PARTYMODE:
+    CStdString playlist = "P:\\PartyMode-Video.xsp";
+    if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist))
+    {
+      // apply new rules
+      g_partyModeManager.Disable();
+      g_partyModeManager.Enable(true);
+    }
+    return true;
   }
+
   return CGUIWindowVideoBase::OnContextButton(itemNumber, button);
 }
 
