@@ -2118,7 +2118,7 @@ void CApplication::RenderNoPresent()
 #endif
   // don't do anything that would require graphiccontext to be locked before here in fullscreen.
   // that stuff should go into renderfullscreen instead as that is called from the renderin thread
-#ifdef HAS_XBOX_HARDWARE
+#ifdef HAS_XBOX_HARDWARE  // Win32 renders from the main thread, not from the player thread
   // dont show GUI when playing full screen video
   if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && !IsPaused())
   {
