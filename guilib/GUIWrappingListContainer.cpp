@@ -184,6 +184,8 @@ bool CGUIWrappingListContainer::SelectItemFromPoint(const CPoint &point)
   float pos = (m_orientation == VERTICAL) ? point.y : point.x;
   if (pos < start)
   { // scroll backward
+    if (!InsideLayout(m_layout, point))
+      return false;
     float amount = (start - pos) / m_layout.Size(m_orientation);
     m_analogScrollCount += amount * amount * mouse_scroll_speed;
     if (m_analogScrollCount > 1)
@@ -191,10 +193,13 @@ bool CGUIWrappingListContainer::SelectItemFromPoint(const CPoint &point)
       Scroll(-1);
       m_analogScrollCount-=1.0f;
     }
+    return true;
   }
   else if (pos > end)
-  {
-    // scroll forward
+  { // scroll forward
+    if (!InsideLayout(m_layout, point))
+      return false;
+
     float amount = (pos - end) / m_layout.Size(m_orientation);
     m_analogScrollCount += amount * amount * mouse_scroll_speed;
     if (m_analogScrollCount > 1)
@@ -202,6 +207,7 @@ bool CGUIWrappingListContainer::SelectItemFromPoint(const CPoint &point)
       Scroll(1);
       m_analogScrollCount-=1.0f;
     }
+    return true;
   }
-  return true;
+  return InsideLayout(m_focusedLayout, point);
 }
