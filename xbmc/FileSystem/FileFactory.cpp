@@ -33,7 +33,7 @@
 #include "FileZip.h"
 #include "FileRar.h"
 #include "FileMusicDatabase.h"
-#include "../xbox/Network.h"
+#include "../utils/Network.h"
 #include "FileTuxBox.h"
 #include "HDHomeRun.h"
 

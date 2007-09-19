@@ -322,7 +322,9 @@ typedef struct _MEMORYSTATUS
 } MEMORYSTATUS, *LPMEMORYSTATUS;
 
 // Common HRESULT values
+#ifndef NOERROR
 #define NOERROR 					(0L)
+#endif
 #define S_OK						(0L)
 #define E_FAIL						(0x80004005L)
 #define E_OUTOFMEMORY					(0x8007000EL)

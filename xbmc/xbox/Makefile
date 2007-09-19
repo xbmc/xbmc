@@ -1,6 +1,6 @@
 INCLUDES=-I. -I../ -I../linux -I../../guilib
 
-SRCS=IoSupport.cpp Network.cpp XKGeneral.cpp
+SRCS=IoSupport.cpp XKGeneral.cpp
 
 LIB=xbox.a
 

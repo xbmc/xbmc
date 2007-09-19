@@ -92,7 +92,7 @@
 #endif
 #include "AudioContext.h"
 #include "GUIFontTTF.h"
-#include "xbox/Network.h"
+#include "utils/Network.h"
 #ifndef _LINUX
 #include "utils/Win32Exception.h"
 #endif
@@ -513,6 +513,12 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
   if (HaveGamepad)
     FEH_TextOut(pFont, (Pal ? 16 : 12) | 0x18000, L"Press any button to reboot");
 
+
+#ifdef _LINUX
+  bool NetworkUp = g_network.IsAvailable();
+#endif
+
+#ifdef HAS_XBOX_NETWORK
   bool NetworkUp = false;
 
   // Boot up the network for FTP
@@ -552,13 +558,12 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
       {
         g_network.Deinitialize();
 
-#ifdef HAS_XBOX_NETWORK
         if (!(XNetGetEthernetLinkStatus() & XNET_ETHERNET_LINK_ACTIVE))
         {
           FEH_TextOut(pFont, iLine, L"Network cable unplugged");
           break;
         }
-#endif
+
         switch( (*it) )
         {
           case NETWORK_DASH:
@@ -591,7 +596,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
         }
 
         int count = 0;
-#ifdef HAS_XBOX_NETWORK
+
         DWORD dwState = XNET_GET_XNADDR_PENDING;
 
         while(dwState == XNET_GET_XNADDR_PENDING)
@@ -615,7 +620,6 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
           NetworkUp = true;
           break;
         }
-#endif
         /* increment line before next attempt */
         ++iLine;
       }
@@ -640,10 +644,11 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
       }
     }
   }
+#endif
 
   if( NetworkUp )
   {
-    FEH_TextOut(pFont, iLine++, L"IP Address: %S", g_network.m_networkinfo.ip);
+    FEH_TextOut(pFont, iLine++, L"IP Address: %S", g_network.GetFirstConnectedInterface()->GetCurrentIPAddress().c_str());
     ++iLine;
   }
 
@@ -1510,6 +1515,8 @@ HRESULT CApplication::Initialize()
         m_gWindowManager.ActivateWindow(startWindow);
     }
   }
+
+#ifdef HAS_XBOX_NETWORK
   /* setup network based on our settings */
   /* network will start it's init procedure */
   g_network.Initialize(g_guiSettings.GetInt("network.assignment"),
@@ -1517,6 +1524,7 @@ HRESULT CApplication::Initialize()
     g_guiSettings.GetString("network.subnet").c_str(),
     g_guiSettings.GetString("network.gateway").c_str(),
     g_guiSettings.GetString("network.dns").c_str());
+#endif
 
 #ifdef HAS_PYTHON
   g_pythonParser.bStartup = true;
@@ -1600,12 +1608,12 @@ void CApplication::StopIdleThread()
 void CApplication::StartWebServer()
 {
 #ifdef HAS_WEB_SERVER    
-  if (g_guiSettings.GetBool("servers.webserver") && g_network.IsAvailable() )
+  if (g_guiSettings.GetBool("servers.webserver") && g_network.IsAvailable())
   {
     CLog::Log(LOGNOTICE, "Webserver: Starting...");
     CSectionLoader::Load("LIBHTTP");
     m_pWebServer = new CWebServer();
-    m_pWebServer->Start(g_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), _P("Q:\\web"), false);
+    m_pWebServer->Start(g_network.GetFirstConnectedInterface()->GetCurrentIPAddress().c_str(), atoi(g_guiSettings.GetString("servers.webserverport")), _P("Q:\\web"), false);
         if (pXbmcHttp)
       pXbmcHttp->xbmcBroadcast("StartUp", 1);
   }
@@ -5052,9 +5060,10 @@ void CApplication::Process()
 
 void CApplication::ProcessSlow()
 {
-
+#ifdef HAS_XBOX_NETWORK
   // update our network state
   g_network.UpdateState();
+#endif
 
 #ifdef HAS_XBOX_HARDWARE
   // check if we need 2 spin down the harddisk

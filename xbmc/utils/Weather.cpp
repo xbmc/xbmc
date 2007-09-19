@@ -6,7 +6,7 @@
 #include "HTTP.h"
 #include "XMLUtils.h"
 #include "../Temperature.h"
-#include "../xbox/Network.h"
+#include "../utils/Network.h"
 #include "../Util.h"
 
 using namespace DIRECTORY;
