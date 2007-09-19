@@ -109,7 +109,7 @@ void CGUIMoverControl::OnRight()
 bool CGUIMoverControl::OnMouseDrag(const CPoint &offset, const CPoint &point)
 {
   g_Mouse.SetState(MOUSE_STATE_DRAG);
-  g_Mouse.SetExclusiveAccess(GetID(), GetParentID());
+  g_Mouse.SetExclusiveAccess(GetID(), GetParentID(), point);
   Move((int)offset.x, (int)offset.y);
   return true;
 }

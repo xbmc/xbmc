@@ -341,7 +341,7 @@ bool CGUISliderControl::OnMouseDrag(const CPoint &offset, const CPoint &point)
 {
   g_Mouse.SetState(MOUSE_STATE_DRAG);
   // get exclusive access to the mouse
-  g_Mouse.SetExclusiveAccess(GetID(), GetParentID());
+  g_Mouse.SetExclusiveAccess(GetID(), GetParentID(), point);
   // get the position of the mouse
   SetFromPosition(point);
   return true;
