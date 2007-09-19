@@ -933,7 +933,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   {
     hasCamera = true;
     g_SkinInfo.ResolveConstant(cam->Attribute("x"), camera.x);
-    g_SkinInfo.ResolveConstant(cam->Attribute("x"), camera.y);
+    g_SkinInfo.ResolveConstant(cam->Attribute("y"), camera.y);
   }
 
   /////////////////////////////////////////////////////////////////////////////
