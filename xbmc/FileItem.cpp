@@ -307,7 +307,6 @@ void CFileItem::Reset()
   m_strDVDLabel.Empty();
   m_strTitle.Empty();
   m_strPath.Empty();
-  m_fRating = 0.0f;
   m_dwSize = 0;
   m_bIsFolder = false;
   m_bIsParentFolder=false;
