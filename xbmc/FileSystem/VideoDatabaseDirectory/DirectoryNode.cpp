@@ -17,6 +17,9 @@
 #include "DirectoryNodeRecentlyAddedMovies.h"
 #include "DirectoryNodeRecentlyAddedEpisodes.h"
 #include "DirectoryNodeStudio.h"
+#include "DirectoryNodeMusicVideosOverview.h"
+#include "DirectoryNodeRecentlyAddedMusicVideos.h"
+#include "DirectoryNodeTitleMusicVideos.h"
 
 using namespace DIRECTORY::VIDEODATABASEDIRECTORY;
 
@@ -108,6 +111,12 @@ CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const CStdString& str
     return new CDirectoryNodeRecentlyAddedEpisodes(strName,pParent);
   case NODE_TYPE_STUDIO:
     return new CDirectoryNodeStudio(strName,pParent);
+  case NODE_TYPE_MUSICVIDEOS_OVERVIEW:
+    return new CDirectoryNodeMusicVideosOverview(strName,pParent);
+  case NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS:
+    return new CDirectoryNodeRecentlyAddedMusicVideos(strName,pParent);
+  case NODE_TYPE_TITLE_MUSICVIDEOS:
+    return new CDirectoryNodeTitleMusicVideos(strName,pParent);
   }
 
   return NULL;

@@ -17,6 +17,8 @@ NODE_TYPE CDirectoryNodeStudio::GetChildType()
   CollectQueryParams(params);
   if (params.GetContentType() == VIDEODB_CONTENT_MOVIES)
     return NODE_TYPE_TITLE_MOVIES;
+  if (params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS)
+    return NODE_TYPE_TITLE_MUSICVIDEOS;
 
   return NODE_TYPE_TITLE_TVSHOWS;
 }

@@ -201,14 +201,17 @@ bool CGUIBaseContainer::SelectItemFromPoint(const CPoint &point)
   float pos = (m_orientation == VERTICAL) ? point.y : point.x;
   while (row < m_itemsPerPage)
   {
-    float size = (row == m_cursor) ? m_focusedLayout.Size(m_orientation) : m_layout.Size(m_orientation);
-    if (pos < size && row + m_offset < (int)m_items.size())
-    { // found
+    const CGUIListItemLayout &layout = (row == m_cursor) ? m_focusedLayout : m_layout;
+    if (pos < layout.Size(m_orientation) && row + m_offset < (int)m_items.size())
+    { // found correct "row" -> check horizontal
+      if (!InsideLayout(layout, point))
+        return false;
+
       MoveToItem(row);
       return true;
     }
     row++;
-    pos -= size;
+    pos -= layout.Size(m_orientation);
   }
   return false;
 }
@@ -522,6 +525,14 @@ void CGUIBaseContainer::FreeMemory(int keepStart, int keepEnd)
     for (int i = keepEnd + 1; i < keepStart && i < (int)m_items.size(); ++i)
       m_items[i]->FreeMemory();
   }
+}
+
+bool CGUIBaseContainer::InsideLayout(const CGUIListItemLayout &layout, const CPoint &point)
+{
+  if ((m_orientation == VERTICAL && layout.Size(HORIZONTAL) && point.x > layout.Size(HORIZONTAL)) ||
+      (m_orientation == HORIZONTAL && layout.Size(VERTICAL) && point.y > layout.Size(VERTICAL)))
+    return false;
+  return true;
 }
 
 #ifdef _DEBUG

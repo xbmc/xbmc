@@ -68,7 +68,10 @@ enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_SONG_INFO,
                       CONTEXT_BUTTON_EDIT_PARTYMODE,
                       CONTEXT_BUTTON_LINK_MOVIE,
-                      CONTEXT_BUTTON_UNLINK_MOVIE
+                      CONTEXT_BUTTON_UNLINK_MOVIE,
+                      CONTEXT_BUTTON_GO_TO_ARTIST,
+                      CONTEXT_BUTTON_GO_TO_ALBUM,
+                      CONTEXT_BUTTON_PLAY_OTHER
                     };
 
 class CContextButtons : public vector< pair<CONTEXT_BUTTON, CStdString> >

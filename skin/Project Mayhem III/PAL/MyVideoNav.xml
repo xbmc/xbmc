@@ -161,20 +161,31 @@
 				<onleft>50</onleft>
 				<onright>50</onright>
 				<onup>8</onup>
+				<ondown>16</ondown>
+			</control>
+			<control type="radiobutton" id="16">
+				<description>Party Mode button</description>
+				<posx>0</posx>
+				<posy>342</posy>
+				<label>589</label>
+				<onleft>50</onleft>
+				<onright>50</onright>
+				<onup>19</onup>
 				<ondown>11</ondown>
 			</control>
+
 
                         <control type="radiobutton" id="11">
 				<description>Unlock Shares</description>
 				<posx>0</posx>
-				<posy>342</posy>
+				<posy>379</posy>
 				<label>20336</label>
 				<onleft>50</onleft>
 				<onright>50</onright>
 				<onclick>xbmc.mastermode</onclick>
 				<selected>system.ismaster</selected>
 				<visible>system.haslocks</visible>
-				<onup>19</onup>
+				<onup>16</onup>
 				<ondown>2</ondown>
 			</control>
 		</control>

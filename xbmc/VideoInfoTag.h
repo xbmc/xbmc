@@ -23,6 +23,7 @@ public:
   bool Save(TiXmlNode *node, const CStdString &tag);
   virtual void Serialize(CArchive& ar);
   const CStdString GetCast(bool bIncludeRole = false) const;
+  const CStdString GetArtist() const;
 
   CStdString m_strDirector;
   CStdString m_strWritingCredits;
@@ -33,6 +34,7 @@ public:
   CScraperUrl m_strPictureURL;
   CStdString m_strTitle;
   CStdString m_strVotes;
+  std::vector< CStdString> m_artist;
   std::vector< std::pair<CStdString, CStdString> > m_cast;
   typedef std::vector< std::pair<CStdString, CStdString> >::const_iterator iCast;
 
@@ -50,6 +52,7 @@ public:
   CStdString m_strFirstAired;
   CStdString m_strShowTitle;
   CStdString m_strStudio;
+  CStdString m_strAlbum;
   bool m_bWatched;
   int m_iTop250;
   int m_iYear;
@@ -60,4 +63,3 @@ public:
   int m_iSpecialSortEpisode;
   float m_fRating;
 };
-

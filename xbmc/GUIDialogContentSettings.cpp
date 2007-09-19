@@ -80,6 +80,11 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
               CreateSettings();
               SetupPage();
               break;
+      case 3: strLabel = g_localizeStrings.Get(20389);
+              m_info = m_scrapers["musicvideos"][0];
+              CreateSettings();
+              SetupPage();
+              break;
       }  
     }
     if (iControl == CONTROL_SCRAPER_LIST)
@@ -134,6 +139,7 @@ void CGUIDialogContentSettings::OnWindowLoaded()
       }
     }
   }
+
   // now select the correct scraper
   if (!m_info.strContent.IsEmpty())
   {
@@ -186,6 +192,17 @@ void CGUIDialogContentSettings::SetupPage()
       CONTROL_SELECT_ITEM(CONTROL_CONTENT_TYPE, 2);
     }
   }
+  if (m_scrapers.find("musicvideos") != m_scrapers.end())
+  {
+    msg2.SetLabel(g_localizeStrings.Get(20389));
+    msg2.SetParam1(3);
+    g_graphicsContext.SendMessage(msg2);
+    if (m_info.strContent.Equals("musicvideos"))
+    {
+      SET_CONTROL_LABEL(CONTROL_CONTENT_TYPE,g_localizeStrings.Get(20389));
+      CONTROL_SELECT_ITEM(CONTROL_CONTENT_TYPE, 3);
+    }
+  }
   SET_CONTROL_VISIBLE(CONTROL_CONTENT_TYPE);
   // now add them scrapers to the list control
   if (m_info.strContent.IsEmpty() || m_info.strContent.Equals("None"))
@@ -223,6 +240,11 @@ void CGUIDialogContentSettings::CreateSettings()
   {
     AddBool(1,20345,&m_bRunScan);
     AddBool(2,20379,&m_bSingleItem);
+  }
+  if (m_info.strContent.Equals("musicvideos"))
+  {
+    AddBool(1,20345,&m_bRunScan);
+    AddBool(2,20346,&m_bScanRecursive);    
   }
 }
 
@@ -328,7 +350,7 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, VIDEO::SScanSettings
   {
     scraper = dialog->m_info;
 
-    if(scraper.strContent.Equals("tvshows"))
+    if (scraper.strContent.Equals("tvshows"))
     {
       settings.parent_name = dialog->m_bSingleItem;
       settings.parent_name_root = dialog->m_bSingleItem;
@@ -336,15 +358,15 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, VIDEO::SScanSettings
       
       bRunScan = dialog->m_bRunScan;
     }
-    else if(scraper.strContent.Equals("movies"))
+    else if (scraper.strContent.Equals("movies"))
     {            
-      if( dialog->m_bUseDirNames )
+      if (dialog->m_bUseDirNames)
       {
         settings.parent_name = true;
         settings.parent_name_root = false;
         settings.recurse = dialog->m_bScanRecursive ? INT_MAX : 1;
 
-        if(dialog->m_bSingleItem)
+        if (dialog->m_bSingleItem)
         {
           settings.parent_name_root = true;
           settings.recurse = 0;
@@ -359,9 +381,17 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, VIDEO::SScanSettings
 
       bRunScan = dialog->m_bRunScan;
     }
+    else if (scraper.strContent.Equals("musicvideos"))
+    {            
+      settings.parent_name = false;
+      settings.parent_name_root = false;
+      settings.recurse = dialog->m_bScanRecursive ? INT_MAX : 0;
+
+      bRunScan = dialog->m_bRunScan;
+    }
     else if (scraper.strContent.IsEmpty() || scraper.strContent.Equals("None") )
     {
-      if(dialog->m_bExclude)
+      if (dialog->m_bExclude)
         scraper.strContent = "None";
       else
         scraper.strContent = "";
