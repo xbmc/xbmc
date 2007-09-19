@@ -96,7 +96,7 @@ CGUIListItemLayout::~CGUIListItemLayout()
     delete *it;
 }
 
-float CGUIListItemLayout::Size(ORIENTATION orientation)
+float CGUIListItemLayout::Size(ORIENTATION orientation) const
 {
   return (orientation == HORIZONTAL) ? m_width : m_height;
 }
