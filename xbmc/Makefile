@@ -1,4 +1,4 @@
-INCLUDES=-I. -Ilinux -Icores -I../guilib
+INCLUDES=-I. -Ilinux -Icores -I../guilib -Iutils
 INCLUDES+=-Ilib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core -Ilib/libUPnP/Platinum/Source/Core -Ilib/libUPnP/Platinum/Source/Devices/MediaServer -Ilib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Posix
 
 PCH=stdafx.h

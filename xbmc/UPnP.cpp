@@ -25,7 +25,7 @@
 #include "Util.h"
 #include "Application.h"
 
-#include "xbox/Network.h"
+#include "utils/Network.h"
 #include "UPnP.h"
 #include "FileSystem/UPnPVirtualPathDirectory.h"
 #include "FileSystem/MusicDatabaseDirectory.h"
@@ -1178,7 +1178,7 @@ CUPnP::StartServer()
 
     // trying to set optional upnp values for XP UPnP UI Icons to detect us
     // but it doesn't work anyways as it requires multicast for XP to detect us
-    NPT_String ip = g_network.m_networkinfo.ip;
+    NPT_String ip = g_network.GetFirstConnectedInterface()->GetCurrentIPAddress().c_str();
 #ifndef HAS_XBOX_NETWORK
     NPT_List<NPT_String> list;
     if (NPT_SUCCEEDED(PLT_UPnPMessageHelper::GetIPAddresses(list))) {
@@ -1231,7 +1231,7 @@ void CUPnP::StartRenderer()
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
     g_settings.LoadUPnPXml(filename);
 
-    NPT_String ip = g_network.m_networkinfo.ip;
+    NPT_String ip = g_network.GetFirstConnectedInterface()->GetCurrentIPAddress().c_str();
 #ifndef HAS_XBOX_NETWORK
     NPT_List<NPT_String> list;
     if (NPT_SUCCEEDED(PLT_UPnPMessageHelper::GetIPAddresses(list))) {

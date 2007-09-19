@@ -2,6 +2,7 @@
 
 #ifdef _LINUX
 
+#include <stdio.h>
 #include <ctype.h>
 #include <errno.h>
 

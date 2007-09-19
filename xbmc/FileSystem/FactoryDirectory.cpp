@@ -42,7 +42,7 @@
 #ifdef HAS_UPNP
 #include "UPnPDirectory.h"
 #endif
-#include "../xbox/Network.h"
+#include "../utils/Network.h"
 #include "ZipDirectory.h"
 #include "RarDirectory.h"
 #include "DirectoryTuxBox.h"
