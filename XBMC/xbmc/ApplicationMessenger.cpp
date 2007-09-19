@@ -37,7 +37,7 @@
 #ifdef HAS_WEB_SERVER
 #include "lib/libGoAhead/XBMChttp.h"
 #endif
-#include "xbox/Network.h"
+#include "utils/Network.h"
 
 extern HWND g_hWnd;
 

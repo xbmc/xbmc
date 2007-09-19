@@ -7,7 +7,7 @@
 #include "HTTP.h"
 #include "../utils/HTMLUtil.h"
 #include "../Util.h"
-#include "../xbox/Network.h"
+#include "../utils/Network.h"
 
 using namespace XFILE;
 

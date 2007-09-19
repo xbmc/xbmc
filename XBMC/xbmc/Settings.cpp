@@ -34,7 +34,7 @@
 #include "GUIAudioManager.h"
 #include "AudioContext.h"
 #include "utils/GUIInfoManager.h"
-#include "xbox/Network.h"
+#include "utils/Network.h"
 #include "FileSystem/MultiPathDirectory.h"
 #include "GUIBaseContainer.h" // for VIEW_TYPE enum
 #include "utils/FanController.h"

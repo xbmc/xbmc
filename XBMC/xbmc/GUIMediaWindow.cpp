@@ -28,7 +28,7 @@
 #include "FileSystem/PluginDirectory.h"
 #include "GUIPassword.h"
 #include "Application.h"
-#include "xbox/Network.h"
+#include "utils/Network.h"
 #include "PartyModeManager.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIWindowFileManager.h"
@@ -715,7 +715,7 @@ bool CGUIMediaWindow::HaveDiscOrConnection(CStdString& strPath, int iDriveType)
   else if (iDriveType==SHARE_TYPE_REMOTE)
   {
     // TODO: Handle not connected to a remote share
-    if ( !g_network.IsEthernetConnected() )
+    if ( !g_network.IsConnected() )
     {
       CGUIDialogOK::ShowAndGetInput(220, 221, 0, 0);
       return false;

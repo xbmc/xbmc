@@ -28,7 +28,7 @@
 #include "GUIDialogContextMenu.h"
 #include "MediaManager.h"
 #include "AutoSwitch.h"
-#include "xbox/Network.h"
+#include "utils/Network.h"
 #include "GUIPassword.h"
 
 using namespace XFILE;
@@ -463,7 +463,7 @@ bool CGUIDialogFileBrowser::HaveDiscOrConnection( CStdString& strPath, int iDriv
   else if ( iDriveType == SHARE_TYPE_REMOTE )
   {
     // TODO: Handle not connected to a remote share
-    if ( !g_network.IsEthernetConnected() )
+    if ( !g_network.IsConnected() )
     {
       CGUIDialogOK::ShowAndGetInput(220, 221, 0, 0);
       return false;

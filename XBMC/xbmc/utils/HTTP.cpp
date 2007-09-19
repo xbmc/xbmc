@@ -8,7 +8,7 @@
 #include "../DNSNameCache.h"
 
 #include "../Util.h"
-#include "../xbox/Network.h"
+#include "../utils/Network.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

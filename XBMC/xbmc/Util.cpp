@@ -77,7 +77,7 @@
 #ifdef _XBOX
 #include <xbdm.h>
 #endif
-#include "xbox/Network.h"
+#include "utils/Network.h"
 #include "GUIPassword.h"
 #ifdef HAS_KAI
 #include "utils/KaiClient.h"
@@ -4205,7 +4205,9 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       musicScan->StopScanning();
 
     g_network.NetworkMessage(CNetwork::SERVICES_DOWN,1);
+#ifdef HAS_XBOX_NETWORK
     g_network.Deinitialize();
+#endif
 #ifdef HAS_XBOX_HARDWARE
     CLog::Log(LOGNOTICE, "stop fancontroller");
     CFanController::Instance()->Stop();
@@ -4214,11 +4216,13 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     g_passwordManager.m_mapSMBPasswordCache.clear();
     g_passwordManager.bMasterUser = false;
     m_gWindowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
+#ifdef HAS_XBOX_NETWORK
     g_network.Initialize(g_guiSettings.GetInt("network.assignment"),
       g_guiSettings.GetString("network.ipaddress").c_str(),
       g_guiSettings.GetString("network.subnet").c_str(),
       g_guiSettings.GetString("network.gateway").c_str(),
       g_guiSettings.GetString("network.dns").c_str());
+#endif
   }
   else if (execute.Left(18).Equals("system.pwmcontrol"))
   {

@@ -12,7 +12,7 @@
 #include <libsmbclient.h>
 #endif
 #include "../Util.h"
-#include "../xbox/Network.h"
+#include "../utils/Network.h"
 #include "../utils/Win32Exception.h"
 
 using namespace XFILE;
