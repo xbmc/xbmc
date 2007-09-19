@@ -1020,7 +1020,7 @@ bool SSortFileItem::MovieYearAscending(CFileItem *left, CFileItem *right)
   if (right->IsParentFolder()) return false;
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
-    if (left->GetVideoInfoTag()->m_iYear > 0)
+    if (left->GetVideoInfoTag()->m_strPremiered.IsEmpty() && left->GetVideoInfoTag()->m_strFirstAired.IsEmpty())
     {
       int result = left->GetVideoInfoTag()->m_iYear-right->GetVideoInfoTag()->m_iYear;
       if (result < 0) return true;
@@ -1042,7 +1042,7 @@ bool SSortFileItem::MovieYearDescending(CFileItem *left, CFileItem *right)
   if (right->IsParentFolder()) return false;
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
-    if (left->GetVideoInfoTag()->m_iYear > 0)
+    if (left->GetVideoInfoTag()->m_strPremiered.IsEmpty() && left->GetVideoInfoTag()->m_strFirstAired.IsEmpty())
     {
      int result = left->GetVideoInfoTag()->m_iYear-right->GetVideoInfoTag()->m_iYear;
      if (result < 0) return false;
