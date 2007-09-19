@@ -48,6 +48,21 @@ bool CNetwork::IsConnected()
    return GetFirstConnectedInterface() != NULL;
 }
 
+CNetworkInterface* CNetwork::GetInterfaceByName(CStdString& name)
+{
+   std::vector<CNetworkInterface*>& ifaces = GetInterfaceList();
+   std::vector<CNetworkInterface*>::const_iterator iter = ifaces.begin();
+   while (iter != ifaces.end())
+   {
+      CNetworkInterface* iface = *iter;
+      if (iface && iface->GetName().Equals(name))
+         return iface;
+      ++iter;
+   }
+   
+   return NULL;
+}
+
 void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
 {
   switch( message )

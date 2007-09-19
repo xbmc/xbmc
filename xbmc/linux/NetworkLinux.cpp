@@ -266,6 +266,20 @@ std::vector<NetworkAccessPoint>  CNetworkLinux::GetAccessPoints(void)
   
 void CNetworkInterfaceLinux::GetSettingsIP(bool& isDHCP, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway)
 {
+   if (GetName().Equals("eth0"))
+   {
+	   isDHCP = false;
+	   ipAddress = "10.10.10.10";
+	   networkMask = "11.11.11.11";
+	   defaultGateway = "12.12.12.12";
+	}
+	else
+	{
+	   isDHCP = true;
+	   ipAddress = "0.0.0.0";
+	   networkMask = "0.0.0.0";
+	   defaultGateway = "0.0.0.0";
+	}
 }
 
 void CNetworkInterfaceLinux::SetSettingsIP(bool isDHCP, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway)
@@ -274,6 +288,9 @@ void CNetworkInterfaceLinux::SetSettingsIP(bool isDHCP, CStdString& ipAddress, C
    
 void CNetworkInterfaceLinux::GetSettingsWireless(CStdString& essId, CStdString& key, bool& keyIsString)
 {
+	essId = "tals";
+	key = "momo";
+	keyIsString = true;	
 }
 
 void CNetworkInterfaceLinux::SetSettingsWireless(CStdString& essId, CStdString& key, bool keyIsString)
