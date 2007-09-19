@@ -520,15 +520,16 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
     pItem->m_strPath = movies[i].m_strFileNameAndPath;
     items.Add(pItem);
   }
-  CFileItemList items;
-  m_database.GetMusicVideosByArtist(strSearch, items);
-  for (int i = 0; i < (int)items.Size(); ++i)
+
+  CFileItemList mvids;
+  m_database.GetMusicVideosByArtist(strSearch, mvids);
+  for (int i = 0; i < (int)mvids.Size(); ++i)
   {
     CStdString strItem;
-    strItem.Format("[%s] %s", g_localizeStrings.Get(20391), items[i]->GetVideoInfoTag()->m_strTitle);  // Movie
+    strItem.Format("[%s] %s", g_localizeStrings.Get(20391), mvids[i]->GetVideoInfoTag()->m_strTitle);  // Movie
     CFileItem *pItem = new CFileItem(strItem);
-    *pItem->GetVideoInfoTag() = *items[i]->GetVideoInfoTag();
-    pItem->m_strPath = items[i]->GetVideoInfoTag()->m_strFileNameAndPath;
+    *pItem->GetVideoInfoTag() = *mvids[i]->GetVideoInfoTag();
+    pItem->m_strPath = mvids[i]->GetVideoInfoTag()->m_strFileNameAndPath;
     items.Add(pItem);
   }
 }
