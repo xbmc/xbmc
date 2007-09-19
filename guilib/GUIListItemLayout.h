@@ -54,7 +54,7 @@ public:
   ~CGUIListItemLayout();
   void LoadLayout(TiXmlElement *layout, bool focused);
   void Render(CGUIListItem *item, DWORD parentID, DWORD time = 0);
-  float Size(ORIENTATION orientation);
+  float Size(ORIENTATION orientation) const;
   bool Focused() const { return m_focused; };
   void ResetScrolling();
   void QueueAnimation(ANIMATION_TYPE animType);

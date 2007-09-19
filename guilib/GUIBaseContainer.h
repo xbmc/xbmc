@@ -78,6 +78,7 @@ protected:
   virtual int  CorrectOffset(int offset, int cursor) const;
   virtual void UpdateLayout();
   virtual void CalculateLayout();
+  bool InsideLayout(const CGUIListItemLayout &layout, const CPoint &point);
 
   inline float Size() const;
   void MoveToRow(int row);
