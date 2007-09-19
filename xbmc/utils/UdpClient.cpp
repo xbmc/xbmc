@@ -4,7 +4,7 @@
 #ifdef _LINUX
 #include <sys/ioctl.h>
 #endif
-#include "../xbox/Network.h"
+#include "../utils/Network.h"
 
 #define UDPCLIENT_DEBUG_LEVEL LOGDEBUG
 

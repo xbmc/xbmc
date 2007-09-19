@@ -27,7 +27,7 @@
 #include "Application.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogProfileSettings.h"
-#include "xbox/Network.h"
+#include "utils/Network.h"
 #include "utils/GUIInfoManager.h"
 #include "utils/Weather.h"
 #include "GUIPassword.h"
@@ -101,7 +101,9 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
     CGUIMessage msg2(GUI_MSG_ITEM_SELECTED, m_gWindowManager.GetActiveWindow(), iCtrlID, 0, 0, NULL);
     g_graphicsContext.SendMessage(msg2);
     g_network.NetworkMessage(CNetwork::SERVICES_DOWN,1);
+#ifdef HAS_XBOX_NETWORK
     g_network.Deinitialize();
+#endif
     bool bOldMaster = g_passwordManager.bMasterUser;
     g_passwordManager.bMasterUser = true;
     g_settings.LoadProfile(iItem);
@@ -110,11 +112,13 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
     g_settings.SaveProfiles("q:\\system\\profiles.xml"); // to set last loaded
 
     g_passwordManager.bMasterUser = bOldMaster;
+#ifdef HAS_XBOX_NETWORK
     g_network.Initialize(g_guiSettings.GetInt("network.assignment"),
       g_guiSettings.GetString("network.ipaddress").c_str(),
       g_guiSettings.GetString("network.subnet").c_str(),
       g_guiSettings.GetString("network.gateway").c_str(),
       g_guiSettings.GetString("network.dns").c_str());
+#endif
     CGUIMessage msg3(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), iCtrlID, 0);
     OnMessage(msg3);
     CGUIMessage msgSelect(GUI_MSG_ITEM_SELECT, m_gWindowManager.GetActiveWindow(), iCtrlID, msg2.GetParam1(), msg2.GetParam2());

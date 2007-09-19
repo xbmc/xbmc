@@ -29,7 +29,7 @@
 #include "GUIButtonScroller.h"
 #include "GUIInfoManager.h"
 #include <stack>
-#include "../xbox/Network.h"
+#include "../utils/Network.h"
 #include "GUIWindowSlideShow.h"
 
 // stuff for current song
@@ -1012,48 +1012,62 @@ CStdString CGUIInfoManager::GetLabel(int info)
   case NETWORK_IP_ADDRESS:
     {
       CStdString ip;
-      ip.Format("%s: %s", g_localizeStrings.Get(150).c_str(), g_network.m_networkinfo.ip);
+      CNetworkInterface* iface = g_network.GetFirstConnectedInterface();
+      if (iface)
+        ip.Format("%s: %s", g_localizeStrings.Get(150).c_str(), iface->GetCurrentIPAddress().c_str());
       return ip;
     }
     break;
   case NETWORK_SUBNET_ADDRESS:
     {
       CStdString subnet;
-      subnet.Format("%s: %s", g_localizeStrings.Get(13159), g_network.m_networkinfo.subnet);
+      CNetworkInterface* iface = g_network.GetFirstConnectedInterface();
+      if (iface)
+        subnet.Format("%s: %s", g_localizeStrings.Get(13159), iface->GetCurrentNetmask().c_str());
       return subnet;
     }
     break;
   case NETWORK_GATEWAY_ADDRESS:
     {
       CStdString gateway;
-      gateway.Format("%s: %s", g_localizeStrings.Get(13160), g_network.m_networkinfo.gateway);
+      CNetworkInterface* iface = g_network.GetFirstConnectedInterface();
+      if (iface)
+        gateway.Format("%s: %s", g_localizeStrings.Get(13160), iface->GetCurrentDefaultGateway().c_str());
       return gateway;
     }
     break;
   case NETWORK_DNS1_ADDRESS:
     {
       CStdString dns;
-      dns.Format("%s: %s", g_localizeStrings.Get(13161), g_network.m_networkinfo.DNS1);
+      std::vector<CStdString> nss = g_network.GetNameServers();
+      if (nss.size() >= 1)
+          dns.Format("%s: %s", g_localizeStrings.Get(13161), nss[0].c_str());
       return dns;
     }
     break;
   case NETWORK_DNS2_ADDRESS:
     {
       CStdString dns;
-      dns.Format("%s: %s", g_localizeStrings.Get(20307), g_network.m_networkinfo.DNS2);
+      std::vector<CStdString> nss = g_network.GetNameServers();
+      if (nss.size() >= 2)
+          dns.Format("%s: %s", g_localizeStrings.Get(20307), nss[1].c_str());
       return dns;
     }
     break;
   case NETWORK_DHCP_ADDRESS:
     {
       CStdString dhcpserver;
+#ifdef HAS_XBOX_HARDWARE
       dhcpserver.Format("%s: %s", g_localizeStrings.Get(20308), g_network.m_networkinfo.dhcpserver);
+#endif
       return dhcpserver;
     }
     break;
+#ifdef HAS_XBOX_HARDWARE
   case NETWORK_IS_DHCP:
     {
       CStdString dhcp;
+      CNetworkInterface* iface = g_network.GetFirstConnectedInterface();
       if(g_network.m_networkinfo.DHCP)
         dhcp.Format("%s %s", g_localizeStrings.Get(146), g_localizeStrings.Get(148)); // is dhcp ip
       else
@@ -1061,7 +1075,6 @@ CStdString CGUIInfoManager::GetLabel(int info)
      return dhcp;
     }
     break;
-#ifdef HAS_XBOX_HARDWARE
   case NETWORK_LINK_STATE:
     {
       DWORD dwnetstatus = XNetGetEthernetLinkStatus();

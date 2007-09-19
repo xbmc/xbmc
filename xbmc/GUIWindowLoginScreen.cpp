@@ -33,7 +33,7 @@
 #include "lib/libscrobbler/scrobbler.h"
 #include "utils/Weather.h"
 #include "utils/FanController.h"
-#include "xbox/Network.h"
+#include "utils/Network.h"
 #include "SkinInfo.h"
 
 using namespace XFILE;
@@ -101,18 +101,21 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
             if (iItem != 0 || g_settings.m_iLastLoadedProfileIndex != 0)
             {
               g_network.NetworkMessage(CNetwork::SERVICES_DOWN,1);
+#ifdef HAS_XBOX_NETWORK
               g_network.Deinitialize();
-              #ifdef HAS_XBOX_HARDWARE
+#endif
+#ifdef HAS_XBOX_HARDWARE
               CLog::Log(LOGNOTICE, "stop fancontroller");
               CFanController::Instance()->Stop();
-              #endif
-              
+#endif
               g_settings.LoadProfile(m_viewControl.GetSelectedItem());
+#ifdef HAS_XBOX_NETWORK
               g_network.Initialize(g_guiSettings.GetInt("network.assignment"),
                 g_guiSettings.GetString("network.ipaddress").c_str(),
                 g_guiSettings.GetString("network.subnet").c_str(),
                 g_guiSettings.GetString("network.gateway").c_str(),
                 g_guiSettings.GetString("network.dns").c_str());
+#endif
             }
             else
             {

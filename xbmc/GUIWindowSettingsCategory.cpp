@@ -58,7 +58,7 @@
 #include "GUIDialogContextMenu.h"
 #include "GUIWindowPrograms.h"
 #include "MediaManager.h"
-#include "xbox/Network.h"
+#include "utils/Network.h"
 #include "lib/libGoAhead/WebServer.h"
 #include "GUIControlGroupList.h"
 #include "XBTimeZone.h"
@@ -912,6 +912,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       {
         if (g_guiSettings.GetInt("network.assignment") != NETWORK_STATIC)
         {
+#if 0
           //We are in non Static Mode! Setting the Received IP Information
           if(strSetting.Equals("network.ipaddress"))
             pControl->SetLabel2(g_network.m_networkinfo.ip);
@@ -921,6 +922,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
             pControl->SetLabel2(g_network.m_networkinfo.gateway);
           else if(strSetting.Equals("network.dns"))
             pControl->SetLabel2(g_network.m_networkinfo.DNS1);
+#endif
         }
         pControl->SetEnabled(g_guiSettings.GetInt("network.assignment") == NETWORK_STATIC);
       }
@@ -2046,6 +2048,7 @@ void CGUIWindowSettingsCategory::CheckNetworkSettings()
     }
     else*/
     {
+#ifdef HAS_XBOX_NETWORK
       g_network.NetworkMessage(CNetwork::SERVICES_DOWN,1);
       g_network.Deinitialize();
       g_network.Initialize(g_guiSettings.GetInt("network.assignment"),
@@ -2053,6 +2056,7 @@ void CGUIWindowSettingsCategory::CheckNetworkSettings()
         g_guiSettings.GetString("network.subnet").c_str(),
         g_guiSettings.GetString("network.gateway").c_str(),
         g_guiSettings.GetString("network.dns").c_str());
+#endif
     }
 
 
