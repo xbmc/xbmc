@@ -19,6 +19,8 @@
 #define MOUSE_EXTRA_BUTTON1 3
 #define MOUSE_EXTRA_BUTTON2 4
 
+#include "../Geometry.h"
+
 class CMouse
 {
 public:
@@ -32,10 +34,11 @@ public:
   void Update();
   void SetResolution(int nXMax, int nYMax, float fXSpeed, float fYSpeed);
   void SetInactive();
-  void SetExclusiveAccess(DWORD dwControlID, DWORD dwWindowID);
+  void SetExclusiveAccess(DWORD dwControlID, DWORD dwWindowID, const CPoint &point);
   void EndExclusiveAccess(DWORD dwControlID, DWORD dwWindowID);
   DWORD GetExclusiveWindowID() const { return m_dwExclusiveWindowID;};
   DWORD GetExclusiveControlID() const { return m_dwExclusiveControlID;};
+  const CPoint &GetExclusiveOffset() const { return m_exclusiveOffset; };
   void SetState(DWORD dwState) {m_dwState = dwState;};
   DWORD GetState() const { return m_dwState;};
 
@@ -59,6 +62,7 @@ private:
   // exclusive access to mouse from a control
   DWORD m_dwExclusiveWindowID;
   DWORD m_dwExclusiveControlID;
+  CPoint m_exclusiveOffset;
 
   // state of the mouse
   DWORD m_dwState;
