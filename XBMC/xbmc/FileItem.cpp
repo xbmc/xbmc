@@ -1378,7 +1378,7 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
     Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::SongAlbumAscendingNoThe : SSortFileItem::SongAlbumDescendingNoThe);
     break;
   case SORT_METHOD_GENRE:
-    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::SongGenreAscending : SSortFileItem::SongGenreDescending);
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::GenreAscending : SSortFileItem::GenreDescending);
     break;
   case SORT_METHOD_FILE:
     Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::FileAscending : SSortFileItem::FileDescending);

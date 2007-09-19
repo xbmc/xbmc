@@ -971,25 +971,51 @@ bool SSortFileItem::SongAlbumDescendingNoThe(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::SongGenreAscending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::GenreAscending(CFileItem *left, CFileItem *right)
 {
   // special items
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
-    return StringUtils::AlphaNumericCompare(left->GetMusicInfoTag()->GetGenre().c_str(),right->GetMusicInfoTag()->GetGenre().c_str()) <= 0;
+  {
+    const char* lGenre;
+    if (left->HasMusicInfoTag())
+      lGenre = left->GetMusicInfoTag()->GetGenre().c_str();
+    else
+      lGenre = left->GetVideoInfoTag()->m_strGenre.c_str();
+    const char* rGenre;
+    if (right->HasMusicInfoTag())
+      rGenre = right->GetMusicInfoTag()->GetGenre().c_str();
+    else
+      rGenre = right->GetVideoInfoTag()->m_strGenre.c_str();
+
+    return StringUtils::AlphaNumericCompare(lGenre,rGenre) <= 0;
+  }
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::SongGenreDescending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::GenreDescending(CFileItem *left, CFileItem *right)
 {
   // special items
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
-    return StringUtils::AlphaNumericCompare(left->GetMusicInfoTag()->GetGenre().c_str(),right->GetMusicInfoTag()->GetGenre().c_str()) >= 0;
+  {
+    const char* lGenre;
+    if (left->HasMusicInfoTag())
+      lGenre = left->GetMusicInfoTag()->GetGenre().c_str();
+    else
+      lGenre = left->GetVideoInfoTag()->m_strGenre.c_str();
+    const char* rGenre;
+    if (right->HasMusicInfoTag())
+      rGenre = right->GetMusicInfoTag()->GetGenre().c_str();
+    else
+      rGenre = right->GetVideoInfoTag()->m_strGenre.c_str();
+
+    return StringUtils::AlphaNumericCompare(lGenre,rGenre) >= 0;
+  }
   return left->m_bIsFolder;
 }
 
