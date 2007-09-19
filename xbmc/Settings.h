@@ -291,9 +291,11 @@ public:
     CStdString m_strMusicLibraryAlbumFormatRight;
     bool m_prioritiseAPEv2tags;
     CStdString m_musicItemSeparator;
+    CStdString m_videoItemSeparator;
 
     bool m_bVideoLibraryHideAllItems;
     bool m_bVideoLibraryAllItemsOnBottom;
+    bool m_bVideoLibraryHideRecentlyAddedItems;
 
     bool m_bUseEvilB;
     std::vector<CStdString> m_vecTokens; // cleaning strings tied to language
@@ -337,6 +339,7 @@ public:
     CViewState m_viewStateVideoNavEpisodes;
     CViewState m_viewStateVideoNavSeasons;
     CViewState m_viewStateVideoNavTvShows;
+    CViewState m_viewStateVideoNavMusicVideos;
 
     bool m_bMyMusicPlaylistRepeat;
     bool m_bMyMusicPlaylistShuffle;

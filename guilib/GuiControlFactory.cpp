@@ -95,7 +95,6 @@ bool CGUIControlFactory::GetFloatRange(const TiXmlNode* pRootNode, const char* s
   return true;
 }
 
-// TODO: Extend this to DWORD and Integer's ???
 bool CGUIControlFactory::GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value)
 {
   const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
@@ -361,6 +360,20 @@ bool CGUIControlFactory::GetColor(const TiXmlNode *control, const char *strTag, 
   return false;
 }
 
+bool CGUIControlFactory::GetNavigation(const TiXmlElement *node, const char *tag, DWORD &direction, vector<CStdString> &actions)
+{
+  if (!GetMultipleString(node, tag, actions))
+    return false; // no tag specified
+  if (actions.size() == 1 && StringUtils::IsNaturalNumber(actions[0]))
+  { // single numeric tag specified
+    direction = atol(actions[0].c_str());
+    actions.clear();
+  }
+  else
+    direction = 0;
+  return true;
+}
+
 // Convert a string to a GUI label, by translating/parsing the label for localisable strings
 CStdString CGUIControlFactory::GetLabel(const CStdString &label)
 {
@@ -409,6 +422,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   float width = 0, height = 0;
 
   DWORD left = 0, right = 0, up = 0, down = 0;
+  vector<CStdString> leftActions, rightActions, upActions, downActions;
+
   DWORD pageControl = 0;
   D3DCOLOR colorDiffuse = 0xFFFFFFFF;
   DWORD defaultControl = 0;
@@ -588,22 +603,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetFloat(pControlNode, "controloffsetx", controlOffsetX);
   GetFloat(pControlNode, "controloffsety", controlOffsetY);
 
-  if (!XMLUtils::GetDWORD(pControlNode, "onup" , up ))
-  {
-    up = id - 1;
-  }
-  if (!XMLUtils::GetDWORD(pControlNode, "ondown" , down))
-  {
-    down = id + 1;
-  }
-  if (!XMLUtils::GetDWORD(pControlNode, "onleft" , left ))
-  {
-    left = id;
-  }
-  if (!XMLUtils::GetDWORD(pControlNode, "onright", right))
-  {
-    right = id;
-  }
+  if (!GetNavigation(pControlNode, "onup", up, upActions)) up = id - 1;
+  if (!GetNavigation(pControlNode, "ondown", down, downActions)) down = id + 1;
+  if (!GetNavigation(pControlNode, "onleft", left, leftActions)) left = id;
+  if (!GetNavigation(pControlNode, "onright", right, rightActions)) right = id;
 
   XMLUtils::GetDWORD(pControlNode, "defaultcontrol", defaultControl);
   XMLUtils::GetDWORD(pControlNode, "pagecontrol", pageControl);
@@ -933,7 +936,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   {
     hasCamera = true;
     g_SkinInfo.ResolveConstant(cam->Attribute("x"), camera.x);
-    g_SkinInfo.ResolveConstant(cam->Attribute("x"), camera.y);
+    g_SkinInfo.ResolveConstant(cam->Attribute("y"), camera.y);
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -1332,6 +1335,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     control->SetAnimations(animations);
     control->SetColorDiffuse(colorDiffuse);
     control->SetNavigation(up, down, left, right);
+    control->SetNavigationActions(upActions, downActions, leftActions, rightActions);
     control->SetPulseOnSelect(bPulse);
     if (hasCamera)
       control->SetCamera(camera);

@@ -329,6 +329,9 @@
 				RelativePath=".\GUIListItemLayout.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIListLabel.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIMessage.cpp">
 			</File>
 			<File
@@ -542,6 +545,9 @@
 			</File>
 			<File
 				RelativePath=".\GUIListItemLayout.h">
+			</File>
+			<File
+				RelativePath=".\GUIListLabel.h">
 			</File>
 			<File
 				RelativePath=".\GUIMessage.h">

@@ -626,17 +626,17 @@ bool CGUIMediaWindow::OnClick(int iItem)
       m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST_EDITOR);
       return true;
     }
-    else if (pItem->m_strPath == "newsmartplaylist://")
+    else if (pItem->m_strPath.Left(19).Equals("newsmartplaylist://"))
     {
-      if (CGUIDialogSmartPlaylistEditor::NewPlaylist())
+      if (CGUIDialogSmartPlaylistEditor::NewPlaylist(pItem->m_strPath.Mid(19)))
         Update(m_vecItems.m_strPath);
       return true;
     }
 
-    // this is particular to music as only music allows "auto play next item"
     if (m_guiState.get() && m_guiState->AutoPlayNextItem() && !g_partyModeManager.IsEnabled() && !pItem->IsPlayList())
     {
-      if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026)) // 'add source button' in empty root
+      // TODO: music videos!     
+      if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026) && m_guiState->GetPlaylist() == PLAYLIST_MUSIC) // 'add source button' in empty root
       {
         if (CGUIDialogMediaSource::ShowAndAddMediaSource("music"))
         {
@@ -648,7 +648,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
 
       //play and add current directory to temporary playlist
       int iPlaylist=m_guiState->GetPlaylist();
-      if (iPlaylist!=PLAYLIST_NONE)
+      if (iPlaylist != PLAYLIST_NONE)
       {
         g_playlistPlayer.ClearPlaylist(iPlaylist);
         g_playlistPlayer.Reset();
@@ -1084,7 +1084,7 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
   {
 #endif
   // TODO: FAVOURITES Conditions on masterlock and localisation
-  if (item && !item->IsParentFolder() && !item->m_strPath.Equals("add"))
+  if (item && !item->IsParentFolder() && !item->m_strPath.Equals("add") && !item->m_strPath.Equals("newplaylist://") && !item->m_strPath.Left(19).Equals("newsmartplaylist://"))
   {
     if (CFavourites::IsFavourite(item, GetID()))
       buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14077);     // Remove Favourite

@@ -277,37 +277,31 @@ void CGUIButtonControl::SettingsCategorySetTextAlign(DWORD dwAlign)
 
 void CGUIButtonControl::OnClick()
 {
-  // Save values, SEND_CLICK_MESSAGE may deactivate the window
-  vector<CStdString> clickActions = m_clickActions;
+  // Save values, as the click message may deactivate the window
   DWORD dwControlID = GetID();
   DWORD dwParentID = GetParentID();
+  vector<CStdString> clickActions = m_clickActions;
 
   // button selected, send a message
   CGUIMessage msg(GUI_MSG_CLICKED, dwControlID, dwParentID, 0);
   SendWindowMessage(msg);
 
-  if (clickActions.size())
+  // and execute our actions
+  for (unsigned int i = 0; i < clickActions.size(); i++)
   {
-    for (unsigned int i = 0; i < clickActions.size(); i++)
-    {
-      CGUIMessage message(GUI_MSG_EXECUTE, dwControlID, dwParentID);
-      message.SetStringParam(clickActions[i]);
-      g_graphicsContext.SendMessage(message);
-    }
-    return;
+    CGUIMessage message(GUI_MSG_EXECUTE, dwControlID, dwParentID);
+    message.SetStringParam(clickActions[i]);
+    g_graphicsContext.SendMessage(message);
   }
 }
 
 void CGUIButtonControl::OnFocus()
 {
-  if (m_focusActions.size())
-  { // send as a thread message so that the render can finish
-    for (unsigned int i = 0; i < m_focusActions.size(); i++)
-    {
-      CGUIMessage message(GUI_MSG_EXECUTE, m_dwControlID, m_dwParentID);
-      message.SetStringParam(m_focusActions[i]);
-      m_gWindowManager.SendThreadMessage(message);
-    }
+  for (unsigned int i = 0; i < m_focusActions.size(); i++)
+  {
+    CGUIMessage message(GUI_MSG_EXECUTE, m_dwControlID, m_dwParentID);
+    message.SetStringParam(m_focusActions[i]);
+    m_gWindowManager.SendThreadMessage(message);
   }
 }
 

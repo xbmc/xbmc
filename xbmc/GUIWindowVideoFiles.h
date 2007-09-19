@@ -10,6 +10,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
 
   void GetStackedDirectory(const CStdString &strPath, CFileItemList &items);
+  virtual void OnInfo(CFileItem* pItem, const SScraperInfo& info);
 protected:
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual bool OnPlayMedia(int iItem);
@@ -20,7 +21,6 @@ protected:
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
 
-  virtual void OnInfo(int iItem, const SScraperInfo& info);
   virtual void OnQueueItem(int iItem);
   virtual void OnAssignContent(int iItem, int iFound, SScraperInfo& info, VIDEO::SScanSettings& settings);
   virtual void OnUnAssignContent(int iItem);

@@ -8,7 +8,7 @@ public:
   CPartyModeManager(void);
   virtual ~CPartyModeManager(void);
 
-  bool Enable();
+  bool Enable(bool bVideo=false);
   void Disable();
   void Play(int iPos);
   void OnSongChange(bool bUpdatePlayed = false);
@@ -25,7 +25,7 @@ public:
 private:
   void Process();
   bool AddRandomSongs(int iSongs = 0);
-  bool AddInitialSongs(vector<long> &songIDs);
+  bool AddInitialSongs(vector<pair<int,long> > &songIDs);
   void Add(CFileItem *pItem);
   bool ReapSongs();
   bool MovePlaying();
@@ -34,14 +34,17 @@ private:
   int GetSongCount(int iType);
   void ClearState();
   void UpdateStats();
-  CStdString GetWhereClauseWithHistory() const;
-  void AddToHistory(long songID);
-  void GetRandomSelection(vector<long> &in, unsigned int number, vector<long> &out);
+  std::pair<CStdString,CStdString> GetWhereClauseWithHistory() const;
+  void AddToHistory(int type, long songID);
+  void GetRandomSelection(vector<pair<int,long> > &in, unsigned int number, vector<pair<int, long> > &out);
 
   // state
   bool m_bEnabled;
+  bool m_bIsVideo;
   int m_iLastUserSong;
-  CStdString m_strCurrentFilter;
+  CStdString m_strCurrentFilterMusic;
+  CStdString m_strCurrentFilterVideo;
+  CStdString m_type;
 
   // statistics
   int m_iSongsPlayed;
@@ -53,7 +56,7 @@ private:
 
   // history
   unsigned int m_songsInHistory;
-  vector<long> m_history;
+  vector<pair<int,long> > m_history;
 };
 
 extern CPartyModeManager g_partyModeManager;

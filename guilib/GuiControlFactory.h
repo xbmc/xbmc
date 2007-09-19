@@ -36,6 +36,7 @@ public:
   static bool GetConditionalVisibility(const TiXmlNode* control, int &condition);
   static bool GetMultipleString(const TiXmlNode* pRootNode, const char* strTag, vector<CStdString>& vecStringValue);
 private:
+  bool GetNavigation(const TiXmlElement *node, const char *tag, DWORD &direction, vector<CStdString> &actions);
   bool GetCondition(const TiXmlNode *control, const char *tag, int &condition);
   static bool GetConditionalVisibility(const TiXmlNode* control, int &condition, bool &allowHiddenFocus);
   bool GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringPath);

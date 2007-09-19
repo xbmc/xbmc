@@ -766,6 +766,27 @@
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(51) + container.content(episodes)</visible>
 		</control>
+		<control type="label">
+			<posx>680</posx>
+			<posy>505</posy>
+			<width>420</width>
+			<height>22</height>
+			<font>special13</font>
+			<align>right</align>
+			<label>$INFO[ListItem.Duration,$LOCALIZE[2050] ]</label>
+			<include>contentpanelslide</include>
+			<visible>Control.IsVisible(51) + container.content(musicvideos)</visible>
+		</control>
+		<control type="label">
+			<posx>200</posx>
+			<posy>505</posy>
+			<width>420</width>
+			<height>22</height>
+			<font>special13</font>
+			<label>$INFO[ListItem.Artist]</label>
+			<include>contentpanelslide</include>
+			<visible>Control.IsVisible(51) + container.content(musicvideos)</visible>
+		</control>
 		<control type="textbox">
 			<posx>200</posx>
 			<posy>373</posy>
@@ -1182,13 +1203,14 @@
 				</control>
 				<control type="label">
 					<posx>51</posx>
-					<posy>120</posy>
+					<posy>115</posy>
 					<width>90</width>
 					<height>22</height>
 					<font>font13</font>
 					<selectedcolor>green</selectedcolor>
 					<align>center</align>
 					<info>ListItem.Label</info>
+					<animation effect="slide" end="0,5" time="100">focus</animation>
 				</control>
 			</focusedlayout>
 		</control>
@@ -1260,13 +1282,14 @@
 				</control>
 				<control type="label">
 					<posx>80</posx>
-					<posy>190</posy>
+					<posy>185</posy>
 					<width>150</width>
 					<height>22</height>
 					<font>font13</font>
 					<selectedcolor>green</selectedcolor>
 					<align>center</align>
 					<info>ListItem.Label</info>
+					<animation effect="slide" end="0,5" time="100">focus</animation>
 				</control>
 			</focusedlayout>
 		</control>
