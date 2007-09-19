@@ -158,41 +158,61 @@ bool CGUIControl::OnAction(const CAction &action)
 // Movement controls (derived classes can override)
 void CGUIControl::OnUp()
 {
-  if (HasFocus() && m_dwControlID != m_dwControlUp)
+  if (HasFocus())
   {
-    // Send a message to the window with the sender set as the window
-    CGUIMessage msg(GUI_MSG_MOVE, GetParentID(), GetID(), ACTION_MOVE_UP);
-    SendWindowMessage(msg);
+    if (m_upActions.size())
+      ExecuteActions(m_upActions);
+    else if (m_dwControlID != m_dwControlUp)
+    {
+      // Send a message to the window with the sender set as the window
+      CGUIMessage msg(GUI_MSG_MOVE, GetParentID(), GetID(), ACTION_MOVE_UP);
+      SendWindowMessage(msg);
+    }
   }
 }
 
 void CGUIControl::OnDown()
 {
-  if (HasFocus() && m_dwControlID != m_dwControlDown)
+  if (HasFocus())
   {
-    // Send a message to the window with the sender set as the window
-    CGUIMessage msg(GUI_MSG_MOVE, GetParentID(), GetID(), ACTION_MOVE_DOWN);
-    SendWindowMessage(msg);
+    if (m_downActions.size())
+      ExecuteActions(m_downActions);
+    else if (m_dwControlID != m_dwControlDown)
+    {
+      // Send a message to the window with the sender set as the window
+      CGUIMessage msg(GUI_MSG_MOVE, GetParentID(), GetID(), ACTION_MOVE_DOWN);
+      SendWindowMessage(msg);
+    }
   }
 }
 
 void CGUIControl::OnLeft()
 {
-  if (HasFocus() && m_dwControlID != m_dwControlLeft)
+  if (HasFocus())
   {
-    // Send a message to the window with the sender set as the window
-    CGUIMessage msg(GUI_MSG_MOVE, GetParentID(), GetID(), ACTION_MOVE_LEFT);
-    SendWindowMessage(msg);
+    if (m_leftActions.size())
+      ExecuteActions(m_leftActions);
+    else if (m_dwControlID != m_dwControlLeft)
+    {
+      // Send a message to the window with the sender set as the window
+      CGUIMessage msg(GUI_MSG_MOVE, GetParentID(), GetID(), ACTION_MOVE_LEFT);
+      SendWindowMessage(msg);
+    }
   }
 }
 
 void CGUIControl::OnRight()
 {
-  if (HasFocus() && m_dwControlID != m_dwControlRight)
+  if (HasFocus())
   {
-    // Send a message to the window with the sender set as the window
-    CGUIMessage msg(GUI_MSG_MOVE, GetParentID(), GetID(), ACTION_MOVE_RIGHT);
-    SendWindowMessage(msg);
+    if (m_rightActions.size())
+      ExecuteActions(m_rightActions);
+    else if (m_dwControlID != m_dwControlRight)
+    {
+      // Send a message to the window with the sender set as the window
+      CGUIMessage msg(GUI_MSG_MOVE, GetParentID(), GetID(), ACTION_MOVE_RIGHT);
+      SendWindowMessage(msg);
+    }
   }
 }
 
@@ -367,6 +387,15 @@ void CGUIControl::SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWORD dw
   m_dwControlDown = dwDown;
   m_dwControlLeft = dwLeft;
   m_dwControlRight = dwRight;
+}
+
+void CGUIControl::SetNavigationActions(const vector<CStdString> &up, const vector<CStdString> &down,
+                                       const vector<CStdString> &left, const vector<CStdString> &right)
+{
+  m_leftActions = left;
+  m_rightActions = right;
+  m_upActions = up;
+  m_downActions = down;
 }
 
 void CGUIControl::SetWidth(float width)
@@ -710,4 +739,19 @@ void CGUIControl::SetCamera(const CPoint &camera)
 {
   m_camera = camera;
   m_hasCamera = true;
+}
+
+void CGUIControl::ExecuteActions(const vector<CStdString> &actions)
+{
+  // we should really save anything we need, as the action may cause the window to close
+  DWORD savedID = GetID();
+  DWORD savedParent = GetParentID();
+  vector<CStdString> savedActions = actions;
+
+  for (unsigned int i = 0; i < savedActions.size(); i++)
+  {
+    CGUIMessage message(GUI_MSG_EXECUTE, savedID, savedParent);
+    message.SetStringParam(savedActions[i]);
+    g_graphicsContext.SendMessage(message);
+  }
 }
