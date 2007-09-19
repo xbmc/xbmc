@@ -489,7 +489,8 @@ void CGUIWindow::OnMouseAction()
     CGUIControl *pControl = (CGUIControl *)GetControl(g_Mouse.GetExclusiveControlID());
     if (pControl)
     { // this control has exclusive access to the mouse
-      HandleMouse(pControl, mousePoint);
+      // TODO: Need to convert mousePoint -> controlPoint
+      HandleMouse(pControl, mousePoint + g_Mouse.GetExclusiveOffset());
       return;
     }
   }
