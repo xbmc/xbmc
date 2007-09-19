@@ -567,7 +567,9 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+#ifdef HAS_XBOX_NETWORK
       pControl->AddLabel(g_localizeStrings.Get(718), NETWORK_DASH);
+#endif    
       pControl->AddLabel(g_localizeStrings.Get(716), NETWORK_DHCP);
       pControl->AddLabel(g_localizeStrings.Get(717), NETWORK_STATIC);
       pControl->SetValue(pSettingInt->GetData());
@@ -771,7 +773,17 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(585), SORT_ORDER_DESC);
       pControl->SetValue(pSettingInt->GetData());
     }
+    else if (strSetting.Equals("network.interface"))
+    {
+       FillInNetworkInterfaces(pSetting);
+    }
   }
+
+  if (m_vecSections[m_iSection]->m_strCategory == "network")
+  {
+     NetworkInterfaceChanged();
+  }
+   
   // update our settings (turns controls on/off as appropriate)
   UpdateSettings();
 }
@@ -907,12 +919,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     }
     else if (strSetting.Equals("network.ipaddress") || strSetting.Equals("network.subnet") || strSetting.Equals("network.gateway") || strSetting.Equals("network.dns"))
     {
+#ifdef HAS_XBOX_NETWORK
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
       if (pControl)
       {
         if (g_guiSettings.GetInt("network.assignment") != NETWORK_STATIC)
         {
-#if 0
           //We are in non Static Mode! Setting the Received IP Information
           if(strSetting.Equals("network.ipaddress"))
             pControl->SetLabel2(g_network.m_networkinfo.ip);
@@ -922,10 +934,18 @@ void CGUIWindowSettingsCategory::UpdateSettings()
             pControl->SetLabel2(g_network.m_networkinfo.gateway);
           else if(strSetting.Equals("network.dns"))
             pControl->SetLabel2(g_network.m_networkinfo.DNS1);
-#endif
         }
         pControl->SetEnabled(g_guiSettings.GetInt("network.assignment") == NETWORK_STATIC);
       }
+#endif
+    
+      bool enabled = true;
+      CGUISpinControlEx* pControl1 = (CGUISpinControlEx *)GetControl(GetSetting("network.assignment")->GetID());
+      if (pControl1) 
+         enabled = (pControl1->GetValue() == NETWORK_STATIC);         
+
+       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+       if (pControl) pControl->SetEnabled(enabled);
     }
     else if (strSetting.Equals("Network.httpproxyserver") || strSetting.Equals("Network.httpproxyport"))
     {
@@ -1427,6 +1447,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     }
 #endif
   }
+  
   else if (strSetting.Equals("network.ipaddress"))
   {
     if (g_guiSettings.GetInt("network.assignment") == NETWORK_STATIC)
@@ -1439,6 +1460,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 
     }
   }
+    
   else if (strSetting.Equals("Network.httpproxyport"))
   {
     CSettingString *pSetting = (CSettingString *)pSettingControl->GetSetting();
@@ -1898,6 +1920,10 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     ClearFolderViews(pSettingControl->GetSetting(), WINDOW_PICTURES);
   }
+  else if (strSetting.Equals("network.interface"))
+  {
+     NetworkInterfaceChanged();
+  }
   UpdateSettings();
 }
 
@@ -2060,12 +2086,13 @@ void CGUIWindowSettingsCategory::CheckNetworkSettings()
     }
 
 
-    // update our settings variables
+    // update our settings variables    
     m_iNetworkAssignment = g_guiSettings.GetInt("network.assignment");
     m_strNetworkIPAddress = g_guiSettings.GetString("network.ipaddress");
     m_strNetworkSubnet = g_guiSettings.GetString("network.subnet");
     m_strNetworkGateway = g_guiSettings.GetString("network.gateway");
     m_strNetworkDNS = g_guiSettings.GetString("network.dns");
+
     // replace settings
     /*   g_guiSettings.SetInt("network.assignment", m_iNetworkAssignment);
        g_guiSettings.SetString("network.ipaddress", m_strNetworkIPAddress);
@@ -3110,4 +3137,73 @@ void CGUIWindowSettingsCategory::ClearFolderViews(CSetting *pSetting, int window
       db.Close();
     }
   }
+}
+
+void CGUIWindowSettingsCategory::FillInNetworkInterfaces(CSetting *pSetting)
+{
+  CSettingString *pSettingString = (CSettingString*)pSetting;
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+  pControl->Clear();
+  
+  // query list of interfaces
+  vector<CStdString> vecInterfaces;
+  std::vector<CNetworkInterface*>& ifaces = g_network.GetInterfaceList();
+  std::vector<CNetworkInterface*>::const_iterator iter = ifaces.begin();
+  while (iter != ifaces.end())
+  {
+    CNetworkInterface* iface = *iter;
+    vecInterfaces.push_back(iface->GetName());
+    ++iter;
+  }
+  sort(vecInterfaces.begin(), vecInterfaces.end(), sortstringbyname());
+ 
+  int iInterface = 0; 
+  for (int i = 0; i < vecInterfaces.size(); ++i)
+  {
+    pControl->AddLabel(vecInterfaces[i], iInterface++);
+  }
+}
+
+void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
+{
+      bool bIsDHCP;
+      CStdString sIPAddress;
+      CStdString sNetworkMask;
+      CStdString sDefaultGateway;
+      bool bIsWireless;
+      CStdString ifaceName;
+
+      // Get network information      
+      CGUISpinControlEx *ifaceControl = (CGUISpinControlEx *)GetControl(GetSetting("network.interface")->GetID());
+      ifaceName = ifaceControl->GetLabel();
+      CNetworkInterface* iface = g_network.GetInterfaceByName(ifaceName);
+      iface->GetSettingsIP(bIsDHCP, sIPAddress, sNetworkMask, sDefaultGateway);
+      bIsWireless = iface->IsWireless();
+
+      CStdString dns;
+      std::vector<CStdString> dnss = g_network.GetNameServers();
+      if (dnss.size() >= 1)
+         dns = dnss[0];
+
+      // Update controls with information
+      CGUISpinControlEx* pControl1 = (CGUISpinControlEx *)GetControl(GetSetting("network.assignment")->GetID());
+      if (pControl1) pControl1->SetValue(bIsDHCP ? NETWORK_DHCP : NETWORK_STATIC);         
+
+      GetSetting("network.ipaddress")->GetSetting()->FromString(sIPAddress);
+      GetSetting("network.subnet")->GetSetting()->FromString(sNetworkMask);
+      GetSetting("network.gateway")->GetSetting()->FromString(sDefaultGateway);
+      GetSetting("network.dns")->GetSetting()->FromString(dns);
+      
+      // Wireless stuff
+      CGUIControl* pControl = (CGUIControl *)GetControl(GetSetting("network.essid")->GetID());
+      if (pControl) pControl->SetEnabled(bIsWireless);         
+      pControl = (CGUIControl *)GetControl(GetSetting("network.key")->GetID());
+      if (pControl) pControl->SetEnabled(bIsWireless);         
+      
+      CStdString sWirelessNetwork;
+      CStdString sWirelessKey;
+      bool bWirelessKeyIsString;
+      iface->GetSettingsWireless(sWirelessNetwork, sWirelessKey, bWirelessKeyIsString);
+      GetSetting("network.essid")->GetSetting()->FromString(sWirelessNetwork);
+      GetSetting("network.key")->GetSetting()->FromString(sWirelessKey);
 }

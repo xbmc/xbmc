@@ -456,17 +456,20 @@ CGUISettings::CGUISettings(void)
   // network settings
   AddGroup(6, 705);
   AddCategory(6, "network", 705);
-  AddInt(1, "network.assignment", 715, NETWORK_DASH, NETWORK_DASH, 1, NETWORK_STATIC, SPIN_CONTROL_TEXT);
-  AddString(2, "network.ipaddress", 719, "0.0.0.0", BUTTON_CONTROL_IP_INPUT);
-  AddString(3, "network.subnet", 720, "255.255.255.0", BUTTON_CONTROL_IP_INPUT);
-  AddString(4, "network.gateway", 721, "0.0.0.0", BUTTON_CONTROL_IP_INPUT);
-  AddString(5, "network.dns", 722, "0.0.0.0", BUTTON_CONTROL_IP_INPUT);
-  AddSeparator(6, "network.sep1");
-  AddBool(7, "network.usehttpproxy", 708, false);
-  AddString(8, "network.httpproxyserver", 706, "", BUTTON_CONTROL_IP_INPUT);
-  AddString(9, "network.httpproxyport", 707, "8080", BUTTON_CONTROL_INPUT, false, 707);
-  AddSeparator(10, "network.sep2");
-  AddBool(11, "network.enableinternet", 14054, true);
+  AddString(1, "network.interface",775,"", SPIN_CONTROL_TEXT);
+  AddInt(2, "network.assignment", 715, NETWORK_DHCP, NETWORK_DHCP, 1, NETWORK_STATIC, SPIN_CONTROL_TEXT);
+  AddString(3, "network.ipaddress", 719, "0.0.0.0", BUTTON_CONTROL_IP_INPUT);
+  AddString(4, "network.subnet", 720, "255.255.255.0", BUTTON_CONTROL_IP_INPUT);
+  AddString(5, "network.gateway", 721, "0.0.0.0", BUTTON_CONTROL_IP_INPUT);
+  AddString(6, "network.dns", 722, "0.0.0.0", BUTTON_CONTROL_IP_INPUT);
+  AddString(7, "network.essid", 776, "0.0.0.0", BUTTON_CONTROL_INPUT);
+  AddString(8, "network.key", 777, "0.0.0.0", BUTTON_CONTROL_INPUT);
+  AddSeparator(9, "network.sep1");
+  AddBool(10, "network.usehttpproxy", 708, false);
+  AddString(11, "network.httpproxyserver", 706, "", BUTTON_CONTROL_IP_INPUT);
+  AddString(12, "network.httpproxyport", 707, "8080", BUTTON_CONTROL_INPUT, false, 707);
+  AddSeparator(13, "network.sep2");
+  AddBool(14, "network.enableinternet", 14054, true);
   // hidden proxy authentication details
   AddString(0, "network.httpproxyusername", 706, "", BUTTON_CONTROL_INPUT);
   AddString(0, "network.httpproxypassword", 706, "", BUTTON_CONTROL_INPUT);

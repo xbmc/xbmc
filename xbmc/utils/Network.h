@@ -57,6 +57,7 @@ public:
 
    // Return the list of interfaces
    virtual std::vector<CNetworkInterface*>& GetInterfaceList(void) = 0;
+   CNetworkInterface* GetInterfaceByName(CStdString& name);
    
    // Return the first interface which is active
    CNetworkInterface* GetFirstConnectedInterface(void);
