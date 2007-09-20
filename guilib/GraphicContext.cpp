@@ -1249,19 +1249,19 @@ void CGraphicContext::AcquireCurrentContext(Surface::CSurface* ctx)
 #endif
 }
 
-void CGraphicContext::BeginPaint(CSurface *dest)
+void CGraphicContext::BeginPaint(CSurface *dest, bool lock)
 {
 #ifdef HAS_SDL_OPENGL
-  Lock();
+  if (lock) Lock();
   ValidateSurface(dest);
   VerifyGLState();
 #endif
 }
 
-void CGraphicContext::EndPaint(CSurface *dest)
+void CGraphicContext::EndPaint(CSurface *dest, bool lock)
 {
 #ifdef HAS_SDL_OPENGL
-  Unlock();
+  if (lock) Unlock();
   VerifyGLState();
 #endif
 }
