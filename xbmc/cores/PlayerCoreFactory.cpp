@@ -49,7 +49,7 @@ IPlayer* CPlayerCoreFactory::CreatePlayer(const EPLAYERCORES eCore, IPlayerCallb
 #ifdef HAS_XBOX_HARDWARE
     case EPC_MPLAYER: return new CMPlayer(callback);
 #else
-    case EPC_MPLAYER: return new CDummyVideoPlayer(callback);
+    case EPC_MPLAYER: return new CDVDPlayer(callback);
 #endif
 #ifdef HAS_MODPLAYER
     case EPC_MODPLAYER: return new ModPlayer(callback);
