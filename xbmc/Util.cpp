@@ -3262,6 +3262,8 @@ void CUtil::ConvertFileItemToPlayListItem(const CFileItem *pItem, CPlayList::CPl
     playlistitem.SetDuration(pItem->GetMusicInfoTag()->GetDuration());
   if (playlistitem.HasVideoInfoTag())
     playlistitem.SetDuration(StringUtils::TimeStringToSeconds(pItem->GetVideoInfoTag()->m_strRuntime));
+  if (pItem->IsVideoDb())
+    playlistitem.m_strPath = pItem->GetVideoInfoTag()->m_strFileNameAndPath;
 }
 
 bool CUtil::IsUsingTTFSubtitles()
