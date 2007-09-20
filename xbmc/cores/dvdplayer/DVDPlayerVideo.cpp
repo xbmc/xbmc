@@ -175,7 +175,6 @@ void CDVDPlayerVideo::Process()
 
   while (!m_bStop)
   {
-    Sleep(0); // yield
     while (m_speed == DVD_PLAYSPEED_PAUSE && !m_messageQueue.RecievedAbortRequest() && m_iNrOfPicturesNotToSkip==0) Sleep(5);
 
     int iQueueTimeOut = (m_DetectedStill ? iFrameTime / 4 : iFrameTime * 4) / 1000;

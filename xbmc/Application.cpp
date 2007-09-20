@@ -326,6 +326,7 @@ CApplication::CApplication(void)
   m_framesSem = SDL_CreateSemaphore(0);
 #endif
 
+  m_bPresentFrame = false;
 }
 
 CApplication::~CApplication(void)
@@ -2341,8 +2342,9 @@ void CApplication::RenderNoPresent()
 #ifdef HAS_SDL_OPENGL
     // Video rendering occuring from main thread for OpenGL
     //g_renderManager.RenderUpdate(true, 0, 0);
-    g_renderManager.Present();
-    Sleep(0);
+    if (m_bPresentFrame)
+      g_renderManager.Present();
+
     ResetScreenSaver();
     g_infoManager.ResetCache();
 #else
@@ -2506,7 +2508,7 @@ void CApplication::NewFrame()
 void CApplication::Render()
 {
   { // frame rate limiter (really bad, but it does the trick :p)
-    const static unsigned int singleFrameTime = 33;
+    const static unsigned int singleFrameTime = 15;
     static unsigned int lastFrameTime = 0;
     unsigned int currentTime = timeGetTime();
     int nDelayTime = 1;
@@ -2514,8 +2516,12 @@ void CApplication::Render()
       nDelayTime = lastFrameTime + singleFrameTime - currentTime;
 
 #ifdef HAS_SDL
-    SDL_SemWaitTimeout(m_framesSem, nDelayTime);
+    m_bPresentFrame = false;
+    // if the semaphore is not empty - there is a video frame that needs to be presented
+    if (SDL_SemWaitTimeout(m_framesSem, nDelayTime) == 0)
+      m_bPresentFrame = true;
 #else
+    m_bPresentFrame = true;
     Sleep(nDelayTime);
 #endif
 
