@@ -33,6 +33,7 @@
 #endif
 
 #ifdef HAS_SDL_OPENGL
+#include "Application.h"
 #include "LinuxRendererGL.h"
 #include "LinuxRendererATI.h"
 #else 
@@ -282,6 +283,7 @@ void CXBoxRenderManager::FlipPage(DWORD delay /* = 0LL*/, int source /*= -1*/, E
 #ifdef HAS_SDL_OPENGL
     // In OpenGL, we shouldn't be waiting for CThread::m_bStop since rendering is
     // happening from the main thread.
+    g_application.NewFrame();
     while( timestamp > GetTickCount() ) Sleep(1);
 #else
     while( timestamp > GetTickCount() && !CThread::m_bStop) Sleep(1);

@@ -321,10 +321,18 @@ CApplication::CApplication(void)
 #ifdef HAS_KARAOKE
   m_pCdgParser = new CCdgParser();
 #endif
+
+#ifdef HAS_SDL
+  m_framesSem = SDL_CreateSemaphore(0);
+#endif
+
 }
 
 CApplication::~CApplication(void)
-{}
+{
+  if (m_framesSem)
+    SDL_DestroySemaphore(m_framesSem);
+}
 
 // text out routine for below
 #ifdef HAS_XFONT
@@ -2487,17 +2495,30 @@ void CApplication::DoRender()
   g_infoManager.ResetCache();
 }
 
+void CApplication::NewFrame()
+{
+#ifdef HAS_SDL
+  SDL_SemPost(m_framesSem);
+#endif
+}
+
 #ifndef HAS_XBOX_D3D
 void CApplication::Render()
 {
   { // frame rate limiter (really bad, but it does the trick :p)
-    const static unsigned int singleFrameTime = 10;
+    const static unsigned int singleFrameTime = 33;
     static unsigned int lastFrameTime = 0;
     unsigned int currentTime = timeGetTime();
+    int nDelayTime = 1;
     if (lastFrameTime + singleFrameTime > currentTime)
-      Sleep(lastFrameTime + singleFrameTime - currentTime);
-    else
-      Sleep(1);
+      nDelayTime = lastFrameTime + singleFrameTime - currentTime;
+
+#ifdef HAS_SDL
+    SDL_SemWaitTimeout(m_framesSem, nDelayTime);
+#else
+    Sleep(nDelayTime);
+#endif
+
     lastFrameTime = timeGetTime();
   }
   g_graphicsContext.Lock();
