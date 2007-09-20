@@ -335,12 +335,14 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     }
   }
 
+  // update our content in the info manager
+  g_infoManager.m_content = "";
   if (strDirectory.Left(10).Equals("videodb://"))
   {
     DIRECTORY::CVideoDatabaseDirectory dir;
     DIRECTORY::VIDEODATABASEDIRECTORY::CQueryParams params;
     dir.GetQueryParams(strDirectory,params);
-    DIRECTORY::VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(items.m_strPath);
+    DIRECTORY::VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(strDirectory);
     if (node == DIRECTORY::VIDEODATABASEDIRECTORY::NODE_TYPE_TITLE_MUSICVIDEOS)
       g_infoManager.m_content = "musicvideos";
   }
