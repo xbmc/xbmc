@@ -115,8 +115,8 @@ public:
 #endif
   // the following two functions should wrap any
   // GL calls to maintain thread safety
-  void BeginPaint(Surface::CSurface* dest=NULL);
-  void EndPaint(Surface::CSurface* dest=NULL);
+  void BeginPaint(Surface::CSurface* dest=NULL, bool lock=true);
+  void EndPaint(Surface::CSurface* dest=NULL, bool lock=true);
   void ReleaseCurrentContext(Surface::CSurface* dest=NULL);
   void AcquireCurrentContext(Surface::CSurface* dest=NULL);
   void DeleteThreadContext();

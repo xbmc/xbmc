@@ -251,20 +251,20 @@ void CXBoxRenderManager::FlipPage(DWORD delay /* = 0LL*/, int source /*= -1*/, E
   if(!m_pRenderer) return;
 
   /* make sure any previous frame was presented */
-  if( !m_eventPresented.WaitMSec(MAXPRESENTDELAY*2) )
+  if(g_graphicsContext.IsFullScreenVideo() && (!m_eventPresented.WaitMSec(MAXPRESENTDELAY*2)) )
     CLog::Log(LOGERROR, " - Timeout waiting for previous frame to be presented");
 
   m_presenttime = timestamp;
   m_presentfield = sync;
 
-  CSingleLock lock2(g_graphicsContext);
 #ifdef HAS_SDL_OPENGL
   if( 0 ) /*disable async renderer*/
 #else
+  //CSingleLock lock2(g_graphicsContext);
   if( g_graphicsContext.IsFullScreenVideo() )
 #endif
   {
-    lock2.Leave();
+    //lock2.Leave();
 
     g_graphicsContext.AcquireCurrentContext();
     m_pRenderer->FlipPage(source);
@@ -275,7 +275,7 @@ void CXBoxRenderManager::FlipPage(DWORD delay /* = 0LL*/, int source /*= -1*/, E
   else
   {
     //g_graphicsContext.ReleaseCurrentContext();
-    lock2.Leave();
+    //lock2.Leave();
 
     /* if we are not in fullscreen, we don't control when we render */
     /* so we must await the time and flip then */
@@ -287,7 +287,7 @@ void CXBoxRenderManager::FlipPage(DWORD delay /* = 0LL*/, int source /*= -1*/, E
     while( timestamp > GetTickCount() && !CThread::m_bStop) Sleep(1);
 #endif
     //m_pRenderer->FlipPage(source);
-    m_eventPresented.Set();
+    //m_eventPresented.Set();
   }
 }
 
@@ -299,6 +299,7 @@ void CXBoxRenderManager::Present()
     CLog::Log(LOGERROR, "%s called without valid Renderer object", __FUNCTION__);
     return;
   }
+  
 #endif
 
   EINTERLACEMETHOD mInt = g_stSettings.m_currentVideoSettings.m_InterlaceMethod;
@@ -346,6 +347,10 @@ void CXBoxRenderManager::Present()
     PresentBlend();
   else
     PresentSingle();
+
+#ifdef HAS_SDL_OPENGL
+  m_eventPresented.Set();
+#endif
 }
 
 /* simple present method */
@@ -355,8 +360,7 @@ void CXBoxRenderManager::PresentSingle()
 
   m_pRenderer->RenderUpdate(true, 0, 255);
 
-  int nTicks = GetTickCount();
-  if (m_presenttime > nTicks) Sleep(m_presenttime - nTicks);
+  while (m_presenttime > GetTickCount()) Sleep(1);
   //while( m_presenttime > GetTickCount() && !CThread::m_bStop ) Sleep(1);
 
 #ifndef HAS_SDL
