@@ -336,14 +336,14 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
 
   DIRECTORY::CMusicDatabaseDirectory dir;
   DIRECTORY::MUSICDATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(strDirectory);
-  if (node == DIRECTORY::MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM)
+  if (strDirectory.Left(12).Equals("videodb://3/"))
+    g_infoManager.m_content = "musicvideos";
+  else if (node == DIRECTORY::MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM)
     g_infoManager.m_content = "albums";
   else if (node == DIRECTORY::MUSICDATABASEDIRECTORY::NODE_TYPE_ARTIST)
     g_infoManager.m_content = "artists";
   else if (node == DIRECTORY::MUSICDATABASEDIRECTORY::NODE_TYPE_SONG)
     g_infoManager.m_content = "songs";
-  else if (strDirectory.Left(12).Equals("videodb://3/"))
-    g_infoManager.m_content = "musicvideos";
 
   return bResult;
 }
