@@ -342,8 +342,8 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     g_infoManager.m_content = "artists";
   else if (node == DIRECTORY::MUSICDATABASEDIRECTORY::NODE_TYPE_SONG)
     g_infoManager.m_content = "songs";
-  else
-    g_infoManager.m_content = "";
+  else if (strDirectory.Left(12).Equals("videodb://3/"))
+    g_infoManager.m_content = "musicvideos";
 
   return bResult;
 }
