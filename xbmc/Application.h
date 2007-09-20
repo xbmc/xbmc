@@ -173,6 +173,8 @@ public:
 
   int GlobalIdleTime();
 
+  void NewFrame();
+
 protected:
   friend class CApplicationMessenger;
   // screensaver
@@ -209,6 +211,10 @@ protected:
   int m_iPlaySpeed;
   int m_currentStackPosition;
   int m_nextPlaylistItem;
+
+#ifdef HAS_SDL
+  SDL_sem *m_framesSem;
+#endif
 
   static LONG WINAPI UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *ExceptionInfo);
 
