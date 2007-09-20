@@ -212,6 +212,8 @@ protected:
   int m_currentStackPosition;
   int m_nextPlaylistItem;
 
+  bool m_bPresentFrame;
+
 #ifdef HAS_SDL
   SDL_sem *m_framesSem;
 #endif
