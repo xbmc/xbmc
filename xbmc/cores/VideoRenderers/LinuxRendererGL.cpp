@@ -787,7 +787,7 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
 
   // if we don't have a shader, fallback to SW YUV2RGB for now
   
-  g_graphicsContext.BeginPaint(m_pBuffer);
+  g_graphicsContext.BeginPaint(m_pBuffer, false);
 
   if (m_renderMethod & RENDER_SW)
   {
@@ -880,7 +880,7 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
     VerifyGLState();
   }
   
-  g_graphicsContext.EndPaint(m_pBuffer);
+  g_graphicsContext.EndPaint(m_pBuffer, false);
 }
 
 void CLinuxRendererGL::Reset()
