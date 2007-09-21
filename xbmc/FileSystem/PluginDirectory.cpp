@@ -262,8 +262,8 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
   // free our handle
   removeHandle(handle);
 
-  // append the items to the list, and return true
-  items.AppendPointer(m_listItems);
+  // append the items to the list
+  items.AssignPointer(m_listItems, true); // true to keep the current items
   m_listItems.ClearKeepPointer();
   return success;
 }

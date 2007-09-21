@@ -416,10 +416,9 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
   CLog::Log(LOGDEBUG,"CGUIMediaWindow::GetDirectory (%s)", strDirectory.c_str());
   CLog::Log(LOGDEBUG,"  ParentPath = [%s]", strParentPath.c_str());
 
-  CFileItem* pItem=NULL;
   if (m_guiState.get() && !m_guiState->HideParentDirItems())
   {
-    pItem = new CFileItem("..");
+    CFileItem *pItem = new CFileItem("..");
     pItem->m_strPath = strParentPath;
     pItem->m_bIsFolder = true;
     pItem->m_bIsShareOrDrive = false;
@@ -430,7 +429,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
   CFileItemList cachedItems(strDirectory);
   if (!strDirectory.IsEmpty() && cachedItems.Load())
   {
-    items.AppendPointer(cachedItems);
+    items.AssignPointer(cachedItems, true); // true to keep any previous items (".." item)
     cachedItems.ClearKeepPointer();
   }
   else
