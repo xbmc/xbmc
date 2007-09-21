@@ -2508,19 +2508,33 @@ void CApplication::NewFrame()
 void CApplication::Render()
 {
   { // frame rate limiter (really bad, but it does the trick :p)
-    const static unsigned int singleFrameTime = 15;
+    const static unsigned int singleFrameTime = 10;       // default limit 100 fps
+    const static unsigned int singleVideoFrameTime = 33;  // 30 fps for fullscreen video
     static unsigned int lastFrameTime = 0;
     unsigned int currentTime = timeGetTime();
-    int nDelayTime = 1;
-    if (lastFrameTime + singleFrameTime > currentTime)
-      nDelayTime = lastFrameTime + singleFrameTime - currentTime;
+    int nDelayTime = 0;
 
 #ifdef HAS_SDL
     m_bPresentFrame = false;
-    // if the semaphore is not empty - there is a video frame that needs to be presented
-    if (SDL_SemWaitTimeout(m_framesSem, nDelayTime) == 0)
-      m_bPresentFrame = true;
+    if (g_graphicsContext.IsFullScreenVideo())
+    {
+      if (lastFrameTime + singleVideoFrameTime > currentTime)
+        nDelayTime = lastFrameTime + singleVideoFrameTime - currentTime;
+
+      // if the semaphore is not empty - there is a video frame that needs to be presented
+      if (SDL_SemWaitTimeout(m_framesSem, nDelayTime) == 0)
+        m_bPresentFrame = true;
+    }
+    else
+    {
+      if (lastFrameTime + singleFrameTime > currentTime)
+        nDelayTime = lastFrameTime + singleFrameTime - currentTime;
+      Sleep(nDelayTime);
+    }
 #else
+    if (lastFrameTime + singleFrameTime > currentTime)
+      nDelayTime = lastFrameTime + singleFrameTime - currentTime;
+
     m_bPresentFrame = true;
     Sleep(nDelayTime);
 #endif
