@@ -98,7 +98,7 @@ class ModelPPM
   private:
     friend struct PPM_CONTEXT;
     
-    _PACK_ATTR SEE2_CONTEXT SEE2Cont[25][16], DummySEE2Cont;
+    SEE2_CONTEXT SEE2Cont[25][16], DummySEE2Cont;
     
     struct PPM_CONTEXT *MinContext, *MedContext, *MaxContext;
     STATE* FoundState;      // found next state transition

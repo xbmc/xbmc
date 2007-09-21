@@ -1966,3 +1966,4 @@ bool CDVDPlayer::AddSubtitle(const CStdString& strSubPath)
   m_vecSubtitleFiles.push_back(strSubPath);
   return true;
 }
+
