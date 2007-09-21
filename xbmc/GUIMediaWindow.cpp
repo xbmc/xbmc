@@ -423,22 +423,18 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
     pItem->m_strPath = strParentPath;
     pItem->m_bIsFolder = true;
     pItem->m_bIsShareOrDrive = false;
+    items.Add(pItem);
   }
 
   // see if we can load a previously cached folder
   CFileItemList cachedItems(strDirectory);
   if (!strDirectory.IsEmpty() && cachedItems.Load())
   {
-    items.AssignPointer(cachedItems);
+    items.AppendPointer(cachedItems);
     cachedItems.ClearKeepPointer();
-    if (pItem)
-      items.AddFront(pItem,0);
   }
   else
   {
-    if (pItem)
-      items.Add(pItem);
-
     DWORD time = timeGetTime();
 
     if (!m_rootDir.GetDirectory(strDirectory, items))
