@@ -238,7 +238,6 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
   m_cancelled = false;
   m_success = false;
   m_totalItems = 0;
-  m_listItems.Append(items); // to transfer the parent folder items
 
   // setup our parameters to send the script
   CStdString strHandle;
@@ -264,7 +263,7 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
   removeHandle(handle);
 
   // append the items to the list, and return true
-  items.AssignPointer(m_listItems);
+  items.AppendPointer(m_listItems);
   m_listItems.ClearKeepPointer();
   return success;
 }
@@ -340,9 +339,13 @@ bool CPluginDirectory::GetPluginsDirectory(const CStdString &type, CFileItemList
   // retrieve our folder
   CStdString pluginsFolder = "Q:\\plugins";
   CUtil::AddFileToFolder(pluginsFolder, type, pluginsFolder);
+  CUtil::AddSlashAtEnd(pluginsFolder);
 
   if (!CDirectory::GetDirectory(pluginsFolder, items, "*.py", false))
     return false;
+
+  items.m_strPath.Replace("Q:\\plugins\\", "plugin://");
+  items.m_strPath.Replace("\\", "/");
 
   // flatten any folders - TODO: Assigning of thumbs
   for (int i = 0; i < items.Size(); i++)
