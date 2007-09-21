@@ -2241,13 +2241,13 @@ typedef struct ImgReSampleContext ImgReSampleContext attribute_deprecated;
 /**
  * @deprecated Use the software scaler (swscale) instead.
  */
-attribute_deprecated ImgReSampleContext *img_resample_init(int output_width, int output_height,
+attribute_deprecated struct ImgReSampleContext *img_resample_init(int output_width, int output_height,
                                       int input_width, int input_height);
 
 /**
  * @deprecated Use the software scaler (swscale) instead.
  */
-attribute_deprecated ImgReSampleContext *img_resample_full_init(int owidth, int oheight,
+attribute_deprecated struct ImgReSampleContext *img_resample_full_init(int owidth, int oheight,
                                       int iwidth, int iheight,
                                       int topBand, int bottomBand,
                                       int leftBand, int rightBand,
