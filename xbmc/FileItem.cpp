@@ -1239,9 +1239,10 @@ void CFileItemList::AppendPointer(const CFileItemList& itemlist)
   }
 }
 
-void CFileItemList::AssignPointer(const CFileItemList& itemlist)
+void CFileItemList::AssignPointer(const CFileItemList& itemlist, bool append)
 {
-  Clear();
+  if (!append)
+    Clear();
   AppendPointer(itemlist);
   m_strPath = itemlist.m_strPath;
   m_sortDetails = itemlist.m_sortDetails;
