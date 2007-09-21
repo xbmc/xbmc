@@ -1815,3 +1815,4 @@ NPT_HttpChunkedInputStream::SetBufferSize(NPT_Size size)
     if(size < 512) size = 512;
     return NPT_BufferedInputStream::SetBufferSize(size);
 }
+
