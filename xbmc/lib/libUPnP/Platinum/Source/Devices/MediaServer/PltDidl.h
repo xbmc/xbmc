@@ -29,7 +29,7 @@
 #define PLT_FILTER_MASK_DESCRIPTION                 0x00000020
 #define PLT_FILTER_MASK_SEARCHABLE                  0x00000040
 #define PLT_FILTER_MASK_CHILDCOUNT                  0x00000080
-#define PLT_FILTER_MASK_ORIGINALTRACK               0x00000080
+#define PLT_FILTER_MASK_ORIGINALTRACK               0x00000100
 
 #define PLT_FILTER_MASK_RES                         0x00010000
 #define PLT_FILTER_MASK_RES_DURATION                0x00020000
