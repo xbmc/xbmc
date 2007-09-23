@@ -64,6 +64,44 @@ static const mimetype_extension_struct mimetype_extension_map[] = {
     {NULL, NULL}
 };
 
+/*
+# Play speed
+#    1 normal
+#    0 invalid
+DLNA_ORG_PS = 'DLNA.ORG_PS'
+DLNA_ORG_PS_VAL = '1'
+
+# Convertion Indicator
+#    1 transcoded
+#    0 not transcoded
+DLNA_ORG_CI = 'DLNA.ORG_CI'
+DLNA_ORG_CI_VAL = '0'
+
+# Operations
+#    00 not time seek range, not range 
+#    01 range supported
+#    10 time seek range supported
+#    11 both supported
+DLNA_ORG_OP = 'DLNA.ORG_OP'
+DLNA_ORG_OP_VAL = '01'
+
+# Flags
+#    senderPaced                      80000000  31
+#    lsopTimeBasedSeekSupported       40000000  30
+#    lsopByteBasedSeekSupported       20000000  29
+#    playcontainerSupported           10000000  28
+#    s0IncreasingSupported            08000000  27  
+#    sNIncreasingSupported            04000000  26  
+#    rtspPauseSupported               02000000  25  
+#    streamingTransferModeSupported   01000000  24  
+#    interactiveTransferModeSupported 00800000  23  
+#    backgroundTransferModeSupported  00400000  22  
+#    connectionStallingSupported      00200000  21  
+#    dlnaVersion15Supported           00100000  20  
+DLNA_ORG_FLAGS = 'DLNA.ORG_FLAGS'
+DLNA_ORG_FLAGS_VAL = '01500000000000000000000000000000'
+*/
+
 /*----------------------------------------------------------------------
 |   static
 +---------------------------------------------------------------------*/
@@ -466,7 +504,6 @@ CUPnPServer::BuildObject(CFileItem*      item,
         uri.SetHost(*ips.GetFirstItem());
         uri.SetQuery(query.ToString());
         object->m_ExtraInfo.album_art_uri = uri.ToString();
-        object->m_ExtraInfo.album_art_uri_dlna_profile = "JPEG_TN";
     }
 
     return object;
