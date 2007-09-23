@@ -101,11 +101,9 @@ namespace PYXBMC
     }
     else if (PyString_Check(pObject) && pObjectListItem != NULL && ListItem_CheckExact(pObjectListItem))
     {
-      ListItem* pListItem = NULL;
-
       // an optional listitem was passed
+      ListItem* pListItem = NULL;
       pListItem = (ListItem*)pObjectListItem;
-      Py_INCREF(pListItem);
 
       // set m_strPath to the passed url
       pListItem->item->m_strPath = PyString_AsString(pObject);
