@@ -381,6 +381,7 @@ CUPnPServer::BuildObject(CFileItem*      item,
 
         } else if( item->IsVideoDb() ) {
             object->m_ObjectClass.type = "object.item.videoItem.movie";
+            object->m_Affiliation.album = "[Unknown Series]"; // required to make WMP to show title
 
             if( item->HasVideoInfoTag() ) {
                 CVideoInfoTag *tag = item->GetVideoInfoTag();
@@ -402,14 +403,14 @@ CUPnPServer::BuildObject(CFileItem*      item,
                 object->m_People.director = tag->m_strDirector;
                 object->m_Description.description = tag->m_strTagLine;
                 object->m_Description.long_description = tag->m_strPlot;
-                //TODO - this is wrong, imdb gives it as minute string ie, "116 min"
-                //resource.m_Duration = StringUtils::TimeStringToSeconds(tag->m_strRuntime.c_str());
+                resource.m_Duration = StringUtils::TimeStringToSeconds(tag->m_strRuntime.c_str());
             }
 
         } else if( item->IsAudio() ) {
             object->m_ObjectClass.type = "object.item.audioItem.musicTrack";
         } else if( item->IsVideo() ) {
             object->m_ObjectClass.type = "object.item.videoItem.movie";
+            object->m_Affiliation.album = "[Unknown Series]"; // required to make WMP to show title
         } else if( item->IsPicture() ) {
             object->m_ObjectClass.type = "object.item.imageItem.photo";
         } else {

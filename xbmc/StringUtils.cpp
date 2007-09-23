@@ -163,16 +163,24 @@ int StringUtils::AlphaNumericCompare(const char *left, const char *right)
 }
 
 long StringUtils::TimeStringToSeconds(const CStdString &timeString)
-{
-  CStdStringArray secs;
-  StringUtils::SplitString(timeString, ":", secs);
-  int timeInSecs = 0;
-  for (unsigned int i = 0; i < secs.size(); i++)
+{  
+  if(timeString.Right(4).Equals(" min"))
   {
-    timeInSecs *= 60;
-    timeInSecs += atoi(secs[i]);
+    // this is imdb format of "XXX min"
+    return 60 * atoi(timeString.c_str());
   }
-  return timeInSecs;
+  else
+  {
+    CStdStringArray secs;
+    StringUtils::SplitString(timeString, ":", secs);
+    int timeInSecs = 0;
+    for (unsigned int i = 0; i < secs.size(); i++)
+    {
+      timeInSecs *= 60;
+      timeInSecs += atoi(secs[i]);
+    }
+    return timeInSecs;
+  }
 }
 
 void StringUtils::SecondsToTimeString(long lSeconds, CStdString& strHMS, TIME_FORMAT format)
