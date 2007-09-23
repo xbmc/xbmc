@@ -78,6 +78,7 @@ typedef struct {
 
 typedef struct {
     NPT_String album_art_uri;
+    NPT_String album_art_uri_dlna_profile;
     NPT_String artist_discography_uri;
     NPT_String lyrics_uri;
     NPT_List<NPT_String> relation; // dc:relation
