@@ -101,11 +101,8 @@ namespace PYXBMC
       "");
 
   PyMODINIT_FUNC
-  initxbmcgui(void)
+  InitGUITypes(void)
   {
-    // init xbmc gui modules
-    PyObject* pXbmcGuiModule;
-
     initWindow_Type();
     initWindowDialog_Type();
     initWindowXML_Type();
@@ -125,9 +122,6 @@ namespace PYXBMC
     initDialog_Type();
     initDialogProgress_Type();
     initAction_Type();
-
-    DialogProgress_Type.tp_new = PyType_GenericNew;
-    Dialog_Type.tp_new = PyType_GenericNew;
 
     if (PyType_Ready(&Window_Type) < 0 ||
         PyType_Ready(&WindowDialog_Type) < 0 ||
@@ -149,6 +143,38 @@ namespace PYXBMC
         PyType_Ready(&DialogProgress_Type) < 0 ||
         PyType_Ready(&Action_Type) < 0)
       return;
+
+  }
+
+  PyMODINIT_FUNC
+  DeinitGUIModule(void)
+  {
+    Py_DECREF(&Window_Type);
+    Py_DECREF(&WindowDialog_Type);
+    Py_DECREF(&WindowXML_Type);
+    Py_DECREF(&WindowXMLDialog_Type);
+    Py_DECREF(&ListItem_Type);
+    Py_DECREF(&Control_Type);
+    Py_DECREF(&ControlSpin_Type);
+    Py_DECREF(&ControlLabel_Type);
+    Py_DECREF(&ControlFadeLabel_Type);
+    Py_DECREF(&ControlTextBox_Type);
+    Py_DECREF(&ControlButton_Type);
+    Py_DECREF(&ControlCheckMark_Type);
+    Py_DECREF(&ControlList_Type);
+    Py_DECREF(&ControlImage_Type);
+    Py_DECREF(&ControlProgress_Type);
+    Py_DECREF(&ControlGroup_Type);
+    Py_DECREF(&Dialog_Type);
+    Py_DECREF(&DialogProgress_Type);
+    Py_DECREF(&Action_Type);
+  }
+
+  PyMODINIT_FUNC
+  InitGUIModule(void)
+  {
+    // init xbmc gui modules
+    PyObject* pXbmcGuiModule;
 
     Py_INCREF(&Window_Type);
     Py_INCREF(&WindowDialog_Type);
