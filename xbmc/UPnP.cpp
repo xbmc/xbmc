@@ -359,7 +359,7 @@ CUPnPServer::BuildObject(CFileItem*      item,
         object->m_ObjectID = item->m_strPath;
 
         /* Setup object type */
-        if( item->IsMusicDb() ) {
+        if( item->IsMusicDb() || item->IsAudio() ) {
             object->m_ObjectClass.type = "object.item.audioItem.musicTrack";
           
             if( item->HasMusicInfoTag() ) {
@@ -379,7 +379,7 @@ CUPnPServer::BuildObject(CFileItem*      item,
                 resource.m_Duration = tag->GetDuration();                
             }
 
-        } else if( item->IsVideoDb() ) {
+        } else if( item->IsVideoDb() || item->IsVideo() ) {
             object->m_ObjectClass.type = "object.item.videoItem.movie";
             object->m_Affiliation.album = "[Unknown Series]"; // required to make WMP to show title
 
@@ -406,11 +406,6 @@ CUPnPServer::BuildObject(CFileItem*      item,
                 resource.m_Duration = StringUtils::TimeStringToSeconds(tag->m_strRuntime.c_str());
             }
 
-        } else if( item->IsAudio() ) {
-            object->m_ObjectClass.type = "object.item.audioItem.musicTrack";
-        } else if( item->IsVideo() ) {
-            object->m_ObjectClass.type = "object.item.videoItem.movie";
-            object->m_Affiliation.album = "[Unknown Series]"; // required to make WMP to show title
         } else if( item->IsPicture() ) {
             object->m_ObjectClass.type = "object.item.imageItem.photo";
         } else {
