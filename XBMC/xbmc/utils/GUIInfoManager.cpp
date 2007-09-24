@@ -423,6 +423,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.album")) return VIDEOPLAYER_ALBUM;
     else if (strTest.Equals("videoplayer.writer")) return VIDEOPLAYER_WRITER;
     else if (strTest.Equals("videoplayer.tagline")) return VIDEOPLAYER_TAGLINE;
+    else if (strTest.Equals("videoplayer.isinlibrary")) return VIDEOPLAYER_ISINLIBRARY;
   }
   else if (strCategory.Equals("playlist"))
   {
@@ -1365,6 +1366,12 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
     CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
     if (pWindow && pWindow->IsMediaWindow())
       bReturn = ((CGUIMediaWindow*)pWindow)->CurrentDirectory().HasThumbnail();
+  }
+  else if (condition == VIDEOPLAYER_ISINLIBRARY)
+  {
+    bReturn = m_currentFile.HasVideoInfoTag();
+    if (m_currentFile.HasVideoInfoTag())
+      bReturn = m_currentFile.GetVideoInfoTag()->m_iDbId > -1;
   }
   else if (condition == CONTAINER_ON_NEXT || condition == CONTAINER_ON_PREVIOUS)
   {
@@ -2386,6 +2393,12 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
     {
       dbs.GetEpisodeInfo(item.m_strPath, *m_currentFile.GetVideoInfoTag());
       CLog::Log(LOGDEBUG,__FUNCTION__", got episode info!");
+      CLog::Log(LOGDEBUG,"  Title = %s", m_currentFile.GetVideoInfoTag()->m_strTitle.c_str());
+    }
+    else if (dbs.HasMusicVideoInfo(item.m_strPath))
+    {
+      dbs.GetEpisodeInfo(item.m_strPath, *m_currentFile.GetVideoInfoTag());
+      CLog::Log(LOGDEBUG,__FUNCTION__", got music video info!");
       CLog::Log(LOGDEBUG,"  Title = %s", m_currentFile.GetVideoInfoTag()->m_strTitle.c_str());
     }
     dbs.Close();
