@@ -152,7 +152,7 @@ CDVDDemux::DemuxPacket* CDVDDemuxShoutcast::Read()
   return pPacket;
 }
 
-bool CDVDDemuxShoutcast::Seek(int iTime)
+bool CDVDDemuxShoutcast::Seek(int iTime, bool bBackword)
 {
   return false;
 }
