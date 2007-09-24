@@ -2397,7 +2397,7 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
     }
     else if (dbs.HasMusicVideoInfo(item.m_strPath))
     {
-      dbs.GetEpisodeInfo(item.m_strPath, *m_currentFile.GetVideoInfoTag());
+      dbs.GetMusicVideoInfo(item.m_strPath, *m_currentFile.GetVideoInfoTag());
       CLog::Log(LOGDEBUG,__FUNCTION__", got music video info!");
       CLog::Log(LOGDEBUG,"  Title = %s", m_currentFile.GetVideoInfoTag()->m_strTitle.c_str());
     }
