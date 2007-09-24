@@ -4303,7 +4303,12 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL = FormatSQL("select episode.*,files.strFileName,path.strPath,tvshow.c%02d from episode join files on files.idFile=episode.idFile join tvshowlinkepisode on episode.idepisode=tvshowlinkepisode.idepisode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join path on files.idPath=path.idPath where tvshowlinkepisode.idShow=%u",VIDEODB_ID_TV_TITLE,idShow);
+    CStdString strSQL = FormatSQL("select episode.*,files.strFileName,path.strPath,tvshow.c%02d from episode join files on files.idFile=episode.idFile join tvshowlinkepisode on episode.idepisode=tvshowlinkepisode.idepisode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join path on files.idPath=path.idPath",VIDEODB_ID_TV_TITLE);
+
+    if (idShow != -1)
+    {
+      strSQL = FormatSQL("select episode.*,files.strFileName,path.strPath,tvshow.c%02d from episode join files on files.idFile=episode.idFile join tvshowlinkepisode on episode.idepisode=tvshowlinkepisode.idepisode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join path on files.idPath=path.idPath where tvshowlinkepisode.idShow=%u",VIDEODB_ID_TV_TITLE,idShow);
+    }
 
     if (idGenre != -1)
     {

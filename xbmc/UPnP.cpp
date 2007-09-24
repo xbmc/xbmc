@@ -266,9 +266,9 @@ private:
 
     NPT_Result       BuildResponse(
         PLT_ActionReference& action,
-        CFileItemList& items,
-        NPT_SocketInfo* info,
-        NPT_String &object_id);
+        CFileItemList&       items,
+        NPT_SocketInfo*      info,
+        const char*          parent_id);
 
 
     static NPT_String GetParentFolder(NPT_String file_path) {       
@@ -380,13 +380,28 @@ CUPnPServer::BuildObject(CFileItem*      item,
             }
 
         } else if( item->IsVideoDb() || item->IsVideo() ) {
-            object->m_ObjectClass.type = "object.item.videoItem.movie";
+            object->m_ObjectClass.type = "object.item.videoItem";
             object->m_Affiliation.album = "[Unknown Series]"; // required to make WMP to show title
 
             if( item->HasVideoInfoTag() ) {
                 CVideoInfoTag *tag = item->GetVideoInfoTag();
                 if( !tag->m_strFileNameAndPath.IsEmpty() )
                   file_path = tag->m_strFileNameAndPath;
+
+                if( tag->m_iDbId != -1 ) {
+                    if( tag->m_strShowTitle.IsEmpty() ) {
+                      object->m_ObjectClass.type = "object.item.videoItem.movie";
+                      object->m_Affiliation.album = "[Unknown Series]"; // required to make WMP to show title
+                      object->m_Title = tag->m_strTitle;                                             
+                    } else {
+                      object->m_ObjectClass.type = "object.item.videoItem.videoBroadcast";
+                      object->m_Affiliation.album = tag->m_strShowTitle;
+                      object->m_Title = tag->m_strShowTitle + " - ";
+                      object->m_Title += "S" + ("0" + NPT_String::FromInteger(tag->m_iSeason)).Right(2);
+                      object->m_Title += "E" + ("0" + NPT_String::FromInteger(tag->m_iEpisode)).Right(2);
+                      object->m_Title += " : " + tag->m_strTitle;
+                    }
+                }
 
                 StringUtils::SplitString(tag->m_strGenre, " / ", strings);                
                 for(CStdStringArray::iterator it = strings.begin(); it != strings.end(); it++) {
@@ -399,8 +414,8 @@ CUPnPServer::BuildObject(CFileItem*      item,
                 }
                 object->m_People.actor.TrimRight(",");
                 object->m_People.actor_role.TrimRight(",");
-
                 object->m_People.director = tag->m_strDirector;
+
                 object->m_Description.description = tag->m_strTagLine;
                 object->m_Description.long_description = tag->m_strPlot;
                 resource.m_Duration = StringUtils::TimeStringToSeconds(tag->m_strRuntime.c_str());
@@ -411,7 +426,11 @@ CUPnPServer::BuildObject(CFileItem*      item,
         } else {
             object->m_ObjectClass.type = "object.item";
         }
-
+        
+        // duration of zero is invalid
+        if(resource.m_Duration == 0) {
+          resource.m_Duration = -1;
+        }
 
         /* Set the resource file size */
         resource.m_Size = (NPT_Integer)item->m_dwSize;
@@ -481,17 +500,17 @@ CUPnPServer::BuildObject(CFileItem*      item,
                 /* this should be a standard path */
                 // TODO - get file count of this directory
             }
-        }
-        
+        }        
     }
     
     // set a title for the object
-    if( !item->GetLabel().IsEmpty() /* item->IsLabelPreformated() */ ) {
-        object->m_Title = item->GetLabel();
-    } else {
-        object->m_Title = CUtil::GetTitleFromPath(item->m_strPath, item->m_bIsFolder);
+    if( object->m_Title.IsEmpty() ) {
+        if( !item->GetLabel().IsEmpty() ) {
+            object->m_Title = item->GetLabel();
+        } else {
+            object->m_Title = CUtil::GetTitleFromPath(item->m_strPath, item->m_bIsFolder);
+        }
     }
-
     // set a thumbnail if we have one
     if( item->HasThumbnail() ) {
         NPT_HttpUrl uri = m_FileBaseUri;
@@ -912,7 +931,7 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference& action,
 }
 
 NPT_Result
-CUPnPServer::BuildResponse(PLT_ActionReference &action, CFileItemList &items, NPT_SocketInfo *info, NPT_String &object_id)
+CUPnPServer::BuildResponse(PLT_ActionReference &action, CFileItemList &items, NPT_SocketInfo *info, const char* parent_id)
 {
     NPT_String filter;
     NPT_String startingInd;
@@ -931,7 +950,7 @@ CUPnPServer::BuildResponse(PLT_ActionReference &action, CFileItemList &items, NP
     NPT_String didl = didl_header;
     PLT_MediaObjectReference item;
     for (unsigned long i=start_index; i < stop_index; ++i) {
-        item = Build(items[i], true, info, object_id);
+        item = Build(items[i], true, info, parent_id);
         if (item.IsNull()) {
             /* create a dummy object */
             item = new PLT_MediaObject();
@@ -967,8 +986,32 @@ CUPnPServer::OnSearch(PLT_ActionReference& action,
   // uggly hack to get windows media player to show stuff
   if(searchCriteria.Find("""object.item.audioItem""") >= 0)
       return OnBrowseDirectChildren(action, "musicdb://4", info);
-  else if(searchCriteria.Find("""object.item.videoItem""") >= 0)
-      return OnBrowseDirectChildren(action, "videodb://1/2", info);
+  else if(searchCriteria.Find("""object.item.videoItem""") >= 0) {
+      CFileItemList items, itemsall;
+
+      CVideoDatabase database;
+      if(!database.Open()) {
+        action->SetError(800, "Internal Error");
+        return NPT_SUCCESS;
+      }
+
+      if(!database.GetTitlesNav("videodb://1/2", items)) {
+        action->SetError(800, "Internal Error");
+        return NPT_SUCCESS;
+      }
+      itemsall.AppendPointer(items);
+      items.ClearKeepPointer();
+
+      // TODO - set proper base url for this
+      if(!database.GetEpisodesNav("videodb://2/0", items)) {
+        action->SetError(800, "Internal Error");
+        return NPT_SUCCESS;
+      }
+      itemsall.AppendPointer(items);
+      items.ClearKeepPointer();
+
+      return BuildResponse(action, itemsall, info, NULL);
+  }
 
   return NPT_FAILURE;
 }
