@@ -702,7 +702,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts)
   iFrameSleep = min(iFrameSleep, DVD_MSEC_TO_TIME(500));
 
   // ask decoder to drop frames next round, as we are very late
-  if( iClockSleep < DVD_MSEC_TO_TIME(100) )
+  if( iClockSleep < -DVD_MSEC_TO_TIME(100) )
     result |= EOS_VERYLATE;
 
   if( m_DetectedStill )
