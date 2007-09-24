@@ -11,7 +11,9 @@ CDirectoryNodeTvShowsOverview::CDirectoryNodeTvShowsOverview(const CStdString& s
 
 NODE_TYPE CDirectoryNodeTvShowsOverview::GetChildType()
 {
-  if (GetName()=="1")
+  if (GetName()=="0")
+    return NODE_TYPE_EPISODES;
+  else if (GetName()=="1")
     return NODE_TYPE_GENRE;
   else if (GetName()=="2")
     return NODE_TYPE_TITLE_TVSHOWS;
