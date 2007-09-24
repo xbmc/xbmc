@@ -164,7 +164,19 @@ namespace PYXBMC
  *****************************************************************/
 
   PyMODINIT_FUNC
-  initxbmcplugin(void)
+  DeinitPluginModule(void)
+  {
+    // void for now. no references to dec.
+  }
+
+  PyMODINIT_FUNC
+  InitPluginTypes(void)
+  {
+    // no types here
+  }
+
+  PyMODINIT_FUNC
+  InitPluginModule(void)
   {
     // init general xbmc modules
     PyObject* pXbmcPluginModule;

@@ -31,11 +31,21 @@ XBPython g_pythonParser;
 extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR file);
 extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule);
 
+extern "C" {
+  void InitXBMCModule(void);
+  void InitXBMCTypes(void);
+  void DeinitXBMCModule(void);
+  void InitPluginModule(void);
+  void InitPluginTypes(void);
+  void DeinitPluginModule(void);
+  void InitGUIModule(void);
+  void InitGUITypes(void);
+  void DeinitGUIModule(void);
+}
 
 XBPython::XBPython()
 {
   m_bInitialized = false;
-  bThreadInitialize = false;
   bStartup = false;
   bLogin = false;
   nextid = 0;
@@ -128,6 +138,80 @@ bool XBPython::FileExist(const char* strFile)
   return true;
 }
 
+void XBPython::RegisterExtensionLib(LibraryLoader *pLib)
+{
+  if (!pLib) 
+    return;
+
+  CLog::Log(LOGDEBUG,"%s, adding %s (0x%x)", __FUNCTION__, pLib->GetName(), pLib);
+  m_extensions.push_back(pLib);
+}
+
+void XBPython::UnregisterExtensionLib(LibraryLoader *pLib)
+{
+  if (!pLib) 
+    return;
+
+  CLog::Log(LOGDEBUG,"%s, removing %s (0x%x)", __FUNCTION__, pLib->GetName(), pLib);
+  PythonExtensionLibraries::iterator iter = m_extensions.begin();
+  while (iter != m_extensions.end())
+  {
+    if (*iter == pLib)
+    {
+      m_extensions.erase(iter);
+      break;
+    }
+    iter++;
+  }
+}
+
+void XBPython::UnloadExtensionLibs()
+{
+  CLog::Log(LOGDEBUG,"%s, clearing python extension libraries", __FUNCTION__);
+  PythonExtensionLibraries::iterator iter = m_extensions.begin();
+  while (iter != m_extensions.end())
+  {
+      DllLoaderContainer::ReleaseModule(*iter);
+      iter++;
+  }
+
+  m_extensions.clear();
+}
+
+void XBPython::InitializeInterpreter()
+{
+  InitXBMCModule(); // init xbmc modules
+  InitPluginModule(); // init plugin modules
+  InitGUIModule(); // init xbmcgui modules
+
+  // redirecting default output to debug console
+  if (PyRun_SimpleString(""
+        "import xbmc\n"
+        "class xbmcout:\n"
+        "	def write(self, data):\n"
+        "		xbmc.output(data)\n"
+        "	def close(self):\n"
+        "		xbmc.output('.')\n"
+        "	def flush(self):\n"
+        "		xbmc.output('.')\n"
+        "\n"
+        "import sys\n"
+        "sys.stdout = xbmcout()\n"
+        "sys.stderr = xbmcout()\n"
+        "print '-->Python Interpreter Initialized<--'\n"
+        "") == -1)
+  {
+    CLog::Log(LOGFATAL, "Python Initialize Error");
+  }
+}
+
+void XBPython::DeInitializeInterpreter()
+{
+  DeinitXBMCModule(); 
+  DeinitPluginModule(); 
+  DeinitGUIModule(); 
+}
+
 /**
 * Should be called before executing a script
 */
@@ -183,42 +267,22 @@ void XBPython::Initialize()
       char* python_argv[1] = { "" } ;
       PySys_SetArgv(1, python_argv);
 
-      initxbmc(); // init xbmc modules
-      initxbmcplugin(); // init plugin modules
-      initxbmcgui(); // init xbmcgui modules
-      // redirecting default output to debug console
-      if (PyRun_SimpleString(""
-        "import xbmc\n"
-        "class xbmcout:\n"
-        "	def write(self, data):\n"
-        "		xbmc.output(data)\n"
-        "	def close(self):\n"
-        "		xbmc.output('.')\n"
-        "	def flush(self):\n"
-        "		xbmc.output('.')\n"
-        "\n"
-        "import sys\n"
-        "sys.stdout = xbmcout()\n"
-        "sys.stderr = xbmcout()\n"
-        "print '-->Python Initialized<--'\n"
-        "") == -1)
-      {
-        CLog::Log(LOGFATAL, "Python Initialize Error");
-      }
+      InitXBMCTypes();
+      InitGUITypes();
+      InitPluginTypes();
 
       mainThreadState = PyThreadState_Get();
+
       // release the lock
       PyEval_ReleaseLock();
 
       m_bInitialized = true;
-      bThreadInitialize = false;
       PulseEvent(m_hEvent);
     }
     else
     {
       // only the main thread should initialize python.
       m_iDllScriptCounter--;
-      bThreadInitialize = true;
 
       LeaveCriticalSection(&m_critSection);
       WaitForSingleObject(m_hEvent, INFINITE);
@@ -235,16 +299,16 @@ void XBPython::Finalize()
 {
   m_iDllScriptCounter--;
   // for linux - we never release the library. its loaded and stays in memory.
-#ifndef _LINUX
   EnterCriticalSection(&m_critSection);
   if (m_iDllScriptCounter == 0 && m_bInitialized)
   {
     CLog::Log(LOGINFO, "Python, unloading python24.dll cause no scripts are running anymore");
     PyEval_AcquireLock();
-#ifndef _LINUX
     PyThreadState_Swap(mainThreadState);
-#endif
     Py_Finalize();
+
+    UnloadExtensionLibs();
+
     //g_sectionLoader.UnloadDLL(PYTHON_DLL);
     // first free all dlls loaded by python, after that python24.dll (this is done by UnloadPythonDlls
     //dllFreeLibrary(m_hModule);
@@ -257,7 +321,6 @@ void XBPython::Finalize()
     m_bInitialized = false;
   }
   LeaveCriticalSection(&m_critSection);
-#endif
 }
 
 void XBPython::FreeResources()
@@ -301,9 +364,6 @@ void XBPython::FreeResources()
 
 void XBPython::Process()
 {
-  // initialize if init was called from another thread
-  if (bThreadInitialize) Initialize();
-
   if (bStartup)
   {
     bStartup = false;
@@ -355,7 +415,7 @@ int XBPython::evalFile(const char *src, const unsigned int argc, const char ** a
   if (!m_bInitialized) return -1;
 
   nextid++;
-  XBPyThread *pyThread = new XBPyThread(this, mainThreadState, nextid);
+  XBPyThread *pyThread = new XBPyThread(this, nextid);
   if (argv != NULL)
     pyThread->setArgv(argc, argv);
   pyThread->evalFile(srcStr.c_str());

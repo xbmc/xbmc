@@ -528,7 +528,7 @@ namespace PYXBMC
     DialogProgress_Type.tp_doc = dialogProgress__doc__;
     DialogProgress_Type.tp_methods = DialogProgress_methods;
     DialogProgress_Type.tp_base = 0;
-    DialogProgress_Type.tp_new = 0;
+    DialogProgress_Type.tp_new = PyType_GenericNew;
   }
 
 
@@ -545,7 +545,7 @@ namespace PYXBMC
     Dialog_Type.tp_doc = dialog__doc__;
     Dialog_Type.tp_methods = Dialog_methods;
     Dialog_Type.tp_base = 0;
-    Dialog_Type.tp_new = 0;
+    Dialog_Type.tp_new = PyType_GenericNew;
   }
 }
 

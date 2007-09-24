@@ -8,10 +8,12 @@
 #endif
 #include "../../utils/Thread.h"
 
+class XBPython;
+
 class XBPyThread : public CThread
 {
 public:
-  XBPyThread(LPVOID pExecuter, PyThreadState* mainThreadState, int id);
+  XBPyThread(XBPython *pExecuter, int id);
   virtual ~XBPyThread();
   int evalFile(const char*);
   int evalString(const char*);
@@ -21,9 +23,8 @@ public:
   void stop();
 
 protected:
-  PyThreadState*	m_threadState;
-  PyThreadState*	m_mainThreadState;
-  LPVOID		m_pExecuter;
+  XBPython      *m_pExecuter;
+  PyThreadState *m_threadState;
 
   char type;
   char *source;

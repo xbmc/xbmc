@@ -26,6 +26,9 @@ FILE* xbp_fopen64(const char *filename, const char *mode);
 DIR *xbp_opendir(const char *name);
 int xbp__xstat64(int ver, const char *filename, struct stat64 *stat_buf);
 int xbp__lxstat64(int ver, const char *filename, struct stat64 *stat_buf);
+void *xbp_dlopen(const char *filename, int flag);
+int xbp_dlclose(void *handle);
+void *xbp_dlsym(void *handle, const char *symbol);
 
 FILE *__wrap_fopen64(const char *path, const char *mode)
 {
@@ -116,3 +119,19 @@ int __wrap___lxstat64(int ver, const char *filename, struct stat64 *stat_buf)
 {
   return xbp__lxstat64(ver, filename, stat_buf);
 }
+
+void *__wrap_dlopen(const char *filename, int flag)
+{
+  return xbp_dlopen(filename,flag);
+}
+
+int __wrap_dlclose(void *handle)
+{
+  return xbp_dlclose(handle);
+}
+
+void *__wrap_dlsym(void *handle, const char *symbol)
+{
+  return xbp_dlsym(handle, symbol);
+}
+
