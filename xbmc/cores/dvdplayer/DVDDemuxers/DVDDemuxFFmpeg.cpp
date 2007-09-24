@@ -525,7 +525,7 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
   return pPacket;
 }
 
-bool CDVDDemuxFFmpeg::Seek(int iTime)
+bool CDVDDemuxFFmpeg::Seek(int iTime, bool bBackword)
 {
   __int64 seek_pts = (__int64)iTime * (AV_TIME_BASE / 1000);
   if (m_pFormatContext->start_time != AV_NOPTS_VALUE && seek_pts < m_pFormatContext->start_time)
@@ -534,7 +534,7 @@ bool CDVDDemuxFFmpeg::Seek(int iTime)
   }
   
   Lock();
-  int ret = m_dllAvFormat.av_seek_frame(m_pFormatContext, -1, seek_pts, seek_pts < 0 ? AVSEEK_FLAG_BACKWARD : 0);
+  int ret = m_dllAvFormat.av_seek_frame(m_pFormatContext, -1, seek_pts, bBackword ? AVSEEK_FLAG_BACKWARD : 0);
   m_iCurrentPts = 0LL;
   Unlock();
   
