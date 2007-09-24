@@ -54,7 +54,7 @@ public:
 
   CDVDDemux::DemuxPacket* Read();
 
-  bool Seek(int iTime);
+  bool Seek(int iTime, bool bBackword = false);
   int GetStreamLenght();
   CDemuxStream* GetStream(int iStreamId);
   int GetNrOfStreams();

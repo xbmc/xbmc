@@ -31,8 +31,8 @@ CDVDPlayerVideo::CDVDPlayerVideo(CDVDClock* pClock, CDVDOverlayContainer* pOverl
   m_pTempOverlayPicture = NULL;
   m_pVideoCodec = NULL;
   m_pOverlayCodecCC = NULL;
+  m_speed = DVD_PLAYSPEED_NORMAL;
   
-  SetSpeed(DVD_PLAYSPEED_NORMAL);
   m_bRenderSubs = false;
   m_iVideoDelay = 0;
   m_fForcedAspectRatio = 0;
@@ -686,28 +686,26 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts)
 
   // snapshot current clock, to use the same value in all calculations
   iCurrentClock = m_pClock->GetAbsoluteClock();
+  
+  iClockSleep = pts - m_pClock->GetClock();  //sleep calculated by pts to clock comparison
+  iFrameSleep = m_iFlipTimeStamp - iCurrentClock; // sleep calculated by duration of frame
 
-  //sleep calculated by pts to clock comparison
-  iClockSleep = pts - m_pClock->GetClock();
+  // correct sleep times based on speed
+  if(m_speed)
+  {
+    iClockSleep = iClockSleep * DVD_PLAYSPEED_NORMAL / abs(m_speed);
+    iFrameSleep = iFrameSleep * DVD_PLAYSPEED_NORMAL / m_speed;
+  }
 
   // dropping to a very low framerate is not correct (it should not happen at all)
-  // clock and audio could be adjusted
-  if (iClockSleep > DVD_MSEC_TO_TIME(500) ) 
-    iClockSleep = DVD_MSEC_TO_TIME(500); // drop to a minimum of 2 frames/sec
-
-  // sleep calculated by duration of frame
-  iFrameSleep = m_iFlipTimeStamp - iCurrentClock;
+  iClockSleep = min(iClockSleep, DVD_MSEC_TO_TIME(500));
+  iFrameSleep = min(iFrameSleep, DVD_MSEC_TO_TIME(500));
 
   // ask decoder to drop frames next round, as we are very late
-  if( (-iClockSleep) > DVD_MSEC_TO_TIME(100) )
+  if( iClockSleep < DVD_MSEC_TO_TIME(100) )
     result |= EOS_VERYLATE;
 
-  if (m_speed < 0)
-  {
-    // don't sleep when going backwords, just push frames out
-    iSleepTime = 0;
-  }
-  else if( m_DetectedStill )
+  if( m_DetectedStill )
   { // when we render a still, we can't sync to clock anyway
     iSleepTime = iFrameSleep;
   }
@@ -719,10 +717,6 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts)
     else
       iSleepTime = iFrameSleep + (iClockSleep - iFrameSleep) / m_autosync;
   }
-
-  /* adjust for speed */
-  if( m_speed > DVD_PLAYSPEED_NORMAL )
-    iSleepTime = iSleepTime * DVD_PLAYSPEED_NORMAL / m_speed;
 
 #ifdef PROFILE /* during profiling, try to play as fast as possible */
   iSleepTime = 0;
