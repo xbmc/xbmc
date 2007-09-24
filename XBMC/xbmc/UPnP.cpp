@@ -54,13 +54,9 @@ typedef struct {
 static const mimetype_extension_struct mimetype_extension_map[] = {
     {"mp3",  "audio/mpeg"},
     {"wma",  "audio/x-ms-wma"},
-    {"wav",  "audio/wav"},
     {"wmv",  "video/x-ms-wmv"},
     {"mpg",  "video/mpeg"},
-    {"mpeg", "video/mpeg"},
-    {"avi",  "video/avi"},
     {"jpg",  "image/jpeg"},
-    {"png",  "image/png"},
     {NULL, NULL}
 };
 
@@ -304,7 +300,10 @@ CUPnPServer::GetProtocolInfo(const CFileItem* item, const NPT_String& protocol)
 
     /* we need a valid extension to retrieve the mimetype for the protocol info */
     NPT_String content = item->GetContentType();
-    if( content.IsEmpty() || content == "application/octet-stream" ) {
+    if( content == "application/octet-stream" )
+        content = "";
+
+    if( content.IsEmpty() ) {
         content == "application/octet-stream";
         const mimetype_extension_struct* mapping = mimetype_extension_map;
         while( mapping->extension ) {
@@ -316,11 +315,27 @@ CUPnPServer::GetProtocolInfo(const CFileItem* item, const NPT_String& protocol)
         }
     }
 
+    /* fallback to generic content type if not found */
+    if( content.IsEmpty() ) {      
+        if( item->IsVideo() || item->IsVideoDb() )
+            content = "video/" + ext;
+        else if( item->IsAudio() || item->IsMusicDb() )
+            content = "audio/" + ext;
+        else if( item->IsPicture() )
+            content = "image/" + ext;
+    }
+    
+    /* nothing we can figure out */
+    if( content.IsEmpty() ) {
+        content = "application/octet-stream";
+    }
+
     /* setup dlna strings, wish i knew what all of they mean */
     NPT_String extra = "DLNA.ORG_OP=01;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01500000000000000000000000000000";
-    if( ext == "mp3" || content == "audio/mpeg" ) {
+    if( content == "audio/mpeg" )
         extra.Insert("DLNA.ORG_PN=MP3;");
-    }
+    else if( content == "image/jpeg" )
+        extra.Insert("DLNA.ORG_PN=JPEG_SM;");
 
     NPT_String info = proto + ":*:" + content + ":" + extra;
     return info;
