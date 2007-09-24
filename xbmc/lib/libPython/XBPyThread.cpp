@@ -29,13 +29,12 @@ int xbTrace(PyObject *obj, _frame *frame, int what, PyObject *arg)
   return -1;
 }
 
-XBPyThread::XBPyThread(LPVOID pExecuter, PyThreadState* mainThreadState, int id)
+XBPyThread::XBPyThread(XBPython *pExecuter, int id)
 {
   CLog::Log(LOGDEBUG,"new python thread created. id=%d", id);
   m_pExecuter = pExecuter;
-  m_id = id;
   m_threadState = NULL;
-  m_mainThreadState = mainThreadState;
+  m_id = id;
 
   done = false;
   stopping = false;
@@ -54,7 +53,6 @@ XBPyThread::~XBPyThread()
       delete [] argv[i];
     delete [] argv;
   }
-
 }
 
 int XBPyThread::evalFile(const char *src)
@@ -101,20 +99,20 @@ void XBPyThread::Process()
   // get the global lock
   PyEval_AcquireLock();
 
-  // get a reference to the PyInterpreterState
-  PyInterpreterState *mainInterpreterState = m_mainThreadState->interp;
-
-  // create a thread state object for this thread
-  m_threadState = PyThreadState_New(mainInterpreterState);
+  m_threadState = Py_NewInterpreter();
+  PyEval_ReleaseLock();
 
   if (!m_threadState) {
 	CLog::Log(LOGERROR,"Python thread: FAILED to get thread state!");
-	PyEval_ReleaseLock();
 	return;
   }
 
+  PyEval_AcquireLock();
+
   // swap in my thread state
   PyThreadState_Swap(m_threadState);
+
+  m_pExecuter->InitializeInterpreter();
 
   // get path from script file name and add python path's
   // this is used for python so it will search modules from script path first
@@ -173,10 +171,10 @@ void XBPyThread::Process()
     else CLog::Log(LOGINFO, "Scriptresult: Success\n");
   }
 
+  m_pExecuter->DeInitializeInterpreter();
+
   // clear the thread state and release our hold on the global interpreter
-  PyThreadState_Swap(NULL);
-  PyThreadState_Clear(m_threadState);
-  PyThreadState_Delete(m_threadState);
+  Py_EndInterpreter(m_threadState);
   m_threadState = NULL;
   PyEval_ReleaseLock();
 }
@@ -184,7 +182,7 @@ void XBPyThread::Process()
 void XBPyThread::OnExit()
 {
   done = true;
-  ((XBPython*)m_pExecuter)->setDone(m_id);
+  m_pExecuter->setDone(m_id);
 }
 
 bool XBPyThread::isDone() {
@@ -197,17 +195,13 @@ bool XBPyThread::isStopping() {
 
 void XBPyThread::stop()
 {
-  PyEval_AcquireLock();
-  //PyErr_SetInterrupt();
-
-  // enable tracing. xbTrace will generate an error and the sript will be stopped
-  //PyEval_SetTrace(xbTrace, NULL);
-
-  m_threadState->c_tracefunc = xbTrace;
-  //arg threadState->c_traceobj
-  m_threadState->use_tracing = 1;
-
-  PyEval_ReleaseLock();
+  if (m_threadState)
+  {
+    PyEval_AcquireLock();
+    m_threadState->c_tracefunc = xbTrace;
+    m_threadState->use_tracing = 1;
+    PyEval_ReleaseLock();
+  }
 
   stopping = true;
 }

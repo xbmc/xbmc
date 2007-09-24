@@ -630,13 +630,9 @@ namespace PYXBMC
  * end of methods and python objects
  * initxbmc(void);
  *****************************************************************/
-
   PyMODINIT_FUNC
-  initxbmc(void)
+  InitXBMCTypes(bool bInitTypes)
   {
-    // init general xbmc modules
-    PyObject* pXbmcModule;
-
     initKeyboard_Type();
     initPlayer_Type();
     initPlayList_Type();
@@ -650,7 +646,26 @@ namespace PYXBMC
         PyType_Ready(&PlayListItem_Type) < 0 ||
         PyType_Ready(&InfoTagMusic_Type) < 0 ||
         PyType_Ready(&InfoTagVideo_Type) < 0) return;
+  }
 
+  PyMODINIT_FUNC
+  DeinitXBMCModule()
+  {
+    Py_DECREF(&Keyboard_Type);
+    Py_DECREF(&Player_Type);
+    Py_DECREF(&PlayList_Type);
+    Py_DECREF(&PlayListItem_Type);
+    Py_DECREF(&InfoTagMusic_Type);
+    Py_DECREF(&InfoTagVideo_Type);
+
+  }
+
+  PyMODINIT_FUNC
+  InitXBMCModule()
+  {
+    // init general xbmc modules
+    PyObject* pXbmcModule;
+    
     Py_INCREF(&Keyboard_Type);
     Py_INCREF(&Player_Type);
     Py_INCREF(&PlayList_Type);

@@ -107,7 +107,10 @@ extern "C"
   FUNCTION4(PyRun_SimpleString)
   FUNCTION(PyEval_InitThreads)
   FUNCTION(Py_Initialize)
+  FUNCTION(Py_IsInitialized)
   FUNCTION(Py_Finalize)
+  FUNCTION(Py_NewInterpreter)
+  FUNCTION4(Py_EndInterpreter)
   FUNCTION4(PyThreadState_Swap)
   FUNCTION8(PyErr_SetString)
   FUNCTION4(PyThreadState_New)
@@ -264,7 +267,10 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PyRun_SimpleString)) &&
       dll.ResolveExport(DLL_FUNCTION(PyEval_InitThreads)) &&
       dll.ResolveExport(DLL_FUNCTION(Py_Initialize)) &&
+      dll.ResolveExport(DLL_FUNCTION(Py_IsInitialized)) &&
       dll.ResolveExport(DLL_FUNCTION(Py_Finalize)) &&
+      dll.ResolveExport(DLL_FUNCTION(Py_NewInterpreter)) &&
+      dll.ResolveExport(DLL_FUNCTION(Py_EndInterpreter)) &&
       dll.ResolveExport(DLL_FUNCTION(PyThreadState_Swap)) &&
       dll.ResolveExport(DLL_FUNCTION(PyErr_SetString)) &&
       dll.ResolveExport(DLL_FUNCTION(PyThreadState_New)) &&
