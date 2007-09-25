@@ -3170,6 +3170,10 @@ void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
       CStdString sIPAddress;
       CStdString sNetworkMask;
       CStdString sDefaultGateway;
+      CStdString sWirelessNetwork;
+      CStdString sWirelessKey;
+      bool       bWirelessKeyIsString;
+
       bool bIsWireless;
       CStdString ifaceName;
 
@@ -3177,7 +3181,7 @@ void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
       CGUISpinControlEx *ifaceControl = (CGUISpinControlEx *)GetControl(GetSetting("network.interface")->GetID());
       ifaceName = ifaceControl->GetLabel();
       CNetworkInterface* iface = g_network.GetInterfaceByName(ifaceName);
-      iface->GetSettingsIP(bIsDHCP, sIPAddress, sNetworkMask, sDefaultGateway);
+      iface->GetSettings(bIsDHCP, sIPAddress, sNetworkMask, sDefaultGateway, sWirelessNetwork, sWirelessKey, bWirelessKeyIsString);
       bIsWireless = iface->IsWireless();
 
       CStdString dns;
@@ -3188,7 +3192,6 @@ void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
       // Update controls with information
       CGUISpinControlEx* pControl1 = (CGUISpinControlEx *)GetControl(GetSetting("network.assignment")->GetID());
       if (pControl1) pControl1->SetValue(bIsDHCP ? NETWORK_DHCP : NETWORK_STATIC);         
-
       GetSetting("network.ipaddress")->GetSetting()->FromString(sIPAddress);
       GetSetting("network.subnet")->GetSetting()->FromString(sNetworkMask);
       GetSetting("network.gateway")->GetSetting()->FromString(sDefaultGateway);
@@ -3200,10 +3203,14 @@ void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
       pControl = (CGUIControl *)GetControl(GetSetting("network.key")->GetID());
       if (pControl) pControl->SetEnabled(bIsWireless);         
       
-      CStdString sWirelessNetwork;
-      CStdString sWirelessKey;
-      bool bWirelessKeyIsString;
-      iface->GetSettingsWireless(sWirelessNetwork, sWirelessKey, bWirelessKeyIsString);
-      GetSetting("network.essid")->GetSetting()->FromString(sWirelessNetwork);
-      GetSetting("network.key")->GetSetting()->FromString(sWirelessKey);
+      if (bIsWireless)
+      {
+         GetSetting("network.essid")->GetSetting()->FromString(sWirelessNetwork);
+         GetSetting("network.key")->GetSetting()->FromString(sWirelessKey);
+      }
+      else
+      {
+         GetSetting("network.essid")->GetSetting()->FromString("");
+         GetSetting("network.key")->GetSetting()->FromString("");
+      }
 }
