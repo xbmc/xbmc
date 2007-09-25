@@ -38,12 +38,10 @@ public:
    virtual CStdString GetCurrentIPAddress() = 0;
    virtual CStdString GetCurrentNetmask() = 0;
    virtual CStdString GetCurrentDefaultGateway(void) = 0;
-   virtual void GetSettingsIP(bool& isDHCP, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway) = 0;
-   virtual void SetSettingsIP(bool isDHCP, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway) = 0;
-   
    virtual CStdString GetCurrentWirelessEssId(void) = 0;
-   virtual void GetSettingsWireless(CStdString& essId, CStdString& key, bool& keyIsString) = 0;
-   virtual void SetSettingsWireless(CStdString& essId, CStdString& key, bool keyIsString) = 0;
+
+   virtual void GetSettings(bool& isDHCP, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, bool& keyIsString) = 0;
+   virtual void SetSettings(bool isDHCP, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, bool keyIsString) = 0;
 };
 
 class CNetwork

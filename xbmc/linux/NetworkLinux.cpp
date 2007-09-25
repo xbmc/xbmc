@@ -9,6 +9,7 @@
 #include <resolv.h>
 #include "PlatformDefs.h"
 #include "NetworkLinux.h"
+#include "Util.h"
 
 CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkLinux* network, CStdString interfaceName) 
       
@@ -150,14 +151,14 @@ CStdString CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
       // skip first two lines
       if (linenum++ < 1)
          continue;
-   	
-   	// search where the word begins	
+
+      // search where the word begins	
       n = sscanf(line,  "%16s %128s %128s",
          iface, dst, gateway);
-         
+
       if (n < 3)
          continue;
-      
+
       if (strcmp(iface, m_interfaceName.c_str()) == 0 &&
           strcmp(dst, "00000000") == 0 && 
           strcmp(gateway, "00000000") != 0)
@@ -257,43 +258,93 @@ std::vector<CStdString> CNetworkLinux::GetNameServers(void)
 
 void CNetworkLinux::SetNameServers(std::vector<CStdString> nameServers)
 {
+   FILE* fp = fopen("/etc/resolv.conf", "w");
+   if (fp != NULL)
+   {
+      for (int i = 0; nameServers.size(); i++)
+      {
+         fprintf(fp, "nameserver %s\n", nameServers[i].c_str());
+      }
+      fclose(fp);
+   }
+   else
+   {
+      // TODO:
+   }
 }
-   
+
 std::vector<NetworkAccessPoint>  CNetworkLinux::GetAccessPoints(void)
 {
    
 }
   
-void CNetworkInterfaceLinux::GetSettingsIP(bool& isDHCP, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway)
+void CNetworkInterfaceLinux::GetSettings(bool& isDHCP, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, bool& keyIsString)
 {
-   if (GetName().Equals("eth0"))
+   ipAddress = "";
+   networkMask = "";
+   defaultGateway = "";
+   essId = "";
+   key = "";
+
+   FILE* fp = fopen("/etc/network/interfaces", "r");
+   if (!fp)
    {
-	   isDHCP = false;
-	   ipAddress = "10.10.10.10";
-	   networkMask = "11.11.11.11";
-	   defaultGateway = "12.12.12.12";
-	}
-	else
-	{
-	   isDHCP = true;
-	   ipAddress = "0.0.0.0";
-	   networkMask = "0.0.0.0";
-	   defaultGateway = "0.0.0.0";
-	}
-}
+      // TODO
+      return;
+   }
 
-void CNetworkInterfaceLinux::SetSettingsIP(bool isDHCP, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway)
-{
-}
+   keyIsString = false;
+
+   char* line = NULL;
+   size_t linel = 0;
+   CStdString s;
+   bool foundInterface = false;
+
+   while (getdelim(&line, &linel, '\n', fp) > 0)
+   {
+      vector<CStdString> tokens;
+
+      s = line;
+      s.TrimLeft(" ").TrimRight(" \n");
    
-void CNetworkInterfaceLinux::GetSettingsWireless(CStdString& essId, CStdString& key, bool& keyIsString)
-{
-	essId = "tals";
-	key = "momo";
-	keyIsString = true;	
+      // skip comments
+      if (s.length() == 0 || s.GetAt(0) == '#')
+         continue;
+
+      // look for "iface <interface name> inet"
+      CUtil::Tokenize(s, tokens, " ");
+      if (!foundInterface &&
+          tokens.size() == 4 &&
+          tokens[0].Equals("iface") &&
+          tokens[1].Equals(GetName()) &&
+          tokens[2].Equals("inet"))
+      {
+         isDHCP = tokens[3].Equals("dhcp");
+	 printf("****************************** found %s is dhcp = |%s|\n", GetName().c_str(), tokens[3].c_str());
+         foundInterface = true;
+      }
+
+      if (foundInterface && tokens.size() == 2)
+      {
+         if (tokens[0].Equals("address")) ipAddress = tokens[1];
+         else if (tokens[0].Equals("netmask")) networkMask = tokens[1];
+         else if (tokens[0].Equals("gateway")) defaultGateway = tokens[1];
+         else if (tokens[0].Equals("wireless-essid")) essId = tokens[1];
+         else if (tokens[0].Equals("wireless-key")) key = tokens[1];
+         else if (tokens[0].Equals("auto") || tokens[0].Equals("iface") || tokens[0].Equals("mapping")) break;
+      }
+   }
+
+   if (key.length() > 2 && key[0] == 's' && key[1] == ':')
+   {
+      keyIsString = true;
+      key.erase(0, 2);
+   }
+
+   fclose(fp);
 }
 
-void CNetworkInterfaceLinux::SetSettingsWireless(CStdString& essId, CStdString& key, bool keyIsString)
+void CNetworkInterfaceLinux::SetSettings(bool isDHCP, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, bool keyIsString)
 {
 }
      
