@@ -365,7 +365,7 @@ void CGUIDialogMediaSource::OnOK()
   VECSHARES *shares = g_settings.GetSharesFromType(m_type);
   if (shares)
     shares->push_back(share);
-  if (CDirectory::GetDirectory(share.strPath, items, "", false, true) || CGUIDialogYesNo::ShowAndGetInput(1001,1025,1003,1004))
+  if (share.strPath.Left(9).Equals("plugin://") || CDirectory::GetDirectory(share.strPath, items, "", false, true) || CGUIDialogYesNo::ShowAndGetInput(1001,1025,1003,1004))
   {
     m_confirmed = true;
     Close();
