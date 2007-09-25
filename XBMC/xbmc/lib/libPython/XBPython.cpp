@@ -144,7 +144,9 @@ void XBPython::RegisterExtensionLib(LibraryLoader *pLib)
     return;
 
   CLog::Log(LOGDEBUG,"%s, adding %s (0x%x)", __FUNCTION__, pLib->GetName(), pLib);
+  EnterCriticalSection(&m_critSection);
   m_extensions.push_back(pLib);
+  LeaveCriticalSection(&m_critSection);
 }
 
 void XBPython::UnregisterExtensionLib(LibraryLoader *pLib)
@@ -153,6 +155,7 @@ void XBPython::UnregisterExtensionLib(LibraryLoader *pLib)
     return;
 
   CLog::Log(LOGDEBUG,"%s, removing %s (0x%x)", __FUNCTION__, pLib->GetName(), pLib);
+  EnterCriticalSection(&m_critSection);
   PythonExtensionLibraries::iterator iter = m_extensions.begin();
   while (iter != m_extensions.end())
   {
@@ -163,11 +166,13 @@ void XBPython::UnregisterExtensionLib(LibraryLoader *pLib)
     }
     iter++;
   }
+  LeaveCriticalSection(&m_critSection);
 }
 
 void XBPython::UnloadExtensionLibs()
 {
   CLog::Log(LOGDEBUG,"%s, clearing python extension libraries", __FUNCTION__);
+  EnterCriticalSection(&m_critSection);
   PythonExtensionLibraries::iterator iter = m_extensions.begin();
   while (iter != m_extensions.end())
   {
@@ -176,6 +181,7 @@ void XBPython::UnloadExtensionLibs()
   }
 
   m_extensions.clear();
+  LeaveCriticalSection(&m_critSection);
 }
 
 void XBPython::InitializeInterpreter()
