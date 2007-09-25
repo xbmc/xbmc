@@ -148,7 +148,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
           m_vecItems.m_strPath = "videodb://4/";
         else if (strDestination.Equals("RecentlyAddedEpisodes"))
           m_vecItems.m_strPath = "videodb://5/";
-        else if (strDestination.Equals("RecentlyAddedVideos"))
+        else if (strDestination.Equals("RecentlyAddedMusicVideos"))
           m_vecItems.m_strPath = "videodb://6/";
         else if (strDestination.Equals("Playlists"))
           m_vecItems.m_strPath = "special://videoplaylists/";
