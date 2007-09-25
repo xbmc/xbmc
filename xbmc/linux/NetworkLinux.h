@@ -24,12 +24,10 @@ public:
    virtual CStdString GetCurrentIPAddress();
    virtual CStdString GetCurrentNetmask();
    virtual CStdString GetCurrentDefaultGateway(void);
-   virtual void GetSettingsIP(bool& isDHCP, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway);
-   virtual void SetSettingsIP(bool isDHCP, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway);
-   
    virtual CStdString GetCurrentWirelessEssId(void);
-   virtual void GetSettingsWireless(CStdString& essId, CStdString& key, bool& keyIsString);
-   virtual void SetSettingsWireless(CStdString& essId, CStdString& key, bool keyIsString);
+
+   virtual void GetSettings(bool& isDHCP, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, bool& keyIsString);
+   virtual void SetSettings(bool isDHCP, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, bool keyIsString);
 
 private:   
    CStdString     m_interfaceName;
