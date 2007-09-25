@@ -218,10 +218,12 @@ private:
 class CDVDMsgPlayerSeek : public CDVDMsg
 {
 public:
-  CDVDMsgPlayerSeek(int time) : CDVDMsg(PLAYER_SEEK) { m_time = time; }
+  CDVDMsgPlayerSeek(int time, bool backword) : CDVDMsg(PLAYER_SEEK) { m_time = time; m_backword = backword; }
   int GetTime()                { return m_time; }
+  bool GetBackword()          { return m_backword; }
 private:
   int m_time;
+  bool m_backword;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

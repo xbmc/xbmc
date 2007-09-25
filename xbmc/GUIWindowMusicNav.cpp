@@ -34,6 +34,7 @@
 #include "GUIDialogFileBrowser.h"
 #include "Picture.h"
 #include "FileSystem/MusicDatabaseDirectory.h"
+#include "FileSystem/VideoDatabaseDirectory.h"
 #include "PartyModeManager.h"
 #include "PlayListFactory.h"
 #include "GUIDialogMusicScan.h"
@@ -334,17 +335,28 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     }
   }
 
-  DIRECTORY::CMusicDatabaseDirectory dir;
-  DIRECTORY::MUSICDATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(strDirectory);
-  if (node == DIRECTORY::MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM)
-    g_infoManager.m_content = "albums";
-  else if (node == DIRECTORY::MUSICDATABASEDIRECTORY::NODE_TYPE_ARTIST)
-    g_infoManager.m_content = "artists";
-  else if (node == DIRECTORY::MUSICDATABASEDIRECTORY::NODE_TYPE_SONG)
-    g_infoManager.m_content = "songs";
+  // update our content in the info manager
+  g_infoManager.m_content = "";
+  if (strDirectory.Left(10).Equals("videodb://"))
+  {
+    DIRECTORY::CVideoDatabaseDirectory dir;
+    DIRECTORY::VIDEODATABASEDIRECTORY::CQueryParams params;
+    dir.GetQueryParams(strDirectory,params);
+    DIRECTORY::VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(strDirectory);
+    if (node == DIRECTORY::VIDEODATABASEDIRECTORY::NODE_TYPE_TITLE_MUSICVIDEOS)
+      g_infoManager.m_content = "musicvideos";
+  }
   else
-    g_infoManager.m_content = "";
-
+  {
+    DIRECTORY::CMusicDatabaseDirectory dir;
+    DIRECTORY::MUSICDATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(strDirectory);
+    if (node == DIRECTORY::MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM)
+      g_infoManager.m_content = "albums";
+    else if (node == DIRECTORY::MUSICDATABASEDIRECTORY::NODE_TYPE_ARTIST)
+      g_infoManager.m_content = "artists";
+    else if (node == DIRECTORY::MUSICDATABASEDIRECTORY::NODE_TYPE_SONG)
+      g_infoManager.m_content = "songs";
+  }
   return bResult;
 }
 
