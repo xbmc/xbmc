@@ -1005,7 +1005,6 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
 void CLinuxRendererGL::FlipPage(int source)
 {  
-  CLog::Log(LOGNOTICE, "Calling FlipPage");
   //if( source >= 0 && source < m_NumYV12Buffers )
   m_iYV12RenderBuffer = source;
   //else
