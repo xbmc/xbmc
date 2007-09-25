@@ -321,6 +321,8 @@ namespace PYXBMC
         // TODO: add the rest of the infolabels
         if (strcmpi(PyString_AsString(key), "year") == 0)
           self->item->GetVideoInfoTag()->m_iYear = PyInt_AsLong(value);
+        else if (strcmpi(PyString_AsString(key), "count") == 0)
+          self->item->m_iprogramCount = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "rating") == 0)
           self->item->GetVideoInfoTag()->m_fRating = (float)PyFloat_AsDouble(value);
         else if (strcmpi(PyString_AsString(key), "size") == 0)
@@ -384,6 +386,8 @@ namespace PYXBMC
         // TODO: add the rest of the infolabels
         if (strcmpi(PyString_AsString(key), "tracknumber") == 0)
           self->item->GetMusicInfoTag()->SetTrackNumber(PyInt_AsLong(value));
+        else if (strcmpi(PyString_AsString(key), "count") == 0)
+          self->item->m_iprogramCount = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "size") == 0)
           self->item->m_dwSize = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "duration") == 0)
@@ -415,6 +419,8 @@ namespace PYXBMC
         CLog::Log(LOGDEBUG, __FUNCTION__" - Type: %s,  InfoLabel: %s,  Value: %s ", cType, PyString_AsString(key), tmp.c_str());
         if (strcmpi(PyString_AsString(key), "title") == 0)
           self->item->m_strTitle = tmp;
+        else if (strcmpi(PyString_AsString(key), "count") == 0)
+          self->item->m_iprogramCount = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "size") == 0)
           self->item->m_dwSize = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "picturepath") == 0)
