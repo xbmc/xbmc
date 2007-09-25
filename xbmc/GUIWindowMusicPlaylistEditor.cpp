@@ -326,6 +326,8 @@ void CGUIWindowMusicPlaylistEditor::GetContextButtons(int itemNumber, CContextBu
       buttons.Add(CONTEXT_BUTTON_MOVE_ITEM_UP, 13332);
     if (playlistItem >= 0 && playlistItem < m_playlist.Size())
       buttons.Add(CONTEXT_BUTTON_MOVE_ITEM_DOWN, 13333);
+    if (playlistItem >= 0)
+      buttons.Add(CONTEXT_BUTTON_DELETE, 1210);
   }
   else if (item && !item->IsParentFolder() && !m_vecItems.IsVirtualDirectoryRoot())
     buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 15019);
@@ -360,6 +362,9 @@ bool CGUIWindowMusicPlaylistEditor::OnContextButton(int itemNumber, CONTEXT_BUTT
 
   case CONTEXT_BUTTON_LOAD:
     OnLoadPlaylist();
+    return true;
+  case CONTEXT_BUTTON_DELETE:
+    OnDeletePlaylistItem(GetCurrentPlaylistItem());
     return true;
   }
   return CGUIWindowMusicBase::OnContextButton(itemNumber, button);

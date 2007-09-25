@@ -971,25 +971,51 @@ bool SSortFileItem::SongAlbumDescendingNoThe(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::SongGenreAscending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::GenreAscending(CFileItem *left, CFileItem *right)
 {
   // special items
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
-    return StringUtils::AlphaNumericCompare(left->GetMusicInfoTag()->GetGenre().c_str(),right->GetMusicInfoTag()->GetGenre().c_str()) <= 0;
+  {
+    const char* lGenre;
+    if (left->HasMusicInfoTag())
+      lGenre = left->GetMusicInfoTag()->GetGenre().c_str();
+    else
+      lGenre = left->GetVideoInfoTag()->m_strGenre.c_str();
+    const char* rGenre;
+    if (right->HasMusicInfoTag())
+      rGenre = right->GetMusicInfoTag()->GetGenre().c_str();
+    else
+      rGenre = right->GetVideoInfoTag()->m_strGenre.c_str();
+
+    return StringUtils::AlphaNumericCompare(lGenre,rGenre) <= 0;
+  }
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::SongGenreDescending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::GenreDescending(CFileItem *left, CFileItem *right)
 {
   // special items
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
-    return StringUtils::AlphaNumericCompare(left->GetMusicInfoTag()->GetGenre().c_str(),right->GetMusicInfoTag()->GetGenre().c_str()) >= 0;
+  {
+    const char* lGenre;
+    if (left->HasMusicInfoTag())
+      lGenre = left->GetMusicInfoTag()->GetGenre().c_str();
+    else
+      lGenre = left->GetVideoInfoTag()->m_strGenre.c_str();
+    const char* rGenre;
+    if (right->HasMusicInfoTag())
+      rGenre = right->GetMusicInfoTag()->GetGenre().c_str();
+    else
+      rGenre = right->GetVideoInfoTag()->m_strGenre.c_str();
+
+    return StringUtils::AlphaNumericCompare(lGenre,rGenre) >= 0;
+  }
   return left->m_bIsFolder;
 }
 
@@ -1020,7 +1046,7 @@ bool SSortFileItem::MovieYearAscending(CFileItem *left, CFileItem *right)
   if (right->IsParentFolder()) return false;
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
-    if (left->GetVideoInfoTag()->m_iYear > 0)
+    if (left->GetVideoInfoTag()->m_strPremiered.IsEmpty() && left->GetVideoInfoTag()->m_strFirstAired.IsEmpty())
     {
       int result = left->GetVideoInfoTag()->m_iYear-right->GetVideoInfoTag()->m_iYear;
       if (result < 0) return true;
@@ -1042,7 +1068,7 @@ bool SSortFileItem::MovieYearDescending(CFileItem *left, CFileItem *right)
   if (right->IsParentFolder()) return false;
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
-    if (left->GetVideoInfoTag()->m_iYear > 0)
+    if (left->GetVideoInfoTag()->m_strPremiered.IsEmpty() && left->GetVideoInfoTag()->m_strFirstAired.IsEmpty())
     {
      int result = left->GetVideoInfoTag()->m_iYear-right->GetVideoInfoTag()->m_iYear;
      if (result < 0) return false;
@@ -1088,8 +1114,8 @@ bool SSortFileItem::MovieRatingAscending(CFileItem *left, CFileItem *right)
   if (right->IsParentFolder()) return false;
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
-    if (left->m_fRating < right->m_fRating) return true;
-    if (left->m_fRating > right->m_fRating) return false;
+    if (left->GetVideoInfoTag()->m_fRating < right->GetVideoInfoTag()->m_fRating) return true;
+    if (left->GetVideoInfoTag()->m_fRating > right->GetVideoInfoTag()->m_fRating) return false;
     return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(), right->GetLabel().c_str()) <= 0;
   }
   return left->m_bIsFolder;
@@ -1102,8 +1128,8 @@ bool SSortFileItem::MovieRatingDescending(CFileItem *left, CFileItem *right)
   if (right->IsParentFolder()) return false;
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
-    if (left->m_fRating < right->m_fRating) return false;
-    if (left->m_fRating > right->m_fRating) return true;
+    if (left->GetVideoInfoTag()->m_fRating < right->GetVideoInfoTag()->m_fRating) return false;
+    if (left->GetVideoInfoTag()->m_fRating > right->GetVideoInfoTag()->m_fRating) return true;
     return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(), right->GetLabel().c_str()) >= 0;
   }
   return left->m_bIsFolder;

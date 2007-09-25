@@ -190,7 +190,13 @@ PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
 
     // album art URI
     if (mask & PLT_FILTER_MASK_ALBUMARTURI && m_ExtraInfo.album_art_uri.GetLength() > 0) {
-        didl += "<upnp:albumArtURI>";
+        if(m_ExtraInfo.album_art_uri_dlna_profile.GetLength() > 0) {
+          didl += "<upnp:albumArtURI dlna:profileID=\"";
+          didl += PLT_Didl::AppendXmlEscape(didl, m_ExtraInfo.album_art_uri_dlna_profile);
+          didl += "\">";
+        } else {
+          didl += "<upnp:albumArtURI>";
+        }
         PLT_Didl::AppendXmlEscape(didl, m_ExtraInfo.album_art_uri);
         didl += "</upnp:albumArtURI>";
     }

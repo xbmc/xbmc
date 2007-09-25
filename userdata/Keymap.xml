@@ -236,6 +236,12 @@
       <d>MoveItemDown</d>
       <delete>Delete</delete>
     </keyboard>
+    <gamepad>
+      <Y>Queue</Y>
+    </gamepad>
+    <remote>
+      <zero>Queue</zero>
+    </remote>
   </MyMusicPlaylistEditor>
   <MyMusicFiles>
     <gamepad>

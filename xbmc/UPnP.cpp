@@ -54,15 +54,49 @@ typedef struct {
 static const mimetype_extension_struct mimetype_extension_map[] = {
     {"mp3",  "audio/mpeg"},
     {"wma",  "audio/x-ms-wma"},
-    {"wav",  "audio/wav"},
     {"wmv",  "video/x-ms-wmv"},
     {"mpg",  "video/mpeg"},
-    {"mpeg", "video/mpeg"},
-    {"avi",  "video/avi"},
     {"jpg",  "image/jpeg"},
-    {"png",  "image/png"},
     {NULL, NULL}
 };
+
+/*
+# Play speed
+#    1 normal
+#    0 invalid
+DLNA_ORG_PS = 'DLNA.ORG_PS'
+DLNA_ORG_PS_VAL = '1'
+
+# Convertion Indicator
+#    1 transcoded
+#    0 not transcoded
+DLNA_ORG_CI = 'DLNA.ORG_CI'
+DLNA_ORG_CI_VAL = '0'
+
+# Operations
+#    00 not time seek range, not range 
+#    01 range supported
+#    10 time seek range supported
+#    11 both supported
+DLNA_ORG_OP = 'DLNA.ORG_OP'
+DLNA_ORG_OP_VAL = '01'
+
+# Flags
+#    senderPaced                      80000000  31
+#    lsopTimeBasedSeekSupported       40000000  30
+#    lsopByteBasedSeekSupported       20000000  29
+#    playcontainerSupported           10000000  28
+#    s0IncreasingSupported            08000000  27  
+#    sNIncreasingSupported            04000000  26  
+#    rtspPauseSupported               02000000  25  
+#    streamingTransferModeSupported   01000000  24  
+#    interactiveTransferModeSupported 00800000  23  
+#    backgroundTransferModeSupported  00400000  22  
+#    connectionStallingSupported      00200000  21  
+#    dlnaVersion15Supported           00100000  20  
+DLNA_ORG_FLAGS = 'DLNA.ORG_FLAGS'
+DLNA_ORG_FLAGS_VAL = '01500000000000000000000000000000'
+*/
 
 /*----------------------------------------------------------------------
 |   static
@@ -228,9 +262,9 @@ private:
 
     NPT_Result       BuildResponse(
         PLT_ActionReference& action,
-        CFileItemList& items,
-        NPT_SocketInfo* info,
-        NPT_String &object_id);
+        CFileItemList&       items,
+        NPT_SocketInfo*      info,
+        const char*          parent_id);
 
 
     static NPT_String GetParentFolder(NPT_String file_path) {       
@@ -266,7 +300,10 @@ CUPnPServer::GetProtocolInfo(const CFileItem* item, const NPT_String& protocol)
 
     /* we need a valid extension to retrieve the mimetype for the protocol info */
     NPT_String content = item->GetContentType().c_str();
-    if( content.IsEmpty() || content == "application/octet-stream" ) {
+    if( content == "application/octet-stream" )
+        content = "";
+
+    if( content.IsEmpty() ) {
         content == "application/octet-stream";
         const mimetype_extension_struct* mapping = mimetype_extension_map;
         while( mapping->extension ) {
@@ -278,11 +315,27 @@ CUPnPServer::GetProtocolInfo(const CFileItem* item, const NPT_String& protocol)
         }
     }
 
+    /* fallback to generic content type if not found */
+    if( content.IsEmpty() ) {      
+        if( item->IsVideo() || item->IsVideoDb() )
+            content = "video/" + ext;
+        else if( item->IsAudio() || item->IsMusicDb() )
+            content = "audio/" + ext;
+        else if( item->IsPicture() )
+            content = "image/" + ext;
+    }
+    
+    /* nothing we can figure out */
+    if( content.IsEmpty() ) {
+        content = "application/octet-stream";
+    }
+
     /* setup dlna strings, wish i knew what all of they mean */
     NPT_String extra = "DLNA.ORG_OP=01;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01500000000000000000000000000000";
-    if( ext == "mp3" || content == "audio/mpeg" ) {
+    if( content == "audio/mpeg" )
         extra.Insert("DLNA.ORG_PN=MP3;");
-    }
+    else if( content == "image/jpeg" )
+        extra.Insert("DLNA.ORG_PN=JPEG_SM;");
 
     NPT_String info = proto + ":*:" + content + ":" + extra;
     return info;
@@ -321,7 +374,7 @@ CUPnPServer::BuildObject(CFileItem*      item,
         object->m_ObjectID = item->m_strPath;
 
         /* Setup object type */
-        if( item->IsMusicDb() ) {
+        if( item->IsMusicDb() || item->IsAudio() ) {
             object->m_ObjectClass.type = "object.item.audioItem.musicTrack";
           
             if( item->HasMusicInfoTag() ) {
@@ -341,13 +394,29 @@ CUPnPServer::BuildObject(CFileItem*      item,
                 resource.m_Duration = tag->GetDuration();                
             }
 
-        } else if( item->IsVideoDb() ) {
-            object->m_ObjectClass.type = "object.item.videoItem.movie";
+        } else if( item->IsVideoDb() || item->IsVideo() ) {
+            object->m_ObjectClass.type = "object.item.videoItem";
+            object->m_Affiliation.album = "[Unknown Series]"; // required to make WMP to show title
 
             if( item->HasVideoInfoTag() ) {
                 CVideoInfoTag *tag = item->GetVideoInfoTag();
                 if( !tag->m_strFileNameAndPath.IsEmpty() )
                   file_path = tag->m_strFileNameAndPath;
+
+                if( tag->m_iDbId != -1 ) {
+                    if( tag->m_strShowTitle.IsEmpty() ) {
+                      object->m_ObjectClass.type = "object.item.videoItem.movie";
+                      object->m_Affiliation.album = "[Unknown Series]"; // required to make WMP to show title
+                      object->m_Title = tag->m_strTitle;                                             
+                    } else {
+                      object->m_ObjectClass.type = "object.item.videoItem.videoBroadcast";
+                      object->m_Affiliation.album = tag->m_strShowTitle;
+                      object->m_Title = tag->m_strShowTitle + " - ";
+                      object->m_Title += "S" + ("0" + NPT_String::FromInteger(tag->m_iSeason)).Right(2);
+                      object->m_Title += "E" + ("0" + NPT_String::FromInteger(tag->m_iEpisode)).Right(2);
+                      object->m_Title += " : " + tag->m_strTitle;
+                    }
+                }
 
                 StringUtils::SplitString(tag->m_strGenre, " / ", strings);                
                 for(CStdStringArray::iterator it = strings.begin(); it != strings.end(); it++) {
@@ -360,24 +429,23 @@ CUPnPServer::BuildObject(CFileItem*      item,
                 }
                 object->m_People.actor.TrimRight(",");
                 object->m_People.actor_role.TrimRight(",");
-
                 object->m_People.director = tag->m_strDirector;
+
                 object->m_Description.description = tag->m_strTagLine;
                 object->m_Description.long_description = tag->m_strPlot;
-                //TODO - this is wrong, imdb gives it as minute string ie, "116 min"
-                //resource.m_Duration = StringUtils::TimeStringToSeconds(tag->m_strRuntime.c_str());
+                resource.m_Duration = StringUtils::TimeStringToSeconds(tag->m_strRuntime.c_str());
             }
 
-        } else if( item->IsAudio() ) {
-            object->m_ObjectClass.type = "object.item.audioItem.musicTrack";
-        } else if( item->IsVideo() ) {
-            object->m_ObjectClass.type = "object.item.videoItem.movie";
         } else if( item->IsPicture() ) {
             object->m_ObjectClass.type = "object.item.imageItem.photo";
         } else {
             object->m_ObjectClass.type = "object.item";
         }
-
+        
+        // duration of zero is invalid
+        if(resource.m_Duration == 0) {
+          resource.m_Duration = -1;
+        }
 
         /* Set the resource file size */
         resource.m_Size = (NPT_Integer)item->m_dwSize;
@@ -447,17 +515,17 @@ CUPnPServer::BuildObject(CFileItem*      item,
                 /* this should be a standard path */
                 // TODO - get file count of this directory
             }
-        }
-        
+        }        
     }
     
     // set a title for the object
-    if( !item->GetLabel().IsEmpty() /* item->IsLabelPreformated() */ ) {
-        object->m_Title = item->GetLabel();
-    } else {
-        object->m_Title = CUtil::GetTitleFromPath(item->m_strPath, item->m_bIsFolder);
+    if( object->m_Title.IsEmpty() ) {
+        if( !item->GetLabel().IsEmpty() ) {
+            object->m_Title = item->GetLabel();
+        } else {
+            object->m_Title = CUtil::GetTitleFromPath(item->m_strPath, item->m_bIsFolder);
+        }
     }
-
     // set a thumbnail if we have one
     if( item->HasThumbnail() ) {
         NPT_HttpUrl uri = m_FileBaseUri;
@@ -878,7 +946,7 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference& action,
 }
 
 NPT_Result
-CUPnPServer::BuildResponse(PLT_ActionReference &action, CFileItemList &items, NPT_SocketInfo *info, NPT_String &object_id)
+CUPnPServer::BuildResponse(PLT_ActionReference &action, CFileItemList &items, NPT_SocketInfo *info, const char* parent_id)
 {
     NPT_String filter;
     NPT_String startingInd;
@@ -897,7 +965,7 @@ CUPnPServer::BuildResponse(PLT_ActionReference &action, CFileItemList &items, NP
     NPT_String didl = didl_header;
     PLT_MediaObjectReference item;
     for (unsigned long i=start_index; i < stop_index; ++i) {
-        item = Build(items[i], true, info, object_id);
+        item = Build(items[i], true, info, parent_id);
         if (item.IsNull()) {
             /* create a dummy object */
             item = new PLT_MediaObject();
@@ -933,8 +1001,32 @@ CUPnPServer::OnSearch(PLT_ActionReference& action,
   // uggly hack to get windows media player to show stuff
   if(searchCriteria.Find("""object.item.audioItem""") >= 0)
       return OnBrowseDirectChildren(action, "musicdb://4", info);
-  else if(searchCriteria.Find("""object.item.videoItem""") >= 0)
-      return OnBrowseDirectChildren(action, "videodb://1/2", info);
+  else if(searchCriteria.Find("""object.item.videoItem""") >= 0) {
+      CFileItemList items, itemsall;
+
+      CVideoDatabase database;
+      if(!database.Open()) {
+        action->SetError(800, "Internal Error");
+        return NPT_SUCCESS;
+      }
+
+      if(!database.GetTitlesNav("videodb://1/2", items)) {
+        action->SetError(800, "Internal Error");
+        return NPT_SUCCESS;
+      }
+      itemsall.AppendPointer(items);
+      items.ClearKeepPointer();
+
+      // TODO - set proper base url for this
+      if(!database.GetEpisodesNav("videodb://2/0", items)) {
+        action->SetError(800, "Internal Error");
+        return NPT_SUCCESS;
+      }
+      itemsall.AppendPointer(items);
+      items.ClearKeepPointer();
+
+      return BuildResponse(action, itemsall, info, NULL);
+  }
 
   return NPT_FAILURE;
 }
