@@ -685,7 +685,9 @@ bool CLinuxRendererGL::ValidateRenderTarget()
       CLog::Log(LOGINFO, "GL: NPOT textures are supported through GL_ARB_texture_rectangle extension");
       m_textureTarget = GL_TEXTURE_RECTANGLE_ARB;
       glEnable(GL_TEXTURE_RECTANGLE_ARB);
-    } else {
+    } 
+    else 
+    {
       CLog::Log(LOGINFO, "GL: OpenGL version %d.%d detected", maj, min);
       CLog::Log(LOGINFO, "GL: NPOT textures are supported natively");
     }
@@ -804,6 +806,7 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
   static int imaging = -1;
   static GLfloat brightness = 0;
   static GLfloat contrast   = 0;
+  bool deinterlacing = (m_currentField!=FIELD_FULL) && (g_stSettings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_NONE);
 
   brightness =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Brightness - 50.0)/100.0;
   contrast =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Contrast)/50.0;
@@ -847,12 +850,50 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
 
   glEnable(GL_TEXTURE_2D);
   VerifyGLState();
-  glBindTexture(m_textureTarget, fields[0][0]);
-  VerifyGLState();
+
   if (m_renderMethod & RENDER_SW)
-    glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height, GL_BGRA, GL_UNSIGNED_BYTE, m_rgbBuffer);
+  {
+    // Load RGB image
+    if (deinterlacing)
+    {
+      glPixelStorei(GL_UNPACK_ROW_LENGTH, im.width*2);
+      glBindTexture(m_textureTarget, fields[FIELD_EVEN][0]);
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height/2, GL_BGRA, GL_UNSIGNED_BYTE, m_rgbBuffer); 
+      glBindTexture(m_textureTarget, fields[FIELD_ODD][0]);
+      glPixelStorei(GL_UNPACK_SKIP_PIXELS, im.width);
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height/2, GL_BGRA, GL_UNSIGNED_BYTE, m_rgbBuffer); 
+      glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
+      glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+      VerifyGLState();
+    }
+    else
+    {
+      glBindTexture(m_textureTarget, fields[FIELD_FULL][0]);
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height, GL_BGRA, GL_UNSIGNED_BYTE, m_rgbBuffer); 
+    }
+  }
   else
-    glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[0]);
+  {
+    if (deinterlacing)
+    {
+      // Load Y fields
+      glPixelStorei(GL_UNPACK_ROW_LENGTH, im.width*2);
+      glBindTexture(m_textureTarget, fields[FIELD_EVEN][0]);
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[0]); 
+      glBindTexture(m_textureTarget, fields[FIELD_ODD][0]);
+      glPixelStorei(GL_UNPACK_SKIP_PIXELS, im.width);
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[0]); 
+      glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
+      glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+      VerifyGLState();
+    }
+    else
+    {
+      // Load Y plane
+      glBindTexture(m_textureTarget, fields[FIELD_FULL][0]);
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[0]);
+    }
+  }
 
   VerifyGLState();
 
@@ -870,14 +911,36 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
 
   if (m_renderMethod & RENDER_GLSL)
   {    
-    glBindTexture(m_textureTarget, fields[0][1]);
-    VerifyGLState();
-    glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[1]);
-    VerifyGLState();
-    glBindTexture(m_textureTarget, fields[0][2]);
-    VerifyGLState();
-    glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[2]);
-    VerifyGLState();
+    if (deinterlacing)
+    {
+      // Load Even U & V Fields
+      glBindTexture(m_textureTarget, fields[FIELD_EVEN][1]);
+      glPixelStorei(GL_UNPACK_ROW_LENGTH, im.width);
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/4, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[1]);
+      glBindTexture(m_textureTarget, fields[FIELD_EVEN][2]);
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/4, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[2]);
+
+      // Load Odd U & V Fields
+      glBindTexture(m_textureTarget, fields[FIELD_ODD][1]);
+      glPixelStorei(GL_UNPACK_SKIP_PIXELS, im.width/2);
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/4, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[1]);
+      glBindTexture(m_textureTarget, fields[FIELD_ODD][2]);
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/4, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[2]);
+      VerifyGLState();
+
+      glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
+      glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+    }
+    else
+    {
+      glBindTexture(m_textureTarget, fields[FIELD_FULL][1]);
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[1]);
+      VerifyGLState();
+
+      glBindTexture(m_textureTarget, fields[FIELD_FULL][2]);
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[2]);
+      VerifyGLState();
+    }
   }
   
   g_graphicsContext.EndPaint(m_pBuffer, false);
@@ -927,7 +990,9 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 #warning Alpha blending currently disabled
 #endif
       //glDisable(GL_BLEND);
-    } else {
+    } 
+    else 
+    {
       //glDisable(GL_BLEND);
     }
   }
@@ -1126,13 +1191,15 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
     {
       if (m_renderQuality == RQ_SINGLEPASS)
       {
-        m_pYUVShader = new YUV2RGBBobShader(); // create bob deinterlacing shader
-        CLog::Log(LOGERROR, "GL: Selecting Single Pass YUV 2 RGB Bob deinterlacing shader");
+        m_pYUVShader = new YUV2RGBProgressiveShader(); // create regular progressive scan shader
+        //m_pYUVShader = new YUV2RGBBobShader(); // create bob deinterlacing shader
+        CLog::Log(LOGERROR, "GL: Selecting Single Pass YUV 2 RGB shader");
       }
       else if (m_renderQuality == RQ_MULTIPASS)
       {
-        m_pYUVShader = new YUV2RGBBobShader(); // create bob deinterlacing shader
-        CLog::Log(LOGERROR, "GL: Selecting Multipass Pass YUV 2 RGB Bob deinterlacing shader");
+        m_pYUVShader = new YUV2RGBProgressiveShader(); // create regular progressive scan shader
+        //m_pYUVShader = new YUV2RGBBobShader(); // create bob deinterlacing shader
+        CLog::Log(LOGERROR, "GL: Selecting Multipass Pass YUV 2 RGB shader");
       }
     }
     else
@@ -1683,8 +1750,28 @@ void CLinuxRendererGL::AutoCrop(bool bCrop)
 void CLinuxRendererGL::RenderSinglePass(DWORD flags)
 {
   //CSingleLock lock(g_graphicsContext);
+  int field = FIELD_FULL;
+  DWORD fieldmask = (flags&RENDER_FLAG_FIELDMASK);
+
+  if (fieldmask)
+  {
+    if (fieldmask == RENDER_FLAG_BOTH)
+    {
+      field = FIELD_FULL;
+    }
+    else if (fieldmask == RENDER_FLAG_EVEN)
+    {
+      field = FIELD_EVEN;
+    }
+    else
+    {
+      field = FIELD_ODD;
+    }
+  }
+
   int index = 0; //m_iYV12RenderBuffer;
   YV12Image &im = m_image[index];
+  bool deinterlacing = (field!=FIELD_FULL) && (g_stSettings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_NONE);
 
   // set scissors if we are not in fullscreen video
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
@@ -1708,18 +1795,42 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags)
   // Y
   glEnable(m_textureTarget);
   glActiveTexture(GL_TEXTURE0);
-  glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][0]);
+  glBindTexture(m_textureTarget, m_YUVTexture[index][field][0]);
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+  if (deinterlacing)
+  {
+    glMatrixMode(GL_TEXTURE);
+    glPushMatrix();
+    glLoadIdentity();
+    glScalef(1.0, 0.5, 1.0);
+    glMatrixMode(GL_MODELVIEW);
+  }
 
   // U
   glActiveTexture(GL_TEXTURE1);
   glEnable(m_textureTarget);
-  glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][1]);
+  glBindTexture(m_textureTarget, m_YUVTexture[index][field][1]);
+  if (deinterlacing)
+  {
+    glMatrixMode(GL_TEXTURE);
+    glPushMatrix();
+    glLoadIdentity();
+    glScalef(1.0, 0.5, 1.0);
+    glMatrixMode(GL_MODELVIEW);
+  }
   
   // V
   glActiveTexture(GL_TEXTURE2);
   glEnable(m_textureTarget);
-  glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][2]);
+  glBindTexture(m_textureTarget, m_YUVTexture[index][field][2]);
+  if (deinterlacing)
+  {
+    glMatrixMode(GL_TEXTURE);
+    glPushMatrix();
+    glLoadIdentity();
+    glScalef(1.0, 0.5, 1.0);
+    glMatrixMode(GL_MODELVIEW);
+  }
   
   glActiveTexture(GL_TEXTURE0);
   VerifyGLState();
@@ -1734,30 +1845,13 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags)
     else
       SetTextureFilter(GL_LINEAR);
   }  
-
+  
   m_pYUVShader->SetYTexture(0);
   m_pYUVShader->SetUTexture(1);
   m_pYUVShader->SetVTexture(2);
-  
-  m_pYUVShader->SetWidth(im.width);
-  m_pYUVShader->SetHeight(im.height);
-
-  switch (m_currentField)
-  {
-  case FIELD_ODD:
-    m_pYUVShader->SetField(1);
-    break;
-    
-  case FIELD_EVEN:
-    m_pYUVShader->SetField(0);
-    break;
-    
-  default:
-    break;
-  }
 
   m_pYUVShader->Enable();
-  
+
   glBegin(GL_QUADS);
   
   if (m_textureTarget==GL_TEXTURE_2D)
@@ -1815,12 +1909,33 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags)
 
   m_pYUVShader->Disable();
   
+  VerifyGLState();
+
   glActiveTexture(GL_TEXTURE1);
   glDisable(m_textureTarget);
+  if (deinterlacing)
+  {
+    glMatrixMode(GL_TEXTURE);
+    glPopMatrix();
+  }
+
   glActiveTexture(GL_TEXTURE2);
   glDisable(m_textureTarget);
+  if (deinterlacing)
+  {
+    glMatrixMode(GL_TEXTURE);
+    glPopMatrix();
+  }
+
   glActiveTexture(GL_TEXTURE0);
   glDisable(m_textureTarget);
+  if (deinterlacing)
+  {
+    glMatrixMode(GL_TEXTURE);
+    glPopMatrix();
+  }
+  glMatrixMode(GL_MODELVIEW); 
+
   VerifyGLState();
 
   g_graphicsContext.EndPaint();
@@ -2266,6 +2381,25 @@ void CLinuxRendererGL::RenderLowMem(DWORD flags)
 
 void CLinuxRendererGL::RenderSoftware(DWORD flags)
 {
+  int field = FIELD_FULL;
+  DWORD fieldmask = (flags&RENDER_FLAG_FIELDMASK);
+
+  if (fieldmask)
+  {
+    if (fieldmask == RENDER_FLAG_BOTH)
+    {
+      field = FIELD_FULL;
+    }
+    else if (fieldmask == RENDER_FLAG_EVEN)
+    {
+      field = FIELD_EVEN;
+    }
+    else
+    {
+      field = FIELD_ODD;
+    }
+  }
+
   int index = 0;
   YV12Image &im = m_image[index];
 
@@ -2279,10 +2413,18 @@ void CLinuxRendererGL::RenderSoftware(DWORD flags)
 
   glDisable(GL_DEPTH_TEST);
 
+  if (field!=FIELD_FULL)
+  {
+    glMatrixMode(GL_TEXTURE);
+    glPushMatrix();
+    glScalef(1.0, 0.5, 1.0);
+    glMatrixMode(GL_MODELVIEW);
+  }
+
   // Y
   glEnable(m_textureTarget);
   glActiveTexture(GL_TEXTURE0);
-  glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][0]);
+  glBindTexture(m_textureTarget, m_YUVTexture[index][field][0]);
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
   glBegin(GL_QUADS);
@@ -2302,7 +2444,6 @@ void CLinuxRendererGL::RenderSoftware(DWORD flags)
     
     glTexCoord2f(0, im.texcoord_y);
     glVertex4f((float)rd.left, (float)rd.bottom, 0, 1.0f);
-
   }  
   else 
   {
@@ -2325,6 +2466,13 @@ void CLinuxRendererGL::RenderSoftware(DWORD flags)
   glEnd();
 
   VerifyGLState();
+
+  if (field!=FIELD_FULL)
+  {
+    glMatrixMode(GL_TEXTURE);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW); 
+  }
 
   glDisable(m_textureTarget);
   VerifyGLState();
@@ -2427,58 +2575,61 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
   }
 
   // YUV 
-  p = 0;
-  glBindTexture(m_textureTarget, fields[0][0]);
-  if (m_renderMethod & RENDER_SW)
+  for (int f = FIELD_FULL; f<=FIELD_EVEN ; f++)
   {
-    // require Power Of Two textures?
-    if (m_renderMethod & RENDER_POT)
+    int divfactor = (f==FIELD_FULL)?1:2;
+    glBindTexture(m_textureTarget, fields[f][0]);
+    if (m_renderMethod & RENDER_SW)
     {
-      static unsigned long np2x = 0, np2y = 0;
-      np2x = NP2(im.width);
-      np2y = NP2(im.height);
-      CLog::Log(LOGNOTICE, "GL: Creating power of two texture of size %d x %d", np2x, np2y);
-      glTexImage2D(m_textureTarget, 0, GL_RGBA, np2x, np2y, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
-      im.texcoord_x = ((float)im.width / (float)np2x);
-      im.texcoord_y = ((float)im.height / (float)np2y);
+      // require Power Of Two textures?
+      if (m_renderMethod & RENDER_POT)
+      {
+        static unsigned long np2x = 0, np2y = 0;
+        np2x = NP2(im.width);
+        np2y = NP2((im.height / divfactor));
+        CLog::Log(LOGNOTICE, "GL: Creating power of two texture of size %d x %d", np2x, np2y);
+        glTexImage2D(m_textureTarget, 0, GL_RGBA, np2x, np2y, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+        im.texcoord_x = ((float)im.width / (float)np2x);
+        im.texcoord_y = ((float)im.height / (float)divfactor / (float)np2y);
+      }
+      else
+      {
+        CLog::Log(LOGDEBUG, "GL: Creating NPOT texture of size %d x %d", im.width, im.height);
+        glTexImage2D(m_textureTarget, 0, GL_RGBA, im.width, im.height/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+      }
     }
     else
     {
-      CLog::Log(LOGDEBUG, "GL: Creating NPOT texture of size %d x %d", im.width, im.height);
-      glTexImage2D(m_textureTarget, 0, GL_RGBA, im.width, im.height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+      CLog::Log(LOGDEBUG, "GL: Creating Y NPOT texture of size %d x %d", im.width, im.height);
+      glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width, im.height/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
     }
-  }
-  else
-  {
-    CLog::Log(LOGDEBUG, "GL: Creating Y NPOT texture of size %d x %d", im.width, im.height);
-    glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width, im.height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
-  }
 
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
-  VerifyGLState();
-
-  if (m_renderMethod & RENDER_GLSL)
-  {
-    CLog::Log(LOGDEBUG, "GL: Creating U NPOT texture of size %d x %d", im.width/2, im.height/2);
-    glBindTexture(m_textureTarget, fields[0][1]);
-    glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
     glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
     VerifyGLState();
+
+    if (m_renderMethod & RENDER_GLSL)
+    {
+      CLog::Log(LOGDEBUG, "GL: Creating U NPOT texture of size %d x %d", im.width/2, im.height/2/divfactor);
+      glBindTexture(m_textureTarget, fields[f][1]);
+      glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+      glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
+      glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
+      VerifyGLState();
     
-    CLog::Log(LOGDEBUG, "GL: Creating V NPOT texture of size %d x %d", im.width/2, im.height/2);
-    glBindTexture(m_textureTarget, fields[0][2]);
-    glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL); 
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
-    VerifyGLState();
+      CLog::Log(LOGDEBUG, "GL: Creating V NPOT texture of size %d x %d", im.width/2, im.height/2/divfactor);
+      glBindTexture(m_textureTarget, fields[f][2]);
+      glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL); 
+      glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
+      glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
+      VerifyGLState();
+    }
   }
 
   g_graphicsContext.EndPaint(m_pBuffer);

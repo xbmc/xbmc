@@ -398,14 +398,20 @@ void CXBoxRenderManager::PresentBob()
     D3DDevice::Present( NULL, NULL, NULL, NULL );
     D3DDevice::SetRenderState(D3DRS_PRESENTATIONINTERVAL, interval);
   }
-#endif
+#elif defined (HAS_SDL_OPENGL)
+  m_pRenderer->FlipPage(0);
+  if( m_presenttime )
+  {
+    /* wait for timestamp */
+    while( m_presenttime > GetTickCount() ) Sleep(1);
+  }
 
   /* render second field */
   if( m_presentfield == FS_EVEN )
     m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD | RENDER_FLAG_NOLOCK, 255);
   else
     m_pRenderer->RenderUpdate(true, RENDER_FLAG_EVEN | RENDER_FLAG_NOLOCK, 255);
-
+#endif
 #ifndef HAS_SDL
   D3DDevice::Present( NULL, NULL, NULL, NULL );
 #endif
