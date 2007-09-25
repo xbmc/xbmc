@@ -4,6 +4,12 @@
 #include "DVDAudioCodec.h"
 #include "DllLiba52.h"
 
+#ifdef _LINUX
+#define XBMC_ALIGN_INT __attribute__ ((aligned (4)))
+#else
+#define XBMC_ALIGN_INT
+#endif
+
 class CDVDAudioCodecLiba52 : public CDVDAudioCodec
 {
 public:
@@ -40,6 +46,6 @@ protected:
   int m_decodedDataSize;
   BYTE* m_pInputBuffer;
 
-  int16_t m_decodedData[131072/2]; // could be a bit to big
-  BYTE m_inputBuffer[4096];
+  int16_t m_decodedData[131072/2] XBMC_ALIGN_INT; // could be a bit to big
+  BYTE m_inputBuffer[4096] XBMC_ALIGN_INT;
 };
