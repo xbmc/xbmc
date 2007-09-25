@@ -198,6 +198,11 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
           dir->m_listItems.AddSortMethod(SORT_METHOD_STUDIO, 572, LABEL_MASKS("%T", "%U"));
         break;
       }
+    case SORT_METHOD_PROGRAM_COUNT:
+      {
+        dir->m_listItems.AddSortMethod(SORT_METHOD_PROGRAM_COUNT, 567, LABEL_MASKS("%T", "%C"));
+        break;
+      }
   }
 }
 
