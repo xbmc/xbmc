@@ -8,6 +8,7 @@
 #include "pyutil.h"
 #include "infotagvideo.h"
 #include "infotagmusic.h"
+#include "listitem.h"
 
 // player callback class
 
@@ -57,18 +58,26 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(play__doc__,
-    "play([item]) -- Play this item.\n"
+    "play([item, listitem]) -- Play this item.\n"
     "\n"
-    "item can be a filename or a PlayList.\n"
-    "If item is not given then the Player will try to play the current item\n"
-    "in the current playlist.");
+    "item           : [opt] string - filename, url or playlist.\n"
+    "listitem       : [opt] listitem - used with setInfo() to set different infolabels.\n"
+    "\n"
+    "*Note, If item is not given then the Player will try to play the current item\n"
+    "       in the current playlist.\n"
+    "\n"
+    "example:\n"
+    "  - listitem = xbmcgui.ListItem('Ironman')\n"
+    "  - listitem.setInfo('video', {'Title': 'Ironman', 'Genre': 'Science Fiction'})\n"
+    "  - xbmc.Player( xbmc.PLAYER_CORE_MPLAYER ).play(url, listitem)\n");
 
   // play a file or python playlist
   PyObject* Player_Play(Player *self, PyObject *args)
   {
     PyObject *pObject = NULL;
+    PyObject *pObjectListItem = NULL;
 
-    if (!PyArg_ParseTuple(args, "|O", &pObject)) return NULL;
+    if (!PyArg_ParseTuple(args, "|OO", &pObject, &pObjectListItem)) return NULL;
 
     // force a playercore before playing
     g_application.m_eForcedNextPlayer = self->playerCore;
@@ -89,6 +98,17 @@ namespace PYXBMC
       self->iPlayList = pPlayList->iPlayList;
       g_playlistPlayer.SetCurrentPlaylist(pPlayList->iPlayList);
       g_applicationMessenger.PlayListPlayerPlay();
+    }
+    else if (PyString_Check(pObject) && pObjectListItem != NULL && ListItem_CheckExact(pObjectListItem))
+    {
+      // an optional listitem was passed
+      ListItem* pListItem = NULL;
+      pListItem = (ListItem*)pObjectListItem;
+
+      // set m_strPath to the passed url
+      pListItem->item->m_strPath = PyString_AsString(pObject);
+
+      g_applicationMessenger.PlayFile((const CFileItem)*pListItem->item, false);
     }
     else if (PyString_Check(pObject))
     {

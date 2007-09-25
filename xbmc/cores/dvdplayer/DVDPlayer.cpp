@@ -268,15 +268,15 @@ void CDVDPlayer::Process()
 
       if(GetPlaySpeed() != DVD_PLAYSPEED_NORMAL && GetPlaySpeed() != DVD_PLAYSPEED_PAUSE)
       {
-        bool bMenu = IsInMenu();
+        if (IsInMenu())
+        {
+          // this can't be done in menu
+          SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
 
-        // don't allow rewind in menu
-        if (bMenu && GetPlaySpeed() < 0 ) SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
-
-        if (m_CurrentVideo.id >= 0 &&
-            m_dvdPlayerVideo.GetCurrentPts() != DVD_NOPTS_VALUE &&
-            !bMenu &&
-            !m_bDontSkipNextFrame)
+        }
+        else if (m_CurrentVideo.id >= 0 
+             && (m_dvdPlayerVideo.GetCurrentPts() != DVD_NOPTS_VALUE)
+             && (m_dvd.iFlagSentStart & DVDPLAYER_VIDEO))
         {
 
           // check how much off clock video is when ff/rw:ing
@@ -286,20 +286,20 @@ void CDVDPlayer::Process()
           // speed. we'd need to have some way to not resync the clock
           // after a seek to remember timing. still need to handle
           // discontinuities somehow
-          // when seeking, give the player a headstart of 1 second to make sure the time it takes
-          // to seek doesn't make a difference.
-          __int64 iError = m_clock.GetClock() - m_dvdPlayerVideo.GetCurrentPts();
 
-          if(GetPlaySpeed() > 0 && iError > DVD_MSEC_TO_TIME(1 * GetPlaySpeed()) )
+          // when seeking, give the player a headstart to make sure 
+          // the time it takes to seek doesn't make a difference.
+          __int64 iError, iTime;
+          iError = m_clock.GetClock() - m_dvdPlayerVideo.GetCurrentPts();
+          iError = iError * DVD_PLAYSPEED_NORMAL / GetPlaySpeed();
+
+          if(iError > DVD_MSEC_TO_TIME(1000))
           {
-            CLog::Log(LOGDEBUG, "CDVDPlayer::Process - FF Seeking to catch up");
-            SeekTime( GetTime() + GetPlaySpeed());
+            CLog::Log(LOGDEBUG, "CDVDPlayer::Process - Seeking to catch up");
+            iTime = GetTime() + (__int64)500 * GetPlaySpeed() / DVD_PLAYSPEED_NORMAL;
+            m_messenger.Put(new CDVDMsgPlayerSeek(iTime, GetPlaySpeed() < 0));
+            m_bDontSkipNextFrame = true;
           }
-          else if(GetPlaySpeed() < 0 && iError < DVD_MSEC_TO_TIME(1 * GetPlaySpeed()) )
-          {
-            SeekTime( GetTime() + GetPlaySpeed());
-          }
-          m_bDontSkipNextFrame = true;
         }
       }
 
@@ -778,7 +778,7 @@ void CDVDPlayer::HandleMessages()
         else
         {
           CLog::Log(LOGDEBUG, "demuxer seek to: %d", pMsgPlayerSeek->GetTime());
-          if (m_pDemuxer && m_pDemuxer->Seek(pMsgPlayerSeek->GetTime()))
+          if (m_pDemuxer && m_pDemuxer->Seek(pMsgPlayerSeek->GetTime(), pMsgPlayerSeek->GetBackword() ))
           {
             CLog::Log(LOGDEBUG, "demuxer seek to: %d, success", pMsgPlayerSeek->GetTime());
             FlushBuffers();
@@ -1285,7 +1285,7 @@ void CDVDPlayer::SeekTime(__int64 iTime)
 {
   if(iTime<0) 
     iTime = 0;
-  m_messenger.Put(new CDVDMsgPlayerSeek((int)iTime));
+  m_messenger.Put(new CDVDMsgPlayerSeek((int)iTime, false));
 }
 
 // return the time in milliseconds

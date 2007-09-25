@@ -347,7 +347,7 @@ public:
   bool IsEmpty() const;
   void Append(const CFileItemList& itemlist);
   void AppendPointer(const CFileItemList& itemlist);
-  void AssignPointer(const CFileItemList& itemlist);
+  void AssignPointer(const CFileItemList& itemlist, bool append = false);
   void Reserve(int iCount);
   void Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder);
   void Randomize();

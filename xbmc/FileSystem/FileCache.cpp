@@ -100,7 +100,7 @@ void CFileCache::Process() {
 	// this better be done in this thread since its the same thread that will do the reading.
 	// e.g. libcurl do not like sharing handles across thread boundaries.
 	// empty source path string means a open handle was attached so no open required (ugly).
-	if(!m_sourcePath.IsEmpty() && !m_source.Open(m_sourcePath, true, READ_BUFFERED)) {
+	if(!m_sourcePath.IsEmpty() && !m_source.Open(m_sourcePath, true)) {
 		CLog::Log(LOGERROR,"CFileCache::Process - failed to open source <%s>", m_sourcePath.c_str());
 		return ;
 	}
