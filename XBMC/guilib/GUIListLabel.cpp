@@ -31,7 +31,7 @@ void CGUIListLabel::Render()
   if (m_label.font && !m_text.IsEmpty())
   {
     DWORD color = m_selected ? m_label.selectedColor : m_label.textColor;
-    if (m_scrolling && m_renderRect.Width() < m_textWidth)
+    if (m_scrolling && m_renderRect.x2 < m_textWidth + m_renderRect.x1)
       m_label.font->DrawScrollingText(m_renderRect.x1, m_renderRect.y1, &color, 1,
                                   m_label.shadowColor, m_text, m_renderRect.Width(), m_scrollInfo);
     else

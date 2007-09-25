@@ -411,6 +411,7 @@ namespace PYXBMC
               self->item->m_dateTime.SetDate(atoi(tmp.Right(4)), atoi(tmp.Mid(3,4)), atoi(tmp.Left(2)));
           }
         }
+        self->item->GetMusicInfoTag()->SetLoaded(true);
       }
       else if (strcmpi(cType, "pictures") == 0)
       {
