@@ -1,5 +1,13 @@
 #pragma once
 
+#ifdef _LINUX
+// under gcc, inline will only take place if optimizations are applied (-O). this will force inline even whith optimizations.
+#define XBMC_FORCE_INLINE __attribute__((always_inline))
+#else
+#define XBMC_FORCE_INLINE
+#endif
+
+
 class CPoint
 {
 public:
@@ -62,7 +70,7 @@ public:
     return false;
   };
 
-  inline const CRect &operator -=(const CPoint &point)
+  inline const CRect &operator -=(const CPoint &point) XBMC_FORCE_INLINE
   {
     x1 -= point.x;
     y1 -= point.y;
@@ -71,7 +79,7 @@ public:
     return *this;
   };
 
-  inline const CRect &operator +=(const CPoint &point)
+  inline const CRect &operator +=(const CPoint &point) XBMC_FORCE_INLINE
   {
     x1 += point.x;
     y1 += point.y;
@@ -91,17 +99,17 @@ public:
     return *this;
   };
 
-  inline bool IsEmpty() const
+  inline bool IsEmpty() const XBMC_FORCE_INLINE
   {
     return (x2 - x1) * (y2 - y1) == 0;
   };
 
-  inline float Width() const
+  inline float Width() const XBMC_FORCE_INLINE
   {
     return x2 - x1;
   };
 
-  inline float Height() const
+  inline float Height() const XBMC_FORCE_INLINE
   {
     return y2 - y1;
   };
@@ -117,3 +125,4 @@ public:
 
   float x1, y1, x2, y2;
 };
+
