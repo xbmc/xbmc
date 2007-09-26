@@ -261,6 +261,8 @@
 #define VISUALISATION_NAME          402
 #define VISUALISATION_ENABLED       403
 
+#define STRING_IS_EMPTY             410
+
 #define SKIN_HAS_THEME_START        500
 #define SKIN_HAS_THEME_END          599 // allow for max 100 themes
 
