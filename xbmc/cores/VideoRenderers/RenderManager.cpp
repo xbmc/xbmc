@@ -132,7 +132,7 @@ void CXBoxRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   RestoreCriticalSection(g_graphicsContext, locks);
 
   if (m_pRenderer)
-    m_pRenderer->RenderUpdate(clear, flags, alpha);
+    m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_LAST, alpha);
 }
 
 unsigned int CXBoxRenderManager::PreInit()
@@ -399,10 +399,11 @@ void CXBoxRenderManager::PresentBob()
     D3DDevice::SetRenderState(D3DRS_PRESENTATIONINTERVAL, interval);
   }
 #elif defined (HAS_SDL_OPENGL)
+
   m_pRenderer->FlipPage(0);
   if( m_presenttime )
   {
-    /* wait for timestamp */
+    // wait for timestamp
     while( m_presenttime > GetTickCount() ) Sleep(1);
   }
 
