@@ -399,6 +399,8 @@ void CXBoxRenderManager::PresentBob()
     D3DDevice::SetRenderState(D3DRS_PRESENTATIONINTERVAL, interval);
   }
 #elif defined (HAS_SDL_OPENGL)
+  
+  return; // FIXME: odd field needs to be rendered as well
 
   m_pRenderer->FlipPage(0);
   if( m_presenttime )
