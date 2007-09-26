@@ -375,7 +375,11 @@ void CDVDPlayerAudio::Process()
     result = DecodeFrame(audioframe, m_speed != DVD_PLAYSPEED_NORMAL); // blocks if no audio is available, but leaves critical section before doing so
     LeaveCriticalSection(&m_critCodecSection);
 
-    if( result & DECODE_FLAG_ERROR )  continue;
+    if( result & DECODE_FLAG_ERROR ) 
+    { 
+      CLog::Log(LOGDEBUG, "CDVDPlayerAudio::Process - Decode Error");
+      continue;
+    }
 
     if( result & DECODE_FLAG_ABORT )
     {
