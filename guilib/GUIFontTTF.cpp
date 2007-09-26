@@ -921,10 +921,10 @@ struct CUSTOMVERTEX {
   SDL_FreeSurface(tempSurface);  
 #elif defined(HAS_SDL_OPENGL)
   // tex coords converted to 0..1 range
-  float tl = ch->left / m_textureWidth;
-  float tr = ch->right / m_textureWidth;
-  float tt = ch->top / m_textureHeight;
-  float tb = ch->bottom / m_textureHeight;
+  float tl = texture.x1 / m_textureWidth;
+  float tr = texture.x2 / m_textureWidth;
+  float tt = texture.y1 / m_textureHeight;
+  float tb = texture.y2 / m_textureHeight;
   
   GLubyte colors[4] = { (GLubyte)((dwColor >> 16) & 0xff), (GLubyte)((dwColor >> 8) & 0xff), (GLubyte)(dwColor & 0xff), (GLubyte)(dwColor >> 24) };
   
