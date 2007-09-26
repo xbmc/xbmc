@@ -485,7 +485,6 @@ void CLinuxRendererGL::CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, f
 
 void CLinuxRendererGL::ManageTextures()
 {
-  int neededbuffers = 0;
   m_NumYV12Buffers = 1;
   m_NumOSDBuffers = 1;
   m_iYV12RenderBuffer = 0;
@@ -806,7 +805,8 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
   static int imaging = -1;
   static GLfloat brightness = 0;
   static GLfloat contrast   = 0;
-  bool deinterlacing = (m_currentField!=FIELD_FULL) && (g_stSettings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_NONE);
+  bool deinterlacing = (m_currentField!=FIELD_FULL) && (g_stSettings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_NONE)
+    && (g_stSettings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_DEINTERLACE);
 
   brightness =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Brightness - 50.0)/100.0;
   contrast =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Contrast)/50.0;
@@ -857,9 +857,9 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
     if (deinterlacing)
     {
       glPixelStorei(GL_UNPACK_ROW_LENGTH, im.width*2);
-      glBindTexture(m_textureTarget, fields[FIELD_EVEN][0]);
-      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height/2, GL_BGRA, GL_UNSIGNED_BYTE, m_rgbBuffer); 
       glBindTexture(m_textureTarget, fields[FIELD_ODD][0]);
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height/2, GL_BGRA, GL_UNSIGNED_BYTE, m_rgbBuffer); 
+      glBindTexture(m_textureTarget, fields[FIELD_EVEN][0]);
       glPixelStorei(GL_UNPACK_SKIP_PIXELS, im.width);
       glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height/2, GL_BGRA, GL_UNSIGNED_BYTE, m_rgbBuffer); 
       glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
@@ -878,9 +878,9 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
     {
       // Load Y fields
       glPixelStorei(GL_UNPACK_ROW_LENGTH, im.width*2);
-      glBindTexture(m_textureTarget, fields[FIELD_EVEN][0]);
-      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[0]); 
       glBindTexture(m_textureTarget, fields[FIELD_ODD][0]);
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[0]); 
+      glBindTexture(m_textureTarget, fields[FIELD_EVEN][0]);
       glPixelStorei(GL_UNPACK_SKIP_PIXELS, im.width);
       glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[0]); 
       glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
@@ -914,17 +914,17 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
     if (deinterlacing)
     {
       // Load Even U & V Fields
-      glBindTexture(m_textureTarget, fields[FIELD_EVEN][1]);
+      glBindTexture(m_textureTarget, fields[FIELD_ODD][1]);
       glPixelStorei(GL_UNPACK_ROW_LENGTH, im.width);
       glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/4, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[1]);
-      glBindTexture(m_textureTarget, fields[FIELD_EVEN][2]);
+      glBindTexture(m_textureTarget, fields[FIELD_ODD][2]);
       glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/4, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[2]);
 
       // Load Odd U & V Fields
-      glBindTexture(m_textureTarget, fields[FIELD_ODD][1]);
+      glBindTexture(m_textureTarget, fields[FIELD_EVEN][1]);
       glPixelStorei(GL_UNPACK_SKIP_PIXELS, im.width/2);
       glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/4, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[1]);
-      glBindTexture(m_textureTarget, fields[FIELD_ODD][2]);
+      glBindTexture(m_textureTarget, fields[FIELD_EVEN][2]);
       glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/4, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[2]);
       VerifyGLState();
 
@@ -1562,7 +1562,20 @@ void CLinuxRendererGL::Render(DWORD flags)
       m_reloadShaders = 1;
     }
     m_currentField = FIELD_EVEN;
-  } // not interlaced
+  }
+  else if (flags & RENDER_FLAG_LAST)
+  {
+    switch(m_currentField)
+    {
+    case FIELD_ODD:
+      flags = RENDER_FLAG_ODD;
+      break;
+
+    case FIELD_EVEN:
+      flags = RENDER_FLAG_EVEN;
+      break;
+    }
+  }
   else
   {
     if (m_currentField != FIELD_FULL)
@@ -1574,12 +1587,6 @@ void CLinuxRendererGL::Render(DWORD flags)
 
   g_graphicsContext.BeginPaint();
   
-  if( flags & RENDER_FLAG_NOOSD ) 
-  {
-    g_graphicsContext.EndPaint();
-    return;
-  }
-
   if (m_renderMethod & RENDER_GLSL)
   {
     UpdateVideoFilter();
@@ -1609,6 +1616,12 @@ void CLinuxRendererGL::Render(DWORD flags)
   }
 
   /* general stuff */
+
+  if( flags & RENDER_FLAG_NOOSD ) 
+  {
+    g_graphicsContext.EndPaint();
+    return;
+  }
 
   RenderOSD();
 
@@ -1770,7 +1783,8 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags)
 
   int index = 0; //m_iYV12RenderBuffer;
   YV12Image &im = m_image[index];
-  bool deinterlacing = (field!=FIELD_FULL) && (g_stSettings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_NONE);
+  bool deinterlacing = (field!=FIELD_FULL) && (g_stSettings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_NONE)
+    && (g_stSettings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_DEINTERLACE);
 
   // set scissors if we are not in fullscreen video
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
@@ -1796,40 +1810,16 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags)
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(m_textureTarget, m_YUVTexture[index][field][0]);
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-  if (deinterlacing)
-  {
-    glMatrixMode(GL_TEXTURE);
-    glPushMatrix();
-    glLoadIdentity();
-    glScalef(1.0, 0.5, 1.0);
-    glMatrixMode(GL_MODELVIEW);
-  }
 
   // U
   glActiveTexture(GL_TEXTURE1);
   glEnable(m_textureTarget);
   glBindTexture(m_textureTarget, m_YUVTexture[index][field][1]);
-  if (deinterlacing)
-  {
-    glMatrixMode(GL_TEXTURE);
-    glPushMatrix();
-    glLoadIdentity();
-    glScalef(1.0, 0.5, 1.0);
-    glMatrixMode(GL_MODELVIEW);
-  }
   
   // V
   glActiveTexture(GL_TEXTURE2);
   glEnable(m_textureTarget);
   glBindTexture(m_textureTarget, m_YUVTexture[index][field][2]);
-  if (deinterlacing)
-  {
-    glMatrixMode(GL_TEXTURE);
-    glPushMatrix();
-    glLoadIdentity();
-    glScalef(1.0, 0.5, 1.0);
-    glMatrixMode(GL_MODELVIEW);
-  }
   
   glActiveTexture(GL_TEXTURE0);
   VerifyGLState();
@@ -1912,27 +1902,13 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags)
 
   glActiveTexture(GL_TEXTURE1);
   glDisable(m_textureTarget);
-  if (deinterlacing)
-  {
-    glMatrixMode(GL_TEXTURE);
-    glPopMatrix();
-  }
 
   glActiveTexture(GL_TEXTURE2);
   glDisable(m_textureTarget);
-  if (deinterlacing)
-  {
-    glMatrixMode(GL_TEXTURE);
-    glPopMatrix();
-  }
 
   glActiveTexture(GL_TEXTURE0);
   glDisable(m_textureTarget);
-  if (deinterlacing)
-  {
-    glMatrixMode(GL_TEXTURE);
-    glPopMatrix();
-  }
+
   glMatrixMode(GL_MODELVIEW); 
 
   VerifyGLState();
@@ -2399,6 +2375,8 @@ void CLinuxRendererGL::RenderSoftware(DWORD flags)
     }
   }
 
+  bool deinterlacing = (field!=FIELD_FULL) && (g_stSettings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_NONE)
+    && (g_stSettings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_DEINTERLACE);
   int index = 0;
   YV12Image &im = m_image[index];
 
@@ -2412,7 +2390,7 @@ void CLinuxRendererGL::RenderSoftware(DWORD flags)
 
   glDisable(GL_DEPTH_TEST);
 
-  if (field!=FIELD_FULL)
+  if (deinterlacing)
   {
     glMatrixMode(GL_TEXTURE);
     glPushMatrix();
@@ -2466,7 +2444,7 @@ void CLinuxRendererGL::RenderSoftware(DWORD flags)
 
   VerifyGLState();
 
-  if (field!=FIELD_FULL)
+  if (deinterlacing)
   {
     glMatrixMode(GL_TEXTURE);
     glPopMatrix();

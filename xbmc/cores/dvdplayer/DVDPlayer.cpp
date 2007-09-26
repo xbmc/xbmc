@@ -98,7 +98,11 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
         strFile.CompareNoCase("d:\\video_ts\\video_ts.ifo") == 0 ||
         strFile.CompareNoCase("iso9660://video_ts/video_ts.ifo") == 0)
     {
+#ifdef _LINUX
+      m_filename = "/dev/cdrom";
+#else
       m_filename = "\\Device\\Cdrom0";
+#endif
     }
     else 
       m_filename = strFile;
