@@ -51,6 +51,7 @@ typedef struct YV12Image
 #define RENDER_FLAG_ODD         0x02
 #define RENDER_FLAG_BOTH (RENDER_FLAG_EVEN | RENDER_FLAG_ODD)
 #define RENDER_FLAG_FIELDMASK   0x03
+#define RENDER_FLAG_LAST        0x04
 
 #define RENDER_FLAG_NOOSD       0x04 /* don't draw any osd */
 #define RENDER_FLAG_NOOSDALPHA  0x08 /* don't allow alpha when osd is drawn */
