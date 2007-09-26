@@ -327,6 +327,11 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.launchxbe")) ret = SYSTEM_LAUNCHING_XBE;
     else if (strTest.Equals("system.progressbar")) ret = SYSTEM_PROGRESS_BAR;
   }
+  else if (strTest.Left(8).Equals("isempty("))
+  {
+    CStdString str = strTest.Mid(8, strTest.GetLength() - 9);
+    return AddMultiInfo(GUIInfo(bNegate ? -STRING_IS_EMPTY : STRING_IS_EMPTY, TranslateSingleString(str)));
+  }
   else if (strCategory.Equals("xlinkkai"))
   {
     if (strTest.Equals("xlinkkai.username")) ret = XLINK_KAI_USERNAME;
@@ -1534,6 +1539,9 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
         else
           bReturn = !g_settings.GetSkinString(info.m_data1).IsEmpty();
       }
+      break;
+    case STRING_IS_EMPTY:
+      bReturn = GetLabel(info.m_data1).IsEmpty();
       break;
     case CONTROL_GROUP_HAS_FOCUS:
       {
