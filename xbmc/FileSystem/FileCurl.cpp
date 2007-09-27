@@ -673,7 +673,7 @@ unsigned int CFileCurl::Read(void* lpBuf, __int64 uiBufSize)
 {
   /* only request 1 byte, for truncated reads */
   if(!FillBuffer(1))
-    return -1;
+    return 0;
 
   /* ensure only available data is considered */
   unsigned int want = (unsigned int)min(m_buffer.GetMaxReadSize(), uiBufSize);
@@ -689,7 +689,7 @@ unsigned int CFileCurl::Read(void* lpBuf, __int64 uiBufSize)
   if (!m_stillRunning && m_fileSize && m_filePos != m_fileSize)
   {
     CLog::Log(LOGWARNING, __FUNCTION__" - Transfer ended before entire file was retreived pos %d, size %d", m_filePos, m_fileSize);
-    return -1;
+    return 0;
   }
 
   return 0;
