@@ -250,8 +250,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.builddate")) ret = SYSTEM_BUILD_DATE;
     else if (strTest.Equals("system.hasnetwork")) ret = SYSTEM_ETHERNET_LINK_ACTIVE;
     else if (strTest.Equals("system.fps")) ret = SYSTEM_FPS;
-#ifdef HAS_KAI
     else if (strTest.Equals("system.kaiconnected")) ret = SYSTEM_KAI_CONNECTED;
+#ifdef HAS_KAI
     else if (strTest.Equals("system.kaienabled")) ret = SYSTEM_KAI_ENABLED;
 #endif
     else if (strTest.Equals("system.hasmediadvd")) ret = SYSTEM_MEDIA_DVD;
@@ -1316,8 +1316,11 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
   }
   else if (condition == PLAYER_MUTED)
     bReturn = g_stSettings.m_bMute;
-#ifdef HAS_KAI
   else if (condition == SYSTEM_KAI_CONNECTED)
+#ifndef HAS_KAI
+    bReturn = false;
+#endif
+#ifdef HAS_KAI
     bReturn = g_network.IsAvailable(false) && g_guiSettings.GetBool("xlinkkai.enabled") && CKaiClient::GetInstance()->IsEngineConnected();
   else if (condition == SYSTEM_KAI_ENABLED)
     bReturn = g_network.IsAvailable(false) && g_guiSettings.GetBool("xlinkkai.enabled");
