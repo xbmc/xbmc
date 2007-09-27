@@ -399,9 +399,10 @@ CGUISettings::CGUISettings(void)
   AddSeparator(8, "myvideos.sep2");
   AddBool(9,"myvideos.hideplots",20369,false);
   AddBool(10,"myvideos.seasonthumbs",20382,false);
-  AddString(11, "myvideos.cleanupvideolibrary", 334, "", BUTTON_CONTROL_STANDARD);
-  AddString(12, "myvideos.exportvideolibrary", 647, "", BUTTON_CONTROL_STANDARD);
-  AddString(13, "myvideos.importvideolibrary", 648, "", BUTTON_CONTROL_STANDARD);
+  AddBool(11,"myvideos.actorthumbs",20402,false);
+  AddString(12, "myvideos.cleanupvideolibrary", 334, "", BUTTON_CONTROL_STANDARD);
+  AddString(13, "myvideos.exportvideolibrary", 647, "", BUTTON_CONTROL_STANDARD);
+  AddString(14, "myvideos.importvideolibrary", 648, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(5, "videoplayer", 16003);
   AddString(1, "videoplayer.calibrate", 214, "", BUTTON_CONTROL_STANDARD);

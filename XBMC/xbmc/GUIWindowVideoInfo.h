@@ -18,6 +18,7 @@ public:
   void SetMovie(const CFileItem *item);
   bool NeedRefresh() const;
   bool RefreshAll() const;
+  virtual bool OnAction(const CAction& action);
 
   const CStdString &GetThumbnail() const { return m_movieItem.GetThumbnailImage(); };
   virtual CFileItem* GetCurrentListItem(int offset = 0) { return &m_movieItem; }
@@ -29,7 +30,7 @@ protected:
   void SetLabel(int iControl, const CStdString& strLabel);
 
   // link cast to movies
-  void AddItemsToList(const vector<CStdString> &vecStr);
+  void AddItemsToList(const std::vector<std::pair<CStdString,CStdString> > &vecStr);
   void OnSearch(CStdString& strSearch);
   void DoSearch(CStdString& strSearch, CFileItemList& items);
   void OnSearchItemFound(const CFileItem* pItem);
@@ -39,7 +40,7 @@ protected:
   bool m_bViewReview;
   bool m_bRefresh;
   bool m_bRefreshAll;
-  vector<CStdString> m_vecStrCast;
+  std::vector<std::pair<CStdString,CStdString> > m_vecStrCast;
   CGUIDialogProgress* m_dlgProgress;
   CVideoDatabase m_database;
 };
