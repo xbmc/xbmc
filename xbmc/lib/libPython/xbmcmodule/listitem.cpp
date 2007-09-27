@@ -344,12 +344,11 @@ namespace PYXBMC
             }
             else
               pActor = pTuple;
-            CStdString strActor = "";
-            CStdString strRole = "";
-            if (!PyGetUnicodeString(strActor, pActor, 1)) continue;
+            SActorInfo info;
+            if (!PyGetUnicodeString(info.strName, pActor, 1)) continue;
             if (pRole != NULL)
-              PyGetUnicodeString(strRole, pRole, 1);
-            self->item->GetVideoInfoTag()->m_cast.push_back(make_pair<CStdString,CStdString>(strActor, strRole));
+              PyGetUnicodeString(info.strRole, pRole, 1);
+            self->item->GetVideoInfoTag()->m_cast.push_back(info);
           }
         }
         else

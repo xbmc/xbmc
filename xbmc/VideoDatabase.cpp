@@ -34,7 +34,7 @@ using namespace XFILE;
 using namespace DIRECTORY;
 using namespace VIDEO;
 
-#define VIDEO_DATABASE_VERSION 11
+#define VIDEO_DATABASE_VERSION 12
 #define VIDEO_DATABASE_OLD_VERSION 3.f
 #define VIDEO_DATABASE_NAME "MyVideos34.db"
 #define RECENTLY_ADDED_LIMIT  25
@@ -122,7 +122,7 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE UNIQUE INDEX ix_directorlinkmovie_2 ON directorlinkmovie ( idMovie, idDirector )\n");
 
     CLog::Log(LOGINFO, "create actors table");
-    m_pDS->exec("CREATE TABLE actors ( idActor integer primary key, strActor text )\n");
+    m_pDS->exec("CREATE TABLE actors ( idActor integer primary key, strActor text, strThumb text )\n");
 
     CLog::Log(LOGINFO, "create path table");
     m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text, strContent text, strScraper text, strHash text, scanRecursive integer, useFolderNames bool)\n");
@@ -984,7 +984,7 @@ long CVideoDatabase::AddGenre(const CStdString& strGenre)
 }
 
 //********************************************************************************************************************************
-long CVideoDatabase::AddActor(const CStdString& strActor)
+long CVideoDatabase::AddActor(const CStdString& strActor, const CStdString& strThumb)
 {
   try
   {
@@ -996,7 +996,7 @@ long CVideoDatabase::AddActor(const CStdString& strActor)
     {
       m_pDS->close();
       // doesnt exists, add it
-      strSQL=FormatSQL("insert into Actors (idActor, strActor) values( NULL, '%s')", strActor.c_str());
+      strSQL=FormatSQL("insert into Actors (idActor, strActor, strThumb) values( NULL, '%s','%s')", strActor.c_str(),strThumb.c_str());
       m_pDS->exec(strSQL.c_str());
       long lActorId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
       return lActorId;
@@ -1005,6 +1005,8 @@ long CVideoDatabase::AddActor(const CStdString& strActor)
     {
       const field_value value = m_pDS->fv("idActor");
       long lActorId = value.get_asLong() ;
+      // update the thumb url's
+      strSQL=FormatSQL("update actors set strThumb='%s' where idActor=%u",strThumb.c_str(),lActorId);
       m_pDS->close();
       return lActorId;
     }
@@ -1689,7 +1691,7 @@ void CVideoDatabase::AddGenreAndDirectorsAndStudios(const CVideoInfoTag& details
     {
       CStdString strDirector = pToken;
       strDirector.Trim();
-      long lDirectorId = AddActor(strDirector);
+      long lDirectorId = AddActor(strDirector,"");
       vecDirectors.push_back(lDirectorId);
       pToken = strtok( NULL, "/" );
     }
@@ -1698,7 +1700,7 @@ void CVideoDatabase::AddGenreAndDirectorsAndStudios(const CVideoInfoTag& details
   {
     CStdString strDirector = details.m_strDirector;
     strDirector.Trim();
-    long lDirectorId = AddActor(strDirector);
+    long lDirectorId = AddActor(strDirector,"");
     vecDirectors.push_back(lDirectorId);
   }
 
@@ -1775,8 +1777,8 @@ void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, co
     // add cast...
     for (CVideoInfoTag::iCast it = details.m_cast.begin(); it != details.m_cast.end(); ++it)
     {
-      long lActor = AddActor(it->first);
-      AddActorToMovie(lMovieId, lActor, it->second);
+      long lActor = AddActor(it->strName,it->thumbUrl.m_xml);
+      AddActorToMovie(lMovieId, lActor, it->strRole);
     }
     
     for (unsigned int i = 0; i < vecGenres.size(); ++i)
@@ -1846,8 +1848,8 @@ long CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideo
     // add cast...
     for (CVideoInfoTag::iCast it = details.m_cast.begin(); it != details.m_cast.end(); ++it)
     {
-      long lActor = AddActor(it->first);
-      AddActorToTvShow(lTvShowId, lActor, it->second);
+      long lActor = AddActor(it->strName,it->thumbUrl.m_xml);
+      AddActorToTvShow(lTvShowId, lActor, it->strRole);
     }
     
     for (unsigned int i = 0; i < vecGenres.size(); ++i)
@@ -1926,8 +1928,8 @@ long CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, 
     // add cast...
     for (CVideoInfoTag::iCast it = details.m_cast.begin(); it != details.m_cast.end(); ++it)
     {
-      long lActor = AddActor(it->first);
-      AddActorToEpisode(lEpisodeId, lActor, it->second);
+      long lActor = AddActor(it->strName,it->thumbUrl.m_xml);
+      AddActorToEpisode(lEpisodeId, lActor, it->strRole);
     }
     
     for (unsigned int i = 0; i < vecGenres.size(); ++i)
@@ -2000,7 +2002,7 @@ void CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPat
     // add artists...
     for (vector<CStdString>::const_iterator it = details.m_artist.begin(); it != details.m_artist.end(); ++it)
     {
-      long lArtist = AddActor(*it);
+      long lArtist = AddActor(*it,"");
       AddArtistToMusicVideo(lMVideoId, lArtist);
     }
     
@@ -2445,11 +2447,15 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool ne
   if (needsCast)
   {
     // create cast string
-    CStdString strSQL = FormatSQL("select actors.strActor,actorlinkmovie.strRole from actorlinkmovie,actors where actorlinkmovie.idMovie=%u and actorlinkmovie.idActor = actors.idActor",lMovieId);
+    CStdString strSQL = FormatSQL("select actors.strActor,actorlinkmovie.strRole,actors.strThumb from actorlinkmovie,actors where actorlinkmovie.idMovie=%u and actorlinkmovie.idActor = actors.idActor",lMovieId);
     m_pDS2->query(strSQL.c_str());
     while (!m_pDS2->eof())
     {
-      details.m_cast.push_back(make_pair(m_pDS2->fv("actors.strActor").get_asString(), m_pDS2->fv("actorlinkmovie.strRole").get_asString()));
+      SActorInfo info;
+      info.strName = m_pDS2->fv("actors.strActor").get_asString();
+      info.strRole = m_pDS2->fv("actorlinkmovie.strRole").get_asString();
+      info.thumbUrl.ParseString(m_pDS2->fv("actors.strThumb").get_asString());
+      details.m_cast.push_back(info);
       m_pDS2->next();
     }
     castTime += timeGetTime() - time; time = timeGetTime();
@@ -2494,11 +2500,15 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool n
   if (needsCast)
   {
     // create cast string
-    CStdString strSQL = FormatSQL("select actors.strActor,actorlinktvshow.strRole from actorlinktvshow,actors where actorlinktvshow.idShow=%u and actorlinktvshow.idActor = actors.idActor",lTvShowId);
+    CStdString strSQL = FormatSQL("select actors.strActor,actorlinktvshow.strRole,actors.strThumb from actorlinktvshow,actors where actorlinktvshow.idShow=%u and actorlinktvshow.idActor = actors.idActor",lTvShowId);
     m_pDS2->query(strSQL.c_str());
     while (!m_pDS2->eof())
     {
-      details.m_cast.push_back(make_pair(m_pDS2->fv("actors.strActor").get_asString(), m_pDS2->fv("actorlinktvshow.strRole").get_asString()));
+      SActorInfo info;
+      info.strName = m_pDS2->fv("actors.strActor").get_asString();
+      info.strRole = m_pDS2->fv("actorlinktvshow.strRole").get_asString();
+      info.thumbUrl.ParseString(m_pDS2->fv("actors.strThumb").get_asString());
+      details.m_cast.push_back(info);
       m_pDS2->next();
     }
     castTime += timeGetTime() - time; time = timeGetTime();
@@ -2544,11 +2554,15 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool 
   if (needsCast)
   {
     // create cast string
-    CStdString strSQL = FormatSQL("select actors.strActor,actorlinkepisode.strRole from actorlinkepisode,actors where actorlinkepisode.idEpisode=%u and actorlinkepisode.idActor = actors.idActor",lEpisodeId);
+    CStdString strSQL = FormatSQL("select actors.strActor,actorlinkepisode.strRole,actors.strThumb from actorlinkepisode,actors where actorlinkepisode.idEpisode=%u and actorlinkepisode.idActor = actors.idActor",lEpisodeId);
     m_pDS2->query(strSQL.c_str());
     while (!m_pDS2->eof())
     {
-      details.m_cast.push_back(make_pair(m_pDS2->fv("actors.strActor").get_asString(), m_pDS2->fv("actorlinkepisode.strRole").get_asString()));
+      SActorInfo info;
+      info.strName = m_pDS2->fv("actors.strActor").get_asString();
+      info.strRole = m_pDS2->fv("actorlinkepisode.strRole").get_asString();
+      info.thumbUrl.ParseString(m_pDS2->fv("actors.strThumb").get_asString());
+      details.m_cast.push_back(info);      
       m_pDS2->next();
     }
     castTime += timeGetTime() - time; time = timeGetTime();
@@ -3097,6 +3111,11 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       m_pDS->exec("CREATE UNIQUE INDEX ix_directorlinkmusicvideo_1 ON directorlinkmusicvideo ( idDirector, idMVideo )\n");
       m_pDS->exec("CREATE UNIQUE INDEX ix_directorlinkmusicvideo_2 ON directorlinkmusicvideo ( idMVideo, idDirector )\n");
     }
+    if (iVersion < 12)
+    {
+      // add the thumb column to the actors table
+      m_pDS->exec("alter table actors add strThumb text");
+    }
   }
   catch (...)
   {
@@ -3612,30 +3631,30 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
     {
       if (idContent == VIDEODB_CONTENT_MOVIES)
       {
-        strSQL=FormatSQL("select actors.idactor,actors.strActor,path.strPath,movie.c%02d from actorlinkmovie,actors,movie,files,path where actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idmovie=movie.idmovie and files.idFile = movie.idFile and files.idPath = path.idPath",VIDEODB_ID_WATCHED);
+        strSQL=FormatSQL("select actors.idactor,actors.strActor,path.strPath,movie.c%02d,actors.strThumb from actorlinkmovie,actors,movie,files,path where actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idmovie=movie.idmovie and files.idFile = movie.idFile and files.idPath = path.idPath",VIDEODB_ID_WATCHED);
       }
       else if (idContent == VIDEODB_CONTENT_TVSHOWS)
       {
-        strSQL=FormatSQL("select actors.idactor,actors.strActor,path.strPath from actorlinktvshow,actors,tvshow,tvshowlinkpath,path where actors.idActor=actorlinktvshow.idActor and actorlinktvshow.idshow=tvshow.idshow and tvshowlinkpath.idshow=tvshow.idshow and tvshowlinkpath.idpath=path.idpath");
+        strSQL=FormatSQL("select actors.idactor,actors.strActor,path.strPath,actors.strThumb from actorlinktvshow,actors,tvshow,tvshowlinkpath,path where actors.idActor=actorlinktvshow.idActor and actorlinktvshow.idshow=tvshow.idshow and tvshowlinkpath.idshow=tvshow.idshow and tvshowlinkpath.idpath=path.idpath");
       }
       else if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
       {
-        strSQL=FormatSQL("select actors.idactor,actors.strActor,path.strPath,musicvideo.c%02d from artistlinkmusicvideo,actors,musicvideo,files,path where actors.idActor=artistlinkmusicvideo.idArtist and artistlinkmusicvideo.idmvideo=musicvideo.idmvideo and files.idFile = musicvideo.idFile and files.idPath = path.idPath",VIDEODB_ID_MUSICVIDEO_WATCHED);
+        strSQL=FormatSQL("select actors.idactor,actors.strActor,path.strPath,musicvideo.c%02d,actors.strThumb from artistlinkmusicvideo,actors,musicvideo,files,path where actors.idActor=artistlinkmusicvideo.idArtist and artistlinkmusicvideo.idmvideo=musicvideo.idmvideo and files.idFile = musicvideo.idFile and files.idPath = path.idPath",VIDEODB_ID_MUSICVIDEO_WATCHED);
       }
     }
     else
     {
       if (idContent == VIDEODB_CONTENT_MOVIES)
       {
-        strSQL=FormatSQL("select distinct actors.idactor,actors.strActor,movie.c%02d from actorlinkmovie,actors,movie where actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idmovie=movie.idmovie",VIDEODB_ID_WATCHED);
+        strSQL=FormatSQL("select distinct actors.idactor,actors.strActor,movie.c%02d,actors.strThumb from actorlinkmovie,actors,movie where actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idmovie=movie.idmovie",VIDEODB_ID_WATCHED);
       }
       else if (idContent == VIDEODB_CONTENT_TVSHOWS)
       {
-        strSQL=FormatSQL("select distinct actors.idactor,actors.strActor from actorlinktvshow,actors,tvshow where actors.idActor=actorlinktvshow.idActor and actorlinktvshow.idshow=tvshow.idshow");
+        strSQL=FormatSQL("select distinct actors.idactor,actors.strActor,actors.strThumb from actorlinktvshow,actors,tvshow where actors.idActor=actorlinktvshow.idActor and actorlinktvshow.idshow=tvshow.idshow");
       }
       else if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
       {
-        strSQL=FormatSQL("select distinct actors.idactor,actors.strActor,musicvideo.c%02d from artistlinkmusicvideo,actors,musicvideo where actors.idActor=artistlinkmusicvideo.idartist and artistlinkmusicvideo.idmvideo=musicvideo.idmvideo",VIDEODB_ID_MUSICVIDEO_WATCHED);
+        strSQL=FormatSQL("select distinct actors.idactor,actors.strActor,musicvideo.c%02d,actors.strThumb from artistlinkmusicvideo,actors,musicvideo where actors.idActor=artistlinkmusicvideo.idartist and artistlinkmusicvideo.idmvideo=musicvideo.idmvideo",VIDEODB_ID_MUSICVIDEO_WATCHED);
       }
     }
 
@@ -3681,7 +3700,18 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
         pItem->m_bIsFolder=true;
         if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
           pItem->GetVideoInfoTag()->m_bWatched = it->second.second;
-
+        pItem->GetVideoInfoTag()->m_strPictureURL.ParseString(m_pDS->fv("actors.strThumb").get_asString());
+        pItem->SetThumbnailImage("DefaultActorBig.png");
+        if (idContent != VIDEODB_CONTENT_MUSICVIDEOS && CFile::Exists(pItem->GetCachedActorThumb()))
+          pItem->SetThumbnailImage(pItem->GetCachedActorThumb());
+        if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
+        {
+          if (CFile::Exists(pItem->GetCachedArtistThumb()))
+            pItem->SetThumbnailImage(pItem->GetCachedArtistThumb());
+          else
+            pItem->SetThumbnailImage("");
+        }
+        pItem->GetVideoInfoTag()->m_strPictureURL.ParseString(m_pDS->fv("actors.strThumb").get_asString());
         items.Add(pItem);
       }
     }
@@ -3694,8 +3724,19 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
         strDir.Format("%ld/", m_pDS->fv("actors.idactor").get_asLong());
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
+        pItem->SetThumbnailImage("DefaultActorBig.png");
         if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
           pItem->GetVideoInfoTag()->m_bWatched = m_pDS->fv(2).get_asBool();
+        if (idContent != VIDEODB_CONTENT_MUSICVIDEOS && CFile::Exists(pItem->GetCachedActorThumb()))
+          pItem->SetThumbnailImage(pItem->GetCachedActorThumb());
+        if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
+        {
+          if (CFile::Exists(pItem->GetCachedArtistThumb()))
+            pItem->SetThumbnailImage(pItem->GetCachedArtistThumb());
+          else
+            pItem->SetThumbnailImage("");
+        }
+        pItem->GetVideoInfoTag()->m_strPictureURL.ParseString(m_pDS->fv("actors.strThumb").get_asString());
         items.Add(pItem);
         m_pDS->next();
       }
