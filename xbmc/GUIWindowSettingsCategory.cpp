@@ -2985,7 +2985,7 @@ void CGUIWindowSettingsCategory::FillInSkinColors(CSetting *pSetting)
 
   CFileItemList items;
   directory.SetMask(".xml");
-  directory.GetDirectory(strPath, items);
+  directory.GetDirectory(PTH_IC(strPath), items);
   // Search for Themes in the Current skin!
   for (int i = 0; i < items.Size(); ++i)
   {
