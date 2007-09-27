@@ -361,7 +361,7 @@ protected:
 
   long AddPath(const CStdString& strPath);
   long AddGenre(const CStdString& strGenre1);
-  long AddActor(const CStdString& strActor);
+  long AddActor(const CStdString& strActor, const CStdString& strThumb);
   long AddStudio(const CStdString& strStudio1);
 
   void AddActorToMovie(long lMovieId, long lActorId, const CStdString& strRole);

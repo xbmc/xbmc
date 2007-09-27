@@ -91,12 +91,16 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag)
     TiXmlNode *node = movie->InsertEndChild(cast);
     TiXmlElement actor("name");
     TiXmlNode *actorNode = node->InsertEndChild(actor);
-    TiXmlText name(it->first);
+    TiXmlText name(it->strName);
     actorNode->InsertEndChild(name);
     TiXmlElement role("role");
     TiXmlNode *roleNode = node->InsertEndChild(role);
-    TiXmlText character(it->second);
+    TiXmlText character(it->strRole);
     roleNode->InsertEndChild(character);
+    TiXmlElement thumb("thumb");
+    TiXmlNode *thumbNode = node->InsertEndChild(thumb);
+    TiXmlText th(it->thumbUrl.m_xml);
+    roleNode->InsertEndChild(th);
   }
   // artists
   for (std::vector<CStdString>::const_iterator it = m_artist.begin(); it != m_artist.end(); ++it)
@@ -206,13 +210,21 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
     const TiXmlNode *actor = node->FirstChild("name");
     if (actor && actor->FirstChild())
     {
-      CStdString name = actor->FirstChild()->Value();
-      CStdString role;
+      SActorInfo info;
+      info.strName = actor->FirstChild()->Value();
       const TiXmlNode *roleNode = node->FirstChild("role");
       if (roleNode && roleNode->FirstChild())
-        role = roleNode->FirstChild()->Value();
-
-      m_cast.push_back(make_pair(name, role));
+        info.strRole = roleNode->FirstChild()->Value();
+      const TiXmlElement *thumbNode = node->FirstChildElement("thumbs");
+      if (thumbNode && thumbNode->FirstChild())
+        info.thumbUrl.ParseElement(thumbNode);
+      else
+      {
+        thumbNode = node->FirstChildElement("thumb");
+        if (thumbNode && thumbNode->FirstChild())
+          info.thumbUrl.ParseElement(thumbNode);
+      }
+      m_cast.push_back(info);
     }
     node = node->NextSibling("actor");
   }
@@ -272,8 +284,9 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar << (int)m_cast.size();
     for (unsigned int i=0;i<m_cast.size();++i)
     {
-      ar << m_cast[i].first;
-      ar << m_cast[i].second;
+      ar << m_cast[i].strName;
+      ar << m_cast[i].strRole;
+      ar << m_cast[i].thumbUrl.m_xml;
     }
     ar << (int)m_artist.size();
     for (unsigned int i=0;i<m_artist.size();++i)
@@ -321,10 +334,13 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar >> iCastSize;
     for (int i=0;i<iCastSize;++i)
     {
-      CStdString strFirst, strSecond;
-      ar >> strFirst;
-      ar >> strSecond;
-      m_cast.push_back(make_pair<CStdString,CStdString>(strFirst,strSecond));
+      SActorInfo info;
+      ar >> info.strName;
+      ar >> info.strRole;
+      CStdString strXml;
+      ar >> strXml;
+      info.thumbUrl.ParseString(strXml);
+      m_cast.push_back(info);
     }
     int iArtistSize;
     ar >> iArtistSize;
@@ -377,10 +393,10 @@ const CStdString CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const
   for (iCast it = m_cast.begin(); it != m_cast.end(); ++it)
   {
     CStdString character;
-    if (it->second.IsEmpty() || !bIncludeRole)
-      character.Format("%s\n", it->first.c_str());
+    if (it->strRole.IsEmpty() || !bIncludeRole)
+      character.Format("%s\n", it->strName.c_str());
     else
-      character.Format("%s %s %s\n", it->first.c_str(), g_localizeStrings.Get(20347).c_str(), it->second.c_str());
+      character.Format("%s %s %s\n", it->strName.c_str(), g_localizeStrings.Get(20347).c_str(), it->strRole.c_str());
     strLabel += character;
   }
   return strLabel.TrimRight("\n");
