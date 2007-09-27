@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xboxmediacenter.com-->
-<!--Date of translation: 09/19/2007-->
+<!--Date of translation: 09/28/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 10279-->
+<!--Based on english strings version 10369-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -1548,6 +1548,8 @@ den här visualiseringen</string>
   <string id="20399">Gå till musikvideor från album</string>
   <string id="20400">Gå till musikvideor av artist</string>
   <string id="20401">Spela musikvideo</string>
+  <string id="20402">Hämta skådespelarminiatyrer automatiskt</string>
+  <string id="20403">Ange skådespelarminiatyr</string>
   <string id="21330">Visa dolda filer och mappar</string>
   <string id="21331">TuxBox klient</string>
   <string id="21332">VARNING: Vald TuxBox enhet är i inspelningsläge!</string>
