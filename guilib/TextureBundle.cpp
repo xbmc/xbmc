@@ -141,7 +141,7 @@ bool CTextureBundle::OpenBundle()
   else
     strPath.Format("%s\\media\\Textures.xpr", g_graphicsContext.GetMediaDir());
 
-  strPath = _P(strPath);
+  strPath = PTH_IC(strPath);
   
 #ifndef _LINUX
   if (GetFileAttributes(strPath.c_str()) == -1)
