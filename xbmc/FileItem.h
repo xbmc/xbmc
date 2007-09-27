@@ -220,6 +220,7 @@ public:
   CStdString GetCachedGameSaveThumb();
   CStdString GetCachedProfileThumb();
   CStdString GetCachedSeasonThumb();
+  CStdString GetCachedActorThumb();
 
   // Sets the video thumb (cached first, else caches user thumb)
   void SetVideoThumb();

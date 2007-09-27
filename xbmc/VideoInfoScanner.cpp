@@ -788,6 +788,8 @@ namespace VIDEO
       ApplyIMDBThumbToFolder(strDirectory,strThumb);
     }
 
+    if (g_guiSettings.GetBool("myvideos.actorthumbs"))
+      FetchActorThumbs(movieDetails.m_cast);
     return lResult;
   }
 
@@ -1006,6 +1008,18 @@ namespace VIDEO
     }
   }
 
+  void CVideoInfoScanner::FetchActorThumbs(const vector<SActorInfo>& actors)
+  {
+    for (unsigned int i=0;i<actors.size();++i)
+    {
+      CFileItem item;
+      item.SetLabel(actors[i].strName);
+      CStdString strThumb = item.GetCachedActorThumb();
+      if (!CFile::Exists(strThumb) && !actors[i].thumbUrl.GetFirstThumb().m_url.IsEmpty())
+        DownloadThumbnail(strThumb,actors[i].thumbUrl.GetFirstThumb());
+    }
+  }
+
   bool CVideoInfoScanner::DownloadThumbnail(const CStdString &thumb, const CScraperUrl::SUrlEntry& entry)
   {
     if (entry.m_url.IsEmpty())
@@ -1019,7 +1033,8 @@ namespace VIDEO
       try
       {
         CPicture picture;
-        picture.CreateThumbnailFromMemory((const BYTE *)thumbData.c_str(), thumbData.size(), CUtil::GetExtension(entry.m_url), thumb);
+        if (!picture.CreateThumbnailFromMemory((const BYTE *)thumbData.c_str(), thumbData.size(), CUtil::GetExtension(entry.m_url), thumb) && CUtil::GetExtension(entry.m_url).Equals(".jpg"))
+          picture.CreateThumbnailFromMemory((const BYTE *)thumbData.c_str(), thumbData.size(), ".gif", thumb);
       }
       catch (...)
       {
