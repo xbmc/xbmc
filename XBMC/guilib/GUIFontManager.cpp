@@ -49,7 +49,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   if (!pFontFile)
   {
     pFontFile = new CGUIFontTTF(TTFfontName);
-    bool bFontLoaded = ((CGUIFontTTF *)pFontFile)->Load(_P(strPath), iSize, iStyle, aspect);
+    bool bFontLoaded = ((CGUIFontTTF *)pFontFile)->Load(PTH_IG(strPath), iSize, iStyle, aspect);
     if (!bFontLoaded)
     {
       // Now try to load it from media\fonts
@@ -59,7 +59,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
         strPath += CUtil::GetFileName(strFilename);
       }
 
-      bFontLoaded = ((CGUIFontTTF *)pFontFile)->Load(_P(strPath), iSize, iStyle, aspect);
+      bFontLoaded = ((CGUIFontTTF *)pFontFile)->Load(PTH_IG(strPath), iSize, iStyle, aspect);
     }
 
     if (!bFontLoaded)

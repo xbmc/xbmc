@@ -48,9 +48,11 @@ struct sortstringbyname
 
 #ifndef _LINUX
 #define _P(x) x
+#define PTH_IG(x) (x)
 #define PATH_SEPARATOR_CHAR '\\'
 #define PATH_SEPARATOR_STRING "\\"
 #else
+#define PTH_IG(x) CUtil::TranslatePathConvertCase(x)
 #define _P(x) CUtil::TranslatePath(x)
 #define PATH_SEPARATOR_CHAR '/'
 #define PATH_SEPARATOR_STRING "/"
@@ -292,6 +294,7 @@ public:
   static void BootToDash();
 
   static CStdString TranslatePath(const CStdString& path);
+  static CStdString TranslatePathConvertCase(const CStdString& path);
   
 private:
   

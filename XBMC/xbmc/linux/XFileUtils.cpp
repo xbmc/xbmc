@@ -1,5 +1,6 @@
 #include "XFileUtils.h"
 #include "XTimeUtils.h"
+#include "Util.h"
 
 #ifdef _LINUX
 
@@ -205,17 +206,20 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
   }
   else
   {
-    CStdString strLower(lpFileName);
-    strLower.MakeLower(); 
     fd = open(lpFileName, flags, mode);
-    if (fd == -1 && errno == ENOENT) // important to check reason for fail. only if its "file does not exist" shall we try lower case.
+
+    // Important to check reason for fail. Only if its 
+    // "file does not exist" shall we try to find the file
+    if (fd == -1 && errno == ENOENT) 
     {
-      // failed to open file. maybe due to case sensitivity. try opening the same name in lower case.
-      CLog::Log(LOGWARNING,"%s, cant open file <%s>. trying to use lowercase <%s>", __FUNCTION__, lpFileName, strLower.c_str());
-      fd = open(strLower.c_str(), flags, mode);
-      if (fd != -1) {
-        CLog::Log(LOGDEBUG,"%s, successfuly opened <%s>", __FUNCTION__, strLower.c_str());
-        strResultFile = strLower;
+      // Failed to open file. maybe due to case sensitivity. 
+      // Try opening the same name in lower case.
+      CStdString igFileName = PTH_IG(lpFileName);
+      fd = open(igFileName.c_str(), flags, mode);
+      if (fd != -1) 
+      {
+        CLog::Log(LOGWARNING,"%s, successfuly opened <%s> instead of <%s>", __FUNCTION__, igFileName.c_str(), lpFileName);
+        strResultFile = igFileName;
       }
     }
   }
