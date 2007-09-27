@@ -851,8 +851,6 @@ HRESULT CApplication::Create(HWND hWnd)
     CIoSupport::RemapDriveLetter('T',szDevicePath);
 #else
     CIoSupport::RemapDriveLetter('T',(char*) strMnt.c_str());
-    CIoSupport::RemapDriveLetter('C',(char*) strMnt.c_str());
-    CIoSupport::RemapDriveLetter('E',(char*) strMnt.c_str());
 #endif    
   }
 
@@ -1014,6 +1012,7 @@ HRESULT CApplication::Create(HWND hWnd)
   CIoSupport::RemapDriveLetter('E', "Harddisk0\\Partition1");
 #endif
 
+#ifdef HAS_XBOX_HARDWARE
   CIoSupport::Dismount("Cdrom0");
   CIoSupport::RemapDriveLetter('D', "Cdrom0");
 
@@ -1044,7 +1043,6 @@ HRESULT CApplication::Create(HWND hWnd)
 
   CIoSupport::RemapDriveLetter('X',"Harddisk0\\Partition3");
   CIoSupport::RemapDriveLetter('Y',"Harddisk0\\Partition4");
-#ifdef HAS_XBOX_HARDWARE
   CIoSupport::RemapDriveLetter('Z',"Harddisk0\\Partition5");
 #elif defined(_LINUX)
   CIoSupport::RemapDriveLetter('Z',"/tmp/xbmc");
