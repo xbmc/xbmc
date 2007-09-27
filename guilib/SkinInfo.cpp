@@ -270,7 +270,7 @@ double CSkinInfo::GetMinVersion()
 void CSkinInfo::LoadIncludes()
 {
   RESOLUTION res;
-  CStdString includesPath = GetSkinPath("includes.xml", &res);
+  CStdString includesPath = PTH_IC(GetSkinPath("includes.xml", &res));
   CLog::Log(LOGINFO, "Loading skin includes from %s", includesPath.c_str());
   m_includes.ClearIncludes();
   m_includes.LoadIncludes(includesPath.c_str());
