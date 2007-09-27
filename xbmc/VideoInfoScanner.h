@@ -51,6 +51,7 @@ namespace VIDEO
     virtual void Run();
     int CountFiles(const CStdString& strPath);
     void FetchSeasonThumbs(long lTvShowId);
+    void FetchActorThumbs(const std::vector<SActorInfo>& actors);
     static int GetPathHash(const CFileItemList &items, CStdString &hash);
 
   protected:
