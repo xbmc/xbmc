@@ -365,6 +365,9 @@ copy() {
         mkdir -p "$BUILDDIR/web" &> /dev/null
         "$RAR" x -y -inul "$WEB" "$BUILDDIR/web/"
       fi
+    elif [[ $I == "XboxMediaCenter" ]]
+    then
+      mv "${SOURCEDIR}/${I}" "$BUILDDIR" &> /dev/null
     else
       cp -rf "${SOURCEDIR}/${I}" "$BUILDDIR" &> /dev/null
     fi
@@ -432,7 +435,7 @@ CONFIGOPTS=""
 (( COPY=1 ))
 (( CONFIRM=0 ))
 (( SHOW_MAKE=1 ))
-(( CONFIGURE=0 ))
+(( CONFIGURE=1 ))
 (( DEBUG=1 ))
 
 if ! [[ -e "$SOURCEDIR/.firstrun" ]]
