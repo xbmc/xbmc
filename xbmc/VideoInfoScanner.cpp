@@ -358,6 +358,8 @@ namespace VIDEO
           if (!pItem->m_bIsFolder && m_itemCount)
             m_pObserver->OnSetProgress(m_currentItem++,m_itemCount);
         }
+        if (CUtil::GetFileName(pItem->m_strPath).Equals("sample.avi"))
+          continue;
       }
       if (info.strContent.Equals("tvshows"))
       {
