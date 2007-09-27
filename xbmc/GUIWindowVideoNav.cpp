@@ -895,6 +895,13 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         if (dir.GetDirectoryChildType(m_vecItems.m_strPath) == NODE_TYPE_SEASONS && !dir.IsAllItem(item->m_strPath) && item->m_bIsFolder)
           buttons.Add(CONTEXT_BUTTON_SET_SEASON_THUMB, 20371);
         
+        if (dir.GetDirectoryChildType(m_vecItems.m_strPath) == NODE_TYPE_ACTOR && !dir.IsAllItem(item->m_strPath) && item->m_bIsFolder)
+        {
+          if (m_vecItems.m_strPath.Left(11).Equals("videodb://3")) // mvids
+            buttons.Add(CONTEXT_BUTTON_SET_ARTIST_THUMB, 13359);
+          else
+            buttons.Add(CONTEXT_BUTTON_SET_ACTOR_THUMB, 20403);
+        }
         if (item->HasVideoInfoTag() && (!item->m_bIsFolder || node == NODE_TYPE_TITLE_TVSHOWS))
           buttons.Add(CONTEXT_BUTTON_DELETE, 646);
 
@@ -961,6 +968,8 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return true;
 
   case CONTEXT_BUTTON_SET_SEASON_THUMB:
+  case CONTEXT_BUTTON_SET_ACTOR_THUMB:
+  case CONTEXT_BUTTON_SET_ARTIST_THUMB:
     {
       // Grab the thumbnails from the web
       CStdString strPath;
@@ -970,30 +979,41 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       DIRECTORY::CDirectory::Create(strPath);
       int i=1;
       CVideoInfoTag tag;
-      m_database.GetTvShowInfo("",tag,m_vecItems[itemNumber]->GetVideoInfoTag()->m_iDbId);
-      for (std::vector<CScraperUrl::SUrlEntry>::iterator iter=tag.m_strPictureURL.m_url.begin();iter != tag.m_strPictureURL.m_url.end();++iter)
+      if (button != CONTEXT_BUTTON_SET_ARTIST_THUMB)
       {
-        if (iter->m_type != CScraperUrl::URL_TYPE_SEASON || iter->m_season != m_vecItems[itemNumber]->GetVideoInfoTag()->m_iSeason)
-          continue;
-        CStdString thumbFromWeb;
-        CStdString strLabel;
-        strLabel.Format("imdbthumb%i.jpg",i);
-        CUtil::AddFileToFolder(strPath, strLabel, thumbFromWeb);
-        if (VIDEO::CVideoInfoScanner::DownloadThumbnail(thumbFromWeb,*iter))
+        if (button == CONTEXT_BUTTON_SET_SEASON_THUMB)
+          m_database.GetTvShowInfo("",tag,m_vecItems[itemNumber]->GetVideoInfoTag()->m_iDbId);
+        else
+          tag = *m_vecItems[itemNumber]->GetVideoInfoTag();
+        for (std::vector<CScraperUrl::SUrlEntry>::iterator iter=tag.m_strPictureURL.m_url.begin();iter != tag.m_strPictureURL.m_url.end();++iter)
         {
-          CStdString strItemPath;
-          strItemPath.Format("thumb://IMDb%i",i++);
-          CFileItem *item = new CFileItem(strItemPath, false);
-          item->SetThumbnailImage(thumbFromWeb);
+          if ((iter->m_type != CScraperUrl::URL_TYPE_SEASON || iter->m_season != m_vecItems[itemNumber]->GetVideoInfoTag()->m_iSeason) && button == CONTEXT_BUTTON_SET_SEASON_THUMB)
+            continue;
+          CStdString thumbFromWeb;
           CStdString strLabel;
-          item->SetLabel(g_localizeStrings.Get(20015));
-          items.Add(item);
+          strLabel.Format("imdbthumb%i.jpg",i);
+          CUtil::AddFileToFolder(strPath, strLabel, thumbFromWeb);
+          if (VIDEO::CVideoInfoScanner::DownloadThumbnail(thumbFromWeb,*iter))
+          {
+            CStdString strItemPath;
+            strItemPath.Format("thumb://IMDb%i",i++);
+            CFileItem *item = new CFileItem(strItemPath, false);
+            item->SetThumbnailImage(thumbFromWeb);
+            CStdString strLabel;
+            item->SetLabel(g_localizeStrings.Get(20015));
+            items.Add(item);
+          }
         }
       }
-      if (CFile::Exists(m_vecItems[itemNumber]->GetCachedSeasonThumb()))
+      CStdString cachedThumb = m_vecItems[itemNumber]->GetCachedSeasonThumb();
+      if (button == CONTEXT_BUTTON_SET_ACTOR_THUMB)
+        cachedThumb = m_vecItems[itemNumber]->GetCachedActorThumb();
+      if (button == CONTEXT_BUTTON_SET_ARTIST_THUMB)
+        cachedThumb = m_vecItems[itemNumber]->GetCachedArtistThumb();
+      if (CFile::Exists(cachedThumb))
       {
         CFileItem *item = new CFileItem("thumb://Current", false);
-        item->SetThumbnailImage(m_vecItems[itemNumber]->GetCachedSeasonThumb());
+        item->SetThumbnailImage(cachedThumb);
         item->SetLabel(g_localizeStrings.Get(20016));
         items.Add(item);
       }
@@ -1012,8 +1032,6 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
       // delete the thumbnail if that's what the user wants, else overwrite with the
       // new thumbnail
-      CStdString cachedThumb(m_vecItems[itemNumber]->GetCachedSeasonThumb());
-
       if (result.Mid(0,12) == "thumb://IMDb")
       {
         CStdString strFile;
@@ -1024,11 +1042,13 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           result = "thumb://None";
       }
       else if (result == "thumb://None")
-        CFile::Delete(m_vecItems[itemNumber]->GetCachedSeasonThumb());
+        CFile::Delete(cachedThumb);
       else
         CFile::Cache(result,cachedThumb);
 
       CUtil::DeleteVideoDatabaseDirectoryCache();
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS, 0, NULL);
+      g_graphicsContext.SendMessage(msg);
       Update(m_vecItems.m_strPath);
 
       return true;

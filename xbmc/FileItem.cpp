@@ -890,6 +890,17 @@ CStdString CFileItem::GetCachedSeasonThumb()
   return cachedThumb;
 }
 
+CStdString CFileItem::GetCachedActorThumb()
+{
+  Crc32 crc;
+  crc.ComputeFromLowerCase("actor" + GetLabel());
+  CStdString hex;
+  hex.Format("%08x", crc);
+  CStdString cachedThumb;
+  cachedThumb.Format("%s\\%c\\%08x.tbn", g_settings.GetVideoThumbFolder().c_str(), hex[0], (unsigned __int32)crc);
+  return cachedThumb;
+}
+
 void CFileItem::SetCachedArtistThumb()
 {
   CStdString thumb(GetCachedArtistThumb());
