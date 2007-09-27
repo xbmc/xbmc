@@ -128,6 +128,7 @@ HRESULT CIoSupport::MapDriveLetter(char cDriveLetter, char * szDevice)
     if (driveMapping[i].cDriveLetter == upperLetter)
     {
       strcpy(driveMapping[i].szDevice, szDevice);
+      CLog::Log(LOGNOTICE, "Mapping drive %c to %s", cDriveLetter, szDevice);
       return S_OK;
     }
   return E_FAIL;
