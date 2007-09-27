@@ -214,7 +214,7 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
     {
       // Failed to open file. maybe due to case sensitivity. 
       // Try opening the same name in lower case.
-      CStdString igFileName = PTH_IG(lpFileName);
+      CStdString igFileName = PTH_IC(lpFileName);
       fd = open(igFileName.c_str(), flags, mode);
       if (fd != -1) 
       {
