@@ -19,6 +19,10 @@
  *
  */
 
+#ifdef _LINUX
+#include <sys/types.h>
+#include <dirent.h>
+#endif
 #include "stdafx.h"
 #include "Application.h"
 #include "GUIWindowVideoBase.h"
@@ -5542,3 +5546,61 @@ CStdString CUtil::TranslatePath(const CStdString& path)
 	return result;
 }
 
+CStdString CUtil::CUtil::TranslatePathConvertCase(const CStdString& path)
+{
+   CStdString translatedPath = TranslatePath(path);
+
+#ifdef _LINUX
+   // If the file exists with the requested name, simply return it
+   struct stat stat_buf;
+   if (stat(translatedPath.c_str(), &stat_buf) == 0)
+      return translatedPath;
+
+   CStdString result;
+   vector<CStdString> tokens;
+   Tokenize(translatedPath, tokens, "/");
+   CStdString file;
+   DIR* dir;
+   struct dirent* de;
+
+   for (int i = 0; i < tokens.size(); i++)
+   {
+      file = result + "/" + tokens[i];
+      if (stat(file.c_str(), &stat_buf) == 0)
+      {
+         result += "/" + tokens[i];
+      }
+      else
+      {
+         dir = opendir(result.c_str());
+         if (dir)
+         {
+            while ((de = readdir(dir)) != NULL)
+            {
+               // check if there's a file with same name but different case
+               if (strcasecmp(de->d_name, tokens[i]) == 0)
+               {
+                  result += "/";
+                  result += de->d_name;
+                  break;
+               }
+            }
+          
+            // if we did not find any file that somewhat matches, just 
+            // fallback but we know it's not gonna be a good ending
+            if (de == NULL)
+               result += "/" + tokens[i];
+          
+            closedir(dir); 
+         }
+         else
+            // this is just fallback, we won't succeed anyway...
+            result += "/" + tokens[i];
+      }
+   }
+  
+   return result;
+#else
+   return translatedPath;
+#endif
+}
