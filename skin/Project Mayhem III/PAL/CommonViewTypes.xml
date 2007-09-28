@@ -2547,6 +2547,7 @@
 			<onclick>PageUp(61)</onclick>
 			<texturefocus border="4">scrollbar_arrow_up_focus.png</texturefocus>
 			<texturenofocus border="4">scrollbar_arrow_up.png</texturenofocus>
+			<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			<visible>Control.IsVisible(61) + !Skin.HasSetting(UseScrollbars)</visible>
 		</control>
 		<control type="button">
@@ -2557,6 +2558,7 @@
 			<onclick>PageDown(61)</onclick>
 			<texturefocus border="4">scrollbar_arrow_down_focus.png</texturefocus>
 			<texturenofocus border="4">scrollbar_arrow_down.png</texturenofocus>
+				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			<visible>Control.IsVisible(61) + !Skin.HasSetting(UseScrollbars)</visible>
 		</control>
 		<control type="scrollbar" id="61">
@@ -2573,6 +2575,7 @@
 			<onright>9000</onright>
 			<showonepage>false</showonepage>
 			<orientation>vertical</orientation>
+			<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			<visible>!Skin.HasSetting(UseScrollbars) + Control.IsVisible(50)</visible>
 		</control>
 		<control type="spincontrol" id="61">
@@ -2586,6 +2589,7 @@
 			<ondown>61</ondown>
 			<onup>50</onup>
 			<showonepage>false</showonepage>
+			<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			<visible>Skin.HasSetting(UseScrollbars) + Control.IsVisible(50)</visible>
 		</control>
 	</include>
