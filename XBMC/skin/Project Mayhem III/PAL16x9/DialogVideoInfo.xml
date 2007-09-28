@@ -244,6 +244,7 @@
 				<height>209</height>
 				<texture>blue_rectangle_music.png</texture>
 				<aspectratio>stretch</aspectratio>
+				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
 			<control type="image" id="3">
 				<description>Cover image</description>
@@ -312,6 +313,7 @@
 				<orientation>vertical</orientation>
 			        <pagecontrol>61</pagecontrol>
 			        <scrolltime>200</scrolltime>
+				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			        <itemlayout width="250" height="29">
 				    <control type="image">
 				        <posx>0</posx>
