@@ -55,7 +55,8 @@ DEPEND_FILES	= src/asp.o src/balloc.o src/base64.o src/cgi.o src/default.o  \
 				  src/sock.o src/sockGen.o $(SSLPATCHFILE) \
 				  src/security.o src/sym.o src/uemf.o src/url.o src/value.o \
 				  src/md5c.o src/um.o src/websda.o src/emfdb.o \
-				  src/webrom.o src/webs.o src/websuemf.o
+				  src/webrom.o src/webs.o src/websuemf.o \
+				  src/spy.o src/umui.o
 CFLAGS	= -DWEBS -DUEMF -DOS="LINUX" -DLINUX $(UMSW) $(DASW) $(SSLSW) $(IFMODSW)-DDEV -D__NO_CGI_BIN
 OTHERS	= -DB_STATS -DB_FILL -DDEBUG
 DEBUG	= -g -Wall
