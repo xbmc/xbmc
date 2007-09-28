@@ -58,7 +58,7 @@
 				Name="VCPreLinkEventTool"/>
 			<Tool
 				Name="XboxDeploymentTool"
-				RemotePath="xe:\xbmc\default.xbe"
+				RemotePath="xe:\xbmc\xbmcd.xbe"
 				Progress="FALSE"/>
 			<Tool
 				Name="XboxImageTool"
