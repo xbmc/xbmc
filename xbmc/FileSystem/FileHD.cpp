@@ -106,6 +106,7 @@ bool CFileHD::OpenForWrite(const CURL& url, bool bBinary, bool bOverWrite)
   // make sure it's a legal FATX filename (we are writing to the harddisk)
   CStdString strPath = GetLocal(url);
 
+#ifdef HAS_FTP_SERVER
   if (g_guiSettings.GetBool("servers.ftpautofatx")) // allow overriding
   {
     CStdString strPathOriginal = strPath;
@@ -113,6 +114,7 @@ bool CFileHD::OpenForWrite(const CURL& url, bool bBinary, bool bOverWrite)
     if (strPathOriginal != strPath)
       CLog::Log(LOGINFO,"CFileHD::OpenForWrite: WARNING: Truncated filename %s %s", strPathOriginal.c_str(), strPath.c_str());
   }
+#endif
   
   m_hFile.attach(CreateFile(strPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, bOverWrite ? CREATE_ALWAYS : OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL));
   if (!m_hFile.isValid()) 
