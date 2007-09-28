@@ -1,5 +1,5 @@
 <window id="2003">
-	<defaultcontrol>5</defaultcontrol>
+	<defaultcontrol always="true">5</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<animation effect="fade" time="1000" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
 	<animation effect="fade" time="1000" condition="!Skin.HasSetting(animated)">WindowClose</animation>
@@ -69,7 +69,7 @@
 				<description>Movie Title value</description>
 				<posx>330</posx>
 				<posy>120</posy>
-				<width>290</width>
+				<width>355</width>
 				<label>-</label>
 				<font>special13</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
@@ -252,7 +252,8 @@
 				<width>101</width>
 				<height>199</height>
 				<texture>-</texture>
-				<aspectratio>stretch</aspectratio>
+				<aspectratio>keep</aspectratio>
+				<align>center</align>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
 			<control type="image" id="0">
@@ -271,8 +272,9 @@
 				<posy>355</posy>
 				<width>94</width>
 				<height>164</height>
-				<texture>-</texture>
-				<aspectratio>stretch</aspectratio>
+				<texture>DefaultActorBig.png</texture>
+				<aspectratio>keep</aspectratio>
+				<align>center</align>
 				<visible>control.isvisible(50) + !container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
 			<control type="image">
@@ -301,14 +303,14 @@
 				<description>Cast List Container</description>
 				<posx>200</posx>
 				<posy>350</posy>
-				<width>375</width>
+				<width>350</width>
 				<height>175</height>
-				<onleft>5</onleft>
-				<onright>4</onright>
+				<onleft>9000</onleft>
+				<onright>61</onright>
 				<onup>50</onup>
 				<ondown>50</ondown>
 				<orientation>vertical</orientation>
-			        <pagecontrol>25</pagecontrol>
+			        <pagecontrol>61</pagecontrol>
 			        <scrolltime>200</scrolltime>
 			        <itemlayout width="250" height="29">
 				    <control type="image">
@@ -344,7 +346,7 @@
 				</itemlayout>
                                 <focusedlayout height="29" width="250">
 		   		    <control type="image">
-				        <width>375</width>
+				        <width>350</width>
 				        <height>29</height>
 				        <posx>0</posx>
 				        <posy>0</posy>
@@ -904,7 +906,7 @@
 				<visible>container.content(musicvideos)</visible>
 			</control>
 		</control>
-		<control type="group">
+		<control type="group" id="9000">
 			<posx>20</posx>
 			<posy>-20</posy>
 			<control type="button" id="5">
@@ -1041,5 +1043,6 @@
 				<include>mediaoverlay</include>
 			</control>
 		</control>
+		<include>DialogInfoViewCommonPageControls</include>
 	</controls>
 </window>
