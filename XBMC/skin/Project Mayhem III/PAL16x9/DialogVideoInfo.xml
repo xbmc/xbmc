@@ -298,95 +298,8 @@
 				<ondown>5</ondown>
 				<spinposx>430</spinposx>
 				<spinposy>195</spinposy>
-				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
+				<visible>!control.isvisible(50) + !container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
-                        <control type="list" id="50">
-				<description>Cast List Container</description>
-				<posx>200</posx>
-				<posy>350</posy>
-				<width>350</width>
-				<height>175</height>
-				<onleft>9000</onleft>
-				<onright>61</onright>
-				<onup>50</onup>
-				<ondown>50</ondown>
-				<orientation>vertical</orientation>
-			        <pagecontrol>61</pagecontrol>
-			        <scrolltime>200</scrolltime>
-				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
-			        <itemlayout width="250" height="29">
-				    <control type="image">
-				        <posx>0</posx>
-				       	<posy>3</posy>
-				       	<width>22</width>
-				       	<height>22</height>
-        				<info>ListItem.Icon</info>
-				    </control>
-				    <control type="label">
-			        	<posx>30</posx>
-			        	<posy>3</posy>
-        				<width>430</width>
-				        <height>22</height>
-        				<font>font13</font>
-				        <aligny>center</aligny>
-		        		<selectedcolor>green</selectedcolor>
-		        		<align>left</align>
-        				<info>ListItem.Label</info>
-				    </control>
-	  			    <control type="label">
-			                <posx>475</posx>
-			                <posy>3</posy>
-		        	        <width>300</width>
-		                	<height>22</height>
-	        	        	<font>font13</font>
-        	        		<aligny>center</aligny>
-			                <selectedcolor>green</selectedcolor>
-	        		        <textcolor>grey</textcolor>
-	                		<align>right</align>
-		        	        <info>ListItem.Label2</info>
-        			    </control>
-				</itemlayout>
-                                <focusedlayout height="29" width="250">
-		   		    <control type="image">
-				        <width>350</width>
-				        <height>29</height>
-				        <posx>0</posx>
-				        <posy>0</posy>
-			        	<visible>Control.HasFocus(50)</visible>
-				        <texture>list-focus.png</texture>
-		 	            </control>
-				    <control type="image">
-				        <posx>0</posx>
-				        <posy>3</posy>
-				        <width>22</width>
-				        <height>22</height>
-				        <info>ListItem.Icon</info>
-				    </control>
-				    <control type="label">
- 				        <posx>30</posx>
-				        <posy>3</posy>
-				        <width>430</width>
-				        <height>22</height>
-				        <font>font13</font>
-				        <aligny>center</aligny>
-				        <selectedcolor>green</selectedcolor>
-				        <align>left</align>
-				        <info>ListItem.Label</info>
-				    </control>
-				    <control type="label">
-				        <posx>475</posx>
- 				        <posy>3</posy>
-				        <width>300</width>
-				        <height>22</height>
-            				<font>font13</font>
-            				<aligny>center</aligny>
-				        <selectedcolor>green</selectedcolor>
-				        <textcolor>grey</textcolor>
-    				        <align>right</align>
-				        <info>ListItem.Label2</info>
-				    </control>
-                                </focusedlayout>
-                        </control>
 		</control>
 		<control type="group">
 			<control type="label" id="1">
@@ -480,33 +393,48 @@
 				<font>font13</font>
 				<visible>container.content(tvshows)</visible>
 			</control>
+			<control type="image" id="0">
+				<description>Actor Cover rectangle</description>
+				<posx>586</posx>
+				<posy>350</posy>
+				<width>104</width>
+				<height>174</height>
+				<texture>blue_rectangle_music.png</texture>
+				<aspectratio>stretch</aspectratio>
+				<visible>control.isvisible(50) + container.content(tvshows)</visible>
+			</control>
+			<control type="image" id="34">
+				<description>Actor image</description>
+				<posx>591</posx>
+				<posy>355</posy>
+				<width>94</width>
+				<height>164</height>
+				<texture>DefaultActorBig.png</texture>
+				<aspectratio>keep</aspectratio>
+				<align>center</align>
+				<visible>control.isvisible(50) + container.content(tvshows)</visible>
+			</control>
+			<control type="image">
+				<posx>190</posx>
+				<posy>337</posy>
+				<width>510</width>
+				<height>10</height>
+				<texture>separator.png</texture>
+				<visible>container.content(tvshows)</visible>
+			</control>
 			<control type="textbox" id="4">
 				<description>textarea</description>
 				<posx>200</posx>
-				<posy>335</posy>
+				<posy>350</posy>
 				<width>480</width>
-				<height>210</height>
+				<height>200</height>
 				<onleft>5</onleft>
 				<onright>50</onright>
 				<onup>5</onup>
 				<ondown>5</ondown>
 				<spinposx>430</spinposx>
-				<spinposy>210</spinposy>
-				<visible>container.content(tvshows)</visible>
-			</control>
-			<control type="listcontrol" id="50">
-				<description>cast listcontrol</description>
-				<posx>200</posx>
-				<posy>330</posy>
-				<width>480</width>
-				<height>210</height>
-				<onleft>5</onleft>
-				<onright>4</onright>
-				<onup>5</onup>
-				<ondown>8</ondown>
-				<spinposx>430</spinposx>
-				<spinposy>215</spinposy>
-				<visible>container.content(tvshows)</visible>
+				<spinposy>195</spinposy>
+				<visible>!control.isvisible(50) + container.content(tvshows)</visible>
 			</control>
 		</control>
 		<control type="group">
@@ -686,33 +614,48 @@
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
 			</control>
+			<control type="image" id="0">
+				<description>Actor Cover rectangle</description>
+				<posx>586</posx>
+				<posy>350</posy>
+				<width>104</width>
+				<height>174</height>
+				<texture>blue_rectangle_music.png</texture>
+				<aspectratio>stretch</aspectratio>
+				<visible>control.isvisible(50) + container.content(episodes)</visible>
+			</control>
+			<control type="image" id="34">
+				<description>Actor image</description>
+				<posx>591</posx>
+				<posy>355</posy>
+				<width>94</width>
+				<height>164</height>
+				<texture>DefaultActorBig.png</texture>
+				<aspectratio>keep</aspectratio>
+				<align>center</align>
+				<visible>control.isvisible(50) + container.content(episodes)</visible>
+			</control>
+			<control type="image">
+				<posx>190</posx>
+				<posy>337</posy>
+				<width>510</width>
+				<height>10</height>
+				<texture>separator.png</texture>
+				<visible>!container.content(tvshows) + container.content(episodes)</visible>
+			</control>
 			<control type="textbox" id="4">
 				<description>textarea</description>
 				<posx>200</posx>
-				<posy>335</posy>
+				<posy>350</posy>
 				<width>480</width>
-				<height>205</height>
+				<height>200</height>
 				<onleft>5</onleft>
 				<onright>50</onright>
 				<onup>5</onup>
 				<ondown>5</ondown>
 				<spinposx>430</spinposx>
-				<spinposy>210</spinposy>
-				<visible>container.content(episodes)</visible>
-			</control>
-			<control type="listcontrol" id="50">
-				<description>cast listcontrol</description>
-				<posx>200</posx>
-				<posy>335</posy>
-				<width>480</width>
-				<height>205</height>
-				<onleft>5</onleft>
-				<onright>4</onright>
-				<onup>5</onup>
-				<ondown>8</ondown>
-				<spinposx>430</spinposx>
-				<spinposy>210</spinposy>
-				<visible>container.content(episodes)</visible>
+				<spinposy>195</spinposy>
+				<visible>!control.isvisible(50) + container.content(episodes)</visible>
 			</control>
 		</control>
 		<control type="group">
@@ -882,30 +825,16 @@
 			<control type="textbox" id="4">
 				<description>textarea</description>
 				<posx>200</posx>
-				<posy>355</posy>
+				<posy>350</posy>
 				<width>480</width>
-				<height>205</height>
+				<height>200</height>
 				<onleft>5</onleft>
 				<onright>50</onright>
 				<onup>5</onup>
 				<ondown>5</ondown>
 				<spinposx>430</spinposx>
-				<spinposy>190</spinposy>
-				<visible>container.content(musicvideos)</visible>
-			</control>
-			<control type="listcontrol" id="50">
-				<description>cast listcontrol</description>
-				<posx>200</posx>
-				<posy>355</posy>
-				<width>480</width>
-				<height>205</height>
-				<onleft>5</onleft>
-				<onright>4</onright>
-				<onup>5</onup>
-				<ondown>8</ondown>
-				<spinposx>430</spinposx>
-				<spinposy>190</spinposy>
-				<visible>container.content(musicvideos)</visible>
+				<spinposy>195</spinposy>
+				<visible>!control.isvisible(50) + container.content(musicvideos)</visible>
 			</control>
 		</control>
 		<control type="group" id="9000">
@@ -1046,5 +975,6 @@
 			</control>
 		</control>
 		<include>DialogInfoViewCommonPageControls</include>
+		<include>DialogInfoViewOldListViewCommons</include>
 	</controls>
 </window>
