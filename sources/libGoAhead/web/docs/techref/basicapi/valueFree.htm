@@ -1,0 +1,46 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>valueFree -- basic</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+ <table width="550"> <tr><td>
+ 
+<table border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle">
+<tr>
+	<td class="titleLeft" align=left width="33%"><b> valueFree</b></td><td class="titleCenter" align=center width="33%"><b> basic</b></td><td class="titleRight" align=right width="33%"><B> EMF</B></td></tr>
+</table><hr>
+<h2>Synopsis</h2><p>Frees any storage allocated for a <a href="value_t.htm">value_t</a> variable.</p><h2>Prototype</h2><pre>
+ #include &quot;uemf.h&quot;
+ 
+ void <b>valueFree</b>(value_t* v);
+</pre><h2>Parameters</h2><table width=100% BORDER="0" CELLPADDING="0" CELLSPACING="0">
+    
+    <tr>
+        
+    <td width="4%">&nbsp;</td><td width="96%">Pointer to the string or symbol type <A HREF="symClose.htm">symClose</A><BR>
+<A HREF="symDelete.htm">symDelete</A><BR>
+<A HREF="symEnter.htm">symEnter</A><BR> 
+      variable.</td></tr>
+</table><h2>Description</h2><p> The <A HREF="symClose.htm">symClose</A><BR>
+<A HREF="symDelete.htm">symDelete</A><BR>
+<A HREF="symEnter.htm">symEnter</A><BR><a href="value_t.htm">value_t</a> module provides a generic type that 
+  can hold all possible data types. It is designed to provide maximum efficiency. 
+</p><p> This function either calls <a href="bfree.htm">bFree</a> for a string type 
+  or initiates the call back function for a symbol type. </p><h2>Return Value</h2><p> 
+none
+</p><h2>Example</h2><pre>
+statemachine_t *sm;
+value_t        v;
+
+v = valueSymbol((void *)sm, &fmFreeStateMachine);
+
+symEnter(smTable, instanceName, v, 0);
+
+valueFree(&v);
+</pre><h2>Stability Classification</h2><p>Stable.</p><h2></h2><h2></h2><h2></h2><h2></h2><h2>See Also</h2><p>
+<A HREF="value_t.htm">value_t</A></p></td></tr></table> 
+</body>
+</html>

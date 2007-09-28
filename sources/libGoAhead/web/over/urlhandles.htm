@@ -1,0 +1,49 @@
+<html>
+<head>
+<title>URL Handlers -- GoAhead WebServer&#153;</title>
+<link rel="stylesheet" href="../style/normal_ws.css">
+</head>
+
+<body>
+<TABLE WIDTH="550" BORDER="0"><TR><TD>
+
+<TABLE WIDTH="78%" BORDER="0"><TR><TD><H1>GoAhead WebServer URL Handlers</H1><P> The GoAhead WebServer implements a flexible URL handler 
+where the semantics of a URL may be interpreted at run-time by multiple 
+URL handlers. URL handlers are given the URL and the option of accepting 
+it for processing. If a handler accepts the URL, no further 
+URL handlers will be called.</P><P>A URL handler specifies a path prefix, a processing function and a order option. The 
+path prefix nominates the URLs of interest. Any URL that matches this URL prefix is 
+given to the handler for processing. A match is deemed to occur if 
+the URL exactly matches the prefix for the length of the prefix. If 
+more than one handler matches, the longest matching URL handler will be called 
+first and so-on in decreasing length order. For example, the following 
+all match the prefix &quot;/my&quot;:</P><P><PRE>
+/myCar?model= ford
+/myPath/model/ford
+/my/car/model/ford
+</PRE><P></P><P>A URL handler may supply the empty URL prefix 
+&quot;&quot; and thus match all URLs. The order option enables a URL handler to 
+specify that it wishes to be processed first or last regardless of the URL 
+match. This is specified by the <I>flags</I>parameter to the 
+<A HREF="../docs/techref/wsapi/websUrlHandlerDefine.htm">websUrlHandlerDefine</A> API call.&nbsp; If multiple 
+handlers may specify these flags, the order of evaluation for the handlers 
+specifiying the same flag is undefined.</P><P>A URL handler is a C procedure according to the 
+following prototype:</P><PRE>
+int myHandler(webs_t wp, char_t *url, char_t *path,
+     char_t *query);
+</PRE><P></P><P>The <I>url</I> parameter contains the entire URL. The <I>path</I> parameter 
+holds the URL portion after the hostname and port number. The <I>query</I> 
+parameter holds any optional query. The URL handler must return 1 if it elects 
+to process the URL. Otherwise it should return 0 to indicate that a later URL 
+handler should process the URL.</P><P>A URL handler may modify the settings of a request but 
+delay handling of the URL to another handler. The security handler is one 
+example of this. Request settings, form variables and URL details may be 
+modified by a handler to affect the processing by other handlers.</P><H2> See Also</H2><P>
+<A HREF="asp.htm">Active Server Pages</A>, 
+<A HREF="ejs.htm">JavaScript</A>&#153;, 
+<A HREF="goforms.htm">GoForms</A>&#153;,         
+<A HREF="../docs/techref/wsapi/websSecurityHandler.htm">websSecurityHandler</A>, 
+<A HREF="../docs/techref/wsapi/websUrlHandlerDefine.htm">websUrlHandlerDefine</A> </P></TD></TR></TABLE><h1>&nbsp;        
+</h1></TD></TR> </TABLE>
+</body>
+</html>

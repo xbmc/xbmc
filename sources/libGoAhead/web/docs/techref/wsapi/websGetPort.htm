@@ -1,0 +1,27 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>websGetPort -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<table width="550"> <tr><td>
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%"><b>websGetPort</b></TD><td class="titleCenter" align=center width="33%"><b> 
+GoAhead WebServer API</b></TD><td class="titleRight" align=right width="33%"><B> 
+GoAhead EMF</B></TD></TR> </TABLE><HR> <h2>Synopsis</h2><p>Returns the TCP/IP 
+port number on which the web server is listening for requests.</p><h2>Prototype</h2><pre> #include &quot;webs.h&quot;
+ 
+ int <b>websGetPort</b>(); </pre><h2>Parameters</h2><table width=100% BORDER="0" CELLPADDING="0" CELLSPACING="0"> 
+<TR> <TD VALIGN="TOP">None <TD></TD></TR></table><h2>Description</h2><P>The websGetPort 
+procedure returns the TCP/IP port number on which the web server is listening 
+for browser requests. The port is configured when the web server is opened via 
+<A href="websOpen.htm">websOpen</A> or reopened via <A href="websOpenListen.htm">websOpenListen</A>. 
+</P><h2>Return Value</h2><p> Returns an integer value &gt; 0 containing the port 
+number. Returns 0 if the port is not opened.</p><h2>Example</h2><pre> port = websGetPort(); 
+websWrite(wp, &quot;The port number is %d&quot;, port); </pre><h2>Stability Classification</h2><p>Stable.</p><h2>See 
+Also</h2><p> <A href="websGetHost.htm">websGetHost</A>, <A href="websGetHostUrl.htm">websGetHostUrl</A>, 
+<A href="websWrite.htm">websWrite</A> </p></td></tr></table>
+</body>
+</html>

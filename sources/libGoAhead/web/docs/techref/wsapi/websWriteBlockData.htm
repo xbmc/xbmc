@@ -1,0 +1,32 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>websWriteBlock -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<table width="550"> <tr><td>
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%"><b>websWriteBlockData</b></TD><td class="titleCenter" align=center width="33%"><b> 
+GoAhead WebServer API</b></TD><td class="titleRight" align=right width="33%"><B> 
+GoAhead EMF</B></TD></TR> </TABLE><HR> <h2>Synopsis</h2><p> Write a block of raw 
+ASCII or binary data to the user's browser.</p><h2>Prototype</h2><pre> #include &quot;webs.h&quot; 
+
+ int <b>websWriteBlockData</b>(webs_t wp, char_t *buf, int len); 
+</pre><h2>Parameters</h2><table width=100% BORDER="0" CELLPADDING="0" CELLSPACING="0"> 
+<TR> <TD VALIGN="TOP" WIDTH="4%">wp <TD WIDTH="96%">Web server connection handle. 
+<TR> <TD VALIGN="TOP" WIDTH="4%">buf <TD WIDTH="96%">Buffer containing data to 
+write to the browser. <TR> <TD VALIGN="TOP" WIDTH="4%">len <TD WIDTH="96%"> Number 
+of bytes of data to write.</TD></TR></table><p></p><h2>Description</h2><P>The 
+websWriteBlockData procedure writes a block of raw data back to the user's browser. 
+It can be used within both ASP procedures and Form procedures. Data will be immediately 
+flushed to the user's browser. (See <A HREF="websWriteBlock.htm">websWriteBlock</A> 
+if Unicode strings need to be written.) </P><h2>Return Value</h2><p> The number 
+of bytes actually written.</p><h2>Example</h2><pre> websWriteBlockData(wp, buf, sizeof(buf)); </pre><h2>Stability Classification</h2><p>Stable.</p><h2>See Also</h2><p> 
+<A href="websWriteBlockData.htm">Active Server Pages</A>, <A href="../../../over/goforms.htm">GoForms</A>, 
+<A href="websDone.htm">websDone</A>, <A href="websFooter.htm">websFooter</A>, 
+<A href="websHeader.htm">websHeader</A>, <A href="websWrite.htm">websWrite</A>, 
+<A href="websWriteBlock.htm">websWriteBlock</A> </p></td></tr></table>
+</body>
+</html>

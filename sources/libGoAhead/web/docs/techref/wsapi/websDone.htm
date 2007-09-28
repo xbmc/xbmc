@@ -1,0 +1,32 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>websDone -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<table width="550"> <tr><td>
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%"><b>websDone</b></TD><td class="titleCenter" align=center width="33%"><b> 
+GoAhead WebServer API</b></TD><td class="titleRight" align=right width="33%"><B> 
+GoAhead EMF</B></TD></TR> </TABLE><HR> <h2>Synopsis</h2><p>Close the connection 
+to the browser when completing a Form request.</p><h2>Prototype</h2><pre> #include &quot;webs.h&quot;
+ 
+ void <b>websDone</b>(webs_t wp, int code); </pre><h2>Parameters</h2><table width=100% BORDER="0" CELLPADDING="0" CELLSPACING="0"> 
+<TR> <TD VALIGN="TOP" WIDTH="5%">wp <TD WIDTH="95%">Web server handle to the browser 
+connection. <TR> <TD VALIGN="TOP" WIDTH="5%">code <TD WIDTH="95%">HTTP completion 
+code.</TD></TR></table><h2>Description</h2><P>The websDone procedure is called 
+by Form procedures when completing processing. websDone closes the browser connection 
+and frees all connection resources. websDone must be called only once per browser 
+connection. </P><P>The <EM>code</EM> parameter is a standard HTTP response code. 
+Some of the more common codes include: </P><P> <UL> <LI>200 &quot;Data follows&quot; 
+<LI>204 &quot;No Content&quot; <LI>301 &quot;Redirect&quot; <LI>302 &quot;Redirect&quot; 
+<LI>304 &quot;User local copy&quot; <LI>400 &quot;Page not found&quot; <LI>401 
+&quot;Password Required&quot; <LI>404 &quot;Site or Page Not Found&quot; <LI>405 
+&quot;Access Denied&quot; <LI>500 &quot;Web Error&quot; <LI>503 &quot;Site Temporarily 
+Unavailable. Try again&quot;</LI></UL><h2>Return Value</h2><p>None</p><h2>Example</h2><pre> 
+websDone(wp, 200); </pre><h2>Stability Classification</h2><p>Stable.</p><h2>See 
+Also</h2><p><A href="websWrite.htm">websWrite</A></p></td></tr></table>
+</body>
+</html>

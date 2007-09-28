@@ -1,0 +1,53 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>symOpen -- basic</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+ <table width="550"> <tr><td>
+<table border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle">
+<tr>
+	<td class="titleLeft" align=left width="33%"><b> symOpen</b></td><td class="titleCenter" align=center width="33%"><b> basic</b></td><td class="titleRight" align=right width="33%"><B> EMF</B></td></tr>
+</table><hr>
+<h2>Synopsis</h2><p>Creates a symbol table for fast indexing.</p><h2>Prototype</h2><pre>
+ #include &quot;uemf.h&quot;
+
+ sym_fd_t <b>symOpen</b>(int hash_size); 
+</pre><h2>Parameters</h2><table width=100% BORDER="0" CELLPADDING="0" CELLSPACING="0">
+    
+    <tr>
+        <td>hash_size</td><td>Table size.  Nearest prime number is actually used.</td></tr>
+</table><h2>Description</h2><p> This module implements a highly efficient generic symbol table with update 
+  and access routines. Symbols are simple character strings, and the values they 
+  take can be flexible types as defined by <a href="value_t.htm">value_t</a>. 
+  This module allows multiple symbol tables to be created. </p><p>
+The function allocates a table structure (sym_tabent_t) which consists of
+the table size, a flag for whether the table is in use, and the actual table
+itself.  The structure is stored in a global sym array that can be accessed by
+the returned sym_fd_t handle.
+</p><h2>Return Value</h2><p> 
+Returns an integer (sym_fd_t) to be used as the handle for subsequent calls to
+the symbol table access functions.  Returns -1 on error. 
+</p><h2>Example</h2><pre>
+sym_fd_t id;
+sym_t* sp;
+
+id = symOpen(64);
+...
+
+symEnter(id, "lookup", valueString("value"), 0);
+...
+
+sp = symLookup(id, "lookup");
+</pre><h2>Stability Classification</h2><p>Evolving.</p><h2></h2><h2></h2><h2></h2><h2>See Also</h2><p>
+<a href="symClose.htm">symClose</a>,
+<a href="symDelete.htm">symDelete</a>,
+<a href="symEnter.htm">symEnter</a>,
+<a href="symFirst.htm">symFirst</a>,
+<a href="symLookup.htm">symLookup</a>,
+<a href="symNext.htm">symNext</a>
+</p></td></tr></table>
+</body>
+</html>

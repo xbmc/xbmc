@@ -1,0 +1,19 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>umGetAccessLimit -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<TABLE WIDTH="550" BORDER="0" BORDERCOLOR="#FFFFFF" BGCOLOR="#FFFFFF"><TR BORDERCOLOR="#FFFFFF"><TD>
+
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%">umGetAccessLimit</TD><td class="titleCenter" align=center width="33%"><b>GoAhead 
+WebServer API</b></TD><td class="titleRight" align=right width="33%"><B>GoAhead 
+EMF</B></TD></TR> </TABLE><HR><H2>Synopsis</H2><P>	Returns the URL or ancestral URL for an access limit table.</P><H2>Prototype</H2><PRE>
+ #include &quot;um.h&quot;
+
+ char_t	*umGetAccessLimit(char_t * url);</PRE><H2>Parameters</H2><P><TABLE WIDTH="66%" BORDER="0"><TR><TD WIDTH="14%">url</TD><TD WIDTH="86%">URL to check against the access limit table</TD></TR></TABLE><H2>Description</H2><P>	The returned pointer points to a copy of a URL string that has an associated access limit.  This string must eventually be deleted by a call to the <A HREF="../basicapi/bfree.htm">bfree</A>() function. </P><H2>Return Value</H2><P>	umGetAccessLimit returns a pointer to a new URL string, or  a NULL on error.</P><H2>Example</H2><PRE>char_t	*url = umGetAccessLimit(T(&quot;/cgi-bin/status.exe&quot;));</PRE><H2>See Also</H2><P>	<A HREF="umGetFirstAccessLimit.htm">umGetFirstAccessLimit</A>(), <A HREF="../basicapi/bfree.htm">bfree</A>()</P><BLOCKQUOTE>&nbsp;</BLOCKQUOTE></TD></TR></TABLE>
+</body>
+</html>

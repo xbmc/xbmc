@@ -1,0 +1,41 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>symClose -- basic</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+ <table width="550"> <tr><td>
+<table border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle">
+<tr>
+	<td class="titleLeft" align=left width="33%"><b> symClose</b></td><td class="titleCenter" align=center width="33%"><b> basic</b></td><td class="titleRight" align=right width="33%"><B> EMF</B></td></tr>
+</table><hr>
+<h2>Synopsis</h2><p>Closes and frees a symbol table and all symbols within it.</p><h2>Prototype</h2><pre>
+ #include &quot;uemf.h&quot;
+
+ void <b>symClose</b>(sym_fd_t sd); 
+</pre><h2>Parameters</h2><table width=100% BORDER="0" CELLPADDING="0" CELLSPACING="0">
+    
+    <tr>
+        
+    <td width="10%">sd</td><td width="90%">Table handle.</td></tr>
+</table><P></p><h2>Description</h2><p> This module implements a highly efficient generic symbol table with update 
+  and access routines. Symbols are simple character strings and the values they 
+  take can be flexible types as defined by<A HREF="value_t.htm"> value_t</A>. 
+  This module allows multiple symbol tables to be created. </p><p>Frees all symbols in the hash table, then the hash table itself. 
+<a href=valueFree.htm>valueFree</a> is called for each symbol that is 
+deleted.</p><h2>Return Value</h2><p> No return value.</p><h2>Example</h2><pre>
+sym_fd_t id;
+
+symClose(id);
+</pre><h2>Stability Classification</h2><p>Evolving.</p><h2></h2><h2></h2><h2></h2><h2>See Also</h2><p>
+<a href="symDelete.htm">symDelete</a>,
+<a href="symEnter.htm">symEnter</a>,
+<a href="symFirst.htm">symFirst</a>,
+<a href="symLookup.htm">symLookup</a>,
+<a href="symNext.htm">symNext</a>,
+<a href="symOpen.htm">symOpen</a>
+</p></td></tr></table>
+</body>
+</html>

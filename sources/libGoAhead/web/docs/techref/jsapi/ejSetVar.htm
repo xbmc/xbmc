@@ -1,0 +1,49 @@
+<html>
+<head>
+<title>ejSetVar -- GoAhead Embedded JavaScript</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<table width="550"> <tr><td>
+ <TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle">
+<TR>
+	
+<td class="titleLeft" align=left width="33%"><B>ejSetVar</B></TD><td class="titleCenter" align=center width="33%"><b>GoAhead JavaScript API</b></TD><td class="titleRight" align=right width="33%"><B>GoAhead EMF</B></TD></TR>
+</TABLE><HR>
+
+
+<h2>Synopsis</h2><p>Set the value of a JavaScript variable</p><h2>Prototype</h2><pre>
+#include &quot;ej.h&quot;
+
+void <b>ejSetVar</b>(int eid, char_t *variable, char_t *value);
+</pre>
+
+<h2>Parameters</h2><p><table width=90%>
+    
+    <TR>
+        <TD width=40>eid
+        <TD>JavaScript interpreter handle 
+    <TR>
+        <TD width=40>variable
+        <TD>Name of the JavaScript variable
+    
+    <TR>
+        <TD width=40>value
+        <TD> Value to 
+set</TD></TR></table><h2>Description</h2><P>The ejSetVar procedure defines the current value of the JavaScript variable. All JavaScript variables are stored as 
+strings. </P>.
+ 
+<h2>Return Value</h2><p>           
+   None</p><h2>Example</h2><pre>
+ejSetVar(eid, &quot;name&quot;, &quot;John 
+Smith&quot;);
+</pre>
+<h2>See Also</h2><p>
+<A href="../../../over/ejs.htm">JavaScript</A>,&nbsp; 
+<A href="../../../over/asp.htm">Active Server Pages</A>,&nbsp;
+<A href="ejGetVar.htm">ejGetVar</A>,&nbsp;
+<A href="ejEval.htm">ejEval</A> 
+</p></td></tr></table>
+</body>
+</html>

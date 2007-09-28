@@ -1,0 +1,27 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>websEncode64 -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<table width="550"> <tr><td>
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%"><b>websEncode64</b></TD><td class="titleCenter" align=center width="33%"><b>GoAhead 
+WebServer API</b></TD><td class="titleRight" align=right width="33%"><B>GoAhead 
+EMF</B></TD></TR> </TABLE><HR> <h2>Synopsis</h2><p>Encode a string using the basic 
+encoding scheme (base 64).</p><h2>Prototype</h2><pre> #include &quot;webs.h&quot;
+ 
+ void <b>websEncode64</b>(char_t *outbuf, char_t *string, int outlen); </pre><h2>Parameters</h2><table width=100% border=0 CELLPADDING="0" CELLSPACING="0"> 
+<TR> <TD VALIGN="TOP" width="7%">outbuf</TD><TD width="93%">Output buffer.</TD></TR> 
+<TR> <TD VALIGN="TOP" width="7%">string</TD><TD width="93%">Input string.</TD></TR> 
+<TR> <TD VALIGN="TOP" width="7%">outlen</TD><TD width="93%">Output buffer length.</TD></TR> 
+</table><h2>Description</h2><P>The websEncode64 procedure encodes the <EM>string</EM> 
+argument into the supplied <EM>outbuf</EM> buffer. websEncode64 can work in-situ, 
+i.e., <EM>outbuf</EM> and <EM>string</EM> can be the same. </P><h2>Return Value</h2><p> 
+None</p><h2>Example</h2><pre> websEncode64(encoded, &quot;String with special characters \&quot; %&quot;, sizeof(encoded)); 
+    websDecode64(decoded, encoded, sizeof(decoded)); 
+</pre><h2>Stability Classification</h2><p>Stable.</p><h2>See Also</h2><p><A href="websDecode64.htm">websDecode64</A></p></td></tr></table>
+</body>
+</html>

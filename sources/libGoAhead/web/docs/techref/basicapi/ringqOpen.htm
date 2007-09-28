@@ -1,0 +1,67 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>ringqOpen -- basic</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+ <table width="550"> <tr><td>
+<table border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle">
+<tr>
+	<td class="titleLeft" align=left width="33%"><b> ringqOpen</b></td><td class="titleCenter" align=center width="33%"><b> basic</b></td><td class="titleRight" align=right width="33%"><B> EMF</B></td></tr>
+</table><hr>
+<h2>Synopsis</h2><p>Create a new ring queue for dynamic strings.</p><h2>Prototype</h2><pre>
+ #include &quot;uemf.h&quot;
+
+ int <b>ringqOpen</b>(ringq_t *rq, int increment, int maxsize); 
+</pre><h2>Parameters</h2><table width=100% BORDER="0" CELLPADDING="0" CELLSPACING="0">
+    
+    <tr>
+        
+    <td width="9%">rq</td><td width="91%">Pointer to a ringq_t struct that receives the new ring queue.</td></tr>
+    <tr>
+        
+    <td width="9%">increment</td><td width="91%">The amount to increase the size of the ringq should it need 
+      to grow.</td></tr>
+    <tr>
+        
+    <td width="9%">maxsize</td><td width="91%">The upper limit beyond which the queue must not grow.</td></tr>
+</table><h2>Description</h2><p> A ring queue allows maximum utilization of memory for data storage and is 
+  ideal for input/output buffering. This module provides a highly efficient implementation 
+  and a vehicle for dynamic strings. </p><p> <b>Caution</b>: This is a public implementation and callers have full access 
+  to the queue structure and pointers. Change this module very carefully. </p><p>
+This module follows the open/close model.
+</p><p>
+Operation of a ringq where rq is a pointer to a ringq:
+</p><p>
+rq->buflen contains the size of the buffer.<br>
+rq->buf will point to the start of the buffer.<br>
+rq->servp will point to the first (un-consumed) data byte.<br>
+  rq->endp will point to the next free location to which new data is added.<br>
+rq->endbuf will point to one past the end of the buffer.
+</p><p> E.g.: If the ringq contains the data "abcdef", it might look like: </p><pre>
++-------------------------------------------------------------------+
+ |   |   |   |   |   |   |   | a | b | c | d | e | f |   |   |   |   |
++-------------------------------------------------------------------+
+   ^                           ^                       ^               ^
+   |                           |                       |               |
+ rq->buf                    rq->servp               rq->endp      rq->enduf
+</pre><p> The queue is empty when servp == endp. This means that the queue will hold 
+  at most rq->buflen -1 bytes. It is the filler's responsibility to ensure that 
+  the ringq is never filled such that servp == endp. </p><p> It is the filler's responsibility to "wrap" the endp back to point to rq->buf 
+  when the pointer steps past the end. Correspondingly, it is the consumers responsibility 
+  to "wrap" the servp when it steps to rq->endbuf. The ringqPutc and ringqGetc 
+  routines will do this automatically. </p><h2>Return Value</h2><p> 
+0 on success, -1 on error.
+</p><h2>Example</h2><pre>
+if (ringqOpen(&p.tagbuf, XML_INC, XML_MAX) < 0) {
+    return -1;
+}
+</pre><h2>Stability Classification</h2><p>Evolving.</p><h2></h2><h2></h2><h2>See Also</h2><p>
+<a href="ringqPutBlk.htm">ringqPutBlk</a>,
+<a href="ringqPutStr.htm">ringqPutStr</a>
+</p></td></tr></table>
+
+</body>
+</html>

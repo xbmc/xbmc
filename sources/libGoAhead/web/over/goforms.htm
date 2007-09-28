@@ -1,0 +1,68 @@
+<html>
+<head>
+<title>GoForms -- GoAhead WebServer&#153;</title>
+<link rel="stylesheet" href="../style/normal_ws.css">
+</head>
+
+<body>
+
+<TABLE WIDTH="550" BORDER="0"><TR><TD><H1>GoForms™</H1><P>The GoAhead WebServer implements the standard Common 
+Gateway Interface (CGI) as an in-memory forms processor called GoForms™. Old style CGI processing results in the creation of a 
+new process for every request to a CGI Url. 
+As CGI is often the primary means of implementing user input, this is  
+slow and cumbersome. GoForms is a more suitable solution for 
+embedded systems that demand compact, high performance solutions.</P><P>  GoForm procedures run in-memory without creating a new 
+process for each browser connection. By sharing the address space with 
+the GoAhead WebServer, GoForms procedures can directly access the full request context. The GoForm 
+handler also automatically decodes and parses all POST and query 
+data for easy access. A convenient API (see <A HREF="../docs/techref/wsapi/websGetVar.htm">websGetVar</A>) 
+permits easy access to CGI variables.</P><P>GoForms is implemented as a 
+<A HREF="urlhandles.htm">URL Handler</A> which            
+           
+        interprets URLs that begin with &quot;/goform&quot;. 
+The URL segment following &quot;goform&quot; defines the form name with 
+query details appended to the URL. For example:</P><P>           
+<PRE>
+/goform/myForm?name=John&amp;age=30           
+</PRE><P>        This will       call the GoForm procedure &quot;myForm&quot; and 
+automatically decode the querystring &quot;name=John&amp;age=30&quot; and 
+define GoForm variables called &quot;name&quot; and &quot;age&quot;. In addition to POST and query data, the <A HREF="../docs/techref/wsapi/websVar.htm">           
+    standard CGI variables</A>         
+             
+             
+           
+  are also defined.</P><P>
+             
+             
+           
+GoForm procedures are defined by the 
+<A HREF="../docs/techref/wsapi/websFormDefine.htm">websFormDefine</A> API call and conform to the following 
+prototype:</P><PRE>
+void myForm(webs_t wp, char_t *path, char_t *query)
+{
+    websHeader(wp);
+    websWrite(wp, &quot;Name %s&quot;, websGetVar(wp, &quot;name&quot;, &quot;&quot;)); 
+    websWrite(wp,  &quot;Age %s&quot;, websGetVar(wp, &quot;age&quot;, &quot;&quot;));
+    websFooter(wp);
+    websDone(wp, 200);
+}
+</PRE><P>The GoForm procedure is responsible for writing the HTTP 
+header and HTML document contents back to the user's browser. 
+<A HREF="../docs/techref/wsapi/websHeader.htm">websHeader</A> creates a standard HTTP 
+header with initial HTML tags. 
+<A HREF="../docs/techref/wsapi/websFooter.htm">websFooter</A> closes the document with a 
+closing HTML tag. Inside the GoForm procedure,
+<A HREF="../docs/techref/wsapi/websGetVar.htm">websGetVar</A>, 
+<A HREF="../docs/techref/wsapi/websRedirect.htm">websRedirect</A>, 
+<A HREF="../docs/techref/wsapi/websWrite.htm">websWrite</A>, 
+and <A HREF="../docs/techref/wsapi/websWriteBlock.htm">websWriteBlock</A> are some of the most
+useful API calls.
+</P><H2> See Also</H2><P>
+<A HREF="asp.htm">Active Server Pages</A>,&nbsp;         
+<A HREF="ejs.htm">JavaScript</A>, 
+<A HREF="urlhandles.htm">URL Handlers</A>, 
+<A HREF="../docs/techref/wsapi/websSecurityHandler.htm">websSecurityHandler</A>, 
+<A HREF="../docs/techref/wsapi/websUrlHandlerDefine.htm">websUrlHandlerDefine</A> </P></TD></TR></TABLE><h1>&nbsp;        
+</h1>
+</body>
+</html>

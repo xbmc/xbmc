@@ -1,0 +1,48 @@
+<html>
+<head>
+<title>ejOpen -- GoAhead Embedded JavaScript</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+
+<table width="550"> <tr><td>
+ <TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle">
+<TR>
+	
+<td class="titleLeft" align=left width="33%"><B>ejOpen</B></TD><td class="titleCenter" align=center width="33%"><b>GoAhead JavaScript API</b></TD><td class="titleRight" align=right width="33%"><B>GoAhead EMF</B></TD></TR>
+</TABLE><HR>
+
+
+<h2>Synopsis</h2><p>Open a JavaScript interpreter session.</p><h2>Prototype</h2><pre>
+#include &quot;ej.h&quot;
+
+int <b>ejOpen</b>(sym_fd_t variables, sym_fd_t functions);
+</pre><h2>Parameters</h2><p><table width=90%>
+    
+    <TR>
+        <TD width=40>variables
+        <TD> Symbol table for variables
+    <TR>
+        <TD width=40>functions
+        <TD>Symbol table for functions</TR></table><h2>Description</h2><P>To use JavaScript, you must first open an interpreter session 
+with <i>ejOpen</i>. JavaScript interpreters usually have their own
+variable and global function name space. To share variable or function
+name space, pass a symbol table into <b>ejOpen</b> in the <i>variable</i>
+or <i>function</i> parameters. If either of these parameters are set
+to NULL, the symbol table will be created automatically.</P><p>Use <b>ejClose</b> to close the interpreter when finished.
+ 
+
+<h2>Return Value</h2><p>Handle for the JavaScript interpreter.</p><h2>Example</h2><pre>
+if (ejOpen(NULL, NULL)< 0) {
+    /* Cant open interpreter */
+    return -1;
+}
+</pre><h2>See Also</h2><p>
+<A href="../../../over/ejs.htm">JavaScript</A>,&nbsp; 
+<A href="../../../over/asp.htm">Active Server Pages</A>
+<A href="ejClose.htm">ejClose</A>
+<A href="ejEval.htm">ejEval</A>
+</p></td></tr></table>
+</body>
+</html>

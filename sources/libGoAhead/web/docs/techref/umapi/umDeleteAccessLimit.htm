@@ -1,0 +1,19 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>umDeleteAccessLimit -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<TABLE WIDTH="550" BORDER="0" BORDERCOLOR="#FFFFFF" BGCOLOR="#FFFFFF"><TR BORDERCOLOR="#FFFFFF"><TD>
+
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%">umDeleteAccessLimit</TD><td class="titleCenter" align=center width="33%"><b>GoAhead 
+WebServer API</b></TD><td class="titleRight" align=right width="33%"><B>GoAhead 
+EMF</B></TD></TR> </TABLE><HR><H2><B>Synopsis</B></H2><P>	Delete an access limit.</P><H2><B>Prototype</B></H2><PRE>
+ #include &quot;um.h&quot;
+
+ int umDeleteAccessLimit(char_t * url);</PRE><H2><B>Parameters</B></H2><P><TABLE WIDTH="42%" BORDER="0"><TR><TD WIDTH="20%">url</TD><TD WIDTH="80%">URL name</TD></TR></TABLE><H2><B>Description</B></H2><P>int	umDeleteAccessLimit(char_t * url)</P><H2><B>Return Value</B></H2><P>	umDeleteAccessLimit returns 0 if successful;  -1 on error.</P><H2><B>Example</B></H2><PRE>int nCheck = umDeleteAccessLimit(T(&quot;index.html&quot;));</PRE><H2><B>See Also</B></H2><P>	<A HREF="umAddAccessLimit.htm">umAddAccessLimit</A>()</P><H2>&nbsp;</H2><BLOCKQUOTE>&nbsp;</BLOCKQUOTE></TD></TR></TABLE>
+</body>
+</html>

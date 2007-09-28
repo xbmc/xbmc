@@ -1,0 +1,26 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>websGetHostUrl -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<table width="550"> <tr><td>
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%"><b>websGetHostUrl</b></TD><td class="titleCenter" align=center width="33%"><b> 
+GoAhead WebServer API</b></TD><td class="titleRight" align=right width="33%"><B> 
+GoAhead EMF</B></TD></TR> </TABLE><HR> <h2>Synopsis</h2><p>Returns the hostname 
+and port as a string suitable for creating URLs.</p><h2>Prototype</h2><pre> #include &quot;webs.h&quot; 
+
+ char_t *<b>websGetHostUrl</b>(); </pre><h2>Parameters</h2><table width=100% BORDER="0" CELLPADDING="0" CELLSPACING="0"> 
+<TR> <TD VALIGN="TOP">None <TD></TD></TR></table><h2>Description</h2><P>The websGetHostUrl 
+procedure returns a string containing the local server name and port number on 
+which the web server is running. This can be used to create fully qualified URLs. 
+</P><h2>Return Value</h2><p> Pointer to a static string containing the hostname 
+and port. If port is 80, the port is omitted.</p><h2>Example</h2><pre> fmtAlloc(path, &quot;http://%s/mypage.htm&quot;, websGetHostUrl()); 
+websRedirect(wp, path); </pre><h2>Stability Classification</h2><p>Stable.</p><h2>See Also</h2><p> <A href="websGetPort.htm">websGetPort</A>, 
+<A href="websGetHost.htm">websGetHost</A>, <A href="websRedirect.htm">websRedirect</A> 
+</p></td></tr></table>
+</body>
+</html>

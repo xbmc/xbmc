@@ -1,0 +1,31 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>websUrlType -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<table width="550"> <tr><td>
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%"><b>websUrlType</b></TD><td class="titleCenter" align=center width="33%"><b> 
+GoAhead WebServer API</b></TD><td class="titleRight" align=right width="33%"><B> 
+GoAhead EMF</B></TD></TR> </TABLE><HR> <h2>Synopsis</h2><p>Return the MIME type 
+for a given URL.</p><h2>Prototype</h2><pre> #include &quot;webs.h&quot; 
+
+ char_t *<b>websUrlType</b>(char_t *url, char_t *buf, int bufsize); </pre><h2>Parameters</h2><table width=100% BORDER="0" CELLPADDING="0" CELLSPACING="0"> 
+<TR> <TD VALIGN="TOP" WIDTH="7%">url <TD WIDTH="93%">Source URL to parse.<TR> 
+<TD VALIGN="TOP" WIDTH="7%">buf <TD WIDTH="93%"> User supplied buffer to hold 
+the mime type. <TR> <TD VALIGN="TOP" WIDTH="7%">bufsize <TD WIDTH="93%">Size of 
+buf.</TD></TR></table><h2>Description</h2><P>The websUrlType procedure returns 
+the mime type for a given URL by examining the URL document name extension. If 
+the mime type is unknown, &quot;text/plain&quot; will be returned.</P><P>When 
+using the GoAhead WebServer, the mime types are defined in mime.c. When using 
+the GoAhead EMF, they are automatically defined.</P><h2>Return Value</h2><p> Returns 
+a pointer to the user supplied buffer in <EM>buf</EM> .</p><h2>Example</h2><pre> 
+char_t mimeType[80]; 
+websUrlType(url, mimeType, sizeof(mimeType)); 
+if (strcmp(mimeType, &quot;text/plain&quot;) == 0) { } </pre><h2>Stability Classification</h2><p>Stable.</p><h2>See 
+Also</h2><p> <A href="websUrlParse.htm">websUrlParse</A> </p></td></tr></table>
+</body>
+</html>
