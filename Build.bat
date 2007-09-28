@@ -53,7 +53,7 @@ goto COMPILE
 
 :COMPILE
   ECHO Compiling Solution...
-  %NET% %CLEAN%
+  rem %NET% %CLEAN%
   del release\xbmc.map
   %NET% %OPTS%
   IF NOT EXIST %XBE% (
