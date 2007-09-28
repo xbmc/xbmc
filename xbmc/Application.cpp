@@ -5125,9 +5125,11 @@ void CApplication::ProcessSlow()
   //  check if we can unload any unreferenced dlls or sections
   CSectionLoader::UnloadDelayed();
 
+#ifdef _XBOX
   // Xbox Autodetection - Send in X sec PingTime Interval
   if (m_gWindowManager.GetActiveWindow() != WINDOW_LOGIN_SCREEN) // sorry jm ;D
     CUtil::AutoDetection();
+#endif
 
   // check for any idle curl connections
   g_curlInterface.CheckIdle();
