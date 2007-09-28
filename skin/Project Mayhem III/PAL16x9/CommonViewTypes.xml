@@ -2673,7 +2673,7 @@
 	<include name="DialogInfoViewCommonPageControls">
 		<control type="button">
 			<posx>560</posx>
-			<posy>355</posy>
+			<posy>350</posy>
 			<include>scrollbar_width</include>
 			<height>20</height>
 			<onclick>PageUp(61)</onclick>
@@ -2695,9 +2695,9 @@
 		</control>
 		<control type="scrollbar" id="61">
 			<posx>560</posx>
-			<posy>375</posy>
+			<posy>370</posy>
 			<include>scrollbar_width_dialog</include>
-			<height>128</height>
+			<height>133</height>
 			<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
 			<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
 			<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
