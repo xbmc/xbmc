@@ -2538,4 +2538,58 @@
 	<include name="scrollbar_width">
 		<width>20</width>
 	</include>
+	<include name="DialogInfoViewCommonPageControls">
+		<control type="button">
+			<posx>560</posx>
+			<posy>355</posy>
+			<include>scrollbar_width</include>
+			<height>20</height>
+			<onclick>PageUp(61)</onclick>
+			<texturefocus border="4">scrollbar_arrow_up_focus.png</texturefocus>
+			<texturenofocus border="4">scrollbar_arrow_up.png</texturenofocus>
+			<visible>Control.IsVisible(61) + !Skin.HasSetting(UseScrollbars)</visible>
+		</control>
+		<control type="button">
+			<posx>560</posx>
+			<posy>503</posy>
+			<include>scrollbar_width</include>
+			<height>20</height>
+			<onclick>PageDown(61)</onclick>
+			<texturefocus border="4">scrollbar_arrow_down_focus.png</texturefocus>
+			<texturenofocus border="4">scrollbar_arrow_down.png</texturenofocus>
+			<visible>Control.IsVisible(61) + !Skin.HasSetting(UseScrollbars)</visible>
+		</control>
+		<control type="scrollbar" id="61">
+			<posx>560</posx>
+			<posy>375</posy>
+			<include>scrollbar_width_dialog</include>
+			<height>128</height>
+			<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
+			<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
+			<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
+			<textureslidernib>-</textureslidernib>
+			<textureslidernibfocus>-</textureslidernibfocus>
+			<onleft>50</onleft>
+			<onright>9000</onright>
+			<showonepage>false</showonepage>
+			<orientation>vertical</orientation>
+			<visible>!Skin.HasSetting(UseScrollbars) + Control.IsVisible(50)</visible>
+		</control>
+		<control type="spincontrol" id="61">
+			<description>Next page button</description>
+			<posx>640</posx>
+			<posy>545</posy>
+			<subtype>page</subtype>
+			<font>font12</font>
+			<onleft>50</onleft>
+			<onright>9000</onright>
+			<ondown>61</ondown>
+			<onup>50</onup>
+			<showonepage>false</showonepage>
+			<visible>Skin.HasSetting(UseScrollbars) + Control.IsVisible(50)</visible>
+		</control>
+	</include>
+	<include name="scrollbar_width_dialog">
+		<width>16</width>
+	</include>
 </includes>
