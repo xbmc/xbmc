@@ -475,21 +475,31 @@ CGUISettings::CGUISettings(void)
   AddString(0, "network.httpproxypassword", 706, "", BUTTON_CONTROL_INPUT);
 
   AddCategory(6, "servers", 14036);
+#if defined(HAS_FTP_SERVER) || defined (HAS_WEB_SERVER)
+#ifdef HAS_FTP_SERVER
   AddBool(1,  "servers.ftpserver",        167, true);
-  AddString(2,"servers.ftpserveruser",    1245, "xbox", SPIN_CONTROL_TEXT);
   AddString(3,"servers.ftpserverpassword",1246, "xbox", BUTTON_CONTROL_HIDDEN_INPUT, true, 1246);
   AddBool(4,  "servers.ftpautofatx",      771, true);
+  AddString(2,"servers.ftpserveruser",    1245, "xbox", SPIN_CONTROL_TEXT);
+#endif
+#if defined(HAS_FTP_SERVER) && defined(HAS_WEB_SERVER)
   AddSeparator(5, "servers.sep1");
+#endif
+#ifdef HAS_WEB_SERVER
   AddBool(6,  "servers.webserver",        263, false);
   AddString(7,"servers.webserverport",    730, "80", BUTTON_CONTROL_INPUT, false, 730);
   AddString(8,"servers.webserverpassword",733, "", BUTTON_CONTROL_HIDDEN_INPUT, true, 733);
+#endif
+#endif
 
+#ifdef _XBOX
   AddCategory(6,"autodetect",           1250  );
   AddBool(1,    "autodetect.onoff",     1251, true);
   AddBool(2,    "autodetect.popupinfo", 1254, true);
   AddString(3,  "autodetect.nickname",  1252, "XBMC-NickName",BUTTON_CONTROL_INPUT, false, 1252);
   AddSeparator(4, "autodetect.sep1");
   AddBool(5,    "autodetect.senduserpw",1255, true); // can be in advanced.xml! default:true
+#endif
 
   AddCategory(6, "smb", 1200);
   AddString(1, "smb.username",    1203,   "", BUTTON_CONTROL_INPUT, true, 1203);
