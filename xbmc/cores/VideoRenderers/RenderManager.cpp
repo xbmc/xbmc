@@ -242,6 +242,28 @@ void CXBoxRenderManager::FlipPage(DWORD delay /* = 0LL*/, int source /*= -1*/, E
   }
 }
 
+float CXBoxRenderManager::GetMaximumFPS()
+{
+  float fps;
+  int res = g_graphicsContext.GetVideoResolution();
+  EINTERLACEMETHOD method = g_stSettings.m_currentVideoSettings.m_InterlaceMethod;
+
+  if( res == PAL_4x3 || res == PAL_16x9 )
+    fps = 50.0f;
+  else
+    fps = 60000.0f/1001.0f;
+
+  if( m_rendermethod == RENDER_HQ_RGB_SHADER
+   || m_rendermethod == RENDER_HQ_RGB_SHADERV2)
+  {
+    if( method == VS_INTERLACEMETHOD_AUTO && m_presentfield != FS_NONE
+    || method == VS_INTERLACEMETHOD_RENDER_BOB )
+      fps *= 0.5;
+  }
+
+  return fps;
+}
+
 void CXBoxRenderManager::Present()
 {
   EINTERLACEMETHOD mInt = g_stSettings.m_currentVideoSettings.m_InterlaceMethod;
@@ -251,7 +273,8 @@ void CXBoxRenderManager::Present()
   {
     /* this is uggly to do on each frame, should only need be done once */
     int mResolution = g_graphicsContext.GetVideoResolution();
-    if( m_rendermethod == RENDER_HQ_RGB_SHADERV2 )
+    if( m_rendermethod == RENDER_HQ_RGB_SHADER 
+     || m_rendermethod == RENDER_HQ_RGB_SHADERV2 )
       mInt = VS_INTERLACEMETHOD_RENDER_BOB;
     else if( mResolution == HDTV_480p_16x9 
           || mResolution == HDTV_480p_4x3 
