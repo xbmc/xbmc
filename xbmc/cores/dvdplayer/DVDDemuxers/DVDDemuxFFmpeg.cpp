@@ -371,6 +371,21 @@ void CDVDDemuxFFmpeg::SetSpeed(int iSpeed)
     m_dllAvFormat.av_read_play(m_pFormatContext);
 
   m_speed = iSpeed;
+
+  AVDiscard discard = AVDISCARD_NONE;
+  if(m_speed > 4*DVD_PLAYSPEED_NORMAL)
+    discard = AVDISCARD_NONKEY;
+  else if(m_speed > 2*DVD_PLAYSPEED_NORMAL)
+    discard = AVDISCARD_BIDIR;
+  else if(m_speed < DVD_PLAYSPEED_PAUSE)
+    discard = AVDISCARD_NONKEY;
+
+
+  for(unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
+  {
+    if(m_pFormatContext->streams[i])
+      m_pFormatContext->streams[i]->discard = discard;
+  }
 }
 
 __int64 CDVDDemuxFFmpeg::ConvertTimestamp(__int64 pts, int den, int num)
