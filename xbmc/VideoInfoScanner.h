@@ -61,6 +61,7 @@ namespace VIDEO
     bool m_bRunning;
     bool m_bUpdateAll;
     bool m_bCanInterrupt;
+    bool m_bClean;
     CStdString m_strStartDir;
     CVideoDatabase m_database;
     SScraperInfo m_info;

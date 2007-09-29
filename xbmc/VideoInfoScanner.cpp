@@ -43,6 +43,7 @@ namespace VIDEO
     m_bCanInterrupt = false;
     m_currentItem=0;
     m_itemCount=0;
+    m_bClean=false;
   }
 
   CVideoInfoScanner::~CVideoInfoScanner()
@@ -77,6 +78,9 @@ namespace VIDEO
       // using Interupt() while scanning as it could
       // result in unexpected behaviour.
       m_bCanInterrupt = false;
+
+      if (m_bClean)
+        m_database.CleanDatabase(m_pObserver);
 
       bool bCancelled = false;
       for(std::map<CStdString,VIDEO::SScanSettings>::iterator it = m_pathsToScan.begin(); it != m_pathsToScan.end(); it++)
@@ -136,10 +140,14 @@ namespace VIDEO
       // we go.
       m_database.Open();
       m_database.GetPaths(m_pathsToScan);
+      m_bClean = true;
       m_database.Close();
     }
     else
+    {
       m_pathsToScan.insert(pair<CStdString,SScanSettings>(strDirectory,settings));
+      m_bClean = false;
+    }
 
     StopThread();
     Create();
