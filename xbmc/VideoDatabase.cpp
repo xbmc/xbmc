@@ -5904,7 +5904,7 @@ void CVideoDatabase::GetMusicVideoDirectorsByName(const CStdString& strSearch, C
   }
 }
 
-void CVideoDatabase::CleanDatabase()
+void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver)
 {
   try
   {
@@ -5918,17 +5918,23 @@ void CVideoDatabase::CleanDatabase()
     m_pDS->query(sql.c_str());
     if (m_pDS->num_rows() == 0) return;
 
-    CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-    if (progress)
+    CGUIDialogProgress *progress=NULL;
+    if (!pObserver)
     {
-      progress->SetHeading(700);
-      progress->SetLine(0, "");
-      progress->SetLine(1, 313);
-      progress->SetLine(2, 330);
-      progress->SetPercentage(0);
-      progress->StartModal();
-      progress->ShowProgressBar(true);
+      progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      if (progress)
+      {
+        progress->SetHeading(700);
+        progress->SetLine(0, "");
+        progress->SetLine(1, 313);
+        progress->SetLine(2, 330);
+        progress->SetPercentage(0);
+        progress->StartModal();
+        progress->ShowProgressBar(true);
+      }
     }
+    else
+      pObserver->OnStateChanged(CLEANING_UP_DATABASE);
 
     CStdString filesToDelete = "(";
     CStdString moviesToDelete = "(";
@@ -5963,17 +5969,23 @@ void CVideoDatabase::CleanDatabase()
       { // mark for deletion
         filesToDelete += m_pDS->fv("files.idFile").get_asString() + ",";
       }
-      if ((current % 50) == 0 && progress)
+      if (!pObserver)
       {
-        progress->SetPercentage(current * 100 / total);
-        progress->Progress();
-        if (progress->IsCanceled())
+        if (progress)
         {
-          progress->Close();
-          m_pDS->close();
-          return;
+          progress->SetPercentage(current * 100 / total);
+          progress->Progress();
+          if (progress->IsCanceled())
+          {
+            progress->Close();
+            m_pDS->close();
+            return;
+          }
         }
       }
+      else
+        pObserver->OnSetProgress(current,total);
+      
       m_pDS->next();
       current++;
     }
