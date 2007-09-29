@@ -151,7 +151,7 @@ void CGUIDialogVideoScan::UpdateState()
 
   SET_CONTROL_LABEL(CONTROL_LABELSTATUS, GetStateString());
 
-  if (m_ScanState == FETCHING_VIDEO_INFO)
+  if (m_ScanState == FETCHING_VIDEO_INFO || m_ScanState == CLEANING_UP_DATABASE)
   {
     CURL url(m_strCurrentDir);
     CStdString strStrippedPath;
