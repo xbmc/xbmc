@@ -284,7 +284,9 @@ void CXBoxRenderManager::FlipPage(DWORD delay /* = 0LL*/, int source /*= -1*/, E
     // In OpenGL, we shouldn't be waiting for CThread::m_bStop since rendering is
     // happening from the main thread.
     g_application.NewFrame();
-    while( timestamp > GetTickCount() ) Sleep(1);
+    int nTicks = GetTickCount();
+    if (timestamp > nTicks)
+      ::Sleep(timestamp - nTicks);
 #else
     while( timestamp > GetTickCount() && !CThread::m_bStop) Sleep(1);
 #endif
@@ -311,7 +313,11 @@ void CXBoxRenderManager::Present()
   {
     /* this is uggly to do on each frame, should only need be done once */
     int mResolution = g_graphicsContext.GetVideoResolution();
+#if defined (HAS_SDL_OPENGL)
+    if (1)
+#else
     if( m_rendermethod == RENDER_HQ_RGB_SHADERV2 )
+#endif
       mInt = VS_INTERLACEMETHOD_RENDER_BOB;
     else if( mResolution == HDTV_480p_16x9 
           || mResolution == HDTV_480p_4x3 
@@ -362,7 +368,10 @@ void CXBoxRenderManager::PresentSingle()
 
   m_pRenderer->RenderUpdate(true, 0, 255);
 
-  while (m_presenttime > GetTickCount()) Sleep(1);
+  int nTicks = GetTickCount();
+  if (m_presenttime > nTicks) 
+    ::Sleep(m_presenttime - nTicks);
+
   //while( m_presenttime > GetTickCount() && !CThread::m_bStop ) Sleep(1);
 
 #ifndef HAS_SDL
@@ -400,14 +409,13 @@ void CXBoxRenderManager::PresentBob()
   }
 #elif defined (HAS_SDL_OPENGL)
   
-  return; // FIXME: odd field needs to be rendered as well
+  int nTicks = GetTickCount();
+  if (m_presenttime > nTicks) 
+    ::Sleep(m_presenttime - nTicks);
+
+return; // hack for now untill bob rendering is corrected.
 
   m_pRenderer->FlipPage(0);
-  if( m_presenttime )
-  {
-    // wait for timestamp
-    while( m_presenttime > GetTickCount() ) Sleep(1);
-  }
 
   /* render second field */
   if( m_presentfield == FS_EVEN )
