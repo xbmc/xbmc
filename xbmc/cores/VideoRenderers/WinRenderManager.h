@@ -69,7 +69,7 @@ public:
     else
       return INVALID;
   }
-
+  float GetMaximumFPS() { return 60.0; };
   inline DWORD GetPresentDelay() { return 0;  }
   inline bool Paused() { return m_bPauseDrawing; };
   inline bool IsStarted() { return m_bIsStarted;}

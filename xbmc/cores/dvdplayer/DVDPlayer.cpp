@@ -291,7 +291,7 @@ void CDVDPlayer::Process()
           // the time it takes to seek doesn't make a difference.
           __int64 iError, iTime;
           iError = m_clock.GetClock() - m_dvdPlayerVideo.GetCurrentPts();
-          iError = iError * DVD_PLAYSPEED_NORMAL / GetPlaySpeed();
+//          iError = iError * DVD_PLAYSPEED_NORMAL / GetPlaySpeed();
 
           if(iError > DVD_MSEC_TO_TIME(1000))
           {
