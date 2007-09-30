@@ -708,7 +708,11 @@ int dbSave(int did, char_t *filename, int flags)
 /*
  *	First write to a temporary file, then switch around later.
  */
+#ifndef LINUX
 	fmtAlloc(&tmpFile, FNAMESIZE, T("%s\\data.tmp"), basicGetProductDir());
+#else
+	fmtAlloc(&tmpFile, FNAMESIZE, T("%s/data.tmp"), basicGetProductDir());
+#endif
 	if ((fd = gopen(tmpFile, 
 		O_CREAT | O_TRUNC | O_WRONLY | O_BINARY, 0666)) < 0) {
 		trace(1, T("WARNING: Failed to open file %s\n"), tmpFile);
@@ -779,7 +783,11 @@ int dbSave(int did, char_t *filename, int flags)
  *	Replace the existing file with the temporary file, if no errors
  */
 	if (nRet == 0) {
+#ifndef LINUX
 		fmtAlloc(&path, FNAMESIZE, T("%s\\%s"), basicGetProductDir(), filename);
+#else
+		fmtAlloc(&path, FNAMESIZE, T("%s/%s"), basicGetProductDir(), filename);
+#endif
 
 		gunlink(path);
 		if (grename(tmpFile, path) != 0) {
@@ -840,7 +848,11 @@ int dbLoad(int did, char_t *filename, int flags)
 
     a_assert(did >= 0);
 
+#ifndef LINUX
 	fmtAlloc(&path, FNAMESIZE, T("%s\\%s"), basicGetProductDir(), filename);
+#else
+	fmtAlloc(&path, FNAMESIZE, T("%s/%s"), basicGetProductDir(), filename);
+#endif
 	trace(4, T("DB: About to read data file <%s>\n"), path);
 
 	if (gstat(path, &sbuf) < 0) {
