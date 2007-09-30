@@ -59,6 +59,4 @@ private:
    int m_sock;
 };
 
-extern CNetworkLinux g_network;
-
 #endif

@@ -131,14 +131,14 @@ NPT_WinsockSystem NPT_WinsockSystem::Initializer;
 NPT_Result
 NPT_NetworkInterface::GetNetworkInterfaces(NPT_List<NPT_NetworkInterface*>& interfaces)
 {
-    if (!g_network.IsAvailable(true))
+    if (!g_application.getNetwork().IsAvailable(true))
         return NPT_ERROR_NETWORK_DOWN;
 
     NPT_IpAddress primary_address;
-    primary_address.ResolveName(g_network.m_networkinfo.ip);
+    primary_address.ResolveName(g_application.getNetwork().m_networkinfo.ip);
 
     NPT_IpAddress netmask;
-    netmask.ResolveName(g_network.m_networkinfo.subnet);
+    netmask.ResolveName(g_application.getNetwork().m_networkinfo.subnet);
 
     NPT_IpAddress broadcast_address;        
     broadcast_address.ResolveName("255.255.255.255");
@@ -146,7 +146,7 @@ NPT_NetworkInterface::GetNetworkInterfaces(NPT_List<NPT_NetworkInterface*>& inte
     NPT_Flags     flags = NPT_NETWORK_INTERFACE_FLAG_BROADCAST | NPT_NETWORK_INTERFACE_FLAG_MULTICAST;
 
     NPT_MacAddress mac;
-    //mac.SetAddress(NPT_MacAddress::TYPE_ETHERNET, g_network.m_networkinfo.mac, 6);
+    //mac.SetAddress(NPT_MacAddress::TYPE_ETHERNET, g_application.getNetwork().m_networkinfo.mac, 6);
 
     // create an interface object
     char iface_name[5];
@@ -1081,29 +1081,29 @@ public:
     // AVTransport
     virtual NPT_Result OnNext(PLT_ActionReference& action)
     {
-        g_applicationMessenger.PlayListPlayerNext();
+        g_application.getApplicationMessenger().PlayListPlayerNext();
         return NPT_SUCCESS;
     }
     virtual NPT_Result OnPause(PLT_ActionReference& action)
     {
         if(!g_application.IsPaused())
-          g_applicationMessenger.MediaPause();
+          g_application.getApplicationMessenger().MediaPause();
         return NPT_SUCCESS;
     }
     virtual NPT_Result OnPlay(PLT_ActionReference& action)
     {
         if(g_application.IsPaused())
-            g_applicationMessenger.MediaPause();
+            g_application.getApplicationMessenger().MediaPause();
         return NPT_SUCCESS;
     }
     virtual NPT_Result OnPrevious(PLT_ActionReference& action)
     {
-        g_applicationMessenger.PlayListPlayerPrevious();
+        g_application.getApplicationMessenger().PlayListPlayerPrevious();
         return NPT_SUCCESS;
     }
     virtual NPT_Result OnStop(PLT_ActionReference& action)
     {
-        g_applicationMessenger.MediaStop();
+        g_application.getApplicationMessenger().MediaStop();
         return NPT_SUCCESS;
     }
     virtual NPT_Result OnSetAVTransportURI(PLT_ActionReference& action)
@@ -1124,7 +1124,7 @@ public:
         service->SetStateVariable("AVTransportURIMetaData", meta, false);
         NPT_CHECK_SEVERE(action->SetArgumentsOutFromStateVariable());
 
-        g_applicationMessenger.MediaPlay((const char*)uri);
+        g_application.getApplicationMessenger().MediaPlay((const char*)uri);
         
         return NPT_SUCCESS;
     }
@@ -1270,7 +1270,7 @@ CUPnP::StartServer()
 
     // trying to set optional upnp values for XP UPnP UI Icons to detect us
     // but it doesn't work anyways as it requires multicast for XP to detect us
-    NPT_String ip = g_network.GetFirstConnectedInterface()->GetCurrentIPAddress().c_str();
+    NPT_String ip = g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress().c_str();
 #ifndef HAS_XBOX_NETWORK
     NPT_List<NPT_String> list;
     if (NPT_SUCCEEDED(PLT_UPnPMessageHelper::GetIPAddresses(list))) {
@@ -1323,7 +1323,7 @@ void CUPnP::StartRenderer()
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
     g_settings.LoadUPnPXml(filename);
 
-    NPT_String ip = g_network.GetFirstConnectedInterface()->GetCurrentIPAddress().c_str();
+    NPT_String ip = g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress().c_str();
 #ifndef HAS_XBOX_NETWORK
     NPT_List<NPT_String> list;
     if (NPT_SUCCEEDED(PLT_UPnPMessageHelper::GetIPAddresses(list))) {

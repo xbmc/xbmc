@@ -89,7 +89,7 @@ void CTuxBoxService::Process()
         if (strCurrentServiceName != g_tuxbox.sCurSrvData.service_name && g_application.IsPlaying())
         {
           CLog::Log(LOGDEBUG," - ERROR: Non controlled channel change detected! Stopping current playing stream!");
-          g_applicationMessenger.MediaStop();
+          g_application.getApplicationMessenger().MediaStop();
           break;
         }
       }
@@ -1284,7 +1284,7 @@ bool CTuxBoxUtil::GetVideoSubChannels(CStdString& strVideoSubChannelName, CStdSt
 
   // IsPlaying, Stop it..
   if(g_application.IsPlaying())
-    g_applicationMessenger.MediaStop();
+    g_application.getApplicationMessenger().MediaStop();
 
   // popup the context menu
   CGUIDialogContextMenu *pMenu;

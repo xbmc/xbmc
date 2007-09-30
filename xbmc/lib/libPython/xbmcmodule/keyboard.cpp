@@ -2,6 +2,7 @@
 #include "keyboard.h"
 #include "pyutil.h"
 #include "../../../Util.h"
+#include "Application.h"
 
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
@@ -72,7 +73,7 @@ namespace PYXBMC
 
     // do modal of dialog
     ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_KEYBOARD, m_gWindowManager.GetActiveWindow()};
-    g_applicationMessenger.SendMessage(tMsg, true);
+    g_application.getApplicationMessenger().SendMessage(tMsg, true);
 
     Py_INCREF(Py_None);
     return Py_None;

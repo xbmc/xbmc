@@ -8,6 +8,7 @@
 #include "../utils/HTMLUtil.h"
 #include "../Util.h"
 #include "../utils/Network.h"
+#include "Application.h"
 
 using namespace XFILE;
 
@@ -89,7 +90,7 @@ void CRssReader::Process()
     int nRetries = 3;
     CURL url(strUrl);
 
-    if ((url.GetProtocol() == "http" || url.GetProtocol() == "https") && (!g_guiSettings.GetBool("network.enableinternet") || !g_network.IsAvailable()))
+    if ((url.GetProtocol() == "http" || url.GetProtocol() == "https") && (!g_guiSettings.GetBool("network.enableinternet") || !g_application.getNetwork().IsAvailable()))
       strXML = "<rss><item><title>"+g_localizeStrings.Get(15301)+"</title></item></rss>";
     else
     {

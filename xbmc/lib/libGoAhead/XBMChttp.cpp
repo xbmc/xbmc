@@ -337,13 +337,13 @@ int SetResponse(const CStdString &response)
   if (response.length()>=closeTag.length())
   {
     if ((response.Right(closeTag.length())!=closeTag) && closeFinalTag) 
-      return g_applicationMessenger.SetResponse(response+closeTag);
+      return g_application.getApplicationMessenger().SetResponse(response+closeTag);
     else;
   }
   else 
     if (closeFinalTag)
-      return g_applicationMessenger.SetResponse(response+closeTag);
-  return g_applicationMessenger.SetResponse(response);
+      return g_application.getApplicationMessenger().SetResponse(response+closeTag);
+  return g_application.getApplicationMessenger().SetResponse(response);
 }
 
 CStdString flushResult(int eid, webs_t wp, const CStdString &output)
@@ -506,7 +506,7 @@ void LoadPlayListOld(const CStdString& strPlayList, int playList)
     g_playlistPlayer.Reset();
     g_playlistPlayer.Add(playList, *pPlayList);
     g_playlistPlayer.SetCurrentPlaylist(playList);
-    g_applicationMessenger.PlayListPlayerPlay();
+    g_application.getApplicationMessenger().PlayListPlayerPlay();
     
     // set current file item
     CPlayList& playlist = g_playlistPlayer.GetPlaylist(playList);
@@ -539,7 +539,7 @@ bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoSt
   if ((playlist.size() == 1) && (autoStart))
   {
     // just 1 song? then play it (no need to have a playlist of 1 song)
-    g_applicationMessenger.MediaPlay(CFileItem(playlistItem).m_strPath);
+    g_application.getApplicationMessenger().MediaPlay(CFileItem(playlistItem).m_strPath);
     return true;
   }
 
@@ -555,7 +555,7 @@ bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoSt
       const CPlayList::CPlayListItem& item = playlist[0];
       g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
       g_playlistPlayer.Reset();
-      g_applicationMessenger.PlayListPlayerPlay();
+      g_application.getApplicationMessenger().PlayListPlayerPlay();
       return true;
     } 
     else
@@ -1601,7 +1601,7 @@ int CXbmcHttp::xbmcPlayerPlayFile(int numParas, CStdString paras[])
   }
   else
   {
-    g_applicationMessenger.MediaPlay(paras[0]);
+    g_application.getApplicationMessenger().MediaPlay(paras[0]);
     if(g_application.IsPlaying())
       return SetResponse(openTag+"OK");
   }
@@ -1802,7 +1802,7 @@ int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
       }
     }
     else
-      g_applicationMessenger.MediaPause();
+      g_application.getApplicationMessenger().MediaPause();
     return SetResponse(openTag+"OK");
     break;
   case 2:
@@ -1816,7 +1816,7 @@ int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
     }
     else
       //g_application.StopPlaying();
-      g_applicationMessenger.MediaStop();
+      g_application.getApplicationMessenger().MediaStop();
     return SetResponse(openTag+"OK");
     break;
   case 3:
@@ -2170,7 +2170,7 @@ int CXbmcHttp::xbmcShowPicture(int numParas, CStdString paras[])
   {
     if (!playableFile(paras[0]))
       return SetResponse(openTag+"Error:Unable to open file");
-    g_applicationMessenger.PictureShow(paras[0]);
+    g_application.getApplicationMessenger().PictureShow(paras[0]);
     return SetResponse(openTag+"OK");
   }
 }
@@ -2195,7 +2195,7 @@ int CXbmcHttp::xbmcExecBuiltIn(int numParas, CStdString paras[])
     return SetResponse(openTag+"Error:Missing parameter");
   else
   {
-    g_applicationMessenger.ExecBuiltIn(paras[0]);
+    g_application.getApplicationMessenger().ExecBuiltIn(paras[0]);
     return SetResponse(openTag+"OK");
   }
 }
@@ -2806,17 +2806,17 @@ CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *comman
     websHeader(wp);
   if ((*parameter==0) || !strcmp(parameter,XBMC_NONE))
     if (checkForFunctionTypeParas(cmd, paras))
-	  g_applicationMessenger.HttpApi(cmd+"; "+paras);
+	  g_application.getApplicationMessenger().HttpApi(cmd+"; "+paras);
 	else
-    g_applicationMessenger.HttpApi(cmd);
+    g_application.getApplicationMessenger().HttpApi(cmd);
   else
-    g_applicationMessenger.HttpApi(cmd+"; "+paras);
+    g_application.getApplicationMessenger().HttpApi(cmd+"; "+paras);
   //wait for response - max 20s
   Sleep(0);
-  response=g_applicationMessenger.GetResponse();
+  response=g_application.getApplicationMessenger().GetResponse();
   while (response=="[No response yet]" && cnt++<200) 
   {
-    response=g_applicationMessenger.GetResponse();
+    response=g_application.getApplicationMessenger().GetResponse();
 	CLog::Log(LOGDEBUG, "XBMCHTTPShim: waiting %d", cnt);
     Sleep(100);
   }

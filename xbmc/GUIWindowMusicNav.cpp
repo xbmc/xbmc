@@ -569,7 +569,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       database.Open();
       CVideoInfoTag details;
       database.GetMusicVideoInfo("",details,database.GetMusicVideoByArtistAndAlbumAndTitle(m_vecItems[itemNumber]->GetMusicInfoTag()->GetArtist(),m_vecItems[itemNumber]->GetMusicInfoTag()->GetAlbum(),m_vecItems[itemNumber]->GetMusicInfoTag()->GetTitle()));
-      g_applicationMessenger.PlayFile(CFileItem(details));
+      g_application.getApplicationMessenger().PlayFile(CFileItem(details));
       return true;
     }
   }

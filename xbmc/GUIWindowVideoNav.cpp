@@ -1069,7 +1069,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       database.Open();
       CSong song;
       if (database.GetSongById(database.GetSongByArtistAndAlbumAndTitle(m_vecItems[itemNumber]->GetVideoInfoTag()->GetArtist(),m_vecItems[itemNumber]->GetVideoInfoTag()->m_strAlbum,m_vecItems[itemNumber]->GetVideoInfoTag()->m_strTitle),song))
-        g_applicationMessenger.PlayFile(song);
+        g_application.getApplicationMessenger().PlayFile(song);
       return true;
     }
 

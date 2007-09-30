@@ -30,6 +30,7 @@
 #include "AutoSwitch.h"
 #include "utils/Network.h"
 #include "GUIPassword.h"
+#include "Application.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -463,7 +464,7 @@ bool CGUIDialogFileBrowser::HaveDiscOrConnection( CStdString& strPath, int iDriv
   else if ( iDriveType == SHARE_TYPE_REMOTE )
   {
     // TODO: Handle not connected to a remote share
-    if ( !g_network.IsConnected() )
+    if ( !g_application.getNetwork().IsConnected() )
     {
       CGUIDialogOK::ShowAndGetInput(220, 221, 0, 0);
       return false;

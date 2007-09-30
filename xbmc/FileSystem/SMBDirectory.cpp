@@ -15,6 +15,7 @@
 #include "DirectoryCache.h"
 #include "LocalizeStrings.h"
 #include "../GUIPassword.h"
+#include "Application.h"
 #ifndef _LINUX
 #include "../lib/libsmb/xbLibSmb.h"
 #else
@@ -281,7 +282,7 @@ int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
           pDialog->SetLine(2, "");
 
           ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, m_gWindowManager.GetActiveWindow()};
-          g_applicationMessenger.SendMessage(tMsg, false);
+          g_application.getApplicationMessenger().SendMessage(tMsg, false);
         }
         break;
       }

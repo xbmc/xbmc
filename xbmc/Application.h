@@ -22,6 +22,10 @@
 #include "utils/Splash.h"
 #include "utils/IMDB.h"
 #include "utils/Stopwatch.h"
+#include "ApplicationMessenger.h"
+#ifdef _LINUX
+#include "NetworkLinux.h"
+#endif
 
 using namespace MEDIA_DETECT;
 using namespace MUSIC_INFO;
@@ -141,6 +145,10 @@ public:
   void RestoreMusicScanSettings();
   void CheckMusicPlaylist();
 
+  CApplicationMessenger getApplicationMessenger();
+#ifdef _LINUX
+  CNetworkLinux getNetwork();
+#endif
   CGUIDialogVolumeBar m_guiDialogVolumeBar;
   CGUIDialogSeekBar m_guiDialogSeekBar;
   CGUIDialogKaiToast m_guiDialogKaiToast;
@@ -237,6 +245,11 @@ protected:
   float NavigationIdleTime();
 
   void SaveCurrentFileSettings();
+
+  CApplicationMessenger m_applicationMessenger;
+#ifdef _LINUX
+  CNetworkLinux		m_network;
+#endif
 };
 
 extern CApplication g_application;

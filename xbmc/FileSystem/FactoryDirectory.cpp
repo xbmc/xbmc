@@ -13,6 +13,8 @@
 #include "ShoutcastDirectory.h"
 #include "LastFMDirectory.h"
 #include "FTPDirectory.h"
+#include "Application.h"
+
 #ifdef HAS_FILESYSTEM_SMB
 #include "SMBDirectory.h"
 #endif
@@ -94,7 +96,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
   if (strProtocol.Left(3) == "mem") return new CMemUnitDirectory();
 #endif
 
-  if( g_network.IsAvailable() )
+  if( g_application.getNetwork().IsAvailable() )
   {
     if (strProtocol == "shout") return new CShoutcastDirectory();
     if (strProtocol == "lastfm") return new CLastFMDirectory();

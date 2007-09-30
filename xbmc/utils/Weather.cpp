@@ -8,6 +8,7 @@
 #include "../Temperature.h"
 #include "../utils/Network.h"
 #include "../Util.h"
+#include "Application.h"
 
 using namespace DIRECTORY;
 
@@ -72,7 +73,7 @@ void CBackgroundWeatherLoader::GetInformation()
   if (!g_guiSettings.GetBool("network.enableinternet"))
     return;
 
-  if (!g_network.IsAvailable())
+  if (!g_application.getNetwork().IsAvailable())
     return;
 
   CWeather *callback = (CWeather *)m_callback;
