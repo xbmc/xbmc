@@ -604,6 +604,13 @@ void CGUIWindowVideoInfo::AddItemsToList(const vector<pair<CStdString,CStdString
     CFileItem item(vecStr[i].second);
     if (CFile::Exists(item.GetCachedActorThumb()))
       pItem->SetThumbnailImage(item.GetCachedActorThumb());
+    else if (CFile::Exists(item.GetCachedArtistThumb()))
+      pItem->SetThumbnailImage(item.GetCachedArtistThumb());
+    else
+    {
+      if (m_movieItem.GetVideoInfoTag()->m_artist.size() == 0)
+        pItem->SetThumbnailImage("DefaultActorBig.png");
+    }
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_LIST, 0, 0, (void*)pItem);
     g_graphicsContext.SendMessage(msg);
   }
