@@ -644,6 +644,8 @@ void CGUIWindowVideoNav::OnInfo(CFileItem* pItem, const SScraperInfo& info)
   m_database.Open(); // since we can be called from the music library without being inited
   if (pItem->IsVideoDb())
     m_database.GetScraperForPath(pItem->GetVideoInfoTag()->m_strPath,info2);
+  else if (m_vecItems.IsPluginFolder())
+    info2.strContent = "plugin";
   else
   {
     CUtil::Split(pItem->m_strPath,strPath,strFile);
