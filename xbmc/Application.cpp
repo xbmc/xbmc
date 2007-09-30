@@ -5715,13 +5715,13 @@ void CApplication::SaveCurrentFileSettings()
   }
 }
 
-CApplicationMessenger CApplication::getApplicationMessenger()
+CApplicationMessenger& CApplication::getApplicationMessenger()
 {
    return m_applicationMessenger;
 }
 
 #ifdef _LINUX
-CNetworkLinux CApplication::getNetwork()
+CNetworkLinux& CApplication::getNetwork()
 {
    return m_network;
 }
