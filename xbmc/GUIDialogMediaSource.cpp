@@ -367,6 +367,19 @@ void CGUIDialogMediaSource::OnOK()
     shares->push_back(share);
   if (share.strPath.Left(9).Equals("plugin://") || CDirectory::GetDirectory(share.strPath, items, "", false, true) || CGUIDialogYesNo::ShowAndGetInput(1001,1025,1003,1004))
   {
+    if (share.strPath.Left(9).Equals("plugin://"))
+    {
+      CFileItem item2(share.strPath);      
+      CUtil::AddFileToFolder(share.strPath,"default.py",item2.m_strPath);
+      item2.m_strPath.Replace("plugin://","Q:\\plugins\\");
+      item2.m_strPath.Replace("/","\\");
+      item2.m_bIsFolder = false;
+      item2.SetCachedProgramThumb();
+      if (!item2.HasThumbnail())
+        item2.SetUserProgramThumb();
+      if (item2.HasThumbnail())
+        m_paths[0]->SetThumbnailImage(item2.GetThumbnailImage());
+    }
     m_confirmed = true;
     Close();
   }
