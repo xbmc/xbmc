@@ -353,11 +353,27 @@ bool CPluginDirectory::GetPluginsDirectory(const CStdString &type, CFileItemList
   items.m_strPath.Replace("\\", "/");
 
   // flatten any folders - TODO: Assigning of thumbs
+  // grab sources
+  VECSHARES* pShares=g_settings.GetSharesFromType(type);
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItem *item = items[i];
+    item->SetCachedProgramThumb();
+    if (!item->HasThumbnail())
+    {
+      CFileItem item2(*item);
+      CUtil::AddFileToFolder(item->m_strPath,"default.py",item2.m_strPath);
+      item2.SetCachedProgramThumb();
+      if (item2.HasThumbnail())
+        item->SetThumbnailImage(item2.GetThumbnailImage());
+    }
     item->m_strPath.Replace("Q:\\plugins\\", "plugin://");
     item->m_strPath.Replace("\\", "/");
+    for (unsigned int j=0;j<pShares->size();++j)
+    {
+      if (pShares->at(j).strPath.Equals(item->m_strPath) && !pShares->at(j).m_strThumbnailImage.IsEmpty())
+        item->SetThumbnailImage(pShares->at(j).m_strThumbnailImage);
+    }
   }
   return true;
 }
