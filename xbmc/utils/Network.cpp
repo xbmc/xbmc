@@ -10,9 +10,7 @@ CNetwork::CNetwork()
 
 CNetwork::~CNetwork()
 {
-#ifndef _LINUX
    g_application.getApplicationMessenger().NetworkMessage(SERVICES_DOWN, 0);
-#endif
 }
 
 int CNetwork::ParseHex(char *str, unsigned char *addr)
