@@ -733,11 +733,11 @@ void CGUIWindowVideoNav::OnFinalizeFileItems(CFileItemList& items)
   CQueryParams params;
   dir.GetQueryParams(items.m_strPath,params);
   bool filterWatched=false;
-  if (params.GetContentType() == VIDEODB_CONTENT_TVSHOWS && dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_EPISODES)
+  if ((params.GetContentType() == VIDEODB_CONTENT_TVSHOWS && dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_EPISODES) || dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_EPISODES)
     filterWatched = true;
   if (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_ALL)
     filterWatched = false;
-  if (params.GetContentType() == VIDEODB_CONTENT_MOVIES || params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS) // need to filter no matter to get rid of duplicates - price to pay for not filtering in db
+  if (params.GetContentType() == VIDEODB_CONTENT_MOVIES || params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS || dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_MOVIES || dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS) // need to filter no matter to get rid of duplicates - price to pay for not filtering in db
     filterWatched = true;
 
   if (filterWatched || !m_filter.IsEmpty())
@@ -774,9 +774,9 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
   CQueryParams params;
   dir.GetQueryParams(items.m_strPath,params);
   bool filterWatched=false;
-  if (params.GetContentType() == VIDEODB_CONTENT_TVSHOWS && dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_EPISODES)
+  if ((params.GetContentType() == VIDEODB_CONTENT_TVSHOWS && dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_EPISODES) || dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_EPISODES)
     filterWatched = true;
-  if (params.GetContentType() == VIDEODB_CONTENT_MOVIES || params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS)
+  if (params.GetContentType() == VIDEODB_CONTENT_MOVIES || params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS|| dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_MOVIES || dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS)
     filterWatched = true;
   if (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_ALL)
     filterWatched = false;
