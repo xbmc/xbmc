@@ -13,7 +13,7 @@
 #include "stdafx.h"
 #include "XBApplicationEx.h"
 #include "XBVideoConfig.h"
-
+#include "Application.h"
 
 //-----------------------------------------------------------------------------
 // Global access to common members
@@ -317,7 +317,7 @@ void CXBApplicationEx::ReadInput()
     switch(event.type)
     {
       case SDL_QUIT:
-        g_applicationMessenger.Shutdown();
+        g_application.getApplicationMessenger().Shutdown();
         break;
 
 #ifdef HAS_SDL_JOYSTICK

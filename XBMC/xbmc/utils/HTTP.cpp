@@ -6,9 +6,9 @@
 #include "stdafx.h"
 #include "HTTP.h"
 #include "../DNSNameCache.h"
-
 #include "../Util.h"
 #include "../utils/Network.h"
+#include "Application.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -364,7 +364,7 @@ bool CHTTP::Download(const string &strURL, const string &strFileName, LPDWORD pd
 //------------------------------------------------------------------------------------------------------------------
 bool CHTTP::Connect()
 {
-  if (!g_network.IsAvailable())
+  if (!g_application.getNetwork().IsAvailable())
     return false;
 
   sockaddr_in service;

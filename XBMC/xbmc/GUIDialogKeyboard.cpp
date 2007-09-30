@@ -29,6 +29,7 @@
 #include "GUIPassword.h"
 #include "utils/md5.h"
 #include "xbox/XKGeneral.h"
+#include "Application.h"
 
 // Symbol mapping (based on MS virtual keyboard - may need improving)
 static char symbol_map[37] = ")!@#$%^&*([]{}-_=+;:\'\",.<>/?\\|`~    ";
@@ -510,7 +511,7 @@ bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, const CStdStri
   pKeyboard->SetText(aTextString);
   // do this using a thread message to avoid render() conflicts
   ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_KEYBOARD, m_gWindowManager.GetActiveWindow()};
-  g_applicationMessenger.SendMessage(tMsg, true);
+  g_application.getApplicationMessenger().SendMessage(tMsg, true);
   pKeyboard->Close();
 
   // If have text - update this.

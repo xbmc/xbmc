@@ -1,4 +1,4 @@
-INCLUDES=-I. -I../ -Iffmpeg -I../linux -I../../guilib
+INCLUDES=-I. -I../ -Iffmpeg -I../linux -I../../guilib -I../utils
 
 SRCS=DummyVideoPlayer.cpp PlayerCoreFactory.cpp ssrc.cpp
 

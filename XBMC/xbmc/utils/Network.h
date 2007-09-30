@@ -53,6 +53,9 @@ public:
     SERVICES_DOWN,
   };
 
+   CNetwork();
+   ~CNetwork();
+
    // Return the list of interfaces
    virtual std::vector<CNetworkInterface*>& GetInterfaceList(void) = 0;
    CNetworkInterface* GetInterfaceByName(CStdString& name);
