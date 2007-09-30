@@ -145,9 +145,9 @@ public:
   void RestoreMusicScanSettings();
   void CheckMusicPlaylist();
 
-  CApplicationMessenger getApplicationMessenger();
+  CApplicationMessenger& getApplicationMessenger();
 #ifdef _LINUX
-  CNetworkLinux getNetwork();
+  CNetworkLinux& getNetwork();
 #endif
   CGUIDialogVolumeBar m_guiDialogVolumeBar;
   CGUIDialogSeekBar m_guiDialogSeekBar;
