@@ -1618,6 +1618,12 @@ void CApplication::StartWebServer()
   if (g_guiSettings.GetBool("servers.webserver") && m_network.IsAvailable())
   {
     CLog::Log(LOGNOTICE, "Webserver: Starting...");
+    if (atoi(g_guiSettings.GetString("servers.webserverport")) < 1024 && geteuid() != 0)
+    {
+        CLog::Log(LOGERROR, "Cannot start Web Server as port is smaller than 1024 and user is not root");
+        return;
+    }
+
     CSectionLoader::Load("LIBHTTP");
     m_pWebServer = new CWebServer();
     m_pWebServer->Start(m_network.GetFirstConnectedInterface()->GetCurrentIPAddress().c_str(), atoi(g_guiSettings.GetString("servers.webserverport")), _P("Q:\\web"), false);
