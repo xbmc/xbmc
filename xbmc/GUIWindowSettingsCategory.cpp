@@ -1838,7 +1838,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 
     if (dlg->IsConfirmed())
     {
-      g_applicationMessenger.RestartApp();
+      g_application.getApplicationMessenger().RestartApp();
     }
   }
   else if (strSetting.Equals("upnp.client"))
@@ -2069,7 +2069,7 @@ void CGUIWindowSettingsCategory::CheckNetworkSettings()
     if (CGUIDialogYesNo::ShowAndGetInput(14038, 14039, 14040, 0))
     {
       // reset settings
-      g_applicationMessenger.RestartApp();
+      g_application.getApplicationMessenger().RestartApp();
       // Todo: aquire new network settings without restart app!
     }
     else*/
@@ -3147,7 +3147,7 @@ void CGUIWindowSettingsCategory::FillInNetworkInterfaces(CSetting *pSetting)
   
   // query list of interfaces
   vector<CStdString> vecInterfaces;
-  std::vector<CNetworkInterface*>& ifaces = g_network.GetInterfaceList();
+  std::vector<CNetworkInterface*>& ifaces = g_application.getNetwork().GetInterfaceList();
   std::vector<CNetworkInterface*>::const_iterator iter = ifaces.begin();
   while (iter != ifaces.end())
   {
@@ -3180,12 +3180,12 @@ void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
       // Get network information      
       CGUISpinControlEx *ifaceControl = (CGUISpinControlEx *)GetControl(GetSetting("network.interface")->GetID());
       ifaceName = ifaceControl->GetLabel();
-      CNetworkInterface* iface = g_network.GetInterfaceByName(ifaceName);
+      CNetworkInterface* iface = g_application.getNetwork().GetInterfaceByName(ifaceName);
       iface->GetSettings(bIsDHCP, sIPAddress, sNetworkMask, sDefaultGateway, sWirelessNetwork, sWirelessKey, bWirelessKeyIsString);
       bIsWireless = iface->IsWireless();
 
       CStdString dns;
-      std::vector<CStdString> dnss = g_network.GetNameServers();
+      std::vector<CStdString> dnss = g_application.getNetwork().GetNameServers();
       if (dnss.size() >= 1)
          dns = dnss[0];
 

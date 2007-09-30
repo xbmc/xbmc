@@ -100,7 +100,7 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
     g_application.StopPlaying();
     CGUIMessage msg2(GUI_MSG_ITEM_SELECTED, m_gWindowManager.GetActiveWindow(), iCtrlID, 0, 0, NULL);
     g_graphicsContext.SendMessage(msg2);
-    g_network.NetworkMessage(CNetwork::SERVICES_DOWN,1);
+    g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
 #ifdef HAS_XBOX_NETWORK
     g_network.Deinitialize();
 #endif

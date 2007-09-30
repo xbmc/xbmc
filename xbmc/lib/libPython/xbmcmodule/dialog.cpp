@@ -93,7 +93,7 @@ namespace PYXBMC
 
     //send message and wait for user input
     ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, dWindow, ACTIVE_WINDOW};
-    g_applicationMessenger.SendMessage(tMsg, true);
+    g_application.getApplicationMessenger().SendMessage(tMsg, true);
 
     return Py_BuildValue("b", pDialog->IsConfirmed());
   }
@@ -272,7 +272,7 @@ namespace PYXBMC
 
     //send message and wait for user input
     ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, dWindow, ACTIVE_WINDOW};
-    g_applicationMessenger.SendMessage(tMsg, true);
+    g_application.getApplicationMessenger().SendMessage(tMsg, true);
 
     return Py_BuildValue("b", pDialog->IsConfirmed());
   }
@@ -317,7 +317,7 @@ namespace PYXBMC
 
     //send message and wait for user input
     ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, dWindow, ACTIVE_WINDOW};
-    g_applicationMessenger.SendMessage(tMsg, true);
+    g_application.getApplicationMessenger().SendMessage(tMsg, true);
 
     return Py_BuildValue("i", pDialog->GetSelectedLabel());
   }

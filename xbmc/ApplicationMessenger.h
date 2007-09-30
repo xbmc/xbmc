@@ -88,5 +88,3 @@ private:
   CStdString bufferResponse;
 
 };
-
-extern CApplicationMessenger g_applicationMessenger;

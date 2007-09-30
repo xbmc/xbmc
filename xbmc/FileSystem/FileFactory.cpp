@@ -36,6 +36,7 @@
 #include "../utils/Network.h"
 #include "FileTuxBox.h"
 #include "HDHomeRun.h"
+#include "Application.h"
 
 using namespace XFILE;
 
@@ -75,7 +76,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #ifdef HAS_XBOX_HARDWARE
   else if (strProtocol.Left(3) == "mem") return new CFileMemUnit();
 #endif
-  if( g_network.IsAvailable() )
+  if( g_application.getNetwork().IsAvailable() )
   {
     if (strProtocol == "http" 
     ||  strProtocol == "https") return new CFileCurl();

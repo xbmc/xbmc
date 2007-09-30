@@ -41,8 +41,6 @@
 
 extern HWND g_hWnd;
 
-CApplicationMessenger g_applicationMessenger;
-
 void CApplicationMessenger::Cleanup()
 {
   vector<ThreadMessage*>::iterator it = m_vecMessages.begin();
@@ -356,19 +354,19 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       switch(ret)
       {
       case 1:
-        g_applicationMessenger.Restart();
+        g_application.getApplicationMessenger().Restart();
         break;
       case 2:
-        g_applicationMessenger.Shutdown();
+        g_application.getApplicationMessenger().Shutdown();
         break;
       case 3:
-        g_applicationMessenger.RebootToDashBoard();
+        g_application.getApplicationMessenger().RebootToDashBoard();
         break;
       case 4:
-        g_applicationMessenger.Reset();
+        g_application.getApplicationMessenger().Reset();
         break;
       case 5:
-        g_applicationMessenger.RestartApp();
+        g_application.getApplicationMessenger().RestartApp();
         break;
       }
 #endif
@@ -420,7 +418,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       break;
     case TMSG_NETWORKMESSAGE:
       {
-        g_network.NetworkMessage((CNetwork::EMESSAGE)pMsg->dwParam1, pMsg->dwParam2);
+        g_application.getNetwork().NetworkMessage((CNetwork::EMESSAGE)pMsg->dwParam1, pMsg->dwParam2);
       }
       break;
   }
