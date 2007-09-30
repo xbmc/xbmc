@@ -1443,7 +1443,8 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     if (g_guiSettings.GetBool("servers.webserver"))
     {
       g_application.StartWebServer();
-      g_application.m_pWebServer->SetPassword(g_guiSettings.GetString("servers.webserverpassword").c_str());
+      if (g_application.m_pWebServer)
+         g_application.m_pWebServer->SetPassword(g_guiSettings.GetString("servers.webserverpassword").c_str());
     }
 #endif
   }
