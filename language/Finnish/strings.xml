@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: jutski (->7/2006) Mikko70 (1/2007->)-->
-<!--Date of translation: 20/09/2007-->
+<!--Date of translation: 28/09/2007-->
 <!--$Revision$: -->
-<!--Based on english strings version 10279 -->
+<!--Based on english strings version  10369 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -285,7 +285,7 @@
   <string id="358">Kaikki albumit</string>
   <string id="359">Uusimmat albumit</string>
   <string id="360">Näytönsäästäjä</string>
-  <string id="361">Jatkuva kuvaesitys</string>
+  <string id="361">Kaikkien kuvaesitys</string>
   <string id="362">Näytönsäästäjän tummuus</string>
   <string id="363">Järjestä: Tiedostonimi</string>
   <string id="364">AC3 yhteensopiva vastaanotin</string>
@@ -1256,38 +1256,38 @@
   <string id="15252">Valitaan radioasema...</string>
   <string id="15253">Etsi samankaltaisia esittäjiä...</string>
   <string id="15254">Etsi samankaltaisia tunnisteita...</string>
-  <string id="15255">Sinun profiilisi (%name%)</string>
-  <string id="15256">Kaikki parhaat tunnisteet</string>
-  <string id="15257">Parhaat esittäjät tunnisteelle %name%</string>
-  <string id="15258">Parhaat albumit tunnisteelle %name%</string>
-  <string id="15259">Parhaat raidat tunnisteelle %name%</string>
+  <string id="15255">Oma profiili (%name%)</string>
+  <string id="15256">Suosituimmat tunnisteet</string>
+  <string id="15257">Suosituimmat esittäjät tunnisteelle:%name%</string>
+  <string id="15258">Suosituimmat albumit tunnisteelle:%name%</string>
+  <string id="15259">Suosituimmat kappaleet tunnisteelle:%name%</string>
   <string id="15260">Kuuntele tunnisteen %name% kappaleet Last.FM radiosta</string>
   <string id="15261">Samankaltaiset esittäjät kuin %name%</string>
-  <string id="15262">Parhaat %name%:n albumit</string>
-  <string id="15263">Parhaat %name%:n raidat</string>
-  <string id="15264">Parhaat %name%:n tunnisteet</string>
-  <string id="15265">Suurimmat %name%:n fanit</string>
-  <string id="15266">Kuuntele %name%:n fanien Last.FM radiota</string>
+  <string id="15262">Suosituimmat %name%:n albumit</string>
+  <string id="15263">Suosituimmat %name%:n kappaleet</string>
+  <string id="15264">Suosituimmat %name%:n tunnisteet</string>
+  <string id="15265">Suurimmat %name% fanit</string>
+  <string id="15266">Kuuntele %name% fanien Last.FM radiota</string>
   <string id="15267">Kuuntele %name%:n samankaltaisten esittäjien last.fm radiota</string>
-  <string id="15268">Käyttäjän %name% parhaat esittäjät</string>
-  <string id="15269">Käyttäjän %name% parhaat albumit</string>
-  <string id="15270">Käyttäjän %name% parhaat raidat</string>
+  <string id="15268">Käyttäjän %name% suosituimmat esittäjät</string>
+  <string id="15269">Käyttäjän %name% suosituimmat albumit</string>
+  <string id="15270">Käyttäjän %name% suosituimmat kappaleet</string>
   <string id="15271">Käyttäjän %name% kaverit</string>
   <string id="15272">Käyttäjän %name% naapurit</string>
-  <string id="15273">%name%n viikottainen esittäjä lista</string>
-  <string id="15274">%name%n viikottainen albumi lista</string>
-  <string id="15275">%name%n viikottainen kappale lista</string>
+  <string id="15273">%name%:n viikottainen esittäjälista</string>
+  <string id="15274">%name%:n viikottainen albumilista</string>
+  <string id="15275">%name%:n viikottainen kappalelista</string>
   <string id="15276">Kuuntele %name%n naapurien Last.FM radiota</string>
   <string id="15277">Kuuntele %name%n henkilökohtaista Last.FM radiota</string>
-  <string id="15278">Kuuntele %name%n parhaiden raitojen Last.FM radiota</string>
+  <string id="15278">Kuuntele %name%n suosikki kappaleiden Last.FM radiota</string>
   <string id="15279">Haetaan listaa Last.FM:stä...</string>
   <string id="15280">Ei voida hakea listaa Last.FM:stä...</string>
   <string id="15281">Anna esittäjän nimi löytääksesi vastaavia esittäjiä</string>
-  <string id="15282">Anna tunniste löytääksesi samankaltaisia kappaleita</string>
-  <string id="15283">%name%n aiemmin kuuntelemat kappaleet</string>
-  <string id="15284">Kuuntele %name%n suositukset Last.FM radiosta</string>
-  <string id="15285">Käyttäjän %name% parhaat tunnisteet</string>
-  <string id="15286">Kuuntele %name%n soittolista Last.FM radiosta</string>
+  <string id="15282">Anna tunniste löytääksesi vastaavia</string>
+  <string id="15283">Käyttäjän %name% kuuntelemat kappaleet</string>
+  <string id="15284">Kuuntele %name%:n suositukset Last.FM radiosta</string>
+  <string id="15285">Käyttäjän %name% tunnisteet</string>
+  <string id="15286">Kuuntele %name%:n soittolista Last.FM radiosta</string>
   
   <string id="15300">Määriteltyä polkua ei löydy</string>
   <string id="15301">Palvelimeen ei saada yhteyttä</string>
@@ -1615,7 +1615,7 @@
   <string id="20371">Aseta tuotantokauden kuvake</string>
   <string id="20372">Tuotantokauden kuva</string>
   <string id="20373">Tuotantokausi</string>
-  <string id="20374">Ladataan videon tiedot</string>
+  <string id="20374">Ladataan tiedot elokuvista</string>
   <string id="20375">Määrittelemätön sisältö</string>
   <string id="20376">Ensimmäisenä tehty:</string>
   <string id="20377">Päivitä TV-ohjelman tiedot</string>
@@ -1643,7 +1643,9 @@
   <string id="20399">Siirry albumeista musiikkivideoihin</string>
   <string id="20400">Siirry esittääjän musiikkivideoihin</string>
   <string id="20401">Toista musiikkivideo</string>
- <!-- up to 21329 is reserved for the video db !! !-->
+  <string id="20402">Automaattisesti luodut ohjaajan kuvakkeet</string>
+  <string id="20403">Aseta ohjaajan pikakuvake</string>
+   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Näytä piilotetut tiedostot ja kansiot</string>
   
@@ -1790,7 +1792,7 @@
   <string id="21879">Maakoodi</string>
   <string id="21880">Kuvapalvelu</string>
   <string id="21881">UPnP toisto käytössä</string>
-  <string id="21883">Kiintolevylle siirretyt cd:t</string>
+  <string id="21883">Kiintolevylle siirretyt CD:t</string>
    
   <string id="21882">Ohita ennen DVD-valikkoa olevat esitykset</string>
   <!-- strings 21900 thru 21999 reserved for slideshow info -->

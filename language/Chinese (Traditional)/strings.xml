@@ -134,7 +134,7 @@
   <string id="195">找不到資訊！</string>
   <string id="196">選擇影片：</string>
   <string id="197">讀取%s資訊</string>
-  <string id="198">讀取影片詳細資料</string>
+  <string id="198">載入影片詳細資料</string>
   <string id="199">導演：</string>
   <string id="200">編劇：</string>
   <string id="201">年份：</string>
@@ -422,7 +422,7 @@
   <string id="502">托盤開啟</string>
   <string id="503">工作中</string>
   <string id="504">沒有光碟</string>
-  <string id="505">讀取媒體資訊…</string>
+  <string id="505">載入媒體資訊…</string>
   <string id="507">排序：使用數</string>
   <string id="510">啟用 視覺效果</string>
   <string id="511">啟用 切換影片模式</string>
@@ -672,6 +672,7 @@
   <string id="1040">載入目錄</string>
   <string id="1041">檢索%i項目</string>
   <string id="1042">檢索%i在%i項目</string>
+  <string id="1043">程式插件</string>
 
   <string id="1200">SMB 共享設定</string>
   <string id="1202">工作群組</string>
@@ -737,7 +738,6 @@
   <string id="1412">風</string>
   <string id="1413">細雨</string>
   <string id="1414">雷雨</string>
-
   <!-- strings through to 1450 reserved for weather translation -->
 
   <string id="2050">運行時間：</string>
@@ -1326,6 +1326,7 @@
   <string id="16032">無法重建資料庫！</string>
   <string id="16033">無法打開資料庫！</string>
   <string id="16034">無法從資料庫取得歌曲檔案！</string>
+  <string id="16035">派對模式播放列表</string>
 
   <string id="16100">所有影片</string>
   <string id="16101">未看過的</string>
@@ -1463,7 +1464,7 @@
   <string id="20124">填裝玻璃</string>
   <string id="20125">登入</string>
   <string id="20126">登出</string>
-  <string id="20128">進到根目錄</string>
+  <string id="20128">跳至根目錄</string>
   <string id="20129">交織</string>
   <string id="20130">交織(倒轉)</string>
   <string id="20131">混合</string>
@@ -1559,7 +1560,7 @@
   <string id="20319">下載遊戲存檔失敗！</string>
   <string id="20320">選擇要下載和安裝的遊戲存檔</string>
   <string id="20321">線上找不到該遊戲存檔</string>
-  <string id="20322">進入遊戲存檔</string>
+  <string id="20322">跳至遊戲存檔</string>
   <string id="20323">遊戲存檔</string>
   <string id="20324">玩部分的…</string>
   <string id="20325">重設螢幕校正</string>
@@ -1590,15 +1591,15 @@
   <string id="20350">票數</string>
   <string id="20351">電視節目資訊</string>
   <string id="20352">影集資訊</string>
-  <string id="20353">下載電視節目詳細介紹</string>
+  <string id="20353">載入電視節目詳細介紹</string>
   <string id="20354">取得影集介紹</string>
-  <string id="20355">下載影集情報至資料庫</string>
+  <string id="20355">載入影集情報至資料庫</string>
   <string id="20356">選擇電視節目：</string>
   <string id="20357">輸入電視節目名稱</string>
   <string id="20358">第%i季</string>
   <string id="20359">集</string>
   <string id="20360">影集</string>
-  <string id="20361">下載影集詳細介紹</string>
+  <string id="20361">載入影集詳細介紹</string>
   <string id="20362">從資料庫移除影集</string>
   <string id="20363">從資料庫移除電視節目</string>
   <string id="20364">電視節目</string>
@@ -1611,7 +1612,7 @@
   <string id="20371">設定影集縮圖</string>
   <string id="20372">影集圖像</string>
   <string id="20373">季</string>
-  <string id="20374">下載影片資訊</string>
+  <string id="20374">載入影片資訊</string>
   <string id="20375">不指定內容</string>
   <string id="20376">首次播出：</string>
   <string id="20377">重新整理電視節目資訊</string>
@@ -1626,6 +1627,21 @@
   <string id="20386">最近加入的電影</string>
   <string id="20387">最近加入的影集</string>
   <string id="20388">影片製作公司</string>
+  <string id="20389">音樂錄影帶</string>
+  <string id="20390">最近加入的音樂錄影帶</string>
+  <string id="20391">音樂錄影帶</string>
+  <string id="20392">從資料庫移除音樂錄影帶</string>
+  <string id="20393">音樂錄影帶資訊</string>
+  <string id="20394">載入音樂錄影帶資訊</string>
+  <string id="20395">混合</string>
+  <string id="20396">依藝人跳至專輯</string>
+  <string id="20397">進入專輯</string>
+  <string id="20398">播放歌曲</string>
+  <string id="20399">從專輯跳至音樂錄影帶</string>
+  <string id="20400">依藝人跳至音樂錄影帶</string>
+  <string id="20401">播放音樂錄影帶</string>
+  <string id="20402">自動擷取演員縮圖</string>
+  <string id="20403">設定演員縮圖</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">顯示隱藏檔案和目錄</string>
@@ -1773,9 +1789,10 @@
   <string id="21879">國家代碼</string>
   <string id="21880">參考服務</string>
   <string id="21881">啟用 UPnP 播放器</string>
+  <string id="21882">嘗試略過介紹直接跳至 DVD 選單</string>
+  <string id="21883">擷取音樂 CD</string>
 
   <!-- strings 21900 thru 21999 reserved for slideshow info -->
 
   <string id="29999">遊戲應用閃爍過濾</string>
 </strings>
- 	  	 
