@@ -2317,7 +2317,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
 
   if (!g_stSettings.iAdditionalSubtitleDirectoryChecked && !g_guiSettings.GetString("subtitles.custompath").IsEmpty()) // to avoid checking non-existent directories (network) every time..
   {
-    if (!g_network.IsAvailable() && !IsHD(g_guiSettings.GetString("subtitles.custompath")))
+    if (!g_application.getNetwork().IsAvailable() && !IsHD(g_guiSettings.GetString("subtitles.custompath")))
     {
       CLog::Log(LOGINFO,"CUtil::CacheSubtitles: disabling alternate subtitle directory for this session, it's nonaccessible");
       g_stSettings.iAdditionalSubtitleDirectoryChecked = -1; // disabled
@@ -3507,11 +3507,11 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 
   if (execute.Equals("reboot") || execute.Equals("restart"))  //Will reboot the xbox, aka cold reboot
   {
-    g_applicationMessenger.Restart();
+    g_application.getApplicationMessenger().Restart();
   }
   else if (execute.Equals("shutdown"))
   {
-    g_applicationMessenger.Shutdown();
+    g_application.getApplicationMessenger().Shutdown();
   }
   else if (execute.Equals("dashboard"))
   {
@@ -3522,7 +3522,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("restartapp"))
   {
-    g_applicationMessenger.RestartApp();
+    g_application.getApplicationMessenger().RestartApp();
   }
   else if (execute.Equals("mastermode"))
   {
@@ -3555,7 +3555,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("reset")) //Will reset the xbox, aka soft reset
   {
-    g_applicationMessenger.Reset();
+    g_application.getApplicationMessenger().Reset();
   }
   else if (execute.Equals("activatewindow") || execute.Equals("replacewindow"))
   {
@@ -4210,9 +4210,9 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     if (musicScan && musicScan->IsScanning())
       musicScan->StopScanning();
 
-    g_network.NetworkMessage(CNetwork::SERVICES_DOWN,1);
+    g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
 #ifdef HAS_XBOX_NETWORK
-    g_network.Deinitialize();
+    g_application.getNetwork().Deinitialize();
 #endif
 #ifdef HAS_XBOX_HARDWARE
     CLog::Log(LOGNOTICE, "stop fancontroller");
@@ -4223,7 +4223,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     g_passwordManager.bMasterUser = false;
     m_gWindowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
 #ifdef HAS_XBOX_NETWORK
-    g_network.Initialize(g_guiSettings.GetInt("network.assignment"),
+    g_application.getNetwork().Initialize(g_guiSettings.GetInt("network.assignment"),
       g_guiSettings.GetString("network.ipaddress").c_str(),
       g_guiSettings.GetString("network.subnet").c_str(),
       g_guiSettings.GetString("network.gateway").c_str(),

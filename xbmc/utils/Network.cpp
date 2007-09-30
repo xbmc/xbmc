@@ -3,6 +3,18 @@
 #include "../Application.h"
 #include "../lib/libscrobbler/scrobbler.h"
 
+CNetwork::CNetwork()
+{
+   g_application.getApplicationMessenger().NetworkMessage(SERVICES_UP, 0);
+}
+
+CNetwork::~CNetwork()
+{
+#ifndef _LINUX
+   g_application.getApplicationMessenger().NetworkMessage(SERVICES_DOWN, 0);
+#endif
+}
+
 int CNetwork::ParseHex(char *str, unsigned char *addr)
 {
    int len = 0;

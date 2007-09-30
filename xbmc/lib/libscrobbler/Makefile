@@ -1,4 +1,4 @@
-INCLUDES=-I. -I../../ -I../../linux -I../../../guilib
+INCLUDES=-I. -I../../ -I../../linux -I../../../guilib -I../../utils
 SRCS=scrobbler.cpp
 OBJS=scrobbler.o
 

@@ -1019,7 +1019,7 @@ CStdString CGUIInfoManager::GetLabel(int info)
   case NETWORK_IP_ADDRESS:
     {
       CStdString ip;
-      CNetworkInterface* iface = g_network.GetFirstConnectedInterface();
+      CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
       if (iface)
         ip.Format("%s: %s", g_localizeStrings.Get(150).c_str(), iface->GetCurrentIPAddress().c_str());
       return ip;
@@ -1028,7 +1028,7 @@ CStdString CGUIInfoManager::GetLabel(int info)
   case NETWORK_SUBNET_ADDRESS:
     {
       CStdString subnet;
-      CNetworkInterface* iface = g_network.GetFirstConnectedInterface();
+      CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
       if (iface)
         subnet.Format("%s: %s", g_localizeStrings.Get(13159), iface->GetCurrentNetmask().c_str());
       return subnet;
@@ -1037,7 +1037,7 @@ CStdString CGUIInfoManager::GetLabel(int info)
   case NETWORK_GATEWAY_ADDRESS:
     {
       CStdString gateway;
-      CNetworkInterface* iface = g_network.GetFirstConnectedInterface();
+      CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
       if (iface)
         gateway.Format("%s: %s", g_localizeStrings.Get(13160), iface->GetCurrentDefaultGateway().c_str());
       return gateway;
@@ -1046,7 +1046,7 @@ CStdString CGUIInfoManager::GetLabel(int info)
   case NETWORK_DNS1_ADDRESS:
     {
       CStdString dns;
-      std::vector<CStdString> nss = g_network.GetNameServers();
+      std::vector<CStdString> nss = g_application.getNetwork().GetNameServers();
       if (nss.size() >= 1)
           dns.Format("%s: %s", g_localizeStrings.Get(13161), nss[0].c_str());
       return dns;
@@ -1055,7 +1055,7 @@ CStdString CGUIInfoManager::GetLabel(int info)
   case NETWORK_DNS2_ADDRESS:
     {
       CStdString dns;
-      std::vector<CStdString> nss = g_network.GetNameServers();
+      std::vector<CStdString> nss = g_application.getNetwork().GetNameServers();
       if (nss.size() >= 2)
           dns.Format("%s: %s", g_localizeStrings.Get(20307), nss[1].c_str());
       return dns;
@@ -1065,7 +1065,7 @@ CStdString CGUIInfoManager::GetLabel(int info)
     {
       CStdString dhcpserver;
 #ifdef HAS_XBOX_HARDWARE
-      dhcpserver.Format("%s: %s", g_localizeStrings.Get(20308), g_network.m_networkinfo.dhcpserver);
+      dhcpserver.Format("%s: %s", g_localizeStrings.Get(20308), g_application.getNetwork().m_networkinfo.dhcpserver);
 #endif
       return dhcpserver;
     }
@@ -1074,8 +1074,8 @@ CStdString CGUIInfoManager::GetLabel(int info)
   case NETWORK_IS_DHCP:
     {
       CStdString dhcp;
-      CNetworkInterface* iface = g_network.GetFirstConnectedInterface();
-      if(g_network.m_networkinfo.DHCP)
+      CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
+      if(g_application.getNetwork().m_networkinfo.DHCP)
         dhcp.Format("%s %s", g_localizeStrings.Get(146), g_localizeStrings.Get(148)); // is dhcp ip
       else
         dhcp.Format("%s %s", g_localizeStrings.Get(146), g_localizeStrings.Get(147)); // is fixed ip
@@ -1321,9 +1321,9 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
     bReturn = false;
 #endif
 #ifdef HAS_KAI
-    bReturn = g_network.IsAvailable(false) && g_guiSettings.GetBool("xlinkkai.enabled") && CKaiClient::GetInstance()->IsEngineConnected();
+    bReturn = g_application.getNetwork().IsAvailable(false) && g_guiSettings.GetBool("xlinkkai.enabled") && CKaiClient::GetInstance()->IsEngineConnected();
   else if (condition == SYSTEM_KAI_ENABLED)
-    bReturn = g_network.IsAvailable(false) && g_guiSettings.GetBool("xlinkkai.enabled");
+    bReturn = g_application.getNetwork().IsAvailable(false) && g_guiSettings.GetBool("xlinkkai.enabled");
 #endif
   else if (condition == SYSTEM_PLATFORM_LINUX)
 #ifdef _LINUX

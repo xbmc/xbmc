@@ -1,4 +1,4 @@
-INCLUDES=-I. -I.. -I../../ -I../../linux -I../../../guilib
+INCLUDES=-I. -I.. -I../../ -I../../linux -I../../../guilib -I../../utils
 SRCS=LinuxRenderer.cpp RenderManager.cpp LinuxRendererATI.cpp LinuxRendererGL.cpp
 DIRS=VideoShaders
 

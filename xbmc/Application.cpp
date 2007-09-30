@@ -524,7 +524,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 
 
 #ifdef _LINUX
-  bool NetworkUp = g_network.IsAvailable();
+  bool NetworkUp = m_network.IsAvailable();
 #endif
 
 #ifdef HAS_XBOX_NETWORK
@@ -565,7 +565,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
       std::vector<int>::iterator it;
       for( it = netorder.begin();it != netorder.end(); it++)
       {
-        g_network.Deinitialize();
+        m_network.Deinitialize();
 
         if (!(XNetGetEthernetLinkStatus() & XNET_ETHERNET_LINK_ACTIVE))
         {
@@ -577,17 +577,17 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
         {
           case NETWORK_DASH:
             FEH_TextOut(pFont, iLine, L"Init network using dash settings...");
-            g_network.Initialize(NETWORK_DASH, "","","","");
+            m_network.Initialize(NETWORK_DASH, "","","","");
             break;
           case NETWORK_DHCP:
             FEH_TextOut(pFont, iLine, L"Init network using DHCP...");
-            g_network.Initialize(NETWORK_DHCP, "","","","");
+            m_network.Initialize(NETWORK_DHCP, "","","","");
             break;
           default:
             FEH_TextOut(pFont, iLine, L"Init network using static ip...");
             if( m_bXboxMediacenterLoaded )
             {
-              g_network.Initialize(NETWORK_STATIC,
+              m_network.Initialize(NETWORK_STATIC,
                     g_guiSettings.GetString("network.ipaddress").c_str(),
                     g_guiSettings.GetString("network.subnet").c_str(),
                     g_guiSettings.GetString("network.gateway").c_str(),
@@ -595,7 +595,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
             }
             else
             {
-              g_network.Initialize(NETWORK_STATIC,
+              m_network.Initialize(NETWORK_STATIC,
                     "192.168.0.42",
                     "255.255.255.0",
                     "192.168.0.1",
@@ -610,13 +610,13 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 
         while(dwState == XNET_GET_XNADDR_PENDING)
         {
-          dwState = g_network.UpdateState();
+          dwState = m_network.UpdateState();
 
           if( dwState != XNET_GET_XNADDR_PENDING )
             break;
 
           if (HaveGamepad && AnyButtonDown())
-            g_applicationMessenger.Restart();
+            m_applicationMessenger.Restart();
 
 
           Sleep(50);
@@ -647,7 +647,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
             Sleep(50);
 
             if (HaveGamepad && AnyButtonDown())
-              g_applicationMessenger.Restart();
+              m_applicationMessenger.Restart();
           }
         }
       }
@@ -657,7 +657,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 
   if( NetworkUp )
   {
-    FEH_TextOut(pFont, iLine++, L"IP Address: %S", g_network.GetFirstConnectedInterface()->GetCurrentIPAddress().c_str());
+    FEH_TextOut(pFont, iLine++, L"IP Address: %S", m_network.GetFirstConnectedInterface()->GetCurrentIPAddress().c_str());
     ++iLine;
   }
 
@@ -1147,7 +1147,7 @@ HRESULT CApplication::Create(HWND hWnd)
         {
           // We do a hard reset to come back to default resolution and avoid infinite reboots
           CLog::Log(LOGINFO, "No infinite reboot loop...");
-          g_applicationMessenger.Reset();
+          m_applicationMessenger.Reset();
         }
       }
     }
@@ -1526,7 +1526,7 @@ HRESULT CApplication::Initialize()
 #ifdef HAS_XBOX_NETWORK
   /* setup network based on our settings */
   /* network will start it's init procedure */
-  g_network.Initialize(g_guiSettings.GetInt("network.assignment"),
+  m_network.Initialize(g_guiSettings.GetInt("network.assignment"),
     g_guiSettings.GetString("network.ipaddress").c_str(),
     g_guiSettings.GetString("network.subnet").c_str(),
     g_guiSettings.GetString("network.gateway").c_str(),
@@ -1615,12 +1615,12 @@ void CApplication::StopIdleThread()
 void CApplication::StartWebServer()
 {
 #ifdef HAS_WEB_SERVER    
-  if (g_guiSettings.GetBool("servers.webserver") && g_network.IsAvailable())
+  if (g_guiSettings.GetBool("servers.webserver") && m_network.IsAvailable())
   {
     CLog::Log(LOGNOTICE, "Webserver: Starting...");
     CSectionLoader::Load("LIBHTTP");
     m_pWebServer = new CWebServer();
-    m_pWebServer->Start(g_network.GetFirstConnectedInterface()->GetCurrentIPAddress().c_str(), atoi(g_guiSettings.GetString("servers.webserverport")), _P("Q:\\web"), false);
+    m_pWebServer->Start(m_network.GetFirstConnectedInterface()->GetCurrentIPAddress().c_str(), atoi(g_guiSettings.GetString("servers.webserverport")), _P("Q:\\web"), false);
         if (pXbmcHttp)
       pXbmcHttp->xbmcBroadcast("StartUp", 1);
   }
@@ -1645,7 +1645,7 @@ void CApplication::StopWebServer()
 void CApplication::StartFtpServer()
 {
 #ifdef HAS_FTP_SERVER
-  if ( g_guiSettings.GetBool("servers.ftpserver") && g_network.IsAvailable() )
+  if ( g_guiSettings.GetBool("servers.ftpserver") && m_network.IsAvailable() )
   {
     CLog::Log(LOGNOTICE, "XBFileZilla: Starting...");
     if (!m_pFileZilla)
@@ -1706,7 +1706,7 @@ void CApplication::StopFtpServer()
 void CApplication::StartTimeServer()
 {
 #ifdef HAS_TIME_SERVER
-  if (g_guiSettings.GetBool("locale.timeserver") && g_network.IsAvailable() )
+  if (g_guiSettings.GetBool("locale.timeserver") && m_network.IsAvailable() )
   {
     if( !m_psntpClient )
     {
@@ -1973,7 +1973,7 @@ void CApplication::CheckDate()
 
 void CApplication::StopServices()
 {
-  g_network.NetworkMessage(CNetwork::SERVICES_DOWN, 0);
+  m_network.NetworkMessage(CNetwork::SERVICES_DOWN, 0);
 
   CLog::Log(LOGNOTICE, "stop dvd detect media");
   m_DetectDVDType.StopThread();
@@ -2762,7 +2762,7 @@ bool CApplication::OnAction(const CAction &action)
     {
       if (GetTickCount() >= MarkTime + 3000)
       {
-        g_applicationMessenger.Shutdown();
+        m_applicationMessenger.Shutdown();
         return true;
       }
     }
@@ -3575,7 +3575,7 @@ void CApplication::Stop()
 #endif
     //g_lcd->StopThread();
     CLog::Log(LOGNOTICE, "stop python");
-    g_applicationMessenger.Cleanup();
+    m_applicationMessenger.Cleanup();
 #ifdef HAS_PYTHON    
     g_pythonParser.FreeResources();
 #endif
@@ -4472,7 +4472,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   {
     // reset our codec info - don't want that on screen
     g_infoManager.SetShowCodec(false);
-    g_applicationMessenger.PictureSlideShow(g_guiSettings.GetString("screensaver.slideshowpath"), true);
+    m_applicationMessenger.PictureSlideShow(g_guiSettings.GetString("screensaver.slideshowpath"), true);
     return;
   }
   else if (m_screenSaverMode == "Dim")
@@ -4588,7 +4588,7 @@ void CApplication::CheckShutdown()
       }
 
       if (bShutDown)
-        g_applicationMessenger.Shutdown(); // Turn off the box
+        m_applicationMessenger.Shutdown(); // Turn off the box
     }
   }
 
@@ -5051,7 +5051,7 @@ void CApplication::Process()
 
   // process messages which have to be send to the gui
   // (this can only be done after m_gWindowManager.Render())
-  g_applicationMessenger.ProcessWindowMessages();
+  m_applicationMessenger.ProcessWindowMessages();
 
 #ifdef HAS_PYTHON
   // process any Python scripts
@@ -5059,7 +5059,7 @@ void CApplication::Process()
 #endif
 
   // process messages, even if a movie is playing
-  g_applicationMessenger.ProcessMessages();
+  m_applicationMessenger.ProcessMessages();
 
   // check for memory unit changes
 #ifdef HAS_XBOX_HARDWARE
@@ -5101,7 +5101,7 @@ void CApplication::ProcessSlow()
 {
 #ifdef HAS_XBOX_NETWORK
   // update our network state
-  g_network.UpdateState();
+  m_network.UpdateState();
 #endif
 
 #ifdef HAS_XBOX_HARDWARE
@@ -5429,7 +5429,7 @@ void CApplication::SeekTime( double dTime )
             item.m_lStartOffset = (long)((dTime - startOfNewFile) * 75.0);
             // don't just call "PlayFile" here, as we are quite likely called from the
             // player thread, so we won't be able to delete ourselves.
-            g_applicationMessenger.PlayFile(item, true);
+            m_applicationMessenger.PlayFile(item, true);
           }
           return;
         }
@@ -5714,4 +5714,16 @@ void CApplication::SaveCurrentFileSettings()
     }
   }
 }
+
+CApplicationMessenger CApplication::getApplicationMessenger()
+{
+   return m_applicationMessenger;
+}
+
+#ifdef _LINUX
+CNetworkLinux CApplication::getNetwork()
+{
+   return m_network;
+}
+#endif
 

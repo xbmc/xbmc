@@ -348,8 +348,6 @@ void CNetworkInterfaceLinux::SetSettings(bool isDHCP, CStdString& ipAddress, CSt
 {
 }
      
-CNetworkLinux g_network;
- 
    /*
 int main(void)
 {
