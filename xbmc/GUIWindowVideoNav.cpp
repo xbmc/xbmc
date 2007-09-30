@@ -343,7 +343,6 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         {
           g_infoManager.m_content = "episodes";
           item.m_strPath = items.m_strPath;
-          item.SetCachedSeasonThumb();
         }
         else
           g_infoManager.m_content = "seasons";
