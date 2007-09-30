@@ -23,6 +23,7 @@
 #include "GUIViewStateVideo.h"
 #include "playlistplayer.h"
 #include "FileSystem/VideoDatabaseDirectory.h"
+#include "FileSystem/PluginDirectory.h"
 #include "GUIBaseContainer.h"
 #include "VideoDatabase.h"
 
@@ -352,6 +353,14 @@ VECSHARES& CGUIViewStateWindowVideoNav::GetShares()
   share.m_strThumbnailImage="defaultFolderBig.png";
   share.m_iDriveType = SHARE_TYPE_LOCAL;
   m_shares.push_back(share);
+
+  // plugins share
+  if (CPluginDirectory::HasPlugins("video"))
+  {
+    share.strName = g_localizeStrings.Get(1037);
+    share.strPath = "plugin://video/";
+    m_shares.push_back(share);
+  }
 
   return CGUIViewStateWindowVideo::GetShares();
 }
