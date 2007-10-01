@@ -1435,7 +1435,8 @@ bool CGUIWindowVideoBase::GetDirectory(const CStdString &strDirectory, CFileItem
 
 void CGUIWindowVideoBase::OnPrepareFileItems(CFileItemList &items)
 {
-  items.SetCachedVideoThumbs();
+  if (!items.m_strPath.Equals("plugin://video/"))
+    items.SetCachedVideoThumbs();
 }
 
 void CGUIWindowVideoBase::AddToDatabase(int iItem)
