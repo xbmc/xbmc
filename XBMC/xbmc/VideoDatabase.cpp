@@ -6116,18 +6116,6 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver)
     sql = "delete from movielinktvshow where idMovie not in (select distinct idMovie from movie)";
     m_pDS->exec(sql.c_str());
 
-    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning path table");
-    sql = "delete from path where idPath not in (select distinct idPath from files) and idPath not in (select distinct idPath from tvshowlinkpath) and strContent=''";
-    m_pDS->exec(sql.c_str());
-    
-    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning genre table");
-    sql = "delete from genre where idGenre not in (select distinct idGenre from genrelinkmovie) and idGenre not in (select distinct idGenre from genrelinktvshow) and idGenre not in (select distinct idGenre from genrelinkepisode)";
-    m_pDS->exec(sql.c_str());
-
-    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning actor table of actors and directors");
-    sql = "delete from actors where idActor not in (select distinct idActor from actorlinkmovie) and idActor not in (select distinct idDirector from directorlinkmovie) and idActor not in (select distinct idActor from actorlinktvshow) and idActor not in (select distinct idActor from actorlinkepisode) and idActor not in (select distinct idDirector from directorlinktvshow) and idActor not in (select distinct idDirector from directorlinkepisode)";
-    m_pDS->exec(sql.c_str());
- 
     CLog::Log(LOGDEBUG, __FUNCTION__" Updating episode counts");
     m_pDS->query("select idshow from tvshow");
     while (!m_pDS->eof())
@@ -6155,6 +6143,22 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver)
 
     CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning studiolinkmusicvideo table");
     sql = "delete from studiolinkmusicvideo where idMVideo in " + musicVideosToDelete;
+    m_pDS->exec(sql.c_str());
+
+    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning path table");
+    sql = "delete from path where idPath not in (select distinct idPath from files) and idPath not in (select distinct idPath from tvshowlinkpath) and strContent=''";
+    m_pDS->exec(sql.c_str());
+
+    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning genre table");
+    sql = "delete from genre where idGenre not in (select distinct idGenre from genrelinkmovie) and idGenre not in (select distinct idGenre from genrelinktvshow) and idGenre not in (select distinct idGenre from genrelinkepisode) and idGenre not in (select distinct idGenre from genrelinkmusicvideo)";
+    m_pDS->exec(sql.c_str());
+
+    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning actor table of actors and directors");
+    sql = "delete from actors where idActor not in (select distinct idActor from actorlinkmovie) and idActor not in (select distinct idDirector from directorlinkmovie) and idActor not in (select distinct idActor from actorlinktvshow) and idActor not in (select distinct idActor from actorlinkepisode) and idActor not in (select distinct idDirector from directorlinktvshow) and idActor not in (select distinct idDirector from directorlinkepisode) and idActor not in (select distinct idArtist from artistlinkmusicvideo)";
+    m_pDS->exec(sql.c_str());
+
+    CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning studio table");
+    sql = "delete from studio where idStudio not in (select distinct idStudio from studiolinkmovie) and idStudio not in (select distinct idStudio from genrelinkmusicvideo)";
     m_pDS->exec(sql.c_str());
 
     CommitTransaction();
