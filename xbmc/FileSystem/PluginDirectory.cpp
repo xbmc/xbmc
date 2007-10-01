@@ -360,10 +360,15 @@ bool CPluginDirectory::GetPluginsDirectory(const CStdString &type, CFileItemList
     CFileItem *item = items[i];
     item->SetCachedProgramThumb();
     if (!item->HasThumbnail())
+      item->SetUserProgramThumb();
+    if (!item->HasThumbnail())
     {
       CFileItem item2(*item);
       CUtil::AddFileToFolder(item->m_strPath,"default.py",item2.m_strPath);
+      item2.m_bIsFolder = false;
       item2.SetCachedProgramThumb();
+      if (!item2.HasThumbnail())
+        item2.SetUserProgramThumb();
       if (item2.HasThumbnail())
         item->SetThumbnailImage(item2.GetThumbnailImage());
     }
