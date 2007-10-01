@@ -5934,7 +5934,10 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver)
       }
     }
     else
+    {
+      pObserver->OnDirectoryChanged("");
       pObserver->OnStateChanged(CLEANING_UP_DATABASE);
+    }
 
     CStdString filesToDelete = "(";
     CStdString moviesToDelete = "(";
@@ -6154,7 +6157,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver)
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning actor table of actors and directors");
-    sql = "delete from actors where idActor not in (select distinct idActor from actorlinkmovie) and idActor not in (select distinct idDirector from directorlinkmovie) and idActor not in (select distinct idActor from actorlinktvshow) and idActor not in (select distinct idActor from actorlinkepisode) and idActor not in (select distinct idDirector from directorlinktvshow) and idActor not in (select distinct idDirector from directorlinkepisode) and idActor not in (select distinct idArtist from artistlinkmusicvideo)";
+    sql = "delete from actors where idActor not in (select distinct idActor from actorlinkmovie) and idActor not in (select distinct idDirector from directorlinkmovie) and idActor not in (select distinct idActor from actorlinktvshow) and idActor not in (select distinct idActor from actorlinkepisode) and idActor not in (select distinct idDirector from directorlinktvshow) and idActor not in (select distinct idDirector from directorlinkepisode) and idActor not in (select distinct idArtist from artistlinkmusicvideo) and idActor not in (select distinct idDirector from directorlinkmusicvideo)";
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning studio table");

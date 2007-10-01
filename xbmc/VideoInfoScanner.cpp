@@ -79,9 +79,6 @@ namespace VIDEO
       // result in unexpected behaviour.
       m_bCanInterrupt = false;
 
-      if (m_bClean)
-        m_database.CleanDatabase(m_pObserver);
-
       bool bCancelled = false;
       for(std::map<CStdString,VIDEO::SScanSettings>::iterator it = m_pathsToScan.begin(); it != m_pathsToScan.end(); it++)
       {
@@ -96,13 +93,11 @@ namespace VIDEO
       {
         m_database.CommitTransaction();
 
-        if (m_bUpdateAll)
-        {
-          if (m_pObserver)
-            m_pObserver->OnStateChanged(COMPRESSING_DATABASE);
-
-          m_database.Compress();
-        }
+        if (m_bClean)
+          m_database.CleanDatabase(m_pObserver);
+        if (m_pObserver)
+          m_pObserver->OnStateChanged(COMPRESSING_DATABASE);
+        m_database.Compress();
       }
       else
         m_database.RollbackTransaction();
