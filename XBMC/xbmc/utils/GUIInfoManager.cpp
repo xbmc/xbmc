@@ -2008,7 +2008,7 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
     if (tag.GetArtist().size()) { return tag.GetArtist(); }
     break;
   case MUSICPLAYER_YEAR: 
-    if (tag.GetYear().size()) { return tag.GetYear(); }
+    if (tag.GetYear()) { return tag.GetYearString(); }
     break;
   case MUSICPLAYER_GENRE: 
     if (tag.GetGenre().size()) { return tag.GetGenre(); }
@@ -2784,7 +2784,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     break;
   case LISTITEM_YEAR:
     if (item->HasMusicInfoTag())
-      return item->GetMusicInfoTag()->GetYear();
+      return item->GetMusicInfoTag()->GetYearString();
     if (item->HasVideoInfoTag())
     {
       CStdString strResult;
