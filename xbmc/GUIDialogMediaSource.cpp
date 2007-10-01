@@ -369,16 +369,27 @@ void CGUIDialogMediaSource::OnOK()
   {
     if (share.strPath.Left(9).Equals("plugin://"))
     {
-      CFileItem item2(share.strPath);      
-      CUtil::AddFileToFolder(share.strPath,"default.py",item2.m_strPath);
-      item2.m_strPath.Replace("plugin://","Q:\\plugins\\");
-      item2.m_strPath.Replace("/","\\");
-      item2.m_bIsFolder = false;
-      item2.SetCachedProgramThumb();
-      if (!item2.HasThumbnail())
-        item2.SetUserProgramThumb();
-      if (item2.HasThumbnail())
-        m_paths[0]->SetThumbnailImage(item2.GetThumbnailImage());
+      CStdString strPath=share.strPath;
+      strPath.Replace("plugin://","Q:\\plugins\\");
+      strPath.Replace("/","\\");
+      CFileItem item(strPath,true);
+      item.SetCachedProgramThumb();
+      if (!item.HasThumbnail())
+        item.SetUserProgramThumb();
+      if (!item.HasThumbnail())
+      {
+        CUtil::AddFileToFolder(strPath,"default.py",item.m_strPath);
+        item.m_bIsFolder = false;
+        item.SetCachedProgramThumb();
+        if (!item.HasThumbnail())
+          item.SetUserProgramThumb();
+      }
+      if (item.HasThumbnail())
+      {
+        CFileItem item2(share.strPath,true);
+        XFILE::CFile::Cache(item.GetThumbnailImage(),item2.GetCachedProgramThumb());
+        m_paths[0]->SetThumbnailImage(item2.GetCachedProgramThumb());
+      }
     }
     m_confirmed = true;
     Close();
