@@ -189,7 +189,11 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
           g_partyModeManager.Disable();
         else
         {
-          g_partyModeManager.Enable(true);
+          if (!g_partyModeManager.Enable(true))
+          {
+            SET_CONTROL_SELECTED(GetID(),CONTROL_BTNPARTYMODE,false);
+            return false;
+          }
 
           // Playlist directory is the root of the playlist window
           if (m_guiState.get()) m_guiState->SetPlaylistDirectory("playlistvideo://");
