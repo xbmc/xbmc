@@ -600,11 +600,39 @@ void CGUIWindowMusicNav::SetArtistImage(int iItem)
     m_musicdatabase.GetArtistPath(idArtist, picturePath);
   }
 
-  if (CGUIDialogFileBrowser::ShowAndGetImage(g_settings.m_musicSources, g_localizeStrings.Get(1030), picturePath))
+  CFileItemList items;
+  if (XFILE::CFile::Exists(pItem->GetCachedArtistThumb()))
+  {
+    CFileItem* nItem = new CFileItem("thumb://Current",false);
+    nItem->SetLabel(g_localizeStrings.Get(20016));
+    nItem->SetThumbnailImage(pItem->GetCachedArtistThumb());
+    items.Add(nItem);
+  }
+  CStdString strThumb;
+  CUtil::AddFileToFolder(picturePath,"folder.jpg",strThumb);
+  if (XFILE::CFile::Exists(strThumb))
+  {
+    CFileItem* pItem = new CFileItem(strThumb,false);
+    pItem->SetLabel(g_localizeStrings.Get(20017));
+    pItem->SetThumbnailImage(strThumb);
+    items.Add(pItem);
+  }
+
+  CFileItem* nItem = new CFileItem("thumb://None",false);
+  nItem->SetLabel(g_localizeStrings.Get(20018));
+  nItem->SetThumbnailImage("DefaultFolderBig.png");
+  items.Add(nItem);
+
+  if (CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_musicSources, g_localizeStrings.Get(20019), picturePath))
   {
     CStdString thumb(pItem->GetCachedArtistThumb());
     CPicture picture;
-    if (picture.DoCreateThumbnail(picturePath, thumb))
+    if (picturePath.Equals("thumb://Current"))
+      return;
+    if (picturePath.Equals("thumb://None"))
+      XFILE::CFile::Delete(thumb);
+
+    if (picturePath.Equals("thumb://None") || picture.DoCreateThumbnail(picturePath, thumb))
     {
       CMusicDatabaseDirectory dir;
       dir.ClearDirectoryCache(m_vecItems.m_strPath);
