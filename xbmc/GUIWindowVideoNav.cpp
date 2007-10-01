@@ -322,13 +322,7 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
   bool bResult = CGUIWindowVideoBase::GetDirectory(strDirectory, items);
   if (bResult)
   {
-    if (!items.IsVideoDb())  // don't need to do this for playlist, as OnRetrieveMusicInfo() should ideally set thumbs
-    {
-      items.SetCachedVideoThumbs();
-      m_thumbLoader.Load(m_vecItems);
-      g_infoManager.m_content = "";
-    }
-    else
+    if (items.IsVideoDb())
     {
       DIRECTORY::CVideoDatabaseDirectory dir;
       CQueryParams params;
@@ -362,6 +356,12 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         g_infoManager.m_content = "musicvideos";
       else
         g_infoManager.m_content = "";
+    }
+    else if (!items.m_strPath.Equals("plugin://video/"))  // don't need to do this for playlist, as OnRetrieveMusicInfo() should ideally set thumbs
+    {
+      items.SetCachedVideoThumbs();
+      m_thumbLoader.Load(m_vecItems);
+      g_infoManager.m_content = "";
     }
   }
 
@@ -895,6 +895,9 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
 
         if (dir.GetDirectoryChildType(m_vecItems.m_strPath) == NODE_TYPE_SEASONS && !dir.IsAllItem(item->m_strPath) && item->m_bIsFolder)
           buttons.Add(CONTEXT_BUTTON_SET_SEASON_THUMB, 20371);
+
+        if (m_vecItems.m_strPath.Equals("plugin://video/"))
+          buttons.Add(CONTEXT_BUTTON_SET_PLUGIN_THUMB, 1044);
         
         if (dir.GetDirectoryChildType(m_vecItems.m_strPath) == NODE_TYPE_ACTOR && !dir.IsAllItem(item->m_strPath) && item->m_bIsFolder)
         {
@@ -971,6 +974,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_SET_SEASON_THUMB:
   case CONTEXT_BUTTON_SET_ACTOR_THUMB:
   case CONTEXT_BUTTON_SET_ARTIST_THUMB:
+  case CONTEXT_BUTTON_SET_PLUGIN_THUMB:
     {
       // Grab the thumbnails from the web
       CStdString strPath;
@@ -980,7 +984,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       DIRECTORY::CDirectory::Create(strPath);
       int i=1;
       CVideoInfoTag tag;
-      if (button != CONTEXT_BUTTON_SET_ARTIST_THUMB)
+      if (button != CONTEXT_BUTTON_SET_ARTIST_THUMB && button != CONTEXT_BUTTON_SET_PLUGIN_THUMB)
       {
         if (button == CONTEXT_BUTTON_SET_SEASON_THUMB)
           m_database.GetTvShowInfo("",tag,m_vecItems[itemNumber]->GetVideoInfoTag()->m_iDbId);
@@ -1011,12 +1015,53 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         cachedThumb = m_vecItems[itemNumber]->GetCachedActorThumb();
       if (button == CONTEXT_BUTTON_SET_ARTIST_THUMB)
         cachedThumb = m_vecItems[itemNumber]->GetCachedArtistThumb();
+      if (button == CONTEXT_BUTTON_SET_PLUGIN_THUMB)
+      {
+        strPath = m_vecItems[itemNumber]->m_strPath;
+        strPath.Replace("plugin://video/","Q:\\plugins\\video\\");
+        strPath.Replace("/","\\");
+        CFileItem item(strPath,true);
+        cachedThumb = item.GetCachedProgramThumb();
+      }
       if (CFile::Exists(cachedThumb))
       {
         CFileItem *item = new CFileItem("thumb://Current", false);
         item->SetThumbnailImage(cachedThumb);
         item->SetLabel(g_localizeStrings.Get(20016));
         items.Add(item);
+      }
+
+      if (button == CONTEXT_BUTTON_SET_PLUGIN_THUMB)
+      {
+        if (items.Size() == 0)
+        {
+          CFileItem item2(strPath,false);
+          CUtil::AddFileToFolder(strPath,"default.py",item2.m_strPath);
+          if (CFile::Exists(item2.GetCachedProgramThumb()))
+          {
+            CFileItem *item = new CFileItem("thumb://Current", false);
+            item->SetThumbnailImage(item2.GetCachedProgramThumb());
+            item->SetLabel(g_localizeStrings.Get(20016));
+            items.Add(item);
+          }
+        }
+        CStdString strThumb;
+        CUtil::AddFileToFolder(strPath,"folder.jpg",strThumb);
+        if (CFile::Exists(strThumb))
+        {
+          CFileItem* item = new CFileItem(strThumb,false);
+          item->SetThumbnailImage(strThumb);
+          item->SetLabel(g_localizeStrings.Get(20017));
+          items.Add(item);
+        }
+        CUtil::AddFileToFolder(strPath,"default.tbn",strThumb);
+        if (CFile::Exists(strThumb))
+        {
+          CFileItem* item = new CFileItem(strThumb,false);
+          item->SetThumbnailImage(strThumb);
+          item->SetLabel(g_localizeStrings.Get(20017));
+          items.Add(item);
+        }
       }
 
       CFileItem *item = new CFileItem("thumb://None", false);
@@ -1042,8 +1087,18 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         else
           result = "thumb://None";
       }
-      else if (result == "thumb://None")
+      if (result == "thumb://None")
+      {
         CFile::Delete(cachedThumb);
+        if (button == CONTEXT_BUTTON_SET_PLUGIN_THUMB)
+        {
+          CPicture picture;
+          picture.CacheSkinImage("DefaultFolderBig.png",cachedThumb);
+          CFileItem item2(strPath,false);
+          CUtil::AddFileToFolder(strPath,"default.py",item2.m_strPath);
+          CFile::Delete(item2.GetCachedProgramThumb());
+        }
+      }
       else
         CFile::Cache(result,cachedThumb);
 
