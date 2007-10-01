@@ -433,23 +433,17 @@ bool SSortFileItem::SongArtistAscending(CFileItem *left, CFileItem *right)
     // test year
     if (g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear)
     {
+      int yL = 0, yR = 0;
       if (left->HasMusicInfoTag())
-        l = (char *)left->GetMusicInfoTag()->GetYear().c_str();
+        yL = left->GetMusicInfoTag()->GetYear();
       else if (left->HasVideoInfoTag())
-      {
-        strL.Format("%i",left->GetVideoInfoTag()->m_iYear);
-        l = (char*)strL.c_str();
-      }
+        yL = left->GetVideoInfoTag()->m_iYear;
       if (right->HasMusicInfoTag())
-        r = (char *)right->GetMusicInfoTag()->GetYear().c_str();
+        yR = right->GetMusicInfoTag()->GetYear();
       else if (right->HasVideoInfoTag())
-      {
-        strR.Format("%i",right->GetVideoInfoTag()->m_iYear);
-        r = (char*)strR.c_str();
-      }     
-      result = StringUtils::AlphaNumericCompare(l, r);
-      if (result < 0) return true;
-      if (result > 0) return false;
+        yR = right->GetVideoInfoTag()->m_iYear;
+      if (yL < yR) return true;
+      if (yL > yR) return false;
     }
     // artists agree, test the album
     if (left->HasMusicInfoTag())
@@ -517,23 +511,17 @@ bool SSortFileItem::SongArtistDescending(CFileItem *left, CFileItem *right)
     // test year
     if (g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear)
     {
+      int yL = 0, yR = 0;
       if (left->HasMusicInfoTag())
-        l = (char *)left->GetMusicInfoTag()->GetYear().c_str();
+        yL = left->GetMusicInfoTag()->GetYear();
       else if (left->HasVideoInfoTag())
-      {
-        strL.Format("%i",left->GetVideoInfoTag()->m_iYear);
-        l = (char*)strL.c_str();
-      }
+        yL = left->GetVideoInfoTag()->m_iYear;
       if (right->HasMusicInfoTag())
-        r = (char *)right->GetMusicInfoTag()->GetYear().c_str();
+        yR = right->GetMusicInfoTag()->GetYear();
       else if (right->HasVideoInfoTag())
-      {
-        strR.Format("%i",right->GetVideoInfoTag()->m_iYear);
-        r = (char*)strR.c_str();
-      }     
-      result = StringUtils::AlphaNumericCompare(l, r);
-      if (result > 0) return true;
-      if (result < 0) return false;
+        yR = right->GetVideoInfoTag()->m_iYear;
+      if (yL > yR) return true;
+      if (yL < yR) return false;
     }
     // artists agree, test the album
     if (left->HasMusicInfoTag())
@@ -603,24 +591,17 @@ bool SSortFileItem::SongArtistAscendingNoThe(CFileItem *left, CFileItem *right)
     // test year
     if (g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear)
     {
+      int yL = 0, yR = 0;
       if (left->HasMusicInfoTag())
-        l = (char *)left->GetMusicInfoTag()->GetYear().c_str();
+        yL = left->GetMusicInfoTag()->GetYear();
       else if (left->HasVideoInfoTag())
-      {
-        strL.Format("%i",left->GetVideoInfoTag()->m_iYear);
-        l = (char*)strL.c_str();
-      }
+        yL = left->GetVideoInfoTag()->m_iYear;
       if (right->HasMusicInfoTag())
-        r = (char *)right->GetMusicInfoTag()->GetYear().c_str();
+        yR = right->GetMusicInfoTag()->GetYear();
       else if (right->HasVideoInfoTag())
-      {
-        strR.Format("%i",right->GetVideoInfoTag()->m_iYear);
-        r = (char*)strR.c_str();
-      }     
-
-      result = StringUtils::AlphaNumericCompare(l, r);
-      if (result < 0) return true;
-      if (result > 0) return false;
+        yR = right->GetVideoInfoTag()->m_iYear;
+      if (yL < yR) return true;
+      if (yL > yR) return false;
     }
     // artists agree, test the album
     if (left->HasMusicInfoTag())
@@ -688,24 +669,17 @@ bool SSortFileItem::SongArtistDescendingNoThe(CFileItem *left, CFileItem *right)
     // test year
     if (g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear)
     {
+      int yL = 0, yR = 0;
       if (left->HasMusicInfoTag())
-        l = (char *)left->GetMusicInfoTag()->GetYear().c_str();
+        yL = left->GetMusicInfoTag()->GetYear();
       else if (left->HasVideoInfoTag())
-      {
-        strL.Format("%i",left->GetVideoInfoTag()->m_iYear);
-        l = (char*)strL.c_str();
-      }
+        yL = left->GetVideoInfoTag()->m_iYear;
       if (right->HasMusicInfoTag())
-        r = (char *)right->GetMusicInfoTag()->GetYear().c_str();
+        yR = right->GetMusicInfoTag()->GetYear();
       else if (right->HasVideoInfoTag())
-      {
-        strR.Format("%i",right->GetVideoInfoTag()->m_iYear);
-        r = (char*)strR.c_str();
-      }     
-
-      result = StringUtils::AlphaNumericCompare(l, r);
-      if (result > 0) return true;
-      if (result < 0) return false;
+        yR = right->GetVideoInfoTag()->m_iYear;
+      if (yL > yR) return true;
+      if (yL < yR) return false;
     }
     // artists agree, test the album
     if (left->HasMusicInfoTag())
