@@ -178,7 +178,7 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
     break;
   case 'Y':
     if (music)
-      value = music->GetYear();
+      value = music->GetYearString();
     if (movie)
     {
       if (!movie->m_strFirstAired.IsEmpty())
