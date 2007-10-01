@@ -32,7 +32,7 @@ void CVideoInfoTag::Reset()
   m_iTop250 = 0;
   m_iYear = 0;
   m_iSeason = -1;
-  m_iEpisode = 0;
+  m_iEpisode = -1;
   m_iSpecialSortSeason = -1;
   m_iSpecialSortEpisode = -1;
   m_fRating = 0.0f;

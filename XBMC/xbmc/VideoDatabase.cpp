@@ -3131,7 +3131,7 @@ void CVideoDatabase::MarkAsWatched(const CFileItem &item)
 {
   // find the movie in the db
   long movieID = -1;
-  if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iEpisode == 0) // movie
+  if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iEpisode == -1) // movie
     movieID = GetMovieInfo(item.m_strPath);
 
   int iType=0;
