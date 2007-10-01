@@ -1067,6 +1067,36 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           items.Add(item);
         }
       }
+      if (button == CONTEXT_BUTTON_SET_ARTIST_THUMB)
+      {
+        CStdString picturePath;
+
+        CStdString strPath = m_vecItems[itemNumber]->m_strPath;
+        CUtil::RemoveSlashAtEnd(strPath);
+
+        int nPos=strPath.ReverseFind("/");
+        if (nPos>-1)
+        {
+          //  try to guess where the user should start
+          //  browsing for the artist thumb
+          CMusicDatabase database;
+          database.Open();
+          CFileItemList albums;
+          long idArtist=database.GetArtistByName(m_vecItems[itemNumber]->GetLabel());
+          CStdString path;
+          database.GetArtistPath(idArtist, picturePath);
+        }
+
+        CStdString strThumb;
+        CUtil::AddFileToFolder(picturePath,"folder.jpg",strThumb);
+        if (XFILE::CFile::Exists(strThumb))
+        {
+          CFileItem* pItem = new CFileItem(strThumb,false);
+          pItem->SetLabel(g_localizeStrings.Get(20017));
+          pItem->SetThumbnailImage(strThumb);
+          items.Add(pItem);
+        }
+      }
 
       CFileItem *item = new CFileItem("thumb://None", false);
       item->SetThumbnailImage("defaultFolderBig.png");
