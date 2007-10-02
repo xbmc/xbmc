@@ -5,21 +5,24 @@
 #include "Util.h"
 #include "File.h"
 
+#include "CacheMemBuffer.h"
+#include "../utils/SingleLock.h"
+
 using namespace XFILE;
 
-#define READ_CACHE_CHUNK_SIZE (64*1024)
+#define READ_CACHE_CHUNK_SIZE (32*1024)
 
 // when buffering we will wait for BUFFER_BYTES amount of bytes. need to experiment about the size and
 // in general implement better buffering mechanism. 
-#define BUFFER_BYTES (1048576/2)
+#define BUFFER_BYTES (64*1024)
 
-CFileCache::CFileCache() : m_bDeleteCache(false)
+CFileCache::CFileCache() : m_bDeleteCache(false), m_seekPos(0), m_readPos(0), m_nSeekResult(0)
 {
-	m_pCache = new CSimpleFileCache;
+	m_pCache = new CacheMemBuffer;
 }
 
 CFileCache::CFileCache(CCacheStrategy *pCache, bool bDeleteCache) : 
-			m_pCache(pCache), m_bDeleteCache(bDeleteCache)
+			m_pCache(pCache), m_bDeleteCache(bDeleteCache), m_seekPos(0), m_readPos(0), m_nSeekResult(0)
 {
 }
 
@@ -65,6 +68,9 @@ bool CFileCache::Open(const CURL& url, bool bBinary)
 		return false;
 	}
 
+	m_readPos = 0;
+	m_seekEvent.Reset();
+	m_seekEnded.Reset();
 	CThread::Create(false);
 
 	return true;
@@ -111,29 +117,64 @@ void CFileCache::Process() {
 		iRead = m_source.Read(buf, READ_CACHE_CHUNK_SIZE);
 		if(iRead == 0)
 		{
-			CLog::Log(LOGINFO, "CFileCache::Process - Hit eof, exiting");
-			break;
+			CLog::Log(LOGINFO, "CFileCache::Process - Hit eof.");
+	        m_pCache->EndOfInput();
+			
+			// since there is no more to read - wait either for seek or close 
+			// WaitForSingleObject is CThread::WaitForSingleObject that will also listen to the
+			// end thread event.
+			int nRet = WaitForSingleObject(m_seekEvent.GetHandle(), INFINITE);
+			if (nRet == WAIT_OBJECT_0) 
+			{
+	        	m_pCache->ClearEndOfInput();
+				m_seekEvent.Set(); // hack so that later we realize seek is needed
+			}
+			else 
+				break;
 		}
 		else if (iRead < 0)
 			bError = TRUE;
 
-		DWORD iTotalWrite=0;
-		while (!m_bStop && iTotalWrite < iRead) {
-			int iWrite = m_pCache->WriteToCache(buf+iTotalWrite, iRead - iTotalWrite);
-			// write should always work. all handling of buffering and errors should be
-			// done inside the cache strategy. only if unrecoverable error happened, WriteToCache would return error and we break.
-			if (iWrite < 0) {
-				CLog::Log(LOGERROR,"CFileCache::Process - error writing to cache");
-				bError = TRUE;
+		int iTotalWrite=0;
+		while (!m_bStop && (iTotalWrite < iRead || iRead == 0)) {
+			int iWrite = 0;
+			if (iRead > 0) 
+			{
+				iWrite = m_pCache->WriteToCache(buf+iTotalWrite, iRead - iTotalWrite);
+
+				// write should always work. all handling of buffering and errors should be
+				// done inside the cache strategy. only if unrecoverable error happened, WriteToCache would return error and we break.
+				if (iWrite < 0) {
+					CLog::Log(LOGERROR,"CFileCache::Process - error writing to cache");
+					bError = TRUE;
+					break;
+				}
+				else if (iWrite == 0)
+					Sleep(5);
+	
+				iTotalWrite += iWrite;
+			}
+
+			if (m_seekEvent.WaitMSec(0)) 
+			{
+				CLog::Log(LOGDEBUG,"%s, request seek on source to %lld", __FUNCTION__, m_seekPos);	
+				if ((m_nSeekResult = m_source.Seek(m_seekPos, SEEK_SET)) != m_seekPos)
+				{
+					CLog::Log(LOGERROR,"%s, error %d seeking. seek returned %lld", __FUNCTION__, (int)GetLastError(), m_nSeekResult);
+					m_nSeekResult = -1;
+				}
+				m_pCache->Reset(m_source.GetPosition());
+				m_seekEnded.Set();
 				break;
 			}
 
-			iTotalWrite += iWrite;
+			if (iRead == 0)
+				break;
 		}
 	}
 
-	m_pCache->EndOfInput();
-	
+	// just in case someone's waiting...
+	m_seekEnded.Set();
 }
 
 bool CFileCache::Exists(const CURL& url)
@@ -157,25 +198,26 @@ unsigned int CFileCache::Read(void* lpBuf, __int64 uiBufSize)
 		return 0;
 	}
 
+	if (m_bStop)
+		return 0;
+
+	// we need to see that we can satisfy the callers request.
+	if (!m_pCache->IsEndOfInput())
+	{
+		int nAvail = m_pCache->WaitForData(uiBufSize, 5000);
+		if (nAvail < uiBufSize)
+		{
+			CLog::Log(LOGWARNING,"CFileCache::Read - can't satisfy request to read %lld bytes (available: %d bytes). stream decode may encounter problems", uiBufSize, nAvail);
+		}
+	}
+
 	unsigned int uiBytes = 0;
 	int iRc = m_pCache->ReadFromCache((char *)lpBuf, (size_t)uiBufSize);
-	if (iRc == CACHE_RC_WOULD_BLOCK) {
-		// we dont have enough data to read - start buffering.
-		// buffering is simply waiting for enough data to be available (hardcoded amount for now).
-		// TODO: smarted implementations of buffering
-		CLog::Log(LOGDEBUG,"CFileCache::Read - not enough data. buffering till %d bytes available", BUFFER_BYTES);
-		if (m_pCache->WaitForData(BUFFER_BYTES, 10000) < 1024)  { // if after 10 seconds there is less than 1k available will close the connection as eof.
-			CLog::Log(LOGWARNING,"CFileCache::Read - stream broke.");
-			return 0;
-		}
-
-		iRc = m_pCache->ReadFromCache((char *)lpBuf, (size_t)uiBufSize);
-
-	}
-	
 	if (iRc > 0)
+    {
 		uiBytes = iRc;
-
+        m_readPos += uiBytes;
+    }
 	return uiBytes;
 }
 
@@ -186,15 +228,37 @@ __int64 CFileCache::Seek(__int64 iFilePosition, int iWhence)
 		return -1;
 	}
 
-	__int64 iCurPos = m_pCache->GetPosition();
+	__int64 iCurPos = m_readPos;
 	__int64 iTarget = iFilePosition;
 	if (iWhence == SEEK_END)
 		iTarget = GetLength() + iTarget;
 	else if (iWhence == SEEK_CUR)
 		iTarget = iCurPos + iTarget;
 
-	__int64 iDiff = iTarget - iCurPos;
-	return m_pCache->Seek(iFilePosition, iWhence);
+    if (iTarget == m_readPos)
+       return m_readPos;
+
+	m_seekPos = iTarget;
+	if ((m_nSeekResult = m_pCache->Seek(m_seekPos, SEEK_SET)) == -1)
+	{
+		m_seekEvent.Set();
+		if (!m_seekEnded.WaitMSec(INFINITE)) 
+		{
+			m_seekEvent.Reset();
+			CLog::Log(LOGWARNING,"CFileCache::Seek - seek to %lld failed.", m_seekPos);
+			return -1;
+		}
+	
+		m_seekEvent.Reset();
+		if (m_nSeekResult >= 0) 
+		{
+			m_readPos = iTarget;	
+		}
+	}
+    else
+		m_readPos = iTarget;
+
+	return m_nSeekResult;
 }
 
 void CFileCache::Close()
@@ -209,12 +273,7 @@ void CFileCache::Close()
 
 __int64 CFileCache::GetPosition()
 {
-	if (!m_pCache) {
-		CLog::Log(LOGERROR,"CFileCache::GetPosition- sanity failed. no cache strategy!");
-		return -1;
-	}
-
-	return m_pCache->GetPosition();
+	return m_readPos;
 }
 
 __int64 CFileCache::GetLength()
