@@ -82,6 +82,8 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag)
   XMLUtils::SetString(movie, "aired", m_strFirstAired);
   XMLUtils::SetString(movie, "studio", m_strStudio);
   XMLUtils::SetString(movie, "album", m_strAlbum);
+  if (m_strEpisodeGuide.IsEmpty())
+    XMLUtils::SetString(movie, "episodeguide", m_strEpisodeGuide);
 
   // cast
   for (iCast it = m_cast.begin(); it != m_cast.end(); ++it)
@@ -275,9 +277,14 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
   const TiXmlElement *epguide = movie->FirstChildElement("episodeguide");
   if (epguide)
   {
-    std::stringstream stream;
-    stream << *epguide;
-    m_strEpisodeGuide = stream.str();
+    if (epguide->FirstChild() && strncmp(epguide->FirstChild()->Value(),"<episodeguide>",14) == 0)
+      m_strEpisodeGuide = epguide->FirstChild()->Value();
+    else if (epguide->FirstChild() && strlen(epguide->FirstChild()->Value()) > 0)
+    {
+      std::stringstream stream;
+      stream << *epguide;
+      m_strEpisodeGuide = stream.str();
+    }
   }
 
   return true;
