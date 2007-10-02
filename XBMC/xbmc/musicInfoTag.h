@@ -27,8 +27,9 @@ public:
   int GetDiscNumber() const;
   int GetTrackAndDiskNumber() const;
   int GetDuration() const;  // may be set even if Loaded() returns false
+  int GetYear() const;
   void GetReleaseDate(SYSTEMTIME& dateTime) const;
-  CStdString GetYear() const;
+  CStdString GetYearString() const;
   const CStdString& GetMusicBrainzTrackID() const;
   const CStdString& GetMusicBrainzArtistID() const;
   const CStdString& GetMusicBrainzAlbumID() const;

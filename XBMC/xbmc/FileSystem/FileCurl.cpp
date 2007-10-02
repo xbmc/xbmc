@@ -685,7 +685,7 @@ unsigned int CFileCurl::Read(void* lpBuf, __int64 uiBufSize)
 {
   /* only request 1 byte, for truncated reads (only if not eof) */
   if(m_filePos < m_fileSize && !FillBuffer(1))
-    return (unsigned int) -1;
+    return (unsigned int) 0;
 
   /* ensure only available data is considered */
 #ifndef _LINUX
@@ -705,7 +705,7 @@ unsigned int CFileCurl::Read(void* lpBuf, __int64 uiBufSize)
   if (!m_stillRunning && m_fileSize && m_filePos != m_fileSize)
   {
     CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retreived pos %lld, size %lld", __FUNCTION__, m_filePos, m_fileSize);
-    return (unsigned int) -1;
+    return (unsigned int) 0;
   }
 
   return 0;

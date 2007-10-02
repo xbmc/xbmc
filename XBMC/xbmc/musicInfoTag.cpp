@@ -131,7 +131,12 @@ void CMusicInfoTag::GetReleaseDate(SYSTEMTIME& dateTime) const
   memcpy(&dateTime, &m_dwReleaseDate, sizeof(m_dwReleaseDate) );
 }
 
-CStdString CMusicInfoTag::GetYear() const
+int CMusicInfoTag::GetYear() const
+{
+  return m_dwReleaseDate.wYear;
+}
+
+CStdString CMusicInfoTag::GetYearString() const
 {
   CStdString strReturn;
   strReturn.Format("%i", m_dwReleaseDate.wYear);

@@ -675,6 +675,7 @@
   <string id="1041">Retrieved %i items</string>
   <string id="1042">Retrieved %i of %i items</string>
   <string id="1043">Program Plugins</string>
+  <string id="1044">Set Plugin Thumb</string>
 
   <string id="1200">SMB Client</string>
   <string id="1202">Workgroup</string>
@@ -1650,6 +1651,8 @@
   <string id="20399">Go To Music Videos from Album</string>
   <string id="20400">Go To Music Videos by Artist</string>
   <string id="20401">Play Music Video</string>
+  <string id="20402">Automatically grab actor thumbs</string>
+  <string id="20403">Set Actor Thumb</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>

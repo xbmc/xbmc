@@ -485,9 +485,12 @@ const CStdString CScraperParser::Parse(const CStdString& strTag)
   pChildElement->QueryIntAttribute("dest",&iResult);
   TiXmlElement* pChildStart = pChildElement->FirstChildElement("RegExp");
   ParseNext(pChildStart);
-
   CStdString tmp = m_param[iResult-1];
-  ClearBuffers(); 
+  
+  const char* szClearBuffer = pChildElement->Attribute("clearbuffers");
+  if (!szClearBuffer || stricmp(szClearBuffer,"no") != 0)
+    ClearBuffers(); 
+
   return tmp;
 }
 
@@ -718,9 +721,8 @@ char* CScraperParser::RemoveWhiteSpace(const char *string2)
 }
 void CScraperParser::ClearBuffers()
 {
-	//clear all m_param strings
-	for (int i=0;i<9;++i)
-	{
-		m_param[i].clear();
-	}
+  //clear all m_param strings
+  for (int i=0;i<9;++i)
+    m_param[i].clear();
 }
+

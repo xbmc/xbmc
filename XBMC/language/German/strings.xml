@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: scape@xboxmediacenter.com-->
-<!--Date of translation: 09/03/2007-->
+<!--Date of translation: 09/26/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 10101-->
+<!--Based on english strings version 10279-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -659,6 +659,7 @@
   <string id="1040">Ordner wird geladen...</string>
   <string id="1041">%i Einträge geladen</string>
   <string id="1042">%i von %i Einträgen geladen</string>
+  <string id="1043">Programm Plugins</string>
   <string id="1200">SMB-Client</string>
   <string id="1202">Arbeitsgruppe</string>
   <string id="1203">Standard Benutzername</string>
@@ -1263,6 +1264,7 @@
   <string id="16032">Die Datenbank konnte nicht gestartet werden.</string>
   <string id="16033">Die Datenbank konnte nicht geöffnet werden.</string>
   <string id="16034">Es konnten keine Titel aus der Datenbank geladen werden.</string>
+  <string id="16035">Party-Modus Playlist</string>
   <string id="16100">Alle Videos</string>
   <string id="16101">Nicht gesehen</string>
   <string id="16102">Gesehen</string>
@@ -1555,6 +1557,19 @@
   <string id="20386">Kürzlich hinzugefügte Filme</string>
   <string id="20387">Kürzlich hinzugefügte Episoden</string>
   <string id="20388">Studios</string>
+  <string id="20389">Musik-Videos</string>
+  <string id="20390">Kürzlich hinzugefügte Musik-Videos</string>
+  <string id="20391">Musik-Video</string>
+  <string id="20392">Musik-Video aus Datenbank entfernen</string>
+  <string id="20393">Musik-Video Informationen</string>
+  <string id="20394">Musik-Video Informationen werden geladen...</string>
+  <string id="20395">Gemischt</string>
+  <string id="20396">Zu Alben dieses Interpreten wechseln</string>
+  <string id="20397">Zum Album wechseln</string>
+  <string id="20398">Titel abspielen</string>
+  <string id="20399">Zu Musik-Videos dieses Albums wechseln</string>
+  <string id="20400">Zu Musik-Videos dieses Interpreten wechseln</string>
+  <string id="20401">Musik-Video abspielen</string>
   <string id="21330">Versteckte Ordner und Dateien anzeigen</string>
   <string id="21331">TuxBox Client</string>
   <string id="21332">WARNUNG: Ziel-TuxBox-Laufwerk ist im Aufnahme-Modus!</string>
@@ -1693,5 +1708,6 @@
   <string id="21880">Auskunftsdienst</string>
   <string id="21881">UPnP Renderer aktivieren</string>
   <string id="21882">Film-Einleitung vor dem DVD-Menü überspringen</string>
+  <string id="21883">Kopierte Audio CDs</string>
   <string id="29999">Automatische Videofilter Korrektur für Spiele</string>
 </strings>

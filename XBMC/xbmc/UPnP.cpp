@@ -424,8 +424,8 @@ CUPnPServer::BuildObject(CFileItem*      item,
                 }
 
                 for(CVideoInfoTag::iCast it = tag->m_cast.begin();it != tag->m_cast.end();it++) {
-                    object->m_People.actor += it->first + ",";
-                    object->m_People.actor_role += it->second + ",";
+                    object->m_People.actor += it->strName + ",";
+                    object->m_People.actor_role += it->strRole + ",";
                 }
                 object->m_People.actor.TrimRight(",");
                 object->m_People.actor_role.TrimRight(",");

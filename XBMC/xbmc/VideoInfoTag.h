@@ -14,6 +14,13 @@ struct SScraperInfo
   CStdString strContent; // dupe, whatever
 };
 
+struct SActorInfo
+{
+  CStdString strName;
+  CStdString strRole;
+  CScraperUrl thumbUrl;
+};
+
 class CVideoInfoTag : public ISerializable
 {
 public:
@@ -34,9 +41,9 @@ public:
   CScraperUrl m_strPictureURL;
   CStdString m_strTitle;
   CStdString m_strVotes;
-  std::vector< CStdString> m_artist;
-  std::vector< std::pair<CStdString, CStdString> > m_cast;
-  typedef std::vector< std::pair<CStdString, CStdString> >::const_iterator iCast;
+  vector< CStdString> m_artist;
+  vector< SActorInfo > m_cast;
+  typedef std::vector< SActorInfo >::const_iterator iCast;
 
   CStdString m_strRuntime;
   CStdString m_strFile;
