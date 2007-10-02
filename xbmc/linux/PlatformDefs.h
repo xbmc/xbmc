@@ -42,7 +42,7 @@
 #define strcmpi	strcasecmp
 #define strnicmp  strncasecmp
 #define _atoi64(x) atoll(x)
-#define CopyMemory(dst,src,size) memcpy(dst, src, size)
+#define CopyMemory(dst,src,size) memmove(dst, src, size)
 #define ZeroMemory(dst,size) bzero(dst, size)
 
 #define VOID		void

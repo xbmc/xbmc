@@ -2329,3 +2329,5 @@ xbmc/Favourites.cpp
 xbmc/Favourites.h
 xbmc/GUIDialogFavourites.cpp
 xbmc/GUIDialogFavourites.h
+xbmc/FileSystem/CacheMemBuffer.h
+xbmc/FileSystem/CacheMemBuffer.cpp

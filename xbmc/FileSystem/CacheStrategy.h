@@ -41,10 +41,12 @@ public:
 	virtual int ReadFromCache(char *pBuffer, size_t iMaxSize) = 0;
 	virtual __int64 WaitForData(unsigned int iMinAvail, unsigned int iMillis) = 0;
 
-    virtual __int64       Seek(__int64 iFilePosition, int iWhence) = 0;
-    virtual __int64       GetPosition() = 0;
+    virtual __int64 Seek(__int64 iFilePosition, int iWhence) = 0;
+	virtual void Reset(__int64 iSourcePosition) = 0;
 
 	virtual void EndOfInput(); // mark the end of the input stream so that Read will know when to return EOF
+	virtual bool IsEndOfInput();
+    virtual void ClearEndOfInput();
 
 protected:
 	bool	m_bEndOfInput;
@@ -65,7 +67,7 @@ public:
 	virtual __int64 WaitForData(unsigned int iMinAvail, unsigned int iMillis) ;
 
     virtual __int64 Seek(__int64 iFilePosition, int iWhence);
-    virtual __int64 GetPosition() ;
+	virtual void Reset(__int64 iSourcePosition);
 	
 	__int64	GetAvailableRead();
 
@@ -73,6 +75,7 @@ protected:
 	HANDLE	m_hCacheFileRead;
 	HANDLE	m_hCacheFileWrite;
 	HANDLE	m_hDataAvailEvent;
+    __int64 m_nStartPosition;
 	CStdString m_fileName;
 	CCriticalSection m_sync;
 };

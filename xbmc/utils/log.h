@@ -19,6 +19,12 @@
 #define LOGFATAL   6
 #define LOGNONE    7
 
+#ifdef __GNUC__
+#define ATTRIB_LOG_FORMAT __attribute__((format(printf,2,3)))
+#else
+#define ATTRIB_LOG_FORMAT
+#endif
+
 class CLog
 {
   static FILE* fd;
@@ -26,7 +32,7 @@ public:
   CLog();
   virtual ~CLog(void);
   static void Close();
-  static void Log(int loglevel, const char *format, ... );
+  static void Log(int loglevel, const char *format, ... ) ATTRIB_LOG_FORMAT;
   static void DebugLog(const char *format, ...);
   static void MemDump(BYTE *pData, int length);
   static void DebugLogMemory();
