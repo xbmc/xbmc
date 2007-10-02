@@ -5920,6 +5920,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver)
     else
     {
       pObserver->OnDirectoryChanged("");
+      pObserver->OnSetCurrentProgress(0,1);
       pObserver->OnStateChanged(CLEANING_UP_DATABASE);
     }
 
@@ -6443,7 +6444,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
           // no need to delete the episode info, due to the above deletion
           CVideoInfoTag info;
           info.Load(episode);
-          long lEpisodeId = AddEpisode(showID,info.m_strFileNameAndPath);
+          long lEpisodeId = AddEpisode(showID,info.m_strFileNameAndPath); // do this here due to multi episode files
           SetDetailsForEpisode(info.m_strFileNameAndPath, info, showID, lEpisodeId);
           episode = episode->NextSiblingElement("episodedetails");
         }
