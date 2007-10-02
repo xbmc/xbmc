@@ -25,6 +25,7 @@
 #include "utils/fstrcmp.h"
 #include "utils/RegExp.h"
 #include "util.h"
+#include "XMLUtils.h"
 #include "GUIPassword.h"
 #include "filesystem/StackDirectory.h"
 #include "filesystem/MultiPathDirectory.h"
@@ -292,7 +293,7 @@ bool CVideoDatabase::GetPaths(map<CStdString,VIDEO::SScanSettings> &paths)
 
     // grab all paths with movie content set
     if (!m_pDS->query("select strPath,scanRecursive,useFolderNames from path"
-                      " where strContent = 'movies'"
+                      " where (strContent = 'movies' or strContent = 'musicvideos')"
                       " and strPath NOT like 'stack://%%'"
                       " and strPath NOT like 'multipath://%%'"
                       " order by strPath"))
@@ -3899,33 +3900,18 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-  
-    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
-    {
-      strSQL = FormatSQL("select episode.c%02d,path.strPath from episode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join tvshowlinkepisode on tvshowlinkepisode.idepisode=episode.idepisode join tvshowlinkpath on tvshowlinkpath.idshow=tvshow.idshow join path on path.idpath=tvshowlinkpath.idpath where tvshow.idshow=%u", VIDEODB_ID_EPISODE_SEASON,idShow);
 
-      if (idActor != -1)
-        strSQL = FormatSQL("select episode.c%02d,path.strPath from episode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join tvshowlinkepisode on tvshowlinkepisode.idepisode = episode.idepisode join actorlinktvshow on actorlinktvshow.idshow=tvshow.idshow join tvshowlinkpath on tvshowlinkpath.idshow=tvshow.idshow join path on path.idpath=tvshowlinkpath.idpath where tvshow.idshow=%u and actorlinktvshow.idActor=%u",VIDEODB_ID_EPISODE_SEASON,idShow,idActor);
+    strSQL = FormatSQL("select distinct episode.c%02d,path.strPath from episode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join tvshowlinkepisode on tvshowlinkepisode.idepisode=episode.idepisode join tvshowlinkpath on tvshowlinkpath.idshow=tvshow.idshow join path on path.idpath=tvshowlinkpath.idpath where tvshow.idshow=%u", VIDEODB_ID_EPISODE_SEASON,idShow);
 
-      if (idDirector != -1)
-        strSQL = FormatSQL("select episode.c%02d, path.strPath from episode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join directorlinktvshow on directorlinktvshow.idshow=tvshow.idshow join tvshowlinkpath on tvshowlinpath.idshow=tvshow.idshow join path on path.idpath=tvshowlinkpath.idpath where tvshow.idshow=%u and directorlinktvshow.idDirector=%u",VIDEODB_ID_EPISODE_SEASON,idShow,idDirector);
+    if (idActor != -1)
+      strSQL = FormatSQL("select distinct episode.c%02d,path.strPath from episode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join tvshowlinkepisode on tvshowlinkepisode.idepisode = episode.idepisode join actorlinktvshow on actorlinktvshow.idshow=tvshow.idshow join tvshowlinkpath on tvshowlinkpath.idshow=tvshow.idshow join path on path.idpath=tvshowlinkpath.idpath where tvshow.idshow=%u and actorlinktvshow.idActor=%u",VIDEODB_ID_EPISODE_SEASON,idShow,idActor);
 
-      if (idGenre != -1)
-        strSQL = FormatSQL("select episode.c%02d, path.strPath from episode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join tvshowlinkepisode on tvshowlinkepisode.idepisode = episode.idepisode join genrelinktvshow on genrelinktvshow.idshow=tvshow.idshow join tvshowlinkpath on tvshowlinkpath.idshow=tvshow.idshow join path on path.idpath=tvshowlinkpath.idpath where tvshow.idshow=%u and genrelinktvshow.idGenre=%u",VIDEODB_ID_EPISODE_SEASON,idShow,idGenre);
-    }
-    else
-    {
-      strSQL = FormatSQL("select distinct episode.c%02d from episode join tvshowlinkepisode on tvshowlinkepisode.idepisode=episode.idepisode where tvshowlinkepisode.idshow=%u", VIDEODB_ID_EPISODE_SEASON,idShow);
+    if (idDirector != -1)
+      strSQL = FormatSQL("select distinct episode.c%02d, path.strPath from episode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join directorlinktvshow on directorlinktvshow.idshow=tvshow.idshow join tvshowlinkpath on tvshowlinpath.idshow=tvshow.idshow join path on path.idpath=tvshowlinkpath.idpath where tvshow.idshow=%u and directorlinktvshow.idDirector=%u",VIDEODB_ID_EPISODE_SEASON,idShow,idDirector);
 
-      if (idActor != -1)
-        strSQL = FormatSQL("select distinct episode.c%02d from episode join tvshowlinkepisode on tvshowlinkepisode.idepisode = episode.idepisode join actorlinktvshow on actorlinktvshow.idshow=tvshowlinkepisode.idshow where tvshowlinkepisode.idshow=%u and actorlinktvshow.idActor=%u",VIDEODB_ID_EPISODE_SEASON,idShow,idActor);
+    if (idGenre != -1)
+      strSQL = FormatSQL("select distinct episode.c%02d, path.strPath from episode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join tvshowlinkepisode on tvshowlinkepisode.idepisode = episode.idepisode join genrelinktvshow on genrelinktvshow.idshow=tvshow.idshow join tvshowlinkpath on tvshowlinkpath.idshow=tvshow.idshow join path on path.idpath=tvshowlinkpath.idpath where tvshow.idshow=%u and genrelinktvshow.idGenre=%u",VIDEODB_ID_EPISODE_SEASON,idShow,idGenre);
 
-      if (idDirector != -1)
-        strSQL = FormatSQL("select distinct episode.c%02d from episode join tvshowlinkepisode on tvshowlinkepisode.idepisode=episode.idepisode join directorlinktvshow on directorlinktvshow.idshow=tvshowlinkepisode.idshow where tvshowlinkepisode.idshow=%u and directorlinktvshow.idDirector=%u",VIDEODB_ID_EPISODE_SEASON,idShow,idDirector);
-
-      if (idGenre != -1)
-        strSQL = FormatSQL("select distinct episode.c%02d from episode join tvshowlinkepisode on tvshowlinkepisode.idepisode = episode.idepisode join genrelinktvshow on genrelinktvshow.idshow=tvshowlinkepisode.idshow where tvshowlinkepisode.idshow=%u and genrelinktvshow.idGenre=%u",VIDEODB_ID_EPISODE_SEASON,idShow,idGenre);
-    }
     CStdString strSQL2 = FormatSQL("select idMovie from movielinktvshow where idShow=%u",idShow);
 
     // run query
@@ -3955,11 +3941,7 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
           continue;
         }
         if (it == mapYears.end())
-        {
-          CStdString year;
-          year.Format("%d", lYear);
-          mapYears.insert(pair<long, CStdString>(lYear, year));
-        }
+          mapYears.insert(pair<long, CStdString>(lYear, m_pDS->fv(2).get_asString()));
         m_pDS->next();
       }
       m_pDS->close();
@@ -3980,6 +3962,7 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->GetVideoInfoTag()->m_strTitle = strLabel;
         pItem->GetVideoInfoTag()->m_iSeason = lSeason;
         pItem->GetVideoInfoTag()->m_iDbId = idShow;
+        pItem->GetVideoInfoTag()->m_strPath = it->second;
         pItem->SetCachedSeasonThumb();
         items.Add(pItem);
       }      
@@ -4002,6 +3985,7 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->GetVideoInfoTag()->m_strTitle = strLabel;
         pItem->GetVideoInfoTag()->m_iSeason = lSeason;
         pItem->GetVideoInfoTag()->m_iDbId = idShow;
+        pItem->GetVideoInfoTag()->m_strPath = m_pDS->fv(1).get_asString();
         pItem->SetCachedSeasonThumb();
         items.Add(pItem);
         m_pDS->next();
@@ -4947,7 +4931,7 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
 bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& info, int& iFound)
 {  
   SScanSettings settings;
-  return GetScraperForPath(strPath, info, settings);
+  return GetScraperForPath(strPath, info, settings, iFound);
 }
 
 bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& info, SScanSettings& settings)
@@ -6355,6 +6339,27 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile)
     }
     m_pDS->close();
 
+    // now dump path info
+    map<CStdString,SScanSettings> paths;
+    GetPaths(paths);
+    TiXmlElement xmlPathElement("paths");
+    TiXmlNode *pPaths = pMain->InsertEndChild(xmlPathElement);
+    for( map<CStdString,SScanSettings>::iterator iter=paths.begin();iter != paths.end();++iter)
+    {
+      SScraperInfo info;
+      int iFound=0;
+      if (GetScraperForPath(iter->first,info,iFound) && iFound == 1)
+      {
+        TiXmlElement xmlPathElement2("path");
+        TiXmlNode *pPath = pPaths->InsertEndChild(xmlPathElement2);
+        XMLUtils::SetString(pPath,"url",iter->first);
+        XMLUtils::SetInt(pPath,"scanrecursive",iter->second.recurse);
+        XMLUtils::SetBoolean(pPath,"usefoldernames",iter->second.parent_name);
+        XMLUtils::SetString(pPath,"content",info.strContent);
+        XMLUtils::SetString(pPath,"scraperpath",info.strPath);
+      }
+    }
+
     if (progress)
       progress->Close();
 
@@ -6416,20 +6421,20 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
         SetDetailsForMovie(info.m_strFileNameAndPath, info);
         current++;
       }
-      if (strnicmp(movie->Value(), "musicvideo", 10) == 0)
+      else if (strnicmp(movie->Value(), "musicvideo", 10) == 0)
       { 
         info.Load(movie);
         SetDetailsForMusicVideo(info.m_strFileNameAndPath, info);
         current++;
       }
-      if (strnicmp(movie->Value(), "tvshow", 6) == 0)
+      else if (strnicmp(movie->Value(), "tvshow", 6) == 0)
       {
         // load the TV show in.  NOTE: This deletes all episodes under the TV Show, which may not be
         // what we desire.  It may make better sense to only delete (or even better, update) the show information
         info.Load(movie);
-        CUtil::AddSlashAtEnd(info.m_strFileNameAndPath);
-        DeleteTvShow(info.m_strFileNameAndPath);
-        long showID = SetDetailsForTvShow(info.m_strFileNameAndPath, info);
+        CUtil::AddSlashAtEnd(info.m_strPath);
+        DeleteTvShow(info.m_strPath);
+        long showID = SetDetailsForTvShow(info.m_strPath, info);
         current++;
         // now load the episodes
         TiXmlElement *episode = movie->FirstChildElement("episodedetails");
@@ -6440,6 +6445,23 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
           info.Load(episode);
           SetDetailsForEpisode(info.m_strFileNameAndPath, info, showID);
           episode = episode->NextSiblingElement("episodedetails");
+        }
+      }
+      else if (strnicmp(movie->Value(), "paths", 5) == 0)
+      {
+        const TiXmlElement* path = movie->FirstChildElement("path");
+        while (path)
+        {
+          CStdString strPath;
+          XMLUtils::GetString(path,"url",strPath);
+          SScraperInfo info;
+          SScanSettings settings;
+          XMLUtils::GetString(path,"content",info.strContent);
+          XMLUtils::GetString(path,"scraperpath",info.strPath);
+          XMLUtils::GetInt(path,"scanrecursive",settings.recurse);
+          XMLUtils::GetBoolean(path,"usefoldernames",settings.parent_name);
+          SetScraperForPath(strPath,info,settings);
+          path = path->NextSiblingElement();
         }
       }
       movie = movie->NextSiblingElement();
@@ -6467,34 +6489,34 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
 }
 
 bool CVideoDatabase::GetArbitraryQuery(const CStdString& strQuery, const CStdString& strOpenRecordSet, const CStdString& strCloseRecordSet,
-	const CStdString& strOpenRecord, const CStdString& strCloseRecord, const CStdString& strOpenField, const CStdString& strCloseField, CStdString& strResult)
+                                       const CStdString& strOpenRecord, const CStdString& strCloseRecord, const CStdString& strOpenField, const CStdString& strCloseField, CStdString& strResult)
 {
   try
   {
     strResult = "";
-	if (NULL == m_pDB.get()) return false;
-	if (NULL == m_pDS.get()) return false;
-	CStdString strSQL=FormatSQL(strQuery);
-	if (!m_pDS->query(strSQL.c_str()))
-	{
-	  strResult = m_pDB->getErrorMsg();
-	  return false;
-	}
-	int iRowsFound = m_pDS->num_rows();
-	strResult=strOpenRecordSet;
-	while (!m_pDS->eof())
-	{
-	  strResult += strOpenRecord;
-	  for (int i=0; i<m_pDS->fieldCount(); i++)
-	  {
-	    strResult += strOpenField + m_pDS->fv(i).get_asString() + strCloseField;
-	  }
-	  strResult += strCloseRecord;
-	  m_pDS->next();
-	}
-	strResult += strCloseRecordSet;
-	m_pDS->close();
-	return true;
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+    CStdString strSQL=FormatSQL(strQuery);
+    if (!m_pDS->query(strSQL.c_str()))
+    {
+      strResult = m_pDB->getErrorMsg();
+      return false;
+    }
+    int iRowsFound = m_pDS->num_rows();
+    strResult=strOpenRecordSet;
+    while (!m_pDS->eof())
+    {
+      strResult += strOpenRecord;
+      for (int i=0; i<m_pDS->fieldCount(); i++)
+      {
+        strResult += strOpenField + m_pDS->fv(i).get_asString() + strCloseField;
+      }
+      strResult += strCloseRecord;
+      m_pDS->next();
+    }
+    strResult += strCloseRecordSet;
+    m_pDS->close();
+    return true;
   }
   catch (...)
   {
@@ -6502,8 +6524,8 @@ bool CVideoDatabase::GetArbitraryQuery(const CStdString& strQuery, const CStdStr
   }
   try
   {
-	if (NULL == m_pDB.get()) return false;
-	strResult = m_pDB->getErrorMsg();
+    if (NULL == m_pDB.get()) return false;
+    strResult = m_pDB->getErrorMsg();
   }
   catch (...)
   {
