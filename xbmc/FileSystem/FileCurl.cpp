@@ -184,8 +184,8 @@ void CFileCurl::SetBufferSize(unsigned int size)
 void CFileCurl::Close()
 {
   CLog::Log(LOGDEBUG, "FileCurl::Close(%p) %s", this, m_url.c_str());
-	m_filePos = 0;
-	m_fileSize = 0;
+  m_filePos = 0;
+  m_fileSize = 0;
   m_opened = false;
 
   if( m_easyHandle )
@@ -283,6 +283,8 @@ void CFileCurl::SetCommonOptions()
   
   if (m_useOldHttpVersion)
     g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
+  else
+    SetRequestHeader("Connection", "keep-alive");
 
   if (m_proxy.length() > 0)
     g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_PROXY, m_proxy.c_str());
@@ -453,7 +455,7 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
     {
       if( response >= 400 )
       {
-        CLog::Log(LOGERROR, "CFileCurl:Open, Error code from server %l", response);
+        CLog::Log(LOGERROR, "CFileCurl:Open, Error code from server %ld", response);
         Close();
         return false;
       }
@@ -493,7 +495,7 @@ bool CFileCurl::ReadString(char *szLine, int iLineLength)
 {
   unsigned int want = (unsigned int)iLineLength;
 
-  if(!FillBuffer(want))
+  if(m_filePos < m_fileSize && !FillBuffer(want))
     return false;
 
   // ensure only available data is considered 
@@ -502,7 +504,7 @@ bool CFileCurl::ReadString(char *szLine, int iLineLength)
   /* check if we finished prematurely */
   if (!m_stillRunning && m_fileSize && m_filePos != m_fileSize && !want)
   {
-    CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retreived pos %d, size %d", __FUNCTION__, m_filePos, m_fileSize);
+    CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retreived pos %lld, size %lld", __FUNCTION__, m_filePos, m_fileSize);
     return false;
   }
 
@@ -548,7 +550,7 @@ __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
   if (!m_buffer.SkipBytes((int)(nextPos - m_filePos)))
   {
     // if we can't be sure we can seek, abort here
-    if( !m_seekable ) return -1;
+//    if( !m_seekable ) return -1;
 
     /* halt transaction */
     g_curlInterface.multi_remove_handle(m_multiHandle, m_easyHandle);
@@ -558,6 +560,7 @@ __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
 
     /* set offset */
     CURLcode ret = g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RESUME_FROM_LARGE, nextPos);
+
 //    if (CURLE_OK == ret)
 //      CLog::Log(LOGDEBUG, "FileCurl::Seek(%p) - resetting file fetch to %i (successful)", this, nextPos);
 //    else
@@ -565,7 +568,7 @@ __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
 
 
     /* restart */
-    g_curlInterface.multi_add_handle(m_multiHandle, m_easyHandle);
+    CURLMcode addRet = g_curlInterface.multi_add_handle(m_multiHandle, m_easyHandle);
 
     /* reset stillrunning as we now are going to reget data */
     m_stillRunning = 1;
@@ -680,8 +683,8 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
 
 unsigned int CFileCurl::Read(void* lpBuf, __int64 uiBufSize)
 {
-  /* only request 1 byte, for truncated reads */
-  if(!FillBuffer(1))
+  /* only request 1 byte, for truncated reads (only if not eof) */
+  if(m_filePos < m_fileSize && !FillBuffer(1))
     return (unsigned int) -1;
 
   /* ensure only available data is considered */
@@ -701,7 +704,7 @@ unsigned int CFileCurl::Read(void* lpBuf, __int64 uiBufSize)
   /* check if we finished prematurely */
   if (!m_stillRunning && m_fileSize && m_filePos != m_fileSize)
   {
-    CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retreived pos %d, size %d", __FUNCTION__, m_filePos, m_fileSize);
+    CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retreived pos %lld, size %lld", __FUNCTION__, m_filePos, m_fileSize);
     return (unsigned int) -1;
   }
 
@@ -749,7 +752,7 @@ bool CFileCurl::FillBuffer(unsigned int want)
         while((msg = g_curlInterface.multi_info_read(m_multiHandle, &msgs)))
         {
           if(msg->msg = CURLMSG_DONE)
-            return (msg->data.result == CURLM_OK);
+            return (msg->data.result == CURLE_OK);
         }
       }
       return false;
@@ -763,7 +766,7 @@ bool CFileCurl::FillBuffer(unsigned int want)
 #ifndef _LINUX
         SwitchToThread();
 #else
-	pthread_yield();
+	    pthread_yield();
 #endif
 
         FD_ZERO(&fdread);
@@ -771,17 +774,12 @@ bool CFileCurl::FillBuffer(unsigned int want)
         FD_ZERO(&fdexcep);
 
         // get file descriptors from the transfers
-        if( CURLM_OK != g_curlInterface.multi_fdset(m_multiHandle, &fdread, &fdwrite, &fdexcep, &maxfd) )
+        if( CURLM_OK != g_curlInterface.multi_fdset(m_multiHandle, &fdread, &fdwrite, &fdexcep, &maxfd) || maxfd == -1 )
           return false;
 
         long timeout = 0;
         if(CURLM_OK != g_curlInterface.multi_timeout(m_multiHandle, &timeout) || timeout == -1)
           timeout = 200;
-
-#ifndef _LINUX 
-        if( maxfd < 0 ) // hack for broken curl
-          maxfd = fdread.fd_count + fdwrite.fd_count + fdexcep.fd_count - 1;
-#endif
 
         if( maxfd >= 0  )
         {

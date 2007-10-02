@@ -11,6 +11,7 @@
 
 #define DVD_SEC_TO_TIME(x) ((x) * DVD_TIME_BASE)
 #define DVD_MSEC_TO_TIME(x) ((x) * (DVD_TIME_BASE / 1000))
+#define DVD_TIME_TO_MSEC(x) ((x) / (DVD_TIME_BASE / 1000))
 
 #define DVD_PLAYSPEED_RW_2X       -2000
 #define DVD_PLAYSPEED_REVERSE     -1000
