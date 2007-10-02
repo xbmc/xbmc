@@ -100,7 +100,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag)
     TiXmlElement thumb("thumb");
     TiXmlNode *thumbNode = node->InsertEndChild(thumb);
     TiXmlText th(it->thumbUrl.m_xml);
-    roleNode->InsertEndChild(th);
+    thumbNode->InsertEndChild(th);
   }
   // artists
   for (std::vector<CStdString>::const_iterator it = m_artist.begin(); it != m_artist.end(); ++it)
@@ -159,7 +159,23 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
 
   m_strPictureURL.ParseElement(movie->FirstChildElement("thumbs"));
   if (m_strPictureURL.m_url.size() == 0)
-    m_strPictureURL.ParseElement(movie->FirstChildElement("thumb"));
+  {
+    if (movie->FirstChildElement("thumb") && !movie->FirstChildElement("thumb")->FirstChildElement())
+    {
+      if (movie->FirstChildElement("thumb")->FirstChild())
+      {
+        CStdString strValue = movie->FirstChildElement("thumb")->FirstChild()->Value();
+        TiXmlDocument doc;
+        doc.Parse(strValue.c_str());
+        if (doc.FirstChildElement("thumbs"))
+          m_strPictureURL.ParseElement(doc.FirstChildElement("thumbs"));
+        else
+          m_strPictureURL.ParseElement(doc.FirstChildElement("thumb"));
+      }
+    }
+    else
+      m_strPictureURL.ParseElement(movie->FirstChildElement("thumb"));
+  }
 
   CStdString strTemp;
   const TiXmlNode *node = movie->FirstChild("genre");
@@ -246,11 +262,12 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
   node = movie->FirstChild("artist");
   while (node)
   {
-    if (node->FirstChild())
+    const TiXmlNode* pNode = node->FirstChild("name");
+    if (pNode && pNode->FirstChild())
     {
-      strTemp = node->FirstChild()->Value();
-      if (!strTemp.IsEmpty())
-        m_artist.push_back(strTemp);
+      const char *pValue = pNode->FirstChild()->Value();
+      if (pValue)
+        m_artist.push_back(pValue);
     }
     node = node->NextSibling("artist");
   }
