@@ -1250,8 +1250,8 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
         output+=closeTag+openTag+"Album"+tag+":"+tagVal->GetAlbum();
       if (tagVal && !tagVal->GetGenre().IsEmpty())
         output+=closeTag+openTag+"Genre"+tag+":"+tagVal->GetGenre();
-      if (tagVal && !tagVal->GetYear().IsEmpty())
-        output+=closeTag+openTag+"Year"+tag+":"+tagVal->GetYear();
+      if (tagVal && tagVal->GetYear())
+        output+=closeTag+openTag+"Year"+tag+":"+tagVal->GetYearString();
       // TODO: Should this be a tagitem member?? (wouldn't have vbr updates though)
       CStdString bitRate(g_infoManager.GetMusicLabel(MUSICPLAYER_BITRATE)); 
       // TODO: This should be a static tag item

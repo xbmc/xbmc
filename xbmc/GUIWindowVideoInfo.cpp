@@ -35,30 +35,30 @@
 
 using namespace XFILE;
 
-#define CONTROL_TITLE    20
-#define CONTROL_DIRECTOR   21
-#define CONTROL_CREDITS    22
-#define CONTROL_GENRE    23
-#define CONTROL_YEAR    24
-#define CONTROL_TAGLINE    25
-#define CONTROL_PLOTOUTLINE   26
-#define CONTROL_CAST     29
-#define CONTROL_RATING_AND_VOTES  30
-#define CONTROL_RUNTIME    31
-#define CONTROL_MPAARATING    32
-#define CONTROL_TITLE_AND_YEAR    33
+#define CONTROL_TITLE               20
+#define CONTROL_DIRECTOR            21
+#define CONTROL_CREDITS             22
+#define CONTROL_GENRE               23
+#define CONTROL_YEAR                24
+#define CONTROL_TAGLINE             25
+#define CONTROL_PLOTOUTLINE         26
+#define CONTROL_CAST                29
+#define CONTROL_RATING_AND_VOTES    30
+#define CONTROL_RUNTIME             31
+#define CONTROL_MPAARATING          32
+#define CONTROL_TITLE_AND_YEAR      33
+#define CONTROL_ACTOR_IMAGE         34
 
-#define CONTROL_IMAGE    3
-#define CONTROL_TEXTAREA    4
+#define CONTROL_IMAGE                3
+#define CONTROL_TEXTAREA             4
+#define CONTROL_BTN_TRACKS           5
+#define CONTROL_BTN_REFRESH          6
+#define CONTROL_DISC                 7
+#define CONTROL_BTN_PLAY             8
+#define CONTROL_BTN_RESUME           9
+#define CONTROL_BTN_GET_THUMB       10
 
-#define CONTROL_BTN_TRACKS   5
-#define CONTROL_BTN_REFRESH   6
-#define CONTROL_BTN_PLAY      8
-#define CONTROL_BTN_RESUME    9
-#define CONTROL_BTN_GET_THUMB 10
-
-#define CONTROL_LIST            50
-#define CONTROL_DISC             7
+#define CONTROL_LIST                50
 
 CGUIWindowVideoInfo::CGUIWindowVideoInfo(void)
     : CGUIDialog(WINDOW_VIDEO_INFO, "DialogVideoInfo.xml")
@@ -233,7 +233,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
           int iItem = msg.GetParam1();
           if (iItem < 0 || iItem >= (int)m_vecStrCast.size())
             break;
-          CStdString strItem = m_vecStrCast[iItem];
+          CStdString strItem = m_vecStrCast[iItem].first;
           CStdString strFind; 
           strFind.Format(" %s ",g_localizeStrings.Get(20347));
           int iPos = strItem.Find(strFind);
@@ -308,11 +308,11 @@ void CGUIWindowVideoInfo::Update()
   for (CVideoInfoTag::iCast it = m_movieItem.GetVideoInfoTag()->m_cast.begin(); it != m_movieItem.GetVideoInfoTag()->m_cast.end(); ++it)
   {
     CStdString character;
-    if (it->second.IsEmpty())
-      character = it->first;
+    if (it->strRole.IsEmpty())
+      character = it->strName;
     else
-      character.Format("%s %s %s", it->first.c_str(), g_localizeStrings.Get(20347).c_str(), it->second.c_str());
-    m_vecStrCast.push_back(character);
+      character.Format("%s %s %s", it->strName.c_str(), g_localizeStrings.Get(20347).c_str(), it->strRole.c_str());
+    m_vecStrCast.push_back(make_pair<CStdString,CStdString>(character,it->strName));
   }
   AddItemsToList(m_vecStrCast);
   if (m_movieItem.GetVideoInfoTag()->m_artist.size() > 0)
@@ -321,7 +321,7 @@ void CGUIWindowVideoInfo::Update()
     m_vecStrCast.clear();
     for (std::vector<CStdString>::const_iterator it = m_movieItem.GetVideoInfoTag()->m_artist.begin(); it != m_movieItem.GetVideoInfoTag()->m_artist.end(); ++it)
     {
-      m_vecStrCast.push_back(*it);
+      m_vecStrCast.push_back(make_pair<CStdString,CStdString>(*it,*it));
     }
     AddItemsToList(m_vecStrCast);
   }
@@ -383,6 +383,37 @@ void CGUIWindowVideoInfo::Render()
   CGUIDialog::Render();
 }
 
+bool CGUIWindowVideoInfo::OnAction(const CAction& action)
+{
+  bool bResult = CGUIDialog::OnAction(action);
+  if (GetFocusedControlID() == CONTROL_LIST)
+  {
+    // get current selected item
+    CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_LIST, 0, 0, NULL);
+    g_graphicsContext.SendMessage(msg);
+    int iItem = msg.GetParam1();
+    if (iItem >= 0 || iItem < (int)m_vecStrCast.size())
+    {
+      CGUIImage* pImage = (CGUIImage*)GetControl(CONTROL_ACTOR_IMAGE);
+      if (pImage)
+      {
+        CFileItem item(m_vecStrCast[iItem].second);
+        if (CFile::Exists(item.GetCachedActorThumb()))
+          pImage->SetFileName(item.GetCachedActorThumb());
+        else
+          pImage->SetFileName("DefaultActorBig.png");
+      }
+    }
+  }
+  else
+  {
+    CGUIImage* pImage = (CGUIImage*)GetControl(CONTROL_ACTOR_IMAGE);
+    if (pImage)
+      pImage->SetFileName("");
+  }
+
+  return bResult;
+}
 
 void CGUIWindowVideoInfo::Refresh()
 {
@@ -564,14 +595,24 @@ void CGUIWindowVideoInfo::OnSearchItemFound(const CFileItem* pItem)
   Refresh();
 }
 
-void CGUIWindowVideoInfo::AddItemsToList(const vector<CStdString> &vecStr)
+void CGUIWindowVideoInfo::AddItemsToList(const vector<pair<CStdString,CStdString> > &vecStr)
 {
   CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST, 0, 0, NULL);
   g_graphicsContext.SendMessage(msg);
 
   for (int i = 0; i < (int)vecStr.size(); i++)
   {
-    CGUIListItem* pItem = new CGUIListItem(vecStr[i]);
+    CGUIListItem* pItem = new CGUIListItem(vecStr[i].first);
+    CFileItem item(vecStr[i].second);
+    if (CFile::Exists(item.GetCachedActorThumb()))
+      pItem->SetThumbnailImage(item.GetCachedActorThumb());
+    else if (CFile::Exists(item.GetCachedArtistThumb()))
+      pItem->SetThumbnailImage(item.GetCachedArtistThumb());
+    else
+    {
+      if (m_movieItem.GetVideoInfoTag()->m_artist.size() == 0)
+        pItem->SetThumbnailImage("DefaultActorBig.png");
+    }
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_LIST, 0, 0, (void*)pItem);
     g_graphicsContext.SendMessage(msg);
   }

@@ -882,12 +882,23 @@ CStdString CFileItem::GetCachedProfileThumb()
 CStdString CFileItem::GetCachedSeasonThumb()
 {
   Crc32 crc;
-  crc.ComputeFromLowerCase("season" + m_strPath);
+  crc.ComputeFromLowerCase("season" + GetVideoInfoTag()->m_strPath+GetLabel());
   CStdString hex;
   hex.Format("%08x", (__int32)crc);
   CStdString cachedThumb;
   cachedThumb.Format("%s\\%c\\%08x.tbn", g_settings.GetVideoThumbFolder().c_str(), hex[0], (unsigned __int32)crc);
   return _P(cachedThumb);
+}
+
+CStdString CFileItem::GetCachedActorThumb()
+{
+  Crc32 crc;
+  crc.ComputeFromLowerCase("actor" + GetLabel());
+  CStdString hex;
+  hex.Format("%08x", crc);
+  CStdString cachedThumb;
+  cachedThumb.Format("%s\\%c\\%08x.tbn", g_settings.GetVideoThumbFolder().c_str(), hex[0], (unsigned __int32)crc);
+  return cachedThumb;
 }
 
 void CFileItem::SetCachedArtistThumb()

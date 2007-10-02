@@ -32,7 +32,7 @@ void CVideoInfoTag::Reset()
   m_iTop250 = 0;
   m_iYear = 0;
   m_iSeason = -1;
-  m_iEpisode = 0;
+  m_iEpisode = -1;
   m_iSpecialSortSeason = -1;
   m_iSpecialSortEpisode = -1;
   m_fRating = 0.0f;
@@ -82,6 +82,8 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag)
   XMLUtils::SetString(movie, "aired", m_strFirstAired);
   XMLUtils::SetString(movie, "studio", m_strStudio);
   XMLUtils::SetString(movie, "album", m_strAlbum);
+  if (m_strEpisodeGuide.IsEmpty())
+    XMLUtils::SetString(movie, "episodeguide", m_strEpisodeGuide);
 
   // cast
   for (iCast it = m_cast.begin(); it != m_cast.end(); ++it)
@@ -91,12 +93,16 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag)
     TiXmlNode *node = movie->InsertEndChild(cast);
     TiXmlElement actor("name");
     TiXmlNode *actorNode = node->InsertEndChild(actor);
-    TiXmlText name(it->first);
+    TiXmlText name(it->strName);
     actorNode->InsertEndChild(name);
     TiXmlElement role("role");
     TiXmlNode *roleNode = node->InsertEndChild(role);
-    TiXmlText character(it->second);
+    TiXmlText character(it->strRole);
     roleNode->InsertEndChild(character);
+    TiXmlElement thumb("thumb");
+    TiXmlNode *thumbNode = node->InsertEndChild(thumb);
+    TiXmlText th(it->thumbUrl.m_xml);
+    thumbNode->InsertEndChild(th);
   }
   // artists
   for (std::vector<CStdString>::const_iterator it = m_artist.begin(); it != m_artist.end(); ++it)
@@ -155,7 +161,23 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
 
   m_strPictureURL.ParseElement(movie->FirstChildElement("thumbs"));
   if (m_strPictureURL.m_url.size() == 0)
-    m_strPictureURL.ParseElement(movie->FirstChildElement("thumb"));
+  {
+    if (movie->FirstChildElement("thumb") && !movie->FirstChildElement("thumb")->FirstChildElement())
+    {
+      if (movie->FirstChildElement("thumb")->FirstChild())
+      {
+        CStdString strValue = movie->FirstChildElement("thumb")->FirstChild()->Value();
+        TiXmlDocument doc;
+        doc.Parse(strValue.c_str());
+        if (doc.FirstChildElement("thumbs"))
+          m_strPictureURL.ParseElement(doc.FirstChildElement("thumbs"));
+        else
+          m_strPictureURL.ParseElement(doc.FirstChildElement("thumb"));
+      }
+    }
+    else
+      m_strPictureURL.ParseElement(movie->FirstChildElement("thumb"));
+  }
 
   CStdString strTemp;
   const TiXmlNode *node = movie->FirstChild("genre");
@@ -206,13 +228,21 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
     const TiXmlNode *actor = node->FirstChild("name");
     if (actor && actor->FirstChild())
     {
-      CStdString name = actor->FirstChild()->Value();
-      CStdString role;
+      SActorInfo info;
+      info.strName = actor->FirstChild()->Value();
       const TiXmlNode *roleNode = node->FirstChild("role");
       if (roleNode && roleNode->FirstChild())
-        role = roleNode->FirstChild()->Value();
-
-      m_cast.push_back(make_pair(name, role));
+        info.strRole = roleNode->FirstChild()->Value();
+      const TiXmlElement *thumbNode = node->FirstChildElement("thumbs");
+      if (thumbNode && thumbNode->FirstChild())
+        info.thumbUrl.ParseElement(thumbNode);
+      else
+      {
+        thumbNode = node->FirstChildElement("thumb");
+        if (thumbNode && thumbNode->FirstChild())
+          info.thumbUrl.ParseElement(thumbNode);
+      }
+      m_cast.push_back(info);
     }
     node = node->NextSibling("actor");
   }
@@ -234,11 +264,12 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
   node = movie->FirstChild("artist");
   while (node)
   {
-    if (node->FirstChild())
+    const TiXmlNode* pNode = node->FirstChild("name");
+    if (pNode && pNode->FirstChild())
     {
-      strTemp = node->FirstChild()->Value();
-      if (!strTemp.IsEmpty())
-        m_artist.push_back(strTemp);
+      const char *pValue = pNode->FirstChild()->Value();
+      if (pValue)
+        m_artist.push_back(pValue);
     }
     node = node->NextSibling("artist");
   }
@@ -246,9 +277,14 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
   const TiXmlElement *epguide = movie->FirstChildElement("episodeguide");
   if (epguide)
   {
-    std::stringstream stream;
-    stream << *epguide;
-    m_strEpisodeGuide = stream.str();
+    if (epguide->FirstChild() && strncmp(epguide->FirstChild()->Value(),"<episodeguide>",14) == 0)
+      m_strEpisodeGuide = epguide->FirstChild()->Value();
+    else if (epguide->FirstChild() && strlen(epguide->FirstChild()->Value()) > 0)
+    {
+      std::stringstream stream;
+      stream << *epguide;
+      m_strEpisodeGuide = stream.str();
+    }
   }
 
   return true;
@@ -272,8 +308,9 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar << (int)m_cast.size();
     for (unsigned int i=0;i<m_cast.size();++i)
     {
-      ar << m_cast[i].first;
-      ar << m_cast[i].second;
+      ar << m_cast[i].strName;
+      ar << m_cast[i].strRole;
+      ar << m_cast[i].thumbUrl.m_xml;
     }
     ar << (int)m_artist.size();
     for (unsigned int i=0;i<m_artist.size();++i)
@@ -321,10 +358,13 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar >> iCastSize;
     for (int i=0;i<iCastSize;++i)
     {
-      CStdString strFirst, strSecond;
-      ar >> strFirst;
-      ar >> strSecond;
-      m_cast.push_back(std::make_pair<CStdString,CStdString>(strFirst,strSecond));
+      SActorInfo info;
+      ar >> info.strName;
+      ar >> info.strRole;
+      CStdString strXml;
+      ar >> strXml;
+      info.thumbUrl.ParseString(strXml);
+      m_cast.push_back(info);
     }
     int iArtistSize;
     ar >> iArtistSize;
@@ -377,10 +417,10 @@ const CStdString CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const
   for (iCast it = m_cast.begin(); it != m_cast.end(); ++it)
   {
     CStdString character;
-    if (it->second.IsEmpty() || !bIncludeRole)
-      character.Format("%s\n", it->first.c_str());
+    if (it->strRole.IsEmpty() || !bIncludeRole)
+      character.Format("%s\n", it->strName.c_str());
     else
-      character.Format("%s %s %s\n", it->first.c_str(), g_localizeStrings.Get(20347).c_str(), it->second.c_str());
+      character.Format("%s %s %s\n", it->strName.c_str(), g_localizeStrings.Get(20347).c_str(), it->strRole.c_str());
     strLabel += character;
   }
   return strLabel.TrimRight("\n");

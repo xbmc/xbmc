@@ -365,8 +365,32 @@ void CGUIDialogMediaSource::OnOK()
   VECSHARES *shares = g_settings.GetSharesFromType(m_type);
   if (shares)
     shares->push_back(share);
-  if (CDirectory::GetDirectory(share.strPath, items, "", false, true) || CGUIDialogYesNo::ShowAndGetInput(1001,1025,1003,1004))
+  if (share.strPath.Left(9).Equals("plugin://") || CDirectory::GetDirectory(share.strPath, items, "", false, true) || CGUIDialogYesNo::ShowAndGetInput(1001,1025,1003,1004))
   {
+    if (share.strPath.Left(9).Equals("plugin://"))
+    {
+      CStdString strPath=share.strPath;
+      strPath.Replace("plugin://","Q:\\plugins\\");
+      strPath.Replace("/","\\");
+      CFileItem item(strPath,true);
+      item.SetCachedProgramThumb();
+      if (!item.HasThumbnail())
+        item.SetUserProgramThumb();
+      if (!item.HasThumbnail())
+      {
+        CUtil::AddFileToFolder(strPath,"default.py",item.m_strPath);
+        item.m_bIsFolder = false;
+        item.SetCachedProgramThumb();
+        if (!item.HasThumbnail())
+          item.SetUserProgramThumb();
+      }
+      if (item.HasThumbnail())
+      {
+        CFileItem item2(share.strPath,true);
+        XFILE::CFile::Cache(item.GetThumbnailImage(),item2.GetCachedProgramThumb());
+        m_paths[0]->SetThumbnailImage(item2.GetCachedProgramThumb());
+      }
+    }
     m_confirmed = true;
     Close();
   }

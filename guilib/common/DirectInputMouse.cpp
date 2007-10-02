@@ -2,6 +2,7 @@
 #include "DirectInputMouse.h"
 #include "DirectInput.h"
 #include "../key.h"
+#include "../GraphicContext.h"
 
 #ifndef HAS_SDL
 
@@ -173,13 +174,17 @@ void CMouse::SetExclusiveAccess(DWORD dwControlID, DWORD dwWindowID, const CPoin
 {
   m_dwExclusiveControlID = dwControlID;
   m_dwExclusiveWindowID = dwWindowID;
-  m_exclusiveOffset = point - CPoint(posX, posY);
+  // convert posX, posY to screen coords...
+  // NOTE: This relies on the window resolution having been set correctly beforehand in CGUIWindow::OnMouseAction()
+  CPoint mouseCoords(posX, posY);
+  g_graphicsContext.InvertFinalCoords(mouseCoords.x, mouseCoords.y);
+  m_exclusiveOffset = point - mouseCoords;
 }
 
 void CMouse::EndExclusiveAccess(DWORD dwControlID, DWORD dwWindowID)
 {
   if (m_dwExclusiveControlID == dwControlID && m_dwExclusiveWindowID == dwWindowID)
-    SetExclusiveAccess(WINDOW_INVALID, WINDOW_INVALID, CPoint(posX, posY));
+    SetExclusiveAccess(WINDOW_INVALID, WINDOW_INVALID, CPoint(0, 0));
 }
 
 void CMouse::Acquire()

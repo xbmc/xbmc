@@ -150,7 +150,7 @@ void CDVDPlayerVideo::OnStartup()
   m_iDroppedFrames = 0;
   
   m_iCurrentPts = DVD_NOPTS_VALUE;
-  m_iFlipTimeStamp = m_pClock->GetAbsoluteClock();
+  m_FlipTimeStamp = m_pClock->GetAbsoluteClock();
   m_DetectedStill = false;
   
   memset(&m_output, 0, sizeof(m_output));
@@ -171,7 +171,7 @@ void CDVDPlayerVideo::Process()
   
   __int64 pts = 0;
 
-  unsigned int iFrameTime = (unsigned int)(DVD_TIME_BASE / m_fFrameRate) ;  
+  double frametime = (double)DVD_TIME_BASE / m_fFrameRate;
 
   int iDropped = 0; //frames dropped in a row
   bool bRequestDrop = false;  
@@ -180,7 +180,7 @@ void CDVDPlayerVideo::Process()
   {
     while (m_speed == DVD_PLAYSPEED_PAUSE && !m_messageQueue.RecievedAbortRequest() && m_iNrOfPicturesNotToSkip==0) Sleep(5);
 
-    int iQueueTimeOut = (m_DetectedStill ? iFrameTime / 4 : iFrameTime * 4) / 1000;
+    int iQueueTimeOut = (int)(m_DetectedStill ? frametime / 4 : frametime * 4) / 1000;
     
     CDVDMsg* pMsg;
     MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, iQueueTimeOut);
@@ -195,9 +195,9 @@ void CDVDPlayerVideo::Process()
       //Okey, start rendering at stream fps now instead, we are likely in a stillframe
       if( !m_DetectedStill )
       {
-        CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe detected, switching to forced %d fps", (DVD_TIME_BASE / iFrameTime));
+        CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe detected, switching to forced %f fps", m_fFrameRate);
         m_DetectedStill = true;
-        pts+= iFrameTime*4;
+        pts+= (__int64)frametime*4;
       }
 
       //Waiting timed out, output last picture
@@ -208,7 +208,7 @@ void CDVDPlayerVideo::Process()
         picture.iFlags &= ~DVP_FLAG_INTERLACED;
         picture.iFlags |= DVP_FLAG_NOSKIP;
         OutputPicture(&picture, pts);
-        pts+= iFrameTime;
+        pts+= (__int64)frametime;
       }
 
       continue;
@@ -239,13 +239,17 @@ void CDVDPlayerVideo::Process()
             
       if(pMsgGeneralResync->m_clock)
       {
-        __int64 delay = m_iFlipTimeStamp - m_pClock->GetAbsoluteClock();
+        double delay = m_FlipTimeStamp - m_pClock->GetAbsoluteClock();
         
-        if( delay > iFrameTime ) delay = iFrameTime;
+        if( delay > frametime ) delay = frametime;
         else if( delay < 0 ) delay = 0;
 
-        m_pClock->Discontinuity(CLOCK_DISC_NORMAL, pts, delay);
+        m_pClock->Discontinuity(CLOCK_DISC_NORMAL, pts, (__int64)delay);
+#ifndef _LINUX
         CLog::Log(LOGDEBUG, "CDVDPlayerVideo:: Resync - clock:%I64d, delay:%I64d", pts, delay);
+#else
+        CLog::Log(LOGDEBUG, "CDVDPlayerVideo:: Resync - clock:%lld, delay:%f", pts, delay);
+#endif
       }
 
       pMsgGeneralResync->Release();
@@ -288,7 +292,7 @@ void CDVDPlayerVideo::Process()
         //in normal mpegs
         m_iNrOfPicturesNotToSkip = 5;
       }
-      else if( iDropped*iFrameTime > DVD_MSEC_TO_TIME(100) )
+      else if( iDropped*frametime > DVD_MSEC_TO_TIME(100) )
       { // if we dropped too many pictures in a row, insert a forced picture
         m_iNrOfPicturesNotToSkip++;
       }
@@ -338,8 +342,8 @@ void CDVDPlayerVideo::Process()
             picture.iGroupId = pPacket->iGroupId;
             
             if (picture.iDuration == 0)
-              // should not use iFrameTime here. cause framerate can change while playing video
-              picture.iDuration = iFrameTime;
+              // should not use frametime here. cause framerate can change while playing video
+              picture.iDuration = (__int64)frametime;
 
             if (m_iNrOfPicturesNotToSkip > 0)
             {
@@ -663,54 +667,33 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts)
     CLog::Log(LOGERROR, "%s - renderer not started", __FUNCTION__);
     return EOS_ABORT;
   }
-
-  if( !(pPicture->iFlags & DVP_FLAG_DROPPED) )
-  {
-    // copy picture to overlay
-    YV12Image image;
-
-    int index = g_renderManager.GetImage(&image);
-    if (index < 0) 
-      return EOS_DROPPED;
-
-    ProcessOverlays(pPicture, &image, pts);
-    
-    // tell the renderer that we've finished with the image (so it can do any
-    // post processing before FlipPage() is called.)
-    g_renderManager.ReleaseImage(index);
-  }
-#else
-  // no video renderer, let's mark it as dropped
-  pPicture->iFlags |= DVP_FLAG_DROPPED;
 #endif
+
   int result = 0;
 
   //User set delay
   pts += m_iVideoDelay;
 
   // calculate the time we need to delay this picture before displaying
-  __int64 iSleepTime, iClockSleep, iFrameSleep, iCurrentClock;
+  double iSleepTime, iClockSleep, iFrameSleep, iCurrentClock, iFrameDuration;
 
-  // snapshot current clock, to use the same value in all calculations
-  iCurrentClock = m_pClock->GetAbsoluteClock();
   
+  iCurrentClock = m_pClock->GetAbsoluteClock(); // snapshot current clock  
   iClockSleep = pts - m_pClock->GetClock();  //sleep calculated by pts to clock comparison
-  iFrameSleep = m_iFlipTimeStamp - iCurrentClock; // sleep calculated by duration of frame
+  iFrameSleep = m_FlipTimeStamp - iCurrentClock; // sleep calculated by duration of frame
+  iFrameDuration = pPicture->iDuration;
 
   // correct sleep times based on speed
   if(m_speed)
   {
     iClockSleep = iClockSleep * DVD_PLAYSPEED_NORMAL / abs(m_speed);
     iFrameSleep = iFrameSleep * DVD_PLAYSPEED_NORMAL / m_speed;
+    iFrameDuration = iFrameDuration * DVD_PLAYSPEED_NORMAL / m_speed;
   }
 
   // dropping to a very low framerate is not correct (it should not happen at all)
   iClockSleep = min(iClockSleep, DVD_MSEC_TO_TIME(500));
   iFrameSleep = min(iFrameSleep, DVD_MSEC_TO_TIME(500));
-
-  // ask decoder to drop frames next round, as we are very late
-  if( iClockSleep < -DVD_MSEC_TO_TIME(100) )
-    result |= EOS_VERYLATE;
 
   if( m_DetectedStill )
   { // when we render a still, we can't sync to clock anyway
@@ -718,7 +701,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts)
   }
   else
   {
-    /* try to decide on how to sync framerate */
+    // try to decide on how to sync framerate
     if( pPicture->iFlags & DVP_FLAG_NOAUTOSYNC )
       iSleepTime = iClockSleep;
     else
@@ -731,15 +714,47 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts)
 
   // present the current pts of this frame to user, and include the actual
   // presentation delay, to allow him to adjust for it
-  m_iCurrentPts = pts - (iSleepTime > 0 ? iSleepTime : 0);
+  m_iCurrentPts = pts - (__int64)max(0.0, iSleepTime);
 
   // timestamp when we think next picture should be displayed based on current duration
-  m_iFlipTimeStamp = iCurrentClock;
-  m_iFlipTimeStamp += iSleepTime > 0 ? iSleepTime : 0;
-  m_iFlipTimeStamp += pPicture->iDuration;
+  m_FlipTimeStamp  = iCurrentClock;
+  m_FlipTimeStamp += max(0.0, iSleepTime);
+  m_FlipTimeStamp += iFrameDuration;
 
   if( (pPicture->iFlags & DVP_FLAG_DROPPED) ) 
     return result | EOS_DROPPED;
+
+  // ask decoder to drop frames next round, as we are very late
+  if( iClockSleep < -DVD_MSEC_TO_TIME(100) )
+    result |= EOS_VERYLATE;
+  
+
+#ifdef HAS_VIDEO_PLAYBACK
+
+  float maxfps = g_renderManager.GetMaximumFPS();
+  if( m_fFrameRate * abs(m_speed) / DVD_PLAYSPEED_NORMAL >  maxfps )
+  {
+    // calculate frame dropping pattern to render at this speed
+    // we do that by deciding if this or next frame is closest
+    // to the flip timestamp
+    double current   = fabs(m_dropbase -  m_droptime);
+    double next      = fabs(m_dropbase - (m_droptime + iFrameDuration));
+    double frametime = (double)DVD_TIME_BASE / maxfps;
+
+    m_droptime += iFrameDuration;
+#ifndef PROFILE
+    if( next < current && !(pPicture->iFlags & DVP_FLAG_NOSKIP) )
+      return result | EOS_DROPPED;
+#endif
+
+    while(m_dropbase < m_droptime)             m_dropbase += frametime;
+    while(m_dropbase - frametime > m_droptime) m_dropbase -= frametime;
+  } 
+  else
+  {
+    m_droptime = 0.0f;
+    m_dropbase = 0.0f;
+  }
 
   // set fieldsync if picture is interlaced
   EFIELDSYNC mDisplayField = FS_NONE;
@@ -751,17 +766,34 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts)
       mDisplayField = FS_EVEN;
   }
 
-  // present this image after the given delay
-  __int64 delay = iCurrentClock + iSleepTime - m_pClock->GetAbsoluteClock();
+  // copy picture to overlay
+  YV12Image image;
 
-#ifdef HAS_VIDEO_PLAYBACK
+  int index = g_renderManager.GetImage(&image);
+  if (index < 0) 
+    return EOS_DROPPED;
+
+  ProcessOverlays(pPicture, &image, pts);
+  
+  // tell the renderer that we've finished with the image (so it can do any
+  // post processing before FlipPage() is called.)
+  g_renderManager.ReleaseImage(index);
+
+  // present this image after the given delay, but correct for copy time
+  double delay = iCurrentClock + iSleepTime - m_pClock->GetAbsoluteClock();
+
   if(delay<0)
     g_renderManager.FlipPage( 0, -1, mDisplayField);
   else
     g_renderManager.FlipPage( (DWORD)(delay * 1000 / DVD_TIME_BASE), -1, mDisplayField);
+
+#else
+  // no video renderer, let's mark it as dropped
+  result|= EOS_DROPPED;
 #endif
 
   return result;
+
 }
 
 void CDVDPlayerVideo::UpdateMenuPicture()
@@ -782,7 +814,7 @@ void CDVDPlayerVideo::UpdateMenuPicture()
 string CDVDPlayerVideo::GetPlayerInfo()
 {
   std::ostringstream s;
-  s << "vq size:" << max(100,100 * m_messageQueue.GetDataSize() / m_messageQueue.GetMaxDataSize()) << "%";
+  s << "vq size:" << min(100,100 * m_messageQueue.GetDataSize() / m_messageQueue.GetMaxDataSize()) << "%";
   s << ", ";
   s << "cpu: " << (int)(100 * CThread::GetRelativeUsage()) << "%";
   return s.str();

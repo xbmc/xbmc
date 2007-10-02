@@ -95,7 +95,7 @@ protected:
   
   __int64 m_iCurrentPts; // last pts displayed
   __int64 m_iVideoDelay; // not really needed to be an __int64  
-  __int64 m_iFlipTimeStamp; // time stamp of last flippage. used to play at a forced framerate
+  double m_FlipTimeStamp; // time stamp of last flippage. used to play at a forced framerate
 
   int m_iDroppedFrames;
   bool m_bDropFrames;
@@ -120,6 +120,9 @@ protected:
   
   int m_iNrOfPicturesNotToSkip;
   int m_speed;
+
+  double m_droptime;
+  double m_dropbase;
 
   bool m_DetectedStill;
 
