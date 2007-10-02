@@ -108,6 +108,7 @@ protected:
   CDVDAudioCodec* m_pAudioCodec; // audio codec
 
   int m_speed;  // wanted playback speed. if playback speed!=DVD_PLAYSPEED_NORMAL, don't sync clock as it will loose track of position after seek
+  double m_droptime;
 
   typedef struct {__int64 pts; __int64 timestamp;} TPTSItem;
   TPTSItem m_currentPTSItem;

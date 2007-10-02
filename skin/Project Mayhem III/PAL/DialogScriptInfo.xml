@@ -19,23 +19,23 @@
 		</control>
 		<control type="image" id="0">
 			<description>contentpanel slice</description>
-			<posx>140</posx>
+			<posx>-64</posx>
 			<posy>88</posy>
 			<width>64</width>
 			<height>510</height>
 			<texture>contentpanel_left.png</texture>
-			<animation effect="slide" time="200" start="0,0" end="-204,0" acceleration="-1" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
-			<animation effect="slide" time="200" start="-204,0" end="0,0" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+			<animation effect="slide" time="200" start="204,0" end="0,0" acceleration="-1" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+			<animation effect="slide" time="200" start="0,0" end="204,0" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
 		</control>
 		<control type="image" id="0">
 			<description>contentpanel slice</description>
-			<posx>204</posx>
+			<posx>0</posx>
 			<posy>88</posy>
 			<width>720</width>
 			<height>510</height>
 			<texture>contentpanel.png</texture>
-			<animation effect="slide" time="200" start="0,0" end="-204,0" acceleration="-1" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
-			<animation effect="slide" time="200" start="-204,0" end="0,0" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+			<animation effect="slide" time="200" start="204,0" end="0,0" acceleration="-1" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+			<animation effect="slide" time="200" start="0,0" end="204,0" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
 		</control>
 		<control type="label" id="1">
 			<description>xbox media center label</description>

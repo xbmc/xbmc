@@ -1,5 +1,7 @@
 //**************************************************************************************************
 // Type Redefinitions
+#ifndef SPC_TYPES_H
+#define SPC_TYPES_H
 
 typedef void v0;
 
@@ -198,4 +200,38 @@ typedef struct SPC_ID666
   int fadetime;
   SPC_EmulatorType emulator;
 } SPC_ID666;
+
+//Interpolation routines -------------------
+	enum DSPInter
+	{
+		INT_INVALID = -1,
+		INT_NONE,								//None
+		INT_LINEAR,								//Linear
+		INT_CUBIC,								//Cubic
+		INT_GAUSS,								//4-point Gaussian
+		INT_SINC,								//8-point Sinc
+		INT_TOTAL
+	};
+
+	//DSP options ------------------------------
+	enum DSPOpts
+	{
+		OPT_ANALOG,								//Simulate anomalies of the analog hardware
+		OPT_OLDSMP,								//Old sample decompression routine
+		OPT_SURND,								//"Surround" sound
+		OPT_REVERSE,							//Reverse stereo samples
+		OPT_NOECHO,								//Disable echo
+		OPT_FILTER,								//Pass each voice through an anti-aliasing filter
+	};
+
+	//Mixing routines (see DSP.Asm for details of each routine)
+	enum Mixing
+	{
+		MIX_INVALID =	-1,
+		MIX_NONE =		0,						//No mixing
+		MIX_INT =		1,						//Use integer math
+		MIX_FLOAT =		3						//Use floating-point math
+	};
+
+#endif
 

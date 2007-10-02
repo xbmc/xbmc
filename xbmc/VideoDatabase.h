@@ -33,6 +33,7 @@ typedef vector<CStdString> VECMOVIESFILES;
 
 namespace VIDEO
 {
+  class IVideoInfoScannerObserver;
   struct SScanSettings;
 }
 
@@ -235,7 +236,6 @@ typedef vector<CBookmark> VECBOOKMARKS;
 #define COMPARE_PERCENTAGE     0.90f // 90%
 #define COMPARE_PERCENTAGE_MIN 0.50f // 50%
 
-
 class CVideoDatabase : public CDatabase
 {
 public:
@@ -366,7 +366,7 @@ public:
   bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info, VIDEO::SScanSettings& settings);
   bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info, VIDEO::SScanSettings& settings, int& iFound);
 
-  void CleanDatabase();
+  void CleanDatabase(VIDEO::IVideoInfoScannerObserver* pObserver=NULL);
   
   long AddFile(const CStdString& strFileName);
   void ExportToXML(const CStdString &xmlFile);
@@ -378,7 +378,7 @@ protected:
 
   long AddPath(const CStdString& strPath);
   long AddGenre(const CStdString& strGenre1);
-  long AddActor(const CStdString& strActor);
+  long AddActor(const CStdString& strActor, const CStdString& strThumb);
   long AddStudio(const CStdString& strStudio1);
 
   void AddActorToMovie(long lMovieId, long lActorId, const CStdString& strRole);

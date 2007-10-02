@@ -334,6 +334,11 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.platform.xbox")) ret = SYSTEM_PLATFORM_XBOX;
     else if (strTest.Equals("system.platform.windows")) ret = SYSTEM_PLATFORM_WINDOWS;
   }
+  else if (strTest.Left(8).Equals("isempty("))
+  {
+    CStdString str = strTest.Mid(8, strTest.GetLength() - 9);
+    return AddMultiInfo(GUIInfo(bNegate ? -STRING_IS_EMPTY : STRING_IS_EMPTY, TranslateSingleString(str)));
+  }
 #ifdef HAS_KAI
   else if (strCategory.Equals("xlinkkai"))
   {
@@ -1582,6 +1587,9 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
           bReturn = !g_settings.GetSkinString(info.m_data1).IsEmpty();
       }
       break;
+    case STRING_IS_EMPTY:
+      bReturn = GetLabel(info.m_data1).IsEmpty();
+      break;
     case CONTROL_GROUP_HAS_FOCUS:
       {
         CGUIWindow *pWindow = m_gWindowManager.GetWindow(dwContextWindow);
@@ -2047,7 +2055,7 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
     if (tag.GetArtist().size()) { return tag.GetArtist(); }
     break;
   case MUSICPLAYER_YEAR: 
-    if (tag.GetYear().size()) { return tag.GetYear(); }
+    if (tag.GetYear()) { return tag.GetYearString(); }
     break;
   case MUSICPLAYER_GENRE: 
     if (tag.GetGenre().size()) { return tag.GetGenre(); }
@@ -2833,7 +2841,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     break;
   case LISTITEM_YEAR:
     if (item->HasMusicInfoTag())
-      return item->GetMusicInfoTag()->GetYear();
+      return item->GetMusicInfoTag()->GetYearString();
     if (item->HasVideoInfoTag())
     {
       CStdString strResult;
