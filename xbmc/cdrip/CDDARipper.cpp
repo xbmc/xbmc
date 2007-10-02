@@ -51,7 +51,7 @@ bool CCDDARipper::Init(const CStdString& strTrackFile, const CStdString& strFile
     m_pEncoder->SetAlbum(infoTag->GetAlbum().c_str());
     m_pEncoder->SetGenre(infoTag->GetGenre().c_str());
     m_pEncoder->SetTrack(strTrack.c_str());
-    m_pEncoder->SetYear(infoTag->GetYear().c_str());
+    m_pEncoder->SetYear(infoTag->GetYearString().c_str());
   }
 
   // init encoder

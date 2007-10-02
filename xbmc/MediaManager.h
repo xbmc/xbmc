@@ -18,7 +18,7 @@ public:
   bool LoadSources();
   bool SaveSources();
 
-  void GetLocalDrives(VECSHARES &localDrives, bool includeQ = false);
+  void GetLocalDrives(VECSHARES &localDrives, bool includeQ = true);
   void GetNetworkLocations(VECSHARES &locations);
 
   bool AddNetworkLocation(const CStdString &path);

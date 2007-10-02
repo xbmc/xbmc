@@ -198,6 +198,11 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
           dir->m_listItems.AddSortMethod(SORT_METHOD_STUDIO, 572, LABEL_MASKS("%T", "%U"));
         break;
       }
+    case SORT_METHOD_PROGRAM_COUNT:
+      {
+        dir->m_listItems.AddSortMethod(SORT_METHOD_PROGRAM_COUNT, 567, LABEL_MASKS("%T", "%C"));
+        break;
+      }
   }
 }
 
@@ -347,7 +352,25 @@ bool CPluginDirectory::GetPluginsDirectory(const CStdString &type, CFileItemList
   // flatten any folders - TODO: Assigning of thumbs
   for (int i = 0; i < items.Size(); i++)
   {
-    CFileItem *item = items[i];
+    CFileItem* item = items[i];
+    item->SetThumbnailImage("");
+    item->SetCachedProgramThumb();
+    if (!item->HasThumbnail())
+      item->SetUserProgramThumb();
+    if (!item->HasThumbnail())
+    {
+      CFileItem item2(item->m_strPath);
+      CUtil::AddFileToFolder(item->m_strPath,"default.py",item2.m_strPath);
+      item2.m_bIsFolder = false;
+      item2.SetCachedProgramThumb();
+      if (!item2.HasThumbnail())
+        item2.SetUserProgramThumb();
+      if (item2.HasThumbnail())
+      {
+        XFILE::CFile::Cache(item2.GetThumbnailImage(),item->GetCachedProgramThumb());
+        item->SetThumbnailImage(item->GetCachedProgramThumb());
+      }
+    }
     item->m_strPath.Replace(_P("Q:\\plugins\\"), "plugin://");
     item->m_strPath.Replace("\\", "/");
   }

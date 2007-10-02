@@ -363,10 +363,11 @@ void CGUIWindowVideoPlaylist::SavePlayList()
   if (CGUIDialogKeyboard::ShowAndGetInput(strNewFileName, g_localizeStrings.Get(16012), false))
   {
     // need 2 rename it
-    CStdString strPath;
+    CStdString strPath, strFolder;
+    CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"), "video", strFolder);
     CUtil::RemoveIllegalChars( strNewFileName );
     strNewFileName += ".m3u";
-    CUtil::AddFileToFolder(CUtil::VideoPlaylistsLocation(), strNewFileName, strPath);
+    CUtil::AddFileToFolder(strFolder, strNewFileName, strPath);
 
     CPlayListM3U playlist;
     for (int i = 0; i < m_vecItems.Size(); ++i)
