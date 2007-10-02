@@ -78,8 +78,8 @@ namespace XFILE
       CStdString      m_ftpauth;
       int             m_timeout;
 
-	    __int64					m_fileSize;
-	    __int64					m_filePos;
+      __int64         m_fileSize;
+      __int64	      m_filePos;
       bool            m_opened;
       bool            m_useOldHttpVersion;
       bool            m_seekable;

@@ -1,6 +1,7 @@
 #pragma once
 #include "IFile.h"
 #include "CacheStrategy.h"
+#include "../utils/CriticalSection.h"
 
 namespace XFILE
 {	
@@ -37,6 +38,12 @@ namespace XFILE
 		bool			m_bDeleteCache;
 		CFile			m_source;
 		CStdString		m_sourcePath;
+		CEvent			m_seekEvent;
+		CEvent			m_seekEnded;
+		__int64			m_nSeekResult;
+		__int64			m_seekPos;
+		__int64			m_readPos;
+	    CCriticalSection m_sync;
 	};
 
 }
