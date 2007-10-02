@@ -6443,7 +6443,8 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
           // no need to delete the episode info, due to the above deletion
           CVideoInfoTag info;
           info.Load(episode);
-          SetDetailsForEpisode(info.m_strFileNameAndPath, info, showID);
+          long lEpisodeId = AddEpisode(showID,info.m_strFileNameAndPath);
+          SetDetailsForEpisode(info.m_strFileNameAndPath, info, showID, lEpisodeId);
           episode = episode->NextSiblingElement("episodedetails");
         }
       }
