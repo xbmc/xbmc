@@ -89,10 +89,24 @@
 			<RegExp input="$$1" output="&lt;outline&gt;\2&lt;/outline&gt;&lt;plot&gt;\2&lt;/plot&gt;" dest="5+">
 				<expression>Plot (Outline|Summary):&lt;/h5&gt;([^&lt;]*)</expression>
 			</RegExp>
-			<RegExp input="$$2" output="&lt;url function=&quot;GetPlot&quot;&gt;http://akas.imdb.com/title/\1/plotsummary&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;" dest="5+">
-				<expression></expression>
+
+			<!-- *** Scrapes Characters inc. Thumbs then same again excluding <a href="/character/ch???????/"> *** -->
+			<RegExp input="$$1" output="&lt;actor&gt;&lt;thumbs&gt;&lt;thumb&gt;http://ia.media-imdb.com/media/imdb/\1m.jpg&lt;/thumb&gt;&lt;thumb&gt;http://ia.media-imdb.com/media/imdb/\1t.jpg&lt;/thumb&gt;&lt;thumb&gt;http://ia.media-imdb.com/media/imdb/\1f.jpg&lt;/thumb&gt;&lt;/thumbs&gt;&lt;name&gt;\2&lt;/name&gt;&lt;role&gt;\3&lt;/role&gt;&lt;/actor&gt;" dest="5+">
+				<expression repeat="yes" noclean="1" trim="2,3">&lt;img src=&quot;http://ia.media-imdb.com/media/imdb/([^&quot;]*)t\.jpg&quot;[^&gt;]*[^&quot;]*&quot;nm&quot;&gt;&lt;a href=&quot;[^&quot;]*&quot;&gt;([^&lt;]*)&lt;[^&quot;]*&quot;ddd&quot;&gt; ... [^&quot;]*&quot;char&quot;&gt;[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;</expression>
 			</RegExp>
-			<RegExp input="$$2" output="&lt;url function=&quot;GetCast&quot;&gt;http://akas.imdb.com/title/\1/fullcredits#cast&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;actor&gt;&lt;thumbs&gt;&lt;thumb&gt;http://ia.media-imdb.com/media/imdb/\1m.jpg&lt;/thumb&gt;&lt;thumb&gt;http://ia.media-imdb.com/media/imdb/\1t.jpg&lt;/thumb&gt;&lt;thumb&gt;http://ia.media-imdb.com/media/imdb/\1f.jpg&lt;/thumb&gt;&lt;/thumbs&gt;&lt;name&gt;\2&lt;/name&gt;&lt;role&gt;\3&lt;/role&gt;&lt;/actor&gt;" dest="5+">
+				<expression repeat="yes" noclean="1" trim="2,3">&lt;img src=&quot;http://ia.media-imdb.com/media/imdb/([^&quot;]*)t\.jpg&quot;[^&gt;]*[^&quot;]*&quot;nm&quot;&gt;&lt;a href=&quot;[^&quot;]*&quot;&gt;([^&lt;]*)&lt;[^&quot;]*&quot;ddd&quot;&gt; ... [^&quot;]*&quot;char&quot;&gt;([^&lt;]*)&lt;/td&gt;</expression>
+			</RegExp>
+
+			<!-- *** Scrapes Characters exc. Thumbs then same again excluding <a href="/character/ch???????/"> *** -->
+			<RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;/actor&gt;" dest="5+">
+				<expression repeat="yes" noclean="1" trim="1,2">&lt;img src=&quot;[^&quot;]*\.gif&quot;[^&gt;]*[^&quot;]*&quot;nm&quot;&gt;&lt;a href=&quot;[^&quot;]*&quot;&gt;([^&lt;]*)&lt;[^&quot;]*&quot;ddd&quot;&gt; ... [^&quot;]*&quot;char&quot;&gt;[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;/actor&gt;" dest="5+">
+				<expression repeat="yes" noclean="1" trim="1,2">&lt;img src=&quot;[^&quot;]*\.gif&quot;[^&gt;]*[^&quot;]*&quot;nm&quot;&gt;&lt;a href=&quot;[^&quot;]*&quot;&gt;([^&lt;]*)&lt;[^&quot;]*&quot;ddd&quot;&gt; ... [^&quot;]*&quot;char&quot;&gt;([^&lt;]*)&lt;/td&gt;</expression>
+			</RegExp>
+
+			<RegExp input="$$2" output="&lt;url function=&quot;GetPlot&quot;&gt;http://akas.imdb.com/title/\1/plotsummary&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
 			<RegExp input="$$2" output="&lt;url function=&quot;GetIMPAPoster&quot;&gt;http://akas.imdb.com/title/\1/posters&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;" dest="5+">
@@ -109,29 +123,6 @@
 			<expression noclean="1"/>
 		</RegExp>
 	</GetPlot>
-	<GetCast clearbuffers="no" dest="6">
-		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="6">
-
-			<!-- *** Scrapes Characters inc. Thumbs then same again excluding <a href="/character/ch???????/"> *** -->
-
-			<RegExp input="$$1" output="&lt;actor&gt;&lt;thumbs&gt;&lt;thumb&gt;http://ia.media-imdb.com/media/imdb/\1m.jpg&lt;/thumb&gt;&lt;thumb&gt;http://ia.media-imdb.com/media/imdb/\1t.jpg&lt;/thumb&gt;&lt;thumb&gt;http://ia.media-imdb.com/media/imdb/\1f.jpg&lt;/thumb&gt;&lt;/thumbs&gt;&lt;name&gt;\2&lt;/name&gt;&lt;role&gt;\3&lt;/role&gt;&lt;/actor&gt;" dest="5+">
-				<expression repeat="yes" noclean="1" trim="2,3">&lt;img src=&quot;http://ia.media-imdb.com/media/imdb/([^&quot;]*)t\.jpg&quot;[^&gt;]*[^&quot;]*&quot;nm&quot;&gt;&lt;a href=&quot;[^&quot;]*&quot;&gt;([^&lt;]*)&lt;[^&quot;]*&quot;ddd&quot;&gt; ... [^&quot;]*&quot;char&quot;&gt;[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;</expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;actor&gt;&lt;thumbs&gt;&lt;thumb&gt;http://ia.media-imdb.com/media/imdb/\1m.jpg&lt;/thumb&gt;&lt;thumb&gt;http://ia.media-imdb.com/media/imdb/\1t.jpg&lt;/thumb&gt;&lt;thumb&gt;http://ia.media-imdb.com/media/imdb/\1f.jpg&lt;/thumb&gt;&lt;/thumbs&gt;&lt;name&gt;\2&lt;/name&gt;&lt;role&gt;\3&lt;/role&gt;&lt;/actor&gt;" dest="5+">
-				<expression repeat="yes" noclean="1" trim="2,3">&lt;img src=&quot;http://ia.media-imdb.com/media/imdb/([^&quot;]*)t\.jpg&quot;[^&gt;]*[^&quot;]*&quot;nm&quot;&gt;&lt;a href=&quot;[^&quot;]*&quot;&gt;([^&lt;]*)&lt;[^&quot;]*&quot;ddd&quot;&gt; ... [^&quot;]*&quot;char&quot;&gt;([^&lt;]*)&lt;/td&gt;</expression>
-			</RegExp>
-
-			<!-- *** Scrapes Characters exc. Thumbs then same again excluding <a href="/character/ch???????/"> *** -->
-
-			<RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;/actor&gt;" dest="5+">
-				<expression repeat="yes" noclean="1" trim="1,2">&lt;img src=&quot;[^&quot;]*\.gif&quot;[^&gt;]*[^&quot;]*&quot;nm&quot;&gt;&lt;a href=&quot;[^&quot;]*&quot;&gt;([^&lt;]*)&lt;[^&quot;]*&quot;ddd&quot;&gt; ... [^&quot;]*&quot;char&quot;&gt;[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;</expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;/actor&gt;" dest="5+">
-				<expression repeat="yes" noclean="1" trim="1,2">&lt;img src=&quot;[^&quot;]*\.gif&quot;[^&gt;]*[^&quot;]*&quot;nm&quot;&gt;&lt;a href=&quot;[^&quot;]*&quot;&gt;([^&lt;]*)&lt;[^&quot;]*&quot;ddd&quot;&gt; ... [^&quot;]*&quot;char&quot;&gt;([^&lt;]*)&lt;/td&gt;</expression>
-			</RegExp>
-			<expression noclean="1"/>
-		</RegExp>
-	</GetCast>
 	<GetIMPAPoster clearbuffers="no" dest="5">
 		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetIMPAPoster2&quot;&gt;http://www.impawards.com/\1&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/details&gt;" dest="5+">
 			<expression noclean="1">&lt;a href=&quot;http://www.impawards.com/([^&quot;]*)&quot;&gt;</expression>
