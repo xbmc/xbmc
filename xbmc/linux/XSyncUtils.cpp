@@ -290,13 +290,15 @@ int SDL_SemWaitTimeout2(SDL_sem *sem, Uint32 dwMilliseconds)
   req.tv_nsec += (dwMilliseconds % 1000) * 1000000;
   req.tv_sec += req.tv_nsec / 1000000000L;
   req.tv_nsec = req.tv_nsec % 1000000000L;
-  while (((nRet = sem_timedwait((sem_t*)(&sem), &req))==-1) && (errno==EINTR))
+  while (((nRet = sem_timedwait((sem_t*)(sem), &req))==-1) && (errno==EINTR))
+  {
     continue;
+  }
   if (nRet != 0)
   {
     return SDL_MUTEX_TIMEDOUT;
   }
-  return nRet;
+  return 0;
 }
 
 #endif
