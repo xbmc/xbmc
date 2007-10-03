@@ -69,7 +69,7 @@ void CGUIDialogVideoSettings::CreateSettings()
   }
   {
     const int entries[] = { 160301, 16302, 16303, 16304, 16305, 16306 };
-    AddSpin(VIDEO_SETTINGS_INTERLACEMETHOD, 16300, (int*)&g_stSettings.m_currentVideoSettings.m_ScalingMethod, 6, entries);
+    AddSpin(VIDEO_SETTINGS_SCALINGMETHOD, 16300, (int*)&g_stSettings.m_currentVideoSettings.m_ScalingMethod, 3, entries);
   }
   AddBool(VIDEO_SETTINGS_CROP, 644, &g_stSettings.m_currentVideoSettings.m_Crop);
   {
