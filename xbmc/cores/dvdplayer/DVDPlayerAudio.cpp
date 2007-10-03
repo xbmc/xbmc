@@ -457,7 +457,7 @@ void CDVDPlayerAudio::Process()
     __int64 clock = m_pClock->GetClock();
     __int64 error = m_ptsQueue.Current() - clock;
 
-    if( abs(error) > DVD_MSEC_TO_TIME(5) )
+    if( abs(error) > DVD_MSEC_TO_TIME(10) )
     {
       m_pClock->Discontinuity(CLOCK_DISC_NORMAL, clock+error, 0);      
       if(m_speed == DVD_PLAYSPEED_NORMAL)

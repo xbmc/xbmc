@@ -7,6 +7,10 @@
 
 #ifdef _LINUX
 
+#include <semaphore.h>
+#include <time.h>
+#include <errno.h>
+
 SDL_mutex *g_mutex = SDL_CreateMutex();
 
 bool InitializeRecursiveMutex(HANDLE hMutex, BOOL bInitialOwner) {
@@ -131,7 +135,11 @@ DWORD WINAPI WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds ) {
         if (dwMilliseconds == INFINITE)
           nRet = SDL_SemWait(hHandle->m_hSem);
         else
-          nRet = SDL_SemWaitTimeout(hHandle->m_hSem, dwMilliseconds);
+        {
+          // See NOTE in SDL_SemWaitTimeout2() definition (towards the end of this file)
+          // nRet = SDL_SemWaitTimeout(hHandle->m_hSem, dwMilliseconds);
+          nRet = SDL_SemWaitTimeout2(hHandle->m_hSem, dwMilliseconds);
+        }
 
         if (nRet == 0)
           dwRet = WAIT_OBJECT_0;
@@ -270,5 +278,21 @@ LONG InterlockedExchange(
   return nKeep;
 }
 
+// NOTE: SDL_SemWaitTimeout is implemented using a busy wait, which is
+// highly inaccurate. Until it is fixed, we do it the right way using
+// sem_timedwait()
+int SDL_SemWaitTimeout2(SDL_sem *sem, Uint32 dwMilliseconds)
+{
+  int nRet = 0;
+  struct timespec req;
+  req.tv_sec = dwMilliseconds / 1000;
+  req.tv_nsec = (dwMilliseconds % 1000) * 1000000;
+  nRet = sem_timedwait((sem_t*)(&sem), &req);
+  if (nRet != 0)
+  {
+    nRet = SDL_MUTEX_TIMEDOUT;
+  }
+  return nRet;
+}
 
 #endif

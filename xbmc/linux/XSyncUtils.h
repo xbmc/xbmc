@@ -39,6 +39,8 @@ LONG InterlockedExchange(
   LONG Value
 );
 
+int SDL_SemWaitTimeout2(SDL_sem *sem, Uint32 ms);
+
 #endif 
 
 #endif
