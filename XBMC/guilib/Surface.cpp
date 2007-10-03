@@ -430,12 +430,10 @@ void CSurface::EnableVSync(bool enable)
 
   if (enable)
   {
-    OutputDebugString("Enabling VSYNC\n");
     CLog::Log(LOGINFO, "GL: Enabling VSYNC");
   }
   else
   {
-    OutputDebugString("Disabling VSYNC\n");
     CLog::Log(LOGINFO, "GL: Disabling VSYNC");
   }
 

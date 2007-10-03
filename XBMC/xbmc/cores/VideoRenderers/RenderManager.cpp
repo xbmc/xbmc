@@ -431,14 +431,14 @@ void CXBoxRenderManager::PresentBob()
     D3DDevice::SetRenderState(D3DRS_PRESENTATIONINTERVAL, interval);
   }
 #elif defined (HAS_SDL_OPENGL)
+
+  return; // hack for now untill bob rendering is corrected.
+
+  m_pRenderer->FlipPage(0);
   
   int nTicks = GetTickCount();
   if (m_presenttime > nTicks) 
     ::Sleep(m_presenttime - nTicks);
-
-return; // hack for now untill bob rendering is corrected.
-
-  m_pRenderer->FlipPage(0);
 
   /* render second field */
   if( m_presentfield == FS_EVEN )
