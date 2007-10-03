@@ -2448,7 +2448,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool ne
   if (needsCast)
   {
     // create cast string
-    CStdString strSQL = FormatSQL("select actors.strActor,actorlinkmovie.strRole,actors.strThumb from actorlinkmovie,actors where actorlinkmovie.idMovie=%u and actorlinkmovie.idActor = actors.idActor",lMovieId);
+    CStdString strSQL = FormatSQL("select  actors.strActor,actorlinkmovie.strRole,actors.strThumb from  actorlinkmovie,actors where actorlinkmovie.idMovie=%u and actorlinkmovie.idActor  = actors.idActor order by actorlinkmovie.ROWID",lMovieId);
     m_pDS2->query(strSQL.c_str());
     while (!m_pDS2->eof())
     {
