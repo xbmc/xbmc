@@ -1192,19 +1192,19 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
       {
         m_pYUVShader = new YUV2RGBProgressiveShader(); // create regular progressive scan shader
         //m_pYUVShader = new YUV2RGBBobShader(); // create bob deinterlacing shader
-        CLog::Log(LOGERROR, "GL: Selecting Single Pass YUV 2 RGB shader");
+        CLog::Log(LOGNOTICE, "GL: Selecting Single Pass YUV 2 RGB shader");
       }
       else if (m_renderQuality == RQ_MULTIPASS)
       {
         m_pYUVShader = new YUV2RGBProgressiveShader(); // create regular progressive scan shader
         //m_pYUVShader = new YUV2RGBBobShader(); // create bob deinterlacing shader
-        CLog::Log(LOGERROR, "GL: Selecting Multipass Pass YUV 2 RGB shader");
+        CLog::Log(LOGNOTICE, "GL: Selecting Multipass Pass YUV 2 RGB shader");
       }
     }
     else
     {
       m_pYUVShader = new YUV2RGBProgressiveShader(); // create regular progressive scan shader
-      CLog::Log(LOGERROR, "GL: Selecting YUV 2 RGB Progressive Shader");
+      CLog::Log(LOGNOTICE, "GL: Selecting YUV 2 RGB Progressive Shader");
     }
 
     if (m_pYUVShader && m_pYUVShader->CompileAndLink())
