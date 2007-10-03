@@ -2526,7 +2526,7 @@ void CApplication::Render()
         nDelayTime = lastFrameTime + singleVideoFrameTime - currentTime;
 
       // if the semaphore is not empty - there is a video frame that needs to be presented
-      if (SDL_SemWaitTimeout(m_framesSem, nDelayTime) == 0)
+      if (SDL_SemWaitTimeout2(m_framesSem, nDelayTime) == 0)
         m_bPresentFrame = true;
     }
     else
