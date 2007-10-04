@@ -352,6 +352,18 @@ void CDVDDemuxFFmpeg::Flush()
   if (m_pFormatContext)
   {
     m_dllAvFormat.av_read_frame_flush(m_pFormatContext);
+
+    // reset any dts interpolation      
+    for(int i=0;i<MAX_STREAMS;i++)
+    {
+      if(m_pFormatContext->streams[i])
+      {
+        m_pFormatContext->streams[i]->cur_dts = AV_NOPTS_VALUE;
+        m_pFormatContext->streams[i]->last_IP_duration = 0;
+        m_pFormatContext->streams[i]->last_IP_pts = AV_NOPTS_VALUE;
+      }
+    }
+    m_iCurrentPts = DVD_NOPTS_VALUE;
   }
 }
 
@@ -434,28 +446,20 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
     }
     g_urltimeout = 0;
 
-    if (result == AVERROR(EINTR))
+    if (result == AVERROR(EINTR) || result == AVERROR(EAGAIN))
     {
-      // timeout, probably no real error
-      // TODO - fix ffmpeg to always return this
+      // timeout, probably no real error, return empty packet
+      pPacket = CDVDDemuxUtils::AllocateDemuxPacket(0);
+      if(pPacket)
+      {
+        pPacket->dts = DVD_NOPTS_VALUE;
+        pPacket->pts = DVD_NOPTS_VALUE;
+        pPacket->iStreamId = -1;
+      }
     }
     else if (result < 0)
     {
-      // we are likely atleast at an discontinuity
-      m_dllAvFormat.av_read_frame_flush(m_pFormatContext);
-
-      // reset any dts interpolation      
-      for(int i=0;i<MAX_STREAMS;i++)
-      {
-        if(m_pFormatContext->streams[i])
-        {
-          m_pFormatContext->streams[i]->cur_dts = AV_NOPTS_VALUE;
-          m_pFormatContext->streams[i]->last_IP_duration = 0;
-          m_pFormatContext->streams[i]->last_IP_pts = AV_NOPTS_VALUE;
-        }
-      }
-
-      m_iCurrentPts = DVD_NOPTS_VALUE;
+      Flush();
     }
     else
     {        
