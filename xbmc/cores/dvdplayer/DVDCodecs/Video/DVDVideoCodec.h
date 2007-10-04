@@ -12,14 +12,14 @@
 // should be entirely filled by all codecs
 typedef struct stDVDVideoPicture
 {
-  __int64 pts; // timestamp in seconds, used in the CDVDPlayer class to keep track of pts
+  double pts; // timestamp in seconds, used in the CDVDPlayer class to keep track of pts
   BYTE* data[4];      // [4] = alpha channel, currently not used
   int iLineSize[4];   // [4] = alpha channel, currently not used
 
   unsigned int iFlags;
   
   unsigned int iRepeatPicture;
-  unsigned int iDuration;
+  double       iDuration;
   unsigned int iFrameType         : 4; // see defines above // 1->I, 2->P, 3->B, 0->Undef
   unsigned int color_matrix       : 4;
   unsigned int color_range        : 1; // 1 indicate if we have a full range of color
@@ -81,7 +81,7 @@ public:
    * returns one or a combination of VC_ messages
    * pData and iSize can be NULL, this means we should flush the rest of the data.
    */
-  virtual int Decode(BYTE* pData, int iSize, __int64 pts) = 0;
+  virtual int Decode(BYTE* pData, int iSize, double pts) = 0;
   
  /*
    * Reset the decoder.

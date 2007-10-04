@@ -18,10 +18,10 @@ public:
   CDVDPlayerSubtitle(CDVDOverlayContainer* pOverlayContainer);
   ~CDVDPlayerSubtitle();
 
-  void Process(__int64 pts);
+  void Process(double pts);
   void Flush();
   void FindSubtitles(const char* strFilename);
-  bool GetCurrentSubtitle(CStdString& strSubtitle, __int64 pts);
+  bool GetCurrentSubtitle(CStdString& strSubtitle, double pts);
   int GetSubtitleCount();
 
   void UpdateOverlayInfo(CDVDInputStreamNavigator* pStream, int iAction) { m_pOverlayContainer->UpdateOverlayInfo(pStream, &m_dvdspus, iAction); }

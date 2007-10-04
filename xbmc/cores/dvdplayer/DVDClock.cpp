@@ -18,7 +18,7 @@ CDVDClock::CDVDClock()
 CDVDClock::~CDVDClock()
 {}
 
-__int64 CDVDClock::GetAbsoluteClock()
+double CDVDClock::GetAbsoluteClock()
 {
   if(!m_systemFrequency.QuadPart)
     QueryPerformanceFrequency(&m_systemFrequency);
@@ -26,12 +26,10 @@ __int64 CDVDClock::GetAbsoluteClock()
   LARGE_INTEGER current;
   QueryPerformanceCounter(&current);
 
-  __int64 seconds = current.QuadPart / m_systemFrequency.QuadPart;
-  current.QuadPart -= seconds * m_systemFrequency.QuadPart;
-  return seconds*DVD_TIME_BASE + current.QuadPart*DVD_TIME_BASE / m_systemFrequency.QuadPart;
+  return DVD_TIME_BASE * (double)current.QuadPart / m_systemFrequency.QuadPart;
 }
 
-__int64 CDVDClock::GetClock()
+double CDVDClock::GetClock()
 {
   CSharedLock lock(m_critSection);
   LARGE_INTEGER current;
@@ -51,7 +49,7 @@ __int64 CDVDClock::GetClock()
     QueryPerformanceCounter(&current);
 
   current.QuadPart -= m_startClock.QuadPart;
-  return current.QuadPart * DVD_TIME_BASE / m_systemUsed.QuadPart + m_iDisc;
+  return DVD_TIME_BASE * (double)current.QuadPart / m_systemUsed.QuadPart + m_iDisc;
 }
 
 void CDVDClock::SetSpeed(int iSpeed)
@@ -80,7 +78,7 @@ void CDVDClock::SetSpeed(int iSpeed)
   m_systemUsed.QuadPart = newfreq;    
 }
 
-void CDVDClock::Discontinuity(ClockDiscontinuityType type, __int64 currentPts, __int64 delay)
+void CDVDClock::Discontinuity(ClockDiscontinuityType type, double currentPts, double delay)
 {
   CExclusiveLock lock(m_critSection);
   switch (type)
@@ -94,7 +92,7 @@ void CDVDClock::Discontinuity(ClockDiscontinuityType type, __int64 currentPts, _
     {
 
       QueryPerformanceCounter(&m_startClock);
-      m_startClock.QuadPart += delay * m_systemUsed.QuadPart / DVD_TIME_BASE; 
+      m_startClock.QuadPart += (__int64)(delay * m_systemUsed.QuadPart / DVD_TIME_BASE);
       m_iDisc = currentPts;
       m_bReset = false;
       break;
@@ -122,7 +120,7 @@ void CDVDClock::Resume()
   }  
 }
 
-__int64 CDVDClock::DistanceToDisc()
+double CDVDClock::DistanceToDisc()
 {
   CSharedLock lock(m_critSection);
   return GetClock() - m_iDisc;

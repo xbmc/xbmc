@@ -46,7 +46,7 @@ void CDVDDemuxSPU::FlushCurrentPacket()
   memset(&m_spuData, 0, sizeof(m_spuData));
 }
 
-CSPUInfo* CDVDDemuxSPU::AddData(BYTE* data, int iSize, __int64 pts)
+CSPUInfo* CDVDDemuxSPU::AddData(BYTE* data, int iSize, double pts)
 {
   SPUData* pSPUData = &m_spuData;
 
@@ -182,7 +182,7 @@ CSPUInfo* CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
         {
           p++;
           pSPUInfo->iPTSStartTime = pSPUData->pts;
-          pSPUInfo->iPTSStartTime += (((__int64)(delay * 1024 * DVD_TIME_BASE)) / 90000);
+          pSPUInfo->iPTSStartTime += delay * 1024 * DVD_TIME_BASE / 90000;
           DebugLog("    GetPacket, STA_DSP: Start Display, delay: %i", ((delay * 1024) / 90000));
         }
         break;
@@ -190,7 +190,7 @@ CSPUInfo* CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
         {
           p++;
           pSPUInfo->iPTSStopTime = pSPUData->pts;
-          pSPUInfo->iPTSStopTime += (((__int64)delay * 1024 * DVD_TIME_BASE) / 90000);
+          pSPUInfo->iPTSStopTime += delay * 1024 * DVD_TIME_BASE / 90000;
           DebugLog("    GetPacket, STP_DSP: Stop Display, delay: %i", ((delay * 1024) / 90000));
         }
         break;

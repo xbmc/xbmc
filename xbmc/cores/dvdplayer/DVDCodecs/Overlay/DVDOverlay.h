@@ -64,8 +64,8 @@ public:
   
   bool IsOverlayType(DVDOverlayType type) { return (m_type == type); }
   
-  __int64 iPTSStartTime;
-  __int64 iPTSStopTime;
+  double iPTSStartTime;
+  double iPTSStopTime;
   bool bForced; // display, no matter what
   int iGroupId;
 #ifdef DVDDEBUG_OVERLAY_TRACKER

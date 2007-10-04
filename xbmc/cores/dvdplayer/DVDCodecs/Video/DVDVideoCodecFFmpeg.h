@@ -12,7 +12,7 @@ public:
   virtual ~CDVDVideoCodecFFmpeg();
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);  
   virtual void Dispose();
-  virtual int Decode(BYTE* pData, int iSize, __int64 pts);
+  virtual int Decode(BYTE* pData, int iSize, double pts);
   virtual void Reset();
   virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
   virtual void SetDropState(bool bDrop);
@@ -32,7 +32,7 @@ protected:
   int m_iScreenWidth;
   int m_iScreenHeight;
   
-  std::map<int, __int64> m_timestamps;
+  std::map<int, double> m_timestamps;
   DllAvCodec m_dllAvCodec;
   DllAvUtil m_dllAvUtil;
 };

@@ -126,8 +126,8 @@ private:
 class CDVDMsgGeneralResync : public CDVDMsg
 {
 public:
-  CDVDMsgGeneralResync(__int64 timestamp, bool clock) : CDVDMsg(GENERAL_RESYNC)  { m_timestamp = timestamp; m_clock = clock; }
-  __int64 m_timestamp;
+  CDVDMsgGeneralResync(double timestamp, bool clock) : CDVDMsg(GENERAL_RESYNC)  { m_timestamp = timestamp; m_clock = clock; }
+  double m_timestamp;
   bool m_clock;
 };
 
@@ -218,12 +218,19 @@ private:
 class CDVDMsgPlayerSeek : public CDVDMsg
 {
 public:
-  CDVDMsgPlayerSeek(int time, bool backword) : CDVDMsg(PLAYER_SEEK) { m_time = time; m_backword = backword; }
-  int GetTime()                { return m_time; }
-  bool GetBackword()          { return m_backword; }
+  CDVDMsgPlayerSeek(int time, bool backward, bool flush = true)
+    : CDVDMsg(PLAYER_SEEK)
+    , m_time(time)
+    , m_backward(backward)
+    , m_flush(flush)
+  {}
+  int  GetTime()              { return m_time; }
+  bool GetBackward()          { return m_backward; }
+  bool GetFlush()             { return m_flush; }
 private:
-  int m_time;
-  bool m_backword;
+  int  m_time;
+  bool m_backward;
+  bool m_flush;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
