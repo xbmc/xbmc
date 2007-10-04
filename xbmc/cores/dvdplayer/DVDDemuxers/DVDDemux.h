@@ -101,8 +101,8 @@ public:
     int iStreamId; // integer representing the stream index
     int iGroupId; // the group this data belongs to, used to group data from different streams together
     
-    __int64 pts; // pts in DVD_TIME_BASE
-    __int64 dts; // dts in DVD_TIME_BASE
+    double pts; // pts in DVD_TIME_BASE
+    double dts; // dts in DVD_TIME_BASE
   }
   DemuxPacket;
 
