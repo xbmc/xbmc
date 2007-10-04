@@ -33,19 +33,26 @@ typedef struct DVDInfo
   DWORD iDVDStillStartTime; // time in ticks when we started the still
   int iSelectedSPUStream;   // mpeg stream id, or -1 if disabled
   int iSelectedAudioStream; // mpeg stream id, or -1 if disabled
-
-  int iFlagSentStart;
-  int iNrOfExpectedDiscontinuities;
 }
 DVDInfo;
 
-typedef struct SCurrentStream
+typedef struct
 {
   int              id;     // demuxerid of current playing stream
-  __int64 dts;             // last dts from demuxer, used to find disncontinuities
+  double           dts;    // last dts from demuxer, used to find disncontinuities
   CDVDStreamInfo   hint;   // stream hints, used to notice stream changes
   void*            stream; // pointer or integer, identifying stream playing. if it changes stream changed
-} SCurrentStream;
+  bool             inited;
+
+  void Clear()
+  {
+    id = -1;
+    dts = DVD_NOPTS_VALUE;
+    hint.Clear();
+    stream = NULL;
+    inited = false;
+  }
+} CCurrentStream;
 
 #define DVDPLAYER_AUDIO 1
 #define DVDPLAYER_VIDEO 2
@@ -146,7 +153,7 @@ private:
   int GetPlaySpeed()                                                { return m_playSpeed; }
   
   __int64 GetTotalTimeInMsec();
-  void FlushBuffers();
+  void FlushBuffers(bool queued);
 
   void HandleMessages();
   bool IsInMenu() const;
@@ -155,19 +162,20 @@ private:
   void CheckContinuity(CDVDDemux::DemuxPacket* pPacket, unsigned int source);
 
   bool m_bDontSkipNextFrame;
-  bool m_bReadAgain; // tricky, if set to true, the main loop will start over again
   bool m_bAbortRequest;
 
   std::string m_filename; // holds the actual filename
   std::string m_content;  // hold a hint to what content file contains (mime type)
     
-  SCurrentStream m_CurrentAudio;
-  SCurrentStream m_CurrentVideo;
-  SCurrentStream m_CurrentSubtitle;
+  CCurrentStream m_CurrentAudio;
+  CCurrentStream m_CurrentVideo;
+  CCurrentStream m_CurrentSubtitle;
 
   std::vector<std::string>  m_vecSubtitleFiles; // external subtitle files
 
   int m_playSpeed;
+
+  double m_lastpts; // holds last display pts during ff/rw operations
   
   unsigned int m_packetcount; // packet count from demuxer, may wrap around. used during startup
   
