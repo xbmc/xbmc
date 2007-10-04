@@ -77,7 +77,7 @@ CDVDOverlay* CDVDOverlayContainer::Remove(CDVDOverlay* pOverlay)
   return pNext;
 }
 
-void CDVDOverlayContainer::CleanUp(__int64 pts)
+void CDVDOverlayContainer::CleanUp(double pts)
 {
   CDVDOverlay* pOverlay = NULL;
   

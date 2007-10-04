@@ -14,7 +14,7 @@ public:
   virtual void DeInit();
   virtual void Reset();
   
-  virtual CDVDOverlay* Parse(__int64 iPts);
+  virtual CDVDOverlay* Parse(double iPts);
 
 private:
   int ParseFile();
