@@ -21,7 +21,7 @@ public:
 
   void Add(CDVDOverlay* pSubtitle);
   
-  CDVDOverlay* Get(__int64 iPts = 0LL); // get the first overlay in this fifo
+  CDVDOverlay* Get(double iPts = 0LL); // get the first overlay in this fifo
 
   void Reset();
   

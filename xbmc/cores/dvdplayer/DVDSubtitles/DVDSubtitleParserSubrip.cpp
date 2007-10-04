@@ -40,7 +40,7 @@ void CDVDSubtitleParserSubrip::Reset()
 }
   
 // parse exactly one subtitle
-CDVDOverlay* CDVDSubtitleParserSubrip::Parse(__int64 iPts)
+CDVDOverlay* CDVDSubtitleParserSubrip::Parse(double iPts)
 {
   CDVDOverlay* pOverlay = m_collection.Get(iPts);
   return pOverlay;
@@ -75,8 +75,8 @@ int CDVDSubtitleParserSubrip::ParseFile()
 		    CDVDOverlayText* pOverlay = new CDVDOverlayText();
         pOverlay->Acquire(); // increase ref count with one so that we can hold a handle to this overlay
         
-	      pOverlay->iPTSStartTime = ((__int64)(((hh1 * 60 + mm1) * 60) + ss1) * 1000 + ms1) * (DVD_TIME_BASE / 1000);
-		    pOverlay->iPTSStopTime  = ((__int64)(((hh2 * 60 + mm2) * 60) + ss2) * 1000 + ms2) * (DVD_TIME_BASE / 1000);
+	      pOverlay->iPTSStartTime = ((double)(((hh1 * 60 + mm1) * 60) + ss1) * 1000 + ms1) * (DVD_TIME_BASE / 1000);
+		    pOverlay->iPTSStopTime  = ((double)(((hh2 * 60 + mm2) * 60) + ss2) * 1000 + ms2) * (DVD_TIME_BASE / 1000);
 		     
 			  while (m_pStream->ReadLine(line, sizeof(line)))
 			  {

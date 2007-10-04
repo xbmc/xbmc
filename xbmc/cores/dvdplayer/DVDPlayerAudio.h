@@ -22,8 +22,8 @@ enum CodecID;
 typedef struct stDVDAudioFrame
 {
   BYTE* data;
-  __int64 pts;
-  unsigned int duration;  
+  double pts;
+  double duration;
   unsigned int size;
 
   int channels;
@@ -35,15 +35,15 @@ typedef struct stDVDAudioFrame
 class CPTSQueue
 {
 private:
-  typedef struct {__int64 pts; __int64 timestamp;} TPTSItem;
-  TPTSItem m_currentPTSItem;
-  std::queue<TPTSItem> m_quePTSQueue;
+  typedef struct {double pts; double timestamp; double duration;} TPTSItem;
+  TPTSItem m_current;
+  std::queue<TPTSItem> m_queue;
 
 public:
   CPTSQueue();
-  void Add(__int64 pts, __int64 delay);
+  void Add(double pts, double delay, double duration);
   void Flush();
-  __int64 Current();
+  double Current();
 };
 
 class CDVDPlayerAudio : public CThread
@@ -79,7 +79,7 @@ public:
   CDVDMessageQueue m_messageQueue;
   CPTSQueue m_ptsQueue;
 
-  __int64 GetCurrentPts()                           { return m_ptsQueue.Current(); }
+  double GetCurrentPts()                            { return m_ptsQueue.Current(); }
 
   bool IsStalled()                                  { return m_Stalled;  }
 protected:
@@ -93,7 +93,7 @@ protected:
   // tries to open a decoder for the given data. 
   bool OpenDecoder(CDVDStreamInfo &hint, BYTE* buffer = NULL, unsigned int size = 0);
 
-  __int64 m_audioClock;
+  double m_audioClock;
   
   // for audio decoding
   CDVDDemux::DemuxPacket* pAudioPacket;
@@ -109,13 +109,6 @@ protected:
 
   int m_speed;  // wanted playback speed. if playback speed!=DVD_PLAYSPEED_NORMAL, don't sync clock as it will loose track of position after seek
   double m_droptime;
-
-  typedef struct {__int64 pts; __int64 timestamp;} TPTSItem;
-  TPTSItem m_currentPTSItem;
-  std::queue<TPTSItem> m_quePTSQueue;
-
-  void AddPTSQueue(__int64 pts, __int64 delay);
-  void FlushPTSQueue();
 
   bool m_Stalled;
   CRITICAL_SECTION m_critCodecSection;
