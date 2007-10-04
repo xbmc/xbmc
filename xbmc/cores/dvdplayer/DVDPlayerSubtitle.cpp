@@ -119,7 +119,7 @@ void CDVDPlayerSubtitle::CloseStream(bool flush)
 
 }
 
-void CDVDPlayerSubtitle::Process(__int64 pts)
+void CDVDPlayerSubtitle::Process(double pts)
 {
   if (m_pSubtitleFileParser && m_pOverlayContainer->GetSize() < 5 && pts != DVD_NOPTS_VALUE)
   {
@@ -129,7 +129,7 @@ void CDVDPlayerSubtitle::Process(__int64 pts)
   }
 }
 
-bool CDVDPlayerSubtitle::GetCurrentSubtitle(CStdString& strSubtitle, __int64 pts)
+bool CDVDPlayerSubtitle::GetCurrentSubtitle(CStdString& strSubtitle, double pts)
 {
   strSubtitle = "";
   

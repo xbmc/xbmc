@@ -10,7 +10,7 @@ typedef struct SPUData
   unsigned int iSize; // current data size
   unsigned int iNeededSize; // wanted packet size
   unsigned int iAllocatedSize;
-  __int64 pts;
+  double pts;
 }
 SPUData;
 
@@ -34,7 +34,7 @@ public:
   CDVDDemuxSPU();
   virtual ~CDVDDemuxSPU();
 
-  CSPUInfo* AddData(BYTE* data, int iSize, __int64 pts); // returns a packet from ParsePacket if possible
+  CSPUInfo* AddData(BYTE* data, int iSize, double pts); // returns a packet from ParsePacket if possible
 
   CSPUInfo* ParseRLE(CSPUInfo* pSPU, BYTE* pUnparsedData);
   void FindSubtitleColor(int last_color, int stats[4], CSPUInfo* pSPU);

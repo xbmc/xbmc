@@ -95,7 +95,7 @@ public:
   bool Seek(int iTimeInMsec); //seek within current pg(c)
   virtual int GetCurrentGroupId() { return m_icurrentGroupId; }
 
-  __int64 GetTimeStampCorrection() { return (m_iVobUnitCorrection * 1000) / 90; }
+  double GetTimeStampCorrection() { return (double)(m_iVobUnitCorrection * 1000) / 90; }
 protected:
 
   int ProcessBlock(BYTE* buffer, int* read);
