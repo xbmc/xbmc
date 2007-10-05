@@ -23,7 +23,7 @@ public:
   void Remove(); // remove the first overlay in this fifo
 
   void Clear(); // clear the fifo and delete all overlays
-  void CleanUp(__int64 pts); // validates all overlays against current pts
+  void CleanUp(double pts); // validates all overlays against current pts
   int GetSize();
 
   void UpdateOverlayInfo(CDVDInputStreamNavigator* pStream, CDVDDemuxSPU *pSpu, int iAction);

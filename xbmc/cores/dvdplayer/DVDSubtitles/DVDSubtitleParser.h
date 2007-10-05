@@ -21,7 +21,7 @@ public:
   virtual void DeInit() = 0;
   virtual void Reset() = 0;
   
-  virtual CDVDOverlay* Parse(__int64 iPts) = 0;
+  virtual CDVDOverlay* Parse(double iPts) = 0;
   
 protected:
   CDVDSubtitleStream* m_pStream;

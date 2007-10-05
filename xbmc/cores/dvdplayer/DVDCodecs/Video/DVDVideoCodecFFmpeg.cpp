@@ -141,7 +141,7 @@ void CDVDVideoCodecFFmpeg::SetDropState(bool bDrop)
   }
 }
 
-int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, __int64 pts)
+int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
 {
   int iGotPicture = 0, len = 0;
 
@@ -266,7 +266,7 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->iFlags |= frame->data[0] ? 0 : DVP_FLAG_DROPPED;
 
   // see if we can find a timestamp for this frame
-  std::map<int, __int64>::iterator it = m_timestamps.find(frame->coded_picture_number);
+  std::map<int, double>::iterator it = m_timestamps.find(frame->coded_picture_number);
   if(it != m_timestamps.end())
   {
     pDvdVideoPicture->pts = (*it).second;

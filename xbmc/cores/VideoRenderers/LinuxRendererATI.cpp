@@ -358,7 +358,7 @@ bool CLinuxRendererATI::CreateYV12Texture(int index, bool clear)
       static unsigned long np2x = 0, np2y = 0;
       np2x = NP2(im.width);
       np2y = NP2(im.height);
-      CLog::Log(LOGNOTICE, "GL: Creating power of two texture of size %d x %d", np2x, np2y);
+      CLog::Log(LOGNOTICE, "GL: Creating power of two texture of size %ld x %ld", np2x, np2y);
       glTexImage2D(m_textureTarget, 0, GL_RGBA, np2x, np2y, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
       im.texcoord_x = ((float)im.width / (float)np2x);
       im.texcoord_y = ((float)im.height / (float)np2y);
