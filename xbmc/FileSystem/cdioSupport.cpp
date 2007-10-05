@@ -106,7 +106,7 @@ HRESULT CCdIoSupport::CloseTray()
 HANDLE CCdIoSupport::OpenCDROM()
 {
 #ifdef _LINUX
-  char* source_name = "/dev/cdrom";
+  char* source_name = GetDeviceFileName();
 #else
   char* source_name = "\\\\.\\D:";
 #endif
@@ -612,7 +612,7 @@ void CCdIoSupport::GetCdTextInfo(trackinfo *pti, int trackNum)
 CCdInfo* CCdIoSupport::GetCdInfo()
 {
 #ifdef _LINUX
-  char* source_name = "/dev/cdrom";
+  char* source_name = GetDeviceFileName();
 #else
   char* source_name = "\\\\.\\D:";
 #endif
@@ -908,3 +908,28 @@ ULONG CCdIoSupport::CddbDiscId()
 
   return ((n % 0xff) << 24 | t << 8 | m_nNumTracks);
 }
+
+char* CCdIoSupport::GetDeviceFileName()
+{
+  if (s_defaultDevice == NULL)  
+  {
+    if (getenv("XBMC_DVD_DEVICE") != NULL)
+      s_defaultDevice = strdup(getenv("XBMC_DVD_DEVICE"));
+    else
+    {
+      CdIo_t *p_cdio = cdio_open(NULL, DRIVER_UNKNOWN);
+      if (p_cdio != NULL)
+      {
+        s_defaultDevice = strdup(cdio_get_arg(p_cdio, "source"));
+        cdio_destroy(p_cdio);
+      }
+      else
+        s_defaultDevice = strdup("");
+    }
+  }
+
+  return s_defaultDevice;
+}
+
+char* CCdIoSupport::s_defaultDevice = NULL;
+
