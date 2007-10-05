@@ -26,11 +26,9 @@ public:
   CDemuxStreamAudioFFmpeg(DllAvCodec* pDll) : CDemuxStreamAudio()
   {
     m_pDll = pDll;
-    previous_dts = 0LL;
   }
 
   virtual void GetStreamInfo(std::string& strInfo);
-  __int64 previous_dts;
   
 private:
   DllAvCodec*  m_pDll;
@@ -68,7 +66,7 @@ protected:
   void Unlock() { LeaveCriticalSection(&m_critSection); }
 
   bool ContextInit(const char* strFile, int chunksize, bool seekable);
-  __int64 ConvertTimestamp(__int64 pts, int den, int num);
+  double ConvertTimestamp(__int64 pts, int den, int num);
 
   CRITICAL_SECTION m_critSection;
   // #define MAX_STREAMS 42 // from avformat.h
@@ -80,7 +78,7 @@ protected:
   DllAvCodec  m_dllAvCodec;
   DllAvUtil   m_dllAvUtil;
   
-  __int64 m_iCurrentPts; // used for stream length estimation
+  double m_iCurrentPts; // used for stream length estimation
   bool m_bDiscardDts;
   int m_speed;
 };

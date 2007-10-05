@@ -245,7 +245,7 @@ bool CVideoDatabase::CreateTables()
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "videodatabase::unable to create tables:%i", GetLastError());
+    CLog::Log(LOGERROR, "videodatabase::unable to create tables:%i", (int)GetLastError());
     return false;
   }
 
@@ -2452,7 +2452,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool ne
   if (needsCast)
   {
     // create cast string
-    CStdString strSQL = FormatSQL("select actors.strActor,actorlinkmovie.strRole,actors.strThumb from actorlinkmovie,actors where actorlinkmovie.idMovie=%u and actorlinkmovie.idActor = actors.idActor",lMovieId);
+    CStdString strSQL = FormatSQL("select  actors.strActor,actorlinkmovie.strRole,actors.strThumb from  actorlinkmovie,actors where actorlinkmovie.idMovie=%u and actorlinkmovie.idActor  = actors.idActor order by actorlinkmovie.ROWID",lMovieId);
     m_pDS2->query(strSQL.c_str());
     while (!m_pDS2->eof())
     {
@@ -3166,17 +3166,17 @@ void CVideoDatabase::MarkAsWatched(long lMovieId, int iType /* = 0 */)
     CStdString strSQL;
     if (iType == 0)
     {
-      CLog::Log(LOGINFO, "Updating Movie:%i as Watched", lMovieId);
+      CLog::Log(LOGINFO, "Updating Movie:%ld as Watched", lMovieId);
       strSQL.Format("UPDATE movie set c%02d='true' WHERE idMovie=%u", VIDEODB_ID_WATCHED, lMovieId);
     }
     else if (iType == 1)
     {
-      CLog::Log(LOGINFO, "Updating Episode:%i as Watched", lMovieId);
+      CLog::Log(LOGINFO, "Updating Episode:%ld as Watched", lMovieId);
       strSQL.Format("UPDATE episode set c%02d='true' WHERE idEpisode=%u", VIDEODB_ID_EPISODE_WATCHED, lMovieId);
     }
     else if (iType == 3)
     {
-      CLog::Log(LOGINFO, "Updating MusicVideo:%i as Watched", lMovieId);
+      CLog::Log(LOGINFO, "Updating MusicVideo:%ld as Watched", lMovieId);
       strSQL.Format("UPDATE musicvideo set c%02d='true' WHERE idMVideo=%u", VIDEODB_ID_MUSICVIDEO_WATCHED, lMovieId);
     }
 
@@ -3184,7 +3184,7 @@ void CVideoDatabase::MarkAsWatched(long lMovieId, int iType /* = 0 */)
   }
   catch (...)
   {
-	  CLog::Log(LOGERROR, "CVideoDatabase::MarkAsWatched(long lMovieId) failed on MovieID:%i", lMovieId);
+	  CLog::Log(LOGERROR, "CVideoDatabase::MarkAsWatched(long lMovieId) failed on MovieID:%ld", lMovieId);
   }
 }
 
@@ -3197,25 +3197,25 @@ void CVideoDatabase::MarkAsUnWatched(long lMovieId, int iType /* = 0 */)
     CStdString strSQL;
     if (iType == 0)
     {
-      CLog::Log(LOGINFO, "Updating Movie:%i as UnWatched", lMovieId);
+      CLog::Log(LOGINFO, "Updating Movie:%ld as UnWatched", lMovieId);
       strSQL.Format("UPDATE movie set c%02d='false' WHERE idMovie=%u", VIDEODB_ID_WATCHED, lMovieId);
     }
 
     else if (iType == 1)
     {
-      CLog::Log(LOGINFO, "Updating Episode:%i as UnWatched", lMovieId);
+      CLog::Log(LOGINFO, "Updating Episode:%ld as UnWatched", lMovieId);
       strSQL.Format("UPDATE episode set c%02d='false' WHERE idEpisode=%u", VIDEODB_ID_EPISODE_WATCHED, lMovieId);
     }
     else if (iType == 3)
     {
-      CLog::Log(LOGINFO, "Updating MusicVideo:%i as UnWatched", lMovieId);
+      CLog::Log(LOGINFO, "Updating MusicVideo:%ld as UnWatched", lMovieId);
       strSQL.Format("UPDATE musicvideo set c%02d='false' WHERE idMVideo=%u", VIDEODB_ID_MUSICVIDEO_WATCHED, lMovieId);
     }
     m_pDS->exec(strSQL.c_str());
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "CVideoDatabase::MarkAsUnWatched(long lMovieId) failed on MovieID:%i", lMovieId);
+    CLog::Log(LOGERROR, "CVideoDatabase::MarkAsUnWatched(long lMovieId) failed on MovieID:%ld", lMovieId);
   }
 }
 
@@ -3228,29 +3228,29 @@ void CVideoDatabase::UpdateMovieTitle(long lMovieId, const CStdString& strNewMov
     CStdString strSQL;
     if (iType == 0)    
     {
-      CLog::Log(LOGINFO, "Changing Movie:id:%i New Title:%s", lMovieId, strNewMovieTitle.c_str());
+      CLog::Log(LOGINFO, "Changing Movie:id:%ld New Title:%s", lMovieId, strNewMovieTitle.c_str());
       strSQL = FormatSQL("UPDATE movie SET c%02d='%s' WHERE idMovie=%i", VIDEODB_ID_TITLE, strNewMovieTitle.c_str(), lMovieId );
     }
     else if (iType == 1)
     {
-      CLog::Log(LOGINFO, "Changing Episode:id:%i New Title:%s", lMovieId, strNewMovieTitle.c_str());
+      CLog::Log(LOGINFO, "Changing Episode:id:%ld New Title:%s", lMovieId, strNewMovieTitle.c_str());
       strSQL = FormatSQL("UPDATE episode SET c%02d='%s' WHERE idEpisode=%i", VIDEODB_ID_EPISODE_TITLE, strNewMovieTitle.c_str(), lMovieId );
     }
     else if (iType == 2)
     {
-      CLog::Log(LOGINFO, "Changing TvShow:id:%i New Title:%s", lMovieId, strNewMovieTitle.c_str());
+      CLog::Log(LOGINFO, "Changing TvShow:id:%ld New Title:%s", lMovieId, strNewMovieTitle.c_str());
       strSQL = FormatSQL("UPDATE tvshow SET c%02d='%s' WHERE idShow=%i", VIDEODB_ID_TV_TITLE, strNewMovieTitle.c_str(), lMovieId );
     }
     else if (iType == 3)
     {
-      CLog::Log(LOGINFO, "Changing MusicVideo:id:%i New Title:%s", lMovieId, strNewMovieTitle.c_str());
+      CLog::Log(LOGINFO, "Changing MusicVideo:id:%ld New Title:%s", lMovieId, strNewMovieTitle.c_str());
       strSQL = FormatSQL("UPDATE musicvideo SET c%02d='%s' WHERE idMVideo=%i", VIDEODB_ID_MUSICVIDEO_TITLE, strNewMovieTitle.c_str(), lMovieId );
     }
     m_pDS->exec(strSQL.c_str());
   }
   catch (...)
   {
-	  CLog::Log(LOGERROR, "CVideoDatabase::UpdateMovieTitle(long lMovieId, const CStdString& strNewMovieTitle) failed on MovieID:%i and Title:%s", lMovieId, strNewMovieTitle.c_str());
+	  CLog::Log(LOGERROR, "CVideoDatabase::UpdateMovieTitle(long lMovieId, const CStdString& strNewMovieTitle) failed on MovieID:%ld and Title:%s", lMovieId, strNewMovieTitle.c_str());
   }
 }
 
@@ -4095,7 +4095,7 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
             }
           }
 
-          CLog::Log(LOGDEBUG,"Time for actual SQL query = %d", timeGetTime() - time); time = timeGetTime();
+          CLog::Log(LOGDEBUG,"Time for actual SQL query = %ld", timeGetTime() - time); time = timeGetTime();
           // get movies from returned subtable
           while (!m_pDS->eof())
           {
@@ -4114,8 +4114,8 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
             }
             m_pDS->next();
           }
-          CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %d", timeGetTime() - time);
-    		  CLog::Log(LOGDEBUG, "%s times: Info %d, Cast %d", __FUNCTION__, movieTime, castTime);
+          CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %ld", timeGetTime() - time);
+    		  CLog::Log(LOGDEBUG, "%s times: Info %ld, Cast %ld", __FUNCTION__, movieTime, castTime);
         }
         catch (...)
         {
@@ -4138,7 +4138,7 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
       return true;
     }
 
-    CLog::Log(LOGDEBUG,"Time for actual SQL query = %d", timeGetTime() - time); time = timeGetTime();
+    CLog::Log(LOGDEBUG,"Time for actual SQL query = %ld", timeGetTime() - time); time = timeGetTime();
 
     // get data from returned rows
     items.Reserve(iRowsFound);
@@ -4162,7 +4162,7 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
       m_pDS->next();
     }
 
-    CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %d", timeGetTime() - time);
+    CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %ld", timeGetTime() - time);
 
     // cleanup
     m_pDS->close();
@@ -4239,7 +4239,7 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
             }
           }
 
-          CLog::Log(LOGDEBUG,"Time for actual SQL query = %d", timeGetTime() - time); time = timeGetTime();
+          CLog::Log(LOGDEBUG,"Time for actual SQL query = %ld", timeGetTime() - time); time = timeGetTime();
           // get movies from returned subtable
           while (!m_pDS->eof())
           {
@@ -4256,8 +4256,8 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
             iSONGS++;
             m_pDS->next();
           }
-          CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %d", timeGetTime() - time);
-    		  CLog::Log(LOGDEBUG, "%s times: Info %d, Cast %d", __FUNCTION__, movieTime, castTime);
+          CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %ld", timeGetTime() - time);
+    		  CLog::Log(LOGDEBUG, "%s times: Info %ld, Cast %ld", __FUNCTION__, movieTime, castTime);
         }
         catch (...)
         {
@@ -4287,7 +4287,7 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
       return true;
     }
 
-    CLog::Log(LOGDEBUG,"Time for actual SQL query = %d", timeGetTime() - time); time = timeGetTime();
+    CLog::Log(LOGDEBUG,"Time for actual SQL query = %ld", timeGetTime() - time); time = timeGetTime();
 
     // get data from returned rows
     items.Reserve(iRowsFound);
@@ -4308,7 +4308,7 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
       m_pDS->next();
     }
 
-    CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %d", timeGetTime() - time);
+    CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %ld", timeGetTime() - time);
 
     // cleanup
     m_pDS->close();
@@ -4398,7 +4398,7 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
             }
           }
 
-          CLog::Log(LOGDEBUG,"Time for actual SQL query = %d", timeGetTime() - time); time = timeGetTime();
+          CLog::Log(LOGDEBUG,"Time for actual SQL query = %ld", timeGetTime() - time); time = timeGetTime();
           // get movies from returned subtable
           while (!m_pDS->eof())
           {
@@ -4423,8 +4423,8 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
             iSONGS++;
             m_pDS->next();
           }
-          CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %d", timeGetTime() - time);
-    	  CLog::Log(LOGDEBUG, "%s times: Info %d, Cast %d", __FUNCTION__, movieTime, castTime);
+          CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %ld", timeGetTime() - time);
+    	  CLog::Log(LOGDEBUG, "%s times: Info %ld, Cast %ld", __FUNCTION__, movieTime, castTime);
         }
         catch (...)
         {
@@ -4454,7 +4454,7 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
       return true;
     }
 
-    CLog::Log(LOGDEBUG,"Time for actual SQL query = %d", timeGetTime() - time); time = timeGetTime();
+    CLog::Log(LOGDEBUG,"Time for actual SQL query = %ld", timeGetTime() - time); time = timeGetTime();
 
     // get data from returned rows
     items.Reserve(iRowsFound);
@@ -4482,7 +4482,7 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
       m_pDS->next();
     }
 
-    CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %d", timeGetTime() - time);
+    CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %ld", timeGetTime() - time);
 
     // cleanup
     m_pDS->close();
@@ -4582,8 +4582,8 @@ bool CVideoDatabase::GetMusicVideosNav(const CStdString& strBaseDir, CFileItemLi
             }
             m_pDS->next();
           }
-          CLog::DebugLog("Time to retrieve musicvideos from dataset = %d", timeGetTime() - time);
-    		  CLog::Log(LOGDEBUG, "%s times: Info %d, Cast %d", __FUNCTION__, movieTime, castTime);
+          CLog::Log(LOGDEBUG,"Time to retrieve musicvideos from dataset = %ld", timeGetTime() - time);
+    	  CLog::Log(LOGDEBUG, "%s times: Info %ld, Cast %ld", __FUNCTION__, movieTime, castTime);
         }
         catch (...)
         {
