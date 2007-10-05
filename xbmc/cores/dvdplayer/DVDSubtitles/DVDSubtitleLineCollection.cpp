@@ -39,7 +39,7 @@ void CDVDSubtitleLineCollection::Add(CDVDOverlay* pOverlay)
   m_iSize++;
 }
 
-CDVDOverlay* CDVDSubtitleLineCollection::Get(__int64 iPts)
+CDVDOverlay* CDVDSubtitleLineCollection::Get(double iPts)
 {
   CDVDOverlay* pOverlay = NULL;
   

@@ -237,7 +237,7 @@ void CDVDAudio::Resume()
   if (m_pAudioDecoder) m_pAudioDecoder->Resume();
 }
 
-__int64 CDVDAudio::GetDelay()
+double CDVDAudio::GetDelay()
 {
   CSingleLock lock (m_critSection);
 
@@ -249,7 +249,7 @@ __int64 CDVDAudio::GetDelay()
   if(m_iBufferSize && bps)
     delay += (double)m_iBufferSize / bps;
 
-  return (__int64)(delay * DVD_TIME_BASE);
+  return delay * DVD_TIME_BASE;
 }
 
 void CDVDAudio::Flush()

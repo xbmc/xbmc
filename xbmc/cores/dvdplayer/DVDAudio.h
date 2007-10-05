@@ -30,7 +30,7 @@ public:
   void Destroy();
   DWORD AddPackets(const DVDAudioFrame &audioframe);
   void DoWork();
-  __int64 GetDelay(); // returns the time it takes to play a packet if we add one at this time
+  double GetDelay(); // returns the time it takes to play a packet if we add one at this time
   void Flush();
 
   void SetSpeed(int iSpeed);
