@@ -1,4 +1,4 @@
-INCLUDES=-I. -I/usr/include/SDL -I.. -I../../guilib -I../utils
+INCLUDES=-I. -I/usr/include/SDL -I.. -I../../guilib -I../utils -I../FileSystem
 CFLAGS+=-DHAS_SDL
 
 SRCS=ConvUtils.cpp XEventUtils.cpp XFileUtils.cpp XHandle.cpp XSyncUtils.cpp XTimeUtils.cpp XMemUtils.cpp XThreadUtils.cpp NetworkLinux.cpp NetworkLinux.cpp

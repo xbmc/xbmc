@@ -16,6 +16,8 @@
 #include "../../utils/GUIInfoManager.h"
 #include "DVDPerformanceCounter.h"
 
+#include "../../FileSystem/cdioSupport.h"
+
 CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
     : IPlayer(callback),
       CThread(),
@@ -99,7 +101,7 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
         strFile.CompareNoCase("iso9660://video_ts/video_ts.ifo") == 0)
     {
 #ifdef _LINUX
-      m_filename = "/dev/cdrom";
+      m_filename = MEDIA_DETECT::CCdIoSupport::GetDeviceFileName();
 #else
       m_filename = "\\Device\\Cdrom0";
 #endif

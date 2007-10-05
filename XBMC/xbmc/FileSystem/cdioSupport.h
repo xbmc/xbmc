@@ -262,6 +262,8 @@ public:
   CCdInfo* GetCdInfo();
   void GetCdTextInfo(trackinfo *pti, int trackNum);
 
+  static char* GetDeviceFileName();
+
 protected:
   int ReadBlock(int superblock, uint32_t offset, uint8_t bufnum, track_t track_num);
   bool IsIt(int num);
@@ -276,6 +278,7 @@ protected:
   ULONG CddbDiscId();
   int CddbDecDigitSum(int n);
   UINT MsfSeconds(msf_t *msf);
+
 
 private:
 
@@ -301,6 +304,8 @@ private:
   int m_nNumData;                /* # of data tracks */
   int m_nFirstAudio;      /* # of first audio track */
   int m_nNumAudio;              /* # of audio tracks */
+
+  static char* s_defaultDevice;
 };
 
 }
