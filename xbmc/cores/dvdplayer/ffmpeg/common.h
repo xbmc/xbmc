@@ -44,9 +44,15 @@
 #ifndef av_always_inline
 #if defined(__GNUC__) && (__GNUC__ > 3 || __GNUC__ == 3 && __GNUC_MINOR__ > 0)
 #    define av_always_inline __attribute__((always_inline)) inline
-#    define av_noinline __attribute__((noinline))
 #else
 #    define av_always_inline inline
+#endif
+#endif
+
+#ifndef av_noinline
+#if defined(__GNUC__) && (__GNUC__ > 3 || __GNUC__ == 3 && __GNUC_MINOR__ > 0)
+#    define av_noinline __attribute__((noinline))
+#else
 #    define av_noinline
 #endif
 #endif
@@ -186,6 +192,17 @@ static inline uint8_t av_clip_uint8(int a)
     else          return a;
 }
 
+/**
+ * clip a signed integer value into the -32768,32767 range
+ * @param a value to clip
+ * @return clipped value
+ */
+static inline int16_t av_clip_int16(int a)
+{
+    if ((a+32768) & ~65535) return (a>>31) ^ 32767;
+    else                    return a;
+}
+
 /* math */
 int64_t ff_gcd(int64_t a, int64_t b);
 
@@ -268,6 +285,7 @@ static inline int ff_get_fourcc(const char *s){
     }
 
 #if defined(ARCH_X86) || defined(ARCH_POWERPC) || defined(ARCH_BFIN)
+#define AV_READ_TIME read_time
 #if defined(ARCH_X86_64)
 static inline uint64_t read_time(void)
 {
@@ -319,13 +337,17 @@ static inline uint64_t read_time(void)
      return (((uint64_t)tbu)<<32) | (uint64_t)tbl;
 }
 #endif
+#elif defined(HAVE_GETHRTIME)
+#define AV_READ_TIME gethrtime
+#endif
 
+#ifdef AV_READ_TIME
 #define START_TIMER \
 uint64_t tend;\
-uint64_t tstart= read_time();\
+uint64_t tstart= AV_READ_TIME();\
 
 #define STOP_TIMER(id) \
-tend= read_time();\
+tend= AV_READ_TIME();\
 {\
   static uint64_t tsum=0;\
   static int tcount=0;\

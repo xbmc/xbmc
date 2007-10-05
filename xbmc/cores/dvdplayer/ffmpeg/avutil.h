@@ -30,8 +30,8 @@
 #define AV_STRINGIFY(s)         AV_TOSTRING(s)
 #define AV_TOSTRING(s) #s
 
-#define LIBAVUTIL_VERSION_INT   ((49<<16)+(4<<8)+1)
-#define LIBAVUTIL_VERSION       49.4.1
+#define LIBAVUTIL_VERSION_INT   ((49<<16)+(5<<8)+0)
+#define LIBAVUTIL_VERSION       49.5.0
 #define LIBAVUTIL_BUILD         LIBAVUTIL_VERSION_INT
 
 #define LIBAVUTIL_IDENT         "Lavu" AV_STRINGIFY(LIBAVUTIL_VERSION)
@@ -103,6 +103,9 @@ enum PixelFormat {
 
     PIX_FMT_GRAY16BE,  ///<        Y        , 16bpp, big-endian
     PIX_FMT_GRAY16LE,  ///<        Y        , 16bpp, little-endian
+    PIX_FMT_YUV440P,   ///< Planar YUV 4:4:0 (1 Cr & Cb sample per 1x2 Y samples)
+    PIX_FMT_YUVJ440P,  ///< Planar YUV 4:4:0 full scale (jpeg)
+    PIX_FMT_YUVA420P,  ///< Planar YUV 4:2:0, 20bpp, (1 Cr & Cb sample per 2x2 Y & A samples)
     PIX_FMT_NB,        ///< number of pixel formats, DO NOT USE THIS if you want to link with shared libav* because the number of formats might differ between versions
 };
 

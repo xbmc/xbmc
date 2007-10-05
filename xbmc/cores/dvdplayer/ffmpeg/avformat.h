@@ -21,8 +21,8 @@
 #ifndef AVFORMAT_H
 #define AVFORMAT_H
 
-#define LIBAVFORMAT_VERSION_INT ((51<<16)+(12<<8)+1)
-#define LIBAVFORMAT_VERSION     51.12.1
+#define LIBAVFORMAT_VERSION_INT ((51<<16)+(14<<8)+0)
+#define LIBAVFORMAT_VERSION     51.14.0
 #define LIBAVFORMAT_BUILD       LIBAVFORMAT_VERSION_INT
 
 #define LIBAVFORMAT_IDENT       "Lavf" AV_STRINGIFY(LIBAVFORMAT_VERSION)
@@ -186,6 +186,8 @@ typedef struct AVOutputFormat {
      */
     const struct AVCodecTag **codec_tag;
 
+    enum CodecID subtitle_codec; /**< default subtitle codec */
+
     /* private fields */
     struct AVOutputFormat *next;
 } AVOutputFormat;
@@ -195,7 +197,11 @@ typedef struct AVInputFormat {
     const char *long_name;
     /** size of private data so that it can be allocated in the wrapper */
     int priv_data_size;
-    /** tell if a given file has a chance of being parsed by this format */
+    /**
+     * tell if a given file has a chance of being parsed by this format.
+     * The buffer provided is guranteed to be AVPROBE_PADDING_SIZE bytes big
+     * so you dont have to check for that unless you need more.
+     */
     int (*read_probe)(AVProbeData *);
     /** read the format header and initialize the AVFormatContext
        structure. Return 0 if OK. 'ap' if non NULL contains
@@ -216,6 +222,7 @@ typedef struct AVInputFormat {
      * @param stream_index must not be -1
      * @param flags selects which direction should be preferred if no exact
      *              match is available
+     * @return >= 0 on success (but not necessarily the new offset)
      */
     int (*read_seek)(struct AVFormatContext *,
                      int stream_index, int64_t timestamp, int flags);
@@ -277,13 +284,14 @@ typedef struct AVStream {
      */
     AVRational r_frame_rate;
     void *priv_data;
-#if LIBAVFORMAT_VERSION_INT < (52<<16)
+
     /* internal data used in av_find_stream_info() */
-    int64_t codec_info_duration;
+    int64_t first_dts;
+#if LIBAVFORMAT_VERSION_INT < (52<<16)
     int codec_info_nb_frames;
 #endif
     /** encoding: PTS generation when outputing stream */
-    AVFrac pts;
+    struct AVFrac pts;
 
     /**
      * this is the fundamental unit of time (in seconds) in terms
@@ -300,9 +308,20 @@ typedef struct AVStream {
     /** quality, as it has been removed from AVCodecContext and put in AVVideoFrame
      * MN: dunno if that is the right place for it */
     float quality;
-    /** decoding: pts of the first frame of the stream, in stream time base. */
+    /**
+     * decoding: pts of the first frame of the stream, in stream time base.
+     * only set this if you are absolutely 100% sure that the value you set
+     * it to really is the pts of the first frame
+     * This may be undefined (AV_NOPTS_VALUE).
+     * @note the ASF header does NOT contain a correct start_time the ASF
+     * demuxer must NOT set this
+     */
     int64_t start_time;
-    /** decoding: duration of the stream, in stream time base. */
+    /**
+     * decoding: duration of the stream, in stream time base.
+     * If a source file does not specify a duration, but does specify
+     * a bitrate, this value will be estimates from bit rate and file size.
+     */
     int64_t duration;
 
     char language[4]; /** ISO 639 3-letter language code (empty string if undefined) */
@@ -326,12 +345,25 @@ typedef struct AVStream {
     int64_t pts_buffer[MAX_REORDER_DELAY+1];
 } AVStream;
 
+#define AV_PROGRAM_RUNNING 1
+
+typedef struct AVProgram {
+    int            id;
+    char           *provider_name; ///< Network name for DVB streams
+    char           *name;          ///< Service name for DVB streams
+    int            flags;
+    enum AVDiscard discard;        ///< selects which program to discard and which to feed to the caller
+} AVProgram;
+
 #define AVFMTCTX_NOHEADER      0x0001 /**< signal that no header is present
                                          (streams are added dynamically) */
 
+#ifdef _XBOX
 /* dvd's can have maximally 41 streams */
-//#ifdef _XBOX needed for all builds
 #define MAX_STREAMS 42
+#else
+#define MAX_STREAMS 20
+#endif
 
 /* format I/O context */
 typedef struct AVFormatContext {
@@ -400,6 +432,7 @@ typedef struct AVFormatContext {
     int flags;
 #define AVFMT_FLAG_GENPTS       0x0001 ///< generate pts if missing even if it requires parsing future frames
 #define AVFMT_FLAG_IGNIDX       0x0002 ///< ignore index
+#define AVFMT_FLAG_NONBLOCK     0x0004 ///< do not block when reading packets from input
 
     int loop_input;
     /** decoding: size of data to probe; encoding unused */
@@ -412,6 +445,9 @@ typedef struct AVFormatContext {
 
     const uint8_t *key;
     int keylen;
+
+    unsigned int nb_programs;
+    AVProgram **programs;
 } AVFormatContext;
 
 typedef struct AVPacketList {
@@ -629,6 +665,7 @@ void av_close_input_file(AVFormatContext *s);
  * @param id file format dependent stream id
  */
 AVStream *av_new_stream(AVFormatContext *s, int id);
+AVProgram *av_new_program(AVFormatContext *s, int id);
 
 /**
  * Set the pts for a given stream.
@@ -776,19 +813,30 @@ attribute_deprecated int parse_image_size(int *width_ptr, int *height_ptr, const
 attribute_deprecated int parse_frame_rate(int *frame_rate, int *frame_rate_base, const char *arg);
 
 /**
- * Converts date string to number of seconds since Jan 1st, 1970.
- *
+ * Parses \p datestr and returns a corresponding number of microseconds.
+ * @param datestr String representing a date or a duration.
+ * - If a date the syntax is:
  * @code
- * Syntax:
- * - If not a duration:
  *  [{YYYY-MM-DD|YYYYMMDD}]{T| }{HH[:MM[:SS[.m...]]][Z]|HH[MM[SS[.m...]]][Z]}
- * Time is localtime unless Z is suffixed to the end. In this case GMT
- * Return the date in micro seconds since 1970
- *
- * - If a duration:
- *  HH[:MM[:SS[.m...]]]
- *  S+[.m...]
  * @endcode
+ * Time is localtime unless Z is appended, in which case it is
+ * interpreted as UTC.
+ * If the year-month-day part isn't specified it takes the current
+ * year-month-day.
+ * Returns the number of microseconds since 1st of January, 1970 up to
+ * the time of the parsed date or INT64_MIN if \p datestr cannot be
+ * successfully parsed.
+ * - If a duration the syntax is:
+ * @code
+ *  [-]HH[:MM[:SS[.m...]]]
+ *  [-]S+[.m...]
+ * @endcode
+ * Returns the number of microseconds contained in a time interval
+ * with the specified duration or INT64_MIN if \p datestr cannot be
+ * succesfully parsed.
+ * @param duration Flag which tells how to interpret \p datestr, if
+ * not zero \p datestr is interpreted as a duration, otherwise as a
+ * date.
  */
 int64_t parse_date(const char *datestr, int duration);
 
@@ -830,6 +878,22 @@ int av_get_frame_filename(char *buf, int buf_size,
  * @return 1 if a valid numbered sequence string, 0 otherwise.
  */
 int av_filename_number_test(const char *filename);
+
+/**
+ * Generate an SDP for an RTP session.
+ *
+ * @param ac array of AVFormatContexts describing the RTP streams. If the
+ *           array is composed by only one context, such context can contain
+ *           multiple AVStreams (one AVStream per RTP stream). Otherwise,
+ *           all the contexts in the array (an AVCodecContext per RTP stream)
+ *           must contain only one AVStream
+ * @param n_files number of AVCodecContexts contained in ac
+ * @param buff buffer where the SDP will be stored (must be allocated by
+ *             the caller
+ * @param size the size of the buffer
+ * @return 0 if OK. AVERROR_xxx if error.
+ */
+int avf_sdp_create(AVFormatContext *ac[], int n_files, char *buff, int size);
 
 #ifdef HAVE_AV_CONFIG_H
 
