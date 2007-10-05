@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xboxmediacenter.com-->
-<!--Date of translation: 09/28/2007-->
+<!--Date of translation: 10/03/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 10369-->
+<!--Based on english strings version 10403-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -657,6 +657,7 @@
   <string id="1041">Hämtade %i objekt</string>
   <string id="1042">Hämtade %i av %i objekt</string>
   <string id="1043">Programinstickstillägg</string>
+  <string id="1044">Ange insticksminiatyr</string>
   <string id="1200">SMB Utdelning</string>
   <string id="1202">SMB Arbetsgrupp</string>
   <string id="1203">SMB Användarnamn</string>

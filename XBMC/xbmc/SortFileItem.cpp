@@ -1228,6 +1228,9 @@ bool SSortFileItem::StudioDescending(CFileItem *left, CFileItem *right)
 
 bool SSortFileItem::StudioAscendingNoThe(CFileItem *left, CFileItem *right)
 {
+  if (!left || !right)
+    return false;
+
   // special cases
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;

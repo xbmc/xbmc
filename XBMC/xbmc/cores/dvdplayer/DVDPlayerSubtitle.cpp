@@ -92,14 +92,14 @@ bool CDVDPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, string &filename)
     m_pSubtitleFileParser = CDVDFactorySubtitle::CreateParser(m_pSubtitleStream, filename);
     if (!m_pSubtitleFileParser)
     {
-      CLog::Log(LOGERROR, "% - Unable to create subtitle parser", __FUNCTION__);
+      CLog::Log(LOGERROR, "%s - Unable to create subtitle parser", __FUNCTION__);
       CloseStream(false);
       return false;
     }
 
     if (!m_pSubtitleFileParser->Init())
     {
-      CLog::Log(LOGERROR, "% - Unable to init subtitle parser", __FUNCTION__);
+      CLog::Log(LOGERROR, "%s - Unable to init subtitle parser", __FUNCTION__);
       CloseStream(false);
       return false;
     }
@@ -119,7 +119,7 @@ void CDVDPlayerSubtitle::CloseStream(bool flush)
 
 }
 
-void CDVDPlayerSubtitle::Process(__int64 pts)
+void CDVDPlayerSubtitle::Process(double pts)
 {
   if (m_pSubtitleFileParser && m_pOverlayContainer->GetSize() < 5 && pts != DVD_NOPTS_VALUE)
   {
@@ -129,7 +129,7 @@ void CDVDPlayerSubtitle::Process(__int64 pts)
   }
 }
 
-bool CDVDPlayerSubtitle::GetCurrentSubtitle(CStdString& strSubtitle, __int64 pts)
+bool CDVDPlayerSubtitle::GetCurrentSubtitle(CStdString& strSubtitle, double pts)
 {
   strSubtitle = "";
   

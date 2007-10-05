@@ -1001,7 +1001,8 @@ const CStdString& CFileItem::GetContentType() const
     else if( m_strPath.Left(8).Equals("shout://")
           || m_strPath.Left(7).Equals("http://")
           || m_strPath.Left(8).Equals("https://")
-          || m_strPath.Left(7).Equals("upnp://"))
+          || m_strPath.Left(7).Equals("upnp://")
+          || m_strPath.Left(6).Equals("mms://"))
     {
       CFileCurl::GetContent(GetAsUrl(), m_ref);
 
@@ -1336,7 +1337,10 @@ void CFileItemList::Reserve(int iCount)
 
 void CFileItemList::Sort(FILEITEMLISTCOMPARISONFUNC func)
 {
-  sort(m_items.begin(), m_items.end(), func);
+  if (m_items.size() > 0)
+    sort(m_items.begin(), m_items.end(), func);
+  else
+    CLog::Log(LOGWARNING,"%s, items list is empty.", __FUNCTION__);
 }
 
 void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)

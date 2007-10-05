@@ -164,7 +164,7 @@ void CDVDVideoCodecLibMpeg2::SetDropState(bool bDrop)
   m_hurry = bDrop ? 1 : 0;
 }
 
-int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, __int64 pts)
+int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, double pts)
 {
   int iState = 0;
   bool bGotPicture = false;

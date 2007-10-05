@@ -59,17 +59,17 @@ public:
   float GetAspectRatio()                            { return 4.0f / 3.0f; }
 #endif
 
-  __int64 GetDelay()                                { return m_iVideoDelay; }
-  void SetDelay(__int64 delay)                      { m_iVideoDelay = delay; }
+  double GetDelay()                                { return m_iVideoDelay; }
+  void SetDelay(double delay)                      { m_iVideoDelay = delay; }
 
   bool IsStalled()                                  { return m_DetectedStill;  }
   int GetNrOfDroppedFrames()                        { return m_iDroppedFrames; }
 
   bool InitializedOutputDevice();
   
-  __int64 GetCurrentPts()                           { return m_iCurrentPts; }
+  double GetCurrentPts()                           { return m_iCurrentPts; }
 
-  __int64 GetOutputDelay(); /* returns the expected delay, from that a packet is put in queue */
+  double GetOutputDelay(); /* returns the expected delay, from that a packet is put in queue */
   string GetPlayerInfo();
 
   void SetSpeed(int iSpeed);
@@ -89,12 +89,12 @@ protected:
 #define EOS_DROPPED 2
 #define EOS_VERYLATE 4
 
-  int OutputPicture(DVDVideoPicture* pPicture, __int64 pts);
-  void ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest, __int64 pts);
-  void ProcessVideoUserData(DVDVideoUserData* pVideoUserData, __int64 pts);
+  int OutputPicture(DVDVideoPicture* pPicture, double pts);
+  void ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest, double pts);
+  void ProcessVideoUserData(DVDVideoUserData* pVideoUserData, double pts);
   
-  __int64 m_iCurrentPts; // last pts displayed
-  __int64 m_iVideoDelay; // not really needed to be an __int64  
+  double m_iCurrentPts; // last pts displayed
+  double m_iVideoDelay;
   double m_FlipTimeStamp; // time stamp of last flippage. used to play at a forced framerate
 
   int m_iDroppedFrames;
