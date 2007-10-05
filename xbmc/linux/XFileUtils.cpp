@@ -11,6 +11,8 @@
 #include <dirent.h>
 #include <errno.h>
 
+#include "cdioSupport.h"
+
 #include "../utils/log.h"
 
 HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData) {
@@ -198,7 +200,7 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
   CStdString strResultFile(lpFileName);
 
   // special case for opening the cdrom device
-  if (strcmp(lpFileName, "/dev/cdrom")==0)
+  if (strcmp(lpFileName, MEDIA_DETECT::CCdIoSupport::GetDeviceFileName())==0)
   {
     fd = open(lpFileName, O_RDONLY | O_NONBLOCK);
     cd = true;

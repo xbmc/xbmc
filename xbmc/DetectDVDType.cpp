@@ -318,10 +318,15 @@ DWORD CDetectDVDMedia::GetTrayState()
   
   int fd = 0;
   int drivestatus,discstatus;
-  fd = open("/dev/cdrom", O_RDONLY | O_NONBLOCK);
+
+  char* dvdDevice = CCdIoSupport::GetDeviceFileName();
+  if (strlen(dvdDevice) == 0)
+    return DRIVE_NOT_READY;
+
+  fd = open(dvdDevice, O_RDONLY | O_NONBLOCK);
   if (fd<0)
   {
-    CLog::Log(LOGERROR, "Unable to open CD-ROM device /dev/cdrom for polling.");
+    CLog::Log(LOGERROR, "Unable to open CD-ROM device %s for polling.", dvdDevice);
     return DRIVE_NOT_READY;
   }
 
@@ -362,7 +367,7 @@ DWORD CDetectDVDMedia::GetTrayState()
 
   /*
   m_dwTrayState == TRAY_CLOSED_MEDIA_PRESENT;
-  CdIo_t* cdio = cdio_open("/dev/cdrom", DRIVER_UNKNOWN);
+  CdIo_t* cdio = cdio_open(dvdDevice, DRIVER_UNKNOWN);
   if (cdio)
   {
     discmode_t discmode = CDIO_DISC_MODE_NO_INFO;

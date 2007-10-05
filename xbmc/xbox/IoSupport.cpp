@@ -37,6 +37,7 @@
 #include <sys/ioctl.h>
 #include <fcntl.h>
 #include <linux/cdrom.h>
+#include "../FileSystem/cdioSupport.h"
 #endif
 
 #define NT_STATUS_OBJECT_NAME_NOT_FOUND long(0xC0000000 | 0x0034)
@@ -310,7 +311,8 @@ HANDLE CIoSupport::OpenCDROM()
     return NULL;
   }
 #elif defined(_LINUX)
-  hDevice = CreateFile("/dev/cdrom", GENERIC_READ, FILE_SHARE_READ,
+  hDevice = CreateFile(MEDIA_DETECT::CCdIoSupport::GetDeviceFileName(), 
+                       GENERIC_READ, FILE_SHARE_READ,
                        NULL, OPEN_EXISTING,
                        FILE_FLAG_RANDOM_ACCESS, NULL );
 #else
