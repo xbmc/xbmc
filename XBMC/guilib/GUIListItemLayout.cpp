@@ -279,6 +279,7 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
   CGUIControlFactory::GetAspectRatio(child, "aspectratio", aspectRatio, aspectAlign);
   int visibleCondition = 0;
   CGUIControlFactory::GetConditionalVisibility(child, visibleCondition);
+  XMLUtils::GetFloat(child, "angle", label.angle); label.angle *= -1;
   if (type == "label")
   { // info label
     return new CListLabel(posX, posY, width, height, visibleCondition, label, info, content, animations);
