@@ -195,13 +195,15 @@ static inline int url_is_streamed(ByteIOContext *s)
     return s->is_streamed;
 }
 
+/** @note when opened as read/write, the buffers are only used for
+   writing */
 int url_fdopen(ByteIOContext *s, URLContext *h);
 
 /** @warning must be called before any I/O */
 int url_setbufsize(ByteIOContext *s, int buf_size);
 
 /** @note when opened as read/write, the buffers are only used for
-   reading */
+   writing */
 int url_fopen(ByteIOContext *s, const char *filename, int flags);
 int url_fclose(ByteIOContext *s);
 URLContext *url_fileno(ByteIOContext *s);
@@ -252,21 +254,10 @@ int url_close_dyn_buf(ByteIOContext *s, uint8_t **pbuffer);
 unsigned long get_checksum(ByteIOContext *s);
 void init_checksum(ByteIOContext *s, unsigned long (*update_checksum)(unsigned long c, const uint8_t *p, unsigned int len), unsigned long checksum);
 
-/* file.c */
-extern URLProtocol file_protocol;
-extern URLProtocol pipe_protocol;
-
 /* udp.c */
-extern URLProtocol udp_protocol;
 int udp_set_remote_url(URLContext *h, const char *uri);
 int udp_get_local_port(URLContext *h);
 int udp_get_file_handle(URLContext *h);
-
-/* tcp.c  */
-extern URLProtocol tcp_protocol;
-
-/* http.c */
-extern URLProtocol http_protocol;
 
 #endif
 
