@@ -476,7 +476,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CShare *shar
         return false;
 
       CStdString strNewPW;
-	    CStdString strNewLockMode;
+      CStdString strNewLockMode;
       if (CGUIDialogLockSettings::ShowAndGetLock(share->m_iLockMode,strNewPW))
         strNewLockMode.Format("%i",share->m_iLockMode);
       else
@@ -486,6 +486,8 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CShare *shar
       g_settings.UpdateSource(type, share->strName, "lockmode", strNewLockMode);
       g_settings.UpdateSource(type, share->strName, "badpwdcount", "0");
       g_settings.SaveSources();
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
+      m_gWindowManager.SendThreadMessage(msg);
       return true;
     }
   }

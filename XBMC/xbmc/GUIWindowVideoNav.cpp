@@ -255,6 +255,13 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
         m_filter.TrimLeft().ToLower();
         OnFilterItems();
       }
+      else if (message.GetParam1()==GUI_MSG_UPDATE_SOURCES)
+      {
+        CUtil::DeleteVideoDatabaseDirectoryCache();
+        if (!m_vecItems.m_strPath.Equals("?"))
+          Update(m_vecItems.m_strPath);
+        return true;
+      }
     }
     break;
   }
