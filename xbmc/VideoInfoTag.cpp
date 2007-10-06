@@ -267,12 +267,14 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
   while (node)
   {
     const TiXmlNode* pNode = node->FirstChild("name");
+    const char* pValue=NULL;
     if (pNode && pNode->FirstChild())
-    {
-      const char *pValue = pNode->FirstChild()->Value();
-      if (pValue)
-        m_artist.push_back(pValue);
-    }
+      pValue = pNode->FirstChild()->Value();
+    else if (node->FirstChild())
+      pValue = node->FirstChild()->Value();
+    if (pValue)
+      m_artist.push_back(pValue);
+
     node = node->NextSibling("artist");
   }
 
