@@ -670,7 +670,19 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
   }
 
   CFileItem* pItem = m_vecItems[iItem];
+  
+  DeleteItem(pItem);
 
+  CUtil::DeleteVideoDatabaseDirectoryCache();
+
+  DisplayEmptyDatabaseMessage(m_database.GetMovieCount() <= 0 && m_database.GetTvShowCount() <= 0 && m_database.GetMusicVideoCount() <= 0);
+  Update( m_vecItems.m_strPath );
+  m_viewControl.SetSelectedItem(iItem);
+  return;
+}
+
+void CGUIWindowVideoNav::DeleteItem(CFileItem* pItem)
+{
   int iType=0;
   if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty()) // tvshow
     iType = 2;
@@ -698,36 +710,32 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
   if (!pDialog->IsConfirmed()) return;
 
   CStdString path;
-  m_database.GetFilePath(pItem->GetVideoInfoTag()->m_iDbId, path, iType);
+  CVideoDatabase database;
+  database.Open();
+
+  database.GetFilePath(pItem->GetVideoInfoTag()->m_iDbId, path, iType);
   if (path.IsEmpty()) return;
   if (iType == 0)
-    m_database.DeleteMovie(path);
+    database.DeleteMovie(path);
   if (iType == 1)
-    m_database.DeleteEpisode(path);
+    database.DeleteEpisode(path);
   if (iType == 2)
-    m_database.DeleteTvShow(path);
+    database.DeleteTvShow(path);
   if (iType == 3)
-    m_database.DeleteMusicVideo(path);
+    database.DeleteMusicVideo(path);
 
   if (iType == 2)
-    m_database.SetPathHash(path,"");  
+    database.SetPathHash(path,"");  
   else
   {
     CStdString strDirectory;
     CUtil::GetDirectory(path,strDirectory);
-    m_database.SetPathHash(strDirectory,"");
+    database.SetPathHash(strDirectory,"");
   }
 
   // delete the cached thumb for this item (it will regenerate if it is a user thumb)
   CStdString thumb(pItem->GetCachedVideoThumb());
   CFile::Delete(thumb);
-
-  CUtil::DeleteVideoDatabaseDirectoryCache();
-
-  DisplayEmptyDatabaseMessage(m_database.GetMovieCount() <= 0 && m_database.GetTvShowCount() <= 0 && m_database.GetMusicVideoCount() <= 0);
-  Update( m_vecItems.m_strPath );
-  m_viewControl.SetSelectedItem(iItem);
-  return;
 }
 
 void CGUIWindowVideoNav::OnFinalizeFileItems(CFileItemList& items)
@@ -964,15 +972,22 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return true;
 
   case CONTEXT_BUTTON_MARK_WATCHED:
-    MarkWatched(itemNumber);
+    MarkWatched(m_vecItems[itemNumber]);
+    CUtil::DeleteVideoDatabaseDirectoryCache();
+    Update(m_vecItems.m_strPath);
     return true;
 
+
   case CONTEXT_BUTTON_MARK_UNWATCHED:
-    MarkUnWatched(itemNumber);
+    MarkUnWatched(m_vecItems[itemNumber]);
+    CUtil::DeleteVideoDatabaseDirectoryCache();
+    Update(m_vecItems.m_strPath);
     return true;
 
   case CONTEXT_BUTTON_EDIT:
-    UpdateVideoTitle(itemNumber);
+    UpdateVideoTitle(m_vecItems[itemNumber]);
+    CUtil::DeleteVideoDatabaseDirectoryCache();
+    Update(m_vecItems.m_strPath);
     return true;
 
   case CONTEXT_BUTTON_SET_SEASON_THUMB:
