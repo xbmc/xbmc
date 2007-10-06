@@ -19,6 +19,9 @@ public:
   void AddToDatabase(int iItem);
   static void OnScan(const CStdString& strPath, const SScraperInfo& info, const VIDEO::SScanSettings& settings);
   virtual void OnInfo(CFileItem* pItem, const SScraperInfo& info);
+  static void MarkUnWatched(CFileItem* pItem);
+  static void MarkWatched(CFileItem* pItem);
+  static void UpdateVideoTitle(CFileItem* pItem);
 
 private:
   bool IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel);
@@ -55,9 +58,6 @@ protected:
   void AddItemToPlayList(const CFileItem* pItem, CFileItemList &queuedItems);
   void GetStackedFiles(const CStdString &strFileName, std::vector<CStdString> &movies);
 
-  void MarkUnWatched(int iItem);
-  void MarkWatched(int iItem);
-  void UpdateVideoTitle(int iItem);
   void OnSearch();
   void OnSearchItemFound(const CFileItem* pSelItem);
   int GetScraperForItem(CFileItem *item, SScraperInfo &info, VIDEO::SScanSettings& settings);
