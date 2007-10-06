@@ -306,6 +306,8 @@ void CGUIDialogContentSettings::FillListControl()
 CFileItem* CGUIDialogContentSettings::GetCurrentListItem(int offset)
 {
   int currentItem = -1;
+  if( m_info.strContent.IsEmpty())
+    return NULL;
   for (int i=0;i<m_vecItems.Size();++i )
   {
     if (m_vecItems[i]->IsSelected())
