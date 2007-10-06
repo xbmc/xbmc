@@ -48,7 +48,7 @@ public:
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
   virtual DWORD GetChunkLen();
   virtual FLOAT GetDelay();
-  CALSADirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, char* strAudioCodec = "", bool bIsMusic=false);
+  CALSADirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, char* strAudioCodec = "", bool bIsMusic=false, bool bPassthrough = false);
   virtual ~CALSADirectSound();
 
   virtual DWORD AddPackets(unsigned char* data, DWORD len);
