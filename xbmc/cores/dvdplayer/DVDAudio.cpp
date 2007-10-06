@@ -73,7 +73,7 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
     m_pAudioDecoder = new CASyncDirectSound(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, codecstring);
 #elif _LINUX
 
-  m_pAudioDecoder = new CALSADirectSound(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring);
+  m_pAudioDecoder = new CALSADirectSound(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough);
 
 #else
 
