@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 08/29/2007-->
+<!--Date of translation: 10/04/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 10101-->
+<!--Based on english strings version 10403-->
 <strings>
   <string id="0">Programmer</string>
   <string id="1">Billeder</string>
@@ -374,7 +374,7 @@
   <string id="453">Adresse på række 3</string>
   <string id="454">Adresse på række 4</string>
   <string id="455">Rækker</string>
-  <string id="456">Tilstand</string>
+  <string id="456">tilstand</string>
   <string id="457">Skift visning</string>
   <string id="459">Undertekster</string>
   <string id="460">Lydkanal</string>
@@ -663,6 +663,8 @@
   <string id="1040">Indlæser mappe</string>
   <string id="1041">Hentede %i objekter</string>
   <string id="1042">Hentede %i af %i objekter</string>
+  <string id="1043">Program-plugins</string>
+  <string id="1044">Vælg ikon til plugin</string>
   <string id="1200">SMB-klient</string>
   <string id="1202">Arbejdsgruppe</string>
   <string id="1203">Standard brugernavn</string>
@@ -722,7 +724,7 @@
   <string id="1412">blæsende</string>
   <string id="1413">finregn</string>
   <string id="1414">uvejr</string>
-  <string id="2050">Køretid:</string>
+  <string id="2050">Spilletid:</string>
   <string id="4501">LCD-type</string>
   <string id="10000">Forside</string>
   <string id="10001">Programmer</string>
@@ -1281,6 +1283,7 @@
   <string id="16032">Kunne ikke initialisere databasen</string>
   <string id="16033">Kunne ikke åbne databasen</string>
   <string id="16034">Kunne ikke hente sange fra databasen</string>
+  <string id="16035">Afspilningsliste til partymode</string>
   <string id="16100">Alle videoer</string>
   <string id="16101">Ikke set</string>
   <string id="16102">Set</string>
@@ -1576,6 +1579,21 @@
   <string id="20386">Nyligt tilføjne film</string>
   <string id="20387">Nyligt tilføjne episoder</string>
   <string id="20388">Studioer</string>
+  <string id="20389">Musikvideoer</string>
+  <string id="20390">Nyligt tilføjne musikvideoer</string>
+  <string id="20391">Musikvideo</string>
+  <string id="20392">Fjern musikvideo fra database</string>
+  <string id="20393">Information om musikvideo</string>
+  <string id="20394">Indlæser information om musikvideo</string>
+  <string id="20395">Blandet</string>
+  <string id="20396">Gå til album af kunstner</string>
+  <string id="20397">Gå til album</string>
+  <string id="20398">Afspil sang</string>
+  <string id="20399">Gå til musikvideoer fra album</string>
+  <string id="20400">Gå til musikvideoer af kunstner</string>
+  <string id="20401">Afspil musikvideo</string>
+  <string id="20402">Hent ikoner af skuespillere automatisk</string>
+  <string id="20403">Vælg ikon for skuespiller</string>
   <string id="21330">Vis skjulte filer og mapper</string>
   <string id="21331">TuxBox-klient</string>
   <string id="21332">ADVARSEL: den valgte TuxBox er i optagetilstand!</string>
@@ -1714,5 +1732,6 @@
   <string id="21880">Referencetjeneste</string>
   <string id="21881">Aktiver UPnP-renderer</string>
   <string id="21882">Forsøg at gå direkte til DVD-menuen</string>
+  <string id="21883">Rippede lyd-cd'er</string>
   <string id="29999">Brug flimmerfilter på spil</string>
 </strings>
