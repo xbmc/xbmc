@@ -60,6 +60,7 @@ protected:
   bool FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, CMusicAlbumInfo& album, ALLOW_SELECTION allowSelection);
 
   void ShowAlbumInfo(const CAlbum &album, const CStdString &strPath, bool bRefresh, bool bShowInfo = true);
+  void ShowSongInfo(CFileItem* pItem);
   void UpdateThumb(const CAlbum &album, const CStdString &path);
 
   void OnManualAlbumInfo();
