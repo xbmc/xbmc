@@ -574,7 +574,31 @@ __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
   if (!m_buffer.SkipBytes((int)(nextPos - m_filePos)))
   {
     // if we can't be sure we can seek, abort here
-    if( !m_seekable ) return -1;
+    if( !m_seekable ) {
+
+      if((nextPos - m_filePos) < m_bufferSize)
+      {
+        int len = m_buffer.GetMaxReadSize();
+        m_filePos += len;
+        m_buffer.SkipBytes(len);
+        FillBuffer(m_bufferSize);
+
+        if(!m_buffer.SkipBytes((int)(nextPos - m_filePos)))
+        {
+          CLog::Log(LOGERROR, __FUNCTION__" - Failed to skip to position after having filled buffer");
+          if(!m_buffer.SkipBytes(-len))
+            CLog::Log(LOGERROR, __FUNCTION__" - Failed to restore position after failed seek");
+          else
+            m_filePos -= len;
+          return -1;
+        }
+        m_filePos = nextPos;
+        return m_filePos;
+      }
+
+      CLog::Log(LOGWARNING, __FUNCTION__" - Seek failed in nonseekable file");
+      return -1;
+    }
 
     /* halt transaction */
     g_curlInterface.multi_remove_handle(m_multiHandle, m_easyHandle);
