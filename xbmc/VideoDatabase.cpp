@@ -4083,12 +4083,7 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
           if (iRowsFound == 0)
           {
             m_pDS->close();
-            if (iITERATIONS == 0)
-              return true; // failed on first iteration, so there's probably no songs in the db
-            else
-            {
-              return true; // there no more songs left to process (aborts the unbounded for loop)
-            }
+            return true;
           }
 
           CLog::DebugLog("Time for actual SQL query = %d", timeGetTime() - time); time = timeGetTime();
@@ -6136,6 +6131,22 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver)
     CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning path table");
     sql = "delete from path where idPath not in (select distinct idPath from files) and idPath not in (select distinct idPath from tvshowlinkpath) and strContent=''";
     m_pDS->exec(sql.c_str());
+    sql = "select * from path where strContent not like ''";
+    m_pDS->query(sql.c_str());
+    CStdString strIds;
+    while (!m_pDS->eof())
+    {
+      if (!CDirectory::Exists(m_pDS->fv("path.strPath").get_asString()))
+        strIds.Format("%s %u,",strIds.Mid(0),m_pDS->fv("path.idPath").get_asLong()); // mid since we cannot format the same string
+      m_pDS->next();
+    }
+    if (!strIds.IsEmpty())
+    {
+      strIds.TrimLeft(" ");
+      strIds.TrimRight(",");
+      sql = FormatSQL("delete from path where idpath in (%s)",strIds.c_str());
+      m_pDS->exec(sql.c_str());
+    }
 
     CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning genre table");
     sql = "delete from genre where idGenre not in (select distinct idGenre from genrelinkmovie) and idGenre not in (select distinct idGenre from genrelinktvshow) and idGenre not in (select distinct idGenre from genrelinkepisode) and idGenre not in (select distinct idGenre from genrelinkmusicvideo)";
