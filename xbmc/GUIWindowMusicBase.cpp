@@ -329,13 +329,13 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
   { // lookup is done on a folder - find the albums in the folder
     CFileItemList items;
     GetDirectory(strPath, items);
-    OnRetrieveMusicInfo(items);
 
     // check the first song we find in the folder, and grab it's album info
     bool foundAlbum(false);
     for (int i = 0; i < items.Size() && !foundAlbum; i++)
     {
       CFileItem* pItem = items[i];
+      pItem->LoadMusicTag();
       if (pItem->HasMusicInfoTag() && pItem->GetMusicInfoTag()->Loaded() && !pItem->GetMusicInfoTag()->GetAlbum().IsEmpty())
       {
         // great, have a song - use it.
