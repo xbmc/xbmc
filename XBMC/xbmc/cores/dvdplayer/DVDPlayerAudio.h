@@ -81,7 +81,7 @@ public:
 
   double GetCurrentPts()                            { return m_ptsQueue.Current(); }
 
-  bool IsStalled()                                  { return m_Stalled;  }
+  bool IsStalled()                                  { return m_stalled;  }
 protected:
 
   virtual void OnStartup();
@@ -95,22 +95,41 @@ protected:
 
   double m_audioClock;
   
-  // for audio decoding
-  CDVDDemux::DemuxPacket* pAudioPacket;
-  BYTE* audio_pkt_data; // current audio packet
-  int audio_pkt_size; // and current audio packet size
-  
-  double m_bps_i;  // input bytes per second
-  double m_bps_o;  // output bytes per second
+  // data for audio decoding
+  struct
+  {
+    CDVDMsgDemuxerPacket*  msg;
+    BYTE*                  data;
+    int                    size;
+    double                 dts;
+
+    void Attach(CDVDMsgDemuxerPacket* msg2)
+    {
+      msg = msg2;
+      msg->Acquire();
+      CDVDDemux::DemuxPacket* p = msg->GetPacket();      
+      data = p->pData;
+      size = p->iSize;
+      dts = p->dts;
+
+    }
+    void Release()
+    {
+      if(msg) msg->Release();
+      msg  = NULL;
+      data = NULL;
+      size = 0;
+      dts  = DVD_NOPTS_VALUE;
+    }
+  } m_decode;
 
   CDVDAudio m_dvdAudio; // audio output device
   CDVDClock* m_pClock; // dvd master clock
   CDVDAudioCodec* m_pAudioCodec; // audio codec
 
-  int m_speed;  // wanted playback speed. if playback speed!=DVD_PLAYSPEED_NORMAL, don't sync clock as it will loose track of position after seek
-  double m_droptime;
-
-  bool m_Stalled;
+  int     m_speed;
+  double  m_droptime;
+  bool    m_stalled;
   CRITICAL_SECTION m_critCodecSection;
 };
 
