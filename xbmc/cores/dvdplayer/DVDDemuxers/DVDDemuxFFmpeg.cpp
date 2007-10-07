@@ -226,7 +226,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     }
     else if( m_pInput->IsStreamType(DVDSTREAM_TYPE_FILE) )
     {
-      if(m_pInput->Seek(0, SEEK_CUR) < 0)
+      if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
         context->is_streamed = 1;
     }
     

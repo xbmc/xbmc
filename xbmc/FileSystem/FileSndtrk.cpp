@@ -113,6 +113,8 @@ __int64 CFileSndtrk::Seek(__int64 iFilePosition, int iWhence)
   case SEEK_END:
     SetFilePointerEx((HANDLE)m_hFile, lPos, &lNewPos, FILE_END);
     break;
+  default:
+    return -1;
   }
   m_i64FilePos = lNewPos.QuadPart;
   return (lNewPos.QuadPart);

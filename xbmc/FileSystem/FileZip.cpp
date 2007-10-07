@@ -109,12 +109,16 @@ __int64 CFileZip::Seek(__int64 iFilePosition, int iWhence)
       iResult = mFile.Seek(mZipItem.offset+mZipItem.usize+iFilePosition,SEEK_SET)-mZipItem.offset;
       return iResult;
       break;
+    default:
+      return -1;
+
     }
   }
   // here goes the stupid part..
   if (mZipItem.method == 8)
   {
     char temp[131072];
+    __int64 iStartPos = m_iFilePos;
     switch (iWhence)
     {
     case SEEK_SET:
@@ -196,8 +200,7 @@ __int64 CFileZip::Seek(__int64 iFilePosition, int iWhence)
     case SEEK_END: 
       // now this is a nasty bastard, possibly takes lotsoftime
       // uncompress, minding m_ZStream.total_out
-      
-      __int64 iStartPos = m_iFilePos;
+            
       if ((GetLength()+iFilePosition)-m_iFilePos > 1024*1024) // 1 MB seek
       {
         StartProgressBar();
@@ -222,6 +225,8 @@ __int64 CFileZip::Seek(__int64 iFilePosition, int iWhence)
       }
       return m_iFilePos;
       break;
+    default:
+      return -1;
     }
   }
   return -1;

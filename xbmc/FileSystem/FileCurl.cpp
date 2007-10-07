@@ -568,6 +568,10 @@ __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
       else
         return -1;
 			break;
+    case SEEK_POSSIBLE:
+      return m_seekable ? 1 : 0;
+    default:
+      return -1;
 	}
 //  CLog::Log(LOGDEBUG, "FileCurl::Seek(%p) - current pos %i, new pos %i", this, (unsigned int)m_filePos, (unsigned int)nextPos);
   // see if nextPos is within our buffer
