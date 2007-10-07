@@ -6,7 +6,7 @@
 #include <string>
 #include "StdString.h"
 #include <vector>
-using namespace std;
+#include "../utils/CriticalSection.h"
 
 namespace DIRECTORY
 {
@@ -29,9 +29,10 @@ public:
 private:
   bool WaitOnScriptResult(const CStdString &scriptPath, const CStdString &scriptName);
 
-  static vector<CPluginDirectory*> globalHandles;
+  static std::vector<CPluginDirectory*> globalHandles;
   static int getNewHandle(CPluginDirectory *cp);
   static void removeHandle(int handle);
+  static CCriticalSection m_handleLock;
 
   CFileItemList m_listItems;
   HANDLE        m_directoryFetched;

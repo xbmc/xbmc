@@ -22,10 +22,13 @@
 #include "PluginDirectory.h"
 #include "Util.h"
 #include "lib/libPython/XBPython.h"
+#include "../utils/SingleLock.h"
  
 using namespace DIRECTORY;
+using namespace std;
 
 vector<CPluginDirectory *> CPluginDirectory::globalHandles;
+CCriticalSection CPluginDirectory::m_handleLock;
 
 CPluginDirectory::CPluginDirectory(void)
 {
@@ -39,6 +42,7 @@ CPluginDirectory::~CPluginDirectory(void)
 
 int CPluginDirectory::getNewHandle(CPluginDirectory *cp)
 {
+  CSingleLock lock(m_handleLock);
   int handle = (int)globalHandles.size();
   globalHandles.push_back(cp);
   return handle;
@@ -46,12 +50,14 @@ int CPluginDirectory::getNewHandle(CPluginDirectory *cp)
 
 void CPluginDirectory::removeHandle(int handle)
 {
+  CSingleLock lock(m_handleLock);
   if (handle > 0 && handle < (int)globalHandles.size())
     globalHandles.erase(globalHandles.begin() + handle);
 }
 
 bool CPluginDirectory::AddItem(int handle, const CFileItem *item, int totalItems)
 {
+  CSingleLock lock(m_handleLock);
   if (handle < 0 || handle >= (int)globalHandles.size())
   {
     CLog::Log(LOGERROR, " %s - called with an invalid handle.", __FUNCTION__);
@@ -68,6 +74,7 @@ bool CPluginDirectory::AddItem(int handle, const CFileItem *item, int totalItems
 
 void CPluginDirectory::EndOfDirectory(int handle, bool success)
 {
+  CSingleLock lock(m_handleLock);
   if (handle < 0 || handle >= (int)globalHandles.size())
   {
     CLog::Log(LOGERROR, " %s - called with an invalid handle.", __FUNCTION__);
@@ -82,6 +89,7 @@ void CPluginDirectory::EndOfDirectory(int handle, bool success)
 
 void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
 {
+  CSingleLock lock(m_handleLock);
   if (handle < 0 || handle >= (int)globalHandles.size())
   {
     CLog::Log(LOGERROR, "%s - called with an invalid handle.", __FUNCTION__);
