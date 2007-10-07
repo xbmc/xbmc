@@ -60,7 +60,7 @@
 			</RegExp>
 			<RegExp input="$$5" output="&lt;thumbs&gt;\1&lt;/thumbs&gt;" dest="4+">
 				<RegExp input="$$2" output="&lt;thumb&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="5">
-					<expression repeat="yes">&lt;Type&gt;series&lt;/Type&gt;[^&lt;]*&lt;BannerType&gt;[^&lt;]*&lt;/BannerType&gt;[^&lt;]*&lt;Season&gt;0&lt;/Season&gt;[^&lt;]*&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*</expression>
+					<expression clear="yes" repeat="yes">&lt;Type&gt;series&lt;/Type&gt;[^&lt;]*&lt;BannerType&gt;[^&lt;]*&lt;/BannerType&gt;[^&lt;]*&lt;Season&gt;0&lt;/Season&gt;[^&lt;]*&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*</expression>
 				</RegExp>
 				<RegExp input="$$2" output="&lt;thumb type=&quot;season&quot; season=&quot;\1&quot;&gt;http://thetvdb.com/banners/\2&lt;/thumb&gt;" dest="5+">
 					<expression repeat="yes">&lt;Type&gt;seasonwide&lt;/Type&gt;[^&lt;]*&lt;BannerType&gt;[^&lt;]*&lt;/BannerType&gt;[^&lt;]*&lt;Season&gt;([0-9]+)&lt;/Season&gt;[^&lt;]*&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*</expression>
