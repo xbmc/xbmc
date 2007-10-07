@@ -394,7 +394,7 @@ bool CGUIWindowVideoInfo::OnAction(const CAction& action)
     if (iItem >= 0 || iItem < (int)m_vecStrCast.size())
     {
       CGUIImage* pImage = (CGUIImage*)GetControl(CONTROL_ACTOR_IMAGE);
-      if (pImage)
+      if (pImage && m_vecStrCast.size())
       {
         CFileItem item(m_vecStrCast[iItem].second);
         if (CFile::Exists(item.GetCachedActorThumb()))
