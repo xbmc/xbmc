@@ -285,6 +285,11 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
 void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
 {
   if (pItem->m_bIsFolder && pItem->IsParentFolder()) return ;
+  if (!pItem->m_bIsFolder)
+  {
+    ShowSongInfo(pItem);
+    return;
+  }
 
   if (pItem->IsVideoDb())
   {
@@ -304,38 +309,23 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
     if (m_dlgProgress->IsCanceled()) return ;
   }
 
-  CStdString strPath;
-  if (pItem->m_bIsFolder)
-    strPath = pItem->m_strPath;
-  else
-  {
-    CUtil::GetDirectory(pItem->m_strPath, strPath);
-    CUtil::AddSlashAtEnd(strPath);
-  }
+  CStdString strPath = pItem->m_strPath;
 
   // Try to find an album to lookup from the current item
   CAlbum album;
   if (pItem->IsMusicDb())
   {
-    if (pItem->m_bIsFolder)
-    { // Look up is done on an album so grab the albumid
-      DIRECTORY::MUSICDATABASEDIRECTORY::CQueryParams params;
-      DIRECTORY::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(pItem->m_strPath, params);
-      album.idAlbum = params.GetAlbumId();
-      album.strAlbum = pItem->GetMusicInfoTag()->GetAlbum();
-      album.strArtist = pItem->GetMusicInfoTag()->GetArtist();
-    }
-    else
-    { // Lookup is done on a song - grab the album from the database
-      DIRECTORY::MUSICDATABASEDIRECTORY::CQueryParams params;
-      DIRECTORY::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(pItem->m_strPath, params);
-      m_musicdatabase.GetAlbumFromSong(params.GetSongId(), album);
-    }
+    DIRECTORY::MUSICDATABASEDIRECTORY::CQueryParams params;
+    DIRECTORY::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(pItem->m_strPath, params);
+    album.idAlbum = params.GetAlbumId();
+    album.strAlbum = pItem->GetMusicInfoTag()->GetAlbum();
+    album.strArtist = pItem->GetMusicInfoTag()->GetArtist();
+
     // we're going to need it's path as well (we assume that there's only one) - this is for
     // assigning thumbs to folders, and obtaining the local folder.jpg
     m_musicdatabase.GetAlbumPath(album.idAlbum, strPath);
   }
-  else if (pItem->m_bIsFolder)
+  else
   { // lookup is done on a folder - find the albums in the folder
     CFileItemList items;
     GetDirectory(strPath, items);
@@ -366,24 +356,6 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
       CLog::Log(LOGINFO, __FUNCTION__" called on a folder containing no songs with tag info - nothing can be done");
       if (m_dlgProgress && bShowInfo) m_dlgProgress->Close();
       return;
-    }
-  }
-  else
-  { // lookup is done on a file - can only do useful stuff if we have a tag
-    if (!pItem->LoadMusicTag() || !pItem->GetMusicInfoTag()->Loaded())
-    {
-      CLog::Log(LOGINFO, __FUNCTION__" called on a file without tag info - nothing can be done");
-      if (m_dlgProgress && bShowInfo) m_dlgProgress->Close();
-      return;
-    }
-    // lookup the song in the database and get it's album info
-    CSong song(*pItem->GetMusicInfoTag());
-    if (!m_musicdatabase.GetAlbumFromSong(song, album))
-    { // album isn't in the database - construct it from the tag info we have
-      CMusicInfoTag *tag = pItem->GetMusicInfoTag();
-      album.strAlbum = tag->GetAlbum();
-      album.strArtist = tag->GetAlbumArtist().IsEmpty() ? tag->GetArtist() : tag->GetAlbumArtist();
-      album.idAlbum = -1; // the -1 indicates it's not in the database
     }
   }
 
@@ -495,6 +467,26 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CAlbum& album, const CStdString& p
   if (m_dlgProgress && bShowInfo)
     m_dlgProgress->Close();
 
+}
+
+void CGUIWindowMusicBase::ShowSongInfo(CFileItem* pItem)
+{
+  CGUIDialogSongInfo *dialog = (CGUIDialogSongInfo *)m_gWindowManager.GetWindow(WINDOW_DIALOG_SONG_INFO);
+  if (dialog)
+  {
+    if (!pItem->IsMusicDb())
+      pItem->LoadMusicTag();
+    if (!pItem->HasMusicInfoTag())
+      return;
+
+    dialog->SetSong(pItem);
+    dialog->DoModal(GetID());
+    if (dialog->NeedsUpdate())
+    { // update our file list
+      m_vecItems.RemoveDiscCache();
+      Update(m_vecItems.m_strPath);
+    }
+  }
 }
 
 /*
@@ -862,17 +854,7 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   case CONTEXT_BUTTON_SONG_INFO:
     {
-      CGUIDialogSongInfo *dialog = (CGUIDialogSongInfo *)m_gWindowManager.GetWindow(WINDOW_DIALOG_SONG_INFO);
-      if (dialog)
-      {
-        dialog->SetSong(m_vecItems[itemNumber]);
-        dialog->DoModal(GetID());
-        if (dialog->NeedsUpdate())
-        { // update our file list
-          m_vecItems.RemoveDiscCache();
-          Update(m_vecItems.m_strPath);
-        }
-      }
+      ShowSongInfo(m_vecItems[itemNumber]);
       return true;
     }
 
