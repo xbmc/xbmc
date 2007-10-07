@@ -94,6 +94,9 @@ __int64 CFileMemUnit::Seek(__int64 iFilePosition, int iWhence)
     position += m_fileSystem->GetPosition();
   else if (iWhence == SEEK_END)
     position += m_fileSystem->GetLength();
+  else if (iWhence != SEEK_SET)
+    return -1;
+
   if (position < 0) position = 0;
   if (position > m_fileSystem->GetLength()) position = m_fileSystem->GetLength();
   return m_fileSystem->Seek(position);
