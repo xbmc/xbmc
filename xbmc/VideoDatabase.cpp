@@ -3945,7 +3945,7 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
           continue;
         }
         if (it == mapYears.end())
-          mapYears.insert(pair<long, CStdString>(lYear, m_pDS->fv(2).get_asString()));
+          mapYears.insert(pair<long, CStdString>(lYear, m_pDS->fv(1).get_asString()));
         m_pDS->next();
       }
       m_pDS->close();

@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: jutski (->7/2006) Mikko70 (1/2007->)-->
-<!--Date of translation: 28/09/2007-->
+<!--Date of translation: 6/10/2007-->
 <!--$Revision$: -->
-<!--Based on english strings version  10369 -->
+<!--Finnish strings based on english strings version 10403 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -676,6 +676,7 @@
   <string id="1041">Noudettu %i kohdetta</string>
   <string id="1042">Noudettu %i/%i kohdetta</string>
   <string id="1043">Ohjelma-lisukkeet</string>
+  <string id="1044">Lisuke pienoiskuvake</string>
   
   <string id="1200">SMB-asiakas</string>
   <string id="1202">Työryhmä</string>
@@ -1644,7 +1645,7 @@
   <string id="20400">Siirry esittääjän musiikkivideoihin</string>
   <string id="20401">Toista musiikkivideo</string>
   <string id="20402">Automaattisesti luodut ohjaajan kuvakkeet</string>
-  <string id="20403">Aseta ohjaajan pikakuvake</string>
+  <string id="20403">Aseta ohjaajan pienoiskuvake</string>
    <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Näytä piilotetut tiedostot ja kansiot</string>
