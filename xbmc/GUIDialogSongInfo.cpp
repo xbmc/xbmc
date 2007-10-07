@@ -90,7 +90,12 @@ bool CGUIDialogSongInfo::OnMessage(CGUIMessage& message)
       {
         CGUIWindowMusicBase *window = (CGUIWindowMusicBase *)m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
         if (window)
-          window->OnInfo(&m_song, true);
+        {
+          CFileItem item(m_song);
+          CUtil::GetDirectory(m_song.m_strPath,item.m_strPath);
+          item.m_bIsFolder = true;
+          window->OnInfo(&item, true);
+        }
         return true;
       }
       else if (iControl == CONTROL_GETTHUMB)
