@@ -134,7 +134,7 @@
   <string id="195">没有发现信息！</string>
   <string id="196">选择影片：</string>
   <string id="197">读取%s信息</string>
-  <string id="198">读取影片详细资料</string>
+  <string id="198">载入影片详细资料</string>
   <string id="199">导演：</string>
   <string id="200">编剧：</string>
   <string id="201">年份：</string>
@@ -422,7 +422,7 @@
   <string id="502">开启</string>
   <string id="503">忙</string>
   <string id="504">空</string>
-  <string id="505">读取媒体信息…</string>
+  <string id="505">载入媒体信息…</string>
   <string id="507">排序：使用数</string>
   <string id="510">开启可视化效果</string>
   <string id="511">启用视频模式自动切换</string>
@@ -482,6 +482,7 @@
   <string id="569">注释</string>
   <string id="570">加入日期</string>
   <string id="571">默认</string>
+  <string id="572">影片制作公司</string>
 
   <string id="580">排序方向</string>
   <string id="581">排序方法</string>
@@ -620,7 +621,7 @@
   <string id="767">保留</string>
   <string id="768">保留</string>
   <string id="769">保留</string>
-  <string id="770">错误 %i：不能共享</string>
+  <string id="770">错误%i：不能共享</string>
   <string id="771">- FTP 服务器限定工作在 FATX 格式</string>
   <string id="772">音频硬件</string>
   <string id="773">搜索中</string>
@@ -665,6 +666,14 @@
   <string id="1034">子菜单</string>
   <string id="1035">启用子菜单按钮</string>
   <string id="1036">收藏夹</string>
+  <string id="1037">视频插件</string>
+  <string id="1038">音乐插件</string>
+  <string id="1039">图片插件</string>
+  <string id="1040">载入目录</string>
+  <string id="1041">检索%i项目</string>
+  <string id="1042">检索%i在%i项目</string>
+  <string id="1043">程序插件</string>
+  <string id="1044">设定插件缩略图</string>
 
   <string id="1200">SMB 共享设定</string>
   <string id="1202">工作组</string>
@@ -938,7 +947,7 @@
   <string id="13206">覆盖</string>
   <string id="13208">闹铃</string>
   <string id="13209">闹铃间隔(分钟)</string>
-  <string id="13210">闹铃启动，%i分钟倒计时。</string>
+  <string id="13210">闹铃启动，倒计时%i分钟。</string>
   <string id="13211">响铃！</string>
   <string id="13212">闹铃取消，剩余%i分%i秒。</string>
 
@@ -1074,11 +1083,11 @@
 
   <string id="14000">影片堆叠</string>
   <string id="14001">堆叠关闭</string>
-  <string id="14003">下载播放列表文件…</string>
-  <string id="14004">下载流媒体列表…</string>
+  <string id="14003">载入播放列表文件…</string>
+  <string id="14004">载入流媒体列表…</string>
   <string id="14005">分析流媒体列表…</string>
-  <string id="14006">下载流媒体列表失败</string>
-  <string id="14007">下载播放列表文件失败</string>
+  <string id="14006">载入流媒体列表失败</string>
+  <string id="14007">载入播放列表文件失败</string>
   <string id="14008">启用 Kai 通告</string>
   <string id="14009">游戏目录</string>
   <string id="14010">自动切换为图标显示条件</string>
@@ -1314,11 +1323,12 @@
   <string id="16026">播放列表回放取消</string>
   <string id="16027">太多连续性错误</string>
 
-  <string id="16030">舞会派对模式取消！</string>
+  <string id="16030">取消派对模式！</string>
   <string id="16031">资料库中没有符合条件的歌曲！</string>
   <string id="16032">无法初始化资料库！</string>
   <string id="16033">无法打开资料库！</string>
   <string id="16034">无法从资料库获取歌曲文件！</string>
+  <string id="16035">派对模式播放列表</string>
 
   <string id="16100">所有视频文件</string>
   <string id="16101">未观看的</string>
@@ -1443,14 +1453,14 @@
   <string id="20111">自动启动</string>
   <string id="20112">上次登录：%s</string>
   <string id="20113">从未登录</string>
-  <string id="20114">预设文件 %i / %i</string>
+  <string id="20114">预设文件%i / %i</string>
   <string id="20115">使用者登录 / 选择预设文件</string>
   <string id="20116">在登录窗口中使用锁定</string>
   <string id="20117">密码无效</string>
   <string id="20118">需先设定管理员锁定</string>
   <string id="20119">你现在要设定吗？</string>
   <string id="20120">载入程序讯息</string>
-  <string id="20121">启动舞会派对模式！</string>
+  <string id="20121">启动派对模式！</string>
   <string id="20122">真实</string>
   <string id="20123">混合饮料</string>
   <string id="20124">填入玻璃</string>
@@ -1480,7 +1490,7 @@
   <string id="20149">120分钟后自动关机</string>
   <string id="20150">定制自动关机时间</string>
   <string id="20151">取消自动关机</string>
-  <string id="20152">锁定设定文件 %s</string>
+  <string id="20152">锁定设定文件%s</string>
   <string id="20153">浏览…</string>
   <string id="20154">系统基本信息</string>
   <string id="20155">存储器信息</string>
@@ -1618,6 +1628,22 @@
   <string id="20385">移除电视节目连接</string>
   <string id="20386">最近加入的电影</string>
   <string id="20387">最近加入的影集</string>
+  <string id="20388">影片制作公司</string>
+  <string id="20389">音乐视频</string>
+  <string id="20390">最近加入的音乐视频</string>
+  <string id="20391">音乐视频</string>
+  <string id="20392">从资料库移除音乐视频</string>
+  <string id="20393">音乐视频资讯</string>
+  <string id="20394">载入音乐视频资讯</string>
+  <string id="20395">混合</string>
+  <string id="20396">依艺人跳至专辑</string>
+  <string id="20397">进入专辑</string>
+  <string id="20398">播放歌曲</string>
+  <string id="20399">从专辑跳至音乐视频</string>
+  <string id="20400">依艺人跳至音乐视频</string>
+  <string id="20401">播放音乐视频</string>
+  <string id="20402">自动撷取演员的缩略图</string>
+  <string id="20403">设定演员缩略图</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">显示隐藏档案和目录</string>
@@ -1765,6 +1791,8 @@
   <string id="21879">国家代码</string>
   <string id="21880">参考服务</string>
   <string id="21881">启用 UPnP 播放器</string>
+  <string id="21882">尝试略过介绍直接跳至 DVD 选单</string>
+  <string id="21883">压缩音乐 CD</string>
 
   <!-- strings 21900 thru 21999 reserved for slideshow info -->
 

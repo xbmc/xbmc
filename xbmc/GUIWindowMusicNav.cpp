@@ -462,18 +462,21 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     // enable music info button on an album or on a song.
     if (item->IsAudio() && !item->IsPlayList() && !item->IsSmartPlayList())
       buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658);
-    else if (item->IsVideoDb()) // music video
-      buttons.Add(CONTEXT_BUTTON_INFO, 20393);
+    else if (item->IsVideoDb())
+    {
+      if (!item->m_bIsFolder) // music video
+       buttons.Add(CONTEXT_BUTTON_INFO, 20393);
+    }
     else if (!inPlaylists && dir.HasAlbumInfo(item->m_strPath) && !dir.IsAllItem(item->m_strPath))
       buttons.Add(CONTEXT_BUTTON_INFO, 13351);
 
     // enable query all albums button only in album view
-    if (dir.HasAlbumInfo(item->m_strPath) && !dir.IsAllItem(item->m_strPath) && item->m_bIsFolder)
+    if (dir.HasAlbumInfo(item->m_strPath) && !dir.IsAllItem(item->m_strPath) && item->m_bIsFolder && !item->IsVideoDb())
       buttons.Add(CONTEXT_BUTTON_INFO_ALL, 20059);
 
     // turn off set artist image if not at artist listing.
     // (uses file browser to pick an image)
-    if (dir.IsArtistDir(item->m_strPath) && !dir.IsAllItem(item->m_strPath))
+    if (dir.IsArtistDir(item->m_strPath) && !dir.IsAllItem(item->m_strPath) || (item->m_strPath.Left(14).Equals("videodb://3/4/") && item->m_strPath.size() > 14 && item->m_bIsFolder))
       buttons.Add(CONTEXT_BUTTON_SET_ARTIST_THUMB, 13359);
 
     //Set default or clear default
@@ -500,6 +503,18 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
       database.Open();
       if (database.GetMusicVideoByArtistAndAlbumAndTitle(item->GetMusicInfoTag()->GetArtist(),item->GetMusicInfoTag()->GetAlbum(),item->GetMusicInfoTag()->GetTitle()) > -1)
         buttons.Add(CONTEXT_BUTTON_PLAY_OTHER, 20401);
+    }
+    if (item->HasVideoInfoTag() && !item->m_bIsFolder)
+    {
+      if (item->GetVideoInfoTag()->m_bWatched)
+        buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
+      else
+        buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
+      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser)
+      {
+        buttons.Add(CONTEXT_BUTTON_RENAME, 16105);
+        buttons.Add(CONTEXT_BUTTON_DELETE, 646);
+      }
     }
   }
   // noncontextual buttons
@@ -576,6 +591,30 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       g_application.getApplicationMessenger().PlayFile(CFileItem(details));
       return true;
     }
+
+  case CONTEXT_BUTTON_MARK_WATCHED:
+    CGUIWindowVideoBase::MarkWatched(m_vecItems[itemNumber]);
+    CUtil::DeleteVideoDatabaseDirectoryCache();
+    Update(m_vecItems.m_strPath);
+    return true; 
+
+  case CONTEXT_BUTTON_MARK_UNWATCHED:
+    CGUIWindowVideoBase::MarkUnWatched(m_vecItems[itemNumber]);
+    CUtil::DeleteVideoDatabaseDirectoryCache();
+    Update(m_vecItems.m_strPath);
+    return true; 
+
+  case CONTEXT_BUTTON_RENAME:
+    CGUIWindowVideoBase::UpdateVideoTitle(m_vecItems[itemNumber]);
+    CUtil::DeleteVideoDatabaseDirectoryCache();
+    Update(m_vecItems.m_strPath);
+    return true;
+
+  case CONTEXT_BUTTON_DELETE:
+    CGUIWindowVideoNav::DeleteItem(m_vecItems[itemNumber]);
+    CUtil::DeleteVideoDatabaseDirectoryCache();
+    Update(m_vecItems.m_strPath);
+    return true;
   }
 
   return CGUIWindowMusicBase::OnContextButton(itemNumber, button);
@@ -587,18 +626,24 @@ void CGUIWindowMusicNav::SetArtistImage(int iItem)
   CStdString picturePath;
 
   CStdString strPath = pItem->m_strPath;
-  CUtil::RemoveSlashAtEnd(strPath);
-
-  int nPos=strPath.ReverseFind('/');
-  if (nPos>-1)
+  long idArtist = -1;
+  if (pItem->IsMusicDb())
   {
-    //  try to guess where the user should start
-    //  browsing for the artist thumb
-    CFileItemList albums;
-    long idArtist=atol(strPath.Mid(nPos+1));
-    CStdString path;
-    m_musicdatabase.GetArtistPath(idArtist, picturePath);
+    CUtil::RemoveSlashAtEnd(strPath);
+    int nPos=strPath.ReverseFind("/");
+    if (nPos>-1)
+    {
+      //  try to guess where the user should start
+      //  browsing for the artist thumb
+      CFileItemList albums;
+      idArtist=atol(strPath.Mid(nPos+1));
+      CStdString path;
+    }
   }
+  else if (pItem->IsVideoDb())
+    idArtist = m_musicdatabase.GetArtistByName(pItem->GetLabel());
+
+  m_musicdatabase.GetArtistPath(idArtist, picturePath);
 
   CFileItemList items;
   if (XFILE::CFile::Exists(pItem->GetCachedArtistThumb()))

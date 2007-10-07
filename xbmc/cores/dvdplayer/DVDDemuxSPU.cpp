@@ -183,7 +183,7 @@ CSPUInfo* CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
         {
           p++;
           pSPUInfo->iPTSStartTime = pSPUData->pts;
-          pSPUInfo->iPTSStartTime += delay * 1024 * DVD_TIME_BASE / 90000;
+          pSPUInfo->iPTSStartTime += (double)delay * 1024 * DVD_TIME_BASE / 90000;
           DebugLog("    GetPacket, STA_DSP: Start Display, delay: %i", ((delay * 1024) / 90000));
         }
         break;
@@ -191,7 +191,7 @@ CSPUInfo* CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
         {
           p++;
           pSPUInfo->iPTSStopTime = pSPUData->pts;
-          pSPUInfo->iPTSStopTime += delay * 1024 * DVD_TIME_BASE / 90000;
+          pSPUInfo->iPTSStopTime += (double)delay * 1024 * DVD_TIME_BASE / 90000;
           DebugLog("    GetPacket, STP_DSP: Stop Display, delay: %i", ((delay * 1024) / 90000));
         }
         break;
