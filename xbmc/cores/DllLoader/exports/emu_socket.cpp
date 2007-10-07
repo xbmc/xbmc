@@ -197,6 +197,7 @@ extern "C"
   int __stdcall dllbind(int s, const struct sockaddr FAR * name, int namelen)
   {
     SOCKET socket = GetSocketForIndex(s);
+    struct sockaddr_in address2;
 
     if( name->sa_family == AF_INET 
     &&  namelen >= sizeof(sockaddr_in) )
@@ -215,8 +216,11 @@ extern "C"
       if( address->sin_addr.S_un.S_addr == inet_addr(g_network.m_networkinfo.ip)
       ||  address->sin_addr.S_un.S_addr == inet_addr("127.0.0.1") )
       {
-        // local xbox, correct for xbox stack        
-        address->sin_addr.S_un.S_addr = 0;
+        // local xbox, correct for xbox stack
+        address2 = *address;
+        address2.sin_addr.S_un.S_addr = 0;
+        name = (sockaddr*)&address2;
+        namelen = sizeof(address2);
       }
     }    
 
