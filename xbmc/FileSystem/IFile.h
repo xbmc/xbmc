@@ -11,6 +11,8 @@
 
 #include "..\URL.h"
 
+#define SEEK_POSSIBLE 0x10 // flag used to check if protocol allows seeks
+
 namespace XFILE
 {
 class IFile
