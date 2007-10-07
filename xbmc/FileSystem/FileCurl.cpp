@@ -164,6 +164,9 @@ CFileCurl::CFileCurl()
   m_pHeaderCallback = NULL;
   m_bufferSize = BUFFER_SIZE;
   m_timeout = 0;
+  m_ftpauth = "";
+  m_ftpport = "";
+  m_ftppasvip = false;
 }
 
 //Has to be called before Open()
@@ -269,6 +272,12 @@ void CFileCurl::SetCommonOptions()
   else
     g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_FTPPORT, NULL);
 
+  // allow curl to not use the ip address in the returned pasv response
+  if( m_ftppasvip )
+    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_FTP_SKIP_PASV_IP, 0);
+  else
+    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_FTP_SKIP_PASV_IP, 1);
+
   // always allow gzip compression
   if( m_contentencoding.length() > 0 )
     g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_ENCODING, m_contentencoding.c_str());
@@ -370,6 +379,7 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
 
     m_ftpauth = "";
     m_ftpport = "";
+    m_ftppasvip = false;
 
     /* parse options given */
     CUtil::Tokenize(options, array, "&");
@@ -399,6 +409,13 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
         m_ftpport = value;
         if(value.IsEmpty())
           m_ftpport = "-";
+      }
+      else if(name.Equals("pasvip"))
+      {        
+        if(value == "0")
+          m_ftppasvip = false;
+        else
+          m_ftppasvip = true;
       }
     }
 
