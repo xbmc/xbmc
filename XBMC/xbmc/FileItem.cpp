@@ -1371,10 +1371,10 @@ void CFileItemList::Reserve(int iCount)
 void CFileItemList::Sort(FILEITEMLISTCOMPARISONFUNC func)
 {
   CSingleLock lock(m_lock);
-  if (m_items.size() > 0)
-    sort(m_items.begin(), m_items.end(), func);
-  else
-    CLog::Log(LOGWARNING,"%s, items list is empty.", __FUNCTION__);
+  DWORD dwStart = GetTickCount();
+  std::sort(m_items.begin(), m_items.end(), func);
+  DWORD dwElapsed = GetTickCount() - dwStart;
+  CLog::Log(LOGDEBUG,"%s, sorting took %lu millis", __FUNCTION__, dwElapsed);
 }
 
 void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)

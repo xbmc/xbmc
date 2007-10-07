@@ -68,6 +68,7 @@ BOOL QueryPerformanceFrequency(LARGE_INTEGER *lpFrequency) {
 BOOL FileTimeToLocalFileTime(const FILETIME* lpFileTime, LPFILETIME lpLocalFileTime) 
 {
 #warning FileTimeToLocalTime not implemented
+  *lpLocalFileTime = *lpFileTime;
   return true;
 }
 
@@ -106,7 +107,7 @@ LONG   CompareFileTime(const FILETIME* lpFileTime1, const FILETIME* lpFileTime2)
 
   if (t1.QuadPart == t2.QuadPart)
      return 0;
-  else if (t1.QuadPart < t1.QuadPart)
+  else if (t1.QuadPart < t2.QuadPart)
      return -1;
   else
      return 1;
