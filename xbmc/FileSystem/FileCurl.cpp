@@ -263,6 +263,12 @@ void CFileCurl::SetCommonOptions()
       g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_FTPSSLAUTH, CURLFTPAUTH_TLS);
   }
 
+  // allow passive mode for ftp
+  if( m_ftpport.length() > 0 )
+    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_FTPPORT, m_ftpport.c_str());
+  else
+    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_FTPPORT, NULL);
+
   // always allow gzip compression
   if( m_contentencoding.length() > 0 )
     g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_ENCODING, m_contentencoding.c_str());
@@ -359,8 +365,14 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
 
     url2.SetFileName(filename);
 
+    CStdString options = url2.GetOptions().Mid(1);
+    options.TrimRight('/'); // hack for trailing slashes being added from source
+
+    m_ftpauth = "";
+    m_ftpport = "";
+
     /* parse options given */
-    CUtil::Tokenize(url2.GetOptions().Mid(1), array, "&");
+    CUtil::Tokenize(options, array, "&");
     for(CStdStringArray::iterator it = array.begin(); it != array.end(); it++)
     {
       CStdString name, value;
@@ -374,14 +386,19 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
       {
         name = (*it);
         value = "";
-      }
+      }      
 
       if(name.Equals("auth"))
       {
         m_ftpauth = value;
-        m_ftpauth.TrimRight('/'); // hack for trailing slashes being added from source
         if(m_ftpauth.IsEmpty())
           m_ftpauth = "any";
+      }
+      else if(name.Equals("active"))
+      {
+        m_ftpport = value;
+        if(value.IsEmpty())
+          m_ftpport = "-";
       }
     }
 
