@@ -39,7 +39,9 @@
 #include "MusicDatabase.h"
 #include "SortFileItem.h"
 #include "utils/TuxBoxUtil.h"
+#include "utils/SingleLock.h"
 
+using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
 using namespace PLAYLIST;
@@ -1107,6 +1109,8 @@ const CFileItem* CFileItemList::operator[] (const CStdString& strPath) const
 
 void CFileItemList::SetFastLookup(bool fastLookup)
 {
+  CSingleLock lock(m_lock);
+
   if (fastLookup && !m_fastLookup)
   { // generate the map
     m_map.clear();
@@ -1124,6 +1128,8 @@ void CFileItemList::SetFastLookup(bool fastLookup)
 
 bool CFileItemList::Contains(const CStdString& fileName)
 {
+  CSingleLock lock(m_lock);
+
   // checks case insensitive
   CStdString checkPath(fileName); checkPath.ToLower();
   if (m_fastLookup)
@@ -1140,6 +1146,8 @@ bool CFileItemList::Contains(const CStdString& fileName)
 
 void CFileItemList::Clear()
 {
+  CSingleLock lock(m_lock);
+
   if (m_items.size())
   {
     IVECFILEITEMS i;
@@ -1161,6 +1169,8 @@ void CFileItemList::Clear()
 
 void CFileItemList::ClearKeepPointer()
 {
+  CSingleLock lock(m_lock);
+
   if (m_items.size())
   {
     m_items.clear();
@@ -1175,6 +1185,8 @@ void CFileItemList::ClearKeepPointer()
 
 void CFileItemList::Add(CFileItem* pItem)
 {
+  CSingleLock lock(m_lock);
+
   m_items.push_back(pItem);
   if (m_fastLookup)
   {
@@ -1185,6 +1197,8 @@ void CFileItemList::Add(CFileItem* pItem)
 
 void CFileItemList::AddFront(CFileItem* pItem, int itemPosition)
 {
+  CSingleLock lock(m_lock);
+
   if (itemPosition >= 0)
   {
     m_items.insert(m_items.begin()+itemPosition, pItem);
@@ -1202,6 +1216,8 @@ void CFileItemList::AddFront(CFileItem* pItem, int itemPosition)
 
 void CFileItemList::Remove(CFileItem* pItem)
 {
+  CSingleLock lock(m_lock);
+
   for (IVECFILEITEMS it = m_items.begin(); it != m_items.end(); ++it)
   {
     if (pItem == *it)
@@ -1219,6 +1235,8 @@ void CFileItemList::Remove(CFileItem* pItem)
 
 void CFileItemList::Remove(int iItem)
 {
+  CSingleLock lock(m_lock);
+
   if (iItem >= 0 && iItem < (int)Size())
   {
     CFileItem* pItem = *(m_items.begin() + iItem);
@@ -1234,6 +1252,8 @@ void CFileItemList::Remove(int iItem)
 
 void CFileItemList::Append(const CFileItemList& itemlist)
 {
+  CSingleLock lock(m_lock);
+
   for (int i = 0; i < itemlist.Size(); ++i)
   {
     const CFileItem* pItem = itemlist[i];
@@ -1244,6 +1264,8 @@ void CFileItemList::Append(const CFileItemList& itemlist)
 
 void CFileItemList::AppendPointer(const CFileItemList& itemlist)
 {
+  CSingleLock lock(m_lock);
+
   for (int i = 0; i < itemlist.Size(); ++i)
   {
     CFileItem* pItem = const_cast<CFileItem*>(itemlist[i]);
@@ -1262,6 +1284,8 @@ void CFileItemList::AssignPointer(const CFileItemList& itemlist, bool append)
 
 CFileItem* CFileItemList::Get(int iItem)
 {
+  CSingleLock lock(m_lock);
+
   if (iItem > -1)
     return m_items[iItem];
 
@@ -1270,6 +1294,8 @@ CFileItem* CFileItemList::Get(int iItem)
 
 const CFileItem* CFileItemList::Get(int iItem) const
 {
+  CSingleLock lock(m_lock);
+
   if (iItem > -1)
     return m_items[iItem];
 
@@ -1278,6 +1304,8 @@ const CFileItem* CFileItemList::Get(int iItem) const
 
 CFileItem* CFileItemList::Get(const CStdString& strPath)
 {
+  CSingleLock lock(m_lock);
+
   CStdString pathToCheck(strPath); pathToCheck.ToLower();
   if (m_fastLookup)
   {
@@ -1300,6 +1328,8 @@ CFileItem* CFileItemList::Get(const CStdString& strPath)
 
 const CFileItem* CFileItemList::Get(const CStdString& strPath) const
 {
+  CSingleLock lock(m_lock);
+
   CStdString pathToCheck(strPath); pathToCheck.ToLower();
   if (m_fastLookup)
   {
@@ -1322,21 +1352,25 @@ const CFileItem* CFileItemList::Get(const CStdString& strPath) const
 
 int CFileItemList::Size() const
 {
+  CSingleLock lock(m_lock);
   return (int)m_items.size();
 }
 
 bool CFileItemList::IsEmpty() const
 {
+  CSingleLock lock(m_lock);
   return (m_items.size() <= 0);
 }
 
 void CFileItemList::Reserve(int iCount)
 {
+  CSingleLock lock(m_lock);
   m_items.reserve(iCount);
 }
 
 void CFileItemList::Sort(FILEITEMLISTCOMPARISONFUNC func)
 {
+  CSingleLock lock(m_lock);
   if (m_items.size() > 0)
     sort(m_items.begin(), m_items.end(), func);
   else
@@ -1441,11 +1475,13 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
 
 void CFileItemList::Randomize()
 {
+  CSingleLock lock(m_lock);
   random_shuffle(m_items.begin(), m_items.end());
 }
 
 void CFileItemList::Serialize(CArchive& ar)
 {
+  CSingleLock lock(m_lock);
   if (ar.IsStoring())
   {
     CFileItem::Serialize(ar);
@@ -1543,6 +1579,7 @@ void CFileItemList::Serialize(CArchive& ar)
 
 void CFileItemList::FillInDefaultIcons()
 {
+  CSingleLock lock(m_lock);
   for (int i = 0; i < (int)m_items.size(); ++i)
   {
     CFileItem* pItem = m_items[i];
@@ -1552,6 +1589,7 @@ void CFileItemList::FillInDefaultIcons()
 
 void CFileItemList::SetMusicThumbs()
 {
+  CSingleLock lock(m_lock);
   //cache thumbnails directory
   g_directoryCache.InitMusicThumbCache();
 
@@ -1566,6 +1604,7 @@ void CFileItemList::SetMusicThumbs()
 
 int CFileItemList::GetFolderCount() const
 {
+  CSingleLock lock(m_lock);
   int nFolderCount = 0;
   for (int i = 0; i < (int)m_items.size(); i++)
   {
@@ -1579,6 +1618,7 @@ int CFileItemList::GetFolderCount() const
 
 int CFileItemList::GetFileCount() const
 {
+  CSingleLock lock(m_lock);
   int nFileCount = 0;
   for (int i = 0; i < (int)m_items.size(); i++)
   {
@@ -1592,6 +1632,7 @@ int CFileItemList::GetFileCount() const
 
 int CFileItemList::GetSelectedCount() const
 {
+  CSingleLock lock(m_lock);
   int count = 0;
   for (int i = 0; i < (int)m_items.size(); i++)
   {
@@ -1605,6 +1646,7 @@ int CFileItemList::GetSelectedCount() const
 
 void CFileItemList::FilterCueItems()
 {
+  CSingleLock lock(m_lock);
   // Handle .CUE sheet files...
   VECSONGS itemstoadd;
   CStdStringArray itemstodelete;
@@ -1740,18 +1782,21 @@ void CFileItemList::FilterCueItems()
 // Remove the extensions from the filenames
 void CFileItemList::RemoveExtensions()
 {
+  CSingleLock lock(m_lock);
   for (int i = 0; i < Size(); ++i)
     m_items[i]->RemoveExtension();
 }
 
 void CFileItemList::CleanFileNames()
 {
+  CSingleLock lock(m_lock);
   for (int i = 0; i < Size(); ++i)
     m_items[i]->CleanFileName();
 }
 
 void CFileItemList::Stack()
 {
+  CSingleLock lock(m_lock);
   // TODO: Remove nfo files before this stage?  The old routine did, but I'm not sure
   // the advantage of this (seems to me it's better just to ignore them for stacking
   // purposes).
@@ -1987,6 +2032,7 @@ bool CFileItemList::AlwaysCache()
 
 void CFileItemList::SetCachedVideoThumbs()
 {
+  CSingleLock lock(m_lock);
   // TODO: Investigate caching time to see if it speeds things up
   for (unsigned int i = 0; i < m_items.size(); ++i)
   {
@@ -1997,6 +2043,7 @@ void CFileItemList::SetCachedVideoThumbs()
 
 void CFileItemList::SetCachedProgramThumbs()
 {
+  CSingleLock lock(m_lock);
   // TODO: Investigate caching time to see if it speeds things up
   for (unsigned int i = 0; i < m_items.size(); ++i)
   {
@@ -2007,6 +2054,7 @@ void CFileItemList::SetCachedProgramThumbs()
 
 void CFileItemList::SetCachedMusicThumbs()
 {
+  CSingleLock lock(m_lock);
   // TODO: Investigate caching time to see if it speeds things up
   for (unsigned int i = 0; i < m_items.size(); ++i)
   {
