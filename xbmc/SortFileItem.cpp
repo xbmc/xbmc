@@ -22,6 +22,9 @@
 #include "stdafx.h"
 #include "SortFileItem.h"
 #include "Util.h"
+#include "utils/log.h"
+
+#define RETURN_IF_NULL(x,y) if ((x) == NULL) { CLog::Log(LOGWARNING, "%s, sort item is null", __FUNCTION__); return y; }
 
 inline int StartsWithToken(const CStdString& strLabel)
 {
@@ -41,6 +44,9 @@ inline int StartsWithToken(const CStdString& strLabel)
 //
 bool SSortFileItem::FileAscending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -48,11 +54,14 @@ bool SSortFileItem::FileAscending(CFileItem *left, CFileItem *right)
   int result = StringUtils::AlphaNumericCompare(lurl.GetFileNameWithoutPath().c_str(), rurl.GetFileNameWithoutPath().c_str());
   if (result < 0) return true;
   if (result > 0) return false;
-  return left->m_lStartOffset <= right->m_lStartOffset; // useful for .cue's in my music
+  return left->m_lStartOffset < right->m_lStartOffset; // useful for .cue's in my music
 }
 
 bool SSortFileItem::FileDescending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -60,33 +69,42 @@ bool SSortFileItem::FileDescending(CFileItem *left, CFileItem *right)
   int result = StringUtils::AlphaNumericCompare(lurl.GetFileNameWithoutPath().c_str(), rurl.GetFileNameWithoutPath().c_str());
   if (result < 0) return false;
   if (result > 0) return true;
-  return left->m_lStartOffset >= right->m_lStartOffset;
+  return left->m_lStartOffset > right->m_lStartOffset;
 }
 
 bool SSortFileItem::SizeAscending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
-    return left->m_dwSize <= right->m_dwSize;
+    return left->m_dwSize < right->m_dwSize;
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::SizeDescending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
-    return left->m_dwSize >= right->m_dwSize;
+    return left->m_dwSize > right->m_dwSize;
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::DateAscending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -103,6 +121,9 @@ bool SSortFileItem::DateAscending(CFileItem *left, CFileItem *right)
 
 bool SSortFileItem::DateDescending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -119,6 +140,9 @@ bool SSortFileItem::DateDescending(CFileItem *left, CFileItem *right)
 
 bool SSortFileItem::DriveTypeAscending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -126,13 +150,16 @@ bool SSortFileItem::DriveTypeAscending(CFileItem *left, CFileItem *right)
   { // same category
     if ( left->m_iDriveType < right->m_iDriveType ) return true;
     if ( left->m_iDriveType > right->m_iDriveType ) return false;
-    return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(), right->GetLabel().c_str()) <= 0;
+    return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(), right->GetLabel().c_str()) < 0;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::DriveTypeDescending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -140,35 +167,44 @@ bool SSortFileItem::DriveTypeDescending(CFileItem *left, CFileItem *right)
   { // same category
     if ( left->m_iDriveType < right->m_iDriveType ) return false;
     if ( left->m_iDriveType > right->m_iDriveType ) return true;
-    return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(), right->GetLabel().c_str()) >= 0;
+    return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(), right->GetLabel().c_str()) > 0;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::LabelAscending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // special items
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
-    return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(),right->GetLabel().c_str()) <= 0;
+    return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(),right->GetLabel().c_str()) < 0;
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::LabelDescending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // special items
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
-    return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(),right->GetLabel().c_str()) >= 0;
+    return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(),right->GetLabel().c_str()) > 0;
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::LabelAscendingNoThe(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // special items
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -180,13 +216,16 @@ bool SSortFileItem::LabelAscendingNoThe(CFileItem *left, CFileItem *right)
     l += StartsWithToken(left->GetLabel());
     r += StartsWithToken(right->GetLabel());
 
-    return StringUtils::AlphaNumericCompare(l, r) <= 0;
+    return StringUtils::AlphaNumericCompare(l, r) < 0;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::LabelDescendingNoThe(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // special items
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -198,35 +237,44 @@ bool SSortFileItem::LabelDescendingNoThe(CFileItem *left, CFileItem *right)
     l += StartsWithToken(left->GetLabel());
     r += StartsWithToken(right->GetLabel());
 
-    return StringUtils::AlphaNumericCompare(l, r) >= 0;
+    return StringUtils::AlphaNumericCompare(l, r) > 0;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::SongTrackNumAscending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // special items
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
-    return left->GetMusicInfoTag()->GetTrackAndDiskNumber() <= right->GetMusicInfoTag()->GetTrackAndDiskNumber();
+    return left->GetMusicInfoTag()->GetTrackAndDiskNumber() < right->GetMusicInfoTag()->GetTrackAndDiskNumber();
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::SongTrackNumDescending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // special items
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
-    return left->GetMusicInfoTag()->GetTrackAndDiskNumber() >= right->GetMusicInfoTag()->GetTrackAndDiskNumber();
+    return left->GetMusicInfoTag()->GetTrackAndDiskNumber() > right->GetMusicInfoTag()->GetTrackAndDiskNumber();
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::EpisodeNumAscending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // special items
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -251,13 +299,16 @@ bool SSortFileItem::EpisodeNumAscending(CFileItem *left, CFileItem *right)
       ir = (right->GetVideoInfoTag()->m_iSpecialSortSeason<<24)+(right->GetVideoInfoTag()->m_iSpecialSortEpisode<<8)-(128-right->GetVideoInfoTag()->m_iEpisode);
     else
       ir = (right->GetVideoInfoTag()->m_iSeason<<24)+(right->GetVideoInfoTag()->m_iEpisode<<8);
-    return il <= ir;
+    return il < ir;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::EpisodeNumDescending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // special items
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -274,35 +325,44 @@ bool SSortFileItem::EpisodeNumDescending(CFileItem *left, CFileItem *right)
       ir = (right->GetVideoInfoTag()->m_iSpecialSortSeason<<24)+(right->GetVideoInfoTag()->m_iSpecialSortEpisode<<8)-(128-right->GetVideoInfoTag()->m_iEpisode);
     else
       ir = (right->GetVideoInfoTag()->m_iSeason<<24)+(right->GetVideoInfoTag()->m_iEpisode<<8);
-    return il >= ir;
+    return il > ir;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::SongDurationAscending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // special items
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
-    return left->GetMusicInfoTag()->GetDuration() <= right->GetMusicInfoTag()->GetDuration();
+    return left->GetMusicInfoTag()->GetDuration() < right->GetMusicInfoTag()->GetDuration();
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::SongDurationDescending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // special items
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
-    return left->GetMusicInfoTag()->GetDuration() >= right->GetMusicInfoTag()->GetDuration();
+    return left->GetMusicInfoTag()->GetDuration() > right->GetMusicInfoTag()->GetDuration();
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::SongTitleAscending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // special cases
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -311,13 +371,16 @@ bool SSortFileItem::SongTitleAscending(CFileItem *left, CFileItem *right)
   {
     char *l = (char *)left->GetMusicInfoTag()->GetTitle().c_str();
     char *r = (char *)right->GetMusicInfoTag()->GetTitle().c_str();
-    return StringUtils::AlphaNumericCompare(l, r) <= 0;
+    return StringUtils::AlphaNumericCompare(l, r) < 0;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::SongTitleDescending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // special cases
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -326,13 +389,16 @@ bool SSortFileItem::SongTitleDescending(CFileItem *left, CFileItem *right)
   {
     char *l = (char *)left->GetMusicInfoTag()->GetTitle().c_str();
     char *r = (char *)right->GetMusicInfoTag()->GetTitle().c_str();
-    return StringUtils::AlphaNumericCompare(l, r) >= 0;
+    return StringUtils::AlphaNumericCompare(l, r) > 0;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::MovieTitleAscending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // special cases
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -341,13 +407,16 @@ bool SSortFileItem::MovieTitleAscending(CFileItem *left, CFileItem *right)
   {
     char *l = (char *)left->GetVideoInfoTag()->m_strTitle.c_str();
     char *r = (char *)right->GetVideoInfoTag()->m_strTitle.c_str();
-    return StringUtils::AlphaNumericCompare(l, r) <= 0;
+    return StringUtils::AlphaNumericCompare(l, r) < 0;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::MovieTitleDescending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // special cases
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -356,13 +425,16 @@ bool SSortFileItem::MovieTitleDescending(CFileItem *left, CFileItem *right)
   {
     char *l = (char *)left->GetVideoInfoTag()->m_strTitle.c_str();
     char *r = (char *)right->GetVideoInfoTag()->m_strTitle.c_str();
-    return StringUtils::AlphaNumericCompare(l, r) >= 0;
+    return StringUtils::AlphaNumericCompare(l, r) > 0;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::SongTitleAscendingNoThe(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // special cases
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -374,13 +446,16 @@ bool SSortFileItem::SongTitleAscendingNoThe(CFileItem *left, CFileItem *right)
     l += StartsWithToken(left->GetMusicInfoTag()->GetTitle());
     r += StartsWithToken(right->GetMusicInfoTag()->GetTitle());
     
-    return StringUtils::AlphaNumericCompare(l, r) <= 0;
+    return StringUtils::AlphaNumericCompare(l, r) < 0;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::SongTitleDescendingNoThe(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // special cases
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -392,13 +467,16 @@ bool SSortFileItem::SongTitleDescendingNoThe(CFileItem *left, CFileItem *right)
     l += StartsWithToken(left->GetMusicInfoTag()->GetTitle());
     r += StartsWithToken(right->GetMusicInfoTag()->GetTitle());
     
-    return StringUtils::AlphaNumericCompare(l, r) >= 0;
+    return StringUtils::AlphaNumericCompare(l, r) > 0;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::SongArtistAscending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // special cases
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -469,13 +547,16 @@ bool SSortFileItem::SongArtistAscending(CFileItem *left, CFileItem *right)
     if (right->HasMusicInfoTag())
       rt = right->GetMusicInfoTag()->GetTrackAndDiskNumber();
     
-    return lt <= rt;
+    return lt < rt;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::SongArtistDescending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // special cases
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -547,13 +628,16 @@ bool SSortFileItem::SongArtistDescending(CFileItem *left, CFileItem *right)
     if (right->HasMusicInfoTag())
       rt = right->GetMusicInfoTag()->GetTrackAndDiskNumber();
     
-    return rt <= lt;
+    return rt < lt;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::SongArtistAscendingNoThe(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // special cases
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -625,13 +709,16 @@ bool SSortFileItem::SongArtistAscendingNoThe(CFileItem *left, CFileItem *right)
       lt = left->GetMusicInfoTag()->GetTrackAndDiskNumber();
     if (right->HasMusicInfoTag())
       rt = right->GetMusicInfoTag()->GetTrackAndDiskNumber();
-    return lt <= rt;
+    return lt < rt;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::SongArtistDescendingNoThe(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // special cases
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -703,12 +790,15 @@ bool SSortFileItem::SongArtistDescendingNoThe(CFileItem *left, CFileItem *right)
       lt = left->GetMusicInfoTag()->GetTrackAndDiskNumber();
     if (right->HasMusicInfoTag())
       rt = right->GetMusicInfoTag()->GetTrackAndDiskNumber();
-    return rt <= lt;
+    return rt < lt;
   }
   return left->m_bIsFolder;}
 
 bool SSortFileItem::SongAlbumAscending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // special cases
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -758,13 +848,16 @@ bool SSortFileItem::SongAlbumAscending(CFileItem *left, CFileItem *right)
       lt = left->GetMusicInfoTag()->GetTrackAndDiskNumber();
     if (right->HasMusicInfoTag())
       rt = right->GetMusicInfoTag()->GetTrackAndDiskNumber();
-    return lt <= rt;
+    return lt < rt;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::SongAlbumDescending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // special cases
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -814,13 +907,16 @@ bool SSortFileItem::SongAlbumDescending(CFileItem *left, CFileItem *right)
       lt = left->GetMusicInfoTag()->GetTrackAndDiskNumber();
     if (right->HasMusicInfoTag())
       rt = right->GetMusicInfoTag()->GetTrackAndDiskNumber();
-    return rt <= lt;
+    return rt < lt;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::SongAlbumAscendingNoThe(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // special cases
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -877,13 +973,16 @@ bool SSortFileItem::SongAlbumAscendingNoThe(CFileItem *left, CFileItem *right)
     if (right->HasMusicInfoTag())
       rt = right->GetMusicInfoTag()->GetTrackAndDiskNumber();
 
-    return lt <= rt;
+    return lt < rt;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::SongAlbumDescendingNoThe(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // special cases
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -940,13 +1039,16 @@ bool SSortFileItem::SongAlbumDescendingNoThe(CFileItem *left, CFileItem *right)
     if (right->HasMusicInfoTag())
       rt = right->GetMusicInfoTag()->GetTrackAndDiskNumber();
 
-    return rt <= lt;
+    return rt < lt;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::GenreAscending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // special items
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -964,13 +1066,16 @@ bool SSortFileItem::GenreAscending(CFileItem *left, CFileItem *right)
     else
       rGenre = right->GetVideoInfoTag()->m_strGenre.c_str();
 
-    return StringUtils::AlphaNumericCompare(lGenre,rGenre) <= 0;
+    return StringUtils::AlphaNumericCompare(lGenre,rGenre) < 0;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::GenreDescending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // special items
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -988,33 +1093,42 @@ bool SSortFileItem::GenreDescending(CFileItem *left, CFileItem *right)
     else
       rGenre = right->GetVideoInfoTag()->m_strGenre.c_str();
 
-    return StringUtils::AlphaNumericCompare(lGenre,rGenre) >= 0;
+    return StringUtils::AlphaNumericCompare(lGenre,rGenre) > 0;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::ProgramCountAscending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
   if (left->m_bIsFolder == right->m_bIsFolder)
-    return left->m_iprogramCount <= right->m_iprogramCount;
+    return left->m_iprogramCount < right->m_iprogramCount;
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::ProgramCountDescending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
   if (left->m_bIsFolder == right->m_bIsFolder)
-    return left->m_iprogramCount >= right->m_iprogramCount;
+    return left->m_iprogramCount > right->m_iprogramCount;
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::MovieYearAscending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -1025,18 +1139,21 @@ bool SSortFileItem::MovieYearAscending(CFileItem *left, CFileItem *right)
       int result = left->GetVideoInfoTag()->m_iYear-right->GetVideoInfoTag()->m_iYear;
       if (result < 0) return true;
       if (result > 0) return false;
-      return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(), right->GetLabel().c_str()) <= 0;
+      return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(), right->GetLabel().c_str()) < 0;
     }
     if (!left->GetVideoInfoTag()->m_strPremiered.IsEmpty())
-      return StringUtils::AlphaNumericCompare(left->GetVideoInfoTag()->m_strPremiered.c_str(), right->GetVideoInfoTag()->m_strPremiered.c_str()) <= 0;
+      return StringUtils::AlphaNumericCompare(left->GetVideoInfoTag()->m_strPremiered.c_str(), right->GetVideoInfoTag()->m_strPremiered.c_str()) < 0;
     if (!left->GetVideoInfoTag()->m_strFirstAired.IsEmpty())
-      return StringUtils::AlphaNumericCompare(left->GetVideoInfoTag()->m_strFirstAired.c_str(), right->GetVideoInfoTag()->m_strFirstAired.c_str()) <= 0;
+      return StringUtils::AlphaNumericCompare(left->GetVideoInfoTag()->m_strFirstAired.c_str(), right->GetVideoInfoTag()->m_strFirstAired.c_str()) < 0;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::MovieYearDescending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -1047,42 +1164,51 @@ bool SSortFileItem::MovieYearDescending(CFileItem *left, CFileItem *right)
      int result = left->GetVideoInfoTag()->m_iYear-right->GetVideoInfoTag()->m_iYear;
      if (result < 0) return false;
      if (result > 0) return true;
-     return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(), right->GetLabel().c_str()) >= 0;
+     return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(), right->GetLabel().c_str()) > 0;
     }
     if (!left->GetVideoInfoTag()->m_strPremiered.IsEmpty())
-      return StringUtils::AlphaNumericCompare(left->GetVideoInfoTag()->m_strPremiered.c_str(), right->GetVideoInfoTag()->m_strPremiered.c_str()) >= 0;
+      return StringUtils::AlphaNumericCompare(left->GetVideoInfoTag()->m_strPremiered.c_str(), right->GetVideoInfoTag()->m_strPremiered.c_str()) > 0;
     if (!left->GetVideoInfoTag()->m_strFirstAired.IsEmpty())
-      return StringUtils::AlphaNumericCompare(left->GetVideoInfoTag()->m_strFirstAired.c_str(), right->GetVideoInfoTag()->m_strFirstAired.c_str()) >= 0;
+      return StringUtils::AlphaNumericCompare(left->GetVideoInfoTag()->m_strFirstAired.c_str(), right->GetVideoInfoTag()->m_strFirstAired.c_str()) > 0;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::ProductionCodeAscending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
-    return StringUtils::AlphaNumericCompare(left->GetVideoInfoTag()->m_strProductionCode.c_str(),right->GetVideoInfoTag()->m_strProductionCode.c_str()) <= 0;
+    return StringUtils::AlphaNumericCompare(left->GetVideoInfoTag()->m_strProductionCode.c_str(),right->GetVideoInfoTag()->m_strProductionCode.c_str()) < 0;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::ProductionCodeDescending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
-    return StringUtils::AlphaNumericCompare(left->GetVideoInfoTag()->m_strProductionCode.c_str(),right->GetVideoInfoTag()->m_strProductionCode.c_str()) >= 0;
+    return StringUtils::AlphaNumericCompare(left->GetVideoInfoTag()->m_strProductionCode.c_str(),right->GetVideoInfoTag()->m_strProductionCode.c_str()) > 0;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::MovieRatingAscending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -1090,13 +1216,16 @@ bool SSortFileItem::MovieRatingAscending(CFileItem *left, CFileItem *right)
   {
     if (left->GetVideoInfoTag()->m_fRating < right->GetVideoInfoTag()->m_fRating) return true;
     if (left->GetVideoInfoTag()->m_fRating > right->GetVideoInfoTag()->m_fRating) return false;
-    return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(), right->GetLabel().c_str()) <= 0;
+    return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(), right->GetLabel().c_str()) < 0;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::MovieRatingDescending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -1104,13 +1233,16 @@ bool SSortFileItem::MovieRatingDescending(CFileItem *left, CFileItem *right)
   {
     if (left->GetVideoInfoTag()->m_fRating < right->GetVideoInfoTag()->m_fRating) return false;
     if (left->GetVideoInfoTag()->m_fRating > right->GetVideoInfoTag()->m_fRating) return true;
-    return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(), right->GetLabel().c_str()) >= 0;
+    return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(), right->GetLabel().c_str()) > 0;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::MPAARatingAscending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -1118,13 +1250,16 @@ bool SSortFileItem::MPAARatingAscending(CFileItem *left, CFileItem *right)
   {
     if (left->GetVideoInfoTag()->m_strMPAARating < right->GetVideoInfoTag()->m_strMPAARating) return true;
     if (left->GetVideoInfoTag()->m_strMPAARating > right->GetVideoInfoTag()->m_strMPAARating) return false;
-    return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(), right->GetLabel().c_str()) <= 0;
+    return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(), right->GetLabel().c_str()) < 0;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::MPAARatingDescending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -1132,13 +1267,16 @@ bool SSortFileItem::MPAARatingDescending(CFileItem *left, CFileItem *right)
   {
     if (left->GetVideoInfoTag()->m_strMPAARating < right->GetVideoInfoTag()->m_strMPAARating) return false;
     if (left->GetVideoInfoTag()->m_strMPAARating > right->GetVideoInfoTag()->m_strMPAARating) return true;
-    return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(), right->GetLabel().c_str()) >= 0;
+    return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(), right->GetLabel().c_str()) > 0;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::SongRatingAscending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -1146,13 +1284,16 @@ bool SSortFileItem::SongRatingAscending(CFileItem *left, CFileItem *right)
   {
     if (left->GetMusicInfoTag()->GetRating() < right->GetMusicInfoTag()->GetRating()) return true;
     if (left->GetMusicInfoTag()->GetRating() > right->GetMusicInfoTag()->GetRating()) return false;
-    return StringUtils::AlphaNumericCompare(left->GetMusicInfoTag()->GetTitle().c_str(), right->GetMusicInfoTag()->GetTitle().c_str()) >= 0;
+    return StringUtils::AlphaNumericCompare(left->GetMusicInfoTag()->GetTitle().c_str(), right->GetMusicInfoTag()->GetTitle().c_str()) > 0;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::SongRatingDescending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -1161,13 +1302,16 @@ bool SSortFileItem::SongRatingDescending(CFileItem *left, CFileItem *right)
     // currently we just compare rating, then title
     if (left->GetMusicInfoTag()->GetRating() < right->GetMusicInfoTag()->GetRating()) return false;
     if (left->GetMusicInfoTag()->GetRating() > right->GetMusicInfoTag()->GetRating()) return true;
-    return StringUtils::AlphaNumericCompare(left->GetMusicInfoTag()->GetTitle().c_str(), right->GetMusicInfoTag()->GetTitle().c_str()) <= 0;
+    return StringUtils::AlphaNumericCompare(left->GetMusicInfoTag()->GetTitle().c_str(), right->GetMusicInfoTag()->GetTitle().c_str()) < 0;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::MovieRuntimeAscending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // special cases
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -1176,13 +1320,16 @@ bool SSortFileItem::MovieRuntimeAscending(CFileItem *left, CFileItem *right)
   {
     char *l = (char *)left->GetVideoInfoTag()->m_strRuntime.c_str();
     char *r = (char *)right->GetVideoInfoTag()->m_strRuntime.c_str();
-    return StringUtils::AlphaNumericCompare(l, r) <= 0;
+    return StringUtils::AlphaNumericCompare(l, r) < 0;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::MovieRuntimeDescending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // special cases
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -1191,13 +1338,16 @@ bool SSortFileItem::MovieRuntimeDescending(CFileItem *left, CFileItem *right)
   {
     char *l = (char *)left->GetVideoInfoTag()->m_strRuntime.c_str();
     char *r = (char *)right->GetVideoInfoTag()->m_strRuntime.c_str();
-    return StringUtils::AlphaNumericCompare(l, r) >= 0;
+    return StringUtils::AlphaNumericCompare(l, r) > 0;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::StudioAscending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // special cases
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -1206,13 +1356,16 @@ bool SSortFileItem::StudioAscending(CFileItem *left, CFileItem *right)
   {
     char *l = (char *)left->GetVideoInfoTag()->m_strStudio.c_str();
     char *r = (char *)right->GetVideoInfoTag()->m_strStudio.c_str();
-    return StringUtils::AlphaNumericCompare(l, r) <= 0;
+    return StringUtils::AlphaNumericCompare(l, r) < 0;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::StudioDescending(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // special cases
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -1221,15 +1374,15 @@ bool SSortFileItem::StudioDescending(CFileItem *left, CFileItem *right)
   {
     char *l = (char *)left->GetVideoInfoTag()->m_strStudio.c_str();
     char *r = (char *)right->GetVideoInfoTag()->m_strStudio.c_str();
-    return StringUtils::AlphaNumericCompare(l, r) >= 0;
+    return StringUtils::AlphaNumericCompare(l, r) > 0;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::StudioAscendingNoThe(CFileItem *left, CFileItem *right)
 {
-  if (!left || !right)
-    return false;
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
 
   // special cases
   if (left->IsParentFolder()) return true;
@@ -1242,13 +1395,16 @@ bool SSortFileItem::StudioAscendingNoThe(CFileItem *left, CFileItem *right)
     l += StartsWithToken(left->GetVideoInfoTag()->m_strStudio);
     r += StartsWithToken(right->GetVideoInfoTag()->m_strStudio);
     
-    return StringUtils::AlphaNumericCompare(l, r) <= 0;
+    return StringUtils::AlphaNumericCompare(l, r) < 0;
   }
   return left->m_bIsFolder;
 }
 
 bool SSortFileItem::StudioDescendingNoThe(CFileItem *left, CFileItem *right)
 {
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
   // special cases
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
@@ -1260,7 +1416,7 @@ bool SSortFileItem::StudioDescendingNoThe(CFileItem *left, CFileItem *right)
     l += StartsWithToken(left->GetVideoInfoTag()->m_strStudio);
     r += StartsWithToken(right->GetVideoInfoTag()->m_strStudio);
     
-    return StringUtils::AlphaNumericCompare(l, r) >= 0;
+    return StringUtils::AlphaNumericCompare(l, r) > 0;
   }
   return left->m_bIsFolder;
 }
