@@ -1,4 +1,4 @@
 plasma.xbs: plasma.o
-	g++ -shared -o Plasma.xbs ../common.o plasma.o ../../lib/libmisc.a
+	g++ -shared -o Plasma.xbs ../common.o plasma.o ../../lib/libmisc.a -lXmu
 	#cp plasma.xbs /home/yuvalt/XBMC/screensavers/
 	cp Plasma.xbs ../../../../../XBMC/screensavers/

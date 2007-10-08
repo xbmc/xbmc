@@ -147,7 +147,6 @@ std::string Hack::getShortName() { return "solarwinds"; }
 std::string Hack::getName()      { return "Solar Winds"; }
 
 void Hack::start() {
-/*
 	glViewport(0, 0, Common::width, Common::height);
 
 	glMatrixMode(GL_PROJECTION);
@@ -156,7 +155,6 @@ void Hack::start() {
 	glTranslatef(0.0, 0.0, -15.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-*/
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -167,13 +165,11 @@ void Hack::start() {
 		// Necessary for point and line smoothing (I don't know why)
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 	glEnable(GL_BLEND);
+
 	Wind::init();
 
 	// Initialize surfaces
 	_winds.resize(numWinds);
-
-        // Clear the GL error 
-        glGetError();
 }
 
 void Hack::reshape() {
@@ -188,17 +184,7 @@ void Hack::reshape() {
 }
 
 void Hack::tick() {
-        glMatrixMode(GL_PROJECTION);
-        glPushMatrix();
-        glLoadIdentity();
-        gluPerspective(90.0, Common::aspectRatio, 1.0, 10000);
-        glTranslatef(0.0, 0.0, -15.0);
-        glMatrixMode(GL_MODELVIEW);
-        glPushMatrix();
-        glLoadIdentity();
-
-        glEnable(GL_TEXTURE_2D);
-        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glLoadIdentity();
 
 	if (!blur) {
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -222,15 +208,7 @@ void Hack::tick() {
 	// Update surfaces
 	stdx::call_all(_winds, &Wind::update);
 
-	// Common::flush();
-
-        glMatrixMode(GL_PROJECTION);
-        glPopMatrix();
-        glMatrixMode(GL_MODELVIEW);
-        glPopMatrix();
-
-        // Clear the GL error 
-        glGetError();
+	Common::flush();
 }
 
 void Hack::stop() {}
@@ -250,35 +228,3 @@ void Hack::buttonPress(unsigned int) {}
 void Hack::buttonRelease(unsigned int) {}
 void Hack::pointerEnter() {}
 void Hack::pointerLeave() {}
-
-#define _LINUX
-#include "../../../xbmc_scr.h"
-
-extern "C" {
-
-void Create(void* pd3dDevice, int iWidth, int iHeight, const char * szScreensaver, float pixelRatio)
-{
-  Common::width = iWidth;
-  Common::height = iHeight;
-  Common::aspectRatio = float(Common::width) / float(Common::height);
-}
-
-void Start()
-{
-  Common::resources = new ResourceManager;
-  Hack::start();
-}
-
-void Render()
-{
-  Hack::tick();
-}
-
-void Stop()
-{
-  Hack::stop();
-  delete Common::resources;
-}
-
-}
-
