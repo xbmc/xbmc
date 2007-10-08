@@ -91,7 +91,7 @@
 #undef HAS_CREDITS
 #undef HAS_MODPLAYER
 #undef HAS_SYSINFO
-#undef HAS_SCREENSAVER
+#define HAS_SCREENSAVER
 #undef HAS_MIKMOD
 #undef HAS_SECTIONS
 #define HAS_UPNP
