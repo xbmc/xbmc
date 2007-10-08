@@ -192,7 +192,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
             m_strNewSkinFontSet=strFontSet;
           }
           else
-            CLog::Log(LOGERROR, "No ttf font found but needed.", strFontSet.c_str());
+            CLog::Log(LOGERROR, "No ttf font found but needed: %s", strFontSet.c_str());
         }
 
         g_charsetConverter.reset();
@@ -2734,7 +2734,10 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
 #ifdef _LINUX
 	void *handle = dlopen((const char*)pItem->m_strPath, RTLD_LAZY);
 	if (!handle)
+	{
+          CLog::Log(LOGERROR, "FillInScreensavers: Unable to load %s, reason: %s", (const char*) pItem->m_strPath, dlerror());
 	  continue;
+	}
 	dlclose(handle);
 #endif
         CStdString strLabel = pItem->GetLabel();
