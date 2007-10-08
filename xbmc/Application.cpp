@@ -2684,7 +2684,7 @@ bool CApplication::OnKey(CKey& key)
         }
   }
   if (!key.IsAnalogButton())
-    CLog::Log(LOGDEBUG, "%s: %i pressed, action is %i", __FUNCTION__, key.GetButtonCode(), action.wID);
+    CLog::Log(LOGDEBUG, "%s: %i pressed, action is %i", __FUNCTION__, (int) key.GetButtonCode(), action.wID);
 
   //  Play a sound based on the action
   g_audioManager.PlayActionSound(action);
@@ -4369,7 +4369,7 @@ bool CApplication::ResetScreenSaverWindow()
       m_pd3dDevice->SetGammaRamp(GAMMA_RAMP_FLAG, &Ramp); // use immediate to get a smooth fade
     }
     m_pd3dDevice->SetGammaRamp(0, &m_OldRamp); // put the old gamma ramp back in place
-#elif defined(HAS_SDL_2D)
+#else
 	 Uint16 RampRed[256];
 	 Uint16 RampGreen[256];
 	 Uint16 RampBlue[256];
@@ -4510,8 +4510,8 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     Sleep(5);
     m_pd3dDevice->SetGammaRamp(GAMMA_RAMP_FLAG, &Ramp); // use immediate to get a smooth fade
   }
-#elif defined(HAS_SDL_2D)
-  SDL_GetGammaRamp(m_OldRampRed, m_OldRampGreen, m_OldRampGreen); // Store the old gamma ramp
+#else
+  SDL_GetGammaRamp(m_OldRampRed, m_OldRampGreen, m_OldRampBlue); // Store the old gamma ramp
   Uint16 RampRed[256];
   Uint16 RampGreen[256];
   Uint16 RampBlue[256];
