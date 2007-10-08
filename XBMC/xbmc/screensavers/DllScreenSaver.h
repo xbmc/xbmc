@@ -9,7 +9,11 @@ struct SCR_INFO
 struct ScreenSaver
 {
 public:
+#ifndef HAS_SDL
     void (__cdecl* Create)(LPDIRECT3DDEVICE8 pd3dDevice, int iWidth, int iHeight, const char* szScreensaver, float pixelRatio);
+#else
+    void (__cdecl* Create)(void* pd3dDevice, int iWidth, int iHeight, const char* szScreensaver, float pixelRatio);
+#endif
     void (__cdecl* Start) ();
     void (__cdecl* Render) ();
     void (__cdecl* Stop) ();
