@@ -11309,9 +11309,9 @@ done
 
 if test "$use_debug" = "yes"; then
   if test "$use_profiling" = "yes"; then
-    DEBUG_FLAGS="-g -Wformat -pg -D_DEBUG"
+    DEBUG_FLAGS="-g -pg -D_DEBUG -Wall"
   else
-    DEBUG_FLAGS="-g -Wformat -D_DEBUG"
+    DEBUG_FLAGS="-g -D_DEBUG -Wall"
   fi
 else
   if test "$use_profiling" = "yes"; then
