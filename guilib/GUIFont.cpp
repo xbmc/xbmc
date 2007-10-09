@@ -103,7 +103,6 @@ void CGUIFont::DrawColourTextWidth(float x, float y, float angle, DWORD* pdw256C
 void CGUIFont::DrawText( float x, float y, float angle, DWORD dwColor, DWORD dwShadowColor, const WCHAR* strText, DWORD dwFlags, FLOAT fMaxPixelWidth /* = 0 */)
 {
   if (!m_font) return;
-  float nw = 0.0f, nh = 0.0f;
   fMaxPixelWidth = ROUND(fMaxPixelWidth / g_graphicsContext.GetGUIScaleX());
   if (!dwColor) dwColor = m_textColor;
   if (!dwShadowColor) dwShadowColor = m_shadowColor;

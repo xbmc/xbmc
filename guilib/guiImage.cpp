@@ -641,7 +641,6 @@ void CGUIImage::LoadDiffuseImage()
   {
     int width, height;
     bool linearTexture;
-    int iImages = g_TextureManager.Load(m_image.diffuse, 0);
     m_diffuseTexture = g_TextureManager.GetTexture(m_image.diffuse, 0, width, height, m_diffusePalette, linearTexture);
 
     if (m_diffuseTexture)
@@ -953,7 +952,7 @@ void CGUIImage::DumpTextureUse()
   if (m_texturesAllocated && m_vecTextures.size())
   {
     if (GetID())
-      CLog::Log(LOGDEBUG, "Image control %d using texture %s", GetID(), m_strFileName.c_str());
+      CLog::Log(LOGDEBUG, "Image control %lu using texture %s", GetID(), m_strFileName.c_str());
     else
       CLog::Log(LOGDEBUG, "Using texture %s", m_strFileName.c_str());
   }

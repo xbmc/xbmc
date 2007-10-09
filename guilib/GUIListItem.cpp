@@ -112,8 +112,9 @@ CStdString CGUIListItem::GetOverlayImage() const
     return "OverlayUnwatched.png";
   case ICON_OVERLAY_WATCHED:
     return "OverlayWatched.png";
+  default:
+    return "";
   }
-  return "";
 }
 
 void CGUIListItem::Select(bool bOnOff)
