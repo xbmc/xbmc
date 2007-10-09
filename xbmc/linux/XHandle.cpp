@@ -19,7 +19,37 @@ CXHandle::CXHandle(HandleType nType)
   m_objectTracker[m_type]++;
 };
 
-CXHandle::~CXHandle() {
+CXHandle::CXHandle(const CXHandle &src)
+{
+  // we shouldnt get here EVER. however, if we do - try to make the best. copy what we can
+  // and most importantly - not share any pointer.
+  CLog::Log(LOGWARNING,"%s, copy handle.", __FUNCTION__);
+
+  Init();
+  if (src.m_hSem)
+    m_hSem = SDL_CreateSemaphore(SDL_SemValue(src.m_hSem));
+
+  if (m_hThread)
+  {
+    CLog::Log(LOGERROR, "%s - thread handle copied instead of passed!", __FUNCTION__);
+  }
+
+  if (src.m_hMutex)
+    m_hMutex = SDL_CreateMutex();
+
+  fd = src.fd;
+  m_bManualEvent = src.m_bManualEvent;
+  m_tmCreation = time(NULL);
+  m_FindFileResults = src.m_FindFileResults;
+  m_nFindFileIterator = src.m_nFindFileIterator; 
+  m_FindFileDir = src.m_FindFileDir;
+  m_iOffset = src.m_iOffset;
+  m_bCDROM = src.m_bCDROM;
+  m_objectTracker[m_type]++;
+}
+
+CXHandle::~CXHandle() 
+{
 
   m_objectTracker[m_type]--;
 

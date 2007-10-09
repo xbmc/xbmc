@@ -170,7 +170,11 @@ __int64 CFileHD::Seek(__int64 iFilePosition, int iWhence)
   switch (iWhence)
   {
   case SEEK_SET:
+#ifndef _LINUX
     if (iFilePosition <= GetLength())
+#else
+    if (((HANDLE)m_hFile)->m_bCDROM || iFilePosition <= GetLength())
+#endif
       bSuccess = SetFilePointerEx((HANDLE)m_hFile, lPos, &lNewPos, FILE_BEGIN);
     else
       bSuccess = false;
