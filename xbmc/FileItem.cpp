@@ -1068,6 +1068,7 @@ CFileItemList::CFileItemList()
   m_bCacheToDisc=false;
   m_sortMethod=SORT_METHOD_NONE;
   m_sortOrder=SORT_ORDER_NONE;
+  m_replaceListing = false;
 }
 
 CFileItemList::CFileItemList(const CStdString& strPath)
@@ -1078,6 +1079,7 @@ CFileItemList::CFileItemList(const CStdString& strPath)
   m_bCacheToDisc=false;
   m_sortMethod=SORT_METHOD_NONE;
   m_sortOrder=SORT_ORDER_NONE;
+  m_replaceListing = false;
 }
 
 CFileItemList::~CFileItemList()
@@ -1157,6 +1159,7 @@ void CFileItemList::Clear()
   m_sortOrder=SORT_ORDER_NONE;
   m_bCacheToDisc=false;
   m_sortDetails.clear();
+  m_replaceListing = false;
 }
 
 void CFileItemList::ClearKeepPointer()
@@ -1171,6 +1174,7 @@ void CFileItemList::ClearKeepPointer()
   m_sortOrder=SORT_ORDER_NONE;
   m_bCacheToDisc=false;
   m_sortDetails.clear();
+  m_replaceListing = false;
 }
 
 void CFileItemList::Add(CFileItem* pItem)
@@ -1258,6 +1262,7 @@ void CFileItemList::AssignPointer(const CFileItemList& itemlist, bool append)
   AppendPointer(itemlist);
   m_strPath = itemlist.m_strPath;
   m_sortDetails = itemlist.m_sortDetails;
+  m_replaceListing = itemlist.m_replaceListing;
 }
 
 CFileItem* CFileItemList::Get(int iItem)
@@ -2566,4 +2571,9 @@ void CFileItemList::AddSortMethod(SORT_METHOD sortMethod, int buttonLabel, const
   sort.m_labelMasks=labelMasks;
 
   m_sortDetails.push_back(sort);
+}
+
+void CFileItemList::SetReplaceListing(bool replace)
+{
+  m_replaceListing = replace;
 }
