@@ -477,7 +477,7 @@ __int64 CFile::Seek(__int64 iFilePosition, int iWhence)
     {
       __int64 ret = m_pFile->Seek(iFilePosition, iWhence);
       if(ret >= 0)
-        return 0;
+        return ret;
       else
       {
         if(m_pFile->GetLength() && m_pFile->Seek(0, SEEK_CUR) >= 0)
