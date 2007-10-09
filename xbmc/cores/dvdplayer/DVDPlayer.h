@@ -27,7 +27,6 @@ class CStreamInfo;
 
 typedef struct DVDInfo
 {
-  int iCurrentCell;
   int state;                // current dvdstate
   DWORD iDVDStillTime;      // total time in ticks we should display the still before continuing
   DWORD iDVDStillStartTime; // time in ticks when we started the still
@@ -176,8 +175,6 @@ private:
   int m_playSpeed;
 
   double m_lastpts; // holds last display pts during ff/rw operations
-  
-  unsigned int m_packetcount; // packet count from demuxer, may wrap around. used during startup
   
   // classes
   CDVDPlayerAudio m_dvdPlayerAudio; // audio part

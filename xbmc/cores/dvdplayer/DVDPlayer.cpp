@@ -31,7 +31,6 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   InitializeCriticalSection(&m_critStreamSection);
 
   memset(&m_dvd, 0, sizeof(DVDInfo));
-  m_dvd.iCurrentCell = -1;  
   m_dvd.iSelectedAudioStream = -1;
   m_dvd.iSelectedSPUStream = -1;
 
@@ -159,9 +158,9 @@ bool CDVDPlayer::IsPlaying() const
 void CDVDPlayer::OnStartup()
 {
   CThread::SetName("CDVDPlayer");
-  m_CurrentVideo.id = -1;
-  m_CurrentAudio.id = -1;
-  m_packetcount = 0;
+  m_CurrentVideo.Clear();
+  m_CurrentAudio.Clear();
+  m_CurrentSubtitle.Clear();
 
   m_messenger.Init();
 
@@ -335,15 +334,11 @@ void CDVDPlayer::Process()
             continue;
           }
         }
-
-        // keep on trying until user wants us to stop.
-        // another option would be to check if the input stream
-        // is advancing, and if it isn't, then abort
-        CLog::Log(LOGERROR, "Error reading data from demuxer");
-        continue;
+        
+        // any demuxer supporting non blocking reads, should return empty packates
+        CLog::Log(LOGERROR, "%s - EOF reading from demuxer", __FUNCTION__);
+        break;
       }
-
-      m_packetcount++;
 
       if(m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
       {
@@ -1713,10 +1708,6 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
       {
         dvdnav_cell_change_event_t* cell_change_event = (dvdnav_cell_change_event_t*)pData;
         CLog::Log(LOGDEBUG, "DVDNAV_CELL_CHANGE");
-        //if (cell_change_event->pgN != m_dvd.iCurrentCell)
-        {
-          m_dvd.iCurrentCell = cell_change_event->pgN;
-        }
 
         m_dvd.state = DVDSTATE_NORMAL;        
         
