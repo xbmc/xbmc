@@ -134,6 +134,12 @@ CSettings::CSettings(void)
     g_graphicsContext.ResetOverscan((RESOLUTION)i, m_ResInfo[i].Overscan);
   }
 
+  for (int i = DESKTOP ; i<=CUSTOM ; i++)
+  {
+    g_graphicsContext.ResetScreenParameters((RESOLUTION)i);
+    g_graphicsContext.ResetOverscan(m_ResInfo[i]);
+  }
+
   g_stSettings.m_iMyVideoStack = STACK_NONE;
 
   g_stSettings.m_bMyVideoCleanTitles = false;

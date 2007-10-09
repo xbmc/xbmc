@@ -1,6 +1,7 @@
 #pragma once
 
 #define XC_VIDEO_FLAGS 8
+#define MAX_RESOLUTIONS 32
 
 class XBVideoConfig
 {
@@ -26,9 +27,14 @@ public:
 #else
   void GetModes();
   RESOLUTION GetInitialMode();
-#endif  
+#endif
   RESOLUTION GetSafeMode() const;
   RESOLUTION GetBestMode() const;
+#ifdef HAS_SDL
+  void GetDesktopResolution(int &w, int &h);
+  int GetNumberOfResolutions() { return m_iNumResolutions; }
+  void GetResolutionInfo(int num, RESOLUTION_INFO &info) { info = m_ResInfo[num]; }
+#endif
   VSYNC GetVSyncMode() const { return m_VSyncMode; }
   bool IsValidResolution(RESOLUTION res) const;
   void PrintInfo() const;
@@ -51,6 +57,8 @@ private:
   bool bHasNTSC;
   DWORD m_dwVideoFlags;
   VSYNC m_VSyncMode;
+  int m_iNumResolutions;
+  RESOLUTION_INFO m_ResInfo[MAX_RESOLUTIONS];
 };
 
 extern XBVideoConfig g_videoConfig;
