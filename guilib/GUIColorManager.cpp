@@ -62,7 +62,7 @@ bool CGUIColorManager::LoadXML(TiXmlDocument &xmlDoc)
     if (color->FirstChild() && color->Attribute("name"))
     {
       DWORD value = 0xffffffff;
-      sscanf(color->FirstChild()->Value(), "%x", &value);
+      sscanf(color->FirstChild()->Value(), "%x", (int*) &value);
       CStdString name = color->Attribute("name");
       iColor it = m_colors.find(name);
       if (it != m_colors.end())
@@ -85,6 +85,6 @@ DWORD CGUIColorManager::GetColor(const CStdString &color) const
 
   // try converting hex directly
   DWORD value = 0;
-  sscanf(color.c_str(), "%x", &value);
+  sscanf(color.c_str(), "%x", (int*) &value);
   return value;
 }
