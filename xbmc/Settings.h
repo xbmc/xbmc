@@ -9,6 +9,7 @@ class CProfile;
 #include "../xbmc/StringUtils.h"
 #include "GUISettings.h"
 #include "FileItem.h"
+#include "XBVideoConfig.h"
 
 #include <vector>
 
@@ -418,7 +419,7 @@ public:
   int m_iLastLoadedProfileIndex;
   int m_iLastUsedProfileIndex;
   bool bUseLoginScreen;
-  RESOLUTION_INFO m_ResInfo[10];
+  RESOLUTION_INFO m_ResInfo[CUSTOM+MAX_RESOLUTIONS];
 
   // utility functions for user data folders
   CStdString GetUserDataItem(const CStdString& strFile) const;
