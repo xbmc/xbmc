@@ -135,7 +135,7 @@ class CLinuxRendererGL
 {
 public:
   CLinuxRendererGL();  
-  ~CLinuxRendererGL();
+  virtual ~CLinuxRendererGL();
 
   virtual void GetVideoRect(RECT &rs, RECT &rd);
   virtual float GetAspectRatio();

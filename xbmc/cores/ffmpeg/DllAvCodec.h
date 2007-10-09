@@ -12,13 +12,18 @@ extern "C" {
 #ifndef __STDC_LIMIT_MACROS
 #define __STDC_LIMIT_MACROS
 #endif
+
+#ifndef __GNUC__
 #pragma warning(disable:4244)
+#endif
+
 #include "avcodec.h"
 }
 
 class DllAvCodecInterface
 {
 public:
+  virtual ~DllAvCodecInterface() {}
   virtual void avcodec_register_all(void)=0;
   virtual void avcodec_flush_buffers(AVCodecContext *avctx)=0;
   virtual int avcodec_open(AVCodecContext *avctx, AVCodec *codec)=0;
@@ -119,6 +124,7 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va);
 class DllAvUtilInterface
 {
 public:
+  virtual ~DllAvUtilInterface() {}
 #if LIBAVUTIL_VERSION_INT < (50<<16)
   virtual void av_log_set_callback(void (*)(void*, int, const char*, va_list))=0;
 #endif

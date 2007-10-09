@@ -37,8 +37,8 @@ public:
 protected:
   CGUIImage m_guiBackground;
   CGUIImage m_guiLeft;
-  CGUIImage m_guiRight;
   CGUIImage m_guiMid;
+  CGUIImage m_guiRight;
   CGUIImage m_guiOverlay;
   float m_RangeMin;
   float m_RangeMax;

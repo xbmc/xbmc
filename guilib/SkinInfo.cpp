@@ -223,9 +223,6 @@ CStdString CSkinInfo::GetDirFromRes(RESOLUTION res)
   CStdString strRes;
   switch (res)
   {
-  case INVALID:
-    strRes = "";
-    break;
   case PAL_4x3:
     strRes = "\\PAL";
     break;
@@ -245,6 +242,10 @@ CStdString CSkinInfo::GetDirFromRes(RESOLUTION res)
     break;
   case HDTV_1080i:
     strRes = "\\1080i";
+    break;
+  case INVALID:
+  default:
+    strRes = "";
     break;
   }
   return _P(strRes);

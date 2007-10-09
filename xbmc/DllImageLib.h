@@ -69,6 +69,7 @@ struct ImageInfo
 class DllImageLibInterface
 {
 public:
+    virtual ~DllImageLibInterface() {}
     virtual bool ReleaseImage(ImageInfo *)=0;
     virtual bool LoadImage(const char *, unsigned int, unsigned int, ImageInfo *)=0;
     virtual bool CreateThumbnail(const char *, const char *, int, int, bool)=0;
