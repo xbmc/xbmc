@@ -198,7 +198,7 @@ bool CGUIPanelContainer::OnMessage(CGUIMessage& message)
       // Check that m_offset is valid
       ValidateOffset();
       // only select an item if it's in a valid range
-      if (message.GetParam1() >= 0 && message.GetParam1() < (int)m_items.size())
+      if (message.GetParam1() >= 0 && message.GetParam1() < m_items.size())
       {
         // Select the item requested
         int item = message.GetParam1();
