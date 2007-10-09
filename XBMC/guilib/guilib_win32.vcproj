@@ -603,6 +603,12 @@
 			<File
 				RelativePath=".\common\DirectInputMouse.h">
 			</File>
+			<File
+				RelativePath=".\common\Mouse.cpp">
+			</File>
+			<File
+				RelativePath=".\common\Mouse.h">
+			</File>
 		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt">
