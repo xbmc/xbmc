@@ -2701,7 +2701,7 @@
 			<textureslidernibfocus>-</textureslidernibfocus>
 			<onleft>50</onleft>
 			<onright>9000</onright>
-			<showonepage>false</showonepage>
+			<showonepage>true</showonepage>
 			<orientation>vertical</orientation>
 			<visible>!Skin.HasSetting(UseScrollbars) + Control.IsVisible(50)</visible>
 			<visible>!container.content(musicvideos)</visible>
@@ -2716,7 +2716,7 @@
 			<onright>9000</onright>
 			<ondown>61</ondown>
 			<onup>50</onup>
-			<showonepage>false</showonepage>
+			<showonepage>true</showonepage>
 			<visible>Skin.HasSetting(UseScrollbars) + Control.IsVisible(50)</visible>
 			<visible>!container.content(musicvideos)</visible>
 		</control>
