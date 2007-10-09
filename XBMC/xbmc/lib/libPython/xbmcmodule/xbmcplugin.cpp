@@ -76,10 +76,11 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(endOfDirectory__doc__,
-    "endOfDirectory(handle[, succeeded]) -- Callback function to tell XBMC that the end of the directory listing in a virtualPythonFolder module is reached.\n"
+    "endOfDirectory(handle[, succeeded, updateListing]) -- Callback function to tell XBMC that the end of the directory listing in a virtualPythonFolder module is reached.\n"
     "\n"
-    "handle      : Integer - handle the plugin was started with.\n"
-    "succeeded   : [opt] bool - True=script completed successfully(Default)/False=Script did not.\n"
+    "handle           : Integer - handle the plugin was started with.\n"
+    "succeeded        : [opt] bool - True=script completed successfully(Default)/False=Script did not.\n"
+    "updateListing    : [opt] bool - True=this folder should update the current listing/False=Folder is a subfolder(Default).\n"
     "\n"
     "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
     "       Once you use a keyword, all following arguments require the keyword.\n"
@@ -89,24 +90,26 @@ namespace PYXBMC
 
   PyObject* XBMCPLUGIN_EndOfDirectory(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {
-    static char *keywords[] = { "handle", "succeeded", NULL };
+    static char *keywords[] = { "handle", "succeeded", "updateListing", NULL };
     int handle = -1;
     bool bSucceeded = true;
+    bool bUpdateListing = false;
     // parse arguments to constructor
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "i|b",
+      "i|bb",
       keywords,
       &handle,
-      &bSucceeded
+      &bSucceeded,
+      &bUpdateListing
       ))
     {
       return NULL;
     };
 
     // tell the directory class that we're done
-    DIRECTORY::CPluginDirectory::EndOfDirectory(handle, bSucceeded);
+    DIRECTORY::CPluginDirectory::EndOfDirectory(handle, bSucceeded, bUpdateListing);
 
     Py_INCREF(Py_None);
     return Py_None;

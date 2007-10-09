@@ -442,6 +442,10 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
     // took over a second, and not normally cached, so cache it
     if (time + 1000 < timeGetTime() && !items.GetCacheToDisc())
       items.Save();
+
+    // if these items should replace the current listing, then pop it off the top
+    if (items.GetReplaceListing())
+      m_history.RemoveParentPath();
   }
   return true;
 }
