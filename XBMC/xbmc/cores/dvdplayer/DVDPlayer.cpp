@@ -649,6 +649,20 @@ void CDVDPlayer::CheckContinuity(CDVDDemux::DemuxPacket* pPacket, unsigned int s
   }
 
 }
+void CDVDPlayer::SyncronizeDemuxer(DWORD timeout)
+{
+  if(CThread::ThreadId() == GetCurrentThreadId())
+    return;
+  if(!m_messenger.IsInited())
+    return;
+
+  CDVDMsgGeneralSynchronize* message = new CDVDMsgGeneralSynchronize(timeout, 0);
+  message->Acquire();  
+  m_messenger.Put(message);
+  message->Wait(&m_bStop, 0);
+  message->Release();
+}
+
 void CDVDPlayer::SyncronizePlayers(DWORD sources)
 {
 
@@ -908,6 +922,7 @@ void CDVDPlayer::HandleMessages()
 void CDVDPlayer::SetPlaySpeed(int speed)
 {
   m_messenger.Put(new CDVDMsgInt(CDVDMsg::PLAYER_SETSPEED, speed));
+  SyncronizeDemuxer(100);
 }
 
 void CDVDPlayer::Pause()
@@ -1261,6 +1276,7 @@ void CDVDPlayer::GetAudioStreamName(int iStream, CStdString& strStreamName)
 void CDVDPlayer::SetAudioStream(int iStream)
 {
   m_messenger.Put(new CDVDMsgPlayerSetAudioStream(iStream));
+  SyncronizeDemuxer(100);
 }
 
 void CDVDPlayer::SeekTime(__int64 iTime)
@@ -1268,6 +1284,7 @@ void CDVDPlayer::SeekTime(__int64 iTime)
   if(iTime<0) 
     iTime = 0;
   m_messenger.Put(new CDVDMsgPlayerSeek((int)iTime, false));
+  SyncronizeDemuxer(100);
 }
 
 // return the time in milliseconds
@@ -1694,12 +1711,10 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
         m_messenger.Put(new CDVDMsgDemuxerReset());
 
         //Force an aspect ratio that is set in the dvdheaders if available
-        CDVDMsgVideoSetAspect *aspect = new CDVDMsgVideoSetAspect(pStream->GetVideoAspectRatio());
-        if( m_dvdPlayerVideo.m_messageQueue.Put(aspect) != MSGQ_OK )
-        {
-          aspect->Release();
+        if( m_dvdPlayerAudio.m_messageQueue.IsInited() )
+          m_dvdPlayerVideo.SendMessage(new CDVDMsgVideoSetAspect(pStream->GetVideoAspectRatio()));
+        else
           m_dvdPlayerVideo.SetAspectRatio(pStream->GetVideoAspectRatio());
-        }
 
         return NAVRESULT_HOLD;
       }
