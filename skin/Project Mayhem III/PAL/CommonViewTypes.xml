@@ -831,11 +831,61 @@
 			<textureslidernib>-</textureslidernib>
 			<textureslidernibfocus>-</textureslidernibfocus>
 			<onleft>50</onleft>
-			<onright>9000</onright>
+			<onright>611</onright>
 			<showonepage>false</showonepage>
 			<orientation>vertical</orientation>
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(51)</visible>
+		</control>
+		<control type="textbox" id="511">
+			<posx>200</posx>
+			<posy>373</posy>
+			<width>450</width>
+			<height>130</height>
+			<font>font13</font>
+			<pagecontrol>611</pagecontrol>
+			<label>$INFO[ListItem.Plot]</label>
+			<include>contentpanelslide</include>
+			<visible>Control.IsVisible(51) + !IsEmpty(ListItem.Plot)</visible>
+		</control>
+		<control type="button">
+			<posx>660</posx>
+			<posy>373</posy>
+			<include>scrollbar_width</include>
+			<height>20</height>
+			<onclick>PageUp(611)</onclick>
+			<texturefocus border="4">scrollbar_arrow_up_focus.png</texturefocus>
+			<texturenofocus border="4">scrollbar_arrow_up.png</texturenofocus>
+			<include>contentpanelslide</include>
+			<visible>Control.IsVisible(611)</visible>
+		</control>
+		<control type="button">
+			<posx>660</posx>
+			<posy>483</posy>
+			<include>scrollbar_width</include>
+			<height>20</height>
+			<onclick>PageDown(611)</onclick>
+			<texturefocus border="4">scrollbar_arrow_down_focus.png</texturefocus>
+			<texturenofocus border="4">scrollbar_arrow_down.png</texturenofocus>
+			<include>contentpanelslide</include>
+			<visible>Control.IsVisible(611)</visible>
+		</control>
+		<control type="scrollbar" id="611">
+			<posx>660</posx>
+			<posy>393</posy>
+			<include>scrollbar_width</include>
+			<height>90</height>
+			<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
+			<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
+			<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
+			<textureslidernib>-</textureslidernib>
+			<textureslidernibfocus>-</textureslidernibfocus>
+			<onleft>61</onleft>
+			<onright>9000</onright>
+			<showonepage>false</showonepage>
+			<orientation>vertical</orientation>
+			<include>contentpanelslide</include>
+			<visible>Control.IsVisible(511)</visible>
 		</control>
 	</include>
 	<include name="VideoViewCommons_BigList">

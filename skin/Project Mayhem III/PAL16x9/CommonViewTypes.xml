@@ -820,65 +820,12 @@
 			<textureslidernib>-</textureslidernib>
 			<textureslidernibfocus>-</textureslidernibfocus>
 			<onleft>50</onleft>
-			<onright>610</onright>
+			<onright>611</onright>
 			<showonepage>false</showonepage>
 			<orientation>vertical</orientation>
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(51)</visible>
 		</control>
-
-        <!-- nuka1195 changes start here -->
-		<control type="textbox" id="510">
-			<posx>200</posx>
-			<posy>373</posy>
-			<width>320</width>
-			<height>130</height>
-			<font>font13</font>
-			<pagecontrol>610</pagecontrol>
-			<label>$INFO[ListItem.Plot]</label>
-			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(51) + !IsEmpty(ListItem.Plot) + !IsEmpty(ListItem.Cast)</visible>
-		</control>
-		<control type="button">
-			<posx>535</posx>
-			<posy>373</posy>
-			<include>scrollbar_width</include>
-			<height>20</height>
-			<onclick>PageUp(610)</onclick>
-			<texturefocus border="4">scrollbar_arrow_up_focus.png</texturefocus>
-			<texturenofocus border="4">scrollbar_arrow_up.png</texturenofocus>
-			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(610)</visible>
-		</control>
-		<control type="button">
-			<posx>535</posx>
-			<posy>483</posy>
-			<include>scrollbar_width</include>
-			<height>20</height>
-			<onclick>PageDown(610)</onclick>
-			<texturefocus border="4">scrollbar_arrow_down_focus.png</texturefocus>
-			<texturenofocus border="4">scrollbar_arrow_down.png</texturenofocus>
-			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(610)</visible>
-		</control>
-		<control type="scrollbar" id="610">
-			<posx>535</posx>
-			<posy>393</posy>
-			<include>scrollbar_width</include>
-			<height>90</height>
-			<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
-			<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
-			<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
-			<textureslidernib>-</textureslidernib>
-			<textureslidernibfocus>-</textureslidernibfocus>
-			<onleft>61</onleft>
-			<onright>611</onright>
-			<showonepage>true</showonepage>
-			<orientation>vertical</orientation>
-			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(510)</visible>
-		</control>
-
 		<control type="textbox" id="511">
 			<posx>200</posx>
 			<posy>373</posy>
@@ -888,10 +835,10 @@
 			<pagecontrol>611</pagecontrol>
 			<label>$INFO[ListItem.Plot]</label>
 			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(51) + !IsEmpty(ListItem.Plot) + IsEmpty(ListItem.Cast)</visible>
+			<visible>Control.IsVisible(51) + !IsEmpty(ListItem.Plot)</visible>
 		</control>
 		<control type="button">
-			<posx>670</posx>
+			<posx>660</posx>
 			<posy>373</posy>
 			<include>scrollbar_width</include>
 			<height>20</height>
@@ -902,7 +849,7 @@
 			<visible>Control.IsVisible(611)</visible>
 		</control>
 		<control type="button">
-			<posx>670</posx>
+			<posx>660</posx>
 			<posy>483</posy>
 			<include>scrollbar_width</include>
 			<height>20</height>
@@ -913,7 +860,7 @@
 			<visible>Control.IsVisible(611)</visible>
 		</control>
 		<control type="scrollbar" id="611">
-			<posx>670</posx>
+			<posx>660</posx>
 			<posy>393</posy>
 			<include>scrollbar_width</include>
 			<height>90</height>
@@ -922,71 +869,13 @@
 			<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
 			<textureslidernib>-</textureslidernib>
 			<textureslidernibfocus>-</textureslidernibfocus>
-			<onleft>610</onleft>
-			<onright>620</onright>
+			<onleft>61</onleft>
+			<onright>9000</onright>
 			<showonepage>false</showonepage>
 			<orientation>vertical</orientation>
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(511)</visible>
 		</control>
-
-		<control type="textbox" id="520">
-			<posx>560</posx>
-			<posy>373</posy>
-			<width>100</width>
-			<height>130</height>
-			<font>font13</font>
-			<pagecontrol>620</pagecontrol>
-			<label>$INFO[ListItem.Cast]</label>
-			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(51) + !IsEmpty(ListItem.Cast)</visible>
-		</control>
-		<control type="button">
-			<posx>670</posx>
-			<posy>373</posy>
-			<include>scrollbar_width</include>
-			<height>20</height>
-			<onclick>PageUp(620)</onclick>
-			<texturefocus border="4">scrollbar_arrow_up_focus.png</texturefocus>
-			<texturenofocus border="4">scrollbar_arrow_up.png</texturenofocus>
-			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(620)</visible>
-		</control>
-		<control type="button">
-			<posx>670</posx>
-			<posy>483</posy>
-			<include>scrollbar_width</include>
-			<height>20</height>
-			<onclick>PageDown(620)</onclick>
-			<texturefocus border="4">scrollbar_arrow_down_focus.png</texturefocus>
-			<texturenofocus border="4">scrollbar_arrow_down.png</texturenofocus>
-			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(620)</visible>
-		</control>
-		<control type="scrollbar" id="620">
-			<posx>670</posx>
-			<posy>393</posy>
-			<include>scrollbar_width</include>
-			<height>90</height>
-			<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
-			<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
-			<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
-			<textureslidernib>-</textureslidernib>
-			<textureslidernibfocus>-</textureslidernibfocus>
-			<onleft>611</onleft>
-			<onright>9000</onright>
-			<showonepage>false</showonepage>
-			<orientation>vertical</orientation>
-			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(520)</visible>
-		</control>
-        <!-- nuka1195 changes end here -->
-        
-        
-        
-        
-        
-        
 	</include>
 	<include name="VideoViewCommons_BigList">
 		<control type="list" id="59">
