@@ -72,7 +72,6 @@ void CGUIFontBase::DrawTextWidthInternal(FLOAT fOriginX, FLOAT fOriginY, DWORD d
 void CGUIFontBase::DrawColourTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette, int numColors, DWORD dwShadowColor,
                                    const WCHAR* strText, BYTE* pbColours, float fMaxWidth)
 {
-  float nh = 0.0f;
   int nStringLength = wcslen(strText);
   WCHAR *pszBuffer = new WCHAR[nStringLength + 1];
 

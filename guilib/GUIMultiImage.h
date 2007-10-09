@@ -40,7 +40,7 @@ protected:
   void LoadImage(int image);
   CStdString m_texturePath;
   CStdString m_currentPath;
-  int m_currentImage;
+  unsigned int m_currentImage;
   CStopWatch m_imageTimer;
   CStopWatch m_fadeTimer;
   DWORD m_timePerImage;

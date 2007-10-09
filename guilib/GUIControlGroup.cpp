@@ -346,7 +346,7 @@ const CGUIControl* CGUIControlGroup::GetControl(int iControl) const
       const CGUIControl *control = group->GetControl(iControl);
       if (control) pControl = control;
     }
-    if (pControl->GetID() == iControl) 
+    if ((int) pControl->GetID() == iControl) 
     {
       if (pControl->IsVisible())
         return pControl;
@@ -387,7 +387,7 @@ CGUIControl *CGUIControlGroup::GetFocusedControl() const
 CGUIControl *CGUIControlGroup::GetFirstFocusableControl(int id)
 {
   if (!CanFocus()) return NULL;
-  if (id && id == GetID()) return this; // we're focusable and they want us
+  if (id && id == (int) GetID()) return this; // we're focusable and they want us
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl* pControl = *it;
@@ -397,7 +397,7 @@ CGUIControl *CGUIControlGroup::GetFirstFocusableControl(int id)
       CGUIControl *control = group->GetFirstFocusableControl(id);
       if (control) return control;
     }
-    if ((!id || pControl->GetID() == id) && pControl->CanFocus())
+    if ((!id || (int) pControl->GetID() == id) && pControl->CanFocus())
       return pControl;
   }
   return NULL;
@@ -430,7 +430,7 @@ bool CGUIControlGroup::RemoveControl(int id)
       if (group->RemoveControl(id))
         return true;
     }
-    if (control->GetID() == id)
+    if ((int) control->GetID() == id)
     {
       m_children.erase(it);
       return true;
@@ -463,7 +463,7 @@ void CGUIControlGroup::GetContainers(vector<CGUIControl *> &containers) const
 #ifdef _DEBUG
 void CGUIControlGroup::DumpTextureUse()
 {
-  CLog::Log(LOGDEBUG, "%s for controlgroup %i", __FUNCTION__, GetID());
+  CLog::Log(LOGDEBUG, "%s for controlgroup %lu", __FUNCTION__, GetID());
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     (*it)->DumpTextureUse();

@@ -29,7 +29,7 @@
 #else
 #if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)
   #pragma comment (lib,"../../guilib/freetype2/freetype221_D.lib")
-#else
+#elif !defined(__GNUC__)
   #pragma comment (lib,"../../guilib/freetype2/freetype221.lib")
 #endif
 #endif
