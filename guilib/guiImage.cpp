@@ -641,6 +641,7 @@ void CGUIImage::LoadDiffuseImage()
   {
     int width, height;
     bool linearTexture;
+    g_TextureManager.Load(m_image.diffuse, 0);
     m_diffuseTexture = g_TextureManager.GetTexture(m_image.diffuse, 0, width, height, m_diffusePalette, linearTexture);
 
     if (m_diffuseTexture)

@@ -280,7 +280,7 @@ CStdString CGUILabelControl::ShortenPath(const CStdString &path)
 
   float fTextHeight, fTextWidth;
   WCHAR cDelim = L'\0';
-  unsigned int nGreaterDelim, nPos;
+  int nGreaterDelim, nPos;
 
   nPos = utf16Path.find_last_of( L'\\' );
   if ( nPos >= 0 )
@@ -297,7 +297,7 @@ CStdString CGUILabelControl::ShortenPath(const CStdString &path)
   // remove trailing slashes
   if (utf16Path.size() > 3)
     if (utf16Path.Right(3).Compare(CStdStringW("://")) != 0 && utf16Path.Right(2).Compare(CStdStringW(":\\")) != 0)
-      if (nPos == utf16Path.size() - 1)
+      if (nPos == (int) utf16Path.size() - 1)
       {
         utf16Path.erase(utf16Path.size() - 1);
         nPos = utf16Path.find_last_of( cDelim );
