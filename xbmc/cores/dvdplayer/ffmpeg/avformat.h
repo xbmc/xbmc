@@ -358,7 +358,7 @@ typedef struct AVProgram {
 #define AVFMTCTX_NOHEADER      0x0001 /**< signal that no header is present
                                          (streams are added dynamically) */
 
-#ifdef _XBOX
+#if 1
 /* dvd's can have maximally 41 streams */
 #define MAX_STREAMS 42
 #else
