@@ -259,7 +259,7 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
       // if control is disabled then move 2 the next control
       if ( !CanFocus() )
       {
-        CLog::Log(LOGERROR, "Control %d in window %d has been asked to focus, but it can't", GetID(), GetParentID());
+        CLog::Log(LOGERROR, "Control %lu in window %lu has been asked to focus, but it can't", GetID(), GetParentID());
         return false;
       }
       SetFocus(true);
@@ -566,7 +566,6 @@ CAnimation *CGUIControl::GetAnimation(ANIMATION_TYPE type, bool checkConditions 
 
 void CGUIControl::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState)
 {
-  GUIVISIBLE visible = m_visible;
   // Make sure control is hidden or visible at the appropriate times
   // while processing a visible or hidden animation it needs to be visible,
   // but when finished a hidden operation it needs to be hidden

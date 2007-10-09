@@ -117,7 +117,7 @@ class CSetting
 {
 public:
   CSetting(int iOrder, const char *strSetting, int iLabel, int iControlType) { m_iOrder = iOrder; m_strSetting = strSetting; m_iLabel = iLabel; m_iControlType = iControlType; m_advanced = false; };
-  ~CSetting() {};
+  virtual ~CSetting() {};
   virtual int GetType() { return 0; };
   int GetControlType() { return m_iControlType; };
   virtual void FromString(const CStdString &strValue) {};
@@ -139,7 +139,7 @@ class CSettingBool : public CSetting
 {
 public:
   CSettingBool(int iOrder, const char *strSetting, int iLabel, bool bData, int iControlType): CSetting(iOrder, strSetting, iLabel, iControlType) { m_bData = bData; };
-  ~CSettingBool() {};
+  virtual ~CSettingBool() {};
 
   virtual int GetType() { return SETTINGS_TYPE_BOOL; };
   virtual void FromString(const CStdString &strValue);
@@ -156,7 +156,7 @@ class CSettingFloat : public CSetting
 {
 public:
   CSettingFloat(int iOrder, const char *strSetting, int iLabel, float fData, float fMin, float fStep, float fMax, int iControlType);
-  ~CSettingFloat() {};
+  virtual ~CSettingFloat() {};
 
   virtual int GetType() { return SETTINGS_TYPE_FLOAT; };
   virtual void FromString(const CStdString &strValue);
@@ -178,7 +178,7 @@ class CSettingInt : public CSetting
 public:
   CSettingInt(int iOrder, const char *strSetting, int iLabel, int iData, int iMin, int iStep, int iMax, int iControlType, const char *strFormat);
   CSettingInt(int iOrder, const char *strSetting, int iLabel, int iData, int iMin, int iStep, int iMax, int iControlType, int iFormat, int iLabelMin);
-  ~CSettingInt() {};
+  virtual ~CSettingInt() {};
 
   virtual int GetType() { return SETTINGS_TYPE_INT; };
   virtual void FromString(const CStdString &strValue);
@@ -203,7 +203,7 @@ class CSettingHex : public CSettingInt
 public:
   CSettingHex(int iOrder, const char *strSetting, int iLabel, int iData, int iMin, int iStep, int iMax, int iControlType, const char *strFormat)
       : CSettingInt(iOrder, strSetting, iLabel, iData, iMin, iStep, iMax, iControlType, strFormat) {};
-  ~CSettingHex() {};
+  virtual ~CSettingHex() {};
   virtual void FromString(const CStdString &strValue);
   virtual CStdString ToString();
   virtual int GetType() { return SETTINGS_TYPE_HEX; };
@@ -213,7 +213,7 @@ class CSettingString : public CSetting
 {
 public:
   CSettingString(int iOrder, const char *strSetting, int iLabel, const char *strData, int iControlType, bool bAllowEmpty, int iHeadingString);
-  ~CSettingString() {};
+  virtual ~CSettingString() {};
 
   virtual int GetType() { return SETTINGS_TYPE_STRING; };
   virtual void FromString(const CStdString &strValue);
@@ -232,7 +232,7 @@ class CSettingSeparator : public CSetting
 {
 public:
   CSettingSeparator(int iOrder, const char *strSetting);
-  ~CSettingSeparator() {};
+  virtual ~CSettingSeparator() {};
 
   virtual int GetType() { return SETTINGS_TYPE_SEPARATOR; };
 };

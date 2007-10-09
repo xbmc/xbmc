@@ -19,6 +19,7 @@ class IRunnable
 {
 public:
   virtual void Run()=0;
+  virtual ~IRunnable() {}
 };
 
 #ifdef CTHREAD

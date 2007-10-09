@@ -19,6 +19,7 @@ class IEditControlObserver
 {
 public:
   virtual void OnEditTextComplete(CStdString& strLineOfText) = 0;
+  virtual ~IEditControlObserver() {}
 };
 
 class CGUIEditControl : public CGUILabelControl
