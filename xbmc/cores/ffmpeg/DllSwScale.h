@@ -14,7 +14,9 @@ extern "C" {
 #define __STDC_LIMIT_MACROS
 #endif
 
+#ifndef __GNUC__
 #pragma warning(disable:4244)
+#endif
 
 #include "avutil.h"
 #include "swscale.h"
@@ -24,6 +26,7 @@ extern "C" {
 class DllSwScaleInterface
 {
 public:
+   virtual ~DllSwScaleInterface() {}
    virtual struct SwsContext *sws_getContext(int srcW, int srcH, int srcFormat, int dstW, int dstH, int dstFormat, int flags,
                                   SwsFilter *srcFilter, SwsFilter *dstFilter, double *param)=0;
 
