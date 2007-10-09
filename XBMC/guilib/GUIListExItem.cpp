@@ -128,12 +128,7 @@ void CGUIListExItem::RenderText(float fPosX, float fPosY, float fMaxWidth, DWORD
 {
   if (!label.font)
     return ;
-  static int scroll_pos = 0;
-  static int iScrollX = 0;
-  static int iLastItem = -1;
-  static int iFrames = 0;
-  static int iStartFrame = 0;
-
+  
   float fTextHeight, fTextWidth;
   label.font->GetTextExtent( wszText, &fTextWidth, &fTextHeight);
 
