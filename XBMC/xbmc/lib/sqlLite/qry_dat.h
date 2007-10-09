@@ -165,6 +165,9 @@ public:
     case ft_Double: {
       return os << fv.get_asDouble();
       break;
+    default:
+      return os;
+      break;
     }
   }
   }
