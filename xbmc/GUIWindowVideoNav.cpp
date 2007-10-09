@@ -893,14 +893,12 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
             buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
           else
             buttons.Add(CONTEXT_BUTTON_UPDATE_TVSHOW, 13349);
-
-          buttons.Add(CONTEXT_BUTTON_EDIT, 16105);
         }
-        else if (item->HasVideoInfoTag() && !item->m_bIsFolder)
+        if (node == NODE_TYPE_TITLE_TVSHOWS || node == NODE_TYPE_SEASONS || (item->HasVideoInfoTag() && !item->m_bIsFolder))
         {
-          if (item->GetVideoInfoTag()->m_bWatched)
+          if (item->m_bIsFolder || item->GetVideoInfoTag()->m_bWatched)
             buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
-          else
+          if (item->m_bIsFolder || !item->GetVideoInfoTag()->m_bWatched)
             buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
           buttons.Add(CONTEXT_BUTTON_EDIT, 16105); //Edit Title
         }
