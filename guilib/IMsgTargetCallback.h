@@ -17,6 +17,7 @@ class IMsgTargetCallback
 {
 public:
   virtual bool OnMessage(CGUIMessage& message) = 0;
+  virtual ~IMsgTargetCallback() {}
 };
 
 #endif

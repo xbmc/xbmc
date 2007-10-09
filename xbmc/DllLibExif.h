@@ -6,6 +6,7 @@ class DllLibExifInterface
 {
 public:
     virtual bool process_jpeg(const char *, ExifInfo_t *, IPTCInfo_t *)=0;
+    virtual ~DllLibExifInterface() {}
 };
 
 class DllLibExif : public DllDynamic, DllLibExifInterface

@@ -96,9 +96,9 @@ namespace MathUtils
   {
     assert (x > static_cast <double>(INT_MIN / 2) - 1.0);
     assert (x < static_cast <double>(INT_MAX / 2) + 1.0);
+  #ifndef _LINUX
     const float round_towards_p_i = -0.5f;
     int i;
-  #ifndef _LINUX
     __asm
     {
       fld x
@@ -117,9 +117,9 @@ namespace MathUtils
   {
     assert (x > static_cast <double>(INT_MIN / 2) - 1.0);
     assert (x < static_cast <double>(INT_MAX / 2) + 1.0);
+  #ifndef _LINUX
     const float round_towards_m_i = -0.5f;
     int i;
-  #ifndef _LINUX
     __asm
     {
       fld x
@@ -301,5 +301,5 @@ private:
   static HANDLE m_hCurrentCpuUsage;
 };
 
-static int iAdditionalChecked = -1;
+//static int iAdditionalChecked = -1;
 

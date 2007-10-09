@@ -538,7 +538,7 @@ bool CGUIBaseContainer::InsideLayout(const CGUIListItemLayout &layout, const CPo
 #ifdef _DEBUG
 void CGUIBaseContainer::DumpTextureUse()
 {
-  CLog::Log(LOGDEBUG, "%s for container %i", __FUNCTION__, GetID());
+  CLog::Log(LOGDEBUG, "%s for container %ul", __FUNCTION__, (int) GetID());
   for (unsigned int i = 0; i < m_items.size(); ++i)
   {
     CGUIListItem *item = m_items[i];

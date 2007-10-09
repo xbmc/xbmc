@@ -417,7 +417,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   // resolve again with strType set so that <default> tags are added
   g_SkinInfo.ResolveIncludes(pControlNode, strType);
 
-  int id = 0;
+  DWORD id = 0;
   float posX = 0, posY = 0;
   float width = 0, height = 0;
 
@@ -470,6 +470,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   float sliderWidth = 150, sliderHeight = 16;
   float textureWidthBig = 128;
   float textureHeightBig = 128;
+#ifdef HAS_KAI
+  DWORD dwBuddyControlID = 0;
+#endif
   float textureHeight = 30;
   float textureWidth = 80;
   float itemWidthBig = 150;
@@ -495,7 +498,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   float thumbYPosBig = 14;
   float thumbWidthBig = 100;
   float thumbHeightBig = 100;
-  DWORD dwBuddyControlID = 0;
   int iNumSlots = 7;
   float buttonGap = 5;
   int iDefaultSlot = 2;
@@ -559,7 +561,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   // check if we are a <controlgroup>
   if (strcmpi(pControlNode->Value(), "controlgroup") == 0)
   {
-    if (pControlNode->Attribute("id", &id))
+    if (pControlNode->Attribute("id", (int*) &id))
       id += 9000;       // offset at 9000 for old controlgroups
                         // NOTE: An old control group with no id means that it can't be focused
                         //       Which isn't too good :(
@@ -567,8 +569,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   }
   else
 #endif
-  if (!pControlNode->Attribute("id", &id))
-    XMLUtils::GetInt(pControlNode, "id", id);       // backward compatibility - not desired
+  if (!pControlNode->Attribute("id", (int*) &id))
+    XMLUtils::GetInt(pControlNode, "id", (int&) id);       // backward compatibility - not desired
   // TODO: Perhaps we should check here whether id is valid for focusable controls
   // such as buttons etc.  For labels/fadelabels/images it does not matter
 
