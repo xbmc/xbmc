@@ -158,6 +158,7 @@ private:
   bool IsInMenu() const;
 
   void SyncronizePlayers(DWORD sources);
+  void SyncronizeDemuxer(DWORD timeout);
   void CheckContinuity(CDVDDemux::DemuxPacket* pPacket, unsigned int source);
 
   bool m_bDontSkipNextFrame;
