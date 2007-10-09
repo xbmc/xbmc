@@ -17,6 +17,7 @@ namespace VIDEO
   class IVideoInfoScannerObserver
   {
   public:
+    virtual ~IVideoInfoScannerObserver() { }
     virtual void OnStateChanged(SCAN_STATE state) = 0;
     virtual void OnDirectoryChanged(const CStdString& strDirectory) = 0;
     virtual void OnDirectoryScanned(const CStdString& strDirectory) = 0;
