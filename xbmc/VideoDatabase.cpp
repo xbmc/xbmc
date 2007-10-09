@@ -3710,7 +3710,7 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
           if (CFile::Exists(pItem->GetCachedArtistThumb()))
             pItem->SetThumbnailImage(pItem->GetCachedArtistThumb());
           else
-            pItem->SetThumbnailImage("");
+            pItem->SetThumbnailImage("DefaultArtistBig.png");
         }
         pItem->GetVideoInfoTag()->m_strPictureURL.ParseString(m_pDS->fv("actors.strThumb").get_asString());
         items.Add(pItem);
@@ -3735,7 +3735,7 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
           if (CFile::Exists(pItem->GetCachedArtistThumb()))
             pItem->SetThumbnailImage(pItem->GetCachedArtistThumb());
           else
-            pItem->SetThumbnailImage("");
+            pItem->SetThumbnailImage("DefaultArtistBig.png");
         }
         pItem->GetVideoInfoTag()->m_strPictureURL.ParseString(m_pDS->fv("actors.strThumb").get_asString());
         items.Add(pItem);

@@ -1643,6 +1643,7 @@
   <string id="20401">Play Music Video</string>
   <string id="20402">Automatically grab actor thumbs</string>
   <string id="20403">Set Actor Thumb</string>
+  <string id="20404">Studio:</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
