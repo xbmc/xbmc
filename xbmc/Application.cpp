@@ -803,7 +803,7 @@ HRESULT CApplication::Create(HWND hWnd)
 #endif
 
   // Create the Mouse and Keyboard devices
-  g_Mouse.Initialize(hWnd);
+  g_Mouse.Initialize(&hWnd);
   g_Keyboard.Initialize(hWnd);
 
 #ifdef HAS_XBOX_HARDWARE
@@ -3053,8 +3053,7 @@ bool CApplication::ProcessHTTPApiButtons()
       {
         CAction action;
         action.wID = ACTION_MOUSE;
-        g_Mouse.posX = keyHttp.GetLeftThumbX();
-        g_Mouse.posY = keyHttp.GetLeftThumbY();
+        g_Mouse.SetLocation(CPoint(keyHttp.GetLeftThumbX(), keyHttp.GetLeftThumbY()));
         if (keyHttp.GetLeftTrigger()!=0)
           g_Mouse.bClick[keyHttp.GetLeftTrigger()-1]=true;
         if (keyHttp.GetRightTrigger()!=0)
