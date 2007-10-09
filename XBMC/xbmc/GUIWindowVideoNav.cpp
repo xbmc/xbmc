@@ -1121,7 +1121,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       }
 
       CFileItem *item = new CFileItem("thumb://None", false);
-      item->SetThumbnailImage("defaultFolderBig.png");
+      item->SetThumbnailImage("DefaultActorBig.png");
       item->SetLabel(g_localizeStrings.Get(20018));
       items.Add(item);
 
