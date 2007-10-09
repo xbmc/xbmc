@@ -386,6 +386,8 @@ public:
   void AddSortMethod(SORT_METHOD method, int buttonLabel, const LABEL_MASKS &labelMasks);
   bool HasSortDetails() const { return m_sortDetails.size() != 0; };
   const vector<SORT_METHOD_DETAILS> &GetSortDetails() const { return m_sortDetails; };
+  bool GetReplaceListing() const { return m_replaceListing; };
+  void SetReplaceListing(bool replace);
 
 private:
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
@@ -397,6 +399,7 @@ private:
   SORT_METHOD m_sortMethod;
   SORT_ORDER m_sortOrder;
   bool m_bCacheToDisc;
+  bool m_replaceListing;
 
   vector<SORT_METHOD_DETAILS> m_sortDetails;
 };
