@@ -1780,9 +1780,12 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
   }
   else if (info.m_info == PLAYER_SEEKTIME)
   {
+    TIME_FORMAT format = (TIME_FORMAT)info.m_data1;
+    if (format == TIME_FORMAT_GUESS && GetTotalPlayTime() >= 3600)
+      format = TIME_FORMAT_HH_MM_SS;
     CGUIDialogSeekBar *seekBar = (CGUIDialogSeekBar*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
     if (seekBar)
-      return seekBar->GetSeekTimeLabel((TIME_FORMAT)info.m_data1);
+      return seekBar->GetSeekTimeLabel(format);
   }
   else if (info.m_info == SYSTEM_TIME)
   {
