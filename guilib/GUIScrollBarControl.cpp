@@ -266,7 +266,7 @@ bool CGUIScrollBar::OnMouseDrag(const CPoint &offset, const CPoint &point)
 
 bool CGUIScrollBar::OnMouseWheel(char wheel, const CPoint &point)
 {
-  Move(wheel);
+  Move(-wheel);
   return true;
 }
 

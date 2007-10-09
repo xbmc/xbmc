@@ -14,11 +14,10 @@
 #include "XBInputEx.h"
 #endif
 #include "IWindowManagerCallback.h"
+#include "common/Mouse.h"
 #ifdef _XBOX
-#include "common/XBoxMouse.h"
 #include "common/XBoxKeyboard.h"
 #else
-#include "common/DirectInputMouse.h"
 #include "common/DirectInputKeyboard.h"
 #endif
 //-----------------------------------------------------------------------------
