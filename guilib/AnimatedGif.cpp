@@ -366,6 +366,7 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
               fread((char*)&tag, 1, sizeof(gifnetscape), fd);
               nLoops = tag.iIterations;
               if (nLoops) nLoops++;
+              getbyte(fd);
             }
             else
             {
