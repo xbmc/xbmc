@@ -27,6 +27,8 @@ private:
 class CNetworkInterface
 {
 public:
+   virtual ~CNetworkInterface() {};
+
    virtual CStdString& GetName(void) = 0;
    
    virtual bool IsEnabled(void) = 0;
@@ -54,7 +56,7 @@ public:
   };
 
    CNetwork();
-   ~CNetwork();
+   virtual ~CNetwork();
 
    // Return the list of interfaces
    virtual std::vector<CNetworkInterface*>& GetInterfaceList(void) = 0;

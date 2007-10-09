@@ -47,14 +47,14 @@ void CAudioBuffer::Set(const unsigned char* psBuffer, int iSize, int iBitsPerSam
   if (iBitsPerSample == 16)
   {
     iSize /= 2;
-    for (int i = 0; i < iSize, i < m_iLen; i++)
+    for (int i = 0; i < iSize && i < m_iLen; i++)
     { // 16 bit -> convert to short directly
       m_pBuffer[i] = ((short *)psBuffer)[i];
     }
   }
   else if (iBitsPerSample == 8)
   {
-    for (int i = 0; i < iSize, i < m_iLen; i++)
+    for (int i = 0; i < iSize && i < m_iLen; i++)
     { // 8 bit -> convert to signed short by multiplying by 256
       m_pBuffer[i] = ((short)((char *)psBuffer)[i]) << 8;
     }
@@ -62,7 +62,7 @@ void CAudioBuffer::Set(const unsigned char* psBuffer, int iSize, int iBitsPerSam
   else // assume 24 bit data
   {
     iSize /= 3;
-    for (int i = 0; i < iSize, i < m_iLen; i++)
+    for (int i = 0; i < iSize && i < m_iLen; i++)
     { // 24 bit -> ignore least significant byte and convert to signed short
       m_pBuffer[i] = (((int)psBuffer[3 * i + 1]) << 0) + (((int)((char *)psBuffer)[3 * i + 2]) << 8);
     }

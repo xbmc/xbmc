@@ -38,7 +38,7 @@ class CNetworkLinux : public CNetwork
 {
 public:   
    CNetworkLinux(void);
-   ~CNetworkLinux(void);
+   virtual ~CNetworkLinux(void);
    
    // Return the list of interfaces
    virtual std::vector<CNetworkInterface*>& GetInterfaceList(void);

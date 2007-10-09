@@ -348,7 +348,7 @@ bool CGUITextBox::OnMouseWheel(char wheel, const CPoint &point)
   { // increase or decrease our offset by the appropriate amount.
     m_offset -= wheel;
     // check that we are within the correct bounds.
-    if (m_offset + m_itemsPerPage > (int)m_lines.size())
+    if (m_offset + m_itemsPerPage > m_lines.size())
       m_offset = (m_lines.size() >= m_itemsPerPage) ? m_lines.size() - m_itemsPerPage : 0;
     // update the page control...
     int iPage = m_offset / m_itemsPerPage + 1;
