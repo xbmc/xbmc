@@ -19,11 +19,7 @@
 class IMsgSenderCallback;
 class CGUIMessage;
 
-#ifdef _XBOX
-#include "common/XBoxMouse.h"
-#else
-#include "common/DirectInputMouse.h"
-#endif
+#include "common/Mouse.h"
 
 /*!
  \ingroup graphics
