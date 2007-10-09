@@ -446,7 +446,7 @@ bool CTextureBundle::PreloadFile(const CStdString& Filename)
 #else
       struct sysinfo info;
       sysinfo(&info);
-      CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %d bytes, have %d bytes)", name.c_str(), ReadSize, info.totalram);             
+      CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %lu bytes, have %lu bytes)", name.c_str(), ReadSize, info.totalram);             
 #endif
     }
   }
@@ -483,7 +483,7 @@ HRESULT CTextureBundle::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
 #else
     struct sysinfo info;
     sysinfo(&info);
-    CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %d bytes, have %d bytes)", name.c_str(),
+    CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %lu bytes, have %lu bytes)", name.c_str(),
               m_CurFileHeader[m_LoadIdx]->second.UnpackedSize, info.totalram);
 #endif
     return E_OUTOFMEMORY;
