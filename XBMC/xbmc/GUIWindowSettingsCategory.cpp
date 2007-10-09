@@ -2639,6 +2639,21 @@ void CGUIWindowSettingsCategory::FillInResolutions(CSetting *pSetting, bool play
       else  // "Auto"
         pControl->AddLabel(g_localizeStrings.Get(14061), res);
     }
+#ifdef HAS_SDL
+    else if (res == CUSTOM)
+    {
+      for (int i = 0 ; i<g_videoConfig.GetNumberOfResolutions() ; i++)
+      {
+        RESOLUTION_INFO info;
+        g_videoConfig.GetResolutionInfo(i, info);
+        pControl->AddLabel(info.strMode, res+i);
+      }
+    }
+    else if (res == DESKTOP)
+    {
+      pControl->AddLabel(g_settings.m_ResInfo[DESKTOP].strMode, res);
+    }
+#endif
     else
     {
       pControl->AddLabel(g_settings.m_ResInfo[res].strMode, res);

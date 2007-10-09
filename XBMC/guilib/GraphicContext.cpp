@@ -458,6 +458,13 @@ void CGraphicContext::GetAllowedResolutions(vector<RESOLUTION> &res, bool bAllow
     if (g_videoConfig.Has1080i())
       res.push_back(HDTV_1080i);
   }
+#ifdef HAS_SDL
+  if (g_videoConfig.GetNumberOfResolutions())
+  {
+    res.push_back(CUSTOM);
+  }
+  res.push_back(DESKTOP);
+#endif
 }
 
 #ifndef HAS_SDL
@@ -708,6 +715,14 @@ void CGraphicContext::SetScreenFilters(bool useFullScreenFilters)
 #endif
 }
 
+void CGraphicContext::ResetOverscan(RESOLUTION_INFO &res)
+{
+  res.Overscan.left = 0;
+  res.Overscan.top = 0;
+  res.Overscan.right = res.iWidth;
+  res.Overscan.bottom = res.iHeight;
+}
+
 void CGraphicContext::ResetOverscan(RESOLUTION res, OVERSCAN &overscan)
 {
   overscan.left = 0;
@@ -818,6 +833,13 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_INTERLACED | D3DPRESENTFLAG_WIDESCREEN;
     strcpy(g_settings.m_ResInfo[res].strMode, "PAL60 16:9");
     break;
+  case DESKTOP:
+    g_videoConfig.GetDesktopResolution(g_settings.m_ResInfo[res].iWidth,
+                                       g_settings.m_ResInfo[res].iHeight);
+    g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * g_settings.m_ResInfo[res].iHeight);
+    snprintf(g_settings.m_ResInfo[res].strMode, sizeof(g_settings.m_ResInfo[res].strMode), 
+             "%dx%d (Desktop)", g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight);
+    break;
   default:
     break;
   }
@@ -829,6 +851,9 @@ float CGraphicContext::GetPixelRatio(RESOLUTION iRes) const
   if (iRes == HDTV_480p_4x3 || iRes == NTSC_4x3 || iRes == PAL60_4x3) return 4320.0f / 4739.0f;
   if (iRes == HDTV_480p_16x9 || iRes == NTSC_16x9 || iRes == PAL60_16x9) return 4320.0f / 4739.0f*4.0f / 3.0f;
   if (iRes == PAL_16x9) return 128.0f / 117.0f*4.0f / 3.0f;
+  // TODO: use XRandR to query physical size and obtain exact pixel ratio
+  // for now, just assume square pixels (most monitors' native resolution)
+  if (iRes == CUSTOM || iRes == DESKTOP) return 1.0f;
   return 128.0f / 117.0f;
 }
 

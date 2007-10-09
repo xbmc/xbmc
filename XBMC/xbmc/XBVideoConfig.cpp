@@ -20,9 +20,15 @@
  */
 
 #include "stdafx.h"
+#include "include.h"
 #include "XBVideoConfig.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "xbox/Undocumented.h"
+#endif
+#ifdef HAS_GLX
+#include "Surface.h"
+using namespace Surface;
+#include <X11/extensions/Xinerama.h>
 #endif
 
 XBVideoConfig g_videoConfig;
@@ -125,6 +131,44 @@ bool XBVideoConfig::HasHDPack() const
 #endif
 }
 
+#ifdef HAS_SDL
+void XBVideoConfig::GetDesktopResolution(int &w, int &h)
+{
+#ifdef HAS_GLX
+  Display * pRootDisplay = XOpenDisplay(NULL);
+  int screen = DefaultScreen(pRootDisplay);
+  int width = DisplayWidth(pRootDisplay, screen);
+  int height = DisplayHeight(pRootDisplay, screen);
+  XineramaScreenInfo *info;
+  int num;
+  info = XineramaQueryScreens(pRootDisplay, &num);
+  if (info)
+  {
+    int desired = 0;
+    width = info[0].width;
+    height = info[0].height;
+    const char *variable = SDL_getenv("SDL_VIDEO_FULLSCREEN_HEAD");
+    if (variable)
+    {
+      desired = SDL_atoi(variable);
+      for (int i = 0 ; i<num ; i++)
+      {
+        if (info[i].screen_number==desired)
+        {
+          width = info[i].width;
+          height = info[i].height;
+          break;
+        }
+      }
+    }
+    XFree(info);
+  }
+  w = width;
+  h = height;
+#endif
+}
+#endif
+
 #ifndef HAS_SDL
 void XBVideoConfig::GetModes(LPDIRECT3D8 pD3D)
 {
@@ -169,9 +213,14 @@ void XBVideoConfig::GetModes()
 {
    CLog::Log(LOGINFO, "Available videomodes:");
    SDL_Rect        **modes;
-   
+
    /* Get available fullscreen/hardware modes */
+#ifdef HAS_SDL_OPENGL
+   modes = SDL_ListModes(NULL, SDL_FULLSCREEN);
+#else
    modes = SDL_ListModes(NULL, SDL_FULLSCREEN|SDL_HWSURFACE);
+#endif
+   m_iNumResolutions = 0;
    if (modes == (SDL_Rect **)0)
    {
         CLog::Log(LOGINFO, "No modes available");
@@ -190,13 +239,24 @@ void XBVideoConfig::GetModes()
    {
      // ignore 640 wide modes
      if (modes[i]->w < 720)
-        continue;
-     CLog::Log(LOGINFO, "Found mode: %ix%i", modes[i]->w, modes[i]->h);
-     
-     if (modes[i]->w == 720 && modes[i]->h == 576)
-       bHasPAL = true;
-     if (modes[i]->w == 720 && modes[i]->h == 480)
-       bHasNTSC = true;
+       continue;
+     if (i<MAX_RESOLUTIONS)
+     {
+       m_ResInfo[m_iNumResolutions].iWidth = modes[i]->w;
+       m_ResInfo[m_iNumResolutions].iHeight = modes[i]->h;
+       m_ResInfo[m_iNumResolutions].fPixelRatio = 1.0f;
+       m_ResInfo[m_iNumResolutions].iSubtitles = (int)(0.9*modes[i]->h);
+       snprintf(m_ResInfo[m_iNumResolutions].strMode,
+                sizeof(m_ResInfo[m_iNumResolutions].strMode),
+                "%d x %d", modes[i]->w, modes[i]->h);
+       CLog::Log(LOGINFO, "Found mode: %ix%i", modes[i]->w, modes[i]->h);
+       g_settings.m_ResInfo[CUSTOM+m_iNumResolutions] = m_ResInfo[m_iNumResolutions];
+       m_iNumResolutions++;
+       if (modes[i]->w == 720 && modes[i]->h == 576)
+         bHasPAL = true;
+       if (modes[i]->w == 720 && modes[i]->h == 480)
+         bHasNTSC = true;
+     }
    }
 }
 #endif
