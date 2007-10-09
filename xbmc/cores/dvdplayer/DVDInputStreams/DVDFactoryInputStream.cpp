@@ -6,12 +6,13 @@
 #include "DVDInputStreamNavigator.h"
 #include "DVDInputStreamHttp.h"
 #include "DVDInputStreamFFmpeg.h"
+#include "../../../FileSystem/cdioSupport.h"
 
 CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, const std::string& file, const std::string& content)
 {
   CFileItem item(file.c_str(), false);
   if (item.IsDVDFile(false, true) || item.IsDVDImage() ||
-      file.compare("\\Device\\Cdrom0") == 0)
+      file.compare(MEDIA_DETECT::CCdIoSupport::GetDeviceFileName()) == 0 )
   {
     return (new CDVDInputStreamNavigator(pPlayer));
   }

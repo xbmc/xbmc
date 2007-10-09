@@ -17,6 +17,8 @@ public:
 
   CXHandle();
   CXHandle(HandleType nType);
+  CXHandle(const CXHandle &src);
+
   virtual ~CXHandle();
   void Init();
   inline HandleType GetType() { return m_type; }
