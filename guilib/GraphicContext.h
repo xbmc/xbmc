@@ -49,7 +49,9 @@ enum RESOLUTION {
   PAL_16x9 = 7,
   PAL60_4x3 = 8,
   PAL60_16x9 = 9,
-  AUTORES = 10
+  AUTORES = 10,
+  DESKTOP = 11,
+  CUSTOM = 12
 };
 
 enum VSYNC {
@@ -83,7 +85,7 @@ struct RESOLUTION_INFO
   int iSubtitles;
   DWORD dwFlags;
   float fPixelRatio;
-  char strMode[11];
+  char strMode[32];
 };
 
 /*!
@@ -148,6 +150,7 @@ public:
   RESOLUTION GetVideoResolution() const;
   void SetScreenFilters(bool useFullScreenFilters);
   void ResetOverscan(RESOLUTION res, OVERSCAN &overscan);
+  void ResetOverscan(RESOLUTION_INFO &resinfo);
   void ResetScreenParameters(RESOLUTION res);
   void Lock() { EnterCriticalSection(*this);  }
   void Unlock() { LeaveCriticalSection(*this); }
