@@ -82,7 +82,6 @@ bool CGUIControlGroupList::OnMessage(CGUIMessage& message)
       // scroll if we need to and update our page control
       ValidateOffset();
       float offset = 0;
-      bool done = false;
       for (iControls it = m_children.begin(); it != m_children.end(); ++it)
       {
         CGUIControl *control = *it;

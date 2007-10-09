@@ -174,7 +174,7 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 #else
   DWORD end = timeGetTime();
 
-  CLog::Log(LOGDEBUG,"Load %s: %d ms (%d ms xml load)", m_xmlFile.c_str(), end - start, lend - start);
+  CLog::Log(LOGDEBUG,"Load %s: %lu ms (%lu ms xml load)", m_xmlFile.c_str(), end - start, lend - start);
 #endif  
   return ret;
 }
@@ -954,7 +954,7 @@ const CGUIControl* CGUIWindow::GetControl(int iControl) const
       const CGUIControl *control = group->GetControl(iControl);
       if (control) pControl = control;
     }
-    if (pControl->GetID() == iControl) 
+    if ((int) pControl->GetID() == iControl) 
     {
       if (pControl->IsVisible())
         return pControl;
@@ -1129,7 +1129,7 @@ bool CGUIWindow::ControlGroupHasFocus(int groupID, int controlID)
     {
       CGUIMessage message(GUI_MSG_ITEM_SELECTED, GetID(), group->GetID());
       group->OnMessage(message);
-      return (controlID == message.GetParam1());
+      return (controlID == (int) message.GetParam1());
     }
   }
   return false;
@@ -1189,7 +1189,7 @@ CGUIControl *CGUIWindow::GetFirstFocusableControl(int id)
       CGUIControl *control = group->GetFirstFocusableControl(id);
       if (control) return control;
     }
-    if (pControl->GetID() == id && pControl->CanFocus())
+    if (pControl->GetID() == (DWORD) id && pControl->CanFocus())
       return pControl;
   }
   return NULL;
@@ -1201,7 +1201,7 @@ bool CGUIWindow::OnMove(int fromControl, int moveAction)
   if (!control) control = GetControl(fromControl);
   if (!control)
   { // no current control??
-    CLog::Log(LOGERROR, "Unable to find control %i in window %i", fromControl, GetID());
+    CLog::Log(LOGERROR, "Unable to find control %i in window %lu", fromControl, GetID());
     return false;
   }
   vector<int> moveHistory;
@@ -1269,7 +1269,7 @@ void CGUIWindow::GetContainers(vector<CGUIControl *> &containers) const
 #ifdef _DEBUG
 void CGUIWindow::DumpTextureUse()
 {
-  CLog::Log(LOGDEBUG, "%s for window %i", __FUNCTION__, GetID());
+  CLog::Log(LOGDEBUG, "%s for window %lu", __FUNCTION__, GetID());
   for (ivecControls it = m_vecControls.begin();it != m_vecControls.end(); ++it)
   {
     (*it)->DumpTextureUse();

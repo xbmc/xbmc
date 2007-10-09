@@ -148,7 +148,7 @@ void CGUIWindowManager::Add(CGUIWindow* pWindow)
     map<DWORD, CGUIWindow *>::iterator it = m_mapWindows.find(pWindow->GetID() + i);
     if (it != m_mapWindows.end())
     {
-      CLog::Log(LOGERROR, "Error, trying to add a second window with id %i to the window manager", pWindow->GetID());
+      CLog::Log(LOGERROR, "Error, trying to add a second window with id %lu to the window manager", pWindow->GetID());
       return;
     }
     m_mapWindows.insert(pair<DWORD, CGUIWindow *>(pWindow->GetID() + i, pWindow));
@@ -178,7 +178,7 @@ void CGUIWindowManager::Remove(DWORD dwID)
   }
   else
   {
-    CLog::Log(LOGWARNING, "Attempted to remove window %i from the window manager when it didn't exist", dwID);
+    CLog::Log(LOGWARNING, "Attempted to remove window %lu from the window manager when it didn't exist", dwID);
   }
 }
 
@@ -198,7 +198,7 @@ void CGUIWindowManager::PreviousWindow()
 {
   // deactivate any window
   CLog::Log(LOGDEBUG,"CGUIWindowManager::PreviousWindow: Deactivate");
-  int currentWindow = GetActiveWindow();
+  DWORD currentWindow = GetActiveWindow();
   CGUIWindow *pCurrentWindow = GetWindow(currentWindow);
   if (!pCurrentWindow)
     return;     // no windows or window history yet

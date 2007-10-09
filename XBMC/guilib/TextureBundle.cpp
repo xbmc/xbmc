@@ -18,7 +18,7 @@
 
 #ifdef _XBOX
 #pragma comment(lib,"xbmc/lib/liblzo/lzo.lib")
-#else
+#elif !defined(__GNUC__)
 #pragma comment(lib,"../../xbmc/lib/liblzo/lzo.lib")
 #endif
 

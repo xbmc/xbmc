@@ -14,7 +14,12 @@ using namespace Surface;
 
 #ifdef HAS_GLX
 Display* CSurface::s_dpy = 0;
+
+static Bool WaitForNotify(Display *dpy, XEvent *event, XPointer arg) {
+  return (event->type == MapNotify) && (event->xmap.window == (Window) arg);
+}
 #endif
+
 bool CSurface::b_glewInit = 0;
 std::string CSurface::s_glVendor = "";
 std::string CSurface::s_glRenderer = "";
