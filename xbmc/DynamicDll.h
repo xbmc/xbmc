@@ -448,9 +448,9 @@ public: \
 //    {
 //      return m_bar(p1, p2);
 //    }
-//  protected: \
-//    typedef void (* foobar_METHOD) (int type, char* szTest); \
-//  public: \
+//  protected: 
+//    typedef void (* foobar_METHOD) (int type, char* szTest); 
+//  public: 
 //    foobar_METHOD foobar;
 //  protected:
 //    virtual bool ResolveExports()

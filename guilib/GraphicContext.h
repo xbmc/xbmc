@@ -215,7 +215,7 @@ public:
   int CreateRenderTarget(int width, int height);
   bool MakeCurrentRenderTarget(int rendertarget);
   int DeleteRenderTarget(int rendertarget=0);
-  int ResetCurentRenderTarget() { MakeCurrentRenderTarget(0); }
+  void ResetCurentRenderTarget() { MakeCurrentRenderTarget(0); }
 
 protected:
   IMsgSenderCallback* m_pCallback;

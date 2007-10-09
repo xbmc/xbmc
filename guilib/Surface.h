@@ -18,14 +18,15 @@
 #endif
 
 namespace Surface {
-
 #ifdef HAS_GLX
 #include <GL/glx.h>
+/*
 static Bool WaitForNotify(Display *dpy, XEvent *event, XPointer arg) {
   return (event->type == MapNotify) && (event->xmap.window == (Window) arg);
 }
+*/
 #endif
-  
+ 
 class CSurface
 {
 public:

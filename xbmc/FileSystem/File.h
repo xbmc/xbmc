@@ -18,6 +18,7 @@ class IFileCallback
 {
 public:
   virtual bool OnFileCallback(void* pContext, int ipercent, float avgSpeed) = 0;
+  virtual ~IFileCallback() {}; 
 };
 
 /* indicate that caller can handle truncated reads, where function returns before entire buffer has been filled */

@@ -24,6 +24,7 @@ class IRssObserver
 {
 public:
   virtual void OnFeedUpdate(CStdStringW& aFeed, LPBYTE aColorArray) = 0;
+  virtual ~IRssObserver() {}
 };
 
 class CRssReader : public CThread

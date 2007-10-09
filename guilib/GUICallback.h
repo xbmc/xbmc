@@ -3,7 +3,10 @@
 
 #include "assert.h"
 #include "memory.h"
+
+#ifndef __GNUC__
 #pragma warning( disable : 4786 )
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // NOTE FROM RUNTiME: An Event holds a weak reference to class method, it acts similar to a   //

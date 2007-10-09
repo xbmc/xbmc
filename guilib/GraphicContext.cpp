@@ -736,6 +736,8 @@ void CGraphicContext::ResetOverscan(RESOLUTION res, OVERSCAN &overscan)
     overscan.right = 720;
     overscan.bottom = 576;
     break;
+  default:
+    break;
   }
 }
 
@@ -815,6 +817,8 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     g_settings.m_ResInfo[res].iHeight = 480;
     g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_INTERLACED | D3DPRESENTFLAG_WIDESCREEN;
     strcpy(g_settings.m_ResInfo[res].strMode, "PAL60 16:9");
+    break;
+  default:
     break;
   }
 }
@@ -916,8 +920,8 @@ void CGraphicContext::SetScalingResolution(RESOLUTION res, float posX, float pos
     fToPosX -= fToWidth * fZoom * 0.5f;
     fToWidth *= fZoom + 1.0f;
 
-    /* adjust for aspect ratio as zoom is given in the vertical direction and we don't /*
-    /* do aspect ratio corrections in the gui code */
+    // adjust for aspect ratio as zoom is given in the vertical direction and we don't 
+    // do aspect ratio corrections in the gui code 
     fZoom = fZoom / g_settings.m_ResInfo[m_Resolution].fPixelRatio;
     fToPosY -= fToHeight * fZoom * 0.5f;
     fToHeight *= fZoom + 1.0f;
