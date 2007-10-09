@@ -236,7 +236,7 @@ using namespace PLAYLIST;
   #pragma comment (lib,"xbmc/lib/mikxbox/mikxboxd.lib")  // SECTIONNAME=MOD_RW,MOD_RX
  #endif
 #else
- #ifdef HAS_FILESYSTEM
+ #if defined (HAS_FILESYSTEM) && not defined (_LINUX)
   #pragma comment (lib,"xbmc/lib/libXBMS/libXBMS.lib")
   #pragma comment (lib,"xbmc/lib/libsmb/libsmb.lib")
   #pragma comment (lib,"xbmc/lib/libxdaap/libxdaap.lib") // SECTIONNAME=LIBXDAAP
@@ -249,7 +249,7 @@ using namespace PLAYLIST;
   #pragma comment (lib,"xbmc/lib/libshout/libshout.lib")
   #pragma comment (lib,"xbmc/lib/libiconv/libiconv.lib")
   #pragma comment (lib,"xbmc/lib/libfribidi/libfribidi.lib")
- #else
+ #elif not defined(_LINUX)
   #pragma comment (lib,"../../xbmc/lib/libGoAhead/goahead_win32.lib")
   #pragma comment (lib,"../../xbmc/lib/sqlLite/libSQLite3_win32.lib")
   #pragma comment (lib,"../../xbmc/lib/libshout/libshout_win32.lib" )
