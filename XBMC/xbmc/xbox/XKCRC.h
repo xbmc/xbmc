@@ -53,9 +53,7 @@ Reason: Prepared for Public Release
 #elif defined (_XBOX)
  #pragma message ("Compiling for XBOX: " __FILE__)
  #include <xtl.h>
-#elif defined (_LINUX)
- #pragma message ("Compiling for LINUX: " __FILE__)
-#else
+#elif !defined (_LINUX)
  #error ERRR: Have to Define _WINDOWS or _XBOX or _LINUX!!
 #endif
 
