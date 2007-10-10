@@ -43,8 +43,8 @@ void CLog::Log(int loglevel, const char *format, ... )
     CSingleLock waitLock(critSec);
     if (!fd)
     {
-      // g_stSettings.m_logFolder is initialized in the CSettings constructor to Q:\\
-      // and if we are running from DVD, it's changed to T:\\ in CApplication::Create()
+      // g_stSettings.m_logFolder is initialized in the CSettings constructor to Q:
+      // and if we are running from DVD, it's changed to T: in CApplication::Create()
       CStdString LogFile;
       CUtil::AddFileToFolder(g_stSettings.m_logFolder, "xbmc.log", LogFile);
 #ifndef _LINUX      
@@ -75,7 +75,7 @@ void CLog::Log(int loglevel, const char *format, ... )
     
 
     int length = 0;
-    while ( length != strData.length() )
+    while ( length != (int) strData.length() )
     {
       length = strData.length();
       strData.TrimRight(" ");
@@ -149,7 +149,7 @@ void CLog::DebugLogMemory()
 
 void CLog::MemDump(BYTE *pData, int length)
 {
-  Log(LOGDEBUG, "MEM_DUMP: Dumping from %x", pData);
+  Log(LOGDEBUG, "MEM_DUMP: Dumping from %x", (unsigned int) pData);
   for (int i = 0; i < length; i+=16)
   {
     CStdString strLine;

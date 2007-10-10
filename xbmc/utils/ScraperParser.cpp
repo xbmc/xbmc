@@ -363,7 +363,6 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
       }
     }
     int i = reg.RegFind(curInput.c_str());
-    int iPos=0;
     while (i > -1 && i < (int)curInput.size())
     {
       if (!bAppend)

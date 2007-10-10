@@ -47,6 +47,7 @@ Reason: Prepared for Public Release
 
 */
 
+#ifndef __GNUC__
 #pragma once
 #if defined (_WINDOWS)
  #pragma message ("Compiling for WINDOWS: " __FILE__)
@@ -54,10 +55,9 @@ Reason: Prepared for Public Release
 #elif defined (_XBOX)
  #pragma message ("Compiling for XBOX: " __FILE__)
  #include <xtl.h>
-#elif defined (_LINUX)
- #pragma message ("Compiling for LINUX: " __FILE__)
-#else
+#elif !defined (_LINUX)
  #error ERR: Have to Define _WINDOWS or _XBOX or _LINUX!!
+#endif
 #endif
 
 #ifndef FILENAME_MAX
