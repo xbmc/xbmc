@@ -561,9 +561,13 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       m_Resolution = (RESOLUTION) g_guiSettings.GetInt("pictures.displayresolution");
-      if (m_Resolution != g_guiSettings.m_LookAndFeelResolution && m_Resolution != INVALID)
+      if (m_Resolution != g_guiSettings.m_LookAndFeelResolution && m_Resolution != INVALID && m_Resolution!=AUTORES)
       {
         g_graphicsContext.SetVideoResolution(m_Resolution, TRUE);
+      }
+      else
+      {
+        m_Resolution = g_graphicsContext.GetVideoResolution();
       }
 
       CGUIWindow::OnMessage(message);

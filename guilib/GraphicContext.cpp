@@ -380,14 +380,6 @@ void CGraphicContext::ClipToViewWindow()
 
 void CGraphicContext::SetFullScreenViewWindow(RESOLUTION &res)
 {
-  if (m_bFullScreenRoot)
-  {
-    m_videoRect.left = 0;
-    m_videoRect.top = 0;
-    m_videoRect.right = m_iFullScreenWidth;
-    m_videoRect.bottom = m_iFullScreenHeight; 
-  }
-  else
   {
     m_videoRect.left = g_settings.m_ResInfo[res].Overscan.left;
     m_videoRect.top = g_settings.m_ResInfo[res].Overscan.top;
@@ -590,6 +582,11 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
     res = g_videoConfig.GetSafeMode();
   }
+  if (res>=DESKTOP)
+  {
+    g_advancedSettings.m_fullScreen = 1;
+    m_bFullScreenRoot = true;
+  }
 
   if (m_Resolution != res)
   {
@@ -644,13 +641,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     m_surfaces[SDL_ThreadID()] = m_screenSurface;
 
     glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-
-    if (m_bFullScreenRoot)
-    {
-      glViewport(0, 0, m_iFullScreenWidth, m_iFullScreenHeight);
-      glScissor(0, 0, m_iFullScreenWidth, m_iFullScreenHeight);
-    }
-    else
+    
     {
       glViewport(0, 0, m_iScreenWidth, m_iScreenHeight);
       glScissor(0, 0, m_iScreenWidth, m_iScreenHeight);
@@ -676,11 +667,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
                         res == PAL_16x9 || res == NTSC_16x9);
   
     // set the mouse resolution
-    if (m_bFullScreenRoot)
-    {
-      g_Mouse.SetResolution(m_iFullScreenWidth, m_iFullScreenHeight, 1, 1);
-    }
-    else if ((g_settings.m_ResInfo[m_Resolution].iWidth != g_settings.m_ResInfo[res].iWidth) || (g_settings.m_ResInfo[m_Resolution].iHeight != g_settings.m_ResInfo[res].iHeight))
+    if ((g_settings.m_ResInfo[m_Resolution].iWidth != g_settings.m_ResInfo[res].iWidth) || (g_settings.m_ResInfo[m_Resolution].iHeight != g_settings.m_ResInfo[res].iHeight))
     {
       g_Mouse.SetResolution(g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight, 1, 1);
     }
@@ -752,14 +739,14 @@ void CGraphicContext::ResetOverscan(RESOLUTION res, OVERSCAN &overscan)
     overscan.bottom = 576;
     break;
   default:
+    overscan.right = g_settings.m_ResInfo[res].iWidth;
+    overscan.bottom = g_settings.m_ResInfo[res].iHeight;
     break;
   }
 }
 
 void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 {
-  ResetOverscan(res, g_settings.m_ResInfo[res].Overscan);
-  g_settings.m_ResInfo[res].fPixelRatio = GetPixelRatio(res);
   // 1080i
   switch (res)
   {
@@ -843,6 +830,8 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
   default:
     break;
   }
+  ResetOverscan(res, g_settings.m_ResInfo[res].Overscan);
+  g_settings.m_ResInfo[res].fPixelRatio = GetPixelRatio(res);
 }
 
 float CGraphicContext::GetPixelRatio(RESOLUTION iRes) const
@@ -853,7 +842,7 @@ float CGraphicContext::GetPixelRatio(RESOLUTION iRes) const
   if (iRes == PAL_16x9) return 128.0f / 117.0f*4.0f / 3.0f;
   // TODO: use XRandR to query physical size and obtain exact pixel ratio
   // for now, just assume square pixels (most monitors' native resolution)
-  if (iRes == CUSTOM || iRes == DESKTOP) return 1.0f;
+  if (iRes >= DESKTOP) return 1.0f;
   return 128.0f / 117.0f;
 }
 
@@ -912,17 +901,7 @@ void CGraphicContext::SetScalingResolution(RESOLUTION res, float posX, float pos
     float fToPosY;
     float fToWidth;
     float fToHeight;
-
-    if (m_bFullScreenRoot)
-    {
-      fFromWidth = (float)g_settings.m_ResInfo[res].iWidth;
-      fFromHeight = (float)g_settings.m_ResInfo[res].iHeight;
-      fToPosX = (float)0;
-      fToPosY = (float)0;
-      fToWidth = (float)m_iFullScreenWidth;
-      fToHeight = (float)m_iFullScreenHeight;
-    }
-    else
+    
     {
       fFromWidth = (float)g_settings.m_ResInfo[res].iWidth;
       fFromHeight = (float)g_settings.m_ResInfo[res].iHeight;
@@ -970,10 +949,7 @@ void CGraphicContext::SetScalingResolution(RESOLUTION res, float posX, float pos
   m_origins.push(CPoint(posX, posY));
   while (m_cameras.size())
     m_cameras.pop();
-  if (m_bFullScreenRoot)
-    m_cameras.push(CPoint(0.5f*m_iFullScreenWidth, 0.5f*m_iFullScreenHeight));
-  else
-    m_cameras.push(CPoint(0.5f*m_iScreenWidth, 0.5f*m_iScreenHeight));
+  m_cameras.push(CPoint(0.5f*m_iScreenWidth, 0.5f*m_iScreenHeight));
   UpdateCameraPosition(m_cameras.top());
 
   // and reset the final transform
