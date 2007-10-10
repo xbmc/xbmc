@@ -562,6 +562,11 @@ void CLinuxRendererGL::ChooseBestResolution(float fps)
     return;
   }
 
+  m_iResolution = g_graphicsContext.GetVideoResolution();
+  CLog::Log(LOGNOTICE, "Display resolution AUTO : %s (%d)", g_settings.m_ResInfo[m_iResolution].strMode, m_iResolution);
+  return;
+
+  /*
   // Work out if framesize suits 4:3 or 16:9
   // Uses the frame aspect ratio of 8/(3*sqrt(3)) (=1.53960) which is the optimal point
   // where the percentage of black bars to screen area in 4:3 and 16:9 is equal
@@ -650,6 +655,7 @@ void CLinuxRendererGL::ChooseBestResolution(float fps)
   }
 
   CLog::Log(LOGNOTICE, "Display resolution AUTO : %s (%d)", g_settings.m_ResInfo[m_iResolution].strMode, m_iResolution);
+  */
 }
 
 bool CLinuxRendererGL::ValidateRenderTarget()

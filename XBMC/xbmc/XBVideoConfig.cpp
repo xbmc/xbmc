@@ -249,6 +249,11 @@ void XBVideoConfig::GetModes()
        snprintf(m_ResInfo[m_iNumResolutions].strMode,
                 sizeof(m_ResInfo[m_iNumResolutions].strMode),
                 "%d x %d", modes[i]->w, modes[i]->h);
+       if ((float)modes[i]->w / (float)modes[i]->h >= 1.7)         
+         m_ResInfo[m_iNumResolutions].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
+       else
+         m_ResInfo[m_iNumResolutions].dwFlags = 0;
+       g_graphicsContext.ResetOverscan(m_ResInfo[m_iNumResolutions]);
        CLog::Log(LOGINFO, "Found mode: %ix%i", modes[i]->w, modes[i]->h);
        g_settings.m_ResInfo[CUSTOM+m_iNumResolutions] = m_ResInfo[m_iNumResolutions];
        m_iNumResolutions++;
@@ -258,6 +263,7 @@ void XBVideoConfig::GetModes()
          bHasNTSC = true;
      }
    }
+   g_graphicsContext.ResetScreenParameters(DESKTOP);
 }
 #endif
 
@@ -303,6 +309,10 @@ bool XBVideoConfig::IsValidResolution(RESOLUTION res) const
     if (res == HDTV_480p_16x9 && Has480p() && bCanDoWidescreen) return true;
     if (res == HDTV_720p && Has720p()) return true;
     if (res == HDTV_1080i && Has1080i()) return true;
+  }
+  if (res>=DESKTOP && res<(CUSTOM+m_iNumResolutions))
+  {
+    return true;
   }
   return false;
 }
