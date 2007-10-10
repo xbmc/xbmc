@@ -64,6 +64,15 @@
 			<font>special13</font>
 			<visible>!container.hasthumb + container.content(movies)</visible>
 		</control>
+		<control type="label" id="1">
+			<description>description label</description>
+			<posx>207</posx>
+			<posy>43</posy>
+			<align>left</align>
+			<label>$LOCALIZE[20314] - $LOCALIZE[20389]</label>
+			<font>special13</font>
+			<visible>!container.hasthumb + container.content(musicvideos)</visible>
+		</control>
 		<include>contentpanel</include>
 		<control type="label" id="12">
 			<description>number of files text label</description>
