@@ -25,7 +25,6 @@ void CHTMLRow::Parse(const CStdString& strTable)
 {
   CHTMLUtil util;
   CStdString strTag;
-  int iPosEnd = (int)strTable.size() + 1;
   int iTableRowStart = 0;
   do
   {
