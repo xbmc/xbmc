@@ -88,6 +88,8 @@ private:
   unsigned int m_uiChannels;
 
   snd_pcm_uframes_t m_BufferSize;
+
+  bool m_bPassthrough;
 };
 
 #endif 

@@ -48,9 +48,11 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   m_uiChannels = iChannels;
   m_uiSamplesPerSec = uiSamplesPerSec;
   m_uiBitsPerSample = uiBitsPerSample;
+  m_bPassthrough = bPassthrough;
 
   m_nCurrentVolume = g_stSettings.m_nVolumeLevel;
-  m_amp.SetVolume(m_nCurrentVolume);
+  if (!m_bPassthrough)
+     m_amp.SetVolume(m_nCurrentVolume);
 
   m_dwPacketSize = iChannels*(uiBitsPerSample/8)*512;
   m_dwNumPackets = 16;
@@ -59,7 +61,7 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
 
   /* Open the device */
   const char* device;
-  if (bPassthrough == false)
+  if (!m_bPassthrough)
     device = g_guiSettings.GetString("audiooutput.audiodevice").c_str();
   else
     device = g_guiSettings.GetString("audiooutput.passthroughdevice").c_str();
@@ -236,7 +238,7 @@ void CALSADirectSound::Mute(bool bMute)
 //***********************************************************************************************
 HRESULT CALSADirectSound::SetCurrentVolume(LONG nVolume)
 {
-  if (!m_bIsAllocated) return -1;
+  if (!m_bIsAllocated || m_bPassthrough) return -1;
   m_nCurrentVolume = nVolume;
   m_amp.SetVolume(nVolume);
   return S_OK;
@@ -277,7 +279,8 @@ DWORD CALSADirectSound::AddPackets(unsigned char *data, DWORD len)
 	int framesToWrite = snd_pcm_bytes_to_frames(m_pPlayHandle,nPeriodSize);
 
 	// handle volume de-amp 
-	m_amp.DeAmplify((short *)pcmPtr, framesToWrite * m_uiChannels);
+	if (!m_bPassthrough)
+           m_amp.DeAmplify((short *)pcmPtr, framesToWrite * m_uiChannels);
 	
 	int writeResult = snd_pcm_writei(m_pPlayHandle, pcmPtr, framesToWrite);
 	if (  writeResult == -EPIPE  ) {
