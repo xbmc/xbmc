@@ -203,6 +203,18 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     Seek(true, true);
     return true;
     break;
+  
+  case ACTION_NEXT_SCENE:
+    if (g_application.m_pPlayer->SeekScene(true))
+      g_infoManager.SetDisplayAfterSeek();
+    return true;
+    break;
+
+  case ACTION_PREV_SCENE:
+    if (g_application.m_pPlayer->SeekScene(false))
+      g_infoManager.SetDisplayAfterSeek();
+    return true;
+    break;
 
   case ACTION_SHOW_OSD_TIME:
     m_bShowCurrentTime = !m_bShowCurrentTime;
