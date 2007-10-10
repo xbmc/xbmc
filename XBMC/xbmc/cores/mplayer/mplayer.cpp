@@ -870,13 +870,12 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
     m_iPTS = 0;
     m_bPaused = false;
 
-    CStdString strEdlFileName;
+    // Read EDL
     if (!bFileOnInternet && bIsVideo && !bIsDVD )
     {
-      CUtil::ReplaceExtension(strFile, ".edl", strEdlFileName);
-      if ( CFile::Exists(strEdlFileName) )
+      if (m_Edl.ReadnCacheAny(strFile))
       {
-        options.SetEdl(strEdlFileName);
+        options.SetEdl(m_Edl.GetCachedEdl());
       }
     }
     
@@ -1504,6 +1503,7 @@ void CMPlayer::Seek(bool bPlus, bool bLargeStep)
 {
   // Use relative time seeking if we dont know the length of the video
   // or its explicitly enabled, and the length is alteast twice the size of the largest forward seek value
+  int iSeek=0;
 
   if(m_bPaused && bPlus && !bLargeStep)
   {
@@ -1518,18 +1518,15 @@ void CMPlayer::Seek(bool bPlus, bool bLargeStep)
   {
     if (bLargeStep)
     {
-      if (bPlus)
-        SeekRelativeTime(g_advancedSettings.m_videoTimeSeekForwardBig);
-      else
-        SeekRelativeTime(g_advancedSettings.m_videoTimeSeekBackwardBig);
+      iSeek= bPlus ? g_advancedSettings.m_videoTimeSeekForwardBig : g_advancedSettings.m_videoTimeSeekBackwardBig;
     }
     else
     {
-      if (bPlus)
-        SeekRelativeTime(g_advancedSettings.m_videoTimeSeekForward);
-      else
-        SeekRelativeTime(g_advancedSettings.m_videoTimeSeekBackward);
+      iSeek= bPlus ? g_advancedSettings.m_videoTimeSeekForward : g_advancedSettings.m_videoTimeSeekBackward;
     }
+    m_Edl.CompensateSeek(bPlus, &iSeek);
+
+    SeekRelativeTime(iSeek);    
   }
   else
   {
@@ -1543,6 +1540,7 @@ void CMPlayer::Seek(bool bPlus, bool bLargeStep)
     //we have to seek using absolute percentage instead
     if( GetTime() > iTime * 1000 )
     {
+      //TODO EDL compensation for this?
       SeekPercentage(GetPercentage()+percent);
     }
     else
@@ -1556,9 +1554,23 @@ void CMPlayer::Seek(bool bPlus, bool bLargeStep)
       else if( timeInSecs > -1 && timeInSecs < 0 )
         timeInSecs = -1;
 
-      SeekRelativeTime( (int)timeInSecs );
+      iSeek=(int)timeInSecs;
+      m_Edl.CompensateSeek(bPlus, &iSeek);
+      SeekRelativeTime(iSeek);
     }    
   }
+}
+
+bool CMPlayer::SeekScene(bool bPlus)
+{
+  __int64 iScenemarker;
+  bool bSeek=false;
+  if( m_Edl.HaveScenes() && m_Edl.SeekScene(bPlus,&iScenemarker) )
+  {
+    SeekTime(iScenemarker);
+    bSeek=true;
+  }
+  return bSeek;
 }
 
 void CMPlayer::SeekRelativeTime(int iSeconds)
@@ -1635,14 +1647,16 @@ void CMPlayer::GetGeneralInfo( CStdString& strVideoInfo)
   int iCacheFilled;
   float fTotalCorrection;
   float fAVDelay;
+  char cEdlStatus;
   if (!m_bIsPlaying)
   {
     strVideoInfo = "";
     return ;
   }
+  cEdlStatus = m_Edl.GetEdlStatus();
   mplayer_GetGeneralInfo(&lFramesDropped, &iQuality, &iCacheFilled, &fTotalCorrection, &fAVDelay);
-  strVideoInfo.Format("dropped:%i Q:%i cache:%i%% ct:%2.2f av:%2.2f",
-                      lFramesDropped, iQuality, iCacheFilled, fTotalCorrection, fAVDelay);
+  strVideoInfo.Format("dropped:%i Q:%i cache:%i%% ct:%2.2f edl:%c av:%2.2f",
+                      lFramesDropped, iQuality, iCacheFilled, fTotalCorrection, cEdlStatus, fAVDelay );
 }
 
 void CMPlayer::Update(bool bPauseDrawing)
