@@ -4767,7 +4767,7 @@ bool CVideoDatabase::GetRecentlyAddedMoviesNav(const CStdString& strBaseDir, CFi
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL = FormatSQL("select movie.*,files.strFileName,path.strPath from movie join files on files.idFile=movie.idFile join path on files.idPath=path.idPath order by movie.idMovie desc limit %u",RECENTLY_ADDED_LIMIT);
+    CStdString strSQL=FormatSQL("select idmovie from movie order by idMovie desc limit %u",RECENTLY_ADDED_LIMIT);
 
     // run query
     CLog::Log(LOGDEBUG, "CVideoDatabase::GetRecentlyAddedMoviesNav() query: %s", strSQL.c_str());
@@ -4778,7 +4778,16 @@ bool CVideoDatabase::GetRecentlyAddedMoviesNav(const CStdString& strBaseDir, CFi
       m_pDS->close();
       return true;
     }
+    CStdString strMovies="(";
+    while (!m_pDS->eof())
+    {
+      strMovies += m_pDS->fv(0).get_asString()+",";
+      m_pDS->next();
+    }
+    strMovies[strMovies.size()-1] = ')';
 
+    strSQL = FormatSQL("select movie.*,files.strFileName,path.strPath from movie join files on files.idFile=movie.idFile join path on files.idPath=path.idPath where movie.idMovie in %s order by movie.idMovie desc",strMovies.c_str());
+    m_pDS->query(strSQL.c_str());
     CLog::DebugLog("Time for actual SQL query = %d", timeGetTime() - time); time = timeGetTime();
 
     // get data from returned rows
@@ -4827,9 +4836,8 @@ bool CVideoDatabase::GetRecentlyAddedEpisodesNav(const CStdString& strBaseDir, C
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL = FormatSQL("select episode.*,files.strFileName,path.strPath,tvshow.c%02d from episode join files on files.idFile=episode.idFile join tvshowlinkepisode on episode.idepisode=tvshowlinkepisode.idepisode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join path on files.idPath=path.idPath order by episode.idEpisode desc limit %u",VIDEODB_ID_TV_TITLE,RECENTLY_ADDED_LIMIT);
     // run query
-
+    CStdString strSQL=FormatSQL("select idepisode from episode order by idEpisode desc limit %u",RECENTLY_ADDED_LIMIT);
     CLog::Log(LOGDEBUG, "CVideoDatabase::GetEpisodesNav() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
@@ -4838,7 +4846,16 @@ bool CVideoDatabase::GetRecentlyAddedEpisodesNav(const CStdString& strBaseDir, C
       m_pDS->close();
       return true;
     }
+    CStdString strEpisodes="(";
+    while (!m_pDS->eof())
+    {
+      strEpisodes += m_pDS->fv(0).get_asString()+",";
+      m_pDS->next();
+    }
+    strEpisodes[strEpisodes.size()-1] = ')';
 
+    strSQL = FormatSQL("select episode.*,files.strFileName,path.strPath,tvshow.c%02d from episode join files on files.idFile=episode.idFile join tvshowlinkepisode on episode.idepisode=tvshowlinkepisode.idepisode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join path on files.idPath=path.idPath where episode.idepisode in %s order by episode.idEpisode desc",VIDEODB_ID_TV_TITLE,strEpisodes.c_str());
+    m_pDS->query(strSQL.c_str());
     CLog::DebugLog("Time for actual SQL query = %d", timeGetTime() - time); time = timeGetTime();
 
     // get data from returned rows
@@ -4886,7 +4903,7 @@ bool CVideoDatabase::GetRecentlyAddedMusicVideosNav(const CStdString& strBaseDir
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL = FormatSQL("select musicvideo.*,files.strFileName,path.strPath from musicvideo join files on files.idFile=musicvideo.idFile join path on files.idPath=path.idPath order by musicvideo.idmvideo desc limit %u",RECENTLY_ADDED_LIMIT);
+    CStdString strSQL=FormatSQL("select idmvideo from musicvideo order by idmvideo desc limit %u",RECENTLY_ADDED_LIMIT);
 
     // run query
     CLog::Log(LOGDEBUG, "CVideoDatabase::GetRecentlyAddedMusicVideosNav() query: %s", strSQL.c_str());
@@ -4897,7 +4914,16 @@ bool CVideoDatabase::GetRecentlyAddedMusicVideosNav(const CStdString& strBaseDir
       m_pDS->close();
       return true;
     }
+    CStdString strMVideos="(";
+    while (!m_pDS->eof())
+    {
+      strMVideos += m_pDS->fv(0).get_asString()+",";
+      m_pDS->next();
+    }
+    strMVideos[strMVideos.size()-1] = ')';
 
+    strSQL = FormatSQL("select musicvideo.*,files.strFileName,path.strPath from musicvideo join files on files.idFile=musicvideo.idFile join path on files.idPath=path.idPath where musicvideo.idmvideo in %s order by musicvideo.idmvideo desc",strMVideos.c_str());
+    m_pDS->query(strSQL.c_str());
     CLog::DebugLog("Time for actual SQL query = %d", timeGetTime() - time); time = timeGetTime();
 
     // get data from returned rows
