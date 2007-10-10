@@ -3555,6 +3555,18 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
           options.starttime = bookmark.timeInSeconds;
           options.state = bookmark.playerState;
         }
+      } 
+      else if (item.HasVideoInfoTag()) 
+      {
+        const CVideoInfoTag *tag = item.GetVideoInfoTag();
+
+        if (tag->m_iBookmarkId != -1 && tag->m_iBookmarkId != 0)
+        {
+          CBookmark bookmark;
+          dbs.GetBookMarkForEpisode(*tag, bookmark);
+          options.starttime = bookmark.timeInSeconds;
+          options.state = bookmark.playerState;
+        }
       }
 
       dbs.Close();
