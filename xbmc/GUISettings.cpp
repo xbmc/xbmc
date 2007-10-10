@@ -192,7 +192,7 @@ CGUISettings::CGUISettings(void)
   AddSeparator(5,"pictures.sep1");
   AddBool(6, "pictures.useexifrotation", 20184, true);
   AddBool(7, "pictures.usetags", 258, true);
-  AddInt(8, "pictures.displayresolution", 169, (int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
+  AddInt(8, "pictures.displayresolution", 169, (int)AUTORES, (int)HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddSeparator(9,"pictures.sep2");
   AddString(10,"pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
 
@@ -423,7 +423,7 @@ CGUISettings::CGUISettings(void)
   AddString(2, "videoplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(3, "videoplayer.sep1");
   AddInt(4, "videoplayer.rendermethod", 13354, RENDER_HQ_RGB_SHADER, RENDER_LQ_RGB_SHADER, 1, RENDER_HQ_RGB_SHADERV2, SPIN_CONTROL_TEXT);
-  AddInt(5, "videoplayer.displayresolution", 169, (int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
+  AddInt(5, "videoplayer.displayresolution", 169, (int)AUTORES, (int)HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddInt(6, "videoplayer.framerateconversions", 336, FRAME_RATE_LEAVE_AS_IS, FRAME_RATE_LEAVE_AS_IS, 1, FRAME_RATE_USE_PAL60, SPIN_CONTROL_TEXT);
   AddInt(7, "videoplayer.flicker", 13100, 1, 0, 1, 5, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(8, "videoplayer.soften", 215, false);
@@ -552,7 +552,7 @@ CGUISettings::CGUISettings(void)
   AddString(11, "locale.timeaddress"      , 731  , "207.46.130.100", BUTTON_CONTROL_IP_INPUT);
 
   AddCategory(7, "videoscreen", 131);
-  AddInt(1, "videoscreen.resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
+  AddInt(1, "videoscreen.resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddString(2, "videoscreen.guicalibration",214,"", BUTTON_CONTROL_STANDARD);
   AddInt(3, "videoscreen.flickerfilter", 13100, 5, 0, 1, 5, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(4, "videoscreen.soften", 215, false);
