@@ -385,7 +385,7 @@
 				<posx>55</posx>
 				<posy>55</posy>
 				<align>left</align>
-				<label>20351</label>
+				<label>20352</label>
 				<font>special13</font>
 				<visible>container.content(episodes)</visible>
 			</control>
