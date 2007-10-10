@@ -31,8 +31,6 @@ XBAudioConfig::XBAudioConfig()
 {
 #ifdef HAS_XBOX_AUDIO
   m_dwAudioFlags = XGetAudioFlags();
-#else
-  m_dwAudioFlags = 0;
 #endif
 }
 
@@ -48,9 +46,8 @@ bool XBAudioConfig::HasDigitalOutput()
       dwAVPack == XC_AV_PACK_HDTV ||
       dwAVPack == XC_AV_PACK_VGA ||
       dwAVPack == XC_AV_PACK_SVIDEO)
-    return true;
 #endif
-  return false;
+    return true;
 }
 
 void XBAudioConfig::SetAC3Enabled(bool bEnable)
@@ -69,7 +66,7 @@ bool XBAudioConfig::GetAC3Enabled()
 #ifdef HAS_XBOX_AUDIO
   return (XC_AUDIO_FLAGS_ENCODED(XGetAudioFlags()) & XC_AUDIO_FLAGS_ENABLE_AC3) != 0;
 #else
-  return false;
+  return true;
 #endif
 }
 
@@ -89,7 +86,7 @@ bool XBAudioConfig::GetDTSEnabled()
 #ifdef HAS_XBOX_AUDIO
   return (XC_AUDIO_FLAGS_ENCODED(XGetAudioFlags()) & XC_AUDIO_FLAGS_ENABLE_DTS) != 0;
 #else
-  return false;
+  return true;
 #endif
 }
 
@@ -106,8 +103,8 @@ bool XBAudioConfig::NeedsSave()
 // USE VERY CAREFULLY!!
 void XBAudioConfig::Save()
 {
-  if (!NeedsSave()) return ;
 #ifdef HAS_XBOX_AUDIO
+  if (!NeedsSave()) return ;
   // update the EEPROM settings
   DWORD type = REG_BINARY;
   ExSaveNonVolatileSetting(XC_AUDIO_FLAGS, &type, (PULONG)&m_dwAudioFlags, 4);

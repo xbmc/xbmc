@@ -316,11 +316,7 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
   m_BytesPerSecond = (m_BitsPerSampleOutput / 8)*m_SampleRateOutput*channels;
 
 	/* Open the device */
-	char* device = getenv("XBMC_AUDIODEV");
-	if (device == NULL)
-	  device = "default";
-	
-	int nErr = snd_pcm_open(&m_pStream[num], device, SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK);
+	int nErr = snd_pcm_open(&m_pStream[num], g_guiSettings.GetString("audiooutput.audiodevice"), SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK);
         CHECK_ALSA_RETURN(LOGERROR,"pcm_open",nErr);
 
 	/* Allocate Hardware Parameters structures and fills it with config space for PCM */

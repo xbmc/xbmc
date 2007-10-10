@@ -284,7 +284,7 @@
   <string id="361">R. SlideShow</string>
   <string id="362">Screensaver Fade Level</string>
   <string id="363">Sort by: File</string>
-  <string id="364">- AC3 Capable Receiver</string>
+  <string id="364">- Dolby Digital (AC3) Capable Receiver</string>
   <string id="365">Sort by: Name</string>
   <string id="366">Sort by: Year</string>
   <string id="367">Sort by: Rating</string>
@@ -458,6 +458,8 @@
   <string id="542">DVD Icons</string>
   <string id="543">DVD</string>
   <string id="544">Media Info</string>
+  <string id="545">Audio Output Device</string>
+  <string id="546">Passthrough Output Device</string>
 
   <string id="550">Sort by: %s</string>
   <string id="551">Name</string>
