@@ -924,7 +924,14 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
             buttons.Add(CONTEXT_BUTTON_SET_ACTOR_THUMB, 20403);
         }
         if (item->HasVideoInfoTag() && (!item->m_bIsFolder || node == NODE_TYPE_TITLE_TVSHOWS))
+        {
+          if (info.strContent.Equals("tvshows")) 
+          {
+            if(item->GetVideoInfoTag()->m_iBookmarkId != -1 && item->GetVideoInfoTag()->m_iBookmarkId != 0)
+              buttons.Add(CONTEXT_BUTTON_UNLINK_BOOKMARK, 20405);
+          }
           buttons.Add(CONTEXT_BUTTON_DELETE, 646);
+        }
 
         // this should ideally be non-contextual (though we need some context for non-tv show node I guess)
         CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
@@ -1206,6 +1213,16 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CSong song;
       if (database.GetSongById(database.GetSongByArtistAndAlbumAndTitle(m_vecItems[itemNumber]->GetVideoInfoTag()->GetArtist(),m_vecItems[itemNumber]->GetVideoInfoTag()->m_strAlbum,m_vecItems[itemNumber]->GetVideoInfoTag()->m_strTitle),song))
         g_applicationMessenger.PlayFile(song);
+      return true;
+    }
+
+  case CONTEXT_BUTTON_UNLINK_BOOKMARK:
+    {
+      m_database.Open();
+      m_database.DeleteBookMarkForEpisode(*m_vecItems[itemNumber]->GetVideoInfoTag());
+      m_database.Close();
+      CUtil::DeleteVideoDatabaseDirectoryCache();
+      Update(m_vecItems.m_strPath);
       return true;
     }
 
