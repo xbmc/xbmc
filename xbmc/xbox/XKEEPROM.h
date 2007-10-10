@@ -74,12 +74,9 @@ Reason: Prepared for Public Release
 	#include <xtl.h>
 	#include "XKExports.h"
 	#include "XKUtils.h"
-#elif defined (_LINUX)
-	#pragma message ("Compiling for LINUX: " __FILE__)
-#else
+#elif !defined (_LINUX)
 	#error ERR: Have to Define _WINDOWS or _XBOX or _LINUX!!
 #endif
-
 #include "XKGeneral.h"
 #include "XKRC4.h"
 #include "XKSHA1.h"
