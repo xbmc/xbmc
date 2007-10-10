@@ -58,9 +58,11 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   snd_pcm_hw_params_t *hw_params=NULL;
 
   /* Open the device */
-  char* device = getenv("XBMC_AUDIODEV");
-  if (device == NULL)
-    device = "default";
+  const char* device;
+  if (bPassthrough == false)
+    device = g_guiSettings.GetString("audiooutput.audiodevice").c_str();
+  else
+    device = g_guiSettings.GetString("audiooutput.passthroughdevice").c_str();
 
   int nErr = snd_pcm_open(&m_pPlayHandle, device, SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK);
   CHECK_ALSA_RETURN(LOGERROR,"pcm_open",nErr);
@@ -261,7 +263,7 @@ DWORD CALSADirectSound::AddPackets(unsigned char *data, DWORD len)
   }
 
   // if there is no room in the buffer - even for one frame, return 
-  if ( snd_pcm_frames_to_bytes(m_pPlayHandle,GetSpace()) < len )
+  if ( snd_pcm_frames_to_bytes(m_pPlayHandle,GetSpace()) < (int) len )
        return 0;
 
   unsigned char *pcmPtr = data;

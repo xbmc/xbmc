@@ -379,8 +379,8 @@ CGUISettings::CGUISettings(void)
   AddBool(4, "audiooutput.ac3passthrough", 364, true);
   AddBool(5, "audiooutput.dtspassthrough", 254, true);
 #ifdef _LINUX
-  AddString(6, "audiooutput.audiodevice", 545, "default", SPIN_CONTROL_TEXT);
-  AddString(7, "audiooutput.passthroughdevice", 546, "default", SPIN_CONTROL_TEXT);
+  AddString(6, "audiooutput.audiodevice", 545, "default", BUTTON_CONTROL_INPUT);
+  AddString(7, "audiooutput.passthroughdevice", 546, "iec958", BUTTON_CONTROL_INPUT);
 #endif
 
   AddCategory(4, "videooutput", 21373);
