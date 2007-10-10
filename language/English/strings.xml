@@ -227,6 +227,7 @@
   <string id="294">Create bookmark</string>
   <string id="296">Clear bookmarks</string>
   <string id="297">Audio Delay</string>
+  <string id="298">Bookmarks</string>
   <string id="303">Delay</string>
   <string id="304">Language</string>
   <string id="305">Enabled</string>
@@ -1644,6 +1645,8 @@
   <string id="20402">Automatically grab actor thumbs</string>
   <string id="20403">Set Actor Thumb</string>
   <string id="20404">Studio:</string>
+  <string id="20405">Remove Episode Bookmark</string>
+  <string id="20406">Set Episode Bookmark</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>

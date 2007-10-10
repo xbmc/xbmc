@@ -15,9 +15,11 @@ public:
 protected:
   void GotoBookmark(int iItem);
   void ClearBookmarks();
-  void AddBookmark();
+  void AddBookmark(CVideoInfoTag* tag=NULL);
   void Clear();
   void Update();
+  void AddEpisodeBookmark();
+
   CGUIControl *GetFirstFocusableControl(int id);
 
   CFileItemList m_vecItems;

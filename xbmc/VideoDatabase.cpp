@@ -35,7 +35,7 @@ using namespace XFILE;
 using namespace DIRECTORY;
 using namespace VIDEO;
 
-#define VIDEO_DATABASE_VERSION 12
+#define VIDEO_DATABASE_VERSION 13
 #define VIDEO_DATABASE_OLD_VERSION 3.f
 #define VIDEO_DATABASE_NAME "MyVideos34.db"
 #define RECENTLY_ADDED_LIMIT  25
@@ -78,6 +78,7 @@ bool CVideoDatabase::CreateTables()
 
     CLog::Log(LOGINFO, "create bookmark table");
     m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, timeInSeconds double, thumbNailImage text, player text, playerState text, type integer)\n");
+    m_pDS->exec("CREATE INDEX ix_bookmark ON bookmark (idFile)");
 
     CLog::Log(LOGINFO, "create settings table");
     m_pDS->exec("CREATE TABLE settings ( idFile integer, Interleaved bool, NoCache bool, Deinterlace bool, FilmGrain integer,"
@@ -166,6 +167,11 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec(columns.c_str());
     m_pDS->exec("CREATE UNIQUE INDEX ix_episode_file_1 on episode (idEpisode, idFile)");
     m_pDS->exec("CREATE UNIQUE INDEX id_episode_file_2 on episode (idFile, idEpisode)");
+    CStdString createColIndex;
+    createColIndex.Format("CREATE INDEX ix_episode_season_episode on episode (c%02d, c%02d)", VIDEODB_ID_EPISODE_SEASON, VIDEODB_ID_EPISODE_EPISODE);
+    m_pDS->exec(createColIndex.c_str());
+    createColIndex.Format("CREATE INDEX ix_episode_bookmark on episode (c%02d)", VIDEODB_ID_EPISODE_BOOKMARK);
+    m_pDS->exec(createColIndex.c_str());
 
     CLog::Log(LOGINFO, "create tvshowlinkepisode table");
     m_pDS->exec("CREATE TABLE tvshowlinkepisode ( idShow integer, idEpisode integer)\n");
@@ -2093,13 +2099,14 @@ void CVideoDatabase::GetFilePath(long lMovieId, CStdString &filePath, int iType)
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::GetBookMarksForFile(const CStdString& strFilenameAndPath, VECBOOKMARKS& bookmarks, CBookmark::EType type /*= CBookmark::STANDARD*/)
+void CVideoDatabase::GetBookMarksForFile(const CStdString& strFilenameAndPath, VECBOOKMARKS& bookmarks, CBookmark::EType type /*= CBookmark::STANDARD*/, bool bAppend)
 {
   try
   {
     long lFileId = GetFile(strFilenameAndPath);
     if (lFileId < 0) return ;
-    bookmarks.erase(bookmarks.begin(), bookmarks.end());
+    if (!bAppend)
+      bookmarks.erase(bookmarks.begin(), bookmarks.end());
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
 
@@ -2113,6 +2120,14 @@ void CVideoDatabase::GetBookMarksForFile(const CStdString& strFilenameAndPath, V
       bookmark.playerState = m_pDS->fv("playerState").get_asString();
       bookmark.player = m_pDS->fv("player").get_asString();
       bookmark.type = type;
+      if (type == CBookmark::EPISODE)
+      {
+        CStdString strSQL2=FormatSQL("select c%02d, c%02d from episode where c%02d=%i order by c%02d, c%02d", VIDEODB_ID_EPISODE_EPISODE, VIDEODB_ID_EPISODE_SEASON, VIDEODB_ID_EPISODE_BOOKMARK, m_pDS->fv("idBookmark").get_asInteger(), VIDEODB_ID_EPISODE_SORTSEASON, VIDEODB_ID_EPISODE_SORTEPISODE);
+        m_pDS2->query(strSQL2.c_str());
+        bookmark.episodeNumber = m_pDS2->fv(0).get_asLong();
+        bookmark.seasonNumber = m_pDS2->fv(1).get_asLong();
+        m_pDS2->close();
+      }
       bookmarks.push_back(bookmark);
       m_pDS->next();
     }
@@ -2129,12 +2144,31 @@ bool CVideoDatabase::GetResumeBookMark(const CStdString& strFilenameAndPath, CBo
 {
   VECBOOKMARKS bookmarks;
   GetBookMarksForFile(strFilenameAndPath, bookmarks, CBookmark::RESUME);
-  if(bookmarks.size()>0)
+  if (bookmarks.size() > 0)
   {
     bookmark = bookmarks[0];
     return true;
   }
   return false;
+}
+
+void CVideoDatabase::GetEpisodesByFile(const CStdString& strFilenameAndPath, vector<CVideoInfoTag>& episodes)
+{
+  try
+  {
+    CStdString strSQL = FormatSQL("select episode.*,files.strFileName,path.strPath,tvshow.c%02d from episode join files on files.idFile=episode.idFile join tvshowlinkepisode on episode.idepisode=tvshowlinkepisode.idepisode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join path on files.idPath=path.idPath where files.idFile=%i order by episode.c%02d, episode.c%02d asc", VIDEODB_ID_TV_TITLE, GetFile(strFilenameAndPath), VIDEODB_ID_EPISODE_SORTSEASON, VIDEODB_ID_EPISODE_SORTEPISODE);
+    m_pDS->query(strSQL.c_str());
+    while (!m_pDS->eof())
+    {
+      episodes.push_back(GetDetailsForEpisode(m_pDS));
+      m_pDS->next();
+    }
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CVideoDatabase::GetEpisodesByFile(%s) failed", strFilenameAndPath.c_str());
+  }
 }
 
 //********************************************************************************************************************************
@@ -2150,18 +2184,18 @@ void CVideoDatabase::AddBookMarkToFile(const CStdString& strFilenameAndPath, con
       // parameter is anywhere in use in XBMC.
       lFileId = AddFile(strFilenameAndPath);
       if (lFileId < 0)
-        return ;
+        return;
     }
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
 
     CStdString strSQL;
     int idBookmark=-1;
-    if( type == CBookmark::RESUME ) // get the same resume mark bookmark each time type
+    if (type == CBookmark::RESUME) // get the same resume mark bookmark each time type
     {
       strSQL=FormatSQL("select idBookmark from bookmark where idFile=%i and type=1", lFileId);   
     }
-    else // get the same bookmark again, and update. not sure here as a dvd can have same time in multiple places, state will differ thou
+    else if (type == CBookmark::STANDARD) // get the same bookmark again, and update. not sure here as a dvd can have same time in multiple places, state will differ thou
     {
       /* get a bookmark within the same time as previous */
       double mintime = bookmark.timeInSeconds - 0.5f;
@@ -2169,14 +2203,16 @@ void CVideoDatabase::AddBookMarkToFile(const CStdString& strFilenameAndPath, con
       strSQL=FormatSQL("select idBookmark from bookmark where idFile=%i and type=%i and (timeInSeconds between %f and %f) and playerState='%s'", lFileId, (int)type, mintime, maxtime, bookmark.playerState.c_str());
     }
 
-    // get current id
-    m_pDS->query( strSQL.c_str() );
-    if (m_pDS->num_rows() != 0)
-      idBookmark = m_pDS->get_field_value("idBookmark").get_asInteger();            
-    m_pDS->close();
-
+    if (type != CBookmark::EPISODE)
+    {
+      // get current id
+      m_pDS->query( strSQL.c_str() );
+      if (m_pDS->num_rows() != 0)
+        idBookmark = m_pDS->get_field_value("idBookmark").get_asInteger();            
+      m_pDS->close();
+    }
     // update or insert depending if it existed before
-    if( idBookmark >= 0 )
+    if (idBookmark >= 0 )
       strSQL=FormatSQL("update bookmark set timeInSeconds = %f, thumbNailImage = '%s', player = '%s', playerState = '%s' where idBookmark = %i", bookmark.timeInSeconds, bookmark.thumbNailImage.c_str(), bookmark.player.c_str(), bookmark.playerState.c_str(), idBookmark);
     else
       strSQL=FormatSQL("insert into bookmark (idBookmark, idFile, timeInSeconds, thumbNailImage, player, playerState, type) values(NULL,%i,%f,'%s','%s','%s', %i)", lFileId, bookmark.timeInSeconds, bookmark.thumbNailImage.c_str(), bookmark.player.c_str(), bookmark.playerState.c_str(), (int)type);
@@ -2202,13 +2238,19 @@ void CVideoDatabase::ClearBookMarkOfFile(const CStdString& strFilenameAndPath, C
     /* should be no problem since we never add bookmarks that are closer than that   */
     double mintime = bookmark.timeInSeconds - 0.5f;
     double maxtime = bookmark.timeInSeconds + 0.5f;
-    CStdString strSQL=FormatSQL("select idBookmark from bookmark where idFile=%i and type=%i and (timeInSeconds between %f and %f)", lFileId, type, mintime, maxtime);
+    CStdString strSQL = FormatSQL("select idBookmark from bookmark where idFile=%i and type=%i and playerState like '%s' and player like '%s' and (timeInSeconds between %f and %f)", lFileId, type, bookmark.playerState.c_str(), bookmark.player.c_str(), mintime, maxtime);
+
     m_pDS->query( strSQL.c_str() );
     if (m_pDS->num_rows() != 0)
     {
       int idBookmark = m_pDS->get_field_value("idBookmark").get_asInteger();
       strSQL=FormatSQL("delete from bookmark where idBookmark=%i",idBookmark);
       m_pDS->exec(strSQL.c_str());
+      if (type == CBookmark::EPISODE)
+      {
+        strSQL=FormatSQL("update episode set c%02d=-1 where idFile=%i and c%02d=%i", VIDEODB_ID_EPISODE_BOOKMARK, lFileId, VIDEODB_ID_EPISODE_BOOKMARK, idBookmark);
+        m_pDS->exec(strSQL.c_str());
+      }
     }
 
     m_pDS->close();
@@ -2231,10 +2273,80 @@ void CVideoDatabase::ClearBookMarksOfFile(const CStdString& strFilenameAndPath, 
 
     CStdString strSQL=FormatSQL("delete from bookmark where idFile=%i and type=%i", lFileId, (int)type);
     m_pDS->exec(strSQL.c_str());
+    if (type == CBookmark::EPISODE)
+    {
+      strSQL=FormatSQL("update episode set c%02d=-1 where idFile=%i", VIDEODB_ID_EPISODE_BOOKMARK, lFileId);
+      m_pDS->exec(strSQL.c_str());
+    }
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "CVideoDatabase::ClearBookMarksOfMovie(%s) failed", strFilenameAndPath.c_str());
+  }
+}
+
+
+bool CVideoDatabase::GetBookMarkForEpisode(const CVideoInfoTag& tag, CBookmark& bookmark)
+{
+  try
+  {
+    CStdString strSQL = FormatSQL("select bookmark.* from bookmark join episode on episode.c%02d=bookmark.idBookmark where episode.idEpisode=%i", VIDEODB_ID_EPISODE_BOOKMARK, tag.m_iDbId);
+    m_pDS->query( strSQL.c_str() );
+    if (!m_pDS->eof())
+    {
+      bookmark.timeInSeconds = m_pDS->fv("timeInSeconds").get_asDouble();
+      bookmark.thumbNailImage = m_pDS->fv("thumbNailImage").get_asString();
+      bookmark.playerState = m_pDS->fv("playerState").get_asString();
+      bookmark.player = m_pDS->fv("player").get_asString();
+      bookmark.type = (CBookmark::EType)m_pDS->fv("type").get_asInteger();
+    }
+    else 
+    {
+      m_pDS->close();
+      return false;
+    }
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CVideoDatabase::GetBookMarkForEpisode failed!");
+    return false;
+  }
+  return true;
+}
+
+void CVideoDatabase::AddBookMarkForEpisode(const CVideoInfoTag& tag, const CBookmark& bookmark)
+{
+  try
+  {
+    long lFileId = GetFile(tag.m_strFileNameAndPath);
+    // delete the current episode for the selected episode number
+    CStdString strSQL = FormatSQL("delete from bookmark where idBookmark in (select c%02d from episode where c%02d=%i and c%02d=%i and idFile=%i)", VIDEODB_ID_EPISODE_BOOKMARK, VIDEODB_ID_EPISODE_SEASON, tag.m_iSeason, VIDEODB_ID_EPISODE_EPISODE, tag.m_iEpisode, lFileId);
+    m_pDS->exec(strSQL.c_str());
+
+    AddBookMarkToFile(tag.m_strFileNameAndPath, bookmark, CBookmark::EPISODE);
+    long lBookmarkId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
+    strSQL = FormatSQL("update episode set c%02d=%i where c%02d=%i and c%02d=%i and idFile=%i", VIDEODB_ID_EPISODE_BOOKMARK, lBookmarkId, VIDEODB_ID_EPISODE_SEASON, tag.m_iSeason, VIDEODB_ID_EPISODE_EPISODE, tag.m_iEpisode, lFileId);
+    m_pDS->exec(strSQL.c_str());
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CVideoDatabase::AddBookMarkForEpisode(%i) failed", tag.m_iDbId);
+  }
+}
+
+void CVideoDatabase::DeleteBookMarkForEpisode(const CVideoInfoTag& tag)
+{
+  try
+  {
+    CStdString strSQL = FormatSQL("delete from bookmark where idBookmark in (select c%02d from episode where idEpisode=%i)", VIDEODB_ID_EPISODE_BOOKMARK, tag.m_iDbId);
+    m_pDS->exec(strSQL.c_str());
+    strSQL = FormatSQL("update episode set c%02d=-1 where idEpisode=%i", VIDEODB_ID_EPISODE_BOOKMARK, tag.m_iDbId);
+    m_pDS->exec(strSQL.c_str());
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CVideoDatabase::DeleteBookMarkForEpisode(%i) failed", tag.m_iDbId);
   }
 }
 
@@ -3116,6 +3228,16 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     {
       // add the thumb column to the actors table
       m_pDS->exec("alter table actors add strThumb text");
+    }
+    if (iVersion < 13)
+    {
+      // add some indices
+      m_pDS->exec("CREATE INDEX ix_bookmark ON bookmark (idFile)");
+      CStdString createColIndex;
+      createColIndex.Format("CREATE INDEX ix_episode_season_episode on episode (c%02d, c%02d)", VIDEODB_ID_EPISODE_SEASON, VIDEODB_ID_EPISODE_EPISODE);
+      m_pDS->exec(createColIndex.c_str());
+      createColIndex.Format("CREATE INDEX ix_episode_bookmark on episode (c%02d)", VIDEODB_ID_EPISODE_BOOKMARK);
+      m_pDS->exec(createColIndex.c_str());
     }
   }
   catch (...)

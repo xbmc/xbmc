@@ -672,9 +672,8 @@ namespace VIDEO
       items.Add(new CFileItem(*item));
 
     // enumerate
-    CStdStringArray expression = g_advancedSettings.m_tvshowTwoPartStackRegExps;
-    unsigned int iTwoParters=expression.size();
-    expression.insert(expression.end(),g_advancedSettings.m_tvshowStackRegExps.begin(),g_advancedSettings.m_tvshowStackRegExps.end());
+    CStdStringArray expression = g_advancedSettings.m_tvshowStackRegExps;
+
     for (int i=0;i<items.Size();++i)
     {
       if (items[i]->m_bIsFolder)
@@ -682,8 +681,10 @@ namespace VIDEO
       CStdString strPath;
       CUtil::GetDirectory(items[i]->m_strPath,strPath);
       CUtil::RemoveSlashAtEnd(strPath); // want no slash for the test that follows
+
       if (CUtil::GetFileName(strPath).Equals("sample"))
         continue;
+
       for (unsigned int j=0;j<expression.size();++j)
       {
         CRegExp reg;
@@ -692,10 +693,13 @@ namespace VIDEO
         CStdString strLabel=items[i]->m_strPath;
         strLabel.MakeLower();
         CLog::Log(LOGDEBUG,"running expression %s on label %s",expression[j].c_str(),strLabel.c_str());
-        if (reg.RegFind(strLabel.c_str()) > -1)
+        int regexppos, regexp2pos;
+
+        if ((regexppos = reg.RegFind(strLabel.c_str())) > -1)
         {
           char* season = reg.GetReplaceString("\\1");
           char* episode = reg.GetReplaceString("\\2");
+
           if (season && episode)
           {
             CLog::Log(LOGDEBUG,"found match %s %s %s",strLabel.c_str(),season,episode);
@@ -705,8 +709,43 @@ namespace VIDEO
             CIMDBUrl url;
             url.m_scrURL.push_back(CScraperUrl(items[i]->m_strPath));
             episodeList.insert(std::make_pair<std::pair<int,int>,CIMDBUrl>(key,url));
-            if (j >= iTwoParters)
+
+            // check the remainder of the string for any further episodes.
+            CRegExp reg2;
+            if (!reg2.RegComp(g_advancedSettings.m_tvshowMultiPartStackRegExp))
               break;
+
+            char *remainder = reg.GetReplaceString("\\3");
+            int offset = 0;
+            
+            // we want "long circuit" OR below so that both offsets are evaluated
+            while (((regexp2pos = reg2.RegFind(remainder + offset)) > -1) | ((regexppos = reg.RegFind(remainder + offset)) > -1)) 
+            {
+              if (((regexppos <= regexp2pos) && regexppos != -1) ||
+                 (regexppos >= 0 && regexp2pos == -1))
+              {
+                season = reg.GetReplaceString("\\1");
+                episode = reg.GetReplaceString("\\2");
+                key.first = atoi(season);
+                key.second = atoi(episode);
+                free(season);
+                free(episode);
+                CLog::Log(LOGDEBUG, "adding new season %u, multipart episode %u", key.first, key.second);
+                episodeList.insert(std::make_pair<std::pair<int,int>,CIMDBUrl>(key,url));
+                remainder = reg.GetReplaceString("\\3");
+                offset = 0;
+              } 
+              else if (((regexp2pos < regexppos) && regexp2pos != -1) ||
+                       (regexp2pos >= 0 && regexppos == -1))
+              {
+                episode = reg2.GetReplaceString("\\1");
+                key.second = atoi(episode);
+                free(episode);
+                CLog::Log(LOGDEBUG, "adding multipart episode %u", key.second);
+                episodeList.insert(std::make_pair<std::pair<int,int>,CIMDBUrl>(key,url));
+                offset += regexp2pos + reg2.GetFindLen();
+              }
+            }
           }
         }
       }

@@ -28,11 +28,13 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
 #include "Picture.h"
+#include "GUIDialogContextMenu.h"
 
 #define BOOKMARK_THUMB_WIDTH g_advancedSettings.m_thumbSize
 
-#define CONTROL_ADD_BOOKMARK     2
-#define CONTROL_CLEAR_BOOKMARKS  3
+#define CONTROL_ADD_BOOKMARK          2
+#define CONTROL_CLEAR_BOOKMARKS       3
+#define CONTROL_ADD_EPISODE_BOOKMARK  4
 
 #define CONTROL_LIST             10
 #define CONTROL_THUMBS           11
@@ -52,6 +54,7 @@ bool CGUIDialogVideoBookmarks::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
+      CUtil::DeleteVideoDatabaseDirectoryCache();
       Clear();
     }
     break;
@@ -75,6 +78,10 @@ bool CGUIDialogVideoBookmarks::OnMessage(CGUIMessage& message)
       {
         ClearBookmarks();
       }
+      else if (iControl == CONTROL_ADD_EPISODE_BOOKMARK)
+      {
+        AddEpisodeBookmark();
+      }
       else if (m_viewControl.HasControl(iControl))  // list/thumb control
       {
         int iItem = m_viewControl.GetSelectedItem();
@@ -85,13 +92,16 @@ bool CGUIDialogVideoBookmarks::OnMessage(CGUIMessage& message)
           {
             CVideoDatabase videoDatabase;
             videoDatabase.Open();
-            videoDatabase.ClearBookMarkOfFile(g_application.CurrentFile(),m_bookmarks[iItem]);
+            videoDatabase.ClearBookMarkOfFile(g_application.CurrentFile(),m_bookmarks[iItem],m_bookmarks[iItem].type);
             videoDatabase.Close();
+            CUtil::DeleteVideoDatabaseDirectoryCache();
           }
           Update();
         }
         else if (iAction == ACTION_SELECT_ITEM)
+        {
           GotoBookmark(iItem);
+        }
       }
     }
     break;
@@ -118,10 +128,28 @@ void CGUIDialogVideoBookmarks::Update()
   CVideoDatabase videoDatabase;
   videoDatabase.Open();
   videoDatabase.GetBookMarksForFile(g_application.CurrentFile(), m_bookmarks);
-
+  videoDatabase.GetBookMarksForFile(g_application.CurrentFile(), m_bookmarks, CBookmark::EPISODE, true);
   /* push in the resume mark first */
   if( videoDatabase.GetResumeBookMark(g_application.CurrentFile(), resumemark) )
     m_bookmarks.insert(m_bookmarks.begin(), resumemark);
+  
+  if (g_application.CurrentFileItem().HasVideoInfoTag() && g_application.CurrentFileItem().GetVideoInfoTag()->m_iEpisode > -1)
+  {
+    vector<CVideoInfoTag> episodes;
+    videoDatabase.GetEpisodesByFile(g_application.CurrentFile(),episodes);
+    if (episodes.size() > 1)
+    {
+      CONTROL_ENABLE(CONTROL_ADD_EPISODE_BOOKMARK);
+    }
+    else
+    {
+      CONTROL_DISABLE(CONTROL_ADD_EPISODE_BOOKMARK);
+    }
+  }
+  else
+  {
+    CONTROL_DISABLE(CONTROL_ADD_EPISODE_BOOKMARK);
+  }
 
   videoDatabase.Close();
 
@@ -135,11 +163,14 @@ void CGUIDialogVideoBookmarks::Update()
   // cycle through each stored bookmark and add it to our list control
   for (unsigned int i = 0; i < m_bookmarks.size(); ++i)
   {
-    if( m_bookmarks[i].type == CBookmark::RESUME )
+    if (m_bookmarks[i].type == CBookmark::RESUME)
       m_bookmarks[i].thumbNailImage = "bookmark-resume.png";
 
     CStdString bookmarkTime;
-    StringUtils::SecondsToTimeString((long)m_bookmarks[i].timeInSeconds, bookmarkTime, TIME_FORMAT_HH_MM_SS);
+    if (m_bookmarks[i].type == CBookmark::EPISODE)
+      bookmarkTime.Format("%s %i %s %i", g_localizeStrings.Get(20373), m_bookmarks[i].seasonNumber, g_localizeStrings.Get(20359).c_str(), m_bookmarks[i].episodeNumber);
+    else
+      StringUtils::SecondsToTimeString((long)m_bookmarks[i].timeInSeconds, bookmarkTime, TIME_FORMAT_HH_MM_SS);
 
     CFileItem *item = new CFileItem(bookmarkTime);
     item->SetThumbnailImage(m_bookmarks[i].thumbNailImage);
@@ -171,11 +202,12 @@ void CGUIDialogVideoBookmarks::ClearBookmarks()
   videoDatabase.Open();
   videoDatabase.ClearBookMarksOfFile(g_application.CurrentFile(), CBookmark::STANDARD);
   videoDatabase.ClearBookMarksOfFile(g_application.CurrentFile(), CBookmark::RESUME);
+  videoDatabase.ClearBookMarksOfFile(g_application.CurrentFile(), CBookmark::EPISODE);
   videoDatabase.Close();
   Update();
 }
 
-void CGUIDialogVideoBookmarks::AddBookmark()
+void CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
 {
   CVideoDatabase videoDatabase;
   CBookmark bookmark;
@@ -225,7 +257,10 @@ void CGUIDialogVideoBookmarks::AddBookmark()
   }
   lock.Leave();
   videoDatabase.Open();
-  videoDatabase.AddBookMarkToFile(g_application.CurrentFile(), bookmark, CBookmark::STANDARD);
+  if (tag)
+    videoDatabase.AddBookMarkForEpisode(*tag, bookmark);
+  else
+    videoDatabase.AddBookMarkToFile(g_application.CurrentFile(), bookmark, CBookmark::STANDARD);
   videoDatabase.Close();
   Update();
 }
@@ -249,4 +284,43 @@ CGUIControl *CGUIDialogVideoBookmarks::GetFirstFocusableControl(int id)
   if (m_viewControl.HasControl(id))
     id = m_viewControl.GetCurrentControl();
   return CGUIWindow::GetFirstFocusableControl(id);
+}
+
+void CGUIDialogVideoBookmarks::AddEpisodeBookmark()
+{
+  vector<CVideoInfoTag> episodes;
+  CVideoDatabase videoDatabase;
+  float posX = 0;
+  float posY = 0;
+  videoDatabase.Open();
+  videoDatabase.GetEpisodesByFile(g_application.CurrentFile(), episodes);
+  videoDatabase.Close();
+  if(episodes.size() > 0)
+  {
+    CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+    map<int, CVideoInfoTag*> buttons;
+    const CGUIControl *pList = GetControl(CONTROL_ADD_EPISODE_BOOKMARK);
+    if (pList)
+    {
+      posX = pList->GetXPosition() + pList->GetWidth() / 2;
+      posY = pList->GetYPosition() + pList->GetHeight() / 2;
+    }
+    if (pMenu)
+    {
+      pMenu->Initialize();
+      for (unsigned int i=0; i < episodes.size(); ++i)
+      {
+        CStdString strButton;
+        strButton.Format("%s %i, %s %i", g_localizeStrings.Get(20373), episodes[i].m_iSeason, g_localizeStrings.Get(20359).c_str(), episodes[i].m_iEpisode);
+        buttons[pMenu->AddButton(strButton)] = &episodes[i];
+      }
+
+      pMenu->SetPosition(GetPosX() + posX - pMenu->GetWidth() / 2, GetPosY() + posY - pMenu->GetHeight());
+      pMenu->DoModal(GetID());
+
+      int pressed = pMenu->GetButton();
+      if (buttons.find(pressed) != buttons.end())
+        AddBookmark(buttons[pressed]);
+    }
+  }
 }
