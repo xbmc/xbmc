@@ -5,6 +5,7 @@
 class DllMadCodecInterface
 {
 public:
+  virtual ~DllMadCodecInterface() {}
   virtual IAudioDecoder* CreateAudioDecoder (unsigned int type, IAudioOutput **output)=0;
 };
 

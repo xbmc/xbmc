@@ -4,6 +4,7 @@
 class DllCubeInterface
 {
 public:
+    virtual ~DllCubeInterface() {}
     virtual int Init()=0;
     virtual int LoadADX(const char* szFileName, int* sampleRate, int* samleSize, int* channels)=0;
     virtual void FreeADX(int adl)=0;
