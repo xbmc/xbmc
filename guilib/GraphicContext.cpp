@@ -587,8 +587,13 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     g_advancedSettings.m_fullScreen = 1;
     m_bFullScreenRoot = true;
   }
+  if (res==WINDOW)
+  {
+    g_advancedSettings.m_fullScreen = 0;
+    m_bFullScreenRoot = true;
+  }
 
-  if (m_Resolution != res)
+  if (res==WINDOW || (m_Resolution != res))
   {
     Lock();
     m_iScreenWidth = g_settings.m_ResInfo[res].iWidth;
@@ -600,7 +605,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0, (bool)g_advancedSettings.m_fullScreen);
     //m_screenSurface = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 32, options);
 #elif defined(HAS_SDL_OPENGL)
-    int options = 0;
+    int options = SDL_RESIZABLE;
     if (g_advancedSettings.m_fullScreen) options |= SDL_FULLSCREEN;
 
     // Create a bare root window so that SDL Input handling works
@@ -827,6 +832,10 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     snprintf(g_settings.m_ResInfo[res].strMode, sizeof(g_settings.m_ResInfo[res].strMode), 
              "%dx%d (Desktop)", g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight);
     break;
+  case WINDOW:
+    g_settings.m_ResInfo[WINDOW] = g_settings.m_ResInfo[PAL60_4x3];
+    g_settings.m_ResInfo[WINDOW].fPixelRatio = 1.0f;
+    break;
   default:
     break;
   }
@@ -842,7 +851,7 @@ float CGraphicContext::GetPixelRatio(RESOLUTION iRes) const
   if (iRes == PAL_16x9) return 128.0f / 117.0f*4.0f / 3.0f;
   // TODO: use XRandR to query physical size and obtain exact pixel ratio
   // for now, just assume square pixels (most monitors' native resolution)
-  if (iRes >= DESKTOP) return 1.0f;
+  if (iRes >= WINDOW) return 1.0f;
   return 128.0f / 117.0f;
 }
 
