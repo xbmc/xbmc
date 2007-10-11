@@ -311,10 +311,7 @@ void CDVDPlayer::Process()
 
           // stream is holding back data untill demuxer has flushed
           if(pStream->IsHeld())
-          {
             pStream->SkipHold();
-            continue;
-          }
 
           // stills will be skipped
           if(m_dvd.state == DVDSTATE_STILL)
@@ -331,12 +328,15 @@ void CDVDPlayer::Process()
               }
             }
             Sleep(100);
-            continue;
           }
+
+          // we don't consider dvd's ended untill navigator tells us so
+          CLog::Log(LOGINFO, "%s - EOF reading from demuxer", __FUNCTION__);
+          continue;          
         }
-        
+
         // any demuxer supporting non blocking reads, should return empty packates
-        CLog::Log(LOGERROR, "%s - EOF reading from demuxer", __FUNCTION__);
+        CLog::Log(LOGINFO, "%s - EOF reading from demuxer", __FUNCTION__);
         break;
       }
 
