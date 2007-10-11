@@ -12,8 +12,8 @@
 //////////////////////////////////////////////////////////////////////
 
 CVisualisation::CVisualisation(struct Visualisation* pVisz, DllVisualisation* pDll, const CStdString& strVisualisationName)
-    : m_pDll(pDll)
-    , m_pVisz(pVisz)
+    : m_pVisz(pVisz)
+    , m_pDll(pDll)
     , m_strVisualisationName(strVisualisationName)
 {}
 
