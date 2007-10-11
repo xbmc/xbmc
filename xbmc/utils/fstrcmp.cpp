@@ -43,8 +43,10 @@
 
 #include "fstrcmp.h"
 
+#ifndef __GNUC__
+#pragma warning( disable : 4244 )
+#endif
 
-#pragma warning( disable : 4244 ) 
 /*
  * Data on one input string being compared.
  */

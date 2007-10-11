@@ -8,6 +8,7 @@ class IHttpHeaderCallback
 {
 public:
   virtual void ParseHeaderData(CStdString strData) = 0;
+  virtual ~IHttpHeaderCallback() { }
 };
 
 namespace XCURL

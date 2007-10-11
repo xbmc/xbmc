@@ -10,9 +10,9 @@
 void win32_exception::writelog(const char *prefix)  const
 {
   if( prefix )
-    CLog::Log(LOGERROR, "%s : %s (code:0x%08x) at 0x%08x", prefix, what(), code(), where());
+    CLog::Log(LOGERROR, "%s : %s (code:0x%08x) at 0x%08x", prefix, what(), (unsigned int) code(), (unsigned int) where());
   else
-    CLog::Log(LOGERROR, "%s (code:0x%08x) at 0x%08x", what(), code(), where());
+    CLog::Log(LOGERROR, "%s (code:0x%08x) at 0x%08x", what(), (unsigned int) code(), (unsigned int) where());
 }
 
 
@@ -52,7 +52,7 @@ win32_exception::win32_exception(const EXCEPTION_RECORD& info)
 void win32_exception::writelog(const char *prefix)  const
 {
   if( prefix )
-    CLog::Log(LOGERROR, "%s : %s (code:0x%08x) at 0x%08x", prefix, what(), code(), where());
+    CLog::Log(LOGERROR, "%s : %s (code:0x%08x) at 0x%08x", prefix, (unsigned int) what(), code(), where());
   else
     CLog::Log(LOGERROR, "%s (code:0x%08x) at 0x%08x", what(), code(), where());
 }
