@@ -229,7 +229,7 @@ compile() {
     else
       make -j${CORES} -C "${SOURCEDIR}" 2>&1 | tee "${SOURCEDIR}/compile.log" | grep -E "Linking|Building|Compiling"
     fi
-    grep Error "${SOURCEDIR}/compile.log"
+    grep " Error " "${SOURCEDIR}/compile.log"
     if [[ $? == "0" ]]
     then
       echo
