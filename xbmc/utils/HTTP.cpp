@@ -70,9 +70,9 @@ int base64_encode(const void *enc, int encLen, char *out, int outMax) {
 }
 
 CHTTP::CHTTP(const string& strProxyServer, int iProxyPort)
-    : m_strProxyServer(strProxyServer)
+    : m_socket(INVALID_SOCKET)
+    , m_strProxyServer(strProxyServer)
     , m_iProxyPort(iProxyPort)
-    , m_socket(INVALID_SOCKET)
 {
   m_strCookie = "";
 #ifndef _LINUX
@@ -340,7 +340,7 @@ bool CHTTP::Download(const string &strURL, const string &strFileName, LPDWORD pd
   HANDLE hFile = CreateFile(strFileName.c_str(), GENERIC_WRITE, FILE_SHARE_READ, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
   if (hFile == INVALID_HANDLE_VALUE)
   {
-    CLog::Log(LOGERROR, "Unable to open file %s: %d", strFileName.c_str(), GetLastError());
+    CLog::Log(LOGERROR, "Unable to open file %s: %lu", strFileName.c_str(), GetLastError());
     return false;
   }
   if (strData.size())
@@ -571,7 +571,11 @@ bool CHTTP::Send(char* pBuffer, int iLen)
 #else
   char *buf = pBuffer;
 #endif
-  DWORD n, flags;
+
+  DWORD n;
+#ifndef _LINUX 
+  DWORD flags;
+#endif
 
   while (iLen > 0)
   {
@@ -626,8 +630,11 @@ bool CHTTP::Recv(int iLen)
 #ifndef _LINUX
   WSABUF buf;
   WSAOVERLAPPED ovl;
+  DWORD flags;
+  DWORD n;
+#else
+  ssize_t n;
 #endif
-  DWORD n, flags;
   bool bUnknown = (iLen < 0);
 
   if (iLen > (BUFSIZE - m_RecvBytes) || bUnknown)

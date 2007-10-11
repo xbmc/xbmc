@@ -64,8 +64,8 @@ float CStopWatch::GetElapsedMilliseconds() const
 
 LONGLONG CStopWatch::GetTicks() const
 {
-  LARGE_INTEGER currTicks;
 #ifndef _LINUX
+  LARGE_INTEGER currTicks;
   QueryPerformanceCounter( &currTicks );
   return currTicks.QuadPart;
 #else
