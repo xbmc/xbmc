@@ -210,14 +210,14 @@ void CScraperParser::ReplaceBuffers(CStdString& strDest)
   for (int i=0;i<9;++i)
   {
     sprintf(temp,"$$%i",i+1);
-    int iIndex = 0;
+    size_t iIndex = 0;
     while ((iIndex = strDest.find(temp,iIndex)) != CStdString::npos) // COPIED FROM CStdString WITH THE ADDITION OF $ ESCAPING
     {
       strDest.replace(strDest.begin()+iIndex,strDest.begin()+iIndex+strlen(temp),m_param[i]);
       iIndex += m_param[i].length();
     }
   }
-  int iIndex = 0;
+  size_t iIndex = 0;
   while ((iIndex = strDest.find("\\n",iIndex))!=CStdString::npos)
     strDest.replace(strDest.begin()+iIndex,strDest.begin()+iIndex+2,"\n");
 }
@@ -339,7 +339,7 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
       {
         char temp[4];
         sprintf(temp,"\\%i",iBuf+1);
-        int i2=0;
+        size_t i2=0;
         while ((i2 = strOutput.Find(temp,i2)) != CStdString::npos)
         {
           strOutput.Insert(i2,"!!!CLEAN!!!");
@@ -352,7 +352,7 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
       {
         char temp[4];
         sprintf(temp,"\\%i",iBuf+1);
-        int i2=0;
+        size_t i2=0;
         while ((i2 = strOutput.Find(temp,i2)) != CStdString::npos)
         {
           strOutput.Insert(i2,"!!!TRIM!!!");
@@ -415,7 +415,7 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
         {
           CStdString strResultNoCase = strResult;
           strResultNoCase.ToLower();
-          if (strResultNoCase.Find(m_param[iCompare-1]) != CStdString::npos)
+          if ((size_t) strResultNoCase.Find(m_param[iCompare-1]) != CStdString::npos)
             dest += strResult;
         }
         else
@@ -495,11 +495,11 @@ const CStdString CScraperParser::Parse(const CStdString& strTag)
 
 void CScraperParser::Clean(CStdString& strDirty)
 {
-  int i=0;
+  size_t i=0;
   CStdString strBuffer;
   while ((i=strDirty.Find("!!!CLEAN!!!",i)) != CStdString::npos)
   {
-    int i2;
+    size_t i2;
     if ((i2=strDirty.Find("!!!CLEAN!!!",i+11)) != CStdString::npos)
     {
       strBuffer = strDirty.substr(i+11,i2-i-11);
@@ -519,7 +519,7 @@ void CScraperParser::Clean(CStdString& strDirty)
   i=0;
   while ((i=strDirty.Find("!!!TRIM!!!",i)) != CStdString::npos)
   {
-    int i2;
+    size_t i2;
     if ((i2=strDirty.Find("!!!TRIM!!!",i+10)) != CStdString::npos)
     {
       strBuffer = strDirty.substr(i+10,i2-i-10);
