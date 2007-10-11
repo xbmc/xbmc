@@ -264,6 +264,7 @@ void XBVideoConfig::GetModes()
      }
    }
    g_graphicsContext.ResetScreenParameters(DESKTOP);
+   g_graphicsContext.ResetScreenParameters(WINDOW);
 }
 #endif
 
@@ -310,7 +311,7 @@ bool XBVideoConfig::IsValidResolution(RESOLUTION res) const
     if (res == HDTV_720p && Has720p()) return true;
     if (res == HDTV_1080i && Has1080i()) return true;
   }
-  if (res>=DESKTOP && res<(CUSTOM+m_iNumResolutions))
+  if (res>=WINDOW && res<(CUSTOM+m_iNumResolutions))
   {
     return true;
   }
