@@ -60,6 +60,7 @@ enum APE_DECOMPRESS_FIELDS
 class DllMACDllInterface
 {
 public:
+  virtual ~DllMACDllInterface() {} 
   virtual int GetVersionNumber()=0;
   virtual int Seek(APE_DECOMPRESS_HANDLE, int)=0;
   virtual void Destroy(APE_DECOMPRESS_HANDLE)=0;

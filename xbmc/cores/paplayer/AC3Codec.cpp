@@ -289,7 +289,6 @@ int AC3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 #define HEADER_SIZEAC3 7
 int AC3Codec::Decode(BYTE* pData, int iSize)
 {
-  level_t level = 1.0f;
   sample_t bias = 384;
   m_DecoderError = false;
   

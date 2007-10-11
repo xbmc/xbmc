@@ -63,7 +63,7 @@ bool WAVPackCodec::Init(const CStdString &strFile, unsigned int filecache)
 
   if (m_SampleRate==0 || m_Channels==0 || m_BitsPerSample==0 || m_TotalTime==0)
   {
-    CLog::Log(LOGERROR, "WAVPackCodec: incomplete stream info from %s, SampleRate=%i, Channels=%i, BitsPerSample=%i, TotalTime=%i", strFile.c_str(), m_SampleRate, m_Channels, m_BitsPerSample, m_TotalTime);
+    CLog::Log(LOGERROR, "WAVPackCodec: incomplete stream info from %s, SampleRate=%i, Channels=%i, BitsPerSample=%i, TotalTime=%llu", strFile.c_str(), m_SampleRate, m_Channels, m_BitsPerSample, m_TotalTime);
     return false;
   }
 
@@ -117,7 +117,6 @@ void WAVPackCodec::DeInit()
 __int64 WAVPackCodec::Seek(__int64 iSeekTime)
 {
   m_BufferSize=m_BufferPos=0;
-  int NumSamples=m_dll.WavpackGetNumSamples(m_Handle);
   int SeekSample=(int)(m_SampleRate / 1000.0 * iSeekTime);
   if (m_dll.WavpackSeekSample(m_Handle, SeekSample))
   {
