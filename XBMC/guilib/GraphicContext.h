@@ -50,8 +50,9 @@ enum RESOLUTION {
   PAL60_4x3 = 8,
   PAL60_16x9 = 9,
   AUTORES = 10,
-  DESKTOP = 11,
-  CUSTOM = 12
+  WINDOW = 11,
+  DESKTOP = 12,
+  CUSTOM = 13
 };
 
 enum VSYNC {
