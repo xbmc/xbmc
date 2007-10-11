@@ -39,7 +39,7 @@ void CMouse::Update()
   // Check if we have an update...
   if (bMouseMoved)
   {
-    mouseState = SDL_GetMouseState(&x, &y);  
+    mouseState = SDL_GetMouseState(&x, &y);  
     posX = (float)x; if (posX < 0) posX = 0; if (posX > m_iMaxX) posX = (float)m_iMaxX;
     posY = (float)y; if (posY < 0) posY = 0; if (posY > m_iMaxY) posY = (float)m_iMaxY;
     m_bActive = true;
