@@ -310,35 +310,44 @@ void CXBApplicationEx::ReadInput()
 #ifdef HAS_SDL
   //SDL_PumpEvents();
 
+  static RESOLUTION windowres = WINDOW;
   SDL_Event event;
   g_Mouse.cWheel = 0; // Reset cWheel, necessary since mouse wheel is only handled through events in SDL
   if (SDL_PollEvent(&event))
   {
     switch(event.type)
     {
-      case SDL_QUIT:
-        g_application.getApplicationMessenger().Shutdown();
-        break;
+    case SDL_QUIT:
+      g_application.getApplicationMessenger().Shutdown();
+      break;
+      
+    case SDL_VIDEORESIZE:
+      g_settings.m_ResInfo[WINDOW].iWidth = event.resize.w;
+      g_settings.m_ResInfo[WINDOW].iHeight = event.resize.h; 
+      g_graphicsContext.ResetOverscan(g_settings.m_ResInfo[WINDOW]);
+      g_graphicsContext.SetVideoResolution(windowres, FALSE, false);
+      g_Mouse.SetResolution(g_settings.m_ResInfo[WINDOW].iWidth, g_settings.m_ResInfo[WINDOW].iHeight, 1, 1);
+      break;
 
 #ifdef HAS_SDL_JOYSTICK
-      case SDL_JOYBUTTONUP:
-      case SDL_JOYBUTTONDOWN:
-      case SDL_JOYAXISMOTION:
-      case SDL_JOYBALLMOTION:
-      case SDL_JOYHATMOTION:
-        g_Joystick.Update(event);
-        break;
+    case SDL_JOYBUTTONUP:
+    case SDL_JOYBUTTONDOWN:
+    case SDL_JOYAXISMOTION:
+    case SDL_JOYBALLMOTION:
+    case SDL_JOYHATMOTION:
+      g_Joystick.Update(event);
+      break;
 #endif
-      case SDL_KEYDOWN:
-        g_Keyboard.Update(event);
-        break;
-      case SDL_MOUSEBUTTONDOWN: // hack to get mouse wheel movement working, should be in CMouse::Update(), but SDL only handles mouse wheel through events
-        if (event.button.button == SDL_BUTTON_WHEELUP)
-          g_Mouse.cWheel = 1;
-        else if (event.button.button == SDL_BUTTON_WHEELDOWN)
-          g_Mouse.cWheel = -1;
-        break;
-     }     
+    case SDL_KEYDOWN:
+      g_Keyboard.Update(event);
+      break;
+    case SDL_MOUSEBUTTONDOWN: // hack to get mouse wheel movement working, should be in CMouse::Update(), but SDL only handles mouse wheel through events
+      if (event.button.button == SDL_BUTTON_WHEELUP)
+        g_Mouse.cWheel = 1;
+      else if (event.button.button == SDL_BUTTON_WHEELDOWN)
+        g_Mouse.cWheel = -1;
+      break;
+    }     
   }
 #else
   // Read the input from the keyboard
