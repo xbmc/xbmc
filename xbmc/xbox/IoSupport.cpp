@@ -125,7 +125,7 @@ HRESULT CIoSupport::MapDriveLetter(char cDriveLetter, char * szDevice)
   return E_FAIL;
 #else
   char upperLetter = toupper(cDriveLetter);
-  for (int i=0; i < NUM_OF_DRIVES; i++)
+  for (unsigned int i=0; i < NUM_OF_DRIVES; i++)
     if (driveMapping[i].cDriveLetter == upperLetter)
     {
       strcpy(driveMapping[i].szDevice, szDevice);
@@ -199,7 +199,7 @@ void CIoSupport::GetPartition(char cDriveLetter, char * szPartition)
     sprintf(szPartition, "Harddisk0\\Partition%u", upperLetter - 'A' + 1);
     return;
   }
-  for (int i=0; i < NUM_OF_DRIVES; i++)
+  for (unsigned int i=0; i < NUM_OF_DRIVES; i++)
     if (driveMapping[i].cDriveLetter == upperLetter)
     {
       strcpy(szPartition, driveMapping[i].szDevice);
@@ -211,7 +211,7 @@ void CIoSupport::GetPartition(char cDriveLetter, char * szPartition)
 const char* CIoSupport::GetPartition(char cDriveLetter)
 {
   char upperLetter = toupper(cDriveLetter);
-  for (int i=0; i < NUM_OF_DRIVES; i++)
+  for (unsigned int i=0; i < NUM_OF_DRIVES; i++)
     if (driveMapping[i].cDriveLetter == upperLetter)
       return driveMapping[i].szDevice;
   return NULL;
@@ -235,7 +235,7 @@ void CIoSupport::GetDrive(char * szPartition, char * cDriveLetter)
     *cDriveLetter = part_num + 'A' - 1;
     return;
   }
-  for (int i=0; i < NUM_OF_DRIVES; i++)
+  for (unsigned int i=0; i < NUM_OF_DRIVES; i++)
     if (strnicmp(driveMapping[i].szDevice, szPartition, strlen(driveMapping[i].szDevice)) == 0)
     {
       *cDriveLetter = driveMapping[i].cDriveLetter;
@@ -405,7 +405,6 @@ INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer
 {
 #ifdef HAS_DVD_DRIVE
 #ifdef _LINUX
-  DWORD dwBytesReturned;
   if (hDevice->m_bCDROM)
   {    
     int fd = hDevice->fd;
