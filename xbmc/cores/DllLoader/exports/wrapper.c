@@ -17,7 +17,8 @@ void dllfree(void*);
 int dll_open(const char* szFileName, int iMode);
 int dll_write(int fd, const void* buffer, unsigned int uiSize);
 int dll_read(int fd, void* buffer, unsigned int uiSize);
-long dll_lseek(int fd, long lPos, int iWhence);
+off_t dll_lseek(int fd, __off_t lPos, int iWhence);
+__off64_t dll_lseeki64(int fd, __off64_t lPos, int iWhence);
 int dll_close(int fd);
 
 FILE * dll_fopen (const char * filename, const char * mode);
@@ -98,7 +99,8 @@ __off_t __wrap_lseek(int fildes, __off_t offset, int whence)
 
 __off64_t __wrap_lseek64(int fildes, __off64_t offset, int whence)
 {
-  return dll_lseeki64(fildes, offset, whence);
+  __off64_t seekRes = dll_lseeki64(fildes, offset, whence);
+  return seekRes;
 }
 
 int __wrap_fclose(FILE *fp)
