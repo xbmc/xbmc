@@ -229,6 +229,7 @@ compile() {
     else
       make -j${CORES} -C "${SOURCEDIR}" 2>&1 | tee "${SOURCEDIR}/compile.log" | grep -E "Linking|Building|Compiling"
     fi
+
     grep " Error " "${SOURCEDIR}/compile.log"
     if [[ $? == "0" ]]
     then
@@ -337,7 +338,7 @@ copy() {
           cp -rf "${SOURCEDIR}/skin/Project Mayhem III/${J}" "${BUILDDIR}/skin/Project Mayhem III" &> /dev/null
         fi
       done
-    elif [[ $I == "userdata" ]]
+    elif [[ "$I" == "userdata" ]]
     then
       if [[ -e "$BACKUPDIR/UserData" ]]
       then
@@ -353,7 +354,7 @@ copy() {
       else
         cp -rf "${SOURCEDIR}/${I}" "$BUILDDIR" &> /dev/null
       fi
-    elif [[ $I == "web" ]]
+    elif [[ "$I" == "web" ]]
     then
       RAR="$(which unrar)"
       if [[ $RAR == "" ]]
@@ -365,7 +366,7 @@ copy() {
         mkdir -p "$BUILDDIR/web" &> /dev/null
         "$RAR" x -y -inul "$WEB" "$BUILDDIR/web/"
       fi
-    elif [[ $I == "XboxMediaCenter" ]]
+    elif [[ "$I" == "XboxMediaCenter" ]]
     then
       mv "${SOURCEDIR}/${I}" "$BUILDDIR" &> /dev/null
     else
