@@ -1544,6 +1544,8 @@ CStdString CSysInfo::GetKernelVersion()
     strKernel.Format("%s %s %s %s %s",g_localizeStrings.Get(13283), un.sysname, un.release, un.version, un.machine);
     return strKernel;
   }
+
+  return "";
 #else
   return "";
 #endif
