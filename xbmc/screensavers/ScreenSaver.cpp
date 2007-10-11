@@ -12,8 +12,8 @@
 //////////////////////////////////////////////////////////////////////
 
 CScreenSaver::CScreenSaver(struct ScreenSaver* pScr, DllScreensaver* pDll, const CStdString& strScreenSaverName)
-    : m_pDll(pDll)
-    , m_pScr(pScr)
+    : m_pScr(pScr)
+    , m_pDll(pDll)
     , m_strScreenSaverName(strScreenSaverName)
 {}
 

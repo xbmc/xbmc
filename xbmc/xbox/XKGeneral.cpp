@@ -170,8 +170,6 @@ DWORD XKGeneral::HexStrToDWORD(LPBYTE StringData, LPDWORD pBufferLen, BOOL Remov
 //RemoveInvalid indacates if invalid values should be Zero or removed..
 void XKGeneral::HexStrToBytes(LPBYTE StringData, LPDWORD pBufferLen, BOOL RemoveInvalid)
 {
-  UCHAR retVal = 0x00;
-
   DWORD dwSize = *pBufferLen;
   LPSTR sData = new CHAR[dwSize + 1];
 

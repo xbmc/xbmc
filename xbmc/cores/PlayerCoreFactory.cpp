@@ -51,8 +51,10 @@ IPlayer* CPlayerCoreFactory::CreatePlayer(const EPLAYERCORES eCore, IPlayerCallb
 #endif
 //    case EPC_SIDPLAYER: return new SidPlayer(callback);
     case EPC_PAPLAYER: return new PAPlayer(callback); // added by dataratt
-  }
-  return NULL;
+
+    default:
+       return NULL; 
+  }  
 }
 
 EPLAYERCORES CPlayerCoreFactory::GetPlayerCore(const CStdString& strCore)
@@ -77,8 +79,8 @@ CStdString CPlayerCoreFactory::GetPlayerName(const EPLAYERCORES eCore)
     case EPC_MODPLAYER: return "MODPlayer";
 //    case EPC_SIDPLAYER: return "SIDPlayer";
     case EPC_PAPLAYER: return "PAPlayer";
+    default: return "";
   }
-  return "";
 }
 
 void CPlayerCoreFactory::GetPlayers( VECPLAYERCORES &vecCores )

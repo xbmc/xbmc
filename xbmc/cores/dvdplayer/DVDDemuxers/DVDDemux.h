@@ -40,6 +40,8 @@ public:
     disabled = false;
   }
 
+  virtual ~CDemuxStream() {}
+
   virtual void GetStreamInfo(std::string& strInfo)
   {
     strInfo = "";
@@ -73,6 +75,7 @@ public:
     type = STREAM_VIDEO;
   }
 
+  virtual ~CDemuxStreamVideo() {}
   int iFpsScale; // scale of 1000 and a rate of 29970 will result in 29.97 fps
   int iFpsRate;
   int iHeight; // height of the stream reported by the demuxer
@@ -88,6 +91,8 @@ public:
     iSampleRate = 0;
     type = STREAM_AUDIO;
   }
+
+  virtual ~CDemuxStreamAudio() {}
 
   void GetStreamType(std::string& strInfo);
 
