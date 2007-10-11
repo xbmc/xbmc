@@ -447,7 +447,7 @@ extern "C"
     return -1;
   }
 
-  __int64 dll_lseeki64(int fd, __int64 lPos, int iWhence)
+  __off64_t dll_lseeki64(int fd, __off64_t lPos, int iWhence)
   {
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
     if (pFile != NULL)
@@ -467,11 +467,11 @@ extern "C"
     return (__int64)-1;
   }
 
-  long dll_lseek(int fd, long lPos, int iWhence)
+  __off_t dll_lseek(int fd, __off_t lPos, int iWhence)
   {
     if (g_emuFileWrapper.DescriptorIsEmulatedFile(fd))
     {
-      return (long)dll_lseeki64(fd, (__int64)lPos, iWhence);
+      return (__off_t)dll_lseeki64(fd, (__off_t)lPos, iWhence);
     }
     else if (!IS_STD_DESCRIPTOR(fd))
     {
@@ -488,7 +488,7 @@ extern "C"
     int fd = g_emuFileWrapper.GetDescriptorByStream(stream);
     if (fd >= 0)
     {
-      dll_lseeki64(fd, (__int64)0, SEEK_SET);
+      dll_lseeki64(fd, 0, SEEK_SET);
     }
     else if (!IS_STD_STREAM(stream))
     {
@@ -1114,7 +1114,7 @@ extern "C"
 #ifndef _LINUX
       if (dll_lseeki64(fd, *pos, SEEK_SET) >= 0)
 #else
-      if (dll_lseeki64(fd, (long long int)pos->__pos, SEEK_SET) >= 0)
+      if (dll_lseeki64(fd, (__off64_t)pos->__pos, SEEK_SET) >= 0)
 #endif
       {
         return 0;
