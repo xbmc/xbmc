@@ -321,12 +321,12 @@ copy() {
   for I in credits language media screensavers scripts skin sounds system userdata visualisations web XboxMediaCenter README.linux demo-asoundrc copying.txt Changelog.txt
   do
     printf "\r Copying %-16.16s" $I 
-    if [[ $I == "skin" ]]
+    if [[ "$I" == "skin" ]]
     then
       mkdir -p "${BUILDDIR}/skin/Project Mayhem III" &> /dev/null
-      if [[ -e $BACKUPDIR/skin ]]
+      if [[ -e "$BACKUPDIR/skin" ]]
       then
-        cp -rf "$BACKUPDIR/skin/*" "$BUILDDIR/skin/" &> /dev/null
+        cp -rf "$BACKUPDIR/skin/"* "$BUILDDIR/skin/" &> /dev/null
       fi
       for J in $(ls "${SOURCEDIR}/skin/Project Mayhem III")
       do
@@ -346,7 +346,7 @@ copy() {
       else
         cp -rf "${SOURCEDIR}/${I}" "$BUILDDIR" &> /dev/null
       fi
-    elif [[ $I == "scripts" ]] 
+    elif [[ "$I" == "scripts" ]] 
     then
       if [[ -e "$BACKUPDIR/scripts" ]]
       then
