@@ -4,6 +4,7 @@
 class DllNosefartInterface
 {
 public:
+    virtual ~DllNosefartInterface() {}
     virtual int LoadNSF(const char* szFileName)=0;
     virtual void FreeNSF(int)=0;
     virtual int StartPlayback(int nsf, int track)=0;

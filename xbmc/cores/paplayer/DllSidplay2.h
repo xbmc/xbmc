@@ -4,6 +4,7 @@
 class DllSidplay2Interface
 {
 public:
+    virtual ~DllSidplay2Interface() {}
     virtual int Init()=0;
     virtual int LoadSID(const char* szFileName)=0;
     virtual void FreeSID(int sid)=0;

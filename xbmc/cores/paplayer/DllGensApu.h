@@ -4,6 +4,7 @@
 class DllGensApuInterface
 {
 public:
+    virtual ~DllGensApuInterface() {}
     virtual int Init()=0;
     virtual int LoadGYM(const char* szFileName)=0;
     virtual void FreeGYM(int gym)=0;

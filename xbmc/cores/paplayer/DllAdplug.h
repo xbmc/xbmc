@@ -4,6 +4,7 @@
 class DllAdplugInterface
 {
 public:
+    virtual ~DllAdplugInterface() {}
     virtual int Init()=0;
     virtual int LoadADL(const char* szFileName)=0;
     virtual void FreeADL(int adl)=0;

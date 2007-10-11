@@ -7,6 +7,7 @@
 class DllVorbisfileInterface
 {
 public:
+    virtual ~DllVorbisfileInterface() {}
     virtual int ov_clear(OggVorbis_File *vf)=0;
     virtual int ov_open(FILE *f,OggVorbis_File *vf,char *initial,long ibytes)=0;
     virtual int ov_open_callbacks(void *datasource, OggVorbis_File *vf,
