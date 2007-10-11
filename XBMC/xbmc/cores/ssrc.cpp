@@ -3292,7 +3292,7 @@ int Cssrc::UpSampleCommon(unsigned char * *pRetDataPtr, bool IsEof, int toberead
   for (ch = 0;ch < nch;ch++)
   {
     REAL *op = &outbuf[ch];
-    int fdo = fs1 / (dfrq * osf), no = n1y * osf;
+    int /* fdo = fs1 / (dfrq * osf), */ no = n1y * osf;
 
     s1p = s1p_backup; ip = ip_backup + ch;
 
