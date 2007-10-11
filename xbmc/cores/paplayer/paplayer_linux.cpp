@@ -165,7 +165,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 
 void PAPlayer::UpdateCrossFadingTime(const CFileItem& file)
 {
-  if (m_crossFading = g_guiSettings.GetInt("musicplayer.crossfade"))
+  if ((m_crossFading = g_guiSettings.GetInt("musicplayer.crossfade")))
   {
     if (
       m_crossFading &&
@@ -355,8 +355,8 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
 			   "period duration: %d", 
                m_SampleRateOutput, 
  			   channels,
-			   m_periods[num], 
-			   buffer_size,
+			   (int) m_periods[num], 
+			   (int) buffer_size,
 			   periodDuration); 
 
 	
@@ -446,7 +446,7 @@ void PAPlayer::SetVolume(long nVolume)
 void PAPlayer::SetDynamicRangeCompression(long drc)
 {
   // TODO: Add volume amplification
-  CLog::Log(LOGDEBUG,"PAPlayer::SetDynamicRangeCompression - drc: %d", drc);
+  CLog::Log(LOGDEBUG,"PAPlayer::SetDynamicRangeCompression - drc: %lu", drc);
 }
 
 void PAPlayer::Process()
@@ -692,7 +692,6 @@ bool PAPlayer::ProcessPAP()
     if (!m_bPaused) {
 
 		// Let our decoding stream(s) do their thing
-		DWORD time = timeGetTime();
 		int retVal = m_decoder[m_currentDecoder].ReadSamples(PACKET_SIZE);
 		if (retVal == RET_ERROR)
 		{
@@ -705,7 +704,6 @@ bool PAPlayer::ProcessPAP()
 		{
 			m_decoder[1 - m_currentDecoder].Destroy();
 		}
-		DWORD time2 = timeGetTime();
 	
 		// if we're cross-fading, then we do this for both streams, otherwise
 		// we do it just for the one stream.
@@ -743,9 +741,6 @@ bool PAPlayer::ProcessPAP()
     }
     else
         Sleep(100);
-
-    DWORD time3 = timeGetTime();
-//   CLog::Log(LOGINFO, "Time Decoding: %i, Time Resampling: %i, bytes processed %i, buffer 1 state %i, buffer 2 state %i", time2-time, time3-time2, dataToRead, m_decoder[m_currentDecoder].GetDataSize(), m_decoder[1 - m_currentDecoder].GetDataSize());
   }
   return true;
 }
@@ -854,7 +849,7 @@ void PAPlayer::HandleSeeking()
   {
     DWORD time = timeGetTime();
     m_timeOffset = m_decoder[m_currentDecoder].Seek(m_SeekTime);
-    CLog::Log(LOGDEBUG, "Seek to time %f took %i ms", 0.001f * m_SeekTime, timeGetTime() - time);
+    CLog::Log(LOGDEBUG, "Seek to time %f took %lu ms", 0.001f * m_SeekTime, timeGetTime() - time);
     FlushStreams();
     m_bytesSentOut = 0;
     m_SeekTime = -1;
@@ -931,7 +926,7 @@ bool PAPlayer::HandleFFwdRewd()
 
 void PAPlayer::SetStreamVolume(int stream, long nVolume)
 {
-  CLog::Log(LOGDEBUG,"PAPlayer::SetStreamVolume - stream %d, volume: %d", stream, nVolume);
+  CLog::Log(LOGDEBUG,"PAPlayer::SetStreamVolume - stream %d, volume: %lu", stream, nVolume);
   m_amp[stream].SetVolume(nVolume);
 }
 
