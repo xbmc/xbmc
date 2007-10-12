@@ -15,7 +15,6 @@ CISO9660Directory::~CISO9660Directory(void)
 
 bool CISO9660Directory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
-  static char szTemp[1024];
   CStdString strRoot = strPath;
   if (!CUtil::HasSlashAtEnd(strPath) )
     strRoot += "/";

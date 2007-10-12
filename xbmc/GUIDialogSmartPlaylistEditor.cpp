@@ -302,8 +302,8 @@ void CGUIDialogSmartPlaylistEditor::OnWindowLoaded()
     OnMessage(msg);
   }
   const int limits[] = { 10, 25, 50, 100, 250, 500, 1000 };
-  float amountOut = 1.0f;
-  for (int i = 0; i < sizeof(limits) / sizeof(int); i++)
+  //float amountOut = 1.0f;
+  for (unsigned int i = 0; i < sizeof(limits) / sizeof(int); i++)
   {
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_LIMIT, limits[i]);
     CStdString label; label.Format(g_localizeStrings.Get(21436).c_str(), limits[i]);

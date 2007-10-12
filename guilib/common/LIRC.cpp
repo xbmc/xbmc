@@ -97,7 +97,7 @@ void CRemoteControl::Update()
   char buttonName[128];
   char repeatStr[4];
   char deviceName[128];
-  int num = sscanf(m_buf, "%s %s %s %s", &scanCode, &repeatStr, &buttonName, &deviceName);
+  sscanf(m_buf, "%s %s %s %s", &scanCode[0], &repeatStr[0], &buttonName[0], &deviceName[0]);
 
   int repeat = strtol(repeatStr, NULL, 16);
   if (repeat % LIRC_REPEAT_IGNORE != 0)

@@ -99,6 +99,7 @@ static void build_char_table(void)
   chartbl[0x7f] = '¤';    /* FIXME: this should be a solid block */
 }
 
+/*
 static int ccbuf_has_displayable(cc_buffer_t *this)
 {
   int i;
@@ -109,7 +110,7 @@ static int ccbuf_has_displayable(cc_buffer_t *this)
   }
   return found;
 }
-
+*/
 
 static void ccbuf_add_char(cc_buffer_t *this, uint8_t c)
 {

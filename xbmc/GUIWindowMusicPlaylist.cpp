@@ -561,7 +561,7 @@ bool CGUIWindowMusicPlayList::Update(const CStdString& strDirectory)
 void CGUIWindowMusicPlayList::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
   // is this playlist playing?
-  bool isPlaying = (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC && g_application.IsPlayingAudio());
+  //bool isPlaying = (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC && g_application.IsPlayingAudio());
   int itemPlaying = g_playlistPlayer.GetCurrentSong();
 
   if (itemNumber >= 0 && itemNumber < m_vecItems.Size())
@@ -627,7 +627,9 @@ bool CGUIWindowMusicPlayList::OnContextButton(int itemNumber, CONTEXT_BUTTON but
   case CONTEXT_BUTTON_CANCEL_PARTYMODE:
     g_partyModeManager.Disable();
     return true;
+
   case CONTEXT_BUTTON_EDIT_PARTYMODE:
+  {
     CStdString playlist = "P:\\PartyMode.xsp";
     if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist))
     {
@@ -636,6 +638,10 @@ bool CGUIWindowMusicPlayList::OnContextButton(int itemNumber, CONTEXT_BUTTON but
       g_partyModeManager.Enable();
     }
     return true;
+  }
+
+  default:
+    break;
   }
   return CGUIWindowMusicBase::OnContextButton(itemNumber, button);
 }

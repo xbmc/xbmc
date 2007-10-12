@@ -47,7 +47,7 @@ extern "C" void tracker_memory_free_all(DllTrackInfo* pInfo)
 {
   if (!pInfo->dataList.empty() || !pInfo->virtualList.empty())
   {
-    CLog::Log(LOGDEBUG,"%s (base %8x): Detected memory leaks: %d leaks", pInfo->pDll->GetFileName(), pInfo->pDll->hModule, pInfo->dataList.size() + pInfo->virtualList.size());
+    CLog::Log(LOGDEBUG,"%s (base %p): Detected memory leaks: %d leaks", pInfo->pDll->GetFileName(), pInfo->pDll->hModule, pInfo->dataList.size() + pInfo->virtualList.size());
     size_t total = 0;
     CallerMap tempMap;
     CallerMapIter itt;

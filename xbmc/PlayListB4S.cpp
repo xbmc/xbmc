@@ -88,7 +88,6 @@ bool CPlayListB4S::LoadData(std::istream& stream)
       if (pNodeLength)
       {
         lDuration = atol(pNodeLength->FirstChild()->Value());
-        lDuration;
       }
       if (pNodeInfo)
       {
@@ -126,7 +125,7 @@ void CPlayListB4S::Save(const CStdString& strFileName) const
     const CPlayListItem& item = m_vecItems[i];
     fprintf(fd, "    <entry Playstring=%cfile:%s%c>\n", 34, item.GetFileName().c_str(), 34 );
     fprintf(fd, "      <Name>%s</Name>\n", item.GetDescription().c_str());
-    fprintf(fd, "      <Length>%i</Length>\n", item.GetDuration());
+    fprintf(fd, "      <Length>%lu</Length>\n", item.GetDuration());
   }
   fprintf(fd, "  </playlist>\n");
   fprintf(fd, "</WinampXML>\n");

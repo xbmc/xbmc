@@ -16,14 +16,22 @@ using namespace XFILE;
 // in general implement better buffering mechanism. 
 #define BUFFER_BYTES (64*1024)
 
-CFileCache::CFileCache() : m_bDeleteCache(false), m_seekPos(0), m_readPos(0), m_nSeekResult(0)
+CFileCache::CFileCache()
 {
-	m_pCache = new CacheMemBuffer;
+   m_bDeleteCache = false;
+   m_nSeekResult = 0;
+   m_seekPos = 0;
+   m_readPos = 0;
+   m_pCache = new CacheMemBuffer;
 }
 
-CFileCache::CFileCache(CCacheStrategy *pCache, bool bDeleteCache) : 
-			m_pCache(pCache), m_bDeleteCache(bDeleteCache), m_seekPos(0), m_readPos(0), m_nSeekResult(0)
+CFileCache::CFileCache(CCacheStrategy *pCache, bool bDeleteCache)
 {
+   m_pCache = pCache;
+   m_bDeleteCache = bDeleteCache;
+   m_seekPos = 0;
+   m_readPos = 0; 
+   m_nSeekResult = 0;
 }
 
 CFileCache::~CFileCache()

@@ -265,7 +265,6 @@ using namespace PLAYLIST;
 #define MAX_FFWD_SPEED 5
 
 CStdString g_LoadErrorStr;
-static int iBlinkRecord = 0;
 
 #ifdef HAS_XBOX_D3D
 static void WaitCallback(DWORD flags)
@@ -756,7 +755,9 @@ HRESULT CApplication::Create(HWND hWnd)
 
   g_hWnd = hWnd;
 
+#ifndef HAS_SDL
   HRESULT hr = S_OK;
+#endif
   
   //grab a handle to our thread to be used later in identifying the render thread
   m_threadID = GetCurrentThreadId();
@@ -773,12 +774,13 @@ HRESULT CApplication::Create(HWND hWnd)
   win32_exception::install_handler();
 #endif
 
+  // map Q to home drive of xbe to load the config file
   CStdString strExecutablePath;
+  CUtil::GetHomePath(strExecutablePath);
+
+#ifndef _LINUX  
   char szDevicePath[MAX_PATH];
 
-  // map Q to home drive of xbe to load the config file
-  CUtil::GetHomePath(strExecutablePath);
-#ifndef _LINUX  
   CIoSupport::GetPartition(strExecutablePath.c_str()[0], szDevicePath);
   strcat(szDevicePath, &strExecutablePath.c_str()[2]);
   CIoSupport::RemapDriveLetter('Q', szDevicePath);
@@ -4542,10 +4544,11 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
 
 void CApplication::CheckShutdown()
 {
+#ifdef HAS_XBOX_HARDWARE
   CGUIDialogMusicScan *pMusicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
   CGUIDialogVideoScan *pVideoScan = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
   CGUIWindowVideoFiles *pVideoFiles = (CGUIWindowVideoFiles *)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
-#ifdef HAS_XBOX_HARDWARE
+
   // Note: if the the screensaver is switched on, the shutdown timeout is
   // counted from when the screensaver activates.
   if (!m_bInactive)

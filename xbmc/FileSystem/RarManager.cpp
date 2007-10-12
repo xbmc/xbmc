@@ -252,7 +252,7 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
         continue;
     }
 
-    int iMask = (pIterator->item.HostOS==3 ? 0x0040000:16); // win32 or unix attribs?
+    unsigned int iMask = (pIterator->item.HostOS==3 ? 0x0040000:16); // win32 or unix attribs?
     if (((pIterator->item.FileAttr & iMask) == iMask) || (vec.size() > iDepth+1 && bMask)) // we have a directory
     {
       if (!bMask) continue;

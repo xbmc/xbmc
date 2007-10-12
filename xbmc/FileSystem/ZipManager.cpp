@@ -56,7 +56,7 @@ bool CZipManager::GetZipList(const CStdString& strPath, std::vector<SZipEntry>& 
 #ifndef _LINUX
       CLog::Log(LOGDEBUG,"statdata: %i, new: %i",it2->second,m_StatData.st_mtime);
 #else
-      CLog::Log(LOGDEBUG,"statdata: %i, new: %i",it2->second,m_StatData._st_mtime);
+      CLog::Log(LOGDEBUG,"statdata: %llu new: %llu",it2->second,m_StatData._st_mtime);
 #endif
 #ifndef _LINUX
       if (m_StatData.st_mtime == it2->second)

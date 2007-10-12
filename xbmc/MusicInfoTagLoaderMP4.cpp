@@ -270,7 +270,7 @@ int CMusicInfoTagLoaderMP4::ParseAtom( __int64 startOffset, __int64 stopOffset, 
     atomName = ReadUnsignedInt( &atomHeader[ 4 ] );
 
     // See if it's a container atom.. if it is, then recursively call ParseAtom on it...
-    for ( int containerAtom = 0; containerAtom < ( sizeof( g_ContainerAtoms ) / sizeof( unsigned int ) ); containerAtom++ )
+    for ( unsigned int containerAtom = 0; containerAtom < ( sizeof( g_ContainerAtoms ) / sizeof( unsigned int ) ); containerAtom++ )
     {
       if ( atomName == g_ContainerAtoms[ containerAtom ] )
       {

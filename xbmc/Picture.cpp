@@ -74,7 +74,6 @@ SDL_Surface* CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iM
       DWORD srcPitch = ((m_info.width + 1)* 3 / 4) * 4; 
       BYTE *pixels = (BYTE *)pTexture->pixels;
 #endif
-      BYTE *src = m_info.texture;
       for (unsigned int y = 0; y < m_info.height; y++)
       {
         BYTE *dst = pixels + y * destPitch;
@@ -192,7 +191,6 @@ bool CPicture::CacheSkinImage(const CStdString &srcFile, const CStdString &destF
 #ifdef __GNUC__
 #warning fix this code to support OpenGL
 #endif
-    SDL_Palette* palette;
     SDL_Surface* texture = NULL;
 #endif
     if (texture)

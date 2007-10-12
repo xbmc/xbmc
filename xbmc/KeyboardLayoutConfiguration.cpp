@@ -103,7 +103,7 @@ void CKeyboardLayoutConfiguration::readCharMapFromXML(const TiXmlElement* pXMLMa
         }
         else
         {
-          CLog::Log(LOGERROR, "String from %s or to %s does not have the expected length of 1", fromStr.c_str(), toStr.c_str());
+          CLog::Log(LOGERROR, "String from %ls or to %ls does not have the expected length of 1", fromStr.c_str(), toStr.c_str());
         }
       }
       else
@@ -148,7 +148,7 @@ void CKeyboardLayoutConfiguration::readByteMapFromXML(const TiXmlElement* pXMLMa
               }
               else
               {
-                CLog::Log(LOGERROR, "String to %s does not have the expected length of >=1", toStr.c_str());
+                CLog::Log(LOGERROR, "String to %ls does not have the expected length of >=1", toStr.c_str());
               }
             }
             else
@@ -158,7 +158,7 @@ void CKeyboardLayoutConfiguration::readByteMapFromXML(const TiXmlElement* pXMLMa
           }
           else
           {
-            CLog::Log(LOGERROR, "Scanned from-value as 0 probably a (typing?) error! ", from);
+            CLog::Log(LOGERROR, "Scanned from-value %d as 0 probably a (typing?) error! ", from);
           }
         }
         else

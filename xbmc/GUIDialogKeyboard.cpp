@@ -116,7 +116,7 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
   }
   else if (action.wID == ACTION_CURSOR_RIGHT)
   {
-    if (GetCursorPos() == m_strEdit.size() && (m_strEdit.size() == 0 || m_strEdit[m_strEdit.size() - 1] != ' '))
+    if ((unsigned int) GetCursorPos() == m_strEdit.size() && (m_strEdit.size() == 0 || m_strEdit[m_strEdit.size() - 1] != ' '))
     { // add a space
       Character(L' ');
     }
@@ -152,7 +152,7 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
   }
   else if (action.wID >= KEY_ASCII)
   { // input from the keyboard
-    char ch = action.wID & 0xFF;
+    //char ch = action.wID & 0xFF;
     switch (action.unicode)
     {
     case 10:  // enter
@@ -413,7 +413,7 @@ char CGUIDialogKeyboard::GetCharacter(int iButton)
   }
   else
   { // check for symbols
-    for (int i = 0; i < NUM_SYMBOLS; i++)
+    for (unsigned int i = 0; i < NUM_SYMBOLS; i++)
       if (iButton == symbolButtons[i])
         return (char)iButton;
   }
@@ -486,7 +486,7 @@ void CGUIDialogKeyboard::UpdateButtons()
     }
     SetControlLabel(iButton, aLabel);
   }
-  for (int i = 0; i < NUM_SYMBOLS; i++)
+  for (unsigned int i = 0; i < NUM_SYMBOLS; i++)
   {
     aLabel[0] = symbolButtons[i];
     SetControlLabel(symbolButtons[i], aLabel);
@@ -727,7 +727,7 @@ void CGUIDialogKeyboard::SetControlLabel(int id, const CStdString &label)
   message.SetLabel(label);
   for (unsigned int i = 0; i < m_vecControls.size(); i++)
   {
-    if (m_vecControls[i]->GetID() == id || m_vecControls[i]->IsGroup())
+    if (m_vecControls[i]->GetID() == (DWORD) id || m_vecControls[i]->IsGroup())
       m_vecControls[i]->OnMessage(message);
   }
 }

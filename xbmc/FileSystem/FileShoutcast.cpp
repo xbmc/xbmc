@@ -92,7 +92,7 @@ error_code filelib_write(char *buf, u_long size)
 {
   if ((int)size > m_ringbuf.Size())
   {
-    CLog::Log(LOGERROR, "Shoutcast chunk too big: %i", size);
+    CLog::Log(LOGERROR, "Shoutcast chunk too big: %lu", size);
     return SR_ERROR_BUFFER_FULL;
   }
   while (m_ringbuf.GetMaxWriteSize() < (int)size) Sleep(10);

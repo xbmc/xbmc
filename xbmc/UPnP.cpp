@@ -496,12 +496,17 @@ CUPnPServer::BuildObject(CFileItem*      item,
                   break;
                 case MUSICDATABASEDIRECTORY::NODE_TYPE_GENRE:
                   container->m_ObjectClass.type += "genre.musicGenre";
+                  break;
+                default:
+                  break;
             }
         } else if(item->IsVideoDb()) {
             VIDEODATABASEDIRECTORY::NODE_TYPE node = CVideoDatabaseDirectory::GetDirectoryChildType(item->m_strPath);
             switch(node) {
                 case VIDEODATABASEDIRECTORY::NODE_TYPE_GENRE:
                   container->m_ObjectClass.type += "genre.movieGenre";
+		default:
+		  break;
             }
         }
 
@@ -1146,8 +1151,8 @@ public:
 +---------------------------------------------------------------------*/
 CUPnP::CUPnP() :
     m_ServerHolder(new CDeviceHostReferenceHolder()),
-    m_CtrlPointHolder(new CCtrlPointReferenceHolder()),
-    m_RendererHolder(new CRendererReferenceHolder())
+    m_RendererHolder(new CRendererReferenceHolder()),
+    m_CtrlPointHolder(new CCtrlPointReferenceHolder())
 {
 //#ifdef HAS_XBOX_HARDWARE
 //    broadcast = true;

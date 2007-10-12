@@ -131,7 +131,7 @@ bool CLangCodeExpander::LookupInDb(CStdString& desc, const CStdString& code)
   {
     CSectionLoader::Load("LCODE");
     longcode = MAKECODE('\0', '\0', sCode[0], sCode[1]);
-    for(int i = 0; i < sizeof(g_iso639_1) / sizeof(LCENTRY); i++)
+    for(unsigned int i = 0; i < sizeof(g_iso639_1) / sizeof(LCENTRY); i++)
     {
       if(g_iso639_1[i].code == longcode)
       {
@@ -146,7 +146,7 @@ bool CLangCodeExpander::LookupInDb(CStdString& desc, const CStdString& code)
   {
     CSectionLoader::Load("LCODE");
     longcode = MAKECODE('\0', sCode[0], sCode[1], sCode[2]);
-    for(int i = 0; i < sizeof(g_iso639_2) / sizeof(LCENTRY); i++)
+    for(unsigned int i = 0; i < sizeof(g_iso639_2) / sizeof(LCENTRY); i++)
     {
       if(g_iso639_2[i].code == longcode)
       {
@@ -160,8 +160,10 @@ bool CLangCodeExpander::LookupInDb(CStdString& desc, const CStdString& code)
   return false;
 }
 
+#ifndef __GNUC__
 #pragma const_seg("LC_RDATA")
 #pragma comment(linker, "/merge:LC_RDATA=LCODE")
+#endif
 
 extern const LCENTRY g_iso639_1[143] =
 {

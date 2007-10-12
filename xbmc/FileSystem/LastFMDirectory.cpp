@@ -116,7 +116,7 @@ void CLastFMDirectory::AddListEntry(const char *name, const char *artist, const 
     pItem->m_dwSize = _atoi64(count) * 100000000;
 
     const char *dot;
-    if (dot = (const char *)strstr(count, "."))
+    if ((dot = (const char *)strstr(count, ".")))
       pItem->m_dwSize += _atoi64(dot + 1);
   }
 

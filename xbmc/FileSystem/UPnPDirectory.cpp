@@ -234,7 +234,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                     // look for date?
                     if((*entry)->m_Description.date.GetLength()) {
                       SYSTEMTIME time = {};
-                      int count = sscanf((*entry)->m_Description.date, "%hu-%hu-%huT%hu:%hu:%hu",
+                      sscanf((*entry)->m_Description.date, "%hu-%hu-%huT%hu:%hu:%hu",
                                           &time.wYear, &time.wMonth, &time.wDay, &time.wHour, &time.wMinute, &time.wSecond);
                       pItem->m_dateTime = time;
                     }

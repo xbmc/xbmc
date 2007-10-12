@@ -95,7 +95,7 @@ BOOL   FindNextFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindData) {
 	if (lpFindData == NULL || hHandle == NULL || hHandle->GetType() != CXHandle::HND_FIND_FILE)
 		return FALSE;
 
-	if (hHandle->m_nFindFileIterator >= hHandle->m_FindFileResults.size())
+	if ((unsigned int) hHandle->m_nFindFileIterator >= hHandle->m_FindFileResults.size())
 		return FALSE;
 
 	CStdString strFileName = hHandle->m_FindFileResults[hHandle->m_nFindFileIterator++];
@@ -404,7 +404,7 @@ BOOL ReadFile(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead,
  }
   
   size_t bytesRead = read(hFile->fd, lpBuffer, nNumberOfBytesToRead);
-  if (bytesRead == -1)
+  if (bytesRead == (size_t) -1)
     return 0;
     
   if (lpNumberOfBytesRead)
@@ -424,7 +424,7 @@ BOOL WriteFile(HANDLE hFile, const void * lpBuffer, DWORD nNumberOfBytesToWrite,
   
   size_t bytesWritten = write(hFile->fd, lpBuffer, nNumberOfBytesToWrite);
 
-  if (bytesWritten == -1)
+  if (bytesWritten == (size_t) -1)
     return 0;
     
   *lpNumberOfBytesWritten = bytesWritten;

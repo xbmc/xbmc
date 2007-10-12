@@ -176,7 +176,7 @@ bool CID3Tag::Parse()
       else
       {
         CUtil::ThumbCacheAdd(strCoverArt, false);
-        CLog::Log(LOGERROR, "Tag loader mp3: Unable to create album art for %s (extension=%s, size=%d)", tag.GetURL().c_str(), strExtension.c_str(), nBufSize);
+        CLog::Log(LOGERROR, "Tag loader mp3: Unable to create album art for %s (extension=%s, size=%lu)", tag.GetURL().c_str(), strExtension.c_str(), nBufSize);
       }
     }
   }
@@ -476,7 +476,7 @@ CStdString CID3Tag::ParseMP3Genre(const CStdString& str) const
       if (StringUtils::IsNaturalNumber(t))
       {
         char * pEnd;
-        long l = strtol(t.c_str(), &pEnd, 0);
+        /*long l = */strtol(t.c_str(), &pEnd, 0);
 
         id3_ucs4_t* ucs4=m_dll.id3_latin1_ucs4duplicate((id3_latin1_t*)t.c_str());
         const id3_ucs4_t* genre=m_dll.id3_genre_name(ucs4);

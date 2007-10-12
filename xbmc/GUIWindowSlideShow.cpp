@@ -108,7 +108,7 @@ void CBackgroundPicLoader::Process()
       }
     }
   }
-  CLog::Log(LOGDEBUG, "Time for loading %i images: %i ms, average %i ms", count, totalTime, totalTime / count);
+  CLog::Log(LOGDEBUG, "Time for loading %lu images: %lu ms, average %lu ms", count, totalTime, totalTime / count);
 }
 
 void CBackgroundPicLoader::LoadPic(int iPic, int iSlideNumber, const CStdString &strFileName, const int maxWidth, const int maxHeight)

@@ -167,7 +167,6 @@ void CDVDVideoCodecLibMpeg2::SetDropState(bool bDrop)
 int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, double pts)
 {
   int iState = 0;
-  bool bGotPicture = false;
   if (!m_pHandle) return VC_ERROR;
 
   if (pData && iSize)

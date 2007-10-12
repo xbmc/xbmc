@@ -225,7 +225,7 @@ bool CGUIViewControl::HasControl(int viewControlID) const
   // run through our controls, checking for the id
   for (ciViews it = m_vecViews.begin(); it != m_vecViews.end(); it++)
   {
-    if ((*it)->GetID() == viewControlID)
+    if ((*it)->GetID() == (DWORD) viewControlID)
       return true;
   }
   return false;
@@ -279,7 +279,7 @@ int CGUIViewControl::GetView(VIEW_TYPE type, int id) const
   for (int i = 0; i < (int)m_vecViews.size(); i++)
   {
     CGUIBaseContainer *view = (CGUIBaseContainer *)m_vecViews[i];
-    if ((type == VIEW_TYPE_NONE || type == view->GetType()) && (!id || view->GetID() == id))
+    if ((type == VIEW_TYPE_NONE || type == view->GetType()) && (!id || view->GetID() == (DWORD) id))
     {
       return i;
     }
