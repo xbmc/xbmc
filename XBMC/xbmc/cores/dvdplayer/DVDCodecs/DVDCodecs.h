@@ -13,7 +13,9 @@ extern "C" {
 #ifndef __STDC_LIMIT_MACROS
 #define __STDC_LIMIT_MACROS
 #endif
+#ifndef __GNUC__
 #pragma warning(disable:4244)
+#endif
 #include "../../ffmpeg/avcodec.h"
 }
 

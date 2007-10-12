@@ -33,7 +33,6 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   InitializeCriticalSection(&m_critStreamSection);
 
   memset(&m_dvd, 0, sizeof(DVDInfo));
-  m_dvd.iCurrentCell = -1;  
   m_dvd.iSelectedAudioStream = -1;
   m_dvd.iSelectedSPUStream = -1;
 
@@ -165,9 +164,9 @@ bool CDVDPlayer::IsPlaying() const
 void CDVDPlayer::OnStartup()
 {
   CThread::SetName("CDVDPlayer");
-  m_CurrentVideo.id = -1;
-  m_CurrentAudio.id = -1;
-  m_packetcount = 0;
+  m_CurrentVideo.Clear();
+  m_CurrentAudio.Clear();
+  m_CurrentSubtitle.Clear();
 
   m_messenger.Init();
 
@@ -318,10 +317,7 @@ void CDVDPlayer::Process()
 
           // stream is holding back data untill demuxer has flushed
           if(pStream->IsHeld())
-          {
             pStream->SkipHold();
-            continue;
-          }
 
           // stills will be skipped
           if(m_dvd.state == DVDSTATE_STILL)
@@ -338,18 +334,17 @@ void CDVDPlayer::Process()
               }
             }
             Sleep(100);
-            continue;
           }
+
+          // we don't consider dvd's ended untill navigator tells us so
+          CLog::Log(LOGINFO, "%s - EOF reading from demuxer", __FUNCTION__);
+          continue;          
         }
 
-        // keep on trying until user wants us to stop.
-        // another option would be to check if the input stream
-        // is advancing, and if it isn't, then abort
-        CLog::Log(LOGERROR, "Error reading data from demuxer");
-        continue;
+        // any demuxer supporting non blocking reads, should return empty packates
+        CLog::Log(LOGINFO, "%s - EOF reading from demuxer", __FUNCTION__);
+        break;
       }
-
-      m_packetcount++;
 
       if(m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
       {
@@ -660,6 +655,20 @@ void CDVDPlayer::CheckContinuity(CDVDDemux::DemuxPacket* pPacket, unsigned int s
   }
 
 }
+void CDVDPlayer::SyncronizeDemuxer(DWORD timeout)
+{
+  if(CThread::ThreadId() == GetCurrentThreadId())
+    return;
+  if(!m_messenger.IsInited())
+    return;
+
+  CDVDMsgGeneralSynchronize* message = new CDVDMsgGeneralSynchronize(timeout, 0);
+  message->Acquire();  
+  m_messenger.Put(message);
+  message->Wait(&m_bStop, 0);
+  message->Release();
+}
+
 void CDVDPlayer::SyncronizePlayers(DWORD sources)
 {
 
@@ -919,6 +928,7 @@ void CDVDPlayer::HandleMessages()
 void CDVDPlayer::SetPlaySpeed(int speed)
 {
   m_messenger.Put(new CDVDMsgInt(CDVDMsg::PLAYER_SETSPEED, speed));
+  SyncronizeDemuxer(100);
 }
 
 void CDVDPlayer::Pause()
@@ -1272,6 +1282,7 @@ void CDVDPlayer::GetAudioStreamName(int iStream, CStdString& strStreamName)
 void CDVDPlayer::SetAudioStream(int iStream)
 {
   m_messenger.Put(new CDVDMsgPlayerSetAudioStream(iStream));
+  SyncronizeDemuxer(100);
 }
 
 void CDVDPlayer::SeekTime(__int64 iTime)
@@ -1279,6 +1290,7 @@ void CDVDPlayer::SeekTime(__int64 iTime)
   if(iTime<0) 
     iTime = 0;
   m_messenger.Put(new CDVDMsgPlayerSeek((int)iTime, false));
+  SyncronizeDemuxer(100);
 }
 
 // return the time in milliseconds
@@ -1705,12 +1717,10 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
         m_messenger.Put(new CDVDMsgDemuxerReset());
 
         //Force an aspect ratio that is set in the dvdheaders if available
-        CDVDMsgVideoSetAspect *aspect = new CDVDMsgVideoSetAspect(pStream->GetVideoAspectRatio());
-        if( m_dvdPlayerVideo.m_messageQueue.Put(aspect) != MSGQ_OK )
-        {
-          aspect->Release();
+        if( m_dvdPlayerAudio.m_messageQueue.IsInited() )
+          m_dvdPlayerVideo.SendMessage(new CDVDMsgVideoSetAspect(pStream->GetVideoAspectRatio()));
+        else
           m_dvdPlayerVideo.SetAspectRatio(pStream->GetVideoAspectRatio());
-        }
 
         return NAVRESULT_HOLD;
       }
@@ -1719,10 +1729,6 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
       {
         dvdnav_cell_change_event_t* cell_change_event = (dvdnav_cell_change_event_t*)pData;
         CLog::Log(LOGDEBUG, "DVDNAV_CELL_CHANGE");
-        //if (cell_change_event->pgN != m_dvd.iCurrentCell)
-        {
-          m_dvd.iCurrentCell = cell_change_event->pgN;
-        }
 
         m_dvd.state = DVDSTATE_NORMAL;        
         

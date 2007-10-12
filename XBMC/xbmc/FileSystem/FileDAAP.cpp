@@ -208,6 +208,9 @@ __int64 CFileDAAP::Seek(__int64 iFilePosition, int iWhence)
 {
   CSingleLock lock(g_DaapClient);
 
+  if(iWhence == SEEK_POSSIBLE)
+    return m_curl.Seek(iFilePosition, iWhence);
+
   int requestid = ++m_thisHost->request_id;
 
   char hash[33] = {0};

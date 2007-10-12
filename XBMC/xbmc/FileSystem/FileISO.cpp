@@ -117,7 +117,8 @@ __int64 CFileISO::Seek(__int64 iFilePosition, int iWhence)
 {
   if (!m_bOpened) return -1;
   __int64 lNewPos = m_isoReader.Seek(m_hFile, iFilePosition, iWhence);
-  m_cache.Clear();
+  if(lNewPos >= 0)
+    m_cache.Clear();
   return lNewPos;
 }
 

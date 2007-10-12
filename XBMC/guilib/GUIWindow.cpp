@@ -497,7 +497,7 @@ void CGUIWindow::OnMouseAction()
     }
   }
   g_graphicsContext.SetScalingResolution(m_coordsRes, posX, posY, m_needsScaling);
-  CPoint mousePoint(g_Mouse.posX, g_Mouse.posY);
+  CPoint mousePoint(g_Mouse.GetLocation());
   g_graphicsContext.InvertFinalCoords(mousePoint.x, mousePoint.y);
 
   bool bHandled = false;
@@ -577,13 +577,13 @@ bool CGUIWindow::HandleMouse(CGUIControl *pControl, const CPoint &point)
   { // Left double click
     return pControl->OnMouseDoubleClick(MOUSE_LEFT_BUTTON, point);
   }
-  else if (g_Mouse.bHold[MOUSE_LEFT_BUTTON] && (g_Mouse.cMickeyX || g_Mouse.cMickeyY))
+  else if (g_Mouse.bHold[MOUSE_LEFT_BUTTON] && g_Mouse.HasMoved())
   { // Mouse Drag
-    return pControl->OnMouseDrag(CPoint(g_Mouse.cMickeyX, g_Mouse.cMickeyY), point);
+    return pControl->OnMouseDrag(g_Mouse.GetLastMove(), point);
   }
-  else if (g_Mouse.cWheel)
+  else if (g_Mouse.GetWheel())
   { // Mouse wheel
-    return pControl->OnMouseWheel(g_Mouse.cWheel, point);
+    return pControl->OnMouseWheel(g_Mouse.GetWheel(), point);
   }
   // no mouse stuff done other than movement - return indicating whether we've focused or not
   return focused;

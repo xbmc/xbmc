@@ -161,6 +161,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_EPISODE_ORIGINALTITLE = 14,
   VIDEODB_ID_EPISODE_SORTSEASON = 15,
   VIDEODB_ID_EPISODE_SORTEPISODE = 16,
+  VIDEODB_ID_EPISODE_BOOKMARK = 17,
   VIDEODB_ID_EPISODE_MAX
 } VIDEODB_EPISODE_IDS;
 
@@ -183,6 +184,7 @@ const struct SDbTableOffsets DbEpisodeOffsets[] =
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strOriginalTitle)},
   { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iSpecialSortSeason) },
   { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iSpecialSortEpisode) },
+  { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iBookmarkId) },
 };
 
 typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
@@ -223,11 +225,14 @@ public:
   CStdString thumbNailImage;
   CStdString playerState;
   CStdString player;
+  long seasonNumber;
+  long episodeNumber;
 
   enum EType
   {
     STANDARD = 0,
     RESUME = 1,
+    EPISODE = 2,
   } type;
 };
 
@@ -273,6 +278,7 @@ public:
   long GetTvShowInfo(const CStdString& strPath);
   long GetEpisodeInfo(const CStdString& strFilenameAndPath, long lEpisodeId=-1); // lEpisodeId is used for hinting due to two parters...
   long GetMusicVideoInfo(const CStdString& strFilenameAndPath);
+  void GetEpisodesByFile(const CStdString& strFilenameAndPath, vector<CVideoInfoTag>& episodes);
 
   void SetDetailsForMovie(const CStdString& strFilenameAndPath, const CVideoInfoTag& details);
   long SetDetailsForTvShow(const CStdString& strPath, const CVideoInfoTag& details);
@@ -306,11 +312,14 @@ public:
 
   void GetEpisodesByPlot(const CStdString& strSearch, CFileItemList& items);
 
-  void GetBookMarksForFile(const CStdString& strFilenameAndPath, VECBOOKMARKS& bookmarks, CBookmark::EType type = CBookmark::STANDARD);
+  void GetBookMarksForFile(const CStdString& strFilenameAndPath, VECBOOKMARKS& bookmarks, CBookmark::EType type = CBookmark::STANDARD, bool bAppend=false);
   void AddBookMarkToFile(const CStdString& strFilenameAndPath, const CBookmark &bookmark, CBookmark::EType type = CBookmark::STANDARD);
   bool GetResumeBookMark(const CStdString& strFilenameAndPath, CBookmark &bookmark);
   void ClearBookMarkOfFile(const CStdString& strFilenameAndPath, CBookmark& bookmark, CBookmark::EType type = CBookmark::STANDARD);
   void ClearBookMarksOfFile(const CStdString& strFilenameAndPath, CBookmark::EType type = CBookmark::STANDARD);
+  bool GetBookMarkForEpisode(const CVideoInfoTag& tag, CBookmark& bookmark);
+  void AddBookMarkForEpisode(const CVideoInfoTag& tag, const CBookmark& bookmark);
+  void DeleteBookMarkForEpisode(const CVideoInfoTag& tag);
 
   void RemoveContentForPath(const CStdString& strPath,CGUIDialogProgress *progress = NULL);
 

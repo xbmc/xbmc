@@ -14,13 +14,21 @@
 #define MSG_PEEK 0x2
 
 static bool m_bSocketsInit = false;
-static SOCKET m_sockets[MAX_SOCKETS + 1];
+typedef struct
+{
+  SOCKET sock;
+  char*  data;
+  char*  start;
+  char*  end;
+} SSocketData;
+static SSocketData m_sockets[MAX_SOCKETS + 1];
 
 void InitSockets()
 {
   m_bSocketsInit = true;
+  memset(m_sockets, 0, sizeof(SSocketData) * (MAX_SOCKETS + 1));
   for(int i = 0; i < MAX_SOCKETS; i++)
-    m_sockets[i] = INVALID_SOCKET;
+    m_sockets[i].sock = INVALID_SOCKET;
 }
 
 SOCKET GetSocketForIndex(int iIndex)
@@ -31,17 +39,17 @@ SOCKET GetSocketForIndex(int iIndex)
     return INVALID_SOCKET;
   }
 
-  if (InterlockedCompareExchangePointer((PVOID*)&m_sockets[iIndex], (PVOID)INVALID_SOCKET, (PVOID)INVALID_SOCKET) == (PVOID)INVALID_SOCKET)
+  if (InterlockedCompareExchangePointer((PVOID*)&m_sockets[iIndex].sock, (PVOID)INVALID_SOCKET, (PVOID)INVALID_SOCKET) == (PVOID)INVALID_SOCKET)
     CLog::Log(LOGERROR, "GetSocketForIndex() invalid socket for index:%i", iIndex);
 
-  return m_sockets[iIndex];
+  return m_sockets[iIndex].sock;
 }
 
 int GetIndexForSocket(SOCKET iSocket)
 {
   for (int i = 0; i < MAX_SOCKETS; i++)
   {
-    if (InterlockedCompareExchangePointer((PVOID*)&m_sockets[i], (PVOID)iSocket, (PVOID)iSocket) == (PVOID)iSocket)
+    if (InterlockedCompareExchangePointer((PVOID*)&m_sockets[i].sock, (PVOID)iSocket, (PVOID)iSocket) == (PVOID)iSocket)
       return i;
   }
   return -1;
@@ -57,8 +65,14 @@ int AddSocket(SOCKET iSocket)
 
   for (int i = 3; i < MAX_SOCKETS; i++)
   {
-    if (InterlockedCompareExchangePointer((PVOID*)&m_sockets[i], (PVOID)iSocket, (PVOID)INVALID_SOCKET) == (PVOID)INVALID_SOCKET)
+    if (InterlockedCompareExchangePointer((PVOID*)&m_sockets[i].sock, (PVOID)iSocket, (PVOID)INVALID_SOCKET) == (PVOID)INVALID_SOCKET)
+    {
+      if(m_sockets[i].data) delete m_sockets[i].data;
+      m_sockets[i].data = NULL;
+      m_sockets[i].start = NULL;
+      m_sockets[i].end = NULL;
       return i;
+    }
   }
   CLog::Log(LOGERROR, __FUNCTION__" - Unable to add socket to internal list, no space left");
   return -1;
@@ -72,11 +86,13 @@ void ReleaseSocket(int iIndex)
     return ;
   }
 
-  if (InterlockedExchangePointer((PVOID*)&m_sockets[iIndex], (PVOID)INVALID_SOCKET) == (PVOID)INVALID_SOCKET)
-  {
+  if (InterlockedExchangePointer((PVOID*)&m_sockets[iIndex].sock, (PVOID)INVALID_SOCKET) == (PVOID)INVALID_SOCKET)
     CLog::Log(LOGERROR, "ReleaseSocket() invalid socket for index:%i", iIndex);
-    return ;
-  }  
+
+  if(m_sockets[iIndex].data) delete m_sockets[iIndex].data;
+  m_sockets[iIndex].data = NULL;
+  m_sockets[iIndex].start = NULL;
+  m_sockets[iIndex].end = NULL;
 }
 
 extern "C"
@@ -197,6 +213,7 @@ extern "C"
   int __stdcall dllbind(int s, const struct sockaddr FAR * name, int namelen)
   {
     SOCKET socket = GetSocketForIndex(s);
+    struct sockaddr_in address2;
 
     if( name->sa_family == AF_INET 
     &&  namelen >= sizeof(sockaddr_in) )
@@ -215,8 +232,11 @@ extern "C"
       if( address->sin_addr.S_un.S_addr == inet_addr(g_network.m_networkinfo.ip)
       ||  address->sin_addr.S_un.S_addr == inet_addr("127.0.0.1") )
       {
-        // local xbox, correct for xbox stack        
-        address->sin_addr.S_un.S_addr = 0;
+        // local xbox, correct for xbox stack
+        address2 = *address;
+        address2.sin_addr.S_un.S_addr = 0;
+        name = (sockaddr*)&address2;
+        namelen = sizeof(address2);
       }
     }    
 
@@ -258,37 +278,82 @@ extern "C"
 
   int __stdcall dllioctlsocket(int s, long cmd, DWORD FAR * argp)
   {
-    SOCKET socket = GetSocketForIndex(s);
+    if (s < 3 || s >= MAX_SOCKETS)
+    {
+      CLog::Log(LOGERROR, "dllioctlsocket invalid index:%i", s);
+      return SOCKET_ERROR;
+    }
+    SSocketData& socket = m_sockets[s];
 
-    return ioctlsocket(socket, cmd, argp);
+    int res = ioctlsocket(socket.sock, cmd, argp);
+    if( res == 0 && cmd == FIONREAD && socket.data )
+      *argp += socket.end - socket.start;
+
+    return res;
   }
 
   int __stdcall dllrecv(int s, char FAR * buf, int len, int flags)
   {
-    SOCKET socket = GetSocketForIndex(s);
+    if (s < 3 || s >= MAX_SOCKETS)
+    {
+      CLog::Log(LOGERROR, "dllrecv invalid index:%i", s);
+      return SOCKET_ERROR;
+    }
+    SSocketData& socket = m_sockets[s];
+    int len2, len3;
 
     if(flags & MSG_PEEK)
     {
       CLog::Log(LOGWARNING, __FUNCTION__" - called with MSG_PEEK set, attempting workaround");
       // work around for peek, it will give garbage as data
-      // and will always block, till data or error
-      unsigned long size=0;
-      while(1)
+      
+      if(socket.data == NULL)
       {
-        if(ioctlsocket(socket, FIONREAD, &size))
-          return -1;
-        if(size)
-          break;
-        Sleep(1);
+        socket.data = new char[len];
+        len2 = recv(socket.sock, socket.data, len, 0);
+        if(len2 == SOCKET_ERROR)
+        {
+          SAFE_DELETE(socket.data);
+          return SOCKET_ERROR;
+        }
+        socket.start = socket.data;
+        socket.end = socket.start + len2;
       }
-      return min((int)size, len);
+      len2 = min(len, socket.end - socket.start);
+      memcpy(buf, socket.start, len2);
+      return len2;
     }
 
     if(flags)
       CLog::Log(LOGWARNING, __FUNCTION__" - called with flags %d that will be ignored", flags);
-
     flags = 0;
-    return recv(socket, buf, len, flags);
+
+    len2 = 0;
+    if(socket.start < socket.end)
+    {
+      len2 = min(len, socket.end - socket.start);
+      memcpy(buf, socket.start, len2);
+      socket.start += len2;
+      buf++;
+      len--;
+    }      
+
+    if(socket.start >= socket.end)
+    {
+      delete[] socket.data;
+      socket.data = NULL;
+      socket.start = NULL;
+      socket.end = NULL;
+    }
+
+    if(len == 0)
+      return 0;
+
+    len3 = recv(socket.sock, buf, len, flags);
+    if(len3 == SOCKET_ERROR)
+      return SOCKET_ERROR;
+
+    return len2 + len3;
   }
 
   int __stdcall dllselect(int nfds, fd_set FAR * readfds, fd_set FAR * writefds, fd_set FAR *exceptfds, const struct timeval FAR * timeout)

@@ -337,6 +337,8 @@ bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_LAUNCH_IN:
     OnChooseVideoModeAndLaunch(itemNumber);
     return true;
+  default:
+    break;
   }
   return CGUIMediaWindow::OnContextButton(itemNumber, button);
 }

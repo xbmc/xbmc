@@ -72,7 +72,7 @@ bool CPluginDirectory::AddItem(int handle, const CFileItem *item, int totalItems
   return !dir->m_cancelled;
 }
 
-void CPluginDirectory::EndOfDirectory(int handle, bool success)
+void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceListing)
 {
   CSingleLock lock(m_handleLock);
   if (handle < 0 || handle >= (int)globalHandles.size())
@@ -82,6 +82,7 @@ void CPluginDirectory::EndOfDirectory(int handle, bool success)
   }
   CPluginDirectory *dir = globalHandles[handle];
   dir->m_success = success;
+  dir->m_listItems.SetReplaceListing(replaceListing);
 
   // set the event to mark that we're done
   SetEvent(dir->m_directoryFetched);

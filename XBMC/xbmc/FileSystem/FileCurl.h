@@ -77,6 +77,8 @@ namespace XFILE
       CStdString      m_customrequest;
       CStdString      m_contentencoding;
       CStdString      m_ftpauth;
+      CStdString      m_ftpport;
+      bool            m_ftppasvip;
       int             m_timeout;
 
       __int64         m_fileSize;

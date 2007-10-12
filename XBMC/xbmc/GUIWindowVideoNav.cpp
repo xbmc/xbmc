@@ -893,14 +893,12 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
             buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
           else
             buttons.Add(CONTEXT_BUTTON_UPDATE_TVSHOW, 13349);
-
-          buttons.Add(CONTEXT_BUTTON_EDIT, 16105);
         }
-        else if (item->HasVideoInfoTag() && !item->m_bIsFolder)
+        if (node == NODE_TYPE_TITLE_TVSHOWS || node == NODE_TYPE_SEASONS || (item->HasVideoInfoTag() && !item->m_bIsFolder))
         {
-          if (item->GetVideoInfoTag()->m_bWatched)
+          if (item->m_bIsFolder || item->GetVideoInfoTag()->m_bWatched)
             buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
-          else
+          if (item->m_bIsFolder || !item->GetVideoInfoTag()->m_bWatched)
             buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
           buttons.Add(CONTEXT_BUTTON_EDIT, 16105); //Edit Title
         }
@@ -926,7 +924,14 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
             buttons.Add(CONTEXT_BUTTON_SET_ACTOR_THUMB, 20403);
         }
         if (item->HasVideoInfoTag() && (!item->m_bIsFolder || node == NODE_TYPE_TITLE_TVSHOWS))
+        {
+          if (info.strContent.Equals("tvshows")) 
+          {
+            if(item->GetVideoInfoTag()->m_iBookmarkId != -1 && item->GetVideoInfoTag()->m_iBookmarkId != 0)
+              buttons.Add(CONTEXT_BUTTON_UNLINK_BOOKMARK, 20405);
+          }
           buttons.Add(CONTEXT_BUTTON_DELETE, 646);
+        }
 
         // this should ideally be non-contextual (though we need some context for non-tv show node I guess)
         CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
@@ -1121,7 +1126,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       }
 
       CFileItem *item = new CFileItem("thumb://None", false);
-      item->SetThumbnailImage("defaultFolderBig.png");
+      item->SetThumbnailImage("DefaultActorBig.png");
       item->SetLabel(g_localizeStrings.Get(20018));
       items.Add(item);
 
@@ -1208,6 +1213,16 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CSong song;
       if (database.GetSongById(database.GetSongByArtistAndAlbumAndTitle(m_vecItems[itemNumber]->GetVideoInfoTag()->GetArtist(),m_vecItems[itemNumber]->GetVideoInfoTag()->m_strAlbum,m_vecItems[itemNumber]->GetVideoInfoTag()->m_strTitle),song))
         g_application.getApplicationMessenger().PlayFile(song);
+      return true;
+    }
+
+  case CONTEXT_BUTTON_UNLINK_BOOKMARK:
+    {
+      m_database.Open();
+      m_database.DeleteBookMarkForEpisode(*m_vecItems[itemNumber]->GetVideoInfoTag());
+      m_database.Close();
+      CUtil::DeleteVideoDatabaseDirectoryCache();
+      Update(m_vecItems.m_strPath);
       return true;
     }
 
