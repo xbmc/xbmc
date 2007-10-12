@@ -600,6 +600,54 @@ void CASyncDirectSound::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeaker
   m_iCurrentAudioStream = iAudioStream;
 }
 
+
+void GetSigmoidCurve(float scale, short *curve)
+{
+  ASSERT(scale > 1);
+  // f(x) = a/(1 + e^{-bx}) + c
+
+  // want it to map 0 .. 1, and have f'(0) = scale > 1
+  // f(0) = a/2 + c = 0
+  // f(1) = a/(1 + e^{-b}) + c = 1
+  // f'(0) = -a/(1 + 1)^2.1.-b = ab/4 = scale
+  // so a = 4scale/b
+  // f(0) = 2scale/b + c = 0
+  // f(1) = 4scale/b(1 + e^{-b}) + c = 1
+
+  float b = 8/3*scale;   // reasonable approximation at least when k > 4
+  for (int i = 0; i < 2000; i++)
+  {
+    // Newton-Raphson approximation
+    float eb = exp(-b);
+    float f = 4*scale/(b*(1 + eb)) - 2*scale/b - 1;
+    float fp = -4*scale/(b*(1 + eb)*b*(1+eb))*(b*(1 - eb)+(1 + eb)) + 2*scale/(b*b);
+    float b1 = b - f/fp;
+    if (fabs(b1-b) < 1e-10)
+      break;
+    b = b1;
+  }
+  float a = 4*scale / b;
+  float c = -a/2;
+
+  // generate our mapping now
+  for (float x = 0.0f; x <= 32767.0f; x++)
+  {
+    float y = a/(1 + exp(-b*(x/32767)))+c;
+    *curve++ = (short)(y * 32767.0f + 0.5f);
+  }
+}
+
+void GetCompressionCurve(float drc, short *curve)
+{
+  float powerdB = (90.0f - drc) / 90.0f;
+  float scaledB = pow(32767.0f, 1 - powerdB);
+  for (float in = 0; in <= 32767.0f; in++)
+  {
+    float out = pow(in, powerdB) * scaledB;
+    *curve++ = (short)(out + 0.5f);
+  }
+}
+
 void CASyncDirectSound::SetDynamicRangeCompression(long drc)
 {
   if (m_drcAmount == drc)
@@ -608,17 +656,25 @@ void CASyncDirectSound::SetDynamicRangeCompression(long drc)
   m_drcAmount = drc;
 
   // compute DRC table
-  if (!m_drcTable)
+  if (!m_drcTable && m_drcAmount)
     m_drcTable = new short[32768];
 
-  short *table = m_drcTable;
-  float powerdB = (90.0f - m_drcAmount * 0.01f) / 90.0f;
-  float scaledB = pow(32767.0f, 1 - powerdB);
-  for (float in = 0; in <= 32767.0f; in++)
+#define USE_SIGMOID
+
+#ifdef USE_SIGMOID
+  if (m_drcAmount)
   {
-    float out = pow(in, powerdB) * scaledB;
-    *table++ = (short)(out + 0.5f);
+    float scaledB = pow(10.0f, m_drcAmount * 0.01f / 20);
+    GetSigmoidCurve(scaledB, m_drcTable);
   }
+  else
+  { // no amplification, so reset to a linear scale
+    for (int i = 0; i < 32768; i++)
+      m_drcTable[i] = i;
+  }
+#else
+  GetCompressionCurve(m_drcAmount*0.01f, m_drcTable);
+#endif
 }
 
 void CASyncDirectSound::ApplyDynamicRangeCompression(void *dest, const void *source, const int bytes)

@@ -442,6 +442,10 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
     // took over a second, and not normally cached, so cache it
     if (time + 1000 < timeGetTime() && !items.GetCacheToDisc())
       items.Save();
+
+    // if these items should replace the current listing, then pop it off the top
+    if (items.GetReplaceListing())
+      m_history.RemoveParentPath();
   }
   return true;
 }
@@ -854,7 +858,6 @@ void CGUIMediaWindow::SetHistoryForPath(const CStdString& strDirectory)
 
     while (CUtil::GetParentPath(strPath, strParentPath))
     {
-      bool bSet = false;
       for (int i = 0; i < (int)items.Size(); ++i)
       {
         CFileItem* pItem = items[i];
@@ -1098,6 +1101,8 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_ADD_FAVOURITE:
     CFavourites::AddOrRemove(m_vecItems[itemNumber], GetID());
     return true;
+  default:
+    break;
   }
   return false;
 }

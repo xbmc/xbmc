@@ -119,7 +119,6 @@
 #define ACTION_AUDIO_NEXT_LANGUAGE    56 // Select next language in movie.  Can b used in videoFullScreen.xml window id=2005
 #define ACTION_CHANGE_RESOLUTION      57 // switch 2 next resolution. Can b used during screen calibration settingsScreenCalibration.xml windowid=11
 
-
 #define REMOTE_0                    58  // remote keys 0-9. are used by multiple windows
 #define REMOTE_1                    59  // for example in videoFullScreen.xml window id=2005 you can
 #define REMOTE_2                    60  // enter time (mmss) to jump to particular point in the movie
@@ -212,7 +211,10 @@
 #define ACTION_INCREASE_RATING        136
 #define ACTION_DECREASE_RATING        137
 
-#define ACTION_TOGGLE_FULLSCREEN      138 // switch 2 desktop resolution
+#define ACTION_NEXT_SCENE             138 // switch to next scene/cutpoint in movie
+#define ACTION_PREV_SCENE             139 // switch to previous scene/cutpoint in movie
+
+#define ACTION_TOGGLE_FULLSCREEN      199 // switch 2 desktop resolution
 
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                     9999

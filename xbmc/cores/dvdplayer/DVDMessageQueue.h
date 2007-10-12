@@ -51,7 +51,7 @@ public:
   bool IsFull()                         { return (m_iDataSize >= m_iMaxDataSize); }
   void SetMaxDataSize(int iMaxDataSize) { m_iMaxDataSize = iMaxDataSize; }
   int GetMaxDataSize()                  { return m_iMaxDataSize; }
-  
+  bool IsInited()                       { return m_bInitialized; }
 private:
 
   HANDLE m_hEvent;

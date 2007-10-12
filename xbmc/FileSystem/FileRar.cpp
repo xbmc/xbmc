@@ -392,8 +392,10 @@ __int64 CFileRar::Seek(__int64 iFilePosition, int iWhence)
       }
 
       iFilePosition += GetLength();
-    default:
+    case SEEK_SET:
       break;
+    default:
+      return -1;
   }
   
   if (iFilePosition > this->GetLength()) 

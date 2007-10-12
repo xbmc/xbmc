@@ -37,6 +37,7 @@ void CVideoInfoTag::Reset()
   m_iSpecialSortEpisode = -1;
   m_fRating = 0.0f;
   m_iDbId = -1;
+  m_iBookmarkId = -1;
 
   m_bWatched = false;
 }
@@ -343,6 +344,7 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar << m_iDbId;
     ar << m_iSpecialSortSeason;
     ar << m_iSpecialSortEpisode;
+    ar << m_iBookmarkId;
   }
   else
   {
@@ -402,6 +404,7 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar >> m_iDbId;
     ar >> m_iSpecialSortSeason;
     ar >> m_iSpecialSortEpisode;
+    ar >> m_iBookmarkId;
   }
 }
 

@@ -496,6 +496,9 @@ unsigned int CFileSMB::Read(void *lpBuf, __int64 uiBufSize)
 __int64 CFileSMB::Seek(__int64 iFilePosition, int iWhence)
 {
   if (m_fd == -1) return -1;
+  if(iWhence == SEEK_POSSIBLE)
+    return 1;
+
   CSingleLock lock(smb);
 
   INT64 pos = smbc_lseek(m_fd, iFilePosition, iWhence);

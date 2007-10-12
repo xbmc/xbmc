@@ -23,7 +23,7 @@ public:
 
   // callbacks from python
   static bool AddItem(int handle, const CFileItem *item, int totalItems);
-  static void EndOfDirectory(int handle, bool success);
+  static void EndOfDirectory(int handle, bool success, bool replaceListing);
   static void AddSortMethod(int handle, SORT_METHOD sortMethod);
 
 private:

@@ -232,13 +232,9 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     }
     else if( m_pInput->IsStreamType(DVDSTREAM_TYPE_FILE) )
     {
-      if(m_pInput->Seek(0, SEEK_CUR) < 0)
+      if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
         context->is_streamed = 1;
     }
-    
-    // skip finding stream info for any streamed content
-    if(context->is_streamed)
-      streaminfo = false;  
 
     strcpy(context->filename, strFile);  
 
@@ -310,6 +306,9 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   }
   // reset any timeout
   g_urltimeout = 0;
+
+  // if format can be nonblocking, let's use that
+  m_pFormatContext->flags |= AVFMT_FLAG_NONBLOCK;
 
   // print some extra information
   m_dllAvFormat.dump_format(m_pFormatContext, 0, strFile, 0);

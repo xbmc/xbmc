@@ -665,7 +665,7 @@ void CGUIWindowMusicNav::SetArtistImage(int iItem)
 
   CFileItem* nItem = new CFileItem("thumb://None",false);
   nItem->SetLabel(g_localizeStrings.Get(20018));
-  nItem->SetThumbnailImage("DefaultFolderBig.png");
+  nItem->SetThumbnailImage("DefaultArtistBig.png");
   items.Add(nItem);
 
   if (CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_musicSources, g_localizeStrings.Get(20019), picturePath))

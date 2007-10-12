@@ -93,7 +93,7 @@
 				<textcolor>green</textcolor>
 				<font>special13</font>
 			</control>
-			<control type="label" id="1">
+			<control type="fadelabel" id="1">
 				<description>Artist label</description>
 				<width>420</width>
 				<posx>160</posx>
@@ -102,9 +102,9 @@
 				<align>left</align>
 				<font>special12</font>
 			</control>
-			<control type="label" id="1">
+			<control type="fadelabel" id="1">
 				<description>Title label</description>
-				<width>520</width>
+				<width>420</width>
 				<posx>160</posx>
 				<posy>30</posy>
 				<info>MusicPlayer.Title</info>
