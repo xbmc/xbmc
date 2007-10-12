@@ -248,6 +248,8 @@ HRESULT CALSADirectSound::SetCurrentVolume(LONG nVolume)
 //***********************************************************************************************
 DWORD CALSADirectSound::GetSpace()
 {
+  if (!m_bIsAllocated) return 0;
+
   int nSpace = snd_pcm_avail_update(m_pPlayHandle);
   if (nSpace < 0) {
      CLog::Log(LOGWARNING,"CALSADirectSound::GetSpace - get space failed. err: %d (%s)", nSpace, snd_strerror(nSpace));
