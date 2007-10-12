@@ -80,23 +80,24 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
-
+/*
 static int dvd_file_open(URLContext *h, const char *filename, int flags)
 {
   return -1;
 }
+*/
 
 static int dvd_file_read(URLContext *h, BYTE* buf, int size)
 {
   CDVDInputStream* pInputStream = (CDVDInputStream*)h->priv_data;
   return pInputStream->Read(buf, size);
 }
-
+/*
 static int dvd_file_write(URLContext *h, BYTE* buf, int size)
 {
   return -1;
 }
-
+*/
 static __int64 dvd_file_seek(URLContext *h, __int64 pos, int whence)
 {  
   CDVDInputStream* pInputStream = (CDVDInputStream*)h->priv_data;

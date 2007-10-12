@@ -313,7 +313,7 @@ void DllLoader::PrintImportLookupTable(unsigned long ImportLookupTable_RVA)
     if (*Table & 0x80000000)
     {
       // Process Ordinal...
-      CLog::Log(LOGDEBUG, "            Ordinal: %01X\n", *Table & 0x7fffffff);
+      CLog::Log(LOGDEBUG, "            Ordinal: %01lX\n", *Table & 0x7fffffff);
     }
     else
     {
@@ -341,10 +341,10 @@ void DllLoader::PrintImportTable(ImportDirTable_t *ImportDirTable)
     Name = (char*)RVA2Data(Imp->Name_RVA);
     
     CLog::Log(LOGDEBUG, "    %s:\n", Name);
-    CLog::Log(LOGDEBUG, "        ImportAddressTable:     %04X\n", Imp->ImportAddressTable_RVA);
-    CLog::Log(LOGDEBUG, "        ImportLookupTable:      %04X\n", Imp->ImportLookupTable_RVA);
-    CLog::Log(LOGDEBUG, "        TimeStamp:              %01X\n", Imp->TimeStamp);
-    CLog::Log(LOGDEBUG, "        Forwarder Chain:        %01X\n", Imp->ForwarderChain);
+    CLog::Log(LOGDEBUG, "        ImportAddressTable:     %04lX\n", Imp->ImportAddressTable_RVA);
+    CLog::Log(LOGDEBUG, "        ImportLookupTable:      %04lX\n", Imp->ImportLookupTable_RVA);
+    CLog::Log(LOGDEBUG, "        TimeStamp:              %01lX\n", Imp->TimeStamp);
+    CLog::Log(LOGDEBUG, "        Forwarder Chain:        %01lX\n", Imp->ForwarderChain);
     
     PrintImportLookupTable(Imp->ImportLookupTable_RVA);
     CLog::Log(LOGDEBUG, "\n");
@@ -364,17 +364,17 @@ void DllLoader::PrintExportTable(ExportDirTable_t *ExportDirTable)
 
   CLog::Log(LOGDEBUG, "Export Table for %s:\n", Name);
 
-  CLog::Log(LOGDEBUG, "ExportFlags:    %04X\n", ExportDirTable->ExportFlags);
-  CLog::Log(LOGDEBUG, "TimeStamp:      %04X\n", ExportDirTable->TimeStamp);
+  CLog::Log(LOGDEBUG, "ExportFlags:    %04lX\n", ExportDirTable->ExportFlags);
+  CLog::Log(LOGDEBUG, "TimeStamp:      %04lX\n", ExportDirTable->TimeStamp);
   CLog::Log(LOGDEBUG, "Major Ver:      %02X\n", ExportDirTable->MajorVersion);
   CLog::Log(LOGDEBUG, "Minor Ver:      %02X\n", ExportDirTable->MinorVersion);
-  CLog::Log(LOGDEBUG, "Name RVA:       %04X\n", ExportDirTable->Name_RVA);
-  CLog::Log(LOGDEBUG, "OrdinalBase     %d\n", ExportDirTable->OrdinalBase);
-  CLog::Log(LOGDEBUG, "NumAddrTable    %d\n", ExportDirTable->NumAddrTable);
-  CLog::Log(LOGDEBUG, "NumNamePtrs     %d\n", ExportDirTable->NumNamePtrs);
-  CLog::Log(LOGDEBUG, "ExportAddressTable_RVA  %04X\n", ExportDirTable->ExportAddressTable_RVA);
-  CLog::Log(LOGDEBUG, "NamePointerTable_RVA    %04X\n", ExportDirTable->NamePointerTable_RVA);
-  CLog::Log(LOGDEBUG, "OrdinalTable_RVA        %04X\n\n", ExportDirTable->OrdinalTable_RVA);
+  CLog::Log(LOGDEBUG, "Name RVA:       %04lX\n", ExportDirTable->Name_RVA);
+  CLog::Log(LOGDEBUG, "OrdinalBase     %lu\n", ExportDirTable->OrdinalBase);
+  CLog::Log(LOGDEBUG, "NumAddrTable    %lu\n", ExportDirTable->NumAddrTable);
+  CLog::Log(LOGDEBUG, "NumNamePtrs     %lu\n", ExportDirTable->NumNamePtrs);
+  CLog::Log(LOGDEBUG, "ExportAddressTable_RVA  %04lX\n", ExportDirTable->ExportAddressTable_RVA);
+  CLog::Log(LOGDEBUG, "NamePointerTable_RVA    %04lX\n", ExportDirTable->NamePointerTable_RVA);
+  CLog::Log(LOGDEBUG, "OrdinalTable_RVA        %04lX\n\n", ExportDirTable->OrdinalTable_RVA);
 
   CLog::Log(LOGDEBUG, "Public Exports:\n");
   CLog::Log(LOGDEBUG, "    ordinal hint RVA      name\n");
@@ -382,9 +382,9 @@ void DllLoader::PrintExportTable(ExportDirTable_t *ExportDirTable)
   {
     char *Name = (char*)RVA2Data(NamePointerTable[i]);
 
-    CLog::Log(LOGDEBUG, "          %d", OrdinalTable[i] + ExportDirTable->OrdinalBase);
+    CLog::Log(LOGDEBUG, "          %lu", OrdinalTable[i] + ExportDirTable->OrdinalBase);
     CLog::Log(LOGDEBUG, "    %d", OrdinalTable[i]);
-    CLog::Log(LOGDEBUG, " %08X", ExportAddressTable[OrdinalTable[i]]);
+    CLog::Log(LOGDEBUG, " %08lX", ExportAddressTable[OrdinalTable[i]]);
     CLog::Log(LOGDEBUG, " %s\n", Name);
   }
 }
@@ -427,8 +427,8 @@ int DllLoader::ResolveImports(void)
           {
             bResult = 0;
             char szBuf[128];
-            CLog::Log(LOGDEBUG,"Unable to resolve ordinal %s %d\n", Name, *Table&0x7ffffff);
-            sprintf(szBuf, "%d", *Table&0x7ffffff);
+            CLog::Log(LOGDEBUG,"Unable to resolve ordinal %s %lu\n", Name, *Table&0x7ffffff);
+            sprintf(szBuf, "%lu", *Table&0x7ffffff);
             *Addr = create_dummy_function(Name, szBuf);
             tracker_dll_data_track(this, *Addr);
           }
@@ -551,7 +551,7 @@ int DllLoader::ResolveExport(unsigned long ordinal, void **pAddr)
   if (sDllName) sDllName += 1;
   else sDllName = GetFileName();
   
-  CLog::Log(LOGWARNING, "Unable to resolve: %s %d", sDllName, ordinal);
+  CLog::Log(LOGWARNING, "Unable to resolve: %s %lu", sDllName, ordinal);
   return 0;
 }
 
@@ -717,12 +717,12 @@ bool DllLoader::Load()
 
     ResolveExport("theQuickTimeDispatcher", (void **)&dispatch_addr);
     imagebase_addr = (DWORD)hModule;
-    CLog::Log(LOGDEBUG, "Virtual Address of theQuickTimeDispatcher = 0x%x", dispatch_addr);
-    CLog::Log(LOGDEBUG, "ImageBase of %s = 0x%x", GetName(), imagebase_addr);
+    CLog::Log(LOGDEBUG, "Virtual Address of theQuickTimeDispatcher = 0x%lx", dispatch_addr);
+    CLog::Log(LOGDEBUG, "ImageBase of %s = 0x%lx", GetName(), imagebase_addr);
 
     dispatch_rva = dispatch_addr - imagebase_addr;
 
-    CLog::Log(LOGDEBUG, "Relative Virtual Address of theQuickTimeDispatcher = %p", dispatch_rva);
+    CLog::Log(LOGDEBUG, "Relative Virtual Address of theQuickTimeDispatcher = %lu", dispatch_rva);
 
     DWORD base = imagebase_addr;
     if (dispatch_rva == 0x124C30)

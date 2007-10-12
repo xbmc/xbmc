@@ -65,7 +65,7 @@ bool CEdl::ReadEdl()
     tmpValid=true;
     while (CutFile.ReadString(m_szBuffer, 1023) && tmpValid) 
     {
-      if( sscanf( m_szBuffer, "%lf %lf %i", &tmpCut.CutStart, &tmpCut.CutEnd, &tmpCut.CutAction ) == 3)
+      if( sscanf( m_szBuffer, "%lf %lf %i", &tmpCut.CutStart, &tmpCut.CutEnd, (int*) &tmpCut.CutAction ) == 3)
       {
         if ( tmpCut.CutAction==CUT || tmpCut.CutAction==MUTE )
         {  

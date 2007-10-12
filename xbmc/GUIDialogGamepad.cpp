@@ -11,7 +11,7 @@ CGUIDialogGamepad::CGUIDialogGamepad(void)
   m_bCanceled = false;
   m_strUserInput = "";
   m_strPassword = "";
-  int m_iRetries = 0;
+  m_iRetries = 0;
   m_bUserInputCleanup = true;
 }
 

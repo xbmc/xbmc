@@ -21,6 +21,7 @@ typedef sample_t convert_t;
 class DllLibDtsInterface
 {
 public:
+  virtual ~DllLibDtsInterface() {} 
   virtual dts_state_t * dts_init (uint32_t mm_accel)=0;
   virtual int dts_syncinfo (dts_state_t *state, uint8_t * buf, int * flags, int * sample_rate, int * bit_rate, int *frame_length)=0;
   virtual int dts_frame (dts_state_t * state, uint8_t * buf, int * flags, level_t * level, sample_t bias)=0;

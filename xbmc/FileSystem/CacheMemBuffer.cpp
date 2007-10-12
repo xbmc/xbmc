@@ -61,7 +61,7 @@ int CacheMemBuffer::Close()
 int CacheMemBuffer::WriteToCache(const char *pBuffer, size_t iSize) 
 {
   CSingleLock lock(m_sync);
-  int nToWrite = m_buffer.GetMaxWriteSize() ;
+  unsigned int nToWrite = m_buffer.GetMaxWriteSize() ;
 
   // must also check the forward buffer.
   // if we have leftovers from the previous seek - we need not read anymore until they are utilized
@@ -88,7 +88,7 @@ int CacheMemBuffer::ReadFromCache(char *pBuffer, size_t iMaxSize)
   }
 
   int nRead = iMaxSize;
-  if (m_buffer.GetMaxReadSize() < iMaxSize)
+  if ((size_t) m_buffer.GetMaxReadSize() < iMaxSize)
     nRead = m_buffer.GetMaxReadSize();
 
   if (nRead > 0)
@@ -100,7 +100,7 @@ int CacheMemBuffer::ReadFromCache(char *pBuffer, size_t iMaxSize)
     }
 
     // copy to history so we can seek back
-    if (m_HistoryBuffer.GetMaxWriteSize() < nRead)
+    if ((int) m_HistoryBuffer.GetMaxWriteSize() < nRead)
       m_HistoryBuffer.SkipBytes(nRead);
     m_HistoryBuffer.WriteBinary(pBuffer, nRead);
 
@@ -120,7 +120,7 @@ int CacheMemBuffer::ReadFromCache(char *pBuffer, size_t iMaxSize)
 __int64 CacheMemBuffer::WaitForData(unsigned int iMinAvail, unsigned int iMillis)
 {
   DWORD dwTime = GetTickCount() + iMillis;
-  while (!IsEndOfInput() && m_buffer.GetMaxReadSize() < iMinAvail && GetTickCount() < dwTime )
+  while (!IsEndOfInput() && (unsigned int) m_buffer.GetMaxReadSize() < iMinAvail && GetTickCount() < dwTime )
     Sleep(50); // may miss the deadline. shouldn't be a problem.
 
   return m_buffer.GetMaxReadSize();

@@ -317,8 +317,8 @@ const CStdString CUtil::GetExtension(const CStdString& strFileName)
   int period = strFileName.find_last_of('.');
   if(period >= 0)
   {
-    if( strFileName.find_first_of('/', period+1) != -1 ) return "";
-    if( strFileName.find_first_of('\\', period+1) != -1 ) return "";
+    if( strFileName.find_first_of('/', period+1) != string::npos ) return "";
+    if( strFileName.find_first_of('\\', period+1) != string::npos ) return "";
 
     /* url options could be at the end of a url */
     const int options = strFileName.find_first_of('?', period+1);
@@ -1774,7 +1774,7 @@ void CUtil::UrlDecode(CStdString& strURLData)
   /* resulet will always be less than source */
   strResult.reserve( strURLData.length() );
 
-  for (unsigned int i = 0; i < (int)strURLData.size(); ++i)
+  for (unsigned int i = 0; i < strURLData.size(); ++i)
   {
     int kar = (unsigned char)strURLData[i];
     if (kar == '+') strResult += ' ';
@@ -2259,7 +2259,7 @@ void CUtil::ClearSubtitles()
           strFile = _P(strFile);
           if (strFile.Find("subtitle") >= 0 )
           {
-            if (strFile.Find(".keep") != strFile.size()-5) // do not remove files ending with .keep
+            if (strFile.Find(".keep") != (signed int) strFile.size()-5) // do not remove files ending with .keep
               ::DeleteFile(strFile.c_str());
           }
           else if (strFile.Find("vobsub_queue") >= 0 )
@@ -2443,7 +2443,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
           CUtil::AddFileToFolder(strLookInPaths[step],strFileNameNoExt+CUtil::GetExtension(strItem),strRar);
           CUtil::AddFileToFolder(strLookInPaths[step],strItem,strItemWithPath);
 
-          int iPos = strMovie.substr(0,6)=="rar://"?1:0;
+          unsigned int iPos = strMovie.substr(0,6)=="rar://"?1:0;
           iPos = strMovie.substr(0,6)=="zip://"?1:0;
           if ((step != iPos) || (strFileNameNoExtNoCase+".rar").Equals(strItem) || (strFileNameNoExtNoCase+".zip").Equals(strItem))
             CacheRarSubtitles( vecExtensionsCached, items[j]->m_strPath, strFileNameNoExtNoCase);
@@ -2909,8 +2909,8 @@ void CUtil::InitGamma()
 {
 #ifndef HAS_SDL
   g_graphicsContext.Get3DDevice()->GetGammaRamp(&oldramp);
-#elif defined(HAS_SDL_2D)
-  SDL_GetGammaRamp(oldrampRed, oldrampGreen, oldrampGreen);
+#elif defined(HAS_SDL)
+  SDL_GetGammaRamp(oldrampRed, oldrampGreen, oldrampBlue);
 #endif  
 }
 void CUtil::RestoreBrightnessContrastGamma()
@@ -2918,7 +2918,7 @@ void CUtil::RestoreBrightnessContrastGamma()
   g_graphicsContext.Lock();
 #ifndef HAS_SDL  
   g_graphicsContext.Get3DDevice()->SetGammaRamp(GAMMA_RAMP_FLAG, &oldramp);
-#elif defined(HAS_SDL_2D)
+#elif defined(HAS_SDL)
   SDL_SetGammaRamp(oldrampRed, oldrampGreen, oldrampGreen);
 #endif
   g_graphicsContext.Unlock();
@@ -2944,7 +2944,7 @@ void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float G
   // calculate ramp
 #ifndef HAS_SDL
   D3DGAMMARAMP ramp;
-#elif defined(HAS_SDL_2D)
+#elif defined(HAS_SDL)
   Uint16 rampRed[256];
   Uint16 rampGreen[256];
   Uint16 rampBlue[256];
@@ -2956,7 +2956,7 @@ void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float G
     float f = (powf((float)i / 255.f, Gamma) * Contrast + Brightness) * 255.f;
 #ifndef HAS_SDL    
     ramp.blue[i] = ramp.green[i] = ramp.red[i] = clamp(f);
-#elif defined(HAS_SDL_2D)
+#elif defined(HAS_SDL)
     rampBlue[i] = rampGreen[i] = rampRed[i] = clamp(f);
 #endif    
   }
@@ -2965,8 +2965,8 @@ void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float G
   g_graphicsContext.Lock();
 #ifndef HAS_SDL  
   g_graphicsContext.Get3DDevice()->SetGammaRamp(bImmediate ? GAMMA_RAMP_FLAG : 0, &ramp);
-#elif defined(HAS_SDL_2D)
-  SDL_SetGammaRamp(rampRed, rampGreen, rampGreen);
+#elif defined(HAS_SDL)
+  SDL_SetGammaRamp(rampRed, rampGreen, rampBlue);
 #endif
   g_graphicsContext.Unlock();
 }
@@ -3005,16 +3005,16 @@ void CUtil::FlashScreen(bool bImmediate, bool bOn)
   {
 #ifndef HAS_SDL  
     g_graphicsContext.Get3DDevice()->GetGammaRamp(&flashramp);
-#elif defined(HAS_SDL_2D)
-    SDL_GetGammaRamp(flashrampRed, flashrampGreen, flashrampGreen);    
+#elif defined(HAS_SDL)
+    SDL_GetGammaRamp(flashrampRed, flashrampGreen, flashrampBlue);    
 #endif    
     SetBrightnessContrastGamma(0.5f, 1.2f, 2.0f, bImmediate);
   }
   else
 #ifndef HAS_SDL  
     g_graphicsContext.Get3DDevice()->SetGammaRamp(bImmediate ? GAMMA_RAMP_FLAG : 0, &flashramp);
-#elif defined(HAS_SDL_2D)
-    SDL_SetGammaRamp(flashrampRed, flashrampGreen, flashrampGreen);    
+#elif defined(HAS_SDL)
+    SDL_SetGammaRamp(flashrampRed, flashrampGreen, flashrampBlue);    
 #endif    
   g_graphicsContext.Unlock();
 }
@@ -3399,64 +3399,64 @@ typedef struct
 } BUILT_IN;
 
 const BUILT_IN commands[] = {
-  "Help",               false,  "This help message",
-  "Reboot",             false,  "Reboot the xbox (power cycle)",
-  "Restart",            false,  "Restart the xbox (power cycle)",
-  "ShutDown",           false,  "Shutdown the xbox",
-  "Dashboard",          false,  "Run your dashboard",
-  "RestartApp",         false,  "Restart XBMC",
-  "Credits",            false,  "Run XBMCs Credits",
-  "Reset",              false,  "Reset the xbox (warm reboot)",
-  "Mastermode",         false,  "Control master mode",
-  "ActivateWindow",     true,   "Activate the specified window",
-  "ReplaceWindow",      true,   "Replaces the current window with the new one",
-  "TakeScreenshot",     false,  "Takes a Screenshot",
-  "RunScript",          true,   "Run the specified script",
-  "RunXBE",             true,   "Run the specified executeable",
-  "Extract",            true,   "Extracts the specified archive",
-  "PlayMedia",          true,   "Play the specified media file (or playlist)",
-  "SlideShow",          true,   "Run a slideshow from the specified directory",
-  "RecursiveSlideShow", true,   "Run a slideshow from the specified directory, including all subdirs",
-  "ReloadSkin",         false,  "Reload XBMC's skin",
-  "PlayerControl",      true,   "Control the music or video player",
-  "EjectTray",          false,  "Close or open the DVD tray",
-  "AlarmClock",         true,   "Prompt for a length of time and start an alarm clock",
-  "CancelAlarm",        true,   "Cancels an alarm",
+  { "Help",               false,  "This help message" },
+  { "Reboot",             false,  "Reboot the xbox (power cycle)" },
+  { "Restart",            false,  "Restart the xbox (power cycle)" },
+  { "ShutDown",           false,  "Shutdown the xbox" },
+  { "Dashboard",          false,  "Run your dashboard" },
+  { "RestartApp",         false,  "Restart XBMC" },
+  { "Credits",            false,  "Run XBMCs Credits" },
+  { "Reset",              false,  "Reset the xbox (warm reboot)" },
+  { "Mastermode",         false,  "Control master mode" },
+  { "ActivateWindow",     true,   "Activate the specified window" },
+  { "ReplaceWindow",      true,   "Replaces the current window with the new one" },
+  { "TakeScreenshot",     false,  "Takes a Screenshot" },
+  { "RunScript",          true,   "Run the specified script" },
+  { "RunXBE",             true,   "Run the specified executeable" },
+  { "Extract",            true,   "Extracts the specified archive" },
+  { "PlayMedia",          true,   "Play the specified media file (or playlist)" },
+  { "SlideShow",          true,   "Run a slideshow from the specified directory" },
+  { "RecursiveSlideShow", true,   "Run a slideshow from the specified directory, including all subdirs" },
+  { "ReloadSkin",         false,  "Reload XBMC's skin" },
+  { "PlayerControl",      true,   "Control the music or video player" },
+  { "EjectTray",          false,  "Close or open the DVD tray" },
+  { "AlarmClock",         true,   "Prompt for a length of time and start an alarm clock" },
+  { "CancelAlarm",        true,   "Cancels an alarm" },
 #ifdef HAS_KAI
-  "KaiConnection",      false,  "Change kai connection status (connect/disconnect)",
+  { "KaiConnection",      false,  "Change kai connection status (connect/disconnect)" },
 #endif
-  "Action",             true,   "Executes an action for the active window (same as in keymap)",
-  "Notification",       true,   "Shows a notification on screen, specify header, then message, and optionally time in milliseconds and a icon.",
-  "PlayDVD",            false,  "Plays the inserted CD or DVD media from the DVD-ROM Drive!",
-  "Skin.ToggleSetting", true,   "Toggles a skin setting on or off",
-  "Skin.SetString",     true,   "Prompts and sets skin string",
-  "Skin.SetNumeric",    true,   "Prompts and sets numeric input",
-  "Skin.SetPath",       true,   "Prompts and sets a skin path",
-  "Skin.Theme",         true,   "Control skin theme",
-  "Skin.SetImage",      true,   "Prompts and sets a skin image",
-  "Skin.SetLargeImage", true,   "Prompts and sets a large skin images",
-  "Skin.SetFile",       true,   "Prompts and sets a file",
-  "Skin.SetBool",       true,   "Sets a skin setting on",
-  "Skin.Reset",         true,   "Resets a skin setting to default",
-  "Skin.ResetSettings", false,  "Resets all skin settings",
-  "Mute",               false,  "Mute the player",
-  "SetVolume",          true,   "Set the current volume",
-  "Dialog.Close",       true,   "Close a dialog",
-  "System.LogOff",      false,  "Log off current user",
-  "System.PWMControl",  true,   "Control PWM RGB LEDs",
-  "Resolution",         true,   "Change XBMC's Resolution",
-  "SetFocus",           true,   "Change current focus to a different control id", 
-  "BackupSystemInfo",   false,  "Backup System Informations to local hdd",
-  "UpdateLibrary",      true,   "Update the selected library (music or video)",
-  "PageDown",           true,   "Send a page down event to the pagecontrol with given id",
-  "PageUp",             true,   "Send a page up event to the pagecontrol with given id"
+  { "Action",             true,   "Executes an action for the active window (same as in keymap)" },
+  { "Notification",       true,   "Shows a notification on screen, specify header, then message, and optionally time in milliseconds and a icon." },
+  { "PlayDVD",            false,  "Plays the inserted CD or DVD media from the DVD-ROM Drive!" },
+  { "Skin.ToggleSetting", true,   "Toggles a skin setting on or off" },
+  { "Skin.SetString",     true,   "Prompts and sets skin string" },
+  { "Skin.SetNumeric",    true,   "Prompts and sets numeric input" },
+  { "Skin.SetPath",       true,   "Prompts and sets a skin path" },
+  { "Skin.Theme",         true,   "Control skin theme" },
+  { "Skin.SetImage",      true,   "Prompts and sets a skin image" },
+  { "Skin.SetLargeImage", true,   "Prompts and sets a large skin images" },
+  { "Skin.SetFile",       true,   "Prompts and sets a file" },
+  { "Skin.SetBool",       true,   "Sets a skin setting on" },
+  { "Skin.Reset",         true,   "Resets a skin setting to default" },
+  { "Skin.ResetSettings", false,  "Resets all skin settings" },
+  { "Mute",               false,  "Mute the player" },
+  { "SetVolume",          true,   "Set the current volume" },
+  { "Dialog.Close",       true,   "Close a dialog" },
+  { "System.LogOff",      false,  "Log off current user" },
+  { "System.PWMControl",  true,   "Control PWM RGB LEDs" },
+  { "Resolution",         true,   "Change XBMC's Resolution" },
+  { "SetFocus",           true,   "Change current focus to a different control id" },  
+  { "BackupSystemInfo",   false,  "Backup System Informations to local hdd" },
+  { "UpdateLibrary",      true,   "Update the selected library (music or video)"},
+  { "PageDown",           true,   "Send a page down event to the pagecontrol with given id" },
+  { "PageUp",             true,   "Send a page up event to the pagecontrol with given id" }
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
 {
   CStdString function, param;
   SplitExecFunction(execString, function, param);
-  for (int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
+  for (unsigned int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
   {
     if (function.CompareNoCase(commands[i].command) == 0 && (!commands[i].needsParameters || !param.IsEmpty()))
       return true;
@@ -3487,7 +3487,7 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &strFunct
 void CUtil::GetBuiltInHelp(CStdString &help)
 {
   help.Empty();
-  for (int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
+  for (unsigned int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
   {
     help += commands[i].command;
     help += "\t";
@@ -3961,7 +3961,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         if (szParam)
         {
           if (strlen(szParam))
-            fSecs = fSecs = static_cast<float>(atoi(szParam)*60);
+            fSecs = static_cast<float>(atoi(szParam)*60);
           free(szParam);
         }
         szParam = reg.GetReplaceString("\\1");
@@ -4074,7 +4074,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     GetSkinThemes(vecTheme);
 
     int iTheme = -1;
-    int iThemes = vecTheme.size();
+    //int iThemes = vecTheme.size();
     // find current theme
     if (!g_guiSettings.GetString("lookandfeel.skintheme").Equals("skindefault"))
       for (unsigned int i=0;i<vecTheme.size();++i)
@@ -4591,9 +4591,9 @@ bool CUtil::SetSysDateTimeYear(int iYear, int iMonth, int iDay, int iHour, int i
 
   CLog::Log(LOGDEBUG, "------------ TimeZone -------------");
   CLog::Log(LOGDEBUG, "-      GMT Zone: GMT %.1f",iGMTZone);
-  CLog::Log(LOGDEBUG, "-          Bias: %i minutes",tziNew.Bias);
-  CLog::Log(LOGDEBUG, "-  DaylightBias: %i",tziNew.DaylightBias);
-  CLog::Log(LOGDEBUG, "-  StandardBias: %i",tziNew.StandardBias);
+  CLog::Log(LOGDEBUG, "-          Bias: %lu minutes",tziNew.Bias);
+  CLog::Log(LOGDEBUG, "-  DaylightBias: %lu",tziNew.DaylightBias);
+  CLog::Log(LOGDEBUG, "-  StandardBias: %lu",tziNew.StandardBias);
 
   switch (dwRet)
   {
@@ -4759,7 +4759,7 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
 #else
   socklen_t cliLen;
 #endif
-  int t1,t2,t3,t4, init_counter=0, life=0;
+  int t1,t2,t3,t4, life=0;
   struct sockaddr_in	server;
   struct sockaddr_in	cliAddr;
   struct timeval timeout={0,500};
@@ -5287,7 +5287,7 @@ bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTex
     return false;
 
   char cDelim = '\0';
-  int nGreaterDelim, nPos;
+  unsigned int nGreaterDelim, nPos;
 
   nPos = StrInput.find_last_of( '\\' );
   if ( nPos >= 0 )
@@ -5494,10 +5494,10 @@ void CUtil::WipeDir(const CStdString& strPath) // DANGEROUS!!!!
   {
     CLog::Log(LOGDEBUG,"wipe dir %s",items[i]->m_strPath.c_str());
     if (!::RemoveDirectory((items[i]->m_strPath+"\\").c_str()))
-      CLog::Log(LOGDEBUG,"this sucks %u!",GetLastError());
+      CLog::Log(LOGDEBUG,"this sucks %lu!",GetLastError());
   }
   if (!::RemoveDirectory((strPath+"\\").c_str()))
-    CLog::Log(LOGDEBUG,"wtf %u",GetLastError());
+    CLog::Log(LOGDEBUG,"wtf %lu",GetLastError());
 }
 
 void CUtil::ClearFileItemCache()
@@ -5563,7 +5563,7 @@ CStdString CUtil::CUtil::TranslatePathConvertCase(const CStdString& path)
    DIR* dir;
    struct dirent* de;
 
-   for (int i = 0; i < tokens.size(); i++)
+   for (unsigned int i = 0; i < tokens.size(); i++)
    {
       file = result + "/" + tokens[i];
       if (stat(file.c_str(), &stat_buf) == 0)

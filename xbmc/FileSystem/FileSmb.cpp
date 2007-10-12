@@ -620,7 +620,7 @@ bool CFileSMB::OpenForWrite(const CURL& url, bool bBinary, bool bOverWrite)
 
 bool CFileSMB::IsValidFile(const CStdString& strFileName)
 {
-  if (strFileName.Find('/') == CStdString::npos || /* doesn't have sharename */
+  if (strFileName.Find('/') == -1 || /* doesn't have sharename */
       strFileName.Right(2) == "/." || /* not current folder */
       strFileName.Right(3) == "/..")  /* not parent folder */
       return false;

@@ -37,9 +37,9 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
     return false;
   
   // display progress dialog after 1 seconds
-  DWORD dwTimeStamp = GetTickCount();//+ 1000;
+  //DWORD dwTimeStamp = GetTickCount();//+ 1000;
   CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  bool dialogopen = false;
+  //bool dialogopen = false;
   int iProgressPercent = 0;
   if (dlgProgress)
   {

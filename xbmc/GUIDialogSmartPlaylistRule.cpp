@@ -61,7 +61,7 @@ bool CGUIDialogSmartPlaylistRule::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
-      int iAction = message.GetParam1();
+      //int iAction = message.GetParam1();
       if (iControl == CONTROL_OK)
         OnOK();
       else if (iControl == CONTROL_CANCEL)
@@ -370,6 +370,9 @@ CGUIDialogSmartPlaylistRule::FIELD CGUIDialogSmartPlaylistRule::GetFieldType(CSm
 
   case CSmartPlaylistRule::FIELD_PLAYLIST:
     return PLAYLIST_FIELD;
+
+  default:
+    break;
   }
   return TEXT_FIELD;
 }

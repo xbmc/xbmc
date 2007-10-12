@@ -7,7 +7,9 @@
 
 //#define DUMPING_DATA 1
 
+#ifndef __GNUC__
 #pragma warning (disable:4806)
+#endif
 
 #include "../../utils/log.h"
 #define printf CLog::DebugLog
@@ -182,7 +184,7 @@ int CoffLoader::LoadCoffHModule(FILE *fp)
     return 0;
 
   WindowsHeader_t tempWindowsHeader;
-  int readcount = fread(&tempWindowsHeader, 1, WINHDR_SIZE, fp);
+  size_t readcount = fread(&tempWindowsHeader, 1, WINHDR_SIZE, fp);
   if (readcount != WINHDR_SIZE) //test file size error
     return 0;
 

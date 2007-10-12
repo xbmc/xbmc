@@ -33,7 +33,6 @@
  */
 void *mmap_anon(void *addr, size_t len, int prot, int flags, off_t offset)
 {
-    int fd;
     void *result;
 
      /* From loader/ext.c:

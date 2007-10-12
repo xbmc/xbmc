@@ -130,7 +130,7 @@ bool CMusicDatabase::CreateTables()
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "musicbase::unable to create tables:%i", GetLastError());
+    CLog::Log(LOGERROR, "musicbase::unable to create tables:%lu", GetLastError());
     return false;
   }
 
@@ -461,7 +461,7 @@ void CMusicDatabase::AddExtraSongArtists(const CStdStringArray &vecArtists, long
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, lSongId);
+    CLog::Log(LOGERROR, "%s(%lu) failed", __FUNCTION__, lSongId);
   }
 }
 
@@ -496,7 +496,7 @@ void CMusicDatabase::AddExtraAlbumArtists(const CStdStringArray &vecArtists, lon
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, lAlbumId);
+    CLog::Log(LOGERROR, "%s(%lu) failed", __FUNCTION__, lAlbumId);
   }
 }
 
@@ -553,7 +553,7 @@ void CMusicDatabase::AddExtraGenres(const CStdStringArray &vecGenres, long lSong
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%i,%i) failed", __FUNCTION__, lSongId, lAlbumId);
+    CLog::Log(LOGERROR, "%s(%lu,%lu) failed", __FUNCTION__, lSongId, lAlbumId);
   }
 }
 
@@ -881,7 +881,7 @@ bool CMusicDatabase::GetArbitraryQuery(const CStdString& strQuery, const CStdStr
 	  strResult = m_pDB->getErrorMsg();
 	  return false;
 	}
-	int iRowsFound = m_pDS->num_rows();
+	//int iRowsFound = m_pDS->num_rows();
 	strResult=strOpenRecordSet;
 	while (!m_pDS->eof())
 	{
@@ -992,7 +992,7 @@ bool CMusicDatabase::GetAlbumInfoSongs(long idAlbumInfo, VECSONGS& songs)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, idAlbumInfo);
+    CLog::Log(LOGERROR, "%s(%lu) failed", __FUNCTION__, idAlbumInfo);
   }
 
   return false;
@@ -1061,7 +1061,7 @@ bool CMusicDatabase::GetTop100Albums(VECALBUMS& albums)
       m_pDS->close();
       return false;
     }
-    int iCount = 1;
+    //int iCount = 1;
     while (!m_pDS->eof())
     {
       albums.push_back(GetAlbumFromDataset());
@@ -1346,15 +1346,15 @@ bool CMusicDatabase::Search(const CStdString& search, CFileItemList &items)
   DWORD time = timeGetTime();
   // first grab all the artists that match
   SearchArtists(search, items);
-  CLog::Log(LOGDEBUG, "%s Artist search in %d ms", __FUNCTION__, timeGetTime() - time); time = timeGetTime();
+  CLog::Log(LOGDEBUG, "%s Artist search in %lu ms", __FUNCTION__, timeGetTime() - time); time = timeGetTime();
 
   // then albums that match
   SearchAlbums(search, items);
-  CLog::Log(LOGDEBUG, "%s Album search in %d ms", __FUNCTION__, timeGetTime() - time); time = timeGetTime();
+  CLog::Log(LOGDEBUG, "%s Album search in %lu ms", __FUNCTION__, timeGetTime() - time); time = timeGetTime();
 
   // and finally songs
   SearchSongs(search, items);
-  CLog::Log(LOGDEBUG, "%s Songs search in %d ms", __FUNCTION__, timeGetTime() - time); time = timeGetTime();
+  CLog::Log(LOGDEBUG, "%s Songs search in %lu ms", __FUNCTION__, timeGetTime() - time); time = timeGetTime();
   return true;
 }
 
@@ -2763,7 +2763,7 @@ bool CMusicDatabase::GetSongsNav(const CStdString& strBaseDir, CFileItemList& it
       return false;
     }
 
-    CLog::Log(LOGDEBUG,"Time for actual SQL query = %d", timeGetTime() - time); time = timeGetTime();
+    CLog::Log(LOGDEBUG,"Time for actual SQL query = %lu", timeGetTime() - time); time = timeGetTime();
 
     // get data from returned rows
     items.Reserve(iRowsFound);
@@ -2777,7 +2777,7 @@ bool CMusicDatabase::GetSongsNav(const CStdString& strBaseDir, CFileItemList& it
       m_pDS->next();
     }
 
-    CLog::Log(LOGDEBUG,"Time to retrieve songs from dataset = %d", timeGetTime() - time);
+    CLog::Log(LOGDEBUG,"Time to retrieve songs from dataset = %lu", timeGetTime() - time);
 
     // cleanup
     m_pDS->close();

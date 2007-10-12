@@ -40,23 +40,23 @@ typedef struct
   int localizedString;
 } translateField;
 
-static const translateField fields[] = { "none", CSmartPlaylistRule::FIELD_NONE, 231,
-                                         "genre", CSmartPlaylistRule::SONG_GENRE, 515,
-                                         "album", CSmartPlaylistRule::SONG_ALBUM, 558,
-                                         "albumartist", CSmartPlaylistRule::SONG_ALBUM_ARTIST, 566,
-                                         "artist", CSmartPlaylistRule::SONG_ARTIST, 557,
-                                         "title", CSmartPlaylistRule::SONG_TITLE, 556,
-                                         "year", CSmartPlaylistRule::SONG_YEAR, 562,
-                                         "time", CSmartPlaylistRule::SONG_TIME, 180,
-                                         "tracknumber", CSmartPlaylistRule::SONG_TRACKNUMBER, 554,
-                                         "filename", CSmartPlaylistRule::SONG_FILENAME, 561,
-                                         "playcount", CSmartPlaylistRule::SONG_PLAYCOUNT, 567,
-                                         "lastplayed", CSmartPlaylistRule::SONG_LASTPLAYED, 568,
-                                         "rating", CSmartPlaylistRule::SONG_RATING, 563,
-                                         "comment", CSmartPlaylistRule::SONG_COMMENT, 569,
-                                         "dateadded", CSmartPlaylistRule::SONG_DATEADDED, 570,
-                                         "random", CSmartPlaylistRule::FIELD_RANDOM, 590,
-                                         "playlist", CSmartPlaylistRule::FIELD_PLAYLIST, 559,
+static const translateField fields[] = { { "none", CSmartPlaylistRule::FIELD_NONE, 231 }, 
+                                         { "genre", CSmartPlaylistRule::SONG_GENRE, 515 },
+                                         { "album", CSmartPlaylistRule::SONG_ALBUM, 558 },
+                                         { "albumartist", CSmartPlaylistRule::SONG_ALBUM_ARTIST, 566 },
+                                         { "artist", CSmartPlaylistRule::SONG_ARTIST, 557 },
+                                         { "title", CSmartPlaylistRule::SONG_TITLE, 556 },
+                                         { "year", CSmartPlaylistRule::SONG_YEAR, 562 },
+                                         { "time", CSmartPlaylistRule::SONG_TIME, 180 },
+                                         { "tracknumber", CSmartPlaylistRule::SONG_TRACKNUMBER, 554 },
+                                         { "filename", CSmartPlaylistRule::SONG_FILENAME, 561 },
+                                         { "playcount", CSmartPlaylistRule::SONG_PLAYCOUNT, 567 },
+                                         { "lastplayed", CSmartPlaylistRule::SONG_LASTPLAYED, 568 },
+                                         { "rating", CSmartPlaylistRule::SONG_RATING, 563 },
+                                         { "comment", CSmartPlaylistRule::SONG_COMMENT, 569 },
+                                         { "dateadded", CSmartPlaylistRule::SONG_DATEADDED, 570 },
+                                         { "random", CSmartPlaylistRule::FIELD_RANDOM, 590 },
+                                         { "playlist", CSmartPlaylistRule::FIELD_PLAYLIST, 559 }
                                        };
 
 #define NUM_FIELDS sizeof(fields) / sizeof(translateField)
@@ -68,18 +68,18 @@ typedef struct
   int localizedString;
 } operatorField;
 
-static const operatorField operators[] = { "contains", CSmartPlaylistRule::OPERATOR_CONTAINS, 21400,
-                                           "doesnotcontain", CSmartPlaylistRule::OPERATOR_DOES_NOT_CONTAIN, 21401,
-                                           "is", CSmartPlaylistRule::OPERATOR_EQUALS, 21402,
-                                           "isnot", CSmartPlaylistRule::OPERATOR_DOES_NOT_EQUAL, 21403,
-                                           "startswith", CSmartPlaylistRule::OPERATOR_STARTS_WITH, 21404,
-                                           "endswith", CSmartPlaylistRule::OPERATOR_ENDS_WITH, 21405,
-                                           "greaterthan", CSmartPlaylistRule::OPERATOR_GREATER_THAN, 21406,
-                                           "lessthan", CSmartPlaylistRule::OPERATOR_LESS_THAN, 21407,
-                                           "after", CSmartPlaylistRule::OPERATOR_AFTER, 21408,
-                                           "before", CSmartPlaylistRule::OPERATOR_BEFORE, 21409,
-                                           "inthelast", CSmartPlaylistRule::OPERATOR_IN_THE_LAST, 21410,
-                                           "notinthelast", CSmartPlaylistRule::OPERATOR_NOT_IN_THE_LAST, 21411
+static const operatorField operators[] = { { "contains", CSmartPlaylistRule::OPERATOR_CONTAINS, 21400 },
+                                           { "doesnotcontain", CSmartPlaylistRule::OPERATOR_DOES_NOT_CONTAIN, 21401 },
+                                           { "is", CSmartPlaylistRule::OPERATOR_EQUALS, 21402 },
+                                           { "isnot", CSmartPlaylistRule::OPERATOR_DOES_NOT_EQUAL, 21403 },
+                                           { "startswith", CSmartPlaylistRule::OPERATOR_STARTS_WITH, 21404 },
+                                           { "endswith", CSmartPlaylistRule::OPERATOR_ENDS_WITH, 21405 },
+                                           { "greaterthan", CSmartPlaylistRule::OPERATOR_GREATER_THAN, 21406 },
+                                           { "lessthan", CSmartPlaylistRule::OPERATOR_LESS_THAN, 21407 },
+                                           { "after", CSmartPlaylistRule::OPERATOR_AFTER, 21408 },
+                                           { "before", CSmartPlaylistRule::OPERATOR_BEFORE, 21409 },
+                                           { "inthelast", CSmartPlaylistRule::OPERATOR_IN_THE_LAST, 21410 },
+                                           { "notinthelast", CSmartPlaylistRule::OPERATOR_NOT_IN_THE_LAST, 21411 }
                                          };
 
 #define NUM_OPERATORS sizeof(operators) / sizeof(operatorField)
@@ -110,42 +110,42 @@ TiXmlElement CSmartPlaylistRule::GetAsElement()
 
 CSmartPlaylistRule::DATABASE_FIELD CSmartPlaylistRule::TranslateField(const char *field)
 {
-  for (int i = 0; i < NUM_FIELDS; i++)
+  for (unsigned int i = 0; i < NUM_FIELDS; i++)
     if (strcmpi(field, fields[i].string) == 0) return fields[i].field;
   return FIELD_NONE;
 }
 
 CStdString CSmartPlaylistRule::TranslateField(DATABASE_FIELD field)
 {
-  for (int i = 0; i < NUM_FIELDS; i++)
+  for (unsigned int i = 0; i < NUM_FIELDS; i++)
     if (field == fields[i].field) return fields[i].string;
   return "none";
 }
 
 CSmartPlaylistRule::SEARCH_OPERATOR CSmartPlaylistRule::TranslateOperator(const char *oper)
 {
-  for (int i = 0; i < NUM_OPERATORS; i++)
+  for (unsigned int i = 0; i < NUM_OPERATORS; i++)
     if (strcmpi(oper, operators[i].string) == 0) return operators[i].op;
   return OPERATOR_CONTAINS;
 }
 
 CStdString CSmartPlaylistRule::TranslateOperator(SEARCH_OPERATOR oper)
 {
-  for (int i = 0; i < NUM_OPERATORS; i++)
+  for (unsigned int i = 0; i < NUM_OPERATORS; i++)
     if (oper == operators[i].op) return operators[i].string;
   return "contains";
 }
 
 CStdString CSmartPlaylistRule::GetLocalizedField(DATABASE_FIELD field)
 {
-  for (int i = 0; i < NUM_FIELDS; i++)
+  for (unsigned int i = 0; i < NUM_FIELDS; i++)
     if (field == fields[i].field) return g_localizeStrings.Get(fields[i].localizedString);
   return g_localizeStrings.Get(16018);
 }
 
 CStdString CSmartPlaylistRule::GetLocalizedOperator(SEARCH_OPERATOR oper)
 {
-  for (int i = 0; i < NUM_OPERATORS; i++)
+  for (unsigned int i = 0; i < NUM_OPERATORS; i++)
     if (oper == operators[i].op) return g_localizeStrings.Get(operators[i].localizedString);
   return g_localizeStrings.Get(16018);
 }
@@ -183,6 +183,8 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CStdString& strType)
   case OPERATOR_LESS_THAN:
   case OPERATOR_NOT_IN_THE_LAST:
     operatorString = " < '%s'"; break;
+  default:
+    break;
   }
   CStdString parameter = CDatabase::FormatSQL(operatorString.c_str(), m_parameter.c_str());
   if (m_field == SONG_LASTPLAYED)

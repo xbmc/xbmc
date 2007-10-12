@@ -25,7 +25,7 @@
 static CXbmcWeb* pXbmcWeb;
 static CXbmcConfiguration* pXbmcWebConfig;
 
-
+#ifndef __GNUC__
 #pragma code_seg("WEB_TEXT")
 #pragma data_seg("WEB_DATA")
 #pragma bss_seg("WEB_BSS")
@@ -36,6 +36,7 @@ static CXbmcConfiguration* pXbmcWebConfig;
 #pragma comment(linker, "/merge:WEB_BSS=LIBHTTP")
 #pragma comment(linker, "/merge:WEB_RD=LIBHTTP")
 #pragma comment(linker, "/section:LIBHTTP,RWE")
+#endif
 
 // this is from a C library so use C style function calls
 #ifdef __cplusplus
@@ -49,8 +50,8 @@ static int		websHomePageHandler(webs_t wp, char_t *urlPrefix,
 					char_t *query);
 extern void		defaultErrorHandler(int etype, char_t *msg);
 extern void		defaultTraceHandler(int level, char_t *buf);
-static void		memLeaks();
-static int		nCopyAnsiToWideChar(LPWORD, LPSTR);
+//static void		memLeaks();
+//static int		nCopyAnsiToWideChar(LPWORD, LPSTR);
 extern void		dbZero(int did);
 
 
@@ -376,16 +377,17 @@ static int websHomePageHandler(webs_t wp, char_t *urlPrefix, char_t *webDir,
 /*
  *	If the empty or "/" URL is invoked, redirect default URLs to the home page
  */
-	bool redirected = false;
+	//bool redirected = false;
 	char dir[1024];
 	char files[][20] = {
-			"index.html",
-			"index.htm",
-			"home.htm",
-			"home.html",
-			"default.asp",
-			"home.asp",
-			'\0', };
+			{"index.html"},
+			{"index.htm"},
+			{"home.htm"},
+			{"home.html"},
+			{"default.asp"},
+			{"home.asp"},
+			{'\0' }
+                    };
 
 	// check if one of the above files exist, if one does then redirect to it.
 	strcpy(dir, websGetDefaultDir());
@@ -512,10 +514,12 @@ void formTest(webs_t wp, char_t *path, char_t *query)
 }
 
 // Restore code and data sections to normal.
+#ifndef __GNUC__
 #pragma code_seg()
 #pragma data_seg()
 #pragma bss_seg()
 #pragma const_seg()
+#endif
 
 void  XbmcHttpCommand(webs_t wp, char_t *path, char_t *query) 
 {																

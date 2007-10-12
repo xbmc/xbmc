@@ -158,15 +158,16 @@ BOOL WINAPI TlsFree(DWORD dwTlsIndex) {
 }
 
 DWORD WINAPI TlsAlloc() {
-  for(int i=0;i<TLS_INDEXES;i++)
+  for (int i = 0; i < TLS_INDEXES; i++)
   {
-    if(!tls_used[i])
+    if (!tls_used[i])
     {
       tls_used[i] = TRUE;
       return i;
     }
-    return TLS_OUT_OF_INDEXES;
   }
+
+  return TLS_OUT_OF_INDEXES;
 }
 
 

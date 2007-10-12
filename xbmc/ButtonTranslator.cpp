@@ -183,7 +183,7 @@ void CButtonTranslator::MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick)
   // parse map
   TiXmlElement *pButton = pJoystick->FirstChildElement();
   int id = 0;
-  char* szId;
+  //char* szId;
   char* szType;
   char *szAction;
   while (pButton)

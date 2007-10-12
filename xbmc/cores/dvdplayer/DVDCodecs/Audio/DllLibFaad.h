@@ -5,6 +5,7 @@
 class DllLibFaadInterface
 {
 public:
+  virtual ~DllLibFaadInterface() {}
   virtual faacDecHandle faacDecOpen(void)=0;
   virtual faacDecConfigurationPtr faacDecGetCurrentConfiguration(faacDecHandle hDecoder)=0;
   virtual unsigned char faacDecSetConfiguration(faacDecHandle hDecoder, faacDecConfigurationPtr config)=0;

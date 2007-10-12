@@ -139,9 +139,9 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
     {
       iOffset += 24;
       int nTitleSize = pData[iOffset + 0] + pData[iOffset + 1] * 0x100;
-      int nAuthorSize = pData[iOffset + 2] + pData[iOffset + 3] * 0x100;
-      int nCopyrightSize = pData[iOffset + 4] + pData[iOffset + 5] * 0x100;
-      int nCommentsSize = pData[iOffset + 6] + pData[iOffset + 7] * 0x100;
+      //int nAuthorSize = pData[iOffset + 2] + pData[iOffset + 3] * 0x100;
+      //int nCopyrightSize = pData[iOffset + 4] + pData[iOffset + 5] * 0x100;
+      //int nCommentsSize = pData[iOffset + 6] + pData[iOffset + 7] * 0x100;
 
       iOffset += 10;
 
@@ -276,11 +276,11 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
         }
         else if (iFrameType == WMT_TYPE_QWORD && iValueSize > 0)
         {
-          DWORD qwValue = pData[iOffset] + pData[iOffset + 1] * 0x100 + pData[iOffset + 2] * 0x10000 + pData[iOffset + 3] * 0x1000000;
+          //DWORD qwValue = pData[iOffset] + pData[iOffset + 1] * 0x100 + pData[iOffset + 2] * 0x10000 + pData[iOffset + 3] * 0x1000000;
         }
         else if (iFrameType == WMT_TYPE_WORD && iValueSize > 0)
         {
-          WORD wValue = pData[iOffset] + pData[iOffset + 1] * 0x100;
+          //WORD wValue = pData[iOffset] + pData[iOffset + 1] * 0x100;
         }
 
         // parse next frame
@@ -354,11 +354,11 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
         }
         else if (iFrameType == WMT_TYPE_QWORD && iValueSize > 0)
         {
-          DWORD qwValue = pData[iOffset] + pData[iOffset + 1] * 0x100 + pData[iOffset + 2] * 0x10000 + pData[iOffset + 3] * 0x1000000;
+          //DWORD qwValue = pData[iOffset] + pData[iOffset + 1] * 0x100 + pData[iOffset + 2] * 0x10000 + pData[iOffset + 3] * 0x1000000;
         }
         else if (iFrameType == WMT_TYPE_WORD && iValueSize > 0)
         {
-          WORD wValue = pData[iOffset] + pData[iOffset + 1] * 0x100;
+          //WORD wValue = pData[iOffset] + pData[iOffset + 1] * 0x100;
         }
 
         // parse next frame
@@ -511,7 +511,7 @@ void CMusicInfoTagLoaderWMA::SetTagValueBinary(const CStdString& strFrameName, c
           else
           {
             CUtil::ThumbCacheAdd(strCoverArt, false);
-            CLog::Log(LOGERROR, "Tag loader wma: Unable to create album art for %s (extension=%s, size=%d)", tag.GetURL().c_str(), strExtension.c_str(), picture.dwDataLen);
+            CLog::Log(LOGERROR, "Tag loader wma: Unable to create album art for %s (extension=%s, size=%lu)", tag.GetURL().c_str(), strExtension.c_str(), picture.dwDataLen);
           }
         }
       }

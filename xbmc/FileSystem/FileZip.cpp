@@ -2,13 +2,15 @@
 #include "FileZip.h"
 #include <sys/stat.h>
 
+#ifndef __GNUC__
 #ifndef _XBOX
 #pragma comment (lib,"../../xbmc/lib/zlib/zlib.lib")
+#endif
 #endif
 
 using namespace XFILE;
 
-CFileZip::CFileZip() : m_dlgProgress(NULL), m_bUseProgressBar(false)
+CFileZip::CFileZip() : m_bUseProgressBar(false), m_dlgProgress(NULL)
 {
   m_szStringBuffer = NULL;
   m_szStartOfStringBuffer = NULL;
@@ -146,7 +148,7 @@ __int64 CFileZip::Seek(__int64 iFilePosition, int iWhence)
         }
         while (m_iFilePos < iFilePosition)
         {
-          int iToRead = (iFilePosition-m_iFilePos)>131072?131072:(int)(iFilePosition-m_iFilePos);
+          unsigned int iToRead = (iFilePosition-m_iFilePos)>131072?131072:(int)(iFilePosition-m_iFilePos);
           if (Read(temp,iToRead) != iToRead)
             return -1;
           if (m_bUseProgressBar)
@@ -180,7 +182,7 @@ __int64 CFileZip::Seek(__int64 iFilePosition, int iWhence)
       }
       while (m_iFilePos < iFilePosition)
       {
-        int iToRead = (iFilePosition-m_iFilePos)>131072?131072:(int)(iFilePosition-m_iFilePos);
+        unsigned int iToRead = (iFilePosition-m_iFilePos)>131072?131072:(int)(iFilePosition-m_iFilePos);
         if (Read(temp,iToRead) != iToRead)
           return -1;
         if (m_bUseProgressBar)
@@ -209,7 +211,7 @@ __int64 CFileZip::Seek(__int64 iFilePosition, int iWhence)
 
       while( m_ZStream.total_out < mZipItem.usize+iFilePosition)
       {
-        int iToRead = (mZipItem.usize+iFilePosition-m_ZStream.total_out > 131072)?131072:(int)(mZipItem.usize+iFilePosition-m_ZStream.total_out);
+        unsigned int iToRead = (mZipItem.usize+iFilePosition-m_ZStream.total_out > 131072)?131072:(int)(mZipItem.usize+iFilePosition-m_ZStream.total_out);
         if (Read(temp,iToRead) != iToRead)
           return -1;
         if (m_bUseProgressBar)
@@ -272,7 +274,6 @@ unsigned int CFileZip::Read(void* lpBuf, __int64 uiBufSize)
   if (mZipItem.method == 8) // deflated
   {
     uLong iDecompressed = 0;
-    int iMessage = Z_OK;
     uLong prevOut = m_ZStream.total_out;
     while ((iDecompressed < uiBufSize) && ((m_iZipFilePos < mZipItem.csize) || (m_bFlush)))
     {
@@ -409,7 +410,7 @@ bool CFileZip::ReadString(char* szLine, int iLineLength)
 
 bool CFileZip::FillBuffer()
 {
-  int sToRead = 65535;
+  unsigned int sToRead = 65535;
   if (m_iZipFilePos+65535 > mZipItem.csize)
     sToRead = static_cast<int>(mZipItem.csize-m_iZipFilePos);
 

@@ -36,7 +36,9 @@ using namespace DIRECTORY;
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
+#ifndef __GNUC__
 #pragma warning (disable:4244)
+#endif
 
 class CAsyncFileCallback
   : public CThread
@@ -177,11 +179,11 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
     CStopWatch timer;
     timer.StartZero();
     float start = 0.0f;
-    float callback = 0.0f;
+    //float callback = 0.0f;
     while (llFileSize > 0)
     {
       g_application.ResetScreenSaver();
-      int iBytesToRead = iBufferSize;
+      unsigned int iBytesToRead = iBufferSize;
       
       /* make sure we don't try to read more than filesize*/
       if (iBytesToRead > llFileSize) iBytesToRead = llFileSize;
@@ -743,8 +745,8 @@ CFileStreamBuffer::CFileStreamBuffer(int backsize)
   : std::streambuf()
   , m_file(NULL)
   , m_buffer(NULL)
-  , m_frontsize(0)
   , m_backsize(backsize)
+  , m_frontsize(0)
 {}
 
 void CFileStreamBuffer::Attach(IFile *file)
@@ -883,10 +885,10 @@ streamsize CFileStreamBuffer::showmanyc()
   return egptr() - gptr();
 }
 
-CFileStream::CFileStream(int backsize /*= 0*/)
-    : m_buffer(backsize)
-    , m_file(NULL)
-    , std::istream(&m_buffer)
+CFileStream::CFileStream(int backsize /*= 0*/) : 
+    std::istream(&m_buffer),
+    m_buffer(backsize),
+    m_file(NULL)
 {
 }
 

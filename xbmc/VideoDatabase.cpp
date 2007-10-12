@@ -837,7 +837,7 @@ long CVideoDatabase::AddMovie(const CStdString& strFilenameAndPath)
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
     
-    long lFileId, lMovieId=-1,lEpisodeId=-1;
+    long lFileId, lMovieId=-1; //,lEpisodeId=-1;
     lFileId = GetFile(strFilenameAndPath);
     if (lFileId < 0)
       lFileId = AddFile(strFilenameAndPath);
@@ -1505,7 +1505,7 @@ void CVideoDatabase::GetMoviesByActor(const CStdString& strActor, VECMOVIES& mov
     CStdString strSQL=FormatSQL("select movie.*,files.strFileName,path.strPath from movie join files on files.idFile=movie.idFile join path on files.idPath=path.idPath join actorlinkmovie on actorlinkmovie.idmovie=movie.idmovie join actors on actors.idActor=actorlinkmovie.idActor where actors.stractor='%s'", strActor.c_str());
     m_pDS->query( strSQL.c_str() );
 
-    long lLastPathId = -1;
+    //long lLastPathId = -1;
     while (!m_pDS->eof())
     {
       movies.push_back(GetDetailsForMovie(m_pDS));
@@ -1530,7 +1530,7 @@ void CVideoDatabase::GetTvShowsByActor(const CStdString& strActor, VECMOVIES& mo
     CStdString strSQL=FormatSQL("select tvshow.*,path.strPath,path.strPath from tvshow join path on tvshowlinkpath.idpath = path.idpath join tvshowlinkpath on tvshowlinkpath.idshow=tvshow.idshow join actorlinktvshow on actorlinktvshow.idshow=tvshow.idshow join actors on actors.idActor=actorlinktvshow.idActor where actors.stractor='%s'", strActor.c_str());
     m_pDS->query( strSQL.c_str() );
 
-    long lLastPathId = -1;
+    //long lLastPathId = -1;
     while (!m_pDS->eof())
     {
       movies.push_back(GetDetailsForTvShow(m_pDS));
@@ -1555,7 +1555,7 @@ void CVideoDatabase::GetEpisodesByActor(const CStdString& strActor, VECMOVIES& m
     CStdString strSQL=FormatSQL("select episode.*,files.strFileName,path.strPath,tvshow.c%02d from episode join files on files.idFile=episode.idfile join tvshowlinkepisode on tvshowlinkepisode.idepisode=episode.idepisode join tvshow on tvshowlinkepisode.idshow=tvshow.idshow join path on files.idPath=path.idPath join actorlinkepisode on actorlinkepisode.idepisode=episode.idepisode join actors on actors.idActor=actorlinkepisode.idActor where actors.stractor='%s'", VIDEODB_ID_TV_TITLE,strActor.c_str());
     m_pDS->query( strSQL.c_str() );
 
-    long lLastPathId = -1;
+    //long lLastPathId = -1;
     while (!m_pDS->eof())
     {
       CVideoInfoTag movie=GetDetailsForEpisode(m_pDS);
@@ -1586,7 +1586,7 @@ void CVideoDatabase::GetMusicVideosByArtist(const CStdString& strArtist, CFileIt
       strSQL=FormatSQL("select musicvideo.*,files.strFileName,path.strPath from musicvideo join files on files.idFile=musicvideo.idFile join path on files.idPath=path.idPath join artistlinkmusicvideo on artistlinkmusicvideo.idmvideo=musicvideo.idmvideo join actors on actors.idActor=artistlinkmusicvideo.idArtist where actors.stractor='%s'", strArtist.c_str());
     m_pDS->query( strSQL.c_str() );
 
-    long lLastPathId = -1;
+    //long lLastPathId = -1;
     while (!m_pDS->eof())
     {
       CVideoInfoTag tag = GetDetailsForMusicVideo(m_pDS);
@@ -1917,7 +1917,7 @@ long CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, 
 {
   try
   {
-    long lFileId = GetFile(strFilenameAndPath);
+    //long lFileId = GetFile(strFilenameAndPath);
     if (lEpisodeId == -1)
     {
       lEpisodeId = GetEpisodeInfo(strFilenameAndPath);
@@ -3797,7 +3797,7 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
     {
       map<long, pair<CStdString,bool> > mapActors;
       map<long, pair<CStdString,bool> >::iterator it;
-      long lLastPathId = -1;
+      //long lLastPathId = -1;
 
       while (!m_pDS->eof())
       {
@@ -3932,7 +3932,7 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
     {
       map<long, pair<CStdString,bool> > mapYears;
       map<long, pair<CStdString,bool> >::iterator it;
-      long lLastPathId = -1;
+      //long lLastPathId = -1;
       while (!m_pDS->eof())
       {
         long lYear = m_pDS->fv(0).get_asLong();
@@ -4055,7 +4055,7 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
     {
       map<long, CStdString> mapYears;
       map<long, CStdString>::iterator it;
-      long lLastPathId = -1;
+      //long lLastPathId = -1;
       while (!m_pDS->eof())
       {
         long lYear = m_pDS->fv(0).get_asLong();
@@ -5544,7 +5544,7 @@ bool CVideoDatabase::GetMusicVideosByWhere(const CStdString &baseDir, const CStd
     // get data from returned rows
     items.Reserve(iRowsFound);
     // get songs from returned subtable
-    int count = 0;
+    //int count = 0;
     while (!m_pDS->eof())
     {
       CFileItem *item = new CFileItem(GetDetailsForMusicVideo(m_pDS));
@@ -6667,7 +6667,7 @@ bool CVideoDatabase::GetArbitraryQuery(const CStdString& strQuery, const CStdStr
       strResult = m_pDB->getErrorMsg();
       return false;
     }
-    int iRowsFound = m_pDS->num_rows();
+    //int iRowsFound = m_pDS->num_rows();
     strResult=strOpenRecordSet;
     while (!m_pDS->eof())
     {

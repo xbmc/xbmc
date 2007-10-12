@@ -62,7 +62,6 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAdres
     SOCKET sd;          /* Socket descriptor */
     struct sockaddr_in socket_address;
     struct hostent *host;
-    int count = 0;
 
 #ifndef _LINUX
     /* Open a windows connection */
@@ -113,6 +112,7 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAdres
 #ifndef _LINUX
     // this segfaults due to host->h_aliases[1] being invalid on
     // the weather.com lookup
+    int count = 0;
     while(1)
     {
       if(host->h_aliases[count] == NULL)

@@ -235,39 +235,39 @@ bool CDVDStateSerializer::XMLToDVDState( dvd_state_t *state, const std::string &
     element = element->NextSiblingElement("gprm");
   }
  
-  if( text = hRoot.FirstChildElement("domain").FirstChild().Text() )
-    sscanf(text->Value(), "%d", &state->domain);
+  if( (text = hRoot.FirstChildElement("domain").FirstChild().Text()) )
+    sscanf(text->Value(), "%d", (int*) &state->domain);
 
-  if( text = hRoot.FirstChildElement("vtsn").FirstChild().Text() )
+  if( (text = hRoot.FirstChildElement("vtsn").FirstChild().Text()) )
     sscanf(text->Value(), "%d", &state->vtsN);
 
-  if( text = hRoot.FirstChildElement("pgcn").FirstChild().Text() )
+  if( (text = hRoot.FirstChildElement("pgcn").FirstChild().Text()) )
     sscanf(text->Value(), "%d", &state->pgcN);
 
-  if( text = hRoot.FirstChildElement("pgn").FirstChild().Text() )
+  if( (text = hRoot.FirstChildElement("pgn").FirstChild().Text()) )
     sscanf(text->Value(), "%d", &state->pgN);
 
-  if( text = hRoot.FirstChildElement("celln").FirstChild().Text() )
+  if( (text = hRoot.FirstChildElement("celln").FirstChild().Text()) )
     sscanf(text->Value(), "%d", &state->cellN);
 
-  if( text = hRoot.FirstChildElement("cell_restart").FirstChild().Text() )
+  if( (text = hRoot.FirstChildElement("cell_restart").FirstChild().Text()) )
     sscanf(text->Value(), "%I32d", &state->cell_restart);
 
-  if( text = hRoot.FirstChildElement("blockn").FirstChild().Text() )
+  if( (text = hRoot.FirstChildElement("blockn").FirstChild().Text()) )
     sscanf(text->Value(), "%d", &state->blockN);
 
   { TiXmlHandle hrsm = hRoot.FirstChildElement("rsm");
 
-    if( text = hrsm.FirstChildElement("vtsn").FirstChild().Text() )
+    if( (text = hrsm.FirstChildElement("vtsn").FirstChild().Text()) )
       sscanf(text->Value(), "%d", &state->rsm_vtsN);
 
-    if( text = hrsm.FirstChildElement("blockn").FirstChild().Text() )
+    if( (text = hrsm.FirstChildElement("blockn").FirstChild().Text()) )
       sscanf(text->Value(), "%d", &state->rsm_blockN);
 
-    if( text = hrsm.FirstChildElement("pgcn").FirstChild().Text() )
+    if( (text = hrsm.FirstChildElement("pgcn").FirstChild().Text()) )
       sscanf(text->Value(), "%d", &state->rsm_pgcN);
 
-    if( text = hrsm.FirstChildElement("celln").FirstChild().Text() )
+    if( (text = hrsm.FirstChildElement("celln").FirstChild().Text()) )
       sscanf(text->Value(), "%d", &state->rsm_cellN);
 
     element = hrsm.FirstChildElement("registers").FirstChildElement("sprm").Element();
