@@ -811,9 +811,18 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
   static int imaging = -1;
   static GLfloat brightness = 0;
   static GLfloat contrast   = 0;
-  bool deinterlacing = (m_currentField!=FIELD_FULL) && (g_stSettings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_NONE)
-    && (g_stSettings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_DEINTERLACE);
-
+  bool deinterlacing;
+  if (m_currentField == FIELD_FULL)
+  {
+    deinterlacing = false;
+  }
+  else
+  {
+    deinterlacing = (g_stSettings.m_currentVideoSettings.m_InterlaceMethod==VS_INTERLACEMETHOD_RENDER_BOB || 
+                     (g_stSettings.m_currentVideoSettings.m_InterlaceMethod==VS_INTERLACEMETHOD_RENDER_BOB_INVERTED) ||
+                     (g_stSettings.m_currentVideoSettings.m_InterlaceMethod==VS_INTERLACEMETHOD_AUTO)) && (m_renderQuality != RQ_MULTIPASS);
+  }
+    
   brightness =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Brightness - 50.0)/100.0;
   contrast =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Contrast)/50.0;
 
@@ -1123,30 +1132,30 @@ void CLinuxRendererGL::UpdateVideoFilter()
   if (m_scalingMethod == g_stSettings.m_currentVideoSettings.m_ScalingMethod)
     return;
 
+  if (m_pVideoFilterShader)
+  {
+    m_pVideoFilterShader->Free();
+    delete m_pVideoFilterShader;
+    m_pVideoFilterShader = NULL;
+  }
+  VerifyGLState();
   m_scalingMethod = g_stSettings.m_currentVideoSettings.m_ScalingMethod;
+
   switch (g_stSettings.m_currentVideoSettings.m_ScalingMethod)
   {
   case VS_SCALINGMETHOD_NEAREST:
-  case VS_SCALINGMETHOD_LINEAR:
     m_renderQuality = RQ_SINGLEPASS;
-    if (m_pVideoFilterShader)
-    {
-      m_pVideoFilterShader->Free();
-      delete m_pVideoFilterShader;
-      m_pVideoFilterShader = NULL;
-    }
+    SetTextureFilter(GL_NEAREST);
+    break;
+    
+  case VS_SCALINGMETHOD_LINEAR:
+    SetTextureFilter(GL_LINEAR);
+    m_renderQuality = RQ_SINGLEPASS;
     break;
         
   case VS_SCALINGMETHOD_CUBIC:
-    VerifyGLState();
+    SetTextureFilter(GL_LINEAR);
     m_renderQuality = RQ_MULTIPASS;
-    if (m_pVideoFilterShader)
-    {
-      m_pVideoFilterShader->Free();
-      delete m_pVideoFilterShader;
-      m_pVideoFilterShader = NULL;
-    }
-    VerifyGLState();
     m_pVideoFilterShader = new BicubicFilterShader(0.3, 0.3);
     if (m_pVideoFilterShader && m_pVideoFilterShader->CompileAndLink())
     {
@@ -1167,13 +1176,6 @@ void CLinuxRendererGL::UpdateVideoFilter()
   case VS_SCALINGMETHOD_NEDI:
     CLog::Log(LOGERROR, "GL: TODO: This scaler has not yet been implemented");
     m_renderQuality = RQ_SINGLEPASS;
-    //m_renderQuality = RQ_MULTIPASS;
-    if (m_pVideoFilterShader)
-    {
-      m_pVideoFilterShader->Free();
-      delete m_pVideoFilterShader;
-      m_pVideoFilterShader = NULL;
-    }
     break;
   }
 }
@@ -1202,8 +1204,8 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
       }
       else if (m_renderQuality == RQ_MULTIPASS)
       {
-        m_pYUVShader = new YUV2RGBProgressiveShader(); // create regular progressive scan shader
-        //m_pYUVShader = new YUV2RGBBobShader(); // create bob deinterlacing shader
+        //m_pYUVShader = new YUV2RGBProgressiveShader(); // create regular progressive scan shader
+        m_pYUVShader = new YUV2RGBBobShader(); // create bob deinterlacing shader
         CLog::Log(LOGNOTICE, "GL: Selecting Multipass Pass YUV 2 RGB shader");
       }
     }
@@ -2033,21 +2035,11 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags)
   switch (m_currentField)
   {
   case FIELD_ODD:
-    /*
-    glUniform1f(m_stepY, 1/(float)im.height);
-    glUniform1f(m_stepX, 1/(float)im.width);
-    glUniform1i(m_shaderField, 1);
-    */
     m_pYUVShader->SetField(1);
     imgheight = im.height/2;
     break;
 
   case FIELD_EVEN:
-    /*
-    glUniform1f(m_stepY, 1/(float)im.height);
-    glUniform1f(m_stepX, 1/(float)im.width);
-    glUniform1i(m_shaderField, 0);
-    */
     m_pYUVShader->SetField(0);
     imgheight = im.height/2;
     break;
@@ -2623,22 +2615,25 @@ void CLinuxRendererGL::SetTextureFilter(GLenum method)
 {
   YUVFIELDS &fields = m_YUVTexture[0];
 
-  glBindTexture(m_textureTarget, fields[0][0]);  
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, method);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, method);
-  VerifyGLState();
-
-  if (m_renderMethod & RENDER_GLSL)
+  for (int f = FIELD_FULL; f<=FIELD_EVEN ; f++)
   {
-    glBindTexture(m_textureTarget, fields[0][1]);
+    glBindTexture(m_textureTarget, fields[f][0]);  
     glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, method);
     glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, method);
     VerifyGLState();
     
-    glBindTexture(m_textureTarget, fields[0][2]);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, method);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, method);
-    VerifyGLState();
+    if (m_renderMethod & RENDER_GLSL)
+    {
+      glBindTexture(m_textureTarget, fields[f][1]);
+      glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, method);
+      glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, method);
+      VerifyGLState();
+      
+      glBindTexture(m_textureTarget, fields[f][2]);
+      glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, method);
+      glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, method);
+      VerifyGLState();
+    }
   }
 }
 
