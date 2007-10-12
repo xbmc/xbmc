@@ -700,16 +700,10 @@
 				RelativePath=".\common\DirectInputMouse.h">
 			</File>
 			<File
-				RelativePath=".\common\SDLKeyboard.cpp">
+				RelativePath=".\common\Mouse.cpp">
 			</File>
 			<File
-				RelativePath=".\common\SDLKeyboard.h">
-			</File>
-			<File
-				RelativePath=".\common\SDLMouse.cpp">
-			</File>
-			<File
-				RelativePath=".\common\SDLMouse.h">
+				RelativePath=".\common\Mouse.h">
 			</File>
 		</Filter>
 		<File

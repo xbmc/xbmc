@@ -130,7 +130,7 @@ void CApplicationRenderer::Process()
           }
           if (m_busycount > 0) m_busycount--;
           //no busy indicator if a progress dialog is showing
-          if (m_gWindowManager.HasModalDialog() || (m_gWindowManager.GetTopMostModalDialogID() == WINDOW_DIALOG_PROGRESS))
+          if ((m_gWindowManager.HasModalDialog() && (m_gWindowManager.GetTopMostModalDialogID() != WINDOW_VIDEO_INFO) && (m_gWindowManager.GetTopMostModalDialogID() != WINDOW_MUSIC_INFO)) || (m_gWindowManager.GetTopMostModalDialogID() == WINDOW_DIALOG_PROGRESS))
           {
             //TODO: render progress dialog here instead of in dialog::Progress
             m_time = timeGetTime();

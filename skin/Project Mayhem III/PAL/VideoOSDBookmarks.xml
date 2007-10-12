@@ -24,21 +24,21 @@
 			<width>420</width>
 			<align>left</align>
 			<font>special13</font>
-			<label>13398</label>
+			<label>298</label>
 			<textcolor>dialogheader</textcolor>
 		</control>
 		<control type="button" id="2">
 			<description>Create Bookmark button</description>
 			<posx>0</posx>
 			<posy>320</posy>
-			<width>197</width>
+			<width>130</width>
 			<height>31</height>
 			<font>font10</font>
 			<textoffsetx>12</textoffsetx>
 			<aligny>center</aligny>
 			<align>center</align>
 			<label>294</label>
-			<onleft>3</onleft>
+			<onleft>4</onleft>
 			<onright>3</onright>
 			<ondown>11</ondown>
 			<onup>11</onup>
@@ -47,15 +47,33 @@
 		</control>
 		<control type="button" id="3">
 			<description>Clear Bookmarks button</description>
-			<posx>238</posx>
+			<posx>135</posx>
 			<posy>320</posy>
-			<width>197</width>
+			<width>135</width>
 			<height>31</height>
 			<font>font10</font>
 			<aligny>center</aligny>
 			<align>center</align>
 			<label>296</label>
 			<onleft>2</onleft>
+			<onright>4</onright>
+			<ondown>11</ondown>
+			<onup>11</onup>
+			<texturenofocus>keyboard-btn-space.png</texturenofocus>
+			<texturefocus>keyboard-btn-space-focus2.png</texturefocus>
+		</control>
+		<control type="button" id="4">
+			<description>Create Episode Bookmark Button</description>
+			<visible>videoplayer.content(episodes)</visible>
+			<posx>270</posx>
+			<posy>320</posy>
+			<width>170</width>
+			<height>31</height>
+			<font>font10</font>
+			<aligny>center</aligny>
+			<align>center</align>
+			<label>20406</label>
+			<onleft>3</onleft>
 			<onright>2</onright>
 			<ondown>11</ondown>
 			<onup>11</onup>

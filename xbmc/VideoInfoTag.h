@@ -69,4 +69,5 @@ public:
   int m_iSpecialSortSeason;
   int m_iSpecialSortEpisode;
   float m_fRating;
+  int m_iBookmarkId;
 };

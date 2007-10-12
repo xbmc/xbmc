@@ -27,7 +27,6 @@ class CStreamInfo;
 
 typedef struct DVDInfo
 {
-  int iCurrentCell;
   int state;                // current dvdstate
   DWORD iDVDStillTime;      // total time in ticks we should display the still before continuing
   DWORD iDVDStillStartTime; // time in ticks when we started the still
@@ -159,6 +158,7 @@ private:
   bool IsInMenu() const;
 
   void SyncronizePlayers(DWORD sources);
+  void SyncronizeDemuxer(DWORD timeout);
   void CheckContinuity(CDVDDemux::DemuxPacket* pPacket, unsigned int source);
 
   bool m_bDontSkipNextFrame;
@@ -177,11 +177,9 @@ private:
 
   double m_lastpts; // holds last display pts during ff/rw operations
   
-  unsigned int m_packetcount; // packet count from demuxer, may wrap around. used during startup
-  
   // classes
-  CDVDPlayerAudio m_dvdPlayerAudio; // audio part
   CDVDPlayerVideo m_dvdPlayerVideo; // video part
+  CDVDPlayerAudio m_dvdPlayerAudio; // audio part
   CDVDPlayerSubtitle m_dvdPlayerSubtitle; // subtitle part
   
   CDVDMessageQueue m_messenger;     // thread messenger, only the dvdplayer.cpp class itself may send message to this!

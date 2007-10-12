@@ -1258,31 +1258,69 @@ void CGUIWindowVideoBase::OnDeleteItem(int iItem)
   m_viewControl.SetSelectedItem(iItem);
 }
 
-void CGUIWindowVideoBase::MarkUnWatched(CFileItem* pItem)
+void CGUIWindowVideoBase::MarkUnWatched(CFileItem* item)
 {
-  int iType=0;
-  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder) // episode
-    iType = 1;
-  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_artist.size() > 0)
-    iType = 3;
-
   CVideoDatabase database;
   database.Open();
-  database.MarkAsUnWatched(pItem->GetVideoInfoTag()->m_iDbId,iType);
+  CFileItemList items;
+  if (item->m_bIsFolder)
+  {
+    CVideoDatabaseDirectory dir;
+    CStdString strPath = item->m_strPath;
+    if (dir.GetDirectoryChildType(item->m_strPath) == NODE_TYPE_SEASONS)
+      strPath += "-1/";
+    dir.GetDirectory(strPath,items);
+  }
+  else
+    items.Add(new CFileItem(*item));
+
+  for (int i=0;i<items.Size();++i)
+  {
+    CFileItem* pItem=items[i];
+    if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_bWatched)
+      continue;
+
+    int iType=0;
+    if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder) // episode
+      iType = 1;
+    if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_artist.size() > 0)
+      iType = 3;
+
+    database.MarkAsUnWatched(pItem->GetVideoInfoTag()->m_iDbId,iType);
+  }
 }
 
 //Add Mark a Title as watched
-void CGUIWindowVideoBase::MarkWatched(CFileItem* pItem)
+void CGUIWindowVideoBase::MarkWatched(CFileItem* item)
 {
-  int iType=0;
-  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder) // episode
-    iType = 1;
-  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_artist.size() > 0)
-    iType = 3;
-
   CVideoDatabase database;
   database.Open();
-  database.MarkAsWatched(pItem->GetVideoInfoTag()->m_iDbId,iType);
+  CFileItemList items;
+  if (item->m_bIsFolder)
+  {
+    CVideoDatabaseDirectory dir;
+    CStdString strPath = item->m_strPath;
+    if (dir.GetDirectoryChildType(item->m_strPath) == NODE_TYPE_SEASONS)
+      strPath += "-1/";
+    dir.GetDirectory(strPath,items);
+  }
+  else
+    items.Add(new CFileItem(*item));
+
+  for (int i=0;i<items.Size();++i)
+  {
+    CFileItem* pItem=items[i];
+    if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_bWatched)
+      continue;
+
+    int iType=0;
+    if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder) // episode
+      iType = 1;
+    if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_artist.size() > 0)
+      iType = 3;
+
+    database.MarkAsWatched(pItem->GetVideoInfoTag()->m_iDbId,iType);
+  }
 }
 
 //Add change a title's name

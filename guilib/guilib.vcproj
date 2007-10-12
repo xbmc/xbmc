@@ -674,6 +674,12 @@
 			Name="common"
 			Filter="">
 			<File
+				RelativePath=".\common\Mouse.cpp">
+			</File>
+			<File
+				RelativePath=".\common\Mouse.h">
+			</File>
+			<File
 				RelativePath=".\common\XBoxKeyboard.cpp">
 			</File>
 			<File

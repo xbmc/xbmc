@@ -930,7 +930,7 @@ HRESULT CApplication::Create(HWND hWnd)
 #endif
 
   // Create the Mouse and Keyboard devices
-  g_Mouse.Initialize(hWnd);
+  g_Mouse.Initialize(&hWnd);
   g_Keyboard.Initialize(hWnd);
 #ifdef HAS_LIRC
   g_RemoteControl.Initialize();
@@ -3438,8 +3438,7 @@ bool CApplication::ProcessHTTPApiButtons()
       {
         CAction action;
         action.wID = ACTION_MOUSE;
-        g_Mouse.posX = keyHttp.GetLeftThumbX();
-        g_Mouse.posY = keyHttp.GetLeftThumbY();
+        g_Mouse.SetLocation(CPoint(keyHttp.GetLeftThumbX(), keyHttp.GetLeftThumbY()));
         if (keyHttp.GetLeftTrigger()!=0)
           g_Mouse.bClick[keyHttp.GetLeftTrigger()-1]=true;
         if (keyHttp.GetRightTrigger()!=0)
@@ -3959,6 +3958,18 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
         CBookmark bookmark;
         if(dbs.GetResumeBookMark(item.m_strPath, bookmark))
         {
+          options.starttime = bookmark.timeInSeconds;
+          options.state = bookmark.playerState;
+        }
+      } 
+      else if (item.HasVideoInfoTag()) 
+      {
+        const CVideoInfoTag *tag = item.GetVideoInfoTag();
+
+        if (tag->m_iBookmarkId != -1 && tag->m_iBookmarkId != 0)
+        {
+          CBookmark bookmark;
+          dbs.GetBookMarkForEpisode(*tag, bookmark);
           options.starttime = bookmark.timeInSeconds;
           options.state = bookmark.playerState;
         }

@@ -376,7 +376,7 @@ void CGUIWindowGameSaves::GetContextButtons(int itemNumber, CContextButtons &but
   buttons.Add(CONTEXT_BUTTON_COPY, 115);
   buttons.Add(CONTEXT_BUTTON_MOVE, 116);
   buttons.Add(CONTEXT_BUTTON_DELETE, 117);
-  // Only add if we are on E:\udata\
+  // Only add if we are on E:/udata/
   // CStdString strFileName = CUtil::GetFileName(m_vecItems[iItem]->m_strPath);
   // if (!strFileName.Equals("savemeta.xbx"))
   //   buttons.Add(CONTEXT_BUTTON_DOWNLOAD, 20317);
@@ -522,6 +522,8 @@ bool CGUIWindowGameSaves::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       }
       return true;
     }*/
+   default:
+     break;
   }
   return false;
 }

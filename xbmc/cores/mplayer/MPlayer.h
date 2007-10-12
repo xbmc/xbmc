@@ -1,6 +1,7 @@
 #pragma once
 #include "../iplayer.h"
 #include "DllMPlayer.h"
+#include "../../Edl.h"
 
 class CMPlayer : public IPlayer, public CThread
 {
@@ -120,6 +121,7 @@ public:
 
   virtual void ToggleFrameDrop();
   virtual void Seek(bool bPlus = true, bool bLargeStep = false);
+  virtual bool SeekScene(bool bPlus = true);
   virtual void SetVolume(long nVolume);
   virtual void SetDynamicRangeCompression(long drc);
   virtual void GetAudioInfo( CStdString& strAudioInfo);
@@ -189,5 +191,5 @@ protected:
   bool m_bSubsVisibleTTF;
   bool m_bIsMplayeropenfile;
   CEvent m_evProcessDone;
-
+  CEdl m_Edl;
 };
