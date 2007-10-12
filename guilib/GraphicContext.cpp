@@ -590,7 +590,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
   if (res==WINDOW)
   {
     g_advancedSettings.m_fullScreen = 0;
-    m_bFullScreenRoot = true;
+    m_bFullScreenRoot = false;
   }
 
   if (res==WINDOW || (m_Resolution != res))
@@ -1282,7 +1282,25 @@ void CGraphicContext::EndPaint(CSurface *dest, bool lock)
 
 bool CGraphicContext::ToggleFullScreenRoot ()
 {
-  SetFullScreenRoot(!m_bFullScreenRoot);
+  static RESOLUTION desktopres = DESKTOP;
+  static RESOLUTION windowres = WINDOW;
+  static RESOLUTION lastres = INVALID;
+  if (m_bFullScreenRoot)
+  {
+    lastres = GetVideoResolution();
+    SetVideoResolution(windowres);
+  }
+  else
+  {
+    if (lastres != INVALID)
+    {
+      SetVideoResolution(lastres);
+    }
+    else
+    {
+      SetVideoResolution(desktopres);
+    }
+  }
   return  m_bFullScreenRoot;
 }
 
