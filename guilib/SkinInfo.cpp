@@ -187,7 +187,7 @@ CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res, co
   // first try and load from the current resolution's directory
   int height=0;
   *res = g_graphicsContext.GetVideoResolution();
-  if (*res >= DESKTOP)
+  if (*res >= WINDOW)
   {
     height = g_settings.m_ResInfo[*res].iHeight;
     if (height>=1080)
