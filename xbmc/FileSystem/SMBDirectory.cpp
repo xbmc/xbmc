@@ -59,7 +59,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   struct smbc_dirent* dirEnt;
   CStdString strFile;
 
-  while (dirEnt = smbc_readdir(fd))
+  while ((dirEnt = smbc_readdir(fd)))
   {
     // We use UTF-8 internally, as does SMB
     strFile = dirEnt->name;

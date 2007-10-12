@@ -675,7 +675,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
     OnMessage(msg);
   }
 
-  int iSpeed = g_application.GetPlaySpeed();
+  //int iSpeed = g_application.GetPlaySpeed();
 
   if (g_infoManager.GetBool(PLAYER_SHOWCODEC) || m_bShowViewModeInfo)
   {
@@ -733,7 +733,7 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
       float x = (float) maxWidth / 2 + g_settings.m_ResInfo[res].Overscan.left;
       float y = (float) g_settings.m_ResInfo[res].iSubtitles - h;
 
-      float outlinewidth = 3;
+      //float outlinewidth = 3;
 
       m_subtitleFont->DrawOutlineText(x, y, 0, 0xFF000000, 3, utf16Sub.c_str(), XBFONT_CENTER_X);
     }

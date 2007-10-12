@@ -828,7 +828,7 @@ bool CGUIWindowFileManager::DoProcessFolder(int iAction, const CStdString& strPa
 
 bool CGUIWindowFileManager::DoProcess(int iAction, CFileItemList & items, const CStdString& strDestFile)
 {
-  bool bCancelled(false);
+  //bool bCancelled(false);
   for (int iItem = 0; iItem < items.Size(); ++iItem)
   {
     CFileItem* pItem = items[iItem];

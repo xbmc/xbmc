@@ -1,10 +1,12 @@
 #include "stdafx.h"
 #include "SpyceModule.h"
 
+#ifndef __GNUC__
 #pragma code_seg("WEB_TEXT")
 #pragma data_seg("WEB_DATA")
 #pragma bss_seg("WEB_BSS")
 #pragma const_seg("WEB_RD")
+#endif
 
 namespace WEBS_SPYCE
 {

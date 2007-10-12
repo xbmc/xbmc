@@ -62,7 +62,6 @@ void CLinuxRendererATI::ReleaseImage(int source, bool preserve)
   m_image[source].flags = 0;
 
   YV12Image &im = m_image[source];
-  YUVFIELDS &fields = m_YUVTexture[source];
   
   m_image[source].flags &= ~IMAGE_FLAG_INUSE;
   m_image[source].flags = 0;
@@ -76,7 +75,7 @@ void CLinuxRendererATI::ReleaseImage(int source, bool preserve)
     int     srcStride[] = { im.stride[0], im.stride[1], im.stride[2] };
     uint8_t *dst[] = { m_rgbBuffer, 0, 0 };
     int     dstStride[] = { m_iSourceWidth*4, 0, 0 };
-    int ret = m_dllSwScale.sws_scale(context, src, srcStride, 0, im.height, dst, dstStride);
+    m_dllSwScale.sws_scale(context, src, srcStride, 0, im.height, dst, dstStride);
     
     m_dllSwScale.sws_freeContext(context);
 #endif

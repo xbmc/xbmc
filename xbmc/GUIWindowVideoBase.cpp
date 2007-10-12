@@ -111,7 +111,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
       // save current window, unless the current window is the video playlist window
-      if (GetID() != WINDOW_VIDEO_PLAYLIST && g_stSettings.m_iVideoStartWindow != GetID())
+      if (GetID() != WINDOW_VIDEO_PLAYLIST && (DWORD)g_stSettings.m_iVideoStartWindow != GetID())
       {
         g_stSettings.m_iVideoStartWindow = GetID();
         g_settings.Save();
@@ -146,7 +146,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
           break;
         }
 
-        if (nNewWindow != GetID())
+        if ((DWORD) nNewWindow != GetID())
         {
           g_stSettings.m_iVideoStartWindow = nNewWindow;
           g_settings.Save();
@@ -337,8 +337,8 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
   CIMDB IMDB;
   IMDB.SetScraperInfo(info);
 
-  bool bUpdate = false;
-  bool bFound = false;
+  //bool bUpdate = false;
+  //bool bFound = false;
 
   if (!pDlgProgress) return ;
   if (!pDlgSelect) return ;
@@ -749,7 +749,7 @@ void CGUIWindowVideoBase::OnQueueItem(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
 
-  int iOldSize=g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).size();
+  //int iOldSize=g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).size();
 
   CFileItem item(*m_vecItems[iItem]);
   if (item.IsRAR() || item.IsZIP())
@@ -1048,7 +1048,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       if (!m_vecItems.IsPluginFolder())
       {
         VIDEO::SScanSettings settings;
-        int iFound = GetScraperForItem(item, info, settings);
+        GetScraperForItem(item, info, settings);
       }
       else
         info.strContent = "plugin";      
@@ -1094,6 +1094,8 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_RENAME:
     OnRenameItem(itemNumber);
     return true;
+  default:
+    break;
   }
   return CGUIMediaWindow::OnContextButton(itemNumber, button);
 }

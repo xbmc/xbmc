@@ -284,7 +284,7 @@ void CXBoxRenderManager::FlipPage(DWORD delay /* = 0LL*/, int source /*= -1*/, E
     // In OpenGL, we shouldn't be waiting for CThread::m_bStop since rendering is
     // happening from the main thread.
     g_application.NewFrame();
-    int nTicks = GetTickCount();
+    unsigned int nTicks = GetTickCount();
     if (timestamp > nTicks)
       ::Sleep(timestamp - nTicks);
 #else
@@ -391,7 +391,7 @@ void CXBoxRenderManager::PresentSingle()
 
   m_pRenderer->RenderUpdate(true, 0, 255);
 
-  int nTicks = GetTickCount();
+  unsigned int nTicks = GetTickCount();
   if (m_presenttime > nTicks) 
     ::Sleep(m_presenttime - nTicks);
 
@@ -436,7 +436,7 @@ void CXBoxRenderManager::PresentBob()
 
   m_pRenderer->FlipPage(0);
   
-  int nTicks = GetTickCount();
+  unsigned int nTicks = GetTickCount();
   if (m_presenttime > nTicks) 
     ::Sleep(m_presenttime - nTicks);
 

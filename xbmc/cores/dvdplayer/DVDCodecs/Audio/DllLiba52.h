@@ -12,6 +12,7 @@ typedef __int16 int16_t;
 class DllLiba52Interface
 {
 public:
+  virtual ~DllLiba52Interface() {}
   virtual a52_state_t * a52_init (uint32_t mm_accel)=0;
   virtual sample_t * a52_samples (a52_state_t * state)=0;
   virtual int a52_syncinfo (uint8_t * buf, int * flags, int * sample_rate, int * bit_rate)=0;

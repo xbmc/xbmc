@@ -151,7 +151,6 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_CLICKED:
     {
-      DWORD test = message.GetSenderId();
       // clicked - change the control...
       NextControl();
     }

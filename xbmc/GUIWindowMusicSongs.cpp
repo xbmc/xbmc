@@ -475,6 +475,8 @@ bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button
   case CONTEXT_BUTTON_SWITCH_MEDIA:
 		CGUIDialogContextMenu::SwitchMedia("music", m_vecItems.m_strPath);
 		return true;
+  default:
+    break;
   }
   return CGUIWindowMusicBase::OnContextButton(itemNumber, button);
 }

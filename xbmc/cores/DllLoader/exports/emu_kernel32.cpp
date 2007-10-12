@@ -62,7 +62,7 @@ extern "C" BOOL WINAPI dllFindClose(HANDLE hFile)
 extern "C" DWORD WINAPI dllGetFileAttributesA(LPCSTR lpFileName)
 {
   char str[XBMC_MAX_PATH];
-  char* p;
+  //char* p;
 
   if (!strcmp(lpFileName, "\\Device\\Cdrom0")) return (FILE_ATTRIBUTE_READONLY | FILE_ATTRIBUTE_DIRECTORY);
 
@@ -226,6 +226,7 @@ extern "C" BOOL WINAPI dllDisableThreadLibraryCalls(HANDLE h)
   return TRUE;
 }
 
+#ifndef _LINUX
 static void DumpSystemInfo(const SYSTEM_INFO* si)
 {
   CLog::Log(LOGDEBUG, "  Processor architecture %d\n", si->wProcessorArchitecture);
@@ -239,6 +240,7 @@ static void DumpSystemInfo(const SYSTEM_INFO* si)
   CLog::Log(LOGDEBUG, "  Processor level: 0x%x\n", si->wProcessorLevel);
   CLog::Log(LOGDEBUG, "  Processor revision: 0x%x\n", si->wProcessorRevision);
 }
+#endif
 
 extern "C" void WINAPI dllGetSystemInfo(LPSYSTEM_INFO lpSystemInfo)
 {
@@ -653,6 +655,7 @@ extern "C" HANDLE WINAPI dllGetProcessHeap()
 {
 #ifdef  _LINUX
   CLog::Log(LOGWARNING, "KERNEL32!GetProcessHeap() linux cant provide this service!");
+  return 0;
 #else
   HANDLE hHeap;
   hHeap = GetProcessHeap();
@@ -731,7 +734,7 @@ extern "C" BOOL WINAPI dllTlsFree(DWORD dwTlsIndex)
 
 extern "C" BOOL WINAPI dllTlsSetValue(int dwTlsIndex, LPVOID lpTlsValue)
 {
-  if(dwTlsIndex == (DWORD)(-1)) 
+  if (dwTlsIndex == -1) 
     return FALSE;
   BOOL retval = TlsSetValue(dwTlsIndex, lpTlsValue);
 
@@ -820,7 +823,7 @@ extern "C" DWORD WINAPI dllWaitForMultipleObjects(DWORD nCount, CONST HANDLE *lp
 
 extern "C" BOOL WINAPI dllGetProcessAffinityMask(HANDLE hProcess, LPDWORD lpProcessAffinityMask, LPDWORD lpSystemAffinityMask)
 {
-  CLog::Log(LOGDEBUG, "GetProcessAffinityMask(0x%x, 0x%x, 0x%x) => 1\n",
+  CLog::Log(LOGDEBUG, "GetProcessAffinityMask(0x%p, 0x%p, 0x%p) => 1\n",
             hProcess, lpProcessAffinityMask, lpSystemAffinityMask);
   if (lpProcessAffinityMask)*lpProcessAffinityMask = 1;
   if (lpSystemAffinityMask)*lpSystemAffinityMask = 1;
@@ -970,7 +973,7 @@ SFlsSlot, *LPSFlsSlot;
 #if defined (_XBOX) || defined (_LINUX)
 #define FLS_OUT_OF_INDEXES (DWORD)0xFFFFFFFF
 #endif
-SFlsSlot flsSlots[FLS_NUM_SLOTS] = { false, NULL, NULL };
+SFlsSlot flsSlots[FLS_NUM_SLOTS] = { { false, NULL, NULL } };
 
 extern "C" DWORD WINAPI dllFlsAlloc(PFLS_CALLBACK_FUNCTION lpCallback)
 {
@@ -1148,7 +1151,7 @@ extern "C" BOOL WINAPI dllDVDReadFileLayerChangeHack(HANDLE hFile, LPVOID lpBuff
       LONG low = 0;
       LONG high = 0;
       low = SetFilePointer(hFile, low, &high, FILE_CURRENT);
-      CLog::Log(LOGWARNING, "DVDReadFile() warning - invalid data read from block at %d (%d) - rereading", low, high);
+      CLog::Log(LOGWARNING, "DVDReadFile() warning - invalid data read from block at %li (%li) - rereading", low, high);
       SetFilePointer(hFile, (int)numChecked - (int)*lpNumberOfBytesRead - DVD_CHUNK_SIZE, NULL, FILE_CURRENT);
       DWORD numRead;
       ret = ReadFile(hFile, (BYTE *)lpBuffer + numChecked - DVD_CHUNK_SIZE, DVD_CHUNK_SIZE, &numRead, lpOverlapped);

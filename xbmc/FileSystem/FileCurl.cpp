@@ -621,7 +621,7 @@ __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
     SetRequestHeaders();
 
     /* set offset */
-    CURLcode ret = g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RESUME_FROM_LARGE, nextPos);
+    /* CURLcode ret = */g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RESUME_FROM_LARGE, nextPos);
 
 //    if (CURLE_OK == ret)
 //      CLog::Log(LOGDEBUG, "FileCurl::Seek(%p) - resetting file fetch to %i (successful)", this, nextPos);
@@ -630,7 +630,7 @@ __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
 
 
     /* restart */
-    CURLMcode addRet = g_curlInterface.multi_add_handle(m_multiHandle, m_easyHandle);
+    /* CURLMcode addRet = */ g_curlInterface.multi_add_handle(m_multiHandle, m_easyHandle);
 
     /* reset stillrunning as we now are going to reget data */
     m_stillRunning = 1;
@@ -813,7 +813,7 @@ bool CFileCurl::FillBuffer(unsigned int want)
         CURLMsg* msg;
         while((msg = g_curlInterface.multi_info_read(m_multiHandle, &msgs)))
         {
-          if(msg->msg = CURLMSG_DONE)
+          if (msg->msg == CURLMSG_DONE)
             return (msg->data.result == CURLE_OK);
         }
       }

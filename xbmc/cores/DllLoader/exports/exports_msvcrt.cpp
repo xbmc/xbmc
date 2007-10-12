@@ -14,8 +14,10 @@
 #endif
 #endif
 
+#ifndef __GNUC__
 #pragma warning (disable:4391)
 #pragma warning (disable:4392)
+#endif
 
 #ifndef _LINUX
 extern "C" void* dll_close();

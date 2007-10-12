@@ -136,7 +136,7 @@ void CGUIDialogVisualisationSettings::SetupPage()
     SET_CONTROL_HIDDEN(CONTROL_NONE_AVAILABLE);
   }
 
-  int numSettings = m_pSettings->size();
+  //int numSettings = m_pSettings->size();
 
   // run through and create our controls
   for (unsigned int i = 0; i < m_pSettings->size(); i++)

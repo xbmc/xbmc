@@ -31,11 +31,11 @@ bool CSDLMouse::Update(MouseState &state)
   {
     mouseState = SDL_GetMouseState(&x, &y);
   
-    state.x = (float)x; 
+    state.x = x; 
     if (state.x < 0) 
       state.x = 0; 
 
-    state.y = (float)y; 
+    state.y = y; 
     if (state.y < 0) 
       state.y = 0; 
   }

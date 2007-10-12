@@ -119,7 +119,7 @@ int CSimpleFileCache::Close()
 int CSimpleFileCache::WriteToCache(const char *pBuffer, size_t iSize) {
 	DWORD iWritten=0;
 	if (!WriteFile(m_hCacheFileWrite, pBuffer, iSize, &iWritten, NULL)) {
-		CLog::Log(LOGERROR, "%s - failed to write to file. err: %d", __FUNCTION__, GetLastError());
+		CLog::Log(LOGERROR, "%s - failed to write to file. err: %lu", __FUNCTION__, GetLastError());
 		return CACHE_RC_ERROR;
 	}
 	

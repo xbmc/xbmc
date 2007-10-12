@@ -31,7 +31,7 @@ bool CMultiPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
   DWORD progressTime = timeGetTime() + 3000L;   // 3 seconds before showing progress bar
   CGUIDialogProgress* dlgProgress = NULL;
   
-  int iFailures = 0;
+  unsigned int iFailures = 0;
   for (unsigned int i = 0; i < vecPaths.size(); ++i)
   {
     // show the progress dialog if we have passed our time limit
@@ -97,7 +97,7 @@ bool CMultiPathDirectory::Exists(const CStdString& strPath)
   if (!GetPaths(strPath, vecPaths))
     return false;
 
-  for (unsigned int i = 0; i < (int)vecPaths.size(); ++i)
+  for (unsigned int i = 0; i < vecPaths.size(); ++i)
   {
     CLog::Log(LOGDEBUG,"Testing Existance (%s)", vecPaths[i].c_str());
     if (CDirectory::Exists(vecPaths[i]))

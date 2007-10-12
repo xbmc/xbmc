@@ -615,6 +615,9 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     CUtil::DeleteVideoDatabaseDirectoryCache();
     Update(m_vecItems.m_strPath);
     return true;
+
+  default:
+    break;
   }
 
   return CGUIWindowMusicBase::OnContextButton(itemNumber, button);

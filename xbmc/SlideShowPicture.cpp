@@ -464,7 +464,7 @@ void CSlideShowPic::Render()
   float fSourceInvAR = 1 / fSourceAR;
   float fAR = si * si * (fSourceInvAR - fSourceAR) + fSourceAR;
 
-  float fOutputFrameAR = fAR / fPixelRatio;
+  //float fOutputFrameAR = fAR / fPixelRatio;
 
   float fScaleNorm = fScreenWidth / m_fWidth;
   float fScaleInv = fScreenWidth / m_fHeight;

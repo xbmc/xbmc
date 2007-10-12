@@ -144,7 +144,6 @@ CStdString CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
    char gateway[128];
    size_t linel = 0;
    int n;
-   char* p;
    int linenum = 0;
    while (getdelim(&line, &linel, '\n', fp) > 0)
    {
@@ -165,7 +164,7 @@ CStdString CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
       {
          unsigned char gatewayAddr[4];
          int len = CNetwork::ParseHex(gateway, gatewayAddr);
-         if (len = 4)
+         if (len == 4)
          {
             struct in_addr in;
             in.s_addr = (gatewayAddr[0] << 24) | (gatewayAddr[1] << 16) | 
@@ -275,7 +274,8 @@ void CNetworkLinux::SetNameServers(std::vector<CStdString> nameServers)
 
 std::vector<NetworkAccessPoint>  CNetworkLinux::GetAccessPoints(void)
 {
-   
+   std::vector<NetworkAccessPoint> result;
+   return result;  
 }
   
 void CNetworkInterfaceLinux::GetSettings(bool& isDHCP, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, bool& keyIsString)

@@ -526,7 +526,7 @@ void CDVDPlayerVideo::StepFrame()
 void CDVDPlayerVideo::Flush()
 { 
   /* flush using message as this get's called from dvdplayer thread */
-  /* and any demux packet that has been taken out of queue need to *
+  /* and any demux packet that has been taken out of queue need to */
   /* be disposed of before we flush */
   m_messageQueue.Flush();
   m_messageQueue.Put(new CDVDMsgGeneralFlush());  

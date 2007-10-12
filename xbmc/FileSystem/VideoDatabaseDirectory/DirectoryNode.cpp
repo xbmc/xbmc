@@ -117,6 +117,8 @@ CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const CStdString& str
     return new CDirectoryNodeRecentlyAddedMusicVideos(strName,pParent);
   case NODE_TYPE_TITLE_MUSICVIDEOS:
     return new CDirectoryNodeTitleMusicVideos(strName,pParent);
+  default:
+    break;
   }
 
   return NULL;
@@ -250,6 +252,8 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
       pItem = new CFileItem(g_localizeStrings.Get(20366));  // "All Seasons"
       pItem->m_strPath = BuildPath() + "-1/";
       break;
+    default:
+      break;
   }
 
   if (pItem)
@@ -271,8 +275,8 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
 bool CDirectoryNode::CanCache()
 {
   //  Only cache the directorys in the root
-  NODE_TYPE childnode=GetChildType();
-  NODE_TYPE node=GetType();
+  //NODE_TYPE childnode=GetChildType();
+  //NODE_TYPE node=GetType();
 
   // something should probably be cached
   return true;//(childnode==NODE_TYPE_TITLE_MOVIES || childnode==NODE_TYPE_EPISODES || childnode == NODE_TYPE_SEASONS || childnode == NODE_TYPE_TITLE_TVSHOWS);

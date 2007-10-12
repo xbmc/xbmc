@@ -146,7 +146,7 @@ bool CMusicInfoTagLoaderSid::Load(const CStdString& strFileName, CMusicInfoTag& 
       }
       temp3 += iStart;
     }
-    int iFind = reg.RegFind(temp3);
+    /*int iFind = */reg.RegFind(temp3);
     if( reg.RegFind(temp3) > -1 )
     {
       char* szTitle = reg.GetReplaceString("\\1");
@@ -194,7 +194,7 @@ bool CMusicInfoTagLoaderSid::Load(const CStdString& strFileName, CMusicInfoTag& 
     f2.getline(temp,8191);
     CStdString strTemp(temp);
     strTemp.MakeLower();
-    int iFind = strTemp.find(strHVSCpath);
+    unsigned int iFind = strTemp.find(strHVSCpath);
     if (iFind == string::npos)
       continue;
 

@@ -521,7 +521,7 @@ void CGUIWindowVideoFiles::LoadPlayList(const CStdString& strPlayList)
     if (m_guiState.get())
       m_guiState->SetPlaylistDirectory("playlistvideo://");
     // activate the playlist window if its not activated yet
-    if (GetID() == m_gWindowManager.GetActiveWindow() && iSize > 1)
+    if (GetID() == (DWORD) m_gWindowManager.GetActiveWindow() && iSize > 1)
     {
       m_gWindowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
     }
@@ -535,7 +535,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
   if (item)
   {
     // are we in the playlists location?
-    bool inPlaylists = m_vecItems.m_strPath.Equals(CUtil::MusicPlaylistsLocation()) || m_vecItems.m_strPath.Equals("special://musicplaylists/");
+    //bool inPlaylists = m_vecItems.m_strPath.Equals(CUtil::MusicPlaylistsLocation()) || m_vecItems.m_strPath.Equals("special://musicplaylists/");
 
     if (m_vecItems.IsVirtualDirectoryRoot())
     {
@@ -682,6 +682,9 @@ bool CGUIWindowVideoFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button
   case CONTEXT_BUTTON_ADD_TO_LIBRARY:
     AddToDatabase(itemNumber);
     return true;
+
+  default:
+    break;
   }
   return CGUIWindowVideoBase::OnContextButton(itemNumber, button);
 }

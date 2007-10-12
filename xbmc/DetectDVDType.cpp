@@ -317,7 +317,6 @@ DWORD CDetectDVDMedia::GetTrayState()
 #ifdef _LINUX
   
   int fd = 0;
-  int drivestatus,discstatus;
 
   char* dvdDevice = CCdIoSupport::GetDeviceFileName();
   if (strlen(dvdDevice) == 0)
@@ -330,7 +329,7 @@ DWORD CDetectDVDMedia::GetTrayState()
     return DRIVE_NOT_READY;
   }
 
-  drivestatus = ioctl(fd, CDROM_DRIVE_STATUS, 0);
+  int drivestatus = ioctl(fd, CDROM_DRIVE_STATUS, 0);
 
   switch(drivestatus)
   {

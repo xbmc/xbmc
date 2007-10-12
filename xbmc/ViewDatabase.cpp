@@ -55,7 +55,7 @@ bool CViewDatabase::CreateTables()
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s unable to create tables:%i", __FUNCTION__, GetLastError());
+    CLog::Log(LOGERROR, "%s unable to create tables:%lu", __FUNCTION__, GetLastError());
     return false;
   }
 
@@ -69,7 +69,7 @@ bool CViewDatabase::UpdateOldVersion(int version)
 
 bool CViewDatabase::GetViewState(const CStdString &path, int window, CViewState &state)
 {
-  DWORD titleID = 0;
+  //DWORD titleID = 0;
   try
   {
     if (NULL == m_pDB.get()) return false;

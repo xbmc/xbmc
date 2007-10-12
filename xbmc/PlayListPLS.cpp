@@ -217,7 +217,7 @@ void CPlayListPLS::Save(const CStdString& strFileName) const
     g_charsetConverter.utf8ToStringCharset(strDescription);
     fprintf(fd, "File%i=%s\n", i + 1, strFileName.c_str() );
     fprintf(fd, "Title%i=%s\n", i + 1, strDescription.c_str() );
-    fprintf(fd, "Length%i=%i\n", i + 1, item.GetDuration() / 1000 );
+    fprintf(fd, "Length%i=%lu\n", i + 1, item.GetDuration() / 1000 );
   }
 
   fprintf(fd, "NumberOfEntries=%i\n", m_vecItems.size());
@@ -228,7 +228,7 @@ void CPlayListPLS::Save(const CStdString& strFileName) const
 bool CPlayListASX::LoadAsxIniInfo(std::istream &stream)
 {
   CLog::Log(LOGINFO, "Parsing INI style ASX");
-  string::size_type equals = 0, end = 0;
+  //string::size_type equals = 0, end = 0;
 
   std::string name, value;
 
@@ -339,7 +339,7 @@ bool CPlayListASX::LoadData(std::istream& stream)
 
         TiXmlElement *pRef = pElement->FirstChildElement("ref");
         TiXmlElement *pTitle = pElement->FirstChildElement("title");
-        TiXmlElement *pDuration = pElement->FirstChildElement("duration"); /* <DURATION VALUE="hh:mm:ss.fract"/> */
+        //TiXmlElement *pDuration = pElement->FirstChildElement("duration"); /* <DURATION VALUE="hh:mm:ss.fract"/> */
 
         if(pTitle)
           title = pTitle->GetText();

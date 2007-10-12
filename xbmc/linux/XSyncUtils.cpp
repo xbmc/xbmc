@@ -40,6 +40,8 @@ bool  DestroyRecursiveMutex(HANDLE hMutex) {
 
   hMutex->m_hMutex = NULL;
   hMutex->m_hSem = NULL;
+
+  return true;
 }
 
 HANDLE  WINAPI CreateMutex( LPSECURITY_ATTRIBUTES lpMutexAttributes,  BOOL bInitialOwner,  LPCTSTR lpName ) {
@@ -177,13 +179,13 @@ DWORD WINAPI WaitForMultipleObjects( DWORD nCount, HANDLE* lpHandles, BOOL bWait
   DWORD dwStartTime   = SDL_GetTicks();
   BOOL *bDone = new BOOL[nCount];
   
-  for (int nFlag=0; nFlag<nCount; nFlag++ ) 
+  for (unsigned int nFlag=0; nFlag<nCount; nFlag++ ) 
     bDone[nFlag] = FALSE;
 
-  int nSignalled = 0;
+  DWORD nSignalled = 0;
   while (!bWaitEnded) {
   
-    for (int i=0; i < nCount; i++) {
+    for (unsigned int i=0; i < nCount; i++) {
 
       if (!bDone[i]) {
         DWORD dwWaitRC = WaitForSingleObject(lpHandles[i], 20);

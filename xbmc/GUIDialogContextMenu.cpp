@@ -490,6 +490,9 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CShare *shar
       m_gWindowManager.SendThreadMessage(msg);
       return true;
     }
+
+  default:
+    break;
   }
   return false;
 }
