@@ -162,7 +162,7 @@ bool CPartyModeManager::Enable(bool bVideo /* = false */)
     pDialog->Close();
     return false;
   }
-  CLog::Log(LOGDEBUG, "%s time for song fetch: %i", __FUNCTION__, timeGetTime() - time);
+  CLog::Log(LOGDEBUG, "%s time for song fetch: %lu", __FUNCTION__, timeGetTime() - time);
 
   // start playing
   g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
@@ -417,7 +417,7 @@ bool CPartyModeManager::ReapSongs()
   if (m_bIsVideo)
     iPlaylist = PLAYLIST_VIDEO;
 
-  CPlayList& playlist = g_playlistPlayer.GetPlaylist(iPlaylist);
+  //CPlayList& playlist = g_playlistPlayer.GetPlaylist(iPlaylist);
 
   // reap any played songs
   int iCurrentSong = g_playlistPlayer.GetCurrentSong();

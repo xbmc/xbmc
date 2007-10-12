@@ -140,7 +140,7 @@ void CGUIWindowWeather::UpdateLocations()
   g_graphicsContext.SendMessage(msg);
   CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_SELECTLOCATION);
 
-  for (int i = 0; i < MAX_LOCATION; i++)
+  for (unsigned int i = 0; i < MAX_LOCATION; i++)
   {
     char *szLocation = g_weatherManager.GetLocation(i);
     if (!szLocation) continue;

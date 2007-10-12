@@ -199,7 +199,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
     int     srcStride[] = { m_pFrame->linesize[0], m_pFrame->linesize[1], m_pFrame->linesize[2] };
     uint8_t *dst[] = { m_pConvertFrame->data[0], m_pConvertFrame->data[1], m_pConvertFrame->data[2] };
     int     dstStride[] = { m_pConvertFrame->linesize[0], m_pConvertFrame->linesize[1], m_pConvertFrame->linesize[2] };
-    int ret = m_dllSwScale.sws_scale(context, src, srcStride, 0, m_pCodecContext->height, dst, dstStride);
+    m_dllSwScale.sws_scale(context, src, srcStride, 0, m_pCodecContext->height, dst, dstStride);
 
     m_dllSwScale.sws_freeContext(context); 
 #endif

@@ -245,7 +245,7 @@ CUPnPVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList
 bool 
 CUPnPVirtualPathDirectory::GetMatchingShare(const CStdString &strPath, CShare& share, vector<CStdString>& paths) 
 {
-	int index;
+    unsigned int index;
 
     paths.clear();
 
@@ -257,7 +257,7 @@ CUPnPVirtualPathDirectory::GetMatchingShare(const CStdString &strPath, CShare& s
     if (!vecShares) return false;
 
     // look for share
-    for (index = 0; index < (int)vecShares->size(); ++index) {
+    for (index = 0; index < vecShares->size(); ++index) {
         CShare share = vecShares->at(index);
         CStdString strName = share.strName;
         if (strSource.Equals(strName))

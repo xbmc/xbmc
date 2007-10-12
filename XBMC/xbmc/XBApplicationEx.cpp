@@ -150,7 +150,9 @@ INT CXBApplicationEx::Run()
   BYTE frameMoveExceptionCount = 0;
   BYTE renderExceptionCount = 0;
 
+#ifndef _DEBUG
   const BYTE MAX_EXCEPTION_COUNT = 10;
+#endif
 
   // Run the game loop, animating and rendering frames
   while (!m_bStop)

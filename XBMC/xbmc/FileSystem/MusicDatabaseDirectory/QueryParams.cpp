@@ -43,5 +43,7 @@ void CQueryParams::SetQueryParam(NODE_TYPE NodeType, const CStdString& strNodeNa
   case NODE_TYPE_SONG:
   case NODE_TYPE_SONG_TOP100:
     m_idSong=idDb;
+  default:
+    break;
   }
 }

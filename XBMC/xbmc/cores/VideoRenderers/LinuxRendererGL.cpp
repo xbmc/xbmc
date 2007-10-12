@@ -160,7 +160,7 @@ void CLinuxRendererGL::CalculateFrameAspectRatio(int desired_width, int desired_
   // This indicates either a scaling has taken place (which we didn't ask for) or it has
   // found an aspect ratio parameter from the file, and is changing the frame size based
   // on that.
-  if (m_iSourceWidth == desired_width && m_iSourceHeight == desired_height)
+  if (m_iSourceWidth == (unsigned int) desired_width && m_iSourceHeight == (unsigned int) desired_height)
     return ;
 
   // mplayer is scaling in one or both directions.  We must alter our Source Pixel Ratio
@@ -301,7 +301,7 @@ void CLinuxRendererGL::DrawAlpha(int x0, int y0, int w, int h, unsigned char *sr
   osdRect.bottom = (float)rv.top + (float)(rv.bottom - rv.top) * relbottom;
   osdRect.top = osdRect.bottom - (float)h * yscale;
 
-  RECT rc = { 0, 0, w, h };
+  //RECT rc = { 0, 0, w, h };
 
   int iOSDBuffer = (m_iOSDRenderBuffer + 1) % m_NumOSDBuffers;
 
@@ -392,8 +392,8 @@ void CLinuxRendererGL::RenderOSD()
   CSingleLock lock(g_graphicsContext);
 
   //copy alle static vars to local vars because they might change during this function by mplayer callbacks
-  float osdWidth = m_OSDWidth;
-  float osdHeight = m_OSDHeight;
+  //float osdWidth = m_OSDWidth;
+  //float osdHeight = m_OSDHeight;
   DRAWRECT osdRect = m_OSDRect;
   //  if (!viewportRect.bottom && !viewportRect.right)
   //    return;
@@ -512,8 +512,8 @@ void CLinuxRendererGL::ManageDisplay()
 void CLinuxRendererGL::ChooseBestResolution(float fps)
 {
   bool bUsingPAL = g_videoConfig.HasPAL();    // current video standard:PAL or NTSC
-  bool bCanDoWidescreen = g_videoConfig.HasWidescreen(); // can widescreen be enabled?
-  bool bWideScreenMode = false;
+  //bool bCanDoWidescreen = g_videoConfig.HasWidescreen(); // can widescreen be enabled?
+  //bool bWideScreenMode = false;
 
   // If the resolution selection is on Auto the following rules apply :
   //
@@ -803,7 +803,7 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
     int     srcStride[] = { im.stride[0], im.stride[1], im.stride[2] };
     uint8_t *dst[] = { m_rgbBuffer, 0, 0 };
     int     dstStride[] = { m_iSourceWidth*4, 0, 0 };
-    int ret = m_dllSwScale.sws_scale(context, src, srcStride, 0, im.height, dst, dstStride);
+    m_dllSwScale.sws_scale(context, src, srcStride, 0, im.height, dst, dstStride);
     
     m_dllSwScale.sws_freeContext(context);
   }   
@@ -1663,8 +1663,8 @@ void CLinuxRendererGL::SetViewMode(int iViewMode)
   }
 
   // get our calibrated full screen resolution
-  float fOffsetX1 = (float)g_settings.m_ResInfo[m_iResolution].Overscan.left;
-  float fOffsetY1 = (float)g_settings.m_ResInfo[m_iResolution].Overscan.top;
+  //float fOffsetX1 = (float)g_settings.m_ResInfo[m_iResolution].Overscan.left;
+  //float fOffsetY1 = (float)g_settings.m_ResInfo[m_iResolution].Overscan.top;
   float fScreenWidth = (float)(g_settings.m_ResInfo[m_iResolution].Overscan.right - g_settings.m_ResInfo[m_iResolution].Overscan.left);
   float fScreenHeight = (float)(g_settings.m_ResInfo[m_iResolution].Overscan.bottom - g_settings.m_ResInfo[m_iResolution].Overscan.top);
   // and the source frame ratio
@@ -1789,8 +1789,8 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags)
 
   int index = 0; //m_iYV12RenderBuffer;
   YV12Image &im = m_image[index];
-  bool deinterlacing = (field!=FIELD_FULL) && (g_stSettings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_NONE)
-    && (g_stSettings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_DEINTERLACE);
+  //bool deinterlacing = (field!=FIELD_FULL) && (g_stSettings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_NONE)
+  //  && (g_stSettings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_DEINTERLACE);
 
   // set scissors if we are not in fullscreen video
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
@@ -2506,7 +2506,7 @@ void CLinuxRendererGL::DeleteYV12Texture(int index)
 
 void CLinuxRendererGL::ClearYV12Texture(int index)
 {
-  YV12Image &im = m_image[index];
+  //YV12Image &im = m_image[index];
 
   //memset(im.plane[0], 0,   im.stride[0] * im.height);
   //memset(im.plane[1], 128, im.stride[1] * im.height>>im.cshift_y );

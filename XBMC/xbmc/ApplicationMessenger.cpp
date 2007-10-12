@@ -383,7 +383,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       break;
 
     case TMSG_PLAYLISTPLAYER_PLAY:
-      if (pMsg->dwParam1 != -1)
+      if (pMsg->dwParam1 != (DWORD) -1)
         g_playlistPlayer.Play(pMsg->dwParam1);
       else
         g_playlistPlayer.Play();

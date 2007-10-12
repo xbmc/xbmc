@@ -366,6 +366,8 @@ bool CGUIWindowMusicPlaylistEditor::OnContextButton(int itemNumber, CONTEXT_BUTT
   case CONTEXT_BUTTON_DELETE:
     OnDeletePlaylistItem(GetCurrentPlaylistItem());
     return true;
+  default:
+    break;
   }
   return CGUIWindowMusicBase::OnContextButton(itemNumber, button);
 }

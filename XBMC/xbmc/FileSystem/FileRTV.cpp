@@ -73,7 +73,7 @@ bool CFileRTV::Open(const char* strHostName, const char* strFileName, int iport,
   }
   m_bOpened = true;
   
-  CLog::Log(LOGDEBUG, "%s - Opened %s on %s, Size %I64d, Position %d", __FUNCTION__, strHostName, strFileName, m_fileSize, m_filePos);
+  CLog::Log(LOGDEBUG, "%s - Opened %s on %s, Size %llu, Position %llu", __FUNCTION__, strHostName, strFileName, m_fileSize, m_filePos);
   return true;
 }
 

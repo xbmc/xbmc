@@ -81,7 +81,7 @@ bool CVideoDatabaseDirectory::GetQueryParams(const CStdString& strPath, CQueryPa
   auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strPath));
 
   if (!pNode.get())
-    false;
+    return false;
   
   CDirectoryNode::GetDatabaseInfo(strPath,params);
   return true;

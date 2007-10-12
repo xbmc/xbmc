@@ -78,7 +78,7 @@ void CLastFmManager::Parameter(const CStdString& key, const CStdString& data, CS
 {
   value = "";
   vector<CStdString> params;
-  int iNumItems = StringUtils::SplitString(data, "\n", params);
+  StringUtils::SplitString(data, "\n", params);
   for (int i = 0; i < (int)params.size(); i++)
   {
     CStdString tmp = params[i];

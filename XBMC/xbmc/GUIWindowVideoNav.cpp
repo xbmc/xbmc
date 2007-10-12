@@ -747,7 +747,7 @@ void CGUIWindowVideoNav::DeleteItem(CFileItem* pItem)
 
 void CGUIWindowVideoNav::OnFinalizeFileItems(CFileItemList& items)
 {
-  int iItem=0;
+  //int iItem=0;
   m_unfilteredItems.AppendPointer(items);
   // now filter as necessary
   CVideoDatabaseDirectory dir;
@@ -851,7 +851,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
   {
     SScraperInfo info;
     VIDEO::SScanSettings settings;
-    int iFound = GetScraperForItem(item, info, settings);
+    GetScraperForItem(item, info, settings);
     
     if (info.strContent.Equals("tvshows"))
       buttons.Add(CONTEXT_BUTTON_INFO, item->m_bIsFolder ? 20351 : 20352);
@@ -1225,6 +1225,9 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       Update(m_vecItems.m_strPath);
       return true;
     }
+  
+  default:
+    break;
 
   }
   return CGUIWindowVideoBase::OnContextButton(itemNumber, button);

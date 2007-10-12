@@ -1696,7 +1696,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
       break;
     case DVDNAV_HIGHLIGHT:
       {
-        dvdnav_highlight_event_t* pInfo = (dvdnav_highlight_event_t*)pData;
+        //dvdnav_highlight_event_t* pInfo = (dvdnav_highlight_event_t*)pData;
         int iButton = pStream->GetCurrentButton();
         CLog::Log(LOGDEBUG, "DVDNAV_HIGHLIGHT: Highlight button %d\n", iButton);        
         m_dvdPlayerSubtitle.UpdateOverlayInfo((CDVDInputStreamNavigator*)m_pInputStream, LIBDVDNAV_BUTTON_NORMAL);
@@ -1704,7 +1704,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
       break;
     case DVDNAV_VTS_CHANGE:
       {
-        dvdnav_vts_change_event_t* vts_change_event = (dvdnav_vts_change_event_t*)pData;
+        //dvdnav_vts_change_event_t* vts_change_event = (dvdnav_vts_change_event_t*)pData;
         CLog::Log(LOGDEBUG, "DVDNAV_VTS_CHANGE");
 
         //Make sure we clear all the old overlays here, or else old forced items are left.
@@ -1727,7 +1727,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
       break;
     case DVDNAV_CELL_CHANGE:
       {
-        dvdnav_cell_change_event_t* cell_change_event = (dvdnav_cell_change_event_t*)pData;
+        //dvdnav_cell_change_event_t* cell_change_event = (dvdnav_cell_change_event_t*)pData;
         CLog::Log(LOGDEBUG, "DVDNAV_CELL_CHANGE");
 
         m_dvd.state = DVDSTATE_NORMAL;        
@@ -1737,7 +1737,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
       break;
     case DVDNAV_NAV_PACKET:
       {
-          pci_t* pci = (pci_t*)pData;
+          //pci_t* pci = (pci_t*)pData;
 
           // this should be possible to use to make sure we get
           // seamless transitions over these boundaries

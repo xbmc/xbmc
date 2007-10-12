@@ -1515,7 +1515,7 @@ void CFileItemList::Serialize(CArchive& ar)
       ar << details.m_labelMasks.m_strLabel2Folder;
     }
 
-    for (i; i < (int)m_items.size(); ++i)
+    for (; i < (int)m_items.size(); ++i)
     {
       CFileItem* pItem = m_items[i];
       ar << *pItem;

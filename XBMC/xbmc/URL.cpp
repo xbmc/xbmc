@@ -471,7 +471,7 @@ void CURL::GetURL(CStdString& strURL) const
                         + m_strPassword.length()
                         + m_strHostName.length()
                         + m_strFileName.length()
-                        + m_strOptions.length();
+                        + m_strOptions.length()
                         + 10;
 
   if( strURL.capacity() < sizeneed )
@@ -495,7 +495,7 @@ void CURL::GetURLWithoutUserDetails(CStdString& strURL) const
                         + m_strDomain.length()
                         + m_strHostName.length()
                         + m_strFileName.length()
-                        + m_strOptions.length();
+                        + m_strOptions.length()
                         + 10;
 
   if( strURL.capacity() < sizeneed )
@@ -609,6 +609,6 @@ bool CURL::IsLocal() const
 
 bool CURL::IsFileOnly(const CStdString &url)
 {
-  return url.find_first_of("/\\") == -1;
+  return url.find_first_of("/\\") == CStdString::npos;
 }
 

@@ -1,8 +1,10 @@
+#ifndef __GNUC__
 #pragma comment(linker, "/merge:RTV_TEXT=LIBRTV")
 #pragma comment(linker, "/merge:RTV_DATA=LIBRTV")
 #pragma comment(linker, "/merge:RTV_BSS=LIBRTV")
 #pragma comment(linker, "/merge:RTV_RD=LIBRTV")
 #pragma comment(linker, "/section:LIBRTV,RWE")
+#endif
 
 #ifndef RTVINTERFACE_H
 #define RTVINTERFACE_H

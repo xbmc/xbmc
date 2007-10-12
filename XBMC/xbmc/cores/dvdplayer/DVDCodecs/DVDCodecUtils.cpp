@@ -65,7 +65,7 @@ bool CDVDCodecUtils::CopyPictureToOverlay(YV12Image* pImage, DVDVideoPicture *pS
   BYTE *d = pImage->plane[0];
   int w = pSrc->iWidth;
   int h = pSrc->iHeight;
-  if ((w==pSrc->iLineSize[0]) && (pSrc->iLineSize[0]==pImage->stride[0]))
+  if ((w == pSrc->iLineSize[0]) && ((unsigned int) pSrc->iLineSize[0] == pImage->stride[0]))
   {
     memcpy(d, s, w*h);
   }
@@ -82,7 +82,7 @@ bool CDVDCodecUtils::CopyPictureToOverlay(YV12Image* pImage, DVDVideoPicture *pS
   d = pImage->plane[1];
   w = pSrc->iWidth >> 1;
   h = pSrc->iHeight >> 1;
-  if ((w==pSrc->iLineSize[1]) && (pSrc->iLineSize[1]==pImage->stride[1]))
+  if ((w==pSrc->iLineSize[1]) && ((unsigned int) pSrc->iLineSize[1]==pImage->stride[1]))
   {
     memcpy(d, s, w*h);
   }
@@ -97,7 +97,7 @@ bool CDVDCodecUtils::CopyPictureToOverlay(YV12Image* pImage, DVDVideoPicture *pS
   }
   s = pSrc->data[2];
   d = pImage->plane[2];
-  if ((w==pSrc->iLineSize[2]) && (pSrc->iLineSize[2]==pImage->stride[2]))
+  if ((w==pSrc->iLineSize[2]) && ((unsigned int) pSrc->iLineSize[2]==pImage->stride[2]))
   {
     memcpy(d, s, w*h);
   }

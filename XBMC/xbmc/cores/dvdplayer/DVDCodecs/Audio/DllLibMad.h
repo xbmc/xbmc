@@ -5,6 +5,7 @@
 class DllLibMadInterface
 {
 public:
+  virtual ~DllLibMadInterface() {}
   virtual void mad_synth_init(struct mad_synth *)=0;
   virtual void mad_stream_init(struct mad_stream *)=0;
   virtual void mad_frame_init(struct mad_frame *)=0;

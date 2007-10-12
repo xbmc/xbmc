@@ -152,9 +152,9 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
   case GUI_MSG_FOCUSED:
     {
       CGUIWindow::OnMessage(message);
-      unsigned int focusedControl = GetFocusedControlID();
-      if (focusedControl >= CONTROL_START_BUTTONS && focusedControl < CONTROL_START_BUTTONS + m_vecSections.size() &&
-          focusedControl - CONTROL_START_BUTTONS != m_iSection)
+      DWORD focusedControl = GetFocusedControlID();
+      if (focusedControl >= CONTROL_START_BUTTONS && focusedControl < (DWORD) (CONTROL_START_BUTTONS + m_vecSections.size()) &&
+          focusedControl - CONTROL_START_BUTTONS != (DWORD) m_iSection)
       {
         if (m_vecSections[focusedControl-CONTROL_START_BUTTONS]->m_strCategory == "masterlock")
         {
@@ -862,9 +862,9 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     }
     else if (strSetting.Equals("videooutput.hd480p") || strSetting.Equals("videooutput.hd720p") || strSetting.Equals("videooutput.hd1080i"))
     {
+#ifdef HAS_XBOX_HARDWARE
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       // disable if we do not have the HDTV pack and are not NTSC
-#ifdef HAS_XBOX_HARDWARE
       if (pControl) pControl->SetEnabled(g_videoConfig.HasNTSC() && g_videoConfig.HasHDPack());
 #endif
     }
@@ -1193,28 +1193,24 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }*/
   else if (strSetting.Equals("karaoke.port0voicemask"))
   {
-    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     g_guiSettings.SetString("karaoke.port0voicemask", pControl->GetCurrentLabel());
     FillInVoiceMaskValues(0, g_guiSettings.GetSetting("karaoke.port0voicemask"));
   }
   else if (strSetting.Equals("karaoke.port1voicemask"))
   {
-    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     g_guiSettings.SetString("karaoke.port1voicemask", pControl->GetCurrentLabel());
     FillInVoiceMaskValues(1, g_guiSettings.GetSetting("karaoke.port1voicemask"));
   }
   else if (strSetting.Equals("karaoke.port2voicemask"))
   {
-    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     g_guiSettings.SetString("karaoke.port2voicemask", pControl->GetCurrentLabel());
     FillInVoiceMaskValues(2, g_guiSettings.GetSetting("karaoke.port2voicemask"));
   }
   else if (strSetting.Equals("karaoke.port2voicemask"))
   {
-    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     g_guiSettings.SetString("karaoke.port3voicemask", pControl->GetCurrentLabel());
     FillInVoiceMaskValues(3, g_guiSettings.GetSetting("karaoke.port3voicemask"));
@@ -1290,8 +1286,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
   else if (strSetting.Equals("musicplayer.outputtoallspeakers"))
   {
-    CSettingBool *pSetting = (CSettingBool*)pSettingControl->GetSetting();
-
     if (!g_application.IsPlaying())
     {
       g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
@@ -1527,7 +1521,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
   else if (strSetting.Equals("lookandfeel.font"))
   { // new font choosen...
-    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     CStdString strSkinFontSet = pControl->GetCurrentLabel();
     if (strSkinFontSet != ".svn" && strSkinFontSet != g_guiSettings.GetString("lookandfeel.font"))
@@ -1543,7 +1536,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
   else if (strSetting.Equals("lookandfeel.skin"))
   { // new skin choosen...
-    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     CStdString strSkin = pControl->GetCurrentLabel();
     CStdString strSkinPath = _P("Q:\\skin\\" + strSkin);
@@ -1591,7 +1583,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
   else if (strSetting.Equals("videoscreen.resolution"))
   { // new resolution choosen... - update if necessary
-    CSettingInt *pSettingInt = (CSettingInt *)pSettingControl->GetSetting();
     int iControlID = pSettingControl->GetID();
     CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID, 0, 0, NULL);
     g_graphicsContext.SendMessage(msg);
@@ -1610,7 +1601,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
   else if (strSetting.Equals("videoscreen.vsync"))
   {
-    CSettingInt *pSettingInt = (CSettingInt *)pSettingControl->GetSetting();
     int iControlID = pSettingControl->GetID();
     CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID, 0, 0, NULL);
     g_graphicsContext.SendMessage(msg);
@@ -1786,7 +1776,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
   else if (strSetting.Equals("locale.country"))
   {
-    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
 
     const CStdString& strRegion=pControl->GetCurrentLabel();
@@ -2212,7 +2201,6 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
 
 void CGUIWindowSettingsCategory::FillInSkinFonts(CSetting *pSetting)
 {
-  CSettingString *pSettingString = (CSettingString*)pSetting;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->SetType(SPIN_CONTROL_TYPE_TEXT);
   pControl->Clear();
@@ -2281,7 +2269,6 @@ void CGUIWindowSettingsCategory::FillInSkinFonts(CSetting *pSetting)
 
 void CGUIWindowSettingsCategory::FillInSkins(CSetting *pSetting)
 {
-  CSettingString *pSettingString = (CSettingString*)pSetting;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->SetType(SPIN_CONTROL_TYPE_TEXT);
   pControl->Clear();
@@ -2329,7 +2316,6 @@ void CGUIWindowSettingsCategory::FillInSkins(CSetting *pSetting)
 
 void CGUIWindowSettingsCategory::FillInSoundSkins(CSetting *pSetting)
 {
-  CSettingString *pSettingString = (CSettingString*)pSetting;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->SetType(SPIN_CONTROL_TYPE_TEXT);
   pControl->Clear();
@@ -2691,8 +2677,7 @@ void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
   int iCurrentLang = 0;
   int iLanguage = 0;
   vector<CStdString> vecLanguage;
-  unsigned int i = 0;
-  for (i = 0; i < items.Size(); ++i)
+  for (int i = 0; i < items.Size(); ++i)
   {
     CFileItem* pItem = items[i];
     if (pItem->m_bIsFolder)
@@ -2705,7 +2690,7 @@ void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
   }
 
   sort(vecLanguage.begin(), vecLanguage.end(), sortstringbyname());
-  for (i = 0; i < vecLanguage.size(); ++i)
+  for (unsigned int i = 0; i < vecLanguage.size(); ++i)
   {
     CStdString strLanguage = vecLanguage[i];
     if (strcmpi(strLanguage.c_str(), pSettingString->GetData().c_str()) == 0)
@@ -2734,7 +2719,6 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
   directory.GetDirectory(strPath, items);
 
   int iCurrentScr = -1;
-  int iScr = 0;
   vector<CStdString> vecScr;
   int i = 0;
   for (i = 0; i < items.Size(); ++i)
@@ -2799,14 +2783,14 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
 
 void CGUIWindowSettingsCategory::FillInFTPServerUser(CSetting *pSetting)
 {
-  CSettingString *pSettingString = (CSettingString*)pSetting;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->SetType(SPIN_CONTROL_TYPE_TEXT);
   pControl->Clear();
   pControl->SetShowRange(true);
-  int iDefaultFtpUser = 0;
 
 #ifdef HAS_FTP_SERVER
+  int iDefaultFtpUser = 0;
+
   CStdString strFtpUser1; int iUserMax;
   // Get FTP XBOX Users and list them !
   if (CUtil::GetFTPServerUserName(0, strFtpUser1, iUserMax))
@@ -2858,7 +2842,6 @@ bool CGUIWindowSettingsCategory::SetFTPServerUserPass()
 
 void CGUIWindowSettingsCategory::FillInRegions(CSetting *pSetting)
 {
-  CSettingString *pSettingString = (CSettingString*)pSetting;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->SetType(SPIN_CONTROL_TYPE_TEXT);
   pControl->Clear();
@@ -2983,7 +2966,6 @@ void CGUIWindowSettingsCategory::FillInSkinColors(CSetting *pSetting)
 {
   // There is a default theme (just default.xml)
   // any other *.xml files are additional color themes on top of this one.
-  CSettingString *pSettingString = (CSettingString*)pSetting;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   CStdString strSettingString = g_guiSettings.GetString("lookandfeel.skincolors");
 
@@ -3160,7 +3142,6 @@ void CGUIWindowSettingsCategory::ClearFolderViews(CSetting *pSetting, int window
 
 void CGUIWindowSettingsCategory::FillInNetworkInterfaces(CSetting *pSetting)
 {
-  CSettingString *pSettingString = (CSettingString*)pSetting;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
   
@@ -3177,7 +3158,7 @@ void CGUIWindowSettingsCategory::FillInNetworkInterfaces(CSetting *pSetting)
   sort(vecInterfaces.begin(), vecInterfaces.end(), sortstringbyname());
  
   int iInterface = 0; 
-  for (int i = 0; i < vecInterfaces.size(); ++i)
+  for (unsigned int i = 0; i < vecInterfaces.size(); ++i)
   {
     pControl->AddLabel(vecInterfaces[i], iInterface++);
   }

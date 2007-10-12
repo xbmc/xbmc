@@ -212,6 +212,8 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
         dir->m_listItems.AddSortMethod(SORT_METHOD_PROGRAM_COUNT, 567, LABEL_MASKS("%T", "%C"));
         break;
       }
+    default:  
+      break;
   }
 }
 
@@ -314,7 +316,6 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
 
   // run the script
   CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, pathToScript.c_str(), argv[0], argv[1], argv[2]);
-  bool success = false;
   if (g_pythonParser.evalFile(pathToScript.c_str(), 3, (const char**)argv) >= 0)
     return true;
   else

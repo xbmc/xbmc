@@ -473,7 +473,7 @@ void AddItemToPlayList(const CFileItem* pItem, int playList, int sortMethod, CSt
     IDirectory *pDirectory = CFactoryDirectory::Create(strDirectory);
     if (mask!="")
       pDirectory->SetMask(mask);
-    bool bResult=pDirectory->GetDirectory(strDirectory,items);
+    /*bool bResult=*/pDirectory->GetDirectory(strDirectory,items);
     items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
     for (int i=0; i < items.Size(); ++i)
       AddItemToPlayList(items[i], playList, sortMethod, mask);
@@ -551,8 +551,8 @@ bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoSt
   if (autoStart)
     if (g_playlistPlayer.GetPlaylist( iPlaylist ).size() )
     {
-      CPlayList& playlist = g_playlistPlayer.GetPlaylist( iPlaylist );
-      const CPlayList::CPlayListItem& item = playlist[0];
+      //CPlayList& playlist = g_playlistPlayer.GetPlaylist( iPlaylist );
+      //const CPlayList::CPlayListItem& item = playlist[0];
       g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
       g_playlistPlayer.Reset();
       g_application.getApplicationMessenger().PlayListPlayerPlay();

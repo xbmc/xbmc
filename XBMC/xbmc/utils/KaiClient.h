@@ -18,6 +18,7 @@ class CKaiRequestList;
 class IBuddyObserver
 {
 public:
+  virtual ~IBuddyObserver() {}
   virtual void OnInitialise(CKaiClient* pClient) = 0;
   virtual void OnDeInitialise() = 0;
   virtual void OnEngineDetached() = 0;

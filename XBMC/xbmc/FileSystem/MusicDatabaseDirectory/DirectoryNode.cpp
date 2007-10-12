@@ -120,6 +120,8 @@ CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const CStdString& str
     return new CDirectoryNodeYearAlbum(strName, pParent);
   case NODE_TYPE_YEAR_SONG:
     return new CDirectoryNodeYearSong(strName, pParent);
+  default:
+    break;
   }
 
   return NULL;
@@ -287,6 +289,8 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
     pItem = new CFileItem(g_localizeStrings.Get(15104));  // "All Songs"
     pItem->m_strPath = BuildPath() + "-1/";
     break;*/
+  default:
+    break;
   }
 
   if (pItem)

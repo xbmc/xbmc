@@ -55,8 +55,8 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const CStdString &strType)
     int iMode = pItem->m_iLockMode;
     CStdString strLockCode = pItem->m_strLockCode;
     CStdString strLabel = pItem->GetLabel();
-    bool bConfirmed = false;
-    bool bCanceled = false;
+    //bool bConfirmed = false;
+    //bool bCanceled = false;
     int iResult = 0;  // init to user succeeded state, doing this to optimize switch statement below
     char buffer[33]; // holds 32 places plus sign character
     int iRetries = 0;

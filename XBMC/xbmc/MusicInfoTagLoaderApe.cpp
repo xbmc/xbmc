@@ -42,7 +42,7 @@ bool CMusicInfoTagLoaderApe::Load(const CStdString& strFileName, CMusicInfoTag& 
   {
     // retrieve the APE Tag info from strFileName
     // and put it in tag
-    bool bResult = false;
+    //bool bResult = false;
     tag.SetURL(strFileName);
     CAPEv2Tag myTag;
     if (myTag.ReadTag(strFileName.c_str(), true)) // true to check ID3 tag as well
