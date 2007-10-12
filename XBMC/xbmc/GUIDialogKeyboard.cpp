@@ -139,7 +139,7 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
     OnRemoteNumberClick(action.wID);
     return true;
   }
-  else if (action.wID >= KEY_VKEY && action.wID < KEY_ASCII)
+  else if (action.wID >= (WORD)KEY_VKEY && action.wID < (WORD)KEY_ASCII)
   { // input from the keyboard (vkey, not ascii)
     BYTE b = action.wID & 0xFF;
     if (b == 0x25) MoveCursor( -1);     // left
@@ -155,6 +155,7 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
     //char ch = action.wID & 0xFF;
     switch (action.unicode)
     {
+    case 13:  // enter
     case 10:  // enter
       OnOK();
       break;
