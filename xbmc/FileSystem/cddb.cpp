@@ -1075,6 +1075,7 @@ bool Xcddb::queryCache( unsigned long discid )
 
   CStdString strFileName;
   strFileName.Format("%s\\%x.cddb", cCacheDir.c_str(), discid);
+  strFileName = _P(strFileName);
 
   FILE* fd;
   fd = fopen( strFileName.c_str(), "rb");
@@ -1100,6 +1101,7 @@ bool Xcddb::writeCacheFile( const char* pBuffer, unsigned long discid )
 
   CStdString strFileName;
   strFileName.Format("%s\\%x.cddb", cCacheDir.c_str(), discid);
+  strFileName = _P(strFileName);
 
   FILE* fd;
   fd = fopen(strFileName.c_str(), "wb+");
@@ -1124,6 +1126,7 @@ bool Xcddb::isCDCached( int nr_of_tracks, toc cdtoc[] )
 
   CStdString strFileName;
   strFileName.Format("%s\\%x.cddb", cCacheDir.c_str(), discid);
+  strFileName = _P(strFileName);
 
   FILE* fd;
   fd = fopen(strFileName.c_str(), "rb");
@@ -1405,6 +1408,7 @@ bool Xcddb::isCDCached( CCdInfo* pInfo )
 
   CStdString strFileName;
   strFileName.Format("%s\\%x.cddb", cCacheDir.c_str(), discid);
+  strFileName = _P(strFileName);
 
   FILE* fd;
   fd = fopen(strFileName.c_str(), "rb");
