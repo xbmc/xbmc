@@ -229,8 +229,8 @@ compile() {
     else
       make -j${CORES} -C "${SOURCEDIR}" 2>&1 | tee "${SOURCEDIR}/compile.log" | grep -E "Linking|Building|Compiling"
     fi
-
-    grep " Error " "${SOURCEDIR}/compile.log"
+   
+    grep Error "${SOURCEDIR}/compile.log"
     if [[ $? == "0" ]]
     then
       echo
@@ -330,7 +330,7 @@ copy() {
       fi
       for J in $(ls "${SOURCEDIR}/skin/Project Mayhem III")
       do
-        if [[ $J == "media" ]]
+        if [[ "$J" == "media" ]]
         then
           mkdir "${BUILDDIR}/skin/Project Mayhem III/media" &> /dev/null
           cp "${SOURCEDIR}/skin/Project Mayhem III/media/Textures.xpr" "${BUILDDIR}/skin/Project Mayhem III/media" &> /dev/null
@@ -391,7 +391,7 @@ cleanup() {
   if [ -d $1 ]
   then
     printf "\r Cleaning %-60.60s" $1
-    rm -rf $I/src $I/.* $I/*.DLL $I/*.dll &> /dev/null
+    rm -rf $I/src $I/.svn $I/*.DLL $I/*.dll &> /dev/null
     for I in $(ls -d $1/* 2> /dev/null)
     do
       cleanup "${I}"
