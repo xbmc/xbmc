@@ -173,6 +173,9 @@ CFileCurl::CFileCurl()
   m_pHeaderCallback = NULL;
   m_bufferSize = BUFFER_SIZE;
   m_timeout = 0;
+  m_ftpauth = "";
+  m_ftpport = "";
+  m_ftppasvip = false;
 }
 
 //Has to be called before Open()
@@ -272,6 +275,18 @@ void CFileCurl::SetCommonOptions()
       g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_FTPSSLAUTH, CURLFTPAUTH_TLS);
   }
 
+  // allow passive mode for ftp
+  if( m_ftpport.length() > 0 )
+    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_FTPPORT, m_ftpport.c_str());
+  else
+    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_FTPPORT, NULL);
+
+  // allow curl to not use the ip address in the returned pasv response
+  if( m_ftppasvip )
+    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_FTP_SKIP_PASV_IP, 0);
+  else
+    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_FTP_SKIP_PASV_IP, 1);
+
   // always allow gzip compression
   if( m_contentencoding.length() > 0 )
     g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_ENCODING, m_contentencoding.c_str());
@@ -370,8 +385,15 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
 
     url2.SetFileName(filename);
 
+    CStdString options = url2.GetOptions().Mid(1);
+    options.TrimRight('/'); // hack for trailing slashes being added from source
+
+    m_ftpauth = "";
+    m_ftpport = "";
+    m_ftppasvip = false;
+
     /* parse options given */
-    CUtil::Tokenize(url2.GetOptions().Mid(1), array, "&");
+    CUtil::Tokenize(options, array, "&");
     for(CStdStringArray::iterator it = array.begin(); it != array.end(); it++)
     {
       CStdString name, value;
@@ -385,14 +407,26 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
       {
         name = (*it);
         value = "";
-      }
+      }      
 
       if(name.Equals("auth"))
       {
         m_ftpauth = value;
-        m_ftpauth.TrimRight('/'); // hack for trailing slashes being added from source
         if(m_ftpauth.IsEmpty())
           m_ftpauth = "any";
+      }
+      else if(name.Equals("active"))
+      {
+        m_ftpport = value;
+        if(value.IsEmpty())
+          m_ftpport = "-";
+      }
+      else if(name.Equals("pasvip"))
+      {        
+        if(value == "0")
+          m_ftppasvip = false;
+        else
+          m_ftppasvip = true;
       }
     }
 
@@ -545,13 +579,40 @@ __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
       else
         return -1;
 			break;
+    case SEEK_POSSIBLE:
+      return m_seekable ? 1 : 0;
+    default:
+      return -1;
 	}
 //  CLog::Log(LOGDEBUG, "FileCurl::Seek(%p) - current pos %i, new pos %i", this, (unsigned int)m_filePos, (unsigned int)nextPos);
   // see if nextPos is within our buffer
   if (!m_buffer.SkipBytes((int)(nextPos - m_filePos)))
   {
     // if we can't be sure we can seek, abort here
-//    if( !m_seekable ) return -1;
+    if( !m_seekable ) {
+      if((nextPos - m_filePos) < m_bufferSize)
+      {
+        int len = m_buffer.GetMaxReadSize();
+        m_filePos += len;
+        m_buffer.SkipBytes(len);
+        FillBuffer(m_bufferSize);
+
+        if(!m_buffer.SkipBytes((int)(nextPos - m_filePos)))
+        {
+          CLog::Log(LOGERROR, "%s - Failed to skip to position after having filled buffer", __FUNCTION__);
+          if(!m_buffer.SkipBytes(-len))
+            CLog::Log(LOGERROR, "%s - Failed to restore position after failed seek", __FUNCTION__);
+          else
+            m_filePos -= len;
+          return -1;
+        }
+        m_filePos = nextPos;
+        return m_filePos;
+      }
+
+      CLog::Log(LOGWARNING, "%s - Seek failed in nonseekable file", __FUNCTION__);
+      return -1;
+    }
 
     /* halt transaction */
     g_curlInterface.multi_remove_handle(m_multiHandle, m_easyHandle);

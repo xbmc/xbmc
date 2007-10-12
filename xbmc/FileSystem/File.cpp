@@ -511,7 +511,21 @@ __int64 CFile::Seek(__int64 iFilePosition, int iWhence)
 
   try
   {
-    return m_pFile->Seek(iFilePosition, iWhence);
+    if(iWhence == SEEK_POSSIBLE)
+    {
+      __int64 ret = m_pFile->Seek(iFilePosition, iWhence);
+      if(ret >= 0)
+        return ret;
+      else
+      {
+        if(m_pFile->GetLength() && m_pFile->Seek(0, SEEK_CUR) >= 0)
+          return 1;
+        else
+          return 0;
+      }
+    }
+    else
+      return m_pFile->Seek(iFilePosition, iWhence);
   }
 #ifndef _LINUX
   catch (const win32_exception &e) 

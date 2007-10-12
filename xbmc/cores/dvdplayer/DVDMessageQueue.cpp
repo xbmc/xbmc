@@ -92,11 +92,13 @@ MsgQueueReturnCode CDVDMessageQueue::Put(CDVDMsg* pMsg)
   if (!m_bInitialized)
   {
     CLog::Log(LOGWARNING, "CDVDMessageQueue::Put MSGQ_NOT_INITIALIZED");
+    pMsg->Release();
     return MSGQ_NOT_INITIALIZED;
   }
   if (!pMsg)
   {
     CLog::Log(LOGFATAL, "CDVDMessageQueue::Put MSGQ_INVALID_MSG");
+    pMsg->Release();
     return MSGQ_INVALID_MSG;
   }
   

@@ -845,6 +845,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\DynamicDll.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\Edl.cpp">
+				</File>
+				<File
 					RelativePath=".\xbmc\utils\Event.cpp">
 				</File>
 				<File
@@ -2518,6 +2521,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\DynamicDll.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\Edl.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\Event.h">

@@ -26,9 +26,10 @@ class IMsgSenderCallback;
 class CGUIMessage;
 
 #ifdef _XBOX
-#include "common/XBoxMouse.h"
+#include "common/Mouse.h"
 #elif defined(HAS_SDL)
-#include "common/SDLMouse.h"
+#include "common/Mouse.h"
+//#include "common/SDLMouse.h"
 #else
 #include "common/DirectInputMouse.h"
 #endif

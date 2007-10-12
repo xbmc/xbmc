@@ -135,6 +135,8 @@ __int64 CFileCDDA::Seek(__int64 iFilePosition, int iWhence /*=SEEK_SET*/)
     // end += pos
     m_lsnCurrent = m_lsnEnd + lsnPosition;
     break;
+  default:
+    return -1;
   }
 
   return ((m_lsnCurrent -m_lsnStart)*CDIO_CD_FRAMESIZE_RAW);

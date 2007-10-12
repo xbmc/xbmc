@@ -1,36 +1,28 @@
 #include "../include.h"
 #include "DirectInputMouse.h"
 #include "DirectInput.h"
-#include "../key.h"
-#include "../GraphicContext.h"
 
 #ifndef HAS_SDL
 
 #include "../../Tools/Win32/XBMC_PC.h"
 extern CXBMC_PC *g_xbmcPC;
 
-CMouse g_Mouse; // global
-
-CMouse::CMouse()
+CDirectInputMouse::CDirectInputMouse()
 {
   m_mouse = NULL;
-  m_bInitialized = false;
-  m_dwExclusiveWindowID = WINDOW_INVALID;
-  m_dwExclusiveControlID = WINDOW_INVALID;
-  m_dwState = MOUSE_STATE_NORMAL;
-  m_bActive = false;
 }
 
-CMouse::~CMouse()
+CDirectInputMouse::~CDirectInputMouse()
 {
   if (m_mouse)
     m_mouse->Release();
 }
 
-void CMouse::Initialize(HWND hWnd)
+void CDirectInputMouse::Initialize(void *appData)
 {
-  if (m_bInitialized)
-    return;
+  ASSERT(appData);
+
+  HWND hWnd = *(HWND *)appData;
 
   if (FAILED(g_directInput.Initialize(hWnd)))
     return;
@@ -43,15 +35,9 @@ void CMouse::Initialize(HWND hWnd)
   
   if (FAILED(m_mouse->SetCooperativeLevel(hWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE)))
     return;
-
-  m_bInitialized = true;
-
-//  Acquire();
-  // Set the default resolution (PAL)
-  SetResolution(720, 576, 1, 1);
 }
 
-void CMouse::Update()
+bool CDirectInputMouse::Update(MouseState &state)
 {
   bool bMouseMoved(false);
   DIMOUSESTATE mouseState;
@@ -59,138 +45,31 @@ void CMouse::Update()
   if (!m_mouse) return;
   if (S_OK == m_mouse->GetDeviceState(sizeof(DIMOUSESTATE), (LPVOID)&mouseState))
   {
-    cMickeyX = (char)mouseState.lX;
-    cMickeyY = (char)mouseState.lY;
-    cWheel = (char)mouseState.lZ;
+    state.dx = (char)mouseState.lX;
+    state.dy = (char)mouseState.lY;
+    state.dz = (char)mouseState.lZ;
     POINT point;
     if (!g_xbmcPC->GetCursorPos(point))
     { // outside our client rect
-      m_bActive = false;
-      return;
+      state.active = false;
+      return false;
     }
-    if (point.x < 0) point.x = 0; if (point.x > m_iMaxX) point.x = m_iMaxX;
-    if (point.y < 0) point.y = 0; if (point.y > m_iMaxY) point.y = m_iMaxY;
-    bMouseMoved = (posX != (float)point.x || posY != (float)point.y);
-    posX = (float)point.x;
-    posY = (float)point.y;
+    bMouseMoved = (state.x != (float)point.x || state.y != (float)point.y);
+    state.x = point.x;
+    state.y = point.y;
+
+    state.button[MOUSE_LEFT_BUTTON] = mouseState.rgbButtons[0] != 0;
+    state.button[MOUSE_RIGHT_BUTTON] = mouseState.rgbButtons[1] != 0;
+    state.button[MOUSE_MIDDLE_BUTTON] = mouseState.rgbButtons[2] != 0;
+    state.button[MOUSE_EXTRA_BUTTON1] = mouseState.rgbButtons[3] != 0;
+    state.button[MOUSE_EXTRA_BUTTON2] = false;
   }
-
-  // Check if we have an update...
-  if (bMouseMoved)
-  {
-//    posX += (int)((float)cMickeyX * m_fSpeedX); if (posX < 0) posX = 0; if (posX > m_iMaxX) posX = m_iMaxX;
-//    posY += (int)((float)cMickeyY * m_fSpeedY); if (posY < 0) posY = 0; if (posY > m_iMaxY) posY = m_iMaxY;
-    m_bActive = true;
-    dwLastActiveTime = timeGetTime();
-  }
-  else
-  {
-    cMickeyX = 0;
-    cMickeyY = 0;
-    cWheel = 0;
-    // check how long we've been inactive
-    if (timeGetTime() - dwLastActiveTime > MOUSE_ACTIVE_LENGTH) m_bActive = false;
-  }
-  // Fill in the public members
-  bDown[MOUSE_LEFT_BUTTON] = mouseState.rgbButtons[0] != 0;
-  bDown[MOUSE_RIGHT_BUTTON] = mouseState.rgbButtons[1] != 0;
-  bDown[MOUSE_MIDDLE_BUTTON] = mouseState.rgbButtons[2] != 0;
-  bDown[MOUSE_EXTRA_BUTTON1] = mouseState.rgbButtons[3] != 0;
-  bDown[MOUSE_EXTRA_BUTTON2] = false;
-  // Perform the click mapping (for single + double click detection)
-  bool bNothingDown = true;
-  for (int i = 0; i < 5; i++)
-  {
-    bClick[i] = false;
-    bDoubleClick[i] = false;
-    bHold[i] = false;
-    if (bDown[i])
-    {
-      bNothingDown = false;
-      if (bLastDown[i])
-      { // start of hold
-        bHold[i] = true;
-      }
-      else
-      {
-        if (timeGetTime() - dwLastClickTime[i] < MOUSE_DOUBLE_CLICK_LENGTH)
-        { // Double click
-          bDoubleClick[i] = true;
-        }
-        else
-        { // Mouse down
-        }
-      }
-    }
-    else
-    {
-      if (bLastDown[i])
-      { // Mouse up
-        bNothingDown = false;
-        bClick[i] = true;
-        dwLastClickTime[i] = timeGetTime();
-      }
-      else
-      { // no change
-      }
-    }
-    bLastDown[i] = bDown[i];
-  }
-  if (bNothingDown)
-  { // reset mouse pointer
-    SetState(MOUSE_STATE_NORMAL);
-  }
+  return bMouseMoved;
 }
 
-void CMouse::SetResolution(int iXmax, int iYmax, float fXspeed, float fYspeed)
-{
-  m_iMaxX = iXmax;
-  m_iMaxY = iYmax;
-  m_fSpeedX = fXspeed;
-  m_fSpeedY = fYspeed;
-  // reset the coordinates
-  posX = m_iMaxX * 0.5f;
-  posY = m_iMaxY * 0.5f;
-}
-
-// IsActive - returns true if we have been active in the last MOUSE_ACTIVE_LENGTH period
-bool CMouse::IsActive() const
-{
-  return m_bActive;
-}
-
-// turns off mouse activation
-void CMouse::SetInactive()
-{
-  m_bActive = false;
-}
-
-bool CMouse::HasMoved() const
-{
-  return (cMickeyX && cMickeyY);
-}
-
-void CMouse::SetExclusiveAccess(DWORD dwControlID, DWORD dwWindowID, const CPoint &point)
-{
-  m_dwExclusiveControlID = dwControlID;
-  m_dwExclusiveWindowID = dwWindowID;
-  // convert posX, posY to screen coords...
-  // NOTE: This relies on the window resolution having been set correctly beforehand in CGUIWindow::OnMouseAction()
-  CPoint mouseCoords(posX, posY);
-  g_graphicsContext.InvertFinalCoords(mouseCoords.x, mouseCoords.y);
-  m_exclusiveOffset = point - mouseCoords;
-}
-
-void CMouse::EndExclusiveAccess(DWORD dwControlID, DWORD dwWindowID)
-{
-  if (m_dwExclusiveControlID == dwControlID && m_dwExclusiveWindowID == dwWindowID)
-    SetExclusiveAccess(WINDOW_INVALID, WINDOW_INVALID, CPoint(0, 0));
-}
-
-void CMouse::Acquire()
+void CDirectInputMouse::Acquire()
 {
   if (m_mouse)
     m_mouse->Acquire();
 }
 
-#endif

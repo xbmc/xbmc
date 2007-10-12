@@ -145,6 +145,8 @@ __int64 CFileRTV::Seek(__int64 iFilePosition, int iWhence)
     // end += pos
     newpos = m_fileSize + iFilePosition;
     break;
+  default:
+    return -1;
   }
   // Return offset from beginning
   if (newpos < 0) newpos = 0;

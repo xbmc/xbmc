@@ -48,6 +48,8 @@ using namespace XFILE;
 #define CONTROL_MPAARATING          32
 #define CONTROL_TITLE_AND_YEAR      33
 #define CONTROL_ACTOR_IMAGE         34
+#define CONTROL_STUDIO              36
+
 
 #define CONTROL_IMAGE                3
 #define CONTROL_TEXTAREA             4
@@ -264,6 +266,9 @@ void CGUIWindowVideoInfo::Update()
   strTmp = m_movieItem.GetVideoInfoTag()->m_strDirector; strTmp.Trim();
   SetLabel(CONTROL_DIRECTOR, strTmp);
 
+  strTmp = m_movieItem.GetVideoInfoTag()->m_strStudio; strTmp.Trim();
+  SetLabel(CONTROL_STUDIO, strTmp);
+
   strTmp = m_movieItem.GetVideoInfoTag()->m_strWritingCredits; strTmp.Trim();
   SetLabel(CONTROL_CREDITS, strTmp);
 
@@ -395,7 +400,7 @@ bool CGUIWindowVideoInfo::OnAction(const CAction& action)
     if (iItem >= 0 || iItem < (int)m_vecStrCast.size())
     {
       CGUIImage* pImage = (CGUIImage*)GetControl(CONTROL_ACTOR_IMAGE);
-      if (pImage)
+      if (pImage && m_vecStrCast.size())
       {
         CFileItem item(m_vecStrCast[iItem].second);
         if (CFile::Exists(item.GetCachedActorThumb()))

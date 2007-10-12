@@ -268,7 +268,7 @@ public:
     bool m_displayRemoteCodes;
     CStdStringArray m_videoStackRegExps;
     CStdStringArray m_tvshowStackRegExps;
-    CStdStringArray m_tvshowTwoPartStackRegExps;
+    CStdString m_tvshowMultiPartStackRegExp;
     CStdStringArray m_pathSubstitutions;
     int m_remoteRepeat;
     float m_controllerDeadzone;
