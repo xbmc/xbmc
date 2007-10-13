@@ -340,7 +340,7 @@ FLOAT CALSADirectSound::GetDelay()
 //***********************************************************************************************
 DWORD CALSADirectSound::GetChunkLen()
 {
-  return m_BufferSize;
+  return m_dwPacketSize;
 }
 //***********************************************************************************************
 int CALSADirectSound::SetPlaySpeed(int iSpeed)
