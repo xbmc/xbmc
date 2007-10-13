@@ -45,12 +45,17 @@ void CLog::Log(int loglevel, const char *format, ... )
     {
       // g_stSettings.m_logFolder is initialized in the CSettings constructor to Q:
       // and if we are running from DVD, it's changed to T: in CApplication::Create()
-      CStdString LogFile;
-      CUtil::AddFileToFolder(g_stSettings.m_logFolder, "xbmc.log", LogFile);
+      CStdString strLogFile, strLogFileOld;
+      strLogFile.Format("%sxbmc.log", _P(g_stSettings.m_logFolder).c_str());
+      strLogFileOld.Format("%sxbmc.old.log", _P(g_stSettings.m_logFolder).c_str());
+
+      ::DeleteFile(strLogFileOld.c_str());
+      ::MoveFile(strLogFile.c_str(), strLogFileOld.c_str());
+
 #ifndef _LINUX      
-      fd = _fsopen(LogFile, "a+", _SH_DENYWR);
+      fd = _fsopen(strLogFile, "a+", _SH_DENYWR);
 #else
-      fd = fopen(LogFile, "a+");
+      fd = fopen(strLogFile, "a+");
 #endif
     }
       
