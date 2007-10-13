@@ -1208,7 +1208,7 @@ void CGLTexture::LoadToGPU()
       textureWidth = maxSize;
     }
   }
-  CLog::Log(LOGNOTICE, "Texture width x height: %d x %d", textureWidth, textureHeight);
+  //CLog::Log(LOGNOTICE, "Texture width x height: %d x %d", textureWidth, textureHeight);
   glTexImage2D(GL_TEXTURE_2D, 0, 4, textureWidth, textureHeight, 0,
                GL_BGRA, GL_UNSIGNED_BYTE, m_pixels);
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
