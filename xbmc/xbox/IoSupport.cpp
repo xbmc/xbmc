@@ -38,6 +38,7 @@
 #include <fcntl.h>
 #include <linux/cdrom.h>
 #include "../FileSystem/cdioSupport.h"
+#include "../DetectDVDType.h"
 #endif
 
 #define NT_STATUS_OBJECT_NAME_NOT_FOUND long(0xC0000000 | 0x0034)
@@ -274,8 +275,11 @@ DWORD CIoSupport::GetTrayState()
   }
 
   return dwTrayState;
-#endif
+#elif defined(_LINUX)
+  return MEDIA_DETECT::CDetectDVDMedia::DriveReady();
+#else
   return DRIVE_NOT_READY;
+#endif
 }
 
 HRESULT CIoSupport::Shutdown()
