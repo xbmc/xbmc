@@ -56,9 +56,10 @@ AC_CHECK_LIB([cdio], [main],, AC_MSG_ERROR(== Could not find a required library.
 AC_CHECK_LIB([dl], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux) )
 AC_CHECK_LIB([freetype], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
 AC_CHECK_LIB([fribidi], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
-AC_CHECK_LIB([lzo], [main],,
-  AC_CHECK_LIB([lzo2], [main],, AC_MSG_ERROR(== Could not find either liblzo or liblzo2 - one of these must be present))
-  )
+AC_CHECK_LIB([lzo], [main],, AC_MSG_ERROR(== Could not find liblzo))
+#AC_CHECK_LIB([lzo], [main],,
+#  AC_CHECK_LIB([lzo2], [main],, AC_MSG_ERROR(== Could not find either liblzo or liblzo2 - one of these must be present))
+#  )
 AC_CHECK_LIB([smbclient], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux) )
 AC_CHECK_LIB([sqlite3], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
 AC_CHECK_LIB([asound], [main])      # check for asound library, fedora
