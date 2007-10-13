@@ -159,6 +159,7 @@ extern "C"
   FUNCTION4(PyList_Size)
   FUNCTION4(_PyObject_New)
   FUNCTION4(PyLong_AsLong)
+  FUNCTION4(PyLong_AsLongLong)
 
   VA_FUNCTION12(PyErr_Format)
   /*void* PyErr_Format(void* a, void* b, ...)
@@ -277,6 +278,7 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PyList_Size)) &&
       dll.ResolveExport(DLL_FUNCTION(_PyObject_New)) &&
       dll.ResolveExport(DLL_FUNCTION(PyLong_AsLong)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyLong_AsLongLong)) &&
       dll.ResolveExport(DLL_VA_FUNCTION(PyErr_Format)) &&
       dll.ResolveExport(DLL_FUNCTION(PyUnicodeUCS2_AsUnicode)) &&
       dll.ResolveExport(DLL_FUNCTION(Py_MakePendingCalls)) &&
