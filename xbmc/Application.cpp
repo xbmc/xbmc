@@ -795,11 +795,6 @@ HRESULT CApplication::Create(HWND hWnd)
   g_stSettings.m_logFolder = logPath;
 #endif  
   CStdString strLogFile, strLogFileOld;
-  strLogFile.Format("%sxbmc.log", g_stSettings.m_logFolder);
-  strLogFileOld.Format("%sxbmc.old.log", g_stSettings.m_logFolder);
-
-  ::DeleteFile(strLogFileOld.c_str());
-  ::MoveFile(strLogFile.c_str(), strLogFileOld.c_str());
 
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
   CLog::Log(LOGNOTICE, "Starting XBoxMediaCenter.  Built on %s", __DATE__);
