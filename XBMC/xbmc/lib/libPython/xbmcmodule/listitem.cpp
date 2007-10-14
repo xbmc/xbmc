@@ -327,6 +327,9 @@ namespace PYXBMC
           self->item->GetVideoInfoTag()->m_fRating = (float)PyFloat_AsDouble(value);
         else if (strcmpi(PyString_AsString(key), "size") == 0)
           self->item->m_dwSize = (__int64)PyLong_AsLongLong(value);
+        else if (strcmpi(PyString_AsString(key), "overlay") == 0)
+          // TODO: Add a check for a valid overlay value
+          self->item->SetOverlayImage((CGUIListItem::GUIIconOverlay)PyInt_AsLong(value));
         else if (strcmpi(PyString_AsString(key), "cast") == 0 || strcmpi(PyString_AsString(key), "castandrole") == 0)
         {
           if (!PyObject_TypeCheck(value, &PyList_Type)) continue;
