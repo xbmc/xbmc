@@ -41,6 +41,8 @@
 #include "../DetectDVDType.h"
 #endif
 
+using namespace MEDIA_DETECT;
+
 #define NT_STATUS_OBJECT_NAME_NOT_FOUND long(0xC0000000 | 0x0034)
 #define NT_STATUS_VOLUME_DISMOUNTED     long(0xC0000000 | 0x026E)
 
@@ -249,6 +251,18 @@ HRESULT CIoSupport::EjectTray()
 {
 #ifdef _XBOX
   HalWriteSMBusValue(0x20, 0x0C, FALSE, 0);  // eject tray
+#endif
+#ifdef _LINUX
+  char* dvdDevice = CCdIoSupport::GetDeviceFileName();
+  if (strlen(dvdDevice) != 0)
+  {
+    int fd = open(dvdDevice, O_RDONLY | O_NONBLOCK);
+    if (fd)
+    {
+      ioctl(fd, CDROMEJECT, 0);
+      close(fd);
+    }
+  }
 #endif
   return S_OK;
 }
