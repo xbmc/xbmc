@@ -35,6 +35,10 @@
 #include "Application.h"
 #include "Util.h"
 #include "Picture.h"
+#if defined (LIBCDIO_VERSION_NUM) && (LIBCDIO_VERSION_NUM > 77)
+#define USING_NEW_CDIO
+#include <cdio/mmc.h>
+#endif
 
 using namespace XFILE;
 using namespace MEDIA_DETECT;
@@ -315,12 +319,14 @@ DWORD CDetectDVDMedia::GetTrayState()
   HalReadSMCTrayState(&m_dwTrayState, &m_dwTrayCount);
 #endif
 #ifdef _LINUX
-  
-  int fd = 0;
 
   char* dvdDevice = CCdIoSupport::GetDeviceFileName();
   if (strlen(dvdDevice) == 0)
     return DRIVE_NOT_READY;
+
+#ifndef USING_NEWCDIO
+
+  int fd = 0;
 
   fd = open(dvdDevice, O_RDONLY | O_NONBLOCK);
   if (fd<0)
@@ -359,27 +365,27 @@ DWORD CDetectDVDMedia::GetTrayState()
 
   close(fd);
 
-  // The following code should work with a newer version of libcdio than
-  // what comes with Ubuntu currently. So for now, it is commented out.
-  // In the future it can be used to maintain platform independence.
+#else
+
+  // The following code works with libcdio >= 0.78
+  // To enable it, download and install the latest version from
+  // http://www.gnu.org/software/libcdio/
   // -d4rk 06/27/07
 
-  /*
-  m_dwTrayState == TRAY_CLOSED_MEDIA_PRESENT;
+
+  m_dwTrayState = TRAY_CLOSED_MEDIA_PRESENT;
   CdIo_t* cdio = cdio_open(dvdDevice, DRIVER_UNKNOWN);
   if (cdio)
   {
     discmode_t discmode = CDIO_DISC_MODE_NO_INFO;
     int status = mmc_get_tray_status(cdio);
-    if (status)
-      discmode = mmc_get_discmode(cdio);
-    if (discmode==CDIO_DISC_MODE_NO_INFO || discmode==CDIO_DISC_MODE_ERROR)
-      discmode = 0;
+    if (status==0)
+      discmode = cdio_get_discmode(cdio);
     switch(status)
     {
     case 0: //closed
-      if (discmode==0)
-	m_dwTrayState = TRAY_CLOSED_NO_MEDIA;
+      if (discmode==CDIO_DISC_MODE_NO_INFO || discmode==CDIO_DISC_MODE_ERROR)
+        m_dwTrayState = TRAY_CLOSED_NO_MEDIA;
       else
 	m_dwTrayState = TRAY_CLOSED_MEDIA_PRESENT;
       break;
@@ -390,9 +396,11 @@ DWORD CDetectDVDMedia::GetTrayState()
     }
     cdio_destroy(cdio);
   }
-  */
+
   
-#endif
+#endif // USING_NEW_CDIO
+#endif // _LINUX
+
   if (m_dwTrayState == TRAY_CLOSED_MEDIA_PRESENT)
   {
     if (m_dwLastTrayState != TRAY_CLOSED_MEDIA_PRESENT)
