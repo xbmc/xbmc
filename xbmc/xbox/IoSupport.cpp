@@ -272,6 +272,18 @@ HRESULT CIoSupport::CloseTray()
 #ifdef _XBOX
   HalWriteSMBusValue(0x20, 0x0C, FALSE, 1);  // close tray
 #endif
+#ifdef _LINUX
+  char* dvdDevice = CCdIoSupport::GetDeviceFileName();
+  if (strlen(dvdDevice) != 0)
+  {
+    int fd = open(dvdDevice, O_RDONLY | O_NONBLOCK);
+    if (fd)
+    {
+      ioctl(fd, CDROMCLOSETRAY, 0);
+      close(fd);
+    }
+  }
+#endif
   return S_OK;
 }
 
