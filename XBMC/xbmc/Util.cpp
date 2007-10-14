@@ -1656,7 +1656,7 @@ bool CUtil::IsMultiPath(const CStdString& strPath)
 bool CUtil::IsDVD(const CStdString& strFile)
 {
   CStdString strFileLow = strFile; strFileLow.MakeLower();
-  if (strFileLow == "d:\\"  || strFileLow == "d:" || strFileLow == "iso9660://" || strFileLow == "udf://" || strFileLow == "dvd://1" )
+  if (strFileLow == "d:/"  || strFileLow == "d:\\"  || strFileLow == "d:" || strFileLow == "iso9660://" || strFileLow == "udf://" || strFileLow == "dvd://1" )
     return true;
 
   return false;
