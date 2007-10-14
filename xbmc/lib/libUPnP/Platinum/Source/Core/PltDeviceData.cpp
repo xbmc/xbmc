@@ -74,6 +74,11 @@ PLT_DeviceData::SetURLBase(const char* url_base)
         m_URLBasePath.SetLength(index+1);
     }
 
+    // set it on embedded devices
+    for (NPT_Cardinal i=0; i < m_EmbeddedDevices.GetItemCount(); i++) {
+        NPT_CHECK_FATAL(m_EmbeddedDevices[i]->SetURLBase(url_base));
+    }
+
     return NPT_SUCCESS;
 }    
 
@@ -301,6 +306,12 @@ PLT_DeviceData::SetDescriptionUrl(NPT_HttpUrl description_url)
         int index = m_URLBasePath.ReverseFind('/');
         if (index >= 0) m_URLBasePath.SetLength(index+1);
     }
+
+    // set it on embedded devices
+    for (NPT_Cardinal i=0; i < m_EmbeddedDevices.GetItemCount(); i++) {
+        NPT_CHECK_FATAL(m_EmbeddedDevices[i]->SetDescriptionUrl(description_url));
+    }
+
     return NPT_SUCCESS;
 }
 
@@ -394,7 +405,7 @@ PLT_DeviceData::SetDescriptionDevice(NPT_XmlElementNode* device_node)
         NPT_Array<NPT_XmlElementNode*> devices;
         PLT_XmlHelper::GetChildren(deviceList, devices, "device");
         for( int k = 0 ; k < (int)devices.GetItemCount(); k++) {    
-            PLT_DeviceDataReference device(new PLT_DeviceData());
+            PLT_DeviceDataReference device(new PLT_DeviceData(m_URLDescription));
             NPT_CHECK_SEVERE(device->SetDescriptionDevice(devices[k]));
             AddDevice(device);
         }
