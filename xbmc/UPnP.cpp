@@ -1060,18 +1060,18 @@ public:
 
         StringUtils::SecondsToTimeString((long)g_application.GetTotalTime(), buffer, TIME_FORMAT_HH_MM_SS);
         avt->SetStateVariable("CurrentTrackDuration", buffer.c_str(), publish);
+        
+        avt->SetStateVariable("AVTransportURI", g_application.CurrentFile().c_str(), publish);
+        avt->SetStateVariable("TransportPlaySpeed", (const char*)NPT_String::FromInteger(g_application.GetPlaySpeed()), publish);
 
-        // TODO - these states don't generate events, LastChange state needs to be fixed
         if (g_application.IsPlaying()) {
             avt->SetStateVariable("TransportState", "PLAYING", publish);
             avt->SetStateVariable("TransportStatus", "OK", publish);
-            avt->SetStateVariable("TransportPlaySpeed", "1", publish);
             avt->SetStateVariable("NumberOfTracks", "1", publish);
-            avt->SetStateVariable("CurrentTrack", "1", publish);
+            avt->SetStateVariable("CurrentTrack", "1", publish);            
         } else {
             avt->SetStateVariable("TransportState", "STOPPED", publish);
             avt->SetStateVariable("TransportStatus", "OK", publish);
-            avt->SetStateVariable("TransportPlaySpeed", "1", publish);
             avt->SetStateVariable("NumberOfTracks", "0", publish);
             avt->SetStateVariable("CurrentTrack", "0", publish);
         }
