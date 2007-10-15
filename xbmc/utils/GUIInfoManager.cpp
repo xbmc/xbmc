@@ -512,6 +512,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   {
     if (strTest.Equals("skin.currenttheme"))
       ret = SKIN_THEME;
+    else if (strTest.Equals("skin.currentcolourtheme"))
+      ret = SKIN_COLOUR_THEME;
     else if (strTest.Left(12).Equals("skin.string("))
     {
       int pos = strTest.Find(",");
@@ -1004,6 +1006,12 @@ CStdString CGUIInfoManager::GetLabel(int info)
       strLabel = g_localizeStrings.Get(15109);
     else
       strLabel = g_guiSettings.GetString("lookandfeel.skintheme");
+    break;
+  case SKIN_COLOUR_THEME:
+    if (g_guiSettings.GetString("lookandfeel.skincolors").Equals("skindefault"))
+      strLabel = g_localizeStrings.Get(15109);
+    else
+      strLabel = g_guiSettings.GetString("lookandfeel.skincolors");
     break;
 #ifdef HAS_LCD
   case LCD_PROGRESS_BAR:

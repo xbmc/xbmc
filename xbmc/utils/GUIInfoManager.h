@@ -335,6 +335,7 @@
 
 #define XLINK_KAI_USERNAME          750
 #define SKIN_THEME                  800
+#define SKIN_COLOUR_THEME           801
 
 #define SLIDE_INFO_START            900
 #define SLIDE_INFO_END              980
