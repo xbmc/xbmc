@@ -1071,7 +1071,6 @@ public:
             avt->SetStateVariable("CurrentTrack", "1", publish);            
         } else {
             avt->SetStateVariable("TransportState", "STOPPED", publish);
-            avt->SetStateVariable("TransportStatus", "OK", publish);
             avt->SetStateVariable("NumberOfTracks", "0", publish);
             avt->SetStateVariable("CurrentTrack", "0", publish);
         }
@@ -1123,9 +1122,16 @@ public:
         service->SetStateVariable("AVTransportURI", uri, false);
         service->SetStateVariable("AVTransportURIMetaData", meta, false);
         NPT_CHECK_SEVERE(action->SetArgumentsOutFromStateVariable());
+        service->NotifyChanged();
 
         g_applicationMessenger.MediaPlay((const char*)uri);
-        
+        if(!g_application.IsPlaying()) {
+          service->SetStateVariable("TransportState", "STOPPED", false);
+          service->SetStateVariable("TransportStatus", "TransportStatus", false);          
+        }        
+        service->NotifyChanged();
+
+        NPT_CHECK_SEVERE(action->SetArgumentsOutFromStateVariable());
         return NPT_SUCCESS;
     }
 
