@@ -33,8 +33,8 @@
 #define AV_STRINGIFY(s)         AV_TOSTRING(s)
 #define AV_TOSTRING(s) #s
 
-#define LIBAVCODEC_VERSION_INT  ((51<<16)+(44<<8)+0)
-#define LIBAVCODEC_VERSION      51.44.0
+#define LIBAVCODEC_VERSION_INT  ((51<<16)+(45<<8)+0)
+#define LIBAVCODEC_VERSION      51.45.0
 #define LIBAVCODEC_BUILD        LIBAVCODEC_VERSION_INT
 
 #define LIBAVCODEC_IDENT        "Lavc" AV_STRINGIFY(LIBAVCODEC_VERSION)
@@ -166,6 +166,8 @@ enum CodecID {
     CODEC_ID_BETHSOFTVID,
     CODEC_ID_PTX,
     CODEC_ID_TXD,
+    CODEC_ID_VP6A,
+    CODEC_ID_AMV,
 
     /* various PCM "codecs" */
     CODEC_ID_PCM_S16LE= 0x10000,
@@ -207,6 +209,7 @@ enum CodecID {
     CODEC_ID_ADPCM_SBPRO_3,
     CODEC_ID_ADPCM_SBPRO_2,
     CODEC_ID_ADPCM_THP,
+    CODEC_ID_ADPCM_IMA_AMV,
 
     /* AMR */
     CODEC_ID_AMR_NB= 0x12000,
@@ -2432,7 +2435,7 @@ void avcodec_init(void);
 void register_avcodec(AVCodec *format);
 
 /**
- * Finds an encoder with a matching codec ID.
+ * Finds a registered encoder with a matching codec ID.
  *
  * @param id CodecID of the requested encoder
  * @return An encoder if one was found, NULL otherwise.
@@ -2440,7 +2443,7 @@ void register_avcodec(AVCodec *format);
 AVCodec *avcodec_find_encoder(enum CodecID id);
 
 /**
- * Finds an encoder with the specified name.
+ * Finds a registered encoder with the specified name.
  *
  * @param name name of the requested encoder
  * @return An encoder if one was found, NULL otherwise.
@@ -2448,7 +2451,7 @@ AVCodec *avcodec_find_encoder(enum CodecID id);
 AVCodec *avcodec_find_encoder_by_name(const char *name);
 
 /**
- * Finds a decoder with a matching codec ID.
+ * Finds a registered decoder with a matching codec ID.
  *
  * @param id CodecID of the requested decoder
  * @return A decoder if one was found, NULL otherwise.
@@ -2456,7 +2459,7 @@ AVCodec *avcodec_find_encoder_by_name(const char *name);
 AVCodec *avcodec_find_decoder(enum CodecID id);
 
 /**
- * Finds an decoder with the specified name.
+ * Finds a registered decoder with the specified name.
  *
  * @param name name of the requested decoder
  * @return A decoder if one was found, NULL otherwise.
@@ -2802,8 +2805,6 @@ typedef struct AVBitStreamFilter {
     void (*close)(AVBitStreamFilterContext *bsfc);
     struct AVBitStreamFilter *next;
 } AVBitStreamFilter;
-
-extern AVBitStreamFilter *av_first_bitstream_filter;
 
 void av_register_bitstream_filter(AVBitStreamFilter *bsf);
 AVBitStreamFilterContext *av_bitstream_filter_init(const char *name);
