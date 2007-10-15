@@ -102,19 +102,23 @@ namespace PYXBMC
   PyObject* PlayList_Add(PlayList *self, PyObject *args)
   {
     char *cFileName = NULL;
-    char *cDescription = NULL;
+    PyObject *pDescription = NULL;
     int iDuration = 0;
     CPlayList::CPlayListItem Item;
 
-    if (!PyArg_ParseTuple(args, "s|sl", &cFileName, &cDescription, &iDuration))	return NULL;
+    if (!PyArg_ParseTuple(args, "s|Ol", &cFileName, &pDescription, &iDuration))	return NULL;
 
     Item.SetFileName(cFileName);
+    string strDescription;
+    if (!PyGetUnicodeString(strDescription, pDescription))
+      Item.SetDescription(cFileName);
+    else
+      Item.SetDescription(strDescription);
 
-    if (cDescription) Item.SetDescription(cDescription);
-    else Item.SetDescription(cFileName);
-
-    if (iDuration) Item.SetDuration(iDuration);
-    else Item.SetDuration(0);
+    if (iDuration)
+      Item.SetDuration(iDuration);
+    else
+      Item.SetDuration(0);
 
     self->pPlayList->Add(Item);
 
