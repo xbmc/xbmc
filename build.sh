@@ -26,6 +26,7 @@ usage() {
   echo "   CONFIRM                          : Don't ask about anything"
 #  echo "   SHOWMAKE                         : Don't suppress make output"
 ## SHOWMAKE requires changes to Makefile.in
+  echo "   NOCONFIG                         : Don't automatically run configure"
   echo "   CONFIGOPT=<config-option>        : Option to pass to configure."
   echo "                                      One option per CONFIGOPT=,"
   echo "                                      can pass more than one"
@@ -87,7 +88,7 @@ parse_args() {
         ;;
       NODEBUG)
         (( DEBUG=0 ))
-	CONFIGOPTS="$CONFIGOPTS --disable-debug"
+	      CONFIGOPTS="$CONFIGOPTS --disable-debug"
         ;;
       WEB)
         if [[ -e $PAR ]]
@@ -97,6 +98,9 @@ parse_args() {
           echo "  $PAR doesn't exist!"
           exit
         fi
+        ;;
+      NOCONFIG)
+        CONFIGURE=0
         ;;
       *)
         echo " Invalid option $OPT"
@@ -240,73 +244,21 @@ compile() {
   fi
 }
 
-backup() {
-  (( FAILED=0 ))
-  echo " Found old XBMC build. Attempting backup."
-  echo "  If something goes wrong check $BACKUPDIR."
-  mkdir -p "$BACKUPDIR" &> /dev/null
-
-  for DIR in UserData scripts skin
-  do
-    STATUS="..."
-    printf "   %s : %-30.30s" "${DIR}" "${STATUS}"
-    if ! [[ -e "$BUILDDIR/$DIR" ]]
-    then
-      STATUS="Not found!"
-    else
-      if [[ $DIR = "skin" ]]
-      then
-        (( NSKINS=0 ))
-        _IFS=$IFS
-        IFS=$'\n\t'
-        SKINS=$(ls "${BUILDDIR}/skin")
-        mkdir -p "$BACKUPDIR/skin" &> /dev/null
-        for S in $SKINS
-        do
-          if ! [[ $S = "Project Mayhem III" ]]
-          then
-            (( NSKINS+=1 ))
-            cp -rf "$BUILDDIR/skin/$S" "$BACKUPDIR/skin/" &> /dev/null
-            if (($?))
-            then
-              FAILED=1
-            fi
-          fi
-        done
-        IFS=$_IFS
-        STATUS="Found $NSKINS 3rd party skins."
-      else
-        cp -rf "${BUILDDIR}/$DIR" "$BACKUPDIR" &> /dev/null
-        if (($?))
-        then
-          STATUS="Failed."
-          FAILED=1
-        else
-          STATUS="Success."
-        fi
-      fi
-    fi
-    printf "\r   %s : %-30.30s\n" "${DIR}" "${STATUS}"
-  done
-
-  if ((FAILED))
-  then
-    echo " Backup failed!"
-    echo " Please manually backup UserData and scripts dirs"
-    echo "  then delete ${BUILDDIR}."
-    exit
-  fi
-}
-
 copy() {
+  BACKUPDIR="${BUILDDIR}.bak"
   if [[ -e "$BUILDDIR" ]]
   then
-    backup
-    echo " Removing old ${BUILDDIR}."
-    rm -rf "$BUILDDIR"  &> /dev/null
+    #backup
+    echo " Backing up old ${BUILDDIR} to ${BACKUPDIR}."
+    if [[ -e "$BACKUPDIR" ]] 
+    then
+      echo "  Removing old $BACKUPDIR first."
+      rm -rf "$BACKUPDIR" &> /dev/null
+    fi
+    mv "$BUILDDIR" "${BACKUPDIR}"  &> /dev/null
     if [[ $? != 0 ]]
     then
-      echo " You don't have permission to remove"
+      echo " You don't have permission to move"
       echo "  the old $BUILDDIR. Please fix this"
       echo "  and rerun with options NOUPDATE"
       echo "  and NOCOMPILE"
@@ -324,10 +276,6 @@ copy() {
     if [[ "$I" == "skin" ]]
     then
       mkdir -p "${BUILDDIR}/skin/Project Mayhem III" &> /dev/null
-      if [[ -e "$BACKUPDIR/skin" ]]
-      then
-        cp -rf "$BACKUPDIR/skin/"* "$BUILDDIR/skin/" &> /dev/null
-      fi
       for J in $(ls "${SOURCEDIR}/skin/Project Mayhem III")
       do
         if [[ "$J" == "media" ]]
@@ -346,14 +294,6 @@ copy() {
       else
         cp -rf "${SOURCEDIR}/${I}" "$BUILDDIR" &> /dev/null
       fi
-    elif [[ "$I" == "scripts" ]] 
-    then
-      if [[ -e "$BACKUPDIR/scripts" ]]
-      then
-        cp -rf "$BACKUPDIR/scripts" "$BUILDDIR" &> /dev/null
-      else
-        cp -rf "${SOURCEDIR}/${I}" "$BUILDDIR" &> /dev/null
-      fi
     elif [[ "$I" == "web" ]]
     then
       RAR="$(which unrar)"
@@ -368,16 +308,27 @@ copy() {
       fi
     elif [[ "$I" == "XboxMediaCenter" ]]
     then
-      mv "${SOURCEDIR}/${I}" "$BUILDDIR" &> /dev/null
+      if [[ -e "${SOURCEDIR}/$I" ]]
+      then
+        mv "${SOURCEDIR}/${I}" "$BUILDDIR" &> /dev/null
+      elif [[ -e "${BACKUPDIR}/${I}" ]]
+      then
+        echo
+        echo " Couldn't find new binary, using old one from backup!"
+        cp -f "${BACKUPDIR}/${I}" "${BUILDDIR}/${I}" &> /dev/null
+      else 
+        ls "..." &> /dev/null  # force $? to be non-zero
+      fi
     else
       cp -rf "${SOURCEDIR}/${I}" "$BUILDDIR" &> /dev/null
     fi
     error
   done
+  
   if ! (( DEBUG ))
-    then
-      echo " Stripping binary."
-      strip "$BUILDDIR/XboxMediaCenter"
+  then
+    echo " Stripping binary."
+    strip "$BUILDDIR/XboxMediaCenter"
   fi
 
   printf "\r Copying %-16.16s\n" "complete!" 
@@ -392,10 +343,33 @@ cleanup() {
   then
     printf "\r Cleaning %-60.60s" $1
     rm -rf $I/src $I/.svn $I/*.DLL $I/*.dll &> /dev/null
-    for I in $(ls -d $1/* 2> /dev/null)
+    for I in $1/* #$(ls -d $1/* 2> /dev/null)
     do
       cleanup "${I}"
     done
+  fi
+}
+
+merge() {
+  if [[ -d "$BACKUPDIR/$1" ]]
+  then
+    if [[ -e "$BUILDDIR/$1" ]]
+    then
+      for I in $(ls -d $BACKUPDIR/$1/* 2> /dev/null)
+      do
+        I=${I#"${BACKUPDIR}/"}
+        merge "$I"
+      done
+    else
+      echo "  Merged ${1#"${BACKUPDIR}/"}"
+      cp -rf "$BACKUPDIR/$1" "$BUILDDIR/$1" &> /dev/null
+    fi
+  else
+    if ! [[ -e "$BUILDDIR/$1" ]]
+    then
+      echo "  Merged ${1#"${BACKUPDIR}/"}"
+      cp -f "$BACKUPDIR/$1" "$BUILDDIR/$1" &> /dev/null
+    fi
   fi
 }
 
@@ -406,9 +380,6 @@ fix() {
     echo "  Renaming userdata to UserData."
     mv "${BUILDDIR}/userdata" "${BUILDDIR}/UserData"
   fi
-
-#  echo "  Renaming fonts to Fonts."
-#  mv "${BUILDDIR}/skin/Project Mayhem III/fonts" "${BUILDDIR}/skin/Project Mayhem III/Fonts"
 
   echo "  Renaming arial.ttf to Arial.ttf."
   mv  "${BUILDDIR}/media/Fonts/arial.ttf" "${BUILDDIR}/media/Fonts/Arial.ttf"
@@ -421,6 +392,17 @@ fix() {
   cleanup "$BUILDDIR"
   printf "\r Cleaning %-60.60s\n" "complete!"
   IFS=$_IFS
+  if [[ -e "$BACKUPDIR" ]]
+  then
+    echo " Merging 3rd party files from backup."
+    for I in $(ls $BACKUPDIR) #screensavers scripts skin sounds system visualisations
+    do
+      IFS=$'\t\n'
+      merge "$I"
+      IFS=$_IFS
+    done
+    echo " Merge complete!"
+  fi
 }
 
 SOURCEDIR=${0%/*}
@@ -448,6 +430,8 @@ then
   usage
 fi
 
+echo -ne "]0;Building XBMC"
+
 touch "/root/.test" &> /dev/null
 
 if ! (( $? )) 
@@ -465,8 +449,6 @@ then
     exit
   fi
 fi
-
-echo -ne "]0;Building XBMC"
 
 if [[ -e ~/.xbmc-build-settings ]]
 then
@@ -534,12 +516,6 @@ else
 fi
 
 echo " All done!"
-
-if [[ -e "$BACKUPDIR" ]]
-then
-  echo " Removing backups."
-  rm -rf "$BACKUPDIR" &> /dev/null
-fi
 
 if (( COMPILE && !CONFIRM))
 then
