@@ -228,39 +228,6 @@
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
-			<control type="image">
-				<posx>55</posx>
-				<posy>340</posy>
-				<width>625</width>
-				<height>5</height>
-				<texture>separator.png</texture>
-				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
-			</control>
-			<control type="textbox" id="4">
-				<description>textarea</description>
-				<posx>200</posx>
-				<posy>352</posy>
-				<width>480</width>
-				<height>175</height>
-				<onleft>5</onleft>
-				<onright>50</onright>
-				<onup>5</onup>
-				<ondown>5</ondown>
-				<spinposx>430</spinposx>
-				<spinposy>158</spinposy>
-				<visible>!control.isvisible(50) + !container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
-			</control>
-			<control type="image" id="34">
-				<description>Actor image</description>
-				<posx>586</posx>
-				<posy>355</posy>
-				<width>85</width>
-				<height>164</height>
-				<texture>DefaultActorBig.png</texture>
-				<aspectratio>keep</aspectratio>
-				<align>center</align>
-				<visible>control.isvisible(50) + !container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
-			</control>
 		</control>
 		<control type="group">
 			<control type="label" id="1">
@@ -274,9 +241,9 @@
 			</control>
 			<control type="image" id="3">
 				<description>TV Show Banner image</description>
-				<posx>200</posx>
+				<posx>60</posx>
 				<posy>100</posy>
-				<width>450</width>
+				<width>615</width>
 				<height>115</height>
 				<texture>-</texture>
 				<aspectratio>keep</aspectratio>
@@ -284,16 +251,16 @@
 			</control>
 			<control type="fadelabel" id="20">
 				<description>TV Show Title value</description>
-				<posx>200</posx>
+				<posx>60</posx>
 				<posy>225</posy>
-				<width>290</width>
+				<width>615</width>
 				<label>-</label>
 				<font>special13</font>
 				<visible>container.content(tvshows)</visible>
 			</control>
 			<control type="label" id="1">
 				<description>Episodes txt</description>
-				<posx>200</posx>
+				<posx>60</posx>
 				<posy>255</posy>
 				<width>90</width>
 				<label>$LOCALIZE[20360] :</label>
@@ -302,16 +269,16 @@
 			</control>
 			<control type="label" id="1">
 				<description>Episodes Value</description>
-				<posx>300</posx>
+				<posx>170</posx>
 				<posy>255</posy>
-				<width>400</width>
+				<width>550</width>
 				<label>$INFO[listitem.episode]</label>
 				<font>font13</font>
 				<visible>container.content(tvshows)</visible>
 			</control>
 			<control type="label" id="1">
 				<description>First Aired txt</description>
-				<posx>200</posx>
+				<posx>60</posx>
 				<posy>280</posy>
 				<width>90</width>
 				<label>$LOCALIZE[20376] :</label>
@@ -320,16 +287,16 @@
 			</control>
 			<control type="label" id="24">
 				<description>First Aired Value</description>
-				<posx>300</posx>
+				<posx>170</posx>
 				<posy>280</posy>
-				<width>400</width>
+				<width>550</width>
 				<label>-</label>
 				<font>font13</font>
 				<visible>container.content(tvshows)</visible>
 			</control>
 			<control type="label" id="1">
 				<description>Genre txt</description>
-				<posx>200</posx>
+				<posx>60</posx>
 				<posy>305</posy>
 				<width>90</width>
 				<label>174</label>
@@ -338,45 +305,12 @@
 			</control>
 			<control type="label" id="23">
 				<description>Genre value</description>
-				<posx>300</posx>
+				<posx>170</posx>
 				<posy>305</posy>
-				<width>400</width>
+				<width>550</width>
 				<label></label>
 				<font>font13</font>
 				<visible>container.content(tvshows)</visible>
-			</control>
-			<control type="image" id="34">
-				<description>Actor image</description>
-				<posx>591</posx>
-				<posy>355</posy>
-				<width>85</width>
-				<height>164</height>
-				<texture>DefaultActorBig.png</texture>
-				<aspectratio>keep</aspectratio>
-				<align>center</align>
-				<visible>control.isvisible(50) + container.content(tvshows)</visible>
-			</control>
-			<control type="image">
-				<posx>190</posx>
-				<posy>337</posy>
-				<width>510</width>
-				<height>10</height>
-				<texture>separator.png</texture>
-				<visible>container.content(tvshows)</visible>
-			</control>
-			<control type="textbox" id="4">
-				<description>textarea</description>
-				<posx>200</posx>
-				<posy>350</posy>
-				<width>480</width>
-				<height>200</height>
-				<onleft>5</onleft>
-				<onright>50</onright>
-				<onup>5</onup>
-				<ondown>5</ondown>
-				<spinposx>430</spinposx>
-				<spinposy>195</spinposy>
-				<visible>!control.isvisible(50) + container.content(tvshows)</visible>
 			</control>
 		</control>
 		<control type="group">
@@ -389,17 +323,6 @@
 				<font>special13</font>
 				<visible>container.content(episodes)</visible>
 			</control>
-<!--			<control type="image">
-				<description>folder image</description>
-				<posx>20</posx>
-				<posy>0</posy>
-				<width>720</width>
-				<height>86</height>
-				<aspectratio align="left">keep</aspectratio>
-				<texture diffuse="Wide_Icon_Diffuse.png" />
-				<info>container.folderthumb</info>
-				<visible>container.content(episodes)</visible>
-			</control> -->
 			<control type="image">
 				<description>Cover image</description>
 				<posx>55</posx>
@@ -434,7 +357,7 @@
 				<description>Title value</description>
 				<posx>200</posx>
 				<posy>140</posy>
-				<width>330</width>
+				<width>375</width>
 				<label>-</label>
 				<font>special13</font>
 				<visible>container.content(episodes)</visible>
@@ -506,7 +429,7 @@
 				<description>Episode value</description>
 				<posx>300</posx>
 				<posy>178</posy>
-				<width>230</width>
+				<width>375</width>
 				<info>Listitem.Episode</info>
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
@@ -515,7 +438,7 @@
 				<description>Sesson value</description>
 				<posx>300</posx>
 				<posy>195</posy>
-				<width>230</width>
+				<width>375</width>
 				<info>Listitem.Season</info>
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
@@ -524,7 +447,7 @@
 				<description>Director value</description>
 				<posx>300</posx>
 				<posy>215</posy>
-				<width>230</width>
+				<width>375</width>
 				<label>-</label>
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
@@ -542,7 +465,7 @@
 				<description>Genre value</description>
 				<posx>300</posx>
 				<posy>255</posy>
-				<width>230</width>
+				<width>375</width>
 				<label>-</label>
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
@@ -551,7 +474,7 @@
 				<description>Year value</description>
 				<posx>300</posx>
 				<posy>275</posy>
-				<width>252</width>
+				<width>375</width>
 				<label>-</label>
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
@@ -560,43 +483,10 @@
 				<description>Rating and votes value</description>
 				<posx>300</posx>
 				<posy>295</posy>
-				<width>230</width>
+				<width>375</width>
 				<label>-</label>
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
-			</control>
-			<control type="image" id="34">
-				<description>Actor image</description>
-				<posx>591</posx>
-				<posy>355</posy>
-				<width>85</width>
-				<height>164</height>
-				<texture>DefaultActorBig.png</texture>
-				<aspectratio>keep</aspectratio>
-				<align>center</align>
-				<visible>control.isvisible(50) + container.content(episodes)</visible>
-			</control>
-			<control type="image">
-				<posx>190</posx>
-				<posy>337</posy>
-				<width>510</width>
-				<height>10</height>
-				<texture>separator.png</texture>
-				<visible>!container.content(tvshows) + container.content(episodes)</visible>
-			</control>
-			<control type="textbox" id="4">
-				<description>textarea</description>
-				<posx>200</posx>
-				<posy>350</posy>
-				<width>480</width>
-				<height>200</height>
-				<onleft>5</onleft>
-				<onright>50</onright>
-				<onup>5</onup>
-				<ondown>5</ondown>
-				<spinposx>430</spinposx>
-				<spinposy>195</spinposy>
-				<visible>!control.isvisible(50) + container.content(episodes)</visible>
 			</control>
 		</control>
 		<control type="group">
@@ -611,7 +501,7 @@
 			</control>
 			<control type="image">
 				<description>Cover image</description>
-				<posx>555</posx>
+				<posx>55</posx>
 				<posy>100</posy>
 				<width>130</width>
 				<height>232</height>
@@ -623,7 +513,7 @@
 				<description>Title value</description>
 				<posx>200</posx>
 				<posy>110</posy>
-				<width>330</width>
+				<width>375</width>
 				<info>Listitem.Title</info>
 				<font>special13</font>
 				<visible>container.content(musicvideos)</visible>
@@ -695,7 +585,7 @@
 				<description>Artist value</description>
 				<posx>300</posx>
 				<posy>160</posy>
-				<width>230</width>
+				<width>375</width>
 				<info>Listitem.Artist</info>
 				<font>font12</font>
 				<visible>container.content(musicvideos)</visible>
@@ -704,7 +594,7 @@
 				<description>Album value</description>
 				<posx>300</posx>
 				<posy>185</posy>
-				<width>230</width>
+				<width>375</width>
 				<info>Listitem.Album</info>
 				<font>font12</font>
 				<visible>container.content(musicvideos)</visible>
@@ -713,7 +603,7 @@
 				<description>Genre value</description>
 				<posx>300</posx>
 				<posy>210</posy>
-				<width>230</width>
+				<width>375</width>
 				<info>Listitem.Genre</info>
 				<font>font12</font>
 				<visible>container.content(musicvideos)</visible>
@@ -722,7 +612,7 @@
 				<description>Year value</description>
 				<posx>300</posx>
 				<posy>235</posy>
-				<width>230</width>
+				<width>375</width>
 				<info>Listitem.Year</info>
 				<font>font12</font>
 				<visible>container.content(musicvideos)</visible>
@@ -731,7 +621,7 @@
 				<description>Runtime value</description>
 				<posx>300</posx>
 				<posy>260</posy>
-				<width>230</width>
+				<width>375</width>
 				<info>Listitem.Duration</info>
 				<font>font12</font>
 				<visible>container.content(musicvideos)</visible>
@@ -740,7 +630,7 @@
 				<description>Director value</description>
 				<posx>300</posx>
 				<posy>285</posy>
-				<width>252</width>
+				<width>375</width>
 				<info>Listitem.Director</info>
 				<font>font12</font>
 				<visible>container.content(musicvideos)</visible>
@@ -749,108 +639,136 @@
 				<description>Studio value</description>
 				<posx>300</posx>
 				<posy>310</posy>
-				<width>230</width>
+				<width>375</width>
 				<info>Listitem.Studio</info>
 				<font>font12</font>
 				<visible>container.content(musicvideos)</visible>
 			</control>
-			<control type="textbox" id="4">
-				<description>textarea</description>
-				<posx>200</posx>
-				<posy>350</posy>
-				<width>480</width>
-				<height>200</height>
-				<onleft>5</onleft>
-				<onright>50</onright>
-				<onup>5</onup>
-				<ondown>5</ondown>
-				<spinposx>430</spinposx>
-				<spinposy>195</spinposy>
-				<visible>!control.isvisible(50) + container.content(musicvideos)</visible>
-			</control>
 		</control>
 		<control type="group" id="9000">
-		<posy>-22</posy>
-		<control type="button" id ="5">
-			<description>Plot/Cast</description>
-			<posx>55</posx>
-			<posy>372</posy>
-			<width>135</width>
-			<height>32</height>
-			<label>206</label>
-			<font>font10</font>
-			<align>center</align>
-			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
-			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
-			<onleft>50</onleft>
-			<onright>4</onright>
-			<onup>10</onup>
-			<ondown>8</ondown>
+			<posy>-22</posy>
+			<control type="button" id ="5">
+				<description>Plot/Cast</description>
+				<posx>55</posx>
+				<posy>372</posy>
+				<width>135</width>
+				<height>32</height>
+				<label>206</label>
+				<font>font10</font>
+				<align>center</align>
+				<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+				<onleft>50</onleft>
+				<onright>4</onright>
+				<onup>10</onup>
+				<ondown>8</ondown>
+			</control>
+			<control type="button" id ="8">
+				<description>Play</description>
+				<posx>55</posx>
+				<posy>407</posy>
+				<width>135</width>
+				<height>32</height>
+				<label>208</label>
+				<font>font10</font>
+				<align>center</align>
+				<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+				<onleft>4</onleft>
+				<onright>4</onright>
+				<onup>5</onup>
+				<ondown>9</ondown>
+			</control>
+			<control type="button" id ="9">
+				<description>Resume</description>
+				<posx>55</posx>
+				<posy>442</posy>
+				<width>135</width>
+				<height>32</height>
+				<label>13404</label>
+				<font>font10</font>
+				<align>center</align>
+				<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+				<onleft>4</onleft>
+				<onright>4</onright>
+				<onup>8</onup>
+				<ondown>6</ondown>
+			</control>
+			<control type="button" id ="6">
+				<description>Refresh</description>
+				<posx>55</posx>
+				<posy>477</posy>
+				<width>135</width>
+				<height>32</height>
+				<label>184</label>
+				<font>font10</font>
+				<align>center</align>
+				<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+				<onleft>4</onleft>
+				<onright>4</onright>
+				<onup>9</onup>
+				<ondown>10</ondown>
+			</control>
+			<control type="button" id ="10">
+				<description>Get Thumb</description>
+				<posx>55</posx>
+				<posy>512</posy>
+				<width>135</width>
+				<height>32</height>
+				<label>13405</label>
+				<font>font10</font>
+				<align>center</align>
+				<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+				<onleft>4</onleft>
+				<onright>4</onright>
+				<onup>6</onup>
+				<ondown>5</ondown>
+			</control>
 		</control>
-		<control type="button" id ="8">
-			<description>Play</description>
-			<posx>55</posx>
-			<posy>407</posy>
-			<width>135</width>
-			<height>32</height>
-			<label>208</label>
-			<font>font10</font>
+		<control type="image">
+			<description>Actor Cover rectangle</description>
+			<posx>586</posx>
+			<posy>350</posy>
+			<width>104</width>
+			<height>174</height>
+			<texture>blue_rectangle_music.png</texture>
+			<aspectratio>stretch</aspectratio>
+			<visible>control.isvisible(50)</visible>
+		</control>
+		<control type="image" id="34">
+			<description>Actor image</description>
+			<posx>591</posx>
+			<posy>355</posy>
+			<width>94</width>
+			<height>164</height>
+			<texture>DefaultActorBig.png</texture>
+			<aspectratio>keep</aspectratio>
 			<align>center</align>
-			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
-			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
-			<onleft>4</onleft>
-			<onright>4</onright>
+			<visible>control.isvisible(50)</visible>
+		</control>
+		<control type="image">
+			<posx>190</posx>
+			<posy>337</posy>
+			<width>510</width>
+			<height>10</height>
+			<texture>separator.png</texture>
+		</control>
+		<control type="textbox" id="4">
+			<description>textarea</description>
+			<posx>200</posx>
+			<posy>350</posy>
+			<width>480</width>
+			<height>180</height>
+			<onleft>5</onleft>
+			<onright>50</onright>
 			<onup>5</onup>
-			<ondown>9</ondown>
-		</control>
-		<control type="button" id ="9">
-			<description>Resume</description>
-			<posx>55</posx>
-			<posy>442</posy>
-			<width>135</width>
-			<height>32</height>
-			<label>13404</label>
-			<font>font10</font>
-			<align>center</align>
-			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
-			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
-			<onleft>4</onleft>
-			<onright>4</onright>
-			<onup>8</onup>
-			<ondown>6</ondown>
-		</control>
-		<control type="button" id ="6">
-			<description>Refresh</description>
-			<posx>55</posx>
-			<posy>477</posy>
-			<width>135</width>
-			<height>32</height>
-			<label>184</label>
-			<font>font10</font>
-			<align>center</align>
-			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
-			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
-			<onleft>4</onleft>
-			<onright>4</onright>
-			<onup>9</onup>
-			<ondown>10</ondown>
-		</control>
-		<control type="button" id ="10">
-			<description>Get Thumb</description>
-			<posx>55</posx>
-			<posy>512</posy>
-			<width>135</width>
-			<height>32</height>
-			<label>13405</label>
-			<font>font10</font>
-			<align>center</align>
-			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
-			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
-			<onleft>4</onleft>
-			<onright>4</onright>
-			<onup>6</onup>
 			<ondown>5</ondown>
-		</control>
+			<spinposx>430</spinposx>
+			<spinposy>160</spinposy>
+			<visible>!control.isvisible(50)</visible>
 		</control>
 		<include>DialogInfoViewCommonPageControls</include>
 		<include>DialogInfoViewOldListViewCommons</include>
