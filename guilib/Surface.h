@@ -79,6 +79,8 @@ public:
   bool m_bOK;
   bool m_bVSync;
   int m_iVSyncMode;
+  int m_iGLMajVer;
+  int m_iGLMinVer;
   short int m_iRedSize;
   short int m_iGreenSize;
   short int m_iBlueSize;
