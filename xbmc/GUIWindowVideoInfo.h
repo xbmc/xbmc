@@ -22,7 +22,7 @@ public:
 
   const CStdString &GetThumbnail() const { return m_movieItem.GetThumbnailImage(); };
   virtual CFileItem* GetCurrentListItem(int offset = 0) { return &m_movieItem; }
-
+  virtual bool HasListItems() const { return true; };
 protected:
   virtual void OnInitWindow();
   void Refresh();

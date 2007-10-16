@@ -4131,13 +4131,13 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("pagedown"))
   {
     int id = atoi(parameter.c_str());
-    CGUIMessage message(GUI_MSG_PAGE_DOWN, m_gWindowManager.GetActiveWindow(), id);
+    CGUIMessage message(GUI_MSG_PAGE_DOWN, m_gWindowManager.GetFocusedWindow(), id);
     g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("pageup"))
   {
     int id = atoi(parameter.c_str());
-    CGUIMessage message(GUI_MSG_PAGE_UP, m_gWindowManager.GetActiveWindow(), id);
+    CGUIMessage message(GUI_MSG_PAGE_UP, m_gWindowManager.GetFocusedWindow(), id);
     g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("updatelibrary"))
