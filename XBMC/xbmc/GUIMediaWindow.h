@@ -17,9 +17,10 @@ public:
   virtual void OnWindowUnload();
   virtual void OnInitWindow();
   virtual bool IsMediaWindow() const { return true; };
-  virtual CFileItem *GetCurrentListItem(int offset = 0);
   const CFileItemList &CurrentDirectory() const { return m_vecItems;};
   int GetViewContainerID() const { return m_viewControl.GetCurrentControl(); };
+  virtual bool HasListItems() const { return true; };
+  virtual CFileItem *GetCurrentListItem(int offset = 0);
 
 protected:
   CGUIControl *GetFirstFocusableControl(int id);
