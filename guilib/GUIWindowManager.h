@@ -65,6 +65,7 @@ public:
   void DispatchThreadMessages();
   void AddMsgTarget( IMsgTargetCallback* pMsgTarget );
   int GetActiveWindow() const;
+  int GetFocusedWindow() const;
   bool HasModalDialog() const;
   bool HasDialogOnScreen() const;
   void UpdateModelessVisibility();
