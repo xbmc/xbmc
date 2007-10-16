@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "GUILargeTextureManager.h"
 #include "Picture.h"
+#include "Surface.h"
 
 CGUILargeTextureManager g_largeTextureManager;
 
@@ -23,6 +24,15 @@ void CGUILargeTextureManager::Process()
   // lock item list
   CSingleLock lock(m_listSection);
   m_running = true;
+  Surface::CSurface* pBuffer = new Surface::CSurface(256, 256, false, g_graphicsContext.getScreenSurface(), g_graphicsContext.getScreenSurface(), NULL, false, false, false);
+  if (!pBuffer || (!pBuffer->IsValid()))
+  {
+    CLog::Log(LOGERROR, "GL: Could not create surface for Large Texture Manager");
+  }
+  else
+  {
+    g_graphicsContext.ValidateSurface(pBuffer);
+  }
   while (m_queued.size() && !m_bStop)
   { // load the top item in the queue
     // take a copy of the details required for the load, as
@@ -73,6 +83,11 @@ void CGUILargeTextureManager::Process()
     lock.Leave();
     Sleep(1);
     lock.Enter();
+  }
+  if (pBuffer)
+  {
+    delete pBuffer;
+    pBuffer = NULL;
   }
   m_running = false;
 }
