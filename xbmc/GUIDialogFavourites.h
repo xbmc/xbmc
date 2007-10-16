@@ -12,7 +12,7 @@ public:
 
   virtual CFileItem *GetCurrentListItem(int offset = 0);
 
-  virtual bool IsMediaWindow() const { return true; };
+  virtual bool HasListItems() const { return true; };
 
 protected:
   int GetSelectedItem();
