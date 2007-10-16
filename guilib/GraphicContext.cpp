@@ -1127,7 +1127,9 @@ bool CGraphicContext::ValidateSurface(CSurface* dest)
       }
       m_surfaces[tid] = surface;
       return true;
-    } else {
+    } 
+    else 
+    {
       m_surfaces[tid] = dest;
       dest->MakeCurrent();
     }

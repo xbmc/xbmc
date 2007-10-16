@@ -50,6 +50,8 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   m_pShared = shared;
   m_bVSync = false;
   m_iVSyncMode = 0;
+  m_iGLMajVer = 0;
+  m_iGLMinVer = 0;
 
 #ifdef HAS_GLX
   m_glWindow = 0;
@@ -226,17 +228,17 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     {
       if (glewInit()!=GLEW_OK)
       {
-              CLog::Log(LOGERROR, "GL: Critical Error. Could not initialise GL Extension Wrangler Library");
+        CLog::Log(LOGERROR, "GL: Critical Error. Could not initialise GL Extension Wrangler Library");
       }
       else
       {
-              b_glewInit = true;
-              if (s_glVendor.length()==0)
-              {
-                s_glVendor = (const char*)glGetString(GL_VENDOR);
-                s_glRenderer = (const char*)glGetString(GL_RENDERER);
-                CLog::Log(LOGINFO, "GL: OpenGL Vendor String: %s", s_glVendor.c_str());
-              }
+        b_glewInit = true;
+        if (s_glVendor.length()==0)
+        {
+          s_glVendor = (const char*)glGetString(GL_VENDOR);
+          s_glRenderer = (const char*)glGetString(GL_RENDERER);
+          CLog::Log(LOGINFO, "GL: OpenGL Vendor String: %s", s_glVendor.c_str());
+        }
       }
     }
     m_bOK = true;
@@ -286,6 +288,10 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   {
     m_bOK = true;
   }
+#endif
+#if defined(HAS_SDL_OPENGL)
+  int temp;
+  GetGLVersion(temp, temp);
 #endif
 }
 #endif
@@ -594,7 +600,12 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight)
 #ifdef HAS_SDL_OPENGL
 void CSurface::GetGLVersion(int& maj, int& min)
 {
-  const char* ver = (const char*)glGetString(GL_VERSION);
-  sscanf(ver, "%d.%d", &maj, &min);
+  if (m_iGLMajVer==0)
+  {
+    const char* ver = (const char*)glGetString(GL_VERSION);
+    sscanf(ver, "%d.%d", &m_iGLMajVer, &m_iGLMinVer);
+  }
+  maj = m_iGLMajVer;
+  min = m_iGLMinVer;
 }
 #endif
