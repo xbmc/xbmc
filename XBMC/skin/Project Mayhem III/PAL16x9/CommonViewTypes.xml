@@ -2525,7 +2525,7 @@
 				<orientation>vertical</orientation>
 			        <pagecontrol>61</pagecontrol>
 			        <scrolltime>200</scrolltime>
-				<visible>!Skin.HasSetting(UseScrollbars) + !container.content(musicvideos)</visible>
+				<visible>!Skin.HasSetting(UseScrollbars)</visible>
 			        <itemlayout width="250" height="29">
 				    <control type="image">
 				        <posx>0</posx>
@@ -2590,7 +2590,7 @@
 				<orientation>vertical</orientation>
 			        <pagecontrol>61</pagecontrol>
 			        <scrolltime>200</scrolltime>
-				<visible>Skin.HasSetting(UseScrollbars) + !container.content(musicvideos)</visible>
+				<visible>Skin.HasSetting(UseScrollbars)</visible>
 			        <itemlayout width="250" height="29">
 				    <control type="image">
 				        <posx>0</posx>
@@ -2719,7 +2719,6 @@
 			<texturefocus border="4">scrollbar_arrow_up_focus.png</texturefocus>
 			<texturenofocus border="4">scrollbar_arrow_up.png</texturenofocus>
 			<visible>Control.IsVisible(61) + !Skin.HasSetting(UseScrollbars)</visible>
-			<visible>!container.content(musicvideos)</visible>
 		</control>
 		<control type="button">
 			<posx>560</posx>
@@ -2730,12 +2729,11 @@
 			<texturefocus border="4">scrollbar_arrow_down_focus.png</texturefocus>
 			<texturenofocus border="4">scrollbar_arrow_down.png</texturenofocus>
 			<visible>Control.IsVisible(61) + !Skin.HasSetting(UseScrollbars)</visible>
-			<visible>!container.content(musicvideos)</visible>
 		</control>
 		<control type="scrollbar" id="61">
 			<posx>560</posx>
 			<posy>370</posy>
-			<include>scrollbar_width_dialog</include>
+			<include>scrollbar_width</include>
 			<height>133</height>
 			<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
 			<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
@@ -2747,7 +2745,6 @@
 			<showonepage>true</showonepage>
 			<orientation>vertical</orientation>
 			<visible>!Skin.HasSetting(UseScrollbars) + Control.IsVisible(50)</visible>
-			<visible>!container.content(musicvideos)</visible>
 		</control>
 		<control type="spincontrol" id="61">
 			<description>Next page button</description>
@@ -2761,10 +2758,6 @@
 			<onup>50</onup>
 			<showonepage>true</showonepage>
 			<visible>Skin.HasSetting(UseScrollbars) + Control.IsVisible(50)</visible>
-			<visible>!container.content(musicvideos)</visible>
 		</control>
-	</include>
-	<include name="scrollbar_width_dialog">
-		<width>16</width>
 	</include>
 </includes>
