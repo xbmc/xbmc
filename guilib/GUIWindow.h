@@ -106,6 +106,7 @@ public:
   virtual bool IsDialogRunning() const { return false; };
   virtual bool IsModalDialog() const { return false; };
   virtual bool IsMediaWindow() const { return false; };
+  virtual bool HasListItems() const { return false; };
   virtual CFileItem *GetCurrentListItem(int offset = 0) { return NULL; };
   virtual int GetViewContainerID() const { return 0; };
   void GetContainers(vector<CGUIControl *> &containers) const;
