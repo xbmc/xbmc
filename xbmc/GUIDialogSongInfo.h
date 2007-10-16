@@ -12,7 +12,7 @@ public:
   virtual bool OnAction(const CAction &action);
   bool NeedsUpdate() const { return m_needsUpdate; };
 
-  virtual bool IsMediaWindow() const { return true; };
+  virtual bool HasListItems() const { return true; };
   virtual CFileItem* GetCurrentListItem(int offset = 0);
 protected:
   bool DownloadThumbnail(const CStdString &thumbFile);
