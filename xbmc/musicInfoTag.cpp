@@ -203,6 +203,12 @@ void CMusicInfoTag::SetGenre(const CStdString& strGenre)
   m_strGenre.TrimRight("\r");
 }
 
+void CMusicInfoTag::SetYear(int year)
+{
+  memset(&m_dwReleaseDate, 0, sizeof(m_dwReleaseDate) );
+  m_dwReleaseDate.wYear = year;
+}
+
 void CMusicInfoTag::SetReleaseDate(SYSTEMTIME& dateTime)
 {
   memcpy(&m_dwReleaseDate, &dateTime, sizeof(m_dwReleaseDate) );
