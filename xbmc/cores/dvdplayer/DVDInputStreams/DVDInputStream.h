@@ -30,7 +30,7 @@ public:
   bool HasExtension(char* sExtension);
   
   int GetBlockSize() { return DVDSTREAM_BLOCK_SIZE_FILE; }
-  bool IsStreamType(DVDStreamType type) { return m_streamType == type; }
+  bool IsStreamType(DVDStreamType type) const { return m_streamType == type; }
   virtual bool IsEOF() = 0;  
   virtual int GetCurrentGroupId() { return 0; }
 

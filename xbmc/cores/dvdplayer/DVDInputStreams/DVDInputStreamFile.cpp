@@ -43,10 +43,6 @@ bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content)
     return false;
   }
   m_eof = true;
-  // if we are caching - allow some buffer to fill up.
-  if (nFlags & READ_CACHED)
-    Sleep(3000);
-
   return true;
 }
 

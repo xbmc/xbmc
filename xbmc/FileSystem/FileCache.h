@@ -40,6 +40,8 @@ namespace XFILE
 		CStdString		m_sourcePath;
 		CEvent			m_seekEvent;
 		CEvent			m_seekEnded;
+		int				m_nBytesToBuffer;
+		time_t			m_tmLastBuffering;
 		__int64			m_nSeekResult;
 		__int64			m_seekPos;
 		__int64			m_readPos;

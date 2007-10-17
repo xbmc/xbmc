@@ -510,7 +510,9 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
      m_httpheader.Parse("Content-Type: audio/mpeg\r\n");
   }
 
-  m_seekable = false;
+  //m_seekable = false;
+  m_seekable = true; // hack. some streams will support seek but not return correct http headers (many apple movie trailers for example).
+                     // we should try seeking anyway.
   if(m_fileSize > 0)
   {
     if(url2.GetProtocol().Equals("http") || url2.GetProtocol().Equals("https"))
