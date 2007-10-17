@@ -44,6 +44,7 @@ public:
   void SetAlbum(const CStdString& strAlbum) ;
   void SetAlbumArtist(const CStdString& strAlbumArtist);
   void SetGenre(const CStdString& strGenre) ;
+  void SetYear(int year);
   void SetReleaseDate(SYSTEMTIME& dateTime);
   void SetTrackNumber(int iTrack);
   void SetPartOfSet(int m_iPartOfSet);
