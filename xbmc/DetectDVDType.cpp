@@ -36,7 +36,7 @@
 #include "Util.h"
 #include "Picture.h"
 #if defined (LIBCDIO_VERSION_NUM) && (LIBCDIO_VERSION_NUM > 77)
-#define USING_NEW_CDIO
+#define USING_CDIO78
 #include <cdio/mmc.h>
 #endif
 
@@ -324,7 +324,7 @@ DWORD CDetectDVDMedia::GetTrayState()
   if (strlen(dvdDevice) == 0)
     return DRIVE_NOT_READY;
 
-#ifndef USING_NEWCDIO
+#ifndef USING_CDIO78
 
   int fd = 0;
 
@@ -398,7 +398,7 @@ DWORD CDetectDVDMedia::GetTrayState()
   }
 
   
-#endif // USING_NEW_CDIO
+#endif // USING_CDIO78
 #endif // _LINUX
 
   if (m_dwTrayState == TRAY_CLOSED_MEDIA_PRESENT)
