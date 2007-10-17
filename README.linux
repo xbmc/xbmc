@@ -149,10 +149,11 @@ SDL_VIDEO_FULLSCREEN_HEAD to the display no.  which you want to use.
 For e.g. "SDL_VIDEO_FULLSCREEN_HEAD=1 ./XboxMediaCenter" to tell XBMC 
 to use display no.1.
 
-Note: Nvidia Twinview users should be aware that X treats the twinviewed displays as the same head.
-If you want to run fullscreen XBMC on one display and start it from the other you must configure X with
-two "Device" sections against the same physical card. See chapter 16 of the Nvidia user guide for 
-information on how to do this.
+Note: Nvidia Twinview users should be aware that X treats the
+twinviewed displays as the same head.  If you want to run fullscreen
+XBMC on one display and start it from the other you must configure X
+with two "Device" sections against the same physical card. See chapter
+16 of the Nvidia user guide for information on how to do this.
 
 ----------------------------------------
 6.3 Channel downmixing
@@ -172,6 +173,20 @@ can be found in same folder as this README, so:
 .3 you can edit the file and change the downmix setup by changing the
    "ttable" values. The values range from 0.0 to 1.0 and are actaully the
    volume pct from the original channels volume.
+
+----------------------------------------
+6.4 Fullscreen Mouse Sensitivity
+----------------------------------------
+
+If you find that your mouse is not sensitive enough in fullscreen, set
+the environment variable SDL_VIDEO_X11_MOUSEACCEL to adjust mouse
+acceleration. From SDL docs:
+
+  "For X11, SDL_VIDEO_X11_MOUSEACCEL sets the mouse acceleration. The
+  value should be a string on the form: n/d/t where n and d are the
+  acceleration numerator/denumerators (so mouse movement is
+  accelerated by n/d), and t is the threshold above which acceleration
+  applies (counted as number of pixels the mouse moves at once)."
 
 
 -----------------------------------------------------------------------------
