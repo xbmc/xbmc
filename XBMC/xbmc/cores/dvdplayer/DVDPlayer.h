@@ -68,8 +68,8 @@ public:
   virtual bool IsPlaying() const;
   virtual void Pause();
   virtual bool IsPaused() const;
-  virtual bool HasVideo();
-  virtual bool HasAudio();
+  virtual bool HasVideo() const;
+  virtual bool HasAudio() const;
   virtual void ToggleFrameDrop();
   virtual bool CanSeek();
   virtual void Seek(bool bPlus, bool bLargeStep);
@@ -123,6 +123,9 @@ public:
 
 
   virtual int OnDVDNavResult(void* pData, int iMessage);
+
+  virtual bool IsCaching() const ;
+  virtual int GetCacheLevel() const ; 
   
 private:
   void LockStreams()                                            { EnterCriticalSection(&m_critStreamSection); }
@@ -177,6 +180,11 @@ private:
 
   double m_lastpts; // holds last display pts during ff/rw operations
   
+  bool   m_bCaching;
+  time_t m_tmLastSeek;
+  time_t m_tmStartCaching;
+  time_t m_tmCachingTime;
+
   // classes
   CDVDPlayerVideo m_dvdPlayerVideo; // video part
   CDVDPlayerAudio m_dvdPlayerAudio; // audio part

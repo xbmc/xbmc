@@ -18,6 +18,14 @@
 
 #include "../../FileSystem/cdioSupport.h"
 
+// buffering is time driven and not size driven.
+// when a/v queues are empty, we start buffering.
+// first buffer for INITIAL_BUFFERING_TIME seconds and each time increase buffering time in INCREASE_BUFFERING_TIME seconds.
+// never buffer more than  MAX_BUFFERING_TIME seconds.
+#define INITIAL_BUFFERING_TIME 5
+#define INCREASE_BUFFERING_TIME 1
+#define MAX_BUFFERING_TIME 10
+
 CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
     : IPlayer(callback),
       CThread(),
@@ -27,6 +35,11 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
 {
   m_pDemuxer = NULL;
   m_pInputStream = NULL;
+
+  m_bCaching = false;
+  m_tmLastSeek = time(NULL);
+  m_tmCachingTime = INITIAL_BUFFERING_TIME;
+  m_tmStartCaching = time(NULL);
 
   m_hReadyEvent = CreateEvent(NULL, true, false, NULL);
 
@@ -142,7 +155,7 @@ bool CDVDPlayer::CloseFile()
 
   // tell demuxer to abort
   if(m_pDemuxer)
-      m_pDemuxer->Abort();
+    m_pDemuxer->Abort();
 
   CLog::Log(LOGNOTICE, "DVDPlayer: waiting for threads to exit");
 
@@ -301,6 +314,19 @@ void CDVDPlayer::Process()
 
       // read a data frame from stream.
       CDVDDemux::DemuxPacket* pPacket = m_pDemuxer->Read();
+ 
+      if (!m_bCaching && time(NULL) - m_tmLastSeek > 2 && m_playSpeed == DVD_PLAYSPEED_NORMAL && g_graphicsContext.IsFullScreenVideo())
+      {
+        m_bCaching = ((!HasVideo() || m_dvdPlayerVideo.m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0) && (!HasAudio() ||m_dvdPlayerAudio.m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0));
+
+        if (m_bCaching)
+        {
+          CLog::Log(LOGNOTICE,"%s - start caching for %u seconds.", __FUNCTION__, (UINT)m_tmCachingTime);
+          m_dvdPlayerAudio.m_messageQueue.SetCaching(true);
+          m_dvdPlayerVideo.m_messageQueue.SetCaching(true);
+          m_tmStartCaching = time(NULL);
+        }
+      }
 
       if (!pPacket)
       {
@@ -452,7 +478,7 @@ void CDVDPlayer::Process()
         break;
       }
 
-      UnlockStreams();
+      UnlockStreams();   
     }
   }
 }
@@ -923,6 +949,23 @@ void CDVDPlayer::HandleMessages()
     pMsg->Release();
     ret = m_messenger.Get(&pMsg, 0);
   }
+
+  // check if we should end buffering.
+  if (m_bCaching) 
+  {
+    if (time(NULL) - m_tmStartCaching >= m_tmCachingTime)
+    {
+      CLog::Log(LOGNOTICE,"%s - caching is done. continue playback.", __FUNCTION__);
+      m_bCaching = false;
+      m_dvdPlayerAudio.m_messageQueue.SetCaching(false);
+      m_dvdPlayerVideo.m_messageQueue.SetCaching(false);        
+
+      m_tmCachingTime += INCREASE_BUFFERING_TIME;
+      if (m_tmCachingTime > MAX_BUFFERING_TIME)
+        m_tmCachingTime = MAX_BUFFERING_TIME;
+    }
+  }
+ 
 }
 
 void CDVDPlayer::SetPlaySpeed(int speed)
@@ -945,7 +988,7 @@ bool CDVDPlayer::IsPaused() const
   return (m_playSpeed == DVD_PLAYSPEED_PAUSE);
 }
 
-bool CDVDPlayer::HasVideo()
+bool CDVDPlayer::HasVideo() const
 {
   if (m_pInputStream)
   {
@@ -954,7 +997,7 @@ bool CDVDPlayer::HasVideo()
   return false;
 }
 
-bool CDVDPlayer::HasAudio()
+bool CDVDPlayer::HasAudio() const
 {
   return (m_CurrentAudio.id >= 0);
 }
@@ -1000,6 +1043,8 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
       SeekPercentage(percent);
     }
   }
+
+  m_tmLastSeek = time(NULL);
 }
 
 void CDVDPlayer::ToggleFrameDrop()
@@ -1064,6 +1109,7 @@ void CDVDPlayer::SeekPercentage(float iPercent)
     return;
 
   SeekTime((__int64)(iTotalTime * iPercent / 100));
+  m_tmLastSeek = time(NULL);
 }
 
 float CDVDPlayer::GetPercentage()
@@ -1291,6 +1337,7 @@ void CDVDPlayer::SeekTime(__int64 iTime)
     iTime = 0;
   m_messenger.Put(new CDVDMsgPlayerSeek((int)iTime, false));
   SyncronizeDemuxer(100);
+  m_tmLastSeek = time(NULL);
 }
 
 // return the time in milliseconds
@@ -1978,3 +2025,14 @@ bool CDVDPlayer::AddSubtitle(const CStdString& strSubPath)
   return true;
 }
 
+bool CDVDPlayer::IsCaching() const 
+{
+  return m_bCaching || ((!HasVideo() ||m_dvdPlayerVideo.m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0) && (!HasAudio() || m_dvdPlayerAudio.m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0));
+}
+
+int CDVDPlayer::GetCacheLevel() const 
+{
+  double dElapsed = time(NULL) - m_tmStartCaching;
+  double dPct = (dElapsed / (double)m_tmCachingTime) * 100.0;
+  return (int)dPct;
+}
