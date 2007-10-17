@@ -20,7 +20,7 @@
 
 #include <math.h>
 
-#define CACHE_BUFFER_SIZE (1048576 * 1)
+#define CACHE_BUFFER_SIZE (1048576 * 5)
 
 using namespace XFILE;
 

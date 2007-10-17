@@ -26,7 +26,7 @@ class CDVDMessageQueue
 {
 public:
   CDVDMessageQueue();
-  ~CDVDMessageQueue();
+  virtual ~CDVDMessageQueue();
   
   void  Init();
   void  Flush();
@@ -42,27 +42,33 @@ public:
   MsgQueueReturnCode Get(CDVDMsg** pMsg, unsigned int iTimeoutInMilliSeconds);
 
   
-  int GetDataSize()                     { return m_iDataSize; }
-  unsigned GetPacketCount(CDVDMsg::Message type);
-  bool RecievedAbortRequest()           { return m_bAbortRequest; }
-  void WaitUntilEmpty()                 { while (m_pFirstMessage) Sleep(1); }
+  int GetDataSize() const                     { return m_iDataSize; }
+  unsigned GetPacketCount(CDVDMsg::Message type) const;
+  bool RecievedAbortRequest() const           { return m_bAbortRequest; }
+  void WaitUntilEmpty()                       { while (m_pFirstMessage) Sleep(1); }
   
   // non messagequeue related functions
-  bool IsFull()                         { return (m_iDataSize >= m_iMaxDataSize); }
-  void SetMaxDataSize(int iMaxDataSize) { m_iMaxDataSize = iMaxDataSize; }
-  int GetMaxDataSize()                  { return m_iMaxDataSize; }
-  bool IsInited()                       { return m_bInitialized; }
+  bool IsFull() const                         { return (m_iDataSize >= m_iMaxDataSize); }
+  void SetMaxDataSize(int iMaxDataSize)       { m_iMaxDataSize = iMaxDataSize; }
+  int GetMaxDataSize() const                  { return m_iMaxDataSize; }
+  bool IsInited() const                       { return m_bInitialized; }
+
+  // when caching - Get will not return (to allow queue to fill up)
+  void SetCaching(bool bCaching)              { m_bCaching = bCaching; }
+  bool IsCaching()                            { return m_bCaching ; }
+
 private:
 
   HANDLE m_hEvent;
-  CRITICAL_SECTION m_critSection;
+  mutable CRITICAL_SECTION m_critSection;
   
   DVDMessageListItem* m_pFirstMessage;
   DVDMessageListItem* m_pLastMessage;
   
   bool m_bAbortRequest;
   bool m_bInitialized;
-  
+  bool m_bCaching;
+
   int m_iDataSize;
   int m_iMaxDataSize;
 };

@@ -10,6 +10,7 @@ CDVDMessageQueue::CDVDMessageQueue()
   m_iDataSize     = 0;
   m_bAbortRequest = false;
   m_bInitialized  = false;
+  m_bCaching      = false;
   
   InitializeCriticalSection(&m_critSection);
   m_hEvent = CreateEvent(NULL, true, false, NULL);
@@ -98,7 +99,6 @@ MsgQueueReturnCode CDVDMessageQueue::Put(CDVDMsg* pMsg)
   if (!pMsg)
   {
     CLog::Log(LOGFATAL, "CDVDMessageQueue::Put MSGQ_INVALID_MSG");
-    pMsg->Release();
     return MSGQ_INVALID_MSG;
   }
   
@@ -151,7 +151,7 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
   while (!m_bAbortRequest)
   {
     msgItem = m_pFirstMessage;
-    if (msgItem)
+    if (msgItem && !m_bCaching)
     {
       m_pFirstMessage = msgItem->pNext;
       
@@ -197,7 +197,7 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
 }
 
 
-unsigned CDVDMessageQueue::GetPacketCount(CDVDMsg::Message type)
+unsigned CDVDMessageQueue::GetPacketCount(CDVDMsg::Message type) const
 {    
   if (!m_bInitialized)
     return 0;
