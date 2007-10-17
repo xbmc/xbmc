@@ -44,8 +44,8 @@ public:
   virtual bool IsPlaying() const { return m_bIsPlaying; }
   virtual void Pause();
   virtual bool IsPaused() const { return m_bPaused; }
-  virtual bool HasVideo() { return false; }
-  virtual bool HasAudio() { return true; }
+  virtual bool HasVideo() const { return false; }
+  virtual bool HasAudio() const { return true; }
   virtual void ToggleFrameDrop() {}
   virtual bool CanSeek();
   virtual void Seek(bool bPlus = true, bool bLargeStep = false) {}

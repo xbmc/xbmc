@@ -7,14 +7,24 @@
 
 #include "CacheMemBuffer.h"
 #include "../utils/SingleLock.h"
+#include "../Application.h"
 
 using namespace XFILE;
-
+ 
 #define READ_CACHE_CHUNK_SIZE (32*1024)
 
-// when buffering we will wait for BUFFER_BYTES amount of bytes. need to experiment about the size and
-// in general implement better buffering mechanism. 
-#define BUFFER_BYTES (64*1024)
+//
+// buffering logic:
+// when not enough data is available, we will buffer untill INITIAL_BUFFER_BYTES bytes are available.
+// each time we buffer, we increment the amount of bytes we wait for in INCREMENT_BUFFER_BYTES.
+// however, we never exceed MAX_BUFFER_BYTES.
+//
+// whenever a whole minute passes by without buffering we decrease the amount of bytes we wait for
+// untill we are at INITIAL_BUFFER_BYTES again.
+//
+#define INITIAL_BUFFER_BYTES (128*1024)
+#define INCREMENT_BUFFER_BYTES (128*1024)
+#define MAX_BUFFER_BYTES (4 * (INITIAL_BUFFER_BYTES))
 
 CFileCache::CFileCache()
 {
@@ -22,6 +32,8 @@ CFileCache::CFileCache()
    m_nSeekResult = 0;
    m_seekPos = 0;
    m_readPos = 0;
+   m_nBytesToBuffer = INITIAL_BUFFER_BYTES;
+   m_tmLastBuffering = time(NULL);
    m_pCache = new CacheMemBuffer;
 }
 
@@ -60,7 +72,9 @@ IFile *CFileCache::GetFileImp() {
 bool CFileCache::Open(const CURL& url, bool bBinary)
 {
 	Close();
- 
+
+    CSingleLock lock(m_sync);
+
 	CLog::Log(LOGDEBUG,"CFileCache::Open - opening <%s> using cache", url.GetFileName().c_str());
 
 	if (!m_pCache) {
@@ -85,6 +99,8 @@ bool CFileCache::Open(const CURL& url, bool bBinary)
 }
 
 bool CFileCache::Attach(IFile *pFile) {
+    CSingleLock lock(m_sync);
+
 	if (!pFile || !m_pCache)
 		return false;
 
@@ -201,6 +217,7 @@ int CFileCache::Stat(const CURL& url, struct __stat64* buffer)
 
 unsigned int CFileCache::Read(void* lpBuf, __int64 uiBufSize)
 {
+    CSingleLock lock(m_sync);
 	if (!m_pCache) {
 		CLog::Log(LOGERROR,"CFileCache::Read - sanity failed. no cache strategy!");
 		return 0;
@@ -212,25 +229,52 @@ unsigned int CFileCache::Read(void* lpBuf, __int64 uiBufSize)
 	// we need to see that we can satisfy the callers request.
 	if (!m_pCache->IsEndOfInput())
 	{
-		int nAvail = m_pCache->WaitForData(uiBufSize, 5000);
+		// check if we have enough data
+		int nAvail = m_pCache->WaitForData(uiBufSize, 0);
 		if (nAvail < uiBufSize)
 		{
-			CLog::Log(LOGWARNING,"CFileCache::Read - can't satisfy request to read %lld bytes (available: %d bytes). stream decode may encounter problems", uiBufSize, nAvail);
+			// buffering 
+			int nMinutesFromLastBuffering = (time(NULL) - m_tmLastBuffering) / 60;
+			m_nBytesToBuffer -= (nMinutesFromLastBuffering * INCREMENT_BUFFER_BYTES);
+			if (m_nBytesToBuffer < INITIAL_BUFFER_BYTES)
+				m_nBytesToBuffer = INITIAL_BUFFER_BYTES;
+
+			int nToBuffer = m_nBytesToBuffer;
+			if (nToBuffer < uiBufSize)
+				nToBuffer = uiBufSize;
+
+			CLog::Log(LOGDEBUG,"%s, not enough data available. buffering. waiting for %d bytes", __FUNCTION__, nToBuffer);
+			while (!m_bStop && !m_pCache->IsEndOfInput() && nAvail < nToBuffer)
+			{
+				nAvail = m_pCache->WaitForData(nToBuffer, 500);
+			}
+
+			m_tmLastBuffering = time(NULL);
+			m_nBytesToBuffer += INCREMENT_BUFFER_BYTES;
+			if (m_nBytesToBuffer > MAX_BUFFER_BYTES)
+				m_nBytesToBuffer = MAX_BUFFER_BYTES;
 		}
 	}
 
-	unsigned int uiBytes = 0;
-	int iRc = m_pCache->ReadFromCache((char *)lpBuf, (size_t)uiBufSize);
-	if (iRc > 0)
+    if (!m_bStop)
     {
+	  unsigned int uiBytes = 0;
+	  int iRc = m_pCache->ReadFromCache((char *)lpBuf, (size_t)uiBufSize);
+	  if (iRc > 0)
+      {
 		uiBytes = iRc;
         m_readPos += uiBytes;
+      }
+	  return uiBytes;
     }
-	return uiBytes;
+
+    return CACHE_RC_ERROR;
 }
 
 __int64 CFileCache::Seek(__int64 iFilePosition, int iWhence)
 {  
+    CSingleLock lock(m_sync);
+
 	if (!m_pCache) {
 		CLog::Log(LOGERROR,"CFileCache::Seek- sanity failed. no cache strategy!");
 		return -1;
@@ -273,6 +317,7 @@ void CFileCache::Close()
 {
 	StopThread();
 
+    CSingleLock lock(m_sync);
 	if (m_pCache)
 		m_pCache->Close();
 	
