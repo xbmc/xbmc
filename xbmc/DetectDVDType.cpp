@@ -59,6 +59,7 @@ CDetectDVDMedia::CDetectDVDMedia()
   m_dwLastTrayState = 0;
   m_bStartup = true;  // Do not autorun on startup
   m_pInstance = this;
+  CLog::Log(LOGDEBUG, "Compiled with libcdio Version 0.%d", LIBCDIO_VERSION_NUM);
 }
 
 CDetectDVDMedia::~CDetectDVDMedia()
