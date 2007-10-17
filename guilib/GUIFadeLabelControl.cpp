@@ -136,6 +136,7 @@ bool CGUIFadeLabelControl::OnMessage(CGUIMessage& message)
     {
       m_infoLabels.clear();
       m_stringLabels.clear();
+      m_scrollInfo.Reset();
       AddLabel(message.GetLabel());
     }
   }
