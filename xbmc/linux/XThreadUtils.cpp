@@ -6,6 +6,8 @@
 #include "XEventUtils.h"
 #include "../utils/log.h"
 
+#include <signal.h>
+
 #ifdef _LINUX
 
 // a variable which is defined __thread will be defined in thread local storage
@@ -24,6 +26,12 @@ struct InternalThreadParam {
 static int InternalThreadFunc(void *data) {
   InternalThreadParam *pParam = (InternalThreadParam *)data;
   int nRc = -1;
+  
+  //block all signals to this thread
+  sigset_t sigs;
+  sigfillset( &sigs );
+  pthread_sigmask( SIG_BLOCK, &sigs, NULL );
+
   try {
      nRc = pParam->threadFunc(pParam->data);
   }
