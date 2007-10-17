@@ -2667,18 +2667,18 @@ bool CApplication::OnKey(CKey& key)
       }
     }
     else
-        {
-          if (key.GetFromHttpApi())
+    {
+      if (key.GetFromHttpApi())
       {
         if (key.GetButtonCode() != KEY_INVALID)
-                {
+        {
           action.wID = (WORD) key.GetButtonCode();
-                  g_buttonTranslator.GetAction(iWin, key, action);
-                }
-      }
-          else
-        g_buttonTranslator.GetAction(iWin, key, action);
+          g_buttonTranslator.GetAction(iWin, key, action);
         }
+      }
+      else
+        g_buttonTranslator.GetAction(iWin, key, action);
+    }
   }
   if (!key.IsAnalogButton())
     CLog::Log(LOGDEBUG, "%s: %i pressed, action is %i", __FUNCTION__, (int) key.GetButtonCode(), action.wID);
@@ -3306,6 +3306,10 @@ bool CApplication::ProcessGamepad(float frameTime)
 #endif
 #ifdef HAS_SDL_JOYSTICK
   int iWin = m_gWindowManager.GetActiveWindow() & WINDOW_ID_MASK;
+  if (m_gWindowManager.HasModalDialog())
+  {
+    iWin = m_gWindowManager.GetTopMostModalDialogID() & WINDOW_ID_MASK;
+  }
   int bid;
   if (g_Joystick.GetButton(bid))
   {
