@@ -92,12 +92,14 @@ void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
     m_vecWindowMessages.push_back(msg);
   }
   else m_vecMessages.push_back(msg);
-  lock.Leave();
 
   if (message.hWaitEvent)
   {
+    lock.Leave();
     WaitForSingleObject(message.hWaitEvent, INFINITE);
+    lock.Enter();
     CloseHandle(message.hWaitEvent);
+    message.hWaitEvent = NULL;
   }
 }
 
@@ -116,16 +118,15 @@ void CApplicationMessenger::ProcessMessages()
     //Leave here as the message might make another
     //thread call processmessages or sendmessage
     lock.Leave();
-
     ProcessMessage(pMsg);
+
+    // lock again to make sure nothing happened to pMsg->hWaitEvent
+    lock.Enter();
 
     if (pMsg->hWaitEvent)
       SetEvent(pMsg->hWaitEvent);
 
     delete pMsg;
-
-    //Reenter here again, to not ruin message vector
-    lock.Enter();
   }
 }
 
