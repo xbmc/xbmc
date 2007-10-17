@@ -401,7 +401,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CShare *shar
     return CAutorun::PlayDisc();
 
   case CONTEXT_BUTTON_EJECT_DISC:
-    if (CIoSupport::GetTrayState() == TRAY_OPEN)
+    if (CIoSupport::GetTrayState() == TRAY_OPEN || CIoSupport::GetTrayState() == DRIVE_OPEN)
       CIoSupport::CloseTray();
     else
       CIoSupport::EjectTray();
