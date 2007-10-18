@@ -45,7 +45,7 @@ bool CAudioDecoder::Create(const CFileItem &file, __int64 seekOffset, unsigned i
 
   CSingleLock lock(m_critSection);
   // create our pcm buffer
-  m_pcmBuffer.Create( max((unsigned int) 1, nBufferSize) * INTERNAL_BUFFER_LENGTH, 0 );
+  m_pcmBuffer.Create( max((unsigned int) 2, nBufferSize) * INTERNAL_BUFFER_LENGTH );
 
   // reset our playback timing variables
   m_eof = false;

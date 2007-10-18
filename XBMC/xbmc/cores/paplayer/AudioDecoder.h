@@ -1,7 +1,7 @@
 #pragma once
 #include "../../utils/Thread.h"
 #include "ICodec.h"
-#include "RingHoldBuffer.h"
+#include "FileSystem/RingBuffer.h"
 
 #define PACKET_SIZE 3840    // audio packet size - we keep 1 in reserve for gapless playback
                             // using a multiple of 1, 2, 3, 4, 5, 6 to guarantee track alignment
@@ -49,7 +49,7 @@ public:
   unsigned int GetDataSize();
   void *GetData(unsigned int size);
   void PrefixData(void *data, unsigned int size);
-  ICodec *GetCodec() { return m_codec; }
+  ICodec *GetCodec() const { return m_codec; }
 
 private:
   void ProcessAudio(float *data, int numsamples);
@@ -60,7 +60,7 @@ private:
   // block size (number of bytes per sample * number of channels)
   int m_blockSize;
   // pcm buffer
-  CRingHoldBuffer m_pcmBuffer;
+  CRingBuffer m_pcmBuffer;
 
   // output buffer (for transferring data from the Pcm Buffer to the rest of the audio chain)
   float m_outputBuffer[OUTPUT_SAMPLES];

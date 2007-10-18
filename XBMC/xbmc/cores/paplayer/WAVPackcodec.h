@@ -1,6 +1,6 @@
 #pragma once
 #include "ICodec.h"
-#include "FileReader.h"
+#include "FileSystem/File.h"
 #include "DllWAVPack.h"
 
 class WAVPackCodec : public ICodec
@@ -35,6 +35,5 @@ private:
   int       m_BufferPos;
   BYTE*     m_ReadBuffer;
 
-  CFileReader m_file;
   DllWavPack m_dll;
 };

@@ -22,13 +22,16 @@ public:
 };
 
 /* indicate that caller can handle truncated reads, where function returns before entire buffer has been filled */
-#define READ_TRUNCATED 0x1
+#define READ_TRUNCATED 0x01
 
 /* use buffered io during reading, ( hint to make all protocols buffered, some might be internal anyway ) */
-#define READ_BUFFERED 0x2
+#define READ_BUFFERED  0x02
 
 /* use cache to access this file */
-#define READ_CACHED	0x4
+#define READ_CACHED	   0x04
+
+/* open without caching. regardless to file type. */
+#define READ_NO_CACHE  0x08
 
 class CFileStreamBuffer;
 
@@ -50,7 +53,9 @@ public:
   void Close();
   int GetChunkSize() {if (m_pFile) return m_pFile->GetChunkSize(); return 0;}
   bool SkipNext(){if (m_pFile) return m_pFile->SkipNext(); return false;}
-  void SetObject(void* obj){if (m_pFile) m_pFile->Object = obj;} //generic object pointer to whatever
+  void SetObject(void* obj)    {if (m_pFile) m_pFile->Object = obj;} //generic object pointer to whatever
+  bool IsCaching()    const    {if (m_pFile) return m_pFile->IsCaching(); return false;}
+  int GetCacheLevel() const    {if (m_pFile) return m_pFile->GetCacheLevel(); return -1;}
 
   IFile *GetImplemenation() { return m_pFile; }
   void Attach(IFile *pFile, unsigned int flags = 0);
