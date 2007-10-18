@@ -55,13 +55,13 @@ PLT_MediaBrowser::OnDeviceAdded(PLT_DeviceDataReference& device)
     
     type = "urn:schemas-upnp-org:service:ContentDirectory:1";
     if (NPT_FAILED(device->FindServiceByType(type, serviceCDS))) {
-        NPT_LOG_WARNING_1("Service %s not found", (const char*)type);
+        NPT_LOG_INFO_1("Service %s not found", (const char*)type);
         return NPT_FAILURE;
     }
     
     type = "urn:schemas-upnp-org:service:ConnectionManager:1";
     if (NPT_FAILED(device->FindServiceByType(type, serviceCMR))) {
-        NPT_LOG_WARNING_1("Service %s not found", (const char*)type);
+        NPT_LOG_INFO_1("Service %s not found", (const char*)type);
         return NPT_FAILURE;
     }    
     

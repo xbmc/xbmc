@@ -458,10 +458,10 @@ PLT_DeviceData::FindServiceByDescriptionURI(const char* uri, PLT_Service*& servi
         return NPT_SUCCESS;
     }
 
-    for (int i=0; i < (int)m_EmbeddedDevices.GetItemCount(); i++) {
-        if (NPT_SUCCEEDED(NPT_ContainerFind(m_EmbeddedDevices[i]->m_Services, PLT_ServiceSCPDURLFinder(uri), service)))
-            return NPT_SUCCESS;
-    }
+    //for (int i=0; i < (int)m_EmbeddedDevices.GetItemCount(); i++) {
+    //    if (NPT_SUCCEEDED(NPT_ContainerFind(m_EmbeddedDevices[i]->m_Services, PLT_ServiceSCPDURLFinder(uri), service)))
+    //        return NPT_SUCCESS;
+    //}
     return NPT_FAILURE;
 }
 
@@ -475,10 +475,10 @@ PLT_DeviceData::FindServiceByControlURI(const char* uri, PLT_Service*& service)
         return NPT_SUCCESS;
     }
 
-    for (int i=0; i < (int)m_EmbeddedDevices.GetItemCount(); i++) {
-        if (NPT_SUCCEEDED(NPT_ContainerFind(m_EmbeddedDevices[i]->m_Services, PLT_ServiceControlURLFinder(uri), service)))
-            return NPT_SUCCESS;
-    }
+    //for (int i=0; i < (int)m_EmbeddedDevices.GetItemCount(); i++) {
+    //    if (NPT_SUCCEEDED(NPT_ContainerFind(m_EmbeddedDevices[i]->m_Services, PLT_ServiceControlURLFinder(uri), service)))
+    //        return NPT_SUCCESS;
+    //}
     return NPT_FAILURE;
 }
 
@@ -492,9 +492,9 @@ PLT_DeviceData::FindServiceByEventSubURI(const char* uri, PLT_Service*& service)
         return NPT_SUCCESS;
     }
 
-    for (int i=0; i < (int)m_EmbeddedDevices.GetItemCount(); i++) {
-        if (NPT_SUCCEEDED(NPT_ContainerFind(m_EmbeddedDevices[i]->m_Services, PLT_ServiceEventSubURLFinder(uri), service)))
-            return NPT_SUCCESS;
-    }
+    //for (int i=0; i < (int)m_EmbeddedDevices.GetItemCount(); i++) {
+    //    if (NPT_SUCCEEDED(NPT_ContainerFind(m_EmbeddedDevices[i]->m_Services, PLT_ServiceEventSubURLFinder(uri), service)))
+    //        return NPT_SUCCESS;
+    //}
     return NPT_FAILURE;
 }
