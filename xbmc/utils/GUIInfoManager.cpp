@@ -2194,7 +2194,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     }
     break;
   case VIDEOPLAYER_STUDIO:
-    return m_currentFile.GetVideoInfoTag()->m_strPlot;
+    return m_currentFile.GetVideoInfoTag()->m_strStudio;
   case VIDEOPLAYER_MPAA:
     return m_currentFile.GetVideoInfoTag()->m_strMPAARating;
   case VIDEOPLAYER_CAST:
