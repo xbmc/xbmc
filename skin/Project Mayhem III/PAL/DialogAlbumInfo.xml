@@ -28,14 +28,7 @@
 			<label>10523</label>
 			<font>special13</font>
 		</control>
-<!--		<control type="textbox">
-			<description>Labels & Values</description>
-			<posx>200</posx>
-			<posy>123</posy>
-			<width>460</width>
-			<label>$INFO[listitem.artist, $LOCALIZE[171]</label>
-		</control> -->
-		<control type="fadelabel" id="20">
+		<control type="label" id="20">
 			<description>Album value</description>
 			<posx>200</posx>
 			<posy>95</posy>
@@ -43,6 +36,7 @@
 			<width>90</width>
 			<label>-</label>
 			<font>font11</font>
+			<scroll>true</scroll>
 		</control>
 		<control type="label" id="1">
 			<description>Artist</description>
@@ -92,53 +86,59 @@
 			<label>176</label>
 			<font>font11</font>
 		</control>
-		<control type="fadelabel" id="21">
+		<control type="label" id="21">
 			<description>Artist value</description>
 			<width>375</width>
 			<posx>310</posx>
 			<posy>123</posy>
 			<label>-</label>
 			<font>font11</font>
+			<scroll>true</scroll>
 		</control>
-		<control type="fadelabel" id="22">
+		<control type="label" id="22">
 			<description>year value</description>
 			<width>375</width>
 			<posx>310</posx>
 			<posy>143</posy>
 			<label>-</label>
 			<font>font11</font>
+			<scroll>true</scroll>
 		</control>
-		<control type="fadelabel" id="23">
+		<control type="label" id="23">
 			<description>Rating value</description>
 			<width>375</width>
 			<posx>310</posx>
 			<posy>163</posy>
 			<label>-</label>
 			<font>font11</font>
+			<scroll>true</scroll>
 		</control>
-		<control type="fadelabel" id="24">
+		<control type="label" id="24">
 			<description>Genre value</description>
 			<width>375</width>
 			<posx>310</posx>
 			<posy>183</posy>
 			<label>-</label>
 			<font>font11</font>
+			<scroll>true</scroll>
 		</control>
-		<control type="fadelabel" id="25">
+		<control type="label" id="25">
 			<description>Tones value</description>
 			<posx>310</posx>
 			<posy>203</posy>
 			<width>375</width>
 			<label>-</label>
 			<font>font11</font>
+			<scroll>true</scroll>
 		</control>
-		<control type="fadelabel" id="26">
+		<control type="label" id="26">
 			<description>Styles value</description>
 			<width>375</width>
 			<posx>310</posx>
 			<posy>223</posy>
 			<label>-</label>
 			<font>font11</font>
+			<scroll>true</scroll>
 		</control>
 		<control type="image" id="3">
 			<description>Album Cover image</description>
