@@ -164,6 +164,7 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
   case 'Z':
     if (movie && !movie->m_strShowTitle.IsEmpty())
       value = movie->m_strShowTitle;
+    break;
   case 'B':
     if (music && music->GetAlbum().size())
       value = music->GetAlbum();
