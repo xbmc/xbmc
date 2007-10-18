@@ -1,6 +1,6 @@
 #pragma once
 #include "ICodec.h"
-#include "FileReader.h"
+#include "FileSystem/File.h"
 #include "DllLibshnplay.h"
 
 class SHNCodec : public ICodec
@@ -16,7 +16,6 @@ public:
   virtual bool CanInit();
 private:
 
-  CFileReader m_file;
   ShnPlayFileStream m_stream;
   ShnPlay *m_handle;
   DllLibShnPlay m_dll;

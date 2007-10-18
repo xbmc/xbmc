@@ -25,13 +25,11 @@ WAVPackCodec::~WAVPackCodec()
 
 bool WAVPackCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
-  m_file.Initialize(filecache);
-
   if (!m_dll.Load())
     return false;
   
   //  Open the file to play
-  if (!m_file.Open(strFile))
+  if (!m_file.Open(strFile, true, READ_CACHED))
   {
     CLog::Log(LOGERROR, "WAVPackCodec: Can't open %s", strFile.c_str());
     return false;

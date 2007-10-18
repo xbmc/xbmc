@@ -144,7 +144,6 @@ public:
   BOOL Create( int iBufSize )
   {
     BOOL bResult = FALSE;
-
     ::EnterCriticalSection(&m_critSection );
     if ( m_pBuf )
       delete [] m_pBuf;
@@ -475,6 +474,10 @@ public:
 
   BOOL SkipBytes( int nBufLen )
   {
+    // skip back - not currently supported.
+    if (nBufLen < 0 )
+      return FALSE;
+
     ::EnterCriticalSection(&m_critSection );
     BOOL bResult = FALSE;
     {

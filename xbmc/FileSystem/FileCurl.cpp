@@ -13,6 +13,8 @@
 using namespace XFILE;
 using namespace XCURL;
 
+#define XMIN(a,b) ((a)<(b)?(a):(b))
+
 #ifndef _LINUX
 extern "C" int __stdcall dllselect(int ntfs, fd_set *readfds, fd_set *writefds, fd_set *errorfds, const timeval *timeout);
 #else
@@ -112,7 +114,7 @@ size_t CFileCurl::WriteCallback(char *buffer, size_t size, size_t nitems)
   if (m_overflowSize)
   {
     // we have our overflow buffer - first get rid of as much as we can
-    unsigned int maxWriteable = min(m_buffer.GetMaxWriteSize(), m_overflowSize);
+    unsigned int maxWriteable = XMIN(m_buffer.GetMaxWriteSize(), m_overflowSize);
     if (maxWriteable)
     {
       if (!m_buffer.WriteBinary(m_overflowBuffer, maxWriteable))
@@ -125,7 +127,7 @@ size_t CFileCurl::WriteCallback(char *buffer, size_t size, size_t nitems)
     }
   }
   // ok, now copy the data into our ring buffer
-  unsigned int maxWriteable = min(m_buffer.GetMaxWriteSize(), amount);
+  unsigned int maxWriteable = XMIN(m_buffer.GetMaxWriteSize(), amount);
   if (maxWriteable)
   {
     if (!m_buffer.WriteBinary(buffer, maxWriteable))
@@ -447,7 +449,7 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
 
 bool CFileCurl::Open(const CURL& url, bool bBinary)
 {
-  m_buffer.Create(m_bufferSize * 3, m_bufferSize);  // 3 times our buffer size (2 in front, 1 behind)
+  m_buffer.Create(m_bufferSize * 3);  // 3 times our buffer size (2 in front, 1 behind)
   m_overflowBuffer = 0;
   m_overflowSize = 0;
 
@@ -536,7 +538,7 @@ bool CFileCurl::ReadString(char *szLine, int iLineLength)
     return false;
 
   // ensure only available data is considered 
-  want = min(m_buffer.GetMaxReadSize(), want);
+  want = XMIN(m_buffer.GetMaxReadSize(), want);
 
   /* check if we finished prematurely */
   if (!m_stillRunning && m_fileSize && m_filePos != m_fileSize && !want)
@@ -752,11 +754,7 @@ unsigned int CFileCurl::Read(void* lpBuf, __int64 uiBufSize)
     return (unsigned int) 0;
 
   /* ensure only available data is considered */
-#ifndef _LINUX
-  unsigned int want = (unsigned int)min(m_buffer.GetMaxReadSize(), uiBufSize);
-#else
-  unsigned int want = (unsigned int)(m_buffer.GetMaxReadSize() < uiBufSize ? m_buffer.GetMaxReadSize() : uiBufSize);
-#endif
+  unsigned int want = (unsigned int)XMIN(m_buffer.GetMaxReadSize(), uiBufSize);
 
   /* xfer data to caller */
   if (m_buffer.ReadBinary((char *)lpBuf, want))
@@ -790,7 +788,7 @@ bool CFileCurl::FillBuffer(unsigned int want)
     /* if there is data in overflow buffer, try to use that first */
     if(m_overflowSize)
     {
-      unsigned amount = min(m_buffer.GetMaxWriteSize(), m_overflowSize);
+      unsigned amount = XMIN(m_buffer.GetMaxWriteSize(), m_overflowSize);
       m_buffer.WriteBinary(m_overflowBuffer, amount);
 
       if(amount < m_overflowSize)

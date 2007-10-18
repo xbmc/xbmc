@@ -107,27 +107,6 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   snd_pcm_hw_params_free (hw_params);
   CHECK_ALSA(LOGERROR,"snd_pcm_hw_params_free",nErr);
 
-  /* disable underrun reporting and play silence */
-  snd_pcm_uframes_t boundary;
-  snd_pcm_sw_params_t *swparams = NULL;
-  snd_pcm_sw_params_malloc(&swparams);
-  nErr = snd_pcm_sw_params_current(m_pPlayHandle, swparams);
-  CHECK_ALSA(LOGERROR,"sw_params_get_current",nErr);
-
-  nErr = snd_pcm_sw_params_get_boundary(swparams, &boundary);
-  CHECK_ALSA(LOGERROR,"get_boundary",nErr);
-
-  nErr = snd_pcm_sw_params_set_stop_threshold(m_pPlayHandle, swparams, boundary);
-  CHECK_ALSA(LOGERROR,"set_stop_threshold",nErr);
-
-  nErr = snd_pcm_sw_params_set_silence_size(m_pPlayHandle, swparams, boundary);
-  CHECK_ALSA(LOGERROR,"set_silence_size",nErr);
-
-  nErr = snd_pcm_sw_params(m_pPlayHandle, swparams);
-  CHECK_ALSA(LOGERROR,"sw_params",nErr);
-
-  snd_pcm_sw_params_free(swparams);
-
   nErr = snd_pcm_prepare (m_pPlayHandle);
   CHECK_ALSA(LOGERROR,"snd_pcm_prepare",nErr);
 
