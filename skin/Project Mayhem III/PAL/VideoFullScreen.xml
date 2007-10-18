@@ -107,6 +107,16 @@
 					<align>left</align>
 					<font>font10</font>
 				</control>
+				<control type="label" id="1">
+					<description>NonTV current_event_details</description>
+					<width>520</width>
+					<posx>160</posx>
+					<posy>60</posy>
+					<info>videoplayer.studio</info>
+					<align>left</align>
+					<font>font10</font>
+					<visible>IsEmpty(VideoPlayer.Director)</visible>
+				</control>
 			</control>
 			<control type="group" id="1">
 				<visible>videoplayer.content(episodes)</visible>
