@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 10/04/2007-->
+<!--Date of translation: 10/15/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 10403-->
+<!--Based on english strings version 10494-->
 <strings>
   <string id="0">Programmer</string>
   <string id="1">Billeder</string>
@@ -224,8 +224,9 @@
   <string id="292">Lyd</string>
   <string id="293">Søg efter undertekster</string>
   <string id="294">Opret bogmærke</string>
-  <string id="296">Slet bogmærke</string>
+  <string id="296">Slet bogmærker</string>
   <string id="297">Lydforsinkelse</string>
+  <string id="298">Bogmærker</string>
   <string id="303">Forsinkelse</string>
   <string id="304">Sprog</string>
   <string id="305">Aktiveret</string>
@@ -487,8 +488,8 @@
   <string id="585">Faldende</string>
   <string id="586">Rediger afspilningsliste</string>
   <string id="587">Filter</string>
-  <string id="588">Afbryd Party Mode</string>
-  <string id="589">Party Mode</string>
+  <string id="588">Afbryd festtilstand</string>
+  <string id="589">Festtilstand</string>
   <string id="590">Tilfældig</string>
   <string id="591">Fra</string>
   <string id="592">En</string>
@@ -545,6 +546,7 @@
   <string id="657">Søg efter mappe</string>
   <string id="658">Sanginfo</string>
   <string id="659">Kommentar:</string>
+  <string id="660">Lydforstærkning</string>
   <string id="700">Rydder op i databasen</string>
   <string id="701">Fjerner gamle sange fra databasen</string>
   <string id="702">Denne sti er tidligere blevet gennemsøgt</string>
@@ -630,7 +632,7 @@
   <string id="1007">Tilføj netværkssted</string>
   <string id="1008">Protokol</string>
   <string id="1009">Serverens adresse</string>
-  <string id="1010">Serverense navn</string>
+  <string id="1010">Serverens navn</string>
   <string id="1011">Fjern sti</string>
   <string id="1012">Delt mappe</string>
   <string id="1013">Port</string>
@@ -1278,12 +1280,12 @@
   <string id="16025">Indtast kunstnernavn</string>
   <string id="16026">Afspilningsliste afbrudt</string>
   <string id="16027">For mange uafbrudte fejl</string>
-  <string id="16030">Party Mode afbrudt</string>
+  <string id="16030">Festtilstand afbrudt</string>
   <string id="16031">Ingen matches i databasen</string>
   <string id="16032">Kunne ikke initialisere databasen</string>
   <string id="16033">Kunne ikke åbne databasen</string>
   <string id="16034">Kunne ikke hente sange fra databasen</string>
-  <string id="16035">Afspilningsliste til partymode</string>
+  <string id="16035">Afspilningsliste til festtilstand</string>
   <string id="16100">Alle videoer</string>
   <string id="16101">Ikke set</string>
   <string id="16102">Set</string>
@@ -1594,6 +1596,9 @@
   <string id="20401">Afspil musikvideo</string>
   <string id="20402">Hent ikoner af skuespillere automatisk</string>
   <string id="20403">Vælg ikon for skuespiller</string>
+  <string id="20404">Studio:</string>
+  <string id="20405">Slet episode-bogmærke</string>
+  <string id="20406">Opret episode-bogmærke</string>
   <string id="21330">Vis skjulte filer og mapper</string>
   <string id="21331">TuxBox-klient</string>
   <string id="21332">ADVARSEL: den valgte TuxBox er i optagetilstand!</string>
@@ -1675,7 +1680,7 @@
   <string id="21436">%i sange</string>
   <string id="21437">Ny smart afspilningsliste...</string>
   <string id="21438">%c-drev</string>
-  <string id="21439">Rediger regler for Party Mode</string>
+  <string id="21439">Rediger regler for festtilstand</string>
   <string id="21800">Filnavn</string>
   <string id="21801">Filsti</string>
   <string id="21802">Filstørrelse</string>
