@@ -317,7 +317,7 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
 
 	/* Open the device */
 	int nErr = snd_pcm_open(&m_pStream[num], g_guiSettings.GetString("audiooutput.audiodevice"), SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK);
-        CHECK_ALSA_RETURN(LOGERROR,"pcm_open",nErr);
+    CHECK_ALSA_RETURN(LOGERROR,"pcm_open",nErr);
 
 	/* Allocate Hardware Parameters structures and fills it with config space for PCM */
 	snd_pcm_hw_params_alloca(&hw_params);
@@ -365,24 +365,6 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
     CHECK_ALSA_RETURN(LOGERROR,"snd_pcm_hw_params",nErr);
 
 	/* disable underrun reporting and play silence */
-	snd_pcm_uframes_t boundary;
-	snd_pcm_sw_params_t *swparams = NULL;
-	snd_pcm_sw_params_alloca(&swparams);
-	nErr = snd_pcm_sw_params_current(m_pStream[num], swparams);
-    CHECK_ALSA(LOGERROR,"sw_params_get_current",nErr);
-
-	nErr = snd_pcm_sw_params_get_boundary(swparams, &boundary);
-	CHECK_ALSA(LOGERROR,"get_boundary",nErr);
-
-	nErr = snd_pcm_sw_params_set_stop_threshold(m_pStream[num], swparams, boundary);
-	CHECK_ALSA(LOGERROR,"set_stop_threshold",nErr);
-
-	nErr = snd_pcm_sw_params_set_silence_size(m_pStream[num], swparams, boundary);
-	CHECK_ALSA(LOGERROR,"set_silence_size",nErr);
-
-	nErr = snd_pcm_sw_params(m_pStream[num], swparams);
-    CHECK_ALSA(LOGERROR,"sw_params",nErr);
-
 	nErr = snd_pcm_prepare (m_pStream[num]);
     CHECK_ALSA(LOGERROR,"snd_pcm_prepare",nErr);
 
@@ -771,9 +753,22 @@ int PAPlayer::GetTotalTime()
   return (int)(GetTotalTime64()/1000);
 }
 
+bool PAPlayer::IsCaching() const
+{
+  const ICodec* codec = m_decoder[m_currentDecoder].GetCodec();
+  if (codec)
+    return codec->IsCaching();
+
+  return false;
+}
+
 int PAPlayer::GetCacheLevel() const
 {
-  return m_CacheLevel;
+  const ICodec* codec = m_decoder[m_currentDecoder].GetCodec();
+  if (codec)
+    return codec->GetCacheLevel();
+
+  return -1;
 }
 
 int PAPlayer::GetChannels()
@@ -938,7 +933,7 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
 
     bool ret = false;
 
-    int nAvail = snd_pcm_avail_update(m_pStream[stream]);
+    int nAvail = snd_pcm_frames_to_bytes(m_pStream[stream], snd_pcm_avail_update(m_pStream[stream]));
     if (nAvail < PACKET_SIZE) {
         return false;
     }
@@ -957,25 +952,25 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
     StreamCallback(&m_packet[stream][0]);
    
 	while ( pcmPtr < m_packet[stream][0].packet + m_packet[stream][0].length) {
-		int nPeriodSize = (m_periods[stream] * 2 * m_Channels); // write a frame. 
+		int nPeriodSize = snd_pcm_frames_to_bytes(m_pStream[stream],m_periods[stream]);
 		if ( pcmPtr + nPeriodSize >  m_packet[stream][0].packet + m_packet[stream][0].length) {
 			nPeriodSize = m_packet[stream][0].packet + m_packet[stream][0].length - pcmPtr; 
 		}
 			
-         	int framesToWrite = nPeriodSize / (2 * m_Channels);   
-      		int writeResult = snd_pcm_writei(m_pStream[stream], pcmPtr, framesToWrite);
-      		if (  writeResult == -EPIPE  ) {
-        		CLog::Log(LOGDEBUG, "PAPlayer::AddPacketsToStream - buffer underun (tried to write %d frames)", 
-				framesToWrite);
-        		int err = snd_pcm_prepare(m_pStream[stream]);
-             		CHECK_ALSA(LOGERROR,"prepare after EPIPE", err); 
-      		}
-      		else if (writeResult != framesToWrite) { 
-        		CLog::Log(LOGERROR, "PAPlayer::AddPacketsToStream - failed to write %d frames. "
-				"bad write (err: %d) - %s", 
-        			framesToWrite, writeResult, snd_strerror(writeResult));				
-        		break;
-      		}
+		int framesToWrite = snd_pcm_bytes_to_frames(m_pStream[stream],nPeriodSize);
+		int writeResult = snd_pcm_writei(m_pStream[stream], pcmPtr, framesToWrite);
+		if (  writeResult == -EPIPE  ) {
+			CLog::Log(LOGDEBUG, "PAPlayer::AddPacketsToStream - buffer underun (tried to write %d frames)", 
+			framesToWrite);
+			int err = snd_pcm_prepare(m_pStream[stream]);
+				CHECK_ALSA(LOGERROR,"prepare after EPIPE", err); 
+		}
+		else if (writeResult != framesToWrite) { 
+			CLog::Log(LOGERROR, "PAPlayer::AddPacketsToStream - failed to write %d frames. "
+			"bad write (err: %d) - %s", 
+				framesToWrite, writeResult, snd_strerror(writeResult));				
+			break;
+		}
 		//else
       	//		m_bytesSentOut += nPeriodSize; 
 

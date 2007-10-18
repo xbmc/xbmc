@@ -1,6 +1,6 @@
 #pragma once
 #include "ICodec.h"
-#include "FileReader.h"
+#include "FileSystem/File.h"
 #include "DllAACCodec.h"
 
 class AACCodec : public ICodec
@@ -26,7 +26,6 @@ private:
   int       m_BufferSize; 
   int       m_BufferPos;
 
-  CFileReader m_file;
   // Our dll
   DllAACCodec m_dll;
 };

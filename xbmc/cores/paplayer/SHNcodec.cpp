@@ -70,12 +70,10 @@ SHNCodec::~SHNCodec()
 
 bool SHNCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
-  m_file.Initialize(filecache);
-
   if (!m_dll.Load())
     return false;
 
-  if (!m_file.Open(strFile))
+  if (!m_file.Open(strFile,true, READ_CACHED))
     return false;
 
   // setup our callbacks

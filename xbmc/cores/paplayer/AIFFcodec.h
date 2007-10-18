@@ -1,6 +1,6 @@
 #pragma once
 #include "ICodec.h"
-#include "FileReader.h"
+#include "FileSystem/File.h"
 
 class AIFFCodec : public ICodec
 {
@@ -17,7 +17,6 @@ public:
 private:
   int ConvertSampleRate(unsigned char *rate);
 
-  CFileReader m_file;
   long m_iDataStart;
   long m_iDataLen;
   long m_NumSamples;

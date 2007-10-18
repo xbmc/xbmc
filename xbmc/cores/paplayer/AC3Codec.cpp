@@ -101,9 +101,8 @@ void AC3Codec::PrepairBuffers()
 
 bool AC3Codec::InitFile(const CStdString &strFile, unsigned int filecache)
 {
-  m_file.Initialize(filecache);
   //  Open the file to play
-  return m_file.Open(strFile, false);
+  return m_file.Open(strFile, true, READ_CACHED);
 }
 
 bool AC3Codec::CalculateTotalTime()
@@ -159,7 +158,7 @@ bool AC3Codec::Init(const CStdString &strFile, unsigned int filecache)
   if (!CalculateTotalTime())
     return false;
 
-  m_file.StartBuffering();
+  //m_file.StartBuffering();
   m_IsInitialized = true;
   return true;
 }

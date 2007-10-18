@@ -1,7 +1,7 @@
 #pragma once
 #include "ICodec.h"
 #include "../../MusicInfoTagLoaderMP3.h"
-#include "FileReader.h"
+#include "FileSystem/File.h"
 #include "DllMadCodec.h"
 
 class MP3Codec : public ICodec
@@ -18,14 +18,12 @@ public:
   virtual int ReadSamples(float *pBuffer, int numsamples, int *actualsamples);
   virtual bool CanInit();
   virtual bool SkipNext();
-  virtual int GetCacheLevel();
   virtual bool HasFloatData() const { return m_BitsPerSampleInternal == 32; };
 private:
   void OnFileReaderClearEvent();
   void FlushDecoder();
 
   // Decoding variables
-  CFileReader   m_file;          // Our MP3 file
   __int64 m_lastByteOffset;
   bool    m_eof;
   IAudioDecoder* m_pDecoder;    // handle to the codec.

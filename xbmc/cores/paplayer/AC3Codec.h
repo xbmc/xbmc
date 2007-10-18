@@ -2,7 +2,7 @@
 #pragma once
 
 #include "ICodec.h"
-#include "FileReader.h"
+#include "FileSystem/File.h"
 #include "DllAc3codec.h"
 
 #ifdef HAS_AC3_CODEC
@@ -30,7 +30,6 @@ protected:
   int  Decode(BYTE* pData, int iSize);
   void SetupChannels(unsigned flags);
   
-  CFileReader m_file;
   a52_state_t* m_pState;
 
   BYTE m_inputBuffer[3840];

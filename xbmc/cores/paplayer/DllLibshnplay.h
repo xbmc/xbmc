@@ -1,13 +1,11 @@
 #pragma once
 #include "../../DynamicDll.h"
 #include "shn/shnplay.h"
-
-// forward
-class CFileReader;
+#include "FileSystem/File.h"
 
 struct ShnPlayFileStream {
 	ShnPlayStream vtbl;
-	CFileReader *file;
+	XFILE::CFile *file;
 };
 
 typedef struct ShnPlayFileStream ShnPlayFileStream;
