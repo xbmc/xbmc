@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include "utils/BitstreamStats.h"
+
 enum DVDStreamType
 {
   DVDSTREAM_TYPE_NONE   = -1,
@@ -33,9 +35,11 @@ public:
   bool IsStreamType(DVDStreamType type) const { return m_streamType == type; }
   virtual bool IsEOF() = 0;  
   virtual int GetCurrentGroupId() { return 0; }
+  virtual BitstreamStats GetBitstreamStats() const { return m_stats; }
 
 protected:
   DVDStreamType m_streamType;
   char* m_strFileName;
+  BitstreamStats m_stats;
   std::string m_content;
 };

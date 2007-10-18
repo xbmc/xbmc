@@ -12,7 +12,7 @@
 
 //#include "DVDChapterReader.h"
 #include "DVDSubtitles/DVDFactorySubtitle.h"
-
+#include "utils/BitstreamStats.h"
 
 class CDVDInputStream;
 
@@ -115,12 +115,14 @@ public:
   virtual void DoAudioWork()                                    { m_dvdPlayerAudio.DoWork(); }
   virtual bool OnAction(const CAction &action);
   virtual bool HasMenu();
+  virtual int GetAudioBitrate();
+  virtual int GetVideoBitrate();
+  virtual int GetSourceBitrate();
   
   virtual bool GetCurrentSubtitle(CStdString& strSubtitle);
   
   virtual CStdString GetPlayerState();
   virtual bool SetPlayerState(CStdString state);
-
 
   virtual int OnDVDNavResult(void* pData, int iMessage);
 
