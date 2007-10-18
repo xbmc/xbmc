@@ -26,8 +26,6 @@ AACCodec::~AACCodec()
 
 bool AACCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
-  m_file.Initialize(filecache);
-
   if (!m_dll.Load())
     return false;
 
@@ -197,7 +195,7 @@ unsigned __int32 AACCodec::AACOpenCallback(const char *pName, const char *mode, 
   if (!codec)
     return 0;
 
-  return codec->m_file.Open(pName);
+  return codec->m_file.Open(pName, true, READ_CACHED);
 }
 
 void AACCodec::AACCloseCallback(void *userData)

@@ -1,7 +1,9 @@
-#include "stdafx.h"
+	#include "stdafx.h"
 #include "MP3codec.h"
 
 #define DECODER_DELAY 529 // decoder delay in samples
+
+#define XMIN(a,b) (a)<(b)?(a):(b)
 
 MP3Codec::MP3Codec()
 {
@@ -60,8 +62,6 @@ void MP3Codec::OnFileReaderClearEvent()
 
 bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
 {
-  m_file.Initialize(filecache);
-
   if (!m_dll.IsLoaded())
     m_dll.Load();
 
@@ -99,7 +99,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
     mp3info.GetReplayGain(m_replayGain);
   }
 
-  if (!m_file.Open(strFile, true, bIsInternetStream))
+  if (!m_file.Open(strFile, true, READ_CACHED))
   {
     CLog::Log(LOGERROR, "MP3Codec: Unable to open file %s", strFile.c_str());
     delete m_pDecoder;
@@ -153,13 +153,13 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
     m_pDecoder->flush();
     m_file.Seek(id3v2Size);
   }
-  m_file.OnClear = MakeDelegate(this, &MP3Codec::OnFileReaderClearEvent);
+  //m_file.OnClear = MakeDelegate(this, &MP3Codec::OnFileReaderClearEvent);
   return true;
 }
 
 void MP3Codec::DeInit()
 {
-  m_file.OnClear.clear();
+  //m_file.OnClear.clear();
   m_file.Close();
 }
 
@@ -174,10 +174,9 @@ void MP3Codec::FlushDecoder()
 
 __int64 MP3Codec::Seek(__int64 iSeekTime)
 {
-  if (!m_file.CanSeek()) return -1;
   // calculate our offset to seek to in the file
   m_lastByteOffset = m_seekInfo.GetByteOffset(0.001f * iSeekTime);
-  m_file.Seek(m_lastByteOffset, SEEK_SET);
+  __int64 iRet = m_file.Seek(m_lastByteOffset, SEEK_SET);
   FlushDecoder();
   return iSeekTime;
 }
@@ -193,7 +192,7 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 {
   *actualsize = 0;
   // First read in any extra info we need from our MP3
-  int inputBufferToRead = min(m_file.GetChunkSize(), m_InputBufferSize - m_InputBufferPos);
+  int inputBufferToRead = XMIN(m_file.GetChunkSize(), m_InputBufferSize - m_InputBufferPos);
   if ( inputBufferToRead && !m_CallAgainWithSameBuffer && !m_eof ) 
   {
     if (m_file.GetLength() > 0)
@@ -321,12 +320,7 @@ bool MP3Codec::SkipNext()
   return m_file.SkipNext();
 }
 
-int MP3Codec::GetCacheLevel()
-{
-  return m_file.GetCacheLevel();
-}
-
 bool MP3Codec::CanSeek()
 {
-  return m_file.CanSeek();
+  return true;
 }

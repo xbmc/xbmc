@@ -1,7 +1,6 @@
 #pragma once
 
 #include "IFile.h"
-#include "../cores/paplayer/FileReader.h"
 
 namespace XFILE
 {
@@ -22,7 +21,7 @@ public:
   
   virtual bool OpenForWrite(const CURL& url, bool bBinary = true, bool bOverWrite = false);
   protected:
-  CFileReader m_reader;
+  CFile m_reader;
 };
 
 };

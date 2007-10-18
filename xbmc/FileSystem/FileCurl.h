@@ -1,6 +1,6 @@
 #pragma once
 #include "IFile.h"
-#include "../cores/paplayer/RingHoldBuffer.h"
+#include "RingBuffer.h"
 #include <map>
 #include "../utils/HttpHeader.h"
 
@@ -87,7 +87,7 @@ namespace XFILE
       bool            m_useOldHttpVersion;
       bool            m_seekable;
 
-      CRingHoldBuffer m_buffer;           // our ringhold buffer
+      CRingBuffer     m_buffer;           // our ringhold buffer
       char *          m_overflowBuffer;   // in the rare case we would overflow the above buffer
       unsigned int    m_overflowSize;     // size of the overflow buffer
       unsigned int    m_bufferSize;

@@ -4,13 +4,13 @@
 #ifdef HAS_WMA_CODEC
 
 #include "ICodec.h"
-#include "FileReader.h"
+#include "FileSystem/File.h"
 
 #include "DllWMA.h"
 
 struct WMAInfo
 {
-  CFileReader fileReader;
+  XFILE::CFile fileReader;
   char buffer[65536];
   DWORD iStartOfBuffer;
 };

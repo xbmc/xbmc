@@ -271,8 +271,12 @@ bool CFile::Open(const CStdString& strFileName, bool bBinary, unsigned int flags
         return false;
     }
 
-    CURL url(strFileName);
+    CFileItem fileItem;
+    fileItem.m_strPath = strFileName;
+    if ( (flags & READ_NO_CACHE) == 0 && fileItem.IsInternetStream())
+      m_flags |= READ_CACHED;
 
+    CURL url(strFileName);
     if (m_flags & READ_CACHED)
     {
 		m_pFile = new CFileCache();
