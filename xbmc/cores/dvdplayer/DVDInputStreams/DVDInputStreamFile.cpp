@@ -92,3 +92,12 @@ __int64 CDVDInputStreamFile::GetLength()
     return m_pFile->GetLength();
   return 0;
 }
+
+BitstreamStats CDVDInputStreamFile::GetBitstreamStats() const 
+{
+  if (!m_pFile)
+    return m_stats; // dummy return. defined in CDVDInputStream
+
+  return m_pFile->GetBitstreamStats();
+}
+

@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include "IFile.h"
+#include "utils/BitstreamStats.h"
 
 namespace XFILE
 {
@@ -56,6 +57,7 @@ public:
   void SetObject(void* obj)    {if (m_pFile) m_pFile->Object = obj;} //generic object pointer to whatever
   bool IsCaching()    const    {if (m_pFile) return m_pFile->IsCaching(); return false;}
   int GetCacheLevel() const    {if (m_pFile) return m_pFile->GetCacheLevel(); return -1;}
+  BitstreamStats GetBitstreamStats() { return m_bitStreamStats; }
 
   IFile *GetImplemenation() { return m_pFile; }
   void Attach(IFile *pFile, unsigned int flags = 0);
@@ -70,6 +72,7 @@ private:
   unsigned int m_flags;
   IFile* m_pFile;
   CFileStreamBuffer* m_pBuffer;
+  BitstreamStats m_bitStreamStats;
 };
 
 // streambuf for file io, only supports buffered input currently

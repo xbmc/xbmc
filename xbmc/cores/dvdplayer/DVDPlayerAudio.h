@@ -71,7 +71,8 @@ public:
   void SetVolume(long nVolume)                          { m_dvdAudio.SetVolume(nVolume); }
   void SetDynamicRangeCompression(long drc)             { m_dvdAudio.SetDynamicRangeCompression(drc); }
 
-  string GetPlayerInfo();
+  std::string GetPlayerInfo();
+  int GetAudioBitrate();
 
   // holds stream information for current playing stream
   CDVDStreamInfo m_streaminfo;
@@ -126,6 +127,7 @@ protected:
   CDVDAudio m_dvdAudio; // audio output device
   CDVDClock* m_pClock; // dvd master clock
   CDVDAudioCodec* m_pAudioCodec; // audio codec
+  BitstreamStats m_audioStats;
 
   int     m_speed;
   double  m_droptime;
