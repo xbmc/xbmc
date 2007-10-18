@@ -89,7 +89,9 @@ public:
   virtual __int64 GetTime(){ return 0;};
   virtual void ResetTime() {};
   virtual int GetTotalTime(){ return 0;};
-  virtual int GetBitrate(){ return 0;};
+  virtual int GetAudioBitrate(){ return 0;}
+  virtual int GetVideoBitrate(){ return 0;}
+  virtual int GetSourceBitrate(){ return 0;}
   virtual int GetChannels(){ return 0;};
   virtual int GetBitsPerSample(){ return 0;};
   virtual int GetSampleRate(){ return 0;};

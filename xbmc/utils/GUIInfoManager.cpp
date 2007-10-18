@@ -2092,7 +2092,7 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
       float fTimeSpan = (float)(timeGetTime() - m_lastMusicBitrateTime);
       if (fTimeSpan >= 500.0f)
       {
-        m_MusicBitrate = g_application.m_pPlayer->GetBitrate();
+        m_MusicBitrate = g_application.m_pPlayer->GetAudioBitrate();
         m_lastMusicBitrateTime = timeGetTime();
       }
       CStdString strBitrate = "";

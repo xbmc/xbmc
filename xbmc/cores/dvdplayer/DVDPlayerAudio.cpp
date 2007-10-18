@@ -181,6 +181,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       }
 
       int len = m_pAudioCodec->Decode(m_decode.data, m_decode.size);
+      m_audioStats.AddSampleBytes(m_decode.size);
       if (len < 0)
       {
         /* if error, we skip the packet */
@@ -323,6 +324,7 @@ void CDVDPlayerAudio::Process()
   int result;
  
   DVDAudioFrame audioframe;
+  m_audioStats.Start();
 
   while (!m_bStop)
   {
@@ -463,7 +465,12 @@ string CDVDPlayerAudio::GetPlayerInfo()
   std::ostringstream s;
   s << "aq size:" << min(100,100 * m_messageQueue.GetDataSize() / m_messageQueue.GetMaxDataSize()) << "%";
   s << ", ";
-  s << "cpu: " << (int)(100 * CThread::GetRelativeUsage()) << "%";
+  s << "cpu: " << (int)(100 * CThread::GetRelativeUsage()) << "%, ";
+  s << "bitrate: " << (GetAudioBitrate() / 8) / 1024 << " KBytes/s";
   return s.str();
 }
 
+int CDVDPlayerAudio::GetAudioBitrate()
+{
+  return (int)m_audioStats.GetBitrate();
+}
