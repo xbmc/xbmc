@@ -164,6 +164,7 @@
 					<info>VideoPlayer.Director</info>
 					<align>right</align>
 					<font>special12</font>
+					<scroll>true</scroll>
 				</control>
 				<control type="label">
 					<description>Title label</description>
@@ -173,6 +174,7 @@
 					<info>VideoPlayer.Title</info>
 					<align>right</align>
 					<font>special13</font>
+					<scroll>true</scroll>
 				</control>
 				<control type="label">
 					<description>Genre label</description>
@@ -182,6 +184,7 @@
 					<info>VideoPlayer.Genre</info>
 					<align>right</align>
 					<font>font10</font>
+					<scroll>true</scroll>
 				</control>
 				<control type="label">
 					<description>Time label</description>
@@ -223,6 +226,7 @@
 				<info>MusicPlayer.Artist</info>
 				<align>right</align>
 				<font>special12</font>
+				<scroll>true</scroll>
 			</control>
 			<control type="label">
 				<description>Title label</description>
@@ -232,6 +236,7 @@
 				<info>MusicPlayer.Title</info>
 				<align>right</align>
 				<font>special13</font>
+				<scroll>true</scroll>
 			</control>
 			<control type="label">
 				<description>Album label</description>
@@ -241,6 +246,7 @@
 				<label>$INFO[MusicPlayer.Album]$INFO[musicplayer.discnumber, - $LOCALIZE[427]]</label>
 				<align>right</align>
 				<font>font10</font>
+				<scroll>true</scroll>
 			</control>
 			<control type="label">
 				<description>Time label</description>

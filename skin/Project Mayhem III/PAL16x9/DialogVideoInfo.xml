@@ -39,7 +39,7 @@
 				<aspectratio>keep</aspectratio>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
-			<control type="fadelabel" id="20">
+			<control type="label" id="20">
 				<description>Movie Title value</description>
 				<posx>200</posx>
 				<posy>95</posy>
@@ -47,6 +47,7 @@
 				<label>-</label>
 				<font>font14</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
 			<control type="label" id="1">
 				<description>Studio txt</description>
@@ -138,7 +139,7 @@
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
-			<control type="fadelabel" id="36">
+			<control type="label" id="36">
 				<description>Studio value</description>
 				<posx>310</posx>
 				<posy>123</posy>
@@ -146,8 +147,9 @@
 				<label>-</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="21">
+			<control type="label" id="21">
 				<description>Director value</description>
 				<posx>310</posx>
 				<posy>143</posy>
@@ -155,8 +157,9 @@
 				<label>-</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="22">
+			<control type="label" id="22">
 				<description>Writing Credits value</description>
 				<posx>310</posx>
 				<posy>163</posy>
@@ -164,8 +167,9 @@
 				<label>-</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="23">
+			<control type="label" id="23">
 				<description>Genre value</description>
 				<posx>310</posx>
 				<posy>183</posy>
@@ -173,8 +177,9 @@
 				<label>-</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="24">
+			<control type="label" id="24">
 				<description>Year value</description>
 				<posx>310</posx>
 				<posy>203</posy>
@@ -182,8 +187,9 @@
 				<label>-</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="25">
+			<control type="label" id="25">
 				<description>TagLine value</description>
 				<posx>310</posx>
 				<posy>223</posy>
@@ -191,8 +197,9 @@
 				<label>-</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="26">
+			<control type="label" id="26">
 				<description>PlotOutline value</description>
 				<posx>310</posx>
 				<posy>243</posy>
@@ -200,8 +207,9 @@
 				<label>-</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="30">
+			<control type="label" id="30">
 				<description>Rating and votes value</description>
 				<posx>310</posx>
 				<posy>263</posy>
@@ -209,8 +217,9 @@
 				<label>-</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="31">
+			<control type="label" id="31">
 				<description>Runtime value</description>
 				<posx>310</posx>
 				<posy>283</posy>
@@ -218,8 +227,9 @@
 				<label>-</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="32">
+			<control type="label" id="32">
 				<description>MPPA Rating value</description>
 				<posx>310</posx>
 				<posy>303</posy>
@@ -227,6 +237,7 @@
 				<label>-</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
 		</control>
 		<control type="group">
@@ -249,7 +260,7 @@
 				<aspectratio>keep</aspectratio>
 				<visible>container.content(tvshows)</visible>
 			</control>
-			<control type="fadelabel" id="20">
+			<control type="label" id="20">
 				<description>TV Show Title value</description>
 				<posx>60</posx>
 				<posy>225</posy>
@@ -257,6 +268,7 @@
 				<label>-</label>
 				<font>special13</font>
 				<visible>container.content(tvshows)</visible>
+				<scroll>true</scroll>
 			</control>
 			<control type="label" id="1">
 				<description>Episodes txt</description>
@@ -275,6 +287,7 @@
 				<label>$INFO[listitem.episode]</label>
 				<font>font13</font>
 				<visible>container.content(tvshows)</visible>
+				<scroll>true</scroll>
 			</control>
 			<control type="label" id="1">
 				<description>First Aired txt</description>
@@ -284,6 +297,7 @@
 				<label>$LOCALIZE[20376] :</label>
 				<font>font13</font>
 				<visible>container.content(tvshows)</visible>
+				<scroll>true</scroll>
 			</control>
 			<control type="label" id="24">
 				<description>First Aired Value</description>
@@ -293,6 +307,7 @@
 				<label>-</label>
 				<font>font13</font>
 				<visible>container.content(tvshows)</visible>
+				<scroll>true</scroll>
 			</control>
 			<control type="label" id="1">
 				<description>Genre txt</description>
@@ -311,6 +326,7 @@
 				<label></label>
 				<font>font13</font>
 				<visible>container.content(tvshows)</visible>
+				<scroll>true</scroll>
 			</control>
 		</control>
 		<control type="group">
@@ -344,7 +360,7 @@
 				<texture flipy="true" diffuse="diffuse_mirror.png" /> 
 				<visible>container.content(episodes)</visible>
 			</control>
-			<control type="fadelabel" id="1">
+			<control type="label" id="1">
 				<description>Tv ShowTitle value</description>
 				<posx>200</posx>
 				<posy>110</posy>
@@ -352,8 +368,9 @@
 				<info>ListItem.tvshowtitle</info>
 				<font>special13</font>
 				<visible>container.content(episodes)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="20">
+			<control type="label" id="20">
 				<description>Title value</description>
 				<posx>200</posx>
 				<posy>140</posy>
@@ -361,6 +378,7 @@
 				<label>-</label>
 				<font>special13</font>
 				<visible>container.content(episodes)</visible>
+				<scroll>true</scroll>
 			</control>
 			<control type="label" id="1">
 				<description>Episode txt</description>
@@ -425,7 +443,7 @@
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
 			</control>
-			<control type="fadelabel" id="1">
+			<control type="label" id="1">
 				<description>Episode value</description>
 				<posx>300</posx>
 				<posy>178</posy>
@@ -433,8 +451,9 @@
 				<info>Listitem.Episode</info>
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="1">
+			<control type="label" id="1">
 				<description>Sesson value</description>
 				<posx>300</posx>
 				<posy>195</posy>
@@ -442,8 +461,9 @@
 				<info>Listitem.Season</info>
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="21">
+			<control type="label" id="21">
 				<description>Director value</description>
 				<posx>300</posx>
 				<posy>215</posy>
@@ -451,8 +471,9 @@
 				<label>-</label>
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="22">
+			<control type="label" id="22">
 				<description>Writing Credits value</description>
 				<posx>300</posx>
 				<posy>235</posy>
@@ -460,8 +481,9 @@
 				<label>-</label>
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="23">
+			<control type="label" id="23">
 				<description>Genre value</description>
 				<posx>300</posx>
 				<posy>255</posy>
@@ -469,8 +491,9 @@
 				<label>-</label>
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="24">
+			<control type="label" id="24">
 				<description>Year value</description>
 				<posx>300</posx>
 				<posy>275</posy>
@@ -478,8 +501,9 @@
 				<label>-</label>
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="30">
+			<control type="label" id="30">
 				<description>Rating and votes value</description>
 				<posx>300</posx>
 				<posy>295</posy>
@@ -487,6 +511,7 @@
 				<label>-</label>
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
+				<scroll>true</scroll>
 			</control>
 		</control>
 		<control type="group">
@@ -509,7 +534,7 @@
 				<info>ListItem.Icon</info>
 				<visible>container.content(musicvideos)</visible>
 			</control>
-			<control type="fadelabel" id="1">
+			<control type="label" id="1">
 				<description>Title value</description>
 				<posx>200</posx>
 				<posy>110</posy>
@@ -517,6 +542,7 @@
 				<info>Listitem.Title</info>
 				<font>special13</font>
 				<visible>container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
 			<control type="label" id="1">
 				<description>Artist txt</description>
@@ -581,7 +607,7 @@
 				<font>font12</font>
 				<visible>container.content(musicvideos)</visible>
 			</control>
-			<control type="fadelabel" id="1">
+			<control type="label" id="1">
 				<description>Artist value</description>
 				<posx>300</posx>
 				<posy>160</posy>
@@ -589,8 +615,9 @@
 				<info>Listitem.Artist</info>
 				<font>font12</font>
 				<visible>container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="1">
+			<control type="label" id="1">
 				<description>Album value</description>
 				<posx>300</posx>
 				<posy>185</posy>
@@ -598,8 +625,9 @@
 				<info>Listitem.Album</info>
 				<font>font12</font>
 				<visible>container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="1">
+			<control type="label" id="1">
 				<description>Genre value</description>
 				<posx>300</posx>
 				<posy>210</posy>
@@ -607,8 +635,9 @@
 				<info>Listitem.Genre</info>
 				<font>font12</font>
 				<visible>container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="1">
+			<control type="label" id="1">
 				<description>Year value</description>
 				<posx>300</posx>
 				<posy>235</posy>
@@ -616,8 +645,9 @@
 				<info>Listitem.Year</info>
 				<font>font12</font>
 				<visible>container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="1">
+			<control type="label" id="1">
 				<description>Runtime value</description>
 				<posx>300</posx>
 				<posy>260</posy>
@@ -625,8 +655,9 @@
 				<info>Listitem.Duration</info>
 				<font>font12</font>
 				<visible>container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="1">
+			<control type="label" id="1">
 				<description>Director value</description>
 				<posx>300</posx>
 				<posy>285</posy>
@@ -634,8 +665,9 @@
 				<info>Listitem.Director</info>
 				<font>font12</font>
 				<visible>container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="1">
+			<control type="label" id="1">
 				<description>Studio value</description>
 				<posx>300</posx>
 				<posy>310</posy>
@@ -643,6 +675,7 @@
 				<info>Listitem.Studio</info>
 				<font>font12</font>
 				<visible>container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
 		</control>
 		<control type="group" id="9000">
