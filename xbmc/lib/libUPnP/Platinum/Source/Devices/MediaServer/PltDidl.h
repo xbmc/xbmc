@@ -30,6 +30,8 @@
 #define PLT_FILTER_MASK_SEARCHABLE                  0x00000040
 #define PLT_FILTER_MASK_CHILDCOUNT                  0x00000080
 #define PLT_FILTER_MASK_ORIGINALTRACK               0x00000100
+#define PLT_FILTER_MASK_ACTOR                       0x00000200
+#define PLT_FILTER_MASK_AUTHOR                      0x00000400
 
 #define PLT_FILTER_MASK_RES                         0x00010000
 #define PLT_FILTER_MASK_RES_DURATION                0x00020000
@@ -38,7 +40,9 @@
 
 #define PLT_FILTER_FIELD_CREATOR                    "dc:creator"
 #define PLT_FILTER_FIELD_ARTIST                     "upnp:artist"
-#define PLT_FILTER_FIELD_ALBUM                      "upnp:album"
+#define PLT_FILTER_FIELD_ACTOR                      "upnp:actor"
+#define PLT_FILTER_FIELD_AUTHOR                     "upnp:actor"
+#define PLT_FILTER_FIELD_ALBUM                      "upnp:author"
 #define PLT_FILTER_FIELD_GENRE                      "upnp:genre"
 #define PLT_FILTER_FIELD_ALBUMARTURI                "upnp:albumArtURI"
 #define PLT_FILTER_FIELD_DESCRIPTION                "upnp:longDescription"

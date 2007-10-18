@@ -384,11 +384,11 @@ CUPnPServer::BuildObject(CFileItem*      item,
 
                 StringUtils::SplitString(tag->GetGenre(), " / ", strings);
                 for(CStdStringArray::iterator it = strings.begin(); it != strings.end(); it++) {
-                    object->m_Affiliation.genre_extended.Add((*it).c_str());
+                    object->m_Affiliation.genre.Add((*it).c_str());
                 }
 
                 object->m_Affiliation.album = tag->GetAlbum();
-                object->m_People.artist = tag->GetAlbumArtist();
+                object->m_People.artists.Add(tag->GetAlbumArtist().c_str());
                 object->m_Creator = tag->GetArtist();
                 object->m_MiscInfo.original_track_number = tag->GetTrackNumber();
                 resource.m_Duration = tag->GetDuration();                
@@ -420,15 +420,12 @@ CUPnPServer::BuildObject(CFileItem*      item,
 
                 StringUtils::SplitString(tag->m_strGenre, " / ", strings);                
                 for(CStdStringArray::iterator it = strings.begin(); it != strings.end(); it++) {
-                    object->m_Affiliation.genre_extended.Add((*it).c_str());
+                    object->m_Affiliation.genre.Add((*it).c_str());
                 }
 
                 for(CVideoInfoTag::iCast it = tag->m_cast.begin();it != tag->m_cast.end();it++) {
-                    object->m_People.actor += it->strName + ",";
-                    object->m_People.actor_role += it->strRole + ",";
+                    object->m_People.actors.Add(it->strName.c_str(), it->strRole.c_str());
                 }
-                object->m_People.actor.TrimRight(",");
-                object->m_People.actor_role.TrimRight(",");
                 object->m_People.director = tag->m_strDirector;
 
                 object->m_Description.description = tag->m_strTagLine;
