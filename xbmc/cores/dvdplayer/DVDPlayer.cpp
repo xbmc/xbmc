@@ -1097,7 +1097,7 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
 
     int iFramesDropped = m_dvdPlayerVideo.GetNrOfDroppedFrames();
 
-    strGeneralInfo.Format("DVD Player ad:%6.3f, a/v:%6.3f, dropped:%d, cpu: %i%%", dDelay, dDiff, iFramesDropped, (int)(CThread::GetRelativeUsage()*100));
+    strGeneralInfo.Format("DVD Player ad:%6.3f, a/v:%6.3f, dropped:%d, cpu: %i%%. source bitrate: %d Kbytes/s", dDelay, dDiff, iFramesDropped, (int)(CThread::GetRelativeUsage()*100), (GetSourceBitrate() / 8) / 1024);
   }
 }
 
@@ -2035,4 +2035,22 @@ int CDVDPlayer::GetCacheLevel() const
   double dElapsed = time(NULL) - m_tmStartCaching;
   double dPct = (dElapsed / (double)m_tmCachingTime) * 100.0;
   return (int)dPct;
+}
+
+int CDVDPlayer::GetAudioBitrate()
+{
+  return m_dvdPlayerAudio.GetAudioBitrate();
+}
+
+int CDVDPlayer::GetVideoBitrate()
+{
+  return m_dvdPlayerVideo.GetVideoBitrate();
+}
+
+int CDVDPlayer::GetSourceBitrate()
+{
+  if (m_pInputStream)
+    return (int)m_pInputStream->GetBitstreamStats().GetBitrate();
+
+  return 0;
 }
