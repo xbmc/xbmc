@@ -3313,8 +3313,17 @@ bool CApplication::ProcessGamepad(float frameTime)
   int bid;
   if (g_Joystick.GetButton(bid))
   {
-    CAction action;
+    // reset Idle Timer
+    m_idleTimer.StartZero();
 
+    ResetScreenSaver();
+    if (ResetScreenSaverWindow())
+    {
+      g_Joystick.Reset();
+      return true;
+    }
+
+    CAction action;
     string jname = g_Joystick.GetJoystick();
     if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, false, action.wID, action.strAction))
     {
