@@ -45,7 +45,7 @@ void CGUILabelControl::Render()
   CStdString lastLabel(m_renderLabel);
 	if (m_singleInfo)
 	{ 
-		m_renderLabel = g_infoManager.GetLabel(m_singleInfo);
+		m_renderLabel = g_infoManager.GetLabel(m_singleInfo, m_dwParentID);
 	}
 	else
 	{
