@@ -2020,6 +2020,7 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags)
   VerifyGLState();
 
   glPushAttrib(GL_VIEWPORT_BIT);
+  glPushAttrib(GL_SCISSOR_BIT);
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
   glLoadIdentity();
@@ -2051,6 +2052,7 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags)
 
   gluOrtho2D(0, im.width, 0, imgheight);
   glViewport(0, 0, im.width, imgheight);
+  glScissor(0, 0, im.width, imgheight);
   glMatrixMode(GL_MODELVIEW);
   VerifyGLState();
 
@@ -2092,6 +2094,7 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags)
   glPopMatrix(); // pop modelview
   glMatrixMode(GL_PROJECTION);
   glPopMatrix(); // pop projection
+  glPopAttrib(); // pop scissor
   glPopAttrib(); // pop viewport
   glMatrixMode(GL_MODELVIEW);
   VerifyGLState();
