@@ -119,26 +119,29 @@ namespace PYXBMC
 
     if (!PyArg_ParseTuple(args, "O|Ol", &pObjectUrl, &pObjectListItem, &iDuration)) return NULL;
 
-    if (PyString_Check(pObjectUrl) && pObjectListItem != NULL && ListItem_CheckExact(pObjectListItem))
+    CStdString strUrl = "";
+    if (!PyGetUnicodeString(strUrl, pObjectUrl)) return NULL;
+
+    if (pObjectListItem != NULL && ListItem_CheckExact(pObjectListItem))
     {
       // an optional listitem was passed
       ListItem* pListItem = NULL;
       pListItem = (ListItem*)pObjectListItem;
 
       // set m_strPath to the passed url
-      pListItem->item->m_strPath = PyString_AsString(pObjectUrl);
+      pListItem->item->m_strPath = strUrl;
       self->pPlayList->Add((CFileItem*)pListItem->item);
     }
     else if (PyString_Check(pObjectUrl))
     {
       CPlayList::CPlayListItem Item;
-      CFileItem item(PyString_AsString(pObjectUrl), false);
+      CFileItem item(strUrl, false);
 
-      Item.SetFileName(PyString_AsString(pObjectUrl));
+      Item.SetFileName(strUrl);
         
       CStdString strDescription;
       if (!PyGetUnicodeString(strDescription, pObjectListItem))
-        Item.SetDescription(PyString_AsString(pObjectUrl));
+        Item.SetDescription(strUrl);
       else
         Item.SetDescription(strDescription);
 
