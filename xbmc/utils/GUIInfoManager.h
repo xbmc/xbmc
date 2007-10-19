@@ -401,8 +401,8 @@ public:
 
   int TranslateString(const CStdString &strCondition);
   bool GetBool(int condition, DWORD dwContextWindow = 0);
-  int GetInt(int info) const;
-  CStdString GetLabel(int info);
+  int GetInt(int info, DWORD contextWindow = 0) const;
+  CStdString GetLabel(int info, DWORD contextWindow = 0);
 
   CStdString GetImage(int info, DWORD contextWindow);
 
