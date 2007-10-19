@@ -31,6 +31,23 @@
 using namespace DIRECTORY;
 using namespace XFILE;
 
+namespace 
+{
+  static const NPT_String JoinString(const NPT_List<NPT_String>& array, const NPT_String& delimiter)
+  {
+    NPT_String result;
+    
+    for(NPT_List<NPT_String>::Iterator it = array.GetFirstItem(); it; it++ )
+      result += (*it) + delimiter;
+
+    if(result.IsEmpty())
+      return "";
+    else
+      return result.SubString(delimiter.GetLength());
+  }
+
+}
+
 namespace DIRECTORY
 {
 /*----------------------------------------------------------------------
@@ -247,8 +264,8 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                       CStdString buffer;
 
                       tag->m_strTitle = (*entry)->m_Title;
-                      StringUtils::SplitString((const char*) (*entry)->m_Affiliation.genre, ",", strings);
-                      StringUtils::JoinString(strings, " / ", tag->m_strGenre);
+                      
+                      tag->m_strGenre = JoinString((*entry)->m_Affiliation.genre, " / ");
                       tag->m_strDirector = (*entry)->m_People.director;
                       tag->m_strTagLine = (*entry)->m_Description.description;
                       tag->m_strPlot = (*entry)->m_Description.long_description;
@@ -263,12 +280,11 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 
                       tag->SetDuration((*entry)->m_Resources[0].m_Duration);
                       tag->SetTitle((const char*) (*entry)->m_Title);
-                      StringUtils::SplitString((const char*) (*entry)->m_Affiliation.genre, ",", strings);
-                      StringUtils::JoinString(strings, " / ", buffer);
-                      tag->SetGenre(buffer);
+                      tag->SetGenre((const char*) JoinString((*entry)->m_Affiliation.genre, " / "));
                       tag->SetAlbum((const char*) (*entry)->m_Affiliation.album);
                       tag->SetTrackNumber((*entry)->m_MiscInfo.original_track_number); 
-                      tag->SetAlbumArtist((const char*)(*entry)->m_People.artist);
+                      if((*entry)->m_People.artists.GetItemCount())
+                        tag->SetAlbumArtist((const char*)(*entry)->m_People.artists.GetFirstItem()->name);
                       tag->SetArtist((const char*)(*entry)->m_Creator);
 
                       tag->SetLoaded();
