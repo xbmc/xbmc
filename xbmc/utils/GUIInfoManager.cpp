@@ -675,11 +675,11 @@ TIME_FORMAT CGUIInfoManager::TranslateTimeFormat(const CStdString &format)
   return TIME_FORMAT_GUESS;
 }
 
-CStdString CGUIInfoManager::GetLabel(int info)
+CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
 {
   CStdString strLabel;
   if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
-    return GetMultiInfoLabel(m_multiInfo[info - MULTI_INFO_START]);
+    return GetMultiInfoLabel(m_multiInfo[info - MULTI_INFO_START], contextWindow);
 
   if (info >= SLIDE_INFO_START && info <= SLIDE_INFO_END)
     return GetPictureLabel(info);
@@ -891,7 +891,9 @@ CStdString CGUIInfoManager::GetLabel(int info)
 #endif  
   case CONTAINER_FOLDERPATH:
     {
-      CGUIWindow *window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+      CGUIWindow *window = m_gWindowManager.GetWindow(contextWindow);
+      if (!window || !window->IsMediaWindow())
+        window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
       if (window && window->IsMediaWindow())
       {
         CURL url(((CGUIMediaWindow*)window)->CurrentDirectory().m_strPath);
@@ -1158,9 +1160,11 @@ CStdString CGUIInfoManager::GetLabel(int info)
   case LISTITEM_WRITER:
   case LISTITEM_TAGLINE:
     {
-      CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetFocusedWindow());
-      if (pWindow && pWindow->HasListItems())
-        strLabel = GetItemLabel(pWindow->GetCurrentListItem(), info);
+      CGUIWindow *window = m_gWindowManager.GetWindow(contextWindow);
+      if (!window || !window->HasListItems())
+        window = m_gWindowManager.GetWindow(m_gWindowManager.GetFocusedWindow());
+      if (window && window->HasListItems())
+        strLabel = GetItemLabel(window->GetCurrentListItem(), info);
     }
     break;
   }
@@ -1169,7 +1173,7 @@ CStdString CGUIInfoManager::GetLabel(int info)
 }
 
 // tries to get a integer value for use in progressbars/sliders and such
-int CGUIInfoManager::GetInt(int info) const
+int CGUIInfoManager::GetInt(int info, DWORD contextWindow) const
 {
   switch( info )
   {
@@ -1542,7 +1546,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
       }
       break;
     case STRING_IS_EMPTY:
-      bReturn = GetLabel(info.m_data1).IsEmpty();
+      bReturn = GetLabel(info.m_data1, dwContextWindow).IsEmpty();
       break;
     case CONTROL_GROUP_HAS_FOCUS:
       {
@@ -1850,7 +1854,7 @@ CStdString CGUIInfoManager::GetImage(int info, DWORD contextWindow)
         return GetItemImage(item, info);
     }
   }
-  return GetLabel(info);
+  return GetLabel(info, contextWindow);
 }
 
 CStdString CGUIInfoManager::GetDate(bool bNumbersOnly)
@@ -2994,7 +2998,7 @@ CStdString CGUIInfoManager::GetMultiInfo(const vector<CInfoPortion> &multiInfo, 
       if (preferImage)
         infoLabel = g_infoManager.GetImage(portion.m_info, contextWindow);
       if (infoLabel.IsEmpty())
-        infoLabel = g_infoManager.GetLabel(portion.m_info);
+        infoLabel = g_infoManager.GetLabel(portion.m_info, contextWindow);
       if (!infoLabel.IsEmpty())
       {
         label += portion.m_prefix;
