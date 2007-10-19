@@ -63,6 +63,7 @@ void CSlideShowPic::Close()
       glDeleteTextures(1, &m_pImage->id);
     }
     g_graphicsContext.EndPaint();
+    delete m_pImage;
 #else
     SDL_FreeSurface(m_pImage);
 #endif
@@ -91,7 +92,7 @@ void CSlideShowPic::SetTexture(int iSlideNumber, SDL_Surface* pTexture, int iWid
   // creating of textures during a glBegin(), glEnd() block
   // and this is called from a different thread
   //g_graphicsContext.Lock();
-  m_pImage = new CGLTexture(pTexture, false);
+  m_pImage = new CGLTexture(pTexture, false, true);
   //g_graphicsContext.Unlock();
 #else
   m_pImage = pTexture;
@@ -206,7 +207,7 @@ void CSlideShowPic::UpdateTexture(SDL_Surface *pTexture, int iWidth, int iHeight
   // of textures during glBegin(), glEnd() blocks, and this
   // is called from a different thread
   //g_graphicsContext.Lock();
-  m_pImage = new CGLTexture(pTexture, false);
+  m_pImage = new CGLTexture(pTexture, false, true);
   //g_graphicsContext.Unlock();
 #else
   m_pImage = pTexture;
