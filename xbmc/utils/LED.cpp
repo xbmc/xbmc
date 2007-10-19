@@ -352,10 +352,12 @@ bool ILEDSmartxxRGB::SetRGBStatus(const CStdString &strStatus)
 
 bool ILEDSmartxxRGB::SetRGBLed(int red, int green, int blue, int white)
 {
-  _outp(SMARTXX_PWD_RED,red);
-  _outp(SMARTXX_PWD_GREEN,green); 
-  _outp(SMARTXX_PWD_BLUE,blue);
-  _outp(SMARTXX_PWM_STATUS,white);
+  _outp( g_sysinfo.SmartXXModCHIP().Equals("SmartXX V3") ? SMARTXX_PWD_RED:SMARTXX_OPX_PWD_RED, red);
+  _outp( g_sysinfo.SmartXXModCHIP().Equals("SmartXX V3") ? SMARTXX_PWD_GREEN:SMARTXX_OPX_PWD_GREEN, green); 
+  _outp( g_sysinfo.SmartXXModCHIP().Equals("SmartXX V3") ? SMARTXX_PWD_BLUE:SMARTXX_OPX_PWD_BLUE, blue);
+    
+  _outp( SMARTXX_PWM_STATUS, white);
+  
   return true;
 }
 
