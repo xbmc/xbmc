@@ -81,7 +81,8 @@ void CFrameBufferObject::Cleanup()
   m_bound = false;
 }
 
-bool CFrameBufferObject::CreateAndBindToTexture(GLenum target, int width, int height, GLenum format)
+bool CFrameBufferObject::CreateAndBindToTexture(GLenum target, int width, int height, GLenum format, 
+                                                GLenum filter, GLenum clampmode)
 {
   if (!IsValid())
     return false;
@@ -92,10 +93,10 @@ bool CFrameBufferObject::CreateAndBindToTexture(GLenum target, int width, int he
   glGenTextures(1, &m_texid);
   glBindTexture(target, m_texid);
   glTexImage2D(target, 0, format,  width, height, 0, format, GL_UNSIGNED_BYTE, NULL);
-  glTexParameterf(target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameterf(target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameterf(target, GL_TEXTURE_WRAP_S, clampmode);
+  glTexParameterf(target, GL_TEXTURE_WRAP_T, clampmode);
+  glTexParameteri(target, GL_TEXTURE_MAG_FILTER, filter);
+  glTexParameteri(target, GL_TEXTURE_MIN_FILTER, filter);
   VerifyGLState();
   return BindToTexture(target, m_texid);
 }
@@ -103,8 +104,8 @@ bool CFrameBufferObject::CreateAndBindToTexture(GLenum target, int width, int he
 void CFrameBufferObject::SetFiltering(GLenum target, GLenum mode)
 {
   glBindTexture(target, m_texid);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mode);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, mode);
+  glTexParameteri(target, GL_TEXTURE_MAG_FILTER, mode);
+  glTexParameteri(target, GL_TEXTURE_MIN_FILTER, mode);
 }
 
 bool CFrameBufferObject::BindToTexture(GLenum target, GLuint texid)
