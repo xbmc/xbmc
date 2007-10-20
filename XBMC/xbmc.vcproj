@@ -4161,6 +4161,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\GUIPythonWindowXMLDialog.cpp">
 					</File>
 					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\GUIPythonWindowXMLDialog.h">
+					</File>
+					<File
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\infotagmusic.cpp">
 					</File>
 					<File
