@@ -87,6 +87,7 @@
 #ifndef HAS_XBOX_D3D
 #include "DirectXGraphics.h"
 #endif
+#include "lib/libGoAhead/xbmchttp.h"
 
 namespace MathUtils {
 
@@ -3720,6 +3721,8 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     {
       if( g_application.IsPlaying() && g_application.m_pPlayer && g_application.m_pPlayer->CanRecord())
       {
+		if (pXbmcHttp)
+			pXbmcHttp->xbmcBroadcast(g_application.m_pPlayer->IsRecording()?"RecordStopping":"RecordStarting", 1);
         g_application.m_pPlayer->Record(!g_application.m_pPlayer->IsRecording());
       }
     }
