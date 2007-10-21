@@ -1530,13 +1530,10 @@ bool CDVDPlayer::OpenSubtitleStream(int iStream)
 
 bool CDVDPlayer::CloseAudioStream(bool bWaitForBuffers)
 {
-  if (m_CurrentVideo.id < 0) 
+  if (m_CurrentAudio.id < 0)
     return false;
 
   CLog::Log(LOGNOTICE, "Closing audio stream");
-
-  if (m_CurrentAudio.id < 0)
-    return false;
 
   m_dvdPlayerAudio.CloseStream(bWaitForBuffers);
 
