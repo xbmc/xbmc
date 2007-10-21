@@ -307,7 +307,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
     if (g_advancedSettings.m_bMusicLibraryAllItemsOnBottom)
       items.Add(pItem);
     else
-      items.AddFront(pItem,0);
+      items.AddFront(pItem, (items.Size() > 0 && items[0]->IsParentFolder()) ? 1 : 0);
   }
 }
 
