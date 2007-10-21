@@ -132,7 +132,7 @@ namespace PYXBMC
       pListItem->item->m_strPath = strUrl;
       self->pPlayList->Add((CFileItem*)pListItem->item);
     }
-    else if (PyString_Check(pObjectUrl))
+    else
     {
       CPlayList::CPlayListItem Item;
       CFileItem item(strUrl, false);
@@ -140,7 +140,7 @@ namespace PYXBMC
       Item.SetFileName(strUrl);
         
       CStdString strDescription;
-      if (!PyGetUnicodeString(strDescription, pObjectListItem))
+      if (pObjectListItem == NULL || !PyGetUnicodeString(strDescription, pObjectListItem))
         Item.SetDescription(strUrl);
       else
         Item.SetDescription(strDescription);
@@ -149,8 +149,6 @@ namespace PYXBMC
 
       self->pPlayList->Add(Item);
     }
-    else
-      return NULL;
 
     Py_INCREF(Py_None);
     return Py_None;
