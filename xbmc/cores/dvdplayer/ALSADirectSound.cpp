@@ -58,6 +58,7 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   m_dwNumPackets = 16;
 
   snd_pcm_hw_params_t *hw_params=NULL;
+  snd_pcm_sw_params_t *sw_params=NULL;
 
   /* Open the device */
   const char* device;
@@ -71,6 +72,9 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
 
   /* Allocate Hardware Parameters structures and fills it with config space for PCM */
   snd_pcm_hw_params_malloc(&hw_params);
+
+  /* Allocate Software Parameters structures and fills it with config space for PCM */
+  snd_pcm_sw_params_malloc(&sw_params);
 
   nErr = snd_pcm_hw_params_any(m_pPlayHandle, hw_params);
   CHECK_ALSA_RETURN(LOGERROR,"hw_params_any",nErr);
@@ -104,8 +108,20 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   nErr = snd_pcm_hw_params(m_pPlayHandle, hw_params);
   CHECK_ALSA_RETURN(LOGERROR,"snd_pcm_hw_params",nErr);
 
+  nErr = snd_pcm_sw_params_current(m_pPlayHandle, sw_params);
+  CHECK_ALSA_RETURN(LOGERROR,"sw_params_current",nErr);
+
+  nErr = snd_pcm_sw_params_set_start_threshold(m_pPlayHandle, sw_params, m_dwPacketSize);
+  CHECK_ALSA_RETURN(LOGERROR,"sw_params_set_start_threshold",nErr);
+
+  nErr = snd_pcm_sw_params(m_pPlayHandle, sw_params);
+  CHECK_ALSA_RETURN(LOGERROR,"snd_pcm_sw_params",nErr);
+
   snd_pcm_hw_params_free (hw_params);
   CHECK_ALSA(LOGERROR,"snd_pcm_hw_params_free",nErr);
+
+  snd_pcm_sw_params_free (sw_params);
+  CHECK_ALSA(LOGERROR,"snd_pcm_sw_params_free",nErr);
 
   nErr = snd_pcm_prepare (m_pPlayHandle);
   CHECK_ALSA(LOGERROR,"snd_pcm_prepare",nErr);
