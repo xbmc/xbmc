@@ -1805,7 +1805,7 @@ CStdString CGUIInfoManager::GetImage(int info, DWORD contextWindow)
 {
   if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
   {
-    return GetMultiInfoLabel(m_multiInfo[info - MULTI_INFO_START]);
+    return GetMultiInfoLabel(m_multiInfo[info - MULTI_INFO_START], contextWindow);
   }
   else if (info == WEATHER_CONDITIONS)
     return g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON);
