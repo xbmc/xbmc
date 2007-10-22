@@ -1,11 +1,11 @@
-INCLUDES=-I. -I.. -I../../../xbmc/linux -I../../../xbmc
+INCLUDES=-I. -I.. -I../../xbmc/linux -I../../xbmc
 
 SRCS=Main.cpp
 
 LIB=ProjectM.vis
 SDL_DEFINES=-DHAS_SDL_OPENGL -DHAS_SDL
 
-include ../../../Makefile.include
+include ../../Makefile.include
 
 vis:
 	$(MAKE)

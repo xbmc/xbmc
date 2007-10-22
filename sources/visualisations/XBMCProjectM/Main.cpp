@@ -39,9 +39,10 @@ d4rk@xboxmediacenter.com
 #endif
 #include "libprojectM/src/projectM.h"
 #include "libprojectM/src/PCM.h"
+#include <string>
 
 #define CONFIG_FILE "/config"
-#define PRESETS_DIR "visualisations/projectM"
+#define PRESETS_DIR "/visualisations/projectM"
 #define FONTS_DIR "/fonts"
 #define PROJECTM_DATADIR "UserData"
 
@@ -72,8 +73,6 @@ extern "C" void Create(LPDIRECT3DDEVICE8 pd3dDevice, int iPosX, int iPosY, int i
 extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName, float fPixelRatio)
 #endif
 {
-  char projectM_data[PATH_MAX];
-
   strcpy(g_visName, szVisualisationName);
 
    /** Initialise projectM */
@@ -89,23 +88,27 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
   globalPM->gy=gy;
   globalPM->fps=fps;
   globalPM->renderTarget->usePbuffers=0;
-  globalPM->avgtime = 100;
+  globalPM->avgtime = 200;
   globalPM->maxsamples=maxSamples;
-  
-  strcpy(projectM_data, PROJECTM_DATADIR);
-  strcpy(projectM_data+strlen(PROJECTM_DATADIR), FONTS_DIR);
-  projectM_data[strlen(PROJECTM_DATADIR)+strlen(FONTS_DIR)]='\0';
+
+  char *rootdir = getenv("XBMC_HOME");
+  std::string dirname;
+
+  if (rootdir==NULL)
+  {
+    rootdir = ".";
+  }
+  dirname = string(rootdir) + "/" + string(PROJECTM_DATADIR) + string(FONTS_DIR);;
+  fprintf(stderr, "ProjectM Fonts Dir: %s\n", dirname.c_str());
   
   globalPM->fontURL = (char *)malloc( sizeof( char ) * 512 );
-  strcpy( globalPM->fontURL, projectM_data );
+  strncpy(globalPM->fontURL, dirname.c_str(), 512);
   
-  strcpy(projectM_data+strlen(PROJECTM_DATADIR), PRESETS_DIR);
-  projectM_data[strlen(PROJECTM_DATADIR)+strlen(PRESETS_DIR)]='\0';
+  dirname = string(rootdir) + "/" + string(PRESETS_DIR);;
+  fprintf(stderr, "ProjectM Presets Dir: %s", dirname.c_str());
   
   globalPM->presetURL = (char *)malloc( sizeof( char ) * 512 );
-
-//  strcpy( globalPM->presetURL, projectM_data );
-  strcpy( globalPM->presetURL,PRESETS_DIR);
+  strncpy(globalPM->presetURL, dirname.c_str(), 512);
     
   projectM_init( globalPM );
   
@@ -130,6 +133,10 @@ extern "C" void Stop()
 {
   if (globalPM) 
   {
+    if (globalPM->fontURL)
+      free(globalPM->fontURL);
+    if (globalPM->presetURL)
+      free(globalPM->presetURL);
     free(globalPM);
     globalPM = NULL;
   }
@@ -152,7 +159,6 @@ extern "C" void AudioData(short* pAudioData, int iAudioDataLength, float *pFreqD
 //-----------------------------------------------------------------------------
 extern "C" void Render()
 { 
-  GLenum errcode;
 
   glClearColor(0,0,0,0);
 
