@@ -1281,12 +1281,11 @@ CUPnP::StartServer()
     }
 #endif
     m_ServerHolder->m_Device->m_PresentationURL = NPT_HttpUrl(ip, atoi(g_guiSettings.GetString("servers.webserverport")), "/").ToString();
-    m_ServerHolder->m_Device->m_ModelName = "Xbox Media Center";
-    m_ServerHolder->m_Device->m_ModelDescription = "Xbox Media Center - Media Server";
-    m_ServerHolder->m_Device->m_ModelURL = "http://www.xboxmediacenter.com/";
-    m_ServerHolder->m_Device->m_ModelNumber = "2.0";
     m_ServerHolder->m_Device->m_ModelName = "XBMC";
-    m_ServerHolder->m_Device->m_Manufacturer = "Xbox Team";
+    m_ServerHolder->m_Device->m_ModelNumber = "2.0";
+    m_ServerHolder->m_Device->m_ModelDescription = "Xbox Media Center - Media Server";
+    m_ServerHolder->m_Device->m_ModelURL = "http://www.xboxmediacenter.com/";    
+    m_ServerHolder->m_Device->m_Manufacturer = "Team XBMC";
     m_ServerHolder->m_Device->m_ManufacturerURL = "http://www.xboxmediacenter.com/";
 
     // since the xbox doesn't support multicast
@@ -1338,11 +1337,11 @@ void CUPnP::StartRenderer()
           (g_settings.m_UPnPUUIDRenderer.length() ? g_settings.m_UPnPUUIDRenderer.c_str() : NULL) );
 
     m_RendererHolder->m_Device->m_PresentationURL = NPT_HttpUrl(ip, atoi(g_guiSettings.GetString("servers.webserverport")), "/").ToString();
-    m_RendererHolder->m_Device->m_ModelName = "Xbox Media Center";
-    m_RendererHolder->m_Device->m_ModelDescription = "Xbox Media Center - Media Renderer";
-    m_RendererHolder->m_Device->m_ModelURL = "http://www.xboxmediacenter.com/";
+    m_RendererHolder->m_Device->m_ModelName = "XBMC";
     m_RendererHolder->m_Device->m_ModelNumber = "2.0";
-    m_RendererHolder->m_Device->m_Manufacturer = "Xbox Team";
+    m_RendererHolder->m_Device->m_ModelDescription = "Xbox Media Center - Media Renderer";
+    m_RendererHolder->m_Device->m_ModelURL = "http://www.xboxmediacenter.com/";    
+    m_RendererHolder->m_Device->m_Manufacturer = "Team XBMC";
     m_RendererHolder->m_Device->m_ManufacturerURL = "http://www.xboxmediacenter.com/";
 
     m_RendererHolder->m_Device->SetBroadcast(broadcast);
