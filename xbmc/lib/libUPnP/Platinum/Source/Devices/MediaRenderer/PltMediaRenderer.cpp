@@ -93,7 +93,7 @@ PLT_MediaRenderer::PLT_MediaRenderer(PlaybackCmdListener* listener,
         AddService(service);
         service->SetStateVariable("CurrentConnectionIDs", "0", false);
         // put all supported mime types here instead
-        service->SetStateVariable("SinkProtocolInfo", "http-get:*:*:*", false);
+        service->SetStateVariable("SinkProtocolInfo", "http-get:*:*:*;rtsp:*:*:*;http-get:*:video/mpeg:*;http-get:*:audio/mpeg:*", false);
         service->SetStateVariable("SourceProtocolInfo", "", false);
     }
 
