@@ -315,7 +315,7 @@ namespace PYXBMC
 
     CStdString tmp;
     while (PyDict_Next(pInfoLabels, &pos, &key, &value)) {
-      CLog::Log(LOGDEBUG, __FUNCTION__" - InfoLabel Dictionary: pos: %i,  key: %s", pos, PyString_AsString(key));
+      CLog::Log(LOGDEBUG, __FUNCTION__" - InfoLabel Dictionary: pos: %i,  type: %s,  label: %s", pos, cType, PyString_AsString(key));
       if (strcmpi(cType, "video") == 0)
       {
         // TODO: add the rest of the infolabels
@@ -357,7 +357,6 @@ namespace PYXBMC
         else
         {
           if (!PyGetUnicodeString(tmp, value, 1)) continue;
-          CLog::Log(LOGDEBUG, __FUNCTION__" - Type: %s,  InfoLabel: %s,  Value: %s ", cType, PyString_AsString(key), tmp.c_str());
           if (strcmpi(PyString_AsString(key), "genre") == 0)
             self->item->GetVideoInfoTag()->m_strGenre = tmp;
           else if (strcmpi(PyString_AsString(key), "director") == 0)
@@ -397,7 +396,6 @@ namespace PYXBMC
         else
         {
           if (!PyGetUnicodeString(tmp, value, 1)) continue;
-          CLog::Log(LOGDEBUG, __FUNCTION__" - Type: %s,  InfoLabel: %s,  Value: %s ", cType, PyString_AsString(key), tmp.c_str());
           if (strcmpi(PyString_AsString(key), "genre") == 0)
             self->item->GetMusicInfoTag()->SetGenre(tmp);
           else if (strcmpi(PyString_AsString(key), "album") == 0)
@@ -418,7 +416,6 @@ namespace PYXBMC
       {
         // TODO: Figure out how to set picture tags
         if (!PyGetUnicodeString(tmp, value, 1)) continue;
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Type: %s,  InfoLabel: %s,  Value: %s ", cType, PyString_AsString(key), tmp.c_str());
         if (strcmpi(PyString_AsString(key), "title") == 0)
           self->item->m_strTitle = tmp;
         else if (strcmpi(PyString_AsString(key), "count") == 0)
