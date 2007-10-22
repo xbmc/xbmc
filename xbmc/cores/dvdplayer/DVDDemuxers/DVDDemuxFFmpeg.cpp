@@ -615,8 +615,16 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
       {
         m_streams[iId] = new CDemuxStreamVideoFFmpeg(&m_dllAvCodec);
         m_streams[iId]->type = STREAM_VIDEO;
-        ((CDemuxStreamVideo*)m_streams[iId])->iFpsRate = pStream->codec->time_base.den;
-        ((CDemuxStreamVideo*)m_streams[iId])->iFpsScale = pStream->codec->time_base.num;
+        if(pStream->r_frame_rate.den && pStream->r_frame_rate.num)
+        {
+          ((CDemuxStreamVideo*)m_streams[iId])->iFpsRate = pStream->r_frame_rate.den;
+          ((CDemuxStreamVideo*)m_streams[iId])->iFpsScale = pStream->r_frame_rate.num;
+        }
+        else
+        {
+          ((CDemuxStreamVideo*)m_streams[iId])->iFpsRate = pStream->codec->time_base.den;
+          ((CDemuxStreamVideo*)m_streams[iId])->iFpsScale = pStream->codec->time_base.num;
+        }
         ((CDemuxStreamVideo*)m_streams[iId])->iWidth = pStream->codec->width;
         ((CDemuxStreamVideo*)m_streams[iId])->iHeight = pStream->codec->height;
         break;
