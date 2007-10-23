@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <scraper name="NFO Scraper" content="musicvideos" thumb="mvids.gif">
 	<NfoScrape dest="3">
 		<RegExp input="$$5" output="&lt;musicvideo&gt;\1&lt;/musicvideo&gt;" dest="3">
@@ -27,10 +27,10 @@
 		</RegExp>
 	</NfoScrape>
 	<FileNameScrape dest="3">
-		<RegExp input="$$1" output="&lt;musicvideo&gt;&lt;artist&gt;\1&lt;/artist&gt;&lt;title&gt;\2&lt;/title&gt;&lt;year&gt;\3&lt;/year&gt;&lt;/musicvideo&gt;" dest="3">
+		<RegExp input="$$1" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;musicvideo&gt;&lt;artist&gt;\1&lt;/artist&gt;&lt;title&gt;\2&lt;/title&gt;&lt;year&gt;\3&lt;/year&gt;&lt;/musicvideo&gt;" dest="3">
 			<expression>([^-]*)-([^-]*)-[^-]*-[^-]*-([0-9][0-9][0-9][0-9])</expression>
 		</RegExp>
-		<RegExp input="$$1" output="&lt;musicvideo&gt;&lt;artist&gt;\1&lt;/artist&gt;&lt;title&gt;\2&lt;/title&gt;&lt;year&gt;\3&lt;/year&gt;&lt;/musicvideo&gt;" dest="3+">
+		<RegExp input="$$1" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;musicvideo&gt;&lt;artist&gt;\1&lt;/artist&gt;&lt;title&gt;\2&lt;/title&gt;&lt;year&gt;\3&lt;/year&gt;&lt;/musicvideo&gt;" dest="3+">
 			<expression>([^-]*)-([^-]*)[^0-9]*([0-9][0-9][0-9][0-9])?</expression>
 		</RegExp>
 	</FileNameScrape>
