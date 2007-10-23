@@ -113,6 +113,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             CFileItem *pItem = new CFileItem((const char*)name);
             pItem->m_strPath = (const char*) path + uuid;
             pItem->m_bIsFolder = true;
+            pItem->SetThumbnailImage((const char*)device->GetIconUrl("image/jpeg"));
 
             if (!CUtil::HasSlashAtEnd(pItem->m_strPath)) pItem->m_strPath += '/';
 
