@@ -1044,11 +1044,36 @@ namespace VIDEO
     CStdString strPath;
     strPath.Format("videodb://2/2/%i/",lTvShowId);
     m_database.GetSeasonsNav(strPath,items,-1,-1,-1,-1,lTvShowId);
+    // used for checking for a season[ ._-](number).tbn
+    CFileItemList tbnItems;
+    CDirectory::GetDirectory(movie.m_strPath,tbnItems,".tbn");
     for (int i=0;i<items.Size();++i)
     {
       items[i]->SetVideoThumb();
       if (!items[i]->HasThumbnail())
-        DownloadThumbnail(items[i]->GetCachedSeasonThumb(),movie.m_strPictureURL.GetSeasonThumb(items[i]->GetVideoInfoTag()->m_iSeason));
+      {
+        CStdString strExpression;
+        strExpression.Format("season[ ._-](0?%i)\\.tbn",items[i]->GetVideoInfoTag()->m_iSeason);
+        bool bDownload=true;
+        CRegExp reg;
+        if (reg.RegComp(strExpression.c_str()))
+        {
+          for (int j=0;j<tbnItems.Size();++j)
+          {
+            CStdString strCheck = CUtil::GetFileName(tbnItems[j]->m_strPath);
+            strCheck.ToLower();
+            if (reg.RegFind(strCheck.c_str()) > -1)
+            {
+              CPicture picture;
+              picture.DoCreateThumbnail(tbnItems[j]->m_strPath,items[i]->GetCachedSeasonThumb());
+              bDownload=false;
+              break;
+            }
+          }
+        }
+        if (bDownload)
+          DownloadThumbnail(items[i]->GetCachedSeasonThumb(),movie.m_strPictureURL.GetSeasonThumb(items[i]->GetVideoInfoTag()->m_iSeason));
+      }
     }
   }
 
