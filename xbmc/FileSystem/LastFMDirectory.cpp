@@ -274,10 +274,10 @@ bool CLastFMDirectory::ParseTagList(CStdString url, CFileItemList &items)
     if (!count) count = pEntry->FirstChild("match");
     if (!count && pEntry->Attribute("count"))
       countstr = pEntry->Attribute("count");
-    else
+    else if (count->FirstChild())
       countstr = count->FirstChild()->Value();
 
-    if (name)
+    if (name && name->FirstChild())
       namestr = name->FirstChild()->Value();
     else
       namestr = pEntry->Attribute("name");
