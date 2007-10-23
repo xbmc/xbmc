@@ -361,7 +361,7 @@ namespace PYXBMC
             self->item->GetVideoInfoTag()->m_strGenre = tmp;
           else if (strcmpi(PyString_AsString(key), "director") == 0)
             self->item->GetVideoInfoTag()->m_strDirector = tmp;
-          else if (strcmpi(PyString_AsString(key), "MPAARating") == 0)
+          else if (strcmpi(PyString_AsString(key), "mpaa") == 0)
             self->item->GetVideoInfoTag()->m_strMPAARating = tmp;
           else if (strcmpi(PyString_AsString(key), "plot") == 0)
             self->item->GetVideoInfoTag()->m_strPlot = tmp;
