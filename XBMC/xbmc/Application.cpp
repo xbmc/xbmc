@@ -786,6 +786,7 @@ HRESULT CApplication::Create(HWND hWnd)
   CIoSupport::RemapDriveLetter('Q', szDevicePath);
 #else
   CIoSupport::RemapDriveLetter('Q', (char*) strExecutablePath.c_str());
+  setenv("XBMC_HOME", strExecutablePath.c_str(), 0);
 #endif  
 
   // check logpath
