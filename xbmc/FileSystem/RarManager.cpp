@@ -114,7 +114,9 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
   }
 
   CStdString strPath = strPathInRar;
+#ifndef _LINUX
   strPath.Replace('/', '\\');
+#endif
 
   __int64 iOffset = -1;
   if (iRes != 2)
