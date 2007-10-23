@@ -517,7 +517,7 @@ BOOL GetDiskFreeSpaceEx(
 
 {
 	struct statfs64 fsInfo;
-	if (statfs64(lpDirectoryName, &fsInfo) != 0)
+	if (statfs64(_P(lpDirectoryName), &fsInfo) != 0)
 		return false;
 
 	if (lpFreeBytesAvailable)

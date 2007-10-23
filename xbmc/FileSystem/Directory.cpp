@@ -20,7 +20,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
 {
   try 
   {
-    CStdString translatedPath = CUtil::TranslateSpecialPath(strPath);
+    CStdString translatedPath = CUtil::TranslateSpecialPath(_P(strPath));
 
     auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(translatedPath));
     if (!pDirectory.get()) return false;
@@ -29,7 +29,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
     pDirectory->SetAllowPrompting(allowPrompting);
     pDirectory->SetCacheDirectory(cacheDirectory);
 
-    items.m_strPath=strPath;
+    items.m_strPath=_P(strPath);
 
     bool bSuccess = pDirectory->GetDirectory(translatedPath, items);
     if (bSuccess)
