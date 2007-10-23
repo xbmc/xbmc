@@ -2909,14 +2909,18 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     return item->GetIconImage();
     break;
   case LISTITEM_ICON:
-    if (!item->HasThumbnail() && item->HasIcon())
     {
-      CStdString strThumb = item->GetIconImage();
-      if (info == LISTITEM_ICON)
+      CStdString strThumb = item->GetThumbnailImage();
+      if(!strThumb.IsEmpty() && !CURL::IsFileOnly(strThumb) && !CUtil::IsHD(strThumb))
+        strThumb = "";
+
+      if(strThumb.IsEmpty())
+      {
+        strThumb = item->GetIconImage();
         strThumb.Insert(strThumb.Find("."), "Big");
+      }
       return strThumb;
     }
-    return item->GetThumbnailImage();
     break;
   case LISTITEM_OVERLAY:
     return item->GetOverlayImage();
