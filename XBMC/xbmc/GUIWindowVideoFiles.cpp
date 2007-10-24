@@ -541,24 +541,27 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
     {
       // get the usual shares, and anything for all media windows
       CShare *share = CGUIDialogContextMenu::GetShare("video", item);
-      CGUIDialogContextMenu::GetContextButtons("video", share, buttons);
-      CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
-      // add scan button somewhere here
-      if (!item->IsDVD() && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
+      if (share)
       {
-        CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-        if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
-          buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
-        CVideoDatabase database;
-        database.Open();
-        SScraperInfo info;
-        if (database.GetScraperForPath(share->strPath,info))
+        CGUIDialogContextMenu::GetContextButtons("video", share, buttons);
+        CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
+        // add scan button somewhere here
+        if (!item->IsDVD() && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
         {
-          if (!info.strPath.IsEmpty() && !info.strContent.IsEmpty())
-            if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
-              buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
-            else
-              buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);	// Stop Scanning
+          CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+          if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
+            buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
+          CVideoDatabase database;
+          database.Open();
+          SScraperInfo info;
+          if (database.GetScraperForPath(share->strPath,info))
+          {
+            if (!info.strPath.IsEmpty() && !info.strContent.IsEmpty())
+              if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
+                buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
+              else
+                buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);	// Stop Scanning
+          }
         }
       }
     }
