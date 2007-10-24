@@ -451,8 +451,8 @@ unsigned int CFile::Read(void *lpBuf, __int64 uiBufSize)
       unsigned int done = 0;
       while((uiBufSize-done) > 0)
       {
-        unsigned int curr = m_pFile->Read((char*)lpBuf+done, uiBufSize-done);
-        if(curr==0)
+        int curr = m_pFile->Read((char*)lpBuf+done, uiBufSize-done);
+        if(curr<=0)
           break;
 
         done+=curr;
