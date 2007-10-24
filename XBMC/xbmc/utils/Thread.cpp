@@ -29,6 +29,7 @@
 typedef unsigned (WINAPI *PBEGINTHREADEX_THREADFUNC)(LPVOID lpThreadParameter);
 #else
 #include "PlatformInclude.h"
+#include <signal.h>
 typedef int (*PBEGINTHREADEX_THREADFUNC)(LPVOID lpThreadParameter);
 #endif
 
@@ -90,6 +91,23 @@ CThread::~CThread()
 
 
 #ifdef _LINUX
+__thread CThread* pLocalThread = NULL;
+void CThread::term_handler (int signum)
+{
+  CLog::Log(LOGERROR,"thread 0x%x (%lu) got signal %d. calling OnException and terminating thread abnormally.", SDL_ThreadID(), SDL_ThreadID(), signum);
+  if (pLocalThread)
+  {
+    pLocalThread->m_bStop = TRUE;
+    if (pLocalThread->m_StopEvent)
+      SetEvent(pLocalThread->m_StopEvent);
+
+    pLocalThread->OnException();
+    if( pLocalThread->IsAutoDelete() )
+      delete pLocalThread;
+  }
+
+  pthread_exit(NULL);
+}
 int CThread::staticThread(void* data)
 #else
 DWORD WINAPI CThread::staticThread(LPVOID* data)
@@ -106,6 +124,14 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
 #ifndef _LINUX
   /* install win32 exception translator */
   win32_exception::install_handler();
+#else
+  pLocalThread = pThread;
+  struct sigaction action;
+  action.sa_handler = term_handler;
+  sigemptyset (&action.sa_mask);
+  action.sa_flags = 0;
+  sigaction (SIGABRT, &action, NULL);
+  sigaction (SIGSEGV, &action, NULL);
 #endif
 
   try 

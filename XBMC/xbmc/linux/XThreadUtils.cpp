@@ -6,9 +6,8 @@
 #include "XEventUtils.h"
 #include "../utils/log.h"
 
-#include <signal.h>
-
 #ifdef _LINUX
+#include <signal.h>
 
 // a variable which is defined __thread will be defined in thread local storage
 // which means it will be different for each thread that accesses it.
@@ -23,16 +22,34 @@ struct InternalThreadParam {
   HANDLE handle;
 };
 
+__thread InternalThreadParam *pParam = NULL;
+void handler (int signum)
+{
+  CLog::Log(LOGERROR,"thread 0x%x (%lu) got signal %d. terminating thread abnormally.", SDL_ThreadID(), SDL_ThreadID(), signum);
+  if (pParam && pParam->handle)
+  {
+    SetEvent(pParam->handle);
+    CloseHandle(pParam->handle);
+    delete pParam;
+  }
+
+  pthread_exit(NULL);
+}
+
 static int InternalThreadFunc(void *data) {
-  InternalThreadParam *pParam = (InternalThreadParam *)data;
+  pParam = (InternalThreadParam *)data;
   int nRc = -1;
-  
-  //block all signals to this thread
-  sigset_t sigs;
-  sigfillset( &sigs );
-  pthread_sigmask( SIG_BLOCK, &sigs, NULL );
+
+  // assign termination handler  
+  struct sigaction action;
+  action.sa_handler = handler;
+  sigemptyset (&action.sa_mask);
+  action.sa_flags = 0;
+  sigaction (SIGABRT, &action, NULL);
+  sigaction (SIGSEGV, &action, NULL);
 
   try {
+     CLog::Log(LOGDEBUG,"Running thread %lu", SDL_ThreadID());
      nRc = pParam->threadFunc(pParam->data);
   }
   catch(...) {
