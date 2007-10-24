@@ -55,7 +55,13 @@ public:
 protected:
   virtual void OnStartup(){};
   virtual void OnExit(){};
+  virtual void OnException(){} // signal termination handler
   virtual void Process(); 
+
+#ifdef _LINUX
+  static void term_handler (int signum);
+#endif
+
   bool m_bStop;
   HANDLE m_ThreadHandle;
 

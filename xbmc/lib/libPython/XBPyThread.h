@@ -37,6 +37,7 @@ protected:
   virtual void OnStartup();
   virtual void Process();
   virtual void OnExit();
+  virtual void OnException();
 };
 
 #endif // XBPYTHREAD_H_

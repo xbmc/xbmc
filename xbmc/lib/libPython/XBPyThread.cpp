@@ -173,7 +173,6 @@ void XBPyThread::Process()
 
   m_pExecuter->DeInitializeInterpreter();
 
-  // clear the thread state and release our hold on the global interpreter
   Py_EndInterpreter(m_threadState);
   m_threadState = NULL;
   PyEval_ReleaseLock();
@@ -182,6 +181,15 @@ void XBPyThread::Process()
 void XBPyThread::OnExit()
 {
   done = true;
+  m_pExecuter->setDone(m_id);
+}
+
+void XBPyThread::OnException()
+{
+  done = true;
+  m_threadState = NULL;
+  CLog::Log(LOGERROR,"%s, abnormally terminating python thread", __FUNCTION__);
+  PyEval_ReleaseLock();
   m_pExecuter->setDone(m_id);
 }
 
