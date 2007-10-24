@@ -3730,7 +3730,7 @@ void CApplication::OnPlayBackStopped()
 
   // Let's tell the outside world as well
   if (pXbmcHttp)
-    pXbmcHttp->xbmcBroadcast("OnPlayBackStoped", 1);
+    pXbmcHttp->xbmcBroadcast("OnPlayBackStopped", 1);
 
   OutputDebugString("Playback was stopped\n");
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0, 0, 0, NULL );
