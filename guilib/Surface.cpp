@@ -564,7 +564,17 @@ bool CSurface::MakeCurrent()
 #ifdef HAS_GLX
   if (m_glWindow)
   {
-    return (bool)glXMakeCurrent(s_dpy, m_glWindow, m_glContext);
+    //attempt up to 10 times
+    int i = 0;
+    while (i<=10 && !glXMakeCurrent(s_dpy, m_glWindow, m_glContext))
+    {
+      Sleep(5);
+      i++;
+    }
+    if (i==10)
+      return false;
+    return true;
+    //return (bool)glXMakeCurrent(s_dpy, m_glWindow, m_glContext);
   }
   else if (m_glPBuffer)
   {
