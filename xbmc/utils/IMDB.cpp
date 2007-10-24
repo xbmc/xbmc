@@ -130,7 +130,7 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
 
   int iYear = atoi(strYear);
 
-  while ((movie = movie->NextSiblingElement()))
+  do
   {
     url.m_scrURL.clear();
     TiXmlNode *title = movie->FirstChild("title");
@@ -173,7 +173,8 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
 
       movielist.push_back(url);
     }
-  }
+  } while ((movie = movie->NextSiblingElement()));
+
   return true;
 }
 
