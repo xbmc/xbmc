@@ -1,5 +1,5 @@
 #pragma once
-#include "lib/sqlLite/sqlitedataset.h"
+#include "lib/sqLite/sqlitedataset.h"
 
 using namespace dbiplus;
 
