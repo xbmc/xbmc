@@ -170,7 +170,7 @@ void CFileCache::Process() {
       bError = TRUE;
 
     int iTotalWrite=0;
-    while (!m_bStop && (iTotalWrite < iRead || iRead == 0)) {
+    while (!bError && !m_bStop && (iTotalWrite < iRead || iRead == 0)) {
       int iWrite = 0;
       if (iRead > 0) 
       {
@@ -206,6 +206,11 @@ void CFileCache::Process() {
         break;
     }
   }
+
+  m_bStop = true;
+
+  // make sure cache is set to mark end of file (read may be waiting).
+  m_pCache->EndOfInput();
 
   // just in case someone's waiting...
   m_seekEnded.Set();
