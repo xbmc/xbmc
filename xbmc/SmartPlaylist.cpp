@@ -331,6 +331,10 @@ bool CSmartPlaylist::Load(const CStdString &path)
   if (!root)
     return false;
 
+  // encoding:
+  CStdString encoding;
+  XMLUtils::GetEncoding(&m_xmlDoc, encoding);
+
   TiXmlHandle match = ((TiXmlHandle)root->FirstChild("match")).FirstChild();
   if (match.Node())
     m_matchAllRules = strcmpi(match.Node()->Value(), "all") == 0;
@@ -345,10 +349,11 @@ bool CSmartPlaylist::Load(const CStdString &path)
     TiXmlNode *parameter = rule->FirstChild();
     if (field && oper && parameter)
     { // valid rule
-      // TODO UTF8: We assume these are from string charset so far.
-      // Once they're constructible from the GUI, we'll check for encoding.
       CStdString utf8Parameter;
-      g_charsetConverter.stringCharsetToUtf8(parameter->Value(), utf8Parameter);
+      if (encoding.IsEmpty()) // utf8
+        utf8Parameter = parameter->Value();
+      else
+        g_charsetConverter.stringCharsetToUtf8(encoding, parameter->Value(), utf8Parameter);
       CSmartPlaylistRule rule;
       rule.TranslateStrings(field, oper, utf8Parameter.c_str());
       m_playlistRules.push_back(rule);
@@ -376,7 +381,9 @@ bool CSmartPlaylist::Load(const CStdString &path)
 bool CSmartPlaylist::Save(const CStdString &path)
 {
   TiXmlDocument doc;
-  // TODO: Format strings in UTF8?
+  TiXmlDeclaration decl("1.0", "UTF-8", "yes");
+  doc.InsertEndChild(decl);
+
   TiXmlElement xmlRootElement("smartplaylist");
   xmlRootElement.SetAttribute("type",m_playlistType.c_str());
   TiXmlNode *pRoot = doc.InsertEndChild(xmlRootElement);
