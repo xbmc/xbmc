@@ -243,6 +243,9 @@
 #define CONTAINER_ON_NEXT           365
 #define CONTAINER_ON_PREVIOUS       366
 #define CONTAINER_HAS_FOCUS         367
+#define CONTAINER_ROW               368
+#define CONTAINER_COLUMN            369
+#define CONTAINER_POSITION          370
 
 #define MUSICPM_ENABLED             380
 #define MUSICPM_SONGSPLAYED         381
