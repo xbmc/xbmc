@@ -74,6 +74,11 @@ PLT_DeviceData::SetURLBase(const char* url_base)
         m_URLBasePath.SetLength(index+1);
     }
 
+    // set it on embedded devices
+    for (NPT_Cardinal i=0; i < m_EmbeddedDevices.GetItemCount(); i++) {
+        NPT_CHECK_FATAL(m_EmbeddedDevices[i]->SetURLBase(url_base));
+    }
+
     return NPT_SUCCESS;
 }    
 
@@ -100,9 +105,49 @@ PLT_DeviceData::GetURLBase()
 
     // override path
     url.SetPath(m_URLBasePath);
+    url.SetFragment("");
+    url.SetQuery("");
     return url;
 }
 
+/*----------------------------------------------------------------------
+|   PLT_DeviceData::GetIconUrl
++---------------------------------------------------------------------*/
+NPT_String
+PLT_DeviceData::GetIconUrl(const char* mimetype, NPT_Integer maxsize, NPT_Integer maxdepth)
+{
+    PLT_DeviceIcon icon;
+    icon.depth = 0;
+    icon.height = 0;
+    icon.width = 0;
+
+    for(NPT_Cardinal i = 0; i < m_IconList.GetItemCount(); i++) {
+        if(mimetype && m_IconList[i].mimetype != mimetype
+        || maxsize && m_IconList[i].width > maxsize
+        || maxsize && m_IconList[i].height > maxsize
+        || maxdepth && m_IconList[i].depth > maxdepth)
+            continue;
+
+        if(icon.width >= m_IconList[i].width
+        || icon.height >= m_IconList[i].height
+        || icon.depth >= m_IconList[i].depth)
+            continue;
+        icon = m_IconList[i];
+    }
+
+    if(icon.url == "")
+        return "";
+
+    NPT_HttpUrl full(icon.url);
+    if(full.IsValid())
+        return full.ToString();
+    full = GetURLBase();
+    if(icon.url.StartsWith("/"))
+        full.SetPathPlus(icon.url);
+    else
+        full.SetPathPlus(full.GetPath() + icon.url);
+    return full.ToString();
+}
 /*----------------------------------------------------------------------
 |   PLT_DeviceData::SetLeaseTime
 +---------------------------------------------------------------------*/
@@ -221,24 +266,18 @@ PLT_DeviceData::GetDescription(NPT_XmlElementNode* root, NPT_XmlElementNode** de
     NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(device, "UDN", "uuid:" + m_UUID));
     NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(device, "presentationURL", m_PresentationURL));
 
-    // hack for now:
+    // icons
     NPT_XmlElementNode* icons = new NPT_XmlElementNode("iconList");
     NPT_CHECK_SEVERE(device->AddChild(icons));
-    NPT_XmlElementNode* icon = new NPT_XmlElementNode("icon");
-    NPT_CHECK_SEVERE(icons->AddChild(icon));
-    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(icon, "mimetype", "image/png"));
-    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(icon, "width", "48"));
-    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(icon, "height", "48"));
-    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(icon, "depth", "24"));
-    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(icon, "url", "/logo48.png"));
-
-    icon = new NPT_XmlElementNode("icon");
-    NPT_CHECK_SEVERE(icons->AddChild(icon));
-    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(icon, "mimetype", "image/png"));
-    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(icon, "width", "32"));
-    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(icon, "height", "32"));
-    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(icon, "depth", "24"));
-    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(icon, "url", "/logo32.png"));
+    for (NPT_Cardinal i=0; i < m_IconList.GetItemCount(); i++) {
+        NPT_XmlElementNode* icon = new NPT_XmlElementNode("icon");
+        NPT_CHECK_SEVERE(icons->AddChild(icon));
+        NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(icon, "mimetype", m_IconList[i].mimetype));
+        NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(icon, "width", NPT_String::FromInteger(m_IconList[i].width)));
+        NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(icon, "height", NPT_String::FromInteger(m_IconList[i].height)));
+        NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(icon, "depth", NPT_String::FromInteger(m_IconList[i].depth)));
+        NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(icon, "url", m_IconList[i].url));
+    }
 
     // services
     NPT_XmlElementNode* services = new NPT_XmlElementNode("serviceList");
@@ -301,6 +340,12 @@ PLT_DeviceData::SetDescriptionUrl(NPT_HttpUrl description_url)
         int index = m_URLBasePath.ReverseFind('/');
         if (index >= 0) m_URLBasePath.SetLength(index+1);
     }
+
+    // set it on embedded devices
+    for (NPT_Cardinal i=0; i < m_EmbeddedDevices.GetItemCount(); i++) {
+        NPT_CHECK_FATAL(m_EmbeddedDevices[i]->SetDescriptionUrl(description_url));
+    }
+
     return NPT_SUCCESS;
 }
 
@@ -369,6 +414,26 @@ PLT_DeviceData::SetDescriptionDevice(NPT_XmlElementNode* device_node)
     PLT_XmlHelper::GetChildText(device_node, "modelNumber", m_ModelNumber);
     PLT_XmlHelper::GetChildText(device_node, "serialNumber", m_SerialNumber);
 
+    // enumerate icons
+    NPT_XmlElementNode* iconList = PLT_XmlHelper::GetChild(device_node, "iconList");
+    if (iconList) {
+        NPT_Array<NPT_XmlElementNode*> icons;
+        PLT_XmlHelper::GetChildren(iconList, icons, "icon");
+        for( int k = 0 ; k < (int)icons.GetItemCount(); k++) {
+            PLT_DeviceIcon icon;
+            NPT_String integer, height, depth;
+            PLT_XmlHelper::GetChildText(icons[k], "mimetype", icon.mimetype);
+            PLT_XmlHelper::GetChildText(icons[k], "url", icon.url);
+            if(NPT_SUCCEEDED(PLT_XmlHelper::GetChildText(icons[k], "width", integer)))
+              NPT_ParseInteger32(integer, icon.width);
+            if(NPT_SUCCEEDED(PLT_XmlHelper::GetChildText(icons[k], "height", integer)))
+              NPT_ParseInteger32(integer, icon.height);
+            if(NPT_SUCCEEDED(PLT_XmlHelper::GetChildText(icons[k], "depth", integer)))
+              NPT_ParseInteger32(integer, icon.depth);
+            m_IconList.Add(icon);
+        }
+    }
+
     // enumerate device services
     NPT_XmlElementNode* serviceList = PLT_XmlHelper::GetChild(device_node, "serviceList");
     if (serviceList) {
@@ -394,7 +459,7 @@ PLT_DeviceData::SetDescriptionDevice(NPT_XmlElementNode* device_node)
         NPT_Array<NPT_XmlElementNode*> devices;
         PLT_XmlHelper::GetChildren(deviceList, devices, "device");
         for( int k = 0 ; k < (int)devices.GetItemCount(); k++) {    
-            PLT_DeviceDataReference device(new PLT_DeviceData());
+            PLT_DeviceDataReference device(new PLT_DeviceData(m_URLDescription));
             NPT_CHECK_SEVERE(device->SetDescriptionDevice(devices[k]));
             AddDevice(device);
         }
@@ -447,10 +512,10 @@ PLT_DeviceData::FindServiceByDescriptionURI(const char* uri, PLT_Service*& servi
         return NPT_SUCCESS;
     }
 
-    for (int i=0; i < (int)m_EmbeddedDevices.GetItemCount(); i++) {
-        if (NPT_SUCCEEDED(NPT_ContainerFind(m_EmbeddedDevices[i]->m_Services, PLT_ServiceSCPDURLFinder(uri), service)))
-            return NPT_SUCCESS;
-    }
+    //for (int i=0; i < (int)m_EmbeddedDevices.GetItemCount(); i++) {
+    //    if (NPT_SUCCEEDED(NPT_ContainerFind(m_EmbeddedDevices[i]->m_Services, PLT_ServiceSCPDURLFinder(uri), service)))
+    //        return NPT_SUCCESS;
+    //}
     return NPT_FAILURE;
 }
 
@@ -464,10 +529,10 @@ PLT_DeviceData::FindServiceByControlURI(const char* uri, PLT_Service*& service)
         return NPT_SUCCESS;
     }
 
-    for (int i=0; i < (int)m_EmbeddedDevices.GetItemCount(); i++) {
-        if (NPT_SUCCEEDED(NPT_ContainerFind(m_EmbeddedDevices[i]->m_Services, PLT_ServiceControlURLFinder(uri), service)))
-            return NPT_SUCCESS;
-    }
+    //for (int i=0; i < (int)m_EmbeddedDevices.GetItemCount(); i++) {
+    //    if (NPT_SUCCEEDED(NPT_ContainerFind(m_EmbeddedDevices[i]->m_Services, PLT_ServiceControlURLFinder(uri), service)))
+    //        return NPT_SUCCESS;
+    //}
     return NPT_FAILURE;
 }
 
@@ -481,9 +546,9 @@ PLT_DeviceData::FindServiceByEventSubURI(const char* uri, PLT_Service*& service)
         return NPT_SUCCESS;
     }
 
-    for (int i=0; i < (int)m_EmbeddedDevices.GetItemCount(); i++) {
-        if (NPT_SUCCEEDED(NPT_ContainerFind(m_EmbeddedDevices[i]->m_Services, PLT_ServiceEventSubURLFinder(uri), service)))
-            return NPT_SUCCESS;
-    }
+    //for (int i=0; i < (int)m_EmbeddedDevices.GetItemCount(); i++) {
+    //    if (NPT_SUCCEEDED(NPT_ContainerFind(m_EmbeddedDevices[i]->m_Services, PLT_ServiceEventSubURLFinder(uri), service)))
+    //        return NPT_SUCCESS;
+    //}
     return NPT_FAILURE;
 }

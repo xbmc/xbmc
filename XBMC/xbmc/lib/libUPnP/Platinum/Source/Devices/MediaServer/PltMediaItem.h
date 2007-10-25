@@ -35,6 +35,20 @@ typedef struct {
 } PLT_SearchClass;
 
 typedef struct {
+    NPT_String name;
+    NPT_String role;
+} PLT_PersonRole;
+
+class PLT_PersonRoles
+  : public NPT_List<PLT_PersonRole>
+{
+public:
+    NPT_Result Add(const NPT_String& name, const NPT_String& role = "");
+    NPT_Result ToDidl(NPT_String& didl, const NPT_String& tag);
+    NPT_Result FromDidl(const NPT_Array<NPT_XmlElementNode*>& nodes);
+};
+
+typedef struct {
     NPT_String allowed_use; // (CSV)
     NPT_String validity_start;
     NPT_String validity_end;
@@ -45,12 +59,9 @@ typedef struct {
 } PLT_Constraint;
 
 typedef struct {
-    NPT_String artist;
-    NPT_String artist_role;
-    NPT_String actor;
-    NPT_String actor_role;
-    NPT_String author;
-    NPT_String author_role;
+    PLT_PersonRoles artists;
+    PLT_PersonRoles actors;
+    PLT_PersonRoles authors;
     NPT_String producer;
     NPT_String director;
     NPT_String publisher;
@@ -58,9 +69,7 @@ typedef struct {
 } PLT_PeopleInfo;
 
 typedef struct {
-    NPT_String genre;
-    NPT_String genre_id;
-    NPT_List<NPT_String> genre_extended;
+    NPT_List<NPT_String> genre;
     NPT_String album;
     NPT_String playlist; // dc:title of the playlist item the content belongs too
 } PLT_AffiliationInfo;

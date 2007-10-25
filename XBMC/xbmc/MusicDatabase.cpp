@@ -1046,10 +1046,12 @@ bool CMusicDatabase::GetTop100Albums(VECALBUMS& albums)
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL = "select albumview.*, sum(song.iTimesPlayed) as total from song "
+    // NOTE: The song.idAlbum is needed for the group by, as for some reason group by albumview.idAlbum doesn't work
+    //       consistently - possibly an SQLite bug, as it works fine in SQLiteSpy (v3.3.17)
+    CStdString strSQL = "select albumview.*, sum(song.iTimesPlayed) as total, song.idAlbum from song "
                     "join albumview on albumview.idAlbum=song.idAlbum "
                     "where song.iTimesPlayed>0 "
-                    "group by albumview.idalbum "
+                    "group by song.idAlbum "
                     "order by total desc "
                     "limit 100 ";
 
@@ -1064,6 +1066,7 @@ bool CMusicDatabase::GetTop100Albums(VECALBUMS& albums)
     //int iCount = 1;
     while (!m_pDS->eof())
     {
+      int total = m_pDS->fv("total").get_asInteger();
       albums.push_back(GetAlbumFromDataset());
       m_pDS->next();
     }

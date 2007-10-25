@@ -154,8 +154,8 @@ public:
     NPT_Result operator()(PLT_DeviceDataReference& device) const {
         NPT_CHECK(device->m_Services.ApplyUntil(PLT_ServiceReadyIterator(), 
                                                 NPT_UntilResultNotEquals(NPT_SUCCESS)));
-        NPT_CHECK(device->m_EmbeddedDevices.ApplyUntil(PLT_DeviceReadyIterator(), 
-                                                       NPT_UntilResultNotEquals(NPT_SUCCESS)));
+        //NPT_CHECK(device->m_EmbeddedDevices.ApplyUntil(PLT_DeviceReadyIterator(), 
+        //                                               NPT_UntilResultNotEquals(NPT_SUCCESS)));
         return NPT_SUCCESS;
     }
 };
@@ -707,6 +707,25 @@ PLT_CtrlPoint::ProcessSsdpNotify(NPT_HttpRequest& request,
                         delete sub;
                     }
                 }
+
+                // remove all embededed devices
+                for (NPT_Cardinal j=0; j < data->m_EmbeddedDevices.GetItemCount(); j++) {
+                    PLT_DeviceDataReference data2 = data->m_EmbeddedDevices[j];
+                    if (m_Devices.Contains(data2)) {
+                        m_Devices.Remove(data2);
+                        m_ListenerList.Apply(PLT_CtrlPointListenerOnDeviceRemovedIterator(data2));
+
+                        for (NPT_Cardinal i=0; i<data2->m_Services.GetItemCount(); i++) {
+                            PLT_EventSubscriber* sub;
+                            PLT_Service* service = data2->m_Services[i];
+                            if (NPT_SUCCEEDED(NPT_ContainerFind(m_Subscribers, PLT_EventSubscriberFinderByService(service), sub))) {
+                                m_Subscribers.Remove(sub, true);
+                                delete sub;
+                            }
+                        }
+                    }
+                }
+
             }
             return NPT_SUCCESS;
         }
@@ -772,7 +791,7 @@ PLT_CtrlPoint::ProcessSsdpMessage(NPT_HttpMessage* message, NPT_SocketInfo& info
             m_TaskManager->StartTask(task);
         }
 
-        NPT_LOG_INFO_1("Device (%s) expiration time renewed..", (const char*)uuid);
+        //NPT_LOG_INFO_1("Device (%s) expiration time renewed..", (const char*)uuid);
         return NPT_SUCCESS;
     }
     
@@ -815,9 +834,21 @@ PLT_CtrlPoint::ProcessGetDescriptionResponse(NPT_Result               res,
     }
 
     // Get SCPD of root device services
-    // TODO: we also need to get the scpds of embedded devices services
     if (NPT_FAILED(data->m_Services.Apply(PLT_AddGetSCPDRequestIterator(m_TaskManager, this, data)))) {
         goto bad_response;
+    }
+    
+    // add all embeded devices
+    for (NPT_Cardinal i=0; i < data->m_EmbeddedDevices.GetItemCount(); i++) {
+        // check so we've haven't seen it before
+        PLT_DeviceDataReference data2 = data->m_EmbeddedDevices[i];
+        if (NPT_FAILED(NPT_ContainerFind(m_Devices, PLT_DeviceDataFinder(data2->GetUUID()), data2))) {          
+            if (NPT_FAILED(data2->m_Services.Apply(PLT_AddGetSCPDRequestIterator(m_TaskManager, this, data2)))) {
+                NPT_LOG_SEVERE("Bad Description response from sub device skipped");
+                continue;
+            }
+            m_Devices.Add(data2);
+        }
     }
 
     return NPT_SUCCESS;

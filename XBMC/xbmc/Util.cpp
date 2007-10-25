@@ -95,6 +95,7 @@
 #ifndef HAS_XBOX_D3D
 #include "DirectXGraphics.h"
 #endif
+#include "lib/libGoAhead/XBMChttp.h"
 
 void hack()
 {
@@ -2215,7 +2216,7 @@ bool CUtil::IsHD(const CStdString& strFileName)
 {
   if (strFileName.size() <= 2) return false;
   char szDriveletter = tolower(strFileName.GetAt(0));
-  if ( (szDriveletter >= 'c' && szDriveletter <= 'g' && szDriveletter != 'd') || (szDriveletter == 'q') || (szDriveletter == 'z') || (szDriveletter == 'y') || (szDriveletter == 'x') )
+  if ( (szDriveletter >= 'c' && szDriveletter <= 'z' && szDriveletter != 'd') )
   {
     if (strFileName.GetAt(1) == ':') return true;
   }
@@ -3847,6 +3848,8 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     {
       if( g_application.IsPlaying() && g_application.m_pPlayer && g_application.m_pPlayer->CanRecord())
       {
+		if (pXbmcHttp)
+			pXbmcHttp->xbmcBroadcast(g_application.m_pPlayer->IsRecording()?"RecordStopping":"RecordStarting", 1);
         g_application.m_pPlayer->Record(!g_application.m_pPlayer->IsRecording());
       }
     }
@@ -4264,13 +4267,13 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("pagedown"))
   {
     int id = atoi(parameter.c_str());
-    CGUIMessage message(GUI_MSG_PAGE_DOWN, m_gWindowManager.GetActiveWindow(), id);
+    CGUIMessage message(GUI_MSG_PAGE_DOWN, m_gWindowManager.GetFocusedWindow(), id);
     g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("pageup"))
   {
     int id = atoi(parameter.c_str());
-    CGUIMessage message(GUI_MSG_PAGE_UP, m_gWindowManager.GetActiveWindow(), id);
+    CGUIMessage message(GUI_MSG_PAGE_UP, m_gWindowManager.GetFocusedWindow(), id);
     g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("updatelibrary"))
@@ -4748,7 +4751,7 @@ return bReturn;
 bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, CStdString strNickName, int iFTPPort)
 {
   bool bFoundNewClient= false;
-  CStdString strTmp;
+  CStdString strLocalIP;
   CStdString strSendMessage = "ping\0";
   CStdString strReceiveMessage = "ping";
   int iUDPPort = 4905;
@@ -4767,7 +4770,7 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
 #ifdef HAS_XBOX_HARDWARE
     XNADDR xna;
     DWORD dwState = XNetGetTitleXnAddr(&xna);
-    XNetInAddrToString(xna.ina,(char *)strTmp.c_str(),64);
+    XNetInAddrToString(xna.ina,(char *)strLocalIP.c_str(),64);
 #else
     char hostname[255];
 #ifndef _LINUX
@@ -4784,7 +4787,7 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
       {
         if((hostinfo = gethostbyname(hostname)) != NULL)
         {
-          strTmp = inet_ntoa (*(struct in_addr *)*hostinfo->h_addr_list);
+          strLocalIP = inet_ntoa (*(struct in_addr *)*hostinfo->h_addr_list);
           strNickName.Format("%s",hostname);
         }
       }
@@ -4794,7 +4797,7 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
 #endif
 #endif
   // get IP address
-  sscanf( (char *)strTmp.c_str(), "%d.%d.%d.%d", &t1, &t2, &t3, &t4 );
+  sscanf( (char *)strLocalIP.c_str(), "%d.%d.%d.%d", &t1, &t2, &t3, &t4 );
   if( !t1 ) return false;
   cliLen = sizeof( cliAddr);
   // setup UDP socket
@@ -4895,6 +4898,7 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
     int iSockRet = recvfrom(udp_server_socket, sztmp, 512, 0,(struct sockaddr *) &cliAddr, &cliLen); 
     if (iSockRet != SOCKET_ERROR)
     {
+      CStdString strTmp;
       // do we received a new Client info or just a "ping" request
       if(strReceiveMessage.Equals(sztmp))
 	    {
@@ -4926,93 +4930,97 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
 #endif
         ); //this is the client IP
         
-        //is our list empty?
-        if(v_xboxclients.client_ip.size() <= 0 )
+        //Is this our Local IP ?
+        if ( !strIP.Equals(strLocalIP) )
         {
-          // the list is empty, add. this client to the list!
-          v_xboxclients.client_ip.push_back(strIP);
-          v_xboxclients.client_info.push_back(strInfo);
-          v_xboxclients.client_lookup_count.push_back(0);
-          v_xboxclients.client_informed.push_back(false);
-          bFoundNewClient = true;
-          bUpdateShares = true;
-        }
-        // our list is not empty, check if we allready have this client in our list!
-        else 
-        {
-          // this should be a new client or?
-          // check list
-          bFoundNewClient = true;
-          for (i=0; i<v_xboxclients.client_ip.size(); i++)
+          //is our list empty?
+          if(v_xboxclients.client_ip.size() <= 0 )
           {
-            if(strIP.Equals(v_xboxclients.client_ip[i].c_str()))
-              bFoundNewClient=false;
-          }
-          if(bFoundNewClient)
-          {
-            // bFoundNewClient is still true, the client is not in our list!
-            // add. this client to our list!
+            // the list is empty, add. this client to the list!
             v_xboxclients.client_ip.push_back(strIP);
             v_xboxclients.client_info.push_back(strInfo);
             v_xboxclients.client_lookup_count.push_back(0);
             v_xboxclients.client_informed.push_back(false);
+            bFoundNewClient = true;
             bUpdateShares = true;
           }
-          else // this is a existing client! check for LIFE & lookup counter
+          // our list is not empty, check if we allready have this client in our list!
+          else 
           {
-            // calculate iLookUpCountMax value counter dependence on clients size!
-            if(v_xboxclients.client_ip.size() > iLookUpCountMax)
-              iLookUpCountMax += (v_xboxclients.client_ip.size()-iLookUpCountMax);
-
+            // this should be a new client or?
+            // check list
+            bFoundNewClient = true;
             for (i=0; i<v_xboxclients.client_ip.size(); i++)
             {
               if(strIP.Equals(v_xboxclients.client_ip[i].c_str()))
-              {
-                // found client in list, reset looup_Count and the client_info
-                v_xboxclients.client_info[i]=strInfo;
-                v_xboxclients.client_lookup_count[i] = 0;
-              }
-              else 
-              {
-                // check client lookup counter! Not reached the CountMax, Add +1!
-                if(v_xboxclients.client_lookup_count[i] < iLookUpCountMax )
-                  v_xboxclients.client_lookup_count[i] = v_xboxclients.client_lookup_count[i]+1;
-                else
-                {
-                  // client lookup counter REACHED CountMax, remove this client
-                  v_xboxclients.client_ip.erase(v_xboxclients.client_ip.begin()+i);
-                  v_xboxclients.client_info.erase(v_xboxclients.client_info.begin()+i);
-                  v_xboxclients.client_lookup_count.erase(v_xboxclients.client_lookup_count.begin()+i);
-                  v_xboxclients.client_informed.erase(v_xboxclients.client_informed.begin()+i);
-                  
-                  // debug log, clients removed from our list 
-                  CLog::Log(LOGDEBUG,"Autodetection: Client ID:[%i] Removed! (mode LIFE 1)",i );  
+                bFoundNewClient=false;
+            }
+            if(bFoundNewClient)
+            {
+              // bFoundNewClient is still true, the client is not in our list!
+              // add. this client to our list!
+              v_xboxclients.client_ip.push_back(strIP);
+              v_xboxclients.client_info.push_back(strInfo);
+              v_xboxclients.client_lookup_count.push_back(0);
+              v_xboxclients.client_informed.push_back(false);
+              bUpdateShares = true;
+            }
+            else // this is a existing client! check for LIFE & lookup counter
+            {
+              // calculate iLookUpCountMax value counter dependence on clients size!
+              if(v_xboxclients.client_ip.size() > iLookUpCountMax)
+                iLookUpCountMax += (v_xboxclients.client_ip.size()-iLookUpCountMax);
 
-                  // client is removed from our list, update our shares
-                  CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
-                  m_gWindowManager.SendThreadMessage(msg);
+              for (i=0; i<v_xboxclients.client_ip.size(); i++)
+              {
+                if(strIP.Equals(v_xboxclients.client_ip[i].c_str()))
+                {
+                  // found client in list, reset looup_Count and the client_info
+                  v_xboxclients.client_info[i]=strInfo;
+                  v_xboxclients.client_lookup_count[i] = 0;
+                }
+                else 
+                {
+                  // check client lookup counter! Not reached the CountMax, Add +1!
+                  if(v_xboxclients.client_lookup_count[i] < iLookUpCountMax )
+                    v_xboxclients.client_lookup_count[i] = v_xboxclients.client_lookup_count[i]+1;
+                  else
+                  {
+                    // client lookup counter REACHED CountMax, remove this client
+                    v_xboxclients.client_ip.erase(v_xboxclients.client_ip.begin()+i);
+                    v_xboxclients.client_info.erase(v_xboxclients.client_info.begin()+i);
+                    v_xboxclients.client_lookup_count.erase(v_xboxclients.client_lookup_count.begin()+i);
+                    v_xboxclients.client_informed.erase(v_xboxclients.client_informed.begin()+i);
+                    
+                    // debug log, clients removed from our list 
+                    CLog::Log(LOGDEBUG,"Autodetection: Client ID:[%i] Removed! (mode LIFE 1)",i );  
+
+                    // client is removed from our list, update our shares
+                    CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
+                    m_gWindowManager.SendThreadMessage(msg);
+                  }
                 }
               }
-            }
-            // here comes our list for debug log
-            for (i=0; i<v_xboxclients.client_ip.size(); i++)
-            {
-              CLog::Log(LOGDEBUG,"Autodetection: Client ID:[%i] (mode LIFE=1)",i );
-              CLog::Log(LOGDEBUG,"----------------------------------------------------------------" );
-              CLog::Log(LOGDEBUG,"IP:%s Info:%s LookUpCount:%i Informed:%s",
-                v_xboxclients.client_ip[i].c_str(),
-                v_xboxclients.client_info[i].c_str(), 
-                v_xboxclients.client_lookup_count[i],
-                v_xboxclients.client_informed[i] ? "true":"false");
-              CLog::Log(LOGDEBUG,"----------------------------------------------------------------" );
+              // here comes our list for debug log
+              for (i=0; i<v_xboxclients.client_ip.size(); i++)
+              {
+                CLog::Log(LOGDEBUG,"Autodetection: Client ID:[%i] (mode LIFE=1)",i );
+                CLog::Log(LOGDEBUG,"----------------------------------------------------------------" );
+                CLog::Log(LOGDEBUG,"IP:%s Info:%s LookUpCount:%i Informed:%s",
+                  v_xboxclients.client_ip[i].c_str(),
+                  v_xboxclients.client_info[i].c_str(), 
+                  v_xboxclients.client_lookup_count[i],
+                  v_xboxclients.client_informed[i] ? "true":"false");
+                CLog::Log(LOGDEBUG,"----------------------------------------------------------------" );
+              }
             }
           }
-        }
-        if(bUpdateShares)
-        {
-          // a client is add or removed from our list, update our shares
-          CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
-          m_gWindowManager.SendThreadMessage(msg);
+          if(bUpdateShares)
+          {
+            // a client is add or removed from our list, update our shares
+            CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
+            m_gWindowManager.SendThreadMessage(msg);
+          }
         }
       }
     }

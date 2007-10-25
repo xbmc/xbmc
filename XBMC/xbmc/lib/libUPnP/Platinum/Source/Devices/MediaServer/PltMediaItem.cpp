@@ -24,6 +24,55 @@ extern const char* didl_namespace_dc;
 extern const char* didl_namespace_upnp;
 
 /*----------------------------------------------------------------------
+|   PLT_PersonRoles::AddPerson
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_PersonRoles::Add(const NPT_String& name, const NPT_String& role /*= ""*/)
+{
+  PLT_PersonRole person;
+  person.name = name;
+  person.role = role;
+  return NPT_List<PLT_PersonRole>::Add(person);
+}
+
+/*----------------------------------------------------------------------
+|   PLT_PersonRoles::ToDidl
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_PersonRoles::ToDidl(NPT_String& didl, const NPT_String& tag)
+{
+    for (NPT_List<PLT_PersonRole>::Iterator it = NPT_List<PLT_PersonRole>::GetFirstItem(); it; it++) {
+        if(it->role.IsEmpty()) {
+            didl += "<upnp:" + tag + ">";
+        } else {
+            didl += "<upnp:" + tag + " upnp:role=\"";
+            PLT_Didl::AppendXmlEscape(didl, it->role);
+            didl += "\">";
+        }
+        PLT_Didl::AppendXmlEscape(didl, it->name);
+        didl += "</upnp:" + tag + ">";
+    }
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_PersonRoles::ToDidl
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_PersonRoles::FromDidl(const NPT_Array<NPT_XmlElementNode*>& nodes)
+{
+    for (NPT_Cardinal i = 0; i < nodes.GetItemCount(); i++) {
+        PLT_PersonRole person;
+        const NPT_String* name = nodes[i]->GetText();
+        const NPT_String* role = nodes[i]->GetAttribute("role", didl_namespace_upnp);
+        if (name) person.name = *name;
+        if (role) person.role = *role;
+        NPT_CHECK(NPT_List<PLT_PersonRole>::Add(person));
+    }
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
 |   PLT_MediaItemResource::PLT_MediaItemResource
 +---------------------------------------------------------------------*/
 PLT_MediaItemResource::PLT_MediaItemResource()
@@ -112,11 +161,12 @@ PLT_MediaObject::Reset()
     m_Creator = "";
     m_Restricted = true;
 
-    m_People.artist         = "";
-    m_People.artist_role    = "";
+    m_People.actors.Clear();
+    m_People.artists.Clear();    
+    m_People.authors.Clear();
 
     m_Affiliation.album     = "";
-    m_Affiliation.genre     = "";
+    m_Affiliation.genre.Clear();
     m_Affiliation.playlist  = "";
 
     m_Description.description = "";
@@ -160,12 +210,20 @@ PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
     }
 
     // artist
-    if (mask & PLT_FILTER_MASK_ARTIST && m_People.artist.GetLength() > 0) {
-        didl += "<upnp:artist>";
-        PLT_Didl::AppendXmlEscape(didl, m_People.artist);
-        didl += "</upnp:artist>";
+    if (mask & PLT_FILTER_MASK_ARTIST) {
+        m_People.artists.ToDidl(didl, "artist");
     }
 
+    // actor
+    if (mask & PLT_FILTER_MASK_ACTOR) {
+        m_People.actors.ToDidl(didl, "actor");
+    }
+
+    // actor
+    if (mask & PLT_FILTER_MASK_AUTHOR) {
+        m_People.authors.ToDidl(didl, "author");
+    }
+    
     // album
     if (mask & PLT_FILTER_MASK_ALBUM && m_Affiliation.album.GetLength() > 0) {
         didl += "<upnp:album>";
@@ -175,16 +233,10 @@ PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
 
     // genre
     if (mask & PLT_FILTER_MASK_GENRE) {
-        if (m_Affiliation.genre_extended.GetItemCount() > 0) {
-            for (NPT_List<NPT_String>::Iterator it = m_Affiliation.genre_extended.GetFirstItem(); it; ++it) {
-                didl += "<upnp:genre>";
-                PLT_Didl::AppendXmlEscape(didl, (*it));
-                didl += "</upnp:genre>";        
-            }
-        } else if (m_Affiliation.genre.GetLength() > 0) {
+        for (NPT_List<NPT_String>::Iterator it = m_Affiliation.genre.GetFirstItem(); it; ++it) {
             didl += "<upnp:genre>";
-            PLT_Didl::AppendXmlEscape(didl, m_Affiliation.genre);
-            didl += "</upnp:genre>";
+            PLT_Didl::AppendXmlEscape(didl, (*it));
+            didl += "</upnp:genre>";        
         }
     }
 
@@ -283,15 +335,27 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
 
     // read non-required elements
     PLT_XmlHelper::GetChildText(entry, "creator", m_Creator, didl_namespace_dc);
-    PLT_XmlHelper::GetChildText(entry, "artist", m_People.artist, didl_namespace_upnp);
+
+    PLT_XmlHelper::GetChildren(entry, resources, "artist", didl_namespace_upnp);
+    m_People.artists.FromDidl(resources);
+
     PLT_XmlHelper::GetChildText(entry, "album", m_Affiliation.album, didl_namespace_upnp);
-    PLT_XmlHelper::GetChildText(entry, "genre", m_Affiliation.genre, didl_namespace_upnp);
+
+    resources.Clear();
+    PLT_XmlHelper::GetChildren(entry, resources, "genre", didl_namespace_upnp);
+    for (unsigned int i=0; i<resources.GetItemCount(); i++) {
+        if(resources[i]->GetText()) {
+            m_Affiliation.genre.Add(*resources[i]->GetText());
+        }
+    }
+
     PLT_XmlHelper::GetChildText(entry, "albumArtURI", m_ExtraInfo.album_art_uri, didl_namespace_upnp);
     PLT_XmlHelper::GetChildText(entry, "longDescription", m_Description.long_description, didl_namespace_upnp);
     PLT_XmlHelper::GetChildText(entry, "originalTrackNumber", str, didl_namespace_upnp);
     if( NPT_FAILED(str.ToInteger((long&)m_MiscInfo.original_track_number)) )
         m_MiscInfo.original_track_number = 0;
 
+    resources.Clear();
     PLT_XmlHelper::GetChildren(entry, resources, "res");
     if (resources.GetItemCount() > 0) {
         for (unsigned int i=0; i<resources.GetItemCount(); i++) {

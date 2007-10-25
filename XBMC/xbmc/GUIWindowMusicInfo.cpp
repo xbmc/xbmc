@@ -45,6 +45,8 @@ using namespace XFILE;
 #define CONTROL_BTN_REFRESH 6
 #define CONTROL_BTN_GET_THUMB 10
 
+#define CONTROL_LIST 50
+
 CGUIWindowMusicInfo::CGUIWindowMusicInfo(void)
     : CGUIDialog(WINDOW_MUSIC_INFO, "DialogAlbumInfo.xml")
 {
@@ -60,6 +62,9 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
+      CGUIMessage message(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST);
+      OnMessage(message);
+      m_albumSongs.Clear();
     }
     break;
 
@@ -106,13 +111,27 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
 void CGUIWindowMusicInfo::SetAlbum(const CAlbum& album, const VECSONGS &songs, const CStdString &path)
 {
   m_album = album;
-  m_songs = songs;
+  SetSongs(songs);
   m_albumItem = CFileItem(path, true);
   m_albumItem.GetMusicInfoTag()->SetAlbum(m_album.strAlbum);
   m_albumItem.GetMusicInfoTag()->SetAlbumArtist(m_album.strArtist);
+  m_albumItem.GetMusicInfoTag()->SetYear(m_album.iYear);
   m_albumItem.GetMusicInfoTag()->SetLoaded(true);
+  m_albumItem.GetMusicInfoTag()->SetRating('0' + (m_album.iRating + 1) / 2);
+  m_albumItem.GetMusicInfoTag()->SetGenre(m_album.strGenre);
   m_albumItem.SetMusicThumb();
   m_hasUpdatedThumb = false;
+}
+
+void CGUIWindowMusicInfo::SetSongs(const VECSONGS &songs)
+{
+  m_albumSongs.Clear();
+  for (unsigned int i = 0; i < songs.size(); i++)
+  {
+    const CSong& song = songs[i];
+    CFileItem *item = new CFileItem(song);
+    m_albumSongs.Add(item);
+  }
 }
 
 void CGUIWindowMusicInfo::Update()
@@ -133,28 +152,43 @@ void CGUIWindowMusicInfo::Update()
 
   if (m_bViewReview)
   {
+    SET_CONTROL_VISIBLE(CONTROL_TEXTAREA);
+    SET_CONTROL_HIDDEN(CONTROL_LIST);
     SetLabel(CONTROL_TEXTAREA, m_album.strReview);
     SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 182);
   }
   else
   {
-    vector<CGUIListItem> items;
-    for (unsigned int i = 0; i < m_songs.size();++i)
+    SET_CONTROL_VISIBLE(CONTROL_LIST);
+    if (GetControl(CONTROL_LIST))
     {
-      const CSong& song = m_songs[i];
-      CGUIListItem item;
-      CStdString label;
-      label.Format("%i. %s", song.iTrack, song.strTitle.c_str());
-      item.SetLabel(label);
-      if (song.iDuration > 0)
-        StringUtils::SecondsToTimeString(song.iDuration, label);
-      item.SetLabel2(label);
-      items.push_back(item);
-    };
-
-    CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), CONTROL_TEXTAREA, 0, 0, &items);
-    OnMessage(message);
-
+      SET_CONTROL_HIDDEN(CONTROL_TEXTAREA);
+      CGUIMessage message(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST);
+      OnMessage(message);
+      for (int i = 0; i < m_albumSongs.Size(); i++)
+      {
+        CGUIMessage message(GUI_MSG_LABEL_ADD, GetID(), CONTROL_LIST, 0, 0, m_albumSongs[i]);
+        OnMessage(message);
+      }
+    }
+    else
+    { // backward compatibility
+      vector<CGUIListItem> items;
+      for (int i = 0; i < m_albumSongs.Size();++i)
+      {
+        const CMusicInfoTag *song = m_albumSongs[i]->GetMusicInfoTag();
+        CGUIListItem item;
+        CStdString label;
+        label.Format("%i. %s", song->GetTrackNumber(), song->GetTitle().c_str());
+        item.SetLabel(label);
+        if (song->GetDuration() > 0)
+          StringUtils::SecondsToTimeString(song->GetDuration(), label);
+        item.SetLabel2(label);
+        items.push_back(item);
+      };
+      CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), CONTROL_TEXTAREA, 0, 0, &items);
+      OnMessage(message);
+    }
     SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 183);
   }
   // update the thumbnail

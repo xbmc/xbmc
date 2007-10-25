@@ -24,6 +24,7 @@
 #include "GUIWindowVideoFiles.h"
 #include "utils/GUIInfoManager.h"
 #include "Util.h"
+#include "utils/RegExp.h"
 #include "PlayListM3U.h"
 #include "Application.h"
 #include "PlayListPlayer.h"
@@ -1046,6 +1047,31 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         cachedThumb = m_vecItems[itemNumber]->GetCachedActorThumb();
       if (button == CONTEXT_BUTTON_SET_ARTIST_THUMB)
         cachedThumb = m_vecItems[itemNumber]->GetCachedArtistThumb();
+      if (button == CONTEXT_BUTTON_SET_SEASON_THUMB)
+      {
+        CFileItemList tbnItems;
+        CDirectory::GetDirectory(tag.m_strPath,tbnItems,".tbn");
+        CStdString strExpression;
+        strExpression.Format("season[ ._-](0?%i)\\.tbn",m_vecItems[itemNumber]->GetVideoInfoTag()->m_iSeason);
+        bool bDownload=true;
+        CRegExp reg;
+        if (reg.RegComp(strExpression.c_str()))
+        {
+          for (int j=0;j<tbnItems.Size();++j)
+          {
+            CStdString strCheck = CUtil::GetFileName(tbnItems[j]->m_strPath);
+            strCheck.ToLower();
+            if (reg.RegFind(strCheck.c_str()) > -1)
+            {
+              CFileItem *item = new CFileItem("thumb://Local", false);
+              item->SetThumbnailImage(cachedThumb);
+              item->SetLabel(g_localizeStrings.Get(20017));
+              items.Add(item);              
+              break;
+            }
+          }
+        }
+      }
       if (button == CONTEXT_BUTTON_SET_PLUGIN_THUMB)
       {
         strPath = m_vecItems[itemNumber]->m_strPath;
