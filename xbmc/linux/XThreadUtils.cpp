@@ -4,7 +4,9 @@
 #include "XThreadUtils.h"
 #include "XTimeUtils.h"
 #include "XEventUtils.h"
-#include "../utils/log.h"
+#include "system.h"
+#include "log.h"
+#include "GraphicContext.h"
 
 #ifdef _LINUX
 #include <signal.h>
@@ -33,6 +35,12 @@ void handler (int signum)
     delete pParam;
   }
 
+  if (OwningCriticalSection(g_graphicsContext))
+  {
+    CLog::Log(LOGWARNING,"killed thread owns graphic context. releasing it.");
+    ExitCriticalSection(g_graphicsContext);
+  }
+
   pthread_exit(NULL);
 }
 
@@ -55,6 +63,13 @@ static int InternalThreadFunc(void *data) {
   catch(...) {
     CLog::Log(LOGERROR,"thread 0x%x raised an exception. terminating it.", SDL_ThreadID());
   }
+
+  if (OwningCriticalSection(g_graphicsContext))
+  {
+    CLog::Log(LOGERROR,"thread terminated and still owns graphic context. releasing it.");
+    ExitCriticalSection(g_graphicsContext);
+  }
+
   SetEvent(pParam->handle);
   CloseHandle(pParam->handle);
   delete pParam;
