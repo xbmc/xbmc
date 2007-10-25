@@ -449,3 +449,20 @@ bool CGUIPanelContainer::SelectItemFromPoint(const CPoint &point)
   }
   return false;
 }
+
+bool CGUIPanelContainer::GetCondition(int condition, int data) const
+{ // probably only works vertically atm...
+  int row = m_cursor / m_itemsPerRow;
+  int col = m_cursor % m_itemsPerRow;
+  if (m_orientation == HORIZONTAL)
+    swap(row, col);
+  switch (condition)
+  {
+  case CONTAINER_ROW:
+    return (row == data);
+  case CONTAINER_COLUMN:
+    return (col == data);
+  default:
+    return CGUIBaseContainer::GetCondition(condition, data);
+  }
+}
