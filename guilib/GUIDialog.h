@@ -36,6 +36,10 @@ protected:
   virtual bool RenderAnimation(DWORD time);
   virtual void SetDefaults();
 
+  friend class CApplicationMessenger;
+  void DoModal_Internal(int iWindowID = WINDOW_INVALID); // modal
+  void Show_Internal(); // modeless
+
   bool m_bRunning;
   bool m_bModal;
   bool m_dialogClosing;

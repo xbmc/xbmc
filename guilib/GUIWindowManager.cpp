@@ -2,6 +2,7 @@
 #include "GUIWindowManager.h"
 #include "GUIAudioManager.h"
 #include "GUIDialog.h"
+#include "Application.h"
 #include "../xbmc/Settings.h"
 #include "../xbmc/GUIPassword.h"
 #include "../xbmc/utils/GUIInfoManager.h"
@@ -390,6 +391,18 @@ bool CGUIWindowManager::OnAction(const CAction &action)
 
 void CGUIWindowManager::Render()
 {
+  if (GetCurrentThreadId() != g_application.GetThreadId())
+  {
+    // make sure graphics lock is not held
+    ExitCriticalSection(g_graphicsContext);
+    g_application.getApplicationMessenger().Render();
+  }
+  else
+    Render_Internal();
+}
+
+void CGUIWindowManager::Render_Internal()
+{
   CGUIWindow* pWindow = GetWindow(GetActiveWindow());
   if (pWindow)
     pWindow->Render();
@@ -444,6 +457,18 @@ void CGUIWindowManager::UpdateModelessVisibility()
 }
 
 void CGUIWindowManager::Process(bool renderOnly /*= false*/)
+{
+  if (GetCurrentThreadId() != g_application.GetThreadId())
+  {
+    // make sure graphics lock is not held
+    ExitCriticalSection(g_graphicsContext);
+    g_application.getApplicationMessenger().WindowManagerProcess(renderOnly);
+  }
+  else
+    Process_Internal(renderOnly);
+}
+
+void CGUIWindowManager::Process_Internal(bool renderOnly /*= false*/)
 {
   if (m_pCallback)
   {

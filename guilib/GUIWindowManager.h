@@ -85,6 +85,11 @@ private:
   void AddToWindowHistory(DWORD newWindowID);
   void ClearWindowHistory();
   CGUIWindow *GetTopMostDialog() const;
+
+  friend class CApplicationMessenger;
+  void Process_Internal(bool renderOnly = false);
+  void Render_Internal();
+
   map<DWORD, CGUIWindow *> m_mapWindows;
   vector <CGUIWindow*> m_vecCustomWindows;
   vector <CGUIWindow*> m_activeDialogs;

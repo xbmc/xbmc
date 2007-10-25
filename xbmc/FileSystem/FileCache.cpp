@@ -99,8 +99,6 @@ bool CFileCache::Open(const CURL& url, bool bBinary)
 
   CThread::Create(false);
 
-  m_threadStarted.WaitMSec(INFINITE);
-
   return true;
 }
 

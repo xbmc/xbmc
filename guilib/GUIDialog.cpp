@@ -6,7 +6,6 @@
 #include "../xbmc/utils/SingleLock.h"
 #include "../xbmc/Application.h"
 
-
 CGUIDialog::CGUIDialog(DWORD dwID, const CStdString &xmlFile)
     : CGUIWindow(dwID, xmlFile)
 {
@@ -117,7 +116,7 @@ void CGUIDialog::Close(bool forceClose /*= false*/)
   OnMessage(msg);
 }
 
-void CGUIDialog::DoModal(int iWindowID /*= WINDOW_INVALID */)
+void CGUIDialog::DoModal_Internal(int iWindowID /*= WINDOW_INVALID */)
 {
   //Lock graphic context here as it is sometimes called from non rendering threads
   //maybe we should have a critical section per window instead??
@@ -152,7 +151,7 @@ void CGUIDialog::DoModal(int iWindowID /*= WINDOW_INVALID */)
   }
 }
 
-void CGUIDialog::Show()
+void CGUIDialog::Show_Internal()
 {
   //Lock graphic context here as it is sometimes called from non rendering threads
   //maybe we should have a critical section per window instead??
@@ -178,6 +177,16 @@ void CGUIDialog::Show()
   OnMessage(msg);
 
 //  m_bRunning = true;
+}
+
+void CGUIDialog::DoModal(int iWindowID /*= WINDOW_INVALID */)
+{
+  g_application.getApplicationMessenger().DoModal(this, iWindowID);
+}
+
+void CGUIDialog::Show()
+{
+  g_application.getApplicationMessenger().Show(this);
 }
 
 bool CGUIDialog::RenderAnimation(DWORD time)
