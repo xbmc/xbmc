@@ -281,6 +281,19 @@ static void WaitCallback(DWORD flags)
 }
 #endif
 
+CBackgroundPlayer::CBackgroundPlayer(const CFileItem &item, int iPlayList) : m_item(item), m_iPlayList(iPlayList)
+{
+}
+
+CBackgroundPlayer::~CBackgroundPlayer()
+{
+}
+
+void CBackgroundPlayer::Process()
+{
+  g_application.PlayMediaSync(m_item, m_iPlayList);
+}
+
 //extern IDirectSoundRenderer* m_pAudioDecoder;
 CApplication::CApplication(void)
     : m_ctrDpad(220, 220)
@@ -3745,6 +3758,20 @@ void CApplication::Stop()
 }
 
 bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
+{
+  // if the GUI thread is creating the player then we do it in background in order not to block the gui
+  if (GetCurrentThreadId() == g_application.GetThreadId())
+  {
+    CBackgroundPlayer *pBGPlayer = new CBackgroundPlayer(item, iPlaylist);
+    pBGPlayer->Create(true); // will delete itself when done
+  }
+  else
+    return PlayMediaSync(item, iPlaylist);
+
+  return true;
+}
+
+bool CApplication::PlayMediaSync(const CFileItem& item, int iPlaylist)
 {
   if (item.IsLastFM())
   {

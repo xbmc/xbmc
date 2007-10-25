@@ -39,6 +39,8 @@
 #endif
 #include "utils/Network.h"
 
+#include "GUIWindowManager.h"
+
 extern HWND g_hWnd;
 
 void CApplicationMessenger::Cleanup()
@@ -422,6 +424,27 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         g_application.getNetwork().NetworkMessage((CNetwork::EMESSAGE)pMsg->dwParam1, pMsg->dwParam2);
       }
       break;
+    case TMSG_GUI_DO_MODAL:
+      {
+        CGUIDialog *pDialog = (CGUIDialog *)pMsg->lpVoid;
+        int nId = (int)pMsg->dwParam1;
+        if (pDialog)
+          pDialog->DoModal_Internal(nId);
+      }
+      break;
+    case TMSG_GUI_SHOW:
+      {
+        CGUIDialog *pDialog = (CGUIDialog *)pMsg->lpVoid;
+        if (pDialog)
+          pDialog->Show_Internal();
+      }
+      break;
+    case TMSG_GUI_WIN_MANAGER_PROCESS:
+      m_gWindowManager.Process_Internal((bool)pMsg->dwParam1);
+      break;
+    case TMSG_GUI_WIN_MANAGER_RENDER:
+      m_gWindowManager.Render_Internal();
+      break;
   }
 }
 
@@ -597,5 +620,33 @@ void CApplicationMessenger::NetworkMessage(DWORD dwMessage, DWORD dwParam)
 void CApplicationMessenger::SwitchToFullscreen()
 {
   ThreadMessage tMsg = {TMSG_SWITCHTOFULLSCREEN};
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::DoModal(CGUIDialog *pDialog, int iWindowID)
+{
+  ThreadMessage tMsg = {TMSG_GUI_DO_MODAL};
+  tMsg.lpVoid = pDialog;
+  tMsg.dwParam1 = (DWORD)iWindowID;
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::Show(CGUIDialog *pDialog)
+{
+  ThreadMessage tMsg = {TMSG_GUI_SHOW};
+  tMsg.lpVoid = pDialog;
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::WindowManagerProcess(bool renderOnly)
+{
+  ThreadMessage tMsg = {TMSG_GUI_WIN_MANAGER_PROCESS};
+  tMsg.dwParam1 = (DWORD)renderOnly;
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::Render()
+{
+  ThreadMessage tMsg = {TMSG_GUI_WIN_MANAGER_RENDER};
   SendMessage(tMsg, true);
 }

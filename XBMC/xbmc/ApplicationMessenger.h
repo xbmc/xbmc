@@ -1,5 +1,7 @@
 #pragma once
 
+#include "GUIDialog.h"
+
 // defines here
 #define TMSG_DIALOG_DOMODAL       100
 #define TMSG_WRITE_SCRIPT_OUTPUT  101
@@ -29,6 +31,11 @@
 #define TMSG_HTTPAPI              400
 
 #define TMSG_NETWORKMESSAGE         500
+
+#define TMSG_GUI_DO_MODAL         600
+#define TMSG_GUI_SHOW             601
+#define TMSG_GUI_WIN_MANAGER_PROCESS 602
+#define TMSG_GUI_WIN_MANAGER_RENDER 603
 
 typedef struct
 {
@@ -77,6 +84,12 @@ public:
   void ExecBuiltIn(const CStdString &command);
 
   void NetworkMessage(DWORD dwMessage, DWORD dwParam = 0);
+
+  void DoModal(CGUIDialog *pDialog, int iWindowID = WINDOW_INVALID);
+  void Show(CGUIDialog *pDialog);
+  void WindowManagerProcess(bool renderOnly = false); // will call m_gWindowManager.Process on the rendering thread
+  void Render(); // will call m_gWindowManager.Render on the rendering thread
+
 private:
   void ProcessMessage(ThreadMessage *pMsg);
 

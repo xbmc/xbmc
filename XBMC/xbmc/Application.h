@@ -36,6 +36,17 @@ class CSNTPClient;
 class CCdgParser;
 class CApplicationMessenger;
 
+class CBackgroundPlayer : public CThread
+{
+public:
+  CBackgroundPlayer(const CFileItem &item, int iPlayList);
+  virtual ~CBackgroundPlayer();
+  virtual void Process();
+protected:
+  CFileItem m_item;
+  int       m_iPlayList;
+};
+
 class CApplication : public CXBApplicationEx, public IPlayerCallback, public IMsgTargetCallback
 {
 public:
@@ -93,6 +104,7 @@ public:
   virtual void OnPlayBackStopped();
   virtual void OnQueueNextItem();
   bool PlayMedia(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
+  bool PlayMediaSync(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
   bool ProcessAndStartPlaylist(const CStdString& strPlayList, PLAYLIST::CPlayList& playlist, int iPlaylist);
   bool PlayFile(const CFileItem& item, bool bRestart = false);
   void StopPlaying();
