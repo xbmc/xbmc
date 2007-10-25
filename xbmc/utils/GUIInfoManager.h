@@ -15,6 +15,10 @@
 #include "../utils/criticalsection.h"
 #include "IMsgTargetCallback.h"
 
+// conditions for window retrieval
+#define WINDOW_CONDITION_HAS_LIST_ITEMS  1
+#define WINDOW_CONDITION_IS_MEDIA_WINDOW 2
+
 #define OPERATOR_NOT  3
 #define OPERATOR_AND  2
 #define OPERATOR_OR   1
@@ -365,6 +369,7 @@
 
 // forward
 class CInfoPortion;
+class CGUIWindow;
 
 // structure to hold multiple integer data
 // for storage referenced from a single integer
@@ -496,6 +501,10 @@ public:
   void SetContainerMoving(int id, int direction) { m_containerMoves[id] = direction; };
 
 protected:
+  // routines for window retrieval
+  bool CheckWindowCondition(CGUIWindow *window, int condition) const;
+  CGUIWindow *GetWindowWithCondition(DWORD contextWindow, int condition) const;
+
   bool GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow = 0);
   CStdString GetMultiInfoLabel(const GUIInfo &info, DWORD dwContextWindow = 0) const;
   int TranslateSingleString(const CStdString &strCondition);
