@@ -24,7 +24,7 @@ class CGUIListItemLayout
   class CListLabel : public CListBase
   {
   public:
-    CListLabel(float posX, float posY, float width, float height, int visibleCondition, const CLabelInfo &label, int info, const CStdString &contents, const vector<CAnimation> &animations);
+    CListLabel(float posX, float posY, float width, float height, int visibleCondition, const CLabelInfo &label, bool alwyasScroll, int info, const CStdString &contents, const vector<CAnimation> &animations);
     virtual ~CListLabel();
 
     CGUIListLabel m_label;
@@ -58,6 +58,7 @@ public:
   bool Focused() const { return m_focused; };
   void ResetScrolling();
   void QueueAnimation(ANIMATION_TYPE animType);
+  void ResetAnimation(ANIMATION_TYPE animType);
 
   void SetInvalid() { m_invalidated = true; };
 
