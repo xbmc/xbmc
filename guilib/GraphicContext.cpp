@@ -900,6 +900,7 @@ void CGraphicContext::ApplyStateBlock()
 
 void CGraphicContext::SetScalingResolution(RESOLUTION res, float posX, float posY, bool needsScaling)
 {
+  Lock();
   m_windowResolution = res;
   if (needsScaling)
   {
@@ -963,6 +964,7 @@ void CGraphicContext::SetScalingResolution(RESOLUTION res, float posX, float pos
 
   // and reset the final transform
   UpdateFinalTransform(m_guiTransform);
+  Unlock();
 }
 
 void CGraphicContext::UpdateFinalTransform(const TransformMatrix &matrix)
