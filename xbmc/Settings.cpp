@@ -225,7 +225,7 @@ CSettings::CSettings(void)
 
   g_advancedSettings.m_songInfoDuration = 2;
   g_advancedSettings.m_busyDialogDelay = 2000;
-  g_advancedSettings.m_logLevel = LOG_LEVEL_NORMAL;
+  g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG;
   g_advancedSettings.m_cddbAddress = "freedb.freedb.org";
   g_advancedSettings.m_usePCDVDROM = false;
   g_advancedSettings.m_noDVDROM = false;
