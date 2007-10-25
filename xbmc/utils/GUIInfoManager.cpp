@@ -477,6 +477,12 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (info.Equals("onprevious")) ret = CONTAINER_ON_PREVIOUS;
     else if (info.Left(8).Equals("content("))
       return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_CONTENT : CONTAINER_CONTENT, ConditionalStringParameter(info.Mid(8,info.GetLength()-9)), 0));
+    else if (info.Left(4).Equals("row("))
+      return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_ROW : CONTAINER_ROW, id, atoi(info.Mid(4, info.GetLength() - 5))));
+    else if (info.Left(7).Equals("column("))
+      return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_COLUMN : CONTAINER_COLUMN, id, atoi(info.Mid(7, info.GetLength() - 8))));
+    else if (info.Left(9).Equals("position("))
+      return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_POSITION : CONTAINER_POSITION, id, atoi(info.Mid(9, info.GetLength() - 10))));
     else if (info.Equals("hasthumb")) ret = CONTAINER_HAS_THUMB;
     else if (info.Left(5).Equals("sort("))
     {
@@ -1643,6 +1649,27 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
         map<int,int>::const_iterator it = m_containerMoves.find(info.m_data1);
         if (it != m_containerMoves.end())
           bReturn = condition == CONTAINER_ON_NEXT ? it->second > 0 : it->second < 0;
+      }
+      break;
+    case CONTAINER_ROW:
+    case CONTAINER_COLUMN:
+    case CONTAINER_POSITION:
+      {
+        const CGUIControl *control = NULL;
+        if (info.m_data1)
+        { // container specified
+          CGUIWindow *window = GetWindowWithCondition(dwContextWindow, 0);
+          if (window)
+            control = window->GetControl(info.m_data1);
+        }
+        else
+        { // no container specified - assume a mediawindow
+          CGUIWindow *window = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+          if (window)
+            control = window->GetControl(window->GetViewContainerID());
+        }
+        if (control && control->IsContainer())
+          bReturn = ((CGUIBaseContainer *)control)->GetCondition(info.m_info, info.m_data2);
       }
       break;
     case CONTAINER_HAS_FOCUS:

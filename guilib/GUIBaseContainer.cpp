@@ -550,3 +550,18 @@ void CGUIBaseContainer::DumpTextureUse()
   }
 }
 #endif
+
+bool CGUIBaseContainer::GetCondition(int condition, int data) const
+{
+  switch (condition)
+  {
+  case CONTAINER_ROW:
+    return (m_orientation == VERTICAL) ? (m_cursor == data) : true;
+  case CONTAINER_COLUMN:
+    return (m_orientation == HORIZONTAL) ? (m_cursor == data) : true;
+  case CONTAINER_POSITION:
+    return (m_cursor == data);
+  default:
+    return false;
+  }
+}
