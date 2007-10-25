@@ -16,7 +16,7 @@ class CGUIListLabel :
       public CGUIControl
 {
 public:
-  CGUIListLabel(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo);
+  CGUIListLabel(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool alwaysScroll);
   virtual ~CGUIListLabel(void);
 
   virtual void Render();
@@ -36,6 +36,7 @@ protected:
   float       m_textWidth;
 
   bool        m_scrolling;
+  bool        m_alwaysScroll;
   bool        m_selected;
   CScrollInfo m_scrollInfo;
   CRect       m_renderRect;   // render location

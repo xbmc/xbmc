@@ -253,6 +253,17 @@ void CGUIControlGroup::QueueAnimation(ANIMATION_TYPE animType)
   }
 }
 
+void CGUIControlGroup::ResetAnimation(ANIMATION_TYPE animType)
+{
+  CGUIControl::ResetAnimation(animType);
+  // send window level animations to our children as well
+  if (animType == ANIM_TYPE_WINDOW_OPEN || animType == ANIM_TYPE_WINDOW_CLOSE)
+  {
+    for (iControls it = m_children.begin(); it != m_children.end(); ++it)
+      (*it)->ResetAnimation(animType);
+  }
+}
+
 bool CGUIControlGroup::IsAnimating(ANIMATION_TYPE animType)
 {
   if (CGUIControl::IsAnimating(animType))
