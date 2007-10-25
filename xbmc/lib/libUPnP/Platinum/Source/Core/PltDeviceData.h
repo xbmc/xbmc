@@ -28,6 +28,17 @@ typedef NPT_Reference<PLT_DeviceData> PLT_DeviceDataReference;
 typedef NPT_List<PLT_DeviceDataReference> PLT_DeviceDataReferenceList;
 
 /*----------------------------------------------------------------------
+|   PLT_DeviceIcon class
++---------------------------------------------------------------------*/
+typedef struct {
+    NPT_String  mimetype;
+    NPT_Integer width;
+    NPT_Integer height;
+    NPT_Integer depth;
+    NPT_String  url;
+} PLT_DeviceIcon;
+
+/*----------------------------------------------------------------------
 |   PLT_DeviceData class
 +---------------------------------------------------------------------*/
 class PLT_DeviceData
@@ -44,11 +55,12 @@ public:
     virtual NPT_String  GetDescriptionUrl(const char* bind_addr = NULL);
     virtual NPT_HttpUrl GetURLBase();
     virtual NPT_Result  GetDescription(NPT_XmlElementNode* parent, NPT_XmlElementNode** device = NULL);
+    virtual NPT_String  GetIconUrl(const char* mimetype = NULL, NPT_Integer maxsize = 0, NPT_Integer maxdepth = 0);
 
     const NPT_TimeInterval& GetLeaseTime()    const { return m_LeaseTime;    }
     const NPT_String&       GetUUID()         const { return m_UUID;         }
     const NPT_String&       GetFriendlyName() const { return m_FriendlyName; }
-    const NPT_String&       GetType()         const { return m_DeviceType;   }
+    const NPT_String&       GetType()         const { return m_DeviceType;   }        
 
 
     NPT_Result FindServiceByType(const char* type, PLT_Service*& service);
@@ -105,6 +117,7 @@ protected:
 
     NPT_Array<PLT_Service*>             m_Services;
     NPT_Array<PLT_DeviceDataReference>  m_EmbeddedDevices;
+    NPT_Array<PLT_DeviceIcon>           m_IconList;
 };
 
 /*----------------------------------------------------------------------

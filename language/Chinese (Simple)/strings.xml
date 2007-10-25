@@ -228,6 +228,7 @@
   <string id="294">创建书签</string>
   <string id="296">清除书签</string>
   <string id="297">声音延迟</string>
+  <string id="298">书签</string>
   <string id="303">延迟</string>
   <string id="304">语言</string>
   <string id="305">开启</string>
@@ -353,8 +354,8 @@
   <string id="429">请放入 CD/DVD</string>
   <string id="430">排序：DVD#</string>
   <string id="431">无缓存</string>
-  <string id="432">从资料库中删除影片</string>
-  <string id="433">确定删除'%s'？</string>
+  <string id="432">从资料库中移除影片</string>
+  <string id="433">确定移除'%s'？</string>
   <string id="434"></string>
   <string id="435">轨</string>
   <string id="436">年：</string>
@@ -552,6 +553,7 @@
   <string id="657">浏览文件夹</string>
   <string id="658">歌曲信息</string>
   <string id="659">注释：</string>
+  <string id="660">音量放大</string>
 
   <string id="700">清除音乐库</string>
   <string id="701">清除音乐库中的旧歌曲</string>
@@ -682,7 +684,7 @@
 
   <string id="1207">WINS-服务器</string>
 
-  <string id="1210">删除</string>
+  <string id="1210">移除</string>
   <string id="1211">音乐</string>
   <string id="1212">视频</string>
   <string id="1213">图片</string>
@@ -1022,7 +1024,7 @@
   <string id="13333">下移</string>
   <string id="13334">编辑标签</string>
   <string id="13335">设为默认</string>
-  <string id="13336">删除按键</string>
+  <string id="13336">移除按键</string>
   <string id="13338">前 LED</string>
   <string id="13339">前 LED 颜色</string>
   <string id="13340">默认</string>
@@ -1173,7 +1175,7 @@
   <string id="15012">加入游戏</string>
   <string id="15013">语音交谈</string>
   <string id="15014">邀请</string>
-  <string id="15015">删除</string>
+  <string id="15015">移除</string>
   <string id="15016">游戏</string>
   <string id="15017">显示：游戏</string>
   <string id="15018">进入</string>
@@ -1527,6 +1529,11 @@
   <string id="20186">请稍候…</string>
   <string id="20187">备份 EEPROM</string>
   <string id="20188">备份 BIOS</string>
+  
+  <string id="20200">派对模式！(影片)</string>
+  <string id="20201">真实(影片)</string>
+  <string id="20202">混合饮料(影片)</string>
+  <string id="20203">填入玻璃(影片)</string>
 
   <string id="20189"></string>
   <string id="20190"></string>
@@ -1644,6 +1651,9 @@
   <string id="20401">播放音乐视频</string>
   <string id="20402">自动撷取演员的缩略图</string>
   <string id="20403">设定演员缩略图</string>
+  <string id="20404">影片制作公司：</string>
+  <string id="20405">移除影集书签</string>
+  <string id="20406">设定影集书签</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">显示隐藏档案和目录</string>

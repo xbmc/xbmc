@@ -10,6 +10,7 @@
 #endif
 #include "../../../PlayListFactory.h"
 #include "pyutil.h"
+#include "listitem.h"
 
 using namespace PLAYLIST;
 
@@ -101,27 +102,58 @@ namespace PYXBMC
     self->ob_type->tp_free((PyObject*)self);
   }
 
+  // TODO: remove depreciated add method
   PyDoc_STRVAR(add__doc__,
-    "add(filename[, description, duration]) -- Add's a new file to the playlist.\n");
+    "add(url[, title, duration]) -- Add's a new file to the playlist.(Depreciated)\n"
+    "add(url[, listitem]) -- Add's a new file to the playlist.(Preferred method)\n"
+    "\n"
+    "url            : [opt] string - filename or url to add.\n"
+    "listitem       : [opt] listitem - used with setInfo() to set different infolabels.\n"
+    "\n"
+    "example:\n"
+    "  - playlist = xbmc.PlayList( 1 )\n"
+    "  - listitem = xbmcgui.ListItem('Ironman', thumbnailImage='F:\\\\movies\\\\Ironman.tbn')\n"
+    "  - listitem.setInfo('video', {'Title': 'Ironman', 'Genre': 'Science Fiction'})\n"
+    "  - playlist.add(url, listitem)\n");
 
   PyObject* PlayList_Add(PlayList *self, PyObject *args)
   {
-    char *cFileName = NULL;
-    char *cDescription = NULL;
     int iDuration = 0;
-    CPlayList::CPlayListItem Item;
+    PyObject *pObjectUrl = NULL;
+    PyObject *pObjectListItem = NULL;
 
-    if (!PyArg_ParseTuple(args, "s|sl", &cFileName, &cDescription, &iDuration))	return NULL;
+    if (!PyArg_ParseTuple(args, "O|Ol", &pObjectUrl, &pObjectListItem, &iDuration)) return NULL;
 
-    Item.SetFileName(cFileName);
+    CStdString strUrl = "";
+    if (!PyGetUnicodeString(strUrl, pObjectUrl)) return NULL;
 
-    if (cDescription) Item.SetDescription(cDescription);
-    else Item.SetDescription(cFileName);
+    if (pObjectListItem != NULL && ListItem_CheckExact(pObjectListItem))
+    {
+      // an optional listitem was passed
+      ListItem* pListItem = NULL;
+      pListItem = (ListItem*)pObjectListItem;
 
-    if (iDuration) Item.SetDuration(iDuration);
-    else Item.SetDuration(0);
+      // set m_strPath to the passed url
+      pListItem->item->m_strPath = strUrl;
+      self->pPlayList->Add((CFileItem*)pListItem->item);
+    }
+    else
+    {
+      CPlayList::CPlayListItem Item;
+      CFileItem item(strUrl, false);
 
-    self->pPlayList->Add(Item);
+      Item.SetFileName(strUrl);
+        
+      CStdString strDescription;
+      if (pObjectListItem == NULL || !PyGetUnicodeString(strDescription, pObjectListItem))
+        Item.SetDescription(strUrl);
+      else
+        Item.SetDescription(strDescription);
+
+      Item.SetDuration(iDuration);
+
+      self->pPlayList->Add(Item);
+    }
 
     Py_INCREF(Py_None);
     return Py_None;

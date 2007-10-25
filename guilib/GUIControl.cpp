@@ -510,6 +510,15 @@ void CGUIControl::SetAnimations(const vector<CAnimation> &animations)
   m_animations = animations;
 }
 
+void CGUIControl::ResetAnimation(ANIMATION_TYPE type)
+{
+  for (unsigned int i = 0; i < m_animations.size(); i++)
+  {
+    if (m_animations[i].GetType() == type)
+      m_animations[i].ResetAnimation();
+  }
+}
+
 void CGUIControl::QueueAnimation(ANIMATION_TYPE animType)
 {
   // rule out the animations we shouldn't perform

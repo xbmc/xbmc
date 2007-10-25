@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xboxmediacenter.com-->
-<!--Date of translation: 10/03/2007-->
+<!--Date of translation: 10/17/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 10403-->
+<!--Based on english strings version 10541-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -225,6 +225,7 @@
   <string id="294">Skapa bokmärke</string>
   <string id="296">Ta bort bokmärken</string>
   <string id="297">Ljudfördröjning</string>
+  <string id="298">Bokmärken</string>
   <string id="303">Fördröjning</string>
   <string id="304">Språk</string>
   <string id="305">Aktiverad</string>
@@ -344,14 +345,14 @@
   <string id="428">Sätt i korrekt CD/DVD</string>
   <string id="429">Var god sätt i följande CD/DVD</string>
   <string id="430">Sort: DVD#</string>
-  <string id="431">Ingen cache</string>
+  <string id="431">Ingen buffert</string>
   <string id="432">Radera filmen från biblioteket</string>
   <string id="433">Är du säker på att ta bort '%s'?</string>
   <string id="435">Låt</string>
   <string id="436">År:</string>
   <string id="437">Längd:</string>
   <string id="438">Öppnar fil</string>
-  <string id="439">Cache</string>
+  <string id="439">Buffert</string>
   <string id="440">Hårddisk</string>
   <string id="441">UDF</string>
   <string id="442">LAN</string>
@@ -539,6 +540,7 @@
   <string id="657">Bläddra efter mapp</string>
   <string id="658">Låtinformation</string>
   <string id="659">Kommentar:</string>
+  <string id="660">Volymförstärkning</string>
   <string id="700">Rensar bibliotek</string>
   <string id="701">Radera gamla låtar från databasen</string>
   <string id="702">Denna sökväg har skannats tidigare.</string>
@@ -1047,14 +1049,14 @@ den här visualiseringen</string>
   <string id="14022">Bibliotek</string>
   <string id="14023">Ingen TV</string>
   <string id="14024">Skriv in din närmsta storstad</string>
-  <string id="14025">Video/Ljud/DVDcache - Hårddisk</string>
-  <string id="14026">Videocache - DVDRom</string>
+  <string id="14025">Video/Ljud/DVDbuffert - Hårddisk</string>
+  <string id="14026">Videobuffert - DVDRom</string>
   <string id="14027">- Lokalt Nätverk</string>
   <string id="14028">- Internet</string>
-  <string id="14030">Ljudcache - DVDRom</string>
+  <string id="14030">Ljudbuffert - DVDRom</string>
   <string id="14031">- Lokalt Nätverk</string>
   <string id="14032">- Internet</string>
-  <string id="14034">DVDcache - DVDRom</string>
+  <string id="14034">DVDbuffert - DVDRom</string>
   <string id="14035">- Lokalt Nätverk</string>
   <string id="14036">Servrar</string>
   <string id="14037">Utseende</string>
@@ -1080,7 +1082,7 @@ den här visualiseringen</string>
   <string id="14057">Inte möjligt medan du skannar efter mediainfo</string>
   <string id="14058">Filmbruseffekt</string>
   <string id="14059">Leta miniatyrer på utdelningar</string>
-  <string id="14060">Okänd typ cache - Internet</string>
+  <string id="14060">Okänd typ buffert- Internet</string>
   <string id="14061">Auto</string>
   <string id="14062">Ange användarnamn för</string>
   <string id="14063">Datum &amp; tid</string>
@@ -1183,7 +1185,7 @@ den här visualiseringen</string>
   <string id="15207">Uppkopplad</string>
   <string id="15208">Inte uppkopplad</string>
   <string id="15209">Leveransintervall %i</string>
-  <string id="15210">Cachade %i låtar</string>
+  <string id="15210">Buffrade %i låtar</string>
   <string id="15211">Skickar...</string>
   <string id="15212">Skickar om %i sek</string>
   <string id="15213">Spela upp med...</string>
@@ -1454,6 +1456,10 @@ den här visualiseringen</string>
   <string id="20186">Var god vänta</string>
   <string id="20187">Tar backup av EEPROM</string>
   <string id="20188">Tar backup av BIOS</string>
+  <string id="20200">Festa på! (filmer)</string>
+  <string id="20201">Sant (filmer)</string>
+  <string id="20202">Blandar drinkar (filmer)</string>
+  <string id="20203">Fyller glas (filmer)</string>
   <string id="20306">Okänd. Lägg till MD5 från XBMC.log till BiosIDs.ini</string>
   <string id="20307">Sekundär DNS</string>
   <string id="20308">DHCP server:</string>
@@ -1551,6 +1557,9 @@ den här visualiseringen</string>
   <string id="20401">Spela musikvideo</string>
   <string id="20402">Hämta skådespelarminiatyrer automatiskt</string>
   <string id="20403">Ange skådespelarminiatyr</string>
+  <string id="20404">Studio:</string>
+  <string id="20405">Ta bort avsnittsbokmärke</string>
+  <string id="20406">Lägg till avsnittsbokmärke</string>
   <string id="21330">Visa dolda filer och mappar</string>
   <string id="21331">TuxBox klient</string>
   <string id="21332">VARNING: Vald TuxBox enhet är i inspelningsläge!</string>
@@ -1596,7 +1605,7 @@ den här visualiseringen</string>
   <string id="21392">Låg strömförbrukning</string>
   <string id="21393">Hög standby</string>
   <string id="21394">Låg standby</string>
-  <string id="21395">Kan inte cacha filer större än 4gb</string>
+  <string id="21395">Kan inte buffra filer större än 4gb</string>
   <string id="21396">Kapitel</string>
   <string id="21397">Högkvalitets Pixel Shader V2</string>
   <string id="21398">Aktivera spellista vid start</string>

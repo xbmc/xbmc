@@ -4161,6 +4161,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\GUIPythonWindowXMLDialog.cpp">
 					</File>
 					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\GUIPythonWindowXMLDialog.h">
+					</File>
+					<File
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\infotagmusic.cpp">
 					</File>
 					<File
@@ -4517,25 +4520,25 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				Name="sqlite"
 				Filter="">
 				<File
-					RelativePath=".\xbmc\lib\sqlLite\dataset.cpp">
+					RelativePath=".\xbmc\lib\sqLite\dataset.cpp">
 				</File>
 				<File
-					RelativePath=".\xbmc\lib\sqlLite\dataset.h">
+					RelativePath=".\xbmc\lib\sqLite\dataset.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\lib\sqlLite\qry_dat.cpp">
+					RelativePath=".\xbmc\lib\sqLite\qry_dat.cpp">
 				</File>
 				<File
-					RelativePath=".\xbmc\lib\sqlLite\qry_dat.h">
+					RelativePath=".\xbmc\lib\sqLite\qry_dat.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\lib\sqlLite\sqlite.h">
+					RelativePath=".\xbmc\lib\sqLite\sqlite.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\lib\sqlLite\sqlitedataset.cpp">
+					RelativePath=".\xbmc\lib\sqLite\sqlitedataset.cpp">
 				</File>
 				<File
-					RelativePath=".\xbmc\lib\sqlLite\sqlitedataset.h">
+					RelativePath=".\xbmc\lib\sqLite\sqlitedataset.h">
 				</File>
 			</Filter>
 		</Filter>

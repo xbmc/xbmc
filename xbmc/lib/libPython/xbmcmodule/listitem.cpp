@@ -320,7 +320,7 @@ namespace PYXBMC
 
     CStdString tmp;
     while (PyDict_Next(pInfoLabels, &pos, &key, &value)) {
-      CLog::Log(LOGDEBUG, "%s - InfoLabel Dictionary: pos: %i,  key: %s", __FUNCTION__, pos, PyString_AsString(key));
+      CLog::Log(LOGDEBUG, "%s - InfoLabel Dictionary: pos: %i,  type: %s,  label: %s", __FUNCTION__, pos, cType, PyString_AsString(key));
       if (strcmpi(cType, "video") == 0)
       {
         // TODO: add the rest of the infolabels
@@ -331,7 +331,10 @@ namespace PYXBMC
         else if (strcmpi(PyString_AsString(key), "rating") == 0)
           self->item->GetVideoInfoTag()->m_fRating = (float)PyFloat_AsDouble(value);
         else if (strcmpi(PyString_AsString(key), "size") == 0)
-          self->item->m_dwSize = PyInt_AsLong(value);
+          self->item->m_dwSize = (__int64)PyLong_AsLongLong(value);
+        else if (strcmpi(PyString_AsString(key), "overlay") == 0)
+          // TODO: Add a check for a valid overlay value
+          self->item->SetOverlayImage((CGUIListItem::GUIIconOverlay)PyInt_AsLong(value));
         else if (strcmpi(PyString_AsString(key), "cast") == 0 || strcmpi(PyString_AsString(key), "castandrole") == 0)
         {
           if (!PyObject_TypeCheck(value, &PyList_Type)) continue;
@@ -359,12 +362,11 @@ namespace PYXBMC
         else
         {
           if (!PyGetUnicodeString(tmp, value, 1)) continue;
-          CLog::Log(LOGDEBUG, "%s - Type: %s,  InfoLabel: %s,  Value: %s ", __FUNCTION__, cType, PyString_AsString(key), tmp.c_str());
           if (strcmpi(PyString_AsString(key), "genre") == 0)
             self->item->GetVideoInfoTag()->m_strGenre = tmp;
           else if (strcmpi(PyString_AsString(key), "director") == 0)
             self->item->GetVideoInfoTag()->m_strDirector = tmp;
-          else if (strcmpi(PyString_AsString(key), "MPAARating") == 0)
+          else if (strcmpi(PyString_AsString(key), "mpaa") == 0)
             self->item->GetVideoInfoTag()->m_strMPAARating = tmp;
           else if (strcmpi(PyString_AsString(key), "plot") == 0)
             self->item->GetVideoInfoTag()->m_strPlot = tmp;
@@ -393,13 +395,12 @@ namespace PYXBMC
         else if (strcmpi(PyString_AsString(key), "count") == 0)
           self->item->m_iprogramCount = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "size") == 0)
-          self->item->m_dwSize = PyInt_AsLong(value);
+          self->item->m_dwSize = (__int64)PyLong_AsLongLong(value);
         else if (strcmpi(PyString_AsString(key), "duration") == 0)
           self->item->GetMusicInfoTag()->SetDuration(PyInt_AsLong(value));
         else
         {
           if (!PyGetUnicodeString(tmp, value, 1)) continue;
-          CLog::Log(LOGDEBUG, "%s - Type: %s,  InfoLabel: %s,  Value: %s ", __FUNCTION__, cType, PyString_AsString(key), tmp.c_str());
           if (strcmpi(PyString_AsString(key), "genre") == 0)
             self->item->GetMusicInfoTag()->SetGenre(tmp);
           else if (strcmpi(PyString_AsString(key), "album") == 0)
@@ -420,13 +421,12 @@ namespace PYXBMC
       {
         // TODO: Figure out how to set picture tags
         if (!PyGetUnicodeString(tmp, value, 1)) continue;
-        CLog::Log(LOGDEBUG, "%s - Type: %s,  InfoLabel: %s,  Value: %s ", __FUNCTION__, cType, PyString_AsString(key), tmp.c_str());
         if (strcmpi(PyString_AsString(key), "title") == 0)
           self->item->m_strTitle = tmp;
         else if (strcmpi(PyString_AsString(key), "count") == 0)
           self->item->m_iprogramCount = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "size") == 0)
-          self->item->m_dwSize = PyInt_AsLong(value);
+          self->item->m_dwSize = (__int64)PyLong_AsLongLong(value);
         else if (strcmpi(PyString_AsString(key), "picturepath") == 0)
           self->item->m_strPath = tmp;
         //else if (strcmpi(PyString_AsString(key), "picturedatetime") == 0)

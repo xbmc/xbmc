@@ -16,7 +16,7 @@ public:
 
   static bool Show(SScraperInfo& scraper, VIDEO::SScanSettings& settings, bool& bRunScan);
   static bool ShowForDirectory(const CStdString& strDirectory, SScraperInfo& scraper, VIDEO::SScanSettings& settings, bool& bRunScan);
-  virtual bool IsMediaWindow() const { return true; };
+  virtual bool HasListItems() const { return true; };
   virtual CFileItem* GetCurrentListItem(int offset = 0);
 protected:
   virtual void OnCancel();

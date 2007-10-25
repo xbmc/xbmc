@@ -56,8 +56,10 @@ bool CPartyModeManager::Enable(bool bVideo /* = false */)
   CStdString partyModePath;
 
   CGUIDialogProgress* pDialog = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  pDialog->SetHeading(20121);
-  pDialog->SetLine(0,20123);
+  int iHeading = (bVideo ? 20200 : 20121);
+  int iLine0 = (bVideo ? 20202 : 20123);
+  pDialog->SetHeading(iHeading);
+  pDialog->SetLine(0, iLine0);
   pDialog->SetLine(1, "");
   pDialog->SetLine(2, "");
   pDialog->StartModal();

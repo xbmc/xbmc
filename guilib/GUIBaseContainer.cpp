@@ -47,7 +47,10 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
       if (item != m_lastItem || !HasFocus())
         item->GetFocusedLayout()->ResetScrolling();
       if (item != m_lastItem)
+      {
+        item->GetFocusedLayout()->ResetAnimation(ANIM_TYPE_FOCUS);
         item->GetFocusedLayout()->QueueAnimation(ANIM_TYPE_FOCUS);
+      }
       item->GetFocusedLayout()->Render(item, m_dwParentID, m_renderTime);
     }
     m_lastItem = item;
@@ -60,7 +63,7 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
       item->SetLayout(layout);
     }
     if (item->GetLayout())
-      item->GetLayout()->Render(item, m_dwParentID);
+      item->GetLayout()->Render(item, m_dwParentID, m_renderTime);
   }
   g_graphicsContext.RestoreOrigin();
 }
@@ -547,4 +550,19 @@ void CGUIBaseContainer::DumpTextureUse()
   }
 }
 #endif
+
+bool CGUIBaseContainer::GetCondition(int condition, int data) const
+{
+  switch (condition)
+  {
+  case CONTAINER_ROW:
+    return (m_orientation == VERTICAL) ? (m_cursor == data) : true;
+  case CONTAINER_COLUMN:
+    return (m_orientation == HORIZONTAL) ? (m_cursor == data) : true;
+  case CONTAINER_POSITION:
+    return (m_cursor == data);
+  default:
+    return false;
+  }
+}
 

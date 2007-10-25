@@ -35,6 +35,7 @@ public:
   virtual void OnRight();
   virtual void OnUp();
   virtual void OnDown();
+  virtual bool GetCondition(int condition, int data) const;
 protected:
   virtual bool MoveUp(DWORD nextControl);
   virtual bool MoveDown(DWORD nextControl);
