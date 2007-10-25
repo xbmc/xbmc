@@ -3206,9 +3206,10 @@ void CGUIInfoManager::ResetCurrentSlide()
 bool CGUIInfoManager::CheckWindowCondition(CGUIWindow *window, int condition) const
 {
   // check if it satisfies our condition
-  if (window && (condition & WINDOW_CONDITION_HAS_LIST_ITEMS) && !window->HasListItems())
+  if (!window) return false;
+  if ((condition & WINDOW_CONDITION_HAS_LIST_ITEMS) && !window->HasListItems())
     return false;
-  if (window && (condition & WINDOW_CONDITION_IS_MEDIA_WINDOW) && !window->IsMediaWindow())
+  if ((condition & WINDOW_CONDITION_IS_MEDIA_WINDOW) && !window->IsMediaWindow())
     return false;
   return true;
 }
