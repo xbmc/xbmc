@@ -2,11 +2,12 @@
 #include "GUIListLabel.h"
 #include "../xbmc/utils/CharsetConverter.h"
 
-CGUIListLabel::CGUIListLabel(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo)
+CGUIListLabel::CGUIListLabel(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool alwaysScroll)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {
   m_selected = false;
-  m_scrolling = false;
+  m_alwaysScroll = alwaysScroll;
+  m_scrolling = m_alwaysScroll ? true : false;
   m_label = labelInfo;
 }
 
@@ -16,8 +17,8 @@ CGUIListLabel::~CGUIListLabel(void)
 
 void CGUIListLabel::SetScrolling(bool scrolling)
 {
-  m_scrolling = scrolling;
-  if (!scrolling)
+  m_scrolling = m_alwaysScroll ? true : scrolling;
+  if (!m_scrolling)
     m_scrollInfo.Reset();
 }
 

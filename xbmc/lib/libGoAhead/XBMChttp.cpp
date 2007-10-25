@@ -1236,7 +1236,7 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
         output+=closeTag+openTag+"Title"+tag+":"+tagVal->m_strTitle ;
       if (tagVal && !tagVal->m_strGenre.IsEmpty())
         output+=closeTag+openTag+"Genre"+tag+":"+tagVal->m_strGenre;
-	    output+=closeTag+openTag+"Thumb"+tag+":"+g_infoManager.GetImage(VIDEOPLAYER_COVER, -1);
+	  output+=closeTag+openTag+"Thumb"+tag+":"+g_infoManager.GetImage(VIDEOPLAYER_COVER, -1);
     }
     else if (g_application.IsPlayingAudio())
     { // Audio information
@@ -1252,6 +1252,8 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
         output+=closeTag+openTag+"Genre"+tag+":"+tagVal->GetGenre();
       if (tagVal && tagVal->GetYear())
         output+=closeTag+openTag+"Year"+tag+":"+tagVal->GetYearString();
+	  if (tagVal && tagVal->GetURL())
+        output+=closeTag+openTag+"URL"+tag+":"+tagVal->GetURL();
       // TODO: Should this be a tagitem member?? (wouldn't have vbr updates though)
       CStdString bitRate(g_infoManager.GetMusicLabel(MUSICPLAYER_BITRATE)); 
       // TODO: This should be a static tag item
@@ -1638,10 +1640,22 @@ int CXbmcHttp::xbmcGetPlayListContents(int numParas, CStdString paras[])
   if (thePlayList.size()==0)
     list=openTag+"[Empty]" ;
   else
-    for (int i=0; i< thePlayList.size(); i++) {
-      const CPlayList::CPlayListItem& item=thePlayList[i];
-      list += closeTag+openTag + item.GetFileName();
-    }
+    if (g_application.IsPlayingAudio())
+	{
+	  for (int i=0; i< thePlayList.size(); i++) {
+        const CPlayList::CPlayListItem& item=thePlayList[i];
+		const CMusicInfoTag* tagVal=item.GetMusicTag();
+	    if (tagVal && tagVal->GetURL()!="")
+          list += closeTag+openTag + tagVal->GetURL();
+		else
+          list += closeTag+openTag + item.GetFileName();
+      }
+	}
+	else
+	  for (int i=0; i< thePlayList.size(); i++) {
+        const CPlayList::CPlayListItem& item=thePlayList[i];
+        list += closeTag+openTag + item.GetFileName();
+      }
   return SetResponse(list) ;
 }
 
@@ -2577,6 +2591,17 @@ int CXbmcHttp::xbmcOnAction(int numParas, CStdString paras[])
   }
 }
 
+int CXbmcHttp::xbmcRecordStatus(int numParas, CStdString paras[])
+{
+  if (numParas!=0)
+    return SetResponse(openTag+"Error:Too many parameters");
+  else
+      if( g_application.IsPlaying() && g_application.m_pPlayer && g_application.m_pPlayer->CanRecord())
+		return SetResponse(g_application.m_pPlayer->IsRecording()?openTag+"Recording":openTag+"Not recording");
+	  else
+        return SetResponse(openTag+"Can't record");
+}
+
 int CXbmcHttp::xbmcSetResponseFormat(int numParas, CStdString paras[])
 {
   if (numParas==0)
@@ -2654,6 +2679,9 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
     CLog::Log(LOGDEBUG, "HttpApi Start command: %s  paras: [not recorded]", command.c_str());
   command=command.ToLower();
   if (numParas>=0)
+  {
+	for (int i = 0; i < numParas; i++)
+      CUtil::UrlDecode(paras[i]);
     if (command == "clearplaylist")                   retVal = xbmcClearPlayList(numParas, paras);  
       else if (command == "addtoplaylist")            retVal = xbmcAddToPlayList(numParas, paras);  
       else if (command == "playfile")                 retVal = xbmcPlayerPlayFile(numParas, paras); 
@@ -2731,6 +2759,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
 	  else if (command == "setbroadcast")             retVal = xbmcSetBroadcast(numParas, paras);
 	  else if (command == "getbroadcast")             retVal = xbmcGetBroadcast();
 	  else if (command == "action")                   retVal = xbmcOnAction(numParas, paras);
+	  else if (command == "getrecordstatus")          retVal = xbmcRecordStatus(numParas, paras);
 
       //Old command names
       else if (command == "deletefile")               retVal = xbmcDeleteFile(numParas, paras);
@@ -2743,6 +2772,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
 
       else
         retVal = SetResponse(openTag+"Error:Unknown command");
+  }
   else if (numParas==-2)
 	  retVal = SetResponse(openTag+"Error:Too many parameters");
   else

@@ -61,6 +61,7 @@ CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock) : CThread(), m_dvdAudio(m_bS
 
 CDVDPlayerAudio::~CDVDPlayerAudio()
 {
+  StopThread();
   g_dvdPerformanceCounter.DisableAudioQueue();
 
   // close the stream, and don't wait for the audio to be finished

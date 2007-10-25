@@ -67,7 +67,7 @@ void CGUIFadeLabelControl::Render()
 		{
 			m_iCurrentLabel = 0;
 		}
-		strRenderLabel = g_infoManager.GetLabel(m_vecInfo[m_iCurrentLabel]);
+		strRenderLabel = g_infoManager.GetLabel(m_vecInfo[m_iCurrentLabel], m_dwParentID);
 	}
 
   CStdStringW strLabelUnicode;
@@ -136,6 +136,7 @@ bool CGUIFadeLabelControl::OnMessage(CGUIMessage& message)
     {
       m_infoLabels.clear();
       m_stringLabels.clear();
+      m_scrollInfo.Reset();
       AddLabel(message.GetLabel());
     }
   }

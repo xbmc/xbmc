@@ -3787,25 +3787,25 @@
 				Name="sqlite"
 				Filter="">
 				<File
-					RelativePath="..\..\xbmc\lib\sqlLite\dataset.cpp">
+					RelativePath="..\..\xbmc\lib\sqLite\dataset.cpp">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\sqlLite\dataset.h">
+					RelativePath="..\..\xbmc\lib\sqLite\dataset.h">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\sqlLite\qry_dat.cpp">
+					RelativePath="..\..\xbmc\lib\sqLite\qry_dat.cpp">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\sqlLite\qry_dat.h">
+					RelativePath="..\..\xbmc\lib\sqLite\qry_dat.h">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\sqlLite\sqlite3.h">
+					RelativePath="..\..\xbmc\lib\sqLite\sqlite3.h">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\sqlLite\sqlitedataset.cpp">
+					RelativePath="..\..\xbmc\lib\sqLite\sqlitedataset.cpp">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\sqlLite\sqlitedataset.h">
+					RelativePath="..\..\xbmc\lib\sqLite\sqlitedataset.h">
 				</File>
 			</Filter>
 			<Filter

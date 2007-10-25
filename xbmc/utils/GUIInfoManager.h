@@ -18,6 +18,10 @@
 #endif
 #include "IMsgTargetCallback.h"
 
+// conditions for window retrieval
+#define WINDOW_CONDITION_HAS_LIST_ITEMS  1
+#define WINDOW_CONDITION_IS_MEDIA_WINDOW 2
+
 #define OPERATOR_NOT  3
 #define OPERATOR_AND  2
 #define OPERATOR_OR   1
@@ -242,6 +246,9 @@
 #define CONTAINER_ON_NEXT           365
 #define CONTAINER_ON_PREVIOUS       366
 #define CONTAINER_HAS_FOCUS         367
+#define CONTAINER_ROW               368
+#define CONTAINER_COLUMN            369
+#define CONTAINER_POSITION          370
 
 #define MUSICPM_ENABLED             380
 #define MUSICPM_SONGSPLAYED         381
@@ -341,6 +348,7 @@
 
 #define XLINK_KAI_USERNAME          750
 #define SKIN_THEME                  800
+#define SKIN_COLOUR_THEME           801
 
 #define SLIDE_INFO_START            900
 #define SLIDE_INFO_END              980
@@ -370,6 +378,7 @@
 
 // forward
 class CInfoPortion;
+class CGUIWindow;
 
 // structure to hold multiple integer data
 // for storage referenced from a single integer
@@ -406,8 +415,8 @@ public:
 
   int TranslateString(const CStdString &strCondition);
   bool GetBool(int condition, DWORD dwContextWindow = 0);
-  int GetInt(int info) const;
-  CStdString GetLabel(int info);
+  int GetInt(int info, DWORD contextWindow = 0) const;
+  CStdString GetLabel(int info, DWORD contextWindow = 0);
 
   CStdString GetImage(int info, DWORD contextWindow);
 
@@ -501,6 +510,10 @@ public:
   void SetContainerMoving(int id, int direction) { m_containerMoves[id] = direction; };
 
 protected:
+  // routines for window retrieval
+  bool CheckWindowCondition(CGUIWindow *window, int condition) const;
+  CGUIWindow *GetWindowWithCondition(DWORD contextWindow, int condition) const;
+
   bool GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow = 0);
   CStdString GetMultiInfoLabel(const GUIInfo &info, DWORD dwContextWindow = 0) const;
   int TranslateSingleString(const CStdString &strCondition);

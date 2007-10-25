@@ -337,7 +337,7 @@ namespace PYXBMC
     "*Note, Use update() to update lines and progressbar.\n"
     "\n"
     "example:\n"
-    "  - pDialog = xbmcgui.ProgressDialog()\n"
+    "  - pDialog = xbmcgui.DialogProgress()\n"
     "  - ret = pDialog.create('Xbox Media Center', 'Initializing script...')\n");
 
   PyObject* Dialog_ProgressCreate(PyObject *self, PyObject *args)

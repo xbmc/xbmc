@@ -33,13 +33,13 @@
 				<description>Cover image</description>
 				<posx>55</posx>
 				<posy>95</posy>
-				<width>121</width>
+				<width>130</width>
 				<height>239</height>
 				<texture>-</texture>
 				<aspectratio>keep</aspectratio>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
-			<control type="fadelabel" id="20">
+			<control type="label" id="20">
 				<description>Movie Title value</description>
 				<posx>200</posx>
 				<posy>95</posy>
@@ -47,6 +47,7 @@
 				<label>-</label>
 				<font>font14</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
 			<control type="label" id="1">
 				<description>Studio txt</description>
@@ -138,7 +139,7 @@
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
-			<control type="fadelabel" id="36">
+			<control type="label" id="36">
 				<description>Studio value</description>
 				<posx>310</posx>
 				<posy>123</posy>
@@ -146,8 +147,9 @@
 				<label>-</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="21">
+			<control type="label" id="21">
 				<description>Director value</description>
 				<posx>310</posx>
 				<posy>143</posy>
@@ -155,8 +157,9 @@
 				<label>-</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="22">
+			<control type="label" id="22">
 				<description>Writing Credits value</description>
 				<posx>310</posx>
 				<posy>163</posy>
@@ -164,8 +167,9 @@
 				<label>-</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="23">
+			<control type="label" id="23">
 				<description>Genre value</description>
 				<posx>310</posx>
 				<posy>183</posy>
@@ -173,8 +177,9 @@
 				<label>-</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="24">
+			<control type="label" id="24">
 				<description>Year value</description>
 				<posx>310</posx>
 				<posy>203</posy>
@@ -182,8 +187,9 @@
 				<label>-</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="25">
+			<control type="label" id="25">
 				<description>TagLine value</description>
 				<posx>310</posx>
 				<posy>223</posy>
@@ -191,8 +197,9 @@
 				<label>-</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="26">
+			<control type="label" id="26">
 				<description>PlotOutline value</description>
 				<posx>310</posx>
 				<posy>243</posy>
@@ -200,8 +207,9 @@
 				<label>-</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="30">
+			<control type="label" id="30">
 				<description>Rating and votes value</description>
 				<posx>310</posx>
 				<posy>263</posy>
@@ -209,8 +217,9 @@
 				<label>-</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="31">
+			<control type="label" id="31">
 				<description>Runtime value</description>
 				<posx>310</posx>
 				<posy>283</posy>
@@ -218,8 +227,9 @@
 				<label>-</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="32">
+			<control type="label" id="32">
 				<description>MPPA Rating value</description>
 				<posx>310</posx>
 				<posy>303</posy>
@@ -227,39 +237,7 @@
 				<label>-</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
-			</control>
-			<control type="image">
-				<posx>55</posx>
-				<posy>340</posy>
-				<width>625</width>
-				<height>5</height>
-				<texture>separator.png</texture>
-				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
-			</control>
-			<control type="textbox" id="4">
-				<description>textarea</description>
-				<posx>200</posx>
-				<posy>352</posy>
-				<width>480</width>
-				<height>175</height>
-				<onleft>5</onleft>
-				<onright>50</onright>
-				<onup>5</onup>
-				<ondown>5</ondown>
-				<spinposx>430</spinposx>
-				<spinposy>158</spinposy>
-				<visible>!control.isvisible(50) + !container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
-			</control>
-			<control type="image" id="34">
-				<description>Actor image</description>
-				<posx>586</posx>
-				<posy>355</posy>
-				<width>94</width>
-				<height>164</height>
-				<texture>DefaultActorBig.png</texture>
-				<aspectratio>keep</aspectratio>
-				<align>center</align>
-				<visible>control.isvisible(50) + !container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
 		</control>
 		<control type="group">
@@ -274,26 +252,27 @@
 			</control>
 			<control type="image" id="3">
 				<description>TV Show Banner image</description>
-				<posx>200</posx>
+				<posx>60</posx>
 				<posy>100</posy>
-				<width>500</width>
+				<width>615</width>
 				<height>115</height>
 				<texture>-</texture>
 				<aspectratio>keep</aspectratio>
 				<visible>container.content(tvshows)</visible>
 			</control>
-			<control type="fadelabel" id="20">
+			<control type="label" id="20">
 				<description>TV Show Title value</description>
-				<posx>200</posx>
+				<posx>60</posx>
 				<posy>225</posy>
-				<width>290</width>
+				<width>615</width>
 				<label>-</label>
 				<font>special13</font>
 				<visible>container.content(tvshows)</visible>
+				<scroll>true</scroll>
 			</control>
 			<control type="label" id="1">
 				<description>Episodes txt</description>
-				<posx>200</posx>
+				<posx>60</posx>
 				<posy>255</posy>
 				<width>90</width>
 				<label>$LOCALIZE[20360] :</label>
@@ -302,34 +281,37 @@
 			</control>
 			<control type="label" id="1">
 				<description>Episodes Value</description>
-				<posx>300</posx>
+				<posx>170</posx>
 				<posy>255</posy>
-				<width>400</width>
+				<width>550</width>
 				<label>$INFO[listitem.episode]</label>
 				<font>font13</font>
 				<visible>container.content(tvshows)</visible>
+				<scroll>true</scroll>
 			</control>
 			<control type="label" id="1">
 				<description>First Aired txt</description>
-				<posx>200</posx>
+				<posx>60</posx>
 				<posy>280</posy>
 				<width>90</width>
 				<label>$LOCALIZE[20376] :</label>
 				<font>font13</font>
 				<visible>container.content(tvshows)</visible>
+				<scroll>true</scroll>
 			</control>
 			<control type="label" id="24">
 				<description>First Aired Value</description>
-				<posx>300</posx>
+				<posx>170</posx>
 				<posy>280</posy>
-				<width>400</width>
+				<width>550</width>
 				<label>-</label>
 				<font>font13</font>
 				<visible>container.content(tvshows)</visible>
+				<scroll>true</scroll>
 			</control>
 			<control type="label" id="1">
 				<description>Genre txt</description>
-				<posx>200</posx>
+				<posx>60</posx>
 				<posy>305</posy>
 				<width>90</width>
 				<label>174</label>
@@ -338,45 +320,13 @@
 			</control>
 			<control type="label" id="23">
 				<description>Genre value</description>
-				<posx>300</posx>
+				<posx>170</posx>
 				<posy>305</posy>
-				<width>400</width>
+				<width>550</width>
 				<label></label>
 				<font>font13</font>
 				<visible>container.content(tvshows)</visible>
-			</control>
-			<control type="image" id="34">
-				<description>Actor image</description>
-				<posx>591</posx>
-				<posy>355</posy>
-				<width>94</width>
-				<height>164</height>
-				<texture>DefaultActorBig.png</texture>
-				<aspectratio>keep</aspectratio>
-				<align>center</align>
-				<visible>control.isvisible(50) + container.content(tvshows)</visible>
-			</control>
-			<control type="image">
-				<posx>190</posx>
-				<posy>337</posy>
-				<width>510</width>
-				<height>10</height>
-				<texture>separator.png</texture>
-				<visible>container.content(tvshows)</visible>
-			</control>
-			<control type="textbox" id="4">
-				<description>textarea</description>
-				<posx>200</posx>
-				<posy>350</posy>
-				<width>480</width>
-				<height>200</height>
-				<onleft>5</onleft>
-				<onright>50</onright>
-				<onup>5</onup>
-				<ondown>5</ondown>
-				<spinposx>430</spinposx>
-				<spinposy>195</spinposy>
-				<visible>!control.isvisible(50) + container.content(tvshows)</visible>
+				<scroll>true</scroll>
 			</control>
 		</control>
 		<control type="group">
@@ -389,17 +339,6 @@
 				<font>special13</font>
 				<visible>container.content(episodes)</visible>
 			</control>
-<!--			<control type="image">
-				<description>folder image</description>
-				<posx>20</posx>
-				<posy>0</posy>
-				<width>720</width>
-				<height>86</height>
-				<aspectratio align="left">keep</aspectratio>
-				<texture diffuse="Wide_Icon_Diffuse.png" />
-				<info>container.folderthumb</info>
-				<visible>container.content(episodes)</visible>
-			</control> -->
 			<control type="image">
 				<description>Cover image</description>
 				<posx>55</posx>
@@ -421,7 +360,7 @@
 				<texture flipy="true" diffuse="diffuse_mirror.png" /> 
 				<visible>container.content(episodes)</visible>
 			</control>
-			<control type="fadelabel" id="1">
+			<control type="label" id="1">
 				<description>Tv ShowTitle value</description>
 				<posx>200</posx>
 				<posy>110</posy>
@@ -429,8 +368,9 @@
 				<info>ListItem.tvshowtitle</info>
 				<font>special13</font>
 				<visible>container.content(episodes)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="20">
+			<control type="label" id="20">
 				<description>Title value</description>
 				<posx>200</posx>
 				<posy>140</posy>
@@ -438,6 +378,7 @@
 				<label>-</label>
 				<font>special13</font>
 				<visible>container.content(episodes)</visible>
+				<scroll>true</scroll>
 			</control>
 			<control type="label" id="1">
 				<description>Episode txt</description>
@@ -502,111 +443,75 @@
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
 			</control>
-			<control type="fadelabel" id="1">
+			<control type="label" id="1">
 				<description>Episode value</description>
 				<posx>300</posx>
 				<posy>178</posy>
-				<width>230</width>
+				<width>375</width>
 				<info>Listitem.Episode</info>
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="1">
+			<control type="label" id="1">
 				<description>Sesson value</description>
 				<posx>300</posx>
 				<posy>195</posy>
-				<width>230</width>
+				<width>375</width>
 				<info>Listitem.Season</info>
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="21">
+			<control type="label" id="21">
 				<description>Director value</description>
 				<posx>300</posx>
 				<posy>215</posy>
-				<width>230</width>
+				<width>375</width>
 				<label>-</label>
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="22">
+			<control type="label" id="22">
 				<description>Writing Credits value</description>
 				<posx>300</posx>
 				<posy>235</posy>
-				<width>230</width>
+				<width>375</width>
 				<label>-</label>
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="23">
+			<control type="label" id="23">
 				<description>Genre value</description>
 				<posx>300</posx>
 				<posy>255</posy>
-				<width>230</width>
+				<width>375</width>
 				<label>-</label>
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="24">
+			<control type="label" id="24">
 				<description>Year value</description>
 				<posx>300</posx>
 				<posy>275</posy>
-				<width>252</width>
+				<width>375</width>
 				<label>-</label>
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="30">
+			<control type="label" id="30">
 				<description>Rating and votes value</description>
 				<posx>300</posx>
 				<posy>295</posy>
-				<width>230</width>
+				<width>375</width>
 				<label>-</label>
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
-			</control>
-			<control type="image" id="0">
-				<description>Actor Cover rectangle</description>
-				<posx>586</posx>
-				<posy>350</posy>
-				<width>104</width>
-				<height>174</height>
-				<texture>blue_rectangle_music.png</texture>
-				<aspectratio>stretch</aspectratio>
-				<visible>control.isvisible(50) + container.content(episodes)</visible>
-			</control>
-			<control type="image" id="34">
-				<description>Actor image</description>
-				<posx>591</posx>
-				<posy>355</posy>
-				<width>94</width>
-				<height>164</height>
-				<texture>DefaultActorBig.png</texture>
-				<aspectratio>keep</aspectratio>
-				<align>center</align>
-				<visible>control.isvisible(50) + container.content(episodes)</visible>
-			</control>
-			<control type="image">
-				<posx>190</posx>
-				<posy>337</posy>
-				<width>510</width>
-				<height>10</height>
-				<texture>separator.png</texture>
-				<visible>!container.content(tvshows) + container.content(episodes)</visible>
-			</control>
-			<control type="textbox" id="4">
-				<description>textarea</description>
-				<posx>200</posx>
-				<posy>350</posy>
-				<width>480</width>
-				<height>200</height>
-				<onleft>5</onleft>
-				<onright>50</onright>
-				<onup>5</onup>
-				<ondown>5</ondown>
-				<spinposx>430</spinposx>
-				<spinposy>195</spinposy>
-				<visible>!control.isvisible(50) + container.content(episodes)</visible>
+				<scroll>true</scroll>
 			</control>
 		</control>
 		<control type="group">
@@ -621,7 +526,7 @@
 			</control>
 			<control type="image">
 				<description>Cover image</description>
-				<posx>555</posx>
+				<posx>55</posx>
 				<posy>100</posy>
 				<width>130</width>
 				<height>232</height>
@@ -629,7 +534,7 @@
 				<info>ListItem.Icon</info>
 				<visible>container.content(musicvideos)</visible>
 			</control>
-			<control type="fadelabel" id="1">
+			<control type="label" id="1">
 				<description>Title value</description>
 				<posx>200</posx>
 				<posy>110</posy>
@@ -637,6 +542,7 @@
 				<info>Listitem.Title</info>
 				<font>special13</font>
 				<visible>container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
 			<control type="label" id="1">
 				<description>Artist txt</description>
@@ -701,249 +607,201 @@
 				<font>font12</font>
 				<visible>container.content(musicvideos)</visible>
 			</control>
-			<control type="fadelabel" id="1">
+			<control type="label" id="1">
 				<description>Artist value</description>
 				<posx>300</posx>
 				<posy>160</posy>
-				<width>230</width>
+				<width>375</width>
 				<info>Listitem.Artist</info>
 				<font>font12</font>
 				<visible>container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="1">
+			<control type="label" id="1">
 				<description>Album value</description>
 				<posx>300</posx>
 				<posy>185</posy>
-				<width>230</width>
+				<width>375</width>
 				<info>Listitem.Album</info>
 				<font>font12</font>
 				<visible>container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="1">
+			<control type="label" id="1">
 				<description>Genre value</description>
 				<posx>300</posx>
 				<posy>210</posy>
-				<width>230</width>
+				<width>375</width>
 				<info>Listitem.Genre</info>
 				<font>font12</font>
 				<visible>container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="1">
+			<control type="label" id="1">
 				<description>Year value</description>
 				<posx>300</posx>
 				<posy>235</posy>
-				<width>230</width>
+				<width>375</width>
 				<info>Listitem.Year</info>
 				<font>font12</font>
 				<visible>container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="1">
+			<control type="label" id="1">
 				<description>Runtime value</description>
 				<posx>300</posx>
 				<posy>260</posy>
-				<width>230</width>
+				<width>375</width>
 				<info>Listitem.Duration</info>
 				<font>font12</font>
 				<visible>container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="1">
+			<control type="label" id="1">
 				<description>Director value</description>
 				<posx>300</posx>
 				<posy>285</posy>
-				<width>252</width>
+				<width>375</width>
 				<info>Listitem.Director</info>
 				<font>font12</font>
 				<visible>container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="1">
+			<control type="label" id="1">
 				<description>Studio value</description>
 				<posx>300</posx>
 				<posy>310</posy>
-				<width>230</width>
+				<width>375</width>
 				<info>Listitem.Studio</info>
 				<font>font12</font>
 				<visible>container.content(musicvideos)</visible>
-			</control>
-			<control type="textbox" id="4">
-				<description>textarea</description>
-				<posx>200</posx>
-				<posy>350</posy>
-				<width>480</width>
-				<height>200</height>
-				<onleft>5</onleft>
-				<onright>50</onright>
-				<onup>5</onup>
-				<ondown>5</ondown>
-				<spinposx>430</spinposx>
-				<spinposy>195</spinposy>
-				<visible>!control.isvisible(50) + container.content(musicvideos)</visible>
+				<scroll>true</scroll>
 			</control>
 		</control>
 		<control type="group" id="9000">
-		<posy>-22</posy>
-		<control type="button" id ="5">
-			<description>Plot/Cast</description>
-			<posx>55</posx>
-			<posy>372</posy>
-			<width>135</width>
-			<height>32</height>
-			<label>206</label>
-			<font>font10</font>
-			<align>center</align>
-			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
-			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
-			<onleft>50</onleft>
-			<onright>4</onright>
-			<onup>10</onup>
-			<ondown>8</ondown>
+			<posy>-22</posy>
+			<control type="button" id ="5">
+				<description>Plot/Cast</description>
+				<posx>55</posx>
+				<posy>372</posy>
+				<width>135</width>
+				<height>32</height>
+				<label>206</label>
+				<font>font10</font>
+				<align>center</align>
+				<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+				<onleft>50</onleft>
+				<onright>4</onright>
+				<onup>10</onup>
+				<ondown>8</ondown>
+			</control>
+			<control type="button" id ="8">
+				<description>Play</description>
+				<posx>55</posx>
+				<posy>407</posy>
+				<width>135</width>
+				<height>32</height>
+				<label>208</label>
+				<font>font10</font>
+				<align>center</align>
+				<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+				<onleft>4</onleft>
+				<onright>4</onright>
+				<onup>5</onup>
+				<ondown>9</ondown>
+			</control>
+			<control type="button" id ="9">
+				<description>Resume</description>
+				<posx>55</posx>
+				<posy>442</posy>
+				<width>135</width>
+				<height>32</height>
+				<label>13404</label>
+				<font>font10</font>
+				<align>center</align>
+				<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+				<onleft>4</onleft>
+				<onright>4</onright>
+				<onup>8</onup>
+				<ondown>6</ondown>
+			</control>
+			<control type="button" id ="6">
+				<description>Refresh</description>
+				<posx>55</posx>
+				<posy>477</posy>
+				<width>135</width>
+				<height>32</height>
+				<label>184</label>
+				<font>font10</font>
+				<align>center</align>
+				<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+				<onleft>4</onleft>
+				<onright>4</onright>
+				<onup>9</onup>
+				<ondown>10</ondown>
+			</control>
+			<control type="button" id ="10">
+				<description>Get Thumb</description>
+				<posx>55</posx>
+				<posy>512</posy>
+				<width>135</width>
+				<height>32</height>
+				<label>13405</label>
+				<font>font10</font>
+				<align>center</align>
+				<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+				<onleft>4</onleft>
+				<onright>4</onright>
+				<onup>6</onup>
+				<ondown>5</ondown>
+			</control>
 		</control>
-		<control type="button" id ="8">
-			<description>Play</description>
-			<posx>55</posx>
-			<posy>407</posy>
-			<width>135</width>
-			<height>32</height>
-			<label>208</label>
-			<font>font10</font>
+		<control type="image">
+			<description>Actor Cover rectangle</description>
+			<posx>586</posx>
+			<posy>350</posy>
+			<width>104</width>
+			<height>174</height>
+			<texture>blue_rectangle_music.png</texture>
+			<aspectratio>stretch</aspectratio>
+			<visible>control.isvisible(50)</visible>
+		</control>
+		<control type="image" id="34">
+			<description>Actor image</description>
+			<posx>591</posx>
+			<posy>355</posy>
+			<width>94</width>
+			<height>164</height>
+			<texture>DefaultActorBig.png</texture>
+			<aspectratio>keep</aspectratio>
 			<align>center</align>
-			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
-			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
-			<onleft>4</onleft>
-			<onright>4</onright>
+			<visible>control.isvisible(50)</visible>
+		</control>
+		<control type="image">
+			<posx>190</posx>
+			<posy>337</posy>
+			<width>510</width>
+			<height>10</height>
+			<texture>separator.png</texture>
+		</control>
+		<control type="textbox" id="4">
+			<description>textarea</description>
+			<posx>200</posx>
+			<posy>350</posy>
+			<width>480</width>
+			<height>180</height>
+			<onleft>5</onleft>
+			<onright>50</onright>
 			<onup>5</onup>
-			<ondown>9</ondown>
-		</control>
-		<control type="button" id ="9">
-			<description>Resume</description>
-			<posx>55</posx>
-			<posy>442</posy>
-			<width>135</width>
-			<height>32</height>
-			<label>13404</label>
-			<font>font10</font>
-			<align>center</align>
-			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
-			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
-			<onleft>4</onleft>
-			<onright>4</onright>
-			<onup>8</onup>
-			<ondown>6</ondown>
-		</control>
-		<control type="button" id ="6">
-			<description>Refresh</description>
-			<posx>55</posx>
-			<posy>477</posy>
-			<width>135</width>
-			<height>32</height>
-			<label>184</label>
-			<font>font10</font>
-			<align>center</align>
-			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
-			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
-			<onleft>4</onleft>
-			<onright>4</onright>
-			<onup>9</onup>
-			<ondown>10</ondown>
-		</control>
-		<control type="button" id ="10">
-			<description>Get Thumb</description>
-			<posx>55</posx>
-			<posy>512</posy>
-			<width>135</width>
-			<height>32</height>
-			<label>13405</label>
-			<font>font10</font>
-			<align>center</align>
-			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
-			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
-			<onleft>4</onleft>
-			<onright>4</onright>
-			<onup>6</onup>
 			<ondown>5</ondown>
-		</control>
-		</control>
-		<control type="group">
-			<visible>Player.HasAudio</visible>
-			<control type="image" id="0">
-				<description>music rectangle</description>
-				<posx>30</posx>
-				<posy>381</posy>
-				<width>90</width>
-				<height>120</height>
-				<texture>blue_rectangle_music.png</texture>
-				<include>mediaoverlay</include>
-			</control>
-			<control type="image" id="0">
-				<description>music logo</description>
-				<posx>35</posx>
-				<posy>387</posy>
-				<width>80</width>
-				<height>109</height>
-				<texture>defaultAlbumCover.png</texture>
-				<info>MusicPlayer.Cover</info>
-				<aspectratio align="left">keep</aspectratio>
-				<include>mediaoverlay</include>
-			</control>
-			<control type="label" id="0">
-				<description>play time label</description>
-				<posx>35</posx>
-				<posy>500</posy>
-				<label>-</label>
-				<info>MusicPlayer.Time</info>
-				<align>left</align>
-				<font>font13</font>
-				<include>mediaoverlay</include>
-			</control>
-			<control type="fadelabel" id="0">
-				<description>album/artist/genre etc info label</description>
-				<width>130</width>
-				<posx>35</posx>
-				<posy>525</posy>
-				<font>font10</font>
-				<label>$INFO[MusicPlayer.Artist]$INFO[MusicPlayer.Title, | ]$INFO[MusicPlayer.Album, | ]$INFO[MusicPlayer.Year, | ]</label>
-				<include>mediaoverlay</include>
-			</control>
-		</control>
-		<control type="group">
-			<visible>Player.HasVideo</visible>
-			<control type="image" id="0">
-				<description>video rectangle</description>
-				<posx>30</posx>
-				<posy>380</posy>
-				<width>140</width>
-				<height>118</height>
-				<texture>blue_rectangle_video.png</texture>
-				<include>mediaoverlay</include>
-			</control>
-			<control type="videowindow" id="1">
-				<description>video preview window</description>
-				<posx>35</posx>
-				<posy>385</posy>
-				<width>130</width>
-				<height>107</height>
-				<visible>!Window.Next(Home)</visible>
-				<animation effect="fade" time="1" delay="500">WindowOpen</animation>
-				<animation effect="fade" time="1" delay="0">VisibleChange</animation>
-			</control>
-			<control type="label" id="0">
-				<description>play time label</description>
-				<posx>35</posx>
-				<posy>500</posy>
-				<label>-</label>
-				<info>VideoPlayer.Time</info>
-				<align>left</align>
-				<font>font13</font>
-				<include>mediaoverlay</include>
-			</control>
-			<control type="fadelabel" id="0">
-				<description>album/artist/genre etc info label</description>
-				<width>130</width>
-				<posx>35</posx>
-				<posy>525</posy>
-				<font>font10</font>
-				<label>$INFO[VideoPlayer.Title]$INFO[VideoPlayer.Year, | ]$INFO[VideoPlayer.Director, | ]$INFO[VideoPlayer.Genre, | ]</label>
-				<include>mediaoverlay</include>
-			</control>
+			<spinposx>430</spinposx>
+			<spinposy>160</spinposy>
+			<visible>!control.isvisible(50)</visible>
 		</control>
 		<include>DialogInfoViewCommonPageControls</include>
 		<include>DialogInfoViewOldListViewCommons</include>

@@ -41,6 +41,7 @@ CDVDPlayerVideo::CDVDPlayerVideo(CDVDClock* pClock, CDVDOverlayContainer* pOverl
 
 CDVDPlayerVideo::~CDVDPlayerVideo()
 {
+  StopThread();
   g_dvdPerformanceCounter.DisableVideoQueue();
   DeleteCriticalSection(&m_critCodecSection);
 }
