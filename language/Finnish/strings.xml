@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: jutski (->7/2006) Mikko70 (1/2007->)-->
-<!--Date of translation: 6/10/2007-->
+<!--Date of translation: 15/10/2007-->
 <!--$Revision$: -->
-<!--Finnish strings based on english strings version 10403 -->
+<!--Finnish strings based on english strings version 10541 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -229,8 +229,9 @@
   <string id="292">Ääni</string>
   <string id="293">Valitse tekstitys</string>
   <string id="294">Luo kirjanmerkki</string>
-  <string id="296">Poista kirjanmerkki</string>
+  <string id="296">Poista kirjanmerkit</string>
   <string id="297">Äänen viive</string>
+  <string id="298">Kirjanmerkit</string>
   <string id="303">Tekstityksen viive</string>
   <string id="304">Kieli</string>
   <string id="305">Tekstitys</string>
@@ -338,7 +339,7 @@
   <string id="411">Haetaan säätiedot:</string>
   <string id="412">Säätietoja ei saatu</string>
   <string id="413">Manuaalisesti</string>
-  <string id="414">Tälle albumille ei ole levyarviota</string>
+  <string id="414">Tälle albumille ei ole esittelyä</string>
   <string id="415">Ladataan pienoiskuvake...</string>
   <string id="416">Tietoja ei saatavilla</string>
   <string id="417">Suuret kuvak.</string>
@@ -555,6 +556,7 @@
   <string id="657">Valitse kansio</string>
   <string id="658">Kappaleen tiedot</string>
   <string id="659">Kommentti:</string>
+  <string id="660">Voimakkuuden vahvistus</string>
   
   <string id="700">Järjestetään tietokantaa</string>
   <string id="701">Poistetaan vanhat kappaleet tietokannasta</string>
@@ -669,14 +671,14 @@
   <string id="1034">Alivalikko</string>
   <string id="1035">Alivalikon painikkeet käytössä</string>
   <string id="1036">Suosikit</string>
-  <string id="1037">Video-lisukkeet</string>
-  <string id="1038">Musiikki-lisukkeet</string>
+  <string id="1037">Video-lisäkkeet</string>
+  <string id="1038">Musiikki-lisäkkeet</string>
   <string id="1039">Kuva-lisäkkeet</string>
   <string id="1040">Ladataan kansiota</string>
   <string id="1041">Noudettu %i kohdetta</string>
   <string id="1042">Noudettu %i/%i kohdetta</string>
-  <string id="1043">Ohjelma-lisukkeet</string>
-  <string id="1044">Lisuke pienoiskuvake</string>
+  <string id="1043">Ohjelma-lisäkkeet</string>
+  <string id="1044">Lisäkkeen pienoiskuvake</string>
   
   <string id="1200">SMB-asiakas</string>
   <string id="1202">Työryhmä</string>
@@ -1529,6 +1531,11 @@
   <string id="20186">Odota hetki</string>
   <string id="20187">Varmuuskopioidaan EEPROM:in tiedot</string>
   <string id="20188">Varmuuskopioidaan Bios:in tiedot</string>
+
+  <string id="20200">Video esitys alkaa</string>
+  <string id="20201">Nyt voit rentoutua</string>
+  <string id="20202">Arvotaan katseltavia videoita</string>
+  <string id="20203">Valmiina katselu nautintoon</string> 
   
   <string id="20189"></string>
   <string id="20190"></string>
@@ -1596,7 +1603,7 @@
   <string id="20351">TV-ohjelman tiedot</string>
   <string id="20352">Jakson tiedot</string>
   <string id="20353">Ladataan TV-ohjelman tietoja</string>
-  <string id="20354">Noudetaan jakson opasta</string>
+  <string id="20354">Noudetaan jaksojen tietoja</string>
   <string id="20355">Ladataan jaksojen tietoja hakemistosta</string>
   <string id="20356">Valitse TV-ohjelma:</string>
   <string id="20357">Anna TV-ohjelman nimi</string>
@@ -1641,12 +1648,15 @@
   <string id="20396">Siirry esittäjän albumeihin</string>
   <string id="20397">Siirry albumiin</string>
   <string id="20398">Toista kappale</string>
-  <string id="20399">Siirry albumeista musiikkivideoihin</string>
-  <string id="20400">Siirry esittääjän musiikkivideoihin</string>
+  <string id="20399">Siirry albumin musiikkivideoihin</string>
+  <string id="20400">Siirry esittäjän musiikkivideoihin</string>
   <string id="20401">Toista musiikkivideo</string>
   <string id="20402">Automaattisesti luodut ohjaajan kuvakkeet</string>
   <string id="20403">Aseta ohjaajan pienoiskuvake</string>
-   <!-- up to 21329 is reserved for the video db !! !-->
+  <string id="20404">Studio:</string>
+  <string id="20405">Poista jakson kirjanmerkki</string>
+  <string id="20406">Aseta jakson kirjanmerkki</string>
+  <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Näytä piilotetut tiedostot ja kansiot</string>
   
@@ -1734,7 +1744,7 @@
   <string id="21436">%i kappaletta</string>
   <string id="21437">Uusi älykäs soittolista...</string>
   <string id="21438">%c: Asema</string>
-  <string id="21439">Muokkaa jukeboksin asetuksia</string>
+  <string id="21439">Jukeboksin asetukset</string>
  
   <string id="21800">Tiedostonimi</string>
   <string id="21801">Tiedoston sijainti</string>

@@ -37,7 +37,7 @@ void CGUITextBox::Render()
 {
   CStdString renderLabel;
 	if (m_singleInfo)
-		renderLabel = g_infoManager.GetLabel(m_singleInfo);
+		renderLabel = g_infoManager.GetLabel(m_singleInfo, m_dwParentID);
 	else
     renderLabel = g_infoManager.GetMultiInfo(m_multiInfo, m_dwParentID);
 

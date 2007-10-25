@@ -384,11 +384,11 @@ CUPnPServer::BuildObject(CFileItem*      item,
 
                 StringUtils::SplitString(tag->GetGenre(), " / ", strings);
                 for(CStdStringArray::iterator it = strings.begin(); it != strings.end(); it++) {
-                    object->m_Affiliation.genre_extended.Add((*it).c_str());
+                    object->m_Affiliation.genre.Add((*it).c_str());
                 }
 
                 object->m_Affiliation.album = tag->GetAlbum();
-                object->m_People.artist = tag->GetAlbumArtist();
+                object->m_People.artists.Add(tag->GetAlbumArtist().c_str());
                 object->m_Creator = tag->GetArtist();
                 object->m_MiscInfo.original_track_number = tag->GetTrackNumber();
                 resource.m_Duration = tag->GetDuration();                
@@ -420,15 +420,12 @@ CUPnPServer::BuildObject(CFileItem*      item,
 
                 StringUtils::SplitString(tag->m_strGenre, " / ", strings);                
                 for(CStdStringArray::iterator it = strings.begin(); it != strings.end(); it++) {
-                    object->m_Affiliation.genre_extended.Add((*it).c_str());
+                    object->m_Affiliation.genre.Add((*it).c_str());
                 }
 
                 for(CVideoInfoTag::iCast it = tag->m_cast.begin();it != tag->m_cast.end();it++) {
-                    object->m_People.actor += it->strName + ",";
-                    object->m_People.actor_role += it->strRole + ",";
+                    object->m_People.actors.Add(it->strName.c_str(), it->strRole.c_str());
                 }
-                object->m_People.actor.TrimRight(",");
-                object->m_People.actor_role.TrimRight(",");
                 object->m_People.director = tag->m_strDirector;
 
                 object->m_Description.description = tag->m_strTagLine;
@@ -1065,18 +1062,17 @@ public:
 
         StringUtils::SecondsToTimeString((long)g_application.GetTotalTime(), buffer, TIME_FORMAT_HH_MM_SS);
         avt->SetStateVariable("CurrentTrackDuration", buffer.c_str(), publish);
+        
+        avt->SetStateVariable("AVTransportURI", g_application.CurrentFile().c_str(), publish);
+        avt->SetStateVariable("TransportPlaySpeed", (const char*)NPT_String::FromInteger(g_application.GetPlaySpeed()), publish);
 
-        // TODO - these states don't generate events, LastChange state needs to be fixed
         if (g_application.IsPlaying()) {
             avt->SetStateVariable("TransportState", "PLAYING", publish);
             avt->SetStateVariable("TransportStatus", "OK", publish);
-            avt->SetStateVariable("TransportPlaySpeed", "1", publish);
             avt->SetStateVariable("NumberOfTracks", "1", publish);
-            avt->SetStateVariable("CurrentTrack", "1", publish);
+            avt->SetStateVariable("CurrentTrack", "1", publish);            
         } else {
             avt->SetStateVariable("TransportState", "STOPPED", publish);
-            avt->SetStateVariable("TransportStatus", "OK", publish);
-            avt->SetStateVariable("TransportPlaySpeed", "1", publish);
             avt->SetStateVariable("NumberOfTracks", "0", publish);
             avt->SetStateVariable("CurrentTrack", "0", publish);
         }
@@ -1128,9 +1124,16 @@ public:
         service->SetStateVariable("AVTransportURI", uri, false);
         service->SetStateVariable("AVTransportURIMetaData", meta, false);
         NPT_CHECK_SEVERE(action->SetArgumentsOutFromStateVariable());
+        service->NotifyChanged();
 
         g_application.getApplicationMessenger().MediaPlay((const char*)uri);
-        
+        if(!g_application.IsPlaying()) {
+          service->SetStateVariable("TransportState", "STOPPED", false);
+          service->SetStateVariable("TransportStatus", "TransportStatus", false);          
+        }        
+        service->NotifyChanged();
+
+        NPT_CHECK_SEVERE(action->SetArgumentsOutFromStateVariable());
         return NPT_SUCCESS;
     }
 
@@ -1283,12 +1286,11 @@ CUPnP::StartServer()
     }
 #endif
     m_ServerHolder->m_Device->m_PresentationURL = NPT_HttpUrl(ip, atoi(g_guiSettings.GetString("servers.webserverport")), "/").ToString();
-    m_ServerHolder->m_Device->m_ModelName = "Xbox Media Center";
-    m_ServerHolder->m_Device->m_ModelDescription = "Xbox Media Center - Media Server";
-    m_ServerHolder->m_Device->m_ModelURL = "http://www.xboxmediacenter.com/";
-    m_ServerHolder->m_Device->m_ModelNumber = "2.0";
     m_ServerHolder->m_Device->m_ModelName = "XBMC";
-    m_ServerHolder->m_Device->m_Manufacturer = "Xbox Team";
+    m_ServerHolder->m_Device->m_ModelNumber = "2.0";
+    m_ServerHolder->m_Device->m_ModelDescription = "Xbox Media Center - Media Server";
+    m_ServerHolder->m_Device->m_ModelURL = "http://www.xboxmediacenter.com/";    
+    m_ServerHolder->m_Device->m_Manufacturer = "Team XBMC";
     m_ServerHolder->m_Device->m_ManufacturerURL = "http://www.xboxmediacenter.com/";
 
     // since the xbox doesn't support multicast
@@ -1340,11 +1342,11 @@ void CUPnP::StartRenderer()
           (g_settings.m_UPnPUUIDRenderer.length() ? g_settings.m_UPnPUUIDRenderer.c_str() : NULL) );
 
     m_RendererHolder->m_Device->m_PresentationURL = NPT_HttpUrl(ip, atoi(g_guiSettings.GetString("servers.webserverport")), "/").ToString();
-    m_RendererHolder->m_Device->m_ModelName = "Xbox Media Center";
-    m_RendererHolder->m_Device->m_ModelDescription = "Xbox Media Center - Media Renderer";
-    m_RendererHolder->m_Device->m_ModelURL = "http://www.xboxmediacenter.com/";
+    m_RendererHolder->m_Device->m_ModelName = "XBMC";
     m_RendererHolder->m_Device->m_ModelNumber = "2.0";
-    m_RendererHolder->m_Device->m_Manufacturer = "Xbox Team";
+    m_RendererHolder->m_Device->m_ModelDescription = "Xbox Media Center - Media Renderer";
+    m_RendererHolder->m_Device->m_ModelURL = "http://www.xboxmediacenter.com/";    
+    m_RendererHolder->m_Device->m_Manufacturer = "Team XBMC";
     m_RendererHolder->m_Device->m_ManufacturerURL = "http://www.xboxmediacenter.com/";
 
     m_RendererHolder->m_Device->SetBroadcast(broadcast);

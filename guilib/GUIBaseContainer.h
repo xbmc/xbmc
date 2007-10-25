@@ -63,6 +63,8 @@ public:
   virtual bool IsContainer() const { return true; };
   CGUIListItem *GetListItem(int offset) const;
 
+  virtual bool GetCondition(int condition, int data) const;
+
 #ifdef _DEBUG
   virtual void DumpTextureUse();
 #endif

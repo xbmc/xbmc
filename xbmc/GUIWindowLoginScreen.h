@@ -11,7 +11,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
   virtual void Render();
-  virtual bool IsMediaWindow() const { return true; };
+  virtual bool HasListItems() const { return true; };
   virtual CFileItem* GetCurrentListItem(int offset = 0);
   int GetViewContainerID() const { return m_viewControl.GetCurrentControl(); };
 

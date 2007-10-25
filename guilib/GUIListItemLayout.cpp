@@ -19,9 +19,9 @@ CGUIListItemLayout::CListBase::~CListBase()
 {
 }
 
-CGUIListItemLayout::CListLabel::CListLabel(float posX, float posY, float width, float height, int visibleCondition, const CLabelInfo &label, int info, const CStdString &content, const vector<CAnimation> &animations)
+CGUIListItemLayout::CListLabel::CListLabel(float posX, float posY, float width, float height, int visibleCondition, const CLabelInfo &label, bool alwaysScroll, int info, const CStdString &content, const vector<CAnimation> &animations)
 : CGUIListItemLayout::CListBase(visibleCondition),
-  m_label(0, 0, posX, posY, width, height, label)
+  m_label(0, 0, posX, posY, width, height, label, alwaysScroll)
 {
   m_type = LIST_LABEL;
   m_label.SetAnimations(animations);
@@ -227,6 +227,19 @@ void CGUIListItemLayout::QueueAnimation(ANIMATION_TYPE animType)
   }
 }
 
+void CGUIListItemLayout::ResetAnimation(ANIMATION_TYPE animType)
+{
+  for (iControls it = m_controls.begin(); it != m_controls.end(); it++)
+  {
+    CListBase *layoutItem = (*it);
+    if (layoutItem->m_type == CListBase::LIST_IMAGE ||
+        layoutItem->m_type == CListBase::LIST_TEXTURE)
+      ((CListTexture *)layoutItem)->m_image.ResetAnimation(animType);
+    else if (layoutItem->m_type == CListBase::LIST_LABEL)
+      ((CListLabel *)layoutItem)->m_label.ResetAnimation(animType);
+  }
+}
+
 CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *child)
 {
   // resolve any <include> tag's in this control
@@ -280,9 +293,11 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
   int visibleCondition = 0;
   CGUIControlFactory::GetConditionalVisibility(child, visibleCondition);
   XMLUtils::GetFloat(child, "angle", label.angle); label.angle *= -1;
+  bool scroll(false);
+  XMLUtils::GetBoolean(child, "scroll", scroll);
   if (type == "label")
   { // info label
-    return new CListLabel(posX, posY, width, height, visibleCondition, label, info, content, animations);
+    return new CListLabel(posX, posY, width, height, visibleCondition, label, scroll, info, content, animations);
   }
   else if (type == "image")
   {
@@ -330,10 +345,10 @@ void CGUIListItemLayout::CreateListControlLayouts(float width, float height, boo
   CListImage *image = new CListImage(8, 0, iconWidth, texHeight, 0, CImage(""), CGUIImage::ASPECT_RATIO_KEEP, 0, 0xffffffff, blankAnims, LISTITEM_ICON);
   m_controls.push_back(image);
   float x = iconWidth + labelInfo.offsetX + 10;
-  CListLabel *label = new CListLabel(x, labelInfo.offsetY, width - x - 18, height, 0, labelInfo, LISTITEM_LABEL, "", blankAnims);
+  CListLabel *label = new CListLabel(x, labelInfo.offsetY, width - x - 18, height, 0, labelInfo, false, LISTITEM_LABEL, "", blankAnims);
   m_controls.push_back(label);
   x = labelInfo2.offsetX ? labelInfo2.offsetX : m_width - 16;
-  label = new CListLabel(x, labelInfo2.offsetY, x - iconWidth - 20, height, 0, labelInfo2, LISTITEM_LABEL2, "", blankAnims);
+  label = new CListLabel(x, labelInfo2.offsetY, x - iconWidth - 20, height, 0, labelInfo2, false, LISTITEM_LABEL2, "", blankAnims);
   m_controls.push_back(label);
 }
 
@@ -363,7 +378,7 @@ void CGUIListItemLayout::CreateThumbnailPanelLayouts(float width, float height, 
   m_controls.push_back(overlay);
   // label
   if (hideLabels) return;
-  CListLabel *label = new CListLabel(width*0.5f, texHeight, width, height, 0, labelInfo, LISTITEM_LABEL, "", blankAnims);
+  CListLabel *label = new CListLabel(width*0.5f, texHeight, width, height, 0, labelInfo, false, LISTITEM_LABEL, "", blankAnims);
   m_controls.push_back(label);
 }
 //#endif

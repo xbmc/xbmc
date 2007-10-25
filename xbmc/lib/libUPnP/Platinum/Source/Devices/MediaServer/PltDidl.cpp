@@ -54,6 +54,10 @@ PLT_Didl::ConvertFilterToMask(NPT_String filter)
             mask |= PLT_FILTER_MASK_CREATOR;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_ARTIST, len) == 0) {
             mask |= PLT_FILTER_MASK_ARTIST;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_ACTOR, len) == 0) {
+            mask |= PLT_FILTER_MASK_ACTOR;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_AUTHOR, len) == 0) {
+            mask |= PLT_FILTER_MASK_AUTHOR;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_ALBUM, len) == 0) {
             mask |= PLT_FILTER_MASK_ALBUM;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_GENRE, len) == 0) {

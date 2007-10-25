@@ -225,6 +225,17 @@ namespace PYXBMC
     PyModule_AddStringConstant(pXbmcGuiModule, "__version__",    "1.2");
     PyModule_AddStringConstant(pXbmcGuiModule, "__credits__",    PY_XBMC_CREDITS);
     PyModule_AddStringConstant(pXbmcGuiModule, "__platform__",  PY_XBMC_PLATFORM);
+
+    // icon overlay constants
+    PyModule_AddIntConstant(pXbmcGuiModule, "ICON_OVERLAY_NONE", CGUIListItem::ICON_OVERLAY_NONE);
+    PyModule_AddIntConstant(pXbmcGuiModule, "ICON_OVERLAY_RAR", CGUIListItem::ICON_OVERLAY_RAR);
+    PyModule_AddIntConstant(pXbmcGuiModule, "ICON_OVERLAY_ZIP", CGUIListItem::ICON_OVERLAY_ZIP);
+    PyModule_AddIntConstant(pXbmcGuiModule, "ICON_OVERLAY_LOCKED", CGUIListItem::ICON_OVERLAY_LOCKED);
+    PyModule_AddIntConstant(pXbmcGuiModule, "ICON_OVERLAY_HAS_TRAINER", CGUIListItem::ICON_OVERLAY_HAS_TRAINER);
+    PyModule_AddIntConstant(pXbmcGuiModule, "ICON_OVERLAY_TRAINED", CGUIListItem::ICON_OVERLAY_TRAINED);
+    PyModule_AddIntConstant(pXbmcGuiModule, "ICON_OVERLAY_UNWATCHED", CGUIListItem::ICON_OVERLAY_UNWATCHED);
+    PyModule_AddIntConstant(pXbmcGuiModule, "ICON_OVERLAY_WATCHED", CGUIListItem::ICON_OVERLAY_WATCHED);
+    PyModule_AddIntConstant(pXbmcGuiModule, "ICON_OVERLAY_HD", CGUIListItem::ICON_OVERLAY_HD);
   }
 }
 

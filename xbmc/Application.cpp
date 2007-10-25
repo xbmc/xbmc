@@ -219,14 +219,14 @@ using namespace PLAYLIST;
  #endif
  #ifdef _XBOX
   #pragma comment (lib,"xbmc/lib/libGoAhead/goaheadd.lib") // SECTIONNAME=LIBHTTP
-  #pragma comment (lib,"xbmc/lib/sqlLite/libSQLite3d.lib")
+  #pragma comment (lib,"xbmc/lib/sqLite/libSQLite3d.lib")
   #pragma comment (lib,"xbmc/lib/libshout/libshoutd.lib" )
   #pragma comment (lib,"xbmc/lib/libcdio/libcdiod.lib" )
   #pragma comment (lib,"xbmc/lib/libiconv/libiconvd.lib")
   #pragma comment (lib,"xbmc/lib/libfribidi/libfribidid.lib")
  #else
   #pragma comment (lib,"../../xbmc/lib/libGoAhead/goahead_win32d.lib") // SECTIONNAME=LIBHTTP
-  #pragma comment (lib,"../../xbmc/lib/sqlLite/libSQLite3_win32d.lib")
+  #pragma comment (lib,"../../xbmc/lib/sqLite/libSQLite3_win32d.lib")
   #pragma comment (lib,"../../xbmc/lib/libshout/libshout_win32d.lib" )
   #pragma comment (lib,"../../xbmc/lib/libcdio/libcdio_win32d.lib" )
   #pragma comment (lib,"../../xbmc/lib/libiconv/libiconvd.lib")
@@ -244,14 +244,14 @@ using namespace PLAYLIST;
  #endif
  #ifdef _XBOX
   #pragma comment (lib,"xbmc/lib/libGoAhead/goahead.lib")
-  #pragma comment (lib,"xbmc/lib/sqlLite/libSQLite3.lib")
+  #pragma comment (lib,"xbmc/lib/sqLite/libSQLite3.lib")
   #pragma comment (lib,"xbmc/lib/libcdio/libcdio.lib")
   #pragma comment (lib,"xbmc/lib/libshout/libshout.lib")
   #pragma comment (lib,"xbmc/lib/libiconv/libiconv.lib")
   #pragma comment (lib,"xbmc/lib/libfribidi/libfribidi.lib")
  #elif not defined(_LINUX)
   #pragma comment (lib,"../../xbmc/lib/libGoAhead/goahead_win32.lib")
-  #pragma comment (lib,"../../xbmc/lib/sqlLite/libSQLite3_win32.lib")
+  #pragma comment (lib,"../../xbmc/lib/sqLite/libSQLite3_win32.lib")
   #pragma comment (lib,"../../xbmc/lib/libshout/libshout_win32.lib" )
   #pragma comment (lib,"../../xbmc/lib/libcdio/libcdio_win32.lib" )
   #pragma comment (lib,"../../xbmc/lib/libiconv/libiconv.lib")
@@ -4191,7 +4191,7 @@ void CApplication::OnPlayBackStopped()
 #ifdef HAS_WEB_SERVER      
   // Let's tell the outside world as well
   if (pXbmcHttp)
-    pXbmcHttp->xbmcBroadcast("OnPlayBackStoped", 1);
+    pXbmcHttp->xbmcBroadcast("OnPlayBackStopped", 1);
 #endif
 
   OutputDebugString("Playback was stopped\n");

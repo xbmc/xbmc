@@ -6,6 +6,11 @@
 #define SMARTXX_PWD_GREEN     0xf70d   //PWM2: SmartXX V3 port for RGB green output
 #define SMARTXX_PWD_BLUE      0xf70e   //PWM3: SmartXX V3 port for RGB blue output
 #define SMARTXX_PWM_STATUS    0xf702   //PWM4: SmartXX V3 Status LED port BLUE!
+
+#define SMARTXX_OPX_PWD_RED   0xf701    //PWM1: SmartXX OPX port for RGB red
+#define SMARTXX_OPX_PWD_GREEN 0xf70c    //PWM2: SmartXX OPX port for RGB green
+#define SMARTXX_OPX_PWD_BLUE  0xf70d    //PWM3: SmartXX OPX port for RGB blue
+
 //#define SMARTXX_PWM_LIGHT	    0xF701	 //PWM5: Display Port brightness control
 //#define SMARTXX_PWM_CONTRAST  0xF703	 //PWM6: Display Port contrast control
 
