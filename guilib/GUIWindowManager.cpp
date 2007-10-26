@@ -394,8 +394,9 @@ void CGUIWindowManager::Render()
   if (GetCurrentThreadId() != g_application.GetThreadId())
   {
     // make sure graphics lock is not held
-    ExitCriticalSection(g_graphicsContext);
+    int nCount = ExitCriticalSection(g_graphicsContext);
     g_application.getApplicationMessenger().Render();
+    RestoreCriticalSection(g_graphicsContext, nCount);
   }
   else
     Render_Internal();
