@@ -3624,6 +3624,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\paplayer\AudioDecoder.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\cores\paplayer\CachingCodec.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\cores\paplayer\CDDAcodec.cpp">
 				</File>
 				<File
