@@ -1,8 +1,8 @@
 #pragma once
-#include "ICodec.h"
+#include "CachingCodec.h"
 #include "FileReader.h"
 
-class CDDACodec : public ICodec
+class CDDACodec : public CachingCodec
 {
 public:
   CDDACodec();
@@ -15,7 +15,6 @@ public:
   virtual bool CanInit();
 
 private:
-  CFileReader m_file;
   // Input buffer to read our cdda data into
   BYTE*   m_Buffer;
   int     m_BufferSize; 

@@ -1,9 +1,9 @@
 #pragma once
-#include "ICodec.h"
+#include "CachingCodec.h"
 #include "FileReader.h"
 #include "Dllvorbisfile.h"
 
-class OGGCodec : public ICodec
+class OGGCodec : public CachingCodec
 {
 public:
   OGGCodec();
@@ -23,7 +23,6 @@ private:
 
   void RemapChannels(short *SampleBuffer, int samples);
 
-  CFileReader m_file;
   DllVorbisfile m_dll;
   OggVorbis_File m_VorbisFile;
   double m_TimeOffset;

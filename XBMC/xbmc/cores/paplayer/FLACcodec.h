@@ -1,9 +1,9 @@
 #pragma once
-#include "ICodec.h"
+#include "CachingCodec.h"
 #include "FileReader.h"
 #include "Dlllibflac.h"
 
-class FLACCodec : public ICodec
+class FLACCodec : public CachingCodec
 {
 public:
   FLACCodec();
@@ -29,7 +29,6 @@ private:
   void FreeDecoder();
 
   DllLibFlac  m_dll;
-  CFileReader m_file;
   BYTE* m_pBuffer;                    //  buffer to hold the decoded audio data
   int m_BufferSize;                   //  size of buffer is filled with decoded audio data
   int m_MaxFrameSize;                 //  size of a single decoded frame

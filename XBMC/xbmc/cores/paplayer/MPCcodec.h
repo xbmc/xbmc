@@ -1,9 +1,9 @@
 #pragma once
-#include "ICodec.h"
+#include "CachingCodec.h"
 #include "FileReader.h"
 #include "Dllmpccodec.h"
 
-class MPCCodec : public ICodec
+class MPCCodec : public CachingCodec
 {
 public:
   MPCCodec();
@@ -20,7 +20,6 @@ private:
   float m_sampleBuffer[FRAMELEN * 2 * 2];
   int m_sampleBufferSize;
 
-  CFileReader m_file;
   mpc_reader m_reader;
   mpc_decoder *m_handle;
 
