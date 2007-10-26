@@ -1,9 +1,8 @@
 #pragma once
-#include "ICodec.h"
-#include "FileReader.h"
+#include "CachingCodec.h"
 #include "ADPCMCodec.h"
 
-class WAVCodec : public ICodec
+class WAVCodec : public CachingCodec
 {
 public:
   WAVCodec();
@@ -16,7 +15,6 @@ public:
   virtual bool CanInit();
 
 private:
-  CFileReader m_file;
   long m_iDataStart;
   long m_iDataLen;
 };

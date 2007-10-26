@@ -1,13 +1,13 @@
 
 #pragma once
 
-#include "ICodec.h"
+#include "CachingCodec.h"
 #include "FileReader.h"
 #include "DllAC3Codec.h"
 
 #ifdef HAS_AC3_CODEC
 
-class AC3Codec : public ICodec
+class AC3Codec : public CachingCodec
 {
 public:
   AC3Codec();
@@ -30,7 +30,6 @@ protected:
   int  Decode(BYTE* pData, int iSize);
   void SetupChannels(unsigned flags);
   
-  CFileReader m_file;
   a52_state_t* m_pState;
 
   BYTE m_inputBuffer[3840];

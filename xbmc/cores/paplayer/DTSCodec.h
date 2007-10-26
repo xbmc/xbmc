@@ -1,13 +1,13 @@
 
 #pragma once
 
-#include "ICodec.h"
+#include "CachingCodec.h"
 #include "FileReader.h"
 #include "DllDcaCodec.h"
 
 #ifdef HAS_DTS_CODEC
 
-class DTSCodec : public ICodec
+class DTSCodec : public CachingCodec
 {
 public:
   DTSCodec();
@@ -36,7 +36,6 @@ protected:
   static void convert2s16_5(convert_t * _f, int16_t * s16);
   static void convert2s16_multi(convert_t * _f, int16_t * s16, int flags);
 
-  CFileReader m_file;
   dts_state_t* m_pState;
 
   BYTE m_inputBuffer[12288];
