@@ -1,6 +1,7 @@
 #include "include.h"
 #include "LocalizeStrings.h"
 #include "../xbmc/utils/CharsetConverter.h"
+#include "../xbmc/Util.h"
 #include "XMLUtils.h"
 
 // can be removed after hardcoded strings are in strings.xml
@@ -86,12 +87,12 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
     pChild = pChild->NextSiblingElement("string");
   }
 
-  if (!strFileName.Equals("Q:\\language\\english\\strings.xml"))
+  if (!strFileName.Equals(_P("Q:\\language\\english\\strings.xml")))
   {
     // load the original english file
     // and copy any missing texts
     TiXmlDocument xmlDoc;
-    if ( !xmlDoc.LoadFile("Q:\\language\\english\\strings.xml") )
+    if ( !xmlDoc.LoadFile(_P("Q:\\language\\english\\strings.xml")) )
     {
       return true;
     }
