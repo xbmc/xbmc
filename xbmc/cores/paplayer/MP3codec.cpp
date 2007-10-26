@@ -321,11 +321,6 @@ bool MP3Codec::SkipNext()
   return m_file.SkipNext();
 }
 
-int MP3Codec::GetCacheLevel()
-{
-  return m_file.GetCacheLevel();
-}
-
 bool MP3Codec::CanSeek()
 {
   return m_file.CanSeek();
