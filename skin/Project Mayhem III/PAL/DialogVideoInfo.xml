@@ -1,6 +1,6 @@
 <window id="2003">
 	<defaultcontrol always="true">5</defaultcontrol>
-	<allowoverlay>no</allowoverlay>
+	<allowoverlay>yes</allowoverlay>
 	<include>dialogeffect</include>
 	<controls>
 		<control type="image" id="0">
@@ -36,7 +36,7 @@
 				<width>121</width>
 				<height>239</height>
 				<texture>-</texture>
-				<aspectratio>keep</aspectratio>
+				<aspectratio align="left">keep</aspectratio>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
 			<control type="label" id="20">
@@ -345,7 +345,7 @@
 				<width>130</width>
 				<height>140</height>
 				<info>ListItem.Icon</info>
-				<aspectratio aligny="bottom">keep</aspectratio>
+				<aspectratio align="left" aligny="bottom">keep</aspectratio>
 				<visible>container.content(episodes)</visible>
 			</control>
 			<control type="image">
@@ -354,7 +354,7 @@
 				<posy>250</posy>
 				<width>130</width>
 				<height>140</height>
-				<aspectratio aligny="top">keep</aspectratio>
+				<aspectratio align="left" aligny="top">keep</aspectratio>
 				<info>ListItem.Icon</info>
 				<texture flipy="true" diffuse="diffuse_mirror.png" /> 
 				<visible>container.content(episodes)</visible>
@@ -529,7 +529,7 @@
 				<posy>100</posy>
 				<width>130</width>
 				<height>232</height>
-				<aspectratio>keep</aspectratio>
+				<aspectratio align="left">keep</aspectratio>
 				<info>ListItem.Icon</info>
 				<visible>container.content(musicvideos)</visible>
 			</control>
