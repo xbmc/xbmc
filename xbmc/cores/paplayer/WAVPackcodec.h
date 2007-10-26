@@ -1,9 +1,8 @@
 #pragma once
-#include "ICodec.h"
-#include "FileReader.h"
+#include "CachingCodec.h"
 #include "Dllwavpack.h"
 
-class WAVPackCodec : public ICodec
+class WAVPackCodec : public CachingCodec
 {
 public:
   WAVPackCodec();
@@ -35,6 +34,5 @@ private:
   int       m_BufferPos;
   BYTE*     m_ReadBuffer;
 
-  CFileReader m_file;
   DllWavPack m_dll;
 };
