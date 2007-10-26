@@ -1,6 +1,6 @@
 <window id="2001">
 	<defaultcontrol>5</defaultcontrol>
-	<allowoverlay>no</allowoverlay>
+	<allowoverlay>yes</allowoverlay>
 	<include>dialogeffect</include>
 	<controls>
 		<control type="image" id="0">
@@ -146,7 +146,7 @@
 			<posy>95</posy>
 			<width>145</width>
 			<height>180</height>
-			<aspectratio>keep</aspectratio>
+			<aspectratio align="left">keep</aspectratio>
 			<texture>-</texture>
 		</control>
 		<control type="image">
