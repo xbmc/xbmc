@@ -270,7 +270,8 @@ CApplication::CApplication(void)
   m_bNetworkSpinDown = false;
   m_dwSpinDownTime = timeGetTime();
   m_pWebServer = NULL;
-  pXbmcHttp = NULL;
+  m_pXbmcHttp = NULL;
+  m_prevTitle="";
   m_pFileZilla = NULL;
   m_pPlayer = NULL;
 #ifdef HAS_XBOX_HARDWARE
@@ -1438,8 +1439,8 @@ void CApplication::StartWebServer()
     CSectionLoader::Load("LIBHTTP");
     m_pWebServer = new CWebServer();
     m_pWebServer->Start(g_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), "Q:\\web", false);
-	if (pXbmcHttp)
-      pXbmcHttp->xbmcBroadcast("StartUp", 1);
+	if (m_pXbmcHttp)
+      m_pXbmcHttp->xbmcBroadcast("StartUp", 1);
   }
 }
 
@@ -2391,11 +2392,11 @@ bool CApplication::OnKey(CKey& key)
 bool CApplication::OnAction(const CAction &action)
 {
   // Let's tell the outside world about this action
-  if (pXbmcHttp)
+  if (m_pXbmcHttp)
   {
     CStdString tmp;
     tmp.Format("%i",action.wID);
-    pXbmcHttp->xbmcBroadcast("OnAction:"+tmp, 2);
+    m_pXbmcHttp->xbmcBroadcast("OnAction:"+tmp, 2);
   }
 
   // special case for switching between GUI & fullscreen mode.
@@ -3039,14 +3040,37 @@ bool CApplication::ProcessMouse()
   return m_gWindowManager.OnAction(action);
 }
 
+void  CApplication::CheckForTitleChange()
+{
+  if (IsPlayingVideo())
+  {
+	const CVideoInfoTag* tagVal = g_infoManager.GetCurrentMovieTag();
+    if (m_pXbmcHttp && tagVal && !(tagVal->m_strTitle.IsEmpty()) && (tagVal->m_strTitle!=m_prevTitle))
+    {
+	  m_pXbmcHttp->xbmcBroadcast("TitleChanged:"+tagVal->m_strTitle, 1);
+      m_prevTitle=tagVal->m_strTitle;
+    }
+  }
+  else if (IsPlayingAudio())
+  {
+    const CMusicInfoTag* tagVal=g_infoManager.GetCurrentSongTag();
+    if (m_pXbmcHttp && tagVal && !(tagVal->GetTitle().IsEmpty()) && (tagVal->GetTitle()!=m_prevTitle))
+    {
+	  m_pXbmcHttp->xbmcBroadcast("Title changed:"+tagVal->GetTitle(), 1);
+      m_prevTitle=tagVal->GetTitle();
+    }
+  }
+}
+
+
 bool CApplication::ProcessHTTPApiButtons()
 {
-  if (pXbmcHttp)
+  if (m_pXbmcHttp)
   {
     // copy key from webserver, and reset it in case we're called again before
     // whatever happens in OnKey()
-    CKey keyHttp(pXbmcHttp->GetKey());
-    pXbmcHttp->ResetKey();
+    CKey keyHttp(m_pXbmcHttp->GetKey());
+    m_pXbmcHttp->ResetKey();
     if (keyHttp.GetButtonCode() != KEY_INVALID)
     {
       if (keyHttp.GetButtonCode() == KEY_VMOUSE) //virtual mouse
@@ -3160,8 +3184,8 @@ void CApplication::Stop()
     m_bStop = true;
     CLog::Log(LOGNOTICE, "stop all");
 
-	if (pXbmcHttp)
-      pXbmcHttp->xbmcBroadcast("ShutDown", 1);
+	if (m_pXbmcHttp)
+      m_pXbmcHttp->xbmcBroadcast("ShutDown", 1);
 
     StopServices();
     //Sleep(5000);
@@ -3669,8 +3693,8 @@ void CApplication::OnPlayBackEnded()
   // (does nothing if python is not loaded)
   g_pythonParser.OnPlayBackEnded();
   // Let's tell the outside world as well
-  if (pXbmcHttp)
-    pXbmcHttp->xbmcBroadcast("OnPlayBackEnded", 1);
+  if (m_pXbmcHttp)
+    m_pXbmcHttp->xbmcBroadcast("OnPlayBackEnded", 1);
 
   CLog::Log(LOGDEBUG, "Playback has finished");
 
@@ -3692,8 +3716,8 @@ void CApplication::OnPlayBackStarted()
   g_pythonParser.OnPlayBackStarted();
 
   // Let's tell the outside world as well
-  if (pXbmcHttp)
-    pXbmcHttp->xbmcBroadcast("OnPlayBackStarted", 1);
+  if (m_pXbmcHttp)
+    m_pXbmcHttp->xbmcBroadcast("OnPlayBackStarted", 1);
 
   CLog::Log(LOGDEBUG, "Playback has started");
 
@@ -3713,8 +3737,8 @@ void CApplication::OnQueueNextItem()
   g_pythonParser.OnQueueNextItem(); // currently unimplemented
 
   // Let's tell the outside world as well
-  if (pXbmcHttp)
-    pXbmcHttp->xbmcBroadcast("OnQueueNextItem", 1);
+  if (m_pXbmcHttp)
+    m_pXbmcHttp->xbmcBroadcast("OnQueueNextItem", 1);
 
   CLog::Log(LOGDEBUG, "Player has asked for the next item");
 
@@ -3729,8 +3753,8 @@ void CApplication::OnPlayBackStopped()
   g_pythonParser.OnPlayBackStopped();
 
   // Let's tell the outside world as well
-  if (pXbmcHttp)
-    pXbmcHttp->xbmcBroadcast("OnPlayBackStopped", 1);
+  if (m_pXbmcHttp)
+    m_pXbmcHttp->xbmcBroadcast("OnPlayBackStopped", 1);
 
   OutputDebugString("Playback was stopped\n");
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0, 0, 0, NULL );
@@ -4698,6 +4722,9 @@ void CApplication::ProcessSlow()
   // update upnp server/renderer states
   if(CUPnP::IsInstantiated())
     CUPnP::GetInstance()->UpdateState();
+
+  //Check to see if current playing Title has changed and whether we should broadcast the fact
+  CheckForTitleChange();
 }
 
 // Global Idle Time in Seconds
