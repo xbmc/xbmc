@@ -48,7 +48,7 @@ using namespace PLAYLIST;
 
 #define XBMC_NONE      T("none")
 
-CXbmcHttp* pXbmcHttp;
+CXbmcHttp* m_pXbmcHttp;
 CXbmcHttpShim* pXbmcHttpShim;
 CUdpBroadcast* pUdpBroadcast;
 
