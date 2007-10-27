@@ -1372,11 +1372,15 @@
   <string id="20019">Choose Thumbnail</string>
   <string id="20020">Cannot use both KAI and trainer</string>
   <string id="20021">Choose which you want to use</string>
+  <!-- string id 20022 will always be set to an empty string (LocalizeStrings.cpp)--->
   <string id="20022"></string>
   <string id="20023">Conflict</string>
   <string id="20024">Scan new</string>
   <string id="20025">Scan all</string>
   <string id="20026">Region</string>
+
+  <!-- string id's 20027 thru 20034 are reserved for temperaturestrings  (LocalizeStrings.cpp)--->
+
   <string id="20038">Lock music window</string>
   <string id="20039">Lock videos window</string>
   <string id="20040">Lock pictures window</string>
@@ -1528,10 +1532,11 @@
   <string id="20187">Backing up EEPROM</string>
   <string id="20188">Backing up BIOS</string>
 
-  <string id="20200">Party on! (videos)</string>
-  <string id="20201">True (videos)</string>
-  <string id="20202">Mixing drinks (videos)</string>
-  <string id="20203">Filling glasses (videos)</string>
+  <!-- string id's 20200 thru 20211 are reserved for speedstrings (LocalizeStrings.cpp)-->
+  
+  <string id="20250">Party on! (videos)</string>
+  <string id="20251">Mixing drinks (videos)</string>
+  <string id="20252">Filling glasses (videos)</string>
 
   <string id="20189"></string>
   <string id="20190"></string>
