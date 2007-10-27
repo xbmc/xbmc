@@ -1532,10 +1532,9 @@
   <string id="20187">Varmuuskopioidaan EEPROM:in tiedot</string>
   <string id="20188">Varmuuskopioidaan Bios:in tiedot</string>
 
-  <string id="20200">Video esitys alkaa</string>
-  <string id="20201">Nyt voit rentoutua</string>
-  <string id="20202">Arvotaan katseltavia videoita</string>
-  <string id="20203">Valmiina katselu nautintoon</string> 
+  <string id="20250">Video esitys alkaa</string>
+  <string id="20251">Arvotaan katseltavia videoita</string>
+  <string id="20252">Valmiina katselu nautintoon</string> 
   
   <string id="20189"></string>
   <string id="20190"></string>
