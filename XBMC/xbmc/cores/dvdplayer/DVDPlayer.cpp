@@ -331,7 +331,6 @@ void CDVDPlayer::Process()
           }
 
           // we don't consider dvd's ended untill navigator tells us so
-          CLog::Log(LOGINFO, "%s - EOF reading from demuxer", __FUNCTION__);
           continue;          
         }
 
@@ -1454,6 +1453,14 @@ bool CDVDPlayer::OpenVideoStream(int iStream)
 
   CDVDStreamInfo hint(*pStream, true);
 
+  /* set aspect ratio as requested by navigator for dvd's */
+  if( m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) )
+  {
+    float aspect = static_cast<CDVDInputStreamNavigator*>(m_pInputStream)->GetVideoAspectRatio();
+    if(aspect != 0.0)
+      hint.aspect = aspect;
+  }
+
   bool success = false;
   try
   {    
@@ -1472,10 +1479,6 @@ bool CDVDPlayer::OpenVideoStream(int iStream)
     pStream->disabled = true;
     return false;
   }
-
-  /* set aspect ratio as requested by navigator for dvd's */
-  if( m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) )
-    m_dvdPlayerVideo.SendMessage(new CDVDMsgVideoSetAspect(static_cast<CDVDInputStreamNavigator*>(m_pInputStream)->GetVideoAspectRatio()));
 
   /* store information about stream */
   m_CurrentVideo.id = iStream;
@@ -1708,10 +1711,9 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
         m_messenger.Put(new CDVDMsgDemuxerReset());
 
         //Force an aspect ratio that is set in the dvdheaders if available
+        m_CurrentVideo.hint.aspect = pStream->GetVideoAspectRatio();
         if( m_dvdPlayerAudio.m_messageQueue.IsInited() )
-          m_dvdPlayerVideo.SendMessage(new CDVDMsgVideoSetAspect(pStream->GetVideoAspectRatio()));
-        else
-          m_dvdPlayerVideo.SetAspectRatio(pStream->GetVideoAspectRatio());
+          m_dvdPlayerVideo.SendMessage(new CDVDMsgVideoSetAspect(m_CurrentVideo.hint.aspect));
 
         return NAVRESULT_HOLD;
       }
