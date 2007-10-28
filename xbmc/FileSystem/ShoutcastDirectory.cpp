@@ -107,7 +107,7 @@ bool CShoutcastDirectory::ParseStations(TiXmlElement *root, CFileItemList &items
     pItem->GetMusicInfoTag()->SetGenre(genre);
 
     /* this is what will be sorted upon */
-    pItem->m_fRating = (float)atoi(listeners.c_str());
+    pItem->GetVideoInfoTag()->m_fRating = (float)atoi(listeners.c_str());
     pItem->m_dwSize = atoi(bitrate.c_str());
 
 
