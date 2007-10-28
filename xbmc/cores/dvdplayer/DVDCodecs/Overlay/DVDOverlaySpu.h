@@ -26,6 +26,8 @@ public:
     memset(alpha, 0, sizeof(alpha));
     memset(color, 0, sizeof(color));
     memset(stats, 0, sizeof(stats));
+    memset(highlight_alpha, 0, sizeof(highlight_alpha));
+    memset(highlight_color, 0, sizeof(highlight_color));
   }
 
   BYTE* pData; // rle data
