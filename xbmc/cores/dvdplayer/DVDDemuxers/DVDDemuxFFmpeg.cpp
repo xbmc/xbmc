@@ -613,20 +613,25 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
       }
     case CODEC_TYPE_VIDEO:
       {
-        m_streams[iId] = new CDemuxStreamVideoFFmpeg(&m_dllAvCodec);
-        m_streams[iId]->type = STREAM_VIDEO;
+        CDemuxStreamVideoFFmpeg* st = new CDemuxStreamVideoFFmpeg(&m_dllAvCodec);
+        m_streams[iId] = st;
         if(pStream->r_frame_rate.den && pStream->r_frame_rate.num)
         {
-          ((CDemuxStreamVideo*)m_streams[iId])->iFpsRate = pStream->r_frame_rate.den;
-          ((CDemuxStreamVideo*)m_streams[iId])->iFpsScale = pStream->r_frame_rate.num;
+          st->iFpsRate = pStream->r_frame_rate.den;
+          st->iFpsScale = pStream->r_frame_rate.num;
         }
         else
         {
-          ((CDemuxStreamVideo*)m_streams[iId])->iFpsRate = pStream->codec->time_base.den;
-          ((CDemuxStreamVideo*)m_streams[iId])->iFpsScale = pStream->codec->time_base.num;
+          st->iFpsRate = pStream->codec->time_base.den;
+          st->iFpsScale = pStream->codec->time_base.num;
         }
-        ((CDemuxStreamVideo*)m_streams[iId])->iWidth = pStream->codec->width;
-        ((CDemuxStreamVideo*)m_streams[iId])->iHeight = pStream->codec->height;
+        st->iWidth = pStream->codec->width;
+        st->iHeight = pStream->codec->height;
+        if (pStream->codec->sample_aspect_ratio.num == 0)
+          st->fAspect = 0.0;
+        else 
+          st->fAspect = av_q2d(pStream->codec->sample_aspect_ratio) * pStream->codec->width / pStream->codec->height;
+
         break;
       }
     case CODEC_TYPE_DATA:
