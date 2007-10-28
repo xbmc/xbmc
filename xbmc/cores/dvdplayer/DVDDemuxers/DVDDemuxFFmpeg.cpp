@@ -617,8 +617,8 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         m_streams[iId] = st;
         if(pStream->r_frame_rate.den && pStream->r_frame_rate.num)
         {
-          st->iFpsRate = pStream->r_frame_rate.den;
-          st->iFpsScale = pStream->r_frame_rate.num;
+          st->iFpsRate = pStream->r_frame_rate.num;
+          st->iFpsScale = pStream->r_frame_rate.den;
         }
         else
         {
