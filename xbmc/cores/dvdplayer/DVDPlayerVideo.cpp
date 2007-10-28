@@ -81,7 +81,8 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
     m_autosync = 1; // avoid using frame time as we don't know it accurate
   }
 
-
+  // use aspect in stream if available
+  m_fForcedAspectRatio = hint.aspect;
 
   // should alway's be NULL!!!!, it will probably crash anyway when deleting m_pVideoCodec here.
   if (m_pVideoCodec)
@@ -354,11 +355,9 @@ void CDVDPlayerVideo::Process()
             else if(pPacket->dts != DVD_NOPTS_VALUE)
               pts = pPacket->dts;
             
-            //Check if dvd has forced an aspect ratio
+            /* use forced aspect if any */
             if( m_fForcedAspectRatio != 0.0f )
-            {
               picture.iDisplayWidth = (int) (picture.iDisplayHeight * m_fForcedAspectRatio);
-            }
 
             int iResult;
             do 
