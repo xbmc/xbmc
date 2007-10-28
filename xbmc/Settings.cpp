@@ -878,7 +878,7 @@ bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& 
   {
     // get the data for this resolution
     int iRes;
-    GetInteger(pResolution, "id", iRes, (int)PAL_4x3, HDTV_1080i, PAL60_16x9); //PAL4x3 as default data
+    GetInteger(pResolution, "id", iRes, (int)PAL_4x3, HDTV_1080i, MAX_RESOLUTIONS); //PAL4x3 as default data
     GetString(pResolution, "description", m_ResInfo[iRes].strMode, m_ResInfo[iRes].strMode);
     // get the appropriate "safe graphics area" = 10% for 4x3, 3.5% for 16x9
     float fSafe;
@@ -916,6 +916,26 @@ bool CSettings::SaveCalibration(TiXmlNode* pRootNode) const
   TiXmlElement xmlRootElement("calibration");
   TiXmlNode *pRoot = pRootNode->InsertEndChild(xmlRootElement);
   for (int i = 0; i < 10; i++)
+  {
+    // Write the resolution tag
+    TiXmlElement resElement("resolution");
+    TiXmlNode *pNode = pRoot->InsertEndChild(resElement);
+    // Now write each of the pieces of information we need...
+    SetString(pNode, "description", m_ResInfo[i].strMode);
+    SetInteger(pNode, "id", i);
+    SetInteger(pNode, "subtitles", m_ResInfo[i].iSubtitles);
+    SetFloat(pNode, "pixelratio", m_ResInfo[i].fPixelRatio);
+    // create the overscan child
+    TiXmlElement overscanElement("overscan");
+    TiXmlNode *pOverscanNode = pNode->InsertEndChild(overscanElement);
+    SetInteger(pOverscanNode, "left", m_ResInfo[i].Overscan.left);
+    SetInteger(pOverscanNode, "top", m_ResInfo[i].Overscan.top);
+    SetInteger(pOverscanNode, "right", m_ResInfo[i].Overscan.right);
+    SetInteger(pOverscanNode, "bottom", m_ResInfo[i].Overscan.bottom);
+  }
+
+  // save WINDOW, DESKTOP and CUSTOM resolution
+  for (int i = (int)WINDOW ; i<(CUSTOM+g_videoConfig.GetNumberOfResolutions()) ; i++)
   {
     // Write the resolution tag
     TiXmlElement resElement("resolution");
