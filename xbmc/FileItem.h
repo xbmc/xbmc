@@ -264,7 +264,6 @@ public:
   int m_iDriveType;     ///< If \e m_bIsShareOrDrive is \e true, use to get the share type. Types see: CShare::m_iDriveType
   CDateTime m_dateTime;             ///< file creation date & time
   __int64 m_dwSize;             ///< file size (0 for folders)
-  float m_fRating;
   CStdString m_strDVDLabel;
   CStdString m_strTitle;
   int m_iprogramCount;
