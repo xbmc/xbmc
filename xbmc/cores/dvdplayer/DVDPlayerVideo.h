@@ -49,7 +49,6 @@ public:
   bool IsFrameDropEnabled()                         { return m_bDropFrames; }
 
   void EnableFullscreen(bool bEnable)               { m_bAllowFullscreen = bEnable; }
-  void SetAspectRatio(float aspect)                 { m_fForcedAspectRatio = aspect; }
 
 #ifdef HAS_VIDEO_PLAYBACK
   void GetVideoRect(RECT& SrcRect, RECT& DestRect)  { g_renderManager.GetVideoRect(SrcRect, DestRect); }
