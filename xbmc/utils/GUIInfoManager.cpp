@@ -2856,8 +2856,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       { // song rating.  Images will probably be better than numbers for this in the long run
         rating = item->GetMusicInfoTag()->GetRating();
       }
-      else if (item->m_fRating > 0.f) // movie rating
-        rating.Format("%2.2f", item->m_fRating);
+      else if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_fRating > 0.f) // movie rating
+        rating.Format("%2.2f", item->GetVideoInfoTag()->m_fRating);
       return rating;
     }
   case LISTITEM_PROGRAM_COUNT:
