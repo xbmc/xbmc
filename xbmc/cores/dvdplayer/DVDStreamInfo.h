@@ -28,6 +28,7 @@ public:
   int fpsrate;
   int height; // height of the stream reported by the demuxer
   int width; // width of the stream reported by the demuxer
+  float aspect; // // display aspect as reported by demuxer
 
   // AUDIO
   int channels;
