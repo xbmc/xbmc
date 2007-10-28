@@ -58,6 +58,7 @@ CStdString openTag, closeTag, userHeader, userFooter, openRecordSet, closeRecord
 bool incWebHeader, incWebFooter, closeFinalTag;
 
 bool autoGetPictureThumbs = true;
+bool shuttingDown = false;
 
 /*
 ** Translation Table as described in RFC1113
@@ -1928,6 +1929,7 @@ int CXbmcHttp::xbmcExit(int theAction)
   if (theAction>0 && theAction<6)
   {
     SetResponse(openTag+"OK");
+	shuttingDown=true;
 	return theAction;
   }
   else
@@ -2401,8 +2403,6 @@ bool CXbmcHttp::xbmcBroadcast(CStdString message, int level)
 	  pUdpBroadcast = new CUdpBroadcast();
 	CStdString msg;
     msg.Format(openBroadcast+message+";%i"+closeBroadcast, level);
-
-    //return pUdpBroadcast->broadcast(openBroadcast+message+";"+closeBroadcast, g_stSettings.m_HttpApiBroadcastPort);
 	return pUdpBroadcast->broadcast(msg, g_stSettings.m_HttpApiBroadcastPort);
   }
   else
@@ -2670,6 +2670,8 @@ int CXbmcHttp::xbmcHelp()
 
 int CXbmcHttp::xbmcCommand(const CStdString &parameter)
 {
+  if (shuttingDown)
+    return -1;
   int numParas, retVal=false;
   CStdString command, paras[MAX_PARAS];
   numParas = splitParameter(parameter, command, paras, ";");
@@ -2803,6 +2805,8 @@ CLog::Log(LOGDEBUG, "xbmcHttpShim ends");
 
 CStdString CXbmcHttpShim::xbmcExternalCall(char *command)
 {
+  if (shuttingDown)
+    return "";
   int open, close;
   CStdString parameter="", cmd=command, execute;
   open = cmd.Find("(");
@@ -2829,6 +2833,8 @@ CStdString CXbmcHttpShim::xbmcExternalCall(char *command)
 /* Parse an XBMC HTTP API command */
 CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *command, char_t *parameter)
 {
+  if (shuttingDown)
+    return "";
   CStdString cmd=command, paras=parameter, response="[No response yet]", retVal;
   CLog::Log(LOGDEBUG, "XBMCHTTPShim: Received command %s (%s)", cmd.c_str(), paras.c_str());
   int cnt=0;
@@ -2868,16 +2874,20 @@ CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *comman
  */
 int CXbmcHttpShim::xbmcCommand( int eid, webs_t wp, int argc, char_t **argv)
 {
-	char_t	*command, *parameter;
+  char_t	*command, *parameter;
+  if (shuttingDown)
+    return -1;
 
-	int parameters = ejArgs(argc, argv, T("%s %s"), &command, &parameter);
-	if (parameters < 1) {
+  int parameters = ejArgs(argc, argv, T("%s %s"), &command, &parameter);
+  if (parameters < 1) 
+  {
     websError(wp, 500, T("Error:Insufficient args"));
-		return -1;
-	}
-	else if (parameters < 2) parameter = "";
-
-	xbmcProcessCommand( eid, wp, command, parameter);
+    return -1;
+  }
+  else 
+	if (parameters < 2) 
+	  parameter = "";
+  xbmcProcessCommand( eid, wp, command, parameter);
   return 0;
 }
 
@@ -2887,6 +2897,8 @@ void CXbmcHttpShim::xbmcForm(webs_t wp, char_t *path, char_t *query)
 {
   char_t  *command, *parameter;
 
+  if (shuttingDown)
+	return;
   command = websGetVar(wp, WEB_COMMAND, XBMC_NONE); 
   parameter = websGetVar(wp, WEB_PARAMETER, XBMC_NONE);
 
