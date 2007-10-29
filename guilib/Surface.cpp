@@ -442,38 +442,50 @@ void CSurface::EnableVSync(bool enable)
   if (enable)
   {
     CLog::Log(LOGINFO, "GL: Enabling VSYNC");
+
+#warning using vsync on nvidia always true
+    // the following setenv will currently have no effect on rendering. it should be set before screen setup.
+    // workaround needed.
+    if (setenv("__GL_SYNC_TO_VBLANK","1",true) != 0)
+      CLog::Log(LOGERROR,"GL: failed to set vsync env variable!");
   }
   else
   {
     CLog::Log(LOGINFO, "GL: Disabling VSYNC");
+    if (unsetenv("__GL_SYNC_TO_VBLANK") != 0)
+      CLog::Log(LOGERROR,"GL: failed to unset vsync env variable!");
   }
 
   // Nvidia cards: See Appendix E. of NVidia Linux Driver Set README
-  if (enable) 
-    putenv("__GL_SYNC_TO_VBLANK=1"); 
-  else 
+  CStdString strVendor(s_glVendor);
+  strVendor.ToLower();
+  bool bNVidia = (strVendor.find("nvidia") >= 0);
+  if (!bNVidia)
   {
-    putenv("__GL_SYNC_TO_VBLANK");
-      switch(m_iVSyncMode)
-      {
-      case 1:
-        if (_glXSwapIntervalSGI)
-          _glXSwapIntervalSGI(1);
-        break;
-        
-      case 2:
-        if (_glXSwapIntervalMESA)
-          _glXSwapIntervalMESA(0);
-        break;
+    switch(m_iVSyncMode)
+    {
+    case 1:
+      if (_glXSwapIntervalSGI)
+        _glXSwapIntervalSGI(1);
+      break;
+      
+    case 2:
+      if (_glXSwapIntervalMESA)
+        _glXSwapIntervalMESA(0);
+      break;
 
-      case 3:
-        if (_wglSwapIntervalEXT)
-          _wglSwapIntervalEXT(0);
-        break;
-      }
-    m_iVSyncMode = 0;
-    m_bVSync=enable;
+    case 3:
+      if (_wglSwapIntervalEXT)
+        _wglSwapIntervalEXT(0);
+      break;
+    }
   }
+
+  m_iVSyncMode = 0;
+  m_bVSync=enable;
+
+  if (bNVidia)
+    return;
 
   if (IsValid() && enable)
   {
@@ -505,24 +517,20 @@ void CSurface::EnableVSync(bool enable)
     if (_glXSwapIntervalSGI)
     {
       m_iVSyncMode = 1;
-      m_bVSync = enable;
       _glXSwapIntervalSGI(2);
     }
     else if (_glXSwapIntervalMESA)
     {
       m_iVSyncMode = 2;
-      m_bVSync = enable;
       _glXSwapIntervalMESA(2);
     }
     else if (_glXWaitVideoSyncSGI && _glXGetVideoSyncSGI)
     {
       m_iVSyncMode = 4;
-      m_bVSync = enable;
     }
     else if (_wglSwapIntervalEXT)
     {
       m_iVSyncMode = 3;
-      m_bVSync = enable; 
       _wglSwapIntervalEXT(2);
     }
     else
