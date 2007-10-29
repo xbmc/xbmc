@@ -128,5 +128,5 @@ private:
 #define WEB_COMMAND T("command")
 #define WEB_PARAMETER T("parameter")
 
-extern CXbmcHttp* pXbmcHttp; //make it global so Application.cpp can access it for key/button messages
+extern CXbmcHttp* m_pXbmcHttp; //make it global so Application.cpp can access it for key/button messages
 extern CXbmcHttpShim* pXbmcHttpShim;

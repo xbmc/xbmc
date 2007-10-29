@@ -712,6 +712,7 @@
 			<info>ListItem.Title</info>
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(51)</visible>
+			<scroll>true</scroll>
 		</control>
 		<control type="label">
 			<posx>680</posx>
@@ -723,6 +724,7 @@
 			<info>ListItem.Year</info>
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(51) + container.content(movies)</visible>
+			<scroll>true</scroll>
 		</control>
 		<control type="label">
 			<posx>200</posx>
@@ -733,6 +735,7 @@
 			<info>ListItem.Genre</info>
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(51) + container.content(movies)</visible>
+			<scroll>true</scroll>
 		</control>
 		<control type="label">
 			<posx>680</posx>
@@ -744,6 +747,7 @@
 			<info>ListItem.Rating</info>
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(51) + container.content(movies)</visible>
+			<scroll>true</scroll>
 		</control>
 		<control type="label">
 			<posx>680</posx>
@@ -755,6 +759,7 @@
 			<label>$LOCALIZE[20359] - $INFO[ListItem.Episode]</label>
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(51) + container.content(episodes)</visible>
+			<scroll>true</scroll>
 		</control>
 		<control type="label">
 			<posx>200</posx>
@@ -765,6 +770,7 @@
 			<label>$LOCALIZE[20373] - $INFO[ListItem.Season]</label>
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(51) + container.content(episodes)</visible>
+			<scroll>true</scroll>
 		</control>
 		<control type="label">
 			<posx>680</posx>
@@ -776,6 +782,7 @@
 			<label>$INFO[ListItem.Duration,$LOCALIZE[2050] ]</label>
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(51) + container.content(musicvideos)</visible>
+			<scroll>true</scroll>
 		</control>
 		<control type="label">
 			<posx>200</posx>
@@ -786,6 +793,7 @@
 			<label>$INFO[ListItem.Artist]</label>
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(51) + container.content(musicvideos)</visible>
+			<scroll>true</scroll>
 		</control>
 		<control type="button">
 			<posx>535</posx>
@@ -2509,6 +2517,15 @@
 					<info>ListItem.Label</info>
 				</control>
 			</focusedlayout>
+		</control>
+		<control type="image">
+			<posx>403</posx>
+			<posy>185</posy>
+			<width>90</width>
+			<height>175</height>
+			<info>ListItem.Icon</info>
+			<aspectratio align="center" aligny="center">keep</aspectratio>
+			<visible>Window.IsVisible(2003)</visible>
 		</control>
 	</include>
 		<include name="DialogInfoViewOldListViewCommons">

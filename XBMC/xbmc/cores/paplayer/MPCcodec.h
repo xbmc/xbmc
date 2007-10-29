@@ -1,9 +1,9 @@
 #pragma once
-#include "ICodec.h"
+#include "CachingCodec.h"
 #include "FileSystem/File.h"
 #include "DllMpcCodec.h"
 
-class MPCCodec : public ICodec
+class MPCCodec : public CachingCodec
 {
 public:
   MPCCodec();

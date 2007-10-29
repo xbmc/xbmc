@@ -348,12 +348,12 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
     case TMSG_HTTPAPI:
     {
 #ifdef HAS_WEB_SERVER
-      if (!pXbmcHttp)
+      if (!m_pXbmcHttp)
       {
 	    CSectionLoader::Load("LIBHTTP");
-        pXbmcHttp = new CXbmcHttp();
+        m_pXbmcHttp = new CXbmcHttp();
       }
-	  int ret=pXbmcHttp->xbmcCommand(pMsg->strParam);
+	  int ret=m_pXbmcHttp->xbmcCommand(pMsg->strParam);
       switch(ret)
       {
       case 1:

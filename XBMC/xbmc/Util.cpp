@@ -3848,8 +3848,8 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     {
       if( g_application.IsPlaying() && g_application.m_pPlayer && g_application.m_pPlayer->CanRecord())
       {
-		if (pXbmcHttp)
-			pXbmcHttp->xbmcBroadcast(g_application.m_pPlayer->IsRecording()?"RecordStopping":"RecordStarting", 1);
+		if (m_pXbmcHttp)
+			m_pXbmcHttp->xbmcBroadcast(g_application.m_pPlayer->IsRecording()?"RecordStopping":"RecordStarting", 1);
         g_application.m_pPlayer->Record(!g_application.m_pPlayer->IsRecording());
       }
     }
@@ -4078,29 +4078,43 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 
     int iTheme = -1;
     //int iThemes = vecTheme.size();
+    CStdString strTmpTheme;
     // find current theme
     if (!g_guiSettings.GetString("lookandfeel.skintheme").Equals("skindefault"))
       for (unsigned int i=0;i<vecTheme.size();++i)
-        if (vecTheme[i].Equals(g_guiSettings.GetString("lookandfeel.skintheme")))
+      {
+        strTmpTheme = g_guiSettings.GetString("lookandfeel.skintheme");
+        RemoveExtension(strTmpTheme);
+        if (vecTheme[i].Equals(strTmpTheme))
         {
           iTheme=i;
           break;
         }
+      }
 
     int iParam = atoi(parameter.c_str());
-    if (iParam == 0)
+    if (iParam == 0 || iParam == 1)
       iTheme++;
-    if (iParam == -1)
+    else if (iParam == -1)
       iTheme--;
     if (iTheme > (int)vecTheme.size()-1)
       iTheme = -1;
     if (iTheme < -1)
       iTheme = vecTheme.size()-1;
 
+    CStdString strSkinTheme;
     if (iTheme==-1)
       g_guiSettings.SetString("lookandfeel.skintheme","skindefault");
     else
-      g_guiSettings.SetString("lookandfeel.skintheme",vecTheme[iTheme]);
+    {
+      strSkinTheme.Format("%s.xpr",vecTheme[iTheme]);
+      g_guiSettings.SetString("lookandfeel.skintheme",strSkinTheme);
+    }
+    // also set the default color theme
+    CStdString colorTheme(strSkinTheme);
+    ReplaceExtension(colorTheme, ".xml", colorTheme);
+
+    g_guiSettings.SetString("lookandfeel.skincolors", colorTheme);
 
     g_application.DelayLoadSkin();
   }
