@@ -2,8 +2,9 @@
 #include "ICodec.h"
 #include "FileSystem/File.h"
 #include "DllLibshnplay.h"
+#include "CachingCodec.h"
 
-class SHNCodec : public ICodec
+class SHNCodec : public CachingCodec
 {
 public:
   SHNCodec();
@@ -20,3 +21,4 @@ private:
   ShnPlay *m_handle;
   DllLibShnPlay m_dll;
 };
+

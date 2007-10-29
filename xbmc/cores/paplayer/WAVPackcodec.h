@@ -2,8 +2,9 @@
 #include "ICodec.h"
 #include "FileSystem/File.h"
 #include "DllWAVPack.h"
+#include "CachingCodec.h"
 
-class WAVPackCodec : public ICodec
+class WAVPackCodec : public CachingCodec
 {
 public:
   WAVPackCodec();
@@ -37,3 +38,4 @@ private:
 
   DllWavPack m_dll;
 };
+

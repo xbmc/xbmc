@@ -1456,10 +1456,9 @@ den här visualiseringen</string>
   <string id="20186">Var god vänta</string>
   <string id="20187">Tar backup av EEPROM</string>
   <string id="20188">Tar backup av BIOS</string>
-  <string id="20200">Festa på! (filmer)</string>
-  <string id="20201">Sant (filmer)</string>
-  <string id="20202">Blandar drinkar (filmer)</string>
-  <string id="20203">Fyller glas (filmer)</string>
+  <string id="20250">Festa på! (filmer)</string>
+  <string id="20251">Blandar drinkar (filmer)</string>
+  <string id="20252">Fyller glas (filmer)</string>
   <string id="20306">Okänd. Lägg till MD5 från XBMC.log till BiosIDs.ini</string>
   <string id="20307">Sekundär DNS</string>
   <string id="20308">DHCP server:</string>

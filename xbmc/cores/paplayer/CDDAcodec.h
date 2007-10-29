@@ -1,8 +1,8 @@
 #pragma once
-#include "ICodec.h"
+#include "CachingCodec.h"
 #include "FileSystem/File.h"
 
-class CDDACodec : public ICodec
+class CDDACodec : public CachingCodec
 {
 public:
   CDDACodec();

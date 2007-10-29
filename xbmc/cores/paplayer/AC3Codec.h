@@ -1,13 +1,13 @@
 
 #pragma once
 
-#include "ICodec.h"
+#include "CachingCodec.h"
 #include "FileSystem/File.h"
 #include "DllAc3codec.h"
 
 #ifdef HAS_AC3_CODEC
 
-class AC3Codec : public ICodec
+class AC3Codec : public CachingCodec
 {
 public:
   AC3Codec();

@@ -3,11 +3,12 @@
 
 #include "FileSystem/File.h"
 #include "ICodec.h"
+#include "CachingCodec.h"
 #include "DllDCACodec.h"
 
 #ifdef HAS_DTS_CODEC
 
-class DTSCodec : public ICodec
+class DTSCodec : public CachingCodec
 {
 public:
   DTSCodec();
@@ -67,3 +68,4 @@ protected:
   DllDCACodec m_dll;
 };
 #endif
+
