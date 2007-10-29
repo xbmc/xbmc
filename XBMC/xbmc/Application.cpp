@@ -890,6 +890,10 @@ HRESULT CApplication::Create(HWND hWnd)
   sdlFlags |= SDL_INIT_JOYSTICK;
 #endif
 
+  // for nvidia cards - vsync currently ALWAYS enabled.
+  // the reason is that after screen has been setup changing this env var will make no difference.
+  setenv("__GL_SYNC_TO_VBLANK","1",true);
+
   if (SDL_Init(sdlFlags) != 0)
   {
         CLog::Log(LOGFATAL, "XBAppEx: Unable to initialize SDL: %s", SDL_GetError());
