@@ -50,11 +50,19 @@ bool CNetworkInterfaceLinux::IsEnabled()
 bool CNetworkInterfaceLinux::IsConnected()
 {
    struct ifreq ifr;
+   memset(&ifr,0,sizeof(struct ifreq));
    strcpy(ifr.ifr_name, m_interfaceName.c_str());
    if (ioctl(m_network->GetSocket(), SIOCGIFFLAGS, &ifr) < 0)
       return false;
 
-   return (ifr.ifr_flags & IFF_RUNNING == IFF_RUNNING);
+   // ignore loopback
+   int iRunning = ( (ifr.ifr_flags & IFF_RUNNING) && (!(ifr.ifr_flags & IFF_LOOPBACK)));
+
+   if (ioctl(m_network->GetSocket(), SIOCGIFADDR, &ifr) < 0)
+      return false;
+
+   // return only interfaces which has ip address
+   return iRunning && (*(int*)&ifr.ifr_addr.sa_data != 0) ;
 }
 
 CStdString CNetworkInterfaceLinux::GetMacAddress()
