@@ -1,9 +1,9 @@
 #pragma once
-#include "ICodec.h"
+#include "CachingCodec.h"
 #include "FileSystem/File.h"
 #include "DllVorbisfile.h"
 
-class OGGCodec : public ICodec
+class OGGCodec : public CachingCodec
 {
 public:
   OGGCodec();

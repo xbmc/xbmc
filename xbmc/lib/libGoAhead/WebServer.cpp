@@ -65,8 +65,8 @@ CWebServer::CWebServer()
   pXbmcWebConfig = new CXbmcConfiguration();
   if (!pXbmcHttpShim)
     pXbmcHttpShim = new CXbmcHttpShim();
-  if (!pXbmcHttp)
-    pXbmcHttp = new CXbmcHttp();
+  if (!m_pXbmcHttp)
+    m_pXbmcHttp = new CXbmcHttp();
   m_port = 80;					/* Server port */
   m_szPassword[0] = '\0';
 
@@ -84,10 +84,10 @@ CWebServer::~CWebServer()
     delete pXbmcHttpShim;
     pXbmcHttpShim=NULL;
   }
-  if (pXbmcHttp)
+  if (m_pXbmcHttp)
   {
-    delete pXbmcHttp;
-    pXbmcHttp=NULL;
+    delete m_pXbmcHttp;
+    m_pXbmcHttp=NULL;
   }
 }
 /*

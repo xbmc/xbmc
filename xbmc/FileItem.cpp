@@ -93,7 +93,6 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
     m_strPath = _P(movie.m_strFileNameAndPath);
     m_bIsFolder = false;
   }
-  m_fRating = movie.m_fRating;
   *GetVideoInfoTag() = movie;
   FillInDefaultIcon();
   SetVideoThumb();
@@ -282,7 +281,6 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
 
   m_lStartOffset = item.m_lStartOffset;
   m_lEndOffset = item.m_lEndOffset;
-  m_fRating = item.m_fRating;
   m_strDVDLabel = item.m_strDVDLabel;
   m_strTitle = item.m_strTitle;
   m_iprogramCount = item.m_iprogramCount;
@@ -305,7 +303,6 @@ void CFileItem::Reset()
   FreeIcons();
   m_overlayIcon = ICON_OVERLAY_NONE;
   m_bSelected = false;
-  m_fRating = 0.0f;
   m_strDVDLabel.Empty();
   m_strTitle.Empty();
   m_strPath.Empty();
@@ -356,7 +353,6 @@ void CFileItem::Serialize(CArchive& ar)
     ar << m_iDriveType;
     ar << m_dateTime;
     ar << m_dwSize;
-    ar << m_fRating;
     ar << m_strDVDLabel;
     ar << m_strTitle;
     ar << m_iprogramCount;
@@ -409,7 +405,6 @@ void CFileItem::Serialize(CArchive& ar)
     ar >> m_iDriveType;
     ar >> m_dateTime;
     ar >> m_dwSize;
-    ar >> m_fRating;
     ar >> m_strDVDLabel;
     ar >> m_strTitle;
     ar >> m_iprogramCount;

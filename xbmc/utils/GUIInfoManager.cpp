@@ -153,6 +153,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("player.recording")) ret = PLAYER_RECORDING;
     else if (strTest.Equals("player.displayafterseek")) ret = PLAYER_DISPLAY_AFTER_SEEK;
     else if (strTest.Equals("player.caching")) ret = PLAYER_CACHING;
+    else if (strTest.Equals("player.cachelevel")) ret = PLAYER_CACHELEVEL;
     else if (strTest.Equals("player.seekbar")) ret = PLAYER_SEEKBAR;
     else if (strTest.Equals("player.progress")) ret = PLAYER_PROGRESS;
     else if (strTest.Equals("player.seeking")) ret = PLAYER_SEEKING;
@@ -733,6 +734,13 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     if(g_application.IsPlaying() && g_application.m_pPlayer)
       strLabel.Format("%02d", g_application.m_pPlayer->GetChapterCount());
     break;
+  case PLAYER_CACHELEVEL:
+    {
+      int iLevel = 0;
+      if(g_application.IsPlaying() && ((iLevel = GetInt(PLAYER_CACHELEVEL)) >= 0))
+        strLabel.Format("%i", iLevel);
+    }
+    break;
   case MUSICPLAYER_TITLE:
   case MUSICPLAYER_ALBUM:
   case MUSICPLAYER_ARTIST:
@@ -1207,7 +1215,7 @@ int CGUIInfoManager::GetInt(int info, DWORD contextWindow) const
       return g_application.GetVolume();
     case PLAYER_PROGRESS:
     case PLAYER_SEEKBAR:
-    case PLAYER_CACHING:
+    case PLAYER_CACHELEVEL:
     case PLAYER_CHAPTER:
     case PLAYER_CHAPTERCOUNT:
       {
@@ -1222,7 +1230,7 @@ int CGUIInfoManager::GetInt(int info, DWORD contextWindow) const
               CGUIDialogSeekBar *seekBar = (CGUIDialogSeekBar*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
               return seekBar ? (int)seekBar->GetPercentage() : 0;
             }
-          case PLAYER_CACHING:
+          case PLAYER_CACHELEVEL:
             return (int)(g_application.m_pPlayer->GetCacheLevel());
           case PLAYER_CHAPTER:
             return g_application.m_pPlayer->GetChapter();
@@ -2907,8 +2915,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       { // song rating.  Images will probably be better than numbers for this in the long run
         rating = item->GetMusicInfoTag()->GetRating();
       }
-      else if (item->m_fRating > 0.f) // movie rating
-        rating.Format("%2.2f", item->m_fRating);
+      else if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_fRating > 0.f) // movie rating
+        rating.Format("%2.2f", item->GetVideoInfoTag()->m_fRating);
       return rating;
     }
   case LISTITEM_PROGRAM_COUNT:

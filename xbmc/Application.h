@@ -219,6 +219,7 @@ protected:
 
   CFileItem m_itemCurrentFile;
   CFileItemList m_currentStack;
+  CStdString m_prevTitle;
   CSplash* m_splash;
   DWORD m_threadID;       // application thread ID.  Used in applicationMessanger to know where we are firing a thread with delay from.
   EPLAYERCORES m_eCurrentPlayer;
@@ -255,6 +256,7 @@ protected:
   void CheckForDebugButtonCombo();
   void StartFtpEmergencyRecoveryMode();
   float NavigationIdleTime();
+  void CheckForTitleChange();
 
   void SaveCurrentFileSettings();
 
