@@ -1,8 +1,8 @@
 #pragma once
-#include "ICodec.h"
+#include "CachingCodec.h"
 #include "FileSystem/File.h"
 
-class AIFFCodec : public ICodec
+class AIFFCodec : public CachingCodec
 {
 public:
   AIFFCodec();

@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: jutski (->7/2006) Mikko70 (1/2007->)-->
-<!--Date of translation: 15/10/2007-->
+<!--Date of translation: 27/10/2007-->
 <!--$Revision$: -->
-<!--Finnish strings based on english strings version 10541 -->
+<!--Finnish strings based on English strings version 10628 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -1381,6 +1381,9 @@
   <string id="20024">Etsi uudet</string>
   <string id="20025">Etsi kaikki</string>
   <string id="20026">Kielialue</string>
+  
+  <!-- string id's 20027 thru 20034 are reserved for temperaturestrings -->
+   
   <string id="20038">Lukitse Musiikki</string>
   <string id="20039">Lukitse Videot</string>
   <string id="20040">Lukitse Kuvat</string>
@@ -1531,12 +1534,6 @@
   <string id="20186">Odota hetki</string>
   <string id="20187">Varmuuskopioidaan EEPROM:in tiedot</string>
   <string id="20188">Varmuuskopioidaan Bios:in tiedot</string>
-
-  <string id="20200">Video esitys alkaa</string>
-  <string id="20201">Nyt voit rentoutua</string>
-  <string id="20202">Arvotaan katseltavia videoita</string>
-  <string id="20203">Valmiina katselu nautintoon</string> 
-  
   <string id="20189"></string>
   <string id="20190"></string>
   <string id="20191"></string>
@@ -1548,6 +1545,13 @@
   <string id="20197"></string>
   <string id="20198"></string>
   <string id="20199"></string>
+
+ <!-- string id's 20200 thru 20211 are reserved for speedstrings -->	
+ 
+  <string id="20250">Video esitys alkaa</string>
+  <string id="20251">Arvotaan katseltavia videoita</string>
+  <string id="20252">Valmiina katselu nautintoon</string> 
+  
   <string id="20300"></string>
   <string id="20301"></string>
   <string id="20302"></string>
@@ -1806,6 +1810,7 @@
   <string id="21883">Kiintolevylle siirretyt CD:t</string>
    
   <string id="21882">Ohita ennen DVD-valikkoa olevat esitykset</string>
+  
   <!-- strings 21900 thru 21999 reserved for slideshow info -->
 
   <string id="29999">Näytön välkynnän poisto</string>

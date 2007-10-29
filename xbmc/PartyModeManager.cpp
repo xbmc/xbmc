@@ -56,8 +56,8 @@ bool CPartyModeManager::Enable(bool bVideo /* = false */)
   CStdString partyModePath;
 
   CGUIDialogProgress* pDialog = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  int iHeading = (bVideo ? 20200 : 20121);
-  int iLine0 = (bVideo ? 20202 : 20123);
+  int iHeading = (bVideo ? 20250 : 20121);
+  int iLine0 = (bVideo ? 20251 : 20123);
   pDialog->SetHeading(iHeading);
   pDialog->SetLine(0, iLine0);
   pDialog->SetLine(1, "");
@@ -156,7 +156,7 @@ bool CPartyModeManager::Enable(bool bVideo /* = false */)
   g_playlistPlayer.SetShuffle(iPlaylist, false);
   g_playlistPlayer.SetRepeat(iPlaylist, PLAYLIST::REPEAT_NONE);
 
-  pDialog->SetLine(0,20124);
+  pDialog->SetLine(0, (bVideo ? 20252 : 20124));
   pDialog->Progress();
   // add initial songs
   if (!AddInitialSongs(songIDs))

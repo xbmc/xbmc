@@ -64,6 +64,7 @@
 #define PLAYER_CHAPTERCOUNT          36
 #define PLAYER_TIME_SPEED            37
 #define PLAYER_FINISH_TIME           38
+#define PLAYER_CACHELEVEL            39
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101
