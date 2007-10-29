@@ -280,7 +280,7 @@ bool CHTTP::IsInternet(bool checkDNS /* = true */)
 {
   CStdString strURL = "http://www.google.com";
   if (!checkDNS)
-    strURL = "http://66.102.7.99"; // www.google.com ip
+    strURL = "http://74.125.19.103"; // www.google.com ip
   int status = Open(strURL, "HEAD", NULL);
   Close();
 
@@ -942,7 +942,9 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
 
     Close();
 
-    if (!CanHandle)
+    // pass through HEAD requests, as we assume that if you did a head request
+    // you don't want to follow redirects etc.
+    if (!CanHandle || !stricmp(verb, "HEAD"))
     {
       CLog::Log(LOGERROR, "Server returned: %d %s", status, strReason.c_str());
       return status; // unhandlable
