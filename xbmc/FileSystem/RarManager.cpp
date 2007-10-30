@@ -405,3 +405,4 @@ bool CRarManager::HasMultipleEntries(const CStdString& strPath)
 {
   return urarlib_hasmultiple(strPath.c_str());
 }
+

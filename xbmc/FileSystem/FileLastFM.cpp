@@ -16,3 +16,4 @@ CFileLastFM::~CFileLastFM()
 }
 
 }
+

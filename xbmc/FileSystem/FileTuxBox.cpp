@@ -41,3 +41,4 @@ __int64 CFileTuxBox::Seek(__int64 iFilePosition, int iWhence)
 void CFileTuxBox::Close()
 {
 }
+
