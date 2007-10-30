@@ -70,3 +70,4 @@ bool CNSFFileDirectory::ContainsFiles(const CStdString& strPath)
 
   return false;
 }
+
