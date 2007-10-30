@@ -246,7 +246,7 @@ unsigned int CFileRar::Read(void *lpBuf, __int64 uiBufSize)
   if( WaitForSingleObject(m_pExtract->GetDataIO().hBufferEmpty,5000) == WAIT_TIMEOUT )
   {
     CLog::Log(LOGERROR, __FUNCTION__" - Timeout waiting for buffer to empty");
-    return -1;
+    return 0;
   }
 
 
