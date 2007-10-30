@@ -1,6 +1,6 @@
 
 #include "stdafx.h"
-#include "cddadirectory.h"
+#include "CDDADirectory.h"
 #include "../DetectDVDType.h"
 #include "../MusicDatabase.h"
 

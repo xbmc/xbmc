@@ -1,9 +1,9 @@
 
 #include "stdafx.h"
-#include "lastfmdirectory.h"
-#include "directorycache.h"
-#include "../util.h"
-#include "../musicdatabase.h"
+#include "LastFMDirectory.h"
+#include "DirectoryCache.h"
+#include "../Util.h"
+#include "../MusicDatabase.h"
 
 using namespace DIRECTORY;
 
@@ -116,7 +116,7 @@ void CLastFMDirectory::AddListEntry(const char *name, const char *artist, const 
     pItem->m_dwSize = _atoi64(count) * 100000000;
 
     const char *dot;
-    if (dot = (const char *)strstr(count, "."))
+    if ((dot = (const char *)strstr(count, ".")))
       pItem->m_dwSize += _atoi64(dot + 1);
   }
 
@@ -127,7 +127,7 @@ void CLastFMDirectory::AddListEntry(const char *name, const char *artist, const 
 
   if (date)
   {
-    LONGLONG ll = Int32x32To64(atoi(date), 10000000) + 116444736000000000;
+    LONGLONG ll = Int32x32To64(atoi(date), 10000000) + 116444736000000000LL;
     FILETIME ft;
 
     ft.dwLowDateTime = (DWORD)(ll & 0xFFFFFFFF);

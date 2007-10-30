@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "filecdda.h"
+#include "FileCDDA.h"
 #include <sys/stat.h>
-#include "../util.h"
-#include "../lib/libcdio/util.h"
+#include "../Util.h"
+#include "../lib/libcdio/Util.h"
 #include "../DetectDVDType.h"
 
 

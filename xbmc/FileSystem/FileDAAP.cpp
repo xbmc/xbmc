@@ -110,7 +110,7 @@ DAAP_SClientHost* CDaapClient::GetHost(const CStdString &strHost)
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "CDaapClient::GetHost(%s) - Unknown Exception");
+    CLog::Log(LOGERROR, "CDaapClient::GetHost(%s) - Unknown Exception", strHost.c_str());
     return NULL;
   }
     
@@ -127,6 +127,8 @@ void CDaapClient::StatusCallback(DAAP_SClient *pClient, DAAP_Status status, int 
       CLog::Log(LOGINFO, "CDaapClient::Callback - Downlading");
     case DAAP_STATUS_idle:
       CLog::Log(LOGINFO, "CDaapClient::Callback - Idle");
+    default:
+      CLog::Log(LOGINFO, "CDaapClient::Callback - Status %d", status);
   }
 }
 

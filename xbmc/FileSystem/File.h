@@ -9,7 +9,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "ifile.h"
+#include "IFile.h"
 
 namespace XFILE
 {
@@ -17,13 +17,14 @@ class IFileCallback
 {
 public:
   virtual bool OnFileCallback(void* pContext, int ipercent, float avgSpeed) = 0;
+  virtual ~IFileCallback() {}; 
 };
 
 /* indicate that caller can handle truncated reads, where function returns before entire buffer has been filled */
-#define READ_TRUNCATED 0x1
+#define READ_TRUNCATED 0x01
 
 /* use buffered io during reading, ( hint to make all protocols buffered, some might be internal anyway ) */
-#define READ_BUFFERED 0x2
+#define READ_BUFFERED  0x02
 
 class CFileStreamBuffer;
 

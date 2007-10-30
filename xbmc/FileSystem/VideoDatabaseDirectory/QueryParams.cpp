@@ -57,5 +57,7 @@ void CQueryParams::SetQueryParam(NODE_TYPE NodeType, const CStdString& strNodeNa
   case NODE_TYPE_TITLE_MUSICVIDEOS:
     m_idMVideo = idDb;
     break;
+  default:
+    break;
   }
 }

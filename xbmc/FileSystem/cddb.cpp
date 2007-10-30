@@ -10,9 +10,9 @@
 
 #include "stdafx.h"
 #include "cddb.h"
-#include "../dnsnamecache.h"
-#include "../id3tag.h"
-#include "../util.h"
+#include "../DNSNameCache.h"
+#include "../Id3Tag.h"
+#include "../Util.h"
 
 
 using namespace CDDB;
@@ -777,7 +777,7 @@ void Xcddb::parseData(const char *buffer)
   const char trenner[3] = {'\n', '\r', '\0'};
   line = strtok((char*)buffer, trenner);
   int line_cnt = 0;
-  while (line = strtok(0, trenner))
+  while ((line = strtok(0, trenner)))
   {
     if (line[0] != '#')
     {
@@ -1168,7 +1168,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
   // 
   if ( queryCache(discid) )
   {
-    CLog::Log(LOGDEBUG, "Xcddb::queryCDinfo discid [%08x] already cached", discid);
+    CLog::Log(LOGDEBUG, "Xcddb::queryCDinfo discid [%08lx] already cached", discid);
     return true;
   }
 
@@ -1266,23 +1266,23 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
   strcat(query_buffer, "cddb query");
   {
     char tmp_buffer[256];
-    sprintf(tmp_buffer, " %08x", discid);
+    sprintf(tmp_buffer, " %08lx", discid);
     strcat(query_buffer, tmp_buffer);
   }
   {
     char tmp_buffer[256];
-    sprintf(tmp_buffer, " %u", real_track_count);
+    sprintf(tmp_buffer, " %i", real_track_count);
     strcat(query_buffer, tmp_buffer);
   }
   for (int i = 0;i < lead_out;i++)
   {
     char tmp_buffer[256];
-    sprintf(tmp_buffer, " %u", frames[i]);
+    sprintf(tmp_buffer, " %lu", frames[i]);
     strcat(query_buffer, tmp_buffer);
   }
   {
     char tmp_buffer[256];
-    sprintf(tmp_buffer, " %u", complete_length);
+    sprintf(tmp_buffer, " %lu", complete_length);
     strcat(query_buffer, tmp_buffer);
   }
 

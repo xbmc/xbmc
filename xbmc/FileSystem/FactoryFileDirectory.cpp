@@ -1,14 +1,14 @@
 
 #include "stdafx.h"
-#include "../util.h"
-#include "factoryfiledirectory.h"
+#include "../Util.h"
+#include "FactoryFileDirectory.h"
 #ifdef HAS_FILESYSTEM
-#include "oggfiledirectory.h"
-#include "nsffiledirectory.h"
-#include "sidfiledirectory.h"
+#include "OGGFileDirectory.h"
+#include "NSFFileDirectory.h"
+#include "SIDFileDirectory.h"
 #endif
-#include "rardirectory.h"
-#include "zipdirectory.h"
+#include "RarDirectory.h"
+#include "ZipDirectory.h"
 #include "SmartPlaylistDirectory.h"
 #include "../SmartPlaylist.h"
 #include "PlaylistFileDirectory.h"

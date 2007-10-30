@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "../../Videodatabase.h"
+#include "../../VideoDatabase.h"
 #include "DirectoryNodeOverview.h"
 
 using namespace DIRECTORY::VIDEODATABASEDIRECTORY;
