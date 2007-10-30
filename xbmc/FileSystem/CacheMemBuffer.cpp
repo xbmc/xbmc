@@ -115,10 +115,10 @@ int CacheMemBuffer::ReadFromCache(char *pBuffer, size_t iMaxSize)
   return nRead;
 }
 
-__int64 CacheMemBuffer::WaitForData(unsigned int iMinAvail, unsigned int iMillis)
+__int64 CacheMemBuffer::WaitForData(__int64 iMinAvail, unsigned int iMillis)
 {
   DWORD dwTime = GetTickCount() + iMillis;
-  while (!IsEndOfInput() && (unsigned int) m_buffer.GetMaxReadSize() < iMinAvail && GetTickCount() < dwTime )
+  while (!IsEndOfInput() && m_buffer.GetMaxReadSize() < iMinAvail && GetTickCount() < dwTime )
     Sleep(50); // may miss the deadline. shouldn't be a problem.
 
   return m_buffer.GetMaxReadSize();
@@ -140,7 +140,7 @@ __int64 CacheMemBuffer::Seek(__int64 iFilePosition, int iWhence)
   if (iFilePosition > m_nStartPosition + m_buffer.GetMaxReadSize() && 
       iFilePosition < m_nStartPosition + m_buffer.GetMaxReadSize() + 100000)
   {
-    int nRequired = iFilePosition - (m_nStartPosition + m_buffer.GetMaxReadSize());
+    __int64 nRequired = iFilePosition - (m_nStartPosition + m_buffer.GetMaxReadSize());
     lock.Leave();
     WaitForData(nRequired + 1, 5000);
     lock.Enter();
@@ -149,12 +149,12 @@ __int64 CacheMemBuffer::Seek(__int64 iFilePosition, int iWhence)
   // check if seek is inside the current buffer
   if (iFilePosition >= m_nStartPosition && iFilePosition < m_nStartPosition + m_buffer.GetMaxReadSize())
   {
-    int nOffset = iFilePosition - m_nStartPosition;
+    __int64 nOffset = iFilePosition - m_nStartPosition;
     // copy to history so we can seek back
     if (m_HistoryBuffer.GetMaxWriteSize() < nOffset)
-      m_HistoryBuffer.SkipBytes(nOffset);
+      m_HistoryBuffer.SkipBytes((int)nOffset);
 
-    if (!m_buffer.ReadBinary(m_HistoryBuffer, nOffset))
+    if (!m_buffer.ReadBinary(m_HistoryBuffer, (int)nOffset))
     {
       CLog::Log(LOGERROR, "%s, failed to copy %d bytes to history", __FUNCTION__, nOffset);
     }
@@ -168,7 +168,7 @@ __int64 CacheMemBuffer::Seek(__int64 iFilePosition, int iWhence)
   {
     CRingBuffer saveHist, saveUnRead;
     __int64 nToSkip = iFilePosition - iHistoryStart;
-    ASSERT(m_HistoryBuffer.ReadBinary(saveHist, nToSkip));
+    ASSERT(m_HistoryBuffer.ReadBinary(saveHist, (int)nToSkip));
 
     ASSERT(saveUnRead.Copy(m_buffer));
 
