@@ -60,7 +60,6 @@ CStdString CFileHD::GetLocal(const CURL &url)
   }
 
   path.Replace('/', '\\');
-
   g_charsetConverter.utf8ToStringCharset(path);
   return path;
 }

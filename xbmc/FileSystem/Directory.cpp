@@ -1,10 +1,10 @@
 
 #include "stdafx.h"
-#include "directory.h"
-#include "factorydirectory.h"
-#include "factoryfiledirectory.h"
-#include "../utils/win32exception.h"
-#include "../util.h"
+#include "Directory.h"
+#include "FactoryDirectory.h"
+#include "FactoryFileDirectory.h"
+#include "../utils/Win32Exception.h"
+#include "../Util.h"
 
 using namespace DIRECTORY;
 

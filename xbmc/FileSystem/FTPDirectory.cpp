@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "ftpdirectory.h"
-#include "ftpparse.h"
-#include "../url.h"
-#include "../util.h"
+#include "FTPDirectory.h"
+#include "FTPParse.h"
+#include "../URL.h"
+#include "../Util.h"
 #include "DirectoryCache.h"
 #include "FileCurl.h"
 

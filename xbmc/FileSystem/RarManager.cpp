@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "RarManager.h"
 #include "../lib/UnrarXLib/rar.hpp"
-#include "../util.h"
-#include "../utils/singlelock.h"
-#include "../fileitem.h"
+#include "../Util.h"
+#include "../utils/SingleLock.h"
+#include "../FileItem.h"
 
 #include <set>
 

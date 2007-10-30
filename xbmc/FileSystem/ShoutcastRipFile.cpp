@@ -1,7 +1,7 @@
 
 #include "stdafx.h"
 #include "ShoutcastRipFile.h"
-#include "../id3tag.h"
+#include "../Id3Tag.h"
 
 #define MAX_RECORDED_TRACKS 999
 

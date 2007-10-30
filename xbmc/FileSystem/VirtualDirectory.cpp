@@ -1,9 +1,9 @@
 
 #include "stdafx.h"
-#include "virtualdirectory.h"
+#include "VirtualDirectory.h"
 #include "FactoryDirectory.h"
-#include "../util.h"
-#include "directorycache.h"
+#include "../Util.h"
+#include "DirectoryCache.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "../utils/MemoryUnitManager.h"
 #endif
