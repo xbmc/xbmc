@@ -39,7 +39,7 @@ public:
 
 	virtual int WriteToCache(const char *pBuffer, size_t iSize) = 0;
 	virtual int ReadFromCache(char *pBuffer, size_t iMaxSize) = 0;
-	virtual __int64 WaitForData(unsigned int iMinAvail, unsigned int iMillis) = 0;
+	virtual __int64 WaitForData(__int64 iMinAvail, unsigned int iMillis) = 0;
 
     virtual __int64 Seek(__int64 iFilePosition, int iWhence) = 0;
 	virtual void Reset(__int64 iSourcePosition) = 0;
@@ -64,7 +64,7 @@ public:
 
 	virtual int WriteToCache(const char *pBuffer, size_t iSize) ;
 	virtual int ReadFromCache(char *pBuffer, size_t iMaxSize) ;
-	virtual __int64 WaitForData(unsigned int iMinAvail, unsigned int iMillis) ;
+	virtual __int64 WaitForData(__int64 iMinAvail, unsigned int iMillis) ;
 
     virtual __int64 Seek(__int64 iFilePosition, int iWhence);
 	virtual void Reset(__int64 iSourcePosition);

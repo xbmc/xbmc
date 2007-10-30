@@ -243,7 +243,7 @@ unsigned int CFileCache::Read(void* lpBuf, __int64 uiBufSize)
   if (!m_pCache->IsEndOfInput())
   {
     // check if we have enough data
-    int nAvail = m_pCache->WaitForData(uiBufSize, 0);
+    __int64 nAvail = m_pCache->WaitForData(uiBufSize, 0);
     if (nAvail < uiBufSize)
     {
       // buffering 
@@ -254,7 +254,7 @@ unsigned int CFileCache::Read(void* lpBuf, __int64 uiBufSize)
       if (m_nBytesToBuffer < INITIAL_BUFFER_BYTES)
         m_nBytesToBuffer = INITIAL_BUFFER_BYTES;
 
-      int nToBuffer = m_nBytesToBuffer;
+      __int64 nToBuffer = m_nBytesToBuffer;
       if (nToBuffer < uiBufSize)
         nToBuffer = uiBufSize;
 
