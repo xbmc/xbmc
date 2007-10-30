@@ -11,8 +11,8 @@
 
 #include "IFile.h"
 #include "iso9660.h"
-#include "../xbox/iosupport.h"
-#include "ringbuffer.h"
+#include "../xbox/IoSupport.h"
+#include "RingBuffer.h"
 
 namespace XFILE
 {

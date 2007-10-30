@@ -7,6 +7,7 @@
 class DllHdHomeRunInterface
 {
 public:
+  virtual ~DllHdHomeRunInterface() {} 
   virtual int           discover_find_devices(uint32_t device_type, struct hdhomerun_discover_device_t result_list[], int max_count)=0;
   virtual struct hdhomerun_device_t*  device_create_from_str(const char *device_str)=0;
   virtual void          device_destroy(struct hdhomerun_device_t *hd)=0;

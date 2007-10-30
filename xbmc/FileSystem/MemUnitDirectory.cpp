@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "MemUnitDirectory.h"
-#include "directorycache.h"
+#include "DirectoryCache.h"
 #include "../utils/MemoryUnitManager.h"
 #include "MemoryUnits/IFileSystem.h"
 #include "MemoryUnits/IDevice.h"

@@ -20,10 +20,11 @@
  */
 #include "stdafx.h"
 #include "PluginDirectory.h"
-#include "util.h"
+#include "Util.h"
 #include "lib/libPython/XBPython.h"
  
 using namespace DIRECTORY;
+using namespace std;
 
 vector<CPluginDirectory *> CPluginDirectory::globalHandles;
 
@@ -204,6 +205,8 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
         dir->m_listItems.AddSortMethod(SORT_METHOD_PROGRAM_COUNT, 567, LABEL_MASKS("%T", "%C"));
         break;
       }
+    default:  
+      break;
   }
 }
 

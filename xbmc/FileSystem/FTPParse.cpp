@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------------
-// library for parsing FTP LIST responses [ftpparse.c, ftpparse.h: ]
-// D. J. Bernstein, djb@cr.yp.to http://cr.yp.to/ftpparse.html
+// library for parsing FTP LIST responses [ftpparse.c, FTPParse.h: ]
+// D. J. Bernstein, djb@cr.yp.to http://cr.yp.to/FTPParse.html
 //
 // Commercial use is fine, if you let me know what programs you're using this in.
 // Currently covered formats:
@@ -17,7 +17,7 @@
 
 #include "stdafx.h"
 #include <time.h>
-#include "ftpparse.h"
+#include "FTPParse.h"
 
 
 static long totai(long year,long month,long mday)

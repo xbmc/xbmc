@@ -88,8 +88,8 @@
 
 #ifndef __RingBuffer_h
 #define __RingBuffer_h
-#include "../utils/criticalsection.h"
-#include "../utils/singlelock.h"
+#include "../utils/CriticalSection.h"
+#include "../utils/SingleLock.h"
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000

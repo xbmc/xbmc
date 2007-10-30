@@ -22,7 +22,7 @@
 
 
 #include "stdafx.h"
-#include "../util.h"
+#include "../Util.h"
 #include "UPnPDirectory.h"
 #include "../UPnP.h"
 #include "Platinum.h"
@@ -130,7 +130,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
         NPT_String uuid = (next_slash==-1)?path.SubString(7):path.SubString(7, next_slash-7);
         NPT_String object_id = (next_slash==-1)?"":path.SubString(next_slash+1);
         if (object_id.GetLength()) {
-            CStdString tmp = object_id;
+            CStdString tmp = (char*) object_id;
             CUtil::UrlDecode(tmp);
             object_id = tmp;
         }
@@ -222,7 +222,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 
             // if it's a container, format a string as upnp://uuid/object_id/ 
             if (pItem->m_bIsFolder) {
-                CStdString object_id = (*entry)->m_ObjectID;
+                CStdString object_id = (char*) (*entry)->m_ObjectID;
                 CUtil::URLEncode(object_id);
                 pItem->m_strPath = (const char*) NPT_String("upnp://") + uuid + "/" + object_id.c_str() + "/";
             } else {
@@ -252,7 +252,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                     // look for date?
                     if((*entry)->m_Description.date.GetLength()) {
                       SYSTEMTIME time = {};
-                      int count = sscanf((*entry)->m_Description.date, "%hu-%hu-%huT%hu:%hu:%hu",
+                      sscanf((*entry)->m_Description.date, "%hu-%hu-%huT%hu:%hu:%hu",
                                           &time.wYear, &time.wMonth, &time.wDay, &time.wHour, &time.wMinute, &time.wSecond);
                       pItem->m_dateTime = time;
                     }

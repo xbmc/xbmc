@@ -1,9 +1,9 @@
 
 #include "stdafx.h"
-#include "hddirectory.h"
-#include "../util.h"
-#include "../xbox/iosupport.h"
-#include "directorycache.h"
+#include "HDDirectory.h"
+#include "../Util.h"
+#include "../xbox/IoSupport.h"
+#include "DirectoryCache.h"
 #include "iso9660.h"
 
 using namespace DIRECTORY;

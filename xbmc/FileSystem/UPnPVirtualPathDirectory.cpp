@@ -22,7 +22,7 @@
 
 
 #include "stdafx.h"
-#include "../util.h"
+#include "../Util.h"
 #include "NptUtils.h"
 #include "UPnPVirtualPathDirectory.h"
 
@@ -245,7 +245,7 @@ CUPnPVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList
 bool 
 CUPnPVirtualPathDirectory::GetMatchingShare(const CStdString &strPath, CShare& share, vector<CStdString>& paths) 
 {
-	int index;
+    unsigned int index;
 
     paths.clear();
 
@@ -257,7 +257,7 @@ CUPnPVirtualPathDirectory::GetMatchingShare(const CStdString &strPath, CShare& s
     if (!vecShares) return false;
 
     // look for share
-    for (index = 0; index < (int)vecShares->size(); ++index) {
+    for (index = 0; index < vecShares->size(); ++index) {
         CShare share = vecShares->at(index);
         CStdString strName = share.strName;
         if (strSource.Equals(strName))
@@ -269,9 +269,9 @@ CUPnPVirtualPathDirectory::GetMatchingShare(const CStdString &strPath, CShare& s
     share = (*vecShares)[index];
 
     // filter out non local shares
-    for (unsigned int i = 0; i < share.vecPaths.size(); i++) {
-        if (!CUtil::IsRemote(share.vecPaths[i])) {
-            paths.push_back(share.vecPaths[i]);
+    for (unsigned int j = 0; j < share.vecPaths.size(); j++) {
+        if (!CUtil::IsRemote(share.vecPaths[j])) {
+            paths.push_back(share.vecPaths[j]);
         }
     }
     return true;
