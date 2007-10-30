@@ -26,6 +26,12 @@ public:
 /* use buffered io during reading, ( hint to make all protocols buffered, some might be internal anyway ) */
 #define READ_BUFFERED  0x02
 
+/* use cache to access this file */
+#define READ_CACHED	   0x04
+
+/* open without caching. regardless to file type. */
+#define READ_NO_CACHE  0x08
+
 class CFileStreamBuffer;
 
 class CFile
@@ -46,8 +52,12 @@ public:
   void Close();
   int GetChunkSize() {if (m_pFile) return m_pFile->GetChunkSize(); return 0;}
   bool SkipNext(){if (m_pFile) return m_pFile->SkipNext(); return false;}
-  void SetObject(void* obj){if (m_pFile) m_pFile->Object = obj;} //generic object pointer to whatever
+  void SetObject(void* obj)    {if (m_pFile) m_pFile->Object = obj;} //generic object pointer to whatever
+  bool IsCaching()    const    {if (m_pFile) return m_pFile->IsCaching(); return false;}
+  int GetCacheLevel() const    {if (m_pFile) return m_pFile->GetCacheLevel(); return -1;}
 
+  IFile *GetImplemenation() { return m_pFile; }
+  void Attach(IFile *pFile, unsigned int flags = 0);
 
   static bool Exists(const CStdString& strFileName);
   static int  Stat(const CStdString& strFileName, struct __stat64* buffer);

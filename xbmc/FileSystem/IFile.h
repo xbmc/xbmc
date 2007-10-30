@@ -85,6 +85,9 @@ public:
   virtual bool Delete(const CURL& url) { return false; }
   virtual bool Rename(const CURL& url, const CURL& urlnew) { return false; }
 
+  virtual bool IsCaching()     const {return false;}
+  virtual int  GetCacheLevel() const {return -1;} 
+
   void* Object;
 };
 };
