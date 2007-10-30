@@ -17,3 +17,4 @@ namespace DIRECTORY
       bool UpdateProgress(CGUIDialogProgress* dlgProgress, CStdString strLn1, CStdString strLn2, int iPercent, bool bCLose);
   };
 }
+

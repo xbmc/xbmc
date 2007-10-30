@@ -240,3 +240,4 @@ void CVirtualDirectory::GetShares(VECSHARES &shares) const
   }
 }
 }
+

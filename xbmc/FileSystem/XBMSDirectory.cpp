@@ -284,3 +284,4 @@ bool CXBMSDirectory::Exists(const char* strPath)
   
   return false;
 }
+
