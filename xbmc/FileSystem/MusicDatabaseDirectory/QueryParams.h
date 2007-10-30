@@ -18,7 +18,7 @@ namespace DIRECTORY
     protected:
       void SetQueryParam(NODE_TYPE NodeType, const CStdString& strNodeName);
 
-      friend CDirectoryNode;
+      friend class CDirectoryNode;
     private:
       long m_idArtist;
       long m_idAlbum;

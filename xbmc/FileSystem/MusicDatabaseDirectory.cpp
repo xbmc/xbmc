@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "musicdatabaseDirectory.h"
-#include "../util.h"
-#include "musicdatabasedirectory/QueryParams.h"
+#include "MusicDatabaseDirectory.h"
+#include "../Util.h"
+#include "MusicDatabaseDirectory/QueryParams.h"
 #include "../MusicDatabase.h"
 
 using namespace XFILE;
@@ -84,7 +84,7 @@ void CMusicDatabaseDirectory::ClearDirectoryCache(const CStdString& strDirectory
   crc.ComputeFromLowerCase(directory.m_strPath);
 
   CStdString strFileName;
-  strFileName.Format("Z:\\%08x.fi", crc);
+  strFileName.Format("Z:\\%08x.fi", (unsigned __int32) crc);
   CFile::Delete(strFileName);
 }
 

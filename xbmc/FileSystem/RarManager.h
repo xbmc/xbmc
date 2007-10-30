@@ -6,11 +6,11 @@
 #endif // _MSC_VER > 1000
 
 #include "File.h"
-#include "../fileitem.h"
-#include "../utils/criticalsection.h"
+#include "../FileItem.h"
+#include "../utils/CriticalSection.h"
 #include <map>
 #include "../lib/UnrarXLib/UnrarX.hpp"
-#include "../utils/stopwatch.h"
+#include "../utils/Stopwatch.h"
 
 #include "../utils/Thread.h"
 

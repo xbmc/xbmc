@@ -8,6 +8,7 @@ class IHttpHeaderCallback
 {
 public:
   virtual void ParseHeaderData(CStdString strData) = 0;
+  virtual ~IHttpHeaderCallback() { }
 };
 
 namespace XCURL
@@ -80,8 +81,8 @@ namespace XFILE
       bool            m_ftppasvip;
       int             m_timeout;
 
-	    __int64					m_fileSize;
-	    __int64					m_filePos;
+      __int64         m_fileSize;
+      __int64	      m_filePos;
       bool            m_opened;
       bool            m_useOldHttpVersion;
       bool            m_seekable;

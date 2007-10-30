@@ -1,9 +1,9 @@
 
 #include "stdafx.h"
-#include "../util.h"
+#include "../Util.h"
 #include "OGGFileDirectory.h"
-#include "../OGGtag.h"
-#include "directorycache.h"
+#include "../OggTag.h"
+#include "DirectoryCache.h"
 
 using namespace DIRECTORY;
 

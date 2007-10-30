@@ -1,7 +1,7 @@
 #pragma once
-#include "idirectory.h"
-#include "musicdatabasedirectory/DirectoryNode.h"
-#include "musicdatabasedirectory/QueryParams.h"
+#include "IDirectory.h"
+#include "MusicDatabaseDirectory/DirectoryNode.h"
+#include "MusicDatabaseDirectory/QueryParams.h"
 
 namespace DIRECTORY
 {

@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "playlistdirectory.h"
-#include "../playlistplayer.h"
+#include "PlaylistDirectory.h"
+#include "../PlayListPlayer.h"
 
 using namespace PLAYLIST;
 using namespace DIRECTORY;
