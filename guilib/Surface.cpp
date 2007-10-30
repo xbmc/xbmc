@@ -459,7 +459,7 @@ void CSurface::EnableVSync(bool enable)
   // Nvidia cards: See Appendix E. of NVidia Linux Driver Set README
   CStdString strVendor(s_glVendor);
   strVendor.ToLower();
-  bool bNVidia = (strVendor.find("nvidia") >= 0);
+  bool bNVidia = (strVendor.find("nvidia") != std::string::npos);
   if (!bNVidia)
   {
     switch(m_iVSyncMode)
