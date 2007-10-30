@@ -1,6 +1,6 @@
 #pragma once
 
-#include "directory.h"
+#include "Directory.h"
 
 namespace DIRECTORY
 {
@@ -28,7 +28,7 @@ public:
 protected:
   static void InitCache(set<CStdString>& dirs);
   static void ClearCache(set<CStdString>& dirs);
-  static bool IsCacheDir(CStdString strPath);
+  static bool IsCacheDir(const CStdString &strPath);
 
   vector<CDir*> m_vecCache;
   typedef vector<CDir*>::iterator ivecCache;

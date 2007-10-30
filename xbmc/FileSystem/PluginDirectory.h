@@ -1,10 +1,10 @@
 #pragma once
-#include "filesystem/idirectory.h"
-#include "fileitem.h"
-#include "settings.h"
-#include "filesystem/directory.h"
+#include "FileSystem/IDirectory.h"
+#include "FileItem.h"
+#include "Settings.h"
+#include "FileSystem/Directory.h"
 #include <string>
-#include "stdstring.h"
+#include "StdString.h"
 #include <vector>
 using namespace std;
 
@@ -29,7 +29,7 @@ public:
 private:
   bool WaitOnScriptResult(const CStdString &scriptPath, const CStdString &scriptName);
 
-  static vector<CPluginDirectory*> globalHandles;
+  static std::vector<CPluginDirectory*> globalHandles;
   static int getNewHandle(CPluginDirectory *cp);
   static void removeHandle(int handle);
 

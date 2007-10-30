@@ -1,6 +1,6 @@
 #include "../stdafx.h"
 #include "FileFTP.h"
-#include "ftpparse.h"
+#include "FTPParse.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>

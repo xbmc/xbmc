@@ -1,9 +1,9 @@
 
 #include "stdafx.h"
-#include "../util.h"
+#include "../Util.h"
 #include "NSFFileDirectory.h"
 #include "../MusicInfoTagLoaderNSF.h"
-#include "directorycache.h"
+#include "DirectoryCache.h"
 
 using namespace DIRECTORY;
 

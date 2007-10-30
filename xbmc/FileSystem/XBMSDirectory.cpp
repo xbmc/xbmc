@@ -1,17 +1,17 @@
 
 #include "stdafx.h"
-#include "xbmsdirectory.h"
-#include "../util.h"
-#include "directorycache.h"
+#include "XBMSDirectory.h"
+#include "../Util.h"
+#include "DirectoryCache.h"
 
 using namespace DIRECTORY;
 
 extern "C"
 {
-#include "../lib/libxbms/ccincludes.h"
- #include "../lib/libxbms/ccbuffer.h"
- #include "../lib/libxbms/ccxclient.h"
- #include "../lib/libxbms/ccxmltrans.h"
+#include "../lib/libXBMS/ccincludes.h"
+ #include "../lib/libXBMS/ccbuffer.h"
+ #include "../lib/libXBMS/ccxclient.h"
+ #include "../lib/libXBMS/ccxmltrans.h"
 }
 
 
@@ -189,7 +189,7 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPathUtf8, CFileItemList &
       __int64 lTimeDate = _atoi64(szModification);
 
       FILETIME fileTime, localTime;
-      LONGLONG ll = Int32x32To64(lTimeDate, 10000000) + 116444736000000000;
+      LONGLONG ll = Int32x32To64(lTimeDate, 10000000) + 116444736000000000LL;
       fileTime.dwLowDateTime = (DWORD) (ll & 0xFFFFFFFF);
       fileTime.dwHighDateTime = (DWORD)(ll >> 32);
 

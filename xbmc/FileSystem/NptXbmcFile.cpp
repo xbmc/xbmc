@@ -12,7 +12,7 @@
 +---------------------------------------------------------------------*/
 #include "IFile.h"
 #include "FileFactory.h"
-#include "Utils/Log.h"
+#include "utils/log.h"
 
 #ifdef max
 #undef max

@@ -1,7 +1,7 @@
 
 #include "stdafx.h"
 #include "DirectoryCache.h"
-#include "../util.h"
+#include "../Util.h"
 
 using namespace DIRECTORY;
 
@@ -134,7 +134,7 @@ void CDirectoryCache::InitCache(set<CStdString>& dirs)
   set<CStdString>::iterator it;
   for (it = dirs.begin(); it != dirs.end(); ++it)
   {
-    CStdString& strDir = *it;
+    const CStdString& strDir = *it;
     CFileItemList items;
     CDirectory::GetDirectory(strDir, items, "", false);
     items.Clear();
@@ -158,7 +158,7 @@ void CDirectoryCache::ClearCache(set<CStdString>& dirs)
   }
 }
 
-bool CDirectoryCache::IsCacheDir(CStdString strPath)
+bool CDirectoryCache::IsCacheDir(const CStdString &strPath)
 {
   if (g_directoryCache.m_thumbDirs.find(strPath) == g_directoryCache.m_thumbDirs.end())
     return false;

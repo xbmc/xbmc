@@ -50,3 +50,4 @@ bool CDirectoryNodeMusicVideosOverview::GetContent(CFileItemList& items)
 
   return true;
 }
+

@@ -1,7 +1,7 @@
 #pragma once
 #include "IFile.h"
 #include "FTPUtil.h"
-#include "../autoptrhandle.h"
+#include "../AutoPtrHandle.h"
 using namespace XFILE;
 using namespace AUTOPTR;
 

@@ -20,11 +20,11 @@
 
 #include "stdafx.h"
 #include "File.h"
-#include "filefactory.h"
-#include "../application.h"
+#include "FileFactory.h"
+#include "../Application.h"
 #include "../Util.h"
 #include "DirectoryCache.h"
-#include "../utils/win32exception.h"
+#include "../utils/Win32Exception.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -553,33 +553,33 @@ bool CFile::ReadString(char *szLine, int iLineLength)
   if (m_pBuffer)
   {
     typedef CFileStreamBuffer::traits_type traits;
-    CFileStreamBuffer::int_type byte = m_pBuffer->sgetc();
+    CFileStreamBuffer::int_type aByte = m_pBuffer->sgetc();
     
-    if(byte == traits::eof())
+    if(aByte == traits::eof())
       return false;
 
     while(iLineLength>0)
     {
-      byte = m_pBuffer->sbumpc();
+      aByte = m_pBuffer->sbumpc();
 
-      if(byte == traits::eof())
+      if(aByte == traits::eof())
         break;
 
-      if(byte == traits::to_int_type('\n'))
+      if(aByte == traits::to_int_type('\n'))
       {
         if(m_pBuffer->sgetc() == traits::to_int_type('\r'))
           m_pBuffer->sbumpc();
         break;
       }
 
-      if(byte == traits::to_int_type('\r'))
+      if(aByte == traits::to_int_type('\r'))
       {
         if(m_pBuffer->sgetc() == traits::to_int_type('\n'))
           m_pBuffer->sbumpc();
         break;
       }
 
-      *szLine = traits::to_char_type(byte);
+      *szLine = traits::to_char_type(aByte);
       szLine++;
       iLineLength--;
     }
@@ -691,8 +691,8 @@ CFileStreamBuffer::CFileStreamBuffer(int backsize)
   : std::streambuf()
   , m_file(NULL)
   , m_buffer(NULL)
-  , m_frontsize(0)
   , m_backsize(backsize)
+  , m_frontsize(0)
 {}
 
 void CFileStreamBuffer::Attach(IFile *file)
