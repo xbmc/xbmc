@@ -154,8 +154,8 @@ int CSimpleFileCache::ReadFromCache(char *pBuffer, size_t iMaxSize) {
 		return m_bEndOfInput?CACHE_RC_EOF : CACHE_RC_WOULD_BLOCK;
 	}
 
-	if (iMaxSize > iAvailable)
-		iMaxSize = iAvailable;
+	if ((__int64)iMaxSize > iAvailable)
+		iMaxSize = (size_t)iAvailable;
 
 	DWORD iRead = 0;
 	if (!ReadFile(m_hCacheFileRead, pBuffer, iMaxSize, &iRead, NULL)) {
@@ -167,12 +167,12 @@ int CSimpleFileCache::ReadFromCache(char *pBuffer, size_t iMaxSize) {
 	return iRead;
 }
 
-__int64 CSimpleFileCache::WaitForData(unsigned int iMinAvail, unsigned int iMillis) {
+__int64 CSimpleFileCache::WaitForData(__int64 iMinAvail, unsigned int iMillis) {
 	
-	DWORD tmStart = timeGetTime();
+	DWORD tmStart = GetTickCount();
 	__int64 iAvail = 0;
 
-	while ( iAvail < iMinAvail && timeGetTime() - tmStart < iMillis) {
+	while ( iAvail < iMinAvail && GetTickCount() - tmStart < iMillis) {
 
 		// possible race condition here:
 		// if writer will set the event between the availability check and reset - 
