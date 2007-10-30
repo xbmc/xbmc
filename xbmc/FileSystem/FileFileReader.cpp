@@ -108,3 +108,4 @@ __int64 CFileFileReader::GetPosition()
 {
   return m_reader.GetPosition();
 }
+

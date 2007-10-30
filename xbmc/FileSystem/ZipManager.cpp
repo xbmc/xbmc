@@ -220,3 +220,4 @@ void CZipManager::release(const CStdString& strPath)
     mZipDate.erase(it2);
   }
 }
+
