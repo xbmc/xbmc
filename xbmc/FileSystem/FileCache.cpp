@@ -306,6 +306,10 @@ __int64 CFileCache::Seek(__int64 iFilePosition, int iWhence)
     iTarget = GetLength() + iTarget;
   else if (iWhence == SEEK_CUR)
     iTarget = iCurPos + iTarget;
+  else if (iWhence == SEEK_POSSIBLE)
+    return true;
+  else if (iWhence != SEEK_SET)
+    return -1;
 
   if (iTarget == m_readPos)
     return m_readPos;
