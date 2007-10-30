@@ -268,7 +268,6 @@ unsigned int CFileZip::Read(void* lpBuf, __int64 uiBufSize)
   if (mZipItem.method == 8) // deflated
   {
     uLong iDecompressed = 0;
-    int iMessage = Z_OK;
     uLong prevOut = m_ZStream.total_out;
     while ((iDecompressed < uiBufSize) && ((m_iZipFilePos < mZipItem.csize) || (m_bFlush)))
     {

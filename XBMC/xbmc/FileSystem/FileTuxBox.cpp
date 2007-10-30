@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "FileTuxBox.h"
-#include "../utils/Http.h"
+#include "../utils/HTTP.h"
 
 //Reserved for TuxBox Recording!
 

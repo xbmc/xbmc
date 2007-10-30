@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "PlaylistFileDirectory.h"
 #include "../utils/log.h"
-#include "../PlaylistFactory.h"
+#include "../PlayListFactory.h"
 #include "../Util.h"
 
 using namespace PLAYLIST;

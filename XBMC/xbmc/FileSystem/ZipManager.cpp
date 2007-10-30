@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ZipManager.h"
-#include "../util.h"
+#include "../Util.h"
 
 using namespace XFILE;
 

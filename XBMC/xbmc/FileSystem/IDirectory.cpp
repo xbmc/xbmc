@@ -1,7 +1,7 @@
 
 #include "stdafx.h"
 #include "IDirectory.h"
-#include "../util.h"
+#include "../Util.h"
 
 using namespace DIRECTORY;
 

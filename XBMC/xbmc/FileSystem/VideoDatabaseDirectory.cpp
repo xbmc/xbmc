@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "videodatabaseDirectory.h"
-#include "../util.h"
-#include "videodatabasedirectory/QueryParams.h"
+#include "VideoDatabaseDirectory.h"
+#include "../Util.h"
+#include "VideoDatabaseDirectory/QueryParams.h"
 #include "../VideoDatabase.h"
 #include "TextureManager.h"
 
@@ -81,7 +81,7 @@ bool CVideoDatabaseDirectory::GetQueryParams(const CStdString& strPath, CQueryPa
   auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strPath));
 
   if (!pNode.get())
-    false;
+    return false;
   
   CDirectoryNode::GetDatabaseInfo(strPath,params);
   return true;
@@ -97,7 +97,7 @@ void CVideoDatabaseDirectory::ClearDirectoryCache(const CStdString& strDirectory
   crc.ComputeFromLowerCase(directory.m_strPath);
 
   CStdString strFileName;
-  strFileName.Format("Z:\\%08x.fi", crc);
+  strFileName.Format("Z:\\%08x.fi", (unsigned __int32) crc);
   CFile::Delete(strFileName);
 }
 

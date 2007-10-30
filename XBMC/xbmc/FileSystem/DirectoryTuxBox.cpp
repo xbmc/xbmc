@@ -1,11 +1,11 @@
 
 #include "stdafx.h"
 #include "DirectoryTuxBox.h"
-#include "directorycache.h"
-#include "../util.h"
+#include "DirectoryCache.h"
+#include "../Util.h"
 #include "FileCurl.h"
 #include "../utils/HttpHeader.h"
-#include "../utils/Http.h"
+#include "../utils/HTTP.h"
 #include "../utils/TuxBoxUtil.h"
 
 using namespace XFILE;

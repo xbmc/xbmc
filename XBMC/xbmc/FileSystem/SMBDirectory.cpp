@@ -10,10 +10,10 @@
 */
 
 #include "stdafx.h"
-#include "smbdirectory.h"
-#include "../util.h"
-#include "directorycache.h"
-#include "localizeStrings.h"
+#include "SMBDirectory.h"
+#include "../Util.h"
+#include "DirectoryCache.h"
+#include "LocalizeStrings.h"
 #include "../GUIPassword.h"
 #include "../lib/libsmb/xbLibSmb.h"
 
@@ -54,7 +54,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   struct smbc_dirent* dirEnt;
   CStdString strFile;
 
-  while (dirEnt = smbc_readdir(fd))
+  while ((dirEnt = smbc_readdir(fd)))
   {
     // We use UTF-8 internally, as does SMB
     strFile = dirEnt->name;
@@ -99,7 +99,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       }
 
       FILETIME fileTime, localTime;
-      LONGLONG ll = Int32x32To64(lTimeDate & 0xffffffff, 10000000) + 116444736000000000;
+      LONGLONG ll = Int32x32To64(lTimeDate & 0xffffffff, 10000000) + 116444736000000000ll;
       fileTime.dwLowDateTime = (DWORD) (ll & 0xffffffff);
       fileTime.dwHighDateTime = (DWORD)(ll >> 32);
       FileTimeToLocalFileTime(&fileTime, &localTime);

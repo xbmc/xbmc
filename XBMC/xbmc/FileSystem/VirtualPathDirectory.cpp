@@ -1,9 +1,9 @@
 
 #include "stdafx.h"
-#include "virtualpathdirectory.h"
-#include "directory.h"
-#include "../settings.h"
-#include "../util.h"
+#include "VirtualPathDirectory.h"
+#include "Directory.h"
+#include "../Settings.h"
+#include "../Util.h"
 
 using namespace DIRECTORY;
 
@@ -26,7 +26,7 @@ bool CVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemLis
   DWORD progressTime = timeGetTime() + 3000L;   // 3 seconds before showing progress bar
   CGUIDialogProgress* dlgProgress = NULL;
   
-  int iFailures = 0;
+  unsigned int iFailures = 0;
   for (int i = 0; i < (int)share.vecPaths.size(); ++i)
   {
     // show the progress dialog if we have passed our time limit
@@ -88,7 +88,7 @@ bool CVirtualPathDirectory::Exists(const CStdString& strPath)
   if (!GetMatchingShare(strPath, share))
     return false;
 
-  int iFailures = 0;
+  unsigned int iFailures = 0;
   for (int i = 0; i < (int)share.vecPaths.size(); ++i)
   {
     CLog::Log(LOGDEBUG,"Testing Existance (%s)", share.vecPaths[i].c_str());

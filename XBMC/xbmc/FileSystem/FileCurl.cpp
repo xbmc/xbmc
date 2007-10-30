@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "FileCurl.h"
 #include "../Util.h"
-#include <sys/Stat.h>
+#include <sys/stat.h>
 
 #include "DllLibCurl.h"
 
@@ -178,8 +178,8 @@ void CFileCurl::SetBufferSize(unsigned int size)
 void CFileCurl::Close()
 {
   CLog::Log(LOGDEBUG, "FileCurl::Close(%p) %s", this, m_url.c_str());
-	m_filePos = 0;
-	m_fileSize = 0;
+  m_filePos = 0;
+  m_fileSize = 0;
   m_opened = false;
 
   if( m_easyHandle )
@@ -798,8 +798,8 @@ bool CFileCurl::FillBuffer(unsigned int want)
         CURLMsg* msg;
         while((msg = g_curlInterface.multi_info_read(m_multiHandle, &msgs)))
         {
-          if(msg->msg = CURLMSG_DONE)
-            return (msg->data.result == CURLM_OK);
+          if (msg->msg == CURLMSG_DONE)
+            return (msg->data.result == CURLE_OK);
         }
       }
       return false;

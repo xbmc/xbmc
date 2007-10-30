@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ifiledirectory.h"
+#include "IFileDirectory.h"
 
 namespace DIRECTORY
 {

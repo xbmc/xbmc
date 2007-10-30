@@ -1,9 +1,9 @@
 
 #include "stdafx.h"
-#include "iso9660directory.h"
-#include "../xbox/iosupport.h"
+#include "ISO9660Directory.h"
+#include "../xbox/IoSupport.h"
 #include "iso9660.h"
-#include "../util.h"
+#include "../Util.h"
 
 using namespace DIRECTORY;
 
@@ -15,7 +15,6 @@ CISO9660Directory::~CISO9660Directory(void)
 
 bool CISO9660Directory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
-  static char szTemp[1024];
   CStdString strRoot = strPath;
   if (!CUtil::HasSlashAtEnd(strPath) )
     strRoot += "/";

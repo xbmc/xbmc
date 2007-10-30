@@ -21,8 +21,8 @@
 #include "stdafx.h"
 #include "FileDAAP.h"
 #include "DAAPDirectory.h"
-#include "../util.h"
-#include "directorycache.h"
+#include "../Util.h"
+#include "DirectoryCache.h"
 
 namespace DIRECTORY
 {
