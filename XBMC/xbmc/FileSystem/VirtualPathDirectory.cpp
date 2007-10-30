@@ -157,3 +157,4 @@ bool CVirtualPathDirectory::GetMatchingShare(const CStdString &strPath, CShare& 
   share = (*vecShares)[iIndex];
   return true;
 }
+

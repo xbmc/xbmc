@@ -71,3 +71,4 @@ protected:
 
 extern CRarManager g_RarManager;
 #endif
+
