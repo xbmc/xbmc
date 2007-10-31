@@ -3,6 +3,13 @@
 #include <math.h>
 #include <memory>
 
+#ifdef __GNUC__
+// under gcc, inline will only take place if optimizations are applied (-O). this will force inline even whith optimizations.
+#define XBMC_FORCE_INLINE __attribute__((always_inline))
+#else
+#define XBMC_FORCE_INLINE
+#endif
+
 class TransformMatrix
 {
 public:
@@ -150,7 +157,7 @@ public:
     return result;
   }
 
-  inline void TransformPosition(float &x, float &y, float &z) const
+  inline void TransformPosition(float &x, float &y, float &z) const XBMC_FORCE_INLINE
   {
     float newX = m[0][0] * x + m[0][1] * y + m[0][2] * z + m[0][3];
     float newY = m[1][0] * x + m[1][1] * y + m[1][2] * z + m[1][3];
@@ -159,7 +166,7 @@ public:
     x = newX;
   }
 
-  inline void TransformPositionUnscaled(float &x, float &y, float &z) const
+  inline void TransformPositionUnscaled(float &x, float &y, float &z) const XBMC_FORCE_INLINE
   {
     float n;
     // calculate the norm of the transformed (but not translated) vectors involved
@@ -174,7 +181,7 @@ public:
     x = newX;
   }
 
-  inline void InverseTransformPosition(float &x, float &y) const
+  inline void InverseTransformPosition(float &x, float &y) const XBMC_FORCE_INLINE
   { // used for mouse - no way to find z
     x -= m[0][3]; y -= m[1][3];
     float detM = m[0][0]*m[1][1] - m[0][1]*m[1][0];
@@ -183,22 +190,22 @@ public:
     x = newX;
   }
 
-  inline float TransformXCoord(float x, float y, float z) const
+  inline float TransformXCoord(float x, float y, float z) const XBMC_FORCE_INLINE
   {
     return m[0][0] * x + m[0][1] * y + m[0][2] * z + m[0][3];
   }
 
-  inline float TransformYCoord(float x, float y, float z) const
+  inline float TransformYCoord(float x, float y, float z) const XBMC_FORCE_INLINE
   {
     return m[1][0] * x + m[1][1] * y + m[1][2] * z + m[1][3];
   }
 
-  inline float TransformZCoord(float x, float y, float z) const
+  inline float TransformZCoord(float x, float y, float z) const XBMC_FORCE_INLINE
   {
     return m[2][0] * x + m[2][1] * y + m[2][2] * z + m[2][3];
   }
 
-  inline unsigned int TransformAlpha(unsigned int colour) const
+  inline unsigned int TransformAlpha(unsigned int colour) const XBMC_FORCE_INLINE
   {
     return (unsigned int)(colour * alpha);
   }
