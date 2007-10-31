@@ -40,12 +40,19 @@ int main(int argc, char* argv[])
 {
   if (argc > 1)
   {
-    if (strnicmp(argv[1], "-fs", 3) == 0)
+    for (int i=1; i<argc;i++)
     {
-      printf("Running in fullscreen mode...\n");
-      g_advancedSettings.m_fullScreen = true;
+      if (strnicmp(argv[i], "-q", 2) == 0)
+        g_application.SetQuiet(true);
+      
+      if (strnicmp(argv[i], "-fs", 3) == 0)
+      {
+        printf("Running in fullscreen mode...\n");
+        g_advancedSettings.m_fullScreen = true;
+      }
     }
   }
+  
   g_application.Create(NULL);
   while (1)
   {

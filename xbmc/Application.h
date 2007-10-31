@@ -192,9 +192,9 @@ public:
   CStdString m_strPlayListFile;
 
   int GlobalIdleTime();
-
   void NewFrame();
-
+  void SetQuiet(bool bQuiet);
+  
 protected:
   friend class CApplicationMessenger;
   // screensaver
@@ -228,6 +228,7 @@ protected:
   bool m_bAllSettingsLoaded;
   bool m_bInitializing;
   bool m_playCountUpdated;
+  bool m_bQuiet;
 
   int m_iPlaySpeed;
   int m_currentStackPosition;

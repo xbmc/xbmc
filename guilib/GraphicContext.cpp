@@ -4,6 +4,7 @@
 #include "IMsgSenderCallback.h"
 #include "../xbmc/Settings.h"
 #include "../xbmc/XBVideoConfig.h"
+#include "../xbmc/utils/SingleLock.h"
 #ifdef HAS_XBOX_D3D
  #include "xgraphics.h"
  #define D3D_CLEAR_STENCIL D3DCLEAR_STENCIL
@@ -11,7 +12,7 @@
  #define D3D_CLEAR_STENCIL 0x0l
 #endif
 #ifdef HAS_SDL_OPENGL
-#define GLVALIDATE CLockMe locker(this);ValidateSurface()
+#define GLVALIDATE  { CSingleLock locker(*this); ValidateSurface(); }
 #endif
 #include "Surface.h"
 #include "SkinInfo.h"
@@ -60,7 +61,7 @@ CGraphicContext::~CGraphicContext(void)
   {
 #ifndef HAS_SDL
     D3DVIEWPORT8 *viewport = m_viewStack.top();
-#elif defined(HAS_SDL_2D)
+#elif defined(H77AS_SDL_2D)
     SDL_Rect *viewport = m_viewStack.top();
 #elif defined(HAS_SDL_OPENGL)
     GLint* viewport = m_viewStack.top();
@@ -643,7 +644,11 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0);
     SDL_WM_SetCaption("XBox Media Center", NULL);
 #endif
-    m_surfaces[SDL_ThreadID()] = m_screenSurface;
+    
+    {
+      CSingleLock aLock(m_surfaceLock);
+      m_surfaces[SDL_ThreadID()] = m_screenSurface;
+    }
 
     glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
     
@@ -1111,7 +1116,7 @@ int CGraphicContext::BlitToScreen(SDL_Surface *src, SDL_Rect *srcrect, SDL_Rect 
 #endif
 bool CGraphicContext::ValidateSurface(CSurface* dest)
 {
-  // FIXME: routine cleanup of unused surfaces
+  CSingleLock aLock(m_surfaceLock);
   map<Uint32, CSurface*>::iterator iter;
   Uint32 tid = SDL_ThreadID();
   iter = m_surfaces.find(tid);
@@ -1140,7 +1145,7 @@ bool CGraphicContext::ValidateSurface(CSurface* dest)
 #ifdef _WIN32
     CSurface* surface = NULL;
 #else
-        CSurface* surface = InitializeSurface();
+     CSurface* surface = InitializeSurface();
 #endif
     if (surface) 
     {
@@ -1211,6 +1216,7 @@ void CGraphicContext::ReleaseCurrentContext(Surface::CSurface* ctx)
   Lock();
   map<Uint32, CSurface*>::iterator iter;
   Uint32 tid = SDL_ThreadID();
+  CSingleLock aLock(m_surfaceLock);
   iter = m_surfaces.find(tid);
   if (iter==m_surfaces.end()) 
   {
@@ -1225,13 +1231,12 @@ void CGraphicContext::ReleaseCurrentContext(Surface::CSurface* ctx)
 
 void CGraphicContext::DeleteThreadContext() {
 #ifdef HAS_SDL_OPENGL
-  Lock();
+  CSingleLock aLock(m_surfaceLock);
   map<Uint32, CSurface*>::iterator iter;
   Uint32 tid = SDL_ThreadID();
   iter = m_surfaces.find(tid);
   if (iter!=m_surfaces.end()) 
     m_surfaces.erase(iter);
-  Unlock();
 #endif
 }
 
@@ -1251,6 +1256,7 @@ void CGraphicContext::AcquireCurrentContext(Surface::CSurface* ctx)
   Lock();
   map<Uint32, CSurface*>::iterator iter;
   Uint32 tid = SDL_ThreadID();
+  CSingleLock aLock(m_surfaceLock);
   iter = m_surfaces.find(tid);
   if (iter==m_surfaces.end()) 
   {
