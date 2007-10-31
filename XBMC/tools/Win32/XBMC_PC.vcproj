@@ -2045,6 +2045,18 @@
 				Name="Filesystem"
 				Filter="">
 				<File
+					RelativePath="..\..\xbmc\FileSystem\CacheMemBuffer.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\CacheMemBuffer.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\CacheStrategy.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\CacheStrategy.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileSystem\cddb.cpp">
 				</File>
 				<File
@@ -2085,6 +2097,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\File.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\FileCache.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\FileCache.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\FileCurl.cpp">
