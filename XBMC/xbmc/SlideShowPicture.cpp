@@ -197,18 +197,22 @@ void CSlideShowPic::UpdateTexture(SDL_Surface *pTexture, int iWidth, int iHeight
 #ifndef HAS_SDL
     m_pImage->Release();
 #elif defined(HAS_SDL_OPENGL)
+     // release the lock since destructor locks graphics context. avoid dead locks with rendering loop
+    CGLTexture *pTemp = m_pImage;
+    m_pImage = NULL;
+    lock.Leave();
     delete m_pImage;
+    lock.Enter();
 #else
     SDL_FreeSurface(m_pImage);
 #endif
   }
 #ifdef HAS_SDL_OPENGL
-  // lock graphics context as opengl doesn't allow upload
-  // of textures during glBegin(), glEnd() blocks, and this
-  // is called from a different thread
-  //g_graphicsContext.Lock();
-  m_pImage = new CGLTexture(pTexture, false, true);
-  //g_graphicsContext.Unlock();
+  // avoid deadlock with graphicscontext
+  lock.Leave();
+  CGLTexture *pTemp = new CGLTexture(pTexture, false, true);
+  lock.Enter();
+  m_pImage = pTemp;
 #else
   m_pImage = pTexture;
 #endif
