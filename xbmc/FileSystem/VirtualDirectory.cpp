@@ -90,7 +90,11 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
     int iIndex = CUtil::GetMatchingShare(strPath, shares, bIsSourceName);
     // added exception for various local hd items
     // function doesn't work for http/shout streams with options..
+#ifdef _LINUX
+    if (iIndex > -1 || strPath.Mid(0, 1) == "/" || strPath.Mid(1, 1) == ":" 
+#else
     if (iIndex > -1 || strPath.Mid(1, 1) == ":" 
+#endif
       || strPath.Left(8).Equals("shout://") 
       || strPath.Left(8).Equals("https://") 
       || strPath.Left(7).Equals("http://") 
