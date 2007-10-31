@@ -296,7 +296,7 @@ void CBackgroundPlayer::Process()
 
 //extern IDirectSoundRenderer* m_pAudioDecoder;
 CApplication::CApplication(void)
-    : m_ctrDpad(220, 220)
+    : m_ctrDpad(220, 220), m_bQuiet(false)
 {
   m_iPlaySpeed = 1;
 #ifdef HAS_XBOX_HARDWARE
@@ -2524,6 +2524,11 @@ void CApplication::NewFrame()
 #endif
 }
 
+void CApplication::SetQuiet(bool bQuiet)
+{
+  m_bQuiet = bQuiet;
+}
+
 #ifndef HAS_XBOX_D3D
 void CApplication::Render()
 {
@@ -2588,25 +2593,27 @@ void CApplication::RenderMemoryStatus()
     RESOLUTION res = g_graphicsContext.GetVideoResolution();
     g_graphicsContext.SetScalingResolution(res, 0, 0, false);
 
-    CStdStringW wszText;
-    MEMORYSTATUS stat;
-    GlobalMemoryStatus(&stat);
+    if (!m_bQuiet)
+    {
+      CStdStringW wszText;
+      MEMORYSTATUS stat;
+      GlobalMemoryStatus(&stat);
 #ifndef _LINUX
-    wszText.Format(L"FreeMem %d/%d Kb, FPS %2.1f, CPU %2.0f%%", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, g_infoManager.GetFPS(), (1.0f - m_idleThread.GetRelativeUsage())*100);
+      wszText.Format(L"FreeMem %d/%d Kb, FPS %2.1f, CPU %2.0f%%", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, g_infoManager.GetFPS(), (1.0f - m_idleThread.GetRelativeUsage())*100);
 #else
-    wszText.Format(L"FreeMem %d/%d Kb, FPS %2.1f, CPU %d%%", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, g_infoManager.GetFPS(), g_cpuInfo.getUsedPercentage());
+      wszText.Format(L"FreeMem %d/%d Kb, FPS %2.1f, CPU %d%%", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, g_infoManager.GetFPS(), g_cpuInfo.getUsedPercentage());
 #endif
 
-    CGUIFont* pFont = g_fontManager.GetFont("font13");
-    if (pFont)
-    {
-      float x = 0.04f * g_graphicsContext.GetWidth() + g_settings.m_ResInfo[res].Overscan.left;
-      float y = 0.04f * g_graphicsContext.GetHeight() + g_settings.m_ResInfo[res].Overscan.top;
-      pFont->DrawOutlineText(x, y, 0xffffffff, 0xff000000, 2, wszText);
+      CGUIFont* pFont = g_fontManager.GetFont("font13");
+      if (pFont)
+      {
+        float x = 0.04f * g_graphicsContext.GetWidth() + g_settings.m_ResInfo[res].Overscan.left;
+        float y = 0.04f * g_graphicsContext.GetHeight() + g_settings.m_ResInfo[res].Overscan.top;
+        pFont->DrawOutlineText(x, y, 0xffffffff, 0xff000000, 2, wszText);
+      }
     }
   }
 }
-
 // OnKey() translates the key into a CAction which is sent on to our Window Manager.
 // The window manager will return true if the event is processed, false otherwise.
 // If not already processed, this routine handles global keypresses.  It returns

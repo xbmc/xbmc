@@ -8,6 +8,13 @@
 
 #pragma once
 
+#ifdef __GNUC__
+// under gcc, inline will only take place if optimizations are applied (-O). this will force inline even whith optimizations.
+#define XBMC_FORCE_INLINE __attribute__((always_inline))
+#else
+#define XBMC_FORCE_INLINE
+#endif
+
 #include <vector>
 #include <stack>
 #include <map>
@@ -106,8 +113,8 @@ public:
   void SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams);
   int GetBackbufferCount() const { return (m_pd3dParams)?m_pd3dParams->BackBufferCount:0; }
 #else
-  inline void setScreenSurface(Surface::CSurface* surface) { m_screenSurface = surface; }  
-  inline Surface::CSurface* getScreenSurface() { return m_screenSurface; }  
+  inline void setScreenSurface(Surface::CSurface* surface) XBMC_FORCE_INLINE { m_screenSurface = surface; }  
+  inline Surface::CSurface* getScreenSurface() XBMC_FORCE_INLINE { return m_screenSurface; }  
 #endif
 #ifdef HAS_SDL_2D
   int BlitToScreen(SDL_Surface *src, SDL_Rect *srcrect, SDL_Rect *dstrect); 
@@ -167,15 +174,15 @@ public:
   float GetScalingPixelRatio() const;
   void Flip() {m_screenSurface->Flip();}
   void InvertFinalCoords(float &x, float &y) const;
-  inline float ScaleFinalXCoord(float x, float y) const { return m_finalTransform.TransformXCoord(x, y, 0); }
-  inline float ScaleFinalYCoord(float x, float y) const { return m_finalTransform.TransformYCoord(x, y, 0); }
-  inline float ScaleFinalZCoord(float x, float y) const { return m_finalTransform.TransformZCoord(x, y, 0); }
-  inline void ScaleFinalCoords(float &x, float &y, float &z) const { m_finalTransform.TransformPosition(x, y, z); }
+  inline float ScaleFinalXCoord(float x, float y) const XBMC_FORCE_INLINE { return m_finalTransform.TransformXCoord(x, y, 0); }
+  inline float ScaleFinalYCoord(float x, float y) const XBMC_FORCE_INLINE { return m_finalTransform.TransformYCoord(x, y, 0); }
+  inline float ScaleFinalZCoord(float x, float y) const XBMC_FORCE_INLINE { return m_finalTransform.TransformZCoord(x, y, 0); }
+  inline void ScaleFinalCoords(float &x, float &y, float &z) const XBMC_FORCE_INLINE { m_finalTransform.TransformPosition(x, y, z); }
   bool RectIsAngled(float x1, float y1, float x2, float y2) const;
 
-  inline float GetGUIScaleX() const { return m_guiScaleX; };
-  inline float GetGUIScaleY() const { return m_guiScaleY; };
-  inline DWORD MergeAlpha(DWORD color) const
+  inline float GetGUIScaleX() const XBMC_FORCE_INLINE { return m_guiScaleX; }
+  inline float GetGUIScaleY() const XBMC_FORCE_INLINE { return m_guiScaleY; }
+  inline DWORD MergeAlpha(DWORD color) const XBMC_FORCE_INLINE
   {
     DWORD alpha = m_finalTransform.TransformAlpha((color >> 24) & 0xff);
     if (alpha > 255) alpha = 255;
@@ -238,6 +245,7 @@ protected:
 #ifdef HAS_SDL_OPENGL
   stack<GLint*> m_viewStack;
   map<Uint32, Surface::CSurface*> m_surfaces;
+  CCriticalSection m_surfaceLock;
 #endif
 
   int m_iScreenHeight;
@@ -269,22 +277,6 @@ private:
   TransformMatrix m_finalTransform;
   stack<TransformMatrix> m_groupTransform;
 };
-
-
-class CLockMe
-{
-  public:
-  CLockMe(CCriticalSection* section) {
-    sec = section;
-    EnterCriticalSection(*sec);
-  }
-  ~CLockMe() {
-    LeaveCriticalSection(*sec);
-  }
- private:
-  CCriticalSection* sec;
-};
-
 
 /*!
  \ingroup graphics
