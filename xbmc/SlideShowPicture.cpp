@@ -201,7 +201,7 @@ void CSlideShowPic::UpdateTexture(SDL_Surface *pTexture, int iWidth, int iHeight
     CGLTexture *pTemp = m_pImage;
     m_pImage = NULL;
     lock.Leave();
-    delete m_pImage;
+    delete pTemp;
     lock.Enter();
 #else
     SDL_FreeSurface(m_pImage);
