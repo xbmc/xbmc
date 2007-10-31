@@ -767,7 +767,11 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
   {
     if (plItemUrl.IsLocal() ) //Filename is local or not qualified
     {
+#ifdef _LINUX
+      if (!( (strFilename.c_str()[1] == ':') || (strFilename.c_str()[0] == '/') ) ) //Filename not fully qualified
+#else
       if (!( strFilename.c_str()[1] == ':')) //Filename not fully qualified
+#endif
       {
         if (strFilename.c_str()[0] == '/' || strFilename.c_str()[0] == '\\' || HasSlashAtEnd(strBasePath))
         {
@@ -799,7 +803,11 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
   {
     if (plItemUrl.IsLocal()) //Filename is local
     {
+#ifdef _LINUX
+      if ( (strFilename.c_str()[1] == ':') || (strFilename.c_str()[0] == '/') )  //Filename not fully qualified
+#else
       if (strFilename[1] == ':') // already fully qualified
+#endif
         return;
       if (strFilename.c_str()[0] == '/' || strFilename.c_str()[0] == '\\' || HasSlashAtEnd(strBasePath)) //Begins with a slash.. not good.. but we try to make the best of it..
 
