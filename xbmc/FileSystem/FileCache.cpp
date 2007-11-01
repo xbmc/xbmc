@@ -36,7 +36,11 @@ CFileCache::CFileCache()
    m_readPos = 0;
    m_nBytesToBuffer = INITIAL_BUFFER_BYTES;
    m_tmLastBuffering = time(NULL);
-   m_pCache = new CacheMemBuffer;
+#ifdef _XBOX
+   m_pCache = new CSimpleFileCache();
+#else
+   m_pCache = new CacheMemBuffer();
+#endif
 }
 
 CFileCache::CFileCache(CCacheStrategy *pCache, bool bDeleteCache)
