@@ -64,11 +64,11 @@ int CSimpleFileCache::Open() {
 	}
 	
 	m_hCacheFileWrite = CreateFile(fileName.c_str()
-						, GENERIC_WRITE, FILE_SHARE_READ
+						, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_DELETE
 						, NULL
 						, CREATE_ALWAYS
-						, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_NO_BUFFERING
-						,NULL);
+						, FILE_ATTRIBUTE_NORMAL
+						, NULL);
 
 	if(m_hCacheFileWrite == INVALID_HANDLE_VALUE)
 	{
@@ -78,7 +78,7 @@ int CSimpleFileCache::Open() {
 	}
 
 	m_hCacheFileRead = CreateFile(fileName.c_str()
-						, GENERIC_READ, 0
+						, GENERIC_READ, FILE_SHARE_WRITE
 						, NULL
 						, OPEN_EXISTING
 						, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_DELETE_ON_CLOSE 
