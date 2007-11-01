@@ -116,8 +116,12 @@ bool CFileCache::Attach(IFile *pFile) {
     return false;
   }
 
+  m_threadStarted.Reset();
   CThread::Create(false);
-
+  
+  // have to wait for the start event since it will be set only when the file is actually open. only then will several calls (e.g. GetLength) be valid.
+  m_threadStarted.WaitMSec(INFINITE);
+  
   return true;
 }
 
