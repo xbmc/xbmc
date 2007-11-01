@@ -301,7 +301,6 @@ namespace PYXBMC
       PyErr_SetString(PyExc_TypeError, "infoLabels object should be of type Dict");
       return NULL;
     }
-    CLog::Log(LOGDEBUG, __FUNCTION__" - InfoLabel Dictionary has %i items", PyDict_Size(pInfoLabels));
     if (PyDict_Size(pInfoLabels) == 0)
     {
       PyErr_SetString(PyExc_ValueError, "Empty InfoLabel dictionary");
@@ -315,12 +314,15 @@ namespace PYXBMC
 
     CStdString tmp;
     while (PyDict_Next(pInfoLabels, &pos, &key, &value)) {
-      CLog::Log(LOGDEBUG, __FUNCTION__" - InfoLabel Dictionary: pos: %i,  type: %s,  label: %s", pos, cType, PyString_AsString(key));
       if (strcmpi(cType, "video") == 0)
       {
         // TODO: add the rest of the infolabels
         if (strcmpi(PyString_AsString(key), "year") == 0)
           self->item->GetVideoInfoTag()->m_iYear = PyInt_AsLong(value);
+        else if (strcmpi(PyString_AsString(key), "episode") == 0)
+          self->item->GetVideoInfoTag()->m_iEpisode = PyInt_AsLong(value);
+        else if (strcmpi(PyString_AsString(key), "season") == 0)
+          self->item->GetVideoInfoTag()->m_iSeason = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "count") == 0)
           self->item->m_iprogramCount = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "rating") == 0)
@@ -367,14 +369,20 @@ namespace PYXBMC
             self->item->GetVideoInfoTag()->m_strPlot = tmp;
           else if (strcmpi(PyString_AsString(key), "plotoutline") == 0)
             self->item->GetVideoInfoTag()->m_strPlotOutline = tmp;
-          else if (strcmpi(PyString_AsString(key), "runtime") == 0)
-            self->item->GetVideoInfoTag()->m_strRuntime = tmp;
           else if (strcmpi(PyString_AsString(key), "title") == 0)
             self->item->GetVideoInfoTag()->m_strTitle = tmp;
           else if (strcmpi(PyString_AsString(key), "duration") == 0)
             self->item->GetVideoInfoTag()->m_strRuntime = tmp;
           else if (strcmpi(PyString_AsString(key), "studio") == 0)
             self->item->GetVideoInfoTag()->m_strStudio = tmp;
+          else if (strcmpi(PyString_AsString(key), "tagline") == 0)
+            self->item->GetVideoInfoTag()->m_strTagLine = tmp;
+          else if (strcmpi(PyString_AsString(key), "writer") == 0)
+            self->item->GetVideoInfoTag()->m_strWritingCredits = tmp;
+          else if (strcmpi(PyString_AsString(key), "tvshowtitle") == 0)
+            self->item->GetVideoInfoTag()->m_strShowTitle = tmp;
+          else if (strcmpi(PyString_AsString(key), "premiered") == 0)
+            self->item->GetVideoInfoTag()->m_strPremiered = tmp;
           else if (strcmpi(PyString_AsString(key), "date") == 0)
           {
             if (strlen(tmp) == 10)
