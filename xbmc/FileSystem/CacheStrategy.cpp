@@ -53,7 +53,7 @@ CSimpleFileCache::~CSimpleFileCache() {
 int CSimpleFileCache::Open() {
 	Close();
 
-	m_hDataAvailEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+	m_hDataAvailEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 
 	CStdString fileName = CUtil::GetNextFilename("Z:\\filecache%03d.cache", 999);
 	if(fileName.empty())
@@ -123,12 +123,7 @@ int CSimpleFileCache::WriteToCache(const char *pBuffer, size_t iSize) {
 		return CACHE_RC_ERROR;
 	}
 	
-	//CLog::Log(LOGDEBUG,"CSimpleFileCache::WriteToCache. wrote %d bytes", iWritten);
-
 	// when reader waits for data it will wait on the event.
-	// it will reset it prior to the wait.
-	// there is a possible race condition here - but the reader will worse case wait 1 second, 
-	// so rather not lock (performance)
 	SetEvent(m_hDataAvailEvent);
 
 	return iWritten;
@@ -167,33 +162,29 @@ int CSimpleFileCache::ReadFromCache(char *pBuffer, size_t iMaxSize) {
 	return iRead;
 }
 
-__int64 CSimpleFileCache::WaitForData(__int64 iMinAvail, unsigned int iMillis) {
-	
-	DWORD tmStart = GetTickCount();
-	__int64 iAvail = 0;
+__int64 CSimpleFileCache::WaitForData(__int64 iMinAvail, unsigned int iMillis) 
+{
+  if( iMillis == 0 || IsEndOfInput() )
+    return GetAvailableRead();
 
-	while ( iAvail < iMinAvail && GetTickCount() - tmStart < iMillis) {
-
-		// possible race condition here:
-		// if writer will set the event between the availability check and reset - 
-		// we will hang. but only for 1 second, so better not take the performance hit
-		if ( (iAvail = GetAvailableRead()) < iMinAvail )
-			ResetEvent(m_hDataAvailEvent);
-		else {
-			return iAvail;
-		}
-
-		// busy look (sleep max 1 sec each round)
-		DWORD dwRc = WaitForSingleObject(m_hDataAvailEvent, 1000);
-		
+	DWORD dwTimeout = GetTickCount() + iMillis;
+  DWORD dwTime;
+	while ( !IsEndOfInput() && (dwTime = GetTickCount()) < dwTimeout ) 
+  {
+    __int64 iAvail = GetAvailableRead();
 		if (iAvail >= iMinAvail)
 			return iAvail;
 
-		if (dwRc == WAIT_FAILED)
+		// busy look (sleep max 1 sec each round)
+		DWORD dwRc = WaitForSingleObject(m_hDataAvailEvent, max(dwTimeout - dwTime, 1000) );
+    if (dwRc == WAIT_FAILED || dwRc == WAIT_ABANDONED)
 			return CACHE_RC_ERROR;
 	}
 
-	return CACHE_RC_TIMEOUT;
+  if( IsEndOfInput() )
+    return GetAvailableRead();
+
+  return CACHE_RC_TIMEOUT;
 }
 
 __int64 CSimpleFileCache::Seek(__int64 iFilePosition, int iWhence) {
@@ -251,6 +242,12 @@ void CSimpleFileCache::Reset(__int64 iSourcePosition)
 	SetFilePointerEx(m_hCacheFileWrite, pos, NULL, FILE_BEGIN);
 	SetFilePointerEx(m_hCacheFileRead, pos, NULL, FILE_BEGIN);
 	m_nStartPosition = iSourcePosition;
+}
+
+void CSimpleFileCache::EndOfInput()
+{
+  CCacheStrategy::EndOfInput();
+  SetEvent(m_hDataAvailEvent); 
 }
 
 }
