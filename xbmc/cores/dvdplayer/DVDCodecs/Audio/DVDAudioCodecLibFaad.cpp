@@ -156,7 +156,8 @@ int CDVDAudioCodecLibFaad::GetData(BYTE** dst)
 
 void CDVDAudioCodecLibFaad::Reset()
 {
-  m_dll.faacDecPostSeekReset(m_pHandle, 0);
+  if (m_pHandle)
+    m_dll.faacDecPostSeekReset(m_pHandle, 0);
 }
 
 void CDVDAudioCodecLibFaad::CloseDecoder()
