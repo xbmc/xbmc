@@ -31,8 +31,8 @@ namespace XFILE {
 */
 class CCacheStrategy{
 public:
-    CCacheStrategy();
-    virtual ~CCacheStrategy();
+  CCacheStrategy();
+  virtual ~CCacheStrategy();
 
 	virtual int Open() = 0;
 	virtual int Close() = 0;
@@ -41,12 +41,12 @@ public:
 	virtual int ReadFromCache(char *pBuffer, size_t iMaxSize) = 0;
 	virtual __int64 WaitForData(__int64 iMinAvail, unsigned int iMillis) = 0;
 
-    virtual __int64 Seek(__int64 iFilePosition, int iWhence) = 0;
+  virtual __int64 Seek(__int64 iFilePosition, int iWhence) = 0;
 	virtual void Reset(__int64 iSourcePosition) = 0;
 
 	virtual void EndOfInput(); // mark the end of the input stream so that Read will know when to return EOF
 	virtual bool IsEndOfInput();
-    virtual void ClearEndOfInput();
+  virtual void ClearEndOfInput();
 
 protected:
 	bool	m_bEndOfInput;
@@ -66,9 +66,10 @@ public:
 	virtual int ReadFromCache(char *pBuffer, size_t iMaxSize) ;
 	virtual __int64 WaitForData(__int64 iMinAvail, unsigned int iMillis) ;
 
-    virtual __int64 Seek(__int64 iFilePosition, int iWhence);
+  virtual __int64 Seek(__int64 iFilePosition, int iWhence);
 	virtual void Reset(__int64 iSourcePosition);
-	
+	virtual void EndOfInput();
+
 	__int64	GetAvailableRead();
 
 protected:
