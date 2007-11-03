@@ -1225,22 +1225,58 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
   }
   else
   {
-    output = openTag + "Filename:" + fileItem.m_strPath;
-    // current playing item
-    tmp.Format("%i",g_playlistPlayer.GetCurrentSong()); 	 
-    output+=closeTag+openTag+"SongNo:"+tmp; 	 
+    output = openTag + "Filename:" + fileItem.m_strPath;  // currently playing item filename
     if (g_application.IsPlayingVideo())
     { // Video information
+      tmp.Format("%i",g_playlistPlayer.GetCurrentSong());
+      output+=closeTag+openTag+"VideoNo:"+tmp;  // current item # in playlist
       output+=closeTag+openTag+"Type"+tag+":Video" ;
       const CVideoInfoTag* tagVal=g_infoManager.GetCurrentMovieTag();
-      if (tagVal && !tagVal->m_strTitle.IsEmpty())
-        output+=closeTag+openTag+"Title"+tag+":"+tagVal->m_strTitle ;
-      if (tagVal && !tagVal->m_strGenre.IsEmpty())
-        output+=closeTag+openTag+"Genre"+tag+":"+tagVal->m_strGenre;
-	  output+=closeTag+openTag+"Thumb"+tag+":"+g_infoManager.GetImage(VIDEOPLAYER_COVER, -1);
+      if (tagVal)
+      {
+        if (!tagVal->m_strShowTitle.IsEmpty())
+          output+=closeTag+openTag+"Show Title"+tag+":"+tagVal->m_strShowTitle ;
+        if (!tagVal->m_strTitle.IsEmpty())
+          output+=closeTag+openTag+"Title"+tag+":"+tagVal->m_strTitle ;
+        if (!tagVal->m_strGenre.IsEmpty())
+          output+=closeTag+openTag+"Genre"+tag+":"+tagVal->m_strGenre;
+        if (!tagVal->m_strStudio.IsEmpty())
+          output+=closeTag+openTag+"Studio"+tag+":"+tagVal->m_strStudio;
+        if (tagVal && !tagVal->m_strDirector.IsEmpty())
+          output+=closeTag+openTag+"Director"+tag+":"+tagVal->m_strDirector;
+        if (!tagVal->m_strWritingCredits.IsEmpty())
+          output+=closeTag+openTag+"Writer"+tag+":"+tagVal->m_strWritingCredits;
+        if (!tagVal->m_strTagLine.IsEmpty())
+          output+=closeTag+openTag+"Tagline"+tag+":"+tagVal->m_strTagLine;
+        if (!tagVal->m_strPlotOutline.IsEmpty())
+          output+=closeTag+openTag+"Plotoutline"+tag+":"+tagVal->m_strPlotOutline;
+        if (!tagVal->m_strPlot.IsEmpty())
+          output+=closeTag+openTag+"Plot"+tag+":"+tagVal->m_strPlot;    
+        if (tagVal->m_fRating != 0.0f)  // only non-zero ratings are of interest
+          output.Format("%s%03.1f (%s %s)",output+closeTag+openTag+"Rating"+tag+":",tagVal->m_fRating, tagVal->m_strVotes, g_localizeStrings.Get(20350));
+        if (!tagVal->m_strOriginalTitle.IsEmpty())
+          output+=closeTag+openTag+"Original Title"+tag+":"+tagVal->m_strOriginalTitle;
+        if (!tagVal->m_strPremiered.IsEmpty())
+          output+=closeTag+openTag+"Premiered"+tag+":"+tagVal->m_strPremiered;
+        if (!tagVal->m_strStatus.IsEmpty())
+          output+=closeTag+openTag+"Status"+tag+":"+tagVal->m_strStatus;
+        if (!tagVal->m_strProductionCode.IsEmpty())
+          output+=closeTag+openTag+"Production Code"+tag+":"+tagVal->m_strProductionCode;
+        if (!tagVal->m_strFirstAired.IsEmpty())
+          output+=closeTag+openTag+"First Aired"+tag+":"+tagVal->m_strFirstAired;
+        if (tagVal->m_iYear != 0)
+          output.Format("%s%i",output+closeTag+openTag+"Year"+tag+":",tagVal->m_iYear);
+        if (tagVal->m_iSeason != -1)
+          output.Format("%s%i",output+closeTag+openTag+"Season"+tag+":",tagVal->m_iSeason);
+        if (tagVal->m_iEpisode != -1)
+          output.Format("%s%i",output+closeTag+openTag+"Episode"+tag+":",tagVal->m_iEpisode);
+	      output+=closeTag+openTag+"Thumb"+tag+":"+g_infoManager.GetImage(VIDEOPLAYER_COVER, -1);
+      }
     }
     else if (g_application.IsPlayingAudio())
     { // Audio information
+      tmp.Format("%i",g_playlistPlayer.GetCurrentSong()); 	 
+      output+=closeTag+openTag+"SongNo:"+tmp;  // current item # in playlist
       output+=closeTag+openTag+"Type"+tag+":Audio";
       const CMusicInfoTag* tagVal=g_infoManager.GetCurrentSongTag();
       if (tagVal && !tagVal->GetTitle().IsEmpty())
