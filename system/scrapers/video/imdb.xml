@@ -45,7 +45,7 @@
 			  <expression repeat="yes">&lt;a href=&quot;/name/[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;top250&gt;\1&lt;/top250&gt;" dest="5+">
-				<expression>Top 250: ([^&lt;]*)&lt;/a&gt;</expression>
+				<expression>Top 250: #([0-9]*)&lt;/a&gt;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;mpaa&gt;\1&lt;/mpaa&gt;" dest="5+">
 				<expression>MPAA&lt;/a&gt;:&lt;/h5&gt;(.[^&lt;]*)</expression>
