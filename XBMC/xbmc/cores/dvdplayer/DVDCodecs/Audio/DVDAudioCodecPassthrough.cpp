@@ -298,7 +298,6 @@ int CDVDAudioCodecPassthrough::Decode(BYTE* pData, int iSize)
   if( m_iFrameSize == 0)
   {
     m_iOffset = 0;
-    int iFrameLenght=0;
 
     if( SyncDTSHeader(m_pDataFrame, m_iDataFrameLen, &m_iOffset, &m_iFrameSize) )
     {
