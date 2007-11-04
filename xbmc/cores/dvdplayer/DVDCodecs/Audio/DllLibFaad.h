@@ -14,6 +14,7 @@ public:
   virtual long faacDecInit(faacDecHandle hDecoder, unsigned char *buffer, unsigned long buffer_size, unsigned long *samplerate, unsigned char *channels)=0;
   virtual char faacDecInit2(faacDecHandle hDecoder, unsigned char *pBuffer, unsigned long SizeOfDecoderSpecificInfo, unsigned long *samplerate, unsigned char *channels)=0;
   virtual char* faacDecGetErrorMessage(unsigned char errcode)=0;
+  virtual void faacDecPostSeekReset(faacDecHandle hDecoder, long frame)=0;
 };
 
 class DllLibFaad : public DllDynamic, DllLibFaadInterface
@@ -31,6 +32,7 @@ class DllLibFaad : public DllDynamic, DllLibFaadInterface
   DEFINE_METHOD5(long, faacDecInit, (faacDecHandle p1, unsigned char *p2, unsigned long p3, unsigned long *p4, unsigned char *p5))
   DEFINE_METHOD5(char, faacDecInit2, (faacDecHandle p1, unsigned char *p2, unsigned long p3, unsigned long *p4, unsigned char *p5))
   DEFINE_METHOD1(char*, faacDecGetErrorMessage, (unsigned char p1))
+  DEFINE_METHOD2(void, faacDecPostSeekReset, (faacDecHandle p1, long p2))
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(faacDecOpen)
     RESOLVE_METHOD(faacDecGetCurrentConfiguration)
@@ -40,5 +42,6 @@ class DllLibFaad : public DllDynamic, DllLibFaadInterface
     RESOLVE_METHOD(faacDecInit)
     RESOLVE_METHOD(faacDecInit2)
     RESOLVE_METHOD(faacDecGetErrorMessage)
+    RESOLVE_METHOD(faacDecPostSeekReset)
   END_METHOD_RESOLVE()
 };

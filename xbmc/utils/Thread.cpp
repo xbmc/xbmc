@@ -373,7 +373,7 @@ float CThread::GetRelativeUsage()
 
 DWORD CThread::WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds)
 {
-  if(dwMilliseconds > 10 )
+  if(dwMilliseconds > 10)
   {
     HANDLE handles[2] = {hHandle, m_StopEvent};
     DWORD result = ::WaitForMultipleObjects(2, handles, false, dwMilliseconds);
@@ -382,8 +382,10 @@ DWORD CThread::WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds)
     || result == WAIT_OBJECT_0)
       return result;
 
-    // thread terminated. return failure.
-    return WAIT_FAILED;
+    if( dwMilliseconds == INFINITE )
+      return WAIT_ABANDONED;
+    else
+      return WAIT_TIMEOUT;
   }
   else
     return ::WaitForSingleObject(hHandle, dwMilliseconds);
