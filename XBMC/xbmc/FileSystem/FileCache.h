@@ -17,6 +17,7 @@ namespace XFILE
 
     // CThread methods
     virtual void Process();
+    virtual void OnExit();
     
     // IFIle methods
     virtual bool          Open(const CURL& url, bool bBinary = true);
@@ -40,12 +41,12 @@ namespace XFILE
     CCacheStrategy *m_pCache;
     bool      m_bDeleteCache;
     bool      m_bCaching;
+    bool      m_bSeekPossible;
     int       m_nCacheLevel;
     CFile      m_source;
     CStdString    m_sourcePath;
     CEvent      m_seekEvent;
     CEvent      m_seekEnded;
-    CEvent      m_threadStarted;
     int        m_nBytesToBuffer;
     time_t      m_tmLastBuffering;
     __int64      m_nSeekResult;
