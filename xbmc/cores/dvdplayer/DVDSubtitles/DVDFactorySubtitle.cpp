@@ -22,7 +22,7 @@ bool CDVDFactorySubtitle::GetSubtitles(VecSubtitleFiles& vecSubtitles, string& s
   CUtil::CacheSubtitles(strFile, strExtensionCached);
   int iSize = strExtensionCached.size();
   int iStart = 0;
-  int iEnd = 0;
+  
   while (iStart < iSize)
   {
     int iEnd = strExtensionCached.Find(" ", iStart);
