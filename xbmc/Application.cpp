@@ -271,7 +271,7 @@ CApplication::CApplication(void)
   m_dwSpinDownTime = timeGetTime();
   m_pWebServer = NULL;
   m_pXbmcHttp = NULL;
-  m_prevTitle="";
+  m_prevMedia="";
   m_pFileZilla = NULL;
   m_pPlayer = NULL;
 #ifdef HAS_XBOX_HARDWARE
@@ -3045,19 +3045,31 @@ void  CApplication::CheckForTitleChange()
   if (IsPlayingVideo())
   {
 	const CVideoInfoTag* tagVal = g_infoManager.GetCurrentMovieTag();
-    if (m_pXbmcHttp && tagVal && !(tagVal->m_strTitle.IsEmpty()) && (tagVal->m_strTitle!=m_prevTitle))
+    if (m_pXbmcHttp && tagVal && !(tagVal->m_strTitle.IsEmpty()))
     {
-	  m_pXbmcHttp->xbmcBroadcast("TitleChanged:"+tagVal->m_strTitle, 1);
-      m_prevTitle=tagVal->m_strTitle;
+      CStdString msg=m_pXbmcHttp->GetOpenTag()+"MovieTitle:"+tagVal->m_strTitle+m_pXbmcHttp->GetCloseTag();
+	  if (m_prevMedia!=msg)
+	  {
+	    m_pXbmcHttp->xbmcBroadcast("MediaChanged:"+msg, 1);
+        m_prevMedia=msg;
+	  }
     }
   }
   else if (IsPlayingAudio())
   {
     const CMusicInfoTag* tagVal=g_infoManager.GetCurrentSongTag();
-    if (m_pXbmcHttp && tagVal && !(tagVal->GetTitle().IsEmpty()) && (tagVal->GetTitle()!=m_prevTitle))
-    {
-	  m_pXbmcHttp->xbmcBroadcast("Title changed:"+tagVal->GetTitle(), 1);
-      m_prevTitle=tagVal->GetTitle();
+    if (m_pXbmcHttp && tagVal)
+	{
+	  CStdString msg="";
+	  if (!tagVal->GetTitle().IsEmpty())
+		  msg=m_pXbmcHttp->GetOpenTag()+"AudioTitle:"+tagVal->GetTitle()+m_pXbmcHttp->GetCloseTag();
+	  if (!tagVal->GetArtist().IsEmpty())
+		  msg+=m_pXbmcHttp->GetOpenTag()+"AudioArtist:"+tagVal->GetArtist()+m_pXbmcHttp->GetCloseTag();
+	  if (m_prevMedia!=msg)
+	  {
+        m_pXbmcHttp->xbmcBroadcast("MediaChanged:"+msg, 1);
+	    m_prevMedia=msg;
+	  }
     }
   }
 }
