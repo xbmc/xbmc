@@ -468,7 +468,10 @@ typedef void* LPDIRECT3DDEVICE8;
 
 #define GENERIC_READ	FILE_READ_DATA
 #define GENERIC_WRITE	FILE_WRITE_DATA
-#define FILE_SHARE_READ	(0x00)
+#define FILE_SHARE_READ                  0x00000001
+#define FILE_SHARE_WRITE                 0x00000002
+#define FILE_SHARE_DELETE                0x00000004
+
 
 // String
 char *itoa(int i, char *a, int r);
