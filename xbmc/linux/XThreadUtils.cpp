@@ -27,7 +27,7 @@ struct InternalThreadParam {
 __thread InternalThreadParam *pParam = NULL;
 void handler (int signum)
 {
-  CLog::Log(LOGERROR,"thread 0x%x (%lu) got signal %d. terminating thread abnormally.", SDL_ThreadID(), SDL_ThreadID(), signum);
+  CLog::Log(LOGERROR,"thread 0x%x (%lu) got signal %d. terminating thread abnormally.", SDL_ThreadID(), (unsigned long)SDL_ThreadID(), signum);
   if (pParam && pParam->handle)
   {
     SetEvent(pParam->handle);
@@ -57,7 +57,7 @@ static int InternalThreadFunc(void *data) {
   sigaction (SIGSEGV, &action, NULL);
 
   try {
-     CLog::Log(LOGDEBUG,"Running thread %lu", SDL_ThreadID());
+     CLog::Log(LOGDEBUG,"Running thread %lu", (unsigned long)SDL_ThreadID());
      nRc = pParam->threadFunc(pParam->data);
   }
   catch(...) {

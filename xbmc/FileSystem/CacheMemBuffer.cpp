@@ -119,6 +119,9 @@ int CacheMemBuffer::ReadFromCache(char *pBuffer, size_t iMaxSize)
 
 __int64 CacheMemBuffer::WaitForData(unsigned int iMinAvail, unsigned int iMillis)
 {
+  if (iMillis == 0 || IsEndOfInput())
+    return m_buffer.GetMaxReadSize();
+
   DWORD dwTime = GetTickCount() + iMillis;
   while (!IsEndOfInput() && (unsigned int) m_buffer.GetMaxReadSize() < iMinAvail && GetTickCount() < dwTime )
     Sleep(50); // may miss the deadline. shouldn't be a problem.

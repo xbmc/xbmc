@@ -10,6 +10,9 @@
 #define WAIT_OBJECT_0	((STATUS_WAIT_0 ) + 0 )
 #define WAIT_TIMEOUT	258L
 #define INFINITE		0xFFFFFFFF
+#define STATUS_ABANDONED_WAIT_0 0x00000080
+#define WAIT_ABANDONED         ((STATUS_ABANDONED_WAIT_0 ) + 0 )
+#define WAIT_ABANDONED_0       ((STATUS_ABANDONED_WAIT_0 ) + 0 )
 
 HANDLE	WINAPI CreateMutex( LPSECURITY_ATTRIBUTES lpMutexAttributes,  BOOL bInitialOwner,  LPCTSTR lpName );
 bool	InitializeRecursiveMutex(HANDLE hMutex, BOOL bInitialOwner);
