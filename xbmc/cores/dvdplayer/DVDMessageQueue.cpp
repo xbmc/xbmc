@@ -98,7 +98,6 @@ MsgQueueReturnCode CDVDMessageQueue::Put(CDVDMsg* pMsg)
   if (!pMsg)
   {
     CLog::Log(LOGFATAL, "CDVDMessageQueue::Put MSGQ_INVALID_MSG");
-    pMsg->Release();
     return MSGQ_INVALID_MSG;
   }
   
