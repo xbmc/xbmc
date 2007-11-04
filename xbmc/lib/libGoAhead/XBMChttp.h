@@ -110,10 +110,13 @@ public:
   int xbmcGetBroadcast();
   int xbmcOnAction(int numParas, CStdString paras[]);
   int xbmcRecordStatus(int numParas, CStdString paras[]);
-
+  int xbmcGetMusicLabel(int numParas, CStdString paras[]);
+  int xbmcGetVideoLabel(int numParas, CStdString paras[]);
   int xbmcGetSkinSetting(int numParas, CStdString paras[]);
   CKey GetKey();
   void ResetKey();
+  CStdString GetOpenTag();
+  CStdString GetCloseTag();
 
 private:
   CKey key;
