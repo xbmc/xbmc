@@ -62,6 +62,9 @@
                         <RegExp input="$$6" output="\1f.jpg" dest="7">
 				<expression noclean="1">(.*)m\.jpg</expression>
                         </RegExp>
+			<RegExp input="$$7" output="&lt;thumbs&gt;&lt;thumb&gt;\1&lt;/thumb&gt;&lt;/thumbs&gt;" dest="5+">
+				<expression noclean="1"></expression>
+                        </RegExp>
 			<RegExp input="$$7" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="8">
 				<expression noclean="1"></expression>
                         </RegExp>
@@ -110,11 +113,11 @@
 		</RegExp>
 	</GetPlot>
 	<GetIMPALink clearbuffers="no" dest="5">
-		<RegExp input="$$8" output="&lt;thumbs&gt;\1&lt;/thumbs&gt;" dest="5">
+<!--		<RegExp input="$$8" output="&lt;thumbs&gt;\1&lt;/thumbs&gt;" dest="5">
 			<expression></expression>
-		</RegExp>
+		</RegExp> -->
 		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetIMPAPosters&quot;&gt;http://www.impawards.com/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression noclean="1">&lt;a href=&quot;http://www.impawards.com/([^&quot;]*)&quot;&gt;</expression>
+			<expression clear="yes" noclean="1">&lt;a href=&quot;http://www.impawards.com/([^&quot;]*)&quot;&gt;</expression>
 		</RegExp>
 	</GetIMPALink>
 	<GetIMPAPosters dest="5">
