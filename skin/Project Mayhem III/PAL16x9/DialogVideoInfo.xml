@@ -39,14 +39,34 @@
 				<aspectratio align="left">keep</aspectratio>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
-			<control type="label" id="20">
+			<control type="label" id="1">
 				<description>Movie Title value</description>
 				<posx>200</posx>
-				<posy>95</posy>
+				<posy>75</posy>
 				<width>355</width>
-				<label>-</label>
-				<font>font14</font>
+				<label>$INFO[listitem.title]</label>
+				<font>special13</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
+				<scroll>true</scroll>
+			</control>
+			<control type="label" id="1">
+				<description>Top 250 Text</description>
+				<posx>200</posx>
+				<posy>103</posy>
+				<width>105</width>
+				<label>13409</label>
+				<font>font11</font>
+				<visible>!IsEmpty(listitem.top250) + !container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
+				<scroll>true</scroll>
+			</control>
+			<control type="label" id="1">
+				<description>Top 250 Value</description>
+				<posx>310</posx>
+				<posy>103</posy>
+				<width>375</width>
+				<label>$INFO[listitem.top250,#, $LOCALIZE[13408]]</label>
+				<font>font11</font>
+				<visible>!IsEmpty(listitem.top250) + !container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 				<scroll>true</scroll>
 			</control>
 			<control type="label" id="1">
