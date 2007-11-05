@@ -188,6 +188,7 @@
 #define VIDEOPLAYER_WRITER          280
 #define VIDEOPLAYER_TAGLINE         281
 #define VIDEOPLAYER_ISINLIBRARY     282
+#define VIDEOPLAYER_TOP250          283
 
 #define AUDIOSCROBBLER_ENABLED      300
 #define AUDIOSCROBBLER_CONN_STATE   301
@@ -234,6 +235,7 @@
 #define LISTITEM_CAST_AND_ROLE      345
 #define LISTITEM_WRITER             346
 #define LISTITEM_TAGLINE            347
+#define LISTITEM_TOP250             348
 #define LISTITEM_END                350
 
 #define CONTAINER_FOLDERTHUMB       360

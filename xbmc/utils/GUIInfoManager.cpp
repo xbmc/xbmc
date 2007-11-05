@@ -423,6 +423,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Left(19).Equals("videoplayer.content")) return AddMultiInfo(GUIInfo(bNegate ? -VIDEOPLAYER_CONTENT : VIDEOPLAYER_CONTENT, ConditionalStringParameter(strTest.Mid(20,strTest.size()-21)), 0));
     else if (strTest.Equals("videoplayer.studio")) ret = VIDEOPLAYER_STUDIO;
     else if (strTest.Equals("videoplayer.mpaa")) return VIDEOPLAYER_MPAA;
+    else if (strTest.Equals("videoplayer.top250")) return VIDEOPLAYER_TOP250;
     else if (strTest.Equals("videoplayer.cast")) return VIDEOPLAYER_CAST;
     else if (strTest.Equals("videoplayer.castandrole")) return VIDEOPLAYER_CAST_AND_ROLE;
     else if (strTest.Equals("videoplayer.artist")) return VIDEOPLAYER_ARTIST;
@@ -667,6 +668,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("castandrole")) return LISTITEM_CAST_AND_ROLE;
   else if (info.Equals("writer")) return LISTITEM_WRITER;
   else if (info.Equals("tagline")) return LISTITEM_TAGLINE;
+  else if (info.Equals("top250")) return LISTITEM_TOP250;
   return 0;
 }
 
@@ -766,6 +768,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case VIDEOPLAYER_PREMIERED:
   case VIDEOPLAYER_STUDIO:
   case VIDEOPLAYER_MPAA:
+  case VIDEOPLAYER_TOP250:
   case VIDEOPLAYER_CAST:
   case VIDEOPLAYER_CAST_AND_ROLE:
   case VIDEOPLAYER_ARTIST:
@@ -1171,6 +1174,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case LISTITEM_CAST_AND_ROLE:
   case LISTITEM_WRITER:
   case LISTITEM_TAGLINE:
+  case LISTITEM_TOP250:
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS); // true for has list items
       if (window)
@@ -2221,6 +2225,14 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     return m_currentFile.GetVideoInfoTag()->m_strStudio;
   case VIDEOPLAYER_MPAA:
     return m_currentFile.GetVideoInfoTag()->m_strMPAARating;
+  case VIDEOPLAYER_TOP250:
+    {
+      CStdString strTop250;
+      if (m_currentFile.GetVideoInfoTag()->m_iTop250 > 0)
+        strTop250.Format("%i", m_currentFile.GetVideoInfoTag()->m_iTop250);
+      return strTop250;
+    }
+    break;
   case VIDEOPLAYER_CAST:
     return m_currentFile.GetVideoInfoTag()->GetCast();
   case VIDEOPLAYER_CAST_AND_ROLE:
@@ -2985,6 +2997,15 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_TAGLINE:
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strTagLine;
+    break;
+  case LISTITEM_TOP250:
+    if (item->HasVideoInfoTag())
+    {
+      CStdString strResult;
+      if (item->GetVideoInfoTag()->m_iTop250 > 0)
+        strResult.Format("%i",item->GetVideoInfoTag()->m_iTop250);
+      return strResult;
+    }
     break;
   }
   return "";
