@@ -42,16 +42,16 @@ public:
   MsgQueueReturnCode Get(CDVDMsg** pMsg, unsigned int iTimeoutInMilliSeconds);
 
   
-  int GetDataSize()                     { return m_iDataSize; }
+  int GetDataSize() const               { return m_iDataSize; }
   unsigned GetPacketCount(CDVDMsg::Message type);
   bool RecievedAbortRequest()           { return m_bAbortRequest; }
   void WaitUntilEmpty()                 { while (m_pFirstMessage) Sleep(1); }
   
   // non messagequeue related functions
-  bool IsFull()                         { return (m_iDataSize >= m_iMaxDataSize); }
+  bool IsFull() const                   { return (m_iDataSize >= m_iMaxDataSize); }
   void SetMaxDataSize(int iMaxDataSize) { m_iMaxDataSize = iMaxDataSize; }
-  int GetMaxDataSize()                  { return m_iMaxDataSize; }
-  bool IsInited()                       { return m_bInitialized; }
+  int GetMaxDataSize() const            { return m_iMaxDataSize; }
+  bool IsInited() const                 { return m_bInitialized; }
 private:
 
   HANDLE m_hEvent;

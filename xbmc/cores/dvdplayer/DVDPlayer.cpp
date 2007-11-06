@@ -40,10 +40,9 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   m_CurrentAudio.Clear();
   m_CurrentVideo.Clear();
   m_CurrentSubtitle.Clear();
-
-  m_bDontSkipNextFrame = false;
   
   m_playSpeed = DVD_PLAYSPEED_NORMAL;
+  m_caching = false;
 #ifdef DVDDEBUG_MESSAGE_TRACKER
   g_dvdMessageTracker.Init();
 #endif
@@ -249,11 +248,22 @@ void CDVDPlayer::Process()
     {
       HandleMessages();
       Sleep(10);
+
+      if (m_caching)
+      {
+        // check here if we should stop caching
+        // TODO - we could continue to wait, if filesystem can cache further
+
+        m_clock.SetSpeed(m_playSpeed);
+        m_dvdPlayerAudio.SetSpeed(m_playSpeed);
+        m_dvdPlayerVideo.SetSpeed(m_playSpeed);
+        m_caching = false;
+      }
     }
 
     if (m_bAbortRequest)
       break;
-
+    
     if(GetPlaySpeed() != DVD_PLAYSPEED_NORMAL && GetPlaySpeed() != DVD_PLAYSPEED_PAUSE)
     {
       if (IsInMenu())
@@ -296,13 +306,25 @@ void CDVDPlayer::Process()
     // read a data frame from stream.
     CDVDDemux::DemuxPacket* pPacket = m_pDemuxer->Read();
 
+    // check if we are too slow and need to recache
+    if (m_dvdPlayerAudio.IsStalled() && m_CurrentAudio.inited && m_CurrentAudio.id >= 0
+    ||  m_dvdPlayerVideo.IsStalled() && m_CurrentVideo.inited && m_CurrentVideo.id >= 0 && !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+    {
+      if(!m_caching)
+      {
+        m_clock.SetSpeed(DVD_PLAYSPEED_PAUSE);
+        m_dvdPlayerAudio.SetSpeed(DVD_PLAYSPEED_PAUSE);
+        m_dvdPlayerVideo.SetSpeed(DVD_PLAYSPEED_PAUSE);
+        m_caching = true;
+      }
+    }
+
     if (!pPacket)
     {
       // when paused, demuxer could be be returning empty
       if (m_playSpeed == DVD_PLAYSPEED_PAUSE)
         continue;
 
-      if (!m_pInputStream) break;
       if (m_pInputStream->IsEOF()) break;
 
       if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
@@ -507,13 +529,6 @@ void CDVDPlayer::ProcessVideoData(CDemuxStream* pStream, CDVDDemux::DemuxPacket*
     m_CurrentVideo.stream = (void*)pStream;
   }
 
-
-  if (m_bDontSkipNextFrame)
-  {
-    m_dvdPlayerVideo.SendMessage(new CDVDMsgVideoNoSkip());
-    m_bDontSkipNextFrame = false;
-  }
-  
   if( pPacket->iSize != 4) //don't check the EOF_SEQUENCE of stillframes
   {
     CheckContinuity( pPacket, DVDPLAYER_VIDEO );
@@ -688,6 +703,15 @@ void CDVDPlayer::OnExit()
   try
   {
     CLog::Log(LOGNOTICE, "CDVDPlayer::OnExit()");
+
+    // if we are caching, start playing it agian
+    if (m_caching && !m_bAbortRequest)
+    {
+      m_clock.SetSpeed(m_playSpeed);
+      m_dvdPlayerAudio.SetSpeed(m_playSpeed);
+      m_dvdPlayerVideo.SetSpeed(m_playSpeed);
+      m_caching = false;
+    }
 
     // close each stream
     if (!m_bAbortRequest) CLog::Log(LOGNOTICE, "DVDPlayer: eof, waiting for queues to empty");
@@ -895,6 +919,7 @@ void CDVDPlayer::HandleMessages()
         // 1. disable audio
         // 2. skip frames and adjust their pts or the clock
         m_playSpeed = speed;
+        m_caching = false;
         m_clock.SetSpeed(speed);
         m_dvdPlayerAudio.SetSpeed(speed);
         m_dvdPlayerVideo.SetSpeed(speed);
@@ -903,7 +928,7 @@ void CDVDPlayer::HandleMessages()
         //        untill our buffers are somewhat filled
         if(m_pDemuxer)
           m_pDemuxer->SetSpeed(speed);
-      }
+      } 
     }
     catch (...)
     {
@@ -925,16 +950,14 @@ void CDVDPlayer::SetPlaySpeed(int speed)
 
 void CDVDPlayer::Pause()
 {
-  int iSpeed = GetPlaySpeed();
-
   // return to normal speed if it was paused before, pause otherwise
-  if (iSpeed == DVD_PLAYSPEED_PAUSE) SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
+  if (m_playSpeed == DVD_PLAYSPEED_PAUSE || m_caching) SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
   else SetPlaySpeed(DVD_PLAYSPEED_PAUSE);
 }
 
 bool CDVDPlayer::IsPaused() const
 {
-  return (m_playSpeed == DVD_PLAYSPEED_PAUSE);
+  return (m_playSpeed == DVD_PLAYSPEED_PAUSE) || m_caching;
 }
 
 bool CDVDPlayer::HasVideo()
@@ -1724,7 +1747,8 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
 
         m_dvd.state = DVDSTATE_NORMAL;        
         
-        m_bDontSkipNextFrame = true;
+        if( m_dvdPlayerVideo.m_messageQueue.IsInited() )
+          m_dvdPlayerVideo.SendMessage(new CDVDMsgVideoNoSkip());        
       }
       break;
     case DVDNAV_NAV_PACKET:
@@ -1967,4 +1991,11 @@ bool CDVDPlayer::AddSubtitle(const CStdString& strSubPath)
 {
   m_vecSubtitleFiles.push_back(strSubPath);
   return true;
+}
+
+int CDVDPlayer::GetCacheLevel() const
+{
+  int a = min(100,100 * m_dvdPlayerAudio.m_messageQueue.GetDataSize() / m_dvdPlayerAudio.m_messageQueue.GetMaxDataSize());
+  int v = min(100,100 * m_dvdPlayerVideo.m_messageQueue.GetDataSize() / m_dvdPlayerVideo.m_messageQueue.GetMaxDataSize());
+  return max(a, v);
 }
