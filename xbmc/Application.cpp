@@ -3908,16 +3908,11 @@ void CApplication::DoRenderFullScreen()
       return ;
     pFSWin->RenderFullScreen();
 
-    // aslong as player is handling rendering, we update
-    // this stuff here, otherwise it will happen in main render
-    if( IsPlaying() && !IsPaused() )
-    {
-      if (m_gWindowManager.HasDialogOnScreen())
-        m_gWindowManager.RenderDialogs();
-      // Render the mouse pointer, if visible...
-      if (g_Mouse.IsActive())
-        g_application.m_guiPointer.Render();
-    }
+    if (m_gWindowManager.HasDialogOnScreen())
+      m_gWindowManager.RenderDialogs();
+    // Render the mouse pointer, if visible...
+    if (g_Mouse.IsActive())
+      g_application.m_guiPointer.Render();
   }
 }
 
