@@ -1,0 +1,160 @@
+<!-- should be self-explanatory -->
+<scraper name="TheTVDB.com FR" content="tvshows" thumb="tvdb.png">
+	<!-- 	input: 		$1=query string -->
+	<!-- 	returns: 	the url we should use to do the search -->
+	<CreateSearchUrl dest="3">
+		<RegExp input="$$1" output="http://thetvdb.com/interfaces/GetSeries.php?language=17&amp;seriesname=\1" dest="3">
+			<expression></expression>
+		</RegExp>
+	</CreateSearchUrl>
+	<!-- 	input: $1=html $2=search query -->
+	<!-- 	returns: results in xml format <results><movie><title>*</title><url>*</url>*#urls<extra>*</extra></movie>*</results> -->
+	<GetSearchResults dest="1">
+		<RegExp output="\1" dest="3">
+			<expression noclean="1">&lt;Items&gt;(.*)&lt;/Items&gt;</expression>
+		</RegExp>
+		<RegExp input="$$4" output="&lt;results&gt;\1&lt;/results&gt;" dest="1">
+			<RegExp input="$$3" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;http://thetvdb.com/interfaces/SeriesUpdates.php?language=17&amp;amp;lasttime=0&amp;amp;idlist=\1&lt;/url&gt;&lt;url&gt;http://thetvdb.com/interfaces/GetBanners.php?seriesid=\1&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="4">
+				<expression repeat="yes">&lt;id&gt;([0-9]*)&lt;/id&gt;[^&lt;]*&lt;SeriesName&gt;([^&lt;]*)&lt;/SeriesName&gt;</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetSearchResults>
+	<!-- 	input: $1..#urls=html -->
+	<!--	input: $(#urls+1): extra !-->
+	<!-- 	returns: results in xml format <details><plot>*</plot><director>*</director><premiered>*</premiered><episodeguide>*</episodeguide></details> -->
+	<GetDetails dest="7">
+		<RegExp input="$$4" output="&lt;details&gt;\1&lt;/details&gt;" dest="7">
+			<RegExp input="$$1" output="\1" dest="5">
+				<expression noclean="1">&lt;Item&gt;[^&lt;]*&lt;id&gt;$$3&lt;/id&gt;(.*)</expression>
+			</RegExp>
+			<RegExp input="$$5" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="4">
+				<expression noclean="1">&lt;Overview&gt;([^&lt;]*)&lt;/Overview&gt;</expression>
+			</RegExp>
+			<RegExp input="$$5" output="&lt;premiered&gt;\1&lt;/premiered&gt;" dest="4+">
+				<expression>&lt;FirstAired&gt;([^&lt;]*)&lt;/FirstAired&gt;</expression>
+			</RegExp>
+			<RegExp input="$$5" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="4+">
+				<expression>&lt;Rating&gt;([^&lt;]*)&lt;/Rating&gt;</expression>
+			</RegExp>
+			<RegExp input="$$5" output="&lt;title&gt;\1&lt;/title&gt;" dest="4+">
+				<expression>&lt;SeriesName&gt;([^&lt;]*)&lt;/SeriesName&gt;</expression>
+			</RegExp>
+			<RegExp input="$$5" output="\1" dest="6">
+				<expression noclean="1">&lt;Genre&gt;([^&lt;]*)&lt;/Genre&gt;</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="4+">
+				<expression repeat="yes">([^\|]*)\|</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="4+">
+				<expression repeat="yes">([^,]*),</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="4+">
+				<expression>([^\|,]+)$</expression>
+			</RegExp>
+			<RegExp input="$$5" output="\1" dest="6">
+				<expression noclean="1">&lt;Actors&gt;([^&lt;]*)&lt;/Actors&gt;</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;/actor&gt;" dest="4+">
+				<expression repeat="yes">\|?([^\|]*)\|?</expression>
+			</RegExp>
+			<RegExp input="$$5" output="&lt;thumbs&gt;\1&lt;/thumbs&gt;" dest="4+">
+				<RegExp input="$$2" output="&lt;thumb&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="5">
+					<expression clear="yes" repeat="yes">&lt;Type&gt;series&lt;/Type&gt;[^&lt;]*&lt;BannerType&gt;[^&lt;]*&lt;/BannerType&gt;[^&lt;]*&lt;Season&gt;0&lt;/Season&gt;[^&lt;]*&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*</expression>
+				</RegExp>
+				<RegExp input="$$2" output="&lt;thumb type=&quot;season&quot; season=&quot;\1&quot;&gt;http://thetvdb.com/banners/\2&lt;/thumb&gt;" dest="5+">
+					<expression repeat="yes">&lt;Type&gt;seasonwide&lt;/Type&gt;[^&lt;]*&lt;BannerType&gt;[^&lt;]*&lt;/BannerType&gt;[^&lt;]*&lt;Season&gt;([0-9]+)&lt;/Season&gt;[^&lt;]*&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*</expression>
+				</RegExp>
+				<RegExp input="$$2" output="&lt;thumb type=&quot;season&quot; season=&quot;\1&quot;&gt;http://thetvdb.com/banners/\2&lt;/thumb&gt;" dest="5+">
+					<expression repeat="yes">&lt;Type&gt;season&lt;/Type&gt;[^&lt;]*&lt;BannerType&gt;[^&lt;]*&lt;/BannerType&gt;[^&lt;]*&lt;Season&gt;([0-9]+)&lt;/Season&gt;[^&lt;]*&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*</expression>
+				</RegExp>
+				<expression noclean="1"></expression>
+			</RegExp>
+			<RegExp input="$$3" output="&lt;episodeguide&gt;http://thetvdb.com/interfaces/GetEpisodes.php?language=17&amp;amp;seriesid=\1&lt;/episodeguide&gt;" dest="4+">
+				<expression></expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetDetails>
+	<!-- 	input: $1=html  !-->
+	<!--    input: $2=series url !-->
+	<!-- 	returns: results in xml format <episodeguide><episode><title>*</title><url>*</url><season>*</season><epnum>*</epnum><thumb>*</thumb><id>*</id></episode>*</episodeguide> !-->
+	<GetEpisodeList dest="3">
+ 	  <RegExp input="$$4" output="&lt;episodeguide&gt;\1&lt;/episodeguide&gt;" dest="3">
+ 		<RegExp input="$$1" output="&lt;episode&gt;&lt;title&gt;\4&lt;/title&gt;&lt;url&gt;http://thetvdb.com/interfaces/EpisodeUpdates.php?language=17&amp;amp;idlist=\1&lt;/url&gt;&lt;epnum&gt;\3&lt;/epnum&gt;&lt;season&gt;\2&lt;/season&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/episode&gt;" dest="4">
+ 			<expression repeat="yes">&lt;id&gt;([0-9]*)&lt;/id&gt;[^&lt;]*&lt;SeasonNumber&gt;([0-9]*)&lt;/SeasonNumber&gt;[^&lt;]*&lt;EpisodeNumber&gt;([0-9]*)&lt;/EpisodeNumber&gt;[^&lt;]*&lt;EpisodeName&gt;([^&lt;]*)&lt;/EpisodeName&gt;</expression>
+ 		</RegExp>
+ 	    <expression noclean="1"></expression>
+ 	  </RegExp>
+	</GetEpisodeList>
+	<!-- 	input: $1=html -->
+	<!-- 	returns: results in xml format <details><writer>*</writer><director>*</director><cast>*</cast><rating>*</rating><rank>*</rank><plot>*</plot> -->
+	<GetEpisodeDetails dest="3">
+		<RegExp input="$$4" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="4">
+				<expression>&lt;Overview&gt;([^&lt;]*)&lt;/Overview&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="6">
+				<expression noclean="1">&lt;Writer&gt;([^&lt;]*)&lt;/Writer&gt;</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="4+">
+				<expression repeat="yes">([^\|]*)\|</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="4+">
+				<expression repeat="yes">([^,]*),</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="4+">
+				<expression>([^\|,]+)$</expression>
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="6">
+				<expression noclean="1">&lt;Director&gt;([^&lt;]*)&lt;/Director&gt;</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;director&gt;\1&lt;/director&gt;" dest="4+">
+				<expression repeat="yes">([^\|]*)\|</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;director&gt;\1&lt;/director&gt;" dest="4+">
+				<expression repeat="yes">([^,]*),</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;director&gt;\1&lt;/director&gt;" dest="4+">
+				<expression>([^\|,]+)$</expression>
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="6">
+				<expression noclean="1">&lt;GuestStars&gt;([^&lt;]*)&lt;/GuestStars&gt;</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;/actor&gt;" dest="4+">
+				<expression repeat="yes">([^\|]*)\|</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;/actor&gt;" dest="4+">
+				<expression repeat="yes">([^,]*),</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;/actor&gt;" dest="4+">
+				<expression>([^\|,]+)$</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="4+">
+ 				<expression>&lt;EpisodeName&gt;([^&lt;]*)&lt;/EpisodeName&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;season&gt;\1&lt;/season&gt;" dest="4+">
+ 				<expression>&lt;SeasonNumber&gt;([^&lt;]*)&lt;/SeasonNumber&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;episode&gt;\1&lt;/episode&gt;" dest="4+">
+ 				<expression>&lt;EpisodeNumber&gt;([^&lt;]*)&lt;/EpisodeNumber&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;thumb&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
+				<expression>&lt;filename&gt;([^&lt;]+)&lt;/filename&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;aired&gt;\1&lt;/aired&gt;" dest="4+">
+				<expression>&lt;FirstAired&gt;([^&lt;]+)&lt;/FirstAired&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;displayseason&gt;\1&lt;/displayseason&gt;" dest="4+">
+				<expression>&lt;airsbefore_season&gt;([^&lt;]+)&lt;/airsbefore_season&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;displayepisode&gt;\1&lt;/displayepisode&gt;" dest="4+">
+				<expression>&lt;airsbefore_episode&gt;([^&lt;]+)&lt;/airsbefore_episode&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;displayafterseason&gt;\1&lt;/displayafterseason&gt;" dest="4+">
+				<expression>&lt;airsafter_season&gt;([^&lt;]+)&lt;/airsafter_season&gt;</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetEpisodeDetails>
+</scraper>
