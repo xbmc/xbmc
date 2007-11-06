@@ -25,6 +25,7 @@ CDVDPlayerVideo::CDVDPlayerVideo(CDVDClock* pClock, CDVDOverlayContainer* pOverl
   m_speed = DVD_PLAYSPEED_NORMAL;
   
   m_bRenderSubs = false;
+  m_DetectedStill = false;
   m_iVideoDelay = 0;
   m_fForcedAspectRatio = 0;
   m_iNrOfPicturesNotToSkip = 0;
