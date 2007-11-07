@@ -28,6 +28,7 @@
 #include "GUIDialogContentSettings.h"
 #include "GUIDialogVideoScan.h"
 #include "GUIWindowVideoFiles.h"
+#include "GUIDialogPluginSettings.h"
 #include "Application.h"
 #include "GUIPassword.h"
 #include "Util.h"
@@ -490,7 +491,11 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CShare *shar
       m_gWindowManager.SendThreadMessage(msg);
       return true;
     }
-
+  case CONTEXT_BUTTON_PLUGIN_SETTINGS:
+    {
+      CURL url(share->strPath);
+      CGUIDialogPluginSettings::ShowAndGetInput(url);
+    }  
   default:
     break;
   }
