@@ -307,15 +307,18 @@ void CDVDPlayer::Process()
     CDVDDemux::DemuxPacket* pPacket = m_pDemuxer->Read();
 
     // check if we are too slow and need to recache
-    if (m_dvdPlayerAudio.IsStalled() && m_CurrentAudio.inited && m_CurrentAudio.id >= 0
-    ||  m_dvdPlayerVideo.IsStalled() && m_CurrentVideo.inited && m_CurrentVideo.id >= 0 && !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+    if(!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
     {
-      if(!m_caching)
+      if (m_dvdPlayerAudio.IsStalled() && m_CurrentAudio.inited && m_CurrentAudio.id >= 0
+      ||  m_dvdPlayerVideo.IsStalled() && m_CurrentVideo.inited && m_CurrentVideo.id >= 0)
       {
-        m_clock.SetSpeed(DVD_PLAYSPEED_PAUSE);
-        m_dvdPlayerAudio.SetSpeed(DVD_PLAYSPEED_PAUSE);
-        m_dvdPlayerVideo.SetSpeed(DVD_PLAYSPEED_PAUSE);
-        m_caching = true;
+        if(!m_caching)
+        {
+          m_clock.SetSpeed(DVD_PLAYSPEED_PAUSE);
+          m_dvdPlayerAudio.SetSpeed(DVD_PLAYSPEED_PAUSE);
+          m_dvdPlayerVideo.SetSpeed(DVD_PLAYSPEED_PAUSE);
+          m_caching = true;
+        }
       }
     }
 
