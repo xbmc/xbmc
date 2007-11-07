@@ -76,9 +76,9 @@ protected:
 	HANDLE	m_hCacheFileRead;
 	HANDLE	m_hCacheFileWrite;
 	HANDLE	m_hDataAvailEvent;
-    __int64 m_nStartPosition;
-	CStdString m_fileName;
-	CCriticalSection m_sync;
+  __int64 m_nStartPosition;
+  __int64 m_nWritePosition;
+  __int64 m_nReadPosition;
 };
 
 }
