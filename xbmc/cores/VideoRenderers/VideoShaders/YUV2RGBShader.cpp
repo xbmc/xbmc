@@ -70,12 +70,15 @@ BaseYUV2RGBShader::BaseYUV2RGBShader()
 // Use for weave deinterlacing / progressive
 //////////////////////////////////////////////////////////////////////
 
-YUV2RGBProgressiveShader::YUV2RGBProgressiveShader()
+YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect)
 {
+  string target = "";
+  if (rect)
+    target="Rect";
   string shaderf = 
-    "uniform sampler2D ytex;\n"
-    "uniform sampler2D utex;\n"
-    "uniform sampler2D vtex;\n"
+    "uniform sampler2D"+target+" ytex;\n"
+    "uniform sampler2D"+target+" utex;\n"
+    "uniform sampler2D"+target+" vtex;\n"
     "void main()\n"
     "{\n"
     "vec4 yuv, rgb;\n"
@@ -83,9 +86,9 @@ YUV2RGBProgressiveShader::YUV2RGBProgressiveShader()
     "                vec4(0.0,       -0.39465, 2.03211, 0.0), \n"
     "                vec4(1.13983, -0.58060, 0.0,     0.0), \n"
     "                vec4(0.0,     0.0,      0.0,     0.0) ); \n"
-    "yuv.rgba = vec4(texture2D(ytex, gl_TexCoord[0].xy).r,\n"
-    "                0.436 * (texture2D(utex, gl_TexCoord[1].xy).r * 2.0 - 1.0),\n"
-    "                0.615 * (texture2D(vtex, gl_TexCoord[2].xy).r * 2.0 - 1.0),\n"
+    "yuv.rgba = vec4(texture2D"+target+"(ytex, gl_TexCoord[0].xy).r,\n"
+    "                0.436 * (texture2D"+target+"(utex, gl_TexCoord[1].xy).r * 2.0 - 1.0),\n"
+    "                0.615 * (texture2D"+target+"(vtex, gl_TexCoord[2].xy).r * 2.0 - 1.0),\n"
     "                0.0);\n"
     "rgb = yuvmat * yuv;\n"
     "rgb.a = 1.0;\n"
@@ -118,12 +121,15 @@ bool YUV2RGBProgressiveShader::OnEnabled()
 // YUV2RGBBobShader - YUV2RGB with Bob deinterlacing
 //////////////////////////////////////////////////////////////////////
 
-YUV2RGBBobShader::YUV2RGBBobShader()
+YUV2RGBBobShader::YUV2RGBBobShader(bool rect)
 {
+  string target = "";
+  if (rect)
+    target="Rect";
   string shaderf = 
-    "uniform sampler2D ytex;"
-    "uniform sampler2D utex;"
-    "uniform sampler2D vtex;"
+    "uniform sampler2D"+target+" ytex;"
+    "uniform sampler2D"+target+" utex;"
+    "uniform sampler2D"+target+" vtex;"
     "uniform float stepX, stepY;"
     "uniform int field;"
     "void main()"
@@ -140,9 +146,9 @@ YUV2RGBBobShader::YUV2RGBBobShader()
     "                vec4(0.0,       -0.39465, 2.03211, 0.0), \n"
     "                vec4(1.13983, -0.58060, 0.0,     0.0), \n"
     "                vec4(0.0,     0.0,      0.0,     0.0) ); \n"
-    "yuv = vec4(texture2D(ytex, offsetY).r,"
-    "           texture2D(utex, offsetUV).r,"
-    "           texture2D(vtex, offsetUV).r,"
+    "yuv = vec4(texture2D"+target+"(ytex, offsetY).r,"
+    "           texture2D"+target+"(utex, offsetUV).r,"
+    "           texture2D"+target+"(vtex, offsetUV).r,"
     "           0.0);"
     "yuv.gba = vec3(0.436 * (yuv.g * 2.0 - 1.0),"
     "           0.615 * (yuv.b * 2.0 - 1.0), 0);"        
