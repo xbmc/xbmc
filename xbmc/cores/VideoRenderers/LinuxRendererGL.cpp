@@ -1198,20 +1198,20 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
     {
       if (m_renderQuality == RQ_SINGLEPASS)
       {
-        m_pYUVShader = new YUV2RGBProgressiveShader(); // create regular progressive scan shader
-        //m_pYUVShader = new YUV2RGBBobShader(); // create bob deinterlacing shader
+        m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB); // create regular progressive scan shader
+        //m_pYUVShader = new YUV2RGBBobShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB); // create bob deinterlacing shader
         CLog::Log(LOGNOTICE, "GL: Selecting Single Pass YUV 2 RGB shader");
       }
       else if (m_renderQuality == RQ_MULTIPASS)
       {
-        //m_pYUVShader = new YUV2RGBProgressiveShader(); // create regular progressive scan shader
-        m_pYUVShader = new YUV2RGBBobShader(); // create bob deinterlacing shader
+        //m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB); // create regular progressive scan shader
+        m_pYUVShader = new YUV2RGBBobShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB); // create bob deinterlacing shader
         CLog::Log(LOGNOTICE, "GL: Selecting Multipass Pass YUV 2 RGB shader");
       }
     }
     else
     {
-      m_pYUVShader = new YUV2RGBProgressiveShader(); // create regular progressive scan shader
+      m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB); // create regular progressive scan shader
       CLog::Log(LOGNOTICE, "GL: Selecting YUV 2 RGB Progressive Shader");
     }
 
@@ -1881,23 +1881,23 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags)
     // are not normalized)
 
     glMultiTexCoord2f(GL_TEXTURE0, (float)rs.left, (float)rs.top );
-    glMultiTexCoord2f(GL_TEXTURE1, (float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f);
-    glMultiTexCoord2f(GL_TEXTURE2, (float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f );
+    glMultiTexCoord2f(GL_TEXTURE1, (float)rs.left / 2.0f, (float)rs.top / 2.0f);
+    glMultiTexCoord2f(GL_TEXTURE2, (float)rs.left / 2.0f, (float)rs.top / 2.0f );
     glVertex4f((float)rd.left, (float)rd.top, 0, 1.0f );
     
     glMultiTexCoord2f(GL_TEXTURE0, (float)rs.right, (float)rs.top );
-    glMultiTexCoord2f(GL_TEXTURE1, (float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f );
-    glMultiTexCoord2f(GL_TEXTURE2, (float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f );
+    glMultiTexCoord2f(GL_TEXTURE1, (float)rs.right / 2.0f, (float)rs.top / 2.0f );
+    glMultiTexCoord2f(GL_TEXTURE2, (float)rs.right / 2.0f, (float)rs.top / 2.0f );
     glVertex4f((float)rd.right, (float)rd.top, 0, 1.0f);
     
     glMultiTexCoord2f(GL_TEXTURE0, (float)rs.right, (float)rs.bottom );
-    glMultiTexCoord2f(GL_TEXTURE1, (float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
-    glMultiTexCoord2f(GL_TEXTURE2, (float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
+    glMultiTexCoord2f(GL_TEXTURE1, (float)rs.right / 2.0f, (float)rs.bottom / 2.0f );
+    glMultiTexCoord2f(GL_TEXTURE2, (float)rs.right / 2.0f, (float)rs.bottom / 2.0f );
     glVertex4f((float)rd.right, (float)rd.bottom, 0, 1.0f);
     
     glMultiTexCoord2f(GL_TEXTURE0, (float)rs.left, (float)rs.bottom );
-    glMultiTexCoord2f(GL_TEXTURE1, (float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
-    glMultiTexCoord2f(GL_TEXTURE2, (float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
+    glMultiTexCoord2f(GL_TEXTURE1, (float)rs.left / 2.0f, (float)rs.bottom / 2.0f );
+    glMultiTexCoord2f(GL_TEXTURE2, (float)rs.left / 2.0f, (float)rs.bottom / 2.0f );
     glVertex4f((float)rd.left, (float)rd.bottom, 0, 1.0f);
   }
   glEnd();

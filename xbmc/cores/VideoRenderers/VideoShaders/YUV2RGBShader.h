@@ -40,7 +40,7 @@ namespace Shaders {
   class YUV2RGBProgressiveShader : public BaseYUV2RGBShader
   {
   public:
-    YUV2RGBProgressiveShader();
+    YUV2RGBProgressiveShader(bool rect=false);
     void OnCompiledAndLinked();
     bool OnEnabled();
   };
@@ -48,7 +48,7 @@ namespace Shaders {
   class YUV2RGBBobShader : public BaseYUV2RGBShader
   {
   public:
-    YUV2RGBBobShader();
+    YUV2RGBBobShader(bool rect=false);
     void OnCompiledAndLinked();
     bool OnEnabled();
   };
