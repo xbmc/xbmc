@@ -3110,7 +3110,9 @@ void CGUIInfoManager::ParseLabel(const CStdString &strLabel, vector<CInfoPortion
     {
       CStdString left = work.Left(pos1);
       CStdString right = work.Mid(pos2 + 1);
-      CStdString replace = g_localizeStrings.Get(atoi(work.Mid(pos1 + 10).c_str()));
+      CStdString replace = g_localizeStringsTemp.Get(atoi(work.Mid(pos1 + 10).c_str()));
+      if (replace == "")
+         replace = g_localizeStrings.Get(atoi(work.Mid(pos1 + 10).c_str()));
       work = left + replace + right;
     }
     else
