@@ -23,7 +23,8 @@
 #include "Util.h"
 #include "lib/libPython/XBPython.h"
 #include "../utils/SingleLock.h"
- 
+#include "PluginSettings.h"
+
 using namespace DIRECTORY;
 using namespace std;
 
@@ -243,6 +244,9 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
   CStdString options = url.GetOptions();
   CUtil::RemoveSlashAtEnd(options); // This MAY kill some scripts (eg though with a URL ending with a slash), but
                                     // is needed for all others, as XBMC adds slashes to "folders"
+
+  // Load the plugin settings
+  g_currentPluginSettings.Load(url);
 
   // reset our wait event, and grab a new handle
   ResetEvent(m_directoryFetched);

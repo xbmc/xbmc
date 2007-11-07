@@ -187,6 +187,7 @@
 #include "GUIDialogSmartPlaylistEditor.h"
 #include "GUIDialogSmartPlaylistRule.h"
 #include "GUIDialogPictureInfo.h"
+#include "GUIDialogPluginSettings.h"
 
 #ifdef HAS_SDL
 #include <SDL/SDL_mixer.h>
@@ -1464,6 +1465,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogSmartPlaylistRule);       // window id = 137
   m_gWindowManager.Add(new CGUIDialogBusy);      // window id = 138
   m_gWindowManager.Add(new CGUIDialogPictureInfo);      // window id = 139
+  m_gWindowManager.Add(new CGUIDialogPluginSettings);      // window id = 140
 
   CGUIDialogLockSettings* pDialog = NULL;
   CStdString strPath;
@@ -3696,6 +3698,7 @@ void CApplication::Stop()
     m_gWindowManager.Delete(WINDOW_DIALOG_SMART_PLAYLIST_RULE);
     m_gWindowManager.Delete(WINDOW_DIALOG_BUSY);
     m_gWindowManager.Delete(WINDOW_DIALOG_PICTURE_INFO);
+    m_gWindowManager.Delete(WINDOW_DIALOG_PLUGIN_SETTINGS);
 
     m_gWindowManager.Delete(WINDOW_STARTUP);
     m_gWindowManager.Delete(WINDOW_VISUALISATION);
