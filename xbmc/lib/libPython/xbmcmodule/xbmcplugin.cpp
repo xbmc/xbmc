@@ -2,6 +2,7 @@
 #include "../python/Python.h"
 #include "FileSystem/PluginDirectory.h"
 #include "listitem.h"
+#include "PluginSettings.h"
 
 // include for constants
 #include "pyutil.h"
@@ -9,10 +10,12 @@
 
 using namespace XFILE;
 
+#ifndef __GNUC__
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
 #pragma bss_seg("PY_BSS")
 #pragma const_seg("PY_RDATA")
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -153,11 +156,27 @@ namespace PYXBMC
     return Py_None;
   }
 
+  PyDoc_STRVAR(getSetting__doc__,
+    "getSetting(id) -- Returns a value of a setting.\n"
+    "\n"
+    "id        : string - id of the setting that the module needs to access.\n"
+    "\n"
+    "example:\n"
+    "  - apikey = xbmcplugin.get('apikey')\n");
+
+  PyObject* XBMCPLUGIN_GetSetting(PyObject *self, PyObject *args)
+  {
+    char *id;
+    if (!PyArg_ParseTuple(args, "s", &id)) return NULL;
+    return Py_BuildValue("s", g_currentPluginSettings.Get(id).c_str());
+  }
+
   // define c functions to be used in python here
   PyMethodDef pluginMethods[] = {
     {"addDirectoryItem", (PyCFunction)XBMCPLUGIN_AddDirectoryItem, METH_VARARGS|METH_KEYWORDS, addDirectoryItem__doc__},
     {"endOfDirectory", (PyCFunction)XBMCPLUGIN_EndOfDirectory, METH_VARARGS|METH_KEYWORDS, endOfDirectory__doc__},
     {"addSortMethod", (PyCFunction)XBMCPLUGIN_AddSortMethod, METH_VARARGS|METH_KEYWORDS, addSortMethod__doc__},
+    {"getSetting", (PyCFunction)XBMCPLUGIN_GetSetting, METH_VARARGS|METH_KEYWORDS, getSetting__doc__},
     {NULL, NULL, 0, NULL}
   };
 
