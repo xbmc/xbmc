@@ -24,6 +24,7 @@
 #include "ComboRenderer.h"
 #include "RGBRenderer.h"
 #include "RGBRendererV2.h"
+#include "Application.h"
 
 CXBoxRenderManager g_renderManager;
 
@@ -221,7 +222,7 @@ void CXBoxRenderManager::FlipPage(DWORD delay /* = 0LL*/, int source /*= -1*/, E
   m_presentfield = sync;
 
   CSingleLock lock2(g_graphicsContext);
-  if( g_graphicsContext.IsFullScreenVideo() )
+  if( g_graphicsContext.IsFullScreenVideo() && !g_application.IsPaused() )
   {
     lock2.Leave();
 
@@ -432,7 +433,7 @@ void CXBoxRenderManager::Process()
       CSharedLock lock(m_sharedSection);
       CSingleLock lock2(g_graphicsContext);
 
-      if( m_pRenderer && g_graphicsContext.IsFullScreenVideo() )
+      if( m_pRenderer && g_graphicsContext.IsFullScreenVideo() && !g_application.IsPaused() )
         Present();
     }
     catch(...)
