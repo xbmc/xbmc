@@ -32,4 +32,5 @@ protected:
  \brief 
  */
 extern CLocalizeStrings g_localizeStrings;
+extern CLocalizeStrings g_localizeStringsTemp;
 #endif

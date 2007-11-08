@@ -42,6 +42,7 @@ public:
   void SetFocusActions(const vector<CStdString>& focusActions) { m_focusActions = focusActions; };
   const CLabelInfo& GetLabelInfo() const { return m_label; };
   virtual const string& GetLabel() const { return m_strLabel; };
+  virtual const string& GetLabel2() const { return m_strLabel2; };
   void SetTabButton(bool bIsTabButton = TRUE) { m_bTabButton = bIsTabButton; };
   void SetSelected(bool bSelected);
   void Flicker(bool bFlicker = TRUE);

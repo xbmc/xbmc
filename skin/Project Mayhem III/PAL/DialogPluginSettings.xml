@@ -1,0 +1,110 @@
+<window id="10140">
+	<defaultcontrol>2</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<control type="image">
+			<description>background image</description>
+			<posx>50</posx>
+			<posy>100</posy>
+			<width>620</width>
+			<height>430</height>
+			<texture>dialog-panel.png</texture>
+		</control>
+		<control type="grouplist" id="2">
+			<description>control area</description>
+			<posx>75</posx>
+			<posy>115</posy>
+			<width>590</width>
+			<height>300</height>
+			<itemgap>0</itemgap>
+			<pagecontrol>90</pagecontrol>
+			<onleft>9000</onleft>
+			<onright>9000</onright>
+			<onup>9000</onup>
+			<ondown>9000</ondown>
+		</control>
+		<control type="button" id="3">
+			<description>Default Button</description>
+			<posx>530</posx>
+			<posy>150</posy>
+			<font>font13</font>
+			<textoffsetx>7</textoffsetx>
+			<texturefocus>list-focus.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+		</control>
+		<control type="radiobutton" id="4">
+			<description>Default RadioButton</description>
+			<posx>530</posx>
+			<posy>150</posy>
+			<font>font13</font>
+			<texturefocus>list-focus.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<textoffsetx>7</textoffsetx>
+			<textureradiofocus>settings-check-box.png</textureradiofocus>
+			<textureradionofocus> settings-check-boxNF.png</textureradionofocus>
+		</control>
+		<control type="spincontrolex" id="5">
+			<description>Default SpinControlex</description>
+			<posx>530</posx>
+			<posy>150</posy>
+			<width>300</width>
+			<texturefocus>list-focus.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<textureup>scroll-up.png</textureup>
+			<texturedown>scroll-down.png</texturedown>
+			<textureupfocus>scroll-up-focus.png</textureupfocus>
+			<texturedownfocus>scroll-down-focus.png</texturedownfocus>
+			<font>font13</font>
+			<textcolor>white</textcolor>
+			<disabledcolor>disabled</disabledcolor>
+			<textoffsetx>7</textoffsetx>
+			<aligny>center</aligny>
+			<reverse>yes</reverse>define CONTROL_AREA                    5
+		</control>
+		<control type="image" id="6">
+			<description>separator image</description>
+			<width>350</width>
+			<height>5</height>
+			<texture>separator.png</texture>
+		</control>
+      <control type="group" id="9000">
+          <control type="button" id="11">
+             <description>cancel</description>
+             <posx>480</posx>
+             <posy>450</posy>
+             <width>80</width>
+             <height>30</height>
+             <align>center</align>
+             <aligny>center</aligny>
+             <label>222</label>
+             <textcolor>ffffffff</textcolor>
+             <textoffsetx>10</textoffsetx>
+             <disabledcolor>60d0d0d0</disabledcolor>
+             <shadowcolor>ff000000</shadowcolor>
+             <onleft>10</onleft>
+             <onright>10</onright>
+             <onup>2</onup>
+             <ondown>2</ondown>
+          </control>
+          <control type="button" id="10">
+             <description>ok</description>
+             <posx>570</posx>
+             <posy>450</posy>
+             <width>80</width>
+             <height>30</height>
+             <align>center</align>
+             <aligny>center</aligny>
+             <label>186</label>
+             <textcolor>ffffffff</textcolor>
+             <textoffsetx>10</textoffsetx>
+             <disabledcolor>60d0d0d0</disabledcolor>
+             <shadowcolor>ff000000</shadowcolor>
+             <onleft>11</onleft>
+             <onright>11</onright>
+             <onup>2</onup>
+             <ondown>2</ondown>
+           </control>
+       </control>
+		
+	</controls>
+</window>
