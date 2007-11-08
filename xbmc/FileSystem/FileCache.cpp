@@ -16,8 +16,6 @@ using namespace XFILE;
 CFileCache::CFileCache()
 {
    m_bDeleteCache = false;
-   m_bCaching  = false;
-   m_nCacheLevel = 0;
    m_nSeekResult = 0;
    m_seekPos = 0;
    m_readPos = 0;
@@ -330,13 +328,9 @@ __int64 CFileCache::GetLength()
   return m_source.GetLength();
 }
 
-bool CFileCache::IsCaching()    const    
+ICacheInterface* CFileCache::GetCache()
 {
-  return m_bCaching;
+  if(m_pCache)
+    return m_pCache->GetInterface();
+  return NULL;
 }
-
-int CFileCache::GetCacheLevel() const    
-{
-  return m_nCacheLevel;
-}
-

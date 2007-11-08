@@ -32,17 +32,14 @@ namespace XFILE
     virtual __int64       GetPosition();
     virtual __int64       GetLength();
     
+    virtual ICacheInterface* GetCache();
     IFile *GetFileImp();
-
-    bool IsCaching()    const    ;
-    int GetCacheLevel() const    ;
+    
 
   private:
     CCacheStrategy *m_pCache;
     bool      m_bDeleteCache;
-    bool      m_bCaching;
     bool      m_bSeekPossible;
-    int       m_nCacheLevel;
     CFile      m_source;
     CStdString    m_sourcePath;
     CEvent      m_seekEvent;
