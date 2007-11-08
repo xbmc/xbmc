@@ -1128,6 +1128,12 @@
 				Name="Settings"
 				Filter="">
 				<File
+					RelativePath="..\..\xbmc\GUIDialogPluginSettings.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPluginSettings.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\GUISettings.cpp">
 				</File>
 				<File
@@ -1141,6 +1147,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIWindowSettingsScreenCalibration.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\PluginSettings.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\PluginSettings.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\Settings.cpp">
