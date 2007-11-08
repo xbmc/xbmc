@@ -318,6 +318,17 @@ void CFile::Attach(IFile *pFile, unsigned int flags) {
   }
 }
 
+IFile* CFile::Detach() {
+  // TODO - currently the buffered reading is broken if in use, it should be
+  //        moved to a IFile instead, then it will work just fine
+
+  IFile* file = m_pFile;
+  m_pFile = NULL;
+  m_flags = 0;
+  return file;
+}
+
+
 bool CFile::OpenForWrite(const CStdString& strFileName, bool bBinary, bool bOverWrite)
 {
   try 
