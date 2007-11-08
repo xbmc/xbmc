@@ -35,7 +35,6 @@ bool CFileReader::Open(const CStdString &strFile, bool autoBuffer, bool preBuffe
   Close();
   if (!m_file.Open(strFile, true, READ_TRUNCATED))
     return false;
-  m_file.SetObject(&m_ringBuffer);
 
   if (!(m_chunk_size = m_file.GetChunkSize()))
     m_chunk_size = 16384;
