@@ -52,12 +52,12 @@ public:
   void Close();
   int GetChunkSize() {if (m_pFile) return m_pFile->GetChunkSize(); return 0;}
   bool SkipNext(){if (m_pFile) return m_pFile->SkipNext(); return false;}
-  void SetObject(void* obj)    {if (m_pFile) m_pFile->Object = obj;} //generic object pointer to whatever
-  bool IsCaching()    const    {if (m_pFile) return m_pFile->IsCaching(); return false;}
-  int GetCacheLevel() const    {if (m_pFile) return m_pFile->GetCacheLevel(); return -1;}
+
+  ICacheInterface* GetCache() {if (m_pFile) return m_pFile->GetCache(); return NULL;}
 
   IFile *GetImplemenation() { return m_pFile; }
-  void Attach(IFile *pFile, unsigned int flags = 0);
+  IFile *Detach();
+  void   Attach(IFile *pFile, unsigned int flags = 0);
 
   static bool Exists(const CStdString& strFileName);
   static int  Stat(const CStdString& strFileName, struct __stat64* buffer);
