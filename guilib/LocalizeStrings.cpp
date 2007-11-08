@@ -15,6 +15,7 @@ CStdString ToUTF8(const CStdString& strEncoding, const CStdString& str)
 }
 
 CLocalizeStrings g_localizeStrings;
+CLocalizeStrings g_localizeStringsTemp;
 extern CStdString g_LoadErrorStr;
 
 CLocalizeStrings::CLocalizeStrings(void)
