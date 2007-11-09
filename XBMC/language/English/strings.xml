@@ -1290,6 +1290,12 @@
   <string id="15284">Listen to %name%'s recommendations Last.FM radio</string>
   <string id="15285">Top tags for user %name%</string>
   <string id="15286">Listen to %name%'s playlist Last.FM radio</string>
+  <string id="15287">Do you want to add the current track to your loved tracks?</string>
+  <string id="15288">Do you want to ban the current track?</string>
+  <string id="15289">Added to your loved tracks: '%s'.</string>
+  <string id="15290">Could not add '%s' to your loved tracks.</string>
+  <string id="15291">Banned: '%s'.</string>
+  <string id="15292">Could not ban '%s'.</string>
 
   <string id="15300">Path not found or invalid</string>
   <string id="15301">Could not connect to network server</string>
@@ -1375,14 +1381,14 @@
   <string id="20019">Choose Thumbnail</string>
   <string id="20020">Cannot use both KAI and trainer</string>
   <string id="20021">Choose which you want to use</string>
-  <!-- string id 20022 will always be set to an empty string (LocalizeStrings.cpp)--->
+  <!-- string id 20022 will always be set to an empty string (LocalizeStrings.cpp)-->
   <string id="20022"></string>
   <string id="20023">Conflict</string>
   <string id="20024">Scan new</string>
   <string id="20025">Scan all</string>
   <string id="20026">Region</string>
 
-  <!-- string id's 20027 thru 20034 are reserved for temperaturestrings  (LocalizeStrings.cpp)--->
+  <!-- string id's 20027 thru 20034 are reserved for temperaturestrings  (LocalizeStrings.cpp)-->
 
   <string id="20038">Lock music window</string>
   <string id="20039">Lock videos window</string>

@@ -13,8 +13,13 @@ public:
   //radio
   bool ChangeStation(const CURL& stationUrl);
   void StopRadio(bool bKillSession = true);
-  void OnSongChange(bool bNewSongIsLastFm);
+  void OnSongChange(CFileItem& newSong);
   bool IsRadioEnabled() {return !m_RadioSession.IsEmpty();}
+  bool IsLastFmEnabled();
+  bool Love(bool askConfirmation = true);
+  bool Ban(bool askConfirmation = true);
+  bool CanLove();
+  bool CanBan();
 
   //scrobbler
   bool CanScrobble(const CFileItem &fileitem);
@@ -23,6 +28,13 @@ protected:
   virtual void OnStartup();
 
 private:
+  typedef struct
+  {
+    CFileItem* CurrentSong;
+    bool IsLoved;
+    bool IsBanned;
+  } LastFmManagerSong;
+
   CLastFmManager();
   static CLastFmManager* m_pInstance;
 
@@ -35,6 +47,10 @@ private:
   void SendUpdateMessage();
   void Update();
   void AddToPlaylist(const int nrTracks);
+  bool CallXmlRpc(const CStdString& action, const CStdString& artist, const CStdString& title);
+  void CreateMD5Hash(const CStdString& bufferToHash, CStdString& hash);
+  bool Love(const CMusicInfoTag& musicinfotag);
+  bool Ban(const CMusicInfoTag& musicinfotag);
 
   CStdString m_RadioUrl;
   CStdString m_RadioSession;
@@ -42,6 +58,8 @@ private:
   CStdString m_RadioBasePath;
   CStdString m_RadioSubscriber;
   CStdString m_RadioBanned;
+
+  LastFmManagerSong m_CurrentSong;
 
   PLAYLIST::CPlayList m_RadioTrackQueue;
   HANDLE m_hWorkerEvent;
