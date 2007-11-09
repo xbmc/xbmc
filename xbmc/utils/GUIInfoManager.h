@@ -195,6 +195,9 @@
 #define AUDIOSCROBBLER_SUBMIT_INT   302
 #define AUDIOSCROBBLER_FILES_CACHED 303
 #define AUDIOSCROBBLER_SUBMIT_STATE 304
+#define LASTFM_RADIOPLAYING         305
+#define LASTFM_CANLOVE              306
+#define LASTFM_CANBAN               307
 
 #define LISTITEM_START              310
 #define LISTITEM_THUMB              310
