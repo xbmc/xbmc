@@ -29,6 +29,7 @@
 #include <stack>
 #include "../xbox/network.h"
 #include "GUIWindowSlideShow.h"
+#include "../LastFmManager.h"
 
 // stuff for current song
 #ifdef HAS_FILESYSTEM
@@ -459,6 +460,12 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("audioscrobbler.submitinterval")) ret = AUDIOSCROBBLER_SUBMIT_INT;
     else if (strTest.Equals("audioscrobbler.filescached")) ret = AUDIOSCROBBLER_FILES_CACHED;
     else if (strTest.Equals("audioscrobbler.submitstate")) ret = AUDIOSCROBBLER_SUBMIT_STATE;
+  }
+  else if (strCategory.Equals("lastfm"))
+  {
+    if (strTest.Equals("lastfm.radioplaying")) ret = LASTFM_RADIOPLAYING;
+    else if (strTest.Equals("lastfm.canlove")) ret = LASTFM_CANLOVE;
+    else if (strTest.Equals("lastfm.canban")) ret = LASTFM_CANBAN;
   }
   else if (strCategory.Equals("slideshow"))
     ret = CPictureInfoTag::TranslateString(strTest.Mid(strCategory.GetLength() + 1));
@@ -1492,8 +1499,17 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
       bReturn = g_partyModeManager.IsEnabled();
     break;
     case AUDIOSCROBBLER_ENABLED:
-      bReturn = g_guiSettings.GetBool("lastfm.enable");
+      bReturn = CLastFmManager::GetInstance()->IsLastFmEnabled();
     break;
+    case LASTFM_RADIOPLAYING:
+      bReturn = CLastFmManager::GetInstance()->IsRadioEnabled();
+      break;
+    case LASTFM_CANLOVE:
+      bReturn = CLastFmManager::GetInstance()->CanLove();
+      break;
+    case LASTFM_CANBAN:
+      bReturn = CLastFmManager::GetInstance()->CanBan();
+      break;
     case VIDEOPLAYER_USING_OVERLAYS:
       bReturn = (g_guiSettings.GetInt("videoplayer.rendermethod") == RENDER_OVERLAYS);
     break;
