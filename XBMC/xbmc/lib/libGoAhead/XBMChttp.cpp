@@ -2401,8 +2401,10 @@ int CXbmcHttp::xbmcConfig(int numParas, CStdString paras[])
   {
     return SetResponse(openTag+"Error:Unknown Config Command");
   }
-
-  return SetResponse(response);
+  if (ret==-1)
+    return SetResponse(openTag+"Error:WebServer needs to be running - is it?");
+  else
+    return SetResponse(response);
 }
 
 int CXbmcHttp::xbmcGetSystemInfo(int numParas, CStdString paras[])
