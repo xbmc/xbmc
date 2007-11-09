@@ -82,6 +82,7 @@
 #include "lib/libfilezilla/xbfilezilla.h"
 #endif
 #include "lib/libscrobbler/scrobbler.h"
+#include "LastFmManager.h"
 #include "MusicInfoLoader.h"
 #include "XBVideoConfig.h"
 #ifndef HAS_XBOX_D3D
@@ -3328,7 +3329,9 @@ const BUILT_IN commands[] = {
   "BackupSystemInfo",   false,  "Backup System Informations to local hdd",
   "UpdateLibrary",      true,   "Update the selected library (music or video)",
   "PageDown",           true,   "Send a page down event to the pagecontrol with given id",
-  "PageUp",             true,   "Send a page up event to the pagecontrol with given id"
+  "PageUp",             true,   "Send a page up event to the pagecontrol with given id",
+  "LastFM.Love",        false,  "Add the current playing last.fm radio track to the last.fm loved tracks",
+  "LastFM.Ban",         false,  "Ban the current playing last.fm radio track",
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -4183,6 +4186,14 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
           CGUIWindowVideoBase::OnScan("",info,settings);
       }
     }
+  }
+  else if (execute.Equals("lastfm.love"))
+  {
+    CLastFmManager::GetInstance()->Love(parameter.Equals("false") ? false : true);
+  }
+  else if (execute.Equals("lastfm.ban"))
+  {
+    CLastFmManager::GetInstance()->Ban(parameter.Equals("false") ? false : true);
   }
   else
     return -1;
