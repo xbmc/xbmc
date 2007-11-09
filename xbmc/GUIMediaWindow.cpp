@@ -1074,8 +1074,8 @@ bool CGUIMediaWindow::OnPopupMenu(int iItem)
 void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
   CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems.Size()) ? m_vecItems[itemNumber] : NULL;
-
-  if (item->IsPluginFolder())
+  
+  if (item && item->IsPluginFolder())
   {
       buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);     // Remove Favourite
   }
