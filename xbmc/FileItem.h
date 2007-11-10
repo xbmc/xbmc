@@ -251,6 +251,10 @@ public:
   /* sets the contenttype if known beforehand */
   void              SetContentType(const CStdString& content) { m_contenttype = content; } ;  
 
+  /* general extra info about the contents of the item, not for display */
+  void SetExtraInfo(const CStdString& info) { m_extrainfo = info; };
+  const CStdString& GetExtraInfo() const { return m_extrainfo; };
+
   bool IsSamePath(const CFileItem *item);
 private:
   // Gets the .tbn file associated with this item
@@ -281,6 +285,7 @@ private:
   bool m_bCanQueue;
   bool m_bLabelPreformated;
   CStdString m_contenttype;
+  CStdString m_extrainfo;
   CMusicInfoTag* m_musicInfoTag;
   CVideoInfoTag* m_videoInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
