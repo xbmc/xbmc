@@ -142,13 +142,13 @@
 	<GetMoviePosterDB dest="5">
 		<RegExp input="$$8" output="&lt;details&gt;&lt;thumbs&gt;\1$$9&lt;/thumbs&gt;&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;thumb&gt;\1/l_\2&lt;/thumb&gt;" dest="8+">
-				<expression repeat="yes" noclean="1">&lt;img src=&quot;([^&quot;]*)/t_([^&quot;]*)&quot;[^_]*[^&lt;]*[0-9]+x[0-9]+</expression>
+				<expression repeat="yes" noclean="1">&lt;img src=&quot;([^&quot;]*)/t_([^&quot;]*)&quot;[^_]*[^:]*[^=]*=&quot;US</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;thumb&gt;\1/l_\2&lt;/thumb&gt;" dest="8+">
 				<expression repeat="yes" noclean="1">&lt;img src=&quot;([^&quot;]*)/t_([^&quot;]*)&quot;[^_]*[^:]*[^=]*=&quot;[^U]</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;thumb&gt;\1/l_\2&lt;/thumb&gt;" dest="8+">
-				<expression repeat="yes" noclean="1">&lt;img src=&quot;([^&quot;]*)/t_([^&quot;]*)&quot;[^_]*[^:]*[^=]*=&quot;US</expression>
+				<expression repeat="yes" noclean="1">&lt;img src=&quot;([^&quot;]*)/t_([^&quot;]*)&quot;[^_]*[^&lt;]*[0-9]+x[0-9]+</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>
