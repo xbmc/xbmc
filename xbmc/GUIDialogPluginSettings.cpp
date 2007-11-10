@@ -267,7 +267,7 @@ void CGUIDialogPluginSettings::CreateControls()
   strHeading.Format("$LOCALIZE[1045]->%s", strHeading.c_str());
   SET_CONTROL_LABEL(CONTROL_HEADING_LABEL, strHeading);
 
-  CGUIControl* pControl;
+  CGUIControl* pControl = NULL;
   int controlId = CONTROL_START_CONTROL;
   TiXmlElement *setting = m_settings.GetPluginRoot()->FirstChildElement("setting");
   while (setting)
