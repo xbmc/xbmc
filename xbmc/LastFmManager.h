@@ -20,6 +20,8 @@ public:
   bool Ban(bool askConfirmation = true);
   bool CanLove();
   bool CanBan();
+  bool Unlove(const CMusicInfoTag& musicinfotag, bool askConfirmation = true);
+  bool Unban(const CMusicInfoTag& musicinfotag, bool askConfirmation = true);
 
   //scrobbler
   bool CanScrobble(const CFileItem &fileitem);

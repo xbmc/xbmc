@@ -1296,6 +1296,12 @@
   <string id="15290">Could not add '%s' to your loved tracks.</string>
   <string id="15291">Banned: '%s'.</string>
   <string id="15292">Could not ban '%s'.</string>
+  <string id="15293">Tracks recently loved by %name%</string>
+  <string id="15294">Tracks recently banned by %name%</string>
+  <string id="15295">Remove from loved tracks</string>
+  <string id="15296">Un-ban</string>
+  <string id="15297">Do you want to remove this track from your loved tracks?</string>
+  <string id="15298">Do you want to un-ban this track?</string>
 
   <string id="15300">Path not found or invalid</string>
   <string id="15301">Could not connect to network server</string>
