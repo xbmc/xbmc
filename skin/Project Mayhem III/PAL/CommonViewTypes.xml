@@ -2461,29 +2461,29 @@
 	</include>
 	<include name="FileBrowser_ThumbView">
 		<control type="panel" id="451">
-			<posx>10</posx>
-			<posy>70</posy>
+			<posx>55</posx>
+			<posy>100</posy>
 			<width>400</width>
 			<height>280</height>
-			<onleft>9000</onleft>
+			<onleft>60</onleft>
 			<onright>60</onright>
-			<onup>451</onup>
-			<ondown>451</ondown>
+			<onup>9000</onup>
+			<ondown>9000</ondown>
 			<scrolltime>200</scrolltime>
 			<viewtype label="536">icon</viewtype>
 			<pagecontrol>60</pagecontrol>
-			<itemlayout height="140" width="120">
+			<itemlayout height="140" width="90">
 				<control type="image">
-					<posx>5</posx>
+					<posx>4</posx>
 					<posy>5</posy>
-					<width>110</width>
+					<width>82</width>
 					<height>100</height>
 					<info>ListItem.Icon</info>
 				</control>
 				<control type="label">
-					<posx>60</posx>
+					<posx>45</posx>
 					<posy>115</posy>
-					<width>100</width>
+					<width>82</width>
 					<height>22</height>
 					<font>font13</font>
 					<selectedcolor>green</selectedcolor>
@@ -2491,25 +2491,25 @@
 					<info>ListItem.Label</info>
 				</control>
 			</itemlayout>
-			<focusedlayout height="140" width="120">
+			<focusedlayout height="140" width="90">
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>120</width>
+					<width>90</width>
 					<height>110</height>
 					<texture>folder-focus.png</texture>
 				</control>
 				<control type="image">
-					<posx>5</posx>
+					<posx>4</posx>
 					<posy>5</posy>
-					<width>110</width>
+					<width>82</width>
 					<height>100</height>
 					<info>ListItem.Icon</info>
 				</control>
 				<control type="label">
-					<posx>60</posx>
+					<posx>45</posx>
 					<posy>115</posy>
-					<width>100</width>
+					<width>82</width>
 					<height>22</height>
 					<font>font13</font>
 					<selectedcolor>green</selectedcolor>
@@ -2519,13 +2519,20 @@
 			</focusedlayout>
 		</control>
 		<control type="image">
-			<posx>403</posx>
-			<posy>185</posy>
-			<width>90</width>
-			<height>175</height>
+			<posx>450</posx>
+			<posy>55</posy>
+			<width>2</width>
+			<height>470</height>
+			<texture>settings-divider.png</texture>
+			<visible>!Control.IsVisible(60)</visible>
+		</control>
+		<control type="image">
+			<posx>460</posx>
+			<posy>55</posy>
+			<height>465</height>
+			<width>225</width>
 			<info>ListItem.Icon</info>
-			<aspectratio align="center" aligny="center">keep</aspectratio>
-			<visible>Window.IsVisible(2003)</visible>
+			<aspectratio align="right" aligny="center">keep</aspectratio>
 		</control>
 	</include>
 		<include name="DialogInfoViewOldListViewCommons">
