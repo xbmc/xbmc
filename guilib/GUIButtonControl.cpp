@@ -102,7 +102,7 @@ void CGUIButtonControl::Render()
       float width = m_width - 2 * m_label.offsetX - m_label.font->GetTextWidth(strLabelUnicode.c_str()) - 5;
       if (width < 0) width = 0;
       fPosX = m_posX + m_width - m_label.offsetX;
-      DWORD dwAlign = XBFONT_RIGHT | (m_label.align & XBFONT_CENTER_Y);
+      DWORD dwAlign = XBFONT_RIGHT | (m_label.align & XBFONT_CENTER_Y) | XBFONT_TRUNCATED;
 
       g_charsetConverter.utf8ToUTF16(m_strLabel2, strLabelUnicode);
 
