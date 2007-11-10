@@ -38,6 +38,7 @@
 #include "GUIImage.h"
 #include "GUIMultiImage.h"
 #include "GUIDialogSmartPlaylistEditor.h"
+#include "GUIDialogPluginSettings.h"
 
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
 #include "SkinInfo.h"
@@ -1107,6 +1108,12 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_ADD_FAVOURITE:
     CFavourites::AddOrRemove(m_vecItems[itemNumber], GetID());
     return true;
+  case CONTEXT_BUTTON_PLUGIN_SETTINGS:
+    {
+      CURL url(m_vecItems[itemNumber]->m_strPath);
+      CGUIDialogPluginSettings::ShowAndGetInput(url);
+      return true;
+    }
   }
   return false;
 }
