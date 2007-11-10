@@ -655,7 +655,17 @@ bool CLastFmManager::CallXmlRpc(const CStdString& action, const CStdString& arti
   CStdString strPassword = g_guiSettings.GetString("lastfm.password");
   if (strUserName.IsEmpty() || strPassword.IsEmpty())
   {
-    CLog::Log(LOGERROR, "Last.fm stream selected but no username or password set.");
+    CLog::Log(LOGERROR, "Last.fm CallXmlRpc no username or password set.");
+    return false;
+  }
+  if (artist.IsEmpty())
+  {
+    CLog::Log(LOGERROR, "Last.fm CallXmlRpc no artistname provided.");
+    return false;
+  }
+  if (title.IsEmpty())
+  {
+    CLog::Log(LOGERROR, "Last.fm CallXmlRpc no tracktitle provided.");
     return false;
   }
   
@@ -763,7 +773,9 @@ bool CLastFmManager::Love(bool askConfirmation)
       CStdString strTitle = infoTag->GetTitle();
       CStdString strArtist = infoTag->GetArtist();
 
-      if (!askConfirmation || CGUIDialogYesNo::ShowAndGetInput(15200, 15287, -1, -1))
+      CStdString strInfo;
+      strInfo.Format("%s - %s", strArtist, strTitle);
+      if (!askConfirmation || CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(15200), g_localizeStrings.Get(15287), strInfo, ""))
       {
         CStdString strMessage;
         if (Love(*infoTag))
@@ -794,7 +806,9 @@ bool CLastFmManager::Ban(bool askConfirmation)
       CStdString strTitle = infoTag->GetTitle();
       CStdString strArtist = infoTag->GetArtist();
 
-      if (!askConfirmation || CGUIDialogYesNo::ShowAndGetInput(15200, 15288, -1, -1))
+      CStdString strInfo;
+      strInfo.Format("%s - %s", strArtist, strTitle);
+      if (!askConfirmation || CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(15200), g_localizeStrings.Get(15288), strInfo, ""))
       {
         CStdString strMessage;
         if (Ban(*infoTag))
@@ -849,6 +863,68 @@ bool CLastFmManager::Ban(const CMusicInfoTag& musicinfotag)
     g_applicationMessenger.ExecBuiltIn("playercontrol(next)");
     m_CurrentSong.IsBanned = true;
     return true;
+  }
+  return false;
+}
+
+bool CLastFmManager::Unlove(const CMusicInfoTag& musicinfotag, bool askConfirmation /*= true*/)
+{
+  if (!IsLastFmEnabled())
+  {
+    CLog::Log(LOGERROR, "LastFmManager Unlove, lasfm is not enabled");
+    return false;
+  }
+
+  CStdString strTitle = musicinfotag.GetTitle();
+  CStdString strArtist = musicinfotag.GetArtist();
+
+  if (strArtist.IsEmpty())
+  {
+    CLog::Log(LOGERROR, "Last.fm Unlove no artistname provided.");
+    return false;
+  }
+  if (strTitle.IsEmpty())
+  {
+    CLog::Log(LOGERROR, "Last.fm Unlove no tracktitle provided.");
+    return false;
+  }
+
+  CStdString strInfo;
+  strInfo.Format("%s - %s", strArtist, strTitle);
+  if (!askConfirmation || CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(15200), g_localizeStrings.Get(15297), strInfo, ""))
+  {
+    return CallXmlRpc("unLoveTrack", strArtist, strTitle);
+  }
+  return false;
+}
+
+bool CLastFmManager::Unban(const CMusicInfoTag& musicinfotag, bool askConfirmation /*= true*/)
+{
+  if (!IsLastFmEnabled())
+  {
+    CLog::Log(LOGERROR, "LastFmManager Unban, lasfm is not enabled");
+    return false;
+  }
+  
+  CStdString strTitle = musicinfotag.GetTitle();
+  CStdString strArtist = musicinfotag.GetArtist();
+
+  if (strArtist.IsEmpty())
+  {
+    CLog::Log(LOGERROR, "Last.fm Unban no artistname provided.");
+    return false;
+  }
+  if (strTitle.IsEmpty())
+  {
+    CLog::Log(LOGERROR, "Last.fm Unban no tracktitle provided.");
+    return false;
+  }
+
+  CStdString strInfo;
+  strInfo.Format("%s - %s", strArtist, strTitle);
+  if (!askConfirmation || CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(15200), g_localizeStrings.Get(15298), strInfo, ""))
+  {
+    return CallXmlRpc("unBanTrack", strArtist, strTitle);
   }
   return false;
 }
