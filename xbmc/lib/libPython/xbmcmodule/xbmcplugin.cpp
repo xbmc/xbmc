@@ -159,13 +159,26 @@ namespace PYXBMC
     "\n"
     "id        : string - id of the setting that the module needs to access.\n"
     "\n"
+    "*Note, You can use the above as a keyword.\n"
+    "\n"
     "example:\n"
     "  - apikey = xbmcplugin.get('apikey')\n");
 
-  PyObject* XBMCPLUGIN_GetSetting(PyObject *self, PyObject *args)
+  PyObject* XBMCPLUGIN_GetSetting(PyObject *self, PyObject *args, PyObject *kwds)
   {
+    static char *keywords[] = { "id", NULL };
     char *id;
-    if (!PyArg_ParseTuple(args, "s", &id)) return NULL;
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      "s",
+      keywords,
+      &id
+      ))
+    {
+      return NULL;
+    };
+
     return Py_BuildValue("s", g_currentPluginSettings.Get(id).c_str());
   }
 

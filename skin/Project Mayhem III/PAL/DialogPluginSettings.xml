@@ -19,11 +19,11 @@
 			<height>430</height>
 			<texture>dialog-panel.png</texture>
 		</control>
-		<control type="label">
+		<control type="label" id="20">
 			<description>dialog Heading</description>
 			<posx>75</posx>
 			<posy>83</posy>
-			<label>1045</label>
+			<label></label>
 			<font>special13</font>
 			<textcolor>dialogheader</textcolor>
 		</control>
