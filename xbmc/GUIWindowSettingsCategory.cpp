@@ -1272,7 +1272,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
   else if (strSetting.Equals("lastfm.enable") || strSetting.Equals("lastfm.username") || strSetting.Equals("lastfm.password"))
   {
-    if (g_guiSettings.GetBool("lastfm.enable"))
+    if (g_guiSettings.GetBool("lastfm.enable") || g_guiSettings.GetBool("lastfm.recordtoprofile"))
     {
       CStdString strPassword=g_guiSettings.GetString("lastfm.password");
       CStdString strUserName=g_guiSettings.GetString("lastfm.username");

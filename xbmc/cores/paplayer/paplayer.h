@@ -60,7 +60,6 @@ public:
   virtual void GetVideoRect(RECT& SrcRect, RECT& DestRect){}
   virtual void GetVideoAspectRatio(float& fAR) {}
   virtual void ToFFRW(int iSpeed = 0);
-  virtual bool IsCaching() const;
   virtual int GetCacheLevel() const; 
   virtual int GetTotalTime();
   __int64 GetTotalTime64();

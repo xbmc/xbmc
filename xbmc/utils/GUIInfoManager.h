@@ -191,12 +191,16 @@
 #define VIDEOPLAYER_WRITER          280
 #define VIDEOPLAYER_TAGLINE         281
 #define VIDEOPLAYER_ISINLIBRARY     282
+#define VIDEOPLAYER_TOP250          283
 
 #define AUDIOSCROBBLER_ENABLED      300
 #define AUDIOSCROBBLER_CONN_STATE   301
 #define AUDIOSCROBBLER_SUBMIT_INT   302
 #define AUDIOSCROBBLER_FILES_CACHED 303
 #define AUDIOSCROBBLER_SUBMIT_STATE 304
+#define LASTFM_RADIOPLAYING         305
+#define LASTFM_CANLOVE              306
+#define LASTFM_CANBAN               307
 
 #define LISTITEM_START              310
 #define LISTITEM_THUMB              310
@@ -237,6 +241,7 @@
 #define LISTITEM_CAST_AND_ROLE      345
 #define LISTITEM_WRITER             346
 #define LISTITEM_TAGLINE            347
+#define LISTITEM_TOP250             348
 #define LISTITEM_END                350
 
 #define CONTAINER_FOLDERTHUMB       360

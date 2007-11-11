@@ -69,8 +69,8 @@ public:
   // Skip to next track/item inside the current media (if supported).
   virtual bool SkipNext(){return false;}
 
-  virtual bool IsCaching()    const    {return m_file.IsCaching();}
-  virtual int GetCacheLevel() const    {return m_file.GetCacheLevel();}
+  virtual bool IsCaching()    const    {return false;}
+  virtual int GetCacheLevel() const    {return -1;}
 
   // true if we can retrieve normalized float data immediately
   virtual bool HasFloatData() const { return false; }
