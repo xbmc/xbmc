@@ -10,6 +10,7 @@ public:
   ~CPluginSettings();
   bool Load(const CURL url);
   bool Save(void);
+  static bool SettingsExist(const CStdString &strPath);
   void Set(const CStdString key, const CStdString value);
   CStdString Get(const CStdString key);
   TiXmlElement* GetPluginRoot();
