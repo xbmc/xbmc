@@ -16,6 +16,9 @@
 
 namespace XFILE
 {
+
+class ICacheInterface;
+
 class IFile
 {
 public:
@@ -80,16 +83,13 @@ public:
   virtual __int64 GetPosition() = 0;
   virtual __int64 GetLength() = 0;
   virtual void Flush() { }
-  virtual int GetChunkSize() { return 16384; }
+  virtual int  GetChunkSize() {return 0;}
   virtual bool SkipNext(){return false;}
 
   virtual bool Delete(const CURL& url) { return false; }
   virtual bool Rename(const CURL& url, const CURL& urlnew) { return false; }
 
-  virtual bool IsCaching()     const {return false;}
-  virtual int  GetCacheLevel() const {return -1;} 
-
-  void* Object;
+  virtual ICacheInterface* GetCache() {return NULL;} 
 };
 };
 

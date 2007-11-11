@@ -29,12 +29,6 @@ bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content)
 
   int nFlags = READ_TRUNCATED;
 
-  // only cache http.
-  // TODO: cache smb too but only when a cache strategy that enables large seek jumps back
-  // and forth is available.
-  if (CStdString(strFile).Left(5) == "http:")
-	nFlags |= READ_CACHED;
-
   // open file in binary mode
   if (!m_pFile->Open(strFile, true, nFlags ))
   {

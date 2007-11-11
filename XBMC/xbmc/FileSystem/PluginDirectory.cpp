@@ -246,6 +246,7 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
                                     // is needed for all others, as XBMC adds slashes to "folders"
 
   // Load the plugin settings
+  CLog::Log(LOGDEBUG, "%s - URL for plugin settings: %s", __FUNCTION__, url.GetFileName().c_str() );
   g_currentPluginSettings.Load(url);
 
   // reset our wait event, and grab a new handle

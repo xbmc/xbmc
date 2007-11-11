@@ -30,6 +30,7 @@ public:
   bool GetHeader(CStdString strName, CStdString& strValue) const;
   void Cancel();
   void SetUserAgent(string strUserAgent);
+  void SetContentType(const string& strContentType);
 
   string m_redirectedURL;
   bool IsInternet(bool checkDNS = true);
@@ -62,6 +63,7 @@ private:
   string m_strUsername;
   string m_strPassword;
   string m_strUserAgent;
+  string m_strContentType;
   map<CStdString, CStdString> m_mapHeaders;
 
   bool m_bProxyEnabled;
