@@ -19,7 +19,6 @@ bool CPluginSettings::Load(const CURL url)
   
   // Create our final path
   CStdString pluginFileName = "Q:\\plugins\\";
-  m_userFileName = _P(m_userFileName);
 
   CUtil::AddFileToFolder(pluginFileName, url.GetHostName(), pluginFileName);
   CUtil::AddFileToFolder(pluginFileName, url.GetFileName(), pluginFileName);
@@ -29,7 +28,9 @@ bool CPluginSettings::Load(const CURL url)
 
   CUtil::AddFileToFolder(pluginFileName, "resources", pluginFileName);
   CUtil::AddFileToFolder(pluginFileName, "settings.xml", pluginFileName);
+
   pluginFileName = _P(pluginFileName);
+  m_userFileName = _P(m_userFileName);
 
   if (!m_pluginXmlDoc.LoadFile(pluginFileName.c_str()))
   {
