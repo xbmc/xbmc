@@ -1522,7 +1522,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
     pSelect->SetHeading(530); // Select Genre
     pSelect->Reset();
     CFileItemList items;
-    if (!CDirectory::GetDirectory("videodb://1/", items))
+    if (!CDirectory::GetDirectory("videodb://1/1/", items))
       return;
     pSelect->SetItems(&items);
     pSelect->EnableButton(true);
