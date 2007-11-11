@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scraper name="IMDb (Complete Cast)" content="movies" thumb="imdb.gif">
+<scraper name="IMDb" content="movies" thumb="imdb.gif">
 	<NfoUrl dest="3">
 		<RegExp input="$$1" output="&lt;url&gt;http://akas.imdb.com/title/tt\1/&lt;/url&gt;&lt;id&gt;tt\1&lt;/id&gt;"  dest="3">
 			<expression clear="yes" noclean="1">imdb.com/Title\?([0-9]*)</expression>
@@ -121,8 +121,8 @@
 		</RegExp>
 	</GetCast>
 	<GetIMPALink clearbuffers="no" dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetIMPAPosters&quot;&gt;http://www.impawards.com/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression clear="yes" noclean="1">&lt;a href=&quot;http://www.impawards.com/([^&quot;]*)&quot;&gt;</expression>
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetIMPAPosters&quot;&gt;http://\1impawards.com/\2&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression clear="yes" noclean="1,2">http://([^&quot;]*)impawards.com/([^&quot;]*)&quot;&gt;</expression>
 		</RegExp>
 	</GetIMPALink>
 	<GetIMPAPosters clearbuffers="no" dest="5">
