@@ -19,7 +19,7 @@ class CLocalizeStrings
 public:
   CLocalizeStrings(void);
   virtual ~CLocalizeStrings(void);
-  bool Load(const CStdString& strFileName);
+  bool Load(const CStdString& strFileName, const CStdString& strFallbackFileName="Q:\\language\\english\\strings.xml");
   const CStdString& Get(DWORD dwCode) const;
   void Clear();
 protected:

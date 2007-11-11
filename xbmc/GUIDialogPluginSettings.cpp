@@ -50,35 +50,35 @@ bool CGUIDialogPluginSettings::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage())
   {
-   case GUI_MSG_WINDOW_INIT:
-   {
-     CGUIDialog::OnMessage(message);
-
-     if (!m_settings.Load(m_url))
-       return false;
-
-     FreeControls();
-     CreateControls();
-     break;
-   }
-
-   case GUI_MSG_CLICKED:
-   {
-     int iControl = message.GetSenderId();
-
-     if (iControl == ID_BUTTON_OK)
-      SaveSettings();
-    else
-      ShowVirtualKeyboard(iControl);
-
-    if (iControl == ID_BUTTON_OK || iControl == ID_BUTTON_CANCEL)
+    case GUI_MSG_WINDOW_INIT:
     {
-      m_bConfirmed = true;
-      Close();
-      return true;
+      CGUIDialog::OnMessage(message);
+
+      if (!m_settings.Load(m_url))
+        return false;
+
+      FreeControls();
+      CreateControls();
+      break;
     }
-   }
-   break;
+
+    case GUI_MSG_CLICKED:
+    {
+      int iControl = message.GetSenderId();
+
+      if (iControl == ID_BUTTON_OK)
+        SaveSettings();
+      else
+        ShowVirtualKeyboard(iControl);
+
+      if (iControl == ID_BUTTON_OK || iControl == ID_BUTTON_CANCEL)
+      {
+        m_bConfirmed = true;
+        Close();
+        return true;
+      }
+    }
+    break;
   }
   return CGUIDialogBoxBase::OnMessage(message);
 }
@@ -93,18 +93,26 @@ void CGUIDialogPluginSettings::ShowAndGetInput(CURL& url)
   CUtil::AddFileToFolder(pathToPlugin, url.GetHostName(), pathToPlugin);
   CUtil::AddFileToFolder(pathToPlugin, url.GetFileName(), pathToPlugin);
 
+  // Remove the slash at end, makes xbox and linux compatible
+  CUtil::RemoveSlashAtEnd(pathToPlugin);
+
   // Path where the language strings reside
   CStdString pathToLanguageFile = pathToPlugin;
+  CStdString pathToFallbackLanguageFile = pathToPlugin;
   CUtil::AddFileToFolder(pathToLanguageFile, "resources", pathToLanguageFile);
+  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "resources", pathToFallbackLanguageFile);
   CUtil::AddFileToFolder(pathToLanguageFile, "language", pathToLanguageFile);
-  CUtil::AddFileToFolder(pathToLanguageFile,  g_guiSettings.GetString("locale.language"), pathToLanguageFile);
+  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "language", pathToFallbackLanguageFile);
+  CUtil::AddFileToFolder(pathToLanguageFile, g_guiSettings.GetString("locale.language"), pathToLanguageFile);
+  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "english", pathToFallbackLanguageFile);
   CUtil::AddFileToFolder(pathToLanguageFile, "strings.xml", pathToLanguageFile);
-  pathToLanguageFile.Replace("/", "\\");
+  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "strings.xml", pathToFallbackLanguageFile);
 
   pathToLanguageFile = _P(pathToLanguageFile);
+  pathToFallbackLanguageFile = _P(pathToFallbackLanguageFile);
 
   // Load the strings temporarily
-  g_localizeStringsTemp.Load(pathToLanguageFile);
+  g_localizeStringsTemp.Load(pathToLanguageFile, pathToFallbackLanguageFile);
 
   // Create the dialog
   CGUIDialog* pDialog = (CGUIDialog*) m_gWindowManager.GetWindow(WINDOW_DIALOG_PLUGIN_SETTINGS);
@@ -132,9 +140,11 @@ void CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
 
       if (strcmp(type, "text") == 0)
       {
+        // get any options
         bool bHidden = false;
         if (option)
           bHidden = (strcmp(option, "hidden") == 0);
+
         if (CGUIDialogKeyboard::ShowAndGetInput(value, ((CGUIButtonControl*) control)->GetLabel(), true, bHidden))
           ((CGUIButtonControl*) control)->SetLabel2(value);
       }
@@ -169,7 +179,12 @@ void CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
         
         if (strcmpi(type, "folder") == 0)
         {
-          if (CGUIDialogFileBrowser::ShowAndGetDirectory(*shares, ((CGUIButtonControl*) control)->GetLabel(), value))
+          // get any options
+          bool bWriteOnly = false;
+          if (option)
+            bWriteOnly = (strcmpi(option, "writeable") == 0);
+
+          if (CGUIDialogFileBrowser::ShowAndGetDirectory(*shares, ((CGUIButtonControl*) control)->GetLabel(), value, bWriteOnly))
             ((CGUIButtonControl*) control)->SetLabel2(value);
         }
         else if (strcmpi(type, "picture") == 0)
@@ -185,6 +200,17 @@ void CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
             strMask = g_stSettings.m_videoExtensions;
           else if (strcmpi(type, "music") == 0)
             strMask = g_stSettings.m_musicExtensions;
+          else if (strcmpi(type, "programs") == 0)
+            strMask = ".xbe|.py";
+
+          // get any options
+          bool bUseThumbs = false;
+          bool bUseFileDirectories = false;
+          if (option)
+          {
+            bUseThumbs = (strcmpi(option, "usethumbs") == 0 || strcmpi(option, "usethumbs|treatasfolder") == 0);
+            bUseFileDirectories = (strcmpi(option, "treatasfolder") == 0 || strcmpi(option, "usethumbs|treatasfolder") == 0);
+          }
 
           if (CGUIDialogFileBrowser::ShowAndGetFile(*shares, strMask, ((CGUIButtonControl*) control)->GetLabel(), value))
             ((CGUIButtonControl*) control)->SetLabel2(value);
@@ -267,7 +293,7 @@ void CGUIDialogPluginSettings::CreateControls()
   // set our dialog heading
   CStdString strHeading = m_url.GetFileName();
   CUtil::RemoveSlashAtEnd(strHeading);
-  strHeading.Format("$LOCALIZE[1045]->%s", strHeading.c_str());
+  strHeading.Format("$LOCALIZE[1045] - %s", strHeading.c_str());
   SET_CONTROL_LABEL(CONTROL_HEADING_LABEL, strHeading);
 
   CGUIControl* pControl = NULL;
