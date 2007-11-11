@@ -39,6 +39,7 @@
 #include "GUIMultiImage.h"
 #include "GUIDialogSmartPlaylistEditor.h"
 #include "GUIDialogPluginSettings.h"
+#include "PluginSettings.h"
 
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
 #include "SkinInfo.h"
@@ -1078,7 +1079,8 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
   
   if (item && item->IsPluginFolder())
   {
-      buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);     // Remove Favourite
+    if (CPluginSettings::SettingsExist(item->m_strPath))
+      buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
   }
 
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
