@@ -12,17 +12,22 @@ bool CPluginSettings::Load(const CURL url)
 {
   m_url = url;  
 
-  m_userFileName.Format("P:\\plugins\\%s\\%s", url.GetHostName().c_str(), url.GetFileName().c_str());
+  // create the users filepath
+  m_userFileName.Format("P:\\plugin_data\\%s\\%s", url.GetHostName().c_str(), url.GetFileName().c_str());
   CUtil::RemoveSlashAtEnd(m_userFileName);
-  m_userFileName += "-settings.xml";
-
-  // Load the settings file from the plugin directory 
+  CUtil::AddFileToFolder(m_userFileName, "settings.xml", m_userFileName);
+  
+  // Create our final path
   CStdString pluginFileName = "Q:\\plugins\\";
+
   CUtil::AddFileToFolder(pluginFileName, url.GetHostName(), pluginFileName);
   CUtil::AddFileToFolder(pluginFileName, url.GetFileName(), pluginFileName);
+
+  // Remove the slash at end, makes xbox and linux compatible
+  CUtil::RemoveSlashAtEnd(pluginFileName);
+
   CUtil::AddFileToFolder(pluginFileName, "resources", pluginFileName);
   CUtil::AddFileToFolder(pluginFileName, "settings.xml", pluginFileName);
-  pluginFileName.Replace("/","\\");
 
   if (!m_pluginXmlDoc.LoadFile(pluginFileName.c_str()))
   {
@@ -63,15 +68,23 @@ CPluginSettings::~CPluginSettings()
 
 bool CPluginSettings::Save(void)
 {
-  CStdString dir;
-  dir.Format("P:\\plugins");
-  if (!DIRECTORY::CDirectory::Exists(dir))
-    DIRECTORY::CDirectory::Create(dir);
+  // break down the path into directories
+  CStdString strRoot, strType, strPlugin;
+  CUtil::GetDirectory(m_userFileName, strPlugin);
+  CUtil::RemoveSlashAtEnd(strPlugin);
+  CUtil::GetDirectory(strPlugin, strType);
+  CUtil::RemoveSlashAtEnd(strType);
+  CUtil::GetDirectory(strType, strRoot);
+  CUtil::RemoveSlashAtEnd(strRoot);
 
-  dir.Format("P:\\plugins\\%s", m_url.GetHostName().c_str());
-  if (!DIRECTORY::CDirectory::Exists(dir))
-    DIRECTORY::CDirectory::Create(dir);
-    
+  // create the individual folders
+  if (!DIRECTORY::CDirectory::Exists(strRoot))
+    DIRECTORY::CDirectory::Create(strRoot);
+  if (!DIRECTORY::CDirectory::Exists(strType))
+    DIRECTORY::CDirectory::Create(strType);
+  if (!DIRECTORY::CDirectory::Exists(strPlugin))
+    DIRECTORY::CDirectory::Create(strPlugin);
+
   return m_userXmlDoc.SaveFile(m_userFileName);
 }
 
@@ -144,6 +157,34 @@ CStdString CPluginSettings::Get(const CStdString key)
 TiXmlElement* CPluginSettings::GetPluginRoot()
 {
   return m_pluginXmlDoc.RootElement();
+}
+
+bool CPluginSettings::SettingsExist(const CStdString &strPath)
+{
+  CURL url(strPath);
+  CStdString pluginFileName = "Q:\\plugins\\";
+
+  // Create our final path
+  CUtil::AddFileToFolder(pluginFileName, url.GetHostName(), pluginFileName);
+  CUtil::AddFileToFolder(pluginFileName, url.GetFileName(), pluginFileName);
+
+  // Remove the slash at end, makes xbox and linux compatible
+  CUtil::RemoveSlashAtEnd(pluginFileName);
+
+  CUtil::AddFileToFolder(pluginFileName, "resources", pluginFileName);
+  CUtil::AddFileToFolder(pluginFileName, "settings.xml", pluginFileName);
+
+  // Load the settings file to verify it's valid
+  TiXmlDocument xmlDoc;
+  if (!xmlDoc.LoadFile(pluginFileName.c_str()))
+    return false;
+
+  // Make sure that the plugin XML has the settings element
+  TiXmlElement *setting = xmlDoc.RootElement();
+  if (!setting || strcmpi(setting->Value(), "settings") != 0)
+    return false;
+
+  return true;
 }
 
 CPluginSettings g_currentPluginSettings;
