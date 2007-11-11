@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scraper name="IMDb" content="movies" thumb="imdb.gif">
+<scraper name="IMDb (Complete Cast)" content="movies" thumb="imdb.gif">
 	<NfoUrl dest="3">
 		<RegExp input="$$1" output="&lt;url&gt;http://akas.imdb.com/title/tt\1/&lt;/url&gt;&lt;id&gt;tt\1&lt;/id&gt;"  dest="3">
 			<expression clear="yes" noclean="1">imdb.com/Title\?([0-9]*)</expression>
@@ -132,7 +132,7 @@
 		<RegExp input="$$1" output="\1" dest="4">
 			<expression clear="yes" noclean="1">value=&quot;/([^&quot;]*)/[^&quot;]*\.html&quot;&gt;</expression>
 		</RegExp>
-		<RegExp input="$$1" output="&lt;thumb&gt;http://www.impawards.com/$$4/posters/\1&lt;/thumb&gt;" dest="8+">
+		<RegExp input="$$1" output="&lt;thumb&gt;http://www.impawards.com/$$4/posters/\1&lt;/thumb&gt;" dest="8">
 			<expression noclean="1">&lt;img SRC=&quot;posters/([^&quot;]*)&quot;</expression>
 		</RegExp>
 		<RegExp input="$$1" output="&lt;thumb&gt;http://www.impawards.com/$$4/posters/\1&lt;/thumb&gt;" dest="8+">
@@ -140,12 +140,12 @@
 		</RegExp>
 	</GetIMPAPosters>
 	<GetMoviePosterDB dest="5">
-		<RegExp input="$$8" output="&lt;details&gt;&lt;thumbs&gt;\1$$9&lt;/thumbs&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$8$$9" output="&lt;details&gt;&lt;thumbs&gt;\1&lt;/thumbs&gt;&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;thumb&gt;\1/l_\2&lt;/thumb&gt;" dest="8+">
 				<expression repeat="yes" noclean="1">&lt;img src=&quot;([^&quot;]*)/t_([^&quot;]*)&quot;[^_]*[^:]*[^=]*title=&quot;US&quot; alt=&quot;US&quot;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;thumb&gt;\1/l_\2&lt;/thumb&gt;" dest="8+">
-				<expression repeat="yes" noclean="1">&lt;img src=&quot;([^&quot;]*)/t_([^&quot;]*)&quot;[^_]*[^:]*[^=]*title=&quot;[^U][^S][^=]* alt=&quot;[^U][^S]&quot;</expression>
+				<expression repeat="yes" noclean="1">&lt;img src=&quot;([^&quot;]*)/t_([^&quot;]*)&quot;[^_]*[^:]*[^=]*title=&quot;(U[^S]|[^U].)[^=]* alt=&quot;(U[^S]|[^U].)&quot;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;thumb&gt;\1/l_\2&lt;/thumb&gt;" dest="8+">
 				<expression repeat="yes" noclean="1">&lt;img src=&quot;([^&quot;]*)/t_([^&quot;]*)&quot;[^_]*[^&lt;]*[0-9]+x[0-9]+</expression>
