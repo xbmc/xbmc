@@ -28,15 +28,26 @@ CLocalizeStrings::~CLocalizeStrings(void)
 
 }
 
-bool CLocalizeStrings::Load(const CStdString& strFileName)
+bool CLocalizeStrings::Load(const CStdString& strFileName, const CStdString& strFallbackFileName)
 {
+  bool bLoadFallback = !strFileName.Equals(strFallbackFileName);
   m_vecStrings.erase(m_vecStrings.begin(), m_vecStrings.end());
   TiXmlDocument xmlDoc;
   if (!xmlDoc.LoadFile(strFileName.c_str()))
   {
     CLog::Log(LOGERROR, "unable to load %s: %s at line %d", strFileName.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
-    g_LoadErrorStr.Format("%s, Line %d\n%s", strFileName.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
-    return false;
+    if (!bLoadFallback)
+    {
+      g_LoadErrorStr.Format("%s, Line %d\n%s", strFileName.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+      return false;
+    }
+    else if (!xmlDoc.LoadFile(strFallbackFileName.c_str()))
+    {
+      CLog::Log(LOGERROR, "unable to load %s: %s at line %d", strFallbackFileName.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
+      g_LoadErrorStr.Format("%s, Line %d\n%s", strFallbackFileName.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+      return false;
+    }
+    bLoadFallback = false;
   }
   
   CStdString strEncoding;
@@ -87,12 +98,12 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
     pChild = pChild->NextSiblingElement("string");
   }
 
-  if (!strFileName.Equals("Q:\\language\\english\\strings.xml"))
+  if (bLoadFallback)
   {
-    // load the original english file
+    // load the original fallback file
     // and copy any missing texts
     TiXmlDocument xmlDoc;
-    if ( !xmlDoc.LoadFile("Q:\\language\\english\\strings.xml") )
+    if ( !xmlDoc.LoadFile(strFallbackFileName) )
     {
       return true;
     }
