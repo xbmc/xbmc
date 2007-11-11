@@ -228,8 +228,8 @@ void resetTags()
   closeRecordSet="";
   openRecord="";
   closeRecord="";
-  openField="<li>";
-  closeField="";
+  openField="<field>";
+  closeField="</field>";
   openBroadcast="<b>";
   closeBroadcast="</b>";
   incWebHeader=true;
@@ -1333,6 +1333,28 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
   return SetResponse(output);
 }
 
+int CXbmcHttp::xbmcGetMusicLabel(int numParas, CStdString paras[])
+{
+  if (numParas<1)
+    return SetResponse(openTag+"Error:Missing Parameter");
+  else
+  {
+	int item=(int)atoi(paras[0].c_str());
+    return SetResponse(openTag+g_infoManager.GetMusicLabel(item));
+  }
+}
+
+int CXbmcHttp::xbmcGetVideoLabel(int numParas, CStdString paras[])
+{
+  if (numParas<1)
+    return SetResponse(openTag+"Error:Missing Parameter");
+  else
+  {
+	int item=(int)atoi(paras[0].c_str());
+    return SetResponse(openTag+g_infoManager.GetVideoLabel(item));
+  }
+}
+
 int CXbmcHttp::xbmcGetPercentage()
 {
   if (g_application.m_pPlayer)
@@ -1789,6 +1811,16 @@ int CXbmcHttp::xbmcRemoveFromPlayList(int numParas, CStdString paras[])
   }
   else
     return SetResponse(openTag+"Error:Missing parameter");
+}
+
+CStdString CXbmcHttp::GetOpenTag()
+{
+  return openTag;
+}
+
+CStdString CXbmcHttp::GetCloseTag()
+{
+  return closeTag;
 }
 
 CKey CXbmcHttp::GetKey()
@@ -2369,8 +2401,10 @@ int CXbmcHttp::xbmcConfig(int numParas, CStdString paras[])
   {
     return SetResponse(openTag+"Error:Unknown Config Command");
   }
-
-  return SetResponse(response);
+  if (ret==-1)
+    return SetResponse(openTag+"Error:WebServer needs to be running - is it?");
+  else
+    return SetResponse(response);
 }
 
 int CXbmcHttp::xbmcGetSystemInfo(int numParas, CStdString paras[])
@@ -2751,6 +2785,8 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
       else if (command == "getplaylistsong")          retVal = xbmcGetPlayListSong(numParas, paras);
       else if (command == "playlistnext")             retVal = xbmcPlayListNext();
       else if (command == "playlistprev")             retVal = xbmcPlayListPrev();
+	  else if (command == "getmusiclabel")            retVal = xbmcGetMusicLabel(numParas, paras);
+	  else if (command == "getvideolabel")            retVal = xbmcGetVideoLabel(numParas, paras);
       else if (command == "getpercentage")            retVal = xbmcGetPercentage();
       else if (command == "seekpercentage")           retVal = xbmcSeekPercentage(numParas, paras, false);
       else if (command == "seekpercentagerelative")   retVal = xbmcSeekPercentage(numParas, paras, true);

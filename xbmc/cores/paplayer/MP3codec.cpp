@@ -4,6 +4,7 @@
 #define DECODER_DELAY 529 // decoder delay in samples
 
 #define XMIN(a,b) (a)<(b)?(a):(b)
+#define DEFAULT_CHUNK_SIZE 16384
 
 MP3Codec::MP3Codec()
 {
@@ -192,7 +193,11 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 {
   *actualsize = 0;
   // First read in any extra info we need from our MP3
-  int inputBufferToRead = XMIN(m_file.GetChunkSize(), m_InputBufferSize - m_InputBufferPos);
+  int nChunkSize = m_file.GetChunkSize();
+  if (nChunkSize == 0)
+    nChunkSize = DEFAULT_CHUNK_SIZE;
+
+  int inputBufferToRead = XMIN(nChunkSize, m_InputBufferSize - m_InputBufferPos);
   if ( inputBufferToRead && !m_CallAgainWithSameBuffer && !m_eof ) 
   {
     if (m_file.GetLength() > 0)

@@ -43,7 +43,13 @@ void CCacheStrategy::ClearEndOfInput()
   m_bEndOfInput = false;
 }
 
-CSimpleFileCache::CSimpleFileCache() : m_hCacheFileRead(NULL), m_hCacheFileWrite(NULL), m_hDataAvailEvent(NULL), m_nStartPosition(0) {
+CSimpleFileCache::CSimpleFileCache() 
+  : m_hCacheFileRead(NULL)
+  , m_hCacheFileWrite(NULL)
+  , m_hDataAvailEvent(NULL)
+  , m_nStartPosition(0)
+  , m_nWritePosition(0)
+  , m_nReadPosition(0) {
 }
 
 CSimpleFileCache::~CSimpleFileCache() {
@@ -96,8 +102,6 @@ int CSimpleFileCache::Open() {
 
 int CSimpleFileCache::Close() 
 {
-	CSingleLock lock(m_sync);
-
 	if (m_hDataAvailEvent)
 		CloseHandle(m_hDataAvailEvent);
 
@@ -126,24 +130,17 @@ int CSimpleFileCache::WriteToCache(const char *pBuffer, size_t iSize) {
 	// when reader waits for data it will wait on the event.
 	SetEvent(m_hDataAvailEvent);
 
+  m_nWritePosition += iWritten;
 	return iWritten;
 }
 
-__int64 CSimpleFileCache::GetAvailableRead() {
-	LARGE_INTEGER posRead = {}, posWrite = {};
-	
-	if(!SetFilePointerEx(m_hCacheFileRead, posRead, &posRead, FILE_CURRENT)) {
-		return CACHE_RC_ERROR;
-	}
-	
-	if(!SetFilePointerEx(m_hCacheFileWrite, posWrite, &posWrite, FILE_CURRENT)) {
-		return CACHE_RC_ERROR;
-	}
-	
-	return posWrite.QuadPart - posRead.QuadPart;
+__int64 CSimpleFileCache::GetAvailableRead()
+{
+	return m_nWritePosition - m_nReadPosition;
 }
 
-int CSimpleFileCache::ReadFromCache(char *pBuffer, size_t iMaxSize) {
+int CSimpleFileCache::ReadFromCache(char *pBuffer, size_t iMaxSize)
+{
 	__int64 iAvailable = GetAvailableRead(); 
 	if ( iAvailable <= 0 ) {
 		return m_bEndOfInput?CACHE_RC_EOF : CACHE_RC_WOULD_BLOCK;
@@ -157,8 +154,7 @@ int CSimpleFileCache::ReadFromCache(char *pBuffer, size_t iMaxSize) {
 		CLog::Log(LOGERROR,"CSimpleFileCache::ReadFromCache - failed to read %d bytes.", iMaxSize);
 		return CACHE_RC_ERROR;
 	}
-
-	//CLog::Log(LOGDEBUG,"CSimpleFileCache::ReadFromCache. read %d bytes", iRead);
+  m_nReadPosition += iRead;	
 	return iRead;
 }
 
@@ -191,20 +187,6 @@ __int64 CSimpleFileCache::Seek(__int64 iFilePosition, int iWhence) {
 
 	CLog::Log(LOGDEBUG,"CSimpleFileCache::Seek, seeking to %lld", iFilePosition);
 
-	if (iFilePosition < m_nStartPosition)
-	{
-		CLog::Log(LOGDEBUG,"CSimpleFileCache::Seek, request seek before start of cache.");
-		return CACHE_RC_ERROR;
-	}
-
-	// we cant seek to a location not read yet
-	// in this case we will return error and reset the read pointer
-	LARGE_INTEGER posWrite = {}, posRead = {};	
-	if(!SetFilePointerEx(m_hCacheFileWrite, posWrite, &posWrite, FILE_CURRENT))
-		return CACHE_RC_ERROR;
-	if(!SetFilePointerEx(m_hCacheFileRead, posRead, &posRead, FILE_CURRENT))
-		return CACHE_RC_ERROR;
-
 	__int64 iTarget = iFilePosition - m_nStartPosition;
 	if (SEEK_END == iWhence) 
 	{
@@ -212,14 +194,17 @@ __int64 CSimpleFileCache::Seek(__int64 iFilePosition, int iWhence) {
 		return CACHE_RC_ERROR;
 	}
 	else if (SEEK_CUR == iWhence)
-		iTarget = iFilePosition + posRead.QuadPart;
+		iTarget = iFilePosition + m_nReadPosition;
 
-	__int64 nDiff = iTarget - posWrite.QuadPart;
+	if (iTarget < 0)
+	{
+		CLog::Log(LOGDEBUG,"CSimpleFileCache::Seek, request seek before start of cache.");
+		return CACHE_RC_ERROR;
+	}
+
+	__int64 nDiff = iTarget - m_nWritePosition;
 	if ( nDiff > 500000 || (nDiff > 0 && WaitForData(nDiff, 5000) == CACHE_RC_TIMEOUT)  ) {		
-		CLog::Log(LOGWARNING,"CSimpleFileCache::Seek - attempt to seek pass read data (seek to %lld. max: %lld. reset read pointer. (%lld:%d)", iTarget, posWrite.QuadPart, iFilePosition, iWhence);
-
-		// roll back file pointer
-		SetFilePointerEx(m_hCacheFileRead, posRead, NULL, FILE_BEGIN);
+		CLog::Log(LOGWARNING,"%s - attempt to seek pass read data (seek to %lld. max: %lld. reset read pointer. (%lld:%d)", __FUNCTION__, iTarget, m_nWritePosition, iFilePosition, iWhence);
 		return  CACHE_RC_ERROR;
 	}
 
@@ -229,19 +214,21 @@ __int64 CSimpleFileCache::Seek(__int64 iFilePosition, int iWhence) {
 	if(!SetFilePointerEx(m_hCacheFileRead, pos, &pos, FILE_BEGIN))
 		return CACHE_RC_ERROR;
 	
+  m_nReadPosition = iTarget;
+
 	return pos.QuadPart;
 }
 
 void CSimpleFileCache::Reset(__int64 iSourcePosition)
 {
-	CSingleLock lock(m_sync);
-
 	LARGE_INTEGER pos;
 	pos.QuadPart = 0;
 
 	SetFilePointerEx(m_hCacheFileWrite, pos, NULL, FILE_BEGIN);
 	SetFilePointerEx(m_hCacheFileRead, pos, NULL, FILE_BEGIN);
 	m_nStartPosition = iSourcePosition;
+  m_nReadPosition = 0;
+  m_nWritePosition = 0;
 }
 
 void CSimpleFileCache::EndOfInput()

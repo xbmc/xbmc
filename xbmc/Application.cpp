@@ -308,7 +308,7 @@ CApplication::CApplication(void)
 #ifdef HAS_WEB_SERVER
   m_pWebServer = NULL;
   m_pXbmcHttp = NULL;
-  m_prevTitle="";
+  m_prevMedia="";
 #endif
   m_pFileZilla = NULL;
   m_pPlayer = NULL;
@@ -3466,19 +3466,31 @@ void  CApplication::CheckForTitleChange()
   if (IsPlayingVideo())
   {
 	const CVideoInfoTag* tagVal = g_infoManager.GetCurrentMovieTag();
-    if (m_pXbmcHttp && tagVal && !(tagVal->m_strTitle.IsEmpty()) && (tagVal->m_strTitle!=m_prevTitle))
+    if (m_pXbmcHttp && tagVal && !(tagVal->m_strTitle.IsEmpty()))
     {
-	  m_pXbmcHttp->xbmcBroadcast("TitleChanged:"+tagVal->m_strTitle, 1);
-      m_prevTitle=tagVal->m_strTitle;
+      CStdString msg=m_pXbmcHttp->GetOpenTag()+"MovieTitle:"+tagVal->m_strTitle+m_pXbmcHttp->GetCloseTag();
+	  if (m_prevMedia!=msg)
+	  {
+	    m_pXbmcHttp->xbmcBroadcast("MediaChanged:"+msg, 1);
+        m_prevMedia=msg;
+	  }
     }
   }
   else if (IsPlayingAudio())
   {
     const CMusicInfoTag* tagVal=g_infoManager.GetCurrentSongTag();
-    if (m_pXbmcHttp && tagVal && !(tagVal->GetTitle().IsEmpty()) && (tagVal->GetTitle()!=m_prevTitle))
-    {
-	  m_pXbmcHttp->xbmcBroadcast("Title changed:"+tagVal->GetTitle(), 1);
-      m_prevTitle=tagVal->GetTitle();
+    if (m_pXbmcHttp && tagVal)
+	{
+	  CStdString msg="";
+	  if (!tagVal->GetTitle().IsEmpty())
+		  msg=m_pXbmcHttp->GetOpenTag()+"AudioTitle:"+tagVal->GetTitle()+m_pXbmcHttp->GetCloseTag();
+	  if (!tagVal->GetArtist().IsEmpty())
+		  msg+=m_pXbmcHttp->GetOpenTag()+"AudioArtist:"+tagVal->GetArtist()+m_pXbmcHttp->GetCloseTag();
+	  if (m_prevMedia!=msg)
+	  {
+        m_pXbmcHttp->xbmcBroadcast("MediaChanged:"+msg, 1);
+	    m_prevMedia=msg;
+	  }
     }
   }
 }
@@ -4372,16 +4384,11 @@ void CApplication::DoRenderFullScreen()
       return ;
     pFSWin->RenderFullScreen();
 
-    // aslong as player is handling rendering, we update
-    // this stuff here, otherwise it will happen in main render
-    if( IsPlaying() && !IsPaused() )
-    {
-      if (m_gWindowManager.HasDialogOnScreen())
-        m_gWindowManager.RenderDialogs();
-      // Render the mouse pointer, if visible...
-      if (g_Mouse.IsActive())
-        g_application.m_guiPointer.Render();
-    }
+    if (m_gWindowManager.HasDialogOnScreen())
+      m_gWindowManager.RenderDialogs();
+    // Render the mouse pointer, if visible...
+    if (g_Mouse.IsActive())
+      g_application.m_guiPointer.Render();
   }
 }
 
@@ -4883,7 +4890,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         m_itemCurrentFile = item;
       }
       g_infoManager.SetCurrentItem(m_itemCurrentFile);
-      CLastFmManager::GetInstance()->OnSongChange(m_itemCurrentFile.IsLastFM());
+      CLastFmManager::GetInstance()->OnSongChange(m_itemCurrentFile);
       g_partyModeManager.OnSongChange(true);
 
       if (IsPlayingAudio())

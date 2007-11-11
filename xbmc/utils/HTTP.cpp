@@ -82,6 +82,7 @@ CHTTP::CHTTP(const string& strProxyServer, int iProxyPort)
   m_RecvBuffer = 0;
   m_redirectedURL = "";
   m_strUserAgent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)";
+  m_strContentType = "application/x-www-form-urlencoded";
 }
 
 
@@ -105,6 +106,7 @@ CHTTP::CHTTP()
   m_RecvBuffer = 0;
   m_redirectedURL = "";
   m_strUserAgent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)";
+  m_strContentType = "application/x-www-form-urlencoded";
 }
 
 
@@ -739,6 +741,12 @@ void CHTTP::SetUserAgent(string strUserAgent)
   m_strUserAgent = strUserAgent;
 }
 
+void CHTTP::SetContentType(const string& strContentType)
+{
+  m_strContentType = strContentType;
+}
+
+
 //------------------------------------------------------------------------------------------------------------------
 
 int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
@@ -762,7 +770,9 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
   char* szHTTPHEADER = (char*)alloca(350 + m_strHostName.size() + m_strCookie.size() + (pData ? strlen(pData) : 0));
   if (stricmp(verb, "POST")==0)
   {
-    strcpy(szHTTPHEADER, "Content-Type: application/x-www-form-urlencoded\r\n");
+    strcpy(szHTTPHEADER, "Content-Type: ");
+    strcat(szHTTPHEADER, m_strContentType.c_str());
+    strcat(szHTTPHEADER, "\r\n");
   }
   else
   {

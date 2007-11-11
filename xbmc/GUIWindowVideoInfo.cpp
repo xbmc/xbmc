@@ -49,6 +49,7 @@ using namespace XFILE;
 #define CONTROL_TITLE_AND_YEAR      33
 #define CONTROL_ACTOR_IMAGE         34
 #define CONTROL_STUDIO              36
+#define CONTROL_TOP250              37
 
 
 #define CONTROL_IMAGE                3
@@ -283,6 +284,11 @@ void CGUIWindowVideoInfo::Update()
 
   strTmp = m_movieItem.GetVideoInfoTag()->m_strMPAARating; strTmp.Trim();
   SetLabel(CONTROL_MPAARATING, strTmp);
+
+  CStdString strTop250;
+  if (m_movieItem.GetVideoInfoTag()->m_iTop250)
+    strTop250.Format("%i", m_movieItem.GetVideoInfoTag()->m_iTop250);
+  SetLabel(CONTROL_TOP250, strTop250);
 
   CStdString strYear;
   if (m_movieItem.GetVideoInfoTag()->m_iYear)
