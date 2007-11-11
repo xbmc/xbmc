@@ -30,6 +30,7 @@
 #include "utils/md5.h"
 #include "FileSystem/File.h"
 #include "utils/GUIInfoManager.h"
+#include "MusicDatabase.h"
 #include <sstream>
 
 using namespace PLAYLIST;
@@ -837,13 +838,34 @@ bool CLastFmManager::Love(const CMusicInfoTag& musicinfotag)
     return false;
   }
   
-  if (CallXmlRpc("loveTrack", musicinfotag.GetArtist(), musicinfotag.GetTitle()))
+  CStdString strTitle = musicinfotag.GetTitle();
+  CStdString strArtist = musicinfotag.GetArtist();
+  
+  CStdString strFilePath;
+  if (m_CurrentSong.CurrentSong && !m_CurrentSong.CurrentSong->IsLastFM())
   {
+    //path to update the rating for
+    strFilePath = m_CurrentSong.CurrentSong->m_strPath;
+  }
+  if (CallXmlRpc("loveTrack",strArtist, strTitle))
+  {
+    m_CurrentSong.IsLoved = true;
     //update the rating to 5, we loved it.
     CMusicInfoTag newTag(musicinfotag);
     newTag.SetRating('5');
     g_infoManager.SetCurrentSongTag(newTag);
-    m_CurrentSong.IsLoved = true;
+    //try updating the rating in the database if it's a local file.
+    CMusicDatabase musicdatabase;
+    if (musicdatabase.Open())
+    {
+      CSong song;
+      //update if the song exists in our database and there is no rating yet.
+      if (musicdatabase.GetSongByFileName(strFilePath, song) && song.rating == '0')
+      {
+        musicdatabase.SetSongRating(strFilePath, '5');
+      }
+      musicdatabase.Close();
+    }
     return true;
   }
   return false;
@@ -893,7 +915,31 @@ bool CLastFmManager::Unlove(const CMusicInfoTag& musicinfotag, bool askConfirmat
   strInfo.Format("%s - %s", strArtist, strTitle);
   if (!askConfirmation || CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(15200), g_localizeStrings.Get(15297), strInfo, ""))
   {
-    return CallXmlRpc("unLoveTrack", strArtist, strTitle);
+    if (CallXmlRpc("unLoveTrack", strArtist, strTitle))
+    {
+      //update our local rating, now this is tricky because we only have an artist and title
+      //and don't know if it was a local or radio song.
+      //So we're going to try to get it from the database and check if the rating is 5,
+      //if it is we can assume this was the song we loved before.
+      CMusicDatabase musicdatabase;
+      if (musicdatabase.Open())
+      {
+        long songid = musicdatabase.GetSongByArtistAndAlbumAndTitle(strArtist, "%", strTitle);
+        if (songid > 0)
+        {
+          CSong song;
+          musicdatabase.GetSongById(songid, song);
+          if (song.rating == '5')
+          {
+            //reset the rating
+            musicdatabase.SetSongRating(song.strFileName, '0');
+          }
+        }
+        musicdatabase.Close();
+      }
+
+      return true;
+    }
   }
   return false;
 }
