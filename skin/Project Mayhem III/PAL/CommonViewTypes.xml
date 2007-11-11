@@ -2602,9 +2602,9 @@
                         <control type="list" id="50">
 				<description>Cast List Container</description>
 				<posx>200</posx>
-				<posy>380</posy>
+				<posy>350</posy>
 				<width>350</width>
-				<height>175</height>
+				<height>145</height>
 				<onleft>9000</onleft>
 				<onright>61</onright>
 				<onup>50</onup>
@@ -2768,8 +2768,8 @@
 		</control>
 		<control type="spincontrol" id="61">
 			<description>Next page button</description>
-			<posx>640</posx>
-			<posy>545</posy>
+			<posx>540</posx>
+			<posy>505</posy>
 			<subtype>page</subtype>
 			<font>font12</font>
 			<onleft>50</onleft>
