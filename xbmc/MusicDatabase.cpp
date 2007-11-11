@@ -720,6 +720,14 @@ bool CMusicDatabase::GetSongByFileName(const CStdString& strFileName, CSong& son
   try
   {
     song.Clear();
+    CURL url(strFileName);
+    
+    if (url.GetProtocol()=="musicdb")
+    {
+      CStdString strFile = CUtil::GetFileName(strFileName);
+      CUtil::RemoveExtension(strFile);
+      return GetSongById(atol(strFile.c_str()), song);
+    }
 
     CStdString strPath;
     CUtil::GetDirectory(strFileName, strPath);
@@ -3508,6 +3516,7 @@ bool CMusicDatabase::SetSongRating(const CStdString &filePath, char rating)
 {
   try
   {
+    if (filePath.IsEmpty()) return false;
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
