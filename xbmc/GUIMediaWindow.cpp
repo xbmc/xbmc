@@ -38,6 +38,7 @@
 #include "guiImage.h"
 #include "GUIMultiImage.h"
 #include "GUIDialogSmartPlaylistEditor.h"
+#include "GUIDialogPluginSettings.h"
 
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
 #include "SkinInfo.h"
@@ -1073,8 +1074,8 @@ bool CGUIMediaWindow::OnPopupMenu(int iItem)
 void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
   CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems.Size()) ? m_vecItems[itemNumber] : NULL;
-
-  if (item->IsPluginFolder())
+  
+  if (item && item->IsPluginFolder())
   {
       buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);     // Remove Favourite
   }
@@ -1106,6 +1107,12 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_ADD_FAVOURITE:
     CFavourites::AddOrRemove(m_vecItems[itemNumber], GetID());
     return true;
+  case CONTEXT_BUTTON_PLUGIN_SETTINGS:
+    {
+      CURL url(m_vecItems[itemNumber]->m_strPath);
+      CGUIDialogPluginSettings::ShowAndGetInput(url);
+      return true;
+    }
   default:
     break;
   }

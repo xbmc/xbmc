@@ -27,6 +27,7 @@
 #include "RGBRenderer.h"
 #include "RGBRendererV2.h"
 #endif
+#include "Application.h"
 
 #ifdef _LINUX
 #include "PlatformInclude.h"
@@ -262,7 +263,7 @@ void CXBoxRenderManager::FlipPage(DWORD delay /* = 0LL*/, int source /*= -1*/, E
   if( 0 ) /*disable async renderer*/
 #else
   //CSingleLock lock2(g_graphicsContext);
-  if( g_graphicsContext.IsFullScreenVideo() )
+  if( g_graphicsContext.IsFullScreenVideo() && !g_application.IsPaused() )
 #endif
   {
     //lock2.Leave();
@@ -529,7 +530,7 @@ void CXBoxRenderManager::Process()
       CSharedLock lock(m_sharedSection);
       CSingleLock lock2(g_graphicsContext);
 
-      if( m_pRenderer && g_graphicsContext.IsFullScreenVideo() )
+      if( m_pRenderer && g_graphicsContext.IsFullScreenVideo() && !g_application.IsPaused() )
       {
 	// If we need to render acquire the context.
 	// Here, we are sharing the main thread's rendering context

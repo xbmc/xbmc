@@ -13,29 +13,12 @@ using namespace XFILE;
  
 #define READ_CACHE_CHUNK_SIZE (64*1024)
 
-//
-// buffering logic:
-// when not enough data is available, we will buffer untill INITIAL_BUFFER_BYTES bytes are available.
-// each time we buffer, we increment the amount of bytes we wait for in INCREMENT_BUFFER_BYTES.
-// however, we never exceed MAX_BUFFER_BYTES.
-//
-// whenever a whole minute passes by without buffering we decrease the amount of bytes we wait for
-// untill we are at INITIAL_BUFFER_BYTES again.
-//
-#define INITIAL_BUFFER_BYTES (128*1024)
-#define INCREMENT_BUFFER_BYTES (128*1024)
-#define MAX_BUFFER_BYTES (4 * (INITIAL_BUFFER_BYTES))
-
 CFileCache::CFileCache()
 {
    m_bDeleteCache = false;
-   m_bCaching  = false;
-   m_nCacheLevel = 0;
    m_nSeekResult = 0;
    m_seekPos = 0;
    m_readPos = 0;
-   m_nBytesToBuffer = INITIAL_BUFFER_BYTES;
-   m_tmLastBuffering = time(NULL);
 #ifdef _XBOX
    m_pCache = new CSimpleFileCache();
 #else
@@ -245,72 +228,40 @@ unsigned int CFileCache::Read(void* lpBuf, __int64 uiBufSize)
 {
   CSingleLock lock(m_sync);
   if (!m_pCache) {
-    CLog::Log(LOGERROR,"CFileCache::Read - sanity failed. no cache strategy!");
+    CLog::Log(LOGERROR,"%s - sanity failed. no cache strategy!", __FUNCTION__);
     return 0;
   }
-  
+  __int64 iRc;
+
+retry:
   // attempt to read
-  int iRc = m_pCache->ReadFromCache((char *)lpBuf, (size_t)uiBufSize);
+  iRc = m_pCache->ReadFromCache((char *)lpBuf, (size_t)uiBufSize);
   if (iRc > 0)
   {
     m_readPos += iRc;
-    return iRc;
+    return (int)iRc;
+  }
+
+  if (iRc == CACHE_RC_WOULD_BLOCK)
+  {
+    // just wait for some data to show up
+    iRc = m_pCache->WaitForData(1, 10000);
+    if (iRc > 0)
+      goto retry;
+  }
+  
+  if (iRc == CACHE_RC_TIMEOUT)
+  {
+    CLog::Log(LOGWARNING, "%s - timeout waiting for data", __FUNCTION__);
+    return 0;
   }
 
   if (iRc == CACHE_RC_EOF || iRc == 0)
     return 0;
 
-  if (iRc == CACHE_RC_WOULD_BLOCK)
-  {
-    // buffering 
-    m_bCaching = true;
-    m_nCacheLevel = 0;
-
-    int nMinutesFromLastBuffering = (time(NULL) - m_tmLastBuffering) / 60;
-    m_nBytesToBuffer -= (nMinutesFromLastBuffering * INCREMENT_BUFFER_BYTES);
-    if (m_nBytesToBuffer < INITIAL_BUFFER_BYTES)
-      m_nBytesToBuffer = INITIAL_BUFFER_BYTES;
-
-    __int64 nToBuffer = m_nBytesToBuffer;
-
-    CLog::Log(LOGDEBUG,"%s, not enough data available. buffering. waiting for %d bytes", __FUNCTION__, nToBuffer);
-
-    __int64 nAvail = 0;
-    while (!m_pCache->IsEndOfInput() && nAvail < nToBuffer)
-    {
-      nAvail = m_pCache->WaitForData(nToBuffer, 100);
-      if( nAvail == CACHE_RC_ERROR )
-        break;
-      m_nCacheLevel = (int)(((double)nAvail / (double)nToBuffer) * 100.0);
-    }
-
-    m_tmLastBuffering = time(NULL);
-    m_nBytesToBuffer += INCREMENT_BUFFER_BYTES;
-    if (m_nBytesToBuffer > MAX_BUFFER_BYTES)
-      m_nBytesToBuffer = MAX_BUFFER_BYTES;
-
-    m_bCaching = false;
-    m_nCacheLevel = 0;
-    
-    iRc = m_pCache->ReadFromCache((char *)lpBuf, (size_t)uiBufSize);
-    if (iRc > 0)
-    {
-      m_readPos += iRc;
-      return iRc;
-    }
-
-    if (iRc == CACHE_RC_EOF || iRc == 0)
-      return 0;
-
-    if (iRc == CACHE_RC_WOULD_BLOCK)
-    {
-      CLog::Log(LOGERROR, "%s - cache strategy returned CACHE_RC_WOULD_BLOCK, after having said it had data");
-      return -1;
-    }
-  }
-
   // unknown error code
-  return iRc;
+  CLog::Log(LOGERROR, "%s - cache strategy returned unknown error code %d", __FUNCTION__, (int)iRc);  
+  return 0;
 }
 
 __int64 CFileCache::Seek(__int64 iFilePosition, int iWhence)
@@ -318,7 +269,7 @@ __int64 CFileCache::Seek(__int64 iFilePosition, int iWhence)
   CSingleLock lock(m_sync);
 
   if (!m_pCache) {
-    CLog::Log(LOGERROR,"CFileCache::Seek- sanity failed. no cache strategy!");
+    CLog::Log(LOGERROR,"%s - sanity failed. no cache strategy!", __FUNCTION__);
     return -1;
   }
 
@@ -343,15 +294,15 @@ __int64 CFileCache::Seek(__int64 iFilePosition, int iWhence)
 
     m_seekPos = iTarget;
     m_seekEvent.Set();
-    if (!m_seekEnded.WaitMSec(INFINITE)) 
+    if (WaitForSingleObject(m_seekEnded.GetHandle(),INFINITE) != WAIT_OBJECT_0) 
     {
-      CLog::Log(LOGWARNING,"CFileCache::Seek - seek to %lld failed.", m_seekPos);
+      CLog::Log(LOGWARNING,"%s - seek to %lld failed.", __FUNCTION__, m_seekPos);
       return -1;
     }
   }
 
-  if (m_nSeekResult >= 0) 
-    m_readPos = m_nSeekResult;  
+  if (m_nSeekResult >= 0)
+    m_readPos = m_nSeekResult;
 
   return m_nSeekResult;
 }
@@ -377,13 +328,9 @@ __int64 CFileCache::GetLength()
   return m_source.GetLength();
 }
 
-bool CFileCache::IsCaching()    const    
+ICacheInterface* CFileCache::GetCache()
 {
-  return m_bCaching;
+  if(m_pCache)
+    return m_pCache->GetInterface();
+  return NULL;
 }
-
-int CFileCache::GetCacheLevel() const    
-{
-  return m_nCacheLevel;
-}
-

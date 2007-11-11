@@ -753,15 +753,6 @@ int PAPlayer::GetTotalTime()
   return (int)(GetTotalTime64()/1000);
 }
 
-bool PAPlayer::IsCaching() const
-{
-  const ICodec* codec = m_decoder[m_currentDecoder].GetCodec();
-  if (codec)
-    return codec->IsCaching();
-
-  return false;
-}
-
 int PAPlayer::GetCacheLevel() const
 {
   const ICodec* codec = m_decoder[m_currentDecoder].GetCodec();

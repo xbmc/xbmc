@@ -31,6 +31,7 @@
 #include <stack>
 #include "../utils/Network.h"
 #include "GUIWindowSlideShow.h"
+#include "../LastFmManager.h"
 
 // stuff for current song
 #if defined(HAS_FILESYSTEM) && defined(HAS_XBOX_HARDWARE)
@@ -432,6 +433,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Left(19).Equals("videoplayer.content")) return AddMultiInfo(GUIInfo(bNegate ? -VIDEOPLAYER_CONTENT : VIDEOPLAYER_CONTENT, ConditionalStringParameter(strTest.Mid(20,strTest.size()-21)), 0));
     else if (strTest.Equals("videoplayer.studio")) ret = VIDEOPLAYER_STUDIO;
     else if (strTest.Equals("videoplayer.mpaa")) return VIDEOPLAYER_MPAA;
+    else if (strTest.Equals("videoplayer.top250")) return VIDEOPLAYER_TOP250;
     else if (strTest.Equals("videoplayer.cast")) return VIDEOPLAYER_CAST;
     else if (strTest.Equals("videoplayer.castandrole")) return VIDEOPLAYER_CAST_AND_ROLE;
     else if (strTest.Equals("videoplayer.artist")) return VIDEOPLAYER_ARTIST;
@@ -467,6 +469,12 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("audioscrobbler.submitinterval")) ret = AUDIOSCROBBLER_SUBMIT_INT;
     else if (strTest.Equals("audioscrobbler.filescached")) ret = AUDIOSCROBBLER_FILES_CACHED;
     else if (strTest.Equals("audioscrobbler.submitstate")) ret = AUDIOSCROBBLER_SUBMIT_STATE;
+  }
+  else if (strCategory.Equals("lastfm"))
+  {
+    if (strTest.Equals("lastfm.radioplaying")) ret = LASTFM_RADIOPLAYING;
+    else if (strTest.Equals("lastfm.canlove")) ret = LASTFM_CANLOVE;
+    else if (strTest.Equals("lastfm.canban")) ret = LASTFM_CANBAN;
   }
   else if (strCategory.Equals("slideshow"))
     ret = CPictureInfoTag::TranslateString(strTest.Mid(strCategory.GetLength() + 1));
@@ -676,6 +684,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("castandrole")) return LISTITEM_CAST_AND_ROLE;
   else if (info.Equals("writer")) return LISTITEM_WRITER;
   else if (info.Equals("tagline")) return LISTITEM_TAGLINE;
+  else if (info.Equals("top250")) return LISTITEM_TOP250;
   return 0;
 }
 
@@ -775,6 +784,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case VIDEOPLAYER_PREMIERED:
   case VIDEOPLAYER_STUDIO:
   case VIDEOPLAYER_MPAA:
+  case VIDEOPLAYER_TOP250:
   case VIDEOPLAYER_CAST:
   case VIDEOPLAYER_CAST_AND_ROLE:
   case VIDEOPLAYER_ARTIST:
@@ -1195,6 +1205,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case LISTITEM_CAST_AND_ROLE:
   case LISTITEM_WRITER:
   case LISTITEM_TAGLINE:
+  case LISTITEM_TOP250:
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS); // true for has list items
       if (window)
@@ -1535,8 +1546,17 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
       bReturn = g_partyModeManager.IsEnabled();
     break;
     case AUDIOSCROBBLER_ENABLED:
-      bReturn = g_guiSettings.GetBool("lastfm.enable");
+      bReturn = CLastFmManager::GetInstance()->IsLastFmEnabled();
     break;
+    case LASTFM_RADIOPLAYING:
+      bReturn = CLastFmManager::GetInstance()->IsRadioEnabled();
+      break;
+    case LASTFM_CANLOVE:
+      bReturn = CLastFmManager::GetInstance()->CanLove();
+      break;
+    case LASTFM_CANBAN:
+      bReturn = CLastFmManager::GetInstance()->CanBan();
+      break;
     case VIDEOPLAYER_USING_OVERLAYS:
       bReturn = (g_guiSettings.GetInt("videoplayer.rendermethod") == RENDER_OVERLAYS);
     break;
@@ -2270,6 +2290,14 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     return m_currentFile.GetVideoInfoTag()->m_strStudio;
   case VIDEOPLAYER_MPAA:
     return m_currentFile.GetVideoInfoTag()->m_strMPAARating;
+  case VIDEOPLAYER_TOP250:
+    {
+      CStdString strTop250;
+      if (m_currentFile.GetVideoInfoTag()->m_iTop250 > 0)
+        strTop250.Format("%i", m_currentFile.GetVideoInfoTag()->m_iTop250);
+      return strTop250;
+    }
+    break;
   case VIDEOPLAYER_CAST:
     return m_currentFile.GetVideoInfoTag()->GetCast();
   case VIDEOPLAYER_CAST_AND_ROLE:
@@ -3044,6 +3072,15 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_TAGLINE:
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strTagLine;
+    break;
+  case LISTITEM_TOP250:
+    if (item->HasVideoInfoTag())
+    {
+      CStdString strResult;
+      if (item->GetVideoInfoTag()->m_iTop250 > 0)
+        strResult.Format("%i",item->GetVideoInfoTag()->m_iTop250);
+      return strResult;
+    }
     break;
   }
   return "";

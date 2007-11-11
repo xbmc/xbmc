@@ -96,6 +96,13 @@ void CLastFMDirectory::AddEntry(int iString, CStdString strPath, CStdString strI
   pItem->m_strPath = strPath;
   pItem->m_bIsFolder = bFolder;
   pItem->SetLabelPreformated(true);
+  //the extra info is used in the mediawindows to determine which items are needed in the contextmenu
+  if (strPath.Find("lastfm://xbmc") >= 0)
+  {
+    pItem->SetCanQueue(false);
+    pItem->SetExtraInfo("lastfmitem");
+  }
+  
   items.Add(pItem);
 }
 
@@ -104,11 +111,18 @@ void CLastFMDirectory::AddListEntry(const char *name, const char *artist, const 
   CStdString strName;
   CStdString strCount;
   CFileItem *pItem = new CFileItem;
+  CMusicInfoTag* musicinfotag = pItem->GetMusicInfoTag();
+  musicinfotag->SetTitle(name);
 
   if (artist)
+  {
     strName.Format("%s - %s", artist, name);
+    musicinfotag->SetArtist(artist);
+  }
   else
+  {
     strName = name;
+  }
 
   if (count)
   {
@@ -134,6 +148,24 @@ void CLastFMDirectory::AddListEntry(const char *name, const char *artist, const 
     ft.dwHighDateTime = (DWORD)(ll >> 32);
     
     pItem->m_dateTime=ft;
+  }
+
+  pItem->SetCanQueue(false);
+  //the extra info is used in the mediawindows to determine which items are needed in the contextmenu
+  if (m_objname.Equals(g_guiSettings.GetString("lastfm.username")))
+  {
+    if (m_objrequest.Equals("recentbannedtracks"))
+    {
+      pItem->SetExtraInfo("lastfmbanned");
+    }
+    else if (m_objrequest.Equals("recentlovedtracks"))
+    {
+      pItem->SetExtraInfo("lastfmloved");
+    }
+  }
+  if (pItem->GetExtraInfo().IsEmpty() && strPath.Find("lastfm://xbmc") >= 0)
+  {
+    pItem->SetExtraInfo("lastfmitem");
   }
 
   // icons? would probably take too long to retrieve them all
@@ -433,6 +465,10 @@ bool CLastFMDirectory::GetUserInfo(CFileItemList &items)
     return ParseTrackList(BuildURLFromInfo(), items);
   else if (m_objrequest == "recenttracks")
     return ParseTrackList(BuildURLFromInfo(), items);
+  else if (m_objrequest == "recentlovedtracks")
+    return ParseTrackList(BuildURLFromInfo(), items);
+  else if (m_objrequest == "recentbannedtracks")
+    return ParseTrackList(BuildURLFromInfo(), items);
   else if (m_objrequest == "")
   {
     AddEntry(15268, "lastfm://xbmc/user/%name%/topartists/", "", true, items);
@@ -445,6 +481,8 @@ bool CLastFMDirectory::GetUserInfo(CFileItemList &items)
     AddEntry(15274, "lastfm://xbmc/user/%name%/weeklyalbumchart/", "", true, items);
     AddEntry(15275, "lastfm://xbmc/user/%name%/weeklytrackchart/", "", true, items);
     AddEntry(15283, "lastfm://xbmc/user/%name%/recenttracks/", "", true, items);
+    AddEntry(15293, "lastfm://xbmc/user/%name%/recentlovedtracks/", "", true, items);
+    AddEntry(15294, "lastfm://xbmc/user/%name%/recentbannedtracks/", "", true, items);
     AddEntry(15276, "lastfm://user/%name%/neighbours", "", false, items);
     AddEntry(15277, "lastfm://user/%name%/personal", "", false, items);
     AddEntry(15278, "lastfm://user/%name%/loved", "", false, items);

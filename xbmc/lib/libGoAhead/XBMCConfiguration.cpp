@@ -251,25 +251,41 @@ int CXbmcConfiguration::GetBookmark( int eid, webs_t wp, CStdString& response, i
 }
 
 /*
+ * Add a new bookmark (type, name, path)
  * Add a new bookmark (type, name, path, position)
+ * Add a new bookmark (type, name, path, thumbnail, position)
  * var type has to be set to a bookmark name (like video, music ...)
  * var name = share name
  * var path = path
+ * var thumbnail = thumbnail image (not required)
  * var postition = position where bookmark should be placed (not required)
  */
 int CXbmcConfiguration::AddBookmark( int eid, webs_t wp, CStdString& response, int argc, char_t **argv)
 {
-	char_t	*type, *name, *path, *position = NULL;
+  char_t    *type, *name, *path, *thumbnail = NULL, *position = NULL;
+  int numParas;
 
-	// asp function is called within a script, get arguments
-	if (ejArgs(argc, argv, T("%s %s %s %s"), &type, &name, &path, &position) < 3) {
-          if (eid!=-1) websError(wp, 500, T("Insufficient args\n use: function(command, type, name, path, [postion])"));
-            else response="<li>Error:Insufficient args, use: function(command, type, name, path, [postion])";
-  	  return -1;
-	}
+  // asp function is called within a script, get arguments
+  numParas=ejArgs(argc, argv, T("%s %s %s %s %s"), &type, &name, &path, &thumbnail, &position);
+  if ( numParas< 3) 
+  {
+    if (eid!=-1)
+       websError(wp, 500, T("Insufficient args\n use: function(command, type, name, path, [thumbnail], [position])"));
+    else
+       response="<li>Error:Insufficient args, use: function(command, type, name, path, [thumbnail], [position])";
+    return -1;
+  }
+
   CShare share;
   share.strName = name;
   share.strPath = path;
+  if (numParas==4)
+  {
+	  position=thumbnail;
+	  thumbnail=NULL;
+  }
+  if (numParas==5)
+    share.m_strThumbnailImage = thumbnail;
   share.vecPaths.push_back(path);
   g_settings.AddShare(type,share);
 
@@ -426,9 +442,11 @@ int CXbmcConfiguration::RemoveBookmark( int eid, webs_t wp, CStdString& response
 
 	// asp function is called within a script, get arguments
 	if (ejArgs(argc, argv, T("%s %s"), &type, &position) < 2) {
-          if (eid!=-1) websError(wp, 500, T("Insufficient args\n use: function(type, postion)"));
-            else response="<li>Error:Insufficient args, use: function(type, postion)";
-  	  return -1;
+          if(eid!=-1)
+            websError(wp, 500, T("Insufficient args\n use: function(type, position)"));
+          else
+            response="<li>Error:Insufficient args, use: function(type, position)";
+	  return -1;
 	}
 
 	int nr = 0;

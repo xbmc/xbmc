@@ -291,6 +291,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_iBadPwdCount = item.m_iBadPwdCount;
   m_bCanQueue=item.m_bCanQueue;
   m_contenttype = item.m_contenttype;
+  m_extrainfo = item.m_extrainfo;
   SetInvalid();
   return *this;
 }
@@ -331,6 +332,7 @@ void CFileItem::Reset()
   if (m_pictureInfoTag)
     delete m_pictureInfoTag;
   m_pictureInfoTag=NULL;
+  m_extrainfo.Empty();
   SetInvalid();
 }
 
@@ -365,6 +367,7 @@ void CFileItem::Serialize(CArchive& ar)
 
     ar << m_bCanQueue;
     ar << m_contenttype;
+    ar << m_extrainfo;
 
     if (m_musicInfoTag)
     {
@@ -417,6 +420,7 @@ void CFileItem::Serialize(CArchive& ar)
 
     ar >> m_bCanQueue;
     ar >> m_contenttype;
+    ar >> m_extrainfo;
 
     int iType;
     ar >> iType;

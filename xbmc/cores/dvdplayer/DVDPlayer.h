@@ -124,10 +124,10 @@ public:
   virtual CStdString GetPlayerState();
   virtual bool SetPlayerState(CStdString state);
 
-  virtual int OnDVDNavResult(void* pData, int iMessage);
-
-  virtual bool IsCaching() const ;
+  virtual bool IsCaching() const { return m_caching; } 
   virtual int GetCacheLevel() const ; 
+
+  virtual int OnDVDNavResult(void* pData, int iMessage);
   
 private:
   void LockStreams()                                            { EnterCriticalSection(&m_critStreamSection); }
@@ -166,12 +166,12 @@ private:
   void SyncronizeDemuxer(DWORD timeout);
   void CheckContinuity(CDVDDemux::DemuxPacket* pPacket, unsigned int source);
 
-  bool m_bDontSkipNextFrame;
   bool m_bAbortRequest;
 
   std::string m_filename; // holds the actual filename
   std::string m_content;  // hold a hint to what content file contains (mime type)
-    
+  bool        m_caching;  // player is filling up the demux queue
+
   CCurrentStream m_CurrentAudio;
   CCurrentStream m_CurrentVideo;
   CCurrentStream m_CurrentSubtitle;
@@ -184,8 +184,6 @@ private:
   
   bool   m_bCaching;
   time_t m_tmLastSeek;
-  time_t m_tmStartCaching;
-  time_t m_tmCachingTime;
 
   // classes
   CDVDPlayerVideo m_dvdPlayerVideo; // video part
