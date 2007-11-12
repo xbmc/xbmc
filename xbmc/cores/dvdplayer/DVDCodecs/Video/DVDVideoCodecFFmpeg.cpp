@@ -135,9 +135,22 @@ void CDVDVideoCodecFFmpeg::SetDropState(bool bDrop)
 
     //  2 seem to be to high.. it causes video to be ruined on following images
     if( bDrop )
+    {
+      // TODO: 'hurry_up' has been deprecated in favor of the skip_* variables
+      // Use those instead.
+
       m_pCodecContext->hurry_up = 1;
+      //m_pCodecContext->skip_frame = AVDISCARD_DEFAULT;
+      //m_pCodecContext->skip_idct = AVDISCARD_DEFAULT;
+      //m_pCodecContext->skip_loop_filter = AVDISCARD_NONREF;
+    }
     else
+    {
       m_pCodecContext->hurry_up = 0;
+      //m_pCodecContext->skip_frame = AVDISCARD_NONE;
+      //m_pCodecContext->skip_idct = AVDISCARD_NONE;
+      //m_pCodecContext->skip_loop_filter = AVDISCARD_DEFAULT;
+    }
   }
 }
 
@@ -193,7 +206,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
 #ifdef HAS_DVD_SWSCALE
     struct SwsContext *context = m_dllSwScale.sws_getContext(m_pCodecContext->width, m_pCodecContext->height, 
 			m_pCodecContext->pix_fmt, m_pCodecContext->width, m_pCodecContext->height, 
-			PIX_FMT_YUV420P, SWS_BICUBIC, NULL, NULL, NULL);
+			PIX_FMT_YUV420P, SWS_BILINEAR, NULL, NULL, NULL);
 
     uint8_t *src[] = { m_pFrame->data[0], m_pFrame->data[1], m_pFrame->data[2] };
     int     srcStride[] = { m_pFrame->linesize[0], m_pFrame->linesize[1], m_pFrame->linesize[2] };
