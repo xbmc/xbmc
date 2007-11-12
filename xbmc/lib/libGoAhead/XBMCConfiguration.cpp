@@ -7,10 +7,10 @@
 #include "..\..\util.h"
 #include "includes.h"
 
-//#pragma code_seg("WEB_TEXT")
-//#pragma data_seg("WEB_DATA")
-//#pragma bss_seg("WEB_BSS")
-//#pragma const_seg("WEB_RD")
+#pragma code_seg("WEB_TEXT")
+#pragma data_seg("WEB_DATA")
+#pragma bss_seg("WEB_BSS")
+#pragma const_seg("WEB_RD")
 
 CXbmcConfiguration::CXbmcConfiguration()
 {
