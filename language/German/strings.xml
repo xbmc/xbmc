@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: scape@xboxmediacenter.com-->
-<!--Date of translation: 09/26/2007-->
+<!--Date of translation: 11/12/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 10279-->
+<!--Based on english strings version 10705-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -227,6 +227,7 @@
   <string id="294">Lesezeichen erstellen</string>
   <string id="296">Lesezechen löschen</string>
   <string id="297">Audio-Verzögerung</string>
+  <string id="298">Lesezeichen</string>
   <string id="303">Untertitel-Verzögerung</string>
   <string id="304">Sprache</string>
   <string id="305">Aktiviert</string>
@@ -542,6 +543,7 @@
   <string id="657">Nach einem Ordner durchsuchen...</string>
   <string id="658">Titel-Informationen</string>
   <string id="659">Kommentar:</string>
+  <string id="660">Lautstärkeanpassung</string>
   <string id="700">Datenbank wird aktualisiert...</string>
   <string id="701">Alte Musikdaten aus der Datenbank löschen</string>
   <string id="702">Dieser Pfad wurde bereits aktualisiert. Möchten Sie den Pfad&#10;komplett aktualisieren oder nur nach neuen Dateien suchen?</string>
@@ -660,6 +662,8 @@
   <string id="1041">%i Einträge geladen</string>
   <string id="1042">%i von %i Einträgen geladen</string>
   <string id="1043">Programm Plugins</string>
+  <string id="1044">Plugin-Thumbnail</string>
+  <string id="1045">Plugin Einstellungen</string>
   <string id="1200">SMB-Client</string>
   <string id="1202">Arbeitsgruppe</string>
   <string id="1203">Standard Benutzername</string>
@@ -1025,6 +1029,8 @@
   <string id="13405">Cover Download</string>
   <string id="13406">Bild-Information</string>
   <string id="13407">%s Voreinstellungen</string>
+  <string id="13408">(IMDb Benutzer-Bewertung)</string>
+  <string id="13409">Top 250:</string>
   <string id="14000">Videos Stapeln</string>
   <string id="14001">Stapeln deaktivieren</string>
   <string id="14003">Playlist wird heruntergeladen...</string>
@@ -1228,6 +1234,18 @@
   <string id="15284">Last.fm Radio Empfehlungen für %name% anhören</string>
   <string id="15285">Die besten Tags von %name%</string>
   <string id="15286">Die Playlist von %name% im Last.fm Radio anhören</string>
+  <string id="15287">Möchten Sie den aktuellen Titel zu Ihrer Lieblingsliste hinzufügen?</string>
+  <string id="15288">Möchten Sie den aktuellen Titel von Ihrer Lieblingsliste sperren?</string>
+  <string id="15289">Zur Lieblingsliste hinzugefügt: '%s'</string>
+  <string id="15290">Der Titel '%s' konnte nicht zur Lieblingsliste hinzugefügt werden.</string>
+  <string id="15291">Von der Lieblingsliste gesperrt: '%s'</string>
+  <string id="15292">Der Titel '%s' konnte nicht von der Lieblingsliste gesperrt werden.</string>
+  <string id="15293">Kürzlich zur Lieblingsliste hinzugefügt von %name%</string>
+  <string id="15294">Kürzlich von der Lieblingsliste gesperrt von %name%</string>
+  <string id="15295">Von Lieblingsliste entfernen</string>
+  <string id="15296">Von Sperrliste entfernen</string>
+  <string id="15297">Möchten Sie den Titel aus Ihrer Lieblingsliste entfernen?</string>
+  <string id="15298">Möchten Sie den Titel aus Ihrer Sperrliste entfernen?</string>
   <string id="15300">Der Pfad wurde nicht gefunden oder ist ungültig.</string>
   <string id="15301">Keine Verbindung zum Netzwerkserver.</string>
   <string id="15302">Es wurden keine Server gefunden.</string>
@@ -1469,6 +1487,9 @@
   <string id="20197"></string>
   <string id="20198"></string>
   <string id="20199"></string>
+  <string id="20250">Party-Modus ist aktiviert!</string>
+  <string id="20251">Titel werden gefiltert...</string>
+  <string id="20252">Titel werden hinzugefügt...</string>
   <string id="20300"></string>
   <string id="20301"></string>
   <string id="20302"></string>
@@ -1550,7 +1571,7 @@
   <string id="20379">Ordner beinhaltet eine einzige TV-Serie</string>
   <string id="20380">Ordner vom Scan ausschließen</string>
   <string id="20381">Besondere</string>
-  <string id="20382">Staffel-Covers von TV-Serien automatisch downloaden</string>
+  <string id="20382">Staffel-Covers von TV-Serien automatisch herunterladen</string>
   <string id="20383">Ordner enthält ein einziges Video</string>
   <string id="20384">Link zur TV-Serie</string>
   <string id="20385">Link zur TV-Serie entfernen</string>
@@ -1570,6 +1591,11 @@
   <string id="20399">Zu Musik-Videos dieses Albums wechseln</string>
   <string id="20400">Zu Musik-Videos dieses Interpreten wechseln</string>
   <string id="20401">Musik-Video abspielen</string>
+  <string id="20402">Schauspieler-Cover automatisch herunterladen</string>
+  <string id="20403">Schauspieler-Cover</string>
+  <string id="20404">Filmstudio:</string>
+  <string id="20405">Episoden-Lesez. entfernen</string>
+  <string id="20406">Episoden-Lesez. setzen</string>
   <string id="21330">Versteckte Ordner und Dateien anzeigen</string>
   <string id="21331">TuxBox Client</string>
   <string id="21332">WARNUNG: Ziel-TuxBox-Laufwerk ist im Aufnahme-Modus!</string>
