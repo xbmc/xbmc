@@ -93,7 +93,7 @@
 				<textcolor>green</textcolor>
 				<font>special13</font>
 			</control>
-			<control type="fadelabel" id="1">
+			<control type="label" id="1">
 				<description>Artist label</description>
 				<width>420</width>
 				<posx>160</posx>
@@ -101,8 +101,9 @@
 				<info>MusicPlayer.Artist</info>
 				<align>left</align>
 				<font>special12</font>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="1">
+			<control type="label" id="1">
 				<description>Title label</description>
 				<width>420</width>
 				<posx>160</posx>
@@ -110,8 +111,9 @@
 				<info>MusicPlayer.Title</info>
 				<align>left</align>
 				<font>special13</font>
+				<scroll>true</scroll>
 			</control>
-			<control type="fadelabel" id="1">
+			<control type="label" id="1">
 				<description>Album label</description>
 				<width>420</width>
 				<posx>160</posx>
@@ -119,6 +121,7 @@
 				<label>$INFO[MusicPlayer.Album]$INFO[musicplayer.discnumber, - $LOCALIZE[427]]</label>
 				<align>left</align>
 				<font>font10</font>
+				<scroll>true</scroll>
 			</control>
 			<control type="image" id="1">
 				<description>Song Rating Image</description>
