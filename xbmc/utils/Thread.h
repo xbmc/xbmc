@@ -62,7 +62,7 @@ protected:
   static void term_handler (int signum);
 #endif
 
-  bool m_bStop;
+  volatile bool m_bStop;
   HANDLE m_ThreadHandle;
 
 private:
