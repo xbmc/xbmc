@@ -7,10 +7,10 @@
 #include "..\..\util.h"
 #include "includes.h"
 
-#pragma code_seg("WEB_TEXT")
-#pragma data_seg("WEB_DATA")
-#pragma bss_seg("WEB_BSS")
-#pragma const_seg("WEB_RD")
+//#pragma code_seg("WEB_TEXT")
+//#pragma data_seg("WEB_DATA")
+//#pragma bss_seg("WEB_BSS")
+//#pragma const_seg("WEB_RD")
 
 CXbmcConfiguration::CXbmcConfiguration()
 {
@@ -277,7 +277,6 @@ int CXbmcConfiguration::AddBookmark( int eid, webs_t wp, CStdString& response, i
   }
   CShare share;
   share.strName = name;
-  share.strPath = path;
   if (numParas==4)
   {
 	  position=thumbnail;
@@ -285,7 +284,16 @@ int CXbmcConfiguration::AddBookmark( int eid, webs_t wp, CStdString& response, i
   }
   if (numParas==5)
     share.m_strThumbnailImage = thumbnail;
-  share.vecPaths.push_back(path);
+  CStdString strPath=path;
+  if (!CUtil::HasSlashAtEnd(strPath))
+  {
+    if (strPath.Find("//") >= 0 )
+      strPath += "/";
+    else
+      strPath += "\\";
+  }
+  share.strPath = strPath;
+  share.vecPaths.push_back(strPath.c_str());
   g_settings.AddShare(type,share);
 
   return 0;
@@ -555,7 +563,7 @@ int CXbmcConfiguration::SaveConfiguration( int eid, webs_t wp, CStdString& respo
 int CXbmcConfiguration::GetOption( int eid, webs_t wp, CStdString& response, int argc, char_t **argv)
 {
   eid!=-1 ? websError(wp, 500, T("Deprecated\n")):
-response="<li>Error:Functino is deprecated";
+response="<li>Error:Function is deprecated";
 return -1;
 
   
@@ -626,7 +634,7 @@ int CXbmcConfiguration::SetOption( int eid, webs_t wp, CStdString& response, int
 	char_t *name, *value = NULL;
 
   eid!=-1 ? websError(wp, 500, T("Deprecated\n")):
-  response="<li>Error:Functino is deprecated";
+  response="<li>Error:Function is deprecated";
   return -1;
 
 	// load xboxmediacenter.xml, write a messages if file could not be loaded

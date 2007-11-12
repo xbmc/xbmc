@@ -61,7 +61,8 @@ extern void		dbZero(int did);
 CWebServer::CWebServer()
 {
   pXbmcWeb = new CXbmcWeb();
-  pXbmcWebConfig = new CXbmcConfiguration();
+  if (!pXbmcWebConfig)
+    pXbmcWebConfig = new CXbmcConfiguration();
   if (!pXbmcHttpShim)
     pXbmcHttpShim = new CXbmcHttpShim();
   if (!m_pXbmcHttp)
@@ -533,6 +534,25 @@ void XbmcWebsForm(webs_t wp, char_t *path, char_t *query)
 {
 	if (!pXbmcWeb) return;
 	return pXbmcWeb->xbmcForm(wp, path, query);
+}
+
+bool XbmcWebConfigInit()
+{
+  if (!pXbmcWebConfig) {
+    pXbmcWebConfig = new CXbmcConfiguration();
+	return true;
+  }
+  else
+	return false;
+}
+
+void XbmcWebConfigRelease()
+{
+  if (pXbmcWebConfig)
+  {
+	delete pXbmcWebConfig;
+	pXbmcWebConfig=NULL;
+  }
 }
 
 /*
