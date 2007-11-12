@@ -24,8 +24,8 @@
 			<RegExp input="$$1" output="\1" dest="4">
 				<expression noclean="1">(&gt;&lt;a href=&quot;/title.*)</expression>
 			</RegExp>
-			<RegExp input="$$4" output="&lt;entity&gt;&lt;title&gt;\2 (\3)&lt;/title&gt;&lt;url&gt;http://akas.imdb.com/title/\1/&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="5+">
-				<expression repeat="yes" noclean="1,2">&gt;&lt;a href=&quot;/title/([t0-9]*)/[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt; *\(([0-9]*)</expression>
+			<RegExp input="$$4" output="&lt;entity&gt;&lt;title&gt;\2 (\3) \4&lt;/title&gt;&lt;url&gt;http://akas.imdb.com/title/\1/&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="5+">
+				<expression repeat="yes" noclean="1,2,3">&gt;&lt;a href=&quot;/title/([t0-9]*)/[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt; *\(([0-9]*)\)([^=]*)?(&lt;/td&gt;*)</expression>
 			</RegExp>
 			<expression clear="yes" noclean="1"></expression>
 		</RegExp>

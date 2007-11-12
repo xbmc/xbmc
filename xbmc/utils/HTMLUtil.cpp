@@ -96,6 +96,7 @@ void CHTMLUtil::RemoveTags(CStdString& strHTML)
   }
 
   strReturn.Replace("&mdash;", "--");
+  strReturn.Replace("&#160;", " ");
 
   strHTML = strReturn;
 }
