@@ -19,7 +19,7 @@
 				<expression clear="yes">/title/([t0-9]*)/faq</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1 (\2)&lt;/title&gt;&lt;url&gt;http://akas.imdb.com/title/$$7/&lt;/url&gt;&lt;id&gt;$$7&lt;/id&gt;&lt;/entity&gt;" dest="5">
-				<expression clear="yes" noclean="1">&lt;meta name=&quot;title&quot; content=&quot;([^&quot;]*) \(([0-9]*)\)</expression>
+				<expression clear="yes" noclean="1">&lt;meta name=&quot;title&quot; content=&quot;([^(]*)[^0-9/A-Z]* \(([0-9/A-Z]*)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="4">
 				<expression noclean="1">(&gt;&lt;a href=&quot;/title.*)</expression>
