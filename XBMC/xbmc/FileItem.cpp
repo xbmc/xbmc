@@ -828,11 +828,11 @@ void CFileItem::FillInDefaultIcon()
       {
         SetIconImage("DefaultScript.png");
       }
-      //else
-      //{
-      //  // default icon for unknown file type
-      //  SetIconImage("defaultUnknown.png");
-      //}
+      else
+      {
+        // default icon for unknown file type
+        SetIconImage("defaultFile.png");
+      }
     }
     else
     {
