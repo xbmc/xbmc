@@ -56,7 +56,7 @@ void CJoystick::Initialize(HWND hWnd)
       }
     }
     // enable joystick event capture
-    SDL_JoystickEventState(SDL_ENABLE);    
+    SDL_JoystickEventState(SDL_DISABLE);    
   }
   else
   {
