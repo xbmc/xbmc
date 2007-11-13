@@ -26,7 +26,6 @@ CGraphicContext::CGraphicContext(void)
   m_stateBlock = 0xffffffff;
   m_dwID = 0;
   m_strMediaDir = "D:\\media";
-  m_bShowPreviewWindow = false;
   m_bCalibrating = false;
   m_Resolution = INVALID;
   m_pCallback = NULL;
@@ -261,15 +260,6 @@ void CGraphicContext::SetViewWindow(float left, float top, float right, float bo
     m_videoRect.top = (long)(ScaleFinalYCoord(left, top) + 0.5f);
     m_videoRect.right = (long)(ScaleFinalXCoord(right, bottom) + 0.5f);
     m_videoRect.bottom = (long)(ScaleFinalYCoord(right, bottom) + 0.5f);
-    if (m_bShowPreviewWindow && !m_bFullScreenVideo)
-    {
-      D3DRECT d3dRC;
-      d3dRC.x1 = m_videoRect.left;
-      d3dRC.x2 = m_videoRect.right;
-      d3dRC.y1 = m_videoRect.top;
-      d3dRC.y2 = m_videoRect.bottom;
-      Get3DDevice()->Clear( 1, &d3dRC, D3DCLEAR_TARGET, 0x00010001, 1.0f, 0L );
-    }
   }
 }
 
@@ -309,12 +299,6 @@ bool CGraphicContext::IsFullScreenVideo() const
 {
   return m_bFullScreenVideo;
 }
-
-void CGraphicContext::EnablePreviewWindow(bool bEnable)
-{
-  m_bShowPreviewWindow = bEnable;
-}
-
 
 bool CGraphicContext::IsCalibrating() const
 {
