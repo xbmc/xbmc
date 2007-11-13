@@ -214,6 +214,7 @@
 			<onclick>XBMC.LastFM.Love</onclick>
 			<visible>LastFM.RadioPlaying</visible>
 			<pulseonselect>true</pulseonselect>
+			<animation effect="zoom" start="100" end="175" center="146,411"condition="Control.HasFocus(20)">Conditional</animation>
 		</control>
 		<control type="button" id="21">
 			<description>Hate button</description>
