@@ -109,7 +109,6 @@ public:
   void ResetScreenParameters(RESOLUTION res);
   void Lock() { EnterCriticalSection(*this); }
   void Unlock() { LeaveCriticalSection(*this); }
-  void EnablePreviewWindow(bool bEnable);
   float GetPixelRatio(RESOLUTION iRes) const;
   void CaptureStateBlock();
   void ApplyStateBlock();
@@ -183,7 +182,6 @@ protected:
   CStdString m_strMediaDir;
   RECT m_videoRect;
   bool m_bFullScreenVideo;
-  bool m_bShowPreviewWindow;
   bool m_bCalibrating;
   RESOLUTION m_Resolution;
   
