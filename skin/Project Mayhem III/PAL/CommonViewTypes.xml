@@ -845,6 +845,17 @@
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(51) + !IsEmpty(ListItem.Plot)</visible>
 		</control>
+		<control type="textbox" id="511">
+			<posx>200</posx>
+			<posy>373</posy>
+			<width>450</width>
+			<height>130</height>
+			<font>font13</font>
+			<pagecontrol>611</pagecontrol>
+			<label>416</label>
+			<include>contentpanelslide</include>
+			<visible>Control.IsVisible(51) + IsEmpty(ListItem.Plot)</visible>
+		</control>
 		<control type="button">
 			<posx>660</posx>
 			<posy>373</posy>
