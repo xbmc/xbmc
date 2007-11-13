@@ -2137,16 +2137,6 @@ void CApplication::RenderNoPresent()
 
 void CApplication::DoRender()
 {
-  // enable/disable video overlay window
-  if (IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO && !m_bScreenSave)
-  {
-    g_graphicsContext.EnablePreviewWindow(true);
-  }
-  else
-  {
-    g_graphicsContext.EnablePreviewWindow(false);
-  }
-
   if(!m_pd3dDevice)
     return;
 
