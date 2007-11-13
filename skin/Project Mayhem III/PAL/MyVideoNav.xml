@@ -94,7 +94,7 @@
 				<label>100</label>
 				<onleft>50</onleft>
 				<onright>50</onright>
-				<onup>11</onup>
+				<onup>21</onup>
 				<ondown>3</ondown>
 			</control>
 			<control type="button" id="3">
@@ -195,8 +195,42 @@
 				<selected>system.ismaster</selected>
 				<visible>system.haslocks</visible>
 				<onup>16</onup>
-				<ondown>2</ondown>
+				<ondown>20</ondown>
 			</control>
+		</control>
+		<control type="button" id="20">
+			<description>Love button</description>
+			<posx>130</posx>
+			<posy>395</posy>
+			<height>32</height>
+			<width>32</width>
+			<font>font13</font>
+			<onleft>50</onleft>
+			<onright>50</onright>
+			<onup>11</onup>
+			<ondown>21</ondown>
+			<texturefocus>Love-focus.png</texturefocus>
+			<texturenofocus>Love.png</texturenofocus>
+			<onclick>XBMC.LastFM.Love</onclick>
+			<visible>LastFM.RadioPlaying</visible>
+			<pulseonselect>true</pulseonselect>
+		</control>
+		<control type="button" id="21">
+			<description>Hate button</description>
+			<posx>130</posx>
+			<posy>460</posy>
+			<height>32</height>
+			<width>32</width>
+			<onleft>50</onleft>
+			<onright>50</onright>
+			<onup>20</onup>
+			<ondown>2</ondown>
+			<texturefocus>Ban-focus.png</texturefocus>
+			<texturenofocus>Ban.png</texturenofocus>
+			<onclick>XBMC.LastFM.Ban</onclick>
+			<visible>LastFM.RadioPlaying</visible>
+			<pulseonselect>true</pulseonselect>
+			<animation effect="zoom" start="100" end="175" center="146,476"condition="Control.HasFocus(21)">Conditional</animation>
 		</control>
 		<include>OldListViewCommons</include>
 		<include>VideoLibraryList2View</include>
