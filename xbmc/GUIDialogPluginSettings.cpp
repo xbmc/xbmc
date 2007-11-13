@@ -240,7 +240,7 @@ bool CGUIDialogPluginSettings::SaveSettings(void)
         value = ((CGUIRadioButtonControl*) control)->IsSelected() ? "true" : "false";
         break;
       case CGUIControl::GUICONTROL_SPINEX:
-        value = ((CGUISpinControlEx*) control)->GetLabel();
+        value.Format("%i", ((CGUISpinControlEx*) control)->GetValue());
         break;
       default:
         break;
@@ -300,6 +300,7 @@ void CGUIDialogPluginSettings::CreateControls()
     const char *type = setting->Attribute("type");
     const char *id = setting->Attribute("id");
     CStdString values = setting->Attribute("values");
+    CStdString lvalues = setting->Attribute("lvalues");
 
     CStdString label;
     label.Format("$LOCALIZE[%s]", setting->Attribute("label"));
@@ -330,14 +331,25 @@ void CGUIDialogPluginSettings::CreateControls()
       pControl = new CGUISpinControlEx(*pOriginalSpin);
       if (!pControl) return;
       ((CGUISpinControlEx *)pControl)->SetText(label);
-      CUtil::Tokenize(values, valuesVec, "|");
+
+      if (!lvalues.IsEmpty())
+        CUtil::Tokenize(lvalues, valuesVec, "|");
+      else
+        CUtil::Tokenize(values, valuesVec, "|");
 
       for (unsigned int i = 0; i < valuesVec.size(); i++)
       {
-        ((CGUISpinControlEx *)pControl)->AddLabel(valuesVec[i], i);
-        if (valuesVec[i] == m_settings.Get(id))
-          ((CGUISpinControlEx *)pControl)->SetValue(i);
+        if (!lvalues.IsEmpty())
+        {
+          CStdString replace = g_localizeStringsTemp.Get(atoi(valuesVec[i]));
+          if (replace.IsEmpty())
+            replace = g_localizeStrings.Get(atoi(valuesVec[i]));
+          ((CGUISpinControlEx *)pControl)->AddLabel(replace, i);
+        }
+        else
+          ((CGUISpinControlEx *)pControl)->AddLabel(valuesVec[i], i);
       }
+      ((CGUISpinControlEx *)pControl)->SetValue(atoi(m_settings.Get(id)));
     }
     else if (strcmpi(type, "sep") == 0 && pOriginalImage)
       pControl = new CGUIImage(*pOriginalImage);
