@@ -3212,9 +3212,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\dvdplayer\DVDMessageTracker.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\dvdplayer\DVDOverlay.h">
-				</File>
-				<File
 					RelativePath=".\xbmc\cores\dvdplayer\DVDOverlayContainer.cpp">
 				</File>
 				<File
@@ -3398,6 +3395,15 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 						</File>
 						<File
 							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecCC.h">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecFFmpeg.cpp">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecFFmpeg.h">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayImage.h">
 						</File>
 						<File
 							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlaySpu.h">

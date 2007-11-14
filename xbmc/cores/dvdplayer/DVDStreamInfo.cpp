@@ -36,6 +36,8 @@ void CDVDStreamInfo::Clear()
 
   channels = 0;
   samplerate = 0;
+
+  identifier = 0;
 }
 
 bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, bool withextradata)
@@ -62,6 +64,9 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, bool withextradata)
   // AUDIO
   if( channels != right.channels
   ||  samplerate != right.samplerate ) return false;
+
+  // SUBTITLE
+  if( identifier != right.identifier ) return false;
 
   return true;
 }
@@ -104,14 +109,17 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
   // AUDIO
   channels = right.channels;
   samplerate = right.samplerate;
+
+  // SUBTITLE
+  identifier = right.identifier;
 }
 
 void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
 {
+  Clear();
+
   codec = right.codec;
   type = right.type;
-
-  if( extradata && extrasize ) free(extradata);
 
   if( withextradata && right.ExtraSize )
   {
@@ -119,38 +127,25 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     extradata = malloc(extrasize);
     memcpy(extradata, right.ExtraData, extrasize);
   }
-  else
-  {
-    extrasize = 0;
-    extradata = 0;
-  }
 
   if( right.type == STREAM_AUDIO )
   {
     const CDemuxStreamAudio *stream = static_cast<const CDemuxStreamAudio*>(&right);
-    // VIDEO
-    fpsscale = 0;
-    fpsrate = 0;
-    height = 0;
-    width = 0;
-    aspect = 0.0;
-
-    // AUDIO
     channels = stream->iChannels;
     samplerate = stream->iSampleRate;
   }
   else if(  right.type == STREAM_VIDEO )
   {
     const CDemuxStreamVideo *stream = static_cast<const CDemuxStreamVideo*>(&right);
-    // VIDEO
     fpsscale = stream->iFpsScale;
     fpsrate = stream->iFpsRate;
     height = stream->iHeight;
     width = stream->iWidth;
     aspect = stream->fAspect;
-
-    // AUDIO
-    channels = 0;
-    samplerate = 0;
+  }
+  else if(  right.type == STREAM_SUBTITLE )
+  {
+    const CDemuxStreamSubtitle *stream = static_cast<const CDemuxStreamSubtitle*>(&right);
+    identifier = stream->identifier;
   }
 }

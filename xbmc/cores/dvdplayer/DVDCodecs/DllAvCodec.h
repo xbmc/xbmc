@@ -21,6 +21,7 @@ public:
   virtual int avpicture_fill(AVPicture *picture, uint8_t *ptr, int pix_fmt, int width, int height)=0;
   virtual int avcodec_decode_video(AVCodecContext *avctx, AVFrame *picture, int *got_picture_ptr, uint8_t *buf, int buf_size)=0;
   virtual int avcodec_decode_audio(AVCodecContext *avctx, int16_t *samples, int *frame_size_ptr, uint8_t *buf, int buf_size)=0;
+  virtual int avcodec_decode_subtitle(AVCodecContext *avctx, AVSubtitle *sub, int *got_sub_ptr, const uint8_t *buf, int buf_size)=0;
   virtual int img_convert(AVPicture *dst, int dst_pix_fmt, const AVPicture *src, int pix_fmt, int width, int height)=0;
   virtual int avpicture_get_size(int pix_fmt, int width, int height)=0;
   virtual AVCodecContext *avcodec_alloc_context(void)=0;
@@ -50,6 +51,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_METHOD5(int, avpicture_fill, (AVPicture *p1, uint8_t *p2, int p3, int p4, int p5))
   DEFINE_FUNC_ALIGNED5(int, __cdecl, avcodec_decode_video, AVCodecContext*, AVFrame*, int*, uint8_t*, int)
   DEFINE_FUNC_ALIGNED5(int, __cdecl, avcodec_decode_audio, AVCodecContext*, int16_t*, int*, uint8_t*, int)
+  DEFINE_FUNC_ALIGNED5(int, __cdecl, avcodec_decode_subtitle, AVCodecContext*, AVSubtitle*, int*, const uint8_t *, int)
   DEFINE_FUNC_ALIGNED6(int, __cdecl, img_convert, AVPicture*, int, const AVPicture*, int, int, int)
   DEFINE_METHOD3(int, avpicture_get_size, (int p1, int p2, int p3))
   DEFINE_FUNC_ALIGNED0(AVCodecContext*, __cdecl, avcodec_alloc_context)
@@ -74,6 +76,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD(avpicture_fill)
     RESOLVE_METHOD(avcodec_decode_video)
     RESOLVE_METHOD(avcodec_decode_audio)
+    RESOLVE_METHOD(avcodec_decode_subtitle)
     RESOLVE_METHOD(img_convert)
     RESOLVE_METHOD(avpicture_get_size)
     RESOLVE_METHOD(avcodec_alloc_context)

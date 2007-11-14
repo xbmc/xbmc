@@ -11,6 +11,7 @@ class CDVDInputStream;
 class CDVDSubtitleStream;
 class CDVDSubtitleParser;
 class CDVDInputStreamNavigator;
+class CDVDOverlayCodec;
 
 class CDVDPlayerSubtitle
 {
@@ -35,6 +36,7 @@ private:
 
   CDVDSubtitleStream* m_pSubtitleStream;
   CDVDSubtitleParser* m_pSubtitleFileParser;
+  CDVDOverlayCodec*   m_pOverlayCodec;
   CDVDDemuxSPU        m_dvdspus;
 
   CDVDStreamInfo      m_streaminfo;
