@@ -2614,8 +2614,8 @@
 				<description>Cast List Container</description>
 				<posx>200</posx>
 				<posy>350</posy>
-				<width>350</width>
-				<height>145</height>
+				<width>371</width>
+				<height>175</height>
 				<onleft>9000</onleft>
 				<onright>61</onright>
 				<onup>50</onup>
@@ -2635,7 +2635,7 @@
 				    <control type="label">
 			        	<posx>30</posx>
 			        	<posy>3</posy>
-        				<width>350</width>
+        				<width>371</width>
 				        <height>22</height>
         				<font>font13</font>
 				        <aligny>center</aligny>
@@ -2646,7 +2646,7 @@
 				</itemlayout>
                                 <focusedlayout height="29" width="250">
 		   		    <control type="image">
-				        <width>350</width>
+				        <width>371</width>
 				        <height>29</height>
 				        <posx>0</posx>
 				        <posy>0</posy>
@@ -2663,7 +2663,7 @@
 				    <control type="label">
  				        <posx>30</posx>
 				        <posy>3</posy>
-				        <width>350</width>
+				        <width>371</width>
 				        <height>22</height>
 				        <font>font13</font>
 				        <aligny>center</aligny>
@@ -2742,30 +2742,30 @@
 	</include>
 	<include name="DialogInfoViewCommonPageControls">
 		<control type="button">
-			<posx>560</posx>
+			<posx>665</posx>
 			<posy>350</posy>
 			<include>scrollbar_width</include>
 			<height>20</height>
 			<onclick>PageUp(61)</onclick>
 			<texturefocus border="4">scrollbar_arrow_up_focus.png</texturefocus>
 			<texturenofocus border="4">scrollbar_arrow_up.png</texturenofocus>
-			<visible>Control.IsVisible(61) + !Skin.HasSetting(UseScrollbars)</visible>
+			<visible>!Skin.HasSetting(UseScrollbars) + Control.IsVisible(61)</visible>
 		</control>
 		<control type="button">
-			<posx>560</posx>
-			<posy>503</posy>
+			<posx>665</posx>
+			<posy>500</posy>
 			<include>scrollbar_width</include>
 			<height>20</height>
 			<onclick>PageDown(61)</onclick>
 			<texturefocus border="4">scrollbar_arrow_down_focus.png</texturefocus>
 			<texturenofocus border="4">scrollbar_arrow_down.png</texturenofocus>
-			<visible>Control.IsVisible(61) + !Skin.HasSetting(UseScrollbars)</visible>
+			<visible>!Skin.HasSetting(UseScrollbars) + Control.IsVisible(61)</visible>
 		</control>
 		<control type="scrollbar" id="61">
-			<posx>560</posx>
+			<posx>665</posx>
 			<posy>370</posy>
 			<include>scrollbar_width</include>
-			<height>133</height>
+			<height>130</height>
 			<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
 			<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
 			<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
@@ -2773,22 +2773,21 @@
 			<textureslidernibfocus>-</textureslidernibfocus>
 			<onleft>50</onleft>
 			<onright>9000</onright>
-			<showonepage>true</showonepage>
+			<showonepage>false</showonepage>
 			<orientation>vertical</orientation>
-			<visible>!Skin.HasSetting(UseScrollbars) + Control.IsVisible(50)</visible>
+			<visible>!Skin.HasSetting(UseScrollbars) + [Control.IsVisible(50) | Control.IsVisible(4)]</visible>
 		</control>
 		<control type="spincontrol" id="61">
 			<description>Next page button</description>
-			<posx>540</posx>
-			<posy>505</posy>
+			<posx>650</posx>
+			<posy>540</posy>
 			<subtype>page</subtype>
 			<font>font12</font>
 			<onleft>50</onleft>
 			<onright>9000</onright>
 			<ondown>61</ondown>
 			<onup>50</onup>
-			<showonepage>true</showonepage>
-			<visible>Skin.HasSetting(UseScrollbars) + Control.IsVisible(50)</visible>
+			<visible>Skin.HasSetting(UseScrollbars) + [Control.IsVisible(50) | Control.IsVisible(4)]</visible>
 		</control>
 	</include>
 </includes>
