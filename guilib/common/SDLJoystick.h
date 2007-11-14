@@ -21,6 +21,7 @@ public:
   void Initialize(HWND hwnd);
   void Reset(bool axis=false);
   void ResetAxis(int axisId) { m_Amount[axisId] = 0.0f; }
+  void Update();
   void Update(SDL_Event& event);
   float GetAmount(int axis) { if (axis>=0 && axis<MAX_AXES) return m_Amount[axis]; return 0.0f; }
   float GetAmount() { return m_Amount[m_AxisId]; }

@@ -3339,6 +3339,7 @@ bool CApplication::ProcessGamepad(float frameTime)
     iWin = m_gWindowManager.GetTopMostModalDialogID() & WINDOW_ID_MASK;
   }
   int bid;
+  g_Joystick.Update();
   if (g_Joystick.GetButton(bid))
   {
     // reset Idle Timer
