@@ -61,6 +61,9 @@ public:
   double GetDelay()                                { return m_iVideoDelay; }
   void SetDelay(double delay)                      { m_iVideoDelay = delay; }
 
+  double GetSubtitleDelay()                                { return m_iSubtitleDelay; }
+  void SetSubtitleDelay(double delay)                      { m_iSubtitleDelay = delay; }
+
   bool IsStalled()                                  { return m_DetectedStill;  }
   int GetNrOfDroppedFrames()                        { return m_iDroppedFrames; }
 
@@ -94,6 +97,7 @@ protected:
   
   double m_iCurrentPts; // last pts displayed
   double m_iVideoDelay;
+  double m_iSubtitleDelay;
   double m_FlipTimeStamp; // time stamp of last flippage. used to play at a forced framerate
 
   int m_iDroppedFrames;
