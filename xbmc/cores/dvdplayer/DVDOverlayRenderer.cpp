@@ -3,7 +3,9 @@
 #include "DVDOverlayRenderer.h"
 #include "DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
+#include "DVDCodecs/Overlay/DVDOverlayImage.h"
 
+#define CLAMP(a, min, max) ((a) > (max) ? (max) : ( (a) < (min) ? (min) : a ))
 
 void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlay* pOverlay)
 {
@@ -11,6 +13,10 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlay* pOve
   {
     // display subtitle, if bForced is true, it's a menu overlay and we should crop it
     Render_SPU_YUV(pPicture, pOverlay, pOverlay->bForced);
+  }
+  else if (pOverlay->IsOverlayType(DVDOVERLAY_TYPE_IMAGE))
+  {
+    Render(pPicture, (CDVDOverlayImage*)pOverlay);
   }
   else if (false && pOverlay->IsOverlayType(DVDOVERLAY_TYPE_TEXT))
   {
@@ -29,6 +35,67 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlay* pOve
       e = e->pNext;
     }
   }
+}
+
+void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlayImage* pOverlay)
+{
+  BYTE* palette[4];
+  for(int i=0;i<4;i++)
+    palette[i] = (BYTE*)calloc(1, pOverlay->palette_colors);
+
+  for(int i=0;i<pOverlay->palette_colors;i++)
+  {
+    DWORD color = pOverlay->palette[i];
+
+    palette[3][i] = (BYTE)((color >> 24) & 0xff);
+    
+    double r = (color & 0xff) / 255.0;
+    double g = ((color >> 8) & 0xff) / 255.0;
+    double b = ((color >> 16) & 0xff) / 255.0;
+    
+    double ey = 0.299 * r + 0.587 * g + 0.114 * b;
+    double er = 0.500 * r - 0.419 * g - 0.081 * b;
+
+    palette[0][i] = (BYTE)(255 * CLAMP(0.299 * r + 0.587 * g + 0.114 * b, 0.0, 1.0));
+    palette[1][i] = (BYTE)(127.5 + 255 * CLAMP( 0.500 * r - 0.419 * g - 0.081 * b, -0.5, 0.5));
+    palette[2][i] = (BYTE)(127.5 + 255 * CLAMP(-0.169 * r - 0.331 * g + 0.500 * b, -0.5, 0.5));
+  }
+
+  for(int i=0;i<pOverlay->height;i++)
+  {
+    BYTE* line = pOverlay->data + pOverlay->linesize*i;
+
+    BYTE* target[3];    
+    target[0] = pPicture->data[0] + pPicture->stride[0]*(i + pOverlay->y) + pOverlay->x;
+    target[1] = pPicture->data[1] + pPicture->stride[1]*((i + pOverlay->y)>>1) + (pOverlay->x>>1);
+    target[2] = pPicture->data[2] + pPicture->stride[2]*((i + pOverlay->y)>>1) + (pOverlay->x>>1);
+
+    for(int j=0;j<pOverlay->width;j++)
+    {
+      unsigned char index = line[j];
+      if(index > pOverlay->palette_colors)
+      {
+        CLog::Log(LOGWARNING, "%s - out of range color index %u", __FUNCTION__, index);
+        continue;
+      }
+
+      if(palette[3][index] == 0)
+        continue;
+
+      int s_blend = palette[3][index] + 1;
+      int t_blend = 256 - s_blend;
+      
+      target[0][j] = (target[0][j] * t_blend + palette[0][index] * s_blend) >> 8;
+      if(!(1&(i|j)))
+      {
+        target[1][j>>1] = (target[1][j>>1] * t_blend + palette[1][index] * s_blend) >> 8;
+        target[2][j>>1] = (target[2][j>>1] * t_blend + palette[2][index] * s_blend) >> 8;
+      }
+    }
+
+  }
+  for(int i=0;i<4;i++)
+    free(palette[i]);
 }
 
 // render the parsed sub (parsed rle) onto the yuv image
