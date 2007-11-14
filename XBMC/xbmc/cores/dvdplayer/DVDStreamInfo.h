@@ -34,6 +34,9 @@ public:
   int channels;
   int samplerate;
 
+  // SUBTITLE
+  int identifier;
+
   // CODEC EXTRADATA
   void*        extradata; // extra data for codec to use
   unsigned int extrasize; // size of extra data

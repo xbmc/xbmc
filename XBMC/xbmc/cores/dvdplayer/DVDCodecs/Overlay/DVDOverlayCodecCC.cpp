@@ -17,7 +17,7 @@ CDVDOverlayCodecCC::~CDVDOverlayCodecCC()
 {
 }
 static cc_decoder_t* m_cc_decoder = NULL;
-bool CDVDOverlayCodecCC::Open()
+bool CDVDOverlayCodecCC::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   Reset();
   cc_decoder_init();
