@@ -56,7 +56,7 @@ void CJoystick::Initialize(HWND hWnd)
       }
     }
     // enable joystick event capture
-    SDL_JoystickEventState(SDL_ENABLE);    
+    SDL_JoystickEventState(SDL_DISABLE); // UPDATE: disable always, since we're now polling and not relying on js events
   }
   else
   {
@@ -78,8 +78,78 @@ void CJoystick::Reset(bool axis)
   }
 }
 
+void CJoystick::Update()
+{
+  int buttonId = -1;
+  int axisId = -1;
+  int numj = m_Joysticks.size();
+  if (numj<=0)
+    return;
+
+  // go through all joysticks
+  for (int j = 0 ; j<numj ; j++)
+  {
+    SDL_Joystick *joy = m_Joysticks[j];
+    int numb = SDL_JoystickNumButtons(joy);
+    int numax = SDL_JoystickNumAxes(joy);
+    numax = (numax>MAX_AXIS)?MAX_AXIS:numax;
+    int axisval;
+
+    // get button states first, they take priority over axis
+    for (int b = 0 ; b<numb ; b++)
+    {
+      if (SDL_JoystickGetButton(joy, b))
+      {
+        m_JoyId = j;
+        buttonId = b+1;
+        j = numj;
+        break;
+      }
+    }
+
+    for (int a = 0 ; a<numax ; a++)
+    {
+      axisval = SDL_JoystickGetAxis(joy, a);
+      axisId = a+1;
+      if (axisId<=0 || axisId>=MAX_AXES)
+      {
+        CLog::Log(LOGERROR, "Axis Id out of range. Maximum supported axis: %d", MAX_AXES);
+      }
+      else
+      {
+        if (axisval==0)
+        {
+          m_Amount[axisId] = 0.0f;
+        }
+        else
+        {
+          m_JoyId = j;      
+          m_Amount[axisId] = ((float)axisval / 32768.0f); //[-32768 to 32767]
+        }
+      }
+    }
+    m_AxisId = GetAxisWithMaxAmount();
+  }
+
+  if (buttonId==-1)
+  {
+    m_pressTicks = 0;
+    SetButtonActive(false);
+  }
+  else
+  {
+    if (buttonId!=m_ButtonId)
+    {
+      m_ButtonId = buttonId;
+      m_pressTicks = SDL_GetTicks();
+    }
+    SetButtonActive();
+  }
+
+}
+
 void CJoystick::Update(SDL_Event& joyEvent)
-{  
+{
   int buttonId = -1;
   int axisId = -1;
   int joyId = -1;
@@ -89,7 +159,7 @@ void CJoystick::Update(SDL_Event& joyEvent)
 
   switch(joyEvent.type)
   {
-  case SDL_JOYBUTTONDOWN:  
+  case SDL_JOYBUTTONDOWN:
     m_JoyId = joyId = joyEvent.jbutton.which;
     m_ButtonId = buttonId = joyEvent.jbutton.button + 1;
     m_pressTicks = SDL_GetTicks();
@@ -128,7 +198,7 @@ void CJoystick::Update(SDL_Event& joyEvent)
     break;
 
   case SDL_JOYBUTTONUP:
-     m_pressTicks = 0;
+    m_pressTicks = 0;
     SetButtonActive(false);
     CLog::Log(LOGDEBUG, "Joystick %d button %d Up", joyEvent.jbutton.which, m_ButtonId);
 
@@ -139,7 +209,7 @@ void CJoystick::Update(SDL_Event& joyEvent)
 }
 
 bool CJoystick::GetButton(int &id, bool consider_repeat)
-{ 
+{
   if (!IsButtonActive())
     return false;
   if (!consider_repeat)
@@ -172,7 +242,7 @@ bool CJoystick::GetButton(int &id, bool consider_repeat)
     }
     lastTicks = nowTicks;
   }
-  id = m_ButtonId; 
+  id = m_ButtonId;
   return true;
 }
 
