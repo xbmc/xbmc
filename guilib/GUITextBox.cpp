@@ -12,12 +12,13 @@ CGUITextBox::CGUITextBox(DWORD dwParentID, DWORD dwControlId, float posX, float 
                          const CImage& textureUp, const CImage& textureDown,
                          const CImage& textureUpFocus, const CImage& textureDownFocus,
                          const CLabelInfo& spinInfo, float spinX, float spinY,
-                         const CLabelInfo& labelInfo)
+                         const CLabelInfo& labelInfo, int scrollTime)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
     , m_upDown(dwControlId, CONTROL_UPDOWN, 0, 0, spinWidth, spinHeight, textureUp, textureDown, textureUpFocus, textureDownFocus, spinInfo, SPIN_CONTROL_TYPE_INT)
 {
   m_upDown.SetSpinAlign(XBFONT_CENTER_Y | XBFONT_RIGHT, 0);
   m_offset = 0;
+  m_scrollOffset = 0;
   m_label = labelInfo;
   m_itemsPerPage = 10;
   m_itemHeight = 10;
@@ -27,10 +28,18 @@ CGUITextBox::CGUITextBox(DWORD dwParentID, DWORD dwControlId, float posX, float 
   ControlType = GUICONTROL_TEXTBOX;
   m_pageControl = 0;
   m_singleInfo = 0;
+  m_renderTime = 0;
+  m_scrollTime = scrollTime;
 }
 
 CGUITextBox::~CGUITextBox(void)
 {
+}
+
+void CGUITextBox::DoRender(DWORD currentTime)
+{
+  m_renderTime = currentTime;
+  CGUIControl::DoRender(currentTime);
 }
 
 void CGUITextBox::Render()
@@ -46,6 +55,7 @@ void CGUITextBox::Render()
   { // different, so reset to the top of the textbox and invalidate.  The page control will update itself below
     m_renderLabel = renderLabel;
     m_offset = 0;
+    m_scrollOffset = 0;
     m_bInvalidated = true;
   }
 
@@ -70,32 +80,48 @@ void CGUITextBox::Render()
     UpdatePageControl();
   }
 
-  float posY = m_posY;
+  // update our scroll position as necessary
+  m_scrollOffset += m_scrollSpeed * (m_renderTime - m_lastRenderTime);
+  if ((m_scrollSpeed < 0 && m_scrollOffset < m_offset * m_itemHeight) ||
+      (m_scrollSpeed > 0 && m_scrollOffset > m_offset * m_itemHeight))
+  {
+    m_scrollOffset = m_offset * m_itemHeight;
+    m_scrollSpeed = 0;
+  }
+  m_lastRenderTime = m_renderTime;
+
+  int offset = (int)(m_scrollOffset / m_itemHeight);
+
+  g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height);
+
+  // we offset our draw position to take into account scrolling and whether or not our focused
+  // item is offscreen "above" the list.
+  float posX = m_posX;
+  float posY = m_posY + offset * m_itemHeight - m_scrollOffset;
 
   if (m_label.font)
   {
     m_label.font->Begin();
-    for (unsigned int i = 0; i < m_itemsPerPage; i++)
+    float maxWidth = m_width + 16;
+    while (posY < m_posY + m_height && offset < (int)m_lines.size())
     {
-      float posX = m_posX;
-      if (i + m_offset < m_lines.size() )
+      // render item
+      if (offset < (int)m_lines2.size())
       {
-        // render item
-        float maxWidth = m_width + 16;
-        if (i + m_offset < m_lines2.size())
-        {
-          float fTextWidth, fTextHeight;
-          m_label.font->GetTextExtent( m_lines2[i + m_offset].c_str(), &fTextWidth, &fTextHeight);
-          maxWidth -= fTextWidth;
-
-          m_label.font->DrawTextWidth(posX + maxWidth, posY + 2, m_label.textColor, m_label.shadowColor, m_lines2[i + m_offset].c_str(), fTextWidth);
-        }
-        m_label.font->DrawTextWidth(posX, posY + 2, m_label.textColor, m_label.shadowColor, m_lines[i + m_offset].c_str(), maxWidth);
-        posY += m_itemHeight;
+        float fTextWidth, fTextHeight;
+        m_label.font->GetTextExtent( m_lines2[offset].c_str(), &fTextWidth, &fTextHeight);
+        maxWidth -= fTextWidth;
+        m_label.font->DrawTextWidth(posX + maxWidth, posY + 2, m_label.textColor, m_label.shadowColor, m_lines2[offset].c_str(), fTextWidth);
       }
+      m_label.font->DrawTextWidth(posX, posY + 2, m_label.textColor, m_label.shadowColor, m_lines[offset].c_str(), maxWidth);
+      posY += m_itemHeight;
+      offset++;
     }
     m_label.font->End();
   }
+
+  g_graphicsContext.RestoreClipRegion();
+
   if (!m_pageControl)
   {
     m_upDown.SetPosition(m_posX + m_spinPosX, m_posY + m_spinPosY);
@@ -139,7 +165,7 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
       if (message.GetMessage() == GUI_MSG_CLICKED)
       {
         if (m_upDown.GetValue() >= 1)
-          m_offset = (m_upDown.GetValue() - 1) * m_itemsPerPage;
+          ScrollToOffset((m_upDown.GetValue() - 1) * m_itemsPerPage);
       }
     }
     if (message.GetMessage() == GUI_MSG_LABEL_BIND)
@@ -148,6 +174,7 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
       if (items)
       {
         m_offset = 0;
+        m_scrollOffset = 0;
         m_lines.clear();
         m_lines2.clear();
         for (unsigned int i = 0; i < items->size(); ++i)
@@ -165,6 +192,7 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
     if (message.GetMessage() == GUI_MSG_LABEL_SET)
     {
       m_offset = 0;
+      m_scrollOffset = 0;
       m_lines.clear();
       m_lines2.clear();
       m_upDown.SetRange(1, 1);
@@ -176,6 +204,7 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
     if (message.GetMessage() == GUI_MSG_LABEL_RESET)
     {
       m_offset = 0;
+      m_scrollOffset = 0;
       m_lines.clear();
       m_lines2.clear();
       m_upDown.SetRange(1, 1);
@@ -200,7 +229,7 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
     {
       if (message.GetSenderId() == m_pageControl)
       { // update our page
-        m_offset = message.GetParam1();
+        ScrollToOffset(message.GetParam1());
         return true;
       }
     }
@@ -260,7 +289,7 @@ void CGUITextBox::OnPageUp()
   {
     iPage--;
     m_upDown.SetValue(iPage);
-    m_offset = (m_upDown.GetValue() - 1) * m_itemsPerPage;
+    ScrollToOffset((m_upDown.GetValue() - 1) * m_itemsPerPage);
   }
   if (m_pageControl)
   { // tell our pagecontrol (scrollbar or whatever) to update
@@ -279,7 +308,7 @@ void CGUITextBox::OnPageDown()
   {
     iPage++;
     m_upDown.SetValue(iPage);
-    m_offset = (m_upDown.GetValue() - 1) * m_itemsPerPage;
+    ScrollToOffset((m_upDown.GetValue() - 1) * m_itemsPerPage);
   }
   if (m_pageControl)
   { // tell our pagecontrol (scrollbar or whatever) to update
@@ -342,14 +371,15 @@ bool CGUITextBox::OnMouseWheel(char wheel, const CPoint &point)
   }
   else
   { // increase or decrease our offset by the appropriate amount.
-    m_offset -= wheel;
+    int offset = m_offset - wheel;
     // check that we are within the correct bounds.
-    if (m_offset + m_itemsPerPage > (int)m_lines.size())
-      m_offset = (m_lines.size() >= m_itemsPerPage) ? m_lines.size() - m_itemsPerPage : 0;
+    if (offset + m_itemsPerPage > (int)m_lines.size())
+      offset = (m_lines.size() >= m_itemsPerPage) ? m_lines.size() - m_itemsPerPage : 0;
+    ScrollToOffset(offset);
     // update the page control...
-    int iPage = m_offset / m_itemsPerPage + 1;
+    int iPage = offset / m_itemsPerPage + 1;
     // last page??
-    if (m_offset + m_itemsPerPage == m_lines.size())
+    if (offset + m_itemsPerPage == m_lines.size())
       iPage = m_upDown.GetMaximum();
     m_upDown.SetValue(iPage);
   }
@@ -405,4 +435,22 @@ void CGUITextBox::SetColorDiffuse(D3DCOLOR color)
 {
   CGUIControl::SetColorDiffuse(color);
   m_upDown.SetColorDiffuse(color);
+}
+
+void CGUITextBox::ScrollToOffset(int offset)
+{
+  float size = m_itemHeight;
+  m_scrollOffset = m_offset * m_itemHeight;
+/*  int range = m_itemsPerPage / 4;
+  if (range <= 0) range = 1;
+  if (offset * m_itemHeight < m_scrollOffset &&  m_scrollOffset - offset * m_itemHeight > m_itemHeight * range)
+  { // scrolling up, and we're jumping more than 0.5 of a screen
+    m_scrollOffset = (offset + range) * m_itemHeight;
+  }
+  if (offset * m_itemHeight > m_scrollOffset && offset * m_itemHeight - m_scrollOffset > m_itemHeight * range)
+  { // scrolling down, and we're jumping more than 0.5 of a screen
+    m_scrollOffset = (offset - range) * m_itemHeight;
+  }*/
+  m_scrollSpeed = (offset * m_itemHeight - m_scrollOffset) / m_scrollTime;
+  m_offset = offset;
 }
