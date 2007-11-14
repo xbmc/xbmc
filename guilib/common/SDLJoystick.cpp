@@ -140,6 +140,7 @@ void CJoystick::Update()
   {
     if (buttonId!=m_ButtonId)
     {
+      CLog::Log(LOGDEBUG, "Joystick %d button %d Down", m_JoyId, buttonId);
       m_ButtonId = buttonId;
       m_pressTicks = SDL_GetTicks();
     }
