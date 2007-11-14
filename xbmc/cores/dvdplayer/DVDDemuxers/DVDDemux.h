@@ -92,6 +92,19 @@ public:
   int iSampleRate;
 };
 
+class CDemuxStreamSubtitle : public CDemuxStream
+{
+public:
+  CDemuxStreamSubtitle() : CDemuxStream()
+  {
+    identifier = 0;
+    type = STREAM_SUBTITLE;
+  }
+
+  int identifier;
+};
+
+
 class CDVDDemux
 {
 public:
@@ -197,7 +210,7 @@ public:
   /*
    * return the subtitle stream, or NULL if it does not exist
    */
-  CDemuxStream* GetStreamFromSubtitleId(int iSubtitleIndex);
+  CDemuxStreamSubtitle* GetStreamFromSubtitleId(int iSubtitleIndex);
   
 protected:
   CDVDInputStream* m_pInput;
