@@ -4,6 +4,7 @@
 #include "DVDCodecs/Overlay/DVDOverlay.h"
 #include "DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
+#include "DVDCodecs/Overlay/DVDOverlayCodecFFmpeg.h"
 #include "DVDClock.h"
 #include "DVDInputStreams/DVDFactoryInputStream.h"
 #include "DVDInputStreams/DVDInputStream.h"
@@ -18,6 +19,7 @@ CDVDPlayerSubtitle::CDVDPlayerSubtitle(CDVDOverlayContainer* pOverlayContainer)
   
   m_pSubtitleFileParser = NULL;
   m_pSubtitleStream = NULL;
+  m_pOverlayCodec = NULL;
 }
 
 CDVDPlayerSubtitle::~CDVDPlayerSubtitle()
@@ -48,7 +50,29 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
         m_pOverlayContainer->Add(pSPUInfo);
         pSPUInfo->Release();
       }
-    }    
+    } 
+    else if (m_streaminfo.codec == CODEC_ID_DVB_SUBTITLE)
+    {
+      if(!m_pOverlayCodec)
+      {
+        pMsg->Release();
+        return;
+      }
+
+      int result = m_pOverlayCodec->Decode(pPacket->pData, pPacket->iSize, pPacket->dts);
+
+      if(result == OC_OVERLAY)
+      {
+        CDVDOverlay* overlay;
+        while((overlay = m_pOverlayCodec->GetOverlay()) != NULL)
+        {
+          overlay->iGroupId = pPacket->iGroupId;
+          m_pOverlayContainer->Add(overlay);
+          overlay->Release();
+        }
+      }
+
+    }
   }
   else if( pMsg->IsType(CDVDMsg::SUBTITLE_CLUTCHANGE) )
   {
@@ -105,6 +129,17 @@ bool CDVDPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, string &filename)
     }
   }
 
+  if(hints.codec == CODEC_ID_DVB_SUBTITLE)
+  {
+    m_pOverlayCodec = new CDVDOverlayCodecFFmpeg();
+    if(!m_pOverlayCodec->Open(hints, CDVDCodecOptions()))
+    {
+      CLog::Log(LOGERROR, "%s - Unable to init overlay codec", __FUNCTION__);
+      CloseStream(false);
+      return false;
+    }
+  }
+
   return true;
 }
 
@@ -114,6 +149,8 @@ void CDVDPlayerSubtitle::CloseStream(bool flush)
     SAFE_DELETE(m_pSubtitleStream);
   if(m_pSubtitleFileParser)
     SAFE_DELETE(m_pSubtitleFileParser);
+  if(m_pOverlayCodec)
+    SAFE_DELETE(m_pOverlayCodec);
 
   m_dvdspus.FlushCurrentPacket();
 
