@@ -159,15 +159,27 @@
 		<control type="textbox" id="4">
 			<description>textarea</description>
 			<posx>200</posx>
-			<posy>352</posy>
-			<width>460</width>
-			<height>175</height>
-			<onleft>5</onleft>
-			<onright>5</onright>
+			<posy>350</posy>
+			<width>455</width>
+			<height>170</height>
+			<onleft>9000</onleft>
+			<onright>61</onright>
 			<onup>5</onup>
 			<ondown>5</ondown>
-			<spinposx>440</spinposx>
-			<spinposy>158</spinposy>
+			<pagecontrol>61</pagecontrol>
+			<visible>!Skin.HasSetting(UseScrollbars) + !Control.IsActive(50)</visible>
+		</control>
+		<control type="textbox" id="4">
+			<description>textarea</description>
+			<posx>200</posx>
+			<posy>350</posy>
+			<width>471</width>
+			<height>170</height>
+			<onleft>9000</onleft>
+			<onright>61</onright>
+			<onup>5</onup>
+			<ondown>5</ondown>
+			<visible>Skin.HasSetting(UseScrollbars) + !Control.IsActive(50)</visible>
 		</control>
 		</control>
 		<control type="group" id="9000">
@@ -183,8 +195,8 @@
 			<align>center</align>
 			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
 			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
-			<onleft>50</onleft>
-			<onright>4</onright>
+			<onleft>61</onleft>
+			<onright>50</onright>
 			<onup>10</onup>
 			<ondown>6</ondown>
 		</control>
@@ -199,8 +211,8 @@
 			<align>center</align>
 			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
 			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
-			<onleft>4</onleft>
-			<onright>4</onright>
+			<onleft>61</onleft>
+			<onright>50</onright>
 			<onup>5</onup>
 			<ondown>10</ondown>
 		</control>
@@ -215,11 +227,13 @@
 			<align>center</align>
 			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
 			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
-			<onleft>4</onleft>
-			<onright>4</onright>
+			<onleft>61</onleft>
+			<onright>50</onright>
 			<onup>6</onup>
 			<ondown>5</ondown>
 		</control>
 		</control>
+		<include>DialogInfoViewCommonPageControls</include>
+		<include>MusicDialogInfoViewOldListViewCommons</include>
 	</controls>
 </window>
