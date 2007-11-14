@@ -24,8 +24,9 @@ public:
               const CImage& textureUp, const CImage& textureDown,
               const CImage& textureUpFocus, const CImage& textureDownFocus,
               const CLabelInfo& spinInfo, float spinX, float spinY,
-              const CLabelInfo &labelInfo);
+              const CLabelInfo &labelInfo, int scrollTime = 200);
   virtual ~CGUITextBox(void);
+  virtual void DoRender(DWORD currentTime);
   virtual void Render();
   virtual bool OnAction(const CAction &action) ;
   virtual void OnRight();
@@ -55,13 +56,20 @@ protected:
   void OnPageUp();
   void OnPageDown();
   void UpdatePageControl();
+  void ScrollToOffset(int offset);
 
   float m_spinPosX;
   float m_spinPosY;
+
+  // offset of text in the control
   unsigned int m_offset;
+  float m_scrollOffset;
+  float m_scrollSpeed;
+  int   m_scrollTime;
   unsigned int m_itemsPerPage;
   float m_itemHeight;
-  int m_iMaxPages;
+  DWORD m_renderTime;
+  DWORD m_lastRenderTime;
 
   CLabelInfo m_label;       // label configuration (size, font, etc.)
   CStdString m_renderLabel; // label to render
