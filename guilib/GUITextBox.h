@@ -51,12 +51,13 @@ public:
   virtual bool OnMouseClick(DWORD dwButton, const CPoint &point);
   virtual bool OnMouseWheel(char wheel, const CPoint &point);
   void SetInfo(int singleInfo);
+  void SetAutoScrolling(const TiXmlNode *node);
 
 protected:
   void OnPageUp();
   void OnPageDown();
   void UpdatePageControl();
-  void ScrollToOffset(int offset);
+  void ScrollToOffset(int offset, bool autoScroll = false);
 
   float m_spinPosX;
   float m_spinPosY;
@@ -70,6 +71,12 @@ protected:
   float m_itemHeight;
   DWORD m_renderTime;
   DWORD m_lastRenderTime;
+
+  // autoscrolling
+  int   m_autoScrollCondition;
+  int   m_autoScrollTime;      // time to scroll 1 line (ms)
+  int   m_autoScrollDelay;     // delay before scroll (ms)
+  DWORD m_autoScrollDelayTime; // current offset into the delay
 
   CLabelInfo m_label;       // label configuration (size, font, etc.)
   CStdString m_renderLabel; // label to render
