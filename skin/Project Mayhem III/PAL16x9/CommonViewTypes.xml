@@ -2553,14 +2553,14 @@
 				<posy>350</posy>
 				<width>350</width>
 				<height>175</height>
-				<onleft>4</onleft>
+				<onleft>9000</onleft>
 				<onright>61</onright>
 				<onup>50</onup>
 				<ondown>50</ondown>
 				<orientation>vertical</orientation>
 			        <pagecontrol>61</pagecontrol>
 			        <scrolltime>200</scrolltime>
-				<visible>!Skin.HasSetting(UseScrollbars)</visible>
+				<visible>!Skin.HasSetting(UseScrollbars) + Window.IsActive(movieinformation)</visible>
 			        <itemlayout width="250" height="29">
 				    <control type="image">
 				        <posx>0</posx>
@@ -2625,7 +2625,7 @@
 				<orientation>vertical</orientation>
 			        <pagecontrol>61</pagecontrol>
 			        <scrolltime>200</scrolltime>
-				<visible>Skin.HasSetting(UseScrollbars)</visible>
+				<visible>Skin.HasSetting(UseScrollbars) + Window.IsActive(movieinformation)</visible>
 			        <itemlayout width="250" height="29">
 				    <control type="image">
 				        <posx>0</posx>
@@ -2674,6 +2674,182 @@
 				        <selectedcolor>green</selectedcolor>
 				        <align>left</align>
 				        <info>ListItem.Label</info>
+				    </control>
+                                </focusedlayout>
+                        </control>
+		</include>
+		<include name="MusicDialogInfoViewOldListViewCommons">
+                        <control type="list" id="50">
+				<description>Track List Container + Scrollbar Area</description>
+				<posx>200</posx>
+				<posy>350</posy>
+				<width>455</width>
+				<height>175</height>
+				<onleft>9000</onleft>
+				<onright>61</onright>
+				<onup>50</onup>
+				<ondown>50</ondown>
+				<orientation>vertical</orientation>
+			        <pagecontrol>61</pagecontrol>
+			        <scrolltime>200</scrolltime>
+				<visible>!Skin.HasSetting(UseScrollbars) + Window.IsActive(musicinformation)</visible>
+			        <itemlayout width="250" height="29">
+				    <control type="image">
+				        <posx>5</posx>
+				       	<posy>3</posy>
+				       	<width>17</width>
+				       	<height>22</height>
+				        <texture>$INFO[ListItem.Icon]</texture>
+					<aspectratio align="left">keep</aspectratio>
+				    </control>
+				    <control type="label">
+			        	<posx>30</posx>
+			        	<posy>3</posy>
+        				<width>320</width>
+				        <height>22</height>
+        				<font>font13</font>
+				        <aligny>center</aligny>
+		        		<selectedcolor>green</selectedcolor>
+		        		<align>left</align>
+					<label>$INFO[ListItem.TrackNumber] - $INFO[ListItem.Label]</label>
+				    </control>
+				    <control type="label">
+			        	<posx>450</posx>
+			        	<posy>3</posy>
+        				<width>100</width>
+				        <height>22</height>
+        				<font>font13</font>
+				        <aligny>center</aligny>
+		        		<selectedcolor>green</selectedcolor>
+		        		<align>right</align>
+					<label>$INFO[ListItem.Duration]</label>
+				    </control>
+				</itemlayout>
+                                <focusedlayout height="29" width="250">
+		   		    <control type="image">
+				        <width>455</width>
+				        <height>29</height>
+				        <posx>0</posx>
+				        <posy>0</posy>
+			        	<visible>Control.HasFocus(50)</visible>
+				        <texture>list-focus.png</texture>
+		 	            </control>
+				    <control type="image">
+				        <posx>5</posx>
+				        <posy>3</posy>
+				        <width>17</width>
+				        <height>22</height>
+				        <texture>$INFO[ListItem.Icon]</texture>
+					<aspectratio align="left">keep</aspectratio>
+				    </control>
+				    <control type="label">
+ 				        <posx>30</posx>
+				        <posy>3</posy>
+				        <width>320</width>
+				        <height>22</height>
+				        <font>font13</font>
+				        <aligny>center</aligny>
+				        <selectedcolor>green</selectedcolor>
+				        <align>left</align>
+					<label>$INFO[ListItem.TrackNumber] - $INFO[ListItem.Label]</label>
+				    </control>
+				    <control type="label">
+			        	<posx>450</posx>
+			        	<posy>3</posy>
+        				<width>100</width>
+				        <height>22</height>
+        				<font>font13</font>
+				        <aligny>center</aligny>
+		        		<selectedcolor>green</selectedcolor>
+		        		<align>right</align>
+					<label>$INFO[ListItem.Duration]</label>
+				    </control>
+                                </focusedlayout>
+                        </control>
+                        <control type="list" id="50">
+				<description>Track List Container</description>
+				<posx>200</posx>
+				<posy>350</posy>
+				<width>471</width>
+				<height>175</height>
+				<onleft>9000</onleft>
+				<onright>61</onright>
+				<onup>50</onup>
+				<ondown>50</ondown>
+				<orientation>vertical</orientation>
+			        <pagecontrol>61</pagecontrol>
+			        <scrolltime>200</scrolltime>
+				<visible>Skin.HasSetting(UseScrollbars) + Window.IsActive(musicinformation)</visible>
+			        <itemlayout width="250" height="29">
+				    <control type="image">
+				        <posx>5</posx>
+				       	<posy>3</posy>
+				       	<width>17</width>
+				       	<height>22</height>
+				        <texture>$INFO[ListItem.Icon]</texture>
+					<aspectratio align="left">keep</aspectratio>
+				    </control>
+				    <control type="label">
+			        	<posx>30</posx>
+			        	<posy>3</posy>
+        				<width>471</width>
+				        <height>22</height>
+        				<font>font13</font>
+				        <aligny>center</aligny>
+		        		<selectedcolor>green</selectedcolor>
+		        		<align>left</align>
+					<label>$INFO[ListItem.TrackNumber] - $INFO[ListItem.Label]</label>
+				    </control>
+				    <control type="label">
+			        	<posx>466</posx>
+			        	<posy>3</posy>
+        				<width>100</width>
+				        <height>22</height>
+        				<font>font13</font>
+				        <aligny>center</aligny>
+		        		<selectedcolor>green</selectedcolor>
+		        		<align>right</align>
+					<label>$INFO[ListItem.Duration]</label>
+				    </control>
+				</itemlayout>
+                                <focusedlayout height="29" width="250">
+		   		    <control type="image">
+				        <width>471</width>
+				        <height>29</height>
+				        <posx>0</posx>
+				        <posy>0</posy>
+			        	<visible>Control.HasFocus(50)</visible>
+				        <texture>list-focus.png</texture>
+		 	            </control>
+				    <control type="image">
+				        <posx>5</posx>
+				        <posy>3</posy>
+				        <width>17</width>
+				        <height>22</height>
+				        <texture>$INFO[ListItem.Icon]</texture>
+					<aspectratio align="left">keep</aspectratio>
+				    </control>
+				    <control type="label">
+ 				        <posx>30</posx>
+				        <posy>3</posy>
+				        <width>371</width>
+				        <height>22</height>
+				        <font>font13</font>
+				        <aligny>center</aligny>
+				        <selectedcolor>green</selectedcolor>
+				        <align>left</align>
+					<label>$INFO[ListItem.TrackNumber] - $INFO[ListItem.Label]</label>
+				    </control>
+				    <control type="label">
+			        	<posx>466</posx>
+			        	<posy>3</posy>
+        				<width>100</width>
+				        <height>22</height>
+        				<font>font13</font>
+				        <aligny>center</aligny>
+		        		<selectedcolor>green</selectedcolor>
+		        		<align>right</align>
+					<label>$INFO[ListItem.Duration]</label>
 				    </control>
                                 </focusedlayout>
                         </control>
