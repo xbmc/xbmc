@@ -213,10 +213,10 @@ void CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
         }
       }
     }
-
     setting = setting->NextSiblingElement("setting");
     controlId++;
   }
+  EnableControls();
 }
 
 // Go over all the settings and set their values according to the values of the GUI components
@@ -367,6 +367,83 @@ void CGUIDialogPluginSettings::CreateControls()
     setting = setting->NextSiblingElement("setting");
     controlId++;
   }
+  EnableControls();
+}
+
+// Go over all the settings and set their enabled condition according to the values of the enabled attribute
+void CGUIDialogPluginSettings::EnableControls()
+{
+  int controlId = CONTROL_START_CONTROL;
+  TiXmlElement *setting = m_settings.GetPluginRoot()->FirstChildElement("setting");
+  while (setting)
+  {
+    CStdString enable = setting->Attribute("enable");
+    if (!enable.IsEmpty())
+    {
+      vector<CStdString> enableCondVec;
+      CUtil::Tokenize(enable, enableCondVec, "+");
+      
+      bool bEnable = true;
+      
+      const CGUIControl* control = GetControl(controlId);
+
+      for (unsigned int i = 0; i < enableCondVec.size(); i++)
+      {
+        vector<CStdString> enableVec;
+        if (!TranslateSingleString(enableCondVec[i], enableVec)) continue;
+
+        const CGUIControl* control2 = GetControl(controlId + atoi(enableVec[1]));
+
+        CStdString value;
+        switch (control2->GetControlType())
+        {
+          case CGUIControl::GUICONTROL_BUTTON:
+            value = ((CGUIButtonControl*) control2)->GetLabel2();
+            break;
+          case CGUIControl::GUICONTROL_RADIO:
+            value = ((CGUIRadioButtonControl*) control2)->IsSelected() ? "true" : "false";
+            break;
+          case CGUIControl::GUICONTROL_SPINEX:
+            value.Format("%i", ((CGUISpinControlEx*) control2)->GetValue());
+            break;
+          default:
+            break;
+        }
+        if (enableVec[0].Equals("eq"))
+          bEnable &= value.Equals(enableVec[2]);
+        else if (enableVec[0].Equals("!eq"))
+          bEnable &= !value.Equals(enableVec[2]);
+        else if (enableVec[0].Equals("gt"))
+          bEnable &= (atoi(value) > atoi(enableVec[2]));
+        else if (enableVec[0].Equals("lt"))
+          bEnable &= (atoi(value) < atoi(enableVec[2]));
+      }
+      ((CGUIButtonControl*) control)->SetEnabled(bEnable);
+    }
+
+    setting = setting->NextSiblingElement("setting");
+    controlId++;
+  }
+}
+
+bool CGUIDialogPluginSettings::TranslateSingleString(const CStdString &strCondition, vector<CStdString> &enableVec)
+{
+  CStdString strTest = strCondition;
+  strTest.ToLower();
+  strTest.TrimLeft(" ");
+  strTest.TrimRight(" ");
+
+  int pos1 = strTest.Find("(");
+  int pos2 = strTest.Find(",");
+  int pos3 = strTest.Find(")");
+  if (pos1 >= 0 && pos2 > pos1 && pos3 > pos2)
+  {
+    enableVec.push_back(strTest.Left(pos1));
+    enableVec.push_back(strTest.Mid(pos1 + 1, pos2 - pos1 - 1));
+    enableVec.push_back(strTest.Mid(pos2 + 1, pos3 - pos2 - 1));
+    return true;
+  }
+  return false;
 }
 
 CURL CGUIDialogPluginSettings::m_url;
