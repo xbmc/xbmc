@@ -1222,7 +1222,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       textureUp, textureDown,
       textureUpFocus, textureDownFocus,
       spinInfo, spinPosX, spinPosY,
-      labelInfo);
+      labelInfo, scrollTime);
 
     ((CGUITextBox *)control)->SetPageControl(pageControl);
     ((CGUITextBox *)control)->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
