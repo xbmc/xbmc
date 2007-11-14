@@ -133,6 +133,10 @@ void CJoystick::Update()
 
   if (buttonId==-1)
   {
+    if (m_ButtonId!=-1)
+    {
+      CLog::Log(LOGDEBUG, "Joystick %d button %d Up", m_JoyId, m_ButtonId);
+    }
     m_pressTicks = 0;
     SetButtonActive(false);
   }
