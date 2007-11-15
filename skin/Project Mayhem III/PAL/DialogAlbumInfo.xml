@@ -162,25 +162,13 @@
 			<posy>350</posy>
 			<width>455</width>
 			<height>170</height>
-			<onleft>5</onleft>
-			<onright>50</onright>
-			<onup>5</onup>
-			<ondown>5</ondown>
-			<pagecontrol>61</pagecontrol>
-			<visible>!Skin.HasSetting(UseScrollbars) + !Control.IsActive(50)</visible>
-		</control>
-		<control type="textbox" id="4">
-			<description>textarea</description>
-			<posx>200</posx>
-			<posy>350</posy>
-			<width>455</width>
-			<height>170</height>
 			<onleft>9000</onleft>
 			<onright>61</onright>
 			<onup>5</onup>
 			<ondown>5</ondown>
 			<pagecontrol>61</pagecontrol>
 			<visible>!Skin.HasSetting(UseScrollbars) + !Control.IsActive(50)</visible>
+			<autoscroll time="1000" delay="3000">Skin.HasSetting(AutoScroll)</autoscroll>
 		</control>
 		<control type="textbox" id="4">
 			<description>textarea</description>
@@ -193,6 +181,7 @@
 			<onup>5</onup>
 			<ondown>5</ondown>
 			<visible>Skin.HasSetting(UseScrollbars)</visible>
+			<autoscroll time="1000" delay="3000">Skin.HasSetting(AutoScroll)</autoscroll>
 		</control>
 		</control>
 		<control type="group" id="9000">
