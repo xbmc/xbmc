@@ -91,8 +91,8 @@
 			<height>32</height>
 			<width>32</width>
 			<font>font13</font>
-			<onleft>50</onleft>
-			<onright>50</onright>
+			<onleft>20</onleft>
+			<onright>20</onright>
 			<onup>14</onup>
 			<ondown>21</ondown>
 			<texturefocus>Love-focus.png</texturefocus>
@@ -108,8 +108,8 @@
 			<posy>460</posy>
 			<height>32</height>
 			<width>32</width>
-			<onleft>50</onleft>
-			<onright>50</onright>
+			<onleft>21</onleft>
+			<onright>21</onright>
 			<onup>20</onup>
 			<ondown>11</ondown>
 			<texturefocus>Ban-focus.png</texturefocus>
@@ -966,7 +966,7 @@
 			<!-- Custom Options -->
 			<control type="group" id="9005">
 				<visible>Skin.String(SkinSettings,4)</visible>
-				<control type="radiobutton" id="30">
+				<control type="radiobutton" id="80">
 					<description>enable Autoscroll</description>
 					<posx>190</posx>
 					<posy>100</posy>
@@ -974,10 +974,10 @@
 					<label>20189</label>
 					<onclick>Skin.ToggleSetting(AutoScroll)</onclick>
 					<selected>Skin.HasSetting(AutoScroll)</selected>
-					<onleft>9004</onleft>
-					<onright>9004</onright>
-					<onup>30</onup>
-					<ondown>30</ondown>
+					<onleft>9001</onleft>
+					<onright>9001</onright>
+					<onup>50</onup>
+					<ondown>50</ondown>
 					<textoffsetx>7</textoffsetx>
 					<texturefocus>list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
