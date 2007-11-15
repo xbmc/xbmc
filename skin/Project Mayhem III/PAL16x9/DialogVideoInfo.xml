@@ -842,6 +842,7 @@
 			<ondown>5</ondown>
 			<pagecontrol>61</pagecontrol>
 			<visible>!Skin.HasSetting(UseScrollbars) + !Control.IsActive(50)</visible>
+			<autoscroll time="1000" delay="3000">Skin.HasSetting(AutoScroll)</autoscroll>
 		</control>
 		<control type="textbox" id="4">
 			<description>textarea</description>
@@ -855,6 +856,7 @@
 			<ondown>5</ondown>
 			<pagecontrol>61</pagecontrol>
 			<visible>Skin.HasSetting(UseScrollbars) + !Control.IsActive(50)</visible>
+			<autoscroll time="1000" delay="3000">Skin.HasSetting(AutoScroll)</autoscroll>
 		</control>
 		<include>DialogInfoViewCommonPageControls</include>
 		<include>DialogInfoViewOldListViewCommons</include>
