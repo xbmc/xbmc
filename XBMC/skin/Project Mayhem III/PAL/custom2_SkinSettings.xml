@@ -70,6 +70,17 @@
 				<onleft>9004</onleft>
 				<onright>9004</onright>
 				<onup>12</onup>
+				<ondown>14</ondown>
+			</control>
+			<control type="button" id="14">
+				<description>Custom Settings</description>
+				<posx>0</posx>
+				<posy>231</posy>
+				<label>20190</label>
+				<onfocus>Skin.SetString(SkinSettings,4)</onfocus>
+				<onleft>9005</onleft>
+				<onright>9005</onright>
+				<onup>13</onup>
 				<ondown>20</ondown>
 			</control>
 		</control>
@@ -82,7 +93,7 @@
 			<font>font13</font>
 			<onleft>50</onleft>
 			<onright>50</onright>
-			<onup>13</onup>
+			<onup>14</onup>
 			<ondown>21</ondown>
 			<texturefocus>Love-focus.png</texturefocus>
 			<texturenofocus>Love.png</texturenofocus>
@@ -950,6 +961,26 @@
 						<texturefocus border="5">list-focus.png</texturefocus>
 						<texturenofocus>-</texturenofocus>
 					</control>
+				</control>
+			</control>
+			<!-- Custom Options -->
+			<control type="group" id="9005">
+				<visible>Skin.String(SkinSettings,4)</visible>
+				<control type="radiobutton" id="30">
+					<description>enable Autoscroll</description>
+					<posx>190</posx>
+					<posy>100</posy>
+					<width>485</width>
+					<label>20189</label>
+					<onclick>Skin.ToggleSetting(AutoScroll)</onclick>
+					<selected>Skin.HasSetting(AutoScroll)</selected>
+					<onleft>9004</onleft>
+					<onright>9004</onright>
+					<onup>30</onup>
+					<ondown>30</ondown>
+					<textoffsetx>7</textoffsetx>
+					<texturefocus>list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
 				</control>
 			</control>
 		</control>
