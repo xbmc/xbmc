@@ -216,6 +216,7 @@ bool CGUIControlFactory::GetAlignment(const TiXmlNode* pRootNode, const char* st
   CStdString strAlign = pNode->FirstChild()->Value();
   if (strAlign == "right") dwAlignment = XBFONT_RIGHT;
   else if (strAlign == "center") dwAlignment = XBFONT_CENTER_X;
+  else if (strAlign == "justify") dwAlignment = XBFONT_JUSTIFIED;
   else dwAlignment = XBFONT_LEFT;
   return true;
 }
