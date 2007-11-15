@@ -36,6 +36,7 @@
 #include "../filesystem/SndtrkDirectory.h"
 #endif
 #include "../musicInfoTagLoaderFactory.h"
+#include "LabelFormatter.h"
 
 #include "GUILabelControl.h"  // for CInfoPortion
 
@@ -2415,9 +2416,22 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
       }
     } // if (!tag.Loaded() && url.GetProtocol()=="cdda" )
     else
-    { // at worse, set our title as the filename
-      tag.SetTitle( CUtil::GetTitleFromPath(m_currentFile.m_strPath) );
-    } // we now have at least the title
+    {
+      CStdString fileName = CUtil::GetFileName(m_currentFile.m_strPath);
+      CUtil::RemoveExtension(fileName);
+      for (unsigned int i = 0; i < g_advancedSettings.m_musicTagsFromFileFilters.size(); i++)
+      {
+        CLabelFormatter formatter(g_advancedSettings.m_musicTagsFromFileFilters[i], "");
+        if (formatter.FillMusicTag(fileName, &tag))
+        {
+          tag.SetLoaded(true);
+          break;
+        }
+      }
+      if (!tag.Loaded()) // at worse, set our title as the filename
+        tag.SetTitle( CUtil::GetTitleFromPath(m_currentFile.m_strPath) );
+    }
+    // we now have at least the title
     tag.SetLoaded(true);
   }
 
