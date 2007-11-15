@@ -843,7 +843,20 @@
 			<pagecontrol>611</pagecontrol>
 			<label>$INFO[ListItem.Plot]</label>
 			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(51) + !IsEmpty(ListItem.Plot)</visible>
+			<visible>Control.IsVisible(51) + Control.IsVisible(611) + !IsEmpty(ListItem.Plot)</visible>
+			<autoscroll time="1000" delay="3000">Skin.HasSetting(AutoScroll)</autoscroll>
+		</control>
+		<control type="textbox" id="511">
+			<posx>200</posx>
+			<posy>373</posy>
+			<width>480</width>
+			<height>130</height>
+			<font>font13</font>
+			<pagecontrol>611</pagecontrol>
+			<label>$INFO[ListItem.Plot]</label>
+			<include>contentpanelslide</include>
+			<visible>Control.IsVisible(51) + !Control.IsVisible(611) + !IsEmpty(ListItem.Plot)</visible>
+			<autoscroll time="1000" delay="3000">Skin.HasSetting(AutoScroll)</autoscroll>
 		</control>
 		<control type="textbox" id="511">
 			<posx>200</posx>
@@ -855,6 +868,7 @@
 			<label>416</label>
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(51) + IsEmpty(ListItem.Plot)</visible>
+			<autoscroll time="1000" delay="3000">Skin.HasSetting(AutoScroll)</autoscroll>
 		</control>
 		<control type="button">
 			<posx>660</posx>
@@ -890,7 +904,7 @@
 			<textureslidernibfocus>-</textureslidernibfocus>
 			<onleft>61</onleft>
 			<onright>9000</onright>
-			<showonepage>false</showonepage>
+			<showonepage>true</showonepage>
 			<orientation>vertical</orientation>
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(511)</visible>
@@ -2148,6 +2162,7 @@
 			<label>$INFO[ListItem.Plot]</label>
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(57)</visible>
+			<autoscroll time="1000" delay="3000">Skin.HasSetting(AutoScroll)</autoscroll>
 		</control>
 	</include>
 	<include name="WideIcon_Small">
