@@ -47,6 +47,7 @@ void CJoystick::Initialize(HWND hWnd)
       m_Joysticks.push_back(joy);
       if (joy)
       {
+        CalibrateAxis(joy);
         m_JoystickNames.push_back(string(SDL_JoystickName(i)));
         CLog::Log(LOGNOTICE, "Enabled Joystick: %s", SDL_JoystickName(i));
       }
@@ -59,6 +60,20 @@ void CJoystick::Initialize(HWND hWnd)
 
   // disable joystick events, since we'll be polling them
   SDL_JoystickEventState(SDL_DISABLE);
+}
+
+void CJoystick::CalibrateAxis(SDL_Joystick* joy)
+{
+  SDL_JoystickUpdate();
+  
+  int numax = SDL_JoystickNumAxes(joy);
+  numax = (numax>MAX_AXES)?MAX_AXES:numax;
+
+  // get default axis states
+  for (int a = 0 ; a<numax ; a++)
+  {
+    m_DefaultAmount[a] = ((float)SDL_JoystickGetAxis(joy, a))/32768.0f;
+  }
 }
 
 void CJoystick::Reset(bool axis)
@@ -106,6 +121,7 @@ void CJoystick::Update()
     }
 
     // get axis states
+    m_NumAxes = numax;
     for (int a = 0 ; a<numax ; a++)
     {
       axisval = SDL_JoystickGetAxis(joy, a);
@@ -158,7 +174,6 @@ void CJoystick::Update(SDL_Event& joyEvent)
   int buttonId = -1;
   int axisId = -1;
   int joyId = -1;
-  const char* joyName = NULL;
   bool ignore = false; // not used for now
   bool axis = false;
 
@@ -257,11 +272,13 @@ int CJoystick::GetAxisWithMaxAmount()
   static int axis;
   axis = 0;
   maxAmount = 0;
+  float tempf;
   for (int i = 1 ; i<=m_NumAxes ; i++)
   {
-    if ((float)fabs(m_Amount[i])>maxAmount)
+    tempf = fabs(m_Amount[i]);
+    if (tempf>maxAmount)
     {
-      maxAmount = (float)fabs(m_Amount[i]);
+      maxAmount = tempf;
       axis = i;
     }
   }

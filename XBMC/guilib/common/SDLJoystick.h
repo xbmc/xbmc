@@ -20,6 +20,7 @@ public:
 
   void Initialize(HWND hwnd);
   void Reset(bool axis=false);
+  void CalibrateAxis(SDL_Joystick *joy);
   void ResetAxis(int axisId) { m_Amount[axisId] = 0.0f; }
   void Update();
   void Update(SDL_Event& event);
@@ -37,6 +38,7 @@ private:
   bool IsAxisActive() { return (bool)(m_ActiveFlags&JACTIVE_AXIS); }
 
   float m_Amount[MAX_AXES];
+  float m_DefaultAmount[MAX_AXES];
   int m_AxisId;
   int m_ButtonId;
   int m_JoyId;
