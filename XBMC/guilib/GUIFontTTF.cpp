@@ -78,6 +78,10 @@ namespace MathUtils {
 #define CHARS_PER_TEXTURE_LINE 20 // number of characters to cache per texture line
 #define CHAR_CHUNK    64      // 64 chars allocated at a time (1024 bytes)
 
+int CGUIFontTTF::justification_word_weight = 6;   // weight of word spacing over letter spacing when justifying.
+                                                  // A larger number means more of the "dead space" is placed between
+                                                  // words rather than between letters.
+
 CGUIFontTTF::CGUIFontTTF(const CStdString& strFileName)
   : CGUIFontBase(strFileName)
 {
@@ -306,12 +310,12 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, DWORD *pdw256ColorPalett
         {
           WCHAR letter = *spaceCalc++;
           if (letter == L'\r') continue;
-          // spaces have 3 times the justification spacing of normal letters
-          lineLength += (letter == L' ') ? 3 : 1;
+          // spaces have multiple times the justification spacing of normal letters
+          lineLength += (letter == L' ') ? justification_word_weight : 1;
         }
         float width;
         GetTextExtentInternal(strText, &width, NULL, TRUE);
-        spacePerLetter = (fMaxPixelWidth - width) / lineLength;
+        spacePerLetter = (fMaxPixelWidth - width) / (lineLength - 1);
       }
       bStartingNewLine = FALSE;
       cursorX = 0; // current position along the line
@@ -364,7 +368,7 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, DWORD *pdw256ColorPalett
     if ( dwFlags & XBFONT_JUSTIFIED )
     {
       if (letter == L' ')
-        cursorX += ch->advance + spacePerLetter * 3;
+        cursorX += ch->advance + spacePerLetter * justification_word_weight;
       else
         cursorX += ch->advance + spacePerLetter;
     }
