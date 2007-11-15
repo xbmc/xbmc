@@ -44,7 +44,7 @@ public:
 
 protected:
   virtual void GetTextExtentInternal(const WCHAR* strText, FLOAT* pWidth,
-                             FLOAT* pHeight, BOOL bFirstLineOnly = FALSE);
+                             FLOAT* pHeight = NULL, BOOL bFirstLineOnly = FALSE);
 
   virtual void DrawTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
                             const WCHAR* strText, DWORD cchText, DWORD dwFlags = 0,

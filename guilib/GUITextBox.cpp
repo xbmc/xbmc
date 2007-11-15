@@ -132,13 +132,20 @@ void CGUITextBox::Render()
   float posX = m_posX;
   float posY = m_posY + offset * m_itemHeight - m_scrollOffset;
 
+  // alignment correction
+  DWORD align = m_label.align;
+  if (align & XBFONT_CENTER_X)
+    posX += m_width * 0.5f;
+  if (align & XBFONT_RIGHT)
+    posX += m_width;
+
   if (m_label.font)
   {
     m_label.font->Begin();
-    float maxWidth = m_width + 16;
     int current = offset;
     while (posY < m_posY + m_height && current < (int)m_lines.size())
     {
+      float maxWidth = m_width;
       // render item
       if (current < (int)m_lines2.size())
       {
@@ -147,7 +154,9 @@ void CGUITextBox::Render()
         maxWidth -= fTextWidth;
         m_label.font->DrawTextWidth(posX + maxWidth, posY + 2, m_label.textColor, m_label.shadowColor, m_lines2[current].c_str(), fTextWidth);
       }
-      m_label.font->DrawTextWidth(posX, posY + 2, m_label.textColor, m_label.shadowColor, m_lines[current].c_str(), maxWidth);
+      if (current == (int)m_lines.size() - 1)
+        align &= ~XBFONT_JUSTIFIED; // last line shouldn't be justified
+      m_label.font->DrawText(posX, posY + 2, m_label.textColor, m_label.shadowColor, m_lines[current].c_str(), align, maxWidth);
       posY += m_itemHeight;
       current++;
     }

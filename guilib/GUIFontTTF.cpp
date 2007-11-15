@@ -257,11 +257,16 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, DWORD *pdw256ColorPalett
       dwFlags &= ~XBFONT_TRUNCATED;
     else
     {
-      float width, height;
-      GetTextExtentInternal(strText, &width, &height);
+      float width;
+      GetTextExtentInternal(strText, &width, NULL);
       if (width <= fMaxPixelWidth)
         dwFlags &= ~XBFONT_TRUNCATED;
     }
+  }
+  else if ( dwFlags & XBFONT_JUSTIFIED )
+  {
+    if ( fMaxPixelWidth <= 0.0f )
+      dwFlags &= XBFONT_JUSTIFIED;
   }
 
   float lineX;
@@ -270,6 +275,7 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, DWORD *pdw256ColorPalett
   int numLines = 0;
   // Set a flag so we can determine initial justification effects
   BOOL bStartingNewLine = TRUE;
+  float spacePerLetter = 0; // for justification effects
 
   while ( cchText-- )
   {
@@ -291,6 +297,21 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, DWORD *pdw256ColorPalett
           w *= 0.5f;
         // Offset this line's starting position
         lineX -= w;
+      }
+      if ( dwFlags & XBFONT_JUSTIFIED )
+      { // first compute the size of the text to render (single line) in both characters and pixels
+        const WCHAR *spaceCalc = strText;
+        unsigned int lineLength = 0;
+        while (*spaceCalc && *spaceCalc != L'\n')
+        {
+          WCHAR letter = *spaceCalc++;
+          if (letter == L'\r') continue;
+          // spaces have 3 times the justification spacing of normal letters
+          lineLength += (letter == L' ') ? 3 : 1;
+        }
+        float width;
+        GetTextExtentInternal(strText, &width, NULL, TRUE);
+        spacePerLetter = (fMaxPixelWidth - width) / lineLength;
       }
       bStartingNewLine = FALSE;
       cursorX = 0; // current position along the line
@@ -340,7 +361,15 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, DWORD *pdw256ColorPalett
       }
     }
     RenderCharacter(lineX + cursorX, lineY, ch, dwColor);
-    cursorX += ch->advance;
+    if ( dwFlags & XBFONT_JUSTIFIED )
+    {
+      if (letter == L' ')
+        cursorX += ch->advance + spacePerLetter * 3;
+      else
+        cursorX += ch->advance + spacePerLetter;
+    }
+    else
+      cursorX += ch->advance;
   }
 
   End();
@@ -352,7 +381,7 @@ void CGUIFontTTF::GetTextExtentInternal( const WCHAR* strText, FLOAT* pWidth,
   // First let's calculate width
   int len = wcslen(strText);
   int i = 0, j = 0;
-  *pWidth = *pHeight = 0.0f;
+  *pWidth = 0.0f;
   int numLines = 0;
 
   while (j < len)
@@ -381,7 +410,8 @@ void CGUIFontTTF::GetTextExtentInternal( const WCHAR* strText, FLOAT* pWidth,
       break;
   }
 
-  *pHeight = (float)(numLines - 1) * m_lineHeight + (m_cellHeight - 2); // -2 as we increment this for space in our texture
+  if (pHeight)
+    *pHeight = (float)(numLines - 1) * m_lineHeight + (m_cellHeight - 2); // -2 as we increment this for space in our texture
   return ;
 }
 
@@ -710,3 +740,4 @@ struct CUSTOMVERTEX {
   m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
 #endif
 }
+
