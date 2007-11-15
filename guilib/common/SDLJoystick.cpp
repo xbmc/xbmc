@@ -55,19 +55,14 @@ void CJoystick::Initialize(HWND hWnd)
         m_JoystickNames.push_back(string(""));
       }
     }
-    // enable joystick event capture
-    SDL_JoystickEventState(SDL_DISABLE); // UPDATE: disable always, since we're now polling and not relying on js events
   }
-  else
-  {
-    // no joysticks, disable joystick event capture
-    SDL_JoystickEventState(SDL_DISABLE);
-  }
+
+  // disable joystick events, since we'll be polling them
+  SDL_JoystickEventState(SDL_DISABLE);
 }
 
 void CJoystick::Reset(bool axis)
 {
-  SetButtonActive(false);
   if (axis)
   {
     SetAxisActive(false);
@@ -85,6 +80,9 @@ void CJoystick::Update()
   int numj = m_Joysticks.size();
   if (numj<=0)
     return;
+  
+  // update the state of all opened joysticks
+  SDL_JoystickUpdate();
 
   // go through all joysticks
   for (int j = 0 ; j<numj ; j++)
@@ -102,11 +100,12 @@ void CJoystick::Update()
       {
         m_JoyId = j;
         buttonId = b+1;
-        j = numj;
+        j = numj-1;
         break;
       }
     }
 
+    // get axis states
     for (int a = 0 ; a<numax ; a++)
     {
       axisval = SDL_JoystickGetAxis(joy, a);
@@ -133,12 +132,13 @@ void CJoystick::Update()
 
   if (buttonId==-1)
   {
-    if (m_ButtonId!=-1)
+    if (m_ButtonId!=0)
     {
       CLog::Log(LOGDEBUG, "Joystick %d button %d Up", m_JoyId, m_ButtonId);
     }
     m_pressTicks = 0;
     SetButtonActive(false);
+    m_ButtonId = 0;
   }
   else
   {
