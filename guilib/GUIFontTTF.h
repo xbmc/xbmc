@@ -96,6 +96,8 @@ protected:
 
   float m_originX;
   float m_originY;
+
+  static int justification_word_weight;
 };
 
 #endif
