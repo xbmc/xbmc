@@ -89,6 +89,7 @@
 #include "DirectXGraphics.h"
 #endif
 #include "lib/libGoAhead/xbmchttp.h"
+#include "DNSNameCache.h"
 
 namespace MathUtils {
 
@@ -1666,6 +1667,59 @@ bool CUtil::IsOnDVD(const CStdString& strFile)
   if (strFile.Left(5) == "cdda:" || strFile.Left(5) == "CDDA:")
     return true;
 
+  return false;
+}
+
+bool CUtil::IsOnLAN(const CStdString& strPath)
+{  
+  if(IsMultiPath(strPath))
+    return CUtil::IsOnLAN(CMultiPathDirectory::GetFirstPath(strPath));
+  if(IsStack(strPath))
+    return CUtil::IsOnLAN(CStackDirectory::GetFirstStackedFile(strPath));
+  if(strPath.Left(8) == "special:")
+    return CUtil::IsOnLAN(TranslateSpecialPath(strPath));
+  if(IsDAAP(strPath))
+    return true;
+  if(IsTuxBox(strPath))
+    return true;
+  if(IsUPnP(strPath))
+    return true;
+
+  CURL url(strPath);
+  if(IsInRAR(strPath) || IsInZIP(strPath))
+    return CUtil::IsOnLAN(url.GetHostName());
+
+  if(!IsRemote(strPath))
+    return false;
+
+  CStdString host = url.GetHostName();
+  if(host.length() == 0)
+    return false;
+
+
+  unsigned long address = ntohl(inet_addr(host.c_str()));
+  if(address == INADDR_NONE)
+  {
+    CStdString ip;
+    if(CDNSNameCache::Lookup(host, ip))
+      address = ntohl(inet_addr(ip.c_str()));
+  }
+
+  if(address == INADDR_NONE)
+  {
+    // assume a hostname without dot's
+    // is local (smb netbios hostnames) 
+    if(host.find('.') == string::npos)
+      return true;
+  }
+  else
+  {
+    // check if we are on the local subnet
+    unsigned long subnet = ntohl(inet_addr(g_network.m_networkinfo.subnet));
+    unsigned long local  = ntohl(inet_addr(g_network.m_networkinfo.ip));
+    if( (address & subnet) == (local & subnet) )
+      return true;
+  }
   return false;
 }
 
