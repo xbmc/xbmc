@@ -116,4 +116,16 @@
 			<visible>Skin.HasSetting(Use_Custom_Background)</visible>
 		</control>
 	</include>
+	<include name="autoscrollslow">
+	         <align>justify</align>
+	         <autoscroll time="3000" delay="3000">Skin.HasSetting(AutoScroll)</autoscroll>
+	</include>
+	<include name="autoscrollmedium">
+	         <align>justify</align>
+	         <autoscroll time="2000" delay="3000">Skin.HasSetting(AutoScroll)</autoscroll>
+	</include>
+	<include name="autoscrollfast">
+	         <align>justify</align>
+	         <autoscroll time="1000" delay="3000">Skin.HasSetting(AutoScroll)</autoscroll>
+	</include>
 </includes>
