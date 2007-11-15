@@ -702,6 +702,11 @@ bool CFileItem::IsOnDVD() const
   return CUtil::IsOnDVD(m_strPath);
 }
 
+bool CFileItem::IsOnLAN() const
+{
+  return CUtil::IsOnLAN(m_strPath);
+}
+
 bool CFileItem::IsISO9660() const
 {
   return CUtil::IsISO9660(m_strPath);

@@ -129,6 +129,7 @@ public:
   bool IsCDDA() const;
   bool IsDVD() const;
   bool IsOnDVD() const;
+  bool IsOnLAN() const;
   bool IsHD() const;
   bool IsRemote() const;
   bool IsSmb() const;

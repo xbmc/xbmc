@@ -90,6 +90,7 @@ public:
   static bool HasSlashAtEnd(const CStdString& strFile);
   static bool IsRemote(const CStdString& strFile);
   static bool IsOnDVD(const CStdString& strFile);
+  static bool IsOnLAN(const CStdString& strFile);
   static bool IsDVD(const CStdString& strFile);
   static bool IsVirtualPath(const CStdString& strFile);
   static bool IsMultiPath(const CStdString& strPath);
