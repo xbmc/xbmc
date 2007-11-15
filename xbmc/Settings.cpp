@@ -1435,6 +1435,19 @@ void CSettings::LoadAdvancedSettings()
     }
   }
 
+  // music filename->tag filters
+  TiXmlElement* filters = pRootElement->FirstChildElement("musicfilenamefilters");
+  if (filters)
+  {
+    TiXmlNode* filter = filters->FirstChild("filter");
+    while (filter)
+    {
+      if (filter->FirstChild())
+        g_advancedSettings.m_musicTagsFromFileFilters.push_back(filter->FirstChild()->ValueStr());
+      filter = filter->NextSibling("filter");
+    }
+  }
+
   // load in the GUISettings overrides:
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in
 }
