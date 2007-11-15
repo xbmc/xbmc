@@ -843,8 +843,8 @@
 			<pagecontrol>611</pagecontrol>
 			<label>$INFO[ListItem.Plot]</label>
 			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(51) + Control.IsVisible(611) + !IsEmpty(ListItem.Plot)</visible>
-			<autoscroll time="1000" delay="3000">Skin.HasSetting(AutoScroll)</autoscroll>
+			<visible>Control.IsVisible(51) + !Skin.HasSetting(UseScrollBars) + !IsEmpty(ListItem.Plot) + Control.IsVisible(611)</visible>
+			<include>autoscrollmedium</include>
 		</control>
 		<control type="textbox" id="511">
 			<posx>200</posx>
@@ -855,8 +855,8 @@
 			<pagecontrol>611</pagecontrol>
 			<label>$INFO[ListItem.Plot]</label>
 			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(51) + !Control.IsVisible(611) + !IsEmpty(ListItem.Plot)</visible>
-			<autoscroll time="1000" delay="3000">Skin.HasSetting(AutoScroll)</autoscroll>
+			<visible>Control.IsVisible(51) + Skin.HasSetting(UseScrollBars) + !IsEmpty(ListItem.Plot) | !Control.IsVisible(611)</visible>
+			<include>autoscrollmedium</include>
 		</control>
 		<control type="textbox" id="511">
 			<posx>200</posx>
@@ -867,7 +867,18 @@
 			<pagecontrol>611</pagecontrol>
 			<label>416</label>
 			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(51) + IsEmpty(ListItem.Plot)</visible>
+			<visible>Control.IsVisible(51) + !Skin.HasSetting(UseScrollBars) + IsEmpty(ListItem.Plot)</visible>
+		</control>
+		<control type="textbox" id="511">
+			<posx>200</posx>
+			<posy>373</posy>
+			<width>480</width>
+			<height>130</height>
+			<font>font13</font>
+			<pagecontrol>611</pagecontrol>
+			<label>416</label>
+			<include>contentpanelslide</include>
+			<visible>Control.IsVisible(51) + Skin.HasSetting(UseScrollBars) + IsEmpty(ListItem.Plot)</visible>
 		</control>
 		<control type="button">
 			<posx>660</posx>
@@ -906,7 +917,7 @@
 			<showonepage>false</showonepage>
 			<orientation>vertical</orientation>
 			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(511)</visible>
+			<visible>Control.IsVisible(511) + !Skin.HasSetting(UseScrollBars)</visible>
 		</control>
 	</include>
 	<include name="VideoViewCommons_BigList">
@@ -2161,7 +2172,7 @@
 			<label>$INFO[ListItem.Plot]</label>
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(57)</visible>
-			<autoscroll time="1000" delay="3000">Skin.HasSetting(AutoScroll)</autoscroll>
+			<include>autoscrollmedium</include>
 		</control>
 	</include>
 	<include name="WideIcon_Small">
@@ -2581,6 +2592,7 @@
 				       	<posy>3</posy>
 				       	<width>22</width>
 				       	<height>22</height>
+					<texture>DefaultActorBig.png</texture>
         				<info>ListItem.Icon</info>
 				    </control>
 				    <control type="label">
@@ -2609,6 +2621,7 @@
 				        <posy>3</posy>
 				        <width>22</width>
 				        <height>22</height>
+					<texture>DefaultActorBig.png</texture>
 				        <info>ListItem.Icon</info>
 				    </control>
 				    <control type="label">
@@ -2637,13 +2650,14 @@
 				<orientation>vertical</orientation>
 			        <pagecontrol>61</pagecontrol>
 			        <scrolltime>200</scrolltime>
-				<visible>!Skin.HasSetting(UseScrollbars) + Window.IsActive(movieinformation)</visible>
+				<visible>Skin.HasSetting(UseScrollbars) + Window.IsActive(movieinformation)</visible>
 			        <itemlayout width="250" height="29">
 				    <control type="image">
 				        <posx>0</posx>
 				       	<posy>3</posy>
 				       	<width>22</width>
 				       	<height>22</height>
+					<texture>DefaultActorBig.png</texture>
         				<info>ListItem.Icon</info>
 				    </control>
 				    <control type="label">
@@ -2672,6 +2686,7 @@
 				        <posy>3</posy>
 				        <width>22</width>
 				        <height>22</height>
+					<texture>DefaultActorBig.png</texture>
 				        <info>ListItem.Icon</info>
 				    </control>
 				    <control type="label">
