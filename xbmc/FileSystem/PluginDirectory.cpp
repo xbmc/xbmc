@@ -467,3 +467,15 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
 
   return !m_cancelled && m_success;
 }
+
+void CPluginDirectory::SetContent(int handle, const CStdString &strContent)
+{
+  if (handle < 0 || handle >= (int)globalHandles.size())
+  {
+    CLog::Log(LOGERROR, "%s called with an invalid handle.", __FUNCTION__);
+    return;
+  }
+
+  CPluginDirectory *dir = globalHandles[handle];
+  dir->m_listItems.SetContent(strContent);
+}
