@@ -325,7 +325,7 @@ bool CLabelFormatter::FillMusicTag(const CStdString &fileName, CMusicInfoTag *ta
     return false;
   for (unsigned int i = 1; i < m_staticContent[0].size(); i++)
   {
-    int pos2 = fileName.Find(m_staticContent[0][i], pos1);
+    int pos2 = m_staticContent[0][i].size() ? fileName.Find(m_staticContent[0][i], pos1) : fileName.size();
     if (pos2 == CStdString::npos)
       return false;
     // found static content - thus we have the dynamic content surrounded
