@@ -102,9 +102,20 @@ void CGUITextBox::Render()
     m_itemsPerPage = (unsigned int)(fTotalHeight / fHeight);
 
     // we have all the sizing correct so do any wordwrapping
-    CStdStringW utf16Text;
-    g_charsetConverter.utf8ToUTF16(m_renderLabel, utf16Text);
-    CGUILabelControl::WrapText(utf16Text, m_label.font, m_width, m_lines);
+    // break into paragraphs, and wrap each one separately
+    // for justification purposes.
+    m_lines.clear();
+    vector<CStdString> paragraphs;
+    StringUtils::SplitString(m_renderLabel, "\n", paragraphs);
+    for (unsigned int i = 0; i < paragraphs.size(); i++)
+    {
+      CStdStringW utf16Text;
+      g_charsetConverter.utf8ToUTF16(paragraphs[i], utf16Text);
+      vector<CStdStringW> lines;
+      CGUILabelControl::WrapText(utf16Text, m_label.font, m_width, lines);
+      lines[lines.size() - 1] += L'\n';
+      m_lines.insert(m_lines.end(), lines.begin(), lines.end());
+    }
 
     // disable all second label information
     m_lines2.clear();
@@ -163,10 +174,9 @@ void CGUITextBox::Render()
   float posY = m_posY + offset * m_itemHeight - m_scrollOffset;
 
   // alignment correction
-  DWORD align = m_label.align;
-  if (align & XBFONT_CENTER_X)
+  if (m_label.align & XBFONT_CENTER_X)
     posX += m_width * 0.5f;
-  if (align & XBFONT_RIGHT)
+  if (m_label.align & XBFONT_RIGHT)
     posX += m_width;
 
   if (m_label.font)
@@ -184,8 +194,9 @@ void CGUITextBox::Render()
         maxWidth -= fTextWidth;
         m_label.font->DrawTextWidth(posX + maxWidth, posY + 2, m_label.textColor, m_label.shadowColor, m_lines2[current].c_str(), fTextWidth);
       }
-      if (current == (int)m_lines.size() - 1)
-        align &= ~XBFONT_JUSTIFIED; // last line shouldn't be justified
+      DWORD align = m_label.align;
+      if (m_lines[current].size() && m_lines[current][m_lines[current].size() - 1] == L'\n')
+        align &= ~XBFONT_JUSTIFIED; // last line of a paragraph shouldn't be justified
       m_label.font->DrawText(posX, posY + 2, m_label.textColor, m_label.shadowColor, m_lines[current].c_str(), align, maxWidth);
       posY += m_itemHeight;
       current++;
