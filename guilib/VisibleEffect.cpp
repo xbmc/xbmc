@@ -354,6 +354,20 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
   }
 }
 
+CAnimation *CAnimation::CreateFader(float start, float end, unsigned int delay, unsigned int length)
+{
+  CAnimation *anim = new CAnimation();
+  if (anim)
+  {
+    anim->m_startAlpha = start;
+    anim->m_endAlpha = end;
+    anim->m_delay = delay;
+    anim->m_length = length;
+    anim->m_effect = EFFECT_TYPE_FADE;
+  }
+  return anim;
+}
+
 void CAnimation::Animate(unsigned int time, bool startAnim)
 {
   // First start any queued animations
