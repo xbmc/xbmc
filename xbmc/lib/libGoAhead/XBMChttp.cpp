@@ -2857,7 +2857,6 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
 	  retVal = SetResponse(openTag+"Error:Too many parameters");
   else
     retVal = SetResponse(openTag+"Error:Missing command");
-  return retVal;
 //relinquish the remainder of time slice
 #ifndef _DEBUG 
   Sleep(0);
