@@ -369,12 +369,8 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       else
         g_infoManager.m_content = "";
     }
-    else if (!items.m_strPath.Equals("plugin://video/"))  // don't need to do this for playlist, as OnRetrieveMusicInfo() should ideally set thumbs
-    {
-      items.SetCachedVideoThumbs();
-      m_thumbLoader.Load(m_vecItems);
-      g_infoManager.m_content = "";
-    }
+    else
+      g_infoManager.m_content = items.GetContent();
   }
 
   return bResult;
