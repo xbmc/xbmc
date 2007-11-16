@@ -1164,6 +1164,7 @@ void CFileItemList::Clear()
   m_bCacheToDisc=false;
   m_sortDetails.clear();
   m_replaceListing = false;
+  m_content.Empty();
 }
 
 void CFileItemList::ClearKeepPointer()
@@ -1179,6 +1180,7 @@ void CFileItemList::ClearKeepPointer()
   m_bCacheToDisc=false;
   m_sortDetails.clear();
   m_replaceListing = false;
+  m_content.Empty();
 }
 
 void CFileItemList::Add(CFileItem* pItem)
@@ -1267,6 +1269,7 @@ void CFileItemList::AssignPointer(const CFileItemList& itemlist, bool append)
   m_strPath = itemlist.m_strPath;
   m_sortDetails = itemlist.m_sortDetails;
   m_replaceListing = itemlist.m_replaceListing;
+  m_content = itemlist.m_content;
 }
 
 CFileItem* CFileItemList::Get(int iItem)
@@ -1480,6 +1483,8 @@ void CFileItemList::Serialize(CArchive& ar)
       ar << details.m_labelMasks.m_strLabel2Folder;
     }
 
+    ar << m_content;
+
     for (i; i < (int)m_items.size(); ++i)
     {
       CFileItem* pItem = m_items[i];
@@ -1535,6 +1540,8 @@ void CFileItemList::Serialize(CArchive& ar)
       ar >> details.m_labelMasks.m_strLabel2Folder;
       m_sortDetails.push_back(details);
     }
+
+    ar >> m_content;
 
     for (int i = 0; i < iSize; ++i)
     {

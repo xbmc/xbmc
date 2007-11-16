@@ -393,6 +393,8 @@ public:
   const vector<SORT_METHOD_DETAILS> &GetSortDetails() const { return m_sortDetails; };
   bool GetReplaceListing() const { return m_replaceListing; };
   void SetReplaceListing(bool replace);
+  void SetContent(const CStdString &content) { m_content = content; };
+  const CStdString &GetContent() const { return m_content; };
 
 private:
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
@@ -405,6 +407,7 @@ private:
   SORT_ORDER m_sortOrder;
   bool m_bCacheToDisc;
   bool m_replaceListing;
+  CStdString m_content;
 
   vector<SORT_METHOD_DETAILS> m_sortDetails;
 };
