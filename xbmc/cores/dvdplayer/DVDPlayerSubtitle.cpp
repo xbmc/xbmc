@@ -93,6 +93,9 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
     m_dvdspus.Reset();
     if (m_pSubtitleFileParser) 
       m_pSubtitleFileParser->Reset();
+
+    if (m_pOverlayCodec)
+      m_pOverlayCodec->Flush();
   }
 
   pMsg->Release();
