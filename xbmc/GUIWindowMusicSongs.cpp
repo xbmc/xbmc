@@ -543,7 +543,10 @@ bool CGUIWindowMusicSongs::Update(const CStdString &strDirectory)
   if (!CGUIMediaWindow::Update(strDirectory))
     return false;
 
-  g_infoManager.m_content = "files";
+  if (!m_vecItems.GetContent().IsEmpty())
+    g_infoManager.m_content = m_vecItems.GetContent();
+  else
+    g_infoManager.m_content = "files";
   m_thumbLoader.Load(m_vecItems);
   return true;
 }
