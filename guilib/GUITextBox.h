@@ -52,6 +52,7 @@ public:
   virtual bool OnMouseWheel(char wheel, const CPoint &point);
   void SetInfo(int singleInfo);
   void SetAutoScrolling(const TiXmlNode *node);
+  void ResetAutoScrolling();
 
 protected:
   void OnPageUp();
@@ -77,6 +78,7 @@ protected:
   int   m_autoScrollTime;      // time to scroll 1 line (ms)
   int   m_autoScrollDelay;     // delay before scroll (ms)
   DWORD m_autoScrollDelayTime; // current offset into the delay
+  CAnimation *m_autoScrollRepeatAnim;
 
   CLabelInfo m_label;       // label configuration (size, font, etc.)
   CStdString m_renderLabel; // label to render

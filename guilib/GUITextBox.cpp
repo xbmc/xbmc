@@ -35,25 +35,41 @@ CGUITextBox::CGUITextBox(DWORD dwParentID, DWORD dwControlId, float posX, float 
   m_autoScrollTime = 0;
   m_autoScrollDelay = 3000;
   m_autoScrollDelayTime = 0;
+  m_autoScrollRepeatAnim = NULL;
 }
 
 CGUITextBox::~CGUITextBox(void)
 {
+  if (m_autoScrollRepeatAnim)
+    delete m_autoScrollRepeatAnim;
+  m_autoScrollRepeatAnim = NULL;
 }
 
 void CGUITextBox::DoRender(DWORD currentTime)
 {
   m_renderTime = currentTime;
+
+  // render the repeat anim as appropriate
+  if (m_autoScrollRepeatAnim)
+  {
+    m_autoScrollRepeatAnim->Animate(m_renderTime, true);
+    TransformMatrix matrix;
+    m_autoScrollRepeatAnim->RenderAnimation(matrix);
+    g_graphicsContext.AddTransform(matrix);
+  }
+
   CGUIControl::DoRender(currentTime);
   // if not visible, we reset the autoscroll timer and positioning
   if (!IsVisible() && m_autoScrollTime)
   {
-    m_autoScrollDelayTime = 0;
+    ResetAutoScrolling();
     m_lastRenderTime = 0;
     m_offset = 0;
     m_scrollOffset = 0;
     m_scrollSpeed = 0;
   }
+  if (m_autoScrollRepeatAnim)
+    g_graphicsContext.RemoveTransform();
 }
 
 void CGUITextBox::Render()
@@ -71,7 +87,7 @@ void CGUITextBox::Render()
     m_offset = 0;
     m_scrollOffset = 0;
     m_bInvalidated = true;
-    m_autoScrollDelayTime = 0;
+    ResetAutoScrolling();
   }
 
   if (m_bInvalidated)
@@ -106,10 +122,24 @@ void CGUITextBox::Render()
       { // delay is finished - start scrolling
         if (m_offset < (int)m_lines.size() - m_itemsPerPage)
           ScrollToOffset(m_offset + 1, true);
+        else
+        { // at the end, run a delay and restart
+          if (m_autoScrollRepeatAnim)
+          {
+            if (m_autoScrollRepeatAnim->GetState() == ANIM_STATE_NONE)
+              m_autoScrollRepeatAnim->QueueAnimation(ANIM_PROCESS_NORMAL);
+            else if (m_autoScrollRepeatAnim->GetState() == ANIM_STATE_APPLIED)
+            { // reset to the start of the list and start the scrolling again
+              m_offset = 0;
+              m_scrollOffset = 0;
+              ResetAutoScrolling();
+            }
+          }
+        }
       }
     }
     else if (m_autoScrollCondition)
-      m_autoScrollDelayTime = 0;    // conditional is false, so reset the scroll delay.
+      ResetAutoScrolling();  // conditional is false, so reset the autoscrolling
   }
 
   // update our scroll position as necessary
@@ -184,13 +214,13 @@ bool CGUITextBox::OnAction(const CAction &action)
   {
   case ACTION_PAGE_UP:
     OnPageUp();
-    m_autoScrollDelayTime = 0;
+    ResetAutoScrolling();
     return true;
     break;
 
   case ACTION_PAGE_DOWN:
     OnPageDown();
-    m_autoScrollDelayTime = 0;
+    ResetAutoScrolling();
     return true;
     break;
 
@@ -214,7 +244,7 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
     {
       if (message.GetMessage() == GUI_MSG_CLICKED)
       {
-        m_autoScrollDelayTime = 0;
+        ResetAutoScrolling();
         if (m_upDown.GetValue() >= 1)
           ScrollToOffset((m_upDown.GetValue() - 1) * m_itemsPerPage);
       }
@@ -226,7 +256,7 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
       {
         m_offset = 0;
         m_scrollOffset = 0;
-        m_autoScrollDelayTime = 0;
+        ResetAutoScrolling();
         m_lines.clear();
         m_lines2.clear();
         for (unsigned int i = 0; i < items->size(); ++i)
@@ -245,7 +275,7 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
     {
       m_offset = 0;
       m_scrollOffset = 0;
-      m_autoScrollDelayTime = 0;
+      ResetAutoScrolling();
       m_lines.clear();
       m_lines2.clear();
       m_upDown.SetRange(1, 1);
@@ -258,7 +288,7 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
     {
       m_offset = 0;
       m_scrollOffset = 0;
-      m_autoScrollDelayTime = 0;
+      ResetAutoScrolling();
       m_lines.clear();
       m_lines2.clear();
       m_upDown.SetRange(1, 1);
@@ -273,7 +303,7 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
     if (message.GetMessage() == GUI_MSG_SETFOCUS)
     {
       m_upDown.SetFocus(true);
-      m_autoScrollDelayTime = 0;
+      ResetAutoScrolling();
     }
     if (message.GetMessage() == GUI_MSG_LOSTFOCUS)
     {
@@ -284,7 +314,7 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
     {
       if (message.GetSenderId() == m_pageControl)
       { // update our page
-        m_autoScrollDelayTime = 0;
+        ResetAutoScrolling();
         ScrollToOffset(message.GetParam1());
         return true;
       }
@@ -438,7 +468,7 @@ bool CGUITextBox::OnMouseWheel(char wheel, const CPoint &point)
     if (offset + m_itemsPerPage == m_lines.size())
       iPage = m_upDown.GetMaximum();
     m_upDown.SetValue(iPage);
-    m_autoScrollDelayTime = 0;
+    ResetAutoScrolling();
   }
   return true;
 }
@@ -513,5 +543,15 @@ void CGUITextBox::SetAutoScrolling(const TiXmlNode *node)
     scroll->Attribute("time", &m_autoScrollTime);
     if (scroll->FirstChild())
       m_autoScrollCondition = g_infoManager.TranslateString(scroll->FirstChild()->ValueStr());
+    float repeatTime;
+    if (scroll->Attribute("repeat", &repeatTime))
+      m_autoScrollRepeatAnim = CAnimation::CreateFader(100, 0, repeatTime, 1000);
   }
+}
+
+void CGUITextBox::ResetAutoScrolling()
+{
+  m_autoScrollDelayTime = 0;
+  if (m_autoScrollRepeatAnim)
+    m_autoScrollRepeatAnim->ResetAnimation();
 }

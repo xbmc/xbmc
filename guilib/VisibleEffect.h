@@ -34,6 +34,7 @@ public:
 
   void Reset();
   void Create(const TiXmlElement *node, const FRECT &rect);
+  static CAnimation *CreateFader(float start, float end, unsigned int delay, unsigned int length);
   void Animate(unsigned int time, bool startAnim);
   void ResetAnimation();
   void ApplyAnimation();
