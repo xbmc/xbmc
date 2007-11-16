@@ -130,6 +130,7 @@ namespace PYXBMC
     PyObject_HEAD_XBMC_CONTROL
     string strFont;
     string strText;
+    string strText2;
     string strTextureFocus;
     string strTextureNoFocus;
     DWORD dwTextColor;
