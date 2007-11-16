@@ -843,7 +843,7 @@
 			<pagecontrol>611</pagecontrol>
 			<label>$INFO[ListItem.Plot]</label>
 			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(51) + !Skin.HasSetting(UseScrollBars) + !IsEmpty(ListItem.Plot) + Control.IsVisible(611)</visible>
+			<visible>Control.IsVisible(51) + [!Skin.HasSetting(UseScrollBars) + !IsEmpty(ListItem.Plot) + Control.IsVisible(611)]</visible>
 			<include>autoscrollmedium</include>
 		</control>
 		<control type="textbox" id="511">
@@ -855,7 +855,7 @@
 			<pagecontrol>611</pagecontrol>
 			<label>$INFO[ListItem.Plot]</label>
 			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(51) + Skin.HasSetting(UseScrollBars) + !IsEmpty(ListItem.Plot) | !Control.IsVisible(611)</visible>
+			<visible>Control.IsVisible(51) + [Skin.HasSetting(UseScrollBars) + !IsEmpty(ListItem.Plot) | !Control.IsVisible(611)]</visible>
 			<include>autoscrollmedium</include>
 		</control>
 		<control type="textbox" id="511">
@@ -867,7 +867,7 @@
 			<pagecontrol>611</pagecontrol>
 			<label>416</label>
 			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(51) + !Skin.HasSetting(UseScrollBars) + IsEmpty(ListItem.Plot)</visible>
+			<visible>Control.IsVisible(51) + [!Skin.HasSetting(UseScrollBars) + IsEmpty(ListItem.Plot)]</visible>
 		</control>
 		<control type="textbox" id="511">
 			<posx>200</posx>
@@ -878,7 +878,7 @@
 			<pagecontrol>611</pagecontrol>
 			<label>416</label>
 			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(51) + Skin.HasSetting(UseScrollBars) + IsEmpty(ListItem.Plot)</visible>
+			<visible>Control.IsVisible(51) + [Skin.HasSetting(UseScrollBars) + IsEmpty(ListItem.Plot)]</visible>
 		</control>
 		<control type="button">
 			<posx>660</posx>
