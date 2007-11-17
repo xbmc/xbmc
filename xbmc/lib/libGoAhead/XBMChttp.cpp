@@ -594,7 +594,10 @@ CXbmcHttp::CXbmcHttp()
 CXbmcHttp::~CXbmcHttp()
 {
   if (pUdpBroadcast)
+  {
     delete pUdpBroadcast;
+    pUdpBroadcast=NULL;
+  }
   CLog::Log(LOGDEBUG, "xbmcHttp ends");
 }
 
@@ -2678,6 +2681,35 @@ int CXbmcHttp::xbmcRecordStatus(int numParas, CStdString paras[])
         return SetResponse(openTag+"Can't record");
 }
 
+int CXbmcHttp::xbmcWebServerStatus(int numParas, CStdString paras[])
+{
+  if (numParas==0)
+	if (g_application.m_pWebServer)
+      return SetResponse(openTag+"On");
+	else
+      return SetResponse(openTag+"Off");
+  else
+	if (paras[0].ToLower().Equals("on"))
+	  if (g_application.m_pWebServer)
+	    return SetResponse(openTag+"Already on");
+	  else
+	  {
+	    g_application.StartWebServer();
+	    return SetResponse(openTag+"OK");
+	  }
+	else
+	  if (paras[0].ToLower().Equals("off"))
+	    if (!g_application.m_pWebServer)
+	      return SetResponse(openTag+"Already off");
+	    else
+	    {
+	      g_application.StopWebServer();
+	      return SetResponse(openTag+"OK");
+	    }
+	  else
+        return SetResponse(openTag+"Error:Unknown parameter");
+}
+
 int CXbmcHttp::xbmcSetResponseFormat(int numParas, CStdString paras[])
 {
   if (numParas==0)
@@ -2840,6 +2872,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
 	  else if (command == "getbroadcast")             retVal = xbmcGetBroadcast();
 	  else if (command == "action")                   retVal = xbmcOnAction(numParas, paras);
 	  else if (command == "getrecordstatus")          retVal = xbmcRecordStatus(numParas, paras);
+	  else if (command == "webserverstatus")          retVal = xbmcWebServerStatus(numParas, paras);
 
       //Old command names
       else if (command == "deletefile")               retVal = xbmcDeleteFile(numParas, paras);
@@ -2913,30 +2946,43 @@ CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *comman
   if (shuttingDown)
     return "";
   CStdString cmd=command, paras=parameter, response="[No response yet]", retVal;
+  bool legalCmd=true;
   CLog::Log(LOGDEBUG, "XBMCHTTPShim: Received command %s (%s)", cmd.c_str(), paras.c_str());
   int cnt=0;
-  if ((wp != NULL) && (eid==NO_EID) && (incWebHeader))
-    websHeader(wp);
-  if ((*parameter==0) || !strcmp(parameter,XBMC_NONE))
-    if (checkForFunctionTypeParas(cmd, paras))
-	  g_applicationMessenger.HttpApi(cmd+"; "+paras);
-	else
-    g_applicationMessenger.HttpApi(cmd);
-  else
-    g_applicationMessenger.HttpApi(cmd+"; "+paras);
-  //wait for response - max 20s
-  Sleep(0);
-  response=g_applicationMessenger.GetResponse();
-  while (response=="[No response yet]" && cnt++<200) 
+  if (wp!=NULL)
   {
-    response=g_applicationMessenger.GetResponse();
-	CLog::Log(LOGDEBUG, "XBMCHTTPShim: waiting %d", cnt);
-    Sleep(100);
+    if ((eid==NO_EID) && (incWebHeader))
+      websHeader(wp);
+	//we are being called via the webserver (rather than Python) so add any specific checks here
+    if ((!strcmpi(command,"webserverstatus")) && (strcmp(parameter,XBMC_NONE)))
+	{
+	  response="Error:Can't turn off WebServer via a web call";
+	  legalCmd=false;
+	}
   }
-  if (cnt>199)
+  if (legalCmd)
   {
-    response="Error:Timed out";
-    CLog::Log(LOGDEBUG, "HttpApi Timed out");
+	if ((*parameter==0) || !strcmp(parameter,XBMC_NONE))
+	  if (checkForFunctionTypeParas(cmd, paras))
+		g_applicationMessenger.HttpApi(cmd+"; "+paras);
+	  else
+		g_applicationMessenger.HttpApi(cmd);
+	else
+	  g_applicationMessenger.HttpApi(cmd+"; "+paras);
+	//wait for response - max 20s
+	Sleep(0);
+	response=g_applicationMessenger.GetResponse();
+	while (response=="[No response yet]" && cnt++<200) 
+	{
+	  response=g_applicationMessenger.GetResponse();
+	  CLog::Log(LOGDEBUG, "XBMCHTTPShim: waiting %d", cnt);
+	  Sleep(100);
+	}
+	if (cnt>199)
+	{
+	  response="Error:Timed out";
+	  CLog::Log(LOGDEBUG, "HttpApi Timed out");
+	}
   }
   //flushresult
   retVal=flushResult(eid, wp, userHeader+response+userFooter);
