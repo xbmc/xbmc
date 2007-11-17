@@ -509,6 +509,15 @@
 							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecCC.h">
 						</File>
 						<File
+							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecFFmpeg.cpp">
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecFFmpeg.h">
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayImage.h">
+						</File>
+						<File
 							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlaySpu.h">
 						</File>
 						<File

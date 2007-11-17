@@ -17,7 +17,9 @@ public:
     void SetForceIndex(bool bOnOff);
 
     bool GetNoCache() const;
-    void SetNoCache(bool bOnOff) ;
+    void SetNoCache(bool bOnOff);
+
+    void SetPrefil(float percent) { m_fPrefil = percent; }
 
     bool GetNoIdx() const;
     void SetNoIdx(bool bOnOff) ;
@@ -76,13 +78,13 @@ public:
     bool m_bDeinterlace;
     bool m_bResampleAudio;
     bool m_bNoCache;
+    float m_fPrefil;
     bool m_bNoIdx;
     float m_fSpeed;
     float m_fFPS;
     int m_iChannels;
     int m_iAudioStream;
     int m_iSubtitleStream;
-    int m_iCacheSizeBackBuffer; // percent of cache used for back buffering
     int m_iAutoSync;
     bool m_bAC3PassTru;
     bool m_bDTSPassTru;

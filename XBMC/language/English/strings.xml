@@ -1559,6 +1559,8 @@
   <string id="20186">Please Wait</string>
   <string id="20187">Backing up EEPROM</string>
   <string id="20188">Backing up BIOS</string>
+  <string id="20189">Enable Auto Scrolling for Plot &amp; Review</string>
+  <string id="20190">Custom</string>
 
   <!-- string id's 20200 thru 20211 are reserved for speedstrings (LocalizeStrings.cpp)-->
   

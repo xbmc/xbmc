@@ -38,6 +38,7 @@
 #include "../FileSystem/SndtrkDirectory.h"
 #endif
 #include "../musicInfoTagLoaderFactory.h"
+#include "LabelFormatter.h"
 
 #include "GUILabelControl.h"  // for CInfoPortion
 
@@ -440,7 +441,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.album")) return VIDEOPLAYER_ALBUM;
     else if (strTest.Equals("videoplayer.writer")) return VIDEOPLAYER_WRITER;
     else if (strTest.Equals("videoplayer.tagline")) return VIDEOPLAYER_TAGLINE;
-    else if (strTest.Equals("videoplayer.isinlibrary")) return VIDEOPLAYER_ISINLIBRARY;
+    else if (strTest.Equals("videoplayer.hasinfo")) return VIDEOPLAYER_HAS_INFO;
   }
   else if (strCategory.Equals("playlist"))
   {
@@ -1445,12 +1446,8 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
     if (pWindow)
       bReturn = ((CGUIMediaWindow*)pWindow)->CurrentDirectory().HasThumbnail();
   }
-  else if (condition == VIDEOPLAYER_ISINLIBRARY)
-  {
+  else if (condition == VIDEOPLAYER_HAS_INFO)
     bReturn = m_currentFile.HasVideoInfoTag();
-    if (m_currentFile.HasVideoInfoTag())
-      bReturn = m_currentFile.GetVideoInfoTag()->m_iDbId > -1;
-  }
   else if (condition == CONTAINER_ON_NEXT || condition == CONTAINER_ON_PREVIOUS)
   {
     // no parameters, so we assume it's just requested for a media window.  It therefore
@@ -2207,111 +2204,118 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
   if (!g_application.IsPlayingVideo()) 
     return "";
   
-  switch (item)
+  if (item == VIDEOPLAYER_TITLE)
   {
-  case VIDEOPLAYER_TITLE:
-    return m_currentFile.GetVideoInfoTag()->m_strTitle;
-    break;
-  case VIDEOPLAYER_ORIGINALTITLE:
-    return m_currentFile.GetVideoInfoTag()->m_strOriginalTitle;
-    break;
-  case VIDEOPLAYER_GENRE:
-    return m_currentFile.GetVideoInfoTag()->m_strGenre;
-    break;
-  case VIDEOPLAYER_DIRECTOR:
-    return m_currentFile.GetVideoInfoTag()->m_strDirector;
-    break;
-  case VIDEOPLAYER_RATING:
+    if (m_currentFile.HasVideoInfoTag() && !m_currentFile.GetVideoInfoTag()->m_strTitle.IsEmpty())
+      return m_currentFile.GetVideoInfoTag()->m_strTitle;
+    // don't have the title, so use label, or drop down to title from path
+    if (!m_currentFile.GetLabel().IsEmpty())
+      return m_currentFile.GetLabel();
+    return CUtil::GetTitleFromPath(m_currentFile.m_strPath);
+  }
+  else if (item == VIDEOPLAYER_PLAYLISTLEN)
+  {
+    if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
+      return GetPlaylistLabel(PLAYLIST_LENGTH);
+  }
+  else if (item == VIDEOPLAYER_PLAYLISTPOS)
+  {
+    if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
+      return GetPlaylistLabel(PLAYLIST_POSITION);
+  }
+  else if (m_currentFile.HasVideoInfoTag())
+  {
+    switch (item)
     {
-      CStdString strYear;
-      strYear.Format("%2.2f", m_currentFile.GetVideoInfoTag()->m_fRating);
-      return strYear;
-    }
-  case VIDEOPLAYER_YEAR:
-    {
-      CStdString strYear;
-      if (m_currentFile.GetVideoInfoTag()->m_iYear > 0)
-        strYear.Format("%i", m_currentFile.GetVideoInfoTag()->m_iYear);
-      return strYear;
-    }
-    break;
-  case VIDEOPLAYER_PREMIERED:
-    {
-      CStdString strYear;
-      if (!m_currentFile.GetVideoInfoTag()->m_strPremiered.IsEmpty())
-        strYear = m_currentFile.GetVideoInfoTag()->m_strPremiered;
-      else if (!m_currentFile.GetVideoInfoTag()->m_strFirstAired.IsEmpty())
-        strYear = m_currentFile.GetVideoInfoTag()->m_strFirstAired;
-      return strYear;
-    }
-    break;
-  case VIDEOPLAYER_PLOT:
-    return m_currentFile.GetVideoInfoTag()->m_strPlot;
-  case VIDEOPLAYER_PLOT_OUTLINE:
-    return m_currentFile.GetVideoInfoTag()->m_strPlotOutline;
-  case VIDEOPLAYER_EPISODE:
-    if (m_currentFile.GetVideoInfoTag()->m_iEpisode > 0)
-    {
-      CStdString strYear;
-      if (m_currentFile.GetVideoInfoTag()->m_iSpecialSortEpisode > 0)
-        strYear.Format("S%i", m_currentFile.GetVideoInfoTag()->m_iEpisode);
-      else
-        strYear.Format("%i", m_currentFile.GetVideoInfoTag()->m_iEpisode);
-      return strYear;
-    }
-    break;
-  case VIDEOPLAYER_SEASON:
-    if (m_currentFile.GetVideoInfoTag()->m_iSeason > -1)
-    {
-      CStdString strYear;
-      if (m_currentFile.GetVideoInfoTag()->m_iSpecialSortSeason > 0)
-        strYear.Format("%i", m_currentFile.GetVideoInfoTag()->m_iSpecialSortSeason);
-      else
-        strYear.Format("%i", m_currentFile.GetVideoInfoTag()->m_iSeason);
-      return strYear;
-    }
-    break;
-  case VIDEOPLAYER_TVSHOW:
-    return m_currentFile.GetVideoInfoTag()->m_strShowTitle;
+    case VIDEOPLAYER_ORIGINALTITLE:
+      return m_currentFile.GetVideoInfoTag()->m_strOriginalTitle;
+      break;
+    case VIDEOPLAYER_GENRE:
+      return m_currentFile.GetVideoInfoTag()->m_strGenre;
+      break;
+    case VIDEOPLAYER_DIRECTOR:
+      return m_currentFile.GetVideoInfoTag()->m_strDirector;
+      break;
+    case VIDEOPLAYER_RATING:
+      {
+        CStdString strYear;
+        strYear.Format("%2.2f", m_currentFile.GetVideoInfoTag()->m_fRating);
+        return strYear;
+      }
+    case VIDEOPLAYER_YEAR:
+      {
+        CStdString strYear;
+        if (m_currentFile.GetVideoInfoTag()->m_iYear > 0)
+          strYear.Format("%i", m_currentFile.GetVideoInfoTag()->m_iYear);
+        return strYear;
+      }
+      break;
+    case VIDEOPLAYER_PREMIERED:
+      {
+        CStdString strYear;
+        if (!m_currentFile.GetVideoInfoTag()->m_strPremiered.IsEmpty())
+          strYear = m_currentFile.GetVideoInfoTag()->m_strPremiered;
+        else if (!m_currentFile.GetVideoInfoTag()->m_strFirstAired.IsEmpty())
+          strYear = m_currentFile.GetVideoInfoTag()->m_strFirstAired;
+        return strYear;
+      }
+      break;
+    case VIDEOPLAYER_PLOT:
+      return m_currentFile.GetVideoInfoTag()->m_strPlot;
+    case VIDEOPLAYER_PLOT_OUTLINE:
+      return m_currentFile.GetVideoInfoTag()->m_strPlotOutline;
+    case VIDEOPLAYER_EPISODE:
+      if (m_currentFile.GetVideoInfoTag()->m_iEpisode > 0)
+      {
+        CStdString strYear;
+        if (m_currentFile.GetVideoInfoTag()->m_iSpecialSortEpisode > 0)
+          strYear.Format("S%i", m_currentFile.GetVideoInfoTag()->m_iEpisode);
+        else
+          strYear.Format("%i", m_currentFile.GetVideoInfoTag()->m_iEpisode);
+        return strYear;
+      }
+      break;
+    case VIDEOPLAYER_SEASON:
+      if (m_currentFile.GetVideoInfoTag()->m_iSeason > -1)
+      {
+        CStdString strYear;
+        if (m_currentFile.GetVideoInfoTag()->m_iSpecialSortSeason > 0)
+          strYear.Format("%i", m_currentFile.GetVideoInfoTag()->m_iSpecialSortSeason);
+        else
+          strYear.Format("%i", m_currentFile.GetVideoInfoTag()->m_iSeason);
+        return strYear;
+      }
+      break;
+    case VIDEOPLAYER_TVSHOW:
+      return m_currentFile.GetVideoInfoTag()->m_strShowTitle;
 
-  case VIDEOPLAYER_PLAYLISTLEN:
-    {
-      if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
-        return GetPlaylistLabel(PLAYLIST_LENGTH);
+    case VIDEOPLAYER_STUDIO:
+      return m_currentFile.GetVideoInfoTag()->m_strStudio;
+    case VIDEOPLAYER_MPAA:
+      return m_currentFile.GetVideoInfoTag()->m_strMPAARating;
+    case VIDEOPLAYER_TOP250:
+      {
+        CStdString strTop250;
+        if (m_currentFile.GetVideoInfoTag()->m_iTop250 > 0)
+          strTop250.Format("%i", m_currentFile.GetVideoInfoTag()->m_iTop250);
+        return strTop250;
+      }
+      break;
+    case VIDEOPLAYER_CAST:
+      return m_currentFile.GetVideoInfoTag()->GetCast();
+    case VIDEOPLAYER_CAST_AND_ROLE:
+      return m_currentFile.GetVideoInfoTag()->GetCast(true);
+    case VIDEOPLAYER_ARTIST:
+      if (m_currentFile.GetVideoInfoTag()->m_artist.size() > 0)
+        return m_currentFile.GetVideoInfoTag()->GetArtist();
+      break;
+    case VIDEOPLAYER_ALBUM:
+      return m_currentFile.GetVideoInfoTag()->m_strAlbum;
+    case VIDEOPLAYER_WRITER:
+      return m_currentFile.GetVideoInfoTag()->m_strWritingCredits;
+    case VIDEOPLAYER_TAGLINE:
+      return m_currentFile.GetVideoInfoTag()->m_strTagLine;
     }
-    break;
-  case VIDEOPLAYER_PLAYLISTPOS:
-    {
-      if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
-        return GetPlaylistLabel(PLAYLIST_POSITION);
-    }
-    break;
-  case VIDEOPLAYER_STUDIO:
-    return m_currentFile.GetVideoInfoTag()->m_strStudio;
-  case VIDEOPLAYER_MPAA:
-    return m_currentFile.GetVideoInfoTag()->m_strMPAARating;
-  case VIDEOPLAYER_TOP250:
-    {
-      CStdString strTop250;
-      if (m_currentFile.GetVideoInfoTag()->m_iTop250 > 0)
-        strTop250.Format("%i", m_currentFile.GetVideoInfoTag()->m_iTop250);
-      return strTop250;
-    }
-    break;
-  case VIDEOPLAYER_CAST:
-    return m_currentFile.GetVideoInfoTag()->GetCast();
-  case VIDEOPLAYER_CAST_AND_ROLE:
-    return m_currentFile.GetVideoInfoTag()->GetCast(true);
-  case VIDEOPLAYER_ARTIST:
-    if (m_currentFile.GetVideoInfoTag()->m_artist.size() > 0)
-      return m_currentFile.GetVideoInfoTag()->GetArtist();
-    break;
-  case VIDEOPLAYER_ALBUM:
-    return m_currentFile.GetVideoInfoTag()->m_strAlbum;
-  case VIDEOPLAYER_WRITER:
-    return m_currentFile.GetVideoInfoTag()->m_strWritingCredits;
-  case VIDEOPLAYER_TAGLINE:
-    return m_currentFile.GetVideoInfoTag()->m_strTagLine;
   }
   return "";
 }
@@ -2464,9 +2468,22 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
       }
     } // if (!tag.Loaded() && url.GetProtocol()=="cdda" )
     else
-    { // at worse, set our title as the filename
-      tag.SetTitle( CUtil::GetTitleFromPath(m_currentFile.m_strPath) );
-    } // we now have at least the title
+    {
+      CStdString fileName = CUtil::GetFileName(m_currentFile.m_strPath);
+      CUtil::RemoveExtension(fileName);
+      for (unsigned int i = 0; i < g_advancedSettings.m_musicTagsFromFileFilters.size(); i++)
+      {
+        CLabelFormatter formatter(g_advancedSettings.m_musicTagsFromFileFilters[i], "");
+        if (formatter.FillMusicTag(fileName, &tag))
+        {
+          tag.SetLoaded(true);
+          break;
+        }
+      }
+      if (!tag.Loaded()) // at worse, set our title as the filename
+        tag.SetTitle( CUtil::GetTitleFromPath(m_currentFile.m_strPath) );
+    }
+    // we now have at least the title
     tag.SetLoaded(true);
   }
 
@@ -2516,14 +2533,6 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
       CLog::Log(LOGDEBUG,"  Title = %s", m_currentFile.GetVideoInfoTag()->m_strTitle.c_str());
     }
     dbs.Close();
-
-    if (m_currentFile.GetVideoInfoTag()->m_strTitle.IsEmpty())
-    { // at least fill in the filename
-      if (!item.GetLabel().IsEmpty())
-        m_currentFile.GetVideoInfoTag()->m_strTitle = item.GetLabel();
-      else
-        m_currentFile.GetVideoInfoTag()->m_strTitle = CUtil::GetTitleFromPath(item.m_strPath);
-    }
   }
   // Find a thumb for this file.
   item.SetVideoThumb();

@@ -39,7 +39,6 @@ CGraphicContext::CGraphicContext(void)
 #endif
   m_dwID = 0;
   m_strMediaDir = "D:\\media";
-  m_bShowPreviewWindow = false;
   m_bCalibrating = false;
   m_Resolution = INVALID;
   m_pCallback = NULL;
@@ -336,24 +335,6 @@ void CGraphicContext::SetViewWindow(float left, float top, float right, float bo
     m_videoRect.top = (long)(ScaleFinalYCoord(left, top) + 0.5f);
     m_videoRect.right = (long)(ScaleFinalXCoord(right, bottom) + 0.5f);
     m_videoRect.bottom = (long)(ScaleFinalYCoord(right, bottom) + 0.5f);
-    if (m_bShowPreviewWindow && !m_bFullScreenVideo)
-    {
-#ifndef HAS_SDL    
-      D3DRECT d3dRC;
-      d3dRC.x1 = m_videoRect.left;
-      d3dRC.x2 = m_videoRect.right;
-      d3dRC.y1 = m_videoRect.top;
-      d3dRC.y2 = m_videoRect.bottom;
-      Get3DDevice()->Clear( 1, &d3dRC, D3DCLEAR_TARGET, 0x00010001, 1.0f, 0L );
-#elif defined(HAS_SDL_2D)
-      SDL_Rect r;
-      r.x = (Sint16)m_videoRect.left;
-      r.y = (Sint16)m_videoRect.top;
-      r.w = (Sint16)(m_videoRect.right - m_videoRect.left + 1);
-      r.h = (Sint16)(m_videoRect.bottom - m_videoRect.top +1);
-      SDL_FillRect(m_screenSurface->SDL(), &r, 0x00010001);    
-#endif            
-    }
   }
 }
 
@@ -401,12 +382,6 @@ bool CGraphicContext::IsFullScreenVideo() const
 {
   return m_bFullScreenVideo;
 }
-
-void CGraphicContext::EnablePreviewWindow(bool bEnable)
-{
-  m_bShowPreviewWindow = bEnable;
-}
-
 
 bool CGraphicContext::IsCalibrating() const
 {
