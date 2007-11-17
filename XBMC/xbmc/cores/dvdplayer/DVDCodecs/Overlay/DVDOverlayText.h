@@ -34,9 +34,16 @@ public:
   class CElementText : public CElement
   {
   public:
-    CElementText(const char* strText) : CElement(ELEMENT_TYPE_TEXT)
+    CElementText(const char* strText, int size = -1) : CElement(ELEMENT_TYPE_TEXT)
     {
-      m_text = strdup(strText);
+      if(size == -1)
+        m_text = strdup(strText);
+      else
+      {
+        m_text = (char*)malloc(size);
+        memcpy(m_text, strText, size);
+        m_text[size-1] = '\0';
+      }
     }
     
     virtual ~CElementText()
@@ -49,7 +56,7 @@ public:
   
   class CElementProperty : public CElement
   {
-    CElementProperty(const wchar_t* wszText) : CElement(ELEMENT_TYPE_PROPERTY)
+    CElementProperty() : CElement(ELEMENT_TYPE_PROPERTY)
     {
       bItalic = false;
       bBold = false;

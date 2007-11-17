@@ -37,18 +37,13 @@ int CDVDOverlayCodecCC::DecodeFieldData(BYTE* pData, int iSize)
 }
 */
 
-int CDVDOverlayCodecCC::Decode(BYTE* pData, int iSize, double pts)
+int CDVDOverlayCodecCC::Decode(BYTE* pData, int iSize)
 {
   // minimum amount of data is even more for cc
   decode_cc(m_cc_decoder, pData, iSize);
 
   if (iSize >= 2)
   {
-    if (m_pCurrentOverlay)
-    {
-      m_pCurrentOverlay->iPTSStopTime = pts;
-    }
-    
     Flush();
     m_pCurrentOverlay = new CDVDOverlayText();
     
@@ -109,5 +104,8 @@ void CDVDOverlayCodecCC::Flush()
 
 CDVDOverlay* CDVDOverlayCodecCC::GetOverlay()
 {
-  return m_pCurrentOverlay;
+  CDVDOverlay* overlay = m_pCurrentOverlay;
+  m_pCurrentOverlay = NULL;
+  return overlay;
+
 }
