@@ -133,21 +133,23 @@ bool CDVDPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, string &filename)
       CloseStream(false);
       return false;
     }
+    return true;
   }
+
+  // dvd's use special subtitle decoder
+  if(hints.codec == CODEC_ID_DVD_SUBTITLE && filename == "dvd")
+    return true;
 
   if(hints.codec == CODEC_ID_TEXT)
     m_pOverlayCodec = new CDVDOverlayCodecText();
-  else if(filename != "dvd")
+  else
     m_pOverlayCodec = new CDVDOverlayCodecFFmpeg();
 
-  if(m_pOverlayCodec)
+  if(!m_pOverlayCodec->Open(hints, CDVDCodecOptions()))
   {
-    if(!m_pOverlayCodec->Open(hints, CDVDCodecOptions()))
-    {
-      CLog::Log(LOGERROR, "%s - Unable to init overlay codec", __FUNCTION__);
-      CloseStream(false);
-      return false;
-    }
+    CLog::Log(LOGERROR, "%s - Unable to init overlay codec", __FUNCTION__);
+    CloseStream(false);
+    return false;
   }
   return true;
 }
