@@ -1542,8 +1542,10 @@ bool CDVDPlayer::OpenSubtitleStream(int iStream)
 
   CDVDStreamInfo hint(*pStream, true);
 
-  std::string dummy;
-  if(!m_dvdPlayerSubtitle.OpenStream(hint, dummy))
+  std::string filename;
+  if(m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+    filename = "dvd";
+  if(!m_dvdPlayerSubtitle.OpenStream(hint, filename))
   {
     CLog::Log(LOGWARNING, "%s - Unsupported stream %d. Stream disabled.", __FUNCTION__, iStream);
     pStream->disabled = true;

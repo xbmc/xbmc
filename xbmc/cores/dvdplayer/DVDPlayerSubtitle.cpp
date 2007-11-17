@@ -41,18 +41,7 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
     CDVDMsgDemuxerPacket* pMsgDemuxerPacket = (CDVDMsgDemuxerPacket*)pMsg;
     CDVDDemux::DemuxPacket* pPacket = pMsgDemuxerPacket->GetPacket();
 
-    if (m_streaminfo.codec == CODEC_ID_DVD_SUBTITLE)
-    {
-      CSPUInfo* pSPUInfo = m_dvdspus.AddData(pPacket->pData, pPacket->iSize, pPacket->pts);
-      if (pSPUInfo)
-      {
-        CLog::Log(LOGDEBUG, "CDVDPlayer::ProcessSubData: Got complete SPU packet");
-        pSPUInfo->iGroupId = pPacket->iGroupId;
-        m_pOverlayContainer->Add(pSPUInfo);
-        pSPUInfo->Release();
-      }
-    }
-    else if (m_pOverlayCodec)
+    if (m_pOverlayCodec)
     {
       int result = m_pOverlayCodec->Decode(pPacket->pData, pPacket->iSize);
 
@@ -74,8 +63,19 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
           overlay->Release();
         }
       }
-
+    } 
+    else if (m_streaminfo.codec == CODEC_ID_DVD_SUBTITLE)
+    {
+      CSPUInfo* pSPUInfo = m_dvdspus.AddData(pPacket->pData, pPacket->iSize, pPacket->pts);
+      if (pSPUInfo)
+      {
+        CLog::Log(LOGDEBUG, "CDVDPlayer::ProcessSubData: Got complete SPU packet");
+        pSPUInfo->iGroupId = pPacket->iGroupId;
+        m_pOverlayContainer->Add(pSPUInfo);
+        pSPUInfo->Release();
+      }
     }
+
   }
   else if( pMsg->IsType(CDVDMsg::SUBTITLE_CLUTCHANGE) )
   {
@@ -110,7 +110,7 @@ bool CDVDPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, string &filename)
   m_streaminfo = hints;
 
   // okey check if this is a filesubtitle
-  if(filename.size())
+  if(filename.size() && filename != "dvd" )
   {
     m_pSubtitleStream = new CDVDSubtitleStream();
     if (!m_pSubtitleStream)
@@ -137,7 +137,7 @@ bool CDVDPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, string &filename)
 
   if(hints.codec == CODEC_ID_TEXT)
     m_pOverlayCodec = new CDVDOverlayCodecText();
-  else if(hints.codec != CODEC_ID_DVD_SUBTITLE)
+  else if(filename != "dvd")
     m_pOverlayCodec = new CDVDOverlayCodecFFmpeg();
 
   if(m_pOverlayCodec)
