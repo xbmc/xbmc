@@ -51,14 +51,8 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
         pSPUInfo->Release();
       }
     } 
-    else if (m_streaminfo.codec == CODEC_ID_DVB_SUBTITLE)
+    else if (m_pOverlayCodec)
     {
-      if(!m_pOverlayCodec)
-      {
-        pMsg->Release();
-        return;
-      }
-
       int result = m_pOverlayCodec->Decode(pPacket->pData, pPacket->iSize, pPacket->dts);
 
       if(result == OC_OVERLAY)
@@ -132,7 +126,7 @@ bool CDVDPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, string &filename)
     }
   }
 
-  if(hints.codec == CODEC_ID_DVB_SUBTITLE)
+  if(hints.codec != CODEC_ID_DVD_SUBTITLE)
   {
     m_pOverlayCodec = new CDVDOverlayCodecFFmpeg();
     if(!m_pOverlayCodec->Open(hints, CDVDCodecOptions()))
