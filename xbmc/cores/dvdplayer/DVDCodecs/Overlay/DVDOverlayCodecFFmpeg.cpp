@@ -12,14 +12,12 @@ CDVDOverlayCodecFFmpeg::CDVDOverlayCodecFFmpeg() : CDVDOverlayCodec("FFmpeg Subt
 {
   m_pCodecContext = NULL;
   m_SubtitleIndex = -1;
-  m_firstdts = DVD_NOPTS_VALUE;
-  m_currdts = DVD_NOPTS_VALUE;
   memset(&m_Subtitle, 0, sizeof(m_Subtitle));
 }
 
 CDVDOverlayCodecFFmpeg::~CDVDOverlayCodecFFmpeg()
-{
-  FreeSubtitle(m_Subtitle);
+{  
+  Dispose();
 }
 
 bool CDVDOverlayCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
@@ -84,16 +82,12 @@ void CDVDOverlayCodecFFmpeg::FreeSubtitle(AVSubtitle& sub)
   sub.num_rects = 0;
 }
 
-int CDVDOverlayCodecFFmpeg::Decode(BYTE* data, int size, double pts)
+int CDVDOverlayCodecFFmpeg::Decode(BYTE* data, int size)
 {  
   if (!m_pCodecContext) 
     return 1;
 
   int gotsub = 0, len = 0;
-
-  
-  if(m_firstdts == DVD_NOPTS_VALUE)
-    m_firstdts = pts;
 
   FreeSubtitle(m_Subtitle);
 
@@ -119,9 +113,6 @@ int CDVDOverlayCodecFFmpeg::Decode(BYTE* data, int size, double pts)
   if (!gotsub)
     return OC_BUFFER;
 
-  m_currdts = m_firstdts;
-  m_firstdts = DVD_NOPTS_VALUE;
-
   m_SubtitleIndex = 0;
 
   return OC_OVERLAY;
@@ -134,8 +125,6 @@ void CDVDOverlayCodecFFmpeg::Reset()
 
 void CDVDOverlayCodecFFmpeg::Flush()
 {
-  m_firstdts = DVD_NOPTS_VALUE;
-  m_currdts = DVD_NOPTS_VALUE;
   FreeSubtitle(m_Subtitle);
   m_SubtitleIndex = -1;
 
@@ -162,9 +151,9 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
     
     CDVDOverlayImage* overlay = new CDVDOverlayImage();
 
-    overlay->iPTSStartTime = m_currdts + DVD_MSEC_TO_TIME(m_Subtitle.start_display_time);
-    overlay->iPTSStopTime = 0.0; // ffmpeg has this wrong it seems
-//    overlay->iPTSStopTime  = m_currdts + DVD_MSEC_TO_TIME(m_Subtitle.end_display_time);
+    overlay->iPTSStartTime = DVD_MSEC_TO_TIME(m_Subtitle.start_display_time);
+    overlay->iPTSStopTime = 0.0; // in ffmpeg this is a timeout value
+//    overlay->iPTSStopTime  = DVD_MSEC_TO_TIME(m_Subtitle.end_display_time);
 
     overlay->linesize = rect.w;
     overlay->data     = (BYTE*)malloc(rect.w * rect.h);
