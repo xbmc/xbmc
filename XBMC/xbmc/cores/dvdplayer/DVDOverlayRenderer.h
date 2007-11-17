@@ -14,6 +14,9 @@ typedef struct stDVDPictureRenderer
 {
   BYTE* data[4];
   int stride[4];
+
+  int width;
+  int height;
 }
 DVDPictureRenderer;
 
@@ -36,6 +39,9 @@ public:
     p.stride[1] = pImage->stride[1];
     p.stride[2] = pImage->stride[2];
     p.stride[3] = 0;
+
+    p.width  = pImage->width;
+    p.height = pImage->height;
     
     Render(&p, pOverlay);
   }
@@ -53,7 +59,10 @@ public:
     p.stride[1] = pPicture->iLineSize[1];
     p.stride[2] = pPicture->iLineSize[2];
     p.stride[3] = pPicture->iLineSize[3];
-    
+
+    p.width  = pPicture->iWidth;
+    p.height = pPicture->iHeight;
+
     Render(&p, pOverlay);
   }
 

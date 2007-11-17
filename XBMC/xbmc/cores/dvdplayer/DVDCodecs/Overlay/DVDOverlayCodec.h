@@ -36,7 +36,7 @@ public:
    * returns one or a combination of VC_ messages
    * pData and iSize can be NULL, this means we should flush the rest of the data.
    */
-  virtual int Decode(BYTE* pData, int iSize, double pts) = 0;
+  virtual int Decode(BYTE* data, int size) = 0;
   
   /*
    * Reset the decoder.
