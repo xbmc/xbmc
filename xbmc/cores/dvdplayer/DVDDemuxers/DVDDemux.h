@@ -118,6 +118,7 @@ public:
     
     double pts; // pts in DVD_TIME_BASE
     double dts; // dts in DVD_TIME_BASE
+    double duration; // duration in DVD_TIME_BASE if available
   }
   DemuxPacket;
 
