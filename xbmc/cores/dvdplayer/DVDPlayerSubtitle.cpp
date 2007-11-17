@@ -5,6 +5,7 @@
 #include "DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
 #include "DVDCodecs/Overlay/DVDOverlayCodecFFmpeg.h"
+#include "DVDCodecs/Overlay/DVDOverlayCodecText.h"
 #include "DVDClock.h"
 #include "DVDInputStreams/DVDFactoryInputStream.h"
 #include "DVDInputStreams/DVDInputStream.h"
@@ -50,10 +51,10 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
         m_pOverlayContainer->Add(pSPUInfo);
         pSPUInfo->Release();
       }
-    } 
+    }
     else if (m_pOverlayCodec)
     {
-      int result = m_pOverlayCodec->Decode(pPacket->pData, pPacket->iSize, pPacket->dts);
+      int result = m_pOverlayCodec->Decode(pPacket->pData, pPacket->iSize);
 
       if(result == OC_OVERLAY)
       {
@@ -61,6 +62,14 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
         while((overlay = m_pOverlayCodec->GetOverlay()) != NULL)
         {
           overlay->iGroupId = pPacket->iGroupId;
+          overlay->iPTSStartTime += pPacket->dts;
+
+          if(overlay->iPTSStopTime == 0.0 && pPacket->duration != 0.0)
+            overlay->iPTSStopTime = pPacket->duration;
+
+          if(overlay->iPTSStopTime != 0.0)
+            overlay->iPTSStopTime += pPacket->dts;
+
           m_pOverlayContainer->Add(overlay);
           overlay->Release();
         }
@@ -126,9 +135,13 @@ bool CDVDPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, string &filename)
     }
   }
 
-  if(hints.codec != CODEC_ID_DVD_SUBTITLE)
-  {
+  if(hints.codec == CODEC_ID_TEXT)
+    m_pOverlayCodec = new CDVDOverlayCodecText();
+  else if(hints.codec != CODEC_ID_DVD_SUBTITLE)
     m_pOverlayCodec = new CDVDOverlayCodecFFmpeg();
+
+  if(m_pOverlayCodec)
+  {
     if(!m_pOverlayCodec->Open(hints, CDVDCodecOptions()))
     {
       CLog::Log(LOGERROR, "%s - Unable to init overlay codec", __FUNCTION__);
@@ -136,7 +149,6 @@ bool CDVDPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, string &filename)
       return false;
     }
   }
-
   return true;
 }
 
