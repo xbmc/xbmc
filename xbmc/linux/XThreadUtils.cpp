@@ -53,8 +53,8 @@ static int InternalThreadFunc(void *data) {
   action.sa_handler = handler;
   sigemptyset (&action.sa_mask);
   action.sa_flags = 0;
-  sigaction (SIGABRT, &action, NULL);
-  sigaction (SIGSEGV, &action, NULL);
+  //sigaction (SIGABRT, &action, NULL);
+  //sigaction (SIGSEGV, &action, NULL);
 
   try {
      CLog::Log(LOGDEBUG,"Running thread %lu", (unsigned long)SDL_ThreadID());

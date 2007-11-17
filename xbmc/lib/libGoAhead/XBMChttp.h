@@ -113,6 +113,7 @@ public:
   int xbmcGetMusicLabel(int numParas, CStdString paras[]);
   int xbmcGetVideoLabel(int numParas, CStdString paras[]);
   int xbmcGetSkinSetting(int numParas, CStdString paras[]);
+  int xbmcWebServerStatus(int numParas, CStdString paras[]);
   CKey GetKey();
   void ResetKey();
   CStdString GetOpenTag();
