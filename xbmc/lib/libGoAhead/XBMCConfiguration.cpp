@@ -278,7 +278,6 @@ int CXbmcConfiguration::AddBookmark( int eid, webs_t wp, CStdString& response, i
 
   CShare share;
   share.strName = name;
-  share.strPath = path;
   if (numParas==4)
   {
 	  position=thumbnail;
@@ -286,7 +285,16 @@ int CXbmcConfiguration::AddBookmark( int eid, webs_t wp, CStdString& response, i
   }
   if (numParas==5)
     share.m_strThumbnailImage = thumbnail;
-  share.vecPaths.push_back(path);
+  CStdString strPath=path;
+  if (!CUtil::HasSlashAtEnd(strPath))
+  {
+    if (strPath.Find("//") >= 0 )
+      strPath += "/";
+    else
+      strPath += "\\";
+  }
+  share.strPath = strPath;
+  share.vecPaths.push_back(strPath.c_str());
   g_settings.AddShare(type,share);
 
   return 0;
@@ -635,6 +643,7 @@ int CXbmcConfiguration::SetOption( int eid, webs_t wp, CStdString& response, int
 {
   if (eid!=-1) websError(wp, 500, T("Deprecated\n"));
     else response="<li>Error:Functino is deprecated";
+
   return -1;
 }
 

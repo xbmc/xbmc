@@ -9,7 +9,7 @@ class CDVDOverlayCodecCC : public CDVDOverlayCodec
 public:
   CDVDOverlayCodecCC();
   virtual ~CDVDOverlayCodecCC();
-  virtual bool Open();
+  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
   virtual void Dispose();
   virtual int Decode(BYTE* pData, int iSize, double pts);
   virtual void Reset();

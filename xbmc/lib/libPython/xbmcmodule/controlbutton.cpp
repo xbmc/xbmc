@@ -46,6 +46,7 @@ namespace PYXBMC
     if (!self) return NULL;
     new(&self->strFont) string();    
     new(&self->strText) string();    
+    new(&self->strText2) string();    
     new(&self->strTextureFocus) string();    
     new(&self->strTextureNoFocus) string(); 
     
@@ -113,6 +114,7 @@ namespace PYXBMC
   {
     self->strFont.~string();
     self->strText.~string();
+    self->strText2.~string();
     self->strTextureFocus.~string();
     self->strTextureNoFocus.~string();
     self->ob_type->tp_free((PyObject*)self);
@@ -145,6 +147,7 @@ namespace PYXBMC
       (CGUIButtonControl*)pControl->pGUIControl;
 
     pGuiButtonControl->SetLabel(pControl->strText);
+    pGuiButtonControl->SetLabel2(pControl->strText2);
 
     return pControl->pGUIControl;
   }
@@ -189,28 +192,45 @@ namespace PYXBMC
     "disabledColor  : [opt] hexstring - color of disabled button's label. (e.g. '0xFFFF3300')\n"
     "shadowColor    : [opt] hexstring - color of button's label's shadow. (e.g. '0xFF000000')\n"
     "focusedColor   : [opt] hexstring - color of focused button's label. (e.g. '0xFFFFFF00')\n"
+    "label2         : [opt] string or unicode - text string.\n"
+    "\n"
+    "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
     "\n"
     "example:\n"
     "  - self.button.setLabel('Status', 'font14', '0xFFFFFFFF', '0xFFFF3300', '0xFF000000')\n");
 
-  PyObject* ControlButton_SetLabel(ControlButton *self, PyObject *args)
+  PyObject* ControlButton_SetLabel(ControlButton *self, PyObject *args, PyObject *kwds)
   {
-    PyObject *pObjectText;
+    static char *keywords[] = {
+      "label",
+      "font",
+      "textColor",
+      "disabledColor",
+      "shadowColor",
+      "focusedColor",
+      "label2",
+      NULL};
     char *cFont = NULL;
     char *cTextColor = NULL;
     char *cDisabledColor = NULL;
     char *cShadowColor = NULL;
     char *cFocusedColor = NULL;
-
-    if (!PyArg_ParseTuple(
+    PyObject *pObjectText = NULL;
+    PyObject *pObjectText2 = NULL;
+ 
+    if (!PyArg_ParseTupleAndKeywords(
       args,
-      "O|sssss",
+      kwds,
+      "O|sssssO",
+      keywords,
       &pObjectText,
       &cFont,
       &cTextColor,
       &cDisabledColor,
       &cShadowColor,
-      &cFocusedColor))
+      &cFocusedColor,
+      &pObjectText2))
     {
       return NULL;
     }
@@ -218,6 +238,8 @@ namespace PYXBMC
     {
       return NULL;
     }
+    if (pObjectText2)
+      PyGetUnicodeString(self->strText2, pObjectText2, 1);
 
     if (cFont) self->strFont = cFont;
     if (cTextColor) sscanf(cTextColor, "%x", &self->dwTextColor);
@@ -230,8 +252,8 @@ namespace PYXBMC
     {
       ((CGUIButtonControl*)self->pGUIControl)->PythonSetLabel(
         self->strFont, self->strText, self->dwTextColor, self->dwShadowColor, self->dwFocusedColor );
-      ((CGUIButtonControl*)self->pGUIControl)->PythonSetDisabledColor(
-        self->dwDisabledColor );
+      ((CGUIButtonControl*)self->pGUIControl)->SetLabel2(self->strText2);
+      ((CGUIButtonControl*)self->pGUIControl)->PythonSetDisabledColor(self->dwDisabledColor);
     }
     PyGUIUnlock();
 
@@ -240,7 +262,7 @@ namespace PYXBMC
   }
 
   PyMethodDef ControlButton_methods[] = {
-    {"setLabel", (PyCFunction)ControlButton_SetLabel, METH_VARARGS, setLabel__doc__},
+    {"setLabel", (PyCFunction)ControlButton_SetLabel, METH_KEYWORDS, setLabel__doc__},
     {"setDisabledColor", (PyCFunction)ControlButton_SetDisabledColor, METH_VARARGS, setDisabledColor__doc__},
     {NULL, NULL, 0, NULL}
   };

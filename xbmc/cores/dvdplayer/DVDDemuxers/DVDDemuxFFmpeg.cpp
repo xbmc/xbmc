@@ -649,8 +649,10 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
       }
     case CODEC_TYPE_SUBTITLE:
       {
-        m_streams[iId] = new CDemuxStream();
-        m_streams[iId]->type = STREAM_SUBTITLE;
+        CDemuxStreamSubtitle* st = new CDemuxStreamSubtitle();
+        m_streams[iId] = st;
+        if(pStream->codec)
+          st->identifier = pStream->codec->sub_id;
         break;
       }
     default:

@@ -2360,6 +2360,7 @@ int CXbmcHttp::xbmcConfig(int numParas, CStdString paras[])
       argv[argc]=(char_t*)paras[argc+1].c_str();
   }
   argv[argc]=NULL;
+  bool createdWebConfigObj=XbmcWebConfigInit();
   if (paras[0]=="bookmarksize")
   {
     ret=XbmcWebsHttpAPIConfigBookmarkSize(response, argc, argv);
@@ -2401,10 +2402,15 @@ int CXbmcHttp::xbmcConfig(int numParas, CStdString paras[])
   {
     return SetResponse(openTag+"Error:Unknown Config Command");
   }
+  if (createdWebConfigObj)
+	  XbmcWebConfigRelease();
   if (ret==-1)
     return SetResponse(openTag+"Error:WebServer needs to be running - is it?");
   else
+  {
+	response.Replace("<li>",openTag);
     return SetResponse(response);
+  }
 }
 
 int CXbmcHttp::xbmcGetSystemInfo(int numParas, CStdString paras[])
@@ -2851,7 +2857,6 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
 	  retVal = SetResponse(openTag+"Error:Too many parameters");
   else
     retVal = SetResponse(openTag+"Error:Missing command");
-  return retVal;
 //relinquish the remainder of time slice
 #ifndef _DEBUG 
   Sleep(0);

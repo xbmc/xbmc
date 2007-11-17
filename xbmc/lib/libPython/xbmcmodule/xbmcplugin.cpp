@@ -185,12 +185,49 @@ namespace PYXBMC
     return Py_BuildValue("s", g_currentPluginSettings.Get(id).c_str());
   }
 
+  PyDoc_STRVAR(setContent__doc__,
+    "setContent(handle, content) -- Sets the plugins content.\n"
+    "\n"
+    "handle      : Integer - handle the plugin was started with.\n"
+    "content     : string - content type (eg. movies)\n"
+    "\n"
+    "*Note, You can use the above as keywords for arguments.\n"
+    "       content: files, songs, artists, albums, movies, tvshows, episodes, musicvideos\n"
+    "\n"
+    "example:\n"
+    "  - xbmcplugin.setContent(int(sys.argv[1]), 'movies')\n");
+
+  PyObject* XBMCPLUGIN_SetContent(PyTypeObject *type, PyObject *args, PyObject *kwds)
+  {
+    static char *keywords[] = { "handle", "content", NULL };
+    int handle = -1;
+    char *content;
+    // parse arguments to constructor
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      "is",
+      keywords,
+      &handle,
+      &content
+      ))
+    {
+      return NULL;
+    };
+
+    DIRECTORY::CPluginDirectory::SetContent(handle, content);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
   // define c functions to be used in python here
   PyMethodDef pluginMethods[] = {
     {"addDirectoryItem", (PyCFunction)XBMCPLUGIN_AddDirectoryItem, METH_VARARGS|METH_KEYWORDS, addDirectoryItem__doc__},
     {"endOfDirectory", (PyCFunction)XBMCPLUGIN_EndOfDirectory, METH_VARARGS|METH_KEYWORDS, endOfDirectory__doc__},
     {"addSortMethod", (PyCFunction)XBMCPLUGIN_AddSortMethod, METH_VARARGS|METH_KEYWORDS, addSortMethod__doc__},
     {"getSetting", (PyCFunction)XBMCPLUGIN_GetSetting, METH_VARARGS|METH_KEYWORDS, getSetting__doc__},
+    {"setContent", (PyCFunction)XBMCPLUGIN_SetContent, METH_VARARGS|METH_KEYWORDS, setContent__doc__},
     {NULL, NULL, 0, NULL}
   };
 

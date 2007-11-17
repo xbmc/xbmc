@@ -12,12 +12,13 @@ CGUITextBox::CGUITextBox(DWORD dwParentID, DWORD dwControlId, float posX, float 
                          const CImage& textureUp, const CImage& textureDown,
                          const CImage& textureUpFocus, const CImage& textureDownFocus,
                          const CLabelInfo& spinInfo, float spinX, float spinY,
-                         const CLabelInfo& labelInfo)
+                         const CLabelInfo& labelInfo, int scrollTime)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
     , m_upDown(dwControlId, CONTROL_UPDOWN, 0, 0, spinWidth, spinHeight, textureUp, textureDown, textureUpFocus, textureDownFocus, spinInfo, SPIN_CONTROL_TYPE_INT)
 {
   m_upDown.SetSpinAlign(XBFONT_CENTER_Y | XBFONT_RIGHT, 0);
   m_offset = 0;
+  m_scrollOffset = 0;
   m_label = labelInfo;
   m_itemsPerPage = 10;
   m_itemHeight = 10;
@@ -27,10 +28,48 @@ CGUITextBox::CGUITextBox(DWORD dwParentID, DWORD dwControlId, float posX, float 
   ControlType = GUICONTROL_TEXTBOX;
   m_pageControl = 0;
   m_singleInfo = 0;
+  m_renderTime = 0;
+  m_lastRenderTime = 0;
+  m_scrollTime = scrollTime;
+  m_autoScrollCondition = 0;
+  m_autoScrollTime = 0;
+  m_autoScrollDelay = 3000;
+  m_autoScrollDelayTime = 0;
+  m_autoScrollRepeatAnim = NULL;
 }
 
 CGUITextBox::~CGUITextBox(void)
 {
+  if (m_autoScrollRepeatAnim)
+    delete m_autoScrollRepeatAnim;
+  m_autoScrollRepeatAnim = NULL;
+}
+
+void CGUITextBox::DoRender(DWORD currentTime)
+{
+  m_renderTime = currentTime;
+
+  // render the repeat anim as appropriate
+  if (m_autoScrollRepeatAnim)
+  {
+    m_autoScrollRepeatAnim->Animate(m_renderTime, true);
+    TransformMatrix matrix;
+    m_autoScrollRepeatAnim->RenderAnimation(matrix);
+    g_graphicsContext.AddTransform(matrix);
+  }
+
+  CGUIControl::DoRender(currentTime);
+  // if not visible, we reset the autoscroll timer and positioning
+  if (!IsVisible() && m_autoScrollTime)
+  {
+    ResetAutoScrolling();
+    m_lastRenderTime = 0;
+    m_offset = 0;
+    m_scrollOffset = 0;
+    m_scrollSpeed = 0;
+  }
+  if (m_autoScrollRepeatAnim)
+    g_graphicsContext.RemoveTransform();
 }
 
 void CGUITextBox::Render()
@@ -46,7 +85,9 @@ void CGUITextBox::Render()
   { // different, so reset to the top of the textbox and invalidate.  The page control will update itself below
     m_renderLabel = renderLabel;
     m_offset = 0;
+    m_scrollOffset = 0;
     m_bInvalidated = true;
+    ResetAutoScrolling();
   }
 
   if (m_bInvalidated)
@@ -61,45 +102,119 @@ void CGUITextBox::Render()
     m_itemsPerPage = (unsigned int)(fTotalHeight / fHeight);
 
     // we have all the sizing correct so do any wordwrapping
-    CStdStringW utf16Text;
-    g_charsetConverter.utf8ToW(m_renderLabel, utf16Text);
-    CGUILabelControl::WrapText(utf16Text, m_label.font, m_width, m_lines);
+    // break into paragraphs, and wrap each one separately
+    // for justification purposes.
+    m_lines.clear();
+    vector<CStdString> paragraphs;
+    StringUtils::SplitString(m_renderLabel, "\n", paragraphs);
+    for (unsigned int i = 0; i < paragraphs.size(); i++)
+    {
+      CStdStringW utf16Text;
+      g_charsetConverter.utf8ToW(paragraphs[i], utf16Text);
+      vector<CStdStringW> lines;
+      CGUILabelControl::WrapText(utf16Text, m_label.font, m_width, lines);
+      lines[lines.size() - 1] += L'\n';
+      m_lines.insert(m_lines.end(), lines.begin(), lines.end());
+    }
 
     // disable all second label information
     m_lines2.clear();
     UpdatePageControl();
   }
 
-  float posY = m_posY;
+  // update our auto-scrolling as necessary
+  if (m_autoScrollTime && m_lines.size() > m_itemsPerPage)
+  {
+    if (!m_autoScrollCondition || g_infoManager.GetBool(m_autoScrollCondition, m_dwParentID))
+    {
+      if (m_lastRenderTime)
+        m_autoScrollDelayTime += m_renderTime - m_lastRenderTime;
+      if (m_autoScrollDelayTime > (unsigned int)m_autoScrollDelay && m_scrollSpeed == 0)
+      { // delay is finished - start scrolling
+        if (m_offset < (int)m_lines.size() - m_itemsPerPage)
+          ScrollToOffset(m_offset + 1, true);
+        else
+        { // at the end, run a delay and restart
+          if (m_autoScrollRepeatAnim)
+          {
+            if (m_autoScrollRepeatAnim->GetState() == ANIM_STATE_NONE)
+              m_autoScrollRepeatAnim->QueueAnimation(ANIM_PROCESS_NORMAL);
+            else if (m_autoScrollRepeatAnim->GetState() == ANIM_STATE_APPLIED)
+            { // reset to the start of the list and start the scrolling again
+              m_offset = 0;
+              m_scrollOffset = 0;
+              ResetAutoScrolling();
+            }
+          }
+        }
+      }
+    }
+    else if (m_autoScrollCondition)
+      ResetAutoScrolling();  // conditional is false, so reset the autoscrolling
+  }
+
+  // update our scroll position as necessary
+  if (m_lastRenderTime)
+    m_scrollOffset += m_scrollSpeed * (m_renderTime - m_lastRenderTime);
+  if ((m_scrollSpeed < 0 && m_scrollOffset < m_offset * m_itemHeight) ||
+      (m_scrollSpeed > 0 && m_scrollOffset > m_offset * m_itemHeight))
+  {
+    m_scrollOffset = m_offset * m_itemHeight;
+    m_scrollSpeed = 0;
+  }
+  m_lastRenderTime = m_renderTime;
+
+  int offset = (int)(m_scrollOffset / m_itemHeight);
+
+  g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height);
+
+  // we offset our draw position to take into account scrolling and whether or not our focused
+  // item is offscreen "above" the list.
+  float posX = m_posX;
+  float posY = m_posY + offset * m_itemHeight - m_scrollOffset;
+
+  // alignment correction
+  if (m_label.align & XBFONT_CENTER_X)
+    posX += m_width * 0.5f;
+  if (m_label.align & XBFONT_RIGHT)
+    posX += m_width;
 
   if (m_label.font)
   {
     m_label.font->Begin();
-    for (unsigned int i = 0; i < m_itemsPerPage; i++)
+    int current = offset;
+    while (posY < m_posY + m_height && current < (int)m_lines.size())
     {
-      float posX = m_posX;
-      if (i + m_offset < m_lines.size() )
+      float maxWidth = m_width;
+      // render item
+      if (current < (int)m_lines2.size())
       {
-        // render item
-        float maxWidth = m_width + 16;
-        if (i + m_offset < m_lines2.size())
-        {
-          float fTextWidth, fTextHeight;
-          m_label.font->GetTextExtent( m_lines2[i + m_offset].c_str(), &fTextWidth, &fTextHeight);
-          maxWidth -= fTextWidth;
-
-          m_label.font->DrawTextWidth(posX + maxWidth, posY + 2, m_label.textColor, m_label.shadowColor, m_lines2[i + m_offset].c_str(), fTextWidth);
-        }
-        m_label.font->DrawTextWidth(posX, posY + 2, m_label.textColor, m_label.shadowColor, m_lines[i + m_offset].c_str(), maxWidth);
-        posY += m_itemHeight;
+        float fTextWidth, fTextHeight;
+        m_label.font->GetTextExtent( m_lines2[current].c_str(), &fTextWidth, &fTextHeight);
+        maxWidth -= fTextWidth;
+        m_label.font->DrawTextWidth(posX + maxWidth, posY + 2, m_label.textColor, m_label.shadowColor, m_lines2[current].c_str(), fTextWidth);
       }
+      DWORD align = m_label.align;
+      if (m_lines[current].size() && m_lines[current][m_lines[current].size() - 1] == L'\n')
+        align &= ~XBFONT_JUSTIFIED; // last line of a paragraph shouldn't be justified
+      m_label.font->DrawText(posX, posY + 2, m_label.textColor, m_label.shadowColor, m_lines[current].c_str(), align, maxWidth);
+      posY += m_itemHeight;
+      current++;
     }
     m_label.font->End();
   }
+
+  g_graphicsContext.RestoreClipRegion();
+
   if (!m_pageControl)
   {
     m_upDown.SetPosition(m_posX + m_spinPosX, m_posY + m_spinPosY);
     m_upDown.Render();
+  }
+  else
+  {
+    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, offset);
+    SendWindowMessage(msg);
   }
   CGUIControl::Render();
 }
@@ -110,11 +225,13 @@ bool CGUITextBox::OnAction(const CAction &action)
   {
   case ACTION_PAGE_UP:
     OnPageUp();
+    ResetAutoScrolling();
     return true;
     break;
 
   case ACTION_PAGE_DOWN:
     OnPageDown();
+    ResetAutoScrolling();
     return true;
     break;
 
@@ -138,8 +255,9 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
     {
       if (message.GetMessage() == GUI_MSG_CLICKED)
       {
+        ResetAutoScrolling();
         if (m_upDown.GetValue() >= 1)
-          m_offset = (m_upDown.GetValue() - 1) * m_itemsPerPage;
+          ScrollToOffset((m_upDown.GetValue() - 1) * m_itemsPerPage);
       }
     }
     if (message.GetMessage() == GUI_MSG_LABEL_BIND)
@@ -148,6 +266,8 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
       if (items)
       {
         m_offset = 0;
+        m_scrollOffset = 0;
+        ResetAutoScrolling();
         m_lines.clear();
         m_lines2.clear();
         for (unsigned int i = 0; i < items->size(); ++i)
@@ -165,6 +285,8 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
     if (message.GetMessage() == GUI_MSG_LABEL_SET)
     {
       m_offset = 0;
+      m_scrollOffset = 0;
+      ResetAutoScrolling();
       m_lines.clear();
       m_lines2.clear();
       m_upDown.SetRange(1, 1);
@@ -176,6 +298,8 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
     if (message.GetMessage() == GUI_MSG_LABEL_RESET)
     {
       m_offset = 0;
+      m_scrollOffset = 0;
+      ResetAutoScrolling();
       m_lines.clear();
       m_lines2.clear();
       m_upDown.SetRange(1, 1);
@@ -190,6 +314,7 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
     if (message.GetMessage() == GUI_MSG_SETFOCUS)
     {
       m_upDown.SetFocus(true);
+      ResetAutoScrolling();
     }
     if (message.GetMessage() == GUI_MSG_LOSTFOCUS)
     {
@@ -200,7 +325,8 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
     {
       if (message.GetSenderId() == m_pageControl)
       { // update our page
-        m_offset = message.GetParam1();
+        ResetAutoScrolling();
+        ScrollToOffset(message.GetParam1());
         return true;
       }
     }
@@ -260,7 +386,7 @@ void CGUITextBox::OnPageUp()
   {
     iPage--;
     m_upDown.SetValue(iPage);
-    m_offset = (m_upDown.GetValue() - 1) * m_itemsPerPage;
+    ScrollToOffset((m_upDown.GetValue() - 1) * m_itemsPerPage);
   }
   if (m_pageControl)
   { // tell our pagecontrol (scrollbar or whatever) to update
@@ -279,7 +405,7 @@ void CGUITextBox::OnPageDown()
   {
     iPage++;
     m_upDown.SetValue(iPage);
-    m_offset = (m_upDown.GetValue() - 1) * m_itemsPerPage;
+    ScrollToOffset((m_upDown.GetValue() - 1) * m_itemsPerPage);
   }
   if (m_pageControl)
   { // tell our pagecontrol (scrollbar or whatever) to update
@@ -346,16 +472,18 @@ bool CGUITextBox::OnMouseWheel(char wheel, const CPoint &point)
   }
   else
   { // increase or decrease our offset by the appropriate amount.
-    m_offset -= wheel;
+    int offset = m_offset - wheel;
     // check that we are within the correct bounds.
-    if (m_offset + m_itemsPerPage > m_lines.size())
-      m_offset = (m_lines.size() >= m_itemsPerPage) ? m_lines.size() - m_itemsPerPage : 0;
+    if (offset + (int)m_itemsPerPage > (int)m_lines.size())
+      offset = (m_lines.size() >= m_itemsPerPage) ? m_lines.size() - m_itemsPerPage : 0;
+    ScrollToOffset(offset);
     // update the page control...
-    int iPage = m_offset / m_itemsPerPage + 1;
+    int iPage = offset / m_itemsPerPage + 1;
     // last page??
-    if (m_offset + m_itemsPerPage == m_lines.size())
+    if (offset + m_itemsPerPage == m_lines.size())
       iPage = m_upDown.GetMaximum();
     m_upDown.SetValue(iPage);
+    ResetAutoScrolling();
   }
   return true;
 }
@@ -409,5 +537,37 @@ void CGUITextBox::SetColorDiffuse(D3DCOLOR color)
 {
   CGUIControl::SetColorDiffuse(color);
   m_upDown.SetColorDiffuse(color);
+}
+
+void CGUITextBox::ScrollToOffset(int offset, bool autoScroll)
+{
+  float size = m_itemHeight;
+  m_scrollOffset = m_offset * m_itemHeight;
+  int timeToScroll = autoScroll ? m_autoScrollTime : m_scrollTime;
+  m_scrollSpeed = (offset * m_itemHeight - m_scrollOffset) / timeToScroll;
+  m_offset = offset;
+}
+
+void CGUITextBox::SetAutoScrolling(const TiXmlNode *node)
+{
+  if (!node) return;
+  const TiXmlElement *scroll = node->FirstChildElement("autoscroll");
+  if (scroll)
+  {
+    scroll->Attribute("delay", &m_autoScrollDelay);
+    scroll->Attribute("time", &m_autoScrollTime);
+    if (scroll->FirstChild())
+      m_autoScrollCondition = g_infoManager.TranslateString(scroll->FirstChild()->ValueStr());
+    int repeatTime;
+    if (scroll->Attribute("repeat", &repeatTime))
+      m_autoScrollRepeatAnim = CAnimation::CreateFader(100, 0, repeatTime, 1000);
+  }
+}
+
+void CGUITextBox::ResetAutoScrolling()
+{
+  m_autoScrollDelayTime = 0;
+  if (m_autoScrollRepeatAnim)
+    m_autoScrollRepeatAnim->ResetAnimation();
 }
 

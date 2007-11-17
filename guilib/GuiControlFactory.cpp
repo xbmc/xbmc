@@ -216,6 +216,7 @@ bool CGUIControlFactory::GetAlignment(const TiXmlNode* pRootNode, const char* st
   CStdString strAlign = pNode->FirstChild()->Value();
   if (strAlign == "right") dwAlignment = XBFONT_RIGHT;
   else if (strAlign == "center") dwAlignment = XBFONT_CENTER_X;
+  else if (strAlign == "justify") dwAlignment = XBFONT_JUSTIFIED;
   else dwAlignment = XBFONT_LEFT;
   return true;
 }
@@ -1224,11 +1225,12 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       textureUp, textureDown,
       textureUpFocus, textureDownFocus,
       spinInfo, spinPosX, spinPosY,
-      labelInfo);
+      labelInfo, scrollTime);
 
     ((CGUITextBox *)control)->SetPageControl(pageControl);
     ((CGUITextBox *)control)->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     ((CGUITextBox *)control)->SetLabel(strLabel);
+    ((CGUITextBox *)control)->SetAutoScrolling(pControlNode);
   }
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   else if (strType == "thumbnailpanel")

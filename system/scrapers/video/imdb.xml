@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scraper name="IMDb (Complete Cast)" content="movies" thumb="imdb.gif">
+<scraper name="IMDb" content="movies" thumb="imdb.gif">
 	<NfoUrl dest="3">
 		<RegExp input="$$1" output="&lt;url&gt;http://akas.imdb.com/title/tt\1/&lt;/url&gt;&lt;id&gt;tt\1&lt;/id&gt;"  dest="3">
 			<expression clear="yes" noclean="1">imdb.com/Title\?([0-9]*)</expression>
@@ -18,14 +18,20 @@
 			<RegExp input="$$1" output="\1" dest="7">
 				<expression clear="yes">/title/([t0-9]*)/faq</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1 (\2)&lt;/title&gt;&lt;url&gt;http://akas.imdb.com/title/$$7/&lt;/url&gt;&lt;id&gt;$$7&lt;/id&gt;&lt;/entity&gt;" dest="5">
-				<expression clear="yes" noclean="1">&lt;meta name=&quot;title&quot; content=&quot;([^&quot;]*) \(([0-9]*)\)</expression>
+			<RegExp input="$$1" output="aka &quot;\1&quot; - \2" dest="8">
+				<expression clear="yes" trim="1,2">&lt;h5&gt;[^&lt;]*&lt;/h5&gt;([^(]*)?([^&lt;]*)?&lt;br&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="aka &quot;\1&quot; - \2" dest="9+">
+				<expression repeat="yes" clear="yes" trim="1,2">&lt;i class=&quot;transl&quot;&gt;([^(]*)([^&lt;]*) [[^-]*]*</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1 (\2) $$8 $$9&lt;/title&gt;&lt;url&gt;http://akas.imdb.com/title/$$7/&lt;/url&gt;&lt;id&gt;$$7&lt;/id&gt;&lt;/entity&gt;" dest="5">
+				<expression clear="yes" noclean="1">&lt;meta name=&quot;title&quot; content=&quot;([^(]*)[^0-9/A-Z]* \(([0-9/A-Z]*)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="4">
 				<expression noclean="1">(&gt;&lt;a href=&quot;/title.*)</expression>
 			</RegExp>
-			<RegExp input="$$4" output="&lt;entity&gt;&lt;title&gt;\2 (\3)&lt;/title&gt;&lt;url&gt;http://akas.imdb.com/title/\1/&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="5+">
-				<expression repeat="yes" noclean="1,2">&gt;&lt;a href=&quot;/title/([t0-9]*)/[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt; *\(([0-9]*)</expression>
+			<RegExp input="$$4" output="&lt;entity&gt;&lt;title&gt;\2 (\3) \4&lt;/title&gt;&lt;url&gt;http://akas.imdb.com/title/\1/&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="5+">
+				<expression repeat="yes" noclean="1,2,3">&gt;&lt;a href=&quot;/title/([t0-9]*)/[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt; *\(([0-9/A-Z]*)\)([^=]*)?(&lt;/td&gt;*)</expression>
 			</RegExp>
 			<expression clear="yes" noclean="1"></expression>
 		</RegExp>
@@ -121,8 +127,8 @@
 		</RegExp>
 	</GetCast>
 	<GetIMPALink clearbuffers="no" dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetIMPAPosters&quot;&gt;http://www.impawards.com/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression clear="yes" noclean="1">&lt;a href=&quot;http://www.impawards.com/([^&quot;]*)&quot;&gt;</expression>
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetIMPAPosters&quot;&gt;http://\1impawards.com/\2&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression clear="yes" noclean="1,2">http://([^&quot;]*)impawards.com/([^&quot;]*)&quot;&gt;</expression>
 		</RegExp>
 	</GetIMPALink>
 	<GetIMPAPosters clearbuffers="no" dest="5">

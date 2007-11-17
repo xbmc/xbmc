@@ -101,6 +101,7 @@ CMPlayer::Options::Options()
 {
   m_bResampleAudio = false;
   m_bNoCache = false;
+  m_fPrefil = -1.0;
   m_bNoIdx = false;
   m_iChannels = 0;
   m_bAC3PassTru = false;
@@ -310,8 +311,15 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
     m_vecOptions.push_back("-v");
 
   if (m_bNoCache)
-  {
     m_vecOptions.push_back("-nocache");
+
+  if (m_fPrefil >= 0.0)
+  {
+    strTmp.Format("%2.4f", m_fPrefil);
+    m_vecOptions.push_back("-cache-min");
+    m_vecOptions.push_back(strTmp);
+    m_vecOptions.push_back("-cache-prefill");
+    m_vecOptions.push_back(strTmp);
   }
 
   if (m_bNoIdx)
@@ -786,7 +794,6 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
 
   int iRet = -1;
   int iCacheSize = 1024;
-  int iCacheSizeBackBuffer = MPLAYERBACKBUFFER; // 50 % backbuffer is mplayers default
   bool bFileOnHD(false);
   bool bFileOnISO(false);
   bool bFileOnUDF(false);
@@ -811,8 +818,8 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
   if ( file.IsHD() ) bFileOnHD = true;
   else if ( file.IsISO9660() ) bFileOnISO = true;
   else if ( file.IsOnDVD() ) bFileOnUDF = true;
-  else if ( file.IsInternetStream() ) bFileOnInternet = true;
-  else bFileOnLAN = true;
+  else if ( file.IsOnLAN() ) bFileOnLAN = true;
+  else if ( file.IsInternetStream() ) bFileOnInternet = true;  
 
   bool bIsVideo = file.IsVideo();
   bool bIsAudio = file.IsAudio();
@@ -840,11 +847,12 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
     {
       m_dlgCache = new CDlgCache(3000);
     }
+
     if (iCacheSize == 0)
-    {
-      //let mplayer figure out what to do with the cache
-      iCacheSize = -1;
-    }
+      iCacheSize = -1; //let mplayer figure out what to do with the cache
+
+    if (bFileOnLAN || bFileOnHD)
+      options.SetPrefil(5.0);
 
     CLog::Log(LOGINFO, "mplayer play:%s cachesize:%i", strFile.c_str(), iCacheSize);
 
@@ -1053,7 +1061,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
 
     mplayer_init(argc, argv);
     mplayer_setcache_size(iCacheSize);
-    mplayer_setcache_backbuffer(iCacheSizeBackBuffer);
+    mplayer_setcache_backbuffer(MPLAYERBACKBUFFER);
     mplayer_SlaveCommand("osd 0");    
 
     if (bFileIsDVDImage || bFileIsDVDIfoFile)
@@ -1178,7 +1186,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
 
         mplayer_init(argc, argv);
         mplayer_setcache_size(iCacheSize);
-        mplayer_setcache_backbuffer(iCacheSizeBackBuffer);
+        mplayer_setcache_backbuffer(MPLAYERBACKBUFFER);
         mplayer_SlaveCommand("osd 0");
 
         if (bFileIsDVDImage || bFileIsDVDIfoFile)

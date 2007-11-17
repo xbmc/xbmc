@@ -341,7 +341,9 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
 
   // update our content in the info manager
   g_infoManager.m_content = "";
-  if (strDirectory.Left(10).Equals("videodb://"))
+  if (!items.GetContent().IsEmpty())
+    g_infoManager.m_content = items.GetContent();
+  else if (strDirectory.Left(10).Equals("videodb://"))
   {
     DIRECTORY::CVideoDatabaseDirectory dir;
     DIRECTORY::VIDEODATABASEDIRECTORY::CQueryParams params;

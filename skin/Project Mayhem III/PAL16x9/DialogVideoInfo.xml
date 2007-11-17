@@ -711,7 +711,7 @@
 				<align>center</align>
 				<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
 				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
-				<onleft>50</onleft>
+				<onleft>62</onleft>
 				<onright>4</onright>
 				<onup>10</onup>
 				<ondown>8</ondown>
@@ -781,26 +781,47 @@
 				<ondown>5</ondown>
 			</control>
 		</control>
-		<control type="image">
-			<description>Actor Cover rectangle</description>
-			<posx>586</posx>
-			<posy>350</posy>
-			<width>104</width>
-			<height>174</height>
-			<texture>blue_rectangle_music.png</texture>
+		<control type="image" id="1">
+			<description>background image</description>
+			<posx>555</posx>
+			<posy>345</posy>
+			<width>105</width>
+			<height>180</height>
 			<aspectratio>stretch</aspectratio>
-			<visible>control.isvisible(50)</visible>
+			<texture>homeinfo-bg.png</texture>
+			<visible>!Skin.HasSetting(UseScrollbars) + Control.IsVisible(50)</visible>
 		</control>
 		<control type="image" id="34">
 			<description>Actor image</description>
-			<posx>591</posx>
-			<posy>355</posy>
-			<width>94</width>
-			<height>164</height>
+			<posx>565</posx>
+			<posy>370</posy>
+			<width>85</width>
+			<height>130</height>
 			<texture>DefaultActorBig.png</texture>
-			<aspectratio>keep</aspectratio>
+			<aspectratio aligny="center">keep</aspectratio>
 			<align>center</align>
-			<visible>control.isvisible(50)</visible>
+			<visible>!Skin.HasSetting(UseScrollbars) + Control.IsVisible(50)</visible>
+		</control>
+		<control type="image" id="1">
+			<description>background image</description>
+			<posx>576</posx>
+			<posy>345</posy>
+			<width>105</width>
+			<height>180</height>
+			<aspectratio>stretch</aspectratio>
+			<texture>homeinfo-bg.png</texture>
+			<visible>Skin.HasSetting(UseScrollbars) + Control.IsVisible(50)</visible>
+		</control>
+		<control type="image" id="34">
+			<description>Actor image</description>
+			<posx>586</posx>
+			<posy>370</posy>
+			<width>85</width>
+			<height>130</height>
+			<texture>DefaultActorBig.png</texture>
+			<aspectratio aligny="center">keep</aspectratio>
+			<align>center</align>
+			<visible>Skin.HasSetting(UseScrollbars) + Control.IsVisible(50)</visible>
 		</control>
 		<control type="image">
 			<posx>190</posx>
@@ -813,15 +834,29 @@
 			<description>textarea</description>
 			<posx>200</posx>
 			<posy>350</posy>
-			<width>480</width>
-			<height>180</height>
+			<width>455</width>
+			<height>170</height>
 			<onleft>5</onleft>
 			<onright>50</onright>
 			<onup>5</onup>
 			<ondown>5</ondown>
-			<spinposx>430</spinposx>
-			<spinposy>160</spinposy>
-			<visible>!control.isvisible(50)</visible>
+			<pagecontrol>61</pagecontrol>
+			<visible>!Skin.HasSetting(UseScrollbars) + !Control.IsVisible(50) + Control.IsVisible(61)</visible>
+			<include>autoscrollmedium</include>
+		</control>
+		<control type="textbox" id="4">
+			<description>textarea</description>
+			<posx>200</posx>
+			<posy>350</posy>
+			<width>471</width>
+			<height>170</height>
+			<onleft>5</onleft>
+			<onright>50</onright>
+			<onup>5</onup>
+			<ondown>5</ondown>
+			<pagecontrol>61</pagecontrol>
+			<visible>Skin.HasSetting(UseScrollbars) + !Control.IsVisible(50) | !Control.IsVisible(61)</visible>
+			<include>autoscrollmedium</include>
 		</control>
 		<include>DialogInfoViewCommonPageControls</include>
 		<include>DialogInfoViewOldListViewCommons</include>
