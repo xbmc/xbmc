@@ -432,7 +432,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.album")) return VIDEOPLAYER_ALBUM;
     else if (strTest.Equals("videoplayer.writer")) return VIDEOPLAYER_WRITER;
     else if (strTest.Equals("videoplayer.tagline")) return VIDEOPLAYER_TAGLINE;
-    else if (strTest.Equals("videoplayer.isinlibrary")) return VIDEOPLAYER_ISINLIBRARY;
+    else if (strTest.Equals("videoplayer.hasinfo")) return VIDEOPLAYER_HAS_INFO;
   }
   else if (strCategory.Equals("playlist"))
   {
@@ -1399,12 +1399,8 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow)
     if (pWindow)
       bReturn = ((CGUIMediaWindow*)pWindow)->CurrentDirectory().HasThumbnail();
   }
-  else if (condition == VIDEOPLAYER_ISINLIBRARY)
-  {
+  else if (condition == VIDEOPLAYER_HAS_INFO)
     bReturn = m_currentFile.HasVideoInfoTag();
-    if (m_currentFile.HasVideoInfoTag())
-      bReturn = m_currentFile.GetVideoInfoTag()->m_iDbId > -1;
-  }
   else if (condition == CONTAINER_ON_NEXT || condition == CONTAINER_ON_PREVIOUS)
   {
     // no parameters, so we assume it's just requested for a media window.  It therefore
@@ -2481,14 +2477,6 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
       CLog::Log(LOGDEBUG,"  Title = %s", m_currentFile.GetVideoInfoTag()->m_strTitle.c_str());
     }
     dbs.Close();
-
-    if (m_currentFile.GetVideoInfoTag()->m_strTitle.IsEmpty())
-    { // at least fill in the filename
-      if (!item.GetLabel().IsEmpty())
-        m_currentFile.GetVideoInfoTag()->m_strTitle = item.GetLabel();
-      else
-        m_currentFile.GetVideoInfoTag()->m_strTitle = CUtil::GetTitleFromPath(item.m_strPath);
-    }
   }
   // Find a thumb for this file.
   item.SetVideoThumb();
@@ -2826,8 +2814,12 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_TITLE:
     if (item->HasMusicInfoTag())
       return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetTitle());
-    if (item->HasVideoInfoTag())
+    if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strTitle.IsEmpty())
       return CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strTitle);
+    // don't have the title, so use label, or drop down to title from path
+    if (!item->GetLabel().IsEmpty())
+      return item->GetLabel();
+    return CUtil::GetTitleFromPath(item->m_strPath);
     break;
   case LISTITEM_TRACKNUMBER:
     {
