@@ -72,7 +72,7 @@
 		<animation effect="fade" time="200" condition="!Skin.HasSetting(animated)">WindowClose</animation>
 	</include>
 	<include name="mediaoverlay">
-		<visible>!Window.Next(Home)</visible>
+		<visible>!Window.Next(Home)+!Window.IsVisible(2700)</visible>
 		<animation effect="fade" time="300">WindowOpen</animation>
 		<animation effect="fade" time="300">VisibleChange</animation>
 	</include>
@@ -115,5 +115,17 @@
 			<include>contentpanelslide</include>
 			<visible>Skin.HasSetting(Use_Custom_Background)</visible>
 		</control>
+	</include>
+	<include name="autoscrollslow">
+	         <align>justify</align>
+	         <autoscroll time="3000" delay="3000">Skin.HasSetting(AutoScroll)</autoscroll>
+	</include>
+	<include name="autoscrollmedium">
+	         <align>justify</align>
+	         <autoscroll time="2000" delay="3000">Skin.HasSetting(AutoScroll)</autoscroll>
+	</include>
+	<include name="autoscrollfast">
+	         <align>justify</align>
+	         <autoscroll time="1000" delay="3000">Skin.HasSetting(AutoScroll)</autoscroll>
 	</include>
 </includes>

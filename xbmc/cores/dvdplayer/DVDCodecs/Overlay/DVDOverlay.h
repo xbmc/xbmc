@@ -6,8 +6,9 @@
 enum DVDOverlayType
 {
   DVDOVERLAY_TYPE_NONE    = -1,
-  DVDOVERLAY_TYPE_SPU     = 1,
-  DVDOVERLAY_TYPE_TEXT    = 2
+  DVDOVERLAY_TYPE_SPU     = 1,  
+  DVDOVERLAY_TYPE_TEXT    = 2,
+  DVDOVERLAY_TYPE_IMAGE   = 3,
 };
 
 class CDVDOverlay

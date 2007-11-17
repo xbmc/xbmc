@@ -18,9 +18,7 @@
 			<posy>385</posy>
 			<width>130</width>
 			<height>107</height>
-			<visible>!Window.Next(Home)</visible>
-			<animation effect="fade" time="1" delay="500">WindowOpen</animation>
-			<animation effect="fade" time="1" delay="0">VisibleChange</animation>
+			<include>mediaoverlay</include>
 		</control>
 		<control type="label" id="0">
 			<description>play time label</description>

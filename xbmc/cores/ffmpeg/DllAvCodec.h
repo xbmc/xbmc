@@ -33,6 +33,7 @@ public:
   virtual int avpicture_fill(AVPicture *picture, uint8_t *ptr, int pix_fmt, int width, int height)=0;
   virtual int avcodec_decode_video(AVCodecContext *avctx, AVFrame *picture, int *got_picture_ptr, uint8_t *buf, int buf_size)=0;
   virtual int avcodec_decode_audio2(AVCodecContext *avctx, int16_t *samples, int *frame_size_ptr, uint8_t *buf, int buf_size)=0;
+  virtual int avcodec_decode_subtitle(AVCodecContext *avctx, AVSubtitle *sub, int *got_sub_ptr, const uint8_t *buf, int buf_size)=0;
   virtual int avpicture_get_size(int pix_fmt, int width, int height)=0;
   virtual AVCodecContext *avcodec_alloc_context(void)=0;
   virtual void avcodec_string(char *buf, int buf_size, AVCodecContext *enc, int encode)=0;
@@ -56,6 +57,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_FUNC_ALIGNED2(int, __cdecl, avcodec_open, AVCodecContext*, AVCodec *)
   DEFINE_FUNC_ALIGNED5(int, __cdecl, avcodec_decode_video, AVCodecContext*, AVFrame*, int*, uint8_t*, int)
   DEFINE_FUNC_ALIGNED5(int, __cdecl, avcodec_decode_audio2, AVCodecContext*, int16_t*, int*, uint8_t*, int)
+  DEFINE_FUNC_ALIGNED5(int, __cdecl, avcodec_decode_subtitle, AVCodecContext*, AVSubtitle*, int*, const uint8_t *, int)
   DEFINE_FUNC_ALIGNED0(AVCodecContext*, __cdecl, avcodec_alloc_context)
   DEFINE_FUNC_ALIGNED1(AVCodecParserContext*, __cdecl, av_parser_init, int)
   DEFINE_FUNC_ALIGNED8(int, __cdecl, av_parser_parse, AVCodecParserContext*,AVCodecContext*, uint8_t**, int*, const uint8_t*, int, int64_t, int64_t)
@@ -66,6 +68,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_METHOD2(int, avcodec_open, (AVCodecContext* p1, AVCodec *p2))
   DEFINE_METHOD5(int, avcodec_decode_video, (AVCodecContext* p1, AVFrame *p2, int *p3, uint8_t *p4, int p5))
   DEFINE_METHOD5(int, avcodec_decode_audio2, (AVCodecContext* p1, int16_t *p2, int *p3, uint8_t *p4, int p5))
+  DEFINE_METHOD5(int, avcodec_decode_subtitle, (AVCodecContext* p1, AVSubtitle *p2, int *p3, const uint8_t *p4, int p5))
   DEFINE_METHOD0(AVCodecContext*, avcodec_alloc_context)
   DEFINE_METHOD1(AVCodecParserContext*, av_parser_init, (int p1))
   DEFINE_METHOD8(int, av_parser_parse, (AVCodecParserContext* p1, AVCodecContext* p2, uint8_t** p3, int* p4, const uint8_t* p5, int p6, int64_t p7, int64_t p8))
@@ -95,6 +98,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD(avpicture_fill)
     RESOLVE_METHOD(avcodec_decode_video)
     RESOLVE_METHOD(avcodec_decode_audio2)
+    RESOLVE_METHOD(avcodec_decode_subtitle)
     RESOLVE_METHOD(avpicture_get_size)
     RESOLVE_METHOD(avcodec_alloc_context)
     RESOLVE_METHOD(avcodec_string)

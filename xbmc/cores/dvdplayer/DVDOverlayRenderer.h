@@ -8,6 +8,8 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
 
+class CDVDOverlayImage;
+
 typedef struct stDVDPictureRenderer
 {
   BYTE* data[4];
@@ -19,7 +21,8 @@ class CDVDOverlayRenderer
 {
 public:
   static void Render(DVDPictureRenderer* pPicture, CDVDOverlay* pOverlay);
-  
+  static void Render(DVDPictureRenderer* pPicture, CDVDOverlayImage* pOverlay);
+
   static void Render(YV12Image* pImage, CDVDOverlay* pOverlay)
   {
     DVDPictureRenderer p;

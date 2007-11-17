@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xboxmediacenter.com-->
-<!--Date of translation: 10/17/2007-->
+<!--Date of translation: 11/11/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 10541-->
+<!--Based on english strings version 10705-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -660,6 +660,7 @@
   <string id="1042">Hämtade %i av %i objekt</string>
   <string id="1043">Programinstickstillägg</string>
   <string id="1044">Ange insticksminiatyr</string>
+  <string id="1045">Insticksinställningar</string>
   <string id="1200">SMB Utdelning</string>
   <string id="1202">SMB Arbetsgrupp</string>
   <string id="1203">SMB Användarnamn</string>
@@ -1025,6 +1026,8 @@ den här visualiseringen</string>
   <string id="13405">Hämta miniatyr</string>
   <string id="13406">Bildinformation</string>
   <string id="13407">%s förinställningar</string>
+  <string id="13408">(IMDb användarbetyg)</string>
+  <string id="13409">Topp 250:</string>
   <string id="14000">Stapling: På</string>
   <string id="14001">Stapling: Av</string>
   <string id="14003">Laddar ner spellista...</string>
@@ -1228,6 +1231,18 @@ den här visualiseringen</string>
   <string id="15284">Lyssna till %name%'s rekommenderade Last.FM radio</string>
   <string id="15285">Topp taggar för användare %name%</string>
   <string id="15286">Lyssna till %name%'s spellista på Last.FM radio</string>
+  <string id="15287">Vill du lägga till detta spår i dina älsklingsspår?</string>
+  <string id="15288">Vill du banna detta spår?</string>
+  <string id="15289">Tillagt i dina älsklingsspår: '%s'.</string>
+  <string id="15290">Kunde inte lägga till '%s' till dina älsklingsspår.</string>
+  <string id="15291">Bannade: '%s'.</string>
+  <string id="15292">Kunde inte banna '%s'.</string>
+  <string id="15293">Spår i %name% älsklingsspår</string>
+  <string id="15294">Spår i %name% bannlista</string>
+  <string id="15295">Ta bort från älsklingsspår</string>
+  <string id="15296">Ta bort banning</string>
+  <string id="15297">Vill du ta bort detta spår från dina älsklingsspår?</string>
+  <string id="15298">Vill du ta bort banningen på detta spår?</string>
   <string id="15300">Sökväg hittades inte eller ogiltig</string>
   <string id="15301">Uppkoppling misslyckades</string>
   <string id="15302">Inga servrar hittade</string>
@@ -1458,7 +1473,7 @@ den här visualiseringen</string>
   <string id="20188">Tar backup av BIOS</string>
   <string id="20250">Festa på! (filmer)</string>
   <string id="20251">Blandar drinkar (filmer)</string>
-  <string id="20252">Fyller glas (filmer)</string>
+  <string id="20252">Fyller glasen (filmer)</string>
   <string id="20306">Okänd. Lägg till MD5 från XBMC.log till BiosIDs.ini</string>
   <string id="20307">Sekundär DNS</string>
   <string id="20308">DHCP server:</string>
