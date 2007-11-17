@@ -502,6 +502,7 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
           
           pPacket->pts = ConvertTimestamp(pkt.pts, stream->time_base.den, stream->time_base.num);
           pPacket->dts = ConvertTimestamp(pkt.dts, stream->time_base.den, stream->time_base.num);
+          pPacket->duration =  DVD_SEC_TO_TIME((double)pkt.duration * stream->time_base.num / stream->time_base.den);
 
           // used to guess streamlength
           if (pPacket->dts != DVD_NOPTS_VALUE && (pPacket->dts > m_iCurrentPts || m_iCurrentPts == DVD_NOPTS_VALUE))
@@ -568,6 +569,9 @@ bool CDVDDemuxFFmpeg::Seek(int iTime, bool bBackword)
 
 int CDVDDemuxFFmpeg::GetStreamLenght()
 {
+  if (!m_pFormatContext)
+    return 0;
+
   /* apperently ffmpeg messes up sometimes, so check for negative value too */
   if (m_pFormatContext->duration == AV_NOPTS_VALUE || m_pFormatContext->duration < 0LL)
   {
