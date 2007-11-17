@@ -1118,11 +1118,12 @@ float CDVDPlayer::GetAVDelay()
 
 void CDVDPlayer::SetSubTitleDelay(float fValue)
 {
+  m_dvdPlayerVideo.SetSubtitleDelay(fValue * DVD_TIME_BASE);
 }
 
 float CDVDPlayer::GetSubTitleDelay()
 {
-  return 0.0;
+  return m_dvdPlayerVideo.GetSubtitleDelay() / DVD_TIME_BASE;
 }
 
 // priority: 1: libdvdnav, 2: external subtitles, 3: muxed subtitles

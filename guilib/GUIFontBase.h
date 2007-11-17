@@ -13,11 +13,13 @@
 #define XBFONT_CENTER_X   0x00000002
 #define XBFONT_CENTER_Y   0x00000004
 #define XBFONT_TRUNCATED  0x00000008
+#define XBFONT_JUSTIFIED  0x00000010
 
 #define FONT_STYLE_NORMAL       0
 #define FONT_STYLE_BOLD         1
 #define FONT_STYLE_ITALICS      2
 #define FONT_STYLE_BOLD_ITALICS 3
+
 
 /*!
  \ingroup textures
@@ -42,7 +44,7 @@ protected:
   virtual void DrawColourTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette, int numColors, DWORD dwShadowColor,
                                    const WCHAR* strText, BYTE* pbColours, float fMaxWidth);
 
-  virtual void GetTextExtentInternal( const WCHAR* strText, FLOAT* pWidth, FLOAT* pHeight, BOOL bFirstLineOnly = FALSE) = 0;
+  virtual void GetTextExtentInternal( const WCHAR* strText, FLOAT* pWidth, FLOAT* pHeight = NULL, BOOL bFirstLineOnly = FALSE) = 0;
 
   void DrawTextWidthInternal(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
                              const WCHAR* strText, float fMaxWidth);

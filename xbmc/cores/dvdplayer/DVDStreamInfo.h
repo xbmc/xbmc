@@ -5,7 +5,7 @@ enum StreamType;
 enum CodecID;
 #else
 #include "DVDDemuxers/DVDDemux.h"
-#include "avcodec.h"
+#include "../ffmpeg/avcodec.h"
 #endif
 
 class CDemuxStream;
@@ -39,6 +39,9 @@ public:
   // AUDIO
   int channels;
   int samplerate;
+
+  // SUBTITLE
+  int identifier;
 
   // CODEC EXTRADATA
   void*        extradata; // extra data for codec to use

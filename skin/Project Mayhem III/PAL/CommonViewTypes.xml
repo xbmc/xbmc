@@ -843,7 +843,42 @@
 			<pagecontrol>611</pagecontrol>
 			<label>$INFO[ListItem.Plot]</label>
 			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(51) + !IsEmpty(ListItem.Plot)</visible>
+			<visible>Control.IsVisible(51) + [!Skin.HasSetting(UseScrollBars) + !IsEmpty(ListItem.Plot) + Control.IsVisible(611)]</visible>
+			<include>autoscrollmedium</include>
+		</control>
+		<control type="textbox" id="511">
+			<posx>200</posx>
+			<posy>373</posy>
+			<width>480</width>
+			<height>130</height>
+			<font>font13</font>
+			<pagecontrol>611</pagecontrol>
+			<label>$INFO[ListItem.Plot]</label>
+			<include>contentpanelslide</include>
+			<visible>Control.IsVisible(51) + [Skin.HasSetting(UseScrollBars) + !IsEmpty(ListItem.Plot) | !Control.IsVisible(611)]</visible>
+			<include>autoscrollmedium</include>
+		</control>
+		<control type="textbox" id="511">
+			<posx>200</posx>
+			<posy>373</posy>
+			<width>450</width>
+			<height>130</height>
+			<font>font13</font>
+			<pagecontrol>611</pagecontrol>
+			<label>416</label>
+			<include>contentpanelslide</include>
+			<visible>Control.IsVisible(51) + [!Skin.HasSetting(UseScrollBars) + IsEmpty(ListItem.Plot)]</visible>
+		</control>
+		<control type="textbox" id="511">
+			<posx>200</posx>
+			<posy>373</posy>
+			<width>480</width>
+			<height>130</height>
+			<font>font13</font>
+			<pagecontrol>611</pagecontrol>
+			<label>416</label>
+			<include>contentpanelslide</include>
+			<visible>Control.IsVisible(51) + [Skin.HasSetting(UseScrollBars) + IsEmpty(ListItem.Plot)]</visible>
 		</control>
 		<control type="button">
 			<posx>660</posx>
@@ -882,7 +917,7 @@
 			<showonepage>false</showonepage>
 			<orientation>vertical</orientation>
 			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(511)</visible>
+			<visible>Control.IsVisible(511) + !Skin.HasSetting(UseScrollBars)</visible>
 		</control>
 	</include>
 	<include name="VideoViewCommons_BigList">
@@ -2137,6 +2172,7 @@
 			<label>$INFO[ListItem.Plot]</label>
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(57)</visible>
+			<include>autoscrollmedium</include>
 		</control>
 	</include>
 	<include name="WideIcon_Small">
@@ -2542,13 +2578,14 @@
 				<orientation>vertical</orientation>
 			        <pagecontrol>61</pagecontrol>
 			        <scrolltime>200</scrolltime>
-				<visible>!Skin.HasSetting(UseScrollbars)</visible>
+				<visible>!Skin.HasSetting(UseScrollbars) + Window.IsActive(movieinformation)</visible>
 			        <itemlayout width="250" height="29">
 				    <control type="image">
 				        <posx>0</posx>
 				       	<posy>3</posy>
 				       	<width>22</width>
 				       	<height>22</height>
+					<texture>DefaultActorBig.png</texture>
         				<info>ListItem.Icon</info>
 				    </control>
 				    <control type="label">
@@ -2577,6 +2614,7 @@
 				        <posy>3</posy>
 				        <width>22</width>
 				        <height>22</height>
+					<texture>DefaultActorBig.png</texture>
 				        <info>ListItem.Icon</info>
 				    </control>
 				    <control type="label">
@@ -2595,8 +2633,8 @@
                         <control type="list" id="50">
 				<description>Cast List Container</description>
 				<posx>200</posx>
-				<posy>380</posy>
-				<width>350</width>
+				<posy>350</posy>
+				<width>371</width>
 				<height>175</height>
 				<onleft>9000</onleft>
 				<onright>61</onright>
@@ -2605,19 +2643,20 @@
 				<orientation>vertical</orientation>
 			        <pagecontrol>61</pagecontrol>
 			        <scrolltime>200</scrolltime>
-				<visible>Skin.HasSetting(UseScrollbars)</visible>
+				<visible>Skin.HasSetting(UseScrollbars) + Window.IsActive(movieinformation)</visible>
 			        <itemlayout width="250" height="29">
 				    <control type="image">
 				        <posx>0</posx>
 				       	<posy>3</posy>
 				       	<width>22</width>
 				       	<height>22</height>
+					<texture>DefaultActorBig.png</texture>
         				<info>ListItem.Icon</info>
 				    </control>
 				    <control type="label">
 			        	<posx>30</posx>
 			        	<posy>3</posy>
-        				<width>350</width>
+        				<width>371</width>
 				        <height>22</height>
         				<font>font13</font>
 				        <aligny>center</aligny>
@@ -2628,7 +2667,7 @@
 				</itemlayout>
                                 <focusedlayout height="29" width="250">
 		   		    <control type="image">
-				        <width>350</width>
+				        <width>371</width>
 				        <height>29</height>
 				        <posx>0</posx>
 				        <posy>0</posy>
@@ -2640,18 +2679,195 @@
 				        <posy>3</posy>
 				        <width>22</width>
 				        <height>22</height>
+					<texture>DefaultActorBig.png</texture>
 				        <info>ListItem.Icon</info>
 				    </control>
 				    <control type="label">
  				        <posx>30</posx>
 				        <posy>3</posy>
-				        <width>350</width>
+				        <width>371</width>
 				        <height>22</height>
 				        <font>font13</font>
 				        <aligny>center</aligny>
 				        <selectedcolor>green</selectedcolor>
 				        <align>left</align>
 				        <info>ListItem.Label</info>
+				    </control>
+                                </focusedlayout>
+                        </control>
+		</include>
+		<include name="MusicDialogInfoViewOldListViewCommons">
+                        <control type="list" id="50">
+				<description>Track List Container + Scrollbar Area</description>
+				<posx>200</posx>
+				<posy>350</posy>
+				<width>455</width>
+				<height>175</height>
+				<onleft>9000</onleft>
+				<onright>61</onright>
+				<onup>50</onup>
+				<ondown>50</ondown>
+				<orientation>vertical</orientation>
+			        <pagecontrol>61</pagecontrol>
+			        <scrolltime>200</scrolltime>
+				<visible>!Skin.HasSetting(UseScrollbars) + Window.IsActive(musicinformation)</visible>
+			        <itemlayout width="250" height="29">
+				    <control type="image">
+				        <posx>5</posx>
+				       	<posy>3</posy>
+				       	<width>17</width>
+				       	<height>22</height>
+				        <texture>$INFO[ListItem.Icon]</texture>
+					<aspectratio align="left">keep</aspectratio>
+				    </control>
+				    <control type="label">
+			        	<posx>30</posx>
+			        	<posy>3</posy>
+        				<width>320</width>
+				        <height>22</height>
+        				<font>font13</font>
+				        <aligny>center</aligny>
+		        		<selectedcolor>green</selectedcolor>
+		        		<align>left</align>
+					<label>$INFO[ListItem.TrackNumber] - $INFO[ListItem.Label]</label>
+				    </control>
+				    <control type="label">
+			        	<posx>450</posx>
+			        	<posy>3</posy>
+        				<width>100</width>
+				        <height>22</height>
+        				<font>font13</font>
+				        <aligny>center</aligny>
+		        		<selectedcolor>green</selectedcolor>
+		        		<align>right</align>
+					<label>$INFO[ListItem.Duration]</label>
+				    </control>
+				</itemlayout>
+                                <focusedlayout height="29" width="250">
+		   		    <control type="image">
+				        <width>455</width>
+				        <height>29</height>
+				        <posx>0</posx>
+				        <posy>0</posy>
+			        	<visible>Control.HasFocus(50)</visible>
+				        <texture>list-focus.png</texture>
+		 	            </control>
+				    <control type="image">
+				        <posx>5</posx>
+				        <posy>3</posy>
+				        <width>17</width>
+				        <height>22</height>
+				        <texture>$INFO[ListItem.Icon]</texture>
+					<aspectratio align="left">keep</aspectratio>
+				    </control>
+				    <control type="label">
+ 				        <posx>30</posx>
+				        <posy>3</posy>
+				        <width>320</width>
+				        <height>22</height>
+				        <font>font13</font>
+				        <aligny>center</aligny>
+				        <selectedcolor>green</selectedcolor>
+				        <align>left</align>
+					<label>$INFO[ListItem.TrackNumber] - $INFO[ListItem.Label]</label>
+				    </control>
+				    <control type="label">
+			        	<posx>450</posx>
+			        	<posy>3</posy>
+        				<width>100</width>
+				        <height>22</height>
+        				<font>font13</font>
+				        <aligny>center</aligny>
+		        		<selectedcolor>green</selectedcolor>
+		        		<align>right</align>
+					<label>$INFO[ListItem.Duration]</label>
+				    </control>
+                                </focusedlayout>
+                        </control>
+                        <control type="list" id="50">
+				<description>Track List Container</description>
+				<posx>200</posx>
+				<posy>350</posy>
+				<width>471</width>
+				<height>175</height>
+				<onleft>9000</onleft>
+				<onright>61</onright>
+				<onup>50</onup>
+				<ondown>50</ondown>
+				<orientation>vertical</orientation>
+			        <pagecontrol>61</pagecontrol>
+			        <scrolltime>200</scrolltime>
+				<visible>Skin.HasSetting(UseScrollbars) + Window.IsActive(musicinformation)</visible>
+			        <itemlayout width="250" height="29">
+				    <control type="image">
+				        <posx>5</posx>
+				       	<posy>3</posy>
+				       	<width>17</width>
+				       	<height>22</height>
+				        <texture>$INFO[ListItem.Icon]</texture>
+					<aspectratio align="left">keep</aspectratio>
+				    </control>
+				    <control type="label">
+			        	<posx>30</posx>
+			        	<posy>3</posy>
+        				<width>471</width>
+				        <height>22</height>
+        				<font>font13</font>
+				        <aligny>center</aligny>
+		        		<selectedcolor>green</selectedcolor>
+		        		<align>left</align>
+					<label>$INFO[ListItem.TrackNumber] - $INFO[ListItem.Label]</label>
+				    </control>
+				    <control type="label">
+			        	<posx>466</posx>
+			        	<posy>3</posy>
+        				<width>100</width>
+				        <height>22</height>
+        				<font>font13</font>
+				        <aligny>center</aligny>
+		        		<selectedcolor>green</selectedcolor>
+		        		<align>right</align>
+					<label>$INFO[ListItem.Duration]</label>
+				    </control>
+				</itemlayout>
+                                <focusedlayout height="29" width="250">
+		   		    <control type="image">
+				        <width>471</width>
+				        <height>29</height>
+				        <posx>0</posx>
+				        <posy>0</posy>
+			        	<visible>Control.HasFocus(50)</visible>
+				        <texture>list-focus.png</texture>
+		 	            </control>
+				    <control type="image">
+				        <posx>5</posx>
+				        <posy>3</posy>
+				        <width>17</width>
+				        <height>22</height>
+				        <texture>$INFO[ListItem.Icon]</texture>
+					<aspectratio align="left">keep</aspectratio>
+				    </control>
+				    <control type="label">
+ 				        <posx>30</posx>
+				        <posy>3</posy>
+				        <width>371</width>
+				        <height>22</height>
+				        <font>font13</font>
+				        <aligny>center</aligny>
+				        <selectedcolor>green</selectedcolor>
+				        <align>left</align>
+					<label>$INFO[ListItem.TrackNumber] - $INFO[ListItem.Label]</label>
+				    </control>
+				    <control type="label">
+			        	<posx>466</posx>
+			        	<posy>3</posy>
+        				<width>100</width>
+				        <height>22</height>
+        				<font>font13</font>
+				        <aligny>center</aligny>
+		        		<selectedcolor>green</selectedcolor>
+		        		<align>right</align>
+					<label>$INFO[ListItem.Duration]</label>
 				    </control>
                                 </focusedlayout>
                         </control>
@@ -2724,30 +2940,30 @@
 	</include>
 	<include name="DialogInfoViewCommonPageControls">
 		<control type="button">
-			<posx>560</posx>
+			<posx>665</posx>
 			<posy>350</posy>
 			<include>scrollbar_width</include>
 			<height>20</height>
 			<onclick>PageUp(61)</onclick>
 			<texturefocus border="4">scrollbar_arrow_up_focus.png</texturefocus>
 			<texturenofocus border="4">scrollbar_arrow_up.png</texturenofocus>
-			<visible>Control.IsVisible(61) + !Skin.HasSetting(UseScrollbars)</visible>
+			<visible>!Skin.HasSetting(UseScrollbars) + Control.IsVisible(61)</visible>
 		</control>
 		<control type="button">
-			<posx>560</posx>
-			<posy>503</posy>
+			<posx>665</posx>
+			<posy>500</posy>
 			<include>scrollbar_width</include>
 			<height>20</height>
 			<onclick>PageDown(61)</onclick>
 			<texturefocus border="4">scrollbar_arrow_down_focus.png</texturefocus>
 			<texturenofocus border="4">scrollbar_arrow_down.png</texturenofocus>
-			<visible>Control.IsVisible(61) + !Skin.HasSetting(UseScrollbars)</visible>
+			<visible>!Skin.HasSetting(UseScrollbars) + Control.IsVisible(61)</visible>
 		</control>
 		<control type="scrollbar" id="61">
-			<posx>560</posx>
+			<posx>665</posx>
 			<posy>370</posy>
 			<include>scrollbar_width</include>
-			<height>133</height>
+			<height>130</height>
 			<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
 			<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
 			<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
@@ -2755,22 +2971,21 @@
 			<textureslidernibfocus>-</textureslidernibfocus>
 			<onleft>50</onleft>
 			<onright>9000</onright>
-			<showonepage>true</showonepage>
+			<showonepage>false</showonepage>
 			<orientation>vertical</orientation>
-			<visible>!Skin.HasSetting(UseScrollbars) + Control.IsVisible(50)</visible>
+			<visible>!Skin.HasSetting(UseScrollbars) + [Control.IsVisible(50) | Control.IsVisible(4)]</visible>
 		</control>
 		<control type="spincontrol" id="61">
 			<description>Next page button</description>
-			<posx>640</posx>
-			<posy>545</posy>
+			<posx>650</posx>
+			<posy>540</posy>
 			<subtype>page</subtype>
 			<font>font12</font>
 			<onleft>50</onleft>
 			<onright>9000</onright>
 			<ondown>61</ondown>
 			<onup>50</onup>
-			<showonepage>true</showonepage>
-			<visible>Skin.HasSetting(UseScrollbars) + Control.IsVisible(50)</visible>
+			<visible>Skin.HasSetting(UseScrollbars) + [Control.IsVisible(50) | Control.IsVisible(4)]</visible>
 		</control>
 	</include>
 </includes>

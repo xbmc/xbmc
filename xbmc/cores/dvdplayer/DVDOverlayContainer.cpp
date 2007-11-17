@@ -27,16 +27,19 @@ void CDVDOverlayContainer::Add(CDVDOverlay* pOverlay)
 
   EnterCriticalSection(&m_critSection);
 
-  if (m_overlays.size() > 0)
+  // markup any non ending overlays, to finish
+  // when this new one starts, there can be
+  // multiple overlays queued at same start
+  // point so only stop them when we get a
+  // new startpoint
+  for(int i = m_overlays.size();i>0;)
   {
-    // get last overlay from vector
-    CDVDOverlay* back = m_overlays.back();
-    if (back->iPTSStopTime == 0LL)
-    {
-      // I don't know if this belongs here, but sometimes the end-time
-      // of an spu is not set if another subtitle should be displayed directly after it
-      back->iPTSStopTime = pOverlay->iPTSStartTime;
-    }
+    i--;
+    if(m_overlays[i]->iPTSStopTime != 0)
+      break;
+
+    if(m_overlays[i]->iPTSStartTime != pOverlay->iPTSStartTime)
+      m_overlays[i]->iPTSStopTime = pOverlay->iPTSStartTime;
   }
 
   m_overlays.push_back(pOverlay);

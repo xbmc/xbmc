@@ -46,7 +46,7 @@
 				<label>184</label>
 				<onleft>3</onleft>
 				<onright>3</onright>
-				<onup>4</onup>
+				<onup>71</onup>
 				<ondown>4</ondown>
 			</control>
 			<control type="button" id="4">
@@ -57,7 +57,7 @@
 				<onleft>3</onleft>
 				<onright>3</onright>
 				<onup>2</onup>
-				<ondown>2</ondown>
+				<ondown>70</ondown>
 				<onclick>ActivateWindow(MyWeatherSettings)</onclick>
 			</control>
 			<control type="image" id="101">
@@ -69,6 +69,41 @@
 				<aspectratio>keep</aspectratio>
 				<texture>TWClogo_64px.png</texture>
 			</control>
+		</control>
+		<control type="button" id="70">
+			<description>Love button</description>
+			<posx>130</posx>
+			<posy>395</posy>
+			<height>32</height>
+			<width>32</width>
+			<font>font13</font>
+			<onleft>50</onleft>
+			<onright>50</onright>
+			<onup>4</onup>
+			<ondown>71</ondown>
+			<texturefocus>Love-focus.png</texturefocus>
+			<texturenofocus>Love.png</texturenofocus>
+			<onclick>XBMC.LastFM.Love</onclick>
+			<visible>LastFM.RadioPlaying</visible>
+			<pulseonselect>true</pulseonselect>
+			<animation effect="zoom" start="100" end="175" center="146,411"condition="Control.HasFocus(70)">Conditional</animation>
+		</control>
+		<control type="button" id="71">
+			<description>Hate button</description>
+			<posx>130</posx>
+			<posy>460</posy>
+			<height>32</height>
+			<width>32</width>
+			<onleft>50</onleft>
+			<onright>50</onright>
+			<onup>70</onup>
+			<ondown>3</ondown>
+			<texturefocus>Ban-focus.png</texturefocus>
+			<texturenofocus>Ban.png</texturenofocus>
+			<onclick>XBMC.LastFM.Ban</onclick>
+			<visible>LastFM.RadioPlaying</visible>
+			<pulseonselect>true</pulseonselect>
+			<animation effect="zoom" start="100" end="175" center="146,476"condition="Control.HasFocus(71)">Conditional</animation>
 		</control>
 		<control type="group">
 			<posx>-20</posx>

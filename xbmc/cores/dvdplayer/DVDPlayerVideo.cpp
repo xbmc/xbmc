@@ -27,6 +27,7 @@ CDVDPlayerVideo::CDVDPlayerVideo(CDVDClock* pClock, CDVDOverlayContainer* pOverl
   m_bRenderSubs = false;
   m_DetectedStill = false;
   m_iVideoDelay = 0;
+  m_iSubtitleDelay = 0;
   m_fForcedAspectRatio = 0;
   m_iNrOfPicturesNotToSkip = 0;
   InitializeCriticalSection(&m_critCodecSection);
@@ -478,7 +479,9 @@ void CDVDPlayerVideo::ProcessVideoUserData(DVDVideoUserData* pVideoUserData, dou
       if (!m_pOverlayCodecCC)
       {
         m_pOverlayCodecCC = new CDVDOverlayCodecCC();
-        if (!m_pOverlayCodecCC->Open())
+        CDVDCodecOptions options;
+        CDVDStreamInfo info;
+        if (!m_pOverlayCodecCC->Open(info, options))
         {
           delete m_pOverlayCodecCC;
           m_pOverlayCodecCC = NULL;
@@ -538,13 +541,14 @@ void CDVDPlayerVideo::Flush()
 void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest, double pts)
 {
   // remove any overlays that are out of time
-  m_pOverlayContainer->CleanUp(pts);
+  m_pOverlayContainer->CleanUp(min(pts, pts - m_iSubtitleDelay));
 
   // rendering spu overlay types directly on video memory costs a lot of processing power.
   // thus we allocate a temp picture, copy the original to it (needed because the same picture can be used more than once).
   // then do all the rendering on that temp picture and finaly copy it to video memory.
   // In almost all cases this is 5 or more times faster!.
-  bool bHasSpecialOverlay = m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SPU);
+  bool bHasSpecialOverlay = m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SPU) 
+                         || m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_IMAGE);
   
   if (bHasSpecialOverlay)
   {
@@ -569,14 +573,22 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
   //Both forced and subs should check timeing, pts == 0 in the stillframe case
   while (it != pVecOverlays->end())
   {
-    CDVDOverlay* pOverlay = *it;
-    if ((pOverlay->bForced || m_bRenderSubs) && (pOverlay->iGroupId == pSource->iGroupId) && 
-        ((pOverlay->iPTSStartTime <= pts && (pOverlay->iPTSStopTime >= pts || pOverlay->iPTSStopTime == 0LL)) || pts == 0))
+    CDVDOverlay* pOverlay = *it++;
+    if(!pOverlay->bForced && !m_bRenderSubs)
+      continue;
+
+    if(pOverlay->iGroupId != pSource->iGroupId)
+      continue;
+
+    double pts2 = pOverlay->bForced ? pts : pts - m_iSubtitleDelay;
+
+    if(pOverlay->iPTSStartTime <= pts2 && (pOverlay->iPTSStopTime >= pts2 || pOverlay->iPTSStopTime == 0LL) || pts == 0)
     {
-      if (bHasSpecialOverlay && m_pTempOverlayPicture) CDVDOverlayRenderer::Render(m_pTempOverlayPicture, pOverlay);
-      else CDVDOverlayRenderer::Render(pDest, pOverlay);
+      if (bHasSpecialOverlay && m_pTempOverlayPicture) 
+        CDVDOverlayRenderer::Render(m_pTempOverlayPicture, pOverlay);
+      else 
+        CDVDOverlayRenderer::Render(pDest, pOverlay);
     }
-    it++;
   }
   
   m_pOverlayContainer->Unlock();

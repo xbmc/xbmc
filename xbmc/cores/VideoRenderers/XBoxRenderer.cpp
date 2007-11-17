@@ -903,7 +903,7 @@ void CXBoxRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
     m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_CONSTANTALPHA );
     m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVCONSTANTALPHA );
-    m_pD3DDevice->SetRenderState( D3DRS_BLENDCOLOR, alpha );
+    m_pD3DDevice->SetRenderState( D3DRS_BLENDCOLOR, D3DCOLOR_ARGB(alpha, 0, 0, 0) );
   }
   else
     m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );

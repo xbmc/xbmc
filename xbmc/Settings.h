@@ -293,6 +293,7 @@ public:
     bool m_prioritiseAPEv2tags;
     CStdString m_musicItemSeparator;
     CStdString m_videoItemSeparator;
+    vector<CStdString> m_musicTagsFromFileFilters;
 
     bool m_bVideoLibraryHideAllItems;
     bool m_bVideoLibraryAllItemsOnBottom;

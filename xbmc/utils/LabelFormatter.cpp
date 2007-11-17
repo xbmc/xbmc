@@ -97,7 +97,7 @@ CLabelFormatter::CLabelFormatter(const CStdString &mask, const CStdString &mask2
   m_hideFileExtensions = g_guiSettings.GetBool("filelists.hideextensions");
 }
 
-CStdString CLabelFormatter::GetContent(unsigned int label, const CFileItem *item)
+CStdString CLabelFormatter::GetContent(unsigned int label, const CFileItem *item) const
 {
   assert(label < 2);
   assert(m_staticContent[label].size() == m_dynamicContent[label].size() + 1);
@@ -119,7 +119,7 @@ CStdString CLabelFormatter::GetContent(unsigned int label, const CFileItem *item
   return strLabel;
 }
 
-void CLabelFormatter::FormatLabel(CFileItem *item)
+void CLabelFormatter::FormatLabel(CFileItem *item) const
 {
   CStdString maskedLabel = GetContent(0, item);
   if (!maskedLabel.IsEmpty())
@@ -128,12 +128,12 @@ void CLabelFormatter::FormatLabel(CFileItem *item)
     item->RemoveExtension();
 }
 
-void CLabelFormatter::FormatLabel2(CFileItem *item)
+void CLabelFormatter::FormatLabel2(CFileItem *item) const
 {
   item->SetLabel2(GetContent(1, item));
 }
 
-CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileItem *item)
+CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileItem *item) const
 {
   if (!item) return "";
   const CMusicInfoTag *music = item->GetMusicInfoTag();
@@ -315,5 +315,58 @@ void CLabelFormatter::AssembleMask(unsigned int label, const CStdString& mask)
   }
   SplitMask(label, work);
   assert(m_staticContent[label].size() == m_dynamicContent[label].size() + 1);
+}
+
+bool CLabelFormatter::FillMusicTag(const CStdString &fileName, CMusicInfoTag *tag) const
+{
+  // run through and find static content to split the string up
+  int pos1 = fileName.Find(m_staticContent[0][0], 0);
+  if (pos1 == CStdString::npos)
+    return false;
+  for (unsigned int i = 1; i < m_staticContent[0].size(); i++)
+  {
+    int pos2 = m_staticContent[0][i].size() ? fileName.Find(m_staticContent[0][i], pos1) : fileName.size();
+    if (pos2 == CStdString::npos)
+      return false;
+    // found static content - thus we have the dynamic content surrounded
+    FillMusicMaskContent(m_dynamicContent[0][i - 1].m_content, fileName.Mid(pos1, pos2 - pos1), tag);
+    pos1 = pos2 + m_staticContent[0][i].size();
+  }
+  return true;
+}
+
+void CLabelFormatter::FillMusicMaskContent(const char mask, const CStdString &value, CMusicInfoTag *tag) const
+{
+  if (!tag) return;
+  switch (mask)
+  {
+  case 'N':
+    tag->SetTrackNumber(atol(value.c_str()));
+    break;
+  case 'S':
+    tag->SetPartOfSet(atol(value.c_str()));
+    break;
+  case 'A':
+    tag->SetArtist(value);
+    break;
+  case 'T':
+    tag->SetTitle(value);
+    break;
+  case 'B':
+    tag->SetAlbum(value);
+    break;
+  case 'G':
+    tag->SetGenre(value);
+    break;
+  case 'Y':
+    tag->SetYear(atol(value.c_str()));
+    break;
+  case 'D':
+    tag->SetDuration(StringUtils::TimeStringToSeconds(value));
+    break;
+  case 'R': // rating
+    tag->SetRating(value[0]);
+    break;
+  }
 }
 
