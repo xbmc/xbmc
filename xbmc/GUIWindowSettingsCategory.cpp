@@ -1860,30 +1860,36 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
   else if (strSetting.Equals("upnp.musicshares"))
   {
+    CStdString filename;
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
     CStdString strDummy;
-    g_settings.LoadUPnPXml(_P("q:\\system\\upnpserver.xml"));
+    g_settings.LoadUPnPXml(filename);
     if (CGUIDialogFileBrowser::ShowAndGetShare(strDummy,false,&g_settings.m_UPnPMusicSources,"upnpmusic"))
-      g_settings.SaveUPnPXml(_P("q:\\system\\upnpserver.xml"));
+      g_settings.SaveUPnPXml(filename);
     else
-      g_settings.LoadUPnPXml(_P("q:\\system\\upnpserver.xml"));
+      g_settings.LoadUPnPXml(filename);
   }
   else if (strSetting.Equals("upnp.videoshares"))
   {
+    CStdString filename;
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
     CStdString strDummy;
-    g_settings.LoadUPnPXml(_P("q:\\system\\upnpserver.xml"));
+    g_settings.LoadUPnPXml(filename);
     if (CGUIDialogFileBrowser::ShowAndGetShare(strDummy,false,&g_settings.m_UPnPVideoSources,"upnpvideo"))
-      g_settings.SaveUPnPXml(_P("q:\\system\\upnpserver.xml"));
+      g_settings.SaveUPnPXml(filename);
     else
-      g_settings.LoadUPnPXml(_P("q:\\system\\upnpserver.xml"));
+      g_settings.LoadUPnPXml(filename);
   }
   else if (strSetting.Equals("upnp.pictureshares"))
   {
+    CStdString filename;
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
     CStdString strDummy;
-    g_settings.LoadUPnPXml(_P("q:\\system\\upnpserver.xml"));
+    g_settings.LoadUPnPXml(filename);
     if (CGUIDialogFileBrowser::ShowAndGetShare(strDummy,false,&g_settings.m_UPnPPictureSources,"upnppictures"))
-      g_settings.SaveUPnPXml(_P("q:\\system\\upnpserver.xml"));
+      g_settings.SaveUPnPXml(filename);
     else
-      g_settings.LoadUPnPXml(_P("q:\\system\\upnpserver.xml"));
+      g_settings.LoadUPnPXml(filename);
   }
   else if (strSetting.Equals("masterlock.lockcode"))
   {
