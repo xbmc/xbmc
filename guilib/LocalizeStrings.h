@@ -20,11 +20,16 @@ public:
   CLocalizeStrings(void);
   virtual ~CLocalizeStrings(void);
   bool Load(const CStdString& strFileName, const CStdString& strFallbackFileName="Q:\\language\\english\\strings.xml");
+  bool LoadSkinStrings(const CStdString& path, const CStdString& fallbackPath);
+  void ClearSkinStrings();
   const CStdString& Get(DWORD dwCode) const;
   void Clear();
 protected:
-  std::map<DWORD, CStdString> m_vecStrings;
-  typedef std::map<DWORD, CStdString>::const_iterator ivecStrings;
+  bool LoadXML(const CStdString &filename, CStdString &encoding, CStdString &error);
+  CStdString ToUTF8(const CStdString &encoding, const CStdString &str);
+  std::map<DWORD, CStdString> m_strings;
+  typedef std::map<DWORD, CStdString>::const_iterator ciStrings;
+  typedef std::map<DWORD, CStdString>::iterator       iStrings;
 };
 
 /*!

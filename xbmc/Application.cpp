@@ -1906,6 +1906,18 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
   g_fontManager.LoadFonts(g_guiSettings.GetString("lookandfeel.font"));
 
+  // load in the skin strings
+  CStdString skinPath, skinEnglishPath;
+  CUtil::AddFileToFolder(strSkinPath, "language", skinPath);
+  CUtil::AddFileToFolder(skinPath, g_guiSettings.GetString("locale.language"), skinPath);
+  CUtil::AddFileToFolder(skinPath, "strings.xml", skinPath);
+
+  CUtil::AddFileToFolder(strSkinPath, "language", skinEnglishPath);
+  CUtil::AddFileToFolder(skinEnglishPath, "english", skinEnglishPath);
+  CUtil::AddFileToFolder(skinEnglishPath, "strings.xml", skinEnglishPath);
+
+  g_localizeStrings.LoadSkinStrings(skinPath, skinEnglishPath);
+
   LARGE_INTEGER start;
   QueryPerformanceCounter(&start);
 
