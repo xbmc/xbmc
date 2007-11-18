@@ -485,7 +485,7 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
           if(pkt.pts == 0)
             pkt.pts = AV_NOPTS_VALUE;
 
-          if(m_bMatroska && stream->codec)
+          if(m_bMatroska && stream->codec && stream->codec->codec_type == CODEC_TYPE_VIDEO)
           { // matroska can store different timestamps
             // for different formats, for native stored
             // stuff it is pts, but for ms compatibility
