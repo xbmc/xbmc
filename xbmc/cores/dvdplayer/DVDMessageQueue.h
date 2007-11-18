@@ -45,7 +45,7 @@ public:
   int GetDataSize() const               { return m_iDataSize; }
   unsigned GetPacketCount(CDVDMsg::Message type);
   bool RecievedAbortRequest()           { return m_bAbortRequest; }
-  void WaitUntilEmpty()                 { while (m_pFirstMessage) Sleep(1); }
+  void WaitUntilEmpty()                 { while (m_pFirstMessage && !m_bAbortRequest) Sleep(1); }
   
   // non messagequeue related functions
   bool IsFull() const                   { return (m_iDataSize >= m_iMaxDataSize); }
