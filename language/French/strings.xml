@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Based on english strings version 10403-->
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Based on english strings version 10756-->
 <strings>
   <string id="0">Programmes</string>
   <string id="1">Images</string>
@@ -677,6 +677,7 @@
   <string id="1042">%i de %i items chargés</string>
   <string id="1043">Plugins Programme</string>
   <string id="1044">Choisir une vignette Plugin</string>
+  <string id="1045">Paramètres du Plugin</string>
 
   <string id="1200">Client SMB</string>
   <string id="1202">Groupe de travail</string>
@@ -1082,6 +1083,8 @@
   <string id="13405">Vignette</string>
   <string id="13406">Informations de l'Image</string>
   <string id="13407">%s Préréglages</string>
+  <string id="13408">(Note Spectateurs IMDb)</string>
+  <string id="13409">Top 250:</string>
   
   <string id="14000">Empiler</string>
   <string id="14001">Désempiler</string>
@@ -1261,39 +1264,51 @@
   <string id="15256">Top Tag général</string>
   <string id="15257">Le top Artistes pour le tag %name%</string>
   <string id="15258">Le top Albums pour le tag %name%</string>
-  <string id="15259">Le top Titres pour le tag %name%</string>
-  <string id="15260">Écouter le tag %name% sur Last.FM radio</string>
+  <string id="15259">Le top Morceaux pour le tag %name%</string>
+  <string id="15260">Écouter le tag %name% sur Last.FM Radio</string>
   <string id="15261">Artistes similaire à %name%</string>
   <string id="15262">Le top Albums pour %name%</string>
-  <string id="15263">Le top Titres pour %name%</string>
-  <string id="15264">Le top Tag pour %name%</string>
+  <string id="15263">Le top Morceaux pour %name%</string>
+  <string id="15264">Le top Tags pour %name%</string>
   <string id="15265">Les plus grands fans de %name%</string>
   <string id="15266">Écouter les radios Last.FM des fans de %name%</string>
   <string id="15267">Écouter les radios Last.FM similaire à %name%</string>
   <string id="15268">Le top Artistes de %name%</string>
   <string id="15269">Le top Albums de %name%</string>
-  <string id="15270">Le top Titres de %name%</string>
+  <string id="15270">Le top Morceaux de %name%</string>
   <string id="15271">Amis de %name%</string>
   <string id="15272">Profils d'affinités de %name%</string>
   <string id="15273">Artistes de la semaine pour %name%</string>
   <string id="15274">Albums de la semaine pour %name%</string>
-  <string id="15275">Pistes de la semaine pour %name%</string>
+  <string id="15275">Morceaux de la semaine pour %name%</string>
   <string id="15276">Écouter les radios Last.FM affinitées de %name%</string>
   <string id="15277">Écouter les radios Last.FM personnelles de %name%</string>
   <string id="15278">Écouter les radios Last.FM préférées de %name%</string>
-  <string id="15279">Récupération des listes depuis Last.FM...</string>
-  <string id="15280">Impossible de récupérer la liste depuis Last.FM...</string>
+  <string id="15279">Récupération des playlists depuis Last.FM...</string>
+  <string id="15280">Impossible de récupérer la playlist depuis Last.FM...</string>
   <string id="15281">Saisissez un nom d'artiste pour en trouver des liés</string>
   <string id="15282">Saisissez un nom de tag pour en trouver des semblables</string>
-  <string id="15283">Pistes écoutées récemment par %name%</string>
+  <string id="15283">Morceaux écoutés récemment par %name%</string>
   <string id="15284">Écouter les recommandations de la radio Last.FM de %name%</string>
   <string id="15285">Top tags de l'utilisateur %name%</string>
   <string id="15286">Écouter la playlist radio de %name%</string>
-  
+  <string id="15287">Voulez-vous ajouter le morceau actuel dans vos coups de coeur?</string>
+  <string id="15288">Voulez-vous bannir le morceau actuel?</string>
+  <string id="15289">Ajouté dans vos coups de coeur: '%s'.</string>
+  <string id="15290">Impossible d'ajouter '%s' dans vos coups de coeur.</string>
+  <string id="15291">Banni: '%s'.</string>
+  <string id="15292">Impossible de bannir '%s'.</string>
+  <string id="15293">Coups de coeur récents de %name%</string>
+  <string id="15294">Banni récemment par %name%</string>
+  <string id="15295">Supprimé des coups de coeur</string>
+  <string id="15296">Débannir</string>
+  <string id="15297">Voulez-vous supprimer ce morceau de vos coups de coeur?</string>
+  <string id="15298">Voulez-vous débannir ce morceau?</string>
+
   <string id="15300">Chemin non trouvé ou invalide</string>
   <string id="15301">Impossible de se connecter au serveur</string>
-  <string id="15302">Serveur non Trouvé</string>
-  <string id="15303">Groupe de travail non Trouvé</string>
+  <string id="15302">Serveur non trouvé</string>
+  <string id="15303">Groupe de travail non trouvé</string>
   
   <string id="15310">Ouverture des signets multi-chemin</string>
   <string id="15311">Chemin:</string>
@@ -1374,11 +1389,15 @@
   <string id="20019">Choisir une vignette</string>
   <string id="20020">Impossible d'utiliser Kai et Trainer ensemble</string>
   <string id="20021">Choisissez celui que vous voulez utiliser</string>
+  <!-- string id 20022 will always be set to an empty string (LocalizeStrings.cpp)-->
   <string id="20022"></string>
   <string id="20023">Conflit</string>
   <string id="20024">Rescanner</string>
   <string id="20025">Scanner tout</string>
   <string id="20026">Région</string>
+
+  <!-- string id's 20027 thru 20034 are reserved for temperaturestrings  (LocalizeStrings.cpp)-->
+
   <string id="20038">Sécuriser la section Musique</string>
   <string id="20039">Sécuriser la section Vidéo</string>
   <string id="20040">Sécuriser la section Images</string>
@@ -1529,6 +1548,8 @@
   <string id="20186">Merci de patienter</string>
   <string id="20187">Sauvegarde de l'EEPROM</string>
   <string id="20188">Sauvegarde du BIOS</string>
+  <string id="20189">Activer le défilement auto des Résumés et Critiques</string>
+  <string id="20190">Personnaliser</string>
 
   <string id="20250">Mix de Soirée lancé ! (videos)</string>
   <string id="20251">Mélange des ingrédients (videos)</string>
@@ -1651,8 +1672,8 @@
   <string id="20402">Récupérer automatiquement les vignettes des acteurs</string>
   <string id="20403">Choisir la vignette de l'Acteur</string>
   <string id="20404">Studio:</string>
-  <string id="20405">Supprimer les Signets de l'Episode</string>
-  <string id="20406">Ajouter un Signet pour l'Episode</string>
+  <string id="20405">Supprimer les Signets de l'Épisode</string>
+  <string id="20406">Ajouter un Signet pour l'Épisode</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Afficher les dossiers et les fichiers cachés</string>
@@ -1806,4 +1827,7 @@
   <!-- strings 21900 thru 21999 reserved for slideshow info -->
 
   <string id="29999">Appliquer paramètre du filtre de scintillement aux jeux</string>
+
+  <!-- strings 30000 thru 31000 reserved for plugin settings -->
+  <!-- strings 31001 thru 32000 reserved for skins -->
 </strings>
