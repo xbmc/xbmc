@@ -279,6 +279,12 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     }
   }
 
+  // for some reasons presentation timestamps in matroska is always wrong
+  // i'm guessing something get's set completly wrong somewhere in lavf
+  m_bDiscardPts = false;
+  if (strcmp(m_pFormatContext->iformat->name, "matroska") == 0)
+    m_bDiscardPts = true;
+
   // in combination with libdvdnav seek, av_find_stream_info wont work
   // so we do this for files only
   if (streaminfo)
@@ -482,10 +488,8 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
           if(pkt.pts == 0)
             pkt.pts = AV_NOPTS_VALUE;
 
-          // lavf lies about delayed frames in h264 since parser doesn't set it properly
-          // dts values are then invalid
-          if(stream->codec && stream->codec->codec_id == CODEC_ID_H264 && !stream->codec->has_b_frames)
-            pkt.dts = AV_NOPTS_VALUE;
+          if(m_bDiscardPts && pkt.dts != AV_NOPTS_VALUE)
+            pkt.pts = AV_NOPTS_VALUE;
 
           // copy contents into our own packet
           pPacket->iSize = pkt.size;
