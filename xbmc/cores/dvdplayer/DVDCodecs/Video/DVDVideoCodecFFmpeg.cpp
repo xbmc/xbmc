@@ -121,6 +121,8 @@ void CDVDVideoCodecFFmpeg::Dispose()
   if (m_pConvertFrame)
   {
     delete[] m_pConvertFrame->data[0];
+    if(m_pConvertFrame->opaque)
+      free(m_pConvertFrame->opaque);
     m_dllAvUtil.av_free(m_pConvertFrame);
   }
   m_pConvertFrame = NULL;
@@ -198,6 +200,9 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
 
       // Assign appropriate parts of buffer to image planes in pFrameRGB
       m_dllAvCodec.avpicture_fill((AVPicture *)m_pConvertFrame, buffer, PIX_FMT_YUV420P, m_pCodecContext->width, m_pCodecContext->height);
+
+      m_pConvertFrame->opaque= malloc(sizeof(double));
+      *(double*)m_pConvertFrame->opaque = DVD_NOPTS_VALUE;
     }
 
     // convert the picture
@@ -209,6 +214,13 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
     m_pConvertFrame->interlaced_frame = m_pFrame->interlaced_frame;
     m_pConvertFrame->repeat_pict = m_pFrame->repeat_pict;
     m_pConvertFrame->top_field_first = m_pFrame->top_field_first;
+    if(m_pConvertFrame->opaque)
+    {
+      if(m_pFrame->opaque)
+        *(double*)m_pConvertFrame->opaque = *(double*)m_pFrame->opaque;
+      else
+        *(double*)m_pConvertFrame->opaque = DVD_NOPTS_VALUE;
+    }
   }
   else
   {
@@ -264,7 +276,11 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->iFlags |= frame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;
   pDvdVideoPicture->iFlags |= frame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST: 0;
   pDvdVideoPicture->iFlags |= frame->data[0] ? 0 : DVP_FLAG_DROPPED;
-  pDvdVideoPicture->pts = *(double*)frame->opaque;
+
+  if(frame->opaque)
+    pDvdVideoPicture->pts = *(double*)frame->opaque;
+  else
+    pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
 
   return true;
 }
