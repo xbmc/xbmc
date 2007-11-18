@@ -4,17 +4,6 @@
 #include "../xbmc/Util.h"
 #include "XMLUtils.h"
 
-// can be removed after hardcoded strings are in strings.xml
-CStdString ToUTF8(const CStdString& strEncoding, const CStdString& str)
-{
-  if (strEncoding.IsEmpty())
-    return str;
-
-  CStdString ret;
-  g_charsetConverter.stringCharsetToUtf8(strEncoding, str, ret);
-  return ret;
-}
-
 CLocalizeStrings g_localizeStrings;
 CLocalizeStrings g_localizeStringsTemp;
 extern CStdString g_LoadErrorStr;
@@ -29,160 +18,128 @@ CLocalizeStrings::~CLocalizeStrings(void)
 
 }
 
-bool CLocalizeStrings::Load(const CStdString& strFileName, const CStdString& strFallbackFileName)
+CStdString CLocalizeStrings::ToUTF8(const CStdString& strEncoding, const CStdString& str)
 {
-  bool bLoadFallback = !strFileName.Equals(strFallbackFileName);
-  m_vecStrings.erase(m_vecStrings.begin(), m_vecStrings.end());
-  TiXmlDocument xmlDoc;
-  if (!xmlDoc.LoadFile(strFileName.c_str()))
+  if (strEncoding.IsEmpty())
+    return str;
+
+  CStdString ret;
+  g_charsetConverter.stringCharsetToUtf8(strEncoding, str, ret);
+  return ret;
+}
+
+void CLocalizeStrings::ClearSkinStrings()
+{
+  // clear the skin strings
+  unsigned int skin_strings_start = 31001;
+  unsigned int skin_strings_end = 32000;
+  for (unsigned int str = skin_strings_start; str < skin_strings_end; str++)
   {
-    CLog::Log(LOGERROR, "unable to load %s: %s at line %d", strFileName.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
-    if (!bLoadFallback)
-    {
-      g_LoadErrorStr.Format("%s, Line %d\n%s", strFileName.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
-      return false;
-    }
-    else if (!xmlDoc.LoadFile(strFallbackFileName.c_str()))
-    {
-      CLog::Log(LOGERROR, "unable to load %s: %s at line %d", strFallbackFileName.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
-      g_LoadErrorStr.Format("%s, Line %d\n%s", strFallbackFileName.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
-      return false;
-    }
-    bLoadFallback = false;
+    iStrings it = m_strings.find(str);
+    if (it != m_strings.end())
+      m_strings.erase(it);
   }
-  
-  CStdString strEncoding;
-  XMLUtils::GetEncoding(&xmlDoc, strEncoding);
+}
+
+bool CLocalizeStrings::LoadSkinStrings(const CStdString& path, const CStdString& fallbackPath)
+{
+  ClearSkinStrings();
+  // load the skin strings in.
+  CStdString encoding, error;
+  if (!LoadXML(path, encoding, error))
+  {
+    if (path == fallbackPath) // no fallback, nothing to do
+      return false;
+  }
+
+  // load the fallback
+  if (path != fallbackPath)
+    LoadXML(fallbackPath, encoding, error);
+
+  return true;
+}
+
+bool CLocalizeStrings::LoadXML(const CStdString &filename, CStdString &encoding, CStdString &error)
+{
+  TiXmlDocument xmlDoc;
+  if (!xmlDoc.LoadFile(filename.c_str()))
+  {
+    CLog::Log(LOGERROR, "unable to load %s: %s at line %d", filename.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
+    error.Format("Unable to load %s: %s at line %d", filename.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
+    return false;
+  }
+
+  XMLUtils::GetEncoding(&xmlDoc, encoding);
 
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   if (!pRootElement || pRootElement->NoChildren() || 
-       pRootElement->Value()!=CStdString("strings"))
+       pRootElement->ValueStr()!=CStdString("strings"))
   {
-    CLog::Log(LOGERROR, "%s Doesn't contain <strings>", strFileName.c_str());
-    g_LoadErrorStr.Format("%s\nDoesnt start with <strings>", strFileName.c_str());
+    CLog::Log(LOGERROR, "%s Doesn't contain <strings>", filename.c_str());
+    error.Format("%s\nDoesnt start with <strings>", filename.c_str());
     return false;
   }
 
   const TiXmlElement *pChild = pRootElement->FirstChildElement("string");
   while (pChild)
   {
-    const TiXmlNode *pChildID = pChild->FirstChild("id");
-    const TiXmlNode *pChildText = pChild->FirstChild("value");
-    if (pChildID && !pChildID->NoChildren() &&
-        pChildText && !pChildText->NoChildren())
-    { // Load old style language file with nodes for id and value
-      DWORD dwID = atoi(pChildID->FirstChild()->Value());
-
-      CStdString utf8String;
-      if (strEncoding.IsEmpty()) // Is language file utf8?
-        utf8String=pChildText->FirstChild()->Value();
-      else
-        g_charsetConverter.stringCharsetToUtf8(strEncoding, pChildText->FirstChild()->Value(), utf8String);
-
-      m_vecStrings[dwID] = utf8String;
-    }
-    else
-    { // Load new style language file with id as attribute
-      const char* attrId=pChild->Attribute("id");
-      if (attrId && !pChild->NoChildren())
-      {
-        DWORD dwID = atoi(attrId);
-        CStdString utf8String;
-        if (strEncoding.IsEmpty()) // Is language file utf8?
-          utf8String=pChild->FirstChild()->Value();
-        else
-          g_charsetConverter.stringCharsetToUtf8(strEncoding, pChild->FirstChild()->Value(), utf8String);
-
-        m_vecStrings[dwID] = utf8String;
-      }
+    // Load new style language file with id as attribute
+    const char* attrId=pChild->Attribute("id");
+    if (attrId && !pChild->NoChildren())
+    {
+      DWORD dwID = atoi(attrId);
+      if (m_strings.find(dwID) == m_strings.end())
+        m_strings[dwID] = ToUTF8(encoding, pChild->FirstChild()->Value());
     }
     pChild = pChild->NextSiblingElement("string");
   }
+  return true;
+}
 
-  if (bLoadFallback)
+bool CLocalizeStrings::Load(const CStdString& strFileName, const CStdString& strFallbackFileName)
+{
+  bool bLoadFallback = !strFileName.Equals(strFallbackFileName);
+
+  CStdString encoding, error;
+  Clear();
+
+  if (!LoadXML(strFileName, encoding, error))
   {
-    // load the original fallback file
-    // and copy any missing texts
-    TiXmlDocument xmlDoc;
-    if ( !xmlDoc.LoadFile(strFallbackFileName) )
+    // try loading the fallback
+    if (!bLoadFallback || !LoadXML(strFallbackFileName, encoding, error))
     {
-      return true;
+      g_LoadErrorStr = error;
+      return false;
     }
-
-    XMLUtils::GetEncoding(&xmlDoc, strEncoding);
-
-    TiXmlElement* pRootElement = xmlDoc.RootElement();
-    if (!pRootElement || pRootElement->NoChildren() || 
-         pRootElement->Value()!=CStdString("strings")) return false;
-
-    const TiXmlElement *pChild = pRootElement->FirstChildElement("string");
-    while (pChild)
-    {
-      const TiXmlNode *pChildID = pChild->FirstChild("id");
-      const TiXmlNode *pChildText = pChild->FirstChild("value");
-      if (pChildID && !pChildID->NoChildren() &&
-          pChildText && !pChildText->NoChildren())
-      { // Load old style language file with nodes for id and value
-        DWORD dwID = atoi(pChildID->FirstChild()->Value());
-
-        ivecStrings i = m_vecStrings.find(dwID);
-        if (i == m_vecStrings.end())
-        {
-          CStdString utf8String;
-          if (strEncoding.IsEmpty()) // Is language file utf8?
-            utf8String=pChildText->FirstChild()->Value();
-          else
-            g_charsetConverter.stringCharsetToUtf8(strEncoding, pChildText->FirstChild()->Value(), utf8String);
-
-          m_vecStrings[dwID] = utf8String;
-        }
-      }
-      else
-      { // Load new style language file with id as attribute
-        const char* attrId=pChild->Attribute("id");
-        if (attrId && !pChild->NoChildren())
-        {
-          DWORD dwID = atoi(attrId);
-          ivecStrings i = m_vecStrings.find(dwID);
-          if (i == m_vecStrings.end())
-          {
-            CStdString utf8String;
-            if (strEncoding.IsEmpty()) // Is language file utf8?
-              utf8String=pChild->FirstChild()->Value();
-            else
-              g_charsetConverter.stringCharsetToUtf8(strEncoding, pChild->FirstChild()->Value(), utf8String);
-
-            m_vecStrings[dwID] = utf8String;
-          }
-        }
-      }
-      pChild = pChild->NextSiblingElement("string");
-    }
-
+    bLoadFallback = false;
   }
 
-  m_vecStrings[20022] = "";
-  m_vecStrings[20027] = ToUTF8(strEncoding, "°F");
-  m_vecStrings[20028] = ToUTF8(strEncoding, "K");
-  m_vecStrings[20029] = ToUTF8(strEncoding, "°C");
-  m_vecStrings[20030] = ToUTF8(strEncoding, "°Ré");
-  m_vecStrings[20031] = ToUTF8(strEncoding, "°Ra"); 
-  m_vecStrings[20032] = ToUTF8(strEncoding, "°Rø"); 
-  m_vecStrings[20033] = ToUTF8(strEncoding, "°De"); 
-  m_vecStrings[20034] = ToUTF8(strEncoding, "°N");
+  if (bLoadFallback)
+    LoadXML(strFallbackFileName, encoding, error);
 
-  m_vecStrings[20200] = ToUTF8(strEncoding, "km/h");
-  m_vecStrings[20201] = ToUTF8(strEncoding, "m/min");
-  m_vecStrings[20202] = ToUTF8(strEncoding, "m/s");
-  m_vecStrings[20203] = ToUTF8(strEncoding, "ft/h");
-  m_vecStrings[20204] = ToUTF8(strEncoding, "ft/min");
-  m_vecStrings[20205] = ToUTF8(strEncoding, "ft/s");
-  m_vecStrings[20206] = ToUTF8(strEncoding, "mph");
-  m_vecStrings[20207] = ToUTF8(strEncoding, "kts");
-  m_vecStrings[20208] = ToUTF8(strEncoding, "Beaufort");
-  m_vecStrings[20209] = ToUTF8(strEncoding, "inch/s");
-  m_vecStrings[20210] = ToUTF8(strEncoding, "yard/s");
-  m_vecStrings[20211] = ToUTF8(strEncoding, "Furlong/Fortnight");
+  // fill in the constant strings
+  m_strings[20022] = "";
+  m_strings[20027] = ToUTF8(encoding, "°F");
+  m_strings[20028] = ToUTF8(encoding, "K");
+  m_strings[20029] = ToUTF8(encoding, "°C");
+  m_strings[20030] = ToUTF8(encoding, "°Ré");
+  m_strings[20031] = ToUTF8(encoding, "°Ra"); 
+  m_strings[20032] = ToUTF8(encoding, "°Rø"); 
+  m_strings[20033] = ToUTF8(encoding, "°De"); 
+  m_strings[20034] = ToUTF8(encoding, "°N");
+
+  m_strings[20200] = ToUTF8(encoding, "km/h");
+  m_strings[20201] = ToUTF8(encoding, "m/min");
+  m_strings[20202] = ToUTF8(encoding, "m/s");
+  m_strings[20203] = ToUTF8(encoding, "ft/h");
+  m_strings[20204] = ToUTF8(encoding, "ft/min");
+  m_strings[20205] = ToUTF8(encoding, "ft/s");
+  m_strings[20206] = ToUTF8(encoding, "mph");
+  m_strings[20207] = ToUTF8(encoding, "kts");
+  m_strings[20208] = ToUTF8(encoding, "Beaufort");
+  m_strings[20209] = ToUTF8(encoding, "inch/s");
+  m_strings[20210] = ToUTF8(encoding, "yard/s");
+  m_strings[20211] = ToUTF8(encoding, "Furlong/Fortnight");
 
   return true;
 }
@@ -191,9 +148,8 @@ static CStdString szEmptyString = "";
 
 const CStdString& CLocalizeStrings::Get(DWORD dwCode) const
 {
-  ivecStrings i;
-  i = m_vecStrings.find(dwCode);
-  if (i == m_vecStrings.end())
+  ciStrings i = m_strings.find(dwCode);
+  if (i == m_strings.end())
   {
     return szEmptyString;
   }
@@ -202,5 +158,5 @@ const CStdString& CLocalizeStrings::Get(DWORD dwCode) const
 
 void CLocalizeStrings::Clear()
 {
-  m_vecStrings.erase(m_vecStrings.begin(), m_vecStrings.end());
+  m_strings.clear();
 }
