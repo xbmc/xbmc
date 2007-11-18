@@ -19,6 +19,9 @@ public:
   virtual const char* GetName() { return "FFmpeg"; };
 
 protected:
+  friend int my_get_buffer(struct AVCodecContext *, AVFrame *);
+  friend void my_release_buffer(struct AVCodecContext *, AVFrame *);
+
   void GetVideoAspect(AVCodecContext* CodecContext, unsigned int& iWidth, unsigned int& iHeight);
 
   AVFrame* m_pFrame;
@@ -31,8 +34,9 @@ protected:
 
   int m_iScreenWidth;
   int m_iScreenHeight;
-  
-  std::map<int, double> m_timestamps;
+
+  double m_pts;
+
   DllAvCodec m_dllAvCodec;
   DllAvUtil m_dllAvUtil;
 };
