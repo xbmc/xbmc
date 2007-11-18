@@ -9,6 +9,24 @@
 
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
 
+static int my_get_buffer(struct AVCodecContext *c, AVFrame *pic){
+    int ret= ((CDVDVideoCodecFFmpeg*)c->opaque)->m_dllAvCodec.avcodec_default_get_buffer(c, pic);
+    double *pts= (double*)malloc(sizeof(double));
+    *pts= ((CDVDVideoCodecFFmpeg*)c->opaque)->m_pts;
+    pic->opaque= pts;
+    return ret;
+}
+
+static void my_release_buffer(struct AVCodecContext *c, AVFrame *pic){
+    if(pic) 
+    {
+      free(pic->opaque);
+      pic->opaque = NULL;
+    }
+    ((CDVDVideoCodecFFmpeg*)c->opaque)->m_dllAvCodec.avcodec_default_release_buffer(c, pic);
+}
+
+
 CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
 {
   m_pCodecContext = NULL;
@@ -43,13 +61,17 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     return false;
   }
 
+  m_pCodecContext->opaque = (void*)this;
+  m_pCodecContext->get_buffer = my_get_buffer;
+  m_pCodecContext->release_buffer = my_release_buffer;
+
   m_pCodecContext->debug_mv = 0;
   m_pCodecContext->debug = 0;
   m_pCodecContext->workaround_bugs = FF_BUG_AUTODETECT;
   /* some decoders (eg. dv) do not know the pix_fmt until they decode the
    * first frame. setting to -1 avoid enabling DR1 for them.
    */
-  m_pCodecContext->pix_fmt = (PixelFormat) - 1;
+  m_pCodecContext->pix_fmt = (PixelFormat) - 1;  
 
   if (pCodec->capabilities & CODEC_CAP_DR1)
     m_pCodecContext->flags |= CODEC_FLAG_EMU_EDGE;
@@ -137,6 +159,10 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
   if (!m_pCodecContext) 
     return VC_ERROR;
 
+  // store pts, it will be used to set
+  // the pts of pictures decoded
+  m_pts = pts;
+
   try
   {
     len = m_dllAvCodec.avcodec_decode_video(m_pCodecContext, m_pFrame, &iGotPicture, pData, iSize);
@@ -158,10 +184,6 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
 
   if (!iGotPicture)
     return VC_BUFFER;
-
-  // store this timestamp for last coded frame
-  if (m_pCodecContext->coded_frame && m_pCodecContext->coded_frame->coded_picture_number > 0)
-    m_timestamps[m_pCodecContext->coded_frame->coded_picture_number] = pts;
 
   if (m_pCodecContext->pix_fmt != PIX_FMT_YUV420P)
   {
@@ -214,7 +236,7 @@ void CDVDVideoCodecFFmpeg::Reset()
     m_dllAvUtil.av_free(m_pConvertFrame);
     m_pConvertFrame = NULL;
   }
-  m_timestamps.clear();
+  m_pts = DVD_NOPTS_VALUE;
 
   } catch (win32_exception e) {
     e.writelog(__FUNCTION__);
@@ -242,16 +264,7 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->iFlags |= frame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;
   pDvdVideoPicture->iFlags |= frame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST: 0;
   pDvdVideoPicture->iFlags |= frame->data[0] ? 0 : DVP_FLAG_DROPPED;
-
-  // see if we can find a timestamp for this frame
-  std::map<int, double>::iterator it = m_timestamps.find(frame->coded_picture_number);
-  if(it != m_timestamps.end())
-  {
-    pDvdVideoPicture->pts = (*it).second;
-    m_timestamps.erase(it);
-  }
-  else
-    pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
+  pDvdVideoPicture->pts = *(double*)frame->opaque;
 
   return true;
 }
