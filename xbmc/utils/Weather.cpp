@@ -467,43 +467,22 @@ void CWeather::LoadLocalizedToken()
   {
     CStdString strValue = pChild->Value();
     if (strValue == "string")
-    {
-      const TiXmlNode *pChildID = pChild->FirstChild("id");
-      const TiXmlNode *pChildText = pChild->FirstChild("value");
-      if (pChildID && pChildID->FirstChild() && pChildText && pChildText->FirstChild())
+    { // Load new style language file with id as attribute
+      const char* attrId=pChild->Attribute("id");
+      if (attrId && !pChild->NoChildren())
       {
-        DWORD dwID = atoi(pChildID->FirstChild()->Value());
+        DWORD dwID = atoi(attrId);
         if ( (LOCALIZED_TOKEN_FIRSTID <= dwID && dwID <= LOCALIZED_TOKEN_LASTID) ||
             (LOCALIZED_TOKEN_FIRSTID2 <= dwID && dwID <= LOCALIZED_TOKEN_LASTID2) )
         {
           CStdString utf8Label;
           if (strEncoding.IsEmpty()) // Is language file utf8?
-            utf8Label=pChildText->FirstChild()->Value();
+            utf8Label=pChild->FirstChild()->Value();
           else
-            g_charsetConverter.stringCharsetToUtf8(strEncoding, pChildText->FirstChild()->Value(), utf8Label);
+            g_charsetConverter.stringCharsetToUtf8(strEncoding, pChild->FirstChild()->Value(), utf8Label);
 
           if (!utf8Label.IsEmpty())
             m_localizedTokens.insert(std::pair<string, DWORD>(utf8Label, dwID));
-        }
-      }
-      else
-      { // Load new style language file with id as attribute
-        const char* attrId=pChild->Attribute("id");
-        if (attrId && !pChild->NoChildren())
-        {
-          DWORD dwID = atoi(attrId);
-          if ( (LOCALIZED_TOKEN_FIRSTID <= dwID && dwID <= LOCALIZED_TOKEN_LASTID) ||
-              (LOCALIZED_TOKEN_FIRSTID2 <= dwID && dwID <= LOCALIZED_TOKEN_LASTID2) )
-          {
-            CStdString utf8Label;
-            if (strEncoding.IsEmpty()) // Is language file utf8?
-              utf8Label=pChild->FirstChild()->Value();
-            else
-              g_charsetConverter.stringCharsetToUtf8(strEncoding, pChild->FirstChild()->Value(), utf8Label);
-
-            if (!utf8Label.IsEmpty())
-              m_localizedTokens.insert(std::pair<string, DWORD>(utf8Label, dwID));
-          }
         }
       }
     }
