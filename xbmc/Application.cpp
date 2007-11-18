@@ -2611,8 +2611,19 @@ void CApplication::RenderMemoryStatus()
       CGUIFont* pFont = g_fontManager.GetFont("font13");
       if (pFont)
       {
-        float x = 0.04f * g_graphicsContext.GetWidth() + g_settings.m_ResInfo[res].Overscan.left;
-        float y = 0.04f * g_graphicsContext.GetHeight() + g_settings.m_ResInfo[res].Overscan.top;
+        static int yShift = 20;
+        static int xShift = 40;
+        static unsigned int lastShift = time(NULL);
+        time_t now = time(NULL);
+        if (now - lastShift > 10)
+        {
+          yShift *= -1;
+          if (now % 5 == 0)
+            xShift *= -1;
+          lastShift = now;
+        }
+        float x = xShift + 0.04f * g_graphicsContext.GetWidth() + g_settings.m_ResInfo[res].Overscan.left;
+        float y = yShift + 0.04f * g_graphicsContext.GetHeight() + g_settings.m_ResInfo[res].Overscan.top;
         pFont->DrawOutlineText(x, y, 0xffffffff, 0xff000000, 2, wszText);
       }
     }
