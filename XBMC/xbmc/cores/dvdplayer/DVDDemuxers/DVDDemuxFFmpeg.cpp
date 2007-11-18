@@ -278,12 +278,9 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       return false;
     }
   }
-
-  // for some reasons presentation timestamps in matroska is always wrong
-  // i'm guessing something get's set completly wrong somewhere in lavf
-  m_bDiscardPts = false;
-  if (strcmp(m_pFormatContext->iformat->name, "matroska") == 0)
-    m_bDiscardPts = true;
+  
+  // we need to know if this is matroska later
+  m_bMatroska = strcmp(m_pFormatContext->iformat->name, "matroska") == 0;
 
   // in combination with libdvdnav seek, av_find_stream_info wont work
   // so we do this for files only
@@ -488,8 +485,18 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
           if(pkt.pts == 0)
             pkt.pts = AV_NOPTS_VALUE;
 
-          if(m_bDiscardPts && pkt.dts != AV_NOPTS_VALUE)
-            pkt.pts = AV_NOPTS_VALUE;
+          if(m_bMatroska && stream->codec)
+          { // matroska can store different timestamps
+            // for different formats, for native stored
+            // stuff it is pts, but for ms compatibility
+            // tracks, it is really dts. sadly ffmpeg
+            // sets these two timestamps equal all the
+            // time, so we select it here instead
+            if(stream->codec->codec_tag == 0)
+              pkt.dts = AV_NOPTS_VALUE;
+            else
+              pkt.pts = AV_NOPTS_VALUE;
+          }
 
           // copy contents into our own packet
           pPacket->iSize = pkt.size;
