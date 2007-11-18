@@ -260,7 +260,7 @@ void CGUIWindowPictures::OnPrepareFileItems(CFileItemList& items)
 
   DWORD dwTick=timeGetTime();
 
-  while (loader.IsLoading())
+  while (loader.IsLoading() && !m_dlgProgress->IsCanceled())
   {
     if (bShowProgress)
     { // Do we have to init a progress dialog?
