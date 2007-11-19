@@ -234,7 +234,7 @@ void CFileCurl::SetCommonOptions()
   
   // Allow us to follow two redirects
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_FOLLOWLOCATION, TRUE);
-  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_MAXREDIRS, 2);
+  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_MAXREDIRS, 5);
 
   // When using multiple threads you should set the CURLOPT_NOSIGNAL option to
   // TRUE for all handles. Everything will work fine except that timeouts are not
