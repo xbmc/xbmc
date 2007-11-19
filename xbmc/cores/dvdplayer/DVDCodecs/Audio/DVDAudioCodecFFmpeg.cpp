@@ -5,6 +5,7 @@
 CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg() : CDVDAudioCodec()
 {
   m_iBufferSize = 0;
+  m_iBuffered = 0;
   m_pCodecContext = NULL;
   m_bOpenedCodec = false;
 }
@@ -77,6 +78,7 @@ void CDVDAudioCodecFFmpeg::Dispose()
   m_dllAvUtil.Unload();
   
   m_iBufferSize = 0;
+  m_iBuffered = 0;
 }
 
 int CDVDAudioCodecFFmpeg::Decode(BYTE* pData, int iSize)
@@ -85,6 +87,11 @@ int CDVDAudioCodecFFmpeg::Decode(BYTE* pData, int iSize)
   if (!m_pCodecContext) return -1;
 
   iBytesUsed = m_dllAvCodec.avcodec_decode_audio(m_pCodecContext, (int16_t *)m_buffer, &m_iBufferSize, pData, iSize);
+
+  if(m_iBufferSize == 0)
+    m_iBuffered += iBytesUsed;
+  else
+    m_iBuffered = 0;
 
   return iBytesUsed;
 }
@@ -98,6 +105,8 @@ int CDVDAudioCodecFFmpeg::GetData(BYTE** dst)
 void CDVDAudioCodecFFmpeg::Reset()
 {
   if (m_pCodecContext) m_dllAvCodec.avcodec_flush_buffers(m_pCodecContext);
+  m_iBufferSize = 0;
+  m_iBuffered = 0;
 }
 
 int CDVDAudioCodecFFmpeg::GetChannels()

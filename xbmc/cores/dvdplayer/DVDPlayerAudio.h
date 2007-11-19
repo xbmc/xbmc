@@ -32,7 +32,7 @@ typedef struct stDVDAudioFrame
   bool passthrough;
 } DVDAudioFrame;
 
-class CPTSQueue
+class CPTSOutputQueue
 {
 private:
   typedef struct {double pts; double timestamp; double duration;} TPTSItem;
@@ -40,10 +40,21 @@ private:
   std::queue<TPTSItem> m_queue;
 
 public:
-  CPTSQueue();
+  CPTSOutputQueue();
   void Add(double pts, double delay, double duration);
   void Flush();
   double Current();
+};
+
+class CPTSInputQueue
+{
+private:
+  typedef std::list<std::pair<__int64, double> >::iterator IT;
+  std::list<std::pair<__int64, double> > m_list;
+public:
+  void   Add(__int64 bytes, double pts);
+  double Get(__int64 bytes, bool consume);
+  void   Flush();
 };
 
 class CDVDPlayerAudio : public CThread
@@ -77,9 +88,10 @@ public:
   CDVDStreamInfo m_streaminfo;
   
   CDVDMessageQueue m_messageQueue;
-  CPTSQueue m_ptsQueue;
+  CPTSOutputQueue m_ptsOutput;
+  CPTSInputQueue  m_ptsInput;
 
-  double GetCurrentPts()                            { return m_ptsQueue.Current(); }
+  double GetCurrentPts()                            { return m_ptsOutput.Current(); }
 
   bool IsStalled()                                  { return m_stalled;  }
 protected:
