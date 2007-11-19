@@ -112,6 +112,9 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 
 void CDVDPlayerVideo::CloseStream(bool bWaitForBuffers)
 {
+  // wait until buffers are empty
+  if (bWaitForBuffers) m_messageQueue.WaitUntilEmpty();
+
   m_messageQueue.Abort();
 
   // wait for decode_video thread to end
