@@ -9,6 +9,10 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#ifdef _LINUX
+#include "linux/XSyncUtils.h"
+#endif
+
 class CCriticalSection
 {
 public:

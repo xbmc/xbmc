@@ -189,6 +189,8 @@
 #include "GUIDialogPictureInfo.h"
 #include "GUIDialogPluginSettings.h"
 
+#include "utils/PerformanceSample.h"
+
 #ifdef HAS_SDL
 #include <SDL/SDL_mixer.h>
 #ifdef _WIN32
@@ -2360,6 +2362,8 @@ void CApplication::Render()
 void CApplication::RenderNoPresent()
 {
 #endif
+  MEASURE_FUNCTION;
+
   // don't do anything that would require graphiccontext to be locked before here in fullscreen.
   // that stuff should go into renderfullscreen instead as that is called from the renderin thread
 #if defined(HAS_XBOX_HARDWARE) || defined (_LINUX)
@@ -2403,6 +2407,7 @@ void CApplication::RenderNoPresent()
 #endif
 
   g_ApplicationRenderer.Render();
+
 }
 
 void CApplication::DoRender()
@@ -2536,6 +2541,8 @@ void CApplication::SetQuiet(bool bQuiet)
 #ifndef HAS_XBOX_D3D
 void CApplication::Render()
 {
+  MEASURE_FUNCTION;
+
   { // frame rate limiter (really bad, but it does the trick :p)
     const static unsigned int singleFrameTime = 10;       // default limit 100 fps
     const static unsigned int singleVideoFrameTime = 33;  // 30 fps for fullscreen video
@@ -2588,6 +2595,8 @@ void CApplication::Render()
 
 void CApplication::RenderMemoryStatus()
 {
+  MEASURE_FUNCTION;
+
   g_infoManager.UpdateFPS();
 #if !defined(_DEBUG) && !defined(PROFILE)
   if (LOG_LEVEL_DEBUG_FREEMEM <= g_advancedSettings.m_logLevel)
@@ -2605,7 +2614,9 @@ void CApplication::RenderMemoryStatus()
 #ifndef _LINUX
       wszText.Format(L"FreeMem %d/%d Kb, FPS %2.1f, CPU %2.0f%%", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, g_infoManager.GetFPS(), (1.0f - m_idleThread.GetRelativeUsage())*100);
 #else
-      wszText.Format(L"FreeMem %d/%d Kb, FPS %2.1f, CPU %d%%", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, g_infoManager.GetFPS(), g_cpuInfo.getUsedPercentage());
+      double dCPU = m_resourceCounter.GetCPUUsage();
+      wszText.Format(L"FreeMem %d/%d Kb, FPS %2.1f, CPU-Total %d%%. CPU-XBMC %4.2f%%", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, 
+               g_infoManager.GetFPS(), g_cpuInfo.getUsedPercentage(), dCPU);
 #endif
 
       CGUIFont* pFont = g_fontManager.GetFont("font13");
@@ -3063,6 +3074,8 @@ void CApplication::UpdateLCD()
 
 void CApplication::FrameMove()
 {
+  MEASURE_FUNCTION;
+
   // currently we calculate the repeat time (ie time from last similar keypress) just global as fps
   float frameTime = m_frameTime.GetElapsedSeconds();
   m_frameTime.StartZero();
@@ -3440,6 +3453,8 @@ bool CApplication::ProcessRemote(float frameTime)
 
 bool CApplication::ProcessMouse()
 {
+  MEASURE_FUNCTION;
+
   if (!g_Mouse.IsActive())
     return false;
   // Reset the screensaver and idle timers
@@ -3563,6 +3578,8 @@ bool CApplication::ProcessHTTPApiButtons()
 
 bool CApplication::ProcessKeyboard()
 {
+  MEASURE_FUNCTION;
+
   // process the keyboard buttons etc.
   BYTE vkey = g_Keyboard.GetKey();
   WCHAR unicode = g_Keyboard.GetUnicode();
@@ -3766,6 +3783,10 @@ void CApplication::Stop()
 
     CLog::Log(LOGNOTICE, "unload sections");
     CSectionLoader::UnloadAll();
+
+    CLog::Log(LOGNOTICE, "performance statistics");
+    m_perfStats.DumpStats();
+
     // reset our d3d params before we destroy
 #ifndef HAS_SDL
     g_graphicsContext.SetD3DDevice(NULL);
@@ -4380,11 +4401,15 @@ bool CApplication::NeedRenderFullScreen()
 
 void CApplication::RenderFullScreen()
 {
+  MEASURE_FUNCTION;
+
   g_ApplicationRenderer.Render(true);
 }
 
 void CApplication::DoRenderFullScreen()
 {
+  MEASURE_FUNCTION;
+
   if (g_graphicsContext.IsFullScreenVideo())
   {
     // make sure our overlays are closed
@@ -5155,6 +5180,8 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
 void CApplication::Process()
 {
+  MEASURE_FUNCTION;  
+
   // check if we need to load a new skin
   if (m_dwSkinTime && timeGetTime() >= m_dwSkinTime)
   {
@@ -5851,4 +5878,9 @@ CNetworkLinux& CApplication::getNetwork()
    return m_network;
 }
 #endif
+
+CPerformanceStats &CApplication::GetPerformanceStats()
+{
+  return m_perfStats;
+}
 
