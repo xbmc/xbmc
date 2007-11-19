@@ -252,9 +252,7 @@ namespace PYXBMC
     {
       ((CGUIButtonControl*)self->pGUIControl)->PythonSetLabel(
         self->strFont, self->strText, self->dwTextColor, self->dwShadowColor, self->dwFocusedColor );
-      // hack for now - for some reason strText2 isnt allocated. causes a crash
-      if (self->strText2.c_str())
-        ((CGUIButtonControl*)self->pGUIControl)->SetLabel2(self->strText2);
+      ((CGUIButtonControl*)self->pGUIControl)->SetLabel2(self->strText2);
       ((CGUIButtonControl*)self->pGUIControl)->PythonSetDisabledColor(self->dwDisabledColor);
     }
     PyGUIUnlock();
