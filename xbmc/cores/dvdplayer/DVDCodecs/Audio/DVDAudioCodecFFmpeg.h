@@ -19,6 +19,7 @@ public:
   virtual int GetSampleRate();
   virtual int GetBitsPerSample();
   virtual const char* GetName() { return "FFmpeg"; }
+  virtual int GetBufferSize() { return m_iBuffered; }
 
 protected:
   AVCodecContext* m_pCodecContext;
@@ -26,6 +27,7 @@ protected:
   unsigned char m_buffer[AVCODEC_MAX_AUDIO_FRAME_SIZE];
   int m_iBufferSize;
   bool m_bOpenedCodec;
+  int m_iBuffered;
   
   DllAvCodec m_dllAvCodec;
   DllAvUtil m_dllAvUtil;
