@@ -27,6 +27,9 @@
 #include "NetworkLinux.h"
 #endif
 
+#include "utils/PerformanceStats.h"
+#include "linux/LinuxResourceCounter.h"
+
 using namespace MEDIA_DETECT;
 using namespace MUSIC_INFO;
 
@@ -161,6 +164,8 @@ public:
 #ifdef _LINUX
   CNetworkLinux& getNetwork();
 #endif
+  CPerformanceStats &GetPerformanceStats();
+
   CGUIDialogVolumeBar m_guiDialogVolumeBar;
   CGUIDialogSeekBar m_guiDialogSeekBar;
   CGUIDialogKaiToast m_guiDialogKaiToast;
@@ -265,6 +270,8 @@ protected:
 #ifdef _LINUX
   CNetworkLinux		m_network;
 #endif
+  CPerformanceStats m_perfStats;
+  CLinuxResourceCounter m_resourceCounter;
 };
 
 extern CApplication g_application;

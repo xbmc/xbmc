@@ -1,4 +1,5 @@
 # KDevelop Custom Project File List
+.
 Makefile
 Makefile.include
 guilib/ActionManager.cpp

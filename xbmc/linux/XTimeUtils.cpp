@@ -3,6 +3,8 @@
 #include "../utils/log.h"
 #include <errno.h>
 #include <time.h>
+#include <unistd.h>
+#include <sys/times.h>
 
 #define WIN32_TIME_OFFSET ((unsigned long long)(369 * 365 + 89) * 24 * 3600 * 10000000)
 
@@ -43,12 +45,17 @@ DWORD GetTickCount(void)
   return SDL_GetTicks();
 }
 
-BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount) {
+BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount, bool bUseHighRes) {
   if (lpPerformanceCount == NULL)
     return false;
 
   struct timespec now;
-  if (clock_gettime(CLOCK_MONOTONIC,&now) != 0) {
+
+  clockid_t clockUsed = CLOCK_MONOTONIC;
+  if (bUseHighRes)
+    clockUsed = CLOCK_PROCESS_CPUTIME_ID;
+
+  if (clock_gettime(clockUsed,&now) != 0) {
     CLog::Log(LOGERROR,"%s - error %d getting timer", __FUNCTION__, errno);
     return false;
   }
@@ -58,6 +65,7 @@ BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount) {
 }
 
 BOOL QueryPerformanceFrequency(LARGE_INTEGER *lpFrequency) {
+
   if (lpFrequency == NULL)
     return false;
 
