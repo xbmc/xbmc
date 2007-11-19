@@ -51,13 +51,24 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
         while((overlay = m_pOverlayCodec->GetOverlay()) != NULL)
         {
           overlay->iGroupId = pPacket->iGroupId;
-          overlay->iPTSStartTime += pPacket->dts;
 
-          if(overlay->iPTSStopTime == 0.0 && pPacket->duration != 0.0)
-            overlay->iPTSStopTime = pPacket->duration;
+          double pts = pPacket->dts != DVD_NOPTS_VALUE ? pPacket->dts : pPacket->pts;
+          double duration = pPacket->duration;
 
-          if(overlay->iPTSStopTime != 0.0)
-            overlay->iPTSStopTime += pPacket->dts;
+          if(pts == DVD_NOPTS_VALUE)
+          {
+            CLog::Log(LOGWARNING, "%s - unable to find timestamp for overlay", __FUNCTION__);
+            overlay->iPTSStartTime = 0;
+            overlay->iPTSStopTime = 0;
+          }
+          else
+          {
+            overlay->iPTSStartTime += pts;
+            if(overlay->iPTSStopTime == 0.0 && duration != 0.0)
+              overlay->iPTSStopTime = duration;
+            if(overlay->iPTSStopTime != 0.0)
+              overlay->iPTSStopTime += pts;
+          }
 
           m_pOverlayContainer->Add(overlay);
           overlay->Release();

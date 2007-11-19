@@ -79,6 +79,6 @@ protected:
   DllAvUtil   m_dllAvUtil;
   
   double m_iCurrentPts; // used for stream length estimation
-  bool m_bDiscardPts;
+  bool   m_bMatroska;
   int m_speed;
 };
