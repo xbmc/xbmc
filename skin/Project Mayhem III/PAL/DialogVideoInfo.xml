@@ -63,7 +63,7 @@
 				<description>Top 250 Value</description>
 				<posx>310</posx>
 				<posy>103</posy>
-				<width>375</width>
+				<width>361</width>
 				<label>$INFO[listitem.top250,#, $LOCALIZE[13408]]</label>
 				<font>font11</font>
 				<visible>!IsEmpty(listitem.top250) + !container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
@@ -163,7 +163,7 @@
 				<description>Studio value</description>
 				<posx>310</posx>
 				<posy>123</posy>
-				<width>375</width>
+				<width>361</width>
 				<label>-</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
@@ -173,7 +173,7 @@
 				<description>Director value</description>
 				<posx>310</posx>
 				<posy>143</posy>
-				<width>375</width>
+				<width>361</width>
 				<label>-</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
@@ -183,7 +183,7 @@
 				<description>Writing Credits value</description>
 				<posx>310</posx>
 				<posy>163</posy>
-				<width>375</width>
+				<width>361</width>
 				<label>-</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
@@ -193,7 +193,7 @@
 				<description>Genre value</description>
 				<posx>310</posx>
 				<posy>183</posy>
-				<width>375</width>
+				<width>361</width>
 				<label>-</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
@@ -203,7 +203,7 @@
 				<description>Year value</description>
 				<posx>310</posx>
 				<posy>203</posy>
-				<width>375</width>
+				<width>361</width>
 				<label>-</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
@@ -213,7 +213,7 @@
 				<description>TagLine value</description>
 				<posx>310</posx>
 				<posy>223</posy>
-				<width>375</width>
+				<width>361</width>
 				<label>-</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
@@ -223,7 +223,7 @@
 				<description>PlotOutline value</description>
 				<posx>310</posx>
 				<posy>243</posy>
-				<width>375</width>
+				<width>361</width>
 				<label>-</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
@@ -233,7 +233,7 @@
 				<description>Rating and votes value</description>
 				<posx>310</posx>
 				<posy>263</posy>
-				<width>375</width>
+				<width>361</width>
 				<label>-</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
@@ -243,7 +243,7 @@
 				<description>Runtime value</description>
 				<posx>310</posx>
 				<posy>283</posy>
-				<width>375</width>
+				<width>361</width>
 				<label>-</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
@@ -253,7 +253,7 @@
 				<description>MPPA Rating value</description>
 				<posx>310</posx>
 				<posy>303</posy>
-				<width>375</width>
+				<width>361</width>
 				<label>-</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
