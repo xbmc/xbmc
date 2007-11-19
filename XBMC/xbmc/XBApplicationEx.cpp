@@ -14,6 +14,7 @@
 #include "XBApplicationEx.h"
 #include "XBVideoConfig.h"
 #include "Application.h"
+#include "utils/PerformanceSample.h"
 
 //-----------------------------------------------------------------------------
 // Global access to common members
@@ -157,7 +158,7 @@ INT CXBApplicationEx::Run()
   // Run the game loop, animating and rendering frames
   while (!m_bStop)
   {
-
+    CPerformanceSample sampleLoop("XBApplicationEx-loop");  
 
     //-----------------------------------------
     // Perform app timing
@@ -291,6 +292,8 @@ inline float MaxTrigger(XBGAMEPAD &gamepad)
 #endif
 void CXBApplicationEx::ReadInput()
 {
+  MEASURE_FUNCTION;
+
   //-----------------------------------------
   // Handle input
   //-----------------------------------------

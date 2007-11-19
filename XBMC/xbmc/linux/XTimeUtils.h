@@ -8,8 +8,9 @@ VOID GetLocalTime(LPSYSTEMTIME);
 
 DWORD GetTickCount(void);
 
-// "Load Skin XML: %.2fms", 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart
-BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount);
+// timing methods.
+// when bUseHighRes is true - the cpu clock is used so it may cause bogus values on SMP when thread changes cpu.
+BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount, bool bUseHighRes=false);
 BOOL QueryPerformanceFrequency(LARGE_INTEGER *lpFrequency);
 
 void WINAPI Sleep(DWORD dwMilliSeconds);
