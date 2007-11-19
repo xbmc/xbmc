@@ -2126,7 +2126,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   CUtil::AddFileToFolder(skinPath, "strings.xml", skinPath);
 
   CUtil::AddFileToFolder(strSkinPath, "language", skinEnglishPath);
-  CUtil::AddFileToFolder(skinEnglishPath, "english", skinEnglishPath);
+  CUtil::AddFileToFolder(skinEnglishPath, "English", skinEnglishPath);
   CUtil::AddFileToFolder(skinEnglishPath, "strings.xml", skinEnglishPath);
 
   g_localizeStrings.LoadSkinStrings(skinPath, skinEnglishPath);
