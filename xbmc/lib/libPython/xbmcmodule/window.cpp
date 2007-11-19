@@ -135,6 +135,7 @@ namespace PYXBMC
       pControl = (Control*)ControlButton_Type.tp_alloc(&ControlButton_Type, 0);
       new(&((ControlButton*)pControl)->strFont) string();    
       new(&((ControlButton*)pControl)->strText) string();    
+      new(&((ControlButton*)pControl)->strText2) string();    
       new(&((ControlButton*)pControl)->strTextureFocus) string();    
       new(&((ControlButton*)pControl)->strTextureNoFocus) string(); 
 
