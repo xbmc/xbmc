@@ -63,7 +63,7 @@
 			</RegExp>							
 			<RegExp input="$$8" output="&lt;episodeguide&gt;\1&lt;/episodeguide&gt;" dest="5+">     
 				<RegExp input="$$3" output="&lt;url&gt;http://www.tv.com/show/$$4/episode_listings.html?season=1&lt;/url&gt;" dest="8">
-					<expression>\|[^&lt;]+Next Season</expression>
+					<expression>&lt;[^&lt;]+Next Season</expression>
 				</RegExp>                                           
 				<RegExp input="$$3" output="&lt;url&gt;http://www.tv.com/show/$$4/episode_listings.html?season=\1&lt;/url&gt;" dest="8">
 					<expression repeat="yes">&lt;option[^&gt;]*tag=season_dropdown[^&gt;]*&gt;Season ([0-9]+)&lt;/option&gt;</expression>
