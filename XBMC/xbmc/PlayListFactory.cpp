@@ -66,6 +66,9 @@ CPlayList* CPlayListFactory::Create(const CFileItem& item)
 
     if (strContentType == "audio/x-mpegurl")
       return new CPlayListM3U();
+
+    if (strContentType == "application/vnd.ms-wpl")
+      return new CPlayListWPL();
   }
 
   CStdString extension = CUtil::GetExtension(item.m_strPath);
