@@ -25,8 +25,10 @@
  * @author Michael Niedermayer <michaelni@gmx.at>
  */
 
-#ifndef INTEGER_H
-#define INTEGER_H
+#ifndef FFMPEG_INTEGER_H
+#define FFMPEG_INTEGER_H
+
+//#include <stdint.h>
 
 #define AV_INTEGER_SIZE 8
 
