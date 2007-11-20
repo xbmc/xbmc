@@ -63,6 +63,9 @@ CPlayList* CPlayListFactory::Create(const CFileItem& item)
     || strContentType == "playlist"
     || strContentType == "text/html")
       return new CPlayListPLS();
+
+    if (strContentType == "audio/x-mpegurl")
+      return new CPlayListM3U();
   }
 
   CStdString extension = CUtil::GetExtension(item.m_strPath);
