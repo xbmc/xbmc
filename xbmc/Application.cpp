@@ -903,6 +903,11 @@ HRESULT CApplication::Create(HWND hWnd)
         return E_FAIL;
   }
 
+#ifdef _LINUX
+  // for python scripts that check the OS
+  setenv("OS","Linux",true);
+#endif
+
 #endif
 
   //list available videomodes
