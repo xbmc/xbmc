@@ -2891,13 +2891,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
   else
     retVal = SetResponse(openTag+"Error:Missing command");
 //relinquish the remainder of time slice
-#ifndef _DEBUG 
   Sleep(0);
-#else
-  //Not sure why but to have a reliable debugging experience I need a bigger value here otherwise the thread sometimes gets lost.
-  //Perhaps time to upgrade my PC.
-  Sleep(500);
-#endif
   CLog::Log(LOGDEBUG, "HttpApi Finished command: %s", command.c_str());
   return retVal;
 }
