@@ -226,8 +226,8 @@ typedef struct _TIME_ZONE_INFORMATION {
 typedef int SOCKET;
 
 // Critical section
-#define CRITICAL_SECTION   CXHandle
-#define LPCRITICAL_SECTION CXHandle*
+#define CRITICAL_SECTION   pthread_mutex_t
+#define LPCRITICAL_SECTION pthread_mutex_t*
 
 // Thread
 typedef int (*LPTHREAD_START_ROUTINE)(void *);

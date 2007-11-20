@@ -50,7 +50,14 @@ BOOL NTAPI OwningCriticalSection(LPCRITICAL_SECTION section)
 #ifdef _XBOX
   return (PKTHREAD)section->OwningThread == GetCurrentKPCR()->PrcbData.CurrentThread;
 #elif defined(_LINUX)
-  return section->OwningThread == GetCurrentThreadId();
+  bool bOwning = false;
+  if (section->__data.__count > 0)
+  {
+    bOwning = (pthread_mutex_trylock(section) == 0);
+    if (bOwning)
+      pthread_mutex_unlock(section);
+  }
+  return bOwning;
 #else
   return section->OwningThread == (HANDLE)GetCurrentThreadId();
 #endif
@@ -61,7 +68,11 @@ DWORD NTAPI ExitCriticalSection(LPCRITICAL_SECTION section)
   if(!OwningCriticalSection(section))
     return 0;
 
+#ifndef _LINUX
   DWORD count = section->RecursionCount;
+#else
+  DWORD count = section->__data.__count;
+#endif
   
   for(DWORD i=0;i<count;i++)
     LeaveCriticalSection(section);

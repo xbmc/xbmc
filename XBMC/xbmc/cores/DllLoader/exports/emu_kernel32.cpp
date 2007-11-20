@@ -320,6 +320,7 @@ extern "C" void WINAPI dllEnterCriticalSection(LPCRITICAL_SECTION cs)
 #ifdef API_DEBUG
   CLog::Log(LOGDEBUG, "EnterCriticalSection(0x%x) %p\n", cs, ((LPCRITICAL_SECTION*)cs)[0]);
 #endif
+#ifndef _LINUX
   if (!(LPCRITICAL_SECTION)cs->OwningThread)
   {
 #ifdef API_DEBUG
@@ -327,6 +328,7 @@ extern "C" void WINAPI dllEnterCriticalSection(LPCRITICAL_SECTION cs)
 #endif
     dllInitializeCriticalSection(cs);
   }
+#endif
   EnterCriticalSection(((LPCRITICAL_SECTION*)cs)[0]);
 }
 
