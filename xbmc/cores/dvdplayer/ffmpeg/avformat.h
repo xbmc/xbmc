@@ -18,11 +18,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef AVFORMAT_H
-#define AVFORMAT_H
+#ifndef FFMPEG_AVFORMAT_H
+#define FFMPEG_AVFORMAT_H
 
-#define LIBAVFORMAT_VERSION_INT ((51<<16)+(14<<8)+0)
-#define LIBAVFORMAT_VERSION     51.14.0
+#define LIBAVFORMAT_VERSION_INT ((51<<16)+(19<<8)+0)
+#define LIBAVFORMAT_VERSION     51.19.0
 #define LIBAVFORMAT_BUILD       LIBAVFORMAT_VERSION_INT
 
 #define LIBAVFORMAT_IDENT       "Lavf" AV_STRINGIFY(LIBAVFORMAT_VERSION)
@@ -353,6 +353,8 @@ typedef struct AVProgram {
     char           *name;          ///< Service name for DVB streams
     int            flags;
     enum AVDiscard discard;        ///< selects which program to discard and which to feed to the caller
+    unsigned int   *stream_index;
+    unsigned int   nb_stream_indexes;
 } AVProgram;
 
 #define AVFMTCTX_NOHEADER      0x0001 /**< signal that no header is present
@@ -462,10 +464,6 @@ enum CodecID av_guess_image2_codec(const char *filename);
 
 /* XXX: use automatic init with either ELF sections or C file parser */
 /* modules */
-
-#include "rtp.h"
-
-#include "rtsp.h"
 
 /* utils.c */
 void av_register_input_format(AVInputFormat *format);
@@ -584,7 +582,7 @@ AVFormatContext *av_alloc_format_context(void);
  *
  * @param ic media file handle
  * @return >=0 if OK. AVERROR_xxx if error.
- * @todo Let user decide somehow what information is needed so we do not waste time geting stuff the user does not need.
+ * @todo Let user decide somehow what information is needed so we do not waste time getting stuff the user does not need.
  */
 int av_find_stream_info(AVFormatContext *ic);
 
@@ -865,7 +863,7 @@ int find_info_tag(char *arg, int arg_size, const char *tag1, const char *info);
  * @param buf destination buffer
  * @param buf_size destination buffer size
  * @param path numbered sequence string
- * @number frame number
+ * @param number frame number
  * @return 0 if OK, -1 if format error.
  */
 int av_get_frame_filename(char *buf, int buf_size,
@@ -935,5 +933,4 @@ int match_ext(const char *filename, const char *extensions);
 
 #endif /* HAVE_AV_CONFIG_H */
 
-#endif /* AVFORMAT_H */
-
+#endif /* FFMPEG_AVFORMAT_H */
