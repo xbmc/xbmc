@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scraper name="MTV" content="musicvideos" thumb="mtv.jpg">
+	<CreateSearchUrl dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;http://www.mtv.com/search/?searchterm=\1&lt;/url&gt;" dest="3">
+			<expression></expression>
+		</RegExp>
+	</CreateSearchUrl>
+	<GetSearchResults dest="8">
+		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\3 - \2 (\4)&lt;/title&gt;&lt;url&gt;http://www.mtv.com/overdrive/\1&lt;/url&gt;&lt;/entity&gt;" dest="5+">
+				<expression noclean="1">&lt;a href=&quot;http://www.mtv.com/overdrive/([^&quot;]*)&quot;&gt;\nMusic Video \| ([^&lt;]*)&lt;/a&gt;\n&lt;/strong&gt;\nArtist: &lt;b&gt;([^&lt;]*)&lt;/b&gt;\n&lt;br/&gt;\nAlbum: [^&lt;]*&lt;br/&gt;\nDirector: [^&lt;]*&lt;br/&gt;\n&lt;p class=&quot;meta&quot;&gt;([0-9]*)-[^&lt;]*&lt;/p&gt;</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>		
+	</GetSearchResults>
+	<GetDetails dest="3">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5">
+				<expression trim="1" noclean="1">&lt;h2 class=&quot;sub-title&quot;&gt;([^&lt;]*)&lt;/h2&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;artist&gt;\1&lt;/artist&gt;" dest="5+">
+				<expression>&lt;h2 class=&quot;sub-title&quot;&gt;([^&lt;]*) -[^&lt;]*&lt;/h2&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;album&gt;\1&lt;/album&gt;" dest="5+">
+				<expression>&lt;b&gt;Album:&lt;/b&gt; ([^&lt;]*)&lt;/li&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="5+">
+				<expression>&lt;b&gt;Label:&lt;/b&gt; ([^&lt;]*)&lt;/li&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;year&gt;\1&lt;/year&gt;" dest="5+">
+				<expression>&lt;meta name=&quot;content_create_date&quot; content=&quot;([0-9]*)-[^&quot;]*&quot;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;director&gt;\1&lt;/director&gt;" dest="5+">
+				<expression>&lt;b&gt;Director:&lt;/b&gt; ([^&lt;]*)&lt;/li&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output=";&lt;thumb&gt;http://www.mtv.com\1&lt;/thumb&gt;" dest="5+">
+				<expression noclean="1">&lt;meta name=&quot;thumbnail&quot;[^&quot;]*&quot;([^&quot;]*)&quot;</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetDetails>
+</scraper>

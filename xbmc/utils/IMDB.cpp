@@ -9,6 +9,7 @@
 #include "XMLUtils.h"
 #include "RegExp.h"
 #include "ScraperParser.h"
+#include "NfoFile.h"
 
 using namespace HTML;
 
@@ -94,7 +95,20 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
   CStdString strHTML, strYear;
   CScraperUrl scrURL;
   
-  GetURL(strMovie, scrURL, strYear);
+  if (m_parser.HasFunction("CreateSearchUrl"))
+  {
+    GetURL(strMovie, scrURL, strYear);
+  }
+  else if (m_info.strContent.Equals("musicvideos"))
+  {
+    if (!m_parser.HasFunction("ScrapeFilename"))
+      return false;
+    CScraperUrl scrURL("filenamescrape");
+    url.m_scrURL.push_back(scrURL);
+    url.m_strTitle = strMovie;
+    movielist.push_back(url);
+    return true;
+  }
 
   if (!Get(scrURL, strHTML) || strHTML.size() == 0)
   {
@@ -276,7 +290,9 @@ bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CVideoInfoTag& movieDetails,
   {
     CStdString strCurrHTML;
     CScraperUrl strU = url.m_scrURL[i];
-    if (!Get( strU,strCurrHTML) || strCurrHTML.size() == 0)
+    if (strU.m_xml.Equals("filenamescrape"))
+      return ScrapeFilename(url.m_strTitle,movieDetails);
+    if (!Get(strU,strCurrHTML) || strCurrHTML.size() == 0)
       return false;
     strHTML.push_back(strCurrHTML);
   }
@@ -387,48 +403,61 @@ void CIMDB::RemoveAllAfter(char* szMovie, const char* szSearch)
 void CIMDB::GetURL(const CStdString &strMovie, CScraperUrl& scrURL, CStdString& strYear)
 {
 #define SEP " _\\.\\(\\)\\[\\]\\-"
-
-
-  CStdString strSearch1, strSearch2;
-  strSearch1 = strMovie;
-  strSearch1.ToLower();
-
-  CRegExp reYear;
-  reYear.RegComp("(.+[^"SEP"])["SEP"]+(19[0-9][0-9]|20[0-1][0-9])(["SEP"]|$)");
-  if (reYear.RegFind(strSearch1.c_str()) >= 0)
+  bool bOkay=false;
+  if (m_info.strContent.Equals("musicvideos"))
   {
-    char *pMovie = reYear.GetReplaceString("\\1");
-    char *pYear = reYear.GetReplaceString("\\2");
-
-    if(pMovie)
-    {      
-      strSearch1 = pMovie;
-      free(pMovie);
-    }
-    if(pYear)
+    CVideoInfoTag tag;
+    if (ScrapeFilename(strMovie,tag))
     {
-      strYear = pYear;
-      free(pYear);
+      m_parser.m_param[0] = tag.GetArtist();
+      m_parser.m_param[1] = tag.m_strTitle;
+      CUtil::URLEncode(m_parser.m_param[0]);
+      CUtil::URLEncode(m_parser.m_param[1]);
+      bOkay = true;
     }
   }
+  if (!bOkay)
+  {
+    CStdString strSearch1, strSearch2;
+    strSearch1 = strMovie;
+    strSearch1.ToLower();
 
-  CRegExp reTags;
-  reTags.RegComp("["SEP"](ac3|custom|dc|divx|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|fragment|fs|hdtv|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r5|se|svcd|swedish|unrated|ws|xvid|xxx|cd[1-9]|\\[.*\\])(["SEP"]|$)");
-  
-  int i=0;  
-  if ((i=reTags.RegFind(strSearch1.c_str())) >= 0) // new logic - select the crap then drop anything to the right of it
-    strSearch2 = strSearch1.Mid(0, i);
-  else
-    strSearch2 = strSearch1;
+    CRegExp reYear;
+    reYear.RegComp("(.+[^"SEP"])["SEP"]+(19[0-9][0-9]|20[0-1][0-9])(["SEP"]|$)");
+    if (reYear.RegFind(strSearch1.c_str()) >= 0)
+    {
+      char *pMovie = reYear.GetReplaceString("\\1");
+      char *pYear = reYear.GetReplaceString("\\2");
 
-  strSearch2.Trim();
-  strSearch2.Replace('.', ' ');
-  strSearch2.Replace('-', ' ');
+      if(pMovie)
+      {      
+        strSearch1 = pMovie;
+        free(pMovie);
+      }
+      if(pYear)
+      {
+        strYear = pYear;
+        free(pYear);
+      }
+    }
 
-  CUtil::URLEncode(strSearch2);
+    CRegExp reTags;
+    reTags.RegComp("["SEP"](ac3|custom|dc|divx|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|fragment|fs|hdtv|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r5|se|svcd|swedish|unrated|ws|xvid|xxx|cd[1-9]|\\[.*\\])(["SEP"]|$)");
 
-  m_parser.m_param[0] = strSearch2;
+    int i=0;  
+    if ((i=reTags.RegFind(strSearch1.c_str())) >= 0) // new logic - select the crap then drop anything to the right of it
+      strSearch2 = strSearch1.Mid(0, i);
+    else
+      strSearch2 = strSearch1;
 
+    strSearch2.Trim();
+    strSearch2.Replace('.', ' ');
+    strSearch2.Replace('-', ' ');
+
+    CUtil::URLEncode(strSearch2);
+
+    m_parser.m_param[0] = strSearch2;
+  }
   scrURL.ParseString(m_parser.Parse("CreateSearchUrl"));
 }
 
@@ -599,4 +628,25 @@ void CIMDB::CloseThread()
   StopThread();
   m_state = DO_NOTHING;
   m_found = false;
+}
+
+bool CIMDB::ScrapeFilename(const CStdString& strFileName, CVideoInfoTag& details)
+{
+  if (strFileName.Find("/") > -1 || strFileName.Find("\\") > -1)
+    m_parser.m_param[0] = CUtil::GetFileName(strFileName);
+  else
+    m_parser.m_param[0] = strFileName;
+
+  CUtil::RemoveExtension(m_parser.m_param[0]);
+  m_parser.m_param[0].Replace("_"," ");
+  CStdString strResult = m_parser.Parse("FileNameScrape");
+  TiXmlDocument doc;
+  doc.Parse(strResult.c_str());
+  if (doc.RootElement())
+  {
+    CNfoFile file(m_info.strContent);
+    if (file.GetDetails(details,strResult.c_str()))
+      return true;
+  }
+  return false;
 }

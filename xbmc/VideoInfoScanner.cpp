@@ -540,17 +540,11 @@ namespace VIDEO
                     CVideoInfoTag movieDetails;
                     nfoReader.GetDetails(movieDetails);
                     AddMovieAndGetThumb(pItem, "musicvideos", movieDetails, -1, false, m_dlgProgress);
+                    continue;
                   }
                 }
               }
-              else // Scrape based on filename
-              {
-                CVideoInfoTag movieDetails;
-                if (ScrapeFilename(pItem->m_strPath,info,movieDetails))
-                  AddMovieAndGetThumb(pItem, "musicvideos", movieDetails, -1, false, m_dlgProgress);
-              }
             }
-            continue;
           }
 
           IMDB_MOVIELIST movielist;
@@ -1111,25 +1105,5 @@ namespace VIDEO
       }
     }
     return true;
-  }
-
-  bool CVideoInfoScanner::ScrapeFilename(const CStdString& strFileName, const SScraperInfo& info, CVideoInfoTag& details)
-  {
-    CScraperParser parser;
-    if (!parser.Load("q:\\system\\scrapers\\video\\"+info.strPath))
-      return false;
-    parser.m_param[0] = CUtil::GetFileName(strFileName);
-    CUtil::RemoveExtension(parser.m_param[0]);
-    parser.m_param[0].Replace("_"," ");
-    CStdString strResult = parser.Parse("FileNameScrape");
-    TiXmlDocument doc;
-    doc.Parse(strResult.c_str());
-    if (doc.RootElement())
-    {
-      CNfoFile file(info.strContent);
-      if (file.GetDetails(details,strResult.c_str()))
-        return true;
-    }
-    return false;
   }
 }
