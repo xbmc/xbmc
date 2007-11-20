@@ -18,8 +18,8 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
-#ifndef AVIO_H
-#define AVIO_H
+#ifndef FFMPEG_AVIO_H
+#define FFMPEG_AVIO_H
 
 /* output byte stream handling */
 
@@ -190,6 +190,8 @@ unsigned int get_be24(ByteIOContext *s);
 unsigned int get_be32(ByteIOContext *s);
 uint64_t get_be64(ByteIOContext *s);
 
+uint64_t ff_get_v(ByteIOContext *bc);
+
 static inline int url_is_streamed(ByteIOContext *s)
 {
     return s->is_streamed;
@@ -201,6 +203,11 @@ int url_fdopen(ByteIOContext *s, URLContext *h);
 
 /** @warning must be called before any I/O */
 int url_setbufsize(ByteIOContext *s, int buf_size);
+/** Reset the buffer for reading or writing.
+ * @note Will drop any data currently in the buffer without transmitting it.
+ * @param flags URL_RDONLY to set up the buffer for reading, or URL_WRONLY
+ *        to set up the buffer for writing. */
+int url_resetbuf(ByteIOContext *s, int flags);
 
 /** @note when opened as read/write, the buffers are only used for
    writing */
@@ -213,7 +220,7 @@ URLContext *url_fileno(ByteIOContext *s);
  * handle. If the file is not packetized (stream like http or file on
  * disk), then 0 is returned.
  *
- * @param h buffered file handle
+ * @param s buffered file handle
  * @return maximum packet size in bytes
  */
 int url_fget_max_packet_size(ByteIOContext *s);
@@ -246,11 +253,12 @@ int url_open_dyn_packet_buf(ByteIOContext *s, int max_packet_size);
  * Return the written size and a pointer to the buffer. The buffer
  *  must be freed with av_free().
  * @param s IO context
- * @param pointer to a byte buffer
+ * @param pbuffer pointer to a byte buffer
  * @return the length of the byte buffer
  */
 int url_close_dyn_buf(ByteIOContext *s, uint8_t **pbuffer);
 
+unsigned long ff_crc04C11DB7_update(unsigned long checksum, const uint8_t *buf, unsigned int len);
 unsigned long get_checksum(ByteIOContext *s);
 void init_checksum(ByteIOContext *s, unsigned long (*update_checksum)(unsigned long c, const uint8_t *p, unsigned int len), unsigned long checksum);
 
@@ -259,5 +267,4 @@ int udp_set_remote_url(URLContext *h, const char *uri);
 int udp_get_local_port(URLContext *h);
 int udp_get_file_handle(URLContext *h);
 
-#endif
-
+#endif /* FFMPEG_AVIO_H */

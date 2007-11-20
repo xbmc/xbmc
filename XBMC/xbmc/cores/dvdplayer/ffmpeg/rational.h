@@ -25,8 +25,10 @@
  * @author Michael Niedermayer <michaelni@gmx.at>
  */
 
-#ifndef RATIONAL_H
-#define RATIONAL_H
+#ifndef FFMPEG_RATIONAL_H
+#define FFMPEG_RATIONAL_H
+
+//#include <stdint.h>
 
 /**
  * Rational number num/den.
@@ -110,4 +112,4 @@ AVRational av_sub_q(AVRational b, AVRational c);
  */
 AVRational av_d2q(double d, int max);
 
-#endif // RATIONAL_H
+#endif /* FFMPEG_RATIONAL_H */
