@@ -507,6 +507,16 @@ const CStdString CScraperParser::Parse(const CStdString& strTag)
   return tmp;
 }
 
+bool CScraperParser::HasFunction(const CStdString& strTag)
+{
+  TiXmlElement* pChildElement = m_pRootElement->FirstChildElement(strTag.c_str());
+  
+  if (!pChildElement) 
+    return false;
+  
+  return true;
+}
+
 void CScraperParser::Clean(CStdString& strDirty)
 {
   int i=0;
