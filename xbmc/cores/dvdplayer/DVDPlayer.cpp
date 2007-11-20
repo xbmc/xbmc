@@ -375,10 +375,10 @@ void CDVDPlayer::Process()
     }
 
     CDemuxStream *pStream = m_pDemuxer->GetStream(pPacket->iStreamId);
-
     if (!pStream) 
     {
-      CLog::Log(LOGERROR, "%s - Error demux packet doesn't belong to any stream", __FUNCTION__);
+      if(pPacket->iStreamId != -1)
+        CLog::Log(LOGERROR, "%s - Error demux packet doesn't belong to any stream", __FUNCTION__);
       continue;
     }
 
