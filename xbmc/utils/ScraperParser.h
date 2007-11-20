@@ -50,6 +50,7 @@ public:
   const CStdString GetName() { return m_name; }
   const CStdString GetContent() { return m_content; }
   const CStdString Parse(const CStdString& strTag);
+  bool HasFunction(const CStdString& strTag);
 
   CStdString m_param[9];
   static char* ConvertHTMLToAnsi(const char *szHTML);

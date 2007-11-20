@@ -50,6 +50,7 @@ public:
   bool GetDetails(const CIMDBUrl& url, CVideoInfoTag &movieDetails, CGUIDialogProgress *pProgress = NULL);
   bool GetEpisodeDetails(const CIMDBUrl& url, CVideoInfoTag &movieDetails, CGUIDialogProgress *pProgress = NULL);
   bool GetEpisodeList(const CIMDBUrl& url, IMDB_EPISODELIST& details, CGUIDialogProgress *pProgress = NULL);
+  bool ScrapeFilename(const CStdString& strFileName, CVideoInfoTag& details);
 
   void SetScraperInfo(const SScraperInfo& info) { m_info = info; }
 protected:
