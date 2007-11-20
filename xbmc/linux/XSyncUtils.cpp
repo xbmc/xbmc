@@ -11,6 +11,8 @@
 #include <time.h>
 #include <errno.h>
 
+#include "../utils/log.h"
+
 SDL_mutex *g_mutex = SDL_CreateMutex();
 
 bool InitializeRecursiveMutex(HANDLE hMutex, BOOL bInitialOwner) {
@@ -73,20 +75,29 @@ bool WINAPI ReleaseMutex( HANDLE hMutex ) {
 
 void WINAPI InitializeCriticalSection(LPCRITICAL_SECTION lpCriticalSection) {
   if (lpCriticalSection)
-    InitializeRecursiveMutex(lpCriticalSection,false);
+  {
+    pthread_mutexattr_t attr;
+    pthread_mutexattr_init(&attr);
+    pthread_mutexattr_settype(&attr,PTHREAD_MUTEX_RECURSIVE);
+    if (pthread_mutex_init(lpCriticalSection,&attr) != 0)
+    {
+      CLog::Log(LOGERROR,"%s - failed to create mutex. error: %d", __FUNCTION__, errno);
+    }
+    pthread_mutexattr_destroy(&attr);
+  }
 }
 
 void WINAPI DeleteCriticalSection(LPCRITICAL_SECTION lpCriticalSection) {
   if (lpCriticalSection) 
-    DestroyRecursiveMutex(lpCriticalSection);
+    pthread_mutex_destroy(lpCriticalSection);
 }
 
 void WINAPI EnterCriticalSection(LPCRITICAL_SECTION lpCriticalSection) {
-  WaitForSingleObject(lpCriticalSection, INFINITE);
+  pthread_mutex_lock(lpCriticalSection);
 }
 
 void WINAPI LeaveCriticalSection(LPCRITICAL_SECTION lpCriticalSection) {
-  ReleaseMutex(lpCriticalSection);
+  pthread_mutex_unlock(lpCriticalSection);
 }
 
 void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer) {
