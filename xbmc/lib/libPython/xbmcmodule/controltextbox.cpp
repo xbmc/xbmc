@@ -10,10 +10,12 @@
 #include "control.h"
 #include "pyutil.h"
 
+#ifndef __GNUC__
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
 #pragma bss_seg("PY_BSS")
 #pragma const_seg("PY_RDATA")
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -57,7 +59,7 @@ namespace PYXBMC
     // set default values if needed
     self->strFont = cFont ? cFont : "font13";
 
-    if (cTextColor) sscanf(cTextColor, "%x", &self->dwTextColor);
+    if (cTextColor) sscanf(cTextColor, "%lx", &self->dwTextColor);
     else self->dwTextColor = 0xffffffff;
 
     // default values for spin control
@@ -202,10 +204,12 @@ namespace PYXBMC
     "  - self.textbox = xbmcgui.ControlTextBox(100, 250, 300, 300, textColor='0xFFFFFFFF')\n");
 
 // Restore code and data sections to normal.
+#ifndef __GNUC__
 #pragma code_seg()
 #pragma data_seg()
 #pragma bss_seg()
 #pragma const_seg()
+#endif
 
   PyTypeObject ControlTextBox_Type;
 

@@ -12,10 +12,12 @@
 #include "XBPyThread.h"
 #include "XBPython.h"
 
+#ifndef __GNUC__
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
 #pragma bss_seg("PY_BSS")
 #pragma const_seg("PY_RDATA")
+#endif
 
 extern "C"
 {
@@ -182,7 +184,7 @@ void XBPyThread::Process()
   PyThreadState_Swap(m_threadState);
 
   // look waiting for the running threads to end
-  int nRc = PyRun_SimpleString(
+  PyRun_SimpleString(
         "import threading\n"
         "import sys\n"
         "try:\n"

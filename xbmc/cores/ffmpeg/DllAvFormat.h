@@ -8,9 +8,6 @@ extern "C" {
 #ifndef __STDC_CONSTANT_MACROS
 #define __STDC_CONSTANT_MACROS
 #endif
-#ifndef __STDC_LIMIT_MACROS
-#define __STDC_LIMIT_MACROS
-#endif
 #ifndef __GNUC__
 #pragma warning(disable:4244)
 #endif
@@ -42,8 +39,8 @@ public:
   virtual AVInputFormat *av_probe_input_format(AVProbeData *pd, int is_opened)=0;
   virtual void dump_format(AVFormatContext *ic, int index, const char *url, int is_output)=0;
   virtual void av_destruct_packet_nofree(AVPacket *pkt)=0;
-  virtual int url_fdopen(ByteIOContext *s, URLContext *h)=0;
-  virtual int url_fopen(ByteIOContext *s, const char *filename, int flags)=0;
+  virtual int url_fdopen(ByteIOContext **s, URLContext *h)=0;
+  virtual int url_fopen(ByteIOContext **s, const char *filename, int flags)=0;
   virtual int url_fclose(ByteIOContext *s)=0;
   virtual offset_t url_fseek(ByteIOContext *s, offset_t offset, int whence)=0;
   virtual void av_read_frame_flush(AVFormatContext *s)=0;
@@ -94,8 +91,8 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
                   offset_t (*p8)(void *opaque, offset_t offset, int whence)))
   DEFINE_METHOD4(void, dump_format, (AVFormatContext *p1, int p2, const char *p3, int p4))
   DEFINE_METHOD1(void, av_destruct_packet_nofree, (AVPacket *p1))
-  DEFINE_METHOD2(int, url_fdopen, (ByteIOContext *p1, URLContext *p2))
-  DEFINE_METHOD3(int, url_fopen, (ByteIOContext *p1, const char *p2, int p3))
+  DEFINE_METHOD2(int, url_fdopen, (ByteIOContext **p1, URLContext *p2))
+  DEFINE_METHOD3(int, url_fopen, (ByteIOContext **p1, const char *p2, int p3))
   DEFINE_METHOD1(int, url_fclose, (ByteIOContext *p1))
   DEFINE_METHOD3(offset_t, url_fseek, (ByteIOContext *p1, offset_t p2, int p3))
   BEGIN_METHOD_RESOLVE()

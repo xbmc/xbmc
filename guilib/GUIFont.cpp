@@ -6,16 +6,18 @@
 
 #include "../xbmc/utils/SingleLock.h"
 
+#ifndef _LINUX
 namespace MathUtils {
   int round_int (double x);
 }
-#ifndef _LINUX
 #define ROUND(x) (float)(MathUtils::round_int(x))
 #else
 #define ROUND roundf
+#define max(a,b) ((a)>(b)?(a):(b))
+#define min(a,b) ((a)<(b)?(a):(b))
 #endif
 
-CGUIFont::CGUIFont(const CStdString& strFontName, DWORD textColor, DWORD shadowColor, CGUIFontBase *font)
+CGUIFont::CGUIFont(const CStdString& strFontName, DWORD textColor, DWORD shadowColor, CGUIFontTTF *font)
 {
   m_strFontName = strFontName;
   m_textColor = textColor;
@@ -39,17 +41,31 @@ CStdString& CGUIFont::GetFontName()
 void CGUIFont::DrawTextWidth(float x, float y, float angle, DWORD dwColor, DWORD dwShadowColor,
                              const WCHAR* strText, float fMaxWidth)
 {
+  float unneeded, h;
+  GetTextExtent(L"W", &unneeded, &h); // This effectively sets h = m_cellHeight for TTF fonts but we don't care about
+                                      // truncating height - only width, and as some fonts have some glyphs that may
+                                      // dip under the normal cellheight, we should make room for them.
+  if (!g_graphicsContext.SetClipRegion(x, y, fMaxWidth, 2*h))
+    return; // nothing to render
+    
   if (!m_font) return;
   fMaxWidth = ROUND(fMaxWidth / g_graphicsContext.GetGUIScaleX());
   if (!dwColor) dwColor = m_textColor;
   if (!dwShadowColor) dwShadowColor = m_shadowColor;
   if (angle)
     SetRotation(x, y, angle);
+  DWORD textLen = min(wcslen(strText), 2048);
+  dwColor = g_graphicsContext.MergeAlpha(dwColor);
   if (dwShadowColor)
-    m_font->DrawTextWidthInternal(x + 1, y + 1, g_graphicsContext.MergeAlpha(dwShadowColor), strText, fMaxWidth);
-  m_font->DrawTextWidthInternal(x, y, g_graphicsContext.MergeAlpha(dwColor), strText, fMaxWidth);
+  {
+    dwShadowColor = g_graphicsContext.MergeAlpha(dwShadowColor);
+    m_font->DrawTextInternal(x + 1, y + 1, &dwShadowColor, NULL, strText, textLen, 0, fMaxWidth);
+  }
+  m_font->DrawTextInternal(x, y, &dwColor, NULL, strText, textLen, 0, fMaxWidth);
   if (angle)
     g_graphicsContext.RemoveTransform();
+
+  g_graphicsContext.RestoreClipRegion();
 }
 
 
@@ -66,10 +82,10 @@ void CGUIFont::DrawColourTextWidth(float x, float y, DWORD* pdw256ColorPalette, 
   DrawColourTextWidth(x, y, 0, pdw256ColorPalette, numColors, dwShadowColor, strText, pbColours, fMaxWidth);
 }
 
-void CGUIFont::DrawText( float x, float y, DWORD dwColor, DWORD dwShadowColor, const WCHAR* strText, DWORD dwFlags, FLOAT fMaxPixelWidth /* = 0 */)
+void CGUIFont::DrawText( float x, float y, DWORD dwColor, DWORD dwShadowColor, const WCHAR* strText, DWORD dwFlags, FLOAT fMaxPixelWidth)
 {
   DrawText( x, y, 0, dwColor, dwShadowColor, strText, dwFlags, fMaxPixelWidth);
-}
+} 
 
 void CGUIFont::DrawScrollingText(float x, float y, DWORD* color, int numColors, DWORD dwShadowColor, const CStdStringW &text, float w, CScrollInfo &scrollInfo, BYTE *pPalette)
 {
@@ -84,6 +100,14 @@ void CGUIFont::DrawColourTextWidth(float x, float y, float angle, DWORD* pdw256C
   if (!dwShadowColor) dwShadowColor = m_shadowColor;
   dwShadowColor = g_graphicsContext.MergeAlpha(dwShadowColor);
 
+  // add cropping box
+  float unneeded, h;
+  GetTextExtent(L"W", &unneeded, &h); // This effectively sets h = m_cellHeight for TTF fonts but we don't care about
+                                      // truncating height - only width, and as some fonts have some glyphs that may
+                                      // dip under the normal cellheight, we should make room for them.
+  if (!g_graphicsContext.SetClipRegion(x, y, fMaxWidth, 2*h))
+    return; // nothing to render
+
   fMaxWidth = ROUND(fMaxWidth / g_graphicsContext.GetGUIScaleX());
   DWORD *alphaColor = new DWORD[numColors];
   for (int i = 0; i < numColors; i++)
@@ -94,10 +118,15 @@ void CGUIFont::DrawColourTextWidth(float x, float y, float angle, DWORD* pdw256C
   }
   if (angle)
     SetRotation(x, y, angle);
-  m_font->DrawColourTextWidth(x, y, alphaColor, numColors, dwShadowColor, strText, pbColours, fMaxWidth);
+  DWORD textLen = min(wcslen(strText), 2048);
+  if (dwShadowColor)
+    m_font->DrawTextInternal(x + 1, y + 1, &dwShadowColor, NULL, strText, textLen, 0, fMaxWidth);
+  m_font->DrawTextInternal(x, y, alphaColor, pbColours, strText, textLen, 0, fMaxWidth);
   delete[] alphaColor;
   if (angle)
     g_graphicsContext.RemoveTransform();
+
+  g_graphicsContext.RestoreClipRegion();
 }
 
 void CGUIFont::DrawText( float x, float y, float angle, DWORD dwColor, DWORD dwShadowColor, const WCHAR* strText, DWORD dwFlags, FLOAT fMaxPixelWidth /* = 0 */)
@@ -108,9 +137,14 @@ void CGUIFont::DrawText( float x, float y, float angle, DWORD dwColor, DWORD dwS
   if (!dwShadowColor) dwShadowColor = m_shadowColor;
   if (angle)
     SetRotation(x, y, angle);
+  DWORD textLen = min(wcslen(strText), 2048);
   if (dwShadowColor)
-    m_font->DrawTextImpl(x + 1, y + 1, g_graphicsContext.MergeAlpha(dwShadowColor), strText, wcslen( strText ), dwFlags, fMaxPixelWidth);
-  m_font->DrawTextImpl( x, y, g_graphicsContext.MergeAlpha(dwColor), strText, wcslen( strText ), dwFlags, fMaxPixelWidth );
+  {
+    dwShadowColor = g_graphicsContext.MergeAlpha(dwShadowColor);
+    m_font->DrawTextInternal(x + 1, y + 1, &dwShadowColor, NULL, strText, textLen, dwFlags, fMaxPixelWidth);
+  }
+  dwColor = g_graphicsContext.MergeAlpha(dwColor);
+  m_font->DrawTextInternal( x, y, &dwColor, NULL, strText, textLen, dwFlags, fMaxPixelWidth );
   if (angle)
     g_graphicsContext.RemoveTransform();
 }
@@ -219,6 +253,7 @@ void CGUIFont::DrawScrollingText(float x, float y, float angle, DWORD *color, in
     }
   }
   *pChar = L'\0';
+  DWORD textLen = min(wcslen(pOutput),2048);
   if (pPalette)
   {
     DWORD *alphaColor = new DWORD[numColors];
@@ -228,16 +263,23 @@ void CGUIFont::DrawScrollingText(float x, float y, float angle, DWORD *color, in
       alphaColor[i] = g_graphicsContext.MergeAlpha(color[i]);
     }
     if (dwShadowColor)
-      m_font->DrawTextImpl(x - scrollInfo.pixelPos + 1, y + 1, g_graphicsContext.MergeAlpha(dwShadowColor), pOutput, wcslen(pOutput), 0, w + scrollInfo.pixelPos + h*2);
-    m_font->DrawColourTextImpl(x - scrollInfo.pixelPos, y, alphaColor, pOutput, pOutPalette, wcslen(pOutput), 0, w + scrollInfo.pixelPos + h*2);
+    {
+      dwShadowColor = g_graphicsContext.MergeAlpha(dwShadowColor);
+      m_font->DrawTextInternal(x - scrollInfo.pixelPos + 1, y + 1, &dwShadowColor, NULL, pOutput, textLen, 0, w + scrollInfo.pixelPos + h*2);
+    }
+    m_font->DrawTextInternal(x - scrollInfo.pixelPos, y, alphaColor, pOutPalette, pOutput, textLen, 0, w + scrollInfo.pixelPos + h*2);
     delete[] alphaColor;
   }
   else
   {
     if (!*color) *color = m_textColor;
     if (dwShadowColor)
-      m_font->DrawTextImpl(x - scrollInfo.pixelPos + 1, y + 1, g_graphicsContext.MergeAlpha(dwShadowColor), pOutput, wcslen(pOutput), 0, w + scrollInfo.pixelPos + h*2);
-    m_font->DrawTextWidthInternal(x - scrollInfo.pixelPos, y, g_graphicsContext.MergeAlpha(*color), pOutput, w + scrollInfo.pixelPos + h*2);
+    {
+      dwShadowColor = g_graphicsContext.MergeAlpha(dwShadowColor);
+      m_font->DrawTextInternal(x - scrollInfo.pixelPos + 1, y + 1, &dwShadowColor, NULL, pOutput, textLen, 0, w + scrollInfo.pixelPos + h*2);
+    }
+    DWORD dwColor = g_graphicsContext.MergeAlpha(*color);
+    m_font->DrawTextInternal(x - scrollInfo.pixelPos, y, &dwColor, NULL, pOutput, textLen, 0, w + scrollInfo.pixelPos + h*2);
   }
   delete[] pOutput;
   if (pPalette)
@@ -265,13 +307,13 @@ void CGUIFont::DrawOutlineText(float x, float y, DWORD color, DWORD outlineColor
     int ymax = (int)(sqrt((float)outlineWidth*outlineWidth - i*i) + 0.5f);
     for (int j = 1; j < ymax; j++)
     {
-      DrawText(x - i, y + j, outlineColor, 0, text, flags, maxWidth);
-      DrawText(x - i, y - j, outlineColor, 0, text, flags, maxWidth);
-      DrawText(x + i, y + j, outlineColor, 0, text, flags, maxWidth);
-      DrawText(x + i, y - j, outlineColor, 0, text, flags, maxWidth);
+      DrawText(x - i, y + j, 0, outlineColor, 0, text, flags, maxWidth);
+      DrawText(x - i, y - j, 0, outlineColor, 0, text, flags, maxWidth);
+      DrawText(x + i, y + j, 0, outlineColor, 0, text, flags, maxWidth);
+      DrawText(x + i, y - j, 0, outlineColor, 0, text, flags, maxWidth);
     }
   }
-  DrawText(x, y, color, 0, text, flags, maxWidth);
+  DrawText(x, y, 0, color, 0, text, flags, maxWidth);
   End();
 }
 

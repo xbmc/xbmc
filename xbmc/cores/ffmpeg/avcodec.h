@@ -18,8 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef AVCODEC_H
-#define AVCODEC_H
+#ifndef FFMPEG_AVCODEC_H
+#define FFMPEG_AVCODEC_H
 
 /**
  * @file avcodec.h
@@ -33,8 +33,8 @@
 #define AV_STRINGIFY(s)         AV_TOSTRING(s)
 #define AV_TOSTRING(s) #s
 
-#define LIBAVCODEC_VERSION_INT  ((51<<16)+(45<<8)+0)
-#define LIBAVCODEC_VERSION      51.45.0
+#define LIBAVCODEC_VERSION_INT  ((51<<16)+(48<<8)+0)
+#define LIBAVCODEC_VERSION      51.48.0
 #define LIBAVCODEC_BUILD        LIBAVCODEC_VERSION_INT
 
 #define LIBAVCODEC_IDENT        "Lavc" AV_STRINGIFY(LIBAVCODEC_VERSION)
@@ -168,6 +168,7 @@ enum CodecID {
     CODEC_ID_TXD,
     CODEC_ID_VP6A,
     CODEC_ID_AMV,
+    CODEC_ID_VB,
 
     /* various PCM "codecs" */
     CODEC_ID_PCM_S16LE= 0x10000,
@@ -210,6 +211,12 @@ enum CodecID {
     CODEC_ID_ADPCM_SBPRO_2,
     CODEC_ID_ADPCM_THP,
     CODEC_ID_ADPCM_IMA_AMV,
+    CODEC_ID_ADPCM_EA_R1,
+    CODEC_ID_ADPCM_EA_R3,
+    CODEC_ID_ADPCM_EA_R2,
+    CODEC_ID_ADPCM_IMA_EA_SEAD,
+    CODEC_ID_ADPCM_IMA_EA_EACS,
+    CODEC_ID_ADPCM_EA_XAS,
 
     /* AMR */
     CODEC_ID_AMR_NB= 0x12000,
@@ -264,6 +271,8 @@ enum CodecID {
     CODEC_ID_ATRAC3,
     CODEC_ID_VOXWARE,
     CODEC_ID_APE,
+    CODEC_ID_NELLYMOSER,
+    CODEC_ID_MUSEPACK8,
 
     /* subtitle codecs */
     CODEC_ID_DVD_SUBTITLE= 0x17000,
@@ -1286,6 +1295,7 @@ typedef struct AVCodecContext {
 #define FF_IDCT_SIMPLEARMV5TE 16
 #define FF_IDCT_SIMPLEARMV6   17
 #define FF_IDCT_SIMPLEVIS     18
+#define FF_IDCT_WMV2          19
 
     /**
      * slice count
@@ -2382,9 +2392,9 @@ int avcodec_find_best_pix_fmt(int pix_fmt_mask, int src_pix_fmt,
  * Print in buf the string corresponding to the pixel format with
  * number pix_fmt, or an header if pix_fmt is negative.
  *
- * @param buf[in] the buffer where to write the string
- * @param buf_size[in] the size of buf
- * @param pix_fmt[in] the number of the pixel format to print the corresponding info string, or
+ * @param[in] buf the buffer where to write the string
+ * @param[in] buf_size the size of buf
+ * @param[in] pix_fmt the number of the pixel format to print the corresponding info string, or
  * a negative value to print the corresponding header.
  * Meaningful values for obtaining a pixel format info vary from 0 to PIX_FMT_NB -1.
  */
@@ -2932,4 +2942,4 @@ int av_parse_video_frame_rate(AVRational *frame_rate, const char *str);
 #define AVERROR_NOENT       AVERROR(ENOENT)  /**< No such file or directory. */
 #define AVERROR_PATCHWELCOME    -MKTAG('P','A','W','E') /**< Not yet implemented in FFmpeg. Patches welcome. */
 
-#endif /* AVCODEC_H */
+#endif /* FFMPEG_AVCODEC_H */
