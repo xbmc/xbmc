@@ -42,14 +42,14 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   else
     strPath = strFilename;
 
-  // check if we already have this font file loaded...
+  // check if we already have this font file loaded (font object could differ only by colors)
   CStdString TTFfontName;
   TTFfontName.Format("%s_%i_%i_%f", strFilename, iSize, iStyle, aspect);
-  CGUIFontBase* pFontFile = GetFontFile(TTFfontName);
+  CGUIFontTTF* pFontFile = GetFontFile(TTFfontName);
   if (!pFontFile)
   {
     pFontFile = new CGUIFontTTF(TTFfontName);
-    bool bFontLoaded = ((CGUIFontTTF *)pFontFile)->Load(PTH_IC(strPath), iSize, iStyle, aspect);
+    bool bFontLoaded = pFontFile->Load(strPath, iSize, iStyle, aspect);
     if (!bFontLoaded)
     {
       // Now try to load it from media\fonts
@@ -59,7 +59,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
         strPath += CUtil::GetFileName(strFilename);
       }
 
-      bFontLoaded = ((CGUIFontTTF *)pFontFile)->Load(PTH_IC(strPath), iSize, iStyle, aspect);
+      bFontLoaded = pFontFile->Load(strPath, iSize, iStyle, aspect);
     }
 
     if (!bFontLoaded)
@@ -93,9 +93,9 @@ void GUIFontManager::Unload(const CStdString& strFontName)
   }
 }
 
-void GUIFontManager::FreeFontFile(CGUIFontBase *pFont)
+void GUIFontManager::FreeFontFile(CGUIFontTTF *pFont)
 {
-  for (vector<CGUIFontBase*>::iterator it = m_vecFontFiles.begin(); it != m_vecFontFiles.end(); ++it)
+  for (vector<CGUIFontTTF*>::iterator it = m_vecFontFiles.begin(); it != m_vecFontFiles.end(); ++it)
   {
     if (pFont == *it)
     {
@@ -106,11 +106,11 @@ void GUIFontManager::FreeFontFile(CGUIFontBase *pFont)
   }
 }
 
-CGUIFontBase* GUIFontManager::GetFontFile(const CStdString& strFileName)
+CGUIFontTTF* GUIFontManager::GetFontFile(const CStdString& strFileName)
 {
   for (int i = 0; i < (int)m_vecFontFiles.size(); ++i)
   {
-    CGUIFontBase* pFont = m_vecFontFiles[i];
+    CGUIFontTTF* pFont = m_vecFontFiles[i];
     if (pFont->GetFileName() == strFileName)
       return pFont;
   }

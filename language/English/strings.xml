@@ -7,10 +7,10 @@
   <string id="3">Videos</string>
   <string id="4">TV Guide</string>
   <string id="5">Settings</string>
-  <string id="6">XBMC SVN</string>
+  <string id="6">Xbox Media Center SVN</string>
   <string id="7">Filemanager</string>
   <string id="8">Weather</string>
-  <string id="9">xbmc</string>
+  <string id="9">xbox media center</string>
 
   <string id="11">Monday</string>
   <string id="12">Tuesday</string>
@@ -285,7 +285,7 @@
   <string id="361">R. SlideShow</string>
   <string id="362">Screensaver Fade Level</string>
   <string id="363">Sort by: File</string>
-  <string id="364">- Dolby Digital (AC3) Capable Receiver</string>
+  <string id="364">- AC3 Capable Receiver</string>
   <string id="365">Sort by: Name</string>
   <string id="366">Sort by: Year</string>
   <string id="367">Sort by: Rating</string>
@@ -459,8 +459,6 @@
   <string id="542">DVD Icons</string>
   <string id="543">DVD</string>
   <string id="544">Media Info</string>
-  <string id="545">Audio Output Device</string>
-  <string id="546">Passthrough Output Device</string>
 
   <string id="550">Sort by: %s</string>
   <string id="551">Name</string>
@@ -569,7 +567,7 @@
   <string id="712">Invalid port specified. Value must be between 1 and 65535.</string>
   <string id="713">HTTP Proxy</string>
   <string id="714">XLink Kai</string>
-  <string id="715">- Assignment</string>
+  <string id="715">Assignment</string>
   <string id="716">Automatic (DHCP)</string>
   <string id="717">Manual (Static)</string>
   <string id="718">Default (Dashboard)</string>
@@ -629,9 +627,6 @@
   <string id="772">Audio Hardware</string>
   <string id="773">Seeking</string>
   <string id="774">Slideshow Folder</string>
-  <string id="775">Network Interface</string>
-  <string id="776">- Wireless Network</string>
-  <string id="777">- Wireless Key</string>
 
   <string id="998">XLink Kai</string>
   <string id="999">Online Gaming</string>
@@ -1370,14 +1365,6 @@
   <string id="16205">Delete failed</string>
   <string id="16206">Failed to delete atleast one file</string>
 
-  <string id="16300">Video Scaling Method</string>
-  <string id="16301">Nearest Neighbour</string>
-  <string id="16302">Bilinear</string>
-  <string id="16303">Bicubic</string>
-  <string id="16304">Lanczos2</string>
-  <string id="16305">Lanczos3</string>
-  <string id="16306">Sinc8</string>
-
   <string id="20000">CDDA Rip Folder</string>
   <string id="20001">Use external DVD Player</string>
   <string id="20002">External DVD Player</string>
@@ -1568,8 +1555,6 @@
   <string id="20251">Mixing drinks (videos)</string>
   <string id="20252">Filling glasses (videos)</string>
 
-  <string id="20189"></string>
-  <string id="20190"></string>
   <string id="20191"></string>
   <string id="20192"></string>
   <string id="20193"></string>
@@ -1776,7 +1761,6 @@
   <string id="21437">New Smart Playlist...</string>
   <string id="21438">%c Drive</string>
   <string id="21439">Edit Party Mode Rules</string>
-  <string id="21440">Home Folder</string>
 
   <string id="21800">File Name</string>
   <string id="21801">File Path</string>

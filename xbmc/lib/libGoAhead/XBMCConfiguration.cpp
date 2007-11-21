@@ -5,10 +5,12 @@
 #include "../../Util.h"
 #include "includes.h"
 
+#ifndef __GNUC__
 #pragma code_seg("WEB_TEXT")
 #pragma data_seg("WEB_DATA")
 #pragma bss_seg("WEB_BSS")
 #pragma const_seg("WEB_RD")
+#endif
 
 CXbmcConfiguration::CXbmcConfiguration()
 {
@@ -535,7 +537,7 @@ int CXbmcConfiguration::SaveConfiguration( int eid, webs_t wp, CStdString& respo
 	}
 
 	// load xboxmediacenter.xml, write a messages if file could not be loaded
-	if (Load() == -1)
+	if (Load() == -1) 
 	{
           if (eid!=-1) websError(wp, 500, T("Could not load XboxMediaCenter.xml\n"));
               else response="<li>Error:Could not load XboxMediaCenter.xml";
@@ -544,7 +546,7 @@ int CXbmcConfiguration::SaveConfiguration( int eid, webs_t wp, CStdString& respo
 
 	// Save configuration to file
 	CStdString strPath(filename);
-	if (strPath.find(":\\") == -1)
+	if (strPath.find(":\\") == CStdString::npos)
 	{
 		// only filename specified, so use Q:\\ as base.
     strPath.Format("Q:\\%s", filename);

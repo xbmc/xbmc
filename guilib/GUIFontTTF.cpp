@@ -1,5 +1,6 @@
 #include "include.h"
 #include "GUIFontTTF.h"
+#include "GUIFontManager.h"
 #include "GraphicContext.h"
 
 #include <math.h>
@@ -36,7 +37,32 @@
 #ifdef _LINUX
 #define max(a,b) ((a)>(b)?(a):(b))
 #define min(a,b) ((a)<(b)?(a):(b))
+#define ROUND rintf
+#define ROUND_TO_PIXEL rintf
+#else
+namespace MathUtils {
+  inline int round_int (double x);
+}
+
+#define ROUND(x) (float)(MathUtils::round_int(x))
+
+#ifdef HAS_XBOX_D3D
+#define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x))
+#else
+#define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x)) - 0.5f
 #endif
+
+#endif // _LINUX
+
+DWORD PadPow2(DWORD x);
+
+#define CHARS_PER_TEXTURE_LINE 20 // number of characters to cache per texture line
+#define CHAR_CHUNK    64      // 64 chars allocated at a time (1024 bytes)
+
+int CGUIFontTTF::justification_word_weight = 6;   // weight of word spacing over letter spacing when justifying.
+                                                  // A larger number means more of the "dead space" is placed between
+                                                  // words rather than between letters.
+
 
 class CFreeTypeLibrary
 {
@@ -44,63 +70,135 @@ public:
   CFreeTypeLibrary()
   {
     m_library = NULL;
-    m_references = 0;
   }
 
-  FT_Library Get()
+  FT_Face GetFont(const CStdString &filename, int size, float aspect)
   {
+    // check if we have this font already
+    for (unsigned int i = 0; i < m_fonts.size(); i++)
+    {
+      CFTFont &font = m_fonts[i];
+      if (font.Matches(filename, size, aspect))
+        return font.GetFace();
+    }
+
+    // don't have it yet - create it
+    if (!m_library)
+      FT_Init_FreeType(&m_library);
     if (!m_library)
     {
-      FT_Init_FreeType(&m_library);
+      CLog::Log(LOGERROR, "Unable to initialize freetype library");
+      return NULL;
     }
-    if (m_library)
-      m_references++;
-    return m_library;
+
+    FT_Face face;
+
+    // ok, now load the font face
+    if (FT_New_Face( m_library, filename.c_str(), 0, &face ))
+      return NULL;
+
+    unsigned int ydpi = GetDPI();
+    unsigned int xdpi = (unsigned int)ROUND(ydpi * aspect);
+
+    // we set our screen res currently to 96dpi in both directions (windows default)
+    // we cache our characters (for rendering speed) so it's probably
+    // not a good idea to allow free scaling of fonts - rather, just
+    // scaling to pixel ratio on screen perhaps?
+    if (FT_Set_Char_Size( face, 0, size*64, xdpi, ydpi ))
+    {
+      FT_Done_Face(face);
+      return NULL;
+    }
+
+    // push back the font
+    CFTFont font(filename, size, aspect, face);
+    m_fonts.push_back(font);
+
+    return face;
   };
-  void Release()
+
+  void ReleaseFont(FT_Face face)
   {
-    if (m_references)
-      m_references--;
-    if (!m_references && m_library)
+    // find the font
+    for (unsigned int i = 0; i < m_fonts.size(); i++)
+    {
+      CFTFont &font = m_fonts[i];
+      if (font.Matches(face))
+      {
+        if (font.ReleaseFace())
+          m_fonts.erase(m_fonts.begin() + i);
+        break;
+      }
+    }
+    // check if we can free the font library as well
+    if (!m_fonts.size() && m_library)
     {
       FT_Done_FreeType(m_library);
       m_library = NULL;
     }
+  }
+
+  unsigned int GetDPI() const
+  {
+    return 72; // default dpi, matches what XPR fonts used to use for sizing
   };
 
 private:
+  class CFTFont
+  {
+  public:
+    CFTFont(const CStdString &filename, int size, float aspect, FT_Face face)
+    {
+      m_filename = filename;
+      m_size = size;
+      m_aspect = aspect;
+      m_face = face;
+      m_references = 1;
+    };
+
+    bool Matches(const CStdString &filename, int size, float aspect) const
+    {
+      return (m_filename == filename && m_size == size && m_aspect == aspect);
+    };
+    
+    bool Matches(FT_Face face) const
+    {
+      return m_face == face;
+    };
+
+    FT_Face GetFace()
+    {
+      m_references++;
+      return m_face;
+    };
+
+    bool ReleaseFace()
+    {
+      assert(m_references);
+      m_references--;
+      if (!m_references)
+      {
+        FT_Done_Face(m_face);
+        return true;
+      }
+      return false;
+    };
+
+  private:
+    CStdString   m_filename;
+    int          m_size;
+    float        m_aspect;
+    FT_Face      m_face;
+    unsigned int m_references;
+  };
+
+  vector<CFTFont> m_fonts;
   FT_Library   m_library;
-  unsigned int m_references;
 };
 
 CFreeTypeLibrary g_freeTypeLibrary; // our freetype library
 
-namespace MathUtils {
-  int round_int (double x);
-}
-
-#ifndef _LINUX
-#define ROUND(x) (float)(MathUtils::round_int(x))
-#if defined(HAS_XBOX_D3D) 
-#define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x))
-#else
-#define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x)) - 0.5f
-#endif
-#else
-#define ROUND roundf
-#define ROUND_TO_PIXEL roundf
-#endif
-
-#define CHARS_PER_TEXTURE_LINE 20 // number of characters to cache per texture line
-#define CHAR_CHUNK    64      // 64 chars allocated at a time (1024 bytes)
-
-extern DWORD PadPow2(DWORD x);
-int CGUIFontTTF::justification_word_weight = 6;   // weight of word spacing over letter spacing when justifying.
-                                                  // A larger number means more of the "dead space" is placed between
-                                                  // words rather than between letters.
-
 CGUIFontTTF::CGUIFontTTF(const CStdString& strFileName)
-  : CGUIFontBase(strFileName)
 {
   m_texture = NULL;
   m_char = NULL;
@@ -110,13 +208,27 @@ CGUIFontTTF::CGUIFontTTF(const CStdString& strFileName)
   m_glTextureLoaded = false;
 #endif
   m_face = NULL;
-  m_library = NULL;
   memset(m_charquick, 0, sizeof(m_charquick));
+  m_strFileName = strFileName;
+  m_referenceCount = 0;
 }
 
 CGUIFontTTF::~CGUIFontTTF(void)
 {
   Clear();
+}
+
+void CGUIFontTTF::AddReference()
+{
+  m_referenceCount++;
+}
+
+void CGUIFontTTF::RemoveReference()
+{
+  // delete this object when it's reference count hits zero
+  m_referenceCount--;
+  if (!m_referenceCount)
+    g_fontManager.FreeFontFile(this);
 }
 
 void CGUIFontTTF::ClearCharacterCache()
@@ -174,14 +286,8 @@ void CGUIFontTTF::Clear()
   m_posY = 0;
   m_dwNestedBeginCount = 0;
 
-  FT_Done_Face( m_face );
+  g_freeTypeLibrary.ReleaseFont(m_face);
   m_face = NULL;
-
-  if (m_library)
-  {
-    g_freeTypeLibrary.Release();
-    m_library = NULL;
-  }
 }
 
 bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle, float aspect)
@@ -191,22 +297,9 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle, f
   m_pD3DDevice = g_graphicsContext.Get3DDevice();
 #endif
 
-  m_library = g_freeTypeLibrary.Get();
-  if (!m_library)
-    return false;
+  m_face = g_freeTypeLibrary.GetFont(strFilename, iHeight, aspect);
 
-  // ok, now load the font face
-  if (FT_New_Face( m_library, strFilename.c_str(), 0, &m_face ))
-    return false;
-
-  unsigned int ydpi = 72;
-  unsigned int xdpi = (unsigned int)ROUND(ydpi * aspect);
-
-  // we set our screen res currently to 96dpi in both directions (windows default)
-  // we cache our characters (for rendering speed) so it's probably
-  // not a good idea to allow free scaling of fonts - rather, just
-  // scaling to pixel ratio on screen perhaps?
-  if (FT_Set_Char_Size( m_face, 0, iHeight*64, xdpi, ydpi ))
+  if (!m_face)
     return false;
 
   // grab the maximum cell height and width
@@ -214,6 +307,9 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle, f
   m_cellHeight = m_face->bbox.yMax - m_face->bbox.yMin;
   m_cellBaseLine = m_face->bbox.yMax;
   m_lineHeight = m_face->height;
+
+  unsigned int ydpi = g_freeTypeLibrary.GetDPI();
+  unsigned int xdpi = (unsigned int)ROUND(ydpi * aspect);
 
   m_cellWidth *= iHeight * xdpi;
   m_cellWidth /= (72 * m_face->units_per_EM);
@@ -265,32 +361,11 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle, f
   m_posX = m_textureWidth;
   m_posY = -(int)m_cellHeight;
 
-  // load in the 'W' to get the "max" width of the font
-  Character *w = GetCharacter(L'W');
-  if (w)
-    m_iMaxCharWidth = (unsigned int)(w->right - w->left);
-
   // cache the ellipses width
   Character *ellipse = GetCharacter(L'.');
   if (ellipse) m_ellipsesWidth = ellipse->advance;
 
   return true;
-}
-
-void CGUIFontTTF::DrawTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
-                          const WCHAR* strText, DWORD cchText, DWORD dwFlags,
-                          FLOAT fMaxPixelWidth)
-{
-  // Draw text as a single colour
-  DrawTextInternal(fOriginX, fOriginY, &dwColor, NULL, strText, cchText>2048?2048:cchText, dwFlags, fMaxPixelWidth);
-}
-
-void CGUIFontTTF::DrawColourTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette,
-                                     const WCHAR* strText, BYTE* pbColours, DWORD cchText, DWORD dwFlags,
-                                     FLOAT fMaxPixelWidth)
-{
-  // Draws text as multi-coloured polygons
-    DrawTextInternal(fOriginX, fOriginY, pdw256ColorPalette, pbColours, strText, cchText>2048?2048:cchText, dwFlags, fMaxPixelWidth);
 }
 
 void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, DWORD *pdw256ColorPalette, BYTE *pbColours, const WCHAR* strText, DWORD cchText, DWORD dwFlags, FLOAT fMaxPixelWidth )
@@ -417,6 +492,9 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, DWORD *pdw256ColorPalett
         break;
       }
     }
+    else if (fMaxPixelWidth > 0 && cursorX > fMaxPixelWidth)
+      break;  // exceeded max allowed width - stop rendering
+
     RenderCharacter(lineX + cursorX, lineY, ch, dwColor);
     if ( dwFlags & XBFONT_JUSTIFIED )
     {

@@ -94,7 +94,7 @@ SqliteDatabase::SqliteDatabase() {
   port = "";
   db = "sqlite.db";
   login = "root";
-  passwd, "";
+  passwd= "";
 }
 
 SqliteDatabase::~SqliteDatabase() {
@@ -180,12 +180,12 @@ int SqliteDatabase::connect() {
       active = true;
       return DB_CONNECTION_OK;
     }
-    CLog::Log(LOGERROR, "unable to open database:%s (%i)", db.c_str(),GetLastError());
+    CLog::Log(LOGERROR, "unable to open database:%s (%ul)", db.c_str(),GetLastError());
     return DB_CONNECTION_NONE;
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "unable to open database:%s (%i)", db.c_str(),GetLastError());
+    CLog::Log(LOGERROR, "unable to open database:%s (%ul)", db.c_str(),GetLastError());
   }
   return DB_CONNECTION_NONE;
 };
@@ -216,19 +216,19 @@ long SqliteDatabase::nextid(const char* sname) {
   result_set res;
   char sqlcmd[512];
   sprintf(sqlcmd,"select nextid from %s where seq_name = '%s'",sequence_table.c_str(), sname);
-  if (last_err = sqlite3_exec(getHandle(),sqlcmd,&callback,&res,NULL) != SQLITE_OK) {
+  if ((last_err = sqlite3_exec(getHandle(),sqlcmd,&callback,&res,NULL)) != SQLITE_OK) {
     return DB_UNEXPECTED_RESULT;
     }
   if (res.records.size() == 0) {
     id = 1;
     sprintf(sqlcmd,"insert into %s (nextid,seq_name) values (%d,'%s')",sequence_table.c_str(),id,sname);
-    if (last_err = sqlite3_exec(conn,sqlcmd,NULL,NULL,NULL) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
+    if ((last_err = sqlite3_exec(conn,sqlcmd,NULL,NULL,NULL)) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
     return id;
   }
   else {
     id = res.records[0][0].get_asInteger()+1;
     sprintf(sqlcmd,"update %s set nextid=%d where seq_name = '%s'",sequence_table.c_str(),id,sname);
-    if (last_err = sqlite3_exec(conn,sqlcmd,NULL,NULL,NULL) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
+    if ((last_err = sqlite3_exec(conn,sqlcmd,NULL,NULL,NULL)) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
     return id;    
   }
   return DB_UNEXPECTED_RESULT;
@@ -380,7 +380,7 @@ int SqliteDataset::exec(const string &sql) {
   int res;
   exec_res.record_header.clear();
   exec_res.records.clear();
-  if(res = db->setErr(sqlite3_exec(handle(),sql.c_str(),&callback,&exec_res,&errmsg),sql.c_str()) == SQLITE_OK)
+  if((res = db->setErr(sqlite3_exec(handle(),sql.c_str(),&callback,&exec_res,&errmsg),sql.c_str())) == SQLITE_OK)
     return res;
   else
     {
