@@ -210,7 +210,7 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
 
     // abort on 100 failed CONSECTUTIVE songs
     m_iFailedSongs++;
-    if (m_iFailedSongs >= 100)
+    if (m_iFailedSongs >= g_advancedSettings.m_playlistRetries && g_advancedSettings.m_playlistRetries >= 0)
     {
       CLog::Log(LOGDEBUG,"Playlist Player: too many consecutive failures... aborting playback");
 
