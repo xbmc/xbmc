@@ -9,10 +9,12 @@
 #include "control.h"
 #include "pyutil.h"
 
+#ifndef __GNUC__
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
 #pragma bss_seg("PY_BSS")
 #pragma const_seg("PY_RDATA")
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -96,7 +98,7 @@ namespace PYXBMC
 
     if (!PyArg_ParseTuple(args, "s", &cColor))	return NULL;
 
-    if (cColor) sscanf(cColor, "%x", &self->dwColor);
+    if (cColor) sscanf(cColor, "%lx", &self->dwColor);
 
     PyGUILock();
     //if (self->pGUIControl)
@@ -152,10 +154,12 @@ namespace PYXBMC
     "you can't create this object, it is returned by objects like ControlTextBox and ControlList.");
 
 // Restore code and data sections to normal.
+#ifndef __GNUC__
 #pragma code_seg()
 #pragma data_seg()
 #pragma bss_seg()
 #pragma const_seg()
+#endif
 
   PyTypeObject ControlSpin_Type;
 

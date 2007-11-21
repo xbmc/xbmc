@@ -30,7 +30,9 @@
 #include "stdafx.h"
 #include "dataset.h"
 
+#ifndef __GNUC__
 #pragma warning (disable:4800)
+#endif
 
 namespace dbiplus {
 //************* Database implementation ***************

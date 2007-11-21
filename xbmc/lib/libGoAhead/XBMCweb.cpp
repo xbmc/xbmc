@@ -27,10 +27,12 @@
 using namespace DIRECTORY;
 using namespace PLAYLIST;
 
+#ifndef __GNUC__
 #pragma code_seg("WEB_TEXT")
 #pragma data_seg("WEB_DATA")
 #pragma bss_seg("WEB_BSS")
 #pragma const_seg("WEB_RD")
+#endif
 
 #define XML_MAX_INNERTEXT_SIZE 256
 #define NO_EID -1

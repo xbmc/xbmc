@@ -102,7 +102,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   // it breaks down for small requests. As we can't allow truncated reads for all emulated dll file functions
   // we are often forced to do small reads to fill up the full buffer size wich seems gives garbage back
   if (url.GetProtocol().Equals("rtv"))
-    vecCores.push_back(EPC_DVDPLAYER);    
+    vecCores.push_back(EPC_MPLAYER); // vecCores.push_back(EPC_DVDPLAYER);
 
   if (url.GetProtocol().Equals("hdhomerun"))
     vecCores.push_back(EPC_DVDPLAYER);

@@ -32,8 +32,10 @@
 
 #include "qry_dat.h"
 
+#ifndef __GNUC__
 #pragma warning (disable:4800)
 #pragma warning (disable:4715)
+#endif
 
 namespace dbiplus {
 
@@ -142,6 +144,8 @@ field_value::field_value (const field_value & fv) {
       set_asDouble(fv.get_asDouble());
       break;
     }
+    default:
+      break;
   }
   is_null = false;
 };
@@ -182,12 +186,12 @@ string field_value::get_asString() const {
     }
     case ft_Long: {
       char t[12];
-      sprintf(t,"%i",long_value);
+      sprintf(t,"%ld",long_value);
       return tmp = t;
     }
     case ft_ULong: {
       char t[12];
-      sprintf(t,"%i",ulong_value);
+      sprintf(t,"%lu",ulong_value);
       return tmp = t;
     }
     case ft_Float: {
@@ -200,6 +204,8 @@ string field_value::get_asString() const {
       sprintf(t,"%f",double_value);
       return tmp = t;
     }
+    default:
+      break;
     }
   };
 
@@ -240,6 +246,8 @@ bool field_value::get_asBool() const {
     case ft_Double: {
       return (bool)double_value;
     }
+    default:
+      break;
     }
   };
   
@@ -271,12 +279,12 @@ char field_value::get_asChar() const {
     }
     case ft_Long: {
       char t[12];
-      sprintf(t,"%i",long_value);
+      sprintf(t,"%ld",long_value);
       return t[0];
     }
     case ft_ULong: {
       char t[12];
-      sprintf(t,"%i",ulong_value);
+      sprintf(t,"%lu",ulong_value);
       return t[0];
     }
     case ft_Float: {
@@ -289,6 +297,8 @@ char field_value::get_asChar() const {
       sprintf(t,"%f",double_value);
       return t[0];
     }
+    default:
+      break;
     }
   };
 
@@ -322,6 +332,8 @@ short field_value::get_asShort() const {
     case ft_Double: {
       return (short)double_value;
     }
+    default:
+      break;
     }
   };
 
@@ -355,6 +367,8 @@ unsigned short field_value::get_asUShort() const {
     case ft_Double: {
       return (unsigned short)double_value;
     }
+    default:
+      break;
     }
   };
 
@@ -387,6 +401,8 @@ long field_value::get_asLong() const {
     case ft_Double: {
       return (long)double_value;
     }
+    default:
+      break;
     }
   };
 
@@ -423,6 +439,8 @@ unsigned long field_value::get_asULong() const {
     case ft_Double: {
       return (unsigned long)double_value;
     }
+    default:
+      break;
     }
   };
 
@@ -455,6 +473,8 @@ float field_value::get_asFloat() const {
     case ft_Double: {
       return (float)double_value;
     }
+    default:
+      break;
     }
   };
 
@@ -487,6 +507,8 @@ double field_value::get_asDouble() const {
     case ft_Double: {
       return (double)double_value;
     }
+    default:
+      break;
     }
   };
 
@@ -541,6 +563,8 @@ field_value& field_value::operator= (const field_value & fv) {
       return *this;
       break;
     }
+    default:
+      break;
     }
 };
 
@@ -569,15 +593,18 @@ void field_value::set_asShort(const short s) {
   
 void field_value::set_asUShort(const unsigned short us) {
   ushort_value = us; 
-  field_type = ft_UShort;};
+  field_type = ft_UShort;
+}
   
 void field_value::set_asLong(const long l) {
   long_value = l; 
-  field_type = ft_Long;};
+  field_type = ft_Long;
+}
 
 void field_value::set_asInteger(const int i) {
   long_value = (long)i; 
-  field_type = ft_Long;};
+  field_type = ft_Long;
+}
   
 void field_value::set_asULong(const unsigned long ul) {
   long_value = ul; 
@@ -627,7 +654,12 @@ string field_value::gft() {
       tmp.assign("double");
       return tmp;
     }
+    default:
+      break;
     }
+
+  return tmp;
+
   }
 
 } //namespace 

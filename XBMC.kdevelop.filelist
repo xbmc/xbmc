@@ -39,8 +39,6 @@ guilib/GUIFixedListContainer.cpp
 guilib/GUIFixedListContainer.h
 guilib/GUIFont.cpp
 guilib/GUIFont.h
-guilib/GUIFontBase.cpp
-guilib/GUIFontBase.h
 guilib/GUIFontManager.cpp
 guilib/GUIFontManager.h
 guilib/GUIFontTTF.cpp
