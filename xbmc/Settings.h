@@ -311,6 +311,7 @@ public:
     bool m_bTuxBoxSendAllAPids;
 
     int m_curlclienttimeout;
+    int m_playlistRetries;
   };
   struct stSettings
   {
