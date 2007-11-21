@@ -10,10 +10,12 @@
 #include "control.h"
 #include "pyutil.h"
 
+#ifndef __GNUC__
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
 #pragma bss_seg("PY_BSS")
 #pragma const_seg("PY_RDATA")
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -103,10 +105,10 @@ namespace PYXBMC
       PyGetDefaultImage("button", "texturenofocus", "button-nofocus.jpg");
 
     if (cFont) self->strFont = cFont;
-    if (cTextColor) sscanf( cTextColor, "%x", &self->dwTextColor );
-    if (cDisabledColor) sscanf( cDisabledColor, "%x", &self->dwDisabledColor );
-    if (cShadowColor) sscanf( cShadowColor, "%x", &self->dwShadowColor );
-    if (cFocusedColor) sscanf( cFocusedColor, "%x", &self->dwFocusedColor );
+    if (cTextColor) sscanf( cTextColor, "%lx", &self->dwTextColor );
+    if (cDisabledColor) sscanf( cDisabledColor, "%lx", &self->dwDisabledColor );
+    if (cShadowColor) sscanf( cShadowColor, "%lx", &self->dwShadowColor );
+    if (cFocusedColor) sscanf( cFocusedColor, "%lx", &self->dwFocusedColor );
     return (PyObject*)self;
   }
 
@@ -169,7 +171,7 @@ namespace PYXBMC
 
     // ControlButton *pControl = (ControlButton*)self;
 
-    if (cDisabledColor) sscanf(cDisabledColor, "%x", &self->dwDisabledColor);
+    if (cDisabledColor) sscanf(cDisabledColor, "%lx", &self->dwDisabledColor);
 
     PyGUILock();
     if (self->pGUIControl)
@@ -242,10 +244,10 @@ namespace PYXBMC
       PyGetUnicodeString(self->strText2, pObjectText2, 1);
 
     if (cFont) self->strFont = cFont;
-    if (cTextColor) sscanf(cTextColor, "%x", &self->dwTextColor);
-    if (cDisabledColor) sscanf( cDisabledColor, "%x", &self->dwDisabledColor );
-    if (cShadowColor) sscanf(cShadowColor, "%x", &self->dwShadowColor);
-    if (cFocusedColor) sscanf(cFocusedColor, "%x", &self->dwFocusedColor);
+    if (cTextColor) sscanf(cTextColor, "%lx", &self->dwTextColor);
+    if (cDisabledColor) sscanf( cDisabledColor, "%lx", &self->dwDisabledColor );
+    if (cShadowColor) sscanf(cShadowColor, "%lx", &self->dwShadowColor);
+    if (cFocusedColor) sscanf(cFocusedColor, "%lx", &self->dwFocusedColor);
 
     PyGUILock();
     if (self->pGUIControl)
@@ -299,10 +301,12 @@ namespace PYXBMC
     "  - self.button = xbmcgui.ControlButton(100, 250, 200, 50, 'Status', font='font14')\n");
 
   // Restore code and data sections to normal.
+#ifndef __GNUC__
 #pragma code_seg()
 #pragma data_seg()
 #pragma bss_seg()
 #pragma const_seg()
+#endif
 
   PyTypeObject ControlButton_Type;
 

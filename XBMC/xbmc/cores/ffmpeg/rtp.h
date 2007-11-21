@@ -18,8 +18,8 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
-#ifndef RTP_H
-#define RTP_H
+#ifndef FFMPEG_RTP_H
+#define FFMPEG_RTP_H
 
 #include "avcodec.h"
 #include "avformat.h"
@@ -27,7 +27,6 @@
 #define RTP_MIN_PACKET_LENGTH 12
 #define RTP_MAX_PACKET_LENGTH 1500 /* XXX: suppress this define */
 
-int rtp_init(void);
 int rtp_get_codec_info(AVCodecContext *codec, int payload_type);
 
 /** return < 0 if unknown payload type */
@@ -122,4 +121,4 @@ typedef enum {
 #endif
 
 extern AVRtpPayloadType_t AVRtpPayloadTypes[];
-#endif /* RTP_H */
+#endif /* FFMPEG_RTP_H */

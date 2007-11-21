@@ -10,10 +10,12 @@
 
 #define ACTIVE_WINDOW	m_gWindowManager.GetActiveWindow()
 
+#ifndef __GNUC__
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
 #pragma bss_seg("PY_BSS")
 #pragma const_seg("PY_RDATA")
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -218,6 +220,8 @@ namespace PYXBMC
       break;
     case CGUIControl::GUICONTROL_GROUP:
       pControl = (Control*)ControlGroup_Type.tp_alloc(&ControlGroup_Type, 0);
+      break;
+    default:
       break;
     }
 
@@ -848,10 +852,12 @@ namespace PYXBMC
     "and resets (not delete) all controls that are associated with this window.");
 
 // Restore code and data sections to normal.
+#ifndef __GNUC__
 #pragma code_seg()
 #pragma data_seg()
 #pragma bss_seg()
 #pragma const_seg()
+#endif
 
   PyTypeObject Window_Type;
 

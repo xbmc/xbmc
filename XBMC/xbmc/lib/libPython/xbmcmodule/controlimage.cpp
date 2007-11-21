@@ -9,10 +9,12 @@
 #include "control.h"
 #include "pyutil.h"
 
+#ifndef __GNUC__
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
 #pragma bss_seg("PY_BSS")
 #pragma const_seg("PY_RDATA")
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -54,9 +56,9 @@ namespace PYXBMC
 
     // check if filename exists
     self->strFileName = cImage;
-    if (cColorKey) sscanf(cColorKey, "%x", &self->strColorKey);
+    if (cColorKey) sscanf(cColorKey, "%lx", &self->strColorKey);
     else self->strColorKey = 0;
-    if (cColorDiffuse) sscanf(cColorDiffuse, "%x", &self->strColorDiffuse);
+    if (cColorDiffuse) sscanf(cColorDiffuse, "%lx", &self->strColorDiffuse);
     else self->strColorDiffuse = 0;
 
     return (PyObject*)self;
@@ -101,7 +103,7 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, "s|s", &cImage, &cColorKey)) return NULL;
 
     self->strFileName = cImage;
-    if (cColorKey) sscanf(cColorKey, "%x", &self->strColorKey);
+    if (cColorKey) sscanf(cColorKey, "%lx", &self->strColorKey);
     else self->strColorKey = 0;
 
     PyGUILock();
@@ -129,7 +131,7 @@ namespace PYXBMC
 
     if (!PyArg_ParseTuple(args, "s", &cColorDiffuse)) return NULL;
 
-    if (cColorDiffuse) sscanf(cColorDiffuse, "%x", &self->strColorDiffuse);
+    if (cColorDiffuse) sscanf(cColorDiffuse, "%lx", &self->strColorDiffuse);
     else self->strColorDiffuse = 0;
 
     PyGUILock();
@@ -171,10 +173,12 @@ namespace PYXBMC
     "  - self.image = xbmcgui.ControlImage(100, 250, 125, 75, aspectRatio=2)\n");
 
 // Restore code and data sections to normal.
+#ifndef __GNUC__
 #pragma code_seg()
 #pragma data_seg()
 #pragma bss_seg()
 #pragma const_seg()
+#endif
 
   PyTypeObject ControlImage_Type;
 

@@ -459,16 +459,6 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
     else
       CLog::Log(LOGERROR,"Unable to find an imdb url in nfo file: %s", nfoFile.c_str());
   }
-  if (info2.strContent.Equals("musicvideos") && !hasDetails)
-  {
-    if (CVideoInfoScanner::ScrapeFilename(item->m_strPath,info2,movieDetails))
-      hasDetails = true;
-    else
-    {
-      m_database.Close();
-      return;
-    }
-  }
 
   CStdString movieName = item->GetLabel();
   // 3. Run a loop so that if we Refresh we re-run this block

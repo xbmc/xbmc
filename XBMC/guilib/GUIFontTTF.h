@@ -7,8 +7,6 @@
 #define CGUILIB_GUIFONTTTF_H
 #pragma once
 
-#include "GUIFontBase.h"
-
 // forward definition
 struct FT_FaceRec_;
 struct FT_LibraryRec_;
@@ -16,13 +14,26 @@ struct FT_LibraryRec_;
 typedef struct FT_FaceRec_ *FT_Face;
 typedef struct FT_LibraryRec_ *FT_Library;
 
+// flags for alignment
+#define XBFONT_LEFT       0x00000000
+#define XBFONT_RIGHT      0x00000001
+#define XBFONT_CENTER_X   0x00000002
+#define XBFONT_CENTER_Y   0x00000004
+#define XBFONT_TRUNCATED  0x00000008
+#define XBFONT_JUSTIFIED  0x00000010
+
+#define FONT_STYLE_NORMAL       0
+#define FONT_STYLE_BOLD         1
+#define FONT_STYLE_ITALICS      2
+#define FONT_STYLE_BOLD_ITALICS 3
 
 /*!
  \ingroup textures
  \brief 
  */
-class CGUIFontTTF: public CGUIFontBase
+class CGUIFontTTF
 {
+  friend class CGUIFont;
   struct Character
   {
     short offsetX, offsetY;
@@ -39,20 +50,17 @@ public:
 
   bool Load(const CStdString& strFilename, int height = 20, int style = FONT_STYLE_NORMAL, float aspect = 1.0f);
 
-  virtual void Begin();
-  virtual void End();
+  void Begin();
+  void End();
+
+  const CStdString& GetFileName() const { return m_strFileName; };
 
 protected:
-  virtual void GetTextExtentInternal(const WCHAR* strText, FLOAT* pWidth,
+  void AddReference();
+  void RemoveReference();
+
+  void GetTextExtentInternal(const WCHAR* strText, FLOAT* pWidth,
                              FLOAT* pHeight = NULL, BOOL bFirstLineOnly = FALSE);
-
-  virtual void DrawTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
-                            const WCHAR* strText, DWORD cchText, DWORD dwFlags = 0,
-                            FLOAT fMaxPixelWidth = 0.0f);
-
-  virtual void DrawColourTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette,
-                                  const WCHAR* strText, BYTE* pbColours, DWORD cchText, DWORD dwFlags,
-                                  FLOAT fMaxPixelWidth);
 
   void DrawTextInternal(FLOAT fOriginX, FLOAT fOriginY, DWORD *pdw256ColorPalette, BYTE *pbColours,
                             const WCHAR* strText, DWORD cchText, DWORD dwFlags = 0,
@@ -95,7 +103,6 @@ protected:
 
   // freetype stuff
   FT_Face    m_face;
-  FT_Library m_library;
 
   float m_originX;
   float m_originY;  
@@ -105,6 +112,10 @@ protected:
 #endif
 
   static int justification_word_weight;
+
+  CStdString m_strFileName;
+private:
+  int m_referenceCount;
 };
 
 #endif

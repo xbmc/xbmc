@@ -51,6 +51,7 @@
 #define __int16		short
 #define __int32		long
 #define __int64		long long
+#define __uint64	unsigned long long
 
 #define __stdcall   __attribute__((__stdcall__))
 #define __cdecl
