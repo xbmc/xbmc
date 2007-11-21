@@ -21,6 +21,7 @@ private:
    WORD  m_button;
    char  m_buf[128];
    bool  m_bInitialized;
+   Uint32 m_firstClickTime;
 };
 
 extern CRemoteControl g_RemoteControl;
