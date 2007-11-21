@@ -136,6 +136,12 @@ void XBVideoConfig::GetDesktopResolution(int &w, int &h)
 {
 #ifdef HAS_GLX
   Display * pRootDisplay = XOpenDisplay(NULL);
+  if (pRootDisplay == NULL)
+  {
+     fprintf(stderr, "Cannot get root display. Is X11 running??\n");
+     exit(1);
+  }
+
   int screen = DefaultScreen(pRootDisplay);
   int width = DisplayWidth(pRootDisplay, screen);
   int height = DisplayHeight(pRootDisplay, screen);
