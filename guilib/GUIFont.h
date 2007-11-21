@@ -7,7 +7,7 @@
 #define CGUILIB_GUIFONT_H
 #pragma once
 
-#include "GUIFontBase.h"
+#include "GUIFontTTF.h"
 #include "GraphicContext.h"
 #include "../xbmc/utils/SingleLock.h"
 
@@ -40,7 +40,7 @@ public:
 class CGUIFont
 {
 public:
-  CGUIFont(const CStdString& strFontName, DWORD textColor, DWORD shadowColor, CGUIFontBase *font);
+  CGUIFont(const CStdString& strFontName, DWORD textColor, DWORD shadowColor, CGUIFontTTF *font);
   virtual ~CGUIFont();
 
   CStdString& GetFontName();
@@ -93,7 +93,7 @@ protected:
   // for shadowed text
   DWORD m_shadowColor;
   DWORD m_textColor;
-  CGUIFontBase *m_font;
+  CGUIFontTTF *m_font;
 private:
   void SetRotation(float sx, float sy, float angle);
 };
