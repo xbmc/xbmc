@@ -10,7 +10,7 @@
 
 // Forward
 class CGUIFont;
-class CGUIFontBase;
+class CGUIFontTTF;
 
 /*!
  \ingroup textures
@@ -26,7 +26,7 @@ public:
   CGUIFont* LoadTTF(const CStdString& strFontName, const CStdString& strFilename, DWORD textColor, DWORD shadowColor, const int iSize, const int iStyle, float aspect = 1.0f);
   CGUIFont* GetFont(const CStdString& strFontName, bool fallback = true);
   void Clear();
-  void FreeFontFile(CGUIFontBase *pFont);
+  void FreeFontFile(CGUIFontTTF *pFont);
 
   bool IsFontSetUnicode() { return m_fontsetUnicode; }
   bool IsFontSetUnicode(const CStdString& strFontSet);
@@ -34,11 +34,11 @@ public:
 
 protected:
   void LoadFonts(const TiXmlNode* fontNode);
-  CGUIFontBase* GetFontFile(const CStdString& strFontFile);
+  CGUIFontTTF* GetFontFile(const CStdString& strFontFile);
   bool OpenFontFile(TiXmlDocument& xmlDoc);
 
   vector<CGUIFont*> m_vecFonts;
-  vector<CGUIFontBase*> m_vecFontFiles;
+  vector<CGUIFontTTF*> m_vecFontFiles;
   bool m_fontsetUnicode;
 };
 
