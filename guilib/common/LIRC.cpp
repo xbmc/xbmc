@@ -8,7 +8,7 @@
 #include "log.h"
 
 #define LIRC_DEVICE "/dev/lircd"
-#define LIRC_REPEAT_IGNORE 2
+#define REPEAT_DELAY 500
 
 CRemoteControl g_RemoteControl;
 
@@ -99,12 +99,23 @@ void CRemoteControl::Update()
   char deviceName[128];
   sscanf(m_buf, "%s %s %s %s", &scanCode[0], &repeatStr[0], &buttonName[0], &deviceName[0]);
 
-  int repeat = strtol(repeatStr, NULL, 16);
-  if (repeat % LIRC_REPEAT_IGNORE != 0)
-    return;
-     
-  m_isHolding = (strcmp(repeatStr, "00") != 0);
   m_button = g_buttonTranslator.TranslateLircRemoteString(deviceName, buttonName);
+ 
+  Uint32 now = SDL_GetTicks(); 
+  if (strcmp(repeatStr, "00") == 0)
+  {
+    m_firstClickTime = now;
+    m_isHolding = false;
+  }
+  else if (now - m_firstClickTime >= REPEAT_DELAY)
+  { 
+    m_isHolding = true;
+  }
+  else if (now - m_firstClickTime < REPEAT_DELAY)
+  {
+    m_isHolding = false;
+    m_button = 0;
+  }  
 }
 
 WORD CRemoteControl::GetButton()
