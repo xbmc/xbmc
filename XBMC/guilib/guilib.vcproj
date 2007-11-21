@@ -287,9 +287,6 @@
 				RelativePath=".\GUIFont.cpp">
 			</File>
 			<File
-				RelativePath=".\GUIFontBase.cpp">
-			</File>
-			<File
 				RelativePath=".\GUIFontManager.cpp">
 			</File>
 			<File
@@ -503,9 +500,6 @@
 			</File>
 			<File
 				RelativePath=".\GUIFont.h">
-			</File>
-			<File
-				RelativePath=".\GUIFontBase.h">
 			</File>
 			<File
 				RelativePath=".\GUIFontManager.h">
