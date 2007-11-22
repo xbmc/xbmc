@@ -42,6 +42,10 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   else
     strPath = strFilename;
 
+#ifdef _LINUX
+  strPath = PTH_IC(strPath);
+#endif
+
   // check if we already have this font file loaded (font object could differ only by colors)
   CStdString TTFfontName;
   TTFfontName.Format("%s_%i_%i_%f", strFilename, iSize, iStyle, aspect);
