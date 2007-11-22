@@ -480,6 +480,16 @@ void CDVDPlayer::Process()
 
     UnlockStreams();
   }
+
+  while (!m_bAbortRequest && 
+         ((!m_dvdPlayerAudio.m_messageQueue.RecievedAbortRequest() && 
+         m_dvdPlayerAudio.m_messageQueue.GetDataSize() > 0) ||
+         (!m_dvdPlayerVideo.m_messageQueue.RecievedAbortRequest() && 
+         m_dvdPlayerVideo.m_messageQueue.GetDataSize() > 0) ))
+  {
+    HandleMessages();
+    Sleep(10);
+  }
 }
 
 void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, CDVDDemux::DemuxPacket* pPacket)
@@ -729,17 +739,17 @@ void CDVDPlayer::OnExit()
     if (m_CurrentAudio.id >= 0)
     {
       CLog::Log(LOGNOTICE, "DVDPlayer: closing audio stream");
-      CloseAudioStream(!m_bAbortRequest);
+      CloseAudioStream(false);
     }
     if (m_CurrentVideo.id >= 0)
     {
       CLog::Log(LOGNOTICE, "DVDPlayer: closing video stream");
-      CloseVideoStream(!m_bAbortRequest);
+      CloseVideoStream(false);
     }
     if (m_CurrentSubtitle.id >= 0)
     {
       CLog::Log(LOGNOTICE, "DVDPlayer: closing video stream");
-      CloseSubtitleStream(!m_bAbortRequest);
+      CloseSubtitleStream(false);
     }
     // destroy the demuxer
     if (m_pDemuxer)

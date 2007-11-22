@@ -243,13 +243,13 @@ int CDVDAudioCodecPcm::Decode(BYTE* pData, int iSize)
         return -1;
     }
     
-    m_decodedDataSize = (BYTE*)samples - m_decodedData;
+    m_decodedDataSize = (BYTE*)samples - (BYTE*)m_decodedData;
     return iSize;
 }
 
 int CDVDAudioCodecPcm::GetData(BYTE** dst)
 {
-  *dst = m_decodedData;
+  *dst = (BYTE*)m_decodedData;
   return m_decodedDataSize;
 }
 
