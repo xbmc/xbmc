@@ -56,43 +56,46 @@ void CBackgroundInfoLoader::OnStartup()
 
 void CBackgroundInfoLoader::Run()
 {
-  try
+  if (m_vecItems.size() > 0)
   {
-    EnterCriticalSection(m_lock);
-    if (!m_bStartCalled)
+    try
     {
-      OnLoaderStart();
-      m_bStartCalled = true;
-    }
-    LeaveCriticalSection(m_lock);
-
-    while (!m_bStop)
-    {
-      CFileItem *pItem = NULL;
       EnterCriticalSection(m_lock);
-      std::vector<CFileItem*>::iterator iter = m_vecItems.begin();
-      if (iter != m_vecItems.end())
+      if (!m_bStartCalled)
       {
-        pItem = *iter;
-        m_vecItems.erase(iter);
+        OnLoaderStart();
+        m_bStartCalled = true;
       }
       LeaveCriticalSection(m_lock);
 
-      if (pItem == NULL)
-        break;
+      while (!m_bStop)
+      {
+        CFileItem *pItem = NULL;
+        EnterCriticalSection(m_lock);
+        std::vector<CFileItem*>::iterator iter = m_vecItems.begin();
+        if (iter != m_vecItems.end())
+        {
+          pItem = *iter;
+          m_vecItems.erase(iter);
+        }
+        LeaveCriticalSection(m_lock);
 
-      // Ask the callback if we should abort
-      if (m_pProgressCallback && m_pProgressCallback->Abort())
-        m_bStop=true;
+        if (pItem == NULL)
+          break;
 
-      if (!m_bStop && LoadItem(pItem) && m_pObserver)
-        m_pObserver->OnItemLoaded(pItem);
+        // Ask the callback if we should abort
+        if (m_pProgressCallback && m_pProgressCallback->Abort())
+          m_bStop=true;
+
+        if (!m_bStop && LoadItem(pItem) && m_pObserver)
+          m_pObserver->OnItemLoaded(pItem);
+      }
+
     }
-
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "BackgroundInfoLoader thread: Unhandled exception");
+    catch (...)
+    {
+      CLog::Log(LOGERROR, "BackgroundInfoLoader thread: Unhandled exception");
+    }
   }
 
   EnterCriticalSection(m_lock);
@@ -129,6 +132,7 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
   if (nThreads > MAX_THREAD_COUNT)
     nThreads = MAX_THREAD_COUNT;
 
+  m_nActiveThreads = nThreads;
   for (int i=0; i < nThreads; i++)
   {
     CThread *pThread = new CThread(this); 
@@ -136,7 +140,6 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
     m_workers.push_back(pThread);
   }
       
-  m_nActiveThreads = nThreads;
   LeaveCriticalSection(m_lock);
 }
 

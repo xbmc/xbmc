@@ -1256,7 +1256,7 @@ printf("Scanning\n");
         bProgressVisible = true;
       }
 
-      if (bProgressVisible && m_dlgProgress)
+      if (bProgressVisible && m_dlgProgress && !m_dlgProgress->IsCanceled())
       { // keep GUI alive
         m_dlgProgress->Progress();
       }
