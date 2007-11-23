@@ -676,6 +676,7 @@
   <string id="1042">檢索%i在%i項目</string>
   <string id="1043">程式插件</string>
   <string id="1044">設定插件縮圖</string>
+  <string id="1045">插件設定</string>
 
   <string id="1200">SMB 共享設定</string>
   <string id="1202">工作群組</string>
@@ -1081,6 +1082,8 @@
   <string id="13405">取得縮圖</string>
   <string id="13406">圖片資訊</string>
   <string id="13407">%s 預設</string>
+  <string id="13408">(IMDb 用戶評價)</string>
+  <string id="13409">排名前 250：</string>
 
   <string id="14000">堆疊開啟</string>
   <string id="14001">堆疊關閉</string>
@@ -1279,7 +1282,7 @@
   <string id="15275">%name% 歌曲週排行</string>
   <string id="15276">收聽 %name% 在 Last.FM 的同好</string>
   <string id="15277">收聽 %name% 的個人 Last.FM</string>
-  <string id="15278">收聽 %name% 在 Last.FM 的最愛歌曲</string>
+  <string id="15278">收聽 %name% 在 Last.FM 的最愛</string>
   <string id="15279">從 Last.FM 獲取目錄…</string>
   <string id="15280">無法從 Last.FM 獲取目錄…</string>
   <string id="15281">輸入藝人名稱尋找相關資訊</string>
@@ -1288,6 +1291,18 @@
   <string id="15284">收聽 %name% 在 Last.FM 的推薦</string>
   <string id="15285">%name% 的排行</string>
   <string id="15286">收聽 %name% 在 Last.FM 的播放列表</string>
+  <string id="15287">你想把目前歌曲加入你的最愛嗎？</string>
+  <string id="15288">你想封鎖目前的歌曲嗎？</string>
+  <string id="15289">加入你的最愛歌曲：'%s'</string>
+  <string id="15290">不能加入 '%s' 到你的最愛</string>
+  <string id="15291">被封鎖：'%s'.</string>
+  <string id="15292">不能封鎖 '%s'.</string>
+  <string id="15293">%name% 最近喜好的歌曲</string>
+  <string id="15294">%name% 最近封鎖的歌曲</string>
+  <string id="15295">從最愛中移除</string>
+  <string id="15296">解除封鎖</string>
+  <string id="15297">您想從你的最愛移除這首歌曲嗎？</string>
+  <string id="15298">你想解除封鎖這首歌曲嗎？</string>
 
   <string id="15300">路徑錯誤或無效！</string>
   <string id="15301">無法連線到網路伺服器！</string>
@@ -1373,11 +1388,15 @@
   <string id="20019">選擇縮略圖</string>
   <string id="20020">KAI 與金手指不能同時使用</string>
   <string id="20021">請選擇你要使用的項目</string>
+  <!-- string id 20022 will always be set to an empty string (LocalizeStrings.cpp)-->
   <string id="20022"></string>
   <string id="20023">衝突</string>
   <string id="20024">掃描新加入</string>
   <string id="20025">掃描全部</string>
   <string id="20026">區域</string>
+
+  <!-- string id's 20027 thru 20034 are reserved for temperaturestrings  (LocalizeStrings.cpp)-->
+
   <string id="20038">鎖定音樂視窗</string>
   <string id="20039">鎖定影片視窗</string>
   <string id="20040">鎖定圖片視窗</string>
@@ -1440,7 +1459,7 @@
   <string id="20097">取得專輯資訊</string>
   <string id="20098">正在取得專輯資訊</string>
   <string id="20099">當 CD 播放時不能擷取該 CD</string>
-  <string id="20100">管理員密碼與鎖定</string> 
+  <string id="20100">管理員密碼與鎖定</string>
   <string id="20101">輸入管理員密碼後，永遠啟用管理員模式</string>
   <string id="20102">或是從預設值中複製？</string>
   <string id="20103">儲存預設檔變更？</string>
@@ -1528,13 +1547,15 @@
   <string id="20186">請稍後…</string>
   <string id="20187">備份 EEPROM</string>
   <string id="20188">備份 BIOS</string>
-  
+  <string id="20189">啓用 劇情和評論自動捲動</string>
+  <string id="20190">自訂</string>
+
+  <!-- string id's 20200 thru 20211 are reserved for speedstrings (LocalizeStrings.cpp)-->
+
   <string id="20250">派對模式！(影片)</string>
   <string id="20251">混合飲料(影片)</string>
   <string id="20252">填裝玻璃(影片)</string>
 
-  <string id="20189"></string>
-  <string id="20190"></string>
   <string id="20191"></string>
   <string id="20192"></string>
   <string id="20193"></string>
@@ -1805,4 +1826,6 @@
   <!-- strings 21900 thru 21999 reserved for slideshow info -->
 
   <string id="29999">遊戲應用閃爍過濾</string>
+  <!-- strings 30000 thru 31000 reserved for plugin settings -->
+  <!-- strings 31001 thru 32000 reserved for skins -->
 </strings>
