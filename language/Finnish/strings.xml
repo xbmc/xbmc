@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: jutski (->7/2006) Mikko70 (1/2007->)-->
-<!--Date of translation: 27/10/2007-->
+<!--Date of translation: 15/11/2007-->
 <!--$Revision$: -->
-<!--Finnish strings based on English strings version 10628 -->
+<!--Finnish strings based on English strings version 10751 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -124,20 +124,20 @@
   <string id="182">Kappaleet</string>
   <string id="183">Levyn esittely</string>
   <string id="184">Päivitä</string>
-  <string id="185">Haetaan tietoja albumista</string>
+  <string id="185">Haetaan albumin tietoja</string>
   <string id="186">OK</string>
-  <string id="187">Tietoja ei löytynyt!</string>
+  <string id="187">Albumin tietoja ei löytynyt!</string>
   <string id="188">Valitse kaikki</string>
   <string id="189">Haetaan median tiedot</string>
   <string id="190">Tallenna</string>
   <string id="191">Sekoita</string>
   <string id="192">Tyhjennä</string>
   <string id="193">Hae tiedot</string>
-  <string id="194">Etsitään...</string>
-  <string id="195">Tietoja ei löytynyt!</string>
+  <string id="194">Haetaan...</string>
+  <string id="195">Elokuvan tietoja ei löytynyt!</string>
   <string id="196">Valitse elokuva:</string>
   <string id="197">Haetaan tietoja %ssta</string>
-  <string id="198">Haetaan elokuvan tiedot</string>
+  <string id="198">Haetaan elokuvan tietoja</string>
   <string id="199">Ohjaaja:</string>
   <string id="200">Kirjoittaja:</string>
   <string id="201">Vuosi: </string>
@@ -206,7 +206,7 @@
   <string id="268">Järjestä: Nimi</string>
   <string id="269">Järjestä: Esittäjä</string>
   <string id="270">Järjestä: Albumi</string>
-  <string id="271">100 parasta</string>
+  <string id="271">100 suosituinta</string>
   <string id="272">Määritä kuvan vasen yläkulma</string>
   <string id="273">Määritä kuvan oikea alakulma</string>
   <string id="274">Määritä tekstityksen sijainti</string>
@@ -292,7 +292,7 @@
   <string id="364">AC3 yhteensopiva vastaanotin</string>
   <string id="365">Järjestä: Nimi</string>
   <string id="366">Järjestä: Vuosi</string>
-  <string id="367">Järjestä: Arvostus</string>
+  <string id="367">Järjestä: Arvosana</string>
   <string id="368">IMDb</string>
   <string id="369">Nimi</string>
   <string id="370">ukkosia</string>
@@ -300,7 +300,7 @@
   <string id="372">enimmäkseen</string>
   <string id="373">aurinkoista</string>
   <string id="374">pilvistä</string>
-  <string id="375">lunta</string>
+  <string id="375">lumisadetta</string>
   <string id="376">sadetta</string>
   <string id="377">heikkoa</string>
   <string id="378">aamupäivällä</string>
@@ -477,7 +477,7 @@
   <string id="560">ID</string>
   <string id="561">Tiedosto</string>
   <string id="562">Vuosi</string>
-  <string id="563">Arvostus</string>
+  <string id="563">Arvosana</string>
   <string id="564">Tyyppi</string>
   <string id="565">Käyttö</string>
   <string id="566">Albumin esittäjä</string>
@@ -601,7 +601,7 @@
   <string id="742">Valkoinen</string>
   <string id="743">Keltainen</string>
   <string id="744">Tiedostot</string>
-  <string id="745">Tälle näkymälle ei ole määritetty mediatietoja,</string>
+  <string id="745">Tälle tilalle ei ole luettu mediatietoja,</string>
   <string id="746">vaihda Tiedostot-näkymään</string>
   <string id="747">Kuvan lataus ei onnistu</string>
   <string id="748">Muokkaa tallennuspolku</string>
@@ -679,6 +679,7 @@
   <string id="1042">Noudettu %i/%i kohdetta</string>
   <string id="1043">Ohjelma-lisäkkeet</string>
   <string id="1044">Lisäkkeen pienoiskuvake</string>
+  <string id="1045">Lisäkkeen asetukset</string>
   
   <string id="1200">SMB-asiakas</string>
   <string id="1202">Työryhmä</string>
@@ -785,8 +786,8 @@
   <string id="10501">Musiikki/Tiedostot</string>
   <string id="10502">Musiikki/Kirjasto</string>
   <string id="10503">Soittolistojen hallinta</string>
-  <string id="10504">100 parasta kappaletta</string>
-  <string id="10505">100 parasta albumia</string>
+  <string id="10504">100 suosituinta kappaletta</string>
+  <string id="10505">100 suosituinta albumia</string>
   <string id="10506">Ohjelmat</string>
   <string id="10507">Asetukset</string>
   <string id="10508">Säätila</string>
@@ -1083,7 +1084,9 @@
   <string id="13404">Jatka</string>
   <string id="13405">Pienoiskuvake</string>
   <string id="13406">Kuvan ominaisuudet</string>
-  <string id="13407">%sn esiasetukset</string>
+  <string id="13407">%sn esiasetukset</string> 
+  <string id="13408">(IMDb käyttäjän arvosana)</string>
+  <string id="13409">250 suosituinta:</string> 
   
   <string id="14000">Yhdistä osat</string>
   <string id="14001">Ei yhdistetä</string>
@@ -1160,7 +1163,7 @@
   <string id="14075">Kesäaika käytössä</string>
   <string id="14076">Lisää suosikkeihin</string>
   <string id="14077">Poista suosikeista</string> 
-  <string id="14078">Skinin värit</string>
+  <string id="14078">Skinin väritys</string>
   
   <string id="15000">XLink KAI</string>
   <string id="15001">Ei saatu yhteyttä palveluun, haluatko</string>
@@ -1291,7 +1294,18 @@
   <string id="15284">Kuuntele %name%:n suositukset Last.FM radiosta</string>
   <string id="15285">Käyttäjän %name% tunnisteet</string>
   <string id="15286">Kuuntele %name%:n soittolista Last.FM radiosta</string>
-  
+  <string id="15287">Haluatko lisätä nykyisen kappaleen omiin suosikkeihin?</string>
+  <string id="15288">Haluatko asettaa eston nykyiselle kappaleelle?</string>
+  <string id="15289">'%s' lisätty omiin suosikki kappaleisiin.</string>
+  <string id="15290">'%s':a ei voida omiin lisätä omiin suosikki kappaleisiin.</string>
+  <string id="15291">Esto asetettu: '%s'.</string>
+  <string id="15292">'%s':lle ei voida asettaa estoa.</string>
+  <string id="15293">%name%:n uusimmat suosikit</string>
+  <string id="15294">%name%:n viimeksi estetyt</string>
+  <string id="15295">Poista omista suosikeista</string>
+  <string id="15296">Poista esto</string>
+  <string id="15297">Haluatko poistaa tämän kappaleen omista suosikeista?</string>
+  <string id="15298">Haluatko poistaa eston tältä kappaleelta?</string>
   <string id="15300">Määriteltyä polkua ei löydy</string>
   <string id="15301">Palvelimeen ei saada yhteyttä</string>
   <string id="15302">Palvelimia ei löytynyt</string>
@@ -1376,14 +1390,17 @@
   <string id="20019">Valitse kuvaketiedosto</string>
   <string id="20020">Et voi käyttää KAI:ta ja traineria samanaikaisesti</string>
   <string id="20021">Valitse kumpaa käytät</string>
+ 
+  <!-- string id 20022 will always be set to an empty string (LocalizeStrings.cpp)-->
+ 
   <string id="20022"></string> 
   <string id="20023">Ei onnistu</string>
   <string id="20024">Etsi uudet</string>
   <string id="20025">Etsi kaikki</string>
   <string id="20026">Kielialue</string>
-  
-  <!-- string id's 20027 thru 20034 are reserved for temperaturestrings -->
-   
+ 
+  <!-- string id's 20027 thru 20034 are reserved for temperaturestrings  (LocalizeStrings.cpp)-->
+ 
   <string id="20038">Lukitse Musiikki</string>
   <string id="20039">Lukitse Videot</string>
   <string id="20040">Lukitse Kuvat</string>
@@ -1490,7 +1507,7 @@
   <string id="20142">Käyttäjänimi</string>
   <string id="20143">Anna salasana</string>
   <string id="20144">Sammutusajastin</string>
-  <string id="20145">Sammutusajastus(minuutteina)</string>
+  <string id="20145">Sammutusajastus(minuuttia)</string>
   <string id="20146">Käynnistetty, sammutetaan %imin kuluttua</string>
   <string id="20147">Sammuta 30 minuutin kuluttua</string>
   <string id="20148">Sammuta 60 minuutin kuluttua</string>
@@ -1534,8 +1551,8 @@
   <string id="20186">Odota hetki</string>
   <string id="20187">Varmuuskopioidaan EEPROM:in tiedot</string>
   <string id="20188">Varmuuskopioidaan Bios:in tiedot</string>
-  <string id="20189"></string>
-  <string id="20190"></string>
+  <string id="20189">Automaattinen vieritys käytössä juonelle ja esittelylle</string>
+  <string id="20190">Oma valinta</string>
   <string id="20191"></string>
   <string id="20192"></string>
   <string id="20193"></string>
@@ -1548,9 +1565,9 @@
 
  <!-- string id's 20200 thru 20211 are reserved for speedstrings -->	
  
-  <string id="20250">Video esitys alkaa</string>
+  <string id="20250">Videoesitys alkaa</string>
   <string id="20251">Arvotaan katseltavia videoita</string>
-  <string id="20252">Valmiina katselu nautintoon</string> 
+  <string id="20252">Valmiina aloittamaan elokuvanäytös</string> 
   
   <string id="20300"></string>
   <string id="20301"></string>
@@ -1814,4 +1831,5 @@
   <!-- strings 21900 thru 21999 reserved for slideshow info -->
 
   <string id="29999">Näytön välkynnän poisto</string>
+  <!-- strings 30000 thru 31000 reserved for plugin settings -->
 </strings>
