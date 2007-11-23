@@ -351,7 +351,12 @@ extern "C"
     CxImage image(dwImageType);
     try
     {
-      if (!image.Decode(buffer, size, dwImageType) || !image.IsValid())
+      bool success = image.Decode(buffer, size, dwImageType);
+      if (!success && dwImageType != CXIMAGE_FORMAT_UNKNOWN)
+      { // try to decode with unknown imagetype
+        success = image.Decode(buffer, size, CXIMAGE_FORMAT_UNKNOWN);
+      }
+      if (!success || !image.IsValid())
       {
         printf("PICTURE::CreateThumbnailFromMemory: Unable to decode image. Error:%s\n", image.GetLastError());
         return false;
