@@ -114,7 +114,7 @@
 	</GetPlot>
 	<GetCast clearbuffers="no" dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;actor&gt;&lt;thumbs&gt;&lt;thumb&gt;\1m.jpg&lt;/thumb&gt;&lt;thumb&gt;\1t.jpg&lt;/thumb&gt;&lt;thumb&gt;\1f.jpg&lt;/thumb&gt;&lt;/thumbs&gt;&lt;name&gt;\2&lt;/name&gt;&lt;role&gt;\3&lt;/role&gt;&lt;/actor&gt;" dest="2+">
+			<RegExp input="$$1" output="&lt;actor&gt;&lt;thumbs&gt;&lt;thumb&gt;\1f.jpg&lt;/thumb&gt;&lt;/thumbs&gt;&lt;name&gt;\2&lt;/name&gt;&lt;role&gt;\3&lt;/role&gt;&lt;/actor&gt;" dest="2+">
 				<expression repeat="yes" noclean="1" trim="2,3">&lt;img src=&quot;([^&quot;]*)t\.jpg&quot;[^&gt;]*[^&quot;]*&quot;nm&quot;&gt;&lt;a href=&quot;[^&quot;]*&quot;&gt;([^&lt;]*)&lt;[^&quot;]*&quot;ddd&quot;&gt; ... [^&quot;]*&quot;char&quot;&gt;([^:]*)&lt;/td&gt;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;/actor&gt;" dest="2+">
