@@ -31,6 +31,8 @@
 #include "../../../guilib/Surface.h"
 #include "../../../guilib/FrameBufferObject.h"
 
+#define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))
+
 #ifdef HAS_SDL_OPENGL
 
 using namespace Surface;
@@ -2522,14 +2524,14 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     DeleteYV12Texture(index);
 
     im.height = m_iSourceHeight;
-    im.width = m_iSourceWidth;
+    im.width = ALIGN(m_iSourceWidth,8);
     
-    im.stride[0] = m_iSourceWidth;
-    im.stride[1] = m_iSourceWidth/2;
-    im.stride[2] = m_iSourceWidth/2;
-    im.plane[0] = new BYTE[m_iSourceWidth * m_iSourceHeight];
-    im.plane[1] = new BYTE[(m_iSourceWidth/2) * (m_iSourceHeight/2)];
-    im.plane[2] = new BYTE[(m_iSourceWidth/2) * (m_iSourceHeight/2)];
+    im.stride[0] = im.width;
+    im.stride[1] = im.width/2;
+    im.stride[2] = im.width/2;
+    im.plane[0] = new BYTE[im.width * m_iSourceHeight];
+    im.plane[1] = new BYTE[(im.width/2) * (m_iSourceHeight/2)];
+    im.plane[2] = new BYTE[(im.width/2) * (m_iSourceHeight/2)];
     
     im.cshift_x = 1;
     im.cshift_y = 1;
