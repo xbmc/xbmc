@@ -1096,8 +1096,7 @@ namespace VIDEO
       try
       {
         CPicture picture;
-        if (!picture.CreateThumbnailFromMemory((const BYTE *)thumbData.c_str(), thumbData.size(), CUtil::GetExtension(entry.m_url), thumb) && CUtil::GetExtension(entry.m_url).Equals(".jpg"))
-          picture.CreateThumbnailFromMemory((const BYTE *)thumbData.c_str(), thumbData.size(), ".gif", thumb) || picture.CreateThumbnailFromMemory((const BYTE *)thumbData.c_str(), thumbData.size(), ".png", thumb);
+        picture.CreateThumbnailFromMemory((const BYTE *)thumbData.c_str(), thumbData.size(), CUtil::GetExtension(entry.m_url), thumb);
       }
       catch (...)
       {
