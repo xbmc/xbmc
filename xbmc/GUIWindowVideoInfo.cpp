@@ -308,7 +308,7 @@ void CGUIWindowVideoInfo::Update()
   // setup plot text area
   strTmp = m_movieItem.GetVideoInfoTag()->m_strPlot;
   if (!(!m_movieItem.GetVideoInfoTag()->m_strShowTitle.IsEmpty() && m_movieItem.GetVideoInfoTag()->m_iSeason == 0)) // dont apply to tvshows
-    if (!m_movieItem.GetVideoInfoTag()->m_bWatched && g_guiSettings.GetBool("myvideos.hideplots"))
+    if (!m_movieItem.GetVideoInfoTag()->m_bWatched && g_guiSettings.GetBool("videolibrary.hideplots"))
       strTmp = g_localizeStrings.Get(20370);
 
   strTmp.Trim();

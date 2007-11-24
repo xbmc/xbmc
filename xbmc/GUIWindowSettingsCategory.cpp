@@ -1221,7 +1221,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     musicdatabase.Clean();
     CUtil::DeleteMusicDatabaseDirectoryCache();
   }
-  else if (strSetting.Equals("myvideos.cleanupvideolibrary"))
+  else if (strSetting.Equals("videolibrary.cleanupvideolibrary"))
   {
     if (CGUIDialogYesNo::ShowAndGetInput(313, 333, 0, 0))
     {
@@ -1231,7 +1231,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       videodatabase.Close();
     }
   }
-  else if (strSetting.Equals("myvideos.exportvideolibrary"))
+  else if (strSetting.Equals("videolibrary.exportvideolibrary"))
   {
     CStdString path(g_settings.GetDatabaseFolder());
     VECSHARES shares;
@@ -1245,7 +1245,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       videodatabase.Close();
     }
   }
-  else if (strSetting.Equals("myvideos.importvideolibrary"))
+  else if (strSetting.Equals("videolibrary.importvideolibrary"))
   {
     CStdString path(g_settings.GetDatabaseFolder());
     VECSHARES shares;

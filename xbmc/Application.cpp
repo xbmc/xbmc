@@ -201,6 +201,7 @@
 using namespace XFILE;
 using namespace DIRECTORY;
 using namespace PLAYLIST;
+using namespace VIDEO;
 
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
@@ -1594,6 +1595,16 @@ HRESULT CApplication::Initialize()
     RestoreMusicScanSettings();
   }
 
+  if (g_guiSettings.GetBool("videolibrary.updateonstartup")) {
+    CLog::Log(LOGNOTICE, "Updating video library on startup");
+    CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+    SScraperInfo info;
+    VIDEO::SScanSettings settings;
+    if (scanner && !scanner->IsScanning()) {
+      scanner->StartScanning("",info,settings,false);
+    }
+  }    
+    
   m_slowTimer.StartZero();
 
   CLog::Log(LOGNOTICE, "initialize done");
