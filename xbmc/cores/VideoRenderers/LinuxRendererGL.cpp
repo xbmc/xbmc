@@ -908,6 +908,7 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
     {
       // Load Y plane
       glBindTexture(m_textureTarget, fields[FIELD_FULL][0]);
+      glPixelStorei(GL_UNPACK_ALIGNMENT,1);
       glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[0]);
     }
   }
@@ -951,10 +952,12 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
     else
     {
       glBindTexture(m_textureTarget, fields[FIELD_FULL][1]);
+      glPixelStorei(GL_UNPACK_ALIGNMENT,1);
       glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[1]);
       VerifyGLState();
 
       glBindTexture(m_textureTarget, fields[FIELD_FULL][2]);
+      glPixelStorei(GL_UNPACK_ALIGNMENT,1);
       glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[2]);
       VerifyGLState();
     }
@@ -2524,7 +2527,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     DeleteYV12Texture(index);
 
     im.height = m_iSourceHeight;
-    im.width = ALIGN(m_iSourceWidth,8);
+    im.width = m_iSourceWidth;
     
     im.stride[0] = im.width;
     im.stride[1] = im.width/2;
