@@ -141,6 +141,8 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
   }
   TiXmlHandle docHandle( &doc );
   TiXmlElement *movie = docHandle.FirstChild( "results" ).FirstChild( "entity" ).Element();
+  if (!movie)
+    return false;
 
   int iYear = atoi(strYear);
 
