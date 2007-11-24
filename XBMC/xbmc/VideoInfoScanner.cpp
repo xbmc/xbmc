@@ -584,7 +584,7 @@ namespace VIDEO
                   }
                 }
                 else
-                  if (g_guiSettings.GetBool("myvideos.seasonthumbs"))
+                  if (g_guiSettings.GetBool("videolibrary.seasonthumbs"))
                     FetchSeasonThumbs(lResult);
               }
             }
@@ -826,7 +826,7 @@ namespace VIDEO
       ApplyIMDBThumbToFolder(strDirectory,strThumb);
     }
 
-    if (g_guiSettings.GetBool("myvideos.actorthumbs"))
+    if (g_guiSettings.GetBool("videolibrary.actorthumbs"))
       FetchActorThumbs(movieDetails.m_cast);
     return lResult;
   }
@@ -883,7 +883,7 @@ namespace VIDEO
         AddMovieAndGetThumb(&item,"tvshows",episodeDetails,lShowId);
       }
     }
-    if (g_guiSettings.GetBool("myvideos.seasonthumbs"))
+    if (g_guiSettings.GetBool("videolibrary.seasonthumbs"))
       FetchSeasonThumbs(lShowId);
     m_database.Close();
   }
