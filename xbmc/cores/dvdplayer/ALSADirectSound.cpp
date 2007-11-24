@@ -38,6 +38,8 @@ void CALSADirectSound::DoWork()
 CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, char* strAudioCodec, bool bIsMusic, bool bPassthrough)
 {
   CLog::Log(LOGDEBUG,"CALSADirectSound::CALSADirectSound - opening alsa device");
+  if (iChannels == 0)
+    iChannels = 2;
 
   bool bAudioOnAllSpeakers(false);
   g_audioContext.SetupSpeakerConfig(iChannels, bAudioOnAllSpeakers, bIsMusic);
@@ -96,7 +98,7 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   nErr = snd_pcm_hw_params_set_period_size_near(m_pPlayHandle, hw_params, &m_maxFrames, 0);
   CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_period_size",nErr);
 
-  m_BufferSize = snd_pcm_bytes_to_frames(m_pPlayHandle,m_dwPacketSize * 20); // buffer big enough - but not too big...
+  m_BufferSize = snd_pcm_bytes_to_frames(m_pPlayHandle,m_dwPacketSize * 10); // buffer big enough - but not too big...
   nErr = snd_pcm_hw_params_set_buffer_size_near(m_pPlayHandle, hw_params, &m_BufferSize);
   CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_buffer_size",nErr);
 
@@ -150,6 +152,7 @@ HRESULT CALSADirectSound::Deinitialize()
   }
 
   m_pPlayHandle=NULL;
+  	CLog::Log(LOGDEBUG,"CALSADirectSound::Deinitialize - set active\n");
   g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
 	
   return S_OK;
@@ -261,9 +264,16 @@ DWORD CALSADirectSound::AddPackets(unsigned char *data, DWORD len)
 	return len; 
   }
 
+  DWORD nAvailSpace = GetSpace();
+
   // if there is no room in the buffer - even for one frame, return 
-  if ( snd_pcm_frames_to_bytes(m_pPlayHandle,GetSpace()) < (int) len )
+  if ( snd_pcm_frames_to_bytes(m_pPlayHandle,nAvailSpace) < (int) len )
+  {
+    if (nAvailSpace <= m_maxFrames || (DWORD)snd_pcm_frames_to_bytes(m_pPlayHandle,nAvailSpace) <= m_dwPacketSize)
        return 0;
+
+    len = snd_pcm_frames_to_bytes(m_pPlayHandle,nAvailSpace);
+  }
 
   unsigned char *pcmPtr = data;
 
