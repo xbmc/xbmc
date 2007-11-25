@@ -722,6 +722,9 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
       subtitleText.Replace("</b>", "");
       subtitleText.Replace("<u>", "");
       subtitleText.Replace("</u>", "");
+      subtitleText.Replace("</i", ""); // handle tags which aren't closed properly (happens).
+      subtitleText.Replace("</b", "");
+      subtitleText.Replace("</u", "");
       
       RESOLUTION res = g_graphicsContext.GetVideoResolution();
       g_graphicsContext.SetScalingResolution(res, 0, 0, false);
