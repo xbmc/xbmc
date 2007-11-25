@@ -41,6 +41,7 @@ CGUIDialogSongInfo::CGUIDialogSongInfo(void)
 {
   m_cancelled = false;
   m_needsUpdate = false;
+  m_startRating = -1;
 }
 
 CGUIDialogSongInfo::~CGUIDialogSongInfo(void)
