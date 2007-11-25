@@ -61,6 +61,9 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
       {
         strPath = _P("Q:\\media\\Fonts\\");
         strPath += CUtil::GetFileName(strFilename);
+#ifdef _LINUX
+        strPath = PTH_IC(strPath);
+#endif
       }
 
       bFontLoaded = pFontFile->Load(strPath, iSize, iStyle, aspect);
