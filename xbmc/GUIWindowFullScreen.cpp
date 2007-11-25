@@ -715,6 +715,14 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
     CStdString subtitleText = "";
     if (g_application.m_pPlayer->GetCurrentSubtitle(subtitleText))
     {      
+      // Remove HTML-like tags from the subtitles until 
+      subtitleText.Replace("<i>", "");
+      subtitleText.Replace("</i>", "");
+      subtitleText.Replace("<b>", "");
+      subtitleText.Replace("</b>", "");
+      subtitleText.Replace("<u>", "");
+      subtitleText.Replace("</u>", "");
+      
       RESOLUTION res = g_graphicsContext.GetVideoResolution();
       g_graphicsContext.SetScalingResolution(res, 0, 0, false);
 
