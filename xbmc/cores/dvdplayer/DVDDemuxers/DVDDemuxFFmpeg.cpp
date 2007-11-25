@@ -478,7 +478,7 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
     else
     {        
       // XXX, in some cases ffmpeg returns a negative packet size
-      if (pkt.size <= 0 || pkt.stream_index >= MAX_STREAMS)
+      if (pkt.size < 0 || pkt.stream_index >= MAX_STREAMS)
       {
         CLog::Log(LOGERROR, "CDVDDemuxFFmpeg::Read() no valid packet");
       }
