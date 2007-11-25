@@ -51,7 +51,7 @@ protected:
   virtual void OnStartup(){};
   virtual void OnExit(){};
   virtual void Process(); 
-  bool m_bStop;
+  volatile bool m_bStop;
   HANDLE m_ThreadHandle;
 
 private:
