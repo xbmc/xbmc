@@ -11,7 +11,7 @@ typedef struct stDVDAudioFrame DVDAudioFrame;
 class CDVDAudio
 {
 public:
-  CDVDAudio(bool& bStop);
+  CDVDAudio(volatile bool& bStop);
   ~CDVDAudio();
 
   void RegisterAudioCallback(IAudioCallback* pCallback);
