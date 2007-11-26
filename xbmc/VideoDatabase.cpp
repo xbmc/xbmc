@@ -6305,7 +6305,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver)
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, __FUNCTION__" Cleaning studio table");
-    sql = "delete from studio where idStudio not in (select distinct idStudio from studiolinkmovie) and idStudio not in (select distinct idStudio from genrelinkmusicvideo)";
+    sql = "delete from studio where idStudio not in (select distinct idStudio from studiolinkmovie) and idStudio not in (select distinct idStudio from studiolinkmusicvideo)";
     m_pDS->exec(sql.c_str());
 
     CommitTransaction();
