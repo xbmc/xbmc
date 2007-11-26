@@ -1,6 +1,7 @@
 
 #include "stdafx.h"
 #include "DVDAudioCodecFFmpeg.h"
+#include "../../DVDStreamInfo.h"
 
 CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg() : CDVDAudioCodec()
 {
@@ -15,7 +16,7 @@ CDVDAudioCodecFFmpeg::~CDVDAudioCodecFFmpeg()
   Dispose();
 }
 
-bool CDVDAudioCodecFFmpeg::Open(CodecID codecID, int iChannels, int iSampleRate, int iBits, void* ExtraData, unsigned int ExtraSize)
+bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   AVCodec* pCodec;
   m_bOpenedCodec = false;
@@ -25,7 +26,7 @@ bool CDVDAudioCodecFFmpeg::Open(CodecID codecID, int iChannels, int iSampleRate,
   m_pCodecContext = m_dllAvCodec.avcodec_alloc_context();
   m_dllAvCodec.avcodec_get_context_defaults(m_pCodecContext);
 
-  pCodec = m_dllAvCodec.avcodec_find_decoder(codecID);
+  pCodec = m_dllAvCodec.avcodec_find_decoder(hints.codec);
   if (!pCodec)
   {
     CLog::Log(LOGDEBUG,"CDVDAudioCodecFFmpeg::Open() Unable to find codec");
@@ -39,15 +40,17 @@ bool CDVDAudioCodecFFmpeg::Open(CodecID codecID, int iChannels, int iSampleRate,
   if (pCodec->capabilities & CODEC_CAP_TRUNCATED)
     m_pCodecContext->flags |= CODEC_FLAG_TRUNCATED;
 
-  m_pCodecContext->channels = iChannels;
-  m_pCodecContext->sample_rate = iSampleRate;
+  m_pCodecContext->channels = hints.channels;
+  m_pCodecContext->sample_rate = hints.samplerate;
+  m_pCodecContext->block_align = hints.blockalign;
+  m_pCodecContext->bit_rate = hints.bitrate;
   //m_pCodecContext->bits_per_sample = 24;
   
-  if( ExtraData && ExtraSize > 0 )
+  if( hints.extradata && hints.extrasize > 0 )
   {
-    m_pCodecContext->extradata_size = ExtraSize;
-    m_pCodecContext->extradata = (uint8_t*)m_dllAvUtil.av_mallocz(ExtraSize + FF_INPUT_BUFFER_PADDING_SIZE);
-    memcpy(m_pCodecContext->extradata, ExtraData, ExtraSize);
+    m_pCodecContext->extradata_size = hints.extrasize;
+    m_pCodecContext->extradata = (uint8_t*)m_dllAvUtil.av_mallocz(hints.extrasize + FF_INPUT_BUFFER_PADDING_SIZE);
+    memcpy(m_pCodecContext->extradata, hints.extradata, hints.extrasize);
   }
   
   // set acceleration
@@ -88,7 +91,7 @@ int CDVDAudioCodecFFmpeg::Decode(BYTE* pData, int iSize)
 
   iBytesUsed = m_dllAvCodec.avcodec_decode_audio(m_pCodecContext, (int16_t *)m_buffer, &m_iBufferSize, pData, iSize);
 
-  if(m_iBufferSize == 0)
+  if(m_iBufferSize == 0 && iBytesUsed >= 0)
     m_iBuffered += iBytesUsed;
   else
     m_iBuffered = 0;
