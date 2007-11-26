@@ -617,10 +617,12 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
     {
     case CODEC_TYPE_AUDIO:
       {
-        m_streams[iId] = new CDemuxStreamAudioFFmpeg(&m_dllAvCodec);
-        m_streams[iId]->type = STREAM_AUDIO;
-        ((CDemuxStreamAudio*)m_streams[iId])->iChannels = pStream->codec->channels;
-        ((CDemuxStreamAudio*)m_streams[iId])->iSampleRate = pStream->codec->sample_rate;
+        CDemuxStreamAudioFFmpeg* st = new CDemuxStreamAudioFFmpeg(&m_dllAvCodec);
+        m_streams[iId] = st;
+        st->iChannels = pStream->codec->channels;
+        st->iSampleRate = pStream->codec->sample_rate;
+        st->iBlockAlign = pStream->codec->block_align;
+        st->iBitRate = pStream->codec->bit_rate;
         break;
       }
     case CODEC_TYPE_VIDEO:
