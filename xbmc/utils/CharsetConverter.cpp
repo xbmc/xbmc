@@ -183,7 +183,7 @@ void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &wStr
   size_t inBytes;
 
   // Try to flip hebrew/arabic characters, if any
-  if (g_guiSettings.GetBool("subtitles.flipbidicharset"))
+  if (bVisualBiDiFlip)
   {
 #ifndef _LINUX
     logicalToVisualBiDi(utf8String, strFlipped, FRIBIDI_CHARSET_UTF8);

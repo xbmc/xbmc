@@ -733,7 +733,7 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
       float w;
       float h;
       CStdStringW utf16Sub;
-      g_charsetConverter.utf8ToW(subtitleText, utf16Sub, true);
+      g_charsetConverter.utf8ToW(subtitleText, utf16Sub, g_guiSettings.GetBool("subtitles.flipbidicharset"));
       m_subtitleFont->GetTextExtent(utf16Sub.c_str(), &w, &h);
 
       float maxWidth = (float) g_settings.m_ResInfo[res].Overscan.right - g_settings.m_ResInfo[res].Overscan.left;
