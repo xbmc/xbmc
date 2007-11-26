@@ -25,13 +25,13 @@
 				<expression repeat="yes" clear="yes" trim="1,2">&lt;i class=&quot;transl&quot;&gt;([^(]*)([^&lt;]*) [[^-]*]*</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1 (\2) $$8 $$9&lt;/title&gt;&lt;url&gt;http://akas.imdb.com/title/$$7/&lt;/url&gt;&lt;id&gt;$$7&lt;/id&gt;&lt;/entity&gt;" dest="5">
-				<expression clear="yes" noclean="1">&lt;meta name=&quot;title&quot; content=&quot;([^(]*)[^0-9/A-Z]* \(([0-9/A-Z]*)</expression>
+				<expression clear="yes" noclean="1">&lt;meta name=&quot;title&quot; content=&quot;([^&amp;#34;]+[^(]*)[^0-9/A-Z]* \(([0-9/A-Z]*)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="4">
 				<expression noclean="1">(&gt;&lt;a href=&quot;/title.*)</expression>
 			</RegExp>
 			<RegExp input="$$4" output="&lt;entity&gt;&lt;title&gt;\2 (\3) \4&lt;/title&gt;&lt;url&gt;http://akas.imdb.com/title/\1/&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="5+">
-				<expression repeat="yes" noclean="1,2,3">&gt;&lt;a href=&quot;/title/([t0-9]*)/[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt; *\(([0-9/A-Z]*)\)([^=]*)?(&lt;/td&gt;*)</expression>
+				<expression repeat="yes" noclean="1,2,3">&gt;&lt;a href=&quot;/title/([t0-9]*)/&quot;[^&gt;]*&gt;([^&amp;#34;]+[^&lt;]*)&lt;/a&gt; *\(([0-9/A-Z]*)\)([^=]*)?(&lt;/td&gt;*)</expression>
 			</RegExp>
 			<expression clear="yes" noclean="1"></expression>
 		</RegExp>
