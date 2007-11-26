@@ -1,6 +1,7 @@
 
 #include "stdafx.h"
 #include "DVDAudioCodecLibDts.h"
+#include "../../DVDStreamInfo.h"
 
 inline int16_t convert(register int32_t i)
 {
@@ -179,15 +180,13 @@ CDVDAudioCodecLibDts::~CDVDAudioCodecLibDts()
   Dispose();
 }
 
-bool CDVDAudioCodecLibDts::Open(CodecID codecID, int iChannels, int iSampleRate, int iBits, void* ExtraData, unsigned int ExtraSize)
+bool CDVDAudioCodecLibDts::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   if (!m_dll.Load())
     return false;
 
   SetDefault();
 
-  // analog output is only supported in stereo
-  iChannels = 2;
   
   m_pState = m_dll.dts_init(0);
   if (!m_pState)
@@ -199,7 +198,7 @@ bool CDVDAudioCodecLibDts::Open(CodecID codecID, int iChannels, int iSampleRate,
   m_fSamples = m_dll.dts_samples(m_pState);
 
   // set desired output
-  m_iOutputChannels = iChannels;
+  m_iOutputChannels = 2;
 
   return true;
 }

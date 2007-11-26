@@ -1,6 +1,7 @@
 
 #include "stdafx.h"
 #include "DVDAudioCodecLPcm.h"
+#include "../../DVDStreamInfo.h"
 
 CDVDAudioCodecLPcm::CDVDAudioCodecLPcm() : CDVDAudioCodecPcm()
 {
@@ -8,18 +9,17 @@ CDVDAudioCodecLPcm::CDVDAudioCodecLPcm() : CDVDAudioCodecPcm()
   m_bufferSize = LPCM_BUFFER_SIZE;
 }
 
-bool CDVDAudioCodecLPcm::Open(CodecID codecID, int iChannels, int iSampleRate, int iBits, void* ExtraData, unsigned int ExtraSize)
+bool CDVDAudioCodecLPcm::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
-  m_codecID = codecID;
+  m_codecID = hints.codec;
 
-  CodecID pcm_id = CODEC_ID_NONE;
-#if 0
-  if (codecID = CODEC_ID_LPCM_S24BE) pcm_id = CODEC_ID_PCM_S24BE;
+  CDVDStreamInfo hints2(hints, true);
+  hints2.codec = CODEC_ID_NONE;
+#if 0  
+  if (hints.codecID = CODEC_ID_LPCM_S24BE) hints2.codec = CODEC_ID_PCM_S24BE;
 #endif
-  if (pcm_id != CODEC_ID_NONE)
-  {
-    return CDVDAudioCodecPcm::Open(pcm_id, iChannels, iSampleRate, iBits, ExtraData, ExtraSize);
-  }
+  if (hints2.codec != CODEC_ID_NONE)
+    return CDVDAudioCodecPcm::Open(hints2, options);
   
   return false;
 }

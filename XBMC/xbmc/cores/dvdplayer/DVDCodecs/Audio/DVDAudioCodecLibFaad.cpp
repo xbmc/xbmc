@@ -1,6 +1,7 @@
 
 #include "stdafx.h"
 #include "DVDAudioCodecLibFaad.h"
+#include "../../DVDStreamInfo.h"
 
 CDVDAudioCodecLibFaad::CDVDAudioCodecLibFaad() : CDVDAudioCodec()
 {
@@ -14,7 +15,7 @@ CDVDAudioCodecLibFaad::~CDVDAudioCodecLibFaad()
   Dispose();
 }
 
-bool CDVDAudioCodecLibFaad::Open(CodecID codecID, int iChannels, int iSampleRate, int iBits, void* ExtraData, unsigned int ExtraSize)
+bool CDVDAudioCodecLibFaad::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   // for safety
   if (m_pHandle) Dispose();
@@ -29,14 +30,14 @@ bool CDVDAudioCodecLibFaad::Open(CodecID codecID, int iChannels, int iSampleRate
 
   m_bRawAACStream = true;;
 
-  if( ExtraSize )
+  if( hints.extrasize )
   {
     m_bRawAACStream = false;
 
     unsigned long samplerate;
     unsigned char channels;
 
-    int res = m_dll.faacDecInit2(m_pHandle, (unsigned char*)ExtraData, ExtraSize, &samplerate, &channels);
+    int res = m_dll.faacDecInit2(m_pHandle, (unsigned char*)hints.extradata, hints.extrasize, &samplerate, &channels);
     if (res < 0)
       return false;
 
