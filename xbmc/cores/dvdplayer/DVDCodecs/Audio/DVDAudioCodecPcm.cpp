@@ -1,6 +1,7 @@
 
 #include "stdafx.h"
 #include "DVDAudioCodecPcm.h"
+#include "../../DVDStreamInfo.h"
 #include "../DVDCodecs.h"
 
 /* from g711.c by SUN microsystems (unrestricted use) */
@@ -103,14 +104,14 @@ CDVDAudioCodecPcm::~CDVDAudioCodecPcm()
   Dispose();
 }
 
-bool CDVDAudioCodecPcm::Open(CodecID codecID, int iChannels, int iSampleRate, int iBits, void* ExtraData, unsigned int ExtraSize)
+bool CDVDAudioCodecPcm::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   SetDefault();
   
-  m_codecID = codecID;
-  m_iSourceChannels = iChannels;
-  m_iSourceSampleRate = iSampleRate;
-  m_iSourceBitrate = iBits;
+  m_codecID = hints.codec;
+  m_iSourceChannels = hints.channels;
+  m_iSourceSampleRate = hints.samplerate;
+  m_iSourceBitrate = 16;
   
   switch (m_codecID)
   {
@@ -131,7 +132,7 @@ bool CDVDAudioCodecPcm::Open(CodecID codecID, int iChannels, int iSampleRate, in
   }
 
   // set desired output
-  m_iOutputChannels = iChannels;
+  m_iOutputChannels = m_iSourceChannels;
 
   return true;
 }
