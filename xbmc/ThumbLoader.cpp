@@ -28,6 +28,7 @@ using namespace XFILE;
 
 CVideoThumbLoader::CVideoThumbLoader()
 {
+  StopThread();
 }
 
 CVideoThumbLoader::~CVideoThumbLoader()

@@ -25,6 +25,7 @@
 
 CPictureInfoLoader::CPictureInfoLoader()
 {
+  StopThread();
 }
 
 CPictureInfoLoader::~CPictureInfoLoader()
