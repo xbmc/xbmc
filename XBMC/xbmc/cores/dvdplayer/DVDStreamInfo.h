@@ -39,6 +39,8 @@ public:
   // AUDIO
   int channels;
   int samplerate;
+  int bitrate;
+  int blockalign;
 
   // SUBTITLE
   int identifier;

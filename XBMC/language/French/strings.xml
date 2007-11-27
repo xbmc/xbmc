@@ -1161,7 +1161,7 @@
   <string id="14075">Ajuster l'horloge pour l'observation auto. de l'heure d'été</string>
   <string id="14076">Ajouter aux favoris</string>
   <string id="14077">Enlever des favoris</string>   
-  <string id="14078">Couleur du Skin</string> 
+  <string id="14078">Couleur du texte</string> 
   
   <string id="15000">XLink Kai</string>
   <string id="15001">Le service n'est pas connecté, voulez-vous essayer</string>
@@ -1555,8 +1555,6 @@
   <string id="20251">Mélange des ingrédients (videos)</string>
   <string id="20252">Remplissage des verres (videos)</string>
 
-  <string id="20189"></string>
-  <string id="20190"></string>
   <string id="20191"></string>
   <string id="20192"></string>
   <string id="20193"></string>
