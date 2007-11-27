@@ -1,6 +1,7 @@
 
 #include "stdafx.h"
 #include "DVDAudioCodecLiba52.h"
+#include "../../DVDStreamInfo.h"
 
 #ifndef _LINUX
 typedef __int16 int16_t;
@@ -57,7 +58,7 @@ CDVDAudioCodecLiba52::~CDVDAudioCodecLiba52()
   Dispose();
 }
 
-bool CDVDAudioCodecLiba52::Open(CodecID codecID, int iChannels, int iSampleRate, int iBits, void* ExtraData, unsigned int ExtraSize)
+bool CDVDAudioCodecLiba52::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   if (!m_dll.Load()) return false;
 
@@ -74,7 +75,7 @@ bool CDVDAudioCodecLiba52::Open(CodecID codecID, int iChannels, int iSampleRate,
 
   // output will be decided on when
   // we have decoded something
-  m_iOutputChannels = iChannels;
+  m_iOutputChannels = 0;
 
   return true;
 }

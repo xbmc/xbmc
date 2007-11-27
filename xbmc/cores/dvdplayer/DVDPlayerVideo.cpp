@@ -123,7 +123,6 @@ void CDVDPlayerVideo::CloseStream(bool bWaitForBuffers)
   StopThread(); // will set this->m_bStop to true  
 
   m_messageQueue.End();
-  m_pOverlayContainer->Clear();
 
   CLog::Log(LOGNOTICE, "deleting video codec");
   if (m_pVideoCodec)

@@ -15,7 +15,7 @@
 #include "DVDPlayerAudio.h"
 
 
-CDVDAudio::CDVDAudio(bool &bStop)
+CDVDAudio::CDVDAudio(volatile bool &bStop)
   : m_bStop(bStop)
 {
   m_pAudioDecoder = NULL;
