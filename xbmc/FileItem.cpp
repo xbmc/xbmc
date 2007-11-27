@@ -1784,22 +1784,22 @@ void CFileItemList::Stack()
         isDVDFolder = true;
         break;
       }
-      if (item->m_bIsFolder && (item->GetLabel().Mid(0,2).Equals("CD") && item->GetLabel().size() == 3))
-      {
-        if (atoi(item->GetLabel().c_str()+2) > 0)
+      if (item->m_bIsFolder)
+      { // we stack CD# folders down if they contain a single video file
+        CStdString folderName = item->GetLabel();
+        if (folderName.Left(2).Equals("CD") && StringUtils::IsNaturalNumber(folderName.Mid(2)))
         {
           CFileItemList items;
           CDirectory::GetDirectory(item->m_strPath,items,g_stSettings.m_videoExtensions,true);
-          items.Sort(SORT_METHOD_LABEL,SORT_ORDER_ASC);
-          int vids=0;
-          if (items.Size())
-          {
-            while (items[vids]->m_bIsFolder &&  vids < items.Size()) 
-              vids++;
-            if (items.Size()-vids == 1)
+          if (items.GetFileCount() == 1)  
+          { // only one file in the list, so replace our item with this one
+            for (int j = 0; j < items.Size(); j++)
             {
-              if (items[vids]->IsVideo())
-                *item = *items[vids];
+              if (!items[j]->m_bIsFolder)
+              {
+                *item = *items[j];
+                break;
+              }
             }
           }
         }
