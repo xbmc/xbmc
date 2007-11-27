@@ -19,8 +19,6 @@ public:
 
   void Load(CFileItemList& items);
   bool IsLoading();
-  virtual void OnStartup();
-  virtual void OnExit();
   virtual void Run();
   void SetObserver(IBackgroundLoaderObserver* pObserver);
   void SetProgressCallback(IProgressCallback* pCallback);
