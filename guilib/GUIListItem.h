@@ -10,6 +10,9 @@
 
 #include "StdString.h"
 
+#include <map>
+#include <string>
+
 //  Forward
 class CGUIListItemLayout;
 
@@ -72,6 +75,10 @@ public:
   void SetInvalid();
 
   bool m_bIsFolder;     ///< is item a folder or a file
+
+  void SetProperty(const std::string &strKey, const std::string &strValue);
+  std::string GetProperty(const std::string &strKey) const;
+
 protected:
   CStdString m_strLabel;      // text of column1
   CStdString m_strLabel2;     // text of column2
@@ -82,5 +89,7 @@ protected:
   CGUIListItemLayout *m_layout;
   CGUIListItemLayout *m_focusedLayout;
   bool m_bSelected;     // item is selected or not
+
+  std::map<std::string, std::string> m_mapProperties;
 };
 #endif
