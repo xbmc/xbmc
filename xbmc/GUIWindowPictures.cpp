@@ -260,7 +260,7 @@ void CGUIWindowPictures::OnPrepareFileItems(CFileItemList& items)
 
   DWORD dwTick=timeGetTime();
 
-  while (loader.IsLoading())
+  while (loader.IsLoading() && m_dlgProgress && !m_dlgProgress->IsCanceled())
   {
     if (bShowProgress)
     { // Do we have to init a progress dialog?
@@ -573,6 +573,8 @@ bool CGUIWindowPictures::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_SWITCH_MEDIA:
     CGUIDialogContextMenu::SwitchMedia("pictures", m_vecItems.m_strPath);
     return true;
+  default:
+    break;
   }
   return CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
