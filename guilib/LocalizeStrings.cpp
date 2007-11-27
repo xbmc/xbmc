@@ -62,7 +62,7 @@ bool CLocalizeStrings::LoadSkinStrings(const CStdString& path, const CStdString&
 bool CLocalizeStrings::LoadXML(const CStdString &filename, CStdString &encoding, CStdString &error)
 {
   TiXmlDocument xmlDoc;
-  if (!xmlDoc.LoadFile(filename.c_str()))
+  if (!xmlDoc.LoadFile(PTH_IC(filename.c_str())))
   {
     CLog::Log(LOGERROR, "unable to load %s: %s at line %d", filename.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
     error.Format("Unable to load %s: %s at line %d", filename.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
