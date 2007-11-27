@@ -22,78 +22,149 @@
 #include "stdafx.h"
 #include "BackgroundInfoLoader.h"
 
-CBackgroundInfoLoader::CBackgroundInfoLoader()
+#define ITEMS_PER_THREAD 5
+#define MAX_THREAD_COUNT 5
+
+CBackgroundInfoLoader::CBackgroundInfoLoader(int nThreads)
 {
   m_bRunning = false;
+  m_bStop = true;
   m_pObserver=NULL;
   m_pProgressCallback=NULL;
+  m_pVecItems = NULL;
+  m_nRequestedThreads = nThreads;
+  m_bStartCalled = false;
+  m_nActiveThreads = 0;
 }
 
 CBackgroundInfoLoader::~CBackgroundInfoLoader()
 {
+  StopThread();
+}
+
+void CBackgroundInfoLoader::SetNumOfWorkers(int nThreads)
+{
+  m_nRequestedThreads = nThreads;
 }
 
 void CBackgroundInfoLoader::OnStartup()
 {
-  SetPriority( THREAD_PRIORITY_LOWEST );
 }
 
-void CBackgroundInfoLoader::Process()
+void CBackgroundInfoLoader::Run()
 {
-  try
+  if (m_vecItems.size() > 0)
   {
-    CFileItemList& vecItems = (*m_pVecItems);
-
-    if (vecItems.Size() <= 0)
-      return ;
-
-    OnLoaderStart();
-
-    for (int i = 0; i < (int)vecItems.Size(); ++i)
+    try
     {
-      CFileItem* pItem = vecItems[i];
+      EnterCriticalSection(m_lock);
+      if (!m_bStartCalled)
+      {
+        OnLoaderStart();
+        m_bStartCalled = true;
+      }
+      LeaveCriticalSection(m_lock);
 
-      // Ask the callback if we should abort
-      if (m_pProgressCallback && m_pProgressCallback->Abort())
-        m_bStop=true;
+      while (!m_bStop)
+      {
+        CFileItem *pItem = NULL;
+        EnterCriticalSection(m_lock);
+        std::vector<CFileItem*>::iterator iter = m_vecItems.begin();
+        if (iter != m_vecItems.end())
+        {
+          pItem = *iter;
+          m_vecItems.erase(iter);
+        }
+        LeaveCriticalSection(m_lock);
 
-      if (m_bStop)
-        break;
+        if (pItem == NULL)
+          break;
 
-      // load the item
-      if (!LoadItem(pItem))
-        continue;
+        // Ask the callback if we should abort
+        if (m_pProgressCallback && m_pProgressCallback->Abort())
+          m_bStop=true;
 
-      // Notify observer a item
-      // is loaded.
-      if (m_pObserver)
-        m_pObserver->OnItemLoaded(pItem);
+        if (!m_bStop && LoadItem(pItem) && m_pObserver)
+          m_pObserver->OnItemLoaded(pItem);
+      }
+
     }
+    catch (...)
+    {
+      CLog::Log(LOGERROR, "BackgroundInfoLoader thread: Unhandled exception");
+    }
+  }
 
+  EnterCriticalSection(m_lock);
+  if (--m_nActiveThreads == 0)
     OnLoaderFinish();
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "BackgroundInfoLoader thread: Unhandled exception");
-  }
+  LeaveCriticalSection(m_lock);
 }
 
 void CBackgroundInfoLoader::OnExit()
 {
-  m_bRunning = false;
 }
 
 void CBackgroundInfoLoader::Load(CFileItemList& items)
 {
-  m_pVecItems = &items;
   StopThread();
+
+  if (items.Size() == 0)
+    return;
+  
+  EnterCriticalSection(m_lock);
+
+  for (int nItem=0; nItem < items.Size(); nItem++)
+    m_vecItems.push_back(items[nItem]);
+
+  m_pVecItems = &items;
   m_bRunning = true;
-  Create();
+  m_bStop = false;
+  m_bStartCalled = false;
+
+  int nThreads = m_nRequestedThreads;
+  if (nThreads == -1)
+    nThreads = (m_vecItems.size() / (ITEMS_PER_THREAD+1)) + 1;
+
+  if (nThreads > MAX_THREAD_COUNT)
+    nThreads = MAX_THREAD_COUNT;
+
+  m_nActiveThreads = nThreads;
+  for (int i=0; i < nThreads; i++)
+  {
+    CThread *pThread = new CThread(this); 
+    pThread->Create();
+    pThread->SetPriority(THREAD_PRIORITY_BELOW_NORMAL);
+    pThread->SetName("Background Loader");
+    m_workers.push_back(pThread);
+  }
+      
+  LeaveCriticalSection(m_lock);
+}
+
+void CBackgroundInfoLoader::StopThread()
+{
+  m_bStop = true;
+  EnterCriticalSection(m_lock);
+  m_vecItems.clear();
+  LeaveCriticalSection(m_lock);
+
+  for (int i=0; i<(int)m_workers.size(); i++)
+  {
+    m_workers[i]->StopThread();
+    delete m_workers[i];
+  }
+
+  m_workers.clear();
+
+  m_pVecItems = NULL;
+  m_bRunning = false;
+  m_nActiveThreads = 0;
 }
 
 bool CBackgroundInfoLoader::IsLoading()
 {
-  return m_bRunning;
+  return m_nActiveThreads > 0;
 }
 
 void CBackgroundInfoLoader::SetObserver(IBackgroundLoaderObserver* pObserver)
