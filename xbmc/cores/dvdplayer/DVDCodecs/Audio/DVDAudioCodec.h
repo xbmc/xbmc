@@ -9,6 +9,10 @@ enum CodecID;
 
 struct AVStream;
 
+class CDVDStreamInfo;
+class CDVDCodecOption;
+typedef std::vector<CDVDCodecOption> CDVDCodecOptions;
+
 class CDVDAudioCodec
 {
 public:
@@ -19,8 +23,8 @@ public:
   /*
    * Open the decoder, returns true on success
    */
-  virtual bool Open(CodecID codecID, int iChannels, int iSampleRate, int iBits, void* ExtraData, unsigned int ExtraSize) = 0;
-  
+  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) = 0;
+
   /*
    * Dispose, Free all resources
    */

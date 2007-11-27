@@ -316,7 +316,9 @@ public:
 #ifdef HAS_SDL
     bool m_fullScreen;
 #endif
+    int m_playlistRetries;
   };
+
   struct stSettings
   {
 public:
