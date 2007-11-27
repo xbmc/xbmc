@@ -43,6 +43,7 @@ CGUIListItem::~CGUIListItem(void)
 void CGUIListItem::SetLabel(const CStdString& strLabel)
 {
   m_strLabel = strLabel;
+  SetProperty("label",strLabel);
   SetInvalid();
 }
 
@@ -55,6 +56,7 @@ const CStdString& CGUIListItem::GetLabel() const
 void CGUIListItem::SetLabel2(const CStdString& strLabel2)
 {
   m_strLabel2 = strLabel2;
+  SetProperty("label2",strLabel2);
   SetInvalid();
 }
 
@@ -213,3 +215,16 @@ void CGUIListItem::SetInvalid()
   if (m_focusedLayout) m_focusedLayout->SetInvalid();
 }
 
+void CGUIListItem::SetProperty(const std::string &strKey, const std::string &strValue)
+{
+  m_mapProperties[strKey] = strValue;
+}
+
+std::string CGUIListItem::GetProperty(const std::string &strKey) const
+{
+  std::map<std::string,std::string>::const_iterator iter = m_mapProperties.find(strKey);
+  if (iter == m_mapProperties.end())
+    return "";
+
+  return iter->second;
+}

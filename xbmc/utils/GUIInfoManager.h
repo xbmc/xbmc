@@ -202,47 +202,6 @@
 #define LASTFM_CANLOVE              306
 #define LASTFM_CANBAN               307
 
-#define LISTITEM_START              310
-#define LISTITEM_THUMB              310
-#define LISTITEM_LABEL              311
-#define LISTITEM_TITLE              312
-#define LISTITEM_TRACKNUMBER        313
-#define LISTITEM_ARTIST             314
-#define LISTITEM_ALBUM              315
-#define LISTITEM_YEAR               316
-#define LISTITEM_GENRE              317
-#define LISTITEM_ICON               318
-#define LISTITEM_DIRECTOR           319
-#define LISTITEM_OVERLAY            320
-#define LISTITEM_LABEL2             321
-#define LISTITEM_FILENAME           322
-#define LISTITEM_DATE               323
-#define LISTITEM_SIZE               324
-#define LISTITEM_RATING             325
-#define LISTITEM_PROGRAM_COUNT      326
-#define LISTITEM_DURATION           327
-#define LISTITEM_ISPLAYING          328
-#define LISTITEM_ISSELECTED         329
-#define LISTITEM_PLOT               330
-#define LISTITEM_PLOT_OUTLINE       331
-#define LISTITEM_EPISODE            332
-#define LISTITEM_SEASON             333
-#define LISTITEM_TVSHOW             334
-#define LISTITEM_PREMIERED          335
-#define LISTITEM_COMMENT            336
-#define LISTITEM_ACTUAL_ICON        337
-#define LISTITEM_PATH               338
-#define LISTITEM_PICTURE_PATH       339
-#define LISTITEM_PICTURE_DATETIME   340
-#define LISTITEM_PICTURE_RESOLUTION 341
-#define LISTITEM_STUDIO             342
-#define LISTITEM_MPAA               343
-#define LISTITEM_CAST               344
-#define LISTITEM_CAST_AND_ROLE      345
-#define LISTITEM_WRITER             346
-#define LISTITEM_TAGLINE            347
-#define LISTITEM_TOP250             348
-#define LISTITEM_END                350
 
 #define CONTAINER_FOLDERTHUMB       360
 #define CONTAINER_FOLDERPATH        361
@@ -376,6 +335,51 @@
 #define BUTTON_SCROLLER_HAS_ICON    30001
 
 #define VERSION_STRING "pre-2.1"
+
+#define LISTITEM_START              35000
+#define LISTITEM_THUMB              (LISTITEM_START)
+#define LISTITEM_LABEL              (LISTITEM_START + 1)
+#define LISTITEM_TITLE              (LISTITEM_START + 2)
+#define LISTITEM_TRACKNUMBER        (LISTITEM_START + 3)
+#define LISTITEM_ARTIST             (LISTITEM_START + 4)
+#define LISTITEM_ALBUM              (LISTITEM_START + 5)
+#define LISTITEM_YEAR               (LISTITEM_START + 6)
+#define LISTITEM_GENRE              (LISTITEM_START + 7)
+#define LISTITEM_ICON               (LISTITEM_START + 8)
+#define LISTITEM_DIRECTOR           (LISTITEM_START + 9)
+#define LISTITEM_OVERLAY            (LISTITEM_START + 10)
+#define LISTITEM_LABEL2             (LISTITEM_START + 11)
+#define LISTITEM_FILENAME           (LISTITEM_START + 12)
+#define LISTITEM_DATE               (LISTITEM_START + 13)
+#define LISTITEM_SIZE               (LISTITEM_START + 14)
+#define LISTITEM_RATING             (LISTITEM_START + 15)
+#define LISTITEM_PROGRAM_COUNT      (LISTITEM_START + 16)
+#define LISTITEM_DURATION           (LISTITEM_START + 17)
+#define LISTITEM_ISPLAYING          (LISTITEM_START + 18)
+#define LISTITEM_ISSELECTED         (LISTITEM_START + 19)
+#define LISTITEM_PLOT               (LISTITEM_START + 20)
+#define LISTITEM_PLOT_OUTLINE       (LISTITEM_START + 21)
+#define LISTITEM_EPISODE            (LISTITEM_START + 22)
+#define LISTITEM_SEASON             (LISTITEM_START + 23)
+#define LISTITEM_TVSHOW             (LISTITEM_START + 24)
+#define LISTITEM_PREMIERED          (LISTITEM_START + 25)
+#define LISTITEM_COMMENT            (LISTITEM_START + 26)
+#define LISTITEM_ACTUAL_ICON        (LISTITEM_START + 27)
+#define LISTITEM_PATH               (LISTITEM_START + 28)
+#define LISTITEM_PICTURE_PATH       (LISTITEM_START + 29)
+#define LISTITEM_PICTURE_DATETIME   (LISTITEM_START + 30)
+#define LISTITEM_PICTURE_RESOLUTION (LISTITEM_START + 31)
+#define LISTITEM_STUDIO             (LISTITEM_START + 32)
+#define LISTITEM_MPAA               (LISTITEM_START + 33)
+#define LISTITEM_CAST               (LISTITEM_START + 34)
+#define LISTITEM_CAST_AND_ROLE      (LISTITEM_START + 35)
+#define LISTITEM_WRITER             (LISTITEM_START + 36)
+#define LISTITEM_TAGLINE            (LISTITEM_START + 37)
+#define LISTITEM_TOP250             (LISTITEM_START + 38)
+
+#define LISTITEM_PROPERTY_START     (LISTITEM_START + 200)
+#define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 1000)
+#define LISTITEM_END                (LISTITEM_PROPERTY_END)
 
 // the multiple information vector
 #define MULTI_INFO_START              40000
@@ -531,6 +535,7 @@ protected:
   // The offset into the string parameters array is returned.
   int ConditionalStringParameter(const CStdString &strParameter);
   int AddMultiInfo(const GUIInfo &info);
+  int AddListItemProp(const CStdString &str);
 
   CStdString GetAudioScrobblerLabel(int item);
 
@@ -538,7 +543,8 @@ protected:
   CStdStringArray m_stringParameters;
 
   // Array of multiple information mapped to a single integer lookup
-  vector<GUIInfo> m_multiInfo;
+  std::vector<GUIInfo> m_multiInfo;
+  std::vector<std::string> m_listitemProperties;
 
   CStdString m_currentMovieDuration;
   
