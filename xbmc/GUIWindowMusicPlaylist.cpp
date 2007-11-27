@@ -52,7 +52,6 @@ CGUIWindowMusicPlayList::CGUIWindowMusicPlayList(void)
     : CGUIWindowMusicBase(WINDOW_MUSIC_PLAYLIST, "MyMusicPlaylist.xml")
 {
   m_musicInfoLoader.SetObserver(this);
-  m_musicInfoLoader.SetPriority(THREAD_PRIORITY_LOWEST);
   m_movingFrom = -1;
 }
 
