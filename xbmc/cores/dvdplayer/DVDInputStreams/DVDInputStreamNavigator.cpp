@@ -82,14 +82,17 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
 
   // get default language settings
   char language_menu[3];
-  strncpy(language_menu, g_langInfo.GetDVDMenuLanguage().c_str(), sizeof(language_menu));
+  strncpy(language_menu, g_langInfo.GetDVDMenuLanguage().c_str(), sizeof(language_menu)-1);
+  language_menu[3] = '\0';
 
   char language_audio[3];
-  strncpy(language_audio, g_langInfo.GetDVDAudioLanguage().c_str(), sizeof(language_audio));
+  strncpy(language_audio, g_langInfo.GetDVDAudioLanguage().c_str(), sizeof(language_audio)-1);
+  language_audio[3] = '\0';
 
   char language_subtitle[3];
-  strncpy(language_subtitle, g_langInfo.GetDVDSubtitleLanguage().c_str(), sizeof(language_subtitle));
-  
+  strncpy(language_subtitle, g_langInfo.GetDVDSubtitleLanguage().c_str(), sizeof(language_subtitle)-1);
+  language_subtitle[3] = '\0';
+
   // set language settings in case they are not set in xbmc's configuration
   if (language_menu[0] == '\0') strcpy(language_menu, "en");
   if (language_audio[0] == '\0') strcpy(language_audio, "en");
