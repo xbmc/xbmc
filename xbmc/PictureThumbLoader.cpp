@@ -28,12 +28,12 @@ using namespace XFILE;
 
 CPictureThumbLoader::CPictureThumbLoader()
 {
-  m_regenerateThumbs = false;
-  StopThread();
+  m_regenerateThumbs = false;  
 }
 
 CPictureThumbLoader::~CPictureThumbLoader()
 {
+  StopThread();
 }
 
 bool CPictureThumbLoader::LoadItem(CFileItem* pItem)

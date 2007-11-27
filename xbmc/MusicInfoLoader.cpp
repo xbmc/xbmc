@@ -34,11 +34,11 @@ using namespace MUSIC_INFO;
 
 CMusicInfoLoader::CMusicInfoLoader()
 {
-  StopThread();
 }
 
 CMusicInfoLoader::~CMusicInfoLoader()
 {
+  StopThread();
 }
 
 void CMusicInfoLoader::OnLoaderStart()
