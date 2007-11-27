@@ -1,6 +1,7 @@
 
 #include "stdafx.h"
 #include "DVDAudioCodecLibMad.h"
+#include "../../DVDStreamInfo.h"
 
 static inline signed int scale(mad_fixed_t sample)
 {
@@ -27,7 +28,7 @@ CDVDAudioCodecLibMad::~CDVDAudioCodecLibMad()
   Dispose();
 }
 
-bool CDVDAudioCodecLibMad::Open(CodecID codecID, int iChannels, int iSampleRate, int iBits, void* ExtraData, unsigned int ExtraSize)
+bool CDVDAudioCodecLibMad::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   if (m_bInitialized) Dispose();
   

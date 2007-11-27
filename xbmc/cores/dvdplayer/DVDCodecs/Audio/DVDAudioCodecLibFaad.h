@@ -12,7 +12,7 @@ class CDVDAudioCodecLibFaad : public CDVDAudioCodec
 public:
   CDVDAudioCodecLibFaad();
   virtual ~CDVDAudioCodecLibFaad();
-  virtual bool Open(CodecID codecID, int iChannels, int iSampleRate, int iBits, void* ExtraData, unsigned int ExtraSize);
+  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
   virtual void Dispose();
   virtual int Decode(BYTE* pData, int iSize);
   virtual int GetData(BYTE** dst);

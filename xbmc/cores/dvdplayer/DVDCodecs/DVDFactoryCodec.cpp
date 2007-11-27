@@ -41,12 +41,12 @@ CDVDVideoCodec* CDVDFactoryCodec::OpenCodec(CDVDVideoCodec* pCodec, CDVDStreamIn
   return NULL;
 }
 
-CDVDAudioCodec* CDVDFactoryCodec::OpenCodec(CDVDAudioCodec* pCodec, CDVDStreamInfo &hint  )
+CDVDAudioCodec* CDVDFactoryCodec::OpenCodec(CDVDAudioCodec* pCodec, CDVDStreamInfo &hints, CDVDCodecOptions &options )
 {    
   try
   {
     CLog::Log(LOGDEBUG, "FactoryCodec - Audio: %s - Opening", pCodec->GetName());
-    if( pCodec->Open( hint.codec, hint.channels, hint.samplerate, 16, hint.extradata, hint.extrasize ) )
+    if( pCodec->Open( hints, options ) )
     {
       CLog::Log(LOGDEBUG, "FactoryCodec - Audio: %s - Opened", pCodec->GetName());
       return pCodec;
@@ -95,35 +95,36 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
 CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint )
 {
   CDVDAudioCodec* pCodec = NULL;
+  CDVDCodecOptions options;
 
-  pCodec = OpenCodec( new CDVDAudioCodecPassthrough(), hint );
+  pCodec = OpenCodec( new CDVDAudioCodecPassthrough(), hint, options );
   if( pCodec ) return pCodec;
 
   switch (hint.codec)
   {
   case CODEC_ID_AC3:
     {
-      pCodec = OpenCodec( new CDVDAudioCodecLiba52(), hint );
+      pCodec = OpenCodec( new CDVDAudioCodecLiba52(), hint, options );
       if( pCodec ) return pCodec;
       break;
     }
   case CODEC_ID_DTS:
     {
-      pCodec = OpenCodec( new CDVDAudioCodecLibDts(), hint );
+      pCodec = OpenCodec( new CDVDAudioCodecLibDts(), hint, options );
       if( pCodec ) return pCodec;
       break;
     }
   case CODEC_ID_MP2:
   case CODEC_ID_MP3:
     {
-      pCodec = OpenCodec( new CDVDAudioCodecLibMad(), hint );
+      pCodec = OpenCodec( new CDVDAudioCodecLibMad(), hint, options );
       if( pCodec ) return pCodec;
       break;
     }
   case CODEC_ID_AAC:
   //case CODEC_ID_MPEG4AAC:
     {
-      pCodec = OpenCodec( new CDVDAudioCodecLibFaad(), hint );
+      pCodec = OpenCodec( new CDVDAudioCodecLibFaad(), hint, options );
       if( pCodec ) return pCodec;
       break;
     }
@@ -145,7 +146,7 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint )
   case CODEC_ID_PCM_ALAW:
   case CODEC_ID_PCM_MULAW:
     {
-      pCodec = OpenCodec( new CDVDAudioCodecPcm(), hint );
+      pCodec = OpenCodec( new CDVDAudioCodecPcm(), hint, options );
       if( pCodec ) return pCodec;
       break;
     }
@@ -154,7 +155,7 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint )
   //case CODEC_ID_LPCM_S20BE:
   case CODEC_ID_LPCM_S24BE:
     {
-      pCodec = OpenCodec( new CDVDAudioCodecLPcm(), hint );
+      pCodec = OpenCodec( new CDVDAudioCodecLPcm(), hint, options );
       if( pCodec ) return pCodec;
       break;
     }
@@ -166,7 +167,7 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint )
     }
   }
 
-  pCodec = OpenCodec( new CDVDAudioCodecFFmpeg(), hint );
+  pCodec = OpenCodec( new CDVDAudioCodecFFmpeg(), hint, options );
   if( pCodec ) return pCodec;
 
   return NULL;
