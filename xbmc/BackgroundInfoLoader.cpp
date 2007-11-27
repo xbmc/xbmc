@@ -22,8 +22,13 @@
 #include "stdafx.h"
 #include "BackgroundInfoLoader.h"
 
+#ifdef _XBOX
+#define ITEMS_PER_THREAD 10
+#define MAX_THREAD_COUNT 2
+#else
 #define ITEMS_PER_THREAD 5
 #define MAX_THREAD_COUNT 5
+#endif
 
 CBackgroundInfoLoader::CBackgroundInfoLoader(int nThreads)
 {
@@ -47,35 +52,29 @@ void CBackgroundInfoLoader::SetNumOfWorkers(int nThreads)
   m_nRequestedThreads = nThreads;
 }
 
-void CBackgroundInfoLoader::OnStartup()
-{
-}
-
 void CBackgroundInfoLoader::Run()
 {
-  if (m_vecItems.size() > 0)
+  try
   {
-    try
+    if (m_vecItems.size() > 0)
     {
-      EnterCriticalSection(m_lock);
+      CSingleLock lock(m_lock);
       if (!m_bStartCalled)
       {
         OnLoaderStart();
         m_bStartCalled = true;
       }
-      LeaveCriticalSection(m_lock);
 
       while (!m_bStop)
       {
+        CSingleLock lock(m_lock);
         CFileItem *pItem = NULL;
-        EnterCriticalSection(m_lock);
         std::vector<CFileItem*>::iterator iter = m_vecItems.begin();
         if (iter != m_vecItems.end())
         {
           pItem = *iter;
           m_vecItems.erase(iter);
         }
-        LeaveCriticalSection(m_lock);
 
         if (pItem == NULL)
           break;
@@ -84,25 +83,30 @@ void CBackgroundInfoLoader::Run()
         if (m_pProgressCallback && m_pProgressCallback->Abort())
           m_bStop=true;
 
-        if (!m_bStop && LoadItem(pItem) && m_pObserver)
-          m_pObserver->OnItemLoaded(pItem);
+        lock.Leave();
+        try
+        {
+          if (LoadItem(pItem) && m_pObserver)
+            m_pObserver->OnItemLoaded(pItem);
+        }
+        catch (...)
+        {
+          CLog::Log(LOGERROR, "%s::LoadItem - Unhandled exception for item %s", __FUNCTION__, pItem->m_strPath.c_str());
+        }
       }
+    }
 
-    }
-    catch (...)
-    {
-      CLog::Log(LOGERROR, "BackgroundInfoLoader thread: Unhandled exception");
-    }
+    CSingleLock lock(m_lock);
+    if (m_nActiveThreads == 1)
+      OnLoaderFinish();
+    m_nActiveThreads--;
+
   }
-
-  EnterCriticalSection(m_lock);
-  if (--m_nActiveThreads == 0)
-    OnLoaderFinish();
-  LeaveCriticalSection(m_lock);
-}
-
-void CBackgroundInfoLoader::OnExit()
-{
+  catch (...)
+  {
+    m_nActiveThreads--;
+    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
+  }
 }
 
 void CBackgroundInfoLoader::Load(CFileItemList& items)
