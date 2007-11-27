@@ -29,6 +29,7 @@ using namespace XFILE;
 CPictureThumbLoader::CPictureThumbLoader()
 {
   m_regenerateThumbs = false;
+  StopThread();
 }
 
 CPictureThumbLoader::~CPictureThumbLoader()
