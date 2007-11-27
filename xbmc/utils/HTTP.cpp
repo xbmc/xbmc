@@ -6,8 +6,7 @@
 #include "stdafx.h"
 #include "HTTP.h"
 #include "../dnsnamecache.h"
-
-#include "../util.h"
+#include "../Util.h"
 #include "../xbox/network.h"
 
 
@@ -71,9 +70,9 @@ int base64_encode(const void *enc, int encLen, char *out, int outMax) {
 }
 
 CHTTP::CHTTP(const string& strProxyServer, int iProxyPort)
-    : m_strProxyServer(strProxyServer)
+    : m_socket(INVALID_SOCKET)
+    , m_strProxyServer(strProxyServer)
     , m_iProxyPort(iProxyPort)
-    , m_socket(INVALID_SOCKET)
 {
   m_strCookie = "";
   hEvent = WSA_INVALID_EVENT;
@@ -279,7 +278,7 @@ bool CHTTP::IsInternet(bool checkDNS /* = true */)
 {
   CStdString strURL = "http://www.google.com";
   if (!checkDNS)
-    strURL = "http://66.102.7.99"; // www.google.com ip
+    strURL = "http://74.125.19.103"; // www.google.com ip
   int status = Open(strURL, "HEAD", NULL);
   Close();
 
@@ -339,7 +338,7 @@ bool CHTTP::Download(const string &strURL, const string &strFileName, LPDWORD pd
   HANDLE hFile = CreateFile(strFileName.c_str(), GENERIC_WRITE, FILE_SHARE_READ, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
   if (hFile == INVALID_HANDLE_VALUE)
   {
-    CLog::Log(LOGERROR, "Unable to open file %s: %d", strFileName.c_str(), GetLastError());
+    CLog::Log(LOGERROR, "Unable to open file %s: %lu", strFileName.c_str(), GetLastError());
     return false;
   }
   if (strData.size())
@@ -348,7 +347,7 @@ bool CHTTP::Download(const string &strURL, const string &strFileName, LPDWORD pd
     SetEndOfFile(hFile);
     SetFilePointer(hFile, 0, 0, FILE_BEGIN);
     DWORD n;
-    WriteFile(hFile, strData.data(), strData.size(), &n, 0);
+    WriteFile(hFile, (void*) strData.data(), strData.size(), &n, 0);
   }
   CloseHandle(hFile);
 
@@ -552,7 +551,7 @@ bool CHTTP::BreakURL(const string &strURL, string &strHostName, string &strUsern
 //*********************************************************************************************
 
 #define TIMEOUT (30*1000)
-#define BUFSIZE (32768)
+#define BUFSIZE (32767)
 
 bool CHTTP::Send(char* pBuffer, int iLen)
 {
@@ -611,8 +610,15 @@ bool CHTTP::Recv(int iLen)
   if (iLen > (BUFSIZE - m_RecvBytes) || bUnknown)
     iLen = (BUFSIZE - m_RecvBytes);
 
-  if (!m_RecvBuffer)
+  // sanity
+  if (iLen == -1)
+    iLen = BUFSIZE;
+
+  if (!m_RecvBuffer) 
+  {
     m_RecvBuffer = new char[BUFSIZE + 1];
+    memset(m_RecvBuffer,0,BUFSIZE + 1);
+  }
 
   while (iLen > 0)
   {
@@ -652,13 +658,13 @@ bool CHTTP::Recv(int iLen)
         return false;
       }
     }
-    if (!n)
+    if (n == 0)
     {
       shutdown(m_socket, SD_BOTH);
-      m_RecvBuffer[m_RecvBytes] = 0;
       WSASetLastError(0);
-      return bUnknown; // graceful close
+      return true; // graceful close
     }
+
     m_RecvBytes += n;
     iLen -= n;
 
@@ -668,7 +674,9 @@ bool CHTTP::Recv(int iLen)
       return true; // got some data, don't get any more
     }
   }
+
   m_RecvBuffer[m_RecvBytes] = 0;
+
   return true;
 }
 
@@ -900,7 +908,9 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
 
     Close();
 
-    if (!CanHandle)
+    // pass through HEAD requests, as we assume that if you did a head request
+    // you don't want to follow redirects etc.
+    if (!CanHandle || !stricmp(verb, "HEAD"))
     {
       CLog::Log(LOGERROR, "Server returned: %d %s", status, strReason.c_str());
       return status; // unhandlable
@@ -1004,6 +1014,7 @@ void CHTTP::ParseHeader(string::size_type start, string::size_type colon, string
 void CHTTP::Close()
 {
   int e = WSAGetLastError(); // make sure it's preserved
+
   m_socket.reset();
   if (hEvent != WSA_INVALID_EVENT)
     WSACloseEvent(hEvent);
@@ -1012,6 +1023,7 @@ void CHTTP::Close()
   if (m_RecvBuffer)
     delete [] m_RecvBuffer;
   m_RecvBuffer = 0;
+
   WSASetLastError(e);
 }
 
