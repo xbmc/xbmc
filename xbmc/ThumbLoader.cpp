@@ -27,12 +27,12 @@
 using namespace XFILE;
 
 CVideoThumbLoader::CVideoThumbLoader()
-{
-  StopThread();
+{  
 }
 
 CVideoThumbLoader::~CVideoThumbLoader()
 {
+  StopThread();
 }
 
 bool CVideoThumbLoader::LoadItem(CFileItem* pItem)

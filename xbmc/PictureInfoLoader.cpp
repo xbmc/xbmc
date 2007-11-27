@@ -24,12 +24,12 @@
 #include "PictureInfoTag.h"
 
 CPictureInfoLoader::CPictureInfoLoader()
-{
-  StopThread();
+{  
 }
 
 CPictureInfoLoader::~CPictureInfoLoader()
 {
+  StopThread();
 }
 
 void CPictureInfoLoader::OnLoaderStart()
