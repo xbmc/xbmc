@@ -532,6 +532,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
 #endif
   ORIENTATION orientation = VERTICAL;
   bool showOnePage = true;
+  bool scrollOut = true;
 
   CLabelInfo labelInfo;
   CLabelInfo labelInfo2;
@@ -879,6 +880,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   XMLUtils::GetDWORD(pControlNode,"pauseatend", timeToPauseAtEnd);
   XMLUtils::GetBoolean(pControlNode, "randomize", randomized);
   XMLUtils::GetBoolean(pControlNode, "loop", loop);
+  XMLUtils::GetBoolean(pControlNode, "scrollout", scrollOut);
 
   GetFloat(pControlNode, "radiowidth", radioWidth);
   GetFloat(pControlNode, "radioheight", radioHeight);
@@ -982,7 +984,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   {
     control = new CGUIFadeLabelControl(
       dwParentId, id, posX, posY, width, height,
-      labelInfo);
+      labelInfo, scrollOut, timeToPauseAtEnd);
 
     ((CGUIFadeLabelControl *)control)->SetLabel(vecLabel);
     ((CGUIFadeLabelControl *)control)->SetInfo(vecInfo);
