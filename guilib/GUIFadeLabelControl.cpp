@@ -4,13 +4,17 @@
 #include "../xbmc/utils/GUIInfoManager.h"
 
 
-CGUIFadeLabelControl::CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo)
+CGUIFadeLabelControl::CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool scrollOut, DWORD timeToPauseAtEnd)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height), m_scrollInfo(50, labelInfo.offsetX)
 {
   m_label = labelInfo;
   m_iCurrentLabel = 0;
   m_bFadeIn = false;
+  m_bFadeOut = false;
+  m_bPaused = false;
   m_iCurrentFrame = 0;
+  m_bScrollOut = scrollOut;
+  m_iTimeToPauseAtEnd = timeToPauseAtEnd;
   ControlType = GUICONTROL_FADELABEL;
 }
 
@@ -72,7 +76,7 @@ void CGUIFadeLabelControl::Render()
 
   CStdStringW strLabelUnicode;
   g_charsetConverter.utf8ToW(strRenderLabel, strLabelUnicode);
-
+    
   if (iLabelCount == 1)
   {
     float width = m_label.font->GetTextWidth(strLabelUnicode.c_str());
@@ -83,31 +87,72 @@ void CGUIFadeLabelControl::Render()
       return ;
     }
   }
-  if (m_bFadeIn)
+  
+  if (!m_bFadeIn && !m_bFadeOut && !m_bPaused)
+  {
+    bool moveToNextLabel = false;
+    
+    if (!m_bScrollOut)
+    {
+       CStdStringW remainingString = strLabelUnicode.Mid(m_scrollInfo.characterPos);
+       float width = m_label.font->GetTextWidth(remainingString.c_str());
+       moveToNextLabel = (width < m_width - m_label.offsetX);
+    } 
+    else
+    {
+       moveToNextLabel = (m_scrollInfo.characterPos > strLabelUnicode.size());
+    }
+    
+    if (moveToNextLabel)
+    { // reset to fade in again
+      if (!m_bScrollOut)
+      {
+         m_bPaused = true;
+      }
+      else
+      {
+         m_iCurrentLabel++;
+         m_bFadeIn = true;
+         m_scrollInfo.Reset();
+      }
+      m_iCurrentFrame = 0;      
+    }
+    else
+      RenderText(m_posX, m_posY, m_width, m_label.textColor, (WCHAR*) strLabelUnicode.c_str(), true );
+  }
+  
+  if (m_bFadeIn || m_bFadeOut)
   {
     DWORD dwAlpha = 21 * m_iCurrentFrame;
     dwAlpha <<= 24;
     dwAlpha += ( m_label.textColor & 0x00ffffff);
+    if (m_bFadeOut) dwAlpha = 255 - dwAlpha;
     m_label.font->DrawTextWidth(m_posX + m_label.offsetX, m_posY, dwAlpha, m_label.shadowColor, strLabelUnicode.c_str(), m_width - m_label.offsetX);
 
     m_iCurrentFrame++;
     if (m_iCurrentFrame >= 12)
     {
+      if (m_bFadeOut)
+         m_iCurrentLabel++;
       m_bFadeIn = false;
+      m_bFadeOut = false;
     }
   }
-  else
+  else if (m_bPaused)
   {
-    if (m_scrollInfo.characterPos > strLabelUnicode.size())
-    { // reset to fade in again
-      m_iCurrentLabel++;
-      m_bFadeIn = true;
-      m_iCurrentFrame = 0;
-      m_scrollInfo.Reset();
-    }
-    else
-      RenderText(m_posX, m_posY, m_width, m_label.textColor, (WCHAR*) strLabelUnicode.c_str(), true );
+     CStdStringW remainingString = strLabelUnicode.Mid(m_scrollInfo.characterPos);
+     m_label.font->DrawTextWidth(m_posX + m_label.offsetX, m_posY, m_label.textColor, m_label.shadowColor, remainingString.c_str(), m_width - m_label.offsetX);
+     
+     m_iCurrentFrame++;
+     if (m_iCurrentFrame >= (int) m_iTimeToPauseAtEnd)
+     {
+        m_iCurrentFrame = 0;
+        m_scrollInfo.Reset();
+        m_bPaused = false;
+        m_bFadeOut = true;
+     }
   }
+    
   CGUIControl::Render();
 }
 
@@ -155,11 +200,13 @@ void CGUIFadeLabelControl::RenderText(float fPosX, float fPosY, float fMaxWidth,
   // ok, concat spaces on
   WCHAR wszOrgText[1024];
   wcscpy(wszOrgText, wszText);
+  
   while (width < fMaxWidth)
   {
     wcscat(wszOrgText, L" ");
     width += spacewidth;
   }
+
   // now add enough spaces to cover the text area completely
   width = 0;
   while (width < fMaxWidth)
