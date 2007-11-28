@@ -106,6 +106,7 @@ namespace PYXBMC
     "*Note, Returns filename and/or path as a string to the location of the highlighted item,\n"
     "       if user pressed 'Ok' or a masked item was selected.\n"
     "       Returns the default value if dialog was canceled.\n"
+    "\n"
     "example:\n"
     "  - dialog = xbmcgui.Dialog()\n"
     "  - fn = dialog.browse(3, 'Xbox Media Center', 'files', '', False, False, 'T:\\script_data\\XBMC Lyrics')\n");
