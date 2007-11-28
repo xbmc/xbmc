@@ -3639,15 +3639,15 @@ bool CVideoDatabase::GetDirectorsNav(const CStdString& strBaseDir, CFileItemList
     {
       if (idContent == VIDEODB_CONTENT_MOVIES)
       {
-        strSQL=FormatSQL("select actors.idActor,actors.strActor,path.strPath,movie.c%02d from actors,directorlinkmovie,movie,path,files where actor.idActor=directorlinkMovie.idDirector and directorlinkMovie.idMovie = movie.idMovie and files.idFile=movie.idFile path.idPath = files.idPath",VIDEODB_ID_WATCHED);
+        strSQL=FormatSQL("select actors.idActor,actors.strActor,path.strPath,movie.c%02d from actors,directorlinkmovie,movie,path,files where actors.idActor=directorlinkMovie.idDirector and directorlinkMovie.idMovie = movie.idMovie and files.idFile=movie.idFile and path.idPath = files.idPath",VIDEODB_ID_WATCHED);
       }
       else if (idContent == VIDEODB_CONTENT_TVSHOWS)
       {
-        strSQL=FormatSQL("select actors.idActor,actors.strActor,path.strPath from actors,directorlinktvshow,tvshow,path,files,tvshowlinkepisode where actor.idActor=directorlinktvshow.idDirector and directorlinktvshow.idShow = tvshow.idShow and files.idEpisode=episode.idEpisode and tvshowlinkepisode.idShow=tvshow.idShow and episode.idEpisode=tvshowlinkepisode.idEpisode and path.idPath = files.idPath");
+        strSQL=FormatSQL("select actors.idActor,actors.strActor,path.strPath from actors,directorlinktvshow,tvshow,path,files,episode,tvshowlinkepisode where actors.idActor=directorlinktvshow.idDirector and directorlinktvshow.idShow = tvshow.idShow and files.idFile=episode.idFile and tvshowlinkepisode.idShow=tvshow.idShow and episode.idEpisode=tvshowlinkepisode.idEpisode and path.idPath = files.idPath");
       }
       else if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
       {
-        strSQL=FormatSQL("select actors.idActor,actors.strActor,path.strPath,musicvideo.c%02d from actors,directorlinkmusicvideo,musicvideo,path,files where actor.idActor=directorlinkmusicvideo.idDirector and directorlinkmusicvideo.idMVideo = musicvideo.idMVideo and files.idFile=musicvideo.idFile path.idPath = files.idPath",VIDEODB_ID_MUSICVIDEO_WATCHED);
+        strSQL=FormatSQL("select actors.idActor,actors.strActor,path.strPath,musicvideo.c%02d from actors,directorlinkmusicvideo,musicvideo,path,files where actors.idActor=directorlinkmusicvideo.idDirector and directorlinkmusicvideo.idMVideo = musicvideo.idMVideo and files.idFile=musicvideo.idFile and path.idPath = files.idPath",VIDEODB_ID_MUSICVIDEO_WATCHED);
       }
     }
     else
