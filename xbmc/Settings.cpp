@@ -1816,19 +1816,9 @@ bool CSettings::LoadProfile(int index)
     g_localizeStrings.Load(strLanguagePath);
 
     g_infoManager.ResetCache();
- //   g_infoManager.Clear();
-    if (!strOldSkin.Equals(g_guiSettings.GetString("lookandfeel.skin")) || !strOldTheme.Equals(g_guiSettings.GetString("lookandfeel.skintheme")) ||
-        iOldRes != g_guiSettings.GetInt("videoscreen.resolution") || !strOldFont.Equals(g_guiSettings.GetString("lookandfeel.font")) ||
-        !strOldColors.Equals(g_guiSettings.GetString("lookandfeel.skincolors")))
-    {
-      g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
-    }
-    else
-    {
-      g_audioManager.DeInitialize(CAudioContext::DEFAULT_DEVICE); // needs to reset
-      g_audioManager.Initialize(CAudioContext::DEFAULT_DEVICE);
-      g_audioManager.Load();
-    }
+
+    // always reload the skin - we need it for the new language strings
+    g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
 
     if (m_iLastLoadedProfileIndex != 0)
     {
