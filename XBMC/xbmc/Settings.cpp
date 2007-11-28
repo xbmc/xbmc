@@ -1799,34 +1799,6 @@ bool CSettings::LoadProfile(int index)
       CreateDirectory(strThumbLoc.c_str(),NULL);
     }
 
-    g_infoManager.ResetCache();
- //   g_infoManager.Clear();
-    if (!strOldSkin.Equals(g_guiSettings.GetString("lookandfeel.skin")) || !strOldTheme.Equals(g_guiSettings.GetString("lookandfeel.skintheme")) ||
-        iOldRes != g_guiSettings.GetInt("videoscreen.resolution") || !strOldFont.Equals(g_guiSettings.GetString("lookandfeel.font")) ||
-        !strOldColors.Equals(g_guiSettings.GetString("lookandfeel.skincolors")))
-    {
-      g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
-    }
-    else
-    {
-      g_audioManager.DeInitialize(CAudioContext::DEFAULT_DEVICE); // needs to reset
-      g_audioManager.Initialize(CAudioContext::DEFAULT_DEVICE);
-      g_audioManager.Load();
-    }
-    if (g_langInfo.ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode(g_guiSettings.GetString("lookandfeel.font"))) // need to redo if same skin, other lanuage..
-    {
-      CLog::Log(LOGINFO, "    language needs a ttf font, loading first ttf font available");
-      CStdString strFontSet;
-      if (g_fontManager.GetFirstFontSetUnicode(strFontSet))
-      {
-        CLog::Log(LOGINFO, "    new font is '%s'", strFontSet.c_str());
-        g_guiSettings.SetString("lookandfeel.font", strFontSet);
-        g_settings.Save();
-        g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
-      }
-      else
-        CLog::Log(LOGERROR, "    no ttf font found, but needed for the language %s.", g_guiSettings.GetString("locale.language").c_str());
-    }
     // initialize our charset converter
     g_charsetConverter.reset();
 
@@ -1842,6 +1814,21 @@ bool CSettings::LoadProfile(int index)
 
     g_buttonTranslator.Load();
     g_localizeStrings.Load(strLanguagePath);
+
+    g_infoManager.ResetCache();
+ //   g_infoManager.Clear();
+    if (!strOldSkin.Equals(g_guiSettings.GetString("lookandfeel.skin")) || !strOldTheme.Equals(g_guiSettings.GetString("lookandfeel.skintheme")) ||
+        iOldRes != g_guiSettings.GetInt("videoscreen.resolution") || !strOldFont.Equals(g_guiSettings.GetString("lookandfeel.font")) ||
+        !strOldColors.Equals(g_guiSettings.GetString("lookandfeel.skincolors")))
+    {
+      g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
+    }
+    else
+    {
+      g_audioManager.DeInitialize(CAudioContext::DEFAULT_DEVICE); // needs to reset
+      g_audioManager.Initialize(CAudioContext::DEFAULT_DEVICE);
+      g_audioManager.Load();
+    }
 
     if (m_iLastLoadedProfileIndex != 0)
     {
