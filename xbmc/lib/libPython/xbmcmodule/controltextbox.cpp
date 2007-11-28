@@ -102,12 +102,12 @@ namespace PYXBMC
 
   // SetText() Method
   PyDoc_STRVAR(setText__doc__,
-    "SetText(text) -- Set's the text for this textbox.\n"
+    "setText(text) -- Set's the text for this textbox.\n"
     "\n"
     "text           : string or unicode - text string.\n"
     "\n"
     "example:\n"
-    "  - self.textbox.SetText('This is a line of text that can wrap.')");
+    "  - self.textbox.setText('This is a line of text that can wrap.')");
 
 
   PyObject* ControlTextBox_SetText(ControlTextBox *self, PyObject *args)
