@@ -78,6 +78,36 @@
 		<zero>0</zero>    
 	</remote>    
     
+	<remote device="Microsoft_Xbox">
+		<play>PLAY</play>
+		<pause>PAUSE</pause>
+		<stop>STOP</stop>
+		<forward>FORWARD</forward>
+		<reverse>REVERSE</reverse>
+		<left>LEFT</left>
+		<right>RIGHT</right>
+		<up>UP</up>
+		<down>DOWN</down>
+		<select>SELECT</select>
+		<back>BACK</back>
+		<menu>MENU</menu>
+		<title>TITLE</title>
+		<info>INFO</info>
+		<skipplus>SKIP+</skipplus>
+		<skipminus>SKIP-</skipminus>
+		<display>DISPLAY</display>
+		<one>1</one>
+		<two>2</two>
+		<three>3</three>
+		<four>4</four>
+		<five>5</five>
+		<six>6</six>
+		<seven>7</seven>
+		<eight>8</eight>
+		<nine>9</nine>
+		<zero>0</zero>    
+	</remote>    
+	
 	<remote device="PinnacleSysPCTVRemote">
 		<play>Play</play>
 		<pause>pause</pause>
