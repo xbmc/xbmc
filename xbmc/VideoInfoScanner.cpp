@@ -30,6 +30,8 @@
 #include "FileSystem/StackDirectory.h"
 #include "xbox/xkgeneral.h"
 
+#define REGEXSAMPLEFILE "[-\\._ ]sample[-\\._ ]"
+
 using namespace DIRECTORY;
 using namespace XFILE;
 
@@ -313,6 +315,12 @@ namespace VIDEO
     CStdString strMovieName;
     CIMDB IMDB;
     IMDB.SetScraperInfo(info);
+    CRegExp regExSample;
+    
+    if (!regExSample.RegComp(REGEXSAMPLEFILE))
+    {
+      CLog::Log(LOGERROR, "Unable to compile RegExp for Sample file");
+    }
 
     if (bDirNames && info.strContent.Equals("movies"))
     {
@@ -352,7 +360,12 @@ namespace VIDEO
         continue;
 
       IMDB.SetScraperInfo(info2);
-
+      // Discard all possible sample files defined by regExSample
+      if (regExSample.RegFind(CUtil::GetFileName(pItem->m_strPath)) > -1)
+      {
+        continue;
+      }
+ 
       if (info.strContent.Equals("movies") || info.strContent.Equals("musicvideos"))
       {
         if (m_pObserver)
@@ -361,8 +374,7 @@ namespace VIDEO
           if (!pItem->m_bIsFolder && m_itemCount)
             m_pObserver->OnSetProgress(m_currentItem++,m_itemCount);
         }
-        if (CUtil::GetFileName(pItem->m_strPath).Equals("sample.avi"))
-          continue;
+
       }
       if (info.strContent.Equals("tvshows"))
       {
@@ -638,6 +650,13 @@ namespace VIDEO
   void CVideoInfoScanner::EnumerateSeriesFolder(const CFileItem* item, IMDB_EPISODELIST& episodeList)
   {
     CFileItemList items;
+    CRegExp regExSample;
+    
+    if (!regExSample.RegComp(REGEXSAMPLEFILE))
+    {
+      CLog::Log(LOGERROR, "Unable to compile RegExp for Sample file");
+    }
+
     if (item->m_bIsFolder)
     {
       CUtil::GetRecursiveListing(item->m_strPath,items,g_stSettings.m_videoExtensions,true);
@@ -678,6 +697,16 @@ namespace VIDEO
 
       if (CUtil::GetFileName(strPath).Equals("sample"))
         continue;
+
+      // Discard all possible sample files defined by regExSample
+      CStdString strFileName = CUtil::GetFileName(items[i]->m_strPath);
+      strFileName.MakeLower();
+      CLog::Log(LOGDEBUG, "Checking if file '%s' is a Sample file", strFileName.c_str());
+      if (regExSample.RegFind(strFileName) > -1)
+      {
+        CLog::Log(LOGDEBUG, "File '%s' discarded as Sample file", strFileName.c_str());
+        continue;
+      }
 
       for (unsigned int j=0;j<expression.size();++j)
       {
