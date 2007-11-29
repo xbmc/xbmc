@@ -2573,15 +2573,19 @@ void CApplication::Render()
       if (lastFrameTime + singleVideoFrameTime > currentTime)
         nDelayTime = lastFrameTime + singleVideoFrameTime - currentTime;
 
-      // if the semaphore is not empty - there is a video frame that needs to be presented
-      if (SDL_SemWaitTimeout2(m_framesSem, nDelayTime) == 0)
+      // if the semaphore is not empty - there is a video frame that needs to be presented. we need to wait long enough
+      // so that rendering loop will not delay the next frame's presentation.
+      if (SDL_SemWaitTimeout2(m_framesSem, 500) == 0)
         m_bPresentFrame = true;
     }
     else
     {
       if (lastFrameTime + singleFrameTime > currentTime)
         nDelayTime = lastFrameTime + singleFrameTime - currentTime;
-      Sleep(nDelayTime);
+
+      // only "limit frames" if we are not using vsync.
+      if (g_videoConfig.GetVSyncMode()!=VSYNC_ALWAYS)
+        Sleep(nDelayTime);
     }
 #else
     if (lastFrameTime + singleFrameTime > currentTime)
