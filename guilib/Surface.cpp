@@ -514,7 +514,11 @@ void CSurface::EnableVSync(bool enable)
     }
 #endif
 
-    if (_glXSwapIntervalSGI)
+    if (_glXWaitVideoSyncSGI && _glXGetVideoSyncSGI)
+    {
+      m_iVSyncMode = 4;
+    }
+    else if (_glXSwapIntervalSGI)
     {
       m_iVSyncMode = 1;
       _glXSwapIntervalSGI(2);
@@ -523,10 +527,6 @@ void CSurface::EnableVSync(bool enable)
     {
       m_iVSyncMode = 2;
       _glXSwapIntervalMESA(2);
-    }
-    else if (_glXWaitVideoSyncSGI && _glXGetVideoSyncSGI)
-    {
-      m_iVSyncMode = 4;
     }
     else if (_wglSwapIntervalEXT)
     {
