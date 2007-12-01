@@ -5,6 +5,7 @@ CGUIBorderedImage::CGUIBorderedImage(DWORD dwParentID, DWORD dwControlId, float 
    : CGUIImage(dwParentID, dwControlId, posX + borderSize, posY + borderSize, width - borderSize - borderSize, height - borderSize - borderSize, texture, dwColorKey),
      m_borderImage(dwParentID, dwControlId, posX, posY, width, height, borderTexture, dwColorKey)
 {
+   m_borderSize = borderSize;
 }
 
 CGUIBorderedImage::~CGUIBorderedImage(void)
@@ -13,6 +14,12 @@ CGUIBorderedImage::~CGUIBorderedImage(void)
 
 void CGUIBorderedImage::Render()
 {
+   if (m_bInvalidated) CGUIImage::CalculateSize();
+
+   m_borderImage.SetPosition(m_fX - m_borderSize, m_fY - m_borderSize);
+   m_borderImage.SetWidth(m_fNW + m_borderSize + m_borderSize);
+   m_borderImage.SetHeight(m_fNH + m_borderSize + m_borderSize);
+
    m_borderImage.Render();
    CGUIImage::Render();
 }

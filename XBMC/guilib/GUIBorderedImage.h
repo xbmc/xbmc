@@ -22,6 +22,7 @@ public:
   
 protected:
   CGUIImage m_borderImage;
+  float m_borderSize;
 };
 
 #endif
