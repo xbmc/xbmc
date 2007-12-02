@@ -73,6 +73,8 @@ protected:
   string m_strLabel2;
   vector<CInfoPortion>  m_multiInfo;
   CLabelInfo m_label;
+  CGUITextLayout m_textLayout;
+  CGUITextLayout m_textLayout2;
 
   vector<CStdString> m_clickActions;
   vector<CStdString> m_focusActions;

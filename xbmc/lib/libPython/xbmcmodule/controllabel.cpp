@@ -101,6 +101,7 @@ namespace PYXBMC
       (float)pControl->dwHeight,
       pControl->strText,
       label,
+      false,
       pControl->bHasPath);
     return pControl->pGUIControl;
   }
