@@ -1825,6 +1825,6 @@
   <!-- strings 21900 thru 21999 reserved for slideshow info -->
 
   <string id="29999">Apply Flicker Filter Setting to Games</string>
-  <!-- strings 30000 thru 31000 reserved for plugin settings -->
-  <!-- strings 31001 thru 32000 reserved for skins -->
+  <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
+  <!-- strings 31000 thru 31999 reserved for skins -->
 </strings>
