@@ -203,7 +203,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     Seek(true, true);
     return true;
     break;
-  
+
   case ACTION_NEXT_SCENE:
     if (g_application.m_pPlayer->SeekScene(true))
       g_infoManager.SetDisplayAfterSeek();
@@ -512,7 +512,7 @@ bool CGUIWindowFullScreen::OnMouse(const CPoint &point)
 
 // Override of Render() - RenderFullScreen() is where the action takes place
 // this is called from the rendermanager, normally we won't come this way
-// as player thread will handle rendering, and call this itself. 
+// as player thread will handle rendering, and call this itself.
 void CGUIWindowFullScreen::Render()
 {
 #ifdef HAS_VIDEO_PLAYBACK
@@ -710,13 +710,14 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
     CSingleLock lock (m_fontLock);
 
     if(!m_subtitleFont)
-      return;    
+      return;
 
     CStdString subtitleText = "";
     if (g_application.m_pPlayer->GetCurrentSubtitle(subtitleText))
-    {      
-      // Remove HTML-like tags from the subtitles until 
+    {
+      // Remove HTML-like tags from the subtitles until
       subtitleText.Replace("\\n", "\n");
+      subtitleText.Replace("\\N", "\n");
       subtitleText.Replace("<i>", "");
       subtitleText.Replace("</i>", "");
       subtitleText.Replace("<b>", "");
@@ -726,7 +727,7 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
       subtitleText.Replace("</i", ""); // handle tags which aren't closed properly (happens).
       subtitleText.Replace("</b", "");
       subtitleText.Replace("</u", "");
-      
+
       RESOLUTION res = g_graphicsContext.GetVideoResolution();
       g_graphicsContext.SetScalingResolution(res, 0, 0, false);
 
