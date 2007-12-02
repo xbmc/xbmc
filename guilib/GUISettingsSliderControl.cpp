@@ -6,6 +6,7 @@
 CGUISettingsSliderControl::CGUISettingsSliderControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float sliderWidth, float sliderHeight, const CImage &textureFocus, const CImage &textureNoFocus, const CImage& backGroundTexture, const CImage& nibTexture, const CImage& nibTextureFocus, const CLabelInfo &labelInfo, int iType)
     : CGUISliderControl(dwParentID, dwControlId, posX, posY, sliderWidth, sliderHeight, backGroundTexture, nibTexture,nibTextureFocus, iType)
     , m_buttonControl(dwParentID, dwControlId, posX, posY, width, height, textureFocus, textureNoFocus, labelInfo)
+    , m_textLayout(labelInfo.font, false)
 {
   ControlType = GUICONTROL_SETTINGS_SLIDER;
   m_controlOffsetX = 0;  // no offsets for setting sliders
@@ -28,18 +29,14 @@ void CGUISettingsSliderControl::Render()
   CGUISliderControl::Render();
 
   // now render our text
-  CGUIFont *pFont = m_buttonControl.GetLabelInfo().font;
-  if (pFont)
-  {
-    CStdStringW strOut = CGUISliderControl::GetDescription();
-    float unneeded, height;
-    pFont->GetTextExtent(strOut.c_str(), &unneeded, &height);
-    float fPosY = GetYPosition() + (GetHeight() - height) * 0.5f;
-    if (HasFocus() && m_buttonControl.GetLabelInfo().focusedColor)
-      pFont->DrawText(m_posX - m_buttonControl.GetLabelInfo().offsetX, fPosY, m_buttonControl.GetLabelInfo().focusedColor, m_buttonControl.GetLabelInfo().shadowColor, strOut.c_str(), XBFONT_RIGHT);
-    else
-      pFont->DrawText(m_posX - m_buttonControl.GetLabelInfo().offsetX, fPosY, m_buttonControl.GetLabelInfo().textColor, m_buttonControl.GetLabelInfo().shadowColor, strOut.c_str(), XBFONT_RIGHT);
-  }
+  m_textLayout.Update(CGUISliderControl::GetDescription());
+
+  float posX = m_posX - m_buttonControl.GetLabelInfo().offsetX;
+  float posY = GetYPosition() + GetHeight() * 0.5f;
+  if (HasFocus() && m_buttonControl.GetLabelInfo().focusedColor)
+    m_textLayout.Render(posX, posY, 0, m_buttonControl.GetLabelInfo().focusedColor, m_buttonControl.GetLabelInfo().shadowColor, XBFONT_CENTER_Y | XBFONT_RIGHT, 0);
+  else
+    m_textLayout.Render(posX, posY, 0, m_buttonControl.GetLabelInfo().textColor, m_buttonControl.GetLabelInfo().shadowColor, XBFONT_CENTER_Y | XBFONT_RIGHT, 0);
 }
 
 bool CGUISettingsSliderControl::OnAction(const CAction &action)

@@ -1199,7 +1199,15 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     CStdString path(g_settings.GetDatabaseFolder());
     VECSHARES shares;
     g_mediaManager.GetLocalDrives(shares);
-    if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(651), path, true))
+    bool singleFiles = true;
+    if (singleFiles)
+    {
+      CVideoDatabase videodatabase;
+      videodatabase.Open();
+      videodatabase.ExportToXML(path, true);
+      videodatabase.Close();
+    }
+    else if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(651), path, true))
     {
       CUtil::AddFileToFolder(path, "videodb.xml", path);
       CVideoDatabase videodatabase;
@@ -1979,14 +1987,9 @@ void CGUIWindowSettingsCategory::Render()
   if (m_strErrorMessage.size())
   {
     CGUIFont *pFont = g_fontManager.GetFont("font13");
-    if (pFont)
-    {
-      // our error message is standard ASCII - no need for charset conversions.
-      CStdStringW strLabelUnicode = m_strErrorMessage;
-      float fPosY = g_graphicsContext.GetHeight() * 0.8f;
-      float fPosX = g_graphicsContext.GetWidth() * 0.5f;
-      pFont->DrawText(fPosX, fPosY, 0xFFFFFFFF, 0, strLabelUnicode.c_str(), XBFONT_CENTER_X);
-    }
+    float fPosY = g_graphicsContext.GetHeight() * 0.8f;
+    float fPosX = g_graphicsContext.GetWidth() * 0.5f;
+    CGUITextLayout::DrawText(pFont, fPosX, fPosY, 0xffffffff, 0, m_strErrorMessage, XBFONT_CENTER_X);
   }
 }
 

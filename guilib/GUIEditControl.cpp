@@ -6,7 +6,7 @@
 CGUIEditControl::CGUIEditControl(DWORD dwParentID, DWORD dwControlId,
                                  float posX, float posY, float width, float height,
                                  const CLabelInfo& labelInfo, const string& strLabel)
-    : CGUILabelControl(dwParentID, dwControlId, posX, posY, width, height, strLabel, labelInfo, false)
+    : CGUILabelControl(dwParentID, dwControlId, posX, posY, width, height, strLabel, labelInfo, false, false)
 {
   ControlType = GUICONTROL_EDIT;
   m_pObserver = NULL;
@@ -90,12 +90,14 @@ void CGUIEditControl::RecalcLabelPosition()
 {
   float maxWidth = m_width - 8;
 
-  FLOAT fTextWidth, fTextHeight;
+  float fTextWidth, fTextHeight;
 
-  CStdStringW strTempLabel = m_strLabel;
-  CStdStringW strTempPart = strTempLabel.Mid(0, m_iCursorPos);
+  // this is possibly not quite correct (utf8 issues)
+  CStdString strTempLabel = m_strLabel;
+  CStdString strTempPart = strTempLabel.Mid(0, m_iCursorPos);
 
-  m_label.font->GetTextExtent( strTempPart.c_str(), &fTextWidth, &fTextHeight );
+  m_textLayout.Update(strTempPart);
+  m_textLayout.GetTextExtent(fTextWidth, fTextHeight);
 
   // if skinner forgot to set height :p
   if (m_height == 0)
