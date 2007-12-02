@@ -38,7 +38,6 @@ public:
 protected:
 
   void AddLine(CStdString& aString, DWORD aColour);
-  void WriteString(CStdString& aString, DWORD aColour);
 
   DWORD GetPenColor(INT nPaletteIndex)
   {

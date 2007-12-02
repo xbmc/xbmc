@@ -41,14 +41,14 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   else
     strPath = strFilename;
 
-  // check if we already have this font file loaded (font object could differ only by colors)
+  // check if we already have this font file loaded (font object could differ only by color or style)
   CStdString TTFfontName;
-  TTFfontName.Format("%s_%i_%i_%f", strFilename, iSize, iStyle, aspect);
+  TTFfontName.Format("%s_%i_%f", strFilename, iSize, aspect);
   CGUIFontTTF* pFontFile = GetFontFile(TTFfontName);
   if (!pFontFile)
   {
     pFontFile = new CGUIFontTTF(TTFfontName);
-    boolean bFontLoaded = pFontFile->Load(strPath, iSize, iStyle, aspect);
+    boolean bFontLoaded = pFontFile->Load(strPath, iSize, aspect);
     if (!bFontLoaded)
     {
       // Now try to load it from media\fonts
@@ -58,7 +58,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
         strPath += strFilename;
       }
 
-      bFontLoaded = pFontFile->Load(strPath, iSize, iStyle, aspect);
+      bFontLoaded = pFontFile->Load(strPath, iSize, aspect);
     }
 
     if (!bFontLoaded)
@@ -74,7 +74,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   }
 
   // font file is loaded, create our CGUIFont
-  CGUIFont *pNewFont = new CGUIFont(strFontName, textColor, shadowColor, pFontFile);
+  CGUIFont *pNewFont = new CGUIFont(strFontName, iStyle, textColor, shadowColor, pFontFile);
   m_vecFonts.push_back(pNewFont);
   return pNewFont;
 }

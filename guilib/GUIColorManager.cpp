@@ -79,12 +79,14 @@ bool CGUIColorManager::LoadXML(TiXmlDocument &xmlDoc)
 DWORD CGUIColorManager::GetColor(const CStdString &color) const
 {
   // look in our color map
-  icColor it = m_colors.find(color);
+  CStdString trimmed(color);
+  trimmed.TrimLeft("= ");
+  icColor it = m_colors.find(trimmed);
   if (it != m_colors.end())
     return (*it).second;
 
   // try converting hex directly
   DWORD value = 0;
-  sscanf(color.c_str(), "%x", &value);
+  sscanf(trimmed.c_str(), "%x", &value);
   return value;
 }

@@ -1490,7 +1490,7 @@ LPDIRECT3DTEXTURE8 CreateCreditsTexture(CGUIFont *font, const wchar_t *text)
     D3DDevice::SetTransform(D3DTS_PROJECTION, &mtxProjection);
     // render text into it
     D3DDevice::Clear(0, NULL, D3DCLEAR_TARGET, 0, 1.0f, 0);
-    font->DrawText(0, 0, 0xffdadada, 0, text);
+    font->DrawText(0, 0, 0, 0xffdadada, 0, text);
     D3DDevice::SetRenderTarget(oldSurface, NULL);
     newSurface->Release();
     oldSurface->Release();

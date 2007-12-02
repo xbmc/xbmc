@@ -43,6 +43,7 @@ protected:
   CGUIImage m_imgCheckMarkNoFocus;
 
   CLabelInfo m_label;
+  CGUITextLayout m_textLayout;
   string m_strLabel;
   bool m_bSelected;
 };

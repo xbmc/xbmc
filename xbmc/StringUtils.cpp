@@ -304,3 +304,21 @@ bool StringUtils::FindWords(const char *str, const char *wordLowerCase)
 
   return false;
 }
+
+// assumes it is called from after the first open bracket is found
+int StringUtils::FindEndBracket(const CStdString &str, char opener, char closer, int startPos)
+{
+  int blocks = 1;
+  for (unsigned int i = startPos; i < str.size(); i++)
+  {
+    if (str[i] == opener)
+      blocks++;
+    else if (str[i] == closer)
+    {
+      blocks--;
+      if (!blocks)
+        return i;
+    }
+  }
+  return CStdString::npos;
+}

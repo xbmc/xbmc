@@ -40,62 +40,65 @@ public:
 class CGUIFont
 {
 public:
-  CGUIFont(const CStdString& strFontName, DWORD textColor, DWORD shadowColor, CGUIFontTTF *font);
+  CGUIFont(const CStdString& strFontName, DWORD style, DWORD textColor, DWORD shadowColor, CGUIFontTTF *font);
   virtual ~CGUIFont();
 
   CStdString& GetFontName();
 
-  void DrawOutlineText(float x, float y, DWORD color, DWORD outlineColor, int outlineWidth, const WCHAR *text, DWORD flags = 0L, float maxWidth = 0.0f);
-
-  void DrawText( float x, float y, float angle, DWORD dwColor, DWORD dwShadowColor,
-                 const WCHAR* strText, DWORD dwFlags = 0L,
-                 FLOAT fMaxPixelWidth = 0.0f);
-
-  void DrawTextWidth(float x, float y, float angle, DWORD dwColor, DWORD dwShadowColor,
-                     const WCHAR* strText, float fMaxWidth);
-
-  void DrawScrollingText(float x, float y, float angle, DWORD* color, int numColors,
-                         DWORD dwShadowColor, const CStdStringW &text, float w, CScrollInfo &scrollInfo, BYTE *pPalette = NULL);
-
-  void DrawColourTextWidth(float x, float y, float angle, DWORD* pdw256ColorPalette, int numColors, DWORD dwShadowColor,
-                           const WCHAR* strText, BYTE* pbColours, float fMaxWidth);
-
-  void DrawText( float x, float y, DWORD dwColor, DWORD dwShadowColor,
-                 const WCHAR* strText, DWORD dwFlags = 0L,
-                 FLOAT fMaxPixelWidth = 0.0f );
-
-  void DrawTextWidth(float x, float y, DWORD dwColor, DWORD dwShadowColor,
-                     const WCHAR* strText, float fMaxWidth);
-
-  void DrawColourTextWidth(float x, float y, DWORD* pdw256ColorPalette, int numColors, DWORD dwShadowColor,
-                           const WCHAR* strText, BYTE* pbColours, float fMaxWidth);
-
-  void DrawScrollingText(float x, float y, DWORD* color, int numColors, DWORD dwShadowColor, const CStdStringW &text, float w, CScrollInfo &scrollInfo, BYTE *pPalette = NULL);
-
-  void GetTextExtent( const WCHAR* strText, FLOAT* pWidth, FLOAT* pHeight, BOOL bFirstLineOnly = FALSE)
+  void DrawText( float x, float y, DWORD color, DWORD shadowColor,
+                 const vector<DWORD> &text, DWORD alignment, float maxPixelWidth)
   {
-    if (!m_font) return;
+    vector<DWORD> colors;
+    colors.push_back(color);
+    DrawText(x, y, colors, shadowColor, text, alignment, maxPixelWidth);
+  };
+
+  void DrawText( float x, float y, const vector<DWORD> &colors, DWORD shadowColor,
+                 const vector<DWORD> &text, DWORD alignment, float maxPixelWidth);
+
+  void DrawScrollingText( float x, float y, const vector<DWORD> &colors, DWORD shadowColor,
+                 const vector<DWORD> &text, DWORD alignment, float maxPixelWidth, CScrollInfo &scrollInfo);
+
+  float GetTextWidth( const vector<DWORD> &text )
+  {
+    if (!m_font) return 0;
     CSingleLock lock(g_graphicsContext);
-    m_font->GetTextExtentInternal(strText, pWidth, pHeight, bFirstLineOnly);
-    *pWidth *= g_graphicsContext.GetGUIScaleX();
-    *pHeight *= g_graphicsContext.GetGUIScaleY();
+    return m_font->GetTextWidthInternal(text.begin(), text.end()) * g_graphicsContext.GetGUIScaleX();
+  };
+
+  float GetCharWidth( DWORD ch )
+  {
+    if (!m_font) return 0;
+    CSingleLock lock(g_graphicsContext);
+    return m_font->GetCharWidthInternal(ch) * g_graphicsContext.GetGUIScaleX();
   }
 
-  float GetTextWidth( const WCHAR* strText );
-  float GetTextHeight( const WCHAR* strText );
+  float GetTextHeight(int numLines) const
+  {
+    if (!m_font) return 0;
+    return m_font->GetTextHeight(numLines) * g_graphicsContext.GetGUIScaleY();
+  };
+
+  float GetLineHeight() const
+  {
+    if (!m_font) return 0;
+    return m_font->m_lineHeight * g_graphicsContext.GetGUIScaleY();
+  };
 
   void Begin() { if (m_font) m_font->Begin(); };
   void End() { if (m_font) m_font->End(); };
 
+  DWORD GetStyle() const { return m_style; };
+
   static SHORT RemapGlyph(SHORT letter);
 protected:
   CStdString m_strFontName;
-  // for shadowed text
+  DWORD m_style;
   DWORD m_shadowColor;
   DWORD m_textColor;
-  CGUIFontTTF *m_font;
+  CGUIFontTTF *m_font; // the font object has the size information
 private:
-  void SetRotation(float sx, float sy, float angle);
+  bool ClippedRegionIsEmpty(float x, float y, float width, DWORD alignment) const;
 };
 
 #endif

@@ -14,12 +14,12 @@ CGUITextBox::CGUITextBox(DWORD dwParentID, DWORD dwControlId, float posX, float 
                          const CLabelInfo& spinInfo, float spinX, float spinY,
                          const CLabelInfo& labelInfo, int scrollTime)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+    , CGUITextLayout(labelInfo.font, true)
     , m_upDown(dwControlId, CONTROL_UPDOWN, 0, 0, spinWidth, spinHeight, textureUp, textureDown, textureUpFocus, textureDownFocus, spinInfo, SPIN_CONTROL_TYPE_INT)
 {
   m_upDown.SetSpinAlign(XBFONT_CENTER_Y | XBFONT_RIGHT, 0);
   m_offset = 0;
   m_scrollOffset = 0;
-  m_label = labelInfo;
   m_itemsPerPage = 10;
   m_itemHeight = 10;
   m_spinPosX = spinX;
@@ -36,6 +36,8 @@ CGUITextBox::CGUITextBox(DWORD dwParentID, DWORD dwControlId, float posX, float 
   m_autoScrollDelay = 3000;
   m_autoScrollDelayTime = 0;
   m_autoScrollRepeatAnim = NULL;
+  m_label = labelInfo;
+  m_textColor = m_label.textColor;
 }
 
 CGUITextBox::~CGUITextBox(void)
@@ -80,45 +82,18 @@ void CGUITextBox::Render()
 	else
     renderLabel = g_infoManager.GetMultiInfo(m_multiInfo, m_dwParentID);
 
-  // need to check the last one
-  if (m_renderLabel != renderLabel)
-  { // different, so reset to the top of the textbox and invalidate.  The page control will update itself below
-    m_renderLabel = renderLabel;
+  if (CGUITextLayout::Update(renderLabel, m_width))
+  { // needed update, so reset to the top of the textbox and update our sizing/page control
     m_offset = 0;
     m_scrollOffset = 0;
-    m_bInvalidated = true;
     ResetAutoScrolling();
-  }
 
-  if (m_bInvalidated)
-  { 
-    // first correct any sizing we need to do
-    float fWidth, fHeight;
-    m_label.font->GetTextExtent( L"y", &fWidth, &fHeight);
-    m_itemHeight = fHeight;
+    m_itemHeight = m_font->GetTextHeight(1);   // note: GetLineHeight() is more correct, but seems a bit too much spacing
     float fTotalHeight = m_height;
     if (!m_pageControl)
       fTotalHeight -=  m_upDown.GetHeight() + 5;
-    m_itemsPerPage = (unsigned int)(fTotalHeight / fHeight);
+    m_itemsPerPage = (unsigned int)(fTotalHeight / m_itemHeight);
 
-    // we have all the sizing correct so do any wordwrapping
-    // break into paragraphs, and wrap each one separately
-    // for justification purposes.
-    m_lines.clear();
-    vector<CStdString> paragraphs;
-    StringUtils::SplitString(m_renderLabel, "\n", paragraphs);
-    for (unsigned int i = 0; i < paragraphs.size(); i++)
-    {
-      CStdStringW utf16Text;
-      g_charsetConverter.utf8ToUTF16(paragraphs[i], utf16Text);
-      vector<CStdStringW> lines;
-      CGUILabelControl::WrapText(utf16Text, m_label.font, m_width, lines);
-      lines[lines.size() - 1] += L'\n';
-      m_lines.insert(m_lines.end(), lines.begin(), lines.end());
-    }
-
-    // disable all second label information
-    m_lines2.clear();
     UpdatePageControl();
   }
 
@@ -179,29 +154,20 @@ void CGUITextBox::Render()
   if (m_label.align & XBFONT_RIGHT)
     posX += m_width;
 
-  if (m_label.font)
+  if (m_font)
   {
-    m_label.font->Begin();
+    m_font->Begin();
     int current = offset;
     while (posY < m_posY + m_height && current < (int)m_lines.size())
     {
-      float maxWidth = m_width;
-      // render item
-      if (current < (int)m_lines2.size())
-      {
-        float fTextWidth, fTextHeight;
-        m_label.font->GetTextExtent( m_lines2[current].c_str(), &fTextWidth, &fTextHeight);
-        maxWidth -= fTextWidth;
-        m_label.font->DrawTextWidth(posX + maxWidth, posY + 2, m_label.textColor, m_label.shadowColor, m_lines2[current].c_str(), fTextWidth);
-      }
       DWORD align = m_label.align;
-      if (m_lines[current].size() && m_lines[current][m_lines[current].size() - 1] == L'\n')
+      if (m_lines[current].m_text.size() && m_lines[current].m_carriageReturn)
         align &= ~XBFONT_JUSTIFIED; // last line of a paragraph shouldn't be justified
-      m_label.font->DrawText(posX, posY + 2, m_label.textColor, m_label.shadowColor, m_lines[current].c_str(), align, maxWidth);
+      m_font->DrawText(posX, posY + 2, m_colors, m_label.shadowColor, m_lines[current].m_text, align, m_width);
       posY += m_itemHeight;
       current++;
     }
-    m_label.font->End();
+    m_font->End();
   }
 
   g_graphicsContext.RestoreClipRegion();
@@ -260,35 +226,12 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
           ScrollToOffset((m_upDown.GetValue() - 1) * m_itemsPerPage);
       }
     }
-    if (message.GetMessage() == GUI_MSG_LABEL_BIND)
-    { // send parameter is a link to a vector of CGUIListItem's
-      vector<CGUIListItem> *items = (vector<CGUIListItem> *)message.GetLPVOID();
-      if (items)
-      {
-        m_offset = 0;
-        m_scrollOffset = 0;
-        ResetAutoScrolling();
-        m_lines.clear();
-        m_lines2.clear();
-        for (unsigned int i = 0; i < items->size(); ++i)
-        {
-          CStdStringW utf16Label;
-          CGUIListItem &item = items->at(i);
-          g_charsetConverter.utf8ToUTF16(item.GetLabel(), utf16Label);
-          m_lines.push_back(utf16Label);
-          g_charsetConverter.utf8ToUTF16(item.GetLabel2(), utf16Label);
-          m_lines2.push_back(utf16Label);
-        }
-        UpdatePageControl();
-      }
-    }
     if (message.GetMessage() == GUI_MSG_LABEL_SET)
     {
       m_offset = 0;
       m_scrollOffset = 0;
       ResetAutoScrolling();
       m_lines.clear();
-      m_lines2.clear();
       m_upDown.SetRange(1, 1);
       m_upDown.SetValue(1);
 
@@ -301,7 +244,6 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
       m_scrollOffset = 0;
       ResetAutoScrolling();
       m_lines.clear();
-      m_lines2.clear();
       m_upDown.SetRange(1, 1);
       m_upDown.SetValue(1);
       if (m_pageControl)
@@ -337,14 +279,12 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
 
 void CGUITextBox::PreAllocResources()
 {
-  if (!m_label.font) return;
   CGUIControl::PreAllocResources();
   m_upDown.PreAllocResources();
 }
 
 void CGUITextBox::AllocResources()
 {
-  if (!m_label.font) return;
   CGUIControl::AllocResources();
   m_upDown.AllocResources();
 
@@ -417,7 +357,6 @@ void CGUITextBox::OnPageDown()
 void CGUITextBox::SetLabel(const string &strText)
 {
   g_infoManager.ParseLabel(strText, m_multiInfo);
-  m_bInvalidated = true;
 }
 
 void CGUITextBox::UpdatePageControl()
