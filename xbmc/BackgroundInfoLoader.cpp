@@ -58,11 +58,13 @@ void CBackgroundInfoLoader::Run()
   {
     if (m_vecItems.size() > 0)
     {
-      CSingleLock lock(m_lock);
-      if (!m_bStartCalled)
       {
-        OnLoaderStart();
-        m_bStartCalled = true;
+        CSingleLock lock(m_lock);
+        if (!m_bStartCalled)
+        {
+          OnLoaderStart();
+          m_bStartCalled = true;
+        }
       }
 
       while (!m_bStop)
@@ -86,7 +88,7 @@ void CBackgroundInfoLoader::Run()
         lock.Leave();
         try
         {
-          if (LoadItem(pItem) && m_pObserver)
+          if (!m_bStop && LoadItem(pItem) && m_pObserver)
             m_pObserver->OnItemLoaded(pItem);
         }
         catch (...)
