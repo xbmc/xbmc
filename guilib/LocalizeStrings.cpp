@@ -30,8 +30,8 @@ CStdString CLocalizeStrings::ToUTF8(const CStdString& strEncoding, const CStdStr
 void CLocalizeStrings::ClearSkinStrings()
 {
   // clear the skin strings
-  unsigned int skin_strings_start = 31001;
-  unsigned int skin_strings_end = 32000;
+  unsigned int skin_strings_start = 31000;
+  unsigned int skin_strings_end = 31999;
   for (unsigned int str = skin_strings_start; str < skin_strings_end; str++)
   {
     iStrings it = m_strings.find(str);
