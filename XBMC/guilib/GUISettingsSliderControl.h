@@ -47,5 +47,6 @@ public:
 protected:
   virtual void Update() ;
   CGUIButtonControl m_buttonControl;
+  CGUITextLayout m_textLayout;
 };
 #endif
