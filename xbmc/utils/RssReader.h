@@ -19,7 +19,7 @@
 class IRssObserver
 {
 public:
-  virtual void OnFeedUpdate(CStdStringW& aFeed, LPBYTE aColorArray) = 0;
+  virtual void OnFeedUpdate(const vector<DWORD> &feed) = 0;
 };
 
 class CRssReader : public CThread
@@ -30,7 +30,7 @@ public:
 
   void Create(IRssObserver* aObserver, const vector<string>& aUrl, const vector<int>& times, int spacesBetweenFeeds);
   bool Parse(LPSTR szBuffer, int iFeed);
-  void getFeed(CStdStringW& strText, LPBYTE& pbColors);
+  void getFeed(vector<DWORD> &text);
   void AddTag(const CStdString addTag);
   void AddToQueue(int iAdd);
   void UpdateObserver();

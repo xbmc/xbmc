@@ -616,9 +616,6 @@ void CGUIButtonScroller::RenderItem(float &posX, float &posY, int &iOffset, bool
     if (label.IsEmpty())
       label = m_vecButtons[iOffset]->strLabel;
 
-    CStdStringW strLabelUnicode;
-    g_charsetConverter.utf8ToUTF16(label, strLabelUnicode);
-
     float fAlpha = 255.0f;
     if (m_bHorizontal)
     {
@@ -644,7 +641,7 @@ void CGUIButtonScroller::RenderItem(float &posX, float &posY, int &iOffset, bool
     DWORD dwColor = (alpha << 24) | (color & 0xFFFFFF);
     alpha = (dwAlpha * ((m_label.shadowColor & 0xff000000) >> 24)) / 255;
     DWORD dwShadowColor = (alpha << 24) | (m_label.shadowColor & 0xFFFFFF);
-    m_label.font->DrawText( fPosX, fPosY, dwColor, dwShadowColor, strLabelUnicode.c_str(), m_label.align);
+    CGUITextLayout::DrawText(m_label.font, fPosX, fPosY, dwColor, dwShadowColor, label, m_label.align);
   }
   else
   {

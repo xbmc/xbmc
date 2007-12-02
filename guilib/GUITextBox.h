@@ -8,15 +8,13 @@
 
 #pragma once
 #include "GUISpinControl.h"
-#include "GUIButtonControl.h"
-#include "GUIListItem.h"
-
+#include "GUITextLayout.h"
 
 /*!
  \ingroup controls
  \brief 
  */
-class CGUITextBox : public CGUIControl
+class CGUITextBox : public CGUIControl, public CGUITextLayout
 {
 public:
   CGUITextBox(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height,
@@ -63,7 +61,7 @@ protected:
   float m_spinPosX;
   float m_spinPosY;
 
-  // offset of text in the control
+  // offset of text in the control for scrolling
   unsigned int m_offset;
   float m_scrollOffset;
   float m_scrollSpeed;
@@ -73,6 +71,8 @@ protected:
   DWORD m_renderTime;
   DWORD m_lastRenderTime;
 
+  CLabelInfo m_label;
+
   // autoscrolling
   int   m_autoScrollCondition;
   int   m_autoScrollTime;      // time to scroll 1 line (ms)
@@ -80,10 +80,6 @@ protected:
   DWORD m_autoScrollDelayTime; // current offset into the delay
   CAnimation *m_autoScrollRepeatAnim;
 
-  CLabelInfo m_label;       // label configuration (size, font, etc.)
-  CStdString m_renderLabel; // label to render
-  vector<CStdStringW> m_lines;  // line items formatted up for rendering
-  vector<CStdStringW>  m_lines2; // second item that we need for the braindead use of a textbox in place of a list (music info song listing) 
   CGUISpinControl m_upDown;
 
   DWORD m_pageControl;

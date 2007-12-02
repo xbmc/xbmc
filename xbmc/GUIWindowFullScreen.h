@@ -2,7 +2,7 @@
 #include "GUIWindow.h"
 #include "utils/CriticalSection.h"
 
-class CGUIFont; // forward
+class CGUITextLayout; // forward
 
 class CGUIWindowFullScreen :
       public CGUIWindow
@@ -42,5 +42,5 @@ private:
   int m_timeCodePosition;
 
   CCriticalSection m_fontLock;
-  CGUIFont* m_subtitleFont;
+  CGUITextLayout* m_subsLayout;
 };

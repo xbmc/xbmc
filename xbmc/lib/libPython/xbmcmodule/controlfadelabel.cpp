@@ -84,7 +84,7 @@ namespace PYXBMC
       (float)pControl->dwPosY,
       (float)pControl->dwWidth,
       (float)pControl->dwHeight,
-      label);
+      label, true, 0);
 
     CGUIMessage msg(GUI_MSG_LABEL_RESET, pControl->iParentId, pControl->iControlId);
     pControl->pGUIControl->OnMessage(msg);
