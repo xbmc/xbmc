@@ -9,6 +9,7 @@
 #pragma once
 
 #include "GUIControl.h"
+#include "GUITextLayout.h"
 
 class CInfoPortion
 {
@@ -38,7 +39,7 @@ class CGUILabelControl :
       public CGUIControl
 {
 public:
-  CGUILabelControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const string& strLabel, const CLabelInfo& labelInfo, bool bHasPath);
+  CGUILabelControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const string& strLabel, const CLabelInfo& labelInfo, bool wrapMultiLine, bool bHasPath);
   virtual ~CGUILabelControl(void);
   virtual void Render();
   virtual bool CanFocus() const;
@@ -52,19 +53,15 @@ public:
   void SetInfo(int singleInfo);
   void SetWidthControl(bool bScroll);
   void SetTruncate(bool bTruncate);
-  void SetWrapMultiLine(bool wrapMultiLine) { m_wrapMultiLine = wrapMultiLine; };
   void SetAlignment(DWORD align);
   void SetHighlight(unsigned int start, unsigned int end);
-
-  static void WrapText(CStdString &text, CGUIFont *font, float maxWidth);
-  static void WrapText(CStdStringW &utf16Text, CGUIFont *font, float maxWidth);
-  static void WrapText(CStdStringW &utf16Text, CGUIFont *font, float maxWidth, vector<CStdStringW> &multiLine);
 
 protected:
   CStdString ShortenPath(const CStdString &path);
 
 protected:
   CLabelInfo m_label;
+  CGUITextLayout m_textLayout;
   CStdString m_renderLabel;
 
   string m_strLabel;
@@ -73,7 +70,6 @@ protected:
   int m_iCursorPos;
   DWORD m_dwCounter;
   // stuff for scrolling
-  bool m_wrapMultiLine;
   bool m_ScrollInsteadOfTruncate;
   CScrollInfo m_ScrollInfo;
 

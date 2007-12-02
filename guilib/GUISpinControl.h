@@ -58,7 +58,6 @@ public:
   void SetFloatInterval(float fInterval);
   void SetShowRange(bool bOnoff) ;
   void SetBuddyControlID(DWORD dwBuddyControlID);
-  void SetNonProportional(bool bOnOff);
   void SetShowOnePage(bool showOnePage) { m_showOnePage = showOnePage; };
   void Clear();
   virtual CStdString GetDescription() const;
@@ -90,11 +89,11 @@ protected:
   CGUIImage m_imgspinDown;
   CGUIImage m_imgspinUpFocus;
   CGUIImage m_imgspinDownFocus;
+  CGUITextLayout m_textLayout;
   CLabelInfo m_label;
   bool m_bShowRange;
   char m_szTyped[10];
   int m_iTypedPos;
-  float m_maxTextWidth;
 
   int m_itemsPerPage;
   int m_numItems;

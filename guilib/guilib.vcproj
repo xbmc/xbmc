@@ -380,6 +380,9 @@
 				RelativePath=".\GUITextBox.cpp">
 			</File>
 			<File
+				RelativePath=".\GUITextLayout.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIToggleButtonControl.cpp">
 			</File>
 			<File
@@ -593,6 +596,9 @@
 			</File>
 			<File
 				RelativePath=".\GUITextBox.h">
+			</File>
+			<File
+				RelativePath=".\GUITextLayout.h">
 			</File>
 			<File
 				RelativePath=".\GUIToggleButtonControl.h">

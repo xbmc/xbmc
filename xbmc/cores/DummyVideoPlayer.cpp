@@ -2,6 +2,7 @@
 #include "../stdafx.h"
 #include "DummyVideoPlayer.h"
 #include "GUIFontManager.h"
+#include "GUITextLayout.h"
 #include "../Application.h"
 
 CDummyVideoPlayer::CDummyVideoPlayer(IPlayerCallback& callback)
@@ -251,14 +252,14 @@ void CDummyVideoPlayer::Render()
   {
     // minor issue: The font rendering here is performed in screen coords
     // so shouldn't really be scaled
-    float posX = (vw.left + vw.right) * 0.5f;
-    float posY = (vw.top + vw.bottom) * 0.5f;
-    CStdStringW currentTime;
     int mins = (int)(m_clock / 60000);
     int secs = (int)((m_clock / 1000) % 60);
     int ms = (int)(m_clock % 1000);
-    currentTime.Format(L"Video goes here %02i:%02i:%03i", mins, secs, ms);
-    font->DrawText(posX, posY, 0xffffffff, 0xff000000, currentTime.c_str(), XBFONT_CENTER_X | XBFONT_CENTER_Y);
+    CStdString currentTime;
+    currentTime.Format("Video goes here %02i:%02i:%03i", mins, secs, ms);
+    float posX = (vw.left + vw.right) * 0.5f;
+    float posY = (vw.top + vw.bottom) * 0.5f;
+    CGUITextLayout::DrawText(font, posX, posY, 0xffffffff, 0, currentTime, XBFONT_CENTER_X | XBFONT_CENTER_Y);
   }
   g_graphicsContext.RestoreClipRegion();
 }

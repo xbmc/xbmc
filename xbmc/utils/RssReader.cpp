@@ -143,28 +143,21 @@ void CRssReader::Process()
   UpdateObserver();
 }
 
-void CRssReader::getFeed(CStdStringW& strText, LPBYTE& pbColors)
+void CRssReader::getFeed(vector<DWORD> &text)
 {
-  strText.Empty();
+  text.clear();
   // double the spaces at the start of the set
-  strText.append(m_spacesBetweenFeeds, L' ');
-  for (unsigned int i=0;i<m_strFeed.size();++i)
+  for (int j = 0; j < m_spacesBetweenFeeds; j++)
+    text.push_back(L' ');
+  for (unsigned int i = 0; i < m_strFeed.size(); i++)
   {
-    strText.append(m_spacesBetweenFeeds, L' ');
-    strText += m_strFeed[i];
-  }
-  int nTextLength = strText.GetLength();
-  pbColors = new BYTE[nTextLength];
-  int k=0;
-  // double the spaces at the start of the set
-  for (int i = 0; i < m_spacesBetweenFeeds; i++)
-    pbColors[k++] = 0;
-  for (unsigned int j=0;j<m_strColors.size();++j)
-  {
-    for (int i = 0; i < m_spacesBetweenFeeds; i++)
-      pbColors[k++] = 0;
-    for (unsigned int i = 0; i < m_strColors[j].size(); i++)
-      pbColors[k++] = m_strColors[j][i] - 48;
+    for (int j = 0; j < m_spacesBetweenFeeds; j++)
+      text.push_back(L' ');
+    for (unsigned int j = 0; j < m_strFeed[i].size(); j++)
+    {
+      DWORD letter = m_strFeed[i][j] | ((m_strColors[i][j] - 48) << 16);
+      text.push_back(letter);
+    }
   }
 }
 
@@ -392,13 +385,12 @@ void CRssReader::SetObserver(IRssObserver *observer)
 void CRssReader::UpdateObserver()
 {
   if (!m_pObserver) return;
-  CStdStringW strFeed;
-  LPBYTE pbColors = NULL;
-  getFeed(strFeed,pbColors);
-  if (strFeed.size() > 0)
+  vector<DWORD> feed;
+  getFeed(feed);
+  if (feed.size() > 0)
   {
     g_graphicsContext.Lock();
-    m_pObserver->OnFeedUpdate(strFeed, pbColors);
+    m_pObserver->OnFeedUpdate(feed);
     g_graphicsContext.Unlock();
   }
 }
