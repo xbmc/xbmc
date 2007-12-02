@@ -89,19 +89,14 @@ void CGUISelectButtonControl::Render()
       m_imgRight.Render();
 
     // Render text if a current item is available
-    if (m_iCurrentItem >= 0 && m_label.font && (unsigned)m_iCurrentItem < m_vecItems.size())
+    if (m_iCurrentItem >= 0 && (unsigned)m_iCurrentItem < m_vecItems.size())
     {
-      if (m_vecItems[m_iCurrentItem].size())
-      {
-        CStdStringW itemStrUnicode;
-        g_charsetConverter.utf8ToW(m_vecItems[m_iCurrentItem].c_str(), itemStrUnicode);
-
-        DWORD dwAlign = m_label.align | XBFONT_CENTER_X;
-        float fPosY = m_posY + m_label.offsetY;
-        if (m_label.align & XBFONT_CENTER_Y)
-          fPosY = m_posY + m_imgBackground.GetHeight()*0.5f;
-        m_label.font->DrawText(m_posX + GetWidth()*0.5f, fPosY, dwTextColor, m_label.shadowColor, itemStrUnicode.c_str(), dwAlign, m_label.width);
-      }
+      m_textLayout.Update(m_vecItems[m_iCurrentItem]);
+      DWORD dwAlign = m_label.align | XBFONT_CENTER_X;
+      float fPosY = m_posY + m_label.offsetY;
+      if (m_label.align & XBFONT_CENTER_Y)
+        fPosY = m_posY + m_imgBackground.GetHeight()*0.5f;
+      m_textLayout.Render(m_posX + GetWidth()*0.5f, fPosY, 0, dwTextColor, m_label.shadowColor, dwAlign, m_label.width);
     }
 
     // Select current item, if user doesn't

@@ -39,7 +39,7 @@ class CGUIFontTTF
     short offsetX, offsetY;
     float left, top, right, bottom;
     float advance;
-    WCHAR letter;
+    DWORD letterAndStyle;
   };
 public:
 
@@ -48,7 +48,7 @@ public:
 
   void Clear();
 
-  bool Load(const CStdString& strFilename, int height = 20, int style = FONT_STYLE_NORMAL, float aspect = 1.0f);
+  bool Load(const CStdString& strFilename, int height = 20, float aspect = 1.0f);
 
   void Begin();
   void End();
@@ -59,20 +59,27 @@ protected:
   void AddReference();
   void RemoveReference();
 
-  void GetTextExtentInternal(const WCHAR* strText, FLOAT* pWidth,
-                             FLOAT* pHeight = NULL, BOOL bFirstLineOnly = FALSE);
+  float GetTextWidthInternal(vector<DWORD>::const_iterator start, vector<DWORD>::const_iterator end);
+  float GetCharWidthInternal(DWORD ch);
+  float GetTextHeight(int numLines);
 
-  void DrawTextInternal(FLOAT fOriginX, FLOAT fOriginY, DWORD *pdw256ColorPalette, BYTE *pbColours,
-                            const WCHAR* strText, DWORD cchText, DWORD dwFlags = 0,
-                            FLOAT fMaxPixelWidth = 0.0f);
+  void DrawTextInternal(float x, float y, const vector<DWORD> &colors, const vector<DWORD> &text,
+                            DWORD alignment, float maxPixelWidth);
+
+  void DrawTextInternal(float x, float y, DWORD color, const vector<DWORD> &text,
+                            DWORD alignment, float maxPixelWidth)
+  {
+    vector<DWORD> colors;
+    colors.push_back(color);
+    DrawTextInternal(x, y, colors, text, alignment, maxPixelWidth);
+  }
 
   int m_iHeight;
-  int m_iStyle;
   CStdString m_strFilename;
 
   // Stuff for pre-rendering for speed
-  inline Character *GetCharacter(WCHAR letter);
-  bool CacheCharacter(WCHAR letter, Character *ch);
+  inline Character *GetCharacter(DWORD letter);
+  bool CacheCharacter(WCHAR letter, DWORD style, Character *ch);
   inline void RenderCharacter(float posX, float posY, const Character *ch, D3DCOLOR dwColor);
   void ClearCharacterCache();
 
@@ -88,7 +95,7 @@ protected:
   int m_posY;
 
   Character *m_char;                 // our characters
-  Character *m_charquick[255];       // ascii chars here
+  Character *m_charquick[256*4];     // ascii chars (4 styles) here
   int m_maxChars;                    // size of character array (can be incremented)
   int m_numChars;                    // the current number of cached characters
 
@@ -96,7 +103,6 @@ protected:
 
   unsigned int m_cellBaseLine;
   unsigned int m_cellHeight;
-  unsigned int m_cellAscent;          // typical distance from baseline to top of glyph - based on the 'W'
   unsigned int m_lineHeight;
 
   DWORD m_dwNestedBeginCount;             // speedups

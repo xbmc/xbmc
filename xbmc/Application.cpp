@@ -2456,15 +2456,15 @@ void CApplication::DoRender()
     if (m_pPlayer->IsRecording() )
     {
       static int iBlinkRecord = 0;
-      CGUIFont* pFont = g_fontManager.GetFont("font13");
-      if (pFont)
+      iBlinkRecord++;
+      if (iBlinkRecord > 25)
       {
-        iBlinkRecord++;
-        if (iBlinkRecord > 25)
-          pFont->DrawText(60, 50, 0xffff0000, 0, L"REC"); //Draw REC in RED
-        if (iBlinkRecord > 50)
-          iBlinkRecord = 0;
+        CGUIFont* pFont = g_fontManager.GetFont("font13");
+        CGUITextLayout::DrawText(pFont, 60, 50, 0xffff0000, 0, "REC", 0);
       }
+
+      if (iBlinkRecord > 50)
+        iBlinkRecord = 0;
     }
   }
 
@@ -2506,19 +2506,13 @@ void CApplication::DoRender()
       {
         CStdStringW wszText;
         wszText.Format(L"Remote Code: %i", iRemoteCode);
-        CGUIFont* pFont = g_fontManager.GetFont("font13");
-        if (pFont)
-        {
-#ifdef _DEBUG
-          pFont->DrawOutlineText( 0.08f * g_graphicsContext.GetWidth(), 0.12f * g_graphicsContext.GetHeight(), 0xffffffff, 0xff000000, 2, wszText);
-#else
-
-          if (LOG_LEVEL_DEBUG_FREEMEM <= g_advancedSettings.m_logLevel)
-            pFont->DrawOutlineText( 0.08f * g_graphicsContext.GetWidth(), 0.12f * g_graphicsContext.GetHeight(), 0xffffffff, 0xff000000, 2, wszText);
-          else
-            pFont->DrawOutlineText( 0.08f * g_graphicsContext.GetWidth(), 0.08f * g_graphicsContext.GetHeight(), 0xffffffff, 0xff000000, 2, wszText);
+        float x = 0.08f * g_graphicsContext.GetWidth();
+        float y = 0.12f * g_graphicsContext.GetHeight();
+#ifndef _DEBUG
+        if (LOG_LEVEL_DEBUG_FREEMEM > g_advancedSettings.m_logLevel)
+          y = 0.08f * g_graphicsContext.GetHeight();
 #endif
-        }
+        CGUITextLayout::DrawOutlineText(g_fontManager.GetFont("font13"), x, y, 0xffffffff, 0xff000000, 2, wszText);
         iShowRemoteCode--;
       }
 #endif
@@ -2639,24 +2633,20 @@ void CApplication::RenderMemoryStatus()
                g_infoManager.GetFPS(), g_cpuInfo.getUsedPercentage(), dCPU);
 #endif
 
-      CGUIFont* pFont = g_fontManager.GetFont("font13");
-      if (pFont)
+      static int yShift = 20;
+      static int xShift = 40;
+      static unsigned int lastShift = time(NULL);
+      time_t now = time(NULL);
+      if (now - lastShift > 10)
       {
-        static int yShift = 20;
-        static int xShift = 40;
-        static unsigned int lastShift = time(NULL);
-        time_t now = time(NULL);
-        if (now - lastShift > 10)
-        {
-          yShift *= -1;
-          if (now % 5 == 0)
-            xShift *= -1;
-          lastShift = now;
-        }
-        float x = xShift + 0.04f * g_graphicsContext.GetWidth() + g_settings.m_ResInfo[res].Overscan.left;
-        float y = yShift + 0.04f * g_graphicsContext.GetHeight() + g_settings.m_ResInfo[res].Overscan.top;
-        pFont->DrawOutlineText(x, y, 0xffffffff, 0xff000000, 2, wszText);
+        yShift *= -1;
+        if (now % 5 == 0)
+          xShift *= -1;
+        lastShift = now;
       }
+      float x = xShift + 0.04f * g_graphicsContext.GetWidth() + g_settings.m_ResInfo[res].Overscan.left;
+      float y = yShift + 0.04f * g_graphicsContext.GetHeight() + g_settings.m_ResInfo[res].Overscan.top;
+      CGUITextLayout::DrawOutlineText(g_fontManager.GetFont("font13"), x, y, 0xffffffff, 0xff000000, 2, wszText);
     }
   }
 }

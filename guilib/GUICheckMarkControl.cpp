@@ -8,6 +8,7 @@ CGUICheckMarkControl::CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, 
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
     , m_imgCheckMark(dwParentID, dwControlId, posX, posY, checkWidth, checkHeight, textureCheckMark)
     , m_imgCheckMarkNoFocus(dwParentID, dwControlId, posX, posY, checkWidth, checkHeight, textureCheckMarkNF)
+    , m_textLayout(labelInfo.font, false)
 {
   m_strLabel = "";
   m_label = labelInfo;
@@ -20,49 +21,29 @@ CGUICheckMarkControl::~CGUICheckMarkControl(void)
 
 void CGUICheckMarkControl::Render()
 {
+  m_textLayout.Update(m_strLabel);
+
+  float fTextHeight, fTextWidth;
+  m_textLayout.GetTextExtent(fTextWidth, fTextHeight);
+  m_width = (DWORD)fTextWidth + 5 + m_imgCheckMark.GetWidth();
+  m_height = m_imgCheckMark.GetHeight();
+
   float textPosX = m_posX;
-  float textPosY = m_posY;
+  float textPosY = m_posY + m_height * 0.5f;
   float checkMarkPosX = m_posX;
-  if (m_label.font)
-  {
-    CStdStringW strLabelUnicode;
-    g_charsetConverter.utf8ToW(m_strLabel, strLabelUnicode);
 
-    float fTextHeight, fTextWidth;
-    m_label.font->GetTextExtent( strLabelUnicode.c_str(), &fTextWidth, &fTextHeight);
-    m_width = (DWORD)fTextWidth + 5 + m_imgCheckMark.GetWidth();
-    m_height = m_imgCheckMark.GetHeight();
+  if (m_label.align & (XBFONT_RIGHT | XBFONT_CENTER_X))
+    textPosX += m_imgCheckMark.GetWidth() + 5;
+  else
+    checkMarkPosX += fTextWidth + 5;
 
-    if (fTextHeight < m_imgCheckMark.GetHeight())
-    {
-      textPosY += (m_imgCheckMark.GetHeight() - fTextHeight) * 0.5f;
-    }
+  if (IsDisabled() )
+    m_textLayout.Render(textPosX, textPosY, 0, m_label.disabledColor, m_label.shadowColor, XBFONT_CENTER_Y, 0, true);
+  else if (HasFocus() && m_label.focusedColor)
+    m_textLayout.Render(textPosX, textPosY, 0, m_label.focusedColor, m_label.shadowColor, XBFONT_CENTER_Y, 0);
+  else
+    m_textLayout.Render(textPosX, textPosY, 0, m_label.textColor, m_label.shadowColor, XBFONT_CENTER_Y, 0);
 
-    if (!(m_label.align & (XBFONT_RIGHT | XBFONT_CENTER_X)))
-    {
-      checkMarkPosX += fTextWidth + 5;
-    }
-    else
-    {
-      textPosX += m_imgCheckMark.GetWidth() + 5;
-    }
-
-    if (IsDisabled() )
-    {
-      m_label.font->DrawText(textPosX, textPosY, m_label.disabledColor, m_label.shadowColor, strLabelUnicode.c_str());
-    }
-    else
-    {
-      if (HasFocus() && m_label.focusedColor)
-      {
-        m_label.font->DrawText(textPosX, textPosY, m_label.focusedColor, m_label.shadowColor, strLabelUnicode.c_str());
-      }
-      else
-      {
-        m_label.font->DrawText(textPosX, textPosY, m_label.textColor, m_label.shadowColor, strLabelUnicode.c_str());
-      }
-    }
-  }
   if (m_bSelected)
   {
     m_imgCheckMark.SetPosition(checkMarkPosX, m_posY);

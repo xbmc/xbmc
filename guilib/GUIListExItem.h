@@ -42,8 +42,6 @@ class RenderContext : public CGUIItem::RenderContext
   DWORD GetFramesFocused() { return m_dwFocusedDuration; };
 
 protected:
-  void RenderText(FLOAT fPosX, FLOAT fPosY, FLOAT fMaxWidth, DWORD dwTextColor, WCHAR* wszText, const CLabelInfo &label);
-protected:
   CGUIImage* m_pIcon;
   DWORD m_dwFocusedDuration;
   DWORD m_dwFrameCounter;

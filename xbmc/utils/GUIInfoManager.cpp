@@ -2209,10 +2209,12 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       break;
     case VIDEOPLAYER_RATING:
       {
-        CStdString strYear;
-        strYear.Format("%2.2f", m_currentFile.GetVideoInfoTag()->m_fRating);
-        return strYear;
+        CStdString strRating;
+        if (m_currentFile.GetVideoInfoTag()->m_fRating > 0)
+          strRating.Format("%2.2f", m_currentFile.GetVideoInfoTag()->m_fRating);
+        return strRating;
       }
+      break;
     case VIDEOPLAYER_YEAR:
       {
         CStdString strYear;
@@ -3170,7 +3172,7 @@ void CGUIInfoManager::ParseLabel(const CStdString &strLabel, vector<CInfoPortion
   int pos1 = work.Find("$LOCALIZE[");
   while (pos1 >= 0)
   {
-    int pos2 = work.Find(']', pos1);
+    int pos2 = StringUtils::FindEndBracket(work, '[', ']', pos1 + 10);
     if (pos2 > pos1)
     {
       CStdString left = work.Left(pos1);
@@ -3196,7 +3198,7 @@ void CGUIInfoManager::ParseLabel(const CStdString &strLabel, vector<CInfoPortion
       multiInfo.push_back(CInfoPortion(0, work.Left(pos1), ""));
 
     // ok, now decipher the $INFO block
-    int pos2 = work.Find(']', pos1);
+    int pos2 = StringUtils::FindEndBracket(work, '[', ']', pos1 + 6);
     if (pos2 > pos1)
     {
       // decipher the block

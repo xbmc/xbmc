@@ -32,6 +32,7 @@
 #include "GUILabelControl.h"
 #include "GUIWindowOSD.h"
 #include "GUIFontManager.h"
+#include "GUITextLayout.h"
 
 #include <stdio.h>
 
@@ -97,7 +98,7 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
   m_bShowViewModeInfo = false;
   m_dwShowViewModeTimeout = 0;
   m_bShowCurrentTime = false;
-  m_subtitleFont = NULL;
+  m_subsLayout = NULL;
   // audio
   //  - language
   //  - volume
@@ -435,20 +436,16 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       {
         CSingleLock lock (m_fontLock);
 
-        if (m_subtitleFont)
-        {
-          delete m_subtitleFont;
-          m_subtitleFont = NULL;
-        }
-
         CStdString fontPath = _P("Q:\\media\\Fonts\\");
         fontPath += g_guiSettings.GetString("subtitles.font");
-        m_subtitleFont = g_fontManager.LoadTTF("__subtitle__", fontPath, color[g_guiSettings.GetInt("subtitles.color")], 0, g_guiSettings.GetInt("subtitles.height"), g_guiSettings.GetInt("subtitles.style"));
-        if (!m_subtitleFont)
+        CGUIFont *subFont = g_fontManager.LoadTTF("__subtitle__", PTH_IC(fontPath), color[g_guiSettings.GetInt("subtitles.color")], 0, g_guiSettings.GetInt("subtitles.height"), g_guiSettings.GetInt("subtitles.style"));
+        if (!subFont)
           CLog::Log(LOGERROR, "CGUIWindowFullScreen::OnMessage(WINDOW_INIT) - Unable to load subtitle font");
+        else
+          m_subsLayout = new CGUITextLayout(subFont, true);
       }
       else
-        m_subtitleFont = NULL;
+        m_subsLayout = NULL;
 
       return true;
     }
@@ -473,10 +470,11 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 #endif
 
       CSingleLock lockFont(m_fontLock);
-      if (m_subtitleFont)
+      if (m_subsLayout)
       {
         g_fontManager.Unload("__subtitle__");
-        m_subtitleFont = NULL;
+        delete m_subsLayout;
+        m_subsLayout = NULL;
       }
 
       if (g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
@@ -544,7 +542,7 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
   if (m_bShowCurrentTime) return true;
   if (g_infoManager.GetDisplayAfterSeek()) return true;
   if (g_infoManager.GetBool(PLAYER_SEEKBAR, GetID())) return true;
-  if (CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible() && m_subtitleFont)
+  if (CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible() && m_subsLayout)
     return true;
   if (m_bLastRender)
   {
@@ -703,52 +701,46 @@ void CGUIWindowFullScreen::RenderFullScreen()
 
 void CGUIWindowFullScreen::RenderTTFSubtitles()
 {
-  //if ( g_application.GetCurrentPlayer() == EPC_MPLAYER && CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible() && m_subtitleFont)
+  //if ( g_application.GetCurrentPlayer() == EPC_MPLAYER && CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible() && m_subsLayout)
   if ((g_application.GetCurrentPlayer() == EPC_MPLAYER || g_application.GetCurrentPlayer() == EPC_DVDPLAYER) &&
       CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible())
   {
     CSingleLock lock (m_fontLock);
 
-    if(!m_subtitleFont)
+    if(!m_subsLayout)
       return;
 
-    CStdString subtitleText = "";
+    CStdString subtitleText;
     if (g_application.m_pPlayer->GetCurrentSubtitle(subtitleText))
     {
       // Remove HTML-like tags from the subtitles until
-      subtitleText.Replace("\\n", "\n");
-      subtitleText.Replace("\\N", "\n");
-      subtitleText.Replace("<i>", "");
-      subtitleText.Replace("</i>", "");
-      subtitleText.Replace("<b>", "");
-      subtitleText.Replace("</b>", "");
+      subtitleText.Replace("\\r", "");
+      subtitleText.Replace("\r", "");
+      subtitleText.Replace("\\n", "[CR]");
+      subtitleText.Replace("\n", "[CR]");
+      subtitleText.Replace("\\N", "[CR]");
+      subtitleText.Replace("<i>", "[I]");
+      subtitleText.Replace("</i>", "[/I]");
+      subtitleText.Replace("<b>", "[B]");
+      subtitleText.Replace("</b>", "[/B]");
       subtitleText.Replace("<u>", "");
       subtitleText.Replace("</u>", "");
-      subtitleText.Replace("</i", ""); // handle tags which aren't closed properly (happens).
-      subtitleText.Replace("</b", "");
+      subtitleText.Replace("</i", "[/I]"); // handle tags which aren't closed properly (happens).
+      subtitleText.Replace("</b", "[/B]");
       subtitleText.Replace("</u", "");
 
       RESOLUTION res = g_graphicsContext.GetVideoResolution();
       g_graphicsContext.SetScalingResolution(res, 0, 0, false);
 
-      float w;
-      float h;
-      CStdStringW utf16Sub;
-      g_charsetConverter.utf8ToW(subtitleText, utf16Sub, g_guiSettings.GetBool("subtitles.flipbidicharset"));
-      m_subtitleFont->GetTextExtent(utf16Sub.c_str(), &w, &h);
-
       float maxWidth = (float) g_settings.m_ResInfo[res].Overscan.right - g_settings.m_ResInfo[res].Overscan.left;
-      if (maxWidth*0.9f < w)
-      {
-        CGUILabelControl::WrapText(utf16Sub, m_subtitleFont, maxWidth*0.9f);
-        m_subtitleFont->GetTextExtent(utf16Sub.c_str(), &w, &h);
-      }
-      float x = (float) maxWidth / 2 + g_settings.m_ResInfo[res].Overscan.left;
-      float y = (float) g_settings.m_ResInfo[res].iSubtitles - h;
+      m_subsLayout->Update(subtitleText, maxWidth * 0.9f);
+      
+      float textWidth, textHeight;
+      m_subsLayout->GetTextExtent(textWidth, textHeight);
+      float x = maxWidth * 0.5f + g_settings.m_ResInfo[res].Overscan.left;
+      float y = g_settings.m_ResInfo[res].iSubtitles - textHeight;
 
-      //float outlinewidth = 3;
-
-      m_subtitleFont->DrawOutlineText(x, y, 0, 0xFF000000, 3, utf16Sub.c_str(), XBFONT_CENTER_X);
+      m_subsLayout->RenderOutline(x, y, 0, 0xFF000000, 3, XBFONT_CENTER_X, maxWidth);
     }
   }
 }

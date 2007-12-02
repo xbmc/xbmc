@@ -11,6 +11,7 @@ CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, float 
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
     , m_imgFocus(dwParentID, dwControlId, posX, posY, width, height, textureFocus)
     , m_imgNoFocus(dwParentID, dwControlId, posX, posY, width, height, textureNoFocus)
+    , m_textLayout(labelInfo.font, false), m_textLayout2(labelInfo.font, false)
 {
   m_bSelected = false;
   m_bTabButton = false;
@@ -69,9 +70,9 @@ void CGUIButtonControl::Render()
   bool bRenderText = (m_dwFlickerCounter > 0) ? (m_dwFrameCounter % 60 > 30) : true;
   m_dwFlickerCounter = (m_dwFlickerCounter > 0) ? (m_dwFlickerCounter - 1) : 0;
 
-  CStdString renderLabel(g_infoManager.GetMultiInfo(m_multiInfo, m_dwParentID));
+  m_textLayout.Update(g_infoManager.GetMultiInfo(m_multiInfo, m_dwParentID));
 
-  if (renderLabel.size() > 0 && bRenderText && m_label.font)
+  if (bRenderText)
   {
     float fPosX = m_posX + m_label.offsetX;
     float fPosY = m_posY + m_label.offsetY;
@@ -85,35 +86,32 @@ void CGUIButtonControl::Render()
     if (m_label.align & XBFONT_CENTER_Y)
       fPosY = m_posY + m_height / 2;
 
-    CStdStringW strLabelUnicode;
-    g_charsetConverter.utf8ToW(renderLabel, strLabelUnicode);
-
-    m_label.font->Begin();
     if (IsDisabled())
-      m_label.font->DrawText( fPosX, fPosY, m_label.angle, m_label.disabledColor, m_label.shadowColor, strLabelUnicode.c_str(), m_label.align, m_label.width);
+      m_textLayout.Render( fPosX, fPosY, m_label.angle, m_label.disabledColor, m_label.shadowColor, m_label.align, m_label.width, true);
     else if (HasFocus() && m_label.focusedColor)
-      m_label.font->DrawText( fPosX, fPosY, m_label.angle, m_label.focusedColor, m_label.shadowColor, strLabelUnicode.c_str(), m_label.align, m_label.width);
+      m_textLayout.Render( fPosX, fPosY, m_label.angle, m_label.focusedColor, m_label.shadowColor, m_label.align, m_label.width);
     else
-      m_label.font->DrawText( fPosX, fPosY, m_label.angle, m_label.textColor, m_label.shadowColor, strLabelUnicode.c_str(), m_label.align, m_label.width);
+      m_textLayout.Render( fPosX, fPosY, m_label.angle, m_label.textColor, m_label.shadowColor, m_label.align, m_label.width);
 
     // render the second label if it exists
     if (m_strLabel2.size() > 0)
     {
-      float width = m_width - 2 * m_label.offsetX - m_label.font->GetTextWidth(strLabelUnicode.c_str()) - 5;
+      float textWidth, textHeight;
+      m_textLayout.GetTextExtent(textWidth, textHeight);
+      m_textLayout2.Update(m_strLabel2);
+
+      float width = m_width - 2 * m_label.offsetX - textWidth - 5;
       if (width < 0) width = 0;
       fPosX = m_posX + m_width - m_label.offsetX;
       DWORD dwAlign = XBFONT_RIGHT | (m_label.align & XBFONT_CENTER_Y) | XBFONT_TRUNCATED;
 
-      g_charsetConverter.utf8ToW(m_strLabel2, strLabelUnicode);
-
       if (IsDisabled() )
-        m_label.font->DrawText( fPosX, fPosY, m_label.angle, m_label.disabledColor, m_label.shadowColor, strLabelUnicode.c_str(), dwAlign, width);
+        m_textLayout2.Render( fPosX, fPosY, m_label.angle, m_label.disabledColor, m_label.shadowColor, dwAlign, width, true);
       else if (HasFocus() && m_label.focusedColor)
-        m_label.font->DrawText( fPosX, fPosY, m_label.angle, m_label.focusedColor, m_label.shadowColor, strLabelUnicode.c_str(), dwAlign, width);
+        m_textLayout2.Render( fPosX, fPosY, m_label.angle, m_label.focusedColor, m_label.shadowColor, dwAlign, width);
       else
-        m_label.font->DrawText( fPosX, fPosY, m_label.angle, m_label.textColor, m_label.shadowColor, strLabelUnicode.c_str(), dwAlign, width);
+        m_textLayout2.Render( fPosX, fPosY, m_label.angle, m_label.textColor, m_label.shadowColor, dwAlign, width);
     }
-    m_label.font->End();
   }
   CGUIControl::Render();
 }

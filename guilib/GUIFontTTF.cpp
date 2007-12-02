@@ -72,16 +72,14 @@ public:
     m_library = NULL;
   }
 
+  virtual ~CFreeTypeLibrary()
+  {
+    if (m_library)
+      FT_Done_FreeType(m_library);
+  }
+
   FT_Face GetFont(const CStdString &filename, int size, float aspect)
   {
-    // check if we have this font already
-    for (unsigned int i = 0; i < m_fonts.size(); i++)
-    {
-      CFTFont &font = m_fonts[i];
-      if (font.Matches(filename, size, aspect))
-        return font.GetFace();
-    }
-
     // don't have it yet - create it
     if (!m_library)
       FT_Init_FreeType(&m_library);
@@ -110,33 +108,14 @@ public:
       return NULL;
     }
 
-    // push back the font
-    CFTFont font(filename, size, aspect, face);
-    m_fonts.push_back(font);
-
     return face;
   };
 
   void ReleaseFont(FT_Face face)
   {
-    // find the font
-    for (unsigned int i = 0; i < m_fonts.size(); i++)
-    {
-      CFTFont &font = m_fonts[i];
-      if (font.Matches(face))
-      {
-        if (font.ReleaseFace())
-          m_fonts.erase(m_fonts.begin() + i);
-        break;
-      }
-    }
-    // check if we can free the font library as well
-    if (!m_fonts.size() && m_library)
-    {
-      FT_Done_FreeType(m_library);
-      m_library = NULL;
-    }
-  }
+    assert(face);
+    FT_Done_Face(face);
+  };
 
   unsigned int GetDPI() const
   {
@@ -144,55 +123,6 @@ public:
   };
 
 private:
-  class CFTFont
-  {
-  public:
-    CFTFont(const CStdString &filename, int size, float aspect, FT_Face face)
-    {
-      m_filename = filename;
-      m_size = size;
-      m_aspect = aspect;
-      m_face = face;
-      m_references = 1;
-    };
-
-    bool Matches(const CStdString &filename, int size, float aspect) const
-    {
-      return (m_filename == filename && m_size == size && m_aspect == aspect);
-    };
-    
-    bool Matches(FT_Face face) const
-    {
-      return m_face == face;
-    };
-
-    FT_Face GetFace()
-    {
-      m_references++;
-      return m_face;
-    };
-
-    bool ReleaseFace()
-    {
-      assert(m_references);
-      m_references--;
-      if (!m_references)
-      {
-        FT_Done_Face(m_face);
-        return true;
-      }
-      return false;
-    };
-
-  private:
-    CStdString   m_filename;
-    int          m_size;
-    float        m_aspect;
-    FT_Face      m_face;
-    unsigned int m_references;
-  };
-
-  vector<CFTFont> m_fonts;
   FT_Library   m_library;
 };
 
@@ -290,13 +220,15 @@ void CGUIFontTTF::Clear()
   m_face = NULL;
 }
 
-bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle, float aspect)
+bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, float aspect)
 {
 #ifndef HAS_SDL
   // create our character texture + font shader
   m_pD3DDevice = g_graphicsContext.Get3DDevice();
 #endif
 
+  // we now know that this object is unique - only the GUIFont objects are non-unique, so no need
+  // for reference tracking these fonts
   m_face = g_freeTypeLibrary.GetFont(strFilename, iHeight, aspect);
 
   if (!m_face)
@@ -332,7 +264,6 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle, f
   CLog::Log(LOGDEBUG, " Scaled size of font %s (%i): width = %i, height = %i",
     strFilename.c_str(), iHeight, m_cellWidth, m_cellHeight);
   m_iHeight = iHeight;
-  m_iStyle = iStyle;
 
   if (m_texture)
 #ifndef HAS_SDL  
@@ -368,115 +299,78 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle, f
   return true;
 }
 
-void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, DWORD *pdw256ColorPalette, BYTE *pbColours, const WCHAR* strText, DWORD cchText, DWORD dwFlags, FLOAT fMaxPixelWidth )
+void CGUIFontTTF::DrawTextInternal(float x, float y, const vector<DWORD> &colors, const vector<DWORD> &text, DWORD alignment, float maxPixelWidth)
 {
   Begin();
 
   // save the origin, which is scaled separately
-  m_originX = sx;
-  m_originY = sy;
+  m_originX = x;
+  m_originY = y;
 
-  // vertically centered
-  if (dwFlags & XBFONT_CENTER_Y)
-    sy = -0.5f*(m_cellHeight-2);
-  else
-    sy = 0;
-
-  // Check if we will really need to truncate the CStdString
-  if ( dwFlags & XBFONT_TRUNCATED )
+  // Check if we will really need to truncate or justify the text
+  if ( alignment & XBFONT_TRUNCATED )
   {
-    if ( fMaxPixelWidth <= 0.0f)
-      dwFlags &= ~XBFONT_TRUNCATED;
-    else
-    {
-      float width;
-      GetTextExtentInternal(strText, &width, NULL);
-      if (width <= fMaxPixelWidth)
-        dwFlags &= ~XBFONT_TRUNCATED;
-    }
+    if ( maxPixelWidth <= 0.0f || GetTextWidthInternal(text.begin(), text.end()) <= maxPixelWidth)
+      alignment &= ~XBFONT_TRUNCATED;
   }
-  else if ( dwFlags & XBFONT_JUSTIFIED )
+  else if ( alignment & XBFONT_JUSTIFIED )
   {
-    if ( fMaxPixelWidth <= 0.0f )
-      dwFlags &= XBFONT_JUSTIFIED;
+    if ( maxPixelWidth <= 0.0f )
+      alignment &= ~XBFONT_JUSTIFIED;
   }
 
-  float lineX;
-  float lineY;
-  float cursorX;
-  int numLines = 0;
-  // Set a flag so we can determine initial justification effects
-  BOOL bStartingNewLine = TRUE;
+  // calculate sizing information
+  float startX = 0;
+  float startY = (alignment & XBFONT_CENTER_Y) ? -0.5f*(m_cellHeight-2) : 0;  // vertical centering
+
+  if ( alignment & (XBFONT_RIGHT | XBFONT_CENTER_X) )
+  {
+    // Get the extent of this line
+    float w = GetTextWidthInternal( text.begin(), text.end() );
+
+    if ( alignment & XBFONT_TRUNCATED && w > maxPixelWidth )
+      w = maxPixelWidth;
+      
+    if ( alignment & XBFONT_CENTER_X)
+      w *= 0.5f;
+    // Offset this line's starting position
+    startX -= w;
+  }
+
   float spacePerLetter = 0; // for justification effects
+  if ( alignment & XBFONT_JUSTIFIED )
+  { 
+    // first compute the size of the text to render in both characters and pixels
+    unsigned int lineLength = 0;
+    for (vector<DWORD>::const_iterator pos = text.begin(); pos != text.end(); pos++)
+    {
+      WCHAR letter = (WCHAR)(*pos & 0xffff);
+      // spaces have multiple times the justification spacing of normal letters
+      lineLength += (letter == L' ') ? justification_word_weight : 1;
+    }
+    float width = GetTextWidthInternal(text.begin(), text.end());
+    if (lineLength > 1)
+      spacePerLetter = (maxPixelWidth - width) / (lineLength - 1);
+  }
+  float cursorX = 0; // current position along the line
 
-  while ( cchText-- )
+  for (vector<DWORD>::const_iterator pos = text.begin(); pos != text.end(); pos++)
   {
     // If starting text on a new line, determine justification effects
-    if ( bStartingNewLine )
-    {
-      lineX = 0;
-      lineY = sy + (float)m_lineHeight * numLines;
-      if ( dwFlags & (XBFONT_RIGHT | XBFONT_CENTER_X) )
-      {
-        // Get the extent of this line
-        FLOAT w, h;
-        GetTextExtentInternal( strText, &w, &h, TRUE );
-
-        if ( dwFlags & XBFONT_TRUNCATED && w > fMaxPixelWidth )
-          w = fMaxPixelWidth;
-          
-        if ( dwFlags & XBFONT_CENTER_X)
-          w *= 0.5f;
-        // Offset this line's starting position
-        lineX -= w;
-      }
-      if ( dwFlags & XBFONT_JUSTIFIED )
-      { // first compute the size of the text to render (single line) in both characters and pixels
-        const WCHAR *spaceCalc = strText;
-        unsigned int lineLength = 0;
-        while (*spaceCalc && *spaceCalc != L'\n')
-        {
-          WCHAR letter = *spaceCalc++;
-          if (letter == L'\r') continue;
-          // spaces have multiple times the justification spacing of normal letters
-          lineLength += (letter == L' ') ? justification_word_weight : 1;
-        }
-        float width;
-        GetTextExtentInternal(strText, &width, NULL, TRUE);
-        spacePerLetter = (fMaxPixelWidth - width) / (lineLength - 1);
-      }
-      bStartingNewLine = FALSE;
-      cursorX = 0; // current position along the line
-    }
-
     // Get the current letter in the CStdString
-    WCHAR letter = *strText++;
-
-    DWORD dwColor;
-    if (pbColours)  // multi colour version
-      dwColor = pdw256ColorPalette[*pbColours++];
-    else            // single colour version
-      dwColor = *pdw256ColorPalette;
-
-    // Skip '\r'
-    if ( letter == L'\r' )
-      continue;
-    // Handle the newline character
-    if ( letter == L'\n' )
-    {
-      numLines++;
-      bStartingNewLine = TRUE;
-      continue;
-    }
+    DWORD color = (*pos & 0xff0000) >> 16;
+    if (color >= colors.size())
+      color = 0;
+    color = colors[color];
 
     // grab the next character
-    Character *ch = GetCharacter(letter);
+    Character *ch = GetCharacter(*pos);
     if (!ch) continue;
 
-    if ( dwFlags & XBFONT_TRUNCATED )
+    if ( alignment & XBFONT_TRUNCATED )
     {
       // Check if we will be exceeded the max allowed width
-      if ( cursorX + ch->advance + 3 * m_ellipsesWidth > fMaxPixelWidth )
+      if ( cursorX + ch->advance + 3 * m_ellipsesWidth > maxPixelWidth )
       {
         // Yup. Let's draw the ellipses, then bail
         // Perhaps we should really bail to the next line in this case??
@@ -486,19 +380,19 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, DWORD *pdw256ColorPalett
 
         for (int i = 0; i < 3; i++)
         {
-          RenderCharacter(lineX + cursorX, lineY, period, dwColor);
+          RenderCharacter(startX + cursorX, startY, period, color);
           cursorX += period->advance;
         }
         break;
       }
     }
-    else if (fMaxPixelWidth > 0 && cursorX > fMaxPixelWidth)
+    else if (maxPixelWidth > 0 && cursorX > maxPixelWidth)
       break;  // exceeded max allowed width - stop rendering
 
-    RenderCharacter(lineX + cursorX, lineY, ch, dwColor);
-    if ( dwFlags & XBFONT_JUSTIFIED )
+    RenderCharacter(startX + cursorX, startY, ch, color);
+    if ( alignment & XBFONT_JUSTIFIED )
     {
-      if (letter == L' ')
+      if ((*pos & 0xffff) == L' ')
         cursorX += ch->advance + spacePerLetter * justification_word_weight;
       else
         cursorX += ch->advance + spacePerLetter;
@@ -510,52 +404,45 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, DWORD *pdw256ColorPalett
   End();
 }
 
-void CGUIFontTTF::GetTextExtentInternal( const WCHAR* strText, FLOAT* pWidth,
-                                 FLOAT* pHeight, BOOL bFirstLineOnly)
+// this routine assumes a single line (i.e. it was called from GUITextLayout)
+float CGUIFontTTF::GetTextWidthInternal(vector<DWORD>::const_iterator start, vector<DWORD>::const_iterator end)
 {
-  // First let's calculate width
-  int len = wcslen(strText);
-  int i = 0, j = 0;
-  *pWidth = 0.0f;
-  int numLines = 0;
-
-  while (j < len)
+  float width = 0;
+  while (start != end)
   {
-    for (j = i; j < len; j++)
-    {
-      if (strText[j] == L'\n')
-      {
-        break;
-      }
-    }
-
-    float width = 0;
-    for (int k = i; k < j && k < len; k++)
-    {
-      Character *c = GetCharacter(strText[k]);
-      if (c) width += c->advance;
-    }
-    if (width > *pWidth)
-      *pWidth = width;
-    numLines++;
-
-    i = j + 1;
-
-    if (bFirstLineOnly)
-      break;
+    Character *c = GetCharacter(*start++);
+    if (c) width += c->advance;
   }
-
-  if (pHeight)
-    *pHeight = (float)(numLines - 1) * m_lineHeight + (m_cellHeight - 2); // -2 as we increment this for space in our texture
-  return ;
+  return width;
 }
 
-CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(WCHAR letter)
+float CGUIFontTTF::GetCharWidthInternal(DWORD ch)
 {
+  Character *c = GetCharacter(ch);
+  if (c) return c->advance;
+  return 0;
+}
+
+float CGUIFontTTF::GetTextHeight(int numLines)
+{
+  return (float)(numLines - 1) * m_lineHeight + (m_cellHeight - 2); // -2 as we increment this for space in our texture
+}
+
+CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(DWORD chr)
+{
+  WCHAR letter = (WCHAR)(chr & 0xffff);
+  DWORD style = (chr & 0x3000000) >> 24;
+
   // quick access to ascii chars
-  if(letter < 255)
-    if(m_charquick[letter])
-      return m_charquick[letter];
+  if (letter < 255)
+  {
+    DWORD ch = (style << 8) | letter;
+    if (m_charquick[ch])
+      return m_charquick[ch];
+  }
+
+  // letters are stored based on style and letter
+  DWORD ch = (style << 16) | letter;
 
   int low = 0;
   int high = m_numChars - 1;
@@ -563,9 +450,9 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(WCHAR letter)
   while (low <= high)
   {
     mid = (low + high) >> 1;
-    if (letter > m_char[mid].letter)
+    if (ch > m_char[mid].letterAndStyle)
       low = mid + 1;
-    else if (letter < m_char[mid].letter)
+    else if (ch < m_char[mid].letterAndStyle)
       high = mid - 1;
     else
       return &m_char[mid];
@@ -595,12 +482,12 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(WCHAR letter)
   DWORD dwNestedBeginCount = m_dwNestedBeginCount;
   m_dwNestedBeginCount = 1;
   if (dwNestedBeginCount) End();
-  if (!CacheCharacter(letter, m_char + low))
+  if (!CacheCharacter(letter, style, m_char + low))
   { // unable to cache character - try clearing them all out and starting over
     CLog::Log(LOGDEBUG, "GUIFontTTF::GetCharacter: Unable to cache character.  Clearing character cache of %i characters", m_numChars);
     ClearCharacterCache();
     low = 0;
-    if (!CacheCharacter(letter, m_char + low))
+    if (!CacheCharacter(letter, style, m_char + low))
     {
       CLog::Log(LOGERROR, "GUIFontTTF::GetCharacter: Unable to cache character (out of memory?)");
       if (dwNestedBeginCount) Begin();
@@ -615,14 +502,17 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(WCHAR letter)
   memset(m_charquick, 0, sizeof(m_charquick));
   for(int i=0;i<m_numChars;i++)
   {
-    if(m_char[i].letter<255)
-      m_charquick[m_char[i].letter] = m_char+i;
+    if ((m_char[i].letterAndStyle & 0xffff) < 255)
+    {
+      DWORD ch = ((m_char[i].letterAndStyle & 0xffff0000) >> 8) | (m_char[i].letterAndStyle & 0xff);
+      m_charquick[ch] = m_char+i;
+    }
   }
 
   return m_char + low;
 }
 
-bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
+bool CGUIFontTTF::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
 {
   int glyph_index = FT_Get_Char_Index( m_face, letter );
 
@@ -633,10 +523,10 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
     return false;
   }
   // make bold if applicable
-  if (m_iStyle == FONT_STYLE_BOLD || m_iStyle == FONT_STYLE_BOLD_ITALICS)
+  if (style & FONT_STYLE_BOLD)
     FT_GlyphSlot_Embolden(m_face->glyph);
   // and italics if applicable
-  if (m_iStyle == FONT_STYLE_ITALICS || m_iStyle == FONT_STYLE_BOLD_ITALICS)
+  if (style & FONT_STYLE_ITALICS)
     FT_GlyphSlot_Oblique(m_face->glyph);
   // grab the glyph
   if (FT_Get_Glyph(m_face->glyph, &glyph))
@@ -747,7 +637,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
   }
 
   // set the character in our table
-  ch->letter = letter;
+  ch->letterAndStyle = (style << 16) | letter;
   ch->offsetX = (short)bitGlyph->left;
   ch->offsetY = (short)max((short)m_cellBaseLine - bitGlyph->top, 0);
   ch->left = (float)m_posX + ch->offsetX;
