@@ -293,6 +293,9 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
   if (url.GetFileName().IsEmpty()) // called with no script - should never happen
     return false;
 
+  // Load the settings incase they changed while in the plugins directory
+  g_currentPluginSettings.Load(url);
+
   CStdString fileName;
   CUtil::AddFileToFolder(url.GetFileName(), "default.py", fileName);
 

@@ -32,22 +32,17 @@ CGUISliderControl::~CGUISliderControl(void)
 
 void CGUISliderControl::Render()
 {
-  CGUIFont* pFont13 = g_fontManager.GetFont("font13");
   float fRange, fPos, fPercent;
 
   if (!IsDisabled())
   {
+    CStdString text;
     switch (m_iType)
     {
     case SPIN_CONTROL_TYPE_FLOAT:
-      if(m_iInfoCode) m_fValue = (float)g_infoManager.GetInt(m_iInfoCode);
+      if (m_iInfoCode) m_fValue = (float)g_infoManager.GetInt(m_iInfoCode);
+      text.Format("%2.2f", m_fValue);
 
-      if (m_renderText && pFont13)
-      {
-        CStdStringW value;
-        value.Format(L"%2.2f", m_fValue);
-        pFont13->DrawText(m_posX, m_posY, 0xffffffff, 0, value.c_str(), 0, 0);
-      }
       m_guiBackground.SetPosition(m_posX + m_controlOffsetX, m_posY + m_controlOffsetY);
 
       fRange = m_fEnd - m_fStart;
@@ -57,14 +52,9 @@ void CGUISliderControl::Render()
       break;
 
     case SPIN_CONTROL_TYPE_INT:
-      if(m_iInfoCode) m_iValue = g_infoManager.GetInt(m_iInfoCode);
+      if (m_iInfoCode) m_iValue = g_infoManager.GetInt(m_iInfoCode);
+      text.Format("%i/%i", m_iValue, m_iEnd);
 
-      if (m_renderText && pFont13)
-      {
-        CStdStringW value;
-        value.Format(L"%i/%i", m_iValue, m_iEnd);
-        pFont13->DrawText(m_posX, m_posY, 0xffffffff, 0, value.c_str(), 0, 0);
-      }
       m_guiBackground.SetPosition(m_posX + m_controlOffsetX, m_posY + m_controlOffsetY);
 
       fRange = (float)(m_iEnd - m_iStart);
@@ -74,6 +64,8 @@ void CGUISliderControl::Render()
     default:
       if(m_iInfoCode) m_iPercent = g_infoManager.GetInt(m_iInfoCode);
     }
+    if (m_renderText && text.size())
+      CGUITextLayout::DrawText(g_fontManager.GetFont("font13"), m_posX, m_posY, 0xffffffff, 0, text, 0);
 
     float fScaleX, fScaleY;
     fScaleY = m_height == 0 ? 1.0f : m_height/(float)m_guiBackground.GetTextureHeight();

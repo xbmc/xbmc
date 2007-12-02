@@ -619,7 +619,7 @@ void CGUIWindowVideoNav::OnWindowLoaded()
     info.align = XBFONT_CENTER_X | XBFONT_CENTER_Y;
     info.font = g_fontManager.GetFont("font13");
     info.textColor = 0xffffffff;
-    CGUILabelControl *pLabel = new CGUILabelControl(GetID(),CONTROL_LABELEMPTY,pList->GetXPosition(),pList->GetYPosition(),pList->GetWidth(),pList->GetHeight(),"",info,false);
+    CGUILabelControl *pLabel = new CGUILabelControl(GetID(),CONTROL_LABELEMPTY,pList->GetXPosition(),pList->GetYPosition(),pList->GetWidth(),pList->GetHeight(),"",info,false,false);
     pLabel->SetAnimations(pList->GetAnimations());
     Add(pLabel);
   }
@@ -1060,7 +1060,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
             if (reg.RegFind(strCheck.c_str()) > -1)
             {
               CFileItem *item = new CFileItem("thumb://Local", false);
-              item->SetThumbnailImage(cachedThumb);
+              item->SetThumbnailImage(cachedThumb); // this doesn't look right to me - perhaps tbnItems[j]->m_strPath?
               item->SetLabel(g_localizeStrings.Get(20017));
               items.Add(item);              
               break;

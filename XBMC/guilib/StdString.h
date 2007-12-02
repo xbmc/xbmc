@@ -73,7 +73,7 @@ using namespace std;
 //			- Jim Cline
 //			- Jeff Kohn
 //			- Todd Heckel
-//			- Ullrich Pollähne
+//			- Ullrich Pollï¿½hne
 //			- Joe Vitaterna
 //			- Joe Woodbury
 //			- Aaron (no last name)
@@ -227,7 +227,7 @@ using namespace std;
 //	  2000-APR-17 - Thanks to Joe Vitaterna for pointing out that ReverseFind
 //					is supposed to be a const function.
 //
-//	  2000-MAR-07 - Thanks to Ullrich Pollähne for catching a range bug in one
+//	  2000-MAR-07 - Thanks to Ullrich Pollï¿½hne for catching a range bug in one
 //					of the overloads of assign.
 //
 //    2000-FEB-01 - You can now use CStdString on the Mac with CodeWarrior!
@@ -915,7 +915,7 @@ inline const Type& SSMAX(const Type& arg1, const Type& arg2)
 										pSrcW, pSrcW + nSrc, pNextSrcW,
 										pDstA, pDstA + nDst, pNextDstA);
 #ifdef _LINUX
-#define ASSERT2(a) if (a) {fprintf(stderr, "StdString: Assertion Failed on line %d\n", __LINE__);} 
+#define ASSERT2(a) if (!(a)) {fprintf(stderr, "StdString: Assertion Failed on line %d\n", __LINE__);} 
 #else
 #define ASSERT2 ASSERT
 #endif
@@ -2302,7 +2302,7 @@ public:
 			// <nChars> or the NULL terminator, whichever comes first.  Since we
 			// are about to call a less forgiving overload (in which <nChars>
 			// must be a valid length), we must adjust the length here to a safe
-			// value.  Thanks to Ullrich Pollähne for catching this bug
+			// value.  Thanks to Ullrich Pollï¿½hne for catching this bug
 
 			nChars		= SSMIN(nChars, str.length() - nStart);
 			MYTYPE strTemp(str.c_str()+nStart, nChars);
@@ -2323,7 +2323,7 @@ public:
 			// <nChars> or the NULL terminator, whichever comes first.  Since we
 			// are about to call a less forgiving overload (in which <nChars>
 			// must be a valid length), we must adjust the length here to a safe
-			// value. Thanks to Ullrich Pollähne for catching this bug
+			// value. Thanks to Ullrich Pollï¿½hne for catching this bug
 
 			nChars		= SSMIN(nChars, str.length() - nStart);
 

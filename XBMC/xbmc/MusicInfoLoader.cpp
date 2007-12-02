@@ -38,6 +38,7 @@ CMusicInfoLoader::CMusicInfoLoader()
 
 CMusicInfoLoader::~CMusicInfoLoader()
 {
+  StopThread();
 }
 
 void CMusicInfoLoader::OnLoaderStart()

@@ -217,6 +217,9 @@
 				RelativePath=".\GUIBaseContainer.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIBorderedImage.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIButtonControl.cpp">
 			</File>
 			<File
@@ -352,6 +355,9 @@
 				RelativePath=".\GUITextBox.cpp">
 			</File>
 			<File
+				RelativePath=".\GUITextLayout.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIToggleButtonControl.cpp">
 			</File>
 			<File
@@ -433,6 +439,9 @@
 			</File>
 			<File
 				RelativePath=".\GUIBaseContainer.h">
+			</File>
+			<File
+				RelativePath=".\GUIBorderedImage.h">
 			</File>
 			<File
 				RelativePath=".\GUIButtonControl.h">
@@ -571,6 +580,9 @@
 			</File>
 			<File
 				RelativePath=".\GUITextBox.h">
+			</File>
+			<File
+				RelativePath=".\GUITextLayout.h">
 			</File>
 			<File
 				RelativePath=".\GUIToggleButtonControl.h">
