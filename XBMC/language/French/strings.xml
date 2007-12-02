@@ -436,7 +436,7 @@
   <string id="519">Lancer en ...</string>
   <string id="520">Éditer le titre du XBE</string>
   <string id="521">Compilations</string>
-  <string id="522">Supprimer l'entrée</string>
+  <string id="522">Supprimer la source</string>
   <string id="523">Changer de médias</string>
   <string id="524">Choisir une Playlist</string>
   <string id="525">Nouvelle Playlist...</string>
@@ -603,11 +603,11 @@
   <string id="746">Passer à l'affichage "Fichiers"</string>
   <string id="747">Mémoire insuffisante au chargement de l'image</string>
   <string id="748">Éditer le chemin</string>
-  <string id="749">Ajouter un partage</string>
+  <string id="749">Ajouter une source</string>
   <string id="750">Êtes-vous sûr(e) ?</string>
-  <string id="751">Supprimer le partage</string>
-  <string id="752">Éditer le chemin du partage</string>
-  <string id="753">Éditer le nom du partage</string>
+  <string id="751">Supprimer la source de media</string>
+  <string id="752">Éditer le chemin de la source</string>
+  <string id="753">Éditer le nom de la source</string>
   <string id="754">Ajouter un lien programme</string>
   <string id="755">Éditer le chemin du programme</string>
   <string id="756">Éditer le nom du programme</string>
@@ -652,15 +652,15 @@
   <string id="1017">Saisissez le chemin du serveur</string>
   <string id="1018">Saisissez le numéro du port</string>
   <string id="1019">Saisissez le nom de l'utilisateur</string>
-  <string id="1020">Ajouter une entrée dans %s</string>
-  <string id="1021">Saisir un chemin ou parcourir pour localiser un média.</string>
-  <string id="1022">Saisir un nom pour cette entrée.</string>
-  <string id="1023">Parcourir pour un nouveau partage</string>
+  <string id="1020">Ajouter une source dans %s</string>
+  <string id="1021">Saisissez le chemin pour localiser vos médias</string>
+  <string id="1022">Saisir un nom pour cette source.</string>
+  <string id="1023">Sélectionnez le chemin de vos médias</string>
   <string id="1024">Parcourir</string>
   <string id="1025">Impossible de récupérer les informations.</string>
-  <string id="1026">Ajouter une entrée</string>
-  <string id="1027">Éditer cette entrée</string>
-  <string id="1028">Éditer l'entrée dans %s</string>
+  <string id="1026">Ajouter une source</string>
+  <string id="1027">Éditer cette source</string>
+  <string id="1028">Éditer la source dans %s</string>
   <string id="1029">Saisissez le nouveau label</string>
   <string id="1030">Parcourir pour une Image</string>
   <string id="1031">Parcourir pour un dossier d'image</string>
@@ -1078,7 +1078,7 @@
   <string id="13400">Enchainer Pistes Audio</string>
   <string id="13401">Parcourir pour %s</string>
   <string id="13402">Montrer la position de la piste</string>
-  <string id="13403">Effacer l'entrée par défaut</string>
+  <string id="13403">Effacer la source par défaut</string>
   <string id="13404">Reprendre</string>
   <string id="13405">Vignette</string>
   <string id="13406">Informations de l'Image</string>
@@ -1500,7 +1500,7 @@
   <string id="20138">Impossible de monter l'unité mémoire</string>
   <string id="20139">Dans le port %i, emplacement %i</string>
   <string id="20140">Sécuriser l'écran de veille</string>
-  <string id="20141">Régler</string>
+  <string id="20141">Réglé</string>
   <string id="20142">Nom d'utilisateur</string>
   <string id="20143">Entrer le mot de passe pour</string>
   <string id="20144">Minuteur de fermeture</string>
@@ -1545,7 +1545,7 @@
   <string id="20183">Recharger Thème</string>
   <string id="20184">Pivoter en utilisant l'info EXIF</string>
   <string id="20185"></string>
-  <string id="20186">Merci de patienter</string>
+  <string id="20186">Chargement</string>
   <string id="20187">Sauvegarde de l'EEPROM</string>
   <string id="20188">Sauvegarde du BIOS</string>
   <string id="20189">Activer le défilement auto des Résumés et Critiques</string>
@@ -1598,7 +1598,7 @@
   <string id="20330">Utiliser le nom des dossiers pour la consultation</string>
   <string id="20331">Fichier</string>
   <string id="20332">Utiliser le nom des dossiers ou fichiers&#10;pour la consultation</string>
-  <string id="20333">Sélectionner le contenu</string>
+  <string id="20333">Contenu</string>
   <string id="20334">Dossier</string>
   <string id="20335">Rechercher le contenu récursivement?</string>
   <string id="20336">Déverrouiller Sources</string>
@@ -1698,7 +1698,7 @@
   <string id="21366">Dossier de sous-titres personnalisé</string>
   <string id="21367">Film &amp; Dossier alternatif de sous-titres</string>
  
-  <string id="21370">Jouer le son de navigation pendant la lecture des médias</string>
+  <string id="21370">Sons de navigation lors de la lecture des médias</string>
   <string id="21371">Vignettes</string>
   <string id="21372">Forcer la région du lecteur DVD</string>
   <string id="21373">Matériel vidéo</string>
@@ -1710,7 +1710,7 @@
   <string id="21379">Activer 720p</string>
   <string id="21380">Activer 1080i</string>
   <string id="21381">Entrer le nom de la nouvelle Playlist</string>
-  <string id="21382">Masquer le bouton "Ajouter une entrée" des listes</string>
+  <string id="21382">Masquer le bouton "Ajouter une source" des listes</string>
   <string id="21383">Activer barres de défilement</string>
   <string id="21384">Activer le filtre Masquer vue(s) en mode bibliothèque</string>
   <string id="21385">Ouvrir</string>
