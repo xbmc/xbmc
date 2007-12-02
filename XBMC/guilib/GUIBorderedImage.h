@@ -8,7 +8,7 @@
 class CGUIBorderedImage : public CGUIImage
 {
 public:
-  CGUIBorderedImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture, const CImage& borderTexture, float borderSize, DWORD dwColorKey = 0);
+  CGUIBorderedImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture, const CImage& borderTexture, const FRECT &borderSize, DWORD dwColorKey = 0);
   virtual ~CGUIBorderedImage(void);
 
   virtual void Render();
@@ -22,7 +22,7 @@ public:
   
 protected:
   CGUIImage m_borderImage;
-  float m_borderSize;
+  FRECT m_borderSize;
 };
 
 #endif
