@@ -8,6 +8,7 @@
 #include "GUIConsoleControl.h"
 #include "GUIListControlEx.h"
 #include "guiImage.h"
+#include "GUIBorderedImage.h"
 #include "GUILabelControl.h"
 #include "GUIEditControl.h"
 #include "GUIFadeLabelControl.h"
@@ -456,6 +457,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   CImage textureUp, textureDown;
   CImage textureUpFocus, textureDownFocus;
   CImage texture;
+  CImage borderTexture;
   CImage textureCheckMark, textureCheckMarkNF;
   CImage textureFocus, textureNoFocus;
   CImage textureAltFocus, textureAltNoFocus;
@@ -463,6 +465,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   CImage imageNoFocus, imageFocus;
   DWORD dwColorKey = 0;
   CStdString strSuffix = "";
+  float borderSize = 0.0f;
 
   float controlOffsetX = 0;
   float controlOffsetY = 0;
@@ -769,6 +772,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetTexture(pControlNode, "righttexture", textureRight);
   GetTexture(pControlNode, "overlaytexture", textureOverlay);
   GetTexture(pControlNode, "texture", texture);
+  GetTexture(pControlNode, "bordertexture", borderTexture);
   GetFloat(pControlNode, "rangemin", rMin);
   GetFloat(pControlNode, "rangemax", rMax);
   GetColor(pControlNode, "colorkey", dwColorKey);
@@ -884,6 +888,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetFloat(pControlNode, "radioheight", radioHeight);
   GetFloat(pControlNode, "radioposx", radioPosX);
   GetFloat(pControlNode, "radioposy", radioPosY);
+  GetFloat(pControlNode, "bordersize", borderSize);
 
   XMLUtils::GetBoolean(pControlNode, "showonepage", showOnePage);
   XMLUtils::GetInt(pControlNode, "focusposition", focusPosition);
@@ -1121,6 +1126,13 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     ((CGUIImage *)control)->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     ((CGUIImage *)control)->SetAspectRatio(aspectRatio, aspectAlign);
   }
+  else if (strType == "borderedimage")
+  {
+    control = new CGUIBorderedImage(
+      dwParentId, id, posX, posY, width, height, texture, borderTexture, borderSize, dwColorKey);
+    ((CGUIImage *)control)->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
+    ((CGUIImage *)control)->SetAspectRatio(aspectRatio, aspectAlign);
+  }  
   else if (strType == "largeimage")
   {
     control = new CGUILargeImage(
