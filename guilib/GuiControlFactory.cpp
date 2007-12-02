@@ -178,25 +178,7 @@ bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strT
   if (!pNode) return false;
   const char *border = pNode->Attribute("border");
   if (border)
-  {
-    // format is border="left,right,top,bottom"
-    CStdStringArray borders;
-    StringUtils::SplitString(border, ",", borders);
-    if (borders.size() == 1)
-    {
-      g_SkinInfo.ResolveConstant(borders[0], image.border.left);
-      image.border.top = image.border.left;
-      image.border.right = image.border.left;
-      image.border.bottom = image.border.left;
-    }
-    else if (borders.size() == 4)
-    {
-      g_SkinInfo.ResolveConstant(borders[0], image.border.left);
-      g_SkinInfo.ResolveConstant(borders[1], image.border.top);
-      g_SkinInfo.ResolveConstant(borders[2], image.border.right);
-      g_SkinInfo.ResolveConstant(borders[3], image.border.bottom);
-    }
-  }
+    GetRectFromString(border, image.border);
   image.orientation = 0;
   const char *flipX = pNode->Attribute("flipx");
   if (flipX && strcmpi(flipX, "true") == 0) image.orientation = 1;
@@ -207,6 +189,27 @@ bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strT
   image.file = pNode->FirstChild() ? pNode->FirstChild()->Value() : "";
   image.file.Replace('/', '\\');
   return true;
+}
+
+void CGUIControlFactory::GetRectFromString(const CStdString &string, FRECT &rect)
+{
+  // format is rect="left,right,top,bottom"
+  CStdStringArray strRect;
+  StringUtils::SplitString(string, ",", strRect);
+  if (strRect.size() == 1)
+  {
+    g_SkinInfo.ResolveConstant(strRect[0], rect.left);
+    rect.top = rect.left;
+    rect.right = rect.left;
+    rect.bottom = rect.left;
+  }
+  else if (strRect.size() == 4)
+  {
+    g_SkinInfo.ResolveConstant(strRect[0], rect.left);
+    g_SkinInfo.ResolveConstant(strRect[1], rect.top);
+    g_SkinInfo.ResolveConstant(strRect[2], rect.right);
+    g_SkinInfo.ResolveConstant(strRect[3], rect.bottom);
+  }
 }
 
 bool CGUIControlFactory::GetAlignment(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment)
@@ -465,7 +468,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   CImage imageNoFocus, imageFocus;
   DWORD dwColorKey = 0;
   CStdString strSuffix = "";
-  float borderSize = 0.0f;
+  FRECT borderSize = { 0, 0, 0, 0};
 
   float controlOffsetX = 0;
   float controlOffsetY = 0;
@@ -888,7 +891,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetFloat(pControlNode, "radioheight", radioHeight);
   GetFloat(pControlNode, "radioposx", radioPosX);
   GetFloat(pControlNode, "radioposy", radioPosY);
-  GetFloat(pControlNode, "bordersize", borderSize);
+  CStdString borderStr;
+  if (XMLUtils::GetString(pControlNode, "bordersize", borderStr))
+    GetRectFromString(borderStr, borderSize);
 
   XMLUtils::GetBoolean(pControlNode, "showonepage", showOnePage);
   XMLUtils::GetInt(pControlNode, "focusposition", focusPosition);
@@ -1121,18 +1126,15 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   }
   else if (strType == "image")
   {
-    control = new CGUIImage(
-      dwParentId, id, posX, posY, width, height, texture, dwColorKey);
+    if (borderTexture.file.IsEmpty())
+      control = new CGUIImage(
+        dwParentId, id, posX, posY, width, height, texture, dwColorKey);
+    else
+      control = new CGUIBorderedImage(
+        dwParentId, id, posX, posY, width, height, texture, borderTexture, borderSize, dwColorKey);
     ((CGUIImage *)control)->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     ((CGUIImage *)control)->SetAspectRatio(aspectRatio, aspectAlign);
   }
-  else if (strType == "borderedimage")
-  {
-    control = new CGUIBorderedImage(
-      dwParentId, id, posX, posY, width, height, texture, borderTexture, borderSize, dwColorKey);
-    ((CGUIImage *)control)->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
-    ((CGUIImage *)control)->SetAspectRatio(aspectRatio, aspectAlign);
-  }  
   else if (strType == "largeimage")
   {
     control = new CGUILargeImage(
