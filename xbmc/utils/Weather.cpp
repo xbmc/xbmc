@@ -346,6 +346,7 @@ bool CWeather::LoadWeather(const CStdString &weatherXML)
       // get speed unit
       char szUnitSpeed[5];
       strncpy(szUnitSpeed, g_langInfo.GetSpeedUnitString().c_str(), 5);
+      szUnitSpeed[4] = '\0';
 
       if (strcmp(iTmpStr,"CALM") == 0)
         sprintf(m_szCurrentWind, "%s", szCalm.c_str());

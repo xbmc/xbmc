@@ -318,9 +318,6 @@ void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdSt
 	    ASSERT(len2 <= len*4);
 	    strDest.ReleaseBuffer();
 	    
-	    if (resultString.length() > 0)
-	    	resultString += "\n";
-	    
 	    resultString += strDest;
 	  }
 

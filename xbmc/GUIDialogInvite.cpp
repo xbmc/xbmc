@@ -71,7 +71,6 @@ void CGUIDialogInvite::OnInitWindow()
 
     m_pGames->Release();
 
-    spin_control.SetNonProportional(true);
     spin_control.SetValue(0);
   }
   CGUIWindow::OnInitWindow();

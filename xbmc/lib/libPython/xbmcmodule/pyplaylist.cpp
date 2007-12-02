@@ -109,7 +109,7 @@ namespace PYXBMC
     "add(url[, title, duration]) -- Add's a new file to the playlist.(Depreciated)\n"
     "add(url[, listitem]) -- Add's a new file to the playlist.(Preferred method)\n"
     "\n"
-    "url            : [opt] string - filename or url to add.\n"
+    "url            : string - filename or url to add.\n"
     "listitem       : [opt] listitem - used with setInfo() to set different infolabels.\n"
     "\n"
     "example:\n"

@@ -179,17 +179,14 @@ void CArenaItem::OnPaint(CGUIItem::RenderContext* pContext)
         strInfo.Format("%d", (m_nPlayers > 0) ? m_nPlayers : 0);
       }
 
-      // no need for charset conversions here - just rendering numbers
-      CStdStringW strInfoUnicode = strInfo;
+      CGUITextLayout layout(pDC->m_label.font, false);
+      layout.Update(strInfo);
+
       float fPosX = posX;
       float fPosY = posY + 2;
       if (pDC->m_pButton->GetLabelInfo().align & XBFONT_CENTER_Y)
-      {
-        float fTextHeight, fTextWidth;
-        pDC->m_label.font->GetTextExtent( strInfoUnicode.c_str(), &fTextWidth, &fTextHeight);
-        fPosY = posY + (pDC->m_pButton->GetHeight() - fTextHeight) * 0.5f;
-      }
-      RenderText(fPosX, fPosY, (FLOAT)pDC->m_pButton->GetWidth(), dwColor, (WCHAR*) strInfoUnicode.c_str(), pDC->m_label);
+        fPosY = posY + pDC->m_pButton->GetHeight() * 0.5f;
+      layout.Render(fPosX, fPosY, 0, dwColor, 0, pDC->m_pButton->GetLabelInfo().align, pDC->m_pButton->GetWidth());
     }
   }
 }
