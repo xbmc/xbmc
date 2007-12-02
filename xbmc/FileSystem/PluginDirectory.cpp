@@ -79,6 +79,9 @@ void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceList
   dir->m_success = success;
   dir->m_listItems.SetReplaceListing(replaceListing);
 
+  // Unload the temporary strings
+  g_localizeStringsTemp.Clear();
+
   // set the event to mark that we're done
   SetEvent(dir->m_directoryFetched);
 }
@@ -242,6 +245,9 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
   CLog::Log(LOGDEBUG, __FUNCTION__"URL for plugin settings: %s", url.GetFileName().c_str() );
   g_currentPluginSettings.Load(url);
 
+  // Load language strings
+  LoadPluginStrings(url);
+
   // reset our wait event, and grab a new handle
   ResetEvent(m_directoryFetched);
   int handle = getNewHandle(this);
@@ -292,6 +298,9 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
   // Load the settings incase they changed while in the plugins directory
   g_currentPluginSettings.Load(url);
 
+  // Load language strings
+  LoadPluginStrings(url);
+
   CStdString fileName;
   CUtil::AddFileToFolder(url.GetFileName(), "default.py", fileName);
 
@@ -320,12 +329,11 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
 
   // run the script
   CLog::Log(LOGDEBUG, __FUNCTION__" - calling plugin %s('%s','%s','%s')", pathToScript.c_str(), argv[0], argv[1], argv[2]);
-  bool success = false;
   if (g_pythonParser.evalFile(pathToScript.c_str(), 3, (const char**)argv) >= 0)
     return true;
   else
     CLog::Log(LOGERROR, "Unable to run plugin %s", pathToScript.c_str());
-  
+
   return false;
 }
 
@@ -481,4 +489,30 @@ void CPluginDirectory::SetContent(int handle, const CStdString &strContent)
 
   CPluginDirectory *dir = globalHandles[handle];
   dir->m_listItems.SetContent(strContent);
+}
+
+void CPluginDirectory::LoadPluginStrings(const CURL &url)
+{
+  // Path where the plugin resides
+  CStdString pathToPlugin = "Q:\\plugins\\";
+  CUtil::AddFileToFolder(pathToPlugin, url.GetHostName(), pathToPlugin);
+  CUtil::AddFileToFolder(pathToPlugin, url.GetFileName(), pathToPlugin);
+
+  // Remove the slash at end, makes xbox and linux compatible
+  CUtil::RemoveSlashAtEnd(pathToPlugin);
+
+  // Path where the language strings reside
+  CStdString pathToLanguageFile = pathToPlugin;
+  CStdString pathToFallbackLanguageFile = pathToPlugin;
+  CUtil::AddFileToFolder(pathToLanguageFile, "resources", pathToLanguageFile);
+  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "resources", pathToFallbackLanguageFile);
+  CUtil::AddFileToFolder(pathToLanguageFile, "language", pathToLanguageFile);
+  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "language", pathToFallbackLanguageFile);
+  CUtil::AddFileToFolder(pathToLanguageFile, g_guiSettings.GetString("locale.language"), pathToLanguageFile);
+  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "english", pathToFallbackLanguageFile);
+  CUtil::AddFileToFolder(pathToLanguageFile, "strings.xml", pathToLanguageFile);
+  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "strings.xml", pathToFallbackLanguageFile);
+
+  // Load the strings temporarily
+  g_localizeStringsTemp.Load(pathToLanguageFile, pathToFallbackLanguageFile);
 }
