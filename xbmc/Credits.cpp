@@ -23,6 +23,7 @@
 #define _WCTYPE_INLINE_DEFINED
 #include <process.h>
 #include "GUIFontManager.h"
+#include "GUITextLayout.h"
 #include "credits.h"
 #include "Application.h"
 #include "lib/mikxbox/mikmod.h"
@@ -531,6 +532,8 @@ static void* ResourceData;
 static int SkinOffset;
 
 LPDIRECT3DTEXTURE8 CreateCreditsTexture(CGUIFont *font, const wchar_t *text);
+void GetCreditsTextExtent(CGUIFont *font, const wchar_t *text, float &width, float &height);
+
 static map<int, CGUIFont*> Fonts;
 
 static HRESULT InitLogo()
@@ -1122,7 +1125,7 @@ void RunCredits()
       if (Credits[i].Text)
       {
         CGUIFont* pFont = Fonts.find(Credits[i].Font)->second;
-        pFont->GetTextExtent(Credits[i].Text, &Credits[i].TextWidth, &Credits[i].TextHeight);
+        GetCreditsTextExtent(pFont, Credits[i].Text, Credits[i].TextWidth, Credits[i].TextHeight);
       }
     }
   }
@@ -1194,7 +1197,7 @@ void RunCredits()
         {
           CGUIFont* pFont = Fonts.find(Credits[NextCredit].Font)->second;
           Credits[NextCredit].pTex = CreateCreditsTexture(pFont, Credits[NextCredit].Text);
-          pFont->GetTextExtent(Credits[NextCredit].Text, &Credits[NextCredit].TextWidth, &Credits[NextCredit].TextHeight);
+          GetCreditsTextExtent(pFont, Credits[NextCredit].Text, Credits[NextCredit].TextWidth, Credits[NextCredit].TextHeight);
         }
         ActiveList.push_back(&Credits[NextCredit]);
         LastCreditTime = Credits[NextCredit].Time;
@@ -1463,11 +1466,27 @@ unsigned __stdcall CreditsMusicThread(void* pParam)
   return 0;
 }
 
+void GetCreditsTextExtent(CGUIFont *font, const wchar_t *text, float &width, float &height)
+{
+  // this is really hacky, but the credits need a redesign at some point anyway :p
+  if (!font) return;
+  CStdString utf8;
+  g_charsetConverter.utf16toUTF8(text, utf8);
+  CGUITextLayout layout(font, false);
+  layout.Update(utf8);
+  layout.GetTextExtent(width, height);
+}
+
 LPDIRECT3DTEXTURE8 CreateCreditsTexture(CGUIFont *font, const wchar_t *text)
 {
+  CStdString utf8;
+  g_charsetConverter.utf16toUTF8(text, utf8);
+  CGUITextLayout layout(font, false);
+  layout.Update(utf8);
+
   // grab the text extents
   float width, height;
-  font->GetTextExtent(text, &width, &height);
+  layout.GetTextExtent(width, height);
   // create a texture of this size
   LPDIRECT3DTEXTURE8 texture = NULL;
   OutputDebugString("Creating texture\n");
@@ -1490,7 +1509,7 @@ LPDIRECT3DTEXTURE8 CreateCreditsTexture(CGUIFont *font, const wchar_t *text)
     D3DDevice::SetTransform(D3DTS_PROJECTION, &mtxProjection);
     // render text into it
     D3DDevice::Clear(0, NULL, D3DCLEAR_TARGET, 0, 1.0f, 0);
-    font->DrawText(0, 0, 0, 0xffdadada, 0, text);
+    layout.Render(0, 0, 0, 0xffdadada, 0, 0, 0);
     D3DDevice::SetRenderTarget(oldSurface, NULL);
     newSurface->Release();
     oldSurface->Release();
