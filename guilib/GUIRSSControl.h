@@ -22,7 +22,7 @@ public:
   virtual ~CGUIRSSControl(void);
 
   virtual void Render();
-  virtual void OnFeedUpdate(CStdStringW& aFeed, LPBYTE aColorArray);
+  virtual void OnFeedUpdate(const vector<DWORD> &feed);
   virtual bool CanFocus() const { return false; };
 
   void SetIntervals(const std::vector<int>& vecIntervals);
@@ -30,13 +30,11 @@ public:
 
 protected:
 
-  void RenderText();
-
   CCriticalSection m_criticalSection;
 
   CRssReader* m_pReader;
-  WCHAR* m_pwzText;
-  LPBYTE m_pbColors;
+  vector<DWORD> m_feed;
+  vector<DWORD> m_colors;
 
   CStdString m_strRSSTags;
   D3DCOLOR m_dwChannelColor;

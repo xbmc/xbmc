@@ -155,16 +155,17 @@ namespace PYXBMC
     return Py_None;
   }
 
-
   PyDoc_STRVAR(getSetting__doc__,
-    "getSetting(id) -- Returns a value of a setting.\n"
+    "getSetting(id) -- Returns the value of a setting as a string.\n"
+    "\n"
+    "id        : string - id of the setting that the module needs to access.\n"
     "\n"
     "id        : string - id of the setting that the module needs to access.\n"
     "\n"
     "*Note, You can use the above as a keyword.\n"
     "\n"
     "example:\n"
-    "  - apikey = xbmcplugin.get('apikey')\n");
+    "  - apikey = xbmcplugin.getSetting('apikey')\n");
 
   PyObject* XBMCPLUGIN_GetSetting(PyObject *self, PyObject *args, PyObject *kwds)
   {

@@ -19,8 +19,9 @@
 class CGUIFadeLabelControl : public CGUIControl
 {
 public:
-  CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool scrollOut, DWORD timeToPauseAtEnd);
+  CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool scrollOut, DWORD timeToDelayAtEnd);
   virtual ~CGUIFadeLabelControl(void);
+  virtual void DoRender(DWORD currentTime);
   virtual void Render();
   virtual bool CanFocus() const;
   virtual bool OnMessage(CGUIMessage& message);
@@ -30,20 +31,17 @@ public:
 
 protected:
   void AddLabel(const string &label);
-  void RenderText(float fPosX, float fPosY, float fMaxWidth, DWORD dwTextColor, WCHAR* wszText, bool bScroll );
 
-  vector<string> m_stringLabels;
   vector< vector<CInfoPortion> > m_infoLabels;
+  unsigned int m_currentLabel;
 
   CLabelInfo m_label;
-  int m_iCurrentLabel;
-  bool m_bFadeIn;
-  bool m_bFadeOut;
-  bool m_bPaused;
-  bool m_bScrollOut;
-  int m_iCurrentFrame;
-  DWORD m_iTimeToPauseAtEnd;
-  vector<int> m_vecInfo;
+  CGUITextLayout m_textLayout;
+
+  bool m_scrollOut;
+
   CScrollInfo m_scrollInfo;
+  CAnimation *m_fadeAnim;
+  DWORD m_renderTime;
 };
 #endif

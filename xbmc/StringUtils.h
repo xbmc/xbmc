@@ -30,7 +30,6 @@ enum TIME_FORMAT { TIME_FORMAT_GUESS = 0,
 
 class StringUtils
 {
-
 public:
   static void JoinString(const CStdStringArray &strings, const CStdString& delimiter, CStdString& result);
   static int SplitString(const CStdString& input, const CStdString& delimiter, CStdStringArray &results);
@@ -43,6 +42,7 @@ public:
   static CStdString SizeToString(__int64 size);
   static const CStdString EmptyString;
   static bool FindWords(const char *str, const char *wordLowerCase);
+  static int FindEndBracket(const CStdString &str, char opener, char closer, int startPos = 0);
 };
 
 #endif

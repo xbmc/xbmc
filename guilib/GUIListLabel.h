@@ -32,7 +32,7 @@ public:
 
 protected:
   CLabelInfo  m_label;
-  CStdStringW m_text;
+  CGUITextLayout m_textLayout;
   float       m_textWidth;
 
   bool        m_scrolling;

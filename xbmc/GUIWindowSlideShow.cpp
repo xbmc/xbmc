@@ -526,12 +526,7 @@ void CGUIWindowSlideShow::RenderErrorMessage()
   }
 
   CGUIFont *pFont = pLabel->GetLabelInfo().font;
-  if (pFont)
-  {
-    CStdStringW utf16ErrorMessage;
-    g_charsetConverter.utf8ToW(g_localizeStrings.Get(747), utf16ErrorMessage);
-    pFont->DrawText((float)g_graphicsContext.GetWidth() / 2, (float)g_graphicsContext.GetHeight() / 2, 0xffffffff, 0, utf16ErrorMessage.c_str(), XBFONT_CENTER_X | XBFONT_CENTER_Y);
-  }
+  CGUITextLayout::DrawText(pFont, 0.5f*g_graphicsContext.GetWidth(), 0.5f*g_graphicsContext.GetHeight(), 0xffffffff, 0, g_localizeStrings.Get(747), XBFONT_CENTER_X | XBFONT_CENTER_Y);
 }
 
 bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)

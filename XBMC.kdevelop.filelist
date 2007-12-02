@@ -2,6 +2,7 @@
 .
 Makefile
 Makefile.include
+guilib
 guilib/ActionManager.cpp
 guilib/ActionManager.h
 guilib/AnimatedGif.cpp
@@ -14,6 +15,8 @@ guilib/GUIAudioManager.cpp
 guilib/GUIAudioManager.h
 guilib/GUIBaseContainer.cpp
 guilib/GUIBaseContainer.h
+guilib/GUIBorderedImage.cpp
+guilib/GUIBorderedImage.h
 guilib/GUIButtonControl.cpp
 guilib/GUIButtonControl.h
 guilib/GUIButtonScroller.cpp
@@ -95,6 +98,8 @@ guilib/GUIStandardWindow.cpp
 guilib/GUIStandardWindow.h
 guilib/GUITextBox.cpp
 guilib/GUITextBox.h
+guilib/GUITextLayout.cpp
+guilib/GUITextLayout.h
 guilib/GUIToggleButtonControl.cpp
 guilib/GUIToggleButtonControl.h
 guilib/GUIVideoControl.cpp

@@ -108,31 +108,15 @@ void CGUIListExItem::OnPaint(CGUIItem::RenderContext* pContext)
       CStdString strDisplayText;
       GetDisplayText(strDisplayText);
 
-      CStdStringW strUnicode;
-      g_charsetConverter.utf8ToW(strDisplayText, strUnicode);
+      CGUITextLayout layout(pDC->m_label.font, false);
+      layout.Update(strDisplayText);
 
       float fPosX = posX + pDC->m_pButton->GetLabelInfo().offsetX;
       float fPosY = posY + pDC->m_pButton->GetLabelInfo().offsetY;
       if (pDC->m_pButton->GetLabelInfo().align & XBFONT_CENTER_Y)
-      {
-        float fTextHeight, fTextWidth;
-        pDC->m_label.font->GetTextExtent( strUnicode.c_str(), &fTextWidth, &fTextHeight);
-        fPosY = posY + (pDC->m_pButton->GetHeight() - fTextHeight) * 0.5f;
-      }
-      RenderText(fPosX, fPosY, pDC->m_pButton->GetWidth(), dwColor, (WCHAR*) strUnicode.c_str(), pDC->m_label);
+        fPosY = posY + pDC->m_pButton->GetHeight() * 0.5f;
+      layout.Render(fPosX, fPosY, 0, dwColor, 0, pDC->m_pButton->GetLabelInfo().align, pDC->m_pButton->GetWidth());
     }
   }
 }
 
-void CGUIListExItem::RenderText(float fPosX, float fPosY, float fMaxWidth, DWORD dwTextColor, WCHAR* wszText, const CLabelInfo& label )
-{
-  if (!label.font)
-    return ;
-  
-  float fTextHeight, fTextWidth;
-  label.font->GetTextExtent( wszText, &fTextWidth, &fTextHeight);
-
-  g_graphicsContext.SetClipRegion(fPosX, fPosY, fMaxWidth - 5.0f, 60.0f);
-  label.font->DrawTextWidth(fPosX, fPosY, dwTextColor, label.shadowColor, wszText, fMaxWidth);
-  g_graphicsContext.RestoreClipRegion();
-}
