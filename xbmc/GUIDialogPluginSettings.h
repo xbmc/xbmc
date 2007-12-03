@@ -15,6 +15,7 @@ private:
   void CreateControls();
   void FreeControls();
   void EnableControls();
+  bool GetCondition(const CStdString &condition, const int controlId);
   
   bool SaveSettings(void);
   void ShowVirtualKeyboard(int iControl);
