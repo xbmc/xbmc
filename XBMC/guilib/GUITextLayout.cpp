@@ -4,6 +4,7 @@
 #include "GUIControl.h"
 #include "GUIColorManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
+#include "../xbmc/StringUtils.h"
 
 CGUIString::CGUIString(iString start, iString end, bool carriageReturn)
 {
@@ -159,6 +160,9 @@ void CGUITextLayout::ParseText(const CStdString &text, vector<DWORD> &parsedText
   DWORD currentStyle = m_font->GetStyle(); // start with the default font's style
   DWORD currentColor = 0;
 
+  stack<DWORD> colorStack;
+  colorStack.push(0);
+
   // these aren't independent, but that's probably not too much of an issue
   // eg [UPPERCASE]Glah[LOWERCASE]FReD[/LOWERCASE]Georeg[/UPPERCASE] will work (lower case >> upper case)
   // but [LOWERCASE]Glah[UPPERCASE]FReD[/UPPERCASE]Georeg[/LOWERCASE] won't
@@ -213,10 +217,13 @@ void CGUITextLayout::ParseText(const CStdString &text, vector<DWORD> &parsedText
       { // create new color
         newColor = m_colors.size();
         m_colors.push_back(g_colorManager.GetColor(text.Mid(pos + 5, finish - pos - 5)));
+        colorStack.push(newColor);
       }
       else if (!on && finish == pos + 5)
       { // revert to previous color
-        newColor = (m_colors.size() > 1) ? m_colors.size() - 2 : 0;
+        if (colorStack.size() > 1)
+          colorStack.pop();
+        newColor = colorStack.top();
       }
       pos = finish + 1;
     }
@@ -413,12 +420,28 @@ void CGUITextLayout::DrawOutlineText(CGUIFont *font, float x, float y, const vec
 void CGUITextLayout::AppendToUTF32(const CStdString &text, DWORD colStyle, vector<DWORD> &utf32)
 {
   // convert text to utf32
-  CStdStringW utf16;
+#ifdef WORK_AROUND_NEEDED_FOR_LINE_BREAKS
   // NOTE: This appears to strip \n characters from text.  This may be a consequence of incorrect
-  //       expression of the \n in utf8 (we just use character code 10).
-  g_charsetConverter.utf8ToW(text, utf16);
-
+  //       expression of the \n in utf8 (we just use character code 10) or it might be something
+  //       more sinister.  For now, we use the workaround below.
+  CStdStringW utf16;
   utf32.reserve(utf32.size() + utf16.size());
   for (unsigned int i = 0; i < utf16.size(); i++)
     utf32.push_back(utf16[i] | colStyle);
+#else
+  // workaround - break into \n separated, and re-assemble
+  CStdStringArray multiLines;
+  StringUtils::SplitString(text, "\n", multiLines);
+  for (unsigned int i = 0; i < multiLines.size(); i++)
+  {
+    CStdStringW utf16;
+    g_charsetConverter.utf8ToW(multiLines[i], utf16);
+    utf32.reserve(utf32.size() + utf16.size() + 1);
+    for (unsigned int j = 0; j < utf16.size(); j++)
+      utf32.push_back(utf16[j] | colStyle);
+    if (i < multiLines.size() - 1)
+      utf32.push_back(L'\n');
+  }
+#endif
 }
+
