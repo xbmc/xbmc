@@ -1824,7 +1824,7 @@ bool CSettings::LoadProfile(int index)
     CreateDirectory(g_settings.GetProgramsThumbFolder().c_str(), NULL);
     CreateDirectory(g_settings.GetXLinkKaiThumbFolder().c_str(), NULL);
     CreateDirectory(g_settings.GetPicturesThumbFolder().c_str(), NULL);
-    CreateDirectory("P:\\visualisations",NULL);
+    CreateDirectory(_P("P:\\visualisations"),NULL);
     CLog::Log(LOGINFO, "  thumbnails folder:%s", g_settings.GetThumbnailsFolder().c_str());
     for (unsigned int hex=0; hex < 16; hex++)
     {
