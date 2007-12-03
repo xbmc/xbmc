@@ -1280,32 +1280,23 @@ int CGUIInfoManager::GetInt(int info, DWORD contextWindow) const
 bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CFileItem *pItem)
 {
   // check our cache
-  bool result;
-  if (!pItem && IsCached(condition1, dwContextWindow, result)) // never use cache for list items
-    return result;
+  bool bReturn = false;
+  if (!pItem && IsCached(condition1, dwContextWindow, bReturn)) // never use cache for list items
+    return bReturn;
 
   int condition = abs(condition1);
-  bool bReturn = false;
 
   if(condition >= COMBINED_VALUES_START && (condition - COMBINED_VALUES_START) < (int)(m_CombinedValues.size()) )
   {
     const CCombinedValue &comb = m_CombinedValues[condition - COMBINED_VALUES_START];
-    bool result;
-    if (!EvaluateBooleanExpression(comb, result, dwContextWindow, pItem))
-      result = false;
-    
-    if (!pItem) // we can't cache results for listitems since the same condition is used for all.
-      CacheBool(condition, dwContextWindow, result);
-
-    return result;
-  }
-
-  if (pItem && condition >= LISTITEM_PROPERTY_START && condition - LISTITEM_PROPERTY_START < (int)m_listitemProperties.size())
+    if (!EvaluateBooleanExpression(comb, bReturn, dwContextWindow, pItem))
+      bReturn = false;
+  } 
+  else if (pItem && condition >= LISTITEM_PROPERTY_START && condition - LISTITEM_PROPERTY_START < (int)m_listitemProperties.size())
   { // grab the property
     CStdString property = m_listitemProperties[condition - LISTITEM_PROPERTY_START];
     CStdString val = pItem->GetProperty(property);
     bReturn =  (val == "1" || val.CompareNoCase("true") == 0);
-    return condition1<0?!bReturn:bReturn;
   }
   else if (condition == LISTITEM_ISPLAYING)
   {
@@ -1586,7 +1577,10 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CFile
   }
   // cache return value
   if (condition1 < 0) bReturn = !bReturn;
-  CacheBool(condition1, dwContextWindow, bReturn);
+  
+  if (!pItem)
+    CacheBool(condition1, dwContextWindow, bReturn);
+
   return bReturn;
 }
 
