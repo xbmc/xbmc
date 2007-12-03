@@ -26,7 +26,7 @@ public:
   CVideoInfoTag() { Reset(); };
   void Reset();
   bool Load(const TiXmlElement *movie, bool chained = false);
-  bool Save(TiXmlNode *node, const CStdString &tag);
+  bool Save(TiXmlNode *node, const CStdString &tag, bool savePathInfo = true);
   virtual void Serialize(CArchive& ar);
   const CStdString GetCast(bool bIncludeRole = false) const;
   const CStdString GetArtist() const;
