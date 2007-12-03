@@ -316,3 +316,13 @@ CGUIListContainer::CGUIListContainer(DWORD dwParentID, DWORD dwControlId, float 
   ControlType = GUICONTAINER_LIST;
 }
 //#endif
+
+bool CGUIListContainer::HasNextPage() const
+{
+   return (m_offset != (int)m_items.size() - m_itemsPerPage && (int)m_items.size() >= m_itemsPerPage);
+}
+
+bool CGUIListContainer::HasPreviousPage() const
+{
+   return (m_offset > 0);
+}
