@@ -140,7 +140,7 @@ void CGUIListItemLayout::Render(CGUIListItem *item, DWORD parentID, DWORD time)
 void CGUIListItemLayout::Update(CFileItem *item, DWORD parentID)
 {
   // check for boolean conditions
-  m_isPlaying = g_infoManager.GetItemBool(item, LISTITEM_ISPLAYING, parentID);
+  m_isPlaying = g_infoManager.GetBool(LISTITEM_ISPLAYING, parentID, item);
   for (iControls it = m_controls.begin(); it != m_controls.end(); it++)
     UpdateItem(*it, item, parentID);
   // now we have to check our overlapping label pairs
@@ -188,7 +188,7 @@ void CGUIListItemLayout::UpdateItem(CGUIListItemLayout::CListBase *control, CFil
 {
   // check boolean conditions
   if (control->m_visibleCondition)
-    control->m_visible = g_infoManager.GetItemBool(item, control->m_visibleCondition, parentID);
+    control->m_visible = g_infoManager.GetBool(control->m_visibleCondition, parentID, item);
   if (control->m_type == CListBase::LIST_IMAGE && item)
   {
     CListImage *image = (CListImage *)control;

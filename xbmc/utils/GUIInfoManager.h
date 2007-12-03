@@ -424,7 +424,7 @@ public:
   virtual bool OnMessage(CGUIMessage &message);
 
   int TranslateString(const CStdString &strCondition);
-  bool GetBool(int condition, DWORD dwContextWindow = 0);
+  bool GetBool(int condition, DWORD dwContextWindow = 0, const CFileItem *pItem=NULL);
   int GetInt(int info, DWORD contextWindow = 0) const;
   CStdString GetLabel(int info, DWORD contextWindow = 0);
 
@@ -510,7 +510,6 @@ public:
   CStdString GetItemLabel(const CFileItem *item, int info) const;
   CStdString GetItemMultiLabel(const CFileItem *item, const vector<CInfoPortion> &multiInfo);
   CStdString GetItemImage(const CFileItem *item, int info) const;
-  bool       GetItemBool(const CFileItem *item, int info, DWORD contextWindow);
 
   // Called from tuxbox service thread to update current status
   void UpdateFromTuxBox();
@@ -591,7 +590,7 @@ protected:
 
   int GetOperator(const char ch);
   int TranslateBooleanExpression(const CStdString &expression);
-  bool EvaluateBooleanExpression(const CCombinedValue &expression, bool &result, DWORD dwContextWindow);
+  bool EvaluateBooleanExpression(const CCombinedValue &expression, bool &result, DWORD dwContextWindow, const CFileItem *pItem=NULL);
 
   std::vector<CCombinedValue> m_CombinedValues;
 
