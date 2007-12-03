@@ -4,6 +4,7 @@
 #include "GUIControl.h"
 #include "GUIColorManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
+#include "StringUtils.h"
 
 CGUIString::CGUIString(iString start, iString end, bool carriageReturn)
 {
@@ -413,12 +414,27 @@ void CGUITextLayout::DrawOutlineText(CGUIFont *font, float x, float y, const vec
 void CGUITextLayout::AppendToUTF32(const CStdString &text, DWORD colStyle, vector<DWORD> &utf32)
 {
   // convert text to utf32
-  CStdStringW utf16;
+#ifdef WORK_AROUND_NEEDED_FOR_LINE_BREAKS
   // NOTE: This appears to strip \n characters from text.  This may be a consequence of incorrect
-  //       expression of the \n in utf8 (we just use character code 10).
-  g_charsetConverter.utf8ToUTF16(text, utf16);
-
+  //       expression of the \n in utf8 (we just use character code 10) or it might be something
+  //       more sinister.  For now, we use the workaround below.
+  CStdStringW utf16;
   utf32.reserve(utf32.size() + utf16.size());
   for (unsigned int i = 0; i < utf16.size(); i++)
     utf32.push_back(utf16[i] | colStyle);
+#else
+  // workaround - break into \n separated, and re-assemble
+  CStdStringArray multiLines;
+  StringUtils::SplitString(text, "\n", multiLines);
+  for (unsigned int i = 0; i < multiLines.size(); i++)
+  {
+    CStdStringW utf16;
+    g_charsetConverter.utf8ToUTF16(multiLines[i], utf16);
+    utf32.reserve(utf32.size() + utf16.size() + 1);
+    for (unsigned int j = 0; j < utf16.size(); j++)
+      utf32.push_back(utf16[j] | colStyle);
+    if (i < multiLines.size() - 1)
+      utf32.push_back(L'\n');
+  }
+#endif
 }
