@@ -4,7 +4,7 @@
 #include "GUIControl.h"
 #include "GUIColorManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
-#include "StringUtils.h"
+#include "../xbmc/StringUtils.h"
 
 CGUIString::CGUIString(iString start, iString end, bool carriageReturn)
 {
