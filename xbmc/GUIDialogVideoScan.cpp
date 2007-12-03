@@ -107,7 +107,10 @@ void CGUIDialogVideoScan::StartScanning(const CStdString& strDirectory, const SS
 {
   m_ScanState = PREPARING;
 
-  Show();
+  if (!g_guiSettings.GetBool("videolibrary.backgroundupdate"))
+  {
+    Show();
+  }
 
   m_videoInfoScanner.Start(strDirectory, info, settings, bUpdateAll);
 }
@@ -142,7 +145,10 @@ void CGUIDialogVideoScan::OnFinished()
   // be sure to restore the settings
   CLog::Log(LOGINFO,"Video scan was stopped or finished ... restoring FindRemoteThumbs");
 
-  Close();
+  if (!g_guiSettings.GetBool("videolibrary.backgroundupdate"))
+  {
+    Close();
+  }
 }
 
 void CGUIDialogVideoScan::UpdateState()
