@@ -30,7 +30,7 @@ public:
 class CGUITextLayout
 {
 public:
-  CGUITextLayout(CGUIFont *font, bool wrap);  // this may need changing - we may just use this class to replace CLabelInfo completely
+  CGUITextLayout(CGUIFont *font, bool wrap, float fHeight=0.0);  // this may need changing - we may just use this class to replace CLabelInfo completely
 
   // main function to render strings
   void Render(float x, float y, float angle, DWORD color, DWORD shadowColor, DWORD alignment, float maxWidth, bool solid = false);
@@ -41,6 +41,9 @@ public:
 
   unsigned int GetTextLength() const;
   void GetFirstText(vector<DWORD> &text) const;
+
+  void SetWrap(bool bWrap=true);
+  void SetMaxHeight(float fHeight);
 
   static void DrawText(CGUIFont *font, float x, float y, DWORD color, DWORD shadowColor, const CStdString &text, DWORD align);
   static void DrawOutlineText(CGUIFont *font, float x, float y, DWORD color, DWORD outlineColor, DWORD outlineWidth, const CStdString &text);
@@ -55,9 +58,9 @@ protected:
   typedef vector<CGUIString>::iterator iLine;
 
   // the layout and font details
-  CGUIFont *m_font;       // has style, colour info
-  bool m_wrap;            // wrapping (true if justify is enabled!)
-
+  CGUIFont *m_font;        // has style, colour info
+  bool  m_wrap;            // wrapping (true if justify is enabled!)
+  float m_maxHeight;
   // the default color (may differ from the font objects defaults)
   DWORD m_textColor;
 
