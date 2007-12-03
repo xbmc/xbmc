@@ -561,8 +561,21 @@ bool CGUIBaseContainer::GetCondition(int condition, int data) const
     return (m_orientation == HORIZONTAL) ? (m_cursor == data) : true;
   case CONTAINER_POSITION:
     return (m_cursor == data);
+  case CONTAINER_HAS_NEXT:
+    return (HasNextPage());
+  case CONTAINER_HAS_PREVIOUS:
+    return (HasPreviousPage());
   default:
     return false;
   }
 }
 
+bool CGUIBaseContainer::HasNextPage() const
+{
+   return false;
+}
+
+bool CGUIBaseContainer::HasPreviousPage() const
+{
+   return false;
+}

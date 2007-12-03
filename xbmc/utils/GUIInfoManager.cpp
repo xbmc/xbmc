@@ -494,6 +494,12 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (info.Equals("folderpath")) ret = CONTAINER_FOLDERPATH;
     else if (info.Equals("onnext")) ret = CONTAINER_ON_NEXT;
     else if (info.Equals("onprevious")) ret = CONTAINER_ON_PREVIOUS;
+    else if (info.Equals("hasnext"))
+    {
+      return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_HAS_NEXT : CONTAINER_HAS_NEXT, id, 0));
+    }
+    else if (info.Equals("hasprevious"))    
+      return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_HAS_PREVIOUS : CONTAINER_HAS_PREVIOUS, id, 0));
     else if (info.Left(8).Equals("content("))
       return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_CONTENT : CONTAINER_CONTENT, ConditionalStringParameter(info.Mid(8,info.GetLength()-9)), 0));
     else if (info.Left(4).Equals("row("))
@@ -1711,6 +1717,8 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
     case CONTAINER_ROW:
     case CONTAINER_COLUMN:
     case CONTAINER_POSITION:
+    case CONTAINER_HAS_NEXT:
+    case CONTAINER_HAS_PREVIOUS:
       {
         const CGUIControl *control = NULL;
         if (info.m_data1)

@@ -45,6 +45,9 @@ public:
   virtual void UpdateVisibility();
 
   virtual unsigned int GetRows() const;
+  
+  virtual bool HasNextPage() const;
+  virtual bool HasPreviousPage() const;
 
   void SetPageControl(DWORD id);
 
