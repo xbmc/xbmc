@@ -27,7 +27,10 @@ public:
   virtual void Render();
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
-
+  
+  virtual bool HasNextPage() const;
+  virtual bool HasPreviousPage() const;
+  
 protected:
   virtual void Scroll(int amount);
   void SetCursor(int cursor);
