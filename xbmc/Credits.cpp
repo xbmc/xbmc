@@ -1356,7 +1356,7 @@ void RunCredits()
       }
 
 #ifdef _DEBUG
-      static wchar_t FPS[80];
+      static char FPS[80];
       QueryPerformanceCounter(&end);
       rendertime += end.QuadPart - start.QuadPart;
       if (++n == 50)
@@ -1366,17 +1366,14 @@ void RunCredits()
         MEMORYSTATUS stat;
         GlobalMemoryStatus(&stat);
         float f = float(end2.QuadPart - start2.QuadPart);
-        swprintf(FPS, L"Render: %.2f fps (%.2f%%)\nFreeMem: %.1f/%uMB", 50.0f * freq.QuadPart / f, 100.f * rendertime / f,
+        sprintf(FPS, "Render: %.2f fps (%.2f%%)\nFreeMem: %.1f/%uMB", 50.0f * freq.QuadPart / f, 100.f * rendertime / f,
                  float(stat.dwAvailPhys) / (1024.0f*1024.0f), stat.dwTotalPhys / (1024*1024));
 
         rendertime = 0;
         n = 0;
         QueryPerformanceCounter(&start2);
-      }
-
-      CGUIFont* pFont = g_fontManager.GetFont("font13");
-      if (pFont)
-        pFont->DrawText(50, 30, 0xffffffff, 0, FPS);
+      }      
+      CGUITextLayout::DrawText(g_fontManager.GetFont("font13"), 50, 30, 0xffffffff, 0, FPS, 0);
 #endif
 
       // present scene
