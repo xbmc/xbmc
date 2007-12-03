@@ -160,6 +160,9 @@ void CGUITextLayout::ParseText(const CStdString &text, vector<DWORD> &parsedText
   DWORD currentStyle = m_font->GetStyle(); // start with the default font's style
   DWORD currentColor = 0;
 
+  stack<DWORD> colorStack;
+  colorStack.push(0);
+
   // these aren't independent, but that's probably not too much of an issue
   // eg [UPPERCASE]Glah[LOWERCASE]FReD[/LOWERCASE]Georeg[/UPPERCASE] will work (lower case >> upper case)
   // but [LOWERCASE]Glah[UPPERCASE]FReD[/UPPERCASE]Georeg[/LOWERCASE] won't
@@ -214,10 +217,13 @@ void CGUITextLayout::ParseText(const CStdString &text, vector<DWORD> &parsedText
       { // create new color
         newColor = m_colors.size();
         m_colors.push_back(g_colorManager.GetColor(text.Mid(pos + 5, finish - pos - 5)));
+        colorStack.push(newColor);
       }
       else if (!on && finish == pos + 5)
       { // revert to previous color
-        newColor = (m_colors.size() > 1) ? m_colors.size() - 2 : 0;
+        if (colorStack.size() > 1)
+          colorStack.pop();
+        newColor = colorStack.top();
       }
       pos = finish + 1;
     }
