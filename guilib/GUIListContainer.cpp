@@ -14,7 +14,6 @@ CGUIListContainer::CGUIListContainer(DWORD dwParentID, DWORD dwControlId, float 
 //#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   m_spinControl = NULL;
 //#endif
-  m_wasReset = false;
 }
 
 CGUIListContainer::~CGUIListContainer(void)
@@ -95,7 +94,6 @@ void CGUIListContainer::Render()
     SendWindowMessage(msg);
   }
 
-  m_wasReset = false;
   CGUIBaseContainer::Render();
 }
 
@@ -180,7 +178,6 @@ bool CGUIListContainer::OnMessage(CGUIMessage& message)
   {
     if (message.GetMessage() == GUI_MSG_LABEL_RESET)
     {
-      m_wasReset = true;
       SetCursor(0);
     }
     else if (message.GetMessage() == GUI_MSG_ITEM_SELECT)
