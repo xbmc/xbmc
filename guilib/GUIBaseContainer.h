@@ -115,5 +115,9 @@ protected:
 
   bool m_staticContent;
   vector<CGUIListItem*> m_staticItems;
+  bool m_wasReset;  // true if we've received a Reset message until we've rendered once.  Allows
+                    // us to make sure we don't tell the infomanager that we've been moving when
+                    // the "movement" was simply due to the list being repopulated (thus cursor position
+                    // changing around)
 };
 
