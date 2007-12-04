@@ -41,6 +41,7 @@ public:
 
   unsigned int GetTextLength() const;
   void GetFirstText(vector<DWORD> &text) const;
+  void Reset();
 
   static void DrawText(CGUIFont *font, float x, float y, DWORD color, DWORD shadowColor, const CStdString &text, DWORD align);
   static void DrawOutlineText(CGUIFont *font, float x, float y, DWORD color, DWORD outlineColor, DWORD outlineWidth, const CStdString &text);
