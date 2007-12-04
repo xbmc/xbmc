@@ -473,13 +473,15 @@ CGUISettings::CGUISettings(void)
   AddString(5, "network.gateway", 721, "0.0.0.0", BUTTON_CONTROL_IP_INPUT);
   AddString(6, "network.dns", 722, "0.0.0.0", BUTTON_CONTROL_IP_INPUT);
   AddString(7, "network.essid", 776, "0.0.0.0", BUTTON_CONTROL_INPUT);
-  AddString(8, "network.key", 777, "0.0.0.0", BUTTON_CONTROL_INPUT);
-  AddSeparator(9, "network.sep1");
-  AddBool(10, "network.usehttpproxy", 708, false);
-  AddString(11, "network.httpproxyserver", 706, "", BUTTON_CONTROL_IP_INPUT);
-  AddString(12, "network.httpproxyport", 707, "8080", BUTTON_CONTROL_INPUT, false, 707);
-  AddSeparator(13, "network.sep2");
-  AddBool(14, "network.enableinternet", 14054, true);
+  AddInt(8, "network.enc", 778, ENC_NONE, ENC_NONE, 1, ENC_WPA2, SPIN_CONTROL_TEXT);
+  AddString(9, "network.key", 777, "0.0.0.0", BUTTON_CONTROL_INPUT);
+  AddString(10, "network.save", 779, "", BUTTON_CONTROL_STANDARD);
+  AddSeparator(11, "network.sep1");
+  AddBool(12, "network.usehttpproxy", 708, false);
+  AddString(13, "network.httpproxyserver", 706, "", BUTTON_CONTROL_IP_INPUT);
+  AddString(14, "network.httpproxyport", 707, "8080", BUTTON_CONTROL_INPUT, false, 707);
+  AddSeparator(15, "network.sep2");
+  AddBool(16, "network.enableinternet", 14054, true);
   // hidden proxy authentication details
   AddString(0, "network.httpproxyusername", 706, "", BUTTON_CONTROL_INPUT);
   AddString(0, "network.httpproxypassword", 706, "", BUTTON_CONTROL_INPUT);
