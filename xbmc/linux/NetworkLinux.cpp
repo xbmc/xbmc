@@ -7,6 +7,7 @@
 #include <linux/sockios.h>
 #include <errno.h>
 #include <resolv.h>
+#include <net/if_arp.h>
 #include "PlatformDefs.h"
 #include "NetworkLinux.h"
 #include "Util.h"
@@ -233,16 +234,18 @@ void CNetworkLinux::queryInterfaceList()
    		++p;
       
       // read word until :
-   	n = strcspn(p, ": \t");
-   	p[n] = 0;
-   	
-   	// ignore localhost device
-   	if (strcmp(p, "lo") == 0)
-   	   continue;
-
-      // save the result   	   
-      CStdString interfaceName = p;
-   	m_interfaces.push_back(new CNetworkInterfaceLinux(this, interfaceName));
+      n = strcspn(p, ": \t");
+      p[n] = 0;
+   
+      // make sure the device has ethernet encapsulation	
+      struct ifreq ifr;
+      strcpy(ifr.ifr_name, p);
+      if (ioctl(GetSocket(), SIOCGIFHWADDR, &ifr) >= 0 && ifr.ifr_hwaddr.sa_family == ARPHRD_ETHER)
+      {
+         // save the result   	   
+         CStdString interfaceName = p;
+   	 m_interfaces.push_back(new CNetworkInterfaceLinux(this, interfaceName));
+      }
    }
    
    fclose(fp);
@@ -313,7 +316,7 @@ void CNetworkInterfaceLinux::GetSettings(bool& isDHCP, CStdString& ipAddress, CS
       vector<CStdString> tokens;
 
       s = line;
-      s.TrimLeft(" ").TrimRight(" \n");
+      s.TrimLeft(" \t").TrimRight(" \n");
    
       // skip comments
       if (s.length() == 0 || s.GetAt(0) == '#')
@@ -328,7 +331,6 @@ void CNetworkInterfaceLinux::GetSettings(bool& isDHCP, CStdString& ipAddress, CS
           tokens[2].Equals("inet"))
       {
          isDHCP = tokens[3].Equals("dhcp");
-	 printf("****************************** found %s is dhcp = |%s|\n", GetName().c_str(), tokens[3].c_str());
          foundInterface = true;
       }
 
@@ -338,15 +340,23 @@ void CNetworkInterfaceLinux::GetSettings(bool& isDHCP, CStdString& ipAddress, CS
          else if (tokens[0].Equals("netmask")) networkMask = tokens[1];
          else if (tokens[0].Equals("gateway")) defaultGateway = tokens[1];
          else if (tokens[0].Equals("wireless-essid")) essId = tokens[1];
-         else if (tokens[0].Equals("wireless-key")) key = tokens[1];
+         else if (tokens[0].Equals("wireless-key")) 
+         {
+            key = tokens[1];
+            if (key.length() > 2 && key[0] == 's' && key[1] == ':')
+            {
+               keyIsString = true;
+               key.erase(0, 2);
+            }
+         }
+         else if (tokens[0].Equals("wpa-ssid")) essId = tokens[1];
+         else if (tokens[0].Equals("wpa-psk")) 
+         {
+            key = tokens[1];
+            keyIsString = true;
+         }
          else if (tokens[0].Equals("auto") || tokens[0].Equals("iface") || tokens[0].Equals("mapping")) break;
       }
-   }
-
-   if (key.length() > 2 && key[0] == 's' && key[1] == ':')
-   {
-      keyIsString = true;
-      key.erase(0, 2);
    }
 
    fclose(fp);
