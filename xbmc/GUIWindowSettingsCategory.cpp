@@ -703,6 +703,16 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(640), REPLAY_GAIN_ALBUM);
       pControl->SetValue(pSettingInt->GetData());
     }
+    else if (strSetting.Equals("network.enc"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(780), ENC_NONE);
+      pControl->AddLabel(g_localizeStrings.Get(781), ENC_WEP);
+      pControl->AddLabel(g_localizeStrings.Get(782), ENC_WPA);
+      pControl->AddLabel(g_localizeStrings.Get(783), ENC_WPA2);
+      pControl->SetValue(pSettingInt->GetData());
+    }
     else if (strSetting.Equals("lookandfeel.startupwindow"))
     {
       FillInStartupWindow(pSetting);
@@ -951,6 +961,18 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("network.usehttpproxy"));
+    }
+    else if (strSetting.Equals("network.key"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      CGUISpinControlEx* pControl1 = (CGUISpinControlEx *)GetControl(GetSetting("network.enc")->GetID());
+      if (pControl && pControl1) 
+         pControl->SetEnabled(!pControl1->IsDisabled() && pControl1->GetValue() > 0);
+    }
+    else if (strSetting.Equals("network.save"))
+    {
+      CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
+      pControl->SetEnabled(getuid() == 0);
     }
     else if (strSetting.Equals("postprocessing.verticaldeblocklevel"))
     {
@@ -1920,6 +1942,52 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
      NetworkInterfaceChanged();
   }
+  else if (strSetting.Equals("network.save"))
+  { 
+     bool bIsDHCP;
+     CStdString sIPAddress;
+     CStdString sNetworkMask;
+     CStdString sDefaultGateway;
+     CStdString sWirelessNetwork;
+     CStdString sWirelessKey;
+     CStdString sDns;
+     EncMode iWirelessEnc;
+     CStdString ifaceName;
+
+     CGUISpinControlEx *ifaceControl = (CGUISpinControlEx *)GetControl(GetSetting("network.interface")->GetID());
+     ifaceName = ifaceControl->GetLabel();
+     CNetworkInterface* iface = g_application.getNetwork().GetInterfaceByName(ifaceName);
+   
+     // Update controls with information
+     CGUISpinControlEx* pControl1 = (CGUISpinControlEx *)GetControl(GetSetting("network.assignment")->GetID());
+     if (pControl1) bIsDHCP = (pControl1->GetValue() == NETWORK_DHCP);         
+     CGUIButtonControl* pControl2 = (CGUIButtonControl *)GetControl(GetSetting("network.ipaddress")->GetID());
+     if (pControl2) sIPAddress = pControl2->GetLabel2();         
+     pControl2 = (CGUIButtonControl *)GetControl(GetSetting("network.subnet")->GetID());
+     if (pControl2) sNetworkMask = pControl2->GetLabel2();         
+     pControl2 = (CGUIButtonControl *)GetControl(GetSetting("network.gateway")->GetID());
+     if (pControl2) sDefaultGateway = pControl2->GetLabel2();         
+     pControl2 = (CGUIButtonControl *)GetControl(GetSetting("network.dns")->GetID());
+     if (pControl2) sDns = pControl2->GetLabel2();         
+     pControl1 = (CGUISpinControlEx *)GetControl(GetSetting("network.enc")->GetID());
+     if (pControl1) iWirelessEnc = (EncMode) pControl1->GetValue();         
+     pControl2 = (CGUIButtonControl *)GetControl(GetSetting("network.essid")->GetID());
+     if (pControl2) sWirelessNetwork = pControl2->GetLabel2();         
+     pControl2 = (CGUIButtonControl *)GetControl(GetSetting("network.key")->GetID());
+     if (pControl2) sWirelessKey = pControl2->GetLabel2();         
+            
+     CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+     pDlgProgress->SetLine(0, "");
+     pDlgProgress->SetLine(1, g_localizeStrings.Get(784));
+     pDlgProgress->SetLine(2, "");
+     pDlgProgress->StartModal();
+     pDlgProgress->Progress();
+      
+     iface->SetSettings(bIsDHCP, sIPAddress, sNetworkMask, sDefaultGateway, sWirelessNetwork, sWirelessKey, iWirelessEnc);
+
+     pDlgProgress->Close();
+  }
+
   UpdateSettings();
 }
 
@@ -3167,51 +3235,55 @@ void CGUIWindowSettingsCategory::FillInNetworkInterfaces(CSetting *pSetting)
 
 void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
 {
-      bool bIsDHCP;
-      CStdString sIPAddress;
-      CStdString sNetworkMask;
-      CStdString sDefaultGateway;
-      CStdString sWirelessNetwork;
-      CStdString sWirelessKey;
-      bool       bWirelessKeyIsString;
+   bool bIsDHCP;
+   CStdString sIPAddress;
+   CStdString sNetworkMask;
+   CStdString sDefaultGateway;
+   CStdString sWirelessNetwork;
+   CStdString sWirelessKey;
+   EncMode iWirelessEnc;
+   bool bIsWireless;
+   CStdString ifaceName;
 
-      bool bIsWireless;
-      CStdString ifaceName;
+   // Get network information      
+   CGUISpinControlEx *ifaceControl = (CGUISpinControlEx *)GetControl(GetSetting("network.interface")->GetID());
+   ifaceName = ifaceControl->GetLabel();
+   CNetworkInterface* iface = g_application.getNetwork().GetInterfaceByName(ifaceName);
+   iface->GetSettings(bIsDHCP, sIPAddress, sNetworkMask, sDefaultGateway, sWirelessNetwork, sWirelessKey, iWirelessEnc);
+   bIsWireless = iface->IsWireless();
 
-      // Get network information      
-      CGUISpinControlEx *ifaceControl = (CGUISpinControlEx *)GetControl(GetSetting("network.interface")->GetID());
-      ifaceName = ifaceControl->GetLabel();
-      CNetworkInterface* iface = g_application.getNetwork().GetInterfaceByName(ifaceName);
-      iface->GetSettings(bIsDHCP, sIPAddress, sNetworkMask, sDefaultGateway, sWirelessNetwork, sWirelessKey, bWirelessKeyIsString);
-      bIsWireless = iface->IsWireless();
+   CStdString dns;
+   std::vector<CStdString> dnss = g_application.getNetwork().GetNameServers();
+   if (dnss.size() >= 1)
+      dns = dnss[0];
 
-      CStdString dns;
-      std::vector<CStdString> dnss = g_application.getNetwork().GetNameServers();
-      if (dnss.size() >= 1)
-         dns = dnss[0];
-
-      // Update controls with information
-      CGUISpinControlEx* pControl1 = (CGUISpinControlEx *)GetControl(GetSetting("network.assignment")->GetID());
-      if (pControl1) pControl1->SetValue(bIsDHCP ? NETWORK_DHCP : NETWORK_STATIC);         
-      GetSetting("network.ipaddress")->GetSetting()->FromString(sIPAddress);
-      GetSetting("network.subnet")->GetSetting()->FromString(sNetworkMask);
-      GetSetting("network.gateway")->GetSetting()->FromString(sDefaultGateway);
-      GetSetting("network.dns")->GetSetting()->FromString(dns);
-      
-      // Wireless stuff
-      CGUIControl* pControl = (CGUIControl *)GetControl(GetSetting("network.essid")->GetID());
-      if (pControl) pControl->SetEnabled(bIsWireless);         
-      pControl = (CGUIControl *)GetControl(GetSetting("network.key")->GetID());
-      if (pControl) pControl->SetEnabled(bIsWireless);         
-      
-      if (bIsWireless)
-      {
-         GetSetting("network.essid")->GetSetting()->FromString(sWirelessNetwork);
-         GetSetting("network.key")->GetSetting()->FromString(sWirelessKey);
-      }
-      else
-      {
-         GetSetting("network.essid")->GetSetting()->FromString("");
-         GetSetting("network.key")->GetSetting()->FromString("");
-      }
+   // Update controls with information
+   CGUISpinControlEx* pControl1 = (CGUISpinControlEx *)GetControl(GetSetting("network.assignment")->GetID());
+   if (pControl1) pControl1->SetValue(bIsDHCP ? NETWORK_DHCP : NETWORK_STATIC);         
+   GetSetting("network.ipaddress")->GetSetting()->FromString(sIPAddress);
+   GetSetting("network.subnet")->GetSetting()->FromString(sNetworkMask);
+   GetSetting("network.gateway")->GetSetting()->FromString(sDefaultGateway);
+   GetSetting("network.dns")->GetSetting()->FromString(dns);
+   GetSetting("network.dns")->GetSetting()->FromString(dns);
+   pControl1 = (CGUISpinControlEx *)GetControl(GetSetting("network.enc")->GetID());
+   if (pControl1) pControl1->SetValue(iWirelessEnc);         
+   
+   // Wireless stuff
+   CGUIControl* pControl = (CGUIControl *)GetControl(GetSetting("network.essid")->GetID());
+   if (pControl) pControl->SetEnabled(bIsWireless);         
+   pControl = (CGUIControl *)GetControl(GetSetting("network.key")->GetID());
+   if (pControl) pControl->SetEnabled(bIsWireless && iWirelessEnc > 0);         
+   pControl = (CGUIControl *)GetControl(GetSetting("network.enc")->GetID());
+   if (pControl) pControl->SetEnabled(bIsWireless);         
+   
+   if (bIsWireless)
+   {
+      GetSetting("network.essid")->GetSetting()->FromString(sWirelessNetwork);
+      GetSetting("network.key")->GetSetting()->FromString(sWirelessKey);
+   }
+   else
+   {
+      GetSetting("network.essid")->GetSetting()->FromString("");
+      GetSetting("network.key")->GetSetting()->FromString("");
+   }
 }

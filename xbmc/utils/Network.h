@@ -4,24 +4,26 @@
 #include <vector>
 #include "StdString.h"
 
+enum EncMode { ENC_NONE = 0, ENC_WEP = 1, ENC_WPA = 2, ENC_WPA2 = 3 };
+
 class NetworkAccessPoint
 {
 public:
-   NetworkAccessPoint(CStdString& essId, int quality, bool encrypted)
+   NetworkAccessPoint(CStdString& essId, int quality, EncMode encryption)
    {
       m_essId = essId;
       m_quality = quality;
-      m_isEncrypted = encrypted;
+      m_encryptionMode = encryption;
    }
 
    CStdString getEssId() { return m_essId; }
    int getQuality() { return m_quality; } 
-   bool isEncrypted() { return m_isEncrypted; } 
+   EncMode getEncryptionMode() { return m_encryptionMode; } 
    
 private:
    CStdString   m_essId;
    int          m_quality;
-   bool         m_isEncrypted;
+   EncMode      m_encryptionMode;
 };
 
 class CNetworkInterface
@@ -42,8 +44,8 @@ public:
    virtual CStdString GetCurrentDefaultGateway(void) = 0;
    virtual CStdString GetCurrentWirelessEssId(void) = 0;
 
-   virtual void GetSettings(bool& isDHCP, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, bool& keyIsString) = 0;
-   virtual void SetSettings(bool isDHCP, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, bool keyIsString) = 0;
+   virtual void GetSettings(bool& isDHCP, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode) = 0;
+   virtual void SetSettings(bool isDHCP, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode) = 0;
 };
 
 class CNetwork

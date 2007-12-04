@@ -1661,8 +1661,12 @@ void CApplication::StartWebServer()
     }
 
     CSectionLoader::Load("LIBHTTP");
-    m_pWebServer = new CWebServer();
-    m_pWebServer->Start(m_network.GetFirstConnectedInterface()->GetCurrentIPAddress().c_str(), atoi(g_guiSettings.GetString("servers.webserverport")), _P("Q:\\web"), false);
+    if (m_network.GetFirstConnectedInterface())
+    {
+       m_pWebServer = new CWebServer();
+       m_pWebServer->Start(m_network.GetFirstConnectedInterface()->GetCurrentIPAddress().c_str(), atoi(g_guiSettings.GetString("servers.webserverport")), _P("Q:\\web"), false);
+    }
+
     if (m_pXbmcHttp)
       m_pXbmcHttp->xbmcBroadcast("StartUp", 1);
   }
