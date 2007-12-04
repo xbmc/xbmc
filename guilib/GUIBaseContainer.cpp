@@ -22,6 +22,7 @@ CGUIBaseContainer::CGUIBaseContainer(DWORD dwParentID, DWORD dwControlId, float 
   m_analogScrollCount = 0;
   m_lastItem = NULL;
   m_staticContent = false;
+  m_wasReset = false;
 }
 
 CGUIBaseContainer::~CGUIBaseContainer(void)
@@ -109,6 +110,7 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
       }
       else if (message.GetMessage() == GUI_MSG_LABEL_RESET)
       {
+        m_wasReset = true;
         m_items.clear();
         if (m_pageControl)
         {
@@ -322,6 +324,7 @@ void CGUIBaseContainer::DoRender(DWORD currentTime)
 {
   m_renderTime = currentTime;
   CGUIControl::DoRender(currentTime);
+  m_wasReset = false;
 }
 
 void CGUIBaseContainer::AllocResources()
@@ -401,7 +404,8 @@ void CGUIBaseContainer::ScrollToOffset(int offset)
     m_scrollOffset = (offset - range) * size;
   }
   m_scrollSpeed = (offset * size - m_scrollOffset) / m_scrollTime;
-  g_infoManager.SetContainerMoving(GetID(), offset - m_offset);
+  if (!m_wasReset)
+    g_infoManager.SetContainerMoving(GetID(), offset - m_offset);
   m_offset = offset;
 }
 
