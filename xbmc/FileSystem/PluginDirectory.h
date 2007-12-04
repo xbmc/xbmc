@@ -21,6 +21,7 @@ public:
   static bool HasPlugins(const CStdString &type);
   bool GetPluginsDirectory(const CStdString &type, CFileItemList &items);
   static void LoadPluginStrings(const CURL &url);
+  static void ClearPluginStrings();
 
   // callbacks from python
   static bool AddItem(int handle, const CFileItem *item, int totalItems);
