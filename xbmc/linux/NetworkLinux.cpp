@@ -11,6 +11,7 @@
 #include "PlatformDefs.h"
 #include "NetworkLinux.h"
 #include "Util.h"
+#include "log.h"
 
 CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkLinux* network, CStdString interfaceName) 
       
@@ -289,13 +290,14 @@ std::vector<NetworkAccessPoint>  CNetworkLinux::GetAccessPoints(void)
    return result;  
 }
   
-void CNetworkInterfaceLinux::GetSettings(bool& isDHCP, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, bool& keyIsString)
+void CNetworkInterfaceLinux::GetSettings(bool& isDHCP, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode)
 {
-   ipAddress = "";
-   networkMask = "";
-   defaultGateway = "";
+   ipAddress = "0.0.0.0";
+   networkMask = "0.0.0.0";
+   defaultGateway = "0.0.0.0";
    essId = "";
    key = "";
+   encryptionMode = ENC_NONE;
 
    FILE* fp = fopen("/etc/network/interfaces", "r");
    if (!fp)
@@ -303,8 +305,6 @@ void CNetworkInterfaceLinux::GetSettings(bool& isDHCP, CStdString& ipAddress, CS
       // TODO
       return;
    }
-
-   keyIsString = false;
 
    char* line = NULL;
    size_t linel = 0;
@@ -325,7 +325,7 @@ void CNetworkInterfaceLinux::GetSettings(bool& isDHCP, CStdString& ipAddress, CS
       // look for "iface <interface name> inet"
       CUtil::Tokenize(s, tokens, " ");
       if (!foundInterface &&
-          tokens.size() == 4 &&
+          tokens.size() >=3 &&
           tokens[0].Equals("iface") &&
           tokens[1].Equals(GetName()) &&
           tokens[2].Equals("inet"))
@@ -344,29 +344,153 @@ void CNetworkInterfaceLinux::GetSettings(bool& isDHCP, CStdString& ipAddress, CS
          {
             key = tokens[1];
             if (key.length() > 2 && key[0] == 's' && key[1] == ':')
-            {
-               keyIsString = true;
                key.erase(0, 2);
-            }
+            encryptionMode = ENC_WEP;
          }
          else if (tokens[0].Equals("wpa-ssid")) essId = tokens[1];
-         else if (tokens[0].Equals("wpa-psk")) 
-         {
-            key = tokens[1];
-            keyIsString = true;
-         }
+         else if (tokens[0].Equals("wpa-proto") && tokens[1].Equals("WPA")) encryptionMode = ENC_WPA;
+         else if (tokens[0].Equals("wpa-proto") && tokens[1].Equals("WPA2")) encryptionMode = ENC_WPA2;
+         else if (tokens[0].Equals("wpa-psk")) key = tokens[1];
          else if (tokens[0].Equals("auto") || tokens[0].Equals("iface") || tokens[0].Equals("mapping")) break;
       }
    }
 
+   // Fallback in case wpa-proto is not set
+   if (key != "" && encryptionMode == ENC_NONE)
+      encryptionMode = ENC_WPA;
+      
    fclose(fp);
 }
 
-void CNetworkInterfaceLinux::SetSettings(bool isDHCP, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, bool keyIsString)
+void CNetworkInterfaceLinux::SetSettings(bool isDHCP, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode)
 {
+   FILE* fr = fopen("/etc/network/interfaces", "r");
+   if (!fr)
+   {
+      // TODO
+      return;
+   }
+
+   FILE* fw = fopen("/tmp/interfaces.temp", "w");
+   if (!fw)
+   {
+      // TODO
+      return;
+   }
+   
+   char* line = NULL;
+   size_t linel = 0;
+   CStdString s;
+   bool foundInterface = false;
+   bool dataWritten = false;
+
+   while (getdelim(&line, &linel, '\n', fr) > 0)
+   {
+      vector<CStdString> tokens;
+
+      s = line;
+      s.TrimLeft(" \t").TrimRight(" \n");
+   
+      // skip comments
+      if (!foundInterface && (s.length() == 0 || s.GetAt(0) == '#'))
+      {       
+        fprintf(fw, "%s", line);
+        continue;
+      }
+
+      // look for "iface <interface name> inet"
+      CUtil::Tokenize(s, tokens, " ");
+      if (tokens.size() == 2 &&
+          tokens[0].Equals("auto") &&
+          tokens[1].Equals(GetName()))
+      {
+         continue;
+      }
+      else if (!foundInterface &&
+          tokens.size() == 4 &&
+          tokens[0].Equals("iface") &&
+          tokens[1].Equals(GetName()) &&
+          tokens[2].Equals("inet"))
+      {
+         foundInterface = true;         
+         WriteSettings(fw, isDHCP, ipAddress, networkMask, defaultGateway, essId, key, encryptionMode);
+         dataWritten = true;
+      }
+      else if (foundInterface && 
+               tokens.size() == 4 &&
+               tokens[0].Equals("iface"))
+      {
+        foundInterface = false;
+        fprintf(fw, "%s", line);
+      }
+      else if (!foundInterface)
+      {
+        fprintf(fw, "%s", line);
+      }
+   }
+   
+   if (!dataWritten)
+   {
+      fprintf(fw, "\n");
+      WriteSettings(fw, isDHCP, ipAddress, networkMask, defaultGateway, essId, key, encryptionMode);      
+   }
+   
+   fclose(fr);
+   fclose(fw);
+   
+   // Rename the file
+   if (rename("/tmp/interfaces.temp", "/etc/network/interfaces") < 0)
+   {
+      // TODO
+      return;
+   }
+   
+   CLog::Log(LOGINFO, "Stopping interface %s", GetName().c_str());
+   std::string cmd = "/sbin/ifdown " + GetName();
+   system(cmd.c_str());
+
+   CLog::Log(LOGINFO, "Starting interface %s", GetName().c_str());
+   cmd = "/sbin/ifup " + GetName();
+   system(cmd.c_str());
 }
      
-   /*
+void CNetworkInterfaceLinux::WriteSettings(FILE* fw, bool isDHCP, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode)
+{
+   if (isDHCP)
+   {
+      fprintf(fw, "iface %s inet dhcp\n", GetName().c_str());
+   }
+   else
+   {
+      fprintf(fw, "iface %s inet static\n", GetName().c_str());
+      fprintf(fw, "  address %s\n", ipAddress.c_str());
+      fprintf(fw, "  netmask %s\n", networkMask.c_str());
+      fprintf(fw, "  gateway %s\n", defaultGateway.c_str());
+   }
+   
+   if (IsWireless())
+   {
+      if (encryptionMode == ENC_NONE)
+      {
+         fprintf(fw, "  wireless-essid %s\n", essId.c_str());
+      }
+      else if (encryptionMode == ENC_WEP)
+      {
+         fprintf(fw, "  wireless-essid %s\n", essId.c_str());
+         fprintf(fw, "  wireless-key s:%s\n", key.c_str());
+      }
+      else if (encryptionMode == ENC_WPA || encryptionMode == ENC_WPA2)
+      {
+         fprintf(fw, "  wpa-ssid %s\n", essId.c_str());
+         fprintf(fw, "  wpa-psk %s\n", key.c_str());
+         fprintf(fw, "  wpa-proto %s\n", encryptionMode == ENC_WPA ? "WPA" : "WPA2");               
+      }
+   }
+            
+   fprintf(fw, "auto %s\n\n", GetName().c_str());
+}     
+
+/*
 int main(void)
 {
   CStdString mac;

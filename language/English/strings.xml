@@ -630,8 +630,15 @@
   <string id="773">Seeking</string>
   <string id="774">Slideshow Folder</string>
   <string id="775">Network Interface</string>
-  <string id="776">- Wireless Network</string>
-  <string id="777">- Wireless Key</string>
+  <string id="776">- Wireless Network Name (ESSID)</string>
+  <string id="777">- Wireless Password</string>
+  <string id="778">- Wireless Security</string>
+  <string id="779">Save and Apply Network Interface Settings</string>
+  <string id="780">No Encryption</string>
+  <string id="781">WEP</string>
+  <string id="782">WPA</string>
+  <string id="783">WPA2</string>
+  <string id="784">Attempting to restart network interface. Please wait.</string>
 
   <string id="998">XLink Kai</string>
   <string id="999">Online Gaming</string>
