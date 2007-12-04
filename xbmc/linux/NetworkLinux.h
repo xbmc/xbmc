@@ -26,10 +26,11 @@ public:
    virtual CStdString GetCurrentDefaultGateway(void);
    virtual CStdString GetCurrentWirelessEssId(void);
 
-   virtual void GetSettings(bool& isDHCP, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, bool& keyIsString);
-   virtual void SetSettings(bool isDHCP, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, bool keyIsString);
+   virtual void GetSettings(bool& isDHCP, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode);
+   virtual void SetSettings(bool isDHCP, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode);
 
 private:   
+   void WriteSettings(FILE* fw, bool isDHCP, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode);
    CStdString     m_interfaceName;
    CNetworkLinux* m_network;
 };
