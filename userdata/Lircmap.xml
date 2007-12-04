@@ -2,7 +2,6 @@
 
 <lircmap>
 	<remote device="mceusb">
-		<play>Play</play>
 		<pause>Pause</pause>
 		<stop>Stop</stop>
 		<forward>Forward</forward>
@@ -16,11 +15,11 @@
 		<pageminus>ChanDown</pageminus>
 		<back>Back</back>
 		<menu>PreviousMenu</menu>
-		<title>ContextMenu</title>
+		<title>Play</title>
 		<info>More</info>
 		<skipplus>Skip</skipplus>
 		<skipminus>Replay</skipminus>
-		<display>FullScreen</display>
+		<display>Teletext</display>
 		<start>Home</start>
 		<record>Record</record>
 		<volumeplus>VolUp</volumeplus>
@@ -30,7 +29,7 @@
 		<myvideo>Videos</myvideo>
 		<mymusic>Music</mymusic>
 		<mypictures>Pictures</mypictures>
-		<mytv>TV</mytv>      
+		<mytv>TV</mytv>
 		<one>One</one>
 		<two>Two</two>
 		<three>Three</three>
@@ -41,11 +40,10 @@
 		<eight>Eight</eight>
 		<nine>Nine</nine>
 		<zero>Zero</zero>
-		<mytv>Red</mytv> 
+		<mytv>Red</mytv>
 		<mymusic>Green</mymusic>
-		<mypictures>Yellow</mypictures>      
+		<mypictures>Yellow</mypictures>
 		<myvideo>Blue</myvideo>
-		<display>Teletext</display>
 	</remote>
 	
 	<remote device="XboxDVDDongle">
@@ -75,9 +73,9 @@
 		<seven>7</seven>
 		<eight>8</eight>
 		<nine>9</nine>
-		<zero>0</zero>    
-	</remote>    
-    
+		<zero>0</zero>
+	</remote>
+
 	<remote device="Microsoft_Xbox">
 		<play>PLAY</play>
 		<pause>PAUSE</pause>
@@ -105,9 +103,9 @@
 		<seven>7</seven>
 		<eight>8</eight>
 		<nine>9</nine>
-		<zero>0</zero>    
-	</remote>    
-	
+		<zero>0</zero>
+	</remote>
+
 	<remote device="PinnacleSysPCTVRemote">
 		<play>Play</play>
 		<pause>pause</pause>
