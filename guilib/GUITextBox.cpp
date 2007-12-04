@@ -231,7 +231,7 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
       m_offset = 0;
       m_scrollOffset = 0;
       ResetAutoScrolling();
-      m_lines.clear();
+      CGUITextLayout::Reset();
       m_upDown.SetRange(1, 1);
       m_upDown.SetValue(1);
 
@@ -243,7 +243,7 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
       m_offset = 0;
       m_scrollOffset = 0;
       ResetAutoScrolling();
-      m_lines.clear();
+      CGUITextLayout::Reset();
       m_upDown.SetRange(1, 1);
       m_upDown.SetValue(1);
       if (m_pageControl)
