@@ -163,32 +163,11 @@ void CGUIWindowMusicInfo::Update()
     if (GetControl(CONTROL_LIST))
     {
       SET_CONTROL_HIDDEN(CONTROL_TEXTAREA);
-      CGUIMessage message(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST);
+      CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, &m_albumSongs);
       OnMessage(message);
-      for (int i = 0; i < m_albumSongs.Size(); i++)
-      {
-        CGUIMessage message(GUI_MSG_LABEL_ADD, GetID(), CONTROL_LIST, 0, 0, m_albumSongs[i]);
-        OnMessage(message);
-      }
     }
     else
-    { // backward compatibility
-      vector<CGUIListItem> items;
-      for (int i = 0; i < m_albumSongs.Size();++i)
-      {
-        const CMusicInfoTag *song = m_albumSongs[i]->GetMusicInfoTag();
-        CGUIListItem item;
-        CStdString label;
-        label.Format("%i. %s", song->GetTrackNumber(), song->GetTitle().c_str());
-        item.SetLabel(label);
-        if (song->GetDuration() > 0)
-          StringUtils::SecondsToTimeString(song->GetDuration(), label);
-        item.SetLabel2(label);
-        items.push_back(item);
-      };
-      CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), CONTROL_TEXTAREA, 0, 0, &items);
-      OnMessage(message);
-    }
+      CLog::Log(LOGERROR, "Out of date skin - needs list with id %i", CONTROL_LIST);
     SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 183);
   }
   // update the thumbnail
