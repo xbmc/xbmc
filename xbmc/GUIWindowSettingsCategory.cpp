@@ -949,11 +949,32 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         pControl->SetEnabled(g_guiSettings.GetInt("network.assignment") == NETWORK_STATIC);
       }
 #endif
-    
       bool enabled = true;
       CGUISpinControlEx* pControl1 = (CGUISpinControlEx *)GetControl(GetSetting("network.assignment")->GetID());
       if (pControl1) 
          enabled = (pControl1->GetValue() == NETWORK_STATIC);         
+
+       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+       if (pControl) pControl->SetEnabled(enabled);
+    }
+    else if (strSetting.Equals("network.essid") || strSetting.Equals("network.enc") || strSetting.Equals("network.key"))
+    {
+      // Get network information      
+      CGUISpinControlEx *ifaceControl = (CGUISpinControlEx *)GetControl(GetSetting("network.interface")->GetID());
+      CStdString ifaceName = ifaceControl->GetLabel();
+      CNetworkInterface* iface = g_application.getNetwork().GetInterfaceByName(ifaceName);
+      bool bIsWireless = iface->IsWireless();
+               
+      bool enabled = bIsWireless;
+      CGUISpinControlEx* pControl1 = (CGUISpinControlEx *)GetControl(GetSetting("network.assignment")->GetID());
+      if (pControl1) 
+         enabled &= (pControl1->GetValue() != NETWORK_DISABLED);         
+
+      if (strSetting.Equals("network.key"))
+      {
+         pControl1 = (CGUISpinControlEx *)GetControl(GetSetting("network.enc")->GetID());
+         if (pControl1) enabled &= (pControl1->GetValue() != ENC_NONE);
+      }         
 
        CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
        if (pControl) pControl->SetEnabled(enabled);
@@ -3275,15 +3296,7 @@ void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
    GetSetting("network.dns")->GetSetting()->FromString(dns);
    pControl1 = (CGUISpinControlEx *)GetControl(GetSetting("network.enc")->GetID());
    if (pControl1) pControl1->SetValue(iWirelessEnc);         
-   
-   // Wireless stuff
-   CGUIControl* pControl = (CGUIControl *)GetControl(GetSetting("network.essid")->GetID());
-   if (pControl) pControl->SetEnabled(bIsWireless);         
-   pControl = (CGUIControl *)GetControl(GetSetting("network.key")->GetID());
-   if (pControl) pControl->SetEnabled(bIsWireless && iWirelessEnc > 0);         
-   pControl = (CGUIControl *)GetControl(GetSetting("network.enc")->GetID());
-   if (pControl) pControl->SetEnabled(bIsWireless);         
-   
+      
    if (bIsWireless)
    {
       GetSetting("network.essid")->GetSetting()->FromString(sWirelessNetwork);
