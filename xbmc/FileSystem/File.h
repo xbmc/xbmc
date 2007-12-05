@@ -11,7 +11,7 @@
 
 #include <iostream>
 #include "IFile.h"
-#include "utils/BitstreamStats.h"
+#include "../utils/BitstreamStats.h"
 
 namespace XFILE
 {

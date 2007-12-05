@@ -333,6 +333,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 
   CStdString strMnt = GetProfileUserDataFolder();
 #ifndef _LINUX  
+  char szDevicePath[1024];
   if (GetProfileUserDataFolder().Left(2).Equals("Q:"))
   {
     CUtil::GetHomePath(strMnt);

@@ -273,7 +273,7 @@ void CNetwork::NetworkDown()
   m_laststate = 0;
   m_networkup = false;
 #ifndef _LINUX
-  g_applicationMessenger.NetworkMessage(SERVICES_DOWN, 0);
+  g_application.getApplicationMessenger().NetworkMessage(SERVICES_DOWN, 0);
 #endif
   m_inited = false;
 }
@@ -365,7 +365,7 @@ void CNetwork::NetworkUp()
   
   m_networkup = true;
   
-  g_applicationMessenger.NetworkMessage(SERVICES_UP, 0);
+  g_application.getApplicationMessenger().NetworkMessage(SERVICES_UP, 0);
 }
 
 /* update network state, call repetedly while return value is XNET_GET_XNADDR_PENDING */
@@ -400,7 +400,7 @@ DWORD CNetwork::UpdateState()
 #endif
 }
 
-bool CNetwork::IsEthernetConnected()
+bool CNetwork::IsConnected()
 {
 #ifdef HAS_XBOX_NETWORK
   if (!(XNetGetEthernetLinkStatus() & XNET_ETHERNET_LINK_ACTIVE))
@@ -414,7 +414,7 @@ bool CNetwork::WaitForSetup(DWORD timeout)
 {
   DWORD timestamp = GetTickCount() + timeout;
 
-  if( !IsEthernetConnected() )
+  if( !IsConnected() )
     return false;
 
 #ifdef HAS_XBOX_NETWORK

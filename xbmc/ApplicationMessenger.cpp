@@ -440,7 +440,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       }
       break;
     case TMSG_GUI_WIN_MANAGER_PROCESS:
-      m_gWindowManager.Process_Internal((bool)pMsg->dwParam1);
+      m_gWindowManager.Process_Internal(0 != pMsg->dwParam1);
       break;
     case TMSG_GUI_WIN_MANAGER_RENDER:
       m_gWindowManager.Render_Internal();

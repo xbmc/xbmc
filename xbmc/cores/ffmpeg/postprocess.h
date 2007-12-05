@@ -37,7 +37,9 @@
 
 #define QP_STORE_T int8_t
 
+#ifdef _LINUX
 #include <inttypes.h>
+#endif
 
 typedef void pp_context_t;
 typedef void pp_mode_t;

@@ -871,12 +871,6 @@
 					RelativePath="..\..\xbmc\cores\paplayer\DTSCodec.h">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\paplayer\FileReader.cpp">
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\paplayer\FileReader.h">
-				</File>
-				<File
 					RelativePath="..\..\xbmc\cores\paplayer\FLACcodec.cpp">
 				</File>
 				<File
@@ -1239,6 +1233,25 @@
 				<File
 					RelativePath="..\..\xbmc\cores\VideoRenderers\XBoxRenderer.h">
 				</File>
+				<Filter
+					Name="Shaders"
+					Filter="">
+					<File
+						RelativePath="..\..\xbmc\cores\VideoRenderers\VideoShaders\BaseYUV2RGBShader.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\VideoRenderers\VideoShaders\VideoFilterShader.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\VideoRenderers\VideoShaders\VideoFilterShader.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\VideoRenderers\VideoShaders\YUV2RGBShader.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\VideoRenderers\VideoShaders\YUV2RGBShader.h">
+					</File>
+				</Filter>
 			</Filter>
 		</Filter>
 		<Filter
@@ -1644,6 +1657,12 @@
 					RelativePath="..\..\xbmc\AutoSwitch.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\BitstreamStats.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\BitstreamStats.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\ButtonTranslator.cpp">
 				</File>
 				<File
@@ -1726,6 +1745,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\KaiVector.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\KeyboardLayoutConfiguration.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\KeyboardLayoutConfiguration.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\LabelFormatter.cpp">

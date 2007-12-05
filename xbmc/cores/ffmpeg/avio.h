@@ -21,7 +21,9 @@
 #ifndef FFMPEG_AVIO_H
 #define FFMPEG_AVIO_H
 
+#ifdef _LINUX
 #include <stdint.h>
+#endif
 
 /* output byte stream handling */
 

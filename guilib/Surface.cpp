@@ -443,17 +443,23 @@ void CSurface::EnableVSync(bool enable)
   {
     CLog::Log(LOGINFO, "GL: Enabling VSYNC");
 
+#ifdef __GNUC__
 #warning using vsync on nvidia always true
+#endif
     // the following setenv will currently have no effect on rendering. it should be set before screen setup.
     // workaround needed.
+#ifdef _LINUX
     if (setenv("__GL_SYNC_TO_VBLANK","1",true) != 0)
       CLog::Log(LOGERROR,"GL: failed to set vsync env variable!");
+#endif
   }
   else
   {
     CLog::Log(LOGINFO, "GL: Disabling VSYNC");
+#ifdef _LINUX
     if (unsetenv("__GL_SYNC_TO_VBLANK") != 0)
       CLog::Log(LOGERROR,"GL: failed to unset vsync env variable!");
+#endif
   }
 
   // Nvidia cards: See Appendix E. of NVidia Linux Driver Set README

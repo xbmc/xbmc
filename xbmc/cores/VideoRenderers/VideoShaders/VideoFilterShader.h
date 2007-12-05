@@ -35,7 +35,7 @@ namespace Shaders {
   class BicubicFilterShader : public BaseVideoFilterShader
   {
   public:
-    BicubicFilterShader(float C=0.0f, float C=0.0f);
+    BicubicFilterShader(float B=0.0f, float C=0.0f);
     void OnCompiledAndLinked();
     bool OnEnabled();
     void Free();
