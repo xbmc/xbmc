@@ -87,6 +87,6 @@ DWORD CGUIColorManager::GetColor(const CStdString &color) const
 
   // try converting hex directly
   DWORD value = 0;
-  sscanf(trimmed.c_str(), "%x", &value);
+  sscanf(trimmed.c_str(), "%lx", &value);
   return value;
 }
