@@ -290,7 +290,7 @@ std::vector<NetworkAccessPoint>  CNetworkLinux::GetAccessPoints(void)
    return result;  
 }
   
-void CNetworkInterfaceLinux::GetSettings(bool& isDHCP, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode)
+void CNetworkInterfaceLinux::GetSettings(NetworkAssignment& assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode)
 {
    ipAddress = "0.0.0.0";
    networkMask = "0.0.0.0";
@@ -298,6 +298,7 @@ void CNetworkInterfaceLinux::GetSettings(bool& isDHCP, CStdString& ipAddress, CS
    essId = "";
    key = "";
    encryptionMode = ENC_NONE;
+   assignment = NETWORK_DISABLED;
 
    FILE* fp = fopen("/etc/network/interfaces", "r");
    if (!fp)
@@ -330,8 +331,16 @@ void CNetworkInterfaceLinux::GetSettings(bool& isDHCP, CStdString& ipAddress, CS
           tokens[1].Equals(GetName()) &&
           tokens[2].Equals("inet"))
       {
-         isDHCP = tokens[3].Equals("dhcp");
-         foundInterface = true;
+         if (tokens[3].Equals("dhcp"))
+         {
+            assignment = NETWORK_DHCP;
+            foundInterface = true;
+         }
+         if (tokens[3].Equals("static"))
+         {
+            assignment = NETWORK_STATIC;
+            foundInterface = true;
+         }
       }
 
       if (foundInterface && tokens.size() == 2)
@@ -362,7 +371,7 @@ void CNetworkInterfaceLinux::GetSettings(bool& isDHCP, CStdString& ipAddress, CS
    fclose(fp);
 }
 
-void CNetworkInterfaceLinux::SetSettings(bool isDHCP, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode)
+void CNetworkInterfaceLinux::SetSettings(NetworkAssignment& assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode)
 {
    FILE* fr = fopen("/etc/network/interfaces", "r");
    if (!fr)
@@ -413,7 +422,7 @@ void CNetworkInterfaceLinux::SetSettings(bool isDHCP, CStdString& ipAddress, CSt
           tokens[2].Equals("inet"))
       {
          foundInterface = true;         
-         WriteSettings(fw, isDHCP, ipAddress, networkMask, defaultGateway, essId, key, encryptionMode);
+         WriteSettings(fw, assignment, ipAddress, networkMask, defaultGateway, essId, key, encryptionMode);
          dataWritten = true;
       }
       else if (foundInterface && 
@@ -429,10 +438,10 @@ void CNetworkInterfaceLinux::SetSettings(bool isDHCP, CStdString& ipAddress, CSt
       }
    }
    
-   if (!dataWritten)
+   if (!dataWritten && assignment != NETWORK_DISABLED)
    {
       fprintf(fw, "\n");
-      WriteSettings(fw, isDHCP, ipAddress, networkMask, defaultGateway, essId, key, encryptionMode);      
+      WriteSettings(fw, assignment, ipAddress, networkMask, defaultGateway, essId, key, encryptionMode);      
    }
    
    fclose(fr);
@@ -449,18 +458,21 @@ void CNetworkInterfaceLinux::SetSettings(bool isDHCP, CStdString& ipAddress, CSt
    std::string cmd = "/sbin/ifdown " + GetName();
    system(cmd.c_str());
 
-   CLog::Log(LOGINFO, "Starting interface %s", GetName().c_str());
-   cmd = "/sbin/ifup " + GetName();
-   system(cmd.c_str());
+   if (assignment != NETWORK_DISABLED)
+   {
+      CLog::Log(LOGINFO, "Starting interface %s", GetName().c_str());
+      cmd = "/sbin/ifup " + GetName();
+      system(cmd.c_str());
+   }
 }
      
-void CNetworkInterfaceLinux::WriteSettings(FILE* fw, bool isDHCP, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode)
+void CNetworkInterfaceLinux::WriteSettings(FILE* fw, NetworkAssignment assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode)
 {
-   if (isDHCP)
+   if (assignment == NETWORK_DHCP)
    {
       fprintf(fw, "iface %s inet dhcp\n", GetName().c_str());
    }
-   else
+   else if (assignment == NETWORK_STATIC)
    {
       fprintf(fw, "iface %s inet static\n", GetName().c_str());
       fprintf(fw, "  address %s\n", ipAddress.c_str());
@@ -468,7 +480,7 @@ void CNetworkInterfaceLinux::WriteSettings(FILE* fw, bool isDHCP, CStdString& ip
       fprintf(fw, "  gateway %s\n", defaultGateway.c_str());
    }
    
-   if (IsWireless())
+   if (assignment != NETWORK_DISABLED && IsWireless())
    {
       if (encryptionMode == ENC_NONE)
       {
@@ -486,8 +498,9 @@ void CNetworkInterfaceLinux::WriteSettings(FILE* fw, bool isDHCP, CStdString& ip
          fprintf(fw, "  wpa-proto %s\n", encryptionMode == ENC_WPA ? "WPA" : "WPA2");               
       }
    }
-            
-   fprintf(fw, "auto %s\n\n", GetName().c_str());
+
+   if (assignment != NETWORK_DISABLED)            
+      fprintf(fw, "auto %s\n\n", GetName().c_str());
 }     
 
 /*
