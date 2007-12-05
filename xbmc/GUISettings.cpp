@@ -467,7 +467,7 @@ CGUISettings::CGUISettings(void)
   AddGroup(6, 705);
   AddCategory(6, "network", 705);
   AddString(1, "network.interface",775,"", SPIN_CONTROL_TEXT);
-  AddInt(2, "network.assignment", 715, NETWORK_DHCP, NETWORK_DHCP, 1, NETWORK_STATIC, SPIN_CONTROL_TEXT);
+  AddInt(2, "network.assignment", 715, NETWORK_DHCP, NETWORK_DHCP, 1, NETWORK_DISABLED, SPIN_CONTROL_TEXT);
   AddString(3, "network.ipaddress", 719, "0.0.0.0", BUTTON_CONTROL_IP_INPUT);
   AddString(4, "network.subnet", 720, "255.255.255.0", BUTTON_CONTROL_IP_INPUT);
   AddString(5, "network.gateway", 721, "0.0.0.0", BUTTON_CONTROL_IP_INPUT);
