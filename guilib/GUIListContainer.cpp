@@ -27,16 +27,18 @@ void CGUIListContainer::Render()
   if (m_bInvalidated)
     UpdateLayout();
 
+  if (!m_layout || !m_focusedLayout) return;
+
   m_scrollOffset += m_scrollSpeed * (m_renderTime - m_scrollLastTime);
-  if ((m_scrollSpeed < 0 && m_scrollOffset < m_offset * m_layout.Size(m_orientation)) ||
-      (m_scrollSpeed > 0 && m_scrollOffset > m_offset * m_layout.Size(m_orientation)))
+  if ((m_scrollSpeed < 0 && m_scrollOffset < m_offset * m_layout->Size(m_orientation)) ||
+      (m_scrollSpeed > 0 && m_scrollOffset > m_offset * m_layout->Size(m_orientation)))
   {
-    m_scrollOffset = m_offset * m_layout.Size(m_orientation);
+    m_scrollOffset = m_offset * m_layout->Size(m_orientation);
     m_scrollSpeed = 0;
   }
   m_scrollLastTime = m_renderTime;
 
-  int offset = (int)(m_scrollOffset / m_layout.Size(m_orientation));
+  int offset = (int)(m_scrollOffset / m_layout->Size(m_orientation));
   // Free memory not used on screen at the moment, do this first so there's more memory for the new items.
   FreeMemory(CorrectOffset(offset, 0), CorrectOffset(offset, m_itemsPerPage + 1));
 
@@ -45,9 +47,9 @@ void CGUIListContainer::Render()
   float posY = m_posY;
   // we offset our draw position to take into account scrolling and whether or not our focused
   // item is offscreen "above" the list.
-  float drawOffset = offset * m_layout.Size(m_orientation) - m_scrollOffset;
+  float drawOffset = offset * m_layout->Size(m_orientation) - m_scrollOffset;
   if (offset > m_offset + m_cursor)
-    drawOffset += m_focusedLayout.Size(m_orientation) - m_layout.Size(m_orientation);
+    drawOffset += m_focusedLayout->Size(m_orientation) - m_layout->Size(m_orientation);
 
   if (m_orientation == VERTICAL)
     posY += drawOffset;
@@ -76,9 +78,9 @@ void CGUIListContainer::Render()
 
     // increment our position
     if (m_orientation == VERTICAL)
-      posY += focused ? m_focusedLayout.Size(m_orientation) : m_layout.Size(m_orientation);
+      posY += focused ? m_focusedLayout->Size(m_orientation) : m_layout->Size(m_orientation);
     else
-      posX += focused ? m_focusedLayout.Size(m_orientation) : m_layout.Size(m_orientation);
+      posX += focused ? m_focusedLayout->Size(m_orientation) : m_layout->Size(m_orientation);
 
     current++;
   }
@@ -182,28 +184,7 @@ bool CGUIListContainer::OnMessage(CGUIMessage& message)
     }
     else if (message.GetMessage() == GUI_MSG_ITEM_SELECT)
     {
-      // Check that m_offset is valid
-      ValidateOffset();
-      // only select an item if it's in a valid range
-      if (message.GetParam1() >= 0 && message.GetParam1() < (int)m_items.size())
-      {
-        // Select the item requested
-        int item = message.GetParam1();
-        if (item >= m_offset && item < m_offset + m_itemsPerPage)
-        { // the item is on the current page, so don't change it.
-          SetCursor(item - m_offset);
-        }
-        else if (item < m_offset)
-        { // item is on a previous page - make it the first item on the page
-          SetCursor(0);
-          ScrollToOffset(item);
-        }
-        else // (item >= m_offset+m_itemsPerPage)
-        { // item is on a later page - make it the last item on the page
-          SetCursor(m_itemsPerPage - 1);
-          ScrollToOffset(item - m_cursor);
-        }
-      }
+      SelectItem(message.GetParam1());
       return true;
     }
   }
@@ -275,10 +256,11 @@ void CGUIListContainer::Scroll(int amount)
 
 void CGUIListContainer::ValidateOffset()
 { // first thing is we check the range of m_offset
+  if (!m_layout) return;
   if (m_offset > (int)m_items.size() - m_itemsPerPage)
   {
     m_offset = m_items.size() - m_itemsPerPage;
-    m_scrollOffset = m_offset * m_layout.Size(m_orientation);
+    m_scrollOffset = m_offset * m_layout->Size(m_orientation);
   }
   if (m_offset < 0)
   {
@@ -296,6 +278,30 @@ void CGUIListContainer::SetCursor(int cursor)
   m_cursor = cursor;
 }
 
+void CGUIListContainer::SelectItem(int item)
+{
+  // Check that m_offset is valid
+  ValidateOffset();
+  // only select an item if it's in a valid range
+  if (item >= 0 && item < (int)m_items.size())
+  {
+    // Select the item requested
+    if (item >= m_offset && item < m_offset + m_itemsPerPage)
+    { // the item is on the current page, so don't change it.
+      SetCursor(item - m_offset);
+    }
+    else if (item < m_offset)
+    { // item is on a previous page - make it the first item on the page
+      SetCursor(0);
+      ScrollToOffset(item);
+    }
+    else // (item >= m_offset+m_itemsPerPage)
+    { // item is on a later page - make it the last item on the page
+      SetCursor(m_itemsPerPage - 1);
+      ScrollToOffset(item - m_cursor);
+    }
+  }
+}
 //#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
 CGUIListContainer::CGUIListContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height,
                                  const CLabelInfo& labelInfo, const CLabelInfo& labelInfo2,
@@ -303,11 +309,15 @@ CGUIListContainer::CGUIListContainer(DWORD dwParentID, DWORD dwControlId, float 
                                  float textureHeight, float itemWidth, float itemHeight, float spaceBetweenItems, CGUIControl *pSpin)
 : CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, VERTICAL, 200) 
 {
-  m_layout.CreateListControlLayouts(width, textureHeight + spaceBetweenItems, false, labelInfo, labelInfo2, textureButton, textureButtonFocus, textureHeight, itemWidth, itemHeight, 0, 0);
+  CGUIListItemLayout layout;
+  layout.CreateListControlLayouts(width, textureHeight + spaceBetweenItems, false, labelInfo, labelInfo2, textureButton, textureButtonFocus, textureHeight, itemWidth, itemHeight, 0, 0);
+  m_layouts.push_back(layout);
   CStdString condition;
   condition.Format("control.hasfocus(%i)", dwControlId);
   CStdString condition2 = "!" + condition;
-  m_focusedLayout.CreateListControlLayouts(width, textureHeight + spaceBetweenItems, true, labelInfo, labelInfo2, textureButton, textureButtonFocus, textureHeight, itemWidth, itemHeight, g_infoManager.TranslateString(condition2), g_infoManager.TranslateString(condition));
+  CGUIListItemLayout focusLayout;
+  focusLayout.CreateListControlLayouts(width, textureHeight + spaceBetweenItems, true, labelInfo, labelInfo2, textureButton, textureButtonFocus, textureHeight, itemWidth, itemHeight, g_infoManager.TranslateString(condition2), g_infoManager.TranslateString(condition));
+  m_focusedLayouts.push_back(focusLayout);
   m_height = floor(m_height / (textureHeight + spaceBetweenItems)) * (textureHeight + spaceBetweenItems);
   m_spinControl = pSpin;
   ControlType = GUICONTAINER_LIST;

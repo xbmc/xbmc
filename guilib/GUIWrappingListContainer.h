@@ -27,5 +27,6 @@ protected:
   virtual void ValidateOffset();
   virtual int  CorrectOffset(int offset, int cursor) const;
   virtual bool SelectItemFromPoint(const CPoint &point);
+  virtual void SelectItem(int item);
 };
 

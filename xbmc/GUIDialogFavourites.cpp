@@ -190,19 +190,8 @@ void CGUIDialogFavourites::OnRename(int item)
 void CGUIDialogFavourites::UpdateList()
 {
   int currentItem = GetSelectedItem();
-  CGUIMessage message(GUI_MSG_LABEL_RESET, GetID(), FAVOURITES_LIST);
+  CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), FAVOURITES_LIST, currentItem >= 0 ? currentItem : 0, 0, &m_favourites);
   OnMessage(message);
-  for (int i = 0; i < m_favourites.Size(); i++)
-  {
-    CFileItem *item = m_favourites[i];
-    CGUIMessage message(GUI_MSG_LABEL_ADD, GetID(), FAVOURITES_LIST, 0, 0, item);
-    OnMessage(message);
-  }
-  if (currentItem >= 0)
-  {
-    CGUIMessage message(GUI_MSG_ITEM_SELECT, GetID(), FAVOURITES_LIST, currentItem);
-    OnMessage(message);
-  }
 }
 
 CFileItem *CGUIDialogFavourites::GetCurrentListItem(int offset)
