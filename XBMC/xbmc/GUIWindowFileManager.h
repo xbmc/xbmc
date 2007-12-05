@@ -31,7 +31,7 @@ protected:
   virtual void OnWindowLoaded();
   void SetInitialPath(const CStdString &path);
   void GoParentFolder(int iList);
-  void UpdateControl(int iList);
+  void UpdateControl(int iList, int item);
   bool Update(int iList, const CStdString &strDirectory); //???
   void OnStart(CFileItem *pItem);
   bool SelectItem(int iList, int &item);

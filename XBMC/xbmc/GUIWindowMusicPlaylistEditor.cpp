@@ -266,17 +266,15 @@ void CGUIWindowMusicPlaylistEditor::UpdatePlaylist()
   if (m_playlistThumbLoader.IsLoading())
     m_playlistThumbLoader.StopThread();
 
-  CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_PLAYLIST, 0, 0, NULL);
+  // deselect all items
+  for (int i = 0; i < m_playlist.Size(); i++)
+    m_playlist[i]->Select(false);
+
+  // bind them to the list
+  CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_PLAYLIST, 0, 0, &m_playlist);
   OnMessage(msg);
 
-  for (int i = 0; i < m_playlist.Size(); i++)
-  {
-    m_playlist[i]->Select(false);
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PLAYLIST, 0, 0, (void*)m_playlist[i]);
-    OnMessage(msg);
-  }
-
-  // and playlist items
+  // indicate how many songs we have
   CStdString items;
   items.Format("%i %s", m_playlist.Size(), g_localizeStrings.Get(134).c_str()); // "123 Songs"
   SET_CONTROL_LABEL(CONTROL_LABEL_PLAYLIST, items);

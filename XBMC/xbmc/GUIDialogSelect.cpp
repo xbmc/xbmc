@@ -56,16 +56,9 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
       m_bButtonPressed = false;
       CGUIDialog::OnMessage(message);
       m_iSelected = -1;
-      CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST, 0, 0, NULL);
+      CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, (void*)m_vecList);
       g_graphicsContext.SendMessage(msg);
 
-      for (int i = 0; i < (int)m_vecList->Size(); i++)
-      {
-        //CGUIListItem* pItem = m_vecList[i];
-        CFileItem* pItem = (*m_vecList)[i];
-        CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_LIST, 0, 0, (void*)pItem);
-        g_graphicsContext.SendMessage(msg);
-      }
       CStdString items;
       items.Format("%i %s", m_vecList->Size(), g_localizeStrings.Get(127).c_str());
       SET_CONTROL_LABEL(CONTROL_NUMBEROFFILES, items);
