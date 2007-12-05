@@ -22,16 +22,18 @@ void CGUIFixedListContainer::Render()
   if (m_bInvalidated)
     UpdateLayout();
 
+  if (!m_focusedLayout || !m_layout) return;
+
   m_scrollOffset += m_scrollSpeed * (m_renderTime - m_scrollLastTime);
-  if ((m_scrollSpeed < 0 && m_scrollOffset < m_offset * m_layout.Size(m_orientation)) ||
-      (m_scrollSpeed > 0 && m_scrollOffset > m_offset * m_layout.Size(m_orientation)))
+  if ((m_scrollSpeed < 0 && m_scrollOffset < m_offset * m_layout->Size(m_orientation)) ||
+      (m_scrollSpeed > 0 && m_scrollOffset > m_offset * m_layout->Size(m_orientation)))
   {
-    m_scrollOffset = m_offset * m_layout.Size(m_orientation);
+    m_scrollOffset = m_offset * m_layout->Size(m_orientation);
     m_scrollSpeed = 0;
   }
   m_scrollLastTime = m_renderTime;
 
-  int offset = (int)(m_scrollOffset / m_layout.Size(m_orientation));
+  int offset = (int)(m_scrollOffset / m_layout->Size(m_orientation));
   // Free memory not used on screen at the moment, do this first so there's more memory for the new items.
   FreeMemory(CorrectOffset(offset, 0), CorrectOffset(offset, m_itemsPerPage + 1));
 
@@ -39,9 +41,9 @@ void CGUIFixedListContainer::Render()
   float posX = m_posX;
   float posY = m_posY;
   if (m_orientation == VERTICAL)
-    posY += (offset * m_layout.Size(m_orientation) - m_scrollOffset);
+    posY += (offset * m_layout->Size(m_orientation) - m_scrollOffset);
   else
-    posX += (offset * m_layout.Size(m_orientation) - m_scrollOffset);;
+    posX += (offset * m_layout->Size(m_orientation) - m_scrollOffset);;
 
   float focusedPosX = 0;
   float focusedPosY = 0;
@@ -68,9 +70,9 @@ void CGUIFixedListContainer::Render()
 
     // increment our position
     if (m_orientation == VERTICAL)
-      posY += focused ? m_focusedLayout.Size(m_orientation) : m_layout.Size(m_orientation);
+      posY += focused ? m_focusedLayout->Size(m_orientation) : m_layout->Size(m_orientation);
     else
-      posX += focused ? m_focusedLayout.Size(m_orientation) : m_layout.Size(m_orientation);
+      posX += focused ? m_focusedLayout->Size(m_orientation) : m_layout->Size(m_orientation);
 
     current++;
   }
@@ -157,15 +159,7 @@ bool CGUIFixedListContainer::OnMessage(CGUIMessage& message)
   {
     if (message.GetMessage() == GUI_MSG_ITEM_SELECT)
     {
-      // Check that m_offset is valid
-      ValidateOffset();
-      // only select an item if it's in a valid range
-      if (message.GetParam1() >= 0 && message.GetParam1() < (int)m_items.size())
-      {
-        // Select the item requested
-        int item = message.GetParam1();
-        ScrollToOffset(item - m_cursor);
-      }
+      SelectItem(message.GetParam1());
       return true;
     }
   }
@@ -222,30 +216,34 @@ void CGUIFixedListContainer::Scroll(int amount)
 
 void CGUIFixedListContainer::ValidateOffset()
 { // first thing is we check the range of m_offset
+  if (!m_layout) return;
   if (m_offset > (int)m_items.size() - m_cursor)
   {
     m_offset = m_items.size() - m_cursor;
-    m_scrollOffset = m_offset * m_layout.Size(m_orientation);
+    m_scrollOffset = m_offset * m_layout->Size(m_orientation);
   }
   if (m_offset < -m_cursor)
   {
     m_offset = -m_cursor;
-    m_scrollOffset = m_offset * m_layout.Size(m_orientation);
+    m_scrollOffset = m_offset * m_layout->Size(m_orientation);
   }
 }
 
 bool CGUIFixedListContainer::SelectItemFromPoint(const CPoint &point)
 {
+  if (!m_focusedLayout || !m_layout)
+    return false;
+
   const float mouse_scroll_speed = 0.5f;
   // see if the point is either side of our focused item
-  float start = m_cursor * m_layout.Size(m_orientation);
-  float end = start + m_focusedLayout.Size(m_orientation);
+  float start = m_cursor * m_layout->Size(m_orientation);
+  float end = start + m_focusedLayout->Size(m_orientation);
   float pos = (m_orientation == VERTICAL) ? point.y : point.x;
   if (pos < start)
   { // scroll backward
     if (!InsideLayout(m_layout, point))
       return false;
-    float amount = (start - pos) / m_layout.Size(m_orientation);
+    float amount = (start - pos) / m_layout->Size(m_orientation);
     m_analogScrollCount += amount * amount * mouse_scroll_speed;
     if (m_analogScrollCount > 1)
     {
@@ -259,7 +257,7 @@ bool CGUIFixedListContainer::SelectItemFromPoint(const CPoint &point)
     if (!InsideLayout(m_layout, point))
       return false;
     // scroll forward
-    float amount = (pos - end) / m_layout.Size(m_orientation);
+    float amount = (pos - end) / m_layout->Size(m_orientation);
     m_analogScrollCount += amount * amount * mouse_scroll_speed;
     if (m_analogScrollCount > 1)
     {
@@ -269,4 +267,16 @@ bool CGUIFixedListContainer::SelectItemFromPoint(const CPoint &point)
     return true;
   }
   return InsideLayout(m_focusedLayout, point);
+}
+
+void CGUIFixedListContainer::SelectItem(int item)
+{
+  // Check that m_offset is valid
+  ValidateOffset();
+  // only select an item if it's in a valid range
+  if (item >= 0 && item < (int)m_items.size())
+  {
+    // Select the item requested
+    ScrollToOffset(item - m_cursor);
+  }
 }

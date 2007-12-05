@@ -34,5 +34,6 @@ protected:
   virtual bool MoveDown(DWORD nextControl);
   virtual bool MoveUp(DWORD nextControl);
   virtual void ValidateOffset();
+  virtual void SelectItem(int item);
 };
 
