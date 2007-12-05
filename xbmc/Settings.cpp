@@ -651,9 +651,9 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *source, CS
         // for others
         else
         {
-          // only allow HD, SMB, and XBMS
+          // only allow HD, SMB, XBMS and plugins
           if (url.IsLocal() || protocol.Equals("smb") || protocol.Equals("xbms")
-                            || protocol.Equals("special"))
+                            || protocol.Equals("special") || protocol.Equals("plugin"))
             verifiedPaths.push_back(vecPaths[j]);
           else
             bIsInvalid = true;
