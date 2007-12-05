@@ -1986,6 +1986,11 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
      iface->SetSettings(bIsDHCP, sIPAddress, sNetworkMask, sDefaultGateway, sWirelessNetwork, sWirelessKey, iWirelessEnc);
 
      pDlgProgress->Close();
+     
+     if (iface->IsConnected())
+        CGUIDialogOK::ShowAndGetInput(0, 785, 0, 0);
+     else
+        CGUIDialogOK::ShowAndGetInput(0, 786, 0, 0);
   }
 
   UpdateSettings();
