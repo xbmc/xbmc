@@ -26,7 +26,9 @@
 #ifndef FFMPEG_RGB2RGB_H
 #define FFMPEG_RGB2RGB_H
 
+#ifdef _LINUX
 #include <inttypes.h>
+#endif
 
 /* A full collection of rgb to rgb(bgr) convertors */
 extern void (*rgb24to32)   (const uint8_t *src, uint8_t *dst, long src_size);

@@ -1,7 +1,7 @@
 
 #include "stdafx.h"
 #include "DVDDemuxUtils.h"
-#include "avcodec.h"
+#include "../../ffmpeg/avcodec.h"
 
 void CDVDDemuxUtils::FreeDemuxPacket(CDVDDemux::DemuxPacket* pPacket)
 {

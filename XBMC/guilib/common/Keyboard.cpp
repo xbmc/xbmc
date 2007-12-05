@@ -40,7 +40,7 @@ char CKeyboard::GetAscii()
   CLog::Log(LOGDEBUG, "shift is pressed bool: %d ", GetShift());
 #endif
 
-  if (translatedAscii >= 0 and translatedAscii < 128) // only TRUE ASCII! Otherwise XBMC crashes! No unicode not even latin 1!
+  if (translatedAscii >= 0 && translatedAscii < 128) // only TRUE ASCII! Otherwise XBMC crashes! No unicode not even latin 1!
     return translatedAscii; // mapping to ASCII is supported only if the result is TRUE ASCII
   else
     return lowLevelAscii; // old style

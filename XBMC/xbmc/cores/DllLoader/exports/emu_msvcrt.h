@@ -50,6 +50,10 @@ extern "C"
   int dll_read(int fd, void* buffer, unsigned int uiSize);
   int dll_write(int fd, const void* buffer, unsigned int uiSize);
   int dll_close(int fd);
+#ifndef _LINUX // hack for missing types
+#define __off64_t __int64
+#define __off_t long
+#endif
   __off64_t dll_lseeki64(int fd, __off64_t lPos, int iWhence);
   __off_t dll_lseek(int fd, __off_t lPos, int iWhence);
   char* dll_getenv(const char* szKey);

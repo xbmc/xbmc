@@ -208,6 +208,9 @@
 				RelativePath=".\DirectXGraphics.cpp">
 			</File>
 			<File
+				RelativePath=".\FrameBufferObject.cpp">
+			</File>
+			<File
 				RelativePath=".\GraphicContext.cpp">
 			</File>
 			<File
@@ -391,6 +394,9 @@
 				RelativePath=".\PackedTexture.cpp">
 			</File>
 			<File
+				RelativePath=".\Shader.cpp">
+			</File>
+			<File
 				RelativePath=".\SkinInfo.cpp">
 			</File>
 			<File
@@ -424,6 +430,9 @@
 			</File>
 			<File
 				RelativePath=".\DirectXGraphics.h">
+			</File>
+			<File
+				RelativePath=".\FrameBufferObject.h">
 			</File>
 			<File
 				RelativePath=".\Geometry.h">
@@ -627,6 +636,9 @@
 				RelativePath=".\PackedTexture.h">
 			</File>
 			<File
+				RelativePath=".\Shader.h">
+			</File>
+			<File
 				RelativePath=".\SkinInfo.h">
 			</File>
 			<File
@@ -706,10 +718,28 @@
 				RelativePath=".\common\DirectInputMouse.h">
 			</File>
 			<File
+				RelativePath=".\common\Keyboard.cpp">
+			</File>
+			<File
+				RelativePath=".\common\Keyboard.h">
+			</File>
+			<File
 				RelativePath=".\common\Mouse.cpp">
 			</File>
 			<File
 				RelativePath=".\common\Mouse.h">
+			</File>
+			<File
+				RelativePath=".\common\SDLKeyboard.cpp">
+			</File>
+			<File
+				RelativePath=".\common\SDLKeyboard.h">
+			</File>
+			<File
+				RelativePath=".\common\SDLMouse.cpp">
+			</File>
+			<File
+				RelativePath=".\common\SDLMouse.h">
 			</File>
 		</Filter>
 		<File

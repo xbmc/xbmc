@@ -2,7 +2,7 @@
 
 #include "utils/Thread.h"
 #include "utils/CriticalSection.h"
-#ifdef _LINUX
+#ifdef HAS_SDL
 #include "SDL/SDL.h"
 #include "TextureManager.h"
 #endif

@@ -1333,7 +1333,7 @@ void CGUIWindowBuddies::OnAuthenticationFailed(CStdString& aUsername)
   pDialog->SetLine(2, "");;
 
   ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, m_gWindowManager.GetActiveWindow()};
-  g_applicationMessenger.SendMessage(tMsg, false);
+  g_application.getApplicationMessenger().SendMessage(tMsg, false);
 }
 
 void CGUIWindowBuddies::OnNetworkError(CStdString& aError)
@@ -1791,7 +1791,7 @@ void CGUIWindowBuddies::OnEnterArenaFailed(CStdString& aVector, CStdString& aRea
   pDialog->SetLine(2, "");
 
   ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, m_gWindowManager.GetActiveWindow()};
-  g_applicationMessenger.SendMessage(tMsg, false);
+  g_application.getApplicationMessenger().SendMessage(tMsg, false);
 }
 
 void CGUIWindowBuddies::OnNewArena( CStdString& aVector, CStdString& aDescription,
