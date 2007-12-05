@@ -113,9 +113,9 @@ BicubicFilterShader::BicubicFilterShader(float B, float C)
   m_B = B;
   m_C = C;
   if (B<=0)
-    m_B=1.0/3.0;
+    m_B=1.0f/3.0f;
   if (C<=0)
-    m_C=1.0/3.0;
+    m_C=1.0f/3.0f;
 }
 
 void BicubicFilterShader::OnCompiledAndLinked()
@@ -232,15 +232,15 @@ float BicubicFilterShader::MitchellNetravali(float x, float B, float C)
 {
   float val = 0;
   float ax = fabs(x);
-  if (ax<1.0)
+  if (ax<1.0f)
   {
     val =  ((12 - 9*B - 6*C) * ax * ax * ax +
             (-18 + 12*B + 6*C) * ax * ax +
             (6 - 2*B))/6;
   }
-  else if (ax<2.0)
+  else if (ax<2.0f)
   {
-    val =  ((-B - 6.0*C) * ax * ax * ax + 
+    val =  ((-B - 6*C) * ax * ax * ax + 
             (6*B + 30*C) * ax * ax + (-12*B - 48*C) * 
             ax + (8*B + 24*C)) / 6;
   }

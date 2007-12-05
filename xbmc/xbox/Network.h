@@ -32,7 +32,7 @@ public:
   /* waits for network to finish init */
   bool WaitForSetup(DWORD timeout);
 
-  bool IsEthernetConnected();
+  bool IsConnected();
   bool IsAvailable(bool wait = true);
   bool IsInited() { return m_inited; }
 

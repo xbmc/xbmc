@@ -1161,7 +1161,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
   case VS_SCALINGMETHOD_CUBIC:
     SetTextureFilter(GL_LINEAR);
     m_renderQuality = RQ_MULTIPASS;
-    m_pVideoFilterShader = new BicubicFilterShader(0.3, 0.3);
+    m_pVideoFilterShader = new BicubicFilterShader(0.3f, 0.3f);
     if (m_pVideoFilterShader && m_pVideoFilterShader->CompileAndLink())
     {
       VerifyGLState();

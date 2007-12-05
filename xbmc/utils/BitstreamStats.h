@@ -2,7 +2,9 @@
 #define BITSTREAM_STATS__H__
 
 #include <string>
+#ifdef _LINUX
 #include "linux/PlatformDefs.h"
+#endif
 
 class BitstreamStats
 {

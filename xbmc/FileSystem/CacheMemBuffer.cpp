@@ -11,8 +11,9 @@
 //
 #ifdef _LINUX
 #include "../linux/PlatformDefs.h"
+#else
+#include "stdafx.h"
 #endif
-
 #include "CacheMemBuffer.h"
 #include "Util.h"
 #include "../utils/log.h"
@@ -145,7 +146,7 @@ __int64 CacheMemBuffer::Seek(__int64 iFilePosition, int iWhence)
   if (iFilePosition > m_nStartPosition + m_buffer.GetMaxReadSize() && 
       iFilePosition < m_nStartPosition + m_buffer.GetMaxReadSize() + 100000)
   {
-    int nRequired = iFilePosition - (m_nStartPosition + m_buffer.GetMaxReadSize());
+    int nRequired = (int)(iFilePosition - (m_nStartPosition + m_buffer.GetMaxReadSize()));
     lock.Leave();
     WaitForData(nRequired + 1, 5000);
     lock.Enter();
@@ -154,7 +155,7 @@ __int64 CacheMemBuffer::Seek(__int64 iFilePosition, int iWhence)
   // check if seek is inside the current buffer
   if (iFilePosition >= m_nStartPosition && iFilePosition < m_nStartPosition + m_buffer.GetMaxReadSize())
   {
-    int nOffset = iFilePosition - m_nStartPosition;
+    int nOffset = (int)(iFilePosition - m_nStartPosition);
     // copy to history so we can seek back
     if (m_HistoryBuffer.GetMaxWriteSize() < nOffset)
       m_HistoryBuffer.SkipBytes(nOffset);
@@ -173,7 +174,7 @@ __int64 CacheMemBuffer::Seek(__int64 iFilePosition, int iWhence)
   {
     CRingBuffer saveHist, saveUnRead;
     __int64 nToSkip = iFilePosition - iHistoryStart;
-    ASSERT(m_HistoryBuffer.ReadBinary(saveHist, nToSkip));
+    ASSERT(m_HistoryBuffer.ReadBinary(saveHist, (int)nToSkip));
 
     ASSERT(saveUnRead.Copy(m_buffer));
 

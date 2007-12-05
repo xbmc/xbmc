@@ -197,7 +197,7 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   if (nChunkSize == 0)
     nChunkSize = DEFAULT_CHUNK_SIZE;
 
-  int inputBufferToRead = XMIN(nChunkSize, m_InputBufferSize - m_InputBufferPos);
+  int inputBufferToRead = XMIN(nChunkSize, (int)(m_InputBufferSize - m_InputBufferPos));
   if ( inputBufferToRead && !m_CallAgainWithSameBuffer && !m_eof ) 
   {
     if (m_file.GetLength() > 0)
