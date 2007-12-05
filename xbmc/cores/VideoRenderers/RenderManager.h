@@ -2,12 +2,12 @@
 
 #if defined(HAS_XBOX_HARDWARE)
 #include "XBoxRenderer.h"
-#elif defined (WIN32)
-#include "WinRenderManager.h"
 #elif defined (HAS_SDL_OPENGL)
 #include "LinuxRendererGL.h"
 #elif defined(HAS_SDL)
 #include "LinuxRenderer.h"
+#elif defined (WIN32)
+#include "WinRenderManager.h"
 #endif
 
 #include "../../utils/SharedSection.h"

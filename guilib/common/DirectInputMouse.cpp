@@ -73,3 +73,4 @@ void CDirectInputMouse::Acquire()
     m_mouse->Acquire();
 }
 
+#endif

@@ -4,6 +4,7 @@
 #include "../system.h"
 
 #ifdef HAS_SDL
+#include <SDL/SDL.h>
 
 class CLowLevelKeyboard
 {

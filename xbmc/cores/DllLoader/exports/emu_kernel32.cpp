@@ -62,7 +62,6 @@ extern "C" BOOL WINAPI dllFindClose(HANDLE hFile)
 extern "C" DWORD WINAPI dllGetFileAttributesA(LPCSTR lpFileName)
 {
   char str[XBMC_MAX_PATH];
-  //char* p;
 
   if (!strcmp(lpFileName, "\\Device\\Cdrom0")) return (FILE_ATTRIBUTE_READONLY | FILE_ATTRIBUTE_DIRECTORY);
 
@@ -77,7 +76,7 @@ extern "C" DWORD WINAPI dllGetFileAttributesA(LPCSTR lpFileName)
 
 #ifndef _LINUX
   // convert '/' to '\\'
-  p = str;
+  char *p = str;
   while (p = strchr(p, '/')) * p = '\\';
   return GetFileAttributesA(str);
 #else

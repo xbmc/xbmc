@@ -11,8 +11,8 @@
 
 #include <map>
 #include "utils/log.h"
-#include "StdString.h"
-#include "tinyXML/tinyxml.h"
+#include "../guilib/StdString.h"
+#include "../guilib/tinyXML/tinyxml.h"
 
 //
 // C++ Interface: CKeyboardLayoutConfiguration
