@@ -572,6 +572,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
 #endif    
       pControl->AddLabel(g_localizeStrings.Get(716), NETWORK_DHCP);
       pControl->AddLabel(g_localizeStrings.Get(717), NETWORK_STATIC);
+      pControl->AddLabel(g_localizeStrings.Get(787), NETWORK_DISABLED);
       pControl->SetValue(pSettingInt->GetData());
     }
     else if (strSetting.Equals("subtitles.style"))
@@ -1944,7 +1945,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
   else if (strSetting.Equals("network.save"))
   { 
-     bool bIsDHCP;
+     NetworkAssignment iAssignment;
      CStdString sIPAddress;
      CStdString sNetworkMask;
      CStdString sDefaultGateway;
@@ -1960,7 +1961,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
    
      // Update controls with information
      CGUISpinControlEx* pControl1 = (CGUISpinControlEx *)GetControl(GetSetting("network.assignment")->GetID());
-     if (pControl1) bIsDHCP = (pControl1->GetValue() == NETWORK_DHCP);         
+     if (pControl1) iAssignment = (NetworkAssignment) pControl1->GetValue();         
      CGUIButtonControl* pControl2 = (CGUIButtonControl *)GetControl(GetSetting("network.ipaddress")->GetID());
      if (pControl2) sIPAddress = pControl2->GetLabel2();         
      pControl2 = (CGUIButtonControl *)GetControl(GetSetting("network.subnet")->GetID());
@@ -1983,11 +1984,13 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
      pDlgProgress->StartModal();
      pDlgProgress->Progress();
       
-     iface->SetSettings(bIsDHCP, sIPAddress, sNetworkMask, sDefaultGateway, sWirelessNetwork, sWirelessKey, iWirelessEnc);
+     iface->SetSettings(iAssignment, sIPAddress, sNetworkMask, sDefaultGateway, sWirelessNetwork, sWirelessKey, iWirelessEnc);
 
      pDlgProgress->Close();
      
-     if (iface->IsConnected())
+     if (iAssignment == NETWORK_DISABLED)
+        CGUIDialogOK::ShowAndGetInput(0, 788, 0, 0);     
+     else if (iface->IsConnected())
         CGUIDialogOK::ShowAndGetInput(0, 785, 0, 0);
      else
         CGUIDialogOK::ShowAndGetInput(0, 786, 0, 0);
@@ -3240,7 +3243,7 @@ void CGUIWindowSettingsCategory::FillInNetworkInterfaces(CSetting *pSetting)
 
 void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
 {
-   bool bIsDHCP;
+   NetworkAssignment iAssignment;
    CStdString sIPAddress;
    CStdString sNetworkMask;
    CStdString sDefaultGateway;
@@ -3254,7 +3257,7 @@ void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
    CGUISpinControlEx *ifaceControl = (CGUISpinControlEx *)GetControl(GetSetting("network.interface")->GetID());
    ifaceName = ifaceControl->GetLabel();
    CNetworkInterface* iface = g_application.getNetwork().GetInterfaceByName(ifaceName);
-   iface->GetSettings(bIsDHCP, sIPAddress, sNetworkMask, sDefaultGateway, sWirelessNetwork, sWirelessKey, iWirelessEnc);
+   iface->GetSettings(iAssignment, sIPAddress, sNetworkMask, sDefaultGateway, sWirelessNetwork, sWirelessKey, iWirelessEnc);
    bIsWireless = iface->IsWireless();
 
    CStdString dns;
@@ -3264,7 +3267,7 @@ void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
 
    // Update controls with information
    CGUISpinControlEx* pControl1 = (CGUISpinControlEx *)GetControl(GetSetting("network.assignment")->GetID());
-   if (pControl1) pControl1->SetValue(bIsDHCP ? NETWORK_DHCP : NETWORK_STATIC);         
+   if (pControl1) pControl1->SetValue(iAssignment);         
    GetSetting("network.ipaddress")->GetSetting()->FromString(sIPAddress);
    GetSetting("network.subnet")->GetSetting()->FromString(sNetworkMask);
    GetSetting("network.gateway")->GetSetting()->FromString(sDefaultGateway);

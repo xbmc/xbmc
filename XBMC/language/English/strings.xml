@@ -638,9 +638,11 @@
   <string id="781">WEP</string>
   <string id="782">WPA</string>
   <string id="783">WPA2</string>
-  <string id="784">Attempting to restart network interface. Please wait.</string>
+  <string id="784">Applying network interface settings. Please wait.</string>
   <string id="785">Network interface restarted successfully.</string>
   <string id="786">Network interface did not start successfully.</string>
+  <string id="787">Interface disabled</string>
+  <string id="788">Network interface disabled successfully.</string>
 
   <string id="998">XLink Kai</string>
   <string id="999">Online Gaming</string>
