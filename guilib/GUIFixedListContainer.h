@@ -27,5 +27,6 @@ protected:
   virtual bool MoveUp(DWORD nextControl);
   virtual void ValidateOffset();
   virtual bool SelectItemFromPoint(const CPoint &point);
+  virtual void SelectItem(int item);
 };
 

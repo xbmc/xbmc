@@ -67,6 +67,7 @@ public:
   void CreateThumbnailPanelLayouts(float width, float height, bool focused, const CImage &image, float texWidth, float texHeight, float thumbPosX, float thumbPosY, float thumbWidth, float thumbHeight, DWORD thumbAlign, CGUIImage::GUIIMAGE_ASPECT_RATIO thumbAspect, const CLabelInfo &labelInfo, bool hideLabel);
 //#endif
 
+  int GetCondition() const { return m_condition; };
 #ifdef _DEBUG
   virtual void DumpTextureUse();
 #endif
@@ -84,6 +85,7 @@ protected:
   bool m_focused;
   bool m_invalidated;
 
+  int m_condition;
   bool m_isPlaying;
 };
 

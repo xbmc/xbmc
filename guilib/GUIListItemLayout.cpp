@@ -65,6 +65,7 @@ CGUIListItemLayout::CGUIListItemLayout()
 {
   m_width = 0;
   m_height = 0;
+  m_condition = 0;
   m_focused = false;
   m_invalidated = true;
   m_isPlaying = false;
@@ -75,6 +76,7 @@ CGUIListItemLayout::CGUIListItemLayout(const CGUIListItemLayout &from)
   m_width = from.m_width;
   m_height = from.m_height;
   m_focused = from.m_focused;
+  m_condition = from.m_condition;
   // copy across our controls
   for (ciControls it = from.m_controls.begin(); it != from.m_controls.end(); ++it)
   {
@@ -324,6 +326,9 @@ void CGUIListItemLayout::LoadLayout(TiXmlElement *layout, bool focused)
   m_focused = focused;
   g_SkinInfo.ResolveConstant(layout->Attribute("width"), m_width);
   g_SkinInfo.ResolveConstant(layout->Attribute("height"), m_height);
+  const char *condition = layout->Attribute("condition");
+  if (condition)
+    m_condition = g_infoManager.TranslateString(condition);
   TiXmlElement *child = layout->FirstChildElement("control");
   while (child)
   {
