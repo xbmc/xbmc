@@ -272,7 +272,7 @@ void CNetworkLinux::SetNameServers(std::vector<CStdString> nameServers)
    FILE* fp = fopen("/etc/resolv.conf", "w");
    if (fp != NULL)
    {
-      for (int i = 0; nameServers.size(); i++)
+      for (int i = 0; i < nameServers.size(); i++)
       {
          fprintf(fp, "nameserver %s\n", nameServers[i].c_str());
       }
