@@ -189,7 +189,11 @@
 #include "GUIDialogPictureInfo.h"
 #include "GUIDialogPluginSettings.h"
 
+#ifdef HAS_PERFORMACE_SAMPLE
 #include "utils/PerformanceSample.h"
+#else
+#define MEASURE_FUNCTION
+#endif
 
 #ifdef HAS_SDL
 #include <SDL/SDL_mixer.h>
@@ -240,7 +244,7 @@ using namespace VIDEO;
   #pragma comment (lib,"xbmc/lib/mikxbox/mikxboxd.lib")  // SECTIONNAME=MOD_RW,MOD_RX
  #endif
 #else
- #if defined (HAS_FILESYSTEM) && not defined (_LINUX)
+ #if defined (HAS_FILESYSTEM) && !defined (_LINUX)
   #pragma comment (lib,"xbmc/lib/libXBMS/libXBMS.lib")
   #pragma comment (lib,"xbmc/lib/libsmb/libsmb.lib")
   #pragma comment (lib,"xbmc/lib/libxdaap/libxdaap.lib") // SECTIONNAME=LIBXDAAP
@@ -253,7 +257,7 @@ using namespace VIDEO;
   #pragma comment (lib,"xbmc/lib/libshout/libshout.lib")
   #pragma comment (lib,"xbmc/lib/libiconv/libiconv.lib")
   #pragma comment (lib,"xbmc/lib/libfribidi/libfribidi.lib")
- #elif not defined(_LINUX)
+ #elif !defined(_LINUX)
   #pragma comment (lib,"../../xbmc/lib/libGoAhead/goahead_win32.lib")
   #pragma comment (lib,"../../xbmc/lib/sqLite/libSQLite3_win32.lib")
   #pragma comment (lib,"../../xbmc/lib/libshout/libshout_win32.lib" )
@@ -540,7 +544,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
     FEH_TextOut(pFont, (Pal ? 16 : 12) | 0x18000, L"Press any button to reboot");
 
 
-#ifdef _LINUX
+#ifndef HAS_XBOX_NETWORK
   bool NetworkUp = m_network.IsAvailable();
 #endif
 
@@ -674,7 +678,11 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 
   if( NetworkUp )
   {
+#ifdef HAS_LINUX_NETWORK
     FEH_TextOut(pFont, iLine++, L"IP Address: %S", m_network.GetFirstConnectedInterface()->GetCurrentIPAddress().c_str());
+#else
+    FEH_TextOut(pFont, iLine++, L"IP Address: %S", m_network.m_networkinfo.ip);
+#endif
     ++iLine;
   }
 
@@ -894,9 +902,12 @@ HRESULT CApplication::Create(HWND hWnd)
   sdlFlags |= SDL_INIT_JOYSTICK;
 #endif
 
+
+#ifdef _LINUX
   // for nvidia cards - vsync currently ALWAYS enabled.
   // the reason is that after screen has been setup changing this env var will make no difference.
   setenv("__GL_SYNC_TO_VBLANK","1",true);
+#endif
 
   if (SDL_Init(sdlFlags) != 0)
   {
@@ -1654,19 +1665,24 @@ void CApplication::StartWebServer()
   if (g_guiSettings.GetBool("servers.webserver") && m_network.IsAvailable())
   {
     CLog::Log(LOGNOTICE, "Webserver: Starting...");
+#ifdef _LINUX
     if (atoi(g_guiSettings.GetString("servers.webserverport")) < 1024 && geteuid() != 0)
     {
         CLog::Log(LOGERROR, "Cannot start Web Server as port is smaller than 1024 and user is not root");
         return;
     }
-
+#endif
     CSectionLoader::Load("LIBHTTP");
+#ifdef HAS_LINUX_NETWORK
     if (m_network.GetFirstConnectedInterface())
     {
        m_pWebServer = new CWebServer();
        m_pWebServer->Start(m_network.GetFirstConnectedInterface()->GetCurrentIPAddress().c_str(), atoi(g_guiSettings.GetString("servers.webserverport")), _P("Q:\\web"), false);
     }
-
+#else
+    m_pWebServer = new CWebServer();
+    m_pWebServer->Start(m_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), _P("Q:\\web"), false);
+#endif
     if (m_pXbmcHttp)
       m_pXbmcHttp->xbmcBroadcast("StartUp", 1);
   }
@@ -2573,8 +2589,10 @@ void CApplication::Render()
 
       // if the semaphore is not empty - there is a video frame that needs to be presented. we need to wait long enough
       // so that rendering loop will not delay the next frame's presentation.
+#ifdef _LINUX
       if (SDL_SemWaitTimeout2(m_framesSem, 500) == 0)
         m_bPresentFrame = true;
+#endif
     }
     else
     {
@@ -3798,8 +3816,11 @@ void CApplication::Stop()
     CLog::Log(LOGNOTICE, "unload sections");
     CSectionLoader::UnloadAll();
 
+
+#ifdef HAS_PERFORMANCE_SAMPLE
     CLog::Log(LOGNOTICE, "performance statistics");
     m_perfStats.DumpStats();
+#endif
 
     // reset our d3d params before we destroy
 #ifndef HAS_SDL
@@ -5886,15 +5907,21 @@ CApplicationMessenger& CApplication::getApplicationMessenger()
    return m_applicationMessenger;
 }
 
-#ifdef _LINUX
+#ifdef HAS_LINUX_NETWORK
 CNetworkLinux& CApplication::getNetwork()
 {
-   return m_network;
+  return m_network;
+}
+#else
+CNetwork& CApplication::getNetwork()
+{
+  return m_network;
 }
 #endif
-
+#ifdef HAS_PERFORMANCE_SAMPLE
 CPerformanceStats &CApplication::GetPerformanceStats()
 {
   return m_perfStats;
 }
+#endif
 

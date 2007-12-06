@@ -37,9 +37,9 @@
 #include <sys/ioctl.h>
 #include <fcntl.h>
 #include <linux/cdrom.h>
+#endif
 #include "../FileSystem/cdioSupport.h"
 #include "../DetectDVDType.h"
-#endif
 
 using namespace MEDIA_DETECT;
 

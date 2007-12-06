@@ -149,6 +149,8 @@
 #define HAS_CDDA_RIPPER
 #define HAS_FILESYSTEM_RTV
 #define HAS_FILESYSTEM_DAAP
+#define HAS_PERFORMANCE_SAMPLE
+#define HAS_LINUX_NETWORK
 #undef HAS_KAI
 
 #include <unistd.h>
@@ -175,6 +177,10 @@
 #ifdef _WIN32
 #undef HAS_SDL_AUDIO   // use dsound for audio on win32
 #undef HAS_DVD_SWSCALE // no win32 build of swscale yet
+#undef HAS_SCREENSAVER // no screensavers
+#undef HAS_PERFORMANCE_SAMPLE // no performance sampling
+#undef HAS_LINUX_NETWORK
+#define snprintf _snprintf
 #endif
 #endif
 
