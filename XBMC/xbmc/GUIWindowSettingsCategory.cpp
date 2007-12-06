@@ -949,7 +949,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         pControl->SetEnabled(g_guiSettings.GetInt("network.assignment") == NETWORK_STATIC);
       }
 #endif
-      bool enabled = true;
+      bool enabled = (getuid() == 0);
       CGUISpinControlEx* pControl1 = (CGUISpinControlEx *)GetControl(GetSetting("network.assignment")->GetID());
       if (pControl1) 
          enabled = (pControl1->GetValue() == NETWORK_STATIC);         
@@ -958,6 +958,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
        if (pControl) pControl->SetEnabled(enabled);
     }
 #ifdef HAS_LINUX_NETWORK
+    else if (strSetting.Equals("network.assignment"))
+    {
+      CGUISpinControlEx* pControl1 = (CGUISpinControlEx *)GetControl(GetSetting("network.assignment")->GetID());
+      if (pControl1) 
+         pControl1->SetEnabled(getuid() == 0);             
+    }
     else if (strSetting.Equals("network.essid") || strSetting.Equals("network.enc") || strSetting.Equals("network.key"))
     {
       // Get network information      
@@ -966,7 +972,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CNetworkInterface* iface = g_application.getNetwork().GetInterfaceByName(ifaceName);
       bool bIsWireless = iface->IsWireless();
                
-      bool enabled = bIsWireless;
+      bool enabled = bIsWireless && (getuid() == 0);
       CGUISpinControlEx* pControl1 = (CGUISpinControlEx *)GetControl(GetSetting("network.assignment")->GetID());
       if (pControl1) 
          enabled &= (pControl1->GetValue() != NETWORK_DISABLED);         
