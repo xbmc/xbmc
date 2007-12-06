@@ -14,7 +14,11 @@
 #include "XBApplicationEx.h"
 #include "XBVideoConfig.h"
 #include "Application.h"
+#ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"
+#else
+#define MEASURE_FUNCTION
+#endif
 
 //-----------------------------------------------------------------------------
 // Global access to common members
@@ -158,7 +162,9 @@ INT CXBApplicationEx::Run()
   // Run the game loop, animating and rendering frames
   while (!m_bStop)
   {
+#ifdef HAS_PERFORMANCE_SAMPLE
     CPerformanceSample sampleLoop("XBApplicationEx-loop");  
+#endif
 
     //-----------------------------------------
     // Perform app timing

@@ -17,7 +17,9 @@
 #include "../xbmc/ButtonTranslator.h"
 #include "XMLUtils.h"
 
+#ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"
+#endif
 
 CStdString CGUIWindow::CacheFilename = "";
 
@@ -117,7 +119,9 @@ bool CGUIWindow::LoadReferences()
 
 bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 {
+#ifdef HAS_PERFORMANCE_SAMPLE
   CPerformanceSample aSample("WindowLoad-" + strFileName, true);
+#endif
 
   if (m_windowLoaded)
     return true;      // no point loading if it's already there

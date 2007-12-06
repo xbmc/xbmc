@@ -957,6 +957,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
        CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
        if (pControl) pControl->SetEnabled(enabled);
     }
+#ifdef HAS_LINUX_NETWORK
     else if (strSetting.Equals("network.essid") || strSetting.Equals("network.enc") || strSetting.Equals("network.key"))
     {
       // Get network information      
@@ -979,11 +980,13 @@ void CGUIWindowSettingsCategory::UpdateSettings()
        CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
        if (pControl) pControl->SetEnabled(enabled);
     }
+#endif
     else if (strSetting.Equals("Network.httpproxyserver") || strSetting.Equals("Network.httpproxyport"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("network.usehttpproxy"));
     }
+#ifdef HAS_LINUX_NETWORK
     else if (strSetting.Equals("network.key"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -996,6 +999,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
       pControl->SetEnabled(getuid() == 0);
     }
+#endif
     else if (strSetting.Equals("postprocessing.verticaldeblocklevel"))
     {
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
@@ -1964,6 +1968,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
      NetworkInterfaceChanged();
   }
+#ifdef HAS_LINUX_NETWORK
   else if (strSetting.Equals("network.save"))
   { 
      NetworkAssignment iAssignment;
@@ -2016,7 +2021,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
      else
         CGUIDialogOK::ShowAndGetInput(0, 786, 0, 0);
   }
-
+#endif
   UpdateSettings();
 }
 
@@ -3243,6 +3248,7 @@ void CGUIWindowSettingsCategory::FillInNetworkInterfaces(CSetting *pSetting)
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
   
+#ifdef HAS_LINUX_NETWORK
   // query list of interfaces
   vector<CStdString> vecInterfaces;
   std::vector<CNetworkInterface*>& ifaces = g_application.getNetwork().GetInterfaceList();
@@ -3260,10 +3266,12 @@ void CGUIWindowSettingsCategory::FillInNetworkInterfaces(CSetting *pSetting)
   {
     pControl->AddLabel(vecInterfaces[i], iInterface++);
   }
+#endif
 }
 
 void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
 {
+#ifdef HAS_LINUX_NETWORK
    NetworkAssignment iAssignment;
    CStdString sIPAddress;
    CStdString sNetworkMask;
@@ -3307,4 +3315,5 @@ void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
       GetSetting("network.essid")->GetSetting()->FromString("");
       GetSetting("network.key")->GetSetting()->FromString("");
    }
+#endif
 }

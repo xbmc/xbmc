@@ -1278,7 +1278,11 @@ CUPnP::StartServer()
 
     // trying to set optional upnp values for XP UPnP UI Icons to detect us
     // but it doesn't work anyways as it requires multicast for XP to detect us
+#ifdef HAS_LINUX_NETWORK
     NPT_String ip = g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress().c_str();
+#else
+    NPT_String ip = g_application.getNetwork().m_networkinfo.ip;
+#endif
 #ifndef HAS_XBOX_NETWORK
     NPT_List<NPT_String> list;
     if (NPT_SUCCEEDED(PLT_UPnPMessageHelper::GetIPAddresses(list))) {
@@ -1330,7 +1334,11 @@ void CUPnP::StartRenderer()
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
     g_settings.LoadUPnPXml(filename);
 
+#ifdef _LINUX
     NPT_String ip = g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress().c_str();
+#else
+    NPT_String ip = g_application.getNetwork().m_networkinfo.ip;
+#endif
 #ifndef HAS_XBOX_NETWORK
     NPT_List<NPT_String> list;
     if (NPT_SUCCEEDED(PLT_UPnPMessageHelper::GetIPAddresses(list))) {

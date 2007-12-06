@@ -23,12 +23,13 @@
 #include "utils/IMDB.h"
 #include "utils/Stopwatch.h"
 #include "ApplicationMessenger.h"
-#ifdef _LINUX
-#include "NetworkLinux.h"
-#endif
-
+#include "utils/Network.h"
+#ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceStats.h"
+#endif
+#ifdef _LINUX
 #include "linux/LinuxResourceCounter.h"
+#endif
 
 using namespace MEDIA_DETECT;
 using namespace MUSIC_INFO;
@@ -161,10 +162,14 @@ public:
   void CheckMusicPlaylist();
 
   CApplicationMessenger& getApplicationMessenger();
-#ifdef _LINUX
+#ifdef HAS_LINUX_NETWORK
   CNetworkLinux& getNetwork();
+#else
+  CNetwork& getNetwork();
 #endif
+#ifdef HAS_PERFORMANCE_SAMPLE
   CPerformanceStats &GetPerformanceStats();
+#endif
 
   CGUIDialogVolumeBar m_guiDialogVolumeBar;
   CGUIDialogSeekBar m_guiDialogSeekBar;
@@ -267,11 +272,18 @@ protected:
   void SaveCurrentFileSettings();
 
   CApplicationMessenger m_applicationMessenger;
-#ifdef _LINUX
+#ifdef HAS_LINUX_NETWORK
   CNetworkLinux		m_network;
+#else
+  CNetwork    m_network;
 #endif
+#ifdef HAS_PERFORMANCE_SAMPLE
   CPerformanceStats m_perfStats;
+#endif
+#ifdef _LINUX
   CLinuxResourceCounter m_resourceCounter;
+#endif
+
 };
 
 extern CApplication g_application;
