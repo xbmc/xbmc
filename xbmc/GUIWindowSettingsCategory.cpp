@@ -2016,6 +2016,9 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
      pDlgProgress->StartModal();
      pDlgProgress->Progress();
       
+     std::vector<CStdString> nameServers;
+     nameServers.push_back(sDns);
+     g_application.getNetwork().SetNameServers(nameServers);   
      iface->SetSettings(iAssignment, sIPAddress, sNetworkMask, sDefaultGateway, sWirelessNetwork, sWirelessKey, iWirelessEnc);
 
      pDlgProgress->Close();
