@@ -1703,8 +1703,13 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
   else
   {
     // check if we are on the local subnet
+#ifdef HAS_LINUX_NETWORK
     unsigned long subnet = ntohl(inet_addr(g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentNetmask()));
     unsigned long local  = ntohl(inet_addr(g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress()));
+#else
+    unsigned long subnet = ntohl(inet_addr(g_application.getNetwork().m_networkinfo.subnet));
+    unsigned long local  = ntohl(inet_addr(g_application.getNetwork().m_networkinfo.ip));
+#endif
     if( (address & subnet) == (local & subnet) )
       return true;
   }
@@ -5639,7 +5644,7 @@ CStdString CUtil::TranslatePath(const CStdString& path)
 	return result;
 }
 
-CStdString CUtil::CUtil::TranslatePathConvertCase(const CStdString& path)
+CStdString CUtil::TranslatePathConvertCase(const CStdString& path)
 {
    CStdString translatedPath = TranslatePath(path);
 
