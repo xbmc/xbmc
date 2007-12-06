@@ -114,7 +114,7 @@ size_t CFileCurl::WriteCallback(char *buffer, size_t size, size_t nitems)
   if (m_overflowSize)
   {
     // we have our overflow buffer - first get rid of as much as we can
-    unsigned int maxWriteable = XMIN(m_buffer.GetMaxWriteSize(), m_overflowSize);
+    unsigned int maxWriteable = XMIN((unsigned int)m_buffer.GetMaxWriteSize(), m_overflowSize);
     if (maxWriteable)
     {
       if (!m_buffer.WriteBinary(m_overflowBuffer, maxWriteable))
@@ -127,7 +127,7 @@ size_t CFileCurl::WriteCallback(char *buffer, size_t size, size_t nitems)
     }
   }
   // ok, now copy the data into our ring buffer
-  unsigned int maxWriteable = XMIN(m_buffer.GetMaxWriteSize(), amount);
+  unsigned int maxWriteable = XMIN((unsigned int)m_buffer.GetMaxWriteSize(), amount);
   if (maxWriteable)
   {
     if (!m_buffer.WriteBinary(buffer, maxWriteable))
@@ -538,7 +538,7 @@ bool CFileCurl::ReadString(char *szLine, int iLineLength)
     return false;
 
   // ensure only available data is considered 
-  want = XMIN(m_buffer.GetMaxReadSize(), want);
+  want = XMIN((unsigned int)m_buffer.GetMaxReadSize(), want);
 
   /* check if we finished prematurely */
   if (!m_stillRunning && m_fileSize && m_filePos != m_fileSize && !want)
@@ -783,12 +783,12 @@ bool CFileCurl::FillBuffer(unsigned int want)
 
   // only attempt to fill buffer if transactions still running and buffer
   // doesnt exceed required size already
-  while (m_buffer.GetMaxReadSize() < want && m_buffer.GetMaxWriteSize() > 0 )
+  while ((unsigned int)m_buffer.GetMaxReadSize() < want && m_buffer.GetMaxWriteSize() > 0 )
   {
     /* if there is data in overflow buffer, try to use that first */
     if(m_overflowSize)
     {
-      unsigned amount = XMIN(m_buffer.GetMaxWriteSize(), m_overflowSize);
+      unsigned amount = XMIN((unsigned int)m_buffer.GetMaxWriteSize(), m_overflowSize);
       m_buffer.WriteBinary(m_overflowBuffer, amount);
 
       if(amount < m_overflowSize)
