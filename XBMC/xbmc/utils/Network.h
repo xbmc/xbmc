@@ -3,9 +3,12 @@
 
 #include <vector>
 #include "StdString.h"
+#include "system.h"
 
 enum EncMode { ENC_NONE = 0, ENC_WEP = 1, ENC_WPA = 2, ENC_WPA2 = 3 };
 enum NetworkAssignment { NETWORK_DASH = 0, NETWORK_DHCP = 1, NETWORK_STATIC = 2, NETWORK_DISABLED = 3 };
+
+#ifdef HAS_LINUX_NETWORK
 
 class NetworkAccessPoint
 {
@@ -87,12 +90,8 @@ public:
    static int ParseHex(char *str, unsigned char *addr);
 };
 
-#ifdef HAS_XBOX_NETWORK
-#include "xbox/NetworkXbox.h"
-#endif
-
-#ifdef _LINUX
 #include "linux/NetworkLinux.h"
+#else
+#include "xbox/Network.h"
 #endif
-
 #endif
