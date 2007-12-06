@@ -84,7 +84,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
         }
         else if (iAction == ACTION_PREVIOUS_MENU) // oh no u don't
           return false;
-        else if (iAction == ACTION_SELECT_ITEM)
+        else if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
         {
           int iItem = m_viewControl.GetSelectedItem();
           bool bOkay = !g_guiSettings.GetBool("masterlock.loginlock");
