@@ -232,17 +232,27 @@ int CGUIViewControl::GetViewModeNumber(int number) const
   return 0;  // no view modes :(
 }
 
-// returns the next viewmode in the cycle
-int CGUIViewControl::GetNextViewMode() const
+int CGUIViewControl::GetViewModeByID(int id) const
 {
-  CGUIBaseContainer *nextView = NULL;
-  if (m_currentView < (int)m_vecViews.size() - 1)
-    nextView = (CGUIBaseContainer *)m_vecViews[m_currentView + 1];
-  else if (m_vecViews.size())
-    nextView = (CGUIBaseContainer *)m_vecViews[0];
-  if (nextView)
-    return (nextView->GetType() << 16) | nextView->GetID();
+  for (unsigned int i = 0; i < m_vecViews.size(); ++i)
+  {
+    CGUIBaseContainer *view = (CGUIBaseContainer *)m_vecViews[i];
+    if (view->GetID() == id)
+      return (view->GetType() << 16) | view->GetID();
+  }
   return 0;  // no view modes :(
+}
+
+// returns the next viewmode in the cycle
+int CGUIViewControl::GetNextViewMode(int direction) const
+{
+  if (!m_vecViews.size())
+    return 0; // no view modes :(
+
+  int viewNumber = (m_currentView + direction) % (int)m_vecViews.size();
+  if (viewNumber < 0) viewNumber += m_vecViews.size();
+  CGUIBaseContainer *nextView = (CGUIBaseContainer *)m_vecViews[viewNumber];
+  return (nextView->GetType() << 16) | nextView->GetID();
 }
 
 void CGUIViewControl::Clear()
