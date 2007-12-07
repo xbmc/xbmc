@@ -641,8 +641,8 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *source, CS
         // for my programs
         if (category.Equals("programs") || category.Equals("myprograms"))
         {
-          // only allow HD
-          if (url.IsLocal())
+          // only allow HD and plugins
+          if (url.IsLocal() || protocol.Equals("plugin"))
             verifiedPaths.push_back(vecPaths[j]);
           else
             bIsInvalid = true;
