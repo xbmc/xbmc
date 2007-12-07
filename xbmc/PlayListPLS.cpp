@@ -75,6 +75,12 @@ bool CPlayListPLS::Load(const CStdString &strFile)
     return false;
   }
 
+  if (file.GetLength() > 1024*1024)
+  {
+    CLog::Log(LOGWARNING, __FUNCTION__" - File is larger than 1 MB, most likely not a playlist");
+    return false;
+  }
+
   char szLine[4096];
   CStdString strLine;
 
@@ -93,22 +99,9 @@ bool CPlayListPLS::Load(const CStdString &strFile)
     if(strLine.Equals(START_PLAYLIST_MARKER))
       break;
 
-#if 0
-    // try to parse as an url
-    CURL url(strLine);
-     
-    // if it isn't an url, we are not interested
-    if (url.GetProtocol().IsEmpty())
-      continue;
-
-    // if it's shoutcast, replace the http with shout
-    if (bShoutCast && url.GetProtocol().Equals("http") )
-      strLine.Replace("http:", "shout:");
-    
-    // add this to playlist
-    CPlayListItem newItem(strLine, strLine, 0);
-    Add(newItem);
-#endif
+    // if there is something else before playlist marker, this isn't a pls file
+    if(!strLine.IsEmpty())
+      return false;
   }
 
   int iMaxSize = 0;
