@@ -287,10 +287,9 @@ void CNetworkLinux::SetNameServers(std::vector<CStdString> nameServers)
 std::vector<NetworkAccessPoint>  CNetworkInterfaceLinux::GetAccessPoints(void)
 {
    std::vector<NetworkAccessPoint> result;
-/*
+
    if (!IsWireless())
       return result;
-*/
    
    // Query the wireless extentsions version number. It will help us when we 
    // parse the resulting events   
@@ -344,7 +343,7 @@ std::vector<NetworkAccessPoint>  CNetworkInterfaceLinux::GetAccessPoints(void)
       int x = ioctl(m_network->GetSocket(), SIOCGIWSCAN, &iwr);
       if (x == 0)
          break;
-      printf("************%d errno\n", errno);
+
       if (errno == E2BIG && res_buf_len < 100000) 
       {
          free(res_buf);
