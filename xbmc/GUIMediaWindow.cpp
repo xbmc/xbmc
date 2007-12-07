@@ -255,7 +255,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         }
         return true;
       }
-      else if (message.GetParam1()==GUI_MSG_UPDATE)
+      else if (message.GetParam1()==GUI_MSG_UPDATE && IsActive())
       {
         int iItem = m_viewControl.GetSelectedItem();
         Update(m_vecItems.m_strPath);
@@ -289,7 +289,22 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
     { // send a notify all to all controls on this window
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_REFRESH_LIST);
       OnMessage(msg);
+      break;
     }
+  case GUI_MSG_CHANGE_VIEW_MODE:
+    {
+      int viewMode = 0;
+      if (message.GetParam1())  // we have an id
+        viewMode = m_viewControl.GetViewModeByID(message.GetParam1());
+      else if (message.GetParam2())
+        viewMode = m_viewControl.GetNextViewMode((int)message.GetParam2());
+
+      if (m_guiState.get())
+        m_guiState->SaveViewAsControl(viewMode);
+      UpdateButtons();
+      return true;
+    }
+    break;
   }
 
   return CGUIWindow::OnMessage(message);
