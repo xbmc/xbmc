@@ -3329,63 +3329,67 @@ bool CUtil::IsUsingTTFSubtitles()
 
 typedef struct
 {
-  char command[20];
+  char command[32];
   bool needsParameters;
   char description[128];
 } BUILT_IN;
 
 const BUILT_IN commands[] = {
-  { "Help",               false,  "This help message" },
-  { "Reboot",             false,  "Reboot the xbox (power cycle)" },
-  { "Restart",            false,  "Restart the xbox (power cycle)" },
-  { "ShutDown",           false,  "Shutdown the xbox" },
-  { "Dashboard",          false,  "Run your dashboard" },
-  { "RestartApp",         false,  "Restart XBMC" },
-  { "Credits",            false,  "Run XBMCs Credits" },
-  { "Reset",              false,  "Reset the xbox (warm reboot)" },
-  { "Mastermode",         false,  "Control master mode" },
-  { "ActivateWindow",     true,   "Activate the specified window" },
-  { "ReplaceWindow",      true,   "Replaces the current window with the new one" },
-  { "TakeScreenshot",     false,  "Takes a Screenshot" },
-  { "RunScript",          true,   "Run the specified script" },
-  { "RunXBE",             true,   "Run the specified executeable" },
-  { "Extract",            true,   "Extracts the specified archive" },
-  { "PlayMedia",          true,   "Play the specified media file (or playlist)" },
-  { "SlideShow",          true,   "Run a slideshow from the specified directory" },
-  { "RecursiveSlideShow", true,   "Run a slideshow from the specified directory, including all subdirs" },
-  { "ReloadSkin",         false,  "Reload XBMC's skin" },
-  { "PlayerControl",      true,   "Control the music or video player" },
-  { "EjectTray",          false,  "Close or open the DVD tray" },
-  { "AlarmClock",         true,   "Prompt for a length of time and start an alarm clock" },
-  { "CancelAlarm",        true,   "Cancels an alarm" },
-  { "KaiConnection",      false,  "Change kai connection status (connect/disconnect)" },
-  { "Action",             true,   "Executes an action for the active window (same as in keymap)" },
-  { "Notification",       true,   "Shows a notification on screen, specify header, then message, and optionally time in milliseconds and a icon." },
-  { "PlayDVD",            false,  "Plays the inserted CD or DVD media from the DVD-ROM Drive!" },
-  { "Skin.ToggleSetting", true,   "Toggles a skin setting on or off" },
-  { "Skin.SetString",     true,   "Prompts and sets skin string" },
-  { "Skin.SetNumeric",    true,   "Prompts and sets numeric input" },
-  { "Skin.SetPath",       true,   "Prompts and sets a skin path" },
-  { "Skin.Theme",         true,   "Control skin theme" },
-  { "Skin.SetImage",      true,   "Prompts and sets a skin image" },
-  { "Skin.SetLargeImage", true,   "Prompts and sets a large skin images" },
-  { "Skin.SetFile",       true,   "Prompts and sets a file" },
-  { "Skin.SetBool",       true,   "Sets a skin setting on" },
-  { "Skin.Reset",         true,   "Resets a skin setting to default" },
-  { "Skin.ResetSettings", false,  "Resets all skin settings" },
-  { "Mute",               false,  "Mute the player" },
-  { "SetVolume",          true,   "Set the current volume" },
-  { "Dialog.Close",       true,   "Close a dialog" },
-  { "System.LogOff",      false,  "Log off current user" },
-  { "System.PWMControl",  true,   "Control PWM RGB LEDs" },
-  { "Resolution",         true,   "Change XBMC's Resolution" },
-  { "SetFocus",           true,   "Change current focus to a different control id" }, 
-  { "BackupSystemInfo",   false,  "Backup System Informations to local hdd" },
-  { "UpdateLibrary",      true,   "Update the selected library (music or video)" },
-  { "PageDown",           true,   "Send a page down event to the pagecontrol with given id" },
-  { "PageUp",             true,   "Send a page up event to the pagecontrol with given id" },
-  { "LastFM.Love",        false,  "Add the current playing last.fm radio track to the last.fm loved tracks" },
-  { "LastFM.Ban",         false,  "Ban the current playing last.fm radio track" },
+  { "Help",                       false,  "This help message" },
+  { "Reboot",                     false,  "Reboot the xbox (power cycle)" },
+  { "Restart",                    false,  "Restart the xbox (power cycle)" },
+  { "ShutDown",                   false,  "Shutdown the xbox" },
+  { "Dashboard",                  false,  "Run your dashboard" },
+  { "RestartApp",                 false,  "Restart XBMC" },
+  { "Credits",                    false,  "Run XBMCs Credits" },
+  { "Reset",                      false,  "Reset the xbox (warm reboot)" },
+  { "Mastermode",                 false,  "Control master mode" },
+  { "ActivateWindow",             true,   "Activate the specified window" },
+  { "ReplaceWindow",              true,   "Replaces the current window with the new one" },
+  { "TakeScreenshot",             false,  "Takes a Screenshot" },
+  { "RunScript",                  true,   "Run the specified script" },
+  { "RunXBE",                     true,   "Run the specified executeable" },
+  { "Extract",                    true,   "Extracts the specified archive" },
+  { "PlayMedia",                  true,   "Play the specified media file (or playlist)" },
+  { "SlideShow",                  true,   "Run a slideshow from the specified directory" },
+  { "RecursiveSlideShow",         true,   "Run a slideshow from the specified directory, including all subdirs" },
+  { "ReloadSkin",                 false,  "Reload XBMC's skin" },
+  { "PlayerControl",              true,   "Control the music or video player" },
+  { "EjectTray",                  false,  "Close or open the DVD tray" },
+  { "AlarmClock",                 true,   "Prompt for a length of time and start an alarm clock" },
+  { "CancelAlarm",                true,   "Cancels an alarm" },
+  { "KaiConnection",              false,  "Change kai connection status (connect/disconnect)" },
+  { "Action",                     true,   "Executes an action for the active window (same as in keymap)" },
+  { "Notification",               true,   "Shows a notification on screen, specify header, then message, and optionally time in milliseconds and a icon." },
+  { "PlayDVD",                    false,  "Plays the inserted CD or DVD media from the DVD-ROM Drive!" },
+  { "Skin.ToggleSetting",         true,   "Toggles a skin setting on or off" },
+  { "Skin.SetString",             true,   "Prompts and sets skin string" },
+  { "Skin.SetNumeric",            true,   "Prompts and sets numeric input" },
+  { "Skin.SetPath",               true,   "Prompts and sets a skin path" },
+  { "Skin.Theme",                 true,   "Control skin theme" },
+  { "Skin.SetImage",              true,   "Prompts and sets a skin image" },
+  { "Skin.SetLargeImage",         true,   "Prompts and sets a large skin images" },
+  { "Skin.SetFile",               true,   "Prompts and sets a file" },
+  { "Skin.SetBool",               true,   "Sets a skin setting on" },
+  { "Skin.Reset",                 true,   "Resets a skin setting to default" },
+  { "Skin.ResetSettings",         false,  "Resets all skin settings" },
+  { "Mute",                       false,  "Mute the player" },
+  { "SetVolume",                  true,   "Set the current volume" },
+  { "Dialog.Close",               true,   "Close a dialog" },
+  { "System.LogOff",              false,  "Log off current user" },
+  { "System.PWMControl",          true,   "Control PWM RGB LEDs" },
+  { "Resolution",                 true,   "Change XBMC's Resolution" },
+  { "SetFocus",                   true,   "Change current focus to a different control id" }, 
+  { "BackupSystemInfo",           false,  "Backup System Informations to local hdd" },
+  { "UpdateLibrary",              true,   "Update the selected library (music or video)" },
+  { "PageDown",                   true,   "Send a page down event to the pagecontrol with given id" },
+  { "PageUp",                     true,   "Send a page up event to the pagecontrol with given id" },
+  { "LastFM.Love",                false,  "Add the current playing last.fm radio track to the last.fm loved tracks" },
+  { "LastFM.Ban",                 false,  "Ban the current playing last.fm radio track" },
+  { "Container.Refresh",          false,  "Refresh current listing" },
+  { "Container.NextViewMode",     false,  "Move to the next view type (and refresh the listing)" },
+  { "Container.PreviousViewMode", false,  "Move to the previous view type (and refresh the listing)" },
+  { "Container.SetViewMode",      true,   "Move to the view with the given id" },
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -4248,6 +4252,26 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("lastfm.ban"))
   {
     CLastFmManager::GetInstance()->Ban(parameter.Equals("false") ? false : true);
+  }
+  else if (execute.Equals("container.refresh"))
+  {
+    CGUIMessage message(GUI_MSG_NOTIFY_ALL, m_gWindowManager.GetFocusedWindow(), 0, GUI_MSG_UPDATE);
+    g_graphicsContext.SendMessage(message);
+  }
+  else if (execute.Equals("container.nextviewmode"))
+  {
+    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetFocusedWindow(), 0, 0, 1);
+    g_graphicsContext.SendMessage(message);
+  }
+  else if (execute.Equals("container.previousviewmode"))
+  {
+    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetFocusedWindow(), 0, 0, -1);
+    g_graphicsContext.SendMessage(message);
+  }
+  else if (execute.Equals("container.setviewmode"))
+  {
+    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetFocusedWindow(), 0, atoi(parameter.c_str()));
+    g_graphicsContext.SendMessage(message);
   }
   else
     return -1;

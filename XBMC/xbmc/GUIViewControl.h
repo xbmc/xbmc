@@ -25,8 +25,9 @@ public:
   void SetFocused();
 
   bool HasControl(int controlID) const;
-  int GetNextViewMode() const;
+  int GetNextViewMode(int direction = 1) const;
   int GetViewModeNumber(int number) const;
+  int GetViewModeByID(int id) const;
 
   int GetCurrentControl() const;
 
