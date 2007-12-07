@@ -28,6 +28,9 @@ public:
 
    virtual void GetSettings(NetworkAssignment& assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode);
    virtual void SetSettings(NetworkAssignment& assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode);
+   
+   // Returns the list of access points in the area
+   virtual std::vector<NetworkAccessPoint> GetAccessPoints(void);
 
 private:   
    void WriteSettings(FILE* fw, NetworkAssignment assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode);
@@ -47,9 +50,6 @@ public:
    // Get/set the nameserver(s)
    virtual std::vector<CStdString> GetNameServers(void);
    virtual void SetNameServers(std::vector<CStdString> nameServers);
-   
-   // Returns the list of access points in the area
-   virtual std::vector<NetworkAccessPoint> GetAccessPoints(void);
 
    friend class CNetworkInterfaceLinux;
         
