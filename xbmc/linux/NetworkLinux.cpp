@@ -272,7 +272,7 @@ void CNetworkLinux::SetNameServers(std::vector<CStdString> nameServers)
    FILE* fp = fopen("/etc/resolv.conf", "w");
    if (fp != NULL)
    {
-      for (int i = 0; i < nameServers.size(); i++)
+      for (unsigned int i = 0; i < nameServers.size(); i++)
       {
          fprintf(fp, "nameserver %s\n", nameServers[i].c_str());
       }
@@ -284,9 +284,184 @@ void CNetworkLinux::SetNameServers(std::vector<CStdString> nameServers)
    }
 }
 
-std::vector<NetworkAccessPoint>  CNetworkLinux::GetAccessPoints(void)
+std::vector<NetworkAccessPoint>  CNetworkInterfaceLinux::GetAccessPoints(void)
 {
    std::vector<NetworkAccessPoint> result;
+/*
+   if (!IsWireless())
+      return result;
+*/
+   
+   // Query the wireless extentsions version number. It will help us when we 
+   // parse the resulting events   
+   struct iwreq iwr;
+   char rangebuffer[sizeof(iw_range) * 2];    /* Large enough */
+   struct iw_range*  range = (struct iw_range*) rangebuffer;
+      
+   memset(rangebuffer, 0, sizeof(rangebuffer));
+   iwr.u.data.pointer = (caddr_t) rangebuffer;
+   iwr.u.data.length = sizeof(rangebuffer);
+   iwr.u.data.flags = 0;
+   strncpy(iwr.ifr_name, GetName().c_str(), IFNAMSIZ);   
+   if (ioctl(m_network->GetSocket(), SIOCGIWRANGE, &iwr) < 0)
+   {
+      CLog::Log(LOGWARNING, "%-8.16s  Driver has no Wireless Extension version information.", 
+         GetName().c_str());
+      return result;
+   }
+
+   // Scan for wireless access points
+   memset(&iwr, 0, sizeof(iwr));
+   strncpy(iwr.ifr_name, GetName().c_str(), IFNAMSIZ);
+   if (ioctl(m_network->GetSocket(), SIOCSIWSCAN, &iwr) < 0) 
+   {
+      CLog::Log(LOGWARNING, "Cannot initiate wireless scan: ioctl[SIOCSIWSCAN]: %s", strerror(errno));
+      return result;
+   }
+   
+   // Get the results of the scanning. Three scenarios:
+   //    1. There's not enough room in the result buffer (E2BIG)
+   //    2. The scanning is not complete (EAGAIN) and we need to try again. We cap this with 15 seconds.
+   //    3. Were'e good.
+   int duration = 0; // ms
+   unsigned char* res_buf = NULL;
+   int res_buf_len = IW_SCAN_MAX_DATA;
+   while (duration < 15000)
+   {
+      if (!res_buf)      
+         res_buf = (unsigned char*) malloc(res_buf_len);
+         
+      if (res_buf == NULL)
+      {
+         CLog::Log(LOGWARNING, "Cannot alloc memory for wireless scanning");
+         return result;
+      }
+      
+      strncpy(iwr.ifr_name, GetName().c_str(), IFNAMSIZ);
+      iwr.u.data.pointer = res_buf;
+      iwr.u.data.length = res_buf_len;
+      iwr.u.data.flags = 0;
+      int x = ioctl(m_network->GetSocket(), SIOCGIWSCAN, &iwr);
+      if (x == 0)
+         break;
+      printf("************%d errno\n", errno);
+      if (errno == E2BIG && res_buf_len < 100000) 
+      {
+         free(res_buf);
+         res_buf = NULL;
+         res_buf_len *= 2;
+         CLog::Log(LOGDEBUG, "Scan results did not fit - trying larger buffer (%lu bytes)",
+                        (unsigned long) res_buf_len);
+      }
+      else if (errno == EAGAIN)
+      {
+         usleep(250000); // sleep for 250ms
+         duration += 250;
+      }
+      else 
+      {
+         CLog::Log(LOGWARNING, "Cannot get wireless scan results: ioctl[SIOCGIWSCAN]: %s", strerror(errno));
+         free(res_buf);
+         return result;
+      }
+   }
+   
+   size_t len = iwr.u.data.length;    
+   char* pos = (char *) res_buf;
+   char* end = (char *) res_buf + len;
+   char* custom;
+   struct iw_event iwe_buf, *iwe = &iwe_buf;
+
+   CStdString essId;
+   int quality;
+   EncMode encryption = ENC_NONE;
+   bool first = true;
+
+   while (pos + IW_EV_LCP_LEN <= end) 
+   {
+      /* Event data may be unaligned, so make a local, aligned copy
+       * before processing. */
+      memcpy(&iwe_buf, pos, IW_EV_LCP_LEN);
+      if (iwe->len <= IW_EV_LCP_LEN)
+         break;
+     
+      custom = pos + IW_EV_POINT_LEN;
+      if (range->we_version_compiled > 18 && 
+          (iwe->cmd == SIOCGIWESSID ||
+           iwe->cmd == SIOCGIWENCODE ||
+           iwe->cmd == IWEVGENIE ||
+           iwe->cmd == IWEVCUSTOM)) 
+      {
+         /* Wireless extentsions v19 removed the pointer from struct iw_point */
+         char *dpos = (char *) &iwe_buf.u.data.length;
+         int dlen = dpos - (char *) &iwe_buf;
+         memcpy(dpos, pos + IW_EV_LCP_LEN, sizeof(struct iw_event) - dlen);
+      } 
+      else 
+      {
+         memcpy(&iwe_buf, pos, sizeof(struct iw_event));
+         custom += IW_EV_POINT_OFF;
+      }
+      
+      switch (iwe->cmd) 
+      {
+         case SIOCGIWAP:
+            if (first)
+               first = false;
+            else
+               result.push_back(NetworkAccessPoint(essId, quality, encryption));
+            break;
+           
+         case SIOCGIWESSID:
+         {
+            char essid[IW_ESSID_MAX_SIZE+1];
+            memset(essid, '\0', sizeof(essid));
+            if ((custom) && (iwe->u.essid.length))
+            {
+               memcpy(essid, custom, iwe->u.essid.length);
+               essId = essid;
+            }
+            break;
+         }
+         
+         case IWEVQUAL:
+             quality = iwe->u.qual.qual;
+             break;
+             
+         case SIOCGIWENCODE:
+             if (!(iwe->u.data.flags & IW_ENCODE_DISABLED) && encryption == ENC_NONE)
+                encryption = ENC_WEP;
+             break;
+             
+         case IWEVGENIE:
+         {
+            int offset = 0;
+            while (offset <= iwe_buf.u.data.length)
+            {
+               switch (custom[offset])
+               {
+                  case 0xdd: /* WPA1 */
+                     if (encryption != ENC_WPA2)
+                        encryption = ENC_WPA;
+                     break;
+                  case 0x30: /* WPA2 */
+                     encryption = ENC_WPA2;
+               }
+               
+               offset += custom[offset+1] + 2;
+            }
+         }         
+      }
+      
+      pos += iwe->len;
+   }
+   
+   if (!first)
+      result.push_back(NetworkAccessPoint(essId, quality, encryption));
+      
+   free(res_buf);
+   res_buf = NULL;
+   
    return result;  
 }
   

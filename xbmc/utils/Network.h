@@ -48,6 +48,9 @@ public:
    virtual CStdString GetCurrentDefaultGateway(void) = 0;
    virtual CStdString GetCurrentWirelessEssId(void) = 0;
 
+   // Returns the list of access points in the area
+   virtual std::vector<NetworkAccessPoint> GetAccessPoints(void) = 0;
+
    virtual void GetSettings(NetworkAssignment& assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode) = 0;
    virtual void SetSettings(NetworkAssignment& assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode) = 0;
 };
@@ -81,9 +84,6 @@ public:
    virtual std::vector<CStdString> GetNameServers(void) = 0;
    virtual void SetNameServers(std::vector<CStdString> nameServers) = 0;
    
-   // Returns the list of access points in the area
-   virtual std::vector<NetworkAccessPoint> GetAccessPoints(void) = 0;
-      
    // callback from application controlled thread to handle any setup
    void NetworkMessage(EMESSAGE message, DWORD dwParam);
    
