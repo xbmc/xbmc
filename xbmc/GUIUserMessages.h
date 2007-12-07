@@ -95,3 +95,6 @@
 
 // Message sent to tell the GUI to update a single item
 #define GUI_MSG_UPDATE_ITEM           GUI_MSG_USER + 29
+
+// Message sent to tell the GUI to change view mode
+#define GUI_MSG_CHANGE_VIEW_MODE      GUI_MSG_USER + 30
