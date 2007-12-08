@@ -48,7 +48,7 @@ CPartyModeManager::CPartyModeManager(void)
 CPartyModeManager::~CPartyModeManager(void)
 {
 }
-//#define NEW_PARTY_MODE_METHOD 1
+
 bool CPartyModeManager::Enable(bool bVideo /* = false */)
 {
   // Filter using our PartyMode xml file
@@ -82,6 +82,7 @@ bool CPartyModeManager::Enable(bool bVideo /* = false */)
   {
     m_strCurrentFilterMusic.Empty();
     m_strCurrentFilterVideo.Empty();
+    m_type = bVideo ? "video" : "music";
   }
 
   ClearState();
