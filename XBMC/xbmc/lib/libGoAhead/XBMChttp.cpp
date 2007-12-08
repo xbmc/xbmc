@@ -2790,8 +2790,6 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
   command=command.ToLower();
   if (numParas>=0)
   {
-	for (int i = 0; i < numParas; i++)
-      CUtil::UrlDecode(paras[i]);
     if (command == "clearplaylist")                   retVal = xbmcClearPlayList(numParas, paras);  
       else if (command == "addtoplaylist")            retVal = xbmcAddToPlayList(numParas, paras);  
       else if (command == "playfile")                 retVal = xbmcPlayerPlayFile(numParas, paras); 
@@ -2885,6 +2883,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
 
       else
         retVal = SetResponse(openTag+"Error:Unknown command");
+
   }
   else if (numParas==-2)
 	  retVal = SetResponse(openTag+"Error:Too many parameters");
@@ -2930,7 +2929,10 @@ CStdString CXbmcHttpShim::xbmcExternalCall(char *command)
   }
   else //no parameters
     execute = cmd;
-  return xbmcProcessCommand(NO_EID, NULL, (char_t *) execute.c_str(), (char_t *) parameter.c_str());
+  if (CUtil::UrlDecode(parameter))
+    return xbmcProcessCommand(NO_EID, NULL, (char_t *) execute.c_str(), (char_t *) parameter.c_str());
+  else
+	return "Error: Illegal escape sequence";
 }
 
 
