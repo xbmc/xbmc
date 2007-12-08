@@ -481,6 +481,9 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     if (dir.IsArtistDir(item->m_strPath) && !dir.IsAllItem(item->m_strPath) || (item->m_strPath.Left(14).Equals("videodb://3/4/") && item->m_strPath.size() > 14 && item->m_bIsFolder))
       buttons.Add(CONTEXT_BUTTON_SET_ARTIST_THUMB, 13359);
 
+    if (m_vecItems.m_strPath.Equals("plugin://music/"))
+      buttons.Add(CONTEXT_BUTTON_SET_PLUGIN_THUMB, 1044);
+
     //Set default or clear default
     NODE_TYPE nodetype = dir.GetDirectoryType(item->m_strPath);
     if (!item->IsParentFolder() && !inPlaylists &&
@@ -553,7 +556,8 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return true;
 
   case CONTEXT_BUTTON_SET_ARTIST_THUMB:
-    SetArtistImage(itemNumber);
+  case CONTEXT_BUTTON_SET_PLUGIN_THUMB:
+    SetThumb(itemNumber, button);
     return true;
 
   case CONTEXT_BUTTON_UPDATE_LIBRARY:
@@ -625,40 +629,81 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   return CGUIWindowMusicBase::OnContextButton(itemNumber, button);
 }
 
-void CGUIWindowMusicNav::SetArtistImage(int iItem)
+void CGUIWindowMusicNav::SetThumb(int iItem, CONTEXT_BUTTON button)
 {
   CFileItem* pItem = m_vecItems[iItem];
+  CFileItemList items;
   CStdString picturePath;
+  CStdString strPath;
+  CStdString strThumb;
+  CStdString cachedThumb;
 
-  CStdString strPath = pItem->m_strPath;
-  long idArtist = -1;
-  if (pItem->IsMusicDb())
+  if (button == CONTEXT_BUTTON_SET_ARTIST_THUMB)
   {
-    CUtil::RemoveSlashAtEnd(strPath);
-    int nPos=strPath.ReverseFind("/");
-    if (nPos>-1)
+    long idArtist = -1;
+    if (pItem->IsMusicDb())
     {
-      //  try to guess where the user should start
-      //  browsing for the artist thumb
-      CFileItemList albums;
-      idArtist=atol(strPath.Mid(nPos+1));
-      CStdString path;
+      CUtil::RemoveSlashAtEnd(strPath);
+      int nPos=strPath.ReverseFind("/");
+      if (nPos>-1)
+      {
+        //  try to guess where the user should start
+        //  browsing for the artist thumb
+        CFileItemList albums;
+        idArtist=atol(strPath.Mid(nPos+1));
+        CStdString path;
+      }
+    }
+    else if (pItem->IsVideoDb())
+      idArtist = m_musicdatabase.GetArtistByName(pItem->GetLabel());
+
+    m_musicdatabase.GetArtistPath(idArtist, picturePath);
+
+    cachedThumb = pItem->GetCachedArtistThumb();
+  }
+  else
+  {
+    strPath = m_vecItems[iItem]->m_strPath;
+    strPath.Replace("plugin://music/","Q:\\plugins\\music\\");
+    strPath.Replace("/","\\");
+    picturePath = strPath;
+    CFileItem item(strPath,true);
+    cachedThumb = item.GetCachedProgramThumb();
+  }
+
+  if (XFILE::CFile::Exists(cachedThumb))
+  {
+    CFileItem *item = new CFileItem("thumb://Current", false);
+    item->SetThumbnailImage(cachedThumb);
+    item->SetLabel(g_localizeStrings.Get(20016));
+    items.Add(item);
+  }
+
+  if (button == CONTEXT_BUTTON_SET_PLUGIN_THUMB)
+  {
+    if (items.Size() == 0)
+    {
+      CFileItem item2(strPath,false);
+      CUtil::AddFileToFolder(strPath,"default.py",item2.m_strPath);
+      if (XFILE::CFile::Exists(item2.GetCachedProgramThumb()))
+      {
+        CFileItem *item = new CFileItem("thumb://Current", false);
+        item->SetThumbnailImage(item2.GetCachedProgramThumb());
+        item->SetLabel(g_localizeStrings.Get(20016));
+        items.Add(item);
+      }
+    }
+
+    CUtil::AddFileToFolder(strPath,"default.tbn",strThumb);
+    if (XFILE::CFile::Exists(strThumb))
+    {
+      CFileItem* item = new CFileItem(strThumb,false);
+      item->SetThumbnailImage(strThumb);
+      item->SetLabel(g_localizeStrings.Get(20017));
+      items.Add(item);
     }
   }
-  else if (pItem->IsVideoDb())
-    idArtist = m_musicdatabase.GetArtistByName(pItem->GetLabel());
 
-  m_musicdatabase.GetArtistPath(idArtist, picturePath);
-
-  CFileItemList items;
-  if (XFILE::CFile::Exists(pItem->GetCachedArtistThumb()))
-  {
-    CFileItem* nItem = new CFileItem("thumb://Current",false);
-    nItem->SetLabel(g_localizeStrings.Get(20016));
-    nItem->SetThumbnailImage(pItem->GetCachedArtistThumb());
-    items.Add(nItem);
-  }
-  CStdString strThumb;
   CUtil::AddFileToFolder(picturePath,"folder.jpg",strThumb);
   if (XFILE::CFile::Exists(strThumb))
   {
@@ -670,26 +715,43 @@ void CGUIWindowMusicNav::SetArtistImage(int iItem)
 
   CFileItem* nItem = new CFileItem("thumb://None",false);
   nItem->SetLabel(g_localizeStrings.Get(20018));
-  nItem->SetThumbnailImage("DefaultArtistBig.png");
+  if (button == CONTEXT_BUTTON_SET_ARTIST_THUMB)
+    nItem->SetThumbnailImage("DefaultArtistBig.png");
+  else
+    nItem->SetThumbnailImage("DefaultFolderBig.png");
   items.Add(nItem);
 
   if (CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_musicSources, g_localizeStrings.Get(20019), picturePath))
   {
-    CStdString thumb(pItem->GetCachedArtistThumb());
     CPicture picture;
     if (picturePath.Equals("thumb://Current"))
       return;
-    if (picturePath.Equals("thumb://None"))
-      XFILE::CFile::Delete(thumb);
 
-    if (picturePath.Equals("thumb://None") || picture.DoCreateThumbnail(picturePath, thumb))
+    if (picturePath.Equals("thumb://None"))
+    {
+      XFILE::CFile::Delete(cachedThumb);
+      if (button == CONTEXT_BUTTON_SET_PLUGIN_THUMB)
+      {
+        CPicture picture;
+        picture.CacheSkinImage("DefaultFolderBig.png",cachedThumb);
+        CFileItem item2(strPath,false);
+        CUtil::AddFileToFolder(strPath,"default.py",item2.m_strPath);
+        XFILE::CFile::Delete(item2.GetCachedProgramThumb());
+      }
+    }
+    else if (button == CONTEXT_BUTTON_SET_PLUGIN_THUMB)
+      XFILE::CFile::Cache(picturePath,cachedThumb);
+
+    if (picturePath.Equals("thumb://None") || picture.DoCreateThumbnail(picturePath, cachedThumb))
     {
       CMusicDatabaseDirectory dir;
       dir.ClearDirectoryCache(m_vecItems.m_strPath);
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS, 0, NULL);
+      g_graphicsContext.SendMessage(msg);
       Update(m_vecItems.m_strPath);
     }
     else
-      CLog::Log(LOGERROR,"  Could not cache artist thumb: %s",picturePath.c_str());
+      CLog::Log(LOGERROR, " %s Could not cache artist/plugin thumb: %s", __FUNCTION__, picturePath.c_str());
   }
 }
 

@@ -23,6 +23,7 @@ enum VIEW_TYPE { VIEW_TYPE_NONE = 0,
  \ingroup controls
  \brief 
  */
+
 class CGUIBaseContainer : public CGUIControl
 {
 public:
@@ -83,11 +84,13 @@ protected:
   virtual int  CorrectOffset(int offset, int cursor) const;
   virtual void UpdateLayout();
   virtual void CalculateLayout();
-  bool InsideLayout(const CGUIListItemLayout &layout, const CPoint &point);
+  virtual void SelectItem(int item) {};
+  bool InsideLayout(const CGUIListItemLayout *layout, const CPoint &point);
 
   inline float Size() const;
   void MoveToRow(int row);
   void FreeMemory(int keepStart, int keepEnd);
+  void GetCurrentLayouts();
 
   int m_offset;
   int m_cursor;
@@ -104,8 +107,11 @@ protected:
 
   DWORD m_renderTime;
 
-  CGUIListItemLayout m_layout;
-  CGUIListItemLayout m_focusedLayout;
+  vector<CGUIListItemLayout> m_layouts;
+  vector<CGUIListItemLayout> m_focusedLayouts;
+
+  CGUIListItemLayout *m_layout;
+  CGUIListItemLayout *m_focusedLayout;
 
   virtual void ScrollToOffset(int offset);
   DWORD m_scrollLastTime;
@@ -118,5 +124,9 @@ protected:
 
   bool m_staticContent;
   vector<CGUIListItem*> m_staticItems;
+  bool m_wasReset;  // true if we've received a Reset message until we've rendered once.  Allows
+                    // us to make sure we don't tell the infomanager that we've been moving when
+                    // the "movement" was simply due to the list being repopulated (thus cursor position
+                    // changing around)
 };
 

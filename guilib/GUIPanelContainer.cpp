@@ -26,16 +26,18 @@ void CGUIPanelContainer::Render()
   if (m_bInvalidated)
     UpdateLayout();
 
+  if (!m_layout || !m_focusedLayout) return;
+
   m_scrollOffset += m_scrollSpeed * (m_renderTime - m_scrollLastTime);
-  if ((m_scrollSpeed < 0 && m_scrollOffset < m_offset * m_layout.Size(m_orientation)) ||
-      (m_scrollSpeed > 0 && m_scrollOffset > m_offset * m_layout.Size(m_orientation)))
+  if ((m_scrollSpeed < 0 && m_scrollOffset < m_offset * m_layout->Size(m_orientation)) ||
+      (m_scrollSpeed > 0 && m_scrollOffset > m_offset * m_layout->Size(m_orientation)))
   {
-    m_scrollOffset = m_offset * m_layout.Size(m_orientation);
+    m_scrollOffset = m_offset * m_layout->Size(m_orientation);
     m_scrollSpeed = 0;
   }
   m_scrollLastTime = m_renderTime;
 
-  int offset = (int)(m_scrollOffset / m_layout.Size(m_orientation));
+  int offset = (int)(m_scrollOffset / m_layout->Size(m_orientation));
 
   // Free memory not used on screen at the moment, do this first so there's more memory for the new items.
   FreeMemory(CorrectOffset(offset, 0), CorrectOffset(offset, (m_itemsPerPage + 1) * m_itemsPerRow));
@@ -44,9 +46,9 @@ void CGUIPanelContainer::Render()
   float posX = m_posX;
   float posY = m_posY;
   if (m_orientation == VERTICAL)
-    posY += (offset * m_layout.Size(m_orientation) - m_scrollOffset);
+    posY += (offset * m_layout->Size(m_orientation) - m_scrollOffset);
   else
-    posX += (offset * m_layout.Size(m_orientation) - m_scrollOffset);;
+    posX += (offset * m_layout->Size(m_orientation) - m_scrollOffset);;
 
   float focusedPosX = 0;
   float focusedPosY = 0;
@@ -73,22 +75,22 @@ void CGUIPanelContainer::Render()
     if (row < m_itemsPerRow)
     {
       if (m_orientation == VERTICAL)
-        posX += m_layout.Size(HORIZONTAL);
+        posX += m_layout->Size(HORIZONTAL);
       else
-        posY += m_layout.Size(VERTICAL);
+        posY += m_layout->Size(VERTICAL);
       row++;
     }
     else
     {
       if (m_orientation == VERTICAL)
       {
-        posY += m_layout.Size(VERTICAL);
-        posX -= m_layout.Size(HORIZONTAL) * (m_itemsPerRow - 1);
+        posY += m_layout->Size(VERTICAL);
+        posX -= m_layout->Size(HORIZONTAL) * (m_itemsPerRow - 1);
       }
       else
       {
-        posX += m_layout.Size(HORIZONTAL);
-        posY -= m_layout.Size(VERTICAL) * (m_itemsPerRow - 1);
+        posX += m_layout->Size(HORIZONTAL);
+        posY -= m_layout->Size(VERTICAL) * (m_itemsPerRow - 1);
       }
       row = 1;
     }
@@ -195,28 +197,7 @@ bool CGUIPanelContainer::OnMessage(CGUIMessage& message)
     }
     else if (message.GetMessage() == GUI_MSG_ITEM_SELECT)
     {
-      // Check that m_offset is valid
-      ValidateOffset();
-      // only select an item if it's in a valid range
-      if (message.GetParam1() >= 0 && message.GetParam1() < m_items.size())
-      {
-        // Select the item requested
-        int item = message.GetParam1();
-        if (item >= m_offset * m_itemsPerRow && item < (m_offset + m_itemsPerPage) * m_itemsPerRow)
-        { // the item is on the current page, so don't change it.
-          SetCursor(item - m_offset * m_itemsPerRow);
-        }
-        else if (item < m_offset * m_itemsPerRow)
-        { // item is on a previous page - make it the first item on the page
-          SetCursor(item % m_itemsPerRow);
-          ScrollToOffset((item - m_cursor) / m_itemsPerRow);
-        }
-        else // (item >= m_offset+m_itemsPerPage)
-        { // item is on a later page - make it the last row on the page
-          SetCursor(item % m_itemsPerRow + m_itemsPerRow * (m_itemsPerPage - 1));
-          ScrollToOffset((item - m_cursor) / m_itemsPerRow);
-        }
-      }
+      SelectItem(message.GetParam1());
       return true;
     }
   }
@@ -349,10 +330,11 @@ void CGUIPanelContainer::Scroll(int amount)
 
 void CGUIPanelContainer::ValidateOffset()
 { // first thing is we check the range of m_offset
+  if (!m_layout) return;
   if (m_offset > (int)GetRows() - m_itemsPerPage)
   {
     m_offset = (int)GetRows() - m_itemsPerPage;
-    m_scrollOffset = m_offset * m_layout.Size(m_orientation);
+    m_scrollOffset = m_offset * m_layout->Size(m_orientation);
   }
   if (m_offset < 0)
   {
@@ -371,19 +353,25 @@ void CGUIPanelContainer::SetCursor(int cursor)
 
 void CGUIPanelContainer::CalculateLayout()
 {
+  GetCurrentLayouts();
+
+  if (!m_layout || !m_focusedLayout) return;
   // calculate the number of items to display
   if (m_orientation == HORIZONTAL)
   {
-    m_itemsPerRow = (int)(m_height / m_layout.Size(VERTICAL));
-    m_itemsPerPage = (int)(m_width / m_layout.Size(HORIZONTAL));
+    m_itemsPerRow = (int)(m_height / m_layout->Size(VERTICAL));
+    m_itemsPerPage = (int)(m_width / m_layout->Size(HORIZONTAL));
   }
   else
   {
-    m_itemsPerRow = (int)(m_width / m_layout.Size(HORIZONTAL));
-    m_itemsPerPage = (int)(m_height / m_layout.Size(VERTICAL));
+    m_itemsPerRow = (int)(m_width / m_layout->Size(HORIZONTAL));
+    m_itemsPerPage = (int)(m_height / m_layout->Size(VERTICAL));
   }
   if (m_itemsPerRow < 1) m_itemsPerRow = 1;
   if (m_itemsPerPage < 1) m_itemsPerPage = 1;
+
+  // ensure that the scroll offset is a multiple of our size
+  m_scrollOffset = m_offset * m_layout->Size(m_orientation);
 }
 
 unsigned int CGUIPanelContainer::GetRows() const
@@ -412,8 +400,12 @@ CGUIPanelContainer::CGUIPanelContainer(DWORD dwParentID, DWORD dwControlId, floa
                          CGUIControl *pSpin, CGUIControl *pPanel)
 : CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, VERTICAL, 200) 
 {
-  m_layout.CreateThumbnailPanelLayouts(itemWidth, itemHeight, false, imageNoFocus, textureWidth, textureHeight, thumbPosX, thumbPosY, thumbWidth, thumbHeight, thumbAlign, thumbAspect, labelInfo, hideLabels);
-  m_focusedLayout.CreateThumbnailPanelLayouts(itemWidth, itemHeight, true, imageFocus, textureWidth, textureHeight, thumbPosX, thumbPosY, thumbWidth, thumbHeight, thumbAlign, thumbAspect, labelInfo, hideLabels);
+  CGUIListItemLayout layout;
+  layout.CreateThumbnailPanelLayouts(itemWidth, itemHeight, false, imageNoFocus, textureWidth, textureHeight, thumbPosX, thumbPosY, thumbWidth, thumbHeight, thumbAlign, thumbAspect, labelInfo, hideLabels);
+  m_layouts.push_back(layout);
+  CGUIListItemLayout focusedLayout;
+  focusedLayout.CreateThumbnailPanelLayouts(itemWidth, itemHeight, true, imageFocus, textureWidth, textureHeight, thumbPosX, thumbPosY, thumbWidth, thumbHeight, thumbAlign, thumbAspect, labelInfo, hideLabels);
+  m_focusedLayouts.push_back(focusedLayout);
   m_height -= 5;
   m_itemsPerPage = (int)(m_height / itemHeight);
   if (m_itemsPerPage < 1) m_itemsPerPage = 1;
@@ -428,8 +420,11 @@ CGUIPanelContainer::CGUIPanelContainer(DWORD dwParentID, DWORD dwControlId, floa
 
 bool CGUIPanelContainer::SelectItemFromPoint(const CPoint &point)
 {
-  float sizeX = m_orientation == VERTICAL ? m_layout.Size(HORIZONTAL) : m_layout.Size(VERTICAL);
-  float sizeY = m_orientation == VERTICAL ? m_layout.Size(VERTICAL) : m_layout.Size(HORIZONTAL);
+  if (!m_layout)
+    return false;
+
+  float sizeX = m_orientation == VERTICAL ? m_layout->Size(HORIZONTAL) : m_layout->Size(VERTICAL);
+  float sizeY = m_orientation == VERTICAL ? m_layout->Size(VERTICAL) : m_layout->Size(HORIZONTAL);
 
   float posY = m_orientation == VERTICAL ? point.y : point.x;
   for (int y = 0; y < m_itemsPerPage; y++)
@@ -464,6 +459,31 @@ bool CGUIPanelContainer::GetCondition(int condition, int data) const
     return (col == data);
   default:
     return CGUIBaseContainer::GetCondition(condition, data);
+  }
+}
+
+void CGUIPanelContainer::SelectItem(int item)
+{
+  // Check that m_offset is valid
+  ValidateOffset();
+  // only select an item if it's in a valid range
+  if (item >= 0 && item < (int)m_items.size())
+  {
+    // Select the item requested
+    if (item >= m_offset * m_itemsPerRow && item < (m_offset + m_itemsPerPage) * m_itemsPerRow)
+    { // the item is on the current page, so don't change it.
+      SetCursor(item - m_offset * m_itemsPerRow);
+    }
+    else if (item < m_offset * m_itemsPerRow)
+    { // item is on a previous page - make it the first item on the page
+      SetCursor(item % m_itemsPerRow);
+      ScrollToOffset((item - m_cursor) / m_itemsPerRow);
+    }
+    else // (item >= m_offset+m_itemsPerPage)
+    { // item is on a later page - make it the last row on the page
+      SetCursor(item % m_itemsPerRow + m_itemsPerRow * (m_itemsPerPage - 1));
+      ScrollToOffset((item - m_cursor) / m_itemsPerRow);
+    }
   }
 }
 

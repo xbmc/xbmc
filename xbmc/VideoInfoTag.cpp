@@ -42,7 +42,7 @@ void CVideoInfoTag::Reset()
   m_bWatched = false;
 }
 
-bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag)
+bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathInfo)
 {
   if (!node) return false;
 
@@ -58,10 +58,13 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag)
   XMLUtils::SetFloat(movie, "rating", m_fRating);
   XMLUtils::SetInt(movie, "year", m_iYear);
   XMLUtils::SetInt(movie, "top250", m_iTop250);
-  XMLUtils::SetInt(movie, "season", m_iSeason);
-  XMLUtils::SetInt(movie, "episode", m_iEpisode);
-  XMLUtils::SetInt(movie, "displayseason",m_iSpecialSortSeason);
-  XMLUtils::SetInt(movie, "displayepisode",m_iSpecialSortEpisode);
+  if (tag == "episodedetails" || tag == "tvshow")
+  {
+    XMLUtils::SetInt(movie, "season", m_iSeason);
+    XMLUtils::SetInt(movie, "episode", m_iEpisode);
+    XMLUtils::SetInt(movie, "displayseason",m_iSpecialSortSeason);
+    XMLUtils::SetInt(movie, "displayepisode",m_iSpecialSortEpisode);
+  }
   XMLUtils::SetString(movie, "votes", m_strVotes);
   XMLUtils::SetString(movie, "outline", m_strPlotOutline);
   XMLUtils::SetString(movie, "plot", m_strPlot);
@@ -70,10 +73,15 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag)
   XMLUtils::SetString(movie, "thumb", m_strPictureURL.m_xml);
   XMLUtils::SetString(movie, "mpaa", m_strMPAARating);
   XMLUtils::SetBoolean(movie, "watched", m_bWatched);
-  XMLUtils::SetString(movie, "file", m_strFile);
-  XMLUtils::SetString(movie, "path", m_strPath);
+  if (savePathInfo)
+  {
+    XMLUtils::SetString(movie, "file", m_strFile);
+    XMLUtils::SetString(movie, "path", m_strPath);
+    XMLUtils::SetString(movie, "filenameandpath", m_strFileNameAndPath);
+    if (m_strEpisodeGuide.IsEmpty())
+      XMLUtils::SetString(movie, "episodeguide", m_strEpisodeGuide);
+  }
   XMLUtils::SetString(movie, "id", m_strIMDBNumber);
-  XMLUtils::SetString(movie, "filenameandpath", m_strFileNameAndPath);
   XMLUtils::SetString(movie, "genre", m_strGenre);
   XMLUtils::SetString(movie, "credits", m_strWritingCredits);
   XMLUtils::SetString(movie, "director", m_strDirector);
@@ -83,8 +91,6 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag)
   XMLUtils::SetString(movie, "aired", m_strFirstAired);
   XMLUtils::SetString(movie, "studio", m_strStudio);
   XMLUtils::SetString(movie, "album", m_strAlbum);
-  if (m_strEpisodeGuide.IsEmpty())
-    XMLUtils::SetString(movie, "episodeguide", m_strEpisodeGuide);
 
   // cast
   for (iCast it = m_cast.begin(); it != m_cast.end(); ++it)

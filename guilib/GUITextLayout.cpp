@@ -458,3 +458,9 @@ void CGUITextLayout::AppendToUTF32(const CStdString &text, DWORD colStyle, vecto
 #endif
 }
 
+void CGUITextLayout::Reset()
+{
+  m_lines.clear();
+  m_lastText.Empty();
+}
+
