@@ -37,10 +37,6 @@ protected:
   virtual bool MoveDown(DWORD nextControl);
   virtual bool MoveUp(DWORD nextControl);
   virtual void ValidateOffset();
-
-  bool m_wasReset;  // true if we've received a Reset message until we've rendered once.  Allows
-                    // us to make sure we don't tell the infomanager that we've been moving when
-                    // the "movement" was simply due to the list being repopulated (thus cursor position
-                    // changing around)
+  virtual void SelectItem(int item);
 };
 

@@ -411,6 +411,8 @@ bool CGUIWindowVideoInfo::OnAction(const CAction& action)
         CFileItem item(m_vecStrCast[iItem].second);
         if (CFile::Exists(item.GetCachedActorThumb()))
           pImage->SetFileName(item.GetCachedActorThumb());
+        else  if (CFile::Exists(item.GetCachedArtistThumb()))
+          pImage->SetFileName(item.GetCachedArtistThumb());
         else
           pImage->SetFileName("DefaultActorBig.png");
       }

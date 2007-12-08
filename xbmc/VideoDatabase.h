@@ -244,6 +244,15 @@ typedef vector<CBookmark> VECBOOKMARKS;
 class CVideoDatabase : public CDatabase
 {
 public:
+
+  class CActor    // used for actor retrieval for non-master users
+  {
+  public:
+    CStdString name;
+    CStdString thumb;
+    bool watched;
+  };
+      
   CVideoDatabase(void);
   virtual ~CVideoDatabase(void);
 
@@ -378,7 +387,7 @@ public:
   void CleanDatabase(VIDEO::IVideoInfoScannerObserver* pObserver=NULL);
   
   long AddFile(const CStdString& strFileName);
-  void ExportToXML(const CStdString &xmlFile);
+  void ExportToXML(const CStdString &xmlFile, bool singleFiles = false);
   void ImportFromXML(const CStdString &xmlFile);
 
 protected:

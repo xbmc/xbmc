@@ -28,6 +28,7 @@
 
 #include "FileSystem/MusicDatabaseDirectory.h"
 #include "FileSystem/VideoDatabaseDirectory.h"
+#include "FileSystem/PluginDirectory.h"
 
 using namespace DIRECTORY;
 using namespace MUSICDATABASEDIRECTORY;
@@ -536,6 +537,14 @@ VECSHARES& CGUIViewStateWindowMusicNav::GetShares()
     share.strPath = "videodb://3/";
     share.m_strThumbnailImage = "defaultFolderBig.png";
     share.m_iDriveType = SHARE_TYPE_LOCAL;
+    m_shares.push_back(share);
+  }
+
+  // plugins share
+  if (CPluginDirectory::HasPlugins("music"))
+  {
+    share.strName = g_localizeStrings.Get(1038);
+    share.strPath = "plugin://music/";
     m_shares.push_back(share);
   }
 
