@@ -1843,7 +1843,8 @@ int CUtil::GetDVDIfoTitle(const CStdString& strFile)
   return atoi(strFilename.Mid(4, 2).c_str());
 }
 
-void CUtil::UrlDecode(CStdString& strURLData)
+bool CUtil::UrlDecode(CStdString& strURLData)
+//returns false if illegal escape code found (probably someone forgot to escape a '%')
 {
   CStdString strResult;
 
@@ -1862,6 +1863,8 @@ void CUtil::UrlDecode(CStdString& strURLData)
         strTmp.assign(strURLData.substr(i + 1, 2));
         int dec_num;
         sscanf(strTmp,"%x",&dec_num);
+		if (dec_num<0 || dec_num>255)
+		  return false;
         strResult += (char)dec_num;
         i += 2;
       }
@@ -1871,6 +1874,7 @@ void CUtil::UrlDecode(CStdString& strURLData)
     else strResult += kar;
   }
   strURLData = strResult;
+  return true;
 }
 
 void CUtil::URLEncode(CStdString& strURLData)

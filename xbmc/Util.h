@@ -104,7 +104,7 @@ public:
   static bool IsTuxBox(const CStdString& strFile);
   static void GetFileAndProtocol(const CStdString& strURL, CStdString& strDir);
   static int GetDVDIfoTitle(const CStdString& strPathFile);
-  static void UrlDecode(CStdString& strURLData);
+  static bool UrlDecode(CStdString& strURLData);
   static void URLEncode(CStdString& strURLData);
   static bool CacheXBEIcon(const CStdString& strFilePath, const CStdString& strIcon);
   static bool GetXBEDescription(const CStdString& strFileName, CStdString& strDescription);
