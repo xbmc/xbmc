@@ -441,16 +441,18 @@ bool CGUIDialogSmartPlaylistEditor::EditPlaylist(const CStdString &path)
   CGUIDialogSmartPlaylistEditor *editor = (CGUIDialogSmartPlaylistEditor *)m_gWindowManager.GetWindow(WINDOW_DIALOG_SMART_PLAYLIST_EDITOR);
   if (!editor) return false;
 
-  CSmartPlaylist playlist;
-  if (!playlist.Load(path)) return false;
-
-  editor->m_playlist = playlist;
-  editor->m_path = path;
   editor->m_isPartyMode = 0;
   if (path.Equals("P:\\PartyMode.xsp"))
     editor->m_isPartyMode = 1;
   if (path.Equals("P:\\PartyMode-Video.xsp"))
     editor->m_isPartyMode = 2;
+
+  CSmartPlaylist playlist;
+  if (editor->m_isPartyMode == 0 && !playlist.Load(path))
+    return false; // only edit playlists that exist
+
+  editor->m_playlist = playlist;
+  editor->m_path = path;
   editor->Initialize();
   editor->DoModal(m_gWindowManager.GetActiveWindow());
   return !editor->m_cancelled;
