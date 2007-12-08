@@ -214,8 +214,9 @@
 #define CONTAINER_ROW               368
 #define CONTAINER_COLUMN            369
 #define CONTAINER_POSITION          370
-#define CONTAINER_HAS_NEXT	    371
-#define CONTAINER_HAS_PREVIOUS	    372
+#define CONTAINER_VIEWTYPE          371
+#define CONTAINER_HAS_NEXT	    372
+#define CONTAINER_HAS_PREVIOUS	    373
 
 #define MUSICPM_ENABLED             380
 #define MUSICPM_SONGSPLAYED         381

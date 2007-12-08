@@ -47,6 +47,7 @@ protected:
   void AddItemToPlayList(const CFileItem* pItem, CFileItemList &queuedItems);
   virtual void OnScan(int iItem) {};
   void OnRipCD();
+  virtual void OnPrepareFileItems(CFileItemList &items);
 
   // new methods
   virtual void PlayItem(int iItem);

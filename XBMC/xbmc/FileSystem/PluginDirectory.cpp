@@ -85,8 +85,8 @@ void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceList
   dir->m_success = success;
   dir->m_listItems.SetReplaceListing(replaceListing);
 
-  // Unload the temporary strings
-  g_localizeStringsTemp.Clear();
+  // Unload temporary language strings
+  ClearPluginStrings();
 
   // set the event to mark that we're done
   SetEvent(dir->m_directoryFetched);
@@ -517,6 +517,13 @@ void CPluginDirectory::LoadPluginStrings(const CURL &url)
   CUtil::AddFileToFolder(pathToLanguageFile, "strings.xml", pathToLanguageFile);
   CUtil::AddFileToFolder(pathToFallbackLanguageFile, "strings.xml", pathToFallbackLanguageFile);
 
-  // Load the strings temporarily
+  // Load language strings temporarily
   g_localizeStringsTemp.Load(pathToLanguageFile, pathToFallbackLanguageFile);
 }
+
+void CPluginDirectory::ClearPluginStrings()
+{
+  // Unload temporary language strings
+  g_localizeStringsTemp.Clear();
+}
+

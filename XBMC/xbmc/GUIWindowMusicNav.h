@@ -29,7 +29,7 @@ protected:
   void OnSearch();
   void FilterItems(CFileItemList &items);
 
-  void SetArtistImage(int iItem);
+  void SetThumb(int iItem, CONTEXT_BUTTON button);
   bool GetSongsFromPlayList(const CStdString& strPlayList, CFileItemList &items);
   void DisplayEmptyDatabaseMessage(bool bDisplay);
   CStdString GetQuickpathName(const CStdString& strPath) const;

@@ -303,7 +303,6 @@ void CGUIWindowFileManager::OnSort(int iList)
   }
 
   m_vecItems[iList].Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
-  // UpdateControl(iList);
 }
 
 void CGUIWindowFileManager::ClearFileItems(int iList)
@@ -461,9 +460,8 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
 
   OnSort(iList);
   UpdateButtons();
-  UpdateControl(iList);
 
-  bool foundItem(false);
+  int item = 0;
   strSelectedItem = m_history[iList].GetSelectedItem(m_Directory[iList].m_strPath);
   for (int i = 0; i < m_vecItems[iList].Size(); ++i)
   {
@@ -472,15 +470,11 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
     GetDirectoryHistoryString(pItem, strHistory);
     if (strHistory == strSelectedItem)
     {
-      CONTROL_SELECT_ITEM(iList + CONTROL_LEFT_LIST, i);
-      foundItem = true;
+      item = i;
       break;
     }
   }
-  if (!foundItem)
-  { // select the first item
-    CONTROL_SELECT_ITEM(iList + CONTROL_LEFT_LIST, 0);
-  }
+  UpdateControl(iList, item);
   return true;
 }
 
@@ -638,17 +632,10 @@ bool CGUIWindowFileManager::HaveDiscOrConnection( CStdString& strPath, int iDriv
   return true;
 }
 
-void CGUIWindowFileManager::UpdateControl(int iList)
+void CGUIWindowFileManager::UpdateControl(int iList, int item)
 {
-  CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), iList + CONTROL_LEFT_LIST, 0, 0, NULL);
+  CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), iList + CONTROL_LEFT_LIST, item, 0, &m_vecItems[iList]);
   g_graphicsContext.SendMessage(msg);
-
-  for (int i = 0; i < m_vecItems[iList].Size(); i++)
-  {
-    CFileItem* pItem = m_vecItems[iList][i];
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), iList + CONTROL_LEFT_LIST, 0, 0, (void*)pItem);
-    g_graphicsContext.SendMessage(msg);
-  }
 }
 
 void CGUIWindowFileManager::OnMark(int iList, int iItem)
@@ -1026,9 +1013,6 @@ void CGUIWindowFileManager::Refresh(int iList)
   // update the list views
   Update(iList, m_Directory[iList].m_strPath);
 
-  // UpdateButtons();
-  // UpdateControl(iList);
-
   while (nSel > m_vecItems[iList].Size())
     nSel--;
 
@@ -1043,10 +1027,6 @@ void CGUIWindowFileManager::Refresh()
   // update the list views
   Update(0, m_Directory[0].m_strPath);
   Update(1, m_Directory[1].m_strPath);
-
-  // UpdateButtons();
-  //  UpdateControl(0);
-  // UpdateControl(1);
 
   while (nSel > (int)m_vecItems[iList].Size())
     nSel--;

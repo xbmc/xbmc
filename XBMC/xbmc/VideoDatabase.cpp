@@ -3785,7 +3785,9 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
       }
     }
 
+    unsigned int time = timeGetTime();
     if (!m_pDS->query(strSQL.c_str())) return false;
+    CLog::Log(LOGDEBUG, "%s -  query took %d ms", __FUNCTION__, timeGetTime() - time); time = timeGetTime();
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
     {
@@ -3795,24 +3797,32 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
 
     if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
-      map<long, pair<CStdString,bool> > mapActors;
-      map<long, pair<CStdString,bool> >::iterator it;
+      map<long, CActor> mapActors;
+      map<long, CActor>::iterator it;
       //long lLastPathId = -1;
 
       while (!m_pDS->eof())
       {
         long lActorId = m_pDS->fv("actors.idactor").get_asLong();
-        CStdString strActor = m_pDS->fv("actors.strActor").get_asString();
+        CActor actor;
+        actor.name = m_pDS->fv("actors.strActor").get_asString();
+        actor.thumb = m_pDS->fv("actors.strThumb").get_asString();
+        actor.watched = m_pDS->fv(3).get_asBool();
         it = mapActors.find(lActorId);
         // is this actor already known?
         if (it == mapActors.end())
         {
           // check path
           if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_videoSources))
+          {
             if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-              mapActors.insert(pair<long, pair<CStdString,bool> >(lActorId, pair<CStdString,bool>(strActor,m_pDS->fv(3).get_asBool())));
+              mapActors.insert(pair<long, CActor>(lActorId, actor));
             else
-              mapActors.insert(pair<long, pair<CStdString,bool> >(lActorId, pair<CStdString,bool>(strActor,false)));
+            {
+              actor.watched = false;
+              mapActors.insert(pair<long, CActor>(lActorId, actor));
+            }
+          }
         }
         m_pDS->next();
       }
@@ -3820,14 +3830,14 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
 
       for (it=mapActors.begin();it != mapActors.end();++it)
       {
-        CFileItem* pItem=new CFileItem(it->second.first);
+        CFileItem* pItem=new CFileItem(it->second.name);
         CStdString strDir;
         strDir.Format("%ld/", it->first);
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
         if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-          pItem->GetVideoInfoTag()->m_bWatched = it->second.second;
-        pItem->GetVideoInfoTag()->m_strPictureURL.ParseString(m_pDS->fv("actors.strThumb").get_asString());
+          pItem->GetVideoInfoTag()->m_bWatched = it->second.watched;
+        pItem->GetVideoInfoTag()->m_strPictureURL.ParseString(it->second.thumb);
         pItem->SetThumbnailImage("DefaultActorBig.png");
         if (idContent != VIDEODB_CONTENT_MUSICVIDEOS && CFile::Exists(pItem->GetCachedActorThumb()))
           pItem->SetThumbnailImage(pItem->GetCachedActorThumb());
@@ -3838,7 +3848,6 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
           else
             pItem->SetThumbnailImage("DefaultArtistBig.png");
         }
-        pItem->GetVideoInfoTag()->m_strPictureURL.ParseString(m_pDS->fv("actors.strThumb").get_asString());
         items.Add(pItem);
       }
     }
@@ -3869,6 +3878,7 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
       }
       m_pDS->close();
     }
+    CLog::Log(LOGDEBUG, "%s item retrieval took %d ms", __FUNCTION__, timeGetTime() - time); time = timeGetTime();
 
 //    CLog::Log(LOGDEBUG, "%s Time: %d ms", timeGetTime() - time);
     return true;
@@ -3902,7 +3912,7 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
     else if (idContent == VIDEODB_CONTENT_TVSHOWS)
     {
       if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
-        strSQL = FormatSQL("select tvshow.c%02d,path.strPath from tvshow join files on files.idFile=episode.idFile join episode on episode.idEpisode=tvshowlinkepisode.idEpisode join tvshow on tvshow.idShow = tvshowlinkepisode.idShow join path on files.idPath = path.idPath", VIDEODB_ID_TV_PREMIERED);
+        strSQL = FormatSQL("select tvshow.c%02d,path.strPath from tvshow join files on files.idFile=episode.idFile join episode on episode.idEpisode=tvshowlinkepisode.idEpisode join tvshowlinkepisode on tvshow.idShow = tvshowlinkepisode.idShow join path on files.idPath = path.idPath", VIDEODB_ID_TV_PREMIERED);
       else
         strSQL = FormatSQL("select distinct tvshow.c%02d from tvshow", VIDEODB_ID_TV_PREMIERED);
     }
@@ -3935,7 +3945,15 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
       //long lLastPathId = -1;
       while (!m_pDS->eof())
       {
-        long lYear = m_pDS->fv(0).get_asLong();
+        long lYear = 0;
+        if (idContent == VIDEODB_CONTENT_TVSHOWS)
+        {
+          CDateTime time;
+          time.SetFromDateString(m_pDS->fv(0).get_asString());
+          lYear = time.GetYear();
+        }
+        else if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
+          lYear = m_pDS->fv(0).get_asLong();
         it = mapYears.find(lYear);
         if (it == mapYears.end())
         {
@@ -6327,7 +6345,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver)
   }
 }
 
-void CVideoDatabase::ExportToXML(const CStdString &xmlFile)
+void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* = false */)
 {
   try
   {
@@ -6364,12 +6382,27 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile)
     TiXmlDocument xmlDoc;
     TiXmlDeclaration decl("1.0", "UTF-8", "yes");
     xmlDoc.InsertEndChild(decl);
-    TiXmlElement xmlMainElement("videodb");
-    TiXmlNode *pMain = xmlDoc.InsertEndChild(xmlMainElement);
+    TiXmlNode *pMain = NULL;
+    if (singleFiles)
+      pMain = &xmlDoc;
+    else
+    {
+      TiXmlElement xmlMainElement("videodb");
+      pMain = xmlDoc.InsertEndChild(xmlMainElement);
+    }
     while (!m_pDS->eof())
     {
       CVideoInfoTag movie = GetDetailsForMovie(m_pDS, true);
-      movie.Save(pMain, "movie");
+      movie.Save(pMain, "movie", !singleFiles);
+      if (singleFiles)
+      {
+        CStdString nfoFile;
+        CUtil::ReplaceExtension(movie.m_strFileNameAndPath, ".nfo", nfoFile);
+        xmlDoc.SaveFile(nfoFile.c_str());
+        xmlDoc.Clear();
+        TiXmlDeclaration decl("1.0", "UTF-8", "yes");
+        xmlDoc.InsertEndChild(decl);
+      }
       if ((current % 50) == 0 && progress)
       {
         progress->SetLine(1, movie.m_strTitle);
@@ -6398,7 +6431,16 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile)
     while (!m_pDS->eof())
     {
       CVideoInfoTag movie = GetDetailsForMusicVideo(m_pDS);
-      movie.Save(pMain, "musicvideo");
+      movie.Save(pMain, "musicvideo", !singleFiles);
+      if (singleFiles)
+      {
+        CStdString nfoFile;
+        CUtil::ReplaceExtension(movie.m_strFileNameAndPath, ".nfo", nfoFile);
+        xmlDoc.SaveFile(nfoFile.c_str());
+        xmlDoc.Clear();
+        TiXmlDeclaration decl("1.0", "UTF-8", "yes");
+        xmlDoc.InsertEndChild(decl);
+      }
       if ((current % 50) == 0 && progress)
       {
         progress->SetLine(1, movie.m_strTitle);
@@ -6415,6 +6457,13 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile)
       current++;
     }
     m_pDS->close();
+
+    if (singleFiles)
+    { // don't support tv shows at present
+      if (progress)
+        progress->Close();
+      return;
+    }
 
     // repeat for all tvshows
     sql = "select tvshow.*,path.strPath from tvshow join tvshowlinkpath on tvshow.idShow=tvshowlinkpath.idShow join path on tvshowlinkpath.idPath=path.idPath";
@@ -6478,30 +6527,6 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile)
       progress->StartModal();
       progress->ShowProgressBar(true);
     }
-
-    total = m_pDS->num_rows();
-    current = 0;
-
-    while (!m_pDS->eof())
-    {
-      CVideoInfoTag movie = GetDetailsForEpisode(m_pDS, true);
-      movie.Save(pMain, "episode");
-      if ((current % 50) == 0 && progress)
-      {
-        progress->SetLine(1, movie.m_strTitle);
-        progress->SetPercentage(current * 100 / total);
-        progress->Progress();
-        if (progress->IsCanceled())
-        {
-          progress->Close();
-          m_pDS->close();
-          return;
-        }
-      }
-      m_pDS->next();
-      current++;
-    }
-    m_pDS->close();
 
     // now dump path info
     map<CStdString,SScanSettings> paths;

@@ -22,6 +22,9 @@ CGUIBaseContainer::CGUIBaseContainer(DWORD dwParentID, DWORD dwControlId, float 
   m_analogScrollCount = 0;
   m_lastItem = NULL;
   m_staticContent = false;
+  m_wasReset = false;
+  m_layout = NULL;
+  m_focusedLayout = NULL;
 }
 
 CGUIBaseContainer::~CGUIBaseContainer(void)
@@ -30,6 +33,8 @@ CGUIBaseContainer::~CGUIBaseContainer(void)
 
 void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, bool focused)
 {
+  if (!m_focusedLayout || !m_layout) return;
+
   // set the origin
   g_graphicsContext.SetOrigin(posX, posY);
 
@@ -39,7 +44,7 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
   {
     if (!item->GetFocusedLayout())
     {
-      CGUIListItemLayout *layout = new CGUIListItemLayout(m_focusedLayout);
+      CGUIListItemLayout *layout = new CGUIListItemLayout(*m_focusedLayout);
       item->SetFocusedLayout(layout);
     }
     if (item->GetFocusedLayout())
@@ -59,7 +64,7 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
   {
     if (!item->GetLayout())
     {
-      CGUIListItemLayout *layout = new CGUIListItemLayout(m_layout);
+      CGUIListItemLayout *layout = new CGUIListItemLayout(*m_layout);
       item->SetLayout(layout);
     }
     if (item->GetLayout())
@@ -96,6 +101,20 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
   {
     if (!m_staticContent)
     {
+      if (message.GetMessage() == GUI_MSG_LABEL_BIND && message.GetLPVOID())
+      { // bind our items
+        m_wasReset = true;
+        m_items.clear();
+        CFileItemList *items = (CFileItemList *)message.GetLPVOID();
+        for (int i = 0; i < items->Size(); i++)
+        {
+          CFileItem *item = items->Get(i);
+          item->FreeMemory(); // make sure the memory is free
+          m_items.push_back(item);
+        }
+        UpdateLayout();
+        SelectItem(message.GetParam1());
+      }
       if (message.GetMessage() == GUI_MSG_LABEL_ADD && message.GetLPVOID())
       {
         CGUIListItem* item = (CGUIListItem*)message.GetLPVOID();
@@ -109,6 +128,7 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
       }
       else if (message.GetMessage() == GUI_MSG_LABEL_RESET)
       {
+        m_wasReset = true;
         m_items.clear();
         if (m_pageControl)
         {
@@ -200,12 +220,15 @@ CGUIListItem *CGUIBaseContainer::GetListItem(int offset) const
 
 bool CGUIBaseContainer::SelectItemFromPoint(const CPoint &point)
 {
+  if (!m_focusedLayout || !m_layout)
+    return false;
+
   int row = 0;
   float pos = (m_orientation == VERTICAL) ? point.y : point.x;
   while (row < m_itemsPerPage)
   {
-    const CGUIListItemLayout &layout = (row == m_cursor) ? m_focusedLayout : m_layout;
-    if (pos < layout.Size(m_orientation) && row + m_offset < (int)m_items.size())
+    const CGUIListItemLayout *layout = (row == m_cursor) ? m_focusedLayout : m_layout;
+    if (pos < layout->Size(m_orientation) && row + m_offset < (int)m_items.size())
     { // found correct "row" -> check horizontal
       if (!InsideLayout(layout, point))
         return false;
@@ -214,7 +237,7 @@ bool CGUIBaseContainer::SelectItemFromPoint(const CPoint &point)
       return true;
     }
     row++;
-    pos -= layout.Size(m_orientation);
+    pos -= layout->Size(m_orientation);
   }
   return false;
 }
@@ -322,6 +345,7 @@ void CGUIBaseContainer::DoRender(DWORD currentTime)
 {
   m_renderTime = currentTime;
   CGUIControl::DoRender(currentTime);
+  m_wasReset = false;
 }
 
 void CGUIBaseContainer::AllocResources()
@@ -371,8 +395,15 @@ void CGUIBaseContainer::UpdateVisibility()
 
 void CGUIBaseContainer::CalculateLayout()
 {
+  GetCurrentLayouts();
+
   // calculate the number of items to display
-  m_itemsPerPage = (int)((Size() - m_focusedLayout.Size(m_orientation)) / m_layout.Size(m_orientation)) + 1;
+  assert(m_focusedLayout && m_layout);
+  if (!m_focusedLayout || !m_layout) return;
+  m_itemsPerPage = (int)((Size() - m_focusedLayout->Size(m_orientation)) / m_layout->Size(m_orientation)) + 1;
+
+  // ensure that the scroll offset is a multiple of our size
+  m_scrollOffset = m_offset * m_layout->Size(m_orientation);
 }
 
 unsigned int CGUIBaseContainer::GetRows() const
@@ -389,7 +420,7 @@ inline float CGUIBaseContainer::Size() const
 
 void CGUIBaseContainer::ScrollToOffset(int offset)
 {
-  float size = m_layout.Size(m_orientation);
+  float size = m_layout->Size(m_orientation);
   int range = m_itemsPerPage / 4;
   if (range <= 0) range = 1;
   if (offset * size < m_scrollOffset &&  m_scrollOffset - offset * size > size * range)
@@ -401,7 +432,8 @@ void CGUIBaseContainer::ScrollToOffset(int offset)
     m_scrollOffset = (offset - range) * size;
   }
   m_scrollSpeed = (offset * size - m_scrollOffset) / m_scrollTime;
-  g_infoManager.SetContainerMoving(GetID(), offset - m_offset);
+  if (!m_wasReset)
+    g_infoManager.SetContainerMoving(GetID(), offset - m_offset);
   m_offset = offset;
 }
 
@@ -413,14 +445,20 @@ int CGUIBaseContainer::CorrectOffset(int offset, int cursor) const
 void CGUIBaseContainer::LoadLayout(TiXmlElement *layout)
 {
   TiXmlElement *itemElement = layout->FirstChildElement("itemlayout");
-  if (itemElement)
+  while (itemElement)
   { // we have a new item layout
-    m_layout.LoadLayout(itemElement, false);
+    CGUIListItemLayout itemLayout;
+    itemLayout.LoadLayout(itemElement, false);
+    m_layouts.push_back(itemLayout);
+    itemElement = itemElement->NextSiblingElement("itemlayout");
   }
   itemElement = layout->FirstChildElement("focusedlayout");
-  if (itemElement)
+  while (itemElement)
   { // we have a new item layout
-    m_focusedLayout.LoadLayout(itemElement, true);
+    CGUIListItemLayout itemLayout;
+    itemLayout.LoadLayout(itemElement, true);
+    m_focusedLayouts.push_back(itemLayout);
+    itemElement = itemElement->NextSiblingElement("focusedlayout");
   }
 }
 
@@ -530,10 +568,11 @@ void CGUIBaseContainer::FreeMemory(int keepStart, int keepEnd)
   }
 }
 
-bool CGUIBaseContainer::InsideLayout(const CGUIListItemLayout &layout, const CPoint &point)
+bool CGUIBaseContainer::InsideLayout(const CGUIListItemLayout *layout, const CPoint &point)
 {
-  if ((m_orientation == VERTICAL && layout.Size(HORIZONTAL) && point.x > layout.Size(HORIZONTAL)) ||
-      (m_orientation == HORIZONTAL && layout.Size(VERTICAL) && point.y > layout.Size(VERTICAL)))
+  if (!layout) return false;
+  if ((m_orientation == VERTICAL && layout->Size(HORIZONTAL) && point.x > layout->Size(HORIZONTAL)) ||
+      (m_orientation == HORIZONTAL && layout->Size(VERTICAL) && point.y > layout->Size(VERTICAL)))
     return false;
   return true;
 }
@@ -570,6 +609,35 @@ bool CGUIBaseContainer::GetCondition(int condition, int data) const
   }
 }
 
+void CGUIBaseContainer::GetCurrentLayouts()
+{
+  m_layout = NULL;
+  for (unsigned int i = 0; i < m_layouts.size(); i++)
+  {
+    int condition = m_layouts[i].GetCondition();
+    if (!condition || g_infoManager.GetBool(condition, GetParentID()))
+    {
+      m_layout = &m_layouts[i];
+      break;
+    }
+  }
+  if (!m_layout && m_layouts.size())
+    m_layout = &m_layouts[0];  // failsafe
+
+  m_focusedLayout = NULL;
+  for (unsigned int i = 0; i < m_focusedLayouts.size(); i++)
+  {
+    int condition = m_focusedLayouts[i].GetCondition();
+    if (!condition || g_infoManager.GetBool(condition, GetParentID()))
+    {
+      m_focusedLayout = &m_focusedLayouts[i];
+      break;
+    }
+  }
+  if (!m_focusedLayout && m_focusedLayouts.size())
+    m_focusedLayout = &m_focusedLayouts[0];  // failsafe
+}
+
 bool CGUIBaseContainer::HasNextPage() const
 {
    return false;
@@ -579,3 +647,4 @@ bool CGUIBaseContainer::HasPreviousPage() const
 {
    return false;
 }
+

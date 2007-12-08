@@ -1298,3 +1298,10 @@ bool CGUIWindowMusicBase::GetDirectory(const CStdString &strDirectory, CFileItem
 
   return bResult;
 }
+
+void CGUIWindowMusicBase::OnPrepareFileItems(CFileItemList &items)
+{
+  if (!items.m_strPath.Equals("plugin://music/"))
+    items.SetCachedMusicThumbs();
+}
+
