@@ -104,12 +104,7 @@ void CGUIViewControl::SetCurrentView(int viewMode)
   }
 
   // Update it with the contents
-  UpdateContents(pNewView);
-  if (item > -1)
-  {
-    CGUIMessage msg(GUI_MSG_ITEM_SELECT, m_parentWindow, pNewView->GetID(), item);
-    g_graphicsContext.SendMessage(msg);
-  }
+  UpdateContents(pNewView, item);
 
   // Update our view control
   UpdateViewAsControl(((CGUIBaseContainer *)pNewView)->GetLabel());
@@ -123,22 +118,11 @@ void CGUIViewControl::SetItems(CFileItemList &items)
   UpdateView();
 }
 
-void CGUIViewControl::UpdateContents(const CGUIControl *control)
+void CGUIViewControl::UpdateContents(const CGUIControl *control, int currentItem)
 {
   if (!control || !m_fileItems) return;
-  // reset the current view
-  CGUIMessage msg1(GUI_MSG_LABEL_RESET, m_parentWindow, control->GetID(), 0, 0, NULL);
-  g_graphicsContext.SendMessage(msg1);
-
-  // add the items to the current view
-  for (int i = 0; i < m_fileItems->Size(); i++)
-  {
-    CFileItem* pItem = (*m_fileItems)[i];
-    // free it's memory, to make sure any icons etc. are loaded as needed.
-    pItem->FreeMemory();
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, m_parentWindow, control->GetID(), 0, 0, (void*)pItem);
-    g_graphicsContext.SendMessage(msg);
-  }
+  CGUIMessage msg(GUI_MSG_LABEL_BIND, m_parentWindow, control->GetID(), currentItem, 0, (void*)m_fileItems);
+  g_graphicsContext.SendMessage(msg);
 }
 
 void CGUIViewControl::UpdateView()
@@ -150,11 +134,7 @@ void CGUIViewControl::UpdateView()
   CGUIControl *pControl = m_vecViews[m_currentView];
   // get the currently selected item
   int item = GetSelectedItem(pControl);
-  UpdateContents(pControl);
-  // set the current item
-  if (item < 0) item = 0;
-  CGUIMessage msg(GUI_MSG_ITEM_SELECT, m_parentWindow, pControl->GetID(), item);
-  g_graphicsContext.SendMessage(msg);
+  UpdateContents(pControl, item < 0 ? 0 : item);
 }
 
 int CGUIViewControl::GetSelectedItem(const CGUIControl *control) const
@@ -252,17 +232,27 @@ int CGUIViewControl::GetViewModeNumber(int number) const
   return 0;  // no view modes :(
 }
 
-// returns the next viewmode in the cycle
-int CGUIViewControl::GetNextViewMode() const
+int CGUIViewControl::GetViewModeByID(int id) const
 {
-  CGUIBaseContainer *nextView = NULL;
-  if (m_currentView < (int)m_vecViews.size() - 1)
-    nextView = (CGUIBaseContainer *)m_vecViews[m_currentView + 1];
-  else if (m_vecViews.size())
-    nextView = (CGUIBaseContainer *)m_vecViews[0];
-  if (nextView)
-    return (nextView->GetType() << 16) | nextView->GetID();
+  for (unsigned int i = 0; i < m_vecViews.size(); ++i)
+  {
+    CGUIBaseContainer *view = (CGUIBaseContainer *)m_vecViews[i];
+    if (view->GetID() == id)
+      return (view->GetType() << 16) | view->GetID();
+  }
   return 0;  // no view modes :(
+}
+
+// returns the next viewmode in the cycle
+int CGUIViewControl::GetNextViewMode(int direction) const
+{
+  if (!m_vecViews.size())
+    return 0; // no view modes :(
+
+  int viewNumber = (m_currentView + direction) % (int)m_vecViews.size();
+  if (viewNumber < 0) viewNumber += m_vecViews.size();
+  CGUIBaseContainer *nextView = (CGUIBaseContainer *)m_vecViews[viewNumber];
+  return (nextView->GetType() << 16) | nextView->GetID();
 }
 
 void CGUIViewControl::Clear()

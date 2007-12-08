@@ -1606,16 +1606,18 @@ HRESULT CApplication::Initialize()
     RestoreMusicScanSettings();
   }
 
-  if (g_guiSettings.GetBool("videolibrary.updateonstartup")) {
+  if (g_guiSettings.GetBool("videolibrary.updateonstartup"))
+  {
     CLog::Log(LOGNOTICE, "Updating video library on startup");
     CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
     SScraperInfo info;
     VIDEO::SScanSettings settings;
-    if (scanner && !scanner->IsScanning()) {
+    if (scanner && !scanner->IsScanning())
+    {
       scanner->StartScanning("",info,settings,false);
     }
-  }    
-    
+  }
+
   m_slowTimer.StartZero();
 
   CLog::Log(LOGNOTICE, "initialize done");

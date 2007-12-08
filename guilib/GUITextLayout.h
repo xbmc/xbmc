@@ -41,6 +41,7 @@ public:
 
   unsigned int GetTextLength() const;
   void GetFirstText(vector<DWORD> &text) const;
+  void Reset();
 
   void SetWrap(bool bWrap=true);
   void SetMaxHeight(float fHeight);

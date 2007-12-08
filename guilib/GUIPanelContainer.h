@@ -49,6 +49,7 @@ protected:
   virtual int  CorrectOffset(int offset, int cursor) const;
   virtual bool SelectItemFromPoint(const CPoint &point);
   void SetCursor(int cursor);
+  virtual void SelectItem(int item);
 
   int m_itemsPerRow;
 };

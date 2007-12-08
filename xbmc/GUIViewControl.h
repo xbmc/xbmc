@@ -25,8 +25,9 @@ public:
   void SetFocused();
 
   bool HasControl(int controlID) const;
-  int GetNextViewMode() const;
+  int GetNextViewMode(int direction = 1) const;
   int GetViewModeNumber(int number) const;
+  int GetViewModeByID(int id) const;
 
   int GetCurrentControl() const;
 
@@ -34,7 +35,7 @@ public:
 
 protected:
   int GetSelectedItem(const CGUIControl *control) const;
-  void UpdateContents(const CGUIControl *control);
+  void UpdateContents(const CGUIControl *control, int currentItem);
   void UpdateView();
   void UpdateViewAsControl(const CStdString &viewLabel);
   int GetView(VIEW_TYPE type, int id) const;

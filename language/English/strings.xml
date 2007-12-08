@@ -757,6 +757,7 @@
   <string id="1412">windy</string>
   <string id="1413">drizzle</string>
   <string id="1414">T-Storm</string>
+
   <!-- strings through to 1450 reserved for weather translation -->
 
   <string id="2050">Runtime:</string>
@@ -1853,6 +1854,7 @@
   <string id="22001">Always update library in background</string>
 
   <string id="29999">Apply Flicker Filter Setting to Games</string>
+
   <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
   <!-- strings 31000 thru 31999 reserved for skins -->
 </strings>

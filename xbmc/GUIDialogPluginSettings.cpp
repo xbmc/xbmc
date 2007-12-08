@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "GUIDialogPluginSettings.h"
+#include "FileSystem/PluginDirectory.h"
 #include "GUIDialogNumeric.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIControlGroupList.h"
@@ -88,38 +89,15 @@ void CGUIDialogPluginSettings::ShowAndGetInput(CURL& url)
 {
   m_url = url;
 
-  // Path where the plugin resides
-  CStdString pathToPlugin = "Q:\\plugins\\";
-  CUtil::AddFileToFolder(pathToPlugin, url.GetHostName(), pathToPlugin);
-  CUtil::AddFileToFolder(pathToPlugin, url.GetFileName(), pathToPlugin);
-
-  // Remove the slash at end, makes xbox and linux compatible
-  CUtil::RemoveSlashAtEnd(pathToPlugin);
-
-  // Path where the language strings reside
-  CStdString pathToLanguageFile = pathToPlugin;
-  CStdString pathToFallbackLanguageFile = pathToPlugin;
-  CUtil::AddFileToFolder(pathToLanguageFile, "resources", pathToLanguageFile);
-  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "resources", pathToFallbackLanguageFile);
-  CUtil::AddFileToFolder(pathToLanguageFile, "language", pathToLanguageFile);
-  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "language", pathToFallbackLanguageFile);
-  CUtil::AddFileToFolder(pathToLanguageFile, g_guiSettings.GetString("locale.language"), pathToLanguageFile);
-  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "english", pathToFallbackLanguageFile);
-  CUtil::AddFileToFolder(pathToLanguageFile, "strings.xml", pathToLanguageFile);
-  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "strings.xml", pathToFallbackLanguageFile);
-
-  pathToLanguageFile = _P(pathToLanguageFile);
-  pathToFallbackLanguageFile = _P(pathToFallbackLanguageFile);
-
-  // Load the strings temporarily
-  g_localizeStringsTemp.Load(pathToLanguageFile, pathToFallbackLanguageFile);
+  // Load language strings temporarily
+  DIRECTORY::CPluginDirectory::LoadPluginStrings(url);
 
   // Create the dialog
   CGUIDialog* pDialog = (CGUIDialog*) m_gWindowManager.GetWindow(WINDOW_DIALOG_PLUGIN_SETTINGS);
   pDialog->DoModal();
 
-  // Unload the temporary strings
-  g_localizeStringsTemp.Clear();
+  // Unload temporary language strings
+  DIRECTORY::CPluginDirectory::ClearPluginStrings();
 
   return;
 }
