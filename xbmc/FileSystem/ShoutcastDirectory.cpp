@@ -244,7 +244,7 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
   else
   {
     CLog::Log(LOGERROR, __FUNCTION__" - Invalid root xml element for shoutcast");
-    CLog::Log(LOGDEBUG, __FUNCTION__" - Sample follows...\n%s", data.c_str);
+    CLog::Log(LOGDEBUG, __FUNCTION__" - Sample follows...\n%s", data.c_str());
   }
 
   CFileItemList vecCacheItems;  
