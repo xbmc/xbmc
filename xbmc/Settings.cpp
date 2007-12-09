@@ -879,8 +879,19 @@ bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& 
   {
     // get the data for this resolution
     int iRes;
+    CStdString mode;
     GetInteger(pResolution, "id", iRes, (int)PAL_4x3, HDTV_1080i, MAX_RESOLUTIONS); //PAL4x3 as default data
-    GetString(pResolution, "description", m_ResInfo[iRes].strMode, m_ResInfo[iRes].strMode);
+    GetString(pResolution, "description", mode, m_ResInfo[iRes].strMode);
+#ifdef HAS_SDL
+    if(iRes == DESKTOP && !mode.Equals(m_ResInfo[iRes].strMode))
+    {
+      CLog::Log(LOGDEBUG, "%s - Ignoring desktop resolution \"%s\" that differs from current \"%s\"", __FUNCTION__, mode.c_str(), m_ResInfo[iRes].strMode);
+
+      pResolution = pResolution->NextSiblingElement("resolution");
+      continue;
+    }
+#endif
+
     // get the appropriate "safe graphics area" = 10% for 4x3, 3.5% for 16x9
     float fSafe;
     if (iRes == PAL_4x3 || iRes == NTSC_4x3 || iRes == PAL60_4x3 || iRes == HDTV_480p_4x3)
