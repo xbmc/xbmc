@@ -1,9 +1,9 @@
 XBMC uses the default libFLAC.dll from the win32 developer archive from flac.sourceforge.net
 
-The current version is 1.1.4, and the sources may be downloaded here:
+The current version is 1.2.1, and the sources may be downloaded here:
 
-http://downloads.sourceforge.net/flac/flac-1.1.4.tar.gz
+http://downloads.sourceforge.net/flac/flac-1.2.1.tar.gz
 
 The current binary dll is found in the archive available here:
 
-http://downloads.sourceforge.net/flac/flac-1.1.4-devel-win.zip
+http://downloads.sourceforge.net/flac/flac-1.2.1-devel-win.zip
