@@ -20,13 +20,13 @@ class CFileItem;
 
 #define ON_CLICK_MESSAGE(i,c,m) \
 { \
- GUIEventHandler<c, CGUIMessage&> clickHandler(this, m); \
+ GUIEventHandler<c, CGUIMessage&> clickHandler(this, &m); \
  m_mapClickEvents[i] = clickHandler; \
 } \
 
 #define ON_SELECTED_MESSAGE(i,c,m) \
 { \
- GUIEventHandler<c, CGUIMessage&> selectedHandler(this, m); \
+ GUIEventHandler<c, CGUIMessage&> selectedHandler(this, &m); \
  m_mapSelectedEvents[i] = selectedHandler; \
 } \
 

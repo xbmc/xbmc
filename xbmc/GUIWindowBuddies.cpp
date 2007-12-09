@@ -157,22 +157,22 @@ CGUIWindowBuddies::CGUIWindowBuddies(void)
   m_arena.SetSortingAlgorithm(CGUIWindowBuddies::SortArena);
   m_games.SetSortingAlgorithm(CGUIWindowBuddies::SortGames);
 
-  ON_CLICK_MESSAGE(CONTROL_BTNMODE, CGUIWindowBuddies, OnClickModeButton);
-  ON_CLICK_MESSAGE(CONTROL_BTNADD, CGUIWindowBuddies, OnClickAddButton);
-  ON_CLICK_MESSAGE(CONTROL_BTNREMOVE, CGUIWindowBuddies, OnClickRemoveButton);
-  ON_CLICK_MESSAGE(CONTROL_BTNSPEEX, CGUIWindowBuddies, OnClickSpeexButton);
-  ON_CLICK_MESSAGE(CONTROL_BTNINVITE, CGUIWindowBuddies, OnClickInviteButton);
-  ON_CLICK_MESSAGE(CONTROL_BTNJOIN, CGUIWindowBuddies, OnClickJoinButton);
-  ON_CLICK_MESSAGE(CONTROL_BTNPLAY, CGUIWindowBuddies, OnClickPlayButton);
-  ON_CLICK_MESSAGE(CONTROL_BTNHOST, CGUIWindowBuddies, OnClickHostButton);
-  ON_CLICK_MESSAGE(CONTROL_BTNKEYBOARD, CGUIWindowBuddies, OnClickKeyboardButton);
-  ON_CLICK_MESSAGE(CONTROL_LISTEX, CGUIWindowBuddies, OnClickListItem);
-  ON_CLICK_MESSAGE(CONTROL_KAI_TAB_FRIENDS, CGUIWindowBuddies, OnClickTabFriends);
-  ON_CLICK_MESSAGE(CONTROL_KAI_TAB_GAMES, CGUIWindowBuddies, OnClickTabGames);
-  ON_CLICK_MESSAGE(CONTROL_KAI_TAB_ARENA, CGUIWindowBuddies, OnClickTabArena);
-  ON_CLICK_MESSAGE(CONTROL_KAI_TAB_CHAT, CGUIWindowBuddies, OnClickTabChat);
+  ON_CLICK_MESSAGE(CONTROL_BTNMODE, CGUIWindowBuddies, CGUIWindowBuddies::OnClickModeButton);
+  ON_CLICK_MESSAGE(CONTROL_BTNADD, CGUIWindowBuddies, CGUIWindowBuddies::OnClickAddButton);
+  ON_CLICK_MESSAGE(CONTROL_BTNREMOVE, CGUIWindowBuddies, CGUIWindowBuddies::OnClickRemoveButton);
+  ON_CLICK_MESSAGE(CONTROL_BTNSPEEX, CGUIWindowBuddies, CGUIWindowBuddies::OnClickSpeexButton);
+  ON_CLICK_MESSAGE(CONTROL_BTNINVITE, CGUIWindowBuddies, CGUIWindowBuddies::OnClickInviteButton);
+  ON_CLICK_MESSAGE(CONTROL_BTNJOIN, CGUIWindowBuddies, CGUIWindowBuddies::OnClickJoinButton);
+  ON_CLICK_MESSAGE(CONTROL_BTNPLAY, CGUIWindowBuddies, CGUIWindowBuddies::OnClickPlayButton);
+  ON_CLICK_MESSAGE(CONTROL_BTNHOST, CGUIWindowBuddies, CGUIWindowBuddies::OnClickHostButton);
+  ON_CLICK_MESSAGE(CONTROL_BTNKEYBOARD, CGUIWindowBuddies, CGUIWindowBuddies::OnClickKeyboardButton);
+  ON_CLICK_MESSAGE(CONTROL_LISTEX, CGUIWindowBuddies, CGUIWindowBuddies::OnClickListItem);
+  ON_CLICK_MESSAGE(CONTROL_KAI_TAB_FRIENDS, CGUIWindowBuddies, CGUIWindowBuddies::OnClickTabFriends);
+  ON_CLICK_MESSAGE(CONTROL_KAI_TAB_GAMES, CGUIWindowBuddies, CGUIWindowBuddies::OnClickTabGames);
+  ON_CLICK_MESSAGE(CONTROL_KAI_TAB_ARENA, CGUIWindowBuddies, CGUIWindowBuddies::OnClickTabArena);
+  ON_CLICK_MESSAGE(CONTROL_KAI_TAB_CHAT, CGUIWindowBuddies, CGUIWindowBuddies::OnClickTabChat);
 
-  ON_SELECTED_MESSAGE(CONTROL_LISTEX, CGUIWindowBuddies, OnSelectListItem);
+  ON_SELECTED_MESSAGE(CONTROL_LISTEX, CGUIWindowBuddies, CGUIWindowBuddies::OnSelectListItem);
   window_state = State::Uninitialized;
 }
 

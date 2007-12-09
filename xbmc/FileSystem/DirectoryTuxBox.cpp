@@ -172,7 +172,7 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
       else
       {
         CLog::Log(LOGERROR, __FUNCTION__" - Invalid root xml element for TuxBox");
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Sample follows...\n%s", data.c_str);
+        CLog::Log(LOGDEBUG, __FUNCTION__" - Sample follows...\n%s", data.c_str());
         data.Empty();
         result = false;
       }
