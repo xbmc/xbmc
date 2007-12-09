@@ -16,8 +16,9 @@ CJoystick::CJoystick()
   m_ActiveFlags = JACTIVE_NONE;
   for (int i = 0 ; i<MAX_AXES ; i++)
   {
-    m_Amount[i] = 0.0f;
+    m_Amount[i] = 0;
   }
+  SetSafeRange(5000);
 }
 
 void CJoystick::Initialize(HWND hWnd)
@@ -65,14 +66,15 @@ void CJoystick::Initialize(HWND hWnd)
 void CJoystick::CalibrateAxis(SDL_Joystick* joy)
 {
   SDL_JoystickUpdate();
-  
+
   int numax = SDL_JoystickNumAxes(joy);
   numax = (numax>MAX_AXES)?MAX_AXES:numax;
 
   // get default axis states
   for (int a = 0 ; a<numax ; a++)
   {
-    m_DefaultAmount[a] = ((float)SDL_JoystickGetAxis(joy, a))/32768.0f;
+    m_DefaultAmount[a+1] = SDL_JoystickGetAxis(joy, a);
+    CLog::Log(LOGDEBUG, "Calibrated Axis: %d , default amount %d\n", a, m_DefaultAmount[a+1]);
   }
 }
 
@@ -95,7 +97,7 @@ void CJoystick::Update()
   int numj = m_Joysticks.size();
   if (numj<=0)
     return;
-  
+
   // update the state of all opened joysticks
   SDL_JoystickUpdate();
 
@@ -132,14 +134,10 @@ void CJoystick::Update()
       }
       else
       {
-        if (axisval==0)
+        m_Amount[axisId] = axisval;  //[-32768 to 32767]
+        if (axisval!=m_DefaultAmount[axisId])
         {
-          m_Amount[axisId] = 0.0f;
-        }
-        else
-        {
-          m_JoyId = j;      
-          m_Amount[axisId] = ((float)axisval / 32768.0f); //[-32768 to 32767]
+          m_JoyId = j;
         }
       }
     }
@@ -202,14 +200,14 @@ void CJoystick::Update(SDL_Event& joyEvent)
     if (joyEvent.jaxis.value==0)
     {
       ignore = true;
-      m_Amount[axisId] = 0.0f;
+      m_Amount[axisId] = 0;
     }
     else
     {
-      m_Amount[axisId] = ((float)joyEvent.jaxis.value / 32768.0f); //[-32768 to 32767]
+      m_Amount[axisId] = joyEvent.jaxis.value; //[-32768 to 32767]
     }
     m_AxisId = GetAxisWithMaxAmount();
-    CLog::Log(LOGDEBUG, "Joystick %d Axis %d Amount %f", joyId, axisId, m_Amount[axisId]);
+    CLog::Log(LOGDEBUG, "Joystick %d Axis %d Amount %d", joyId, axisId, m_Amount[axisId]);
     break;
 
   case SDL_JOYBALLMOTION:
@@ -268,14 +266,14 @@ bool CJoystick::GetButton(int &id, bool consider_repeat)
 
 int CJoystick::GetAxisWithMaxAmount()
 {
-  static float maxAmount;
+  static int maxAmount;
   static int axis;
   axis = 0;
-  maxAmount = 0;
-  float tempf;
+  maxAmount = m_SafeRange;
+  int tempf;
   for (int i = 1 ; i<=m_NumAxes ; i++)
   {
-    tempf = fabs(m_Amount[i]);
+    tempf = abs(m_DefaultAmount[i] - m_Amount[i]);
     if (tempf>maxAmount)
     {
       maxAmount = tempf;
