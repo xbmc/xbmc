@@ -208,7 +208,7 @@ __int64 fileSize(const CStdString &filename)
 {
   if (CFile::Exists(filename))
   {
-    __stat64 s64;
+    struct __stat64 s64;
     if (CFile::Stat(filename, &s64) == 0)
       return s64.st_size;
     else
