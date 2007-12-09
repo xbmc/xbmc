@@ -21,10 +21,18 @@
 #include "stdafx.h"
 #include "ALSADirectSound.h"
 #include "AudioContext.h"
+#include "Util.h"
 
 #define CHECK_ALSA(l,s,e) if ((e)<0) CLog::Log(l,"%s - %s, alsa error: %s",__FUNCTION__,s,snd_strerror(e));
 #define CHECK_ALSA_RETURN(l,s,e) CHECK_ALSA((l),(s),(e)); if ((e)<0) return ;
 
+
+static CStdString EscapeDevice(const CStdString& device)
+{
+  CStdString result(device);
+  result.Replace("'", "\\'");
+  return result;
+}
 
 void CALSADirectSound::DoWork()
 {
@@ -63,14 +71,76 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   snd_pcm_sw_params_t *sw_params=NULL;
 
   /* Open the device */
-  const char* device;
+  CStdString device, deviceuse;
   if (!m_bPassthrough)
-    device = g_guiSettings.GetString("audiooutput.audiodevice").c_str();
+    device = g_guiSettings.GetString("audiooutput.audiodevice");
   else
-    device = g_guiSettings.GetString("audiooutput.passthroughdevice").c_str();
+    device = g_guiSettings.GetString("audiooutput.passthroughdevice");
 
-  int nErr = snd_pcm_open(&m_pPlayHandle, device, SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK);
-  CHECK_ALSA_RETURN(LOGERROR,"pcm_open",nErr);
+  int nErr;
+
+  snd_config_t *config = snd_config;
+  deviceuse = device;
+
+  nErr = snd_config_copy(&config, snd_config);
+  CHECK_ALSA_RETURN(LOGERROR,"config_copy",nErr);
+
+  if(!m_bPassthrough)
+  {
+    // TODO - add an option to only downmix if user want's us
+    if(iChannels == 6)
+      deviceuse = "xbmc_51to2:'" + EscapeDevice(deviceuse) + "'";
+
+    // setup channel mapping to linux default
+    if (strstr(strAudioCodec, "AAC"))
+    {
+      if(iChannels == 6)
+        deviceuse = "xbmc_aac51:'" + EscapeDevice(deviceuse) + "'";
+      else if(iChannels == 5)
+        deviceuse = "xbmc_aac50:'" + EscapeDevice(deviceuse) + "'";
+    }
+    else if (strstr(strAudioCodec, "DMO") || strstr(strAudioCodec, "FLAC") || strstr(strAudioCodec, "PCM"))
+    {
+      if(iChannels == 6)
+        deviceuse = "xbmc_win51:'" + EscapeDevice(deviceuse) + "'";
+      else if(iChannels == 5)
+        deviceuse = "xbmc_win50:'" + EscapeDevice(deviceuse) + "'";
+    }
+    else if (strstr(strAudioCodec, "OggVorbis"))
+    {
+      if(iChannels == 6)
+        deviceuse = "xbmc_ogg51:'" + EscapeDevice(deviceuse) + "'";
+      else if(iChannels == 5)
+        deviceuse = "xbmc_ogg50:'" + EscapeDevice(deviceuse) + "'";
+    }
+
+
+    if(deviceuse != device)
+    {
+      snd_input_t* input;
+      nErr = snd_input_stdio_open(&input, _P("Q:\\system\\asound.conf").c_str(), "r");
+      if(nErr >= 0)
+      {
+        nErr = snd_config_load(config, input);
+        CHECK_ALSA_RETURN(LOGERROR,"config_load", nErr);
+
+        snd_input_close(input);
+        CHECK_ALSA_RETURN(LOGERROR,"input_close", nErr);
+      }
+      else
+      {
+        CLog::Log(LOGWARNING, "%s - Unable to load alsa configuration \"%s\" for device \"%s\" - %s", __FUNCTION__, _P("Q:\\system\\asound.conf").c_str(), deviceuse.c_str(), snd_strerror(nErr));
+        deviceuse = device;
+      }
+    }
+  }
+
+  CLog::Log(LOGDEBUG, "%s - using alsa device %s", __FUNCTION__, deviceuse.c_str());
+
+  nErr = snd_pcm_open_lconf(&m_pPlayHandle, deviceuse.c_str(), SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK, config);
+  CHECK_ALSA_RETURN(LOGERROR,"pcm_open_lconf",nErr);
+
+  snd_config_delete(config);
 
   /* Allocate Hardware Parameters structures and fills it with config space for PCM */
   snd_pcm_hw_params_malloc(&hw_params);
@@ -120,10 +190,7 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   CHECK_ALSA_RETURN(LOGERROR,"snd_pcm_sw_params",nErr);
 
   snd_pcm_hw_params_free (hw_params);
-  CHECK_ALSA(LOGERROR,"snd_pcm_hw_params_free",nErr);
-
   snd_pcm_sw_params_free (sw_params);
-  CHECK_ALSA(LOGERROR,"snd_pcm_sw_params_free",nErr);
 
   nErr = snd_pcm_prepare (m_pPlayHandle);
   CHECK_ALSA(LOGERROR,"snd_pcm_prepare",nErr);
