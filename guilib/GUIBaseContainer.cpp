@@ -114,6 +114,7 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
         }
         UpdateLayout();
         SelectItem(message.GetParam1());
+        return true;
       }
       if (message.GetMessage() == GUI_MSG_LABEL_ADD && message.GetLPVOID())
       {
