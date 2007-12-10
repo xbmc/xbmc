@@ -16,6 +16,7 @@ CGUIFadeLabelControl::CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, 
   if (m_fadeAnim)
     m_fadeAnim->ApplyAnimation();
   m_renderTime = 0;
+  m_lastLabel = -1;
 }
 
 CGUIFadeLabelControl::~CGUIFadeLabelControl(void)
@@ -26,6 +27,7 @@ CGUIFadeLabelControl::~CGUIFadeLabelControl(void)
 
 void CGUIFadeLabelControl::SetInfo(const vector<int> &vecInfo)
 {
+  m_lastLabel = -1;
   if (vecInfo.size())
     m_infoLabels.clear();
   for (unsigned int i = 0; i < vecInfo.size(); i++)
@@ -38,6 +40,7 @@ void CGUIFadeLabelControl::SetInfo(const vector<int> &vecInfo)
 
 void CGUIFadeLabelControl::SetLabel(const vector<string> &vecLabel)
 {
+  m_lastLabel = -1;
   m_infoLabels.clear();
   for (unsigned int i = 0; i < vecLabel.size(); i++)
     AddLabel(vecLabel[i]);
@@ -68,16 +71,19 @@ void CGUIFadeLabelControl::Render()
 		m_currentLabel = 0;
 
   if (m_textLayout.Update(g_infoManager.GetMultiInfo(m_infoLabels[m_currentLabel], m_dwParentID)))
-  {
-    m_scrollInfo.Reset();
-    m_fadeAnim->QueueAnimation(ANIM_PROCESS_REVERSE);
-    // compute suffix based on length of available text
+  { // changed label - update our suffix based on length of available text
     float width, height;
     m_textLayout.GetTextExtent(width, height);
     float spaceWidth = m_label.font->GetCharWidth(L' ');
     unsigned int numSpaces = (unsigned int)(m_width / spaceWidth) + 1;
     if (width < m_width) numSpaces += (unsigned int)((m_width - width) / spaceWidth) + 1;
     m_scrollInfo.suffix.assign(numSpaces, L' ');
+  }
+  if (m_currentLabel != m_lastLabel)
+  { // new label - reset scrolling
+    m_scrollInfo.Reset();
+    m_fadeAnim->QueueAnimation(ANIM_PROCESS_REVERSE);
+    m_lastLabel = m_currentLabel;
   }
 
   if (m_infoLabels.size() == 1) // single label set - just display
@@ -153,11 +159,13 @@ bool CGUIFadeLabelControl::OnMessage(CGUIMessage& message)
     }
     if (message.GetMessage() == GUI_MSG_LABEL_RESET)
     {
+      m_lastLabel = -1;
       m_infoLabels.clear();
       m_scrollInfo.Reset();
     }
     if (message.GetMessage() == GUI_MSG_LABEL_SET)
     {
+      m_lastLabel = -1;
       m_infoLabels.clear();
       m_scrollInfo.Reset();
       AddLabel(message.GetLabel());

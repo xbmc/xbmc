@@ -243,7 +243,7 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
     result = ParseStations(root, items, url);
   else
   {
-    CLog::Log(LOGERROR, "%s - Invalid root xml element for shoutcast", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s - Invalid root xml element for shoutcast",__FUNCTION__);
     CLog::Log(LOGDEBUG, "%s - Sample follows...\n%s", __FUNCTION__, data.c_str());
   }
 

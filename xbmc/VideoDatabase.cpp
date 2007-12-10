@@ -2016,18 +2016,18 @@ void CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPat
       AddArtistToMusicVideo(lMVideoId, lArtist);
     }
     
-    int i;
-    for (i = 0; i < (int)vecGenres.size(); ++i)
+    unsigned int i;
+    for (i = 0; i < vecGenres.size(); ++i)
     {
       AddGenreToMusicVideo(lMVideoId, vecGenres[i]);
     }
 
-    for (i = 0; i < (int)vecDirectors.size(); ++i)
+    for (i = 0; i < vecDirectors.size(); ++i)
     {
       AddDirectorToMusicVideo(lMVideoId, vecDirectors[i]);
     }
     
-    for (i = 0; i < (int)vecStudios.size(); ++i)
+    for (i = 0; i < vecStudios.size(); ++i)
     {
       AddStudioToMusicVideo(lMVideoId, vecStudios[i]);
     }
