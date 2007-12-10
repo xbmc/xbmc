@@ -14,7 +14,7 @@ CGUIBorderedImage::~CGUIBorderedImage(void)
 
 void CGUIBorderedImage::Render()
 {
-  if (!m_borderImage.GetFileName().IsEmpty())
+  if (!m_borderImage.GetFileName().IsEmpty() && m_vecTextures.size())
   {
     if (m_bInvalidated) CGUIImage::CalculateSize();
 
