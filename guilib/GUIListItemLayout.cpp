@@ -125,12 +125,12 @@ void CGUIListItemLayout::Render(CGUIListItem *item, DWORD parentID, DWORD time)
       CGUIListLabel &label = ((CListLabel *)layoutItem)->m_label;
       label.SetSelected(item->IsSelected() || m_isPlaying);
       label.SetScrolling(m_focused);
-      label.UpdateVisibility();
+      label.UpdateVisibility(item);
       label.DoRender(time);
     }
     else
     {
-      ((CListTexture *)layoutItem)->m_image.UpdateVisibility();
+      ((CListTexture *)layoutItem)->m_image.UpdateVisibility(item);
       ((CListTexture *)layoutItem)->m_image.DoRender(time);
     }
   }

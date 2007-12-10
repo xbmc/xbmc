@@ -173,9 +173,9 @@ void CGUIVisualisationControl::LoadVisualisation()
   g_graphicsContext.SendMessage(msg);
 }
 
-void CGUIVisualisationControl::UpdateVisibility()
+void CGUIVisualisationControl::UpdateVisibility(void *pParam)
 {
-  CGUIControl::UpdateVisibility();
+  CGUIControl::UpdateVisibility(pParam);
   if (!IsVisible() && m_bInitialized)
     FreeVisualisation();
 }
