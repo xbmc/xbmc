@@ -201,7 +201,7 @@ bool CIMDB::InternalGetEpisodeList(const CIMDBUrl& url, IMDB_EPISODELIST& detail
   if (!m_parser.Load("Q:\\system\\scrapers\\video\\"+m_info.strPath))
     return false;
   IMDB_EPISODELIST temp;
-  for (int i=0; i < (int) url.m_scrURL.size(); i++)
+  for (unsigned int i=0; i < url.m_scrURL.size(); i++)
   {
     CStdString strHTML;
     CScraperUrl scrUrl;
@@ -306,7 +306,7 @@ bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CVideoInfoTag& movieDetails,
   }
 
   // now grab our details using the scraper
-  for (int i=0;i<(int)strHTML.size();++i)
+  for (unsigned int i=0;i<strHTML.size();++i)
     m_parser.m_param[i] = strHTML[i];
 
   m_parser.m_param[strHTML.size()] = url.m_strID;
