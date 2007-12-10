@@ -1126,12 +1126,13 @@ namespace VIDEO
       {
         CPicture picture;
         picture.CreateThumbnailFromMemory((const BYTE *)thumbData.c_str(), thumbData.size(), CUtil::GetExtension(entry.m_url), thumb);
+        return true;
       }
       catch (...)
       {
         ::DeleteFile(thumb.c_str());
       }
     }
-    return true;
+    return false;
   }
 }
