@@ -43,7 +43,7 @@ public:
   virtual void SetFocus(bool bOnOff);
   virtual void AllocResources();
   virtual void FreeResources();
-  virtual void UpdateVisibility();
+  virtual void UpdateVisibility(void *pParam = NULL);
 
   virtual unsigned int GetRows() const;
   

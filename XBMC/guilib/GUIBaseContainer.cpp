@@ -377,9 +377,9 @@ void CGUIBaseContainer::UpdateLayout()
   }
 }
 
-void CGUIBaseContainer::UpdateVisibility()
+void CGUIBaseContainer::UpdateVisibility(void *pParam)
 {
-  CGUIControl::UpdateVisibility();
+  CGUIControl::UpdateVisibility(pParam);
   if (m_staticContent)
   { // update our item list with our new content, but only add those items that should
     // be visible.
@@ -388,7 +388,7 @@ void CGUIBaseContainer::UpdateVisibility()
     {
       CFileItem *item = (CFileItem *)m_staticItems[i];
       // m_idepth is used to store the visibility condition
-      if (!item->m_idepth || g_infoManager.GetBool(item->m_idepth, GetParentID()))
+      if (!item->m_idepth || g_infoManager.GetBool(item->m_idepth, GetParentID(), item))
         m_items.push_back(item);
     }
   }

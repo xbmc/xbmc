@@ -86,7 +86,7 @@ public:
   virtual ~CGUIImage(void);
 
   virtual void Render();
-  virtual void UpdateVisibility();
+  virtual void UpdateVisibility(void *pParam = NULL);
   virtual bool OnAction(const CAction &action) ;
   virtual bool OnMessage(CGUIMessage& message);
   virtual void PreAllocResources();

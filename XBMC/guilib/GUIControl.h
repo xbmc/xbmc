@@ -147,7 +147,7 @@ public:
   void SetVisibleCondition(int visible, bool allowHiddenFocus);
   int GetVisibleCondition() const { return m_visibleCondition; };
   void SetEnableCondition(int condition);
-  virtual void UpdateVisibility();
+  virtual void UpdateVisibility(void *pParam = NULL);
   virtual void SetInitialVisibility();
   virtual void SetEnabled(bool bEnable);
   virtual void Update() { m_bInvalidated = true; };
