@@ -29,7 +29,7 @@ public:
   CGUIVisualisationControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height);
   virtual ~CGUIVisualisationControl(void);
   virtual void Render();
-  virtual void UpdateVisibility();
+  virtual void UpdateVisibility(void *pParam = NULL);
   virtual void FreeResources();
   virtual void OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample);
   virtual void OnAudioData(const unsigned char* pAudioData, int iAudioDataLength);
