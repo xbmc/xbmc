@@ -449,12 +449,12 @@ bool CGUIControl::OnMouseOver(const CPoint &point)
   return true;
 }
 
-void CGUIControl::UpdateVisibility()
+void CGUIControl::UpdateVisibility(void *pParam)
 {
   if (m_visibleCondition)
   {
     bool bWasVisible = m_visibleFromSkinCondition;
-    m_visibleFromSkinCondition = g_infoManager.GetBool(m_visibleCondition, m_dwParentID);
+    m_visibleFromSkinCondition = g_infoManager.GetBool(m_visibleCondition, m_dwParentID, (CFileItem*)pParam);
     if (!bWasVisible && m_visibleFromSkinCondition)
     { // automatic change of visibility - queue the in effect
   //    CLog::DebugLog("Visibility changed to visible for control id %i", m_dwControlID);
@@ -476,7 +476,7 @@ void CGUIControl::UpdateVisibility()
   // and check for conditional enabling - note this overrides SetEnabled() from the code currently
   // this may need to be reviewed at a later date
   if (m_enableCondition)
-    m_enabled = g_infoManager.GetBool(m_enableCondition, m_dwParentID);
+    m_enabled = g_infoManager.GetBool(m_enableCondition, m_dwParentID, (CFileItem*)pParam);
 }
 
 void CGUIControl::SetInitialVisibility()
