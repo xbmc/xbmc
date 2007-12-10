@@ -255,6 +255,8 @@ extern "C"
 	  // load the image
     DWORD dwImageType = GetImageType(file);
     CxImage *image = new CxImage(dwImageType);
+    if (!image) return false;
+
     int actualwidth = maxwidth;
     int actualheight = maxheight;
     try
