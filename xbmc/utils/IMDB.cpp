@@ -4,7 +4,7 @@
 
 #include "stdafx.h"
 #include "IMDB.h"
-#include "../util.h"
+#include "../Util.h"
 #include "HTMLUtil.h"
 #include "XMLUtils.h"
 #include "RegExp.h"
@@ -13,7 +13,10 @@
 
 using namespace HTML;
 
+#ifndef __GNUC__
 #pragma warning (disable:4018) 
+#endif
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -33,11 +36,11 @@ bool CIMDBUrl::Parse(CStdString strUrls)
   {
     TiXmlHandle docHandle( &doc );
     TiXmlElement *link = docHandle.FirstChild( "episodeguide" ).FirstChild( "url" ).Element();
-    if(link)
-      for ( link; link; link = link->NextSiblingElement("url") )
-        m_scrURL.push_back(CScraperUrl(link));      
-    else if( link = docHandle.FirstChild( "episodeguide" ).Element() )
+    while (link)
+    {
       m_scrURL.push_back(CScraperUrl(link));
+      link = link->NextSiblingElement("url");
+    }
 
   } 
   else
@@ -138,10 +141,12 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
   }
   TiXmlHandle docHandle( &doc );
   TiXmlElement *movie = docHandle.FirstChild( "results" ).FirstChild( "entity" ).Element();
+  if (!movie)
+    return false;
 
   int iYear = atoi(strYear);
 
-  for ( movie; movie; movie = movie->NextSiblingElement() )
+  while (movie)
   {
     url.m_scrURL.clear();
     TiXmlNode *title = movie->FirstChild("title");
@@ -184,6 +189,7 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
 
       movielist.push_back(url);
     }
+    movie = movie->NextSiblingElement();
   }
   return true;
 }
@@ -194,7 +200,7 @@ bool CIMDB::InternalGetEpisodeList(const CIMDBUrl& url, IMDB_EPISODELIST& detail
   if (!m_parser.Load("Q:\\system\\scrapers\\video\\"+m_info.strPath))
     return false;
   IMDB_EPISODELIST temp;
-  for(int i=0; i < url.m_scrURL.size(); i++)
+  for(unsigned int i=0; i < url.m_scrURL.size(); i++)
   {
     CStdString strHTML;
     CScraperUrl scrUrl;
@@ -230,7 +236,7 @@ bool CIMDB::InternalGetEpisodeList(const CIMDBUrl& url, IMDB_EPISODELIST& detail
     TiXmlHandle docHandle( &doc );
     TiXmlElement *movie = docHandle.FirstChild( "episodeguide" ).FirstChild( "episode" ).Element();
 
-    for ( movie; movie; movie = movie->NextSiblingElement() )
+    while (movie) 
     {
       TiXmlNode *title = movie->FirstChild("title");
       TiXmlElement *link = movie->FirstChildElement("url");
@@ -253,6 +259,7 @@ bool CIMDB::InternalGetEpisodeList(const CIMDBUrl& url, IMDB_EPISODELIST& detail
         std::pair<int,int> key(atoi(season->FirstChild()->Value()),atoi(epnum->FirstChild()->Value()));
         temp.insert(std::make_pair<std::pair<int,int>,CIMDBUrl>(key,url2));
       }
+      movie = movie->NextSiblingElement();
     }
   }
 
@@ -260,7 +267,7 @@ bool CIMDB::InternalGetEpisodeList(const CIMDBUrl& url, IMDB_EPISODELIST& detail
   std::map<int,int> min; 
   for (IMDB_EPISODELIST::iterator iter=temp.begin(); iter != temp.end(); ++iter ) 
   { 
-    if (min.size() == (iter->first.first -1))
+    if ((signed int) min.size() == (iter->first.first -1))
       min.insert(iter->first);
     else if (iter->first.second < min[iter->first.first])
       min[iter->first.first] = iter->first.second;
@@ -298,7 +305,7 @@ bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CVideoInfoTag& movieDetails,
   }
 
   // now grab our details using the scraper
-  for (int i=0;i<strHTML.size();++i)
+  for (unsigned int i=0;i<strHTML.size();++i)
     m_parser.m_param[i] = strHTML[i];
 
   m_parser.m_param[strHTML.size()] = url.m_strID;
@@ -327,19 +334,19 @@ bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CVideoInfoTag& movieDetails,
 
   bool ret = ParseDetails(doc, movieDetails);
   TiXmlElement* pRoot = doc.RootElement();
-  TiXmlElement* url = pRoot->FirstChildElement("url");
-  while (url && url->FirstChild())
+  TiXmlElement* xurl = pRoot->FirstChildElement("url");
+  while (xurl && xurl->FirstChild())
   {
-    const char* szFunction = url->Attribute("function");
+    const char* szFunction = xurl->Attribute("function");
     if (szFunction)
     {
       CIMDBUrl url2;
       
-      CScraperUrl scrURL(url);
+      CScraperUrl scrURL(xurl);
       url2.m_scrURL.push_back(scrURL);
       InternalGetDetails(url2,movieDetails,szFunction);
     }
-    url = url->NextSiblingElement("url");
+    xurl = xurl->NextSiblingElement("url");
   }
   TiXmlBase::SetCondenseWhiteSpace(true);
   
