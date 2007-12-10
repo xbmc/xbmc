@@ -1,0 +1,41 @@
+/* FLAC - Free Lossless Audio Codec
+ * Copyright (C) 2001,2002,2003,2004,2005,2006,2007  Josh Coalson
+ *
+ * This file is part the FLAC project.  FLAC is comprised of several
+ * components distributed under difference licenses.  The codec libraries
+ * are distributed under Xiph.Org's BSD-like license (see the file
+ * COPYING.Xiph in this distribution).  All other programs, libraries, and
+ * plugins are distributed under the GPL (see COPYING.GPL).  The documentation
+ * is distributed under the Gnu FDL (see COPYING.FDL).  Each file in the
+ * FLAC distribution contains at the top the terms under which it may be
+ * distributed.
+ *
+ * Since this particular file is relevant to all components of FLAC,
+ * it may be distributed under the Xiph.Org license, which is the least
+ * restrictive of those mentioned above.  See the file COPYING.Xiph in this
+ * distribution.
+ */
+
+
+FLAC (http://flac.sourceforge.net/) is an Open Source lossless audio
+codec developed by Josh Coalson <jcoalson@users.sourceforge.net>.
+
+Other major contributors and their contributions:
+"Andrey Astafiev" <andrei@tvcell.ru>
+* Russian translation of the HTML documentation
+
+"Miroslav Lichvar" <lichvarm@phoenix.inf.upol.cz>
+* IA-32 assembly versions of several libFLAC routines
+
+"Brady Patterson" <bpat@users.sourceforge.net>
+* AIFF file support, PPC assembly versions of libFLAC routines
+
+"Daisuke Shimamura" <Daisuke_Shimamura@nifty.com>
+* i18n support in the XMMS plugin
+
+"X-Fixer" <x-fixer@narod.ru>
+* Configuration system, tag editing, and file info in the Winamp2 plugin
+
+"Matt Zimmerman" <mdz@debian.org>
+* Libtool/autoconf/automake make system, flac man page
+

@@ -1,0 +1,832 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- Copyright (c) 2004,2005,2006,2007  Josh Coalson -->
+<!-- Permission is granted to copy, distribute and/or modify this document -->
+<!-- under the terms of the GNU Free Documentation License, Version 1.1 -->
+<!-- or any later version published by the Free Software Foundation; -->
+<!-- with no invariant sections. -->
+<!-- A copy of the license can be found at http://www.gnu.org/copyleft/fdl.html -->
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<meta name="author" content="Josh Coalson" />
+	<meta name="description" content="A free, open source codec for lossless audio compression and decompression" />
+	<meta name="keywords" content="free,lossless,audio,codec,encoder,decoder,compression,compressor,archival,archive,archiving,backup,music" />
+	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+	<link rel="stylesheet" type="text/css" href="flac.css" />
+	<title>FLAC - changelog</title>
+</head>
+
+<body>
+
+<div class="logo">
+	<a href="http://flac.sourceforge.net/"><img src="images/logo130.gif" alt="FLAC Logo" align="middle" border="0" hspace="0" /></a>
+</div>
+
+<div class="above_nav"></div>
+
+<div class="navbar">
+	&nbsp;<a href="index.html">home</a>&nbsp;&nbsp;|
+	&nbsp;<a href="faq.html">faq</a>&nbsp;&nbsp;|
+	&nbsp;<a href="news.html">news</a>&nbsp;&nbsp;|
+	&nbsp;<a href="download.html">download</a>&nbsp;&nbsp;|
+	&nbsp;<a href="documentation.html">documentation</a>&nbsp;&nbsp;|
+	&nbsp;<a href="comparison.html">comparison</a>&nbsp;&nbsp;|
+	&nbsp;changelog&nbsp;&nbsp;|
+	&nbsp;<a href="links.html">links</a>&nbsp;&nbsp;|
+	&nbsp;<a href="developers.html">developers</a>&nbsp;
+</div>
+
+<div class="langbar">
+	&nbsp;english&nbsp;&nbsp;|
+	&nbsp;<a href="ru/changelog.html">russian</a>&nbsp;
+</div>
+
+<div class="below_nav"></div>
+
+<div class="box">
+	<div class="box_title">
+		changelog
+	</div>
+	<div class="box_header"></div>
+	<div class="box_body">
+		This is an informal changelog, a summary of changes in each release.  (See also <a href="documentation_bugs.html">known bugs</a>.)  Particulary important for developers is the precise description of changes to the library interfaces.  See also the <a href="api/group__porting.html">porting guide</a> for specific instructions on porting to newer versions of FLAC.<br />
+
+		<br />
+
+		<a name="flac_1_2_1"><b>FLAC 1.2.1</b> (17-Sep-2007)</a>
+
+		<br />
+
+		<ul>
+			<li>
+				General:
+				<ul>
+					<li>With the new <span class="argument"><a href="documentation_tools_flac.html#flac_options_keep_foreign_metadata">--keep-foreign-metadata</a></span> in <span class="commandname">flac</span>, non-audio RIFF and AIFF chunks can be stored in FLAC files and recreated when decoding.  This allows, among other, things support for archiving BWF files and other WAVE files from editing tools that preserves all the metadata. </li>
+				</ul>
+			</li>
+			<li>
+				FLAC format:
+				<ul>
+					<li>Specified 2 new APPLICATION metadata blocks for storing WAVE and AIFF chunks (for use with <a href="documentation_tools_flac.html#flac_options_keep_foreign_metadata">--keep-foreign-metadata</a></span> in <span class="commandname">flac</span>).</li>
+					<li>The lead-out track number for non-CDDA cuesheets now must be 255.</li>
+				</ul>
+			</li>
+			<li>
+				Ogg FLAC format:
+				<ul>
+					<li>This is not a format change, but changed default extension for Ogg FLAC from .ogg to .oga, according to new Xiph <a href="http://wiki.xiph.org/index.php/MIME_Types_and_File_Extensions">specification</a> (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1762492&amp;group_id=13478&amp;atid=113478">SF #1762492</a>).</li>
+				</ul>
+			</li>
+			<li>
+				flac:
+				<ul>
+					<li>Added a new option <span class="argument"><a href="documentation_tools_flac.html#flac_options_no_utf8_convert">--no-utf8-convert</a></span> which works like it does in <span class="commandname">metaflac</span> (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=973740&amp;group_id=13478&amp;atid=363478">SF #973740</a>).</li>
+					<li>Added a new option <span class="argument"><a href="documentation_tools_flac.html#flac_options_keep_foreign_metadata">--keep-foreign-metadata</a></span> which can save/restore RIFF and AIFF chunks to/from FLAC files (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=568264&amp;group_id=13478&amp;atid=363478">SF #363478</a>).</li>
+					<li>Changed default extension for Ogg FLAC from .ogg to .oga, according to new Xiph <a href="http://wiki.xiph.org/index.php/MIME_Types_and_File_Extensions">specification</a> (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1762492&amp;group_id=13478&amp;atid=113478">SF #1762492</a>).</li>
+					<li>Fixed bug where using <span class="argument">--replay-gain</span> without any padding option caused only a small PADDING block to be created (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1760790&amp;group_id=13478&amp;atid=113478">SF #1760790</a>).</li>
+					<li>Fixed bug where encoding from stdin on Windows could fail if WAVE/AIFF contained unknown chunks (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1776803&amp;group_id=13478&amp;atid=113478">SF #1776803</a>).</li>
+					<li>Fixed bug where importing non-CDDA cuesheets would cause an invalid lead-out track number (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1764105&amp;group_id=13478&amp;atid=113478">SF #1764105</a>).</li>
+				</ul>
+			</li>
+			<li>
+				metaflac:
+				<ul>
+					<li>Changed default extension for Ogg FLAC from .ogg to .oga, according to new Xiph <a href="http://wiki.xiph.org/index.php/MIME_Types_and_File_Extensions">specification</a> (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1762492&amp;group_id=13478&amp;atid=113478">SF #1762492</a>).</li>
+					<li>Fixed bug where importing non-CDDA cuesheets would cause an invalid lead-out track number (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1764105&amp;group_id=13478&amp;atid=113478">SF #1764105</a>).</li>
+				</ul>
+			</li>
+			<li>
+				plugins:
+				<ul>
+					<li>(none)</li>
+				</ul>
+			</li>
+			<li>
+				build system:
+				<ul>
+					<li>New configure option <span class="argument">--disable-cpplibs</span> to prevent building libFLAC++ (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1723295&amp;group_id=13478&amp;atid=313478">SF #1723295</a>).</li>
+					<li>Fixed bug compiling <span class="commandname">flac</span> without Ogg support (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1760786&amp;group_id=13478&amp;atid=113478">SF #1760786</a>).</li>
+					<li>Fixed bug where sometimes an existing installation of flac could interfere with the build process (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1763690&amp;group_id=13478&amp;atid=113478">SF #1763690</a>).</li>
+					<li>OS X fixes (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1786225&amp;group_id=13478&amp;atid=313478">SF #1786225</a>).</li>
+					<li>MinGW fixes (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1684879&amp;group_id=13478&amp;atid=113478">SF #1684879</a>).</li>
+					<li>Solaris 10 fixes (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1783225&amp;group_id=13478&amp;atid=113478">SF #1783225</a> <a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1783630&amp;group_id=13478&amp;atid=113478">SF #1783630</a>).</li>
+					<li>OS/2 fixes (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1771378&amp;group_id=13478&amp;atid=113478">SF #1771378</a> <a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1229495&amp;group_id=13478&amp;atid=113478">SF #1229495</a>).</li>
+					<li>automake-1.10 fixes (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1791361&amp;group_id=13478&amp;atid=113478">SF #1791361</a> <a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1792179&amp;group_id=13478&amp;atid=113478">SF #1792179</a>).</li>
+				</ul>
+			</li>
+			<li>
+				documentation:
+				<ul>
+					<li>Added new <a href="documentation_tools_flac.html#tutorial">tutorial</a> section for <span class="commandname">flac</span>.</li>
+					<li>Added <a href="documentation_example_code.html">example code</a> section for using libFLAC/libFLAC++.</li>
+				</ul>
+			</li>
+			<li>
+				libraries:
+				<ul>
+					<li>libFLAC: Fixed very rare seek bug (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1684049&amp;group_id=13478&amp;atid=113478">SF #1684049</a>).</li>
+					<li>libFLAC: Fixed seek bug with Ogg FLAC and small streams (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1792172&amp;group_id=13478&amp;atid=113478">SF #1792172</a>).</li>
+					<li>libFLAC: 64-bit fixes (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1790872&amp;group_id=13478&amp;atid=113478">SF #1790872</a>).</li>
+				</ul>
+			</li>
+			<li>
+				Interface changes (see also the <a href="http://flac.sourceforge.net/api/group__porting__1__2__0__to__1__2__1.html">porting guide</a> for specific instructions on porting to FLAC 1.2.1):
+				<ul>
+					<li>
+						libFLAC:
+						<ul>
+							<li><b>Added</b> FLAC__metadata_simple_iterator_is_last()</li>
+							<li><b>Added</b> FLAC__metadata_simple_iterator_get_block_offset()</li>
+							<li><b>Added</b> FLAC__metadata_simple_iterator_get_block_length()</li>
+							<li><b>Added</b> FLAC__metadata_simple_iterator_get_application_id()</li>
+						</ul>
+					</li>
+					<li>
+						libFLAC++:
+						<ul>
+							<li><b>Added</b> FLAC::Metadata::SimpleIterator::is_last()</li>
+							<li><b>Added</b> FLAC::Metadata::SimpleIterator::get_block_offset()</li>
+							<li><b>Added</b> FLAC::Metadata::SimpleIterator::get_block_length()</li>
+							<li><b>Added</b> FLAC::Metadata::SimpleIterator::get_application_id()</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+
+		<br />
+
+		<a name="flac_1_2_0"><b>FLAC 1.2.0</b> (23-Jul-2007)</a>
+
+		<br />
+
+		<ul>
+			<li>
+				General:
+				<ul>
+					<li>Small encoding speedups for all modes.</li>
+				</ul>
+			</li>
+			<li>
+				FLAC format:
+				<ul>
+					<li>One of the reserved bits in the FLAC frame header has been assigned for future use; make sure to refer to the <a href="http://flac.sourceforge.net/api/group__porting__1__1__4__to__1__2__0.html">porting guide</a> if you parse FLAC streams manually.</li>
+				</ul>
+			</li>
+			<li>
+				Ogg FLAC format:
+				<ul>
+					<li>(none)</li>
+				</ul>
+			</li>
+			<li>
+				flac:
+				<ul>
+					<li>Added runtime detection of SSE OS support for most operating systems.</li>
+					<li>Added a new undocumented option <span class="argument">--ignore-chunk-sizes</span> for ignoring the size of the 'data' chunk (WAVE) or 'SSND' chunk (AIFF).  Can be used to encode files with bogus data sizes (e.g. with WAV files piped from foobar2000 to flac.exe as an external encoder).  <b>Use with caution</b>: all subsequent data is treated as audio, so the data/SSND chunk must be the last or the following data/tags will be treated as audio and encoded.</li>
+				</ul>
+			</li>
+			<li>
+				metaflac:
+				<ul>
+					<li>(none)</li>
+				</ul>
+			</li>
+			<li>
+				plugins:
+				<ul>
+					<li>(none)</li>
+				</ul>
+			</li>
+			<li>
+				build system:
+				<ul>
+					<li>Added solution and project files for building with VC++ 2005.</li>
+				</ul>
+			</li>
+			<li>
+				libraries:
+				<ul>
+					<li>Added runtime detection of SSE OS support for most operating systems.</li>
+					<li>Fixed bug where invalid seek tables could cause some seeks to fail.</li>
+				</ul>
+			</li>
+			<li>
+				Interface changes (see also the <a href="http://flac.sourceforge.net/api/group__porting__1__1__4__to__1__2__0.html">porting guide</a> for specific instructions on porting to FLAC 1.2.0):
+				<ul>
+					<li>
+						libFLAC:
+						<ul>
+							<li><b>Added</b> FLAC__format_sample_rate_is_subset()</li>
+						</ul>
+					</li>
+					<li>
+						libFLAC++:
+						<ul>
+							<li><b>Added</b> FLAC::Decoder::Stream::get_decode_position()</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+
+		<br />
+
+		<a name="flac_1_1_4"><b>FLAC 1.1.4</b> (13-Feb-2007)</a>
+
+		<br />
+
+		<ul>
+			<li>
+				General:
+				<ul>
+					<li>Improved compression with no change to format or decrease in speed.</li>
+					<li>Encoding and decoding speedups for all modes.  Encoding at -8 is twice as fast.</li>
+				</ul>
+			</li>
+			<li>
+				FLAC format:
+				<ul>
+					<li>(none)</li>
+				</ul>
+			</li>
+			<li>
+				Ogg FLAC format:
+				<ul>
+					<li>(none)</li>
+				</ul>
+			</li>
+			<li>
+				flac:
+				<ul>
+					<li>Improved compression with no change to format or decrease in speed.</li>
+					<li>Encoding and decoding speedups for all modes.  Encoding at -8 is twice as fast.</li>
+					<li>Added a new option <span class="argument"><a href="documentation_tools_flac.html#flac_options_warnings_as_errors">-w,--warnings-as-errors</a></span> for treating all warnings as errors.</li>
+					<li>Allow <span class="argument"><a href="documentation_tools_flac.html#flac_options_picture">--picture</a></span> option to take only a filename, and have all other attributes extracted from the file itself.</li>
+					<li>Fixed a bug that caused suboptimal default compression settings in some locales (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1608883&amp;group_id=13478&amp;atid=113478">SF #1608883</a>).</li>
+					<li>Fixed a bug where FLAC-to-FLAC transcoding of a corrupted FLAC file would truncate the transcoded file at the first error (<a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1615019&amp;group_id=13478&amp;atid=113478">SF #1615019</a>).</li>
+					<li>Fixed a bug where using <span class="argument"><a href="documentation_tools_flac.html#flac_options_decode_through_errors">-F</a></span> with FLAC-to-FLAC transcoding of a corrupted FLAC would have no effect (<a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1615391&amp;group_id=13478&amp;atid=113478">SF #1615391</a>).</li>
+					<li>Fixed a bug where new PICTURE metadata blocks specified with <span class="argument"><a href="documentation_tools_flac.html#flac_options_picture">--picture</a></span> would not be transferred during FLAC-to-FLAC transcoding (<a href="https://sourceforge.net/tracker/index.php?func=detail&aid=1627993&group_id=13478&atid=113478">SF #1627993</a>).</li>
+				</ul>
+			</li>
+			<li>
+				metaflac:
+				<ul>
+					<li>Allow <span class="argument"><a href="documentation_tools_metaflac.html#metaflac_shorthand_import_picture_from">--import-picture-from</a></span> option to take only a filename, and have all other attributes extracted from the file itself.</li>
+				</ul>
+			</li>
+			<li>
+				plugins:
+				<ul>
+					<li>Fixed a bug in the XMMS plugin where Ctrl-3 (file info) would cause a crash if the file did not exist (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1634941&amp;group_id=13478&amp;amp;atid=313478">SF #1634941</a>).</li>
+				</ul>
+			</li>
+			<li>
+				build system:
+				<ul>
+					<li>Fixed a makefile linkage bug with libogg (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1611414&amp;group_id=13478&amp;atid=113478">SF #1611414</a>).</li>
+					<li>Added pkg-config files for libFLAC and libFLAC++ (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1647881&amp;group_id=13478&amp;atid=313478">SF #1647881</a>).</li>
+					<li>Added <span class=argument>--disable-ogg</span> option for building without Ogg support even if libogg is installed (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1196996&amp;group_id=13478&amp;atid=113478">SF #1196996</a>).</li>
+				</ul>
+			</li>
+			<li>
+				libraries:
+				<ul>
+					<li>Completely rewritten bitbuffer which uses native machine word size instead of bytes for dramatic speed improvements.  The speedup should be most dramatic on CPUs with slower byte manipulation capability and big-endian machines.</li>
+					<li>Much faster Rice partition size estimation which greatly speeds encoding in higher modes.</li>
+					<li>Increased compression for all modes.</li>
+					<li>Reduced memory requirements for encoder and decoder.</li>
+					<li>Fixed a bug with default apodization settings that were erroneous in some locales (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1608883&amp;group_id=13478&amp;atid=113478">SF #1608883</a>).</li>
+				</ul>
+			</li>
+			<li>
+				Interface changes:
+				<ul>
+					<li>
+						libFLAC:
+						<ul>
+							<li>(behavior only) FLAC__stream_encoder_set_metadata() now makes a copy of the "metadata" array of pointers (but still not copies of the objects themselves) so the client does not need to maintain its copy of the array after the call.</li>
+						</ul>
+					</li>
+					<li>
+						libFLAC++:
+						<ul>
+							<li>(none)</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+
+		<br />
+
+		<a name="flac_1_1_3"><b>FLAC 1.1.3</b> (27-Nov-2006)</a>
+
+		<br />
+
+		<ul>
+			<li>
+				General:
+				<ul>
+					<li>Improved compression with no impact on format or decoding speed.</li>
+					<li>Much better recovery for corrupted files</li>
+					<li>Better multichannel support</li>
+					<li>Large file (&gt;2GB) support everywhere</li>
+					<li><span class="commandname">flac</span> now supports FLAC and Ogg FLAC as input to the encoder (e.g. can re-encode FLAC to FLAC) and preserve all the metadata like tags, etc.</li>
+					<li>New <span class="code"><a href="format.html#def_PICTURE">PICTURE</a></span> metadata block for storing things like cover art, new <span class="argument"><a href="documentation_tools_flac.html#flac_options_picture">--picture</a></span> option to <span class="commandname">flac</span> and <span class="argument"><a href="documentation_tools_metaflac.html#metaflac_shorthand_import_picture_from">--import-picture-from</a></span> option to <span class="commandname">metaflac</span> for importing pictures, new <span class="argument"><a href="documentation_tools_metaflac.html#metaflac_shorthand_export_picture_to">--export-picture-to</a></span> option to <span class="commandname">metaflac</span> for exporting pictures, and metadata API <a href="api/group__flac__metadata__level0.html#ga3">additions</a> for searching for suitable pictures based on type, size and color constraints.</li>
+					<li>Support for new <tt>REPLAYGAIN_REFERENCE_LOUDNESS</tt> tag.</li>
+					<li>Fixed a bug in Ogg FLAC encoding where metadata was not being updated properly.  Existing Ogg FLAC files should be recoded to fix up the metadata, e.g. <span class="command">flac -Vf -S 10s --ogg file.ogg</span></li>
+					<li>In the developer libraries, the interface has been simplfied by merging the three decoding layers into a single class; ditto for the encoders.  Also, libOggFLAC has been merged into libFLAC and libOggFLAC++ has been merged into libFLAC++ so there is a single API supporting both native FLAC and Ogg FLAC.</li>
+				</ul>
+			</li>
+			<li>
+				FLAC format:
+				<ul>
+					<li>New <span class="code"><a href="format.html#def_PICTURE">PICTURE</a></span> metadata block for storing things like cover art.</li>
+					<li>Speaker assignments and channel orders for 3-6 channels (see <a href="format.html#frame_header">frame header</a>).</li>
+					<li>Further restrictions on the <a href="format.html#subset">FLAC subset</a> when the sample rate is &lt;=48kHz; in this case the maximum LPC order is now 12 and maximum blocksize is 4608.  This is to further limit the processing and memory requirements for hardware implementations while not measurably affecting compression.</li>
+				</ul>
+			</li>
+			<li>
+				Ogg FLAC format:
+				<ul>
+					<li>(none)</li>
+				</ul>
+			</li>
+			<li>
+				flac:
+				<ul>
+					<li>Improved the <span class="argument"><a href="documentation_tools_flac.html#flac_options_decode_through_errors">-F</a></span> option to allow decoding of FLAC files whose metadata is corrupted, and other kinds of severe corruption.</li>
+					<li>Encoder can now take FLAC and Ogg FLAC as input.  The output FLAC file will have all the same metadata as the original unless overridden with options on the command line.</li>
+					<li>Encoder can now take WAVEFORMATEXTENSIBLE WAVE files as input; decoder will output WAVEFORMATEXTENSIBLE WAVE files when necessary to conform to the latest Microsoft specifications.</li>
+					<li>Now properly supports AIFF and WAVEFORMATEXTENSIBLE multichannel input, performing necessary channel reordering both for encoding and decoding.  WAVEFORMATEXTENSIBLE channel mask is also saved to a tag on encoding and restored on decoding for situations when there is no natural mapping to FLAC channel assignments.</li>
+					<li>Expanded support for "odd" sample resolutions to WAVE and AIFF input; all resolutions from 4 to 24 bits-per-sample now supported for all input types.</li>
+					<li>Added a new option <span class="argument"><a href="documentation_tools_flac.html#flac_options_tag_from_file">--tag-from-file</a></span> for setting a tag from file (e.g. for importing a cuesheet as a tag).</li>
+					<li>Added a new option <span class="argument"><a href="documentation_tools_flac.html#flac_options_picture">--picture</a></span> for adding pictures.</li>
+					<li>Added a new option <span class="argument"><a href="documentation_tools_flac.html#flac_options_apodization">--apodization</a></span> for specifying the window function(s) to be used in LPC analysis.</li>
+					<li>Added support for encoding from non-compressed AIFF-C (<a href="https://sourceforge.net/tracker/?func=detail&amp;atid=113478&amp;aid=1090933&amp;group_id=13478">SF #1090933</a>).</li>
+					<li>Importing of non-CDDA-compliant cuesheets now only issues a warning, not an error (see <a href="http://www.hydrogenaudio.org/forums/index.php?showtopic=31282">here</a>).</li>
+					<li>MD5 comparison failures on decoding are now an error instead of a warning and will also return a non-zero exit code (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1493725&amp;group_id=13478&amp;atid=113478">SF #1493725</a>).</li>
+					<li>The default padding size is now 8K, or 64K if the input audio stream is more than 20 minutes long.</li>
+					<li>Fixed a bug in cuesheet parsing where it would return an error if the last line of the cuesheet did not end with a newline.</li>
+					<li>Fixed a bug that caused a crash when <span class="argument">-a</span> and <span class="argument">-t</span> were used together (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1229481&amp;group_id=13478&amp;atid=113478">SF #1229481</a>).</li>
+					<li>Fixed a bug with --sector-align where appended samples were not always totally silent (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1237707&amp;group_id=13478&amp;atid=113478">SF #1237707</a>).</li>
+					<li>Fixed bugs with --sector-align and raw input files.</li>
+					<li>Fixed a bug printing out unknown AIFF subchunk names (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1267476&amp;group_id=13478&amp;atid=113478">SF #1267476</a>).</li>
+					<li>Fixed a bug where WAVE files with "data" subchunks of size 0 where accepted (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1293830&amp;group_id=13478&amp;atid=113478">SF #1293830</a>).</li>
+					<li>Fixed a bug where sync error at end-of-stream of truncated files was not being caught (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1244071&amp;group_id=13478&amp;atid=113478">SF #1244071</a>).</li>
+					<li>Fixed a problem with filename parsing if file does not have extension but also has a . in the path (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1161916&amp;group_id=13478&amp;atid=113478">SF #1161916</a>).</li>
+					<li>Fixed a problem with fractional-second parsing for <span class="argument">--skip</span>/<span class="argument">--until</span> in some locales (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1031043&amp;group_id=13478&amp;atid=113478">SF #1031043</a>).</li>
+					<li>Increase progress report rate when -p and -e are used together (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1580122&amp;group_id=13478&amp;atid=113478">SF #1580122</a>).</li>
+				</ul>
+			</li>
+			<li>
+				metaflac:
+				<ul>
+					<li>Added support for read-only operations on Ogg FLAC files.</li>
+					<li>Added a new option <span class="argument"><a href="documentation_tools_metaflac.html#metaflac_shorthand_set_tag_from_file">--set-tag-from-file</a></span> for setting a tag from file (e.g. for importing a cuesheet as a tag).</li>
+					<li>Added a new option <span class="argument"><a href="documentation_tools_metaflac.html#metaflac_shorthand_import_picture_from">--import-picture-from</a></span> for importing pictures.</li>
+					<li>Added a new option <span class="argument"><a href="documentation_tools_metaflac.html#metaflac_shorthand_export_picture_to">--export-picture-to</a></span> for exporting pictures.</li>
+					<li>Added shorthand operation <span class="argument"><a href="documentation_tools_metaflac.html#metaflac_shorthand_remove_replay_gain">--remove-replay-gain</a></span> for removing ReplayGain tags.</li>
+					<li><span class="argument"><a href="documentation_tools_metaflac.html#metaflac_shorthand_export_cuesheet_to">--export-cuesheet-to</a></span> now properly specifies the FLAC file name (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1272825&amp;group_id=13478&amp;atid=363478">SF #1272825</a>).</li>
+					<li>Importing of non-CDDA-compliant cuesheets now issues a warning.</li>
+					<li>Removed the following deprecated tag editing options; you should use the new option names shown instead:
+						<ul>
+							<li>Removed <span class="argument">--show-vc-vendor</span>; use <span class="argument">--show-vendor-tag</span></li>
+							<li>Removed <span class="argument">--show-vc-field</span>; use <span class="argument">--show-tag</span></li>
+							<li>Removed <span class="argument">--remove-vc-all</span>; use <span class="argument">--remove-all-tags</span></li>
+							<li>Removed <span class="argument">--remove-vc-field</span>; use <span class="argument">--remove-tag</span></li>
+							<li>Removed <span class="argument">--remove-vc-firstfield</span>; use <span class="argument">--remove-first-tag</span></li>
+							<li>Removed <span class="argument">--set-vc-field</span>; use <span class="argument">--set-tag</span></li>
+							<li>Removed <span class="argument">--import-vc-from</span>; use <span class="argument">--import-tags-from</span></li>
+							<li>Removed <span class="argument">--export-vc-to</span>; use <span class="argument">--export-tags-to</span></li>
+						</ul>
+					</li>
+					<li>Disallow multiple input FLAC files when --import-tags-from=- is used (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1082577&amp;group_id=13478&amp;atid=113478">SF #1082577</a>).</li>
+				</ul>
+			</li>
+			<li>
+				plugins:
+				<ul>
+					<li>When ReplayGain is on, if tags for the preferred kind of gain (album/track) are not in a stream, the other kind will be used.</li>
+					<li>Added ReplayGain info to file info box in XMMS plugin</li>
+					<li>Fixed UTF-8 decoder to disallow non-shortest-form and surrogate sequences (see <a href="http://www.unicode.org/versions/corrigendum1.html">here</a>).</li>
+				</ul>
+			</li>
+			<li>
+				build system:
+				<ul>
+					<li>Added support for building on OS/2 with EMX (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1229495&amp;group_id=13478&amp;atid=113478">SF #1229495</a>)</li>
+					<li>Added support for building with Borland C++ (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1599018&amp;group_id=13478&amp;atid=313478">SF #1599018</a>)</li>
+					<li>Added a <span class="argument">--disable-xmms-plugin</span> option to <span class="command">configure</span> to prevent building the XMMS plugin (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=930494&amp;group_id=13478&amp;atid=363478">SF #930494</a>).</li>
+					<li>Added a <span class="argument">--disable-doxygen-docs</span> option to <span class="command">configure</span> for disabling Doxygen-based API doc generation (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1365935&amp;group_id=13478&amp;atid=313478">SF #1365935</a>).</li>
+					<li>Added a <span class="argument">--disable-thorough-tests</span> option to <span class="command">configure</span> to do the basic library, stream, and tool tests in a reasonable time (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1077948&amp;group_id=13478&amp;atid=363478">SF #1077948</a>).</li>
+					<li>Added large file support with <span class="argument">AC_SYS_LARGEFILE</span>; use <span class="argument">--disable-largefile</span> with <span class="command">configure</span> to disable.</li>
+				</ul>
+			</li>
+			<li>
+				libraries:
+				<ul>
+					<li>Merged libOggFLAC into libFLAC; both formats are now supporte through the same API.</li>
+					<li>Merged libOggFLAC++ into libFLAC++; both formats are now supporte through the same API.</li>
+					<li>libFLAC and libFLAC++: Simplified encoder setup with new <span class="argument">FLAC__stream_encoder_set_compression_level()</span> function.</li>
+					<li>libFLAC: Improved compression with no impact on FLAC format or decoding time by adding a windowing stage before LPC analysis.</li>
+					<li>libFLAC: Fixed a bug where missing STREAMINFO fields (min/max framesize, total samples, MD5 sum) and seek point offsets were not getting rewritten back to Ogg FLAC file (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1338969&amp;group_id=13478&amp;atid=113478">SF #1338969</a>).</li>
+					<li>libFLAC: Fixed a bug in cuesheet parsing where it would return an error if the last line of the cuesheet did not end with a newline.</li>
+					<li>libFLAC: Fixed UTF-8 decoder to disallow non-shortest-form and surrogate sequences (see <a href="http://www.unicode.org/versions/corrigendum1.html">here</a>).</li>
+					<li>libFLAC: Fixed a bug in the return value for <span class="argument">FLAC__stream_decoder_set_metadata_respond_application()</span> and <span class="argument">FLAC__stream_decoder_set_metadata_ignore_application()</span> when there was a memory allocation error (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1235005&amp;group_id=13478&amp;atid=113478">SF #1235005</a>).</li>
+				</ul>
+			</li>
+			<li>
+				Interface changes (see also the <a href="http://flac.sourceforge.net/api/group__porting__1__1__2__to__1__1__3.html">porting guide</a> for specific instructions on porting to FLAC 1.1.3):
+				<ul>
+					<li>
+						all libraries;
+						<ul>
+							<li>Merged libOggFLAC into libFLAC; both formats are now supporte through the same API.</li>
+							<li>Merged libOggFLAC++ into libFLAC++; both formats are now supporte through the same API.</li>
+							<li>Merged seekable stream decoder and file decoder into the stream decoder.</li>
+							<li>Merged seekable stream encoder and file encoder into the stream encoder.</li>
+							<li>Added #defines for the API version number to make porting easier; see <tt>include/lib*FLAC*/export.h</tt>.</li>
+						</ul>
+					</li>
+					<li>
+						libFLAC:
+						<ul>
+							<li><b>Added</b> FLAC__stream_encoder_set_apodization()</li>
+							<li><b>Added</b> FLAC__stream_encoder_set_compression_level()</li>
+							<li><b>Added</b> FLAC__metadata_object_cuesheet_calculate_cddb_id()</li>
+							<li><b>Added</b> FLAC__metadata_get_cuesheet()</li>
+							<li><b>Added</b> FLAC__metadata_get_picture()</li>
+							<li><b>Added</b> FLAC__metadata_chain_read_ogg() and FLAC__metadata_chain_read_ogg_with_callbacks()</li>
+							<li><b>Changed</b> FLAC__stream_encoder_finish() now returns a FLAC__bool to signal a verify failure, or error processing last frame or updating metadata.</li>
+							<li><b>Changed</b> FLAC__StreamDecoderState: removed state FLAC__STREAM_DECODER_UNPARSEABLE_STREAM</li>
+							<li><b>Changed</b> FLAC__StreamDecoderErrorStatus: new error code FLAC__STREAM_DECODER_ERROR_STATUS_UNPARSEABLE_STREAM</li>
+							<li>The above two changes mean that when the decoder encounters what it thinks are unparseable frames from a future decoder, instead of returning a fatal error with the FLAC__STREAM_DECODER_UNPARSEABLE_STREAM state, it just calls the error callback with FLAC__STREAM_DECODER_ERROR_STATUS_UNPARSEABLE_STREAM and leaves the behavior up to the application.</li>
+						</ul>
+					</li>
+					<li>
+						libFLAC++:
+						<ul>
+							<li><b>Added</b> FLAC::Metadata::Picture</li>
+							<li><b>Added</b> FLAC::Encoder::Stream::set_apodization()</li>
+							<li><b>Added</b> FLAC::Encoder::Stream::set_compression_level()</li>
+							<li><b>Added</b> FLAC::Metadata::CueSheet::calculate_cddb_id()</li>
+							<li><b>Added</b> FLAC::Metadata::get_cuesheet()</li>
+							<li><b>Added</b> FLAC::Metadata::get_picture()</li>
+							<li><b>Changed</b> FLAC::Metadata::Chain::read() to accept a flag denoting Ogg FLAC input</li>
+							<li><b>Changed</b> FLAC::Decoder::Stream::finish() now returns a bool to signal an MD5 failure like FLAC__stream_decoder_finish() does.</li>
+							<li><b>Changed</b> FLAC::Encoder::Stream::finish() now returns a bool to signal a verify failure, or error processing last frame or updating metadata.</li>
+						</ul>
+					</li>
+					<li>
+						libOggFLAC:
+						<ul>
+							<li>Merged into libFLAC.</li>
+						</ul>
+					</li>
+					<li>
+						libOggFLAC++:
+						<ul>
+							<li>Merged into libFLAC++.</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+
+		<br />
+
+		<a name="flac_1_1_2"><b>FLAC 1.1.2</b> (05-Feb-2005)</a>
+
+		<br />
+
+		<ul>
+			<li>
+				General:
+				<ul>
+					<li>Sped up decoding by a few percent overall.</li>
+					<li>Sped up encoding when not using LPC (i.e. when using <span class="commandname">flac</span> options <span class="argument">-0</span>, <span class="argument">-1</span>, <span class="argument">-2</span>, or <span class="argument">-l 0</span>).</li>
+					<li>Fixed a decoding bug that could cause sync errors with some ID3v1-tagged FLAC files.</li>
+					<li>Added <a href="documentation_tools_metaflac.html#metaflac">HTML documentation for metaflac</a>.</li>
+				</ul>
+			</li>
+			<li>
+				FLAC format:
+				<ul>
+					<li>(none)</li>
+				</ul>
+			</li>
+			<li>
+				Ogg FLAC format:
+				<ul>
+					<li>(none)</li>
+				</ul>
+			</li>
+			<li>
+				flac:
+				<ul>
+					<li>New option <span class="argument"><a href="documentation_tools_flac.html#flac_options_input_size">--input-size</a></span> to manually specify the input size when encoding raw samples from stdin.</li>
+				</ul>
+			</li>
+			<li>
+				metaflac:
+				<ul>
+					<li>(none)</li>
+				</ul>
+			</li>
+			<li>
+				plugins:
+				<ul>
+					<li>Added support for HTTP streaming in XMMS plugin.  <b>NOTE</b>: there is a <a href="http://bugs.xmms.org/show_bug.cgi?id=2038">bug</a> in the XMMS mpg123 plugin that hijacks FLAC streams; to fix it you will need to add the '.flac' extension to the list of exceptions in <span class="code">Input/mpg123/mpg123.c:is_our_file()</span> in the XMMS sources and recompile.</li>
+				</ul>
+			</li>
+			<li>
+				build system:
+				<ul>
+					<li>(none)</li>
+				</ul>
+			</li>
+			<li>
+				libraries:
+				<ul>
+					<li>libFLAC: Sped up Rice block decoding in the bitbuffer, resulting in decoding speed gains of a few percent.</li>
+					<li>libFLAC: Sped up encoding when not using LPC (i.e. <span class="code">max_lpc_order == 0</span>).</li>
+					<li>libFLAC: Trailing NUL characters maintained on Vorbis comment entries so they can be treated like C strings.</li>
+					<li>libFLAC: More FLAC tag (i.e. Vorbis comment) validation.</li>
+					<li>libFLAC: Fixed a bug in the logic that determines the frame or sample number in a frame header; the bug could cause sync errors with some ID3v1-tagged FLAC files.</li>
+					<li>libFLAC, libOggFLAC: Can now be compiled to use only integer instructions, including encoding.  The decoder is almost completely integer anyway but there were a couple places that needed a fixed-point replacement.  There is no fixed-point version of LPC analysis yet, so if libFLAC is compiled integer-only, the encoder will behave as if the max LPC order is 0 (i.e. used fixed predictors only).  LPC decoding is supported in all cases as it always was integer-only.</li>
+				</ul>
+			</li>
+			<li>
+				Interface changes:
+				<ul>
+					<li>
+						libFLAC:
+						<ul>
+							<li><b>Changed:</b> Metadata object interface now maintains a trailing NUL on Vorbis comment entries for convenience.</li>
+							<li><b>Changed:</b> Metadata object interface now validates all Vorbis comment entries on input and returns false if an entry does not conform to the Vorbis comment spec.</li>
+							<li><b>Added</b> FLAC__format_vorbiscomment_entry_name_is_legal()</li>
+							<li><b>Added</b> FLAC__format_vorbiscomment_entry_value_is_legal()</li>
+							<li><b>Added</b> FLAC__format_vorbiscomment_entry_is_legal()</li>
+							<li><b>Added</b> FLAC__metadata_object_vorbiscomment_entry_from_name_value_pair()</li>
+							<li><b>Added</b> FLAC__metadata_object_vorbiscomment_entry_to_name_value_pair()</li>
+							<li><b>Changed</b> the signature of FLAC__metadata_object_vorbiscomment_entry_matches(): the first argument is now <span class="code">FLAC__StreamMetadata_VorbisComment_Entry entry</span> (was <span class="code">const FLAC__StreamMetadata_VorbisComment_Entry *entry</span>), i.e. <span class="code">entry</span> is now pass-by-value.</li>
+						</ul>
+					</li>
+					<li>
+						libFLAC++:
+						<ul>
+							<li><b>Changed:</b> Metadata object interface now maintains a trailing NUL on Vorbis comment values for convenience.</li>
+							<li><b>Changed:</b> Metadata object interface now validates all Vorbis comment entries on input and returns false if an entry does not conform to the Vorbis comment spec.</li>
+							<li><b>Changed:</b> All Metadata objects' operator=() methods now return a reference to themselves.</li>
+							<li><b>Added</b> methods to FLAC::Metadata::VorbisComment::Entry for setting comment values from null-terminated strings:
+								<ul>
+									<li>Entry(const char *field)</li>
+									<li>Entry(const char *field_name, const char *field_value)</li>
+									<li>bool set_field(const char *field)</li>
+									<li>bool set_field_value(const char *field_value)</li>
+								</ul>
+							</li>
+							<li><b>Changed</b> the signature of FLAC::Metadata::VorbisComment::get_vendor_string() and FLAC::Metadata::VorbisComment::set_vendor_string() to use a UTF-8, NUL-terminated string <span class="code">const FLAC__byte *</span> for the vendor string instead of <span class="code">FLAC::Metadata::VorbisComment::Entry</span>.</li>
+							<li><b>Added</b> FLAC::Metadata::*::assign() to all Metadata objects.</li>
+							<li><b>Added</b> bool FLAC::Metadata::get_tags(const char *filename, VorbisComment &amp;tags)</li>
+						</ul>
+					</li>
+					<li>
+						libOggFLAC:
+						<ul>
+							<li>(none)</li>
+						</ul>
+					</li>
+					<li>
+						libOggFLAC++:
+						<ul>
+							<li>(none)</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+
+		<br />
+
+		<a name="flac_1_1_1"><b>FLAC 1.1.1</b> (01-Oct-2004)</a>
+
+		<br />
+
+		<ul>
+			<li>
+				General:
+				<ul>
+					<li>Ogg FLAC seeking now works</li>
+					<li>New optimizations almost double the decoding speed on PowerPC (e.g. Mac G4/G5)</li>
+					<li>A native OS X release thanks to updated Project Builder and autotools files</li>
+				</ul>
+			</li>
+			<li>
+				FLAC format:
+				<ul>
+					<li>Made invalid the metadata block type 127 so that audio frames can always be distinguished from metadata by seeing 0xff as the first byte.  (This was also required for the Ogg FLAC mapping.)</li>
+				</ul>
+			</li>
+			<li>
+				Ogg FLAC format:
+				<ul>
+					<li>First official FLAC-&gt;Ogg bitstream mapping standardized (see new <a href="ogg_mapping.html">FLAC-to-Ogg mapping specification</a>).  See the documentation for the <span class="argument"><a href="documentation_tools_flac.html#flac_options_ogg">--ogg</a></span> switch about having to re-encode older Ogg FLAC files.</li>
+				</ul>
+			</li>
+			<li>
+				flac:
+				<ul>
+					<li>Print an error when output file already exists instead of automatically overwriting.</li>
+					<li>New option <span class="argument"><a href="documentation_tools_flac.html#flac_options_force">-f</a></span> (<span class="argument"><a href="documentation_tools_flac.html#flac_options_force">--force</a></span>) to force overwriting if the output file already exists.</li>
+					<li>New option <span class="argument"><a href="documentation_tools_flac.html#flac_options_cue">--cue</a></span> to select a specific section to decode using cuesheet track/index points.</li>
+					<li>New option <span class="argument"><a href="documentation_tools_flac.html#flac_options_totally_silent">--totally-silent</a></span> to suppress all output.</li>
+					<li>New (but undocumented) option <span class="argument">--apply-replaygain-which-is-not-lossless</span> which applies ReplayGain to the decoded output.  See <a href="http://www.hydrogenaudio.org/forums/index.php?showtopic=17293&amp;st=11">this thread</a> for usage and caveats.</li>
+					<li>When encoding to Ogg FLAC, use a random serial number (instead of 0 as was done before) when a serial number is not specified.</li>
+					<li>When encoding multiple Ogg FLAC streams, <span class="argument">--serial-number</span> or random serial number sets the first number, which is then incremented for subsequent streams (before, the same serial number was used for all streams).</li>
+					<li>Decoder no longer exits with an error when writing to stdout and the pipe is broken.</li>
+					<li>Better explanation of common error messages.</li>
+					<li>Default extension when writing AIFF files is .aif (before, it was .aiff).</li>
+					<li>Write more common representation of SANE numbers in AIFF files.</li>
+					<li>Bug fix: calculating ReplayGain on 48kHz streams.</li>
+					<li>Bug fix: check for supported block alignments in WAVE files.</li>
+					<li>Bug fix: "offset" field in AIFF SSND chunk properly handled.</li>
+					<li>Bug fix: <a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=679166&amp;group_id=13478&amp;atid=113478">#679166</a>: flac doesn't respect RIFF subchunk padding byte.</li>
+					<li>Bug fix: <a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=828391&amp;group_id=13478&amp;atid=113478">#828391</a>: --add-replay-gain segfaults.</li>
+					<li>Bug fix: <a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=851155&amp;group_id=13478&amp;atid=113478">#851155</a>: Can't seek to position in flac file.</li>
+					<li>Bug fix: <a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=851756&amp;group_id=13478&amp;atid=113478">#851756</a>: flac --skip --until reads entire file.</li>
+					<li>Bug fix: <a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=877122&amp;group_id=13478&amp;atid=113478">#877122</a>: problem parsing cuesheet with CATALOG entry.</li>
+					<li>Bug fix: <a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=896057&amp;group_id=13478&amp;atid=113478">#896057</a>: parsing ISRC number from cuesheet.</li>
+				</ul>
+			</li>
+			<li>
+				metaflac:
+				<ul>
+					<li>Renamed the tag editing options as follows (the <span class="argument">...-vc-...</span> options still work but are deprecated):
+						<ul>
+							<li><span class="argument">--show-vc-vendor</span> becomes <span class="argument">--show-vendor-tag</span></li>
+							<li><span class="argument">--show-vc-field</span> becomes <span class="argument">--show-tag</span></li>
+							<li><span class="argument">--remove-vc-all</span> becomes <span class="argument">--remove-all-tags</span></li>
+							<li><span class="argument">--remove-vc-field</span> becomes <span class="argument">--remove-tag</span></li>
+							<li><span class="argument">--remove-vc-firstfield</span> becomes <span class="argument">--remove-first-tag</span></li>
+							<li><span class="argument">--set-vc-field</span> becomes <span class="argument">--set-tag</span></li>
+							<li><span class="argument">--import-vc-from</span> becomes <span class="argument">--import-tags-from</span></li>
+							<li><span class="argument">--export-vc-to</span> becomes <span class="argument">--export-tags-to</span></li>
+						</ul>
+					</li>
+					<li>Better explanation of common error messages.</li>
+					<li>Bug fix: calculating ReplayGain on 48kHz streams.</li>
+					<li>Bug fix: incorrect numbers when printing seek points.</li>
+				</ul>
+			</li>
+			<li>
+				plugins:
+				<ul>
+					<li>Speed optimization in ReplayGain synthesis.</li>
+					<li>Speed optimization in XMMS playback.</li>
+					<li>Support for big-endian architectures in XMMS plugin.</li>
+					<li>Removed support for ID3 tags.</li>
+					<li>Bug fix: make hard limiter default to off in XMMS plugin.</li>
+					<li>Bug fix: stream length calculation bug in XMMS plugin, debian bug #200435; <a href="http://sourceforge.net/mailarchive/forum.php?thread_id=2733072&amp;forum_id=6312">see also</a>.</li>
+					<li>Bug fix: small memory leak in XMMS plugin.</li>
+				</ul>
+			</li>
+			<li>
+				build system:
+				<ul>
+					<li><span class="code">ordinals.h</span> is now static, not a build-generated file anymore.</li>
+				</ul>
+			</li>
+			<li>
+				libraries:
+				<ul>
+					<li>libFLAC: PPC+Altivec optimizations of some decoder routines.</li>
+					<li>libFLAC: Make stream encoder encode the blocksize and sample rate in the frame header if at all possible (not in STREAMINFO), even if subset encoding was not requested.</li>
+					<li>libFLAC: Bug fix: fixed seek routine where infinite loop could happen when seeking past end of stream.</li>
+					<li>libFLAC, libFLAC++: added methods to skip single frames, useful for quickly finding frame boundaries (see interface changes below).</li>
+					<li>libOggFLAC, libOggFLAC++: New seekable-stream and file encoder and decoder APIs to match native FLAC APIs (see interface changes below).</li>
+				</ul>
+			</li>
+			<li>
+				Interface changes:
+				<ul>
+					<li>
+						libFLAC:
+						<ul>
+							<li><b>Added</b> FLAC__metadata_get_tags()</li>
+							<li><b>Added</b> callback-based versions of metadata editing functions:
+								<ul>
+									<li>FLAC__metadata_chain_read_with_callbacks()</li>
+									<li>FLAC__metadata_chain_write_with_callbacks()</li>
+									<li>FLAC__metadata_chain_write_with_callbacks_and_tempfile()</li>
+									<li>FLAC__metadata_chain_check_if_tempfile_needed()</li>
+								</ul>
+							</li>
+							<li><b>Added</b> decoder functions for skipping single frames, also useful for quickly finding frame boundaries:
+								<ul>
+									<li>FLAC__stream_decoder_skip_single_frame()</li>
+									<li>FLAC__seekable_stream_decoder_skip_single_frame()</li>
+									<li>FLAC__file_decoder_skip_single_frame()</li>
+								</ul>
+							</li>
+							<li><b>Added</b> new required tell callback on seekable stream encoder:
+								<ul>
+									<li>FLAC__SeekableStreamEncoderTellStatus and FLAC__SeekableStreamEncoderTellStatusString[]</li>
+									<li>FLAC__SeekableStreamEncoderTellCallback</li>
+									<li>FLAC__seekable_stream_encoder_set_tell_callback()</li>
+								</ul>
+							</li>
+							<li><b>Changed</b> FLAC__SeekableStreamEncoderState by adding FLAC__SEEKABLE_STREAM_ENCODER_TELL_ERROR</li>
+							<li><b>Changed</b> Tell callback is now required to initialize seekable stream encoder</li>
+							<li><b>Deleted</b> erroneous and unimplemented FLAC__file_decoder_process_remaining_frames()</li>
+						</ul>
+					</li>
+					<li>
+						libFLAC++:
+						<ul>
+							<li><b>Added</b> FLAC::Metadata::get_tags()</li>
+							<li><b>Added</b> decoder functions for skipping single frames, also useful for quickly finding frame boundaries:
+								<ul>
+									<li>FLAC::Decoder::Stream::skip_single_frame()</li>
+									<li>FLAC::Decoder::SeekableStream::skip_single_frame()</li>
+									<li>FLAC::Decoder::File::skip_single_frame()</li>
+								</ul>
+							</li>
+							<li><b>Added</b> encoder functions for setting metadata:
+								<ul>
+									<li>FLAC::Encoder::Stream::set_metadata(FLAC::Metadata::Prototype **metadata, unsigned num_blocks)</li>
+									<li>FLAC::Encoder::SeekableStream::set_metadata(FLAC::Metadata::Prototype **metadata, unsigned num_blocks)</li>
+									<li>FLAC::Encoder::File::set_metadata(FLAC::Metadata::Prototype **metadata, unsigned num_blocks)</li>
+								</ul>
+							</li>
+							<li><b>Added</b> new required tell callback on seekable stream encoder:
+								<ul>
+									<li>pure virtual FLAC::Encoder::SeekableStream::tell_callback()</li>
+								</ul>
+							</li>
+							<li><b>Changed</b> Tell callback is now required to initialize seekable stream encoder</li>
+							<li><b>Deleted</b> the following methods:
+								<ul>
+									<li>FLAC::Decoder::Stream::State::resolved_as_cstring()</li>
+									<li>FLAC::Encoder::Stream::State::resolved_as_cstring()</li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+					<li>
+						libOggFLAC:
+						<ul>
+							<li><b>Added</b> OggFLAC__SeekableStreamDecoder interface</li>
+							<li><b>Added</b> OggFLAC__FileDecoder interface</li>
+							<li><b>Added</b> OggFLAC__SeekableStreamEncoder interface</li>
+							<li><b>Added</b> OggFLAC__FileEncoder interface</li>
+							<li><b>Added</b> OggFLAC__stream_decoder_get_resolved_state_string()</li>
+							<li><b>Added</b> OggFLAC__stream_encoder_get_resolved_state_string()</li>
+							<li><b>Added</b> OggFLAC__stream_encoder_set_metadata_callback()</li>
+							<li><b>Changed</b> OggFLAC__StreamDecoderState by adding OggFLAC__STREAM_DECODER_END_OF_STREAM</li>
+						</ul>
+					</li>
+					<li>
+						libOggFLAC++:
+						<ul>
+							<li><b>Added</b> OggFLAC::Decoder::SeekableStream interface</li>
+							<li><b>Added</b> OggFLAC::Decoder::File interface</li>
+							<li><b>Added</b> OggFLAC::Encoder::SeekableStream interface</li>
+							<li><b>Added</b> OggFLAC::Encoder::File interface</li>
+							<li><b>Added</b> OggFLAC::Decoder::Stream::get_resolved_state_string()</li>
+							<li><b>Added</b> OggFLAC::Encoder::Stream::get_resolved_state_string()</li>
+							<li><b>Added</b> pure virtual OggFLAC::Encoder::Stream::metadata_callback()</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+	<div class="box_footer"></div>
+</div>
+
+
+<div class="copyright">
+	<!-- @@@ oh so hacky -->
+	<table>
+		<tr>
+			<td align="left">
+				Copyright (c) 2004,2005,2006,2007  Josh Coalson
+			</td>
+			<td width="1%" align="right">
+				<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=13478&amp;type=1" width="88" height="31" border="0" alt="SourceForge.net Logo" /></a>
+			</td>
+			<td width="1%" align="right">
+				<a href="http://www.eff.org/cafe/"><img src="images/cafebug.gif" alt="CAFE Logo" border="0" /></a><br />
+			</td>
+			<td width="1%" align="right">
+				<a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" border="0" hspace="0" /></a>
+			</td>
+		</tr>
+	</table>
+</div>
+
+</body>
+</html>

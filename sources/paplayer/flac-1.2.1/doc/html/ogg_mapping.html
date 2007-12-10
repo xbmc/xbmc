@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- Copyright (c) 2004,2005,2006,2007  Josh Coalson -->
+<!-- Permission is granted to copy, distribute and/or modify this document -->
+<!-- under the terms of the GNU Free Documentation License, Version 1.1 -->
+<!-- or any later version published by the Free Software Foundation; -->
+<!-- with no invariant sections. -->
+<!-- A copy of the license can be found at http://www.gnu.org/copyleft/fdl.html -->
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<meta name="author" content="Josh Coalson" />
+	<meta name="description" content="A free, open source codec for lossless audio compression and decompression" />
+	<meta name="keywords" content="free,lossless,audio,codec,encoder,decoder,compression,compressor,archival,archive,archiving,backup,music" />
+	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+	<link rel="stylesheet" type="text/css" href="flac.css" />
+	<title>FLAC - ogg mapping</title>
+</head>
+
+<body>
+
+<div class="logo">
+	<a href="http://flac.sourceforge.net/"><img src="images/logo130.gif" alt="FLAC Logo" align="middle" border="0" hspace="0" /></a>
+</div>
+
+<div class="above_nav"></div>
+
+<div class="navbar">
+	&nbsp;<a href="index.html">home</a>&nbsp;&nbsp;|
+	&nbsp;<a href="faq.html">faq</a>&nbsp;&nbsp;|
+	&nbsp;<a href="news.html">news</a>&nbsp;&nbsp;|
+	&nbsp;<a href="download.html">download</a>&nbsp;&nbsp;|
+	&nbsp;<a href="documentation.html">documentation</a>&nbsp;&nbsp;|
+	&nbsp;<a href="comparison.html">comparison</a>&nbsp;&nbsp;|
+	&nbsp;<a href="changelog.html">changelog</a>&nbsp;&nbsp;|
+	&nbsp;<a href="links.html">links</a>&nbsp;&nbsp;|
+	&nbsp;<a href="developers.html">developers</a>&nbsp;
+</div>
+
+<div class="langbar">
+	&nbsp;english&nbsp;&nbsp;|
+	&nbsp;<a href="ru/ogg_mapping.html">russian</a>&nbsp;
+</div>
+
+<div class="below_nav"></div>
+
+<div class="box">
+	<div class="box_title">
+		ogg mapping
+	</div>
+	<div class="box_header"></div>
+	<div class="box_body">
+		This page specifies the way in which compressed FLAC data is encapsulated in an Ogg transport layer.  It assumes basic knowledge of the <a href="format.html">FLAC format</a> and <a href="http://www.xiph.org/ogg/vorbis/doc/oggstream.html">Ogg structure</a> and <a href="http://www.xiph.org/ogg/vorbis/doc/framing.html">framing</a>.<br />
+		<br />
+		The original FLAC format includes a very thin transport system.  This system of compressed FLAC audio data mixed with a thin transport has come to be known as 'native FLAC'.  The transport consists of audio frame headers and footers which contain synchronization patterns, timecodes, and checksums (but notably not frame lengths), and a metadata system.  It is very lightweight and does not support more elaborate transport mechanisms such as multiple logical streams, but it has served its purpose well.<br />
+		<br />
+		The native FLAC transport is not a transport "layer" in the way of standard codec design because it cannot be entirely separated from the payload.  Though the metadata system can be separated, the frame header includes both data that belongs in the transport (sync pattern, timecode, checksum) and data that belongs in the compressed packets (audio parameters like channel assignments, sample rate, etc).<br />
+		<br />
+		This presents a problem when trying to encapsulate FLAC in other true transport layers; the choice has to be made between redundancy and complexity.  In pursuit of correctness, a mapping could be created that removed from native FLAC the transport data, and merged the remaining frame header information into the audio packets.  The disadvantage is that current native FLAC decoder software could not be used to decode because of the tight coupling with the transport.  Either a separate decoding implementation would have to be created and maintained, or an Ogg FLAC decoder would have to synthesize native FLAC frames from Ogg FLAC packets and feed them to a native FLAC decoder.<br />
+		<br />
+		The alternative is to treat native FLAC frames as Ogg packets and accept the transport redundancy.  It turns out that this is not much of a penalty; a maximum of 12 bytes per frame will be wasted.  Given the common case of stereo CD audio encoded with a blocksize of 4096 samples, a compressed frame will be 4-16 Kbytes.  The redundancy amounts to a fraction of a percent.<br />
+		<br />
+		In the interest of simplicity and expediency, the second method was chosen for the first official FLAC-&gt;Ogg mapping.  A mapping version is included in the first packet so that a less redundant mapping can be defined in the future.<br />
+		<br />
+		It should also be noted that support for encapsulating FLAC in Ogg has been present in the FLAC tools since version 1.0.1.  However, the mappings used were never formalized and have insurmountable problems.  For that reason, Ogg FLAC streams created with <span class="commandname">flac</span> versions before 1.1.1 should be decoded and re-encoded with <span class="commandname">flac</span> 1.1.1 or later (<span class="commandname">flac</span> 1.1.1 can decode all previous Ogg FLAC files, but files made prior to 1.1.0 don't support seeking).  Since the support for Ogg FLAC before FLAC 1.1.1 was limited, we hope this will not result in too much inconvenience.<br />
+		<br />
+		Version 1.0 of the FLAC-to-Ogg mapping then is a simple identifying header followed by pure native FLAC data, as follows:
+		<ul>
+			<li>
+				The first packet of a stream consists of:
+				<ul>
+					<li>The one-byte packet type 0x7F</li>
+					<li>The four-byte ASCII signature "FLAC", i.e. 0x46, 0x4C, 0x41, 0x43</li>
+					<li>A one-byte binary major version number for the mapping, e.g. 0x01 for mapping version 1.0</li>
+					<li>A one-byte binary minor version number for the mapping, e.g. 0x00 for mapping version 1.0</li>
+					<li>A two-byte, big-endian binary number signifying the number of header (non-audio) packets, not including this one.  This number may be zero (0x0000) to signify 'unknown' but be aware that some decoders may not be able to handle such streams.</li>
+					<li>The four-byte ASCII native FLAC signature "fLaC" according to the <a href="format.html#stream">FLAC format specification</a></li>
+					<li>The <a href="format.html#metadata_block">STREAMINFO</a> metadata block for the stream.</li>
+				</ul>
+				This first packet is the only packet in the first page of the stream.  This results in a first Ogg page of exactly 79 bytes at the very beginning of the logical stream.
+			</li>
+			<li>
+				This first page is marked 'beginning of stream' in the page flags.
+			</li>
+			<li>
+				The first packet is followed by one or more header packets.  Each such packet will contain a single <a href="format.html#metadata_block">native FLAC metadata block</a>.  The first of these must be a VORBIS_COMMENT block.  These packets may span page boundaries but the last will finish the page on which it ends, so that the first audio packet begins a page.  The first byte of these metadata packets serves also as the packet type, and has a legal range of (0x01-0x7E,0x81-0xFE).
+			</li>
+			<li>
+				The granule position of these first pages containing only headers is zero.
+			</li>
+			<li>
+				The first audio packet of the logical stream begins a fresh Ogg page.
+			</li>
+			<li>
+				Native FLAC audio frames appear as subsequent packets in the stream.  Each packet corresponds to one FLAC audio frame.  The first byte of each packet serves as the packet type.  Since audio packets are native FLAC frames, this first byte will be always 0xFF according to the <a href="format.html#frame_header">native FLAC format specification</a>.
+			</li>
+			<li>
+				The last page is marked 'end of stream' in the page flags.
+			</li>
+			<li>
+				FLAC packets may span page boundaries.
+			</li>
+			<li>
+				The granule position of pages containing FLAC audio follows the same semantics as that for Ogg-encapsulated Vorbis as described <a href="http://www.xiph.org/ogg/vorbis/doc/vorbis-ogg.html">here</a>.
+			</li>
+			<li>
+				Redundant fields in the STREAMINFO packet may be set to zero (indicating "unknown" in native FLAC), which also facilitates single-pass encoding.  These fields are: the minimum and maximum frame sizes, the total samples count, and the MD5 signature.  "Unknown" values for these fields will not prevent a compliant native FLAC or Ogg FLAC decoder from decoding the stream.
+			</li>
+		</ul>
+		It is intended that the first six bytes of any version of FLAC-to-Ogg mapping will share the same structure, namely, the four-byte signature and two-byte version number.<br />
+		<br />
+		There is an implicit hint to the decoder in the mapping version number; mapping versions which share the same major version number should be decodable by decoders of the same major version number, e.g. a 1.x Ogg FLAC decoder should be able to decode any 1.y Ogg FLAC stream, even when x&lt;y.  If a mapping breaks this forward compatibility the major version number will be incremented.
+	</div>
+	<div class="box_footer"></div>
+</div>
+
+
+<div class="copyright">
+	<!-- @@@ oh so hacky -->
+	<table>
+		<tr>
+			<td align="left">
+				Copyright (c) 2004,2005,2006,2007  Josh Coalson
+			</td>
+			<td width="1%" align="right">
+				<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=13478&amp;type=1" width="88" height="31" border="0" alt="SourceForge.net Logo" /></a>
+			</td>
+			<td width="1%" align="right">
+				<a href="http://www.eff.org/cafe/"><img src="images/cafebug.gif" alt="CAFE Logo" border="0" /></a><br />
+			</td>
+			<td width="1%" align="right">
+				<a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" border="0" hspace="0" /></a>
+			</td>
+		</tr>
+	</table>
+</div>
+
+</body>
+</html>

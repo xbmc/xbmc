@@ -1,0 +1,46 @@
+main.o main.o: main.c ../../config.h operations.h options.h \
+  ../../include/FLAC/format.h ../../include/FLAC/export.h \
+  ../../include/FLAC/ordinals.h /usr/include/inttypes.h \
+  /usr/include/features.h /usr/include/sys/cdefs.h \
+  /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h \
+  /usr/include/gnu/stubs-32.h /usr/include/stdint.h \
+  /usr/include/bits/wchar.h ../../include/share/getopt.h \
+  /usr/include/locale.h \
+  /usr/lib/gcc/i486-linux-gnu/4.1.3/include/stddef.h \
+  /usr/include/bits/locale.h
+
+../../config.h:
+
+operations.h:
+
+options.h:
+
+../../include/FLAC/format.h:
+
+../../include/FLAC/export.h:
+
+../../include/FLAC/ordinals.h:
+
+/usr/include/inttypes.h:
+
+/usr/include/features.h:
+
+/usr/include/sys/cdefs.h:
+
+/usr/include/bits/wordsize.h:
+
+/usr/include/gnu/stubs.h:
+
+/usr/include/gnu/stubs-32.h:
+
+/usr/include/stdint.h:
+
+/usr/include/bits/wchar.h:
+
+../../include/share/getopt.h:
+
+/usr/include/locale.h:
+
+/usr/lib/gcc/i486-linux-gnu/4.1.3/include/stddef.h:
+
+/usr/include/bits/locale.h:

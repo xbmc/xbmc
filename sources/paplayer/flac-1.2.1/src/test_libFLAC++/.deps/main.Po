@@ -1,0 +1,7 @@
+main.o main.o: main.cpp decoders.h encoders.h metadata.h
+
+decoders.h:
+
+encoders.h:
+
+metadata.h:

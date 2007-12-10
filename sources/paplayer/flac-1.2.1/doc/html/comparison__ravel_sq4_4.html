@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- Copyright (c) 2000,2001,2002,2003,2004,2005,2006,2007  Josh Coalson -->
+<!-- Permission is granted to copy, distribute and/or modify this document -->
+<!-- under the terms of the GNU Free Documentation License, Version 1.1 -->
+<!-- or any later version published by the Free Software Foundation; -->
+<!-- with no invariant sections. -->
+<!-- A copy of the license can be found at http://www.gnu.org/copyleft/fdl.html -->
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<meta name="author" content="Josh Coalson" />
+	<meta name="description" content="A free, open source codec for lossless audio compression and decompression" />
+	<meta name="keywords" content="free,lossless,audio,codec,encoder,decoder,compression,compressor,archival,archive,archiving,backup,music" />
+	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+	<link rel="stylesheet" type="text/css" href="flac.css" />
+	<title>FLAC - comparison</title>
+</head>
+
+<body>
+
+<div class="logo">
+	<a href="http://flac.sourceforge.net/"><img src="images/logo130.gif" alt="FLAC Logo" align="middle" border="0" hspace="0" /></a>
+</div>
+
+<div class="above_nav"></div>
+
+<div class="navbar">
+	&nbsp;<a href="index.html">home</a>&nbsp;&nbsp;|
+	&nbsp;<a href="faq.html">faq</a>&nbsp;&nbsp;|
+	&nbsp;<a href="news.html">news</a>&nbsp;&nbsp;|
+	&nbsp;<a href="download.html">download</a>&nbsp;&nbsp;|
+	&nbsp;<a href="documentation.html">documentation</a>&nbsp;&nbsp;|
+	&nbsp;<a href="comparison.html">comparison</a>&nbsp;&nbsp;|
+	&nbsp;<a href="changelog.html">changelog</a>&nbsp;&nbsp;|
+	&nbsp;<a href="links.html">links</a>&nbsp;&nbsp;|
+	&nbsp;<a href="developers.html">developers</a>&nbsp;
+</div>
+
+<div class="langbar">
+	&nbsp;english&nbsp;&nbsp;|
+	&nbsp;<a href="ru/comparison.html">russian</a>&nbsp;
+</div>
+
+<div class="below_nav"></div>
+
+<div class="box">
+	<div class="box_title">
+		comparison
+	</div>
+	<div class="box_header"></div>
+	<div class="box_body">
+
+		<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#EEEED4"><tr><td>
+		<table width="100%" border="0" align="right" bgcolor="#EEEED4"><!-- @@@@@@ border="1" ? -->
+			<tr align="right">
+				<td>
+				</td>
+				<td align="center" bgcolor="#F4F4CC" colspan="2">
+					<font size="+1"><b>Encode time</b></font>
+				</td>
+				<td align="center" bgcolor="#F4F4CC" colspan="2">
+					<font size="+1"><b>Decode time</b></font>
+				</td>
+				<td align="center" bgcolor="#F4F4CC" colspan="2">
+					<font size="+1"><b>Compression</b></font>
+				</td>
+			</tr>
+			<tr align="right">
+				<td align="left" bgcolor="#F4F4CC">
+					<font size="+1"><b>Codec</b></font>
+				</td>
+				<td bgcolor="#F4F4CC">
+					<font size="+1">Total</font>
+				</td>
+				<td bgcolor="#F4F4CC">
+					<font size="+1">CPU</font>
+				</td>
+				<td bgcolor="#F4F4CC">
+					<font size="+1">Total</font>
+				</td>
+				<td bgcolor="#F4F4CC">
+					<font size="+1">CPU</font>
+				</td>
+				<td bgcolor="#F4F4CC">
+					<font size="+1">Size</font>
+				</td>
+				<td bgcolor="#F4F4CC">
+					<font size="+1"><b>Ratio</b></font>
+				</td>
+			</tr>
+		<tr align="right"><td align="left">La 0.3c</td><td>10:40.88</td><td bgcolor="#F8F8E8">10:27.22</td><td>10:17.07</td><td bgcolor="#F8F8E8">10:09.64</td><td>19.94 MB</td><td bgcolor="#F8F8E8">35.50%</td></tr>
+		<tr align="right" bgcolor="#D4D4C0"><td align="left">Monkey's Audio 3.99 (insane)</td><td>9:08.88</td><td bgcolor="#E0E0D4">8:56.22</td><td>9:37.00</td><td bgcolor="#E0E0D4">9:29.35</td><td>20.17 MB</td><td bgcolor="#E0E0D4">35.90%</td></tr>
+		<tr align="right"><td align="left">Monkey's Audio 3.99 (extra high)</td><td>2:00.53</td><td bgcolor="#F8F8E8">1:47.08</td><td>2:05.06</td><td bgcolor="#F8F8E8">1:54.64</td><td>20.29 MB</td><td bgcolor="#F8F8E8">36.11%</td></tr>
+		<tr align="right" bgcolor="#D4D4C0"><td align="left">Tak 1.01 (extra high max)</td><td>4:39.26</td><td bgcolor="#E0E0D4">4:27.17</td><td>0:33.47</td><td bgcolor="#E0E0D4">0:22.42</td><td>20.33 MB</td><td bgcolor="#E0E0D4">36.19%</td></tr>
+		<tr align="right"><td align="left">Tak 1.01 (extra high)</td><td>1:48.73</td><td bgcolor="#F8F8E8">1:34.92</td><td>0:35.50</td><td bgcolor="#F8F8E8">0:24.19</td><td>20.35 MB</td><td bgcolor="#F8F8E8">36.22%</td></tr>
+		<tr align="right" bgcolor="#D4D4C0"><td align="left">optimFROG 4.21 (mode 4 @ 1x)</td><td>24:26.74</td><td bgcolor="#E0E0D4">24:12.40</td><td>24:28.80</td><td bgcolor="#E0E0D4">24:17.98</td><td>20.62 MB</td><td bgcolor="#E0E0D4">36.71%</td></tr>
+		<tr align="right"><td align="left">Monkey's Audio 3.99 (high)</td><td>1:04.75</td><td bgcolor="#F8F8E8">0:50.79</td><td>1:09.21</td><td bgcolor="#F8F8E8">0:58.49</td><td>20.68 MB</td><td bgcolor="#F8F8E8">36.81%</td></tr>
+		<tr align="right" bgcolor="#D4D4C0"><td align="left">optimFROG 4.21 (mode 3 @ 4x)</td><td>4:10.49</td><td bgcolor="#E0E0D4">3:56.43</td><td>4:13.88</td><td bgcolor="#E0E0D4">4:03.90</td><td>20.72 MB</td><td bgcolor="#E0E0D4">36.88%</td></tr>
+		<tr align="right"><td align="left">optimFROG 4.21 (mode 2 @ 4x)</td><td>2:17.17</td><td bgcolor="#F8F8E8">2:02.14</td><td>2:21.02</td><td bgcolor="#F8F8E8">2:10.78</td><td>20.83 MB</td><td bgcolor="#F8F8E8">37.07%</td></tr>
+		<tr align="right" bgcolor="#D4D4C0"><td align="left">optimFROG 4.21 (mode 1 @ 4x)</td><td>1:42.60</td><td bgcolor="#E0E0D4">1:27.34</td><td>1:47.21</td><td bgcolor="#E0E0D4">1:36.54</td><td>20.93 MB</td><td bgcolor="#E0E0D4">37.25%</td></tr>
+		<tr align="right"><td align="left">Tak 1.01 (normal)</td><td>0:48.66</td><td bgcolor="#F8F8E8">0:34.63</td><td>0:26.32</td><td bgcolor="#F8F8E8">0:15.20</td><td>20.95 MB</td><td bgcolor="#F8F8E8">37.28%</td></tr>
+		<tr align="right" bgcolor="#D4D4C0"><td align="left">Monkey's Audio 3.99 (normal)</td><td>0:55.63</td><td bgcolor="#E0E0D4">0:41.68</td><td>1:00.36</td><td bgcolor="#E0E0D4">0:49.66</td><td>21.05 MB</td><td bgcolor="#E0E0D4">37.47%</td></tr>
+		<tr align="right"><td align="left">optimFROG 4.21 (mode 0 @ 4x)</td><td>1:08.87</td><td bgcolor="#F8F8E8">0:53.42</td><td>1:13.72</td><td bgcolor="#F8F8E8">1:02.97</td><td>21.23 MB</td><td bgcolor="#F8F8E8">37.79%</td></tr>
+		<tr align="right" bgcolor="#D4D4C0"><td align="left">WavPack 4.41 (extra high -x)</td><td>1:56.00</td><td bgcolor="#E0E0D4">1:41.60</td><td>0:44.82</td><td bgcolor="#E0E0D4">0:33.19</td><td>21.42 MB</td><td bgcolor="#E0E0D4">38.13%</td></tr>
+		<tr align="right"><td align="left">Tak 1.01 (turbo)</td><td>0:30.01</td><td bgcolor="#F8F8E8">0:15.73</td><td>0:24.32</td><td bgcolor="#F8F8E8">0:12.89</td><td>21.49 MB</td><td bgcolor="#F8F8E8">38.25%</td></tr>
+		<tr align="right" bgcolor="#D4D4C0"><td align="left">Monkey's Audio 3.99 (fast)</td><td>0:43.14</td><td bgcolor="#E0E0D4">0:29.29</td><td>0:48.44</td><td bgcolor="#E0E0D4">0:37.39</td><td>21.52 MB</td><td bgcolor="#E0E0D4">38.30%</td></tr>
+		<tr align="right"><td align="left">WavPack 4.41 (high)</td><td>0:49.04</td><td bgcolor="#F8F8E8">0:32.84</td><td>0:37.71</td><td bgcolor="#F8F8E8">0:25.31</td><td>21.59 MB</td><td bgcolor="#F8F8E8">38.42%</td></tr>
+		<tr align="right" bgcolor="#D4D4C0"><td align="left">WavPack 4.41 (normal -x)</td><td>0:59.89</td><td bgcolor="#E0E0D4">0:43.47</td><td>0:29.43</td><td bgcolor="#E0E0D4">0:18.58</td><td>21.72 MB</td><td bgcolor="#E0E0D4">38.66%</td></tr>
+		<tr align="right"><td align="left">WavPack 4.41 (normal)</td><td>0:40.76</td><td bgcolor="#F8F8E8">0:24.68</td><td>0:30.44</td><td bgcolor="#F8F8E8">0:19.06</td><td>21.75 MB</td><td bgcolor="#F8F8E8">38.70%</td></tr>
+		<tr align="right" bgcolor="#D4D4C0"><td align="left">FLAC 1.2.1 (-8)</td><td>1:51.95</td><td bgcolor="#E0E0D4">1:38.33</td><td>0:21.08</td><td bgcolor="#E0E0D4">0:10.14</td><td>21.78 MB</td><td bgcolor="#E0E0D4">38.77%</td></tr>
+		<tr align="right" bgcolor="#FFFFFF"><td align="left">FLAC 1.2.1 (-5, default)</td><td>0:41.47</td><td bgcolor="#FFFFFF">0:27.54</td><td>0:21.21</td><td bgcolor="#FFFFFF">0:09.96</td><td>21.90 MB</td><td bgcolor="#FFFFFF">38.97%</td></tr>
+		<tr align="right" bgcolor="#D4D4C0"><td align="left">WavPack 4.41 (fast -x)</td><td>0:49.79</td><td bgcolor="#E0E0D4">0:33.44</td><td>0:26.25</td><td bgcolor="#E0E0D4">0:14.43</td><td>22.02 MB</td><td bgcolor="#E0E0D4">39.20%</td></tr>
+		<tr align="right"><td align="left">WavPack 4.41 (fast)</td><td>0:36.56</td><td bgcolor="#F8F8E8">0:20.28</td><td>0:25.55</td><td bgcolor="#F8F8E8">0:14.08</td><td>22.23 MB</td><td bgcolor="#F8F8E8">39.57%</td></tr>
+		<tr align="right" bgcolor="#D4D4C0"><td align="left">FLAC 1.2.1 (-3)</td><td>0:29.86</td><td bgcolor="#E0E0D4">0:15.76</td><td>0:20.28</td><td bgcolor="#E0E0D4">0:09.10</td><td>22.42 MB</td><td bgcolor="#E0E0D4">39.91%</td></tr>
+		<tr align="right"><td align="left">Apple Lossless (iTunes 4.5)</td><td>?</td><td bgcolor="#F8F8E8">?</td><td>?</td><td bgcolor="#F8F8E8">?</td><td>22.52 MB</td><td bgcolor="#F8F8E8">40.08%</td></tr>
+		<tr align="right" bgcolor="#D4D4C0"><td align="left">Bonk 0.5</td><td>3:32.50</td><td bgcolor="#E0E0D4">3:19.49</td><td>2:50.96</td><td bgcolor="#E0E0D4">2:39.42</td><td>23.18 MB</td><td bgcolor="#E0E0D4">41.25%</td></tr>
+		<tr align="right"><td align="left">FLAC 1.2.1 (-1)</td><td>0:25.23</td><td bgcolor="#F8F8E8">0:10.81</td><td>0:21.38</td><td bgcolor="#F8F8E8">0:09.87</td><td>23.33 MB</td><td bgcolor="#F8F8E8">41.52%</td></tr>
+		<tr align="right" bgcolor="#D4D4C0"><td align="left">Shorten 3.2a (-p0 -b256, default)</td><td>0:41.16</td><td bgcolor="#E0E0D4">0:26.71</td><td>0:26.70</td><td bgcolor="#E0E0D4">0:15.27</td><td>23.71 MB</td><td bgcolor="#E0E0D4">42.21%</td></tr>
+		<tr align="right"><td align="left">Shorten 3.2a (-p8 -b2048)</td><td>0:49.31</td><td bgcolor="#F8F8E8">0:34.87</td><td>0:30.80</td><td bgcolor="#F8F8E8">0:17.96</td><td>25.59 MB</td><td bgcolor="#F8F8E8">45.54%</td></tr>
+		<tr align="right" bgcolor="#D4D4C0"><td align="left">RIFF WAVE</td><td>1:53.06</td><td bgcolor="#E0E0D4"></td><td>1:53.06</td><td bgcolor="#E0E0D4"></td><td>56.18 MB</td><td bgcolor="#E0E0D4">100.00%</td></tr>
+		</table>
+		</td></tr></table>
+		<br />
+
+		<b><a href="comparison_all_ratio.html">Complete summary table</a></b><br />
+		<br />
+		<a href="comparison__chopin_prelude_24.html">Frederic Chopin  Prelude No.24 in d minor </a><br />
+		<a href="comparison__dream_theater_600.html">Dream Theater  6:00 </a><br />
+		<a href="comparison__eddie_warner_titus.html">Eddie Warner  Titus </a><br />
+		<a href="comparison__fanfare_de_l_eventail_de_jeanne.html">Maurice Ravel  Fanfare from "L'eventail de Jeanne" </a><br />
+		<a href="comparison__gloria_estefan_conga.html">Gloria Estefan  Conga </a><br />
+		<a href="comparison__hand_in_my_pocket.html">Alanis Morissette  Hand In My Pocket </a><br />
+		<a href="comparison__l_sub_raga_sivapriya.html">L. Subramaniam  Raga Sivapriya </a><br />
+		<a href="comparison__laetatus_sum.html">The Benedictine Monks of Santo Domingo de Silos  Laetatus Sum </a><br />
+		<a href="comparison__mummified_in_barbed_wire.html">Cannibal Corpse  Mummified In Barbed Wire </a><br />
+		<a href="comparison__prokofiev_pcon3_3.html">Sergei Prokofiev  Piano Concerto No.3 (3rd movement) </a><br />
+		Maurice Ravel  String Quartet (4th movement) <br />
+		<a href="comparison__scarlatti_k42.html">Domenico Scarlatti  Sonata K.42 (arr.Yepes for guitar) </a><br />
+		<a href="comparison__tool_forty_six_and_2.html">Tool  Forty-six &amp; 2 </a><br />
+		<a href="comparison__white_room.html">Cream  White Room </a><br />
+
+	</div> <!-- box_body -->
+	<div class="box_footer"></div>
+</div>
+
+
+<div class="copyright">
+	<!-- @@@ oh so hacky -->
+	<table>
+		<tr>
+			<td align="left">
+				Copyright (c) 2000,2001,2002,2003,2004,2005,2006,2007  Josh Coalson
+			</td>
+			<td width="1%" align="right">
+				<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=13478&amp;type=1" width="88" height="31" border="0" alt="SourceForge.net Logo" /></a>
+			</td>
+			<td width="1%" align="right">
+				<a href="http://www.eff.org/cafe/"><img src="images/cafebug.gif" alt="CAFE Logo" border="0" /></a><br />
+			</td>
+			<td width="1%" align="right">
+				<a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" border="0" hspace="0" /></a>
+			</td>
+		</tr>
+	</table>
+</div>
+
+</body>
+</html>

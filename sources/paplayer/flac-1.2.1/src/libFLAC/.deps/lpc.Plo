@@ -1,0 +1,58 @@
+lpc.lo lpc.o: lpc.c ../../config.h /usr/include/math.h \
+  /usr/include/features.h /usr/include/sys/cdefs.h \
+  /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h \
+  /usr/include/gnu/stubs-32.h /usr/include/bits/huge_val.h \
+  /usr/include/bits/mathdef.h /usr/include/bits/mathcalls.h \
+  /usr/include/bits/mathinline.h ../../include/FLAC/assert.h \
+  ../../include/FLAC/format.h ../../include/FLAC/export.h \
+  ../../include/FLAC/ordinals.h /usr/include/inttypes.h \
+  /usr/include/stdint.h /usr/include/bits/wchar.h \
+  include/private/bitmath.h ../../include/FLAC/ordinals.h \
+  include/private/lpc.h include/private/float.h \
+  ../../include/FLAC/format.h
+
+../../config.h:
+
+/usr/include/math.h:
+
+/usr/include/features.h:
+
+/usr/include/sys/cdefs.h:
+
+/usr/include/bits/wordsize.h:
+
+/usr/include/gnu/stubs.h:
+
+/usr/include/gnu/stubs-32.h:
+
+/usr/include/bits/huge_val.h:
+
+/usr/include/bits/mathdef.h:
+
+/usr/include/bits/mathcalls.h:
+
+/usr/include/bits/mathinline.h:
+
+../../include/FLAC/assert.h:
+
+../../include/FLAC/format.h:
+
+../../include/FLAC/export.h:
+
+../../include/FLAC/ordinals.h:
+
+/usr/include/inttypes.h:
+
+/usr/include/stdint.h:
+
+/usr/include/bits/wchar.h:
+
+include/private/bitmath.h:
+
+../../include/FLAC/ordinals.h:
+
+include/private/lpc.h:
+
+include/private/float.h:
+
+../../include/FLAC/format.h:

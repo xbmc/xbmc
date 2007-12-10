@@ -1,0 +1,16 @@
+#
+# GNU makefile
+#
+
+topdir = ../../..
+
+LIB_NAME = libgetopt
+INCLUDES = -I$(topdir)/include -I$(topdir)/include/share
+
+SRCS_C = \
+	getopt.c \
+	getopt1.c
+
+include $(topdir)/build/lib.mk
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- Copyright (c) 2000,2001,2002,2003,2004,2005,2006,2007  Josh Coalson -->
+<!-- Permission is granted to copy, distribute and/or modify this document -->
+<!-- under the terms of the GNU Free Documentation License, Version 1.1 -->
+<!-- or any later version published by the Free Software Foundation; -->
+<!-- with no invariant sections. -->
+<!-- A copy of the license can be found at http://www.gnu.org/copyleft/fdl.html -->
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<meta name="author" content="Josh Coalson" />
+	<meta name="description" content="A free, open source codec for lossless audio compression and decompression" />
+	<meta name="keywords" content="free,lossless,audio,codec,encoder,decoder,compression,compressor,archival,archive,archiving,backup,music" />
+	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+	<link rel="stylesheet" type="text/css" href="flac.css" />
+	<title>FLAC - features</title>
+</head>
+
+<body>
+
+<div class="logo">
+	<a href="http://flac.sourceforge.net/"><img src="images/logo130.gif" alt="FLAC Logo" align="middle" border="0" hspace="0" /></a>
+</div>
+
+<div class="above_nav"></div>
+
+<div class="navbar">
+	&nbsp;<a href="index.html">home</a>&nbsp;&nbsp;|
+	&nbsp;<a href="faq.html">faq</a>&nbsp;&nbsp;|
+	&nbsp;<a href="news.html">news</a>&nbsp;&nbsp;|
+	&nbsp;<a href="download.html">download</a>&nbsp;&nbsp;|
+	&nbsp;<a href="documentation.html">documentation</a>&nbsp;&nbsp;|
+	&nbsp;<a href="comparison.html">comparison</a>&nbsp;&nbsp;|
+	&nbsp;<a href="changelog.html">changelog</a>&nbsp;&nbsp;|
+	&nbsp;<a href="links.html">links</a>&nbsp;&nbsp;|
+	&nbsp;<a href="developers.html">developers</a>&nbsp;
+</div>
+
+<div class="langbar">
+	&nbsp;english&nbsp;&nbsp;|
+	&nbsp;<a href="ru/features.html">russian</a>&nbsp;
+</div>
+
+<div class="below_nav"></div>
+
+<div class="box">
+	<div class="box_title">
+		<a name="introduction">introduction</a>
+	</div>
+	<div class="box_header"></div>
+	<div class="box_body">
+		FLAC stands for Free Lossless Audio Codec, an audio format similar to MP3, but lossless, meaning that audio is compressed in FLAC without any loss in quality.  This is similar to how Zip works, except with FLAC you will get much better compression because it is designed specifically for audio, and you can play back compressed FLAC files in your favorite player (or your car or home stereo, see <a href="links.html#hardware">supported devices</a>) just like you would an MP3 file.<br />
+		<br />
+		FLAC stands out as the <a href="comparison.html">fastest and most widely supported lossless audio codec</a>, and the only one that at once is non-proprietary, is unencumbered by patents, has an open-source reference implementation, has a well documented format and API, and has several other independent implementations.<br />
+		<br />
+		FLAC supports tagging, cover art, and fast seeking.  FLAC is freely available and supported on most operating systems, including Windows, "unix" (Linux, *BSD, Solaris, OS X, IRIX), BeOS, OS/2, and Amiga.<br />
+		<br />
+		There are <a href="links.html">many programs and devices that support FLAC</a>, but the core FLAC project here maintains the format and provides <a href="documentation_tools.html">programs</a> and <a href="developers.html">libraries</a> for working with FLAC files.  See <a href="download.html">Getting FLAC</a> for instructions on downloading and installing the official FLAC tools, or <a href="documentation_tasks.html">Using FLAC</a> for instructions and guides on playing FLAC files, ripping CDs to FLAC, etc.<br />
+		<br />
+		When we say that FLAC is "Free" it means more than just that it is available at no cost.  It means that the specification of the format is fully open to the public to be used for any purpose (the FLAC project reserves the right to set the FLAC specification and certify compliance), and that neither the FLAC format nor any of the implemented encoding/decoding methods are covered by any known patent.  It also means that all the source code is available under open-source licenses.  It is the first truly open and free lossless audio format.  (For more information, see the <a href="license.html">license page</a>.)<br />
+		<br />
+		Notable features of FLAC:
+		<ul>
+			<li>
+				<b>Lossless</b>: The encoding of audio (PCM) data incurs no loss of information, and the decoded audio is bit-for-bit identical to what went into the encoder.  Each frame contains a 16-bit CRC of the frame data for detecting transmission errors.  The integrity of the audio data is further insured by storing an <a href="http://userpages.umbc.edu/~mabzug1/cs/md5/md5.html">MD5 signature</a> of the original unencoded audio data in the file header, which can be compared against later during decoding or testing.
+			</li>
+			<li>
+				<b>Fast</b>: FLAC is asymmetric in favor of decode speed.  Decoding requires only integer arithmetic, and is much less compute-intensive than for most perceptual codecs.  Real-time decode performance is easily achievable on even modest hardware.
+			</li>
+			<li>
+				<b>Hardware support</b>: FLAC is supported by <a href="links.html#hardware">dozens of consumer electronic devices</a>, from portable players, to home stereo equipment, to car stereo.
+			</li>
+			<li>
+				<b>Flexible metadata</b>: FLAC's metadata system supports tags, cover art, seek tables, and cue sheets.  Applications can write their own <a href="format.html#def_APPLICATION">APPLICATION</a> metadata once they <a href="id.html">register an ID</a>.  New metadata blocks can be defined and implemented in future versions of FLAC without breaking older streams or decoders.
+			</li>
+			<li>
+				<b>Seekable</b>: FLAC supports fast sample-accurate seeking.  Not only is this useful for playback, it makes FLAC files suitable for use in editing applications.
+			</li>
+			<li>
+				<b>Streamable</b>: Each FLAC frame contains enough data to decode that frame.  FLAC does not even rely on previous or following frames.  FLAC uses sync codes and CRCs (similar to MPEG and other formats), which, along with framing, allow decoders to pick up in the middle of a stream with a minimum of delay.
+			</li>
+			<li>
+				<b>Suitable for archiving</b>: FLAC is an open format, and there is no generation loss if you need to convert your data to another format in the future.  In addition to the frame CRCs and MD5 signature, <span class="commandname">flac</span> has a verify option that decodes the encoded stream in parallel with the encoding process and compares the result to the original, aborting with an error if there is a mismatch.
+			</li>
+			<li>
+				<b>Convenient CD archiving</b>: FLAC has a <a href="format.html#def_CUESHEET">"cue sheet"</a> metadata block for storing a CD table of contents and all track and index points.  For instance, you can rip a CD to a single file, then import the CD's extracted cue sheet while encoding to yield a single file representation of the entire CD.  If your original CD is damaged, the cue sheet can be exported later in order to burn an exact copy.
+			</li>
+			<li>
+				<b>Error resistant</b>: Because of FLAC's framing, stream errors limit the damage to the frame in which the error occurred, typically a small fraction of a second worth of data.  Contrast this with some other lossless codecs, in which a single error destroys the remainder of the stream.
+			</li>
+		</ul>
+		What FLAC is <b>not</b>:
+		<ul>
+			<li>
+				Lossy.  FLAC is intended for lossless compression only, as there are many good lossy formats already, such as <a href="http://www.xiph.org/ogg/vorbis/index.html">Vorbis</a>, <a href="http://www.musepack.net/">MPC</a>, and <a href="http://www.mp3-tech.org/">MP3</a> (see <a href="http://www.mp3dev.org/mp3/">LAME</a> for an excellent open-source implementation).
+			</li>
+			<li>
+				DRM.  There is no intention to add any copy prevention methods.  Of course, we can't stop someone from encrypting a FLAC stream in another container (e.g. the way Apple encrypts AAC in MP4 with FairPlay), that is the choice of the user.
+			</li>
+		</ul>
+	</div>
+	<div class="box_footer"></div>
+</div>
+
+
+<div class="copyright">
+	<!-- @@@ oh so hacky -->
+	<table>
+		<tr>
+			<td align="left">
+				Copyright (c) 2000,2001,2002,2003,2004,2005,2006,2007  Josh Coalson
+			</td>
+			<td width="1%" align="right">
+				<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=13478&amp;type=1" width="88" height="31" border="0" alt="SourceForge.net Logo" /></a>
+			</td>
+			<td width="1%" align="right">
+				<a href="http://www.eff.org/cafe/"><img src="images/cafebug.gif" alt="CAFE Logo" border="0" /></a><br />
+			</td>
+			<td width="1%" align="right">
+				<a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" border="0" hspace="0" /></a>
+			</td>
+		</tr>
+	</table>
+</div>
+
+</body>
+</html>
