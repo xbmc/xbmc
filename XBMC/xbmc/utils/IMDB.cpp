@@ -156,24 +156,21 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
     if (title && title->FirstChild() && link && link->FirstChild())
     {
       url.m_strTitle = title->FirstChild()->Value();
-      CScraperUrl scrURL(link);
-      url.m_scrURL.push_back(scrURL);
-      //url.m_strURL.push_back(link->FirstChild()->Value());
-      while ((link = link->NextSiblingElement("url")))
+      while (link && link->FirstChild())
       {
-        CScraperUrl scrURL(link);
-        //url.m_strURL.push_back(link->FirstChild()->Value());
-        url.m_scrURL.push_back(scrURL);
+        url.m_scrURL.push_back(CScraperUrl(link));
+        link = link->NextSiblingElement("url");
       }
       if (id && id->FirstChild())
         url.m_strID = id->FirstChild()->Value();
       // if source contained a distinct year, only allow those
+      bool allowed(true);
       if(iYear != 0)
       {
         if(year && year->FirstChild())
         { // sweet scraper provided a year
           if(iYear != atoi(year->FirstChild()->Value()))
-            continue;
+            allowed = false;
         }
         else if(url.m_strTitle.length() >= 6)
         { // imdb normally puts year at end of title within ()
@@ -182,12 +179,13 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
           {
             int iYear2 = atoi(url.m_strTitle.Right(5).Left(4).c_str());
             if( iYear2 != 0 && iYear != iYear2)
-              continue;
+              allowed = false;
           }
         }
       }
-
-      movielist.push_back(url);
+      
+      if (allowed)
+        movielist.push_back(url);
     }
     movie = movie->NextSiblingElement();
   }
@@ -247,12 +245,13 @@ bool CIMDB::InternalGetEpisodeList(const CIMDBUrl& url, IMDB_EPISODELIST& detail
       {
         CIMDBUrl url2;
         g_charsetConverter.stringCharsetToUtf8(title->FirstChild()->Value(),url2.m_strTitle);
-        url2.m_scrURL.push_back(CScraperUrl(link) );
 
-        while ((link = link->NextSiblingElement("url")))
+        while (link && link->FirstChild())
         {
-          url2.m_scrURL.push_back(CScraperUrl(link));
+          url2.m_scrURL.push_back(CScraperUrl(link) );
+          link = link->NextSiblingElement("url");
         }
+
         if (id && id->FirstChild())
           url2.m_strID = id->FirstChild()->Value();
         // if source contained a distinct year, only allow those
