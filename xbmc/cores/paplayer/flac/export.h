@@ -48,6 +48,10 @@
  *  This module contains #defines and symbols for exporting function
  *  calls, and providing version information and compiled-in features.
  *
+ *  If you are compiling with MSVC and will link to the static library
+ *  (libFLAC.lib) you should define FLAC__NO_DLL in your project to
+ *  make sure the symbols are exported properly.
+ *
  * \{
  */
 
@@ -67,9 +71,9 @@
 /** These #defines will mirror the libtool-based library version number, see
  * http://www.gnu.org/software/libtool/manual.html#Libtool-versioning
  */
-#define FLAC_API_VERSION_CURRENT 8
-#define FLAC_API_VERSION_REVISION 1 /**< see above */
-#define FLAC_API_VERSION_AGE 0 /**< see above */
+#define FLAC_API_VERSION_CURRENT 10
+#define FLAC_API_VERSION_REVISION 0 /**< see above */
+#define FLAC_API_VERSION_AGE 2 /**< see above */
 
 #ifdef __cplusplus
 extern "C" {

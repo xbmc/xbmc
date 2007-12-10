@@ -191,9 +191,13 @@ extern FLAC_API const unsigned FLAC__STREAM_SYNC_LEN; /* = 32 bits */
 
 /** An enumeration of the available entropy coding methods. */
 typedef enum {
-	FLAC__ENTROPY_CODING_METHOD_PARTITIONED_RICE = 0
+	FLAC__ENTROPY_CODING_METHOD_PARTITIONED_RICE = 0,
 	/**< Residual is coded by partitioning into contexts, each with it's own
-	 * Rice parameter. */
+	 * 4-bit Rice parameter. */
+
+	FLAC__ENTROPY_CODING_METHOD_PARTITIONED_RICE2 = 1
+	/**< Residual is coded by partitioning into contexts, each with it's own
+	 * 5-bit Rice parameter. */
 } FLAC__EntropyCodingMethodType;
 
 /** Maps a FLAC__EntropyCodingMethodType to a C string.
@@ -212,7 +216,9 @@ typedef struct {
 	/**< The Rice parameters for each context. */
 
 	unsigned *raw_bits;
-	/**< Widths for escape-coded partitions. */
+	/**< Widths for escape-coded partitions.  Will be non-zero for escaped
+	 * partitions and zero for unescaped partitions.
+	 */
 
 	unsigned capacity_by_order;
 	/**< The capacity of the \a parameters and \a raw_bits arrays
@@ -235,10 +241,13 @@ typedef struct {
 
 extern FLAC_API const unsigned FLAC__ENTROPY_CODING_METHOD_PARTITIONED_RICE_ORDER_LEN; /**< == 4 (bits) */
 extern FLAC_API const unsigned FLAC__ENTROPY_CODING_METHOD_PARTITIONED_RICE_PARAMETER_LEN; /**< == 4 (bits) */
+extern FLAC_API const unsigned FLAC__ENTROPY_CODING_METHOD_PARTITIONED_RICE2_PARAMETER_LEN; /**< == 5 (bits) */
 extern FLAC_API const unsigned FLAC__ENTROPY_CODING_METHOD_PARTITIONED_RICE_RAW_LEN; /**< == 5 (bits) */
 
 extern FLAC_API const unsigned FLAC__ENTROPY_CODING_METHOD_PARTITIONED_RICE_ESCAPE_PARAMETER;
 /**< == (1<<FLAC__ENTROPY_CODING_METHOD_PARTITIONED_RICE_PARAMETER_LEN)-1 */
+extern FLAC_API const unsigned FLAC__ENTROPY_CODING_METHOD_PARTITIONED_RICE2_ESCAPE_PARAMETER;
+/**< == (1<<FLAC__ENTROPY_CODING_METHOD_PARTITIONED_RICE2_PARAMETER_LEN)-1 */
 
 /** Header for the entropy coding method.  (c.f. <A HREF="../format.html#residual">format specification</A>)
  */
@@ -342,7 +351,14 @@ typedef struct {
 	unsigned wasted_bits;
 } FLAC__Subframe;
 
-extern FLAC_API const unsigned FLAC__SUBFRAME_ZERO_PAD_LEN; /**< == 1 (bit) */
+/** == 1 (bit)
+ *
+ * This used to be a zero-padding bit (hence the name
+ * FLAC__SUBFRAME_ZERO_PAD_LEN) but is now a reserved bit.  It still has a
+ * mandatory value of \c 0 but in the future may take on the value \c 0 or \c 1
+ * to mean something else.
+ */
+extern FLAC_API const unsigned FLAC__SUBFRAME_ZERO_PAD_LEN;
 extern FLAC_API const unsigned FLAC__SUBFRAME_TYPE_LEN; /**< == 6 (bits) */
 extern FLAC_API const unsigned FLAC__SUBFRAME_WASTED_BITS_FLAG_LEN; /**< == 1 (bit) */
 
@@ -408,7 +424,9 @@ typedef struct {
 	/**< The sample resolution. */
 
 	FLAC__FrameNumberType number_type;
-	/**< The numbering scheme used for the frame. */
+	/**< The numbering scheme used for the frame.  As a convenience, the
+	 * decoder will always convert a frame number to a sample number because
+	 * the rules are complex. */
 
 	union {
 		FLAC__uint32 frame_number;
@@ -426,7 +444,8 @@ typedef struct {
 
 extern FLAC_API const unsigned FLAC__FRAME_HEADER_SYNC; /**< == 0x3ffe; the frame header sync code */
 extern FLAC_API const unsigned FLAC__FRAME_HEADER_SYNC_LEN; /**< == 14 (bits) */
-extern FLAC_API const unsigned FLAC__FRAME_HEADER_RESERVED_LEN; /**< == 2 (bits) */
+extern FLAC_API const unsigned FLAC__FRAME_HEADER_RESERVED_LEN; /**< == 1 (bits) */
+extern FLAC_API const unsigned FLAC__FRAME_HEADER_BLOCKING_STRATEGY_LEN; /**< == 1 (bits) */
 extern FLAC_API const unsigned FLAC__FRAME_HEADER_BLOCK_SIZE_LEN; /**< == 4 (bits) */
 extern FLAC_API const unsigned FLAC__FRAME_HEADER_SAMPLE_RATE_LEN; /**< == 4 (bits) */
 extern FLAC_API const unsigned FLAC__FRAME_HEADER_CHANNEL_ASSIGNMENT_LEN; /**< == 4 (bits) */
@@ -851,8 +870,7 @@ extern FLAC_API const unsigned FLAC__STREAM_METADATA_LENGTH_LEN; /**< == 24 (bit
  *
  *****************************************************************************/
 
-/** Tests that a sample rate is valid for FLAC.  Since the rules for valid
- *  sample rates are slightly complex, they are encapsulated in this function.
+/** Tests that a sample rate is valid for FLAC.
  *
  * \param sample_rate  The sample rate to test for compliance.
  * \retval FLAC__bool
@@ -860,6 +878,17 @@ extern FLAC_API const unsigned FLAC__STREAM_METADATA_LENGTH_LEN; /**< == 24 (bit
  *    \c false.
  */
 FLAC_API FLAC__bool FLAC__format_sample_rate_is_valid(unsigned sample_rate);
+
+/** Tests that a sample rate is valid for the FLAC subset.  The subset rules
+ *  for valid sample rates are slightly more complex since the rate has to
+ *  be expressible completely in the frame header.
+ *
+ * \param sample_rate  The sample rate to test for compliance.
+ * \retval FLAC__bool
+ *    \c true if the given sample rate conforms to the specification for the
+ *    subset, else \c false.
+ */
+FLAC_API FLAC__bool FLAC__format_sample_rate_is_subset(unsigned sample_rate);
 
 /** Check a Vorbis comment entry name to see if it conforms to the Vorbis
  *  comment specification.
@@ -908,7 +937,6 @@ FLAC_API FLAC__bool FLAC__format_vorbiscomment_entry_value_is_legal(const FLAC__
  */
 FLAC_API FLAC__bool FLAC__format_vorbiscomment_entry_is_legal(const FLAC__byte *entry, unsigned length);
 
-/* @@@@ add to unit tests; it is already indirectly tested by the metadata_object tests */
 /** Check a seek table to see if it conforms to the FLAC specification.
  *  See the format specification for limits on the contents of the
  *  seek table.
@@ -921,7 +949,6 @@ FLAC_API FLAC__bool FLAC__format_vorbiscomment_entry_is_legal(const FLAC__byte *
  */
 FLAC_API FLAC__bool FLAC__format_seektable_is_legal(const FLAC__StreamMetadata_SeekTable *seek_table);
 
-/* @@@@ add to unit tests; it is already indirectly tested by the metadata_object tests */
 /** Sort a seek table's seek points according to the format specification.
  *  This includes a "unique-ification" step to remove duplicates, i.e.
  *  seek points with identical \a sample_number values.  Duplicate seek
@@ -936,7 +963,6 @@ FLAC_API FLAC__bool FLAC__format_seektable_is_legal(const FLAC__StreamMetadata_S
  */
 FLAC_API unsigned FLAC__format_seektable_sort(FLAC__StreamMetadata_SeekTable *seek_table);
 
-/* @@@@ add to unit tests; it is already indirectly tested by the metadata_object tests */
 /** Check a cue sheet to see if it conforms to the FLAC specification.
  *  See the format specification for limits on the contents of the
  *  cue sheet.
@@ -957,7 +983,6 @@ FLAC_API unsigned FLAC__format_seektable_sort(FLAC__StreamMetadata_SeekTable *se
  */
 FLAC_API FLAC__bool FLAC__format_cuesheet_is_legal(const FLAC__StreamMetadata_CueSheet *cue_sheet, FLAC__bool check_cd_da_subset, const char **violation);
 
-/* @@@@ add to unit tests; it is already indirectly tested by the metadata_object tests */
 /** Check picture data to see if it conforms to the FLAC specification.
  *  See the format specification for limits on the contents of the
  *  PICTURE block.
