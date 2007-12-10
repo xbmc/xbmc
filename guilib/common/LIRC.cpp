@@ -6,9 +6,9 @@
 #include "LIRC.h"
 #include "ButtonTranslator.h"
 #include "log.h"
+#include "Settings.h"
 
 #define LIRC_DEVICE "/dev/lircd"
-#define REPEAT_DELAY 500
 
 CRemoteControl g_RemoteControl;
 
@@ -17,6 +17,7 @@ CRemoteControl::CRemoteControl()
   m_fd = -1;
   m_file = NULL;  
   m_bInitialized = false;
+  m_skipHold = false;
   Reset();
 }
 
@@ -29,7 +30,7 @@ CRemoteControl::~CRemoteControl()
 void CRemoteControl::Reset()
 {
   m_isHolding = false;
-  m_button = 0;  
+  m_button = 0;
 }
 
 void CRemoteControl::Initialize()
@@ -83,39 +84,44 @@ void CRemoteControl::Update()
 {
   if (!m_bInitialized)
     return;
-    
-  // Read a line from the socket
-  if (fgets(m_buf, sizeof(m_buf), m_file) == NULL)
-    return;
-  
-  // Remove the \n
-  m_buf[strlen(m_buf)-1] = '\0';
 
-  // Parse the result. Sample line:
-  // 000000037ff07bdd 00 OK mceusb
-  char scanCode[128];  
-  char buttonName[128];
-  char repeatStr[4];
-  char deviceName[128];
-  sscanf(m_buf, "%s %s %s %s", &scanCode[0], &repeatStr[0], &buttonName[0], &deviceName[0]);
-
-  m_button = g_buttonTranslator.TranslateLircRemoteString(deviceName, buttonName);
- 
   Uint32 now = SDL_GetTicks(); 
-  if (strcmp(repeatStr, "00") == 0)
+
+  // Read a line from the socket
+  while (fgets(m_buf, sizeof(m_buf), m_file) != NULL)
   {
-    m_firstClickTime = now;
-    m_isHolding = false;
+    // Remove the \n
+    m_buf[strlen(m_buf)-1] = '\0';
+
+    // Parse the result. Sample line:
+    // 000000037ff07bdd 00 OK mceusb
+    char scanCode[128];  
+    char buttonName[128];
+    char repeatStr[4];
+    char deviceName[128];
+    sscanf(m_buf, "%s %s %s %s", &scanCode[0], &repeatStr[0], &buttonName[0], &deviceName[0]);
+
+    m_button = g_buttonTranslator.TranslateLircRemoteString(deviceName, buttonName);
+
+    if (strcmp(repeatStr, "00") == 0)
+    {
+      CLog::Log(LOGDEBUG, "%s - NEW at %d:%s", __FUNCTION__, now, m_buf);
+      m_firstClickTime = now;
+      m_isHolding = false;
+      m_skipHold = true;
+      return;
+    }
+    else if (now - m_firstClickTime >= g_advancedSettings.m_remoteRepeat && !m_skipHold)
+    {
+      m_isHolding = true;
+    }
+    else
+    {
+      m_isHolding = false;
+      m_button = 0;
+    }
   }
-  else if (now - m_firstClickTime >= REPEAT_DELAY)
-  { 
-    m_isHolding = true;
-  }
-  else if (now - m_firstClickTime < REPEAT_DELAY)
-  {
-    m_isHolding = false;
-    m_button = 0;
-  }  
+  m_skipHold = false;
 }
 
 WORD CRemoteControl::GetButton()
