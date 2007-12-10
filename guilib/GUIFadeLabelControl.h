@@ -34,6 +34,7 @@ protected:
 
   vector< vector<CInfoPortion> > m_infoLabels;
   unsigned int m_currentLabel;
+  unsigned int m_lastLabel;
 
   CLabelInfo m_label;
   CGUITextLayout m_textLayout;

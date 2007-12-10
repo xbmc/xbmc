@@ -1,7 +1,0 @@
-<smartplaylist type="video">
-    <name>Party Mode</name>
-    <match>all</match>
-    <!-- <rule field="genre" operator="contains">Rock</rule> -->
-    <!-- <rule field="artist" operator="is">U2</rule> -->
-    <!-- <rule field="year" operator="lessthan">1985</rule> -->
-</smartplaylist>

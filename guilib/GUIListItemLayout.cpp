@@ -9,10 +9,8 @@
 #include "../xbmc/utils/CharsetConverter.h"
 #include "../xbmc/FileItem.h"
 
-CGUIListItemLayout::CListBase::CListBase(int visibleCondition)
+CGUIListItemLayout::CListBase::CListBase()
 {
-  m_visible = true;
-  m_visibleCondition = visibleCondition;
 }
 
 CGUIListItemLayout::CListBase::~CListBase()
@@ -20,13 +18,14 @@ CGUIListItemLayout::CListBase::~CListBase()
 }
 
 CGUIListItemLayout::CListLabel::CListLabel(float posX, float posY, float width, float height, int visibleCondition, const CLabelInfo &label, bool alwaysScroll, int info, const CStdString &content, const vector<CAnimation> &animations)
-: CGUIListItemLayout::CListBase(visibleCondition),
+: CGUIListItemLayout::CListBase(),
   m_label(0, 0, posX, posY, width, height, label, alwaysScroll)
 {
   m_type = LIST_LABEL;
   m_label.SetAnimations(animations);
   m_info = info;
   g_infoManager.ParseLabel(content, m_multiInfo);
+  m_label.SetVisibleCondition(visibleCondition, false);
 }
 
 CGUIListItemLayout::CListLabel::~CListLabel()
@@ -35,13 +34,14 @@ CGUIListItemLayout::CListLabel::~CListLabel()
 
 
 CGUIListItemLayout::CListTexture::CListTexture(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, const CImage &borderImage, const FRECT &borderSize, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, DWORD aspectAlign, D3DCOLOR colorDiffuse, const vector<CAnimation> &animations)
-: CGUIListItemLayout::CListBase(visibleCondition),
+: CGUIListItemLayout::CListBase(),
   m_image(0, 0, posX, posY, width, height, image, borderImage, borderSize)
 {
   m_type = LIST_TEXTURE;
   m_image.SetAspectRatio(aspectRatio, aspectAlign);
   m_image.SetAnimations(animations);
   m_image.SetColorDiffuse(colorDiffuse);
+  m_image.SetVisibleCondition(visibleCondition, false);
 }
 
 
@@ -120,21 +120,18 @@ void CGUIListItemLayout::Render(CGUIListItem *item, DWORD parentID, DWORD time)
   for (iControls it = m_controls.begin(); it != m_controls.end(); it++)
   {
     CListBase *layoutItem = *it;
-    if (layoutItem->m_visible)
+    if (layoutItem->m_type == CListBase::LIST_LABEL)
     {
-      if (layoutItem->m_type == CListBase::LIST_LABEL)
-      {
-        CGUIListLabel &label = ((CListLabel *)layoutItem)->m_label;
-        label.SetSelected(item->IsSelected() || m_isPlaying);
-        label.SetScrolling(m_focused);
-        label.UpdateVisibility();
-        label.DoRender(time);
-      }
-      else
-      {
-        ((CListTexture *)layoutItem)->m_image.UpdateVisibility();
-        ((CListTexture *)layoutItem)->m_image.DoRender(time);
-      }
+      CGUIListLabel &label = ((CListLabel *)layoutItem)->m_label;
+      label.SetSelected(item->IsSelected() || m_isPlaying);
+      label.SetScrolling(m_focused);
+      label.UpdateVisibility();
+      label.DoRender(time);
+    }
+    else
+    {
+      ((CListTexture *)layoutItem)->m_image.UpdateVisibility();
+      ((CListTexture *)layoutItem)->m_image.DoRender(time);
     }
   }
 }
@@ -148,13 +145,13 @@ void CGUIListItemLayout::Update(CFileItem *item, DWORD parentID)
   // now we have to check our overlapping label pairs
   for (unsigned int i = 0; i < m_controls.size(); i++)
   {
-    if (m_controls[i]->m_type == CListBase::LIST_LABEL && m_controls[i]->m_visible)
+    if (m_controls[i]->m_type == CListBase::LIST_LABEL && ((CListLabel *)m_controls[i])->m_label.IsVisible())
     {
       CGUIListLabel &label1 = ((CListLabel *)m_controls[i])->m_label;
       CRect rect1(label1.GetRenderRect());
       for (unsigned int j = i + 1; j < m_controls.size(); j++)
       {
-        if (m_controls[j]->m_type == CListBase::LIST_LABEL && m_controls[j]->m_visible)
+        if (m_controls[j]->m_type == CListBase::LIST_LABEL && ((CListLabel *)m_controls[j])->m_label.IsVisible())
         { // ok, now check if they overlap
           CGUIListLabel &label2 = ((CListLabel *)m_controls[j])->m_label;
           if (!rect1.Intersect(label2.GetRenderRect()).IsEmpty())
@@ -188,9 +185,6 @@ void CGUIListItemLayout::Update(CFileItem *item, DWORD parentID)
 
 void CGUIListItemLayout::UpdateItem(CGUIListItemLayout::CListBase *control, CFileItem *item, DWORD parentID)
 {
-  // check boolean conditions
-  if (control->m_visibleCondition)
-    control->m_visible = g_infoManager.GetBool(control->m_visibleCondition, parentID, item);
   if (control->m_type == CListBase::LIST_IMAGE && item)
   {
     CListImage *image = (CListImage *)control;
