@@ -9,10 +9,10 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "http.h"
-#include "thread.h"
+#include "HTTP.h"
+#include "Thread.h"
 #include "ScraperParser.h"
-#include "..\VideoInfoTag.h"
+#include "../VideoInfoTag.h"
 
 // forward definitions
 class TiXmlDocument;
