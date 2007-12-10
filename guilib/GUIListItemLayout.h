@@ -11,14 +11,11 @@ class CGUIListItemLayout
   class CListBase
   {
   public:
-    CListBase(int visibleCondition);
+    CListBase();
     virtual ~CListBase();
 
     enum LIST_TYPE { LIST_LABEL, LIST_IMAGE, LIST_TEXTURE };
     LIST_TYPE m_type;
-
-    int m_visibleCondition;
-    bool m_visible;
   };
 
   class CListLabel : public CListBase
