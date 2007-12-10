@@ -192,6 +192,13 @@ void CFileCache::Process()
         Sleep(5);
 
       iTotalWrite += iWrite;
+
+      // check if seek was asked. otherwise if cache is full we'll freeze.
+      if (m_seekEvent.WaitMSec(0))
+      {
+        m_seekEvent.Set(); // make sure we get the seek event later. 
+        break;
+      }
     }
 
   }
