@@ -70,7 +70,7 @@
 				</RegExp>
 				<expression noclean="1"></expression>
 			</RegExp>
-			<RegExp input="$$3" output="&lt;episodeguide&gt;http://thetvdb.com/interfaces/GetEpisodes.php?language=17&amp;amp;seriesid=\1&lt;/episodeguide&gt;" dest="4+">
+			<RegExp input="$$3" output="&lt;episodeguide&gt;&lt;url&gt;http://thetvdb.com/interfaces/GetEpisodes.php?language=17&amp;amp;seriesid=\1&lt;/url&gt;&lt;/episodeguide&gt;" dest="4+">
 				<expression></expression>
 			</RegExp>
 			<expression noclean="1"></expression>
