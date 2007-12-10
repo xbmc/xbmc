@@ -267,18 +267,21 @@ extern "C"
 	    int nErr = errno;
 #endif
         printf("PICTURE::LoadImage: Unable to open image: %s Error:%s (%d)\n", file, image->GetLastError(),nErr);
+        delete image;
         return false;
       }
     }
     catch (...)
     {
       printf("PICTURE::LoadImage: Unable to open image: %s\n", file);
+      delete image;
       return false;
     }
     // ok, now resample the image down if necessary
     if (ResampleKeepAspect(*image, maxwidth, maxheight) < 0)
     {
       printf("PICTURE::LoadImage: Unable to resample picture: %s\n", file);
+      delete image;
       return false;
     }
 

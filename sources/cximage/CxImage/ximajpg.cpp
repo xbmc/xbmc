@@ -108,7 +108,8 @@ bool CxImageJPG::GetExifThumbnail(const char *filename, const char *outname)
 ////////////////////////////////////////////////////////////////////////////////
 #ifdef XBMC
 #define RESAMPLE_FACTOR_OF_2_ON_LOAD
-#undef RESAMPLE_ON_LOAD
+#define MAX_PICTURE_AREA 2048*2048 // 4MP == 16MB
+#undef RESAMPLE_IF_TOO_BIG
 bool CxImageJPG::Decode(CxFile * hFile, int &iMaxWidth, int &iMaxHeight)
 #else
 bool CxImageJPG::Decode(CxFile * hFile)
@@ -152,7 +153,7 @@ bool CxImageJPG::Decode(CxFile * hFile)
 	struct ima_error_mgr jerr;
 	jerr.buffer=info.szLastError;
 	/* More stuff */
-#ifdef RESAMPLE_ON_LOAD
+#ifdef RESAMPLE_FACTOR_OF_2_ON_LOAD
 	JSAMPARRAY buffer[4];
 #else
 	JSAMPARRAY buffer;	/* Output row buffer */
@@ -207,20 +208,17 @@ bool CxImageJPG::Decode(CxFile * hFile)
     iMaxWidth = (int)sqrt(iMaxWidth * fAR);
     iMaxHeight = (int)(iMaxWidth / fAR);
   }
-	bool bScale = false;
   if (iMaxWidth > 0 && iMaxHeight > 0)
 	{
 		if (iWidth > iMaxWidth)
 		{
 			iWidth = iMaxWidth;
 			iHeight = (int)((float)iWidth/fAR);
-			bScale = true;
 		}
 		if (iHeight > iMaxHeight)
 		{
 			iHeight = iMaxHeight;
 			iWidth = (int)((float)iHeight*fAR);
-			bScale = true;
 		}
     unsigned int power = 2;
     cinfo.scale_denom = 1;
@@ -242,13 +240,26 @@ bool CxImageJPG::Decode(CxFile * hFile)
 	* if we asked for color quantization.
 	*/
 	
-#ifdef RESAMPLE_ON_LOAD
+#ifdef RESAMPLE_FACTOR_OF_2_ON_LOAD
   // save our image width and height
   iMaxWidth = cinfo.image_width;
   iMaxHeight = cinfo.image_height;
-	Create(iWidth, iHeight, 8*cinfo.num_components, CXIMAGE_FORMAT_JPG);
-#elif defined(RESAMPLE_FACTOR_OF_2_ON_LOAD)
-	Create(cinfo.output_width, cinfo.output_height, 8*cinfo.num_components, CXIMAGE_FORMAT_JPG);
+  // check if we're going to exceed our maximum picture size
+  bool bScale(false);
+#ifdef RESAMPLE_IF_TOO_BIG
+  if (cinfo.output_width * cinfo.output_height > MAX_PICTURE_AREA)
+  {
+    iWidth = (int)sqrt(MAX_PICTURE_AREA * fAR);
+    iHeight = (int)(iWidth / fAR);
+    bScale = true;
+  }
+  else
+#endif
+  {
+    iWidth = cinfo.output_width;
+    iHeight = cinfo.output_height;
+  }
+  Create(iWidth, iHeight, 8*cinfo.num_components, CXIMAGE_FORMAT_JPG);
 #else
 	Create(cinfo.image_width, cinfo.image_height, 8*cinfo.num_components, CXIMAGE_FORMAT_JPG);
 #endif
@@ -286,7 +297,7 @@ bool CxImageJPG::Decode(CxFile * hFile)
 	/* JSAMPLEs per row in output buffer */
 	row_stride = cinfo.output_width * cinfo.num_components;
 
-#ifdef RESAMPLE_ON_LOAD
+#ifdef RESAMPLE_FACTOR_OF_2_ON_LOAD
 	/* Make 4 row buffers to do our resampling on */
 	for (int i=0; i<4; i++)
 	{
@@ -304,7 +315,7 @@ bool CxImageJPG::Decode(CxFile * hFile)
 	* loop counter, so that we don't have to keep track ourselves.
 	*/
 	iter.Upset();
-#ifdef RESAMPLE_ON_LOAD
+#ifdef RESAMPLE_FACTOR_OF_2_ON_LOAD
 	int row_position = 0;
 	int next_row_slot = 0;
 	int num_scanlines_read = 0;
@@ -332,7 +343,7 @@ bool CxImageJPG::Decode(CxFile * hFile)
 #endif
 		if (info.nEscape) longjmp(jerr.setjmp_buffer, 1); // <vho> - cancel decoding
 		
-#ifdef RESAMPLE_ON_LOAD
+#ifdef RESAMPLE_FACTOR_OF_2_ON_LOAD
 		// decode as many rows as we need
 		if (bScale)
 		{
@@ -356,7 +367,7 @@ bool CxImageJPG::Decode(CxFile * hFile)
 #endif
 		// info.nProgress = (long)(100*cinfo.output_scanline/cinfo.output_height);
 		//<DP> Step 6a: CMYK->RGB */
-#ifdef RESAMPLE_ON_LOAD
+#ifdef RESAMPLE_FACTOR_OF_2_ON_LOAD
 		// do bicubic resampling
 		BYTE *dst=iter.GetRow();
     for (int x = 0; x < iWidth; x++)
@@ -451,7 +462,7 @@ bool CxImageJPG::Decode(CxFile * hFile)
 #endif
 			iter.PrevRow();
 	}
-#ifdef RESAMPLE_ON_LOAD
+#ifdef RESAMPLE_FACTOR_OF_2_ON_LOAD
 	while (cinfo.output_scanline < cinfo.output_height)
 	{
 		(void) xjpeg_read_scanlines(&cinfo, buffer[0], 1);
