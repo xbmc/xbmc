@@ -79,6 +79,10 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
 
   int nErr;
 
+  /* if this is first access to audio, global sound config might not be loaded */
+  if(!snd_config)
+    snd_config_update();
+
   snd_config_t *config = snd_config;
   deviceuse = device;
 
