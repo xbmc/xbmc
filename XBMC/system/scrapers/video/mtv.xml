@@ -8,10 +8,10 @@
 	<GetSearchResults dest="8">
 		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
 			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\3 - \2 (\4)&lt;/title&gt;&lt;url&gt;http://www.mtv.com/overdrive/\1&lt;/url&gt;&lt;/entity&gt;" dest="5">
-				<expression noclean="1" clear="yes" repeat="no">&lt;a href=&quot;http://www.mtv.com/overdrive/([^&quot;]*)&quot;&gt;\nMusic Video \|[^&apos;]([^&lt;]*)[^&lt;]*&lt;/a&gt;\n&lt;/strong&gt;\nArtist: &lt;b&gt;([^&lt;]*)&lt;/b&gt;\n&lt;br/&gt;[^=]*&lt;br/&gt;\n&lt;p class=&quot;meta&quot;&gt;([0-9]*)-[^&lt;]*&lt;/p&gt;</expression>
+				<expression noclean="1" clear="yes" repeat="yes">&lt;a href=&quot;http://www.mtv.com/overdrive/([^&quot;]*)&quot;&gt;\nMusic Video \|[^&apos;]([^&lt;]*)[^&lt;]*&lt;/a&gt;\n&lt;/strong&gt;\nArtist: &lt;b&gt;([^&lt;]*)&lt;/b&gt;\n&lt;br/&gt;[^=]*&lt;br/&gt;\n&lt;p class=&quot;meta&quot;&gt;([0-9]*)-[^&lt;]*&lt;/p&gt;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\3 - \2 (\4)&lt;/title&gt;&lt;url&gt;http://www.mtv.com/overdrive/\1&lt;/url&gt;&lt;/entity&gt;" dest="5">
-				<expression noclean="1" repeat="no">&lt;a href=&quot;http://www.mtv.com/overdrive/([^&quot;]*)&quot;&gt;\nMusic Video \| &apos;([^&lt;]*)&apos;[^&lt;]*&lt;/a&gt;\n&lt;/strong&gt;\nArtist: &lt;b&gt;([^&lt;]*)&lt;/b&gt;\n&lt;br/&gt;[^=]*&lt;br/&gt;\n&lt;p class=&quot;meta&quot;&gt;([0-9]*)-[^&lt;]*&lt;/p&gt;</expression>
+				<expression noclean="1" repeat="yes">&lt;a href=&quot;http://www.mtv.com/overdrive/([^&quot;]*)&quot;&gt;\nMusic Video \| &apos;([^&lt;]*)&apos;[^&lt;]*&lt;/a&gt;\n&lt;/strong&gt;\nArtist: &lt;b&gt;([^&lt;]*)&lt;/b&gt;\n&lt;br/&gt;[^=]*&lt;br/&gt;\n&lt;p class=&quot;meta&quot;&gt;([0-9]*)-[^&lt;]*&lt;/p&gt;</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>		
@@ -39,7 +39,7 @@
 			<RegExp input="$$1" output="&lt;director&gt;\1&lt;/director&gt;" dest="5+">
 				<expression trim="1" noclean="1">&lt;b&gt;Director:&lt;/b&gt; ([^&lt;]*)&lt;/li&gt;</expression>
 			</RegExp>
-			<RegExp input="$$1" output=";&lt;thumb&gt;http://www.mtv.com\2.jpg&lt;/thumb&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;thumb&gt;http://www.mtv.com\2.jpg&lt;/thumb&gt;" dest="5+">
 				<expression noclean="1">&quot;thumbnail&quot;([^&quot;]*)content=&quot;([^&quot;]*)\.jpg</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
