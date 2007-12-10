@@ -36,11 +36,11 @@ bool CIMDBUrl::Parse(CStdString strUrls)
   {
     TiXmlHandle docHandle( &doc );
     TiXmlElement *link = docHandle.FirstChild( "episodeguide" ).FirstChild( "url" ).Element();
-    if(link)
-      while ((link = link->NextSiblingElement("url")))
-        m_scrURL.push_back(CScraperUrl(link));      
-    else if ((link = docHandle.FirstChild( "episodeguide" ).Element()))
+    while (link)
+    {
       m_scrURL.push_back(CScraperUrl(link));
+      link = link->NextSiblingElement("url");
+    }
 
   } 
   else
@@ -146,7 +146,7 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
 
   int iYear = atoi(strYear);
 
-  do
+  while (movie)
   {
     url.m_scrURL.clear();
     TiXmlNode *title = movie->FirstChild("title");
@@ -189,7 +189,8 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
 
       movielist.push_back(url);
     }
-  } while ((movie = movie->NextSiblingElement()));
+    movie = movie->NextSiblingElement();
+  }
 
   return true;
 }
@@ -236,7 +237,7 @@ bool CIMDB::InternalGetEpisodeList(const CIMDBUrl& url, IMDB_EPISODELIST& detail
     TiXmlHandle docHandle( &doc );
     TiXmlElement *movie = docHandle.FirstChild( "episodeguide" ).FirstChild( "episode" ).Element();
 
-    while ((movie = movie->NextSiblingElement()))
+    while (movie) 
     {
       TiXmlNode *title = movie->FirstChild("title");
       TiXmlElement *link = movie->FirstChildElement("url");
@@ -259,6 +260,7 @@ bool CIMDB::InternalGetEpisodeList(const CIMDBUrl& url, IMDB_EPISODELIST& detail
         std::pair<int,int> key(atoi(season->FirstChild()->Value()),atoi(epnum->FirstChild()->Value()));
         temp.insert(std::make_pair<std::pair<int,int>,CIMDBUrl>(key,url2));
       }
+      movie = movie->NextSiblingElement();
     }
   }
 

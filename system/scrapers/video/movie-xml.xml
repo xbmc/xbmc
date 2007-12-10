@@ -104,7 +104,7 @@
 				</RegExp>
 				<expression noclean="1"></expression>
 			</RegExp>
-			<RegExp input="$$3" output="&lt;episodeguide&gt;http://www.movie-xml.com/interfaces/GetEpisodes.php?seriesid=\1&lt;/episodeguide&gt;" dest="4+">
+			<RegExp input="$$3" output="&lt;episodeguide&gt;&lt;url&gt;http://www.movie-xml.com/interfaces/GetEpisodes.php?seriesid=\1&lt;/url&gt;&lt;/episodeguide&gt;" dest="4+">
 				<expression></expression>
 			</RegExp>
 			<expression noclean="1"></expression>
