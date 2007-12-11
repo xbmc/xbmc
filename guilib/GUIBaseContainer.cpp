@@ -377,9 +377,9 @@ void CGUIBaseContainer::UpdateLayout()
   }
 }
 
-void CGUIBaseContainer::UpdateVisibility()
+void CGUIBaseContainer::UpdateVisibility(void *pParam)
 {
-  CGUIControl::UpdateVisibility();
+  CGUIControl::UpdateVisibility(pParam);
   if (m_staticContent)
   { // update our item list with our new content, but only add those items that should
     // be visible.
@@ -388,7 +388,7 @@ void CGUIBaseContainer::UpdateVisibility()
     {
       CFileItem *item = (CFileItem *)m_staticItems[i];
       // m_idepth is used to store the visibility condition
-      if (!item->m_idepth || g_infoManager.GetBool(item->m_idepth, GetParentID()))
+      if (!item->m_idepth || g_infoManager.GetBool(item->m_idepth, GetParentID(), item))
         m_items.push_back(item);
     }
   }
@@ -581,7 +581,7 @@ bool CGUIBaseContainer::InsideLayout(const CGUIListItemLayout *layout, const CPo
 #ifdef _DEBUG
 void CGUIBaseContainer::DumpTextureUse()
 {
-  CLog::Log(LOGDEBUG, __FUNCTION__" for container %i", GetID());
+  CLog::Log(LOGDEBUG, "%s for container %lu", __FUNCTION__, GetID());
   for (unsigned int i = 0; i < m_items.size(); ++i)
   {
     CGUIListItem *item = m_items[i];
@@ -601,6 +601,10 @@ bool CGUIBaseContainer::GetCondition(int condition, int data) const
     return (m_orientation == HORIZONTAL) ? (m_cursor == data) : true;
   case CONTAINER_POSITION:
     return (m_cursor == data);
+  case CONTAINER_HAS_NEXT:
+    return (HasNextPage());
+  case CONTAINER_HAS_PREVIOUS:
+    return (HasPreviousPage());
   default:
     return false;
   }
@@ -634,3 +638,14 @@ void CGUIBaseContainer::GetCurrentLayouts()
   if (!m_focusedLayout && m_focusedLayouts.size())
     m_focusedLayout = &m_focusedLayouts[0];  // failsafe
 }
+
+bool CGUIBaseContainer::HasNextPage() const
+{
+   return false;
+}
+
+bool CGUIBaseContainer::HasPreviousPage() const
+{
+   return false;
+}
+
