@@ -27,10 +27,10 @@ void CGUIBorderedImage::Render()
   CGUIImage::Render();
 }
 
-void CGUIBorderedImage::UpdateVisibility(void *pParam)
+void CGUIBorderedImage::UpdateVisibility(const CGUIListItem *item)
 {
-  m_borderImage.UpdateVisibility(pParam);
-  CGUIImage::UpdateVisibility(pParam);
+  m_borderImage.UpdateVisibility(item);
+  CGUIImage::UpdateVisibility(item);
 }
 
 bool CGUIBorderedImage::OnMessage(CGUIMessage& message)

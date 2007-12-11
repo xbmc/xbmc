@@ -13,6 +13,8 @@
 #include "GUIFont.h"        // needed for the CAngle member (CLabelInfo) among other stuff
 #include "VisibleEffect.h"  // needed for the CAnimation members
 
+class CGUIListItem; // forward
+
 enum ORIENTATION { HORIZONTAL = 0, VERTICAL };
 
 class CLabelInfo
@@ -147,7 +149,7 @@ public:
   void SetVisibleCondition(int visible, bool allowHiddenFocus);
   int GetVisibleCondition() const { return m_visibleCondition; };
   void SetEnableCondition(int condition);
-  virtual void UpdateVisibility(void *pParam = NULL);
+  virtual void UpdateVisibility(const CGUIListItem *item = NULL);
   virtual void SetInitialVisibility();
   virtual void SetEnabled(bool bEnable);
   virtual void Update() { m_bInvalidated = true; };
