@@ -31,7 +31,7 @@ public:
   virtual ~CGUIEditControl(void);
 
   virtual void SetObserver(IEditControlObserver* aObserver);
-  virtual void OnKeyPress(CAction action); // FIXME TESTME: NEW/CHANGED parameter and NOT tested CAN'T do it/DON'T know where (window 2700)/how exactly 
+  virtual void OnKeyPress(const CAction &action); // FIXME TESTME: NEW/CHANGED parameter and NOT tested CAN'T do it/DON'T know where (window 2700)/how exactly 
   virtual void Render();
 
 protected:

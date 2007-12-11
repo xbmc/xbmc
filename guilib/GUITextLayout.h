@@ -30,7 +30,7 @@ public:
 class CGUITextLayout
 {
 public:
-  CGUITextLayout(CGUIFont *font, bool wrap, float fHeight=0.0);  // this may need changing - we may just use this class to replace CLabelInfo completely
+  CGUITextLayout(CGUIFont *font, bool wrap, float fHeight=0.0f);  // this may need changing - we may just use this class to replace CLabelInfo completely
 
   // main function to render strings
   void Render(float x, float y, float angle, DWORD color, DWORD shadowColor, DWORD alignment, float maxWidth, bool solid = false);

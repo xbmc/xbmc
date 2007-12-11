@@ -96,7 +96,7 @@ bool CGUIButtonScroller::OnAction(const CAction &action)
     {
       handled = true;
       m_fAnalogScrollSpeed -= ANALOG_SCROLL_START;
-      if (!m_bWrapAround && m_iOffset + m_iCurrentSlot == (int) m_vecButtons.size() - 1)
+      if (!m_bWrapAround && (unsigned int)(m_iOffset + m_iCurrentSlot) == m_vecButtons.size() - 1)
         break;
       DoDown();
     }

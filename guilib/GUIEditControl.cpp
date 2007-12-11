@@ -22,7 +22,7 @@ void CGUIEditControl::SetObserver(IEditControlObserver* aObserver)
   m_pObserver = aObserver;
 }
 
-void CGUIEditControl::OnKeyPress(CAction action) // FIXME TESTME: NEW/CHANGED parameter and NOT tested CAN'T do it/DON'T know where (window 2700)/how exactly
+void CGUIEditControl::OnKeyPress(const CAction &action) // FIXME TESTME: NEW/CHANGED parameter and NOT tested CAN'T do it/DON'T know where (window 2700)/how exactly
 {
   if (action.wID >= KEY_VKEY && action.wID < KEY_ASCII)
   {
