@@ -424,7 +424,7 @@ public:
   virtual bool OnMessage(CGUIMessage &message);
 
   int TranslateString(const CStdString &strCondition);
-  bool GetBool(int condition, DWORD dwContextWindow = 0, const CFileItem *pItem=NULL);
+  bool GetBool(int condition, DWORD dwContextWindow = 0, const CGUIListItem *item=NULL);
   int GetInt(int info, DWORD contextWindow = 0) const;
   CStdString GetLabel(int info, DWORD contextWindow = 0);
 
@@ -529,6 +529,7 @@ protected:
   int TranslateListItem(const CStdString &info);
   TIME_FORMAT TranslateTimeFormat(const CStdString &format);
   CStdString LocalizeTime(const CDateTime &time, TIME_FORMAT format) const;
+  bool GetItemBool(const CGUIListItem *item, int condition) const;
 
   // Conditional string parameters for testing are stored in a vector for later retrieval.
   // The offset into the string parameters array is returned.
@@ -590,7 +591,7 @@ protected:
 
   int GetOperator(const char ch);
   int TranslateBooleanExpression(const CStdString &expression);
-  bool EvaluateBooleanExpression(const CCombinedValue &expression, bool &result, DWORD dwContextWindow, const CFileItem *pItem=NULL);
+  bool EvaluateBooleanExpression(const CCombinedValue &expression, bool &result, DWORD dwContextWindow, const CGUIListItem *item=NULL);
 
   std::vector<CCombinedValue> m_CombinedValues;
 

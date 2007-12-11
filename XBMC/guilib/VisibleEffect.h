@@ -9,6 +9,7 @@ enum ANIMATION_STATE { ANIM_STATE_NONE = 0, ANIM_STATE_DELAYED, ANIM_STATE_IN_PR
 class TiXmlElement;
 class Tweener;
 struct FRECT;
+class CGUIListItem;
 
 #include "TransformMatrix.h"  // needed for the TransformMatrix member
 
@@ -50,7 +51,7 @@ public:
 
   float m_amount;
 
-  void UpdateCondition(DWORD contextWindow);
+  void UpdateCondition(DWORD contextWindow, const CGUIListItem *item = NULL);
   void SetInitialCondition(DWORD contextWindow);
 
 private:
