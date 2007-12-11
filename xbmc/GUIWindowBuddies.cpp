@@ -774,7 +774,7 @@ bool CGUIWindowBuddies::OnAction(const CAction &action)
     if (pEdit)
     {
       // use inline text edit control
-      pEdit->OnKeyPress(action); // FIXME TESTME: NEW/CHANGE parameter and NOT tested CAN'T do it/DON'T know where (window 2700)/how exactly 
+      pEdit->OnKeyPress(action);
     }
     else
     { // use virtual keyboard

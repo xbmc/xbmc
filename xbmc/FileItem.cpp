@@ -1028,7 +1028,7 @@ const CStdString& CFileItem::GetContentType() const
   return m_contenttype;
 }
 
-bool CFileItem::IsSamePath(const CFileItem *item)
+bool CFileItem::IsSamePath(const CFileItem *item) const
 {
   if (!item)
     return false;

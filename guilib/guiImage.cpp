@@ -72,9 +72,9 @@ CGUIImage::~CGUIImage(void)
 
 }
 
-void CGUIImage::UpdateVisibility(void *pParam)
+void CGUIImage::UpdateVisibility(const CGUIListItem *item)
 {
-  CGUIControl::UpdateVisibility(pParam);
+  CGUIControl::UpdateVisibility(item);
 
   // check for conditional information before we free and
   // alloc as this does free and allocation as well
