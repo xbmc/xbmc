@@ -528,9 +528,9 @@ void CAnimation::ApplyAnimation()
   Calculate();
 }
 
-void CAnimation::UpdateCondition(DWORD contextWindow)
+void CAnimation::UpdateCondition(DWORD contextWindow, const CGUIListItem *item)
 {
-  bool condition = g_infoManager.GetBool(m_condition, contextWindow);
+  bool condition = g_infoManager.GetBool(m_condition, contextWindow, item);
   if (condition && !m_lastCondition)
     m_queuedProcess = ANIM_PROCESS_NORMAL;
   else if (!condition && m_lastCondition)

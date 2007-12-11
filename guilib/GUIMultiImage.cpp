@@ -31,9 +31,9 @@ CGUIMultiImage::~CGUIMultiImage(void)
 {
 }
 
-void CGUIMultiImage::UpdateVisibility(void *pParam)
+void CGUIMultiImage::UpdateVisibility(const CGUIListItem *item)
 {
-  CGUIControl::UpdateVisibility(pParam);
+  CGUIControl::UpdateVisibility(item);
 
   // check if we're hidden, and deallocate if so
   if (!IsVisible() && m_visible != DELAYED)

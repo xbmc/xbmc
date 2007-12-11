@@ -215,8 +215,8 @@
 #define CONTAINER_COLUMN            369
 #define CONTAINER_POSITION          370
 #define CONTAINER_VIEWTYPE          371
-#define CONTAINER_HAS_NEXT	    372
-#define CONTAINER_HAS_PREVIOUS	    373
+#define CONTAINER_HAS_NEXT          372
+#define CONTAINER_HAS_PREVIOUS      373
 
 #define MUSICPM_ENABLED             380
 #define MUSICPM_SONGSPLAYED         381
@@ -310,9 +310,9 @@
 #define SYSTEM_TOTAL_SPACE_Y        702
 #define SYSTEM_TOTAL_SPACE_Z        703
 
-#define SYSTEM_PLATFORM_XBOX	    740
-#define SYSTEM_PLATFORM_LINUX	    741
-#define SYSTEM_PLATFORM_WINDOWS	    742
+#define SYSTEM_PLATFORM_XBOX        740
+#define SYSTEM_PLATFORM_LINUX       741
+#define SYSTEM_PLATFORM_WINDOWS     742
 
 #define XLINK_KAI_USERNAME          750
 #define SKIN_THEME                  800
@@ -427,7 +427,7 @@ public:
   virtual bool OnMessage(CGUIMessage &message);
 
   int TranslateString(const CStdString &strCondition);
-  bool GetBool(int condition, DWORD dwContextWindow = 0, const CFileItem *pItem=NULL);
+  bool GetBool(int condition, DWORD dwContextWindow = 0, const CGUIListItem *item=NULL);
   int GetInt(int info, DWORD contextWindow = 0) const;
   CStdString GetLabel(int info, DWORD contextWindow = 0);
 
@@ -532,6 +532,7 @@ protected:
   int TranslateListItem(const CStdString &info);
   TIME_FORMAT TranslateTimeFormat(const CStdString &format);
   CStdString LocalizeTime(const CDateTime &time, TIME_FORMAT format) const;
+  bool GetItemBool(const CGUIListItem *item, int condition) const;
 
   // Conditional string parameters for testing are stored in a vector for later retrieval.
   // The offset into the string parameters array is returned.
@@ -593,7 +594,7 @@ protected:
 
   int GetOperator(const char ch);
   int TranslateBooleanExpression(const CStdString &expression);
-  bool EvaluateBooleanExpression(const CCombinedValue &expression, bool &result, DWORD dwContextWindow, const CFileItem *pItem=NULL);
+  bool EvaluateBooleanExpression(const CCombinedValue &expression, bool &result, DWORD dwContextWindow, const CGUIListItem *item=NULL);
 
   std::vector<CCombinedValue> m_CombinedValues;
 

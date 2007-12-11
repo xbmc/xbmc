@@ -177,7 +177,7 @@ void CGUITextLayout::ParseText(const CStdString &text, vector<DWORD> &parsedText
 
   int startPos = 0;
   size_t pos = text.Find('[');
-  while (pos != CStdString::npos && pos + 1 < (size_t)text.GetLength())
+  while (pos != CStdString::npos && pos + 1 < text.size())
   {
     DWORD newStyle = 0;
     DWORD newColor = currentColor;

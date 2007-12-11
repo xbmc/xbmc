@@ -449,12 +449,12 @@ bool CGUIControl::OnMouseOver(const CPoint &point)
   return true;
 }
 
-void CGUIControl::UpdateVisibility(void *pParam)
+void CGUIControl::UpdateVisibility(const CGUIListItem *item)
 {
   if (m_visibleCondition)
   {
     bool bWasVisible = m_visibleFromSkinCondition;
-    m_visibleFromSkinCondition = g_infoManager.GetBool(m_visibleCondition, m_dwParentID, (CFileItem*)pParam);
+    m_visibleFromSkinCondition = g_infoManager.GetBool(m_visibleCondition, m_dwParentID, item);
     if (!bWasVisible && m_visibleFromSkinCondition)
     { // automatic change of visibility - queue the in effect
   //    CLog::DebugLog("Visibility changed to visible for control id %i", m_dwControlID);
@@ -471,12 +471,12 @@ void CGUIControl::UpdateVisibility(void *pParam)
   {
     CAnimation &anim = m_animations[i];
     if (anim.GetType() == ANIM_TYPE_CONDITIONAL)
-      anim.UpdateCondition(GetParentID());
+      anim.UpdateCondition(GetParentID(), item);
   }
   // and check for conditional enabling - note this overrides SetEnabled() from the code currently
   // this may need to be reviewed at a later date
   if (m_enableCondition)
-    m_enabled = g_infoManager.GetBool(m_enableCondition, m_dwParentID, (CFileItem*)pParam);
+    m_enabled = g_infoManager.GetBool(m_enableCondition, m_dwParentID, item);
 }
 
 void CGUIControl::SetInitialVisibility()
@@ -624,8 +624,6 @@ void CGUIControl::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentPro
     if (currentProcess == ANIM_PROCESS_NORMAL && currentState == ANIM_STATE_APPLIED)
       OnFocus();
   }
-//  if (visible != m_visible)
-//    CLog::DebugLog("UpdateControlState of control id %i - now %s (type=%d, process=%d, state=%d)", m_dwControlID, m_visible == VISIBLE ? "visible" : (m_visible == DELAYED ? "delayed" : "hidden"), type, currentProcess, currentState);
 }
 
 void CGUIControl::Animate(DWORD currentTime)
