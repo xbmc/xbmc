@@ -377,9 +377,9 @@ void CGUIBaseContainer::UpdateLayout()
   }
 }
 
-void CGUIBaseContainer::UpdateVisibility(void *pParam)
+void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
 {
-  CGUIControl::UpdateVisibility(pParam);
+  CGUIControl::UpdateVisibility(item);
   if (m_staticContent)
   { // update our item list with our new content, but only add those items that should
     // be visible.

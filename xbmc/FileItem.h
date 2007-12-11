@@ -256,7 +256,7 @@ public:
   void SetExtraInfo(const CStdString& info) { m_extrainfo = info; };
   const CStdString& GetExtraInfo() const { return m_extrainfo; };
 
-  bool IsSamePath(const CFileItem *item);
+  bool IsSamePath(const CFileItem *item) const;
 private:
   // Gets the .tbn file associated with this item
   CStdString GetTBNFile();
