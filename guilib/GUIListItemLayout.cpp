@@ -125,12 +125,12 @@ void CGUIListItemLayout::Render(CGUIListItem *item, DWORD parentID, DWORD time)
       CGUIListLabel &label = ((CListLabel *)layoutItem)->m_label;
       label.SetSelected(item->IsSelected() || m_isPlaying);
       label.SetScrolling(m_focused);
-      label.UpdateVisibility();
+      label.UpdateVisibility(item);
       label.DoRender(time);
     }
     else
     {
-      ((CListTexture *)layoutItem)->m_image.UpdateVisibility();
+      ((CListTexture *)layoutItem)->m_image.UpdateVisibility(item);
       ((CListTexture *)layoutItem)->m_image.DoRender(time);
     }
   }
@@ -139,7 +139,7 @@ void CGUIListItemLayout::Render(CGUIListItem *item, DWORD parentID, DWORD time)
 void CGUIListItemLayout::Update(CFileItem *item, DWORD parentID)
 {
   // check for boolean conditions
-  m_isPlaying = g_infoManager.GetItemBool(item, LISTITEM_ISPLAYING, parentID);
+  m_isPlaying = g_infoManager.GetBool(LISTITEM_ISPLAYING, parentID, item);
   for (iControls it = m_controls.begin(); it != m_controls.end(); it++)
     UpdateItem(*it, item, parentID);
   // now we have to check our overlapping label pairs
@@ -270,7 +270,7 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
   int info = g_infoManager.TranslateString(infoString);
   if (info && (info < LISTITEM_START || info > LISTITEM_END))
   {
-    CLog::Log(LOGERROR, __FUNCTION__" Invalid item info %s", infoString.c_str());
+    CLog::Log(LOGERROR, " Invalid item info %s", infoString.c_str());
     return NULL;
   }
   CGUIControlFactory::GetTexture(child, "texture", image);

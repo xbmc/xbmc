@@ -362,10 +362,14 @@ void CGUITextBox::SetLabel(const string &strText)
 void CGUITextBox::UpdatePageControl()
 {
   // and update our page control
-  int iPages = m_lines.size() / m_itemsPerPage;
-  if (m_lines.size() % m_itemsPerPage || !iPages) iPages++;
-  m_upDown.SetRange(1, iPages);
-  m_upDown.SetValue(1);
+  if (m_itemsPerPage > 0)
+  {
+    int iPages = m_lines.size() / m_itemsPerPage;
+    if (m_lines.size() % m_itemsPerPage || !iPages) iPages++;
+    m_upDown.SetRange(1, iPages);
+    m_upDown.SetValue(1);
+  }
+
   if (m_pageControl)
   {
     CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, m_lines.size());

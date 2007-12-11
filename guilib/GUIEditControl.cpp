@@ -1,7 +1,7 @@
 #include "include.h"
 #include "GUIEditControl.h"
 #include "../xbmc/Util.h"
-
+#include "../xbmc/utils/CharsetConverter.h"
 
 CGUIEditControl::CGUIEditControl(DWORD dwParentID, DWORD dwControlId,
                                  float posX, float posY, float width, float height,
@@ -22,12 +22,12 @@ void CGUIEditControl::SetObserver(IEditControlObserver* aObserver)
   m_pObserver = aObserver;
 }
 
-void CGUIEditControl::OnKeyPress(WORD wKeyId)
+void CGUIEditControl::OnKeyPress(const CAction &action) // FIXME TESTME: NEW/CHANGED parameter and NOT tested CAN'T do it/DON'T know where (window 2700)/how exactly
 {
-  if (wKeyId >= KEY_VKEY && wKeyId < KEY_ASCII)
+  if (action.wID >= KEY_VKEY && action.wID < KEY_ASCII)
   {
     // input from the keyboard (vkey, not ascii)
-    BYTE b = wKeyId & 0xFF;
+    BYTE b = action.wID & 0xFF;
     if (b == 0x25 && m_iCursorPos > 0)
     {
       // left
@@ -39,11 +39,13 @@ void CGUIEditControl::OnKeyPress(WORD wKeyId)
       m_iCursorPos++;
     }
   }
-  else if (wKeyId >= KEY_ASCII)
+  else if (action.wID >= KEY_ASCII)
   {
     // input from the keyboard
-    char ch = wKeyId & 0xFF;
-    switch (ch)
+    // NOTE: The below code is from the unicode keyboard patch which isn't in trunk fully yet.
+    //       I have included it as this class will eventually need it anyway.  Ideally it should
+    //       be using action.unicode if/when the unicode keyboard patch is merged to trunk.
+    switch (action.wID) 
     {
     case 27:
       { // escape
@@ -75,8 +77,12 @@ void CGUIEditControl::OnKeyPress(WORD wKeyId)
       }
     default:
       {
-        // use character input
-        m_strLabel.insert( m_strLabel.begin() + m_iCursorPos, ch);
+        // use character input // FIXME TESTME: NEW/CHANGED and NOT tested CAN'T do it/DON'T know where/how exactly (conversion from utf8 to WCHAR and back) 
+        CStdStringA utf8StrLabel = m_strLabel;
+        CStdStringW wStrLabel;
+        g_charsetConverter.utf8ToUTF16(utf8StrLabel, wStrLabel);
+        wStrLabel.insert( wStrLabel.begin() + m_iCursorPos, (WCHAR)action.wID);
+        g_charsetConverter.utf16toUTF8(wStrLabel, utf8StrLabel);
         m_iCursorPos++;
         break;
       }
