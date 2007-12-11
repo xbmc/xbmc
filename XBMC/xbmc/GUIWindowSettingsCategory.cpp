@@ -949,7 +949,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         pControl->SetEnabled(g_guiSettings.GetInt("network.assignment") == NETWORK_STATIC);
       }
 #endif
+#ifdef _LINUX
       bool enabled = (getuid() == 0);
+#else
+      bool enabled = false;
+#endif
       CGUISpinControlEx* pControl1 = (CGUISpinControlEx *)GetControl(GetSetting("network.assignment")->GetID());
       if (pControl1) 
          enabled = (pControl1->GetValue() == NETWORK_STATIC);         
