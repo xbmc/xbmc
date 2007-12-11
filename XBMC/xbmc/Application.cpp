@@ -2584,7 +2584,7 @@ void CApplication::Render()
 
 #ifdef HAS_SDL
     m_bPresentFrame = false;
-    if (g_graphicsContext.IsFullScreenVideo())
+    if (g_graphicsContext.IsFullScreenVideo() && !IsPaused())
     {
       if (lastFrameTime + singleVideoFrameTime > currentTime)
         nDelayTime = lastFrameTime + singleVideoFrameTime - currentTime;
@@ -2592,7 +2592,7 @@ void CApplication::Render()
       // if the semaphore is not empty - there is a video frame that needs to be presented. we need to wait long enough
       // so that rendering loop will not delay the next frame's presentation.
 #ifdef _LINUX
-      if (SDL_SemWaitTimeout2(m_framesSem, 500) == 0)
+      if (SDL_SemWaitTimeout2(m_framesSem, 100) == 0)
         m_bPresentFrame = true;
 #endif
     }
