@@ -30,7 +30,7 @@ void CGUIListLabel::SetSelected(bool selected)
 void CGUIListLabel::Render()
 {
   DWORD color = m_selected ? m_label.selectedColor : m_label.textColor;
-  if (m_scrolling && m_renderRect.x2 < m_textWidth + m_renderRect.x1)
+  if (m_scrolling && m_renderRect.x2 < m_textWidth + m_renderRect.x1 - 0.5f)
     m_textLayout.RenderScrolling(m_renderRect.x1, m_renderRect.y1, m_label.angle, color, m_label.shadowColor, 0, m_renderRect.Width(), m_scrollInfo);
   else
     m_textLayout.Render(m_renderRect.x1, m_renderRect.y1, m_label.angle, color, m_label.shadowColor, 0, m_renderRect.Width());

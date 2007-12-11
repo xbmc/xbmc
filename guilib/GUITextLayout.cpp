@@ -20,11 +20,17 @@ CStdString CGUIString::GetAsString() const
   return text;
 }
 
-CGUITextLayout::CGUITextLayout(CGUIFont *font, bool wrap)
+CGUITextLayout::CGUITextLayout(CGUIFont *font, bool wrap, float fHeight)
 {
   m_font = font;
   m_textColor = 0;
   m_wrap = wrap;
+  m_maxHeight = fHeight;
+}
+
+void CGUITextLayout::SetWrap(bool bWrap)
+{
+  m_wrap = bWrap;
 }
 
 void CGUITextLayout::Render(float x, float y, float angle, DWORD color, DWORD shadowColor, DWORD alignment, float maxWidth, bool solid)
@@ -170,8 +176,8 @@ void CGUITextLayout::ParseText(const CStdString &text, vector<DWORD> &parsedText
 #define FONT_STYLE_LOWERCASE 8
 
   int startPos = 0;
-  int pos = text.Find('[');
-  while (pos != CStdString::npos && pos + 1 < text.GetLength())
+  size_t pos = text.Find('[');
+  while (pos != CStdString::npos && pos + 1 < text.size())
   {
     DWORD newStyle = 0;
     DWORD newColor = currentColor;
@@ -212,7 +218,7 @@ void CGUITextLayout::ParseText(const CStdString &text, vector<DWORD> &parsedText
     }
     else if (text.Mid(pos,5) == "COLOR")
     { // color
-      int finish = text.Find("]", pos + 5);
+      size_t finish = text.Find("]", pos + 5);
       if (on && finish != CStdString::npos)
       { // create new color
         newColor = m_colors.size();
@@ -258,10 +264,17 @@ void CGUITextLayout::ParseText(const CStdString &text, vector<DWORD> &parsedText
   AppendToUTF32(subText, ((currentStyle & 3) << 24) | (currentColor << 16), parsedText);
 }
 
+void CGUITextLayout::SetMaxHeight(float fHeight)
+{
+  m_maxHeight = fHeight;
+}
+
 void CGUITextLayout::WrapText(vector<DWORD> &text, float maxWidth)
 {
   if (!m_font)
     return;
+
+  int nMaxLines = (m_maxHeight > 0 && m_font->GetLineHeight() > 0)?(int)(m_maxHeight / m_font->GetLineHeight()):-1;
 
   m_lines.clear();
   // add \n to the end of the string
@@ -270,7 +283,7 @@ void CGUITextLayout::WrapText(vector<DWORD> &text, float maxWidth)
   unsigned int lastSpaceInLine = 0;
   vector<DWORD>::iterator lastSpace = text.begin();
   vector<DWORD>::iterator pos = text.begin();
-  while (pos != text.end())
+  while (pos != text.end() && (nMaxLines <= 0 || m_lines.size() <= (size_t)nMaxLines))
   {
     // Get the current letter in the string
     DWORD letter = *pos;
@@ -450,3 +463,4 @@ void CGUITextLayout::Reset()
   m_lines.clear();
   m_lastText.Empty();
 }
+
