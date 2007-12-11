@@ -110,9 +110,9 @@ bool CVideoThumbLoader::ExtractThumb(const CStdString &strPath, const CStdString
   AVStream *pStream = pFormatContext->streams[nVideoStream];
   
   int nOffset = 120; 
-  double dDuration = (double)pStream->duration * (double)pStream->time_base.num / (double) (double)pStream->time_base.den;
-  if (nOffset > (int)(dDuration / 2)) // in case it is a short video - take a frame from the middle.
-    nOffset = (int)dDuration / 2;
+  int nDuration = pFormatContext->duration / AV_TIME_BASE;
+  if (nOffset > nDuration / 2) // in case it is a short video - take a frame from the middle.
+    nOffset = nDuration / 2;
 
   if (m_dllAvFormat.av_seek_frame(pFormatContext, -1, nOffset * AV_TIME_BASE, AVSEEK_FLAG_BACKWARD) < 0)
   {
@@ -130,14 +130,17 @@ bool CVideoThumbLoader::ExtractThumb(const CStdString &strPath, const CStdString
   {
     CLog::Log(LOGERROR,"%s- failed to read frame from %s", __FUNCTION__, strPath.c_str());
     m_dllAvFormat.av_close_input_file(pFormatContext);
+    av_free_packet(&pkt);
     return false;
   }
 
   AVCodec *pCodec = m_dllAvCodec.avcodec_find_decoder(pStream->codec->codec_id);
+  pStream->codec->workaround_bugs |= FF_BUG_AUTODETECT;
   if(pCodec==NULL || m_dllAvCodec.avcodec_open(pStream->codec, pCodec)<0) 
   {
     CLog::Log(LOGERROR,"%s- failed to open codec for %s", __FUNCTION__, strPath.c_str());
     m_dllAvFormat.av_close_input_file(pFormatContext);
+    av_free_packet(&pkt);
     return false;
   }
 
@@ -149,6 +152,7 @@ bool CVideoThumbLoader::ExtractThumb(const CStdString &strPath, const CStdString
   {
     CLog::Log(LOGERROR,"%s- failed to open codec for %s", __FUNCTION__, strPath.c_str());
     m_dllAvFormat.av_close_input_file(pFormatContext);
+    av_free_packet(&pkt);
     return false;
   }
 
@@ -161,6 +165,7 @@ bool CVideoThumbLoader::ExtractThumb(const CStdString &strPath, const CStdString
   if (result < 0 || !nHasPic)
   {
     m_dllAvFormat.av_close_input_file(pFormatContext);
+    av_free_packet(&pkt);
     return false;
   }
 
@@ -182,6 +187,8 @@ bool CVideoThumbLoader::ExtractThumb(const CStdString &strPath, const CStdString
   }
 
   delete [] pOutBuf;
+  av_free_packet(&pkt);
+  m_dllAvCodec.avcodec_close(pStream->codec);
   m_dllAvFormat.av_close_input_file(pFormatContext);
   return context != NULL;
 }
