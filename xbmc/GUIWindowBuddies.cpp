@@ -769,7 +769,7 @@ bool CGUIWindowBuddies::OnAction(const CAction &action)
     if (pEdit)
     {
       // use inline text edit control
-      pEdit->OnKeyPress(action.wID);
+      pEdit->OnKeyPress(action);
     }
     else
     { // use virtual keyboard

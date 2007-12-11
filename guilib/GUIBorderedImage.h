@@ -12,7 +12,7 @@ public:
   virtual ~CGUIBorderedImage(void);
 
   virtual void Render();
-  virtual void UpdateVisibility();
+  virtual void UpdateVisibility(void *pParam = NULL);
   virtual bool OnMessage(CGUIMessage& message);
   virtual void PreAllocResources();
   virtual void AllocResources();
