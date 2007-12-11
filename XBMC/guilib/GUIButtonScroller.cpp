@@ -96,7 +96,7 @@ bool CGUIButtonScroller::OnAction(const CAction &action)
     {
       handled = true;
       m_fAnalogScrollSpeed -= ANALOG_SCROLL_START;
-      if (!m_bWrapAround && m_iOffset + m_iCurrentSlot == m_vecButtons.size() - 1)
+      if (!m_bWrapAround && (unsigned int)(m_iOffset + m_iCurrentSlot) == m_vecButtons.size() - 1)
         break;
       DoDown();
     }
@@ -254,8 +254,6 @@ void CGUIButtonScroller::Render()
   float posX = m_posX;
   float posY = m_posY;
   // set our viewport
-  float posX2 = posX;
-  float posY2 = posY;
   g_graphicsContext.SetClipRegion(posX, posY, m_width, m_height);
   // if we're scrolling, update our scroll offset
   if (m_bScrollUp || m_bScrollDown)
@@ -502,7 +500,7 @@ void CGUIButtonScroller::OnDown()
 {
   if (m_bHorizontal)
     CGUIControl::OnDown();
-  else if (!m_bWrapAround && m_iOffset + m_iCurrentSlot == m_vecButtons.size() - 1)
+  else if (!m_bWrapAround && (unsigned int) (m_iOffset + m_iCurrentSlot) == m_vecButtons.size() - 1)
   {
     if (m_dwControlUp != GetID())
       CGUIControl::OnDown();  // not wrapping around, and we're down the bottom + our next control is different
@@ -527,7 +525,7 @@ void CGUIButtonScroller::OnRight()
 {
   if (!m_bHorizontal)
     CGUIControl::OnRight();
-  else if (!m_bWrapAround && m_iOffset + m_iCurrentSlot == m_vecButtons.size() - 1 && m_dwControlRight != GetID())
+  else if (!m_bWrapAround && (unsigned int) (m_iOffset + m_iCurrentSlot) == m_vecButtons.size() - 1 && m_dwControlRight != GetID())
     CGUIControl::OnRight();  // not wrapping around, and we're at the right + our next control is different
   else
     DoDown();

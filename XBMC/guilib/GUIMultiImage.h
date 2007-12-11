@@ -22,7 +22,7 @@ public:
   virtual ~CGUIMultiImage(void);
 
   virtual void Render();
-  virtual void UpdateVisibility();
+  virtual void UpdateVisibility(void *pParam = NULL);
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage &message);
   virtual void PreAllocResources();
@@ -40,7 +40,7 @@ protected:
   void LoadImage(int image);
   CStdString m_texturePath;
   CStdString m_currentPath;
-  int m_currentImage;
+  unsigned int m_currentImage;
   CStopWatch m_imageTimer;
   CStopWatch m_fadeTimer;
   DWORD m_timePerImage;

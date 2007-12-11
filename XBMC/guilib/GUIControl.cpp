@@ -259,7 +259,7 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
       // if control is disabled then move 2 the next control
       if ( !CanFocus() )
       {
-        CLog::Log(LOGERROR, "Control %d in window %d has been asked to focus, but it can't", GetID(), GetParentID());
+        CLog::Log(LOGERROR, "Control %lu in window %lu has been asked to focus, but it can't", GetID(), GetParentID());
         return false;
       }
       SetFocus(true);
@@ -449,12 +449,12 @@ bool CGUIControl::OnMouseOver(const CPoint &point)
   return true;
 }
 
-void CGUIControl::UpdateVisibility()
+void CGUIControl::UpdateVisibility(void *pParam)
 {
   if (m_visibleCondition)
   {
     bool bWasVisible = m_visibleFromSkinCondition;
-    m_visibleFromSkinCondition = g_infoManager.GetBool(m_visibleCondition, m_dwParentID);
+    m_visibleFromSkinCondition = g_infoManager.GetBool(m_visibleCondition, m_dwParentID, (CFileItem*)pParam);
     if (!bWasVisible && m_visibleFromSkinCondition)
     { // automatic change of visibility - queue the in effect
   //    CLog::DebugLog("Visibility changed to visible for control id %i", m_dwControlID);
@@ -476,7 +476,7 @@ void CGUIControl::UpdateVisibility()
   // and check for conditional enabling - note this overrides SetEnabled() from the code currently
   // this may need to be reviewed at a later date
   if (m_enableCondition)
-    m_enabled = g_infoManager.GetBool(m_enableCondition, m_dwParentID);
+    m_enabled = g_infoManager.GetBool(m_enableCondition, m_dwParentID, (CFileItem*)pParam);
 }
 
 void CGUIControl::SetInitialVisibility()
@@ -575,7 +575,6 @@ CAnimation *CGUIControl::GetAnimation(ANIMATION_TYPE type, bool checkConditions 
 
 void CGUIControl::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState)
 {
-  GUIVISIBLE visible = m_visible;
   // Make sure control is hidden or visible at the appropriate times
   // while processing a visible or hidden animation it needs to be visible,
   // but when finished a hidden operation it needs to be hidden
@@ -625,8 +624,6 @@ void CGUIControl::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentPro
     if (currentProcess == ANIM_PROCESS_NORMAL && currentState == ANIM_STATE_APPLIED)
       OnFocus();
   }
-//  if (visible != m_visible)
-//    CLog::DebugLog("UpdateControlState of control id %i - now %s (type=%d, process=%d, state=%d)", m_dwControlID, m_visible == VISIBLE ? "visible" : (m_visible == DELAYED ? "delayed" : "hidden"), type, currentProcess, currentState);
 }
 
 void CGUIControl::Animate(DWORD currentTime)
