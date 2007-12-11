@@ -21,6 +21,7 @@ private:
    WORD  m_button;
    char  m_buf[128];
    bool  m_bInitialized;
+   bool  m_skipHold;
    Uint32 m_firstClickTime;
 };
 
