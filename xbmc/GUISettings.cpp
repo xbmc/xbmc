@@ -422,18 +422,6 @@ CGUISettings::CGUISettings(void)
   AddString(8, "videolibrary.cleanupvideolibrary", 334, "", BUTTON_CONTROL_STANDARD);
   AddString(9, "videolibrary.exportvideolibrary", 647, "", BUTTON_CONTROL_STANDARD);
   AddString(10, "videolibrary.importvideolibrary", 648, "", BUTTON_CONTROL_STANDARD);
-
-  AddCategory(5, "videolibrary", 14022);
-  AddBool(1, "videolibrary.hideplots", 20369, false);
-  AddBool(2, "videolibrary.seasonthumbs", 20382, false);
-  AddBool(3, "videolibrary.actorthumbs", 20402, false);
-  AddSeparator(4, "videolibrary.sep1");
-  AddBool(5, "videolibrary.updateonstartup", 22000, false);
-  AddBool(6, "videolibrary.backgroundupdate", 22001, false);    
-  AddSeparator(7, "videolibrary.sep2");  
-  AddString(8, "videolibrary.cleanupvideolibrary", 334, "", BUTTON_CONTROL_STANDARD);
-  AddString(9, "videolibrary.exportvideolibrary", 647, "", BUTTON_CONTROL_STANDARD);
-  AddString(10, "videolibrary.importvideolibrary", 648, "", BUTTON_CONTROL_STANDARD);
   
   AddCategory(5, "videoplayer", 16003);
   AddString(1, "videoplayer.calibrate", 214, "", BUTTON_CONTROL_STANDARD);
