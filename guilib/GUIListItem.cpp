@@ -114,8 +114,9 @@ CStdString CGUIListItem::GetOverlayImage() const
     return "OverlayWatched.png";
   case ICON_OVERLAY_HD:
     return "OverlayHD.png";
+  default:
+    return "";
   }
-  return "";
 }
 
 void CGUIListItem::Select(bool bOnOff)
@@ -210,4 +211,18 @@ void CGUIListItem::SetInvalid()
 {
   if (m_layout) m_layout->SetInvalid();
   if (m_focusedLayout) m_focusedLayout->SetInvalid();
+}
+
+void CGUIListItem::SetProperty(const std::string &strKey, const std::string &strValue)
+{
+  m_mapProperties[strKey] = strValue;
+}
+
+std::string CGUIListItem::GetProperty(const std::string &strKey) const
+{
+  std::map<std::string,std::string>::const_iterator iter = m_mapProperties.find(strKey);
+  if (iter == m_mapProperties.end())
+    return "";
+
+  return iter->second;
 }

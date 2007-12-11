@@ -57,13 +57,13 @@ bool CGUIControlFactory::GetIntRange(const TiXmlNode* pRootNode, const char* str
   const TiXmlNode* pNode = pRootNode->FirstChild(strTag);
   if (!pNode || !pNode->FirstChild()) return false;
   iMinValue = atoi(pNode->FirstChild()->Value());
-  char* maxValue = (char *)strchr(pNode->FirstChild()->Value(), ',');
+  const char* maxValue = strchr(pNode->FirstChild()->Value(), ',');
   if (maxValue)
   {
     maxValue++;
     iMaxValue = atoi(maxValue);
 
-    char* intervalValue = strchr(maxValue, ',');
+    const char* intervalValue = strchr(maxValue, ',');
     if (intervalValue)
     {
       intervalValue++;
@@ -79,13 +79,13 @@ bool CGUIControlFactory::GetFloatRange(const TiXmlNode* pRootNode, const char* s
   const TiXmlNode* pNode = pRootNode->FirstChild(strTag);
   if (!pNode || !pNode->FirstChild()) return false;
   fMinValue = (float)atof(pNode->FirstChild()->Value());
-  char* maxValue = (char *)strchr(pNode->FirstChild()->Value(), ',');
+  const char* maxValue = strchr(pNode->FirstChild()->Value(), ',');
   if (maxValue)
   {
     maxValue++;
     fMaxValue = (float)atof(maxValue);
 
-    char* intervalValue = strchr(maxValue, ',');
+    const char* intervalValue = strchr(maxValue, ',');
     if (intervalValue)
     {
       intervalValue++;

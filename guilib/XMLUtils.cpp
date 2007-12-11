@@ -5,7 +5,7 @@ bool XMLUtils::GetHex(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwH
 {
   const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
   if (!pNode || !pNode->FirstChild()) return false;
-  sscanf(pNode->FirstChild()->Value(), "%x", &dwHexValue );
+  sscanf(pNode->FirstChild()->Value(), "%x", (int*) &dwHexValue );
   return true;
 }
 
