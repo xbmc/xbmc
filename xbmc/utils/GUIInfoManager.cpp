@@ -1272,11 +1272,11 @@ int CGUIInfoManager::GetInt(int info, DWORD contextWindow) const
 }
 // checks the condition and returns it as necessary.  Currently used
 // for toggle button controls and visibility of images.
-bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CFileItem *pItem)
+bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIListItem *item)
 {
   // check our cache
   bool bReturn = false;
-  if (!pItem && IsCached(condition1, dwContextWindow, bReturn)) // never use cache for list items
+  if (!item && IsCached(condition1, dwContextWindow, bReturn)) // never use cache for list items
     return bReturn;
 
   int condition = abs(condition1);
@@ -1284,25 +1284,11 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CFile
   if(condition >= COMBINED_VALUES_START && (condition - COMBINED_VALUES_START) < (int)(m_CombinedValues.size()) )
   {
     const CCombinedValue &comb = m_CombinedValues[condition - COMBINED_VALUES_START];
-    if (!EvaluateBooleanExpression(comb, bReturn, dwContextWindow, pItem))
+    if (!EvaluateBooleanExpression(comb, bReturn, dwContextWindow, item))
       bReturn = false;
-  } 
-  else if (pItem && condition >= LISTITEM_PROPERTY_START && condition - LISTITEM_PROPERTY_START < (int)m_listitemProperties.size())
-  { // grab the property
-    CStdString property = m_listitemProperties[condition - LISTITEM_PROPERTY_START];
-    CStdString val = pItem->GetProperty(property);
-    bReturn =  (val == "1" || val.CompareNoCase("true") == 0);
   }
-  else if (condition == LISTITEM_ISPLAYING)
-  {
-    if (pItem && !m_currentFile.m_strPath.IsEmpty())
-      bReturn = m_currentFile.IsSamePath(pItem);
-  }
-  else if (condition == LISTITEM_ISSELECTED)
-  {
-    if (pItem)
-      bReturn = pItem->IsSelected();
-  }
+  else if (item && condition >= LISTITEM_START && condition < LISTITEM_END)
+    bReturn = GetItemBool(item, condition);
   // Ethernet Link state checking
   // Will check if the Xbox has a Ethernet Link connection! [Cable in!]
   // This can used for the skinner to switch off Network or Inter required functions
@@ -1564,7 +1550,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CFile
   // cache return value
   if (condition1 < 0) bReturn = !bReturn;
   
-  if (!pItem)
+  if (!item) // don't cache item properties
     CacheBool(condition1, dwContextWindow, bReturn);
 
   return bReturn;
@@ -2642,7 +2628,7 @@ int CGUIInfoManager::GetOperator(const char ch)
     return 0;
 }
 
-bool CGUIInfoManager::EvaluateBooleanExpression(const CCombinedValue &expression, bool &result, DWORD dwContextWindow, const CFileItem *pItem)
+bool CGUIInfoManager::EvaluateBooleanExpression(const CCombinedValue &expression, bool &result, DWORD dwContextWindow, const CGUIListItem *item)
 {
   // stack to save our bool state as we go
   stack<bool> save;
@@ -2672,7 +2658,7 @@ bool CGUIInfoManager::EvaluateBooleanExpression(const CCombinedValue &expression
       save.push(left || right);
     }
     else  // operator
-      save.push(GetBool(expr, dwContextWindow, pItem));
+      save.push(GetBool(expr, dwContextWindow, item));
   }
   if (save.size() != 1) return false;
   result = save.top();
@@ -3097,6 +3083,25 @@ CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info) const
   }
   else
     return GetItemLabel(item, info);
+}
+
+bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
+{
+  if (!item) return false;
+  if (condition >= LISTITEM_PROPERTY_START && condition - LISTITEM_PROPERTY_START < (int)m_listitemProperties.size())
+  { // grab the property
+    CStdString property = m_listitemProperties[condition - LISTITEM_PROPERTY_START];
+    CStdString val = item->GetProperty(property);
+    return (val == "1" || val.CompareNoCase("true") == 0);
+  }
+  else if (condition == LISTITEM_ISPLAYING)
+  {
+    if (item->IsFileItem() && !m_currentFile.m_strPath.IsEmpty())
+      return m_currentFile.IsSamePath((const CFileItem *)item);
+  }
+  else if (condition == LISTITEM_ISSELECTED)
+    return item->IsSelected();
+  return false;
 }
 
 CStdString CGUIInfoManager::GetMultiInfo(const vector<CInfoPortion> &multiInfo, DWORD contextWindow, bool preferImage)
