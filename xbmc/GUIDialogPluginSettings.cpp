@@ -29,6 +29,7 @@
 #include "MediaManager.h"
 #include "GUIRadioButtonControl.h"
 #include "GUISpinControlEx.h"
+#include "FileSystem/HDDirectory.h"
 
 #define CONTROL_AREA                  2
 #define CONTROL_DEFAULT_BUTTON        3
@@ -209,6 +210,7 @@ bool CGUIDialogPluginSettings::SaveSettings(void)
   while (setting)
   {
     CStdString id = setting->Attribute("id");
+    const char *type = setting->Attribute("type");
     const CGUIControl* control = GetControl(controlId);
 
     CStdString value;
@@ -221,7 +223,10 @@ bool CGUIDialogPluginSettings::SaveSettings(void)
         value = ((CGUIRadioButtonControl*) control)->IsSelected() ? "true" : "false";
         break;
       case CGUIControl::GUICONTROL_SPINEX:
-        value.Format("%i", ((CGUISpinControlEx*) control)->GetValue());
+        if (strcmpi(type, "fileenum") == 0)
+          value = ((CGUISpinControlEx*) control)->GetLabel();
+        else
+          value.Format("%i", ((CGUISpinControlEx*) control)->GetValue());
         break;
       default:
         break;
@@ -272,6 +277,13 @@ void CGUIDialogPluginSettings::CreateControls()
   CUtil::RemoveSlashAtEnd(strHeading);
   strHeading.Format("$LOCALIZE[1045] - %s", strHeading.c_str());
   SET_CONTROL_LABEL(CONTROL_HEADING_LABEL, strHeading);
+
+  // Create our base path, used for type "fileenum" settings
+  CStdString basepath = "Q:\\plugins\\";
+  CUtil::AddFileToFolder(basepath, m_url.GetHostName(), basepath);
+  CUtil::AddFileToFolder(basepath, m_url.GetFileName(), basepath);
+  // Replace the / at end, GetFileName() leaves a / at the end
+  basepath.Replace("/", "\\");
 
   CGUIControl* pControl = NULL;
   int controlId = CONTROL_START_CONTROL;
@@ -331,6 +343,35 @@ void CGUIDialogPluginSettings::CreateControls()
           ((CGUISpinControlEx *)pControl)->AddLabel(valuesVec[i], i);
       }
       ((CGUISpinControlEx *)pControl)->SetValue(atoi(m_settings.Get(id)));
+    }
+    else if (strcmpi(type, "fileenum") == 0)
+    {
+      pControl = new CGUISpinControlEx(*pOriginalSpin);
+      if (!pControl) return;
+      ((CGUISpinControlEx *)pControl)->SetText(label);
+
+      //find Folders...
+      DIRECTORY::CHDDirectory directory;
+      CFileItemList items;
+      CStdString enumpath;
+      CUtil::AddFileToFolder(basepath, values, enumpath);
+      CStdString mask = setting->Attribute("mask");
+      if (!mask.IsEmpty())
+        directory.SetMask(mask);
+      directory.GetDirectory(enumpath, items);
+
+      int iItem = 0;
+      for (int i = 0; i < items.Size(); ++i)
+      {
+        CFileItem* pItem = items[i];
+        if ((mask.Equals("/") && pItem->m_bIsFolder) || !pItem->m_bIsFolder)
+        {
+          ((CGUISpinControlEx *)pControl)->AddLabel(pItem->GetLabel(), iItem);
+          if (pItem->GetLabel().Equals(m_settings.Get(id)))
+            ((CGUISpinControlEx *)pControl)->SetValue(iItem);
+          iItem++;
+        }
+      }
     }
     else if (strcmpi(type, "sep") == 0 && pOriginalImage)
       pControl = new CGUIImage(*pOriginalImage);
