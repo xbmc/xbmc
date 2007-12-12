@@ -498,8 +498,8 @@ void CPluginDirectory::LoadPluginStrings(const CURL &url)
   CUtil::AddFileToFolder(pathToPlugin, url.GetHostName(), pathToPlugin);
   CUtil::AddFileToFolder(pathToPlugin, url.GetFileName(), pathToPlugin);
 
-  // Remove the slash at end, makes xbox and linux compatible
-  CUtil::RemoveSlashAtEnd(pathToPlugin);
+  // Replace the / at end, GetFileName() leaves a / at the end
+  pathToPlugin.Replace("/", "\\");
 
   // Path where the language strings reside
   CStdString pathToLanguageFile = pathToPlugin;
