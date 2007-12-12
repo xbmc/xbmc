@@ -546,7 +546,7 @@ CStdString CSettings::GetDefaultShareFromType(const CStdString &type)
 
 void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSHARES& items, CStdString& strDefault)
 {
-  CLog::Log(LOGDEBUG, "  Parsing <%s> tag", strTagName.c_str());
+  //CLog::Log(LOGDEBUG, "  Parsing <%s> tag", strTagName.c_str());
   strDefault = "";
 
   items.clear();
@@ -592,13 +592,13 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 
 bool CSettings::GetShare(const CStdString &category, const TiXmlNode *source, CShare &share)
 {
-  CLog::Log(LOGDEBUG,"    ---- SOURCE START ----");
+  //CLog::Log(LOGDEBUG,"    ---- SOURCE START ----");
   const TiXmlNode *pNodeName = source->FirstChild("name");
   CStdString strName;
   if (pNodeName && pNodeName->FirstChild())
   {
     strName = pNodeName->FirstChild()->Value();
-    CLog::Log(LOGDEBUG,"    Found name: %s", strName.c_str());
+    //CLog::Log(LOGDEBUG,"    Found name: %s", strName.c_str());
   }
   // get multiple paths
   vector<CStdString> vecPaths;
@@ -609,7 +609,7 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *source, CS
     {
       CStdString strPath = pPathName->FirstChild()->Value();
       // make sure there are no virtualpaths or stack paths defined in xboxmediacenter.xml
-      CLog::Log(LOGDEBUG,"    Found path: %s", strPath.c_str());
+      //CLog::Log(LOGDEBUG,"    Found path: %s", strPath.c_str());
       if (!CUtil::IsVirtualPath(strPath) && !CUtil::IsStack(strPath))
       {
         // translate special tags
@@ -618,10 +618,12 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *source, CS
           CStdString strPathOld(strPath);
           strPath = CUtil::TranslateSpecialSource(strPath);
           if (!strPath.IsEmpty())
-            CLog::Log(LOGDEBUG,"    -> Translated to path: %s", strPath.c_str());
+          {
+            //CLog::Log(LOGDEBUG,"    -> Translated to path: %s", strPath.c_str());
+          }
           else
           {
-            CLog::Log(LOGERROR,"    -> Skipping invalid token: %s", strPathOld.c_str());
+            //CLog::Log(LOGERROR,"    -> Skipping invalid token: %s", strPathOld.c_str());
             pPathName = pPathName->NextSibling("path");
             continue;
           }
@@ -693,7 +695,7 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *source, CS
 
     share.FromNameAndPaths(category, strName, verifiedPaths);
 
-    CLog::Log(LOGDEBUG,"      Adding source:");
+/*    CLog::Log(LOGDEBUG,"      Adding source:");
     CLog::Log(LOGDEBUG,"        Name: %s", share.strName.c_str());
     if (CUtil::IsVirtualPath(share.strPath) || CUtil::IsMultiPath(share.strPath))
     {
@@ -702,7 +704,7 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *source, CS
     }
     else
       CLog::Log(LOGDEBUG,"        Path: %s", share.strPath.c_str());
-
+*/
     share.m_iBadPwdCount = 0;
     if (pLockMode)
     {
@@ -768,7 +770,7 @@ void CSettings::GetInteger(const TiXmlElement* pRootElement, const char *tagName
   { // default
     iValue = iDefault;
   }
-  CLog::Log(LOGDEBUG, "  %s: %d", tagName, iValue);
+  //CLog::Log(LOGDEBUG, "  %s: %d", tagName, iValue);
 }
 
 void CSettings::GetFloat(const TiXmlElement* pRootElement, const char *tagName, float& fValue, const float fDefault, const float fMin, const float fMax)
@@ -782,7 +784,7 @@ void CSettings::GetFloat(const TiXmlElement* pRootElement, const char *tagName, 
   { // default
     fValue = fDefault;
   }
-  CLog::Log(LOGDEBUG, "  %s: %f", tagName, fValue);
+  //CLog::Log(LOGDEBUG, "  %s: %f", tagName, fValue);
 }
 
 void CSettings::GetViewState(const TiXmlElement *pRootElement, const CStdString &strTagName, CViewState &viewState)
@@ -1820,7 +1822,7 @@ bool CSettings::LoadProfile(int index)
   CStdString strOldFont = g_guiSettings.GetString("lookandfeel.font");
   CStdString strOldTheme = g_guiSettings.GetString("lookandfeel.skintheme");
   CStdString strOldColors = g_guiSettings.GetString("lookandfeel.skincolors");
-  int iOldRes = g_guiSettings.GetInt("videoscreen.resolution");
+  //int iOldRes = g_guiSettings.GetInt("videoscreen.resolution");
   if (Load(bSourcesXML,bSourcesXML))
   {
     CreateDirectory(g_settings.GetDatabaseFolder(), NULL);
