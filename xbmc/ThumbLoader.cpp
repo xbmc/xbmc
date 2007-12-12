@@ -153,6 +153,7 @@ bool CVideoThumbLoader::ExtractThumb(const CStdString &strPath, const CStdString
     if (m_dllAvCodec.avcodec_decode_video(pStream->codec, &pic, &nHasPic, pkt.data, pkt.size) < 0)
     {
       CLog::Log(LOGERROR,"%s- failed to decode video %s", __FUNCTION__, strPath.c_str());
+      av_free_packet(&pkt);
       break;
     }
     av_free_packet(&pkt);
