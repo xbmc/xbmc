@@ -115,7 +115,8 @@ bool CVideoThumbLoader::ExtractThumb(const CStdString &strPath, const CStdString
   AVCodec *pCodec = m_dllAvCodec.avcodec_find_decoder(pStream->codec->codec_id);
   pStream->codec->workaround_bugs |= FF_BUG_AUTODETECT;
   pStream->codec->flags |= CODEC_FLAG_LOW_DELAY;
- 
+  pStream->codec->flags2 |= CODEC_FLAG2_CHUNKS | CODEC_FLAG2_FAST;
+
   if(pCodec==NULL || m_dllAvCodec.avcodec_open(pStream->codec, pCodec)<0) 
   {
     CLog::Log(LOGERROR,"%s- failed to open codec for %s", __FUNCTION__, strPath.c_str());
