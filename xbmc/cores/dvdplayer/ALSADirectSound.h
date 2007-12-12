@@ -82,6 +82,7 @@ private:
   DWORD m_dwNumPackets;
   bool m_bPause;
   bool m_bIsAllocated;
+  bool m_bCanPause;
 
   unsigned int m_uiSamplesPerSec;
   unsigned int m_uiBitsPerSample;

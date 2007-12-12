@@ -54,6 +54,7 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
 
   m_bPause = false;
+  m_bCanPause = false;
   m_bIsAllocated = false;
   m_uiChannels = iChannels;
   m_uiSamplesPerSec = uiSamplesPerSec;
@@ -193,8 +194,10 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   nErr = snd_pcm_sw_params(m_pPlayHandle, sw_params);
   CHECK_ALSA_RETURN(LOGERROR,"snd_pcm_sw_params",nErr);
 
+  m_bCanPause = !!snd_pcm_hw_params_can_pause(hw_params);
+
   snd_pcm_hw_params_free (hw_params);
-  snd_pcm_sw_params_free (sw_params);
+  snd_pcm_sw_params_free (sw_params);  
 
   nErr = snd_pcm_prepare (m_pPlayHandle);
   CHECK_ALSA(LOGERROR,"snd_pcm_prepare",nErr);
@@ -234,9 +237,9 @@ void CALSADirectSound::Flush() {
      return;
 
   int nErr = snd_pcm_drop(m_pPlayHandle);
-  CHECK_ALSA(LOGERROR,"flush-drain",nErr); 
+  CHECK_ALSA(LOGERROR,"flush-drop",nErr);
   nErr = snd_pcm_prepare(m_pPlayHandle);
-  CHECK_ALSA(LOGERROR,"flush-prepare",nErr);  
+  CHECK_ALSA(LOGERROR,"flush-prepare",nErr);
   nErr = snd_pcm_start(m_pPlayHandle);
   CHECK_ALSA(LOGERROR,"flush-start",nErr); 
 }
@@ -246,7 +249,18 @@ HRESULT CALSADirectSound::Pause()
 {
   if (m_bPause) return S_OK;
   m_bPause = true;
-  snd_pcm_pause(m_pPlayHandle,1); // this is not supported on all devices. 
+
+  if(m_bCanPause)
+  {
+    int nErr = snd_pcm_pause(m_pPlayHandle,1); // this is not supported on all devices.     
+    CHECK_ALSA(LOGERROR,"pcm_pause",nErr);
+    if(nErr<0)
+      m_bCanPause = false;
+  }
+
+  if(!m_bCanPause)
+    Flush();
+
   return S_OK;
 }
 
@@ -255,9 +269,8 @@ HRESULT CALSADirectSound::Resume()
 {
   // Resume is called not only after Pause but also at certain other points. like after stop when DVDPlayer is flushed.
   m_bPause = false;
-  snd_pcm_pause(m_pPlayHandle,0);
-
-  Flush();
+  if(m_bCanPause)
+    snd_pcm_pause(m_pPlayHandle,0);
 
   return S_OK;
 }
@@ -267,7 +280,7 @@ HRESULT CALSADirectSound::Stop()
 {
   if (m_bPause) 
      return S_OK;
-  
+
   if (m_pPlayHandle)
      snd_pcm_drop(m_pPlayHandle);
 
@@ -334,6 +347,10 @@ DWORD CALSADirectSound::AddPackets(unsigned char *data, DWORD len)
 	CLog::Log(LOGERROR,"CALSADirectSound::AddPackets - sanity failed. no play handle!");
 	return len; 
   }
+  // if we are paused we don't accept any data as pause doesn't always
+  // work, and then playback would start again
+  if(m_bPause)
+    return 0;
 
   DWORD nAvailSpace = GetSpace();
 
