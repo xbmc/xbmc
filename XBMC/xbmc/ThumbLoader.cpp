@@ -136,12 +136,8 @@ bool CVideoThumbLoader::ExtractThumb(const CStdString &strPath, const CStdString
     return false;
   }
 
-  AVFrame pic;
+  AVFrame *pic = m_dllAvCodec.avcodec_alloc_frame();
   int nHasPic = 0;
-  memset(&pic, 0, sizeof(AVFrame));
-  pic.pts = AV_NOPTS_VALUE;
-  pic.key_frame = 1;
-
   do
   {
     AVPacket pkt;
@@ -151,7 +147,10 @@ bool CVideoThumbLoader::ExtractThumb(const CStdString &strPath, const CStdString
       break;
     }
 
-    if (m_dllAvCodec.avcodec_decode_video(pStream->codec, &pic, &nHasPic, pkt.data, pkt.size) < 0)
+    if (pkt.stream_index != nVideoStream)
+      continue;
+
+    if (m_dllAvCodec.avcodec_decode_video(pStream->codec, pic, &nHasPic, pkt.data, pkt.size) < 0)
     {
       CLog::Log(LOGERROR,"%s- failed to decode video %s", __FUNCTION__, strPath.c_str());
       av_free_packet(&pkt);
@@ -163,6 +162,7 @@ bool CVideoThumbLoader::ExtractThumb(const CStdString &strPath, const CStdString
   if (!nHasPic)
   {
     CLog::Log(LOGERROR,"%s- failed to extract frame from %s", __FUNCTION__, strPath.c_str());
+    m_dllAvUtil.av_free(pic);
     m_dllAvFormat.av_close_input_file(pFormatContext);
     return false;
   }
@@ -170,8 +170,8 @@ bool CVideoThumbLoader::ExtractThumb(const CStdString &strPath, const CStdString
   BYTE *pOutBuf = (BYTE*)new int[THUMB_WIDTH * THUMB_HEIGHT * 4];
   struct SwsContext *context = m_dllSwScale.sws_getContext(pStream->codec->width, pStream->codec->height, 
      pStream->codec->pix_fmt, THUMB_WIDTH, THUMB_HEIGHT, PIX_FMT_RGB32, SWS_BILINEAR, NULL, NULL, NULL);
-  uint8_t *src[] = { pic.data[0], pic.data[1], pic.data[2] };
-  int     srcStride[] = { pic.linesize[0], pic.linesize[1], pic.linesize[2] };
+  uint8_t *src[] = { pic->data[0], pic->data[1], pic->data[2] };
+  int     srcStride[] = { pic->linesize[0], pic->linesize[1], pic->linesize[2] };
   uint8_t *dst[] = { pOutBuf, 0, 0 };
   int     dstStride[] = { THUMB_WIDTH*4, 0, 0 };
 
@@ -185,6 +185,7 @@ bool CVideoThumbLoader::ExtractThumb(const CStdString &strPath, const CStdString
   }
 
   delete [] pOutBuf;
+  m_dllAvUtil.av_free(pic);
   m_dllAvCodec.avcodec_close(pStream->codec);
   m_dllAvFormat.av_close_input_file(pFormatContext);
   return context != NULL;
