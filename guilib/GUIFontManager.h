@@ -6,6 +6,8 @@
 #ifndef GUILIB_FONTMANAGER_H
 #define GUILIB_FONTMANAGER_H
 
+#include "GraphicContext.h"
+
 #pragma once
 
 // Forward
@@ -40,6 +42,7 @@ protected:
   vector<CGUIFont*> m_vecFonts;
   vector<CGUIFontTTF*> m_vecFontFiles;
   bool m_fontsetUnicode;
+  RESOLUTION m_skinResolution;
 };
 
 /*!

@@ -32,6 +32,12 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   if (g_SkinInfo.GetVersion() > 2.0 && res == PAL_16x9 || res == PAL60_16x9 || res == NTSC_16x9 || res == HDTV_480p_16x9)
     aspect *= 0.75f;
 
+  float ratioX = ((float) g_settings.m_ResInfo[res].iWidth) / g_settings.m_ResInfo[m_skinResolution].iWidth;
+  float ratioY = ((float) g_settings.m_ResInfo[res].iHeight) / g_settings.m_ResInfo[m_skinResolution].iHeight;
+
+  aspect *= ratioX;
+  int newSize = (int) (ratioY * iSize);
+    
   CStdString strPath;
   if (strFilename[1] != ':')
   {
@@ -48,12 +54,12 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
 
   // check if we already have this font file loaded (font object could differ only by color or style)
   CStdString TTFfontName;
-  TTFfontName.Format("%s_%i_%f", strFilename, iSize, aspect);
+  TTFfontName.Format("%s_%i_%f", strFilename, newSize, aspect);
   CGUIFontTTF* pFontFile = GetFontFile(TTFfontName);
   if (!pFontFile)
   {
     pFontFile = new CGUIFontTTF(TTFfontName);
-    bool bFontLoaded = pFontFile->Load(strPath, iSize, aspect);
+    bool bFontLoaded = pFontFile->Load(strPath, newSize, aspect);
     if (!bFontLoaded)
     {
       // Now try to load it from media\fonts
@@ -66,7 +72,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
 #endif
       }
 
-      bFontLoaded = pFontFile->Load(strPath, iSize, aspect);
+      bFontLoaded = pFontFile->Load(strPath, newSize, aspect);
     }
 
     if (!bFontLoaded)
@@ -269,8 +275,7 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
 bool GUIFontManager::OpenFontFile(TiXmlDocument& xmlDoc)
 {
   // Get the file to load fonts from:
-  RESOLUTION res;
-  CStdString strPath = _P(g_SkinInfo.GetSkinPath("Font.xml", &res));
+  CStdString strPath = _P(g_SkinInfo.GetSkinPath("Font.xml", &m_skinResolution));
   CLog::Log(LOGINFO, "Loading fonts from %s", strPath.c_str());
 
   // first try our preferred file
