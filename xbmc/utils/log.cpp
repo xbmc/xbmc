@@ -49,8 +49,13 @@ void CLog::Log(int loglevel, const char *format, ... )
       strLogFile.Format("%sxbmc.log", _P(g_stSettings.m_logFolder).c_str());
       strLogFileOld.Format("%sxbmc.old.log", _P(g_stSettings.m_logFolder).c_str());
 
+#ifndef _LINUX
       ::DeleteFile(strLogFileOld.c_str());
       ::MoveFile(strLogFile.c_str(), strLogFileOld.c_str());
+#else
+      ::unlink(strLogFileOld.c_str());
+      ::rename(strLogFile.c_str(), strLogFileOld.c_str());
+#endif
 
 #ifndef _LINUX      
       fd = _fsopen(strLogFile, "a+", _SH_DENYWR);
@@ -88,11 +93,6 @@ void CLog::Log(int loglevel, const char *format, ... )
       strData.TrimRight("\r");
     }
 
-#if defined(_DEBUG) || defined(PROFILE)
-    OutputDebugString(strData.c_str());
-    OutputDebugString("\n");
-#endif
-
     /* fixup newline alignment, number of spaces should equal prefix length */
     strData.Replace("\n", "\n                             ");
     strData += "\n";
@@ -101,6 +101,7 @@ void CLog::Log(int loglevel, const char *format, ... )
     fwrite(strData.c_str(), strData.size(), 1, fd);
     fflush(fd);
   }
+#ifndef _LINUX
 #if defined(_DEBUG) || defined(PROFILE)
   else
   {
@@ -119,6 +120,7 @@ void CLog::Log(int loglevel, const char *format, ... )
       OutputDebugString("\n");
     
   }
+#endif
 #endif
 }
 

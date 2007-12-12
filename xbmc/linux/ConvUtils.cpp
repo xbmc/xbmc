@@ -6,6 +6,9 @@
 #include <ctype.h>
 #include <errno.h>
 
+#include <utils/log.h>
+
+
 /*
  ** The following two functions together make up an itoa()
  ** implementation. Function i2a() is a 'private' function
@@ -38,7 +41,7 @@ char *itoa(int i, char *a, int r)
 
 void OutputDebugString(LPCTSTR lpOuputString)
 {
-  printf("%s", lpOuputString);
+  CLog::Log(LOGDEBUG, "%s", lpOuputString);
 }
 
 void strlwr( char* string )
