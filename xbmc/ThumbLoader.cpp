@@ -32,17 +32,19 @@
 #include "ThumbLoader.h"
 #include "Util.h"
 #include "Picture.h"
+#include "Settings.h"
 
 #include "cores/ffmpeg/DllAvFormat.h"
 #include "cores/ffmpeg/DllAvCodec.h"
 #include "cores/ffmpeg/DllSwScale.h"
 
-#define THUMB_WIDTH 256
-#define THUMB_HEIGHT 144
+#define THUMB_WIDTH g_advancedSettings.m_thumbSize
+#define THUMB_HEIGHT g_advancedSettings.m_thumbSize
+#define THUMB_TIME_IN_VIDEO 180
 
 using namespace XFILE;
 
-CVideoThumbLoader::CVideoThumbLoader() 
+CVideoThumbLoader::CVideoThumbLoader() : CBackgroundInfoLoader(1)
 {  
 }
 
@@ -77,7 +79,7 @@ bool CVideoThumbLoader::ExtractThumb(const CStdString &strPath, const CStdString
 
   AVFormatContext *pFormatContext=NULL;
 
-  if (m_dllAvFormat.av_open_input_file(&pFormatContext, strPath, 0, FFM_PACKET_SIZE, NULL) < 0)
+  if (m_dllAvFormat.av_open_input_file(&pFormatContext, strPath, 0, 0, NULL) < 0)
   {
     CLog::Log(LOGERROR,"%s- failed to open input file %s", __FUNCTION__, strPath.c_str());
     return false;
@@ -108,8 +110,20 @@ bool CVideoThumbLoader::ExtractThumb(const CStdString &strPath, const CStdString
   }
 
   AVStream *pStream = pFormatContext->streams[nVideoStream];
+ 
+  // open the codec
+  AVCodec *pCodec = m_dllAvCodec.avcodec_find_decoder(pStream->codec->codec_id);
+  pStream->codec->workaround_bugs |= FF_BUG_AUTODETECT;
+  pStream->codec->flags |= CODEC_FLAG_LOW_DELAY;
+ 
+  if(pCodec==NULL || m_dllAvCodec.avcodec_open(pStream->codec, pCodec)<0) 
+  {
+    CLog::Log(LOGERROR,"%s- failed to open codec for %s", __FUNCTION__, strPath.c_str());
+    m_dllAvFormat.av_close_input_file(pFormatContext);
+    return false;
+  }
   
-  int nOffset = 120; 
+  int nOffset = THUMB_TIME_IN_VIDEO; 
   int nDuration = pFormatContext->duration / AV_TIME_BASE;
   if (nOffset > nDuration / 2) // in case it is a short video - take a frame from the middle.
     nOffset = nDuration / 2;
@@ -121,51 +135,33 @@ bool CVideoThumbLoader::ExtractThumb(const CStdString &strPath, const CStdString
     return false;
   }
 
-  AVPacket pkt;
   AVFrame pic;
-  int nHasPic;
-
-  int result = m_dllAvFormat.av_read_frame(pFormatContext, &pkt);
-  if (result < 0)
-  {
-    CLog::Log(LOGERROR,"%s- failed to read frame from %s", __FUNCTION__, strPath.c_str());
-    m_dllAvFormat.av_close_input_file(pFormatContext);
-    av_free_packet(&pkt);
-    return false;
-  }
-
-  AVCodec *pCodec = m_dllAvCodec.avcodec_find_decoder(pStream->codec->codec_id);
-  pStream->codec->workaround_bugs |= FF_BUG_AUTODETECT;
-  if(pCodec==NULL || m_dllAvCodec.avcodec_open(pStream->codec, pCodec)<0) 
-  {
-    CLog::Log(LOGERROR,"%s- failed to open codec for %s", __FUNCTION__, strPath.c_str());
-    m_dllAvFormat.av_close_input_file(pFormatContext);
-    av_free_packet(&pkt);
-    return false;
-  }
-
+  int nHasPic = 0;
   memset(&pic, 0, sizeof(AVFrame));
   pic.pts = AV_NOPTS_VALUE;
   pic.key_frame = 1;
-  result = m_dllAvCodec.avcodec_decode_video(pStream->codec, &pic, &nHasPic, pkt.data, pkt.size);
-  if (result < 0)
+
+  do
   {
-    CLog::Log(LOGERROR,"%s- failed to open codec for %s", __FUNCTION__, strPath.c_str());
-    m_dllAvFormat.av_close_input_file(pFormatContext);
+    AVPacket pkt;
+    if (m_dllAvFormat.av_read_frame(pFormatContext, &pkt) < 0)
+    {
+      CLog::Log(LOGERROR,"%s- failed to read frame from %s", __FUNCTION__, strPath.c_str());
+      break;
+    }
+
+    if (m_dllAvCodec.avcodec_decode_video(pStream->codec, &pic, &nHasPic, pkt.data, pkt.size) < 0)
+    {
+      CLog::Log(LOGERROR,"%s- failed to decode video %s", __FUNCTION__, strPath.c_str());
+      break;
+    }
     av_free_packet(&pkt);
-    return false;
-  }
+  } while (!nHasPic);
 
   if (!nHasPic)
   {
-    // in some cases data is gathered by the decoder. try and spew it out.
-    result = m_dllAvCodec.avcodec_decode_video(pStream->codec, &pic, &nHasPic, NULL, 0);
-  }
-
-  if (result < 0 || !nHasPic)
-  {
+    CLog::Log(LOGERROR,"%s- failed to extract frame from %s", __FUNCTION__, strPath.c_str());
     m_dllAvFormat.av_close_input_file(pFormatContext);
-    av_free_packet(&pkt);
     return false;
   }
 
@@ -187,7 +183,6 @@ bool CVideoThumbLoader::ExtractThumb(const CStdString &strPath, const CStdString
   }
 
   delete [] pOutBuf;
-  av_free_packet(&pkt);
   m_dllAvCodec.avcodec_close(pStream->codec);
   m_dllAvFormat.av_close_input_file(pFormatContext);
   return context != NULL;
