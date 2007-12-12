@@ -596,7 +596,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
       if (g_videoConfig.GetVSyncMode()==VSYNC_ALWAYS)
         m_screenSurface->EnableVSync();
       //glEnable(GL_MULTISAMPLE);
-      SDL_WM_SetCaption("XBox Media Center", NULL);
+      SDL_WM_SetCaption("XBMC", NULL);
       if (g_advancedSettings.m_fullScreen)
       {
         SetFullScreenRoot(true);
@@ -617,7 +617,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 
 #else
     m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0);
-    SDL_WM_SetCaption("XBox Media Center", NULL);
+    SDL_WM_SetCaption("XBMC", NULL);
 #endif
     
     {
