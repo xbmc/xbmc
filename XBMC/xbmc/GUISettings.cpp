@@ -976,7 +976,7 @@ void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool adv
             (*it).second->FromString(strValue);
             if (advanced)
               (*it).second->SetAdvanced();
-            CLog::Log(LOGDEBUG, "  %s: %s", (*it).first.c_str(), (*it).second->ToString().c_str());
+            //CLog::Log(LOGDEBUG, "  %s: %s", (*it).first.c_str(), (*it).second->ToString().c_str());
           }
         }
       }

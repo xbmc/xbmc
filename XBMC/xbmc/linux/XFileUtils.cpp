@@ -261,13 +261,13 @@ BOOL DeleteFile(LPCTSTR lpFileName)
     return 1;
   
   if (errno == EACCES) {
-    fprintf(stderr,"%s - cant delete file, trying to change mode <%s>", __FUNCTION__, lpFileName);
+    CLog::Log(LOGERROR,"%s - cant delete file, trying to change mode <%s>", __FUNCTION__, lpFileName);
     if (chmod(lpFileName, 0600) != 0) {
-      fprintf(stderr,"%s - failed to change mode <%s>", __FUNCTION__, lpFileName);
+      CLog::Log(LOGERROR,"%s - failed to change mode <%s>", __FUNCTION__, lpFileName);
       return 0;
     }
 
-    fprintf(stdout,"%s - reattempt to delete file",__FUNCTION__);
+    CLog::Log(LOGDEBUG,"%s - reattempt to delete file",__FUNCTION__);
 
     if (unlink(lpFileName) == 0)
       return 1;
@@ -275,9 +275,9 @@ BOOL DeleteFile(LPCTSTR lpFileName)
   else if (errno == ENOENT) {
     CStdString strLower(lpFileName);
     strLower.MakeLower();
-    fprintf(stderr,"%s - cant delete file <%s>. trying lower case <%s>", __FUNCTION__, lpFileName, strLower.c_str());
+    CLog::Log(LOGERROR,"%s - cant delete file <%s>. trying lower case <%s>", __FUNCTION__, lpFileName, strLower.c_str());
     if (unlink(strLower.c_str()) == 0) {
-      fprintf(stdout,"%s - successfuly removed file <%s>", __FUNCTION__, strLower.c_str());
+      CLog::Log(LOGDEBUG,"%s - successfuly removed file <%s>", __FUNCTION__, strLower.c_str());
       return 1;
     }
   }
@@ -294,13 +294,13 @@ BOOL MoveFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName)
     return 1;
 
   if (errno == EACCES) {
-    fprintf(stderr,"%s - cant move file, trying to change mode <%s>", __FUNCTION__, lpExistingFileName);
+    CLog::Log(LOGERROR,"%s - cant move file, trying to change mode <%s>", __FUNCTION__, lpExistingFileName);
     if (chmod(lpExistingFileName, 0600) != 0) {
-      fprintf(stderr,"%s - failed to change mode <%s>", __FUNCTION__, lpExistingFileName);
+      CLog::Log(LOGERROR,"%s - failed to change mode <%s>", __FUNCTION__, lpExistingFileName);
       return 0;
     }
 
-    fprintf(stdout,"%s - reattempt to move file",__FUNCTION__);
+    CLog::Log(LOGDEBUG,"%s - reattempt to move file",__FUNCTION__);
 
     if (rename(lpExistingFileName, lpNewFileName) == 0)
       return 1;
@@ -308,9 +308,9 @@ BOOL MoveFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName)
   else if (errno == ENOENT) {
     CStdString strLower(lpExistingFileName);
     strLower.MakeLower();
-    fprintf(stderr,"%s - cant move file <%s>. trying lower case <%s>", __FUNCTION__, lpExistingFileName, strLower.c_str());
+    CLog::Log(LOGERROR,"%s - cant move file <%s>. trying lower case <%s>", __FUNCTION__, lpExistingFileName, strLower.c_str());
     if (rename(strLower.c_str(), lpNewFileName) == 0) {
-      fprintf(stdout,"%s - successfuly moved file <%s>", __FUNCTION__, strLower.c_str());
+      CLog::Log(LOGDEBUG,"%s - successfuly moved file <%s>", __FUNCTION__, strLower.c_str());
       return 1;
     }
   }
