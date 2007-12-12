@@ -23,8 +23,8 @@ bool CPluginSettings::Load(const CURL url)
   CUtil::AddFileToFolder(pluginFileName, url.GetHostName(), pluginFileName);
   CUtil::AddFileToFolder(pluginFileName, url.GetFileName(), pluginFileName);
 
-  // Remove the slash at end, makes xbox and linux compatible
-  CUtil::RemoveSlashAtEnd(pluginFileName);
+  // Replace the / at end, GetFileName() leaves a / at the end
+  pluginFileName.Replace("/", "\\");
 
   CUtil::AddFileToFolder(pluginFileName, "resources", pluginFileName);
   CUtil::AddFileToFolder(pluginFileName, "settings.xml", pluginFileName);
@@ -168,8 +168,8 @@ bool CPluginSettings::SettingsExist(const CStdString &strPath)
   CUtil::AddFileToFolder(pluginFileName, url.GetHostName(), pluginFileName);
   CUtil::AddFileToFolder(pluginFileName, url.GetFileName(), pluginFileName);
 
-  // Remove the slash at end, makes xbox and linux compatible
-  CUtil::RemoveSlashAtEnd(pluginFileName);
+  // Replace the / at end, GetFileName() leaves a / at the end
+  pluginFileName.Replace("/", "\\");
 
   CUtil::AddFileToFolder(pluginFileName, "resources", pluginFileName);
   CUtil::AddFileToFolder(pluginFileName, "settings.xml", pluginFileName);
