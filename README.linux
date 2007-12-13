@@ -135,8 +135,10 @@ Usage:
 6.1 Fullscreen
 ----------------------------------------
 
-Toggle FS with the \ key while XBMC is running. To start XBMC in
-fullscreen mode append a '-fs' to the command line.
+The best way is to go into settings\Appearance\Screen and set Resolution 
+to the one with (Desktop) next to it.  Toggle FS with the \ key while XBMC
+is running. To start XBMC in fullscreen mode append a '-fs' to the command
+line. 
 
 ----------------------------------------
 6.2 Multi-monitor Fullscreen
@@ -159,6 +161,7 @@ with two "Device" sections against the same physical card. See chapter
 6.3 Channel downmixing
 ----------------------------------------
 
+(This is Not required Anymore since revision 10937) 
 If your machine only has 2 speakers and you would like to watch movies
 with more channels (e.g. 5.1) then you need to configure your
 .asoundrc file. The .asoundrc file is a configuration file located in
@@ -187,6 +190,29 @@ acceleration. From SDL docs:
   acceleration numerator/denumerators (so mouse movement is
   accelerated by n/d), and t is the threshold above which acceleration
   applies (counted as number of pixels the mouse moves at once)."
+
+----------------------------------------
+6.5 Turning off on screen debug info
+----------------------------------------
+
+The proper way is to compile with the --disable-debug option this will 
+make a smaller executeable as well.
+Add -q to the commandline "./XboxMediaCenter -q" will remove the on screen
+Debug info when you have compiled with debug mode on (default)
+
+----------------------------------------
+6.6 Get DVD/CD Share to show Correct State
+----------------------------------------
+
+To get the DVD Tray shortcut to not display (Open) all the time you
+need to install a newer verison of libcdio
+
+  Installing latest libcdio 
+  Download version 0.78 from  http://ftp.gnu.org/gnu/libcdio/libcdio-0.78.2.tar.gz
+  Extract and run in libcdio path # ./configure --prefix=/usr 
+  make ; # sudo make install 
+  Recompile xbmc after make clean and ./configure
+  SVN 10557+ will print the libcdio version it has been compiled with to stdout (first line). 
 
 
 -----------------------------------------------------------------------------
