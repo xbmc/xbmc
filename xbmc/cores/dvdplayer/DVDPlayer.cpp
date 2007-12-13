@@ -22,6 +22,8 @@
 #include "../../Picture.h"
 #include "../ffmpeg/DllSwScale.h"
 
+#include "../../xbmc/utils/PerformanceSample.h"
+
 CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
     : IPlayer(callback),
       CThread(),
@@ -180,6 +182,8 @@ void CDVDPlayer::OnStartup()
 
 bool CDVDPlayer::ExtractThumb(const CStdString &strPath, const CStdString &strTarget)
 {
+  MEASURE_FUNCTION;
+  int nTime = timeGetTime();
   CDVDInputStream *pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, strPath, "");
   if (!pInputStream || !pInputStream->Open(strPath.c_str(), ""))
   {
@@ -245,12 +249,12 @@ bool CDVDPlayer::ExtractThumb(const CStdString &strPath, const CStdString &strTa
     if (pVideoCodec)
     {
       int nSeekTo = 300*1000; // in millis
-      int nTotalLen = DVD_TIME_TO_MSEC(pInputStream->GetLength());
+      int nTotalLen = pDemuxer->GetStreamLenght();
       if (nSeekTo > nTotalLen / 2)
         nSeekTo = nTotalLen / 2;
 
       CLog::Log(LOGDEBUG,"%s - seeking to pos %dms (total: %dms) in %s", __FUNCTION__, nSeekTo, nTotalLen, strPath.c_str());
-      if (pDemuxer->Seek(nSeekTo))
+      if (pDemuxer->Seek(nSeekTo, true))
       {
         CDVDDemux::DemuxPacket* pPacket = NULL;
   
@@ -304,10 +308,6 @@ bool CDVDPlayer::ExtractThumb(const CStdString &strPath, const CStdString &strTa
                 CLog::Log(LOGDEBUG,"%s - coudln't get picture from decoder in  %s", __FUNCTION__, strPath.c_str());
               }
             }
-            else 
-            {
-              CLog::Log(LOGDEBUG,"%s - coudln't get frame from %s", __FUNCTION__, strPath.c_str());
-            }
           }
           else 
           {
@@ -322,6 +322,9 @@ bool CDVDPlayer::ExtractThumb(const CStdString &strPath, const CStdString &strTa
   }
 
   delete pInputStream;
+
+  int nTotalTime = timeGetTime() - nTime;
+  CLog::Log(LOGDEBUG,"%s - measured %d ms to extract thumb from file <%s> ", __FUNCTION__, nTotalTime, strPath.c_str());
   return bOk;
 }
 
