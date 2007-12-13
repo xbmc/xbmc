@@ -26,17 +26,19 @@ public:
   void Update(SDL_Event& event);
   float GetAmount(int axis)
   {
-    if (axis>=0 && axis<MAX_AXES) return (float)m_Amount[axis]/32768.0f; return 0.0f;
+    if (m_Amount[axis]>0)
+      return (float)(m_Amount[axis]-m_SafeRange)/(32768.0f-(float)m_SafeRange); 
+    return (float)(m_Amount[axis]+m_SafeRange)/(32768.0f-(float)m_SafeRange); 
   }
   float GetAmount()
   {
-    return (float)m_Amount[m_AxisId]/32768.0f;
+    return GetAmount(m_AxisId);
   }
   bool GetButton (int& id, bool consider_repeat=true);
   bool GetAxis (int &id) { if (!IsAxisActive()) return false; id=m_AxisId; return true; }
   string GetJoystick() { return (m_JoyId>-1)?m_JoystickNames[m_JoyId]:""; }
   int GetAxisWithMaxAmount();
-  void SetSafeRange(int val) { m_SafeRange=val; }
+  void SetSafeRange(int val) { m_SafeRange=(val>32767)?32767:val; }
 
 private:
   void SetAxisActive(bool active=true) { m_ActiveFlags = active?(m_ActiveFlags|JACTIVE_AXIS):(m_ActiveFlags&(~JACTIVE_AXIS)); }
@@ -50,7 +52,7 @@ private:
   int m_ButtonId;
   int m_JoyId;
   int m_NumAxes;
-  int m_SafeRange;
+  int m_SafeRange; // dead zone
   Uint32 m_pressTicks;
   WORD m_ActiveFlags;
   vector<SDL_Joystick*> m_Joysticks;
