@@ -174,12 +174,17 @@ void CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
         {
           // set the proper mask
           CStdString strMask;
-          if (strcmpi(type, "video") == 0)
-            strMask = g_stSettings.m_videoExtensions;
-          else if (strcmpi(type, "music") == 0)
-            strMask = g_stSettings.m_musicExtensions;
-          else if (strcmpi(type, "programs") == 0)
-            strMask = ".xbe|.py";
+          if (setting->Attribute("mask"))
+            strMask = setting->Attribute("mask");
+          else
+          {
+            if (strcmpi(type, "video") == 0)
+              strMask = g_stSettings.m_videoExtensions;
+            else if (strcmpi(type, "music") == 0)
+              strMask = g_stSettings.m_musicExtensions;
+            else if (strcmpi(type, "programs") == 0)
+              strMask = ".xbe|.py";
+          }
 
           // get any options
           bool bUseThumbs = false;
@@ -209,7 +214,9 @@ bool CGUIDialogPluginSettings::SaveSettings(void)
   TiXmlElement *setting = m_settings.GetPluginRoot()->FirstChildElement("setting");
   while (setting)
   {
-    CStdString id = setting->Attribute("id");
+    CStdString id;
+    if (setting->Attribute("id"))
+      id = setting->Attribute("id");
     const char *type = setting->Attribute("type");
     const CGUIControl* control = GetControl(controlId);
 
@@ -292,9 +299,12 @@ void CGUIDialogPluginSettings::CreateControls()
   {
     const char *type = setting->Attribute("type");
     const char *id = setting->Attribute("id");
-    CStdString values = setting->Attribute("values");
-    CStdString lvalues = setting->Attribute("lvalues");
-
+    CStdString values;
+    if (setting->Attribute("values"))
+      values = setting->Attribute("values");
+    CStdString lvalues;
+    if (setting->Attribute("lvalues"))
+      lvalues = setting->Attribute("lvalues");
     CStdString label;
     label.Format("$LOCALIZE[%s]", setting->Attribute("label"));
 
@@ -355,7 +365,9 @@ void CGUIDialogPluginSettings::CreateControls()
       CFileItemList items;
       CStdString enumpath;
       CUtil::AddFileToFolder(basepath, values, enumpath);
-      CStdString mask = setting->Attribute("mask");
+      CStdString mask;
+      if (setting->Attribute("mask"))
+        mask = setting->Attribute("mask");
       if (!mask.IsEmpty())
         directory.SetMask(mask);
       directory.GetDirectory(enumpath, items);
