@@ -267,10 +267,15 @@ HRESULT CALSADirectSound::Pause()
 //***********************************************************************************************
 HRESULT CALSADirectSound::Resume()
 {
-  // Resume is called not only after Pause but also at certain other points. like after stop when DVDPlayer is flushed.
-  m_bPause = false;
-  if(m_bCanPause)
+  // Resume is called not only after Pause but also at certain other points. like after stop when DVDPlayer is flushed.  
+  if(m_bCanPause && m_bPause)
     snd_pcm_pause(m_pPlayHandle,0);
+
+  // If we are not pause, stream might not be prepared to start flush will do this for us
+  if(!m_bPause)
+    Flush();
+
+  m_bPause = false;
 
   return S_OK;
 }
@@ -278,11 +283,10 @@ HRESULT CALSADirectSound::Resume()
 //***********************************************************************************************
 HRESULT CALSADirectSound::Stop()
 {
-  if (m_bPause) 
-     return S_OK;
-
   if (m_pPlayHandle)
      snd_pcm_drop(m_pPlayHandle);
+
+  m_bPause = false;
 
   return S_OK;
 }
