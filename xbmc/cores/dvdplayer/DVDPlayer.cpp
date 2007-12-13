@@ -11,12 +11,16 @@
 #include "DVDDemuxers/DVDFactoryDemuxer.h"
 
 #include "DVDCodecs/DVDCodecs.h"
+#include "DVDCodecs/DVDFactoryCodec.h"
 
 #include "../../Util.h"
 #include "../../utils/GUIInfoManager.h"
 #include "DVDPerformanceCounter.h"
 
 #include "../../FileSystem/cdioSupport.h"
+
+#include "../../Picture.h"
+#include "../ffmpeg/DllSwScale.h"
 
 CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
     : IPlayer(callback),
@@ -172,6 +176,153 @@ void CDVDPlayer::OnStartup()
   m_messenger.Init();
 
   g_dvdPerformanceCounter.EnableMainPerformance(ThreadHandle());
+}
+
+bool CDVDPlayer::ExtractThumb(const CStdString &strPath, const CStdString &strTarget)
+{
+  CDVDInputStream *pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, strPath, "");
+  if (!pInputStream || !pInputStream->Open(strPath.c_str(), ""))
+  {
+    CLog::Log(LOGERROR, "InputStream: Error opening, %s", strPath.c_str());
+    if (pInputStream)
+      delete pInputStream;
+    return false;
+  }
+
+  if (pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+  {
+    CLog::Log(LOGERROR, "InputStream: dvd streams not supported for thumb extraction, file: %s", strPath.c_str());
+    delete pInputStream;
+    return false;
+  }
+
+  CDVDDemux *pDemuxer = NULL;
+
+  try
+  {
+    pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(pInputStream);
+    if(!pDemuxer)
+    {
+      delete pInputStream;
+      CLog::Log(LOGERROR, "%s - Error creating demuxer", __FUNCTION__);
+      return false;
+    }
+
+    if (!pDemuxer->Open(pInputStream))
+    {
+      CLog::Log(LOGERROR, "%s - Error opening demuxer", __FUNCTION__);
+      delete pDemuxer;
+      delete pInputStream;
+      return false;
+    }
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, "%s - Exception thrown when opeing demuxer", __FUNCTION__);
+    if (pDemuxer)
+      delete pDemuxer;
+    delete pInputStream;
+    return false;
+  }
+
+  CDemuxStream* pStream = NULL;
+  int nVideoStream = -1;
+  for (int i = 0; i < pDemuxer->GetNrOfStreams(); i++)
+  {
+    pStream = pDemuxer->GetStream(i);
+    if (pStream && pStream->type == STREAM_VIDEO)
+    {
+      nVideoStream = i;
+      break;
+    }
+  }
+
+  bool bOk = false;
+  if (nVideoStream != -1)
+  {
+    CDVDStreamInfo hint(*pStream, true);
+    CDVDVideoCodec *pVideoCodec = CDVDFactoryCodec::CreateVideoCodec( hint );
+    if (pVideoCodec)
+    {
+      int nSeekTo = 300*1000; // in millis
+      int nTotalLen = DVD_TIME_TO_MSEC(pInputStream->GetLength());
+      if (nSeekTo > nTotalLen / 2)
+        nSeekTo = nTotalLen / 2;
+
+      CLog::Log(LOGDEBUG,"%s - seeking to pos %dms (total: %dms) in %s", __FUNCTION__, nSeekTo, nTotalLen, strPath.c_str());
+      if (pDemuxer->Seek(nSeekTo))
+      {
+        CDVDDemux::DemuxPacket* pPacket = NULL;
+  
+        bool bHasFrame = false;
+        while (!bHasFrame)
+        {
+          do
+          {
+            pPacket = pDemuxer->Read();
+          }   while (pPacket && pPacket->iStreamId != nVideoStream);
+
+          if (pPacket)
+          {
+            int iDecoderState = pVideoCodec->Decode(pPacket->pData, pPacket->iSize, pPacket->pts);
+            if (iDecoderState & VC_PICTURE)
+            {
+              bHasFrame = true;
+              DVDVideoPicture picture;
+              memset(&picture, 0, sizeof(DVDVideoPicture));
+              if (pVideoCodec->GetPicture(&picture))
+              {
+                int nWidth = g_advancedSettings.m_thumbSize;
+                int nHeight = g_advancedSettings.m_thumbSize;
+ 
+                DllSwScale dllSwScale;
+                dllSwScale.Load();
+
+                BYTE *pOutBuf = (BYTE*)new int[nWidth * nHeight * 4];
+                struct SwsContext *context = dllSwScale.sws_getContext(picture.iWidth, picture.iHeight, 
+                      PIX_FMT_YUV420P, nWidth, nHeight, PIX_FMT_RGB32, SWS_BILINEAR, NULL, NULL, NULL);
+                uint8_t *src[] = { picture.data[0], picture.data[1], picture.data[2] };
+                int     srcStride[] = { picture.iLineSize[0], picture.iLineSize[1], picture.iLineSize[2] };
+                uint8_t *dst[] = { pOutBuf, 0, 0 };
+                int     dstStride[] = { nWidth*4, 0, 0 };
+
+                if (context)
+                {
+                  dllSwScale.sws_scale(context, src, srcStride, 0, picture.iHeight, dst, dstStride);  
+                  dllSwScale.sws_freeContext(context);
+
+                  CPicture out;
+                  out.CreateThumbnailFromSurface(pOutBuf, nWidth, nHeight, nWidth * 4, strTarget);
+                  bOk = true; 
+                }
+
+                dllSwScale.Unload();                
+                delete [] pOutBuf;
+              }
+              else 
+              {
+                CLog::Log(LOGDEBUG,"%s - coudln't get picture from decoder in  %s", __FUNCTION__, strPath.c_str());
+              }
+            }
+            else 
+            {
+              CLog::Log(LOGDEBUG,"%s - coudln't get frame from %s", __FUNCTION__, strPath.c_str());
+            }
+          }
+          else 
+          {
+            CLog::Log(LOGDEBUG,"%s - decode failed in %s", __FUNCTION__, strPath.c_str());
+            break;
+          }
+ 
+        }
+      }
+      delete pVideoCodec;
+    }
+  }
+
+  delete pInputStream;
+  return bOk;
 }
 
 void CDVDPlayer::Process()
