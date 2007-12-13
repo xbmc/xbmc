@@ -28,9 +28,12 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   // adjust aspect ratio
   RESOLUTION res = g_graphicsContext.GetVideoResolution();
   // #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  if (g_SkinInfo.GetVersion() > 2.0 && res == PAL_16x9 || res == PAL60_16x9 || res == NTSC_16x9 || res == HDTV_480p_16x9)
+  if (g_SkinInfo.GetVersion() > 2.0 && m_skinResolution == PAL_16x9 || m_skinResolution == PAL60_16x9 || m_skinResolution == NTSC_16x9 || m_skinResolution == HDTV_480p_16x9)
     aspect *= 0.75f;
 
+  aspect *= g_graphicsContext.GetGUIScaleY() / g_graphicsContext.GetGUIScaleX();
+  float newSize = (float) iSize / g_graphicsContext.GetGUIScaleY();
+    
   CStdString strPath;
   if (strFilename[1] != ':')
   {
@@ -43,12 +46,12 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
 
   // check if we already have this font file loaded (font object could differ only by color or style)
   CStdString TTFfontName;
-  TTFfontName.Format("%s_%i_%f", strFilename, iSize, aspect);
+  TTFfontName.Format("%s_%f_%f", strFilename, newSize, aspect);
   CGUIFontTTF* pFontFile = GetFontFile(TTFfontName);
   if (!pFontFile)
   {
     pFontFile = new CGUIFontTTF(TTFfontName);
-    boolean bFontLoaded = pFontFile->Load(strPath, iSize, aspect);
+    bool bFontLoaded = pFontFile->Load(strPath, newSize, aspect);
     if (!bFontLoaded)
     {
       // Now try to load it from media\fonts
@@ -58,7 +61,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
         strPath += strFilename;
       }
 
-      bFontLoaded = pFontFile->Load(strPath, iSize, aspect);
+      bFontLoaded = pFontFile->Load(strPath, newSize, aspect);
     }
 
     if (!bFontLoaded)
@@ -148,6 +151,11 @@ void GUIFontManager::LoadFonts(const CStdString& strFontSet)
   TiXmlDocument xmlDoc;
   if (!OpenFontFile(xmlDoc))
     return;
+
+  // set scaling resolution so that we can scale our font sizes correctly
+  // as fonts aren't scaled at render time (due to aliasing) we must scale
+  // the size of the fonts before they are drawn to bitmaps
+  g_graphicsContext.SetScalingResolution(m_skinResolution, 0, 0, true);
 
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   const TiXmlNode *pChild = pRootElement->FirstChild();
@@ -261,8 +269,7 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
 bool GUIFontManager::OpenFontFile(TiXmlDocument& xmlDoc)
 {
   // Get the file to load fonts from:
-  RESOLUTION res;
-  CStdString strPath = g_SkinInfo.GetSkinPath("font.xml", &res);
+  CStdString strPath = g_SkinInfo.GetSkinPath("Font.xml", &m_skinResolution);
   CLog::Log(LOGINFO, "Loading fonts from %s", strPath.c_str());
 
   // first try our preferred file
