@@ -611,7 +611,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
 #endif
       if (!newTexture || newTexture->pixels == NULL)
       {
-        CLog::Log(LOGERROR, "GUIFontTTF::CacheCharacter: Error creating new cache texture for size %i", m_iHeight);
+        CLog::Log(LOGERROR, "GUIFontTTF::CacheCharacter: Error creating new cache texture for size %f", m_height);
         FT_Done_Glyph(glyph);
         return false;
       }
