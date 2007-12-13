@@ -405,11 +405,12 @@ CGUISettings::CGUISettings(void)
   AddCategory(5, "myvideos", 16000);
   AddBool(1, "myvideos.treatstackasfile", 20051, true);
   AddBool(2, "myvideos.autoresume",12017, false);
-  AddSeparator(3, "myvideos.sep1");
-  AddInt(4, "myvideos.viewmode", 582, DEFAULT_VIEW_AUTO, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX, SPIN_CONTROL_TEXT);
-  AddInt(5, "myvideos.sortmethod", 581, SORT_METHOD_LABEL, SORT_METHOD_LABEL, 1, SORT_METHOD_MAX, SPIN_CONTROL_TEXT);
-  AddInt(6, "myvideos.sortorder", 580, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_DESC, SPIN_CONTROL_TEXT);
-  AddBool(7, "myvideos.savefolderviews", 583, true);
+  AddBool(3, "myvideos.autothumb",12024, true);
+  AddSeparator(4, "myvideos.sep1");
+  AddInt(5, "myvideos.viewmode", 582, DEFAULT_VIEW_AUTO, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX, SPIN_CONTROL_TEXT);
+  AddInt(6, "myvideos.sortmethod", 581, SORT_METHOD_LABEL, SORT_METHOD_LABEL, 1, SORT_METHOD_MAX, SPIN_CONTROL_TEXT);
+  AddInt(7, "myvideos.sortorder", 580, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_DESC, SPIN_CONTROL_TEXT);
+  AddBool(8, "myvideos.savefolderviews", 583, true);
   AddCategory(5, "videolibrary", 14022);
 
   AddBool(1, "videolibrary.hideplots", 20369, false);
