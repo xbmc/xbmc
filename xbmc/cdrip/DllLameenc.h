@@ -21,6 +21,7 @@ public:
   virtual int lame_close(lame_global_flags* gfp)=0;
   virtual void lame_mp3_tags_fid(lame_global_flags* gfp, FILE* fid)=0;
   virtual int lame_encode_flush(lame_global_flags* gfp, unsigned char* mp3buf, int size)=0;
+  virtual ~DllLameEncInterface() {}
 };
 
 class DllLameEnc : public DllDynamic, DllLameEncInterface

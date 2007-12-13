@@ -21,6 +21,7 @@ public:
   virtual void vorbis_info_clear(vorbis_info *vi)=0;
   virtual void vorbis_comment_clear(vorbis_comment *vc)=0;
   virtual void vorbis_dsp_clear(vorbis_dsp_state *v)=0;
+  virtual ~DllVorbisInterface() {}
 };
 
 class DllVorbis : public DllDynamic, DllVorbisInterface
