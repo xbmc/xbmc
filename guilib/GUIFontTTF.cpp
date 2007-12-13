@@ -60,7 +60,7 @@ public:
       FT_Done_FreeType(m_library);
   }
 
-  FT_Face GetFont(const CStdString &filename, int size, float aspect)
+  FT_Face GetFont(const CStdString &filename, float size, float aspect)
   {
     // don't have it yet - create it
     if (!m_library)
@@ -84,7 +84,7 @@ public:
     // we cache our characters (for rendering speed) so it's probably
     // not a good idea to allow free scaling of fonts - rather, just
     // scaling to pixel ratio on screen perhaps?
-    if (FT_Set_Char_Size( face, 0, size*64, xdpi, ydpi ))
+    if (FT_Set_Char_Size( face, 0, (int)(size*64 + 0.5f), xdpi, ydpi ))
     {
       FT_Done_Face(face);
       return NULL;
@@ -177,14 +177,14 @@ void CGUIFontTTF::Clear()
   m_face = NULL;
 }
 
-bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, float aspect)
+bool CGUIFontTTF::Load(const CStdString& strFilename, float height, float aspect)
 {
   // create our character texture + font shader
   m_pD3DDevice = g_graphicsContext.Get3DDevice();
 
   // we now know that this object is unique - only the GUIFont objects are non-unique, so no need
   // for reference tracking these fonts
-  m_face = g_freeTypeLibrary.GetFont(strFilename, iHeight, aspect);
+  m_face = g_freeTypeLibrary.GetFont(strFilename, height, aspect);
 
   if (!m_face)
     return false;
@@ -198,16 +198,16 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, float aspect)
   unsigned int ydpi = g_freeTypeLibrary.GetDPI();
   unsigned int xdpi = (unsigned int)ROUND(ydpi * aspect);
 
-  m_cellWidth *= iHeight * xdpi;
+  m_cellWidth *= (unsigned int)(height * xdpi);
   m_cellWidth /= (72 * m_face->units_per_EM);
 
-  m_cellHeight *= iHeight * ydpi;
+  m_cellHeight *= (unsigned int)(height * ydpi);
   m_cellHeight /= (72 * m_face->units_per_EM);
 
-  m_cellBaseLine *= iHeight * ydpi;
+  m_cellBaseLine *= (unsigned int)(height * ydpi);
   m_cellBaseLine /= (72 * m_face->units_per_EM);
 
-  m_lineHeight *= iHeight * ydpi;
+  m_lineHeight *= (unsigned int)(height * ydpi);
   m_lineHeight /= (72 * m_face->units_per_EM);
 
   // increment by 1 for good measure to give space in our texture
@@ -216,9 +216,9 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, float aspect)
   m_cellBaseLine++;
   m_lineHeight++;
 
-  CLog::Log(LOGDEBUG, __FUNCTION__" Scaled size of font %s (%i): width = %i, height = %i",
-    strFilename.c_str(), iHeight, m_cellWidth, m_cellHeight);
-  m_iHeight = iHeight;
+  CLog::Log(LOGDEBUG, "%s Scaled size of font %s (%f): width = %i, height = %i",
+    __FUNCTION__, strFilename.c_str(), height, m_cellWidth, m_cellHeight);
+  m_height = height;
 
   if (m_texture)
     m_texture->Release();
@@ -467,7 +467,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
   FT_Glyph glyph = NULL;
   if (FT_Load_Glyph( m_face, glyph_index, FT_LOAD_TARGET_LIGHT ))
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__" Failed to load glyph %x", letter);
+    CLog::Log(LOGDEBUG, "%s Failed to load glyph %x", __FUNCTION__, letter);
     return false;
   }
   // make bold if applicable
@@ -479,13 +479,13 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
   // grab the glyph
   if (FT_Get_Glyph(m_face->glyph, &glyph))
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__" Failed to get glyph %x", letter);
+    CLog::Log(LOGDEBUG, "%s Failed to get glyph %x", __FUNCTION__, letter);
     return false;
   }
   // render the glyph
   if (FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, NULL, 1))
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__" Failed to render glyph %x to a bitmap", letter);
+    CLog::Log(LOGDEBUG, "%s Failed to render glyph %x to a bitmap", __FUNCTION__, letter);
     return false;
   }
   FT_BitmapGlyph bitGlyph = (FT_BitmapGlyph)glyph;
@@ -515,7 +515,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
       }
       if (D3D_OK != D3DXCreateTexture(m_pD3DDevice, m_textureWidth, newHeight, 1, 0, D3DFMT_LIN_A8, D3DPOOL_MANAGED, &newTexture))
       {
-        CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Error creating new cache texture for size %i", m_iHeight);
+        CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Error creating new cache texture for size %f", m_height);
         FT_Done_Glyph(glyph);
         return false;
       }
