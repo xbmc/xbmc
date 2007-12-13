@@ -11,6 +11,7 @@ public:
   virtual int ogg_stream_pageout(ogg_stream_state *os, ogg_page *og)=0;
   virtual int ogg_stream_flush(ogg_stream_state *os, ogg_page *og)=0;
   virtual int ogg_stream_packetin(ogg_stream_state *os, ogg_packet *op)=0;
+  virtual ~DllOggInterface() {}
 };
 
 class DllOgg : public DllDynamic, DllOggInterface
