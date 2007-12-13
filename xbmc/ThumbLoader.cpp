@@ -75,6 +75,9 @@ void CVideoThumbLoader::OnLoaderFinish()
 
 bool CVideoThumbLoader::ExtractThumb(const CStdString &strPath, const CStdString &strTarget)
 {
+  if (!g_guiSettings.GetBool("myvideos.autothumb"))
+    return false;
+
   CLog::Log(LOGDEBUG,"%s - trying to extract thumb from video file %s", __FUNCTION__, strPath.c_str());
   return CDVDPlayer::ExtractThumb(strPath, strTarget);
 }
