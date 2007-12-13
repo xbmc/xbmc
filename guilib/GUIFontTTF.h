@@ -48,7 +48,7 @@ public:
 
   void Clear();
 
-  bool Load(const CStdString& strFilename, int height = 20, float aspect = 1.0f);
+  bool Load(const CStdString& strFilename, float height = 20.0f, float aspect = 1.0f);
 
   void Begin();
   void End();
@@ -74,7 +74,7 @@ protected:
     DrawTextInternal(x, y, colors, text, alignment, maxPixelWidth);
   }
 
-  int m_iHeight;
+  float m_height;
   CStdString m_strFilename;
 
   // Stuff for pre-rendering for speed
