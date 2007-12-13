@@ -277,7 +277,8 @@ bool CDVDPlayer::ExtractThumb(const CStdString &strPath, const CStdString &strTa
               if (pVideoCodec->GetPicture(&picture))
               {
                 int nWidth = g_advancedSettings.m_thumbSize;
-                int nHeight = g_advancedSettings.m_thumbSize;
+                double aspect = (double)picture.iWidth / (double)picture.iHeight;
+                int nHeight = (int)((double)g_advancedSettings.m_thumbSize / aspect);
  
                 DllSwScale dllSwScale;
                 dllSwScale.Load();
