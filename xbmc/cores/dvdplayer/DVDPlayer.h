@@ -128,7 +128,9 @@ public:
   virtual int GetCacheLevel() const ; 
 
   virtual int OnDVDNavResult(void* pData, int iMessage);
-  
+
+  static bool ExtractThumb(const CStdString &strPath, const CStdString &strTarget);
+    
 private:
   void LockStreams()                                            { EnterCriticalSection(&m_critStreamSection); }
   void UnlockStreams()                                          { LeaveCriticalSection(&m_critStreamSection); }
