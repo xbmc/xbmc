@@ -211,6 +211,11 @@ void CButtonTranslator::MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick)
             {
               axisMap[id] = string(szAction);
             }
+            else if (limit==0)
+            {
+              axisMap[id] = string(szAction);
+              axisMap[-id] = string("0");
+            }
             else
             {
               axisMap[id] = string(szAction);
