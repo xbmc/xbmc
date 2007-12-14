@@ -89,9 +89,25 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
 
   if (!pItem->HasThumbnail())
   {
-    if (pItem->IsVideo() && !pItem->IsInternetStream() && !CFile::Exists(cachedThumb))
-      CVideoThumbLoader::ExtractThumb(pItem->m_strPath, cachedThumb);
-    pItem->SetUserVideoThumb();
+    if (CFile::Exists(cachedThumb))
+      pItem->SetCachedVideoThumb();
+    else
+    {
+      CStdString strPath, strFileName;
+      CUtil::Split(cachedThumb, strPath, strFileName);
+       
+      // create unique thumb for auto generated thumbs
+      cachedThumb = strPath + "auto-" + strFileName;
+      if (pItem->IsVideo() && !pItem->IsInternetStream() && !CFile::Exists(cachedThumb))
+        CVideoThumbLoader::ExtractThumb(pItem->m_strPath, cachedThumb);
+  
+      if (CFile::Exists(cachedThumb))
+      {
+        pItem->SetProperty("HasAutoThumb", "1");
+        pItem->SetProperty("AutoThumbImage", cachedThumb);
+        pItem->SetThumbnailImage(cachedThumb);
+      }
+    }
   }
   else
   {
