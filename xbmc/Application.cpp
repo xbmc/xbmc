@@ -1276,18 +1276,18 @@ HRESULT CApplication::Create(HWND hWnd)
   g_charsetConverter.reset();
 
   // Load the langinfo to have user charset <-> utf-8 conversion
-  CStdString strLangugage = g_guiSettings.GetString("locale.language");
-  strLangugage[0] = toupper(strLangugage[0]);
+  CStdString strLanguage = g_guiSettings.GetString("locale.language");
+  strLanguage[0] = toupper(strLanguage[0]);
   
   CStdString strLangInfoPath;
-  strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", strLangugage.c_str());
+  strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", strLanguage.c_str());
   strLangInfoPath = _P(strLangInfoPath);
 
   CLog::Log(LOGINFO, "load language info file: %s", strLangInfoPath.c_str());
   g_langInfo.Load(strLangInfoPath);
 
   CStdString strKeyboardLayoutConfigurationPath;
-  strKeyboardLayoutConfigurationPath.Format("Q:\\language\\%s\\keyboardmap.xml", strLangugage.c_str());
+  strKeyboardLayoutConfigurationPath.Format("Q:\\language\\%s\\keyboardmap.xml", strLanguage.c_str());
   strKeyboardLayoutConfigurationPath = _P(strKeyboardLayoutConfigurationPath);
   CLog::Log(LOGINFO, "load keyboard layout configuration info file: %s", strKeyboardLayoutConfigurationPath.c_str());
   g_keyboardLayoutConfiguration.Load(strKeyboardLayoutConfigurationPath);
@@ -1300,7 +1300,7 @@ HRESULT CApplication::Create(HWND hWnd)
 #endif
 
   CStdString strLanguagePath;
-  strLanguagePath.Format("Q:\\language\\%s\\strings.xml", strLangugage.c_str());
+  strLanguagePath.Format("Q:\\language\\%s\\strings.xml", strLanguage.c_str());
   strLanguagePath = _P(strLanguagePath);
 
   CLog::Log(LOGINFO, "load language file:%s", strLanguagePath.c_str());

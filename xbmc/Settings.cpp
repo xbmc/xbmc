@@ -1857,20 +1857,23 @@ bool CSettings::LoadProfile(int index)
     g_charsetConverter.reset();
 
     // Load the langinfo to have user charset <-> utf-8 conversion
+    CStdString strLanguage = g_guiSettings.GetString("locale.language");
+    strLanguage[0] = toupper(strLanguage[0]);
+
     CStdString strLangInfoPath;
-    strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", g_guiSettings.GetString("locale.language"));
+    strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", strLanguage.c_str());
     strLangInfoPath = _P(strLangInfoPath);
     CLog::Log(LOGINFO, "load language info file:%s", strLangInfoPath.c_str());
     g_langInfo.Load(strLangInfoPath);
 
     CStdString strKeyboardLayoutConfigurationPath;
-    strKeyboardLayoutConfigurationPath.Format("Q:\\language\\%s\\keyboardmap.xml", g_guiSettings.GetString("locale.language"));
+    strKeyboardLayoutConfigurationPath.Format("Q:\\language\\%s\\keyboardmap.xml", strLanguage.c_str());
     strKeyboardLayoutConfigurationPath = _P(strKeyboardLayoutConfigurationPath);
     CLog::Log(LOGINFO, "load keyboard layout configuration info file: %s", strKeyboardLayoutConfigurationPath.c_str());
     g_keyboardLayoutConfiguration.Load(strKeyboardLayoutConfigurationPath);
 
     CStdString strLanguagePath;
-    strLanguagePath.Format("Q:\\language\\%s\\strings.xml", g_guiSettings.GetString("locale.language"));
+    strLanguagePath.Format("Q:\\language\\%s\\strings.xml", strLanguage.c_str());
 
     g_buttonTranslator.Load();
     g_localizeStrings.Load(_P(strLanguagePath));
