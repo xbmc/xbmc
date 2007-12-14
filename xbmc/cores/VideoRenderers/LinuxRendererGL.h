@@ -178,6 +178,7 @@ protected:
   int  NextYV12Texture();
   virtual bool ValidateRenderTarget();
   virtual void LoadShaders(int renderMethod=FIELD_FULL);
+  void LoadTextures(int source);
   void SetTextureFilter(GLenum method);
   void UpdateVideoFilter();
 

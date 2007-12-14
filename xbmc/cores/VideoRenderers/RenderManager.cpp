@@ -288,6 +288,7 @@ void CXBoxRenderManager::FlipPage(DWORD delay /* = 0LL*/, int source /*= -1*/, E
     unsigned int nTicks = GetTickCount();
     if (timestamp > nTicks)
       ::Sleep(timestamp - nTicks);
+    m_pRenderer->FlipPage(source);
 #else
     while( timestamp > GetTickCount() && !CThread::m_bStop) Sleep(1);
 #endif
