@@ -50,7 +50,7 @@ CLinuxRendererGL::CLinuxRendererGL()
     m_pOSDATexture[i] = 0;
 
     // possiblly not needed?
-    //m_eventTexturesDone[i] = CreateEvent(NULL,FALSE,TRUE,NULL);
+    m_eventTexturesDone[i] = CreateEvent(NULL,FALSE,TRUE,NULL);
     //m_eventOSDDone[i] = CreateEvent(NULL,TRUE,TRUE,NULL);
   }
   m_shaderProgram = 0;
@@ -82,7 +82,7 @@ CLinuxRendererGL::~CLinuxRendererGL()
   UnInit();
   for (int i = 0; i < NUM_BUFFERS; i++)
   {
-    //CloseHandle(m_eventTexturesDone[i]);
+    CloseHandle(m_eventTexturesDone[i]);
     //CloseHandle(m_eventOSDDone[i]);
   }
   if (m_pBuffer)
@@ -489,7 +489,7 @@ void CLinuxRendererGL::ManageTextures()
 {
   m_NumYV12Buffers = 1;
   m_NumOSDBuffers = 1;
-  m_iYV12RenderBuffer = 0;
+  //m_iYV12RenderBuffer = 0;
   m_iOSDRenderBuffer = 0;
   return;
 }
@@ -723,7 +723,10 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
   if (!ValidateRenderTarget())
     return false;
 
+  // FIXME:
   CreateYV12Texture(0);
+  // CreateYV12Texture(1);
+  // CreateYV12Texture(2);
 
   if (m_rgbBuffer != NULL) {
      delete [] m_rgbBuffer;
@@ -738,7 +741,8 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
 
 int CLinuxRendererGL::NextYV12Texture()
 {
-  return 0; //(m_iYV12RenderBuffer + 1) % m_NumYV12Buffers;
+  //return 0; 
+  return (m_iYV12RenderBuffer + 1) % m_NumYV12Buffers;
 }
 
 int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
@@ -747,7 +751,11 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
 
   //CSingleLock lock(g_graphicsContext);
    
-  source = 0;
+  //  source = 0;
+
+  /* take next available buffer */
+  if( source == AUTOSOURCE )
+    source = NextYV12Texture();
 
   if (!m_image[source].plane[0]) 
   {
@@ -761,42 +769,67 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
      return -1;
   }
 
-  m_image[source].flags = readonly?IMAGE_FLAG_READING:IMAGE_FLAG_WRITING;
+  //m_image[source].flags = readonly?IMAGE_FLAG_READING:IMAGE_FLAG_WRITING;
 
-  // copy the image - should be operator of YV12Image
-  for (int p=0;p<MAX_PLANES;p++) 
+  if( source >= 0 && m_image[source].plane[0] )
   {
-     image->plane[p]=m_image[source].plane[p];
-     image->stride[p] = m_image[source].stride[p];
+    if( readonly )
+      m_image[source].flags |= IMAGE_FLAG_READING;
+    else
+    {
+      if( WaitForSingleObject(m_eventTexturesDone[source], 500) == WAIT_TIMEOUT )
+        CLog::Log(LOGWARNING, CStdString(__FUNCTION__) + " - Timeout waiting for texture %d", source);
+      
+      m_image[source].flags |= IMAGE_FLAG_WRITING;
+    }
+        
+    // copy the image - should be operator of YV12Image
+    for (int p=0;p<MAX_PLANES;p++) 
+    {
+      image->plane[p]=m_image[source].plane[p];
+      image->stride[p] = m_image[source].stride[p];
+    }
+    image->width = m_image[source].width;
+    image->height = m_image[source].height;
+    image->flags = m_image[source].flags;
+    image->cshift_x = m_image[source].cshift_x;
+    image->cshift_y = m_image[source].cshift_y;
+    image->texcoord_x = m_image[source].texcoord_x;
+    image->texcoord_y = m_image[source].texcoord_y;
+    
+    //return 0;
+    // return source;
+    
+    //*image = m_image[source];
+    return source;
   }
-  image->width = m_image[source].width;
-  image->height = m_image[source].height;
-  image->flags = m_image[source].flags;
-  image->cshift_x = m_image[source].cshift_x;
-  image->cshift_y = m_image[source].cshift_y;
-  image->texcoord_x = m_image[source].texcoord_x;
-  image->texcoord_y = m_image[source].texcoord_y;
 
-  return 0;
+  return -1;
 }
 
 void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
+{
+  if( m_image[source].flags & IMAGE_FLAG_WRITING )
+    SetEvent(m_eventTexturesDone[source]);
+
+  m_image[source].flags &= ~IMAGE_FLAG_INUSE;
+
+  /* if image should be preserved reserve it so it's not auto seleceted */
+
+  if( preserve )
+    m_image[source].flags |= IMAGE_FLAG_RESERVED;  
+
+}
+
+void CLinuxRendererGL::LoadTextures(int source)
 { 
-  // Eventual FIXME
-  if (source!=0)
-    source=0;
-
-  m_image[source].flags = 0;
-
   YV12Image &im = m_image[source];
   YUVFIELDS &fields = m_YUVTexture[source];
   
-  m_image[source].flags &= ~IMAGE_FLAG_INUSE;
-  m_image[source].flags = 0;
-
   // if we don't have a shader, fallback to SW YUV2RGB for now
   
-  g_graphicsContext.BeginPaint(m_pBuffer, false);
+  //g_graphicsContext.BeginPaint(m_pBuffer, false);
+  g_graphicsContext.BeginPaint();
 
   if (m_renderMethod & RENDER_SW)
   {
@@ -961,9 +994,12 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
       glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[2]);
       VerifyGLState();
     }
-  }
-  
-  g_graphicsContext.EndPaint(m_pBuffer, false);
+  }  
+  //g_graphicsContext.EndPaint(m_pBuffer, false);
+  g_graphicsContext.EndPaint();
+
+  //SetEvent(m_eventTexturesDone[source]);
+  m_image[source].flags = 0;
 }
 
 void CLinuxRendererGL::Reset()
@@ -973,7 +1009,7 @@ void CLinuxRendererGL::Reset()
     /* reset all image flags, this will cleanup textures later */
     m_image[i].flags = 0;
     /* reset texure locks, abit uggly, could result in tearing */
-    //SetEvent(m_eventTexturesDone[i]); 
+    SetEvent(m_eventTexturesDone[i]); 
   }
 }
 
@@ -987,14 +1023,18 @@ void CLinuxRendererGL::Update(bool bPauseDrawing)
 
 void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
-  //if (!m_YUVTexture[m_iYV12RenderBuffer][FIELD_FULL][0]) return ;
-  if (!m_YUVTexture[0][FIELD_FULL][0]) return ;
+  int index = m_iYV12RenderBuffer;
+  if (!m_YUVTexture[index][FIELD_FULL][0]) return ;
 
-  //CSingleLock lock(g_graphicsContext);
   ManageDisplay();
   ManageTextures();
+  
+  if( WaitForSingleObject(m_eventTexturesDone[index], 500) == WAIT_TIMEOUT )
+    CLog::Log(LOGWARNING, CStdString(__FUNCTION__) + " - Timeout waiting for texture %d", index);
 
   g_graphicsContext.BeginPaint();
+
+  LoadTextures(index);
 
   if (clear) 
   {
@@ -1021,15 +1061,16 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   VerifyGLState();
   glEnable(GL_BLEND);
   g_graphicsContext.EndPaint();
+  SetEvent(m_eventTexturesDone[index]);
 }
 
 void CLinuxRendererGL::FlipPage(int source)
 {  
-  //if( source >= 0 && source < m_NumYV12Buffers )
-  m_iYV12RenderBuffer = source;
-  //else
-  //m_iYV12RenderBuffer = NextYV12Texture();
-  
+  if( source >= 0 && source < m_NumYV12Buffers )
+    m_iYV12RenderBuffer = source;
+  else
+    m_iYV12RenderBuffer = NextYV12Texture();
+
   /* we always decode into to the next buffer */
   //++m_iOSDRenderBuffer %= m_NumOSDBuffers;
   
@@ -1041,9 +1082,12 @@ void CLinuxRendererGL::FlipPage(int source)
   
   m_OSDRendered = false;
   
-  g_graphicsContext.BeginPaint();
-  g_graphicsContext.Flip();
-  g_graphicsContext.EndPaint();
+  // Called from non-GUI thread so don't actually flip
+  /*
+    g_graphicsContext.BeginPaint();
+    g_graphicsContext.Flip();
+    g_graphicsContext.EndPaint();
+  */
 
   return;
 }
@@ -1096,6 +1140,7 @@ unsigned int CLinuxRendererGL::DrawSlice(unsigned char *src[], int stride[], int
     d += im.stride[p];
   }
 
+  SetEvent(m_eventTexturesDone[index]);
   return 0;
 }
 
@@ -1190,7 +1235,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
   bool err = false;  
   if (glCreateProgram)
   {
-    g_graphicsContext.BeginPaint(m_pBuffer);
+    g_graphicsContext.BeginPaint();
 
     if (m_pYUVShader)
     {
@@ -1233,7 +1278,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
       err = true;
       CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB GLSL shader");
     }
-    g_graphicsContext.EndPaint(m_pBuffer);
+    g_graphicsContext.EndPaint();
   }
   else if (err && glewIsSupported("GL_ARB_fragment_shader")) 
   {    
@@ -1407,7 +1452,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
     char * currentLocale = setlocale(LC_NUMERIC, NULL);
     setlocale(LC_NUMERIC, "C");
 
-    g_graphicsContext.BeginPaint(m_pBuffer);
+    g_graphicsContext.BeginPaint();
     m_shaderProgram = glCreateProgram();
     m_fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
     m_vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -1483,7 +1528,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
       VerifyGLState();
     }
 
-    g_graphicsContext.EndPaint(m_pBuffer);
+    g_graphicsContext.EndPaint();
     if (error)
     {
       CLog::Log(LOGNOTICE, "GL: Error loading loading GLSL shader, falling back to software rendering");
@@ -1794,7 +1839,8 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags)
     }
   }
 
-  int index = 0; //m_iYV12RenderBuffer;
+  //int index = 0; //m_iYV12RenderBuffer;
+  int index = m_iYV12RenderBuffer;
   YV12Image &im = m_image[index];
   //bool deinterlacing = (field!=FIELD_FULL) && (g_stSettings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_NONE)
   //  && (g_stSettings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_DEINTERLACE);
@@ -1931,7 +1977,8 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags)
 
 void CLinuxRendererGL::RenderMultiPass(DWORD flags)
 {
-  int index = 0; //m_iYV12RenderBuffer;
+  //int index = 0; //m_iYV12RenderBuffer;
+  int index = m_iYV12RenderBuffer;
   YV12Image &im = m_image[index];
 
   // set scissors if we are not in fullscreen video
@@ -2511,7 +2558,7 @@ void CLinuxRendererGL::ClearYV12Texture(int index)
   //memset(im.plane[0], 0,   im.stride[0] * im.height);
   //memset(im.plane[1], 128, im.stride[1] * im.height>>im.cshift_y );
   //memset(im.plane[2], 128, im.stride[2] * im.height>>im.cshift_y );
-
+  //SetEvent(m_eventTexturesDone[index]);
 }
 
 bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
@@ -2542,7 +2589,8 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     im.texcoord_y = 1.0;
   }
 
-  g_graphicsContext.BeginPaint(m_pBuffer);
+  //g_graphicsContext.BeginPaint(m_pBuffer);
+  g_graphicsContext.BeginPaint();
 
   glEnable(m_textureTarget);
   for(int f = 0;f<MAX_FIELDS;f++) 
@@ -2614,8 +2662,9 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
       VerifyGLState();
     }
   }
-
-  g_graphicsContext.EndPaint(m_pBuffer);
+  //g_graphicsContext.EndPaint(m_pBuffer);
+  g_graphicsContext.EndPaint();
+  SetEvent(m_eventTexturesDone[index]);
   return true;
 }
 
