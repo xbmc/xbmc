@@ -438,6 +438,8 @@ void CGUITextLayout::AppendToUTF32(const CStdString &text, DWORD colStyle, vecto
   //       expression of the \n in utf8 (we just use character code 10) or it might be something
   //       more sinister.  For now, we use the workaround below.
   CStdStringW utf16;
+  g_charsetConverter.utf8ToUTF16(text, utf16);
+  utf16.Replace(L"\r", L"");
   utf32.reserve(utf32.size() + utf16.size());
   for (unsigned int i = 0; i < utf16.size(); i++)
     utf32.push_back(utf16[i] | colStyle);
@@ -449,6 +451,7 @@ void CGUITextLayout::AppendToUTF32(const CStdString &text, DWORD colStyle, vecto
   {
     CStdStringW utf16;
     g_charsetConverter.utf8ToUTF16(multiLines[i], utf16);
+    utf16.Replace(L"\r", L"");  // filter out '\r'
     utf32.reserve(utf32.size() + utf16.size() + 1);
     for (unsigned int j = 0; j < utf16.size(); j++)
       utf32.push_back(utf16[j] | colStyle);
