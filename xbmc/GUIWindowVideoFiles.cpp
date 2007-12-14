@@ -392,7 +392,7 @@ void CGUIWindowVideoFiles::OnInfo(CFileItem* pItem, const SScraperInfo& info)
     item.RemoveExtension();
   
   item.SetCachedVideoThumb();
-  if (!item.HasThumbnail()) // inherit from the original item if it exists
+  if (!item.HasThumbnail() && pItem->GetProperty("HasAutoThumb") != "1") // inherit from the original item if it exists
     item.SetThumbnailImage(pItem->GetThumbnailImage());
 
   if (!info.strContent.Equals("plugin"))
