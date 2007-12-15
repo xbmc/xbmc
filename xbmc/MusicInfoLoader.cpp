@@ -32,7 +32,8 @@ using namespace XFILE;
 using namespace DIRECTORY;
 using namespace MUSIC_INFO;
 
-CMusicInfoLoader::CMusicInfoLoader()
+// HACK until we make this threadable - specify 1 thread only for now
+CMusicInfoLoader::CMusicInfoLoader() : CBackgroundInfoLoader(1)
 {
 }
 
