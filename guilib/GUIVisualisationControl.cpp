@@ -432,7 +432,7 @@ bool CGUIVisualisationControl::OnMouseOver(const CPoint &point)
 {
   // unfocusable, so return true
   CGUIControl::OnMouseOver(point);
-  return true;
+  return false;
 }
 
 bool CGUIVisualisationControl::CanFocus() const
