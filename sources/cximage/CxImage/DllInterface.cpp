@@ -315,9 +315,10 @@ extern "C"
     int actualheight = 0;
     try
     {
-      // jpeg's may contain an EXIF preview image - use that if it's there
-      if (dwImageType == CXIMAGE_FORMAT_JPG && image.GetExifThumbnail(file, thumb))
-        return true;
+      // jpeg's may contain an EXIF preview image
+      // we don't use it though, as the resolution is normally too low
+//      if (dwImageType == CXIMAGE_FORMAT_JPG && image.GetExifThumbnail(file, thumb))
+//        return true;
       if (!image.Load(file, dwImageType, actualwidth, actualheight) || !image.IsValid())
       {
         printf("PICTURE::CreateThumbnail: Unable to open image: %s Error:%s\n", file, image.GetLastError());
