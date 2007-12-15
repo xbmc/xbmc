@@ -61,7 +61,12 @@
 #include "utils/Network.h"
 #include "lib/libGoAhead/WebServer.h"
 #include "GUIControlGroupList.h"
+#ifdef HAS_XBOX_HARDWARE
 #include "XBTimeZone.h"
+#endif
+#ifdef _LINUX
+#include "LinuxTimezone.h"
+#endif
 
 using namespace DIRECTORY;
 
@@ -305,11 +310,13 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       if (g_videoConfig.NeedsSave())
         g_videoConfig.Save();
 
+#ifdef HAS_XBOX_HARDWARE
       if (g_timezone.GetTimeZoneIndex() != g_guiSettings.GetInt("locale.timezone"))
         g_timezone.SetTimeZoneIndex(g_guiSettings.GetInt("locale.timezone"));
 
       if (g_timezone.GetDST() != g_guiSettings.GetBool("locale.usedst"))
         g_timezone.SetDST(g_guiSettings.GetBool("locale.usedst"));
+#endif
 
       CheckNetworkSettings();
       CGUIWindow::OnMessage(message);
@@ -621,6 +628,41 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInLanguages(pSetting);
     }
+#ifdef _LINUX    
+    else if (strSetting.Equals("locale.timezonecountry"))
+    {
+      CStdString myTimezoneCountry = g_guiSettings.GetString("locale.timezonecountry");
+      int myTimezeoneCountryIndex = 0;
+      
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      vector<CStdString> countries = g_timezone.GetCounties();
+      for (unsigned int i=0; i < countries.size(); i++)
+      {
+        if (countries[i] == myTimezoneCountry)
+           myTimezeoneCountryIndex = i;
+        pControl->AddLabel(countries[i], i);
+      }
+      pControl->SetValue(myTimezeoneCountryIndex);    
+    }
+    else if (strSetting.Equals("locale.timezone"))
+    {
+      CStdString myTimezoneCountry = g_guiSettings.GetString("locale.timezonecountry");
+      CStdString myTimezone = g_guiSettings.GetString("locale.timezone");
+      int myTimezoneIndex = 0;
+      
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->Clear();
+      vector<CStdString> timezones = g_timezone.GetTimezonesByCountry(myTimezoneCountry);
+      for (unsigned int i=0; i < timezones.size(); i++)
+      {
+        if (timezones[i] == myTimezone)
+           myTimezoneIndex = i;
+        pControl->AddLabel(timezones[i], i);
+      }
+      pControl->SetValue(myTimezoneIndex);   
+    }    
+#endif    
+#ifdef HAS_XBOX_HARDWARE
     else if (strSetting.Equals("locale.timezone"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -629,6 +671,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
         pControl->AddLabel(g_timezone.GetTimeZoneString(i), i);
       pControl->SetValue(pSettingInt->GetData());
     }
+#endif
     else if (strSetting.Equals("videoscreen.resolution"))
     {
       FillInResolutions(pSetting, false);
@@ -950,7 +993,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       }
 #endif
 #ifdef _LINUX
-      bool enabled = (getuid() == 0);
+      bool enabled = (geteuid() == 0);
 #else
       bool enabled = false;
 #endif
@@ -966,7 +1009,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       CGUISpinControlEx* pControl1 = (CGUISpinControlEx *)GetControl(GetSetting("network.assignment")->GetID());
       if (pControl1) 
-         pControl1->SetEnabled(getuid() == 0);             
+         pControl1->SetEnabled(geteuid() == 0);             
     }
     else if (strSetting.Equals("network.essid") || strSetting.Equals("network.enc") || strSetting.Equals("network.key"))
     {
@@ -976,7 +1019,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CNetworkInterface* iface = g_application.getNetwork().GetInterfaceByName(ifaceName);
       bool bIsWireless = iface->IsWireless();
                
-      bool enabled = bIsWireless && (getuid() == 0);
+      bool enabled = bIsWireless && (geteuid() == 0);
       CGUISpinControlEx* pControl1 = (CGUISpinControlEx *)GetControl(GetSetting("network.assignment")->GetID());
       if (pControl1) 
          enabled &= (pControl1->GetValue() != NETWORK_DISABLED);         
@@ -1007,7 +1050,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("network.save"))
     {
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
-      pControl->SetEnabled(getuid() == 0);
+      pControl->SetEnabled(geteuid() == 0);
     }
 #endif
     else if (strSetting.Equals("postprocessing.verticaldeblocklevel"))
@@ -1188,6 +1231,9 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetString("lookandfeel.soundskin") != "OFF");
     }
+#ifdef _LINUX    
+
+#endif   
   }
 }
 
@@ -2033,8 +2079,33 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
         CGUIDialogOK::ShowAndGetInput(0, 785, 0, 0);
      else
         CGUIDialogOK::ShowAndGetInput(0, 786, 0, 0);
+  }  
+#endif
+#ifdef _LINUX
+  else if (strSetting.Equals("locale.timezonecountry"))
+  {
+    CGUISpinControlEx *pControlCountry = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+    CStdString country = pControlCountry->GetCurrentLabel();      
+      
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting("locale.timezone")->GetID());
+    pControl->Clear();
+    vector<CStdString> timezones = g_timezone.GetTimezonesByCountry(country);
+    for (unsigned int i=0; i < timezones.size(); i++)
+    {
+      pControl->AddLabel(timezones[i], i);
+    }
+    
+    g_timezone.SetTimezone(pControl->GetLabel());  
+    g_guiSettings.SetString("locale.timezonecountry",pControlCountry->GetLabel().c_str());
+  }
+  else  if (strSetting.Equals("locale.timezone"))
+  {
+     CGUISpinControlEx *tzControl = (CGUISpinControlEx *)GetControl(GetSetting("locale.timezone")->GetID());
+     g_timezone.SetTimezone(tzControl->GetLabel());
+     g_guiSettings.SetString("locale.timezone", tzControl->GetLabel().c_str());
   }
 #endif
+
   UpdateSettings();
 }
 
