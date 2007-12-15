@@ -70,7 +70,7 @@ bool CGUIVideoControl::OnMouseOver(const CPoint &point)
 {
   // unfocusable, so return true
   CGUIControl::OnMouseOver(point);
-  return true;
+  return false;
 }
 
 bool CGUIVideoControl::CanFocus() const
