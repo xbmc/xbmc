@@ -486,7 +486,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     }
     else if (info.Equals("folderthumb")) ret = CONTAINER_FOLDERTHUMB;
     else if (info.Equals("folderpath")) ret = CONTAINER_FOLDERPATH;
-    else if (info.Equals("viewtype")) ret = CONTAINER_VIEWTYPE;
+    else if (info.Equals("viewmode")) ret = CONTAINER_VIEWMODE;
     else if (info.Equals("onnext")) ret = CONTAINER_ON_NEXT;
     else if (info.Equals("onprevious")) ret = CONTAINER_ON_PREVIOUS;
     else if (info.Equals("hasnext"))
@@ -942,7 +942,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
       }
       break;
     }
-  case CONTAINER_VIEWTYPE:
+  case CONTAINER_VIEWMODE:
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
