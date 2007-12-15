@@ -1,0 +1,21 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NewABX", "NewABX.vcproj", "{22243B2F-0E44-49EE-A3A0-717B1E7C601F}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{22243B2F-0E44-49EE-A3A0-717B1E7C601F}.Debug.ActiveCfg = Debug|Win32
+		{22243B2F-0E44-49EE-A3A0-717B1E7C601F}.Debug.Build.0 = Debug|Win32
+		{22243B2F-0E44-49EE-A3A0-717B1E7C601F}.Release.ActiveCfg = Release|Win32
+		{22243B2F-0E44-49EE-A3A0-717B1E7C601F}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
