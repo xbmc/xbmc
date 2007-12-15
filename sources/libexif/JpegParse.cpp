@@ -66,8 +66,7 @@ enum {
 //--------------------------------------------------------------------------
 // Constructor
 //--------------------------------------------------------------------------
-CJpegParse::CJpegParse():
-  m_SectionBuffer(NULL)
+CJpegParse::CJpegParse()
 {
   memset(&m_ExifInfo, 0, sizeof(m_ExifInfo));
   memset(&m_IPTCInfo, 0, sizeof(m_IPTCInfo));
@@ -76,12 +75,14 @@ CJpegParse::CJpegParse():
 //--------------------------------------------------------------------------
 // Process a SOFn marker.  This is useful for the image dimensions
 //--------------------------------------------------------------------------
-void CJpegParse::ProcessSOFn (void)
+void CJpegParse::ProcessSOFn(const unsigned char *section, const unsigned short length)
 {
-  m_ExifInfo.Height = CExifParse::Get16(m_SectionBuffer+3);
-  m_ExifInfo.Width  = CExifParse::Get16(m_SectionBuffer+5);
+  if (length < 8)
+    return; // not enough space (section[7] is max we refer to)
+  m_ExifInfo.Height = CExifParse::Get16(section+3);
+  m_ExifInfo.Width  = CExifParse::Get16(section+5);
 
-  unsigned char num_components = m_SectionBuffer[7];
+  unsigned char num_components = section[7];
   if (num_components != 3)
   {
     m_ExifInfo.IsColor = 0;
@@ -97,38 +98,38 @@ void CJpegParse::ProcessSOFn (void)
 // Read a section from a JPEG file. Note that this function allocates memory.
 // It must be called in pair with ReleaseSection
 //--------------------------------------------------------------------------
-bool CJpegParse::GetSection (FILE *infile, const unsigned short sectionLength)
+unsigned char *CJpegParse::GetSection (FILE *infile, const unsigned short sectionLength)
 {
-  m_SectionBuffer = new unsigned char[sectionLength];
-  if (m_SectionBuffer == NULL)
+  unsigned char *sectionBuffer = new unsigned char[sectionLength];
+  if (sectionBuffer == NULL)
   {
     printf("JpgParse: could not allocate memory");
-    return false;
+    return NULL;
   }
   // Store first two pre-read bytes.
-  m_SectionBuffer[0] = (unsigned char)(sectionLength >> 8);
-  m_SectionBuffer[1] = (unsigned char)(sectionLength && 0x00FF);
+  sectionBuffer[0] = (unsigned char)(sectionLength >> 8);
+  sectionBuffer[1] = (unsigned char)(sectionLength && 0x00FF);
 
   unsigned int len = (unsigned int)sectionLength;
 
-  size_t bytesRead = fread(m_SectionBuffer+sizeof(sectionLength), 1, len-sizeof(sectionLength), infile);
+  size_t bytesRead = fread(sectionBuffer+sizeof(sectionLength), 1, len-sizeof(sectionLength), infile);
   if (bytesRead != sectionLength-sizeof(sectionLength))
   {
     printf("JpgParse: premature end of file?");
-    delete[] m_SectionBuffer;
-    return false;
+    delete[] sectionBuffer;
+    return NULL;
   }
-  return true;
+  return sectionBuffer;
 }
 
 //--------------------------------------------------------------------------
 // Deallocate memory allocated in GetSection. This function must always
 // be paired by a preceeding GetSection call.
 //--------------------------------------------------------------------------
-void CJpegParse::ReleaseSection (void)
+void CJpegParse::ReleaseSection (unsigned char *sectionBuffer)
 {
-  delete[] m_SectionBuffer;
-  m_SectionBuffer = NULL;
+  if (sectionBuffer)
+    delete[] sectionBuffer;
 }
 
 //--------------------------------------------------------------------------
@@ -195,13 +196,14 @@ bool CJpegParse::ExtractInfo (FILE *infile)
       break;
 
       case M_COM: // Comment section
-        GetSection(infile, itemlen);
-        if (m_SectionBuffer != NULL)
-        {
-       //   CExifParse::FixComment(comment);          // Ensure comment is printable
-          strncpy(m_ExifInfo.Comments, (char *)&m_SectionBuffer[2], min(itemlen-2, MAX_COMMENT));
-		    }
-        ReleaseSection();
+      {
+        unsigned char *section = GetSection(infile, itemlen);
+        if (NULL == section)
+          return false;
+
+        strncpy(m_ExifInfo.Comments, (char *)&section[2], min(itemlen-2, MAX_COMMENT));
+        ReleaseSection(section);
+      }
       break;
 
       case M_SOF0:
@@ -217,35 +219,39 @@ bool CJpegParse::ExtractInfo (FILE *infile)
       case M_SOF13:
       case M_SOF14:
       case M_SOF15:
-        GetSection(infile, itemlen);
-        if ((m_SectionBuffer != NULL) && (itemlen >= 7))
-        {
-          ProcessSOFn();
-          m_ExifInfo.Process = marker;
-        }
-        ReleaseSection();
+      {
+        unsigned char *section = GetSection(infile, itemlen);
+        if (NULL == section)
+          return false;
+
+        ProcessSOFn(section, itemlen);
+        m_ExifInfo.Process = marker;
+        ReleaseSection(section);
+      }
       break;
 
       case M_IPTC:
-        GetSection(infile, itemlen);
-        if (m_SectionBuffer != NULL)
-        {
-          CIptcParse::Process(m_SectionBuffer, itemlen, &m_IPTCInfo);
-        }
-        ReleaseSection();
+      {
+        unsigned char *section = GetSection(infile, itemlen);
+        if (NULL == section)
+          return false;
+        CIptcParse::Process(section, itemlen, &m_IPTCInfo);
+        ReleaseSection(section);
+      }
       break;
 
       case M_EXIF:
+      {
         // Seen files from some 'U-lead' software with Vivitar scanner
         // that uses marker 31 for non exif stuff.  Thus make sure
         // it says 'Exif' in the section before treating it as exif.
-        GetSection(infile, itemlen);
-        if (m_SectionBuffer != NULL)
-        {
-          CExifParse exif;
-          exif.Process(m_SectionBuffer, itemlen, &m_ExifInfo);
-        }
-        ReleaseSection();
+        unsigned char *section = GetSection(infile, itemlen);
+        if (NULL == section)
+          return false;
+        CExifParse exif;
+        exif.Process(section, itemlen, &m_ExifInfo);
+        ReleaseSection(section);
+      }
       break;
 
       case M_JFIF:
@@ -255,9 +261,12 @@ bool CJpegParse::ExtractInfo (FILE *infile)
         // hence no need to keep the copy from the file.
       // fall through to default case
       default:
-        // Skip any other sections.
-        GetSection(infile, itemlen);
-        ReleaseSection();
+      { // Skip any other sections.
+        unsigned char *section = GetSection(infile, itemlen);
+        if (NULL == section)
+          return false;
+        ReleaseSection(section);
+      }
       break;
     }
   }

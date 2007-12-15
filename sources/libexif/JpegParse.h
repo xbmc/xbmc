@@ -46,11 +46,11 @@ class CJpegParse
 
   private:
     bool ExtractInfo    (FILE *infile);
-    bool GetSection     (FILE *infile, const unsigned short sectionLength);
-    void ReleaseSection (void);
-    void ProcessSOFn    (void);
+    unsigned char *GetSection(FILE *infile, const unsigned short sectionLength);
+    void ReleaseSection (unsigned char *section);
+    void ProcessSOFn    (const unsigned char *section, const unsigned short length);
 
-    unsigned char*  m_SectionBuffer;
+//    unsigned char*  m_SectionBuffer;
     ExifInfo_t      m_ExifInfo;
     IPTCInfo_t      m_IPTCInfo;
 };

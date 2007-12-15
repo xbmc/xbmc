@@ -195,9 +195,8 @@ static void ErrNonfatal(const char* const msg, int a1, int a2)
 //--------------------------------------------------------------------------
 CExifParse::CExifParse () : m_FocalPlaneXRes(0.0),
         m_FocalPlaneUnits(0.0), m_ExifImageWidth(0), m_MotorolaOrder(false),
-        m_DateFound(false)
+        m_DateFound(false), m_LargestExifOffset(0), m_ExifInfo(NULL)
 {
-  m_ExifInfo = NULL;
 }
 
 //--------------------------------------------------------------------------
@@ -329,7 +328,7 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
                             const unsigned ExifLength,
                             int NestingLevel)
 {
-  if (NestingLevel > 4)
+  if (DirStart + 2 >= OffsetBase + ExifLength || NestingLevel > 4)
   {
     ErrNonfatal("Maximum directory nesting exceeded (corrupt exif header)", 0,0);
     return;
@@ -339,7 +338,7 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
   memset(IndentString, ' ', 25);
   IndentString[NestingLevel * 4] = '\0';
 
-
+  // need 2 bytes here
   int NumDirEntries = Get16((void*)DirStart, m_MotorolaOrder);
 
   const unsigned char* const DirEnd = DIR_ENTRY_ADDR(DirStart, NumDirEntries);
@@ -709,7 +708,7 @@ bool CExifParse::Process (const unsigned char* const ExifSection, const unsigned
 
   char* pos = (char*)(ExifSection + sizeof(short));   // position data pointer after length field
 
-  if (memcmp(pos, ExifHeader,6))
+  if (length < 12 || memcmp(pos, ExifHeader,6))
   {
     printf("ExifParse: incorrect Exif header");
     return false;
@@ -816,6 +815,21 @@ void CExifParse::ProcessGpsInfo(
                     unsigned ExifLength)
 {
   int NumDirEntries = Get16(DirStart);
+
+  const unsigned char* const DirEnd = DIR_ENTRY_ADDR(DirStart, NumDirEntries);
+  if (DirEnd+4 > (OffsetBase+ExifLength))
+  {
+    if (DirEnd+2 == OffsetBase+ExifLength || DirEnd == OffsetBase+ExifLength)
+    {
+      // Version 1.3 of jhead would truncate a bit too much.
+      // This also caught later on as well.
+    }
+    else
+    {
+      ErrNonfatal("Illegally sized directory", 0,0);
+      return;
+    }
+  }
 
   for (int de=0;de<NumDirEntries;de++)
   {
