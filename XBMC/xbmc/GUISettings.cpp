@@ -29,11 +29,16 @@
 #endif
 #include "XBAudioConfig.h"
 #include "XBVideoConfig.h"
+#ifdef HAS_XBOX_HARDWARE
 #include "XBTimeZone.h"
+#endif
 #ifdef HAS_XFONT
 #include <xfont.h>
 #endif
 #include "MediaManager.h"
+#ifdef _LINUX
+#include "LinuxTimezone.h"
+#endif
 
 // String id's of the masks
 #define MASK_MINS   14044
@@ -553,8 +558,14 @@ CGUISettings::CGUISettings(void)
   AddSeparator(4, "locale.sep1");
   AddString(5, "locale.time", 14065, "", BUTTON_CONTROL_MISC_INPUT);
   AddString(6, "locale.date", 14064, "", BUTTON_CONTROL_MISC_INPUT);
+#ifdef HAS_XBOX_HARDWARE
   AddInt(7, "locale.timezone", 14074, 0, 0, 1, g_timezone.GetNumberOfTimeZones(), SPIN_CONTROL_TEXT);
   AddBool(8, "locale.usedst", 14075, false);
+#endif
+#ifdef _LINUX
+  AddString(8, "locale.timezone", 14081, g_timezone.GetOSConfiguredTimezone(), SPIN_CONTROL_TEXT);
+  AddString(7, "locale.timezonecountry", 14080, g_timezone.GetCountryByTimezone(g_timezone.GetOSConfiguredTimezone()), SPIN_CONTROL_TEXT);
+#endif
   AddSeparator(9, "locale.sep2");
   AddBool(10,   "locale.timeserver"       , 168  , false);
   AddString(11, "locale.timeaddress"      , 731  , "207.46.130.100", BUTTON_CONTROL_IP_INPUT);
@@ -919,9 +930,10 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   SetBool("videooutput.hd720p", g_videoConfig.Has720p());
   SetBool("videooutput.hd1080i", g_videoConfig.Has1080i());
 
-
+#ifdef HAS_XBOX_HARDWARE
   SetInt("locale.timezone", g_timezone.GetTimeZoneIndex());
   SetBool("locale.usedst", g_timezone.GetDST());
+#endif
 
   g_guiSettings.m_LookAndFeelResolution = (RESOLUTION)GetInt("videoscreen.resolution");
   g_videoConfig.SetVSyncMode((VSYNC)GetInt("videoscreen.vsync"));
@@ -955,6 +967,10 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   m_replayGain.iNoGainPreAmp = GetInt("musicplayer.replaygainnogainpreamp");
   m_replayGain.iType = GetInt("musicplayer.replaygaintype");
   m_replayGain.bAvoidClipping = GetBool("musicplayer.replaygainavoidclipping");
+
+#ifdef _LINUX  
+  g_timezone.SetTimezone(GetString("locale.timezone"));
+#endif  
 }
 
 void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool advanced /* = false */)
