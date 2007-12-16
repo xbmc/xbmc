@@ -36,6 +36,7 @@
 #include "../FileSystem/SndtrkDirectory.h"
 #endif
 #include "../musicInfoTagLoaderFactory.h"
+#include "../MusicInfoLoader.h"
 #include "LabelFormatter.h"
 
 #include "GUILabelControl.h"  // for CInfoPortion
@@ -400,6 +401,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("musicplayer.discnumber")) ret = MUSICPLAYER_DISC_NUMBER;
     else if (strTest.Equals("musicplayer.rating")) ret = MUSICPLAYER_RATING;
     else if (strTest.Equals("musicplayer.comment")) ret = MUSICPLAYER_COMMENT;
+    else if (strTest.Equals("musicplayer.lyrics")) ret = MUSICPLAYER_LYRICS;
   }
   else if (strCategory.Equals("videoplayer"))
   {
@@ -776,6 +778,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case MUSICPLAYER_DISC_NUMBER:
   case MUSICPLAYER_RATING:
   case MUSICPLAYER_COMMENT:
+  case MUSICPLAYER_LYRICS:
     strLabel = GetMusicLabel(info);
   break;
   case VIDEOPLAYER_TITLE:
@@ -2154,6 +2157,8 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
     return GetItemLabel(&m_currentFile, LISTITEM_RATING);
   case MUSICPLAYER_COMMENT:
     return GetItemLabel(&m_currentFile, LISTITEM_COMMENT);
+  case MUSICPLAYER_LYRICS: 
+    return GetItemLabel(&m_currentFile, AddListItemProp("lyrics"));
   }
   return "";
 }
@@ -2464,6 +2469,8 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
   else
     m_currentFile.SetMusicThumb();
   m_currentFile.FillInDefaultIcon();
+
+  CMusicInfoLoader::LoadAdditionalTagInfo(&m_currentFile);
 }
 
 void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
