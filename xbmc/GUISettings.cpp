@@ -568,7 +568,7 @@ CGUISettings::CGUISettings(void)
 #endif
   AddSeparator(9, "locale.sep2");
   AddBool(10,   "locale.timeserver"       , 168  , false);
-  AddString(11, "locale.timeaddress"      , 731  , "207.46.130.100", BUTTON_CONTROL_IP_INPUT);
+  AddString(11, "locale.timeserveraddress"      , 731  , "pool.ntp.org", BUTTON_CONTROL_INPUT);
 
   AddCategory(7, "videoscreen", 131);
   AddInt(1, "videoscreen.resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);

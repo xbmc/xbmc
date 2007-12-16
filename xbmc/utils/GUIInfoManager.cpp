@@ -38,6 +38,7 @@
 #include "../FileSystem/SndtrkDirectory.h"
 #endif
 #include "../musicInfoTagLoaderFactory.h"
+#include "../MusicInfoLoader.h"
 #include "LabelFormatter.h"
 
 #include "GUILabelControl.h"  // for CInfoPortion
@@ -406,6 +407,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("musicplayer.discnumber")) ret = MUSICPLAYER_DISC_NUMBER;
     else if (strTest.Equals("musicplayer.rating")) ret = MUSICPLAYER_RATING;
     else if (strTest.Equals("musicplayer.comment")) ret = MUSICPLAYER_COMMENT;
+    else if (strTest.Equals("musicplayer.lyrics")) ret = MUSICPLAYER_LYRICS;
   }
   else if (strCategory.Equals("videoplayer"))
   {
@@ -492,7 +494,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     }
     else if (info.Equals("folderthumb")) ret = CONTAINER_FOLDERTHUMB;
     else if (info.Equals("folderpath")) ret = CONTAINER_FOLDERPATH;
-    else if (info.Equals("viewtype")) ret = CONTAINER_VIEWTYPE;
+    else if (info.Equals("viewmode")) ret = CONTAINER_VIEWMODE;
     else if (info.Equals("onnext")) ret = CONTAINER_ON_NEXT;
     else if (info.Equals("onprevious")) ret = CONTAINER_ON_PREVIOUS;
     else if (info.Equals("hasnext"))
@@ -782,6 +784,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case MUSICPLAYER_DISC_NUMBER:
   case MUSICPLAYER_RATING:
   case MUSICPLAYER_COMMENT:
+  case MUSICPLAYER_LYRICS:
     strLabel = GetMusicLabel(info);
   break;
   case VIDEOPLAYER_TITLE:
@@ -948,7 +951,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
       }
       break;
     }
-  case CONTAINER_VIEWTYPE:
+  case CONTAINER_VIEWMODE:
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
@@ -1367,6 +1370,20 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
 #else
     bReturn = false;
 #endif
+  else if (condition == SYSTEM_PLATFORM_WINDOWS)
+#ifdef WIN32
+    bReturn = true;
+#else
+    bReturn = false;
+#endif
+  else if (condition == SYSTEM_PLATFORM_XBOX)
+#ifdef HAS_XBOX_HARDWARE
+    bReturn = true;
+#else
+    bReturn = false;
+#endif
+  else if (condition == SYSTEM_PLATFORM_LINUX)
+    bReturn = false;
   else if (condition == SYSTEM_PLATFORM_WINDOWS)
 #ifdef WIN32
     bReturn = true;
@@ -2204,6 +2221,8 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
     return GetItemLabel(&m_currentFile, LISTITEM_RATING);
   case MUSICPLAYER_COMMENT:
     return GetItemLabel(&m_currentFile, LISTITEM_COMMENT);
+  case MUSICPLAYER_LYRICS: 
+    return GetItemLabel(&m_currentFile, AddListItemProp("lyrics"));
   }
   return "";
 }
@@ -2514,6 +2533,8 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
   else
     m_currentFile.SetMusicThumb();
   m_currentFile.FillInDefaultIcon();
+
+  CMusicInfoLoader::LoadAdditionalTagInfo(&m_currentFile);
 }
 
 void CGUIInfoManager::SetCurrentMovie(CFileItem &item)

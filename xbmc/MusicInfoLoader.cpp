@@ -32,7 +32,8 @@ using namespace XFILE;
 using namespace DIRECTORY;
 using namespace MUSIC_INFO;
 
-CMusicInfoLoader::CMusicInfoLoader()
+// HACK until we make this threadable - specify 1 thread only for now
+CMusicInfoLoader::CMusicInfoLoader() : CBackgroundInfoLoader(1)
 {
 }
 
@@ -64,6 +65,34 @@ void CMusicInfoLoader::OnLoaderStart()
     m_pProgressCallback->SetProgressMax(m_pVecItems->GetFileCount());
 
   m_musicDatabase.Open();
+}
+
+bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
+{
+  if (!pItem || pItem->m_bIsFolder || pItem->IsPlayList() || pItem->IsNFO() || pItem->IsInternetStream())
+    return false;
+
+  if (pItem->GetProperty("hasfullmusictag") == "true")
+    return false; // already have the information
+
+  CStdString path(pItem->m_strPath);
+  if (pItem->IsMusicDb())
+    path = pItem->GetMusicInfoTag()->GetURL();
+
+  CLog::Log(LOGDEBUG, "Loading additional tag info for file %s", path.c_str());
+
+  // we load up the actual tag for this file
+  CMusicInfoTag tag;
+  auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(path));
+  if (NULL != pLoader.get())
+  {
+    pLoader->Load(path, tag);
+    // then we set the fields from the file tags to the item
+    pItem->SetProperty("lyrics", tag.GetLyrics());
+    pItem->SetProperty("hasfullmusictag", "true");
+    return true;
+  }
+  return false;
 }
 
 bool CMusicInfoLoader::LoadItem(CFileItem* pItem)

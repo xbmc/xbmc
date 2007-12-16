@@ -12,6 +12,7 @@ public:
 
   void UseCacheOnHD(const CStdString& strFileName);
   virtual bool LoadItem(CFileItem* pItem);
+  static bool LoadAdditionalTagInfo(CFileItem* pItem);
 
 protected:
   virtual void OnLoaderStart();

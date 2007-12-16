@@ -111,6 +111,8 @@ bool CID3Tag::Parse()
 
   tag.SetComment(GetComment());
 
+  tag.SetLyrics(GetLyrics());
+
   tag.SetRating(GetRating());
 
   if (!tag.GetTitle().IsEmpty() || !tag.GetArtist().IsEmpty() || !tag.GetAlbum().IsEmpty())
@@ -305,6 +307,32 @@ CStdString CID3Tag::GetEncodedBy() const
   return ToStringCharset(ucs4, encoding);
 }
 
+CStdString CID3Tag::GetLyrics() const
+{
+  id3_field_textencoding encoding=ID3_FIELD_TEXTENCODING_ISO_8859_1;
+  const id3_ucs4_t* ucs4;
+  struct id3_frame *frame;
+  union id3_field *field;
+  frame = m_dll.id3_tag_findframe (m_tag, "USLT", 0);
+  if (!frame) return "";
+  
+  /* Find the encoding used, stored in frame 0 */
+  field = m_dll.id3_frame_field (frame, 0);
+
+  if (field && (m_dll.id3_field_type (field) == ID3_FIELD_TYPE_TEXTENCODING))
+    encoding = m_dll.id3_field_gettextencoding(field);
+
+
+  /* The last field contains the data */
+  field = m_dll.id3_frame_field (frame, frame->nfields-1);
+  if (!field) return "";
+   
+  if(field->type != ID3_FIELD_TYPE_STRINGFULL) return "";
+
+  ucs4 = m_dll.id3_field_getfullstring (field);
+
+  return ToStringCharset(ucs4, encoding);
+}
 char CID3Tag::GetRating() const
 {
   return m_dll.id3_metadata_getrating(m_tag);

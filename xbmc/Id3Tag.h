@@ -31,6 +31,7 @@ protected:
   CStdString GetComment() const;
   char       GetRating() const;
   CStdString GetEncodedBy() const;
+  CStdString GetLyrics() const;
 
   bool HasPicture(id3_picture_type pictype) const;
   CStdString GetPictureMimeType(id3_picture_type pictype) const;

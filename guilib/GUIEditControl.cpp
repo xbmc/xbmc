@@ -41,9 +41,11 @@ void CGUIEditControl::OnKeyPress(const CAction &action) // FIXME TESTME: NEW/CHA
   }
   else if (action.wID >= KEY_ASCII)
   {
-    // input from the keyboard    
-    // FIXME TESTME: NEW/CHANGED parameter and NOT tested CAN'T do it/DON'T know where (window 2700)/how exactly 
-    switch (action.unicode) // (ch)
+    // input from the keyboard
+    // NOTE: The below code is from the unicode keyboard patch which isn't in trunk fully yet.
+    //       I have included it as this class will eventually need it anyway.  Ideally it should
+    //       be using action.unicode if/when the unicode keyboard patch is merged to trunk.
+    switch (action.wID) 
     {
     case 27:
       { // escape
@@ -79,7 +81,7 @@ void CGUIEditControl::OnKeyPress(const CAction &action) // FIXME TESTME: NEW/CHA
         CStdStringA utf8StrLabel = m_strLabel;
         CStdStringW wStrLabel;
         g_charsetConverter.utf8ToW(utf8StrLabel, wStrLabel);
-        wStrLabel.insert( wStrLabel.begin() + m_iCursorPos, action.unicode);
+        wStrLabel.insert( wStrLabel.begin() + m_iCursorPos, (WCHAR)action.wID);
         g_charsetConverter.wToUTF8(wStrLabel, utf8StrLabel);
         m_iCursorPos++;
         break;

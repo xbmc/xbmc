@@ -794,6 +794,8 @@ void CGUIImage::CalculateSize()
     float pixelRatio = g_graphicsContext.GetScalingPixelRatio();
 
     float fSourceFrameRatio = ((float)m_iTextureWidth) / ((float)m_iTextureHeight);
+    if (GetOrientation() & 4)
+      fSourceFrameRatio = ((float)m_iTextureHeight) / ((float)m_iTextureWidth);
     float fOutputFrameRatio = fSourceFrameRatio / pixelRatio;
 
     // maximize the thumbnails width
