@@ -487,7 +487,7 @@ void CLinuxRendererGL::CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, f
 
 void CLinuxRendererGL::ManageTextures()
 {
-  m_NumYV12Buffers = 1;
+  m_NumYV12Buffers = 2;
   m_NumOSDBuffers = 1;
   //m_iYV12RenderBuffer = 0;
   m_iOSDRenderBuffer = 0;
@@ -724,11 +724,13 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
     return false;
 
   // FIXME:
-  CreateYV12Texture(0);
-  // CreateYV12Texture(1);
-  // CreateYV12Texture(2);
+  for (int i = 0 ; i < m_NumYV12Buffers ; i++)
+  {
+    CreateYV12Texture(i);
+  }
 
-  if (m_rgbBuffer != NULL) {
+  if (m_rgbBuffer != NULL) 
+  {
      delete [] m_rgbBuffer;
      m_rgbBuffer = NULL;
   }
@@ -763,12 +765,13 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
      return -1;
   }
 
-  if (m_image[source].flags != 0) 
+  if ((m_image[source].flags&(~IMAGE_FLAG_READY)) != 0) 
   {
      CLog::Log(LOGDEBUG, "CLinuxRenderer::GetImage - request image but none to give");
      return -1;
   }
 
+  m_image[source].flags = 0;
   //m_image[source].flags = readonly?IMAGE_FLAG_READING:IMAGE_FLAG_WRITING;
 
   if( source >= 0 && m_image[source].plane[0] )
@@ -813,7 +816,7 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
     SetEvent(m_eventTexturesDone[source]);
 
   m_image[source].flags &= ~IMAGE_FLAG_INUSE;
-
+  m_image[source].flags |= IMAGE_FLAG_READY;
   /* if image should be preserved reserve it so it's not auto seleceted */
 
   if( preserve )
@@ -825,22 +828,28 @@ void CLinuxRendererGL::LoadTextures(int source)
 { 
   YV12Image &im = m_image[source];
   YUVFIELDS &fields = m_YUVTexture[source];
+
+  if (!(im.flags&IMAGE_FLAG_READY))
+  {
+    SetEvent(m_eventTexturesDone[source]);
+    return;
+  }
   
   // if we don't have a shader, fallback to SW YUV2RGB for now
   
-  //g_graphicsContext.BeginPaint(m_pBuffer, false);
-  g_graphicsContext.BeginPaint();
-
   if (m_renderMethod & RENDER_SW)
   {
-    struct SwsContext *context = m_dllSwScale.sws_getContext(im.width, im.height, PIX_FMT_YUV420P, im.width, im.height, PIX_FMT_RGB32, SWS_BILINEAR, NULL, NULL, NULL);
+    struct SwsContext *context = m_dllSwScale.sws_getContext(im.width, im.height, PIX_FMT_YUV420P, 
+                                                             im.width, im.height, PIX_FMT_RGB32, 
+                                                             SWS_FAST_BILINEAR, NULL, NULL, NULL);
     uint8_t *src[] = { im.plane[0], im.plane[1], im.plane[2] };
     int     srcStride[] = { im.stride[0], im.stride[1], im.stride[2] };
     uint8_t *dst[] = { m_rgbBuffer, 0, 0 };
     int     dstStride[] = { m_iSourceWidth*4, 0, 0 };
-    m_dllSwScale.sws_scale(context, src, srcStride, 0, im.height, dst, dstStride);
-    
+    m_dllSwScale.sws_scale(context, src, srcStride, 0, im.height, dst, dstStride);    
     m_dllSwScale.sws_freeContext(context);
+    m_image[source].flags = 0;
+    SetEvent(m_eventTexturesDone[source]);
   }   
 
   static int imaging = -1;
@@ -994,12 +1003,12 @@ void CLinuxRendererGL::LoadTextures(int source)
       glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[2]);
       VerifyGLState();
     }
-  }  
-  //g_graphicsContext.EndPaint(m_pBuffer, false);
-  g_graphicsContext.EndPaint();
-
-  //SetEvent(m_eventTexturesDone[source]);
-  m_image[source].flags = 0;
+  }
+  if (!(m_renderMethod & RENDER_SW))
+  {
+    SetEvent(m_eventTexturesDone[source]);
+    m_image[source].flags = 0;
+  }
 }
 
 void CLinuxRendererGL::Reset()
@@ -1028,13 +1037,17 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
   ManageDisplay();
   ManageTextures();
-  
-  if( WaitForSingleObject(m_eventTexturesDone[index], 500) == WAIT_TIMEOUT )
-    CLog::Log(LOGWARNING, CStdString(__FUNCTION__) + " - Timeout waiting for texture %d", index);
 
   g_graphicsContext.BeginPaint();
 
-  LoadTextures(index);
+  if( WaitForSingleObject(m_eventTexturesDone[index], 500) == WAIT_TIMEOUT )
+  {
+    CLog::Log(LOGWARNING, "%s - Timeout waiting for texture %d", __FUNCTION__, index);
+  }
+  else
+  {
+    LoadTextures(index);
+  }
 
   if (clear) 
   {
@@ -1061,7 +1074,7 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   VerifyGLState();
   glEnable(GL_BLEND);
   g_graphicsContext.EndPaint();
-  SetEvent(m_eventTexturesDone[index]);
+
 }
 
 void CLinuxRendererGL::FlipPage(int source)
@@ -1154,7 +1167,7 @@ unsigned int CLinuxRendererGL::PreInit()
   m_iOSDRenderBuffer = 0;
   m_iYV12RenderBuffer = 0;
   m_NumOSDBuffers = 1;
-  m_NumYV12Buffers = 1;
+  m_NumYV12Buffers = 2;
   m_OSDHeight = m_OSDWidth = 0;
   m_OSDRendered = false;
 
@@ -1235,7 +1248,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
   bool err = false;  
   if (glCreateProgram)
   {
-    g_graphicsContext.BeginPaint();
+    //g_graphicsContext.BeginPaint();
 
     if (m_pYUVShader)
     {
@@ -1278,7 +1291,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
       err = true;
       CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB GLSL shader");
     }
-    g_graphicsContext.EndPaint();
+    //g_graphicsContext.EndPaint();
   }
   else if (err && glewIsSupported("GL_ARB_fragment_shader")) 
   {    
@@ -1452,7 +1465,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
     char * currentLocale = setlocale(LC_NUMERIC, NULL);
     setlocale(LC_NUMERIC, "C");
 
-    g_graphicsContext.BeginPaint();
+    //g_graphicsContext.BeginPaint();
     m_shaderProgram = glCreateProgram();
     m_fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
     m_vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -1528,7 +1541,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
       VerifyGLState();
     }
 
-    g_graphicsContext.EndPaint();
+    //g_graphicsContext.EndPaint();
     if (error)
     {
       CLog::Log(LOGNOTICE, "GL: Error loading loading GLSL shader, falling back to software rendering");
@@ -1643,7 +1656,7 @@ void CLinuxRendererGL::Render(DWORD flags)
     m_currentField = FIELD_FULL;
   }
 
-  g_graphicsContext.BeginPaint();
+  //g_graphicsContext.BeginPaint();
   
   if (m_renderMethod & RENDER_GLSL)
   {
@@ -1677,7 +1690,7 @@ void CLinuxRendererGL::Render(DWORD flags)
 
   if( flags & RENDER_FLAG_NOOSD ) 
   {
-    g_graphicsContext.EndPaint();
+    //g_graphicsContext.EndPaint();
     return;
   }
 
@@ -1693,7 +1706,7 @@ void CLinuxRendererGL::Render(DWORD flags)
     g_application.RenderMemoryStatus();
     VerifyGLState();
   }
-  g_graphicsContext.EndPaint();
+  //g_graphicsContext.EndPaint();
 }
 
 void CLinuxRendererGL::SetViewMode(int iViewMode)
@@ -1851,7 +1864,7 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags)
     g_graphicsContext.ClipToViewWindow();
   }
 
-  g_graphicsContext.BeginPaint();
+  //g_graphicsContext.BeginPaint();
 
   glDisable(GL_DEPTH_TEST);
 
@@ -1972,7 +1985,7 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags)
 
   VerifyGLState();
 
-  g_graphicsContext.EndPaint();
+  //g_graphicsContext.EndPaint();
 }
 
 void CLinuxRendererGL::RenderMultiPass(DWORD flags)
@@ -1987,7 +2000,7 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags)
     g_graphicsContext.ClipToViewWindow();
   }
 
-  g_graphicsContext.BeginPaint();
+  //g_graphicsContext.BeginPaint();
 
   glDisable(GL_DEPTH_TEST);
   VerifyGLState();
@@ -2206,7 +2219,7 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags)
 
   glDisable(m_textureTarget);
   VerifyGLState();
-  g_graphicsContext.EndPaint();
+  //g_graphicsContext.EndPaint();
 }
 
 /*
@@ -2409,6 +2422,7 @@ void CLinuxRendererGL::RenderLowMem(DWORD flags)
 
 void CLinuxRendererGL::RenderSoftware(DWORD flags)
 {
+  int index = m_iYV12RenderBuffer;
   int field = FIELD_FULL;
   DWORD fieldmask = (flags&RENDER_FLAG_FIELDMASK);
 
@@ -2430,7 +2444,6 @@ void CLinuxRendererGL::RenderSoftware(DWORD flags)
 
   bool deinterlacing = (field!=FIELD_FULL) && (g_stSettings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_NONE)
     && (g_stSettings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_DEINTERLACE);
-  int index = 0;
   YV12Image &im = m_image[index];
 
   // set scissors if we are not in fullscreen video
@@ -2439,7 +2452,7 @@ void CLinuxRendererGL::RenderSoftware(DWORD flags)
     g_graphicsContext.ClipToViewWindow();
   }
 
-  g_graphicsContext.BeginPaint();
+  //g_graphicsContext.BeginPaint();
 
   glDisable(GL_DEPTH_TEST);
 
@@ -2506,7 +2519,7 @@ void CLinuxRendererGL::RenderSoftware(DWORD flags)
 
   glDisable(m_textureTarget);
   VerifyGLState();
-  g_graphicsContext.EndPaint();
+  //g_graphicsContext.EndPaint();
 }
 
 void CLinuxRendererGL::CreateThumbnail(SDL_Surface * surface, unsigned int width, unsigned int height)
@@ -2590,7 +2603,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
   }
 
   //g_graphicsContext.BeginPaint(m_pBuffer);
-  g_graphicsContext.BeginPaint();
+  //g_graphicsContext.BeginPaint();
 
   glEnable(m_textureTarget);
   for(int f = 0;f<MAX_FIELDS;f++) 
@@ -2663,7 +2676,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     }
   }
   //g_graphicsContext.EndPaint(m_pBuffer);
-  g_graphicsContext.EndPaint();
+  //g_graphicsContext.EndPaint();
   SetEvent(m_eventTexturesDone[index]);
   return true;
 }

@@ -285,7 +285,7 @@ bool CDVDPlayer::ExtractThumb(const CStdString &strPath, const CStdString &strTa
 
                 BYTE *pOutBuf = (BYTE*)new int[nWidth * nHeight * 4];
                 struct SwsContext *context = dllSwScale.sws_getContext(picture.iWidth, picture.iHeight, 
-                      PIX_FMT_YUV420P, nWidth, nHeight, PIX_FMT_RGB32, SWS_BILINEAR, NULL, NULL, NULL);
+                      PIX_FMT_YUV420P, nWidth, nHeight, PIX_FMT_RGB32, SWS_FAST_BILINEAR, NULL, NULL, NULL);
                 uint8_t *src[] = { picture.data[0], picture.data[1], picture.data[2] };
                 int     srcStride[] = { picture.iLineSize[0], picture.iLineSize[1], picture.iLineSize[2] };
                 uint8_t *dst[] = { pOutBuf, 0, 0 };
@@ -457,7 +457,7 @@ void CDVDPlayer::Process()
         if(iError > DVD_MSEC_TO_TIME(1000))
         {
           CLog::Log(LOGDEBUG, "CDVDPlayer::Process - Seeking to catch up");
-          __int64 iTime = GetTime() + 500.0 * GetPlaySpeed() / DVD_PLAYSPEED_NORMAL;
+          __int64 iTime = (__int64)(GetTime() + 500.0 * GetPlaySpeed() / DVD_PLAYSPEED_NORMAL);
           m_messenger.Put(new CDVDMsgPlayerSeek(iTime, GetPlaySpeed() < 0));
         }
       }
