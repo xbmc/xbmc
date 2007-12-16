@@ -43,7 +43,7 @@ typedef char BYTE;
 
 //--------------------------------------------------------------------------
 #define JPEG_PARSE_STRING_ID_BASE       21500
-enum {
+typedef enum {
   ProcessUnknown = JPEG_PARSE_STRING_ID_BASE,
   ProcessSof0,
   ProcessSof1,
@@ -141,12 +141,12 @@ bool CJpegParse::ExtractInfo (FILE *infile)
   // Get file marker (two bytes - must be 0xFFD8 for JPEG files
   BYTE a;
   size_t bytesRead = fread(&a, 1, sizeof(BYTE), infile);
-  if ((bytesRead != sizeof(BYTE)) || (a != 0xFF))
+  if ((bytesRead != sizeof(BYTE)) || (a != (BYTE)0xFF))
   {
     return false;
   }
   bytesRead = fread(&a, 1, sizeof(BYTE), infile);
-  if ((bytesRead != sizeof(BYTE)) || (a != M_SOI))
+  if ((bytesRead != sizeof(BYTE)) || (a != (BYTE)M_SOI))
   {
     return false;
   }

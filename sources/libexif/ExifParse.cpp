@@ -40,6 +40,8 @@
 #include "ExifParse.h"
 
 
+#include <algorithm>
+using namespace std;
 // Prototypes for exif utility functions.
 static void ErrNonfatal(const void* const msg, int a1, int a2);
 
@@ -123,7 +125,7 @@ static void ErrNonfatal(const void* const msg, int a1, int a2);
 // language file (e.g. 'language/English/strings.xml', and EXIF_PARSE_STRING_ID_BASE
 // must match the ID of the first Exif string in that file.
 #define EXIF_PARSE_STRING_ID_BASE       21800
-enum {
+typedef enum {
 // Distance
   ExifStrDistanceInfinite = EXIF_PARSE_STRING_ID_BASE,
 // Whitebalance et.al.
