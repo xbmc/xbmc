@@ -67,6 +67,30 @@ void CMusicInfoLoader::OnLoaderStart()
   m_musicDatabase.Open();
 }
 
+bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
+{
+  if (!pItem || pItem->m_bIsFolder || pItem->IsPlayList() || pItem->IsNFO() || pItem->IsInternetStream())
+    return false;
+
+  if (pItem->GetProperty("hasfullmusictag") == "true")
+    return false; // already have the information
+
+  CLog::Log(LOGDEBUG, "Loading additional tag info for file %s", pItem->m_strPath.c_str());
+
+  // we load up the actual tag for this file
+  CMusicInfoTag tag;
+  auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(pItem->m_strPath));
+  if (NULL != pLoader.get())
+  {
+    pLoader->Load(pItem->m_strPath, tag);
+    // then we set the fields from the file tags to the item
+    pItem->SetProperty("lyrics", tag.GetLyrics());
+    pItem->SetProperty("hasfullmusictag", "true");
+    return true;
+  }
+  return false;
+}
+
 bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
 {
   if (m_pProgressCallback && !pItem->m_bIsFolder)
