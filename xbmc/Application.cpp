@@ -188,6 +188,7 @@
 #include "GUIDialogSmartPlaylistRule.h"
 #include "GUIDialogPictureInfo.h"
 #include "GUIDialogPluginSettings.h"
+#include "GUIDialogAccessPoints.h"
 
 #ifdef HAS_PERFORMACE_SAMPLE
 #include "utils/PerformanceSample.h"
@@ -1485,6 +1486,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogBusy);      // window id = 138
   m_gWindowManager.Add(new CGUIDialogPictureInfo);      // window id = 139
   m_gWindowManager.Add(new CGUIDialogPluginSettings);      // window id = 140
+  m_gWindowManager.Add(new CGUIDialogAccessPoints);      // window id = 141
 
   CGUIDialogLockSettings* pDialog = NULL;
   CStdString strPath;
