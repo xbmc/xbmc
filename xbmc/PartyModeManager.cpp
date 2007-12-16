@@ -49,7 +49,7 @@ CPartyModeManager::~CPartyModeManager(void)
 {
 }
 
-bool CPartyModeManager::Enable(bool bVideo /* = false */)
+bool CPartyModeManager::Enable(bool bVideo /* = false */, const CStdString& strXspPath /*= ""*/)
 {
   // Filter using our PartyMode xml file
   CSmartPlaylist playlist;
@@ -63,7 +63,9 @@ bool CPartyModeManager::Enable(bool bVideo /* = false */)
   pDialog->SetLine(1, "");
   pDialog->SetLine(2, "");
   pDialog->StartModal();
-  if (bVideo)
+  if (!strXspPath.IsEmpty()) //if a path to a smartplaylist is supplied use it
+    partyModePath = strXspPath;
+  else if (bVideo)
     partyModePath = g_settings.GetUserDataItem("PartyMode-Video.xsp");
   else
     partyModePath = g_settings.GetUserDataItem("PartyMode.xsp");
