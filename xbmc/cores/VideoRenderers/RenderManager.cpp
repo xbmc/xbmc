@@ -284,11 +284,11 @@ void CXBoxRenderManager::FlipPage(DWORD delay /* = 0LL*/, int source /*= -1*/, E
 #ifdef HAS_SDL_OPENGL
     // In OpenGL, we shouldn't be waiting for CThread::m_bStop since rendering is
     // happening from the main thread.
-    g_application.NewFrame();
-    unsigned int nTicks = GetTickCount();
-    if (timestamp > nTicks)
-      ::Sleep(timestamp - nTicks);
+    // unsigned int nTicks = GetTickCount();
+    while (timestamp > GetTickCount())
+      ::Sleep(1);
     m_pRenderer->FlipPage(source);
+    g_application.NewFrame();
 #else
     while( timestamp > GetTickCount() && !CThread::m_bStop) Sleep(1);
 #endif
