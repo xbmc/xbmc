@@ -75,14 +75,18 @@ bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
   if (pItem->GetProperty("hasfullmusictag") == "true")
     return false; // already have the information
 
-  CLog::Log(LOGDEBUG, "Loading additional tag info for file %s", pItem->m_strPath.c_str());
+  CStdString path(pItem->m_strPath);
+  if (pItem->IsMusicDb())
+    path = pItem->GetMusicInfoTag()->GetURL();
+
+  CLog::Log(LOGDEBUG, "Loading additional tag info for file %s", path.c_str());
 
   // we load up the actual tag for this file
   CMusicInfoTag tag;
-  auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(pItem->m_strPath));
+  auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(path));
   if (NULL != pLoader.get())
   {
-    pLoader->Load(pItem->m_strPath, tag);
+    pLoader->Load(path, tag);
     // then we set the fields from the file tags to the item
     pItem->SetProperty("lyrics", tag.GetLyrics());
     pItem->SetProperty("hasfullmusictag", "true");
