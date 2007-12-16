@@ -8,7 +8,7 @@ public:
   CPartyModeManager(void);
   virtual ~CPartyModeManager(void);
 
-  bool Enable(bool bVideo=false);
+  bool Enable(bool bVideo=false, const CStdString& strXspPath = "");
   void Disable();
   void Play(int iPos);
   void OnSongChange(bool bUpdatePlayed = false);
