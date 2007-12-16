@@ -90,6 +90,7 @@ public:
   virtual bool Rename(const CURL& url, const CURL& urlnew) { return false; }
 
   virtual ICacheInterface* GetCache() {return NULL;} 
+  virtual int IoControl(int request, void* param) { return -1; }
 };
 };
 

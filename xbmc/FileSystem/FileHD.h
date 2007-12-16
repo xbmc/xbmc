@@ -33,6 +33,7 @@ public:
 
   virtual bool Delete(const CURL& url);
   virtual bool Rename(const CURL& url, const CURL& urlnew);
+  virtual int IoControl(int request, void* param);
 protected:
   CStdString GetLocal(const CURL &url); /* crate a properly format path from an url */
   CAutoPtrHandle m_hFile;

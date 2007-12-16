@@ -10,6 +10,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/timeb.h>
+#include <sys/ioctl.h>
+#include <linux/cdrom.h>
 #include <fcntl.h>
 #include <time.h>
 #include <signal.h>
@@ -351,13 +353,18 @@ extern "C"
     if (iMode & O_BINARY)
       bBinary = true;
     bool bWrite = false;
-    if (iMode & O_RDWR || iMode & O_WRONLY)
+    if ((iMode & O_RDWR) || (iMode & O_WRONLY))
       bWrite = true;
     bool bOverwrite=false;
-    if (iMode & _O_TRUNC)
+    if ((iMode & _O_TRUNC) || (iMode & O_CREAT))
       bOverwrite = true;
     // currently always overwrites
-    if ((bWrite && pFile->OpenForWrite(str, bBinary, bOverwrite)) || pFile->Open(str, bBinary) )
+    bool bResult;
+    if (bWrite)
+      bResult = pFile->OpenForWrite(str, bBinary, bOverwrite);
+    else
+      bResult = pFile->Open(str, bBinary);
+    if (bResult)
     {
       EmuFileObject* object = g_emuFileWrapper.RegisterFileObject(pFile);
       if (object == NULL)
@@ -1583,6 +1590,28 @@ extern "C"
   {
     return &errno;
   }
+
+  int __cdecl dll_ioctl(int fd, unsigned long int request, va_list va)
+  {
+     CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
+     if (!pFile)
+       return -1;
+
+    if(request == DVD_READ_STRUCT || request == DVD_AUTH)
+    {
+      void *p1 = va_arg(va, void*);
+      int ret = pFile->IoControl(request, p1);
+      if(ret<0)
+        CLog::Log(LOGWARNING, "%s - %ld request failed with error [%d] %s", __FUNCTION__, request, errno, strerror(errno));
+      return ret;
+    }
+    else
+    {
+      CLog::Log(LOGWARNING, "%s - Unknown request type %ld", __FUNCTION__, request);
+      return -1;
+    }
+  }
+
 #endif
 
 };
