@@ -1148,7 +1148,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         m_strOldTrackFormatRight = g_guiSettings.GetString("musicfiles.trackformatright");
       }
     }
-    else if (strSetting.Equals("locale.timeaddress"))
+    else if (strSetting.Equals("locale.timeserveraddress"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("locale.timeserver"));
@@ -1886,7 +1886,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_langInfo.SetCurrentRegion(strRegion);
     g_guiSettings.SetString("locale.country", strRegion);
   }
-  else if (strSetting.Equals("locale.timeserver") || strSetting.Equals("locale.timeaddress"))
+  else if (strSetting.Equals("locale.timeserver") || strSetting.Equals("locale.timeserveraddress"))
   {
     g_application.StopTimeServer();
     if (g_guiSettings.GetBool("locale.timeserver"))

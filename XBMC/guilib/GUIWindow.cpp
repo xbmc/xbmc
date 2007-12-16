@@ -526,9 +526,9 @@ void CGUIWindow::OnMouseAction()
     CPoint controlPoint;
     if (pControl->CanFocusFromPoint(mousePoint, &focusableControl, controlPoint))
     {
-      controlUnderPointer = true;
+      controlUnderPointer = focusableControl->OnMouseOver(controlPoint);
       bHandled = HandleMouse(focusableControl, controlPoint);
-      if (bHandled)
+      if (bHandled || controlUnderPointer)
         break;
     }
   }
@@ -557,8 +557,6 @@ bool CGUIWindow::OnMouse(const CPoint &point)
 
 bool CGUIWindow::HandleMouse(CGUIControl *pControl, const CPoint &point)
 {
-  // Issue the MouseOver event to highlight the item, and perform any pointer changes
-  bool focused = pControl->OnMouseOver(point);
   if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
   { // Left click
     return pControl->OnMouseClick(MOUSE_LEFT_BUTTON, point);
@@ -583,8 +581,8 @@ bool CGUIWindow::HandleMouse(CGUIControl *pControl, const CPoint &point)
   { // Mouse wheel
     return pControl->OnMouseWheel(g_Mouse.GetWheel(), point);
   }
-  // no mouse stuff done other than movement - return indicating whether we've focused or not
-  return focused;
+  // no mouse stuff done other than movement
+  return false;
 }
 
 DWORD CGUIWindow::GetID(void) const

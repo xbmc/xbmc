@@ -421,6 +421,10 @@ void CMusicInfoTagLoaderWMA::SetTagValueString(const CStdString& strFrameName, c
     else
       tag.SetGenre(tag.GetGenre() + g_advancedSettings.m_musicItemSeparator + strValue);
   }
+  else if (strFrameName == "WM/Lyrics")
+  {
+    tag.SetLyrics(strValue);
+  }
   //else if (strFrameName=="WM/DRM")
   //{
   // // File is DRM protected
