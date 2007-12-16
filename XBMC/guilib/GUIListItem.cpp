@@ -156,6 +156,7 @@ const CGUIListItem& CGUIListItem::operator =(const CGUIListItem& item)
   m_strThumbnailImage = item.m_strThumbnailImage;
   m_overlayIcon = item.m_overlayIcon;
   m_bIsFolder = item.m_bIsFolder;
+  m_mapProperties = item.m_mapProperties;
   SetInvalid();
   return *this;
 }
