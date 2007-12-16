@@ -216,14 +216,10 @@ CFileItem::~CFileItem(void)
 const CFileItem& CFileItem::operator=(const CFileItem& item)
 {
   if (this == &item) return * this;
-  m_strLabel2 = item.m_strLabel2;
-  m_strLabel = item.m_strLabel;
+  CGUIListItem::operator=(item);
   m_bLabelPreformated=item.m_bLabelPreformated;
   FreeMemory();
-  m_bSelected = item.m_bSelected;
-  m_strIcon = item.m_strIcon;
-  m_strThumbnailImage = item.m_strThumbnailImage;
-  m_overlayIcon = item.m_overlayIcon;
+  m_bIsFolder = item.m_bIsFolder;
   m_strPath = item.m_strPath;
   m_bIsFolder = item.m_bIsFolder;
 #ifdef DEBUG
@@ -290,7 +286,6 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_bCanQueue=item.m_bCanQueue;
   m_contenttype = item.m_contenttype;
   m_extrainfo = item.m_extrainfo;
-  SetInvalid();
   return *this;
 }
 
