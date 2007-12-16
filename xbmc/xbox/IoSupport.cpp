@@ -341,10 +341,10 @@ HANDLE CIoSupport::OpenCDROM()
     return NULL;
   }
 #elif defined(_LINUX)
-  hDevice = CreateFile(MEDIA_DETECT::CCdIoSupport::GetDeviceFileName(), 
-                       GENERIC_READ, FILE_SHARE_READ,
-                       NULL, OPEN_EXISTING,
-                       FILE_FLAG_RANDOM_ACCESS, NULL );
+  int fd = open(MEDIA_DETECT::CCdIoSupport::GetDeviceFileName(), O_RDONLY | O_NONBLOCK);
+  hDevice = new CXHandle(CXHandle::HND_FILE);
+  hDevice->fd = fd;
+  hDevice->m_bCDROM = true;
 #else
 
   hDevice = CreateFile("\\\\.\\Cdrom0", GENERIC_READ, FILE_SHARE_READ,
