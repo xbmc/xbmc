@@ -47,6 +47,7 @@ int dll_fgetc (FILE* stream);
 char * dll_fgets (char* pszString, int num , FILE * stream);
 int dll_getc (FILE * stream);
 int dll_ungetc (int c, FILE * stream);
+int dll_ioctl(int d, unsigned long int request, va_list va);
 
 void* __wrap_calloc( size_t num, size_t size )
 {
@@ -242,4 +243,14 @@ int __wrap__IO_getc(FILE *stream)
 int __wrap_ungetc(int c, FILE *stream)
 {
   return dll_ungetc(c, stream);
+}
+
+int __wrap_ioctl(int d, unsigned long int request, ...)
+{
+    int res;
+    va_list va;
+    va_start(va, request);
+    res = dll_ioctl(d, request, va);
+    va_end(va);
+    return res; 
 }
