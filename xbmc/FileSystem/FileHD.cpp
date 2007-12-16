@@ -22,6 +22,9 @@
 #include "FileHD.h"
 #include "../Util.h"
 #include <sys/stat.h>
+#ifdef _LINUX
+#include <sys/ioctl.h>
+#endif
 
 using namespace XFILE;
 
@@ -228,4 +231,12 @@ bool CFileHD::Rename(const CURL& url, const CURL& urlnew)
 void CFileHD::Flush()
 {
   ::FlushFileBuffers(m_hFile);
+}
+
+int CFileHD::IoControl(int request, void* param)
+{ 
+#ifdef _LINUX
+  return ioctl((*m_hFile).fd, request, param);
+#endif
+  return -1;
 }

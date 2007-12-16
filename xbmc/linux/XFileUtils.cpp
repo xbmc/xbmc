@@ -192,57 +192,43 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
   }
   
   int fd = 0;
-  bool cd = false;
 
   if (dwFlagsAndAttributes & FILE_FLAG_NO_BUFFERING)
     flags |= O_SYNC;
 
   CStdString strResultFile(lpFileName);
 
-  // special case for opening the cdrom device
-  if (strcmp(lpFileName, MEDIA_DETECT::CCdIoSupport::GetDeviceFileName())==0)
-  {
-    fd = open(lpFileName, O_RDONLY | O_NONBLOCK);
-    cd = true;
+  fd = open(lpFileName, flags, mode);
 
-  }
-  else
+  // Important to check reason for fail. Only if its 
+  // "file does not exist" shall we try to find the file
+  if (fd == -1 && errno == ENOENT) 
   {
-    fd = open(lpFileName, flags, mode);
-
-    // Important to check reason for fail. Only if its 
-    // "file does not exist" shall we try to find the file
-    if (fd == -1 && errno == ENOENT) 
+    // Failed to open file. maybe due to case sensitivity. 
+    // Try opening the same name in lower case.
+    CStdString igFileName = PTH_IC(lpFileName);
+    fd = open(igFileName.c_str(), flags, mode);
+    if (fd != -1) 
     {
-      // Failed to open file. maybe due to case sensitivity. 
-      // Try opening the same name in lower case.
-      CStdString igFileName = PTH_IC(lpFileName);
-      fd = open(igFileName.c_str(), flags, mode);
-      if (fd != -1) 
-      {
-        CLog::Log(LOGWARNING,"%s, successfuly opened <%s> instead of <%s>", __FUNCTION__, igFileName.c_str(), lpFileName);
-        strResultFile = igFileName;
-      }
+      CLog::Log(LOGWARNING,"%s, successfuly opened <%s> instead of <%s>", __FUNCTION__, igFileName.c_str(), lpFileName);
+      strResultFile = igFileName;
     }
   }
-  
+
   if (fd == -1)
   {
-    CLog::Log(LOGWARNING,"%s, error %d opening file <%s>. ", __FUNCTION__, errno, lpFileName);
+    CLog::Log(LOGWARNING,"%s, error %d opening file <%s>, flags:%x, mode:%x. ", __FUNCTION__, errno, lpFileName, flags, mode);
     return INVALID_HANDLE_VALUE;
   }
 
   HANDLE result = new CXHandle(CXHandle::HND_FILE);
-  if (cd)
-  {
-    result->m_bCDROM = true;
-  }
-  else
-  {
-    result->m_bCDROM = false;
-  }
-    
   result->fd = fd;
+
+  // special case for opening the cdrom device
+  if (strcmp(lpFileName, MEDIA_DETECT::CCdIoSupport::GetDeviceFileName())==0)
+    result->m_bCDROM = true;
+  else
+    result->m_bCDROM = false;
 
   // if FILE_FLAG_DELETE_ON_CLOSE then "unlink" the file (delete)
   // the file will be deleted when the last open descriptor is closed.  
@@ -490,15 +476,7 @@ DWORD  SetFilePointer(HANDLE hFile, LONG lDistanceToMove, PLONG lpDistanceToMove
 		nMode = SEEK_END;
 
 	off64_t currOff;
-	if (hFile->m_bCDROM)
-	{
-	  currOff = lseek64(hFile->fd, offset, nMode);	  
-	  currOff = offset;
-	}
-	else
-	{
-	  currOff = lseek64(hFile->fd, offset, nMode);	  
-	}
+	currOff = lseek64(hFile->fd, offset, nMode);
 	
 	if (lpDistanceToMoveHigh) {
 		*lpDistanceToMoveHigh = (LONG)(currOff >> 32);
