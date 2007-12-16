@@ -3793,14 +3793,20 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     }
     else if (parameter.Left(9).Equals("partymode"))
     {
+      CStdString strXspPath = "";
+      //empty param=music, "music"=music, "video"=video, else xsp path
       bool bVideo=false;
       if (parameter.size() > 9)
+      {
         if (parameter.Mid(10).Equals("video)"))
           bVideo = true;
+        else if (!parameter.Mid(10).Equals("music)"))
+          strXspPath = parameter.Mid(10).TrimRight(")");
+      }
       if (g_partyModeManager.IsEnabled())
         g_partyModeManager.Disable();
       else
-        g_partyModeManager.Enable(bVideo);
+        g_partyModeManager.Enable(bVideo, strXspPath);
     }
     else if (parameter.Equals("random"))
     {
