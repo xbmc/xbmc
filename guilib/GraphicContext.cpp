@@ -60,7 +60,7 @@ CGraphicContext::~CGraphicContext(void)
   {
 #ifndef HAS_SDL
     D3DVIEWPORT8 *viewport = m_viewStack.top();
-#elif defined(H77AS_SDL_2D)
+#elif defined(HAS_SDL_2D)
     SDL_Rect *viewport = m_viewStack.top();
 #elif defined(HAS_SDL_OPENGL)
     GLint* viewport = m_viewStack.top();
