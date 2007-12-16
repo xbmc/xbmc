@@ -737,7 +737,7 @@ void CSNTPClient::Process()
   while (nTries < 3 && !CThread::m_bStop)
   {
     NtpServerResponse response;
-    if (GetServerTime( g_guiSettings.GetString("locale.timeaddress"), response))
+    if (GetServerTime( g_guiSettings.GetString("locale.timeserveraddress"), response))
     {
       SYSTEMTIME st1 = response.m_OriginateTime;
       SYSTEMTIME st2 = response.m_ReceiveTime;
