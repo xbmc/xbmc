@@ -158,6 +158,7 @@
 #define MUSICPLAYER_DISC_NUMBER     218
 #define MUSICPLAYER_RATING          219
 #define MUSICPLAYER_COMMENT         220
+#define MUSICPLAYER_LYRICS          221
 
 #define VIDEOPLAYER_TITLE           250
 #define VIDEOPLAYER_GENRE           251
@@ -445,7 +446,8 @@ public:
   const CFileItem &GetCurrentSlide() const { return m_currentSlide; };
   void ResetCurrentSlide();
   void SetCurrentSongTag(const CMusicInfoTag &tag) 
-  {     
+  {
+    CLog::Log(LOGDEBUG, "Asked to SetCurrentTag");
     *m_currentFile.GetMusicInfoTag() = tag; 
     m_currentFile.m_lStartOffset = 0;
   };
@@ -609,5 +611,6 @@ protected:
  */
 extern CGUIInfoManager g_infoManager;
 #endif
+
 
 
