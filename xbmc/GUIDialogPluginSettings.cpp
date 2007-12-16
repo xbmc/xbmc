@@ -29,6 +29,7 @@
 #include "MediaManager.h"
 #include "GUIRadioButtonControl.h"
 #include "GUISpinControlEx.h"
+#include "FileSystem/HDDirectory.h"
 
 #define CONTROL_AREA                  2
 #define CONTROL_DEFAULT_BUTTON        3
@@ -174,12 +175,17 @@ void CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
         {
           // set the proper mask
           CStdString strMask;
-          if (strcmpi(type, "video") == 0)
-            strMask = g_stSettings.m_videoExtensions;
-          else if (strcmpi(type, "music") == 0)
-            strMask = g_stSettings.m_musicExtensions;
-          else if (strcmpi(type, "programs") == 0)
-            strMask = ".xbe|.py";
+          if (setting->Attribute("mask"))
+            strMask = setting->Attribute("mask");
+          else
+          {
+            if (strcmpi(type, "video") == 0)
+              strMask = g_stSettings.m_videoExtensions;
+            else if (strcmpi(type, "music") == 0)
+              strMask = g_stSettings.m_musicExtensions;
+            else if (strcmpi(type, "programs") == 0)
+              strMask = ".xbe|.py";
+          }
 
           // get any options
           bool bUseThumbs = false;
@@ -209,7 +215,10 @@ bool CGUIDialogPluginSettings::SaveSettings(void)
   TiXmlElement *setting = m_settings.GetPluginRoot()->FirstChildElement("setting");
   while (setting)
   {
-    CStdString id = setting->Attribute("id");
+    CStdString id;
+    if (setting->Attribute("id"))
+      id = setting->Attribute("id");
+    const char *type = setting->Attribute("type");
     const CGUIControl* control = GetControl(controlId);
 
     CStdString value;
@@ -222,7 +231,10 @@ bool CGUIDialogPluginSettings::SaveSettings(void)
         value = ((CGUIRadioButtonControl*) control)->IsSelected() ? "true" : "false";
         break;
       case CGUIControl::GUICONTROL_SPINEX:
-        value.Format("%i", ((CGUISpinControlEx*) control)->GetValue());
+        if (strcmpi(type, "fileenum") == 0)
+          value = ((CGUISpinControlEx*) control)->GetLabel();
+        else
+          value.Format("%i", ((CGUISpinControlEx*) control)->GetValue());
         break;
       default:
         break;
@@ -274,6 +286,13 @@ void CGUIDialogPluginSettings::CreateControls()
   strHeading.Format("$LOCALIZE[1045] - %s", strHeading.c_str());
   SET_CONTROL_LABEL(CONTROL_HEADING_LABEL, strHeading);
 
+  // Create our base path, used for type "fileenum" settings
+  CStdString basepath = "Q:\\plugins\\";
+  CUtil::AddFileToFolder(basepath, m_url.GetHostName(), basepath);
+  CUtil::AddFileToFolder(basepath, m_url.GetFileName(), basepath);
+  // Replace the / at end, GetFileName() leaves a / at the end
+  basepath.Replace("/", "\\");
+
   CGUIControl* pControl = NULL;
   int controlId = CONTROL_START_CONTROL;
   TiXmlElement *setting = m_settings.GetPluginRoot()->FirstChildElement("setting");
@@ -281,9 +300,12 @@ void CGUIDialogPluginSettings::CreateControls()
   {
     const char *type = setting->Attribute("type");
     const char *id = setting->Attribute("id");
-    CStdString values = setting->Attribute("values");
-    CStdString lvalues = setting->Attribute("lvalues");
-
+    CStdString values;
+    if (setting->Attribute("values"))
+      values = setting->Attribute("values");
+    CStdString lvalues;
+    if (setting->Attribute("lvalues"))
+      lvalues = setting->Attribute("lvalues");
     CStdString label;
     label.Format("$LOCALIZE[%s]", setting->Attribute("label"));
 
@@ -332,6 +354,37 @@ void CGUIDialogPluginSettings::CreateControls()
           ((CGUISpinControlEx *)pControl)->AddLabel(valuesVec[i], i);
       }
       ((CGUISpinControlEx *)pControl)->SetValue(atoi(m_settings.Get(id)));
+    }
+    else if (strcmpi(type, "fileenum") == 0)
+    {
+      pControl = new CGUISpinControlEx(*pOriginalSpin);
+      if (!pControl) return;
+      ((CGUISpinControlEx *)pControl)->SetText(label);
+
+      //find Folders...
+      DIRECTORY::CHDDirectory directory;
+      CFileItemList items;
+      CStdString enumpath;
+      CUtil::AddFileToFolder(basepath, values, enumpath);
+      CStdString mask;
+      if (setting->Attribute("mask"))
+        mask = setting->Attribute("mask");
+      if (!mask.IsEmpty())
+        directory.SetMask(mask);
+      directory.GetDirectory(enumpath, items);
+
+      int iItem = 0;
+      for (int i = 0; i < items.Size(); ++i)
+      {
+        CFileItem* pItem = items[i];
+        if ((mask.Equals("/") && pItem->m_bIsFolder) || !pItem->m_bIsFolder)
+        {
+          ((CGUISpinControlEx *)pControl)->AddLabel(pItem->GetLabel(), iItem);
+          if (pItem->GetLabel().Equals(m_settings.Get(id)))
+            ((CGUISpinControlEx *)pControl)->SetValue(iItem);
+          iItem++;
+        }
+      }
     }
     else if (strcmpi(type, "sep") == 0 && pOriginalImage)
       pControl = new CGUIImage(*pOriginalImage);

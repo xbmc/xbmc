@@ -1,0 +1,26 @@
+struct ContainerItem{
+
+bool 	Finished, // Has the file finished being read
+	Loading, // Is it still loading
+	ScxMode, // Are we in SCX mode
+	Extracting, // Is the current file having its contents extracted/converted right now
+	IniMatch, // Filename database match
+	HasNames, // Does the file contain names
+	HasAudioInfo, // Does the file contain audio info
+	HasFolders, // Does the file contain folders
+	NeedsWavHeader, // Does the file need a wavheader to be made
+	Error; // Has there been a read/extract error
+
+int 	Files, // Total files contained
+	IncompatileFmts, // How many incompatible files
+	PlayableFmts; // Is this format playable
+
+
+u_long	FileSize;
+
+String 	DirName, // Directory name
+	DirPath, // Path to directory
+	OpenFileName, // Name of open file
+	Format; // Format of open file
+
+}CItem;
