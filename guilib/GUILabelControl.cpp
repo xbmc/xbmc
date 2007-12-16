@@ -93,7 +93,7 @@ void CGUILabelControl::Render()
       if (m_label.align & XBFONT_CENTER_Y)
         fPosY += m_height * 0.5f;
 
-      m_textLayout.RenderScrolling(fPosX, fPosY, m_label.angle, m_label.textColor, m_label.shadowColor, m_label.align, m_width, m_ScrollInfo);
+      m_textLayout.RenderScrolling(fPosX, fPosY, m_label.angle, m_label.textColor, m_label.shadowColor, (m_label.align & ~3), m_width, m_ScrollInfo);
     }
   }
   if (bNormalDraw)

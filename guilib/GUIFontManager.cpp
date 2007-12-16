@@ -164,6 +164,7 @@ void GUIFontManager::LoadFonts(const CStdString& strFontSet)
   // as fonts aren't scaled at render time (due to aliasing) we must scale
   // the size of the fonts before they are drawn to bitmaps
   g_graphicsContext.SetScalingResolution(m_skinResolution, 0, 0, true);
+
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   const TiXmlNode *pChild = pRootElement->FirstChild();
 

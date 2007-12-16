@@ -41,6 +41,7 @@ void dll_rewind(FILE* stream);
 int dll_fgetpos(FILE* stream, fpos_t* pos);
 int dll_fsetpos(FILE* stream, const fpos_t* pos);
 int dll_fprintf(FILE* stream , const char * format, ...);
+int dllprintf(const char *format, ...);
 int dll_vfprintf(FILE *stream, const char *format, va_list va);
 int dll_fgetc (FILE* stream);
 char * dll_fgets (char* pszString, int num , FILE * stream);
@@ -211,6 +212,16 @@ int __wrap_fprintf(FILE *stream, const char *format, ...)
 int __wrap_vfprintf(FILE *stream, const char *format, va_list ap)
 {
   return dll_vfprintf(stream, format, ap);
+}
+
+int __wrap_printf(const char *format, ...)
+{
+    int res;
+    va_list va;
+    va_start(va, format);
+    res = dll_vfprintf(stdout, format, va);
+    va_end(va);
+    return res; 
 }
 
 int __wrap_fgetc(FILE *stream)

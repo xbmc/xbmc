@@ -113,6 +113,10 @@ bool CMusicInfoTagLoaderMP3::Load(const CStdString& strFileName, CMusicInfoTag& 
       }
       if (apeTag.GetGenre().size())
         tag.SetGenre(apeTag.GetGenre());
+
+      if (apeTag.GetLyrics().size())
+        tag.SetLyrics(apeTag.GetLyrics());
+
       if (apeTag.GetYear().size())
       {
         SYSTEMTIME time;

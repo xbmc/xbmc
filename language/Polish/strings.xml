@@ -744,7 +744,8 @@
   <string id="1412">wiatrem</string>
   <string id="1413">m¿awka</string>
   <string id="1414">burza</string>
-  <!-- linijki do 1450 zarezerwowane -->
+ 
+ <!-- linijki do 1450 zarezerwowane -->
 
   <string id="2050">D³ugoœæ:</string>
 
@@ -848,7 +849,7 @@
   <string id="12325">Dostêp zablokowany! Wpisz kod...</string>
   <string id="12326">Wpisz has³o</string>
   <string id="12327">Wpisz has³o w³aœciciela</string>
-  <string id="12328">Wpisz kod odblokowuj¹cy</string>
+  <string id="12328">Wpisz kod odblokowuj¹cy</string> 
   <string id="12329">lub wciœnij C aby anulowaæ</string>
   <string id="12330">Wciœnij kombinacjê przycisków na padzie</string>
   <string id="12331">a nastêpnie Start, Back aby anulowaæ</string>
@@ -894,7 +895,7 @@
   <string id="12392">Godzin</string>
   <string id="12393">Dni</string>
   <string id="12394">Ca³kowity czas pracy</string>
-
+  
   <string id="12600">Pogoda</string>
 
   <string id="12900">Wygaszacz</string>
@@ -1319,7 +1320,7 @@
   <string id="16002">Przeszukujê CDDB</string>
   <string id="16003">Odtwarzacz</string>
   <string id="16004">Odtwarzaj media z p³yty</string>
-
+  
   <string id="16008">Wpisz nowy tytu³</string>
   <string id="16009">Wpisz nazwê filmu</string>
   <string id="16010">Wpisz nazwê profilu</string>
@@ -1364,7 +1365,7 @@
   <string id="16201">B³¹d podczas kopiowania</string>
   <string id="16202">Nie uda³o siê skopiowaæ conajmniej jednego pliku</string>
   <string id="16203">B³¹d podczas przenoszenia</string>
-  <string id="16204">Nie uda³o siê przenieœæ conajmniej jednego pliku</string>
+  <string id="16204">Nie uda³o siê przenieœæ conajmniej jednego pliku</string>  
   <string id="16205">B³¹d podczas kasowania</string>
   <string id="16206">Nie uda³o siê skasowaæ conajmniej jednego pliku</string>
 
@@ -1461,7 +1462,7 @@
   <string id="20097">Pozyskujê informacje o albumie</string>
   <string id="20098">Pozyskujê informacje dla albumu</string>
   <string id="20099">Nie mo¿na zgraæ CD lub œcie¿ki dopóki odtwarzany jest CD</string>
-  <string id="20100">Has³o w³aœciciela i blokady</string>
+  <string id="20100">Has³o w³aœciciela i blokady</string> 
   <string id="20101">Wpisanie has³a w³aœciciela zawsze uruchamia tryb w³aœciciela</string>
   <string id="20102">czy skopiowaæ z domyœlnego?</string>
   <string id="20103">Zapisaæ zmiany w profilu?</string>
@@ -1553,13 +1554,11 @@
   <string id="20190">W³asne</string>
 
   <!-- string id's 20200 thru 20211 are reserved for speedstrings (LocalizeStrings.cpp)-->
-
+  
   <string id="20250">Party on! (filmy)</string>
   <string id="20251">Mixing drinks (filmy)</string>
   <string id="20252">Filling glasses (filmy)</string>
 
-  <string id="20189"></string>
-  <string id="20190"></string>
   <string id="20191"></string>
   <string id="20192"></string>
   <string id="20193"></string>
@@ -1680,7 +1679,7 @@
   <!-- linijki do 21329 zarezerwowane dla video db!! !-->
 
   <string id="21330">Pokazuj ukryte pliki i katalogi</string>
-
+  
   <string id="21331">Klient TuxBox</string>
   <string id="21332">UWAGA: Urz¹dzenie TuxBox jest w trybie nagrywania!</string>
   <string id="21333">Strumieñ zostanie zatrzymany!</string>
@@ -1689,7 +1688,7 @@
   <string id="21336">£¹czê do: %s</string>
   <string id="21337">Urz¹dzenie TuxBox</string>
   <!-- linijki do 21355 zarezerwowane!! !-->
-
+  
   <string id="21356">UPnP Muzyka</string>
   <string id="21357">UPnP Filmy</string>
   <string id="21358">UPnP Obrazy</string>
@@ -1699,11 +1698,11 @@
   <string id="21362">Zarz¹dzaj udzia³ami z filmami UPnP</string>
   <string id="21363">Zarz¹dzaj udzia³ami z obrazami UPnP</string>
   <string id="21364">Edytuj udzia³ mediów</string>
-  <string id="21365">Usuñ udzia³ mediów</string>
+  <string id="21365">Usuñ udzia³ mediów</string>  
   <string id="21366">W³asny katalog z napisami</string>
   <string id="21367">Film &amp; Alternatywny katalog z napisami</string>
-
-  <string id="21370">W³¹cz dŸwiêki nawigacyjne podczas odtwarzania mediów</string>
+  
+  <string id="21370">W³¹cz dŸwiêki nawigacyjne podczas odtwarzania mediów</string>  
   <string id="21371">Miniatura</string>
   <string id="21372">Wymuszony region DVD</string>
   <string id="21373">Parametry obrazu</string>
@@ -1722,7 +1721,7 @@
   <string id="21386">Zarz¹dzanie poziomem g³oœnoœci pracy</string>
   <string id="21387">Szybki</string>
   <string id="21388">Cichy</string>
-  <string id="21389">Wybierz w³asne t³o</string>
+  <string id="21389">Wybierz w³asne t³o</string>  
   <string id="21390">Poziom zarz¹dzania energi¹</string>
   <string id="21391">Wysoki poziom zu¿ycia energii</string>
   <string id="21392">Niski poziom zu¿ycia energii</string>
@@ -1730,7 +1729,7 @@
   <string id="21394">Dzia³anie z opóŸnieniem</string>
   <string id="21395">Nie mogê cache'owaæ plików wiêkszych ni¿ 4 gb</string>
   <string id="21396">Rozdzia³</string>
-  <string id="21397">Wysokiej jakoœci cieniowanie pixeli V2</string>
+  <string id="21397">Wysokiej jakoœci cieniowanie pixeli V2</string>	
   <string id="21398">Odtwarzaj playlistê na starcie</string>
   <string id="21399">U¿ywaj animacji przejœcia</string>
   <string id="21400">zawiera</string>
@@ -1802,7 +1801,7 @@
   <string id="21842">Wysokoœæ GPS</string>
   <string id="21843">Orientacja</string>
 
-  <string id="21860">kategorie uzupe³niaj¹ce</string>
+  <string id="21860">Kategorie uzupe³niaj¹ce</string>
   <string id="21861">S³owa kluczowe</string>
   <string id="21862">Podpis</string>
   <string id="21863">Autor</string>
@@ -1818,7 +1817,7 @@
   <string id="21873">Miasto</string>
   <string id="21874">Województwo</string>
   <string id="21875">Kraj</string>
-  <string id="21876">Original Tx Reference</string>
+  <string id="21876">Oryginalne referencje Tx</string>
   <string id="21877">Data utworzenia</string>
   <string id="21878">Prawa autorskie</string>
   <string id="21879">Kod kraju</string>
@@ -1829,7 +1828,11 @@
 
   <!-- linijki od 21900 do 21999 zarezerwowane -->
 
+  <string id="22000">Uaktualnij bibliotekê podczas startu</string>
+  <string id="22001">Zawsze uaktualniaj bibliotekê w tle</string>
+
   <string id="29999">Automatyczna ³atka filtru migotania</string>
-  <!-- strings 30000 thru 31000 reserved for plugin settings -->
-  <!-- strings 31001 thru 32000 reserved for skins -->
+
+  <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
+  <!-- strings 31000 thru 31999 reserved for skins -->
 </strings>

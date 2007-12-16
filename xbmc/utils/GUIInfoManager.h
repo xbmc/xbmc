@@ -161,6 +161,7 @@
 #define MUSICPLAYER_DISC_NUMBER     218
 #define MUSICPLAYER_RATING          219
 #define MUSICPLAYER_COMMENT         220
+#define MUSICPLAYER_LYRICS          221
 
 #define VIDEOPLAYER_TITLE           250
 #define VIDEOPLAYER_GENRE           251
@@ -214,7 +215,9 @@
 #define CONTAINER_ROW               368
 #define CONTAINER_COLUMN            369
 #define CONTAINER_POSITION          370
-#define CONTAINER_VIEWTYPE          371
+#define CONTAINER_VIEWMODE          371
+#define CONTAINER_HAS_NEXT          372
+#define CONTAINER_HAS_PREVIOUS      373
 #define CONTAINER_HAS_NEXT          372
 #define CONTAINER_HAS_PREVIOUS      373
 
@@ -448,7 +451,8 @@ public:
   const CFileItem &GetCurrentSlide() const { return m_currentSlide; };
   void ResetCurrentSlide();
   void SetCurrentSongTag(const CMusicInfoTag &tag) 
-  {     
+  {
+    CLog::Log(LOGDEBUG, "Asked to SetCurrentTag");
     *m_currentFile.GetMusicInfoTag() = tag; 
     m_currentFile.m_lStartOffset = 0;
   };
@@ -612,5 +616,6 @@ protected:
  */
 extern CGUIInfoManager g_infoManager;
 #endif
+
 
 

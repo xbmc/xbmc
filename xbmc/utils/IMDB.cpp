@@ -199,7 +199,7 @@ bool CIMDB::InternalGetEpisodeList(const CIMDBUrl& url, IMDB_EPISODELIST& detail
   if (!m_parser.Load("Q:\\system\\scrapers\\video\\"+m_info.strPath))
     return false;
   IMDB_EPISODELIST temp;
-  for (unsigned int i=0; i < url.m_scrURL.size(); i++)
+  for(unsigned int i=0; i < url.m_scrURL.size(); i++)
   {
     CStdString strHTML;
     CScraperUrl scrUrl;
