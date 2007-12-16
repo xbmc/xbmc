@@ -43,7 +43,7 @@ typedef struct YV12Image
 #define IMAGE_FLAG_READING   0x02 /* image is in use after a call to GetImage, caller is only reading */
 #define IMAGE_FLAG_DYNAMIC   0x04 /* image was allocated due to a call to GetImage */
 #define IMAGE_FLAG_RESERVED  0x08 /* image is reserved, must be asked for specifically used to preserve images */
-
+#define IMAGE_FLAG_READY     0x16 /* image is ready to be uploaded to texture memory */
 #define IMAGE_FLAG_INUSE (IMAGE_FLAG_WRITING | IMAGE_FLAG_READING | IMAGE_FLAG_RESERVED)
 
 
