@@ -2097,12 +2097,18 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     
     g_timezone.SetTimezone(pControl->GetLabel());  
     g_guiSettings.SetString("locale.timezonecountry",pControlCountry->GetLabel().c_str());
+
+    CGUISpinControlEx *tzControl = (CGUISpinControlEx *)GetControl(GetSetting("locale.timezone")->GetID());
+    g_guiSettings.SetString("locale.timezone", tzControl->GetLabel().c_str());
   }
   else  if (strSetting.Equals("locale.timezone"))
   {
      CGUISpinControlEx *tzControl = (CGUISpinControlEx *)GetControl(GetSetting("locale.timezone")->GetID());
      g_timezone.SetTimezone(tzControl->GetLabel());
      g_guiSettings.SetString("locale.timezone", tzControl->GetLabel().c_str());
+
+     tzControl = (CGUISpinControlEx *)GetControl(GetSetting("locale.timezonecountry")->GetID());
+     g_guiSettings.SetString("locale.timezonecountry", tzControl->GetLabel().c_str());
   }
 #endif
 
