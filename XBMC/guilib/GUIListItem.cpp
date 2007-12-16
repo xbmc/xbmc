@@ -150,8 +150,7 @@ const CGUIListItem& CGUIListItem::operator =(const CGUIListItem& item)
   if (&item == this) return * this;
   m_strLabel2 = item.m_strLabel2;
   m_strLabel = item.m_strLabel;
-  m_layout = NULL;
-  m_focusedLayout = NULL;
+  FreeMemory();
   m_bSelected = item.m_bSelected;
   m_strIcon = item.m_strIcon;
   m_strThumbnailImage = item.m_strThumbnailImage;
