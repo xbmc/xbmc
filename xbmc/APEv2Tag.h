@@ -29,6 +29,7 @@ public:
   CStdString GetMusicBrainzAlbumArtistID() { return m_strMusicBrainzAlbumArtistID; }
   CStdString GetMusicBrainzTRMID() { return m_strMusicBrainzTRMID; }
   CStdString GetComment() { return m_strComment; };
+  CStdString GetLyrics() { return m_strLyrics; };
   char GetRating() { return m_rating; };
   void GetReplayGainFromTag(IAPETag *pTag);
   const CReplayGain &GetReplayGain() { return m_replayGain; };
@@ -47,6 +48,7 @@ protected:
   CStdString m_strMusicBrainzAlbumArtistID;
   CStdString m_strMusicBrainzTRMID;
   CStdString m_strComment;
+  CStdString m_strLyrics;
   CReplayGain m_replayGain;
   __int64 m_nDuration;
   char m_rating;

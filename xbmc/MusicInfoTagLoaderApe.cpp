@@ -55,6 +55,7 @@ bool CMusicInfoTagLoaderApe::Load(const CStdString& strFileName, CMusicInfoTag& 
       tag.SetTrackNumber(myTag.GetTrackNum());
       tag.SetPartOfSet(myTag.GetDiscNum());
       tag.SetComment(myTag.GetComment());
+      tag.SetLyrics(myTag.GetLyrics());
       tag.SetMusicBrainzAlbumArtistID(myTag.GetMusicBrainzAlbumArtistID());
       tag.SetMusicBrainzAlbumID(myTag.GetMusicBrainzAlbumID());
       tag.SetMusicBrainzArtistID(myTag.GetMusicBrainzArtistID());
