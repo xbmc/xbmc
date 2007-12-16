@@ -73,6 +73,7 @@
 #include "ApplicationRenderer.h"
 #include "GUILargeTextureManager.h"
 #include "LastFmManager.h"
+#include "SmartPlaylist.h"
 
 #ifdef HAS_FILESYSTEM
 #include "filesystem/filedaap.h"
@@ -3378,7 +3379,21 @@ bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
     g_partyModeManager.Disable();
     return CLastFmManager::GetInstance()->ChangeStation(item.GetAsUrl());
   }
-  if (item.IsPlayList() || item.IsInternetStream())
+  if (item.IsSmartPlayList())
+  {
+    CDirectory dir;
+    CFileItemList items;
+    if (dir.GetDirectory(item.m_strPath, items) && items.Size())
+    {
+      CSmartPlaylist smartpl;
+      //get name and type of smartplaylist, this will always succeed as GetDirectory also did this.
+      smartpl.OpenAndReadName(item.m_strPath);
+      CPlayList playlist;
+      playlist.Add(items);
+      return ProcessAndStartPlaylist(smartpl.GetName(), playlist, smartpl.GetType() == "music"?PLAYLIST_MUSIC:PLAYLIST_VIDEO);
+    }
+  }
+  else if (item.IsPlayList() || item.IsInternetStream())
   {
     //is or could be a playlist
     auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(item));
