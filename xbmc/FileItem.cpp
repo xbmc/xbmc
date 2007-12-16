@@ -219,9 +219,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   CGUIListItem::operator=(item);
   m_bLabelPreformated=item.m_bLabelPreformated;
   FreeMemory();
-  m_bIsFolder = item.m_bIsFolder;
   m_strPath = item.m_strPath;
-  m_bIsFolder = item.m_bIsFolder;
 #ifdef DEBUG
   if (m_bIsFolder && !m_strPath.IsEmpty() && !IsFileFolder())  // should root paths be "/" ?
     ASSERT(CUtil::HasSlashAtEnd(m_strPath));
