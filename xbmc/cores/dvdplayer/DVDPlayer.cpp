@@ -9,6 +9,7 @@
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDDemuxers/DVDFactoryDemuxer.h"
+#include "DVDDemuxers/DVDDemuxFFmpeg.h"
 
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
@@ -178,6 +179,74 @@ void CDVDPlayer::OnStartup()
   m_messenger.Init();
 
   g_dvdPerformanceCounter.EnableMainPerformance(ThreadHandle());
+}
+
+void CDVDPlayer::GetFileMetaData(const CStdString &strPath, CFileItem *pItem)
+{
+  if (!pItem)
+    return;
+
+  MEASURE_FUNCTION;
+  CDVDInputStream *pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, strPath, "");
+  if (!pInputStream)
+  {
+    CLog::Log(LOGERROR, "%s - Error creating stream for %s", __FUNCTION__, strPath.c_str());
+    return ;
+  }
+
+  if (pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) || !pInputStream->Open(strPath.c_str(), ""))
+  {
+    CLog::Log(LOGERROR, "%s - invalid stream in %s", __FUNCTION__, strPath.c_str());
+    delete pInputStream;
+    return ;
+  }
+
+  CDVDDemuxFFmpeg *pDemuxer = new CDVDDemuxFFmpeg;
+
+  try
+  {
+    if (!pDemuxer->Open(pInputStream))
+    {
+      CLog::Log(LOGERROR, "%s - Error opening demuxer", __FUNCTION__);
+      delete pDemuxer;
+      delete pInputStream;
+      return ;
+    }
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, "%s - Exception thrown when opeing demuxer", __FUNCTION__);
+    if (pDemuxer)
+      delete pDemuxer;
+    delete pInputStream;
+    return ;
+  }
+
+  AVFormatContext *pContext = pDemuxer->m_pFormatContext; 
+  if (pContext)
+  {
+    int nLenMsec = pDemuxer->GetStreamLenght();
+    CStdString strDuration;
+    int nHours = nLenMsec / 1000 / 60 / 60;
+    int nMinutes = ((nLenMsec / 1000) - nHours * 3600) / 60;
+    int nSec = (nLenMsec / 1000)  - nHours * 3600 - nMinutes * 60;
+    strDuration.Format("%02d:%02d:%02d", nHours, nMinutes, nSec);
+    pItem->SetProperty("duration-msec", nLenMsec);
+    pItem->SetProperty("duration-str", strDuration);
+    pItem->SetProperty("title", pContext->title);
+    pItem->SetProperty("author", pContext->author);
+    pItem->SetProperty("copyright", pContext->copyright);
+    pItem->SetProperty("comment", pContext->comment);
+    pItem->SetProperty("album", pContext->album);
+    pItem->SetProperty("year", pContext->year);
+    pItem->SetProperty("track", pContext->track);
+    pItem->SetProperty("genre", pContext->genre);
+  }
+
+  delete pDemuxer;
+  pInputStream->Close();
+  delete pInputStream;
+  
 }
 
 bool CDVDPlayer::ExtractThumb(const CStdString &strPath, const CStdString &strTarget)
