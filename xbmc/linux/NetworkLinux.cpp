@@ -409,6 +409,7 @@ std::vector<NetworkAccessPoint>  CNetworkInterfaceLinux::GetAccessPoints(void)
                first = false;
             else
                result.push_back(NetworkAccessPoint(essId, quality, encryption));
+               encryption = ENC_NONE;
             break;
            
          case SIOCGIWESSID:
