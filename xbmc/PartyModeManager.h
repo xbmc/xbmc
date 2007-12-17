@@ -2,13 +2,20 @@
 #include "FileItem.h"
 #include "playlist.h"
 
+typedef enum
+{
+  PARTYMODECONTEXT_UNKNOWN,
+  PARTYMODECONTEXT_MUSIC,
+  PARTYMODECONTEXT_VIDEO
+} PartyModeContext;
+
 class CPartyModeManager
 {
 public:
   CPartyModeManager(void);
   virtual ~CPartyModeManager(void);
 
-  bool Enable(bool bVideo=false, const CStdString& strXspPath = "");
+  bool Enable(PartyModeContext context=PARTYMODECONTEXT_MUSIC, const CStdString& strXspPath = "");
   void Disable();
   void Play(int iPos);
   void OnSongChange(bool bUpdatePlayed = false);
