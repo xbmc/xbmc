@@ -185,11 +185,9 @@ bool CDVDPlayer::ExtractThumb(const CStdString &strPath, const CStdString &strTa
   MEASURE_FUNCTION;
   int nTime = timeGetTime();
   CDVDInputStream *pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, strPath, "");
-  if (!pInputStream || !pInputStream->Open(strPath.c_str(), ""))
+  if (!pInputStream)
   {
-    CLog::Log(LOGERROR, "InputStream: Error opening, %s", strPath.c_str());
-    if (pInputStream)
-      delete pInputStream;
+    CLog::Log(LOGERROR, "InputStream: Error creating stream for %s", strPath.c_str());
     return false;
   }
 
@@ -197,6 +195,14 @@ bool CDVDPlayer::ExtractThumb(const CStdString &strPath, const CStdString &strTa
   {
     CLog::Log(LOGERROR, "InputStream: dvd streams not supported for thumb extraction, file: %s", strPath.c_str());
     delete pInputStream;
+    return false;
+  }
+
+  if (!pInputStream->Open(strPath.c_str(), ""))
+  {
+    CLog::Log(LOGERROR, "InputStream: Error opening, %s", strPath.c_str());
+    if (pInputStream)
+      delete pInputStream;
     return false;
   }
 
