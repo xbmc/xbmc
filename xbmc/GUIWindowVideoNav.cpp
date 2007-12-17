@@ -190,7 +190,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
           g_partyModeManager.Disable();
         else
         {
-          if (!g_partyModeManager.Enable(true))
+          if (!g_partyModeManager.Enable(PARTYMODECONTEXT_VIDEO))
           {
             SET_CONTROL_SELECTED(GetID(),CONTROL_BTNPARTYMODE,false);
             return false;

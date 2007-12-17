@@ -3795,18 +3795,21 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     {
       CStdString strXspPath = "";
       //empty param=music, "music"=music, "video"=video, else xsp path
-      bool bVideo=false;
+      PartyModeContext context = PARTYMODECONTEXT_MUSIC;
       if (parameter.size() > 9)
       {
         if (parameter.Mid(10).Equals("video)"))
-          bVideo = true;
+          context = PARTYMODECONTEXT_VIDEO;
         else if (!parameter.Mid(10).Equals("music)"))
+        {
           strXspPath = parameter.Mid(10).TrimRight(")");
+          context = PARTYMODECONTEXT_UNKNOWN;
+        }
       }
       if (g_partyModeManager.IsEnabled())
         g_partyModeManager.Disable();
       else
-        g_partyModeManager.Enable(bVideo, strXspPath);
+        g_partyModeManager.Enable(context, strXspPath);
     }
     else if (parameter.Equals("random"))
     {

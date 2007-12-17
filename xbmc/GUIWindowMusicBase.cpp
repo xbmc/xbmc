@@ -907,7 +907,7 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
 
   case CONTEXT_BUTTON_PLAY_PARTYMODE:
-    g_partyModeManager.Enable(false, m_vecItems[itemNumber]->m_strPath);
+    g_partyModeManager.Enable(PARTYMODECONTEXT_MUSIC, m_vecItems[itemNumber]->m_strPath);
     return true;
 
   case CONTEXT_BUTTON_STOP_SCANNING:
