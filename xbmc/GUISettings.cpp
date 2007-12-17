@@ -478,7 +478,7 @@ CGUISettings::CGUISettings(void)
   AddString(4, "network.subnet", 720, "255.255.255.0", BUTTON_CONTROL_IP_INPUT);
   AddString(5, "network.gateway", 721, "0.0.0.0", BUTTON_CONTROL_IP_INPUT);
   AddString(6, "network.dns", 722, "0.0.0.0", BUTTON_CONTROL_IP_INPUT);
-  AddString(7, "network.essid", 776, "0.0.0.0", BUTTON_CONTROL_INPUT);
+  AddString(7, "network.essid", 776, "0.0.0.0", BUTTON_CONTROL_STANDARD);
   AddInt(8, "network.enc", 778, ENC_NONE, ENC_NONE, 1, ENC_WPA2, SPIN_CONTROL_TEXT);
   AddString(9, "network.key", 777, "0.0.0.0", BUTTON_CONTROL_INPUT);
   AddString(10, "network.save", 779, "", BUTTON_CONTROL_STANDARD);
