@@ -49,20 +49,20 @@
 				</control>
 				<control type="image">
 					<posx>5</posx>
-					<posy>3</posy>
-					<width>20</width>
-					<height>20</height>
-					<info>ListItem.Icon</info>
+					<posy>6</posy>
+					<width>16</width>
+					<height>16</height>
+					<info>ListItem.ActualIcon</info>
 				</control>
 				<control type="image">
-					<posx>40</posx>
-					<posy>43</posy>
+					<posx>30</posx>
+					<posy>7</posy>
 					<width>28</width>
-					<height>28</height>
-					<info>ListItem.Overlay</info>
+					<height>14</height>
+					<info>ListItem.Thumb</info>
 				</control>
 				<control type="label">
-					<posx>50</posx>
+					<posx>67</posx>
 					<posy>0</posy>
 					<width>576</width>
 					<height>29</height>
@@ -93,19 +93,19 @@
 				<control type="image">
 					<posx>5</posx>
 					<posy>6</posy>
-					<width>66</width>
-					<height>65</height>
-					<info>ListItem.Icon</info>
+					<width>16</width>
+					<height>16</height>
+					<info>ListItem.ActualIcon</info>
 				</control>
 				<control type="image">
-					<posx>40</posx>
-					<posy>43</posy>
+					<posx>30</posx>
+					<posy>7</posy>
 					<width>28</width>
-					<height>28</height>
-					<info>ListItem.Overlay</info>
+					<height>14</height>
+					<info>ListItem.Thumb</info>
 				</control>
 				<control type="label">
-					<posx>50</posx>
+					<posx>67</posx>
 					<posy>0</posy>
 					<width>576</width>
 					<height>29</height>

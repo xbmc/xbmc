@@ -643,6 +643,7 @@
   <string id="786">Network interface did not start successfully.</string>
   <string id="787">Interface disabled</string>
   <string id="788">Network interface disabled successfully.</string>
+  <string id="789">Wireless Network Name (ESSID)</string>
 
   <string id="998">XLink Kai</string>
   <string id="999">Online Gaming</string>
@@ -693,6 +694,7 @@
   <string id="1044">Set Plugin Thumb</string>
   <string id="1045">Plugin Settings</string>
   <string id="1046">Access Points</string>^
+  <string id="1047">Other...</string>^
 
   <string id="1200">SMB Client</string>
   <string id="1202">Workgroup</string>
