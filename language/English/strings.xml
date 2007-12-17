@@ -798,6 +798,11 @@
   <string id="10100">Yes/no dialog</string>
   <string id="10101">Progress dialog</string>
 
+  <string id="10200">Setting up playback</string>
+  <string id="10201">Please wait. Starting to play:</string>
+  <string id="10202">Stopping</string>
+  <string id="10203">Please wait while stopping:</string>
+
   <string id="10500">Music/Playlist</string>
   <string id="10501">Music/Files</string>
   <string id="10502">Music/Library</string>

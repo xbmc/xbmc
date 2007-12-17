@@ -25,6 +25,7 @@
 #include "Application.h"
 #include "utils/GUIInfoManager.h"
 
+#define CONTROL_CANCEL_BUTTON 10
 #define CONTROL_PROGRESS_BAR 20
 
 CGUIDialogProgress::CGUIDialogProgress(void)
@@ -34,11 +35,22 @@ CGUIDialogProgress::CGUIDialogProgress(void)
   m_iCurrent=0;
   m_iMax=0;
   m_percentage = 0;
+  m_bCanCancel = true;
 }
 
 CGUIDialogProgress::~CGUIDialogProgress(void)
 {
 
+}
+
+void CGUIDialogProgress::SetCanCancel(bool bCanCancel)
+{
+  m_bCanCancel = bCanCancel;
+  CGUIMessage msg(bCanCancel ? GUI_MSG_VISIBLE : GUI_MSG_HIDDEN, GetID(), CONTROL_CANCEL_BUTTON);
+  if(OwningCriticalSection(g_graphicsContext))
+    OnMessage(msg);
+  else
+    m_gWindowManager.SendThreadMessage(msg, m_dwWindowId);
 }
 
 void CGUIDialogProgress::StartModal()
@@ -97,21 +109,21 @@ bool CGUIDialogProgress::OnMessage(CGUIMessage& message)
   switch ( message.GetMessage() )
   {
 
+  case GUI_MSG_WINDOW_DEINIT:
+    SetCanCancel(true);
+    break;
+
   case GUI_MSG_CLICKED:
     {
-      int iAction = message.GetParam1();
-      if (1 || ACTION_SELECT_ITEM == iAction)
+      int iControl = message.GetSenderId();
+      if (iControl == CONTROL_CANCEL_BUTTON && m_bCanCancel)
       {
-        int iControl = message.GetSenderId();
-        if (iControl == 10)
-        {
-          string strHeading = m_strHeading;
-          strHeading.append(" : ");
-          strHeading.append(g_localizeStrings.Get(16024));
-          CGUIDialogBoxBase::SetHeading(strHeading);
-          m_bCanceled = true;
-          return true;
-        }
+        string strHeading = m_strHeading;
+        strHeading.append(" : ");
+        strHeading.append(g_localizeStrings.Get(16024));
+        CGUIDialogBoxBase::SetHeading(strHeading);
+        m_bCanceled = true;
+        return true;
       }
     }
     break;
@@ -123,8 +135,13 @@ bool CGUIDialogProgress::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_CLOSE_DIALOG || action.wID == ACTION_PREVIOUS_MENU)
   {
-    m_bCanceled = true;
-    return true;
+    if (m_bCanCancel)
+    {
+      m_bCanceled = true;
+      return true;
+    }
+    else
+      return false;
   }
   return CGUIDialog::OnAction(action);
 }

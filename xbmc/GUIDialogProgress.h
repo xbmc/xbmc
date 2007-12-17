@@ -27,7 +27,10 @@ public:
   virtual void SetProgressAdvance(int nSteps=1);
   virtual bool Abort();
 
+  void SetCanCancel(bool bCanCancel);
+
 protected:
+  bool m_bCanCancel;
   bool m_bCanceled;
   string m_strHeading;
 
