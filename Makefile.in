@@ -5,7 +5,7 @@ DEBUG_FLAGS=@DEBUG_FLAGS@
 
 all : compile 
 	$(MAKE) XboxMediaCenter
-	$(MAKE) xrandr-xbmc
+	$(MAKE) xbmc-xrandr
 
 .PHONY : guilib xbmc filesystem musicdatabase videodatabase cores paplayer dllloader exports xbox linux visualizations screensavers utils common tinyxml sqllite libscrobbler unrarxlib libpython libgoahead compile dvdplayer libupnp
 
