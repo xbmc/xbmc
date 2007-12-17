@@ -9,6 +9,7 @@
 #endif
 
 #include "DllLibCurl.h"
+#include "FileShoutcast.h"
 
 using namespace XFILE;
 using namespace XCURL;
@@ -503,13 +504,14 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
   if (CURLE_OK == g_curlInterface.easy_getinfo(m_easyHandle, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &length))
     m_fileSize = (__int64)length;
 
-  /* workaround for shoutcast server wich doesn't set content type on standard mp3 */
-  if( m_httpheader.GetContentType().IsEmpty() )
-  {
-    if( !m_httpheader.GetValue("icy-notice1").IsEmpty()
+  // check if this stream is a shoutcast stream. sometimes checking the protocol line is not enough so examine other headers as well.
+  // shoutcast streams should be handled by FileShoutcast.
+  if (m_httpheader.GetProtoLine().Left(3) == "ICY" || !m_httpheader.GetValue("icy-notice1").IsEmpty()
      || !m_httpheader.GetValue("icy-name").IsEmpty()
      || !m_httpheader.GetValue("icy-br").IsEmpty() )
-     m_httpheader.Parse("Content-Type: audio/mpeg\r\n");
+  {
+    CLog::Log(LOGDEBUG,"FileCurl - file <%s> is a shoutcast stream. re-opening", m_url.c_str());
+    throw new CRedirectException(new CFileShoutcast); 
   }
 
   //m_seekable = false;
