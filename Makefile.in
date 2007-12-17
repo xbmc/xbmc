@@ -5,6 +5,7 @@ DEBUG_FLAGS=@DEBUG_FLAGS@
 
 all : compile 
 	$(MAKE) XboxMediaCenter
+	$(MAKE) xrandr-xbmc
 
 .PHONY : guilib xbmc filesystem musicdatabase videodatabase cores paplayer dllloader exports xbox linux visualizations screensavers utils common tinyxml sqllite libscrobbler unrarxlib libpython libgoahead compile dvdplayer libupnp
 
@@ -73,5 +74,8 @@ compile: guilib xbmc filesystem musicdatabase videodatabase cores paplayer dlllo
 
 XboxMediaCenter: $(wildcard xbmc/*.o xbmc/settings/*.o guilib/*.o guilib/tinyXML/*.o guilib/common/*.o xbmc/FileSystem/*.o xbmc/FileSystem/VideoDatabaseDirectory/*.o xbmc/FileSystem/MusicDatabaseDirectory/*.o xbmc/visualizations/*.o xbmc/screensavers/*.o xbmc/cores/*.o xbmc/cores/paplayer/*.o xbmc/linux/*.o xbmc/lib/sqLite/*.o xbmc/lib/libscrobbler/*.o xbmc/lib/libPython/*.o xbmc/lib/libPython/xbmcmodule/*.o xbmc/xbox/*.o xbmc/cores/DllLoader/*.o xbmc/cores/DllLoader/exports/*.o xbmc/cores/DllLoader/exports/util/*.o xbmc/utils/*.o xbmc/lib/UnrarXLib/*.o xbmc/lib/libGoAhead/*.o xbmc/cores/dvdplayer/*.o xbmc/cores/dvdplayer/DVDSubtitles/*.o xbmc/cores/dvdplayer/DVDInputStreams/*.o xbmc/cores/dvdplayer/DVDCodecs/*.o xbmc/cores/dvdplayer/DVDCodecs/Audio/*.o xbmc/cores/dvdplayer/DVDCodecs/Video/*.o xbmc/cores/dvdplayer/DVDCodecs/Overlay/*.o xbmc/cores/dvdplayer/DVDDemuxers/*.o xbmc/cores/dvdplayer/DVDCodecs/Overlay/libspucc/*.o xbmc/cores/VideoRenderers/*.o xbmc/cores/VideoRenderers/VideoShaders/*.o xbmc/cdrip/*.o) xbmc/lib/libXBMS/libxbms-i486-linux.a xbmc/lib/libUPnP/libupnp-i486-linux.a 
 	g++ $(DEBUG_FLAGS) -o XboxMediaCenter xbmc/*.o xbmc/settings/*.o xbmc/cdrip/*.o guilib/*.o guilib/tinyXML/*.o guilib/common/*.o xbmc/FileSystem/*.o xbmc/FileSystem/VideoDatabaseDirectory/*.o xbmc/FileSystem/MusicDatabaseDirectory/*.o xbmc/visualizations/*.o xbmc/screensavers/*.o xbmc/cores/*.o xbmc/cores/paplayer/*.o xbmc/linux/*.o xbmc/lib/sqLite/*.o xbmc/lib/libscrobbler/*.o xbmc/lib/libPython/*.o xbmc/lib/libPython/xbmcmodule/*.o xbmc/xbox/*.o xbmc/cores/DllLoader/*.o xbmc/cores/DllLoader/exports/*.o xbmc/cores/DllLoader/exports/util/*.o xbmc/utils/*.o xbmc/lib/UnrarXLib/*.o xbmc/lib/libGoAhead/*.o xbmc/cores/dvdplayer/*.o xbmc/cores/dvdplayer/DVDSubtitles/*.o xbmc/cores/dvdplayer/DVDInputStreams/*.o xbmc/cores/dvdplayer/DVDCodecs/*.o xbmc/cores/dvdplayer/DVDCodecs/Audio/*.o xbmc/cores/dvdplayer/DVDCodecs/Video/*.o xbmc/cores/dvdplayer/DVDCodecs/Overlay/*.o xbmc/cores/dvdplayer/DVDDemuxers/*.o xbmc/cores/dvdplayer/DVDCodecs/Overlay/libspucc/*.o xbmc/cores/VideoRenderers/*.o xbmc/cores/VideoRenderers/VideoShaders/*.o xbmc/lib/libGoAhead/libGoAheadD-i486-linux.a xbmc/lib/libXBMS/libxbms-i486-linux.a xbmc/lib/libUPnP/libupnp-i486-linux.a xbmc/lib/libshout/libshout-i486-linux.a xbmc/lib/libRTV/librtv-i486-linux.a xbmc/lib/libXDAAP/libxdaap-i486-linux.a $(LIBS) -rdynamic
+
+xbmc-xrandr: xbmc-xrandr.c
+	gcc -g -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lXrender -lX11 
 
 include Makefile.include
