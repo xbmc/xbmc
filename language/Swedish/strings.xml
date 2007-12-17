@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xboxmediacenter.com-->
-<!--Date of translation: 11/23/2007-->
+<!--Date of translation: 12/17/2007-->
 <!--$Revision$-->
-<!--Based on english strings version 10814-->
+<!--Based on english strings version 11025-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -1194,6 +1194,7 @@ den här visualiseringen</string>
   <string id="15213">Spela upp med...</string>
   <string id="15214">Använd utjämnad A/V synkronisering</string>
   <string id="15215">Göm filnamn i miniatyrläget</string>
+  <string id="15216">Spela i partyläge</string>
   <string id="15250">Skicka radio till Last.FM</string>
   <string id="15251">Ansluter till Last.FM...</string>
   <string id="15252">Väljer station...</string>
@@ -1714,5 +1715,7 @@ den här visualiseringen</string>
   <string id="21881">Aktivera UPnP renderare</string>
   <string id="21882">Försök hoppa över introduktion före DVD menyn</string>
   <string id="21883">Rippade ljudcds</string>
+  <string id="22000">Uppdatera bibliotek vid uppstart</string>
+  <string id="22001">Uppdatera alltid biblioteket i bakgrunden</string>
   <string id="29999">Aktivera fladderfilter lagningsinställning till spel</string>
 </strings>
