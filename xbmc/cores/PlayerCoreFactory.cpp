@@ -142,7 +142,9 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     }
 
     // allways add mplayer as a high prio player for internet streams
+#ifdef HAS_MPLAYER
     vecCores.push_back(EPC_MPLAYER);
+#endif
   }
 
   if (((item.IsDVD()) || item.IsDVDFile() || item.IsDVDImage()))
@@ -194,15 +196,10 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   }*/
 
   //Add all normal players last so you can force them, should you want to
-  if( item.IsVideo() || item.IsAudio() )
-  {
-    vecCores.push_back(EPC_MPLAYER);
+  if ( item.IsAudio() )
+    vecCores.push_back(EPC_PAPLAYER);
 
-    vecCores.push_back(EPC_DVDPLAYER);
-
-    if( item.IsAudio())
-      vecCores.push_back(EPC_PAPLAYER);
-  }
+  vecCores.push_back(EPC_DVDPLAYER);
 
   /* make our list unique, presevering first added players */
   unique(vecCores);

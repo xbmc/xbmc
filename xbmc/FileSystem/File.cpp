@@ -290,8 +290,36 @@ bool CFile::Open(const CStdString& strFileName, bool bBinary, unsigned int flags
     if (!m_pFile)
       return false;
 
-    if (!m_pFile->Open(url, bBinary))
+    try
     {
+      if (!m_pFile->Open(url, bBinary))
+      {
+        SAFE_DELETE(m_pFile);
+        return false;
+      }
+    }
+    catch (CRedirectException *pRedirectEx)
+    {
+      // the file implementation decided this item should use a different implementation.
+      // the exception will contain the new implementation.
+
+      CLog::Log(LOGDEBUG,"File::Open - redirecting implementation for %s", strFileName.c_str());
+      SAFE_DELETE(m_pFile);
+      if (pRedirectEx && pRedirectEx->m_pNewFileImp)
+      {
+        m_pFile = pRedirectEx->m_pNewFileImp;
+        delete pRedirectEx;
+
+        if (!m_pFile->Open(url, bBinary))
+        {
+          SAFE_DELETE(m_pFile);
+          return false;
+        }      
+      }
+    }
+    catch (...)
+    {
+      CLog::Log(LOGDEBUG,"File::Open - unknown exception when opening %s", strFileName.c_str());
       SAFE_DELETE(m_pFile);
       return false;
     }
