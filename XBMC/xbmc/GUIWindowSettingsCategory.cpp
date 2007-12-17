@@ -67,6 +67,9 @@
 #ifdef _LINUX
 #include "LinuxTimezone.h"
 #endif
+#ifdef HAS_LINUX_NETWORK
+#include "GUIDialogAccessPoints.h"
+#endif
 
 using namespace DIRECTORY;
 
@@ -2079,7 +2082,25 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
         CGUIDialogOK::ShowAndGetInput(0, 785, 0, 0);
      else
         CGUIDialogOK::ShowAndGetInput(0, 786, 0, 0);
-  }  
+  } 
+  else if (strSetting.Equals("network.essid"))
+  {
+    CGUIDialogAccessPoints *dialog = (CGUIDialogAccessPoints *)m_gWindowManager.GetWindow(WINDOW_DIALOG_ACCESS_POINTS);
+    if (dialog)
+    {
+       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting("network.interface")->GetID());
+       dialog->SetInterfaceName(pControl->GetLabel());
+       dialog->DoModal();
+       
+       if (dialog->WasItemSelected())
+       {
+          CGUIButtonControl* pControl2 = (CGUIButtonControl *)GetControl(GetSetting("network.essid")->GetID());
+          if (pControl2) pControl2->SetLabel2(dialog->GetSelectedAccessPointEssId());
+          pControl = (CGUISpinControlEx *)GetControl(GetSetting("network.enc")->GetID());
+          if (pControl) pControl->SetValue(dialog->GetSelectedAccessPointEncMode());          
+       }       
+    }
+  }
 #endif
 #ifdef _LINUX
   else if (strSetting.Equals("locale.timezonecountry"))
