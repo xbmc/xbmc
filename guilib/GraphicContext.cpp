@@ -609,7 +609,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
         rootWindow = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0,  options);
         m_screenSurface->ResizeSurface(m_iScreenWidth, m_iScreenHeight);
       }
-      if (g_advancedSettings.m_fullScreen)
+      else
       {
         SetFullScreenRoot(true);
       }
@@ -1376,29 +1376,4 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
   }
   glXWaitX();
 #endif
-}
-
-// RTT Functions
-int CGraphicContext::CreateRenderTarget(int width, int height)
-{
-#ifdef HAS_SDL_OPENGL
-  
-#endif
-  return 0;
-}
-
-bool CGraphicContext::MakeCurrentRenderTarget(int rendertarget)
-{
-#ifdef HAS_SDL_OPENGL
-  
-#endif
-  return false;
-}
-
-int CGraphicContext::DeleteRenderTarget(int rendertarget)
-{
-#ifdef HAS_SDL_OPENGL
-  
-#endif
-  return 0;
 }
