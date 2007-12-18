@@ -18,6 +18,7 @@ public:
 private:
   static size_t ReadCallback(void *ptr, size_t size, size_t nmemb, void *datasource);
   static int SeekCallback(void *datasource, ogg_int64_t offset, int whence);
+  static int NoSeekCallback(void *datasource, ogg_int64_t offset, int whence);
   static int CloseCallback(void *datasource);
   static long TellCallback(void *datasource);
 
