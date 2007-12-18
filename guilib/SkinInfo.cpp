@@ -190,17 +190,21 @@ CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res, co
   if (*res >= WINDOW)
   {
     height = g_settings.m_ResInfo[*res].iHeight;
-    if (height>=1080)
+    if (height>=1080 && (g_settings.m_ResInfo[*res].dwFlags & D3DPRESENTFLAG_WIDESCREEN))
     {
       *res = HDTV_1080i;
     }
-    else if (height>=720)
+    else if (height>=720 && (g_settings.m_ResInfo[*res].dwFlags & D3DPRESENTFLAG_WIDESCREEN))
     {
       *res = HDTV_720p;
     }
     else if (g_settings.m_ResInfo[*res].dwFlags & D3DPRESENTFLAG_WIDESCREEN)
     {
       *res = PAL_16x9;
+    }
+    else
+    {
+      *res = PAL_4x3;
     }
   }
   CStdString strPath;
