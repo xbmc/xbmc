@@ -255,7 +255,7 @@ void XBVideoConfig::GetModes()
        snprintf(m_ResInfo[m_iNumResolutions].strMode,
                 sizeof(m_ResInfo[m_iNumResolutions].strMode),
                 "%d x %d", modes[i]->w, modes[i]->h);
-       if ((float)modes[i]->w / (float)modes[i]->h >= 1.7)         
+       if ((float)modes[i]->w / (float)modes[i]->h >= 1.59)         
          m_ResInfo[m_iNumResolutions].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
        else
          m_ResInfo[m_iNumResolutions].dwFlags = 0;
