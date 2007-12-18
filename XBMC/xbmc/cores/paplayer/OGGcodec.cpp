@@ -13,6 +13,7 @@ OGGCodec::OGGCodec()
   m_CodecName = "OGG";
   m_TimeOffset = 0.0;
   m_CurrentStream=0;
+  m_TotalTime = 0;
   m_VorbisFile.datasource = NULL;
 }
 
@@ -54,10 +55,16 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
     return false;
   }
 
+  // libvorbis requires that a non-seekable stream would always return -1 from seek actions.
+  // so for network streams - twick the seek method to a static one that always return -1.
+  bool bIsStream = false;
+  if (strFile.Left(5).ToLower() == "shout" || strFile.Left(4).ToLower() == "http")
+    bIsStream = true;
+
   //  setup ogg i/o callbacks
   ov_callbacks oggIOCallbacks;
   oggIOCallbacks.read_func=ReadCallback;
-  oggIOCallbacks.seek_func=SeekCallback;
+  oggIOCallbacks.seek_func=bIsStream?NoSeekCallback:SeekCallback;
   oggIOCallbacks.tell_func=TellCallback;
   oggIOCallbacks.close_func=CloseCallback;
 
@@ -149,9 +156,12 @@ int OGGCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 
   //  the maximum chunk size the vorbis decoder seem to return with one call is 4096
   long lRead=m_dll.ov_read(&m_VorbisFile, (char*)pBuffer, size, 0, 2, 1, &iBitStream);
-  
+
+  if (lRead == OV_HOLE)
+    return READ_SUCCESS;
+
   //  Our logical bitstream changed, we reached the eof
-  if (m_CurrentStream!=iBitStream)
+  if (lRead > 0 && m_CurrentStream!=iBitStream)
     lRead=0;
 
   if (lRead<0)
@@ -213,6 +223,11 @@ int OGGCodec::SeekCallback(void *datasource, ogg_int64_t offset, int whence)
     return 0;
 
   return (int)pCodec->m_file.Seek(offset, whence);
+}
+
+int OGGCodec::NoSeekCallback(void *datasource, ogg_int64_t offset, int whence)
+{
+  return -1;
 }
 
 int OGGCodec::CloseCallback(void *datasource)
