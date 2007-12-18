@@ -1291,44 +1291,15 @@ bool CGraphicContext::ToggleFullScreenRoot ()
 
 void CGraphicContext::SetFullScreenRoot(bool fs)
 {
-#ifdef HAS_GLX
-  Display * pRootDisplay = XOpenDisplay(NULL);
-  int screen = DefaultScreen(pRootDisplay); 
-  int width = DisplayWidth(pRootDisplay, screen);
-  int height = DisplayHeight(pRootDisplay, screen);
+  int width, height;
   if (fs)
   {
-    XineramaScreenInfo *info;
-    int num;
-    info = XineramaQueryScreens(pRootDisplay, &num);
-    if (info)
-    {
-      int desired = 0;
-      width = info[0].width;
-      height = info[0].height;
-      const char *variable = SDL_getenv("SDL_VIDEO_FULLSCREEN_HEAD");
-      if (variable) 
-      {
-        desired = SDL_atoi(variable);
-        for (int i = 0 ; i<num ; i++)
-        {
-          if (info[i].screen_number==desired)
-          {
-            width = info[i].width;
-            height = info[i].height;
-            break;
-          }
-        }
-      }
-      XFree(info);
-    }
-
     // Code from this point on should be platform independent. The Win32 version could
     // probably use GetSystemMetrics/EnumDisplayDevices/GetDeviceCaps to query current 
     // resolution on the requested display no. and set 'width' and 'height'
-
-    m_iFullScreenWidth = width;
-    m_iFullScreenHeight = height;
+    
+    width = m_iFullScreenWidth = m_iScreenWidth;
+    height = m_iFullScreenHeight = m_iScreenHeight;
     SDL_SetVideoMode(width, height, 0, SDL_FULLSCREEN);
     m_screenSurface->ResizeSurface(width, height);
     glViewport(0, 0, m_iFullScreenWidth, m_iFullScreenHeight);
@@ -1346,7 +1317,6 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
   m_bFullScreenRoot = fs;
   g_advancedSettings.m_fullScreen = fs;
   SetFullScreenViewWindow(m_Resolution);
-#endif
 
 // The _correct_ way to switch to fullscreen in X. Doesn't work now because of the way
 // SDL creates windows. Should be fixed in SDL 1.3 therefore currently disabled.
