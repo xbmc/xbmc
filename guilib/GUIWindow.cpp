@@ -1057,14 +1057,15 @@ bool CGUIWindow::IsAnimating(ANIMATION_TYPE animType)
 bool CGUIWindow::RenderAnimation(DWORD time)
 {
   TransformMatrix transform;
+  CPoint center(m_posX + m_width * 0.5f, m_posY + m_height * 0.5f);
   // show animation
   m_showAnimation.Animate(time, true);
   UpdateStates(m_showAnimation.GetType(), m_showAnimation.GetProcess(), m_showAnimation.GetState());
-  m_showAnimation.RenderAnimation(transform);
+  m_showAnimation.RenderAnimation(transform, center);
   // close animation
   m_closeAnimation.Animate(time, true);
   UpdateStates(m_closeAnimation.GetType(), m_closeAnimation.GetProcess(), m_closeAnimation.GetState());
-  m_closeAnimation.RenderAnimation(transform);
+  m_closeAnimation.RenderAnimation(transform, center);
   g_graphicsContext.SetWindowTransform(transform);
   return true;
 }
