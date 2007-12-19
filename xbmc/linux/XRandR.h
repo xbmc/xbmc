@@ -33,12 +33,13 @@ class CXRandR
 {
 public:
    CXRandR();
-   std::vector<XOutput> GetModes();
+   std::vector<XOutput> GetModes(void);
    XMode GetCurrentMode(CStdString outputName);
    bool SetMode(XOutput output, XMode mode);
-   void Query();   
-
+   void LoadCustomModeLinesToAllOutputs(void);
+   
 private:
+   void Query();   
    std::vector<XOutput> m_outputs;
 };
 
