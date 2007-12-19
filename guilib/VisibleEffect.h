@@ -12,6 +12,7 @@ struct FRECT;
 class CGUIListItem;
 
 #include "TransformMatrix.h"  // needed for the TransformMatrix member
+#include "Geometry.h"         // for CPoint
 
 enum ANIMATION_TYPE
 {
@@ -39,6 +40,12 @@ public:
   void Animate(unsigned int time, bool startAnim);
   void ResetAnimation();
   void ApplyAnimation();
+  inline void RenderAnimation(TransformMatrix &matrix, const CPoint &center)
+  {
+    if (m_autoCenter)
+      m_center = center;
+    RenderAnimation(matrix);
+  }
   void RenderAnimation(TransformMatrix &matrix);
   void QueueAnimation(ANIMATION_PROCESS process);
 
@@ -69,8 +76,8 @@ private:
   float m_startY;
   float m_endX;
   float m_endY;
-  float m_centerX;
-  float m_centerY;
+  CPoint m_center;
+  bool m_autoCenter;
   float m_startAlpha;
   float m_endAlpha;
 
