@@ -30,8 +30,8 @@ CAnimation &CAnimation::operator=(const CAnimation &src)
   m_startY = src.m_startY;
   m_endX   = src.m_endX;
   m_endY = src.m_endY;
-  m_centerX = src.m_centerX;
-  m_centerY = src.m_centerY;
+  m_center = src.m_center;
+  m_autoCenter = src.m_autoCenter;
   m_startAlpha = src.m_startAlpha;
   m_endAlpha=src.m_endAlpha;
 
@@ -73,7 +73,8 @@ void CAnimation::Reset()
   m_amount = 0;
   m_delay = m_start = m_length = 0;
   m_startX = m_startY = m_endX = m_endY = 0;
-  m_centerX = m_centerY = 0;
+  m_autoCenter = false;
+  m_center = CPoint(0,0);
   m_startAlpha = 0;
   m_endAlpha = 100;
   m_condition = 0;
@@ -255,11 +256,16 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
     const char *centerPos = node->Attribute("center");
     if (centerPos)
     {
-      vector<CStdString> commaSeparated;
-      StringUtils::SplitString(centerPos, ",", commaSeparated);
-      if (commaSeparated.size() > 1)
-        g_SkinInfo.ResolveConstant(commaSeparated[1], m_centerY);
-      g_SkinInfo.ResolveConstant(commaSeparated[0], m_centerX);
+      if (strcmpi(centerPos, "auto") == 0)
+        m_autoCenter = true;
+      else
+      {
+        vector<CStdString> commaSeparated;
+        StringUtils::SplitString(centerPos, ",", commaSeparated);
+        if (commaSeparated.size() > 1)
+          g_SkinInfo.ResolveConstant(commaSeparated[1], m_center.y);
+        g_SkinInfo.ResolveConstant(commaSeparated[0], m_center.x);
+      }
     }
   }
   else // if (m_effect == EFFECT_TYPE_ZOOM)
@@ -267,7 +273,7 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
     // effect defaults
     m_startX = m_startY = 100;
     m_endX = m_endY = 100;
-    m_centerX = m_centerY = 0;
+    m_center = CPoint(0,0);
 
     float startPosX = rect.left;
     float startPosY = rect.top;
@@ -329,11 +335,16 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
     const char *centerPos = node->Attribute("center");
     if (centerPos)
     {
-      vector<CStdString> commaSeparated;
-      StringUtils::SplitString(centerPos, ",", commaSeparated);
-      if (commaSeparated.size() > 1)
-        g_SkinInfo.ResolveConstant(commaSeparated[1], m_centerY);
-      g_SkinInfo.ResolveConstant(commaSeparated[0], m_centerX);
+      if (strcmpi(centerPos, "auto") == 0)
+        m_autoCenter = true;
+      else
+      {
+        vector<CStdString> commaSeparated;
+        StringUtils::SplitString(centerPos, ",", commaSeparated);
+        if (commaSeparated.size() > 1)
+          g_SkinInfo.ResolveConstant(commaSeparated[1], m_center.y);
+        g_SkinInfo.ResolveConstant(commaSeparated[0], m_center.x);
+      }
     }
     else
     { // no center specified
@@ -342,13 +353,13 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
       {
         float scale = m_endX / m_startX;
         if (scale != 1)
-          m_centerX = (endPosX - scale*startPosX) / (1 - scale);
+          m_center.x = (endPosX - scale*startPosX) / (1 - scale);
       }
       if (m_startY)
       {
         float scale = m_endY / m_startY;
         if (scale != 1)
-          m_centerY = (endPosY - scale*startPosY) / (1 - scale);
+          m_center.y = (endPosY - scale*startPosY) / (1 - scale);
       }
     }
   }
@@ -450,8 +461,6 @@ void CAnimation::RenderAnimation(TransformMatrix &matrix)
   // We do this here (rather than in Animate()) as we need the
   // currentProcess information in the UpdateStates() function of the
   // window and control classes.
-
-  // Now do the real animation
   if (m_currentProcess != ANIM_PROCESS_NONE)
     Calculate();
   if (m_currentState == ANIM_STATE_APPLIED)
@@ -465,9 +474,7 @@ void CAnimation::RenderAnimation(TransformMatrix &matrix)
 
 void CAnimation::Calculate()
 {
-  float offset = m_amount;
-  if (m_pTweener)
-    offset = m_pTweener->Tween(m_amount, 0.0f, 1.0f, 1.0f);
+  float offset = m_pTweener ? m_pTweener->Tween(m_amount, 0.0f, 1.0f, 1.0f) : m_amount;
   if (m_effect == EFFECT_TYPE_FADE)
   {
     m_matrix.SetFader(((m_endAlpha - m_startAlpha) * offset + m_startAlpha) * 0.01f);
@@ -478,21 +485,21 @@ void CAnimation::Calculate()
   }
   else if (m_effect == EFFECT_TYPE_ROTATE_X)
   { 
-    m_matrix.SetXRotation(((m_endX - m_startX)*offset + m_startX) * DEGREE_TO_RADIAN, m_centerX, m_centerY, 1.0f);
+    m_matrix.SetXRotation(((m_endX - m_startX)*offset + m_startX) * DEGREE_TO_RADIAN, m_center.x, m_center.y, 1.0f);
   }
   else if (m_effect == EFFECT_TYPE_ROTATE_Y)
   {
-    m_matrix.SetYRotation(((m_endX - m_startX)*offset + m_startX) * DEGREE_TO_RADIAN, m_centerX, m_centerY, 1.0f);
+    m_matrix.SetYRotation(((m_endX - m_startX)*offset + m_startX) * DEGREE_TO_RADIAN, m_center.x, m_center.y, 1.0f);
   }
   else if (m_effect == EFFECT_TYPE_ROTATE_Z)
   { // note coordinate aspect ratio is not generally square in the XY plane, so correct for it.
-    m_matrix.SetZRotation(((m_endX - m_startX)*offset + m_startX) * DEGREE_TO_RADIAN, m_centerX, m_centerY, g_graphicsContext.GetScalingPixelRatio());
+    m_matrix.SetZRotation(((m_endX - m_startX)*offset + m_startX) * DEGREE_TO_RADIAN, m_center.x, m_center.y, g_graphicsContext.GetScalingPixelRatio());
   }
   else if (m_effect == EFFECT_TYPE_ZOOM)
   {
     float scaleX = ((m_endX - m_startX)*offset + m_startX) * 0.01f;
     float scaleY = ((m_endY - m_startY)*offset + m_startY) * 0.01f;
-    m_matrix.SetScaler(scaleX, scaleY, m_centerX, m_centerY);
+    m_matrix.SetScaler(scaleX, scaleY, m_center.x, m_center.y);
   }
 }
 
