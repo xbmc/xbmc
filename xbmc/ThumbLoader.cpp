@@ -128,8 +128,8 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     }  
   }
 
-  if (pItem->IsVideo() && !pItem->IsInternetStream())
-    CDVDPlayer::GetFileMetaData(pItem->m_strPath, pItem);
+//  if (pItem->IsVideo() && !pItem->IsInternetStream())
+//    CDVDPlayer::GetFileMetaData(pItem->m_strPath, pItem);
 
   return true;
 }
