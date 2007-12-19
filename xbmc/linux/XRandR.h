@@ -12,6 +12,8 @@ struct XMode
    float hz;
    bool isPreferred;
    bool isCurrent;
+   unsigned int w;
+   unsigned int h;
 };
 
 struct XOutput
