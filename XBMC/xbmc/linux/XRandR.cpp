@@ -48,6 +48,8 @@ void CXRandR::Query()
          xmode.id = mode->Attribute("id");
          xmode.name = mode->Attribute("name");
          xmode.hz = atof(mode->Attribute("hz"));
+         xmode.w = atoi(mode->Attribute("w"));
+         xmode.h = atoi(mode->Attribute("h"));
          xmode.isPreferred = (strcasecmp(mode->Attribute("preferred"), "true") == 0); 
          xmode.isCurrent = (strcasecmp(mode->Attribute("current"), "true") == 0);              
          xoutput.modes.push_back(xmode);
