@@ -1,6 +1,7 @@
 #include <string.h>
 #include "XRandR.h"
 #include "tinyXML/tinyxml.h"
+#include "Util.h"
 
 CXRandR::CXRandR()
 {
@@ -59,7 +60,7 @@ void CXRandR::Query()
   }
 }
 
-std::vector<XOutput> CXRandR::GetModes()
+std::vector<XOutput> CXRandR::GetModes(void)
 {
    return m_outputs;
 }
@@ -102,13 +103,46 @@ XMode CXRandR::GetCurrentMode(CStdString outputName)
    return result;
 }
 
+void CXRandR::LoadCustomModeLinesToAllOutputs(void)
+{
+   TiXmlDocument xmlDoc;
+   //if (!xmlDoc.LoadFile(_P("Q:/UserData/ModeLines.xml")))
+   if (!xmlDoc.LoadFile("/home/yuvalt/linuxport/XBMC/userdata/ModeLines.xml"))
+   {
+      return;
+   }
+
+   TiXmlElement *pRootElement = xmlDoc.RootElement();
+   if (strcasecmp(pRootElement->Value(), "modelines") != 0)
+   {
+     // TODO ERROR
+     return;
+   }
+
+   char cmd[255];
+   CStdString name;
+
+   for (TiXmlElement* modeline = pRootElement->FirstChildElement("modeline"); modeline; modeline = modeline->NextSiblingElement("modeline"))
+   {
+      name = modeline->Attribute("label");
+
+      sprintf(cmd, "%s/xbmc-xrandr --newmode \"%s\" %s > /dev/null 2>&1", getenv("XBMC_HOME"), 
+        name.c_str(), modeline->FirstChild()->Value());
+      system(cmd);
+ 
+      for (unsigned int i = 0; i < m_outputs.size(); i++)
+      {
+         sprintf(cmd, "%s/xbmc-xrandr --addmode %s \"%s\"  > /dev/null 2>&1", getenv("XBMC_HOME"), 
+           m_outputs[i].name.c_str(), name.c_str());
+         system(cmd);
+      }
+   }
+}
+
 /*
 int main()
 {
    CXRandR r;
-   std::vector<XOutput>  output = r.GetModes();
-   r.SetMode(output[0], output[0].modes[2]);
-   XMode mode = r.GetCurrentMode("default");
-   printf("%s\n", mode.name.c_str());
+   r.LoadCustomModeLinesToAllOutputs();
 }
 */
