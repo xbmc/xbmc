@@ -66,7 +66,6 @@ bool CXRandR::SetMode(XOutput output, XMode mode)
 {
    char cmd[255];
 	sprintf(cmd, "%s/xbmc-xrandr --output %s --mode %s", getenv("XBMC_HOME"), output.name.c_str(), mode.id.c_str());
-	printf("Running: %s\n", cmd);
    int status = system(cmd);
    if (status == -1)
       return false;
@@ -101,6 +100,7 @@ XMode CXRandR::GetCurrentMode(CStdString outputName)
    return result;
 }
 
+/*
 int main()
 {
    CXRandR r;
@@ -109,3 +109,4 @@ int main()
    XMode mode = r.GetCurrentMode("default");
    printf("%s\n", mode.name.c_str());
 }
+*/
