@@ -2436,7 +2436,6 @@ main (int argc, char **argv)
 		    if (mode_shown[j]) continue;
     
 		    jmode = find_mode_by_xid (output_info->modes[j]);
-		    printf ("    <mode name=\"%s\">\n", jmode->name);
 		    for (k = j; k < output_info->nmode; k++)
 		    {
 			if (mode_shown[k]) continue;
@@ -2444,7 +2443,7 @@ main (int argc, char **argv)
 			if (strcmp (jmode->name, kmode->name) != 0) continue;
 			mode_shown[k] = True;
 			kmode->modeFlags |= ModeShown;
-			printf ("      <rate hz=\"%.1f\"", mode_refresh (kmode));
+			printf ("    <mode id=\"0x%x\" name=\"%s\" hz=\"%.1f\"", kmode->id, kmode->name, mode_refresh (kmode));
 			if (kmode == output->mode_info)
 			    printf (" current=\"true\"");
 			else
@@ -2455,14 +2454,14 @@ main (int argc, char **argv)
 			    printf (" preferred=\"false\"");
                         printf("/>\n");
 		    }
-		    printf ("    </mode>\n");
 		}
 		free (mode_shown);
 	    }
 
 	    printf("  </output>\n");
 	}
- 
+
+/* 
         printf("  <unused>\n");
 	for (m = 0; m < res->nmode; m++)
 	{
@@ -2482,6 +2481,7 @@ main (int argc, char **argv)
 	    }
 	}
         printf("  </unused>\n");
+*/
         printf("</screen>\n");
 	exit (0);
     }
