@@ -2443,7 +2443,7 @@ main (int argc, char **argv)
 			if (strcmp (jmode->name, kmode->name) != 0) continue;
 			mode_shown[k] = True;
 			kmode->modeFlags |= ModeShown;
-			printf ("    <mode id=\"0x%x\" name=\"%s\" hz=\"%.1f\"", kmode->id, kmode->name, mode_refresh (kmode));
+			printf ("    <mode id=\"0x%x\" name=\"%s\" w=\"%d\" h=\"%d\" hz=\"%.1f\"", kmode->id, kmode->name, kmode->width, kmode->height, mode_refresh (kmode));
 			if (kmode == output->mode_info)
 			    printf (" current=\"true\"");
 			else
