@@ -802,7 +802,7 @@ HRESULT CApplication::Create(HWND hWnd)
 #endif
 
   // map Q to home drive of xbe to load the config file
-  CStdString strExecutablePath;
+  static CStdString strExecutablePath;
   CUtil::GetHomePath(strExecutablePath);
 
 #ifndef _LINUX  
