@@ -90,6 +90,7 @@
 #endif
 #include "lib/libGoAhead/xbmchttp.h"
 #include "DNSNameCache.h"
+#include "FileSystem/PluginDirectory.h"
 
 namespace MathUtils {
 
@@ -3353,6 +3354,7 @@ const BUILT_IN commands[] = {
   { "TakeScreenshot",             false,  "Takes a Screenshot" },
   { "RunScript",                  true,   "Run the specified script" },
   { "RunXBE",                     true,   "Run the specified executeable" },
+  { "RunPlugin",                  true,   "Run the specified plugin" },
   { "Extract",                    true,   "Extracts the specified archive" },
   { "PlayMedia",                  true,   "Play the specified media file (or playlist)" },
   { "SlideShow",                  true,   "Run a slideshow from the specified directory" },
@@ -3646,6 +3648,22 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     else
     {
       CLog::Log(LOGERROR, "CUtil::ExecBuiltIn, runxbe called with no arguments.");
+    }
+  }
+  else if (execute.Equals("runplugin"))
+  {
+    if (!strParameterCaseIntact.IsEmpty())
+    {
+      CFileItem item(strParameterCaseIntact);
+      if (!item.m_bIsFolder)
+      {
+        item.m_strPath = strParameterCaseIntact;
+        CPluginDirectory::RunScriptWithParams(item.m_strPath);
+      }
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "CUtil::ExecBuiltIn, runplugin called with no arguments.");
     }
   }
   else if (execute.Equals("playmedia"))
