@@ -85,12 +85,14 @@ protected:
   virtual void UpdateLayout();
   virtual void CalculateLayout();
   virtual void SelectItem(int item) {};
+  void Reset();
   bool InsideLayout(const CGUIListItemLayout *layout, const CPoint &point);
 
   inline float Size() const;
   void MoveToRow(int row);
   void FreeMemory(int keepStart, int keepEnd);
   void GetCurrentLayouts();
+  CGUIListItemLayout *GetFocusedLayout() const;
 
   int m_offset;
   int m_cursor;
