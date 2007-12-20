@@ -32,6 +32,20 @@ CGUIListItemLayout::CListLabel::~CListLabel()
 {
 }
 
+CGUIListItemLayout::CListSelectLabel::CListSelectLabel(float posX, float posY, float width, float height, int visibleCondition, const CImage &imageFocus, const CImage &imageNoFocus, const CLabelInfo &label, const CStdString &content, const vector<CAnimation> &animations)
+: CGUIListItemLayout::CListBase(),
+  m_label(0, 0, posX, posY, width, height, imageFocus, imageNoFocus, label, "")
+{
+  m_type = LIST_SELECT_LABEL;
+  g_infoManager.ParseLabel(content, m_multiInfo);
+  m_label.SetAnimations(animations);
+  m_label.SetVisibleCondition(visibleCondition, false);
+}
+
+CGUIListItemLayout::CListSelectLabel::~CListSelectLabel()
+{
+}
+
 
 CGUIListItemLayout::CListTexture::CListTexture(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, const CImage &borderImage, const FRECT &borderSize, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, DWORD aspectAlign, D3DCOLOR colorDiffuse, const vector<CAnimation> &animations)
 : CGUIListItemLayout::CListBase(),
@@ -43,7 +57,6 @@ CGUIListItemLayout::CListTexture::CListTexture(float posX, float posY, float wid
   m_image.SetColorDiffuse(colorDiffuse);
   m_image.SetVisibleCondition(visibleCondition, false);
 }
-
 
 CGUIListItemLayout::CListTexture::~CListTexture()
 {
@@ -87,6 +100,8 @@ CGUIListItemLayout::CGUIListItemLayout(const CGUIListItemLayout &from)
       m_controls.push_back(new CListImage(*(CListImage *)item));
     else if (item->m_type ==  CListBase::LIST_TEXTURE)
       m_controls.push_back(new CListTexture(*(CListTexture *)item));
+    else if (item->m_type == CListBase::LIST_SELECT_LABEL)
+      m_controls.push_back(new CListSelectLabel(*(CListSelectLabel *)item));
   }
   m_invalidated = true;
   m_isPlaying = false;
@@ -127,6 +142,11 @@ void CGUIListItemLayout::Render(CGUIListItem *item, DWORD parentID, DWORD time)
       label.SetScrolling(m_focused);
       label.UpdateVisibility(item);
       label.DoRender(time);
+    }
+    else if (layoutItem->m_type == CListBase::LIST_SELECT_LABEL)
+    {
+      ((CListSelectLabel *)layoutItem)->m_label.UpdateVisibility(item);
+      ((CListSelectLabel *)layoutItem)->m_label.DoRender(time);
     }
     else
     {
@@ -198,6 +218,11 @@ void CGUIListItemLayout::UpdateItem(CGUIListItemLayout::CListBase *control, CFil
     else
       label->m_label.SetLabel(g_infoManager.GetItemMultiLabel(item, label->m_multiInfo));
   }
+  else if (control->m_type == CListBase::LIST_SELECT_LABEL)
+  {
+    CListSelectLabel *label = (CListSelectLabel *)control;
+    label->m_label.UpdateText(g_infoManager.GetItemMultiLabel(item, label->m_multiInfo));
+  }
 }
 
 void CGUIListItemLayout::ResetScrolling()
@@ -210,30 +235,62 @@ void CGUIListItemLayout::ResetScrolling()
   }
 }
 
-void CGUIListItemLayout::QueueAnimation(ANIMATION_TYPE animType)
+void CGUIListItemLayout::SetFocus(unsigned int focus)
 {
   for (iControls it = m_controls.begin(); it != m_controls.end(); it++)
   {
     CListBase *layoutItem = (*it);
     if (layoutItem->m_type == CListBase::LIST_IMAGE ||
         layoutItem->m_type == CListBase::LIST_TEXTURE)
-      ((CListTexture *)layoutItem)->m_image.QueueAnimation(animType);
+      ((CListTexture *)layoutItem)->m_image.SetFocus(focus > 0);
     else if (layoutItem->m_type == CListBase::LIST_LABEL)
-      ((CListLabel *)layoutItem)->m_label.QueueAnimation(animType);
+      ((CListLabel *)layoutItem)->m_label.SetFocus(focus > 0);
+    else if (layoutItem->m_type == CListBase::LIST_SELECT_LABEL)
+      ((CListSelectLabel *)layoutItem)->m_label.SetFocusedItem(focus);
   }
 }
 
-void CGUIListItemLayout::ResetAnimation(ANIMATION_TYPE animType)
+unsigned int CGUIListItemLayout::GetFocus() const
 {
-  for (iControls it = m_controls.begin(); it != m_controls.end(); it++)
+  for (vector<CListBase*>::const_iterator it = m_controls.begin(); it != m_controls.end(); it++)
   {
     CListBase *layoutItem = (*it);
-    if (layoutItem->m_type == CListBase::LIST_IMAGE ||
-        layoutItem->m_type == CListBase::LIST_TEXTURE)
-      ((CListTexture *)layoutItem)->m_image.ResetAnimation(animType);
-    else if (layoutItem->m_type == CListBase::LIST_LABEL)
-      ((CListLabel *)layoutItem)->m_label.ResetAnimation(animType);
+    if (layoutItem->m_type == CListBase::LIST_SELECT_LABEL)
+      return ((CListSelectLabel *)layoutItem)->m_label.GetFocusedItem();
   }
+  return 0;
+}
+
+void CGUIListItemLayout::SelectItemFromPoint(const CPoint &point)
+{
+  for (vector<CListBase*>::const_iterator it = m_controls.begin(); it != m_controls.end(); it++)
+  {
+    CListBase *layoutItem = (*it);
+    if (layoutItem->m_type == CListBase::LIST_SELECT_LABEL)
+      return ((CListSelectLabel *)layoutItem)->m_label.SelectItemFromPoint(point);
+  }
+}
+
+bool CGUIListItemLayout::MoveLeft()
+{
+  for (vector<CListBase*>::const_iterator it = m_controls.begin(); it != m_controls.end(); it++)
+  {
+    CListBase *layoutItem = (*it);
+    if (layoutItem->m_type == CListBase::LIST_SELECT_LABEL)
+      return ((CListSelectLabel *)layoutItem)->m_label.MoveLeft();
+  }
+  return false;
+}
+
+bool CGUIListItemLayout::MoveRight()
+{
+  for (vector<CListBase*>::const_iterator it = m_controls.begin(); it != m_controls.end(); it++)
+  {
+    CListBase *layoutItem = (*it);
+    if (layoutItem->m_type == CListBase::LIST_SELECT_LABEL)
+      return ((CListSelectLabel *)layoutItem)->m_label.MoveRight();
+  }
+  return false;
 }
 
 CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *child)
@@ -252,8 +309,8 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
   float width = 10;
   float height = 10;
   CStdString infoString;
-  CImage image;
-  CImage borderImage;
+  CImage image, borderImage;
+  CImage imageFocus, imageNoFocus;
   FRECT borderSize = { 0, 0, 0, 0 };
   CLabelInfo label;
   CGUIControlFactory::GetFloat(child, "posx", posX);
@@ -264,6 +321,7 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
   CGUIControlFactory::GetColor(child, "textcolor", label.textColor);
   CGUIControlFactory::GetColor(child, "selectedcolor", label.selectedColor);
   CGUIControlFactory::GetColor(child, "shadowcolor", label.shadowColor);
+  CGUIControlFactory::GetColor(child, "focusedcolor", label.focusedColor);
   CStdString fontName;
   XMLUtils::GetString(child, "font", fontName);
   label.font = g_fontManager.GetFont(fontName);
@@ -274,6 +332,8 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
     return NULL;
   }
   CGUIControlFactory::GetTexture(child, "texture", image);
+  CGUIControlFactory::GetTexture(child, "texturefocus", imageFocus);
+  CGUIControlFactory::GetTexture(child, "texturenofocus", imageNoFocus);
   CGUIControlFactory::GetAlignment(child, "align", label.align);
   FRECT rect = { posX, posY, width, height };
   vector<CAnimation> animations;
@@ -300,6 +360,10 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
   if (type == "label")
   { // info label
     return new CListLabel(posX, posY, width, height, visibleCondition, label, scroll, info, content, animations);
+  }
+  else if (type == "multiselect")
+  {
+    return new CListSelectLabel(posX, posY, width, height, visibleCondition, imageFocus, imageNoFocus, label, content, animations);
   }
   else if (type == "image")
   {
