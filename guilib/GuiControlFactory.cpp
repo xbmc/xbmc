@@ -34,6 +34,7 @@
 #include "GUIWrappingListContainer.h"
 #include "GUIPanelContainer.h"
 #include "GUILargeImage.h"
+#include "GUIMultiSelectText.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
 #include "../xbmc/Util.h"
@@ -1064,6 +1065,12 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     ((CGUIRadioButtonControl *)control)->SetToggleSelect(iToggleSelect);
     ((CGUIRadioButtonControl *)control)->SetClickActions(clickActions);
     ((CGUIRadioButtonControl *)control)->SetFocusActions(focusActions);
+  }
+  else if (strType == "multiselect")
+  {
+    control = new CGUIMultiSelectTextControl(
+      dwParentId, id, posX, posY, width, height,
+      textureFocus, textureNoFocus, labelInfo, strLabel);
   }
   else if (strType == "spincontrol")
   {

@@ -341,6 +341,9 @@
 				RelativePath=".\GUIMultiImage.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIMultiSelectText.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIPanelContainer.cpp">
 			</File>
 			<File
@@ -560,6 +563,9 @@
 			</File>
 			<File
 				RelativePath=".\GUIMultiImage.h">
+			</File>
+			<File
+				RelativePath=".\GUIMultiSelectText.h">
 			</File>
 			<File
 				RelativePath=".\GUIPanelContainer.h">
