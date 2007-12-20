@@ -13,6 +13,7 @@ CGUIDialog::CGUIDialog(DWORD dwID, const CStdString &xmlFile)
   m_bRunning = false;
   m_dialogClosing = false;
   m_renderOrder = 1;
+  m_autoClosing = false;
 }
 
 CGUIDialog::~CGUIDialog(void)
@@ -77,12 +78,14 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
         m_gWindowManager.RemoveDialog(GetID());
         m_bRunning = false;
         m_dialogClosing = false;
+        m_autoClosing = false;
       }
       return true;
     }
   case GUI_MSG_WINDOW_INIT:
     {
       CGUIWindow::OnMessage(message);
+      m_showStartTime = SDL_GetTicks();
       return true;
     }
   }
@@ -235,6 +238,14 @@ void CGUIDialog::Render()
   {
     Close(true);
   }
+    
+  if (m_autoClosing)
+  {
+     if (m_showStartTime + m_showDuration < SDL_GetTicks())
+     {
+        Close(true);
+     }
+  }
 }
 
 bool CGUIDialog::IsAnimating(ANIMATION_TYPE animType)
@@ -249,4 +260,11 @@ void CGUIDialog::SetDefaults()
   CGUIWindow::SetDefaults();
   m_renderOrder = 1;
 }
+
+void CGUIDialog::SetAutoClose(int timeoutMs)
+{
+   m_autoClosing = true;
+   m_showDuration = timeoutMs;
+}
+
 
