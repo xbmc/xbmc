@@ -340,6 +340,7 @@ DWORD CALSADirectSound::GetSpace()
   if (nSpace < 0) {
      CLog::Log(LOGWARNING,"CALSADirectSound::GetSpace - get space failed. err: %d (%s)", nSpace, snd_strerror(nSpace));
      nSpace = 0;
+     Flush();
   }
   return nSpace;
 }
