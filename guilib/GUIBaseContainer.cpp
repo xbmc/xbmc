@@ -656,6 +656,11 @@ bool CGUIBaseContainer::GetCondition(int condition, int data) const
     return (HasNextPage());
   case CONTAINER_HAS_PREVIOUS:
     return (HasPreviousPage());
+  case CONTAINER_SUBITEM:
+    {
+      CGUIListItemLayout *layout = GetFocusedLayout();
+      return layout ? (layout->GetFocus() == data) : false;
+    }
   default:
     return false;
   }
