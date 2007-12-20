@@ -503,6 +503,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_COLUMN : CONTAINER_COLUMN, id, atoi(info.Mid(7, info.GetLength() - 8))));
     else if (info.Left(9).Equals("position("))
       return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_POSITION : CONTAINER_POSITION, id, atoi(info.Mid(9, info.GetLength() - 10))));
+    else if (info.Left(8).Equals("subitem("))
+      return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_SUBITEM : CONTAINER_SUBITEM, id, atoi(info.Mid(8, info.GetLength() - 9))));
     else if (info.Equals("hasthumb")) ret = CONTAINER_HAS_THUMB;
     else if (info.Left(5).Equals("sort("))
     {
@@ -1688,6 +1690,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
     case CONTAINER_POSITION:
     case CONTAINER_HAS_NEXT:
     case CONTAINER_HAS_PREVIOUS:
+    case CONTAINER_SUBITEM:
       {
         const CGUIControl *control = NULL;
         if (info.m_data1)
