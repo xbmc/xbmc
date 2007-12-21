@@ -125,7 +125,6 @@ protected:
   LPDIRECT3DPALETTE8 m_diffusePalette;
   LPDIRECT3DPALETTE8 m_pPalette;
   float m_diffuseScaleU, m_diffuseScaleV;
-  bool m_bWasVisible;
   bool m_bDynamicResourceAlloc;
 
   // for when we are changing textures
