@@ -54,7 +54,7 @@ bool CLinuxRendererATI::ValidateRenderTarget()
 
 
 void CLinuxRendererATI::ReleaseImage(int source, bool preserve)
-{  
+{
   // Eventual FIXME
   if (source!=0)
     source=0;
@@ -62,11 +62,11 @@ void CLinuxRendererATI::ReleaseImage(int source, bool preserve)
   m_image[source].flags = 0;
 
   YV12Image &im = m_image[source];
-  
+
   m_image[source].flags &= ~IMAGE_FLAG_INUSE;
   m_image[source].flags = 0;
 
-  // if we don't have a shader, fallback to SW YUV2RGB for now 
+  // if we don't have a shader, fallback to SW YUV2RGB for now
   if (m_renderMethod & RENDER_SW)
   {
 #ifdef HAS_DVD_SWSCALE
@@ -76,7 +76,7 @@ void CLinuxRendererATI::ReleaseImage(int source, bool preserve)
     uint8_t *dst[] = { m_rgbBuffer, 0, 0 };
     int     dstStride[] = { m_iSourceWidth*4, 0, 0 };
     m_dllSwScale.sws_scale(context, src, srcStride, 0, im.height, dst, dstStride);
-    
+
     m_dllSwScale.sws_freeContext(context);
 #endif
   }
@@ -101,10 +101,10 @@ void CLinuxRendererATI::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   g_graphicsContext.BeginPaint();
 
   m_image[source].flags = 0;
-    
+
   YV12Image &im = m_image[source];
   YUVFIELDS &fields = m_YUVTexture[source];
-  
+
   m_image[source].flags &= ~IMAGE_FLAG_INUSE;
   m_image[source].flags = 0;
 
@@ -117,9 +117,9 @@ void CLinuxRendererATI::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
       LoadShaders();
     CreateYV12Texture(0, false);
   }
-  
+
   VerifyGLState();
-  
+
   if (m_renderMethod & RENDER_SW) {
     if (imaging==-1)
     {
@@ -162,7 +162,7 @@ void CLinuxRendererATI::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[0]);
   VerifyGLState();
   if (m_renderMethod & RENDER_GLSL)
-  {    
+  {
     glBindTexture(m_textureTarget, fields[0][1]);
     VerifyGLState();
     glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[1]);
@@ -183,8 +183,8 @@ void CLinuxRendererATI::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     glPixelTransferf(GL_BLUE_BIAS, 0.0);
     VerifyGLState();
   }
-  
-  if (clear) 
+
+  if (clear)
   {
     glClearColor(m_clearColour&0xff000000,
 		 m_clearColour&0x00ff0000,
@@ -192,7 +192,7 @@ void CLinuxRendererATI::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 		 0);
     glClear(GL_COLOR_BUFFER_BIT);
     glClearColor(0,0,0,0);
-    if (alpha<255) 
+    if (alpha<255)
     {
 #ifdef  __GNUC__
 #warning Alpha blending currently disabled
@@ -210,15 +210,15 @@ void CLinuxRendererATI::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 }
 
 void CLinuxRendererATI::FlipPage(int source)
-{  
+{
   CLog::Log(LOGNOTICE, "Calling ATI FlipPage");
   m_iYV12RenderBuffer = source;
-  
+
   if( !m_OSDRendered )
     m_OSDWidth = m_OSDHeight = 0;
-  
+
   m_OSDRendered = false;
-  
+
   return;
 }
 
@@ -250,9 +250,9 @@ unsigned int CLinuxRendererATI::PreInit()
     return false;
 
 #ifdef HAS_DVD_SWSCALE
-  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllSwScale.Load()) 
+  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllSwScale.Load())
 #else
-  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load()) 
+  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load())
 #endif
     CLog::Log(LOGERROR,"CLinuxRendererATI::PreInit - failed to load rescale libraries!");
 
@@ -272,41 +272,26 @@ void CLinuxRendererATI::UnInit()
     DeleteYV12Texture(i);
     DeleteOSDTextures(i);
   }
-  
+
   if (m_pBuffer)
   {
     delete m_pBuffer;
     m_pBuffer = 0;
-  } 
+  }
 
-  if (m_rgbBuffer != NULL) 
-  { 
+  if (m_rgbBuffer != NULL)
+  {
     delete [] m_rgbBuffer;
     m_rgbBuffer = NULL;
   }
 
-  if (m_shaderProgram)
-  {
-    glDeleteShader(m_vertexShader);
-    VerifyGLState();
-    glDeleteShader(m_fragmentShader);
-    VerifyGLState();
-    glDeleteProgram(m_shaderProgram);
-    VerifyGLState();
-    m_fragmentShader = 0;
-    m_vertexShader = 0;
-    m_shaderProgram = 0;
-    m_yTex = 0;
-    m_uTex = 0;
-    m_vTex = 0;
-  }
 }
 
 bool CLinuxRendererATI::CreateYV12Texture(int index, bool clear)
 {
   /* since we also want the field textures, pitch must be texture aligned */
   unsigned p;
-  
+
   YV12Image &im = m_image[index];
   YUVFIELDS &fields = m_YUVTexture[index];
 
@@ -334,11 +319,11 @@ bool CLinuxRendererATI::CreateYV12Texture(int index, bool clear)
   g_graphicsContext.BeginPaint(m_pBuffer);
 
   glEnable(m_textureTarget);
-  for(int f = 0;f<MAX_FIELDS;f++) 
+  for(int f = 0;f<MAX_FIELDS;f++)
   {
-    for(p = 0;p<MAX_PLANES;p++) 
+    for(p = 0;p<MAX_PLANES;p++)
     {
-      if (!glIsTexture(fields[f][p])) 
+      if (!glIsTexture(fields[f][p]))
       {
 	glGenTextures(1, &fields[f][p]);
 	VerifyGLState();
@@ -346,7 +331,7 @@ bool CLinuxRendererATI::CreateYV12Texture(int index, bool clear)
     }
   }
 
-  // YUV 
+  // YUV
   p = 0;
   glBindTexture(m_textureTarget, fields[0][0]);
   if (m_renderMethod & RENDER_SW)
@@ -385,9 +370,9 @@ bool CLinuxRendererATI::CreateYV12Texture(int index, bool clear)
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
     VerifyGLState();
-    
+
     glBindTexture(m_textureTarget, fields[0][2]);
-    glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL); 
+    glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
     glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
