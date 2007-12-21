@@ -798,10 +798,11 @@
   <string id="10100">Yes/no dialog</string>
   <string id="10101">Progress dialog</string>
 
-  <string id="10200">Setting up playback</string>
-  <string id="10201">Please wait. Starting to play:</string>
-  <string id="10202">Stopping</string>
-  <string id="10203">Please wait while stopping:</string>
+  <string id="10210">Looking for subtitles...</string>
+  <string id="10211">Caching subtitles...</string>
+  <string id="10212">terminating</string>
+  <string id="10213">buffering</string>
+  <string id="10214">opening stream</string>
 
   <string id="10500">Music/Playlist</string>
   <string id="10501">Music/Files</string>

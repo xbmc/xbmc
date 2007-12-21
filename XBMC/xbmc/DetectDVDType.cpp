@@ -59,11 +59,6 @@ CDetectDVDMedia::CDetectDVDMedia()
   m_dwLastTrayState = 0;
   m_bStartup = true;  // Do not autorun on startup
   m_pInstance = this;
-#ifdef _LINUX
-  // This fails on win32 due to the critical section (static) in CLog not being
-  // initialized yet :(
-  CLog::Log(LOGDEBUG, "Compiled with libcdio Version 0.%d", LIBCDIO_VERSION_NUM);
-#endif
 }
 
 CDetectDVDMedia::~CDetectDVDMedia()
@@ -73,6 +68,7 @@ CDetectDVDMedia::~CDetectDVDMedia()
 void CDetectDVDMedia::OnStartup()
 {
   // SetPriority( THREAD_PRIORITY_LOWEST );
+  CLog::Log(LOGDEBUG, "Compiled with libcdio Version 0.%d", LIBCDIO_VERSION_NUM);
 }
 
 void CDetectDVDMedia::Process()

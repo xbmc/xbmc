@@ -174,7 +174,7 @@ void CDVDPlayerVideo::Process()
 
   while (!m_bStop)
   {
-    while (m_speed == DVD_PLAYSPEED_PAUSE && !m_messageQueue.RecievedAbortRequest() && m_iNrOfPicturesNotToSkip==0) Sleep(5);
+    while (!m_bStop && m_speed == DVD_PLAYSPEED_PAUSE && !m_messageQueue.RecievedAbortRequest() && m_iNrOfPicturesNotToSkip==0) Sleep(5);
 
     int iQueueTimeOut = (int)(m_DetectedStill ? frametime / 4 : frametime * 4) / 1000;
     
@@ -318,7 +318,7 @@ void CDVDPlayerVideo::Process()
       }
 
       // loop while no error
-      while (!(iDecoderState & VC_ERROR))
+      while (!m_bStop && !(iDecoderState & VC_ERROR))
       {
         // check for a new picture
         if (iDecoderState & VC_PICTURE)
@@ -383,7 +383,7 @@ void CDVDPlayerVideo::Process()
               // guess next frame pts. iDuration is always valid
               pts += picture.iDuration * m_speed / abs(m_speed);
             }
-            while (picture.iRepeatPicture-- > 0);
+            while (!m_bStop && picture.iRepeatPicture-- > 0);
             
             if( iResult & EOS_ABORT )
             {

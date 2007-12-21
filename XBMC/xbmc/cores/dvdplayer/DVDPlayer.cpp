@@ -54,6 +54,9 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   
   m_playSpeed = DVD_PLAYSPEED_NORMAL;
   m_caching = false;
+ 
+  m_pDlgCache = NULL;
+
 #ifdef DVDDEBUG_MESSAGE_TRACKER
   g_dvdMessageTracker.Init();
 #endif
@@ -74,6 +77,14 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
   try
   {
+    if (m_pDlgCache)
+      m_pDlgCache->Close();
+
+    CStdString strHeader;
+    if (file.IsInternetStream())
+      strHeader = g_localizeStrings.Get(10214);
+    m_pDlgCache = new CDlgCache(file.IsInternetStream()?0:3000, strHeader, file.GetLabel());
+    
     CStdString strFile = file.m_strPath;
 
     CLog::Log(LOGNOTICE, "DVDPlayer: Opening: %s", strFile.c_str());
@@ -118,7 +129,12 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     WaitForSingleObject(m_hReadyEvent, INFINITE);
 
     // Playback might have been stopped due to some error
-    if (m_bStop) return false;
+    if (m_bStop) 
+    {
+      m_pDlgCache->Close();
+      m_pDlgCache = NULL;
+      return false;
+    }
 
     /* check if we got a full dvd state, then use that */
     if( options.state.size() > 0 && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
@@ -134,6 +150,12 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Exception thrown on open", __FUNCTION__);
+    if (m_pDlgCache)
+    {
+      m_pDlgCache->Close();
+      m_pDlgCache = NULL;
+    }
+
     return false;
   }
 }
@@ -409,25 +431,31 @@ void CDVDPlayer::Process()
   int video_index = -1;
   int audio_index = -1;
 
-  CLog::Log(LOGNOTICE, "Creating InputStream");
-  
-  m_pInputStream = CDVDFactoryInputStream::CreateInputStream(this, m_filename, m_content);
-  if (!m_pInputStream || !m_pInputStream->Open(m_filename.c_str(), m_content))
-  {
-    CLog::Log(LOGERROR, "InputStream: Error opening, %s", m_filename.c_str());
-    // inputstream will be destroyed in OnExit()
+  if (m_pDlgCache && m_pDlgCache->IsCanceled())
     return;
-  }
-
-  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-  {
-    CLog::Log(LOGNOTICE, "DVDPlayer: playing a dvd with menu's");
-  }
-
-  CLog::Log(LOGNOTICE, "Creating Demuxer");
-  
+ 
   try
   {
+    CLog::Log(LOGNOTICE, "Creating InputStream");
+  
+    m_pInputStream = CDVDFactoryInputStream::CreateInputStream(this, m_filename, m_content);
+    if (!m_pInputStream || !m_pInputStream->Open(m_filename.c_str(), m_content))
+    {
+      CLog::Log(LOGERROR, "InputStream: Error opening, %s", m_filename.c_str());
+      // inputstream will be destroyed in OnExit()
+      return;
+    }
+
+    if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+    {
+      CLog::Log(LOGNOTICE, "DVDPlayer: playing a dvd with menu's");
+    }
+
+    if (m_pDlgCache && m_pDlgCache->IsCanceled())
+      return;
+
+    CLog::Log(LOGNOTICE, "Creating Demuxer");
+
     m_pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(m_pInputStream);
     if(!m_pDemuxer)
     {
@@ -443,9 +471,15 @@ void CDVDPlayer::Process()
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "%s - Exception thrown when opeing demuxer", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s - Exception thrown ", __FUNCTION__);
     return;
   }
+
+  if (m_pDlgCache && m_pDlgCache->IsCanceled())
+    return;
+
+  if (m_pDlgCache)
+    m_pDlgCache->SetMessage(g_localizeStrings.Get(10210));
 
   // find any available external subtitles for non dvd files
   if( !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) )
@@ -469,6 +503,9 @@ void CDVDPlayer::Process()
   // open any external subtitle found
   if(m_vecSubtitleFiles.size() > 0)
   {
+    if (m_pDlgCache)
+      m_pDlgCache->SetMessage(g_localizeStrings.Get(10211));
+
     CDVDStreamInfo hint;
     if(m_dvdPlayerSubtitle.OpenStream(hint, m_vecSubtitleFiles[0]))
       m_CurrentSubtitle.id = 0x100;
@@ -478,6 +515,17 @@ void CDVDPlayer::Process()
   SetEvent(m_hReadyEvent);
 
   m_callback.OnPlayBackStarted();
+
+  if (m_pDlgCache && m_pDlgCache->IsCanceled())
+    return;
+
+  if (m_pDlgCache)
+    m_pDlgCache->SetMessage(g_localizeStrings.Get(10213));
+
+  m_clock.SetSpeed(DVD_PLAYSPEED_PAUSE);
+  m_dvdPlayerAudio.SetSpeed(DVD_PLAYSPEED_PAUSE);
+  m_dvdPlayerVideo.SetSpeed(DVD_PLAYSPEED_PAUSE);
+  m_caching = true;
 
   while (!m_bAbortRequest)
   {
@@ -709,6 +757,29 @@ void CDVDPlayer::Process()
     }
 
     UnlockStreams();
+
+    // present the cache dialog until playback actually started
+    if (m_pDlgCache)
+    {
+      if (m_pDlgCache->IsCanceled())
+      {
+        m_caching = false;
+        m_bAbortRequest = true;
+        break;
+      }
+     
+      if (m_caching)
+      {
+        m_pDlgCache->ShowProgressBar(true);
+        m_pDlgCache->SetPercentage(GetCacheLevel());
+      }
+      else if (GetTime() > 500) // movie started to play
+      {
+        m_pDlgCache->Close();
+        m_pDlgCache = NULL;
+      }
+    }
+
   }
 
   while (!m_bAbortRequest && 
@@ -950,6 +1021,9 @@ void CDVDPlayer::SyncronizePlayers(DWORD sources)
 void CDVDPlayer::OnExit()
 {
   g_dvdPerformanceCounter.DisableMainPerformance();
+  
+  if (m_pDlgCache)
+    m_pDlgCache->SetMessage(g_localizeStrings.Get(10212));
 
   try
   {
@@ -1009,6 +1083,12 @@ void CDVDPlayer::OnExit()
     CLog::Log(LOGERROR, "%s - Exception thrown when trying to close down player, memory leak will follow", __FUNCTION__);
     m_pInputStream = NULL;
     m_pDemuxer = NULL;   
+  }
+
+  if (m_pDlgCache)
+  {
+    m_pDlgCache->Close();
+    m_pDlgCache = NULL;
   }
 
   // set event to inform openfile something went wrong in case openfile is still waiting for this event
