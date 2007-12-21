@@ -9,11 +9,11 @@ using namespace Shaders;
 
 namespace Shaders {
 
-  class BaseVideoFilterShader : public CShaderProgram
+  class BaseVideoFilterShader : public CGLSLShaderProgram
   {
   public:
     BaseVideoFilterShader();
-    void Free() { CShaderProgram::Free(); }
+    void Free() { CGLSLShaderProgram::Free(); }
     virtual void SetSourceTexture(GLint ytex) { m_sourceTexUnit = ytex; }
     virtual void SetWidth(int w)     { m_width  = w; m_stepX = w>0?1.0f/w:0; }
     virtual void SetHeight(int h)    { m_height = h; m_stepY = h>0?1.0f/h:0; }

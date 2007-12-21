@@ -37,16 +37,16 @@ using namespace std;
 
 
 //////////////////////////////////////////////////////////////////////
-// CVertexShader
+// CGLSLVertexShader
 //////////////////////////////////////////////////////////////////////
 
-bool CVertexShader::Compile()
+bool CGLSLVertexShader::Compile()
 {
-  GLint params[4]; 
+  GLint params[4];
 
   Free();
 
-  /* 
+  /*
      Workaround for locale bug in nVidia's shader compiler.
      Save the current locale, set to a neutral locale while compiling and switch back afterwards.
   */
@@ -59,7 +59,7 @@ bool CVertexShader::Compile()
   glCompileShader(m_vertexShader);
   glGetShaderiv(m_vertexShader, GL_COMPILE_STATUS, params);
   VerifyGLState();
-  if (params[0]!=GL_TRUE) 
+  if (params[0]!=GL_TRUE)
   {
     GLchar log[LOG_SIZE];
     CLog::Log(LOGERROR, "GL: Error compiling shader");
@@ -81,20 +81,72 @@ bool CVertexShader::Compile()
   return m_compiled;
 }
 
-void CVertexShader::Free()
+void CGLSLVertexShader::Free()
 {
   if (m_vertexShader)
-    glDeleteShader(m_vertexShader); 
+    glDeleteShader(m_vertexShader);
   m_vertexShader = 0;
 }
 
 
 //////////////////////////////////////////////////////////////////////
-// CPixelShader
+// CARBVertexShader
 //////////////////////////////////////////////////////////////////////
-bool CPixelShader::Compile()
+bool CARBVertexShader::Compile()
 {
-  GLint params[4]; 
+  int err = 0;
+
+  Free();
+
+  // Pixel shaders are not mandatory.
+  if (m_source.length()==0)
+  {
+    CLog::Log(LOGNOTICE, "GL: No vertex shader, fixed pipeline in use");
+    return true;
+  }
+
+  // Workaround for locale bug in nVidia's shader compiler.
+  // Save the current locale, set to a neutral while compiling and switch back afterwards.
+
+  char * currentLocale = setlocale(LC_NUMERIC, NULL);
+  setlocale(LC_NUMERIC, "C");
+
+  glEnable(GL_FRAGMENT_PROGRAM_ARB);
+  glGenProgramsARB(1, &m_vertexShader);
+  glBindProgramARB(GL_VERTEX_PROGRAM_ARB, m_vertexShader);
+
+  glProgramStringARB(GL_VERTEX_PROGRAM_ARB, GL_PROGRAM_FORMAT_ASCII_ARB,
+                     m_source.length(), m_source.c_str());
+
+  glGetIntegerv(GL_PROGRAM_ERROR_POSITION_ARB, &err);
+  if (err>0)
+  {
+    CLog::Log(LOGERROR, "GL: Error compiling ARB vertex shader");
+    m_compiled = false;
+  }
+  else
+  {
+    m_compiled = true;
+  }
+  glDisable(GL_VERTEX_PROGRAM_ARB);
+  setlocale(LC_NUMERIC, currentLocale);
+  return m_compiled;
+}
+
+void CARBVertexShader::Free()
+{
+  if (m_vertexShader)
+    glDeleteProgramsARB(1, &m_vertexShader);
+  m_vertexShader = 0;
+}
+
+
+//////////////////////////////////////////////////////////////////////
+// CGLSLPixelShader
+//////////////////////////////////////////////////////////////////////
+bool CGLSLPixelShader::Compile()
+{
+  GLint params[4];
 
   Free();
 
@@ -105,7 +157,7 @@ bool CPixelShader::Compile()
     return true;
   }
 
-  /* 
+  /*
      Workaround for locale bug in nVidia's shader compiler.
      Save the current locale, set to a neutral while compiling and switch back afterwards.
   */
@@ -117,7 +169,7 @@ bool CPixelShader::Compile()
   glShaderSource(m_pixelShader, 1, &ptr, 0);
   glCompileShader(m_pixelShader);
   glGetShaderiv(m_pixelShader, GL_COMPILE_STATUS, params);
-  if (params[0]!=GL_TRUE) 
+  if (params[0]!=GL_TRUE)
   {
     GLchar log[LOG_SIZE];
     CLog::Log(LOGERROR, "GL: Error compiling shader");
@@ -139,22 +191,73 @@ bool CPixelShader::Compile()
   return m_compiled;
 }
 
-void CPixelShader::Free()
+void CGLSLPixelShader::Free()
 {
-  if (m_pixelShader) 
-    glDeleteShader(m_pixelShader); 
-  m_pixelShader = 0; 
+  if (m_pixelShader)
+    glDeleteShader(m_pixelShader);
+  m_pixelShader = 0;
+}
+
+//////////////////////////////////////////////////////////////////////
+// CARBPixelShader
+//////////////////////////////////////////////////////////////////////
+bool CARBPixelShader::Compile()
+{
+  int err = 0;
+
+  Free();
+
+  // Pixel shaders are not mandatory.
+  if (m_source.length()==0)
+  {
+    CLog::Log(LOGNOTICE, "GL: No pixel shader, fixed pipeline in use");
+    return true;
+  }
+
+  // Workaround for locale bug in nVidia's shader compiler.
+  // Save the current locale, set to a neutral while compiling and switch back afterwards.
+
+  char * currentLocale = setlocale(LC_NUMERIC, NULL);
+  setlocale(LC_NUMERIC, "C");
+
+  glEnable(GL_FRAGMENT_PROGRAM_ARB);
+  glGenProgramsARB(1, &m_pixelShader);
+  glBindProgramARB(GL_FRAGMENT_PROGRAM_ARB, m_pixelShader);
+
+  glProgramStringARB(GL_FRAGMENT_PROGRAM_ARB, GL_PROGRAM_FORMAT_ASCII_ARB,
+                     m_source.length(), m_source.c_str());
+
+  glGetIntegerv(GL_PROGRAM_ERROR_POSITION_ARB, &err);
+  if (err>0)
+  {
+    CLog::Log(LOGERROR, "GL: Error compiling ARB pixel shader");
+    m_compiled = false;
+  }
+  else
+  {
+    m_compiled = true;
+  }
+  glDisable(GL_FRAGMENT_PROGRAM_ARB);
+  setlocale(LC_NUMERIC, currentLocale);
+  return m_compiled;
+}
+
+void CARBPixelShader::Free()
+{
+  if (m_pixelShader)
+    glDeleteProgramsARB(1, &m_pixelShader);
+  m_pixelShader = 0;
 }
 
 
 //////////////////////////////////////////////////////////////////////
-// CShaderProgram
+// CGLSLShaderProgram
 //////////////////////////////////////////////////////////////////////
-void CShaderProgram::Free()
+void CGLSLShaderProgram::Free()
 {
-  m_VP.Free();
+  m_pVP->Free();
   VerifyGLState();
-  m_FP.Free();
+  m_pFP->Free();
   VerifyGLState();
   if (m_shaderProgram)
   {
@@ -165,28 +268,28 @@ void CShaderProgram::Free()
   m_lastProgram = 0;
 }
 
-bool CShaderProgram::CompileAndLink()
+bool CGLSLShaderProgram::CompileAndLink()
 {
-  GLint params[4]; 
+  GLint params[4];
 
   // free resources
   Free();
 
   // compiled vertex shader
-  if (!m_VP.Compile())
+  if (!m_pVP->Compile())
   {
     CLog::Log(LOGERROR, "GL: Error compiling vertex shader");
     return false;
   }
 
   // compile pixel shader
-  if (!m_FP.Compile())
+  if (!m_pFP->Compile())
   {
-    m_VP.Free();
+    m_pVP->Free();
     CLog::Log(LOGERROR, "GL: Error compiling fragment shader");
     return false;
   }
-  
+
   // create program object
   if (!(m_shaderProgram = glCreateProgram()))
   {
@@ -195,21 +298,21 @@ bool CShaderProgram::CompileAndLink()
   }
 
   // attach the vertex shader
-  glAttachShader(m_shaderProgram, m_VP.Handle());
+  glAttachShader(m_shaderProgram, m_pVP->Handle());
   VerifyGLState();
 
   // if we have a pixel shader, attach it. If not, fixed pipeline
   // will be used.
-  if (m_FP.Handle())
+  if (m_pFP->Handle())
   {
-    glAttachShader(m_shaderProgram, m_FP.Handle());
+    glAttachShader(m_shaderProgram, m_pFP->Handle());
     VerifyGLState();
   }
 
   // link the program
   glLinkProgram(m_shaderProgram);
   glGetProgramiv(m_shaderProgram, GL_LINK_STATUS, params);
-  if (params[0]!=GL_TRUE) 
+  if (params[0]!=GL_TRUE)
   {
     GLchar log[LOG_SIZE];
     CLog::Log(LOGERROR, "GL: Error linking shader");
@@ -222,7 +325,7 @@ bool CShaderProgram::CompileAndLink()
   // validate the program
   glValidateProgram(m_shaderProgram);
   glGetProgramiv(m_shaderProgram, GL_VALIDATE_STATUS, params);
-  if (params[0]!=GL_TRUE) 
+  if (params[0]!=GL_TRUE)
   {
     GLchar log[LOG_SIZE];
     CLog::Log(LOGERROR, "GL: Error validating shader");
@@ -231,7 +334,7 @@ bool CShaderProgram::CompileAndLink()
     goto error;
   }
   VerifyGLState();
-  
+
   m_ok = true;
   OnCompiledAndLinked();
   VerifyGLState();
@@ -243,7 +346,7 @@ bool CShaderProgram::CompileAndLink()
   return false;
 }
 
-bool CShaderProgram::Enable()
+bool CGLSLShaderProgram::Enable()
 {
   if (OK())
   {
@@ -264,11 +367,93 @@ bool CShaderProgram::Enable()
   return false;
 }
 
-void CShaderProgram::Disable()
+void CGLSLShaderProgram::Disable()
 {
   if (OK())
   {
     glUseProgram((GLuint)m_lastProgram);
+    OnDisabled();
+  }
+}
+
+//////////////////////////////////////////////////////////////////////
+// CARBShaderProgram
+//////////////////////////////////////////////////////////////////////
+void CARBShaderProgram::Free()
+{
+  m_pVP->Free();
+  VerifyGLState();
+  m_pFP->Free();
+  VerifyGLState();
+  m_ok = false;
+}
+
+bool CARBShaderProgram::CompileAndLink()
+{
+  // free resources
+  Free();
+
+  // compiled vertex shader
+  if (!m_pVP->Compile())
+  {
+    CLog::Log(LOGERROR, "GL: Error compiling vertex shader");
+    goto error;
+  }
+
+  // compile pixel shader
+  if (!m_pFP->Compile())
+  {
+    m_pVP->Free();
+    CLog::Log(LOGERROR, "GL: Error compiling fragment shader");
+    goto error;
+  }
+
+  m_ok = true;
+  OnCompiledAndLinked();
+  VerifyGLState();
+  return true;
+
+ error:
+  m_ok = false;
+  Free();
+  return false;
+}
+
+bool CARBShaderProgram::Enable()
+{
+  if (OK())
+  {
+    if (m_pFP->OK())
+    {
+      glEnable(GL_FRAGMENT_PROGRAM_ARB);
+      glBindProgramARB(GL_FRAGMENT_PROGRAM_ARB, m_pFP->Handle());
+    }
+    if (m_pVP->OK())
+    {
+      glEnable(GL_VERTEX_PROGRAM_ARB);
+      glBindProgramARB(GL_VERTEX_PROGRAM_ARB, m_pVP->Handle());
+    }
+    if (OnEnabled())
+    {
+      VerifyGLState();
+      return true;
+    }
+    else
+    {
+      glDisable(GL_FRAGMENT_PROGRAM_ARB);
+      glDisable(GL_VERTEX_PROGRAM_ARB);
+      return false;
+    }
+  }
+  return false;
+}
+
+void CARBShaderProgram::Disable()
+{
+  if (OK())
+  {
+    glDisable(GL_FRAGMENT_PROGRAM_ARB);
+    glDisable(GL_VERTEX_PROGRAM_ARB);
     OnDisabled();
   }
 }

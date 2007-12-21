@@ -29,10 +29,10 @@ using namespace Shaders;
 using namespace std;
 
 //////////////////////////////////////////////////////////////////////
-// BaseYUV2RGBShader - base class for YUV2RGB shaders
+// BaseYUV2RGBGLSLShader - base class for GLSL YUV2RGB shaders
 //////////////////////////////////////////////////////////////////////
 
-BaseYUV2RGBShader::BaseYUV2RGBShader()
+BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader()
 {
   m_width    = 1;
   m_height   = 1;
@@ -62,6 +62,32 @@ BaseYUV2RGBShader::BaseYUV2RGBShader()
     "gl_Position = ftransform();"
     "}";
   SetVertexShaderSource(shaderv);
+}
+
+
+//////////////////////////////////////////////////////////////////////
+// BaseYUV2RGBGLSLShader - base class for GLSL YUV2RGB shaders
+//////////////////////////////////////////////////////////////////////
+
+BaseYUV2RGBARBShader::BaseYUV2RGBARBShader()
+{
+  m_width    = 1;
+  m_height   = 1;
+  m_stepX    = 0;
+  m_stepY    = 0;
+  m_field    = 0;
+  m_yTexUnit = 0;
+  m_uTexUnit = 0;
+  m_vTexUnit = 0;
+
+  // shader attribute handles
+  m_hYTex  = -1;
+  m_hUTex  = -1;
+  m_hVTex  = -1;
+  m_hStepX = -1;
+  m_hStepY = -1;
+  m_hField = -1;
+
 }
 
 
@@ -181,6 +207,64 @@ bool YUV2RGBBobShader::OnEnabled()
   glUniform1f(m_hStepX, 1.0f / (float)m_width);
   glUniform1f(m_hStepY, 1.0f / (float)m_height);
   VerifyGLState();
+  return true;
+}
+
+//////////////////////////////////////////////////////////////////////
+// YUV2RGBProgressiveShaderARB - YUV2RGB with no deinterlacing
+//////////////////////////////////////////////////////////////////////
+
+YUV2RGBProgressiveShaderARB::YUV2RGBProgressiveShaderARB(bool rect)
+{
+  string source = "";
+  if (!rect)
+  {
+    source ="!!ARBfp1.0\n"
+      "PARAM c[2] = { { 0, -0.1720674, 0.88599992, 1 },\n"
+      "		{ 0.70099545, -0.35706902, 0, 2 } };\n"
+      "TEMP R0;\n"
+      "TEMP R1;\n"
+      "TEX R1.x, fragment.texcoord[2], texture[2], 2D;\n"
+      "TEX R0.x, fragment.texcoord[1], texture[1], 2D;\n"
+      "MUL R0.z, R0.x, c[1].w;\n"
+      "MUL R0.y, R1.x, c[1].w;\n"
+      "TEX R0.x, fragment.texcoord[0], texture[0], 2D;\n"
+      "ADD R0.z, R0, -c[0].w;\n"
+      "MAD R1.xyz, R0.z, c[0], R0.x;\n"
+      "ADD R0.x, R0.y, -c[0].w;\n"
+      "MAD result.color.xyz, R0.x, c[1], R1;\n"
+      "MOV result.color.w, c[0];\n"
+      "END\n";
+  }
+  else
+  {
+    source ="!!ARBfp1.0\n"
+      "PARAM c[2] = { { 0, -0.1720674, 0.88599992, 1 },\n"
+      "		{ 0.70099545, -0.35706902, 0, 2 } };\n"
+      "TEMP R0;\n"
+      "TEMP R1;\n"
+      "TEX R1.x, fragment.texcoord[2], texture[2], RECT;\n"
+      "TEX R0.x, fragment.texcoord[1], texture[1], RECT;\n"
+      "MUL R0.z, R0.x, c[1].w;\n"
+      "MUL R0.y, R1.x, c[1].w;\n"
+      "TEX R0.x, fragment.texcoord[0], texture[0], RECT;\n"
+      "ADD R0.z, R0, -c[0].w;\n"
+      "MAD R1.xyz, R0.z, c[0], R0.x;\n"
+      "ADD R0.x, R0.y, -c[0].w;\n"
+      "MAD result.color.xyz, R0.x, c[1], R1;\n"
+      "MOV result.color.w, c[0];\n"
+      "END\n";
+  }
+  SetPixelShaderSource(source);
+}
+
+void YUV2RGBProgressiveShaderARB::OnCompiledAndLinked()
+{
+
+}
+
+bool YUV2RGBProgressiveShaderARB::OnEnabled()
+{
   return true;
 }
 
