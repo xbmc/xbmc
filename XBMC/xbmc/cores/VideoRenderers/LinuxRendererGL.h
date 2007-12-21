@@ -102,10 +102,10 @@ struct YUVCOEF
 
 enum RenderMethod
 {
-  RENDER_GLSL=0x1,
-  RENDER_ARB=0x2,
-  RENDER_SW=0x4,
-  RENDER_POT=0x8
+  RENDER_GLSL=0x01,
+  RENDER_ARB=0x02,
+  RENDER_SW=0x04,
+  RENDER_POT=0x16
 };
 
 enum RenderQuality
@@ -235,9 +235,9 @@ protected:
   // field index 0 is full image, 1 is odd scanlines, 2 is even scanlines
   YUVBUFFERS m_YUVTexture;
 
-  // pixel shader params
-  GLuint m_shaderProgram;
-  BaseYUV2RGBShader     *m_pYUVShader;
+  //BaseYUV2RGBGLSLShader     *m_pYUVShaderGLSL;
+  //BaseYUV2RGBARBShader      *m_pYUVShaderARB;
+  CShaderProgram        *m_pYUVShader;
   BaseVideoFilterShader *m_pVideoFilterShader;
   ESCALINGMETHOD m_scalingMethod;
 
