@@ -1264,6 +1264,7 @@ Optional Features:
   --enable-gl             enable OpenGL rendering (default is yes)
   --enable-profiling      enable gprof profiling (default is no)
   --enable-joystick       enable SDL joystick support (default is yes)
+  --enable-xrandr         enable XRandR support (default is yes)
 
 Some influential environment variables:
   CXX         C++ compiler command
@@ -1744,6 +1745,14 @@ if test "${enable_joystick+set}" = set; then
   enableval=$enable_joystick; use_joystick=$enableval
 else
   use_joystick=yes
+fi
+
+
+# Check whether --enable-xrandr was given.
+if test "${enable_xrandr+set}" = set; then
+  enableval=$enable_xrandr; use_xrandr=$enableval
+else
+  use_xrandr=yes
 fi
 
 
@@ -3463,6 +3472,8 @@ _ACEOF
 fi
 
 if test "$use_gl" = "no"; then
+  { echo "$as_me:$LINENO: result: == WARNING: OpenGL support is disabled. XBMC will run VERY slow. ==" >&5
+echo "${ECHO_T}== WARNING: OpenGL support is disabled. XBMC will run VERY slow. ==" >&6; }
 
 { echo "$as_me:$LINENO: checking for main in -lSDL_gfx" >&5
 echo $ECHO_N "checking for main in -lSDL_gfx... $ECHO_C" >&6; }
@@ -4355,6 +4366,79 @@ _ACEOF
 
 fi
       # check for rt library, required for clock_gettime
+if test "$use_xrandr" = "yes"; then
+
+{ echo "$as_me:$LINENO: checking for main in -lXrandr" >&5
+echo $ECHO_N "checking for main in -lXrandr... $ECHO_C" >&6; }
+if test "${ac_cv_lib_Xrandr_main+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lXrandr  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_Xrandr_main=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_Xrandr_main=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_Xrandr_main" >&5
+echo "${ECHO_T}$ac_cv_lib_Xrandr_main" >&6; }
+if test $ac_cv_lib_Xrandr_main = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBXRANDR 1
+_ACEOF
+
+  LIBS="-lXrandr $LIBS"
+
+else
+  use_xrandr="no";{ echo "$as_me:$LINENO: result: == Could not find libXRandR. SDL will be used for resolution support. ==" >&5
+echo "${ECHO_T}== Could not find libXRandR. SDL will be used for resolution support. ==" >&6; }
+fi
+
+else
+  { echo "$as_me:$LINENO: result: == XRandR support disabled. SDL will be used for resolution support. ==" >&5
+echo "${ECHO_T}== XRandR support disabled. SDL will be used for resolution support. ==" >&6; }
+fi
 
 # Checks for header files.
 
@@ -11308,28 +11392,50 @@ fi
 done
 
 
+dashes="------------------------"
+final_message="\n  XBMC Configuration:"
+final_message="\n$dashes$final_message\n$dashes"
+
 if test "$use_debug" = "yes"; then
+  final_message="$final_message\n  Debugging:\tYes"
   if test "$use_profiling" = "yes"; then
+    final_message="$final_message\n  Profiling:\tYes"
     DEBUG_FLAGS="-g -pg -D_DEBUG -Wall"
   else
+    final_message="$final_message\n  Profiling:\tNo"
     DEBUG_FLAGS="-g -D_DEBUG -Wall"
   fi
 else
+  final_message="$final_message\n  Debugging:\tNo"
   if test "$use_profiling" = "yes"; then
+    final_message="$final_message\n  Profiling:\tYes"
     DEBUG_FLAGS="-pg -O2"
   else
+    final_message="$final_message\n  Profiling:\tNo"
     DEBUG_FLAGS="-O2"
   fi
 fi
 
 if test "$use_gl" = "yes"; then
+  final_message="$final_message\n  OpenGL:\tYes"
   SDL_DEFINES=""
 else
+  final_message="$final_message\n  OpenGL:\tNo (Very Slow)"
   SDL_DEFINES="-DHAS_SDL_2D"
 fi
 
 if test "$use_joystick" = "yes"; then
+  final_message="$final_message\n  Joystick:\tYes"
   SDL_DEFINES="$SDL_DEFINES -DHAS_SDL_JOYSTICK"
+else
+  final_message="$final_message\n  Joystick:\tNo"
+fi
+
+if test "$use_xrandr" = "yes"; then
+  final_message="$final_message\n  XRandR:\tYes"
+  SDL_DEFINES="$SDL_DEFINES -DHAS_XRANDR"
+else
+  final_message="$final_message\n  XRandR:\tNo"
 fi
 
 if test -d "/usr/include/lzo"; then
@@ -12500,3 +12606,6 @@ if test "$no_create" != yes; then
   $ac_cs_success || { (exit 1); exit 1; }
 fi
 
+
+final_message="$final_message\n$dashes"
+echo -e "$final_message\n"
