@@ -1,4 +1,4 @@
-INCLUDES=-I. -I.. -I../ffmpeg -I../../ -I../../linux -I../../../guilib
+INCLUDES=-I. -I.. -I../ffmpeg -I../../ -I../../linux -I../../utils -I../../../guilib
 
 CFLAGS+=-DHAS_VIDEO_PLAYBACK
 
