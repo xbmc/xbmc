@@ -261,7 +261,7 @@ void CGUIDialog::SetDefaults()
   m_renderOrder = 1;
 }
 
-void CGUIDialog::SetAutoClose(int timeoutMs)
+void CGUIDialog::SetAutoClose(unsigned int timeoutMs)
 {
    m_autoClosing = true;
    m_showDuration = timeoutMs;

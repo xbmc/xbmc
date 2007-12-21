@@ -32,6 +32,7 @@ public:
 
   virtual bool IsAnimating(ANIMATION_TYPE animType);
 
+  void SetAutoClose(unsigned int timeoutMs);
 protected:
   virtual bool RenderAnimation(DWORD time);
   virtual void SetDefaults();
@@ -43,4 +44,7 @@ protected:
   bool m_bRunning;
   bool m_bModal;
   bool m_dialogClosing;
+  bool m_autoClosing;
+  DWORD m_showStartTime;
+  DWORD m_showDuration;
 };
