@@ -187,30 +187,6 @@ compile() {
   then
     config
   fi
-  if [[ -e "$SOURCEDIR/XboxMediaCenter" ]]
-  then
-    echo " A compiled executable already exists."
-    if (( CONFIRM ))
-    then
-      PROMPT="y"
-    else
-      PROMPT=""
-    fi
-    while [[ $PROMPT != "y" && $PROMPT != "n" ]]
-    do
-      printf "\r Compile anyway? (y/n) :  \b"
-      read -n 1 PROMPT
-    done
-    if ! (( CONFIRM ))
-    then
-      echo
-    fi
-    if [[ $PROMPT == "n" ]]
-    then
-      (( COMPILE=0 ))
-      echo " Skipping compilation."
-    fi
-  fi
   if (( COMPILE ))
   then
     if ! [[ -e "$SOURCEDIR/Makefile" ]]
