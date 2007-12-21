@@ -1,10 +1,13 @@
 
 #include "stdafx.h"
 #include "dlgcache.h"
+#include "Application.h"
 
+#ifdef HAS_MPLAYER
 extern "C" void mplayer_exit_player(void);
+#endif
 
-CDlgCache::CDlgCache(DWORD dwDelay)
+CDlgCache::CDlgCache(DWORD dwDelay, const CStdString& strHeader, const CStdString& strMsg)
 {
   m_pDlg = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
@@ -12,7 +15,8 @@ CDlgCache::CDlgCache(DWORD dwDelay)
   if( m_pDlg->IsDialogRunning() )
     dwDelay = 0;
 
-  m_strLinePrev = "";
+  m_strHeader = strHeader;
+  m_strLinePrev = strMsg;
 
   if(dwDelay == 0)
     OpenDialog();    
@@ -39,10 +43,25 @@ CDlgCache::~CDlgCache()
 
 void CDlgCache::OpenDialog()
 {  
-  m_pDlg->SetHeading(438);
-  m_pDlg->SetLine(2, "");
+  if (m_strHeader.IsEmpty())
+    m_pDlg->SetHeading(438);
+  else
+    m_pDlg->SetHeading(m_strHeader);
+
+  m_pDlg->SetLine(2, m_strLinePrev);
   m_pDlg->StartModal();
+  m_pDlg->Render();
   bSentCancel = false;
+}
+
+void CDlgCache::SetHeader(const CStdString& strHeader)
+{
+  m_strHeader = strHeader;
+}
+
+void CDlgCache::SetHeader(int nHeader)
+{
+  SetHeader(g_localizeStrings.Get(nHeader));
 }
 
 void CDlgCache::SetMessage(const CStdString& strMessage)
@@ -81,7 +100,9 @@ void CDlgCache::Process()
         if( !bSentCancel && m_pDlg->IsCanceled())
         {
           bSentCancel = true;
+#ifdef HAS_MPLAYER
           mplayer_exit_player(); 
+#endif
         }
         else if( !m_pDlg->IsDialogRunning() && GetTickCount() > m_dwTimeStamp 
               && !m_gWindowManager.IsWindowActive(WINDOW_DIALOG_YES_NO) )

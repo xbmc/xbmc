@@ -203,6 +203,8 @@
 #endif
 #endif
 
+#include "cores/dlgcache.h"
+
 using namespace XFILE;
 using namespace DIRECTORY;
 using namespace PLAYLIST;
@@ -4087,18 +4089,6 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     return false;
   }
 
-  CGUIDialogProgress *pDlgProgress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-
-  if (pDlgProgress && !item.IsLastFM() && !item.IsShoutCast())
-  {
-    pDlgProgress->SetHeading(10200);
-    pDlgProgress->SetLine(0, 10201);
-    pDlgProgress->SetLine(1, item.GetLabel());
-    pDlgProgress->SetLine(2, "");
-    pDlgProgress->SetCanCancel(false);
-    pDlgProgress->StartModal();
-  }
-
   CPlayerOptions options;
   EPLAYERCORES eNewCore = EPC_NONE;
   if( bRestart )
@@ -4210,8 +4200,6 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   if (!m_pPlayer)
   {
     CLog::Log(LOGERROR, "Error creating player for item %s (File doesn't exist?)", item.m_strPath.c_str());
-    if (pDlgProgress)
-      pDlgProgress->Close();
     return false;
   }
 
@@ -4239,9 +4227,6 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
     g_audioManager.Enable(false);
-
-  if (pDlgProgress)
-    pDlgProgress->Close();
 
   return bResult;
 }
@@ -4392,20 +4377,9 @@ bool CApplication::IsPlayingVideo() const
 
 void CApplication::StopPlaying()
 {
-  CGUIDialogProgress *pDlgProgress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-
   int iWin = m_gWindowManager.GetActiveWindow();
   if ( IsPlaying() )
   {
-    if (pDlgProgress)
-    {
-      pDlgProgress->SetHeading(10202);
-      pDlgProgress->SetLine(0, 10203);
-      pDlgProgress->SetLine(1, m_itemCurrentFile.GetLabel());
-      pDlgProgress->SetLine(2, "");
-      pDlgProgress->SetCanCancel(false);
-      pDlgProgress->StartModal();
-    }
 #ifdef HAS_KARAOKE
     if( m_pCdgParser )
       m_pCdgParser->Stop();
@@ -4449,8 +4423,6 @@ void CApplication::StopPlaying()
   }
   OnPlayBackStopped();
 
-  if (pDlgProgress)
-    pDlgProgress->Close();
 }
 
 bool CApplication::NeedRenderFullScreen()
@@ -5698,7 +5670,7 @@ bool CApplication::SwitchToFullScreen()
   }
 
   // don't switch if there is a dialog on screen or the slideshow is active
-  if (m_gWindowManager.HasModalDialog() || m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW)
+  if (/*m_gWindowManager.HasModalDialog() ||*/ m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW)
     return false;
 
   // See if we're playing a video, and are in GUI mode
@@ -5883,9 +5855,6 @@ void CApplication::CheckForDebugButtonCombo()
     g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG_FREEMEM;
     CLog::Log(LOGINFO, "Key combination detected for full debug logging (X+Y)");
   }
-#ifdef _DEBUG
-  g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG_FREEMEM;
-#endif
 #endif
 }
 

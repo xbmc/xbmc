@@ -197,10 +197,10 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
   // make sure the sent frame is clean
   memset(&audioframe, 0, sizeof(DVDAudioFrame));
 
-  for (;;)
+  while (!m_bStop)
   {
     /* NOTE: the audio packet can contain several frames */
-    while( m_decode.size > 0 )
+    while( !m_bStop && m_decode.size > 0 )
     {
       if( !m_pAudioCodec ) 
         return DECODE_FLAG_ERROR;
@@ -359,7 +359,7 @@ void CDVDPlayerAudio::Process()
   while (!m_bStop)
   {
     //make sure player doesn't keep processing data while paused
-    while (m_speed == DVD_PLAYSPEED_PAUSE && !m_messageQueue.RecievedAbortRequest()) Sleep(5);
+    while (!m_bStop && m_speed == DVD_PLAYSPEED_PAUSE && !m_messageQueue.RecievedAbortRequest()) Sleep(5);
 
     //Don't let anybody mess with our global variables
     EnterCriticalSection(&m_critCodecSection);

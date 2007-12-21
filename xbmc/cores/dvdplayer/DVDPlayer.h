@@ -14,6 +14,8 @@
 #include "DVDSubtitles/DVDFactorySubtitle.h"
 #include "utils/BitstreamStats.h"
 
+#include "dlgcache.h"
+
 class CDVDInputStream;
 
 class CDVDDemux;
@@ -204,7 +206,8 @@ private:
   CDVDDemux* m_pDemuxer;            // demuxer for current playing file
   
   DVDInfo m_dvd;
-  
+
+  CDlgCache *m_pDlgCache;  
   HANDLE m_hReadyEvent;
   CRITICAL_SECTION m_critStreamSection; // need to have this lock when switching streams (audio / video)
 };
