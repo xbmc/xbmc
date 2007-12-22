@@ -24,6 +24,7 @@ CGUIFont::CGUIFont(const CStdString& strFontName, DWORD style, DWORD textColor, 
   m_textColor = textColor;
   m_shadowColor = shadowColor;
   m_font = font;
+  
   if (m_font)
     m_font->AddReference();
 }
@@ -48,7 +49,6 @@ void CGUIFont::DrawText( float x, float y, const vector<DWORD> &colors, DWORD sh
   if (clip && ClippedRegionIsEmpty(x, y, maxPixelWidth, alignment))
     return;
       
-  float nw = 0.0f, nh = 0.0f;
   maxPixelWidth = ROUND(maxPixelWidth / g_graphicsContext.GetGUIScaleX());
   vector<DWORD> renderColors;
   for (unsigned int i = 0; i < colors.size(); i++)
