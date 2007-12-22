@@ -43,9 +43,9 @@ public:
         m_text = strdup(strText);
       else
       {
-        m_text = (char*)malloc(size);
+        m_text = (char*)malloc(size+1);
         memcpy(m_text, strText, size);
-        m_text[size-1] = '\0';
+        m_text[size] = '\0';
       }
     }
     
