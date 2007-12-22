@@ -14,6 +14,14 @@
 class CGUIFont;
 class CGUIFontTTF;
 
+struct OrigFontInfo
+{
+   int size;
+   float aspect;
+   CStdString fontFilePath;
+   CStdString fileName;
+};
+
 /*!
  \ingroup textures
  \brief 
@@ -33,6 +41,8 @@ public:
   bool IsFontSetUnicode() { return m_fontsetUnicode; }
   bool IsFontSetUnicode(const CStdString& strFontSet);
   bool GetFirstFontSetUnicode(CStdString& strFontSet);
+  
+  void ReloadTTFFonts(void);
 
 protected:
   void LoadFonts(const TiXmlNode* fontNode);
@@ -41,6 +51,7 @@ protected:
 
   vector<CGUIFont*> m_vecFonts;
   vector<CGUIFontTTF*> m_vecFontFiles;
+  vector<OrigFontInfo> m_vecFontInfo;
   bool m_fontsetUnicode;
   RESOLUTION m_skinResolution;
 };

@@ -54,7 +54,8 @@ public:
   void End();
 
   const CStdString& GetFileName() const { return m_strFileName; };
-
+  void CopyReferenceCountFrom(CGUIFontTTF& ttf) { m_referenceCount = ttf.m_referenceCount; }
+  
 protected:
   void AddReference();
   void RemoveReference();
@@ -120,6 +121,7 @@ protected:
   static int justification_word_weight;
 
   CStdString m_strFileName;
+
 private:
   int m_referenceCount;
 };
