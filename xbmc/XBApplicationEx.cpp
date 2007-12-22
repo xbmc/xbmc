@@ -19,6 +19,7 @@
 #else
 #define MEASURE_FUNCTION
 #endif
+#include "GUIFontManager.h"
 
 //-----------------------------------------------------------------------------
 // Global access to common members
@@ -337,6 +338,7 @@ void CXBApplicationEx::ReadInput()
       g_graphicsContext.ResetOverscan(g_settings.m_ResInfo[WINDOW]);
       g_graphicsContext.SetVideoResolution(windowres, FALSE, false);
       g_Mouse.SetResolution(g_settings.m_ResInfo[WINDOW].iWidth, g_settings.m_ResInfo[WINDOW].iHeight, 1, 1);
+      g_fontManager.ReloadTTFFonts();
       break;
 
 #ifdef HAS_SDL_JOYSTICK
