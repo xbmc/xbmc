@@ -36,12 +36,12 @@ void CXRandR::Query()
       XOutput xoutput;
       xoutput.name = output->Attribute("name");
       xoutput.isConnected = (strcasecmp(output->Attribute("connected"), "true") == 0);
-      xoutput.w = atoi(output->Attribute("w"));
-      xoutput.h = atoi(output->Attribute("h"));
-      xoutput.x = atoi(output->Attribute("x"));
-      xoutput.y = atoi(output->Attribute("y"));
-      xoutput.wmm = atoi(output->Attribute("wmm"));
-      xoutput.hmm = atoi(output->Attribute("hmm"));      
+      xoutput.w = (output->Attribute("w") != NULL ? atoi(output->Attribute("w")) : 0);
+      xoutput.h = (output->Attribute("h") != NULL ? atoi(output->Attribute("h")) : 0);
+      xoutput.x = (output->Attribute("x") != NULL ? atoi(output->Attribute("x")) : 0);
+      xoutput.y = (output->Attribute("y") != NULL ? atoi(output->Attribute("y")) : 0);
+      xoutput.wmm = (output->Attribute("wmm") != NULL ? atoi(output->Attribute("wmm")) : 0);
+      xoutput.hmm = (output->Attribute("hmm") != NULL ? atoi(output->Attribute("hmm")) : 0);
          
       for (TiXmlElement* mode = output->FirstChildElement("mode"); mode; mode = mode->NextSiblingElement("mode"))
       {
