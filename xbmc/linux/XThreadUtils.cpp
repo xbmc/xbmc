@@ -163,9 +163,31 @@ BOOL WINAPI GetThreadTimes (
     TimeTToFileTime(time(NULL),lpExitTime);
   if (lpKernelTime)
     TimeTToFileTime(0,lpKernelTime);
+#ifdef _POSIX_THREAD_CPUTIME
+
+    
+    if(lpUserTime)
+    {
+      lpUserTime->dwLowDateTime = 0;
+      lpUserTime->dwHighDateTime = 0;
+      pthread_t thread = (pthread_t)SDL_GetThreadID(hThread->m_hThread);
+      if(thread)
+      {
+        clockid_t clock;
+        if(pthread_getcpuclockid(thread, &clock) == 0)
+        {
+          struct timespec tp = {};
+          clock_gettime(clock, &tp);
+          unsigned long long time = (unsigned long long)tp.tv_sec * 10000000 + (unsigned long long)tp.tv_nsec/100;
+          lpUserTime->dwLowDateTime = (time & 0xFFFFFFFF);
+          lpUserTime->dwHighDateTime = (time >> 32);
+        }
+      }
+    }
+#else
   if (lpUserTime)
     TimeTToFileTime(0,lpUserTime);
-    
+#endif
   return true;
 }
 
