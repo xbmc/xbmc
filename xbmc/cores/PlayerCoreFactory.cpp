@@ -161,7 +161,11 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   {
     bool bAdd = true;
 #ifdef HAS_WMA_CODEC
-    if (item.IsType(".wma"))
+    if (url.GetProtocol().Equals("mms"))
+    {
+       bAdd = false;
+    }
+    else if (item.IsType(".wma"))
     {
       WMACodec codec;
       if (!codec.Init(item.m_strPath,2048))
