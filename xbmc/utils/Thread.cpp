@@ -352,10 +352,9 @@ float CThread::GetRelativeUsage()
   // only update every 1 second
   if( iTime < m_iLastTime + 1000*10000 ) return m_fLastUsage;
 
-#ifndef _LINUX
   FILETIME CreationTime, ExitTime, UserTime, KernelTime;
   if( GetThreadTimes( m_ThreadHandle, &CreationTime, &ExitTime, &KernelTime, &UserTime ) )
-  {    
+  {
 
     unsigned __int64 iUsage = 0;
     iUsage += (((unsigned __int64)UserTime.dwHighDateTime) << 32) + ((unsigned __int64)UserTime.dwLowDateTime);
@@ -366,8 +365,7 @@ float CThread::GetRelativeUsage()
     m_iLastTime = iTime;
 
     return m_fLastUsage;
-  }    
-#endif
+  }
   return 0.0f; 
 }
 
