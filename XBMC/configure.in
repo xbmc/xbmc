@@ -76,6 +76,7 @@ if test "$use_xrandr" = "yes"; then
 else
   AC_MSG_RESULT(== XRandR support disabled. SDL will be used for resolution support. ==)
 fi
+AC_CHECK_LIB([mms], [mms_connect])
 
 # Checks for header files.
 AC_HEADER_DIRENT

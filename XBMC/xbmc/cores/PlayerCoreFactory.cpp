@@ -108,9 +108,14 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     vecCores.push_back(EPC_DVDPLAYER);
 
   if (url.GetProtocol().Equals("lastfm") ||
-      url.GetProtocol().Equals("shout") )
+      url.GetProtocol().Equals("shout")
+#ifndef HAS_MMS
+     )
+#else
+      || url.GetProtocol().Equals("mms") )
+#endif
   {
-    vecCores.push_back(EPC_PAPLAYER);    
+    vecCores.push_back(EPC_DVDPLAYER);    
   }
 
   // force flv files to default to mplayer due to weak http streaming in dvdplayer
