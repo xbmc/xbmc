@@ -95,6 +95,10 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
   else if( strContent.Equals("audio/aac") 
     || strContent.Equals("audio/aacp") )
     return new AACCodec();
+#ifdef HAS_WMA_CODEC
+  else if( strContent.Equals("audio/x-ms-wma") )
+    return new WMACodec();
+#endif
 
   CURL urlFile(strFile);
   if (urlFile.GetProtocol() == "lastfm" || urlFile.GetProtocol() == "shout" )

@@ -151,6 +151,7 @@
 #define HAS_FILESYSTEM_DAAP
 #define HAS_PERFORMANCE_SAMPLE
 #define HAS_LINUX_NETWORK
+#define HAS_MMS
 #undef HAS_KAI
 
 #include <unistd.h>

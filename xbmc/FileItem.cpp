@@ -1022,8 +1022,7 @@ const CStdString& CFileItem::GetContentType() const
     else if( m_strPath.Left(8).Equals("shout://")
           || m_strPath.Left(7).Equals("http://")
           || m_strPath.Left(8).Equals("https://")
-          || m_strPath.Left(7).Equals("upnp://")
-          || m_strPath.Left(6).Equals("mms://"))
+          || m_strPath.Left(7).Equals("upnp://"))
     {
       CFileCurl::GetContent(GetAsUrl(), m_ref);
 
@@ -1034,6 +1033,13 @@ const CStdString& CFileItem::GetContentType() const
         m_ref.Delete(i,m_ref.length()-i);
       m_ref.Trim();
     }
+
+#ifdef HAS_MMS
+    if (m_strPath.Left(6).Equals("mms://"))
+    {
+      m_ref = "audio/x-ms-wma";
+    }
+#endif
 
     // if it's still empty set to an unknown type
     if( m_ref.IsEmpty() )
