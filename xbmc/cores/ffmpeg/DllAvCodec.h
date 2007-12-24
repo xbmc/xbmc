@@ -48,6 +48,7 @@ public:
   virtual AVOption *av_set_string(void *obj, const char *name, const char *val)=0;
   virtual int avcodec_default_get_buffer(AVCodecContext *s, AVFrame *pic)=0;
   virtual void avcodec_default_release_buffer(AVCodecContext *s, AVFrame *pic)=0;
+  virtual int avcodec_thread_init(AVCodecContext *s, int thread_count)=0;
 };
 
 class DllAvCodec : public DllDynamic, DllAvCodecInterface
@@ -92,6 +93,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_METHOD3(AVOption*, av_set_string, (void *p1, const char *p2, const char *p3))
   DEFINE_METHOD2(int, avcodec_default_get_buffer, (AVCodecContext *p1, AVFrame *p2))
   DEFINE_METHOD2(void, avcodec_default_release_buffer, (AVCodecContext *p1, AVFrame *p2))
+  DEFINE_METHOD2(int, avcodec_thread_init, (AVCodecContext *p1, int p2))
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(avcodec_flush_buffers)
     RESOLVE_METHOD(avcodec_open)
@@ -115,6 +117,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD(av_set_string)
     RESOLVE_METHOD(avcodec_default_get_buffer)
     RESOLVE_METHOD(avcodec_default_release_buffer)
+    RESOLVE_METHOD(avcodec_thread_init)
   END_METHOD_RESOLVE()
 
 public:

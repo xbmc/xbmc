@@ -6,6 +6,9 @@
 #include "../../DVDClock.h"
 #include "../DVDCodecs.h"
 #include "../../../../utils/Win32Exception.h"
+#ifdef _LINUX
+#include "utils/CPUInfo.h"
+#endif
 
 #ifndef _LINUX
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
@@ -111,7 +114,13 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   {
     m_dllAvCodec.av_set_string(m_pCodecContext, it->m_name.c_str(), it->m_value.c_str());
   }
-  
+
+#ifdef _LINUX
+  int num_threads = max(8 /*MAX_THREADS*/, g_cpuInfo.getCPUCount());
+  if(num_threads > 1)
+    m_dllAvCodec.avcodec_thread_init(m_pCodecContext, num_threads);
+#endif
+
   if (m_dllAvCodec.avcodec_open(m_pCodecContext, pCodec) < 0)
   {
     CLog::Log(LOGDEBUG,"CDVDVideoCodecFFmpeg::Open() Unable to open codec");
