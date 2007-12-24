@@ -753,6 +753,8 @@ void CGUIWindowVideoNav::OnFinalizeFileItems(CFileItemList& items)
   bool filterWatched=false;
   if ((params.GetContentType() == VIDEODB_CONTENT_TVSHOWS && dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_EPISODES) || dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_EPISODES)
     filterWatched = true;
+  if (items.IsPluginFolder())
+    filterWatched = true;
   if (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_ALL)
     filterWatched = false;
   if (params.GetContentType() == VIDEODB_CONTENT_MOVIES || params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS || dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_MOVIES || dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS) // need to filter no matter to get rid of duplicates - price to pay for not filtering in db
@@ -796,6 +798,8 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
     filterWatched = true;
   if (params.GetContentType() == VIDEODB_CONTENT_MOVIES || params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS|| dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_MOVIES || dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS)
     filterWatched = true;
+  if (items.IsPluginFolder())
+    filterWatched = true;
   if (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_ALL)
     filterWatched = false;
   
@@ -807,7 +811,7 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
   for (int i = 0; i < m_unfilteredItems.Size(); i++)
   {
     CFileItem *item = m_unfilteredItems[i];
-    if (item->IsParentFolder() || CVideoDatabaseDirectory::IsAllItem(item->m_strPath) ||
+    if (item->m_bIsFolder || item->IsParentFolder() || CVideoDatabaseDirectory::IsAllItem(item->m_strPath) ||
         (m_filter.IsEmpty() && (!filterWatched || item->GetVideoInfoTag()->m_bWatched == (g_stSettings.m_iMyVideoWatchMode==2))))
     {
       if ((params.GetContentType() != VIDEODB_CONTENT_MOVIES  && params.GetContentType() != VIDEODB_CONTENT_MUSICVIDEOS) || !items.Contains(item->m_strPath))
