@@ -116,7 +116,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   }
 
 #ifdef _LINUX
-  int num_threads = max(8 /*MAX_THREADS*/, g_cpuInfo.getCPUCount());
+  int num_threads = min(8 /*MAX_THREADS*/, g_cpuInfo.getCPUCount());
   if(num_threads > 1)
     m_dllAvCodec.avcodec_thread_init(m_pCodecContext, num_threads);
 #endif
