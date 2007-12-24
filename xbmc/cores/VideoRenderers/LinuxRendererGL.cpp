@@ -2195,8 +2195,8 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
 
     glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     VerifyGLState();
 
     if (!(m_renderMethod & RENDER_SW))
@@ -2206,8 +2206,8 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
       glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
       glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
-      glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
+      glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
       VerifyGLState();
 
       CLog::Log(LOGDEBUG, "GL: Creating V NPOT texture of size %d x %d", im.width/2, im.height/2/divfactor);
@@ -2215,8 +2215,8 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
       glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
       glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
-      glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
+      glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
       VerifyGLState();
     }
   }
