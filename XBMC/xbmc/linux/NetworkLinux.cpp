@@ -122,7 +122,7 @@ CStdString CNetworkInterfaceLinux::GetCurrentWirelessEssId(void)
    CStdString result = "";
    
    char essid[IW_ESSID_MAX_SIZE + 1];
-   essid[0] = '\0';
+   memset(&essid, 0, sizeof(essid));
    
    struct iwreq wrq;
    strcpy(wrq.ifr_name,  m_interfaceName.c_str());
