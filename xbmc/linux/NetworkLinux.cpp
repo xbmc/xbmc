@@ -127,7 +127,7 @@ CStdString CNetworkInterfaceLinux::GetCurrentWirelessEssId(void)
    struct iwreq wrq;
    strcpy(wrq.ifr_name,  m_interfaceName.c_str());
    wrq.u.essid.pointer = (caddr_t) essid;
-   wrq.u.essid.length = 0;
+   wrq.u.essid.length = IW_ESSID_MAX_SIZE;
    wrq.u.essid.flags = 0;
    if (ioctl(m_network->GetSocket(), SIOCGIWESSID, &wrq) >= 0)
    {
