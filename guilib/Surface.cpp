@@ -18,6 +18,9 @@ Display* CSurface::s_dpy = 0;
 static Bool WaitForNotify(Display *dpy, XEvent *event, XPointer arg) {
   return (event->type == MapNotify) && (event->xmap.window == (Window) arg);
 }
+Bool    (*_glXGetSyncValuesOML)(Display* dpy, GLXDrawable drawable, int64_t* ust, int64_t* msc, int64_t* sbc);
+int64_t (*_glXSwapBuffersMscOML)(Display* dpy, GLXDrawable drawable, int64_t target_msc, int64_t divisor,int64_t remainder);
+
 #endif
 
 bool CSurface::b_glewInit = 0;
@@ -461,7 +464,6 @@ void CSurface::EnableVSync(bool enable)
       CLog::Log(LOGERROR,"GL: failed to unset vsync env variable!");
 #endif
   }
-CLog::Log(LOGINFO, "%s - Selected vsync mode %d", __FUNCTION__, m_iVSyncMode);
 
   // Nvidia cards: See Appendix E. of NVidia Linux Driver Set README
   CStdString strVendor(s_glVendor);
@@ -496,6 +498,10 @@ CLog::Log(LOGINFO, "%s - Selected vsync mode %d", __FUNCTION__, m_iVSyncMode);
   {
 #ifdef HAS_GLX
     // Obtain function pointers
+    if (!_glXGetSyncValuesOML)
+      _glXGetSyncValuesOML = (Bool (*)(Display*, GLXDrawable, int64_t*, int64_t*, int64_t*))glXGetProcAddress((const GLubyte*)"glXGetSyncValuesOML");
+    if (!_glXSwapBuffersMscOML)
+      _glXSwapBuffersMscOML = (int64_t (*)(Display*, GLXDrawable, int64_t, int64_t, int64_t))glXGetProcAddress((const GLubyte*)"glXSwapBuffersMscOML");
     if (!_glXWaitVideoSyncSGI)
     {
       _glXWaitVideoSyncSGI = (int (*)(int, int, unsigned int*))glXGetProcAddress((const GLubyte*)"glXWaitVideoSyncSGI");
@@ -518,6 +524,14 @@ CLog::Log(LOGINFO, "%s - Selected vsync mode %d", __FUNCTION__, m_iVSyncMode);
       _wglSwapIntervalEXT = (bool (APIENTRY *)(GLint))wglGetProcAddress("wglSwapIntervalEXT");
     }
 #endif
+    if (_glXGetSyncValuesOML && _glXSwapBuffersMscOML && !m_iVSyncMode)
+    {
+      int64_t ust, msc, sbc;
+      if(_glXGetSyncValuesOML(s_dpy, m_glWindow, &ust, &msc, &sbc))
+        m_iVSyncMode = 5;
+      else
+        CLog::Log(LOGWARNING, "%s - _glXGetSyncValuesOML failed", __FUNCTION__);
+    }
     if (_glXWaitVideoSyncSGI && _glXGetVideoSyncSGI  && !m_iVSyncMode)
     {
       unsigned int count;
@@ -570,10 +584,29 @@ void CSurface::Flip()
     {
       glFinish();
       unsigned int vCount;
-      int ret = _glXGetVideoSyncSGI(&vCount);
-      ret = _glXWaitVideoSyncSGI(2, (vCount+1)%2, &vCount);
+      if(_glXGetVideoSyncSGI(&vCount) == 0)
+        _glXWaitVideoSyncSGI(2, (vCount+1)%2, &vCount);
+      else
+      {
+        CLog::Log(LOGERROR, "%s - glXGetVideoSyncSGI - Filed to get current retrace count", __FUNCTION__);
+        EnableVSync(true);
+      }
+      glXSwapBuffers(s_dpy, m_glWindow);
     }
-    glXSwapBuffers(s_dpy, m_glWindow);
+    else if (m_iVSyncMode == 5)
+    {
+      int64_t ust, msc, sbc;
+      if(_glXGetSyncValuesOML(s_dpy, m_glWindow, &ust, &msc, &sbc))
+        _glXSwapBuffersMscOML(s_dpy, m_glWindow, msc, 0, 0);
+      else
+      {
+        CLog::Log(LOGERROR, "%s - glXSwapBuffersMscOML - Failed to get current retrace count", __FUNCTION__);
+        EnableVSync(true);
+      }
+      CLog::Log(LOGINFO, "%s - ust:%lld, msc:%lld, sbc:%lld", __FUNCTION__, ust, msc, sbc);
+    }
+    else
+      glXSwapBuffers(s_dpy, m_glWindow);
 #elif defined(HAS_SDL_OPENGL)
     SDL_GL_SwapBuffers();
 #else
