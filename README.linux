@@ -42,11 +42,11 @@ character itself should NOT be typed as part of the command.
 
 For Ubuntu 7.04 (Feisty Fawn):
 
-   # sudo apt-get install make g++-4.1 gcc-4.1 libsdl1.2-dev libsdl-image1.2-dev libsdl-gfx1.2-dev libsdl-mixer1.2-dev libsdl-sound1.2-dev libsdl-stretch-dev libcdio6 libcdio-dev libfribidi0 libfribidi-dev liblzo1 liblzo-dev libfreetype6 libfreetype6-dev libsqlite3-0 libsqlite3-dev libogg-dev libsmbclient-dev libsmbclient libasound2-dev python2.4-dev python2.4 python-sqlite libglew1 libglew-dev libcurl3-dev g++ gawk x11proto-xinerama-dev libxinerama-dev libxrandr-dev libxrender-dev libmms-dev
+   # sudo apt-get install make g++-4.1 gcc-4.1 libsdl1.2-dev libsdl-image1.2-dev libsdl-gfx1.2-dev libsdl-mixer1.2-dev libsdl-sound1.2-dev libsdl-stretch-dev libcdio6 libcdio-dev libfribidi0 libfribidi-dev liblzo1 liblzo-dev libfreetype6 libfreetype6-dev libsqlite3-0 libsqlite3-dev libogg-dev libsmbclient-dev libsmbclient libasound2-dev python2.4-dev python2.4 python-sqlite libglew1 libglew-dev libcurl3-dev g++ gawk x11proto-xinerama-dev libxinerama-dev libxrandr-dev libxrender-dev libmms-dev pmount
 
 For Ubuntu 7.10 (Gutsy Gibbon):
 
-   # sudo apt-get install make g++-4.1 gcc-4.1 libsdl1.2-dev libsdl-image1.2-dev libsdl-gfx1.2-dev libsdl-mixer1.2-dev libsdl-sound1.2-dev libsdl-stretch-dev libcdio6 libcdio-dev libfribidi0 libfribidi-dev liblzo1 liblzo-dev libfreetype6 libfreetype6-dev libsqlite3-0 libsqlite3-dev libogg-dev libsmbclient-dev libsmbclient libasound2-dev python2.4-dev python2.4 python-sqlite libglew1.4 libglew1.4-dev libcurl3-dev g++ gawk x11proto-xinerama-dev libxinerama-dev libxrandr-dev libxrender-dev libmms-dev
+   # sudo apt-get install make g++-4.1 gcc-4.1 libsdl1.2-dev libsdl-image1.2-dev libsdl-gfx1.2-dev libsdl-mixer1.2-dev libsdl-sound1.2-dev libsdl-stretch-dev libcdio6 libcdio-dev libfribidi0 libfribidi-dev liblzo1 liblzo-dev libfreetype6 libfreetype6-dev libsqlite3-0 libsqlite3-dev libogg-dev libsmbclient-dev libsmbclient libasound2-dev python2.4-dev python2.4 python-sqlite libglew1.4 libglew1.4-dev libcurl3-dev g++ gawk x11proto-xinerama-dev libxinerama-dev libxrandr-dev libxrender-dev libmms-dev pmount
 
 -----------------------------------------------------------------------------
 4. How to compile
