@@ -216,7 +216,8 @@ void CGUIFontTTF::Clear()
   m_posY = 0;
   m_dwNestedBeginCount = 0;
 
-  g_freeTypeLibrary.ReleaseFont(m_face);
+  if (m_face)
+    g_freeTypeLibrary.ReleaseFont(m_face);
   m_face = NULL;
 }
 
