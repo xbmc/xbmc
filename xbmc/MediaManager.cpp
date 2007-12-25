@@ -23,6 +23,9 @@
 #include "MediaManager.h"
 #include "xbox/IoSupport.h"
 #include "Util.h"
+#ifdef _LINUX
+#include "LinuxFileSystem.h"
+#endif
 
 const char MEDIA_SOURCES_XML[] = { "Q:\\system\\mediasources.xml" };
 
@@ -108,11 +111,14 @@ void CMediaManager::GetLocalDrives(VECSHARES &localDrives, bool includeQ)
   localDrives.push_back(share);
 #endif
 
+  static int xx = 1;
 #ifdef _LINUX
   // Home directory
   CShare share;
   share.strPath = getenv("HOME");
   share.strName = g_localizeStrings.Get(21440);
+  share.strName += xx;
+  xx++;
   share.m_ignore = true;
   share.m_iDriveType = SHARE_TYPE_LOCAL;
   localDrives.push_back(share);
@@ -146,6 +152,18 @@ void CMediaManager::GetLocalDrives(VECSHARES &localDrives, bool includeQ)
     share.strName.Format(g_localizeStrings.Get(21438),'Q');
     share.m_ignore = true;
     localDrives.push_back(share) ;
+  }
+#endif
+
+#ifdef _LINUX
+  vector<CStdString> result = CLinuxFileSystem::GetRemoveableDrives();
+  for (unsigned int i = 0; i < result.size(); i++)
+  {
+     CShare share;
+     share.strPath = result[i];
+     share.strName = CUtil::GetFileName(result[i]);
+     share.m_ignore = true;
+     localDrives.push_back(share) ;
   }
 #endif
 }
