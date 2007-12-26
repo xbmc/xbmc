@@ -19,8 +19,8 @@ static Bool WaitForNotify(Display *dpy, XEvent *event, XPointer arg)
 {
   return (event->type == MapNotify) && (event->xmap.window == (Window) arg);
 }
-Bool    (*_glXGetSyncValuesOML)(Display* dpy, GLXDrawable drawable, int64_t* ust, int64_t* msc, int64_t* sbc);
-int64_t (*_glXSwapBuffersMscOML)(Display* dpy, GLXDrawable drawable, int64_t target_msc, int64_t divisor,int64_t remainder);
+static Bool    (*_glXGetSyncValuesOML)(Display* dpy, GLXDrawable drawable, int64_t* ust, int64_t* msc, int64_t* sbc);
+static int64_t (*_glXSwapBuffersMscOML)(Display* dpy, GLXDrawable drawable, int64_t target_msc, int64_t divisor,int64_t remainder);
 
 #endif
 
@@ -29,11 +29,11 @@ std::string CSurface::s_glVendor = "";
 std::string CSurface::s_glRenderer = "";
 
 #ifdef HAS_SDL_OPENGL
-int (*_glXGetVideoSyncSGI)(unsigned int*) = 0;
-int (*_glXWaitVideoSyncSGI)(int, int, unsigned int*) = 0;
-int (*_glXSwapIntervalSGI)(int) = 0;
-int (*_glXSwapIntervalMESA)(int) = 0;
-bool (APIENTRY *_wglSwapIntervalEXT)(GLint) = 0;
+static int (*_glXGetVideoSyncSGI)(unsigned int*) = 0;
+static int (*_glXWaitVideoSyncSGI)(int, int, unsigned int*) = 0;
+static int (*_glXSwapIntervalSGI)(int) = 0;
+static int (*_glXSwapIntervalMESA)(int) = 0;
+static bool (APIENTRY *_wglSwapIntervalEXT)(GLint) = 0;
 #endif
 
 #ifdef HAS_SDL
@@ -472,23 +472,12 @@ void CSurface::EnableVSync(bool enable)
   bool bNVidia = (strVendor.find("nvidia") != std::string::npos);
   if (!bNVidia)
   {
-    switch(m_iVSyncMode)
-    {
-    case 1:
-      if (_glXSwapIntervalSGI)
-        _glXSwapIntervalSGI(0);
-      break;
-      
-    case 2:
-      if (_glXSwapIntervalMESA)
-        _glXSwapIntervalMESA(0);
-      break;
-
-    case 3:
-      if (_wglSwapIntervalEXT)
-        _wglSwapIntervalEXT(0);
-      break;
-    }
+    if (_glXSwapIntervalSGI)
+      _glXSwapIntervalSGI(0);
+    if (_glXSwapIntervalMESA)
+      _glXSwapIntervalMESA(0);
+    if (_wglSwapIntervalEXT)
+      _wglSwapIntervalEXT(0);
   }
 
   m_iVSyncMode = 0;
@@ -525,15 +514,36 @@ void CSurface::EnableVSync(bool enable)
       _wglSwapIntervalEXT = (bool (APIENTRY *)(GLint))wglGetProcAddress("wglSwapIntervalEXT");
     }
 #endif
+
+    // first we set swap interval to keep fps down
+    if (_glXSwapIntervalSGI)
+    {
+      if(_glXSwapIntervalSGI(1) != 0)
+        CLog::Log(LOGWARNING, "%s - glXSwapIntervalSGI failed", __FUNCTION__);
+    }
+    if (_glXSwapIntervalMESA)
+    {
+      if(_glXSwapIntervalMESA(1) != 0)
+        CLog::Log(LOGWARNING, "%s - glXSwapIntervalMESA failed", __FUNCTION__);
+    }
+#ifdef _WIN32
+    if (_wglSwapIntervalEXT)
+    {
+      if(_wglSwapIntervalEXT(1))
+        CLog::Log(LOGWARNING, "%s - wglSwapIntervalEXT failed", __FUNCTION__);
+    }
+#endif
+
+    // now let's see if we have some system to do specific vsync handling
     if (_glXGetSyncValuesOML && _glXSwapBuffersMscOML && !m_iVSyncMode)
     {
       int64_t ust, msc, sbc;
       if(_glXGetSyncValuesOML(s_dpy, m_glWindow, &ust, &msc, &sbc))
         m_iVSyncMode = 5;
       else
-        CLog::Log(LOGWARNING, "%s - _glXGetSyncValuesOML failed", __FUNCTION__);
+        CLog::Log(LOGWARNING, "%s - glXGetSyncValuesOML failed", __FUNCTION__);
     }
-    if (_glXWaitVideoSyncSGI && _glXGetVideoSyncSGI  && !m_iVSyncMode)
+    if (_glXWaitVideoSyncSGI && _glXGetVideoSyncSGI && !m_iVSyncMode)
     {
       unsigned int count;
       if(_glXGetVideoSyncSGI(&count) == 0)
@@ -541,37 +551,15 @@ void CSurface::EnableVSync(bool enable)
       else
         CLog::Log(LOGWARNING, "%s - glXGetVideoSyncSGI failed, glcontext probably not direct", __FUNCTION__);
     }
-    if (_glXSwapIntervalSGI && !m_iVSyncMode)
-    {
-      if(_glXSwapIntervalSGI(1) == 0)
-        m_iVSyncMode = 1;
-      else
-        CLog::Log(LOGWARNING, "%s - glXSwapIntervalSGI failed", __FUNCTION__);
-    }
-    if (_glXSwapIntervalMESA && !m_iVSyncMode)
-    {
-      if(_glXSwapIntervalMESA(1) == 0)
-        m_iVSyncMode = 2;
-      else
-        CLog::Log(LOGWARNING, "%s - _glXSwapIntervalMESA failed", __FUNCTION__);
-    }
-    if (_wglSwapIntervalEXT && !m_iVSyncMode)
-    {
-      if(_wglSwapIntervalEXT(1))
-        m_iVSyncMode = 3;
-      else
-        CLog::Log(LOGWARNING, "%s - _wglSwapIntervalEXT failed", __FUNCTION__);
-    }
 
     if(!m_iVSyncMode)
     {
       m_iVSyncMode = 0;
       m_bVSync = false;
-      OutputDebugString("Vertical Blank Syncing unsupported\n");
       CLog::Log(LOGERROR, "GL: Vertical Blank Syncing unsupported");
     }
     else
-      CLog::Log(LOGINFO, "%s - Selected vsync mode %d", __FUNCTION__, m_iVSyncMode);
+      CLog::Log(LOGINFO, "GL: Selected vsync mode %d", m_iVSyncMode);
   }
 #endif
 }
@@ -589,7 +577,7 @@ void CSurface::Flip()
         _glXWaitVideoSyncSGI(2, (vCount+1)%2, &vCount);
       else
       {
-        CLog::Log(LOGERROR, "%s - glXGetVideoSyncSGI - Filed to get current retrace count", __FUNCTION__);
+        CLog::Log(LOGERROR, "%s - glXGetVideoSyncSGI - Failed to get current retrace count", __FUNCTION__);
         EnableVSync(true);
       }
       glXSwapBuffers(s_dpy, m_glWindow);
