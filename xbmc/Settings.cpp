@@ -903,6 +903,16 @@ bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& 
     GetInteger(pResolution, "subtitles", m_ResInfo[iRes].iSubtitles, (int)((1 - fSafe)*m_ResInfo[iRes].iHeight), m_ResInfo[iRes].iHeight / 2, m_ResInfo[iRes].iHeight*5 / 4);
     GetFloat(pResolution, "pixelratio", m_ResInfo[iRes].fPixelRatio, 128.0f / 117.0f, 0.5f, 2.0f);
 
+#ifdef HAS_XRANDR
+    const CStdString def("");
+    CStdString val;
+    GetString(pResolution, "xrandrid", val, def);
+    strncpy(m_ResInfo[iRes].strId, val.c_str(), sizeof(m_ResInfo[iRes].strId));
+    GetString(pResolution, "output", val, def);
+    strncpy(m_ResInfo[iRes].strOutput, val.c_str(), sizeof(m_ResInfo[iRes].strOutput));
+    GetFloat(pResolution, "refreshrate", m_ResInfo[iRes].fRefreshRate, 0, 0, 200);
+#endif
+
     // get the overscan info
     const TiXmlElement *pOverscan = pResolution->FirstChildElement("overscan");
     if (pOverscan)
@@ -959,6 +969,11 @@ bool CSettings::SaveCalibration(TiXmlNode* pRootNode) const
     SetInteger(pNode, "id", i);
     SetInteger(pNode, "subtitles", m_ResInfo[i].iSubtitles);
     SetFloat(pNode, "pixelratio", m_ResInfo[i].fPixelRatio);
+#ifdef HAS_XRANDR
+    SetFloat(pNode, "refreshrate", m_ResInfo[i].fRefreshRate);
+    SetString(pNode, "output", m_ResInfo[i].strOutput);
+    SetString(pNode, "xrandrid", m_ResInfo[i].strId);
+#endif
     // create the overscan child
     TiXmlElement overscanElement("overscan");
     TiXmlNode *pOverscanNode = pNode->InsertEndChild(overscanElement);
