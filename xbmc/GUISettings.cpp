@@ -572,10 +572,11 @@ CGUISettings::CGUISettings(void)
 
   AddCategory(7, "videoscreen", 131);
   AddInt(1, "videoscreen.resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
-  AddString(2, "videoscreen.guicalibration",214,"", BUTTON_CONTROL_STANDARD);
-  AddInt(3, "videoscreen.flickerfilter", 13100, 5, 0, 1, 5, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
-  AddBool(4, "videoscreen.soften", 215, false);
-  AddInt(5, "videoscreen.vsync", 13105, 3, 0, 1, 3, SPIN_CONTROL_TEXT);
+  AddString(2, "videoscreen.testresolution",13109,"", BUTTON_CONTROL_STANDARD);
+  AddString(3, "videoscreen.guicalibration",214,"", BUTTON_CONTROL_STANDARD);
+  AddInt(4, "videoscreen.flickerfilter", 13100, 5, 0, 1, 5, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
+  AddBool(5, "videoscreen.soften", 215, false);
+  AddInt(6, "videoscreen.vsync", 13105, 3, 0, 1, 3, SPIN_CONTROL_TEXT);
 
   AddCategory(7, "filelists", 14018);
   AddBool(1, "filelists.hideparentdiritems", 13306, false);

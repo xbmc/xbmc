@@ -5,6 +5,7 @@
 #include "../xbmc/Settings.h"
 #include "../xbmc/XBVideoConfig.h"
 #include "../xbmc/utils/SingleLock.h"
+#include "../xbmc/Application.h"
 #ifdef HAS_XBOX_D3D
  #include "xgraphics.h"
  #define D3D_CLEAR_STENCIL D3DCLEAR_STENCIL
@@ -20,7 +21,7 @@ using namespace Surface;
 #ifdef HAS_GLX
 #include <X11/extensions/Xinerama.h>
 #endif
-
+#include "XRandR.h"
 
 CGraphicContext g_graphicsContext;
 extern bool g_fullScreen;
@@ -563,6 +564,12 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     g_advancedSettings.m_fullScreen = 1;
     m_bFullScreenRoot = true;
   }
+  else
+  {
+    g_advancedSettings.m_fullScreen = 0;
+    m_bFullScreenRoot = false;
+    g_xrandr.RestoreState();
+  }
   if (res==WINDOW)
   {
     g_advancedSettings.m_fullScreen = 0;
@@ -574,7 +581,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     Lock();
     m_iScreenWidth = g_settings.m_ResInfo[res].iWidth;
     m_iScreenHeight = g_settings.m_ResInfo[res].iHeight;
-
+    m_Resolution = res;
 #ifdef HAS_SDL_2D
     int options = SDL_HWSURFACE | SDL_DOUBLEBUF;
     if (g_advancedSettings.m_fullScreen) options |= SDL_FULLSCREEN;
@@ -590,6 +597,15 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     options = (options & (~SDL_FULLSCREEN));
     if (!rootWindow) 
     {
+#ifdef HAS_XRANDR
+      XOutput out;
+      XMode mode;
+      out.name = g_settings.m_ResInfo[res].strOutput;
+      mode.w = g_settings.m_ResInfo[res].iWidth;
+      mode.h = g_settings.m_ResInfo[res].iHeight;
+      mode.hz = g_settings.m_ResInfo[res].fRefreshRate;
+      g_xrandr.SetMode(out, mode);
+#endif
       rootWindow = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0,  options);
       // attach a GLX surface to the root window
       m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, rootWindow, false, false, false, 1);
@@ -1300,6 +1316,17 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     
     width = m_iFullScreenWidth = m_iScreenWidth;
     height = m_iFullScreenHeight = m_iScreenHeight;
+#ifdef HAS_XRANDR
+    XOutput out;
+    XMode mode;
+    RESOLUTION res = m_Resolution;
+    out.name = g_settings.m_ResInfo[res].strOutput;
+    mode.w = g_settings.m_ResInfo[res].iWidth;
+    mode.h = g_settings.m_ResInfo[res].iHeight;
+    mode.hz = g_settings.m_ResInfo[res].fRefreshRate;
+    mode.id = g_settings.m_ResInfo[res].strId;
+    g_xrandr.SetMode(out, mode);
+#endif
     SDL_SetVideoMode(width, height, 0, SDL_FULLSCREEN);
     m_screenSurface->ResizeSurface(width, height);
     glViewport(0, 0, m_iFullScreenWidth, m_iFullScreenHeight);

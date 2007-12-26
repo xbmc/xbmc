@@ -1,7 +1,7 @@
 #pragma once
 
 #define XC_VIDEO_FLAGS 8
-#define MAX_RESOLUTIONS 32
+#define MAX_RESOLUTIONS 64
 
 class XBVideoConfig
 {
