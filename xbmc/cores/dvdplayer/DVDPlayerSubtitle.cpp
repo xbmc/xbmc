@@ -123,14 +123,7 @@ bool CDVDPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, string &filename)
   // okey check if this is a filesubtitle
   if(filename.size() && filename != "dvd" )
   {
-    m_pSubtitleStream = new CDVDSubtitleStream();
-    if (!m_pSubtitleStream)
-    {      
-      CLog::Log(LOGERROR, "%s - Unable to create subtitle stream", __FUNCTION__);
-      CloseStream(false);
-      return false;
-    }
-    m_pSubtitleFileParser = CDVDFactorySubtitle::CreateParser(m_pSubtitleStream, filename);
+    m_pSubtitleFileParser = CDVDFactorySubtitle::CreateParser(filename);
     if (!m_pSubtitleFileParser)
     {
       CLog::Log(LOGERROR, "% - Unable to create subtitle parser", __FUNCTION__);
