@@ -3,6 +3,8 @@
 
 using namespace XFILE;
 
+#ifdef HAS_MMS
+
 CFileMMS::CFileMMS()
 {
 }
@@ -56,3 +58,5 @@ CStdString CFileMMS::GetContent()
 {
    return "audio/x-ms-wma";
 }
+
+#endif // HAS_MMS

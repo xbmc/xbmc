@@ -1265,6 +1265,7 @@ Optional Features:
   --enable-profiling      enable gprof profiling (default is no)
   --enable-joystick       enable SDL joystick support (default is yes)
   --enable-xrandr         enable XRandR support (default is yes)
+  --enable-mms            enable libmms support (default is yes)
 
 Some influential environment variables:
   CXX         C++ compiler command
@@ -1753,6 +1754,14 @@ if test "${enable_xrandr+set}" = set; then
   enableval=$enable_xrandr; use_xrandr=$enableval
 else
   use_xrandr=yes
+fi
+
+
+# Check whether --enable-mms was given.
+if test "${enable_mms+set}" = set; then
+  enableval=$enable_mms; use_mms=$enableval
+else
+  use_mms=yes
 fi
 
 
@@ -4440,6 +4449,8 @@ else
 echo "${ECHO_T}== XRandR support disabled. SDL will be used for resolution support. ==" >&6; }
 fi
 
+if test "$use_mms" = "yes"; then
+
 { echo "$as_me:$LINENO: checking for mms_connect in -lmms" >&5
 echo $ECHO_N "checking for mms_connect in -lmms... $ECHO_C" >&6; }
 if test "${ac_cv_lib_mms_mms_connect+set}" = set; then
@@ -4508,8 +4519,15 @@ _ACEOF
 
   LIBS="-lmms $LIBS"
 
+else
+  use_mms="no";{ echo "$as_me:$LINENO: result: == Could not find libmms. MMS support disabled. ==" >&5
+echo "${ECHO_T}== Could not find libmms. MMS support disabled. ==" >&6; }
 fi
 
+else
+  { echo "$as_me:$LINENO: result: == MMS support disabled. ==" >&5
+echo "${ECHO_T}== MMS support disabled. ==" >&6; }
+fi
 
 # Checks for header files.
 
@@ -11508,6 +11526,14 @@ if test "$use_xrandr" = "yes"; then
 else
   final_message="$final_message\n  XRandR:\tNo"
 fi
+
+if test "$use_mms" = "yes"; then
+  final_message="$final_message\n  MMS:\t\tYes"
+  SDL_DEFINES="$SDL_DEFINES -DHAS_MMS"
+else
+  final_message="$final_message\n  MMS:\t\tNo"
+fi
+
 
 if test -d "/usr/include/lzo"; then
   LZO_INCLUDES="-I/usr/include/lzo"
