@@ -2330,9 +2330,10 @@ if (global_sub_size) {
     global_sub_pos = global_sub_indices[SUB_SOURCE_SUBS];
 #else
   // find the best sub to use
-  if (vobsub_id >= 0) {
+  int vobsub_index_id = vobsub_get_index_by_id(vo_vobsub, vobsub_id);
+  if (vobsub_index_id >= 0) {
     // if user asks for a vobsub id, use that first.
-    global_sub_pos = global_sub_indices[SUB_SOURCE_VOBSUB] + vobsub_id;
+    global_sub_pos = global_sub_indices[SUB_SOURCE_VOBSUB] + vobsub_index_id;
   } else if (dvdsub_id >= 0 && global_sub_indices[SUB_SOURCE_DEMUX] >= 0) {
     // if user asks for a dvd sub id, use that next.
     global_sub_pos = global_sub_indices[SUB_SOURCE_DEMUX] + dvdsub_id;
@@ -4134,7 +4135,7 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
 #endif
 
         if (source == SUB_SOURCE_VOBSUB) {
-          vobsub_id = global_sub_pos - global_sub_indices[SUB_SOURCE_VOBSUB];
+          vobsub_id = vobsub_get_id_by_index(vo_vobsub, global_sub_pos - global_sub_indices[SUB_SOURCE_VOBSUB]);
           if (!global_sub_quiet_osd_hack) osd_show_vobsub_changed = sh_video->fps;          
 #ifdef USE_SUB
         } else if (source == SUB_SOURCE_SUBS) {

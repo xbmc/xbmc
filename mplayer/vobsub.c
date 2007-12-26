@@ -29,6 +29,9 @@
 #define MAX(a, b)	((a)>(b)?(a):(b))
 
 extern int vobsub_id;
+// Record the original -vobsubid set by commandline, since vobsub_id will be
+// overridden if slang match any of vobsub streams.
+static int vobsubid = -2;
 
 /**********************************************************************
  * RAR stream handling
@@ -228,7 +231,7 @@ typedef FILE rar_stream_t;
 /**********************************************************************/
 
 static ssize_t
-getline(char **lineptr, size_t *n, rar_stream_t *stream)
+vobsub_getline(char **lineptr, size_t *n, rar_stream_t *stream)
 {
     size_t res = 0;
     int c;
@@ -430,8 +433,8 @@ mpeg_run(mpeg_t *mpeg)
 		mp_msg(MSGT_VOBSUB,MSGL_ERR, "Bogus aid %d\n", mpeg->aid);
 		return -1;
 	    }
- 	    mpeg->packet_size = len - ((unsigned int) mpeg_tell(mpeg) - idx);
-      if (mpeg->packet_reserve < mpeg->packet_size) {
+	    mpeg->packet_size = len - ((unsigned int) mpeg_tell(mpeg) - idx);
+	    if (mpeg->packet_reserve < mpeg->packet_size) {
 		if (mpeg->packet)
 		    free(mpeg->packet);
 		mpeg->packet = malloc(mpeg->packet_size);
@@ -497,8 +500,8 @@ typedef struct {
     unsigned int size;
     unsigned char *data;
 #ifdef XBMC_VOBSUB
-	unsigned long offset;
-  char pagedout;      // indicates if we have paged the data out (1 = yes, 0 = no)
+    unsigned long offset;
+    char pagedout;      // indicates if we have paged the data out (1 = yes, 0 = no)
 #endif
 } packet_t;
 
@@ -510,10 +513,10 @@ typedef struct {
     unsigned int current_index;
 
 #ifdef XBMC_VOBSUB
-	unsigned long pf;
-	unsigned long pf_used;
-	unsigned long mapped_base;
-	char* mapped_buf;
+    unsigned long pf;
+    unsigned long pf_used;
+    unsigned long mapped_base;
+    char* mapped_buf;
 #endif
 } packet_queue_t;
 
@@ -526,8 +529,8 @@ packet_construct(packet_t *pkt)
     pkt->data = NULL;
 
 #ifdef XBMC_VOBSUB
-	pkt->offset = -1;
-  pkt->pagedout = 0;
+    pkt->offset = -1;
+    pkt->pagedout = 0;
 #endif
 }
 
@@ -736,12 +739,13 @@ typedef struct {
     unsigned int custom;
     unsigned int have_palette;
     unsigned int orig_frame_width, orig_frame_height;
-    unsigned int origin_x, origin_y;
+    int origin_x, origin_y;
     unsigned int forced_subs;
     /* index */
     packet_queue_t *spu_streams;
     unsigned int spu_streams_size;
     unsigned int spu_streams_current;
+    unsigned int spu_valid_streams_size;
 } vobsub_t;
 
 /* Make sure that the spu stream idx exists. */
@@ -790,12 +794,9 @@ vobsub_add_id(vobsub_t *vob, const char *id, size_t idlen, const unsigned int in
 	memcpy(vob->spu_streams[index].id, id, idlen);
     }
     vob->spu_streams_current = index;
-    if (identify)
-    {
-	mp_msg(MSGT_GLOBAL, MSGL_INFO, "ID_VOBSUB_ID=%d\n", index);
-	if (id && idlen)
-	    mp_msg(MSGT_GLOBAL, MSGL_INFO, "ID_VSID_%d_LANG=%s\n", index, vob->spu_streams[index].id);
-    }
+    mp_msg(MSGT_IDENTIFY, MSGL_INFO, "ID_VOBSUB_ID=%d\n", index);
+    if (id && idlen)
+	mp_msg(MSGT_IDENTIFY, MSGL_INFO, "ID_VSID_%d_LANG=%s\n", index, vob->spu_streams[index].id);
     mp_msg(MSGT_VOBSUB,MSGL_V,"[vobsub] subtitle (vobsubid): %d language %s\n",
 		index, vob->spu_streams[index].id);
     return 0;
@@ -927,14 +928,39 @@ vobsub_parse_origin(vobsub_t *vob, const char *line)
     char *p;
     while (isspace(*line))
 	++line;
-    if (!isdigit(*line))
-	return -1;
-    vob->origin_x = strtoul(line, &p, 10);
+    vob->origin_x = strtol(line, &p, 10);
     if (*p != ',')
 	return -1;
     ++p;
-    vob->origin_y = strtoul(p, NULL, 10);
+    vob->origin_y = strtol(p, NULL, 10);
     return 0;
+}
+
+unsigned int vobsub_palette_to_yuv(unsigned int pal)
+{
+    int r, g, b, y, u, v;
+    // Palette in idx file is not rgb value, it was calculated by wrong forumla.
+    // Here's reversed forumla of the one used to generate palette in idx file.
+    r = pal >> 16 & 0xff;
+    g = pal >> 8 & 0xff;
+    b = pal & 0xff;
+    y = MIN(MAX((int)(0.1494 * r + 0.6061 * g + 0.2445 * b), 0), 0xff);
+    u = MIN(MAX((int)(0.6066 * r - 0.4322 * g - 0.1744 * b) + 128, 0), 0xff);
+    v = MIN(MAX((int)(-0.08435 * r - 0.3422 * g + 0.4266 * b) + 128, 0), 0xff);
+    y = y * 219 / 255 + 16;
+    return y << 16 | u << 8 | v;
+}
+
+unsigned int vobsub_rgb_to_yuv(unsigned int rgb)
+{
+    int r, g, b, y, u, v;
+    r = rgb >> 16 & 0xff;
+    g = rgb >> 8 & 0xff;
+    b = rgb & 0xff;
+    y = ( 0.299   * r + 0.587   * g + 0.114   * b) * 219 / 255 + 16.5;
+    u = (-0.16874 * r - 0.33126 * g + 0.5     * b) * 224 / 255 + 128.5;
+    v = ( 0.5     * r - 0.41869 * g - 0.08131 * b) * 224 / 255 + 128.5;
+    return y << 16 | u << 8 | v;
 }
 
 static int
@@ -945,7 +971,7 @@ vobsub_parse_palette(vobsub_t *vob, const char *line)
     n = 0;
     while (1) {
 	const char *p;
-	int r, g, b, y, u, v, tmp;
+	int tmp;
 	while (isspace(*line))
 	    ++line;
 	p = line;
@@ -954,13 +980,7 @@ vobsub_parse_palette(vobsub_t *vob, const char *line)
 	if (p - line != 6)
 	    return -1;
 	tmp = strtoul(line, NULL, 16);
-	r = tmp >> 16 & 0xff;
-	g = tmp >> 8 & 0xff;
-	b = tmp & 0xff;
-	y = MIN(MAX((int)(0.1494 * r + 0.6061 * g + 0.2445 * b), 0), 0xff);
-	u = MIN(MAX((int)(0.6066 * r - 0.4322 * g - 0.1744 * b) + 128, 0), 0xff);
-	v = MIN(MAX((int)(-0.08435 * r - 0.3422 * g + 0.4266 * b) + 128, 0), 0xff);
-	vob->palette[n++] = y << 16 | u << 8 | v;
+	vob->palette[n++] = vobsub_palette_to_yuv(tmp);
 	if (n == 16)
 	    break;
 	if (*p == ',')
@@ -988,7 +1008,7 @@ static int
 vobsub_parse_cuspal(vobsub_t *vob, const char *line)
 {
     //colors: XXXXXX, XXXXXX, XXXXXX, XXXXXX
-    unsigned int n;
+    unsigned int n, tmp;
     n = 0;
     line += 40;
     while(1){
@@ -1000,7 +1020,8 @@ vobsub_parse_cuspal(vobsub_t *vob, const char *line)
 	    ++p;
 	if (p - line !=6)
 	    return -1;
-	vob->cuspal[n++] = strtoul(line, NULL,16);
+	tmp = strtoul(line, NULL, 16);
+	vob->cuspal[n++] |= vobsub_rgb_to_yuv(tmp);
 	if (n==4)
 	    break;
 	if(*p == ',')
@@ -1010,14 +1031,15 @@ vobsub_parse_cuspal(vobsub_t *vob, const char *line)
     return 0;
 }
 
-/* don't know how to use tridx */
 static int
-vobsub_parse_tridx(const char *line)
+vobsub_parse_tridx(vobsub_t *vob, const char *line)
 {
     //tridx: XXXX
-    int tridx;
-    tridx = strtoul((line + 26), NULL, 16);
-    tridx = ((tridx&0x1000)>>12) | ((tridx&0x100)>>7) | ((tridx&0x10)>>2) | ((tridx&1)<<3);
+    int tridx, i;
+    tridx = strtoul((line + 26), NULL, 2);
+    for (i = 0; i < 4; ++i)
+        if ((tridx << i) & 0x08)
+            vob->cuspal[i] |= 1 << 31;
     return tridx;
 }
 
@@ -1078,12 +1100,12 @@ vobsub_parse_forced_subs(vobsub_t *vob, const char *line)
 static int
 vobsub_parse_one_line(vobsub_t *vob, rar_stream_t *fd)
 {
-  ssize_t line_size;
-  int res = -1;
+    ssize_t line_size;
+    int res = -1;
 	size_t line_reserve = 0;
 	char *line = NULL;
-  do {
-	line_size = getline(&line, &line_reserve, fd);
+    do {
+	line_size = vobsub_getline(&line, &line_reserve, fd);
 	if (line_size < 0) {
 	    break;
 	}
@@ -1105,7 +1127,7 @@ vobsub_parse_one_line(vobsub_t *vob, rar_stream_t *fd)
 	    res = vobsub_parse_timestamp(vob, line + 10);
 	else if (strncmp("custom colors:", line, 14) == 0)
 	    //custom colors: ON/OFF, tridx: XXXX, colors: XXXXXX, XXXXXX, XXXXXX,XXXXXX
-	    res = vobsub_parse_cuspal(vob, line) + vobsub_parse_tridx(line) + vobsub_parse_custom(vob, line);
+	    res = vobsub_parse_cuspal(vob, line) + vobsub_parse_tridx(vob, line) + vobsub_parse_custom(vob, line);
 	else if (strncmp("forced subs:", line, 12) == 0)
 		res = vobsub_parse_forced_subs(vob, line + 12);
 	else {
@@ -1117,7 +1139,7 @@ vobsub_parse_one_line(vobsub_t *vob, rar_stream_t *fd)
 	break;
     } while (1);
     if (line)
-	  	free(line);
+      free(line);
     return res;
 }
 
@@ -1130,7 +1152,7 @@ vobsub_parse_ifo(void* this, const char *const name, unsigned int *palette, unsi
     rar_stream_t *fd = rar_open(name, "rb");
     if (fd == NULL) {
         if (force)
-	    mp_msg(MSGT_VOBSUB,MSGL_ERR, "VobSub: Can't open IFO file\n");
+	    mp_msg(MSGT_VOBSUB,MSGL_WARN, "VobSub: Can't open IFO file\n");
     } else {
 	// parse IFO header
 	unsigned char block[0x800];
@@ -1194,21 +1216,14 @@ vobsub_parse_ifo(void* this, const char *const name, unsigned int *palette, unsi
 void *
 vobsub_open(const char *const name,const char *const ifo,const int force,void** spu)
 {
-    vobsub_t *vob = malloc(sizeof(vobsub_t));
+    vobsub_t *vob = calloc(1, sizeof(vobsub_t));
     if(spu)
       *spu = NULL;
+    if (vobsubid == -2)
+      vobsubid = vobsub_id;
     if (vob) {
 	char *buf;
-	vob->custom = 0;
-	vob->have_palette = 0;
-	vob->orig_frame_width = 0;
-	vob->orig_frame_height = 0;
-	vob->spu_streams = NULL;
-	vob->spu_streams_size = 0;
-	vob->spu_streams_current = 0;
-	vob->delay = 0;
-	vob->forced_subs=0;
-	buf = malloc((strlen(name) + 5) * sizeof(char));
+	buf = malloc(strlen(name) + 5);
 	if (buf) {
 	    rar_stream_t *fd;
 	    mpeg_t *mpg;
@@ -1341,7 +1356,7 @@ vobsub_open(const char *const name,const char *const ifo,const int force,void** 
 					last_sid = sid;
 #endif
 			    if (vobsub_ensure_spu_stream(vob, sid) >= 0)  {
-        packet_queue_t *queue = vob->spu_streams + sid;
+				packet_queue_t *queue = vob->spu_streams + sid;
 				/* get the packet to fill */
 				if (queue->packets_size == 0 && packet_queue_grow(queue)  < 0)
 				  abort();
@@ -1398,10 +1413,14 @@ vobsub_open(const char *const name,const char *const ifo,const int force,void** 
 #endif //XBMC_VOBSUB
 
 		vob->spu_streams_current = vob->spu_streams_size;
-		while (vob->spu_streams_current-- > 0)
+		while (vob->spu_streams_current-- > 0) {
 		    vob->spu_streams[vob->spu_streams_current].current_index = 0;
+		    if (vobsubid == vob->spu_streams_current ||
+			    vob->spu_streams[vob->spu_streams_current].packets_size > 0)
+			++vob->spu_valid_streams_size;
+		}
 #ifdef XBMC_VOBSUB
-			packet_queue_pageout(vob->spu_streams + last_sid, last_sid);
+		packet_queue_pageout(vob->spu_streams + last_sid, last_sid);
 #endif			
 		mpeg_free(mpg);
 	    }
@@ -1430,7 +1449,7 @@ unsigned int
 vobsub_get_indexes_count(void *vobhandle)
 {
     vobsub_t *vob = (vobsub_t *) vobhandle;
-    return vob->spu_streams_size;
+    return vob->spu_valid_streams_size;
 }
 
 char *
@@ -1438,6 +1457,35 @@ vobsub_get_id(void *vobhandle, unsigned int index)
 {
     vobsub_t *vob = (vobsub_t *) vobhandle;
     return (index < vob->spu_streams_size) ? vob->spu_streams[index].id : NULL;
+}
+
+int vobsub_get_id_by_index(void *vobhandle, unsigned int index)
+{
+    vobsub_t *vob = vobhandle;
+    int i, j;
+    if (vob == NULL)
+        return -1;
+    for (i = 0, j = 0; i < vob->spu_streams_size; ++i)
+        if (i == vobsubid || vob->spu_streams[i].packets_size > 0) {
+            if (j == index)
+                return i;
+            ++j;
+        }
+    return -1;
+}
+
+int vobsub_get_index_by_id(void *vobhandle, int id)
+{
+    vobsub_t *vob = vobhandle;
+    int i, j;
+    if (vob == NULL || id < 0 || id >= vob->spu_streams_size)
+        return -1;
+    if (id != vobsubid && !vob->spu_streams[id].packets_size)
+        return -1;
+    for (i = 0, j = 0; i < id; ++i)
+        if (i == vobsubid || vob->spu_streams[i].packets_size > 0)
+            ++j;
+    return j;
 }
 
 unsigned int 
@@ -1474,6 +1522,22 @@ vobsub_get_packet(void *vobhandle, float pts,void** data, int* timestamp) {
   unsigned int pts100 = 90000 * pts;
   if (vob->spu_streams && 0 <= vobsub_id && (unsigned) vobsub_id < vob->spu_streams_size) {
     packet_queue_t *queue = vob->spu_streams + vobsub_id;
+
+    int reseek_count = 0;
+    unsigned int lastpts = 0;
+    while (queue->current_index < queue->packets_size
+            && queue->packets[queue->current_index].pts100 <= pts100) {
+      lastpts = queue->packets[queue->current_index].pts100;
+      ++queue->current_index;
+      ++reseek_count;
+    }
+    while (reseek_count--) {
+      --queue->current_index;
+      if (queue->packets[queue->current_index-1].pts100 != UINT_MAX &&
+          queue->packets[queue->current_index-1].pts100 != lastpts)
+        break;
+    }
+
     while (queue->current_index < queue->packets_size) {
       packet_t *pkt = queue->packets + queue->current_index;
       if (pkt->pts100 != UINT_MAX)
@@ -1525,7 +1589,8 @@ void vobsub_seek(void * vobhandle, float pts)
 	    return;
     queue = vob->spu_streams + vobsub_id;
     queue->current_index = 0;
-    while ((queue->packets + queue->current_index)->pts100 < seek_pts100)
+    while (queue->current_index < queue->packets_size
+            && (queue->packets + queue->current_index)->pts100 < seek_pts100)
       ++queue->current_index;
     if (queue->current_index > 0)
       --queue->current_index;
@@ -1596,19 +1661,16 @@ vobsub_out_open(const char *basename, const unsigned int *palette,
     filename = malloc(strlen(basename) + 5);
     if (filename) {
 	result = malloc(sizeof(vobsub_out_t));
-	result->fsub = NULL;
-	result->fidx = NULL;
-	result->aid = 0;
 	if (result) {
 	    result->aid = index;
 	    strcpy(filename, basename);
 	    strcat(filename, ".sub");
-	    result->fsub = fopen(filename, "a");
+	    result->fsub = fopen(filename, "ab");
 	    if (result->fsub == NULL)
 		perror("Error: vobsub_out_open subtitle file open failed");
 	    strcpy(filename, basename);
 	    strcat(filename, ".idx");
-	    result->fidx = fopen(filename, "a");
+	    result->fidx = fopen(filename, "ab");
 	    if (result->fidx) {
 		if (ftell(result->fidx) == 0){
 		    create_idx(result, palette, orig_width, orig_height);
