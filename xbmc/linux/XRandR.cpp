@@ -58,6 +58,9 @@ void CXRandR::Query(bool force)
     xoutput.wmm = (output->Attribute("wmm") != NULL ? atoi(output->Attribute("wmm")) : 0);
     xoutput.hmm = (output->Attribute("hmm") != NULL ? atoi(output->Attribute("hmm")) : 0);
 
+    if (!xoutput.isConnected)
+       continue;
+       
     for (TiXmlElement* mode = output->FirstChildElement("mode"); mode; mode = mode->NextSiblingElement("mode"))
     {
       XMode xmode;
