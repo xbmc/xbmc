@@ -204,7 +204,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     Seek(true, true);
     return true;
     break;
-  
+
   case ACTION_NEXT_SCENE:
     if (g_application.m_pPlayer->SeekScene(true))
       g_infoManager.SetDisplayAfterSeek();
@@ -509,7 +509,7 @@ bool CGUIWindowFullScreen::OnMouse(const CPoint &point)
 
 // Override of Render() - RenderFullScreen() is where the action takes place
 // this is called from the rendermanager, normally we won't come this way
-// as player thread will handle rendering, and call this itself. 
+// as player thread will handle rendering, and call this itself.
 void CGUIWindowFullScreen::Render()
 {
 #ifdef HAS_VIDEO_PLAYBACK
@@ -672,8 +672,6 @@ void CGUIWindowFullScreen::RenderFullScreen()
     OnMessage(msg);
   }
 
-  int iSpeed = g_application.GetPlaySpeed();
-
   if (g_infoManager.GetBool(PLAYER_SHOWCODEC) || m_bShowViewModeInfo)
   {
     SET_CONTROL_VISIBLE(LABEL_ROW1);
@@ -707,11 +705,27 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
     CSingleLock lock (m_fontLock);
 
     if(!m_subsLayout)
-      return;    
+      return;
 
     CStdString subtitleText;
     if (g_application.m_pPlayer->GetCurrentSubtitle(subtitleText))
-    {      
+    {
+      // Remove HTML-like tags from the subtitles until
+      subtitleText.Replace("\\r", "");
+      subtitleText.Replace("\r", "");
+      subtitleText.Replace("\\n", "[CR]");
+      subtitleText.Replace("\n", "[CR]");
+      subtitleText.Replace("\\N", "[CR]");
+      subtitleText.Replace("<i>", "[I]");
+      subtitleText.Replace("</i>", "[/I]");
+      subtitleText.Replace("<b>", "[B]");
+      subtitleText.Replace("</b>", "[/B]");
+      subtitleText.Replace("<u>", "");
+      subtitleText.Replace("</u>", "");
+      subtitleText.Replace("</i", "[/I]"); // handle tags which aren't closed properly (happens).
+      subtitleText.Replace("</b", "[/B]");
+      subtitleText.Replace("</u", "");
+
       RESOLUTION res = g_graphicsContext.GetVideoResolution();
       g_graphicsContext.SetScalingResolution(res, 0, 0, false);
 
