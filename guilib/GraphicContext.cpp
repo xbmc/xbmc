@@ -568,7 +568,9 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
   {
     g_advancedSettings.m_fullScreen = 0;
     m_bFullScreenRoot = false;
+#ifdef HAS_XRANDR
     g_xrandr.RestoreState();
+#endif
   }
   if (res==WINDOW)
   {
