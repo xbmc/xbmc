@@ -254,13 +254,17 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       }
 
       // Reload a resolution
+      // UPDATE: not anymore, resolution is only updated when the 'test resolution'
+      // button is clicked
       if (m_NewResolution != INVALID)
       {
+        /*
         g_guiSettings.SetInt("videoscreen.resolution", m_NewResolution);
         //set the gui resolution, if newRes is AUTORES newRes will be set to the highest available resolution
         g_graphicsContext.SetVideoResolution(m_NewResolution, TRUE);
         //set our lookandfeelres to the resolution set in graphiccontext
         g_guiSettings.m_LookAndFeelResolution = m_NewResolution;
+        */
       }
 
       if (IsActive())
@@ -852,7 +856,18 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     CBaseSettingControl *pSettingControl = m_vecSettings[i];
     pSettingControl->Update();
     CStdString strSetting = pSettingControl->GetSetting()->GetSetting();
-    if (strSetting.Equals("filelists.allowfiledeletion"))
+    if (strSetting.Equals("videoscreen.testresolution"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl)
+      {
+        if ((m_NewResolution != g_guiSettings.m_LookAndFeelResolution) && (m_NewResolution!=INVALID))
+          pControl->SetEnabled(true);
+        else
+          pControl->SetEnabled(false);
+      }
+    }
+    else if (strSetting.Equals("filelists.allowfiledeletion"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].filesLocked() || g_passwordManager.bMasterUser);
@@ -1284,6 +1299,24 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   if (!pSettingControl->OnClick()) // call the control to do it's thing
     return;
 
+  if (strSetting.Equals("videoscreen.testresolution"))
+  {
+    RESOLUTION lastRes = g_graphicsContext.GetVideoResolution();
+    g_guiSettings.SetInt("videoscreen.resolution", m_NewResolution);
+    g_graphicsContext.SetVideoResolution(m_NewResolution, TRUE);
+    g_guiSettings.m_LookAndFeelResolution = m_NewResolution;
+    g_application.ReloadSkin();
+    CGUIDialogYesNo dlg;
+    dlg.SetAutoClose(5000);
+    if (!dlg.ShowAndGetInput(13110, 13111, 20022, 20022))
+    {
+      g_guiSettings.SetInt("videoscreen.resolution", lastRes);
+      g_graphicsContext.SetVideoResolution(lastRes, TRUE);
+      g_guiSettings.m_LookAndFeelResolution = lastRes;
+      g_application.ReloadSkin();
+    }
+  }
+
   // ok, now check the various special things we need to do
   if (strSetting.Equals("mymusic.visualisation"))
   { // new visualisation choosen...
@@ -1696,14 +1729,9 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     m_NewResolution = (RESOLUTION)msg.GetParam1();
     // reset our skin if necessary
     // delay change of resolution
-    if (m_NewResolution != g_guiSettings.m_LookAndFeelResolution)
+    if (m_NewResolution == g_guiSettings.m_LookAndFeelResolution)
     {
-      g_application.DelayLoadSkin();
-    }
-    else
-    { // Do not reload the resolution we are using
       m_NewResolution = INVALID;
-      g_application.CancelDelayLoadSkin();
     }
   }
   else if (strSetting.Equals("videoscreen.vsync"))

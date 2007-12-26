@@ -15,7 +15,8 @@ using namespace Surface;
 #ifdef HAS_GLX
 Display* CSurface::s_dpy = 0;
 
-static Bool WaitForNotify(Display *dpy, XEvent *event, XPointer arg) {
+static Bool WaitForNotify(Display *dpy, XEvent *event, XPointer arg) 
+{
   return (event->type == MapNotify) && (event->xmap.window == (Window) arg);
 }
 Bool    (*_glXGetSyncValuesOML)(Display* dpy, GLXDrawable drawable, int64_t* ust, int64_t* msc, int64_t* sbc);

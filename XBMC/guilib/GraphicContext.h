@@ -94,7 +94,10 @@ struct RESOLUTION_INFO
   int iSubtitles;
   DWORD dwFlags;
   float fPixelRatio;
+  float fRefreshRate;
   char strMode[32];
+  char strOutput[32];
+  char strId[16];
 };
 
 /*!
