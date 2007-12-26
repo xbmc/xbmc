@@ -167,7 +167,7 @@
 			<onup>5</onup>
 			<ondown>5</ondown>
 			<pagecontrol>61</pagecontrol>
-			<visible>!Skin.HasSetting(UseScrollbars) + !Control.IsVisible(50) + Control.IsVisible(61)</visible>
+			<visible>!Skin.HasSetting(UseScrollbars)</visible>
 			<include>autoscrollmedium</include>
 		</control>
 		<control type="textbox" id="4">
@@ -180,7 +180,7 @@
 			<onright>61</onright>
 			<onup>5</onup>
 			<ondown>5</ondown>
-			<visible>Skin.HasSetting(UseScrollbars) + !Control.IsVisible(50) | !Control.IsVisible(61)</visible>
+			<visible>Skin.HasSetting(UseScrollbars)</visible>
 			<include>autoscrollmedium</include>
 		</control>
 		</control>
