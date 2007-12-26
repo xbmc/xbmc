@@ -1,3 +1,5 @@
+#ifdef HAS_MMS
+
 #ifndef FILEMMS_H_
 #define FILEMMS_H_
 
@@ -27,3 +29,5 @@ protected:
 };
 };
 #endif // !defined(AFX_FILESHOUTCAST_H__6B6082E6_547E_44C4_8801_9890781659C0__INCLUDED_)
+
+#endif

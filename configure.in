@@ -35,6 +35,12 @@ AC_ARG_ENABLE([xrandr],
             [use_xrandr=$enableval],
             [use_xrandr=yes])
 
+AC_ARG_ENABLE([mms],
+            [AS_HELP_STRING([--enable-mms],
+               [enable libmms support (default is yes)])],
+            [use_mms=$enableval],
+            [use_mms=yes])
+
 # Checks for programs.
 AC_PROG_AWK
 AC_PROG_CXX
@@ -76,7 +82,12 @@ if test "$use_xrandr" = "yes"; then
 else
   AC_MSG_RESULT(== XRandR support disabled. SDL will be used for resolution support. ==)
 fi
-AC_CHECK_LIB([mms], [mms_connect])
+
+if test "$use_mms" = "yes"; then
+  AC_CHECK_LIB([mms], [mms_connect],, use_mms="no";AC_MSG_RESULT(== Could not find libmms. MMS support disabled. ==))
+else
+  AC_MSG_RESULT(== MMS support disabled. ==)
+fi
 
 # Checks for header files.
 AC_HEADER_DIRENT
@@ -178,6 +189,14 @@ if test "$use_xrandr" = "yes"; then
 else
   final_message="$final_message\n  XRandR:\tNo"
 fi
+
+if test "$use_mms" = "yes"; then
+  final_message="$final_message\n  MMS:\t\tYes"
+  SDL_DEFINES="$SDL_DEFINES -DHAS_MMS"
+else
+  final_message="$final_message\n  MMS:\t\tNo"
+fi
+
 
 if test -d "/usr/include/lzo"; then
   LZO_INCLUDES="-I/usr/include/lzo"
