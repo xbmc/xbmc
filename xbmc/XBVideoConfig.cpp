@@ -30,6 +30,7 @@
 using namespace Surface;
 #include <X11/extensions/Xinerama.h>
 #endif
+#include "XRandR.h"
 
 XBVideoConfig g_videoConfig;
 
@@ -214,7 +215,77 @@ void XBVideoConfig::GetModes(LPDIRECT3D8 pD3D)
       bHasNTSC = true;
   }
 }
+
+#elif defined(HAS_XRANDR)
+
+void XBVideoConfig::GetModes()
+{
+  CLog::Log(LOGINFO, "Available videomodes (xrandr):");
+  vector<XOutput>::iterator outiter;
+  vector<XOutput> outs;
+  outs = g_xrandr.GetModes();
+  CLog::Log(LOGINFO, "Number of connected outputs: %d", outs.size());
+  string modename = "";
+
+  m_iNumResolutions = 0;
+
+  for (outiter = outs.begin() ; outiter != outs.end() ; outiter++)
+  {
+    XOutput out = *outiter;
+    vector<XMode>::iterator modeiter;
+    CLog::Log(LOGINFO, "Output '%s' has %d modes", out.name.c_str(), out.modes.size());
+
+    for (modeiter = out.modes.begin() ; modeiter!=out.modes.end() ; modeiter++)
+    {
+      XMode mode = *modeiter;
+      CLog::Log(LOGINFO, "ID:%s Name:%s Refresh:%f Width:%d Height:%d",
+                mode.id.c_str(), mode.name.c_str(), mode.hz, mode.w, mode.h);
+      if (m_iNumResolutions<MAX_RESOLUTIONS)
+      {
+        m_ResInfo[m_iNumResolutions].iWidth = mode.w;
+        m_ResInfo[m_iNumResolutions].iHeight = mode.h;
+        if (mode.h>0 && mode.w>0 && out.hmm>0 && out.wmm>0)
+        {
+          m_ResInfo[m_iNumResolutions].fPixelRatio = 
+            ((float)out.wmm/(float)mode.w) / (((float)out.hmm/(float)mode.h));
+        }
+        else
+        {
+          m_ResInfo[m_iNumResolutions].fPixelRatio = 1.0f;
+        }
+        CLog::Log(LOGINFO, "Pixel Ratio: %f", m_ResInfo[m_iNumResolutions].fPixelRatio);
+        m_ResInfo[m_iNumResolutions].iSubtitles = (int)(0.9*mode.h);
+        m_ResInfo[m_iNumResolutions].fRefreshRate = mode.hz;
+        snprintf(m_ResInfo[m_iNumResolutions].strMode,
+                 sizeof(m_ResInfo[m_iNumResolutions].strMode),
+                 "%s: %dx%d @ %.2fHz",
+                 out.name.c_str(), mode.w, mode.h, mode.hz);
+        snprintf(m_ResInfo[m_iNumResolutions].strOutput,
+                 sizeof(m_ResInfo[m_iNumResolutions].strOutput),
+                 "%s", out.name.c_str());
+        snprintf(m_ResInfo[m_iNumResolutions].strId,
+                 sizeof(m_ResInfo[m_iNumResolutions].strId),
+                 "%s", mode.id.c_str());
+        if ((float)mode.w / (float)mode.h >= 1.59)
+          m_ResInfo[m_iNumResolutions].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
+        else
+          m_ResInfo[m_iNumResolutions].dwFlags = 0;
+        g_graphicsContext.ResetOverscan(m_ResInfo[m_iNumResolutions]);
+        g_settings.m_ResInfo[CUSTOM+m_iNumResolutions] = m_ResInfo[m_iNumResolutions];
+        m_iNumResolutions++;
+        if (mode.w == 720 && mode.h == 576)
+          bHasPAL = true;
+        if (mode.w == 720 && mode.h == 480)
+          bHasNTSC = true;
+      }
+    }
+  }
+  g_graphicsContext.ResetScreenParameters(DESKTOP);
+  g_graphicsContext.ResetScreenParameters(WINDOW);
+}
+
 #else
+
 void XBVideoConfig::GetModes()
 {
    CLog::Log(LOGINFO, "Available videomodes:");
@@ -255,7 +326,7 @@ void XBVideoConfig::GetModes()
        snprintf(m_ResInfo[m_iNumResolutions].strMode,
                 sizeof(m_ResInfo[m_iNumResolutions].strMode),
                 "%d x %d", modes[i]->w, modes[i]->h);
-       if ((float)modes[i]->w / (float)modes[i]->h >= 1.59)         
+       if ((float)modes[i]->w / (float)modes[i]->h >= 1.59)
          m_ResInfo[m_iNumResolutions].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
        else
          m_ResInfo[m_iNumResolutions].dwFlags = 0;
