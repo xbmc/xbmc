@@ -246,7 +246,7 @@ copy() {
   mkdir "$BUILDDIR" &> /dev/null
   error
 
-  for I in credits language media screensavers scripts skin sounds system userdata visualisations web xbmc-xrandr XboxMediaCenter README.linux demo-asoundrc copying.txt Changelog.txt
+  for I in credits language media screensavers scripts skin sounds system userdata visualisations web xbmc-xrandr XboxMediaCenter README.linux copying.txt Changelog.txt
   do
     printf "\r Copying %-16.16s" $I 
     if [[ "$I" == "skin" ]]
