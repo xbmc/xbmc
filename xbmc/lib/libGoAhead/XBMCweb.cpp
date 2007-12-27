@@ -400,7 +400,6 @@ int catalogNumber( char_t *parameter)
 /* Deal with catalog requests */
 int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 {
-  int iterationCounter = 0;
   int selectionNumber = 0;
   int	iItemCount = 0;  // for test purposes
   int cnt = 0;

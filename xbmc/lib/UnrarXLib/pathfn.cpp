@@ -5,7 +5,7 @@
 
 char* PointToName(const char *Path)
 {
-  const char *Found=NULL;
+  //const char *Found=NULL;
   for (const char *s=&Path[strlen(Path)-1];s>=Path;s--)
     if (IsPathDiv(*s))
       return (char*)(s+1);
