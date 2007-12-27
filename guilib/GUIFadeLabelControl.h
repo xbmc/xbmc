@@ -37,11 +37,11 @@ protected:
   unsigned int m_lastLabel;
 
   CLabelInfo m_label;
-  CGUITextLayout m_textLayout;
 
   bool m_scrollOut;
 
   CScrollInfo m_scrollInfo;
+  CGUITextLayout m_textLayout;
   CAnimation *m_fadeAnim;
   DWORD m_renderTime;
 };

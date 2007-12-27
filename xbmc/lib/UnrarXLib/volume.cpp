@@ -1,10 +1,5 @@
 #include "rar.hpp"
 
-static void GetFirstNewVolName(const char *ArcName,char *VolName,
-  Int64 VolSize,Int64 TotalSize);
-
-
-
 bool MergeArchive(Archive &Arc,ComprDataIO *DataIO,bool ShowFileName,char Command)
 {
   RAROptions *Cmd=Arc.GetRAROptions();
