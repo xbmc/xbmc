@@ -60,6 +60,8 @@ bool incWebHeader, incWebFooter, closeFinalTag;
 bool autoGetPictureThumbs = true;
 bool shuttingDown = false;
 
+CStdString lastThumbFn="";
+
 /*
 ** Translation Table as described in RFC1113
 */
@@ -589,6 +591,7 @@ CXbmcHttp::CXbmcHttp()
   resetTags();
   CKey temp;
   key = temp;
+  lastThumbFn="";
 }
 
 CXbmcHttp::~CXbmcHttp()
@@ -1193,9 +1196,37 @@ int CXbmcHttp::xbmcGetMovieDetails(int numParas, CStdString paras[])
     return SetResponse(openTag+"Error:No file name") ;
 }
 
-int CXbmcHttp::xbmcGetCurrentlyPlaying()
+void copyThumb(CStdString srcFn, CStdString destFn)
+//Copies src file to dest, unless src=="" o src doesn't exist in which case dest is deleted
 {
-  CStdString output="", tmp="", tag="";
+  if (destFn=="")
+    return;
+  if (srcFn=="")
+  {
+	if (CFile::Exists(destFn))
+	  CFile::Delete(destFn);
+  }
+  else
+    if (srcFn!=lastThumbFn)
+	  if (CFile::Exists(srcFn))
+	  {
+        CFile::Cache(srcFn, destFn);
+	    lastThumbFn=srcFn;
+	  }
+	  else
+	  {
+	    CPicture pic;
+        pic.CacheSkinImage(srcFn, destFn);
+	  }
+}
+
+int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
+{
+  CStdString output="", tmp="", tag="", thumbFn="", thumbNothingPlaying="", thumb="";
+  if (numParas>0)
+    thumbFn=paras[0];
+  if (numParas>1)
+    thumbNothingPlaying=paras[1];
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
   if (m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW && pSlideShow)
   {
@@ -1214,9 +1245,14 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
       pic.DoCreateThumbnail(item.m_strPath, item.GetCachedPictureThumb());
       item.SetCachedPictureThumb();
     }
-    CStdString thumb = item.GetCachedPictureThumb();
+    thumb = item.GetCachedPictureThumb();
     if (!item.HasThumbnail())
+	{
       thumb = "[None] " + thumb;
+	  copyThumb("defaultPictureBig.png",thumbFn);
+	}
+	else
+      copyThumb(thumb,thumbFn);
     output+=closeTag+openTag+"Thumb:"+thumb;
     return SetResponse(output);
   }
@@ -1225,6 +1261,7 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
   if (fileItem.m_strPath.IsEmpty())
   {
     output=openTag+"Filename:[Nothing Playing]";
+	copyThumb(thumbNothingPlaying,thumbFn);
   }
   else
   {
@@ -1273,7 +1310,13 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
           output.Format("%s%i",output+closeTag+openTag+"Season"+tag+":",tagVal->m_iSeason);
         if (tagVal->m_iEpisode != -1)
           output.Format("%s%i",output+closeTag+openTag+"Episode"+tag+":",tagVal->m_iEpisode);
-	      output+=closeTag+openTag+"Thumb"+tag+":"+g_infoManager.GetImage(VIDEOPLAYER_COVER, -1);
+		thumb=g_infoManager.GetImage(VIDEOPLAYER_COVER, -1);
+		
+		//CPicture pic;
+        //pic.CacheSkinImage("defaultAlbumCover.png", cachedThumb);
+
+		copyThumb(thumb,thumbFn);
+	    output+=closeTag+openTag+"Thumb"+tag+":"+thumb;
       }
     }
     else if (g_application.IsPlayingAudio())
@@ -1284,6 +1327,12 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
       const CMusicInfoTag* tagVal=g_infoManager.GetCurrentSongTag();
       if (tagVal && !tagVal->GetTitle().IsEmpty())
         output+=closeTag+openTag+"Title"+tag+":"+tagVal->GetTitle();
+      if (tagVal && tagVal->GetTrackNumber())
+	  {
+	    CStdString tmp;
+		tmp.Format("%i",(int)tagVal->GetTrackNumber());
+        output+=closeTag+openTag+"Track"+tag+":"+tmp;
+	  }
       if (tagVal && !tagVal->GetArtist().IsEmpty())
         output+=closeTag+openTag+"Artist"+tag+":"+tagVal->GetArtist();
       if (tagVal && !tagVal->GetAlbum().IsEmpty())
@@ -1305,7 +1354,9 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
         output+=closeTag+openTag+"Bitrate"+tag+":"+bitRate;  
       if (!sampleRate.IsEmpty())
         output+=closeTag+openTag+"Samplerate"+tag+":"+sampleRate;  
-	  output+=closeTag+openTag+"Thumb"+tag+":"+g_infoManager.GetImage(MUSICPLAYER_COVER, -1);
+	  thumb=g_infoManager.GetImage(MUSICPLAYER_COVER, -1);
+      copyThumb(thumb,thumbFn);
+	  output+=closeTag+openTag+"Thumb"+tag+":"+thumb;
     }
 	if (g_application.IsPlaying())
 	  if (!g_application.m_pPlayer->IsPaused()) 
@@ -1314,11 +1365,6 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
         output+=closeTag+openTag+"PlayStatus:Paused";
 	else
 		output+=closeTag+openTag+"PlayStatus:Stopped";
-
-    // Thumb information - our fileItem has this information
-    //if (fileItem.HasThumbnail())
-    //  output+=closeTag+openTag+"Thumb"+tag+":"+fileItem.GetThumbnailImage();
-
     output+=closeTag+openTag+"Time:"+g_infoManager.GetCurrentPlayTime();
     output+=closeTag+openTag+"Duration:";
     if (g_application.IsPlayingVideo())
@@ -2808,7 +2854,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
       else if (command == "exit")                     retVal = xbmcExit(3);
       else if (command == "reset")                    retVal = xbmcExit(4);
       else if (command == "restartapp")               retVal = xbmcExit(5);
-      else if (command == "getcurrentlyplaying")      retVal = xbmcGetCurrentlyPlaying(); 
+      else if (command == "getcurrentlyplaying")      retVal = xbmcGetCurrentlyPlaying(numParas, paras); 
       else if (command == "getxbeid")                 retVal = xbmcGetXBEID(numParas, paras); 
       else if (command == "getxbetitle")              retVal = xbmcGetXBETitle(numParas, paras); 
       else if (command == "getshares")                retVal = xbmcGetShares(numParas, paras); 
