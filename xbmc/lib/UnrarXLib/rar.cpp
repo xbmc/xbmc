@@ -336,17 +336,14 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword)
 			if (!pArc->WOpen(rarfile,NULL))
 				return 0;
 
-			bool FileMatched=true;
       FileCount=0;
       *ppList = NULL;
       ArchiveList_struct *pPrev = NULL;
       int iArchive=0;
       while (1)
       {
-        Int64 TotalPackSize=0,TotalUnpSize=0;
         if (pArc->IsOpened() && pArc->IsArchive(true))
         {
-          bool TitleShown=false;
           __int64 iOffset = pArc->NextBlockPos;
           while(pArc->ReadHeader()>0)
           {
@@ -470,14 +467,9 @@ bool urarlib_hasmultiple(const char *rarfile, char *libpassword)
 			if (!pArc->WOpen(rarfile,NULL))
 				return 0;
 
-			bool FileMatched=true;
-
-			Int64 TotalPackSize=0,TotalUnpSize=0;
 			FileCount=0;
 			if (pArc->IsOpened() && pArc->IsArchive(true))
 			{
-				ArchiveList_struct *pPrev = NULL;
-				bool TitleShown=false;
 				while(pArc->ReadHeader()>0 && FileCount < 2)
 				{
 					if (pArc->GetHeaderType() == FILE_HEAD)

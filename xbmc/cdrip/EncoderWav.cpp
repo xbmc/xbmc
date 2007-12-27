@@ -72,7 +72,7 @@ bool CEncoderWav::WriteWavHeader()
   wav.dwDataLen = m_iBytesWritten;
 
   // write header to beginning of stream
-  SetFilePointer(m_hFile, NULL, NULL, FILE_BEGIN);
+  SetFilePointer(m_hFile, 0, NULL, FILE_BEGIN);
   FileWrite(&wav, sizeof(wav));
 
   return true;

@@ -108,10 +108,10 @@ void CreatePath(const char *Path,const wchar *PathW,bool SkipLastName)
 
 void SetDirTime(const char *Name,RarTime *ftm,RarTime *ftc,RarTime *fta)
 {
+#ifdef _WIN_32
   bool sm=ftm!=NULL && ftm->IsSet();
   bool sc=ftc!=NULL && ftc->IsSet();
   bool sa=ftc!=NULL && fta->IsSet();
-#ifdef _WIN_32
   if (!WinNT())
     return;
   HANDLE hFile=CreateFile(Name,GENERIC_WRITE,FILE_SHARE_READ|FILE_SHARE_WRITE,
