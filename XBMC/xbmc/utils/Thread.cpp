@@ -94,7 +94,7 @@ CThread::~CThread()
 __thread CThread* pLocalThread = NULL;
 void CThread::term_handler (int signum)
 {
-  CLog::Log(LOGERROR,"thread 0x%x (%lu) got signal %d. calling OnException and terminating thread abnormally.", SDL_ThreadID(), SDL_ThreadID(), signum);
+  CLog::Log(LOGERROR,"thread 0x%x (%d) got signal %d. calling OnException and terminating thread abnormally.", SDL_ThreadID(), SDL_ThreadID(), signum);
   if (pLocalThread)
   {
     pLocalThread->m_bStop = TRUE;

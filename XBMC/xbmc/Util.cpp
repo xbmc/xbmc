@@ -3024,15 +3024,19 @@ void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float G
 #endif  
 
   Gamma = 1.0f / Gamma;
+#ifndef HAS_SDL    
   for (int i = 0; i < 256; ++i)
   {
     float f = (powf((float)i / 255.f, Gamma) * Contrast + Brightness) * 255.f;
-#ifndef HAS_SDL    
     ramp.blue[i] = ramp.green[i] = ramp.red[i] = clamp(f);
-#elif defined(HAS_SDL_2D)
-    rampBlue[i] = rampGreen[i] = rampRed[i] = clamp(f);
-#endif    
   }
+#elif defined(HAS_SDL_2D)
+  for (int i = 0; i < 256; ++i)
+  {
+    float f = (powf((float)i / 255.f, Gamma) * Contrast + Brightness) * 255.f;
+    rampBlue[i] = rampGreen[i] = rampRed[i] = clamp(f);
+  }
+#endif    
 
   // set ramp next v sync
   g_graphicsContext.Lock();

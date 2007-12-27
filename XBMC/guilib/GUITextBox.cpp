@@ -480,7 +480,6 @@ void CGUITextBox::SetColorDiffuse(D3DCOLOR color)
 
 void CGUITextBox::ScrollToOffset(int offset, bool autoScroll)
 {
-  float size = m_itemHeight;
   m_scrollOffset = m_offset * m_itemHeight;
   int timeToScroll = autoScroll ? m_autoScrollTime : m_scrollTime;
   m_scrollSpeed = (offset * m_itemHeight - m_scrollOffset) / timeToScroll;
