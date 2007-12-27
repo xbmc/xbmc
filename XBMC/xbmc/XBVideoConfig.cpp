@@ -258,8 +258,8 @@ void XBVideoConfig::GetModes()
         m_ResInfo[m_iNumResolutions].fRefreshRate = mode.hz;
         snprintf(m_ResInfo[m_iNumResolutions].strMode,
                  sizeof(m_ResInfo[m_iNumResolutions].strMode),
-                 "%s: %dx%d @ %.2fHz",
-                 out.name.c_str(), mode.w, mode.h, mode.hz);
+                 "%s: %s @ %.2fHz",
+                 out.name.c_str(), mode.name.c_str(), mode.hz);
         snprintf(m_ResInfo[m_iNumResolutions].strOutput,
                  sizeof(m_ResInfo[m_iNumResolutions].strOutput),
                  "%s", out.name.c_str());
