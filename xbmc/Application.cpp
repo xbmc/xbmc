@@ -202,6 +202,9 @@
 #include <SDL/SDL_syswm.h>
 #endif
 #endif
+#ifdef HAS_XRANDR
+#include "XRandR.h"
+#endif
 
 #include "cores/dlgcache.h"
 
@@ -331,7 +334,6 @@ CApplication::CApplication(void)
   m_iScreenSaveLock = 0;
   m_dwSaverTick = timeGetTime(); // CB: SCREENSAVER PATCH
   m_dwSkinTime = 0;
-
   m_bInitializing = true;
   m_eForcedNextPlayer = EPC_NONE;
   m_strPlayListFile = "";
@@ -880,6 +882,10 @@ HRESULT CApplication::Create(HWND hWnd)
     CIoSupport::RemapDriveLetter('T',(char*) strMnt.c_str());
 #endif    
   }
+
+#ifdef HAS_XRANDR
+  g_xrandr.LoadCustomModeLinesToAllOutputs();
+#endif
 
 #ifndef HAS_SDL
   CLog::Log(LOGNOTICE, "Setup DirectX");
