@@ -27,7 +27,7 @@
 // ****************************************************************************
 
 #include "stdafx.h"
-#include "animatedgif.h"
+#include "AnimatedGif.h"
 
 #pragma pack(1)
 // Error processing macro (NO-OP by default):
@@ -58,26 +58,6 @@ CAnimatedGif::~CAnimatedGif()
 { 
 		delete []	pbmi; 
 		delete []	Raster; 
-}
-
-// Round a number to the nearest power of 2 rounding up
-// runs pretty quickly - the only expensive op is the bsr
-// alternive would be to dec the source, round down and double the result
-// which is slightly faster but rounds 1 to 2
-DWORD __forceinline __stdcall PadPow2(DWORD x)
-{
-	__asm {
-		mov edx,x    // put the value in edx
-			xor ecx,ecx  // clear ecx - if x is 0 bsr doesn't alter it
-			bsr ecx,edx  // find MSB position
-			mov eax,1    // shift 1 by result effectively
-			shl eax,cl   // doing a round down to power of 2
-			cmp eax,edx  // check if x was already a power of two
-			adc ecx,0    // if it wasn't then CF is set so add to ecx
-			mov eax,1    // shift 1 by result again, this does a round
-			shl eax,cl   // up as a result of adding CF to ecx
-	}
-	// return result in eax
 }
 
 // Init: Allocates space for raster and palette in GDI-compatible structures.
