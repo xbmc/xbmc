@@ -1,5 +1,9 @@
 #include "stdafx.h"
 
+#ifndef min
+#define min(a,b)            (((a) < (b)) ? (a) : (b))
+#endif
+
 bool  IsPowerOf2(UINT number)
 {
   return (number & (~number+1)) == number;
@@ -158,21 +162,6 @@ extern LPDIRECT3DDEVICE8 pD3DDevice;
 // runs pretty quickly - the only expensive op is the bsr
 // alternive would be to dec the source, round down and double the result
 // which is slightly faster but rounds 1 to 2
-DWORD __forceinline __stdcall PadPow2(DWORD x)
-{
-	__asm {
-		mov edx,x    // put the value in edx
-			xor ecx,ecx  // clear ecx - if x is 0 bsr doesn't alter it
-			bsr ecx,edx  // find MSB position
-			mov eax,1    // shift 1 by result effectively
-			shl eax,cl   // doing a round down to power of 2
-			cmp eax,edx  // check if x was already a power of two
-			adc ecx,0    // if it wasn't then CF is set so add to ecx
-			mov eax,1    // shift 1 by result again, this does a round
-			shl eax,cl   // up as a result of adding CF to ecx
-	}
-	// return result in eax
-}
 
 D3DFORMAT D3DFormat(XB_D3DFORMAT format)
 {
