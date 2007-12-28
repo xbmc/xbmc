@@ -60,7 +60,7 @@ bool CDVDStateSerializer::DVDToXMLState( std::string &xmlstate, const dvd_state_
         }
         
         { TiXmlElement eMode("mode");
-          sprintf(buffer, "0x%hc", state->registers.GPRM_mode[i]);
+          sprintf(buffer, "0x%c", state->registers.GPRM_mode[i]);
           eMode.InsertEndChild( TiXmlText(buffer) );
           eReg.InsertEndChild(eMode);
         }
@@ -222,7 +222,7 @@ bool CDVDStateSerializer::XMLToDVDState( dvd_state_t *state, const std::string &
 
       text = TiXmlHandle( element ).FirstChildElement("mode").FirstChild().Text();
       if( text )
-        sscanf(text->Value(), "0x%hc", &state->registers.GPRM_mode[index]);
+        sscanf(text->Value(), "0x%c", &state->registers.GPRM_mode[index]);
 
       text = TiXmlHandle( element ).FirstChildElement("time").FirstChildElement("tv_sec").FirstChild().Text();
       if( text )

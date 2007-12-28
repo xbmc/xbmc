@@ -177,7 +177,7 @@ __int64 MP3Codec::Seek(__int64 iSeekTime)
 {
   // calculate our offset to seek to in the file
   m_lastByteOffset = m_seekInfo.GetByteOffset(0.001f * iSeekTime);
-  __int64 iRet = m_file.Seek(m_lastByteOffset, SEEK_SET);
+  m_file.Seek(m_lastByteOffset, SEEK_SET);
   FlushDecoder();
   return iSeekTime;
 }

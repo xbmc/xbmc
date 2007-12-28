@@ -32,8 +32,8 @@ namespace PYXBMC
     char *cTextureMid  = NULL;
     char *cTextureRight  = NULL;
     char *cTextureOverLay  = NULL;
-    char *cColorKey = NULL;
-    char *cColorDiffuse = NULL;//"0xFFFFFFFF";
+    //char *cColorKey = NULL;
+    //char *cColorDiffuse = NULL;//"0xFFFFFFFF";
 
     self = (ControlProgress*)type->tp_alloc(type, 0);
     if (!self) return NULL;
