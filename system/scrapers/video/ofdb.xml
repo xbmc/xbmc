@@ -14,7 +14,8 @@
   <GetSearchResults dest="8">
     <RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
       <RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2 (\4) | \3&lt;/title&gt;&lt;year&gt;\4&lt;/year&gt;&lt;url&gt;http://www.ofdb.de/view.php?page=film&amp;amp;fid=\1&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="5+">
-        <expression repeat="yes" noclean="1">&lt;a href=.view.php.page=film&amp;fid=([0-9]+).&gt;([^&lt;]+)&lt;font size=.1.&gt; . ([^&lt;]+)&lt;/font&gt; \(([0-9]+)\)&lt;/a&gt;</expression>
+        <!--<expression repeat="yes" noclean="1">&lt;a href=.view.php.page=film&amp;fid=([0-9]+).&gt;([^&lt;]+)&lt;font size=.1.&gt; . ([^&lt;]+)&lt;/font&gt; \(([0-9]+)\)&lt;/a&gt;</expression>-->
+      <expression repeat="yes" noclean="1">&lt;a href=.view.php.page=film&amp;fid=([0-9]+). onmouseover=.Tip..&lt;[^&gt;]+&gt;[^&gt;]+&gt;([^&lt;]+)&lt;font size=.1.&gt; . ([^&lt;]+)&lt;/font&gt; \(([0-9]+)\)&lt;/a&gt;</expression>
       </RegExp>
       <expression noclean="1"></expression>
     </RegExp>
