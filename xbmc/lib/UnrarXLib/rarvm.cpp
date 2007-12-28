@@ -712,6 +712,8 @@ void RarVM::Optimize(VM_PreparedProgram *Prg)
       case VM_CMP:
         Cmd->OpCode=Cmd->ByteMode ? VM_CMPB:VM_CMPD;
         continue;
+      default:
+        break;
     }
     if ((VM_CmdFlags[Cmd->OpCode] & VMCF_CHFLAGS)==0)
       continue;
@@ -746,6 +748,8 @@ void RarVM::Optimize(VM_PreparedProgram *Prg)
       case VM_NEG:
         Cmd->OpCode=Cmd->ByteMode ? VM_NEGB:VM_NEGD;
         continue;
+      default:
+        break;
     }
   }
 }
@@ -761,13 +765,13 @@ VM_StandardFilters RarVM::IsStandardFilter(byte *Code,int CodeSize)
     uint CRC;
     VM_StandardFilters Type;
   } StdList[]={
-    53, 0xad576887, VMSF_E8,
-    57, 0x3cd7e57e, VMSF_E8E9,
-   120, 0x3769893f, VMSF_ITANIUM,
-    29, 0x0e06077d, VMSF_DELTA,
-   149, 0x1c2c5dc8, VMSF_RGB,
-   216, 0xbc85e701, VMSF_AUDIO,
-    40, 0x46b9c560, VMSF_UPCASE
+    {53, 0xad576887, VMSF_E8},
+    {57, 0x3cd7e57e, VMSF_E8E9},
+   {120, 0x3769893f, VMSF_ITANIUM},
+    {29, 0x0e06077d, VMSF_DELTA},
+   {149, 0x1c2c5dc8, VMSF_RGB},
+   {216, 0xbc85e701, VMSF_AUDIO},
+    {40, 0x46b9c560, VMSF_UPCASE}
   };
   uint CodeCRC=CRC(0xffffffff,Code,CodeSize)^0xffffffff;
   for (int I=0;I<sizeof(StdList)/sizeof(StdList[0]);I++)
@@ -1009,6 +1013,8 @@ void RarVM::ExecuteStandardFilter(VM_StandardFilters FilterType)
         SET_VALUE(false,&Mem[VM_GLOBALMEMADDR+0x1c],DestPos-DataSize);
         SET_VALUE(false,&Mem[VM_GLOBALMEMADDR+0x20],DataSize);
       }
+      break;
+    default:
       break;
   }
 }
