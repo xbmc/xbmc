@@ -3783,7 +3783,7 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
 
     unsigned int time = timeGetTime();
     if (!m_pDS->query(strSQL.c_str())) return false;
-    CLog::Log(LOGDEBUG, __FUNCTION__" query took %d ms", timeGetTime() - time); time = timeGetTime();
+    CLog::Log(LOGDEBUG, "%s -  query took %lu ms", __FUNCTION__, timeGetTime() - time); time = timeGetTime();
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
     {
@@ -3874,7 +3874,7 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
       }
       m_pDS->close();
     }
-    CLog::Log(LOGDEBUG, __FUNCTION__" item retrieval took %d ms", timeGetTime() - time); time = timeGetTime();
+    CLog::Log(LOGDEBUG, "%s item retrieval took %lu ms", __FUNCTION__, timeGetTime() - time); time = timeGetTime();
 
 //    CLog::Log(LOGDEBUG, __FUNCTION__" Time: %d ms", timeGetTime() - time);
     return true;

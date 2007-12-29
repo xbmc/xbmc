@@ -1053,7 +1053,6 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         CDirectory::GetDirectory(tag.m_strPath,tbnItems,".tbn");
         CStdString strExpression;
         strExpression.Format("season[ ._-](0?%i)\\.tbn",m_vecItems[itemNumber]->GetVideoInfoTag()->m_iSeason);
-        bool bDownload=true;
         CRegExp reg;
         if (reg.RegComp(strExpression.c_str()))
         {

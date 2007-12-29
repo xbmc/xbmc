@@ -2396,6 +2396,7 @@ int CXbmcHttp::xbmcGUISetting(int numParas, CStdString paras[])
       }     
     }
   }
+  return 0; // not reached
 }
 
 int CXbmcHttp::xbmcConfig(int numParas, CStdString paras[])

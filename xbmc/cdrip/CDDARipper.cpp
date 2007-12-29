@@ -193,7 +193,6 @@ bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile,
 // rip a single track from cd
 bool CCDDARipper::RipTrack(CFileItem* pItem)
 {
-  int iTrack = 0;
   CStdString strDirectory = g_guiSettings.GetString("cddaripper.path");
   if (!CUtil::HasSlashAtEnd(strDirectory)) CUtil::AddDirectorySeperator(strDirectory);
   CFileItem ripPath(strDirectory, true);
