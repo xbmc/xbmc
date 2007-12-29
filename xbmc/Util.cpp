@@ -98,6 +98,7 @@
 #endif
 #include "lib/libGoAhead/XBMChttp.h"
 #include "DNSNameCache.h"
+#include "FileSystem/PluginDirectory.h"
 
 void hack()
 {
@@ -3490,6 +3491,7 @@ const BUILT_IN commands[] = {
   { "TakeScreenshot",             false,  "Takes a Screenshot" },
   { "RunScript",                  true,   "Run the specified script" },
   { "RunXBE",                     true,   "Run the specified executeable" },
+  { "RunPlugin",                  true,   "Run the specified plugin" },
   { "Extract",                    true,   "Extracts the specified archive" },
   { "PlayMedia",                  true,   "Play the specified media file (or playlist)" },
   { "SlideShow",                  true,   "Run a slideshow from the specified directory" },
@@ -3789,6 +3791,22 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     }
   }
 #endif
+  else if (execute.Equals("runplugin"))
+  {
+    if (!strParameterCaseIntact.IsEmpty())
+    {
+      CFileItem item(strParameterCaseIntact);
+      if (!item.m_bIsFolder)
+      {
+        item.m_strPath = strParameterCaseIntact;
+        CPluginDirectory::RunScriptWithParams(item.m_strPath);
+      }
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "CUtil::ExecBuiltIn, runplugin called with no arguments.");
+    }
+  }
   else if (execute.Equals("playmedia"))
   {
     if (strParameterCaseIntact.IsEmpty())
@@ -3935,14 +3953,23 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     }
     else if (parameter.Left(9).Equals("partymode"))
     {
-      bool bVideo=false;
+      CStdString strXspPath = "";
+      //empty param=music, "music"=music, "video"=video, else xsp path
+      PartyModeContext context = PARTYMODECONTEXT_MUSIC;
       if (parameter.size() > 9)
+      {
         if (parameter.Mid(10).Equals("video)"))
-          bVideo = true;
+          context = PARTYMODECONTEXT_VIDEO;
+        else if (!parameter.Mid(10).Equals("music)"))
+        {
+          strXspPath = parameter.Mid(10).TrimRight(")");
+          context = PARTYMODECONTEXT_UNKNOWN;
+        }
+      }
       if (g_partyModeManager.IsEnabled())
         g_partyModeManager.Disable();
       else
-        g_partyModeManager.Enable(bVideo);
+        g_partyModeManager.Enable(context, strXspPath);
     }
     else if (parameter.Equals("random"))
     {

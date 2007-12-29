@@ -26,7 +26,6 @@ void CGUILargeImage::AllocateOnDemand()
   {
     if (m_bDynamicResourceAlloc && IsAllocated())
       FreeResources();
-    m_bWasVisible = false;
     return;
   }
 

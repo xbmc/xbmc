@@ -937,6 +937,10 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
         if (vecCores.size() >= 1)
           buttons.Add(CONTEXT_BUTTON_PLAY_WITH, 15213);
       }
+      if (item->IsSmartPlayList())
+      {
+          buttons.Add(CONTEXT_BUTTON_PLAY_PARTYMODE, 15216); // Play in Partymode
+      }
 
       // if autoresume is enabled then add restart video button
       // check to see if the Resume Video button is applicable
@@ -1012,6 +1016,11 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         OnClick(itemNumber);
       return true;
     }
+
+  case CONTEXT_BUTTON_PLAY_PARTYMODE:
+    g_partyModeManager.Enable(PARTYMODECONTEXT_VIDEO, m_vecItems[itemNumber]->m_strPath);
+    return true;
+
   case CONTEXT_BUTTON_RESTART_ITEM:
     OnRestartItem(itemNumber);
     return true;

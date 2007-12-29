@@ -11,6 +11,6 @@ class CDVDFactorySubtitle
 {
 public:
   static bool GetSubtitles(VecSubtitleFiles& vecSubtitles, string& strFile);
-  static CDVDSubtitleParser* CreateParser(CDVDSubtitleStream* pStream, string& strFile);
+  static CDVDSubtitleParser* CreateParser(string& strFile);
 };
 

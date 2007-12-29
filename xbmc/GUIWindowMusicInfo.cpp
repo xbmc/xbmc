@@ -115,10 +115,14 @@ void CGUIWindowMusicInfo::SetAlbum(const CAlbum& album, const VECSONGS &songs, c
   m_albumItem = CFileItem(path, true);
   m_albumItem.GetMusicInfoTag()->SetAlbum(m_album.strAlbum);
   m_albumItem.GetMusicInfoTag()->SetAlbumArtist(m_album.strArtist);
+  m_albumItem.GetMusicInfoTag()->SetArtist(m_album.strArtist);
   m_albumItem.GetMusicInfoTag()->SetYear(m_album.iYear);
   m_albumItem.GetMusicInfoTag()->SetLoaded(true);
   m_albumItem.GetMusicInfoTag()->SetRating('0' + (m_album.iRating + 1) / 2);
   m_albumItem.GetMusicInfoTag()->SetGenre(m_album.strGenre);
+  m_albumItem.SetProperty("albumstyles", m_album.strStyles);
+  m_albumItem.SetProperty("albumtones", m_album.strTones);
+  m_albumItem.SetProperty("albumreview", m_album.strReview);
   m_albumItem.SetMusicThumb();
   m_hasUpdatedThumb = false;
 }

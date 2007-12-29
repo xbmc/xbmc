@@ -3,7 +3,6 @@
 	\brief 
 	*/
 
-
 // ****************************************************************************
 //
 // WINIMAGE.H : Generic classes for raster images (MSWindows specialization)
@@ -31,8 +30,6 @@
 // of this file or this file itself may incur.
 //
 // ****************************************************************************
-
-
 
 using namespace std;
 
