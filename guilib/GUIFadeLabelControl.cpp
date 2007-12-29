@@ -76,7 +76,9 @@ void CGUIFadeLabelControl::Render()
     m_textLayout.GetTextExtent(width, height);
     float spaceWidth = m_label.font->GetCharWidth(L' ');
     unsigned int numSpaces = (unsigned int)(m_width / spaceWidth) + 1;
-    if (width < m_width) numSpaces += (unsigned int)((m_width - width) / spaceWidth) + 1;
+    if (width < m_width) // append spaces for scrolling
+      numSpaces += (unsigned int)((m_width - width) / spaceWidth) + 1;
+    m_shortText = width + m_label.offsetX < m_width;
     m_scrollInfo.suffix.assign(numSpaces, L' ');
   }
   if (m_currentLabel != m_lastLabel)
@@ -86,16 +88,11 @@ void CGUIFadeLabelControl::Render()
     m_lastLabel = m_currentLabel;
   }
 
-  if (m_infoLabels.size() == 1) // single label set - just display
-  {
-    float width, height;
-    m_textLayout.GetTextExtent(width, height);
-    if (width + m_label.offsetX < m_width)
-    {
-      m_textLayout.Render(m_posX + m_label.offsetX, m_posY, 0, m_label.textColor, m_label.shadowColor, 0, m_width - m_label.offsetX);
-      CGUIControl::Render();
-      return;
-    }
+  if (m_infoLabels.size() == 1 && m_shortText) 
+  { // single label set and no scrolling required - just display
+    m_textLayout.Render(m_posX + m_label.offsetX, m_posY, 0, m_label.textColor, m_label.shadowColor, 0, m_width - m_label.offsetX);
+    CGUIControl::Render();
+    return;
   }
 
   bool moveToNextLabel = false;
@@ -125,7 +122,18 @@ void CGUIFadeLabelControl::Render()
     m_fadeAnim->ResetAnimation();
 
   m_scrollInfo.pixelSpeed = (m_fadeAnim->GetProcess() == ANIM_PROCESS_NONE) ? 1.0f : 0.0f;
-  m_textLayout.RenderScrolling(m_posX, m_posY, 0, m_label.textColor, m_label.shadowColor, 0, m_width, m_scrollInfo);
+
+  if (!m_scrollOut && m_shortText)
+  {
+    float posX = m_posX + m_label.offsetX;
+    if (m_label.align & XBFONT_CENTER_X)
+      posX = m_posX + m_width * 0.5f;
+    else if (m_label.align & XBFONT_RIGHT)
+      posX = m_posX + m_width;
+    m_textLayout.Render(posX, m_posY, 0, m_label.textColor, m_label.shadowColor, m_label.align & 3, m_width);
+  }
+  else
+    m_textLayout.RenderScrolling(m_posX, m_posY, 0, m_label.textColor, m_label.shadowColor, 0, m_width, m_scrollInfo);
 
   if (moveToNextLabel)
   { // increment the label and reset scrolling
