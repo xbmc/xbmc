@@ -484,7 +484,7 @@ namespace PYXBMC
 
     PyGUILock();
     DWORD dwId = m_gWindowManager.GetTopMostModalDialogID();
-    if (dwId == WINDOW_INVALID) DWORD dwId = m_gWindowManager.GetActiveWindow();
+    if (dwId == WINDOW_INVALID) dwId = m_gWindowManager.GetActiveWindow();
     PyGUIUnlock();
 
     int ret = g_infoManager.TranslateString(cLine);
