@@ -130,6 +130,14 @@
 #define LCD_FREE_SPACE_E            169
 #define LCD_FREE_SPACE_F            170
 #define LCD_FREE_SPACE_G            171
+#define LCD_TIME_21                 172 // Small bigfont
+#define LCD_TIME_22                 173
+#define LCD_TIME_W21                174 // Medum bigfont
+#define LCD_TIME_W22                175
+#define LCD_TIME_41                 176 // Big bigfont
+#define LCD_TIME_42                 177
+#define LCD_TIME_43                 178
+#define LCD_TIME_44                 179
 
 #define NETWORK_IP_ADDRESS          190
 #define NETWORK_MAC_ADDRESS         191
@@ -433,6 +441,7 @@ public:
   CStdString GetImage(int info, DWORD contextWindow);
 
   CStdString GetTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
+  CStdString GetLcdTime( int _eInfo ) const;
   CStdString GetDate(bool bNumbersOnly = false);
   CStdString GetDuration(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
 
