@@ -488,7 +488,7 @@ void CDVDPlayerVideo::ProcessVideoUserData(DVDVideoUserData* pVideoUserData, dou
       
       if (m_pOverlayCodecCC)
       {
-        int iState = m_pOverlayCodecCC->Decode(data, size);
+        m_pOverlayCodecCC->Decode(data, size);
 
         CDVDOverlay* overlay;
         while((overlay = m_pOverlayCodecCC->GetOverlay()) != NULL)

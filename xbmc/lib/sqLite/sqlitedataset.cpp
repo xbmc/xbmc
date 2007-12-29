@@ -176,12 +176,12 @@ int SqliteDatabase::connect() {
       active = true;
       return DB_CONNECTION_OK;
     }
-    CLog::Log(LOGERROR, "unable to open database:%s (%i)", db.c_str(),GetLastError());
+    CLog::Log(LOGERROR, "unable to open database:%s (%lu)", db.c_str(),GetLastError());
     return DB_CONNECTION_NONE;
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "unable to open database:%s (%i)", db.c_str(),GetLastError());
+    CLog::Log(LOGERROR, "unable to open database:%s (%lu)", db.c_str(),GetLastError());
   }
   return DB_CONNECTION_NONE;
 };
