@@ -14,7 +14,8 @@
   <GetSearchResults dest="8">
     <RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
       <RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2 (\4) | \3&lt;/title&gt;&lt;year&gt;\4&lt;/year&gt;&lt;url&gt;http://www.ofdb.de/view.php?page=film&amp;amp;fid=\1&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="5+">
-        <expression repeat="yes" noclean="1">&lt;a href=.view.php.page=film&amp;fid=([0-9]+).&gt;([^&lt;]+)&lt;font size=.1.&gt; . ([^&lt;]+)&lt;/font&gt; \(([0-9]+)\)&lt;/a&gt;</expression>
+        <!--<expression repeat="yes" noclean="1">&lt;a href=.view.php.page=film&amp;fid=([0-9]+).&gt;([^&lt;]+)&lt;font size=.1.&gt; . ([^&lt;]+)&lt;/font&gt; \(([0-9]+)\)&lt;/a&gt;</expression>-->
+      <expression repeat="yes" noclean="1">&lt;a href=.view.php.page=film&amp;fid=([0-9]+). onmouseover=.Tip..&lt;[^&gt;]+&gt;[^&gt;]+&gt;([^&lt;]+)&lt;font size=.1.&gt; . ([^&lt;]+)&lt;/font&gt; \(([0-9]+)\)&lt;/a&gt;</expression>
       </RegExp>
       <expression noclean="1"></expression>
     </RegExp>
@@ -164,17 +165,20 @@
 			  <expression>L&amp;auml;nge:&lt;/h5&gt;([^&lt;]+)&lt;</expression>
       </RegExp>
       
-      <RegExp input="$$1" output="\1" dest="6">
+      <!--<RegExp input="$$1" output="\1" dest="6">
 				<expression noclean="1">Buch(.*)Genre</expression>
-  		</RegExp>
+  		</RegExp>-->
   		<RegExp input="$$1" output="\1" dest="6">
-				<expression noclean="1">autor(.*)Genre</expression>
+				<expression noclean="1">Drehbuchautoren(.*)Premierendatum</expression>
   		</RegExp>
+  		<!--<RegExp input="$$1" output="\1" dest="6">
+				<expression noclean="1">autor(.*)Genre</expression>
+  		</RegExp>-->
   		<RegExp input="$$6" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="3+">
   				<expression repeat="yes">&lt;a href=&quot;/name/[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
   		</RegExp>
 		  
-		  <RegExp input="$$1" output="\1" dest="7">
+		  <!--<RegExp input="$$1" output="\1" dest="7">
 				<expression noclean="1">first billed only: &lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;(.*)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="7+">
@@ -182,11 +186,17 @@
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="7+">
 				<expression noclean="1">header_cast.gif(.*)</expression>
+			</RegExp>-->
+			<RegExp input="$$1" output="\1" dest="7+">
+				<expression noclean="1">Besetzung(.*)</expression>
 			</RegExp>
 			<RegExp input="$$7" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;/actor&gt;" dest="3+">
-				<expression repeat="yes" noclean="1,2" trim="1,2">&lt;td class="nm"&gt;&lt;a href="/name/nm[0-9]+/"&gt;([^&lt;]+)&lt;/a&gt;&lt;/td&gt;&lt;td class="ddd"&gt; ... &lt;/td&gt;&lt;td class="char"&gt;([^&lt;]+)&lt;/td&gt;</expression>
-			</RegExp>-->
-		  
+				<expression repeat="yes" noclean="1,2" trim="1,2">&lt;td class="nm"&gt;&lt;a href="/name/nm[0-9]+/"&gt;([^&lt;]+)&lt;/a&gt;&lt;/td&gt;&lt;td class="ddd"&gt;[^&lt;]*&lt;/td&gt;&lt;td class="char"&gt;&lt;a href="/character/ch[0-9]+/"&gt;([^&lt;]+)</expression>
+			</RegExp>
+		  <RegExp input="$$7" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;/actor&gt;" dest="3+">
+				<expression repeat="yes" noclean="1,2" trim="1,2">&lt;td class="nm"&gt;&lt;a href="/name/nm[0-9]+/"&gt;([^&lt;]+)&lt;/a&gt;&lt;/td&gt;&lt;td class="ddd"&gt;[^&lt;]*&lt;/td&gt;&lt;td class="char"&gt;([^&lt;]+)&lt;/td&gt;</expression>
+			</RegExp>
+			
       <expression noclean="1"></expression>
     </RegExp>	
   </IMDB-Details>

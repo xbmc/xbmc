@@ -31,7 +31,6 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY
   m_iCurrentLoop = 0;
   m_iImageWidth = 0;
   m_iImageHeight = 0;
-  m_bWasVisible = m_visible == VISIBLE;
   ControlType = GUICONTROL_IMAGE;
   m_bDynamicResourceAlloc=false;
   m_texturesAllocated = false;
@@ -97,7 +96,10 @@ void CGUIImage::AllocateOnDemand()
   {
     if (m_bDynamicResourceAlloc && IsAllocated())
       FreeResources();
-    m_bWasVisible = false;
+    // reset animated textures (animgifs)
+    m_iCurrentLoop = 0;
+    m_iCurrentImage = 0;
+    m_dwFrameCounter = 0;
     return;
   }
 
@@ -850,15 +852,6 @@ void CGUIImage::Process()
 {
   if (m_vecTextures.size() <= 1)
     return ;
-
-  if (!m_bWasVisible)
-  {
-    m_iCurrentLoop = 0;
-    m_iCurrentImage = 0;
-    m_dwFrameCounter = 0;
-    m_bWasVisible = true;
-    return ;
-  }
 
   m_dwFrameCounter++;
   DWORD dwDelay = g_TextureManager.GetDelay(m_strFileName, m_iCurrentImage);
