@@ -202,10 +202,9 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement)
     else if (strValue == "animation" && pChild->FirstChild())
     {
       FRECT rect = { 0, 0, (float)g_settings.m_ResInfo[m_coordsRes].iWidth, (float)g_settings.m_ResInfo[m_coordsRes].iHeight };
-      if (strcmpi(pChild->FirstChild()->Value(), "windowopen") == 0)
-        m_showAnimation.Create(pChild->ToElement(), rect);
-      else if (strcmpi(pChild->FirstChild()->Value(), "windowclose") == 0)
-        m_closeAnimation.Create(pChild->ToElement(), rect);
+      CAnimation anim;
+      anim.Create(pChild, rect);
+      m_animations.push_back(anim);
     }
     else if (strValue == "zorder" && pChild->FirstChild())
     {
@@ -993,36 +992,30 @@ bool CGUIWindow::IsActive() const
 
 void CGUIWindow::QueueAnimation(ANIMATION_TYPE animType)
 {
-  if (animType == ANIM_TYPE_WINDOW_OPEN)
-  {
-    if (m_closeAnimation.GetProcess() == ANIM_PROCESS_NORMAL && m_closeAnimation.IsReversible())
-    {
-      m_closeAnimation.QueueAnimation(ANIM_PROCESS_REVERSE);
-      m_showAnimation.ResetAnimation();
-    }
-    else
-    {
-      if (!m_showAnimation.GetCondition() || g_infoManager.GetBool(m_showAnimation.GetCondition(), GetID()))
-        m_showAnimation.QueueAnimation(ANIM_PROCESS_NORMAL);
-      m_closeAnimation.ResetAnimation();
-    }
-  }
+  // special cases first
   if (animType == ANIM_TYPE_WINDOW_CLOSE)
   {
     if (!m_WindowAllocated || !m_hasRendered) // can't render an animation if we aren't allocated or haven't rendered
       return;
-    if (m_showAnimation.GetProcess() == ANIM_PROCESS_NORMAL && m_showAnimation.IsReversible())
-    {
-      m_showAnimation.QueueAnimation(ANIM_PROCESS_REVERSE);
-      m_closeAnimation.ResetAnimation();
-    }
-    else
-    {
-      if (!m_closeAnimation.GetCondition() || g_infoManager.GetBool(m_closeAnimation.GetCondition(), GetID()))
-        m_closeAnimation.QueueAnimation(ANIM_PROCESS_NORMAL);
-      m_showAnimation.ResetAnimation();
-    }
   }
+  // we first check whether the reverse animation is in progress (and reverse it)
+  // then we check for the normal animation, and queue it
+  CAnimation *reverse = GetAnimation((ANIMATION_TYPE)-animType, false);
+  CAnimation *forward = GetAnimation(animType);
+  if (reverse && reverse->IsReversible() && (reverse->GetState() == ANIM_STATE_IN_PROCESS || reverse->GetState() == ANIM_STATE_DELAYED))
+  {
+    reverse->QueueAnimation(ANIM_PROCESS_REVERSE);
+    if (forward) forward->ResetAnimation();
+  }
+  else if (forward)
+  {
+    forward->QueueAnimation(ANIM_PROCESS_NORMAL);
+    if (reverse) reverse->ResetAnimation();
+  }
+  else if (reverse)
+    reverse->ResetAnimation();
+
+  // and queue any anims for the controls as well
   for (unsigned int i = 0; i < m_vecControls.size(); i++)
   {
     CGUIControl *pControl = m_vecControls[i];
@@ -1030,21 +1023,39 @@ void CGUIWindow::QueueAnimation(ANIMATION_TYPE animType)
   }
 }
 
+CAnimation *CGUIWindow::GetAnimation(ANIMATION_TYPE animType, bool checkConditions)
+{
+  for (unsigned int i = 0; i < m_animations.size(); i++)
+  {
+    CAnimation &anim = m_animations[i];
+    if (anim.GetType() == animType)
+    {
+      if (!checkConditions || (!anim.GetCondition() || g_infoManager.GetBool(anim.GetCondition())))
+        return &anim;
+    }
+  }
+  return NULL;
+}
+
 bool CGUIWindow::IsAnimating(ANIMATION_TYPE animType)
 {
-  if (animType == ANIM_TYPE_WINDOW_OPEN)
+  for (unsigned int i = 0; i < m_animations.size(); i++)
   {
-    if (m_showAnimation.GetQueuedProcess() == ANIM_PROCESS_NORMAL) return true;
-    if (m_showAnimation.GetProcess() == ANIM_PROCESS_NORMAL) return true;
-    if (m_closeAnimation.GetQueuedProcess() == ANIM_PROCESS_REVERSE) return true;
-    if (m_closeAnimation.GetProcess() == ANIM_PROCESS_REVERSE) return true;
-  }
-  else if (animType == ANIM_TYPE_WINDOW_CLOSE)
-  {
-    if (m_closeAnimation.GetQueuedProcess() == ANIM_PROCESS_NORMAL) return true;
-    if (m_closeAnimation.GetProcess() == ANIM_PROCESS_NORMAL) return true;
-    if (m_showAnimation.GetQueuedProcess() == ANIM_PROCESS_REVERSE) return true;
-    if (m_showAnimation.GetProcess() == ANIM_PROCESS_REVERSE) return true;
+    CAnimation &anim = m_animations[i];
+    if (anim.GetType() == animType)
+    {
+      if (anim.GetQueuedProcess() == ANIM_PROCESS_NORMAL)
+        return true;
+      if (anim.GetProcess() == ANIM_PROCESS_NORMAL)
+        return true;
+    }
+    else if (anim.GetType() == -animType)
+    {
+      if (anim.GetQueuedProcess() == ANIM_PROCESS_REVERSE)
+        return true;
+      if (anim.GetProcess() == ANIM_PROCESS_REVERSE)
+        return true;
+    }
   }
   for (unsigned int i = 0; i < m_vecControls.size(); i++)
   {
@@ -1059,13 +1070,13 @@ bool CGUIWindow::RenderAnimation(DWORD time)
   TransformMatrix transform;
   CPoint center(m_posX + m_width * 0.5f, m_posY + m_height * 0.5f);
   // show animation
-  m_showAnimation.Animate(time, true);
-  UpdateStates(m_showAnimation.GetType(), m_showAnimation.GetProcess(), m_showAnimation.GetState());
-  m_showAnimation.RenderAnimation(transform, center);
-  // close animation
-  m_closeAnimation.Animate(time, true);
-  UpdateStates(m_closeAnimation.GetType(), m_closeAnimation.GetProcess(), m_closeAnimation.GetState());
-  m_closeAnimation.RenderAnimation(transform, center);
+  for (unsigned int i = 0; i < m_animations.size(); i++)
+  {
+    CAnimation &anim = m_animations[i];
+    anim.Animate(time, true);
+    UpdateStates(anim.GetType(), anim.GetProcess(), anim.GetState());
+    anim.RenderAnimation(transform, center);
+  }
   g_graphicsContext.SetWindowTransform(transform);
   return true;
 }
@@ -1076,10 +1087,13 @@ void CGUIWindow::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProc
 
 bool CGUIWindow::HasAnimation(ANIMATION_TYPE animType)
 {
-  if (m_showAnimation.GetType() == animType && (!m_showAnimation.GetCondition() || g_infoManager.GetBool(m_showAnimation.GetCondition())))
-    return true;
-  else if (m_closeAnimation.GetType() == animType && (!m_closeAnimation.GetCondition() || g_infoManager.GetBool(m_closeAnimation.GetCondition())))
-    return true;
+  for (unsigned int i = 0; i < m_animations.size(); i++)
+  {
+    CAnimation &anim = m_animations[i];
+    if (anim.GetType() == animType && (!anim.GetCondition() || g_infoManager.GetBool(anim.GetCondition())))
+      return true;
+  }
+
   // Now check the controls to see if we have this animation
   for (unsigned int i = 0; i < m_vecControls.size(); i++)
     if (m_vecControls[i]->GetAnimation(animType)) return true;
@@ -1218,8 +1232,7 @@ void CGUIWindow::SetDefaults()
   m_overlayState = OVERLAY_STATE_PARENT_WINDOW;   // Use parent or previous window's state
   m_visibleCondition = 0;
   m_previousWindow = WINDOW_INVALID;
-  m_showAnimation.Reset();
-  m_closeAnimation.Reset();
+  m_animations.clear();
   m_origins.clear();
   m_hasCamera = false;
 }

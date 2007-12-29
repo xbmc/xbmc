@@ -1,6 +1,5 @@
 #pragma once
 
-enum EFFECT_TYPE { EFFECT_TYPE_NONE = 0, EFFECT_TYPE_FADE, EFFECT_TYPE_SLIDE, EFFECT_TYPE_ROTATE_X, EFFECT_TYPE_ROTATE_Y, EFFECT_TYPE_ROTATE_Z, EFFECT_TYPE_ZOOM };
 enum ANIMATION_PROCESS { ANIM_PROCESS_NONE = 0, ANIM_PROCESS_NORMAL, ANIM_PROCESS_REVERSE };
 enum ANIMATION_STATE { ANIM_STATE_NONE = 0, ANIM_STATE_DELAYED, ANIM_STATE_IN_PROCESS, ANIM_STATE_APPLIED };
 
@@ -26,27 +25,120 @@ enum ANIMATION_TYPE
   ANIM_TYPE_CONDITIONAL       // for animations triggered by a condition change
 };
 
+class CAnimEffect
+{
+public:
+  enum EFFECT_TYPE { EFFECT_TYPE_NONE = 0, EFFECT_TYPE_FADE, EFFECT_TYPE_SLIDE, EFFECT_TYPE_ROTATE_X, EFFECT_TYPE_ROTATE_Y, EFFECT_TYPE_ROTATE_Z, EFFECT_TYPE_ZOOM };
+
+  CAnimEffect(const TiXmlElement *node, EFFECT_TYPE effect);
+  CAnimEffect(unsigned int delay, unsigned int length, EFFECT_TYPE effect);
+  virtual ~CAnimEffect();
+  void Free();
+  void AddReference();
+
+  void Calculate(unsigned int time, const CPoint &center);
+
+  unsigned int GetDelay() const { return m_delay; };
+  unsigned int GetLength() const { return m_delay + m_length; };
+  const TransformMatrix &GetTransform() const { return m_matrix; };
+
+protected:
+  TransformMatrix m_matrix;
+  EFFECT_TYPE m_effect;
+
+private:
+  virtual void ApplyEffect(float offset, const CPoint &center)=0;
+
+  // timing variables
+  unsigned int m_length;
+  unsigned int m_delay;
+
+  Tweener *m_pTweener;
+  // reference tracking
+  unsigned int m_referenceCount;
+};
+
+class CFadeEffect : public CAnimEffect
+{
+public:
+  CFadeEffect(const TiXmlElement *node, bool reverseDefaults);
+  CFadeEffect(float start, float end, unsigned int delay, unsigned int length);
+  virtual ~CFadeEffect() {};
+private:
+  virtual void ApplyEffect(float offset, const CPoint &center);
+
+  float m_startAlpha;
+  float m_endAlpha;
+};
+
+class CSlideEffect : public CAnimEffect
+{
+public:
+  CSlideEffect(const TiXmlElement *node);
+  virtual ~CSlideEffect() {};
+private:
+  virtual void ApplyEffect(float offset, const CPoint &center);
+
+  float m_startX;
+  float m_startY;
+  float m_endX;
+  float m_endY;
+};
+
+class CRotateEffect : public CAnimEffect
+{
+public:
+  CRotateEffect(const TiXmlElement *node, EFFECT_TYPE effect);
+  virtual ~CRotateEffect() {};
+private:
+  virtual void ApplyEffect(float offset, const CPoint &center);
+
+  float m_startAngle;
+  float m_endAngle;
+
+  bool m_autoCenter;
+  CPoint m_center;
+};
+
+class CZoomEffect : public CAnimEffect
+{
+public:
+  CZoomEffect(const TiXmlElement *node, const FRECT &rect);
+  virtual ~CZoomEffect() {};
+private:
+  virtual void ApplyEffect(float offset, const CPoint &center);
+
+  float m_startX;
+  float m_startY;
+  float m_endX;
+  float m_endY;
+
+  bool m_autoCenter;
+  CPoint m_center;
+};
+
 class CAnimation
 {
 public:
   CAnimation();
-  CAnimation(const CAnimation&);
-  virtual ~CAnimation();
-  CAnimation &operator=(const CAnimation &src);
+  CAnimation(const CAnimation &src);
 
-  void Reset();
-  void Create(const TiXmlElement *node, const FRECT &rect);
+  virtual ~CAnimation();
+
+  const CAnimation &CAnimation::operator=(const CAnimation &src);
+
   static CAnimation *CreateFader(float start, float end, unsigned int delay, unsigned int length);
+
+  void Create(const TiXmlElement *node, const FRECT &rect);
+
   void Animate(unsigned int time, bool startAnim);
   void ResetAnimation();
   void ApplyAnimation();
-  inline void RenderAnimation(TransformMatrix &matrix, const CPoint &center)
+  inline void RenderAnimation(TransformMatrix &matrix)
   {
-    if (m_autoCenter)
-      m_center = center;
-    RenderAnimation(matrix);
+    RenderAnimation(matrix, CPoint());
   }
-  void RenderAnimation(TransformMatrix &matrix);
+  void RenderAnimation(TransformMatrix &matrix, const CPoint &center);
   void QueueAnimation(ANIMATION_PROCESS process);
 
   inline bool IsReversible() const { return m_reversible; };
@@ -56,43 +148,35 @@ public:
   inline ANIMATION_PROCESS GetProcess() const { return m_currentProcess; };
   inline ANIMATION_PROCESS GetQueuedProcess() const { return m_queuedProcess; };
 
-  float m_amount;
-
   void UpdateCondition(DWORD contextWindow, const CGUIListItem *item = NULL);
   void SetInitialCondition(DWORD contextWindow);
 
 private:
+  void Calculate(const CPoint &point);
+  void AddEffect(const CStdString &type, const TiXmlElement *node, const FRECT &rect);
+  void AddEffect(CAnimEffect *effect);
+
   enum ANIM_REPEAT { ANIM_REPEAT_NONE = 0, ANIM_REPEAT_PULSE, ANIM_REPEAT_LOOP };
 
+  // type of animation
   ANIMATION_TYPE m_type;
-  EFFECT_TYPE m_effect;
+  bool m_reversible;
+  int m_condition;
 
-  ANIMATION_STATE m_currentState;
-  ANIMATION_PROCESS m_currentProcess;
+  // conditional anims can repeat
+  ANIM_REPEAT m_repeatAnim;
+  bool m_lastCondition;
+
+  // state of animation
   ANIMATION_PROCESS m_queuedProcess;
+  ANIMATION_PROCESS m_currentProcess;
+  ANIMATION_STATE m_currentState;
 
-  // animation variables
-  float m_startX;
-  float m_startY;
-  float m_endX;
-  float m_endY;
-  CPoint m_center;
-  bool m_autoCenter;
-  float m_startAlpha;
-  float m_endAlpha;
-
-  // timing variables
+  // timing of animation
   unsigned int m_start;
   unsigned int m_length;
   unsigned int m_delay;
-  ANIM_REPEAT m_repeatAnim;
-  bool m_reversible;    // whether the animation is reversible or not
+  unsigned int m_amount;
 
-  int m_condition;      // conditions that must be satisfied in order for this
-                      // animation to be performed
-  bool m_lastCondition; // last state of our conditional
-
-  void Calculate();
-  TransformMatrix m_matrix;
-  Tweener *m_pTweener;
+  vector<CAnimEffect *> m_effects;
 };
