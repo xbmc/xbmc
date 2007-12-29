@@ -24,6 +24,12 @@
       <line>Freemem: $INFO[System.FreeMemory]</line>
       <line>$INFO[System.ScreenWidth]x$INFO[System.ScreenHeight] $INFO[System.ScreenMode]</line>
    </general>
+   <screensaver>
+      <line>$INFO[System.CurrentWindow]</line>
+      <line>$INFO[LCD.TimeWide21]</line>
+      <line>$INFO[LCD.TimeWide22]</line>
+      <line>Freemem: $INFO[System.FreeMemory]</line>
+   </screensaver>
    <xbelaunch>
       <line></line>
       <line>Playing</line>
