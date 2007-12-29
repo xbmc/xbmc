@@ -833,6 +833,10 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
         if (vecCores.size() >= 1)
           buttons.Add(CONTEXT_BUTTON_PLAY_WITH, 15213); // Play With...
       }
+      if (item->IsSmartPlayList())
+      {
+          buttons.Add(CONTEXT_BUTTON_PLAY_PARTYMODE, 15216); // Play in Partymode
+      }
 
       if (item->IsSmartPlayList() || m_vecItems.IsSmartPlayList())
         buttons.Add(CONTEXT_BUTTON_EDIT_SMART_PLAYLIST, 586);
@@ -901,6 +905,10 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         OnClick(itemNumber);
       return true;
     }
+
+  case CONTEXT_BUTTON_PLAY_PARTYMODE:
+    g_partyModeManager.Enable(PARTYMODECONTEXT_MUSIC, m_vecItems[itemNumber]->m_strPath);
+    return true;
 
   case CONTEXT_BUTTON_STOP_SCANNING:
     { 

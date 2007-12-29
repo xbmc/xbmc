@@ -456,7 +456,7 @@ bool CGUIWindowVideoPlaylist::OnContextButton(int itemNumber, CONTEXT_BUTTON but
     {
       // apply new rules
       g_partyModeManager.Disable();
-      g_partyModeManager.Enable(true);
+      g_partyModeManager.Enable(PARTYMODECONTEXT_VIDEO);
     }
     return true;
   }

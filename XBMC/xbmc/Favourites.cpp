@@ -128,6 +128,8 @@ CStdString CFavourites::GetExecutePath(const CFileItem *item, DWORD contextWindo
   CStdString execute;
   if (item->m_bIsFolder)
     execute.Format("ActivateWindow(%i,%s)", contextWindow, item->m_strPath);
+  else if (item->m_strPath.Left(9).Equals("plugin://"))
+    execute.Format("RunPlugin(%s)", item->m_strPath);
   else if (contextWindow == WINDOW_SCRIPTS)
     execute.Format("RunScript(%s)", item->m_strPath);
   else if (contextWindow == WINDOW_PROGRAMS)

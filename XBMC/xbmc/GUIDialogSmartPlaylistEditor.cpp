@@ -448,8 +448,15 @@ bool CGUIDialogSmartPlaylistEditor::EditPlaylist(const CStdString &path)
     editor->m_isPartyMode = 2;
 
   CSmartPlaylist playlist;
-  if (editor->m_isPartyMode == 0 && !playlist.Load(path))
-    return false; // only edit playlists that exist
+  bool loaded(playlist.Load(path));
+  if (!loaded)
+  { // failed to load
+    if (editor->m_isPartyMode == 0)
+      return false; // only edit normal playlists that exist
+    // party mode playlists can be editted even if they don't exist
+    playlist.m_playlistRules.push_back(CSmartPlaylistRule());
+    playlist.SetType(editor->m_isPartyMode == 1 ? "music" : "video");
+  }
 
   editor->m_playlist = playlist;
   editor->m_path = path;

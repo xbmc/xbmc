@@ -631,6 +631,7 @@ void CGUIControl::Animate(DWORD currentTime)
   // check visible state outside the loop, as it could change
   GUIVISIBLE visible = m_visible;
   m_transform.Reset();
+  CPoint center(m_posX + m_width * 0.5f, m_posY + m_height * 0.5f);
   for (unsigned int i = 0; i < m_animations.size(); i++)
   {
     CAnimation &anim = m_animations[i];
@@ -638,7 +639,7 @@ void CGUIControl::Animate(DWORD currentTime)
     // Update the control states (such as visibility)
     UpdateStates(anim.GetType(), anim.GetProcess(), anim.GetState());
     // and render the animation effect
-    anim.RenderAnimation(m_transform);
+    anim.RenderAnimation(m_transform, center);
 
 /*    // debug stuff
     if (anim.currentProcess != ANIM_PROCESS_NONE)
