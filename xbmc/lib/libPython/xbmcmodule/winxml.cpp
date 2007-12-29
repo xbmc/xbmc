@@ -134,7 +134,6 @@ namespace PYXBMC
 
     string strText;
     ListItem* pListItem = NULL;
-    bool bRefresh = true;
 
     if (ListItem_CheckExact(pObject))
     {

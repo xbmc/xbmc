@@ -1072,7 +1072,6 @@ bool CMusicDatabase::GetTop100Albums(VECALBUMS& albums)
     int iCount = 1;
     while (!m_pDS->eof())
     {
-      int total = m_pDS->fv("total").get_asInteger();
       albums.push_back(GetAlbumFromDataset());
       m_pDS->next();
     }
