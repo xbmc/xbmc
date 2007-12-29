@@ -356,6 +356,14 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("lcd.freespace(e)")) ret = LCD_FREE_SPACE_E;
     else if (strTest.Equals("lcd.freespace(f)")) ret = LCD_FREE_SPACE_F;
     else if (strTest.Equals("lcd.freespace(g)")) ret = LCD_FREE_SPACE_G;
+    else if (strTest.Equals("lcd.Time21")) ret = LCD_TIME_21; // Small LCD numbers
+    else if (strTest.Equals("lcd.Time22")) ret = LCD_TIME_22;
+    else if (strTest.Equals("lcd.TimeWide21")) ret = LCD_TIME_W21; // Medium LCD numbers
+    else if (strTest.Equals("lcd.TimeWide22")) ret = LCD_TIME_W22;
+    else if (strTest.Equals("lcd.Time41")) ret = LCD_TIME_41; // Big LCD numbers
+    else if (strTest.Equals("lcd.Time42")) ret = LCD_TIME_42;
+    else if (strTest.Equals("lcd.Time43")) ret = LCD_TIME_43;
+    else if (strTest.Equals("lcd.Time44")) ret = LCD_TIME_44;
   }
   else if (strCategory.Equals("network"))
   {
@@ -1060,6 +1068,19 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
         strLabel.Format("\5");
     }
     break;
+    
+  case LCD_TIME_21:
+  case LCD_TIME_22:
+  case LCD_TIME_W21:
+  case LCD_TIME_W22:
+  case LCD_TIME_41:
+  case LCD_TIME_42:
+  case LCD_TIME_43:
+  case LCD_TIME_44:
+    //alternatively, set strLabel
+    return GetLcdTime( info );
+    break;
+
   case SKIN_THEME:
     if (g_guiSettings.GetString("lookandfeel.skintheme").Equals("skindefault"))
       strLabel = g_localizeStrings.Get(15109);
@@ -1916,6 +1937,74 @@ CStdString CGUIInfoManager::GetTime(TIME_FORMAT format) const
 {
   CDateTime time=CDateTime::GetCurrentDateTime();
   return LocalizeTime(time, format);
+}
+
+CStdString CGUIInfoManager::GetLcdTime( int _eInfo ) const
+{
+  CDateTime time=CDateTime::GetCurrentDateTime();
+  CStdString strLcdTime;
+
+#ifdef HAS_LCD
+
+  UINT       nCharset;
+  UINT       nLine;
+  CStdString strTimeMarker;
+
+  switch ( _eInfo )
+  {
+    case LCD_TIME_21:
+      nCharset = 1; // CUSTOM_CHARSET_SMALLCHAR;
+      nLine = 0;
+      strTimeMarker = ".";
+    break;
+    case LCD_TIME_22:
+      nCharset = 1; // CUSTOM_CHARSET_SMALLCHAR;
+      nLine = 1;
+      strTimeMarker = ".";
+    break;
+
+    case LCD_TIME_W21:
+      nCharset = 2; // CUSTOM_CHARSET_MEDIUMCHAR;
+      nLine = 0;
+      strTimeMarker = ".";
+    break;
+    case LCD_TIME_W22:
+      nCharset = 2; // CUSTOM_CHARSET_MEDIUMCHAR;
+      nLine = 1;
+      strTimeMarker = ".";
+    break;
+
+    case LCD_TIME_41:
+      nCharset = 3; // CUSTOM_CHARSET_BIGCHAR;
+      nLine = 0;
+      strTimeMarker = " ";
+    break;
+    case LCD_TIME_42:
+      nCharset = 3; // CUSTOM_CHARSET_BIGCHAR;
+      nLine = 1;
+      strTimeMarker = "o";
+    break;
+    case LCD_TIME_43:
+      nCharset = 3; // CUSTOM_CHARSET_BIGCHAR;
+      nLine = 2;
+      strTimeMarker = "o";
+    break;
+    case LCD_TIME_44:
+      nCharset = 3; // CUSTOM_CHARSET_BIGCHAR;
+      nLine = 3;
+      strTimeMarker = " ";
+    break;
+  }
+
+  strLcdTime += g_lcd->GetBigDigit( nCharset, time.GetHour()  , nLine, 2, 2, true );
+  strLcdTime += strTimeMarker;
+  strLcdTime += g_lcd->GetBigDigit( nCharset, time.GetMinute(), nLine, 2, 2, false );
+  strLcdTime += strTimeMarker;
+  strLcdTime += g_lcd->GetBigDigit( nCharset, time.GetSecond(), nLine, 2, 2, false );
+
+#endif
+  
+  return strLcdTime;
 }
 
 CStdString CGUIInfoManager::LocalizeTime(const CDateTime &time, TIME_FORMAT format) const
