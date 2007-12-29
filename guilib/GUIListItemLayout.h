@@ -2,6 +2,7 @@
 
 #include "GUIBorderedImage.h"
 #include "GUIListLabel.h"
+#include "GUIMultiSelectText.h"
 
 class CGUIListItem;
 class CFileItem;
@@ -14,7 +15,7 @@ class CGUIListItemLayout
     CListBase();
     virtual ~CListBase();
 
-    enum LIST_TYPE { LIST_LABEL, LIST_IMAGE, LIST_TEXTURE };
+    enum LIST_TYPE { LIST_LABEL, LIST_SELECT_LABEL, LIST_IMAGE, LIST_TEXTURE };
     LIST_TYPE m_type;
   };
 
@@ -25,6 +26,17 @@ class CGUIListItemLayout
     virtual ~CListLabel();
 
     CGUIListLabel m_label;
+    int m_info;
+    vector<CInfoPortion> m_multiInfo;
+  };
+
+  class CListSelectLabel : public CListBase
+  {
+  public:
+    CListSelectLabel(float posX, float posY, float width, float height, int visibleCondition, const CImage &imageFocus, const CImage &imageNoFocus, const CLabelInfo &label, const CStdString &content, const vector<CAnimation> &animations);
+    virtual ~CListSelectLabel();
+
+    CGUIMultiSelectTextControl m_label;
     int m_info;
     vector<CInfoPortion> m_multiInfo;
   };
@@ -52,10 +64,9 @@ public:
   void LoadLayout(TiXmlElement *layout, bool focused);
   void Render(CGUIListItem *item, DWORD parentID, DWORD time = 0);
   float Size(ORIENTATION orientation) const;
-  bool Focused() const { return m_focused; };
+  unsigned int GetFocus() const;
+  void SetFocus(unsigned int focus);
   void ResetScrolling();
-  void QueueAnimation(ANIMATION_TYPE animType);
-  void ResetAnimation(ANIMATION_TYPE animType);
 
   void SetInvalid() { m_invalidated = true; };
 
@@ -63,6 +74,10 @@ public:
   void CreateListControlLayouts(float width, float height, bool focused, const CLabelInfo &labelInfo, const CLabelInfo &labelInfo2, const CImage &texture, const CImage &textureFocus, float texHeight, float iconWidth, float iconHeight, int nofocusCondition, int focusCondition);
   void CreateThumbnailPanelLayouts(float width, float height, bool focused, const CImage &image, float texWidth, float texHeight, float thumbPosX, float thumbPosY, float thumbWidth, float thumbHeight, DWORD thumbAlign, CGUIImage::GUIIMAGE_ASPECT_RATIO thumbAspect, const CLabelInfo &labelInfo, bool hideLabel);
 //#endif
+
+  void SelectItemFromPoint(const CPoint &point);
+  bool MoveLeft();
+  bool MoveRight();
 
   int GetCondition() const { return m_condition; };
 #ifdef _DEBUG

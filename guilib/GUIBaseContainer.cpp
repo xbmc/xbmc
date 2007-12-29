@@ -50,11 +50,16 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
     if (item->GetFocusedLayout())
     {
       if (item != m_lastItem || !HasFocus())
-        item->GetFocusedLayout()->ResetScrolling();
-      if (item != m_lastItem)
       {
-        item->GetFocusedLayout()->ResetAnimation(ANIM_TYPE_FOCUS);
-        item->GetFocusedLayout()->QueueAnimation(ANIM_TYPE_FOCUS);
+        item->GetFocusedLayout()->ResetScrolling();
+        item->GetFocusedLayout()->SetFocus(0);
+      }
+      if (item != m_lastItem && HasFocus())
+      {
+        unsigned int subItem = 1;
+        if (m_lastItem && m_lastItem->GetFocusedLayout())
+          subItem = m_lastItem->GetFocusedLayout()->GetFocus();
+        item->GetFocusedLayout()->SetFocus(subItem ? subItem : 1);
       }
       item->GetFocusedLayout()->Render(item, m_dwParentID, m_renderTime);
     }
@@ -62,6 +67,8 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
   }
   else
   {
+    if (item->GetFocusedLayout())
+      item->GetFocusedLayout()->SetFocus(0);  // focus is not set
     if (!item->GetLayout())
     {
       CGUIListItemLayout *layout = new CGUIListItemLayout(*m_layout);
@@ -103,8 +110,7 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
     {
       if (message.GetMessage() == GUI_MSG_LABEL_BIND && message.GetLPVOID())
       { // bind our items
-        m_wasReset = true;
-        m_items.clear();
+        Reset();
         CFileItemList *items = (CFileItemList *)message.GetLPVOID();
         for (int i = 0; i < items->Size(); i++)
         {
@@ -129,8 +135,7 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
       }
       else if (message.GetMessage() == GUI_MSG_LABEL_RESET)
       {
-        m_wasReset = true;
-        m_items.clear();
+        Reset();
         if (m_pageControl)
         {
           CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, GetRows());
@@ -165,6 +170,7 @@ void CGUIBaseContainer::OnUp()
 {
   if (m_orientation == VERTICAL && MoveUp(m_dwControlUp))
     return;
+  // with horizontal lists it doesn't make much sense to have multiselect labels
   CGUIControl::OnUp();
 }
 
@@ -172,6 +178,7 @@ void CGUIBaseContainer::OnDown()
 {
   if (m_orientation == VERTICAL && MoveDown(m_dwControlDown))
     return;
+  // with horizontal lists it doesn't make much sense to have multiselect labels
   CGUIControl::OnDown();
 }
 
@@ -179,6 +186,12 @@ void CGUIBaseContainer::OnLeft()
 {
   if (m_orientation == HORIZONTAL && MoveUp(m_dwControlLeft))
     return;
+  else if (m_orientation == VERTICAL)
+  {
+    CGUIListItemLayout *focusedLayout = GetFocusedLayout();
+    if (focusedLayout && focusedLayout->MoveLeft())
+      return;
+  }
   CGUIControl::OnLeft();
 }
 
@@ -186,6 +199,12 @@ void CGUIBaseContainer::OnRight()
 {
   if (m_orientation == HORIZONTAL && MoveDown(m_dwControlRight))
     return;
+  else if (m_orientation == VERTICAL)
+  {
+    CGUIListItemLayout *focusedLayout = GetFocusedLayout();
+    if (focusedLayout && focusedLayout->MoveRight())
+      return;
+  }
   CGUIControl::OnRight();
 }
 
@@ -219,6 +238,13 @@ CGUIListItem *CGUIBaseContainer::GetListItem(int offset) const
   return m_items[item];
 }
 
+CGUIListItemLayout *CGUIBaseContainer::GetFocusedLayout() const
+{
+  CGUIListItem *item = GetListItem(0);
+  if (item) return item->GetFocusedLayout();
+  return NULL;
+}
+
 bool CGUIBaseContainer::SelectItemFromPoint(const CPoint &point)
 {
   if (!m_focusedLayout || !m_layout)
@@ -235,6 +261,16 @@ bool CGUIBaseContainer::SelectItemFromPoint(const CPoint &point)
         return false;
 
       MoveToItem(row);
+      CGUIListItemLayout *focusedLayout = GetFocusedLayout();
+      if (focusedLayout)
+      {
+        CPoint pt(point);
+        if (m_orientation == VERTICAL)
+          pt.y = pos;
+        else
+          pt.x = pos;
+        focusedLayout->SelectItemFromPoint(pt);
+      }
       return true;
     }
     row++;
@@ -272,28 +308,36 @@ bool CGUIBaseContainer::OnMouseDoubleClick(DWORD dwButton, const CPoint &point)
 
 bool CGUIBaseContainer::OnClick(DWORD actionID)
 {
-  if (m_staticContent && (actionID == ACTION_SELECT_ITEM || actionID == ACTION_MOUSE_LEFT_CLICK))
-  { // "select" action
-    int selected = GetSelectedItem();
-    if (selected >= 0 && selected < (int)m_items.size())
-    {
-      CFileItem *item = (CFileItem *)m_items[selected];
-      // multiple action strings are concat'd together, separated with " , "
-      vector<CStdString> actions;
-      StringUtils::SplitString(item->m_strPath, " , ", actions);
-      for (unsigned int i = 0; i < actions.size(); i++)
+  int subItem = 0;
+  if (actionID == ACTION_SELECT_ITEM || actionID == ACTION_MOUSE_LEFT_CLICK)
+  {
+    if (m_staticContent)
+    { // "select" action
+      int selected = GetSelectedItem();
+      if (selected >= 0 && selected < (int)m_items.size())
       {
-        CStdString action = actions[i];
-        action.Replace(",,", ",");
-        CGUIMessage message(GUI_MSG_EXECUTE, GetID(), GetParentID());
-        message.SetStringParam(action);
-        g_graphicsContext.SendMessage(message);
+        CFileItem *item = (CFileItem *)m_items[selected];
+        // multiple action strings are concat'd together, separated with " , "
+        vector<CStdString> actions;
+        StringUtils::SplitString(item->m_strPath, " , ", actions);
+        for (unsigned int i = 0; i < actions.size(); i++)
+        {
+          CStdString action = actions[i];
+          action.Replace(",,", ",");
+          CGUIMessage message(GUI_MSG_EXECUTE, GetID(), GetParentID());
+          message.SetStringParam(action);
+          g_graphicsContext.SendMessage(message);
+        }
       }
+      return true;
     }
-    return true;
+    // grab the currently focused subitem (if applicable)
+    CGUIListItemLayout *focusedLayout = GetFocusedLayout();
+    if (focusedLayout)
+      subItem = focusedLayout->GetFocus();
   }
   // Don't know what to do, so send to our parent window.
-  CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), actionID);
+  CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), actionID, subItem);
   return SendWindowMessage(msg);
 }
 
@@ -359,7 +403,7 @@ void CGUIBaseContainer::FreeResources()
   CGUIControl::FreeResources();
   if (m_staticContent)
   { // free any static content
-    m_items.clear();
+    Reset();
     for (iItems it = m_staticItems.begin(); it != m_staticItems.end(); it++)
       delete *it;
     m_staticItems.clear();
@@ -383,7 +427,7 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
   if (m_staticContent)
   { // update our item list with our new content, but only add those items that should
     // be visible.
-    m_items.clear();
+    Reset();
     for (unsigned int i = 0; i < m_staticItems.size(); ++i)
     {
       CFileItem *item = (CFileItem *)m_staticItems[i];
@@ -441,6 +485,13 @@ void CGUIBaseContainer::ScrollToOffset(int offset)
 int CGUIBaseContainer::CorrectOffset(int offset, int cursor) const
 {
   return offset + cursor;
+}
+
+void CGUIBaseContainer::Reset()
+{
+  m_wasReset = true;
+  m_items.clear();
+  m_lastItem = NULL;
 }
 
 void CGUIBaseContainer::LoadLayout(TiXmlElement *layout)
@@ -605,6 +656,11 @@ bool CGUIBaseContainer::GetCondition(int condition, int data) const
     return (HasNextPage());
   case CONTAINER_HAS_PREVIOUS:
     return (HasPreviousPage());
+  case CONTAINER_SUBITEM:
+    {
+      CGUIListItemLayout *layout = GetFocusedLayout();
+      return layout ? (layout->GetFocus() == data) : false;
+    }
   default:
     return false;
   }

@@ -994,6 +994,9 @@ CStdString CSysInfo::GetModCHIPDetected()
     mbFlash->AddFCI(0x37,0x1a,"AMIC A29L008T/A29L800T",0x100000);
     mbFlash->AddFCI(0x37,0x9b,"AMIC A29L008U/A29L800U",0x100000);
 
+    mbFlash->AddFCI(0x1f,0x07,"Atmel AT49F002A",0x40000);
+    mbFlash->AddFCI(0x1f,0x08,"Atmel AT49F002AT",0x40000);
+
     mbFlash->AddFCI(0x04,0xb0,"Fujitsu MBM29F002TC",0x40000);
     mbFlash->AddFCI(0x04,0x34,"Fujitsu MBM29F002BC",0x40000);
     mbFlash->AddFCI(0x04,0x51,"Fujitsu MBM29F200TC",0x40000);

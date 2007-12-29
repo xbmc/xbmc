@@ -145,6 +145,7 @@ protected:
   virtual bool RenderAnimation(DWORD time);
   virtual void UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState);
   bool HasAnimation(ANIMATION_TYPE animType);
+  CAnimation *GetAnimation(ANIMATION_TYPE animType, bool checkConditions = true);
 
   // control state saving on window close
   virtual void SaveControlStates();
@@ -191,8 +192,7 @@ protected:
 
   bool   m_hasCamera;
   CPoint m_camera;      // 3D camera position (x,y coords - z is fixed currently)
-  CAnimation m_showAnimation;
-  CAnimation m_closeAnimation;
+  vector<CAnimation> m_animations;
 
   int m_renderOrder;      // for render order of dialogs
   bool m_hasRendered;

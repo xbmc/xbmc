@@ -72,7 +72,8 @@ namespace VIDEO
       m_itemCount=-1;
 
       // Create the thread to count all files to be scanned
-      CThread fileCountReader(this);
+      SetPriority(THREAD_PRIORITY_IDLE);
+      CThread fileCountReader(this);    
       if (m_pObserver)
         fileCountReader.Create();
 

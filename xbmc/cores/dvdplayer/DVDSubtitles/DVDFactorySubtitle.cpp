@@ -38,12 +38,13 @@ bool CDVDFactorySubtitle::GetSubtitles(VecSubtitleFiles& vecSubtitles, string& s
   return true;
 }
 
-CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(CDVDSubtitleStream* pStream, string& strFile)
+CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(string& strFile)
 {
   char line[1024];
   int i;
   CDVDSubtitleParser* pParser = NULL;
-  
+
+  CDVDSubtitleStream* pStream = new CDVDSubtitleStream();
   if(!pStream->Open(strFile))
     return false;
 

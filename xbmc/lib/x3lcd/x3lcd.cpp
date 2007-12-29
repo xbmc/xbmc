@@ -3,6 +3,7 @@
 #include "x3lcd.h"
 #include "conio.h"
 #include "../../util.h"
+#include "../../Application.h" // for g_application.IsInScreenSaver()
 
 #include <conio.h>
 
@@ -11,14 +12,27 @@ char X3LcdAnimIndex=0;
 //*************************************************************************************************************
 CX3LCD::CX3LCD()
 {
-	m_iActualpos=0;
-	m_iRows    = 4;
-	m_iColumns = 20;				
-	m_iRow1adr = 0x00;
-	m_iRow2adr = 0x40;
-	m_iRow3adr = 0x14;
-	m_iRow4adr = 0x54;
-	m_iBackLight=32;
+  m_iActualpos=0;
+  m_iRows    = 4;
+  m_iColumns = 20;        // display rows each line
+  m_iBackLight=32;
+
+  if (g_guiSettings.GetInt("lcd.type") == LCD_TYPE_LCD_KS0073)
+  {
+    // Special case: it's the KS0073
+    m_iRow1adr = 0x00;
+    m_iRow2adr = 0x20;
+    m_iRow3adr = 0x40;
+    m_iRow4adr = 0x60;
+  }
+  else
+  {
+    // We assume that it's a HD44780 compatible
+    m_iRow1adr = 0x00;
+    m_iRow2adr = 0x40;
+    m_iRow3adr = 0x14;
+    m_iRow4adr = 0x54;
+  }
 }
 
 //*************************************************************************************************************
@@ -61,7 +75,7 @@ void CX3LCD::SetLine(int iLine, const CStdString& strLine)
 		return;
 
 	CStdString strLineLong=strLine;
-	strLineLong.Trim();
+	//strLineLong.Trim();
 	StringToLCDCharSet(strLineLong);
 
 	while (strLineLong.size() < m_iColumns) 
@@ -183,16 +197,28 @@ void CX3LCD::DisplayBuildCustomChars()
 	static char Stop[] ={0x00, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x00};
 	static char Pause[]={0x00, 0x1b, 0x1b, 0x1b, 0x1b, 0x1b, 0x1b, 0x00};
 
-	DisplayOut(DISP_CGRAM_SET, CMD);
-	for(I=0;I<8;I++) DisplayOut(Bar0[I], DAT);  			// Bar0
-	for(I=0;I<8;I++) DisplayOut(Bar1[I], DAT);  			// Bar1
-	for(I=0;I<8;I++) DisplayOut(Bar2[I], DAT);  			// Bar2
-	for(I=0;I<8;I++) DisplayOut(REW[X3LcdAnimIndex][I], DAT);   	// REW
-	for(I=0;I<8;I++) DisplayOut(FF[X3LcdAnimIndex][I], DAT);    	// FF
-	for(I=0;I<8;I++) DisplayOut(Play[I], DAT);  			// Play
-	//for(I=0;I<8;I++) DisplayOut(Stop[I], DAT);  			// Stop
-	for(I=0;I<8;I++) DisplayOut(Bar3[I], DAT);
-	for(I=0;I<8;I++) DisplayOut(Pause[I], DAT); 			// Pause
+  DisplayOut(DISP_CGRAM_SET, CMD);
+  DisplayOut(DISP_CGRAM_SET, CMD);
+
+  // TODO: it's probably better to move the default charset in ILCD also:
+  // that will take out the screensaver mode check here and keeps everything central,
+  // but ILCD then has to deal with animation
+  if ( g_application.IsInScreenSaver() ) //IsInScreenSaver()
+  {
+      for(I=0;I<64;I++) DisplayOut( GetLCDCharsetCharacter( I ), DAT ); // all numberblocks chars
+  }
+  else
+  {
+	  for(I=0;I<8;I++) DisplayOut(Bar0[I], DAT);  			// Bar0
+	  for(I=0;I<8;I++) DisplayOut(Bar1[I], DAT);  			// Bar1
+	  for(I=0;I<8;I++) DisplayOut(Bar2[I], DAT);  			// Bar2
+	  for(I=0;I<8;I++) DisplayOut(REW[X3LcdAnimIndex][I], DAT);   	// REW
+	  for(I=0;I<8;I++) DisplayOut(FF[X3LcdAnimIndex][I], DAT);    	// FF
+	  for(I=0;I<8;I++) DisplayOut(Play[I], DAT);  			// Play
+	  //for(I=0;I<8;I++) DisplayOut(Stop[I], DAT);  			// Stop
+	  for(I=0;I<8;I++) DisplayOut(Bar3[I], DAT);
+	  for(I=0;I<8;I++) DisplayOut(Pause[I], DAT); 			// Pause
+  }
 	DisplayOut(DISP_DDRAM_SET, CMD);
 	X3LcdAnimIndex=(X3LcdAnimIndex+1) & 0x7;
 }

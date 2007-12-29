@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include ".\bundler.h"
+#include "Bundler.h"
 #include "../../xbmc/lib/liblzo/lzo1x.h"
 
 // alignment of file blocks - should be a multiple of the sector size of the disk and a power of 2

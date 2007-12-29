@@ -218,58 +218,60 @@ bool CEdl::ReadVideoRedo()
 
 bool CEdl::ReadBeyondTV()
 {
-  Cut tmpCut;
-  double dStartframe;
-  double dEndframe;
-  bool tmpValid=false;
-  TiXmlDocument doc;
-  TiXmlElement *root;
-  TiXmlElement *Region;
-  TiXmlElement *Start;
-  TiXmlElement *End;
-
   Reset();
   m_strEdlFilename=m_strMovie+".chapters.xml";
 
-  tmpValid=doc.LoadFile(m_strEdlFilename);
-  if (tmpValid)
+  if (!CFile::Exists(m_strEdlFilename))
+    return false;
+
+  CFileStream file;
+  if (!file.Open(m_strEdlFilename))
   {
-    root = doc.RootElement();
-    if (root && !strcmp(root->Value(), "cutlist"))
-    {
-      Region = root->FirstChildElement("Region");
-      while (Region && tmpValid)
-      {
-        Start = Region->FirstChildElement("start");
-        End = Region->FirstChildElement("end");
-        if ( Start && End && Start->FirstChild() && End->FirstChild() )
-        {
-          dStartframe=atof(Start->FirstChild()->Value());
-          dEndframe=atof(End->FirstChild()->Value());
-          tmpCut.CutStart=dStartframe/10000000; 
-          tmpCut.CutEnd=dEndframe/10000000;
-          tmpCut.CutAction=CUT;
-          tmpValid=AddCutpoint(tmpCut);
-        }
-        else
-        {
-          tmpValid=false;
-        }
-        Region = Region->NextSiblingElement("Region");
-      }
-    }
+    CLog::Log(LOGDEBUG, "%s failed to read file %s", __FUNCTION__, m_strEdlFilename.c_str());
+    return false;
   }
 
-  if (tmpValid && HaveCutpoints())
+  TiXmlDocument xmlDoc;
+  file >> xmlDoc;
+
+  if (xmlDoc.Error())
+  {
+    CLog::Log(LOGERROR, "Unable to parse chapters.xml file: %s", xmlDoc.ErrorDesc());
+    return false;
+  }
+
+  TiXmlElement *root = xmlDoc.RootElement();
+  if (!root || strcmp(root->Value(), "cutlist"))
+  {
+    CLog::Log(LOGERROR, "Unable to parse chapters.xml file: %s", xmlDoc.ErrorDesc());
+    return false;
+  }
+  TiXmlElement *Region = root->FirstChildElement("Region");
+  while (Region)
+  {
+    TiXmlElement *Start = Region->FirstChildElement("start");
+    TiXmlElement *End = Region->FirstChildElement("end");
+    if ( Start && End && Start->FirstChild() && End->FirstChild() )
+    {
+      double dStartframe=atof(Start->FirstChild()->Value());
+      double dEndframe=atof(End->FirstChild()->Value());
+      Cut cut;
+      cut.CutStart=dStartframe/10000000; 
+      cut.CutEnd=dEndframe/10000000;
+      cut.CutAction=CUT;
+      AddCutpoint(cut); // just ignore it if it fails
+    }
+    Region = Region->NextSiblingElement("Region");
+  }
+
+  if (HaveCutpoints())
   {
     CLog::Log(LOGDEBUG, "CEdl: Read BeyondTV.");
     m_bCutpoints=true;
+    return true;
   }
-  else
-  {
-    Reset();
-  }
-  return tmpValid;
+  CLog::Log(LOGDEBUG, "CEdl: Failed to get cutpoints in BeyondTV file.");
+  return false;
 }
 
 /*

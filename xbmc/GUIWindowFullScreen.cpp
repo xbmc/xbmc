@@ -673,8 +673,6 @@ void CGUIWindowFullScreen::RenderFullScreen()
     OnMessage(msg);
   }
 
-  //int iSpeed = g_application.GetPlaySpeed();
-
   if (g_infoManager.GetBool(PLAYER_SHOWCODEC) || m_bShowViewModeInfo)
   {
     SET_CONTROL_VISIBLE(LABEL_ROW1);

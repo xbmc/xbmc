@@ -155,7 +155,6 @@ protected:
   vector <CGLTexture*> m_vecTextures;
 #endif  
   float m_diffuseScaleU, m_diffuseScaleV;  
-  bool m_bWasVisible;
   bool m_bDynamicResourceAlloc;
 
   // for when we are changing textures

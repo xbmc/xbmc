@@ -49,27 +49,27 @@ CPartyModeManager::~CPartyModeManager(void)
 {
 }
 
-bool CPartyModeManager::Enable(bool bVideo /* = false */)
+bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUSIC*/, const CStdString& strXspPath /*= ""*/)
 {
   // Filter using our PartyMode xml file
   CSmartPlaylist playlist;
   CStdString partyModePath;
 
-  CGUIDialogProgress* pDialog = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  int iHeading = (bVideo ? 20250 : 20121);
-  int iLine0 = (bVideo ? 20251 : 20123);
-  pDialog->SetHeading(iHeading);
-  pDialog->SetLine(0, iLine0);
-  pDialog->SetLine(1, "");
-  pDialog->SetLine(2, "");
-  pDialog->StartModal();
-  if (bVideo)
+  m_bIsVideo = context == PARTYMODECONTEXT_VIDEO;
+  if (!strXspPath.IsEmpty()) //if a path to a smartplaylist is supplied use it
+    partyModePath = strXspPath;
+  else if (m_bIsVideo)
     partyModePath = g_settings.GetUserDataItem("PartyMode-Video.xsp");
   else
     partyModePath = g_settings.GetUserDataItem("PartyMode.xsp");
   if (playlist.Load(partyModePath))
   {
     m_type = playlist.GetType();
+    if (context == PARTYMODECONTEXT_UNKNOWN)
+    {
+      //get it from the xsp file
+      m_bIsVideo = (m_type.Equals("video") || m_type.Equals("mixed"));
+    }
     if (m_type.Equals("mixed"))
       playlist.SetType("music");
     m_strCurrentFilterMusic = playlist.GetWhereClause();
@@ -82,8 +82,17 @@ bool CPartyModeManager::Enable(bool bVideo /* = false */)
   {
     m_strCurrentFilterMusic.Empty();
     m_strCurrentFilterVideo.Empty();
-    m_type = bVideo ? "video" : "music";
+    m_type = m_bIsVideo ? "video" : "music";
   }
+
+  CGUIDialogProgress* pDialog = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  int iHeading = (m_bIsVideo ? 20250 : 20121);
+  int iLine0 = (m_bIsVideo ? 20251 : 20123);
+  pDialog->SetHeading(iHeading);
+  pDialog->SetLine(0, iLine0);
+  pDialog->SetLine(1, "");
+  pDialog->SetLine(2, "");
+  pDialog->StartModal();
 
   ClearState();
   DWORD time = timeGetTime();
@@ -136,7 +145,6 @@ bool CPartyModeManager::Enable(bool bVideo /* = false */)
     database.Close();
     songIDs.insert(songIDs.end(),songIDs2.begin(),songIDs2.end());
   }
-  m_bIsVideo = bVideo;
 
   // calculate history size
   if (m_iMatchingSongs < 50)
@@ -157,7 +165,7 @@ bool CPartyModeManager::Enable(bool bVideo /* = false */)
   g_playlistPlayer.SetShuffle(iPlaylist, false);
   g_playlistPlayer.SetRepeat(iPlaylist, PLAYLIST::REPEAT_NONE);
 
-  pDialog->SetLine(0, (bVideo ? 20252 : 20124));
+  pDialog->SetLine(0, (m_bIsVideo ? 20252 : 20124));
   pDialog->Progress();
   // add initial songs
   if (!AddInitialSongs(songIDs))

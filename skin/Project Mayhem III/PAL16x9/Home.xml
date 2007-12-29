@@ -165,6 +165,27 @@
 					<align>right</align>
 					<font>special12</font>
 					<scroll>true</scroll>
+					<visible>!videoplayer.content(episodes) + !videoplayer.content(musicvideos)</visible>
+				</control>
+				<control type="label">
+					<description>TV Show Title label</description>
+					<width>255</width>
+					<posx>250</posx>
+					<posy>2</posy>
+					<info>VideoPlayer.tvshowtitle</info>
+					<align>right</align>
+					<font>special12</font>
+					<visible>videoplayer.content(episodes)</visible>
+				</control>
+				<control type="label">
+					<description>Music Video Artist label</description>
+					<width>255</width>
+					<posx>250</posx>
+					<posy>2</posy>
+					<info>VideoPlayer.Artist</info>
+					<align>right</align>
+					<font>special12</font>
+					<visible>videoplayer.content(musicvideos)</visible>
 				</control>
 				<control type="label">
 					<description>Title label</description>
@@ -185,6 +206,27 @@
 					<align>right</align>
 					<font>font10</font>
 					<scroll>true</scroll>
+					<visible>!videoplayer.content(episodes) + !videoplayer.content(musicvideos)</visible>
+				</control>
+				<control type="label">
+					<description>Music Video Album label</description>
+					<width>255</width>
+					<posx>250</posx>
+					<posy>57</posy>
+					<info>VideoPlayer.Album</info>
+					<align>right</align>
+					<font>font10</font>
+					<visible>videoplayer.content(musicvideos)</visible>
+				</control>
+				<control type="label">
+					<description>Season and Episode label</description>
+					<width>255</width>
+					<posx>250</posx>
+					<posy>57</posy>
+					<label>$LOCALIZE[20373] $INFO[VideoPlayer.Season] - $LOCALIZE[20359] $INFO[VideoPlayer.episode]</label>
+					<align>right</align>
+					<font>font10</font>
+					<visible>videoplayer.content(episodes)</visible>
 				</control>
 				<control type="label">
 					<description>Time label</description>
