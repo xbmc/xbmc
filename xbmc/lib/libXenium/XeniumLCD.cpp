@@ -11,18 +11,26 @@ CXeniumLCD::CXeniumLCD()
 {
   m_iActualpos=0;
   m_iRows    = 4;
-  m_iColumns = 20;				// display rows each line
-  m_iRow1adr = 0x00;
-  m_iRow2adr = 0x20;
-  m_iRow3adr = 0x40;
-  m_iRow4adr = 0x60;
-
-  m_iRow1adr = 0x00;
-  m_iRow2adr = 0x40;
-  m_iRow3adr = 0x14;
-  m_iRow4adr = 0x54;
+  m_iColumns = 20;        // display rows each line
   m_iBackLight=32;
-  m_iLCDContrast=50;
+  m_iLCDContrast=50;      // Extra Xenium feature
+
+  if (g_guiSettings.GetInt("lcd.type") == LCD_TYPE_LCD_KS0073)
+  {
+    // Special case: it's the KS0073
+    m_iRow1adr = 0x00;
+    m_iRow2adr = 0x20;
+    m_iRow3adr = 0x40;
+    m_iRow4adr = 0x60;
+  }
+  else
+  {
+    // We assume that it's a HD44780 compatible
+    m_iRow1adr = 0x00;
+    m_iRow2adr = 0x40;
+    m_iRow3adr = 0x14;
+    m_iRow4adr = 0x54;
+  }
 }
 
 //*************************************************************************************************************
