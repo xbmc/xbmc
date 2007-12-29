@@ -5,7 +5,7 @@
 #include "../../FileSystem/Directory.h"
 #include "../../Util.h"
 
-static File *CreatedFiles[32];
+//static File *CreatedFiles[32];
 static int RemoveCreatedActive=0;
 
 File::File()
@@ -498,9 +498,9 @@ bool File::RawSeek(Int64 Offset,int Method)
 Int64 File::Tell()
 {
 #ifdef _WIN_32
-  LONG HighDist=0;
+  //LONG HighDist=0;
   //uint LowDist=SetFilePointer(hFile,0,&HighDist,FILE_CURRENT);
-  Int64 pos = m_File.GetPosition();
+  //Int64 pos = m_File.GetPosition();
   return m_File.GetPosition();
   /*if (LowDist==0xffffffff && GetLastError()!=NO_ERROR)
     if (AllowExceptions)

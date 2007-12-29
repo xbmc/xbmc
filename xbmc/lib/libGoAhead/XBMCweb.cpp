@@ -199,36 +199,36 @@ int CXbmcWeb::xbmcRemoteControl( int eid, webs_t wp, char_t *parameter)
   *  This structure is formatted as follows:
   *		command string, XBMC IR command
   */
-
-  xbmcRemoteControlHandlerType	xbmcRemoteControls[ ] = {
-    XBMC_REMOTE_MENU,		XINPUT_IR_REMOTE_MENU,
-      XBMC_REMOTE_BACK,		XINPUT_IR_REMOTE_BACK,
-      XBMC_REMOTE_SELECT,		XINPUT_IR_REMOTE_SELECT,
-      XBMC_REMOTE_DISPLAY,	XINPUT_IR_REMOTE_DISPLAY,
-      XBMC_REMOTE_TITLE,		XINPUT_IR_REMOTE_TITLE,
-      XBMC_REMOTE_INFO,		XINPUT_IR_REMOTE_INFO,
-      XBMC_REMOTE_UP,			XINPUT_IR_REMOTE_UP,
-      XBMC_REMOTE_DOWN,		XINPUT_IR_REMOTE_DOWN,
-      XBMC_REMOTE_LEFT,		XINPUT_IR_REMOTE_LEFT,
-      XBMC_REMOTE_RIGHT,		XINPUT_IR_REMOTE_RIGHT,
-      XBMC_REMOTE_PLAY,		XINPUT_IR_REMOTE_PLAY,
-      XBMC_REMOTE_FORWARD,	XINPUT_IR_REMOTE_FORWARD,
-      XBMC_REMOTE_REVERSE,	XINPUT_IR_REMOTE_REVERSE,
-      XBMC_REMOTE_PAUSE,		XINPUT_IR_REMOTE_PAUSE,
-      XBMC_REMOTE_STOP,		XINPUT_IR_REMOTE_STOP,
-      XBMC_REMOTE_SKIP_PLUS,	XINPUT_IR_REMOTE_SKIP_MINUS,
-      XBMC_REMOTE_SKIP_MINUS, XINPUT_IR_REMOTE_SKIP_PLUS,
-      XBMC_REMOTE_1,			XINPUT_IR_REMOTE_1,
-      XBMC_REMOTE_2,			XINPUT_IR_REMOTE_2,
-      XBMC_REMOTE_3,			XINPUT_IR_REMOTE_3,
-      XBMC_REMOTE_4,			XINPUT_IR_REMOTE_4,
-      XBMC_REMOTE_5,			XINPUT_IR_REMOTE_5,
-      XBMC_REMOTE_6,			XINPUT_IR_REMOTE_6,
-      XBMC_REMOTE_7,			XINPUT_IR_REMOTE_7,
-      XBMC_REMOTE_8,			XINPUT_IR_REMOTE_8,
-      XBMC_REMOTE_9,			XINPUT_IR_REMOTE_9,
-      XBMC_REMOTE_0,			XINPUT_IR_REMOTE_0,
-      "", -1};
+  xbmcRemoteControlHandlerType xbmcRemoteControls[ ] = {
+      {XBMC_REMOTE_MENU,       XINPUT_IR_REMOTE_MENU},
+      {XBMC_REMOTE_BACK,       XINPUT_IR_REMOTE_BACK},
+      {XBMC_REMOTE_SELECT,     XINPUT_IR_REMOTE_SELECT},
+      {XBMC_REMOTE_DISPLAY,    XINPUT_IR_REMOTE_DISPLAY},
+      {XBMC_REMOTE_TITLE,      XINPUT_IR_REMOTE_TITLE},
+      {XBMC_REMOTE_INFO,       XINPUT_IR_REMOTE_INFO},
+      {XBMC_REMOTE_UP,         XINPUT_IR_REMOTE_UP},
+      {XBMC_REMOTE_DOWN,       XINPUT_IR_REMOTE_DOWN},
+      {XBMC_REMOTE_LEFT,       XINPUT_IR_REMOTE_LEFT},
+      {XBMC_REMOTE_RIGHT,      XINPUT_IR_REMOTE_RIGHT},
+      {XBMC_REMOTE_PLAY,       XINPUT_IR_REMOTE_PLAY},
+      {XBMC_REMOTE_FORWARD,    XINPUT_IR_REMOTE_FORWARD},
+      {XBMC_REMOTE_REVERSE,    XINPUT_IR_REMOTE_REVERSE},
+      {XBMC_REMOTE_PAUSE,      XINPUT_IR_REMOTE_PAUSE},
+      {XBMC_REMOTE_STOP,       XINPUT_IR_REMOTE_STOP},
+      {XBMC_REMOTE_SKIP_PLUS,  XINPUT_IR_REMOTE_SKIP_MINUS},
+      {XBMC_REMOTE_SKIP_MINUS, XINPUT_IR_REMOTE_SKIP_PLUS},
+      {XBMC_REMOTE_1,          XINPUT_IR_REMOTE_1},
+      {XBMC_REMOTE_2,          XINPUT_IR_REMOTE_2},
+      {XBMC_REMOTE_3,          XINPUT_IR_REMOTE_3},
+      {XBMC_REMOTE_4,          XINPUT_IR_REMOTE_4},
+      {XBMC_REMOTE_5,          XINPUT_IR_REMOTE_5},
+      {XBMC_REMOTE_6,          XINPUT_IR_REMOTE_6},
+      {XBMC_REMOTE_7,          XINPUT_IR_REMOTE_7},
+      {XBMC_REMOTE_8,          XINPUT_IR_REMOTE_8},
+      {XBMC_REMOTE_9,          XINPUT_IR_REMOTE_9},
+      {XBMC_REMOTE_0,          XINPUT_IR_REMOTE_0},
+      {"",                     -1}
+  };
 
     int cmd = 0;
     // look through the xbmcCommandStructure
@@ -258,14 +258,15 @@ int CXbmcWeb::xbmcNavigate( int eid, webs_t wp, char_t *parameter)
   *		command string, XBMC application state
   */
   xbmcNavigationHandlerType	xbmcNavigator[ ] = {
-    WEB_VIDEOS, WEB_NAV_VIDEOS,
-      WEB_MUSIC, WEB_NAV_MUSIC,
-      WEB_PICTURES, WEB_NAV_PICTURES,
-      WEB_PROGRAMS, WEB_NAV_PROGRAMS,
-      WEB_FILES, WEB_NAV_FILES,
-      WEB_MUSICPLAYLIST, WEB_NAV_MUSICPLAYLIST,
-      WEB_VIDEOPLAYLIST, WEB_NAV_VIDEOPLAYLIST,
-      "", -1};
+    {WEB_VIDEOS,        WEB_NAV_VIDEOS},
+    {WEB_MUSIC,         WEB_NAV_MUSIC},
+    {WEB_PICTURES,      WEB_NAV_PICTURES},
+    {WEB_PROGRAMS,      WEB_NAV_PROGRAMS},
+    {WEB_FILES,         WEB_NAV_FILES},
+    {WEB_MUSICPLAYLIST, WEB_NAV_MUSICPLAYLIST},
+    {WEB_VIDEOPLAYLIST, WEB_NAV_VIDEOPLAYLIST},
+    {"",                -1}
+  };
 
     // are we navigating to a music or video playlist?
     if (!stricmp(WEB_MUSICPLAYLIST, parameter) || !stricmp(WEB_VIDEOPLAYLIST, parameter))
@@ -360,14 +361,15 @@ int CXbmcWeb::xbmcNavigatorState( int eid, webs_t wp, char_t *parameter)
   int cnt = 0;
   int cmd = 0;
   xbmcNavigationHandlerType	xbmcNavigator[ ] = {
-    WEB_VIDEOS, WEB_NAV_VIDEOS,
-      WEB_MUSIC, WEB_NAV_MUSIC,
-      WEB_PICTURES, WEB_NAV_PICTURES,
-      WEB_PROGRAMS, WEB_NAV_PROGRAMS,
-      WEB_FILES, WEB_NAV_FILES,
-      WEB_MUSICPLAYLIST, WEB_NAV_MUSICPLAYLIST,
-      WEB_VIDEOPLAYLIST, WEB_NAV_VIDEOPLAYLIST,
-      "", -1};
+    {WEB_VIDEOS,        WEB_NAV_VIDEOS},
+    {WEB_MUSIC,         WEB_NAV_MUSIC},
+    {WEB_PICTURES,      WEB_NAV_PICTURES},
+    {WEB_PROGRAMS,      WEB_NAV_PROGRAMS},
+    {WEB_FILES,         WEB_NAV_FILES},
+    {WEB_MUSICPLAYLIST, WEB_NAV_MUSICPLAYLIST},
+    {WEB_VIDEOPLAYLIST, WEB_NAV_VIDEOPLAYLIST},
+    {"",                -1}
+  };
 
     // look through the xbmcCommandStructure
     while( xbmcNavigator[cmd].xbmcAppStateCode != -1)
@@ -400,7 +402,6 @@ int catalogNumber( char_t *parameter)
 /* Deal with catalog requests */
 int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 {
-  int iterationCounter = 0;
   int selectionNumber = 0;
   int	iItemCount = 0;  // for test purposes
   int cnt = 0;
