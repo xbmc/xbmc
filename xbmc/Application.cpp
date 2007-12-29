@@ -2701,6 +2701,8 @@ void CApplication::UpdateLCD()
       g_lcd->Render(ILCD::LCD_MODE_VIDEO);
     else if (IsPlayingAudio())
       g_lcd->Render(ILCD::LCD_MODE_MUSIC);
+    else if (IsInScreenSaver())
+      g_lcd->Render(ILCD::LCD_MODE_SCREENSAVER);
     else
       g_lcd->Render(ILCD::LCD_MODE_GENERAL);
 
