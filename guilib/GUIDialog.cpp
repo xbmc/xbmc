@@ -183,35 +183,6 @@ void CGUIDialog::Show()
 bool CGUIDialog::RenderAnimation(DWORD time)
 {
   CGUIWindow::RenderAnimation(time);
-  // debug stuff
-/*  CAnimation anim = m_showAnimation;
-  if (anim.currentProcess != ANIM_PROCESS_NONE)
-  {
-    if (anim.effect == EFFECT_TYPE_SLIDE)
-    {
-      if (IsDialogRunning())
-        CLog::Log(LOGDEBUG, "Animating dialog %d with a %s slide effect %s. visible=%s", GetID(), anim.type == ANIM_TYPE_WINDOW_OPEN ? "show" : "close", anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", IsDialogRunning() ? "true" : "false");
-    }
-    else if (anim.effect == EFFECT_TYPE_FADE)
-    {
-      if (IsDialogRunning())
-        CLog::Log(LOGDEBUG, "Animating dialog %d with a %s fade effect %s. Visible=%s", GetID(), anim.type == ANIM_TYPE_WINDOW_OPEN ? "show" : "close", anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", IsDialogRunning() ? "true" : "false");
-    }
-  }
-  anim = m_closeAnimation;
-  if (anim.currentProcess != ANIM_PROCESS_NONE)
-  {
-    if (anim.effect == EFFECT_TYPE_SLIDE)
-    {
-      if (IsDialogRunning())
-        CLog::Log(LOGDEBUG, "Animating dialog %d with a %s slide effect %s. Amount is %2.1f, visible=%s", GetID(), anim.type == ANIM_TYPE_WINDOW_OPEN ? "show" : "close", anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", anim.amount, IsDialogRunning() ? "true" : "false");
-    }
-    else if (anim.effect == EFFECT_TYPE_FADE)
-    {
-      if (IsDialogRunning())
-        CLog::Log(LOGDEBUG, "Animating dialog %d with a %s fade effect %s. Amount is %2.1f. Visible=%s", GetID(), anim.type == ANIM_TYPE_WINDOW_OPEN ? "show" : "close", anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", anim.amount, IsDialogRunning() ? "true" : "false");
-    }
-  }*/
   return m_bRunning;
 }
 
