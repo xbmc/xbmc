@@ -948,14 +948,13 @@ void CFileItem::CleanFileName()
 
 void CFileItem::SetLabel(const CStdString &strLabel)
 {
-  m_strLabel = strLabel;
   if (strLabel=="..")
   {
     m_bIsParentFolder=true;
     m_bIsFolder=true;
     SetLabelPreformated(true);
   }
-  SetInvalid();
+  CGUIListItem::SetLabel(strLabel);
 }
 
 void CFileItem::SetFileSizeLabel()
