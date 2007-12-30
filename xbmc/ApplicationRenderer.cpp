@@ -217,7 +217,11 @@ void CApplicationRenderer::Process()
           const RECT rc = { 0, 0, iWidth, iHeight };
           const RECT rcDest = { iLeft, iTop, iLeft + iWidth, iTop + iHeight };
           const D3DRECT rc2 = { iLeft, iTop, iLeft + iWidth, iTop + iHeight };
+#ifdef HAS_XBOX_D3D
           g_graphicsContext.Get3DDevice()->Clear(1, &rc2, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L);
+#else
+          g_graphicsContext.Get3DDevice()->Clear(1, &rc2, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0x00010001, 1.0f, 0L);
+#endif
           if (!CopySurface(m_lpSurface, &rc, lpSurfaceBack, &rcDest))
           {
               SAFE_RELEASE(lpSurfaceBack);
