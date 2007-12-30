@@ -20,7 +20,7 @@ private:
   inline bool KeyDown(unsigned char key) const { return (m_keystate[key] & 0x80) ? true : false; };
   LPDIRECTINPUTDEVICE m_keyboard;
   unsigned char m_keystate[256];
-  int m_keyDownLastFrame;
+  unsigned int m_keyDownLastFrame;
 
   bool m_bShift;
   bool m_bCtrl;
