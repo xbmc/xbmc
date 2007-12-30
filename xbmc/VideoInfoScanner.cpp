@@ -311,7 +311,7 @@ namespace VIDEO
     return !m_bStop;
   }
 
-  bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, bool bRefresh, CIMDBUrl *pURL, CGUIDialogProgress* m_dlgProgress)
+  bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* m_dlgProgress)
   {
     CStdString strMovieName;
     CIMDB IMDB;
@@ -401,9 +401,9 @@ namespace VIDEO
             if (files.size() == 0) // no update or no files
               continue;
 
-            CIMDBUrl url;
+            CScraperUrl url;
             //convert m_strEpisodeGuide in url.m_scrURL
-            url.Parse(details.m_strEpisodeGuide);
+            url.ParseEpisodeGuide(details.m_strEpisodeGuide);
             if (m_dlgProgress)
             {
               if (pItem->m_bIsFolder)
@@ -516,15 +516,13 @@ namespace VIDEO
                   }
                   else
                   {
-                    CIMDBUrl url;
                     CScraperUrl scrUrl(nfoReader.m_strImDbUrl); 
-                    url.m_scrURL.push_back(scrUrl);
                     CLog::Log(LOGDEBUG,"-- nfo-scraper: %s", nfoReader.m_strScraper.c_str());
-                    CLog::Log(LOGDEBUG,"-- nfo url: %s", url.m_scrURL[0].m_url[0].m_url.c_str());
-                    url.m_strID  = nfoReader.m_strImDbNr;
+                    CLog::Log(LOGDEBUG,"-- nfo url: %s", scrUrl.m_url[0].m_url.c_str());
+                    scrUrl.strId  = nfoReader.m_strImDbNr;
                     SScraperInfo info2(info);
                     info2.strPath = nfoReader.m_strScraper;
-                    GetIMDBDetails(pItem, url, info2, bDirNames, m_dlgProgress);
+                    GetIMDBDetails(pItem, scrUrl, info2, bDirNames, m_dlgProgress);
                     continue;
                   }
                 }
@@ -563,7 +561,7 @@ namespace VIDEO
           IMDB_MOVIELIST movielist;
           if (pURL || IMDB.FindMovie(strMovieName, movielist, m_dlgProgress))
           {
-            CIMDBUrl url;
+            CScraperUrl url;
             int iMoviesFound=1;
             if (!pURL)
             {
@@ -586,8 +584,8 @@ namespace VIDEO
                   // fetch episode guide
                   CVideoInfoTag details;
                   m_database.GetTvShowInfo(pItem->m_strPath,details,lResult);
-                  CIMDBUrl url;
-                  url.Parse(details.m_strEpisodeGuide);
+                  CScraperUrl url;
+                  url.ParseEpisodeGuide(details.m_strEpisodeGuide);
                   IMDB_EPISODELIST episodes;
                   IMDB_EPISODELIST files;
                   EnumerateSeriesFolder(pItem,files);
@@ -730,9 +728,8 @@ namespace VIDEO
             int iSeason = atoi(season);
             int iEpisode = atoi(episode);
             std::pair<int,int> key(iSeason,iEpisode);
-            CIMDBUrl url;
-            url.m_scrURL.push_back(CScraperUrl(items[i]->m_strPath));
-            episodeList.insert(std::make_pair<std::pair<int,int>,CIMDBUrl>(key,url));
+            CScraperUrl url(items[i]->m_strPath);
+            episodeList.insert(std::make_pair<std::pair<int,int>,CScraperUrl>(key,url));
 
             // check the remainder of the string for any further episodes.
             CRegExp reg2;
@@ -755,7 +752,7 @@ namespace VIDEO
                 free(season);
                 free(episode);
                 CLog::Log(LOGDEBUG, "adding new season %u, multipart episode %u", key.first, key.second);
-                episodeList.insert(std::make_pair<std::pair<int,int>,CIMDBUrl>(key,url));
+                episodeList.insert(std::make_pair<std::pair<int,int>,CScraperUrl>(key,url));
                 remainder = reg.GetReplaceString("\\3");
                 offset = 0;
               } 
@@ -766,7 +763,7 @@ namespace VIDEO
                 key.second = atoi(episode);
                 free(episode);
                 CLog::Log(LOGDEBUG, "adding multipart episode %u", key.second);
-                episodeList.insert(std::make_pair<std::pair<int,int>,CIMDBUrl>(key,url));
+                episodeList.insert(std::make_pair<std::pair<int,int>,CScraperUrl>(key,url));
                 offset += regexp2pos + reg2.GetFindLen();
               }
             }
@@ -901,7 +898,7 @@ namespace VIDEO
         }
 
         CVideoInfoTag episodeDetails;
-        if (m_database.GetEpisodeInfo(iter->second.m_scrURL[0].m_url[0].m_url,iter2->first.second) > -1)
+        if (m_database.GetEpisodeInfo(iter->second.m_url[0].m_url,iter2->first.second) > -1)
           continue;
 
         if (!IMDB.GetEpisodeDetails(iter2->second,episodeDetails,pDlgProgress))
@@ -909,7 +906,7 @@ namespace VIDEO
         episodeDetails.m_iSeason = iter2->first.first;
         episodeDetails.m_iEpisode = iter2->first.second;
         CFileItem item;
-        item.m_strPath = iter->second.m_scrURL[0].m_url[0].m_url;
+        item.m_strPath = iter->second.m_url[0].m_url;
         AddMovieAndGetThumb(&item,"tvshows",episodeDetails,lShowId);
       }
     }
@@ -1013,7 +1010,7 @@ namespace VIDEO
     return nfoFile;
   }
 
-  long CVideoInfoScanner::GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url, const SScraperInfo& info, bool bUseDirNames, CGUIDialogProgress* pDialog /* = NULL */)
+  long CVideoInfoScanner::GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const SScraperInfo& info, bool bUseDirNames, CGUIDialogProgress* pDialog /* = NULL */)
   {
     CIMDB IMDB;
     CVideoInfoTag movieDetails;
@@ -1096,7 +1093,7 @@ namespace VIDEO
           }
         }
         if (bDownload)
-          DownloadThumbnail(items[i]->GetCachedSeasonThumb(),movie.m_strPictureURL.GetSeasonThumb(items[i]->GetVideoInfoTag()->m_iSeason));
+          CScraperUrl::DownloadThumbnail(items[i]->GetCachedSeasonThumb(),movie.m_strPictureURL.GetSeasonThumb(items[i]->GetVideoInfoTag()->m_iSeason));
       }
     }
   }
@@ -1109,31 +1106,7 @@ namespace VIDEO
       item.SetLabel(actors[i].strName);
       CStdString strThumb = item.GetCachedActorThumb();
       if (!CFile::Exists(strThumb) && !actors[i].thumbUrl.GetFirstThumb().m_url.IsEmpty())
-        DownloadThumbnail(strThumb,actors[i].thumbUrl.GetFirstThumb());
+        CScraperUrl::DownloadThumbnail(strThumb,actors[i].thumbUrl.GetFirstThumb());
     }
-  }
-
-  bool CVideoInfoScanner::DownloadThumbnail(const CStdString &thumb, const CScraperUrl::SUrlEntry& entry)
-  {
-    if (entry.m_url.IsEmpty())
-      return false;
-
-    CHTTP http;
-    http.SetReferer(entry.m_spoof);
-    string thumbData;
-    if (http.Get(entry.m_url, thumbData))
-    {
-      try
-      {
-        CPicture picture;
-        picture.CreateThumbnailFromMemory((const BYTE *)thumbData.c_str(), thumbData.size(), CUtil::GetExtension(entry.m_url), thumb);
-        return true;
-      }
-      catch (...)
-      {
-        ::DeleteFile(thumb.c_str());
-      }
-    }
-    return false;
   }
 }

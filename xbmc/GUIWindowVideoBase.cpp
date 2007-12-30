@@ -401,6 +401,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
     if (!item->HasVideoInfoTag()) 
       return;
     movieDetails = *item->GetVideoInfoTag();
+
     bHasInfo = true;
   }
   m_database.Close();
@@ -422,8 +423,8 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
   if (!g_guiSettings.GetBool("network.enableinternet")) return ;
   if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() && !g_passwordManager.bMasterUser)
     return;
-
-  CIMDBUrl url;
+        
+  CScraperUrl scrUrl;
   bool hasDetails(false);
   
   m_database.Open();
@@ -446,14 +447,13 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
       }
       else
       {
-        CScraperUrl scrUrl(nfoReader.m_strImDbUrl); 
-        url.m_scrURL.push_back(scrUrl);
-        url.m_strID = nfoReader.m_strImDbNr;
+        scrUrl.ParseString(nfoReader.m_strImDbUrl);
+        scrUrl.strId = nfoReader.m_strImDbNr;
         SScraperInfo info2(info);
         info2.strPath = nfoReader.m_strScraper;
         IMDB.SetScraperInfo(info2);
         CLog::Log(LOGDEBUG,"-- nfo scraper: %s", nfoReader.m_strScraper.c_str());
-        CLog::Log(LOGDEBUG,"-- nfo url: %s", url.m_scrURL[0].GetFirstThumb().m_url.c_str());
+        CLog::Log(LOGDEBUG,"-- nfo url: %s", scrUrl.GetFirstThumb().m_url.c_str());
       }
     }
     else
@@ -467,7 +467,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
   {
     // 4. if we don't have a url, or need to refresh the search
     //    then do the web search
-    if (!hasDetails && (url.m_scrURL.size() == 0 || needsRefresh))
+    if (!hasDetails && (scrUrl.m_url.size() == 0 || needsRefresh))
     {
       // 4a. show dialog that we're busy querying www.imdb.com
       CStdString strHeading;
@@ -500,7 +500,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
           pDlgSelect->SetHeading(iString);
           pDlgSelect->Reset();
           for (unsigned int i = 0; i < movielist.size(); ++i)
-            pDlgSelect->Add(movielist[i].m_strTitle);
+            pDlgSelect->Add(movielist[i].strTitle);
           pDlgSelect->EnableButton(true);
           pDlgSelect->SetButtonLabel(413); // manual
           pDlgSelect->DoModal();
@@ -508,7 +508,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
           // and wait till user selects one
           int iSelectedMovie = pDlgSelect->GetSelectedLabel();
           if (iSelectedMovie >= 0)
-            url = movielist[iSelectedMovie];
+            scrUrl = movielist[iSelectedMovie];
           else if (!pDlgSelect->IsButtonPressed())
           {
             m_database.Close();
@@ -519,7 +519,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
     }
     // 4c. Check if url is still empty - occurs if user has selected to do a manual
     //     lookup, or if the IMDb lookup failed or was cancelled.
-    if (!hasDetails && url.m_scrURL.size() == 0)
+    if (!hasDetails && scrUrl.m_url.size() == 0)
     {
       // Check for cancel of the progress dialog
       pDlgProgress->Close();
@@ -573,7 +573,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
         iString = 20394;
       pDlgProgress->SetHeading(iString);
       pDlgProgress->SetLine(0, movieName);
-      pDlgProgress->SetLine(1, url.m_strTitle);
+      pDlgProgress->SetLine(1, scrUrl.strTitle);
       pDlgProgress->SetLine(2, "");
       pDlgProgress->StartModal();
       pDlgProgress->Progress();
@@ -593,7 +593,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
             m_database.DeleteDetailsForTvShow(item->m_strPath);
         }
       }
-      if (scanner.RetrieveVideoInfo(list,false,info,!pDlgInfo->RefreshAll(),&url,pDlgProgress))
+      if (scanner.RetrieveVideoInfo(list,false,info,!pDlgInfo->RefreshAll(),&scrUrl,pDlgProgress))
       {
         if (info.strContent.Equals("movies"))
           m_database.GetMovieInfo(item->m_strPath,movieDetails);
