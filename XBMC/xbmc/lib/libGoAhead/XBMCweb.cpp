@@ -306,7 +306,7 @@ int CXbmcWeb::xbmcNavigate( int eid, webs_t wp, char_t *parameter)
         //make a new directory and set the nessecary shares
         directory = new CVirtualDirectory();
 
-        VECSHARES *shares;
+        VECSHARES *shares = NULL;
         CStdString strDirectory;
 
         //get shares and extensions
