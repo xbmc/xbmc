@@ -12,4 +12,4 @@ public:
   virtual bool Load(const CStdString& strFileName);
   virtual void Save(const CStdString& strFileName) const;
 };
-};
+}

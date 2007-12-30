@@ -79,7 +79,7 @@ extern "C" HMODULE __stdcall dllLoadLibraryExtended(LPCSTR lib_file, LPCSTR sour
     
   if (dll)
   {
-    CLog::Log(LOGDEBUG, "LoadLibrary('%s') returning: 0x%p", libname, dll);
+    CLog::Log(LOGDEBUG, "LoadLibrary('%s') returning: 0x%p", libname, (void*)dll);
     return (HMODULE)dll->GetHModule();
   }
 
@@ -124,7 +124,7 @@ extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule)
   // to make sure systems dlls are never deleted
   if (dllhandle->IsSystemDll()) return 1;
   
-  CLog::Log(LOGDEBUG, "FreeLibrary(%s) -> 0x%p", dllhandle->GetName(), dllhandle);
+  CLog::Log(LOGDEBUG, "FreeLibrary(%s) -> 0x%p", dllhandle->GetName(), (void*)dllhandle);
 
   DllLoaderContainer::ReleaseModule(dllhandle);
 

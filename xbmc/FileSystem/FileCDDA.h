@@ -30,4 +30,4 @@ protected:
   lsn_t m_lsnCurrent; // Position inside the track in logical sector number
   lsn_t m_lsnEnd;   // End of m_iTrack in logical sector number
 };
-};
+}

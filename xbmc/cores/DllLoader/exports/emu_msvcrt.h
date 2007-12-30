@@ -115,7 +115,7 @@ extern "C"
 #ifdef _LINUX
   int * __cdecl dll_errno(void);
 #endif
-};
+}
 
 
 

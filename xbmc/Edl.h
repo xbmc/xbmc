@@ -20,7 +20,7 @@ typedef enum
   {
     CUT = 0,
     MUTE = 1,
-    SCENE = 2,
+    SCENE = 2
   } Action;  
 
 struct Cut

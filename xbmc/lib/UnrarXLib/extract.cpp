@@ -219,7 +219,7 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
 	PrevExtracted=false;
 
 	if (SignatureFound ||
-			!Cmd->Recurse && MatchedArgs>=Cmd->FileArgs->ItemsCount() &&
+			!Cmd->Recurse && MatchedArgs>=(signed int)Cmd->FileArgs->ItemsCount() &&
 			AllMatchesExact)
 		return(false);
 
@@ -430,7 +430,7 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
 #ifndef SFX_MODULE
     int Length=strlen(Cmd->ArcPath);
     if (Length>1 && IsPathDiv(Cmd->ArcPath[Length-1]) &&
-        strlen(ArcFileName)==Length-1)
+        strlen(ArcFileName)==(unsigned int) Length-1)
       Length--;
     if (Length>0 && strnicomp(Cmd->ArcPath,ArcFileName,Length)==0)
     {

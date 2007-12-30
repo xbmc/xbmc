@@ -17,7 +17,7 @@ CXHandle::CXHandle(HandleType nType)
   Init();
   m_type=nType; 
   m_objectTracker[m_type]++;
-};
+}
 
 CXHandle::CXHandle(const CXHandle &src)
 {

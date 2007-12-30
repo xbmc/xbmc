@@ -72,7 +72,7 @@ void Rijndael::init(Direction dir,const byte * key,byte * initVector)
 
   byte keyMatrix[_MAX_KEY_COLUMNS][4];
 
-  for(uint i = 0;i < uKeyLenInBytes;i++)
+  for(int i = 0;i < uKeyLenInBytes;i++)
     keyMatrix[i >> 2][i & 3] = key[i]; 
 
   for(int i = 0;i < MAX_IV_SIZE;i++)
@@ -278,7 +278,7 @@ void Rijndael::GenerateTables()
     w ^=  (w << 1) ^ (w & ff_hi ? ff_poly : 0);
   } while (w != 1);
  
-  for (int i = 0,w = 1; i < sizeof(rcon)/sizeof(rcon[0]); i++)
+  for (unsigned int i = 0,w = 1; i < sizeof(rcon)/sizeof(rcon[0]); i++)
   {
     rcon[i] = w;
     w = (w << 1) ^ (w & ff_hi ? ff_poly : 0);

@@ -44,7 +44,7 @@ field_value::field_value(){
   str_value = "";
   field_type = ft_String;
   is_null = false;
-  };
+  }
 
 field_value::field_value(const char *s) {
   str_value = s;
@@ -148,7 +148,7 @@ field_value::field_value (const field_value & fv) {
       break;
   }
   is_null = false;
-};
+}
 
 
 //empty destructor
@@ -207,7 +207,7 @@ string field_value::get_asString() const {
     default:
       break;
     }
-  };
+  }
 
 
 
@@ -249,7 +249,7 @@ bool field_value::get_asBool() const {
     default:
       break;
     }
-  };
+  }
   
 
 char field_value::get_asChar() const {
@@ -300,7 +300,7 @@ char field_value::get_asChar() const {
     default:
       break;
     }
-  };
+  }
 
 
 short field_value::get_asShort() const {
@@ -335,7 +335,7 @@ short field_value::get_asShort() const {
     default:
       break;
     }
-  };
+  }
 
 
 unsigned short field_value::get_asUShort() const {
@@ -370,7 +370,7 @@ unsigned short field_value::get_asUShort() const {
     default:
       break;
     }
-  };
+  }
 
 long field_value::get_asLong() const {
     switch (field_type) {
@@ -404,7 +404,7 @@ long field_value::get_asLong() const {
     default:
       break;
     }
-  };
+  }
 
 int field_value::get_asInteger() const{
   return (int)get_asLong();
@@ -442,7 +442,7 @@ unsigned long field_value::get_asULong() const {
     default:
       break;
     }
-  };
+  }
 
 float field_value::get_asFloat() const {
     switch (field_type) {
@@ -476,7 +476,7 @@ float field_value::get_asFloat() const {
     default:
       break;
     }
-  };
+  }
 
 double field_value::get_asDouble() const {
     switch (field_type) {
@@ -510,7 +510,7 @@ double field_value::get_asDouble() const {
     default:
       break;
     }
-  };
+  }
 
 
 
@@ -566,30 +566,30 @@ field_value& field_value::operator= (const field_value & fv) {
     default:
       break;
     }
-};
+}
 
 
 
 //Set functions
 void field_value::set_asString(const char *s) {
   str_value = s;
-  field_type = ft_String;};
+  field_type = ft_String;}
 
 void field_value::set_asString(const string & s) {
   str_value = s;
-  field_type = ft_String;};
+  field_type = ft_String;}
   
 void field_value::set_asBool(const bool b) {
   bool_value = b; 
-  field_type = ft_Boolean;};
+  field_type = ft_Boolean;}
   
 void field_value::set_asChar(const char c) {
   char_value = c; 
-  field_type = ft_Char;};
+  field_type = ft_Char;}
   
 void field_value::set_asShort(const short s) {
   short_value = s; 
-  field_type = ft_Short;};
+  field_type = ft_Short;}
   
 void field_value::set_asUShort(const unsigned short us) {
   ushort_value = us; 
@@ -608,15 +608,15 @@ void field_value::set_asInteger(const int i) {
   
 void field_value::set_asULong(const unsigned long ul) {
   long_value = ul; 
-  field_type = ft_ULong;};
+  field_type = ft_ULong;}
   
 void field_value::set_asFloat(const float f) {
   float_value = f; 
-  field_type = ft_Float;};
+  field_type = ft_Float;}
   
 void field_value::set_asDouble(const double d) {
   double_value = d; 
-  field_type = ft_Double;};
+  field_type = ft_Double;}
 
   
 fType field_value::get_field_type() {

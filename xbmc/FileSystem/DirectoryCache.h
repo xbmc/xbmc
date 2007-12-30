@@ -40,5 +40,5 @@ protected:
   int m_iMusicThumbCacheRefCount;
 };
 
-};
+}
 extern DIRECTORY::CDirectoryCache g_directoryCache;

@@ -394,7 +394,7 @@ bool CEdl::CacheEdl()
     {
       if ((m_vecCutlist[i].CutAction==CUT) || (m_vecCutlist[i].CutAction==MUTE))
       {
-        fprintf(pFile,"%.2lf\t%.2lf\t%i\n",m_vecCutlist[i].CutStart, m_vecCutlist[i].CutEnd, m_vecCutlist[i].CutAction); 
+        fprintf(pFile,"%.2f\t%.2f\t%i\n",m_vecCutlist[i].CutStart, m_vecCutlist[i].CutEnd, m_vecCutlist[i].CutAction); 
       }
     }
     fclose(pFile);

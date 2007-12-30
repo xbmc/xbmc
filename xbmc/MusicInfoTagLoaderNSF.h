@@ -19,6 +19,6 @@ namespace MUSIC_INFO
     int m_nsf;
     DllNosefart m_dll;
 	};
-};
+}
 
 extern CStdString strNSFDLL;
