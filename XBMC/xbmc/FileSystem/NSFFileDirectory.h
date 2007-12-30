@@ -13,4 +13,4 @@ namespace DIRECTORY
     virtual bool Exists(const char* strPath);
     virtual bool ContainsFiles(const CStdString& strPath);
   };
-};
+}

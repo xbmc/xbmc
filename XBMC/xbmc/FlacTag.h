@@ -22,4 +22,4 @@ protected:
   int FindFlacHeader(void);    // returns the offset in the file of the fLaC data
   unsigned int ReadUnsigned();  // reads a 32 bit unsigned int
 };
-};
+}

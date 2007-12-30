@@ -344,7 +344,7 @@ void File::Write(const void *Data,int Size)
 #if !defined(_WIN_32) && !defined(_LINUX)
         clearerr(hFile);
 #endif
-      if (Written<Size && Written>0)
+      if (Written<(unsigned int) Size && Written>0)
           Seek(Tell()-Written,SEEK_SET);
         continue;
       }

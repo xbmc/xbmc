@@ -383,7 +383,7 @@ bool RarVM::ExecuteCode(VM_PreparedCommand *PreparedCode,int CodeSize)
         break;
       case VM_POPA:
         {
-          const int RegCount=sizeof(R)/sizeof(R[0]);
+          const uint RegCount=sizeof(R)/sizeof(R[0]);
           for (uint I=0,SP=R[7];I<RegCount;I++,SP+=4)
             R[7-I]=GET_VALUE(false,(uint *)&Mem[SP & VM_MEMMASK]);
         }
@@ -774,7 +774,7 @@ VM_StandardFilters RarVM::IsStandardFilter(byte *Code,int CodeSize)
     {40, 0x46b9c560, VMSF_UPCASE}
   };
   uint CodeCRC=CRC(0xffffffff,Code,CodeSize)^0xffffffff;
-  for (int I=0;I<sizeof(StdList)/sizeof(StdList[0]);I++)
+  for (unsigned int I=0;I<sizeof(StdList)/sizeof(StdList[0]);I++)
     if (StdList[I].CRC==CodeCRC && StdList[I].Length==CodeSize)
       return(StdList[I].Type);
   return(VMSF_NONE);
@@ -797,7 +797,7 @@ void RarVM::ExecuteStandardFilter(VM_StandardFilters FilterType)
 
         const int FileSize=0x1000000;
         byte CmpByte2=FilterType==VMSF_E8E9 ? 0xe9:0xe8;
-        for (uint CurPos=0;CurPos<DataSize-4;)
+        for (uint CurPos=0;CurPos<(uint)DataSize-4;)
         {
           byte CurByte=*(Data++);
           CurPos++;
@@ -835,7 +835,7 @@ void RarVM::ExecuteStandardFilter(VM_StandardFilters FilterType)
     case VMSF_ITANIUM:
       {
         byte *Data=Mem;
-        int DataSize=R[4];
+        uint DataSize=R[4];
         uint FileOffset=R[6];
 
         if (DataSize>=VM_GLOBALMEMADDR)
@@ -975,7 +975,7 @@ void RarVM::ExecuteStandardFilter(VM_StandardFilters FilterType)
             {
               unsigned int MinDif=Dif[0],NumMinDif=0;
               Dif[0]=0;
-              for (int J=1;J<sizeof(Dif)/sizeof(Dif[0]);J++)
+              for (unsigned int J=1;J<sizeof(Dif)/sizeof(Dif[0]);J++)
               {
                 if (Dif[J]<MinDif)
                 {

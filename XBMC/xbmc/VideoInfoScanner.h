@@ -68,5 +68,5 @@ namespace VIDEO
     map<CStdString,SScanSettings> m_pathsToScan;
     set<CStdString> m_pathsToCount;
   };
-};
+}
 

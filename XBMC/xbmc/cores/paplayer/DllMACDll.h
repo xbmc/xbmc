@@ -54,7 +54,7 @@ enum APE_DECOMPRESS_FIELDS
     APE_DECOMPRESS_CURRENT_BITRATE = 2004,      // current bitrate [ignored, ignored]
     APE_DECOMPRESS_AVERAGE_BITRATE = 2005,      // average bitrate (works with ranges) [ignored, ignored]
 
-    APE_INTERNAL_INFO = 3000,                   // for internal use -- don't use (returns APE_FILE_INFO *) [ignored, ignored]
+    APE_INTERNAL_INFO = 3000                   // for internal use -- don't use (returns APE_FILE_INFO *) [ignored, ignored]
 };
 
 class DllMACDllInterface

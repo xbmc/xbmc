@@ -27,4 +27,4 @@ private:
 
   XFILE::CFile m_file;
 };
-};
+}

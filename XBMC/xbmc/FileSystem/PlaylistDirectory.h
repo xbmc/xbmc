@@ -11,4 +11,4 @@ namespace DIRECTORY
     virtual ~CPlaylistDirectory(void);
     virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
   };
-};
+}

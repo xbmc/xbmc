@@ -140,7 +140,7 @@ bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
   if (!fgets(buf, sizeof(buf), m_fProcStat))
     return false;
     
-  int num = sscanf(buf, "cpu %Lu %Lu %Lu %Lu %*s", &user, &nice, &system, &idle);
+  int num = sscanf(buf, "cpu %llu %llu %llu %llu %*s", &user, &nice, &system, &idle);
   if (num < 4)
     return false;
    

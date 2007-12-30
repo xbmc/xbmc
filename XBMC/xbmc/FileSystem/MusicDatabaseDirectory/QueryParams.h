@@ -26,6 +26,6 @@ namespace DIRECTORY
       long m_idSong;
       long m_year;
     };
-  };
-};
+  }
+}
 

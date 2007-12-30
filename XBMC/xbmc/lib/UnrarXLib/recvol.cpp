@@ -11,7 +11,7 @@ RecVolumes::RecVolumes()
 
 RecVolumes::~RecVolumes()
 {
-  for (int I=0;I<sizeof(SrcFile)/sizeof(SrcFile[0]);I++)
+  for (unsigned int I=0;I<sizeof(SrcFile)/sizeof(SrcFile[0]);I++)
     delete SrcFile[I];
 }
 
@@ -132,7 +132,7 @@ bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,
       if (Dot==NULL)
         continue;
       bool WrongParam=false;
-      for (int I=0;I<sizeof(P)/sizeof(P[0]);I++)
+      for (unsigned int I=0;I<sizeof(P)/sizeof(P[0]);I++)
       {
         do
         {

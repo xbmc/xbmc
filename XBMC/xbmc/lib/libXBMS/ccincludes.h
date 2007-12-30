@@ -52,7 +52,7 @@
 #include <windows.h>
 #endif /* _XBOX */
 
-extern int errno;
+//extern int errno;
 
 #ifndef PATH_MAX
 #define PATH_MAX 1024

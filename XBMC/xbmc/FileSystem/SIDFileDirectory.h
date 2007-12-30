@@ -16,4 +16,4 @@ namespace DIRECTORY
   private:
     DllSidplay2 m_dll;
   };
-};
+}

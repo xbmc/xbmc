@@ -32,7 +32,7 @@ CGUIRSSControl::~CGUIRSSControl(void)
 void CGUIRSSControl::SetUrls(const vector<string> &vecUrl)
 {
   m_vecUrls = vecUrl; 
-};
+}
 
 void CGUIRSSControl::SetIntervals(const vector<int>& vecIntervals)
 {

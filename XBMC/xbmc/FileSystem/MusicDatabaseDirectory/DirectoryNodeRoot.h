@@ -12,6 +12,6 @@ namespace DIRECTORY
     protected:
       virtual NODE_TYPE GetChildType();
     };
-  };
-};
+  }
+}
 

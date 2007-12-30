@@ -124,7 +124,7 @@ extern "C" {
 				   really "eject" a CD.
 				*/
     DRIVER_OP_ERROR = -1,       /**< operation returned an error */
-    DRIVER_OP_SUCCESS = 0,      /**< in cases where an int is returned,
+    DRIVER_OP_SUCCESS = 0       /**< in cases where an int is returned,
 				     like cdio_set_speed, more the negative
 				     return codes are for errors and the 
 				     positive ones for success. */

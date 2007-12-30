@@ -19,4 +19,4 @@ namespace MUSIC_INFO
     int m_adl;
     DllAdplug m_dll;
 	};
-};
+}

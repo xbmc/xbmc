@@ -86,4 +86,4 @@ protected:
   char m_rating;
   SYSTEMTIME m_dwReleaseDate;
 };
-};
+}

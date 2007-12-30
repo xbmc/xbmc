@@ -34,4 +34,4 @@ protected:
   CHTTP m_http;
 };
 
-};
+}
