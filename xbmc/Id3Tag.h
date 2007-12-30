@@ -59,4 +59,4 @@ protected:
 
   id3_tag* m_tag;
 };
-};
+}

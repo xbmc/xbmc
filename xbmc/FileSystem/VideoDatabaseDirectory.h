@@ -23,4 +23,4 @@ namespace DIRECTORY
     bool ContainsMovies(const CStdString &path);
     static bool CanCache(const CStdString &path);
   };
-};
+}

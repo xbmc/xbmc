@@ -15,4 +15,4 @@ public:
   void ConvertHTMLToAnsi(const CStdString& strHTML, string& strStripped);
   void ConvertHTMLToUTF8(const CStdString& strHTML, string& strStripped);
 };
-};
+}

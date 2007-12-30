@@ -16,4 +16,4 @@ private:
   virtual bool PrioritiseAPETags() const;
   virtual int ReadDuration(const CStdString& strFileName);
 };
-};
+}

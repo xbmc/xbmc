@@ -43,6 +43,6 @@ private:
   bool m_bOpened;
 
 };
-};
+}
 
 #endif // !defined(AFX_FILEXMBMSP_H___INCLUDED_)

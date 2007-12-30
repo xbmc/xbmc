@@ -23,4 +23,4 @@ namespace DIRECTORY
     bool ContainsSongs(const CStdString &path);
     static bool CanCache(const CStdString& strPath);
   };
-};
+}

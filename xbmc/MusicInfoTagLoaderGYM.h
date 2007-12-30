@@ -18,4 +18,4 @@ namespace MUSIC_INFO
     int m_gym;
     DllGensApu m_dll;
 	};
-};
+}

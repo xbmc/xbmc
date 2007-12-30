@@ -215,7 +215,7 @@ public:
   {
     STANDARD = 0,
     RESUME = 1,
-    EPISODE = 2,
+    EPISODE = 2
   } type;
 };
 

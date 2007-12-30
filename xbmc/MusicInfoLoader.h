@@ -29,4 +29,4 @@ protected:
   unsigned int m_databaseHits;
   unsigned int m_tagReads;
 };
-};
+}

@@ -5272,15 +5272,15 @@ bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTex
     return false;
 
   char cDelim = '\0';
-  int nGreaterDelim, nPos;
+  size_t nGreaterDelim, nPos;
 
   nPos = StrInput.find_last_of( '\\' );
-  if ( nPos >= 0 )
+  if ( nPos != CStdString::npos )
     cDelim = '\\';
   else
   {
     nPos = StrInput.find_last_of( '/' );
-    if ( nPos >= 0 )
+    if ( nPos != CStdString::npos )
       cDelim = '/';
   }
   if ( cDelim == '\0' )
@@ -5295,9 +5295,9 @@ bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTex
   {
     nPos = StrInput.find_last_of( cDelim, nPos );
     nGreaterDelim = nPos;
-    if ( nPos >= 0 ) nPos = StrInput.find_last_of( cDelim, nPos - 1 );
-    else break;
-    if ( nPos < 0 ) break;
+    if ( nPos != CStdString::npos )
+      nPos = StrInput.find_last_of( cDelim, nPos - 1 );
+    if ( nPos == CStdString::npos ) break;
     if ( nGreaterDelim > nPos ) StrInput.replace( nPos + 1, nGreaterDelim - nPos - 1, ".." );
     iStrInputSize = StrInput.size();
   }

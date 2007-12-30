@@ -30,4 +30,4 @@ protected:
   bool m_bLoaded;
   VECSONGS m_songs;
 };
-};
+}

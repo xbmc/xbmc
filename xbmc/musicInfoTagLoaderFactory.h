@@ -15,4 +15,4 @@ public:
 
   static IMusicInfoTagLoader* CreateLoader(const CStdString& strFileName);
 };
-};
+}
