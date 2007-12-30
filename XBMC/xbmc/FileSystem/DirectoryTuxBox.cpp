@@ -84,7 +84,7 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
   CFileCurl http;
   int iTryConnect =0;
   int iWaitTimer = 20;
-  bool result;
+  bool result = false;
   
   // Update Progress
   CStdString strLine1, strLine2;
