@@ -12,7 +12,7 @@ public:
   {
     ED_DEINT_FFMPEG,
     ED_DEINT_CUBICIPOL,
-    ED_DEINT_LINBLEND,
+    ED_DEINT_LINBLEND
   };
 
   CDVDVideoPPFFmpeg(EPPTYPE mType);
@@ -41,4 +41,5 @@ protected:
   
   DllPostProc m_dll;
 };
+
 

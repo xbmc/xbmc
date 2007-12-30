@@ -139,28 +139,22 @@ void CGUIDialogSettings::SetupPage()
 
 void CGUIDialogSettings::EnableSettings(unsigned int id, bool enabled)
 {
-  unsigned int index = -1;
   for (unsigned int i = 0; i < m_settings.size(); i++)
   {
     if (m_settings[i].id != id)
       continue;
-    index = i;
-    break;
-  }
-  if(index>=0)
-  {
-    m_settings[index].enabled = enabled;
+    m_settings[i].enabled = enabled;
     if (enabled)
     {
-      CONTROL_ENABLE(index + CONTROL_START);
+      CONTROL_ENABLE(i + CONTROL_START);
     }
     else
     {
-      CONTROL_DISABLE(index + CONTROL_START);
+      CONTROL_DISABLE(i + CONTROL_START);
     }
+    return;
   }
-  else
-    CLog::Log(LOGWARNING, __FUNCTION__" - Invalid setting specified");
+  CLog::Log(LOGWARNING, "%s - Invalid setting specified", __FUNCTION__);
 }
 
 void CGUIDialogSettings::UpdateSetting(unsigned int id)

@@ -89,5 +89,5 @@ namespace XFILE
     __int64 m_iBufferStart;
 	};
 
-};
+}
 #endif // !defined(AFX_FILERAR_H__C6E9401A_3715_11D9_8185_0050FC718317__INCLUDED_)

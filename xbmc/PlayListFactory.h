@@ -12,4 +12,4 @@ public:
   static CPlayList* Create(const CFileItem& item);
   static bool IsPlaylist(const CStdString& filename);
 };
-};
+}

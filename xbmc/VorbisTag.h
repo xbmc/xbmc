@@ -15,4 +15,4 @@ public:
 private:
   void SplitEntry(const CStdString& strTagEntry, CStdString& strTagType, CStdString& strTagValue);
 };
-};
+}

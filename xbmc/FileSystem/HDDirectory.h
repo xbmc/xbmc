@@ -15,4 +15,4 @@ public:
   virtual bool Exists(const char* strPath);
   virtual bool Remove(const char* strPath);
 };
-};
+}

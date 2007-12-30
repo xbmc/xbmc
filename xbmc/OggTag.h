@@ -20,4 +20,4 @@ public:
 protected:
   DllVorbisfile m_dll;
 };
-};
+}

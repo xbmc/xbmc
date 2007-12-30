@@ -128,7 +128,7 @@ static void ccbuf_add_char(cc_buffer_t *this, uint8_t c)
 
   if (pos > rowbuf->num_chars) {
     /* fill up to indented position with transparent spaces, if necessary */
-    // ccrow_fill_transp(rowbuf);
+    /* ccrow_fill_transp(rowbuf); */
   }
 
   /* midrow PAC attributes are applied only if there is no displayable */
@@ -244,7 +244,7 @@ static void cc_swap_buffers(cc_decoder_t *this)
   cc_memory_t *temp;
 
   /* hide caption in displayed memory */
-  // cc_hide_displayed(this);
+  /* cc_hide_displayed(this); */
 
 #ifdef LOG_DEBUG
   printf("cc_decoder: cc_swap_buffers: swapping caption memory\n");
@@ -254,7 +254,7 @@ static void cc_swap_buffers(cc_decoder_t *this)
   this->off_buf = temp;
 
   /* show new displayed memory */
-  // cc_show_displayed(this);
+  /* cc_show_displayed(this); */
 }
 
 static void cc_decode_standard_char(cc_decoder_t *this, uint8_t c1, uint8_t c2)
@@ -398,7 +398,7 @@ static void cc_decode_misc_control_code(cc_decoder_t *this, int channel,
     break;
 
   case 0x2c:             /* EDM - erase displayed memory */
-    // cc_hide_displayed(this);
+    /* cc_hide_displayed(this); */
     ccmem_clear(this->on_buf);
     break;
 

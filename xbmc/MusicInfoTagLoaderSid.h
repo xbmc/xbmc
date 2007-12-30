@@ -14,4 +14,4 @@ namespace MUSIC_INFO
 
 			virtual bool Load(const CStdString& strFileName, CMusicInfoTag& tag);
 	};
-};
+}
