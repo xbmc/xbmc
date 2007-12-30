@@ -474,8 +474,9 @@ void CAnimation::ApplyAnimation()
     m_currentState = ANIM_STATE_IN_PROCESS;
   }
   else
-  {
-    m_currentProcess = ANIM_PROCESS_NONE;
+  { // set normal process, so that Calculate() knows that we're finishing for zero length effects
+    // it will be reset in RenderAnimation()
+    m_currentProcess = ANIM_PROCESS_NORMAL;
     m_currentState = ANIM_STATE_APPLIED;
     m_amount = m_length;
   }
