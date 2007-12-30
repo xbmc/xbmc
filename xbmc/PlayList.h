@@ -102,4 +102,4 @@ private:
   void DecrementOrder(int iOrder);
   void IncrementOrder(int iPosition, int iOrder);
 };
-};
+}

@@ -49,7 +49,7 @@ private:
   {
     ENS_UNKNOWN=0,
     ENS_AC3=1,
-    ENS_DTS=2,
+    ENS_DTS=2
   } m_iType;
 
   DllLibDts m_dllDTS;

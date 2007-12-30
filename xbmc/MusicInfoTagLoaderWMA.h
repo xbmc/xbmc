@@ -21,4 +21,4 @@ protected:
   void SetTagValueBinary(const CStdString& strFrameName, const LPBYTE pValue, CMusicInfoTag& tag);
   void SetTagValueBool(const CStdString& strFrameName, BOOL bValue, CMusicInfoTag& tag);
 };
-};
+}

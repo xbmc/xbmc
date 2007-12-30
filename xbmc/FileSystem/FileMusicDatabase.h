@@ -21,4 +21,4 @@ public:
 protected:
   CFile m_file;
 };
-};
+}

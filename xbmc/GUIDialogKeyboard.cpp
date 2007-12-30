@@ -581,7 +581,7 @@ bool CGUIDialogKeyboard::ShowAndVerifyNewPassword(CStdString& newPassword, const
   }
   CGUIDialogOK::ShowAndGetInput(12341, 12344, 0, 0);
   return false;
-};
+}
 
 // \brief Show keyboard twice to get and confirm a user-entered password string.
 // \param strNewPassword Overwritten with user input if return=true.

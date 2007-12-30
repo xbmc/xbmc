@@ -506,7 +506,7 @@ void CommandData::ProcessSwitch(char *Switch)
           {
             char *Str=Switch+2;
             if (*Str=='-')
-              for (int I=0;I<sizeof(FilterModes)/sizeof(FilterModes[0]);I++)
+              for (unsigned int I=0;I<sizeof(FilterModes)/sizeof(FilterModes[0]);I++)
                 FilterModes[I].State=FILTER_DISABLE;
             else
               while (*Str)
@@ -1134,10 +1134,10 @@ uint CommandData::GetExclAttr(char *Str)
 #ifndef SFX_MODULE
 bool CommandData::CheckWinSize()
 {
-  static int ValidSize[]={
+  static unsigned int ValidSize[]={
     0x10000,0x20000,0x40000,0x80000,0x100000,0x200000,0x400000
   };
-  for (int I=0;I<sizeof(ValidSize)/sizeof(ValidSize[0]);I++)
+  for (unsigned int I=0;I<sizeof(ValidSize)/sizeof(ValidSize[0]);I++)
     if (WinSize==ValidSize[I])
       return(true);
   WinSize=0x400000;

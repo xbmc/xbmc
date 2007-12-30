@@ -40,6 +40,6 @@ wchar* GetWideName(const char *Name,const wchar *NameW,wchar *DestW);
 
 void MakeSubRar(char * destname, char * rarname);
 
-inline char* GetOutputName(const char *Name) {return((char *)Name);};
+inline char* GetOutputName(const char *Name) {return((char *)Name);}
 
 #endif

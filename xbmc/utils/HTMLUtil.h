@@ -15,4 +15,4 @@ public:
   void ConvertHTMLToAnsi(const CStdString& strHTML, std::string& strStripped);
   void ConvertHTMLToUTF8(const CStdString& strHTML, std::string& strStripped);
 };
-};
+}

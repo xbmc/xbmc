@@ -21,5 +21,5 @@ public:
   static IFile* CreateLoader(const CStdString& strFileName);
   static IFile* CreateLoader(const CURL& url);
 };
-};
+}
 #endif // !defined(AFX_FILEFACTORY1_H__068E3138_B7CB_4BEE_B5CE_8AA8CADAB233__INCLUDED_)

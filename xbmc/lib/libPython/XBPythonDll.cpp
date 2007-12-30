@@ -226,12 +226,12 @@ extern "C"
   FUNCTION8(PyDict_GetItemString)
   //FUNCTION8(PyDict_GetItem)
   //FUNCTION4(PyDict_Keys)
-  FUNCTION16(PyDict_Next);
-  FUNCTION4(PyDict_Size);
-  FUNCTION4(PyType_Ready);
-  FUNCTION12(PyType_GenericNew);
-  FUNCTION8(PySys_SetArgv);
-  FUNCTION12(PyObject_RichCompare);
+  FUNCTION16(PyDict_Next)
+  FUNCTION4(PyDict_Size)
+  FUNCTION4(PyType_Ready)
+  FUNCTION12(PyType_GenericNew)
+  FUNCTION8(PySys_SetArgv)
+  FUNCTION12(PyObject_RichCompare)
 
   // PyFloat_FromDouble(double)
   void* (__cdecl* p_PyFloat_FromDouble)(double a); \

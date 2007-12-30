@@ -55,4 +55,4 @@ protected:
   set<CStdString> m_pathsToScan;
   set<CStdString> m_pathsToCount;
 };
-};
+}

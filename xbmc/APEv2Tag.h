@@ -55,4 +55,4 @@ protected:
 
   DllMACDll m_dll;
 };
-};
+}

@@ -83,7 +83,7 @@ enum EFIELDSYNC
   FS_NONE,
   FS_ODD,
   FS_EVEN,
-  FS_BOTH,
+  FS_BOTH
 };
 
 struct YUVRANGE
@@ -189,7 +189,7 @@ protected:
   void RenderSoftware(DWORD flags);   // single pass s/w yuv2rgb renderer
 
   CFrameBufferObject m_fbo;
-  CSurface *m_pBuffer;;
+  CSurface *m_pBuffer;
 
   int m_iYV12RenderBuffer;
   int m_NumYV12Buffers;

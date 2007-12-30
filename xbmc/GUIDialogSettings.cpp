@@ -139,7 +139,7 @@ void CGUIDialogSettings::SetupPage()
 
 void CGUIDialogSettings::EnableSettings(unsigned int id, bool enabled)
 {
-  unsigned int index = (unsigned int) -1;
+  int index = -1;
   for (unsigned int i = 0; i < m_settings.size(); i++)
   {
     if (m_settings[i].id != id)

@@ -1,7 +1,7 @@
 
 #pragma once
 
-#define DATA_OBJECT(data) unsigned long pointer_##data;
+#define DATA_OBJECT(data) unsigned long pointer_##data
 
 #define _Py_NoneStruct (*((PyObject*)pointer__Py_NoneStruct))
 #define _Py_NotImplementedStruct (*((PyObject*)pointer__Py_NotImplementedStruct))

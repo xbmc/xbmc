@@ -76,7 +76,7 @@ protected:
   CURL       m_url;     // the complete url we have connected too
   CFileCurl  m_curl;
 };
-};
+}
 
 #endif // !defined(AFX_FILEDAAP_H___INCLUDED_)
 

@@ -188,17 +188,17 @@ int SqliteDatabase::connect() {
     CLog::Log(LOGERROR, "unable to open database:%s (%lu)", db.c_str(),GetLastError());
   }
   return DB_CONNECTION_NONE;
-};
+}
 
 void SqliteDatabase::disconnect(void) {
   if (active == false) return;
   sqlite3_close(conn);
   active = false;
-};
+}
 
 int SqliteDatabase::create() {
   return connect();
-};
+}
 
 int SqliteDatabase::drop() {
   if (active == false) throw DbErrors("Can't drop database: no active connection...");
@@ -207,7 +207,7 @@ int SqliteDatabase::drop() {
      throw DbErrors("Can't drop database: can't unlink the file %s,\nError: %s",db.c_str(),strerror(errno));
      }
   return DB_COMMAND_OK;
-};
+}
 
 
 long SqliteDatabase::nextid(const char* sname) {

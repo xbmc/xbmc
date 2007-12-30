@@ -116,7 +116,7 @@ void CDlgCache::Process()
 
     Sleep(10);
   }
-};
+}
 
 void CDlgCache::ShowProgressBar(bool bOnOff) 
 { 
