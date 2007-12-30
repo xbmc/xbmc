@@ -11,4 +11,4 @@ namespace DIRECTORY
     virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
     virtual bool Exists(const char* strPath);
   };
-};
+}

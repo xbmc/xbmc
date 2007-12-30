@@ -25,5 +25,5 @@ public:
   CFileReader m_reader;
 };
 
-};
+}
 

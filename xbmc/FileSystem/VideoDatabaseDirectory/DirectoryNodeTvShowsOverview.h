@@ -13,6 +13,7 @@ namespace DIRECTORY
       virtual NODE_TYPE GetChildType();
       virtual bool GetContent(CFileItemList& items);
     };
-  };
-};
+  }
+}
+
 

@@ -221,7 +221,7 @@ typedef struct SPC_ID666
 		OPT_SURND,								//"Surround" sound
 		OPT_REVERSE,							//Reverse stereo samples
 		OPT_NOECHO,								//Disable echo
-		OPT_FILTER,								//Pass each voice through an anti-aliasing filter
+		OPT_FILTER								//Pass each voice through an anti-aliasing filter
 	};
 
 	//Mixing routines (see DSP.Asm for details of each routine)

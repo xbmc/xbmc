@@ -13,4 +13,4 @@ public:
   virtual bool LoadData(std::istream& stream);
   virtual void Save(const CStdString& strFileName) const;
 };
-};
+}

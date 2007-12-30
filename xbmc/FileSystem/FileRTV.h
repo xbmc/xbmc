@@ -44,6 +44,6 @@ private:
   bool m_bOpened;
 
 };
-};
+}
 
 #endif // !defined(AFX_FILERTV_H___INCLUDED_)

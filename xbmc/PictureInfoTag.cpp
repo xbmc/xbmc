@@ -169,7 +169,7 @@ void CPictureInfoTag::GetStringFromArchive(CArchive &ar, char *string, size_t le
   if (!temp.IsEmpty())
     memcpy(string, temp.c_str(), length);
   string[length] = 0;
-};
+}
 
 CStdString CPictureInfoTag::GetInfo(int info) const
 {

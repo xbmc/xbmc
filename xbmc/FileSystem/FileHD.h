@@ -40,5 +40,5 @@ protected:
   __int64 m_i64FilePos;
 };
 
-};
+}
 #endif // !defined(AFX_FILEHD_H__DD2B0A9E_4971_4A29_B525_78CEFCDAF4A1__INCLUDED_)

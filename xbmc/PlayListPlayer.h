@@ -64,7 +64,7 @@ protected:
   REPEAT_STATE m_repeatState[2];
 };
 
-};
+}
 
 /*!
  \ingroup windows 
