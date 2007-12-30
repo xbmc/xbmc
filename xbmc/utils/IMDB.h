@@ -18,16 +18,8 @@
 class TiXmlDocument;
 class CGUIDialogProgress;
 
-class CIMDBUrl
-{
-public:
-  std::vector<CScraperUrl> m_scrURL;
-  CStdString m_strID;  
-  CStdString m_strTitle;
-  bool Parse(CStdString);
-};
-typedef vector<CIMDBUrl> IMDB_MOVIELIST;
-typedef std::map<std::pair<int,int>,CIMDBUrl> IMDB_EPISODELIST;
+typedef vector<CScraperUrl> IMDB_MOVIELIST;
+typedef std::map<std::pair<int,int>,CScraperUrl> IMDB_EPISODELIST;
 
 class CIMDB : public CThread
 {
@@ -38,8 +30,8 @@ public:
 
   bool LoadDLL();
   bool InternalFindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist);
-  bool InternalGetDetails(const CIMDBUrl& url, CVideoInfoTag& movieDetails, const CStdString& strFunction="GetDetails");
-  bool InternalGetEpisodeList(const CIMDBUrl& url, IMDB_EPISODELIST& details);
+  bool InternalGetDetails(const CScraperUrl& url, CVideoInfoTag& movieDetails, const CStdString& strFunction="GetDetails");
+  bool InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& details);
   bool ParseDetails(TiXmlDocument &doc, CVideoInfoTag &movieDetails);
   bool LoadXML(const CStdString& strXMLFile, CVideoInfoTag &movieDetails, bool bDownload = true);
   bool Download(const CStdString &strURL, const CStdString &strFileName);
@@ -47,14 +39,13 @@ public:
 
   // threaded lookup functions
   bool FindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist, CGUIDialogProgress *pProgress = NULL);
-  bool GetDetails(const CIMDBUrl& url, CVideoInfoTag &movieDetails, CGUIDialogProgress *pProgress = NULL);
-  bool GetEpisodeDetails(const CIMDBUrl& url, CVideoInfoTag &movieDetails, CGUIDialogProgress *pProgress = NULL);
-  bool GetEpisodeList(const CIMDBUrl& url, IMDB_EPISODELIST& details, CGUIDialogProgress *pProgress = NULL);
+  bool GetDetails(const CScraperUrl& url, CVideoInfoTag &movieDetails, CGUIDialogProgress *pProgress = NULL);
+  bool GetEpisodeDetails(const CScraperUrl& url, CVideoInfoTag &movieDetails, CGUIDialogProgress *pProgress = NULL);
+  bool GetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& details, CGUIDialogProgress *pProgress = NULL);
   bool ScrapeFilename(const CStdString& strFileName, CVideoInfoTag& details);
 
   void SetScraperInfo(const SScraperInfo& info) { m_info = info; }
 protected:
-  bool Get(CScraperUrl& , string& );
   void RemoveAllAfter(char* szMovie, const char* szSearch);
   CHTTP m_http;
 
@@ -72,7 +63,7 @@ protected:
   CStdString        m_strMovie;
   IMDB_MOVIELIST    m_movieList;
   CVideoInfoTag     m_movieDetails;
-  CIMDBUrl          m_url;
+  CScraperUrl       m_url;
   IMDB_EPISODELIST  m_episode;
   LOOKUP_STATE      m_state;
   bool              m_found;
