@@ -171,7 +171,7 @@ RESOLUTION XBVideoConfig::GetSafeMode() const
 
 RESOLUTION XBVideoConfig::GetBestMode() const
 {
-  RESOLUTION bestRes;
+  RESOLUTION bestRes = INVALID;
   RESOLUTION resolutions[] = {HDTV_1080i, HDTV_720p, HDTV_480p_16x9, HDTV_480p_4x3, NTSC_16x9, NTSC_4x3, PAL_16x9, PAL_4x3, PAL60_16x9, PAL60_4x3, INVALID};
   UCHAR i = 0;
   while (resolutions[i] != INVALID)

@@ -3219,7 +3219,7 @@ bool Cssrc::InitConverter(int OldFreq, int OldBPS, int Channels, int NewFreq, in
 //---------------------------------------------------------------------------
 int Cssrc::UpSampleRawIn(unsigned char * *pRetDataPtr, bool IsEof, int toberead, int toberead2, int nsmplread)
 {
-  int i;
+  int i = 0;
 
   switch (bps)
   {
@@ -3571,7 +3571,7 @@ int Cssrc::UpSampleCommon(unsigned char * *pRetDataPtr, bool IsEof, int toberead
 //---------------------------------------------------------------------------
 int Cssrc::DownSampleRawIn(unsigned char * *pRetDataPtr, bool IsEof, int toberead, int nsmplread)
 {
-  int i;
+  int i = 0;
 
   switch (bps)
   {
