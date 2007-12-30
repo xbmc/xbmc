@@ -254,7 +254,7 @@ void Unpack::Unpack29(bool Solid)
         }
         if (NextCh==4)
         {
-          unsigned int Distance=0,Length;
+          unsigned int Distance=0,Length=0;
           bool Failed=false;
           for (int I=0;I<4 && !Failed;I++)
           {

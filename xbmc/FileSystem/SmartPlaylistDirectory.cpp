@@ -24,7 +24,7 @@ namespace DIRECTORY
     CSmartPlaylist playlist;
     if (!playlist.Load(strPath))
       return false;
-    bool success,success2;
+    bool success = false, success2 = false;
     if (playlist.GetType().Equals("music") || playlist.GetType().Equals("mixed") || playlist.GetType().IsEmpty())
     {
       CMusicDatabase db;
@@ -85,4 +85,5 @@ namespace DIRECTORY
     return "";
   }
 }
+
 
