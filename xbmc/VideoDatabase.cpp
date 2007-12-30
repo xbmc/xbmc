@@ -3990,7 +3990,7 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
     {
       while (!m_pDS->eof())
       {
-        long lYear;
+        long lYear = 0;
         CStdString strLabel;
         if (idContent == VIDEODB_CONTENT_TVSHOWS)
         {

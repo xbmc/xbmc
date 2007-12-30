@@ -639,7 +639,7 @@ int CTextureBundle::LoadAnim(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, 
 #endif
 {
   DWORD ResDataOffset;
-  int nTextures;
+  int nTextures = 0;
   
   *ppTextures = NULL; *ppPalette = NULL; *ppDelays = NULL;
 
