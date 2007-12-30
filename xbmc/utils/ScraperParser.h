@@ -6,6 +6,8 @@
 
 #include <vector>
 
+class CHTTP;
+
 class CScraperUrl
 {
 public:
@@ -30,13 +32,20 @@ public:
   };
 
   bool Parse();
-  bool ParseString(CStdString);
+  bool ParseString(CStdString); // copies by intention
   bool ParseElement(const TiXmlElement*);
+  bool ParseEpisodeGuide(CStdString strUrls); // copies by intention
+
   const SUrlEntry GetFirstThumb() const;
   const SUrlEntry GetSeasonThumb(int) const;
   void Clear();
+  static bool Get(const SUrlEntry&, string&, CHTTP& http);
+  static bool DownloadThumbnail(const CStdString &thumb, const SUrlEntry& entry);
+
   CStdString m_xml;
   CStdString m_spoof; // for backwards compatibility only!
+  CStdString strTitle;
+  CStdString strId;
   std::vector<SUrlEntry> m_url;
 };
 
