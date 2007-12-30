@@ -236,7 +236,7 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
   /* clear data to keep memusage down, not needed anymore */
   data.Empty();
 
-  bool result;
+  bool result = false;
   if( strcmp(root->Value(), "genrelist") == 0 )
     result = ParseGenres(root, items, url);
   else if( strcmp(root->Value(), "stationlist") == 0 )
