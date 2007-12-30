@@ -37,6 +37,7 @@ public:
   void AddReference();
 
   void Calculate(unsigned int time, const CPoint &center);
+  void ApplyState(ANIMATION_STATE state, const CPoint &center);
 
   unsigned int GetDelay() const { return m_delay; };
   unsigned int GetLength() const { return m_delay + m_length; };
