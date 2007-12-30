@@ -9,6 +9,7 @@
 #include "../Util.h"
 #include "../xbox/network.h"
 
+using namespace std;
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
