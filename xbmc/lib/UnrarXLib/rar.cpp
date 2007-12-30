@@ -310,7 +310,7 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword)
 {
   if (!ppList)
 		return 0;
-	uint FileCount;
+	uint FileCount = 0;
 	InitCRC();
 
 	// Set the arguments for the extract command
@@ -442,7 +442,7 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword)
 
 bool urarlib_hasmultiple(const char *rarfile, char *libpassword)
 {
-	uint FileCount;
+	uint FileCount = 0;
 	InitCRC();
 
 	// Set the arguments for the extract command
