@@ -1030,7 +1030,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           CStdString strLabel;
           strLabel.Format("imdbthumb%i.jpg",i);
           CUtil::AddFileToFolder(strPath, strLabel, thumbFromWeb);
-          if (VIDEO::CVideoInfoScanner::DownloadThumbnail(thumbFromWeb,*iter))
+          if (CScraperUrl::DownloadThumbnail(thumbFromWeb,*iter))
           {
             CStdString strItemPath;
             strItemPath.Format("thumb://IMDb%i",i++);
