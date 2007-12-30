@@ -268,7 +268,7 @@ bool CGUIListControlEx::OnMessage(CGUIMessage& message)
 
       CGUIList::GUILISTITEMS& list = m_pList->Lock();
 
-      if (message.GetParam1() >= 0 && message.GetParam1() < list.size())
+      if (message.GetParam1() < list.size())
       {
         int iPage = 1;
         m_iOffset = 0;

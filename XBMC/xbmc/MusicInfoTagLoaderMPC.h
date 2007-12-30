@@ -15,4 +15,4 @@ public:
 private:
   virtual int ReadDuration(const CStdString& strFileName);
 };
-};
+}

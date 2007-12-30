@@ -318,7 +318,6 @@ __int64 CFileXBMSP::Seek(__int64 iFilePosition, int iWhence)
   default:
     return -1;
   }
-  if (newpos < 0) newpos = 0;
   if (newpos > m_fileSize) newpos = m_fileSize;
   if (newpos == m_filePos) return m_filePos;
   if ( newpos == 0 )

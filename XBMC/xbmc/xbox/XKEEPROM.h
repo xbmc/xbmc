@@ -122,7 +122,7 @@ public:
     VIDEO_480I      =0x00,
     VIDEO_720P      =0x02,
     VIDEO_1080I     =0x04,
-    VIDEO_480P      =0x08,
+    VIDEO_480P      =0x08
   };
 
   enum VIDEO_SIZE

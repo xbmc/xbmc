@@ -263,7 +263,7 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
               strFileName.c_str(), errno, nt_error, get_friendly_nt_error_msg(nt_error));
     return false;
   }
-  UINT64 ret = smbc_lseek(m_fd, 0, SEEK_END);
+  __int64 ret = smbc_lseek(m_fd, 0, SEEK_END);
 
   if ( ret < 0 )
   {

@@ -16,4 +16,4 @@ namespace MUSIC_INFO
 	private:
 		bool getFile(CStdString& strFile, const CStdString& strSource);
 	};
-};
+}

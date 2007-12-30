@@ -21,4 +21,4 @@ protected:
   CMusicInfoTag m_musicInfoTag;
   CReplayGain m_replayGain;
 };
-};
+}

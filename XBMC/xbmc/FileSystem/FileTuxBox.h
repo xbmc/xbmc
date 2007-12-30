@@ -18,5 +18,6 @@ namespace XFILE
       virtual __int64 Seek(__int64 iFilePosition, int iWhence = SEEK_SET);
     protected:
   };
-};
+}
+
 
