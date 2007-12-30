@@ -38,5 +38,5 @@ namespace DIRECTORY
       long m_idStudio;
       long m_idMVideo;
     };
-  };
-};
+  }
+}

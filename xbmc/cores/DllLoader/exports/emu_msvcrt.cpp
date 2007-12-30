@@ -1532,4 +1532,4 @@ extern "C"
     static char*** t = (char***)&dll__environ;
     return (char***)&t;
   }
-};
+}

@@ -76,7 +76,7 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
   pItem->SetCachedPictureThumb();
   pItem->FillInDefaultIcon();
   return true;
-};
+}
 
 void CPictureThumbLoader::OnLoaderFinish()
 {

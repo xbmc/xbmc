@@ -26,4 +26,4 @@ public:
 protected:
   vector<CHTMLRow> m_vecRows;
 };
-};
+}

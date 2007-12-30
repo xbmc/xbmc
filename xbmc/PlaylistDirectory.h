@@ -19,4 +19,4 @@ public:
   virtual bool GetDirectory(const CStdString& strPath, VECFILEITEMS &items);
 protected:
 };
-};
+}

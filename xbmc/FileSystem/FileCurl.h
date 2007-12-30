@@ -16,7 +16,7 @@ namespace XCURL
   typedef void CURL_HANDLE;
   typedef void CURLM;
   struct curl_slist;
-};
+}
 
 class CHttpHeader;
 
@@ -104,5 +104,6 @@ namespace XFILE
       /* returned http header */
       CHttpHeader m_httpheader;
   };
-};
+}
+
 
