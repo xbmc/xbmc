@@ -98,4 +98,4 @@ protected:
   CStdString m_cddb_ip_adress;
   CStdString cCacheDir;
 };
-};
+}

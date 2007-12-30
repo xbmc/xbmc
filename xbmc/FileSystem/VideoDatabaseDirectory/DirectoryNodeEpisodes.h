@@ -12,5 +12,5 @@ namespace DIRECTORY
     protected:
       virtual bool GetContent(CFileItemList& items);
     };
-  };
-};
+  }
+}

@@ -15,4 +15,4 @@ public:
 
   virtual bool Load(const CStdString& strFileName, CMusicInfoTag& tag);
 };
-};
+}

@@ -32,7 +32,7 @@ CGUIRSSControl::~CGUIRSSControl(void)
 void CGUIRSSControl::SetUrls(const vector<string> &vecUrl)
 {
   m_vecUrls = vecUrl; 
-};
+}
 
 void CGUIRSSControl::SetIntervals(const vector<int>& vecIntervals)
 {
@@ -76,5 +76,6 @@ void CGUIRSSControl::OnFeedUpdate(const vector<DWORD> &feed)
   CSingleLock lock(m_criticalSection);
   m_feed = feed;
 }
+
 
 

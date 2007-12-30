@@ -216,36 +216,36 @@ extern "C"
   FUNCTION8(PyDict_GetItemString)
   //FUNCTION8(PyDict_GetItem)
   //FUNCTION4(PyDict_Keys)
-  FUNCTION16(PyDict_Next);
-  FUNCTION4(PyDict_Size);
-  FUNCTION4(PyType_Ready);
-  FUNCTION12(PyType_GenericNew);
-  FUNCTION8(PySys_SetArgv);
-  FUNCTION12(PyObject_RichCompare);
+  FUNCTION16(PyDict_Next)
+  FUNCTION4(PyDict_Size)
+  FUNCTION4(PyType_Ready)
+  FUNCTION12(PyType_GenericNew)
+  FUNCTION8(PySys_SetArgv)
+  FUNCTION12(PyObject_RichCompare)
 
   // PyFloat_FromDouble(double)
   void* (__cdecl* p_PyFloat_FromDouble)(double a); \
   void* PyFloat_FromDouble(double a) { return p_PyFloat_FromDouble(a); }
 
-  DATA_OBJECT(PyExc_SystemError);
-  DATA_OBJECT(PyExc_ValueError);
-  DATA_OBJECT(PyExc_Exception);
-  DATA_OBJECT(PyExc_TypeError);
-  DATA_OBJECT(PyExc_KeyboardInterrupt);
-  DATA_OBJECT(PyExc_RuntimeError);
-  DATA_OBJECT(PyExc_ReferenceError);
+  DATA_OBJECT(PyExc_SystemError)
+  DATA_OBJECT(PyExc_ValueError)
+  DATA_OBJECT(PyExc_Exception)
+  DATA_OBJECT(PyExc_TypeError)
+  DATA_OBJECT(PyExc_KeyboardInterrupt)
+  DATA_OBJECT(PyExc_RuntimeError)
+  DATA_OBJECT(PyExc_ReferenceError)
 
-  DATA_OBJECT(_Py_NoneStruct);
-  DATA_OBJECT(_Py_NotImplementedStruct);
-  DATA_OBJECT(_Py_TrueStruct);
-  DATA_OBJECT(_Py_ZeroStruct);
-  DATA_OBJECT(PyString_Type);
-  DATA_OBJECT(PyList_Type);
-  DATA_OBJECT(PyLong_Type);
-  DATA_OBJECT(PyInt_Type);
-  DATA_OBJECT(PyUnicode_Type);
-  DATA_OBJECT(PyTuple_Type);
-  DATA_OBJECT(PyDict_Type);
+  DATA_OBJECT(_Py_NoneStruct)
+  DATA_OBJECT(_Py_NotImplementedStruct)
+  DATA_OBJECT(_Py_TrueStruct)
+  DATA_OBJECT(_Py_ZeroStruct)
+  DATA_OBJECT(PyString_Type)
+  DATA_OBJECT(PyList_Type)
+  DATA_OBJECT(PyLong_Type)
+  DATA_OBJECT(PyInt_Type)
+  DATA_OBJECT(PyUnicode_Type)
+  DATA_OBJECT(PyTuple_Type)
+  DATA_OBJECT(PyDict_Type)
 
   bool python_load_dll(LibraryLoader& dll)
   {

@@ -354,4 +354,4 @@ void CApplicationRenderer::SetBusy(bool bBusy)
     else 
       m_pWindow->Close();
   }
-};
+}

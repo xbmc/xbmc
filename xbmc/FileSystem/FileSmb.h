@@ -79,6 +79,6 @@ protected:
   bool m_bBinary;
   int m_fd;
 };
-};
+}
 
 #endif // !defined(AFX_FILESMB_H__2C4AB5BC_0742_458D_95EA_E9C77BA5663D__INCLUDED_)

@@ -43,7 +43,7 @@ public:
     VIDEO_SET_ASPECT,                // set aspectratio of video
 
     // subtitle related messages
-    SUBTITLE_CLUTCHANGE,
+    SUBTITLE_CLUTCHANGE
   };
   
   CDVDMsg(Message msg)

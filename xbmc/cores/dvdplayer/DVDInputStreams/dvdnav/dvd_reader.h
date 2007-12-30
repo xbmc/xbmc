@@ -268,6 +268,6 @@ int DVDISOVolumeInfo( dvd_reader_t *, char *, unsigned int,
 int DVDUDFCacheLevel( dvd_reader_t *, int );
 
 #ifdef __cplusplus
-};
+}
 #endif
 #endif /* DVD_READER_H_INCLUDED */

@@ -45,4 +45,4 @@ namespace DIRECTORY
     VECSHARES* m_vecShares;
     bool       m_allowNonLocalShares;
   };
-};
+}
