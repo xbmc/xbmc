@@ -44,4 +44,4 @@ private:
   bool          m_success;      // set by script in EndOfDirectory
   int    m_totalItems;   // set by script in AddDirectoryItem
 };
-};
+}

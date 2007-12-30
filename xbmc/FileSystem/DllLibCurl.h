@@ -112,6 +112,6 @@ namespace XCURL
     VEC_CURLSESSIONS m_sessions;  
     CCriticalSection m_critSection;
   };
-};
+}
 
 extern XCURL::DllLibCurlGlobal g_curlInterface;

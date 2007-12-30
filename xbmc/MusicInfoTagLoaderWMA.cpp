@@ -58,7 +58,7 @@ typedef enum WMT_ATTR_DATATYPE
   WMT_TYPE_BOOL = 2,
   WMT_TYPE_DWORD = 3,
   WMT_TYPE_QWORD = 4,
-  WMT_TYPE_WORD = 5,
+  WMT_TYPE_WORD = 5
 } WMT_ATTR_DATATYPE;
 
 // Data item for the WM/Picture metadata attribute

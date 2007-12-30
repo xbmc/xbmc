@@ -138,7 +138,7 @@ size_t CFileCurl::WriteCallback(char *buffer, size_t size, size_t nitems)
   }
   if (amount)
   {
-    CLog::Log(LOGDEBUG, "CFileCurl::WriteCallback(%p) not enough free space for %i bytes", this,  amount); 
+    CLog::Log(LOGDEBUG, "CFileCurl::WriteCallback(%p) not enough free space for %i bytes", (void*)this,  amount); 
     
     m_overflowBuffer = (char*)realloc_simple(m_overflowBuffer, amount + m_overflowSize);
     if(m_overflowBuffer == NULL)
@@ -189,7 +189,7 @@ void CFileCurl::SetBufferSize(unsigned int size)
 
 void CFileCurl::Close()
 {
-  CLog::Log(LOGDEBUG, "FileCurl::Close(%p) %s", this, m_url.c_str());
+  CLog::Log(LOGDEBUG, "FileCurl::Close(%p) %s", (void*)this, m_url.c_str());
   m_filePos = 0;
   m_fileSize = 0;
   m_opened = false;
@@ -459,7 +459,7 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
 
   url2.GetURL(m_url);
 
-  CLog::Log(LOGDEBUG, "FileCurl::Open(%p) %s", this, m_url.c_str());  
+  CLog::Log(LOGDEBUG, "FileCurl::Open(%p) %s", (void*)this, m_url.c_str());  
 
   ASSERT(!(!m_easyHandle ^ !m_multiHandle));
   if( m_easyHandle == NULL )

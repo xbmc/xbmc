@@ -32,7 +32,7 @@
 #ifdef __linux__
 #include <asm/unistd.h>
 #include <asm/ldt.h>
-// 2.5.xx+ calls this user_desc:
+/* 2.5.xx+ calls this user_desc: */
 #include <linux/version.h>
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,5,47)
 #define modify_ldt_ldt_s user_desc
@@ -41,7 +41,7 @@
 #ifdef  __cplusplus
 extern "C" {
 #endif
-/// declare modify_ldt with the _syscall3 macro for older glibcs
+/* declare modify_ldt with the _syscall3 macro for older glibcs */
 #if defined(__GLIBC__) &&  (__GLIBC__ < 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ == 0))
 _syscall3( int, modify_ldt, int, func, void *, ptr, unsigned long, bytecount );
 #else
@@ -151,7 +151,7 @@ static int LDT_Modify( int func, struct modify_ldt_ldt_s *ptr,
 			  : "0" (__NR_modify_ldt),
 			  "r" (func),
 			  "c" (ptr),
-			  "d"(16)//sizeof(*ptr) from kernel point of view
+			  "d"(16)/* sizeof(*ptr) from kernel point of view */
 			  :"esi"     );
 #else
     __asm__ __volatile__("int $0x80"
@@ -220,7 +220,7 @@ ldt_fs_t* Setup_LDT_Keeper(void)
     array.contents=MODIFY_LDT_CONTENTS_DATA;
     array.limit_in_pages=0;
 #ifdef __linux__
-    //ret=LDT_Modify(0x1, &array, sizeof(struct modify_ldt_ldt_s));
+    /* ret=LDT_Modify(0x1, &array, sizeof(struct modify_ldt_ldt_s)); */
     ret=modify_ldt(0x1, &array, sizeof(struct modify_ldt_ldt_s));
     if(ret<0)
     {

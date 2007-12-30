@@ -29,7 +29,7 @@
 enum XPR_FLAGS
 {
   XPRFLAG_PALETTE = 0x00000001,
-  XPRFLAG_ANIM = 0x00000002,
+  XPRFLAG_ANIM = 0x00000002
 };
 
 class CAutoBuffer
@@ -561,7 +561,7 @@ HRESULT CTextureBundle::LoadTexture(const CStdString& Filename, D3DXIMAGE_INFO* 
   enum XPR_FLAGS
   {
     XPRFLAG_PALETTE = 0x00000001,
-    XPRFLAG_ANIM = 0x00000002,
+    XPRFLAG_ANIM = 0x00000002
   };
 
   BYTE* Next = UnpackedBuf;

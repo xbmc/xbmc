@@ -26,7 +26,7 @@ namespace DIRECTORY
       NODE_TYPE_STUDIO,
       NODE_TYPE_MUSICVIDEOS_OVERVIEW,
       NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS,
-      NODE_TYPE_TITLE_MUSICVIDEOS,
+      NODE_TYPE_TITLE_MUSICVIDEOS
     } NODE_TYPE;
 
     class CDirectoryNode
@@ -65,7 +65,7 @@ namespace DIRECTORY
       CStdString m_strName;
       CDirectoryNode* m_pParent;
     };
-  };
-};
+  }
+}
 
 

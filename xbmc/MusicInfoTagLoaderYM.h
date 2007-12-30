@@ -18,4 +18,4 @@ namespace MUSIC_INFO
     int m_ym;
     DllStSound m_dll;
 	};
-};
+}

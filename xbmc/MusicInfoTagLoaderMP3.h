@@ -110,4 +110,4 @@ private:
   CVBRMP3SeekHelper m_seekInfo;
   CReplayGain       m_replayGainInfo;
 };
-};
+}

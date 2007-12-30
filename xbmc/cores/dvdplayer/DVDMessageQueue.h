@@ -17,7 +17,7 @@ enum MsgQueueReturnCode
   MSGQ_ABORT            = -1, // negative for legacy, not an error actually
   MSGQ_NOT_INITIALIZED  = -2,
   MSGQ_INVALID_MSG      = -3,
-  MSGQ_OUT_OF_MEMORY    = -4,
+  MSGQ_OUT_OF_MEMORY    = -4
 };
 
 #define MSGQ_IS_ERROR(c)    (c < 0)

@@ -66,6 +66,6 @@ namespace DIRECTORY
       CStdString m_strName;
       CDirectoryNode* m_pParent;
     };
-  };
-};
+  }
+}
 

@@ -338,7 +338,7 @@ bool EnumConfigPaths(char *Path,int Number)
     "/etc","/usr/lib","/usr/local/lib","/usr/local/etc"
   };
   Number--;
-  if (Number<0 || Number>=sizeof(AltPath)/sizeof(AltPath[0]))
+  if (Number<0 || Number>=(int)(sizeof(AltPath)/sizeof(AltPath[0])))
     return(false);
   strcpy(Path,AltPath[Number]);
   return(true);

@@ -50,5 +50,5 @@ protected:
   DWORD m_dwLastTime;
   CStdString m_contenttype;
 };
-};
+}
 #endif // !defined(AFX_FILESHOUTCAST_H__6B6082E6_547E_44C4_8801_9890781659C0__INCLUDED_)
