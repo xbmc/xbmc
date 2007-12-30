@@ -447,7 +447,7 @@ void CGUIWindowVideoInfo::Refresh()
       thumbImage = m_movieItem.GetCachedVideoThumb();
     if (!CFile::Exists(thumbImage) && strImage.size() > 0)
     {
-      VIDEO::CVideoInfoScanner::DownloadThumbnail(thumbImage,m_movieItem.GetVideoInfoTag()->m_strPictureURL.GetFirstThumb());
+      CScraperUrl::DownloadThumbnail(thumbImage,m_movieItem.GetVideoInfoTag()->m_strPictureURL.GetFirstThumb());
       CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show
     }
 
@@ -676,7 +676,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
     CStdString strLabel;
     strLabel.Format("imdbthumb%i.jpg",i);
     CUtil::AddFileToFolder(strPath, strLabel, thumbFromWeb);
-    if (VIDEO::CVideoInfoScanner::DownloadThumbnail(thumbFromWeb,*iter))
+    if (CScraperUrl::DownloadThumbnail(thumbFromWeb,*iter))
     {
       CStdString strItemPath;
       strItemPath.Format("thumb://IMDb%i",i++);
