@@ -829,6 +829,8 @@ bool CFileCurl::FillBuffer(unsigned int want)
         // happens especially on ftp during initial connection
 #ifndef _LINUX
         SwitchToThread();
+#elif __APPLE__
+        sched_yield();
 #else
 	    pthread_yield();
 #endif
