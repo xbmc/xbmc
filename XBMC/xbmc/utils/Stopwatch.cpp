@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Stopwatch.h"
-#ifdef _LINUX
+#if defined(_LINUX) && !defined(__APPLE__)
 #include <sys/sysinfo.h>
 #endif
 

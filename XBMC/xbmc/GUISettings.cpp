@@ -383,7 +383,10 @@ CGUISettings::CGUISettings(void)
   AddInt(3, "audiooutput.mode", 337, AUDIO_ANALOG, AUDIO_ANALOG, 1, AUDIO_DIGITAL, SPIN_CONTROL_TEXT);
   AddBool(4, "audiooutput.ac3passthrough", 364, true);
   AddBool(5, "audiooutput.dtspassthrough", 254, true);
-#ifdef _LINUX
+#ifdef __APPLE__
+  AddString(6, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
+  AddString(7, "audiooutput.passthroughdevice", 546, "S/PDIF", BUTTON_CONTROL_INPUT);
+#elif defined(_LINUX)
   AddString(6, "audiooutput.audiodevice", 545, "default", BUTTON_CONTROL_INPUT);
   AddString(7, "audiooutput.passthroughdevice", 546, "iec958", BUTTON_CONTROL_INPUT);
 #endif
