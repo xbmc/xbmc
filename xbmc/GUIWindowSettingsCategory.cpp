@@ -67,6 +67,9 @@
 #ifdef _LINUX
 #include "LinuxTimezone.h"
 #endif
+#ifdef __APPLE__
+#include "CPortAudio.h"
+#endif
 #ifdef HAS_LINUX_NETWORK
 #include "GUIDialogAccessPoints.h"
 #endif
@@ -838,6 +841,10 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
        FillInNetworkInterfaces(pSetting);
     }
+    else if (strSetting.Equals("audiooutput.audiodevice"))
+    {
+      FillInAudioDevices(pSetting);
+    }
   }
 
   if (m_vecSections[m_iSection]->m_strCategory == "network")
@@ -1249,9 +1256,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetString("lookandfeel.soundskin") != "OFF");
     }
-#ifdef _LINUX    
-
-#endif   
   }
 }
 
@@ -1438,6 +1442,13 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_guiSettings.m_replayGain.iNoGainPreAmp = g_guiSettings.GetInt("musicplayer.replaygainnogainpreamp");
     g_guiSettings.m_replayGain.bAvoidClipping = g_guiSettings.GetBool("musicplayer.replaygainavoidclipping");
   }
+#ifdef __APPLE__
+  else if (strSetting.Equals("audiooutput.audiodevice"))
+  {
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+      g_guiSettings.SetString("audiooutput.audiodevice", pControl->GetCurrentLabel());
+  }
+#endif
 #ifdef HAS_KAI
   else if (strSetting.Equals("xlinkkai.enabled"))
   {
@@ -3405,6 +3416,29 @@ void CGUIWindowSettingsCategory::FillInNetworkInterfaces(CSetting *pSetting)
   {
     pControl->AddLabel(vecInterfaces[i], iInterface++);
   }
+#endif
+}
+
+void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting)
+{
+#ifdef __APPLE__  
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+  pControl->Clear();
+
+  std::vector<PaDeviceInfo* > deviceList = CPortAudio::GetDeviceList();
+  std::vector<PaDeviceInfo* >::const_iterator iter = deviceList.begin();
+
+  for (int i=0; iter != deviceList.end(); i++)
+  {
+    PaDeviceInfo* dev = *iter;
+    pControl->AddLabel(dev->name, i);
+    
+    if (g_guiSettings.GetString("audiooutput.audiodevice").Equals(dev->name))
+        pControl->SetValue(i);
+    
+    ++iter;
+  }
+  
 #endif
 }
 
