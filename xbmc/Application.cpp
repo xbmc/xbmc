@@ -2660,7 +2660,11 @@ void CApplication::RenderMemoryStatus()
       CStdStringW wszText;
       MEMORYSTATUS stat;
       GlobalMemoryStatus(&stat);
-#ifndef _LINUX
+#ifdef __APPLE__
+      double dCPU = m_resourceCounter.GetCPUUsage();
+      wszText.Format(L"FreeMem %ju/%ju MB, FPS %2.1f, CPU-Total %d%%. CPU-XBMC %4.2f%%", stat.dwAvailPhys/(1024*1024), stat.dwTotalPhys/(1024*1024), 
+               g_infoManager.GetFPS(), g_cpuInfo.getUsedPercentage(), dCPU);
+#elif !defined(_LINUX)
       wszText.Format(L"FreeMem %d/%d Kb, FPS %2.1f, CPU %2.0f%%", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, g_infoManager.GetFPS(), (1.0f - m_idleThread.GetRelativeUsage())*100);
 #else
       double dCPU = m_resourceCounter.GetCPUUsage();
