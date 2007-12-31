@@ -1,6 +1,7 @@
 #include <time.h>
 #include "LinuxTimezone.h"
 #include "Util.h"
+#include "getdelim.h"
 
 CLinuxTimezone::CLinuxTimezone()
 {
@@ -38,9 +39,8 @@ CLinuxTimezone::CLinuxTimezone()
          if (m_timezonesByCountryCode.count(countryCode) == 0)
          {
             vector<CStdString> timezones;
-            timezones.push_back(timezoneName);            
+            timezones.push_back(timezoneName);
             m_timezonesByCountryCode[countryCode] = timezones;
-            
          }            
          else
          {
@@ -102,7 +102,11 @@ vector<CStdString> CLinuxTimezone::GetTimezonesByCountry(const CStdString countr
 
 CStdString CLinuxTimezone::GetCountryByTimezone(const CStdString timezone)
 {
+#ifdef __APPLE__
+  return CStdString("?");
+#else
    return m_countryByCode[m_countriesByTimezoneName[timezone]];
+#endif
 }
 
 void CLinuxTimezone::SetTimezone(CStdString timezoneName)
