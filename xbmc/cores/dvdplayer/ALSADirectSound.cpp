@@ -1,3 +1,4 @@
+#ifndef __APPLE__
 /*
 * XBoxMediaPlayer
 * Copyright (c) 2002 d7o3g4q and RUNTiME
@@ -465,3 +466,4 @@ void CALSADirectSound::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers
 {
     return ;
 }
+#endif
