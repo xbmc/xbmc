@@ -279,7 +279,7 @@ void CRssReader::fromRSSToUTF16(const CStdStringA& strSource, CStdStringW& strDe
 
 		iconv(m_iconv, NULL, &inBytes, NULL, &outBytes);
 
-#ifdef _LINUX
+#if defined(_LINUX) && !defined(__APPLE__)
 		if (iconv(m_iconv, (char**) &src, &inBytes, &dst, &outBytes) == (size_t) -1)
 #else
 		if (iconv(m_iconv, &src, &inBytes, &dst, &outBytes) == (size_t) -1)
