@@ -9,6 +9,12 @@
 #include <unistd.h>
 #include <stdarg.h>
 
+#ifdef __APPLE__
+typedef int64_t		off64_t;
+typedef off_t     __off_t;
+typedef off64_t   __off64_t;
+#endif
+
 void* dllmalloc(size_t );
 void* dllcalloc( size_t , size_t );
 void* dllrealloc(void*, size_t);
