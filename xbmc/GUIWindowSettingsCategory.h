@@ -46,6 +46,8 @@ protected:
   void FillInNetworkInterfaces(CSetting *pSetting);
   void NetworkInterfaceChanged(void);
 
+  void FillInAudioDevices(CSetting* pSetting);
+
   virtual void SetupControls();
   void CreateSettings();
   void UpdateSettings();
