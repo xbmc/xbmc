@@ -89,9 +89,13 @@ CThread::~CThread()
   m_ThreadHandle = NULL;
 }
 
-
 #ifdef _LINUX
+#ifdef __APPLE__
+// FIXME, this is soooo wrong, but actually close enough for now...
+CThread* pLocalThread = NULL;
+#else
 __thread CThread* pLocalThread = NULL;
+#endif
 void CThread::term_handler (int signum)
 {
   CLog::Log(LOGERROR,"thread 0x%x (%d) got signal %d. calling OnException and terminating thread abnormally.", SDL_ThreadID(), SDL_ThreadID(), signum);
@@ -236,7 +240,6 @@ void CThread::Create(bool bAutoDelete, unsigned stacksize)
 
 }
 
-
 bool CThread::IsAutoDelete() const
 {
   return m_bAutoDelete;
@@ -376,8 +379,7 @@ DWORD CThread::WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds)
     HANDLE handles[2] = {hHandle, m_StopEvent};
     DWORD result = ::WaitForMultipleObjects(2, handles, false, dwMilliseconds);
 
-    if(result == WAIT_TIMEOUT 
-    || result == WAIT_OBJECT_0)
+    if(result == WAIT_TIMEOUT || result == WAIT_OBJECT_0)
       return result;
 
     if( dwMilliseconds == INFINITE )
