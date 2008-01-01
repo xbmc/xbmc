@@ -1823,6 +1823,14 @@
   <string id="21881">Enable UPnP Renderer</string>
   <string id="21882">Attempt to skip introduction before DVD Menu</string>
   <string id="21883">Ripped Audio CDs</string>
+  <string id="21884">Query Info For All Artists</string>
+  <string id="21885">Downloading Album Information</string>
+  <string id="21886">Downloading Artist Information</string>
+  <string id="21887">Biography</string>
+  <string id="21888">Discography</string>
+  <string id="21889">Searching Artist</string>
+  <string id="21890">Select Artist</string>
+  <string id="21891">Artist Information</string>
  
   <!-- strings 21900 thru 21999 reserved for slideshow info -->
 

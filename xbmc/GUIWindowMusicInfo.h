@@ -10,6 +10,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual void Render();
   void SetAlbum(const CAlbum& album, const VECSONGS &songs, const CStdString &path);
+  void SetArtist(const CArtist& artist, const CStdString &path);
   bool NeedRefresh() const;
   bool HasUpdatedThumb() const { return m_hasUpdatedThumb; };
   void RefreshThumb();
@@ -20,14 +21,18 @@ protected:
   virtual void OnInitWindow();
   void Update();
   void SetLabel(int iControl, const CStdString& strLabel);
-  bool DownloadThumbnail(const CStdString &thumbFile);
+  int DownloadThumbnail(const CStdString &thumbFile);
   void OnGetThumb();
   void SetSongs(const VECSONGS &songs);
+  void SetDiscography();
+  void OnSearch(const CFileItem* pItem);
 
   CAlbum m_album;
+  CArtist m_artist;
   bool m_bViewReview;
   bool m_bRefresh;
   bool m_hasUpdatedThumb;
+  bool m_bArtistInfo;
   CFileItem     m_albumItem;
   CFileItemList m_albumSongs;
 };

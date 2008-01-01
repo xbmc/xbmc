@@ -14,6 +14,7 @@ public:
   virtual ~CGUIDialogContentSettings(void);
   virtual bool OnMessage(CGUIMessage &message);
 
+  static bool Show(SScraperInfo& scraper, bool& bRunScan);
   static bool Show(SScraperInfo& scraper, VIDEO::SScanSettings& settings, bool& bRunScan);
   static bool ShowForDirectory(const CStdString& strDirectory, SScraperInfo& scraper, VIDEO::SScanSettings& settings, bool& bRunScan);
   virtual bool HasListItems() const { return true; };

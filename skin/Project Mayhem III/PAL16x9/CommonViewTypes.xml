@@ -2724,7 +2724,7 @@
 				       	<posy>3</posy>
 				       	<width>17</width>
 				       	<height>22</height>
-				        <texture>$INFO[ListItem.Icon]</texture>
+				        <info>ListItem.Icon</info>
 					<aspectratio align="left">keep</aspectratio>
 				    </control>
 				    <control type="label">
@@ -2737,6 +2737,19 @@
 		        		<selectedcolor>green</selectedcolor>
 		        		<align>left</align>
 					<label>$INFO[ListItem.TrackNumber] - $INFO[ListItem.Label]</label>
+					<visible>container.content(albums)</visible>
+				    </control>
+				    <control type="label">
+			        	<posx>30</posx>
+			        	<posy>3</posy>
+        				<width>320</width>
+				        <height>22</height>
+        				<font>font13</font>
+				        <aligny>center</aligny>
+		        		<selectedcolor>green</selectedcolor>
+		        		<align>left</align>
+					<label>$INFO[ListItem.Label]</label>
+					<visible>container.content(artists)</visible>
 				    </control>
 				    <control type="label">
 			        	<posx>450</posx>
@@ -2748,9 +2761,22 @@
 		        		<selectedcolor>green</selectedcolor>
 		        		<align>right</align>
 					<label>$INFO[ListItem.Duration]</label>
+					<visible>container.content(albums)</visible>
+				    </control>
+				    <control type="label">
+			        	<posx>450</posx>
+			        	<posy>3</posy>
+        				<width>100</width>
+				        <height>22</height>
+        				<font>font13</font>
+				        <aligny>center</aligny>
+		        		<selectedcolor>green</selectedcolor>
+		        		<align>right</align>
+					<label>$INFO[ListItem.Label2]</label>
+					<visible>container.content(artists)</visible>
 				    </control>
 				</itemlayout>
-                                <focusedlayout height="29" width="250">
+		                <focusedlayout height="29" width="250">
 		   		    <control type="image">
 				        <width>455</width>
 				        <height>29</height>
@@ -2764,7 +2790,7 @@
 				        <posy>3</posy>
 				        <width>17</width>
 				        <height>22</height>
-				        <texture>$INFO[ListItem.Icon]</texture>
+				        <info>ListItem.Icon</info>
 					<aspectratio align="left">keep</aspectratio>
 				    </control>
 				    <control type="label">
@@ -2777,6 +2803,19 @@
 				        <selectedcolor>green</selectedcolor>
 				        <align>left</align>
 					<label>$INFO[ListItem.TrackNumber] - $INFO[ListItem.Label]</label>
+					<visible>container.content(albums)</visible>
+				    </control>
+				    <control type="label">
+ 				        <posx>30</posx>
+				        <posy>3</posy>
+				        <width>320</width>
+				        <height>22</height>
+				        <font>font13</font>
+				        <aligny>center</aligny>
+				        <selectedcolor>green</selectedcolor>
+				        <align>left</align>
+					<label>$INFO[ListItem.Label]</label>
+					<visible>container.content(artists)</visible>
 				    </control>
 				    <control type="label">
 			        	<posx>450</posx>
@@ -2788,6 +2827,19 @@
 		        		<selectedcolor>green</selectedcolor>
 		        		<align>right</align>
 					<label>$INFO[ListItem.Duration]</label>
+					<visible>container.content(albums)</visible>
+				    </control>
+				    <control type="label">
+			        	<posx>450</posx>
+			        	<posy>3</posy>
+        				<width>100</width>
+				        <height>22</height>
+        				<font>font13</font>
+				        <aligny>center</aligny>
+		        		<selectedcolor>green</selectedcolor>
+		        		<align>right</align>
+					<label>$INFO[ListItem.Label2]</label>
+					<visible>container.content(artists)</visible>
 				    </control>
                                 </focusedlayout>
                         </control>
@@ -2813,6 +2865,7 @@
 				       	<height>22</height>
 				        <texture>$INFO[ListItem.Icon]</texture>
 					<aspectratio align="left">keep</aspectratio>
+					<visible>container.content(albums)</visible>
 				    </control>
 				    <control type="label">
 			        	<posx>30</posx>
@@ -2824,6 +2877,19 @@
 		        		<selectedcolor>green</selectedcolor>
 		        		<align>left</align>
 					<label>$INFO[ListItem.TrackNumber] - $INFO[ListItem.Label]</label>
+					<visible>container.content(albums)</visible>
+				    </control>
+				    <control type="label">
+			        	<posx>30</posx>
+			        	<posy>3</posy>
+        				<width>471</width>
+				        <height>22</height>
+        				<font>font13</font>
+				        <aligny>center</aligny>
+		        		<selectedcolor>green</selectedcolor>
+		        		<align>left</align>
+					<label>$INFO[ListItem.Label]</label>
+					<visible>container.content(artists)</visible>
 				    </control>
 				    <control type="label">
 			        	<posx>466</posx>
@@ -2835,6 +2901,19 @@
 		        		<selectedcolor>green</selectedcolor>
 		        		<align>right</align>
 					<label>$INFO[ListItem.Duration]</label>
+					<visible>container.content(albums)</visible>
+				    </control>
+				    <control type="label">
+			        	<posx>466</posx>
+			        	<posy>3</posy>
+        				<width>100</width>
+				        <height>22</height>
+        				<font>font13</font>
+				        <aligny>center</aligny>
+		        		<selectedcolor>green</selectedcolor>
+		        		<align>right</align>
+					<label>$INFO[ListItem.Label2]</label>
+					<visible>container.content(artists)</visible>
 				    </control>
 				</itemlayout>
                                 <focusedlayout height="29" width="250">
@@ -2853,6 +2932,7 @@
 				        <height>22</height>
 				        <texture>$INFO[ListItem.Icon]</texture>
 					<aspectratio align="left">keep</aspectratio>
+					<visible>container.content(albums)</visible>
 				    </control>
 				    <control type="label">
  				        <posx>30</posx>
@@ -2864,6 +2944,19 @@
 				        <selectedcolor>green</selectedcolor>
 				        <align>left</align>
 					<label>$INFO[ListItem.TrackNumber] - $INFO[ListItem.Label]</label>
+					<visible>container.content(albums)</visible>
+				    </control>
+				    <control type="label">
+ 				        <posx>30</posx>
+				        <posy>3</posy>
+				        <width>371</width>
+				        <height>22</height>
+				        <font>font13</font>
+				        <aligny>center</aligny>
+				        <selectedcolor>green</selectedcolor>
+				        <align>left</align>
+					<label>$INFO[ListItem.Label]</label>
+					<visible>container.content(artists)</visible>
 				    </control>
 				    <control type="label">
 			        	<posx>466</posx>
@@ -2875,6 +2968,19 @@
 		        		<selectedcolor>green</selectedcolor>
 		        		<align>right</align>
 					<label>$INFO[ListItem.Duration]</label>
+					<visible>container.content(albums)</visible>
+				    </control>
+				    <control type="label">
+			        	<posx>466</posx>
+			        	<posy>3</posy>
+        				<width>100</width>
+				        <height>22</height>
+        				<font>font13</font>
+				        <aligny>center</aligny>
+		        		<selectedcolor>green</selectedcolor>
+		        		<align>right</align>
+					<label>$INFO[ListItem.Label2]</label>
+					<visible>container.content(artists)</visible>
 				    </control>
                                 </focusedlayout>
                         </control>

@@ -20,6 +20,7 @@
 			<texture>dialog-panel2.png</texture>
 		</control>
 		<control type="group">
+		<visible>container.content(albums)</visible>
 		<control type="label" id="1">
 			<description>description label</description>
 			<posx>55</posx>
@@ -184,10 +185,218 @@
 			<include>autoscrollmedium</include>
 		</control>
 		</control>
+
+
+		<control type="group">
+		<visible>container.content(artists)</visible>
+		<control type="label" id="1">
+			<description>description label</description>
+			<posx>55</posx>
+			<posy>55</posy>
+			<align>left</align>
+			<label>21891</label>
+			<font>special13</font>
+		</control>
+		<control type="label">
+			<description>Artist value</description>
+			<posx>200</posx>
+			<posy>95</posy>
+			<width>300</width>
+			<width>90</width>
+			<info>ListItem.Property(Artist)</info>
+			<font>font11</font>
+			<scroll>true</scroll>
+		</control>
+		<control type="label">
+			<description>DOB</description>
+			<posx>200</posx>
+			<posy>123</posy>
+			<label>*DOB</label>
+			<width>90</width>
+			<font>font11</font>
+		</control>
+		<control type="label" id="1">
+			<description>Genre</description>
+			<posx>200</posx>
+			<posy>143</posy>
+			<label>201</label>
+			<width>90</width>
+			<font>font11</font>
+		</control>
+		<control type="label" id="1">
+			<description>Styles</description>
+			<posx>200</posx>
+			<posy>163</posy>
+			<label>173</label>
+			<width>90</width>
+			<font>font11</font>
+		</control>
+		<control type="label" id="1">
+			<description>Moods</description>
+			<posx>200</posx>
+			<posy>183</posy>
+			<width>90</width>
+			<label>174</label>
+			<font>font11</font>
+		</control>
+		<control type="label" id="1">
+			<description>Instruments</description>
+			<posx>200</posx>
+			<posy>203</posy>
+			<width>90</width>
+			<label>175</label>
+			<font>font11</font>
+		</control>
+		<control type="fadelabel">
+			<description>DOB value</description>
+			<width>375</width>
+			<posx>310</posx>
+			<posy>123</posy>
+			<info>ListItem.Property(DOB)</info>
+			<font>font11</font>
+			<scroll>true</scroll>
+		</control>
+		<control type="label">
+			<description>Genre value</description>
+			<width>375</width>
+			<posx>310</posx>
+			<posy>143</posy>
+			<info>ListItem.Property(Genre)</info>
+			<font>font11</font>
+			<scroll>true</scroll>
+		</control>
+		<control type="label">
+			<description>Styles value</description>
+			<width>375</width>
+			<posx>310</posx>
+			<posy>163</posy>
+			<info>ListItem.Property(Styles)</info>
+			<font>font11</font>
+			<scroll>true</scroll>
+		</control>
+		<control type="label">
+			<description>Moods value</description>
+			<width>375</width>
+			<posx>310</posx>
+			<posy>183</posy>
+			<info>ListItem.Property(Moods)</info>
+			<font>font11</font>
+			<scroll>true</scroll>
+		</control>
+		<control type="label">
+			<description>Instruments value</description>
+			<posx>310</posx>
+			<posy>203</posy>
+			<width>375</width>
+			<info>ListItem.Property(Instruments)</info>
+			<font>font11</font>
+			<scroll>true</scroll>
+		</control>
+		<control type="image" id="3">
+			<description>Artist Cover image</description>
+			<posx>55</posx>
+			<posy>95</posy>
+			<width>145</width>
+			<height>180</height>
+			<aspectratio align="left">keep</aspectratio>
+			<texture>ListItem.Property(ArtistImage)</texture>
+		</control>
+		<control type="image">
+			<posx>55</posx>
+			<posy>340</posy>
+			<width>625</width>
+			<height>5</height>
+			<texture>separator.png</texture>
+		</control>
+		<control type="textbox" id="4">
+			<description>textarea</description>
+			<posx>200</posx>
+			<posy>350</posy>
+			<width>455</width>
+			<height>170</height>
+			<onleft>9001</onleft>
+			<onright>61</onright>
+			<onup>5</onup>
+			<ondown>5</ondown>
+			<pagecontrol>61</pagecontrol>
+			<visible>!Skin.HasSetting(UseScrollbars)</visible>
+			<include>autoscrollmedium</include>
+			<info>ListItem.Property(Biography)</info>
+		</control>
+		<control type="textbox" id="4">
+			<description>textarea</description>
+			<posx>200</posx>
+			<posy>350</posy>
+			<width>471</width>
+			<height>170</height>
+			<onleft>9001</onleft>
+			<onright>61</onright>
+			<onup>5</onup>
+			<ondown>5</ondown>
+			<visible>Skin.HasSetting(UseScrollbars)</visible>
+			<include>autoscrollmedium</include>
+			<info>ListItem.Property(Biography)</info>
+		</control>
+		</control>
+
 		<control type="group" id="9000">
+		<visible>container.content(artists)</visible>
 		<posy>-22</posy>
 		<control type="button" id ="5">
 			<description>Tracks/Review</description>
+			<posx>55</posx>
+			<posy>372</posy>
+			<width>135</width>
+			<height>32</height>
+			<label>182</label>
+			<font>font10</font>
+			<align>center</align>
+			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+			<onleft>61</onleft>
+			<onright>50</onright>
+			<onup>10</onup>
+			<ondown>6</ondown>
+		</control>
+		<control type="button" id ="6">
+			<description>Refresh</description>
+			<posx>55</posx>
+			<posy>407</posy>
+			<width>135</width>
+			<height>32</height>
+			<label>184</label>
+			<font>font10</font>
+			<align>center</align>
+			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+			<onleft>61</onleft>
+			<onright>50</onright>
+			<onup>5</onup>
+			<ondown>10</ondown>
+		</control>
+		<control type="button" id ="10">
+			<description>GetThumb</description>
+			<posx>55</posx>
+			<posy>442</posy>
+			<width>135</width>
+			<height>32</height>
+			<label>13405</label>
+			<font>font10</font>
+			<align>center</align>
+			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+			<onleft>61</onleft>
+			<onright>50</onright>
+			<onup>6</onup>
+			<ondown>5</ondown>
+		</control>
+		</control>
+
+		<control type="group" id="9001">
+		<visible>container.content(artists)</visible>
+		<posy>-22</posy>
+		<control type="button" id ="5">
+			<description>Discography/Biography</description>
 			<posx>55</posx>
 			<posy>372</posy>
 			<width>135</width>

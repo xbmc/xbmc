@@ -70,7 +70,10 @@ CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
   m_strLabel2 = album.strArtist;
   CUtil::AddSlashAtEnd(m_strPath);
   GetMusicInfoTag()->SetAlbum(album);
-  m_strThumbnailImage = album.strThumb;
+  if (album.thumbURL.m_url.size() > 0)
+    m_strThumbnailImage = album.thumbURL.m_url[0].m_url;
+  else
+    m_strThumbnailImage.clear();
 }
 
 CFileItem::CFileItem(const CVideoInfoTag& movie)

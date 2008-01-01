@@ -103,6 +103,30 @@ void CGUIDialogMusicScan::StartScanning(const CStdString& strDirectory)
   m_musicInfoScanner.Start(strDirectory);
 }
 
+void CGUIDialogMusicScan::StartAlbumScan(const CStdString& strDirectory)
+{
+  m_ScanState = PREPARING;
+
+  Show();
+
+  // save settings
+  g_application.SaveMusicScanSettings();
+
+  m_musicInfoScanner.FetchAlbumInfo(strDirectory);
+}
+
+void CGUIDialogMusicScan::StartArtistScan(const CStdString& strDirectory)
+{
+  m_ScanState = PREPARING;
+
+  Show();
+
+  // save settings
+  g_application.SaveMusicScanSettings();
+
+  m_musicInfoScanner.FetchArtistInfo(strDirectory);
+}
+
 void CGUIDialogMusicScan::StopScanning()
 {
   if (m_musicInfoScanner.IsScanning())
@@ -158,6 +182,16 @@ void CGUIDialogMusicScan::UpdateState()
       if (pProgressCtrl) pProgressCtrl->SetPercentage(m_fPercentDone);
     }
   }
+  else if (m_ScanState == DOWNLOADING_ALBUM_INFO || m_ScanState == DOWNLOADING_ARTIST_INFO)
+  {
+    SET_CONTROL_LABEL(CONTROL_LABELDIRECTORY, m_strCurrentDir);
+    if (m_fPercentDone>-1.0F)
+    {
+      SET_CONTROL_VISIBLE(CONTROL_PROGRESS);
+      CGUIProgressControl* pProgressCtrl=(CGUIProgressControl*)GetControl(CONTROL_PROGRESS);
+      if (pProgressCtrl) pProgressCtrl->SetPercentage(m_fPercentDone);
+    }
+  }
   else
   {
     SET_CONTROL_LABEL(CONTROL_LABELDIRECTORY, "");
@@ -179,6 +213,10 @@ int CGUIDialogMusicScan::GetStateString()
     return 331;
   else if (m_ScanState == WRITING_CHANGES)
     return 328;
+  else if (m_ScanState == DOWNLOADING_ALBUM_INFO)
+    return 21885;
+  else if (m_ScanState == DOWNLOADING_ARTIST_INFO)
+    return 21886;
 
   return -1;
 }

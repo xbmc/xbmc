@@ -8,8 +8,10 @@
 #include <vector>
 
 #include "MusicInfotag.h"
+#include "utils/IMDB.h"
 
 using namespace MUSIC_INFO;
+
 
 /*!
  \ingroup music
@@ -28,12 +30,11 @@ public:
   CStdString strAlbum;
   CStdString strArtist;
   CStdString strGenre;
-  CStdString strThumb;
-  CStdString strTones ;
-  CStdString strStyles ;
-  CStdString strReview ;
-  CStdString strImage ;
-  int iRating ;
+  CScraperUrl thumbURL;  
+  CStdString strTones;
+  CStdString strStyles;
+  CStdString strReview;
+  int iRating;
   int iYear;
 };
 
@@ -41,7 +42,33 @@ class CArtist
 {
 public:
   long idArtist;
+  bool operator<(const CArtist& a) const
+  {
+    return strArtist < a.strArtist;
+  }
+
+  void Reset()
+  {
+    strArtist.Empty();
+    strGenre.Empty();
+    strBiography.Empty();
+    strStyles.Empty();
+    strTones.Empty();
+    strInstruments.Empty();
+    strBorn.Empty();
+    thumbURL.Clear();
+    discography.clear();
+    idArtist = -1;
+  }
   CStdString strArtist;
+  CStdString strGenre;
+  CStdString strBiography;
+  CStdString strStyles;
+  CStdString strTones;
+  CStdString strInstruments;
+  CStdString strBorn;
+  CScraperUrl thumbURL;
+  std::vector<std::pair<CStdString,CStdString> > discography;
 };
 
 class CGenre

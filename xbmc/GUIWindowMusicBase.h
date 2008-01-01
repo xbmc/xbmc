@@ -12,6 +12,8 @@
 #include "playlistplayer.h"
 #include "musicinfoloader.h"
 
+struct SScraperInfo;
+
 /*!
  \ingroup windows 
  \brief The base class for music windows
@@ -55,12 +57,14 @@ protected:
 
   void RetrieveMusicInfo();
   void OnInfo(int iItem, bool bShowInfo = true);
-  void OnInfoAll(int iItem);
+  void OnInfoAll(int iItem, bool bCurrent=false);
   virtual void OnQueueItem(int iItem);
   enum ALLOW_SELECTION { SELECTION_ALLOWED = 0, SELECTION_AUTO, SELECTION_FORCED };
-  bool FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, CMusicAlbumInfo& album, ALLOW_SELECTION allowSelection);
+  bool FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, CMusicAlbumInfo& album, const SScraperInfo& info, ALLOW_SELECTION allowSelection);
+  bool FindArtistInfo(const CStdString& strArtist, CMusicArtistInfo& artist, const SScraperInfo& info, ALLOW_SELECTION allowSelection);
 
   void ShowAlbumInfo(const CAlbum &album, const CStdString &strPath, bool bRefresh, bool bShowInfo = true);
+  void ShowArtistInfo(const CArtist &artist, const CStdString &strPath, bool bRefresh, bool bShowInfo = true);
   void ShowSongInfo(CFileItem* pItem);
   void UpdateThumb(const CAlbum &album, const CStdString &path);
 

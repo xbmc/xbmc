@@ -2064,7 +2064,10 @@ int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
   CStdString albums="", album, artist="", tmp;
   double relevance;
   bool rel = false;
-  CMusicInfoScraper scraper;
+  SScraperInfo info;
+  info.strContent = "albums";
+  info.strPath = "allmusic.xml"; // TODO - hardcoded - not that i really care
+  CMusicInfoScraper scraper(info); 
 
   if (numParas<1)
     return SetResponse(openTag+"Error:Missing album name");
@@ -2095,13 +2098,13 @@ int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
           for (int i=0; i < iAlbumCount; ++i)
           {
             CMusicAlbumInfo& info = scraper.GetAlbum(i);
-            albums += closeTag+openTag + info.GetTitle2() + "<@@>" + info.GetAlbumURL();
-			if (rel)
-			{
-			  relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, album, info.GetAlbum().strArtist, artist);
+            albums += closeTag+openTag + info.GetTitle2() + "<@@>" + info.GetAlbumURL().m_url[0].m_url;
+            if (rel)
+            {
+              relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, album, info.GetAlbum().strArtist, artist);
               tmp.Format("%f",relevance);
-			  albums += "<@@@>"+tmp;
-			}
+              albums += "<@@@>"+tmp;
+            }
           }
           return SetResponse(albums) ;
         }
@@ -2127,11 +2130,14 @@ int CXbmcHttp::xbmcChooseAlbum(int numParas, CStdString paras[])
   else
     try
     {
-      CMusicAlbumInfo musicInfo("", paras[0]) ;
+      CMusicAlbumInfo musicInfo;//("", "") ;
       CHTTP http;
-      if (musicInfo.Load(http))
+      SScraperInfo info; // TODO - WTF is this code supposed to do?
+      if (musicInfo.Load(http,info))
       {
-        output=openTag+"image:" + musicInfo.GetAlbum().strImage;
+        if (musicInfo.GetAlbum().thumbURL.m_url.size() > 0)
+         output=openTag+"image:" + musicInfo.GetAlbum().thumbURL.m_url[0].m_url;
+
         output+=closeTag+openTag+"review:" + musicInfo.GetAlbum().strReview;
         return SetResponse(output) ;
       }

@@ -457,7 +457,7 @@ public:
   void ResetCurrentSlide();
   void SetCurrentSongTag(const CMusicInfoTag &tag) 
   {
-    CLog::Log(LOGDEBUG, "Asked to SetCurrentTag");
+    //CLog::Log(LOGDEBUG, "Asked to SetCurrentTag");
     *m_currentFile.GetMusicInfoTag() = tag; 
     m_currentFile.m_lStartOffset = 0;
   };
@@ -621,6 +621,7 @@ protected:
  */
 extern CGUIInfoManager g_infoManager;
 #endif
+
 
 
 

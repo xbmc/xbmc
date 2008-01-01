@@ -12,6 +12,8 @@ public:
   virtual void Render();
 
   void StartScanning(const CStdString& strDirectory);
+  void StartAlbumScan(const CStdString& strDirectory);
+  void StartArtistScan(const CStdString& strDirectory);
   bool IsScanning();
   void StopScanning();
 

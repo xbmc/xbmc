@@ -27,6 +27,8 @@
 #include "Picture.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIPassword.h"
+#include "MusicDatabase.h"
+#include "utils/GUIInfoManager.h"
 
 using namespace XFILE;
 
@@ -101,6 +103,20 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
         m_bViewReview = !m_bViewReview;
         Update();
       }
+      else if (iControl == CONTROL_LIST)
+      {
+        int iAction = message.GetParam1();
+        if (ACTION_SELECT_ITEM == iAction && m_bArtistInfo)
+        {
+          CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl, 0, 0, NULL);
+          g_graphicsContext.SendMessage(msg);
+          int iItem = msg.GetParam1();
+          if (iItem < 0 || iItem >= (int)m_albumSongs.Size())
+            break;
+          OnSearch(m_albumSongs[iItem]);
+          return true;
+        }
+      }
     }
     break;
   }
@@ -125,6 +141,27 @@ void CGUIWindowMusicInfo::SetAlbum(const CAlbum& album, const VECSONGS &songs, c
   m_albumItem.SetProperty("albumreview", m_album.strReview);
   m_albumItem.SetMusicThumb();
   m_hasUpdatedThumb = false;
+  m_bArtistInfo = false;
+  g_infoManager.m_content = "albums";
+}
+
+void CGUIWindowMusicInfo::SetArtist(const CArtist& artist, const CStdString &path)
+{
+  m_artist = artist;
+  SetDiscography();
+  m_albumItem = CFileItem(path, true);
+  m_albumItem.SetLabel(artist.strArtist);
+  m_albumItem.GetMusicInfoTag()->SetAlbumArtist(m_artist.strArtist);
+  m_albumItem.GetMusicInfoTag()->SetArtist(m_artist.strArtist);
+  m_albumItem.GetMusicInfoTag()->SetLoaded(true);
+  m_albumItem.GetMusicInfoTag()->SetGenre(m_artist.strGenre);
+  m_albumItem.SetProperty("styles", m_artist.strStyles);
+  m_albumItem.SetProperty("tones", m_artist.strTones);
+  m_albumItem.SetProperty("biography", m_artist.strBiography);
+  m_albumItem.SetCachedArtistThumb();
+  m_hasUpdatedThumb = false;
+  m_bArtistInfo = true;
+  g_infoManager.m_content = "artists";
 }
 
 void CGUIWindowMusicInfo::SetSongs(const VECSONGS &songs)
@@ -138,41 +175,95 @@ void CGUIWindowMusicInfo::SetSongs(const VECSONGS &songs)
   }
 }
 
+void CGUIWindowMusicInfo::SetDiscography()
+{
+  m_albumSongs.Clear();
+  CMusicDatabase database;
+  database.Open();
+
+  for (unsigned int i=0;i<m_artist.discography.size();++i)
+  {
+    CFileItem item(m_artist.discography[i].first);
+    item.SetLabel2(m_artist.discography[i].second);
+    long idAlbum = database.GetAlbumByName(item.GetLabel(),m_artist.strArtist);
+    CStdString strThumb;
+    if (idAlbum != -1) // we need this slight stupidity to get correct case for the album name
+      database.GetAlbumThumb(idAlbum,strThumb);
+
+    if (!strThumb.IsEmpty() && CFile::Exists(strThumb))
+      item.SetThumbnailImage(strThumb);
+    else
+      item.SetThumbnailImage("defaultAlbumCover.png");
+
+    m_albumSongs.Add(new CFileItem(item));
+  }
+}
+
 void CGUIWindowMusicInfo::Update()
 {
-  SetLabel(CONTROL_ALBUM, m_album.strAlbum );
-  SetLabel(CONTROL_ARTIST, m_album.strArtist );
-  CStdString date; date.Format("%d", m_album.iYear);
-  SetLabel(CONTROL_DATE, date );
-
-  CStdString strRating;
-  if (m_album.iRating > 0)
-    strRating.Format("%i/9", m_album.iRating);
-  SetLabel(CONTROL_RATING, strRating );
-
-  SetLabel(CONTROL_GENRE, m_album.strGenre);
-  SetLabel(CONTROL_TONE, m_album.strTones);
-  SetLabel(CONTROL_STYLES, m_album.strStyles );
-
-  if (m_bViewReview)
+  if (m_bArtistInfo)
   {
-    SET_CONTROL_VISIBLE(CONTROL_TEXTAREA);
-    SET_CONTROL_HIDDEN(CONTROL_LIST);
-    SetLabel(CONTROL_TEXTAREA, m_album.strReview);
-    SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 182);
+    SetLabel(CONTROL_ARTIST, m_artist.strArtist );
+    SetLabel(CONTROL_GENRE, m_artist.strGenre);
+    SetLabel(CONTROL_TONE, m_artist.strTones);
+    SetLabel(CONTROL_STYLES, m_artist.strStyles );
+    if (m_bViewReview)
+    {
+      SET_CONTROL_VISIBLE(CONTROL_TEXTAREA);
+      SET_CONTROL_HIDDEN(CONTROL_LIST);
+      SetLabel(CONTROL_TEXTAREA, m_artist.strBiography);
+      SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 21888);
+    }
+    else
+    {
+      SET_CONTROL_VISIBLE(CONTROL_LIST);
+      if (GetControl(CONTROL_LIST))
+      {
+        SET_CONTROL_HIDDEN(CONTROL_TEXTAREA);
+        CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, &m_albumSongs);
+        OnMessage(message);
+      }
+      else
+        CLog::Log(LOGERROR, "Out of date skin - needs list with id %i", CONTROL_LIST);
+      SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 21887);
+    }
   }
   else
   {
-    SET_CONTROL_VISIBLE(CONTROL_LIST);
-    if (GetControl(CONTROL_LIST))
+    SetLabel(CONTROL_ALBUM, m_album.strAlbum );
+    SetLabel(CONTROL_ARTIST, m_album.strArtist );
+    CStdString date; date.Format("%d", m_album.iYear);
+    SetLabel(CONTROL_DATE, date );
+
+    CStdString strRating;
+    if (m_album.iRating > 0)
+      strRating.Format("%i/9", m_album.iRating);
+    SetLabel(CONTROL_RATING, strRating );
+
+    SetLabel(CONTROL_GENRE, m_album.strGenre);
+    SetLabel(CONTROL_TONE, m_album.strTones);
+    SetLabel(CONTROL_STYLES, m_album.strStyles );
+
+    if (m_bViewReview)
     {
-      SET_CONTROL_HIDDEN(CONTROL_TEXTAREA);
-      CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, &m_albumSongs);
-      OnMessage(message);
+      SET_CONTROL_VISIBLE(CONTROL_TEXTAREA);
+      SET_CONTROL_HIDDEN(CONTROL_LIST);
+      SetLabel(CONTROL_TEXTAREA, m_album.strReview);
+      SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 182);
     }
     else
-      CLog::Log(LOGERROR, "Out of date skin - needs list with id %i", CONTROL_LIST);
-    SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 183);
+    {
+      SET_CONTROL_VISIBLE(CONTROL_LIST);
+      if (GetControl(CONTROL_LIST))
+      {
+        SET_CONTROL_HIDDEN(CONTROL_TEXTAREA);
+        CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, &m_albumSongs);
+        OnMessage(message);
+      }
+      else
+        CLog::Log(LOGERROR, "Out of date skin - needs list with id %i", CONTROL_LIST);
+      SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 183);
+    }
   }
   // update the thumbnail
   const CGUIControl* pControl = GetControl(CONTROL_IMAGE);
@@ -209,7 +300,12 @@ void CGUIWindowMusicInfo::RefreshThumb()
 {
   CStdString thumbImage = m_albumItem.GetThumbnailImage();
   if (!m_albumItem.HasThumbnail())
-    thumbImage = CUtil::GetCachedAlbumThumb(m_album.strAlbum, m_album.strArtist);
+  {
+    if (m_bArtistInfo)
+      thumbImage = m_albumItem.GetCachedArtistThumb();
+    else
+      thumbImage = CUtil::GetCachedAlbumThumb(m_album.strAlbum, m_album.strArtist);
+  }
 
   if (!CFile::Exists(thumbImage))
   {
@@ -228,15 +324,31 @@ bool CGUIWindowMusicInfo::NeedRefresh() const
   return m_bRefresh;
 }
 
-bool CGUIWindowMusicInfo::DownloadThumbnail(const CStdString &thumbFile)
+int CGUIWindowMusicInfo::DownloadThumbnail(const CStdString &thumbFile)
 {
   // Download image and save as thumbFile
-  if (m_album.strImage.IsEmpty())
-    return false;
+  if (m_bArtistInfo)
+  {
+    if (m_artist.thumbURL.m_url.size() == 0)
+      return 0;
 
-  CHTTP http;
-  http.Download(m_album.strImage, thumbFile);
-  return true;
+    int iResult=0;
+    for (unsigned int i=0;i<m_artist.thumbURL.m_url.size();++i)
+    {
+      CStdString strThumb;
+      strThumb.Format("%s-%i.jpg",thumbFile.c_str(),i);
+      if (CScraperUrl::DownloadThumbnail(strThumb,m_artist.thumbURL.m_url[i]))
+        iResult++;
+    }
+    return iResult;
+  }
+  else
+  {
+    if (m_album.thumbURL.m_url.size() == 0)
+      if (CScraperUrl::DownloadThumbnail(thumbFile+"-1.jpg",m_album.thumbURL.m_url[0]))
+        return 1;
+  }
+  return 0;
 }
 
 void CGUIWindowMusicInfo::OnInitWindow()
@@ -259,13 +371,20 @@ void CGUIWindowMusicInfo::OnGetThumb()
 
   // Grab the thumbnail from the web
   CStdString thumbFromWeb;
-  CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, "allmusicThumb.jpg", thumbFromWeb);
-  if (DownloadThumbnail(thumbFromWeb))
+  CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, "allmusicThumb", thumbFromWeb);
+  int iDownloaded=DownloadThumbnail(thumbFromWeb);
+  if (iDownloaded > 0)
   {
-    CFileItem *item = new CFileItem("thumb://allmusic.com", false);
-    item->SetThumbnailImage(thumbFromWeb);
-    item->SetLabel(g_localizeStrings.Get(20055));
-    items.Add(item);
+    for (int i=0;i<iDownloaded;++i)
+    {
+      CStdString strThumb;
+      strThumb.Format("thumb://Remote%i",i);
+      CFileItem *item = new CFileItem(strThumb, false);
+      strThumb.Format("%s-%i.jpg",thumbFromWeb,i);
+      item->SetThumbnailImage(strThumb);
+      item->SetLabel(g_localizeStrings.Get(20055));
+      items.Add(item);
+    }
   }
 
   // Current thumb
@@ -279,7 +398,17 @@ void CGUIWindowMusicInfo::OnGetThumb()
 
   // local thumb
   CStdString cachedLocalThumb;
-  CStdString localThumb(m_albumItem.GetUserMusicThumb());
+  CStdString localThumb;
+  if (m_bArtistInfo)
+  {
+    CMusicDatabase database;
+    database.Open();
+    CStdString strArtistPath;
+    database.GetArtistPath(m_artist.idArtist,strArtistPath);
+    CUtil::AddFileToFolder(strArtistPath,"folder.jpg",localThumb);
+  }
+  else
+    CStdString localThumb = m_albumItem.GetUserMusicThumb();
   if (CFile::Exists(localThumb))
   {
     CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, "localthumb.jpg", cachedLocalThumb);
@@ -292,16 +421,15 @@ void CGUIWindowMusicInfo::OnGetThumb()
       items.Add(item);
     }
   }
+  
+  CFileItem *item = new CFileItem("thumb://None", false);
+  if (m_bArtistInfo)
+    item->SetThumbnailImage("defaultArtistBig.png");
   else
-  { // no local thumb exists, so we are just using the allmusic.com thumb or cached thumb
-    // which is probably the allmusic.com thumb.  These could be wrong, so allow the user
-    // to delete the incorrect thumb
-    CFileItem *item = new CFileItem("thumb://None", false);
     item->SetThumbnailImage("defaultAlbumCover.png");
-    item->SetLabel(g_localizeStrings.Get(20018));
-    items.Add(item);
-  }
-
+  item->SetLabel(g_localizeStrings.Get(20018));
+  items.Add(item);
+  
   CStdString result;
   if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_musicSources, g_localizeStrings.Get(1030), result))
     return;   // user cancelled
@@ -311,15 +439,19 @@ void CGUIWindowMusicInfo::OnGetThumb()
 
   // delete the thumbnail if that's what the user wants, else overwrite with the
   // new thumbnail
-  CStdString cachedThumb(CUtil::GetCachedAlbumThumb(m_album.strAlbum, m_album.strArtist));
+  CStdString cachedThumb;
+  if (m_bArtistInfo)
+    cachedThumb = m_albumItem.GetCachedArtistThumb();
+  else
+    cachedThumb = CUtil::GetCachedAlbumThumb(m_album.strAlbum, m_album.strArtist);
 
   if (result == "thumb://None")
   { // cache the default thumb
     CPicture pic;
     pic.CacheSkinImage("defaultAlbumCover.png", cachedThumb);
   }
-  else if (result == "thumb://allmusic.com")
-    CFile::Cache(thumbFromWeb, cachedThumb);
+  else if (result.Left(14).Equals("thumb://Remote"))
+    CFile::Cache(thumbFromWeb+"-"+result.Mid(14)+".jpg", cachedThumb);
   else if (result == "thumb://Local")
     CFile::Cache(cachedLocalThumb, cachedThumb);
   else if (CFile::Exists(result))
@@ -337,4 +469,24 @@ void CGUIWindowMusicInfo::OnGetThumb()
   g_graphicsContext.SendMessage(msg);
   // Update our screen
   Update();
+}
+
+void CGUIWindowMusicInfo::OnSearch(const CFileItem* pItem)
+{
+  CMusicDatabase database;
+  database.Open();
+  long idAlbum = database.GetAlbumByName(pItem->GetLabel(),m_artist.strArtist);
+  if (idAlbum != -1)
+  {
+    CAlbum album;
+    VECSONGS songs;
+    CStdString strPath;
+
+    if (database.GetAlbumInfo(idAlbum,album,songs))
+    {
+      database.GetAlbumPath(idAlbum,strPath);
+      SetAlbum(album,songs,strPath);
+      Update();
+    }
+  }
 }
