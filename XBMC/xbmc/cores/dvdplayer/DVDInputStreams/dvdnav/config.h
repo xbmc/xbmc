@@ -75,4 +75,6 @@ typedef unsigned int        uint32_t;
 typedef signed int          int32_t;
 typedef unsigned __int64    uint64_t;
 typedef signed __int64      int64_t;
+#ifndef __APPLE__
 typedef unsigned int        uintptr_t;
+#endif
