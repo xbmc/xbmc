@@ -148,6 +148,10 @@ LPVOID GetXbdmBaseAddress()
 #endif
 #endif
 
+#ifdef __APPLE__
+#define APIENTRY
+#endif
+
 //  Entry point of a dll (DllMain)
 typedef BOOL (APIENTRY *EntryFunc)(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved);
 
