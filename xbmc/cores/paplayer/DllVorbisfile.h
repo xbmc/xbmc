@@ -40,7 +40,9 @@ public:
 
 class DllVorbisfile : public DllDynamic, DllVorbisfileInterface
 {
-#ifndef _LINUX
+#ifdef __APPLE__
+  DECLARE_DLL_WRAPPER(DllVorbisfile, Q:\\system\\players\\paplayer\\vorbisfile-osx.so)
+#elif !defined(_LINUX)
   DECLARE_DLL_WRAPPER(DllVorbisfile, Q:\\system\\players\\PAPlayer\\vorbisfile.dll)
 #else
   DECLARE_DLL_WRAPPER(DllVorbisfile, Q:\\system\\players\\paplayer\\vorbisfile-i486-linux.so)

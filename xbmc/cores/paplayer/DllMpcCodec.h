@@ -22,7 +22,9 @@ public:
 
 class DllMPCCodec : public DllDynamic, DllMPCCodecInterface
 {
-#ifndef _LINUX
+#ifdef __APPLE__
+  DECLARE_DLL_WRAPPER(DllMPCCodec, Q:\\system\\players\\paplayer\\libmpcdec-osx.so)
+#elif !defined _LINUX
   DECLARE_DLL_WRAPPER(DllMPCCodec, Q:\\system\\players\\PAPlayer\\libmpcdec.dll)
 #else
   DECLARE_DLL_WRAPPER(DllMPCCodec, Q:\\system\\players\\paplayer\\libmpcdec-i486-linux.so)

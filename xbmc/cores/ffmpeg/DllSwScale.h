@@ -40,7 +40,11 @@ public:
 
 class DllSwScale : public DllDynamic, public DllSwScaleInterface
 {
+#ifdef __APPLE__
+  DECLARE_DLL_WRAPPER(DllSwScale, Q:\\system\\players\\dvdplayer\\swscale-51-osx.so)
+#else
   DECLARE_DLL_WRAPPER(DllSwScale, Q:\\system\\players\\dvdplayer\\swscale-51-i486-linux.so)
+#endif
 
   DEFINE_METHOD10(struct SwsContext *, sws_getContext, ( int p1, int p2, int p3, int p4, int p5, int p6, int p7, 
 							 SwsFilter * p8, SwsFilter * p9, double * p10))
