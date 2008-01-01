@@ -2333,7 +2333,7 @@ CStdString CFileItem::GetUserVideoThumb()
   // 2. if a folder, check for folder.jpg
   if (m_bIsFolder)
   {
-    CStdString folderThumb(GetFolderThumb());
+    CStdString folderThumb(PTH_IC(GetFolderThumb()));
     if (CFile::Exists(folderThumb))
       return folderThumb;
   }
