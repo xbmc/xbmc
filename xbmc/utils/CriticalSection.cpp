@@ -51,7 +51,11 @@ BOOL NTAPI OwningCriticalSection(LPCRITICAL_SECTION section)
   return (PKTHREAD)section->OwningThread == GetCurrentKPCR()->PrcbData.CurrentThread;
 #elif defined(_LINUX)
   bool bOwning = false;
+#ifdef __APPLE__
+  printf("Warning: broken OwningCriticalSection\n");
+#else
   if (section->__data.__count > 0)
+#endif
   {
     bOwning = (pthread_mutex_trylock(section) == 0);
     if (bOwning)
@@ -70,6 +74,8 @@ DWORD NTAPI ExitCriticalSection(LPCRITICAL_SECTION section)
 
 #ifndef _LINUX
   DWORD count = section->RecursionCount;
+#elif defined(__APPLE__)
+  DWORD count = 0;
 #else
   DWORD count = section->__data.__count;
 #endif
