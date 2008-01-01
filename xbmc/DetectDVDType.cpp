@@ -30,7 +30,9 @@
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
+#ifndef __APPLE__
 #include <linux/cdrom.h>
+#endif
 #endif
 #include "Application.h"
 #include "Util.h"
@@ -316,6 +318,9 @@ void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA
 
 DWORD CDetectDVDMedia::GetTrayState()
 {
+#ifdef __APPLE__
+  return DRIVE_READY;
+#else
 #ifdef HAS_UNDOCUMENTED
   HalReadSMCTrayState(&m_dwTrayState, &m_dwTrayCount);
 #endif
@@ -448,6 +453,7 @@ DWORD CDetectDVDMedia::GetTrayState()
 #else
   return DRIVE_READY;
 #endif
+#endif // __APPLE__
 }
 
 void CDetectDVDMedia::UpdateState()
