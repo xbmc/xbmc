@@ -390,7 +390,6 @@ int SDL_SemWaitTimeout2(SDL_sem *sem, Uint32 dwMilliseconds)
       SDL_SemPost(sem);
 	
 	return nRet;
-	
 #else
   int nRet = 0;
   struct timespec req;
@@ -404,12 +403,13 @@ int SDL_SemWaitTimeout2(SDL_sem *sem, Uint32 dwMilliseconds)
     continue;
   }
  
- #endif
- 
   if (nRet != 0)
   {
     return SDL_MUTEX_TIMEDOUT;
   }
+	
+	// FIXME, return something here.
+#endif
 }
 
 #endif
