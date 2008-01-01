@@ -2,11 +2,18 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#ifndef __APPLE__
 #include <linux/if.h>
 #include <linux/wireless.h>
 #include <linux/sockios.h>
+#endif
 #include <errno.h>
 #include <resolv.h>
+#ifdef __APPLE__
+#include <sys/sockio.h>
+#include <net/if.h>
+#include <ifaddrs.h>
+#endif
 #include <net/if_arp.h>
 #include "PlatformDefs.h"
 #include "NetworkLinux.h"
@@ -31,10 +38,14 @@ CStdString& CNetworkInterfaceLinux::GetName(void)
 
 bool CNetworkInterfaceLinux::IsWireless()
 {
+#ifdef __APPLE__
+  return false;
+#else
 	struct iwreq wrq;      
    strcpy(wrq.ifr_name, m_interfaceName.c_str()); 
    if (ioctl(m_network->GetSocket(), SIOCGIWNAME, &wrq) < 0)
     	return false;
+#endif
 
    return true;
 }
@@ -70,7 +81,10 @@ bool CNetworkInterfaceLinux::IsConnected()
 CStdString CNetworkInterfaceLinux::GetMacAddress()
 {
    CStdString result = "";
-   
+
+#ifdef __APPLE__
+   result.Format("00:00:00:00:00:00");
+#else
    struct ifreq ifr;
    strcpy(ifr.ifr_name, m_interfaceName.c_str());
    if (ioctl(m_network->GetSocket(), SIOCGIFHWADDR, &ifr) >= 0)
@@ -83,6 +97,7 @@ CStdString CNetworkInterfaceLinux::GetMacAddress()
          ifr.ifr_hwaddr.sa_data[4], 
          ifr.ifr_hwaddr.sa_data[5]);
    } 
+#endif
 
    return result;
 }
@@ -120,7 +135,8 @@ CStdString CNetworkInterfaceLinux::GetCurrentNetmask(void)
 CStdString CNetworkInterfaceLinux::GetCurrentWirelessEssId(void)
 {
    CStdString result = "";
-   
+
+#ifndef __APPLE__  
    char essid[IW_ESSID_MAX_SIZE + 1];
    memset(&essid, 0, sizeof(essid));
    
@@ -133,6 +149,7 @@ CStdString CNetworkInterfaceLinux::GetCurrentWirelessEssId(void)
    {
       result = essid;
    }
+#endif
    
    return result;   
 }
@@ -141,6 +158,7 @@ CStdString CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
 {
    CStdString result = "";
    
+#ifndef __APPLE__
    FILE* fp = fopen("/proc/net/route", "r");
    if (!fp)
    {
@@ -186,6 +204,7 @@ CStdString CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
    }
    
    fclose(fp);
+#endif
    
    return result;
 }
@@ -210,7 +229,27 @@ std::vector<CNetworkInterface*>& CNetworkLinux::GetInterfaceList(void)
 void CNetworkLinux::queryInterfaceList()
 {
    m_interfaces.clear();
-         
+
+#ifdef __APPLE__
+
+   // Query the list of interfaces.
+   struct ifaddrs *list;
+   if (getifaddrs(&list) < 0)
+     return;
+   
+   struct ifaddrs *cur;        
+   for(cur = list; cur != NULL; cur = cur->ifa_next)
+   {
+     if(cur->ifa_addr->sa_family != AF_INET)
+       continue;
+     
+     // Add the interface.
+     m_interfaces.push_back(new CNetworkInterfaceLinux(this, cur->ifa_name));
+   }
+   
+   freeifaddrs(list);
+
+#else
    FILE* fp = fopen("/proc/net/dev", "r");
    if (!fp)
    {
@@ -250,12 +289,13 @@ void CNetworkLinux::queryInterfaceList()
    }
    
    fclose(fp);
+#endif
 }
 
 std::vector<CStdString> CNetworkLinux::GetNameServers(void)
 {
    std::vector<CStdString> result;
-   
+#ifndef __APPLE__
    res_init();
    
    for (int i = 0; i < _res.nscount; i ++)
@@ -263,7 +303,7 @@ std::vector<CStdString> CNetworkLinux::GetNameServers(void)
       CStdString ns = inet_ntoa(((struct sockaddr_in *)&_res.nsaddr_list[0])->sin_addr);
       result.push_back(ns);
    }
-      
+#endif 
    return result;
 }
 
@@ -284,13 +324,14 @@ void CNetworkLinux::SetNameServers(std::vector<CStdString> nameServers)
    }
 }
 
-std::vector<NetworkAccessPoint>  CNetworkInterfaceLinux::GetAccessPoints(void)
+std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
 {
    std::vector<NetworkAccessPoint> result;
 
    if (!IsWireless())
       return result;
    
+#ifndef __APPLE__
    // Query the wireless extentsions version number. It will help us when we 
    // parse the resulting events   
    struct iwreq iwr;
@@ -461,6 +502,7 @@ std::vector<NetworkAccessPoint>  CNetworkInterfaceLinux::GetAccessPoints(void)
       
    free(res_buf);
    res_buf = NULL;
+#endif
    
    return result;  
 }
@@ -475,6 +517,7 @@ void CNetworkInterfaceLinux::GetSettings(NetworkAssignment& assignment, CStdStri
    encryptionMode = ENC_NONE;
    assignment = NETWORK_DISABLED;
 
+#ifndef __APPLE__
    FILE* fp = fopen("/etc/network/interfaces", "r");
    if (!fp)
    {
@@ -544,10 +587,12 @@ void CNetworkInterfaceLinux::GetSettings(NetworkAssignment& assignment, CStdStri
       encryptionMode = ENC_WPA;
       
    fclose(fp);
+#endif
 }
 
 void CNetworkInterfaceLinux::SetSettings(NetworkAssignment& assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode)
 {
+#ifndef __APPLE__
    FILE* fr = fopen("/etc/network/interfaces", "r");
    if (!fr)
    {
@@ -639,6 +684,7 @@ void CNetworkInterfaceLinux::SetSettings(NetworkAssignment& assignment, CStdStri
       cmd = "/sbin/ifup " + GetName();
       system(cmd.c_str());
    }
+#endif
 }
      
 void CNetworkInterfaceLinux::WriteSettings(FILE* fw, NetworkAssignment assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode)
