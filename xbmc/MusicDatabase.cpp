@@ -72,13 +72,13 @@ bool CMusicDatabase::CreateTables()
     CLog::Log(LOGINFO, "create song table");
     m_pDS->exec("CREATE TABLE song ( idSong integer primary key, idAlbum integer, idPath integer, idArtist integer, strExtraArtists text, idGenre integer, strExtraGenres text, strTitle text, iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text, strMusicBrainzTrackID text, strMusicBrainzArtistID text, strMusicBrainzAlbumID text, strMusicBrainzAlbumArtistID text, strMusicBrainzTRMID text, iTimesPlayed integer, iStartOffset integer, iEndOffset integer, idThumb integer, lastplayed text default NULL, rating char default '0', comment text)\n");
     CLog::Log(LOGINFO, "create albuminfo table");
-    m_pDS->exec("CREATE TABLE albuminfo ( idAlbumInfo integer primary key, idAlbum integer, iYear integer, idGenre integer, strExtraGenres text, strTones text, strStyles text, strReview text, strImage text, iRating integer)\n");
+    m_pDS->exec("CREATE TABLE albuminfo ( idAlbumInfo integer primary key, idAlbum integer, iYear integer, idGenre integer, strExtraGenres text, strMoods text, strStyles text, strReview text, strImage text, iRating integer)\n");
     CLog::Log(LOGINFO, "create albuminfosong table");
     m_pDS->exec("CREATE TABLE albuminfosong ( idAlbumInfoSong integer primary key, idAlbumInfo integer, iTrack integer, strTitle text, iDuration integer)\n");
     CLog::Log(LOGINFO, "create thumb table");
     m_pDS->exec("CREATE TABLE thumb (idThumb integer primary key, strThumb text)\n");
     CLog::Log(LOGINFO, "create artistnfo table");
-    m_pDS->exec("CREATE TABLE artistinfo ( idArtistInfo integer primary key, idArtist integer, strGenres text, strTones text, strStyles text, strBiography text, strImage text)\n");
+    m_pDS->exec("CREATE TABLE artistinfo ( idArtistInfo integer primary key, idArtist integer, strBorn text, strFormed text, strGenres text, strMoods text, strStyles text, strInstruments text, strBiography text, strImage text)\n");
     CLog::Log(LOGINFO, "create content table");
     m_pDS->exec("CREATE TABLE content (strPath text, strScraperPath text, strContent text)\n");
     CLog::Log(LOGINFO, "create discography table");
@@ -958,7 +958,7 @@ bool CMusicDatabase::GetAlbumInfo(long idAlbum, CAlbum &info, VECSONGS &songs)
       info.thumbURL.ParseString(m_pDS->fv("albuminfo.strImage").get_asString());
       info.strReview = m_pDS->fv("albuminfo.strReview").get_asString();
       info.strStyles = m_pDS->fv("albuminfo.strStyles").get_asString();
-      info.strTones = m_pDS->fv("albuminfo.strTones").get_asString();
+      info.strMoods = m_pDS->fv("albuminfo.strMoods").get_asString();
 
       long idAlbumInfo = m_pDS->fv("albuminfo.idAlbumInfo").get_asLong();
 
@@ -1000,7 +1000,10 @@ bool CMusicDatabase::GetArtistInfo(long idArtist, CArtist &info)
       info.thumbURL.ParseString(m_pDS2->fv("artistinfo.strImage").get_asString());
       info.strBiography = m_pDS2->fv("albuminfo.strBiography").get_asString();
       info.strStyles = m_pDS2->fv("albuminfo.strStyles").get_asString();
-      info.strTones = m_pDS2->fv("albuminfo.strTones").get_asString();
+      info.strMoods = m_pDS2->fv("albuminfo.strMoods").get_asString();
+      info.strBorn = m_pDS2->fv("albuminfo.strBorn").get_asString();
+      info.strFormed = m_pDS2->fv("albuminfo.strFormed").get_asString();
+      info.strInstruments = m_pDS2->fv("albuminfo.strInstruments").get_asString();
       strSQL=FormatSQL("select * from discography where idArtist=%i",idArtist);
       m_pDS2->query(strSQL.c_str());
       while (!m_pDS2->eof())
@@ -1516,9 +1519,9 @@ long CMusicDatabase::SetAlbumInfo(long idAlbum, const CAlbum& album, const VECSO
     m_pDS->exec(strSQL.c_str());
 
     // insert the albuminfo
-    strSQL=FormatSQL("insert into albuminfo (idAlbumInfo,idAlbum,idGenre,strExtraGenres,strTones,strStyles,strReview,strImage,iRating,iYear) values(NULL,%i,%i,'%s','%s','%s','%s','%s',%i,%i)",
+    strSQL=FormatSQL("insert into albuminfo (idAlbumInfo,idAlbum,idGenre,strExtraGenres,strMoods,strStyles,strReview,strImage,iRating,iYear) values(NULL,%i,%i,'%s','%s','%s','%s','%s',%i,%i)",
                   idAlbum, lGenreId, extraGenres.c_str(),
-                  album.strTones.c_str(),
+                  album.strMoods.c_str(),
                   album.strStyles.c_str(),
                   album.strReview.c_str(),
                   album.thumbURL.m_xml.c_str(),
@@ -1567,10 +1570,13 @@ long CMusicDatabase::SetArtistInfo(long idArtist, const CArtist& artist)
     m_pDS->exec(strSQL.c_str());
 
     // insert the artistinfo
-    strSQL=FormatSQL("insert into artistinfo (idArtistInfo,idArtist,strGenres,strTones,strStyles,strBiography,strImage) values(NULL,%i,'%s','%s','%s','%s','%s')",
-                  idArtist, artist.strGenre.c_str(),
-                  artist.strTones.c_str(),
+    strSQL=FormatSQL("insert into artistinfo (idArtistInfo,idArtist,strBorn,strFormed,strGenres,strMoods,strStyles,strInstruments,strBiography,strImage) values(NULL,%i,'%s','%s','%s','%s','%s','%s','%s','%s')",
+                  idArtist, artist.strBorn.c_str(),
+                  artist.strFormed.c_str(),
+                  artist.strGenre.c_str(),
+                  artist.strMoods.c_str(),
                   artist.strStyles.c_str(),
+                  artist.strInstruments.c_str(),
                   artist.strBiography.c_str(),
                   artist.thumbURL.m_xml.c_str());
     m_pDS->exec(strSQL.c_str());
@@ -2511,8 +2517,9 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
       GetArtistInfo(m_pDS->fv("idArtist").get_asLong(),artist);
       pItem->SetProperty("instruments",artist.strInstruments);
       pItem->SetProperty("styles",artist.strStyles);
-      pItem->SetProperty("tones",artist.strTones);
+      pItem->SetProperty("moods",artist.strMoods);
       pItem->SetProperty("born",artist.strBorn);
+      pItem->SetProperty("formed",artist.strFormed);
       pItem->SetProperty("biography",artist.strBiography);
       pItem->SetProperty("genres",artist.strGenre);
       items.Add(pItem);
@@ -2933,7 +2940,7 @@ bool CMusicDatabase::UpdateOldVersion(int version)
     if (version < 8)
     {
       // create the artistinfo table  
-      m_pDS->exec("CREATE TABLE artistinfo ( idArtistInfo integer primary key, idArtist integer, strGenres text, strTones text, strStyles text, strBiography text, strImage text)\n");
+      m_pDS->exec("CREATE TABLE artistinfo ( idArtistInfo integer primary key, idArtist integer, strBorn text, strFormed text, strGenres text, strMoods text, strStyles text, strInstruments text, strBiography text, strImage text)\n");
     }
     if (version < 9) // TODO: Merge with v8
     {

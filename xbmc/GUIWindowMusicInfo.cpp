@@ -37,8 +37,11 @@ using namespace XFILE;
 #define CONTROL_DATE   22
 #define CONTROL_RATING 23
 #define CONTROL_GENRE  24
-#define CONTROL_TONE   25
+#define CONTROL_MOODS  25
 #define CONTROL_STYLES 26
+#define CONTROL_INSTRUMENTS 27
+#define CONTROL_BORN   28
+#define CONTROL_FORMED 29
 
 #define CONTROL_IMAGE   3
 #define CONTROL_TEXTAREA 4
@@ -137,7 +140,7 @@ void CGUIWindowMusicInfo::SetAlbum(const CAlbum& album, const VECSONGS &songs, c
   m_albumItem.GetMusicInfoTag()->SetRating('0' + (m_album.iRating + 1) / 2);
   m_albumItem.GetMusicInfoTag()->SetGenre(m_album.strGenre);
   m_albumItem.SetProperty("albumstyles", m_album.strStyles);
-  m_albumItem.SetProperty("albumtones", m_album.strTones);
+  m_albumItem.SetProperty("albummoods", m_album.strMoods);
   m_albumItem.SetProperty("albumreview", m_album.strReview);
   m_albumItem.SetMusicThumb();
   m_hasUpdatedThumb = false;
@@ -156,8 +159,11 @@ void CGUIWindowMusicInfo::SetArtist(const CArtist& artist, const CStdString &pat
   m_albumItem.GetMusicInfoTag()->SetLoaded(true);
   m_albumItem.GetMusicInfoTag()->SetGenre(m_artist.strGenre);
   m_albumItem.SetProperty("styles", m_artist.strStyles);
-  m_albumItem.SetProperty("tones", m_artist.strTones);
+  m_albumItem.SetProperty("moods", m_artist.strMoods);
   m_albumItem.SetProperty("biography", m_artist.strBiography);
+  m_albumItem.SetProperty("instruments", m_artist.strInstruments);
+  m_albumItem.SetProperty("born", m_artist.strBorn);
+  m_albumItem.SetProperty("formed", m_artist.strFormed);
   m_albumItem.SetCachedArtistThumb();
   m_hasUpdatedThumb = false;
   m_bArtistInfo = true;
@@ -205,8 +211,11 @@ void CGUIWindowMusicInfo::Update()
   {
     SetLabel(CONTROL_ARTIST, m_artist.strArtist );
     SetLabel(CONTROL_GENRE, m_artist.strGenre);
-    SetLabel(CONTROL_TONE, m_artist.strTones);
+    SetLabel(CONTROL_MOODS, m_artist.strMoods);
     SetLabel(CONTROL_STYLES, m_artist.strStyles );
+    SetLabel(CONTROL_INSTRUMENTS, m_artist.strInstruments );
+    SetLabel(CONTROL_BORN, m_artist.strBorn );
+    SetLabel(CONTROL_FORMED, m_artist.strFormed );
     if (m_bViewReview)
     {
       SET_CONTROL_VISIBLE(CONTROL_TEXTAREA);
@@ -241,7 +250,7 @@ void CGUIWindowMusicInfo::Update()
     SetLabel(CONTROL_RATING, strRating );
 
     SetLabel(CONTROL_GENRE, m_album.strGenre);
-    SetLabel(CONTROL_TONE, m_album.strTones);
+    SetLabel(CONTROL_MOODS, m_album.strMoods);
     SetLabel(CONTROL_STYLES, m_album.strStyles );
 
     if (m_bViewReview)

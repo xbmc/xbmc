@@ -80,15 +80,16 @@ bool CMusicArtistInfo::Parse(const TiXmlElement* artist, bool bChained)
     if (node->FirstChild())
     {
       CStdString strTemp = node->FirstChild()->Value();
-      if (m_artist.strTones.IsEmpty())
-        m_artist.strTones = strTemp;
+      if (m_artist.strMoods.IsEmpty())
+        m_artist.strMoods = strTemp;
       else
-        m_artist.strTones += g_advancedSettings.m_musicItemSeparator+strTemp;
+        m_artist.strMoods += g_advancedSettings.m_musicItemSeparator+strTemp;
     }
     node = node->NextSibling("mood");
   }
 
   XMLUtils::GetString(artist,"born",m_artist.strBorn);
+  XMLUtils::GetString(artist,"formed",m_artist.strFormed);
   XMLUtils::GetString(artist,"instruments",m_artist.strInstruments);
   XMLUtils::GetString(artist,"biography",m_artist.strBiography);
 

@@ -107,10 +107,10 @@
   <string id="169">Resolution</string>
   <string id="170">Album:</string>
   <string id="171">Artist:</string>
-  <string id="172">Date of Release:</string>
+  <string id="172">Release Date:</string>
   <string id="173">Rating:</string>
   <string id="174">Genre:</string>
-  <string id="175">Tones:</string>
+  <string id="175">Moods:</string>
   <string id="176">Styles:</string>
   <string id="177">Review:</string>
   <string id="178">Tracks:</string>
@@ -1831,6 +1831,9 @@
   <string id="21889">Searching Artist</string>
   <string id="21890">Select Artist</string>
   <string id="21891">Artist Information</string>
+  <string id="21892">Instruments:</string>
+  <string id="21893">Born:</string>
+  <string id="21894">Formed:</string>
  
   <!-- strings 21900 thru 21999 reserved for slideshow info -->
 

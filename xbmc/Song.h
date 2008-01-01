@@ -31,7 +31,7 @@ public:
   CStdString strArtist;
   CStdString strGenre;
   CScraperUrl thumbURL;  
-  CStdString strTones;
+  CStdString strMoods;
   CStdString strStyles;
   CStdString strReview;
   int iRating;
@@ -53,9 +53,10 @@ public:
     strGenre.Empty();
     strBiography.Empty();
     strStyles.Empty();
-    strTones.Empty();
+    strMoods.Empty();
     strInstruments.Empty();
     strBorn.Empty();
+    strFormed.Empty();
     thumbURL.Clear();
     discography.clear();
     idArtist = -1;
@@ -64,9 +65,10 @@ public:
   CStdString strGenre;
   CStdString strBiography;
   CStdString strStyles;
-  CStdString strTones;
+  CStdString strMoods;
   CStdString strInstruments;
   CStdString strBorn;
+  CStdString strFormed;
   CScraperUrl thumbURL;
   std::vector<std::pair<CStdString,CStdString> > discography;
 };

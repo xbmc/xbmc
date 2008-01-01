@@ -132,10 +132,10 @@ bool CMusicAlbumInfo::Parse(const TiXmlElement* album)
     if (node->FirstChild())
     {
       strTemp = node->FirstChild()->Value();
-      if (m_album.strTones.IsEmpty())
-        m_album.strTones = strTemp;
+      if (m_album.strMoods.IsEmpty())
+        m_album.strMoods = strTemp;
       else
-        m_album.strTones += g_advancedSettings.m_musicItemSeparator+strTemp;
+        m_album.strMoods += g_advancedSettings.m_musicItemSeparator+strTemp;
     }
     node = node->NextSibling("mood");
   }
