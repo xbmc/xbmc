@@ -6,7 +6,12 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/vfs.h> 
+#ifndef __APPLE__
+#include <sys/vfs.h>
+#else
+#include <sys/param.h>
+#include <sys/mount.h>
+#endif
 #include <regex.h>
 #include <dirent.h>
 #include <errno.h>
@@ -476,7 +481,11 @@ DWORD  SetFilePointer(HANDLE hFile, LONG lDistanceToMove, PLONG lpDistanceToMove
 		nMode = SEEK_END;
 
 	off64_t currOff;
+#ifdef __APPLE__
+	currOff = lseek(hFile->fd, offset, nMode);	  
+#else
 	currOff = lseek64(hFile->fd, offset, nMode);
+#endif
 	
 	if (lpDistanceToMoveHigh) {
 		*lpDistanceToMoveHigh = (LONG)(currOff >> 32);
@@ -526,7 +535,11 @@ BOOL SetEndOfFile(HANDLE hFile) {
 		return false;
 
 	// get the current offset
+#ifdef __APPLE__
+	off64_t currOff = lseek(hFile->fd, 0, SEEK_CUR);
+#else	
 	off64_t currOff = lseek64(hFile->fd, 0, SEEK_CUR);
+#endif
 	ftruncate(hFile->fd, currOff);
 	return true;
 }
@@ -549,7 +562,12 @@ BOOL SetFilePointerEx(  HANDLE hFile,
 		nMode = SEEK_END;
 
 	off64_t toMove = liDistanceToMove.QuadPart;
+	
+#ifdef __APPLE__
+	off64_t currOff = lseek(hFile->fd, toMove, nMode);
+#else
 	off64_t currOff = lseek64(hFile->fd, toMove, nMode);
+#endif
 
 	if (lpNewFilePointer)
 		lpNewFilePointer->QuadPart = currOff;
