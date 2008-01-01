@@ -36,7 +36,9 @@
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
+#ifndef __APPLE__
 #include <linux/cdrom.h>
+#endif
 #endif
 #include "../FileSystem/cdioSupport.h"
 #include "../DetectDVDType.h"
@@ -252,7 +254,9 @@ HRESULT CIoSupport::EjectTray()
 #ifdef _XBOX
   HalWriteSMBusValue(0x20, 0x0C, FALSE, 0);  // eject tray
 #endif
-#ifdef _LINUX
+#ifdef __APPLE__
+  // FIXME...
+#elif defined(_LINUX)
   char* dvdDevice = CCdIoSupport::GetDeviceFileName();
   if (strlen(dvdDevice) != 0)
   {
@@ -272,7 +276,9 @@ HRESULT CIoSupport::CloseTray()
 #ifdef _XBOX
   HalWriteSMBusValue(0x20, 0x0C, FALSE, 1);  // close tray
 #endif
-#ifdef _LINUX
+#ifdef __APPLE__
+  // FIXME...
+#elif defined(_LINUX)
   char* dvdDevice = CCdIoSupport::GetDeviceFileName();
   if (strlen(dvdDevice) != 0)
   {
@@ -375,7 +381,9 @@ INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
   DWORD dwRead;
   DWORD dwSectorSize = 2048;
 
-#ifdef _LINUX
+#ifdef __APPLE__
+  // FIXME
+#elif defined(_LINUX)
   if (hDevice->m_bCDROM)
   {    
     int fd = hDevice->fd;
@@ -434,7 +442,9 @@ INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
 INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
 {
 #ifdef HAS_DVD_DRIVE
-#ifdef _LINUX
+#ifdef __APPLE__
+  // FIXME.
+#elif defined(_LINUX)
   if (hDevice->m_bCDROM)
   {    
     int fd = hDevice->fd;
