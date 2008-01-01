@@ -74,7 +74,7 @@ CStdString CDatabase::FormatSQL(CStdString strStmt, ...)
   CStdString strResult;
   if (szSql) {
     strResult = szSql;
-    free(szSql);
+    sqlite3_free(szSql);
   }
 
   return strResult;
