@@ -28,9 +28,10 @@
 #define __NO_CGI_BIN
 #endif
 
-
 #define SOCK_DFT_SVC_TIME	20
+#ifndef __APPLE__
 #define SPYCE_SUPPORT
+#endif
 
 #ifdef __cplusplus
 extern "C" {
