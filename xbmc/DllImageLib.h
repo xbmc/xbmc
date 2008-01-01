@@ -81,7 +81,9 @@ public:
 
 class DllImageLib : public DllDynamic, DllImageLibInterface
 {
-#ifndef _LINUX
+#ifdef __APPLE__
+  DECLARE_DLL_WRAPPER(DllImageLib, Q:\\system\\ImageLib-osx.so)
+#elif !defined(_LINUX)
   DECLARE_DLL_WRAPPER(DllImageLib, Q:\\system\\ImageLib.dll)
 #else
   DECLARE_DLL_WRAPPER(DllImageLib, Q:\\system\\ImageLib-i486-linux.so)

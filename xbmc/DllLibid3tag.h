@@ -97,7 +97,9 @@ public:
 
 class DllLibID3Tag : public DllDynamic, DllLibID3TagInterface
 {
-#ifndef _LINUX
+#ifdef __APPLE__
+  DECLARE_DLL_WRAPPER(DllLibID3Tag, Q:\\system\\libid3tag-osx.so)
+#elif !defined(_LINUX)
   DECLARE_DLL_WRAPPER(DllLibID3Tag, Q:\\system\\libid3tag.dll)
 #else
   DECLARE_DLL_WRAPPER(DllLibID3Tag, Q:\\system\\libid3tag-i486-linux.so)
