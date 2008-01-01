@@ -5444,7 +5444,7 @@ bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTex
     return false;
 
   char cDelim = '\0';
-  int nGreaterDelim, nPos;
+  unsigned int nGreaterDelim, nPos;
 
   nPos = StrInput.find_last_of( '\\' );
   if ( nPos >= 0 )
