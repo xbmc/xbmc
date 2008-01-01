@@ -3,7 +3,14 @@
 #include "PlatformDefs.h"
 #include "XHandle.h"
 
+#ifdef __APPLE__
+#include <mach/mach.h>
+#include <mach/mach_time.h>
+#include <sys/sysctl.h>
+#include <SDL/SDL.h>
+#else
 #include <SDL.h>
+#endif
 
 #ifdef _LINUX
 
@@ -100,13 +107,54 @@ void WINAPI LeaveCriticalSection(LPCRITICAL_SECTION lpCriticalSection) {
   pthread_mutex_unlock(lpCriticalSection);
 }
 
-void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer) {
+void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer) 
+{
   if (!lpBuffer)
     return;
 
-  memset(lpBuffer,0,sizeof(MEMORYSTATUS));
+  memset(lpBuffer, 0, sizeof(MEMORYSTATUS));
+  lpBuffer->dwLength = sizeof(MEMORYSTATUS);
 
-#ifdef _LINUX
+#ifdef __APPLE__
+  uint64_t physmem;
+  size_t len = sizeof physmem;
+  int mib[2] = { CTL_HW, HW_MEMSIZE };
+  size_t miblen = sizeof(mib) / sizeof(mib[0]); 
+
+  // Total physical memory.
+  if (sysctl(mib, miblen, &physmem, &len, NULL, 0) == 0 && len == sizeof (physmem))
+      lpBuffer->dwTotalPhys = physmem;
+      
+  // Virtual memory.
+  mib[0] = CTL_VM; mib[1] = VM_SWAPUSAGE;
+  struct xsw_usage swap;
+  len = sizeof(struct xsw_usage);
+  if (sysctl(mib, miblen, &swap, &len, NULL, 0) == 0)
+  {
+      lpBuffer->dwAvailPageFile = swap.xsu_avail;
+      lpBuffer->dwTotalVirtual = lpBuffer->dwTotalPhys + swap.xsu_total;
+  }
+  
+  // In use.
+  mach_port_t stat_port = mach_host_self();
+  vm_statistics_data_t vm_stat;
+  mach_msg_type_number_t count = sizeof(vm_stat) / sizeof(natural_t);
+  if (host_statistics(stat_port, HOST_VM_INFO, (host_info_t)&vm_stat, &count) == 0)
+  {
+      // Find page size.
+      int pageSize;
+      mib[0] = CTL_HW; mib[1] = HW_PAGESIZE;
+      len = sizeof(int);
+      if (sysctl(mib, miblen, &pageSize, &len, NULL, 0) == 0)
+      {
+          uint64_t used = (vm_stat.active_count + vm_stat.inactive_count + vm_stat.wire_count) * pageSize;
+  
+          lpBuffer->dwAvailPhys = lpBuffer->dwTotalPhys - used;
+          lpBuffer->dwAvailVirtual  = lpBuffer->dwAvailPhys; // FIXME.
+      }
+  }
+
+#elif defined(_LINUX)
   struct sysinfo info;
   sysinfo(&info);
 
@@ -119,6 +167,45 @@ void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer) {
 #endif
 }
 
+//////////////////////////////////////////////////////////////////////////////
+DWORD WINAPI WaitForEvent(HANDLE hHandle, DWORD dwMilliseconds)
+{
+	DWORD dwRet = 0;
+	int   nRet = 0;
+
+	if (dwMilliseconds == 0)
+	{
+			if (hHandle->m_bEventSet == true)
+					nRet = -1;
+			else
+					nRet = 0;
+	}
+	else if (dwMilliseconds == INFINITE)
+	{
+			if (hHandle->m_bEventSet == false)
+					nRet = SDL_CondWait(hHandle->m_hCond, hHandle->m_hMutex);
+			if (hHandle->m_bManualEvent)
+					hHandle->m_bEventSet = false;
+	}
+	else
+	{
+			if (hHandle->m_bEventSet == false)
+					nRet = SDL_CondWaitTimeout(hHandle->m_hCond, hHandle->m_hMutex, dwMilliseconds);
+			if (hHandle->m_bManualEvent && dwRet != SDL_MUTEX_TIMEDOUT)
+					hHandle->m_bEventSet = false;
+	}
+
+	// Translate return code.
+	if (nRet == 0)
+			dwRet = WAIT_OBJECT_0;
+	else if (nRet == SDL_MUTEX_TIMEDOUT)
+			dwRet = WAIT_TIMEOUT;
+	else
+			dwRet = WAIT_FAILED;
+	
+	return dwRet;
+}
+
 DWORD WINAPI WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds ) {
   if (hHandle == NULL ||  hHandle == (HANDLE)-1)
     return WAIT_FAILED;
@@ -127,6 +214,16 @@ DWORD WINAPI WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds ) {
   BOOL bNeedWait = true;
 
   switch (hHandle->GetType()) {
+    case CXHandle::HND_EVENT:
+		
+			SDL_mutexP(hHandle->m_hMutex);
+			
+			// Perform the wait.
+			dwRet = WaitForEvent(hHandle, dwMilliseconds);
+			
+			SDL_mutexV(hHandle->m_hMutex);
+			break;
+      
     case CXHandle::HND_MUTEX:
 
       SDL_mutexP(hHandle->m_hMutex);
@@ -142,35 +239,24 @@ DWORD WINAPI WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds ) {
         break; // no need for the wait.
 
     case CXHandle::HND_THREAD:
-    case CXHandle::HND_EVENT:
-      if (hHandle->m_hSem) {          
-        int nRet = 0;
-        if (dwMilliseconds == INFINITE)
-          nRet = SDL_SemWait(hHandle->m_hSem);
-        else
-        {
-          // See NOTE in SDL_SemWaitTimeout2() definition (towards the end of this file)
-          // nRet = SDL_SemWaitTimeout(hHandle->m_hSem, dwMilliseconds);
-          nRet = SDL_SemWaitTimeout2(hHandle->m_hSem, dwMilliseconds);
-        }
+			
+			SDL_mutexP(hHandle->m_hMutex);
+			
+			// Perform the wait.
+			dwRet = WaitForEvent(hHandle, dwMilliseconds);
 
-        if (nRet == 0)
-          dwRet = WAIT_OBJECT_0;
-        else if (nRet == SDL_MUTEX_TIMEDOUT)
-          dwRet = WAIT_TIMEOUT;
-
-        // in case of successful wait with manual event - we post to the semaphore again so that
-        // all threads that are waiting will wake up.
-        if (dwRet == WAIT_OBJECT_0 && (hHandle->GetType() == CXHandle::HND_EVENT || hHandle->GetType() == CXHandle::HND_THREAD) && hHandle->m_bManualEvent) {
-          SDL_SemPost(hHandle->m_hSem);
-        }
-        else if (dwRet == WAIT_OBJECT_0 && hHandle->GetType() == CXHandle::HND_MUTEX) {
-          SDL_mutexP(hHandle->m_hMutex);
-          hHandle->OwningThread = SDL_ThreadID();
-          hHandle->RecursionCount = 1;
-          SDL_mutexV(hHandle->m_hMutex);
-        }
-      }
+      // In case of successful wait with manual event wake up all threads that are waiting.
+      if (dwRet == WAIT_OBJECT_0 && (hHandle->GetType() == CXHandle::HND_EVENT || hHandle->GetType() == CXHandle::HND_THREAD) && hHandle->m_bManualEvent)
+			{
+				SDL_CondBroadcast(hHandle->m_hCond);
+			}
+			else if (dwRet == WAIT_OBJECT_0 && hHandle->GetType() == CXHandle::HND_MUTEX)
+			{
+				hHandle->OwningThread = SDL_ThreadID();
+        hHandle->RecursionCount = 1;
+			}
+			
+			SDL_mutexV(hHandle->m_hMutex);
 
       break;
     default:
@@ -296,6 +382,14 @@ LONG InterlockedExchange(
 // sem_timedwait()
 int SDL_SemWaitTimeout2(SDL_sem *sem, Uint32 dwMilliseconds)
 {
+#ifdef __APPLE__
+  int nRet = SDL_SemWaitTimeout(sem, dwMilliseconds);
+  
+ // Why this is needed is beyond me...*SIGH*.
+  if (nRet != SDL_MUTEX_TIMEDOUT)
+      SDL_SemPost(sem);
+      
+#else
   int nRet = 0;
   struct timespec req;
   clock_gettime(CLOCK_REALTIME, &req);
@@ -307,11 +401,13 @@ int SDL_SemWaitTimeout2(SDL_sem *sem, Uint32 dwMilliseconds)
   {
     continue;
   }
+ 
+ #endif
+ 
   if (nRet != 0)
   {
     return SDL_MUTEX_TIMEDOUT;
   }
-  return 0;
 }
 
 #endif
