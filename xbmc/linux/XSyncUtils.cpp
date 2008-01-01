@@ -388,7 +388,9 @@ int SDL_SemWaitTimeout2(SDL_sem *sem, Uint32 dwMilliseconds)
  // Why this is needed is beyond me...*SIGH*.
   if (nRet != SDL_MUTEX_TIMEDOUT)
       SDL_SemPost(sem);
-      
+	
+	return nRet;
+	
 #else
   int nRet = 0;
   struct timespec req;
