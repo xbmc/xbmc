@@ -14,6 +14,11 @@ static TiXmlDocument pySkinReferences;
 #pragma const_seg("PY_RDATA")
 #endif
 
+#ifdef __APPLE__
+#undef PyUnicode_AsUnicode
+#define PyUnicode_AsUnicode
+#endif
+
 namespace PYXBMC
 {
   int PyGetUnicodeString(string& buf, PyObject* pObject, int pos)
