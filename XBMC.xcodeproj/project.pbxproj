@@ -704,8 +704,6 @@
 		E38E242F0D26317D00618676 /* liblzo.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E24270D26317D00618676 /* liblzo.dylib */; };
 		E38E24300D26317D00618676 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E24280D26317D00618676 /* libsqlite3.dylib */; };
 		E38E24310D26317D00618676 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E24290D26317D00618676 /* libz.dylib */; };
-		E38E24330D26319600618676 /* libportaudio.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E24320D26319600618676 /* libportaudio.dylib */; };
-		E38E24460D26339C00618676 /* libwebs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E24450D26339C00618676 /* libwebs.a */; };
 		E38E25350D26365C00618676 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25330D26365C00618676 /* AppKit.framework */; };
 		E38E25360D26365C00618676 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25340D26365C00618676 /* ApplicationServices.framework */; };
 		E38E25420D2636F300618676 /* libstdc++.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25410D2636F300618676 /* libstdc++.6.dylib */; };
@@ -748,6 +746,8 @@
 		E38E25C30D263DE200618676 /* DVDDemuxFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E25C20D263DE200618676 /* DVDDemuxFFmpeg.cpp */; settings = {COMPILER_FLAGS = "-D__STDC_CONSTANT_MACROS"; }; };
 		E38E25C90D26426F00618676 /* libSDLmain.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25C80D26426F00618676 /* libSDLmain.a */; };
 		E38F12C20D29FF200035C331 /* FileShoutcast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38F12C10D29FF200035C331 /* FileShoutcast.cpp */; };
+		E38F12E80D2A178F0035C331 /* libportaudio-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38F12E70D2A178F0035C331 /* libportaudio-osx.a */; };
+		E38F12EA0D2A17B30035C331 /* libGoAhead-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38F12E90D2A17B30035C331 /* libGoAhead-osx.a */; };
 		E3A4780A0D29029A00F3C3A6 /* dlgcache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A478090D29029A00F3C3A6 /* dlgcache.cpp */; };
 		E3A478160D29030100F3C3A6 /* GUIMultiSelectText.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A478150D29030100F3C3A6 /* GUIMultiSelectText.cpp */; };
 		E3A4781A0D29032C00F3C3A6 /* GUIDialogAccessPoints.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A478190D29032C00F3C3A6 /* GUIDialogAccessPoints.cpp */; };
@@ -2630,8 +2630,6 @@
 		E38E24270D26317D00618676 /* liblzo.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = liblzo.dylib; path = ../../../../../opt/local/lib/liblzo.dylib; sourceTree = SOURCE_ROOT; };
 		E38E24280D26317D00618676 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = ../../../../../opt/local/lib/libsqlite3.dylib; sourceTree = SOURCE_ROOT; };
 		E38E24290D26317D00618676 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = ../../../../../opt/local/lib/libz.dylib; sourceTree = SOURCE_ROOT; };
-		E38E24320D26319600618676 /* libportaudio.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libportaudio.dylib; path = /usr/local/lib/libportaudio.dylib; sourceTree = "<absolute>"; };
-		E38E24450D26339C00618676 /* libwebs.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwebs.a; path = xbmc/lib/libGoAhead/libwebs.a; sourceTree = "<group>"; };
 		E38E25330D26365C00618676 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		E38E25340D26365C00618676 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
 		E38E25410D2636F300618676 /* libstdc++.6.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.6.dylib"; path = "/usr/lib/libstdc++.6.dylib"; sourceTree = "<absolute>"; };
@@ -2674,6 +2672,8 @@
 		E38E25C20D263DE200618676 /* DVDDemuxFFmpeg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDDemuxFFmpeg.cpp; sourceTree = "<group>"; };
 		E38E25C80D26426F00618676 /* libSDLmain.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDLmain.a; path = ../../../../../opt/local/lib/libSDLmain.a; sourceTree = SOURCE_ROOT; };
 		E38F12C10D29FF200035C331 /* FileShoutcast.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileShoutcast.cpp; sourceTree = "<group>"; };
+		E38F12E70D2A178F0035C331 /* libportaudio-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libportaudio-osx.a"; path = "xbmc/lib/libportaudio/libportaudio-osx.a"; sourceTree = "<group>"; };
+		E38F12E90D2A17B30035C331 /* libGoAhead-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libGoAhead-osx.a"; path = "xbmc/lib/libGoAhead/libGoAhead-osx.a"; sourceTree = "<group>"; };
 		E3A478090D29029A00F3C3A6 /* dlgcache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dlgcache.cpp; sourceTree = "<group>"; };
 		E3A478150D29030100F3C3A6 /* GUIMultiSelectText.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIMultiSelectText.cpp; sourceTree = "<group>"; };
 		E3A478190D29032C00F3C3A6 /* GUIDialogAccessPoints.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogAccessPoints.cpp; sourceTree = "<group>"; };
@@ -2704,14 +2704,14 @@
 				E38E242F0D26317D00618676 /* liblzo.dylib in Frameworks */,
 				E38E24300D26317D00618676 /* libsqlite3.dylib in Frameworks */,
 				E38E24310D26317D00618676 /* libz.dylib in Frameworks */,
-				E38E24330D26319600618676 /* libportaudio.dylib in Frameworks */,
-				E38E24460D26339C00618676 /* libwebs.a in Frameworks */,
 				E38E25350D26365C00618676 /* AppKit.framework in Frameworks */,
 				E38E25360D26365C00618676 /* ApplicationServices.framework in Frameworks */,
 				E38E25420D2636F300618676 /* libstdc++.6.dylib in Frameworks */,
 				E38E25690D2639F100618676 /* libxdaap-osx.a in Frameworks */,
 				E38E256D0D263A1C00618676 /* librtv-osx.a in Frameworks */,
 				E38E25C90D26426F00618676 /* libSDLmain.a in Frameworks */,
+				E38F12E80D2A178F0035C331 /* libportaudio-osx.a in Frameworks */,
+				E38F12EA0D2A17B30035C331 /* libGoAhead-osx.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2741,14 +2741,14 @@
 		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				E38F12E90D2A17B30035C331 /* libGoAhead-osx.a */,
+				E38F12E70D2A178F0035C331 /* libportaudio-osx.a */,
 				E38E25C80D26426F00618676 /* libSDLmain.a */,
 				E38E256C0D263A1C00618676 /* librtv-osx.a */,
 				E38E25680D2639F100618676 /* libxdaap-osx.a */,
 				E38E25410D2636F300618676 /* libstdc++.6.dylib */,
 				E38E25330D26365C00618676 /* AppKit.framework */,
 				E38E25340D26365C00618676 /* ApplicationServices.framework */,
-				E38E24450D26339C00618676 /* libwebs.a */,
-				E38E24320D26319600618676 /* libportaudio.dylib */,
 				E38E24220D26317D00618676 /* libcdio.dylib */,
 				E38E24230D26317D00618676 /* libfreetype.dylib */,
 				E38E24240D26317D00618676 /* libfribidi.dylib */,
@@ -6515,6 +6515,7 @@
 					"\"$(SRCROOT)/xbmc/lib/sqLite\"",
 					"\"$(SRCROOT)/xbmc/lib/zlib\"",
 					"\"$(SRCROOT)/../../../../../opt/local/lib\"",
+					"\"$(SRCROOT)/xbmc/lib/libportaudio\"",
 				);
 				PRODUCT_NAME = XBMC;
 				ZERO_LINK = YES;
@@ -6550,6 +6551,7 @@
 					"\"$(SRCROOT)/xbmc/lib/sqLite\"",
 					"\"$(SRCROOT)/xbmc/lib/zlib\"",
 					"\"$(SRCROOT)/../../../../../opt/local/lib\"",
+					"\"$(SRCROOT)/xbmc/lib/libportaudio\"",
 				);
 				PRODUCT_NAME = XBMC;
 			};
@@ -6570,6 +6572,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
+					xbmc/lib/libportaudio,
 					xbmc/cores,
 					xbmc/cores/ffmpeg,
 					xbmc/cores/dvdplayer,
@@ -6579,7 +6582,6 @@
 					/opt/local/include,
 					/opt/local/include/freetype2/,
 					/usr/X11R6/include/,
-					/usr/local/include,
 				);
 				PREBINDING = NO;
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
@@ -6605,6 +6607,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
+					xbmc/lib/libportaudio,
 					xbmc/cores,
 					xbmc/cores/ffmpeg,
 					xbmc/cores/dvdplayer,
@@ -6614,7 +6617,6 @@
 					/opt/local/include,
 					/opt/local/include/freetype2/,
 					/usr/X11R6/include/,
-					/usr/local/include,
 				);
 				PREBINDING = NO;
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
