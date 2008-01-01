@@ -11,7 +11,12 @@
 #include "../../../lib/libPython/XBPython.h"
 #include "../DllLoaderContainer.h"
 
+#ifdef __APPLE__
+// FIXME, this isn't right. Use pthread TLS stuff.
+static char xbp_cw_dir[MAX_PATH] = "Q:\\python";
+#else
 __thread char xbp_cw_dir[MAX_PATH] = "Q:\\python";
+#endif
 
 extern "C"
 {
@@ -135,7 +140,11 @@ FILE* xbp_freopen(const char *path, const char *mode, FILE *stream)
 FILE* xbp_fopen64(const char *filename, const char *mode)
 {
   CStdString strName = _P(filename);
+#ifdef __APPLE__
+  return fopen(strName.c_str(), mode);
+#else
   return fopen64(strName.c_str(), mode);
+#endif
 }
 
 DIR *xbp_opendir(const char *name)
@@ -147,13 +156,21 @@ DIR *xbp_opendir(const char *name)
 int xbp__xstat64(int ver, const char *filename, struct stat64 *stat_buf)
 {
   CStdString strName = _P(filename);
+#ifdef __APPLE__
+  return stat64(strName.c_str(), stat_buf);
+#else
   return __xstat64(ver, strName.c_str(), stat_buf);
+#endif
 }
 
 int xbp__lxstat64(int ver, const char *filename, struct stat64 *stat_buf)
 {
   CStdString strName = _P(filename);
+#ifdef __APPLE__
+  return stat64(strName.c_str(), stat_buf);
+#else
   return __lxstat64(ver, strName.c_str(), stat_buf);
+#endif
 }
 
 } // extern "C"

@@ -473,7 +473,11 @@ Export export_msvcrt[] =
   { "_itoa",                      -1, (void*)itoa,                          NULL },
 #endif  
   { "clearerr",                   -1, (void*)dll_clearerr,                  NULL },
+#ifdef __APPLE__
+  { "_sys_nerr",                  -1, (void*)&sys_nerr,                    NULL },
+#else
   { "_sys_nerr",                  -1, (void*)&_sys_nerr,                    NULL },
+#endif
   { NULL,                         -1, (void*)NULL,                          NULL }
 };
 
@@ -683,7 +687,11 @@ Export export_msvcr71[] =
 #else
   { "_CIsinh",                    -1, (void*)sinh,                       NULL },
   { "_CIcosh",                    -1, (void*)cosh,                       NULL },
+#ifdef __APPLE__
+  { "_isnan",                     -1, (void*)__inline_isnan,              NULL },
+#else
   { "_isnan",                     -1, (void*)isnan,                        NULL },
+#endif
   { "_finite",                    -1, (void*)finite,                       NULL },
   { "_CIfmod",                    -1, (void*)fmod,                       NULL },
 #endif
@@ -706,8 +714,13 @@ Export export_msvcr71[] =
   { "_tzset",                     -1, (void*)tzset,                        NULL },
   { "_tzname",                    -1, (void*)&tzname,                      NULL },
 #endif
+#ifdef __APPLE__
+  { "_sys_nerr",                  -1, (void*)&sys_nerr,                    NULL },
+  { "_sys_errlist",               -1, (void*)&sys_errlist,                 NULL },
+#else
   { "_sys_nerr",                  -1, (void*)&_sys_nerr,                    NULL },
   { "_sys_errlist",               -1, (void*)&_sys_errlist,                 NULL },
+#endif
   { "_getpid",                    -1, (void*)dll_getpid,                    NULL },
   { "_exit",                      -1, (void*)dllexit,                       NULL },
   { "_onexit",                    -1, (void*)dll_onexit,                    NULL },
