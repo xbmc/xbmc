@@ -545,9 +545,6 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 }
 
 #else
-#ifdef __GNUC__
-#warning Need to implement GraphicContext::SetVideoResolution
-#endif
 void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool forceClear /* = false */)
 {
   if (res == AUTORES)
