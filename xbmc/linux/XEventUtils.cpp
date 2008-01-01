@@ -2,12 +2,13 @@
 #include "PlatformDefs.h"
 #include "XEventUtils.h"
 
-HANDLE WINAPI CreateEvent(void *pDummySec, bool bManualReset, bool bInitialState, char *szDummyName) {
+HANDLE WINAPI CreateEvent(void *pDummySec, bool bManualReset, bool bInitialState, char *szDummyName) 
+{
 	CXHandle *pHandle = new CXHandle(CXHandle::HND_EVENT);
 	pHandle->m_bManualEvent = bManualReset;
-	
-	pHandle->m_hSem		= SDL_CreateSemaphore(0);
-	pHandle->m_hMutex	= SDL_CreateMutex();
+    pHandle->m_hCond = SDL_CreateCond();
+	pHandle->m_hMutex = SDL_CreateMutex();
+    pHandle->m_bEventSet = false;
 
 	if (bInitialState)
 		SetEvent(pHandle);
@@ -15,37 +16,36 @@ HANDLE WINAPI CreateEvent(void *pDummySec, bool bManualReset, bool bInitialState
 	return pHandle;
 }
 
-bool WINAPI SetEvent(HANDLE hEvent) {
-	if (hEvent == NULL || hEvent->m_hSem == NULL || hEvent->m_hMutex == NULL)
+bool WINAPI SetEvent(HANDLE hEvent) 
+{
+	if (hEvent == NULL || hEvent->m_hCond == NULL || hEvent->m_hMutex == NULL)
 		return false;
 	
 	SDL_mutexP(hEvent->m_hMutex);
-	
-	if (SDL_SemValue(hEvent->m_hSem) == 0) {
-		SDL_SemPost(hEvent->m_hSem);
+	if (hEvent->m_bEventSet == false)
+	{
+        hEvent->m_bEventSet = true;
+        SDL_CondSignal(hEvent->m_hCond);
 	}
-	
 	SDL_mutexV(hEvent->m_hMutex);
 
 	return true;
 }
 
-bool WINAPI ResetEvent(HANDLE hEvent) {
-	if (hEvent == NULL || hEvent->m_hSem == NULL || hEvent->m_hMutex == NULL)
+bool WINAPI ResetEvent(HANDLE hEvent) 
+{
+	if (hEvent == NULL || hEvent->m_hCond == NULL || hEvent->m_hMutex == NULL)
 		return false;
 
 	SDL_mutexP(hEvent->m_hMutex);
-
-	while (SDL_SemTryWait(hEvent->m_hSem) == 0) 
-		;
-
+    hEvent->m_bEventSet = false;
 	SDL_mutexV(hEvent->m_hMutex);
 
 	return true;
 }
 
 bool WINAPI PulseEvent(HANDLE hEvent) {
-	if (hEvent == NULL || hEvent->m_hSem == NULL || hEvent->m_hMutex == NULL)
+	if (hEvent == NULL || hEvent->m_hCond == NULL || hEvent->m_hMutex == NULL)
 		return false;
 
 	SetEvent(hEvent);

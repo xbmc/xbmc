@@ -74,6 +74,10 @@ CXHandle::~CXHandle()
   if (m_internalLock) {
     SDL_DestroyMutex(m_internalLock);
   }
+  
+  if (m_hCond) {
+    SDL_DestroyCond(m_hCond);
+  }
 
   if (m_hThread) {
     //SDL_WaitThread should only be called once (here, when destructing) since it will destroy the thread object.
@@ -92,10 +96,12 @@ void CXHandle::Init()
   m_hSem=NULL; 
   m_hMutex=NULL; 
   m_hThread=NULL; 
+  m_hCond=NULL;
   m_type = HND_NULL;
   RecursionCount=0;
   OwningThread=0;
   m_bManualEvent=FALSE;
+  m_bEventSet=FALSE;
   m_nFindFileIterator=0 ;
   m_nRefCount=1;
   m_tmCreation = time(NULL);
