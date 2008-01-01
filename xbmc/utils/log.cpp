@@ -78,8 +78,12 @@ void CLog::Log(int loglevel, const char *format, ... )
     GlobalMemoryStatus(&stat);
 
     CStdString strPrefix, strData;
-   
+
+#ifdef __APPLE__
+    strPrefix.Format("%02.2d:%02.2d:%02.2d T:%lu M:%9ju %7s: ", time.wHour, time.wMinute, time.wSecond, GetCurrentThreadId(), stat.dwAvailPhys, levelNames[loglevel]);
+#else
     strPrefix.Format("%02.2d:%02.2d:%02.2d T:%lu M:%9u %7s: ", time.wHour, time.wMinute, time.wSecond, GetCurrentThreadId(), stat.dwAvailPhys, levelNames[loglevel]);
+#endif
 
     strData.reserve(16384);
     va_list va;
