@@ -36,7 +36,9 @@ using namespace std;
 #ifdef _LINUX
 #include <sys/stat.h>
 #include <errno.h>
+#ifndef __APPLE__
 #include <sys/sysinfo.h>
+#endif
 #endif
 
 #ifdef _XBOX
