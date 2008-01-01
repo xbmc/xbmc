@@ -197,7 +197,7 @@
 			<posy>350</posy>
 			<width>455</width>
 			<height>170</height>
-			<onleft>9001</onleft>
+			<onleft>9000</onleft>
 			<onright>61</onright>
 			<onup>5</onup>
 			<ondown>5</ondown>
@@ -211,7 +211,7 @@
 			<posy>350</posy>
 			<width>471</width>
 			<height>170</height>
-			<onleft>9001</onleft>
+			<onleft>9000</onleft>
 			<onright>61</onright>
 			<onup>5</onup>
 			<ondown>5</ondown>
@@ -219,7 +219,6 @@
 			<include>autoscrollmedium</include>
 		</control>
 		</control>
-
 
 		<control type="group">
 		<visible>container.content(artists)</visible>
@@ -369,7 +368,7 @@
 			<posy>350</posy>
 			<width>455</width>
 			<height>170</height>
-			<onleft>9001</onleft>
+			<onleft>9000</onleft>
 			<onright>61</onright>
 			<onup>5</onup>
 			<ondown>5</ondown>
@@ -384,7 +383,7 @@
 			<posy>350</posy>
 			<width>471</width>
 			<height>170</height>
-			<onleft>9001</onleft>
+			<onleft>9000</onleft>
 			<onright>61</onright>
 			<onup>5</onup>
 			<ondown>5</ondown>
@@ -395,7 +394,6 @@
 		</control>
 
 		<control type="group" id="9000">
-		<visible>container.content(albums)</visible>
 		<posy>-22</posy>
 		<control type="button" id ="5">
 			<description>Tracks/Review</description>
@@ -412,6 +410,24 @@
 			<onright>50</onright>
 			<onup>10</onup>
 			<ondown>6</ondown>
+			<visible>container.content(albums)</visible>
+		</control>
+		<control type="button" id ="5">
+			<description>Discography/Biography</description>
+			<posx>55</posx>
+			<posy>372</posy>
+			<width>135</width>
+			<height>32</height>
+			<label>182</label>
+			<font>font10</font>
+			<align>center</align>
+			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+			<onleft>61</onleft>
+			<onright>50</onright>
+			<onup>10</onup>
+			<ondown>6</ondown>
+			<visible>container.content(artists)</visible>
 		</control>
 		<control type="button" id ="6">
 			<description>Refresh</description>
@@ -447,58 +463,6 @@
 		</control>
 		</control>
 
-		<control type="group" id="9001">
-		<visible>container.content(artists)</visible>
-		<posy>-22</posy>
-		<control type="button" id ="5">
-			<description>Discography/Biography</description>
-			<posx>55</posx>
-			<posy>372</posy>
-			<width>135</width>
-			<height>32</height>
-			<label>182</label>
-			<font>font10</font>
-			<align>center</align>
-			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
-			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
-			<onleft>61</onleft>
-			<onright>50</onright>
-			<onup>10</onup>
-			<ondown>6</ondown>
-		</control>
-		<control type="button" id ="6">
-			<description>Refresh</description>
-			<posx>55</posx>
-			<posy>407</posy>
-			<width>135</width>
-			<height>32</height>
-			<label>184</label>
-			<font>font10</font>
-			<align>center</align>
-			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
-			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
-			<onleft>61</onleft>
-			<onright>50</onright>
-			<onup>5</onup>
-			<ondown>10</ondown>
-		</control>
-		<control type="button" id ="10">
-			<description>GetThumb</description>
-			<posx>55</posx>
-			<posy>442</posy>
-			<width>135</width>
-			<height>32</height>
-			<label>13405</label>
-			<font>font10</font>
-			<align>center</align>
-			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
-			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
-			<onleft>61</onleft>
-			<onright>50</onright>
-			<onup>6</onup>
-			<ondown>5</ondown>
-		</control>
-		</control>
 		<include>DialogInfoViewCommonPageControls</include>
 		<include>MusicDialogInfoViewOldListViewCommons</include>
 	</controls>

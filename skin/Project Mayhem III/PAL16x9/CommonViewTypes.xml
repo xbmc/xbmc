@@ -2710,7 +2710,7 @@
 				<posy>350</posy>
 				<width>455</width>
 				<height>175</height>
-				<onleft>9001</onleft>
+				<onleft>9000</onleft>
 				<onright>61</onright>
 				<onup>50</onup>
 				<ondown>50</ondown>
@@ -2849,7 +2849,7 @@
 				<posy>350</posy>
 				<width>471</width>
 				<height>175</height>
-				<onleft>9001</onleft>
+				<onleft>9000</onleft>
 				<onright>61</onright>
 				<onup>50</onup>
 				<ondown>50</ondown>
@@ -3081,7 +3081,7 @@
 			<textureslidernib>-</textureslidernib>
 			<textureslidernibfocus>-</textureslidernibfocus>
 			<onleft>50</onleft>
-			<onright>9001</onright>
+			<onright>9000</onright>
 			<showonepage>false</showonepage>
 			<orientation>vertical</orientation>
 			<visible>!Skin.HasSetting(UseScrollbars) + [Control.IsVisible(50) | Control.IsVisible(4)]</visible>
@@ -3093,7 +3093,7 @@
 			<subtype>page</subtype>
 			<font>font12</font>
 			<onleft>50</onleft>
-			<onright>9001</onright>
+			<onright>9000</onright>
 			<ondown>61</ondown>
 			<onup>50</onup>
 			<visible>Skin.HasSetting(UseScrollbars) + [Control.IsVisible(50) | Control.IsVisible(4)]</visible>
