@@ -111,7 +111,7 @@ void CRemoteControl::Update()
       m_skipHold = true;
       return;
     }
-    else if (now - m_firstClickTime >= g_advancedSettings.m_remoteRepeat && !m_skipHold)
+    else if (now - m_firstClickTime >= (Uint32) g_advancedSettings.m_remoteRepeat && !m_skipHold)
     {
       m_isHolding = true;
     }
