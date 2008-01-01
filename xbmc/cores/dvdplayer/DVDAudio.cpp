@@ -4,6 +4,8 @@
 #ifdef _XBOX
 #include "../mplayer/ASyncDirectSound.h"
 #include "../mplayer/ac97directsound.h"
+#elif defined(__APPLE__)
+#include "PortaudioDirectSound.h"
 #elif _LINUX
 #include "ALSADirectSound.h"
 #else
@@ -71,6 +73,10 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
     m_pAudioDecoder = new CAc97DirectSound(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, true); // true = resample, 128 buffers
   else
     m_pAudioDecoder = new CASyncDirectSound(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, codecstring);
+#elif __APPLE__
+
+  m_pAudioDecoder = new PortAudioDirectSound(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough);
+
 #elif _LINUX
 
   m_pAudioDecoder = new CALSADirectSound(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough);
