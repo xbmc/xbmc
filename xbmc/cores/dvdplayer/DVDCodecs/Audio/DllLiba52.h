@@ -24,7 +24,9 @@ public:
 
 class DllLiba52 : public DllDynamic, DllLiba52Interface
 {
-#ifndef _LINUX
+#ifdef __APPLE__
+  DECLARE_DLL_WRAPPER(DllLiba52, Q:\\system\\players\\dvdplayer\\liba52-osx.so)
+#elif !defined(_LINUX)
   DECLARE_DLL_WRAPPER(DllLiba52, Q:\\system\\players\\dvdplayer\\liba52.dll)
 #else
   DECLARE_DLL_WRAPPER(DllLiba52, Q:\\system\\players\\dvdplayer\\liba52-i486-linux.so)
