@@ -89,9 +89,8 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
 
   if (!pItem->HasThumbnail())
   {
-    if (CFile::Exists(cachedThumb))
-      pItem->SetCachedVideoThumb();
-    else
+    pItem->SetUserVideoThumb();
+    if (!CFile::Exists(cachedThumb))
     {
       CStdString strPath, strFileName;
       CUtil::Split(cachedThumb, strPath, strFileName);
