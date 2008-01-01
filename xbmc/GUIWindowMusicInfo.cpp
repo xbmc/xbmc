@@ -324,7 +324,7 @@ bool CGUIWindowMusicInfo::NeedRefresh() const
   return m_bRefresh;
 }
 
-int CGUIWindowMusicInfo::DownloadThumbnail(const CStdString &thumbFile)
+int CGUIWindowMusicInfo::DownloadThumbnail(const CStdString &thumbFile, bool bMultiple)
 {
   // Download image and save as thumbFile
   if (m_bArtistInfo)
@@ -333,10 +333,17 @@ int CGUIWindowMusicInfo::DownloadThumbnail(const CStdString &thumbFile)
       return 0;
 
     int iResult=0;
-    for (unsigned int i=0;i<m_artist.thumbURL.m_url.size();++i)
+    int iMax = 1;
+    if (bMultiple)
+      iMax = INT_MAX;
+    for (unsigned int i=0;i<m_artist.thumbURL.m_url.size()&&iResult<iMax;++i)
     {
       CStdString strThumb;
-      strThumb.Format("%s-%i.jpg",thumbFile.c_str(),i);
+
+      if (bMultiple)
+        strThumb.Format("%s%i.tbn",thumbFile.c_str(),i);
+      else
+        strThumb = thumbFile;
       if (CScraperUrl::DownloadThumbnail(strThumb,m_artist.thumbURL.m_url[i]))
         iResult++;
     }
@@ -345,8 +352,23 @@ int CGUIWindowMusicInfo::DownloadThumbnail(const CStdString &thumbFile)
   else
   {
     if (m_album.thumbURL.m_url.size() == 0)
-      if (CScraperUrl::DownloadThumbnail(thumbFile+"-1.jpg",m_album.thumbURL.m_url[0]))
-        return 1;
+      return 0;
+
+    int iResult=0;
+    int iMax = 1;
+    if (bMultiple)
+      iMax = INT_MAX;
+    for (unsigned int i=0;i<m_album.thumbURL.m_url.size() && iResult<iMax;++i)
+    {
+      CStdString strThumb;
+      if (bMultiple)
+        strThumb.Format("%s%i.tbn",thumbFile.c_str(),i);
+      else
+        strThumb = thumbFile;
+      if (CScraperUrl::DownloadThumbnail(strThumb,m_album.thumbURL.m_url[i]))
+        iResult++;
+    }
+    return iResult;
   }
   return 0;
 }
@@ -372,7 +394,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
   // Grab the thumbnail from the web
   CStdString thumbFromWeb;
   CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, "allmusicThumb", thumbFromWeb);
-  int iDownloaded=DownloadThumbnail(thumbFromWeb);
+  int iDownloaded=DownloadThumbnail(thumbFromWeb,true);
   if (iDownloaded > 0)
   {
     for (int i=0;i<iDownloaded;++i)
@@ -380,7 +402,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
       CStdString strThumb;
       strThumb.Format("thumb://Remote%i",i);
       CFileItem *item = new CFileItem(strThumb, false);
-      strThumb.Format("%s-%i.jpg",thumbFromWeb,i);
+      strThumb.Format("%s%i.tbn",thumbFromWeb,i);
       item->SetThumbnailImage(strThumb);
       item->SetLabel(g_localizeStrings.Get(20055));
       items.Add(item);
@@ -451,7 +473,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
     pic.CacheSkinImage("defaultAlbumCover.png", cachedThumb);
   }
   else if (result.Left(14).Equals("thumb://Remote"))
-    CFile::Cache(thumbFromWeb+"-"+result.Mid(14)+".jpg", cachedThumb);
+    CFile::Cache(thumbFromWeb+result.Mid(14)+".tbn", cachedThumb);
   else if (result == "thumb://Local")
     CFile::Cache(cachedLocalThumb, cachedThumb);
   else if (CFile::Exists(result))

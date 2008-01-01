@@ -700,7 +700,7 @@ void CGUIWindowMusicNav::SetThumb(int iItem, CONTEXT_BUTTON button)
       if (CScraperUrl::DownloadThumbnail(thumbFromWeb,*iter))
       {
         CStdString strItemPath;
-        strItemPath.Format("thumb://Allmusic%i",i++);
+        strItemPath.Format("thumb://Remote%i",i++);
         CFileItem *item = new CFileItem(strItemPath, false);
         item->SetThumbnailImage(thumbFromWeb);
         CStdString strLabel;
@@ -790,7 +790,7 @@ void CGUIWindowMusicNav::SetThumb(int iItem, CONTEXT_BUTTON button)
     else if (button == CONTEXT_BUTTON_SET_PLUGIN_THUMB)
       XFILE::CFile::Cache(picturePath,cachedThumb);
 
-    if (picturePath.Equals("thumb://None") || picture.DoCreateThumbnail(picturePath, cachedThumb))
+    if (picturePath.Equals("thumb://None") || picture.DoCreateThumbnail(items.Get(picturePath)->GetThumbnailImage(), cachedThumb))
     {
       CMusicDatabaseDirectory dir;
       dir.ClearDirectoryCache(m_vecItems.m_strPath);
