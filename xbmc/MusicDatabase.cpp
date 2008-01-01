@@ -72,7 +72,7 @@ bool CMusicDatabase::CreateTables()
     CLog::Log(LOGINFO, "create song table");
     m_pDS->exec("CREATE TABLE song ( idSong integer primary key, idAlbum integer, idPath integer, idArtist integer, strExtraArtists text, idGenre integer, strExtraGenres text, strTitle text, iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text, strMusicBrainzTrackID text, strMusicBrainzArtistID text, strMusicBrainzAlbumID text, strMusicBrainzAlbumArtistID text, strMusicBrainzTRMID text, iTimesPlayed integer, iStartOffset integer, iEndOffset integer, idThumb integer, lastplayed text default NULL, rating char default '0', comment text)\n");
     CLog::Log(LOGINFO, "create albuminfo table");
-    m_pDS->exec("CREATE TABLE albuminfo ( idAlbumInfo integer primary key, idAlbum integer, iYear integer, idGenre integer, strExtraGenres text, strMoods text, strStyles text, strReview text, strImage text, iRating integer)\n");
+    m_pDS->exec("CREATE TABLE albuminfo ( idAlbumInfo integer primary key, idAlbum integer, iYear integer, idGenre integer, strExtraGenres text, strMoods text, strStyles text, strThemes text, strReview text, strImage text, iRating integer)\n");
     CLog::Log(LOGINFO, "create albuminfosong table");
     m_pDS->exec("CREATE TABLE albuminfosong ( idAlbumInfoSong integer primary key, idAlbumInfo integer, iTrack integer, strTitle text, iDuration integer)\n");
     CLog::Log(LOGINFO, "create thumb table");
@@ -959,6 +959,7 @@ bool CMusicDatabase::GetAlbumInfo(long idAlbum, CAlbum &info, VECSONGS &songs)
       info.strReview = m_pDS->fv("albuminfo.strReview").get_asString();
       info.strStyles = m_pDS->fv("albuminfo.strStyles").get_asString();
       info.strMoods = m_pDS->fv("albuminfo.strMoods").get_asString();
+      info.strThemes = m_pDS->fv("albuminfo.strThemes").get_asString();
 
       long idAlbumInfo = m_pDS->fv("albuminfo.idAlbumInfo").get_asLong();
 
@@ -1519,10 +1520,11 @@ long CMusicDatabase::SetAlbumInfo(long idAlbum, const CAlbum& album, const VECSO
     m_pDS->exec(strSQL.c_str());
 
     // insert the albuminfo
-    strSQL=FormatSQL("insert into albuminfo (idAlbumInfo,idAlbum,idGenre,strExtraGenres,strMoods,strStyles,strReview,strImage,iRating,iYear) values(NULL,%i,%i,'%s','%s','%s','%s','%s',%i,%i)",
+    strSQL=FormatSQL("insert into albuminfo (idAlbumInfo,idAlbum,idGenre,strExtraGenres,strMoods,strStyles,strThemes,strReview,strImage,iRating,iYear) values(NULL,%i,%i,'%s','%s','%s','%s','%s','%s',%i,%i)",
                   idAlbum, lGenreId, extraGenres.c_str(),
                   album.strMoods.c_str(),
                   album.strStyles.c_str(),
+                  album.strThemes.c_str(),
                   album.strReview.c_str(),
                   album.thumbURL.m_xml.c_str(),
                   album.iRating,

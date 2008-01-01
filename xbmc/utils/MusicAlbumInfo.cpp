@@ -139,6 +139,19 @@ bool CMusicAlbumInfo::Parse(const TiXmlElement* album)
     }
     node = node->NextSibling("mood");
   }
+  node = album->FirstChild("theme");
+  while (node)
+  {
+    if (node->FirstChild())
+    {
+      strTemp = node->FirstChild()->Value();
+      if (m_album.strThemes.IsEmpty())
+        m_album.strThemes = strTemp;
+      else
+        m_album.strThemes += g_advancedSettings.m_musicItemSeparator+strTemp;
+    }
+    node = node->NextSibling("theme");
+  }
 
   m_songs.clear();
   node = album->FirstChild("track");

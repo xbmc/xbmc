@@ -88,13 +88,21 @@
 			<font>font11</font>
 		</control>
 		<control type="label" id="1">
-			<description>Release Date</description>
+			<description>Themes</description>
 			<posx>200</posx>
 			<posy>243</posy>
 			<width>90</width>
-			<label>172</label>
+			<label>21895</label>
 			<font>font11</font>
 		</control>
+<!--		<control type="label" id="1">
+			<description>Release Date</description>
+			<posx>200</posx>
+			<posy>263</posy>
+			<width>90</width>
+			<label>172</label>
+			<font>font11</font>
+		</control> -->
 		<control type="label" id="21">
 			<description>Artist value</description>
 			<width>375</width>
@@ -149,15 +157,24 @@
 			<font>font11</font>
 			<scroll>true</scroll>
 		</control>
-		<control type="label">
-			<description>Release Date value</description>
+		<control type="label" id="30">
+			<description>Themes value</description>
 			<width>375</width>
 			<posx>310</posx>
 			<posy>243</posy>
-			<info>ListItem.Property(ReleaseDate)</info>
+			<info>ListItem.Property(AlbumThemes)</info>
 			<font>font11</font>
 			<scroll>true</scroll>
 		</control>
+<!--		<control type="label">
+			<description>Release Date value</description>
+			<width>375</width>
+			<posx>310</posx>
+			<posy>263</posy>
+			<info>ListItem.Property(ReleaseDate)</info>
+			<font>font11</font>
+			<scroll>true</scroll>
+		</control> -->
 		<control type="image" id="3">
 			<description>Album Cover image</description>
 			<posx>55</posx>

@@ -33,6 +33,7 @@ public:
   CScraperUrl thumbURL;  
   CStdString strMoods;
   CStdString strStyles;
+  CStdString strThemes;
   CStdString strReview;
   int iRating;
   int iYear;

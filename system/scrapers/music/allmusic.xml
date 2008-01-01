@@ -7,6 +7,9 @@
 	</CreateAlbumSearchUrl>
 	<GetAlbumSearchResults dest="8">
 		<RegExp input="$$5" output="&lt;results&gt;\1&lt;/results&gt;" dest="8">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1&lt;/title&gt;&lt;/entity&gt;" dest="5">
+				<expression repeat="yes" noclean="1">&lt;TITLE&gt;allmusic[ (]+ ([^&gt;]*) &gt; Overview</expression>
+			</RegExp>
 			<RegExp input="$$1" output="&lt;entity&gt;&lt;year&gt;\1&lt;/year&gt;&lt;artist&gt;\2&lt;/artist&gt;&lt;title&gt;\4&lt;/title&gt;&lt;url&gt;http://wc01.allmusic.com/cg/amg.dll?p=amg&amp;amp;SQL=\3&lt;/url&gt;&lt;/entity&gt;" dest="5+">
 				<expression repeat="yes" noclean="1,2,3">&lt;td class=&quot;cell&quot;&gt;([0-9]*)&lt;/TD&gt;&lt;td class=&quot;cell&quot; style=&quot;[^&quot;]*&quot;&gt;([^&lt;]*)&lt;/TD&gt;&lt;td class=&quot;cell-img&quot;&gt;&lt;a href=&quot;[^&gt;]*&gt;&lt;img[^&gt;]*&gt;&lt;/a&gt;&lt;/TD&gt;&lt;td class=&quot;cell&quot;[^&gt;]*&gt;&lt;a href=&quot;[^&quot;]*sql=([^&quot;]*)&quot;&gt;([^&lt;]*)&lt;</expression>
 			</RegExp>
@@ -37,27 +40,27 @@
 				<expression noclean="1">&lt;span&gt;Release Date&lt;/span&gt;[^;]*[^,]*, ([0-9^]*)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="6">
-				<expression noclean="1">Genre Listing--&gt;([^!]*)&lt;!--Genre Listing</expression>
+				<expression noclean="1">Genre[s]* Listing--&gt;([^!]*)&lt;!--Genre[s]* Listing</expression>
 			</RegExp>
 			<RegExp input="$$6" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
 				<expression noclean="1" repeat="yes">&lt;li&gt;[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;&lt;/li&gt;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="7">
-				<expression noclean="1">Style Listing--&gt;([^!]*)&lt;!--Style Listing</expression>
+				<expression noclean="1">Style[s]* Listing--&gt;([^!]*)&lt;!--Style[s]* Listing</expression>
 			</RegExp>
 			<RegExp input="$$7" output="&lt;style&gt;\1&lt;/style&gt;" dest="5+">
 				<expression noclean="1" repeat="yes">&lt;li&gt;[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;&lt;/li&gt;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="8">
-				<expression noclean="1">Moods Listing--&gt;([^!]*)&lt;!--Moods Listing</expression>
+				<expression noclean="1">Mood[s]* Listing--&gt;([^!]*)&lt;!--Mood[s]* Listing</expression>
 			</RegExp>
 			<RegExp input="$$8" output="&lt;mood&gt;\1&lt;/mood&gt;" dest="5+">
 				<expression noclean="1" repeat="yes">&lt;li&gt;[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;&lt;/li&gt;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="9">
-				<expression noclean="1">Instruments Listing--&gt;([^!]*)&lt;!--Instruments Listing</expression>
+				<expression noclean="1">Theme[s]* Listing--&gt;([^!]*)&lt;!--Theme[s]* Listing</expression>
 			</RegExp>
-			<RegExp input="$$9" output="&lt;instruments&gt;\1&lt;/instruments&gt;" dest="5+">
+			<RegExp input="$$9" output="&lt;theme&gt;\1&lt;/theme&gt;" dest="5+">
 				<expression noclean="1" repeat="yes">&lt;li&gt;[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;&lt;/li&gt;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;track&gt;&lt;position&gt;\1&lt;/position&gt;&lt;title&gt;\2&lt;/title&gt;&lt;duration&gt;\3&lt;/duration&gt;&lt;/track&gt;" dest="5+">
@@ -67,7 +70,7 @@
 				<expression noclean="1">http://image.allmusic.com/([^&quot;]*)&quot;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;url function=&quot;GetReview&quot;&gt;http://www.allmusic.com/cg/amg.dll?p=amg&amp;amp;sql=\1&lt;/url&gt;" dest="5+">
-				<expression noclean="1">&lt;a HREF=&quot;[^:]*sql=([^&quot;]*)&quot;&gt;Review&lt;/a&gt;&lt;/td&gt;</expression>
+				<expression noclean="1">&lt;a HREF=&quot;/cg/amg.dll\?p=amg&amp;sql=([^&quot;]*)&quot;&gt;Review&lt;/a&gt;&lt;/td&gt;</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>
@@ -152,9 +155,6 @@
 			<RegExp input="$$1" output="&lt;url function=&quot;GetDiscography&quot;&gt;http://www.allmusic.com/cg/amg.dll?p=amg&amp;amp;\1&amp;amp;sql=\2&lt;/url&gt;" dest="5+">
 				<expression noclean="1">&lt;a HREF=&quot;/cg/amg.dll\?p=amg&amp;([^&amp;]*)&amp;sql=([^&quot;]*)&quot;&gt;Discography&lt;/a&gt;&lt;/td&gt;</expression>
 			</RegExp>
-
-
-
 			<expression noclean="1"></expression>
 		</RegExp>
 	</GetArtistDetails>
