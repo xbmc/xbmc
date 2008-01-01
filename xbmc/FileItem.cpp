@@ -384,7 +384,7 @@ void CFileItem::Serialize(CArchive& ar)
     else 
       ar << 0;
 
-    ar << m_mapProperties.size();
+    ar << (int)m_mapProperties.size();
     std::map<CStdString, CStdString,icompare>::const_iterator iter = m_mapProperties.begin();
     while (iter != m_mapProperties.end())
     {
@@ -437,9 +437,9 @@ void CFileItem::Serialize(CArchive& ar)
     if (iType == 1)
       ar >> *GetPictureInfoTag();
 
-    size_t nSize;
+    int nSize;
     ar >> nSize;
-    for (size_t nProp=0; nProp < nSize; nProp++)
+    for (int nProp=0; nProp < nSize; nProp++)
     {
       CStdString strKey, strValue;
       ar >> strKey;
