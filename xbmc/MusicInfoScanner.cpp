@@ -164,7 +164,7 @@ void CMusicInfoScanner::Process()
 
           while (!scraper.Completed())
           {
-            if (m_bStop) // fixme
+            if (m_bStop)
             {
               scraper.Cancel();
               break;
@@ -201,8 +201,11 @@ void CMusicInfoScanner::Process()
               scraper.LoadAlbuminfo(bestMatch);
               while (!scraper.Completed())
               {
-                if (m_bStop) // fixme
+                if (m_bStop)
+                {
                   scraper.Cancel();
+                  break;
+                }
                 Sleep(1);
               }
 
@@ -259,7 +262,7 @@ void CMusicInfoScanner::Process()
 
           while (!scraper.Completed())
           {
-            if (0) // fixme
+            if (m_bStop)
             {
               scraper.Cancel();
               break;
@@ -273,8 +276,11 @@ void CMusicInfoScanner::Process()
             scraper.LoadArtistinfo(0);
             while (!scraper.Completed())
             {
-              if (0) // fixme
+              if (m_bStop)
+              {
                 scraper.Cancel();
+                break;
+              }
               Sleep(1);
             }
 
