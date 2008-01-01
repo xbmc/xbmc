@@ -102,7 +102,9 @@
 #define HAS_PYTHON
 #define HAS_TRAINER
 #define HAS_AUDIO
+#ifndef __APPLE__
 #define HAS_SHOUTCAST
+#endif
 #define HAS_RAR
 #undef  HAS_LIRC
 #define HAS_KAI
@@ -129,11 +131,15 @@
 #define HAS_WEB_SERVER
 #define HAS_UPNP
 #undef  HAS_AUDIO
+#ifndef __APPLE__
 #define  HAS_SHOUTCAST
+#endif
 #define HAS_SDL
 #define HAS_RAR
 #define HAS_FILESYSTEM_CDDA
+#ifndef __APPLE__
 #define HAS_FILESYSTEM_SMB
+#endif
 #define HAS_FILESYSTEM
 #define HAS_SYSINFO
 #define HAS_VIDEO_PLAYBACK
@@ -142,7 +148,9 @@
 #define HAS_DVDPLAYER
 #define HAS_DVD_DRIVE
 #define HAS_WMA_CODEC
+#ifndef __APPLE__
 #define HAS_CCXSTREAM
+#endif
 #define HAS_LIRC
 #define HAS_AC3_CODEC
 #define HAS_DTS_CODEC
@@ -171,7 +179,9 @@
 #ifndef HAS_SDL_2D
 #define HAS_SDL_OPENGL
 #ifdef _LINUX
+#ifndef __APPLE__
 #define HAS_GLX
+#endif
 #endif
 #endif
 #ifdef _WIN32
