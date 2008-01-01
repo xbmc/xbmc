@@ -170,7 +170,7 @@ CStdString CGUILabelControl::ShortenPath(const CStdString &path)
     return path;
 
   char cDelim = '\0';
-  unsigned int nPos;
+  int nPos;
 
   nPos = path.find_last_of( '\\' );
   if ( nPos >= 0 )
