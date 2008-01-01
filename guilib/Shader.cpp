@@ -94,7 +94,7 @@ void CGLSLVertexShader::Free()
 //////////////////////////////////////////////////////////////////////
 bool CARBVertexShader::Compile()
 {
-  int err = 0;
+  GLint err = 0;
 
   Free();
 
@@ -203,7 +203,7 @@ void CGLSLPixelShader::Free()
 //////////////////////////////////////////////////////////////////////
 bool CARBPixelShader::Compile()
 {
-  int err = 0;
+  GLint err = 0;
 
   Free();
 
