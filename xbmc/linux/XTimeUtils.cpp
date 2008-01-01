@@ -49,6 +49,12 @@ BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount, bool bUseHighRes
   if (lpPerformanceCount == NULL)
     return false;
 
+#ifdef __APPLE__
+  struct timeval now;
+  gettimeofday(&now, NULL);
+  lpPerformanceCount->QuadPart = ((__int64)now.tv_sec * 1000000000L) + now.tv_usec*1000;
+
+#else
   struct timespec now;
 
   clockid_t clockUsed = CLOCK_MONOTONIC;
@@ -59,8 +65,10 @@ BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount, bool bUseHighRes
     CLog::Log(LOGERROR,"%s - error %d getting timer", __FUNCTION__, errno);
     return false;
   }
-
+  
   lpPerformanceCount->QuadPart = ((__int64)now.tv_sec * 1000000000L) + now.tv_nsec;
+#endif
+
   return true;
 }
 
