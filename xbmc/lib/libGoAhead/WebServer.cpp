@@ -514,6 +514,26 @@ void formTest(webs_t wp, char_t *path, char_t *query)
 	websDone(wp, 200);
 }
 
+#ifdef __APPLE__
+
+// I took this from the libGoAhead sample, it appears to be new.
+
+/******************************************************************************/
+/*
+ *      Returns a pointer to an allocated qualified unique temporary file name.
+ *      This filename must eventually be deleted with bfree();
+ */
+char_t *websGetCgiCommName()
+{
+	char_t  *pname1, *pname2;
+
+    pname1 = tempnam(NULL, T("cgi"));
+    pname2 = bstrdup(B_L, pname1);
+    free(pname1);
+    return pname2;
+}
+#endif
+
 // Restore code and data sections to normal.
 #ifndef __GNUC__
 #pragma code_seg()
