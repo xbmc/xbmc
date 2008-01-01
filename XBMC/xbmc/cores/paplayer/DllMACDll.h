@@ -73,7 +73,9 @@ public:
 
 class DllMACDll : public DllDynamic, DllMACDllInterface
 {
-#ifdef _LINUX
+#ifdef __APPLE__
+  DECLARE_DLL_WRAPPER(DllMACDll, Q:\\system\\players\\paplayer\\MACDll-osx.so)
+#elif defined(_LINUX)
   DECLARE_DLL_WRAPPER(DllMACDll, Q:\\system\\players\\paplayer\\MACDll-i486-linux.so)
 #else
   DECLARE_DLL_WRAPPER(DllMACDll, Q:\\system\\players\\paplayer\\MACDll.dll)
