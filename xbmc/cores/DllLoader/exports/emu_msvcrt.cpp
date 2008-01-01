@@ -11,7 +11,9 @@
 #include <sys/types.h>
 #include <sys/timeb.h>
 #include <sys/ioctl.h>
+#ifndef __APPLE__
 #include <linux/cdrom.h>
+#endif
 #include <fcntl.h>
 #include <time.h>
 #include <signal.h>
@@ -937,6 +939,8 @@ extern "C"
       CLog::Log(LOGWARNING, "msvcrt.dll: dll_telli64 called, TODO: add 'int64 -> long' type checking");      //warning
 #ifndef _LINUX
       return (__int64)tell(fd);
+#elif defined(__APPLE__)
+      return lseek(fd, 0, SEEK_CUR);
 #else
       return lseek64(fd, 0, SEEK_CUR);
 #endif
@@ -1096,7 +1100,7 @@ extern "C"
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(stream);
     if (pFile != NULL)
     {
-#ifndef _LINUX
+#if !defined(_LINUX) || defined(__APPLE__)
       *pos = pFile->GetPosition();
 #else
       pos->__pos = pFile->GetPosition();
@@ -1118,7 +1122,7 @@ extern "C"
     int fd = g_emuFileWrapper.GetDescriptorByStream(stream);
     if (fd >= 0)
     {
-#ifndef _LINUX
+#if !defined(_LINUX) || defined(__APPLE__)
       if (dll_lseeki64(fd, *pos, SEEK_SET) >= 0)
 #else
       if (dll_lseeki64(fd, (__off64_t)pos->__pos, SEEK_SET) >= 0)
@@ -1597,6 +1601,7 @@ extern "C"
      if (!pFile)
        return -1;
 
+#ifndef __APPLE__
     if(request == DVD_READ_STRUCT || request == DVD_AUTH)
     {
       void *p1 = va_arg(va, void*);
@@ -1610,6 +1615,9 @@ extern "C"
       CLog::Log(LOGWARNING, "%s - Unknown request type %ld", __FUNCTION__, request);
       return -1;
     }
+#else
+	return -1;
+#endif
   }
 
 #endif

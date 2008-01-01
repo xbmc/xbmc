@@ -2,7 +2,7 @@
 #ifndef __EMU_FILE_WRAPPER_H__
 #define __EMU_FILE_WRAPPER_H__
 
-#ifdef _LINUX
+#if defined(_LINUX) && !defined(__APPLE__)
 #define _file _fileno
 #endif
 
