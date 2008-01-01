@@ -213,7 +213,7 @@ void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &wStr
     char *dst = new char[inBytes * sizeof(wchar_t)];
     size_t outBytes = inBytes * sizeof(wchar_t);
     char *outdst = dst;
-#ifdef _LINUX
+#if defined(_LINUX) && !defined(__APPLE__)
     if (iconv(m_iconvUtf8toW, (char**)&src, &inBytes, &outdst, &outBytes))
 #else
     if (iconv(m_iconvUtf8toW, &src, &inBytes, &outdst, &outBytes))
@@ -254,7 +254,7 @@ void CCharsetConverter::subtitleCharsetToW(const CStdStringA& strSource, CStdStr
     char *dst = (char*)strDest.GetBuffer(inBytes * sizeof(wchar_t));
     size_t outBytes = inBytes * sizeof(wchar_t);
 
-#ifdef _LINUX
+#if defined(_LINUX) && !defined(__APPLE__)
     if (iconv(m_iconvSubtitleCharsetToW, (char**)&src, &inBytes, &dst, &outBytes))
 #else
     if (iconv(m_iconvSubtitleCharsetToW, &src, &inBytes, &dst, &outBytes))
@@ -344,7 +344,7 @@ void CCharsetConverter::utf8ToStringCharset(const CStdStringA& strSource, CStdSt
     char *dst = strDest.GetBuffer(inBytes);
     size_t outBytes = inBytes - 1;
 
-#ifdef _LINUX
+#if defined(_LINUX) && !defined(__APPLE__)
     if (iconv(m_iconvUtf8ToStringCharset, (char**)&src, &inBytes, &dst, &outBytes) == (size_t) -1)
 #else
     if (iconv(m_iconvUtf8ToStringCharset, &src, &inBytes, &dst, &outBytes) == (size_t) -1)
@@ -382,7 +382,7 @@ void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSource, CStdSt
     size_t outBytes = (inBytes * 4) + 1;
     char *dst = strDest.GetBuffer(outBytes);
 
-#ifdef _LINUX
+#if defined(_LINUX) && !defined(__APPLE__)
     if (iconv(m_iconvStringCharsetToUtf8, (char**)&src, &inBytes, &dst, &outBytes) == (size_t) -1)
 #else
     if (iconv(m_iconvStringCharsetToUtf8, &src, &inBytes, &dst, &outBytes) == (size_t) -1)
@@ -417,7 +417,7 @@ void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSourceCharset,
     size_t outBytes = (inBytes * 4) + 1;
     char *dst = strDest.GetBuffer(outBytes);
 
-#ifdef _LINUX
+#if defined(_LINUX) && !defined(__APPLE__)
     if (iconv(iconvString, (char**)&src, &inBytes, &dst, &outBytes) == (size_t) -1)
 #else
     if (iconv(iconvString, &src, &inBytes, &dst, &outBytes) == (size_t) -1)
@@ -451,7 +451,7 @@ void CCharsetConverter::wToUTF8(const CStdStringW& strSource, CStdStringA &strDe
     size_t inBytes = (strSource.length() + 1) * sizeof(wchar_t);
     size_t outBytes = (inBytes + 1)*sizeof(wchar_t);  // some free for UTF-8 (up to 4 bytes/char)
     char *dst = strDest.GetBuffer(outBytes);
-#ifdef _LINUX
+#if defined(_LINUX) && !defined(__APPLE__)
     if (iconv(m_iconvWtoUtf8, (char**)&src, &inBytes, &dst, &outBytes))
 #else
     if (iconv(m_iconvWtoUtf8, &src, &inBytes, &dst, &outBytes))
@@ -481,7 +481,7 @@ void CCharsetConverter::utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA 
     size_t inBytes = (strSource.length() + 1)*sizeof(wchar_t);
     size_t outBytes = (inBytes + 1)*sizeof(wchar_t);  // UTF-8 is up to 4 bytes/character  
     char *dst = strDest.GetBuffer(outBytes);
-#ifdef _LINUX
+#if defined(_LINUX) && !defined(__APPLE__)
     if (iconv(m_iconvUtf16BEtoUtf8, (char**)&src, &inBytes, &dst, &outBytes))
 #else
     if (iconv(m_iconvUtf16BEtoUtf8, &src, &inBytes, &dst, &outBytes))
@@ -515,7 +515,7 @@ void CCharsetConverter::utf16LEtoW(const char* strSource, CStdStringW &strDest)
     }
     size_t outBytes = (inBytes + 1)*sizeof(wchar_t);  // UTF-8 is up to 4 bytes/character  
     char *dst = (char*) strDest.GetBuffer(outBytes);
-#ifdef _LINUX
+#if defined(_LINUX) && !defined(__APPLE__)
     if (iconv(m_iconvUtf16LEtoW, (char**)&strSource, &inBytes, &dst, &outBytes))
 #else
     if (iconv(m_iconvUtf16LEtoW, &strSource, &inBytes, &dst, &outBytes))
@@ -564,7 +564,7 @@ void CCharsetConverter::ucs2CharsetToStringCharset(const CStdStringW& strSource,
     char *dst = strDest.GetBuffer(inBytes);
     size_t outBytes = inBytes;
 
-#ifdef _LINUX
+#if defined(_LINUX) && !defined(__APPLE__)
     if (iconv(m_iconvUcs2CharsetToStringCharset, (char**)&src, &inBytes, &dst, &outBytes))
 #else
     if (iconv(m_iconvUcs2CharsetToStringCharset, &src, &inBytes, &dst, &outBytes))
@@ -601,7 +601,7 @@ void CCharsetConverter::utf32ToStringCharset(const unsigned long* strSource, CSt
     char *dst = strDest.GetBuffer(inBytes);
     size_t outBytes = inBytes;
 
-#ifdef _LINUX
+#if defined(_LINUX) && !defined(__APPLE__)
     if (iconv(m_iconvUtf32ToStringCharset, (char**)&src, &inBytes, &dst, &outBytes))
 #else
     if (iconv(m_iconvUtf32ToStringCharset, &src, &inBytes, &dst, &outBytes))
