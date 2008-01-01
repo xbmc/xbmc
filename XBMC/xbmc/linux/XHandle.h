@@ -26,6 +26,7 @@ public:
   
   SDL_sem    *m_hSem;
   SDL_Thread  *m_hThread;
+  SDL_cond    *m_hCond;
 
   // simulate mutex and critical section
   SDL_mutex  *m_hMutex;
@@ -39,7 +40,7 @@ public:
   CStdString       m_FindFileDir;
   off64_t          m_iOffset;
   bool             m_bCDROM;
-
+  bool             m_bEventSet;
   int              m_nRefCount;
   SDL_mutex *m_internalLock; 
 
