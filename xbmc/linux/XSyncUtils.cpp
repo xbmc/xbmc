@@ -385,11 +385,11 @@ int SDL_SemWaitTimeout2(SDL_sem *sem, Uint32 dwMilliseconds)
 #ifdef __APPLE__
   int nRet = SDL_SemWaitTimeout(sem, dwMilliseconds);
   
- // Why this is needed is beyond me...*SIGH*.
+  // Why this is needed is beyond me...*SIGH*.
   if (nRet != SDL_MUTEX_TIMEDOUT)
       SDL_SemPost(sem);
 	
-	return nRet;
+  return nRet;
 #else
   int nRet = 0;
   struct timespec req;
@@ -407,8 +407,8 @@ int SDL_SemWaitTimeout2(SDL_sem *sem, Uint32 dwMilliseconds)
   {
     return SDL_MUTEX_TIMEDOUT;
   }
-	
-	// FIXME, return something here.
+
+  return 0;
 #endif
 }
 
