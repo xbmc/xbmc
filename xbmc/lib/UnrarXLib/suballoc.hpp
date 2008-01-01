@@ -10,7 +10,8 @@
 const int N1=4, N2=4, N3=4, N4=(128+3-1*N1-2*N2-3*N3)/4;
 const int N_INDEXES=N1+N2+N3+N4;
 
-#if defined(__GNUC__) || defined(_LINUX)
+// FIXME, this is probably broken on OS X.
+#if (defined(__GNUC__) || defined(_LINUX)) && !defined(__APPLE__)
 #define _PACK_ATTR __attribute__ ((__packed__))
 #else
 #define _PACK_ATTR
@@ -35,12 +36,14 @@ struct RAR_MEM_BLK
   }
 } _PACK_ATTR;
 
+// FIXME, this is probably broken on OS X.
+#ifndef __APPLE__
 #ifdef _AIX
 #pragma pack(pop)
 #else
 #pragma pack()
 #endif
-
+#endif
 
 struct RAR_NODE
 {
