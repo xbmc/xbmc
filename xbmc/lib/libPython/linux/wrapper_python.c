@@ -62,7 +62,11 @@ int __wrap_open(const char *file, int oflag, ...)
   	va_list args;
 	  mode_t mode;
 	  va_start(args, oflag);
+#ifdef __APPLE__
+	  mode = va_arg(args, int);
+#else
 	  mode = va_arg(args, mode_t);
+#endif
 	  va_end(args);
 	  return xbp_open(file, oflag | O_NONBLOCK, mode);
   } 
