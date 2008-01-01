@@ -11,7 +11,9 @@ public:
 
 class DllLibExif : public DllDynamic, DllLibExifInterface
 {
-#ifndef _LINUX
+#if defined(__APPLE__)
+  DECLARE_DLL_WRAPPER(DllLibExif, Q:\\system\\libexif-osx.so)
+#elif !defined(_LINUX)
   DECLARE_DLL_WRAPPER(DllLibExif, Q:\\system\\libexif.dll)
 #else
   DECLARE_DLL_WRAPPER(DllLibExif, Q:\\system\\libexif-i486-linux.so)
