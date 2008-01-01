@@ -12,6 +12,10 @@ using namespace Surface;
 #include <SDL/SDL_syswm.h>
 #endif
 
+#ifdef __APPLE__
+#define APIENTRY 
+#endif
+
 #ifdef HAS_GLX
 Display* CSurface::s_dpy = 0;
 
@@ -534,6 +538,7 @@ void CSurface::EnableVSync(bool enable)
     }
 #endif
 
+#ifndef __APPLE__
     // now let's see if we have some system to do specific vsync handling
     if (_glXGetSyncValuesOML && _glXSwapBuffersMscOML && !m_iVSyncMode)
     {
@@ -551,6 +556,7 @@ void CSurface::EnableVSync(bool enable)
       else
         CLog::Log(LOGWARNING, "%s - glXGetVideoSyncSGI failed, glcontext probably not direct", __FUNCTION__);
     }
+#endif
 
     if(!m_iVSyncMode)
     {
@@ -628,7 +634,12 @@ bool CSurface::MakeCurrent()
     return (bool)glXMakeCurrent(s_dpy, m_glPBuffer, m_glContext);
   }
 #endif
+
+#ifdef __APPLE__
+  return true;
+#else
   return false;
+#endif
 }
 
 void CSurface::ReleaseContext()
