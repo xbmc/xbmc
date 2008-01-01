@@ -15,7 +15,14 @@
 // which means it will be different for each thread that accesses it.
 #define TLS_INDEXES 16
 #define TLS_OUT_OF_INDEXES (DWORD)0xFFFFFFFF
+
+#ifdef __APPLE__
+// FIXME, this needs to be converted to use pthread_once.
+static LPVOID tls[TLS_INDEXES] = { NULL };
+#else
 static LPVOID __thread tls[TLS_INDEXES] = { NULL };
+#endif
+
 static BOOL tls_used[TLS_INDEXES];
 
 struct InternalThreadParam {
@@ -24,15 +31,24 @@ struct InternalThreadParam {
   HANDLE handle;
 };
 
+#ifdef __APPLE__
+// Use pthread's built-in support for TLS, it's more portable.
+static pthread_once_t keyOnce = PTHREAD_ONCE_INIT;
+static pthread_key_t  tlsParamKey = 0;
+#define GET_PARAM() ((InternalThreadParam *)pthread_getspecific(tlsParamKey))
+#else
 __thread InternalThreadParam *pParam = NULL;
+#define GET_PARAM() pParam
+#endif
+
 void handler (int signum)
 {
   CLog::Log(LOGERROR,"thread 0x%x (%lu) got signal %d. terminating thread abnormally.", SDL_ThreadID(), (unsigned long)SDL_ThreadID(), signum);
-  if (pParam && pParam->handle)
+  if (GET_PARAM() && GET_PARAM()->handle)
   {
-    SetEvent(pParam->handle);
-    CloseHandle(pParam->handle);
-    delete pParam;
+    SetEvent(GET_PARAM()->handle);
+    CloseHandle(GET_PARAM()->handle);
+    delete GET_PARAM();
   }
 
   if (OwningCriticalSection(g_graphicsContext))
@@ -44,8 +60,22 @@ void handler (int signum)
   pthread_exit(NULL);
 }
 
-static int InternalThreadFunc(void *data) {
+#ifdef __APPLE__
+static void MakeTlsKey()
+{
+  pthread_key_create(&tlsParamKey, NULL);
+}
+#endif
+
+static int InternalThreadFunc(void *data) 
+{
+#ifdef __APPLE__
+  pthread_once(&keyOnce, MakeTlsKey);
+  pthread_setspecific(tlsParamKey, data);
+#else
   pParam = (InternalThreadParam *)data;
+#endif
+  
   int nRc = -1;
 
   // assign termination handler  
@@ -58,7 +88,7 @@ static int InternalThreadFunc(void *data) {
 
   try {
      CLog::Log(LOGDEBUG,"Running thread %lu", (unsigned long)SDL_ThreadID());
-     nRc = pParam->threadFunc(pParam->data);
+     nRc = GET_PARAM()->threadFunc(GET_PARAM()->data);
   }
   catch(...) {
     CLog::Log(LOGERROR,"thread 0x%x raised an exception. terminating it.", SDL_ThreadID());
@@ -70,9 +100,9 @@ static int InternalThreadFunc(void *data) {
     ExitCriticalSection(g_graphicsContext);
   }
 
-  SetEvent(pParam->handle);
-  CloseHandle(pParam->handle);
-  delete pParam;
+  SetEvent(GET_PARAM()->handle);
+  CloseHandle(GET_PARAM()->handle);
+  delete GET_PARAM();
   return nRc;
 }
 
@@ -94,6 +124,7 @@ HANDLE WINAPI CreateThread(
   pParam->threadFunc = lpStartAddress;
   pParam->data = lpParameter;
   pParam->handle = h;
+  
   h->m_nRefCount++;
   h->m_hThread = SDL_CreateThread(InternalThreadFunc, (void*)pParam);
   if (lpThreadId)
@@ -163,8 +194,7 @@ BOOL WINAPI GetThreadTimes (
     TimeTToFileTime(time(NULL),lpExitTime);
   if (lpKernelTime)
     TimeTToFileTime(0,lpKernelTime);
-#ifdef _POSIX_THREAD_CPUTIME
-
+#if _POSIX_THREAD_CPUTIME != -1
     
     if(lpUserTime)
     {
