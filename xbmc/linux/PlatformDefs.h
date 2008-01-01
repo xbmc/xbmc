@@ -16,7 +16,11 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <string.h>
+#ifdef __APPLE__
+#include <sys/sysctl.h>
+#else
 #include <sys/sysinfo.h>
+#endif
 #include <sys/time.h>
 #include <time.h>
 #endif
@@ -60,7 +64,11 @@
 #define CALLBACK    __stdcall
 #define WINAPI      __stdcall
 #define WINAPIV     __cdecl
+#ifndef __APPLE__
 #define APIENTRY    WINAPI
+#else
+#define APIENTRY
+#endif
 #define APIPRIVATE  __stdcall
 #define IN
 #define OUT
@@ -77,6 +85,13 @@ typedef CXHandle* HANDLE;
 
 typedef void* HINSTANCE;
 typedef void* HMODULE;
+
+#ifdef __APPLE__
+typedef int64_t		off64_t;
+typedef off_t     __off_t;
+typedef off64_t   __off64_t;
+#include <sched.h>
+#endif
 
 typedef unsigned long 	DWORD;
 typedef unsigned short 	WORD;
@@ -313,13 +328,23 @@ typedef struct _SECURITY_ATTRIBUTES {
 typedef struct _MEMORYSTATUS 
 {  
 	DWORD dwLength;  
-	DWORD dwMemoryLoad;  
+	DWORD dwMemoryLoad;
+	
+#ifdef __APPLE__
+	uint64_t dwTotalPhys;
+	uint64_t dwAvailPhys;
+	uint64_t dwTotalPageFile;
+	uint64_t dwAvailPageFile;
+	uint64_t dwTotalVirtual;
+	uint64_t dwAvailVirtual;
+#else
 	SIZE_T dwTotalPhys;  
 	SIZE_T dwAvailPhys;  
 	SIZE_T dwTotalPageFile;  
 	SIZE_T dwAvailPageFile;  
 	SIZE_T dwTotalVirtual;  
 	SIZE_T dwAvailVirtual;
+#endif
 } MEMORYSTATUS, *LPMEMORYSTATUS;
 
 // Common HRESULT values
