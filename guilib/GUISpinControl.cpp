@@ -413,9 +413,12 @@ void CGUISpinControl::Render()
 
     float fPosX = m_posX + m_label.offsetX - 3;
     if ( !IsDisabled() /*HasFocus()*/ )
-      m_textLayout.Render(fPosX, fPosY, 0, m_label.textColor, m_label.shadowColor, m_label.align, 0);
-    else if (HasFocus() && m_label.focusedColor)
-      m_textLayout.Render(fPosX, fPosY, 0, m_label.focusedColor, m_label.shadowColor, m_label.align, 0);
+    {
+      if (HasFocus() && m_label.focusedColor)
+        m_textLayout.Render(fPosX, fPosY, 0, m_label.focusedColor, m_label.shadowColor, m_label.align, 0);
+      else
+        m_textLayout.Render(fPosX, fPosY, 0, m_label.textColor, m_label.shadowColor, m_label.align, 0);
+    }
     else
       m_textLayout.Render(fPosX, fPosY, 0, m_label.disabledColor, m_label.shadowColor, m_label.align, 0, true);
 
