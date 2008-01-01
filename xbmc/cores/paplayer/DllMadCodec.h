@@ -13,6 +13,8 @@ class DllMadCodec : public DllDynamic, DllMadCodecInterface
 {
 #ifndef _LINUX
   DECLARE_DLL_WRAPPER(DllMadCodec, Q:\\system\\players\\PAPlayer\\MADCodec.dll)
+#elif __APPLE__
+  DECLARE_DLL_WRAPPER(DllMadCodec, Q:\\system\\players\\paplayer\\MADCodec-osx.so)
 #else
   DECLARE_DLL_WRAPPER(DllMadCodec, Q:\\system\\players\\paplayer\\MADCodec-i486-linux.so)
 #endif

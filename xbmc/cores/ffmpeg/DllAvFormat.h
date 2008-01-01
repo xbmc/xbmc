@@ -49,8 +49,9 @@ public:
 
 class DllAvFormat : public DllDynamic, DllAvFormatInterface
 {
-
-#ifndef _LINUX
+#ifdef __APPLE__
+  DECLARE_DLL_WRAPPER(DllAvFormat, Q:\\system\\players\\dvdplayer\\avformat-51-osx.so)
+#elif !defined(_LINUX)
   DECLARE_DLL_WRAPPER(DllAvFormat, Q:\\system\\players\\dvdplayer\\avformat-51.dll)
 #else
   DECLARE_DLL_WRAPPER(DllAvFormat, Q:\\system\\players\\dvdplayer\\avformat-51-i486-linux.so)
