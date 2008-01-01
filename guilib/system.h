@@ -125,7 +125,9 @@
 #endif
 
 #ifdef _LINUX
+#ifndef __APPLE__
 #include "../config.h"
+#endif
 #define HAS_PYTHON
 #undef  HAS_TRAINER
 #define HAS_WEB_SERVER
