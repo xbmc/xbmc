@@ -140,7 +140,7 @@ CStdString CSettingInt::ToString()
 void CSettingHex::FromString(const CStdString &strValue)
 {
   int iHexValue;
-  if (sscanf(strValue, "%x", &iHexValue))
+  if (sscanf(strValue, "%x", (unsigned int *)&iHexValue))
     SetData(iHexValue);
 }
 

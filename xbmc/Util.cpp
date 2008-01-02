@@ -1856,7 +1856,7 @@ bool CUtil::UrlDecode(CStdString& strURLData)
         CStdString strTmp;
         strTmp.assign(strURLData.substr(i + 1, 2));
         int dec_num;
-        sscanf(strTmp,"%x",&dec_num);
+        sscanf(strTmp,"%x",(unsigned int *)&dec_num);
 		if (dec_num<0 || dec_num>255)
 		  return false;
         strResult += (char)dec_num;
