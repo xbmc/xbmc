@@ -123,7 +123,7 @@ typedef union DSPReg
 		u8	edl;								//Echo Delay in ms >> 4
 		s8	__r7E;
 		s8	c7;
-	};
+	} u;
 
 	DSPFIR	fir[8];								//FIR filter
 

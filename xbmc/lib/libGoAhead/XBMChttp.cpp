@@ -341,7 +341,6 @@ int SetResponse(const CStdString &response)
   {
     if ((response.Right(closeTag.length())!=closeTag) && closeFinalTag) 
       return g_application.getApplicationMessenger().SetResponse(response+closeTag);
-    else;
   }
   else 
     if (closeFinalTag)
