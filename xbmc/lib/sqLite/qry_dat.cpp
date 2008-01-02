@@ -205,7 +205,7 @@ string field_value::get_asString() const {
       return tmp = t;
     }
     default:
-      break;
+      return tmp = "";
     }
   }
 
@@ -247,7 +247,7 @@ bool field_value::get_asBool() const {
       return (bool)double_value;
     }
     default:
-      break;
+      return false;
     }
   }
   
@@ -298,7 +298,7 @@ char field_value::get_asChar() const {
       return t[0];
     }
     default:
-      break;
+      return '\0';
     }
   }
 
@@ -333,7 +333,7 @@ short field_value::get_asShort() const {
       return (short)double_value;
     }
     default:
-      break;
+      return 0;
     }
   }
 
@@ -368,7 +368,7 @@ unsigned short field_value::get_asUShort() const {
       return (unsigned short)double_value;
     }
     default:
-      break;
+      return 0;
     }
   }
 
@@ -402,7 +402,7 @@ long field_value::get_asLong() const {
       return (long)double_value;
     }
     default:
-      break;
+      return 0;
     }
   }
 
@@ -440,7 +440,7 @@ unsigned long field_value::get_asULong() const {
       return (unsigned long)double_value;
     }
     default:
-      break;
+      return 0;
     }
   }
 
@@ -474,7 +474,7 @@ float field_value::get_asFloat() const {
       return (float)double_value;
     }
     default:
-      break;
+      return 0.0;
     }
   }
 
@@ -508,7 +508,7 @@ double field_value::get_asDouble() const {
       return (double)double_value;
     }
     default:
-      break;
+      return 0.0;
     }
   }
 
@@ -564,7 +564,7 @@ field_value& field_value::operator= (const field_value & fv) {
       break;
     }
     default:
-      break;
+      return *this;
     }
 }
 

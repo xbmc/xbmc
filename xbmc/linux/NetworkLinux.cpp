@@ -217,8 +217,16 @@ CNetworkLinux::CNetworkLinux(void)
 
 CNetworkLinux::~CNetworkLinux(void)
 {
-   if (m_sock != -1)
-      close(CNetworkLinux::m_sock); 
+  if (m_sock != -1)
+    close(CNetworkLinux::m_sock);
+
+  vector<CNetworkInterface*>::iterator it = m_interfaces.begin();
+  while(it != m_interfaces.end())
+  {
+    CNetworkInterface* nInt = *it;
+    delete nInt;
+    it = m_interfaces.erase(it);
+  }
 }
 
 std::vector<CNetworkInterface*>& CNetworkLinux::GetInterfaceList(void)
