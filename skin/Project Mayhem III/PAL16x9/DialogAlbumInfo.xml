@@ -396,7 +396,7 @@
 		<control type="group" id="9000">
 		<posy>-22</posy>
 		<control type="button" id ="5">
-			<description>Tracks/Review</description>
+			<description>Tracks/Review(Albums) or Discography/Biography(Artists)</description>
 			<posx>55</posx>
 			<posy>372</posy>
 			<width>135</width>
@@ -410,24 +410,6 @@
 			<onright>50</onright>
 			<onup>10</onup>
 			<ondown>6</ondown>
-			<visible>container.content(albums)</visible>
-		</control>
-		<control type="button" id ="5">
-			<description>Discography/Biography</description>
-			<posx>55</posx>
-			<posy>372</posy>
-			<width>135</width>
-			<height>32</height>
-			<label>182</label>
-			<font>font10</font>
-			<align>center</align>
-			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
-			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
-			<onleft>61</onleft>
-			<onright>50</onright>
-			<onup>10</onup>
-			<ondown>6</ondown>
-			<visible>container.content(artists)</visible>
 		</control>
 		<control type="button" id ="6">
 			<description>Refresh</description>
