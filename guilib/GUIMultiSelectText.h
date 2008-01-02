@@ -44,7 +44,7 @@ protected:
   void AddString(const CStdString &text, bool selectable, const CStdString &clickAction = "");
   void PositionButtons();
   unsigned int GetNumSelectable() const;
-  unsigned int GetItemFromPoint(const CPoint &point) const;
+  int GetItemFromPoint(const CPoint &point) const;
   void ScrollToItem(unsigned int item);
 
   // the static strings and buttons strings
