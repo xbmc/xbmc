@@ -17,12 +17,13 @@ namespace MathUtils {
 #define min(a,b) ((a)<(b)?(a):(b))
 #endif
 
-CGUIFont::CGUIFont(const CStdString& strFontName, DWORD style, DWORD textColor, DWORD shadowColor, CGUIFontTTF *font)
+CGUIFont::CGUIFont(const CStdString& strFontName, DWORD style, DWORD textColor, DWORD shadowColor, float lineSpacing, CGUIFontTTF *font)
 {
   m_strFontName = strFontName;
   m_style = style & 3;
   m_textColor = textColor;
   m_shadowColor = shadowColor;
+  m_lineSpacing = lineSpacing;
   m_font = font;
   
   if (m_font)
@@ -129,9 +130,9 @@ void CGUIFont::DrawScrollingText(float x, float y, const vector<DWORD> &colors, 
     renderColors.push_back(g_graphicsContext.MergeAlpha(colors[i] ? colors[i] : m_textColor));
 
   if (shadowColor)
-    m_font->DrawTextInternal(x - scrollInfo.pixelPos + 1, y + 1, g_graphicsContext.MergeAlpha(shadowColor), renderText, alignment, maxWidth + scrollInfo.pixelPos + m_font->m_lineHeight*2);
+    m_font->DrawTextInternal(x - scrollInfo.pixelPos + 1, y + 1, g_graphicsContext.MergeAlpha(shadowColor), renderText, alignment, maxWidth + scrollInfo.pixelPos + m_font->GetLineHeight(2.0f));
 
-  m_font->DrawTextInternal(x - scrollInfo.pixelPos, y, renderColors, renderText, alignment, maxWidth + scrollInfo.pixelPos + m_font->m_lineHeight*2);
+  m_font->DrawTextInternal(x - scrollInfo.pixelPos, y, renderColors, renderText, alignment, maxWidth + scrollInfo.pixelPos + m_font->GetLineHeight(2.0f));
 
   g_graphicsContext.RestoreClipRegion();
 }
@@ -151,8 +152,8 @@ bool CGUIFont::ClippedRegionIsEmpty(float x, float y, float width, DWORD alignme
   else if (alignment & XBFONT_RIGHT)
     x -= width;
   if (alignment & XBFONT_CENTER_Y)
-    y -= m_font->m_lineHeight;
+    y -= m_font->GetLineHeight(m_lineSpacing);
 
-  return !g_graphicsContext.SetClipRegion(x, y, width, 2.0f*m_font->m_lineHeight);
+  return !g_graphicsContext.SetClipRegion(x, y, width, m_font->GetLineHeight(2.0f));
 }
 

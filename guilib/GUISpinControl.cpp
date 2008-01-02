@@ -412,16 +412,13 @@ void CGUISpinControl::Render()
       fPosY = m_posY + m_label.offsetY;
 
     float fPosX = m_posX + m_label.offsetX - 3;
-    if ( !IsDisabled() /*HasFocus()*/ )
-    {
-      if (HasFocus() && m_label.focusedColor)
-        m_textLayout.Render(fPosX, fPosY, 0, m_label.focusedColor, m_label.shadowColor, m_label.align, 0);
-      else
-        m_textLayout.Render(fPosX, fPosY, 0, m_label.textColor, m_label.shadowColor, m_label.align, 0);
-    }
-    else
+    if (IsDisabled())
       m_textLayout.Render(fPosX, fPosY, 0, m_label.disabledColor, m_label.shadowColor, m_label.align, 0, true);
-
+    else if (HasFocus() && m_label.focusedColor)
+      m_textLayout.Render(fPosX, fPosY, 0, m_label.focusedColor, m_label.shadowColor, m_label.align, 0);
+    else
+      m_textLayout.Render(fPosX, fPosY, 0, m_label.textColor, m_label.shadowColor, m_label.align, 0);
+ 
     // set our hit rectangle for MouseOver events
     if (!(m_label.align & (XBFONT_RIGHT | XBFONT_CENTER_X)))
       m_hitRect.SetRect(fPosX, fPosY, fPosX + fTextWidth, fPosY + fTextHeight);
