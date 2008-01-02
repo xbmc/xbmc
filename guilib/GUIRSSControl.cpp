@@ -78,3 +78,4 @@ void CGUIRSSControl::OnFeedUpdate(const vector<DWORD> &feed)
 }
 
 
+

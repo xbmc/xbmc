@@ -318,7 +318,7 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
 #endif
     return false;
   }
-  INT64 ret = smbc_lseek(m_fd, 0, SEEK_END);
+  __int64 ret = smbc_lseek(m_fd, 0, SEEK_END);
 
   if ( ret < 0 )
   {

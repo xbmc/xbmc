@@ -4,10 +4,17 @@
 #include "system.h"
 #endif
 
+#include "stdafx.h"
+
 #include <cstring>
 #include "RegExp.h"
 #include "HTMLUtil.h"
 #include "CharsetConverter.h"
+#include "Util.h"
+#include "URL.h"
+#include "HTTP.h"
+
+#include "Picture.h"
 #include "Util.h"
 
 #include <sstream>
@@ -46,10 +53,9 @@ bool CScraperUrl::ParseElement(const TiXmlElement* element)
 {
 	if (!element || !element->FirstChild()) return false;
 
-	m_url.clear();
 	std::stringstream stream;
 	stream << *element;
-	m_xml = stream.str();
+	m_xml += stream.str();
 	bool bHasChilds = false;
 	if (element->FirstChildElement("thumb")) 
 	{
@@ -113,7 +119,7 @@ bool CScraperUrl::ParseString(CStdString strUrl)
   
   TiXmlDocument doc;
   doc.Parse(strUrl.c_str(),0,TIXML_ENCODING_UTF8);
-  m_xml = strUrl;
+  m_xml += strUrl;
 
   TiXmlElement* pElement = doc.RootElement();
   if (pElement)
@@ -152,6 +158,79 @@ const CScraperUrl::SUrlEntry CScraperUrl::GetSeasonThumb(int season) const
   SUrlEntry result;
   result.m_season = -1;
   return result;
+}
+
+bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, CHTTP& http)
+{
+  CURL url(scrURL.m_url);
+  http.SetReferer(scrURL.m_spoof);
+
+  if(scrURL.m_post)
+  {
+    CStdString strOptions = url.GetOptions();
+    strOptions = strOptions.substr(1);
+    url.SetOptions("");
+    CStdString strUrl;
+    url.GetURL(strUrl);
+
+    if (!http.Post(strUrl, strOptions, strHTML))
+      return false;
+  }
+  else 
+    if (!http.Get(scrURL.m_url, strHTML))
+      return false;
+  
+  return true;
+}
+
+bool CScraperUrl::DownloadThumbnail(const CStdString &thumb, const CScraperUrl::SUrlEntry& entry)
+{
+  if (entry.m_url.IsEmpty())
+    return false;
+
+  CHTTP http;
+  http.SetReferer(entry.m_spoof);
+  string thumbData;
+  if (http.Get(entry.m_url, thumbData))
+  {
+    try
+    {
+      CPicture picture;
+      picture.CreateThumbnailFromMemory((const BYTE *)thumbData.c_str(), thumbData.size(), CUtil::GetExtension(entry.m_url), thumb);
+      return true;
+    }
+    catch (...)
+    {
+      ::DeleteFile(thumb.c_str());
+    }
+  }
+  return false;
+}
+
+bool CScraperUrl::ParseEpisodeGuide(CStdString strUrls)
+{
+  if (strUrls.IsEmpty())
+    return false;
+
+  // ok, now parse the xml file
+  if (strUrls.Find("encoding=\"utf-8\"") < 0)
+    g_charsetConverter.stringCharsetToUtf8(strUrls);
+
+  TiXmlDocument doc;
+  doc.Parse(strUrls.c_str(),0,TIXML_ENCODING_UTF8);
+  if (doc.RootElement())
+  {
+    TiXmlHandle docHandle( &doc );
+    TiXmlElement *link = docHandle.FirstChild( "episodeguide" ).FirstChild( "url" ).Element();
+    while (link)
+    {
+      ParseElement(link);
+      link = link->NextSiblingElement("url");
+    } 
+  }
+  else
+    return false;
+  return true;
 }
 
 CScraperParser::CScraperParser()
@@ -204,7 +283,7 @@ bool CScraperParser::Load(const CStdString& strXMLFile)
       return false;
     }
     // check for known content
-    if (stricmp(m_content,"tvshows") && stricmp(m_content,"movies") && stricmp(m_content,"musicvideos"))
+    if (stricmp(m_content,"tvshows") && stricmp(m_content,"movies") && stricmp(m_content,"musicvideos") && stricmp(m_content,"albums"))
     {
       delete m_document;
       m_document = NULL;
@@ -746,6 +825,7 @@ char* CScraperParser::RemoveWhiteSpace(const char *string2)
     string++;
   return string;
 }
+
 void CScraperParser::ClearBuffers()
 {
   //clear all m_param strings

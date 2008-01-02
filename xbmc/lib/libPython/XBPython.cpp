@@ -240,6 +240,7 @@ void XBPython::Initialize()
 #else
       m_pDll = DllLoaderContainer::LoadModule(PYTHON_DLL, NULL, true);
 #endif
+
       if (!m_pDll || !python_load_dll(*m_pDll))
       {
         CLog::Log(LOGFATAL, "Python: error loading python24.dll");
