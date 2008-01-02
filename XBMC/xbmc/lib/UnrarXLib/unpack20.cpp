@@ -313,7 +313,7 @@ byte Unpack::DecodeAudio(int Delta)
   {
     unsigned int MinDif=V->Dif[0],NumMinDif=0;
     V->Dif[0]=0;
-    for (int I=1;I<sizeof(V->Dif)/sizeof(V->Dif[0]);I++)
+    for (unsigned int I=1;I<sizeof(V->Dif)/sizeof(V->Dif[0]);I++)
     {
       if (V->Dif[I]<MinDif)
       {
