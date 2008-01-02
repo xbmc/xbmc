@@ -605,6 +605,7 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
       m_repeatAnim = ANIM_REPEAT_LOOP;
   }
 
+  m_delay = 0xffffffff;
   if (!effect)
   { // old layout:
     // <animation effect="fade" start="0" end="100" delay="10" time="2000" condition="blahdiblah" reversible="false">focus</animation>
