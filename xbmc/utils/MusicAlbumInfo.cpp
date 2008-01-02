@@ -153,8 +153,10 @@ bool CMusicAlbumInfo::Parse(const TiXmlElement* album)
     node = node->NextSibling("theme");
   }
 
-  m_songs.clear();
   node = album->FirstChild("track");
+  if (node)
+    m_songs.clear();  // this means that the tracks can't be spread over separate pages
+                      // but this is probably a reasonable limitation
   while (node)
   {
     if (node->FirstChild())

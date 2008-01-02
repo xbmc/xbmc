@@ -39,10 +39,6 @@ using namespace XFILE;
 #define CONTROL_GENRE  24
 #define CONTROL_MOODS  25
 #define CONTROL_STYLES 26
-#define CONTROL_INSTRUMENTS 27
-#define CONTROL_BORN   28
-#define CONTROL_FORMED 29
-#define CONTROL_THEMES 30
 
 #define CONTROL_IMAGE   3
 #define CONTROL_TEXTAREA 4
@@ -215,9 +211,6 @@ void CGUIWindowMusicInfo::Update()
     SetLabel(CONTROL_GENRE, m_artist.strGenre);
     SetLabel(CONTROL_MOODS, m_artist.strMoods);
     SetLabel(CONTROL_STYLES, m_artist.strStyles );
-    SetLabel(CONTROL_INSTRUMENTS, m_artist.strInstruments );
-    SetLabel(CONTROL_BORN, m_artist.strBorn );
-    SetLabel(CONTROL_FORMED, m_artist.strFormed );
     if (m_bViewReview)
     {
       SET_CONTROL_VISIBLE(CONTROL_TEXTAREA);
@@ -254,7 +247,6 @@ void CGUIWindowMusicInfo::Update()
     SetLabel(CONTROL_GENRE, m_album.strGenre);
     SetLabel(CONTROL_MOODS, m_album.strMoods);
     SetLabel(CONTROL_STYLES, m_album.strStyles );
-    SetLabel(CONTROL_THEMES, m_album.strThemes );
 
     if (m_bViewReview)
     {

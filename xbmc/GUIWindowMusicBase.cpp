@@ -249,11 +249,6 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
 void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
 {
   if (pItem->m_bIsFolder && pItem->IsParentFolder()) return ;
-  if (!pItem->m_bIsFolder)
-  {
-    ShowSongInfo(pItem);
-    return;
-  }
 
   if (pItem->IsVideoDb())
   {
@@ -740,7 +735,6 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
 
   try
   {
-    Sleep(1);
     CMusicInfoScraper scraper(info);
     scraper.FindAlbuminfo(strAlbum, strArtist);
 

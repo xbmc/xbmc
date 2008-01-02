@@ -473,7 +473,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
       if (!item->m_bIsFolder) // music video
        buttons.Add(CONTEXT_BUTTON_INFO, 20393);
     }
-    if (!inPlaylists && dir.HasAlbumInfo(item->m_strPath) && !dir.IsAllItem(item->m_strPath) && !info.strContent.IsEmpty())
+    else if (!inPlaylists && dir.HasAlbumInfo(item->m_strPath) && !dir.IsAllItem(item->m_strPath) && !info.strContent.IsEmpty())
       buttons.Add(CONTEXT_BUTTON_INFO, 13351);
     else if (!inPlaylists && dir.IsArtistDir(item->m_strPath) && !dir.IsAllItem(item->m_strPath) && !info.strContent.IsEmpty())
       buttons.Add(CONTEXT_BUTTON_INFO, 21891);

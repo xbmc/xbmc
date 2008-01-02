@@ -34,7 +34,7 @@ using namespace DIRECTORY;
 using namespace MUSICDATABASEDIRECTORY;
 
 #define MUSIC_DATABASE_OLD_VERSION 1.6f
-#define MUSIC_DATABASE_VERSION        10
+#define MUSIC_DATABASE_VERSION        11
 #define MUSIC_DATABASE_NAME "MyMusic7.db"
 #define RECENTLY_ADDED_LIMIT  25
 #define RECENTLY_PLAYED_LIMIT 25
@@ -2954,6 +2954,13 @@ bool CMusicDatabase::UpdateOldVersion(int version)
       CLog::Log(LOGINFO, "create discography table");
       m_pDS->exec("CREATE TABLE discography (idArtist integer, strAlbum text, strYear text)\n");
     }
+    if (version < 11) // TODO: Merge with v8
+    {
+      CLog::Log(LOGINFO, "create new albuminfo table");
+      m_pDS->exec("DROP TABLE albuminfo\n");
+      m_pDS->exec("CREATE TABLE albuminfo ( idAlbumInfo integer primary key, idAlbum integer, iYear integer, idGenre integer, strExtraGenres text, strMoods text, strStyles text, strThemes text, strReview text, strImage text, iRating integer)\n");
+    }
+
     return true;
   }
   catch (...)
