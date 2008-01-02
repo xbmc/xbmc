@@ -97,8 +97,9 @@ void CAnimEffect::Free()
 
 void CAnimEffect::Calculate(unsigned int time, const CPoint &center)
 {
+  assert(m_delay + m_length);
   // calculate offset and tweening
-  float offset = 0.0f;
+  float offset = 0.0f;  // delayed forward, or finished reverse
   if (time >= m_delay && time < m_delay + m_length)
     offset = (float)(time - m_delay) / m_length;
   else if (time >= m_delay + m_length)
@@ -106,6 +107,12 @@ void CAnimEffect::Calculate(unsigned int time, const CPoint &center)
   if (m_pTweener)
     offset = m_pTweener->Tween(offset, 0.0f, 1.0f, 1.0f);
   // and apply the effect
+  ApplyEffect(offset, center);
+}
+
+void CAnimEffect::ApplyState(ANIMATION_STATE state, const CPoint &center)
+{
+  float offset = (state == ANIM_STATE_APPLIED) ? 1.0f : 0.0f;
   ApplyEffect(offset, center);
 }
 
@@ -468,8 +475,9 @@ void CAnimation::ApplyAnimation()
     m_currentState = ANIM_STATE_IN_PROCESS;
   }
   else
-  {
-    m_currentProcess = ANIM_PROCESS_NONE;
+  { // set normal process, so that Calculate() knows that we're finishing for zero length effects
+    // it will be reset in RenderAnimation()
+    m_currentProcess = ANIM_PROCESS_NORMAL;
     m_currentState = ANIM_STATE_APPLIED;
     m_amount = m_length;
   }
@@ -479,7 +487,18 @@ void CAnimation::ApplyAnimation()
 void CAnimation::Calculate(const CPoint &center)
 {
   for (unsigned int i = 0; i < m_effects.size(); i++)
-    m_effects[i]->Calculate(m_amount, center);
+  {
+    CAnimEffect *effect = m_effects[i];
+    if (effect->GetLength())
+      effect->Calculate(m_delay + m_amount, center);
+    else
+    { // effect has length zero, so either apply complete
+      if (m_currentProcess == ANIM_PROCESS_NORMAL)
+        effect->ApplyState(ANIM_STATE_APPLIED, center);
+      else
+        effect->ApplyState(ANIM_STATE_NONE, center);
+    }
+  }
 }
 
 void CAnimation::RenderAnimation(TransformMatrix &matrix, const CPoint &center)
@@ -587,6 +606,7 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
       m_repeatAnim = ANIM_REPEAT_LOOP;
   }
 
+  m_delay = 0xffffffff;
   if (!effect)
   { // old layout:
     // <animation effect="fade" start="0" end="100" delay="10" time="2000" condition="blahdiblah" reversible="false">focus</animation>

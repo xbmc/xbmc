@@ -19,7 +19,7 @@ GUIFontManager::GUIFontManager(void)
 GUIFontManager::~GUIFontManager(void)
 {}
 
-CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdString& strFilename, DWORD textColor, DWORD shadowColor, const int iSize, const int iStyle, float aspect)
+CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdString& strFilename, DWORD textColor, DWORD shadowColor, const int iSize, const int iStyle, float lineSpacing, float aspect)
 {
   float originalAspect = aspect;
   
@@ -84,7 +84,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   }
 
   // font file is loaded, create our CGUIFont
-  CGUIFont *pNewFont = new CGUIFont(strFontName, iStyle, textColor, shadowColor, pFontFile);
+  CGUIFont *pNewFont = new CGUIFont(strFontName, iStyle, textColor, shadowColor, lineSpacing, pFontFile);
   m_vecFonts.push_back(pNewFont);
   
   // Store the original TTF font info in case we need to reload it in a different resolution
@@ -301,6 +301,7 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
             int iSize = 20;
             int iStyle = FONT_STYLE_NORMAL;
             float aspect = 1.0f;
+            float lineSpacing = 1.0f;
 
             XMLUtils::GetInt(fontNode, "size", iSize);
             if (iSize <= 0) iSize = 20;
@@ -318,9 +319,10 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
                 iStyle = FONT_STYLE_BOLD_ITALICS;
             }
 
+            XMLUtils::GetFloat(fontNode, "linespacing", lineSpacing);
             XMLUtils::GetFloat(fontNode, "aspect", aspect);
 
-            LoadTTF(strFontName, strFontFileName, textColor, shadowColor, iSize, iStyle, aspect);
+            LoadTTF(strFontName, strFontFileName, textColor, shadowColor, iSize, iStyle, lineSpacing, aspect);
           }
         }
       }

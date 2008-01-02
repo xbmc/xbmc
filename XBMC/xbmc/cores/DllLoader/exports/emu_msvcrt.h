@@ -120,3 +120,4 @@ extern "C"
 
 
 #endif // _EMU_MSVCRT_H_
+

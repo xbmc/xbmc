@@ -659,7 +659,7 @@ bool CGUIBaseContainer::GetCondition(int condition, int data) const
   case CONTAINER_SUBITEM:
     {
       CGUIListItemLayout *layout = GetFocusedLayout();
-      return layout ? (layout->GetFocus() == (unsigned int) data) : false;
+      return layout ? (layout->GetFocus() == (unsigned int)data) : false;
     }
   default:
     return false;
