@@ -22,7 +22,7 @@ int CNetwork::ParseHex(char *str, unsigned char *addr)
       int tmp;
       if (str[1] == 0)
          return -1;
-      if (sscanf(str, "%02x", &tmp) != 1)
+      if (sscanf(str, "%02x", (unsigned int *)&tmp) != 1)
          return -1;
       addr[len] = tmp;
       len++;

@@ -135,7 +135,7 @@ void CKeyboardLayoutConfiguration::readByteMapFromXML(const TiXmlElement* pXMLMa
         g_charsetConverter.utf8ToW(strOutChar, toStr);
 
         int from;
-        if (sscanf(hexValue.c_str(), "%x", &from))
+        if (sscanf(hexValue.c_str(), "%x", (unsigned int *)&from))
         {
           if (from != 0) // eats nearly any typing error as 0: catch it:
           {
