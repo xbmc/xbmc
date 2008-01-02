@@ -170,15 +170,15 @@ CStdString CGUILabelControl::ShortenPath(const CStdString &path)
     return path;
 
   char cDelim = '\0';
-  int nPos;
+  size_t nPos;
 
   nPos = path.find_last_of( '\\' );
-  if ( nPos >= 0 )
+  if ( nPos != std::string::npos )
     cDelim = '\\';
   else
   {
     nPos = path.find_last_of( '/' );
-    if ( nPos >= 0 )
+    if ( nPos != std::string::npos )
       cDelim = '/';
   }
   if ( cDelim == '\0' )
@@ -200,18 +200,14 @@ CStdString CGUILabelControl::ShortenPath(const CStdString &path)
 
   while ( fTextWidth > m_width )
   {
-    nPos = workPath.find_last_of( cDelim, nPos );
-    int nGreaterDelim = nPos;
-    if ( nPos >= 0 )
-      nPos = workPath.find_last_of( cDelim, nPos - 1 );
-    else
+    size_t nGreaterDelim = workPath.find_last_of( cDelim, nPos );
+    if (nGreaterDelim == std::string::npos)
+      break;
+    nPos = workPath.find_last_of( cDelim, nGreaterDelim - 1 );
+    if ( nPos == std::string::npos )
       break;
 
-    if ( nPos < 0 )
-      break;
-
-    if ( nGreaterDelim > nPos )
-      workPath.replace( nPos + 1, nGreaterDelim - nPos - 1, "..." );
+    workPath.replace( nPos + 1, nGreaterDelim - nPos - 1, "..." );
 
     m_textLayout.Update(workPath);
     m_textLayout.GetTextExtent(fTextWidth, fTextHeight);
