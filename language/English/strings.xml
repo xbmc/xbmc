@@ -603,11 +603,11 @@
   <string id="746">Switch to the Files view</string>
   <string id="747">Error loading image</string>
   <string id="748">Edit Path</string>
-  <string id="749">Add Share</string>
+  <string id="749"></string>
   <string id="750">Are you sure?</string>
-  <string id="751">Removing Share</string>
-  <string id="752">Edit Share Path</string>
-  <string id="753">Edit Share Name</string>
+  <string id="751">Removing Source</string>
+  <string id="752"></string>
+  <string id="753"></string>
   <string id="754">Add Program Link</string>
   <string id="755">Edit Program Path</string>
   <string id="756">Edit Program Name</string>
@@ -652,7 +652,7 @@
   <string id="1002">XBMC was unable to connect to the network location.</string>
   <string id="1003">This could be due to the network not being connected.</string>
   <string id="1004">Would you like to add it anyway?</string>
-  <string id="1005">Enter a name for this share</string>
+  <string id="1005"></string>
   <string id="1006">IP Address</string>
   <string id="1007">Add Network Location</string>
   <string id="1008">Protocol</string>
@@ -894,7 +894,7 @@
   <string id="12348">Item Locked</string>
   <string id="12353">Reactivate Lock</string>
   <string id="12356">Change Lock</string>
-  <string id="12357">Share Lock</string>
+  <string id="12357">Source Lock</string>
   <string id="12358">Password entry was blank. Try again.</string>
   <string id="12360">Master Lock</string>
   <string id="12362">Shutdown Xbox if Master Lock retries exceeded</string>

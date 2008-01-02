@@ -237,7 +237,7 @@ int CGUIViewControl::GetViewModeByID(int id) const
   for (unsigned int i = 0; i < m_vecViews.size(); ++i)
   {
     CGUIBaseContainer *view = (CGUIBaseContainer *)m_vecViews[i];
-    if (view->GetID() == (DWORD) id)
+    if (view->GetID() == (DWORD)id)
       return (view->GetType() << 16) | view->GetID();
   }
   return 0;  // no view modes :(

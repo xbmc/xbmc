@@ -48,7 +48,7 @@ public:
 
   void Clear();
 
-  bool Load(const CStdString& strFilename, float height = 20.0f, float aspect = 1.0f);
+  bool Load(const CStdString& strFilename, float height = 20.0f, float aspect = 1.0f, float lineSpacing = 1.0f);
 
   void Begin();
   void End();
@@ -62,7 +62,8 @@ protected:
 
   float GetTextWidthInternal(vector<DWORD>::const_iterator start, vector<DWORD>::const_iterator end);
   float GetCharWidthInternal(DWORD ch);
-  float GetTextHeight(int numLines);
+  float GetTextHeight(float lineSpacing, int numLines) const;
+  float GetLineHeight(float lineSpacing) const;
 
   void DrawTextInternal(float x, float y, const vector<DWORD> &colors, const vector<DWORD> &text,
                             DWORD alignment, float maxPixelWidth);
@@ -104,7 +105,6 @@ protected:
 
   unsigned int m_cellBaseLine;
   unsigned int m_cellHeight;
-  unsigned int m_lineHeight;
 
   DWORD m_dwNestedBeginCount;             // speedups
 
