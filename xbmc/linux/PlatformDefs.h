@@ -156,20 +156,15 @@ typedef union _LARGE_INTEGER
 	struct {    
 		DWORD LowPart;    
 		LONG HighPart;  
-	};  
-	struct {    
-		DWORD LowPart;    
-		LONG HighPart;  
 	} u;  
 	LONGLONG QuadPart;
 } LARGE_INTEGER, *PLARGE_INTEGER;
 
- typedef union _ULARGE_INTEGER { 
+typedef union _ULARGE_INTEGER { 
   struct {
-      DWORD LowPart; 
-      DWORD HighPart; 
-  };
-  struct {    DWORD LowPart;    DWORD HighPart;  } u;
+    DWORD LowPart;
+    DWORD HighPart;
+  } u;
   ULONGLONG QuadPart;
 } ULARGE_INTEGER, *PULARGE_INTEGER;
 
@@ -448,8 +443,7 @@ typedef struct _D3DMATRIX {
             float        _21, _22, _23, _24;
             float        _31, _32, _33, _34;
             float        _41, _42, _43, _44;
-
-        };
+        } u;
         float m[4][4];
     };
 } D3DMATRIX;

@@ -105,8 +105,8 @@ BOOL   SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime,  LPFILETIME lpFileTi
   result.QuadPart = (unsigned long long) t * 10000000 + (unsigned long long) lpSystemTime->wMilliseconds * 10000;
   result.QuadPart += WIN32_TIME_OFFSET;
   
-  lpFileTime->dwLowDateTime = result.LowPart;
-  lpFileTime->dwHighDateTime = result.HighPart;
+  lpFileTime->dwLowDateTime = result.u.LowPart;
+  lpFileTime->dwHighDateTime = result.u.HighPart;
     
   return 1;
 }
@@ -114,12 +114,12 @@ BOOL   SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime,  LPFILETIME lpFileTi
 LONG   CompareFileTime(const FILETIME* lpFileTime1, const FILETIME* lpFileTime2) 
 {
   ULARGE_INTEGER t1;
-  t1.LowPart = lpFileTime1->dwLowDateTime;
-  t1.HighPart = lpFileTime1->dwHighDateTime;
+  t1.u.LowPart = lpFileTime1->dwLowDateTime;
+  t1.u.HighPart = lpFileTime1->dwHighDateTime;
 
   ULARGE_INTEGER t2;
-  t2.LowPart = lpFileTime2->dwLowDateTime;
-  t2.HighPart = lpFileTime2->dwHighDateTime;
+  t2.u.LowPart = lpFileTime2->dwLowDateTime;
+  t2.u.HighPart = lpFileTime2->dwHighDateTime;
 
   if (t1.QuadPart == t2.QuadPart)
      return 0;
@@ -132,8 +132,8 @@ LONG   CompareFileTime(const FILETIME* lpFileTime1, const FILETIME* lpFileTime2)
 BOOL   FileTimeToSystemTime( const FILETIME* lpFileTime, LPSYSTEMTIME lpSystemTime) 
 {
   ULARGE_INTEGER fileTime;
-  fileTime.LowPart = lpFileTime->dwLowDateTime;
-  fileTime.HighPart = lpFileTime->dwHighDateTime;
+  fileTime.u.LowPart = lpFileTime->dwLowDateTime;
+  fileTime.u.HighPart = lpFileTime->dwHighDateTime;
 
   fileTime.QuadPart -= WIN32_TIME_OFFSET;
   fileTime.QuadPart /= 10000; /* to milliseconds */
@@ -159,13 +159,13 @@ BOOL   FileTimeToSystemTime( const FILETIME* lpFileTime, LPSYSTEMTIME lpSystemTi
 BOOL   LocalFileTimeToFileTime( const FILETIME* lpLocalFileTime, LPFILETIME lpFileTime) 
 {
   ULARGE_INTEGER l;
-  l.LowPart = lpLocalFileTime->dwLowDateTime;
-  l.HighPart = lpLocalFileTime->dwHighDateTime;
+  l.u.LowPart = lpLocalFileTime->dwLowDateTime;
+  l.u.HighPart = lpLocalFileTime->dwHighDateTime;
  
   l.QuadPart += (unsigned long long) timezone * 10000000;
   
-  lpFileTime->dwLowDateTime = l.LowPart;
-  lpFileTime->dwHighDateTime = l.HighPart;
+  lpFileTime->dwLowDateTime = l.u.LowPart;
+  lpFileTime->dwHighDateTime = l.u.HighPart;
   
   return 1;
 }
@@ -176,8 +176,8 @@ BOOL	FileTimeToTimeT(const FILETIME* lpLocalFileTime, time_t *pTimeT) {
 	return false;
 
   ULARGE_INTEGER fileTime;
-  fileTime.LowPart  = lpLocalFileTime->dwLowDateTime;
-  fileTime.HighPart = lpLocalFileTime->dwHighDateTime;
+  fileTime.u.LowPart  = lpLocalFileTime->dwLowDateTime;
+  fileTime.u.HighPart = lpLocalFileTime->dwHighDateTime;
 
   fileTime.QuadPart -= WIN32_TIME_OFFSET;
   fileTime.QuadPart /= 10000; /* to milliseconds */
@@ -201,8 +201,8 @@ BOOL	TimeTToFileTime(time_t timeT, FILETIME* lpLocalFileTime) {
   result.QuadPart = (unsigned long long) timeT * 10000000;
   result.QuadPart += WIN32_TIME_OFFSET;
   
-  lpLocalFileTime->dwLowDateTime  = result.LowPart;
-  lpLocalFileTime->dwHighDateTime = result.HighPart;
+  lpLocalFileTime->dwLowDateTime  = result.u.LowPart;
+  lpLocalFileTime->dwHighDateTime = result.u.HighPart;
 
   return true;
 }
