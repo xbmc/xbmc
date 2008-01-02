@@ -88,7 +88,7 @@ void CGUITextBox::Render()
     m_scrollOffset = 0;
     ResetAutoScrolling();
 
-    m_itemHeight = m_font->GetTextHeight(1);   // note: GetLineHeight() is more correct, but seems a bit too much spacing
+    m_itemHeight = m_font->GetLineHeight();
     float fTotalHeight = m_height;
     if (!m_pageControl)
       fTotalHeight -=  m_upDown.GetHeight() + 5;

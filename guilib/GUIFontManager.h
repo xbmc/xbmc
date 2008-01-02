@@ -25,7 +25,7 @@ public:
   virtual ~GUIFontManager(void);
   void Unload(const CStdString& strFontName);
   void LoadFonts(const CStdString& strFontSet);
-  CGUIFont* LoadTTF(const CStdString& strFontName, const CStdString& strFilename, DWORD textColor, DWORD shadowColor, const int iSize, const int iStyle, float aspect = 1.0f);
+  CGUIFont* LoadTTF(const CStdString& strFontName, const CStdString& strFilename, DWORD textColor, DWORD shadowColor, const int iSize, const int iStyle, float lineSpacing = 1.0f, float aspect = 1.0f);
   CGUIFont* GetFont(const CStdString& strFontName, bool fallback = true);
   void Clear();
   void FreeFontFile(CGUIFontTTF *pFont);
