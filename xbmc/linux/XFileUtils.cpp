@@ -545,9 +545,16 @@ BOOL SetEndOfFile(HANDLE hFile) {
 }
 
 DWORD SleepEx( DWORD dwMilliseconds,  BOOL bAlertable) {
+#ifdef _LINUX
+  if (dwMilliseconds < 1000)
+    sched_yield();
+  else
+    sleep((unsigned int)dwMilliseconds/1000);
+#else
 #warning need to complete function SleepEx
-	SDL_Delay(dwMilliseconds);
-	return 0;
+    SDL_Delay(dwMilliseconds);
+#endif
+  return 0;
 }
 
 BOOL SetFilePointerEx(  HANDLE hFile,
