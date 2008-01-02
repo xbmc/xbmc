@@ -177,7 +177,7 @@ void CGUIFontTTF::Clear()
   m_face = NULL;
 }
 
-bool CGUIFontTTF::Load(const CStdString& strFilename, float height, float aspect)
+bool CGUIFontTTF::Load(const CStdString& strFilename, float height, float aspect, float lineSpacing)
 {
   // create our character texture + font shader
   m_pD3DDevice = g_graphicsContext.Get3DDevice();
@@ -193,7 +193,6 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, float height, float aspect
   unsigned int m_cellWidth = m_face->bbox.xMax - m_face->bbox.xMin;
   m_cellHeight = m_face->bbox.yMax - m_face->bbox.yMin;
   m_cellBaseLine = m_face->bbox.yMax;
-  m_lineHeight = m_face->height;
 
   unsigned int ydpi = g_freeTypeLibrary.GetDPI();
   unsigned int xdpi = (unsigned int)ROUND(ydpi * aspect);
@@ -207,17 +206,14 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, float height, float aspect
   m_cellBaseLine *= (unsigned int)(height * ydpi);
   m_cellBaseLine /= (72 * m_face->units_per_EM);
 
-  m_lineHeight *= (unsigned int)(height * ydpi);
-  m_lineHeight /= (72 * m_face->units_per_EM);
-
-  // increment by 1 for good measure to give space in our texture
+  // increment for good measure to give space in our texture
   m_cellWidth++;
   m_cellHeight+=2;
   m_cellBaseLine++;
-  m_lineHeight++;
 
-  CLog::Log(LOGDEBUG, "%s Scaled size of font %s (%f): width = %i, height = %i",
-    __FUNCTION__, strFilename.c_str(), height, m_cellWidth, m_cellHeight);
+  CLog::Log(LOGDEBUG, "%s Scaled size of font %s (%f): width = %i, height = %i, lineheight = %i",
+    __FUNCTION__, strFilename.c_str(), height, m_cellWidth, m_cellHeight, m_face->size->metrics.height / 64);
+
   m_height = height;
 
   if (m_texture)
@@ -371,9 +367,16 @@ float CGUIFontTTF::GetCharWidthInternal(DWORD ch)
   return 0;
 }
 
-float CGUIFontTTF::GetTextHeight(int numLines)
+float CGUIFontTTF::GetTextHeight(float lineSpacing, int numLines) const
 {
-  return (float)(numLines - 1) * m_lineHeight + (m_cellHeight - 2); // -2 as we increment this for space in our texture
+  return (float)(numLines - 1) * GetLineHeight(lineSpacing) + (m_cellHeight - 2); // -2 as we increment this for space in our texture
+}
+
+float CGUIFontTTF::GetLineHeight(float lineSpacing) const
+{
+  if (m_face)
+    return lineSpacing * m_face->size->metrics.height / 64.0f;
+  return 0.0f;
 }
 
 CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(DWORD chr)
