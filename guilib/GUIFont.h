@@ -40,7 +40,7 @@ public:
 class CGUIFont
 {
 public:
-  CGUIFont(const CStdString& strFontName, DWORD style, DWORD textColor, DWORD shadowColor, CGUIFontTTF *font);
+  CGUIFont(const CStdString& strFontName, DWORD style, DWORD textColor, DWORD shadowColor, float lineSpacing, CGUIFontTTF *font);
   virtual ~CGUIFont();
 
   CStdString& GetFontName();
@@ -76,13 +76,13 @@ public:
   float GetTextHeight(int numLines) const
   {
     if (!m_font) return 0;
-    return m_font->GetTextHeight(numLines) * g_graphicsContext.GetGUIScaleY();
+    return m_font->GetTextHeight(m_lineSpacing, numLines) * g_graphicsContext.GetGUIScaleY();
   };
 
   float GetLineHeight() const
   {
     if (!m_font) return 0;
-    return m_font->m_lineHeight * g_graphicsContext.GetGUIScaleY();
+    return m_font->GetLineHeight(m_lineSpacing) * g_graphicsContext.GetGUIScaleY();
   };
 
   void Begin() { if (m_font) m_font->Begin(); };
@@ -96,6 +96,7 @@ protected:
   DWORD m_style;
   DWORD m_shadowColor;
   DWORD m_textColor;
+  float m_lineSpacing;
   CGUIFontTTF *m_font; // the font object has the size information
 private:
   bool ClippedRegionIsEmpty(float x, float y, float width, DWORD alignment) const;
