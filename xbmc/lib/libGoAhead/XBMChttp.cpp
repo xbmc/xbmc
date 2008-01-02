@@ -394,11 +394,12 @@ int displayDir(int numParas, CStdString paras[]) {
   }
   pDirectory->SetMask(mask);
   CStdString tail=folder.Right(folder.length()-1);
-  bool bResult=((pDirectory->Exists(folder))||(tail==":")||(tail==":\\")||(tail==":/"));
-  if (!bResult)
-  {
-    return SetResponse(openTag+"Error:Not folder");
-  }
+  bool bResult;
+  //bResult=((pDirectory->Exists(folder))||(tail==":")||(tail==":\\")||(tail==":/"));
+  //if (!bResult)
+  //{
+  //  return SetResponse(openTag+"Error:Not folder");
+  //}
   bResult=pDirectory->GetDirectory(folder,dirItems);
   if (!bResult)
   {
