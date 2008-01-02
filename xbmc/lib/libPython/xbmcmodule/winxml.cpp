@@ -181,11 +181,11 @@ namespace PYXBMC
   }
 
   // refreshList() method
-  PyDoc_STRVAR(refreshList__doc__,
+  /*PyDoc_STRVAR(refreshList__doc__,
     "refreshList() -- Updates this Window List. (any new items will be shown once this command is ran.\n"
     "\n"
     "example:\n"
-    "  - self.refrestList()\n");
+    "  - self.refrestList()\n");*/
 
   // clearList() method
   PyDoc_STRVAR(clearList__doc__,
