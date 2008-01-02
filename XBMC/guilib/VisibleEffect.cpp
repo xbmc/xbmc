@@ -489,7 +489,7 @@ void CAnimation::Calculate(const CPoint &center)
   {
     CAnimEffect *effect = m_effects[i];
     if (effect->GetLength())
-      effect->Calculate(m_amount, center);
+      effect->Calculate(m_delay + m_amount, center);
     else
     { // effect has length zero, so either apply complete
       if (m_currentProcess == ANIM_PROCESS_NORMAL)
