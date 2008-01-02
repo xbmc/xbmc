@@ -257,7 +257,7 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, float height, float aspect
   m_cellHeight+=2;
   m_cellBaseLine++;
 
-  CLog::Log(LOGDEBUG, "%s Scaled size of font %s (%f): width = %i, height = %i, lineheight = %i",
+  CLog::Log(LOGDEBUG, "%s Scaled size of font %s (%f): width = %i, height = %i, lineheight = %li",
     __FUNCTION__, strFilename.c_str(), height, m_cellWidth, m_cellHeight, m_face->size->metrics.height / 64);
 
   m_height = height;
