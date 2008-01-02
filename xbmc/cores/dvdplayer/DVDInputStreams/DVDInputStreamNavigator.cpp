@@ -452,7 +452,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         //m_iTime = (int)(((__int64)m_iTotalTime * pos) / len);
 
         pci_t* pci = m_dll.dvdnav_get_current_nav_pci(m_dvdnav);
-        dsi_t* dsi = m_dll.dvdnav_get_current_nav_dsi(m_dvdnav);
+        m_dll.dvdnav_get_current_nav_dsi(m_dvdnav);
 
         if(!pci)
         {
