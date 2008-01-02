@@ -190,7 +190,7 @@ bool CGUIMultiSelectTextControl::MoveRight()
 
 void CGUIMultiSelectTextControl::SelectItemFromPoint(const CPoint &point)
 {
-  unsigned int item = GetItemFromPoint(point);
+  int item = GetItemFromPoint(point);
   if (item != -1)
   {
     ScrollToItem(item);
@@ -225,7 +225,7 @@ bool CGUIMultiSelectTextControl::OnMouseClick(DWORD dwButton, const CPoint &poin
   return false;
 }
 
-unsigned int CGUIMultiSelectTextControl::GetItemFromPoint(const CPoint &point) const
+int CGUIMultiSelectTextControl::GetItemFromPoint(const CPoint &point) const
 {
   if (!m_label.font) return -1;
   float posX = m_posX;
