@@ -202,7 +202,10 @@ CStdString CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
          }
       }
    }
-   
+  
+   if (line)
+     free(line);
+ 
    fclose(fp);
 #endif
    
@@ -295,7 +298,10 @@ void CNetworkLinux::queryInterfaceList()
    	 m_interfaces.push_back(new CNetworkInterfaceLinux(this, interfaceName));
       }
    }
-   
+  
+   if (line)
+     free(line);
+ 
    fclose(fp);
 #endif
 }
@@ -590,6 +596,9 @@ void CNetworkInterfaceLinux::GetSettings(NetworkAssignment& assignment, CStdStri
       }
    }
 
+   if (line)
+     free(line);
+
    // Fallback in case wpa-proto is not set
    if (key != "" && encryptionMode == ENC_NONE)
       encryptionMode = ENC_WPA;
@@ -665,7 +674,10 @@ void CNetworkInterfaceLinux::SetSettings(NetworkAssignment& assignment, CStdStri
         fprintf(fw, "%s", line);
       }
    }
-   
+  
+   if (line)
+     free(line);
+ 
    if (!dataWritten && assignment != NETWORK_DISABLED)
    {
       fprintf(fw, "\n");
