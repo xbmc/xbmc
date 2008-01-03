@@ -39,6 +39,7 @@ public:
   bool IsActive() const;
   bool HasMoved() const;
   void SetInactive();
+  void SetEnabled(bool enabled) { m_mouseEnabled = enabled; };
   void SetExclusiveAccess(DWORD dwControlID, DWORD dwWindowID, const CPoint &point);
   void EndExclusiveAccess(DWORD dwControlID, DWORD dwWindowID);
   DWORD GetExclusiveWindowID() const { return m_exclusiveWindowID; };
@@ -60,6 +61,7 @@ private:
   // state of the mouse
   DWORD m_pointerState;
   MouseState m_mouseState;
+  bool m_mouseEnabled;
   bool m_lastDown[5];
 
   // mouse device
