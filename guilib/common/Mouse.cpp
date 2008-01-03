@@ -135,7 +135,7 @@ void CMouse::SetResolution(int maxX, int maxY, float speedX, float speedY)
 // IsActive - returns true if we have been active in the last MOUSE_ACTIVE_LENGTH period
 bool CMouse::IsActive() const
 {
-  return m_mouseState.active & m_mouseEnabled;
+  return m_mouseState.active && m_mouseEnabled;
 }
 
 // turns off mouse activation
