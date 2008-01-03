@@ -1541,6 +1541,10 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     else
       g_audioManager.Enable(!g_application.IsPlaying() || g_application.IsPaused());
   }
+  else if (strSetting.Equals("lookandfeel.enablemouse"))
+  {
+    g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
+  }
   else if (strSetting.Equals("videoscreen.resolution"))
   { // new resolution choosen... - update if necessary
     CSettingInt *pSettingInt = (CSettingInt *)pSettingControl->GetSetting();
