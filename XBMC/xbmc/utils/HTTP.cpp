@@ -10,7 +10,10 @@
 #include "../utils/Network.h"
 #include "Application.h"
 
-using namespace std;
+#ifdef _LINUX
+#include <fcntl.h>
+#include <sys/select.h>
+#endif
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -85,6 +88,7 @@ CHTTP::CHTTP(const string& strProxyServer, int iProxyPort)
   m_redirectedURL = "";
   m_strUserAgent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)";
   m_strContentType = "application/x-www-form-urlencoded";
+  m_cancelled = false;
 }
 
 
@@ -109,6 +113,7 @@ CHTTP::CHTTP()
   m_redirectedURL = "";
   m_strUserAgent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)";
   m_strContentType = "application/x-www-form-urlencoded";
+  m_cancelled = false;
 }
 
 
@@ -392,7 +397,7 @@ bool CHTTP::Connect()
       service.sin_addr.s_addr = inet_addr(strIpAddress.c_str());
       if (service.sin_addr.s_addr == INADDR_NONE || strIpAddress == "")
       {
-        CLog::Log(LOGWARNING, "ERROR: Problem accessing the DNS.");
+        CLog::Log(LOGWARNING, "ERROR: Problem accessing the DNS. (addr: %s)", m_strHostName.c_str());
         WSASetLastError(WSAHOST_NOT_FOUND);
         return false;
       }
@@ -401,16 +406,20 @@ bool CHTTP::Connect()
   }
 #ifdef _XBOX
   m_socket.attach(socket(AF_INET, SOCK_STREAM, IPPROTO_TCP));
-#else
- 
-#ifndef _LINUX
+#elif !defined(_LINUX)
   WSADATA wsaData;
   WSAStartup(0x0101, &wsaData);
-#endif
-
+#else
   m_socket.attach(socket(AF_INET, SOCK_STREAM, IPPROTO_TCP));
+  
+  // set the socket to nonblocking
+  int opts = fcntl((SOCKET) m_socket, F_GETFL);
+  opts = (opts | O_NONBLOCK);
+  fcntl((SOCKET) m_socket, F_SETFL,opts);
 #endif
 
+
+#ifndef _LINUX
   // attempt to connection
   int nTries = 0;
   while (connect((SOCKET)m_socket, (sockaddr*) &service, sizeof(struct sockaddr)) == SOCKET_ERROR)
@@ -425,11 +434,63 @@ bool CHTTP::Connect()
 			return false;
 		}
     m_socket.attach(socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)); // new socket
+    Sleep(1000);
   }
 
-#ifndef _LINUX
   hEvent = WSACreateEvent();
+#else
+  if (connect((SOCKET)m_socket, (sockaddr*) &service, sizeof(struct sockaddr)) == SOCKET_ERROR && errno != EINPROGRESS && errno != EALREADY)
+  {
+			CLog::Log(LOGNOTICE, "HTTP: connect failed: %s", strerror(errno));
+			Close();
+			return false;
+  }
+  
+	
+	while (!m_cancelled)
+	{
+    fd_set socks;
+  	FD_ZERO(&socks);	
+  	FD_SET((SOCKET)m_socket, &socks);
+
+	  struct timeval timeout;  /* Timeout for select */
+	  timeout.tv_sec = 0;
+		timeout.tv_usec = 500000;
+		
+		int writesocks = select((SOCKET)m_socket+1, (fd_set *) 0, &socks, (fd_set *) 0, &timeout);
+		if (writesocks == -1 && errno != EINTR)
+		{
+			CLog::Log(LOGNOTICE, "HTTP: connect select failed: %s", strerror(errno));
+			Close();
+			return false;
+		}
+		else if (FD_ISSET((SOCKET)m_socket, &socks))
+		{
+		  break;
+		}
+	}
+
+  // Check if the socket connected 	
+  int value = 0;
+  socklen_t len = sizeof(value);
+  if (getsockopt((SOCKET)m_socket, SOL_SOCKET, SO_ERROR, (char *)&value, &len) == -1)
+  {
+			CLog::Log(LOGNOTICE, "HTTP: connect getsockopt failed: %s", strerror(errno));
+			return false;
+  }
+
+  if (value != 0)
+  {
+  	CLog::Log(LOGNOTICE, "HTTP: socket connect failed (checked with getsockopt): %s", strerror(value));
+		return false;
+  }
+  
+  if (m_cancelled)
+  {
+    return false;
+  }
 #endif
+
   return true;
 }
 
@@ -572,13 +633,11 @@ bool CHTTP::Send(char* pBuffer, int iLen)
 #ifndef _LINUX
   WSABUF buf;
   WSAOVERLAPPED ovl;
+  DWORD n;
+  DWORD flags;
 #else
   char *buf = pBuffer;
-#endif
-
-  DWORD n;
-#ifndef _LINUX 
-  DWORD flags;
+  int n;
 #endif
 
   while (iLen > 0)
@@ -616,11 +675,36 @@ bool CHTTP::Send(char* pBuffer, int iLen)
         return false;
     }
 #else
-    n = send(m_socket, buf, iLen, 0);
-	if (n > 0)
-		buf += n;
-	else 
-		return false;
+
+  	while (!m_cancelled)
+  	{
+  	  n = -1;
+  	  
+      fd_set socks;
+  	  FD_ZERO(&socks);	
+  	  FD_SET((SOCKET)m_socket, &socks);
+  	  struct timeval timeout;  /* Timeout for select */
+  	  timeout.tv_sec = 0;
+  		timeout.tv_usec = 500000;
+  		
+  		int writesocks = select((SOCKET)m_socket+1, (fd_set *) 0, &socks, (fd_set *) 0, &timeout);
+  		if (writesocks == -1 && errno != EINTR)
+  		{
+  			CLog::Log(LOGNOTICE, "HTTP: send select failed: %s", strerror(errno));
+  			break;
+  		}
+  		else if (FD_ISSET((SOCKET)m_socket, &socks))
+  		{
+        n = send(m_socket, buf, iLen, 0);
+        if (n > 0  || (n == -1 && errno != EAGAIN && errno != EINTR))
+          break;
+  		}
+  	}
+
+    if (m_cancelled || n <= 0)
+      return false;
+    else
+		  buf += n;
 #endif
     iPos += n;
     iLen -= n;
@@ -694,9 +778,36 @@ bool CHTTP::Recv(int iLen)
       }
     }
 #else
-    char *buf = &m_RecvBuffer[m_RecvBytes];
-    n = recv(m_socket, buf, iLen, 0);
-    if (n == -1)
+
+
+	  char *buf = &m_RecvBuffer[m_RecvBytes];
+  	
+  	while (!m_cancelled)
+  	{
+  	  n = -1;
+  	  
+      fd_set socks;
+  	  FD_ZERO(&socks);	
+  	  FD_SET((SOCKET)m_socket, &socks);
+  	  struct timeval timeout;  /* Timeout for select */
+  	  timeout.tv_sec = 0;
+  		timeout.tv_usec = 500000;
+  		
+  		int readsocks = select((SOCKET)m_socket+1, &socks, (fd_set *) 0, (fd_set *) 0, &timeout);
+  		if (readsocks == -1 && errno != EINTR)
+  		{
+  			CLog::Log(LOGNOTICE, "HTTP: recv select failed: %s", strerror(errno));
+  			break;
+  		}
+  		else if (FD_ISSET((SOCKET)m_socket, &socks))
+  		{
+        n = recv(m_socket, buf, iLen, 0);
+        if (n > 0 || (n == -1 && errno != EAGAIN && errno != EINTR))
+          break;
+  		}
+  	}
+
+    if (m_cancelled || n == -1)
       return false;
 #endif
 
@@ -1084,6 +1195,8 @@ void CHTTP::Cancel()
 #ifdef _XBOX
   if(m_socket.isValid())
     WSACancelOverlappedIO(m_socket);
+#else
+  m_cancelled = true;
 #endif
 }
 
