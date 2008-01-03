@@ -382,8 +382,8 @@ int displayDir(int numParas, CStdString paras[]) {
   }
   if (numParas>1)
     mask=paras[1];
-    if (numParas>2)
-      option=paras[2];
+  if (numParas>2)
+    option=paras[2];
 
   IDirectory *pDirectory = CFactoryDirectory::Create(folder);
 
@@ -1310,14 +1310,14 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
           output.Format("%s%i",output+closeTag+openTag+"Season"+tag+":",tagVal->m_iSeason);
         if (tagVal->m_iEpisode != -1)
           output.Format("%s%i",output+closeTag+openTag+"Episode"+tag+":",tagVal->m_iEpisode);
-		thumb=g_infoManager.GetImage(VIDEOPLAYER_COVER, -1);
+	  }
+	  thumb=g_infoManager.GetImage(VIDEOPLAYER_COVER, -1);
 		
 		//CPicture pic;
         //pic.CacheSkinImage("defaultAlbumCover.png", cachedThumb);
 
-		copyThumb(thumb,thumbFn);
-	    output+=closeTag+openTag+"Thumb"+tag+":"+thumb;
-      }
+	  copyThumb(thumb,thumbFn);
+	  output+=closeTag+openTag+"Thumb"+tag+":"+thumb;
     }
     else if (g_application.IsPlayingAudio())
     { // Audio information
@@ -2831,7 +2831,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
   if (shuttingDown)
     return -1;
   int numParas, retVal=false;
-  CStdString command, paras[MAX_PARAS];
+	  CStdString command, paras[MAX_PARAS];
   numParas = splitParameter(parameter, command, paras, ";");
   if (parameter.length()<300)
     CLog::Log(LOGDEBUG, "HttpApi Start command: %s  paras: %s", command.c_str(), parameter.c_str());
