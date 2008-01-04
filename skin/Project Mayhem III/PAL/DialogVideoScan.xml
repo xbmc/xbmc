@@ -1,7 +1,6 @@
 <window id="133">
 	<defaultcontrol>402</defaultcontrol>
-	<animation effect="fade" time="400">WindowOpen</animation>
-	<animation effect="fade" time="400">WindowClose</animation>
+	<include>dialogeffect</include>
 	<coordinates>
 		<system>1</system>
 		<posx>30</posx>

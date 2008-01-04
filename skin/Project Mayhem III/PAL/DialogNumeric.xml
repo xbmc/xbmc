@@ -1,15 +1,7 @@
-﻿<window id="109">
+<window id="109">
 	<defaultcontrol always="true">15</defaultcontrol>
 	<include>dialogeffect</include>
 	<controls>
-		<control type="image" id="0">
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>720</width>
-			<height>576</height>
-			<texture>black.png</texture>
-			<animation effect="fade" time="2000">WindowOpen</animation>
-		</control>
 		<control type="image" id="0">
 			<posx>0</posx>
 			<posy>0</posy>

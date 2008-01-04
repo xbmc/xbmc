@@ -44,7 +44,6 @@
 			<onright>28</onright>
 			<ondown>5</ondown>
 			<onup>5</onup>
-			<include>homemisc</include>
 			<showonepage>false</showonepage>
 		</control>
 		<control type="grouplist" id="5">
@@ -55,7 +54,6 @@
 			<height>310</height>
 			<itemgap>0</itemgap>
 			<pagecontrol>60</pagecontrol>
-			<include>homemisc</include>
 			<onleft>28</onleft>
 			<onright>60</onright>
 			<onup>5</onup>
