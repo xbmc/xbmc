@@ -535,7 +535,7 @@ protected:
   bool CheckWindowCondition(CGUIWindow *window, int condition) const;
   CGUIWindow *GetWindowWithCondition(DWORD contextWindow, int condition) const;
 
-  bool GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow = 0);
+  bool GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow = 0, const CGUIListItem *item = NULL);
   CStdString GetMultiInfoLabel(const GUIInfo &info, DWORD dwContextWindow = 0) const;
   int TranslateSingleString(const CStdString &strCondition);
   int TranslateListItem(const CStdString &info);
