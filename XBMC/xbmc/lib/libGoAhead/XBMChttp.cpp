@@ -362,7 +362,7 @@ CStdString flushResult(int eid, webs_t wp, const CStdString &output)
 
 int displayDir(int numParas, CStdString paras[]) {
   //mask = ".mp3|.wma" -> matching files
-  //mask = "*" -> just folders
+  //mask = "*" or "/" -> just folders
   //mask = "" -> all files and folder
   //option = "1" -> append date&time to file name
 
@@ -410,7 +410,7 @@ int displayDir(int numParas, CStdString paras[]) {
   for (int i=0; i<dirItems.Size(); ++i)
   {
     CFileItem *itm = dirItems[i];
-    if (mask=="*" || (mask =="" && itm->m_bIsFolder))
+    if (mask=="*" || mask=="/" || (mask =="" && itm->m_bIsFolder))
       if (!CUtil::HasSlashAtEnd(itm->m_strPath))
         aLine=closeTag+openTag + itm->m_strPath + "\\" ;
       else
@@ -464,7 +464,7 @@ void SetCurrentMediaItem(CFileItem& newItem)
   }
 }
 
-void AddItemToPlayList(const CFileItem* pItem, int playList, int sortMethod, CStdString mask)
+void AddItemToPlayList(const CFileItem* pItem, int playList, int sortMethod, CStdString mask, bool recursive)
 //if playlist==-1 then use slideshow
 {
   if (pItem->m_bIsFolder)
@@ -479,7 +479,8 @@ void AddItemToPlayList(const CFileItem* pItem, int playList, int sortMethod, CSt
     bool bResult=pDirectory->GetDirectory(strDirectory,items);
     items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
     for (int i=0; i < items.Size(); ++i)
-      AddItemToPlayList(items[i], playList, sortMethod, mask);
+	  if (!(CFileItem*)items[i]->m_bIsFolder || recursive)
+        AddItemToPlayList(items[i], playList, sortMethod, mask, recursive);
   }
   else
   {
@@ -980,10 +981,9 @@ int CXbmcHttp::xbmcQueryVideoDataBase(int numParas, CStdString paras[])
 
 int CXbmcHttp::xbmcAddToPlayList(int numParas, CStdString paras[])
 {
-  //parameters=playList;mask
-  CStdString strFileName;
-  CStdString mask="";
-  bool changed=false;
+  //parameters=playList;mask;recursive
+  CStdString strFileName, mask="";
+  bool changed=false, recursive=true;
   int playList ;
 
   if (numParas==0)
@@ -999,6 +999,8 @@ int CXbmcHttp::xbmcAddToPlayList(int numParas, CStdString paras[])
         playList=g_playlistPlayer.GetCurrentPlaylist();
       if(numParas>2) //includes mask
         mask=paras[2];
+	  if (numParas>3) //recursive
+	    recursive=(paras[3]=="1");
     }
     strFileName=paras[0] ;
     CFileItem *pItem = new CFileItem(strFileName);
@@ -1012,7 +1014,7 @@ int CXbmcHttp::xbmcAddToPlayList(int numParas, CStdString paras[])
       pItem->m_bIsShareOrDrive=false;
       if (bResult || CFile::Exists(pItem->m_strPath))
       {
-        AddItemToPlayList(pItem, playList, 0, mask);
+        AddItemToPlayList(pItem, playList, 0, mask, recursive);
         changed=true;
       }
     }
@@ -1525,12 +1527,15 @@ int CXbmcHttp::xbmcAddToSlideshow(int numParas, CStdString paras[])
 //filename (;mask)
 {
   CStdString mask="";
+  bool recursive=true;
   if (numParas<1)
     return SetResponse(openTag+"Error:Missing parameter");
   else
   {
     if (numParas>1)
       mask=paras[1];
+	if (numParas>2)
+	  recursive=paras[2]=="1";
     CFileItem *pItem = new CFileItem(paras[0]);
     pItem->m_strPath=paras[0].c_str();
     IDirectory *pDirectory = CFactoryDirectory::Create(pItem->m_strPath);
@@ -1539,7 +1544,7 @@ int CXbmcHttp::xbmcAddToSlideshow(int numParas, CStdString paras[])
     bool bResult=pDirectory->Exists(pItem->m_strPath);
     pItem->m_bIsFolder=bResult;
     pItem->m_bIsShareOrDrive=false;
-    AddItemToPlayList(pItem, -1, 0, mask); //add to slideshow
+    AddItemToPlayList(pItem, -1, 0, mask, recursive); //add to slideshow
     delete pItem;
     return SetResponse(openTag+"OK");
   }
