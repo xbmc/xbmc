@@ -4,7 +4,7 @@
 		<posy>0</posy>
 		<texture>-</texture>
 		<colorkey>0</colorkey>
-		<include>controldefaults</include>
+		<textcolor>white</textcolor>
 	</default>
 	<default type="label">
 		<posx>80</posx>
@@ -21,7 +21,7 @@
 		<texturefocus>button-focus.png</texturefocus>
 		<texturenofocus>button-nofocus.png</texturenofocus>
 		<font>font13</font>
-		<include>controldefaults</include>
+		<textcolor>white</textcolor>
 		<disabledcolor>disabled</disabledcolor>
 		<textoffsetx>17</textoffsetx>
 		<aligny>center</aligny>
@@ -37,7 +37,7 @@
 		<alttexturenofocus>toggle-down.png</alttexturenofocus>
 		<label>-</label>
 		<font>font13</font>
-		<include>controldefaults</include>
+		<textcolor>white</textcolor>
 		<disabledcolor>disabled</disabledcolor>
 	</default>
 	<default type="listcontrol">
@@ -62,7 +62,7 @@
 		<font>font13</font>
 		<selectedcolor>green</selectedcolor>
 		<textcolor2>60ffffff</textcolor2>
-		<include>controldefaults</include>
+		<textcolor>white</textcolor>
 		<suffix>|</suffix>
 		<textxoff>3</textxoff>
 		<textxoff2>0</textxoff2>
@@ -89,47 +89,9 @@
 		<image>defaultFolderBig.png</image>
 		<font>font12</font>
 		<selectedcolor>green</selectedcolor>
-		<include>controldefaults</include>
+		<textcolor>white</textcolor>
 		<suffix>|</suffix>
 		<aligny>center</aligny>
-	</default>
-	<default type="thumbnailpanel">
-		<posx>210</posx>
-		<posy>125</posy>
-		<width>520</width>
-		<height>395</height>
-		<spinwidth>18</spinwidth>
-		<spinheight>16</spinheight>
-		<spincolor>white</spincolor>
-		<spinfont>font10</spinfont>
-		<spinposx>415</spinposx>
-		<spinposy>405</spinposy>
-		<textureup>scroll-up.png</textureup>
-		<texturedown>scroll-down.png</texturedown>
-		<textureupfocus>scroll-up-focus.png</textureupfocus>
-		<texturedownfocus>scroll-down-focus.png</texturedownfocus>
-		<itemwidth>110</itemwidth>
-		<itemheight>130</itemheight>
-		<texturewidth>92</texturewidth>
-		<textureheight>100</textureheight>
-		<thumbwidth>82</thumbwidth>
-		<thumbheight>90</thumbheight>
-		<thumbposx>5</thumbposx>
-		<thumbposy>5</thumbposy>
-		<imagefolder>folder-nofocus.png</imagefolder>
-		<imagefolderfocus>folder-focus.png</imagefolderfocus>
-		<font>font13</font>
-		<selectedcolor>green</selectedcolor>
-		<include>controldefaults</include>
-		<texturewidthbig>134</texturewidthbig>
-		<textureheightbig>144</textureheightbig>
-		<itemwidthbig>148</itemwidthbig>
-		<itemheightbig>195</itemheightbig>
-		<thumbwidthbig>120</thumbwidthbig>
-		<thumbheightbig>133</thumbheightbig>
-		<thumbposxbig>7</thumbposxbig>
-		<thumbposybig>5</thumbposybig>
-		<suffix>-</suffix>
 	</default>
 	<default type="fadelabel">
 		<posx>55</posx>
@@ -156,7 +118,7 @@
 		<texturedownfocus>scroll-down-focus.png</texturedownfocus>
 		<image>icon-folder.png</image>
 		<font>font13</font>
-		<include>controldefaults</include>
+		<textcolor>white</textcolor>
 	</default>
 	<default type="progress">
 		<posx>100</posx>
@@ -200,7 +162,7 @@
 		<textureupfocus>scroll-up-focus.png</textureupfocus>
 		<texturedownfocus>scroll-down-focus.png</texturedownfocus>
 		<font>font13</font>
-		<include>controldefaults</include>
+		<textcolor>white</textcolor>
 		<disabledcolor>disabled</disabledcolor>
 		<textoffsetx>7</textoffsetx>
 		<aligny>center</aligny>
@@ -231,7 +193,7 @@
 		<texturenofocus>button-nofocus.png</texturenofocus>
 		<label>215</label>
 		<font>font13</font>
-		<include>controldefaults</include>
+		<textcolor>white</textcolor>
 		<disabledcolor>disabled</disabledcolor>
 		<textoffsetx>17</textoffsetx>
 		<aligny>center</aligny>
@@ -251,7 +213,7 @@
 		<textureright>select-right.gif</textureright>
 		<texturerightfocus>select-right-focus.png</texturerightfocus>
 		<font>font13</font>
-		<include>controldefaults</include>
+		<textcolor>white</textcolor>
 		<disabledcolor>disabled</disabledcolor>
 		<onleft>50</onleft>
 		<onright>50</onright>
