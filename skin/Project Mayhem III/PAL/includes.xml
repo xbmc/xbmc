@@ -1,12 +1,10 @@
 <includes>
 	<include file="defaults.xml" />
 	<include file="CommonViewTypes.xml" />
+	<include file="CommonViewTypes_Library.xml" />
+	<include file="CommonViewTypes_Dialogs.xml" />
 	<include file="3D_CoverView.xml" />
 
-	<include name="controldefaults">
-		<textcolor>white</textcolor>
-		<colordiffuse>white</colordiffuse>
-	</include>
 	<include name="homebuttonanimation">
 		<animation effect="fade" time="500" delay="400">VisibleChange</animation>
 		<animation effect="rotate" time="300" start="-120" end="0" center="-20,-60" acceleration="-1.1" delay="0" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
