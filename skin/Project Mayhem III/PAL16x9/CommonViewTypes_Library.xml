@@ -635,4 +635,401 @@
 			<include>autoscrollmedium</include>
 		</control>
 	</include>
+	<include name="VideoLibrary_BigList">
+		<control type="list" id="59">
+			<posx>190</posx>
+			<posy>100</posy>
+			<width>485</width>
+			<height>423</height>
+			<onleft>9000</onleft>
+			<onright>60</onright>
+			<onup>59</onup>
+			<ondown>59</ondown>
+			<scrolltime>200</scrolltime>
+			<viewtype label="537">biglist</viewtype>
+			<pagecontrol>60</pagecontrol>
+			<include>contentpanelslide</include>
+			<itemlayout condition="!Container.Content(Episodes) + !Container.Content(TVShows)" height="141">
+				<control type="image">
+					<width>485</width>
+					<height>136</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texture>blue-rectangleNF.png</texture>
+				</control>
+				<control type="image">
+					<posx>5</posx>
+					<posy>0</posy>
+					<width>90</width>
+					<height>136</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="image">
+					<posx>95</posx>
+					<posy>95</posy>
+					<width>32</width>
+					<height>32</height>
+					<info>ListItem.Overlay</info>
+				</control>
+				<control type="label">
+					<posx>105</posx>
+					<posy>7</posy>
+					<width>370</width>
+					<height>16</height>
+					<font>special13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="label">
+					<posx>105</posx>
+					<posy>40</posy>
+					<width>370</width>
+					<height>16</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>white</selectedcolor>
+					<scroll>true</scroll>
+					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
+				</control>
+				<control type="label">
+					<posx>105</posx>
+					<posy>70</posy>
+					<width>370</width>
+					<height>16</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>white</selectedcolor>
+					<label>$INFO[ListItem.Genre]</label>
+				</control>
+				<control type="label">
+					<posx>475</posx>
+					<posy>110</posy>
+					<width>350</width>
+					<height>16</height>
+					<font>font13</font>
+					<align>right</align>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<label>$INFO[ListItem.Rating,$LOCALIZE[173] ]</label>
+				</control>
+			</itemlayout>
+			<focusedlayout condition="!Container.Content(Episodes) + !Container.Content(TVShows)" height="141">
+				<control type="image">
+					<width>485</width>
+					<height>136</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texture>blue-rectangle.png</texture>
+					<visible>Control.HasFocus(59)</visible>
+				</control>
+				<control type="image">
+					<width>485</width>
+					<height>136</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texture>blue-rectangleNF.png</texture>
+					<visible>!Control.HasFocus(59)</visible>
+				</control>
+				<control type="image">
+					<posx>5</posx>
+					<posy>0</posy>
+					<width>90</width>
+					<height>136</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="image">
+					<posx>95</posx>
+					<posy>95</posy>
+					<width>32</width>
+					<height>32</height>
+					<info>ListItem.Overlay</info>
+				</control>
+				<control type="label">
+					<posx>105</posx>
+					<posy>7</posy>
+					<width>370</width>
+					<height>16</height>
+					<font>special13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<scroll>true</scroll>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="label">
+					<posx>105</posx>
+					<posy>40</posy>
+					<width>370</width>
+					<height>16</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>white</selectedcolor>
+					<scroll>true</scroll>
+					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
+				</control>
+				<control type="label">
+					<posx>105</posx>
+					<posy>70</posy>
+					<width>370</width>
+					<height>16</height>
+					<font>font13</font>
+					<scroll>true</scroll>
+					<aligny>center</aligny>
+					<selectedcolor>white</selectedcolor>
+					<label>$INFO[ListItem.Genre]</label>
+				</control>
+				<control type="label">
+					<posx>475</posx>
+					<posy>110</posy>
+					<width>350</width>
+					<height>16</height>
+					<font>font13</font>
+					<align>right</align>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<label>$INFO[ListItem.Rating,$LOCALIZE[173] ]</label>
+				</control>
+			</focusedlayout>
+			<itemlayout condition="Container.Content(TVShows)" height="141">
+				<control type="image">
+					<width>485</width>
+					<height>136</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texture>WideIconNF.png</texture>
+				</control>
+				<control type="image">
+					<posx>5</posx>
+					<posy>5</posy>
+					<width>475</width>
+					<height>100</height>
+					<info>ListItem.Icon</info>
+					<aspectratio>keep</aspectratio>
+				</control>
+				<control type="image">
+					<posx>400</posx>
+					<posy>65</posy>
+					<width>32</width>
+					<height>32</height>
+					<info>ListItem.Overlay</info>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>115</posy>
+					<width>295</width>
+					<height>16</height>
+					<font>special13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<scroll>true</scroll>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="label">
+					<posx>475</posx>
+					<posy>115</posy>
+					<width>450</width>
+					<height>16</height>
+					<font>font13</font>
+					<align>right</align>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<info>ListItem.Label2</info>
+				</control>
+			</itemlayout>
+			<focusedlayout condition="Container.Content(TVShows)" height="141">
+				<control type="image">
+					<width>485</width>
+					<height>136</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texture>WideIcon.png</texture>
+					<visible>Control.HasFocus(59)</visible>
+				</control>
+				<control type="image">
+					<width>485</width>
+					<height>136</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texture>WideIconNF.png</texture>
+					<visible>!Control.HasFocus(59)</visible>
+				</control>
+				<control type="image">
+					<posx>5</posx>
+					<posy>5</posy>
+					<width>475</width>
+					<height>100</height>
+					<info>ListItem.Icon</info>
+					<aspectratio>keep</aspectratio>
+				</control>
+				<control type="image">
+					<posx>400</posx>
+					<posy>65</posy>
+					<width>32</width>
+					<height>32</height>
+					<info>ListItem.Overlay</info>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>115</posy>
+					<width>295</width>
+					<height>16</height>
+					<font>special13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<scroll>true</scroll>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="label">
+					<posx>475</posx>
+					<posy>115</posy>
+					<width>450</width>
+					<height>16</height>
+					<font>font13</font>
+					<align>right</align>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<info>ListItem.Label2</info>
+				</control>
+			</focusedlayout>
+			<itemlayout condition="Container.Content(Episodes)" height="141">
+				<control type="image">
+					<width>485</width>
+					<height>136</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texture>blue-rectangleNF.png</texture>
+				</control>
+				<control type="image">
+					<posx>5</posx>
+					<posy>0</posy>
+					<width>136</width>
+					<height>136</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="image">
+					<posx>105</posx>
+					<posy>100</posy>
+					<width>32</width>
+					<height>32</height>
+					<info>ListItem.Overlay</info>
+				</control>
+				<control type="label">
+					<posx>145</posx>
+					<posy>7</posy>
+					<width>330</width>
+					<height>16</height>
+					<font>special13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="label">
+					<posx>145</posx>
+					<posy>40</posy>
+					<width>330</width>
+					<height>16</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>white</selectedcolor>
+					<label>$INFO[ListItem.TVShowTitle ,$LOCALIZE[20364] - ]</label>
+				</control>
+				<control type="label">
+					<posx>145</posx>
+					<posy>70</posy>
+					<width>330</width>
+					<height>16</height>
+					<font>font13</font>
+					<scroll>true</scroll>
+					<aligny>center</aligny>
+					<selectedcolor>white</selectedcolor>
+					<label>$INFO[ListItem.Season ,$LOCALIZE[20373] ] - $INFO[ListItem.episode,$LOCALIZE[20359] ]</label>
+				</control>
+				<control type="label">
+					<posx>475</posx>
+					<posy>110</posy>
+					<width>350</width>
+					<height>16</height>
+					<font>font13</font>
+					<align>right</align>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
+				</control>
+			</itemlayout>
+			<focusedlayout condition="Container.Content(Episodes)" height="141">
+				<control type="image">
+					<width>485</width>
+					<height>136</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texture>blue-rectangle.png</texture>
+					<visible>Control.HasFocus(59)</visible>
+				</control>
+				<control type="image">
+					<width>485</width>
+					<height>136</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texture>blue-rectangleNF.png</texture>
+					<visible>!Control.HasFocus(59)</visible>
+				</control>
+				<control type="image">
+					<posx>5</posx>
+					<posy>0</posy>
+					<width>136</width>
+					<height>136</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="image">
+					<posx>105</posx>
+					<posy>100</posy>
+					<width>32</width>
+					<height>32</height>
+					<info>ListItem.Overlay</info>
+				</control>
+				<control type="label">
+					<posx>145</posx>
+					<posy>7</posy>
+					<width>330</width>
+					<height>16</height>
+					<font>special13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="label">
+					<posx>145</posx>
+					<posy>40</posy>
+					<width>330</width>
+					<height>16</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>white</selectedcolor>
+					<label>$INFO[ListItem.TVShowTitle ,$LOCALIZE[20364] - ]</label>
+				</control>
+				<control type="label">
+					<posx>145</posx>
+					<posy>70</posy>
+					<width>330</width>
+					<height>16</height>
+					<font>font13</font>
+					<scroll>true</scroll>
+					<aligny>center</aligny>
+					<selectedcolor>white</selectedcolor>
+					<label>$INFO[ListItem.Season ,$LOCALIZE[20373] ] - $INFO[ListItem.episode,$LOCALIZE[20359] ]</label>
+				</control>
+				<control type="label">
+					<posx>475</posx>
+					<posy>110</posy>
+					<width>350</width>
+					<height>16</height>
+					<font>font13</font>
+					<align>right</align>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
+				</control>
+			</focusedlayout>
+		</control>
+	</include>
 </includes>
