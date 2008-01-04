@@ -1391,8 +1391,9 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
   else if (condition >= MULTI_INFO_START && condition <= MULTI_INFO_END)
   {
     // cache return value
-    bool result = GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START], dwContextWindow);
-    CacheBool(condition1, dwContextWindow, result);
+    bool result = GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START], dwContextWindow, item);
+    if (!item)
+      CacheBool(condition1, dwContextWindow, result);
     return result;
   }
   else if (condition == SYSTEM_HASLOCKS)  
@@ -1583,7 +1584,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
 }
 
 /// \brief Examines the multi information sent and returns true or false accordingly.
-bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow)
+bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow, const CGUIListItem *item)
 {
   bool bReturn = false;
   int condition = abs(info.m_info);
@@ -1603,7 +1604,10 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
       }
       break;
     case STRING_IS_EMPTY:
-      bReturn = GetLabel(info.m_data1, dwContextWindow).IsEmpty();
+      if (item && item->IsFileItem() && info.m_data1 >= LISTITEM_START && info.m_data1 < LISTITEM_END)
+        bReturn = GetItemLabel((CFileItem *)item, info.m_data1).IsEmpty();
+      else
+        bReturn = GetLabel(info.m_data1, dwContextWindow).IsEmpty();
       break;
     case CONTROL_GROUP_HAS_FOCUS:
       {
