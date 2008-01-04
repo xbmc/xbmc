@@ -5,6 +5,7 @@
 		<posx>161</posx>
 		<posy>132</posy>
 	</coordinates>
+	<include>dialogeffect</include>
 	<visible>Window.IsActive(131)</visible>
 	<controls>
 		<control type="image" id="0">
@@ -24,7 +25,6 @@
 			<width>446</width>
 			<height>406</height>
 			<texture>dialog-panellock.png</texture>
-			<include>homemisc</include>
 		</control>
 		<control type="label" id="2">
 			<description>Settings Label</description>
@@ -34,7 +34,6 @@
 			<align>left</align>
 			<font>special13</font>
 			<textcolor>dialogheader</textcolor>
-			<include>homemisc</include>
 		</control>
 		<control type="label" id="3">
 			<description>No Settings Label</description>
@@ -44,7 +43,6 @@
 			<align>center</align>
 			<label>12016</label>
 			<font>font12</font>
-			<include>homemisc</include>
 		</control>
 		<control type="spincontrol" id="60">
 			<description>Next page button</description>
@@ -56,7 +54,6 @@
 			<onright>28</onright>
 			<ondown>5</ondown>
 			<onup>28</onup>
-			<include>homemisc</include>
 			<showonepage>false</showonepage>
 		</control>
 		<control type="grouplist" id="5">
@@ -67,7 +64,6 @@
 			<height>270</height>
 			<itemgap>0</itemgap>
 			<pagecontrol>60</pagecontrol>
-			<include>homemisc</include>
 			<onleft>28</onleft>
 			<onright>60</onright>
 			<onup>28</onup>
@@ -83,7 +79,6 @@
 			<aligny>center</aligny>
 			<texturefocus>input-focus.png</texturefocus>
 			<texturenofocus>-</texturenofocus>
-			<include>homemisc</include>
 		</control>
 		<control type="radiobutton" id="8">
 			<description>Default RadioButton</description>
@@ -97,7 +92,6 @@
 			<aligny>center</aligny>
 			<textureradiofocus>settings-check-box.png</textureradiofocus>
 			<textureradionofocus>settings-check-boxNF.png</textureradionofocus>
-			<include>homemisc</include>
 		</control>
 		<control type="spincontrolex" id="9">
 			<description>Default SpinControlex</description>
@@ -117,7 +111,6 @@
 			<textoffsetx>12</textoffsetx>
 			<aligny>center</aligny>
 			<reverse>yes</reverse>
-			<include>homemisc</include>
 		</control>
 		<control type="sliderex" id="10">
 			<description>Default Slider</description>
@@ -136,14 +129,12 @@
 			<textcolor>white</textcolor>
 			<disabledcolor>disabled</disabledcolor>
 			<textoffsetx>12</textoffsetx>
-			<include>homemisc</include>
 		</control>
 		<control type="image" id="11">
 			<description>separator image</description>
 			<width>350</width>
 			<height>5</height>
 			<texture>separatorOSD.png</texture>
-			<include>homemisc</include>
 		</control>
 		<control type="button" id="28">
 			<description>OK button</description>
@@ -160,7 +151,6 @@
 			<onright>29</onright>
 			<onup>5</onup>
 			<ondown>5</ondown>
-			<include>homemisc</include>
 		</control>
 		<control type="button" id="29">
 			<description>Cancel button</description>
@@ -177,7 +167,6 @@
 			<onright>28</onright>
 			<onup>5</onup>
 			<ondown>5</ondown>
-			<include>homemisc</include>
 		</control>
 	</controls>
 </window>

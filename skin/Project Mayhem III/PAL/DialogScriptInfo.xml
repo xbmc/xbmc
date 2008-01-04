@@ -37,7 +37,7 @@
 			<animation effect="slide" time="200" start="204,0" end="0,0" acceleration="-1" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
 			<animation effect="slide" time="200" start="0,0" end="204,0" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
 		</control>
-		<control type="label" id="1">
+		<control type="label">
 			<description>xbox media center label</description>
 			<posx>200</posx>
 			<posy>43</posy>
@@ -45,7 +45,7 @@
 			<label>9</label>
 			<font>special12</font>
 		</control>
-		<control type="label" id="1">
+		<control type="label">
 			<description>description label</description>
 			<posx>207</posx>
 			<posy>43</posy>

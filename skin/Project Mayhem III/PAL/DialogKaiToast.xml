@@ -3,8 +3,8 @@
 	<animation effect="slide" time="400" end="300,0">WindowClose</animation>
 	<coordinates>
 		<system>1</system>
-		<posx>420</posx>
-		<posy>470</posy>
+		<posx>430</posx>
+		<posy>480</posy>
 	</coordinates>
 	<controls>
 		<control type="image" id="0">
@@ -17,27 +17,28 @@
 		</control>
 		<control type="image" id="400">
 			<description>avatar</description>
-			<posx>20</posx>
+			<posx>16</posx>
 			<posy>15</posy>
 			<width>40</width>
 			<height>40</height>
+			<aspectratio>keep</aspectratio>
 			<texture>infoicon.png</texture>
 		</control>
 		<control type="label" id="401">
-			<description>Caption Label</description>
-			<posx>65</posx>
-			<posy>17</posy>
-			<width>170</width>
+			<description>Label 1</description>
+			<posx>60</posx>
+			<posy>16</posy>
+			<width>185</width>
 			<font>font12</font>
 			<align>center</align>
 			<label>-</label>
 			<scroll>true</scroll>
 		</control>
 		<control type="label" id="402">
-			<description>Description Button</description>
-			<posx>65</posx>
-			<posy>33</posy>
-			<width>170</width>
+			<description>label 2</description>
+			<posx>60</posx>
+			<posy>36</posy>
+			<width>185</width>
 			<label>-</label>
 			<font>font10</font>
 			<align>center</align>
