@@ -140,6 +140,8 @@ void CGUIWindowMusicInfo::SetAlbum(const CAlbum& album, const VECSONGS &songs, c
   m_albumItem.SetProperty("albummoods", m_album.strMoods);
   m_albumItem.SetProperty("albumthemes", m_album.strThemes);
   m_albumItem.SetProperty("albumreview", m_album.strReview);
+  m_albumItem.SetProperty("albumlabel", m_album.strLabel);
+  m_albumItem.SetProperty("albumtype", m_album.strType);
   m_albumItem.SetMusicThumb();
   m_hasUpdatedThumb = false;
   m_bArtistInfo = false;
@@ -162,6 +164,9 @@ void CGUIWindowMusicInfo::SetArtist(const CArtist& artist, const CStdString &pat
   m_albumItem.SetProperty("instruments", m_artist.strInstruments);
   m_albumItem.SetProperty("born", m_artist.strBorn);
   m_albumItem.SetProperty("formed", m_artist.strFormed);
+  m_albumItem.SetProperty("died", m_artist.strDied);
+  m_albumItem.SetProperty("disbanded", m_artist.strDisbanded);
+  m_albumItem.SetProperty("yearsactive", m_artist.strYearsActive);
   m_albumItem.SetCachedArtistThumb();
   m_hasUpdatedThumb = false;
   m_bArtistInfo = true;

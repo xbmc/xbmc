@@ -87,11 +87,26 @@ bool CMusicArtistInfo::Parse(const TiXmlElement* artist, bool bChained)
     }
     node = node->NextSibling("mood");
   }
+  node = artist->FirstChild("yearsactive");
+  while (node)
+  {
+    if (node->FirstChild())
+    {
+      CStdString strTemp = node->FirstChild()->Value();
+      if (m_artist.strYearsActive.IsEmpty())
+        m_artist.strYearsActive = strTemp;
+      else
+        m_artist.strYearsActive += g_advancedSettings.m_musicItemSeparator+strTemp;
+    }
+    node = node->NextSibling("yearsactive");
+  }
 
   XMLUtils::GetString(artist,"born",m_artist.strBorn);
   XMLUtils::GetString(artist,"formed",m_artist.strFormed);
   XMLUtils::GetString(artist,"instruments",m_artist.strInstruments);
   XMLUtils::GetString(artist,"biography",m_artist.strBiography);
+  XMLUtils::GetString(artist,"died",m_artist.strDied);
+  XMLUtils::GetString(artist,"disbanded",m_artist.strDisbanded);
 
   const TiXmlElement* thumbElement = artist->FirstChildElement("thumbs");
   if (!thumbElement || !m_artist.thumbURL.ParseElement(thumbElement) || m_artist.thumbURL.m_url.size() == 0)

@@ -86,6 +86,22 @@
 				<font>font11</font>
 			</control>
 			<control type="label">
+				<description>Label</description>
+				<posx>200</posx>
+				<posy>263</posy>
+				<width>90</width>
+				<label>21899</label>
+				<font>font11</font>
+			</control>
+			<control type="label">
+				<description>Type</description>
+				<posx>200</posx>
+				<posy>283</posy>
+				<width>90</width>
+				<label>146</label>
+				<font>font11</font>
+			</control>
+			<control type="label">
 				<description>Album value</description>
 				<posx>200</posx>
 				<posy>95</posy>
@@ -237,6 +253,44 @@
 				<scroll>true</scroll>
 				<visible>IsEmpty(ListItem.Property(AlbumThemes))</visible>
 			</control>
+			<control type="label">
+				<description>Label value</description>
+				<width>375</width>
+				<posx>310</posx>
+				<posy>263</posy>
+				<info>ListItem.Property(AlbumLabel)</info>
+				<font>font11</font>
+				<scroll>true</scroll>
+			</control>
+			<control type="label">
+				<description>Label Not Available value</description>
+				<width>375</width>
+				<posx>310</posx>
+				<posy>263</posy>
+				<label>416</label>
+				<font>font11</font>
+				<scroll>true</scroll>
+				<visible>IsEmpty(ListItem.Property(AlbumLabel))</visible>
+			</control>
+			<control type="label">
+				<description>Type value</description>
+				<width>375</width>
+				<posx>310</posx>
+				<posy>283</posy>
+				<info>ListItem.Property(AlbumType)</info>
+				<font>font11</font>
+				<scroll>true</scroll>
+			</control>
+			<control type="label">
+				<description>Type Not Available value</description>
+				<width>375</width>
+				<posx>310</posx>
+				<posy>283</posy>
+				<label>416</label>
+				<font>font11</font>
+				<scroll>true</scroll>
+				<visible>IsEmpty(ListItem.Property(AlbumType))</visible>
+			</control>
 			<control type="image" id="3">
 				<description>Album Cover image</description>
 				<posx>55</posx>
@@ -332,6 +386,15 @@
 				<visible>!IsEmpty(ListItem.Property(Formed))</visible>
 			</control>
 			<control type="label">
+				<description>Born/Formed</description>
+				<posx>200</posx>
+				<posy>123</posy>
+				<label>21900</label>
+				<width>90</width>
+				<font>font11</font>
+				<visible>IsEmpty(ListItem.Property(Born)) + IsEmpty(ListItem.Property(Formed))</visible>
+			</control>
+			<control type="label">
 				<description>Genre</description>
 				<posx>200</posx>
 				<posy>143</posy>
@@ -343,7 +406,7 @@
 				<description>Styles</description>
 				<posx>200</posx>
 				<posy>163</posy>
-				<label>173</label>
+				<label>176</label>
 				<width>90</width>
 				<font>font11</font>
 			</control>
@@ -352,7 +415,7 @@
 				<posx>200</posx>
 				<posy>183</posy>
 				<width>90</width>
-				<label>174</label>
+				<label>175</label>
 				<font>font11</font>
 			</control>
 			<control type="label">
@@ -361,6 +424,30 @@
 				<posy>203</posy>
 				<width>90</width>
 				<label>21892</label>
+				<font>font11</font>
+			</control>
+			<control type="label">
+				<description>Died</description>
+				<posx>200</posx>
+				<posy>223</posy>
+				<width>90</width>
+				<label>21897</label>
+				<font>font11</font>
+			</control>
+			<control type="label">
+				<description>Disbanded</description>
+				<posx>200</posx>
+				<posy>243</posy>
+				<width>90</width>
+				<label>21896</label>
+				<font>font11</font>
+			</control>
+			<control type="label">
+				<description>Years Active</description>
+				<posx>200</posx>
+				<posy>263</posy>
+				<width>90</width>
+				<label>21898</label>
 				<font>font11</font>
 			</control>
 			<control type="label">
@@ -469,6 +556,63 @@
 				<scroll>true</scroll>
 				<visible>IsEmpty(ListItem.Property(Instruments))</visible>
 			</control>
+			<control type="label">
+				<description>Died value</description>
+				<posx>310</posx>
+				<posy>223</posy>
+				<width>375</width>
+				<info>ListItem.Property(Died)</info>
+				<font>font11</font>
+				<scroll>true</scroll>
+			</control>
+			<control type="label">
+				<description>Died Not Available value</description>
+				<width>375</width>
+				<posx>310</posx>
+				<posy>223</posy>
+				<label>416</label>
+				<font>font11</font>
+				<scroll>true</scroll>
+				<visible>IsEmpty(ListItem.Property(Died))</visible>
+			</control>
+			<control type="label">
+				<description>Disbanded value</description>
+				<posx>310</posx>
+				<posy>243</posy>
+				<width>375</width>
+				<info>ListItem.Property(Disbanded)</info>
+				<font>font11</font>
+				<scroll>true</scroll>
+			</control>
+			<control type="label">
+				<description>Disbanded Not Available value</description>
+				<width>375</width>
+				<posx>310</posx>
+				<posy>243</posy>
+				<label>416</label>
+				<font>font11</font>
+				<scroll>true</scroll>
+				<visible>IsEmpty(ListItem.Property(Disbanded))</visible>
+			</control>
+			<control type="label">
+				<description>Years Active value</description>
+				<posx>310</posx>
+				<posy>263</posy>
+				<width>375</width>
+				<info>ListItem.Property(YearsActive)</info>
+				<font>font11</font>
+				<scroll>true</scroll>
+			</control>
+			<control type="label">
+				<description>Years Active Not Available value</description>
+				<width>375</width>
+				<posx>310</posx>
+				<posy>263</posy>
+				<label>416</label>
+				<font>font11</font>
+				<scroll>true</scroll>
+				<visible>IsEmpty(ListItem.Property(YearsActive))</visible>
+			</control>
 			<control type="image">
 				<description>Artist Cover image</description>
 				<posx>55</posx>
@@ -476,7 +620,7 @@
 				<width>145</width>
 				<height>180</height>
 				<aspectratio align="left">keep</aspectratio>
-				<info>ListItem.Icon</info>
+				<info>ListItem.Thumb</info>
 			</control>
 			<control type="image">
 				<posx>55</posx>

@@ -176,6 +176,8 @@ bool CMusicAlbumInfo::Parse(const TiXmlElement* album)
   XMLUtils::GetString(album,"releasedate",m_strDateOfRelease);
   XMLUtils::GetInt(album,"year",m_album.iYear);
   XMLUtils::GetInt(album,"rating",m_album.iRating);
+  XMLUtils::GetString(album,"label",m_album.strLabel);
+  XMLUtils::GetString(album,"type",m_album.strType);
 
   m_album.thumbURL.ParseElement(album->FirstChildElement("thumbs"));
   if (m_album.thumbURL.m_url.size() == 0)

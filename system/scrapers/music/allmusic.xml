@@ -11,7 +11,7 @@
 				<expression repeat="yes" noclean="1">&lt;TITLE&gt;allmusic[ (]+ ([^&gt;]*) &gt; Overview</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;entity&gt;&lt;year&gt;\1&lt;/year&gt;&lt;artist&gt;\2&lt;/artist&gt;&lt;title&gt;\4&lt;/title&gt;&lt;url&gt;http://wm01.allmusic.com/cg/amg.dll?p=amg&amp;amp;sql=\3&lt;/url&gt;&lt;/entity&gt;" dest="5+">
-				<expression repeat="yes" noclean="1,2,3,4">class=&quot;cell&quot;&gt;([0-9]*)[^&gt;]*&gt;[^&gt;]*&gt;([^&lt;]*)[^&gt;]*&gt;[^\?]*[^&gt;]*[^\?]*[^&quot;]*sql=([^&quot;]*)&quot;&gt;([^&lt;]*)[^&gt;]*&gt;[^&gt;]*&gt;&lt;[^=]*class="cell</expression>
+				<expression repeat="yes" noclean="1,2,3,4">&lt;td class=&quot;cell&quot;&gt;([0-9]*)[^&gt;]*&gt;[^&gt;]*&gt;([^&lt;]*)[^&gt;]*&gt;[^\?]*[^&gt;]*[^\?]*[^&quot;]*sql=([^&quot;]*)&quot;&gt;([^&lt;]*)[^&gt;]*&gt;[^&gt;]*&gt;&lt;[^=]*class="cell</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>		
@@ -64,7 +64,7 @@
 				<expression noclean="1" repeat="yes">&lt;li&gt;[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;&lt;/li&gt;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;track&gt;&lt;position&gt;\1&lt;/position&gt;&lt;title&gt;\2&lt;/title&gt;&lt;duration&gt;\3&lt;/duration&gt;&lt;/track&gt;" dest="5+">
-				<expression repeat="yes" noclean="1,3">class=&quot;cell&quot;&gt;([0-9^]*)&lt;[^:]*:[^\?]*[^&gt;]*&gt;([^:]*)&lt;/a&gt;[^!|\?]*&quot;right&quot;[^&gt;]*&gt;([^&lt;]*)&lt;[^&gt;]*&gt;</expression>
+				<expression repeat="yes" noclean="1,3">&lt;TD class=&quot;cell&quot;&gt;([0-9^]*)&lt;[^:]*:[^\?]*[^&gt;]*&gt;([^:]*)&lt;/a&gt;[^!|']*&quot;right&quot;[^&gt;]*&gt;([^&lt;]*)&lt;[^&gt;]*&gt;[^&quot;]*&quot;expand&quot;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;thumb&gt;http://image.allmusic.com/\1&lt;/thumb&gt;" dest="5+">
 				<expression noclean="1">http://image.allmusic.com/([^&quot;]*)&quot;</expression>
@@ -94,7 +94,7 @@
 				<expression repeat="yes" noclean="1">&lt;TITLE&gt;allmusic[ (]+ ([^&gt;]*) &gt; Overview</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;genre&gt;\3&lt;/genre&gt;&lt;year&gt;\5&lt;/year&gt;&lt;url&gt;http://www.allmusic.com/cg/amg.dll?p=amg&amp;amp;SQL=\1&lt;/url&gt;&lt;/entity&gt;" dest="5+">
-				<expression repeat="yes" noclean="1,2,3">style=&quot;[^=]*&lt;a href=&quot;[^&quot;]*sql=([^&quot;]*)&quot;&gt;([^&lt;]*)&lt;/a&gt;[^-]*[^&gt;]*&gt;([^&lt;]*)&lt;/TD&gt;[^&gt;]*&gt;(&amp;nbsp;)?([^&lt;]*)&lt;/td&gt;</expression>
+				<expression repeat="yes" noclean="1,2,3">&lt;TD class=&quot;cell&quot; style=&quot;[^=]*&lt;a href=&quot;[^&quot;]*sql=([^&quot;]*)&quot;&gt;([^&lt;]*)&lt;/a&gt;[^-]*[^&gt;]*&gt;([^&lt;]*)&lt;/TD&gt;[^&gt;]*&gt;(&amp;nbsp;)?([^&lt;]*)&lt;/td&gt;</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>		
@@ -107,8 +107,17 @@
 			<RegExp input="$$1" output="&lt;born&gt;\1&lt;/born&gt;" dest="5+">
 				<expression>Born[^!]*&lt;tr&gt;([^!]*)&lt;</expression>
 			</RegExp>
+			<RegExp input="$$1" output="&lt;died&gt;\1&lt;/died&gt;" dest="5+">
+				<expression>Died[^!]*&lt;tr&gt;([^!]*)&lt;</expression>
+			</RegExp>
 			<RegExp input="$$1" output="&lt;formed&gt;\1&lt;/formed&gt;" dest="5+">
 				<expression>Formed[^!]*&lt;tr&gt;([^!]*)&lt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;disbanded&gt;\1&lt;/disbanded&gt;" dest="5+">
+				<expression>Disbanded[^!]*&lt;tr&gt;([^!]*)&lt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;yearsactive&gt;\1&lt;/yearsactive&gt;" dest="5+">
+				<expression repeat="yes">timeline-sub-active&quot;&gt;([^&lt;]*)&lt;/div&gt;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="6">
 				<expression noclean="1">Genre Listing--&gt;([^!]*)&lt;!--Genre Listing</expression>
