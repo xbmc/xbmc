@@ -304,7 +304,7 @@
 		<control type="group">
 			<posx>365</posx>
 			<posy>360</posy>
-			<visible>Control.HasFocus(6) + !Skin.HasSetting(homepageDriveinfo1)</visible>
+			<visible>Control.HasFocus(6) + !Skin.HasSetting(homepageDriveinfo1) + !System.Platform.Linux</visible>
 			<include>homestatsinfo</include>
 			<control type="image">
 				<description>gradient</description>
@@ -363,7 +363,7 @@
 		<control type="group">
 			<posx>365</posx>
 			<posy>360</posy>
-			<visible>Control.HasFocus(6) + Skin.HasSetting(homepageDriveinfo2)</visible>
+			<visible>Control.HasFocus(6) + Skin.HasSetting(homepageDriveinfo2) + !System.Platform.Linux</visible>
 			<include>homestatsinfo</include>
 			<control type="image">
 				<description>gradient</description>
@@ -775,39 +775,15 @@
 			</control>
 		</control>
 		<!-- labels -->
-		<control type="group">
+		<control type="label">
+			<description>date label</description>
+			<posx>660</posx>
+			<posy>57</posy>
+			<label>$INFO[System.Date] [COLOR=grey] |  $INFO[System.Time][/COLOR]</label>
+			<align>right</align>
+			<aligy>center</aligy>
+			<font>special12</font>
 			<include>contentpanelslide</include>
-			<control type="label">
-				<description>date label</description>
-				<posx>582</posx>
-				<posy>56</posy>
-				<label>date</label>
-				<info>System.Date</info>
-				<align>right</align>
-				<aligy>center</aligy>
-				<font>special12</font>
-			</control>
-			<control type="label">
-				<description>suffix label</description>
-				<posx>592</posx>
-				<posy>56</posy>
-				<label>|</label>
-				<align>left</align>
-				<aligy>center</aligy>
-				<font>special12</font>
-				<textcolor>grey</textcolor>
-			</control>
-			<control type="label">
-				<description>time label</description>
-				<posx>602</posx>
-				<posy>56</posy>
-				<label>time</label>
-				<info>System.Time</info>
-				<align>left</align>
-				<font>special12</font>
-				<aligy>center</aligy>
-				<textcolor>grey</textcolor>
-			</control>
 		</control>
 		<control type="rss" id="1">
 			<description>rss feed</description>

@@ -18,7 +18,7 @@
 			<height>488</height>
 			<texture>background-bottom.png</texture>
 		</control>
-		<control type="label" id="1">
+		<control type="label">
 			<description>xbox media center label</description>
 			<posx>200</posx>
 			<posy>43</posy>
@@ -26,7 +26,7 @@
 			<label>9</label>
 			<font>special12</font>
 		</control>
-		<control type="label" id="1">
+		<control type="label">
 			<description>description label</description>
 			<posx>207</posx>
 			<posy>43</posy>
@@ -34,7 +34,7 @@
 			<label>$LOCALIZE[559] Editor</label>
 			<font>special13</font>
 		</control>
-		<control type="image" id="0">
+		<control type="image">
 			<description>contentpanel slice</description>
 			<posx>80</posx>
 			<posy>88</posy>
@@ -43,7 +43,7 @@
 			<texture>contentpanel_left.png</texture>
 			<include>contentpanelslide</include>
 		</control>
-		<control type="image" id="0">
+		<control type="image">
 			<description>contentpanel slice</description>
 			<posx>144</posx>
 			<posy>88</posy>
@@ -52,7 +52,7 @@
 			<texture>contentpanel.png</texture>
 			<include>contentpanelslide</include>
 		</control>
-		<control type="image" id="0">
+		<control type="image">
 			<description>contentpanel slice Custom background</description>
 			<posx>75</posx>
 			<posy>88</posy>
@@ -83,12 +83,12 @@
 		</control>
 		<control type="group" id="9000">
 			<posx>20</posx>
-			<posy>-20</posy>
+			<posy>100</posy>
 			<include>buttonpanelslide</include>
 			<control type="button" id="6">
 				<description>Open Button</description>
 				<posx>0</posx>
-				<posy>120</posy>
+				<posy>0</posy>
 				<width>100</width>
 				<label>21385</label>
 				<font>font13</font>
@@ -100,7 +100,7 @@
 			<control type="button" id="7">
 				<description>Save Button</description>
 				<posx>0</posx>
-				<posy>157</posy>
+				<posy>37</posy>
 				<width>100</width>
 				<label>190</label>
 				<font>font13</font>
@@ -112,7 +112,7 @@
 			<control type="button" id="8">
 				<description>Clear button</description>
 				<posx>0</posx>
-				<posy>194</posy>
+				<posy>74</posy>
 				<width>100</width>
 				<label>192</label>
 				<font>font13</font>

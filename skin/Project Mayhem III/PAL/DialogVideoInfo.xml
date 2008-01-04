@@ -36,7 +36,7 @@
 				<width>121</width>
 				<height>239</height>
 				<texture>-</texture>
-				<aspectratio align="left">keep</aspectratio>
+				<aspectratio>keep</aspectratio>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
 			<control type="label" id="1">
@@ -780,57 +780,102 @@
 				<ondown>5</ondown>
 			</control>
 		</control>
-		<control type="image" id="1">
-			<description>background image</description>
-			<posx>555</posx>
-			<posy>345</posy>
-			<width>105</width>
-			<height>180</height>
-			<aspectratio>stretch</aspectratio>
-			<texture>homeinfo-bg.png</texture>
-			<visible>!Skin.HasSetting(UseScrollbars) + Control.IsVisible(50)</visible>
-		</control>
-		<control type="image" id="34">
-			<description>Actor image</description>
-			<posx>565</posx>
-			<posy>370</posy>
-			<width>85</width>
-			<height>130</height>
-			<texture>DefaultActorBig.png</texture>
-			<aspectratio aligny="center">keep</aspectratio>
-			<align>center</align>
-			<visible>!Skin.HasSetting(UseScrollbars) + Control.IsVisible(50)</visible>
-		</control>
-		<control type="image" id="1">
-			<description>background image</description>
-			<posx>576</posx>
-			<posy>345</posy>
-			<width>105</width>
-			<height>180</height>
-			<aspectratio>stretch</aspectratio>
-			<texture>homeinfo-bg.png</texture>
-			<visible>Skin.HasSetting(UseScrollbars) + Control.IsVisible(50)</visible>
-		</control>
-		<control type="image" id="34">
-			<description>Actor image</description>
-			<posx>586</posx>
-			<posy>370</posy>
-			<width>85</width>
-			<height>130</height>
-			<texture>DefaultActorBig.png</texture>
-			<aspectratio aligny="center">keep</aspectratio>
-			<align>center</align>
-			<visible>Skin.HasSetting(UseScrollbars) + Control.IsVisible(50)</visible>
-		</control>
 		<control type="image">
 			<posx>190</posx>
 			<posy>337</posy>
-			<width>510</width>
+			<width>500</width>
 			<height>10</height>
 			<texture>separator.png</texture>
 		</control>
+		<control type="list" id="50">
+			<description>Cast List Container</description>
+			<posx>200</posx>
+			<posy>350</posy>
+			<width>350</width>
+			<height>175</height>
+			<onleft>9000</onleft>
+			<onright>61</onright>
+			<onup>50</onup>
+			<ondown>50</ondown>
+			<orientation>vertical</orientation>
+			<pagecontrol>61</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<itemlayout width="250" height="29">
+				<control type="image">
+					<posx>0</posx>
+					<posy>3</posy>
+					<width>22</width>
+					<height>22</height>
+					<texture>DefaultActorBig.png</texture>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="label">
+					<posx>30</posx>
+					<posy>3</posy>
+					<width>320</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Label</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="29" width="250">
+				<control type="image">
+					<width>350</width>
+					<height>29</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<visible>Control.HasFocus(50)</visible>
+					<texture>list-focus.png</texture>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>3</posy>
+					<width>22</width>
+					<height>22</height>
+					<texture>DefaultActorBig.png</texture>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="label">
+					<posx>30</posx>
+					<posy>3</posy>
+					<width>320</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Label</info>
+				</control>
+			</focusedlayout>
+		</control>
+		<control type="group">
+			<visible>Control.IsVisible(50)</visible>
+			<animation effect="slide" start="0,0" end="25,0" time="0" condition="!Control.IsVisible(61)">conditional</animation>
+			<control type="image">
+				<description>Actor background image</description>
+				<posx>555</posx>
+				<posy>345</posy>
+				<width>105</width>
+				<height>180</height>
+				<aspectratio>stretch</aspectratio>
+				<texture>homeinfo-bg.png</texture>
+			</control>
+			<control type="image">
+				<description>Actor image</description>
+				<posx>565</posx>
+				<posy>370</posy>
+				<width>85</width>
+				<height>130</height>
+				<info>Container(50).ListItem.Thumb</info>
+				<aspectratio aligny="center">keep</aspectratio>
+				<align>center</align>
+			</control>
+		</control>
 		<control type="textbox" id="4">
-			<description>textarea</description>
+			<description>Textbox when scrollbar is visible</description>
 			<posx>200</posx>
 			<posy>350</posy>
 			<width>455</width>
@@ -840,11 +885,11 @@
 			<onup>5</onup>
 			<ondown>5</ondown>
 			<pagecontrol>61</pagecontrol>
-			<visible>!Skin.HasSetting(UseScrollbars)</visible>
+			<visible>Control.IsVisible(61) + !Control.IsVisible(50)</visible>
 			<include>autoscrollmedium</include>
 		</control>
 		<control type="textbox" id="4">
-			<description>textarea</description>
+			<description>Textbox when scrollbar is NOT visible</description>
 			<posx>200</posx>
 			<posy>350</posy>
 			<width>471</width>
@@ -854,10 +899,43 @@
 			<onup>5</onup>
 			<ondown>5</ondown>
 			<pagecontrol>61</pagecontrol>
-			<visible>Skin.HasSetting(UseScrollbars)</visible>
+			<visible>!Control.IsVisible(61) + !Control.IsVisible(50)</visible>
 			<include>autoscrollmedium</include>
 		</control>
-		<include>DialogInfoViewCommonPageControls</include>
-		<include>DialogInfoViewOldListViewCommons</include>
+		<control type="button">
+			<posx>665</posx>
+			<posy>350</posy>
+			<include>scrollbar_width</include>
+			<height>20</height>
+			<onclick>PageUp(61)</onclick>
+			<texturefocus border="4">scrollbar_arrow_up_focus.png</texturefocus>
+			<texturenofocus border="4">scrollbar_arrow_up.png</texturenofocus>
+			<visible>Control.IsVisible(61)</visible>
+		</control>
+		<control type="button">
+			<posx>665</posx>
+			<posy>500</posy>
+			<include>scrollbar_width</include>
+			<height>20</height>
+			<onclick>PageDown(61)</onclick>
+			<texturefocus border="4">scrollbar_arrow_down_focus.png</texturefocus>
+			<texturenofocus border="4">scrollbar_arrow_down.png</texturenofocus>
+			<visible>Control.IsVisible(61)</visible>
+		</control>
+		<control type="scrollbar" id="61">
+			<posx>665</posx>
+			<posy>370</posy>
+			<include>scrollbar_width</include>
+			<height>130</height>
+			<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
+			<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
+			<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
+			<textureslidernib>-</textureslidernib>
+			<textureslidernibfocus>-</textureslidernibfocus>
+			<onleft>50</onleft>
+			<onright>9000</onright>
+			<showonepage>false</showonepage>
+			<orientation>vertical</orientation>
+		</control>
 	</controls>
 </window>

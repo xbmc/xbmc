@@ -61,7 +61,6 @@
 			<onright>28</onright>
 			<ondown>5</ondown>
 			<onup>28</onup>
-			<include>homemisc</include>
 			<showonepage>false</showonepage>
 		</control>
 		<control type="grouplist" id="5">
@@ -72,7 +71,6 @@
 			<height>270</height>
 			<itemgap>0</itemgap>
 			<pagecontrol>60</pagecontrol>
-			<include>homemisc</include>
 			<onleft>28</onleft>
 			<onright>60</onright>
 			<onup>28</onup>
@@ -86,7 +84,7 @@
 			<font>font12</font>
 			<textoffsetx>12</textoffsetx>
 			<aligny>center</aligny>
-			<texturefocus>list-focus.png</texturefocus>
+			<texturefocus>input-focus.png</texturefocus>
 			<texturenofocus>-</texturenofocus>
 		</control>
 		<control type="radiobutton" id="8">
@@ -95,7 +93,7 @@
 			<posy>150</posy>
 			<height>31</height>
 			<font>font12</font>
-			<texturefocus>list-focus.png</texturefocus>
+			<texturefocus>input-focus.png</texturefocus>
 			<texturenofocus>-</texturenofocus>
 			<textoffsetx>12</textoffsetx>
 			<aligny>center</aligny>
@@ -108,7 +106,7 @@
 			<posy>150</posy>
 			<height>31</height>
 			<width>300</width>
-			<texturefocus>list-focus.png</texturefocus>
+			<texturefocus>input-focus.png</texturefocus>
 			<texturenofocus>-</texturenofocus>
 			<textureup>scroll-up.png</textureup>
 			<texturedown>scroll-down.png</texturedown>
@@ -127,7 +125,7 @@
 			<posy>150</posy>
 			<height>31</height>
 			<width>300</width>
-			<texturefocus>list-focus.png</texturefocus>
+			<texturefocus>input-focus.png</texturefocus>
 			<texturenofocus>-</texturenofocus>
 			<sliderwidth>100</sliderwidth>
 			<sliderheight>20</sliderheight>

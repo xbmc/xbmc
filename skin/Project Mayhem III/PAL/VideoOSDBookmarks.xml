@@ -1,5 +1,5 @@
 <window id="125">
-	<defaultcontrol>2</defaultcontrol>
+	<defaultcontrol always="true">2</defaultcontrol>
 	<animation effect="fade" time="400">WindowOpen</animation>
 	<animation effect="fade" time="400">WindowClose</animation>
 	<coordinates>
@@ -30,7 +30,7 @@
 		<control type="button" id="2">
 			<description>Create Bookmark button</description>
 			<posx>0</posx>
-			<posy>320</posy>
+			<posy>325</posy>
 			<width>130</width>
 			<height>31</height>
 			<font>font10</font>
@@ -44,11 +44,12 @@
 			<onup>11</onup>
 			<texturenofocus>keyboard-btn-space.png</texturenofocus>
 			<texturefocus>keyboard-btn-space-focus2.png</texturefocus>
+			<animation effect="slide" start="0,0" end="82,0" time="0" condition="!videoplayer.content(episodes)">conditional</animation>
 		</control>
 		<control type="button" id="3">
 			<description>Clear Bookmarks button</description>
 			<posx>135</posx>
-			<posy>320</posy>
+			<posy>325</posy>
 			<width>135</width>
 			<height>31</height>
 			<font>font10</font>
@@ -61,13 +62,14 @@
 			<onup>11</onup>
 			<texturenofocus>keyboard-btn-space.png</texturenofocus>
 			<texturefocus>keyboard-btn-space-focus2.png</texturefocus>
+			<animation effect="slide" start="0,0" end="82,0" time="0" condition="!videoplayer.content(episodes)">conditional</animation>
 		</control>
 		<control type="button" id="4">
 			<description>Create Episode Bookmark Button</description>
 			<visible>videoplayer.content(episodes)</visible>
-			<posx>270</posx>
-			<posy>320</posy>
-			<width>170</width>
+			<posx>275</posx>
+			<posy>325</posy>
+			<width>165</width>
 			<height>31</height>
 			<font>font10</font>
 			<aligny>center</aligny>
@@ -80,24 +82,6 @@
 			<texturenofocus>keyboard-btn-space.png</texturenofocus>
 			<texturefocus>keyboard-btn-space-focus2.png</texturefocus>
 		</control>
-		<control type="thumbnailpanel" id="11">
-			<description>Bookmarks thumbnail panel</description>
-			<posx>15</posx>
-			<posy>50</posy>
-			<width>400</width>
-			<height>300</height>
-			<itemwidth>100</itemwidth>
-			<itemheight>110</itemheight>
-			<texturewidth>90</texturewidth>
-			<textureheight>80</textureheight>
-			<thumbwidth>80</thumbwidth>
-			<thumbheight>70</thumbheight>
-			<thumbposx>5</thumbposx>
-			<thumbposy>5</thumbposy>
-			<onleft>2</onleft>
-			<onright>3</onright>
-			<ondown>2</ondown>
-			<onup>2</onup>
-		</control>
+		<include>OSDBookmark_ThumbView</include>
 	</controls>
 </window>
