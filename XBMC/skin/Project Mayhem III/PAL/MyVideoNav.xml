@@ -275,8 +275,7 @@
 		<include>AllViewCommonThumbLarge</include>
 		<include>VideoDVDThumbLarge</include>
 		<include>VideoDVDWrapView</include>
-		<include>WideIcon_Big</include>
-		<include>VideoViewCommons_BigList</include>
+		<include>VideoLibrary_BigList</include>
 		<include>AllViewCommonPageControls</include>
 		<include>windowswitchtransition</include>
 	</controls>
