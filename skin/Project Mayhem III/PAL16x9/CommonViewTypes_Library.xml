@@ -327,7 +327,7 @@
 		</control>
 	</include>
 	<include name="VideoLibraryWideIcon_Small">
-		<control type="list" id="57">
+		<control type="panel" id="57">
 			<posx>432</posx>
 			<posy>100</posy>
 			<width>242</width>
@@ -340,7 +340,7 @@
 			<scrolltime>200</scrolltime>
 			<pagecontrol>60</pagecontrol>
 			<include>contentpanelslide</include>
-			<itemlayout height="106" width="242">
+			<itemlayout condition="!Container.Content(Episodes)" height="106" width="242">
 				<control type="image">
 					<width>238</width>
 					<height>100</height>
@@ -404,18 +404,6 @@
 					<visible>container.content(movies)</visible>
 				</control>
 				<control type="label">
-					<posx>80</posx>
-					<posy>34</posy>
-					<width>155</width>
-					<height>16</height>
-					<font>font13</font>
-					<selectedcolor>green</selectedcolor>
-					<scroll>true</scroll>
-					<label>$INFO[ListItem.episode,$LOCALIZE[20359] ]</label>
-					<aligny>center</aligny>
-					<visible>container.content(episodes)</visible>
-				</control>
-				<control type="label">
 					<posx>235</posx>
 					<posy>80</posy>
 					<width>160</width>
@@ -426,7 +414,7 @@
 					<scroll>true</scroll>
 					<label>$INFO[ListItem.Rating ,$LOCALIZE[204] ]</label>
 					<aligny>center</aligny>
-					<visible>container.content(movies) | container.content(episodes)</visible>
+					<visible>container.content(movies)</visible>
 				</control>
 				<control type="image">
 					<posx>70</posx>
@@ -436,7 +424,7 @@
 					<info>ListItem.Overlay</info>
 				</control>
 			</itemlayout>
-			<focusedlayout height="106" width="242">
+			<focusedlayout condition="!Container.Content(Episodes)" height="106" width="242">
 				<control type="image">
 					<width>238</width>
 					<height>100</height>
@@ -509,18 +497,6 @@
 					<visible>container.content(movies)</visible>
 				</control>
 				<control type="label">
-					<posx>80</posx>
-					<posy>34</posy>
-					<width>155</width>
-					<height>16</height>
-					<font>font13</font>
-					<selectedcolor>green</selectedcolor>
-					<scroll>true</scroll>
-					<label>$INFO[ListItem.episode,$LOCALIZE[20359] ]</label>
-					<aligny>center</aligny>
-					<visible>container.content(episodes)</visible>
-				</control>
-				<control type="label">
 					<posx>235</posx>
 					<posy>80</posy>
 					<width>160</width>
@@ -531,7 +507,7 @@
 					<scroll>true</scroll>
 					<label>$INFO[ListItem.Rating ,$LOCALIZE[204] ]</label>
 					<aligny>center</aligny>
-					<visible>container.content(movies) | container.content(episodes)</visible>
+					<visible>container.content(movies)</visible>
 				</control>
 				<control type="image">
 					<posx>70</posx>
@@ -539,6 +515,69 @@
 					<width>32</width>
 					<height>32</height>
 					<info>ListItem.Overlay</info>
+				</control>
+			</focusedlayout>
+			<itemlayout condition="Container.Content(Episodes)" height="141" width="120">
+				<control type="image">
+					<posx>10</posx>
+					<posy>10</posy>
+					<width>100</width>
+					<height>100</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="image">
+					<posx>80</posx>
+					<posy>75</posy>
+					<width>32</width>
+					<height>32</height>
+					<info>ListItem.Overlay</info>
+				</control>
+				<control type="label">
+					<posx>60</posx>
+					<posy>115</posy>
+					<width>110</width>
+					<height>22</height>
+					<font>font13</font>
+					<selectedcolor>green</selectedcolor>
+					<align>center</align>
+					<info>ListItem.Label</info>
+				</control>
+			</itemlayout>
+			<focusedlayout condition="Container.Content(Episodes)" height="141" width="120">
+				<control type="image">
+					<width>110</width>
+					<height>110</height>
+					<posx>5</posx>
+					<posy>5</posy>
+					<texture>folder-focus.png</texture>
+					<animation effect="zoom" end="0,0,120,120" time="100">focus</animation>
+				</control>
+				<control type="image">
+					<posx>10</posx>
+					<posy>10</posy>
+					<width>100</width>
+					<height>100</height>
+					<info>ListItem.Icon</info>
+					<animation effect="zoom" end="5,5,110,110" time="100">focus</animation>
+				</control>
+				<control type="image">
+					<posx>80</posx>
+					<posy>75</posy>
+					<width>32</width>
+					<height>32</height>
+					<info>ListItem.Overlay</info>
+					<animation effect="slide" end="5,5" time="100">focus</animation>
+				</control>
+				<control type="label">
+					<posx>60</posx>
+					<posy>115</posy>
+					<width>110</width>
+					<height>22</height>
+					<font>font13</font>
+					<selectedcolor>green</selectedcolor>
+					<align>center</align>
+					<info>ListItem.Label</info>
+					<animation effect="slide" end="0,5" time="100">focus</animation>
 				</control>
 			</focusedlayout>
 		</control>
