@@ -112,8 +112,10 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
       None
     };
   
+  // are we using an existing window to create the context?
   if (window) 
   {
+    // obtain the GLX window associated with the CSurface object
     m_glWindow = window->GetWindow();
     CLog::Log(LOGINFO, "GLX Info: Using destination window");
   } else {
@@ -148,6 +150,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   {
     if (antialias)
     {
+      // query compatible framebuffers based on double buffered AA attributes
       fbConfigs = glXChooseFBConfig(s_dpy, DefaultScreen(s_dpy), doubleVisAttributesAA, &num);
       if (!fbConfigs)
       {
@@ -157,22 +160,27 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     }
     else
     {    
+      // query compatible framebuffers based on double buffered attributes
       fbConfigs = glXChooseFBConfig(s_dpy, DefaultScreen(s_dpy), doubleVisAttributes, &num);
     }
   } 
   else 
   {
+    // query compatible framebuffers based on single buffered attributes (not used currently)
     fbConfigs = glXChooseFBConfig(s_dpy, DefaultScreen(s_dpy), singleVisAttributes, &num);
   }
+
   if (fbConfigs==NULL) 
   {
     CLog::Log(LOGERROR, "GLX Error: No compatible framebuffers found");
     return;
   }
 
+  // obtain the xvisual from the first compatible framebuffer
   vInfo = glXGetVisualFromFBConfig(s_dpy, fbConfigs[0]);
 
-  // if no window is specified, create a window
+  // if no window is specified, create a window because a GL context needs to be
+  // associated to a window
   if (!m_glWindow) 
   {
     XSetWindowAttributes  swa;
@@ -192,6 +200,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
       swaMask = 0;
       CLog::Log(LOGINFO, "GLX Info: Using parent window");
     } else  {
+      // create a window with the desktop as the parent
       p = RootWindow(s_dpy, vInfo->screen);
       swaMask = CWBorderPixel;
     }
@@ -204,6 +213,8 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
                                swaMask, &swa );
     XSync(s_dpy, False);
     mapWindow = true;
+
+    // success?
     if (!m_glWindow) 
     {
       XFree(fbConfigs);
@@ -212,7 +223,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     }
   }
 
-  // still no window? then we got a problem  
+  // now create the actual context
   if (shared) 
   {
     CLog::Log(LOGINFO, "GLX Info: Creating shared context");
@@ -223,15 +234,22 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   }
   XFree(fbConfigs);
   XFree(vInfo);
+
+  // map the window and wait for notification that it was successful (X-specific)
   if (mapWindow) 
   {
     XEvent event;
     XMapWindow(s_dpy, m_glWindow);
     XIfEvent(s_dpy, &event, WaitForNotify, (XPointer)m_glWindow);
   }
+
+  // success?
   if (m_glContext) 
   {
+    // make this context current
     glXMakeCurrent(s_dpy, m_glWindow, m_glContext);
+
+    // initialize glew only once (b_glewInit is static)
     if (!b_glewInit)
     {
       if (glewInit()!=GLEW_OK)
