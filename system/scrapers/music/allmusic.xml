@@ -178,7 +178,7 @@
 	<GetDiscography dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;album&gt;&lt;year&gt;\1&lt;/year&gt;&lt;title&gt;\2\3&lt;/title&gt;&lt;label&gt;\4&lt;/label&gt;&lt;/album&gt;" dest="2+">
-				<expression repeat="yes" clear="yes">&lt;td class=&quot;sorted-cell&quot;&gt;([0-9]*)&lt;/td&gt;&lt;td class=&quot;cell-img&quot;&gt;[^&gt;]*&gt;[^\?]*[^&gt;]*&gt;([A][ ])?[ \t]*([^&lt;]*)&lt;/a&gt;&lt;/td&gt;&lt;td class=&quot;cell-img&quot;&gt;[^&gt;]*&gt;[^\?]*break-word;&quot;&gt;([^&lt;]*)&lt;/td&gt;&lt;/tr&gt;</expression>
+				<expression repeat="yes" noclean="2" clear="yes">&lt;td class=&quot;sorted-cell&quot;&gt;([0-9]*)&lt;/td&gt;&lt;td class=&quot;cell-img&quot;&gt;[^&gt;]*&gt;[^\?]*[^&gt;]*&gt;([A][ ])?[ \t]*([^&lt;]*)&lt;/a&gt;&lt;/td&gt;&lt;td class=&quot;cell-img&quot;&gt;[^&gt;]*&gt;[^\?]*break-word;&quot;&gt;([^&lt;]*)&lt;/td&gt;&lt;/tr&gt;</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>
