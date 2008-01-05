@@ -142,8 +142,8 @@ namespace PYXBMC
   }
 
   // InfoTagVideo_GetPath
-  PyDoc_STRVAR(getPath__doc__,
-    "getPath() -- returns a string.\n");
+  /*PyDoc_STRVAR(getPath__doc__,
+    "getPath() -- returns a string.\n");*/
 
   PyObject* InfoTagVideo_GetPath(InfoTagVideo *self, PyObject *args)
   {
