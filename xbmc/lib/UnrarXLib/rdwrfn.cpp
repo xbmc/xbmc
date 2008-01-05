@@ -166,7 +166,7 @@ int ComprDataIO::UnpRead(byte *Addr,uint Count)
         Decrypt.Crypt(Addr,RetCode,(Decryption==15) ? NEW_CRYPT : OLD_DECODE);
       else
         if (Decryption==20)
-          for (int I=0;I<RetCode;I+=16)
+          for (uint I=0;I<RetCode;I+=16)
             Decrypt.DecryptBlock20(&Addr[I]);
         else
 #endif
