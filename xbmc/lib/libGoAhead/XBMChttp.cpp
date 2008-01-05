@@ -520,6 +520,20 @@ void LoadPlayListOld(const CStdString& strPlayList, int playList)
   }
 }
 
+CStdString procMask(CStdString mask)
+{
+  mask=mask.ToLower();
+  if(mask=="[music]")
+    return g_stSettings.m_musicExtensions;
+  if(mask=="[video]")
+    return g_stSettings.m_videoExtensions;
+  if(mask=="[pictures]")
+    return g_stSettings.m_pictureExtensions;
+  if(mask=="[files]")
+    return "";
+  return mask;
+}
+
 bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoStart)
 {
   //CStdString strPath = item.m_strPath;
@@ -567,6 +581,30 @@ bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoSt
   else
     return true;
   return false;
+}
+
+void copyThumb(CStdString srcFn, CStdString destFn)
+//Copies src file to dest, unless src=="" o src doesn't exist in which case dest is deleted
+{
+  if (destFn=="")
+    return;
+  if (srcFn=="")
+  {
+	if (CFile::Exists(destFn))
+	  CFile::Delete(destFn);
+  }
+  else
+    if (srcFn!=lastThumbFn)
+	  if (CFile::Exists(srcFn))
+	  {
+        CFile::Cache(srcFn, destFn);
+	    lastThumbFn=srcFn;
+	  }
+	  else
+	  {
+	    CPicture pic;
+        pic.CacheSkinImage(srcFn, destFn);
+	  }
 }
 
 CUdpBroadcast::CUdpBroadcast() : CUdpClient()
@@ -998,7 +1036,7 @@ int CXbmcHttp::xbmcAddToPlayList(int numParas, CStdString paras[])
       if (playList==-1)
         playList=g_playlistPlayer.GetCurrentPlaylist();
       if(numParas>2) //includes mask
-        mask=paras[2];
+        mask=procMask(paras[2]);
 	  if (numParas>3) //recursive
 	    recursive=(paras[3]=="1");
     }
@@ -1028,7 +1066,6 @@ int CXbmcHttp::xbmcAddToPlayList(int numParas, CStdString paras[])
       return SetResponse(openTag+"Error");
   }
 }
-
 
 int CXbmcHttp::xbmcGetTagFromFilename(int numParas, CStdString paras[]) 
 {
@@ -1085,13 +1122,11 @@ int CXbmcHttp::xbmcGetTagFromFilename(int numParas, CStdString paras[])
     }
     else
     {
-      return SetResponse(openTag+"Error:System not set to use tags");
-      
+      return SetResponse(openTag+"Error:System not set to use tags"); 
     }
   if (tag->Loaded())
   {
     CStdString output, tmp;
-
     output = openTag+"Artist:" + tag->GetArtist();
     output += closeTag+openTag+"Album:" + tag->GetAlbum();
     output += closeTag+openTag+"Title:" + tag->GetTitle();
@@ -1196,30 +1231,6 @@ int CXbmcHttp::xbmcGetMovieDetails(int numParas, CStdString paras[])
   }
   else
     return SetResponse(openTag+"Error:No file name") ;
-}
-
-void copyThumb(CStdString srcFn, CStdString destFn)
-//Copies src file to dest, unless src=="" o src doesn't exist in which case dest is deleted
-{
-  if (destFn=="")
-    return;
-  if (srcFn=="")
-  {
-	if (CFile::Exists(destFn))
-	  CFile::Delete(destFn);
-  }
-  else
-    if (srcFn!=lastThumbFn)
-	  if (CFile::Exists(srcFn))
-	  {
-        CFile::Cache(srcFn, destFn);
-	    lastThumbFn=srcFn;
-	  }
-	  else
-	  {
-	    CPicture pic;
-        pic.CacheSkinImage(srcFn, destFn);
-	  }
 }
 
 int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
@@ -1533,7 +1544,7 @@ int CXbmcHttp::xbmcAddToSlideshow(int numParas, CStdString paras[])
   else
   {
     if (numParas>1)
-      mask=paras[1];
+      mask=procMask(paras[1]);
 	if (numParas>2)
 	  recursive=paras[2]=="1";
     CFileItem *pItem = new CFileItem(paras[0]);
