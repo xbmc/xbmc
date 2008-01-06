@@ -802,7 +802,7 @@ bool CHTTP::Recv(int iLen)
   		else if (FD_ISSET((SOCKET)m_socket, &socks))
   		{
         n = recv(m_socket, buf, iLen, 0);
-        if (n > 0 || (n == -1 && errno != EAGAIN && errno != EINTR))
+        if (n >= 0 || (n == -1 && errno != EAGAIN && errno != EINTR))
           break;
   		}
   	}
