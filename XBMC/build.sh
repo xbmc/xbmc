@@ -1,11 +1,10 @@
 #!/bin/bash
 
 error() {
-  RET=$?
-  if [[ $RET != 0 ]]
+  if [[ $? != 0 ]]
   then
-    #echo
-    echo -e "\n FAILED! Exiting. ($RET)"
+    echo
+    echo " FAILED! Exiting."
     exit
   fi
 }
@@ -33,8 +32,6 @@ usage() {
   echo "                                      can pass more than one"
   echo "   WEB=<path/to/web_int.rar>        : Web interface to use."
   echo "                                      Default = PM3"
-  echo "   VERBOSE                          : Print way too much stuff than to"
-  echo "                                      be useful in most cases."
   echo " These options can be defaulted in ~/.xbmc-build-settings."
   echo " Just make a white space separated list on the first line."
   exit
@@ -105,9 +102,6 @@ parse_args() {
       NOCONFIG)
         CONFIGURE=0
         ;;
-      VERBOSE)
-        VERBOSE=1
-        ;;
       *)
         echo " Invalid option $OPT"
         usage
@@ -159,14 +153,9 @@ update() {
       if [[ $PROMPT == "y" ]]
       then
         echo " Updating source code."
-        svn up "$SOURCEDIR" 2>&1 | tee .build.sh.svn
-        grep "^Updated to" .build.sh.svn &> /dev/null
+        svn up "$SOURCEDIR" 2>&1 | tee "$SOURCEDIR/.build.sh.svn"
+        grep "^Updated to" "$SOURCEDIR/.build.sh.svn" &> /dev/null
         error
-        grep -E "configure$|\.in$" .build.sh.svn &> /dev/null
-        if ! (($?))
-        then
-          CONFIGURE=1
-        fi
         LOCAL_REVISION="$HEADREVISION"
       fi
     else
@@ -202,17 +191,12 @@ compile() {
     if (( CLEAN ))
     then
       echo " Cleaning source directory."
-      if (( VERBOSE ))
-      then
-        make -C "${SOURCEDIR}" clean
-      else
-        make -C "${SOURCEDIR}" clean &> /dev/null
-      fi
+      make -C "${SOURCEDIR}" clean &> /dev/null
     else
       echo " Skipping source directory cleaning."
     fi
     echo " Compiling source."
-    CORES=$(grep "^processor" /proc/cpuinfo | wc -l)
+    CORES=$(grep "processor" /proc/cpuinfo | wc -l)
     echo "  Detected ${CORES} procs/cores, using -j${CORES}"
     if (( $SHOW_MAKE ))
     then
@@ -240,19 +224,9 @@ copy() {
     if [[ -e "$BACKUPDIR" ]] 
     then
       echo "  Removing old $BACKUPDIR first."
-      if (( VERBOSE ))
-      then
-        rm -vrf "$BACKUPDIR"
-      else
-        rm -rf "$BACKUPDIR" &> /dev/null
-      fi
+      rm -rf "$BACKUPDIR" &> /dev/null
     fi
-    if (( VERBOSE ))
-    then
-      mv -v "$BUILDDIR" "${BACKUPDIR}"
-    else
-      mv "$BUILDDIR" "${BACKUPDIR}" &> /dev/null
-    fi
+    mv "$BUILDDIR" "${BACKUPDIR}"  &> /dev/null
     if [[ $? != 0 ]]
     then
       echo " You don't have permission to move"
@@ -264,12 +238,7 @@ copy() {
   fi
 
   echo " Creating ${BUILDDIR}."
-  if (( VERBOSE ))
-  then
-    mkdir -v "$BUILDDIR"
-  else
-    mkdir "$BUILDDIR" &> /dev/null
-  fi
+  mkdir "$BUILDDIR" &> /dev/null
   error
 
   for I in credits language media screensavers scripts skin sounds system userdata visualisations web xbmc-xrandr XboxMediaCenter README.linux copying.txt Changelog.txt
@@ -277,50 +246,24 @@ copy() {
     printf "\r Copying %-16.16s" $I 
     if [[ "$I" == "skin" ]]
     then
-      if (( VERBOSE ))
-      then
-        mkdir -vp "${BUILDDIR}/skin/Project Mayhem III"
-      else
-        mkdir -p "${BUILDDIR}/skin/Project Mayhem III" &> /dev/null
-      fi
+      mkdir -p "${BUILDDIR}/skin/Project Mayhem III" &> /dev/null
       for J in $(ls "${SOURCEDIR}/skin/Project Mayhem III")
       do
         if [[ "$J" == "media" ]]
         then
-          if (( VERBOSE )) 
-          then
-            mkdir -v "${BUILDDIR}/skin/Project Mayhem III/media"
-            cp "${SOURCEDIR}/skin/Project Mayhem III/media/Textures.xpr" "${BUILDDIR}/skin/Project Mayhem III/media"
-          else
-            mkdir "${BUILDDIR}/skin/Project Mayhem III/media" &> /dev/null
-            cp "${SOURCEDIR}/skin/Project Mayhem III/media/Textures.xpr" "${BUILDDIR}/skin/Project Mayhem III/media" &> /dev/null
-          fi
+          mkdir "${BUILDDIR}/skin/Project Mayhem III/media" &> /dev/null
+          cp "${SOURCEDIR}/skin/Project Mayhem III/media/Textures.xpr" "${BUILDDIR}/skin/Project Mayhem III/media" &> /dev/null
         else
-          if (( VERBOSE ))
-          then
-            cp -vrf "${SOURCEDIR}/skin/Project Mayhem III/${J}" "${BUILDDIR}/skin/Project Mayhem III"
-          else
-            cp -rf "${SOURCEDIR}/skin/Project Mayhem III/${J}" "${BUILDDIR}/skin/Project Mayhem III" &> /dev/null
-          fi
+          cp -rf "${SOURCEDIR}/skin/Project Mayhem III/${J}" "${BUILDDIR}/skin/Project Mayhem III" &> /dev/null
         fi
       done
     elif [[ "$I" == "userdata" ]]
     then
       if [[ -e "$BACKUPDIR/UserData" ]]
       then
-        if (( VERBOSE ))
-        then 
-          cp -vrf "$BACKUPDIR/UserData" "$BUILDDIR"
-        else
-          cp -rf "$BACKUPDIR/UserData" "$BUILDDIR" &> /dev/null
-        fi
+        cp -rf "$BACKUPDIR/UserData" "$BUILDDIR" &> /dev/null
       else
-        if (( VERBOSE ))
-        then 
-          cp -vrf "${SOURCEDIR}/${I}" "$BUILDDIR"
-        else
-          cp -rf "${SOURCEDIR}/${I}" "$BUILDDIR" &> /dev/null
-        fi
+        cp -rf "${SOURCEDIR}/${I}" "$BUILDDIR" &> /dev/null
       fi
     elif [[ "$I" == "web" ]]
     then
@@ -331,45 +274,24 @@ copy() {
       fi
       if ! [[ $RAR == "" ]]
       then
-        if (( VERBOSE ))
-        then
-          mkdir -vp "$BUILDDIR/web"
-          "$RAR" x -y "$WEB" "$BUILDDIR/web/"
-        else
-          mkdir -p "$BUILDDIR/web" &> /dev/null
-          "$RAR" x -y -inul "$WEB" "$BUILDDIR/web/"
-        fi
+        mkdir -p "$BUILDDIR/web" &> /dev/null
+        "$RAR" x -y -inul "$WEB" "$BUILDDIR/web/"
       fi
     elif [[ "$I" == "XboxMediaCenter" ]]
     then
       if [[ -e "${SOURCEDIR}/$I" ]]
       then
-        if (( VERBOSE ))
-        then
-          mv -v "${SOURCEDIR}/${I}" "$BUILDDIR"
-        else
-          mv "${SOURCEDIR}/${I}" "$BUILDDIR" &> /dev/null
-        fi
+        mv "${SOURCEDIR}/${I}" "$BUILDDIR" &> /dev/null
       elif [[ -e "${BACKUPDIR}/${I}" ]]
       then
         echo
         echo " Couldn't find new binary, using old one from backup!"
-        if (( VERBOSE ))
-        then
-          cp -vf "${BACKUPDIR}/${I}" "${BUILDDIR}/${I}"
-        else
-          cp -f "${BACKUPDIR}/${I}" "${BUILDDIR}/${I}" &> /dev/null
-        fi
+        cp -f "${BACKUPDIR}/${I}" "${BUILDDIR}/${I}" &> /dev/null
       else 
         ls "..." &> /dev/null  # force $? to be non-zero
       fi
     else
-      if (( VERBOSE ))
-      then
-        cp -vrf "${SOURCEDIR}/${I}" "$BUILDDIR"
-      else
-        cp -rf "${SOURCEDIR}/${I}" "$BUILDDIR" &> /dev/null
-      fi
+      cp -rf "${SOURCEDIR}/${I}" "$BUILDDIR" &> /dev/null
     fi
     error
   done
@@ -391,12 +313,7 @@ cleanup() {
   if [ -d $1 ]
   then
     printf "\r Cleaning %-60.60s" $1
-    if (( VERBOSE ))
-    then
-      rm -vrf $I/src $I/.svn $I/*.DLL $I/*.dll
-    else
-      rm -rf $I/src $I/.svn $I/*.DLL $I/*.dll &> /dev/null
-    fi
+    rm -rf $I/src $I/.svn $I/*.DLL $I/*.dll &> /dev/null
     for I in $1/* #$(ls -d $1/* 2> /dev/null)
     do
       cleanup "${I}"
@@ -416,23 +333,13 @@ merge() {
       done
     else
       echo "  Merged ${1#"${BACKUPDIR}/"}"
-      if (( VERBOSE ))
-      then
-        cp -vrf "$BACKUPDIR/$1" "$BUILDDIR/$1"
-      else
-        cp -rf "$BACKUPDIR/$1" "$BUILDDIR/$1" &> /dev/null
-      fi
+      cp -rf "$BACKUPDIR/$1" "$BUILDDIR/$1" &> /dev/null
     fi
   else
     if ! [[ -e "$BUILDDIR/$1" ]]
     then
       echo "  Merged ${1#"${BACKUPDIR}/"}"
-      if (( VERBOSE ))
-      then
-        cp -vf "$BACKUPDIR/$1" "$BUILDDIR/$1"
-      else
-        cp -f "$BACKUPDIR/$1" "$BUILDDIR/$1" &> /dev/null
-      fi
+      cp -f "$BACKUPDIR/$1" "$BUILDDIR/$1" &> /dev/null
     fi
   fi
 }
@@ -484,7 +391,6 @@ CONFIGOPTS=""
 (( SHOW_MAKE=1 ))
 (( CONFIGURE=1 ))
 (( DEBUG=1 ))
-(( VERBOSE=0 ))
 
 if ! [[ -e "$SOURCEDIR/.firstrun" ]]
 then
@@ -497,16 +403,10 @@ fi
 
 echo -ne "]0;Building XBMC"
 
-if (( VERBOSE ))
-then
-  touch "/root/.test"
-else
-  touch "/root/.test" &> /dev/null
-fi
+touch "/root/.test" &> /dev/null
 
 if ! (( $? )) 
 then
-  rm "/root/.test" &> /dev/null
   PROMPT=""
   echo " There is really no reason to run this as root or with sudo."
   while [[ $PROMPT != "y" && $PROMPT != "n" ]]
@@ -544,23 +444,13 @@ then
     exit
   fi
 else
-  if (( VERBOSE ))
-  then
-    mkdir -vp "$BUILDDIR"
-  else
-    mkdir -p "$BUILDDIR" &> /dev/null
-  fi
+  mkdir -p "$BUILDDIR" &> /dev/null
   if [[ $? != 0 ]]
   then
     echo " You don't have permission to create $BUILDDIR"
     exit
   fi
-  if (( VERBOSE ))
-  then
-    rm -vrf "$BUILDDIR"
-  else
-    rm -rf "$BUILDDIR" &> /dev/null
-  fi
+  rm -rf "$BUILDDIR" &> /dev/null
 fi
 
 if [[ $WEB == "" ]]
@@ -575,6 +465,28 @@ else
   echo " Skipping update."
 fi
 
+if [[ -e "$SOURCEDIR/.build.sh.svn" ]]
+then
+  CMD="$0 $*"
+  grep -E "configure$|\.in$" "$SOURCEDIR/.build.sh.svn" &> /dev/null
+  if ! (($?))
+  then
+    CONFIGURE=1
+  fi
+  grep -E "build.sh$" "$SOURCEDIR/.build.sh.svn" &> /dev/null
+  if ! (( $? ))
+  then
+    CMD="$CMD NOUPDATE"
+    sed -i "s/build.sh//g" "$SOURCEDIR/.build.sh.svn" #&> /dev/null
+    echo " Detected new version of build.sh"
+    echo " Rerunning with \"$CMD\""
+    read -n1
+    $CMD
+    exit
+  fi
+  rm -f "$SOURCEDIR/.build.sh.svn"
+fi
+
 if (( COMPILE ))
 then
   compile
@@ -585,7 +497,7 @@ fi
 if (( UPDATE || COMPILE || COPY ))
 then
   echo " Generating Changelog.txt"
-  #"$SOURCEDIR/tools/Changelog/Changelog.py" -r $LOCAL_REVISION -d "$SOURCEDIR"
+  "$SOURCEDIR/tools/Changelog/Changelog.py" -r $LOCAL_REVISION -d "$SOURCEDIR"
 fi
 
 if (( COPY ))
