@@ -184,14 +184,14 @@ DWORD WINAPI WaitForEvent(HANDLE hHandle, DWORD dwMilliseconds)
 	{
 			if (hHandle->m_bEventSet == false)
 					nRet = SDL_CondWait(hHandle->m_hCond, hHandle->m_hMutex);
-			if (hHandle->m_bManualEvent)
+			if (!hHandle->m_bManualEvent)
 					hHandle->m_bEventSet = false;
 	}
 	else
 	{
 			if (hHandle->m_bEventSet == false)
 					nRet = SDL_CondWaitTimeout(hHandle->m_hCond, hHandle->m_hMutex, dwMilliseconds);
-			if (hHandle->m_bManualEvent && dwRet != SDL_MUTEX_TIMEDOUT)
+			if (!hHandle->m_bManualEvent && dwRet != SDL_MUTEX_TIMEDOUT)
 					hHandle->m_bEventSet = false;
 	}
 
