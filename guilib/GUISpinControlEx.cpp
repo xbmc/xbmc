@@ -8,6 +8,7 @@ CGUISpinControlEx::CGUISpinControlEx(DWORD dwParentID, DWORD dwControlId, float 
     , m_buttonControl(dwParentID, dwControlId, posX, posY, width, height, textureFocus, textureNoFocus, labelInfo)
 {
   ControlType = GUICONTROL_SPINEX;
+  m_spinPosX = 0;
 }
 
 CGUISpinControlEx::~CGUISpinControlEx(void)
@@ -57,7 +58,7 @@ void CGUISpinControlEx::Render()
 void CGUISpinControlEx::SetPosition(float posX, float posY)
 {
   m_buttonControl.SetPosition(posX, posY);
-  float spinPosX = posX + m_buttonControl.GetWidth() - GetSpinWidth() * 2 - m_buttonControl.GetLabelInfo().offsetX;
+  float spinPosX = posX + m_buttonControl.GetWidth() - GetSpinWidth() * 2 - (m_spinPosX ? m_spinPosX : m_buttonControl.GetLabelInfo().offsetX);
   float spinPosY = posY + (m_buttonControl.GetHeight() - GetSpinHeight()) * 0.5f;
   CGUISpinControl::SetPosition(spinPosX, spinPosY);
 }
@@ -108,4 +109,10 @@ void CGUISpinControlEx::SettingsCategorySetSpinTextColor(D3DCOLOR color)
 {
   m_label.textColor = color;
   m_label.focusedColor = color;
+}
+
+void CGUISpinControlEx::SetSpinPosition(float spinPosX)
+{
+  m_spinPosX = spinPosX;
+  SetPosition(m_buttonControl.GetXPosition(), m_buttonControl.GetYPosition());
 }
