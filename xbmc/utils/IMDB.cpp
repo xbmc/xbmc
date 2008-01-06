@@ -67,7 +67,7 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
   
   m_parser.m_param[0] = strHTML;
   m_parser.m_param[1] = scrURL.m_url[0].m_url;
-  CStdString strXML = m_parser.Parse("GetSearchResults");
+  CStdString strXML = m_parser.Parse("GetSearchResults",&m_info.settings);
   if (strXML.IsEmpty())
   {
     CLog::Log(LOGERROR, "%s: Unable to parse web site",__FUNCTION__);
@@ -159,7 +159,7 @@ bool CIMDB::InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& det
     m_parser.m_param[0] = strHTML;
     m_parser.m_param[1] = url.m_url[i].m_url;
 
-    CStdString strXML = m_parser.Parse("GetEpisodeList");
+    CStdString strXML = m_parser.Parse("GetEpisodeList",&m_info.settings);
     if (strXML.IsEmpty())
     {
       CLog::Log(LOGERROR, "%s: Unable to parse web site",__FUNCTION__);
@@ -407,7 +407,7 @@ void CIMDB::GetURL(const CStdString &strMovie, CScraperUrl& scrURL, CStdString& 
 
     m_parser.m_param[0] = strSearch2;
   }
-  scrURL.ParseString(m_parser.Parse("CreateSearchUrl"));
+  scrURL.ParseString(m_parser.Parse("CreateSearchUrl",&m_info.settings));
 }
 
 // threaded functions
@@ -588,7 +588,7 @@ bool CIMDB::ScrapeFilename(const CStdString& strFileName, CVideoInfoTag& details
 
   CUtil::RemoveExtension(m_parser.m_param[0]);
   m_parser.m_param[0].Replace("_"," ");
-  CStdString strResult = m_parser.Parse("FileNameScrape");
+  CStdString strResult = m_parser.Parse("FileNameScrape",&m_info.settings);
   TiXmlDocument doc;
   doc.Parse(strResult.c_str());
   if (doc.RootElement())

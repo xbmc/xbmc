@@ -1,5 +1,16 @@
 <!-- should be self-explanatory -->
 <scraper name="TheTVDB.com" content="tvshows" thumb="tvdb.png">
+	<GetSettings dest="3">
+		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Use DVD Order&quot; type=&quot;bool&quot; id=&quot;dvdorder&quot; &gt;&lt;/setting&gt;" dest="5">
+				<expression></expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;setting label=&quot;UserID&quot; type=&quot;text&quot; id=&quot;userid&quot; &gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetSettings>
 	<!-- 	input: 		$1=query string -->
 	<!-- 	returns: 	the url we should use to do the search -->
 	<CreateSearchUrl dest="3">
@@ -14,7 +25,7 @@
 			<expression noclean="1">&lt;Items&gt;(.*)&lt;/Items&gt;</expression>
 		</RegExp>
 		<RegExp input="$$4" output="&lt;results&gt;\1&lt;/results&gt;" dest="1">
-			<RegExp input="$$3" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;http://thetvdb.com/interfaces/SeriesUpdates.php?lasttime=0&amp;amp;idlist=\1&lt;/url&gt;&lt;url&gt;http://thetvdb.com/interfaces/GetBanners.php?seriesid=\1&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="4">
+			<RegExp input="$$3" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;http://thetvdb.com/interfaces/SeriesUpdates.php?lasttime=0&amp;amp;idlist=\1&amp;amp;user=$INFO[userid]&lt;/url&gt;&lt;url&gt;http://thetvdb.com/interfaces/GetBanners.php?seriesid=\1&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="4">
 				<expression repeat="yes">&lt;id&gt;([0-9]*)&lt;/id&gt;[^&lt;]*&lt;SeriesName&gt;([^&lt;]*)&lt;/SeriesName&gt;</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
@@ -70,7 +81,10 @@
 				</RegExp>
 				<expression noclean="1"></expression>
 			</RegExp>
-			<RegExp input="$$3" output="&lt;episodeguide&gt;&lt;url&gt;http://thetvdb.com/interfaces/GetEpisodes.php?seriesid=\1&lt;/url&gt;&lt;/episodeguide&gt;" dest="4+">
+			<RegExp conditional="!dvdorder" input="$$3" output="&lt;episodeguide&gt;&lt;url&gt;http://thetvdb.com/interfaces/GetEpisodes.php?seriesid=\1&amp;amp;user=$INFO[userid]&lt;/url&gt;&lt;/episodeguide&gt;" dest="4+">
+				<expression></expression>
+			</RegExp>
+			<RegExp conditional="dvdorder" input="$$3" output="&lt;episodeguide&gt;&lt;url&gt;http://thetvdb.com/interfaces/GetEpisodes.php?seriesid=\1&amp;amp;order=dvd&amp;amp;user=$INFO[userid]&lt;/url&gt;&lt;/episodeguide&gt;" dest="4+">
 				<expression></expression>
 			</RegExp>
 			<expression noclean="1"></expression>
@@ -81,7 +95,9 @@
 	<!-- 	returns: results in xml format <episodeguide><episode><title>*</title><url>*</url><season>*</season><epnum>*</epnum><thumb>*</thumb><id>*</id></episode>*</episodeguide> !-->
 	<GetEpisodeList dest="3">
  	  <RegExp input="$$4" output="&lt;episodeguide&gt;\1&lt;/episodeguide&gt;" dest="3">
- 		<RegExp input="$$1" output="&lt;episode&gt;&lt;title&gt;\4&lt;/title&gt;&lt;url&gt;http://thetvdb.com/interfaces/EpisodeUpdates.php?idlist=\1&lt;/url&gt;&lt;epnum&gt;\3&lt;/epnum&gt;&lt;season&gt;\2&lt;/season&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/episode&gt;" dest="4">
+ 		<RegExp input="$$1" output="&lt;episode&gt;&lt;title&gt;\4&lt;/title&gt;&lt;url&gt;http://thetvdb.com/interfaces/EpisodeUpdates.php?idlist=\1&amp;amp;
+
+$INFO[userid]&lt;/url&gt;&lt;epnum&gt;\3&lt;/epnum&gt;&lt;season&gt;\2&lt;/season&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/episode&gt;" dest="4">
  			<expression repeat="yes">&lt;id&gt;([0-9]*)&lt;/id&gt;[^&lt;]*&lt;SeasonNumber&gt;([0-9]*)&lt;/SeasonNumber&gt;[^&lt;]*&lt;EpisodeNumber&gt;([0-9]*)&lt;/EpisodeNumber&gt;[^&lt;]*&lt;EpisodeName&gt;([^&lt;]*)&lt;/EpisodeName&gt;</expression>
  		</RegExp>
  	    <expression noclean="1"></expression>

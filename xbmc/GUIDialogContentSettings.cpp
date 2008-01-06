@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "GUIDialogContentSettings.h"
+#include "GUIDialogPluginSettings.h"
 #include "Util.h"
 #include "VideoDatabase.h"
 #include "VideoInfoScanner.h"
@@ -7,6 +8,7 @@
 
 #define CONTROL_CONTENT_TYPE        3
 #define CONTROL_SCRAPER_LIST        4
+#define CONTROL_SCRAPER_SETTINGS    6
 #define CONTROL_START              30
 
 using namespace DIRECTORY;
@@ -92,9 +94,32 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
       CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_SCRAPER_LIST);
       m_gWindowManager.SendMessage(msg);
       int iSelected = msg.GetParam1();
+     
       m_info = m_scrapers[m_info.strContent][iSelected];
       FillListControl();
       SET_CONTROL_FOCUS(30,0);
+    }
+    if (iControl == CONTROL_SCRAPER_SETTINGS)
+    {
+      if (m_info.settings.LoadSettingsXML("q:\\system\\scrapers\\video\\"+m_info.strPath))
+      {
+        CGUIDialogPluginSettings::ShowAndGetInput(m_info);
+        m_bNeedSave = true;
+        return true;
+      }
+      return false;
+    }
+    CScraperParser parser;
+    CStdString strPath;
+    if (!m_info.strContent.IsEmpty())
+      strPath="q:\\system\\scrapers\\video\\"+m_info.strPath;
+    if (!strPath.IsEmpty() && parser.Load(strPath) && parser.HasFunction("GetSettings"))
+    {
+      CONTROL_ENABLE(CONTROL_SCRAPER_SETTINGS)
+    }
+    else
+    {
+      CONTROL_DISABLE(CONTROL_SCRAPER_SETTINGS)
     }
     break;
   }
@@ -126,6 +151,7 @@ void CGUIDialogContentSettings::OnWindowLoaded()
           if (thumb)
             info.strThumb = thumb;
           info.strContent = content;
+          info.settings = m_scraperSettings;
           std::map<CStdString,std::vector<SScraperInfo> >::iterator iter=m_scrapers.find(content);
           if (iter != m_scrapers.end())
             iter->second.push_back(info);
@@ -341,6 +367,7 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, VIDEO::SScanSettings
   if (!dialog) return false;
 
   dialog->m_info = scraper;
+  dialog->m_scraperSettings = scraper.settings;
   dialog->m_bRunScan = bRunScan;
   dialog->m_bScanRecursive = (settings.recurse > 0) && (!settings.parent_name && settings.recurse == 1);
   dialog->m_bUseDirNames   = settings.parent_name;

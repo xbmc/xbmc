@@ -217,6 +217,23 @@
 			<height>5</height>
 			<texture>separatorOSD.png</texture>
 		</control>
+		<control type="button" id="6">
+			<description>Settings button</description>
+			<posx>128</posx>
+			<posy>325</posy>
+			<width>90</width>
+			<height>32</height>
+			<align>center</align>
+			<label>5</label>
+			<font>font10</font>
+			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+			<onleft>29</onleft>
+			<onright>28</onright>
+			<onup>30</onup>
+			<ondown>3</ondown>
+			<include>homemisc</include>
+		</control>
 		<control type="button" id="28">
 			<description>OK button</description>
 			<posx>223</posx>
@@ -228,7 +245,7 @@
 			<font>font10</font>
 			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
 			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
-			<onleft>29</onleft>
+			<onleft>6</onleft>
 			<onright>29</onright>
 			<onup>30</onup>
 			<ondown>3</ondown>
@@ -245,7 +262,7 @@
 			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
 			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
 			<onleft>28</onleft>
-			<onright>28</onright>
+			<onright>6</onright>
 			<onup>30</onup>
 			<ondown>3</ondown>
 		</control>

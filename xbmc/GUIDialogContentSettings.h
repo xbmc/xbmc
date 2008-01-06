@@ -38,4 +38,5 @@ protected:
   CFileItemList m_vecItems;
 
   SScraperInfo m_info;
+  CScraperSettings m_scraperSettings; // needed so we have a basis
 };
