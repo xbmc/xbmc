@@ -432,7 +432,7 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
     {
       CFileItem *item = (CFileItem *)m_staticItems[i];
       // m_idepth is used to store the visibility condition
-      if (!item->m_idepth || g_infoManager.GetBool(item->m_idepth, GetParentID(), item))
+      if (!item->m_idepth || g_infoManager.GetBool(item->m_idepth, GetParentID()))
         m_items.push_back(item);
     }
   }
