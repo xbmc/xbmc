@@ -196,7 +196,7 @@ void RarTime::SetIsoText(char *TimeText)
   for (int DigitCount=0;*TimeText!=0;TimeText++)
     if (isdigit(*TimeText))
     {
-      int FieldPos=DigitCount<4 ? 0:(DigitCount-4)/2+1;
+      unsigned int FieldPos=DigitCount<4 ? 0:(DigitCount-4)/2+1;
       if (FieldPos<sizeof(Field)/sizeof(Field[0]))
         Field[FieldPos]=Field[FieldPos]*10+*TimeText-'0';
       DigitCount++;
