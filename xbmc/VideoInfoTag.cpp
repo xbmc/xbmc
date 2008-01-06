@@ -28,6 +28,7 @@ bool CScraperSettings::Load(const CStdString& strSettings, const CStdString& str
 
 bool CScraperSettings::LoadUserXML(const CStdString& strSaved)
 {
+  m_userXmlDoc.Clear();
   m_userXmlDoc.Parse(strSaved.c_str());
 
   return m_userXmlDoc.RootElement()?true:false;
