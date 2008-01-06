@@ -323,6 +323,9 @@ void CGUIDialogPluginSettings::CreateControls()
     CStdString lvalues;
     if (setting->Attribute("lvalues"))
       lvalues = setting->Attribute("lvalues");
+    CStdString entries;
+    if (setting->Attribute("entries"))
+      entries = setting->Attribute("entries");
     CStdString label;
     if (setting->Attribute("label") && atoi(setting->Attribute("label")) > 0)
       label.Format("$LOCALIZE[%s]", setting->Attribute("label"));
@@ -351,6 +354,7 @@ void CGUIDialogPluginSettings::CreateControls()
     else if (strcmpi(type, "enum") == 0)
     {
       vector<CStdString> valuesVec;
+      vector<CStdString> entryVec;
 
       pControl = new CGUISpinControlEx(*pOriginalSpin);
       if (!pControl) return;
@@ -360,18 +364,22 @@ void CGUIDialogPluginSettings::CreateControls()
         CUtil::Tokenize(lvalues, valuesVec, "|");
       else
         CUtil::Tokenize(values, valuesVec, "|");
-
+      if (!entries.IsEmpty())
+        CUtil::Tokenize(entries, entryVec, "|");
       for (unsigned int i = 0; i < valuesVec.size(); i++)
       {
+        int iAdd = i;
+        if (entryVec.size() > i)
+          iAdd = atoi(entryVec[i]);
         if (!lvalues.IsEmpty())
         {
           CStdString replace = g_localizeStringsTemp.Get(atoi(valuesVec[i]));
           if (replace.IsEmpty())
             replace = g_localizeStrings.Get(atoi(valuesVec[i]));
-          ((CGUISpinControlEx *)pControl)->AddLabel(replace, i);
+          ((CGUISpinControlEx *)pControl)->AddLabel(replace, iAdd);
         }
         else
-          ((CGUISpinControlEx *)pControl)->AddLabel(valuesVec[i], i);
+          ((CGUISpinControlEx *)pControl)->AddLabel(valuesVec[i], iAdd);
       }
       ((CGUISpinControlEx *)pControl)->SetValue(atoi(m_settings.Get(id)));
     }
