@@ -833,8 +833,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
             DWORD dwLabelID = atol(label.c_str());
             label = g_localizeStrings.Get(dwLabelID);
           }
-          else
-          { // TODO: UTF-8: What if the xml is encoded as UTF-8 already?
+    else
+    { // TODO: UTF-8: What if the xml is encoded as UTF-8 already?
             CStdString utf8String;
             g_charsetConverter.stringCharsetToUtf8(label, utf8String);
             label = utf8String;
@@ -892,6 +892,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetFloat(pControlNode, "radioheight", radioHeight);
   GetFloat(pControlNode, "radioposx", radioPosX);
   GetFloat(pControlNode, "radioposy", radioPosY);
+  GetFloat(pControlNode, "spinposx", radioPosX);
   CStdString borderStr;
   if (XMLUtils::GetString(pControlNode, "bordersize", borderStr))
     GetRectFromString(borderStr, borderSize);
@@ -1342,6 +1343,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       labelInfo, textureFocus, textureNoFocus, textureUp, textureDown, textureUpFocus, textureDownFocus,
       labelInfo, iType);
 
+    ((CGUISpinControlEx *)control)->SetSpinPosition(radioPosX);
     ((CGUISpinControlEx *)control)->SetText(strLabel);
     ((CGUISpinControlEx *)control)->SetReverse(bReverse);
   }
