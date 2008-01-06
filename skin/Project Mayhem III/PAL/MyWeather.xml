@@ -162,7 +162,7 @@
 			</control>
 			<control type="spincontrol" id="3">
 				<description>weather location select spincontrol</description>
-				<align>left</align>
+				<align>right</align>
 				<width>17</width>
 				<height>17</height>
 				<posx>216</posx>
