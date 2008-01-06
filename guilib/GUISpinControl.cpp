@@ -374,7 +374,8 @@ void CGUISpinControl::Render()
 
   m_textLayout.Update(text);
   // Calculate the size of our text (for use in HitTest)
-  float fTextWidth, fTextHeight;
+  float fTextWidth = 0;
+  float fTextHeight = 0;
   m_textLayout.GetTextExtent(fTextWidth, fTextHeight);
   // Position the arrows
   if ( !(m_label.align & (XBFONT_RIGHT | XBFONT_CENTER_X)) )
