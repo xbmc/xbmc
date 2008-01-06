@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xboxmediacenter.com-->
-<!--Date of translation: 12/17/2007-->
+<!--Date of translation: 01/06/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 11025-->
+<!--Based on english strings version 11214-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -588,11 +588,8 @@
   <string id="746">Byt till fil-vyn</string>
   <string id="747">Fel vid laddning av bilden</string>
   <string id="748">Ändra sökväg</string>
-  <string id="749">Lägg till utdelning</string>
   <string id="750">Är du säker?</string>
-  <string id="751">Ta bort utdelning</string>
-  <string id="752">Ändra sökväg till utdelning</string>
-  <string id="753">Byt namn på utdelningen</string>
+  <string id="751">Ta bort källa</string>
   <string id="754">Lägg till programlänk</string>
   <string id="755">Ändra programsökväg</string>
   <string id="756">Ändra programnamn</string>
@@ -620,7 +617,6 @@
   <string id="1002">XBMC kunde inte ansluta till nätverksplatsen.</string>
   <string id="1003">Detta kan bero på att inte nätverket är anslutet.</string>
   <string id="1004">Vill du lägga till det i alla fall?</string>
-  <string id="1005">Skriv namn för denna utdelning</string>
   <string id="1006">IP adress</string>
   <string id="1007">Lägg till nätverksplats</string>
   <string id="1008">Protokoll</string>
@@ -823,7 +819,7 @@
   <string id="12348">Objekt låst</string>
   <string id="12353">Återaktivera lås</string>
   <string id="12356">Byt lås</string>
-  <string id="12357">Delningslås</string>
+  <string id="12357">Käll-lås</string>
   <string id="12358">Inga tecken angivna. Försök igen.</string>
   <string id="12360">Huvudlås</string>
   <string id="12362">Stäng av XBOXen om låsförsök överskrids</string>
@@ -1597,6 +1593,7 @@ den här visualiseringen</string>
   <string id="21365">Ta bort mediautdelning</string>
   <string id="21366">Egen undertextsmapp</string>
   <string id="21367">Film &amp; alternativ undertextmapp</string>
+  <string id="21369">Aktivera mus</string>
   <string id="21370">Spela navigationsljud under mediauppspelning</string>
   <string id="21371">Miniatyrbild</string>
   <string id="21372">Tvingad DVD region</string>
