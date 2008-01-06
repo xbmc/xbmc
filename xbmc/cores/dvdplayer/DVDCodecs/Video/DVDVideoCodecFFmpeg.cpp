@@ -18,6 +18,8 @@
 #endif
 
 int my_get_buffer(struct AVCodecContext *c, AVFrame *pic){
+    if (c->pix_fmt == PIX_FMT_NONE)
+      return -1;
     int ret= ((CDVDVideoCodecFFmpeg*)c->opaque)->m_dllAvCodec.avcodec_default_get_buffer(c, pic);
     double *pts= (double*)malloc(sizeof(double));
     *pts= ((CDVDVideoCodecFFmpeg*)c->opaque)->m_pts;
