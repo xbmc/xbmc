@@ -1834,5 +1834,25 @@
   <string id="29999">Apply Flicker Filter Setting to Games</string>
 
   <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
+  <string id="30000">Chinese</string>
+  <string id="30001">English</string>
+  <string id="30002">Svenska</string>
+  <string id="30003">Norsk</string>
+  <string id="30004">Dansk</string>
+  <string id="30005">Suomeksi</string>
+  <string id="30006">Nederlands</string>
+  <string id="30007">Deutsch</string>
+  <string id="30008">Italiano</string>
+  <string id="30009">Español</string>
+  <string id="30010">Français</string>
+  <string id="30011">Polski</string>
+  <string id="30012">Magyar</string>
+  <string id="30013">Greek</string>
+  <string id="30014">Turkish</string>
+  <string id="30015">Russian</string>
+  <string id="30016">Hebrew</string>
+  <string id="30017">Japanese</string>
+  <string id="30018">Portuguese</string>
+
   <!-- strings 31000 thru 31999 reserved for skins -->
 </strings>
