@@ -9,7 +9,7 @@
 	<default type="label">
 		<posx>80</posx>
 		<posy>60</posy>
-		<label>6</label>
+		<label>-</label>
 		<font>font13</font>
 		<textcolor>white</textcolor>
 	</default>
