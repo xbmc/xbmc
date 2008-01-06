@@ -16,7 +16,9 @@ public:
 
 class DllAACCodec : public DllDynamic, DllAACCodecInterface
 {
-#ifndef _LINUX
+#ifdef __APPLE__
+  DECLARE_DLL_WRAPPER(DllAACCodec, Q:\\system\\players\\paplayer\\AACCodec-osx.so)
+#elif !defined(_LINUX)
   DECLARE_DLL_WRAPPER(DllAACCodec, Q:\\system\\players\\paplayer\\aaccodec.dll)
 #else
   DECLARE_DLL_WRAPPER(DllAACCodec, Q:\\system\\players\\paplayer\\AACCodec-i486-linux.so)
