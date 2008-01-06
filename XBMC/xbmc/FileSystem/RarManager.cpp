@@ -71,6 +71,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
 	}
   
   int iRes = 0;
+#ifndef _LINUX
   //Extract archived file, using existing local copy or overwriting if wanted...
   if (iSize > EXTRACTION_WARN_SIZE)
   {
@@ -86,7 +87,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
         iRes = 2; // pretend to be canceled
     }
   }
-
+#endif
   if (CheckFreeSpace(strDir.Left(3)) < iSize && iRes != 2)
   {
     ClearCache();
