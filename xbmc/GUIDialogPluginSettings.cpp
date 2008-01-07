@@ -30,6 +30,7 @@
 #include "GUIRadioButtonControl.h"
 #include "GUISpinControlEx.h"
 #include "FileSystem/HDDirectory.h"
+#include "VideoInfoScanner.h"
 
 #define CONTROL_AREA                  2
 #define CONTROL_DEFAULT_BUTTON        3
@@ -93,11 +94,31 @@ void CGUIDialogPluginSettings::ShowAndGetInput(CURL& url)
   DIRECTORY::CPluginDirectory::LoadPluginStrings(url);
 
   // Create the dialog
-  CGUIDialog* pDialog = (CGUIDialog*) m_gWindowManager.GetWindow(WINDOW_DIALOG_PLUGIN_SETTINGS);
+  CGUIDialogPluginSettings* pDialog = (CGUIDialogPluginSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_PLUGIN_SETTINGS);
+
+  pDialog->m_strHeading = m_url.GetFileName();
+  CUtil::RemoveSlashAtEnd(pDialog->m_strHeading);
+  pDialog->m_strHeading.Format("$LOCALIZE[1045] - %s", pDialog->m_strHeading.c_str());
+
   pDialog->DoModal();
 
   // Unload temporary language strings
   DIRECTORY::CPluginDirectory::ClearPluginStrings();
+
+  return;
+}
+
+// \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
+void CGUIDialogPluginSettings::ShowAndGetInput(SScraperInfo& info)
+{
+  // Create the dialog
+  CGUIDialogPluginSettings* pDialog = (CGUIDialogPluginSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_PLUGIN_SETTINGS);
+
+  pDialog->m_settings = info.settings;
+  pDialog->m_strHeading.Format("$LOCALIZE[20407] - %s", info.strTitle.c_str());
+
+  pDialog->DoModal();
+  info.settings.LoadUserXML(static_cast<CScraperSettings&>(pDialog->m_settings).GetSettings());
 
   return;
 }
@@ -280,10 +301,7 @@ void CGUIDialogPluginSettings::CreateControls()
     return;
 
   // set our dialog heading
-  CStdString strHeading = m_url.GetFileName();
-  CUtil::RemoveSlashAtEnd(strHeading);
-  strHeading.Format("$LOCALIZE[1045] - %s", strHeading.c_str());
-  SET_CONTROL_LABEL(CONTROL_HEADING_LABEL, strHeading);
+  SET_CONTROL_LABEL(CONTROL_HEADING_LABEL, m_strHeading);
 
   // Create our base path, used for type "fileenum" settings
   CStdString basepath = "Q:\\plugins\\";
@@ -305,8 +323,14 @@ void CGUIDialogPluginSettings::CreateControls()
     CStdString lvalues;
     if (setting->Attribute("lvalues"))
       lvalues = setting->Attribute("lvalues");
+    CStdString entries;
+    if (setting->Attribute("entries"))
+      entries = setting->Attribute("entries");
     CStdString label;
-    label.Format("$LOCALIZE[%s]", setting->Attribute("label"));
+    if (setting->Attribute("label") && atoi(setting->Attribute("label")) > 0)
+      label.Format("$LOCALIZE[%s]", setting->Attribute("label"));
+    else
+      label = setting->Attribute("label");
 
     if (strcmpi(type, "text") == 0 || strcmpi(type, "ipaddress") == 0 ||
       strcmpi(type, "integer") == 0 || strcmpi(type, "video") == 0 ||
@@ -330,6 +354,7 @@ void CGUIDialogPluginSettings::CreateControls()
     else if (strcmpi(type, "enum") == 0)
     {
       vector<CStdString> valuesVec;
+      vector<CStdString> entryVec;
 
       pControl = new CGUISpinControlEx(*pOriginalSpin);
       if (!pControl) return;
@@ -339,18 +364,22 @@ void CGUIDialogPluginSettings::CreateControls()
         CUtil::Tokenize(lvalues, valuesVec, "|");
       else
         CUtil::Tokenize(values, valuesVec, "|");
-
+      if (!entries.IsEmpty())
+        CUtil::Tokenize(entries, entryVec, "|");
       for (unsigned int i = 0; i < valuesVec.size(); i++)
       {
+        int iAdd = i;
+        if (entryVec.size() > i)
+          iAdd = atoi(entryVec[i]);
         if (!lvalues.IsEmpty())
         {
           CStdString replace = g_localizeStringsTemp.Get(atoi(valuesVec[i]));
           if (replace.IsEmpty())
             replace = g_localizeStrings.Get(atoi(valuesVec[i]));
-          ((CGUISpinControlEx *)pControl)->AddLabel(replace, i);
+          ((CGUISpinControlEx *)pControl)->AddLabel(replace, iAdd);
         }
         else
-          ((CGUISpinControlEx *)pControl)->AddLabel(valuesVec[i], i);
+          ((CGUISpinControlEx *)pControl)->AddLabel(valuesVec[i], iAdd);
       }
       ((CGUISpinControlEx *)pControl)->SetValue(atoi(m_settings.Get(id)));
     }
@@ -412,11 +441,19 @@ void CGUIDialogPluginSettings::EnableControls()
   while (setting)
   {
     const CGUIControl* control = GetControl(controlId);
-    // set enable status
-    ((CGUIControl*) control)->SetEnabled(GetCondition(setting->Attribute("enable"), controlId));
-    // set visible status
-    ((CGUIControl*) control)->SetVisible(GetCondition(setting->Attribute("visible"), controlId));
-
+    if (control)
+    {
+      // set enable status
+      if (setting->Attribute("enable"))
+        ((CGUIControl*) control)->SetEnabled(GetCondition(setting->Attribute("enable"), controlId));
+      else
+        ((CGUIControl*) control)->SetEnabled(true);
+      // set visible status
+      if (setting->Attribute("visible"))
+        ((CGUIControl*) control)->SetVisible(GetCondition(setting->Attribute("visible"), controlId));
+      else
+        ((CGUIControl*) control)->SetVisible(true);
+    }
     setting = setting->NextSiblingElement("setting");
     controlId++;
   }
