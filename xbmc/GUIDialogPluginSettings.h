@@ -3,6 +3,8 @@
 
 #include "PluginSettings.h"
 
+struct SScraperInfo;
+
 class CGUIDialogPluginSettings : public CGUIDialogBoxBase
 {
 public:
@@ -10,6 +12,7 @@ public:
   virtual ~CGUIDialogPluginSettings(void);
   virtual bool OnMessage(CGUIMessage& message);
   static void ShowAndGetInput(CURL& url);
+  static void ShowAndGetInput(SScraperInfo& info);
     
 private:
   void CreateControls();
@@ -21,7 +24,8 @@ private:
   void ShowVirtualKeyboard(int iControl);
   static CURL m_url;
   bool TranslateSingleString(const CStdString &strCondition, vector<CStdString> &enableVec);
-  CPluginSettings m_settings;
+  CBasicSettings m_settings;
+  CStdString m_strHeading;
 };
 
 #endif
