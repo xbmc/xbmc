@@ -39,7 +39,7 @@
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
 #else
-#include "GUILabelControl.h"  // needed for CInfoPortion
+#include "GUILabelControl.h"  // needed for CInfoLabel
 #include "GUIImage.h"
 #endif
 #include "utils/KaiClient.h"
@@ -4592,9 +4592,8 @@ bool CApplication::OnMessage(CGUIMessage& message)
     {
       // see if it is a user set string
       CLog::Log(LOGDEBUG,__FUNCTION__" : Translating %s", message.GetStringParam().c_str());
-      vector<CInfoPortion> info;
-      g_infoManager.ParseLabel(message.GetStringParam(), info);
-      message.SetStringParam(g_infoManager.GetMultiInfo(info, 0));
+      CGUIInfoLabel info(message.GetStringParam(), "");
+      message.SetStringParam(info.GetLabel(0));
       CLog::Log(LOGDEBUG,__FUNCTION__" : To %s", message.GetStringParam().c_str());
 
       // user has asked for something to be executed
