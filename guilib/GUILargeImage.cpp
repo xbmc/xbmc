@@ -9,7 +9,7 @@
 CGUILargeImage::CGUILargeImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture)
 : CGUIImage(dwParentID, dwControlId, posX, posY, width, height, texture, 0), m_fallbackImage(dwParentID, dwControlId, posX, posY, width, height, texture)
 {
-  m_fallbackImage.SetFileName(m_image.file);
+  m_fallbackImage.SetFileName(m_image.file.GetLabel(m_dwParentID, true));
   ControlType = GUICONTROL_LARGE_IMAGE;
   m_usingBundledTexture = false;
 }

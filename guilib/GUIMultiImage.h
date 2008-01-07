@@ -18,7 +18,7 @@
 class CGUIMultiImage : public CGUIControl
 {
 public:
-  CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CStdString& texturePath, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop, DWORD timeToPauseAtEnd);
+  CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CGUIInfoLabel& texturePath, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop, DWORD timeToPauseAtEnd);
   virtual ~CGUIMultiImage(void);
 
   virtual void Render();
@@ -33,12 +33,11 @@ public:
   virtual bool CanFocus() const;
 
   void SetAspectRatio(CGUIImage::GUIIMAGE_ASPECT_RATIO ratio);
-  void SetInfo(int info) { m_Info = info; };
 
 protected:
   void LoadDirectory();
   void LoadImage(int image);
-  CStdString m_texturePath;
+  CGUIInfoLabel m_texturePath;
   CStdString m_currentPath;
   unsigned int m_currentImage;
   CStopWatch m_imageTimer;
@@ -54,6 +53,5 @@ protected:
   bool m_bDynamicResourceAlloc;
   bool m_directoryLoaded;
   vector<CStdString> m_files;
-  int m_Info;
 };
 #endif

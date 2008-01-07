@@ -22,23 +22,21 @@ class CGUIListItemLayout
   class CListLabel : public CListBase
   {
   public:
-    CListLabel(float posX, float posY, float width, float height, int visibleCondition, const CLabelInfo &label, bool alwyasScroll, int info, const CStdString &contents, const vector<CAnimation> &animations);
+    CListLabel(float posX, float posY, float width, float height, int visibleCondition, const CLabelInfo &label, bool alwyasScroll, const CGUIInfoLabel &content, const vector<CAnimation> &animations);
     virtual ~CListLabel();
 
     CGUIListLabel m_label;
-    int m_info;
-    vector<CInfoPortion> m_multiInfo;
+    CGUIInfoLabel m_info;
   };
 
   class CListSelectLabel : public CListBase
   {
   public:
-    CListSelectLabel(float posX, float posY, float width, float height, int visibleCondition, const CImage &imageFocus, const CImage &imageNoFocus, const CLabelInfo &label, const CStdString &content, const vector<CAnimation> &animations);
+    CListSelectLabel(float posX, float posY, float width, float height, int visibleCondition, const CImage &imageFocus, const CImage &imageNoFocus, const CLabelInfo &label, const CGUIInfoLabel &content, const vector<CAnimation> &animations);
     virtual ~CListSelectLabel();
 
     CGUIMultiSelectTextControl m_label;
-    int m_info;
-    vector<CInfoPortion> m_multiInfo;
+    CGUIInfoLabel m_info;
   };
 
   class CListTexture : public CListBase
@@ -52,9 +50,9 @@ class CGUIListItemLayout
   class CListImage: public CListTexture
   {
   public:
-    CListImage(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, const CImage &borderImage, const FRECT &borderSize, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, DWORD aspectAlign, D3DCOLOR colorDiffuse, const vector<CAnimation> &animations, int info);
+    CListImage(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, const CImage &borderImage, const FRECT &borderSize, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, DWORD aspectAlign, D3DCOLOR colorDiffuse, const CGUIInfoLabel &content, const vector<CAnimation> &animations);
     virtual ~CListImage();
-    int m_info;
+    CGUIInfoLabel m_info;
   };
 
 public:
