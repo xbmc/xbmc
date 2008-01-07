@@ -42,13 +42,12 @@ public:
   virtual void SetPulseOnSelect(bool pulse);
   virtual void SetNavigation(DWORD up, DWORD down, DWORD left, DWORD right);
   void SetPageControl(DWORD pageControl);
-  void SetLabel(const string &strText);
   virtual bool HitTest(const CPoint &point) const;
   virtual bool CanFocus() const;
   virtual bool OnMouseOver(const CPoint &point);
   virtual bool OnMouseClick(DWORD dwButton, const CPoint &point);
   virtual bool OnMouseWheel(char wheel, const CPoint &point);
-  void SetInfo(int singleInfo);
+  void SetInfo(const CGUIInfoLabel &info);
   void SetAutoScrolling(const TiXmlNode *node);
   void ResetAutoScrolling();
 
@@ -84,8 +83,6 @@ protected:
 
   DWORD m_pageControl;
 
-  // multi-info stuff
-  int                   m_singleInfo;
-  vector<CInfoPortion>  m_multiInfo;
+  CGUIInfoLabel m_info;
 };
 #endif

@@ -11,12 +11,9 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY
 {
   memset(m_alpha, 0xff, 4);
   m_image = texture;
-  g_infoManager.ParseLabel(m_image.file, m_multiInfo);
-  if (m_multiInfo.size() == 1 && !m_multiInfo[0].m_info)
-    m_multiInfo.clear();  // no info here at all - just a standard texture
-  if (m_multiInfo.size())
-    m_image.file.Empty(); // have multiinfo, so no fallback texture
-  m_strFileName = m_image.file;
+  // a constant image never needs updating
+  if (m_image.file.IsConstant())
+    m_strFileName = m_image.file.GetLabel(0);
   m_iTextureWidth = 0;
   m_iTextureHeight = 0;
   m_dwColorKey = dwColorKey;
@@ -30,7 +27,6 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY
   ControlType = GUICONTROL_IMAGE;
   m_bDynamicResourceAlloc=false;
   m_texturesAllocated = false;
-  m_singleInfo = 0;
   m_diffuseTexture = NULL;
   m_diffusePalette = NULL;
 }
@@ -55,8 +51,6 @@ CGUIImage::CGUIImage(const CGUIImage &left)
   ControlType = GUICONTROL_IMAGE;
   m_bDynamicResourceAlloc=false;
   m_texturesAllocated = false;
-  m_multiInfo = left.m_multiInfo;
-  m_singleInfo = left.m_singleInfo;
   m_image = left.m_image;
   m_diffuseTexture = NULL;
   m_diffusePalette = NULL;
@@ -73,14 +67,8 @@ void CGUIImage::UpdateVisibility(const CGUIListItem *item)
 
   // check for conditional information before we free and
   // alloc as this does free and allocation as well
-  if (m_multiInfo.size())
-  {
-    SetFileName(g_infoManager.GetMultiInfo(m_multiInfo, m_dwParentID, true));
-  }
-  if (m_singleInfo)
-  {
-    SetFileName(g_infoManager.GetImage(m_singleInfo, m_dwParentID));
-  }
+  if (!m_image.file.IsConstant())
+    SetFileName(m_image.file.GetLabel(m_dwParentID, true));
 
   AllocateOnDemand();
 }
@@ -429,7 +417,7 @@ bool CGUIImage::OnMessage(CGUIMessage& message)
 {
   if (message.GetMessage() == GUI_MSG_REFRESH_THUMBS)
   {
-    if (m_singleInfo || m_multiInfo.size())
+    if (!m_image.file.IsConstant())
       FreeResources();
     return true;
   }
@@ -714,9 +702,6 @@ void CGUIImage::PythonSetColorKey(DWORD dwColorKey)
 
 void CGUIImage::SetFileName(const CStdString& strFileName)
 {
-  if (strFileName.IsEmpty() && !m_image.file.IsEmpty())
-    return SetFileName(m_image.file);
-
   if (m_strFileName.Equals(strFileName)) return;
   // Don't completely free resources here - we may be just changing
   // filenames mid-animation
@@ -736,11 +721,6 @@ void CGUIImage::SetAlpha(unsigned char a0, unsigned char a1, unsigned char a2, u
   m_alpha[1] = a1;
   m_alpha[2] = a2;
   m_alpha[3] = a3;
-}
-
-void CGUIImage::SetInfo(int info)
-{
-  m_singleInfo = info;
 }
 
 bool CGUIImage::IsAllocated() const
