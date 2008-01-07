@@ -232,7 +232,6 @@
 			<onright>28</onright>
 			<onup>30</onup>
 			<ondown>3</ondown>
-			<include>homemisc</include>
 		</control>
 		<control type="button" id="28">
 			<description>OK button</description>
