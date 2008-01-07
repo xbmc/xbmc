@@ -39,7 +39,7 @@
 #include "../MusicInfoLoader.h"
 #include "LabelFormatter.h"
 
-#include "GUILabelControl.h"  // for CInfoPortion
+#include "GUILabelControl.h"  // for CInfoLabel
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -2903,30 +2903,6 @@ int CGUIInfoManager::ConditionalStringParameter(const CStdString &parameter)
   return (int)m_stringParameters.size() - 1;
 }
 
-CStdString CGUIInfoManager::GetItemMultiLabel(const CFileItem *item, const vector<CInfoPortion> &multiInfo)
-{
-  CStdString label;
-  for (unsigned int i = 0; i < multiInfo.size(); i++)
-  {
-    const CInfoPortion &portion = multiInfo[i];
-    if (portion.m_info)
-    {
-      CStdString infoLabel = g_infoManager.GetItemLabel(item, portion.m_info);
-      if (!infoLabel.IsEmpty())
-      {
-        label += portion.m_prefix;
-        label += infoLabel;
-        label += portion.m_postfix;
-      }
-    }
-    else
-    { // no info, so just append the prefix
-      label += portion.m_prefix;
-    }
-  }
-  return label;
-}
-
 // This is required as in order for the "* All Albums" etc. items to sort
 // correctly, they must have fake artist/album etc. information generated.
 // This looks nasty if we attempt to render it to the GUI, thus this (further)
@@ -3205,97 +3181,6 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
   else if (condition == LISTITEM_ISSELECTED)
     return item->IsSelected();
   return false;
-}
-
-CStdString CGUIInfoManager::GetMultiInfo(const vector<CInfoPortion> &multiInfo, DWORD contextWindow, bool preferImage)
-{
-  CStdString label;
-  for (unsigned int i = 0; i < multiInfo.size(); i++)
-  {
-    const CInfoPortion &portion = multiInfo[i];
-    if (portion.m_info)
-    {
-      CStdString infoLabel;
-      if (preferImage)
-        infoLabel = g_infoManager.GetImage(portion.m_info, contextWindow);
-      if (infoLabel.IsEmpty())
-        infoLabel = g_infoManager.GetLabel(portion.m_info, contextWindow);
-      if (!infoLabel.IsEmpty())
-      {
-        label += portion.m_prefix;
-        label += infoLabel;
-        label += portion.m_postfix;
-      }
-    }
-    else
-    { // no info, so just append the prefix
-      label += portion.m_prefix;
-    }
-  }
-  return label;
-}
-
-void CGUIInfoManager::ParseLabel(const CStdString &strLabel, vector<CInfoPortion> &multiInfo)
-{
-  multiInfo.clear();
-  CStdString work(strLabel);
-  // Step 1: Replace all $LOCALIZE[number] with the real string
-  int pos1 = work.Find("$LOCALIZE[");
-  while (pos1 >= 0)
-  {
-    int pos2 = StringUtils::FindEndBracket(work, '[', ']', pos1 + 10);
-    if (pos2 > pos1)
-    {
-      CStdString left = work.Left(pos1);
-      CStdString right = work.Mid(pos2 + 1);
-      CStdString replace = g_localizeStringsTemp.Get(atoi(work.Mid(pos1 + 10).c_str()));
-      if (replace == "")
-         replace = g_localizeStrings.Get(atoi(work.Mid(pos1 + 10).c_str()));
-      work = left + replace + right;
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "Error parsing label - missing ']'");
-      return;
-    }
-    pos1 = work.Find("$LOCALIZE[", pos1);
-  }
-  // Step 2: Find all $INFO[info,prefix,postfix] blocks
-  pos1 = work.Find("$INFO[");
-  while (pos1 >= 0)
-  {
-    // output the first block (contents before first $INFO)
-    if (pos1 > 0)
-      multiInfo.push_back(CInfoPortion(0, work.Left(pos1), ""));
-
-    // ok, now decipher the $INFO block
-    int pos2 = StringUtils::FindEndBracket(work, '[', ']', pos1 + 6);
-    if (pos2 > pos1)
-    {
-      // decipher the block
-      CStdString block = work.Mid(pos1 + 6, pos2 - pos1 - 6);
-      CStdStringArray params;
-      StringUtils::SplitString(block, ",", params);
-      int info = TranslateString(params[0]);
-      CStdString prefix, postfix;
-      if (params.size() > 1)
-        prefix = params[1];
-      if (params.size() > 2)
-        postfix = params[2];
-      multiInfo.push_back(CInfoPortion(info, prefix, postfix));
-      // and delete it from our work string
-      work = work.Mid(pos2 + 1);
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "Error parsing label - missing ']'");
-      return;
-    }
-    pos1 = work.Find("$INFO[");
-  }
-  // add any last block
-  if (!work.IsEmpty())
-    multiInfo.push_back(CInfoPortion(0, work, ""));
 }
 
 void CGUIInfoManager::ResetCache()

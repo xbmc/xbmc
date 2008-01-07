@@ -99,10 +99,10 @@ namespace PYXBMC
       (float)pControl->dwPosY,
       (float)pControl->dwWidth,
       (float)pControl->dwHeight,
-      pControl->strText,
       label,
       false,
       pControl->bHasPath);
+    ((CGUILabelControl *)pControl->pGUIControl)->SetLabel(pControl->strText);
     return pControl->pGUIControl;
   }
 
