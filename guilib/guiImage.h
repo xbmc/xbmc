@@ -9,7 +9,7 @@
 #pragma once
 
 #include "GUIControl.h"
-#include "GUILabelControl.h"  // for CInfoPortion
+#include "GUILabelControl.h"  // for CLabelInfo
 
 struct FRECT
 {
@@ -32,9 +32,8 @@ struct FRECT
 class CImage
 {
 public:
-  CImage(const CStdString &fileName)
+  CImage(const CStdString &fileName) : file(fileName, "")
   {
-    file = fileName;
     memset(&border, 0, sizeof(FRECT));
     orientation = 0;
   };
@@ -52,7 +51,7 @@ public:
     orientation = left.orientation;
     diffuse = left.diffuse;
   };
-  CStdString file;
+  CGUIInfoLabel file;
   FRECT      border;  // scaled  - unneeded if we get rid of scale on load
   int        orientation; // orientation of the texture (0 - 7 == EXIForientation - 1)
   CStdString diffuse; // diffuse overlay texture (unimplemented)
@@ -89,7 +88,6 @@ public:
   virtual void SetAspectRatio(GUIIMAGE_ASPECT_RATIO ratio, DWORD align = ASPECT_ALIGN_CENTER | ASPECT_ALIGNY_CENTER);
   void SetAlpha(unsigned char alpha);
   void SetAlpha(unsigned char a0, unsigned char a1, unsigned char a2, unsigned char a3);
-  void SetInfo(int info);
 
   const CStdString& GetFileName() const { return m_strFileName;};
   int GetTextureWidth() const;
@@ -139,11 +137,7 @@ protected:
   float m_fNH;
   bool m_linearTexture; // true if it's a linear 32bit texture
 
-  // conditional info
-  vector<CInfoPortion> m_multiInfo;
-  int m_singleInfo;
-
-  // border
+  // border + conditional info
   CImage m_image;
 };
 #endif

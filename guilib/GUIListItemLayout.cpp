@@ -17,14 +17,13 @@ CGUIListItemLayout::CListBase::~CListBase()
 {
 }
 
-CGUIListItemLayout::CListLabel::CListLabel(float posX, float posY, float width, float height, int visibleCondition, const CLabelInfo &label, bool alwaysScroll, int info, const CStdString &content, const vector<CAnimation> &animations)
+CGUIListItemLayout::CListLabel::CListLabel(float posX, float posY, float width, float height, int visibleCondition, const CLabelInfo &label, bool alwaysScroll, const CGUIInfoLabel &content, const vector<CAnimation> &animations)
 : CGUIListItemLayout::CListBase(),
   m_label(0, 0, posX, posY, width, height, label, alwaysScroll)
 {
   m_type = LIST_LABEL;
   m_label.SetAnimations(animations);
-  m_info = info;
-  g_infoManager.ParseLabel(content, m_multiInfo);
+  m_info = content;
   m_label.SetVisibleCondition(visibleCondition, false);
 }
 
@@ -32,12 +31,12 @@ CGUIListItemLayout::CListLabel::~CListLabel()
 {
 }
 
-CGUIListItemLayout::CListSelectLabel::CListSelectLabel(float posX, float posY, float width, float height, int visibleCondition, const CImage &imageFocus, const CImage &imageNoFocus, const CLabelInfo &label, const CStdString &content, const vector<CAnimation> &animations)
+CGUIListItemLayout::CListSelectLabel::CListSelectLabel(float posX, float posY, float width, float height, int visibleCondition, const CImage &imageFocus, const CImage &imageNoFocus, const CLabelInfo &label, const CGUIInfoLabel &content, const vector<CAnimation> &animations)
 : CGUIListItemLayout::CListBase(),
-  m_label(0, 0, posX, posY, width, height, imageFocus, imageNoFocus, label, "")
+  m_label(0, 0, posX, posY, width, height, imageFocus, imageNoFocus, label, CGUIInfoLabel(""))
 {
   m_type = LIST_SELECT_LABEL;
-  g_infoManager.ParseLabel(content, m_multiInfo);
+  m_info = content;
   m_label.SetAnimations(animations);
   m_label.SetVisibleCondition(visibleCondition, false);
 }
@@ -63,10 +62,10 @@ CGUIListItemLayout::CListTexture::~CListTexture()
   m_image.FreeResources();
 }
 
-CGUIListItemLayout::CListImage::CListImage(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, const CImage &borderImage, const FRECT &borderSize, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, DWORD aspectAlign, D3DCOLOR colorDiffuse, const vector<CAnimation> &animations, int info)
+CGUIListItemLayout::CListImage::CListImage(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, const CImage &borderImage, const FRECT &borderSize, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, DWORD aspectAlign, D3DCOLOR colorDiffuse, const CGUIInfoLabel &content, const vector<CAnimation> &animations)
 : CGUIListItemLayout::CListTexture(posX, posY, width, height, visibleCondition, image, borderImage, borderSize, aspectRatio, aspectAlign, colorDiffuse, animations)
 {
-  m_info = info;
+  m_info = content;
   m_type = LIST_IMAGE;
 }
 
@@ -208,20 +207,18 @@ void CGUIListItemLayout::UpdateItem(CGUIListItemLayout::CListBase *control, CFil
   if (control->m_type == CListBase::LIST_IMAGE && item)
   {
     CListImage *image = (CListImage *)control;
-    image->m_image.SetFileName(g_infoManager.GetItemImage(item, image->m_info));
+    if (!image->m_info.IsConstant())
+      image->m_image.SetFileName(image->m_info.GetItemLabel(item, true));
   }
   else if (control->m_type == CListBase::LIST_LABEL)
   {
     CListLabel *label = (CListLabel *)control;
-    if (label->m_info)
-      label->m_label.SetLabel(g_infoManager.GetItemLabel(item, label->m_info));
-    else
-      label->m_label.SetLabel(g_infoManager.GetItemMultiLabel(item, label->m_multiInfo));
+    label->m_label.SetLabel(label->m_info.GetItemLabel(item));
   }
   else if (control->m_type == CListBase::LIST_SELECT_LABEL)
   {
     CListSelectLabel *label = (CListSelectLabel *)control;
-    label->m_label.UpdateText(g_infoManager.GetItemMultiLabel(item, label->m_multiInfo));
+    label->m_label.UpdateText(label->m_info.GetItemLabel(item));
   }
 }
 
@@ -325,13 +322,14 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
   CStdString fontName;
   XMLUtils::GetString(child, "font", fontName);
   label.font = g_fontManager.GetFont(fontName);
-  int info = g_infoManager.TranslateString(infoString);
-  if (info && (info < LISTITEM_START || info > LISTITEM_END))
-  {
-    CLog::Log(LOGERROR, " Invalid item info %s", infoString.c_str());
-    return NULL;
-  }
   CGUIControlFactory::GetTexture(child, "texture", image);
+  // reset the info file for this image as we want to handle the updating
+  // when items change, rather than every frame
+  if (!image.file.IsConstant())
+    image.file = CGUIInfoLabel("");
+  // and get the <info> tag for this as well if available (GetTexture doesn't handle <info>)
+  CGUIInfoLabel infoTexture;
+  CGUIControlFactory::GetInfoLabel(child, "texture", infoTexture);
   CGUIControlFactory::GetTexture(child, "texturefocus", imageFocus);
   CGUIControlFactory::GetTexture(child, "texturenofocus", imageNoFocus);
   CGUIControlFactory::GetAlignment(child, "align", label.align);
@@ -343,8 +341,8 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
   DWORD alignY = 0;
   if (CGUIControlFactory::GetAlignmentY(child, "aligny", alignY))
     label.align |= alignY;
-  CStdString content;
-  XMLUtils::GetString(child, "label", content);
+  CGUIInfoLabel infoLabel;
+  CGUIControlFactory::GetInfoLabel(child, "label", infoLabel);
   CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio = CGUIImage::ASPECT_RATIO_KEEP;
   DWORD aspectAlign = ASPECT_ALIGN_CENTER | ASPECT_ALIGNY_CENTER;
   CGUIControlFactory::GetAspectRatio(child, "aspectratio", aspectRatio, aspectAlign);
@@ -359,22 +357,18 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
     CGUIControlFactory::GetRectFromString(borderStr, borderSize);
   if (type == "label")
   { // info label
-    return new CListLabel(posX, posY, width, height, visibleCondition, label, scroll, info, content, animations);
+    return new CListLabel(posX, posY, width, height, visibleCondition, label, scroll, infoLabel, animations);
   }
   else if (type == "multiselect")
   {
-    return new CListSelectLabel(posX, posY, width, height, visibleCondition, imageFocus, imageNoFocus, label, content, animations);
+    return new CListSelectLabel(posX, posY, width, height, visibleCondition, imageFocus, imageNoFocus, label, infoLabel, animations);
   }
   else if (type == "image")
   {
-    if (info)
-    { // info image
-      return new CListImage(posX, posY, width, height, visibleCondition, image, borderImage, borderSize, aspectRatio, aspectAlign, colorDiffuse, animations, info);
-    }
+    if (!infoTexture.IsConstant())
+      return new CListImage(posX, posY, width, height, visibleCondition, image, borderImage, borderSize, aspectRatio, aspectAlign, colorDiffuse, infoTexture, animations);
     else
-    { // texture
       return new CListTexture(posX, posY, width, height, visibleCondition, image, borderImage, borderSize, CGUIImage::ASPECT_RATIO_STRETCH, aspectAlign, colorDiffuse, animations);
-    }
   }
   return NULL;
 }
@@ -413,13 +407,13 @@ void CGUIListItemLayout::CreateListControlLayouts(float width, float height, boo
     CListTexture *tex = new CListTexture(0, 0, width, texHeight, focusCondition, textureFocus, border, borderRect, CGUIImage::ASPECT_RATIO_STRETCH, 0, 0xffffffff, blankAnims);
     m_controls.push_back(tex);
   }
-  CListImage *image = new CListImage(8, 0, iconWidth, texHeight, 0, CImage(""), border, borderRect, CGUIImage::ASPECT_RATIO_KEEP, 0, 0xffffffff, blankAnims, LISTITEM_ICON);
+  CListImage *image = new CListImage(8, 0, iconWidth, texHeight, 0, CImage(""), border, borderRect, CGUIImage::ASPECT_RATIO_KEEP, 0, 0xffffffff, CGUIInfoLabel("$INFO[ListItem.Icon]"), blankAnims);
   m_controls.push_back(image);
   float x = iconWidth + labelInfo.offsetX + 10;
-  CListLabel *label = new CListLabel(x, labelInfo.offsetY, width - x - 18, height, 0, labelInfo, false, LISTITEM_LABEL, "", blankAnims);
+  CListLabel *label = new CListLabel(x, labelInfo.offsetY, width - x - 18, height, 0, labelInfo, false, CGUIInfoLabel("$INFO[ListItem.Label]"), blankAnims);
   m_controls.push_back(label);
   x = labelInfo2.offsetX ? labelInfo2.offsetX : m_width - 16;
-  label = new CListLabel(x, labelInfo2.offsetY, x - iconWidth - 20, height, 0, labelInfo2, false, LISTITEM_LABEL2, "", blankAnims);
+  label = new CListLabel(x, labelInfo2.offsetY, x - iconWidth - 20, height, 0, labelInfo2, false, CGUIInfoLabel("$INFO[ListItem.Label2]"), blankAnims);
   m_controls.push_back(label);
 }
 
@@ -444,14 +438,14 @@ void CGUIListItemLayout::CreateThumbnailPanelLayouts(float width, float height, 
     yOff += (texHeight - thumbHeight) * 0.5f;
     //if thumbPosX or thumbPosX != 0 the thumb will be bumped off-center
   }
-  CListImage *thumb = new CListImage(thumbPosX + centeredPosX + xOff, thumbPosY + yOff, thumbWidth, thumbHeight, 0, CImage(""), border, borderRect, thumbAspect, 0, 0xffffffff, blankAnims, LISTITEM_ICON);
+  CListImage *thumb = new CListImage(thumbPosX + centeredPosX + xOff, thumbPosY + yOff, thumbWidth, thumbHeight, 0, CImage(""), border, borderRect, thumbAspect, 0, 0xffffffff, CGUIInfoLabel("$INFO[ListItem.Icon]"), blankAnims);
   m_controls.push_back(thumb);
   // overlay
-  CListImage *overlay = new CListImage(thumbPosX + centeredPosX + xOff + thumbWidth - 32, thumbPosY + yOff + thumbHeight - 32, 32, 32, 0, CImage(""), border, borderRect, thumbAspect, 0, 0xffffffff, blankAnims, LISTITEM_OVERLAY);
+  CListImage *overlay = new CListImage(thumbPosX + centeredPosX + xOff + thumbWidth - 32, thumbPosY + yOff + thumbHeight - 32, 32, 32, 0, CImage(""), border, borderRect, thumbAspect, 0, 0xffffffff, CGUIInfoLabel("$INFO[ListItem.Overlay]"), blankAnims);
   m_controls.push_back(overlay);
   // label
   if (hideLabels) return;
-  CListLabel *label = new CListLabel(width*0.5f, texHeight, width, height, 0, labelInfo, false, LISTITEM_LABEL, "", blankAnims);
+  CListLabel *label = new CListLabel(width*0.5f, texHeight, width, height, 0, labelInfo, false, CGUIInfoLabel("$INFO[ListItem.Label]"), blankAnims);
   m_controls.push_back(label);
 }
 //#endif
