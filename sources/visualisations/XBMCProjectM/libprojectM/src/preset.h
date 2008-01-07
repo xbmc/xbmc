@@ -44,6 +44,7 @@ void reloadPerFrame(char * s, preset_t * preset);
 void reloadPerFrameInit(char *s, preset_t * preset);
 void reloadPerPixel(char *s, preset_t * preset);
 void savePreset(char * name);
+preset_t* getActivePreset();
 
 
 #endif /** !_PRESET_H */

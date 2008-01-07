@@ -206,6 +206,7 @@ int switchPreset(switch_mode_t switch_mode, int cut_type) {
 						strcat(path + len, entries[i]->d_name);
 						
 						new_preset = load_preset(path);
+                                                new_preset->index = switch_index;
 						free(path);
 						
 						// we must keep iterating to free the remaining entries
@@ -1027,4 +1028,8 @@ void load_custom_shape_init(custom_shape_t * custom_shape) {
  
   load_unspecified_init_conds_shape(custom_shape);
  
+}
+
+preset_t* getActivePreset() {
+  return active_preset;
 }

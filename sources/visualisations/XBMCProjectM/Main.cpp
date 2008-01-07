@@ -38,8 +38,10 @@ d4rk@xboxmediacenter.com
 #include <GL/glew.h>
 #endif
 #include "libprojectM/src/projectM.h"
+#include "libprojectM/src/preset.h"
 #include "libprojectM/src/PCM.h"
 #include <string>
+#include <dirent.h>
 
 #define CONFIG_FILE "/config"
 #define PRESETS_DIR "/visualisations/projectM"
@@ -63,6 +65,36 @@ char *disp;
 char g_visName[512];
 void* g_device;
 float g_fWaveform[2][512];
+char **g_presets=NULL;
+int g_numPresets = 0;
+
+
+// Some helper Functions
+
+// case-insensitive alpha sort from projectM's win32-dirent.cc
+int alphasort(const void* lhs, const void* rhs) 
+{
+  const struct dirent* lhs_ent = *(struct dirent**)lhs;
+  const struct dirent* rhs_ent = *(struct dirent**)rhs;
+  return strcasecmp(lhs_ent->d_name, rhs_ent->d_name);
+}
+
+// check for a valid preset extension
+int check_valid_extension(const struct dirent* ent) 
+{
+  const char* ext = 0;
+  
+  if (!ent) return 0;
+  
+  ext = strrchr(ent->d_name, '.');
+  if (!ext) ext = ent->d_name;
+  
+  if (0 == strcasecmp(ext, ".milk")) return 1;
+  if (0 == strcasecmp(ext, ".prjm")) return 1;
+  
+  return 0;
+}
+
 
 //-- Create -------------------------------------------------------------------
 // Called once when the visualisation is created by XBMC. Do any setup here.
@@ -140,6 +172,16 @@ extern "C" void Stop()
     free(globalPM);
     globalPM = NULL;
   }
+  if (g_presets)
+  {
+    for (int i = 0 ; i<g_numPresets ; i++)
+    {
+      free(g_presets[i]);
+    }
+    free(g_presets);
+    g_presets = NULL;
+  }
+  m_vecSettings.clear(); 
 }
 
 //-- Audiodata ----------------------------------------------------------------
@@ -219,6 +261,13 @@ extern "C" void GetInfo(VIS_INFO* pInfo)
 extern "C" bool OnAction(long flags, void *param)
 {
   bool ret = false;
+  if (flags == VIS_ACTION_LOAD_PRESET && param)
+  {
+    int pindex = *(int*)param;
+    extern int preset_index;
+    preset_index = pindex;
+    switchPreset(RESTART_ACTIVE, SOFT_CUT);
+  }
   return ret;
 }
 
@@ -227,7 +276,38 @@ extern "C" bool OnAction(long flags, void *param)
 //-----------------------------------------------------------------------------
 extern "C" void GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked)
 {
-  
+  if (!g_presets)
+  {
+    struct dirent** entries;
+    fprintf(stderr, "Preset Dir: %s\n", globalPM->presetURL);
+    int dir_size = scandir(globalPM->presetURL, &entries, check_valid_extension, alphasort);
+    if (dir_size>0)
+    {
+      g_numPresets = dir_size;
+      g_presets = (char **)malloc(sizeof(char*)*dir_size);
+      if (g_presets)
+      {
+        for (int i = 0 ; i<dir_size ; i++)
+        {
+          g_presets[i] = (char*)malloc(strlen(entries[i]->d_name)+2);
+          if (g_presets[i])
+          {
+            strcpy(g_presets[i], entries[i]->d_name);
+          }
+        }
+      }
+    }
+  }
+  if (g_presets)
+  {
+    *pPresets = g_presets;
+    *numPresets = g_numPresets;
+    preset_t* preset = getActivePreset();
+    if (preset && preset->index>=0 && preset->index<g_numPresets)
+    {
+      *currentPreset = preset->index;
+    }
+  }
 }
 
 //-- GetSettings --------------------------------------------------------------
@@ -235,7 +315,9 @@ extern "C" void GetPresets(char ***pPresets, int *currentPreset, int *numPresets
 //-----------------------------------------------------------------------------
 extern "C" void GetSettings(vector<VisSetting> **vecSettings)
 {
-  return;
+  if (!vecSettings)
+    return;
+  *vecSettings = &m_vecSettings;
 }
 
 //-- UpdateSetting ------------------------------------------------------------
@@ -243,5 +325,7 @@ extern "C" void GetSettings(vector<VisSetting> **vecSettings)
 //-----------------------------------------------------------------------------
 extern "C" void UpdateSetting(int num)
 {
-
+  VisSetting &setting = m_vecSettings[num];
+  if (strcasecmp(setting.name, "Use Preset")==0)
+    OnAction(34, (void*)&setting.current);
 }

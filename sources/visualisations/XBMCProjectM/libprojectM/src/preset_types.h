@@ -41,7 +41,9 @@ typedef struct PRESET_T {
   
   char name[MAX_TOKEN_SIZE]; /* preset name as parsed in file */
   char file_path[MAX_PATH_SIZE]; /* Points to the preset file name */
-  
+
+  int index; /* preset index */
+
   int per_pixel_eqn_string_index;
   int per_frame_eqn_string_index;
   int per_frame_init_eqn_string_index;
