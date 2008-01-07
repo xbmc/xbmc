@@ -1,23 +1,37 @@
 #ifndef PLUGINSETTINGS_H_
 #define PLUGINSETTINGS_H_
 
-#include "tinyXML/tinyxml.h" 
+#include "../guilib/tinyXML/tinyxml.h"
 
-class CPluginSettings
+class CBasicSettings
+{
+public:
+  CBasicSettings();
+  virtual ~CBasicSettings();
+
+  virtual bool Load(const CURL& url)  { return false; }
+  virtual bool Save(void) { return false; }
+  void Clear();
+
+  void Set(const CStdString& key, const CStdString& value);
+  CStdString Get(const CStdString& key);
+
+  TiXmlElement* GetPluginRoot();
+protected: 
+  TiXmlDocument   m_userXmlDoc;
+  TiXmlDocument   m_pluginXmlDoc;
+};
+
+class CPluginSettings : public CBasicSettings
 {
 public:
   CPluginSettings();
-  ~CPluginSettings();
-  bool Load(const CURL url);
+  virtual ~CPluginSettings();
+  bool Load(const CURL& url);
   bool Save(void);
   static bool SettingsExist(const CStdString &strPath);
-  void Set(const CStdString key, const CStdString value);
-  CStdString Get(const CStdString key);
-  TiXmlElement* GetPluginRoot();
   
 private: 
-  TiXmlDocument   m_userXmlDoc;
-  TiXmlDocument   m_pluginXmlDoc;
   CStdString      m_id;
   CURL            m_url;
   CStdString      m_userFileName;  
