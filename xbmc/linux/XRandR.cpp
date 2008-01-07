@@ -113,19 +113,92 @@ void CXRandR::RestoreState()
 
 bool CXRandR::SetMode(XOutput output, XMode mode)
 {
-  if (output.name==m_currentOutput && mode.id==m_currentMode)
+  if ((output.name == m_currentOutput && mode.id == m_currentMode) || (output.name == "" && mode.id == ""))
     return true;
 
   Query();
-  if (strlen(mode.id.c_str())==0)
+
+  // Make sure the output exists, if not -- complain and exit
+  bool isOutputFound = false;
+  XOutput outputFound;
+  for (size_t i = 0; i < m_outputs.size(); i++)
+  {
+    if (m_outputs[i].name == output.name)
+    {
+      isOutputFound = true;
+      outputFound = m_outputs[i];
+    }
+  }
+  
+  if (!isOutputFound)
+  {
+    CLog::Log(LOGERROR, "CXRandR::SetMode: asked to change resolution for non existing output: %s mode: %s", output.name.c_str(), mode.id.c_str());
     return false;
-  if (strlen(output.name.c_str())==0)
+  }
+
+  // try to find the same exact mode (same id, resolution, hz)
+  bool isModeFound = false;
+  XMode modeFound;
+  for (size_t i = 0; i < outputFound.modes.size(); i++)
+  {
+    if (outputFound.modes[i].id == mode.id)
+    {
+      if (outputFound.modes[i].w == mode.w && 
+          outputFound.modes[i].h == mode.h &&
+          outputFound.modes[i].hz == mode.hz)
+      {
+        isModeFound = true;
+        modeFound = outputFound.modes[i];
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "CXRandR::SetMode: asked to change resolution for mode that exists but with different w/h/hz: %s mode: %s. Searching for similar modes...", output.name.c_str(), mode.id.c_str());
+        break;
+      }
+    }
+  }
+  
+  if (!isModeFound)
+  {
+    for (size_t i = 0; i < outputFound.modes.size(); i++)
+    {
+      if (outputFound.modes[i].w == mode.w && 
+          outputFound.modes[i].h == mode.h &&
+          outputFound.modes[i].hz == mode.hz)
+      {
+        isModeFound = true;
+        modeFound = outputFound.modes[i];
+        CLog::Log(LOGWARNING, "CXRandR::SetMode: found alternative mode (same hz): %s mode: %s.", output.name.c_str(), outputFound.modes[i].id.c_str());
+      }    
+    }
+  }  
+
+  if (!isModeFound)
+  {
+    for (size_t i = 0; i < outputFound.modes.size(); i++)
+    {
+      if (outputFound.modes[i].w == mode.w && 
+          outputFound.modes[i].h == mode.h)
+      {
+        isModeFound = true;
+        modeFound = outputFound.modes[i];
+        CLog::Log(LOGWARNING, "CXRandR::SetMode: found alternative mode (different hz): %s mode: %s.", output.name.c_str(), outputFound.modes[i].id.c_str());
+      }    
+    }
+  }  
+
+  // Let's try finding a mode that is the same   
+  if (!isModeFound)
+  {
+    CLog::Log(LOGERROR, "CXRandR::SetMode: asked to change resolution for non existing mode: %s mode: %s", output.name.c_str(), mode.id.c_str());
     return false;
-  m_currentOutput = output.name;
-  m_currentMode = mode.id;
+  }
+  
+  m_currentOutput = outputFound.name;
+  m_currentMode = modeFound.id;
   char cmd[255];
   if (getenv("XBMC_HOME"))
-    snprintf(cmd, sizeof(cmd), "%s/xbmc-xrandr --output %s --mode %s", getenv("XBMC_HOME"), output.name.c_str(), mode.id.c_str());
+    snprintf(cmd, sizeof(cmd), "%s/xbmc-xrandr --output %s --mode %s", getenv("XBMC_HOME"), outputFound.name.c_str(), modeFound.id.c_str());
   else
     return false;
   CLog::Log(LOGINFO, "XRANDR: %s", cmd);
