@@ -132,6 +132,7 @@ public:
   virtual ~CRingBuffer()
   {
     Destroy();
+    DeleteCriticalSection(&m_critSection);
   }
 
   ///////////////////////////////////////////////////////////////////
@@ -187,7 +188,6 @@ public:
     m_iReadPtr = 0;
     m_iWritePtr = 0;
     ::LeaveCriticalSection(&m_critSection );
-    DeleteCriticalSection(&m_critSection);
   }
 
   ///////////////////////////////////////////////////////////////////
@@ -234,6 +234,8 @@ public:
   //
   BOOL Append(const CRingBuffer &buf)
   {
+	::EnterCriticalSection(&m_critSection);
+	
     if (m_pBuf == NULL)
       Create(buf.GetMaxReadSize() + 1);
 
@@ -249,6 +251,8 @@ public:
       if (buf.m_iWritePtr > 0)
         WriteBinary(&buf.m_pBuf[0], buf.m_iWritePtr);
     }
+    
+    ::LeaveCriticalSection(&m_critSection);
     return TRUE;
   }
 
