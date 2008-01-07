@@ -720,7 +720,15 @@ HRESULT CApplication::Create(HWND hWnd)
   ::MoveFile(strLogFile.c_str(), strLogFileOld.c_str());
 
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
-  CLog::Log(LOGNOTICE, "Starting XBoxMediaCenter.  Built on %s", __DATE__);
+#if defined(_LINUX) && !defined(__APPLE__)
+  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: GNU/Linux.  Built on %s", __DATE__);
+#elif defined(__APPLE__)
+  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Mac OS X.  Built on %s", __DATE__);
+#elif defined(_WIN32)
+  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Windows.  Built on %s", __DATE__);
+#else
+  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Xbox.  Built on %s", __DATE__);
+#endif
   CLog::Log(LOGNOTICE, "Q is mapped to: %s", strExecutablePath.c_str());
   char szXBEFileName[1024];
   CIoSupport::GetXbePath(szXBEFileName);
