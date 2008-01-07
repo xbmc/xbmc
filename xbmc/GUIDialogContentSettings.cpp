@@ -182,6 +182,19 @@ void CGUIDialogContentSettings::OnWindowLoaded()
       }
     }
   }
+
+  CScraperParser parser;
+  CStdString strPath;
+  if (!m_info.strContent.IsEmpty())
+    strPath="q:\\system\\scrapers\\video\\"+m_info.strPath;
+  if (!strPath.IsEmpty() && parser.Load(strPath) && parser.HasFunction("GetSettings"))
+  {
+    CONTROL_ENABLE(CONTROL_SCRAPER_SETTINGS)
+  }
+  else
+  {
+    CONTROL_DISABLE(CONTROL_SCRAPER_SETTINGS)
+  }
 }
 
 void CGUIDialogContentSettings::SetupPage()
