@@ -397,7 +397,7 @@
 #define COMBINED_VALUES_START        100000
 
 // forward
-class CInfoPortion;
+class CInfoLabel;
 class CGUIWindow;
 
 // structure to hold multiple integer data
@@ -514,13 +514,9 @@ public:
   void SetNextWindow(int windowID) { m_nextWindowID = windowID; };
   void SetPreviousWindow(int windowID) { m_prevWindowID = windowID; };
 
-  void ParseLabel(const CStdString &strLabel, vector<CInfoPortion> &multiInfo);
-  CStdString GetMultiInfo(const vector<CInfoPortion> &multiInfo, DWORD contextWindow, bool preferImage = false);
-
   void ResetCache();
 
   CStdString GetItemLabel(const CFileItem *item, int info) const;
-  CStdString GetItemMultiLabel(const CFileItem *item, const vector<CInfoPortion> &multiInfo);
   CStdString GetItemImage(const CFileItem *item, int info) const;
 
   // Called from tuxbox service thread to update current status

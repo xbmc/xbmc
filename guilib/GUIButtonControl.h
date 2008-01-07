@@ -41,7 +41,7 @@ public:
   const vector<CStdString> &GetClickActions() const { return m_clickActions; };
   void SetFocusActions(const vector<CStdString>& focusActions) { m_focusActions = focusActions; };
   const CLabelInfo& GetLabelInfo() const { return m_label; };
-  virtual const string& GetLabel() const { return m_strLabel; };
+  virtual CStdString GetLabel() const { return GetDescription(); };
   virtual const string& GetLabel2() const { return m_strLabel2; };
   void SetTabButton(bool bIsTabButton = TRUE) { m_bTabButton = bIsTabButton; };
   void SetSelected(bool bSelected);
@@ -69,9 +69,8 @@ protected:
   DWORD m_dwFrameCounter;
   unsigned char m_alpha;
 
-  string m_strLabel;
   string m_strLabel2;
-  vector<CInfoPortion>  m_multiInfo;
+  CGUIInfoLabel  m_info;
   CLabelInfo m_label;
   CGUITextLayout m_textLayout;
   CGUITextLayout m_textLayout2;
