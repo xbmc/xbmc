@@ -2,13 +2,13 @@
 <scraper name="TheTVDB.com" content="tvshows" thumb="tvdb.png">
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
-			<RegExp input="$$1" output="&lt;setting label=&quot;Use DVD Order&quot; type=&quot;bool&quot; id=&quot;dvdorder&quot; &gt;&lt;/setting&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Use DVD Order&quot; type=&quot;bool&quot; id=&quot;dvdorder&quot;&gt;&lt;/setting&gt;" dest="5">
 				<expression></expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;UserID&quot; type=&quot;text&quot; id=&quot;userid&quot; &gt;&lt;/setting&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;setting label=&quot;UserID&quot; type=&quot;text&quot; id=&quot;userid&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;Language&quot; type=&quot;enum&quot; id=&quot;lid&quot; lvalues=&quot;30000|30001|30002|30003|30004|30005|30006|30007|30008|30009|30010|30011|30012|30013|30014|30015|30016|30017|30018&quot; values=&quot;6|7|8|9|10|11|13|14|15|16|17|18|19|20|21|22|24|25|26&quot; default=&quot;2&quot; &gt;&lt;/setting&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Language&quot; type=&quot;enum&quot; id=&quot;language&quot; values=&quot;Chinese|English|Svenska|Norsk|Dansk|Suomeksi|Nederlands|Deutsch|Italiano|Español|Français|Polski|Magyar|Greek|Turkish|Russian|Hebrew|Japanese|Portuguese&quot; entries=&quot;6|7|8|9|10|11|13|14|15|16|17|18|19|20|21|22|24|25|26&quot; default=&quot;7&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
 			<expression noclean="1"></expression>
@@ -28,7 +28,7 @@
 			<expression noclean="1">&lt;Items&gt;(.*)&lt;/Items&gt;</expression>
 		</RegExp>
 		<RegExp input="$$4" output="&lt;results&gt;\1&lt;/results&gt;" dest="1">
-			<RegExp input="$$3" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;http://thetvdb.com/interfaces/SeriesUpdates.php?lasttime=0&amp;amp;idlist=\1&amp;amp;lid=$INFO[lid]&amp;amp;user=$INFO[userid]&lt;/url&gt;&lt;url&gt;http://thetvdb.com/interfaces/GetBanners.php?seriesid=\1&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="4">
+			<RegExp input="$$3" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;http://thetvdb.com/interfaces/SeriesUpdates.php?lasttime=0&amp;amp;idlist=\1&amp;amp;language=$INFO[language]&amp;amp;user=$INFO[userid]&lt;/url&gt;&lt;url&gt;http://thetvdb.com/interfaces/GetBanners.php?seriesid=\1&amp;amp;language=$INFO[language]&amp;amp;user=$INFO[userid]&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="4">
 				<expression repeat="yes">&lt;id&gt;([0-9]*)&lt;/id&gt;[^&lt;]*&lt;SeriesName&gt;([^&lt;]*)&lt;/SeriesName&gt;</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
@@ -70,7 +70,7 @@
 				<expression noclean="1">&lt;Actors&gt;([^&lt;]*)&lt;/Actors&gt;</expression>
 			</RegExp>
 			<RegExp input="$$6" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;/actor&gt;" dest="4+">
-				<expression repeat="yes">\|?([^\|]*)\|?</expression>
+				<expression repeat="yes">\|?([^\|]+)\|?</expression>
 			</RegExp>
 			<RegExp input="$$5" output="&lt;thumbs&gt;\1&lt;/thumbs&gt;" dest="4+">
 				<RegExp input="$$2" output="&lt;thumb&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="5">
@@ -84,10 +84,10 @@
 				</RegExp>
 				<expression noclean="1"></expression>
 			</RegExp>
-			<RegExp conditional="!dvdorder" input="$$3" output="&lt;episodeguide&gt;&lt;url&gt;http://thetvdb.com/interfaces/GetEpisodes.php?seriesid=\1&amp;amp;lid=$INFO[lid]&amp;amp;user=$INFO[userid]&lt;/url&gt;&lt;/episodeguide&gt;" dest="4+">
+			<RegExp conditional="!dvdorder" input="$$3" output="&lt;episodeguide&gt;&lt;url&gt;http://thetvdb.com/interfaces/GetEpisodes.php?seriesid=\1&amp;amp;language=$INFO[language]&amp;amp;user=$INFO[userid]&lt;/url&gt;&lt;/episodeguide&gt;" dest="4+">
 				<expression></expression>
 			</RegExp>
-			<RegExp conditional="dvdorder" input="$$3" output="&lt;episodeguide&gt;&lt;url&gt;http://thetvdb.com/interfaces/GetEpisodes.php?seriesid=\1&amp;amp;order=dvd&amp;amp;lid=$INFO[lid]&amp;amp;user=$INFO[userid]&lt;/url&gt;&lt;/episodeguide&gt;" dest="4+">
+			<RegExp conditional="dvdorder" input="$$3" output="&lt;episodeguide&gt;&lt;url&gt;http://thetvdb.com/interfaces/GetEpisodes.php?seriesid=\1&amp;amp;order=dvd&amp;amp;language=$INFO[language]&amp;amp;user=$INFO[userid]&lt;/url&gt;&lt;/episodeguide&gt;" dest="4+">
 				<expression></expression>
 			</RegExp>
 			<expression noclean="1"></expression>
@@ -98,9 +98,7 @@
 	<!-- 	returns: results in xml format <episodeguide><episode><title>*</title><url>*</url><season>*</season><epnum>*</epnum><thumb>*</thumb><id>*</id></episode>*</episodeguide> !-->
 	<GetEpisodeList dest="3">
  	  <RegExp input="$$4" output="&lt;episodeguide&gt;\1&lt;/episodeguide&gt;" dest="3">
- 		<RegExp input="$$1" output="&lt;episode&gt;&lt;title&gt;\4&lt;/title&gt;&lt;url&gt;http://thetvdb.com/interfaces/EpisodeUpdates.php?idlist=\1&amp;amp;lid=$INFO[lid]&amp;amp;
-
-$INFO[userid]&lt;/url&gt;&lt;epnum&gt;\3&lt;/epnum&gt;&lt;season&gt;\2&lt;/season&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/episode&gt;" dest="4">
+ 		<RegExp input="$$1" output="&lt;episode&gt;&lt;title&gt;\4&lt;/title&gt;&lt;url&gt;http://thetvdb.com/interfaces/EpisodeUpdates.php?idlist=\1&amp;amp;language=$INFO[language]&amp;amp;$INFO[userid]&lt;/url&gt;&lt;epnum&gt;\3&lt;/epnum&gt;&lt;season&gt;\2&lt;/season&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/episode&gt;" dest="4">
  			<expression repeat="yes">&lt;id&gt;([0-9]*)&lt;/id&gt;[^&lt;]*&lt;SeasonNumber&gt;([0-9]*)&lt;/SeasonNumber&gt;[^&lt;]*&lt;EpisodeNumber&gt;([0-9]*)&lt;/EpisodeNumber&gt;[^&lt;]*&lt;EpisodeName&gt;([^&lt;]*)&lt;/EpisodeName&gt;</expression>
  		</RegExp>
  	    <expression noclean="1"></expression>

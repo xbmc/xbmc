@@ -232,6 +232,7 @@ CScraperParser::CScraperParser()
   m_pRootElement = NULL;
   m_name = m_content = NULL;
   m_document = NULL;
+  m_settings = NULL;
 }
 
 CScraperParser::~CScraperParser()
@@ -242,6 +243,7 @@ CScraperParser::~CScraperParser()
 
   m_document = NULL;
   m_name = m_content = NULL;
+  m_settings = NULL;
 }
 
 bool CScraperParser::Load(const CStdString& strXMLFile)
@@ -576,17 +578,22 @@ void CScraperParser::ParseNext(TiXmlElement* element)
         strInput = m_param[0];
 
       const char* szConditional = pReg->Attribute("conditional");
-      bool bExecute=true;
-      if (szConditional && m_settings)
+      bool bExecute = true;
+      if (szConditional)
       {
+        bool bInverse=false;
         if (szConditional[0] == '!')
         {
-          bExecute = false;
+          bInverse = true;
           szConditional++;
         }
-        CStdString strSetting = m_settings->Get(szConditional);
-        if (strSetting.Equals("false"))
-          bExecute = !bExecute;
+        CStdString strSetting;
+        if (m_settings)
+           strSetting = m_settings->Get(szConditional);
+        if (strSetting.IsEmpty()) // setting isnt around - treat as if the value is false
+          bExecute = !bInverse;
+        else
+          bExecute = bInverse || strSetting.Equals("true");
       }
 
       if (bExecute)
