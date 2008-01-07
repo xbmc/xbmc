@@ -1567,6 +1567,9 @@ void CUtil::GetHomePath(CStdString& strPath)
   *szFileName = 0;
   strPath = szXBEFileName;
 #else
+  if (getenv("XBMC_HOME") == NULL)
+	  printf("WARNING: The XBMC_HOME environment variable is not set.\n");
+  
   if (getenv("XBMC_HOME") != NULL)
     strPath = getenv("XBMC_HOME");
   else
