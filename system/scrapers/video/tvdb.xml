@@ -2,13 +2,16 @@
 <scraper name="TheTVDB.com" content="tvshows" thumb="tvdb.png">
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
-			<RegExp input="$$1" output="&lt;setting label=&quot;Use DVD Order&quot; type=&quot;bool&quot; id=&quot;dvdorder&quot;&gt;&lt;/setting&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;url function=&quot;GetLanguages&quot;&gt;http://thetvdb.com/interfaces/GetLanguages.php&lt;/url&gt;" dest="5">
+				<expression></expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;setting label=&quot;Use DVD Order&quot; type=&quot;bool&quot; id=&quot;dvdorder&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;setting label=&quot;UserID&quot; type=&quot;text&quot; id=&quot;userid&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;Language&quot; type=&quot;enum&quot; id=&quot;language&quot; values=&quot;Chinese|English|Svenska|Norsk|Dansk|Suomeksi|Nederlands|Deutsch|Italiano|Español|Français|Polski|Magyar|Greek|Turkish|Russian|Hebrew|Japanese|Portuguese&quot; entries=&quot;6|7|8|9|10|11|13|14|15|16|17|18|19|20|21|22|24|25|26&quot; default=&quot;7&quot;&gt;&lt;/setting&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;setting type=&quot;sep&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
 			<expression noclean="1"></expression>
@@ -174,4 +177,15 @@
 			<expression noclean="1"></expression>
 		</RegExp>
 	</GetEpisodeDetails>
+	<GetLanguages dest="3">
+		<RegExp input="$$2" output="&lt;settings&gt;&lt;setting label=&quot;Language&quot; type=&quot;enum&quot; id=&quot;language&quot; values=&quot;$$9&quot; entries=&quot;$$8&quot; default=&quot;7&quot;&gt;&lt;/setting&gt;&lt;/settings&gt;" dest="3">
+			<RegExp input="$$1" output="\1|" dest="8+">
+				<expression repeat="yes">&lt;id&gt;([0-9]+)&lt;/id&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="\1|" dest="9+">
+				<expression repeat="yes">&lt;language&gt;([^&lt;]*)&lt;/language&gt;</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetLanguages>
 </scraper>

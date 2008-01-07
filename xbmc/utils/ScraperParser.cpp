@@ -593,7 +593,7 @@ void CScraperParser::ParseNext(TiXmlElement* element)
         if (strSetting.IsEmpty()) // setting isnt around - treat as if the value is false
           bExecute = !bInverse;
         else
-          bExecute = bInverse || strSetting.Equals("true");
+          bExecute = bInverse?!strSetting.Equals("true"):strSetting.Equals("true");
       }
 
       if (bExecute)
