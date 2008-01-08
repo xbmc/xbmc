@@ -18,6 +18,7 @@ private:
   void CreateControls();
   void FreeControls();
   void EnableControls();
+  void SetDefaults();
   bool GetCondition(const CStdString &condition, const int controlId);
   
   bool SaveSettings(void);
