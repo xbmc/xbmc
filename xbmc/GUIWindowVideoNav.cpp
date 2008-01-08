@@ -342,6 +342,7 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(items.m_strPath);
       
       items.SetThumbnailImage("");
+      items.ClearProperty("tvshowthumb");
       if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_EPISODES || node == NODE_TYPE_SEASONS || node == NODE_TYPE_RECENTLY_ADDED_EPISODES)
       {
         // grab the show thumb
