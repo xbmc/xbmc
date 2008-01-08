@@ -104,7 +104,7 @@ void CGUIDialogPluginSettings::ShowAndGetInput(CURL& url)
 
   pDialog->DoModal();
 
-  static_cast<const CPluginSettings&>(pDialog->m_settings);
+  settings = pDialog->m_settings;
   settings.Save();
 
   // Unload temporary language strings
@@ -269,7 +269,6 @@ bool CGUIDialogPluginSettings::SaveSettings(void)
     setting = setting->NextSiblingElement("setting");
     controlId++;
   }
-
   return true;
 }
 

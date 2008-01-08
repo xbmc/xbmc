@@ -213,4 +213,11 @@ bool CPluginSettings::SettingsExist(const CStdString& strPath)
   return true;
 }
 
+CPluginSettings& CPluginSettings::operator=(const CBasicSettings& settings)
+{
+  *((CBasicSettings*)this) = settings;
+
+  return *this;
+}
+
 CPluginSettings g_currentPluginSettings;
