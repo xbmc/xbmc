@@ -224,6 +224,7 @@
 #define CONTAINER_HAS_NEXT          372
 #define CONTAINER_HAS_PREVIOUS      373
 #define CONTAINER_SUBITEM           374
+#define CONTAINER_TVSHOWTHUMB       375
 
 #define MUSICPM_ENABLED             380
 #define MUSICPM_SONGSPLAYED         381

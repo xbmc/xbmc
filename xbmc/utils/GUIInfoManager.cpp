@@ -495,6 +495,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
         return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, id, offset));
     }
     else if (info.Equals("folderthumb")) ret = CONTAINER_FOLDERTHUMB;
+    else if (info.Equals("tvshowthumb")) ret = CONTAINER_TVSHOWTHUMB;
     else if (info.Equals("folderpath")) ret = CONTAINER_FOLDERPATH;
     else if (info.Equals("viewmode")) ret = CONTAINER_VIEWMODE;
     else if (info.Equals("onnext")) ret = CONTAINER_ON_NEXT;
@@ -1916,6 +1917,12 @@ CStdString CGUIInfoManager::GetImage(int info, DWORD contextWindow)
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
     if (window)
       return GetItemImage(&const_cast<CFileItemList&>(((CGUIMediaWindow*)window)->CurrentDirectory()), LISTITEM_THUMB);
+  }
+  else if (info == CONTAINER_TVSHOWTHUMB)
+  {
+    CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+    if (window)
+      return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("tvshowthumb");
   }
   else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_ACTUAL_ICON ||
           info == LISTITEM_OVERLAY || info == LISTITEM_RATING)
