@@ -3253,6 +3253,7 @@ void CApplication::Stop()
     UnloadSkin();
 
     m_gWindowManager.Delete(WINDOW_MUSIC_PLAYLIST);
+    m_gWindowManager.Delete(WINDOW_MUSIC_PLAYLIST_EDITOR);
     m_gWindowManager.Delete(WINDOW_MUSIC_FILES);
     m_gWindowManager.Delete(WINDOW_MUSIC_NAV);
     m_gWindowManager.Delete(WINDOW_MUSIC_INFO);
@@ -3301,6 +3302,7 @@ void CApplication::Stop()
     m_gWindowManager.Delete(WINDOW_DIALOG_PLUGIN_SETTINGS);
 
     m_gWindowManager.Delete(WINDOW_STARTUP);
+    m_gWindowManager.Delete(WINDOW_LOGIN_SCREEN);
     m_gWindowManager.Delete(WINDOW_VISUALISATION);
     m_gWindowManager.Delete(WINDOW_SETTINGS_MENU);
     m_gWindowManager.Delete(WINDOW_SETTINGS_PROFILES);
