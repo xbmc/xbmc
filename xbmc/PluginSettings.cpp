@@ -54,11 +54,11 @@ void CBasicSettings::Set(const CStdString& key, const CStdString& value)
   }
 }
 
-CStdString CBasicSettings::Get(const CStdString& key)
+CStdString CBasicSettings::Get(const CStdString& key, bool useDefaults/* = false */)
 {
   CStdString result;
 
-  if (m_userXmlDoc.RootElement())
+  if (m_userXmlDoc.RootElement() && !useDefaults)
   {
     // Try to find the setting and return its value
     TiXmlElement *setting = m_userXmlDoc.RootElement()->FirstChildElement("setting");
