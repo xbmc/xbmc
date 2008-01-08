@@ -1605,10 +1605,11 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
       }
       break;
     case STRING_IS_EMPTY:
+      // note: Get*Image() falls back to Get*Label(), so this should cover all of them
       if (item && item->IsFileItem() && info.m_data1 >= LISTITEM_START && info.m_data1 < LISTITEM_END)
-        bReturn = GetItemLabel((CFileItem *)item, info.m_data1).IsEmpty();
+        bReturn = GetItemImage((CFileItem *)item, info.m_data1).IsEmpty();
       else
-        bReturn = GetLabel(info.m_data1, dwContextWindow).IsEmpty();
+        bReturn = GetImage(info.m_data1, dwContextWindow).IsEmpty();
       break;
     case CONTROL_GROUP_HAS_FOCUS:
       {
