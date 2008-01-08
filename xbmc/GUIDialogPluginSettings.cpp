@@ -39,6 +39,7 @@
 #define CONTROL_DEFAULT_SEPARATOR     6
 #define ID_BUTTON_OK                  10
 #define ID_BUTTON_CANCEL              11
+#define ID_BUTTON_DEFAULT             12
 #define CONTROL_HEADING_LABEL         20
 #define CONTROL_START_CONTROL         100
 
@@ -68,6 +69,8 @@ bool CGUIDialogPluginSettings::OnMessage(CGUIMessage& message)
 
       if (iControl == ID_BUTTON_OK)
         SaveSettings();
+      else if (iControl == ID_BUTTON_DEFAULT)
+        SetDefaults();
       else
         ShowVirtualKeyboard(iControl);
 
@@ -523,6 +526,53 @@ bool CGUIDialogPluginSettings::TranslateSingleString(const CStdString &strCondit
     return true;
   }
   return false;
+}
+
+// Go over all the settings and set their default values
+void CGUIDialogPluginSettings::SetDefaults()
+{
+  int controlId = CONTROL_START_CONTROL;
+  TiXmlElement *setting = m_settings.GetPluginRoot()->FirstChildElement("setting");
+  while (setting)
+  {
+    CStdString id;
+    if (setting->Attribute("id"))
+      id = setting->Attribute("id");
+    const CGUIControl* control = GetControl(controlId);
+    if (control)
+    {
+      CStdString value;
+      switch (control->GetControlType())
+      {
+        case CGUIControl::GUICONTROL_BUTTON:
+          ((CGUIButtonControl*) control)->SetLabel2(m_settings.Get(id, true));
+          break;
+        case CGUIControl::GUICONTROL_RADIO:
+          ((CGUIRadioButtonControl*) control)->SetSelected(m_settings.Get(id, true) == "true");
+          break;
+        case CGUIControl::GUICONTROL_SPINEX:
+          {
+            if (strcmpi(setting->Attribute("type"), "fileenum") == 0)
+            {
+              CStdString value = m_settings.Get(id, true);
+              for (int i = 0; i < ((CGUISpinControlEx*) control)->GetMaximum(); ++i)
+              {
+                ((CGUISpinControlEx *)control)->SetValue(i);
+                if (((CGUISpinControlEx*) control)->GetCurrentLabel().Equals(value))
+                  break;
+              }
+            }
+            else
+              ((CGUISpinControlEx*) control)->SetValue(atoi(m_settings.Get(id, true)));
+          }
+          break;
+        default:
+          break;
+      }
+    }
+    setting = setting->NextSiblingElement("setting");
+    controlId++;
+  }
 }
 
 CURL CGUIDialogPluginSettings::m_url;
