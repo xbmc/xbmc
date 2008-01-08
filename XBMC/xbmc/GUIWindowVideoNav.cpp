@@ -1198,8 +1198,21 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
       if (button == CONTEXT_BUTTON_SET_ACTOR_THUMB)
       {
-        noneitem->SetThumbnailImage("DefaultActorBig.png");
-        noneitem->SetLabel(g_localizeStrings.Get(20018));
+        CStdString picturePath;
+        CStdString strThumb;
+        CUtil::AddFileToFolder(picturePath,"folder.jpg",strThumb);
+        if (XFILE::CFile::Exists(strThumb))
+        {
+          CFileItem* pItem = new CFileItem(strThumb,false);
+          pItem->SetLabel(g_localizeStrings.Get(20017));
+          pItem->SetThumbnailImage(strThumb);
+          items.Add(pItem);
+        }
+        else
+        {
+          noneitem->SetThumbnailImage("DefaultActorBig.png");
+          noneitem->SetLabel(g_localizeStrings.Get(20018));
+        }
       }
 
       items.Add(noneitem);
