@@ -1473,6 +1473,8 @@ extern "C"
         }
         
         LeaveCriticalSection(&dll_cs_environ);
+
+        free(value);
       }
     }
     
