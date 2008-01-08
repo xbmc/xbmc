@@ -31,6 +31,7 @@ public:
   bool Save(void);
   static bool SettingsExist(const CStdString &strPath);
   
+  CPluginSettings& operator =(const CBasicSettings&);
 private: 
   CStdString      m_id;
   CURL            m_url;
