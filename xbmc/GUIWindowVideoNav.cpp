@@ -344,21 +344,35 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       items.SetThumbnailImage("");
       if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_EPISODES || node == NODE_TYPE_SEASONS || node == NODE_TYPE_RECENTLY_ADDED_EPISODES)
       {
-        CFileItem item;
+        // grab the show thumb
+        CFileItem showItem;
+        m_database.GetFilePath(params.GetTvShowId(),showItem.m_strPath,2);
+        showItem.SetVideoThumb();
+        items.SetProperty("tvshowthumb", showItem.GetThumbnailImage());
+
+        // the container folder thumb is the parent (i.e. season or show)
         if (node == NODE_TYPE_EPISODES || node == NODE_TYPE_RECENTLY_ADDED_EPISODES)
         {
           g_infoManager.m_content = "episodes";
+          // grab the season thumb as the folder thumb
+          CStdString strLabel;
+          if (params.GetSeason() == 0)
+            strLabel = g_localizeStrings.Get(20381);
+          else
+            strLabel.Format(g_localizeStrings.Get(20358), params.GetSeason());
+
+          CFileItem item(strLabel);
           item.m_strPath = items.m_strPath;
+          item.m_bIsFolder = true;
+          item.GetVideoInfoTag()->m_strPath = showItem.m_strPath;
+          item.SetCachedSeasonThumb();
+          items.SetThumbnailImage(item.GetThumbnailImage());
         }
         else
-          g_infoManager.m_content = "seasons";
-
-        if (!item.HasThumbnail())
         {
-          m_database.GetFilePath(params.GetTvShowId(),item.m_strPath,2);
-          item.SetVideoThumb();
+          g_infoManager.m_content = "seasons";
+          items.SetThumbnailImage(showItem.GetThumbnailImage());
         }
-        items.SetThumbnailImage(item.GetThumbnailImage());
       }
       else if (node == NODE_TYPE_TITLE_MOVIES || node == NODE_TYPE_RECENTLY_ADDED_MOVIES)
         g_infoManager.m_content = "movies";
