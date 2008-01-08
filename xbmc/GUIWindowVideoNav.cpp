@@ -1029,6 +1029,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"imdbthumbs",strPath);
       CUtil::WipeDir(strPath);
       DIRECTORY::CDirectory::Create(strPath);
+      CFileItem* noneitem = new CFileItem("thumb://None", false);
       int i=1;
       CVideoInfoTag tag;
       if (button != CONTEXT_BUTTON_SET_ARTIST_THUMB && button != CONTEXT_BUTTON_SET_PLUGIN_THUMB)
@@ -1083,6 +1084,11 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
               items.Add(item);              
               break;
             }
+            else
+            {
+              noneitem->SetThumbnailImage("DefaultFolderBig.png");
+              noneitem->SetLabel(g_localizeStrings.Get(20018));
+            }
           }
         }
       }
@@ -1101,6 +1107,11 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         item->SetLabel(g_localizeStrings.Get(20016));
         items.Add(item);
       }
+      else
+      {
+        noneitem->SetThumbnailImage("DefaultFolderBig.png");
+        noneitem->SetLabel(g_localizeStrings.Get(20018));
+      }
 
       if (button == CONTEXT_BUTTON_SET_PLUGIN_THUMB)
       {
@@ -1115,6 +1126,11 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
             item->SetLabel(g_localizeStrings.Get(20016));
             items.Add(item);
           }
+          else
+          {
+            noneitem->SetThumbnailImage("DefaultFolderBig.png");
+            noneitem->SetLabel(g_localizeStrings.Get(20018));
+          }
         }
         CStdString strThumb;
         CUtil::AddFileToFolder(strPath,"folder.jpg",strThumb);
@@ -1125,6 +1141,11 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           item->SetLabel(g_localizeStrings.Get(20017));
           items.Add(item);
         }
+        else
+        {
+          noneitem->SetThumbnailImage("DefaultFolderBig.png");
+          noneitem->SetLabel(g_localizeStrings.Get(20018));
+        }
         CUtil::AddFileToFolder(strPath,"default.tbn",strThumb);
         if (CFile::Exists(strThumb))
         {
@@ -1132,6 +1153,11 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           item->SetThumbnailImage(strThumb);
           item->SetLabel(g_localizeStrings.Get(20017));
           items.Add(item);
+        }
+        else
+        {
+          noneitem->SetThumbnailImage("DefaultFolderBig.png");
+          noneitem->SetLabel(g_localizeStrings.Get(20018));
         }
       }
       if (button == CONTEXT_BUTTON_SET_ARTIST_THUMB)
@@ -1163,12 +1189,20 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           pItem->SetThumbnailImage(strThumb);
           items.Add(pItem);
         }
+        else
+        {
+          noneitem->SetThumbnailImage("DefaultArtistBig.png");
+          noneitem->SetLabel(g_localizeStrings.Get(20018));
+        }
       }
 
-      CFileItem *item = new CFileItem("thumb://None", false);
-      item->SetThumbnailImage("DefaultActorBig.png");
-      item->SetLabel(g_localizeStrings.Get(20018));
-      items.Add(item);
+      if (button == CONTEXT_BUTTON_SET_ACTOR_THUMB)
+      {
+        noneitem->SetThumbnailImage("DefaultActorBig.png");
+        noneitem->SetLabel(g_localizeStrings.Get(20018));
+      }
+
+      items.Add(noneitem);
 
       CStdString result;
       if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_videoSources, g_localizeStrings.Get(20019), result))

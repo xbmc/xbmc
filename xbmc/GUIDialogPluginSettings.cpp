@@ -57,8 +57,6 @@ bool CGUIDialogPluginSettings::OnMessage(CGUIMessage& message)
     {
       CGUIDialog::OnMessage(message);
 
-      m_settings.Load(m_url);
-
       FreeControls();
       CreateControls();
       break;
@@ -100,7 +98,14 @@ void CGUIDialogPluginSettings::ShowAndGetInput(CURL& url)
   CUtil::RemoveSlashAtEnd(pDialog->m_strHeading);
   pDialog->m_strHeading.Format("$LOCALIZE[1045] - %s", pDialog->m_strHeading.c_str());
 
+  CPluginSettings settings;
+  settings.Load(m_url);
+  pDialog->m_settings = settings;
+
   pDialog->DoModal();
+
+  static_cast<const CPluginSettings&>(pDialog->m_settings);
+  settings.Save();
 
   // Unload temporary language strings
   DIRECTORY::CPluginDirectory::ClearPluginStrings();
@@ -265,8 +270,7 @@ bool CGUIDialogPluginSettings::SaveSettings(void)
     controlId++;
   }
 
-  // Save the model into an XML file
-  return m_settings.Save();
+  return true;
 }
 
 void CGUIDialogPluginSettings::FreeControls()
