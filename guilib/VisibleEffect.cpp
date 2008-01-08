@@ -326,6 +326,7 @@ CAnimation::CAnimation()
   m_type = ANIM_TYPE_NONE;
   m_reversible = true;
   m_condition = 0;
+  m_repeatAnim = ANIM_REPEAT_NONE;
   m_currentState = ANIM_STATE_NONE;
   m_currentProcess = ANIM_PROCESS_NONE;
   m_queuedProcess = ANIM_PROCESS_NONE;
