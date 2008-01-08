@@ -723,6 +723,11 @@ int CTextureBundle::LoadAnim(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, 
   }
   *(DWORD*)(ppTex[0] + 1) = (DWORD)(BYTE*)UnpackedBuf;
 
+#ifndef HAS_XBOX_D3D
+  for (int i = 0; i < nTextures; ++i)
+    delete [] ppTex[i];
+#endif
+
   delete [] ppTex;
   ppTex = 0;
 
