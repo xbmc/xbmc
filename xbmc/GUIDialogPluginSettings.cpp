@@ -553,14 +553,8 @@ void CGUIDialogPluginSettings::SetDefaults()
         case CGUIControl::GUICONTROL_SPINEX:
           {
             if (strcmpi(setting->Attribute("type"), "fileenum") == 0)
-            {
-              CStdString value = setting->Attribute("default");
-              for (int i = 0; i < ((CGUISpinControlEx*) control)->GetMaximum(); ++i)
-              {
-                ((CGUISpinControlEx *)control)->SetValue(i);
-                if (((CGUISpinControlEx*) control)->GetCurrentLabel().Equals(value))
-                  break;
-              }
+            { // need to run through all our settings and find the one that matches
+              ((CGUISpinControlEx*) control)->SetValueFromLabel(setting->Attribute("default"));
             }
             else
               ((CGUISpinControlEx*) control)->SetValue(atoi(setting->Attribute("default")));

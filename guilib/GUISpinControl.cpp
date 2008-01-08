@@ -442,6 +442,19 @@ void CGUISpinControl::SetFloatRange(float fStart, float fEnd)
   m_fEnd = fEnd;
 }
 
+void CGUISpinControl::SetValueFromLabel(const CStdString &label)
+{
+  if (m_iType == SPIN_CONTROL_TYPE_TEXT)
+  {
+    m_iValue = 0;
+    for (unsigned int i = 0; i < m_vecLabels.size(); i++)
+      if (label == m_vecLabels[i])
+        m_iValue = i;
+  }
+  else
+    m_iValue = atoi(label.c_str());
+}
+
 void CGUISpinControl::SetValue(int iValue)
 {  
   if (m_iType == SPIN_CONTROL_TYPE_TEXT)
