@@ -249,10 +249,19 @@ namespace PYXBMC
         // old window does not exist anymore, switch to home
         else m_gWindowManager.ActivateWindow(WINDOW_HOME);
       }
+      // free the window's resources and unload it (free all guicontrols)
+      self->pWindow->FreeResources(true);
     }
-
-    // free the window's resources and unload it (free all guicontrols)
-    self->pWindow->FreeResources(true);
+    else
+    {
+      // BUG:
+      // This is an existing window, so no resources are free'd.  Note that
+      // THIS WILL FAIL for any controls newly created by python - they will
+      // remain after the script ends.  Ideally this would be remedied by
+      // a flag in Control that specifies that it was python created - any python
+      // created controls could then be removed + free'd from the window.
+      // how this works with controlgroups though could be a bit tricky.
+    }
 
     // and free our list of controls
     std::vector<Control*>::iterator it = self->vecControls.begin();
