@@ -14,7 +14,7 @@ public:
   void Clear();
 
   void Set(const CStdString& key, const CStdString& value);
-  CStdString Get(const CStdString& key, bool useDefaults = false);
+  CStdString Get(const CStdString& key);
 
   TiXmlElement* GetPluginRoot();
 protected: 

@@ -545,16 +545,16 @@ void CGUIDialogPluginSettings::SetDefaults()
       switch (control->GetControlType())
       {
         case CGUIControl::GUICONTROL_BUTTON:
-          ((CGUIButtonControl*) control)->SetLabel2(m_settings.Get(id, true));
+          ((CGUIButtonControl*) control)->SetLabel2(setting->Attribute("default"));
           break;
         case CGUIControl::GUICONTROL_RADIO:
-          ((CGUIRadioButtonControl*) control)->SetSelected(m_settings.Get(id, true) == "true");
+          ((CGUIRadioButtonControl*) control)->SetSelected(setting->Attribute("default") == "true");
           break;
         case CGUIControl::GUICONTROL_SPINEX:
           {
             if (strcmpi(setting->Attribute("type"), "fileenum") == 0)
             {
-              CStdString value = m_settings.Get(id, true);
+              CStdString value = setting->Attribute("default");
               for (int i = 0; i < ((CGUISpinControlEx*) control)->GetMaximum(); ++i)
               {
                 ((CGUISpinControlEx *)control)->SetValue(i);
@@ -563,7 +563,7 @@ void CGUIDialogPluginSettings::SetDefaults()
               }
             }
             else
-              ((CGUISpinControlEx*) control)->SetValue(atoi(m_settings.Get(id, true)));
+              ((CGUISpinControlEx*) control)->SetValue(atoi(setting->Attribute("default")));
           }
           break;
         default:
