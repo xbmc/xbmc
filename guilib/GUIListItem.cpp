@@ -226,3 +226,10 @@ std::string CGUIListItem::GetProperty(const std::string &strKey) const
 
   return iter->second;
 }
+
+void CGUIListItem::ClearProperty(const std::string &strKey)
+{
+  std::map<std::string,std::string>::iterator iter = m_mapProperties.find(strKey);
+  if (iter != m_mapProperties.end())
+    m_mapProperties.erase(iter);
+}
