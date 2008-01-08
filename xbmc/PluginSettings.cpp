@@ -54,7 +54,7 @@ void CBasicSettings::Set(const CStdString& key, const CStdString& value)
   }
 }
 
-CStdString CBasicSettings::Get(const CStdString& key, bool useDefaults/* = false */)
+CStdString CBasicSettings::Get(const CStdString& key)
 {
   CStdString result;
 
