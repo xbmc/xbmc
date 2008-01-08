@@ -267,6 +267,17 @@ extern "C" bool OnAction(long flags, void *param)
     extern int preset_index;
     preset_index = pindex;
     switchPreset(RESTART_ACTIVE, SOFT_CUT);
+    ret = true;
+  }
+  else if (flags == VIS_ACTION_NEXT_PRESET)
+  {
+    switchPreset(ALPHA_NEXT, SOFT_CUT);
+    ret = true;
+  }
+  else if (flags == VIS_ACTION_PREV_PRESET)
+  {
+    switchPreset(ALPHA_PREVIOUS, SOFT_CUT);
+    ret = true;
   }
   return ret;
 }
