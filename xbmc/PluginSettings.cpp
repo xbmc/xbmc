@@ -23,8 +23,6 @@ void CBasicSettings::Set(const CStdString& key, const CStdString& value)
 {
   if (key == "") return;
 
-  bool done = false;
-  
   // Try to find the setting and change its value
   if (!m_userXmlDoc.RootElement())
   {
@@ -32,32 +30,27 @@ void CBasicSettings::Set(const CStdString& key, const CStdString& value)
     m_userXmlDoc.InsertEndChild(node);
   }
   TiXmlElement *setting = m_userXmlDoc.RootElement()->FirstChildElement("setting");
-  while (setting && !done)
+  while (setting)
   {
     const char *id = setting->Attribute("id");
     if (id && strcmpi(id, key) == 0)
     {
       setting->SetAttribute("value", value.c_str());
-      done = true;
+      return;
     }
 
     setting = setting->NextSiblingElement("setting");
   }
   
   // Setting not found, add it
-  if (!done)
-  {
-    TiXmlElement nodeSetting("setting");
-    nodeSetting.SetAttribute("id", key.c_str());
-    nodeSetting.SetAttribute("value", value.c_str());
-    m_userXmlDoc.RootElement()->InsertEndChild(nodeSetting);
-  }
+  TiXmlElement nodeSetting("setting");
+  nodeSetting.SetAttribute("id", key.c_str());
+  nodeSetting.SetAttribute("value", value.c_str());
+  m_userXmlDoc.RootElement()->InsertEndChild(nodeSetting);
 }
 
 CStdString CBasicSettings::Get(const CStdString& key)
 {
-  CStdString result;
-
   if (m_userXmlDoc.RootElement())
   {
     // Try to find the setting and return its value
@@ -66,10 +59,7 @@ CStdString CBasicSettings::Get(const CStdString& key)
     {
       const char *id = setting->Attribute("id");
       if (id && strcmpi(id, key) == 0)
-      {
-        result = setting->Attribute("value");
-        return result;
-      }
+        return setting->Attribute("value");
 
       setting = setting->NextSiblingElement("setting");
     }
@@ -83,17 +73,14 @@ CStdString CBasicSettings::Get(const CStdString& key)
     {
       const char *id = setting->Attribute("id");
       if (id && strcmpi(id, key) == 0 && setting->Attribute("default"))
-      {
-        result = setting->Attribute("default");
-        return result;
-      }
+        return setting->Attribute("default");
 
       setting = setting->NextSiblingElement("setting");
     }
   }
 
   // Otherwise return empty string
-  return result;
+  return "";
 }
 
 CPluginSettings::CPluginSettings()
