@@ -26,7 +26,7 @@
 			<height>86</height>
 			<aspectratio align="left">keep</aspectratio>
 			<texture diffuse="Wide_Icon_Diffuse.png" />
-			<info>container.folderthumb</info>
+			<info>Container.TVShowThumb</info>
 		</control>
 		<control type="label">
 			<description>xbox media center label</description>
@@ -35,7 +35,7 @@
 			<align>right</align>
 			<label>9</label>
 			<font>special12</font>
-			<visible>!container.hasthumb</visible>
+			<visible>IsEmpty(Container.TVShowThumb)</visible>
 		</control>
 		<control type="label">
 			<description>description label</description>
@@ -44,7 +44,7 @@
 			<align>left</align>
 			<label>$LOCALIZE[20314]</label>
 			<font>special13</font>
-			<visible>!container.hasthumb + !container.content(tvshows) + !container.content(movies) + !container.content(musicvideos)</visible>
+			<visible>IsEmpty(Container.TVShowThumb) + !container.content(tvshows) + !container.content(movies) + !container.content(musicvideos)</visible>
 		</control>
 		<control type="label">
 			<description>description label</description>
@@ -53,7 +53,7 @@
 			<align>left</align>
 			<label>$LOCALIZE[20314] - $LOCALIZE[20343]</label>
 			<font>special13</font>
-			<visible>!container.hasthumb + container.content(tvshows)</visible>
+			<visible>container.content(tvshows)</visible>
 		</control>
 		<control type="label">
 			<description>description label</description>
@@ -62,7 +62,7 @@
 			<align>left</align>
 			<label>$LOCALIZE[20314] - $LOCALIZE[342]</label>
 			<font>special13</font>
-			<visible>!container.hasthumb + container.content(movies)</visible>
+			<visible>container.content(movies)</visible>
 		</control>
 		<control type="label">
 			<description>description label</description>
@@ -71,7 +71,7 @@
 			<align>left</align>
 			<label>$LOCALIZE[20314] - $LOCALIZE[20389]</label>
 			<font>special13</font>
-			<visible>!container.hasthumb + container.content(musicvideos)</visible>
+			<visible>container.content(musicvideos)</visible>
 		</control>
 		<include>contentpanel</include>
 		<control type="label" id="12">
