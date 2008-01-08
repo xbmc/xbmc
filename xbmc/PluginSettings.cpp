@@ -58,7 +58,7 @@ CStdString CBasicSettings::Get(const CStdString& key)
 {
   CStdString result;
 
-  if (m_userXmlDoc.RootElement() && !useDefaults)
+  if (m_userXmlDoc.RootElement())
   {
     // Try to find the setting and return its value
     TiXmlElement *setting = m_userXmlDoc.RootElement()->FirstChildElement("setting");
