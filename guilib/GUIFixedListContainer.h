@@ -28,5 +28,7 @@ protected:
   virtual void ValidateOffset();
   virtual bool SelectItemFromPoint(const CPoint &point);
   virtual void SelectItem(int item);
+  virtual bool HasNextPage() const;
+  virtual bool HasPreviousPage() const;
 };
 
