@@ -403,7 +403,9 @@ fi
 
 echo -ne "]0;Building XBMC"
 
-if [[ $USER="root" ]]
+touch "/root/.test" &> /dev/null
+
+if ! (( $? ))
 then
   PROMPT=""
   echo " There is really no reason to run this as root or with sudo."
