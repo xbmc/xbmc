@@ -486,3 +486,13 @@ void CGUIPanelContainer::SelectItem(int item)
     }
   }
 }
+
+bool CGUIPanelContainer::HasPreviousPage() const
+{
+  return (m_offset > 0);
+}
+
+bool CGUIPanelContainer::HasNextPage() const
+{
+  return (m_offset != (int)GetRows() - m_itemsPerPage && (int)GetRows() > m_itemsPerPage);
+}

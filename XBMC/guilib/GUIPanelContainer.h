@@ -50,6 +50,8 @@ protected:
   virtual bool SelectItemFromPoint(const CPoint &point);
   void SetCursor(int cursor);
   virtual void SelectItem(int item);
+  virtual bool HasPreviousPage() const;
+  virtual bool HasNextPage() const;
 
   int m_itemsPerRow;
 };
