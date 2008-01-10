@@ -46,8 +46,6 @@ using namespace PLAYLIST;
 #define MAX_PARAS 20
 #define NO_EID -1
 
-#define XBMC_NONE      T("none")
-
 CXbmcHttp* m_pXbmcHttp;
 CXbmcHttpShim* pXbmcHttpShim;
 CUdpBroadcast* pUdpBroadcast;
@@ -239,6 +237,20 @@ void resetTags()
   closeFinalTag=false;
 }
 
+CStdString procMask(CStdString mask)
+{
+  mask=mask.ToLower();
+  if(mask=="[music]")
+    return g_stSettings.m_musicExtensions;
+  if(mask=="[video]")
+    return g_stSettings.m_videoExtensions;
+  if(mask=="[pictures]")
+    return g_stSettings.m_pictureExtensions;
+  if(mask=="[files]")
+    return "";
+  return mask;
+}
+
 int splitParameter(const CStdString &parameter, CStdString& command, CStdString paras[], const CStdString &sep)
 //returns -1 if no command, -2 if too many parameters else the number of parameters
 //assumption: sep.length()==1
@@ -329,6 +341,7 @@ bool checkForFunctionTypeParas(CStdString &cmd, CStdString &paras)
   }
   return false;
 }
+
 bool playableFile(const CStdString &filename)
 {
   CFileItem item(filename, false);  
@@ -361,7 +374,7 @@ CStdString flushResult(int eid, webs_t wp, const CStdString &output)
 }
 
 int displayDir(int numParas, CStdString paras[]) {
-  //mask = ".mp3|.wma" -> matching files
+  //mask = ".mp3|.wma" or one of "[music]", "[video]", "[pictures]", "[files]"-> matching files
   //mask = "*" or "/" -> just folders
   //mask = "" -> all files and folder
   //option = "1" -> append date&time to file name
@@ -381,30 +394,19 @@ int displayDir(int numParas, CStdString paras[]) {
     return SetResponse(openTag+"Error:Missing folder");
   }
   if (numParas>1)
-    mask=paras[1];
+    mask=procMask(paras[1]);
   if (numParas>2)
     option=paras[2];
-
   IDirectory *pDirectory = CFactoryDirectory::Create(folder);
-
   if (!pDirectory) 
   {
     return SetResponse(openTag+"Error");  
   }
   pDirectory->SetMask(mask);
-  CStdString tail=folder.Right(folder.length()-1);
-  bool bResult;
-  //bResult=((pDirectory->Exists(folder))||(tail==":")||(tail==":\\")||(tail==":/"));
-  //if (!bResult)
-  //{
-  //  return SetResponse(openTag+"Error:Not folder");
-  //}
-  bResult=pDirectory->GetDirectory(folder,dirItems);
-  if (!bResult)
+  if (!pDirectory->GetDirectory(folder,dirItems))
   {
     return SetResponse(openTag+"Error:Not folder");
   }
-
   dirItems.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
   CStdString aLine="";
   for (int i=0; i<dirItems.Size(); ++i)
@@ -518,20 +520,6 @@ void LoadPlayListOld(const CStdString& strPlayList, int playList)
     item.m_strPath = playlist[0].GetFileName();
     SetCurrentMediaItem(item);
   }
-}
-
-CStdString procMask(CStdString mask)
-{
-  mask=mask.ToLower();
-  if(mask=="[music]")
-    return g_stSettings.m_musicExtensions;
-  if(mask=="[video]")
-    return g_stSettings.m_videoExtensions;
-  if(mask=="[pictures]")
-    return g_stSettings.m_pictureExtensions;
-  if(mask=="[files]")
-    return "";
-  return mask;
 }
 
 bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoStart)
@@ -2995,12 +2983,9 @@ CStdString CXbmcHttpShim::xbmcExternalCall(char *command)
   }
   else //no parameters
     execute = cmd;
-  if (CUtil::UrlDecode(parameter))
-    return xbmcProcessCommand(NO_EID, NULL, (char_t *) execute.c_str(), (char_t *) parameter.c_str());
-  else
-	return "Error: Illegal escape sequence";
+  CUtil::UrlDecode(parameter);
+  return xbmcProcessCommand(NO_EID, NULL, (char_t *) execute.c_str(), (char_t *) parameter.c_str());
 }
-
 
 /* Parse an XBMC HTTP API command */
 CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *command, char_t *parameter)
@@ -3011,26 +2996,25 @@ CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *comman
   bool legalCmd=true;
   CLog::Log(LOGDEBUG, "XBMCHTTPShim: Received command %s (%s)", cmd.c_str(), paras.c_str());
   int cnt=0;
+
+  checkForFunctionTypeParas(cmd, paras);
   if (wp!=NULL)
   {
     if ((eid==NO_EID) && (incWebHeader))
       websHeader(wp);
 	//we are being called via the webserver (rather than Python) so add any specific checks here
-    if ((!strcmpi(command,"webserverstatus")) && (strcmp(parameter,XBMC_NONE)))
+    if ((cmd=="webserverstatus") && (paras!=""))//(strcmp(parameter,XBMC_NONE)))
 	{
-	  response="Error:Can't turn off WebServer via a web call";
+	  response="Error:Can't turn off/on WebServer via a web call";
 	  legalCmd=false;
 	}
   }
   if (legalCmd)
   {
-	if ((*parameter==0) || !strcmp(parameter,XBMC_NONE))
-	  if (checkForFunctionTypeParas(cmd, paras))
+	  if (paras!="")
 		g_applicationMessenger.HttpApi(cmd+"; "+paras);
 	  else
 		g_applicationMessenger.HttpApi(cmd);
-	else
-	  g_applicationMessenger.HttpApi(cmd+"; "+paras);
 	//wait for response - max 20s
 	Sleep(0);
 	response=g_applicationMessenger.GetResponse();
@@ -3084,8 +3068,8 @@ void CXbmcHttpShim::xbmcForm(webs_t wp, char_t *path, char_t *query)
 
   if (shuttingDown)
 	return;
-  command = websGetVar(wp, WEB_COMMAND, XBMC_NONE); 
-  parameter = websGetVar(wp, WEB_PARAMETER, XBMC_NONE);
+  command = websGetVar(wp, WEB_COMMAND, ""); 
+  parameter = websGetVar(wp, WEB_PARAMETER, "");
 
   // do the command
 
