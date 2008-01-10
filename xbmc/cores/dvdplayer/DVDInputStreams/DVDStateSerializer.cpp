@@ -116,7 +116,7 @@ bool CDVDStateSerializer::DVDToXMLState( std::string &xmlstate, const dvd_state_
   }
 
   { TiXmlElement element("cell_restart");
-    sprintf(buffer, "%I32d", state->cell_restart);
+    sprintf(buffer, "%2d", state->cell_restart);
     element.InsertEndChild( TiXmlText( buffer ) );
     eRoot.InsertEndChild(element);
   }
@@ -251,7 +251,7 @@ bool CDVDStateSerializer::XMLToDVDState( dvd_state_t *state, const std::string &
     sscanf(text->Value(), "%d", &state->cellN);
 
   if( text = hRoot.FirstChildElement("cell_restart").FirstChild().Text() )
-    sscanf(text->Value(), "%I32d", &state->cell_restart);
+    sscanf(text->Value(), "%d", &state->cell_restart);
 
   if( text = hRoot.FirstChildElement("blockn").FirstChild().Text() )
     sscanf(text->Value(), "%d", &state->blockN);
