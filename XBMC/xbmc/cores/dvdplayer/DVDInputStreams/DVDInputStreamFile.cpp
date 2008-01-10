@@ -61,9 +61,6 @@ int CDVDInputStreamFile::Read(BYTE* buf, int buf_size)
   /* we currently don't support non completing reads */
   if( ret <= 0 ) m_eof = true;
 
-  /* on error close file */
-  if( ret < 0 ) Close();
-
   return (int)(ret & 0xFFFFFFFF);
 }
 
