@@ -116,7 +116,7 @@ bool CDVDStateSerializer::DVDToXMLState( std::string &xmlstate, const dvd_state_
   }
 
   { TiXmlElement element("cell_restart");
-    sprintf(buffer, "%2d", state->cell_restart);
+    sprintf(buffer, "%d", state->cell_restart);
     element.InsertEndChild( TiXmlText( buffer ) );
     eRoot.InsertEndChild(element);
   }
