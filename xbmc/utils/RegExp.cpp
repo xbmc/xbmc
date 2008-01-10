@@ -158,10 +158,10 @@ CRegExp* CRegExp::RegComp(const char *exp)
 
 char *CRegExp::reg(int paren, int *flagp)
 {
-	char *ret;
+	char *ret = NULL;
 	char *br;
 	char *ender;
-	int parno;
+	int parno = 0;
 	int flags;
 
 	*flagp = HASWIDTH;	// Tentatively. 

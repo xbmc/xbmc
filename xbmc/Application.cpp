@@ -4665,7 +4665,7 @@ void CApplication::CheckScreenSaver()
 // the type of screensaver displayed
 void CApplication::ActivateScreenSaver(bool forceType /*= false */)
 {
-  FLOAT fFadeLevel;
+  FLOAT fFadeLevel = 0;
 
   m_bScreenSave = true;
   m_bInactive = true;
