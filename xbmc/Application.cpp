@@ -4088,7 +4088,7 @@ void CApplication::CheckScreenSaver()
 void CApplication::ActivateScreenSaver(bool forceType /*= false */)
 {
   D3DGAMMARAMP Ramp;
-  FLOAT fFadeLevel;
+  FLOAT fFadeLevel = 0;
 
   m_bScreenSave = true;
   m_bInactive = true;
