@@ -111,14 +111,11 @@ void CMediaManager::GetLocalDrives(VECSHARES &localDrives, bool includeQ)
   localDrives.push_back(share);
 #endif
 
-  static int xx = 1;
 #ifdef _LINUX
   // Home directory
   CShare share;
   share.strPath = getenv("HOME");
   share.strName = g_localizeStrings.Get(21440);
-  share.strName += xx;
-  xx++;
   share.m_ignore = true;
   share.m_iDriveType = SHARE_TYPE_LOCAL;
   localDrives.push_back(share);
