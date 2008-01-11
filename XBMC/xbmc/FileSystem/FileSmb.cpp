@@ -29,6 +29,16 @@ void xb_smbc_auth(const char *srv, const char *shr, char *wg, int wglen,
   return ;
 }
 
+smbc_get_cached_srv_fn orig_cache;
+
+SMBCSRV* xb_smbc_cache(SMBCCTX* c, const char* server, const char* share, const char* workgroup, const char* username)
+{
+  if (strcmp(share, "IPC$") == 0)
+    return NULL;
+
+  return orig_cache(c, server, share, workgroup, username);
+}
+
 CSMB::CSMB()
 {  
   m_context = NULL;
@@ -77,6 +87,8 @@ void CSMB::Init()
     m_context = smbc_new_context();
     m_context->debug = g_advancedSettings.m_logLevel == LOG_LEVEL_DEBUG_SAMBA ? 10 : 0;
     m_context->callbacks.auth_fn = xb_smbc_auth;
+    orig_cache = m_context->callbacks.get_cached_srv_fn;
+    m_context->callbacks.get_cached_srv_fn = xb_smbc_cache;
 #ifndef _LINUX
     m_context->options.one_share_per_server = true;
 #else
