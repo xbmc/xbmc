@@ -310,6 +310,8 @@ typedef float float32_t;
         }
         return i;
     }
+  #elif defined(__APPLE__)
+    #define HAS_LRINTF
   #elif (defined(__i386__) && defined(__GNUC__))
     #define HAS_LRINTF
     // from http://www.stereopsis.com/FPU.html

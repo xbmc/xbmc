@@ -30,7 +30,11 @@
 #include <windows.h>
 #endif
 
+#ifndef __APPLE__
 #include <malloc.h>
+#else
+#include <stdlib.h>
+#endif
 #include <mp4ff.h>
 #include <faad.h>
 #include "utils.h"
