@@ -49,7 +49,9 @@ public:
 
 class DllLibFlac : public DllDynamic, DllLibFlacInterface
 {
-#ifndef _LINUX
+#ifdef __APPLE__
+  DECLARE_DLL_WRAPPER(DllLibFlac, Q:\\system\\players\\paplayer\\libFLAC-osx.so)
+#elif !defined(_LINUX)
   DECLARE_DLL_WRAPPER(DllLibFlac, Q:\\system\\players\\PAPlayer\\libFlac.dll)
 #else
   DECLARE_DLL_WRAPPER(DllLibFlac, Q:\\system\\players\\paplayer\\libFLAC-i486-linux.so)
