@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 10/15/2007-->
+<!--Date of translation: 01/07/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 10494-->
+<!--Based on english strings version 11214-->
 <strings>
   <string id="0">Programmer</string>
   <string id="1">Billeder</string>
@@ -138,7 +138,7 @@
   <string id="201">Årstal:</string>
   <string id="202">Undertitel:</string>
   <string id="203">Handling:</string>
-  <string id="204">Karakter:</string>
+  <string id="204">Bedømmelse:</string>
   <string id="205">Stemmer:</string>
   <string id="206">Skuespillere</string>
   <string id="207">Handling</string>
@@ -314,7 +314,7 @@
   <string id="391">Lav</string>
   <string id="392">Medium</string>
   <string id="393">Høj</string>
-  <string id="394">tåge</string>
+  <string id="394">diset</string>
   <string id="395">hagl</string>
   <string id="396">Vælg placering</string>
   <string id="397">Opdateringsinterval</string>
@@ -544,7 +544,7 @@
   <string id="655">Søg efter program</string>
   <string id="656">Søg efter afspilningsliste</string>
   <string id="657">Søg efter mappe</string>
-  <string id="658">Sanginfo</string>
+  <string id="658">Sangoplysninger</string>
   <string id="659">Kommentar:</string>
   <string id="660">Lydforstærkning</string>
   <string id="700">Rydder op i databasen</string>
@@ -594,11 +594,11 @@
   <string id="746">Skift til filvisning</string>
   <string id="747">Billede kunne ikke hentes</string>
   <string id="748">Rediger sti</string>
-  <string id="749">Tilføj kilde</string>
+  <string id="749"></string>
   <string id="750">Er du sikker?</string>
   <string id="751">Fjerner kilde</string>
-  <string id="752">Rediger netværksmappesti</string>
-  <string id="753">Rediger netværksmappenavn</string>
+  <string id="752"></string>
+  <string id="753"></string>
   <string id="754">Tilføj programlink</string>
   <string id="755">Rediger programmets sti</string>
   <string id="756">Rediger programmets navn</string>
@@ -627,7 +627,7 @@
   <string id="1002">XBMC kunne ikke forbinde til destinationen.</string>
   <string id="1003">Dette kan skyldes at netværket ikke er tilslutttet.</string>
   <string id="1004">Vil du tilføje det alligevel?</string>
-  <string id="1005">Indtast et navn for denne mappe</string>
+  <string id="1005"></string>
   <string id="1006">IP-adresse</string>
   <string id="1007">Tilføj netværkssted</string>
   <string id="1008">Protokol</string>
@@ -667,6 +667,7 @@
   <string id="1042">Hentede %i af %i objekter</string>
   <string id="1043">Program-plugins</string>
   <string id="1044">Vælg ikon til plugin</string>
+  <string id="1045">Indstillinger til plugins</string>
   <string id="1200">SMB-klient</string>
   <string id="1202">Arbejdsgruppe</string>
   <string id="1203">Standard brugernavn</string>
@@ -721,7 +722,7 @@
   <string id="1407">nærheden</string>
   <string id="1408">is</string>
   <string id="1409">-krystaller</string>
-  <string id="1410">roligt</string>
+  <string id="1410">stille</string>
   <string id="1411">med</string>
   <string id="1412">blæsende</string>
   <string id="1413">finregn</string>
@@ -844,7 +845,7 @@
   <string id="12348">Låst</string>
   <string id="12353">Genaktiver lås</string>
   <string id="12356">Ændr lås</string>
-  <string id="12357">Del lås</string>
+  <string id="12357">Kilde-lås</string>
   <string id="12358">Adgangskode var blank. Prøv igen.</string>
   <string id="12360">Hovedlås</string>
   <string id="12362">Sluk Xbox ved for mange fejl ved indtastning af adgangskode</string>
@@ -1005,7 +1006,7 @@
   <string id="13351">Albumoplysninger</string>
   <string id="13352">Tilføj mappe til database</string>
   <string id="13353">Stop gennemsøgning</string>
-  <string id="13354">Render Metode</string>
+  <string id="13354">Render-metode</string>
   <string id="13355">Lavkvalitets Pixel Shader</string>
   <string id="13356">Hardware Overlays</string>
   <string id="13357">Højkvalitets Pixel Shader</string>
@@ -1046,6 +1047,8 @@
   <string id="13405">Hent ikon</string>
   <string id="13406">Informationer om billede</string>
   <string id="13407">%s-standarder</string>
+  <string id="13408">(IMDb brugerbedømmelse)</string>
+  <string id="13409">Top 250:</string>
   <string id="14000">Stakning</string>
   <string id="14001">Ingen stakning</string>
   <string id="14003">Henter afspilningsliste...</string>
@@ -1102,7 +1105,7 @@
   <string id="14056">Stop gennemsøgning</string>
   <string id="14057">Ikke muligt mens der gennemsøges for medie info</string>
   <string id="14058">Filmkornseffekt</string>
-  <string id="14059">Søg efter miniture billeder på delte mapper</string>
+  <string id="14059">Søg efter ikoner på delte mapper</string>
   <string id="14060">Ukendt type mellemlager - Internet</string>
   <string id="14061">Auto</string>
   <string id="14062">Indtast brugernavn for</string>
@@ -1212,6 +1215,7 @@
   <string id="15213">Afspil med...</string>
   <string id="15214">Brug udglattet A/V-synkronisering</string>
   <string id="15215">Skjul filnavne i miniaturevisning</string>
+  <string id="15216">Afspil i festtilstand</string>
   <string id="15250">Send Last.fm Radio til Last.FM</string>
   <string id="15251">Forbinder til Last.FM...</string>
   <string id="15252">Vælger station...</string>
@@ -1219,11 +1223,11 @@
   <string id="15254">Søg lignende etiket...</string>
   <string id="15255">Din profil (%name%)</string>
   <string id="15256">Gennemsnitlig bedste etiket</string>
-  <string id="15257">Bedste kunstner med etiket %name%</string>
-  <string id="15258">Bedste albums med etiket %name%</string>
-  <string id="15259">Bedste sange med etiket %name%</string>
+  <string id="15257">Bedste kunstner med etiketten %name%</string>
+  <string id="15258">Bedste albums med etiketten %name%</string>
+  <string id="15259">Bedste sange med etiketten %name%</string>
   <string id="15260">Lyt til etiket %name% Last.FM radio</string>
-  <string id="15261">Lignede kunstnere som %name%</string>
+  <string id="15261">Lignende kunstnere som %name%</string>
   <string id="15262">Bedste %name% albums</string>
   <string id="15263">Bedste %name% sange</string>
   <string id="15264">Bedste %name% etiket</string>
@@ -1231,24 +1235,36 @@
   <string id="15266">Lyt til brugeren %name%'s Last.FM-radio</string>
   <string id="15267">Lyt til %name% lignende kunstnere last.fm radio</string>
   <string id="15268">Bedste kunstner for bruger %name%</string>
-  <string id="15269">Bedste albums for bruger %name%</string>
-  <string id="15270">Bedste sange for bruger %name%</string>
-  <string id="15271">Venner til bruger %name%</string>
-  <string id="15272">Naboer til bruger %name%</string>
-  <string id="15273">Ugentlig kunstner kurve for %name%</string>
-  <string id="15274">Ugentlig album kurve for %name%</string>
-  <string id="15275">Ugentlig sang kurve for %name%</string>
+  <string id="15269">Bedste albums hos brugeren %name%</string>
+  <string id="15270">Bedste sange hos brugeren %name%</string>
+  <string id="15271">Venner til brugeren %name%</string>
+  <string id="15272">Naboer til brugeren %name%</string>
+  <string id="15273">Ugentlig kunstnerkurve for %name%</string>
+  <string id="15274">Ugentlig albumkurve for %name%</string>
+  <string id="15275">Ugentlig sangkurve for %name%</string>
   <string id="15276">Lyt til %name%'s naboers Last.FM-radio</string>
   <string id="15277">Lyt til %name%'s personlige Last.FM-radio</string>
   <string id="15278">Lyt til %name%'s faboritsange Last.FM-radio</string>
   <string id="15279">Henter liste fra Last.FM...</string>
   <string id="15280">Kunne ikke hente liste fra Last.FM...</string>
-  <string id="15281">Indtast kunstner navn for at finde relaterede</string>
+  <string id="15281">Indtast kunstnernavn for at finde relaterede</string>
   <string id="15282">Indtast etiket for at finde lignende</string>
   <string id="15283">Fornyeligt tilføjede sange af %name%</string>
   <string id="15284">Lyt til %name%'s anbefalede Last.FM-radio</string>
   <string id="15285">Favorit etiketter for brugeren %name%</string>
   <string id="15286">Lyt til %name%'s afspilningsliste Last.FM-radio</string>
+  <string id="15287">Vil du tilføje dette nummer til dine favoritter?</string>
+  <string id="15288">Vil du bandlyse dette nummer?</string>
+  <string id="15289">Tilføjet til dine favoritter: '%s'.</string>
+  <string id="15290">Kunne ikke tilføje '%s' til dine favoritter</string>
+  <string id="15291">Bandlyst: '%s'.</string>
+  <string id="15292">Kunne ikke bandlyse '%s'.</string>
+  <string id="15293">Nylige favoritter hos %name%</string>
+  <string id="15294">Nylige bandlysninger hos %name%</string>
+  <string id="15295">Fjern fra favoritter</string>
+  <string id="15296">Fjern bandlysning</string>
+  <string id="15297">Vil du fjerne dette nummer fra dine favoritter?</string>
+  <string id="15298">Vil du fjerne bandlysningen af dette nummer?</string>
   <string id="15300">Sti ikke fundet eller ugyldig</string>
   <string id="15301">Kunne ikke forbinde til netværksserver</string>
   <string id="15302">Ingen servere fundet</string>
@@ -1257,7 +1273,7 @@
   <string id="15311">Sti:</string>
   <string id="16000">Generelt</string>
   <string id="16001">Konfigurer lydhardware...</string>
-  <string id="16002">CDDB søgning</string>
+  <string id="16002">CDDB-søgning</string>
   <string id="16003">Afspiller</string>
   <string id="16004">Afspil medie fra disk</string>
   <string id="16008">Indtast ny titel</string>
@@ -1492,6 +1508,9 @@
   <string id="20197"></string>
   <string id="20198"></string>
   <string id="20199"></string>
+  <string id="20250">Så skal der festes! (videoer)</string>
+  <string id="20251">Blander drinks (videoer)</string>
+  <string id="20252">Fylder glassene (videoer)</string>
   <string id="20300"></string>
   <string id="20301"></string>
   <string id="20302"></string>
@@ -1619,6 +1638,7 @@
   <string id="21365">Fjern mediedelingsmappe</string>
   <string id="21366">Speciel undertekstmappe</string>
   <string id="21367">Film og alternativ undertekstmappe</string>
+  <string id="21369">Aktiver mus</string>
   <string id="21370">Afspil navigationslyde under medieafspilning</string>
   <string id="21371">Ikon</string>
   <string id="21372">Tving DVD-region</string>
@@ -1738,5 +1758,7 @@
   <string id="21881">Aktiver UPnP-renderer</string>
   <string id="21882">Forsøg at gå direkte til DVD-menuen</string>
   <string id="21883">Rippede lyd-cd'er</string>
+  <string id="22000">Opdater databasen ved opstart</string>
+  <string id="22001">Opdater altid databasen i baggrunden</string>
   <string id="29999">Brug flimmerfilter på spil</string>
 </strings>
