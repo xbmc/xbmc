@@ -181,7 +181,11 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
       else if( ( url.GetFileType().Equals("ac3") && g_audioConfig.GetAC3Enabled() )
         ||  ( url.GetFileType().Equals("dts") && g_audioConfig.GetDTSEnabled() ) ) 
       {
-        //NOP
+#ifdef HAS_MPLAYER
+        vecCores.push_back(EPC_MPLAYER);
+#else
+        vecCores.push_back(EPC_DVDPLAYER);
+#endif
       }
       else
       {
