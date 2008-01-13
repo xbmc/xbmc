@@ -5711,6 +5711,9 @@ CStdString CUtil::TranslatePathConvertCase(const CStdString& path)
    CStdString translatedPath = TranslatePath(path);
 
 #ifdef _LINUX
+   if (translatedPath.Find("://") > 0)
+      return translatedPath;
+
    // If the file exists with the requested name, simply return it
    struct stat stat_buf;
    if (stat(translatedPath.c_str(), &stat_buf) == 0)
