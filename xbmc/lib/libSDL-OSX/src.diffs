@@ -1,0 +1,360 @@
+diff -c -r SDL-1.2.13/src/video/SDL_sysvideo.h SDL-1.2.13-XBMC/src/video/SDL_sysvideo.h
+*** SDL-1.2.13/src/video/SDL_sysvideo.h	2007-12-30 18:48:14.000000000 -1000
+--- SDL-1.2.13-XBMC/src/video/SDL_sysvideo.h	2008-01-08 23:06:01.000000000 -1000
+***************
+*** 72,78 ****
+  	   should take care of cleaning up the current mode.
+  	 */
+  	SDL_Surface *(*SetVideoMode)(_THIS, SDL_Surface *current,
+! 				int width, int height, int bpp, Uint32 flags);
+  
+  	/* Toggle the fullscreen mode */
+  	int (*ToggleFullScreen)(_THIS, int on);
+--- 72,78 ----
+  	   should take care of cleaning up the current mode.
+  	 */
+  	SDL_Surface *(*SetVideoMode)(_THIS, SDL_Surface *current,
+! 				int width, int height, int bpp, Uint32 flags, void* sharedContext);
+  
+  	/* Toggle the fullscreen mode */
+  	int (*ToggleFullScreen)(_THIS, int on);
+diff -c -r SDL-1.2.13/src/video/SDL_video.c SDL-1.2.13-XBMC/src/video/SDL_video.c
+*** SDL-1.2.13/src/video/SDL_video.c	2007-12-30 18:48:14.000000000 -1000
+--- SDL-1.2.13-XBMC/src/video/SDL_video.c	2008-01-08 23:07:43.000000000 -1000
+***************
+*** 568,574 ****
+  /*
+   * Set the requested video mode, allocating a shadow buffer if necessary.
+   */
+! SDL_Surface * SDL_SetVideoMode (int width, int height, int bpp, Uint32 flags)
+  {
+  	SDL_VideoDevice *video, *this;
+  	SDL_Surface *prev_mode, *mode;
+--- 568,574 ----
+  /*
+   * Set the requested video mode, allocating a shadow buffer if necessary.
+   */
+! SDL_Surface * SDL_SetVideoMode (int width, int height, int bpp, Uint32 flags, void* sharedContext)
+  {
+  	SDL_VideoDevice *video, *this;
+  	SDL_Surface *prev_mode, *mode;
+***************
+*** 663,669 ****
+  	prev_mode = SDL_VideoSurface;
+  	SDL_LockCursor();
+  	SDL_VideoSurface = NULL;	/* In case it's freed by driver */
+! 	mode = video->SetVideoMode(this, prev_mode,video_w,video_h,video_bpp,flags);
+  	if ( mode ) { /* Prevent resize events from mode change */
+            /* But not on OS/2 */
+  #ifndef __OS2__
+--- 663,669 ----
+  	prev_mode = SDL_VideoSurface;
+  	SDL_LockCursor();
+  	SDL_VideoSurface = NULL;	/* In case it's freed by driver */
+! 	mode = video->SetVideoMode(this, prev_mode,video_w,video_h,video_bpp,flags,sharedContext);
+  	if ( mode ) { /* Prevent resize events from mode change */
+            /* But not on OS/2 */
+  #ifndef __OS2__
+diff -c -r SDL-1.2.13/src/video/quartz/SDL_QuartzGL.m SDL-1.2.13-XBMC/src/video/quartz/SDL_QuartzGL.m
+*** SDL-1.2.13/src/video/quartz/SDL_QuartzGL.m	2007-12-30 18:48:04.000000000 -1000
+--- SDL-1.2.13-XBMC/src/video/quartz/SDL_QuartzGL.m	2008-01-08 23:22:18.000000000 -1000
+***************
+*** 51,60 ****
+  
+  /* OpenGL helper functions (used internally) */
+  
+! int QZ_SetupOpenGL (_THIS, int bpp, Uint32 flags) {
+! 
+      NSOpenGLPixelFormatAttribute attr[32];
+      NSOpenGLPixelFormat *fmt;
+      int i = 0;
+      int colorBits = bpp;
+  
+--- 51,60 ----
+  
+  /* OpenGL helper functions (used internally) */
+  
+! int QZ_SetupOpenGL (_THIS, int bpp, Uint32 flags, void* sharedCtx) {
+      NSOpenGLPixelFormatAttribute attr[32];
+      NSOpenGLPixelFormat *fmt;
++     NSOpenGLContext* sharedContext = (NSOpenGLContext* )sharedCtx;
+      int i = 0;
+      int colorBits = bpp;
+  
+***************
+*** 126,133 ****
+          return 0;
+      }
+  
+      gl_context = [ [ NSOpenGLContext alloc ] initWithFormat:fmt
+!                                                shareContext:nil];
+  
+      [ fmt release ];
+  
+--- 126,134 ----
+          return 0;
+      }
+  
++     printf("Creating OpenGL context with shared=0x%08lx\n", sharedContext);
+      gl_context = [ [ NSOpenGLContext alloc ] initWithFormat:fmt
+!                                                shareContext:sharedContext];
+  
+      [ fmt release ];
+  
+***************
+*** 177,185 ****
+  
+  void QZ_TearDownOpenGL (_THIS) {
+  
+!     [ NSOpenGLContext clearCurrentContext ];
+!     [ gl_context clearDrawable ];
+!     [ gl_context release ];
+  }
+  
+  
+--- 178,187 ----
+  
+  void QZ_TearDownOpenGL (_THIS) {
+  
+!     //[ NSOpenGLContext clearCurrentContext ];
+!     // We'll take care of whacking this baby.
+!     //[ gl_context clearDrawable ];
+!     //[ gl_context release ];
+  }
+  
+  
+diff -c -r SDL-1.2.13/src/video/quartz/SDL_QuartzVideo.h SDL-1.2.13-XBMC/src/video/quartz/SDL_QuartzVideo.h
+*** SDL-1.2.13/src/video/quartz/SDL_QuartzVideo.h	2007-12-30 18:48:04.000000000 -1000
+--- SDL-1.2.13-XBMC/src/video/quartz/SDL_QuartzVideo.h	2008-01-08 23:03:57.000000000 -1000
+***************
+*** 186,192 ****
+  int    QZ_GetGammaRamp      (_THIS, Uint16 *ramp);
+  
+  /* OpenGL functions */
+! int    QZ_SetupOpenGL       (_THIS, int bpp, Uint32 flags);
+  void   QZ_TearDownOpenGL    (_THIS);
+  void*  QZ_GL_GetProcAddress (_THIS, const char *proc);
+  int    QZ_GL_GetAttribute   (_THIS, SDL_GLattr attrib, int* value);
+--- 186,192 ----
+  int    QZ_GetGammaRamp      (_THIS, Uint16 *ramp);
+  
+  /* OpenGL functions */
+! int    QZ_SetupOpenGL       (_THIS, int bpp, Uint32 flags, void* sharedCtx);
+  void   QZ_TearDownOpenGL    (_THIS);
+  void*  QZ_GL_GetProcAddress (_THIS, const char *proc);
+  int    QZ_GL_GetAttribute   (_THIS, SDL_GLattr attrib, int* value);
+***************
+*** 213,219 ****
+  void         QZ_SetIcon          (_THIS, SDL_Surface *icon, Uint8 *mask);
+  int          QZ_IconifyWindow    (_THIS);
+  SDL_GrabMode QZ_GrabInput        (_THIS, SDL_GrabMode grab_mode);
+! /*int          QZ_GetWMInfo        (_THIS, SDL_SysWMinfo *info);*/
+  
+  /* YUV functions */
+  SDL_Overlay* QZ_CreateYUVOverlay (_THIS, int width, int height,
+--- 213,219 ----
+  void         QZ_SetIcon          (_THIS, SDL_Surface *icon, Uint8 *mask);
+  int          QZ_IconifyWindow    (_THIS);
+  SDL_GrabMode QZ_GrabInput        (_THIS, SDL_GrabMode grab_mode);
+! int          QZ_GetWMInfo        (_THIS, SDL_SysWMinfo *info);
+  
+  /* YUV functions */
+  SDL_Overlay* QZ_CreateYUVOverlay (_THIS, int width, int height,
+diff -c -r SDL-1.2.13/src/video/quartz/SDL_QuartzVideo.m SDL-1.2.13-XBMC/src/video/quartz/SDL_QuartzVideo.m
+*** SDL-1.2.13/src/video/quartz/SDL_QuartzVideo.m	2007-12-30 18:48:04.000000000 -1000
+--- SDL-1.2.13-XBMC/src/video/quartz/SDL_QuartzVideo.m	2008-01-08 23:05:08.000000000 -1000
+***************
+*** 67,73 ****
+  
+  static SDL_Surface* QZ_SetVideoMode     (_THIS, SDL_Surface *current,
+                                           int width, int height, int bpp,
+!                                          Uint32 flags);
+  static int          QZ_ToggleFullScreen (_THIS, int on);
+  static int          QZ_SetColors        (_THIS, int first_color,
+                                           int num_colors, SDL_Color *colors);
+--- 67,73 ----
+  
+  static SDL_Surface* QZ_SetVideoMode     (_THIS, SDL_Surface *current,
+                                           int width, int height, int bpp,
+!                                          Uint32 flags, void* sharedContext);
+  static int          QZ_ToggleFullScreen (_THIS, int on);
+  static int          QZ_SetColors        (_THIS, int first_color,
+                                           int num_colors, SDL_Color *colors);
+***************
+*** 161,167 ****
+      device->SetCaption    = QZ_SetCaption;
+      device->SetIcon       = QZ_SetIcon;
+      device->IconifyWindow = QZ_IconifyWindow;
+!     /*device->GetWMInfo     = QZ_GetWMInfo;*/
+      device->GrabInput     = QZ_GrabInput;
+  
+      device->CreateYUVOverlay =  QZ_CreateYUVOverlay;
+--- 161,167 ----
+      device->SetCaption    = QZ_SetCaption;
+      device->SetIcon       = QZ_SetIcon;
+      device->IconifyWindow = QZ_IconifyWindow;
+!     device->GetWMInfo     = QZ_GetWMInfo;
+      device->GrabInput     = QZ_GrabInput;
+  
+      device->CreateYUVOverlay =  QZ_CreateYUVOverlay;
+***************
+*** 424,430 ****
+  }
+  
+  static SDL_Surface* QZ_SetVideoFullScreen (_THIS, SDL_Surface *current, int width,
+!                                            int height, int bpp, Uint32 flags) {
+      boolean_t exact_match = 0;
+      NSRect screen_rect;
+      CGError error;
+--- 424,430 ----
+  }
+  
+  static SDL_Surface* QZ_SetVideoFullScreen (_THIS, SDL_Surface *current, int width,
+!                                            int height, int bpp, Uint32 flags, void* sharedContext) {
+      boolean_t exact_match = 0;
+      NSRect screen_rect;
+      CGError error;
+***************
+*** 581,587 ****
+          CGLError err;
+          CGLContextObj ctx;
+  
+!         if ( ! QZ_SetupOpenGL (this, bpp, flags) ) {
+              goto ERR_NO_GL;
+          }
+  
+--- 581,587 ----
+          CGLError err;
+          CGLContextObj ctx;
+  
+!         if ( ! QZ_SetupOpenGL (this, bpp, flags, sharedContext) ) {
+              goto ERR_NO_GL;
+          }
+  
+***************
+*** 648,661 ****
+  }
+  
+  static SDL_Surface* QZ_SetVideoWindowed (_THIS, SDL_Surface *current, int width,
+!                                          int height, int *bpp, Uint32 flags) {
+      unsigned int style;
+      NSRect contentRect;
+      BOOL isCustom = NO;
+      int center_window = 1;
+      int origin_x, origin_y;
+      CGDisplayFadeReservationToken fade_token = kCGDisplayFadeReservationInvalidToken;
+! 
+      current->flags = 0;
+      current->w = width;
+      current->h = height;
+--- 648,662 ----
+  }
+  
+  static SDL_Surface* QZ_SetVideoWindowed (_THIS, SDL_Surface *current, int width,
+!                                          int height, int *bpp, Uint32 flags, void* sharedContext) {
+      unsigned int style;
+      NSRect contentRect;
+      BOOL isCustom = NO;
+      int center_window = 1;
+      int origin_x, origin_y;
+      CGDisplayFadeReservationToken fade_token = kCGDisplayFadeReservationInvalidToken;
+!     printf("QZ_SetVideoWindowed(%d, %d)\n", width, height);
+!     
+      current->flags = 0;
+      current->w = width;
+      current->h = height;
+***************
+*** 781,787 ****
+      /* For OpenGL, we bind the context to a subview */
+      if ( flags & SDL_OPENGL ) {
+  
+!         if ( ! QZ_SetupOpenGL (this, *bpp, flags) ) {
+              if (fade_token != kCGDisplayFadeReservationInvalidToken) {
+                  CGDisplayFade (fade_token, 0.5, kCGDisplayBlendSolidColor, kCGDisplayBlendNormal, 0.0, 0.0, 0.0, FALSE);
+                  CGReleaseDisplayFadeReservation (fade_token);
+--- 782,788 ----
+      /* For OpenGL, we bind the context to a subview */
+      if ( flags & SDL_OPENGL ) {
+  
+!         if ( ! QZ_SetupOpenGL (this, *bpp, flags, sharedContext) ) {
+              if (fade_token != kCGDisplayFadeReservationInvalidToken) {
+                  CGDisplayFade (fade_token, 0.5, kCGDisplayBlendSolidColor, kCGDisplayBlendNormal, 0.0, 0.0, 0.0, FALSE);
+                  CGReleaseDisplayFadeReservation (fade_token);
+***************
+*** 855,868 ****
+  }
+  
+  static SDL_Surface* QZ_SetVideoMode (_THIS, SDL_Surface *current, int width,
+!                                      int height, int bpp, Uint32 flags) {
+  
+      current->flags = 0;
+      current->pixels = NULL;
+  
+      /* Setup full screen video */
+      if ( flags & SDL_FULLSCREEN ) {
+!         current = QZ_SetVideoFullScreen (this, current, width, height, bpp, flags );
+          if (current == NULL)
+              return NULL;
+      }
+--- 856,869 ----
+  }
+  
+  static SDL_Surface* QZ_SetVideoMode (_THIS, SDL_Surface *current, int width,
+!                                      int height, int bpp, Uint32 flags, void* sharedContext) {
+  
+      current->flags = 0;
+      current->pixels = NULL;
+  
+      /* Setup full screen video */
+      if ( flags & SDL_FULLSCREEN ) {
+!         current = QZ_SetVideoFullScreen (this, current, width, height, bpp, flags, sharedContext);
+          if (current == NULL)
+              return NULL;
+      }
+***************
+*** 870,876 ****
+      else {
+          /* Force bpp to the device's bpp */
+          bpp = device_bpp;
+!         current = QZ_SetVideoWindowed (this, current, width, height, &bpp, flags);
+          if (current == NULL)
+              return NULL;
+      }
+--- 871,877 ----
+      else {
+          /* Force bpp to the device's bpp */
+          bpp = device_bpp;
+!         current = QZ_SetVideoWindowed (this, current, width, height, &bpp, flags, sharedContext);
+          if (current == NULL)
+              return NULL;
+      }
+diff -c -r SDL-1.2.13/src/video/quartz/SDL_QuartzWM.m SDL-1.2.13-XBMC/src/video/quartz/SDL_QuartzWM.m
+*** SDL-1.2.13/src/video/quartz/SDL_QuartzWM.m	2007-12-30 18:48:04.000000000 -1000
+--- SDL-1.2.13-XBMC/src/video/quartz/SDL_QuartzWM.m	2008-01-08 19:12:56.000000000 -1000
+***************
+*** 367,377 ****
+      }
+  }
+  
+! /*
+! int  QZ_GetWMInfo  (_THIS, SDL_SysWMinfo *info) { 
+!     info->nsWindowPtr = qz_window;
+      return 0; 
+! }*/
+  
+  void QZ_ChangeGrabState (_THIS, int action) {
+  
+--- 367,379 ----
+      }
+  }
+  
+! int  QZ_GetWMInfo  (_THIS, SDL_SysWMinfo *info) {
+!     info->info.quartz.nsContext = gl_context;
+!     info->info.quartz.nsWindow = qz_window;
+!     info->info.quartz.displayID = display_id;
+!     info->info.quartz.nsWindowPtr = [ qz_window windowRef ];
+      return 0; 
+! }
+  
+  void QZ_ChangeGrabState (_THIS, int action) {
+  
