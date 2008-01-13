@@ -27,6 +27,7 @@
 #include "AIFFcodec.h"
 #include "ADPCMCodec.h"
 #include "TimidityCodec.h"
+#include "DVDPlayerCodec.h"
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
@@ -74,10 +75,8 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new CubeCodec();
   else if (strFileType.Equals("ym"))
     return new YMCodec();
-#ifdef HAS_WMA_CODEC
   else if (strFileType.Equals("wma"))
-    return new WMACodec();
-#endif
+    return new DVDPlayerCodec();
   else if (strFileType.Equals("aiff") || strFileType.Equals("aif"))
     return new AIFFCodec();
   else if (strFileType.Equals("xwav"))
@@ -95,10 +94,8 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
   else if( strContent.Equals("audio/aac") 
     || strContent.Equals("audio/aacp") )
     return new AACCodec();
-#ifdef HAS_WMA_CODEC
   else if( strContent.Equals("audio/x-ms-wma") )
-    return new WMACodec();
-#endif
+    return new DVDPlayerCodec();
 
   CURL urlFile(strFile);
   if (urlFile.GetProtocol() == "lastfm" || urlFile.GetProtocol() == "shout" )
