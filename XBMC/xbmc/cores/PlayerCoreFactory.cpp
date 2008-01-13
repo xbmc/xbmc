@@ -6,7 +6,7 @@
 #include "modplayer.h"
 #endif
 #include "paplayer/paplayer.h"
-#include "paplayer/WMACodec.h"
+#include "paplayer/DVDPlayerCodec.h"
 #include "../GUIDialogContextMenu.h"
 #include "../XBAudioConfig.h"
 #include "../FileSystem/FileCurl.h"
@@ -160,19 +160,17 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   if( PAPlayer::HandlesType(url.GetFileType()) )
   {
     bool bAdd = true;
-#ifdef HAS_WMA_CODEC
     if (url.GetProtocol().Equals("mms"))
     {
        bAdd = false;
     }
     else if (item.IsType(".wma"))
     {
-      WMACodec codec;
+      DVDPlayerCodec codec;
       if (!codec.Init(item.m_strPath,2048))
         bAdd = false;
       codec.DeInit();        
     }
-#endif
 
     if (bAdd)
     {

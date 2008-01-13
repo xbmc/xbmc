@@ -1,4 +1,4 @@
-INCLUDES=-I. -I../ -Iffmpeg -I../linux -I../../guilib -I../utils
+INCLUDES=-I. -I../ -Iffmpeg -I../linux -I../../guilib -I../utils -Idvdplayer
 
 SRCS=DummyVideoPlayer.cpp PlayerCoreFactory.cpp ssrc.cpp dlgcache.cpp
 
