@@ -11,8 +11,18 @@
 
 extern "C" {
 
+//
+// Pools.
+//
 void* InitializeAutoReleasePool();
 void DestroyAutoReleasePool(void* pool);
+
+//
+// Open GL.
+//
+void  Cocoa_GL_MakeCurrentContext(void* theContext);
+void  Cocoa_GL_ReleaseContext(void* context);
+void  Cocoa_GL_SwapBuffers(void* theContext);
 
 }
 
