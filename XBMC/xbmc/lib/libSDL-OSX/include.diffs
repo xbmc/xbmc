@@ -1,0 +1,38 @@
+diff -c -r SDL-1.2.13/include/SDL_syswm.h SDL-1.2.13-XBMC/include/SDL_syswm.h
+*** SDL-1.2.13/include/SDL_syswm.h	2007-12-30 18:48:36.000000000 -1000
+--- SDL-1.2.13-XBMC/include/SDL_syswm.h	2008-01-08 19:12:04.000000000 -1000
+***************
+*** 101,106 ****
+--- 101,112 ----
+  		/* Introduced in SDL 1.2.12 */
+  		Display *gfxdisplay;	/* The X11 display to which rendering is done */
+  	    } x11;
++ 	    struct {
++             int       displayID; // Display.
++             void*     nsWindow;  // Window.
++             void*     nsContext; // GL context.
++             void*     nsWindowPtr;
++         } quartz;
+  	} info;
+  } SDL_SysWMinfo;
+  
+diff -c -r SDL-1.2.13/include/SDL_video.h SDL-1.2.13-XBMC/include/SDL_video.h
+*** SDL-1.2.13/include/SDL_video.h	2007-12-30 18:48:36.000000000 -1000
+--- SDL-1.2.13-XBMC/include/SDL_video.h	2008-01-08 23:06:37.000000000 -1000
+***************
+*** 345,351 ****
+   * are not available.
+   */
+  extern DECLSPEC SDL_Surface * SDLCALL SDL_SetVideoMode
+! 			(int width, int height, int bpp, Uint32 flags);
+  
+  /*
+   * Makes sure the given list of rectangles is updated on the given screen.
+--- 345,351 ----
+   * are not available.
+   */
+  extern DECLSPEC SDL_Surface * SDLCALL SDL_SetVideoMode
+! 			(int width, int height, int bpp, Uint32 flags, void* sharedContext);
+  
+  /*
+   * Makes sure the given list of rectangles is updated on the given screen.
