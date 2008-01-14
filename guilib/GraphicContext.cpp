@@ -605,6 +605,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
       mode.hz = g_settings.m_ResInfo[res].fRefreshRate;
       g_xrandr.SetMode(out, mode);
 #endif
+      
       rootWindow = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0,  options);
       // attach a GLX surface to the root window
       m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, rootWindow, false, false, false, 1);
@@ -612,6 +613,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
         m_screenSurface->EnableVSync();
       //glEnable(GL_MULTISAMPLE);
       SDL_WM_SetCaption("XBMC", NULL);
+      
       if (g_advancedSettings.m_fullScreen)
       {
         SetFullScreenRoot(true);
@@ -1111,7 +1113,7 @@ bool CGraphicContext::ValidateSurface(CSurface* dest)
   Uint32 tid = SDL_ThreadID();
   iter = m_surfaces.find(tid);
   if (iter==m_surfaces.end()) {
-#ifdef HAS_GLX
+#if defined(HAS_GLX) || defined(__APPLE__)
     if (dest==NULL)
     {
       CLog::Log(LOGDEBUG, "GL: Sharing screen surface for thread %u", tid);
@@ -1326,7 +1328,13 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     mode.id = g_settings.m_ResInfo[res].strId;
     g_xrandr.SetMode(out, mode);
 #endif
-    SDL_SetVideoMode(width, height, 0, SDL_FULLSCREEN);
+
+#ifdef __APPLE__
+	// Need extra parameter.
+    SDL_SetVideoMode(width, height, 0, SDL_FULLSCREEN, 0);
+#else
+	SDL_SetVideoMode(width, height, 0, SDL_FULLSCREEN);
+#endif
     m_screenSurface->ResizeSurface(width, height);
     glViewport(0, 0, m_iFullScreenWidth, m_iFullScreenHeight);
     glScissor(0, 0, m_iFullScreenWidth, m_iFullScreenHeight);
@@ -1334,7 +1342,12 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
   }
   else
   {
-    SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0, SDL_RESIZABLE);
+#ifdef __APPLE__
+	// Need extra parameter.
+    SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0, SDL_RESIZABLE, 0);
+#else
+	SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0, SDL_RESIZABLE);
+#endif
     m_screenSurface->ResizeSurface(m_iScreenWidth, m_iScreenHeight);
     glViewport(0, 0, m_iScreenWidth, m_iScreenHeight);
     glScissor(0, 0, m_iScreenWidth, m_iScreenHeight);
