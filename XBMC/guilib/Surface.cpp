@@ -2,18 +2,15 @@
 \file Surface.cpp
 \brief 
 */
-
 #include "include.h"
 #include "Surface.h"
+#include "CocoaUtils.h"
 #include <string>
 
 using namespace Surface;
+
 #ifdef HAS_SDL_OPENGL
 #include <SDL/SDL_syswm.h>
-#endif
-
-#ifdef __APPLE__
-#define APIENTRY 
 #endif
 
 #ifdef HAS_GLX
@@ -32,7 +29,7 @@ bool CSurface::b_glewInit = 0;
 std::string CSurface::s_glVendor = "";
 std::string CSurface::s_glRenderer = "";
 
-#ifdef HAS_SDL_OPENGL
+#if defined(HAS_SDL_OPENGL) && !defined(__APPLE__)
 static int (*_glXGetVideoSyncSGI)(unsigned int*) = 0;
 static int (*_glXWaitVideoSyncSGI)(int, int, unsigned int*) = 0;
 static int (*_glXSwapIntervalSGI)(int) = 0;
@@ -60,7 +57,11 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   m_iVSyncMode = 0;
   m_iGLMajVer = 0;
   m_iGLMinVer = 0;
-
+  
+#ifdef __APPLE__
+  m_glContext = 0;
+#endif
+  
 #ifdef HAS_GLX
   m_glWindow = 0;
   m_parentWindow = 0;
@@ -169,7 +170,6 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     // query compatible framebuffers based on single buffered attributes (not used currently)
     fbConfigs = glXChooseFBConfig(s_dpy, DefaultScreen(s_dpy), singleVisAttributes, &num);
   }
-
   if (fbConfigs==NULL) 
   {
     CLog::Log(LOGERROR, "GLX Error: No compatible framebuffers found");
@@ -274,35 +274,63 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     CLog::Log(LOGERROR, "GLX Error: Could not create context");
   }
 #elif defined(HAS_SDL_OPENGL)
-  int options = SDL_OPENGL | (fullscreen?SDL_FULLSCREEN:0);
-  SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   m_iRedSize);
-  SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, m_iGreenSize);
-  SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  m_iBlueSize);
-  SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, m_iAlphaSize);
-  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, m_bDoublebuffer?1:0);
-  m_SDLSurface = SDL_SetVideoMode(m_iWidth, m_iHeight, 0, options);
-  if (m_SDLSurface) 
+#ifdef __APPLE__
+  // We only want to call SDL_SetVideoMode if it's not shared, otherwise we'll create a new window.
+  if (shared == 0)
   {
-    m_bOK = true;
-  }
-
-  if (!b_glewInit)
-  {
-    if (glewInit()!=GLEW_OK)
-    {
-            CLog::Log(LOGERROR, "GL: Critical Error. Could not initialise GL Extension Wrangler Library");
-    }
-    else
-    {
-            b_glewInit = true;
-            if (s_glVendor.length()==0)
-            {
-              s_glVendor = (const char*)glGetString(GL_VENDOR);
-              s_glRenderer = (const char*)glGetString(GL_RENDERER);
-              CLog::Log(LOGINFO, "GL: OpenGL Vendor String: %s", s_glVendor.c_str());
-            }
-    }
-  }
+#endif
+	  int options = SDL_OPENGL | (fullscreen?SDL_FULLSCREEN:0);
+	  SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   m_iRedSize);
+	  SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, m_iGreenSize);
+	  SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  m_iBlueSize);
+	  SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, m_iAlphaSize);
+	  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, m_bDoublebuffer?1:0);
+#ifdef __APPLE__
+	  m_SDLSurface = SDL_SetVideoMode(m_iWidth, m_iHeight, 0, options, shared ? shared->m_glContext : 0);
+#else
+	  m_SDLSurface = SDL_SetVideoMode(m_iWidth, m_iHeight, 0, options);
+#endif
+	  if (m_SDLSurface) 
+	  {
+	    m_bOK = true;
+	  }
+	
+	  if (!b_glewInit)
+	  {
+	    if (glewInit()!=GLEW_OK)
+	    {
+	            CLog::Log(LOGERROR, "GL: Critical Error. Could not initialise GL Extension Wrangler Library");
+	    }
+	    else
+	    {
+	            b_glewInit = true;
+	            if (s_glVendor.length()==0)
+	            {
+	              s_glVendor = (const char*)glGetString(GL_VENDOR);
+	              s_glRenderer = (const char*)glGetString(GL_RENDERER);
+	              CLog::Log(LOGINFO, "GL: OpenGL Vendor String: %s", s_glVendor.c_str());
+	            }
+	    }
+	  }
+	  
+#ifdef __APPLE__
+	
+	  // Get the context.
+	  SDL_SysWMinfo info;
+	  info.version.major = 1;
+	  SDL_GetWMInfo(&info);
+	  m_glContext = info.info.quartz.nsContext;
+  	}
+  	else
+  	{
+  		// Take the shared context.
+  		m_glContext = shared->m_glContext;
+  		MakeCurrent();
+  		m_bOK = true;
+  	}
+  
+#endif
+  
 #else
   int options = SDL_HWSURFACE | SDL_DOUBLEBUF;
   if (fullscreen) 
@@ -451,11 +479,24 @@ CSurface::~CSurface()
     glXDestroyWindow(s_dpy, m_glWindow);
   }
 #else
-  if (IsValid() && m_SDLSurface) 
+  if (IsValid() && m_SDLSurface
+#ifdef __APPLE__
+	  && !IsShared()
+#endif
+     ) 
   {
     CLog::Log(LOGINFO, "Freeing surface");
     SDL_FreeSurface(m_SDLSurface);
   }
+  
+#ifdef __APPLE__
+  if (m_glContext && !IsShared())
+  {
+	  CLog::Log(LOGINFO, "Surface: Whacking context 0x%08lx", m_glContext);
+	  Cocoa_GL_ReleaseContext(m_glContext);
+  }
+#endif
+  
 #endif
 }
 
@@ -465,6 +506,8 @@ void CSurface::EnableVSync(bool enable)
   if (m_bVSync==enable)
     return;
 
+#ifndef __APPLE__
+  
   if (enable)
   {
     CLog::Log(LOGINFO, "GL: Enabling VSYNC");
@@ -536,7 +579,6 @@ void CSurface::EnableVSync(bool enable)
       _wglSwapIntervalEXT = (bool (APIENTRY *)(GLint))wglGetProcAddress("wglSwapIntervalEXT");
     }
 #endif
-
     // first we set swap interval to keep fps down
     if (_glXSwapIntervalSGI)
     {
@@ -556,7 +598,6 @@ void CSurface::EnableVSync(bool enable)
     }
 #endif
 
-#ifndef __APPLE__
     // now let's see if we have some system to do specific vsync handling
     if (_glXGetSyncValuesOML && _glXSwapBuffersMscOML && !m_iVSyncMode)
     {
@@ -574,7 +615,6 @@ void CSurface::EnableVSync(bool enable)
       else
         CLog::Log(LOGWARNING, "%s - glXGetVideoSyncSGI failed, glcontext probably not direct", __FUNCTION__);
     }
-#endif
 
     if(!m_iVSyncMode)
     {
@@ -585,6 +625,7 @@ void CSurface::EnableVSync(bool enable)
     else
       CLog::Log(LOGINFO, "GL: Selected vsync mode %d", m_iVSyncMode);
   }
+#endif
 #endif
 }
 
@@ -654,10 +695,13 @@ bool CSurface::MakeCurrent()
 #endif
 
 #ifdef __APPLE__
-  return true;
-#else
-  return false;
+  if (m_glContext)
+  {
+	  Cocoa_GL_MakeCurrentContext(m_glContext);
+	  return true;
 #endif
+  }	  
+  return false;
 }
 
 void CSurface::ReleaseContext()
@@ -668,10 +712,14 @@ void CSurface::ReleaseContext()
     glXMakeCurrent(s_dpy, None, NULL);
   }
 #endif
+#ifdef __APPLE__
+  // Nothing?
+#endif
 }
 
 bool CSurface::ResizeSurface(int newWidth, int newHeight)
 {
+	printf("Asking to resize surface to %d x %d\n", newWidth, newHeight);
 #ifdef HAS_GLX
   if (m_parentWindow)
   {
@@ -689,7 +737,8 @@ void CSurface::GetGLVersion(int& maj, int& min)
   if (m_iGLMajVer==0)
   {
     const char* ver = (const char*)glGetString(GL_VERSION);
-    sscanf(ver, "%d.%d", &m_iGLMajVer, &m_iGLMinVer);
+    if (ver != 0)
+    	sscanf(ver, "%d.%d", &m_iGLMajVer, &m_iGLMinVer);
   }
   maj = m_iGLMajVer;
   min = m_iGLMinVer;
