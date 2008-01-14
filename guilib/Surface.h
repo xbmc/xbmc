@@ -93,6 +93,9 @@ public:
   GLXPbuffer  m_glPBuffer;
   static Display* s_dpy;
 #endif
+#ifdef __APPLE__
+  void* m_glContext;
+#endif
   static bool b_glewInit;
   static std::string s_glVendor;
   static std::string s_glRenderer;
