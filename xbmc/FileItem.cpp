@@ -465,8 +465,8 @@ bool CFileItem::IsVideo() const
 bool CFileItem::IsAudio() const
 {
   if (IsCDDA()) return true;
-  if (IsShoutCast()) return true;
-  if (IsLastFM()) return true;
+  if (IsShoutCast() && !m_bIsFolder) return true;
+  if (IsLastFM() && !m_bIsFolder) return true;
 
   /* check preset content type */
   if( m_contenttype.Left(6).Equals("audio/") )
