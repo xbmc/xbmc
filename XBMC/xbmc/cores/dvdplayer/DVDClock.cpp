@@ -18,6 +18,7 @@ CDVDClock::CDVDClock()
 CDVDClock::~CDVDClock()
 {}
 
+// Returns the current absolute clock in units of DVD_TIME_BASE (usually microseconds).
 double CDVDClock::GetAbsoluteClock()
 {
   if(!m_systemFrequency.QuadPart)
@@ -90,7 +91,6 @@ void CDVDClock::Discontinuity(ClockDiscontinuityType type, double currentPts, do
     }
   case CLOCK_DISC_NORMAL:
     {
-
       QueryPerformanceCounter(&m_startClock);
       m_startClock.QuadPart += (__int64)(delay * m_systemUsed.QuadPart / DVD_TIME_BASE);
       m_iDisc = currentPts;
