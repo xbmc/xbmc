@@ -1256,6 +1256,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetString("lookandfeel.soundskin") != "OFF");
     }
+    else if (strSetting.Equals("lookandfeel.enablemouse"))
+    {
+       CGUICheckMarkControl *pControl = (CGUICheckMarkControl *)GetControl(pSettingControl->GetID());
+       g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
+    }
   }
 }
 
