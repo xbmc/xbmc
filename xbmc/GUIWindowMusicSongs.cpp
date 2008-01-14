@@ -386,9 +386,9 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
       CGUIWindowMusicBase::GetContextButtons(itemNumber, buttons);
       if (!item->IsPlayList())
       {
-        if (item->IsAudio())
+        if (item->IsAudio() && !item->IsLastFM() && !item->IsShoutCast())
           buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658); // Song Info
-        else if (!item->IsParentFolder())
+        else if (!item->IsParentFolder() && !item->IsLastFM() && !item->IsShoutCast() && !item->m_strPath.Left(3).Equals("new"))
           buttons.Add(CONTEXT_BUTTON_INFO, 13351); // Album Info
       }
 
