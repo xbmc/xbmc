@@ -46,6 +46,7 @@ public:
   DWORD GetExclusiveControlID() const { return m_exclusiveControlID; };
   const CPoint &GetExclusiveOffset() const { return m_exclusiveOffset; };
   void SetState(DWORD state) { m_pointerState = state; };
+  void SetEnabled(bool enabled) { m_mouseEnabled = enabled; };
   DWORD GetState() const { return m_pointerState; };
   CPoint GetLocation() const;
   void SetLocation(const CPoint &point);
@@ -61,6 +62,7 @@ private:
   // state of the mouse
   DWORD m_pointerState;
   MouseState m_mouseState;
+  bool m_mouseEnabled;
   bool m_lastDown[5];
 
   // mouse device
