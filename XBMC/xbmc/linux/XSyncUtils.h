@@ -1,6 +1,7 @@
 #ifndef __X_SYNC_UTILS_
 #define __X_SYNC_UTILS_
 
+#include "XCriticalSection.h"
 #include "XHandle.h"
 
 #ifdef _LINUX
@@ -18,11 +19,6 @@ HANDLE	WINAPI CreateMutex( LPSECURITY_ATTRIBUTES lpMutexAttributes,  BOOL bIniti
 bool	InitializeRecursiveMutex(HANDLE hMutex, BOOL bInitialOwner);
 bool	DestroyRecursiveMutex(HANDLE hMutex);
 bool	WINAPI ReleaseMutex( HANDLE hMutex );
-
-void WINAPI InitializeCriticalSection(LPCRITICAL_SECTION lpCriticalSection);
-void WINAPI DeleteCriticalSection(LPCRITICAL_SECTION lpCriticalSection);
-void WINAPI EnterCriticalSection(LPCRITICAL_SECTION lpCriticalSection);
-void WINAPI LeaveCriticalSection(LPCRITICAL_SECTION lpCriticalSection);
 
 void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer);
 

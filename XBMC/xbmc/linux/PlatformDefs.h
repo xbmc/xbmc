@@ -160,10 +160,10 @@ typedef union _LARGE_INTEGER
 	LONGLONG QuadPart;
 } LARGE_INTEGER, *PLARGE_INTEGER;
 
-typedef union _ULARGE_INTEGER { 
+ typedef union _ULARGE_INTEGER { 
   struct {
-    DWORD LowPart;
-    DWORD HighPart;
+      DWORD LowPart; 
+      DWORD HighPart; 
   } u;
   ULONGLONG QuadPart;
 } ULARGE_INTEGER, *PULARGE_INTEGER;
@@ -236,9 +236,9 @@ typedef struct _TIME_ZONE_INFORMATION {
 
 typedef int SOCKET;
 
-// Critical section
-#define CRITICAL_SECTION   pthread_mutex_t
-#define LPCRITICAL_SECTION pthread_mutex_t*
+class CCriticalSection;
+#define CRITICAL_SECTION     XCriticalSection
+#define LPCRITICAL_SECTION   XCriticalSection*
 
 // Thread
 typedef int (*LPTHREAD_START_ROUTINE)(void *);
