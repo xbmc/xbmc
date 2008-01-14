@@ -1365,6 +1365,8 @@ HRESULT CApplication::Create(HWND hWnd)
   D3DDevice::SetWaitCallback(WaitCallback);
 #endif
 
+  g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
+
   return CXBApplicationEx::Create(hWnd);
 }
 
