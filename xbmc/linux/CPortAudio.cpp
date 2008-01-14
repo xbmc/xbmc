@@ -60,9 +60,12 @@ PaStream* CPortAudio::CreateOutputStream(const CStdString& strName, int channels
     for(int i=0; i<numDevices && pickedDevice == -1; i++)
     {
         PaDeviceInfo* deviceInfo = (PaDeviceInfo* )Pa_GetDeviceInfo(i);
-        
-        if (strName.Equals(deviceInfo->name))
+       
+        if (strName.Equals(deviceInfo->name) || (isDigital == true && strstr(deviceInfo->name, "Digital") != 0))
+        {
+            printf("Picked device:            [%s]\n", deviceInfo->name);
             pickedDevice = i;
+        }
     }
     
     // Open the device.
