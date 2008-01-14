@@ -6,6 +6,13 @@
 #include <unistd.h>
 #include <sys/times.h>
 
+#ifdef __APPLE__
+#include <mach/mach.h>
+#include <mach/clock.h>
+#include <mach/mach_error.h>
+#include "Thread.h"
+#endif
+
 #define WIN32_TIME_OFFSET ((unsigned long long)(369 * 365 + 89) * 24 * 3600 * 10000000)
 
 /*
@@ -56,9 +63,36 @@ BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount, bool bUseHighRes
     return false;
 
 #ifdef __APPLE__
-  struct timeval now;
-  gettimeofday(&now, NULL);
-  lpPerformanceCount->QuadPart = ((__int64)now.tv_sec * 1000000000L) + now.tv_usec*1000;
+  
+  kern_return_t   ret;
+  clock_serv_t    aClock;
+  mach_timespec_t aTime;
+
+  // Get the clock.
+  ret = host_get_clock_service(mach_host_self(), SYSTEM_CLOCK, &aClock);
+  if (ret != KERN_SUCCESS)
+  {
+	  CLog::Log(LOGERROR, "host_get_clock_service() failed: %s", mach_error_string(ret));
+	  return false;
+  }
+	  
+  // Query it for the time.
+  ret = clock_get_time(aClock, &aTime);
+  if (ret != KERN_SUCCESS) 
+  {
+	  CLog::Log(LOGERROR, "clock_get_time() failed: %s", mach_error_string(ret));
+	  return false;
+  }
+
+  lpPerformanceCount->QuadPart = ((__int64)aTime.tv_sec * 1000000000L) + aTime.tv_nsec;
+  
+  // Get current thread's offset to make sure time starts from 0.
+  if (bUseHighRes == false)
+  {
+	  CThread* currentThread = CThread::GetCurrent();
+	  if (currentThread)
+		  lpPerformanceCount->QuadPart -= currentThread->getStartTime()->QuadPart;
+  }
 
 #else
   struct timespec now;
@@ -99,13 +133,13 @@ BOOL   SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime,  LPFILETIME lpFileTi
   static const int dayoffset[12] = {0, 31, 59, 90, 120, 151, 182, 212, 243, 273, 304, 334};
 
   struct tm sysTime;
-  sysTime.tm_year  = lpSystemTime->wYear - 1900;
-  sysTime.tm_mon   = lpSystemTime->wMonth - 1;
-  sysTime.tm_wday  = lpSystemTime->wDayOfWeek;
-  sysTime.tm_mday  = lpSystemTime->wDay;
-  sysTime.tm_hour  = lpSystemTime->wHour;
-  sysTime.tm_min   = lpSystemTime->wMinute;
-  sysTime.tm_sec   = lpSystemTime->wSecond;
+  sysTime.tm_year = lpSystemTime->wYear - 1900;
+  sysTime.tm_mon =  lpSystemTime->wMonth - 1;
+  sysTime.tm_wday = lpSystemTime->wDayOfWeek;
+  sysTime.tm_mday = lpSystemTime-> wDay;
+  sysTime.tm_hour = lpSystemTime-> wHour;
+  sysTime.tm_min = lpSystemTime-> wMinute;
+  sysTime.tm_sec = lpSystemTime->wSecond;
   sysTime.tm_yday  = dayoffset[sysTime.tm_mon] + (sysTime.tm_mday - 1);
   sysTime.tm_isdst = 0;
   
