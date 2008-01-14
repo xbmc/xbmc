@@ -8,6 +8,10 @@
 #include "log.h"
 #include "GraphicContext.h"
 
+#ifdef __APPLE__
+#include "CocoaUtils.h"
+#endif
+
 #ifdef _LINUX
 #include <signal.h>
 
@@ -86,6 +90,10 @@ static int InternalThreadFunc(void *data)
   //sigaction (SIGABRT, &action, NULL);
   //sigaction (SIGSEGV, &action, NULL);
 
+#ifdef __APPLE__
+  void* pool = InitializeAutoReleasePool();
+#endif
+  
   try {
      CLog::Log(LOGDEBUG,"Running thread %lu", (unsigned long)SDL_ThreadID());
      nRc = GET_PARAM()->threadFunc(GET_PARAM()->data);
@@ -93,6 +101,10 @@ static int InternalThreadFunc(void *data)
   catch(...) {
     CLog::Log(LOGERROR,"thread 0x%x raised an exception. terminating it.", SDL_ThreadID());
   }
+  
+#ifdef __APPLE__
+  	DestroyAutoReleasePool(pool);
+#endif
 
   if (OwningCriticalSection(g_graphicsContext))
   {
