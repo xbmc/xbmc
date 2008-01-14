@@ -80,33 +80,6 @@ bool WINAPI ReleaseMutex( HANDLE hMutex ) {
   return bOk;
 }
 
-void WINAPI InitializeCriticalSection(LPCRITICAL_SECTION lpCriticalSection) {
-  if (lpCriticalSection)
-  {
-    pthread_mutexattr_t attr;
-    pthread_mutexattr_init(&attr);
-    pthread_mutexattr_settype(&attr,PTHREAD_MUTEX_RECURSIVE);
-    if (pthread_mutex_init(lpCriticalSection,&attr) != 0)
-    {
-      CLog::Log(LOGERROR,"%s - failed to create mutex. error: %d", __FUNCTION__, errno);
-    }
-    pthread_mutexattr_destroy(&attr);
-  }
-}
-
-void WINAPI DeleteCriticalSection(LPCRITICAL_SECTION lpCriticalSection) {
-  if (lpCriticalSection) 
-    pthread_mutex_destroy(lpCriticalSection);
-}
-
-void WINAPI EnterCriticalSection(LPCRITICAL_SECTION lpCriticalSection) {
-  pthread_mutex_lock(lpCriticalSection);
-}
-
-void WINAPI LeaveCriticalSection(LPCRITICAL_SECTION lpCriticalSection) {
-  pthread_mutex_unlock(lpCriticalSection);
-}
-
 void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer) 
 {
   if (!lpBuffer)
@@ -175,33 +148,33 @@ DWORD WINAPI WaitForEvent(HANDLE hHandle, DWORD dwMilliseconds)
 
 	if (dwMilliseconds == 0)
 	{
-			if (hHandle->m_bEventSet == true)
-					nRet = -1;
-			else
-					nRet = 0;
+		if (hHandle->m_bEventSet == true)
+			nRet = 0;
+		else
+			nRet = SDL_MUTEX_TIMEDOUT;
 	}
 	else if (dwMilliseconds == INFINITE)
 	{
-			if (hHandle->m_bEventSet == false)
-					nRet = SDL_CondWait(hHandle->m_hCond, hHandle->m_hMutex);
-			if (!hHandle->m_bManualEvent)
-					hHandle->m_bEventSet = false;
+		if (hHandle->m_bEventSet == false)
+			nRet = SDL_CondWait(hHandle->m_hCond, hHandle->m_hMutex);
+		if (hHandle->m_bManualEvent == false)
+			hHandle->m_bEventSet = false;
 	}
 	else
 	{
-			if (hHandle->m_bEventSet == false)
-					nRet = SDL_CondWaitTimeout(hHandle->m_hCond, hHandle->m_hMutex, dwMilliseconds);
-			if (!hHandle->m_bManualEvent && dwRet != SDL_MUTEX_TIMEDOUT)
-					hHandle->m_bEventSet = false;
+		if (hHandle->m_bEventSet == false)
+			nRet = SDL_CondWaitTimeout(hHandle->m_hCond, hHandle->m_hMutex, dwMilliseconds);
+		if (hHandle->m_bManualEvent == false && nRet != SDL_MUTEX_TIMEDOUT)
+			hHandle->m_bEventSet = false;
 	}
 
 	// Translate return code.
 	if (nRet == 0)
-			dwRet = WAIT_OBJECT_0;
+		dwRet = WAIT_OBJECT_0;
 	else if (nRet == SDL_MUTEX_TIMEDOUT)
-			dwRet = WAIT_TIMEOUT;
+		dwRet = WAIT_TIMEOUT;
 	else
-			dwRet = WAIT_FAILED;
+		dwRet = WAIT_FAILED;
 	
 	return dwRet;
 }
