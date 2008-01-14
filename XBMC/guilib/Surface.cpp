@@ -4,7 +4,9 @@
 */
 #include "include.h"
 #include "Surface.h"
+#ifdef __APPLE__
 #include "CocoaUtils.h"
+#endif
 #include <string>
 
 using namespace Surface;
@@ -699,8 +701,8 @@ bool CSurface::MakeCurrent()
   {
 	  Cocoa_GL_MakeCurrentContext(m_glContext);
 	  return true;
+  }
 #endif
-  }	  
   return false;
 }
 
