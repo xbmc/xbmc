@@ -36,6 +36,23 @@ typedef int (*PBEGINTHREADEX_THREADFUNC)(LPVOID lpThreadParameter);
 #include "log.h"
 #include "GraphicContext.h"
 
+#ifdef __APPLE__
+//
+// Use pthread's built-in support for TLS, it's more portable.
+//
+static pthread_once_t keyOnce = PTHREAD_ONCE_INIT;
+static pthread_key_t  tlsLocalThread = 0;
+
+//
+// Called once and only once.
+//
+static void MakeTlsKeys()
+{
+  pthread_key_create(&tlsLocalThread, NULL);
+}
+
+#endif
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -52,6 +69,11 @@ typedef struct tagTHREADNAME_INFO
 
 CThread::CThread()
 {
+#ifdef __APPLE__
+  // Initialize thread local storage and local thread pointer.
+  pthread_once(&keyOnce, MakeTlsKeys);
+#endif
+	
   m_bStop = false;
 
   m_bAutoDelete = false;
@@ -91,23 +113,25 @@ CThread::~CThread()
 
 #ifdef _LINUX
 #ifdef __APPLE__
-// FIXME, this is soooo wrong, but actually close enough for now...
-CThread* pLocalThread = NULL;
+// Use pthread-based TLS.
+#define LOCAL_THREAD ((CThread* )pthread_getspecific(tlsLocalThread))
 #else
+// Use compiler-based TLS.
 __thread CThread* pLocalThread = NULL;
+#define LOCAL_THREAD pLocalThread
 #endif
 void CThread::term_handler (int signum)
 {
   CLog::Log(LOGERROR,"thread 0x%x (%d) got signal %d. calling OnException and terminating thread abnormally.", SDL_ThreadID(), SDL_ThreadID(), signum);
-  if (pLocalThread)
+  if (LOCAL_THREAD)
   {
-    pLocalThread->m_bStop = TRUE;
-    if (pLocalThread->m_StopEvent)
-      SetEvent(pLocalThread->m_StopEvent);
+    LOCAL_THREAD->m_bStop = TRUE;
+    if (LOCAL_THREAD->m_StopEvent)
+      SetEvent(LOCAL_THREAD->m_StopEvent);
 
-    pLocalThread->OnException();
-    if( pLocalThread->IsAutoDelete() )
-      delete pLocalThread;
+    LOCAL_THREAD->OnException();
+    if( LOCAL_THREAD->IsAutoDelete() )
+      delete LOCAL_THREAD;
   }
 
   pthread_exit(NULL);
@@ -129,7 +153,9 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   /* install win32 exception translator */
   win32_exception::install_handler();
 #else
+#ifndef __APPLE__
   pLocalThread = pThread;
+#endif
   struct sigaction action;
   action.sa_handler = term_handler;
   sigemptyset (&action.sa_mask);
@@ -138,6 +164,15 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   //sigaction (SIGSEGV, &action, NULL);
 #endif
 
+  
+#ifdef __APPLE__
+  // Set the TLS.
+  pthread_setspecific(tlsLocalThread, (void*)pThread);
+  
+  // Start time counting from now by keeping track of the offset.
+  QueryPerformanceCounter(&pThread->m_startTime, true);
+#endif
+	
   try 
   {
     pThread->OnStartup();
@@ -346,6 +381,13 @@ void CThread::Process()
   if(m_pRunnable)
     m_pRunnable->Run(); 
 }
+
+#ifdef __APPLE__
+CThread* CThread::GetCurrent()
+{
+	return (CThread* )pthread_getspecific(tlsLocalThread);
+}
+#endif
 
 float CThread::GetRelativeUsage()
 {
