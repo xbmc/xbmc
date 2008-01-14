@@ -133,7 +133,7 @@ namespace PYXBMC
   PyDoc_STRVAR(stop__doc__,
     "stop() -- Stop playing.");
 
-  PyObject* Player_Stop(PyObject *self, PyObject *args)
+  PyObject* pyPlayer_Stop(PyObject *self, PyObject *args)
   {
     g_application.getApplicationMessenger().MediaStop();
 
@@ -406,7 +406,7 @@ namespace PYXBMC
 
   PyMethodDef Player_methods[] = {
     {"play", (PyCFunction)Player_Play, METH_VARARGS, play__doc__},
-    {"stop", (PyCFunction)Player_Stop, METH_VARARGS, stop__doc__},
+    {"stop", (PyCFunction)pyPlayer_Stop, METH_VARARGS, stop__doc__},
     {"pause", (PyCFunction)Player_Pause, METH_VARARGS, pause__doc__},
     {"playnext", (PyCFunction)Player_PlayNext, METH_VARARGS, playnext__doc__},
     {"playprevious", (PyCFunction)Player_PlayPrevious, METH_VARARGS, playprevious__doc__},
