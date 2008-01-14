@@ -134,13 +134,13 @@ BOOL   SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime,  LPFILETIME lpFileTi
 
   struct tm sysTime;
   sysTime.tm_year = lpSystemTime->wYear - 1900;
-  sysTime.tm_mon =  lpSystemTime->wMonth - 1;
+  sysTime.tm_mon = lpSystemTime->wMonth - 1;
   sysTime.tm_wday = lpSystemTime->wDayOfWeek;
-  sysTime.tm_mday = lpSystemTime-> wDay;
-  sysTime.tm_hour = lpSystemTime-> wHour;
-  sysTime.tm_min = lpSystemTime-> wMinute;
+  sysTime.tm_mday = lpSystemTime->wDay;
+  sysTime.tm_hour = lpSystemTime->wHour;
+  sysTime.tm_min = lpSystemTime->wMinute;
   sysTime.tm_sec = lpSystemTime->wSecond;
-  sysTime.tm_yday  = dayoffset[sysTime.tm_mon] + (sysTime.tm_mday - 1);
+  sysTime.tm_yday = dayoffset[sysTime.tm_mon] + (sysTime.tm_mday - 1);
   sysTime.tm_isdst = 0;
   
   // If this is a leap year, and we're past the 28th of Feb, increment tm_yday.
