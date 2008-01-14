@@ -17,14 +17,6 @@
 #define XBMC_SAMPLE_RATE 48000
 #endif
 
-#define SAFELY(op)     \
-{                      \
-    int err;           \
-    if (0) printf("[PortAudio] DEBUG: %s\n", #op); \
-    if ((err=op) != 0) \
-       printf("[PortAudio] ERROR: %s.\n", Pa_GetErrorText(err)); \
-}
-
 #define VOLUME_FFWD_MUTE 900 // 9dB
 #define FADE_TIME 2 * 2048.0f / XBMC_SAMPLE_RATE.0f      // 2 packets
 #define TIME_TO_CACHE_NEXT_FILE 5000L         // 5 seconds
