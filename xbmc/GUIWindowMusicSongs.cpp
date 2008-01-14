@@ -422,9 +422,17 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
     {
       if (pScanDlg->IsScanning())
         buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);	// Stop Scanning
-      else if (!inPlaylists && !m_vecItems.IsInternetStream() &&
-              (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
+      else if (
+        !inPlaylists && 
+        !m_vecItems.IsInternetStream() && 
+        !item->IsLastFM() && 
+        !item->IsShoutCast() && 
+        !item->m_strPath.Equals("add") && 
+        !item->IsParentFolder() &&
+        (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
+      {
         buttons.Add(CONTEXT_BUTTON_SCAN, 13352);
+      }
     }
   }
   if (!m_vecItems.IsVirtualDirectoryRoot())
