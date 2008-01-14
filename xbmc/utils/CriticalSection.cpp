@@ -18,77 +18,32 @@
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "stdafx.h"
 #include "CriticalSection.h"
-#ifdef _XBOX
-#include "../xbox/Undocumented.h"
-#endif
 
 //////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
 CCriticalSection::CCriticalSection()
 {
-
-  InitializeCriticalSection(&m_critSection);
+	m_criticalSection.Initialize();
 }
 
+//////////////////////////////////////////////////////////////////////
 CCriticalSection::~CCriticalSection()
 {
-  DeleteCriticalSection(&m_critSection);
+	m_criticalSection.Destroy();
 }
 
-CCriticalSection::operator LPCRITICAL_SECTION()
-{
-  return &m_critSection;
-}
+// The C API.
+void  InitializeCriticalSection(CCriticalSection* section)             { section->getCriticalSection().Initialize(); } 
+void  DeleteCriticalSection(CCriticalSection* section)                 { section->getCriticalSection().Destroy(); }
+BOOL  OwningCriticalSection(CCriticalSection* section)                 { return section->getCriticalSection().Owning(); }
+DWORD ExitCriticalSection(CCriticalSection* section)                   { return section->getCriticalSection().Exit(); } 
+void  RestoreCriticalSection(CCriticalSection* section, DWORD count)   { return section->getCriticalSection().Restore(count); }
+void  EnterCriticalSection(CCriticalSection* section)                  { section->getCriticalSection().Enter(); }
+void  LeaveCriticalSection(CCriticalSection* section)                  { section->getCriticalSection().Leave(); }
 
-
-BOOL NTAPI OwningCriticalSection(LPCRITICAL_SECTION section)
-{
-#ifdef _XBOX
-  return (PKTHREAD)section->OwningThread == GetCurrentKPCR()->PrcbData.CurrentThread;
-#elif defined(_LINUX)
-  bool bOwning = false;
-#ifdef __APPLE__
-  printf("Warning: broken OwningCriticalSection\n");
-#else
-  if (section->__data.__count > 0)
-#endif
-  {
-    bOwning = (pthread_mutex_trylock(section) == 0);
-    if (bOwning)
-      pthread_mutex_unlock(section);
-  }
-  return bOwning;
-#else
-  return section->OwningThread == (HANDLE)GetCurrentThreadId();
-#endif
-}
-
-DWORD NTAPI ExitCriticalSection(LPCRITICAL_SECTION section)
-{
-  if(!OwningCriticalSection(section))
-    return 0;
-
-#ifndef _LINUX
-  DWORD count = section->RecursionCount;
-#elif defined(__APPLE__)
-  DWORD count = 0;
-#else
-  DWORD count = section->__data.__count;
-#endif
-  
-  for(DWORD i=0;i<count;i++)
-    LeaveCriticalSection(section);
-
-  return count;
-}
-
-VOID NTAPI RestoreCriticalSection(LPCRITICAL_SECTION section, DWORD count)
-{
-  for(DWORD i=0;i<count;i++)
-    EnterCriticalSection(section);  
-}
+void EnterCriticalSection(CCriticalSection& section)                   { section.getCriticalSection().Enter(); }
+void LeaveCriticalSection(CCriticalSection& section)                   { section.getCriticalSection().Leave(); }
+BOOL OwningCriticalSection(CCriticalSection& section)                  { return section.getCriticalSection().Owning(); }
+DWORD ExitCriticalSection(CCriticalSection& section)                   { return section.getCriticalSection().Exit(); }
+void RestoreCriticalSection(CCriticalSection& section, DWORD count)    { return section.getCriticalSection().Restore(count); }
 
