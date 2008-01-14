@@ -462,19 +462,39 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
 
     CMusicDatabaseDirectory dir;
     // enable music info button on an album or on a song.
-    if (item->IsAudio() && !item->IsPlayList() && !item->IsSmartPlayList())
+    if (item->IsAudio() && !item->IsPlayList() && !item->IsSmartPlayList() && !item->IsLastFM() && !item->IsShoutCast())
       buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658);
     else if (item->IsVideoDb())
     {
       if (!item->m_bIsFolder) // music video
        buttons.Add(CONTEXT_BUTTON_INFO, 20393);
     }
-    else if (!inPlaylists && dir.HasAlbumInfo(item->m_strPath) && !dir.IsAllItem(item->m_strPath))
+    else if (
+      !inPlaylists && 
+      dir.HasAlbumInfo(item->m_strPath) && 
+      !dir.IsAllItem(item->m_strPath) && 
+      !item->IsParentFolder() && 
+      !item->IsLastFM() && 
+      !item->IsShoutCast() && 
+      !item->m_strPath.Left(14).Equals("musicsearch://")
+      )
+    {
       buttons.Add(CONTEXT_BUTTON_INFO, 13351);
+    }
 
     // enable query all albums button only in album view
-    if (dir.HasAlbumInfo(item->m_strPath) && !dir.IsAllItem(item->m_strPath) && item->m_bIsFolder && !item->IsVideoDb())
+    if (
+      dir.HasAlbumInfo(item->m_strPath) && 
+      !dir.IsAllItem(item->m_strPath) && 
+      item->m_bIsFolder && !item->IsVideoDb() && 
+      !item->IsParentFolder() && 
+      !item->IsLastFM() && 
+      !item->IsShoutCast() &&
+      !item->m_strPath.Left(14).Equals("musicsearch://")
+      )
+    {
       buttons.Add(CONTEXT_BUTTON_INFO_ALL, 20059);
+    }
 
     // turn off set artist image if not at artist listing.
     // (uses file browser to pick an image)
