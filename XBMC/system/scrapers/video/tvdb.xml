@@ -5,7 +5,7 @@
 			<RegExp input="$$1" output="&lt;url function=&quot;GetLanguages&quot;&gt;http://thetvdb.com/interfaces/GetLanguages.php&lt;/url&gt;" dest="5">
 				<expression></expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;Use DVD Order&quot; type=&quot;bool&quot; id=&quot;dvdorder&quot;&gt;&lt;/setting&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Use DVD Order&quot; type=&quot;bool&quot; id=&quot;dvdorder&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;setting label=&quot;UserID&quot; type=&quot;text&quot; id=&quot;userid&quot;&gt;&lt;/setting&gt;" dest="5+">
