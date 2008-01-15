@@ -39,7 +39,7 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
   if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
   {
     CDVDMsgDemuxerPacket* pMsgDemuxerPacket = (CDVDMsgDemuxerPacket*)pMsg;
-    CDVDDemux::DemuxPacket* pPacket = pMsgDemuxerPacket->GetPacket();
+    DemuxPacket* pPacket = pMsgDemuxerPacket->GetPacket();
 
     if (m_pOverlayCodec)
     {
@@ -57,17 +57,19 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
 
           if(pts == DVD_NOPTS_VALUE)
           {
-            CLog::Log(LOGWARNING, "%s - unable to find timestamp for overlay", __FUNCTION__);
-            overlay->iPTSStartTime = 0;
-            overlay->iPTSStopTime = 0;
+            if(overlay->iPTSStartTime == 0 && overlay->iPTSStopTime == 0)
+              CLog::Log(LOGWARNING, "%s - unable to find timestamp for overlay", __FUNCTION__);
           }
           else
           {
-            overlay->iPTSStartTime += pts;
-            if(overlay->iPTSStopTime == 0.0 && duration != 0.0)
+            // we assume pts is better than what
+            // decoder gives us, only take duration
+            // from decoder if available
+            overlay->iPTSStopTime -= overlay->iPTSStartTime;
+            overlay->iPTSStartTime = pts;
+            if(overlay->iPTSStopTime == 0.0)
               overlay->iPTSStopTime = duration;
-            if(overlay->iPTSStopTime != 0.0)
-              overlay->iPTSStopTime += pts;
+            overlay->iPTSStopTime += overlay->iPTSStartTime;
           }
 
           m_pOverlayContainer->Add(overlay);
@@ -169,16 +171,28 @@ void CDVDPlayerSubtitle::CloseStream(bool flush)
 
   m_dvdspus.FlushCurrentPacket();
 
+  if(flush)
+    m_pOverlayContainer->Clear();
 }
 
 void CDVDPlayerSubtitle::Process(double pts)
 {
-  if (m_pSubtitleFileParser && m_pOverlayContainer->GetSize() < 5 && pts != DVD_NOPTS_VALUE)
+  if(pts == DVD_NOPTS_VALUE)
+    return;
+  if(!AcceptsData())
+    return;
+
+  if (m_pSubtitleFileParser)
   {
     CDVDOverlay* pOverlay = m_pSubtitleFileParser->Parse(pts);
     if (pOverlay)
       m_pOverlayContainer->Add(pOverlay);
   }
+}
+
+bool CDVDPlayerSubtitle::AcceptsData()
+{
+  return m_pOverlayContainer->GetSize() < 5;
 }
 
 bool CDVDPlayerSubtitle::GetCurrentSubtitle(CStdString& strSubtitle, double pts)

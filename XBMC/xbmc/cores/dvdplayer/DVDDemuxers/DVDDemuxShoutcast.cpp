@@ -97,7 +97,7 @@ void CDVDDemuxShoutcast::Flush()
 {
 }
 
-CDVDDemux::DemuxPacket* CDVDDemuxShoutcast::Read()
+DemuxPacket* CDVDDemuxShoutcast::Read()
 {
   int iRead = 0;
   
@@ -108,7 +108,7 @@ CDVDDemux::DemuxPacket* CDVDDemuxShoutcast::Read()
   int iDataToRead = SHOUTCAST_BUFFER_SIZE;
   if (m_iMetaStreamInterval > 0) iDataToRead = m_iMetaStreamInterval;
   
-  CDVDDemux::DemuxPacket* pPacket;
+  DemuxPacket* pPacket;
   pPacket = CDVDDemuxUtils::AllocateDemuxPacket(iDataToRead);
   if (pPacket)
   {
@@ -170,4 +170,12 @@ CDemuxStream* CDVDDemuxShoutcast::GetStream(int iStreamId)
 int CDVDDemuxShoutcast::GetNrOfStreams()
 {
   return 1;
+}
+
+std::string CDVDDemuxShoutcast::GetFileName()
+{
+  if(m_pInput)
+    return m_pInput->GetFileName(); 
+  else 
+    return ""; 
 }
