@@ -267,7 +267,7 @@ void CDVDPlayerVideo::Process()
     if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
     {
       CDVDMsgDemuxerPacket* pMsgDemuxerPacket = (CDVDMsgDemuxerPacket*)pMsg;
-      CDVDDemux::DemuxPacket* pPacket = pMsgDemuxerPacket->GetPacket();
+      DemuxPacket* pPacket = pMsgDemuxerPacket->GetPacket();
 
       if (m_DetectedStill)
       {
