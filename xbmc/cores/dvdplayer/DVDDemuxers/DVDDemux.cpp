@@ -106,10 +106,24 @@ CDemuxStreamSubtitle* CDVDDemux::GetStreamFromSubtitleId(int iSubtitleIndex)
   return NULL;
 }
 
-void CDemuxStream::GetStreamName( CStdString& strInfo )
+void CDemuxStream::GetStreamName( std::string& strInfo )
 {   
   if( language[0] == 0 )
     strInfo = "Unknown";
   else
-    g_LangCodeExpander.Lookup( strInfo, language );
+  {
+    CStdString name;
+    g_LangCodeExpander.Lookup( name, language );
+    strInfo = name;
+  }
+}
+
+AVDiscard CDemuxStream::GetDiscard()
+{
+  return AVDISCARD_NONE;
+}
+
+void CDemuxStream::SetDiscard(AVDiscard discard)
+{
+  return;
 }

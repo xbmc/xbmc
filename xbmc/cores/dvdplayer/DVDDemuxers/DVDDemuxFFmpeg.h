@@ -5,33 +5,46 @@
 #include "DllAvFormat.h"
 #include "../DVDCodecs/DllAvCodec.h"
 
-class CDemuxStreamVideoFFmpeg : public CDemuxStreamVideo
+class CDVDDemuxFFmpeg;
+
+class CDemuxStreamVideoFFmpeg
+  : public CDemuxStreamVideo
 {
+  CDVDDemuxFFmpeg *m_parent;
+  AVStream*        m_stream;
 public:
-  CDemuxStreamVideoFFmpeg(DllAvCodec* pDll) : CDemuxStreamVideo()
-  {
-    m_pDll = pDll;
-  }
-  
+  CDemuxStreamVideoFFmpeg(CDVDDemuxFFmpeg *parent, AVStream* stream)
+    : m_parent(parent)
+    , m_stream(stream)
+  {}
   virtual void GetStreamInfo(std::string& strInfo);
-  
-private:
-  DllAvCodec*  m_pDll;
 };
 
 
-class CDemuxStreamAudioFFmpeg : public CDemuxStreamAudio
+class CDemuxStreamAudioFFmpeg
+  : public CDemuxStreamAudio
 {
+  CDVDDemuxFFmpeg *m_parent;
+  AVStream*        m_stream;
 public:
-  CDemuxStreamAudioFFmpeg(DllAvCodec* pDll) : CDemuxStreamAudio()
-  {
-    m_pDll = pDll;
-  }
-
+  CDemuxStreamAudioFFmpeg(CDVDDemuxFFmpeg *parent, AVStream* stream)
+    : m_parent(parent)
+    , m_stream(stream)
+  {}
   virtual void GetStreamInfo(std::string& strInfo);
-  
-private:
-  DllAvCodec*  m_pDll;
+};
+
+class CDemuxStreamSubtitleFFmpeg
+  : public CDemuxStreamSubtitle
+{
+  CDVDDemuxFFmpeg *m_parent;
+  AVStream*        m_stream;
+public:
+  CDemuxStreamSubtitleFFmpeg(CDVDDemuxFFmpeg *parent, AVStream* stream)
+    : m_parent(parent)
+    , m_stream(stream)
+  {}
+  virtual void GetStreamInfo(std::string& strInfo);
 };
 
 #define FFMPEG_FILE_BUFFER_SIZE   32768 // default reading size for ffmpeg
@@ -49,10 +62,12 @@ public:
   void Flush();
   void Abort();
   void SetSpeed(int iSpeed);
+  virtual std::string GetFileName();
 
-  CDVDDemux::DemuxPacket* Read();
+  DemuxPacket* Read();
 
   bool Seek(int iTime, bool bBackword = false);
+  bool SeekByte(__int64 pos);
   int GetStreamLenght();
   CDemuxStream* GetStream(int iStreamId);
   int GetNrOfStreams();
@@ -60,6 +75,10 @@ public:
   AVFormatContext* m_pFormatContext;
 
 protected:
+  friend class CDemuxStreamAudioFFmpeg;
+  friend class CDemuxStreamVideoFFmpeg;
+  friend class CDemuxStreamSubtitleFFmpeg;
+
   int ReadFrame(AVPacket *packet);
   void AddStream(int iId);
   void Lock()   { EnterCriticalSection(&m_critSection); }
@@ -81,4 +100,6 @@ protected:
   double m_iCurrentPts; // used for stream length estimation
   bool   m_bMatroska;
   int m_speed;
+
+  CDVDInputStream* m_pInput;
 };

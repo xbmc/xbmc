@@ -6,7 +6,7 @@
 class CDVDDemuxUtils
 {
 public:
-  static void FreeDemuxPacket(CDVDDemux::DemuxPacket* pPacket);
-  static CDVDDemux::DemuxPacket* AllocateDemuxPacket(int iDataSize = 0);
+  static void FreeDemuxPacket(DemuxPacket* pPacket);
+  static DemuxPacket* AllocateDemuxPacket(int iDataSize = 0);
 };
 

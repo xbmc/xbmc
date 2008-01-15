@@ -461,6 +461,12 @@
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxUtils.h">
 					</File>
 					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxVobsub.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxVobsub.h">
+					</File>
+					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDFactoryDemuxer.cpp">
 					</File>
 					<File
