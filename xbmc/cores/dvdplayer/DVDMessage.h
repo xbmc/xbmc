@@ -242,12 +242,12 @@ private:
 class CDVDMsgDemuxerPacket : public CDVDMsg
 {
 public:
-  CDVDMsgDemuxerPacket(CDVDDemux::DemuxPacket* pPacket, unsigned int packetSize);
+  CDVDMsgDemuxerPacket(DemuxPacket* pPacket, unsigned int packetSize);
   virtual ~CDVDMsgDemuxerPacket();
-  CDVDDemux::DemuxPacket* GetPacket()   { return m_pPacket; }
+  DemuxPacket* GetPacket()   { return m_pPacket; }
   unsigned int GetPacketSize()          { return m_packetSize; }
 public: // XXX, test : should be private
-  CDVDDemux::DemuxPacket* m_pPacket;
+  DemuxPacket* m_pPacket;
   unsigned int m_packetSize;
 };
 
