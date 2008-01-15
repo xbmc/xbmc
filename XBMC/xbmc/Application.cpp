@@ -3459,6 +3459,7 @@ bool CApplication::ProcessGamepad(float frameTime)
   {
     CAction action;
 
+    ResetScreenSaver();
     string jname = g_Joystick.GetJoystick();
     action.fAmount1 = g_Joystick.GetAmount();
     if (action.fAmount1<0)
