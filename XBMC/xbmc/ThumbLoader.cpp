@@ -97,7 +97,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
        
       // create unique thumb for auto generated thumbs
       cachedThumb = strPath + "auto-" + strFileName;
-      if (pItem->IsVideo() && !pItem->IsInternetStream() && !CFile::Exists(cachedThumb))
+      if (pItem->IsVideo() && !pItem->IsInternetStream() && !pItem->IsPlayList() && !CFile::Exists(cachedThumb))
         CVideoThumbLoader::ExtractThumb(pItem->m_strPath, cachedThumb);
   
       if (CFile::Exists(cachedThumb))
