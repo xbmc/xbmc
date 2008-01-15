@@ -424,15 +424,15 @@ bool CHTTP::Connect()
   int nTries = 0;
   while (connect((SOCKET)m_socket, (sockaddr*) &service, sizeof(struct sockaddr)) == SOCKET_ERROR)
   {
-		int e = WSAGetLastError();
-		if ((e != WSAETIMEDOUT && e != WSAEADDRINUSE) || ++nTries > 3) // retry up to 3 times on timeout / addr in use
-		{
-			if (e == WSAECANCELLED)
-			CLog::Log(LOGNOTICE, "HTTP: User canceled");
-
-			Close();
-			return false;
-		}
+    int e = WSAGetLastError();
+    if ((e != WSAETIMEDOUT && e != WSAEADDRINUSE) || ++nTries > 3) // retry up to 3 times on timeout / addr in use
+    {
+      if (e == WSAECANCELLED)
+        CLog::Log(LOGNOTICE, "HTTP: User canceled");
+      
+      Close();
+      return false;
+    }
     m_socket.attach(socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)); // new socket
     Sleep(1000);
   }
@@ -441,48 +441,48 @@ bool CHTTP::Connect()
 #else
   if (connect((SOCKET)m_socket, (sockaddr*) &service, sizeof(struct sockaddr)) == SOCKET_ERROR && errno != EINPROGRESS && errno != EALREADY)
   {
-			CLog::Log(LOGNOTICE, "HTTP: connect failed: %s", strerror(errno));
-			Close();
-			return false;
+    CLog::Log(LOGNOTICE, "HTTP: connect failed: %s", strerror(errno));
+    Close();
+    return false;
   }
   
-	
-	while (!m_cancelled)
-	{
+  
+  while (!m_cancelled)
+  {
     fd_set socks;
-  	FD_ZERO(&socks);	
-  	FD_SET((SOCKET)m_socket, &socks);
-
-	  struct timeval timeout;  /* Timeout for select */
-	  timeout.tv_sec = 0;
-		timeout.tv_usec = 500000;
-		
-		int writesocks = select((SOCKET)m_socket+1, (fd_set *) 0, &socks, (fd_set *) 0, &timeout);
-		if (writesocks == -1 && errno != EINTR)
-		{
-			CLog::Log(LOGNOTICE, "HTTP: connect select failed: %s", strerror(errno));
-			Close();
-			return false;
-		}
-		else if (FD_ISSET((SOCKET)m_socket, &socks))
-		{
-		  break;
-		}
-	}
-
+    FD_ZERO(&socks);	
+    FD_SET((SOCKET)m_socket, &socks);
+    
+    struct timeval timeout;  /* Timeout for select */
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 500000;
+    
+    int writesocks = select((SOCKET)m_socket+1, (fd_set *) 0, &socks, (fd_set *) 0, &timeout);
+    if (writesocks == -1 && errno != EINTR)
+    {
+      CLog::Log(LOGNOTICE, "HTTP: connect select failed: %s", strerror(errno));
+      Close();
+      return false;
+    }
+    else if (FD_ISSET((SOCKET)m_socket, &socks))
+    {
+      break;
+    }
+  }
+  
   // Check if the socket connected 	
   int value = 0;
   socklen_t len = sizeof(value);
   if (getsockopt((SOCKET)m_socket, SOL_SOCKET, SO_ERROR, (char *)&value, &len) == -1)
   {
-			CLog::Log(LOGNOTICE, "HTTP: connect getsockopt failed: %s", strerror(errno));
-			return false;
+    CLog::Log(LOGNOTICE, "HTTP: connect getsockopt failed: %s", strerror(errno));
+    return false;
   }
-
+  
   if (value != 0)
   {
-  	CLog::Log(LOGNOTICE, "HTTP: socket connect failed (checked with getsockopt): %s", strerror(value));
-		return false;
+    CLog::Log(LOGNOTICE, "HTTP: socket connect failed (checked with getsockopt): %s", strerror(value));
+    return false;
   }
   
   if (m_cancelled)
@@ -490,7 +490,7 @@ bool CHTTP::Connect()
     return false;
   }
 #endif
-
+  
   return true;
 }
 
@@ -779,34 +779,33 @@ bool CHTTP::Recv(int iLen)
     }
 #else
 
-
-	  char *buf = &m_RecvBuffer[m_RecvBytes];
-  	
-  	while (!m_cancelled)
-  	{
-  	  n = -1;
-  	  
+    char *buf = &m_RecvBuffer[m_RecvBytes];
+    
+    while (!m_cancelled)
+    {
+      n = -1;
+      
       fd_set socks;
-  	  FD_ZERO(&socks);	
-  	  FD_SET((SOCKET)m_socket, &socks);
-  	  struct timeval timeout;  /* Timeout for select */
-  	  timeout.tv_sec = 0;
-  		timeout.tv_usec = 500000;
-  		
-  		int readsocks = select((SOCKET)m_socket+1, &socks, (fd_set *) 0, (fd_set *) 0, &timeout);
-  		if (readsocks == -1 && errno != EINTR)
-  		{
-  			CLog::Log(LOGNOTICE, "HTTP: recv select failed: %s", strerror(errno));
-  			break;
-  		}
-  		else if (FD_ISSET((SOCKET)m_socket, &socks))
-  		{
+      FD_ZERO(&socks);	
+      FD_SET((SOCKET)m_socket, &socks);
+      struct timeval timeout;  /* Timeout for select */
+      timeout.tv_sec = 0;
+      timeout.tv_usec = 5000000;
+      
+      int readsocks = select((SOCKET)m_socket+1, &socks, (fd_set *) 0, (fd_set *) 0, &timeout);
+      if (readsocks == -1 && errno != EINTR)
+      {
+        CLog::Log(LOGNOTICE, "HTTP: recv select failed: %s", strerror(errno));
+        break;
+      }
+      else if (FD_ISSET((SOCKET)m_socket, &socks))
+      {
         n = recv(m_socket, buf, iLen, 0);
         if (n >= 0 || (n == -1 && errno != EAGAIN && errno != EINTR))
           break;
-  		}
-  	}
-
+      }
+    }
+    
     if (m_cancelled || n == -1)
       return false;
 #endif
