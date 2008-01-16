@@ -721,7 +721,7 @@ void CSurface::ReleaseContext()
 
 bool CSurface::ResizeSurface(int newWidth, int newHeight)
 {
-	printf("Asking to resize surface to %d x %d\n", newWidth, newHeight);
+  CLog::Log(LOGDEBUG, "Asking to resize surface to %d x %d", newWidth, newHeight);
 #ifdef HAS_GLX
   if (m_parentWindow)
   {
