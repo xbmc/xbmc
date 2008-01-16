@@ -18,4 +18,10 @@
       <speedunit>kmh</speedunit>
     </region>
   </regions>
+
+  <sorttokens>
+    <token>The</token>
+    <token>De</token>
+    <token>Het</token>
+  </sorttokens>
 </language>
