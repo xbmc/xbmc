@@ -213,8 +213,7 @@ void CButtonTranslator::MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick)
             }
             else if (limit==0)
             {
-              axisMap[id] = string(szAction);
-              axisMap[-id] = string("0");
+              axisMap[id|0xFFFF0000] = string(szAction);
             }
             else
             {
@@ -261,11 +260,14 @@ void CButtonTranslator::MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick)
   return;
 }
 
-bool CButtonTranslator::TranslateJoystickString(WORD wWindow, const char* szDevice, int id, bool axis, WORD& action, CStdString& strAction)
+bool CButtonTranslator::TranslateJoystickString(WORD wWindow, const char* szDevice, int id, bool axis, WORD& action, CStdString& strAction, bool &fullrange)
 {
   bool found = false;
+
   map<string, JoystickMap>::iterator it;
   map<string, JoystickMap> *jmap;
+
+  fullrange = false;
   
   if (axis)
   {
@@ -298,6 +300,13 @@ bool CButtonTranslator::TranslateJoystickString(WORD wWindow, const char* szDevi
       strAction = (it3->second).c_str();
       found = true;
     }
+    it3 = windowbmap.find(abs(id)|0xFFFF0000);
+    if (it3 != windowbmap.end())
+    {
+      strAction = (it3->second).c_str();
+      found = true;
+      fullrange = true;
+    }
   }
 
   // if not found, try global map
@@ -312,6 +321,13 @@ bool CButtonTranslator::TranslateJoystickString(WORD wWindow, const char* szDevi
       {
         strAction = (it3->second).c_str();
         found = true;
+      }
+      it3 = globalbmap.find(abs(id)|0xFFFF0000);
+      if (it3 != globalbmap.end())
+      {
+        strAction = (it3->second).c_str();
+        found = true;
+        fullrange = true;
       }
     }
   }

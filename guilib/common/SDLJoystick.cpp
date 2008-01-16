@@ -18,7 +18,7 @@ CJoystick::CJoystick()
   {
     m_Amount[i] = 0;
   }
-  SetSafeRange(5000);
+  SetSafeRange(2000);
 }
 
 void CJoystick::Initialize(HWND hWnd)
