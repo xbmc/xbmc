@@ -1,9 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: jutski (->7/2006) Mikko70 (1/2007->)-->
-<!--Date of translation: 15/11/2007-->
-<!--$Revision$: -->
-<!--Finnish strings based on English strings version 10751 -->
+<!--Date of translation: 15/1/2008-->
+<!--Finnish strings based on English strings version 11293 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -334,6 +333,7 @@
   <string id="406">Kosteus</string>
   <string id="407">Suunta:</string>
   <string id="408">Nopeus:</string>
+  <string id="409">Oletukset</string>
   
   <string id="410">Yhdistetään palvelimeen Weather.com</string>
   <string id="411">Haetaan säätiedot:</string>
@@ -420,7 +420,7 @@
   <string id="496">Kuvaruudun säätö</string>
   <string id="497">Piilota tiedostojen päätteet</string>
   <string id="498">Järjestä: Tyyppi</string>
-  <string id="499">Osoitteeseen www.allmusic.com ei saada yhteyttä</string>
+  <string id="499">Osoitteeseen www.allmusic.com &#10;ei saada yhteyttä</string>
   <string id="500">Albumin tietojen lataus ei onnistunut</string>
   <string id="501">Etsitään albumin nimellä...</string>
   <string id="502">Avoinna</string>
@@ -605,11 +605,11 @@
   <string id="746">vaihda Tiedostot-näkymään</string>
   <string id="747">Kuvan lataus ei onnistu</string>
   <string id="748">Muokkaa tallennuspolku</string>
-  <string id="749">Lisää sijainti</string>
+  <string id="749"></string>
   <string id="750">Oletko varma asiasta?</string>
   <string id="751">Poistetaan sijainti</string>
-  <string id="752">Muokkaa sijainnin polkua</string>
-  <string id="753">Muokkaa sijainnin nimeä</string>
+  <string id="752"></string>
+  <string id="753"></string>
   <string id="754">Lisää linkki ohjelmaan</string>
   <string id="755">Muokkaa ohjelman polkua</string>
   <string id="756">Muokkaa ohjelman nimeä</string>
@@ -639,7 +639,7 @@
   <string id="1002">XBMC ei saanut yhteyttä verkko-osoitteeseen.</string>
   <string id="1003">Tämä saattaa johtua siitä, ettei verkkoa ole yhdistetty.</string>
   <string id="1004">Haluatko silti lisätä sijainnin?</string>
-  <string id="1005">Anna nimi tälle sijainnille</string>
+  <string id="1005"></string>
   <string id="1006">IP-osoite</string>
   <string id="1007">Lisää verkko-osoite</string>
   <string id="1008">Protokolla</string>
@@ -895,12 +895,12 @@
   <string id="12392">tuntia</string>
   <string id="12393">päivää</string>
   <string id="12394">Kokonaiskäyntiaika</string>
-  
+
   <string id="12600">Säätila</string>
-  
+
   <string id="12900">Näytönsäästäjä</string>
   <string id="12901">Kokoruudun valikko</string>
-  
+ 
   <string id="13000">Järjestelmä</string>
   <string id="13001">Kiintolevyn välitön pysäytys</string>
   <string id="13002">Vain videoilla</string>
@@ -909,13 +909,13 @@
   <string id="13005">Sammuta Xbox</string>
   <string id="13006">Käynnistä Xbox dashboard</string>
   <string id="13007">Vaihtoehtoinen dashboardin käynnistyspolku</string>
-  
+   
   <string id="13100">Näytön välkynnän poisto</string>
   <string id="13105">Pystysuunnan sammutuksen tahdistus</string>
   <string id="13106">Ei käytössä</string>
   <string id="13107">Käytössä videoita toistettaessa</string>
   <string id="13108">Aina käytössä</string>
-  
+ 
   <string id="13150">Lukituskoodi:</string>
   <string id="13151">Lämpötila:</string>
   <string id="13152">Malli:</string>
@@ -1256,6 +1256,7 @@
   <string id="15213">Toista käyttäen...</string>
   <string id="15214">Käytä pehmennettyä A/V-synkronointia</string>
   <string id="15215">Piilota tiedostonimet pienoiskuvakkeissa</string>
+  <string id="15216">Toista jukeboksissa</string>
   
   <string id="15250">Lähetä Last.FM radio LastFM:ään</string>
   <string id="15251">Yhdistetään Last.FM...</string>
@@ -1306,6 +1307,7 @@
   <string id="15296">Poista esto</string>
   <string id="15297">Haluatko poistaa tämän kappaleen omista suosikeista?</string>
   <string id="15298">Haluatko poistaa eston tältä kappaleelta?</string>
+
   <string id="15300">Määriteltyä polkua ei löydy</string>
   <string id="15301">Palvelimeen ei saada yhteyttä</string>
   <string id="15302">Palvelimia ei löytynyt</string>
@@ -1390,9 +1392,7 @@
   <string id="20019">Valitse kuvaketiedosto</string>
   <string id="20020">Et voi käyttää KAI:ta ja traineria samanaikaisesti</string>
   <string id="20021">Valitse kumpaa käytät</string>
- 
   <!-- string id 20022 will always be set to an empty string (LocalizeStrings.cpp)-->
- 
   <string id="20022"></string> 
   <string id="20023">Ei onnistu</string>
   <string id="20024">Etsi uudet</string>
@@ -1702,8 +1702,9 @@
   <string id="21365">Poista sijainti</string>
   <string id="21366">Omien tekstitysten hakemisto</string>
   <string id="21367">Elokuvien ja vaihtoehtoisten tekstitysten hakemisto</string>
-  
-  <string id="21370">Ohjauspainikkeiden äänitehosteet käytössä</string>
+
+  <string id="21369">Ohjauspainikkeiden äänitehosteet käytössä</string>
+  <string id="21370">Hiiri käytössä</string>
   <string id="21371">Pienoiskuvake</string>  
   <string id="21372">Pakotettu DVD-aluekoodi</string>
   <string id="21373">Videolaitteisto</string>
@@ -1830,6 +1831,12 @@
   
   <!-- strings 21900 thru 21999 reserved for slideshow info -->
 
+  <string id="22000">Päivitä kirjasto ohjelman käynnistyessä</string>
+  <string id="22001">Suorita päivitys taustalla</string>
+
   <string id="29999">Näytön välkynnän poisto</string>
   <!-- strings 30000 thru 31000 reserved for plugin settings -->
+  <!-- strings 31000 thru 31999 reserved for skins -->
+
 </strings>
+
