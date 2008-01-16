@@ -124,11 +124,12 @@ void CSelectionStreams::Update(SelectionStream& s)
     m_Streams.push_back(s);
 }
 
-void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, const std::string& filename)
+void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer)
 {
   if(input && input->IsStreamType(DVDSTREAM_TYPE_DVD))
-  {
+  {    
     CDVDInputStreamNavigator* nav = (CDVDInputStreamNavigator*)input;
+    string filename = nav->GetFileName();
     int source = Source(STREAM_SOURCE_NAV, filename);
 
     int count;
@@ -158,6 +159,7 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, const
   }
   else if(demuxer)
   {
+    string filename = demuxer->GetFileName();
     int count = demuxer->GetNrOfStreams();
     int source;
     if(input) /* hack to know this is sub decoder */
@@ -168,12 +170,15 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, const
     for(int i=0;i<count;i++)
     {
       CDemuxStream* stream = demuxer->GetStream(i);
+      /* make sure stream is marked with right source */
+      stream->source = source;
+
       SelectionStream s;
       s.source   = source;
       s.type     = stream->type;
       s.id       = stream->iId;
       s.language = stream->language;
-      s.filename = filename;
+      s.filename = demuxer->GetFileName();
       stream->GetStreamName(s.name);
       if(stream->type == STREAM_AUDIO)
       {
@@ -358,7 +363,8 @@ bool CDVDPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
         packet = NULL;
         return false;
       }
-      stream->source = m_CurrentSubtitle.source;
+      if(stream->source == STREAM_SOURCE_NONE)
+        m_SelectionStreams.Update(NULL, m_pSubtitleDemuxer);
       return true;
     }
   }
@@ -375,6 +381,8 @@ bool CDVDPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
       packet = NULL;
       return false;
     }
+    if(stream->source == STREAM_SOURCE_NONE)
+      m_SelectionStreams.Update(NULL, m_pDemuxer);
     return true;
   }
   return false;
@@ -465,7 +473,7 @@ void CDVDPlayer::Process()
   if( !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) )
   {
     // add available streams to selection index
-    m_SelectionStreams.Update(m_pInputStream, m_pDemuxer, m_filename);
+    m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
 
     std::vector<std::string> filenames;
     CDVDFactorySubtitle::GetSubtitles(filenames, m_filename);
@@ -1342,7 +1350,7 @@ float CDVDPlayer::GetSubTitleDelay()
 int CDVDPlayer::GetSubtitleCount()
 {
   LockStreams();
-  m_SelectionStreams.Update(m_pInputStream, m_pDemuxer, m_filename);
+  m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
   UnlockStreams();
   return m_SelectionStreams.Count(STREAM_SUBTITLE);
 }
@@ -1397,7 +1405,7 @@ void CDVDPlayer::SetSubtitleVisible(bool bVisible)
 int CDVDPlayer::GetAudioStreamCount()
 {
   LockStreams();
-  m_SelectionStreams.Update(m_pInputStream, m_pDemuxer, m_filename);
+  m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
   UnlockStreams();
   return m_SelectionStreams.Count(STREAM_AUDIO);
 }
@@ -1871,7 +1879,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
           m_dvdPlayerVideo.SendMessage(new CDVDMsgVideoSetAspect(m_CurrentVideo.hint.aspect));
 
         m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_NAV);
-        m_SelectionStreams.Update(m_pInputStream, m_pDemuxer, m_filename);
+        m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
 
         return NAVRESULT_HOLD;
       }
@@ -2144,7 +2152,7 @@ bool CDVDPlayer::AddSubtitleFile(const std::string& filename)
     if(!v.Open(filename))
       return false;
 
-    m_SelectionStreams.Update(NULL, &v, filename);
+    m_SelectionStreams.Update(NULL, &v);
     return true;
   }
   else if(ext == ".sub")
