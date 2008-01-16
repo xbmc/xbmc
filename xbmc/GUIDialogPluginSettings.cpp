@@ -567,6 +567,7 @@ void CGUIDialogPluginSettings::SetDefaults()
     setting = setting->NextSiblingElement("setting");
     controlId++;
   }
+  EnableControls();
 }
 
 CURL CGUIDialogPluginSettings::m_url;
