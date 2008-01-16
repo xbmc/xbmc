@@ -3440,8 +3440,9 @@ bool CApplication::ProcessGamepad(float frameTime)
     }
 
     CAction action;
+    bool fullrange;
     string jname = g_Joystick.GetJoystick();
-    if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, false, action.wID, action.strAction))
+    if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, false, action.wID, action.strAction, fullrange))
     {
       action.fAmount1 = 1.0f;
       action.fRepeat = 0.0f;
@@ -3458,6 +3459,7 @@ bool CApplication::ProcessGamepad(float frameTime)
   if (g_Joystick.GetAxis(bid))
   {
     CAction action;
+    bool fullrange;
 
     ResetScreenSaver();
     if (ResetScreenSaverWindow())
@@ -3471,10 +3473,17 @@ bool CApplication::ProcessGamepad(float frameTime)
     if (action.fAmount1<0)
     {
       bid = -bid;
-      action.fAmount1 = -action.fAmount1;
     }
-    if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, true, action.wID, action.strAction))
+    if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, true, action.wID, action.strAction, fullrange))
     {
+      if (fullrange)
+      {
+        action.fAmount1 = (action.fAmount1+1.0f)/2.0f;
+      }
+      else
+      {
+        action.fAmount1 = fabs(action.fAmount1);
+      }
       action.fAmount2 = 0.0;
       action.fRepeat = 0.0;
       g_audioManager.PlayActionSound(action);
