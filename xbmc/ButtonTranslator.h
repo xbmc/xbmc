@@ -29,7 +29,8 @@ public:
 #endif
 #ifdef HAS_SDL_JOYSTICK
   bool TranslateJoystickString(WORD wWindow, const char* szDevice, int id, 
-                               bool axis, WORD& action, CStdString& strAction);
+                               bool axis, WORD& action, CStdString& strAction,
+                               bool &fullrange);
 #endif
 
 
