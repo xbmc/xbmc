@@ -3435,7 +3435,7 @@ bool CApplication::ProcessGamepad(float frameTime)
     ResetScreenSaver();
     if (ResetScreenSaverWindow())
     {
-      g_Joystick.Reset();
+      g_Joystick.Reset(true);
       return true;
     }
 
@@ -3462,7 +3462,7 @@ bool CApplication::ProcessGamepad(float frameTime)
     ResetScreenSaver();
     if (ResetScreenSaverWindow())
     {
-      g_Joystick.Reset();
+      g_Joystick.Reset(true);
       return true;
     }
 
