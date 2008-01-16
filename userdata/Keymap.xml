@@ -119,6 +119,8 @@
       <axis id="5" limit="+1">VolumeUp</axis>
       <axis id="4" limit="-1">AnalogSeekBack</axis>
       <axis id="4" limit="+1">AnalogSeekForward</axis>
+      <axis id="3" limit="0">ScrollUp</axis>
+      <axis id="6" limit="0">ScrollDown</axis>
     </joystick>
 
     <joystick name="Sony PLAYSTATION(R)3 Controller">   
@@ -294,7 +296,7 @@
 
     <joystick name="Microsoft Xbox Controller S">
       <altname>Mad Catz MicroCON</altname>
-      <button id="17">Playlist</button>
+      <button id="3">Playlist</button>
       <button id="5">Queue</button>
      </joystick>
 
@@ -384,6 +386,8 @@
       <button id="15">BigStepBack</button>
       <button id="16">StepBack</button>
       <button id="17">SmallStepBack</button>
+      <axis id="3" limit="0">AnalogRewind</axis>
+      <axis id="6" limit="0">AnalogFastForward</axis>
     </joystick>
 
     <keyboard>
@@ -465,12 +469,14 @@
       <button id="3">ShowPreset</button>
       <button id="5">XBMC.ActivateWindow(VisualisationPresetList)</button>
       <button id="6">Info</button>
-      <button id="9">OSD</button>
+      <button id="9">XBMC.ActivateWindow(MusicOSD)</button>
       <button id="13">NextPreset</button>
       <button id="14">SkipNext</button>
       <button id="15">PreviousPreset</button>
       <button id="16">SkipPrevious</button>
-    </joystick>
+      <axis id="3" limit="0">AnalogRewind</axis>
+      <axis id="6" limit="0">AnalogFastForward</axis>
+   </joystick>
 
     <keyboard>
       <f>FastForward</f>
@@ -1481,4 +1487,5 @@
     </keyboard>
   </PictureInfo>
 </keymap>
+
 
