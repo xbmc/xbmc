@@ -186,10 +186,13 @@ unsigned int CXBoxRenderManager::PreInit()
 #ifdef _WIN32
       m_pRenderer = new CLinuxRendererATI(true); // Win32 likes this renderer better (no context support yet)
 #else
+      /*
     if (g_graphicsContext.getScreenSurface()->GetGLVendor().find("ATI Technologies Inc.") != std::string::npos)
       m_pRenderer = new CLinuxRendererATI(true); // We need a special ATI renderer since ATI drivers can't seem to handle multi-threaded rendering
     else
-      m_pRenderer = new CLinuxRendererGL();
+      m_pRenderer = new CLinuxRendererATI(true);
+      */
+    m_pRenderer = new CLinuxRendererGL();
 #endif
 #else
     m_pRenderer = new CLinuxRenderer();
