@@ -120,3 +120,4 @@ void CKey::SetFromHttpApi(bool bFromHttpApi)
 {
 	m_fromHttpApi = bFromHttpApi;
 }
+

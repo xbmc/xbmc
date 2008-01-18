@@ -309,3 +309,4 @@ void CGUIButtonControl::SetSelected(bool bSelected)
     m_bInvalidated = true;
   }
 }
+

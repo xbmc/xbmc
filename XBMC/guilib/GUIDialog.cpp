@@ -6,7 +6,6 @@
 #include "../xbmc/utils/SingleLock.h"
 #include "../xbmc/Application.h"
 
-
 CGUIDialog::CGUIDialog(DWORD dwID, const CStdString &xmlFile)
     : CGUIWindow(dwID, xmlFile)
 {

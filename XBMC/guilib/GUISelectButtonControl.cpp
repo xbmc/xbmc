@@ -396,3 +396,4 @@ void CGUISelectButtonControl::SetColorDiffuse(D3DCOLOR color)
   m_imgRightFocus.SetColorDiffuse(color);
   m_imgBackground.SetColorDiffuse(color);
 }
+

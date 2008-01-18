@@ -1,6 +1,6 @@
 #pragma once
 #ifndef _XBOX
-#include "graphiccontext.h"
+#include "GraphicContext.h"
 
 LPVOID XPhysicalAlloc(SIZE_T s, DWORD ulPhysicalAddress, DWORD ulAlignment, DWORD flProtect);
 void XPhysicalFree(LPVOID lpAddress);

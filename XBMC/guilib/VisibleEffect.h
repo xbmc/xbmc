@@ -126,7 +126,7 @@ public:
 
   virtual ~CAnimation();
 
-  const CAnimation &CAnimation::operator=(const CAnimation &src);
+  const CAnimation &operator=(const CAnimation &src);
 
   static CAnimation *CreateFader(float start, float end, unsigned int delay, unsigned int length);
 
