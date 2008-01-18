@@ -38,3 +38,4 @@ bool DTSCDDACodec::CalculateTotalTime()
 }
 
 #endif
+

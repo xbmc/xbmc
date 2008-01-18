@@ -13,6 +13,7 @@ struct mpc_decoder;
 class DllMPCCodecInterface
 {
 public:
+    virtual ~DllMPCCodecInterface() {}
     virtual bool Open(mpc_decoder **decoder, mpc_reader *reader, mpc_streaminfo *info, double *timeinseconds)=0;
     virtual void Close(mpc_decoder *decoder)=0;
     virtual int Read(mpc_decoder *decoder, float *buffer, int size)=0;

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "TimidityCodec.h"
-#include "cores/DllLoader/DllLoader.h"
+#include "../DllLoader/DllLoader.h"
 #include "../../Util.h"
 
 TimidityCodec::TimidityCodec()
@@ -102,3 +102,4 @@ bool TimidityCodec::IsSupportedFormat(const CStdString& strExt)
   
   return false;
 }
+

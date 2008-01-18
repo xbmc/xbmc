@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "../../util.h"
-#include "../../utils/regexp.h"
+#include "../../Util.h"
+#include "../../utils/RegExp.h"
 #include "NSFCodec.h"
 
 NSFCodec::NSFCodec()
@@ -33,7 +33,7 @@ bool NSFCodec::Init(const CStdString &strFile, unsigned int filecache)
   {
     //  Extract the track to play
     CStdString strFileName=CUtil::GetFileName(strFile);
-    int iStart=strFileName.ReverseFind("-")+1;
+    int iStart=strFileName.ReverseFind('-')+1;
     m_iTrack = atoi(strFileName.substr(iStart, strFileName.size()-iStart-10).c_str());
     //  The directory we are in, is the file
     //  that contains the bitstream to play,

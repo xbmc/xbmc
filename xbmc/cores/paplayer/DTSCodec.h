@@ -3,7 +3,7 @@
 
 #include "CachingCodec.h"
 #include "FileReader.h"
-#include "DllDcaCodec.h"
+#include "DllDCACodec.h"
 
 #ifdef HAS_DTS_CODEC
 
@@ -67,3 +67,4 @@ protected:
   DllDCACodec m_dll;
 };
 #endif
+

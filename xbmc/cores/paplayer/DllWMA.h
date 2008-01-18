@@ -4,6 +4,7 @@
 class DllWMAInterface
 {
 public:
+    virtual ~DllWMAInterface() { }
     virtual int Init()=0;
     virtual void* LoadFile(const char* szFileName, long long* totalTime, int *sampleRate, int* bitsPerSample, int *channels)=0;
     virtual void UnloadFile(void* hnd)=0;

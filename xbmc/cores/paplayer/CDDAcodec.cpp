@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "CDDACodec.h"
+#include "CDDAcodec.h"
 #include "../../lib/libcdio/sector.h"
 
 

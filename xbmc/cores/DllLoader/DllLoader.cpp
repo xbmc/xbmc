@@ -15,7 +15,7 @@ typedef struct _UNICODE_STRING {
   PWSTR  Buffer;
 } UNICODE_STRING, *PUNICODE_STRING;
 #endif
-#include "../../utils/win32exception.h"
+#include "utils/Win32Exception.h"
 
 #ifdef min
 #undef min
@@ -276,7 +276,7 @@ void DllLoader::PrintImportLookupTable(unsigned long ImportLookupTable_RVA)
     if (*Table & 0x80000000)
     {
       // Process Ordinal...
-      CLog::Log(LOGDEBUG, "            Ordinal: %01X\n", *Table & 0x7fffffff);
+      CLog::Log(LOGDEBUG, "            Ordinal: %01lX\n", *Table & 0x7fffffff);
     }
     else
     {
@@ -304,10 +304,10 @@ void DllLoader::PrintImportTable(ImportDirTable_t *ImportDirTable)
     Name = (char*)RVA2Data(Imp->Name_RVA);
     
     CLog::Log(LOGDEBUG, "    %s:\n", Name);
-    CLog::Log(LOGDEBUG, "        ImportAddressTable:     %04X\n", Imp->ImportAddressTable_RVA);
-    CLog::Log(LOGDEBUG, "        ImportLookupTable:      %04X\n", Imp->ImportLookupTable_RVA);
-    CLog::Log(LOGDEBUG, "        TimeStamp:              %01X\n", Imp->TimeStamp);
-    CLog::Log(LOGDEBUG, "        Forwarder Chain:        %01X\n", Imp->ForwarderChain);
+    CLog::Log(LOGDEBUG, "        ImportAddressTable:     %04lX\n", Imp->ImportAddressTable_RVA);
+    CLog::Log(LOGDEBUG, "        ImportLookupTable:      %04lX\n", Imp->ImportLookupTable_RVA);
+    CLog::Log(LOGDEBUG, "        TimeStamp:              %01lX\n", Imp->TimeStamp);
+    CLog::Log(LOGDEBUG, "        Forwarder Chain:        %01lX\n", Imp->ForwarderChain);
     
     PrintImportLookupTable(Imp->ImportLookupTable_RVA);
     CLog::Log(LOGDEBUG, "\n");
@@ -327,17 +327,17 @@ void DllLoader::PrintExportTable(ExportDirTable_t *ExportDirTable)
 
   CLog::Log(LOGDEBUG, "Export Table for %s:\n", Name);
 
-  CLog::Log(LOGDEBUG, "ExportFlags:    %04X\n", ExportDirTable->ExportFlags);
-  CLog::Log(LOGDEBUG, "TimeStamp:      %04X\n", ExportDirTable->TimeStamp);
+  CLog::Log(LOGDEBUG, "ExportFlags:    %04lX\n", ExportDirTable->ExportFlags);
+  CLog::Log(LOGDEBUG, "TimeStamp:      %04lX\n", ExportDirTable->TimeStamp);
   CLog::Log(LOGDEBUG, "Major Ver:      %02X\n", ExportDirTable->MajorVersion);
   CLog::Log(LOGDEBUG, "Minor Ver:      %02X\n", ExportDirTable->MinorVersion);
-  CLog::Log(LOGDEBUG, "Name RVA:       %04X\n", ExportDirTable->Name_RVA);
-  CLog::Log(LOGDEBUG, "OrdinalBase     %d\n", ExportDirTable->OrdinalBase);
-  CLog::Log(LOGDEBUG, "NumAddrTable    %d\n", ExportDirTable->NumAddrTable);
-  CLog::Log(LOGDEBUG, "NumNamePtrs     %d\n", ExportDirTable->NumNamePtrs);
-  CLog::Log(LOGDEBUG, "ExportAddressTable_RVA  %04X\n", ExportDirTable->ExportAddressTable_RVA);
-  CLog::Log(LOGDEBUG, "NamePointerTable_RVA    %04X\n", ExportDirTable->NamePointerTable_RVA);
-  CLog::Log(LOGDEBUG, "OrdinalTable_RVA        %04X\n\n", ExportDirTable->OrdinalTable_RVA);
+  CLog::Log(LOGDEBUG, "Name RVA:       %04lX\n", ExportDirTable->Name_RVA);
+  CLog::Log(LOGDEBUG, "OrdinalBase     %lu\n", ExportDirTable->OrdinalBase);
+  CLog::Log(LOGDEBUG, "NumAddrTable    %lu\n", ExportDirTable->NumAddrTable);
+  CLog::Log(LOGDEBUG, "NumNamePtrs     %lu\n", ExportDirTable->NumNamePtrs);
+  CLog::Log(LOGDEBUG, "ExportAddressTable_RVA  %04lX\n", ExportDirTable->ExportAddressTable_RVA);
+  CLog::Log(LOGDEBUG, "NamePointerTable_RVA    %04lX\n", ExportDirTable->NamePointerTable_RVA);
+  CLog::Log(LOGDEBUG, "OrdinalTable_RVA        %04lX\n\n", ExportDirTable->OrdinalTable_RVA);
 
   CLog::Log(LOGDEBUG, "Public Exports:\n");
   CLog::Log(LOGDEBUG, "    ordinal hint RVA      name\n");
@@ -345,9 +345,9 @@ void DllLoader::PrintExportTable(ExportDirTable_t *ExportDirTable)
   {
     char *Name = (char*)RVA2Data(NamePointerTable[i]);
 
-    CLog::Log(LOGDEBUG, "          %d", OrdinalTable[i] + ExportDirTable->OrdinalBase);
+    CLog::Log(LOGDEBUG, "          %lu", OrdinalTable[i] + ExportDirTable->OrdinalBase);
     CLog::Log(LOGDEBUG, "    %d", OrdinalTable[i]);
-    CLog::Log(LOGDEBUG, " %08X", ExportAddressTable[OrdinalTable[i]]);
+    CLog::Log(LOGDEBUG, " %08lX", ExportAddressTable[OrdinalTable[i]]);
     CLog::Log(LOGDEBUG, " %s\n", Name);
   }
 }
@@ -390,8 +390,8 @@ int DllLoader::ResolveImports(void)
           {
             bResult = 0;
             char szBuf[128];
-            CLog::DebugLog("Unable to resolve ordinal %s %d\n", Name, *Table&0x7ffffff);
-            sprintf(szBuf, "%d", *Table&0x7ffffff);
+            CLog::Log(LOGDEBUG,"Unable to resolve ordinal %s %lu\n", Name, *Table&0x7ffffff);
+            sprintf(szBuf, "%lu", *Table&0x7ffffff);
             *Addr = create_dummy_function(Name, szBuf);
             tracker_dll_data_track(this, *Addr);
           }
@@ -408,7 +408,7 @@ int DllLoader::ResolveImports(void)
           void *Fixup;
           if ( !ResolveName(Name, ImpName, &Fixup) )
           {
-            CLog::DebugLog("Unable to resolve %s %s", Name, ImpName);
+            CLog::Log(LOGDEBUG,"Unable to resolve %s %s", Name, ImpName);
             *Addr = create_dummy_function(Name, ImpName);
             tracker_dll_data_track(this, *Addr);
             bResult = 0;
@@ -514,7 +514,7 @@ int DllLoader::ResolveExport(unsigned long ordinal, void **pAddr)
   if (sDllName) sDllName += 1;
   else sDllName = GetFileName();
   
-  CLog::Log(LOGWARNING, "Unable to resolve: %s %d", sDllName, ordinal);
+  CLog::Log(LOGWARNING, "Unable to resolve: %s %lu", sDllName, ordinal);
   return 0;
 }
 
@@ -680,12 +680,12 @@ bool DllLoader::Load()
 
     ResolveExport("theQuickTimeDispatcher", (void **)&dispatch_addr);
     imagebase_addr = (DWORD)hModule;
-    CLog::Log(LOGDEBUG, "Virtual Address of theQuickTimeDispatcher = 0x%x", dispatch_addr);
-    CLog::Log(LOGDEBUG, "ImageBase of %s = 0x%x", GetName(), imagebase_addr);
+    CLog::Log(LOGDEBUG, "Virtual Address of theQuickTimeDispatcher = 0x%lx", dispatch_addr);
+    CLog::Log(LOGDEBUG, "ImageBase of %s = 0x%lx", GetName(), imagebase_addr);
 
     dispatch_rva = dispatch_addr - imagebase_addr;
 
-    CLog::Log(LOGDEBUG, "Relative Virtual Address of theQuickTimeDispatcher = %p", dispatch_rva);
+    CLog::Log(LOGDEBUG, "Relative Virtual Address of theQuickTimeDispatcher = %lu", dispatch_rva);
 
     DWORD base = imagebase_addr;
     if (dispatch_rva == 0x124C30)
@@ -747,7 +747,7 @@ bool DllLoader::Load()
     }
     catch(...)
     {
-      CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception during DLL_PROCESS_ATTACH");
+      CLog::Log(LOGERROR, "%s - Unhandled exception during DLL_PROCESS_ATTACH", __FUNCTION__);
 
       // vp7vfw.dll throws a CUserException due to a missing export
       // but the export isn't really needed for normal operation
@@ -757,7 +757,7 @@ bool DllLoader::Load()
         return false;
 
 
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Ignoring exception during DLL_PROCESS_ATTACH");
+      CLog::Log(LOGDEBUG, "%s - Ignoring exception during DLL_PROCESS_ATTACH", __FUNCTION__);
     }
 
     // init function may have fixed up the export table
@@ -820,7 +820,7 @@ void DllLoader::LoadSymbols()
 
       if (offset==0)
       {
-        CLog::DebugLog("DllLoader: Unable to load symbols for %s. No offset for xbdm.dll with checksum 0x%08X found", GetName(), dllxbdm.WindowsHeader->CheckSum);
+        CLog::Log(LOGDEBUG,"DllLoader: Unable to load symbols for %s. No offset for xbdm.dll with checksum 0x%08X found", GetName(), dllxbdm.WindowsHeader->CheckSum);
         return;
       }
 
@@ -840,12 +840,12 @@ void DllLoader::LoadSymbols()
       }
       catch(...)
       {
-        CLog::DebugLog("DllLoader: Loading symbols for %s failed with an exception.", GetName());
+        CLog::Log(LOGDEBUG,"DllLoader: Loading symbols for %s failed with an exception.", GetName());
       }
     }
   }
   else
-    CLog::DebugLog("DllLoader: Can't load symbols for %s. xbdm.dll is needed and not loaded", GetName());
+    CLog::Log(LOGDEBUG,"DllLoader: Can't load symbols for %s. xbdm.dll is needed and not loaded", GetName());
 
 #ifdef ENABLE_SYMBOL_UNLOADING
   m_bUnloadSymbols=true;  // Do this to allow unloading this dll from dllloadercontainer
@@ -883,7 +883,7 @@ void DllLoader::UnloadSymbols()
 
       if (offset==0)
       {
-        CLog::DebugLog("DllLoader: Unable to unload symbols for %s. No offset for xbdm.dll with checksum 0x%08X found", GetName(), dllxbdm.WindowsHeader->CheckSum);
+        CLog::Log(LOGDEBUG,"DllLoader: Unable to unload symbols for %s. No offset for xbdm.dll with checksum 0x%08X found", GetName(), dllxbdm.WindowsHeader->CheckSum);
         return;
       }
 
@@ -919,11 +919,11 @@ void DllLoader::UnloadSymbols()
       }
       catch(...)
       {
-        CLog::DebugLog("DllLoader: Unloading symbols for %s failed with an exception.", GetName());
+        CLog::Log(LOGDEBUG,"DllLoader: Unloading symbols for %s failed with an exception.", GetName());
       }
     }
   }
   else
-    CLog::DebugLog("DllLoader: Can't unload symbols for %s. xbdm.dll is needed and not loaded", GetName());
+    CLog::Log(LOGDEBUG,"DllLoader: Can't unload symbols for %s. xbdm.dll is needed and not loaded", GetName());
 #endif
 }

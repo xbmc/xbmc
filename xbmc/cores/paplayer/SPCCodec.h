@@ -2,7 +2,7 @@
 #define SPC_CODEC_H_
 
 #include "ICodec.h"
-#include "spc/types.h"
+#include "spc/Types.h"
 #include "..\DllLoader\DllLoader.h"
 
 class SPCCodec : public ICodec
