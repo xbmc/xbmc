@@ -4,6 +4,7 @@
 class DllADPCMInterface
 {
 public:
+    virtual ~DllADPCMInterface() {}
     virtual int LoadXWAV(const char* szFileName)=0;
     virtual void FreeXWAV(int)=0;
     virtual long FillBuffer(int nsf, char* buffer, int size)=0;

@@ -4,6 +4,7 @@
 class DllTimidityInterface
 {
 public:
+    virtual ~DllTimidityInterface() {} 
     virtual int Init()=0;
     virtual int LoadMID(const char* szFileName)=0;
     virtual void FreeMID(int mid)=0;

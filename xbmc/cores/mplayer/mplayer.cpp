@@ -828,7 +828,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
   bFileIsDVDImage = file.IsDVDImage();
   bFileIsDVDIfoFile = file.IsDVDFile(false, true);
 
-  CLog::DebugLog("file:%s IsDVDImage:%i IsDVDIfoFile:%i", strFile.c_str(), bFileIsDVDImage , bFileIsDVDIfoFile);
+  CLog::Log(LOGDEBUG,"file:%s IsDVDImage:%i IsDVDIfoFile:%i", strFile.c_str(), bFileIsDVDImage , bFileIsDVDIfoFile);
   if (strFile.Find("dvd://") >= 0 || bFileIsDVDImage || bFileIsDVDIfoFile)
   {
     bIsDVD = true;

@@ -1,5 +1,3 @@
-
-
 #include "stdafx.h"
 #include "emu_dx8.h"
 

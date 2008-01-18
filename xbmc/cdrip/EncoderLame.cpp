@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "EncoderLame.h"
-#include "../id3tag.h"
+#include "../Id3Tag.h"
 
 // taken from Lame from main.c
 int CEncoderLame::parse_args_from_string(lame_global_flags * const gfp, const char *p,

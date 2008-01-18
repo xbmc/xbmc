@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "SHNCodec.h"
+#include "SHNcodec.h"
 
 
 // Callbacks for file reading

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "WAVPackCodec.h"
+#include "WAVPackcodec.h"
 
 
 WAVPackCodec::WAVPackCodec()
@@ -117,7 +117,6 @@ void WAVPackCodec::DeInit()
 __int64 WAVPackCodec::Seek(__int64 iSeekTime)
 {
   m_BufferSize=m_BufferPos=0;
-  int NumSamples=m_dll.WavpackGetNumSamples(m_Handle);
   int SeekSample=(int)(m_SampleRate / 1000.0 * iSeekTime);
   if (m_dll.WavpackSeekSample(m_Handle, SeekSample))
   {

@@ -4,6 +4,7 @@
 class DllStSoundInterface
 {
 public:
+    virtual ~DllStSoundInterface() {}
     virtual int LoadYM(const char* szFileName)=0;
     virtual void FreeYM(int ym)=0;
     virtual int FillBuffer(int ym, char* buffer, unsigned long length)=0;

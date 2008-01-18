@@ -1,10 +1,11 @@
 #pragma once
 #include "../../DynamicDll.h"
-#include "aac/aaccodec.h"
+#include "aac/AACCodec.h"
 
 class DllAACCodecInterface
 {
 public:
+  virtual ~DllAACCodecInterface() {}
   virtual AACHandle AACOpen(const char *fn, AACIOCallbacks callbacks)=0;
   virtual int AACRead(AACHandle handle, BYTE* pBuffer, int iSize)=0;
   virtual int AACSeek(AACHandle handle, int iTimeMs)=0;
