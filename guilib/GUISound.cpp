@@ -233,3 +233,4 @@ bool CGUISound::LoadWav(const CStdString& strFile, WAVEFORMATEX* wfx, LPBYTE* pp
   fclose(fd);
   return (*ppWavData!=NULL);
 }
+
