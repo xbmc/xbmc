@@ -1,4 +1,5 @@
 #pragma once
+
 #include "ReplayGain.h"
 
 #define READ_EOF      -1
@@ -67,7 +68,7 @@ public:
   // Skip to next track/item inside the current media (if supported).
   virtual bool SkipNext(){return false;}
 
-  virtual int GetCacheLevel(){return -1;}
+  virtual int GetCacheLevel() const    {return -1;}
 
   // true if we can retrieve normalized float data immediately
   virtual bool HasFloatData() const { return false; }

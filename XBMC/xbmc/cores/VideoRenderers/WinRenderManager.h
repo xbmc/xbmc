@@ -82,3 +82,4 @@ protected:
 };
 
 extern CWinRenderManager g_renderManager;
+

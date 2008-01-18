@@ -1,6 +1,6 @@
 #pragma once
+#include "DllWAVPack.h"
 #include "CachingCodec.h"
-#include "Dllwavpack.h"
 
 class WAVPackCodec : public CachingCodec
 {
@@ -36,3 +36,4 @@ private:
 
   DllWavPack m_dll;
 };
+

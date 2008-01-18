@@ -212,7 +212,7 @@ void AC3Codec::SetupChannels(unsigned flags)
   if(!m_iOutputChannels)
     m_iOutputChannels = channels;
   else if(m_iOutputChannels != channels)
-    CLog::Log(LOGWARNING, __FUNCTION__" - Number of channels changed in stream from %d to %d, data might be truncated", m_iOutputChannels, channels);
+    CLog::Log(LOGWARNING, "%s - Number of channels changed in stream from %d to %d, data might be truncated", __FUNCTION__, m_iOutputChannels, channels);
 
   // make sure map contains enough channels
   for(int i=0;i<m_iOutputChannels;i++)
@@ -407,3 +407,4 @@ void AC3Codec::SetDefault()
 }
 
 #endif
+

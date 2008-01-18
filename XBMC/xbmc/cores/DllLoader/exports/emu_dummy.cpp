@@ -9,3 +9,4 @@ extern "C" void not_implement( LPCSTR debuginfo)
     CLog::Log(LOGDEBUG, debuginfo);
   }
 }
+
