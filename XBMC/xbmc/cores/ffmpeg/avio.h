@@ -27,17 +27,20 @@ typedef int64_t offset_t;
 
 /* unbuffered I/O */
 
+/**
+ * URL Context.
+ * New fields can be added to the end with minor version bumps.
+ * Removal, reordering and changes to existing fields require a major
+ * version bump.
+ * sizeof(URLContext) must not be used outside libav*.
+ */
 struct URLContext {
     struct URLProtocol *prot;
     int flags;
     int is_streamed;  /**< true if streamed (no seek possible), default = false */
     int max_packet_size;  /**< if non zero, the stream is packetized with this max packet size */
     void *priv_data;
-#if LIBAVFORMAT_VERSION_INT >= (52<<16)
     char *filename; /**< specified filename */
-#else
-    char filename[1]; /**< specified filename */
-#endif
 };
 
 typedef struct URLContext URLContext;
@@ -77,12 +80,39 @@ void url_get_filename(URLContext *h, char *buf, int buf_size);
  * the callback is called in blocking functions to test regulary if
  * asynchronous interruption is needed. AVERROR(EINTR) is returned
  * in this case by the interrupted function. 'NULL' means no interrupt
- * callback is given. i
+ * callback is given.
  */
 void url_set_interrupt_cb(URLInterruptCB *interrupt_cb);
 
 /* not implemented */
 int url_poll(URLPollEntry *poll_table, int n, int timeout);
+
+/**
+ * Pause and resume playing - only meaningful if using a network streaming
+ * protocol (e.g. MMS).
+ * @param pause 1 for pause, 0 for resume
+ */
+int av_url_read_pause(URLContext *h, int pause);
+
+/**
+ * Seek to a given timestamp relative to some component stream.
+ * Only meaningful if using a network streaming protocol (e.g. MMS.).
+ * @param stream_index The stream index that the timestamp is relative to.
+ *        If stream_index is (-1) the timestamp should be in AV_TIME_BASE
+ *        units from the beginning of the presentation.
+ *        If a stream_index >= 0 is used and the protocol does not support
+ *        seeking based on component streams, the call will fail with ENOTSUP.
+ * @param timestamp timestamp in AVStream.time_base units
+ *        or if there is no stream specified then in AV_TIME_BASE units.
+ * @param flags Optional combination of AVSEEK_FLAG_BACKWARD, AVSEEK_FLAG_BYTE
+ *        and AVSEEK_FLAG_ANY. The protocol may silently ignore
+ *        AVSEEK_FLAG_BACKWARD and AVSEEK_FLAG_ANY, but AVSEEK_FLAG_BYTE will
+ *        fail with ENOTSUP if used and not supported.
+ * @return >= 0 on success
+ * @see AVInputFormat::read_seek
+ */
+offset_t av_url_read_seek(URLContext *h,
+                     int stream_index, int64_t timestamp, int flags);
 
 /**
  * Passing this as the "whence" parameter to a seek function causes it to
@@ -99,13 +129,25 @@ typedef struct URLProtocol {
     offset_t (*url_seek)(URLContext *h, offset_t pos, int whence);
     int (*url_close)(URLContext *h);
     struct URLProtocol *next;
+    int (*url_read_pause)(URLContext *h, int pause);
+    offset_t (*url_read_seek)(URLContext *h,
+                         int stream_index, int64_t timestamp, int flags);
 } URLProtocol;
 
 extern URLProtocol *first_protocol;
 extern URLInterruptCB *url_interrupt_cb;
 
+URLProtocol *av_protocol_next(URLProtocol *p);
+
 int register_protocol(URLProtocol *protocol);
 
+/**
+ * Bytestream IO Context.
+ * New fields can be added to the end with minor version bumps.
+ * Removal, reordering and changes to existing fields require a major
+ * version bump.
+ * sizeof(ByteIOContext) must not be used outside libav*.
+ */
 typedef struct {
     unsigned char *buffer;
     int buffer_size;
@@ -124,9 +166,20 @@ typedef struct {
     unsigned char *checksum_ptr;
     unsigned long (*update_checksum)(unsigned long checksum, const uint8_t *buf, unsigned int size);
     int error;         ///< contains the error code or 0 if no error happened
+    int (*read_pause)(void *opaque, int pause);
+    offset_t (*read_seek)(void *opaque,
+                     int stream_index, int64_t timestamp, int flags);
 } ByteIOContext;
 
 int init_put_byte(ByteIOContext *s,
+                  unsigned char *buffer,
+                  int buffer_size,
+                  int write_flag,
+                  void *opaque,
+                  int (*read_packet)(void *opaque, uint8_t *buf, int buf_size),
+                  int (*write_packet)(void *opaque, uint8_t *buf, int buf_size),
+                  offset_t (*seek)(void *opaque, offset_t offset, int whence));
+ByteIOContext *av_alloc_put_byte(
                   unsigned char *buffer,
                   int buffer_size,
                   int write_flag,
@@ -155,6 +208,10 @@ offset_t url_ftell(ByteIOContext *s);
 offset_t url_fsize(ByteIOContext *s);
 int url_feof(ByteIOContext *s);
 int url_ferror(ByteIOContext *s);
+
+int av_url_read_fpause(ByteIOContext *h, int pause);
+offset_t av_url_read_fseek(ByteIOContext *h,
+                      int stream_index, int64_t timestamp, int flags);
 
 #define URL_EOF (-1)
 /** @note return URL_EOF (-1) if EOF */
@@ -199,7 +256,7 @@ static inline int url_is_streamed(ByteIOContext *s)
 
 /** @note when opened as read/write, the buffers are only used for
    writing */
-int url_fdopen(ByteIOContext *s, URLContext *h);
+int url_fdopen(ByteIOContext **s, URLContext *h);
 
 /** @warning must be called before any I/O */
 int url_setbufsize(ByteIOContext *s, int buf_size);
@@ -211,7 +268,7 @@ int url_resetbuf(ByteIOContext *s, int flags);
 
 /** @note when opened as read/write, the buffers are only used for
    writing */
-int url_fopen(ByteIOContext *s, const char *filename, int flags);
+int url_fopen(ByteIOContext **s, const char *filename, int flags);
 int url_fclose(ByteIOContext *s);
 URLContext *url_fileno(ByteIOContext *s);
 
@@ -225,7 +282,7 @@ URLContext *url_fileno(ByteIOContext *s);
  */
 int url_fget_max_packet_size(ByteIOContext *s);
 
-int url_open_buf(ByteIOContext *s, uint8_t *buf, int buf_size, int flags);
+int url_open_buf(ByteIOContext **s, uint8_t *buf, int buf_size, int flags);
 
 /** return the written or read size */
 int url_close_buf(ByteIOContext *s);
@@ -236,7 +293,7 @@ int url_close_buf(ByteIOContext *s);
  * @param s new IO context
  * @return zero if no error.
  */
-int url_open_dyn_buf(ByteIOContext *s);
+int url_open_dyn_buf(ByteIOContext **s);
 
 /**
  * Open a write only packetized memory stream with a maximum packet
@@ -247,7 +304,7 @@ int url_open_dyn_buf(ByteIOContext *s);
  * @param max_packet_size maximum packet size (must be > 0)
  * @return zero if no error.
  */
-int url_open_dyn_packet_buf(ByteIOContext *s, int max_packet_size);
+int url_open_dyn_packet_buf(ByteIOContext **s, int max_packet_size);
 
 /**
  * Return the written size and a pointer to the buffer. The buffer
