@@ -640,3 +640,4 @@ void CGUIListControlEx::SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DW
   CGUIControl::SetNavigation(dwUp, dwDown, dwLeft, dwRight);
   m_upDown.SetNavigation(GetID(), dwDown, GetID(), dwRight);
 }
+

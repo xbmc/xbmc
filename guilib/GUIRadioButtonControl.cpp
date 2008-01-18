@@ -141,3 +141,4 @@ void CGUIRadioButtonControl::SetColorDiffuse(D3DCOLOR color)
   m_imgRadioFocus.SetColorDiffuse(color);
   m_imgRadioNoFocus.SetColorDiffuse(color);
 }
+

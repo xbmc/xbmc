@@ -16,6 +16,7 @@ CGUIFont::CGUIFont(const CStdString& strFontName, DWORD style, DWORD textColor, 
   m_shadowColor = shadowColor;
   m_lineSpacing = lineSpacing;
   m_font = font;
+  
   if (m_font)
     m_font->AddReference();
 }
@@ -146,3 +147,4 @@ bool CGUIFont::ClippedRegionIsEmpty(float x, float y, float width, DWORD alignme
 
   return !g_graphicsContext.SetClipRegion(x, y, width, m_font->GetLineHeight(2.0f));
 }
+

@@ -12,6 +12,7 @@ CAnimEffect::CAnimEffect(const TiXmlElement *node, EFFECT_TYPE effect)
   m_delay = m_length = 0;
   m_pTweener = NULL;
   // time and delay
+
   float temp;
   if (g_SkinInfo.ResolveConstant(node->Attribute("time"), temp)) m_length = (unsigned int)(temp * g_SkinInfo.GetEffectsSlowdown());
   if (g_SkinInfo.ResolveConstant(node->Attribute("delay"), temp)) m_delay = (unsigned int)(temp * g_SkinInfo.GetEffectsSlowdown());
