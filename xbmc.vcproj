@@ -3266,9 +3266,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					Name="DVDCodecs"
 					Filter="">
 					<File
-						RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\DllAvCodec.h">
-					</File>
-					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\DVDCodecs.h">
 					</File>
 					<File
@@ -3357,9 +3354,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Video\DllLibMpeg2.h">
 						</File>
 						<File
-							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Video\DllPostProc.h">
-						</File>
-						<File
 							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Video\DVDVideoCodec.h">
 						</File>
 						<File
@@ -3432,9 +3426,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				<Filter
 					Name="DVDDemuxers"
 					Filter="">
-					<File
-						RelativePath=".\xbmc\cores\dvdplayer\DVDDemuxers\DllAvFormat.h">
-					</File>
 					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemux.cpp">
 					</File>
@@ -3531,18 +3522,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					Name="DVDHeaders"
 					Filter="">
 					<File
-						RelativePath=".\xbmc\cores\dvdplayer\ffmpeg\avcodec.h">
-					</File>
-					<File
-						RelativePath=".\xbmc\cores\dvdplayer\ffmpeg\avformat.h">
-					</File>
-					<File
-						RelativePath=".\xbmc\cores\dvdplayer\ffmpeg\avio.h">
-					</File>
-					<File
-						RelativePath=".\xbmc\cores\dvdplayer\ffmpeg\common.h">
-					</File>
-					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\decoder.h">
 					</File>
 					<File
@@ -3558,28 +3537,13 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\dvdnav_internal.h">
 					</File>
 					<File
-						RelativePath=".\xbmc\cores\dvdplayer\ffmpeg\ffmpeg.h">
-					</File>
-					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\ifo_types.h">
 					</File>
 					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\nav_types.h">
 					</File>
 					<File
-						RelativePath=".\xbmc\cores\dvdplayer\ffmpeg\rational.h">
-					</File>
-					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\remap.h">
-					</File>
-					<File
-						RelativePath=".\xbmc\cores\dvdplayer\ffmpeg\rtp.h">
-					</File>
-					<File
-						RelativePath=".\xbmc\cores\dvdplayer\ffmpeg\rtsp.h">
-					</File>
-					<File
-						RelativePath=".\xbmc\cores\dvdplayer\ffmpeg\rtspcodes.h">
 					</File>
 					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\vm.h">
@@ -4109,6 +4073,97 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\visualizations\VisualisationFactory.h">
+				</File>
+			</Filter>
+			<Filter
+				Name="ffmpeg"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\cores\ffmpeg\adler32.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\ffmpeg\avcodec.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\ffmpeg\avformat.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\ffmpeg\avio.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\ffmpeg\avutil.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\ffmpeg\common.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\ffmpeg\DllAvCodec.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\ffmpeg\DllAvFormat.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\ffmpeg\DllPostProc.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\ffmpeg\DllSwScale.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\ffmpeg\ffmpeg.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\ffmpeg\fifo.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\ffmpeg\integer.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\ffmpeg\intfloat_readwrite.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\ffmpeg\inttypes.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\ffmpeg\log.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\ffmpeg\lzo.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\ffmpeg\mathematics.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\ffmpeg\mem.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\ffmpeg\opt.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\ffmpeg\postprocess.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\ffmpeg\random.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\ffmpeg\rational.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\ffmpeg\rgb2rgb.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\ffmpeg\rtp.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\ffmpeg\rtsp.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\ffmpeg\rtspcodes.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\ffmpeg\stdint.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\ffmpeg\swscale.h">
 				</File>
 			</Filter>
 		</Filter>
