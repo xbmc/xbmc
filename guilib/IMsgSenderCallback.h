@@ -17,6 +17,7 @@ class IMsgSenderCallback
 {
 public:
   virtual bool SendMessage(CGUIMessage& message) = 0;
+  virtual ~IMsgSenderCallback() {} 
 };
 
 #endif
