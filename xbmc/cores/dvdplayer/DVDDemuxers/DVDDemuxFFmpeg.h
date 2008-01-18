@@ -2,8 +2,8 @@
 #pragma once
 
 #include "DVDDemux.h"
-#include "DllAvFormat.h"
-#include "../DVDCodecs/DllAvCodec.h"
+#include "../../ffmpeg/DllAvFormat.h"
+#include "../../ffmpeg/DllAvCodec.h"
 
 class CDVDDemuxFFmpeg;
 
@@ -91,7 +91,7 @@ protected:
   // #define MAX_STREAMS 42 // from avformat.h
   CDemuxStream* m_streams[MAX_STREAMS]; // maximum number of streams that ffmpeg can handle
 
-  ByteIOContext m_ioContext;
+  ByteIOContext* m_ioContext;
   
   DllAvFormat m_dllAvFormat;
   DllAvCodec  m_dllAvCodec;
