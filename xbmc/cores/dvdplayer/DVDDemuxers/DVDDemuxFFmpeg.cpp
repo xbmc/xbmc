@@ -137,7 +137,7 @@ CDVDDemuxFFmpeg::CDVDDemuxFFmpeg() : CDVDDemux()
 {
   m_pFormatContext = NULL;
   m_pInput = NULL;
-  memset(&m_ioContext, 0, sizeof(ByteIOContext));
+  m_ioContext = NULL;
   InitializeCriticalSection(&m_critSection);
   for (int i = 0; i < MAX_STREAMS; i++) m_streams[i] = NULL;
   m_iCurrentPts = DVD_NOPTS_VALUE;
@@ -235,6 +235,10 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
         context->is_streamed = 1;
     }
 
+#if LIBAVFORMAT_VERSION_INT >= (52<<16)
+    context->filename = (char *) &context[1];
+#endif
+
     strcpy(context->filename, strFile.c_str());  
 
     // open our virtual file device
@@ -257,8 +261,8 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       pd.filename = strFile.c_str();
 
       // read data using avformat's buffers
-      pd.buf_size = m_dllAvFormat.get_buffer(&m_ioContext, pd.buf, sizeof(probe_buffer));
-      m_dllAvFormat.url_fseek(&m_ioContext , 0, SEEK_SET);
+      pd.buf_size = m_dllAvFormat.get_buffer(m_ioContext, pd.buf, sizeof(probe_buffer));
+      m_dllAvFormat.url_fseek(m_ioContext , 0, SEEK_SET);
       
       if (pd.buf_size == 0)
       {
@@ -276,7 +280,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
 
     // open the demuxer
-    if (m_dllAvFormat.av_open_input_stream(&m_pFormatContext, &m_ioContext, strFile.c_str(), iformat, NULL) < 0)
+    if (m_dllAvFormat.av_open_input_stream(&m_pFormatContext, m_ioContext, strFile.c_str(), iformat, NULL) < 0)
     {
       CLog::DebugLog("Error, could not open file", strFile.c_str());
       Dispose();
@@ -326,12 +330,17 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
 void CDVDDemuxFFmpeg::Dispose()
 {
-  if (m_pFormatContext) 
-    m_dllAvFormat.av_close_input_file(m_pFormatContext);  
-  else if (m_ioContext.opaque) // can only do this as an alternate, m_pFormatContex has copy
-    m_dllAvFormat.url_fclose(&m_ioContext);
-
-  memset(&m_ioContext, 0, sizeof(ByteIOContext));
+  if (m_pFormatContext)
+  {
+    if (m_ioContext)
+    {
+      m_dllAvFormat.av_close_input_stream(m_pFormatContext);
+      m_dllAvFormat.url_fclose(m_ioContext);
+    }
+    else
+      m_dllAvFormat.av_close_input_file(m_pFormatContext);
+  }
+  m_ioContext = NULL;
   m_pFormatContext = NULL;
   m_speed = DVD_PLAYSPEED_NORMAL;
 
@@ -444,7 +453,8 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
   if (m_pFormatContext)
   {
     // assume we are not eof
-    m_pFormatContext->pb.eof_reached = 0;
+    if(m_pFormatContext->pb)
+      m_pFormatContext->pb->eof_reached = 0;
 
     // timeout reads after 100ms
     g_urltimeout = GetTickCount() + 100;
@@ -601,9 +611,9 @@ int CDVDDemuxFFmpeg::GetStreamLenght()
     // no duration is available for us
     // try to calculate it
     int iLength = 0;
-    if (m_iCurrentPts != DVD_NOPTS_VALUE && m_pFormatContext->file_size > 0 && m_pFormatContext->pb.pos > 0)
+    if (m_iCurrentPts != DVD_NOPTS_VALUE && m_pFormatContext->file_size > 0 && m_pFormatContext->pb && m_pFormatContext->pb->pos > 0)
     {
-      iLength = (int)(((m_iCurrentPts * m_pFormatContext->file_size) / m_pFormatContext->pb.pos) / 1000) & 0xFFFFFFFF;
+      iLength = (int)(((m_iCurrentPts * m_pFormatContext->file_size) / m_pFormatContext->pb->pos) / 1000) & 0xFFFFFFFF;
     }
     return iLength;
   }

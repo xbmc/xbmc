@@ -6,8 +6,8 @@ extern "C" {
 #define __STDC_CONSTANT_MACROS
 #define __STDC_LIMIT_MACROS
 #pragma warning(disable:4244)
-#include "..\..\ffmpeg\avutil.h"
-#include "..\..\ffmpeg\postprocess.h"
+#include "avutil.h"
+#include "postprocess.h"
 }
 
 class DllAvCodecInterface

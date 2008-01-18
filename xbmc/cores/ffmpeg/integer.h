@@ -80,4 +80,4 @@ AVInteger av_int2i(int64_t a);
  */
 int64_t av_i2int(AVInteger a);
 
-#endif // INTEGER_H
+#endif /* FFMPEG_INTEGER_H */
