@@ -3,7 +3,7 @@
 #include "DVDOverlayCodecText.h"
 #include "DVDOverlayText.h"
 #include "../../DVDStreamInfo.h"
-#include "../DllAvCodec.h"
+#include "../../../ffmpeg/DllAvCodec.h"
 #include "AutoPtrHandle.h"
 
 CDVDOverlayCodecText::CDVDOverlayCodecText() : CDVDOverlayCodec("Text Subtitle Decoder")
