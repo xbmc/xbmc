@@ -107,3 +107,4 @@ bool AdplugCodec::IsSupportedFormat(const CStdString& strExt)
   
   return false;
 }
+

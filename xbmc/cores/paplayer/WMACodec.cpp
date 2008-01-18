@@ -76,3 +76,4 @@ bool WMACodec::CanInit()
 }
 
 #endif
+

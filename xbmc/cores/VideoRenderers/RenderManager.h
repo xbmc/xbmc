@@ -8,7 +8,7 @@
 #else
 
 #include "XBoxRenderer.h"
-#include "..\..\utils\SharedSection.h"
+#include "../../utils/SharedSection.h"
 
 class CXBoxRenderManager : private CThread
 {

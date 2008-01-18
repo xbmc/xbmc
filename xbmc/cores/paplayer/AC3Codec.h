@@ -3,7 +3,7 @@
 
 #include "CachingCodec.h"
 #include "FileReader.h"
-#include "DllAC3Codec.h"
+#include "DllAc3codec.h"
 
 #ifdef HAS_AC3_CODEC
 

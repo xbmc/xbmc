@@ -203,3 +203,4 @@ public:
 protected:
   virtual void Render(DWORD flags);
 };
+

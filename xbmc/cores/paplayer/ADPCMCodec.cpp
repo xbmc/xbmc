@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "../../util.h"
+#include "../../Util.h"
 
 #include "ADPCMCodec.h"
 
@@ -70,3 +70,4 @@ bool ADPCMCodec::CanInit()
 {
   return m_dll.CanLoad();
 }
+

@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include "CDDARipper.h"
 #include "CDDAReader.h"
-#include "..\util.h"
+#include "../Util.h"
 #include "EncoderLame.h"
 #include "EncoderWav.h"
 #include "EncoderVorbis.h"
-#include "..\filesystem\CDDADirectory.h"
-#include "..\detectdvdtype.h"
-#include "../MusicInfoTagLoaderFactory.h"
+#include "../FileSystem/CDDADirectory.h"
+#include "../DetectDVDType.h"
+#include "../musicInfoTagLoaderFactory.h"
 #include "../utils/LabelFormatter.h"
 
 using namespace XFILE;

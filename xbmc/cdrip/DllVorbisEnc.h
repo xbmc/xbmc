@@ -1,12 +1,13 @@
 #pragma once
 #include "../DynamicDll.h"
-#include "../cdrip/oggvorbis\vorbisenc.h"
+#include "../cdrip/oggvorbis/vorbisenc.h"
 
 class DllVorbisEncInterface
 {
 public:
   virtual int vorbis_encode_init(vorbis_info *vi, long channels, long rate, long max_bitrate, long nominal_bitrate, long min_bitrate)=0;
   virtual int vorbis_encode_init_vbr(vorbis_info *vi, long channels, long rate, float base_quality)=0;
+  virtual ~DllVorbisEncInterface() {}
 };
 
 class DllVorbisEnc : public DllDynamic, DllVorbisEncInterface
