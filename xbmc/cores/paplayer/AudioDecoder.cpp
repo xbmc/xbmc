@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "AudioDecoder.h"
-#include "../../util.h"
+#include "../../Util.h"
 #include "CodecFactory.h"
 
 
@@ -137,7 +137,7 @@ void *CAudioDecoder::GetData(unsigned int size)
   {
     m_gaplessBufferSize = 0;
     // check for end of file + end of buffer
-    if ( m_status == STATUS_ENDING && m_pcmBuffer.GetMaxReadSize() < OUTPUT_SAMPLES * sizeof(float))
+    if ( m_status == STATUS_ENDING && m_pcmBuffer.GetMaxReadSize() < (int) (OUTPUT_SAMPLES * sizeof(float)))
     {
       CLog::Log(LOGINFO, "CAudioDecoder::GetData() ending track - only have %i samples left", m_pcmBuffer.GetMaxReadSize() / sizeof(float));
       m_status = STATUS_ENDED;
@@ -155,7 +155,7 @@ void CAudioDecoder::PrefixData(void *data, unsigned int size)
     CLog::Log(LOGERROR, "CAudioDecoder::PrefixData() failed - null data pointer");
     return;
   }
-  m_gaplessBufferSize = min(PACKET_SIZE, size);
+  m_gaplessBufferSize = min((unsigned int) PACKET_SIZE, size);
   memcpy(m_gaplessBuffer, data, m_gaplessBufferSize*sizeof(float));
   if (m_gaplessBufferSize != size)
     CLog::Log(LOGWARNING, "CAudioDecoder::PrefixData - losing %i bytes of audio data in track transistion", size - m_gaplessBufferSize);
@@ -174,7 +174,7 @@ int CAudioDecoder::ReadSamples(int numsamples)
   CSingleLock lock(m_critSection);
 
   // Read in more data
-  int maxsize = min(INPUT_SAMPLES, m_pcmBuffer.GetMaxWriteSize() / sizeof(float));
+  int maxsize = min<unsigned int>(INPUT_SAMPLES, m_pcmBuffer.GetMaxWriteSize() / sizeof(float));
   numsamples = min(numsamples, maxsize);
   numsamples -= (numsamples % m_codec->m_Channels);  // make sure it's divisible by our number of channels
   if ( numsamples )

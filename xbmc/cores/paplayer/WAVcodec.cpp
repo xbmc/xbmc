@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "WAVCodec.h"
+#include "WAVcodec.h"
 
 typedef struct
 {

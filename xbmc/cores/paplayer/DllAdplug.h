@@ -4,6 +4,7 @@
 class DllAdplugInterface
 {
 public:
+    virtual ~DllAdplugInterface() {}
     virtual int Init()=0;
     virtual int LoadADL(const char* szFileName)=0;
     virtual void FreeADL(int adl)=0;
@@ -36,3 +37,4 @@ class DllAdplug : public DllDynamic, DllAdplugInterface
     RESOLVE_METHOD_RENAME(DLL_GetLength, GetLength)
   END_METHOD_RESOLVE()
 };
+

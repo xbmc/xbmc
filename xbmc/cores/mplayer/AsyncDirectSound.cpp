@@ -61,7 +61,7 @@ void CASyncDirectSound::StreamCallback(LPVOID pPacketContext, DWORD dwStatus)
     // removing the CSingleLock lock(critSec) in CLog::Log() also prevents
     // the lockup, but this is a much better hack-fix.
 //    else
-//      CLog::DebugLog("Vis buffer overflow");
+//      CLog::Log(LOGDEBUG,"Vis buffer overflow");
   }
 }
 
@@ -286,7 +286,7 @@ HRESULT CASyncDirectSound::Deinitialize()
 HRESULT CASyncDirectSound::Pause()
 {
   if (m_bPause) return S_OK;
-  CLog::DebugLog("Pause stream");
+  CLog::Log(LOGDEBUG,"Pause stream");
   m_bPause = true;
   m_pStream->Flush();
   m_pStream->Pause( DSSTREAMPAUSE_PAUSE );
@@ -311,7 +311,7 @@ HRESULT CASyncDirectSound::Stop()
 
   // Check the status of each packet
   //mp_msg(0,0,"CASyncDirectSound::Stop");
-  CLog::DebugLog("Stop stream");
+  CLog::Log(LOGDEBUG,"Stop stream");
   if (m_pStream)
   {
     m_pStream->Flush();

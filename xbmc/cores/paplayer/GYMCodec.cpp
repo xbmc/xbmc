@@ -53,7 +53,7 @@ void GYMCodec::DeInit()
 
 __int64 GYMCodec::Seek(__int64 iSeekTime)
 {
-  m_dll.Seek(m_gym,unsigned int(iSeekTime/1000*60));
+  m_dll.Seek(m_gym,(unsigned int) (iSeekTime/1000*60));
 
   m_iDataPos = iSeekTime/1000*48000*4;
   return iSeekTime;

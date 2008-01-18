@@ -5,6 +5,7 @@
 class DllWavPackInterface
 {
 public:
+  virtual ~DllWavPackInterface() {}
   virtual WavpackContext *WavpackOpenFileInputEx (stream_reader *reader, void *wv_id, void *wvc_id, char *error, int flags, int norm_offset)=0;
   virtual WavpackContext *WavpackOpenFileInput (const char *infilename, char *error, int flags, int norm_offset)=0;
   virtual int WavpackGetVersion (WavpackContext *wpc)=0;

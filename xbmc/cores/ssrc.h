@@ -107,29 +107,29 @@ const double shapercoefs[8][21] =
 class Cssrc
 {
 public:
-  Cssrc::Cssrc(void);
-  Cssrc::~Cssrc();
+  Cssrc(void);
+  ~Cssrc();
 
   //---------------------------------------------------------------------------
   // Inits Freq Converter, returns false if cannot do
   //---------------------------------------------------------------------------
-  bool Cssrc::InitConverter(int OldFreq, int OldBPS, int Channels, int NewFreq, int NewBPS, int OutputBufferSize);
+  bool InitConverter(int OldFreq, int OldBPS, int Channels, int NewFreq, int NewBPS, int OutputBufferSize);
 
   //---------------------------------------------------------------------------
   // returns the input bitrate that we are using (in bits per second)
   //---------------------------------------------------------------------------
-  int Cssrc::GetInputBitrate();
+  int GetInputBitrate();
 
   //---------------------------------------------------------------------------
   // Deinitializes everything, cleaning up any buffers that exist
   //---------------------------------------------------------------------------
-  void Cssrc::DeInitialize();
+  void DeInitialize();
 
   //---------------------------------------------------------------------------
   // Get Resampled data out of the buffers
   // returns true if data was got, returns false if there is no data ready
   //---------------------------------------------------------------------------
-  bool Cssrc::GetData(unsigned char *pOutData);
+  bool GetData(unsigned char *pOutData);
 
   //---------------------------------------------------------------------------
   // Put up to iSize bytes of data into our resampler
@@ -137,7 +137,7 @@ public:
   // if there is not enough data, it returns -1
   // if we first need to do a GetData() it returns 0
   //---------------------------------------------------------------------------
-  int Cssrc::PutData(unsigned char *pInData, int iSize);
+  int PutData(unsigned char *pInData, int iSize);
 
   //---------------------------------------------------------------------------
   // Put up to iSize samples of **FLOAT** data into our resampler
@@ -145,7 +145,7 @@ public:
   // if there is not enough data, it returns -1
   // if we first need to do a GetData() it returns 0
   //---------------------------------------------------------------------------
-  int Cssrc::PutFloatData(float *pInData, int numSamples);
+  int PutFloatData(float *pInData, int numSamples);
 
   //---------------------------------------------------------------------------
   // returns the amount of data (or samples) that the resampler will take in
@@ -154,10 +154,10 @@ public:
   // if we can't take any data (eg downsampling, which is current disabled) it
   // returns -1
   //---------------------------------------------------------------------------
-  int Cssrc::GetInputSize();
-  int Cssrc::GetInputSamples();
+  int GetInputSize();
+  int GetInputSamples();
 
-  int Cssrc::GetMaxInputSize() { return m_iMaxInputSize;};
+  int GetMaxInputSize() { return m_iMaxInputSize;};
   //---------------------------------------------------------------------------
   // Converts some data-
   // DataSize is adjusted
@@ -165,7 +165,7 @@ public:
   // IsEOF is set to true when the last chunk of data is supplied in
   //---------------------------------------------------------------------------
   // NOT USED FOR XBMC!
-  // char *Cssrc::ConvertSomeData(char *InData, int &DataSize, bool IsEOF);
+  // char *ConvertSomeData(char *InData, int &DataSize, bool IsEOF);
 
 private:
   // clsDataStream DataStream;
@@ -227,91 +227,91 @@ private:
   //---------------------------------------------------------------------------
   // Inits Filter Stage 1, returns false if error
   //---------------------------------------------------------------------------
-  bool Cssrc::InitFilters(void);
+  bool InitFilters(void);
 
   //---------------------------------------------------------------------------
   // Upsamples a buffer full of rawindata
   // returns the datalength
   //---------------------------------------------------------------------------
-  int Cssrc::UpSampleRawIn(unsigned char * *pRetDataPtr, bool IsEof, int toberead, int toberead2, int nsmplread);
+  int UpSampleRawIn(unsigned char * *pRetDataPtr, bool IsEof, int toberead, int toberead2, int nsmplread);
 
   //---------------------------------------------------------------------------
   // Upsamples a buffer full of *FLOAT* rawindata
   // returns the datalength
   //---------------------------------------------------------------------------
-  int Cssrc::UpSampleFloatIn(unsigned char * *pRetDataPtr, bool IsEof, int toberead, int toberead2, int nsmplread);
+  int UpSampleFloatIn(unsigned char * *pRetDataPtr, bool IsEof, int toberead, int toberead2, int nsmplread);
 
   //---------------------------------------------------------------------------
   // Common routine for above upsampling routines
   //---------------------------------------------------------------------------
-  int Cssrc::UpSampleCommon(unsigned char * *pRetDataPtr, bool IsEof, int toberead, int toberead2, int nsmplread);
+  int UpSampleCommon(unsigned char * *pRetDataPtr, bool IsEof, int toberead, int toberead2, int nsmplread);
 
   //---------------------------------------------------------------------------
   // Downsamples a buffer full of rawindata
   // returns the datalength
   //---------------------------------------------------------------------------
-  int Cssrc::DownSampleRawIn(unsigned char * *pRetDataPtr, bool IsEof, int toberead, int nsmplread);
+  int DownSampleRawIn(unsigned char * *pRetDataPtr, bool IsEof, int toberead, int nsmplread);
 
   //---------------------------------------------------------------------------
   // Downsamples a buffer full of *FLOAT* rawindata
   // returns the datalength
   //---------------------------------------------------------------------------
-  int Cssrc::DownSampleFloatIn(unsigned char * *pRetDataPtr, bool IsEof, int toberead, int nsmplread);
+  int DownSampleFloatIn(unsigned char * *pRetDataPtr, bool IsEof, int toberead, int nsmplread);
 
   //---------------------------------------------------------------------------
   // Common routine for above downsampling routines
   //---------------------------------------------------------------------------
-  int Cssrc::DownSampleCommon(unsigned char * *pRetDataPtr, bool IsEof, int toberead, int nsmplread);
+  int DownSampleCommon(unsigned char * *pRetDataPtr, bool IsEof, int toberead, int nsmplread);
 
   //----------------------------------------------------
-  double Cssrc::alpha(double a);
-  double Cssrc::dbesi0(double x);
-  double Cssrc::win(double n, int len, double alp, double iza);
-  double Cssrc::sinc(double x);
-  double Cssrc::hn_lpf(int n, double lpf, double fs);
-  int Cssrc::gcd(int x, int y);
-  int Cssrc::extract_int(unsigned char *buf);
-  short Cssrc::extract_short(unsigned char *buf);
-  void Cssrc::bury_int(unsigned char *buf, int i);
-  void Cssrc::bury_short(unsigned char *buf, short s);
+  double alpha(double a);
+  double dbesi0(double x);
+  double win(double n, int len, double alp, double iza);
+  double sinc(double x);
+  double hn_lpf(int n, double lpf, double fs);
+  int gcd(int x, int y);
+  int extract_int(unsigned char *buf);
+  short extract_short(unsigned char *buf);
+  void bury_int(unsigned char *buf, int i);
+  void bury_short(unsigned char *buf, short s);
   //----------------------------------------------------
-  void Cssrc::dstsub(int n, REAL *a, int nc, REAL *c);
-  void Cssrc::dctsub(int n, REAL *a, int nc, REAL *c);
-  void Cssrc::rftbsub(int n, REAL *a, int nc, REAL *c);
-  void Cssrc::rftfsub(int n, REAL *a, int nc, REAL *c);
-  void Cssrc::cftx020(REAL *a);
-  void Cssrc::cftb040(REAL *a);
-  void Cssrc::cftf040(REAL *a);
-  void Cssrc::cftf082(REAL *a, REAL *w);
-  void Cssrc::cftf081(REAL *a, REAL *w);
-  void Cssrc::cftf162(REAL *a, REAL *w);
-  void Cssrc::cftf161(REAL *a, REAL *w);
-  void Cssrc::cftfx42(int n, REAL *a, int nw, REAL *w);
-  void Cssrc::cftfx41(int n, REAL *a, int nw, REAL *w);
-  void Cssrc::cftmdl2(int n, REAL *a, REAL *w);
-  void Cssrc::cftmdl1(int n, REAL *a, REAL *w);
-  void Cssrc::cftexp2(int n, REAL *a, int nw, REAL *w);
-  void Cssrc::cftexp1(int n, REAL *a, int nw, REAL *w);
-  void Cssrc::cftrec2(int n, REAL *a, int nw, REAL *w);
-  void Cssrc::cftrec1(int n, REAL *a, int nw, REAL *w);
-  void Cssrc::cftb1st(int n, REAL *a, REAL *w);
-  void Cssrc::cftf1st(int n, REAL *a, REAL *w);
-  void Cssrc::bitrv208neg(REAL *a);
-  void Cssrc::bitrv208(REAL *a);
-  void Cssrc::bitrv216neg(REAL *a);
-  void Cssrc::bitrv216(REAL *a);
-  void Cssrc::bitrv2conj(int n, int *ip, REAL *a);
-  void Cssrc::bitrv2(int n, int *ip, REAL *a);
-  void Cssrc::cftbsub(int n, REAL *a, int *ip, int nw, REAL *w);
-  void Cssrc::cftfsub(int n, REAL *a, int *ip, int nw, REAL *w);
-  void Cssrc::makect(int nc, int *ip, REAL *c);
-  void Cssrc::makewt(int nw, int *ip, REAL *w);
-  void Cssrc::dfst(int n, REAL *a, REAL *t, int *ip, REAL *w);
-  void Cssrc::dfct(int n, REAL *a, REAL *t, int *ip, REAL *w);
-  void Cssrc::ddst(int n, int isgn, REAL *a, int *ip, REAL *w);
-  void Cssrc::ddct(int n, int isgn, REAL *a, int *ip, REAL *w);
-  void Cssrc::rdft(int n, int isgn, REAL *a, int *ip, REAL *w);
-  void Cssrc::cdft(int n, int isgn, REAL *a, int *ip, REAL *w);
+  void dstsub(int n, REAL *a, int nc, REAL *c);
+  void dctsub(int n, REAL *a, int nc, REAL *c);
+  void rftbsub(int n, REAL *a, int nc, REAL *c);
+  void rftfsub(int n, REAL *a, int nc, REAL *c);
+  void cftx020(REAL *a);
+  void cftb040(REAL *a);
+  void cftf040(REAL *a);
+  void cftf082(REAL *a, REAL *w);
+  void cftf081(REAL *a, REAL *w);
+  void cftf162(REAL *a, REAL *w);
+  void cftf161(REAL *a, REAL *w);
+  void cftfx42(int n, REAL *a, int nw, REAL *w);
+  void cftfx41(int n, REAL *a, int nw, REAL *w);
+  void cftmdl2(int n, REAL *a, REAL *w);
+  void cftmdl1(int n, REAL *a, REAL *w);
+  void cftexp2(int n, REAL *a, int nw, REAL *w);
+  void cftexp1(int n, REAL *a, int nw, REAL *w);
+  void cftrec2(int n, REAL *a, int nw, REAL *w);
+  void cftrec1(int n, REAL *a, int nw, REAL *w);
+  void cftb1st(int n, REAL *a, REAL *w);
+  void cftf1st(int n, REAL *a, REAL *w);
+  void bitrv208neg(REAL *a);
+  void bitrv208(REAL *a);
+  void bitrv216neg(REAL *a);
+  void bitrv216(REAL *a);
+  void bitrv2conj(int n, int *ip, REAL *a);
+  void bitrv2(int n, int *ip, REAL *a);
+  void cftbsub(int n, REAL *a, int *ip, int nw, REAL *w);
+  void cftfsub(int n, REAL *a, int *ip, int nw, REAL *w);
+  void makect(int nc, int *ip, REAL *c);
+  void makewt(int nw, int *ip, REAL *w);
+  void dfst(int n, REAL *a, REAL *t, int *ip, REAL *w);
+  void dfct(int n, REAL *a, REAL *t, int *ip, REAL *w);
+  void ddst(int n, int isgn, REAL *a, int *ip, REAL *w);
+  void ddct(int n, int isgn, REAL *a, int *ip, REAL *w);
+  void rdft(int n, int isgn, REAL *a, int *ip, REAL *w);
+  void cdft(int n, int isgn, REAL *a, int *ip, REAL *w);
 };
 
 #endif

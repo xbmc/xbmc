@@ -2,7 +2,7 @@
 #define NSF_CODEC_H_
 
 #include "ICodec.h"
-#include "Dllnosefart.h"
+#include "DllNosefart.h"
 
 class NSFCodec : public ICodec
 {
@@ -29,3 +29,4 @@ private:
 };
 
 #endif
+

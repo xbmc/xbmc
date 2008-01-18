@@ -11,3 +11,4 @@ extern "C" bool d3dCreateTexture(unsigned int width, unsigned int height, LPDIRE
 extern "C" void d3dDrawIndexedPrimitive(D3DPRIMITIVETYPE primType, unsigned int minIndex, unsigned int numVertices, unsigned int startIndex, unsigned int primCount);
 
 #endif // _EMU_DX8_H
+

@@ -1,7 +1,7 @@
 #pragma once
 #include "CachingCodec.h"
 #include "../../MusicInfoTagLoaderMP3.h"
-#include "Dllmadcodec.h"
+#include "DllMadCodec.h"
 
 class MP3Codec : public CachingCodec
 {
@@ -54,3 +54,4 @@ private:
 
   DllMadCodec m_dll;
 };
+

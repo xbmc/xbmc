@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "../../util.h"
+#include "../../Util.h"
 #include "ModuleCodec.h"
 
 using namespace XFILE;
@@ -64,7 +64,7 @@ void ModuleCodec::DeInit()
     m_dll.FreeModule(m_module);
 
   m_renderID = 0;
-  m_module = NULL;
+  m_module = 0;
 }
 
 __int64 ModuleCodec::Seek(__int64 iSeekTime)
@@ -100,3 +100,4 @@ bool ModuleCodec::CanInit()
 {
   return m_dll.CanLoad();
 }
+

@@ -1,6 +1,6 @@
 #pragma once
-#include "../iplayer.h"
-#include "../../utils/thread.h"
+#include "../IPlayer.h"
+#include "../../utils/Thread.h"
 #include "AudioDecoder.h"
 #include "../ssrc.h"
 
@@ -35,8 +35,8 @@ public:
   virtual bool IsPlaying() const { return m_bIsPlaying; }
   virtual void Pause();
   virtual bool IsPaused() const { return m_bPaused; }
-  virtual bool HasVideo() { return false; }
-  virtual bool HasAudio() { return true; }
+  virtual bool HasVideo() const { return false; }
+  virtual bool HasAudio() const { return true; }
   virtual void ToggleFrameDrop() {}
   virtual bool CanSeek();
   virtual void Seek(bool bPlus = true, bool bLargeStep = false) {}
@@ -75,7 +75,9 @@ public:
 
   static bool HandlesType(const CStdString &type);
   virtual void DoAudioWork();
+
 protected:
+
   virtual void OnStartup() {}
   virtual void Process();
   virtual void OnExit();
