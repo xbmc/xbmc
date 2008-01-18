@@ -1,6 +1,7 @@
 #include "include.h"
 #include "GUIListLabel.h"
 #include "../xbmc/utils/CharsetConverter.h"
+#include <limits>
 
 CGUIListLabel::CGUIListLabel(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool alwaysScroll)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
