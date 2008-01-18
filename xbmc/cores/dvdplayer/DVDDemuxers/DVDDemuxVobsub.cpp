@@ -103,7 +103,7 @@ bool CDVDDemuxVobsub::Open(const std::string& filename)
 
   for(unsigned i=0;i<m_Streams.size();i++)
   {
-    m_Streams[i]->ExtraSize = state.extra.length();
+    m_Streams[i]->ExtraSize = state.extra.length()+1;
     m_Streams[i]->ExtraData = strdup(state.extra.c_str());
   }
 
