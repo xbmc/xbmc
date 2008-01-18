@@ -1,4 +1,4 @@
-	#include "stdafx.h"
+#include "stdafx.h"
 #include "MP3codec.h"
 
 #define DECODER_DELAY 529 // decoder delay in samples
