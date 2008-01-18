@@ -1,5 +1,6 @@
 #pragma once
 #include "DynamicDll.h"
+#include "DllAvCodec.h"
 
 extern "C" {
 #define HAVE_MMX
@@ -13,7 +14,7 @@ extern "C" {
 class DllAvFormatInterface
 {
 public:
-  virtual void av_register_all(void)=0;
+  virtual void av_register_all_dont_call(void)=0;
   virtual AVInputFormat *av_find_input_format(const char *short_name)=0;
   virtual int url_feof(ByteIOContext *s)=0;
   virtual void av_close_input_file(AVFormatContext *s)=0;
@@ -45,7 +46,7 @@ public:
 class DllAvFormat : public DllDynamic, DllAvFormatInterface
 {
   DECLARE_DLL_WRAPPER(DllAvFormat, Q:\\system\\players\\dvdplayer\\avformat-52.dll)
-  DEFINE_METHOD0(void, av_register_all)
+  DEFINE_METHOD0(void, av_register_all_dont_call)
   DEFINE_METHOD1(AVInputFormat*, av_find_input_format, (const char *p1))
   DEFINE_METHOD1(int, url_feof, (ByteIOContext *p1))
   DEFINE_METHOD1(void, av_close_input_file, (AVFormatContext *p1))
@@ -73,7 +74,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_FUNC_ALIGNED1(void, __cdecl, av_read_frame_flush, AVFormatContext*)
   DEFINE_FUNC_ALIGNED3(int, __cdecl, get_buffer, ByteIOContext*, unsigned char *, int)
   BEGIN_METHOD_RESOLVE()
-    RESOLVE_METHOD(av_register_all)
+    RESOLVE_METHOD_RENAME(av_register_all, av_register_all_dont_call)
     RESOLVE_METHOD(av_find_input_format)
     RESOLVE_METHOD(url_feof)
     RESOLVE_METHOD(av_close_input_file)
@@ -98,4 +99,10 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
     RESOLVE_METHOD(av_read_frame_flush)
     RESOLVE_METHOD(get_buffer)
   END_METHOD_RESOLVE()
+public:  
+  void av_register_all()
+  {
+    CSingleLock lock(DllAvCodec::m_critSection);
+    av_register_all_dont_call();
+  }
 };
