@@ -35,7 +35,7 @@ void CGUIWindowManager::Initialize()
 bool CGUIWindowManager::SendMessage(CGUIMessage& message)
 {
   bool handled = false;
-//  CLog::DebugLog("SendMessage: mess=%d send=%d control=%d param1=%d", message.GetMessage(), message.GetSenderId(), message.GetControlId(), message.GetParam1());
+//  CLog::Log(LOGDEBUG,"SendMessage: mess=%d send=%d control=%d param1=%d", message.GetMessage(), message.GetSenderId(), message.GetControlId(), message.GetParam1());
   // Send the message to all none window targets
   for (int i = 0; i < (int) m_vecMsgTargets.size(); i++)
   {
@@ -148,7 +148,7 @@ void CGUIWindowManager::Add(CGUIWindow* pWindow)
     map<DWORD, CGUIWindow *>::iterator it = m_mapWindows.find(pWindow->GetID() + i);
     if (it != m_mapWindows.end())
     {
-      CLog::Log(LOGERROR, "Error, trying to add a second window with id %i to the window manager", pWindow->GetID());
+      CLog::Log(LOGERROR, "Error, trying to add a second window with id %lu to the window manager", pWindow->GetID());
       return;
     }
     m_mapWindows.insert(pair<DWORD, CGUIWindow *>(pWindow->GetID() + i, pWindow));
@@ -178,7 +178,7 @@ void CGUIWindowManager::Remove(DWORD dwID)
   }
   else
   {
-    CLog::Log(LOGWARNING, "Attempted to remove window %i from the window manager when it didn't exist", dwID);
+    CLog::Log(LOGWARNING, "Attempted to remove window %lu from the window manager when it didn't exist", dwID);
   }
 }
 
@@ -197,8 +197,8 @@ void CGUIWindowManager::Delete(DWORD dwID)
 void CGUIWindowManager::PreviousWindow()
 {
   // deactivate any window
-  CLog::DebugLog("CGUIWindowManager::PreviousWindow: Deactivate");
-  int currentWindow = GetActiveWindow();
+  CLog::Log(LOGDEBUG,"CGUIWindowManager::PreviousWindow: Deactivate");
+  DWORD currentWindow = GetActiveWindow();
   CGUIWindow *pCurrentWindow = GetWindow(currentWindow);
   if (!pCurrentWindow)
     return;     // no windows or window history yet
@@ -257,7 +257,7 @@ void CGUIWindowManager::PreviousWindow()
   m_windowHistory.pop();
 
   // ok, initialize the new window
-  CLog::DebugLog("CGUIWindowManager::PreviousWindow: Activate new");
+  CLog::Log(LOGDEBUG,"CGUIWindowManager::PreviousWindow: Activate new");
   g_audioManager.PlayWindowSound(pNewWindow->GetID(), SOUND_INIT);
   CGUIMessage msg2(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, GetActiveWindow());
   pNewWindow->OnMessage(msg2);

@@ -119,3 +119,4 @@ void CGUIListExItem::OnPaint(CGUIItem::RenderContext* pContext)
     }
   }
 }
+

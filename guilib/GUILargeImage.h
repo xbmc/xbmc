@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "GUIImage.h"
+#include "guiImage.h"
 
 /*!
  \ingroup controls
@@ -34,3 +34,4 @@ protected:
   int m_orientation;
   CGUIImage m_fallbackImage;
 };
+

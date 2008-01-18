@@ -350,6 +350,7 @@ CStdString CGUILabelControl::ShortenPath(const CStdString &path)
     size_t nGreaterDelim = workPath.find_last_of( cDelim, nPos );
     if (nGreaterDelim == std::string::npos)
       break;
+
     nPos = workPath.find_last_of( cDelim, nGreaterDelim - 1 );
     if ( nPos == std::string::npos )
       break;
@@ -375,3 +376,4 @@ void CGUILabelControl::SetHighlight(unsigned int start, unsigned int end)
   m_startHighlight = start;
   m_endHighlight = end;
 }
+
