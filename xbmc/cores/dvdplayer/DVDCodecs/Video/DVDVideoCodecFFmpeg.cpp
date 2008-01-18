@@ -50,7 +50,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   AVCodec* pCodec;
 
   if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load()) return false;
-  
+
   m_pCodecContext = m_dllAvCodec.avcodec_alloc_context();
   // avcodec_get_context_defaults(m_pCodecContext);
 
@@ -189,6 +189,14 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
 
   if (m_pCodecContext->pix_fmt != PIX_FMT_YUV420P)
   {
+    if (!m_dllSwScale.IsLoaded())
+    {
+      if(!m_dllSwScale.Load())
+        return VC_ERROR;
+
+      m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);    
+    }
+
     if (!m_pConvertFrame)
     {
       // Allocate an AVFrame structure
@@ -206,9 +214,18 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
     }
 
     // convert the picture
-    m_dllAvCodec.img_convert((AVPicture*)m_pConvertFrame, PIX_FMT_YUV420P,
-                (AVPicture*)m_pFrame, m_pCodecContext->pix_fmt,
-                m_pCodecContext->width, m_pCodecContext->height);
+    struct SwsContext *context = m_dllSwScale.sws_getContext(m_pCodecContext->width, m_pCodecContext->height, 
+			m_pCodecContext->pix_fmt, m_pCodecContext->width, m_pCodecContext->height, 
+			PIX_FMT_YUV420P, SWS_BILINEAR, NULL, NULL, NULL);
+
+    uint8_t *src[] = { m_pFrame->data[0], m_pFrame->data[1], m_pFrame->data[2] };
+    int     srcStride[] = { m_pFrame->linesize[0], m_pFrame->linesize[1], m_pFrame->linesize[2] };
+    uint8_t *dst[] = { m_pConvertFrame->data[0], m_pConvertFrame->data[1], m_pConvertFrame->data[2] };
+    int     dstStride[] = { m_pConvertFrame->linesize[0], m_pConvertFrame->linesize[1], m_pConvertFrame->linesize[2] };
+    m_dllSwScale.sws_scale(context, src, srcStride, 0, m_pCodecContext->height, dst, dstStride);
+
+    m_dllSwScale.sws_freeContext(context); 
+
 
     m_pConvertFrame->coded_picture_number = m_pFrame->coded_picture_number;
     m_pConvertFrame->interlaced_frame = m_pFrame->interlaced_frame;
