@@ -326,10 +326,10 @@ CGUIListContainer::CGUIListContainer(DWORD dwParentID, DWORD dwControlId, float 
 
 bool CGUIListContainer::HasNextPage() const
 {
-   return (m_offset != (int)m_items.size() - m_itemsPerPage && (int)m_items.size() >= m_itemsPerPage);
+  return (m_offset != (int)m_items.size() - m_itemsPerPage && (int)m_items.size() >= m_itemsPerPage);
 }
 
 bool CGUIListContainer::HasPreviousPage() const
 {
-   return (m_offset > 0);
+  return (m_offset > 0);
 }

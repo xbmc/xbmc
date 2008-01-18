@@ -112,7 +112,7 @@ protected:
   FT_Face    m_face;
 
   float m_originX;
-  float m_originY;  
+  float m_originY;
 #ifdef HAS_SDL_OPENGL
   bool m_glTextureLoaded;
   GLuint m_glTexture;
