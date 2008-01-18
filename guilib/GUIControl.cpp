@@ -765,3 +765,4 @@ void CGUIControl::ExecuteActions(const vector<CStdString> &actions)
     g_graphicsContext.SendMessage(message);
   }
 }
+

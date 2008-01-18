@@ -98,6 +98,7 @@ protected:
   DWORD m_textColor;
   float m_lineSpacing;
   CGUIFontTTF *m_font; // the font object has the size information
+  
 private:
   bool ClippedRegionIsEmpty(float x, float y, float width, DWORD alignment) const;
 };

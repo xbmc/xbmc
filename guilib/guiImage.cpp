@@ -773,3 +773,4 @@ void CGUIImage::OrientateTexture(CRect &rect, int orientation)
     swap(rect.x2, rect.y2);
   }
 }
+

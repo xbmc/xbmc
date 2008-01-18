@@ -401,7 +401,7 @@ bool CGUITextBox::OnMouseWheel(char wheel, const CPoint &point)
   { // increase or decrease our offset by the appropriate amount.
     int offset = m_offset - wheel;
     // check that we are within the correct bounds.
-    if (offset + m_itemsPerPage > (int)m_lines.size())
+    if (offset + (int)m_itemsPerPage > (int)m_lines.size())
       offset = (m_lines.size() >= m_itemsPerPage) ? m_lines.size() - m_itemsPerPage : 0;
     ScrollToOffset(offset);
     // update the page control...
@@ -496,3 +496,4 @@ void CGUITextBox::ResetAutoScrolling()
   if (m_autoScrollRepeatAnim)
     m_autoScrollRepeatAnim->ResetAnimation();
 }
+

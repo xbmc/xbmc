@@ -347,7 +347,7 @@ bool CTextureBundle::PreloadFile(const CStdString& Filename)
 HRESULT CTextureBundle::LoadFile(const CStdString& Filename, CAutoTexBuffer& UnpackedBuf)
 {
   if (Filename == "-")
-    return NULL;
+    return 0;
 
   CStdString name(Filename);
   name.Normalize();

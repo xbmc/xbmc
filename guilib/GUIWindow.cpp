@@ -117,6 +117,7 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 {
   if (m_windowLoaded)
     return true;      // no point loading if it's already there
+    
   LARGE_INTEGER start;
   QueryPerformanceCounter(&start);
 
@@ -149,15 +150,19 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
     CLog::Log(LOGERROR, "file :%s doesnt contain <window>", strPath.c_str());
     return false;
   }
+
   LARGE_INTEGER lend;
   QueryPerformanceCounter(&lend);
+
   if (!bContainsPath)
     m_coordsRes = resToUse;
   bool ret = Load(pRootElement);
+
   LARGE_INTEGER end, freq;
   QueryPerformanceCounter(&end);
   QueryPerformanceFrequency(&freq);
-  CLog::DebugLog("Load %s: %.2fms (%.2f ms xml load)", m_xmlFile.c_str(), 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, 1000.f * (lend.QuadPart - start.QuadPart) / freq.QuadPart);
+  CLog::Log(LOGDEBUG,"Load %s: %.2fms (%.2f ms xml load)", m_xmlFile.c_str(), 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, 1000.f * (lend.QuadPart - start.QuadPart) / freq.QuadPart);
+
   return ret;
 }
 
@@ -694,7 +699,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
     }
   case GUI_MSG_SETFOCUS:
     {
-//      CLog::DebugLog("set focus to control:%i window:%i (%i)\n", message.GetControlId(),message.GetSenderId(), GetID());
+//      CLog::Log(LOGDEBUG,"set focus to control:%i window:%i (%i)\n", message.GetControlId(),message.GetSenderId(), GetID());
       if ( message.GetControlId() )
       {
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
@@ -837,8 +842,9 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   LARGE_INTEGER end, freq;
   QueryPerformanceCounter(&end);
   QueryPerformanceFrequency(&freq);
+  CLog::Log(LOGDEBUG,"Alloc resources: %.2fms (%.2f ms skin load, %.2f ms preload)", 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, 1000.f * (slend.QuadPart - start.QuadPart) / freq.QuadPart, 1000.f * (plend.QuadPart - slend.QuadPart) / freq.QuadPart);
+
   m_WindowAllocated = true;
-  CLog::DebugLog("Alloc resources: %.2fms (%.2f ms skin load, %.2f ms preload)", 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, 1000.f * (slend.QuadPart - start.QuadPart) / freq.QuadPart, 1000.f * (plend.QuadPart - slend.QuadPart) / freq.QuadPart);
 }
 
 void CGUIWindow::FreeResources(bool forceUnload /*= FALSE */)
@@ -932,7 +938,7 @@ const CGUIControl* CGUIWindow::GetControl(int iControl) const
       const CGUIControl *control = group->GetControl(iControl);
       if (control) pControl = control;
     }
-    if (pControl->GetID() == iControl) 
+    if ((int) pControl->GetID() == iControl) 
     {
       if (pControl->IsVisible())
         return pControl;
@@ -1123,7 +1129,7 @@ bool CGUIWindow::ControlGroupHasFocus(int groupID, int controlID)
     {
       CGUIMessage message(GUI_MSG_ITEM_SELECTED, GetID(), group->GetID());
       group->OnMessage(message);
-      return (controlID == message.GetParam1());
+      return (controlID == (int) message.GetParam1());
     }
   }
   return false;
@@ -1183,7 +1189,7 @@ CGUIControl *CGUIWindow::GetFirstFocusableControl(int id)
       CGUIControl *control = group->GetFirstFocusableControl(id);
       if (control) return control;
     }
-    if (pControl->GetID() == id && pControl->CanFocus())
+    if (pControl->GetID() == (DWORD) id && pControl->CanFocus())
       return pControl;
   }
   return NULL;
@@ -1195,7 +1201,7 @@ bool CGUIWindow::OnMove(int fromControl, int moveAction)
   if (!control) control = GetControl(fromControl);
   if (!control)
   { // no current control??
-    CLog::Log(LOGERROR, "Unable to find control %i in window %i", fromControl, GetID());
+    CLog::Log(LOGERROR, "Unable to find control %i in window %lu", fromControl, GetID());
     return false;
   }
   vector<int> moveHistory;
@@ -1262,7 +1268,7 @@ void CGUIWindow::GetContainers(vector<CGUIControl *> &containers) const
 #ifdef _DEBUG
 void CGUIWindow::DumpTextureUse()
 {
-  CLog::Log(LOGDEBUG, __FUNCTION__" for window %i", GetID());
+  CLog::Log(LOGDEBUG, "%s for window %lu", __FUNCTION__, GetID());
   for (ivecControls it = m_vecControls.begin();it != m_vecControls.end(); ++it)
   {
     (*it)->DumpTextureUse();
