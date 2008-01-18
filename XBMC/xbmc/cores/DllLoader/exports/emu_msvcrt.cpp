@@ -25,8 +25,6 @@
 #include "emu_dummy.h"
 #include "util/EmuFileWrapper.h"
 
-#include "util/EmuFileWrapper.h"
-
 using namespace XFILE;
 using namespace DIRECTORY;
 
@@ -1411,7 +1409,6 @@ extern "C"
 #else
     return mkdir(dir, 0755);
 #endif
-
   }
 
   char* dll_getcwd(char *buffer, int maxlen)

@@ -10,4 +10,3 @@ extern "C" void not_implement( LPCSTR debuginfo)
   }
 }
 
-
