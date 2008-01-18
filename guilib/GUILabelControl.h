@@ -10,7 +10,6 @@
 
 #include "GUIControl.h"
 #include "GUITextLayout.h"
-//#include "GUIInfoLabel.h"
 
 class CGUIListItem;
 

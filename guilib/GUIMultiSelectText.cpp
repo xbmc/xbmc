@@ -400,3 +400,4 @@ void CGUIMultiSelectTextControl::ScrollToItem(unsigned int item)
   m_scrollSpeed = (m_offset - m_scrollOffset) / time_to_scroll;
   m_selectedItem = item;
 }
+

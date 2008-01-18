@@ -54,7 +54,7 @@ public:
   void End();
 
   const CStdString& GetFileName() const { return m_strFileName; };
-
+  
 protected:
   void AddReference();
   void RemoveReference();
@@ -85,7 +85,6 @@ protected:
   void ClearCharacterCache();
 
   LPDIRECT3DDEVICE8 m_pD3DDevice;
-
   LPDIRECT3DTEXTURE8 m_texture;      // texture that holds our rendered characters (8bit alpha only)
   unsigned int m_textureWidth;       // width of our texture
   unsigned int m_textureHeight;      // heigth of our texture
@@ -113,6 +112,7 @@ protected:
   static int justification_word_weight;
 
   CStdString m_strFileName;
+
 private:
   int m_referenceCount;
 };

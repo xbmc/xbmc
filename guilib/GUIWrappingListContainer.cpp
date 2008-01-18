@@ -220,3 +220,4 @@ void CGUIWrappingListContainer::SelectItem(int item)
   if (item >= 0 && item < (int)m_items.size())
     ScrollToOffset(item - m_cursor);
 }
+

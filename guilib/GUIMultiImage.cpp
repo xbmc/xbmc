@@ -295,3 +295,4 @@ void CGUIMultiImage::LoadDirectory()
   // flag as loaded - no point in constantly reloading them
   m_directoryLoaded = true;
 }
+
