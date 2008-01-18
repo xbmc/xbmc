@@ -360,7 +360,7 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
               fread((char*)&tag, 1, sizeof(gifnetscape), fd);
               nLoops = tag.iIterations;
               if (nLoops) nLoops++;
-              int iterm = getbyte(fd); // terminator
+              getbyte(fd);
             }
             else
             {
