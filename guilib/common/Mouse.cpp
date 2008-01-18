@@ -7,7 +7,7 @@
 #include "DirectInputMouse.h"
 #endif
 
-#include "../key.h"
+#include "../Key.h"
 #include "../GraphicContext.h"
 
 #define MOUSE_DOUBLE_CLICK_LENGTH 500L
@@ -154,7 +154,7 @@ CPoint CMouse::GetLocation() const
   return CPoint((float)m_mouseState.x, (float)m_mouseState.y);
 }
 
-void CMouse::SetLocation(CPoint &point)
+void CMouse::SetLocation(const CPoint &point)
 {
   m_mouseState.x = (int)point.x;
   m_mouseState.y = (int)point.y;
