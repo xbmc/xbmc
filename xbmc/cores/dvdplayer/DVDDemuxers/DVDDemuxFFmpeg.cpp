@@ -30,7 +30,10 @@ void CDemuxStreamSubtitleFFmpeg::GetStreamInfo(std::string& strInfo)
   strInfo = temp;
 }
 
-// these need to be put somewhere, they are prototyped together with avutil
+// these need to be put somewhere that are compiled, we should have some better place for it
+
+CCriticalSection DllAvCodec::m_critSection;
+
 void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
 {
   static CStdString buffer;
@@ -73,7 +76,6 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
   }
   buffer.erase(0, start);
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
