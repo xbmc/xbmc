@@ -82,7 +82,6 @@ extern "C" DWORD WINAPI dllGetFileAttributesA(LPCSTR lpFileName)
 #else
   return GetFileAttributes(str);
 #endif
-
 }
 
 struct SThreadWrapper
