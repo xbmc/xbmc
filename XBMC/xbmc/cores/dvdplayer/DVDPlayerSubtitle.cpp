@@ -5,7 +5,6 @@
 #include "DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
 #include "DVDCodecs/Overlay/DVDOverlayCodecFFmpeg.h"
-#include "DVDCodecs/Overlay/DVDOverlayCodecVobsub.h"
 #include "DVDCodecs/Overlay/DVDOverlayCodecText.h"
 #include "DVDClock.h"
 #include "DVDInputStreams/DVDFactoryInputStream.h"
