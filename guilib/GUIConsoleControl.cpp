@@ -118,3 +118,4 @@ void CGUIConsoleControl::Write(CStdString& aString, INT nPaletteIndex)
   line.colour = GetPenColor(nPaletteIndex);
   m_queuedLines.push_back(line);
 }
+

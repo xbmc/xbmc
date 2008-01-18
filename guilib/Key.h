@@ -377,3 +377,4 @@ private:
   bool m_fromHttpApi;
 };
 #endif
+

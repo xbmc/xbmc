@@ -26,8 +26,9 @@ D3DFORMAT GetD3DFormat(XB_D3DFORMAT format)
     return D3DFMT_DXT4;
   case XB_D3DFMT_P8:
     return D3DFMT_LIN_A8R8G8B8;
+  default:
+    return D3DFMT_UNKNOWN;
   }
-  return D3DFMT_UNKNOWN;
 }
 
 DWORD BytesPerPixelFromFormat(XB_D3DFORMAT format)
@@ -42,8 +43,9 @@ DWORD BytesPerPixelFromFormat(XB_D3DFORMAT format)
   case XB_D3DFMT_DXT1:
   case XB_D3DFMT_DXT2:
     return 1;
+  default:
+    return 0;
   }
-  return 0;
 }
 
 bool IsPalettedFormat(XB_D3DFORMAT format)

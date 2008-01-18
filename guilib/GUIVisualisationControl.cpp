@@ -39,17 +39,22 @@ const short* CAudioBuffer::Get() const
 
 void CAudioBuffer::Set(const unsigned char* psBuffer, int iSize, int iBitsPerSample)
 {
+  if (iSize<0) 
+  {
+    return;
+  }
+
   if (iBitsPerSample == 16)
   {
     iSize /= 2;
-    for (int i = 0; i < iSize, i < m_iLen; i++)
+    for (int i = 0; i < iSize && i < m_iLen; i++)
     { // 16 bit -> convert to short directly
       m_pBuffer[i] = ((short *)psBuffer)[i];
     }
   }
   else if (iBitsPerSample == 8)
   {
-    for (int i = 0; i < iSize, i < m_iLen; i++)
+    for (int i = 0; i < iSize && i < m_iLen; i++)
     { // 8 bit -> convert to signed short by multiplying by 256
       m_pBuffer[i] = ((short)((char *)psBuffer)[i]) << 8;
     }
@@ -57,7 +62,7 @@ void CAudioBuffer::Set(const unsigned char* psBuffer, int iSize, int iBitsPerSam
   else // assume 24 bit data
   {
     iSize /= 3;
-    for (int i = 0; i < iSize, i < m_iLen; i++)
+    for (int i = 0; i < iSize && i < m_iLen; i++)
     { // 24 bit -> ignore least significant byte and convert to signed short
       m_pBuffer[i] = (((int)psBuffer[3 * i + 1]) << 0) + (((int)((char *)psBuffer)[3 * i + 2]) << 8);
     }
@@ -275,6 +280,10 @@ void CGUIVisualisationControl::OnAudioData(const unsigned char* pAudioData, int 
     return ;
   if (!m_bInitialized) return ;
 
+  // FIXME: iAudioDataLength should never be less than 0
+  if (iAudioDataLength<0)
+    return;
+
   // Save our audio data in the buffers
   auto_ptr<CAudioBuffer> pBuffer ( new CAudioBuffer(2*AUDIO_BUFFER_SIZE) );
   pBuffer->Set(pAudioData, iAudioDataLength, m_iBitsPerSample);
@@ -356,7 +365,7 @@ bool CGUIVisualisationControl::UpdateAlbumArt()
     {
       m_AlbumThumb = "";
     }
-    CLog::DebugLog("Updating vis albumart: %s", m_AlbumThumb.c_str());
+    CLog::Log(LOGDEBUG,"Updating vis albumart: %s", m_AlbumThumb.c_str());
     if (m_pVisualisation && m_pVisualisation->OnAction(CVisualisation::VIS_ACTION_UPDATE_ALBUMART, (void*)(m_AlbumThumb.c_str()))) return true;
     return false;
 }

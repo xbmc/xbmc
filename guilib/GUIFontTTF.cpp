@@ -110,8 +110,6 @@ private:
 
 CFreeTypeLibrary g_freeTypeLibrary; // our freetype library
 
-
-
 CGUIFontTTF::CGUIFontTTF(const CStdString& strFileName)
 {
   m_texture = NULL;
