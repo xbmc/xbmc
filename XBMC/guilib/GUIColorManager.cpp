@@ -90,3 +90,4 @@ DWORD CGUIColorManager::GetColor(const CStdString &color) const
   sscanf(trimmed.c_str(), "%lx", &value);
   return value;
 }
+
