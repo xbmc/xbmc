@@ -62,3 +62,4 @@ bool YMCodec::CanInit()
 {
   return m_dll.CanLoad();
 }
+

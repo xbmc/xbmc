@@ -6,7 +6,7 @@
 
 class CriticalSection_List;
 
-extern "C" inline void tracker_critical_section_free_all(DllTrackInfo* pInfo);
+extern "C" void tracker_critical_section_free_all(DllTrackInfo* pInfo);
 
 extern "C" void __stdcall track_InitializeCriticalSection(LPCRITICAL_SECTION cs);
 extern "C" void __stdcall track_DeleteCriticalSection(LPCRITICAL_SECTION cs);

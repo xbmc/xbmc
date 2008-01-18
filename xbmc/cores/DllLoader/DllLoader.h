@@ -31,7 +31,7 @@ class DllLoader : public CoffLoader, public LibraryLoader
 {
 public:
   DllLoader(const char *dll, bool track = false, bool bSystemDll = false, bool bLoadSymbols = false, Export* exports = NULL);
-  ~DllLoader();
+  virtual ~DllLoader();
 
   virtual bool Load();
   virtual void Unload();

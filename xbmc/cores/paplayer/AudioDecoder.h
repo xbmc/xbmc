@@ -1,5 +1,5 @@
 #pragma once
-#include "../../utils/thread.h"
+#include "../../utils/Thread.h"
 #include "ICodec.h"
 #include "ringholdbuffer.h"
 

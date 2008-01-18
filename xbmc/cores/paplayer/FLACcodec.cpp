@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "FLACCodec.h"
-#include "../../FLACtag.h"
+#include "FLACcodec.h"
+#include "../../FlacTag.h"
 
 
 FLACCodec::FLACCodec()
@@ -69,7 +69,7 @@ bool FLACCodec::Init(const CStdString &strFile, unsigned int filecache)
   //  These are filled by the metadata callback
   if (m_SampleRate==0 || m_Channels==0 || m_BitsPerSample==0 || m_TotalTime==0 || m_MaxFrameSize==0)
   {
-    CLog::Log(LOGERROR, "FLACCodec: Can't get stream info, SampleRate=%i, Channels=%i, BitsPerSample=%i, TotalTime=%i, MaxFrameSize=%i", m_SampleRate, m_Channels, m_BitsPerSample, m_TotalTime, m_MaxFrameSize);
+    CLog::Log(LOGERROR, "FLACCodec: Can't get stream info, SampleRate=%i, Channels=%i, BitsPerSample=%i, TotalTime=%llu, MaxFrameSize=%i", m_SampleRate, m_Channels, m_BitsPerSample, m_TotalTime, m_MaxFrameSize);
     FreeDecoder();
     return false;
   }
@@ -238,7 +238,7 @@ FLAC__StreamDecoderWriteStatus FLACCodec::DecoderWriteCallback(const FLAC__Strea
   const int bytes_per_sample = frame->header.bits_per_sample/8;
   BYTE* outptr = pThis->m_pBuffer+pThis->m_BufferSize;
 
-  unsigned int current_sample;
+  unsigned int current_sample = 0;
   for(current_sample = 0; current_sample < frame->header.blocksize; current_sample++)
   {
     for(unsigned int channel = 0; channel < frame->header.channels; channel++)

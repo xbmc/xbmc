@@ -376,7 +376,7 @@ unsigned long VobSubPFOpen(int id)
   }
   if (hFile != INVALID_HANDLE_VALUE)
   {
-    CLog::DebugLog("Open %s", filename);
+    CLog::Log(LOGDEBUG,"Open %s", filename);
     return (unsigned long)hFile;
   }
   return -1;

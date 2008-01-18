@@ -15,6 +15,7 @@ typedef struct ShnPlayFileStream ShnPlayFileStream;
 class DllLibShnPlayInterface
 {
 public:
+    virtual ~DllLibShnPlayInterface() {}
     virtual int OpenStream(ShnPlay ** pstate, ShnPlayStream * stream, unsigned int flags)=0;
     virtual int Close(ShnPlay * state)=0;
     virtual int GetInfo(ShnPlay * state, ShnPlayInfo * info)=0;

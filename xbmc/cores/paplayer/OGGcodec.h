@@ -1,7 +1,7 @@
 #pragma once
 #include "CachingCodec.h"
 #include "FileReader.h"
-#include "Dllvorbisfile.h"
+#include "DllVorbisfile.h"
 
 class OGGCodec : public CachingCodec
 {
