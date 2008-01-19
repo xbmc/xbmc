@@ -433,6 +433,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.episode")) ret = VIDEOPLAYER_EPISODE;
     else if (strTest.Equals("videoplayer.season")) ret = VIDEOPLAYER_SEASON;
     else if (strTest.Equals("videoplayer.rating")) ret = VIDEOPLAYER_RATING;
+    else if (strTest.Equals("videoplayer.ratingandvotes")) ret = VIDEOPLAYER_RATING_AND_VOTES;
     else if (strTest.Equals("videoplayer.tvshowtitle")) ret = VIDEOPLAYER_TVSHOW;
     else if (strTest.Equals("videoplayer.premiered")) ret = VIDEOPLAYER_PREMIERED;
     else if (strTest.Left(19).Equals("videoplayer.content")) return AddMultiInfo(GUIInfo(bNegate ? -VIDEOPLAYER_CONTENT : VIDEOPLAYER_CONTENT, ConditionalStringParameter(strTest.Mid(20,strTest.size()-21)), 0));
@@ -676,6 +677,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("date")) return LISTITEM_DATE;
   else if (info.Equals("size")) return LISTITEM_SIZE;
   else if (info.Equals("rating")) return LISTITEM_RATING;
+  else if (info.Equals("ratingandvotes")) return LISTITEM_RATING_AND_VOTES;
   else if (info.Equals("programcount")) return LISTITEM_PROGRAM_COUNT;
   else if (info.Equals("duration")) return LISTITEM_DURATION;
   else if (info.Equals("isselected")) return LISTITEM_ISSELECTED;
@@ -804,6 +806,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case VIDEOPLAYER_EPISODE:
   case VIDEOPLAYER_SEASON:
   case VIDEOPLAYER_RATING:
+  case VIDEOPLAYER_RATING_AND_VOTES:
   case VIDEOPLAYER_TVSHOW:
   case VIDEOPLAYER_PREMIERED:
   case VIDEOPLAYER_STUDIO:
@@ -2307,9 +2310,17 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_RATING:
       {
         CStdString strRating;
-        if (m_currentFile.GetVideoInfoTag()->m_fRating > 0)
+        if (m_currentFile.GetVideoInfoTag()->m_fRating > 0.f)
           strRating.Format("%2.2f", m_currentFile.GetVideoInfoTag()->m_fRating);
         return strRating;
+      }
+      break;
+    case VIDEOPLAYER_RATING_AND_VOTES:
+      {
+        CStdString strRatingAndVotes;
+        if (m_currentFile.GetVideoInfoTag()->m_fRating > 0.f)
+   	      strRatingAndVotes.Format("%2.2f (%s %s)", m_currentFile.GetVideoInfoTag()->m_fRating, m_currentFile.GetVideoInfoTag()->m_strVotes, g_localizeStrings.Get(20350));
+        return strRatingAndVotes;
       }
       break;
     case VIDEOPLAYER_YEAR:
@@ -3017,6 +3028,16 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
         rating.Format("%2.2f", item->GetVideoInfoTag()->m_fRating);
       return rating;
     }
+  case LISTITEM_RATING_AND_VOTES:
+    {
+      if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_fRating > 0.f) // movie rating
+      {
+        CStdString strRatingAndVotes;
+          strRatingAndVotes.Format("%2.2f (%s %s)", item->GetVideoInfoTag()->m_fRating, item->GetVideoInfoTag()->m_strVotes, g_localizeStrings.Get(20350));
+        return strRatingAndVotes;
+      }
+    }
+    break;
   case LISTITEM_PROGRAM_COUNT:
     {
       CStdString count;
@@ -3047,9 +3068,11 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
 
       return item->GetVideoInfoTag()->m_strPlot;
     }
+    break;
   case LISTITEM_PLOT_OUTLINE:
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strPlotOutline;
+    break;
   case LISTITEM_EPISODE:
     if (item->HasVideoInfoTag())
     {
@@ -3074,9 +3097,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
     break;
   case LISTITEM_TVSHOW:
     if (item->HasVideoInfoTag())
-    {
       return item->GetVideoInfoTag()->m_strShowTitle;
-    }
     break;
   case LISTITEM_COMMENT:
     if (item->HasMusicInfoTag())
@@ -3084,7 +3105,6 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
     break;
   case LISTITEM_ACTUAL_ICON:
     return item->GetIconImage();
-    break;
   case LISTITEM_ICON:
     {
       CStdString strThumb = item->GetThumbnailImage();
@@ -3098,13 +3118,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
       }
       return strThumb;
     }
-    break;
   case LISTITEM_OVERLAY:
     return item->GetOverlayImage();
-    break;
   case LISTITEM_THUMB:
     return item->GetThumbnailImage();
-    break;
   case LISTITEM_PATH:
     return item->m_strPath;
   case LISTITEM_PICTURE_PATH:
