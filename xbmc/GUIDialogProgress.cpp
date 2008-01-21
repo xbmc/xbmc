@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "GUIDialogProgress.h"
 #include "GUIProgressControl.h"
-#include "application.h"
+#include "Application.h"
 #include "utils/GUIInfoManager.h"
 
 #define CONTROL_PROGRESS_BAR 20

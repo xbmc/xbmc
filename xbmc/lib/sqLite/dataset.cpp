@@ -30,7 +30,9 @@
 #include "stdafx.h"
 #include "dataset.h"
 
+#ifndef __GNUC__
 #pragma warning (disable:4800)
+#endif
 
 namespace dbiplus {
 //************* Database implementation ***************
@@ -295,7 +297,7 @@ bool Dataset::set_field_value(const char *f_name, const field_value &value) {
 
 
 const field_value Dataset::get_field_value(const char *f_name) {
-  char* name=(char *)strstr(f_name, ".");
+  const char* name=strstr(f_name, ".");
   if (name) name++;
   if (ds_state != dsInactive) {
     if (ds_state == dsEdit || ds_state == dsInsert){

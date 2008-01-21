@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IMusicInfoTagLoader.h"
+#include "ImusicInfoTagLoader.h"
 #include "cores/paplayer/ReplayGain.h"
 
 using namespace MUSIC_INFO;

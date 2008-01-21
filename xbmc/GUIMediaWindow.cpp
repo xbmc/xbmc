@@ -21,8 +21,8 @@
 
 #include "stdafx.h"
 #include "GUIMediaWindow.h"
-#include "util.h"
-#include "detectdvdtype.h"
+#include "Util.h"
+#include "DetectDVDType.h"
 #include "PlayListPlayer.h"
 #include "FileSystem/ZipManager.h"
 #include "FileSystem/PluginDirectory.h"
@@ -35,7 +35,7 @@
 #include "Favourites.h"
 #include "utils/LabelFormatter.h"
 
-#include "GUIImage.h"
+#include "guiImage.h"
 #include "GUIMultiImage.h"
 #include "GUIDialogSmartPlaylistEditor.h"
 #include "GUIDialogPluginSettings.h"
@@ -201,7 +201,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_SETFOCUS:
     {
-      if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != message.GetControlId())
+      if (m_viewControl.HasControl(message.GetControlId()) && (DWORD) m_viewControl.GetCurrentControl() != message.GetControlId())
       {
         m_viewControl.SetFocused();
         return true;
@@ -875,7 +875,6 @@ void CGUIMediaWindow::SetHistoryForPath(const CStdString& strDirectory)
 
     while (CUtil::GetParentPath(strPath, strParentPath))
     {
-      bool bSet = false;
       for (int i = 0; i < (int)items.Size(); ++i)
       {
         CFileItem* pItem = items[i];
@@ -1101,7 +1100,7 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   // check if the skin even supports favourites
   RESOLUTION res;
-  CStdString favourites(g_SkinInfo.GetSkinPath("dialogfavourites.xml", &res));
+  CStdString favourites(g_SkinInfo.GetSkinPath("DialogFavourites.xml", &res));
   if (XFILE::CFile::Exists(favourites))
   {
 #endif
@@ -1131,6 +1130,9 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CGUIDialogPluginSettings::ShowAndGetInput(url);
       return true;
     }
+  default:
+    break;
   }
   return false;
 }
+

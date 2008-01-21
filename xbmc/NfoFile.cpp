@@ -5,10 +5,10 @@
 #include "stdafx.h"
 #include "NfoFile.h"
 #include "utils/ScraperParser.h"
-#include "utils/IMDb.h"
+#include "utils/IMDB.h"
 #include "FileSystem/File.h"
 #include "FileSystem/Directory.h"
-#include "util.h"
+#include "Util.h"
 
 
 using namespace DIRECTORY;

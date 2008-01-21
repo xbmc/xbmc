@@ -174,7 +174,7 @@ void Unpack::Unpack29(bool Solid)
   {
     int Dist=0,BitLength=0,Slot=0;
     for (unsigned int I=0;I<sizeof(DBitLengthCounts)/sizeof(DBitLengthCounts[0]);I++,BitLength++)
-      for (int J=0;J<DBitLengthCounts[I];J++,Slot++,Dist+=(1<<BitLength))
+      for (unsigned int J=0;J<DBitLengthCounts[I];J++,Slot++,Dist+=(1<<BitLength))
       {
         DDecode[Slot]=Dist;
         DBits[Slot]=BitLength;

@@ -104,7 +104,7 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception caught in thread startup, aborting");
+    CLog::Log(LOGERROR, "%s - Unhandled exception caught in thread startup, aborting. auto delete: %d", __FUNCTION__, pThread->IsAutoDelete());
     if( pThread->IsAutoDelete() )
     {
       delete pThread;
@@ -127,7 +127,7 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception caught in thread process, attemping cleanup in OnExit"); 
+    CLog::Log(LOGERROR, "%s - Unhandled exception caught in thread process, attemping cleanup in OnExit", __FUNCTION__); 
   }
 
   try
@@ -144,7 +144,7 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception caught in thread exit"); 
+    CLog::Log(LOGERROR, "%s - Unhandled exception caught in thread exit", __FUNCTION__); 
   }
 
   if ( pThread->IsAutoDelete() )
@@ -168,9 +168,10 @@ void CThread::Create(bool bAutoDelete, unsigned stacksize)
   m_bAutoDelete = bAutoDelete;
   m_bStop = false;
   ::ResetEvent(m_StopEvent);
+ 
   m_ThreadHandle = (HANDLE)_beginthreadex(NULL, stacksize, (PBEGINTHREADEX_THREADFUNC)staticThread, (void*)this, 0, &m_ThreadId);
-}
 
+}
 
 bool CThread::IsAutoDelete() const
 {
@@ -278,7 +279,7 @@ float CThread::GetRelativeUsage()
 
   FILETIME CreationTime, ExitTime, UserTime, KernelTime;
   if( GetThreadTimes( m_ThreadHandle, &CreationTime, &ExitTime, &KernelTime, &UserTime ) )
-  {    
+  {
 
     unsigned __int64 iUsage = 0;
     iUsage += (((unsigned __int64)UserTime.dwHighDateTime) << 32) + ((unsigned __int64)UserTime.dwLowDateTime);
@@ -289,7 +290,7 @@ float CThread::GetRelativeUsage()
     m_iLastTime = iTime;
 
     return m_fLastUsage;
-  }    
+  }
   return 0.0f; 
 }
 
@@ -300,8 +301,7 @@ DWORD CThread::WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds)
     HANDLE handles[2] = {hHandle, m_StopEvent};
     DWORD result = ::WaitForMultipleObjects(2, handles, false, dwMilliseconds);
 
-    if(result == WAIT_TIMEOUT 
-    || result == WAIT_OBJECT_0)
+    if(result == WAIT_TIMEOUT || result == WAIT_OBJECT_0)
       return result;
 
     if( dwMilliseconds == INFINITE )

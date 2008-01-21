@@ -23,13 +23,13 @@
 #include "GUIWindowSettingsProfile.h"
 #include "GUIWindowFileManager.h"
 #include "Profile.h"
-#include "util.h"
-#include "application.h"
+#include "Util.h"
+#include "Application.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogProfileSettings.h"
 #include "xbox/network.h"
-#include "utils/guiinfomanager.h"
-#include "utils/weather.h"
+#include "utils/GUIInfoManager.h"
+#include "utils/Weather.h"
 #include "GUIPassword.h"
 
 using namespace DIRECTORY;
@@ -264,3 +264,4 @@ void CGUIWindowSettingsProfile::OnInitWindow()
   LoadList();
   CGUIWindow::OnInitWindow();
 }
+

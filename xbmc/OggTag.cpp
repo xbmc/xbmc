@@ -20,8 +20,8 @@
  */
 
 #include "stdafx.h"
-#include "oggtag.h"
-#include "util.h"
+#include "OggTag.h"
+#include "Util.h"
 
 
 using namespace MUSIC_INFO;
@@ -117,3 +117,4 @@ int COggTag::GetStreamCount(const CStdString& strFile)
 
   return iStreams;
 }
+

@@ -23,7 +23,7 @@
 #include "GUIDialogVisualisationSettings.h"
 #include "GUIWindowSettingsCategory.h"
 #include "GUIControlGroupList.h"
-#include "util.h"
+#include "Util.h"
 #include "utils/GUIInfoManager.h"
 
 
@@ -248,3 +248,4 @@ void CGUIDialogVisualisationSettings::OnInitWindow()
   m_lastControlID = CONTROL_START;
   CGUIDialog::OnInitWindow();
 }
+

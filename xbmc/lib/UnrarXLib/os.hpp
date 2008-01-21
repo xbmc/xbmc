@@ -18,7 +18,7 @@
 #define LITTLE_ENDIAN
 #define NM  1024
 
-#ifdef _XBOX
+#if defined(_XBOX)
 #ifndef _WIN_32
 #define _WIN_32
 #endif	//_WIN_32
@@ -36,7 +36,7 @@
 #define WIN32_LEAN_AND_MEAN
 #endif
 
-#ifndef _XBOX
+#if !defined(_XBOX)
 #include "include.h"
 #include <windows.h>                        /* WIN32 definitions            */
 #include <prsht.h>

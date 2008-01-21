@@ -1,16 +1,16 @@
 #include "stdafx.h"
 
-#pragma once
-
-#include "..\..\settings.h"
+#include "../../Settings.h"
 #include "XBMCConfiguration.h"
-#include "..\..\util.h"
+#include "../../Util.h"
 #include "includes.h"
 
+#ifndef __GNUC__
 #pragma code_seg("WEB_TEXT")
 #pragma data_seg("WEB_DATA")
 #pragma bss_seg("WEB_BSS")
 #pragma const_seg("WEB_RD")
+#endif
 
 CXbmcConfiguration::CXbmcConfiguration()
 {
@@ -46,8 +46,8 @@ int CXbmcConfiguration::BookmarkSize( int eid, webs_t wp, CStdString& response, 
 	// asp function is called within a script, get arguments
 	if (ejArgs(argc, argv, T("%s"),&type) < 1)
 	{
-    eid!=-1 ? websError(wp, 500, T("Insufficient args\n")):
-              response="<li>Error:Insufficient args";
+           if (eid!=-1) websError(wp, 500, T("Insufficient args\n"));
+              else response="<li>Error:Insufficient args";
 		return -1;
 	}
 
@@ -68,8 +68,8 @@ int CXbmcConfiguration::BookmarkSize( int eid, webs_t wp, CStdString& response, 
     return 0;
   }
 
-  eid!=-1 ? websError(wp, 500, T("Bookmark type does not exist\n")):
-  response="<li>Error:Bookmark type does not exist";
+  if (eid!=-1) websError(wp, 500, T("Bookmark type does not exist\n")); 
+  else response="<li>Error:Bookmark type does not exist";
   return -1;
 
 /*	// load xboxmediacenter.xml, write a messages if file could not be loaded
@@ -121,8 +121,8 @@ int CXbmcConfiguration::GetBookmark( int eid, webs_t wp, CStdString& response, i
 
 	// asp function is called within a script, get arguments
 	if (ejArgs(argc, argv, T("%s %s %s"), &type, &parameter, &id) < 3) {
-    eid!=-1 ? websError(wp, 500, T("Insufficient args\n")):
-              response="<li>Error:Insufficient args";
+          if (eid!=-1) websError(wp, 500, T("Insufficient args\n"));
+            else response="<li>Error:Insufficient args";
 		return -1;
 	}
 
@@ -130,16 +130,16 @@ int CXbmcConfiguration::GetBookmark( int eid, webs_t wp, CStdString& response, i
   try { nr = atoi(id); }
   catch (...)
   {
-    eid!=-1 ? websError(wp, 500, T("Id is not a number\n")):
-    response="<li>Error:Id is not a number";
+    if (eid!=-1) websError(wp, 500, T("Id is not a number\n"));
+      else response="<li>Error:Id is not a number";
     return -1;
   }
 
   VECSHARES* pShares = g_settings.GetSharesFromType(type);
   if (!pShares)
   {
-    eid!=-1 ? websError(wp, 500, T("Bookmark type does not exist\n")):
-    response="<li>Error:Bookmark type does not exist";
+    if (eid!=-1) websError(wp, 500, T("Bookmark type does not exist\n"));
+      else response="<li>Error:Bookmark type does not exist";
     return -1;
   }
   if (nr > 0 && nr <= (int)pShares->size())
@@ -169,14 +169,14 @@ int CXbmcConfiguration::GetBookmark( int eid, webs_t wp, CStdString& response, i
     }
     else
     {
-      eid!=-1 ? websError(wp, 500, T("Parameter not known\n")):
-      response="<li>Error:Parameter not known";
+      if (eid!=-1) websError(wp, 500, T("Parameter not known\n")); 
+        else response="<li>Error:Parameter not known";
     }
     return 0;
   }
 
-  eid!=-1 ? websError(wp, 500, T("Position not found\n")):
-  response="<li>Error:Position not found";
+  if (eid!=-1) websError(wp, 500, T("Position not found\n"));
+    else response="<li>Error:Position not found";
   return -1;
 
 
@@ -271,10 +271,13 @@ int CXbmcConfiguration::AddBookmark( int eid, webs_t wp, CStdString& response, i
   numParas=ejArgs(argc, argv, T("%s %s %s %s %s"), &type, &name, &path, &thumbnail, &position);
   if ( numParas< 3) 
   {
-    eid!=-1 ? websError(wp, 500, T("Insufficient args\n use: function(command, type, name, path, [thumbnail], [position])")):
-              response="<li>Error:Insufficient args, use: function(command, type, name, path, [thumbnail], [position])";
-	return -1;
+    if (eid!=-1)
+       websError(wp, 500, T("Insufficient args\n use: function(command, type, name, path, [thumbnail], [position])"));
+    else
+       response="<li>Error:Insufficient args, use: function(command, type, name, path, [thumbnail], [position])";
+    return -1;
   }
+
   CShare share;
   share.strName = name;
   if (numParas==4)
@@ -369,8 +372,8 @@ int CXbmcConfiguration::SaveBookmark( int eid, webs_t wp, CStdString& response, 
 
 	// asp function is called within a script, get arguments
 	if (ejArgs(argc, argv, T("%s %s %s %s"), &type, &name, &path, &position) < 4) {
-    eid!=-1 ? websError(wp, 500, T("Insufficient args\n use: function(command, type, name, path, postion)")):
-              response="<li>Error:Insufficient args, use: function(command, type, name, path, postion)";
+        if (eid!=-1) websError(wp, 500, T("Insufficient args\n use: function(command, type, name, path, postion)"));
+          else response="<li>Error:Insufficient args, use: function(command, type, name, path, postion)";
 		return -1;
 	}
   VECSHARES* pShares = g_settings.GetSharesFromType(type);
@@ -378,9 +381,9 @@ int CXbmcConfiguration::SaveBookmark( int eid, webs_t wp, CStdString& response, 
 	try { nr = atoi(position); }
 	catch (...)
 	{
-    eid!=-1 ? websError(wp, 500, T("Id is not a number\n")):
-              response="<li>Error:Id is not a number";
-		return -1;
+          if (eid!=-1) websError(wp, 500, T("Id is not a number\n"));
+              else response="<li>Error:Id is not a number";
+	  return -1;
 	}
 
   if (nr > 0 && nr <= (int)pShares->size()) // update share
@@ -392,8 +395,8 @@ int CXbmcConfiguration::SaveBookmark( int eid, webs_t wp, CStdString& response, 
     return 0;
   }
   
-  eid!=-1 ? websError(wp, 500, T("Position not found\n")):
-  response="<li>Error:Position not found";
+  if (eid!=-1) websError(wp, 500, T("Position not found\n"));
+    else response="<li>Error:Position not found";
   return -1;
 
 
@@ -449,8 +452,10 @@ int CXbmcConfiguration::RemoveBookmark( int eid, webs_t wp, CStdString& response
 
 	// asp function is called within a script, get arguments
 	if (ejArgs(argc, argv, T("%s %s"), &type, &position) < 2) {
-      eid!=-1 ? websError(wp, 500, T("Insufficient args\n use: function(type, position)")):
-                response="<li>Error:Insufficient args, use: function(type, position)";
+          if(eid!=-1)
+            websError(wp, 500, T("Insufficient args\n use: function(type, position)"));
+          else
+            response="<li>Error:Insufficient args, use: function(type, position)";
 	  return -1;
 	}
 
@@ -458,9 +463,9 @@ int CXbmcConfiguration::RemoveBookmark( int eid, webs_t wp, CStdString& response
 	try { nr = atoi(position); }
 	catch (...)
 	{
-    eid!=-1 ? websError(wp, 500, T("Id is not a number\n")):
-              response="<li>Error:position is not a number";
-		return -1;
+          if (eid!=-1) websError(wp, 500, T("Id is not a number\n"));
+            else response="<li>Error:position is not a number";
+  	  return -1;
 	}
 
   VECSHARES* pShares = g_settings.GetSharesFromType(type);
@@ -468,8 +473,8 @@ int CXbmcConfiguration::RemoveBookmark( int eid, webs_t wp, CStdString& response
   if (g_settings.DeleteSource(type,share.strName,share.strPath))
     return 0;
 
-  eid!=-1 ? websError(wp, 500, T("Position not found\n")):
-  response="<li>Error:Position not found";
+  if (eid!=-1) websError(wp, 500, T("Position not found\n"));
+    else response="<li>Error:Position not found";
   return -1;
   /*
 	// load xboxmediacenter.xml, write a messages if file could not be loaded
@@ -518,30 +523,30 @@ int CXbmcConfiguration::RemoveBookmark( int eid, webs_t wp, CStdString& response
  */
 int CXbmcConfiguration::SaveConfiguration( int eid, webs_t wp, CStdString& response, int argc, char_t **argv)
 {
-  eid!=-1 ? websError(wp, 500, T("Deprecated\n")):
-  response="<li>Error:Functino is deprecated";
+  if (eid!=-1) websError(wp, 500, T("Deprecated\n"));
+    else response="<li>Error:Functino is deprecated";
   return -1;
 
   char_t	*filename = NULL;
 
 	// asp function is called within a script, get arguments
 	if (ejArgs(argc, argv, T("%s"), &filename) < 1) {
-    eid!=-1 ? websError(wp, 500, T("Insufficient args\n use: function(filename)")):
-              response="<li>Error:Insufficient args, use: function(filename)";
-		return -1;
+           if (eid!=-1) websError(wp, 500, T("Insufficient args\n use: function(filename)"));
+              else response="<li>Error:Insufficient args, use: function(filename)";
+  	   return -1;
 	}
 
 	// load xboxmediacenter.xml, write a messages if file could not be loaded
 	if (Load() == -1)
 	{
-    eid!=-1 ? websError(wp, 500, T("Could not load XboxMediaCenter.xml\n")):
-              response="<li>Error:Could not load XboxMediaCenter.xml";
-    return -1;
+          if (eid!=-1) websError(wp, 500, T("Could not load XboxMediaCenter.xml\n"));
+              else response="<li>Error:Could not load XboxMediaCenter.xml";
+          return -1;
 	}
 
 	// Save configuration to file
 	CStdString strPath(filename);
-	if (strPath.find(":\\") == -1)
+	if (strPath.find(":\\") == CStdString::npos)
 	{
 		// only filename specified, so use Q:\\ as base.
     strPath.Format("Q:\\%s", filename);
@@ -549,9 +554,9 @@ int CXbmcConfiguration::SaveConfiguration( int eid, webs_t wp, CStdString& respo
 
   if (!xbmcCfg.SaveFile(strPath))
 	{
-    eid!=-1 ? websError(wp, 500, T("Could not save to file\n")):
-              response="<li>Error:Could not save to file";
-		return -1;
+          if (eid!=-1) websError(wp, 500, T("Could not save to file\n"));
+            else response="<li>Error:Could not save to file";
+ 	  return -1;
 	}
 	return 0;
 }
@@ -562,8 +567,8 @@ int CXbmcConfiguration::SaveConfiguration( int eid, webs_t wp, CStdString& respo
  */
 int CXbmcConfiguration::GetOption( int eid, webs_t wp, CStdString& response, int argc, char_t **argv)
 {
-  eid!=-1 ? websError(wp, 500, T("Deprecated\n")):
-response="<li>Error:Function is deprecated";
+  if (eid!=-1) websError(wp, 500, T("Deprecated\n"));
+    else response="<li>Error:Functino is deprecated";
 return -1;
 
   

@@ -22,17 +22,17 @@
 #include "stdafx.h"
 #include "GUIWindowVideoBase.h"
 #include "Util.h"
-#include "Utils/IMDB.h"
-#include "Utils/HTTP.h"
-#include "Utils/RegExp.h"
-#include "Utils/GUIInfoManager.h"
+#include "utils/IMDB.h"
+#include "utils/HTTP.h"
+#include "utils/RegExp.h"
+#include "utils/GUIInfoManager.h"
 #include "GUIWindowVideoInfo.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogVideoScan.h"
 #include "GUIDialogSmartPlaylistEditor.h"
 #include "PlayListFactory.h"
 #include "Application.h"
-#include "NFOFile.h"
+#include "NfoFile.h"
 #include "Picture.h"
 #include "utils/fstrcmp.h"
 #include "PlayListPlayer.h"
@@ -111,7 +111,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
       // save current window, unless the current window is the video playlist window
-      if (GetID() != WINDOW_VIDEO_PLAYLIST && g_stSettings.m_iVideoStartWindow != GetID())
+      if (GetID() != WINDOW_VIDEO_PLAYLIST && (DWORD)g_stSettings.m_iVideoStartWindow != GetID())
       {
         g_stSettings.m_iVideoStartWindow = GetID();
         g_settings.Save();
@@ -146,7 +146,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
           break;
         }
 
-        if (nNewWindow != GetID())
+        if ((DWORD) nNewWindow != GetID())
         {
           g_stSettings.m_iVideoStartWindow = nNewWindow;
           g_settings.Save();
@@ -337,8 +337,6 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
   CIMDB IMDB;
   IMDB.SetScraperInfo(info);
 
-  bool bUpdate = false;
-  bool bFound = false;
 
   if (!pDlgProgress) return ;
   if (!pDlgSelect) return ;
@@ -441,7 +439,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
     {
       if (nfoReader.m_strScraper == "NFO")
       {
-        CLog::Log(LOGDEBUG, __FUNCTION__" Got details from nfo");
+        CLog::Log(LOGDEBUG, "%s Got details from nfo", __FUNCTION__);
 //        nfoReader.GetDetails(movieDetails); // will be loaded later
         hasDetails = true;
       }
@@ -739,7 +737,6 @@ void CGUIWindowVideoBase::OnQueueItem(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
 
-  int iOldSize=g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).size();
 
   CFileItem item(*m_vecItems[iItem]);
   if (item.IsRAR() || item.IsZIP())
@@ -1047,7 +1044,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       if (!m_vecItems.IsPluginFolder())
       {
         VIDEO::SScanSettings settings;
-        int iFound = GetScraperForItem(item, info, settings);
+        GetScraperForItem(item, info, settings);
       }
       else
         info.strContent = "plugin";      
@@ -1093,6 +1090,8 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_RENAME:
     OnRenameItem(itemNumber);
     return true;
+  default:
+    break;
   }
   return CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
@@ -1496,12 +1495,12 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
   if (CFile::Exists(strXml))
   {
     bGotXml = true;
-    CLog::Log(LOGDEBUG,__FUNCTION__": found matching xml file:[%s]", strXml.c_str());
+    CLog::Log(LOGDEBUG,"%s: found matching xml file:[%s]", __FUNCTION__, strXml.c_str());
     CFile::Cache(strXml, strCache);
     CIMDB imdb;
     if (!imdb.LoadXML(strCache, movie, false))
     {
-      CLog::Log(LOGERROR,__FUNCTION__": Could not parse info in file:[%s]", strXml.c_str());
+      CLog::Log(LOGERROR,"%s: Could not parse info in file:[%s]", __FUNCTION__, strXml.c_str());
       bGotXml = false;
     }
   }
@@ -1725,3 +1724,4 @@ void CGUIWindowVideoBase::OnScan(const CStdString& strPath, const SScraperInfo& 
   if (pDialog)
     pDialog->StartScanning(strPath,info,settings,false);
 }
+

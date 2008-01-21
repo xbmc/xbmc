@@ -7,7 +7,7 @@
 //
 
 #pragma once
-#include "filesystem/factoryDirectory.h"
+#include "FileSystem/FactoryDirectory.h"
 
 namespace MEDIA_DETECT
 {

@@ -1,5 +1,5 @@
 #pragma once
-#include "iosdoption.h"
+#include "IOSDOption.h"
 #include "IExecutor.h"
 #include "GUICheckMarkControl.h"
 namespace OSD

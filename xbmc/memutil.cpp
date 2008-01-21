@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "memutil.h"
 #ifdef _XBOX
-#include "xbox/undocumented.h"
+#include "xbox/Undocumented.h"
 #endif
 
 void fast_memcpy(void* d, const void* s, unsigned n)

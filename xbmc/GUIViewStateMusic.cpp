@@ -21,8 +21,8 @@
 
 #include "stdafx.h"
 #include "GUIViewStateMusic.h"
-#include "playlistplayer.h"
-#include "util.h"
+#include "PlayListPlayer.h"
+#include "Util.h"
 #include "GUIBaseContainer.h" // for VIEW_TYPE_*
 #include "VideoDatabase.h"
 
@@ -102,7 +102,6 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
 {
   CMusicDatabaseDirectory dir;
   NODE_TYPE NodeType=dir.GetDirectoryChildType(items.m_strPath);
-  NODE_TYPE ParentNodeType=dir.GetDirectoryType(items.m_strPath);
 
   CStdString strTrackLeft=g_guiSettings.GetString("musicfiles.librarytrackformat");
   if (strTrackLeft.IsEmpty())
@@ -298,6 +297,8 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
 
       SetSortOrder(SORT_ORDER_NONE);
     }
+    break;
+  default:
     break;
   }
 
@@ -631,7 +632,6 @@ VECSHARES& CGUIViewStateWindowMusicPlaylist::GetShares()
   m_shares.clear();
   //  Playlist share
   CShare share;
-  share.strName;
   share.strPath = "playlistmusic://";
   share.m_strThumbnailImage="defaultFolderBig.png";
   share.m_iDriveType = SHARE_TYPE_LOCAL;
@@ -699,3 +699,4 @@ void CGUIViewStateMusicLastFM::SaveViewState()
 {
   SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_FILES, g_stSettings.m_viewStateMusicLastFM);
 }
+

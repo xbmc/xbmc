@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../guilib/stdstring.h"
+#include "../guilib/StdString.h"
 
 class CURL
 {

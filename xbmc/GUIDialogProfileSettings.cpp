@@ -30,7 +30,7 @@
 #include "MediaManager.h"
 #include "Util.h"
 #include "GUIPassword.h"
-#include "picture.h"
+#include "Picture.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -388,3 +388,4 @@ void CGUIDialogProfileSettings::OnInitWindow()
 
   CGUIDialogSettings::OnInitWindow();
 }
+

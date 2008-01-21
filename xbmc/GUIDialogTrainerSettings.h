@@ -32,3 +32,4 @@ protected:
   bool m_bCanceled;
   CStdString m_strActive; // active trainer at start - to save db work
 };
+

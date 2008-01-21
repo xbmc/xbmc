@@ -1,5 +1,5 @@
 #pragma once
-#include "thread.h"
+#include "Thread.h"
 
 class CInfoLoader;
 
@@ -21,7 +21,7 @@ class CInfoLoader
 {
 public:
   CInfoLoader(const char *type);
-  ~CInfoLoader();
+  virtual ~CInfoLoader();
   const char *GetInfo(DWORD dwInfo);
   void Refresh();
   void LoaderFinished();

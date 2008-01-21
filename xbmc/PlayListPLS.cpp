@@ -20,10 +20,10 @@
  */
 
 #include "stdafx.h"
-#include "playlistpls.h"
-#include "playlistfactory.h"
-#include "util.h"
-#include "utils\HTTP.h"
+#include "PlayListPLS.h"
+#include "PlayListFactory.h"
+#include "Util.h"
+#include "utils/HTTP.h"
 
 using namespace XFILE;
 using namespace PLAYLIST;
@@ -77,7 +77,7 @@ bool CPlayListPLS::Load(const CStdString &strFile)
 
   if (file.GetLength() > 1024*1024)
   {
-    CLog::Log(LOGWARNING, __FUNCTION__" - File is larger than 1 MB, most likely not a playlist");
+    CLog::Log(LOGWARNING, "%s - File is larger than 1 MB, most likely not a playlist",__FUNCTION__);
     return false;
   }
 
@@ -210,7 +210,7 @@ void CPlayListPLS::Save(const CStdString& strFileName) const
     g_charsetConverter.utf8ToStringCharset(strDescription);
     fprintf(fd, "File%i=%s\n", i + 1, strFileName.c_str() );
     fprintf(fd, "Title%i=%s\n", i + 1, strDescription.c_str() );
-    fprintf(fd, "Length%i=%i\n", i + 1, item.GetDuration() / 1000 );
+    fprintf(fd, "Length%i=%lu\n", i + 1, item.GetDuration() / 1000 );
   }
 
   fprintf(fd, "NumberOfEntries=%i\n", m_vecItems.size());
@@ -221,7 +221,6 @@ void CPlayListPLS::Save(const CStdString& strFileName) const
 bool CPlayListASX::LoadAsxIniInfo(std::istream &stream)
 {
   CLog::Log(LOGINFO, "Parsing INI style ASX");
-  string::size_type equals = 0, end = 0;
 
   std::string name, value;
 
@@ -332,7 +331,6 @@ bool CPlayListASX::LoadData(std::istream& stream)
 
         TiXmlElement *pRef = pElement->FirstChildElement("ref");
         TiXmlElement *pTitle = pElement->FirstChildElement("title");
-        TiXmlElement *pDuration = pElement->FirstChildElement("duration"); /* <DURATION VALUE="hh:mm:ss.fract"/> */
 
         if(pTitle)
           title = pTitle->GetText();

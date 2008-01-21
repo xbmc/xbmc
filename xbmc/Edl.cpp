@@ -1,14 +1,14 @@
 #include "Edl.h"
 #include "include.h"
 #include "stdafx.h"
-#include "util.h"
+#include "Util.h"
 
 #ifndef WSAEVENT  //Needed for XBMC_PC somehow.
 #define WSAEVENT                HANDLE
 #endif
 
-#include "application.h"
-#include "videodatabase.h"
+#include "Application.h"
+#include "VideoDatabase.h"
 
 using namespace XFILE;
 
@@ -65,7 +65,7 @@ bool CEdl::ReadEdl()
     tmpValid=true;
     while (CutFile.ReadString(m_szBuffer, 1023) && tmpValid) 
     {
-      if( sscanf( m_szBuffer, "%lf %lf %i", &tmpCut.CutStart, &tmpCut.CutEnd, &tmpCut.CutAction ) == 3)
+      if( sscanf( m_szBuffer, "%lf %lf %i", &tmpCut.CutStart, &tmpCut.CutEnd, (int*) &tmpCut.CutAction ) == 3)
       {
         if ( tmpCut.CutAction==CUT || tmpCut.CutAction==MUTE )
         {  
@@ -492,7 +492,7 @@ bool CEdl::SeekScene(bool bPlus, __int64 *iScenemarker)
   // Should we skip the scenemarker if inside a cutpoint? For now , we don't.
   if (bPlus)
   {
-    dDiff=(double)99999999999999;
+    dDiff=(double)99999999999999LL;
     for(int i = 0; i < (int)m_vecScenelist.size(); i++ )
     {
       if ( (m_vecScenelist[i] > dCurSeek) && ((m_vecScenelist[i]-dCurSeek) < dDiff))
@@ -505,7 +505,7 @@ bool CEdl::SeekScene(bool bPlus, __int64 *iScenemarker)
   else
   {
     dCurSeek = (dCurSeek>5) ? dCurSeek-5 : 0; // Jump over nearby scene to avoid getting stuck.
-    dDiff=(double)99999999999999;
+    dDiff=(double)99999999999999LL;
     for(int i = 0; i < (int)m_vecScenelist.size(); i++ )
     {
       if ((m_vecScenelist[i] < dCurSeek) && ((dCurSeek-m_vecScenelist[i]) < dDiff))

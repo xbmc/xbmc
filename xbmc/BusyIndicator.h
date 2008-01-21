@@ -7,3 +7,4 @@ public:
   CBusyIndicator(){g_ApplicationRenderer.SetBusy(true);};
   virtual ~CBusyIndicator(){g_ApplicationRenderer.SetBusy(false);};
 };
+

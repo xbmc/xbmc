@@ -35,7 +35,7 @@ to maintain a single distribution point for the source code.
 #ifndef _INC_MATH
 #include <math.h>
 #endif
-#include "sntp.h"
+#include "Sntp.h"
 #include "../DNSNameCache.h"
 #include "../xbox/Network.h"
 

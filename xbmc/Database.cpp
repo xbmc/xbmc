@@ -20,8 +20,8 @@
  */
 
 #include "stdafx.h"
-#include "database.h"
-#include "util.h"
+#include "Database.h"
+#include "Util.h"
 
 
 CDatabase::CDatabase(void)

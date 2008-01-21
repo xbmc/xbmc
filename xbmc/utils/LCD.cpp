@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "lcd.h"
+#include "LCD.h"
 #include "GUIInfoManager.h"
 #include "../Util.h"
 

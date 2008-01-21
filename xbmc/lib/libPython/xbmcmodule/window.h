@@ -1,4 +1,4 @@
-#include "..\python\python.h"
+#include "../python/Python.h"
 #include "GUIPythonWindow.h"
 #include "GUIPythonWindowXML.h"
 #include "GUIPythonWindowXMLDialog.h"

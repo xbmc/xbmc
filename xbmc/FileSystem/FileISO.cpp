@@ -44,7 +44,6 @@ CFileISO::~CFileISO()
 //*********************************************************************************************
 bool CFileISO::Open(const CURL& url, bool bBinary)
 {
-
   string strFName = "\\";
   strFName += url.GetFileName();
   for (int i = 0; i < (int)strFName.size(); ++i )

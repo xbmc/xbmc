@@ -20,8 +20,8 @@
  */
 
 #include "stdafx.h"
-#include "musicinfotagloaderogg.h"
-#include "oggtag.h"
+#include "MusicInfoTagLoaderOgg.h"
+#include "OggTag.h"
 
 
 using namespace MUSIC_INFO;

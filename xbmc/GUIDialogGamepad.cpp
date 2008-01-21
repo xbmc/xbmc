@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "guidialogGamepad.h"
-#include "util.h"
+#include "GUIDialogGamepad.h"
+#include "Util.h"
 #include "utils/md5.h"
-#include "xbox/xkgeneral.h"
+#include "xbox/XKGeneral.h"
 #include "../guilib/GUIAudioManager.h"
 
 CGUIDialogGamepad::CGUIDialogGamepad(void)
@@ -11,7 +11,7 @@ CGUIDialogGamepad::CGUIDialogGamepad(void)
   m_bCanceled = false;
   m_strUserInput = "";
   m_strPassword = "";
-  int m_iRetries = 0;
+  m_iRetries = 0;
   m_bUserInputCleanup = true;
 }
 
@@ -288,3 +288,4 @@ bool CGUIDialogGamepad::IsCanceled() const
 {
   return m_bCanceled;
 }
+

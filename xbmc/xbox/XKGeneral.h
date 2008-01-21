@@ -47,6 +47,7 @@ Reason: Prepared for Public Release
 
 */
 
+#ifndef __GNUC__
 #pragma once
 #if defined (_WINDOWS)
  #pragma message ("Compiling for WINDOWS: " __FILE__)
@@ -56,6 +57,7 @@ Reason: Prepared for Public Release
  #include <xtl.h>
 #else
  #error ERR: Have to Define _WINDOWS or _XBOX !!
+#endif
 #endif
 
 #ifndef FILENAME_MAX

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "IMusicInfoTagLoader.h"
-#include "cores/paplayer/dllnosefart.h"
+#include "ImusicInfoTagLoader.h"
+#include "cores/paplayer/DllNosefart.h"
 
 using namespace MUSIC_INFO;
 

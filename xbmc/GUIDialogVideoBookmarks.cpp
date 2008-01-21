@@ -107,7 +107,7 @@ bool CGUIDialogVideoBookmarks::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_SETFOCUS:
     {
-      if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != message.GetControlId())
+      if (m_viewControl.HasControl(message.GetControlId()) && (DWORD) m_viewControl.GetCurrentControl() != message.GetControlId())
       {
         m_viewControl.SetFocused();
         return true;
@@ -247,7 +247,7 @@ void CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
     // compute the thumb name + create the thumb image
     Crc32 crc;
     crc.ComputeFromLowerCase(g_application.CurrentFile());
-    bookmark.thumbNailImage.Format("%s\\%08x_%i.jpg", g_settings.GetBookmarksThumbFolder().c_str(), crc, m_vecItems.Size() + 1);
+    bookmark.thumbNailImage.Format("%s\\%08x_%i.jpg", g_settings.GetBookmarksThumbFolder().c_str(), (unsigned __int32) crc, m_vecItems.Size() + 1);
     CPicture pic;
     if (!pic.CreateThumbnailFromSurface((BYTE *)lockedRect.pBits, width, height, lockedRect.Pitch, bookmark.thumbNailImage))
       bookmark.thumbNailImage.Empty();
@@ -324,3 +324,4 @@ void CGUIDialogVideoBookmarks::AddEpisodeBookmark()
     }
   }
 }
+

@@ -21,7 +21,7 @@
 
 #include "stdafx.h"
 #include "AutoSwitch.h"
-#include "util.h"
+#include "Util.h"
 #include "GUIBaseContainer.h" // for VIEW_TYPE_*
 
 #define METHOD_BYFOLDERS  0
@@ -228,3 +228,4 @@ bool CAutoSwitch::ByFolderThumbPercentage(bool hideParentDirItems, int percent, 
 
   return false;
 }
+

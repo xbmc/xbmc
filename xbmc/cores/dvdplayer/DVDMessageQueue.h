@@ -26,7 +26,7 @@ class CDVDMessageQueue
 {
 public:
   CDVDMessageQueue();
-  ~CDVDMessageQueue();
+  virtual ~CDVDMessageQueue();
   
   void  Init();
   void  Flush();
