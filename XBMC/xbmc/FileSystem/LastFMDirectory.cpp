@@ -274,7 +274,7 @@ bool CLastFMDirectory::ParseUserList(CStdString url, CFileItemList &items)
 
     if (name)
     {
-      AddListEntry(name, NULL, (count) ? count->FirstChild()->Value() : NULL, NULL, NULL,
+      AddListEntry(name, NULL, (count && count->FirstChild()) ? count->FirstChild()->Value() : NULL, NULL, NULL,
           "lastfm://xbmc/user/" + (CStdString)name + "/", items);
     }
 
