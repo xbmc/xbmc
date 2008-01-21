@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
-#include "playlist.h"
-#include "filesystem/rarmanager.h"
+#include "PlayList.h"
+#include "FileSystem/RarManager.h"
 #include "Settings.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "xbox/custom_launch_params.h"
@@ -105,7 +105,6 @@ public:
   static void GetFileAndProtocol(const CStdString& strURL, CStdString& strDir);
   static int GetDVDIfoTitle(const CStdString& strPathFile);
   static void UrlDecode(CStdString& strURLData);
-
   static void URLEncode(CStdString& strURLData);
   static bool CacheXBEIcon(const CStdString& strFilePath, const CStdString& strIcon);
   static bool GetXBEDescription(const CStdString& strFileName, CStdString& strDescription);

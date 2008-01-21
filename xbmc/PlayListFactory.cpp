@@ -20,12 +20,12 @@
  */
 
 #include "stdafx.h"
-#include "playlistfactory.h"
-#include "Playlistm3u.h"
-#include "PlaylistPLS.h"
-#include "Playlistb4S.h"
-#include "PlaylistWPL.h"
-#include "util.h"
+#include "PlayListFactory.h"
+#include "PlayListM3U.h"
+#include "PlayListPLS.h"
+#include "PlayListB4S.h"
+#include "PlayListWPL.h"
+#include "Util.h"
 
 
 using namespace PLAYLIST;
@@ -111,3 +111,4 @@ bool CPlayListFactory::IsPlaylist(const CStdString& filename)
   if (extension == ".xsp") return true;
   return false;
 }
+

@@ -4,8 +4,8 @@
 #include "../FileSystem/ZipManager.h"
 #include "../FileSystem/RarManager.h"
 #include "HTTP.h"
-#include "xmlutils.h"
-#include "../temperature.h"
+#include "XMLUtils.h"
+#include "../Temperature.h"
 #include "../xbox/network.h"
 
 using namespace DIRECTORY;
@@ -696,3 +696,4 @@ bool CWeather::IsFetched()
   GetInfo(0);
   return (0 != *m_szLastUpdateTime);
 }
+

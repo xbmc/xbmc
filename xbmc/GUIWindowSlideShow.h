@@ -1,9 +1,9 @@
 #pragma once
 
 #include "GUIWindow.h"
-#include "Utils/Thread.h"
+#include "utils/Thread.h"
 #include "SlideShowPicture.h"
-#include "dllImageLib.h"
+#include "DllImageLib.h"
 
 class CGUIWindowSlideShow;
 
@@ -77,6 +77,7 @@ private:
   CFileItemList m_slides;
 
   CSlideShowPic m_Image[2];
+
   int m_iCurrentPic;
   // background loader
   CBackgroundPicLoader* m_pBackgroundLoader;

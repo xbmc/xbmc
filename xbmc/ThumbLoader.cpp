@@ -113,3 +113,4 @@ bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
   }
   return true;
 }
+

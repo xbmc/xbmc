@@ -1,14 +1,16 @@
 #include "stdafx.h"
-#include "..\python\python.h"
-#include "GuiLabelControl.h"
+#include "../python/Python.h"
+#include "GUILabelControl.h"
 #include "GUIFontManager.h"
 #include "control.h"
 #include "pyutil.h"
 
+#ifndef __GNUC__
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
 #pragma bss_seg("PY_BSS")
 #pragma const_seg("PY_RDATA")
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -68,10 +70,10 @@ namespace PYXBMC
     }
 
     if (cFont) self->strFont = cFont;
-    if (cTextColor) sscanf(cTextColor, "%x", &self->dwTextColor);
+    if (cTextColor) sscanf(cTextColor, "%lx", &self->dwTextColor);
     if (cDisabledColor)
     {
-      sscanf( cDisabledColor, "%x", &self->dwDisabledColor );
+      sscanf( cDisabledColor, "%lx", &self->dwDisabledColor );
     }
 
     return (PyObject*)self;
@@ -185,10 +187,12 @@ namespace PYXBMC
     "  - self.label = xbmcgui.ControlLabel(100, 250, 125, 75, 'Status', angle=45)\n");
 
   // Restore code and data sections to normal.
+#ifndef __GNUC__
 #pragma code_seg()
 #pragma data_seg()
 #pragma bss_seg()
 #pragma const_seg()
+#endif
 
   PyTypeObject ControlLabel_Type;
 

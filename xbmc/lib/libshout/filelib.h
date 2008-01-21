@@ -4,7 +4,7 @@
 #include "types.h"
 #ifdef _XBOX
 #include <xtl.h>
-#else if WIN32
+#elif defined(WIN32)
 #include <windows.h>
 #endif
 

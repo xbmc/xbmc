@@ -20,11 +20,11 @@
  */
 
 #include "stdafx.h"
-#include "playlistdirectory.h"
-#include "settings.h"
-#include "filesystem/HDdirectory.h"
+#include "PlaylistDirectory.h"
+#include "Settings.h"
+#include "FileSystem/HDDirectory.h"
 #include "PlayListFactory.h"
-#include "util.h"
+#include "Util.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

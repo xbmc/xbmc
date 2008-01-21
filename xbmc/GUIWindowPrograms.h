@@ -1,6 +1,6 @@
 #pragma once
 #include "GUIMediaWindow.h"
-#include "programdatabase.h"
+#include "ProgramDatabase.h"
 #include "GUIDialogProgress.h"
 #include "ThumbLoader.h"
 

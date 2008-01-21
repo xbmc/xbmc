@@ -2,11 +2,11 @@
 #include "stdafx.h"
 #include "log.h"
 #include <share.h>
-#include "criticalsection.h"
-#include "singlelock.h"
+#include "CriticalSection.h"
+#include "SingleLock.h"
 #include "StdString.h"
 #include "../Settings.h"
-#include "../util.h"
+#include "../Util.h"
 
 FILE* CLog::fd = NULL;
 
@@ -69,7 +69,7 @@ void CLog::Log(int loglevel, const char *format, ... )
     
 
     int length = 0;
-    while ( length != strData.length() )
+    while ( length != (int)strData.length() )
     {
       length = strData.length();
       strData.TrimRight(" ");
@@ -143,7 +143,7 @@ void CLog::DebugLogMemory()
 
 void CLog::MemDump(BYTE *pData, int length)
 {
-  Log(LOGDEBUG, "MEM_DUMP: Dumping from %x", pData);
+  Log(LOGDEBUG, "MEM_DUMP: Dumping from %x", (unsigned int)pData);
   for (int i = 0; i < length; i+=16)
   {
     CStdString strLine;

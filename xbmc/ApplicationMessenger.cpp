@@ -21,18 +21,18 @@
 
 #include "stdafx.h"
 #include "ApplicationMessenger.h"
-#include "application.h"
+#include "Application.h"
 #ifdef _XBOX
-#include "xbox/xkutils.h"
+#include "xbox/XKUtils.h"
 #include "xbox/XKHDD.h"
 #endif
 
-#include "texturemanager.h"
-#include "playlistplayer.h"
-#include "util.h"
+#include "TextureManager.h"
+#include "PlayListPlayer.h"
+#include "Util.h"
 #include "lib/libPython/XBPython.h"
 #include "GUIWindowSlideShow.h"
-#include "lib/libGoAhead/xbmchttp.h"
+#include "lib/libGoAhead/XBMChttp.h"
 #include "xbox/network.h"
 
 extern HWND g_hWnd;
@@ -366,7 +366,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       break;
 
     case TMSG_PLAYLISTPLAYER_PLAY:
-      if (pMsg->dwParam1 != -1)
+      if (pMsg->dwParam1 != (DWORD) -1)
         g_playlistPlayer.Play(pMsg->dwParam1);
       else
         g_playlistPlayer.Play();
@@ -501,7 +501,7 @@ void CApplicationMessenger::MediaRestart(bool bWait)
 
 void CApplicationMessenger::PlayListPlayerPlay()
 {
-  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY, -1};
+  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY, (DWORD) -1};
   SendMessage(tMsg, true);
 }
 
@@ -581,3 +581,4 @@ void CApplicationMessenger::SwitchToFullscreen()
   ThreadMessage tMsg = {TMSG_SWITCHTOFULLSCREEN};
   SendMessage(tMsg, true);
 }
+

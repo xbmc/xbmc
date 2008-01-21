@@ -21,7 +21,7 @@
 
 #include "stdafx.h"
 #include "ApplicationRenderer.h"
-#include "Utils/GuiInfoManager.h"
+#include "utils/GUIInfoManager.h"
 #include "../guilib/guiImage.h"
 
 CApplicationRenderer g_ApplicationRenderer;

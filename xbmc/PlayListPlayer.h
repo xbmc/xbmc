@@ -1,6 +1,6 @@
 #pragma once
 
-#include "playlist.h"
+#include "PlayList.h"
 #include "IMsgTargetCallback.h"
 
 #define PLAYLIST_NONE    -1

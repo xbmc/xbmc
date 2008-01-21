@@ -20,9 +20,9 @@
  */
 
 #include "stdafx.h"
-#include "playlistm3u.h"
-#include "filesystem/file.h"
-#include "util.h"
+#include "PlayListM3U.h"
+#include "FileSystem/File.h"
+#include "Util.h"
 #include "utils/RegExp.h"
 #include "cores/dllloader/exports/emu_msvcrt.h"
 

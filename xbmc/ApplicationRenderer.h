@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Utils/thread.h"
-#include "Utils/criticalsection.h"
+#include "utils/Thread.h"
+#include "utils/CriticalSection.h"
 #include "Application.h"
 #include "GUIDialogBusy.h"
 
@@ -37,3 +37,4 @@ private:
   RESOLUTION m_Resolution;
 };
 extern CApplicationRenderer g_ApplicationRenderer;
+

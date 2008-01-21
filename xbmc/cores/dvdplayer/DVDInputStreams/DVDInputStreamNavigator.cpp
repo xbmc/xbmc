@@ -447,7 +447,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         //m_iTime = (int)(((__int64)m_iTotalTime * pos) / len);
 
         pci_t* pci = m_dll.dvdnav_get_current_nav_pci(m_dvdnav);
-        dsi_t* dsi = m_dll.dvdnav_get_current_nav_dsi(m_dvdnav);
+        m_dll.dvdnav_get_current_nav_dsi(m_dvdnav);
 
         if(!pci)
         {
@@ -472,7 +472,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
           }
           m_iVobUnitCorrection += gap;
           
-          CLog::Log(LOGDEBUG, "DVDNAV_NAV_PACKET - DISCONTINUITY FROM:%I64d TO:%I64d DIFF:%I64d", (m_iVobUnitStop * 1000)/90, ((__int64)pci->pci_gi.vobu_s_ptm*1000)/90, (gap*1000)/90);
+          CLog::Log(LOGDEBUG, "DVDNAV_NAV_PACKET - DISCONTINUITY FROM:%lld TO:%lld DIFF:%lld", (m_iVobUnitStop * 1000)/90, ((__int64)pci->pci_gi.vobu_s_ptm*1000)/90, (gap*1000)/90);
         }
 
         m_iVobUnitStart = pci->pci_gi.vobu_s_ptm;

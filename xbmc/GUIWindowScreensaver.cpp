@@ -21,11 +21,11 @@
 
 #include "stdafx.h"
 #include "GUIWindowScreensaver.h"
-#include "util.h"
+#include "Util.h"
 #ifdef HAS_SCREENSAVER
 #include "screensavers/ScreenSaverFactory.h"
 #endif
-#include "application.h"
+#include "Application.h"
 #include "GUIPassword.h"
 
 CGUIWindowScreensaver::CGUIWindowScreensaver(void)
@@ -172,3 +172,4 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
   }
   return CGUIWindow::OnMessage(message);
 }
+

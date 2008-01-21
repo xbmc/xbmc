@@ -1,11 +1,10 @@
 #pragma once
 
-#include "thread.h"
+#include "Thread.h"
 
 class CSplash : public CThread
 {
 public:
-
   CSplash(const CStdString& imageName);
   virtual ~CSplash();
 

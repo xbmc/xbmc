@@ -22,8 +22,8 @@
 #include "stdafx.h"
 #include "GUIDialogVideoScan.h"
 #include "GUIProgressControl.h"
-#include "application.h"
-#include "util.h"
+#include "Application.h"
+#include "Util.h"
 
 #define CONTROL_LABELSTATUS       401
 #define CONTROL_LABELDIRECTORY    402

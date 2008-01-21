@@ -1,18 +1,20 @@
 #include "stdafx.h"
 #include "dialog.h"
-#include "..\python\python.h"
+#include "../python/Python.h"
 #include "pyutil.h"
-#include "..\..\..\application.h"
-#include "..\xbmc\GUIDialogFileBrowser.h"
-#include "..\xbmc\GUIDialogNumeric.h"
-#include "..\xbmc\GUIDialogGamepad.h"
+#include "../../../Application.h"
+#include "../xbmc/GUIDialogFileBrowser.h"
+#include "../xbmc/GUIDialogNumeric.h"
+#include "../xbmc/GUIDialogGamepad.h"
 
 #define ACTIVE_WINDOW  m_gWindowManager.GetActiveWindow()
 
+#ifndef __GNUC__
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
 #pragma bss_seg("PY_BSS")
 #pragma const_seg("PY_RDATA")
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -483,10 +485,12 @@ namespace PYXBMC
     "DialogProgress class.\n");
 
 // Restore code and data sections to normal.
+#ifndef __GNUC__
 #pragma code_seg()
 #pragma data_seg()
 #pragma bss_seg()
 #pragma const_seg()
+#endif
 
   PyTypeObject WindowDialog_Type;
 

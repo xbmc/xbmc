@@ -20,17 +20,17 @@
  */
 
 #include "stdafx.h"
-#include "autorun.h"
-#include "application.h"
+#include "Autorun.h"
+#include "Application.h"
 #include "DetectDVDType.h"
-#include "util.h"
-#include "guipassword.h"
-#include "playlistplayer.h"
+#include "Util.h"
+#include "GUIPassword.h"
+#include "PlayListPlayer.h"
 #include "xbox/xbeheader.h"
 #include "FileSystem/StackDirectory.h"
-#include "utils/kaiclient.h"
-#include "programdatabase.h"
-#include "utils/trainer.h"
+#include "utils/KaiClient.h"
+#include "ProgramDatabase.h"
+#include "utils/Trainer.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -415,3 +415,4 @@ bool CAutorun::PlayDisc()
   ExecuteAutorun(true,true);
   return true;
 }
+

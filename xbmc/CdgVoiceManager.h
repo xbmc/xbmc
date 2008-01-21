@@ -2,7 +2,7 @@
 #define CDGVOICEMANAGER_H
 
 #include <xvoice.h>
-#include "utils/singlelock.h"
+#include "utils/SingleLock.h"
 
 enum CDG_DEVICE_TYPE
 {

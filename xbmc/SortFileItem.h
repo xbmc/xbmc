@@ -100,3 +100,4 @@ struct SSortFileItem
   static bool StudioDescendingNoThe(CFileItem *left, CFileItem *right);
 
 };
+

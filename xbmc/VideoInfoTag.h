@@ -1,6 +1,6 @@
 #pragma once
 
-#include "utils/archive.h"
+#include "utils/Archive.h"
 #include "utils/ScraperParser.h"
 #include "PluginSettings.h"
 
@@ -55,7 +55,7 @@ public:
   CStdString m_strVotes;
   vector< CStdString> m_artist;
   vector< SActorInfo > m_cast;
-  typedef vector< SActorInfo >::const_iterator iCast;
+  typedef std::vector< SActorInfo >::const_iterator iCast;
 
   CStdString m_strRuntime;
   CStdString m_strFile;

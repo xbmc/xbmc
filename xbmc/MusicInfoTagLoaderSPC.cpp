@@ -21,7 +21,7 @@
 
 #include "stdafx.h"
 #include "MusicInfoTagLoaderSPC.h"
-#include "cores/paplayer/spc/types.h"
+#include "cores/paplayer/spc/Types.h"
 
 using namespace XFILE;
 using namespace MUSIC_INFO;
@@ -31,7 +31,6 @@ SPC_ID666 *SPC_get_id666FP (CFile& file)
 {
   SPC_ID666 *id;
   unsigned char playtime_str[4] = { 0, 0, 0, 0 };
-  unsigned char fadetime_str[5] = { 0, 0, 0, 0, 0 };
 
   id = (SPC_ID666 *)malloc(sizeof(*id));
   if (id == NULL)
@@ -127,3 +126,4 @@ bool CMusicInfoTagLoaderSPC::Load(const CStdString& strFileName, CMusicInfoTag& 
   free(spc);
   return tag.Loaded();
 }
+

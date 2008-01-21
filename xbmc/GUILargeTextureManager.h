@@ -102,3 +102,4 @@ private:
 };
 
 extern CGUILargeTextureManager g_largeTextureManager;
+

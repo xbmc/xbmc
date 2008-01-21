@@ -3,9 +3,9 @@
  \brief
  */
 #pragma once
-#include "..\guilib\guilistitem.h"
-#include "song.h"
-#include "utils/archive.h"
+#include "../guilib/GUIListItem.h"
+#include "Song.h"
+#include "utils/Archive.h"
 #include "DateTime.h"
 #include "VideoInfoTag.h"
 #include "PictureInfoTag.h"
@@ -296,31 +296,31 @@ private:
   \brief A vector of pointer to CFileItem
   \sa CFileItem
   */
-typedef vector<CFileItem*> VECFILEITEMS;
+typedef std::vector<CFileItem*> VECFILEITEMS;
 
 /*!
   \brief Iterator for VECFILEITEMS
   \sa CFileItemList
   */
-typedef vector<CFileItem*>::iterator IVECFILEITEMS;
+typedef std::vector<CFileItem*>::iterator IVECFILEITEMS;
 
 /*!
   \brief A map of pointers to CFileItem
   \sa CFileItem
   */
-typedef map<CStdString, CFileItem*> MAPFILEITEMS;
+typedef std::map<CStdString, CFileItem*> MAPFILEITEMS;
 
 /*!
   \brief Iterator for MAPFILEITEMS
   \sa MAPFILEITEMS
   */
-typedef map<CStdString, CFileItem*>::iterator IMAPFILEITEMS;
+typedef std::map<CStdString, CFileItem*>::iterator IMAPFILEITEMS;
 
 /*!
   \brief Pair for MAPFILEITEMS
   \sa MAPFILEITEMS
   */
-typedef pair<CStdString, CFileItem*> MAPFILEITEMSPAIR;
+typedef std::pair<CStdString, CFileItem*> MAPFILEITEMSPAIR;
 
 typedef bool (*FILEITEMLISTCOMPARISONFUNC) (CFileItem* pItem1, CFileItem* pItem2);
 /*!
@@ -390,7 +390,7 @@ public:
 
   void AddSortMethod(SORT_METHOD method, int buttonLabel, const LABEL_MASKS &labelMasks);
   bool HasSortDetails() const { return m_sortDetails.size() != 0; };
-  const vector<SORT_METHOD_DETAILS> &GetSortDetails() const { return m_sortDetails; };
+  const std::vector<SORT_METHOD_DETAILS> &GetSortDetails() const { return m_sortDetails; };
   bool GetReplaceListing() const { return m_replaceListing; };
   void SetReplaceListing(bool replace);
   void SetContent(const CStdString &content) { m_content = content; };

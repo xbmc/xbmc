@@ -1,5 +1,5 @@
 #pragma once
-#include "../filesystem/file.h"
+#include "../FileSystem/File.h"
 
 class CArchive;
 
@@ -7,6 +7,7 @@ class ISerializable
 {
 public:
   virtual void Serialize(CArchive& ar) = 0;
+  virtual ~ISerializable() {}
 };
 
 class CArchive

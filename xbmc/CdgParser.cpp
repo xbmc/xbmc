@@ -21,10 +21,10 @@
 
 #include "stdafx.h"
 #include "CdgParser.h"
-#include "application.h"
-#include "util.h"
-#include "audiocontext.h"
-#include "utils\guiinfomanager.h"
+#include "Application.h"
+#include "Util.h"
+#include "AudioContext.h"
+#include "utils/GUIInfoManager.h"
 
 using namespace XFILE;
 

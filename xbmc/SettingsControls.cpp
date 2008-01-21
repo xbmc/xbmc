@@ -263,3 +263,4 @@ CSeparatorSettingControl::CSeparatorSettingControl(CGUIImage *pImage, DWORD dwID
 
 CSeparatorSettingControl::~CSeparatorSettingControl()
 {}
+

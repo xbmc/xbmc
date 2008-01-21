@@ -20,9 +20,9 @@
  */
 
 #include "stdafx.h"
-#include ".\programdatabase.h"
+#include "ProgramDatabase.h"
 #include "utils/fstrcmp.h"
-#include "util.h"
+#include "Util.h"
 #include "xbox/xbeheader.h"
 #include "GUIWindowFileManager.h"
 
@@ -64,7 +64,7 @@ bool CProgramDatabase::CreateTables()
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "programdatabase::unable to create tables:%i", GetLastError());
+    CLog::Log(LOGERROR, "programdatabase::unable to create tables:%lu", GetLastError());
     return false;
   }
 
@@ -197,7 +197,7 @@ bool CProgramDatabase::SetTitleId(const CStdString& strFileName, DWORD dwTitleId
     int idFile = m_pDS->fv("files.idFile").get_asLong();
     m_pDS->close();
 
-    CLog::Log(LOGDEBUG, "CProgramDatabase::SetTitle(%s), idFile=%i, region=%u",
+    CLog::Log(LOGDEBUG, "CProgramDatabase::SetTitle(%s), idFile=%i, region=%lu",
               strFileName.c_str(), idFile,dwTitleId);
 
     strSQL=FormatSQL("update files set titleId=%u where idFile=%i",
@@ -234,7 +234,7 @@ bool CProgramDatabase::GetXBEPathByTitleId(const DWORD titleId, CStdString& strP
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "CProgramDatabase::GetXBEPathByTitleId(%i) failed", titleId);
+    CLog::Log(LOGERROR, "CProgramDatabase::GetXBEPathByTitleId(%lu) failed", titleId);
   }
   return false;
 }
@@ -265,7 +265,7 @@ bool CProgramDatabase::HasTrainer(const CStdString& strTrainerPath)
   Crc32 crc; crc.ComputeFromLowerCase(strTrainerPath);
   try
   {
-    strSQL = FormatSQL("select * from trainers where idCRC=%u",crc);
+    strSQL = FormatSQL("select * from trainers where idCRC=%u",(unsigned __int32) crc);
     if (!m_pDS->query(strSQL.c_str()))
       return false;
     if (m_pDS->num_rows())
@@ -290,7 +290,7 @@ bool CProgramDatabase::AddTrainer(int iTitleId, const CStdString& strTrainerPath
     for( int i=0;i<100;++i)
       temp[i] = '0';
     temp[100] = '\0';
-    strSQL=FormatSQL("insert into trainers (idKey,idCRC,idTitle,strTrainerPath,strSettings,Active) values(NULL,%u,%u,'%s','%s',%i)",crc,iTitleId,strTrainerPath.c_str(),temp,0);
+    strSQL=FormatSQL("insert into trainers (idKey,idCRC,idTitle,strTrainerPath,strSettings,Active) values(NULL,%u,%u,'%s','%s',%i)",(unsigned __int32)crc,iTitleId,strTrainerPath.c_str(),temp,0);
     if (!m_pDS->exec(strSQL.c_str()))
       return false;
 
@@ -309,7 +309,7 @@ bool CProgramDatabase::RemoveTrainer(const CStdString& strTrainerPath)
   Crc32 crc; crc.ComputeFromLowerCase(strTrainerPath);
   try
   {
-    strSQL=FormatSQL("delete from trainers where idCRC=%u",crc);
+    strSQL=FormatSQL("delete from trainers where idCRC=%u",(unsigned __int32)crc);
     if (!m_pDS->exec(strSQL.c_str()))
       return false;
 
@@ -390,7 +390,7 @@ bool CProgramDatabase::SetTrainerOptions(const CStdString& strTrainerPath, unsig
     }
     temp[i] = '\0';
 
-    strSQL = FormatSQL("update trainers set strSettings='%s' where idCRC=%u and idTitle=%u",temp,crc,iTitleId);
+    strSQL = FormatSQL("update trainers set strSettings='%s' where idCRC=%u and idTitle=%u",temp,(unsigned __int32)crc,iTitleId);
     if (m_pDS->exec(strSQL.c_str()))
       return true;
 
@@ -398,7 +398,7 @@ bool CProgramDatabase::SetTrainerOptions(const CStdString& strTrainerPath, unsig
   }
   catch (...)
   {
-    CLog::Log(LOGERROR,"CProgramDatabase::SetTrainerOptions failed (%s)",strSQL);
+    CLog::Log(LOGERROR,"CProgramDatabase::SetTrainerOptions failed (%s)",strSQL.c_str());
   }
 
   return false;
@@ -410,12 +410,12 @@ void CProgramDatabase::SetTrainerActive(const CStdString& strTrainerPath, unsign
   Crc32 crc; crc.ComputeFromLowerCase(strTrainerPath);
   try
   {
-    strSQL = FormatSQL("update trainers set Active=%u where idCRC=%u and idTitle=%u",bActive?1:0,crc,iTitleId);
+    strSQL = FormatSQL("update trainers set Active=%u where idCRC=%u and idTitle=%u",bActive?1:0,(unsigned __int32)crc,iTitleId);
     m_pDS->exec(strSQL.c_str());
   }
   catch (...)
   {
-    CLog::Log(LOGERROR,"CProgramDatabase::SetTrainerOptions failed (%s)",strSQL);
+    CLog::Log(LOGERROR,"CProgramDatabase::SetTrainerOptions failed (%s)",strSQL.c_str());
   }
 }
 
@@ -445,7 +445,7 @@ bool CProgramDatabase::GetTrainerOptions(const CStdString& strTrainerPath, unsig
   Crc32 crc; crc.ComputeFromLowerCase(strTrainerPath);
   try
   {
-    strSQL = FormatSQL("select * from trainers where idCRC=%u and idTitle=%u",crc,iTitleId);
+    strSQL = FormatSQL("select * from trainers where idCRC=%u and idTitle=%u",(unsigned __int32)crc,iTitleId);
     if (m_pDS->query(strSQL.c_str()))
     {
       CStdString strSettings = m_pDS->fv("strSettings").get_asString();
@@ -536,7 +536,7 @@ bool CProgramDatabase::AddProgramInfo(CFileItem *item, unsigned int titleID)
     else
       iSize = CGUIWindowFileManager::CalculateFolderSize(strPath);
     if (titleID == 0)
-      titleID = -1;
+      titleID = (unsigned int) -1;
     CStdString strSQL=FormatSQL("insert into files (idFile, strFileName, titleId, xbedescription, iTimesPlayed, lastAccessed, iRegion, iSize) values(NULL, '%s', %u, '%s', %i, %I64u, %i, %I64u)", item->m_strPath.c_str(), titleID, item->GetLabel().c_str(), 0, lastAccessed, iRegion, iSize);
     m_pDS->exec(strSQL.c_str());
     item->m_dwSize = iSize;

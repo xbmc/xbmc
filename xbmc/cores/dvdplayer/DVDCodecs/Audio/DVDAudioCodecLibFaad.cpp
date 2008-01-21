@@ -125,7 +125,7 @@ int CDVDAudioCodecLibFaad::Decode(BYTE* pData, int iSize)
   if (!m_bInitializedDecoder)
     return iBytesToCopy;
 
-  m_DecodedData = (BYTE*)m_dll.faacDecDecode(m_pHandle, &m_frameInfo, m_InputBuffer, m_InputBufferSize);
+  m_DecodedData = (short*)m_dll.faacDecDecode(m_pHandle, &m_frameInfo, m_InputBuffer, m_InputBufferSize);
   m_DecodedDataSize = m_frameInfo.samples * sizeof(short);
 
   if (m_frameInfo.error)
@@ -151,7 +151,7 @@ int CDVDAudioCodecLibFaad::Decode(BYTE* pData, int iSize)
 
 int CDVDAudioCodecLibFaad::GetData(BYTE** dst)
 {
-  *dst = m_DecodedData;
+  *dst = (BYTE*)m_DecodedData;
   return m_DecodedDataSize;
 }
 

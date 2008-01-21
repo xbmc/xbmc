@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "idle.h"
+#include "Idle.h"
 
 
 CIdleThread::CIdleThread()

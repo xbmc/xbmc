@@ -1,16 +1,17 @@
 #include "ScraperParser.h"
 
+#include "stdafx.h"
+
+#include <cstring>
 #include "RegExp.h"
-#include "htmlutil.h"
+#include "HTMLUtil.h"
+#include "CharsetConverter.h"
 #include "URL.h"
 #include "HTTP.h"
-#include "charsetconverter.h"
-#include "stdafx.h"
 
 #include "Picture.h"
 #include "Util.h"
 
-#include <cstring>
 #include <sstream>
 
 CScraperUrl::CScraperUrl(const CStdString& strUrl)
@@ -444,7 +445,7 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
       {
         char temp[4];
         sprintf(temp,"\\%i",iBuf+1);
-        int i2=0;
+        size_t i2=0;
         while ((i2 = strOutput.Find(temp,i2)) != CStdString::npos)
         {
           strOutput.Insert(i2,"!!!CLEAN!!!");
@@ -457,7 +458,7 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
       {
         char temp[4];
         sprintf(temp,"\\%i",iBuf+1);
-        int i2=0;
+        size_t i2=0;
         while ((i2 = strOutput.Find(temp,i2)) != CStdString::npos)
         {
           strOutput.Insert(i2,"!!!TRIM!!!");
@@ -521,7 +522,7 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
         {
           CStdString strResultNoCase = strResult;
           strResultNoCase.ToLower();
-          if (strResultNoCase.Find(m_param[iCompare-1]) != CStdString::npos)
+          if ((size_t) strResultNoCase.Find(m_param[iCompare-1]) != CStdString::npos)
             dest += strResult;
         }
         else
@@ -636,11 +637,11 @@ bool CScraperParser::HasFunction(const CStdString& strTag)
 
 void CScraperParser::Clean(CStdString& strDirty)
 {
-  int i=0;
+  size_t i=0;
   CStdString strBuffer;
   while ((i=strDirty.Find("!!!CLEAN!!!",i)) != CStdString::npos)
   {
-    int i2;
+    size_t i2;
     if ((i2=strDirty.Find("!!!CLEAN!!!",i+11)) != CStdString::npos)
     {
       strBuffer = strDirty.substr(i+11,i2-i-11);
@@ -660,7 +661,7 @@ void CScraperParser::Clean(CStdString& strDirty)
   i=0;
   while ((i=strDirty.Find("!!!TRIM!!!",i)) != CStdString::npos)
   {
-    int i2;
+    size_t i2;
     if ((i2=strDirty.Find("!!!TRIM!!!",i+10)) != CStdString::npos)
     {
       strBuffer = strDirty.substr(i+10,i2-i-10);
@@ -866,3 +867,4 @@ void CScraperParser::ClearBuffers()
   for (int i=0;i<9;++i)
     m_param[i].clear();
 }
+

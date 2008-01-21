@@ -23,16 +23,16 @@
 #define _WCTYPE_INLINE_DEFINED
 #include <process.h>
 #include "GUIFontManager.h"
+#include "Credits.h"
 #include "GUITextLayout.h"
-#include "credits.h"
 #include "Application.h"
 #include "lib/mikxbox/mikmod.h"
 #include "lib/mikxbox/mikxbox.h"
 #include "credits_res.h"
 #include "lib/liblzo/LZO1X.H"
 #include "SkinInfo.h"
-#include "util.h"
-#include "guifont.h"
+#include "Util.h"
+#include "GUIFont.h"
 
 // Transition effects for text, must specific exactly one in and one out effect
 enum CRED_EFFECTS
@@ -1084,7 +1084,7 @@ void RunCredits()
     if (Fonts.find(Credits[i].Font) == Fonts.end())
     {
       // first try loading it
-      CStdString fontPath = "Q:\\Media\\Fonts\\Arial.ttf";
+      CStdString fontPath = "Q:\\media\\Fonts\\Arial.ttf";
       CStdString strFont;
       strFont.Fmt("__credits%d__", Credits[i].Font);
       CGUIFont *font = g_fontManager.LoadTTF(strFont, fontPath, 0xFFdadada, 0, Credits[i].Font, FONT_STYLE_BOLD);
@@ -1513,3 +1513,4 @@ LPDIRECT3DTEXTURE8 CreateCreditsTexture(CGUIFont *font, const wchar_t *text)
   }
   return texture;
 }
+
