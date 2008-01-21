@@ -3,14 +3,13 @@
 //
 #include "stdafx.h"
 #include "TuxBoxUtil.h"
-#include "../util.h"
+#include "../Util.h"
 #include "../FileSystem/FileCurl.h"
 #include "../utils/HttpHeader.h"
-#include "../utils/Http.h"
-#include "../util.h"
+#include "../utils/HTTP.h"
 #include "../GUIDialogContextMenu.h"
-#include "../application.h"
-#include "../applicationmessenger.h"
+#include "../Application.h"
+#include "../ApplicationMessenger.h"
 #include "GUIInfoManager.h"
 
 using namespace XFILE;
@@ -43,12 +42,12 @@ bool CTuxBoxService::Start()
 }
 void CTuxBoxService::Stop()
 {
-  CLog::Log(LOGDEBUG, __FUNCTION__" - Stopping CTuxBoxService thread");
+  CLog::Log(LOGDEBUG, "%s - Stopping CTuxBoxService thread", __FUNCTION__);
   StopThread();
 }
 void CTuxBoxService::OnStartup()
 {
-  CLog::Log(LOGDEBUG, __FUNCTION__" - Starting CTuxBoxService thread");
+  CLog::Log(LOGDEBUG, "%s - Starting CTuxBoxService thread", __FUNCTION__);
   SetThreadPriority(GetCurrentThread(),THREAD_PRIORITY_LOWEST);
 }
 void CTuxBoxService::OnExit()
@@ -76,7 +75,7 @@ void CTuxBoxService::Process()
     CURL url(strURL);
     if(g_tuxbox.GetHttpXML(url,"currentservicedata"))
     {
-      CLog::Log(LOGDEBUG, __FUNCTION__" - receive current service data was successful");
+      CLog::Log(LOGDEBUG, "%s - receive current service data was successful", __FUNCTION__);
       if(!strCurrentServiceName.IsEmpty()&& 
         !strCurrentServiceName.Equals("NULL") &&
         !g_tuxbox.sCurSrvData.service_name.IsEmpty() &&
@@ -98,7 +97,7 @@ void CTuxBoxService::Process()
     }
     else
     {
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Could not receive current service data");
+      CLog::Log(LOGDEBUG, "%s - Could not receive current service data", __FUNCTION__);
     }
   }
   return;
@@ -120,9 +119,9 @@ bool CTuxBoxUtil::CreateNewItem(const CFileItem& item, CFileItem& item_new)
   {
     if(!sBoxStatus.recording.Equals("1")) //Don't Show this Dialog, if the Box is in Recording mode! A previos YN Dialog was send to user!
     {
-      CLog::Log(LOGDEBUG, __FUNCTION__" ---------------------------------------------------------");
-      CLog::Log(LOGDEBUG, __FUNCTION__" - WARNING: Zaping Failed no Zap Point found!");
-      CLog::Log(LOGDEBUG, __FUNCTION__" ---------------------------------------------------------");
+      CLog::Log(LOGDEBUG, "%s ---------------------------------------------------------", __FUNCTION__);
+      CLog::Log(LOGDEBUG, "%s - WARNING: Zaping Failed no Zap Point found!", __FUNCTION__);
+      CLog::Log(LOGDEBUG, "%s ---------------------------------------------------------", __FUNCTION__);
       CGUIDialogOK *dialog = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
       if (dialog)
       {
@@ -163,7 +162,7 @@ bool CTuxBoxUtil::ParseBouquets(TiXmlElement *root, CFileItemList &items, CURL &
 
   if (!pRootElement)
   {    
-    CLog::Log(LOGWARNING, __FUNCTION__" - No %s found",strChild.c_str());
+    CLog::Log(LOGWARNING, "%s - No %s found", __FUNCTION__, strChild.c_str());
     return false;
   }
   if (strFilter.IsEmpty())
@@ -171,7 +170,7 @@ bool CTuxBoxUtil::ParseBouquets(TiXmlElement *root, CFileItemList &items, CURL &
     pNode = pRootElement->FirstChild(strChild.c_str());
     if (!pNode)
     {
-      CLog::Log(LOGWARNING, __FUNCTION__" - No %s found",strChild.c_str());
+      CLog::Log(LOGWARNING, "%s - No %s found", __FUNCTION__,strChild.c_str());
       return false;
     }
     while(pNode)
@@ -193,8 +192,8 @@ bool CTuxBoxUtil::ParseBouquets(TiXmlElement *root, CFileItemList &items, CURL &
             pItem->m_strPath = "tuxbox://"+url.GetUserName()+":"+url.GetPassWord()+"@"+url.GetHostName()+strPort+url.GetOptions();  
             items.Add(pItem);
             //DEBUG Log
-            CLog::Log(LOGDEBUG, __FUNCTION__" - Name:    %s",strItemName.c_str());
-            CLog::Log(LOGDEBUG, __FUNCTION__" - Adress:  %s",pItem->m_strPath.c_str());
+            CLog::Log(LOGDEBUG, "%s - Name:    %s", __FUNCTION__,strItemName.c_str());
+            CLog::Log(LOGDEBUG, "%s - Adress:  %s", __FUNCTION__,pItem->m_strPath.c_str());
           }
         }
         pNode = pNode->NextSibling(strChild.c_str());
@@ -228,7 +227,7 @@ bool CTuxBoxUtil::ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &
 
   if (!pRootElement)
   {    
-    CLog::Log(LOGWARNING, __FUNCTION__" - No %ss found",strChild.c_str());
+    CLog::Log(LOGWARNING, "%s - No %ss found", __FUNCTION__,strChild.c_str());
     return false;
   }
   if(!strFilter.IsEmpty())
@@ -236,7 +235,7 @@ bool CTuxBoxUtil::ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &
     pNode = pRootElement->FirstChild(strChild.c_str());
     if (!pNode)
     {
-      CLog::Log(LOGWARNING, __FUNCTION__" - No %s found",strChild.c_str());
+      CLog::Log(LOGWARNING, "%s - No %s found", __FUNCTION__,strChild.c_str());
       return false;
     }
     while(pNode)
@@ -252,7 +251,7 @@ bool CTuxBoxUtil::ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &
             pIt = pNode->FirstChild("service");
             if (!pIt)
             {
-              CLog::Log(LOGWARNING, __FUNCTION__" - No service found");
+              CLog::Log(LOGWARNING, "%s - No service found", __FUNCTION__);
               return false;
             }
             while(pIt)
@@ -275,8 +274,8 @@ bool CTuxBoxUtil::ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &
                     //pbItem->SetThumbnailImage(GetPicon(strItemName)); //Set Picon Image
 
                     //DEBUG Log
-                    CLog::Log(LOGDEBUG, __FUNCTION__" - Name:    %s",strItemName.c_str());
-                    CLog::Log(LOGDEBUG, __FUNCTION__" - Adress:  %s",pbItem->m_strPath.c_str());
+                    CLog::Log(LOGDEBUG, "%s - Name:    %s", __FUNCTION__,strItemName.c_str());
+                    CLog::Log(LOGDEBUG, "%s - Adress:  %s", __FUNCTION__,pbItem->m_strPath.c_str());
                     
                     //add to the list
                     items.Add(pbItem);
@@ -318,9 +317,9 @@ bool CTuxBoxUtil::ZapToUrl(CURL url, CStdString strOptions, int ipoint)
   {
     if(sBoxStatus.recording.Equals("1"))
     {
-      CLog::Log(LOGDEBUG, __FUNCTION__" ---------------------------------------------------------");
-      CLog::Log(LOGDEBUG, __FUNCTION__" - WARNING: Device is Recording! Record Mode is: %s",sBoxStatus.recording.c_str());
-      CLog::Log(LOGDEBUG, __FUNCTION__" ---------------------------------------------------------");
+      CLog::Log(LOGDEBUG, "%s ---------------------------------------------------------", __FUNCTION__);
+      CLog::Log(LOGDEBUG, "%s - WARNING: Device is Recording! Record Mode is: %s", __FUNCTION__,sBoxStatus.recording.c_str());
+      CLog::Log(LOGDEBUG, "%s ---------------------------------------------------------", __FUNCTION__);
       CGUIDialogYesNo* dialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
       if (dialog)
       {
@@ -344,8 +343,8 @@ bool CTuxBoxUtil::ZapToUrl(CURL url, CStdString strOptions, int ipoint)
   if(http.Open(strZapUrl+strPostUrl, false))
   {
     //DEBUG LOG
-    CLog::Log(LOGDEBUG, __FUNCTION__" - Zapped to: %s (%s)",strZapName.c_str(),strZapUrl.c_str());
-    CLog::Log(LOGDEBUG, __FUNCTION__" - Zap String: %s",strPostUrl.c_str());
+    CLog::Log(LOGDEBUG, "%s - Zapped to: %s (%s)", __FUNCTION__,strZapName.c_str(),strZapUrl.c_str());
+    CLog::Log(LOGDEBUG, "%s - Zap String: %s", __FUNCTION__,strPostUrl.c_str());
 
     //Request StreamInfo
     GetHttpXML(urlx,"streaminfo");
@@ -355,7 +354,7 @@ bool CTuxBoxUtil::ZapToUrl(CURL url, CStdString strOptions, int ipoint)
     //PMT must be a valid value to be sure that the ZAP is OK and we can stream!
     while(sStrmInfo.pmt.Equals("ffffffffh") && iRetry!=10) //try 10 Times
     {
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Requesting STREAMINFO! TryCount: %i!",iRetry);
+      CLog::Log(LOGDEBUG, "%s - Requesting STREAMINFO! TryCount: %i!", __FUNCTION__,iRetry);
       GetHttpXML(urlx,"streaminfo");
       iRetry=iRetry+1;
     }
@@ -364,16 +363,16 @@ bool CTuxBoxUtil::ZapToUrl(CURL url, CStdString strOptions, int ipoint)
     if(sStrmInfo.pmt.Equals("ffffffffh") && g_advancedSettings.m_iTuxBoxZapWaitTime > 0 )
     {
       iRetry = 0;
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Starting TuxBox ZapWaitTimer!");
+      CLog::Log(LOGDEBUG, "%s - Starting TuxBox ZapWaitTimer!", __FUNCTION__);
       while(sStrmInfo.pmt.Equals("ffffffffh") && iRetry!=10) //try 10 Times
       {
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Requesting STREAMINFO! TryCount: %i!",iRetry);
+        CLog::Log(LOGDEBUG, "%s - Requesting STREAMINFO! TryCount: %i!", __FUNCTION__,iRetry);
         GetHttpXML(urlx,"streaminfo");
         iRetry=iRetry+1;
         if(sStrmInfo.pmt.Equals("ffffffffh"))
         {
-          CLog::Log(LOGERROR, __FUNCTION__" - STREAMINFO ERROR! Could not receive all data, TryCount: %i!",iRetry);
-          CLog::Log(LOGERROR, __FUNCTION__" - PMT is: %s (not a Valid Value)! Waiting %i sec.",sStrmInfo.pmt.c_str(), g_advancedSettings.m_iTuxBoxZapWaitTime);
+          CLog::Log(LOGERROR, "%s - STREAMINFO ERROR! Could not receive all data, TryCount: %i!", __FUNCTION__,iRetry);
+          CLog::Log(LOGERROR, "%s - PMT is: %s (not a Valid Value)! Waiting %i sec.", __FUNCTION__,sStrmInfo.pmt.c_str(), g_advancedSettings.m_iTuxBoxZapWaitTime);
           Sleep(g_advancedSettings.m_iTuxBoxZapWaitTime*1000);
         }
       }
@@ -382,11 +381,11 @@ bool CTuxBoxUtil::ZapToUrl(CURL url, CStdString strOptions, int ipoint)
     //PMT Failed! No StreamInformations availible.. closing stream 
     if (sStrmInfo.pmt.Equals("ffffffffh"))
     {
-      CLog::Log(LOGERROR, __FUNCTION__"-------------------------------------------------------------");
-      CLog::Log(LOGERROR, __FUNCTION__" - STREAMINFO ERROR! Could not receive all data, TryCount: %i!",iRetry);
-      CLog::Log(LOGERROR, __FUNCTION__" - PMT is: %s (not a Valid Value)! There is nothing to Stream!",sStrmInfo.pmt.c_str());
-      CLog::Log(LOGERROR, __FUNCTION__" - The Stream will stopped!");
-      CLog::Log(LOGERROR, __FUNCTION__"-------------------------------------------------------------");
+      CLog::Log(LOGERROR, "%s-------------------------------------------------------------", __FUNCTION__);
+      CLog::Log(LOGERROR, "%s - STREAMINFO ERROR! Could not receive all data, TryCount: %i!", __FUNCTION__,iRetry);
+      CLog::Log(LOGERROR, "%s - PMT is: %s (not a Valid Value)! There is nothing to Stream!", __FUNCTION__,sStrmInfo.pmt.c_str());
+      CLog::Log(LOGERROR, "%s - The Stream will stopped!", __FUNCTION__);
+      CLog::Log(LOGERROR, "%s-------------------------------------------------------------", __FUNCTION__);
       return false;
     }
     //Currentservicedata
@@ -515,13 +514,13 @@ bool CTuxBoxUtil::GetHttpXML(CURL url,CStdString strRequestType)
     }
     else 
     {
-      CLog::Log(LOGERROR, __FUNCTION__" - Request Type is not defined! You requested: %s",strRequestType.c_str());
+      CLog::Log(LOGERROR, "%s - Request Type is not defined! You requested: %s", __FUNCTION__,strRequestType.c_str());
       return false;
     }
   }
   else
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - strRequestType Request Type is Empty!");
+    CLog::Log(LOGERROR, "%s - strRequestType Request Type is Empty!", __FUNCTION__);
     return false;
   }
   
@@ -581,18 +580,18 @@ bool CTuxBoxUtil::GetHttpXML(CURL url,CStdString strRequestType)
       }
       else
       {
-        CLog::Log(LOGERROR, __FUNCTION__" - Unable to parse xml");
-        CLog::Log(LOGERROR, __FUNCTION__" - Request String: %s",strRoot.c_str());
+        CLog::Log(LOGERROR, "%s - Unable to parse xml", __FUNCTION__);
+        CLog::Log(LOGERROR, "%s - Request String: %s", __FUNCTION__,strRoot.c_str());
       }
       return false;
     }
     else
     {
-      CLog::Log(LOGERROR, __FUNCTION__" - http length is invalid!");
+      CLog::Log(LOGERROR, "%s - http length is invalid!", __FUNCTION__);
       return false;
     }
   }
-  CLog::Log(LOGERROR, __FUNCTION__" - Open URL Failed! Unable to get XML structure");
+  CLog::Log(LOGERROR, "%s - Open URL Failed! Unable to get XML structure", __FUNCTION__);
   return false;
 }
 bool CTuxBoxUtil::StreamInformations(TiXmlElement *pRootElement)
@@ -621,23 +620,23 @@ bool CTuxBoxUtil::StreamInformations(TiXmlElement *pRootElement)
     if (pNode)
     {
       sStrmInfo.frontend = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Frontend: %s", sStrmInfo.frontend.c_str());
+      CLog::Log(LOGDEBUG, "%s - Frontend: %s", __FUNCTION__, sStrmInfo.frontend.c_str());
     }
     pNode = pRootElement->FirstChild("service");
     if (pNode)
     {
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Service");
+      CLog::Log(LOGDEBUG, "%s - Service", __FUNCTION__);
       pIt = pNode->FirstChild("name");
       if (pIt)
       {
         sStrmInfo.service_name = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Name: %s", sStrmInfo.service_name.c_str());
+        CLog::Log(LOGDEBUG, "%s - Name: %s", __FUNCTION__, sStrmInfo.service_name.c_str());
       }
       pIt = pNode->FirstChild("reference");
       if (pIt)
       {
         sStrmInfo.service_reference = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Reference: %s", sStrmInfo.service_reference.c_str());
+        CLog::Log(LOGDEBUG, "%s - Reference: %s", __FUNCTION__, sStrmInfo.service_reference.c_str());
       }
     }
 
@@ -645,139 +644,139 @@ bool CTuxBoxUtil::StreamInformations(TiXmlElement *pRootElement)
     if(pNode && pNode->FirstChild())
     {
       sStrmInfo.provider= pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Provider: %s", sStrmInfo.provider.c_str());
+      CLog::Log(LOGDEBUG, "%s - Provider: %s", __FUNCTION__, sStrmInfo.provider.c_str());
     }
     pNode = pRootElement->FirstChild("vpid");
     if (pNode)
     {
       sStrmInfo.vpid = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Vpid: %s", sStrmInfo.vpid.c_str());
+      CLog::Log(LOGDEBUG, "%s - Vpid: %s", __FUNCTION__, sStrmInfo.vpid.c_str());
     }
     pNode = pRootElement->FirstChild("apid");
     if (pNode)
     {
       sStrmInfo.apid = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Apid: %s", sStrmInfo.apid.c_str());
+      CLog::Log(LOGDEBUG, "%s - Apid: %s", __FUNCTION__, sStrmInfo.apid.c_str());
     }
     pNode = pRootElement->FirstChild("pcrpid");
     if (pNode)
     {
       sStrmInfo.pcrpid = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - PcrPid: %s", sStrmInfo.pcrpid.c_str());
+      CLog::Log(LOGDEBUG, "%s - PcrPid: %s", __FUNCTION__, sStrmInfo.pcrpid.c_str());
     }
     pNode = pRootElement->FirstChild("tpid");
     if (pNode)
     {
       sStrmInfo.tpid = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Tpid: %s", sStrmInfo.tpid.c_str());
+      CLog::Log(LOGDEBUG, "%s - Tpid: %s", __FUNCTION__, sStrmInfo.tpid.c_str());
     }
     pNode = pRootElement->FirstChild("tsid");
     if (pNode)
     {
       sStrmInfo.tsid = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Tsid: %s", sStrmInfo.tsid.c_str());
+      CLog::Log(LOGDEBUG, "%s - Tsid: %s", __FUNCTION__, sStrmInfo.tsid.c_str());
     }
     pNode = pRootElement->FirstChild("onid");
     if (pNode)
     {
       sStrmInfo.onid = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Onid: %s", sStrmInfo.onid.c_str());
+      CLog::Log(LOGDEBUG, "%s - Onid: %s", __FUNCTION__, sStrmInfo.onid.c_str());
     }
     pNode = pRootElement->FirstChild("sid");
     if (pNode)
     {
       sStrmInfo.sid = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Sid: %s", sStrmInfo.sid.c_str());
+      CLog::Log(LOGDEBUG, "%s - Sid: %s", __FUNCTION__, sStrmInfo.sid.c_str());
     }
     pNode = pRootElement->FirstChild("pmt");
     if (pNode)
     {
       sStrmInfo.pmt = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Pmt: %s", sStrmInfo.pmt.c_str());
+      CLog::Log(LOGDEBUG, "%s - Pmt: %s", __FUNCTION__, sStrmInfo.pmt.c_str());
     }
     pNode = pRootElement->FirstChild("video_format");
     if (pNode)
     {
       sStrmInfo.video_format = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Video Format: %s", sStrmInfo.video_format.c_str());
+      CLog::Log(LOGDEBUG, "%s - Video Format: %s", __FUNCTION__, sStrmInfo.video_format.c_str());
     }
     pNode = pRootElement->FirstChild("supported_crypt_systems");
     if (pNode)
     {
       sStrmInfo.supported_crypt_systems = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Supported Crypt Systems: %s", sStrmInfo.supported_crypt_systems.c_str());
+      CLog::Log(LOGDEBUG, "%s - Supported Crypt Systems: %s", __FUNCTION__, sStrmInfo.supported_crypt_systems.c_str());
     }
     pNode = pRootElement->FirstChild("used_crypt_systems");
     if (pNode)
     {
       sStrmInfo.used_crypt_systems = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Used Crypt Systems: %s", sStrmInfo.used_crypt_systems.c_str());
+      CLog::Log(LOGDEBUG, "%s - Used Crypt Systems: %s", __FUNCTION__, sStrmInfo.used_crypt_systems.c_str());
     }
     pNode = pRootElement->FirstChild("satellite");
     if (pNode)
     {
       sStrmInfo.satellite = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Satellite: %s", sStrmInfo.satellite.c_str());
+      CLog::Log(LOGDEBUG, "%s - Satellite: %s", __FUNCTION__, sStrmInfo.satellite.c_str());
     }
     pNode = pRootElement->FirstChild("frequency");
     if (pNode)
     {
       sStrmInfo.frequency = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Frequency: %s", sStrmInfo.frequency.c_str());
+      CLog::Log(LOGDEBUG, "%s - Frequency: %s", __FUNCTION__, sStrmInfo.frequency.c_str());
     }
     pNode = pRootElement->FirstChild("symbol_rate");
     if (pNode)
     {
       sStrmInfo.symbol_rate = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Symbol Rate: %s", sStrmInfo.symbol_rate.c_str());
+      CLog::Log(LOGDEBUG, "%s - Symbol Rate: %s", __FUNCTION__, sStrmInfo.symbol_rate.c_str());
     }
     pNode = pRootElement->FirstChild("polarisation");
     if (pNode)
     {
       sStrmInfo.polarisation = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Polarisation: %s", sStrmInfo.polarisation.c_str());
+      CLog::Log(LOGDEBUG, "%s - Polarisation: %s", __FUNCTION__, sStrmInfo.polarisation.c_str());
     }
     pNode = pRootElement->FirstChild("inversion");
     if (pNode)
     {
       sStrmInfo.inversion = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Inversion: %s", sStrmInfo.inversion.c_str());
+      CLog::Log(LOGDEBUG, "%s - Inversion: %s", __FUNCTION__, sStrmInfo.inversion.c_str());
     }
     pNode = pRootElement->FirstChild("fec");
     if (pNode)
     {
       sStrmInfo.fec = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Fec: %s", sStrmInfo.fec.c_str());
+      CLog::Log(LOGDEBUG, "%s - Fec: %s", __FUNCTION__, sStrmInfo.fec.c_str());
     }
     pNode = pRootElement->FirstChild("snr");
     if (pNode)
     {
       sStrmInfo.snr = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Snr: %s", sStrmInfo.snr.c_str());
+      CLog::Log(LOGDEBUG, "%s - Snr: %s", __FUNCTION__, sStrmInfo.snr.c_str());
     }
     pNode = pRootElement->FirstChild("agc");
     if (pNode)
     {
       sStrmInfo.agc = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Agc: %s",  sStrmInfo.agc.c_str());
+      CLog::Log(LOGDEBUG, "%s - Agc: %s", __FUNCTION__,  sStrmInfo.agc.c_str());
     }
     pNode = pRootElement->FirstChild("ber");
     if (pNode)
     {
       sStrmInfo.ber = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - ber: %s", sStrmInfo.ber.c_str());
+      CLog::Log(LOGDEBUG, "%s - ber: %s", __FUNCTION__, sStrmInfo.ber.c_str());
     }
     pNode = pRootElement->FirstChild("lock");
     if (pNode)
     {
       sStrmInfo.lock = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Lock: %s", sStrmInfo.lock.c_str());
+      CLog::Log(LOGDEBUG, "%s - Lock: %s", __FUNCTION__, sStrmInfo.lock.c_str());
     }
     pNode = pRootElement->FirstChild("sync");
     if (pNode)
     {
       sStrmInfo.sync = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Sync: %s", sStrmInfo.sync.c_str());
+      CLog::Log(LOGDEBUG, "%s - Sync: %s", __FUNCTION__, sStrmInfo.sync.c_str());
     }
     return true;
   }
@@ -790,29 +789,29 @@ bool CTuxBoxUtil::CurrentServiceData(TiXmlElement *pRootElement)
   TiXmlNode *pVal = NULL;
   if(pRootElement)
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__" - Current Service Data");
+    CLog::Log(LOGDEBUG, "%s - Current Service Data", __FUNCTION__);
     pNode = pRootElement->FirstChild("service");
     if (pNode)
     {
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Service");
+      CLog::Log(LOGDEBUG, "%s - Service", __FUNCTION__);
       pIt = pNode->FirstChild("name");
       if (pIt)
       {
         sCurSrvData.service_name = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, __FUNCTION__" Service Name: %s", pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s Service Name: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
       pIt = pNode->FirstChild("reference");
       if (pIt)
       {
         sCurSrvData.service_reference = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, __FUNCTION__" Service Reference: %s", pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s Service Reference: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
     }
 
     pNode = pRootElement->FirstChild("audio_channels");
     if (pNode)
     {
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Audio Channels");
+      CLog::Log(LOGDEBUG, "%s - Audio Channels", __FUNCTION__);
       int i = 0;
       pIt = pNode->FirstChild("channel");
       while(pIt)
@@ -841,9 +840,9 @@ bool CTuxBoxUtil::CurrentServiceData(TiXmlElement *pRootElement)
           if(i==2) sCurSrvData.audio_channel_2_name = pVal->FirstChild()->Value();
         }
 
-        if(i==0) CLog::Log(LOGDEBUG, __FUNCTION__" - Audio Channels: Channel %i -> PID: %s Selected: %s Name: %s", i, sCurSrvData.audio_channel_0_pid.c_str(), sCurSrvData.audio_channel_0_selected.c_str(), sCurSrvData.audio_channel_0_name.c_str() );
-        if(i==1) CLog::Log(LOGDEBUG, __FUNCTION__" - Audio Channels: Channel %i -> PID: %s Selected: %s Name: %s", i, sCurSrvData.audio_channel_1_pid.c_str(), sCurSrvData.audio_channel_1_selected.c_str(), sCurSrvData.audio_channel_1_name.c_str() );
-        if(i==2) CLog::Log(LOGDEBUG, __FUNCTION__" - Audio Channels: Channel %i -> PID: %s Selected: %s Name: %s", i, sCurSrvData.audio_channel_2_pid.c_str(), sCurSrvData.audio_channel_2_selected.c_str(), sCurSrvData.audio_channel_2_name.c_str() );
+        if(i==0) CLog::Log(LOGDEBUG, "%s - Audio Channels: Channel %i -> PID: %s Selected: %s Name: %s", __FUNCTION__, i, sCurSrvData.audio_channel_0_pid.c_str(), sCurSrvData.audio_channel_0_selected.c_str(), sCurSrvData.audio_channel_0_name.c_str() );
+        if(i==1) CLog::Log(LOGDEBUG, "%s - Audio Channels: Channel %i -> PID: %s Selected: %s Name: %s", __FUNCTION__, i, sCurSrvData.audio_channel_1_pid.c_str(), sCurSrvData.audio_channel_1_selected.c_str(), sCurSrvData.audio_channel_1_name.c_str() );
+        if(i==2) CLog::Log(LOGDEBUG, "%s - Audio Channels: Channel %i -> PID: %s Selected: %s Name: %s", __FUNCTION__, i, sCurSrvData.audio_channel_2_pid.c_str(), sCurSrvData.audio_channel_2_selected.c_str(), sCurSrvData.audio_channel_2_name.c_str() );
 
         i=i+1;
         pIt = pIt->NextSibling("channel");
@@ -853,12 +852,12 @@ bool CTuxBoxUtil::CurrentServiceData(TiXmlElement *pRootElement)
     if (pNode)
     {
       sCurSrvData.audio_track = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Audio Track: %s", pNode->FirstChild()->Value() );
+      CLog::Log(LOGDEBUG, "%s - Audio Track: %s", __FUNCTION__, pNode->FirstChild()->Value() );
     }
     pNode = pRootElement->FirstChild("video_channels");
     if (pNode)
     {
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Video Channels");
+      CLog::Log(LOGDEBUG, "%s - Video Channels", __FUNCTION__);
       pIt = pNode->FirstChild("service");
       if (pIt)
       {
@@ -872,19 +871,19 @@ bool CTuxBoxUtil::CurrentServiceData(TiXmlElement *pRootElement)
           if(pVal)
           {
             vVideoSubChannel.name.push_back(pVal->FirstChild()->Value());
-            CLog::Log(LOGDEBUG, __FUNCTION__" - Video Sub Channel %i:      Name: %s", i,pVal->FirstChild()->Value());
+            CLog::Log(LOGDEBUG, "%s - Video Sub Channel %i:      Name: %s", __FUNCTION__, i,pVal->FirstChild()->Value());
           }
           pVal = pIt->FirstChild("reference");
           if(pVal)
           {
             vVideoSubChannel.reference.push_back(pVal->FirstChild()->Value());
-            CLog::Log(LOGDEBUG, __FUNCTION__" - Video Sub Channel %i: Reference: %s", i,pVal->FirstChild()->Value());
+            CLog::Log(LOGDEBUG, "%s - Video Sub Channel %i: Reference: %s", __FUNCTION__, i,pVal->FirstChild()->Value());
           }
           pVal = pIt->FirstChild("selected");
           if(pVal)
           {
             vVideoSubChannel.selected.push_back(pVal->FirstChild()->Value());
-            CLog::Log(LOGDEBUG, __FUNCTION__" - Video Sub Channel %i: Selected: %s", i,pVal->FirstChild()->Value());
+            CLog::Log(LOGDEBUG, "%s - Video Sub Channel %i: Selected: %s", __FUNCTION__, i,pVal->FirstChild()->Value());
           }
           pIt = pIt->NextSibling("service");
           i++;
@@ -900,89 +899,89 @@ bool CTuxBoxUtil::CurrentServiceData(TiXmlElement *pRootElement)
     pNode = pRootElement->FirstChild("current_event");
     if (pNode)
     {
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Current Event");
+      CLog::Log(LOGDEBUG, "%s - Current Event", __FUNCTION__);
       pIt = pNode->FirstChild("date");
       if (pIt)
       {
         sCurSrvData.current_event_date = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Date: %s", pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s - Date: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
       pIt = pNode->FirstChild("time");
       if (pIt)
       {
         sCurSrvData.current_event_time = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Time: %s", pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s - Time: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
 
       pIt = pNode->FirstChild("start");
       if (pIt)
       {
         sCurSrvData.current_event_start = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Start: %s", pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s - Start: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
 
       pIt = pNode->FirstChild("duration");
       if (pIt)
       {
         sCurSrvData.current_event_duration = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Duration: %s", pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s - Duration: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
 
       pIt = pNode->FirstChild("description");
       if (pIt)
       {
         sCurSrvData.current_event_description = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Description: %s", pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s - Description: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
       pIt = pNode->FirstChild("details");
       if (pIt)
       {
         sCurSrvData.current_event_details = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Details: %s", pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s - Details: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
     }
     pNode = pRootElement->FirstChild("next_event");
     if (pNode)
     {
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Next Event");
+      CLog::Log(LOGDEBUG, "%s - Next Event", __FUNCTION__);
       pIt = pNode->FirstChild("date");
       if (pIt)
       {
         sCurSrvData.next_event_date = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Date: %s", pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s - Date: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
       pIt = pNode->FirstChild("time");
       if (pIt)
       {
         sCurSrvData.next_event_time = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Time: %s", pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s - Time: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
 
       pIt = pNode->FirstChild("start");
       if (pIt)
       {
         sCurSrvData.next_event_start = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Start: %s", pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s - Start: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
 
       pIt = pNode->FirstChild("duration");
       if (pIt)
       {
         sCurSrvData.next_event_duration = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Duration: %s", pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s - Duration: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
 
       pIt = pNode->FirstChild("description");
       if (pIt)
       {
         sCurSrvData.next_event_description = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Description: %s", pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s - Description: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
       pIt = pNode->FirstChild("details");
       if (pIt)
       {
         sCurSrvData.next_event_details = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Details: %s", pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s - Details: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
     }
     return true;
@@ -1002,39 +1001,39 @@ bool CTuxBoxUtil::BoxStatus(TiXmlElement *pRootElement)
   */
 
   TiXmlNode *pNode = NULL;
-  TiXmlNode *pIt = NULL;
+
   if(pRootElement)
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__" - BoxStatus");
+    CLog::Log(LOGDEBUG, "%s - BoxStatus", __FUNCTION__);
     pNode = pRootElement->FirstChild("current_time");
     if (pNode)
     {
       sBoxStatus.current_time = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Current Time: %s", pNode->FirstChild()->Value());
+      CLog::Log(LOGDEBUG, "%s - Current Time: %s", __FUNCTION__, pNode->FirstChild()->Value());
     }
     pNode = pRootElement->FirstChild("standby");
     if (pNode)
     {
       sBoxStatus.standby = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Standby: %s", pNode->FirstChild()->Value());
+      CLog::Log(LOGDEBUG, "%s - Standby: %s", __FUNCTION__, pNode->FirstChild()->Value());
     }
     pNode = pRootElement->FirstChild("recording");
     if (pNode)
     {
       sBoxStatus.recording = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Recording: %s", pNode->FirstChild()->Value());
+      CLog::Log(LOGDEBUG, "%s - Recording: %s", __FUNCTION__, pNode->FirstChild()->Value());
     }
     pNode = pRootElement->FirstChild("mode");
     if (pNode)
     {
       sBoxStatus.mode = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Mode: %s", pNode->FirstChild()->Value());
+      CLog::Log(LOGDEBUG, "%s - Mode: %s", __FUNCTION__, pNode->FirstChild()->Value());
     }
     pNode = pRootElement->FirstChild("ip");
     if (pNode)
     {
       sBoxStatus.ip = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Ip: %s", pNode->FirstChild()->Value());
+      CLog::Log(LOGDEBUG, "%s - Ip: %s", __FUNCTION__, pNode->FirstChild()->Value());
     }
     return true;
   }
@@ -1044,86 +1043,86 @@ bool CTuxBoxUtil::BoxInfo(TiXmlElement *pRootElement)
 {
   TiXmlNode *pNode = NULL;
   TiXmlNode *pIt = NULL;
-  TiXmlNode *pVal = NULL;
+  
   if(pRootElement)
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__" - BoxInfo");
+    CLog::Log(LOGDEBUG, "%s - BoxInfo", __FUNCTION__);
     pNode = pRootElement->FirstChild("image");
     if (pNode)
     {
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Image");
+      CLog::Log(LOGDEBUG, "%s - Image", __FUNCTION__);
       pIt = pNode->FirstChild("version");
       if (pIt)
       {
         sBoxInfo.image_version = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, __FUNCTION__" Image Version: %s", pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s Image Version: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
       pIt = pNode->FirstChild("url");
       if (pIt)
       {
         sBoxInfo.image_url = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, __FUNCTION__" Image Url: %s", pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s Image Url: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
       pIt = pNode->FirstChild("comment");
       if (pIt)
       {
         sBoxInfo.image_comment = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, __FUNCTION__" Image Comment: %s", pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s Image Comment: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
       pIt = pNode->FirstChild("catalog");
       if (pIt)
       {
         sBoxInfo.image_catalog = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, __FUNCTION__" Image Catalog: %s", pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s Image Catalog: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
     }
     pNode = pRootElement->FirstChild("firmware");
     if (pNode)
     {
       sBoxInfo.firmware = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Firmware: %s", pNode->FirstChild()->Value());
+      CLog::Log(LOGDEBUG, "%s - Firmware: %s", __FUNCTION__, pNode->FirstChild()->Value());
     }
     pNode = pRootElement->FirstChild("fpfirmware");
     if (pNode)
     {
       sBoxInfo.fpfirmware = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - FP Firmware: %s", pNode->FirstChild()->Value());
+      CLog::Log(LOGDEBUG, "%s - FP Firmware: %s", __FUNCTION__, pNode->FirstChild()->Value());
     }
     pNode = pRootElement->FirstChild("webinterface");
     if (pNode)
     {
       sBoxInfo.webinterface = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Web Interface: %s", pNode->FirstChild()->Value());
+      CLog::Log(LOGDEBUG, "%s - Web Interface: %s", __FUNCTION__, pNode->FirstChild()->Value());
     }
     pNode = pRootElement->FirstChild("model");
     if (pNode)
     {
       sBoxInfo.model = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Model: %s", pNode->FirstChild()->Value());
+      CLog::Log(LOGDEBUG, "%s - Model: %s", __FUNCTION__, pNode->FirstChild()->Value());
     }
     pNode = pRootElement->FirstChild("manufacturer");
     if (pNode)
     {
       sBoxInfo.manufacturer = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Manufacturer: %s", pNode->FirstChild()->Value());
+      CLog::Log(LOGDEBUG, "%s - Manufacturer: %s", __FUNCTION__, pNode->FirstChild()->Value());
     }
     pNode = pRootElement->FirstChild("processor");
     if (pNode)
     {
       sBoxInfo.processor = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Processor: %s", pNode->FirstChild()->Value());
+      CLog::Log(LOGDEBUG, "%s - Processor: %s", __FUNCTION__, pNode->FirstChild()->Value());
     }
     pNode = pRootElement->FirstChild("usbstick");
     if (pNode)
     {
       sBoxInfo.usbstick = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - USB Stick: %s", pNode->FirstChild()->Value());
+      CLog::Log(LOGDEBUG, "%s - USB Stick: %s", __FUNCTION__, pNode->FirstChild()->Value());
     }
     pNode = pRootElement->FirstChild("disk");
     if (pNode)
     {
       sBoxInfo.disk = pNode->FirstChild()->Value();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Disk: %s", pNode->FirstChild()->Value());
+      CLog::Log(LOGDEBUG, "%s - Disk: %s", __FUNCTION__, pNode->FirstChild()->Value());
     }
     return true;
   }
@@ -1133,79 +1132,79 @@ bool CTuxBoxUtil::ServiceEPG(TiXmlElement *pRootElement)
 {
   TiXmlNode *pNode = NULL;
   TiXmlNode *pIt = NULL;
-  TiXmlNode *pVal = NULL;
+  
   if(pRootElement)
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__" - Service EPG");
+    CLog::Log(LOGDEBUG, "%s - Service EPG", __FUNCTION__);
     pNode = pRootElement->FirstChild("service");
     if (pNode)
     {
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Service");
+      CLog::Log(LOGDEBUG, "%s - Service", __FUNCTION__);
       pIt = pNode->FirstChild("reference");
       if (pIt)
       {
         sServiceEPG.service_reference = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Service Reference: %s", pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s - Service Reference: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
       pIt = pNode->FirstChild("name");
       if (pIt)
       {
         sServiceEPG.service_name = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Service Name: %s", pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s - Service Name: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
     }
     //Todo there is more then 1 event! Create a Event List!
     pNode = pRootElement->FirstChild("event");
     if (pNode)
     {
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Event");
+      CLog::Log(LOGDEBUG, "%s - Event", __FUNCTION__);
       pIt = pNode->FirstChild("date");
       if (pIt)
       {
         sServiceEPG.date = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Date: %s", pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s - Date: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
       pIt = pNode->FirstChild("time");
       if (pIt)
       {
         sServiceEPG.time = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Time: %s", pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s - Time: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
       pIt = pNode->FirstChild("duration");
       if (pIt)
       {
         sServiceEPG.duration = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Duration: %s", pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s - Duration: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
       pIt = pNode->FirstChild("descritption");
       if (pIt)
       {
         sServiceEPG.descritption = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Descritption: %s", pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s - Descritption: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
       pIt = pNode->FirstChild("genre");
       if (pIt)
       {
         sServiceEPG.genre = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Genre: %s", pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s - Genre: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
       pIt = pNode->FirstChild("genrecategory");
       if (pIt)
       {
         sServiceEPG.genrecategory = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Genrecategory: %s", pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s - Genrecategory: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
       pIt = pNode->FirstChild("start");
       if (pIt)
       {
         sServiceEPG.start = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Start: %s", pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s - Start: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
       pIt = pNode->FirstChild("details");
       if (pIt)
       {
         sServiceEPG.details = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Details: %s", pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s - Details: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
     }
     return true;
@@ -1219,13 +1218,13 @@ bool CTuxBoxUtil::GetAudioChannels(CStdString& strAudioChannelName, CStdString& 
   //DVDPlayer Can play all AudioStreams! No need to popup the AudioChannel selector!
   if(g_application.m_eForcedNextPlayer == EPC_DVDPLAYER)
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__" - DVDPlayer is used to play the Stream! Disabling Audio Channel Selection! Returning False to use All Possible Audio channels!");
+    CLog::Log(LOGDEBUG, "%s - DVDPlayer is used to play the Stream! Disabling Audio Channel Selection! Returning False to use All Possible Audio channels!", __FUNCTION__);
     return false;
   }
   // Audio Selection is Disabled! Return false to use default values!
   if(!g_advancedSettings.m_bTuxBoxAudioChannelSelection)
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__" - Audio Channel Selection is Disabled! Returning False to use the default values!");
+    CLog::Log(LOGDEBUG, "%s - Audio Channel Selection is Disabled! Returning False to use the default values!", __FUNCTION__);
     return false;
   }
   // We have only one Audio Channel return false to use default values!
@@ -1323,12 +1322,12 @@ CStdString CTuxBoxUtil::GetPicon(CStdString strServiceName)
 {
   if(!g_advancedSettings.m_bTuxBoxPictureIcon)
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__" PictureIcon Detection is Disabled! Using default icon");
+    CLog::Log(LOGDEBUG, "%s PictureIcon Detection is Disabled! Using default icon", __FUNCTION__);
     return "";
   }
   if (strServiceName.IsEmpty())
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__" Service Name is Empty! Can not detect a PictureIcon. Using default icon!");
+    CLog::Log(LOGDEBUG, "%s Service Name is Empty! Can not detect a PictureIcon. Using default icon!", __FUNCTION__);
     return "";
   }
   else
@@ -1339,7 +1338,7 @@ CStdString CTuxBoxUtil::GetPicon(CStdString strServiceName)
     defaultPng = piconPath+"default.png";
     piconXML = "Q:\\userdata\\pictureicon\\picon.xml";
     TiXmlDocument piconDoc;
-    bool bPngError = false;
+    
     if (!CFile::Exists(piconXML))
     { 
       return defaultPng;
@@ -1375,7 +1374,7 @@ CStdString CTuxBoxUtil::GetPicon(CStdString strServiceName)
       {
         strPng.Format("%s%s",piconPath.c_str(), strPng.c_str());
         strPng.ToLower();
-        CLog::Log(LOGDEBUG, __FUNCTION__" %s: Path is: %s",strServiceName.c_str(), strPng.c_str());
+        CLog::Log(LOGDEBUG, "%s %s: Path is: %s", __FUNCTION__,strServiceName.c_str(), strPng.c_str());
         return strPng;
       }
       pService = pService->NextSiblingElement("service");

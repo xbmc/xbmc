@@ -1,6 +1,7 @@
+#pragma once
+
 #include "BackgroundInfoLoader.h"
 
-#pragma once
 
 class CVideoThumbLoader : public CBackgroundInfoLoader
 {

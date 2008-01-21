@@ -20,8 +20,8 @@
  */
 
 #include "stdafx.h"
-#include "musicinfotagloaderwavpack.h"
-#include "cores/paplayer/WavPackCodec.h"
+#include "MusicInfoTagLoaderWavPack.h"
+#include "cores/paplayer/WAVPackcodec.h"
 
 
 using namespace MUSIC_INFO;

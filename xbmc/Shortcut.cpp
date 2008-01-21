@@ -4,7 +4,7 @@
 
 #include "stdafx.h"
 #include "Shortcut.h"
-#include "util.h"
+#include "Util.h"
 
 
 //////////////////////////////////////////////////////////////////////

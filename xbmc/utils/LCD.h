@@ -1,5 +1,5 @@
 #pragma once
-#include "thread.h"
+#include "Thread.h"
 
 #include "GUILabelControl.h"  // for CInfoPortion
 #define MAX_ROWS 20

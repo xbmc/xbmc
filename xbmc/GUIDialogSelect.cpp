@@ -188,3 +188,4 @@ void CGUIDialogSelect::SetSelected(int iSelected)
   if (iSelected < 0 || iSelected >= (int)m_vecList->Size()) return;
   m_iSelected = iSelected;
 }
+

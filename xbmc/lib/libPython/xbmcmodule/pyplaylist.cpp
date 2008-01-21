@@ -1,18 +1,20 @@
 #include "stdafx.h"
-#include "..\..\..\playlistplayer.h"
-#include "..\..\..\util.h"
+#include "../../../PlayListPlayer.h"
+#include "../../../Util.h"
 #include "pyplaylist.h"
-#include "..\python\structmember.h"
-#include "..\..\..\playlistfactory.h"
+#include "../python/structmember.h"
+#include "../../../PlayListFactory.h"
 #include "pyutil.h"
 #include "listitem.h"
 
 using namespace PLAYLIST;
 
+#ifndef __GNUC__
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
 #pragma bss_seg("PY_BSS")
 #pragma const_seg("PY_RDATA")
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -334,9 +336,9 @@ namespace PYXBMC
   */
 
   PyMappingMethods Playlist_as_mapping = {
-    PlayList_Length,    /* inquiry mp_length;                 /* __len__ */
-    PlayList_GetItem,   /* binaryfunc mp_subscript            /* __getitem__ */
-    0,                  /* objargproc mp_ass_subscript;    /* __setitem__ */
+    PlayList_Length,    /* inquiry mp_length;                  __len__ */
+    PlayList_GetItem,   /* binaryfunc mp_subscript             __getitem__ */ 
+    0,                  /* objargproc mp_ass_subscript;     __setitem__ */
   };
 
   PyMethodDef PlayList_methods[] = {
@@ -369,10 +371,12 @@ namespace PYXBMC
     "Use PlayList[int position] or __getitem__(int position) to get a PlayListItem.");
 
 // Restore code and data sections to normal.
+#ifndef __GNUC__
 #pragma code_seg()
 #pragma data_seg()
 #pragma bss_seg()
 #pragma const_seg()
+#endif
 
   PyTypeObject PlayListItem_Type;
 

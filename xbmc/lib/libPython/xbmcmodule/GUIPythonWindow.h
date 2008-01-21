@@ -1,6 +1,6 @@
 #pragma once
-#include "guiwindow.h"
-#include "..\python\python.h"
+#include "GUIWindow.h"
+#include "../python/Python.h"
 
 class PyXBMCAction
 {
@@ -9,6 +9,8 @@ public:
   PyObject* pCallbackWindow;
   PyObject* pObject;
   int controlId; // for XML window
+  PyXBMCAction() { }
+  //virtual ~PyXBMCAction();
 };
 
 int Py_XBMC_Event_OnAction(void* arg);

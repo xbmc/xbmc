@@ -54,7 +54,7 @@ Reason: Prepared for Public Release
 */
 
 
-#include "xkgeneral.h"
+#include "XKGeneral.h"
 
 
 XKGeneral::XKGeneral(void)
@@ -128,7 +128,7 @@ void XKGeneral::MixedStrToDecStr(LPSTR StringData, LPDWORD StrLen, CHAR Base, BO
 
   for (DWORD i = 0; i < dwSize; i++)
   {
-    LPSTR ChrOffset = (char *)strchr((LPCSTR) & DecChars, *(sData + i));
+    LPCSTR ChrOffset = strchr((LPCSTR) & DecChars, *(sData + i));
     if ((ChrOffset != NULL) && ((ChrOffset - (LPSTR)&DecChars) <= Base - 1))
     {
       memcpy(StringData + currentOffset, ChrOffset, 1);
@@ -170,8 +170,6 @@ DWORD XKGeneral::HexStrToDWORD(LPBYTE StringData, LPDWORD pBufferLen, BOOL Remov
 //RemoveInvalid indacates if invalid values should be Zero or removed..
 void XKGeneral::HexStrToBytes(LPBYTE StringData, LPDWORD pBufferLen, BOOL RemoveInvalid)
 {
-  UCHAR retVal = 0x00;
-
   DWORD dwSize = *pBufferLen;
   LPSTR sData = new CHAR[dwSize + 1];
 
@@ -209,9 +207,9 @@ BOOL XKGeneral::ReadINIFileItem(LPCSTR INIFileName, LPCSTR INISection, LPCSTR IN
 
   if (iniFile != INVALID_HANDLE_VALUE)
   {
-    LPSTR sTempSection = NULL;
-    LPSTR sNextSection = NULL ;
-    LPSTR sTempItem = NULL;
+    LPCSTR sTempSection = NULL;
+    LPCSTR sNextSection = NULL;
+    LPCSTR sTempItem = NULL;
     ULONG sectionOffset = 0;
     DWORD filesize = GetFileSize(iniFile, NULL);
     BOOL foundSection = FALSE, foundItem = FALSE;
@@ -238,11 +236,11 @@ BOOL XKGeneral::ReadINIFileItem(LPCSTR INIFileName, LPCSTR INISection, LPCSTR IN
     while (sTempSection != NULL);
 
     if (foundSection)
-      for (LPSTR finditem = sTempSection + strlen(INISection) + 2; finditem < sNextSection - 1; finditem = min(strchr(finditem, '\n') + 1, sNextSection))
+      for (LPCSTR finditem = sTempSection + strlen(INISection) + 2; finditem < sNextSection - 1; finditem = min((LPCSTR)strchr(finditem, '\n') + 1, sNextSection))
       {
-        LPSTR snextitem = min(strchr(finditem, '\n') + 1, sNextSection);
-        LPSTR spossible = strchr(finditem, *INIItem);
-        LPSTR scomment = strchr(finditem, '#');
+        LPCSTR snextitem = min((LPCSTR)strchr(finditem, '\n') + 1, sNextSection);
+        LPCSTR spossible = strchr(finditem, *INIItem);
+        LPCSTR scomment = strchr(finditem, '#');
 
         if ((spossible != NULL) && (scomment != NULL) && (scomment < spossible))
           continue; //found a Commented Line..
@@ -256,7 +254,7 @@ BOOL XKGeneral::ReadINIFileItem(LPCSTR INIFileName, LPCSTR INISection, LPCSTR IN
           foundItem = TRUE;
 
           sTempItem = strchr(finditem + strlen(INIItem), '=') + 1;
-          LPSTR sEnd = min(strchr(sTempItem, '\n') - 1, sNextSection);
+          LPCSTR sEnd = min((LPCSTR)strchr(sTempItem, '\n') - 1, sNextSection);
           LONG sLen = (LONG)(sEnd - sTempItem);
           LONG sLen2 = (LONG)min((LONG)strlen(sTempItem), sLen);
 
@@ -314,8 +312,8 @@ void XKGeneral::StripEnclosedChars(LPSTR sString, LPDWORD strLen, CHAR EncloseCh
   strcpy((LPSTR)tmpString, sString);
   ZeroMemory(sString, *strLen);
 
-  LPSTR tmpFirst = (char *)strchr((LPCSTR)tmpString, EncloseChar);
-  LPSTR tmpLast = (char *)strrchr((LPCSTR)tmpString, EncloseChar);
+  LPCSTR tmpFirst = strchr((LPCSTR)tmpString, EncloseChar);
+  LPCSTR tmpLast = strrchr((LPCSTR)tmpString, EncloseChar);
 
   //check if Null, if null then just beginning of string..
   tmpFirst = (tmpFirst != NULL) ? tmpFirst + 1 : (LPSTR)tmpString;

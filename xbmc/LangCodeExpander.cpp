@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "langcodeexpander.h"
+#include "LangCodeExpander.h"
 
 #define MAKECODE(a, b, c, d) ((((long)(a))<<24) | (((long)(b))<<16) | (((long)(c))<<8) | (long)(d))
 typedef struct LCENTRY
@@ -131,7 +131,7 @@ bool CLangCodeExpander::LookupInDb(CStdString& desc, const CStdString& code)
   {
     CSectionLoader::Load("LCODE");
     longcode = MAKECODE('\0', '\0', sCode[0], sCode[1]);
-    for(int i = 0; i < sizeof(g_iso639_1) / sizeof(LCENTRY); i++)
+    for(unsigned int i = 0; i < sizeof(g_iso639_1) / sizeof(LCENTRY); i++)
     {
       if(g_iso639_1[i].code == longcode)
       {
@@ -146,7 +146,7 @@ bool CLangCodeExpander::LookupInDb(CStdString& desc, const CStdString& code)
   {
     CSectionLoader::Load("LCODE");
     longcode = MAKECODE('\0', sCode[0], sCode[1], sCode[2]);
-    for(int i = 0; i < sizeof(g_iso639_2) / sizeof(LCENTRY); i++)
+    for(unsigned int i = 0; i < sizeof(g_iso639_2) / sizeof(LCENTRY); i++)
     {
       if(g_iso639_2[i].code == longcode)
       {
@@ -160,10 +160,12 @@ bool CLangCodeExpander::LookupInDb(CStdString& desc, const CStdString& code)
   return false;
 }
 
+#ifndef __GNUC__
 #pragma const_seg("LC_RDATA")
 #pragma comment(linker, "/merge:LC_RDATA=LCODE")
+#endif
 
-static const LCENTRY g_iso639_1[143] =
+extern const LCENTRY g_iso639_1[143] =
 {
   { MAKECODE('\0','\0','c','c'), "Closed Caption" },
   { MAKECODE('\0','\0','a','a'), "Afar" },
@@ -310,7 +312,7 @@ static const LCENTRY g_iso639_1[143] =
   { MAKECODE('\0','\0','z','u'), "Zulu" },
 };
 
-static const LCENTRY g_iso639_2[536] =
+extern const LCENTRY g_iso639_2[536] =
 {
     { MAKECODE('\0','a','b','k'), "Abkhazian" },
   { MAKECODE('\0','a','c','e'), "Achinese" },

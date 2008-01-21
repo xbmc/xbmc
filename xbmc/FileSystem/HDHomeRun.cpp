@@ -17,7 +17,7 @@ public:
     for(std::vector<CStdString>::iterator it = options.begin();it != options.end(); it++)
     {
       CStdString name, value;
-      int pos = it->find_first_of('=');
+      unsigned int pos = it->find_first_of('=');
       if(pos != CStdString::npos)
       {
         name = it->substr(0, pos);

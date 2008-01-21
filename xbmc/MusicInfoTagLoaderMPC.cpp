@@ -20,8 +20,8 @@
  */
 
 #include "stdafx.h"
-#include "musicinfotagloadermpc.h"
-#include "cores/paplayer/MPCCodec.h"
+#include "MusicInfoTagLoaderMPC.h"
+#include "cores/paplayer/MPCcodec.h"
 
 
 using namespace MUSIC_INFO;
@@ -41,3 +41,4 @@ int CMusicInfoTagLoaderMPC::ReadDuration(const CStdString &strFileName)
   }
   return 0;
 }
+

@@ -29,8 +29,6 @@ void CGUILargeTextureManager::Process()
     // it may be no longer required by the time the load is complete
     CLargeTexture *image = m_queued[0];
     CStdString path = image->GetPath();
-    unsigned int width = image->GetWidth();
-    unsigned int height = image->GetHeight();
     lock.Leave();
     // load the image using our image lib
     LPDIRECT3DTEXTURE8 texture = NULL;

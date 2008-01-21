@@ -20,9 +20,9 @@
  */
 
 #include "stdafx.h"
-#include "musicinfotagloadermp4.h"
+#include "MusicInfoTagLoaderMP4.h"
 #include "Util.h"
-#include "picture.h"
+#include "Picture.h"
 #include "id3v1genre.h"
 
 using namespace XFILE;
@@ -281,7 +281,7 @@ int CMusicInfoTagLoaderMP4::ParseAtom( __int64 startOffset, __int64 stopOffset, 
     atomName = ReadUnsignedInt( &atomHeader[ 4 ] );
 
     // See if it's a container atom.. if it is, then recursively call ParseAtom on it...
-    for ( int containerAtom = 0; containerAtom < ( sizeof( g_ContainerAtoms ) / sizeof( unsigned int ) ); containerAtom++ )
+    for ( unsigned int containerAtom = 0; containerAtom < ( sizeof( g_ContainerAtoms ) / sizeof( unsigned int ) ); containerAtom++ )
     {
       if ( atomName == g_ContainerAtoms[ containerAtom ] )
       {
@@ -389,7 +389,7 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
         }
         else
         {
-          CLog::Log(LOGDEBUG, __FUNCTION__" unable to cache thumb as %s", strCoverArt.c_str());
+          CLog::Log(LOGDEBUG, "%s unable to cache thumb as %s", __FUNCTION__, strCoverArt.c_str());
           CUtil::ThumbCacheAdd( strCoverArt, false );
         }
       }
@@ -417,3 +417,4 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
   tag.SetLoaded(false);
   return false;
 }
+

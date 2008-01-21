@@ -28,6 +28,7 @@ MS_CORE_DLL.
 */
 
 #include <io.h>
+
 #define HAVE_SYS_UTIME_H
 #define HAVE_HYPOT
 #define HAVE_TEMPNAM

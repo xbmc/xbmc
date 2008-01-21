@@ -23,7 +23,7 @@ bool CShoutcastDirectory::ParseGenres(TiXmlElement *root, CFileItemList &items, 
   
   if(element == NULL)
   {
-    CLog::Log(LOGWARNING, __FUNCTION__" - No genres found");
+    CLog::Log(LOGWARNING, "%s - No genres found", __FUNCTION__);
     return false;
   }
     
@@ -66,7 +66,7 @@ bool CShoutcastDirectory::ParseStations(TiXmlElement *root, CFileItemList &items
   element = root->FirstChildElement("tunein");
   if(element == NULL) 
   {
-    CLog::Log(LOGWARNING, __FUNCTION__" - No tunein base found");
+    CLog::Log(LOGWARNING, "%s - No tunein base found", __FUNCTION__);
     return false;
   }
   
@@ -79,7 +79,7 @@ bool CShoutcastDirectory::ParseStations(TiXmlElement *root, CFileItemList &items
 
   if(element == NULL)
   {
-    CLog::Log(LOGWARNING, __FUNCTION__" - No stations found");
+    CLog::Log(LOGWARNING, "%s - No stations found", __FUNCTION__);
     return false;
   }
   int stations = 0;
@@ -168,7 +168,7 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
 
   if( !http.Open(url, false) ) 
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Unable to get shoutcast dir");
+    CLog::Log(LOGERROR, "%s - Unable to get shoutcast dir", __FUNCTION__);
     if (dlgProgress) dlgProgress->Close();
     return false;
   }
@@ -180,7 +180,7 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
   if( !(content.Equals("text/html") || content.Equals("text/xml") 
 	  || content.Equals("text/html;charset=utf-8") || content.Equals("text/xml;charset=utf-8") ))
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Invalid content type %s", content.c_str());
+    CLog::Log(LOGERROR, "%s - Invalid content type %s", __FUNCTION__, content.c_str());
     if (dlgProgress) dlgProgress->Close();
     return false;
   }
@@ -226,8 +226,8 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
   TiXmlElement *root = doc.RootElement();
   if(root == NULL)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Unable to parse xml");
-    CLog::Log(LOGDEBUG, __FUNCTION__" - Sample follows...\n%s", data.c_str());
+    CLog::Log(LOGERROR, "%s - Unable to parse xml", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "%s - Sample follows...\n%s", __FUNCTION__, data.c_str());
 
     dlgProgress->Close();
     return false;
@@ -243,8 +243,8 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
     result = ParseStations(root, items, url);
   else
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Invalid root xml element for shoutcast");
-    CLog::Log(LOGDEBUG, __FUNCTION__" - Sample follows...\n%s", data.c_str());
+    CLog::Log(LOGERROR, "%s - Invalid root xml element for shoutcast",__FUNCTION__);
+    CLog::Log(LOGDEBUG, "%s - Sample follows...\n%s", __FUNCTION__, data.c_str());
   }
 
   CFileItemList vecCacheItems;  

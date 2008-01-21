@@ -20,8 +20,8 @@
  */
 
 #include "stdafx.h"
-#include "picture.h"
-#include "util.h"
+#include "Picture.h"
+#include "Util.h"
 #include "TextureManager.h"
 
 using namespace XFILE;
@@ -76,7 +76,6 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iMaxWidth, 
   }
   m_dll.ReleaseImage(&m_info);
   return pTexture;
-
 }
 
 bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, bool checkExistence /*= false*/)

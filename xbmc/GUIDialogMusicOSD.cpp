@@ -105,3 +105,4 @@ void CGUIDialogMusicOSD::OnInitWindow()
   ResetControlStates();
   CGUIDialog::OnInitWindow();
 }
+

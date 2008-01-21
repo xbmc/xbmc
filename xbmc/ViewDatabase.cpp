@@ -20,8 +20,8 @@
  */
 
 #include "stdafx.h"
-#include "viewdatabase.h"
-#include "util.h"
+#include "ViewDatabase.h"
+#include "Util.h"
 
 #define VIEW_DATABASE_VERSION 3
 
@@ -55,7 +55,7 @@ bool CViewDatabase::CreateTables()
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" unable to create tables:%i", GetLastError());
+    CLog::Log(LOGERROR, "%s unable to create tables:%lu", __FUNCTION__, GetLastError());
     return false;
   }
 
@@ -69,7 +69,6 @@ bool CViewDatabase::UpdateOldVersion(int version)
 
 bool CViewDatabase::GetViewState(const CStdString &path, int window, CViewState &state)
 {
-  DWORD titleID = 0;
   try
   {
     if (NULL == m_pDB.get()) return false;
@@ -94,7 +93,7 @@ bool CViewDatabase::GetViewState(const CStdString &path, int window, CViewState 
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__"failed on path '%s'", path.c_str());
+    CLog::Log(LOGERROR, "%s, failed on path '%s'", __FUNCTION__, path.c_str());
   }
   return false;
 }
@@ -128,7 +127,7 @@ bool CViewDatabase::SetViewState(const CStdString &path, int window, const CView
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" failed on path '%s'", path.c_str());
+    CLog::Log(LOGERROR, "%s failed on path '%s'", __FUNCTION__, path.c_str());
   }
   return true;
 }
@@ -145,7 +144,7 @@ bool CViewDatabase::ClearViewStates(int windowID)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" failed on window '%i'", windowID);
+    CLog::Log(LOGERROR, "%s failed on window '%i'", __FUNCTION__, windowID);
   }
   return true;
 }

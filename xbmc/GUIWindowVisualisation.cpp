@@ -22,11 +22,11 @@
 #include "stdafx.h"
 #include "GUIWindowVisualisation.h"
 #include "GUIVisualisationControl.h"
-#include "application.h"
+#include "Application.h"
 #include "GUIDialogMusicOSD.h"
 #include "utils/GUIInfoManager.h"
 #include "ButtonTranslator.h"
-#include "util.h"
+#include "Util.h"
 #include "GUIDialogVisualisationPresetList.h"
 #ifdef HAS_KARAOKE
 #include "CdgParser.h"
@@ -284,3 +284,4 @@ void CGUIWindowVisualisation::FreeResources(bool forceUnload)
   if (pWindow) pWindow->FreeResources(true);
   CGUIWindow::FreeResources(forceUnload);
 }
+

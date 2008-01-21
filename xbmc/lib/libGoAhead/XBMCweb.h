@@ -10,7 +10,7 @@
 
 /********************************* Includes ***********************************/
 
-#include "..\..\FileSystem\VirtualDirectory.h"
+#include "../../FileSystem/VirtualDirectory.h"
 #include "includes.h"
 
 class CXbmcWeb

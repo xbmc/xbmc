@@ -70,7 +70,7 @@ bool CUdpClient::Broadcast(int aPort, CStdString& aMessage)
   addr.sin_port = htons(aPort);
   addr.sin_addr.s_addr = INADDR_BROADCAST;
 
-  UdpCommand broadcast = {addr, aMessage, NULL, NULL};
+  UdpCommand broadcast = {addr, aMessage, NULL, 0};
   commands.push_back(broadcast);
 
   LeaveCriticalSection(&critical_section);
@@ -87,7 +87,7 @@ bool CUdpClient::Send(CStdString aIpAddress, int aPort, CStdString& aMessage)
   addr.sin_port = htons(aPort);
   addr.sin_addr.s_addr = inet_addr(aIpAddress);
 
-  UdpCommand transmit = {addr, aMessage, NULL, NULL};
+  UdpCommand transmit = {addr, aMessage, NULL, 0};
   commands.push_back(transmit);
 
   LeaveCriticalSection(&critical_section);
@@ -98,7 +98,7 @@ bool CUdpClient::Send(SOCKADDR_IN aAddress, CStdString& aMessage)
 {
   EnterCriticalSection(&critical_section);
 
-  UdpCommand transmit = {aAddress, aMessage, NULL, NULL};
+  UdpCommand transmit = {aAddress, aMessage, NULL, 0};
   commands.push_back(transmit);
 
   LeaveCriticalSection(&critical_section);
@@ -149,7 +149,7 @@ void CUdpClient::Process()
 
         CStdString message = messageBuffer;
 
-        CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT RX: %u\t\t<- '%s'", timeGetTime(), message.c_str() );
+        CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT RX: %lu\t\t<- '%s'", timeGetTime(), message.c_str() );
 
         // NOTE: You should consider locking access to the screen device
         // or at least wait until after vertical refresh before firing off events
@@ -203,7 +203,7 @@ void CUdpClient::DispatchNextCommand()
   if (command.binarySize > 0)
   {
     // only perform the following if logging level at debug
-    CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT TX: %u\t\t-> <binary payload %u bytes>", timeGetTime(), command.binarySize );
+    CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT TX: %lu\t\t-> <binary payload %lu bytes>", timeGetTime(), command.binarySize );
 
     do
     {
@@ -216,7 +216,7 @@ void CUdpClient::DispatchNextCommand()
   else
   {
     // only perform the following if logging level at debug
-    CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT TX: %u\t\t-> '%s'", timeGetTime(), command.message.c_str() );
+    CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT TX: %lu\t\t-> '%s'", timeGetTime(), command.message.c_str() );
 
     do
     {

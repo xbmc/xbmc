@@ -203,3 +203,4 @@ CFileItem *CGUIDialogFavourites::GetCurrentListItem(int offset)
   if (item < 0) item += m_favourites.Size();
   return m_favourites[item];
 }
+

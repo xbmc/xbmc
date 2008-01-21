@@ -20,7 +20,7 @@
  */
 
 #include "stdafx.h"
-#include "musicinfotagloaderflac.h"
+#include "MusicInfoTagLoaderFlac.h"
 #include "FlacTag.h"
 
 

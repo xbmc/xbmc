@@ -21,11 +21,11 @@
 
 #include "stdafx.h"
 #include "GUIWindowMusicNav.h"
-#include "util.h"
-#include "Utils/GUIInfoManager.h"
+#include "Util.h"
+#include "utils/GUIInfoManager.h"
 #include "PlayListM3U.h"
-#include "application.h"
-#include "playlistplayer.h"
+#include "Application.h"
+#include "PlayListPlayer.h"
 #include "GUIPassword.h"
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
 #include "GUILabelControl.h"
@@ -36,7 +36,7 @@
 #include "FileSystem/MusicDatabaseDirectory.h"
 #include "FileSystem/VideoDatabaseDirectory.h"
 #include "PartyModeManager.h"
-#include "PlaylistFactory.h"
+#include "PlayListFactory.h"
 #include "GUIDialogMusicScan.h"
 #include "VideoDatabase.h"
 #include "GUIWindowVideoNav.h"
@@ -641,6 +641,9 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     CUtil::DeleteVideoDatabaseDirectoryCache();
     Update(m_vecItems.m_strPath);
     return true;
+
+  default:
+    break;
   }
 
   return CGUIWindowMusicBase::OnContextButton(itemNumber, button);

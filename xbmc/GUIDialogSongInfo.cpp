@@ -21,7 +21,7 @@
 
 #include "stdafx.h"
 #include "GUIDialogSongInfo.h"
-#include "Utils/HTTP.h"
+#include "utils/HTTP.h"
 #include "Util.h"
 #include "Picture.h"
 #include "GUIDialogFileBrowser.h"

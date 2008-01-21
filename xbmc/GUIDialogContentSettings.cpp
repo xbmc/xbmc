@@ -450,3 +450,4 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, VIDEO::SScanSettings
   }
   return false;
 }
+

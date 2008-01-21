@@ -8,7 +8,7 @@ class CBaseSettingControl
 {
 public:
   CBaseSettingControl(DWORD dwID, CSetting *pSetting);
-  ~CBaseSettingControl() {};
+  virtual ~CBaseSettingControl() {}
   virtual bool OnClick() { return false; };
   virtual void Update() {};
   DWORD GetID() { return m_dwID; };
@@ -23,7 +23,7 @@ class CRadioButtonSettingControl : public CBaseSettingControl
 {
 public:
   CRadioButtonSettingControl(CGUIRadioButtonControl* pRadioButton, DWORD dwID, CSetting *pSetting);
-  ~CRadioButtonSettingControl();
+  virtual ~CRadioButtonSettingControl();
   virtual bool OnClick();
   virtual void Update();
   void Select(bool bSelect);
@@ -35,7 +35,7 @@ class CSpinExSettingControl : public CBaseSettingControl
 {
 public:
   CSpinExSettingControl(CGUISpinControlEx* pSpin, DWORD dwID, CSetting *pSetting);
-  ~CSpinExSettingControl();
+  virtual ~CSpinExSettingControl();
   virtual bool OnClick();
   virtual void Update();
 private:
@@ -46,7 +46,7 @@ class CButtonSettingControl : public CBaseSettingControl
 {
 public:
   CButtonSettingControl(CGUIButtonControl* pButton, DWORD dwID, CSetting *pSetting);
-  ~CButtonSettingControl();
+  virtual ~CButtonSettingControl();
   virtual bool OnClick();
   virtual void Update();
 private:
@@ -58,7 +58,7 @@ class CSeparatorSettingControl : public CBaseSettingControl
 {
 public:
   CSeparatorSettingControl(CGUIImage* pImage, DWORD dwID, CSetting *pSetting);
-  ~CSeparatorSettingControl();
+  virtual ~CSeparatorSettingControl();
   virtual bool OnClick() { return false; };
   virtual void Update() {};
 private:

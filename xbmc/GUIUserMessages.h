@@ -1,7 +1,7 @@
 //  GUI messages outside GuiLib
 //
 #pragma once
-#include "guimessage.h"
+#include "GUIMessage.h"
 
 //  Source related messages
 #define GUI_MSG_REMOVED_MEDIA           GUI_MSG_USER + 1
@@ -98,3 +98,4 @@
 
 // Message sent to tell the GUI to change view mode
 #define GUI_MSG_CHANGE_VIEW_MODE      GUI_MSG_USER + 30
+

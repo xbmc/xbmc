@@ -67,7 +67,7 @@ public:
   DemuxPacket* Read();
 
   bool Seek(int iTime, bool bBackword = false);
-  bool SeekByte(__int64 pos);
+  bool SeekByte(int64_t pos);
   int GetStreamLenght();
   CDemuxStream* GetStream(int iStreamId);
   int GetNrOfStreams();
@@ -85,7 +85,7 @@ protected:
   void Unlock() { LeaveCriticalSection(&m_critSection); }
 
   bool ContextInit(const char* strFile, int chunksize, bool seekable);
-  double ConvertTimestamp(__int64 pts, int den, int num);
+  double ConvertTimestamp(int64_t pts, int den, int num);
 
   CRITICAL_SECTION m_critSection;
   // #define MAX_STREAMS 42 // from avformat.h

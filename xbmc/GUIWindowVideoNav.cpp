@@ -21,19 +21,19 @@
 
 #include "stdafx.h"
 #include "GUIWindowVideoNav.h"
-#include "GUIWIndowVideoFiles.h"
+#include "GUIWindowVideoFiles.h"
 #include "utils/GUIInfoManager.h"
+#include "Util.h"
 #include "utils/RegExp.h"
-#include "util.h"
 #include "PlayListM3U.h"
-#include "application.h"
-#include "playlistplayer.h"
+#include "Application.h"
+#include "PlayListPlayer.h"
 #include "GUIPassword.h"
 #include "GUILabelControl.h"
 #include "GUIDialogFileBrowser.h"
 #include "Picture.h"
 #include "FileSystem/VideoDatabaseDirectory.h"
-#include "PlaylistFactory.h"
+#include "PlayListFactory.h"
 #include "GUIFontManager.h"
 #include "GUIDialogVideoScan.h"
 #include "PartyModeManager.h"
@@ -759,7 +759,6 @@ void CGUIWindowVideoNav::DeleteItem(CFileItem* pItem)
 
 void CGUIWindowVideoNav::OnFinalizeFileItems(CFileItemList& items)
 {
-  int iItem=0;
   m_unfilteredItems.AppendPointer(items);
   // now filter as necessary
   CVideoDatabaseDirectory dir;
@@ -867,7 +866,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
   {
     SScraperInfo info;
     VIDEO::SScanSettings settings;
-    int iFound = GetScraperForItem(item, info, settings);
+    GetScraperForItem(item, info, settings);
     
     if (info.strContent.Equals("tvshows"))
       buttons.Add(CONTEXT_BUTTON_INFO, item->m_bIsFolder ? 20351 : 20352);
@@ -1312,6 +1311,9 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       Update(m_vecItems.m_strPath);
       return true;
     }
+  
+  default:
+    break;
 
   }
   return CGUIWindowVideoBase::OnContextButton(itemNumber, button);
@@ -1333,3 +1335,4 @@ void CGUIWindowVideoNav::OnLinkMovieToTvShow(int itemnumber)
     CUtil::DeleteVideoDatabaseDirectoryCache();
   }
 }
+

@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "XBAudioConfig.h"
 #ifdef HAS_XBOX_HARDWARE
-#include "xbox/undocumented.h"
+#include "xbox/Undocumented.h"
 #endif
 
 XBAudioConfig g_audioConfig;
