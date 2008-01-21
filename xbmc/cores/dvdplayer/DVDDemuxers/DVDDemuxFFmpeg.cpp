@@ -710,6 +710,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
     m_streams[iId]->codec = pStream->codec->codec_id;
     m_streams[iId]->iId = iId;
     m_streams[iId]->source = STREAM_SOURCE_DEMUX;
+    m_streams[iId]->pPrivate = pStream;
 
     strcpy( m_streams[iId]->language, pStream->language );
 
