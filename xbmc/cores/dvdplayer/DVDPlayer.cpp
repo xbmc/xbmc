@@ -117,7 +117,7 @@ int CSelectionStreams::Source(StreamSource source, std::string filename)
 void CSelectionStreams::Update(SelectionStream& s)
 {
   CSingleLock lock(m_section);
-  int index = IndexOf(s.type, s.source, s.id);
+  int index = IndexOf(STREAM_NONE, s.source, s.id);
   if(index >= 0)
     m_Streams[index] = s;
   else
@@ -185,7 +185,11 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer)
         std::string type;
         ((CDemuxStreamAudio*)stream)->GetStreamType(type);
         if(type.length() > 0)
-          s.name = " - " + type;
+        {
+          if(s.name.length() > 0)
+            s.name += " - ";
+          s.name += type;
+        }
       }
       Update(s);
     }
@@ -393,13 +397,13 @@ bool CDVDPlayer::IsValidStream(CCurrentStream& stream)
   if(stream.id<0)
     return true; // we consider non selected as valid
 
-  int index = stream.id & 0xff;
-  if(stream.source == STREAM_SOURCE_DEMUX_SUB)
-    return m_pSubtitleDemuxer && m_pSubtitleDemuxer->GetStream(index) != NULL;
-  if(stream.source == STREAM_SOURCE_TEXT)
+  int source = STREAM_SOURCE_MASK(stream.source);
+  if(source == STREAM_SOURCE_DEMUX_SUB)
+    return m_pSubtitleDemuxer && m_pSubtitleDemuxer->GetStream(stream.id) != NULL;
+  if(source == STREAM_SOURCE_TEXT)
     return true;
-  if(stream.source == STREAM_SOURCE_DEMUX)
-    return m_pDemuxer && m_pDemuxer->GetStream(index) != NULL;
+  if(source == STREAM_SOURCE_DEMUX)
+    return m_pDemuxer && m_pDemuxer->GetStream(stream.id) != NULL;
 
   return false;
 }
@@ -408,13 +412,17 @@ bool CDVDPlayer::IsBetterStream(CCurrentStream& current, StreamType type, CDemux
 {
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
-    if(current.source != STREAM_SOURCE_DEMUX 
-    && current.source != STREAM_SOURCE_NONE)
+    int source_type;
+
+    source_type = STREAM_SOURCE_MASK(current.source);
+    if(source_type != STREAM_SOURCE_DEMUX 
+    && source_type != STREAM_SOURCE_NONE)
       return false;
 
-    if(stream->type   != type
-    || stream->source != STREAM_SOURCE_DEMUX
-    || stream->iId    == current.id)
+    source_type = STREAM_SOURCE_MASK(current.source);
+    if(source_type  != STREAM_SOURCE_DEMUX
+    || stream->type != type
+    || stream->iId  == current.id)
       return false;
 
     if(type == STREAM_AUDIO    && stream->iPhysicalId == m_dvd.iSelectedAudioStream)
@@ -1362,19 +1370,15 @@ int CDVDPlayer::GetSubtitle()
 
 void CDVDPlayer::GetSubtitleName(int iStream, CStdString &strStreamName)
 {
-  strStreamName.Format("%d. ", iStream);
-
+  strStreamName = "";
   SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, iStream);
-  if(&s == NULL)
-  {
-    strStreamName += " (Invalid)";
-    return;
-  }
-
   if(s.name.length() > 0)
-    strStreamName += s.name;
+    strStreamName = s.name;
   else
-    strStreamName += "Unknown";
+    strStreamName = "Unknown";
+
+  if(s.type == STREAM_NONE)
+    strStreamName += "(Invalid)";
 }
 
 void CDVDPlayer::SetSubtitle(int iStream)
@@ -1417,18 +1421,15 @@ int CDVDPlayer::GetAudioStream()
 
 void CDVDPlayer::GetAudioStreamName(int iStream, CStdString& strStreamName)
 {
-  strStreamName.Format("%d. ", iStream);
+  strStreamName = "";
   SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, iStream);
-  if(&s == NULL)
-  {
-    strStreamName += " (Invalid)";
-    return;
-  }
-
   if(s.name.length() > 0)
     strStreamName += s.name;
   else
     strStreamName += "Unknown";
+
+  if(s.type == STREAM_NONE)
+    strStreamName += " (Invalid)";
 }
 
 void CDVDPlayer::SetAudioStream(int iStream)
