@@ -419,7 +419,7 @@ bool CDVDPlayer::IsBetterStream(CCurrentStream& current, StreamType type, CDemux
     && source_type != STREAM_SOURCE_NONE)
       return false;
 
-    source_type = STREAM_SOURCE_MASK(current.source);
+    source_type = STREAM_SOURCE_MASK(stream->source);
     if(source_type  != STREAM_SOURCE_DEMUX
     || stream->type != type
     || stream->iId  == current.id)
