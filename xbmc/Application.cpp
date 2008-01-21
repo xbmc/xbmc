@@ -4843,7 +4843,7 @@ void CApplication::Restart(bool bSamePosition)
   CStdString state = m_pPlayer->GetPlayerState();
 
   // set the requested starttime
-  m_itemCurrentFile.m_lStartOffset = time * 75.0;
+  m_itemCurrentFile.m_lStartOffset = (long)(time * 75.0);
 
   // reopen the file
   if ( PlayFile(m_itemCurrentFile, true) && m_pPlayer )
