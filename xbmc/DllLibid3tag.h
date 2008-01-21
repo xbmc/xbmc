@@ -5,6 +5,7 @@
 class DllLibID3TagInterface
 {
 public:
+    virtual ~DllLibID3TagInterface() {}
     virtual struct id3_file *id3_file_open(char const *, enum id3_file_mode)=0;
     virtual struct id3_file *id3_file_fdopen(int, enum id3_file_mode)=0;
     virtual int id3_file_close(struct id3_file *)=0;

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include <ConIo.h>
 #include "FanController.h"
-#include "../xbox/undocumented.h"
+#include "../xbox/Undocumented.h"
 #include "../xbox/XKExports.h"
 
 
@@ -310,7 +310,7 @@ void CFanController::CalcSpeed(int targetTemp)
     if ((temp < tempOld) || (tooColdLoopCount == 12))
     {
       calculatedFanSpeed--;
-      //CLog::DebugLog("Lowering fanspeed to %i, tooHotLoopCount=%i tooColdLoopCount=%i", calculatedFanSpeed, tooHotLoopCount, tooColdLoopCount);
+      //CLog::Log(LOGDEBUG,"Lowering fanspeed to %i, tooHotLoopCount=%i tooColdLoopCount=%i", calculatedFanSpeed, tooHotLoopCount, tooColdLoopCount);
       tooColdLoopCount = 0;
     }
   }
@@ -329,7 +329,7 @@ void CFanController::CalcSpeed(int targetTemp)
     if ((temp > tempOld) || (tooHotLoopCount == 12))
     {
       calculatedFanSpeed++;
-      //CLog::DebugLog("Increasing fanspeed to %i, tooHotLoopCount=%i tooColdLoopCount=%i", calculatedFanSpeed, tooHotLoopCount, tooColdLoopCount);
+      //CLog::Log(LOGDEBUG,"Increasing fanspeed to %i, tooHotLoopCount=%i tooColdLoopCount=%i", calculatedFanSpeed, tooHotLoopCount, tooColdLoopCount);
       tooHotLoopCount = 0;
     }
   }

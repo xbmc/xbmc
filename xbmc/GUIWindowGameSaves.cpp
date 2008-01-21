@@ -21,15 +21,15 @@
 
 #include "stdafx.h"
 #include "GUIWindowGameSaves.h"
-#include "util.h"
+#include "Util.h"
 #include "FileSystem/ZipManager.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIWindowFileManager.h"
 #include "GUIPassword.h"
 #include <fstream>
-//#include "Utils\HTTP.h"  // For Download Function
+//#include "utils/HTTP.h"  // For Download Function
+#include "MediaManager.h"
 #include "utils/LabelFormatter.h"
-#include "mediamanager.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -522,6 +522,8 @@ bool CGUIWindowGameSaves::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       }
       return true;
     }*/
+   default:
+     break;
   }
   return false;
 }

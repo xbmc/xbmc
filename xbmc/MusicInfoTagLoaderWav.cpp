@@ -21,7 +21,7 @@
 
 #include "stdafx.h"
 #include "MusicInfoTagLoaderWav.h"
-#include "cores/paplayer/WAVCodec.h"
+#include "cores/paplayer/WAVcodec.h"
 
 
 using namespace MUSIC_INFO;
@@ -56,3 +56,4 @@ bool CMusicInfoTagLoaderWAV::Load(const CStdString& strFileName, CMusicInfoTag& 
 
   return false;
 }
+

@@ -1,7 +1,7 @@
 
 #include "stdafx.h"
 #include "DownloadQueue.h"
-#include "Http.h"
+#include "HTTP.h"
 #include "../Util.h"
 
 

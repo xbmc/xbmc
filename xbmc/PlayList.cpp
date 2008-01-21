@@ -20,9 +20,9 @@
  */
 
 #include "stdafx.h"
-#include "playlist.h"
-#include "util.h"
-#include "playlistfactory.h"
+#include "PlayList.h"
+#include "Util.h"
+#include "PlayListFactory.h"
 #include <sstream>
 
 using namespace XFILE;
@@ -160,7 +160,7 @@ void CPlayList::Add(CPlayListItem& item, int iPosition, int iOrder)
   else
     m_iPlayableItems++;
 
-  //CLog::Log(LOGDEBUG,__FUNCTION__" item:(%02i/%02i)[%s]", iPosition, item.m_iprogramCount, item.m_strPath.c_str());
+  //CLog::Log(LOGDEBUG,"%s item:(%02i/%02i)[%s]", __FUNCTION__, iPosition, item.m_iprogramCount, item.m_strPath.c_str());
   if (iPosition == iOldSize)
     m_vecItems.push_back(item);
   else
@@ -246,7 +246,7 @@ void CPlayList::DecrementOrder(int iOrder)
     CPlayListItem& item = *it;
     if (item.m_iprogramCount > iOrder)
     {
-      //CLog::Log(LOGDEBUG,__FUNCTION__" fixing item at order %i", item.m_iprogramCount);
+      //CLog::Log(LOGDEBUG,"%s fixing item at order %i", __FUNCTION__, item.m_iprogramCount);
       item.m_iprogramCount--;
     }
     ++it;
@@ -265,7 +265,7 @@ void CPlayList::IncrementOrder(int iPosition, int iOrder)
     CPlayListItem& item = *it;
     if (item.m_iprogramCount >= iOrder)
     {
-      //CLog::Log(LOGDEBUG,__FUNCTION__" fixing item at order %i", item.m_iprogramCount);
+      //CLog::Log(LOGDEBUG,"%s fixing item at order %i", __FUNCTION__, item.m_iprogramCount);
       item.m_iprogramCount++;
     }
     ++it;
@@ -313,7 +313,7 @@ void CPlayList::Shuffle(int iPosition)
       return;
     if (iPosition < 0)
       iPosition = 0;
-    CLog::Log(LOGDEBUG,__FUNCTION__":shuffling at pos:%i", iPosition);
+    CLog::Log(LOGDEBUG,"%s :shuffling at pos:%i", __FUNCTION__, iPosition);
 
     ivecItems it = m_vecItems.begin() + iPosition;
     random_shuffle(it, m_vecItems.end());
@@ -469,7 +469,7 @@ bool CPlayList::Load(const CStdString& strFileName)
 
   if (file.GetLength() > 1024*1024)
   {
-    CLog::Log(LOGWARNING, __FUNCTION__" - File is larger than 1 MB, most likely not a playlist");
+    CLog::Log(LOGWARNING, "%s - File is larger than 1 MB, most likely not a playlist", __FUNCTION__);
     return false;
   }
 
@@ -531,3 +531,4 @@ void CPlayList::UpdateItem(const CFileItem *item)
     }
   }
 }
+

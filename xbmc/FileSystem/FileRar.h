@@ -37,7 +37,7 @@ namespace XFILE
     CmdExtract* m_pExtract;
     int m_iSize;
   };
-  
+
   class CFileRar : public IFile  
 	{
 	public:

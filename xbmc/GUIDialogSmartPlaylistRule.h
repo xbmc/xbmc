@@ -25,7 +25,7 @@ protected:
   void OnBrowse();
 
   enum FIELD { TEXT_FIELD, NUMERIC_FIELD, DATE_FIELD, PLAYLIST_FIELD, SECONDS_FIELD };
-  FIELD CGUIDialogSmartPlaylistRule::GetFieldType(CSmartPlaylistRule::DATABASE_FIELD field);
+  FIELD GetFieldType(CSmartPlaylistRule::DATABASE_FIELD field);
 
   CSmartPlaylistRule m_rule;
   bool m_cancelled;

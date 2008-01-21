@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "AlarmClock.h"
-#include "../application.h"
+#include "../Application.h"
 #include "../Util.h"
 
 CAlarmClock g_alarmClock;
@@ -98,3 +98,4 @@ void CAlarmClock::Process()
     Sleep(100);
   }
 }
+

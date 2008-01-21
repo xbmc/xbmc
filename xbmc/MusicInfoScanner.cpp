@@ -21,12 +21,12 @@
 
 #include "stdafx.h"
 #include "MusicInfoScanner.h"
-#include "musicdatabase.h"
+#include "MusicDatabase.h"
 #include "musicInfoTagLoaderFactory.h"
 #include "FileSystem/DirectoryCache.h"
 #include "Util.h"
 #include "utils/md5.h"
-#include "xbox/xkgeneral.h"
+#include "xbox/XKGeneral.h"
 
 using namespace MUSIC_INFO;
 using namespace DIRECTORY;
@@ -60,7 +60,7 @@ void CMusicInfoScanner::Process()
     CUtil::ThumbCacheClear();
     g_directoryCache.ClearMusicThumbCache();
 
-    CLog::Log(LOGDEBUG, __FUNCTION__" - Starting scan");
+    CLog::Log(LOGDEBUG, "%s - Starting scan", __FUNCTION__);
     m_musicDatabase.BeginTransaction();
 
     if (m_pObserver)
@@ -119,7 +119,7 @@ void CMusicInfoScanner::Process()
     g_directoryCache.ClearMusicThumbCache();
 
     m_musicDatabase.Close();
-    CLog::Log(LOGDEBUG, __FUNCTION__" - Finished scan");
+    CLog::Log(LOGDEBUG, "%s - Finished scan", __FUNCTION__);
 
     dwTick = timeGetTime() - dwTick;
     CStdString strTmp, strTmp1;
@@ -198,9 +198,9 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
   if (!m_musicDatabase.GetPathHash(strDirectory, dbHash) || dbHash != hash)
   { // path has changed - rescan
     if (dbHash.IsEmpty())
-      CLog::Log(LOGDEBUG, __FUNCTION__" Scanning dir '%s' as not in the database", strDirectory.c_str());
+      CLog::Log(LOGDEBUG, "%s Scanning dir '%s' as not in the database", __FUNCTION__, strDirectory.c_str());
     else
-      CLog::Log(LOGDEBUG, __FUNCTION__" Rescanning dir '%s' due to change", strDirectory.c_str());
+      CLog::Log(LOGDEBUG, "%s Rescanning dir '%s' due to change", __FUNCTION__, strDirectory.c_str());
 
     // filter items in the sub dir (for .cue sheet support)
     items.FilterCueItems();
@@ -218,7 +218,7 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
   }
   else
   { // path is the same - no need to rescan
-    CLog::Log(LOGDEBUG, __FUNCTION__" Skipping dir '%s' due to no change", strDirectory.c_str());
+    CLog::Log(LOGDEBUG, "%s Skipping dir '%s' due to no change", __FUNCTION__, strDirectory.c_str());
     m_currentItem += CountFiles(items, false);  // false for non-recursive
 
     // notify our observer of our progress
@@ -279,7 +279,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     if (!pItem->m_bIsFolder && !pItem->IsPlayList() && !pItem->IsShoutCast() && !pItem->IsPicture())
     {
       m_currentItem++;
-//      CLog::Log(LOGDEBUG, __FUNCTION__" - Reading tag for: %s", pItem->m_strPath.c_str());
+//      CLog::Log(LOGDEBUG, "%s - Reading tag for: %s", __FUNCTION__, pItem->m_strPath.c_str());
 
       // grab info from the song
       CSong *dbSong = songsMap.Find(pItem->m_strPath);
@@ -311,10 +311,10 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
         pItem->SetMusicThumb();
         song.strThumb = pItem->GetThumbnailImage();
         songsToAdd.push_back(song);
-//        CLog::Log(LOGDEBUG, __FUNCTION__" - Tag loaded for: %s", pItem->m_strPath.c_str());
+//        CLog::Log(LOGDEBUG, "%s - Tag loaded for: %s", __FUNCTION__, spItem->m_strPath.c_str());
       }
       else
-        CLog::Log(LOGDEBUG, __FUNCTION__" - No tag found for: %s", pItem->m_strPath.c_str());
+        CLog::Log(LOGDEBUG, "%s - No tag found for: %s", __FUNCTION__, pItem->m_strPath.c_str());
     }
   }
 

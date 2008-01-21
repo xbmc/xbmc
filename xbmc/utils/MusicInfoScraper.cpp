@@ -1,10 +1,10 @@
 
 #include "stdafx.h"
 
-#include ".\musicinfoscraper.h"
-#include ".\htmlutil.h"
-#include ".\htmltable.h"
-#include "../util.h"
+#include "./MusicInfoScraper.h"
+#include "./HTMLUtil.h"
+#include "./HTMLTable.h"
+#include "../Util.h"
 
 
 using namespace HTML;

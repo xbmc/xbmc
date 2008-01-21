@@ -2,7 +2,7 @@
 #include "stdafx.h"
 #include "Splash.h"
 #include "guiImage.h"
-#include "..\util.h"
+#include "../Util.h"
 
 using namespace XFILE;
 

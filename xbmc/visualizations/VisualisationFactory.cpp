@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "VisualisationFactory.h"
-#include "../util.h"
+#include "../Util.h"
 
 
 CVisualisationFactory::CVisualisationFactory()

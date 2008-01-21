@@ -8,7 +8,7 @@
 // ******************************************************
 #include "stdafx.h"
 #include "FilterFlickerPatch.h"
-#include "../filesystem/file.h"
+#include "../FileSystem/File.h"
 #include "../Util.h"
 #include "../GUISettings.h"
 #include "log.h"

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "stopwatch.h"
+#include "Stopwatch.h"
 
 CStopWatch::CStopWatch()
 {

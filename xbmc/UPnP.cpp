@@ -22,7 +22,7 @@
 
 
 #include "stdafx.h"
-#include "util.h"
+#include "Util.h"
 #include "Application.h"
 
 #include "xbox/Network.h"
@@ -288,7 +288,7 @@ CUPnPServer::GetProtocolInfo(const CFileItem* item, const NPT_String& protocol)
             proto = "http-get";
         }
     }
-    NPT_String ext = CUtil::GetExtension(item->m_strPath);
+    NPT_String ext = CUtil::GetExtension(item->m_strPath).c_str();
     if( item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty() ) {
         ext = CUtil::GetExtension(item->GetVideoInfoTag()->m_strFileNameAndPath);
     } else if( item->HasMusicInfoTag() && !item->GetMusicInfoTag()->GetURL().IsEmpty() ) {
@@ -299,7 +299,7 @@ CUPnPServer::GetProtocolInfo(const CFileItem* item, const NPT_String& protocol)
 
 
     /* we need a valid extension to retrieve the mimetype for the protocol info */
-    NPT_String content = item->GetContentType();
+    NPT_String content = item->GetContentType().c_str();
     if( content == "application/octet-stream" )
         content = "";
 
@@ -493,12 +493,17 @@ CUPnPServer::BuildObject(CFileItem*      item,
                   break;
                 case MUSICDATABASEDIRECTORY::NODE_TYPE_GENRE:
                   container->m_ObjectClass.type += "genre.musicGenre";
+                  break;
+                default:
+                  break;
             }
         } else if(item->IsVideoDb()) {
             VIDEODATABASEDIRECTORY::NODE_TYPE node = CVideoDatabaseDirectory::GetDirectoryChildType(item->m_strPath);
             switch(node) {
                 case VIDEODATABASEDIRECTORY::NODE_TYPE_GENRE:
                   container->m_ObjectClass.type += "genre.movieGenre";
+		default:
+		  break;
             }
         }
 
@@ -551,7 +556,7 @@ CUPnPServer::Build(CFileItem*        item,
                    const char*       parent_id /* = NULL */)
 {
     PLT_MediaObject* object = NULL;
-    NPT_String       path = item->m_strPath;
+    NPT_String       path = item->m_strPath.c_str();
     NPT_String       share_name;
     NPT_String       file_path;
 
@@ -1149,8 +1154,8 @@ public:
 +---------------------------------------------------------------------*/
 CUPnP::CUPnP() :
     m_ServerHolder(new CDeviceHostReferenceHolder()),
-    m_CtrlPointHolder(new CCtrlPointReferenceHolder()),
-    m_RendererHolder(new CRendererReferenceHolder())
+    m_RendererHolder(new CRendererReferenceHolder()),
+    m_CtrlPointHolder(new CCtrlPointReferenceHolder())
 {
 //#ifdef HAS_XBOX_HARDWARE
 //    broadcast = true;
@@ -1366,3 +1371,4 @@ void CUPnP::UpdateState()
   if (!m_RendererHolder->m_Device.IsNull())
       ((CUPnPRenderer*)m_RendererHolder->m_Device.AsPointer())->UpdateState();  
 }
+

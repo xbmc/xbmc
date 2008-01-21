@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lcd.h"
+#include "LCD.h"
 class CLCDFactory
 {
 public:

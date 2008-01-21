@@ -1,5 +1,5 @@
 #pragma once
-#include "stopwatch.h"
+#include "Stopwatch.h"
 #include "Thread.h"
 #include "../../guilib/LocalizeStrings.h"
 struct SAlarmClockEvent
@@ -48,3 +48,4 @@ private:
   bool m_bIsRunning;
 };
 extern CAlarmClock g_alarmClock;
+

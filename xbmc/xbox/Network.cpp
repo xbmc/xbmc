@@ -1,11 +1,11 @@
 #include "stdafx.h"
 
-#include "network.h"
+#include "Network.h"
 #ifdef HAS_XBOX_NETWORK
 #include "Undocumented.h"
 #endif
-#include "../application.h"
-#include "../filesystem/filesmb.h"
+#include "../Application.h"
+#include "../FileSystem/FileSmb.h"
 #include "../lib/libscrobbler/scrobbler.h"
 
 // global network variable
@@ -427,11 +427,11 @@ void CNetwork::LogState()
     if ( dwState & XNET_GET_XNADDR_DHCP )
       CLog::Log(LOGINFO, __FUNCTION__" - State: dhcp");
 #endif
-    CLog::Log(LOGINFO,  __FUNCTION__" - ip: %s", m_networkinfo.ip);
-    CLog::Log(LOGINFO,  __FUNCTION__" - subnet: %s", m_networkinfo.subnet);
-    CLog::Log(LOGINFO,  __FUNCTION__" - gateway: %s", m_networkinfo.gateway);
+    CLog::Log(LOGINFO,  "%s - ip: %s", __FUNCTION__, m_networkinfo.ip);
+    CLog::Log(LOGINFO,  "%s - subnet: %s", __FUNCTION__, m_networkinfo.subnet);
+    CLog::Log(LOGINFO,  "%s - gateway: %s", __FUNCTION__, m_networkinfo.gateway);
   //  CLog::Log(LOGINFO,  __FUNCTION__" - DHCPSERVER: %s", m_networkinfo.dhcpserver);
-    CLog::Log(LOGINFO,  __FUNCTION__" - dns: %s, %s", m_networkinfo.DNS1, m_networkinfo.DNS2);
+    CLog::Log(LOGINFO,  "%s - dns: %s, %s", m_networkinfo.DNS1, __FUNCTION__, m_networkinfo.DNS2);
 
 }
 
@@ -454,7 +454,7 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
   {
     case SERVICES_UP:
     {
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Starting network services");
+      CLog::Log(LOGDEBUG, "%s - Starting network services",__FUNCTION__);
       g_application.StartTimeServer();
       g_application.StartWebServer();
       g_application.StartFtpServer();
@@ -466,7 +466,7 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
     break;
     case SERVICES_DOWN:
     {
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Stopping network services");
+      CLog::Log(LOGDEBUG, "%s - Stopping network services",__FUNCTION__);
       g_application.StopTimeServer();
       g_application.StopWebServer();
       g_application.StopFtpServer();

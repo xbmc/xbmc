@@ -35,3 +35,4 @@ protected:
   bool m_bLockFiles;
   bool m_bLockSettings;
 };
+

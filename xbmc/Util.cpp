@@ -20,22 +20,22 @@
  */
 
 #include "stdafx.h"
-#include "application.h"
+#include "Application.h"
 #include "GUIWindowVideoBase.h"
-#include "util.h"
-#include "xbox/iosupport.h"
+#include "Util.h"
+#include "xbox/IoSupport.h"
 #include "xbox/xbeheader.h"
 #ifdef HAS_XBOX_HARDWARE
-#include "xbox/undocumented.h"
+#include "xbox/Undocumented.h"
 #include "xbresource.h"
 #endif
 #include "DetectDVDType.h"
-#include "autorun.h"
-#include "filesystem/hddirectory.h"
+#include "Autorun.h"
+#include "FileSystem/HDDirectory.h"
 #include "FileSystem/StackDirectory.h"
 #include "FileSystem/VirtualPathDirectory.h"
-#include "filesystem/MultiPathDirectory.h"
-#include "filesystem/DirectoryCache.h"
+#include "FileSystem/MultiPathDirectory.h"
+#include "FileSystem/DirectoryCache.h"
 #include "ThumbnailCache.h"
 #include "FileSystem/ZipManager.h"
 #include "FileSystem/RarManager.h"
@@ -46,9 +46,9 @@
 #ifdef HAS_CREDITS
 #include "Credits.h"
 #endif
-#include "shortcut.h"
-#include "playlistplayer.h"
-#include "partymodemanager.h"
+#include "Shortcut.h"
+#include "PlayListPlayer.h"
+#include "PartyModeManager.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
@@ -63,13 +63,13 @@
 #include "GUIDialogVideoScan.h"
 #include "utils/fstrcmp.h"
 #include "utils/GUIInfoManager.h"
-#include "utils/trainer.h"
+#include "utils/Trainer.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "utils/MemoryUnitManager.h"
 #include "utils/FilterFlickerPatch.h"
 #include "utils/LED.h"
-#include "utils/fancontroller.h"
-#include "utils/systeminfo.h"
+#include "utils/FanController.h"
+#include "utils/SystemInfo.h"
 #endif
 #include "MediaManager.h"
 #ifdef _XBOX
@@ -88,7 +88,7 @@
 #ifndef HAS_XBOX_D3D
 #include "DirectXGraphics.h"
 #endif
-#include "lib/libGoAhead/xbmchttp.h"
+#include "lib/libGoAhead/XBMChttp.h"
 #include "DNSNameCache.h"
 #include "FileSystem/PluginDirectory.h"
 
@@ -162,7 +162,7 @@ void hack()
 using namespace DIRECTORY;
 
 #define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f)) // Valid ranges: brightness[-1 -> 1 (0 is default)] contrast[0 -> 2 (1 is default)]  gamma[0.5 -> 3.5 (1 is default)] default[ramp is linear]
-static const __int64 SECS_BETWEEN_EPOCHS = 11644473600;
+static const __int64 SECS_BETWEEN_EPOCHS = 11644473600LL;
 static const __int64 SECS_TO_100NS = 10000000;
 
 HANDLE CUtil::m_hCurrentCpuUsage = NULL;
@@ -361,8 +361,8 @@ const CStdString CUtil::GetExtension(const CStdString& strFileName)
   int period = strFileName.find_last_of('.');
   if(period >= 0)
   {
-    if( strFileName.find_first_of('/', period+1) != -1 ) return "";
-    if( strFileName.find_first_of('\\', period+1) != -1 ) return "";
+    if( strFileName.find_first_of('/', period+1) != string::npos ) return "";
+    if( strFileName.find_first_of('\\', period+1) != string::npos ) return "";
 
     /* url options could be at the end of a url */
     const int options = strFileName.find_first_of('?', period+1);
@@ -1406,22 +1406,22 @@ bool CUtil::RunFFPatchedXBE(CStdString szPath1, CStdString& szNewPath)
 {
   if (!g_guiSettings.GetBool("myprograms.autoffpatch"))
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__" - Auto Filter Flicker is off. Skipping Filter Flicker Patching.");
+    CLog::Log(LOGDEBUG, "%s - Auto Filter Flicker is off. Skipping Filter Flicker Patching.", __FUNCTION__);
     return false;
   }
   CStdString strIsPMode = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode;
   if ( strIsPMode.Equals("480p 16:9") || strIsPMode.Equals("480p 4:3") || strIsPMode.Equals("720p 16:9"))
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__" - Progressive Mode detected: Skipping Auto Filter Flicker Patching!");
+    CLog::Log(LOGDEBUG, "%s - Progressive Mode detected: Skipping Auto Filter Flicker Patching!", __FUNCTION__);
     return false;
   }
   if (strncmp(szPath1, "D:", 2) == 0)
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__" - Source is DVD-ROM! Skipping Filter Flicker Patching.");
+    CLog::Log(LOGDEBUG, "%s - Source is DVD-ROM! Skipping Filter Flicker Patching.", __FUNCTION__);
     return false;
   }
 
-  CLog::Log(LOGDEBUG, __FUNCTION__" - Auto Filter Flicker is ON. Starting Filter Flicker Patching.");
+  CLog::Log(LOGDEBUG, "%s - Auto Filter Flicker is ON. Starting Filter Flicker Patching.", __FUNCTION__);
 
   // Test if we already have a patched _ffp XBE
   // Since the FF can be changed in XBMC, we will not check for a pre patched _ffp xbe!
@@ -1442,24 +1442,24 @@ bool CUtil::RunFFPatchedXBE(CStdString szPath1, CStdString& szNewPath)
   CXBE m_xbe;
   if((int)m_xbe.ExtractGameRegion(szPath1.c_str()) <= 0) // Reading the GameRegion is enought to detect a Patchable xbe!
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__" - %s",szPath1.c_str());
-    CLog::Log(LOGDEBUG, __FUNCTION__" - Not Patchable xbe detected (Homebrew?)! Skipping Filter Flicker Patching.");
+    CLog::Log(LOGDEBUG, "%s - %s",szPath1.c_str(), __FUNCTION__);
+    CLog::Log(LOGDEBUG, "%s - Not Patchable xbe detected (Homebrew?)! Skipping Filter Flicker Patching.", __FUNCTION__);
     return false;
   }
 #ifdef HAS_XBOX_HARDWARE
   CGFFPatch m_ffp;
   if (!m_ffp.FFPatch(szPath1, szNewPath))
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__" - ERROR during Filter Flicker Patching. Falling back to the original source.");
+    CLog::Log(LOGDEBUG, "%s - ERROR during Filter Flicker Patching. Falling back to the original source.", __FUNCTION__);
     return false;
   }
 #endif
   if(szNewPath.IsEmpty())
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__" - ERROR NO Patchfile Path is empty! Falling back to the original source.");
+    CLog::Log(LOGDEBUG, "%s - ERROR NO Patchfile Path is empty! Falling back to the original source.", __FUNCTION__);
     return false;
   }
-  CLog::Log(LOGDEBUG, __FUNCTION__" - Filter Flicker Patching done. Starting %s.",szNewPath.c_str());
+  CLog::Log(LOGDEBUG, "%s - Filter Flicker Patching done. Starting %s.", __FUNCTION__, szNewPath.c_str());
   return true;
 }
 
@@ -1568,7 +1568,7 @@ void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParam
     if (szParameters == NULL)
     {
       DWORD error = XLaunchNewImage(szXbe, NULL );
-      CLog::Log(LOGERROR, __FUNCTION__" - XLaunchNewImage returned with error code %d", error);
+      CLog::Log(LOGERROR, "%s - XLaunchNewImage returned with error code %d", __FUNCTION__, error);
     }
     else
     {
@@ -1576,7 +1576,7 @@ void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParam
       strcpy((char*)LaunchData.Data, szParameters);
 
       DWORD error = XLaunchNewImage(szXbe, &LaunchData );
-      CLog::Log(LOGERROR, __FUNCTION__" - XLaunchNewImage returned with error code %d", error);
+      CLog::Log(LOGERROR, "%s - XLaunchNewImage returned with error code %d", __FUNCTION__, error);
     }
   }
 #endif
@@ -1612,6 +1612,7 @@ bool CUtil::HasSlashAtEnd(const CStdString& strFile)
 {
   if (strFile.size() == 0) return false;
   char kar = strFile.c_str()[strFile.size() - 1];
+
   if (kar == '/' || kar == '\\')
     return true;
 
@@ -1853,7 +1854,7 @@ void CUtil::UrlDecode(CStdString& strURLData)
   /* result will always be less than source */
   strResult.reserve( strURLData.length() );
 
-  for (unsigned int i = 0; i < (int)strURLData.size(); ++i)
+  for (unsigned int i = 0; i < strURLData.size(); ++i)
   {
     int kar = (unsigned char)strURLData[i];
     if (kar == '+') strResult += ' ';
@@ -1947,7 +1948,6 @@ bool CUtil::CacheXBEIcon(const CStdString& strFilePath, const CStdString& strIco
   CFile::Delete(strTempFile);
   return success;
 }
-
 
 bool CUtil::GetDirectoryName(const CStdString& strFileName, CStdString& strDescription)
 {
@@ -2069,6 +2069,7 @@ DWORD CUtil::GetXbeID( const CStdString& strFilePath)
       }
     }
   }
+
   return dwReturn;
 }
 
@@ -2319,7 +2320,7 @@ void CUtil::ClearSubtitles()
           strFile.Format("Z:\\%s", wfd.cFileName);
           if (strFile.Find("subtitle") >= 0 )
           {
-            if (strFile.Find(".keep") != strFile.size()-5) // do not remove files ending with .keep
+            if (strFile.Find(".keep") != (signed int) strFile.size()-5) // do not remove files ending with .keep
               ::DeleteFile(strFile.c_str());
           }
           else if (strFile.Find("vobsub_queue") >= 0 )
@@ -2338,7 +2339,7 @@ static char * sub_exts[] = { ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".smi", 
 void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached, XFILE::IFileCallback *pCallback )
 {
   DWORD startTimer = timeGetTime();
-  CLog::Log(LOGDEBUG,__FUNCTION__": START");
+  CLog::Log(LOGDEBUG,"%s: START", __FUNCTION__);
 
   // new array for commons sub dirs
   char * common_sub_dirs[] = {"subs",
@@ -2400,7 +2401,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   }
 
   // checking if any of the common subdirs exist ..
-  CLog::Log(LOGDEBUG,__FUNCTION__": Checking for common subirs...");
+  CLog::Log(LOGDEBUG,"%s: Checking for common subirs...", __FUNCTION__);
   int iSize = strLookInPaths.size();
   for (int i=0;i<iSize;++i)
   {
@@ -2473,14 +2474,14 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   }
 
   DWORD nextTimer = timeGetTime();
-  CLog::Log(LOGDEBUG,__FUNCTION__": Done (time: %i ms)", (int)(nextTimer - startTimer));
+  CLog::Log(LOGDEBUG,"%s: Done (time: %i ms)", __FUNCTION__, (int)(nextTimer - startTimer));
 
   CStdString strLExt;
   CStdString strDest;
   CStdString strItem;
 
   // 2 steps for movie directory and alternate subtitles directory
-  CLog::Log(LOGDEBUG,__FUNCTION__": Searching for subtitles...");
+  CLog::Log(LOGDEBUG,"%s: Searching for subtitles...", __FUNCTION__);
   for (unsigned int step = 0; step < strLookInPaths.size(); step++)
   {
     if (strLookInPaths[step].length() != 0)
@@ -2503,7 +2504,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
           CUtil::AddFileToFolder(strLookInPaths[step],strFileNameNoExt+CUtil::GetExtension(strItem),strRar);
           CUtil::AddFileToFolder(strLookInPaths[step],strItem,strItemWithPath);
 
-          int iPos = strMovie.substr(0,6)=="rar://"?1:0;
+          unsigned int iPos = strMovie.substr(0,6)=="rar://"?1:0;
           iPos = strMovie.substr(0,6)=="zip://"?1:0;
           if ((step != iPos) || (strFileNameNoExtNoCase+".rar").Equals(strItem) || (strFileNameNoExtNoCase+".zip").Equals(strItem))
             CacheRarSubtitles( vecExtensionsCached, items[j]->m_strPath, strFileNameNoExtNoCase);
@@ -2547,7 +2548,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
       g_directoryCache.ClearDirectory(strLookInPaths[step]);
     }
   }
-  CLog::Log(LOGDEBUG,__FUNCTION__": Done (time: %i ms)", (int)(timeGetTime() - nextTimer));
+  CLog::Log(LOGDEBUG,"%s: Done (time: %i ms)", __FUNCTION__, (int)(timeGetTime() - nextTimer));
 
   // rename any keep subtitles
   CFileItemList items;
@@ -2565,7 +2566,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   for (std::vector<CStdString>::iterator it=vecExtensionsCached.begin(); it != vecExtensionsCached.end(); ++it)
     strExtensionCached += *it+" ";
 
-  CLog::Log(LOGDEBUG,__FUNCTION__": END (total time: %i ms)", (int)(timeGetTime() - startTimer));
+  CLog::Log(LOGDEBUG,"%s: END (total time: %i ms)", __FUNCTION__, (int)(timeGetTime() - startTimer));
 }
 
 bool CUtil::CacheRarSubtitles(std::vector<CStdString>& vecExtensionsCached, const CStdString& strRarPath, const CStdString& strCompare, const CStdString& strExtExt)
@@ -3405,7 +3406,7 @@ bool CUtil::IsBuiltIn(const CStdString& execString)
 {
   CStdString function, param;
   SplitExecFunction(execString, function, param);
-  for (int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
+  for (unsigned int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
   {
     if (function.CompareNoCase(commands[i].command) == 0 && (!commands[i].needsParameters || !param.IsEmpty()))
       return true;
@@ -3436,7 +3437,7 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &strFunct
 void CUtil::GetBuiltInHelp(CStdString &help)
 {
   help.Empty();
-  for (int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
+  for (unsigned int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
   {
     help += commands[i].command;
     help += "\t";
@@ -3932,7 +3933,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         if (szParam)
         {
           if (strlen(szParam))
-            fSecs = fSecs = static_cast<float>(atoi(szParam)*60);
+            fSecs = static_cast<float>(atoi(szParam)*60);
           free(szParam);
         }
         szParam = reg.GetReplaceString("\\1");
@@ -4043,7 +4044,6 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     GetSkinThemes(vecTheme);
 
     int iTheme = -1;
-    int iThemes = vecTheme.size();
     CStdString strTmpTheme;
     // find current theme
     if (!g_guiSettings.GetString("lookandfeel.skintheme").Equals("skindefault"))
@@ -4598,9 +4598,9 @@ bool CUtil::SetSysDateTimeYear(int iYear, int iMonth, int iDay, int iHour, int i
 
   CLog::Log(LOGDEBUG, "------------ TimeZone -------------");
   CLog::Log(LOGDEBUG, "-      GMT Zone: GMT %.1f",iGMTZone);
-  CLog::Log(LOGDEBUG, "-          Bias: %i minutes",tziNew.Bias);
-  CLog::Log(LOGDEBUG, "-  DaylightBias: %i",tziNew.DaylightBias);
-  CLog::Log(LOGDEBUG, "-  StandardBias: %i",tziNew.StandardBias);
+  CLog::Log(LOGDEBUG, "-          Bias: %lu minutes",tziNew.Bias);
+  CLog::Log(LOGDEBUG, "-  DaylightBias: %lu",tziNew.DaylightBias);
+  CLog::Log(LOGDEBUG, "-  StandardBias: %lu",tziNew.StandardBias);
 
   switch (dwRet)
   {
@@ -4733,7 +4733,7 @@ if (g_guiSettings.GetBool("autodetect.onoff"))
         CStdString strtemplbl;
         strtemplbl.Format("%s %s",strNickName, v_xboxclients.client_ip[i]);
         g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(1251), strtemplbl);
-        
+
         //Debug Log
         CLog::Log(LOGDEBUG,"%s: %s FTP-Link: %s", g_localizeStrings.Get(1251).c_str(), strNickName.c_str(), strFTPPath.c_str());
 
@@ -4760,7 +4760,7 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
   CStdString strReceiveMessage = "ping";
   int iUDPPort = 4905;
   char sztmp[512];
-	static int udp_server_socket, inited=0;
+  static int udp_server_socket, inited=0;
 	int cliLen, t1,t2,t3,t4, init_counter=0, life=0;
   struct sockaddr_in	server;
   struct sockaddr_in	cliAddr;
@@ -5229,7 +5229,7 @@ double CUtil::AlbumRelevance(const CStdString& strAlbumTemp1, const CStdString& 
 
 CStdString CUtil::SubstitutePath(const CStdString& strFileName)
 {
-  //CLog::Log(LOGDEBUG,__FUNCTION__" checking source filename:[%s]", strFileName.c_str());
+  //CLog::Log(LOGDEBUG,"%s checking source filename:[%s]", __FUNCTION__, strFileName.c_str());
   // substitutes paths to correct issues with remote playlists containing full paths
   for (unsigned int i = 0; i < g_advancedSettings.m_pathSubstitutions.size(); i++)
   {
@@ -5251,7 +5251,7 @@ CStdString CUtil::SubstitutePath(const CStdString& strFileName)
       CUtil::AddSlashAtEnd(strReplace);
 
     // if left most characters match the search, replace them
-    //CLog::Log(LOGDEBUG,__FUNCTION__" testing for path:[%s]", strSearch.c_str());
+    //CLog::Log(LOGDEBUG,"%s testing for path:[%s]", __FUNCTION__, strSearch.c_str());
     int iLen = strSearch.size();
     if (strFileName.Left(iLen).Equals(strSearch))
     {
@@ -5259,12 +5259,12 @@ CStdString CUtil::SubstitutePath(const CStdString& strFileName)
       CStdString strTemp = strFileName.Mid(iLen);
       strTemp.Replace("\\", strReplace.Right(1));
       CStdString strFileNameNew = strReplace + strTemp;
-      //CLog::Log(LOGDEBUG,__FUNCTION__" new filename:[%s]", strFileNameNew.c_str());
+      //CLog::Log(LOGDEBUG,"%s new filename:[%s]", __FUNCTION__, strFileNameNew.c_str());
       return strFileNameNew;
     }
   }
   // nothing matches, return original string
-  //CLog::Log(LOGDEBUG,__FUNCTION__" no matches");
+  //CLog::Log(LOGDEBUG,"%s no matches", __FUNCTION__);
   return strFileName;
 }
 
@@ -5366,7 +5366,7 @@ CStdString CUtil::GetCachedMusicThumb(const CStdString& path)
   RemoveSlashAtEnd(noSlashPath);
   crc.ComputeFromLowerCase(noSlashPath);
   CStdString hex;
-  hex.Format("%08x", crc);
+  hex.Format("%08x", (unsigned __int32) crc);
   CStdString thumb;
   thumb.Format("%s\\%c\\%s.tbn", g_settings.GetMusicThumbFolder().c_str(), hex[0], hex.c_str());
   return thumb;
@@ -5482,10 +5482,10 @@ void CUtil::WipeDir(const CStdString& strPath) // DANGEROUS!!!!
   {
     CLog::Log(LOGDEBUG,"wipe dir %s",items[i]->m_strPath.c_str());
     if (!::RemoveDirectory((items[i]->m_strPath+"\\").c_str()))
-      CLog::Log(LOGDEBUG,"this sucks %u!",GetLastError());
+      CLog::Log(LOGDEBUG,"this sucks %lu!",GetLastError());
   }
   if (!::RemoveDirectory((strPath+"\\").c_str()))
-    CLog::Log(LOGDEBUG,"wtf %u",GetLastError());
+    CLog::Log(LOGDEBUG,"wtf %lu",GetLastError());
 }
 
 void CUtil::ClearFileItemCache()

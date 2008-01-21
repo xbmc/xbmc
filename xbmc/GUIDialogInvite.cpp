@@ -24,7 +24,7 @@
 #include "GUISpinControl.h"
 #include "GUILabelControl.h"
 #include "GUIButtonControl.h"
-#include "Utils/KaiClient.h"
+#include "utils/KaiClient.h"
 #include "ArenaItem.h"
 
 
@@ -101,7 +101,7 @@ bool CGUIDialogInvite::OnMessage(CGUIMessage& message)
               CStdString strGame;
               CGUIList::GUILISTITEMS& list = m_pGames->Lock();
               strVector = ((CArenaItem*)list[nIndex - 1])->m_strVector;
-              CArenaItem::GetTier(CArenaItem::Tier::Game, strVector, strGame);
+              CArenaItem::GetTier(CArenaItem::Game, strVector, strGame);
               m_pGames->Release();
               // Do not localize this message, it may be send to a recipient
               // with a users "foreign language", if he uses xbmc it will be translated

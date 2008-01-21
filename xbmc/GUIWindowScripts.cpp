@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "guiwindowscripts.h"
-#include "util.h"
+#include "GUIWindowScripts.h"
+#include "Util.h"
 #include "lib/libPython/XBPython.h"
 #include "GUIWindowScriptsInfo.h"
 
@@ -134,6 +134,7 @@ void CGUIWindowScripts::Render()
     m_viewControl.SetSelectedItem(selectedItem);
     m_scriptSize = g_pythonParser.ScriptsSize();
   }
+
   CGUIWindow::Render();
 }
 
@@ -150,6 +151,7 @@ bool CGUIWindowScripts::GetDirectory(const CStdString& strDirectory, CFileItemLi
     { // folder item - let's check for a default.py file, and flatten if we have one
       CStdString defaultPY;
       CUtil::AddFileToFolder(item->m_strPath, "default.py", defaultPY);
+
       if (CFile::Exists(defaultPY))
       { // yes, format the item up
         item->m_strPath = defaultPY;
@@ -185,3 +187,4 @@ bool CGUIWindowScripts::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   }
   return CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
+

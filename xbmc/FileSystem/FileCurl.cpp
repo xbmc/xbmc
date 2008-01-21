@@ -131,7 +131,7 @@ size_t CFileCurl::WriteCallback(char *buffer, size_t size, size_t nitems)
     m_overflowBuffer = (char*)realloc_simple(m_overflowBuffer, amount + m_overflowSize);
     if(m_overflowBuffer == NULL)
     {
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Failed to grow overflow buffer");
+      CLog::Log(LOGDEBUG, "%s - Failed to grow overflow buffer", __FUNCTION__);
       return 0;
     }
     memcpy(m_overflowBuffer + m_overflowSize, buffer, amount);
@@ -528,7 +528,7 @@ bool CFileCurl::ReadString(char *szLine, int iLineLength)
   /* check if we finished prematurely */
   if (!m_stillRunning && m_fileSize && m_filePos != m_fileSize && !want)
   {
-    CLog::Log(LOGWARNING, __FUNCTION__" - Transfer ended before entire file was retreived pos %d, size %d", m_filePos, m_fileSize);
+    CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retreived pos %lld, size %lld", __FUNCTION__, m_filePos, m_fileSize);
     return false;
   }
 
@@ -579,7 +579,6 @@ __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
   {
     // if we can't be sure we can seek, abort here
     if( !m_seekable ) {
-
       if((nextPos - m_filePos) < m_bufferSize)
       {
         int len = m_buffer.GetMaxReadSize();
@@ -589,9 +588,9 @@ __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
 
         if(!m_buffer.SkipBytes((int)(nextPos - m_filePos)))
         {
-          CLog::Log(LOGERROR, __FUNCTION__" - Failed to skip to position after having filled buffer");
+          CLog::Log(LOGERROR, "%s - Failed to skip to position after having filled buffer", __FUNCTION__);
           if(!m_buffer.SkipBytes(-len))
-            CLog::Log(LOGERROR, __FUNCTION__" - Failed to restore position after failed seek");
+            CLog::Log(LOGERROR, "%s - Failed to restore position after failed seek", __FUNCTION__);
           else
             m_filePos -= len;
           return -1;
@@ -600,7 +599,7 @@ __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
         return m_filePos;
       }
 
-      CLog::Log(LOGWARNING, __FUNCTION__" - Seek failed in nonseekable file");
+      CLog::Log(LOGWARNING, "%s - Seek failed in nonseekable file", __FUNCTION__);
       return -1;
     }
 
@@ -611,7 +610,8 @@ __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
     SetRequestHeaders();
 
     /* set offset */
-    CURLcode ret = g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RESUME_FROM_LARGE, nextPos);
+    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RESUME_FROM_LARGE, nextPos);
+
 //    if (CURLE_OK == ret)
 //      CLog::Log(LOGDEBUG, "FileCurl::Seek(%p) - resetting file fetch to %i (successful)", this, nextPos);
 //    else
@@ -652,7 +652,7 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
   // if file is already running, get infor from it
   if( m_opened )
   {
-    CLog::Log(LOGWARNING, __FUNCTION__" - Stat called on open file");
+    CLog::Log(LOGWARNING, "%s - Stat called on open file", __FUNCTION__);
     buffer->st_size = GetLength();
 		buffer->st_mode = _S_IFREG;
     return 0;
@@ -751,7 +751,7 @@ unsigned int CFileCurl::Read(void* lpBuf, __int64 uiBufSize)
   /* check if we finished prematurely */
   if (!m_stillRunning && m_fileSize && m_filePos != m_fileSize)
   {
-    CLog::Log(LOGWARNING, __FUNCTION__" - Transfer ended before entire file was retreived pos %d, size %d", m_filePos, m_fileSize);
+    CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retreived pos %lld, size %lld", __FUNCTION__, m_filePos, m_fileSize);
     return 0;
   }
 
@@ -768,7 +768,7 @@ bool CFileCurl::FillBuffer(unsigned int want)
 
   // only attempt to fill buffer if transactions still running and buffer
   // doesnt exceed required size already
-  while (m_buffer.GetMaxReadSize() < want && m_buffer.GetMaxWriteSize() > 0 )
+  while ((unsigned int)m_buffer.GetMaxReadSize() < want && m_buffer.GetMaxWriteSize() > 0 )
   {
     /* if there is data in overflow buffer, try to use that first */
     if(m_overflowSize)
@@ -850,7 +850,7 @@ bool CFileCurl::FillBuffer(unsigned int want)
       break;
       default:
       {
-        CLog::Log(LOGERROR, __FUNCTION__" - curl multi perform failed with code %d, aborting", result);
+        CLog::Log(LOGERROR, "%s - curl multi perform failed with code %d, aborting", __FUNCTION__, result);
         return false;
       }
       break;
@@ -893,7 +893,7 @@ bool CFileCurl::GetHttpHeader(const CURL &url, CHttpHeader &headers)
   {
     CStdString path;
     url.GetURL(path);
-    CLog::Log(LOGERROR, __FUNCTION__" - Exception thrown while trying to retrieve header url: %s", path.c_str());
+    CLog::Log(LOGERROR, "%s - Exception thrown while trying to retrieve header url: %s", __FUNCTION__, path.c_str());
     return false;
   }
 }

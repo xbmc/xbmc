@@ -215,3 +215,4 @@ unsigned CDVDMessageQueue::GetPacketCount(CDVDMsg::Message type)
   LeaveCriticalSection(&m_critSection);
   return count;
 }
+

@@ -9,12 +9,13 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "event.h"
+#include "Event.h"
 
 class IRunnable
 {
 public:
   virtual void Run()=0;
+  virtual ~IRunnable() {}
 };
 
 #ifdef CTHREAD
@@ -65,7 +66,7 @@ private:
   float m_fLastUsage;
 
 private:
-  static DWORD WINAPI CThread::staticThread(LPVOID* data);
+  static DWORD WINAPI staticThread(LPVOID* data);
 };
 
 #endif // !defined(AFX_THREAD_H__ACFB7357_B961_4AC1_9FB2_779526219817__INCLUDED_)

@@ -37,9 +37,7 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
     return false;
   
   // display progress dialog after 1 seconds
-  DWORD dwTimeStamp = GetTickCount();//+ 1000;
   CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  bool dialogopen = false;
   int iProgressPercent = 0;
   if (dlgProgress)
   {
@@ -147,8 +145,8 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
       TiXmlElement *root = doc.RootElement();
       if(root == NULL)
       {
-        CLog::Log(LOGERROR, __FUNCTION__" - Unable to parse xml");
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Sample follows...\n%s", data.c_str());
+        CLog::Log(LOGERROR, "%s - Unable to parse xml", __FUNCTION__);
+        CLog::Log(LOGDEBUG, "%s - Sample follows...\n%s", __FUNCTION__, data.c_str());
         dlgProgress->Close();
         return false;
       }
@@ -171,8 +169,8 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
       }
       else
       {
-        CLog::Log(LOGERROR, __FUNCTION__" - Invalid root xml element for TuxBox");
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Sample follows...\n%s", data.c_str());
+        CLog::Log(LOGERROR, "%s - Invalid root xml element for TuxBox", __FUNCTION__);
+        CLog::Log(LOGDEBUG, "%s - Sample follows...\n%s", __FUNCTION__, data.c_str());
         data.Empty();
         result = false;
       }
@@ -210,7 +208,7 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
       iProgressPercent=iProgressPercent+5;
       UpdateProgress(dlgProgress, strLine1, strLine2, iProgressPercent, false);
       
-      CLog::Log(LOGERROR, __FUNCTION__" - Unable to get XML structure! Try count:%i, Wait Timer:%is",iTryConnect, iWaitTimer);
+      CLog::Log(LOGERROR, "%s - Unable to get XML structure! Try count:%i, Wait Timer:%is",__FUNCTION__, iTryConnect, iWaitTimer);
       iTryConnect++;
       iWaitTimer = iWaitTimer+10;
       result = false;
@@ -231,7 +229,7 @@ bool CDirectoryTuxBox::GetRootAndChildString(const CStdString strPath, CStdStrin
   //Advanced Settings: RootMode! Movies: 
   if(g_advancedSettings.m_iTuxBoxDefaultRootMenu == 3) //Movies! Fixed-> mode=3&submode=4
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Default defined RootMenu : (3) Movies");
+    CLog::Log(LOGERROR, "%s - Default defined RootMenu : (3) Movies", __FUNCTION__);
     strBQRequest = "xml/services?mode=3&submode=4"; 
     strXMLRootString.Format("movies");
     strXMLChildString.Format("service");
@@ -248,7 +246,7 @@ bool CDirectoryTuxBox::GetRootAndChildString(const CStdString strPath, CStdStrin
     //Advanced Settings: SubMenu!
     if(g_advancedSettings.m_bTuxBoxSubMenuSelection)
     {
-      CLog::Log(LOGDEBUG, __FUNCTION__" SubMenu Channel Selection is Enabled! Requesting Submenu!");
+      CLog::Log(LOGDEBUG, "%s SubMenu Channel Selection is Enabled! Requesting Submenu!", __FUNCTION__);
       // DeActivated: Timing Problems, bug in TuxBox.. etc.!
       bool bReqMoRe = true;
       // Detect the RootMode !
@@ -275,28 +273,28 @@ bool CDirectoryTuxBox::GetRootAndChildString(const CStdString strPath, CStdStrin
       //Advanced Settings: Set Default Subemnu
       if(g_advancedSettings.m_iTuxBoxDefaultSubMenu == 1)
       {
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Default defined SubMenu : (1) Services");
+        CLog::Log(LOGDEBUG, "%s - Default defined SubMenu : (1) Services", __FUNCTION__);
         strBQRequest = "xml/services?mode=0&submode=1"; //Services
         strXMLRootString.Format("services");
         strXMLChildString.Format("service");
       }
       else if(g_advancedSettings.m_iTuxBoxDefaultSubMenu == 2)
       {
-        CLog::Log(LOGERROR, __FUNCTION__" - Default defined SubMenu : (2) Satellites");
+        CLog::Log(LOGERROR, "%s - Default defined SubMenu : (2) Satellites", __FUNCTION__);
         strBQRequest = "xml/services?mode=0&submode=2"; //Satellites
         strXMLRootString.Format("satellites");
         strXMLChildString.Format("satellite");
       }
       else if(g_advancedSettings.m_iTuxBoxDefaultSubMenu == 3)
       {
-        CLog::Log(LOGERROR, __FUNCTION__" - Default defined SubMenu : (3) Providers");
+        CLog::Log(LOGERROR, "%s - Default defined SubMenu : (3) Providers", __FUNCTION__);
         strBQRequest = "xml/services?mode=0&submode=3"; //Providers
         strXMLRootString.Format("providers");
         strXMLChildString.Format("provider");
       }
       else
       {
-        CLog::Log(LOGERROR, __FUNCTION__" - Default defined SubMenu : (4) Bouquets");
+        CLog::Log(LOGERROR, "%s - Default defined SubMenu : (4) Bouquets", __FUNCTION__);
         strBQRequest = "xml/services?mode=0&submode=4"; //Bouquets
         strXMLRootString.Format("bouquets");
         strXMLChildString.Format("bouquet");

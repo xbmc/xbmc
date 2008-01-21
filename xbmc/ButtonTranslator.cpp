@@ -21,8 +21,8 @@
 
 #include "stdafx.h"
 #include "ButtonTranslator.h"
-#include "util.h"
-#include "settings.h"
+#include "Util.h"
+#include "Settings.h"
 #include "SkinInfo.h"
 #include "Key.h"
 
@@ -43,7 +43,7 @@ bool CButtonTranslator::Load()
   // Load the config file
   CStdString keymapPath;
   //CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Keymap.xml", keymapPath);
-  keymapPath = g_settings.GetUserDataItem("keymap.xml");
+  keymapPath = g_settings.GetUserDataItem("Keymap.xml");
   CLog::Log(LOGINFO, "Loading %s", keymapPath.c_str());
   if (!xmlDoc.LoadFile(keymapPath))
   {
@@ -65,15 +65,17 @@ bool CButtonTranslator::Load()
   {
     WORD wWindowID = WINDOW_INVALID;
     const char *szWindow = pWindow->Value();
-    if (szWindow)
     {
-      if (strcmpi(szWindow, "global") == 0)
-        wWindowID = -1;
-      else
-        wWindowID = TranslateWindowString(szWindow);
+      if (szWindow)
+      {
+        if (strcmpi(szWindow, "global") == 0)
+          wWindowID = (WORD) -1;
+        else
+          wWindowID = TranslateWindowString(szWindow);
+      }
+      MapWindowActions(pWindow, wWindowID);
+      pWindow = pWindow->NextSibling();
     }
-    MapWindowActions(pWindow, wWindowID);
-    pWindow = pWindow->NextSibling();
   }
   // Done!
   return true;
@@ -86,7 +88,7 @@ void CButtonTranslator::GetAction(WORD wWindow, const CKey &key, CAction &action
   WORD wAction = GetActionCode(wWindow, key, strAction);
   // if it's invalid, try to get it from the global map
   if (wAction == 0)
-    wAction = GetActionCode( -1, key, strAction);
+    wAction = GetActionCode( (WORD) -1, key, strAction);
   // Now fill our action structure
   action.wID = wAction;
   action.strAction = strAction;
@@ -358,7 +360,6 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, WORD &wActio
   else if (strAction.Equals("decreaserating")) wAction = ACTION_DECREASE_RATING;
   else if (strAction.Equals("nextscene")) wAction = ACTION_NEXT_SCENE;
   else if (strAction.Equals("previousscene")) wAction = ACTION_PREV_SCENE;
-
   else
     CLog::Log(LOGERROR, "Keymapping error: no such action '%s' defined", strAction.c_str());
   return (wAction != ACTION_NONE);
@@ -672,3 +673,4 @@ void CButtonTranslator::Clear()
   translatorMap.clear();
 
 }
+

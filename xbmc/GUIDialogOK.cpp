@@ -63,3 +63,4 @@ void CGUIDialogOK::ShowAndGetInput(int heading, int line0, int line1, int line2)
   dialog->DoModal();
   return ;
 }
+

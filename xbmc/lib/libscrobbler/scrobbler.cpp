@@ -23,9 +23,9 @@
 #include "../../utils/md5.h"
 #include "../../utils/CharsetConverter.h"
 #include "../../utils/log.h"
-#include "../../utils/http.h"
-#include "../../util.h"
-#include "../../application.h"
+#include "../../utils/HTTP.h"
+#include "../../Util.h"
+#include "../../Application.h"
 
 using namespace XFILE;
 
