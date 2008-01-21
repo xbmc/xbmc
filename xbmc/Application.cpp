@@ -4834,13 +4834,12 @@ void CApplication::Restart(bool bSamePosition)
   // get player state, needed for dvd's
   CStdString state = m_pPlayer->GetPlayerState();
 
+  // set the requested starttime
+  m_itemCurrentFile.m_lStartOffset = time * 75.0;
+
   // reopen the file
   if ( PlayFile(m_itemCurrentFile, true) && m_pPlayer )
-  {
-    // and seek to the position
     m_pPlayer->SetPlayerState(state);
-    SeekTime(time);
-  }
 }
 
 const CStdString& CApplication::CurrentFile()
