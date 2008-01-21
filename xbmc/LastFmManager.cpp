@@ -136,7 +136,7 @@ bool CLastFmManager::RadioHandShake()
   Parameter("subscriber", html, m_RadioSubscriber);
   Parameter("banned",     html, m_RadioBanned);
 
-  if (m_RadioSession == "failed")
+  if (m_RadioSession == "FAILED")
   {
     CLog::Log(LOGERROR, "Last.fm return failed response, possible bad username or password?");
     m_RadioSession = "";
@@ -202,6 +202,7 @@ bool CLastFmManager::ChangeStation(const CURL& stationUrl)
   if (!RadioHandShake())
   {
     CloseProgressDialog();
+    CGUIDialogOK::ShowAndGetInput(15200, 15206, 0, 0);
     return false;
   }
 
