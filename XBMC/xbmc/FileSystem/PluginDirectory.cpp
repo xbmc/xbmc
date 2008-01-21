@@ -56,7 +56,7 @@ bool CPluginDirectory::AddItem(int handle, const CFileItem *item, int totalItems
 {
   if (handle < 0 || handle >= (int)globalHandles.size())
   {
-    CLog::Log(LOGERROR, __FUNCTION__" called with an invalid handle.");
+    CLog::Log(LOGERROR, " %s - called with an invalid handle.", __FUNCTION__);
     return false;
   }
   
@@ -72,7 +72,7 @@ void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceList
 {
   if (handle < 0 || handle >= (int)globalHandles.size())
   {
-    CLog::Log(LOGERROR, __FUNCTION__" called with an invalid handle.");
+    CLog::Log(LOGERROR, " %s - called with an invalid handle.", __FUNCTION__);
     return;
   }
   CPluginDirectory *dir = globalHandles[handle];
@@ -90,7 +90,7 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
 {
   if (handle < 0 || handle >= (int)globalHandles.size())
   {
-    CLog::Log(LOGERROR, __FUNCTION__" called with an invalid handle.");
+    CLog::Log(LOGERROR, "%s - called with an invalid handle.", __FUNCTION__);
     return;
   }
 
@@ -242,7 +242,7 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
                                     // is needed for all others, as XBMC adds slashes to "folders"
 
   // Load the plugin settings
-  CLog::Log(LOGDEBUG, __FUNCTION__"URL for plugin settings: %s", url.GetFileName().c_str() );
+  CLog::Log(LOGDEBUG, "%s - URL for plugin settings: %s", __FUNCTION__, url.GetFileName().c_str() );
   g_currentPluginSettings.Load(url);
 
   // Load language strings
@@ -262,15 +262,12 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
   // setup our parameters to send the script
   CStdString strHandle;
   strHandle.Format("%i", handle);
-  const char *argv[3];
-  argv[0] = basePath.c_str();
-  argv[1] = strHandle.c_str();
-  argv[2] = options.c_str();
+  const char *plugin_argv[] = {basePath.c_str(), strHandle.c_str(), options.c_str(), NULL };
 
   // run the script
-  CLog::Log(LOGDEBUG, __FUNCTION__" - calling plugin %s('%s','%s','%s')", pathToScript.c_str(), argv[0], argv[1], argv[2]);
+  CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, pathToScript.c_str(), plugin_argv[0], plugin_argv[1], plugin_argv[2]);
   bool success = false;
-  if (g_pythonParser.evalFile(pathToScript.c_str(), 3, (const char**)argv) >= 0)
+  if (g_pythonParser.evalFile(pathToScript.c_str(), 3, (const char**)plugin_argv) >= 0)
   { // wait for our script to finish
     CStdString scriptName = url.GetFileName();
     CUtil::RemoveSlashAtEnd(scriptName);
@@ -328,7 +325,7 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
   argv[2] = options.c_str();
 
   // run the script
-  CLog::Log(LOGDEBUG, __FUNCTION__" - calling plugin %s('%s','%s','%s')", pathToScript.c_str(), argv[0], argv[1], argv[2]);
+  CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, pathToScript.c_str(), argv[0], argv[1], argv[2]);
   if (g_pythonParser.evalFile(pathToScript.c_str(), 3, (const char**)argv) >= 0)
     return true;
   else
@@ -408,20 +405,20 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
   DWORD startTime = timeGetTime();
   CGUIDialogProgress *progressBar = NULL;
 
-  CLog::Log(LOGDEBUG, __FUNCTION__" - waiting on the %s plugin...", scriptName.c_str());
+  CLog::Log(LOGDEBUG, "%s - waiting on the %s plugin...", __FUNCTION__, scriptName.c_str());
   while (true)
   {
     // check if the python script is finished
     if (WaitForSingleObject(m_directoryFetched, 20) == WAIT_OBJECT_0)
     { // python has returned
-      CLog::Log(LOGDEBUG, __FUNCTION__" plugin returned %s", m_success ? "successfully" : "failure");
+      CLog::Log(LOGDEBUG, "%s- plugin returned %s", __FUNCTION__, m_success ? "successfully" : "failure");
       break;
     }
     // check our script is still running
     int id = g_pythonParser.getScriptId(scriptPath.c_str());
     if (id == -1)
     { // nope - bail
-      CLog::Log(LOGDEBUG, __FUNCTION__" plugin exited prematurely - terminating");
+      CLog::Log(LOGDEBUG, " %s - plugin exited prematurely - terminating", __FUNCTION__);
       m_success = false;
       break;
     }
@@ -465,7 +462,7 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
           int id = g_pythonParser.getScriptId(scriptPath.c_str());
           if (id != -1 && g_pythonParser.isRunning(id))
           {
-            CLog::Log(LOGDEBUG, __FUNCTION__" cancelling plugin %s", scriptName.c_str());
+            CLog::Log(LOGDEBUG, "%s- cancelling plugin %s", __FUNCTION__, scriptName.c_str());
             g_pythonParser.stopScript(id);
             break;
           }
@@ -522,3 +519,4 @@ void CPluginDirectory::ClearPluginStrings()
   // Unload temporary language strings
   g_localizeStringsTemp.Clear();
 }
+

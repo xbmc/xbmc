@@ -20,9 +20,9 @@
  */
 
 #include "stdafx.h"
-#include "flactag.h"
-#include "util.h"
-#include "picture.h"
+#include "FlacTag.h"
+#include "Util.h"
+#include "Picture.h"
 
 #define BYTES_TO_CHECK_FOR_BAD_TAGS 8192
 
@@ -119,16 +119,16 @@ bool CFlacTag::Read(const CStdString& strFile)
 
     // read the mime type
     unsigned int size = ReadUnsigned();
-    m_file->Read(info, min(size, 1023));
-    info[min(size, 1023)] = 0;
+    m_file->Read(info, min(size, (unsigned int) 1023));
+    info[min(size, (unsigned int) 1023)] = 0;
     if (size > 1023)
       m_file->Seek(size - 1023, SEEK_CUR);
     CStdString mimeType = info;
 
     // now the description
     size = ReadUnsigned();
-    m_file->Read(info, min(size, 1023));
-    info[min(size, 1023)] = 0;
+    m_file->Read(info, min(size, (unsigned int) 1023));
+    info[min(size, (unsigned int) 1023)] = 0;
     if (size > 1023)
       m_file->Seek(size - 1023, SEEK_CUR);
 
@@ -153,7 +153,7 @@ bool CFlacTag::Read(const CStdString& strFile)
       else
       {
         CUtil::ThumbCacheAdd(strCoverArt, false);
-        CLog::Log(LOGERROR, __FUNCTION__" Unable to create album art for %s (extension=%s, size=%d)", m_musicInfoTag.GetURL().c_str(), mimeType.c_str(), picSize);
+        CLog::Log(LOGERROR, "%s Unable to create album art for %s (extension=%s, size=%d)", __FUNCTION__, m_musicInfoTag.GetURL().c_str(), mimeType.c_str(), picSize);
       }
       delete[] picData;
     }
@@ -176,7 +176,7 @@ int CFlacTag::ReadFlacHeader(void)
   m_file->Seek(iPos + 14, SEEK_SET);  // seek to the frequency and duration data
   m_file->Read(buffer, 8);    // read 64 bits of data
   int iFreq = (buffer[0] << 12) | (buffer[1] << 4) | (buffer[2] >> 4);
-  __int64 iNumSamples = (__int64(buffer[3] & 0x0F) << 32) | (__int64(buffer[4]) << 24) | (buffer[5] << 16) | (buffer[6] << 8) | buffer[7];
+  __int64 iNumSamples = ( (__int64) (buffer[3] & 0x0F) << 32) | ( (__int64) buffer[4] << 24) | (buffer[5] << 16) | (buffer[6] << 8) | buffer[7];
   m_musicInfoTag.SetDuration((int)((iNumSamples) / iFreq));
   return iPos + 38;
 }
@@ -235,3 +235,4 @@ unsigned int CFlacTag::ReadUnsigned()
   m_file->Read(size, 4);
   return ((unsigned int)size[0] << 24) + ((unsigned int)size[1] << 16) + ((unsigned int)size[2] << 8) + (unsigned int)size[3];
 }
+

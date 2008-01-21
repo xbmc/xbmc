@@ -33,7 +33,7 @@
 #define POPUP_SEEK_LABEL      402
 
 CGUIDialogSeekBar::CGUIDialogSeekBar(void)
-    : CGUIDialog(WINDOW_DIALOG_SEEK_BAR, "DialogSeekbar.xml")
+    : CGUIDialog(WINDOW_DIALOG_SEEK_BAR, "DialogSeekBar.xml")
 {
   m_fSeekPercentage = 0.0f;
   m_bRequireSeek = false;
@@ -167,3 +167,4 @@ CStdString CGUIDialogSeekBar::GetSeekTimeLabel(TIME_FORMAT format)
   StringUtils::SecondsToTimeString(time, strHMS, format);
   return strHMS;
 }
+

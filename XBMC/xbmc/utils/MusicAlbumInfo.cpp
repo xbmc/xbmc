@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include ".\musicalbuminfo.h"
-#include ".\htmltable.h"
-#include ".\htmlutil.h"
+#include "./MusicAlbumInfo.h"
+#include "./HTMLTable.h"
+#include "./HTMLUtil.h"
 
 using namespace MUSIC_GRABBER;
 using namespace HTML;

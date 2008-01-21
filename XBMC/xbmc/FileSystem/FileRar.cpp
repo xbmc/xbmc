@@ -245,7 +245,7 @@ unsigned int CFileRar::Read(void *lpBuf, __int64 uiBufSize)
   
   if( WaitForSingleObject(m_pExtract->GetDataIO().hBufferEmpty,5000) == WAIT_TIMEOUT )
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Timeout waiting for buffer to empty");
+    CLog::Log(LOGERROR, "%s - Timeout waiting for buffer to empty", __FUNCTION__);
     return 0;
   }
 
@@ -352,7 +352,7 @@ __int64 CFileRar::Seek(__int64 iFilePosition, int iWhence)
   
   if( WaitForSingleObject(m_pExtract->GetDataIO().hBufferEmpty,SEEKTIMOUT) == WAIT_TIMEOUT )
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Timeout waiting for buffer to empty");
+    CLog::Log(LOGERROR, "%s - Timeout waiting for buffer to empty", __FUNCTION__);
     return -1;
   }
 
@@ -406,7 +406,7 @@ __int64 CFileRar::Seek(__int64 iFilePosition, int iWhence)
     
     if( WaitForSingleObject(m_pExtract->GetDataIO().hBufferEmpty,SEEKTIMOUT) == WAIT_TIMEOUT )
     {
-      CLog::Log(LOGERROR, __FUNCTION__" - Timeout waiting for buffer to empty");
+      CLog::Log(LOGERROR, "%s - Timeout waiting for buffer to empty", __FUNCTION__);
       return -1;
     }
     SetEvent(m_pExtract->GetDataIO().hBufferEmpty);
@@ -420,7 +420,7 @@ __int64 CFileRar::Seek(__int64 iFilePosition, int iWhence)
   SetEvent(m_pExtract->GetDataIO().hBufferFilled);
   if( WaitForSingleObject(m_pExtract->GetDataIO().hSeekDone,SEEKTIMOUT) == WAIT_TIMEOUT )
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Timeout waiting for seek to finish");
+    CLog::Log(LOGERROR, "%s - Timeout waiting for seek to finish", __FUNCTION__);
     return -1;
   }
 
@@ -432,7 +432,7 @@ __int64 CFileRar::Seek(__int64 iFilePosition, int iWhence)
 
   if( WaitForSingleObject(m_pExtract->GetDataIO().hBufferEmpty,SEEKTIMOUT) == WAIT_TIMEOUT )
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Timeout waiting for buffer to empty");
+    CLog::Log(LOGERROR, "%s - Timeout waiting for buffer to empty", __FUNCTION__);
     return -1;
   }
   m_iDataInBuffer = m_pExtract->GetDataIO().m_iSeekTo; // keep data

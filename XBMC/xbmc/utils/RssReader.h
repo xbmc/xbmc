@@ -20,6 +20,7 @@ class IRssObserver
 {
 public:
   virtual void OnFeedUpdate(const vector<DWORD> &feed) = 0;
+  virtual ~IRssObserver() {}
 };
 
 class CRssReader : public CThread

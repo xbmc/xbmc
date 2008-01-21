@@ -15,6 +15,7 @@
 class DllDvdNavInterface
 {
 public:
+  virtual ~DllDvdNavInterface() {}
   virtual dvdnav_status_t dvdnav_open(dvdnav_t **dest, const char *path)=0;
   virtual dvdnav_status_t dvdnav_close(dvdnav_t *self)=0;
   virtual dvdnav_status_t dvdnav_reset(dvdnav_t *self)=0;

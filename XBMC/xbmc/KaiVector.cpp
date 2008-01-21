@@ -25,8 +25,8 @@
 
 #include "stdafx.h"
 #include "KaiVector.h"
-#include "util.h"
-#include "utils/http.h"
+#include "Util.h"
+#include "utils/HTTP.h"
 
 
 //////////////////////////////////////////////////////////////////////
@@ -222,3 +222,4 @@ CKaiVector* CKaiVector::From(CStdString& strUrl)
 
   return pDoc;
 }
+

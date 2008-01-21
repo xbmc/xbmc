@@ -12,7 +12,7 @@
 #ifndef __STRINGUTILS_H_
 #define __STRINGUTILS_H_
 
-#include "..\guilib\StdString.h"
+#include "../guilib/StdString.h"
 #include <vector>
 
 using namespace std;
@@ -39,7 +39,7 @@ public:
   static void RemoveCRLF(CStdString& strLine);
   static void SecondsToTimeString( long lSeconds, CStdString& strHMS, TIME_FORMAT format = TIME_FORMAT_GUESS);
   static bool IsNaturalNumber(const CStdString& str);
-  static CStdString StringUtils::SizeToString(__int64 size);
+  static CStdString SizeToString(__int64 size);
   static const CStdString EmptyString;
   static bool FindWords(const char *str, const char *wordLowerCase);
   static int FindEndBracket(const CStdString &str, char opener, char closer, int startPos = 0);

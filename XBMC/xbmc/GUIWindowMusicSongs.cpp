@@ -22,9 +22,9 @@
 #include "stdafx.h"
 #include "GUIWindowMusicSongs.h"
 #include "Util.h"
-#include "Utils/GUIInfoManager.h"
+#include "utils/GUIInfoManager.h"
 #include "Application.h"
-#include "CUEDocument.h"
+#include "CueDocument.h"
 #include "GUIPassword.h"
 #include "GUIDialogMusicScan.h"
 
@@ -483,6 +483,8 @@ bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button
   case CONTEXT_BUTTON_SWITCH_MEDIA:
 		CGUIDialogContextMenu::SwitchMedia("music", m_vecItems.m_strPath);
 		return true;
+  default:
+    break;
   }
   return CGUIWindowMusicBase::OnContextButton(itemNumber, button);
 }

@@ -11,28 +11,28 @@
 
 /********************************* Includes ***********************************/
 
-#pragma once
-
 #include "stdafx.h"
-#include "xbmcweb.h"
-#include "..\..\Application.h"
+#include "XBMCweb.h"
+#include "../../Application.h"
 
-#include "..\..\util.h"
-#include "..\..\playlistplayer.h"
-#include "..\..\filesystem\CDDADirectory.h"
-#include "..\..\filesystem\zipmanager.h"
-#include "..\..\playlistfactory.h"
-#include "..\..\utils\GUIInfoManager.h"
-#include "..\..\MusicInfoTagLoaderFactory.h"
-#include "..\..\MusicDatabase.h"
+#include "../../Util.h"
+#include "../../PlayListPlayer.h"
+#include "../../FileSystem/CDDADirectory.h"
+#include "../../FileSystem/ZipManager.h"
+#include "../../PlayListFactory.h"
+#include "../../utils/GUIInfoManager.h"
+#include "../../musicInfoTagLoaderFactory.h"
+#include "../../MusicDatabase.h"
 
 using namespace DIRECTORY;
 using namespace PLAYLIST;
 
+#ifndef __GNUC__
 #pragma code_seg("WEB_TEXT")
 #pragma data_seg("WEB_DATA")
 #pragma bss_seg("WEB_BSS")
 #pragma const_seg("WEB_RD")
+#endif
 
 #define XML_MAX_INNERTEXT_SIZE 256
 #define NO_EID -1

@@ -16,9 +16,10 @@ public:
   bool Has480p() const;
   bool Has720p() const;
   bool Has1080i() const;
-  bool HasHDPack() const;
 
+  bool HasHDPack() const;
   CStdString GetAVPack() const;
+
   void GetModes(LPDIRECT3D8 pD3D);
   RESOLUTION GetSafeMode() const;
   RESOLUTION GetBestMode() const;
@@ -33,6 +34,7 @@ public:
   void SetNormal();
   void SetLetterbox(bool bEnable);
   void SetWidescreen(bool bEnable);
+
 
   bool NeedsSave();
   void Save();

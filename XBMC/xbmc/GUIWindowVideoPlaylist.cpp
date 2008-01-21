@@ -20,7 +20,7 @@
  */
 
 #include "stdafx.h"
-#include "GUIWindowVideoPlayList.h"
+#include "GUIWindowVideoPlaylist.h"
 #include "PlayListFactory.h"
 #include "Util.h"
 #include "PlayListM3U.h"
@@ -389,7 +389,6 @@ void CGUIWindowVideoPlaylist::SavePlayList()
 
 void CGUIWindowVideoPlaylist::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
-  bool isPlaying = (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO) && (g_application.IsPlayingVideo());
   int itemPlaying = g_playlistPlayer.GetCurrentSong();
   if (m_movingFrom >= 0)
   {
@@ -450,6 +449,7 @@ bool CGUIWindowVideoPlaylist::OnContextButton(int itemNumber, CONTEXT_BUTTON but
     g_partyModeManager.Disable();
     return true;
   case CONTEXT_BUTTON_EDIT_PARTYMODE:
+  {
     CStdString playlist = "P:\\PartyMode-Video.xsp";
     if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist))
     {
@@ -458,6 +458,9 @@ bool CGUIWindowVideoPlaylist::OnContextButton(int itemNumber, CONTEXT_BUTTON but
       g_partyModeManager.Enable(PARTYMODECONTEXT_VIDEO);
     }
     return true;
+  }
+  default:
+    break;
   }
 
   return CGUIWindowVideoBase::OnContextButton(itemNumber, button);
@@ -513,3 +516,4 @@ void CGUIWindowVideoPlaylist::MarkPlaying()
       m_vecItems[iSong]->Select(true);
   }*/
 }
+

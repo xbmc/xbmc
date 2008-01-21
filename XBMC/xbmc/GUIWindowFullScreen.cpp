@@ -89,7 +89,7 @@
 static DWORD color[6] = { 0xFFFFFF00, 0xFFFFFFFF, 0xFF0099FF, 0xFF00FF00, 0xFFCCFF00, 0xFF00FFFF };
 
 CGUIWindowFullScreen::CGUIWindowFullScreen(void)
-    : CGUIWindow(WINDOW_FULLSCREEN_VIDEO, "VideoFullscreen.xml")
+    : CGUIWindow(WINDOW_FULLSCREEN_VIDEO, "VideoFullScreen.xml")
 {
   m_timeCodeStamp[0] = 0;
   m_timeCodePosition = 0;
@@ -435,7 +435,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       {
         CSingleLock lock (m_fontLock);
 
-        CStdString fontPath = "Q:\\Media\\Fonts\\";
+        CStdString fontPath = "Q:\\media\\Fonts\\";
         fontPath += g_guiSettings.GetString("subtitles.font");
         CGUIFont *subFont = g_fontManager.LoadTTF("__subtitle__", fontPath, color[g_guiSettings.GetInt("subtitles.color")], 0, g_guiSettings.GetInt("subtitles.height"), g_guiSettings.GetInt("subtitles.style"));
         if (!subFont)

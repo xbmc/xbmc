@@ -20,8 +20,8 @@
  */
 
 #include "stdafx.h"
-#include ".\profile.h"
-#include "utils/guiinfomanager.h"
+#include "Profile.h"
+#include "utils/GUIInfoManager.h"
 
 CProfile::CProfile(void)
 {

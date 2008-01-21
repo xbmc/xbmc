@@ -123,3 +123,4 @@ bool CMusicInfoTagLoaderMod::getFile(CStdString& strFile, const CStdString& strS
 	
 	return( true );
 }
+

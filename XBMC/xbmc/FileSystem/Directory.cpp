@@ -62,9 +62,9 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
   }
   catch (...) 
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception");    
+    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);    
   }
-  CLog::Log(LOGERROR, __FUNCTION__" - Error getting %s", strPath.c_str());    
+  CLog::Log(LOGERROR, "%s - Error getting %s", __FUNCTION__, strPath.c_str());    
   return false;
 }
 
@@ -84,9 +84,9 @@ bool CDirectory::Create(const CStdString& strPath)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception");
+    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
   }
-  CLog::Log(LOGERROR, __FUNCTION__" - Error creating %s", strPath.c_str());
+  CLog::Log(LOGERROR, "%s - Error creating %s", __FUNCTION__, strPath.c_str());
   return false;
 }
 
@@ -105,9 +105,9 @@ bool CDirectory::Exists(const CStdString& strPath)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception");    
+    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);    
   }
-  CLog::Log(LOGERROR, __FUNCTION__" - Error checking for %s", strPath.c_str());    
+  CLog::Log(LOGERROR, "%s - Error checking for %s", __FUNCTION__, strPath.c_str());    
   return false;
 }
 
@@ -127,8 +127,8 @@ bool CDirectory::Remove(const CStdString& strPath)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception");
+    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
   }
-  CLog::Log(LOGERROR, __FUNCTION__" - Error removing %s", strPath.c_str());
+  CLog::Log(LOGERROR, "%s - Error removing %s", __FUNCTION__, strPath.c_str());
   return false;
 }

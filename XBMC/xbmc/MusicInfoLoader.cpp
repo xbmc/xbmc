@@ -21,9 +21,9 @@
 
 #include "stdafx.h"
 #include "MusicInfoLoader.h"
-#include "musicdatabase.h"
+#include "MusicDatabase.h"
 #include "musicInfoTagLoaderFactory.h"
-#include "Filesystem/DirectoryCache.h"
+#include "FileSystem/DirectoryCache.h"
 #include "FileSystem/MusicDatabaseDirectory.h"
 #include "FileSystem/MusicDatabaseDirectory/DirectoryNode.h"
 #include "Util.h"

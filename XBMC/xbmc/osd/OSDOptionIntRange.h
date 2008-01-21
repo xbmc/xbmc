@@ -1,5 +1,5 @@
 #pragma once
-#include "iosdoption.h"
+#include "IOSDOption.h"
 #include "IExecutor.h"
 #include "GUISliderControl.h"
 namespace OSD

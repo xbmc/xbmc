@@ -643,7 +643,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
   {
     if (m_streams[iId]) 
     {
-      if( m_streams[iId]->ExtraData ) delete[] m_streams[iId]->ExtraData;
+      if( m_streams[iId]->ExtraData ) delete[] (BYTE*)(m_streams[iId]->ExtraData);
       delete m_streams[iId];
     }
 

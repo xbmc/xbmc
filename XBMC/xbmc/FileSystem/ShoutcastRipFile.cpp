@@ -11,8 +11,6 @@
 
 #include "../lib/libshout/rip_manager.h"
 
-
-
 CShoutcastRipFile::CShoutcastRipFile()
 {
   m_recState.bRecording = false;
