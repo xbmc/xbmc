@@ -3461,13 +3461,6 @@ bool CApplication::ProcessGamepad(float frameTime)
     CAction action;
     bool fullrange;
 
-    ResetScreenSaver();
-    if (ResetScreenSaverWindow())
-    {
-      g_Joystick.Reset(true);
-      return true;
-    }
-
     string jname = g_Joystick.GetJoystick();
     action.fAmount1 = g_Joystick.GetAmount();
     if (action.fAmount1<0)
@@ -3476,6 +3469,12 @@ bool CApplication::ProcessGamepad(float frameTime)
     }
     if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, true, action.wID, action.strAction, fullrange))
     {
+      ResetScreenSaver();
+      if (ResetScreenSaverWindow())
+      {
+        return true;
+      }
+      
       if (fullrange)
       {
         action.fAmount1 = (action.fAmount1+1.0f)/2.0f;
