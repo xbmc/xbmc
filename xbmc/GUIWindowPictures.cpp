@@ -23,7 +23,7 @@
 #include "GUIWindowPictures.h"
 #include "Util.h"
 #include "Picture.h"
-#include "application.h"
+#include "Application.h"
 #include "GUIPassword.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIDialogPictureInfo.h"
@@ -732,3 +732,4 @@ void CGUIWindowPictures::OnInfo(int itemNumber)
     pictureInfo->DoModal();
   }
 }
+

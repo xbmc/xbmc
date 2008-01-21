@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IMusicInfoTagLoader.h"
+#include "ImusicInfoTagLoader.h"
 
 #include "APEv2Tag.h"
 

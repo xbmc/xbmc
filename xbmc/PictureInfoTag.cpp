@@ -463,3 +463,4 @@ int CPictureInfoTag::TranslateString(const CStdString &info)
   else if (info.Equals("altitude")) return SLIDE_EXIF_GPS_ALTITUDE;
   return 0;
 }
+

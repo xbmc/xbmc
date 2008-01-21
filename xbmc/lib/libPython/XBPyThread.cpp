@@ -1,16 +1,18 @@
 
 // python.h should always be included first before any other includes
 #include "stdafx.h"
-#include "python\python.h"
+#include "python/Python.h"
 
 
 #include "XBPyThread.h"
 #include "XBPython.h"
 
+#ifndef __GNUC__
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
 #pragma bss_seg("PY_BSS")
 #pragma const_seg("PY_RDATA")
+#endif
 
 extern "C"
 {
@@ -98,7 +100,7 @@ void XBPyThread::Process()
   PyEval_AcquireLock();
   // swap in my thread state
   PyThreadState_Swap(threadState);
-  //threadState-> >frame->
+
   // get path from script file name and add python path's
   // this is used for python so it will search modules from script path first
   strcpy(sourcedir, source);

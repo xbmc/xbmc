@@ -29,3 +29,4 @@ CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml")
 CGUIWindowHome::~CGUIWindowHome(void)
 {
 }
+

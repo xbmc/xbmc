@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include ".\htmltable.h"
-#include ".\htmlutil.h"
+#include "./HTMLTable.h"
+#include "./HTMLUtil.h"
 
 
 using namespace HTML;
@@ -25,7 +25,6 @@ void CHTMLRow::Parse(const CStdString& strTable)
 {
   CHTMLUtil util;
   CStdString strTag;
-  int iPosEnd = (int)strTable.size() + 1;
   int iTableRowStart = 0;
   do
   {

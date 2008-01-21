@@ -183,3 +183,4 @@ void CGUIDialogHost::GetConfiguration(CStdString& aPassword, CStdString& aDescri
   aDescription = m_strDescription;
   aPlayerLimit = m_nPlayerLimit;
 }
+

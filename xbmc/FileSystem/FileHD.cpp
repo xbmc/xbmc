@@ -144,7 +144,7 @@ int CFileHD::Write(const void *lpBuf, __int64 uiBufSize)
     return 0;
   
   DWORD nBytesWriten;
-  if ( WriteFile((HANDLE)m_hFile, lpBuf, (DWORD)uiBufSize, &nBytesWriten, NULL) )
+  if ( WriteFile((HANDLE)m_hFile, (void*) lpBuf, (DWORD)uiBufSize, &nBytesWriten, NULL) )
     return nBytesWriten;
   
   return 0;

@@ -15,7 +15,7 @@
 //
 #define DECLARE_DLL_WRAPPER(classname, dllname) \
 public: \
-  classname##() : DllDynamic( #dllname ) {}
+  classname () : DllDynamic( #dllname ) {}
 
 ///////////////////////////////////////////////////////////
 //
@@ -32,7 +32,7 @@ public: \
 //
 #define DECLARE_DLL_WRAPPER_TEMPLATE(classname) \
 public: \
-  classname##() {} \
+  classname () {} \
 
 
 ///////////////////////////////////////////////////////////
@@ -447,9 +447,9 @@ public: \
 //    {
 //      return m_bar(p1, p2);
 //    }
-//  protected: \
-//    typedef void (* foobar_METHOD) (int type, char* szTest); \
-//  public: \
+//  protected: 
+//    typedef void (* foobar_METHOD) (int type, char* szTest); 
+//  public: 
 //    foobar_METHOD foobar;
 //  protected:
 //    virtual bool ResolveExports()

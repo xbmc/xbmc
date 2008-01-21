@@ -12,7 +12,7 @@ public:
   void getValueOfTag(const CStdString& strTagAndValue, CStdString& strValue);
   void getAttributeOfTag(const CStdString& strTagAndValue, const CStdString& strTag, CStdString& strValue);
   static void RemoveTags(CStdString& strHTML);
-  void ConvertHTMLToAnsi(const CStdString& strHTML, string& strStripped);
-  void ConvertHTMLToUTF8(const CStdString& strHTML, string& strStripped);
+  void ConvertHTMLToAnsi(const CStdString& strHTML, std::string& strStripped);
+  void ConvertHTMLToUTF8(const CStdString& strHTML, std::string& strStripped);
 };
 }

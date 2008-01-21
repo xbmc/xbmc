@@ -1,7 +1,7 @@
 
 #include "../stdafx.h"
-#include ".\OSDOptionFloatRange.h"
-#include "guifontmanager.h"
+#include "OSDOptionFloatRange.h"
+#include "GUIFontManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

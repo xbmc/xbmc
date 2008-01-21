@@ -21,13 +21,13 @@
 
 #include "stdafx.h"
 #include "ArenaItem.h"
-#include "Utils/KaiClient.h"
+#include "utils/KaiClient.h"
 
 CGUIImage* CArenaItem::m_pPrivateIcon = NULL;
 
 CArenaItem::CArenaItem(CStdString& strLabel) : CKaiItem(strLabel)
 {
-  SetCookie( CKaiClient::Item::Arena );
+  SetCookie( CKaiClient::Arena );
   m_strVector = "/";
   m_strDescription = "";
   m_strPassword = "";

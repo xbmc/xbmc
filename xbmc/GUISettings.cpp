@@ -21,8 +21,8 @@
 
 #include "stdafx.h"
 #include "GUISettings.h"
-#include "application.h"
-#include "util.h"
+#include "Application.h"
+#include "Util.h"
 #include "GUIDialogFileBrowser.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "utils/FanController.h"
@@ -33,7 +33,7 @@
 #ifdef HAS_XFONT
 #include <xfont.h>
 #endif
-#include "mediamanager.h"
+#include "MediaManager.h"
 
 // String id's of the masks
 #define MASK_MINS   14044
@@ -397,6 +397,7 @@ CGUISettings::CGUISettings(void)
   AddInt(6, "myvideos.sortorder", 580, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_DESC, SPIN_CONTROL_TEXT);
   AddBool(7, "myvideos.savefolderviews", 583, true);
   AddCategory(5, "videolibrary", 14022);
+
   AddBool(1, "videolibrary.hideplots", 20369, false);
   AddBool(2, "videolibrary.seasonthumbs", 20382, false);
   AddBool(3, "videolibrary.actorthumbs", 20402, false);
@@ -407,7 +408,7 @@ CGUISettings::CGUISettings(void)
   AddString(8, "videolibrary.cleanupvideolibrary", 334, "", BUTTON_CONTROL_STANDARD);
   AddString(9, "videolibrary.exportvideolibrary", 647, "", BUTTON_CONTROL_STANDARD);
   AddString(10, "videolibrary.importvideolibrary", 648, "", BUTTON_CONTROL_STANDARD);
-
+  
   AddCategory(5, "videoplayer", 16003);
   AddString(1, "videoplayer.calibrate", 214, "", BUTTON_CONTROL_STANDARD);
   AddString(2, "videoplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
@@ -611,8 +612,8 @@ bool CGUISettings::GetBool(const char *strSetting) const
     return ((CSettingBool*)(*it).second)->GetData();
   }
   // Assert here and write debug output
+  CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
   ASSERT(false);
-  CLog::DebugLog("Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
   return false;
 }
 
@@ -626,7 +627,7 @@ void CGUISettings::SetBool(const char *strSetting, bool bSetting)
     return ;
   }
   // Assert here and write debug output
-  CLog::DebugLog("Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
+  CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
 }
 
 void CGUISettings::ToggleBool(const char *strSetting)
@@ -639,7 +640,7 @@ void CGUISettings::ToggleBool(const char *strSetting)
     return ;
   }
   // Assert here and write debug output
-  CLog::DebugLog("Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
+  CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
 }
 
 void CGUISettings::AddFloat(int iOrder, const char *strSetting, int iLabel, float fData, float fMin, float fStep, float fMax, int iControlType)
@@ -659,7 +660,7 @@ float CGUISettings::GetFloat(const char *strSetting) const
   }
   // Assert here and write debug output
   ASSERT(false);
-  CLog::DebugLog("Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
+  CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
   return 0.0f;
 }
 
@@ -674,7 +675,7 @@ void CGUISettings::SetFloat(const char *strSetting, float fSetting)
   }
   // Assert here and write debug output
   ASSERT(false);
-  CLog::DebugLog("Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
+  CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
 }
 
 void CGUISettings::LoadMasterLock(TiXmlElement *pRootElement)
@@ -728,7 +729,7 @@ int CGUISettings::GetInt(const char *strSetting) const
   }
   // Assert here and write debug output
   ASSERT(false);
-  CLog::DebugLog("Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
+  CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
   return 0;
 }
 
@@ -800,7 +801,7 @@ const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) 
     return result->GetData();
   }
   // Assert here and write debug output
-  CLog::DebugLog("Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
+  CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
   ASSERT(false);
   // hardcoded return value so that compiler is happy
   return ((CSettingString *)(*settingsMap.begin()).second)->GetData();
@@ -817,7 +818,7 @@ void CGUISettings::SetString(const char *strSetting, const char *strData)
   }
   // Assert here and write debug output
   ASSERT(false);
-  CLog::DebugLog("Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
+  CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
 }
 
 CSetting *CGUISettings::GetSetting(const char *strSetting)
@@ -995,3 +996,4 @@ void CGUISettings::Clear()
     delete settingsGroups[i];
   settingsGroups.clear();
 }
+

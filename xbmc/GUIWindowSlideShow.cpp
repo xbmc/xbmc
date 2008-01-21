@@ -104,7 +104,7 @@ void CBackgroundPicLoader::Process()
       }
     }
   }
-  CLog::Log(LOGDEBUG, "Time for loading %i images: %i ms, average %i ms", count, totalTime, totalTime / count);
+  CLog::Log(LOGDEBUG, "Time for loading %lu images: %lu ms, average %lu ms", count, totalTime, totalTime / count);
 }
 
 void CBackgroundPicLoader::LoadPic(int iPic, int iSlideNumber, const CStdString &strFileName, const int maxWidth, const int maxHeight)
@@ -119,7 +119,7 @@ void CBackgroundPicLoader::LoadPic(int iPic, int iSlideNumber, const CStdString 
 }
 
 CGUIWindowSlideShow::CGUIWindowSlideShow(void)
-    : CGUIWindow(WINDOW_SLIDESHOW, "Slideshow.xml")
+    : CGUIWindow(WINDOW_SLIDESHOW, "SlideShow.xml")
 {
   m_pBackgroundLoader = NULL;
   Reset();
@@ -159,11 +159,11 @@ void CGUIWindowSlideShow::FreeResources()
   if (m_pBackgroundLoader)
   {
     // sleep until the loader finishes loading the current pic
-    CLog::DebugLog("Waiting for BackgroundLoader thread to close");
+    CLog::Log(LOGDEBUG,"Waiting for BackgroundLoader thread to close");
     while (m_pBackgroundLoader->IsLoading())
       Sleep(10);
     // stop the thread
-    CLog::DebugLog("Stopping BackgroundLoader thread");
+    CLog::Log(LOGDEBUG,"Stopping BackgroundLoader thread");
     m_pBackgroundLoader->StopThread();
     delete m_pBackgroundLoader;
     m_pBackgroundLoader = NULL;
@@ -764,3 +764,4 @@ void CGUIWindowSlideShow::GetCheckedSize(float width, float height, int &maxWidt
   if (maxWidth > MAX_PICTURE_WIDTH) maxWidth = MAX_PICTURE_WIDTH;
   if (maxHeight > MAX_PICTURE_HEIGHT) maxHeight = MAX_PICTURE_HEIGHT;
 }
+

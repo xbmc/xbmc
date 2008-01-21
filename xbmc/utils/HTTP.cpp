@@ -5,7 +5,7 @@
 
 #include "stdafx.h"
 #include "HTTP.h"
-#include "../dnsnamecache.h"
+#include "../DNSNameCache.h"
 #include "../Util.h"
 #include "../xbox/network.h"
 

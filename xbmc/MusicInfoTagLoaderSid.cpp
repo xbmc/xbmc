@@ -20,7 +20,7 @@
  */
 
 #include "stdafx.h"
-#include "musicinfotagloadersid.h"
+#include "MusicInfoTagLoaderSid.h"
 #include "utils/RegExp.h"
 #include "Util.h"
 #include <cstring>
@@ -97,8 +97,8 @@ bool CMusicInfoTagLoaderSid::Load(const CStdString& strFileName, CMusicInfoTag& 
     return( false );
   }
 
-  char* szStart = NULL;
-  char* szEnd = NULL;
+  const char* szStart = NULL;
+  const char* szEnd = NULL;
   char temp2[8191];
   char* temp3 = temp2;
   while( !f.eof() && !szEnd )
@@ -146,8 +146,7 @@ bool CMusicInfoTagLoaderSid::Load(const CStdString& strFileName, CMusicInfoTag& 
       }
       temp3 += iStart;
     }
-    int iFind = reg.RegFind(temp3);
-    if( reg.RegFind(temp3) > -1 )
+    if(reg.RegFind(temp3) > -1)
     {
       char* szTitle = reg.GetReplaceString("\\1");
       char* szArtist = reg.GetReplaceString("\\2");
@@ -194,7 +193,7 @@ bool CMusicInfoTagLoaderSid::Load(const CStdString& strFileName, CMusicInfoTag& 
     f2.getline(temp,8191);
     CStdString strTemp(temp);
     strTemp.MakeLower();
-    int iFind = strTemp.find(strHVSCpath);
+    unsigned int iFind = strTemp.find(strHVSCpath);
     if (iFind == string::npos)
       continue;
 
@@ -248,3 +247,4 @@ bool CMusicInfoTagLoaderSid::Load(const CStdString& strFileName, CMusicInfoTag& 
   tag.SetLoaded(false);
   return( false );
 }
+

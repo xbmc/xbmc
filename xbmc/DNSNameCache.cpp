@@ -20,7 +20,7 @@
  */
 
 #include "stdafx.h"
-#include "dnsnamecache.h"
+#include "DNSNameCache.h"
 
 
 CDNSNameCache g_DNSCache;

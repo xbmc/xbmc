@@ -278,7 +278,7 @@ void CSlideShowPic::Process()
   }
   if (m_iCounter >= m_transistionEnd.start)
   { // do end transistion
-//    CLog::DebugLog("Transistioning");
+//    CLog::Log(LOGDEBUG,"Transistioning");
     m_bDrawNextImage = true;
     if (m_transistionEnd.type == CROSSFADE)
     { // fade out at 1x speed
@@ -421,7 +421,7 @@ void CSlideShowPic::Render()
   float fSourceInvAR = 1 / fSourceAR;
   float fAR = si * si * (fSourceInvAR - fSourceAR) + fSourceAR;
 
-  float fOutputFrameAR = fAR / fPixelRatio;
+  //float fOutputFrameAR = fAR / fPixelRatio;
 
   float fScaleNorm = fScreenWidth / m_fWidth;
   float fScaleInv = fScreenWidth / m_fHeight;

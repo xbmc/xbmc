@@ -21,8 +21,8 @@
 
 #include "stdafx.h"
 #include "GUIWindowVideoOverlay.h"
-#include "util.h"
-#include "application.h"
+#include "Util.h"
+#include "Application.h"
 #include "utils/GUIInfoManager.h"
 
 
@@ -61,3 +61,4 @@ void CGUIWindowVideoOverlay::SetDefaults()
   m_renderOrder = 0;
   m_visibleCondition = SKIN_HAS_VIDEO_OVERLAY;
 }
+

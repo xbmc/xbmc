@@ -23,7 +23,7 @@
 #include "GUIDialogBusy.h"
 #include "Application.h"
 #include "ApplicationRenderer.h"
-#include "Utils/GUIInfoManager.h"
+#include "utils/GUIInfoManager.h"
 
 
 CGUIDialogBusy::CGUIDialogBusy(void)

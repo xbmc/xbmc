@@ -20,7 +20,7 @@
  */
 
 #include "stdafx.h"
-#include "sectionloader.h"
+#include "SectionLoader.h"
 #include "cores/DllLoader/DllLoaderContainer.h"
 
 
@@ -61,7 +61,7 @@ bool CSectionLoader::Load(const CStdString& strSection)
     {
 
 #ifdef LOGALL
-      CLog::DebugLog("SECTION:LoadSection(%s) count:%i\n", strSection.c_str(), section.m_lReferenceCount);
+      CLog::Log(LOGDEBUG,"SECTION:LoadSection(%s) count:%i\n", strSection.c_str(), section.m_lReferenceCount);
 #endif
 
       section.m_lReferenceCount++;
@@ -72,12 +72,12 @@ bool CSectionLoader::Load(const CStdString& strSection)
 #ifdef HAS_SECTIONS
   if ( NULL == XLoadSection(strSection.c_str() ) )
   {
-    CLog::DebugLog("SECTION:LoadSection(%s) load failed!!\n", strSection.c_str());
+    CLog::Log(LOGDEBUG,"SECTION:LoadSection(%s) load failed!!\n", strSection.c_str());
     return false;
   }
   HANDLE hHandle = XGetSectionHandle(strSection.c_str());
 
-  CLog::DebugLog("SECTION:Section %s loaded count:1 size:%i\n", strSection.c_str(), XGetSectionSize(hHandle) );
+  CLog::Log(LOGDEBUG,"SECTION:Section %s loaded count:1 size:%i\n", strSection.c_str(), XGetSectionSize(hHandle) );
 #endif
 
   CSection newSection;
@@ -100,7 +100,7 @@ void CSectionLoader::Unload(const CStdString& strSection)
     if (section.m_strSectionName == strSection)
     {
 #ifdef LOGALL
-      CLog::DebugLog("SECTION:FreeSection(%s) count:%i\n", strSection.c_str(), section.m_lReferenceCount);
+      CLog::Log(LOGDEBUG,"SECTION:FreeSection(%s) count:%i\n", strSection.c_str(), section.m_lReferenceCount);
 #endif
       section.m_lReferenceCount--;
       if ( 0 == section.m_lReferenceCount)
@@ -163,7 +163,7 @@ void CSectionLoader::UnloadDLL(const CStdString &dllname)
           dll.m_lUnloadDelayStartTick = GetTickCount();
         else
         {
-          CLog::DebugLog("SECTION:UnloadDll(%s)", dllname.c_str());
+          CLog::Log(LOGDEBUG,"SECTION:UnloadDll(%s)", dllname.c_str());
           if (dll.m_pDll)
             DllLoaderContainer::ReleaseModule(dll.m_pDll);
           g_sectionLoader.m_vecLoadedDLLs.erase(g_sectionLoader.m_vecLoadedDLLs.begin() + i);
@@ -185,7 +185,7 @@ void CSectionLoader::UnloadDelayed()
     CSection& section = *i;
     if( section.m_lReferenceCount == 0 && GetTickCount() - section.m_lUnloadDelayStartTick > UNLOAD_DELAY)
     {
-      CLog::DebugLog("SECTION:UnloadDelayed(SECTION: %s)", section.m_strSectionName.c_str());
+      CLog::Log(LOGDEBUG,"SECTION:UnloadDelayed(SECTION: %s)", section.m_strSectionName.c_str());
 #ifdef HAS_SECTIONS
       XFreeSection(section.m_strSectionName.c_str());
 #endif
@@ -201,7 +201,7 @@ void CSectionLoader::UnloadDelayed()
     CDll& dll = g_sectionLoader.m_vecLoadedDLLs[i];
     if (dll.m_lReferenceCount == 0 && GetTickCount() - dll.m_lUnloadDelayStartTick > UNLOAD_DELAY)
     {
-      CLog::DebugLog("SECTION:UnloadDelayed(DLL: %s)", dll.m_strDllName.c_str());
+      CLog::Log(LOGDEBUG,"SECTION:UnloadDelayed(DLL: %s)", dll.m_strDllName.c_str());
 
       if (dll.m_pDll)
         DllLoaderContainer::ReleaseModule(dll.m_pDll);
@@ -219,7 +219,7 @@ void CSectionLoader::UnloadAll()
   {
     CSection& section = *i;
     //g_sectionLoader.m_vecLoadedSections.erase(i);
-    CLog::DebugLog("SECTION:UnloadAll(SECTION: %s)", section.m_strSectionName.c_str());
+    CLog::Log(LOGDEBUG,"SECTION:UnloadAll(SECTION: %s)", section.m_strSectionName.c_str());
 #ifdef HAS_SECTIONS
     XFreeSection(section.m_strSectionName.c_str());
 #endif
@@ -232,7 +232,7 @@ void CSectionLoader::UnloadAll()
   while (it != g_sectionLoader.m_vecLoadedDLLs.end())
   {
     CDll& dll = *it;
-    CLog::DebugLog("SECTION:UnloadAll(DLL: %s)", dll.m_strDllName.c_str());
+    CLog::Log(LOGDEBUG,"SECTION:UnloadAll(DLL: %s)", dll.m_strDllName.c_str());
     if (dll.m_pDll)
       DllLoaderContainer::ReleaseModule(dll.m_pDll);
     it = g_sectionLoader.m_vecLoadedDLLs.erase(it);

@@ -124,8 +124,8 @@ void CDVDAudioCodecLiba52::SetupChannels()
   if(channels == 5 || channels == 3)
     channels = 6;
 
-  if(m_iOutputChannels > 0 && m_iOutputChannels != channels) 
-    CLog::Log(LOGINFO, __FUNCTION__" - Number of channels changed in stream from %d to %d", m_iOutputChannels, channels);
+  if(m_iOutputChannels > 0 && m_iOutputChannels != channels)
+    CLog::Log(LOGINFO, "%s - Number of channels changed in stream from %d to %d, data might be truncated", __FUNCTION__, m_iOutputChannels, channels);
 
   m_iOutputChannels = channels;
 
@@ -228,7 +228,7 @@ int CDVDAudioCodecLiba52::Decode(BYTE* pData, int iSize)
           m_decodedDataSize = 0;
           return -1;
         }
-
+ 
         m_decodedDataSize += 2*resample_int16(m_fSamples, (int16_t*)(m_decodedData + m_decodedDataSize), m_iOutputMapping);
       }
 
@@ -243,7 +243,7 @@ int CDVDAudioCodecLiba52::Decode(BYTE* pData, int iSize)
 
 int CDVDAudioCodecLiba52::GetData(BYTE** dst)
 {
-  *dst = m_decodedData;
+  *dst = (BYTE*)m_decodedData;
   return m_decodedDataSize;
 }
 

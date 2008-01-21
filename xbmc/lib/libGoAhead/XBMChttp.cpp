@@ -9,34 +9,32 @@
 
 /********************************* Includes ***********************************/
 
-#pragma once
-
 #include "stdafx.h"
 #include "WebServer.h"
-#include "XbmcHttp.h"
+#include "XBMChttp.h"
 #include "includes.h"
 
-#include "..\..\PlayListFactory.h"
-#include "..\..\Application.h"
-#include "..\..\util.h"
-#include "..\..\playlistplayer.h"
-#include "..\..\filesystem\HDDirectory.h" 
-#include "..\..\filesystem\CDDADirectory.h"
-#include "..\..\videodatabase.h"
+#include "../../PlayListFactory.h"
+#include "../../Application.h"
+#include "../../Util.h"
+#include "../../PlayListPlayer.h"
+#include "../../FileSystem/HDDirectory.h" 
+#include "../../FileSystem/CDDADirectory.h"
+#include "../../VideoDatabase.h"
 #include "GUIButtonControl.h"
-#include "..\..\utils\GUIInfoManager.h"
-#include "..\..\picture.h"
-#include "..\..\MusicInfoTagLoaderFactory.h"
-#include "..\..\utils\MusicInfoScraper.h"
-#include "..\..\MusicDatabase.h"
-#include "..\..\GUIWindowSlideShow.h"
-#include "..\..\GUIMediaWindow.h"
-#include "..\..\GUIWindowFileManager.h"
+#include "../../utils/GUIInfoManager.h"
+#include "../../Picture.h"
+#include "../../musicInfoTagLoaderFactory.h"
+#include "../../utils/MusicInfoScraper.h"
+#include "../../MusicDatabase.h"
+#include "../../GUIWindowSlideShow.h"
+#include "../../GUIMediaWindow.h"
+#include "../../GUIWindowFileManager.h"
 #include "GUIButtonScroller.h"
-#include "..\..\FileSystem\FactoryDirectory.h"
-#include "..\..\FileSystem\VirtualDirectory.h"
-#include "..\..\utils\UdpClient.h"
-#include "..\..\xbox\XKHDD.h"
+#include "../../FileSystem/FactoryDirectory.h"
+#include "../../FileSystem/VirtualDirectory.h"
+#include "../../utils/UdpClient.h"
+#include "../../xbox/XKHDD.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -478,7 +476,7 @@ void AddItemToPlayList(const CFileItem* pItem, int playList, int sortMethod, CSt
     IDirectory *pDirectory = CFactoryDirectory::Create(strDirectory);
     if (mask!="")
       pDirectory->SetMask(mask);
-    bool bResult=pDirectory->GetDirectory(strDirectory,items);
+    pDirectory->GetDirectory(strDirectory, items);
     items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
     for (int i=0; i < items.Size(); ++i)
 	  if (!(CFileItem*)items[i]->m_bIsFolder || recursive)
@@ -557,8 +555,6 @@ bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoSt
   if (autoStart)
     if (g_playlistPlayer.GetPlaylist( iPlaylist ).size() )
     {
-      CPlayList& playlist = g_playlistPlayer.GetPlaylist( iPlaylist );
-      const CPlayList::CPlayListItem& item = playlist[0];
       g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
       g_playlistPlayer.Reset();
       g_applicationMessenger.PlayListPlayerPlay();
@@ -1110,11 +1106,12 @@ int CXbmcHttp::xbmcGetTagFromFilename(int numParas, CStdString paras[])
     }
     else
     {
-      return SetResponse(openTag+"Error:System not set to use tags"); 
+      return SetResponse(openTag+"Error:System not set to use tags");
     }
   if (tag->Loaded())
   {
     CStdString output, tmp;
+
     output = openTag+"Artist:" + tag->GetArtist();
     output += closeTag+openTag+"Album:" + tag->GetAlbum();
     output += closeTag+openTag+"Title:" + tag->GetTitle();
@@ -2835,7 +2832,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
   if (shuttingDown)
     return -1;
   int numParas, retVal=false;
-	  CStdString command, paras[MAX_PARAS];
+  CStdString command, paras[MAX_PARAS];
   numParas = splitParameter(parameter, command, paras, ";");
   if (parameter.length()<300)
     CLog::Log(LOGDEBUG, "HttpApi Start command: %s  paras: %s", command.c_str(), parameter.c_str());

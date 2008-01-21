@@ -76,7 +76,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       {
         // set this here to if the stat should fail
         bIsDir = (dirEnt->smbc_type == SMBC_DIR);
-        
+
         struct __stat64 info = {0};
 
         // make sure we use the authenticated path wich contains any default username
@@ -205,7 +205,7 @@ int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
       s.erase(len - 1, 1);
     }
     
-    CLog::Log(LOGDEBUG, __FUNCTION__" - Using authentication url %s", s.c_str());
+    CLog::Log(LOGDEBUG, "%s - Using authentication url %s", __FUNCTION__, s.c_str());
     { CSingleLock lock(smb);      
       fd = smbc_opendir(s.c_str());
     }
@@ -291,7 +291,7 @@ bool CSMBDirectory::Create(const char* strPath)
   int result = smbc_mkdir(strFileName.c_str(), 0);
 
   if(result != 0)
-    CLog::Log(LOGERROR, __FUNCTION__" - Error( %s )", get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
+    CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
 
   return (result == 0 || EEXIST == result);
 }
@@ -308,7 +308,7 @@ bool CSMBDirectory::Remove(const char* strPath)
   int result = smbc_rmdir(strFileName.c_str());
 
   if(result != 0)
-    CLog::Log(LOGERROR, __FUNCTION__" - Error( %s )", get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
+    CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
 
   return (result == 0);
 }

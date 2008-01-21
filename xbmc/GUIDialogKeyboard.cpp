@@ -28,7 +28,7 @@
 #include "utils/RegExp.h"
 #include "GUIPassword.h"
 #include "utils/md5.h"
-#include "xbox/xkgeneral.h"
+#include "xbox/XKGeneral.h"
 
 // Symbol mapping (based on MS virtual keyboard - may need improving)
 static char symbol_map[37] = ")!@#$%^&*([]{}-_=+;:\'\",.<>/?\\|`~    ";
@@ -115,7 +115,7 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
   }
   else if (action.wID == ACTION_CURSOR_RIGHT)
   {
-    if (GetCursorPos() == m_strEdit.size() && (m_strEdit.size() == 0 || m_strEdit[m_strEdit.size() - 1] != ' '))
+    if ((unsigned int) GetCursorPos() == m_strEdit.size() && (m_strEdit.size() == 0 || m_strEdit[m_strEdit.size() - 1] != ' '))
     { // add a space
       Character(L' ');
     }
@@ -138,7 +138,7 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
     OnRemoteNumberClick(action.wID);
     return true;
   }
-  else if (action.wID >= KEY_VKEY && action.wID < KEY_ASCII)
+  else if (action.wID >= (WORD)KEY_VKEY && action.wID < (WORD)KEY_ASCII)
   { // input from the keyboard (vkey, not ascii)
     BYTE b = action.wID & 0xFF;
     if (b == 0x25) MoveCursor( -1);     // left
@@ -412,7 +412,7 @@ char CGUIDialogKeyboard::GetCharacter(int iButton)
   }
   else
   { // check for symbols
-    for (int i = 0; i < NUM_SYMBOLS; i++)
+    for (unsigned int i = 0; i < NUM_SYMBOLS; i++)
       if (iButton == symbolButtons[i])
         return (char)iButton;
   }
@@ -485,7 +485,7 @@ void CGUIDialogKeyboard::UpdateButtons()
     }
     SetControlLabel(iButton, aLabel);
   }
-  for (int i = 0; i < NUM_SYMBOLS; i++)
+  for (unsigned int i = 0; i < NUM_SYMBOLS; i++)
   {
     aLabel[0] = symbolButtons[i];
     SetControlLabel(symbolButtons[i], aLabel);
@@ -726,7 +726,7 @@ void CGUIDialogKeyboard::SetControlLabel(int id, const CStdString &label)
   message.SetLabel(label);
   for (unsigned int i = 0; i < m_vecControls.size(); i++)
   {
-    if (m_vecControls[i]->GetID() == id || m_vecControls[i]->IsGroup())
+    if (m_vecControls[i]->GetID() == (DWORD) id || m_vecControls[i]->IsGroup())
       m_vecControls[i]->OnMessage(message);
   }
 }
@@ -749,3 +749,4 @@ bool CGUIDialogKeyboard::ShowAndGetFilter(CStdString &filter, bool searching)
   pKeyboard->m_filtering = FILTERING_NONE;
   return ret;
 }
+

@@ -172,7 +172,7 @@ bool CVideoDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
     case NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS: // Recently Added Music Videos
       strLabel = g_localizeStrings.Get(20390); break;
     default:
-      CLog::Log(LOGWARNING, __FUNCTION__" - Unknown nodetype requested %d", pNode->GetChildType());
+      CLog::Log(LOGWARNING, CStdString(__FUNCTION__) + " - Unknown nodetype requested %d", pNode->GetChildType());
       return false;
     }
   }
@@ -219,7 +219,7 @@ CStdString CVideoDatabaseDirectory::GetIcon(const CStdString& strDirectory)
   case NODE_TYPE_MUSICVIDEOS_OVERVIEW: // Music Videos
     return "DefaultMusicVideos.png";
   default:
-    CLog::Log(LOGWARNING, __FUNCTION__" - Unknown nodetype requested %s", strDirectory.c_str());
+    CLog::Log(LOGWARNING, "%s - Unknown nodetype requested %s", __FUNCTION__, strDirectory.c_str());
     break;
   }
 

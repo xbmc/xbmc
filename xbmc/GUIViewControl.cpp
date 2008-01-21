@@ -77,7 +77,7 @@ void CGUIViewControl::SetCurrentView(int viewMode)
   if (newView < 0 || m_currentView == newView)
     return;
 
-//  CLog::DebugLog("SetCurrentView: Oldview: %i, Newview :%i", m_currentView, viewMode);
+//  CLog::Log(LOGDEBUG,"SetCurrentView: Oldview: %i, Newview :%i", m_currentView, viewMode);
   CGUIControl *pNewView = m_vecViews[newView];
 
   bool hasFocus(false);
@@ -112,7 +112,7 @@ void CGUIViewControl::SetCurrentView(int viewMode)
 
 void CGUIViewControl::SetItems(CFileItemList &items)
 {
-//  CLog::DebugLog("SetItems: %i", m_currentView);
+//  CLog::Log(LOGDEBUG,"SetItems: %i", m_currentView);
   m_fileItems = &items;
   // update our current view control...
   UpdateView();
@@ -127,7 +127,7 @@ void CGUIViewControl::UpdateContents(const CGUIControl *control, int currentItem
 
 void CGUIViewControl::UpdateView()
 {
-//  CLog::DebugLog("UpdateView: %i", m_currentView);
+//  CLog::Log(LOGDEBUG,"UpdateView: %i", m_currentView);
   if (m_currentView < 0 || m_currentView >= (int)m_vecViews.size())
     return; // no valid current view!
 
@@ -205,7 +205,7 @@ bool CGUIViewControl::HasControl(int viewControlID) const
   // run through our controls, checking for the id
   for (ciViews it = m_vecViews.begin(); it != m_vecViews.end(); it++)
   {
-    if ((*it)->GetID() == viewControlID)
+    if ((*it)->GetID() == (DWORD) viewControlID)
       return true;
   }
   return false;
@@ -269,7 +269,7 @@ int CGUIViewControl::GetView(VIEW_TYPE type, int id) const
   for (int i = 0; i < (int)m_vecViews.size(); i++)
   {
     CGUIBaseContainer *view = (CGUIBaseContainer *)m_vecViews[i];
-    if ((type == VIEW_TYPE_NONE || type == view->GetType()) && (!id || view->GetID() == id))
+    if ((type == VIEW_TYPE_NONE || type == view->GetType()) && (!id || view->GetID() == (DWORD) id))
     {
       return i;
     }
@@ -301,3 +301,4 @@ void CGUIViewControl::UpdateViewAsControl(const CStdString &viewLabel)
   msgSet.SetLabel(label);
   g_graphicsContext.SendMessage(msgSet);
 }
+

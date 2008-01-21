@@ -171,7 +171,7 @@ void CIoSupport::GetPartition(char cDriveLetter, char * szPartition)
     sprintf(szPartition, "Harddisk0\\Partition%u", upperLetter - 'A' + 1);
     return;
   }
-  for (int i=0; i < NUM_OF_DRIVES; i++)
+  for (unsigned int i=0; i < NUM_OF_DRIVES; i++)
     if (driveMapping[i].cDriveLetter == upperLetter)
     {
       strcpy(szPartition, driveMapping[i].szDevice);
@@ -198,7 +198,7 @@ void CIoSupport::GetDrive(char * szPartition, char * cDriveLetter)
     *cDriveLetter = part_num + 'A' - 1;
     return;
   }
-  for (int i=0; i < NUM_OF_DRIVES; i++)
+  for (unsigned int i=0; i < NUM_OF_DRIVES; i++)
     if (strnicmp(driveMapping[i].szDevice, szPartition, strlen(driveMapping[i].szDevice)) == 0)
     {
       *cDriveLetter = driveMapping[i].cDriveLetter;
@@ -299,7 +299,6 @@ INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
   DWORD dwRead;
   DWORD dwSectorSize = 2048;
   LARGE_INTEGER Displacement;
-
   Displacement.QuadPart = ((INT64)dwSector) * dwSectorSize;
 
   for (int i = 0; i < 5; i++)
@@ -673,6 +672,6 @@ unsigned int CIoSupport::ReadPartitionTable(PARTITION_TABLE *p_table)
 
   return STATUS_SUCCESS;
 #else
-  return -1;
+  return (unsigned int) -1;
 #endif
 }

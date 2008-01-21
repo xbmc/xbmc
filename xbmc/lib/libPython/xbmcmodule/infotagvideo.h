@@ -1,5 +1,5 @@
-#include "..\python\python.h"
-#include "..\..\..\utils\IMDB.h"
+#include "../python/Python.h"
+#include "../../../utils/IMDB.h"
 
 #pragma once
 

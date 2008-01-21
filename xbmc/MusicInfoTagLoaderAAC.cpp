@@ -20,8 +20,8 @@
  */
 
 #include "stdafx.h"
-#include "musicinfotagloaderaac.h"
-#include "cores/paplayer/AACCodec.h"
+#include "MusicInfoTagLoaderAAC.h"
+#include "cores/paplayer/AACcodec.h"
 
 
 using namespace MUSIC_INFO;

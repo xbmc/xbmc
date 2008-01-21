@@ -27,7 +27,7 @@
 #include "GUIConsoleControl.h"
 #include "Util.h"
 #include "xbox/xbeheader.h"
-#include "programdatabase.h"
+#include "ProgramDatabase.h"
 
 using namespace XFILE;
 
@@ -98,12 +98,12 @@ bool CGUIWindowBuddies::SortArena(CGUIItem* pStart, CGUIItem* pEnd)
   // order by item time: arenas at the top of list, players at bottom.
   if ( rpStart.GetCookie() != rpEnd.GetCookie() )
   {
-    return ( rpStart.GetCookie() == CKaiClient::Item::Arena );
+    return ( rpStart.GetCookie() == CKaiClient::Arena );
   }
 
   // if both items are players
-  if ( rpStart.GetCookie() == CKaiClient::Item::Player &&
-       rpEnd.GetCookie() == CKaiClient::Item::Player)
+  if ( rpStart.GetCookie() == CKaiClient::Player &&
+       rpEnd.GetCookie() == CKaiClient::Player)
   {
     CBuddyItem& plStart = * ((CBuddyItem*)pStart);
     CBuddyItem& plEnd = * ((CBuddyItem*)pEnd);
@@ -173,7 +173,7 @@ CGUIWindowBuddies::CGUIWindowBuddies(void)
   ON_CLICK_MESSAGE(CONTROL_KAI_TAB_CHAT, CGUIWindowBuddies, CGUIWindowBuddies::OnClickTabChat);
 
   ON_SELECTED_MESSAGE(CONTROL_LISTEX, CGUIWindowBuddies, CGUIWindowBuddies::OnSelectListItem);
-  window_state = State::Uninitialized;
+  window_state = Uninitialized;
 }
 
 CGUIWindowBuddies::~CGUIWindowBuddies(void)
@@ -300,8 +300,8 @@ void CGUIWindowBuddies::OnInitWindow()
   // set the window state after we have init'd our window
   // so that control visibility is set correctly (else any <visible> tags
   // in controls will override these)
-  if (window_state == State::Uninitialized)
-    ChangeState(State::Buddies);
+  if (window_state == Uninitialized)
+    ChangeState(Buddies);
   else
     ChangeState(window_state);
 
@@ -376,7 +376,7 @@ CBuddyItem* CGUIWindowBuddies::GetBuddySelection()
   if (pItem == NULL)
     return NULL;
 
-  return (pItem->GetCookie() == CKaiClient::Item::Player) ?
+  return (pItem->GetCookie() == CKaiClient::Player) ?
          (CBuddyItem*)pItem : NULL;
 }
 
@@ -389,7 +389,7 @@ CArenaItem* CGUIWindowBuddies::GetArenaSelection()
   if (pItem == NULL)
     return NULL;
 
-  return (pItem->GetCookie() == CKaiClient::Item::Arena) ?
+  return (pItem->GetCookie() == CKaiClient::Arena) ?
          (CArenaItem*)pItem : NULL;
 }
 
@@ -455,7 +455,7 @@ void CGUIWindowBuddies::OnClickJoinButton(CGUIMessage& aMessage)
   CBuddyItem* pBuddy;
   if ( (pBuddy = GetBuddySelection()) )
   {
-    ChangeState(State::Arenas);
+    ChangeState(Arenas);
     SET_CONTROL_FOCUS( CONTROL_LISTEX, 0);
     CStdString strPassword = "";
     m_pKaiClient->EnterVector(pBuddy->m_strVector, strPassword);
@@ -466,12 +466,12 @@ void CGUIWindowBuddies::OnClickPlayButton(CGUIMessage& aMessage)
 {
   switch (window_state)
   {
-  case State::Arenas:
+  case Arenas:
     {
       Play( m_pKaiClient->GetCurrentVector() );
       break;
     }
-  case State::Games:
+  case Games:
     {
       CArenaItem* pArena;
       if ( (pArena = GetArenaSelection()) )
@@ -541,7 +541,7 @@ void CGUIWindowBuddies::OnClickListItem(CGUIMessage& aMessage)
   }
 
   CBuddyItem* pBuddy;
-  if ( window_state == State::Buddies && (pBuddy = GetBuddySelection()) )
+  if ( window_state == Buddies && (pBuddy = GetBuddySelection()) )
   {
     // if we clicked on a buddy and we're in Friends mode
     Invitation & invite = m_invitations[pBuddy->GetName()];
@@ -581,7 +581,7 @@ void CGUIWindowBuddies::OnClickListItem(CGUIMessage& aMessage)
         CStdString strMsg = invite.message;
 
         CStdString strGame;
-        CArenaItem::GetTier(CArenaItem::Tier::Game, invite.vector, strGame);
+        CArenaItem::GetTier(CArenaItem::Game, invite.vector, strGame);
 
         if (strMsg.length() == 0)
         {
@@ -615,7 +615,7 @@ void CGUIWindowBuddies::OnClickListItem(CGUIMessage& aMessage)
           m_pKaiClient->Invite(pBuddy->GetName(), invite.vector, strAccepted);
 
           // join the arena
-          ChangeState(State::Arenas);
+          ChangeState(Arenas);
           CStdString strPassword = "";
           m_pKaiClient->EnterVector(invite.vector, strPassword );
         }
@@ -650,22 +650,22 @@ void CGUIWindowBuddies::FlickerTab(int nTabId)
 
 void CGUIWindowBuddies::OnClickTabFriends(CGUIMessage& aMessage)
 {
-  ChangeState(State::Buddies);
+  ChangeState(Buddies);
 }
 
 void CGUIWindowBuddies::OnClickTabGames(CGUIMessage& aMessage)
 {
-  ChangeState(State::Games);
+  ChangeState(Games);
 }
 
 void CGUIWindowBuddies::OnClickTabArena(CGUIMessage& aMessage)
 {
-  ChangeState(State::Arenas);
+  ChangeState(Arenas);
 }
 
 void CGUIWindowBuddies::OnClickTabChat(CGUIMessage& aMessage)
 {
-  ChangeState(State::Chat);
+  ChangeState(Chat);
 }
 
 void CGUIWindowBuddies::OnSelectListItem(CGUIMessage& aMessage)
@@ -747,13 +747,13 @@ bool CGUIWindowBuddies::OnMessage(CGUIMessage &message)
       // check to see if we've come here with a string parameter
       CStdString dest = message.GetStringParam();
       if (dest.CompareNoCase("chat") == 0)
-        window_state = State::Chat;
+        window_state = Chat;
       else if (dest.CompareNoCase("arenas") == 0)
-        window_state = State::Arenas;
+        window_state = Arenas;
       else if (dest.CompareNoCase("buddies") == 0)
-        window_state = State::Buddies;
+        window_state = Buddies;
       else if (dest.CompareNoCase("games") == 0)
-        window_state = State::Games;
+        window_state = Games;
     }
     break;
   }
@@ -763,7 +763,7 @@ bool CGUIWindowBuddies::OnMessage(CGUIMessage &message)
 
 bool CGUIWindowBuddies::OnAction(const CAction &action)
 {
-  if (window_state == State::Chat && (action.wID & KEY_ASCII || action.wID & KEY_VKEY) )
+  if (window_state == Chat && (action.wID & KEY_ASCII || action.wID & KEY_VKEY) )
   {
     CGUIEditControl* pEdit = ((CGUIEditControl*)GetControl(CONTROL_KAI_TEXTEDIT));
     if (pEdit)
@@ -785,7 +785,7 @@ bool CGUIWindowBuddies::OnAction(const CAction &action)
     {
       switch (window_state)
       {
-      case State::Arenas:
+      case Arenas:
         {
           INT arenaDelimiter = m_pKaiClient->GetCurrentVector().ReverseFind('/') + 1;
           if (arenaDelimiter == 0)
@@ -932,13 +932,13 @@ void CGUIWindowBuddies::Render()
   // Update mode/item selection specific labels
   switch (window_state)
   {
-  case State::Buddies:
+  case Buddies:
     {
       UpdateFriends();
       break;
     }
-  case State::Games:
-  case State::Arenas:
+  case Games:
+  case Arenas:
     {
       UpdateArena();
       break;
@@ -1013,20 +1013,20 @@ void CGUIWindowBuddies::UpdateArena()
 
     switch (pArena->GetTier())
     {
-    case CArenaItem::Tier::Custom:
+    case CArenaItem::Custom:
       if (pArena->m_bIsPersonal && pArena->m_strDescription.length() > 0)
       {
         strDescription = pArena->m_strDescription;
       }
       else
       {
-        pArena->GetTier(CArenaItem::Tier::Game, strDescription);
+        pArena->GetTier(CArenaItem::Game, strDescription);
       }
       break;
-    case CArenaItem::Tier::Platform:
+    case CArenaItem::Platform:
       break;
     default:
-      pArena->GetTier(CArenaItem::Tier::Platform, strDescription);
+      pArena->GetTier(CArenaItem::Platform, strDescription);
       strDescription.ToUpper();
       break;
     }
@@ -1082,24 +1082,24 @@ void CGUIWindowBuddies::PreviousView()
 {
   switch (window_state)
   {
-  case State::Buddies:
+  case Buddies:
     {
-      ChangeState(State::Chat);
+      ChangeState(Chat);
       break;
     }
-  case State::Games:
+  case Games:
     {
-      ChangeState(State::Buddies);
+      ChangeState(Buddies);
       break;
     }
-  case State::Arenas:
+  case Arenas:
     {
-      ChangeState(State::Games);
+      ChangeState(Games);
       break;
     }
-  case State::Chat:
+  case Chat:
     {
-      ChangeState(State::Arenas);
+      ChangeState(Arenas);
       break;
     }
   }
@@ -1109,24 +1109,24 @@ void CGUIWindowBuddies::NextView()
 {
   switch (window_state)
   {
-  case State::Buddies:
+  case Buddies:
     {
-      ChangeState(State::Games);
+      ChangeState(Games);
       break;
     }
-  case State::Games:
+  case Games:
     {
-      ChangeState(State::Arenas);
+      ChangeState(Arenas);
       break;
     }
-  case State::Arenas:
+  case Arenas:
     {
-      ChangeState(State::Chat);
+      ChangeState(Chat);
       break;
     }
-  case State::Chat:
+  case Chat:
     {
-      ChangeState(State::Buddies);
+      ChangeState(Buddies);
       break;
     }
   }
@@ -1140,7 +1140,7 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 
   switch (window_state)
   {
-  case State::Buddies:
+  case Buddies:
     {
       CGUIMessage msgb(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LISTEX, 0, 0, &m_friends);
       g_graphicsContext.SendMessage(msgb);
@@ -1178,7 +1178,7 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
       break;
     }
 
-  case State::Games:
+  case Games:
     {
       CGUIMessage msgb(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LISTEX, 0, 0, &m_games);
       g_graphicsContext.SendMessage(msgb);
@@ -1216,7 +1216,7 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
       break;
     }
 
-  case State::Arenas:
+  case Arenas:
     {
       CGUIMessage msgb(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LISTEX, 0, 0, &m_arena);
       g_graphicsContext.SendMessage(msgb);
@@ -1262,7 +1262,7 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
       break;
     }
 
-  case State::Chat:
+  case Chat:
     {
       mode.SetNavigation(CONTROL_BTNKEYBOARD, CONTROL_BTNKEYBOARD, CONTROL_BTNMODE, CONTROL_BTNMODE);
 
@@ -1308,7 +1308,7 @@ void CGUIWindowBuddies::Enter(CArenaItem& aArena)
   }
 
   m_pKaiClient->EnterVector(aArena.m_strVector, aArena.m_strPassword );
-  ChangeState(State::Arenas);
+  ChangeState(Arenas);
 }
 
 
@@ -2069,3 +2069,4 @@ void CGUIWindowBuddies::UpdatePlayAndHost()
     CONTROL_ENABLE(CONTROL_BTNHOST);
   }
 }
+
