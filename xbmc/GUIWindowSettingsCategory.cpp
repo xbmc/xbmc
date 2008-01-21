@@ -3475,11 +3475,20 @@ void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
    // Update controls with information
    CGUISpinControlEx* pControl1 = (CGUISpinControlEx *)GetControl(GetSetting("network.assignment")->GetID());
    if (pControl1) pControl1->SetValue(iAssignment);         
-   GetSetting("network.ipaddress")->GetSetting()->FromString(sIPAddress);
-   GetSetting("network.subnet")->GetSetting()->FromString(sNetworkMask);
-   GetSetting("network.gateway")->GetSetting()->FromString(sDefaultGateway);
    GetSetting("network.dns")->GetSetting()->FromString(dns);
-   GetSetting("network.dns")->GetSetting()->FromString(dns);
+   if (iAssignment == NETWORK_STATIC || iAssignment == NETWORK_DISABLED)
+   {
+     GetSetting("network.ipaddress")->GetSetting()->FromString(sIPAddress);
+     GetSetting("network.subnet")->GetSetting()->FromString(sNetworkMask);
+     GetSetting("network.gateway")->GetSetting()->FromString(sDefaultGateway);
+   }
+   else
+   {
+     GetSetting("network.ipaddress")->GetSetting()->FromString(iface->GetCurrentIPAddress());
+     GetSetting("network.subnet")->GetSetting()->FromString(iface->GetCurrentNetmask());
+     GetSetting("network.gateway")->GetSetting()->FromString(iface->GetCurrentDefaultGateway());
+   }
+
    pControl1 = (CGUISpinControlEx *)GetControl(GetSetting("network.enc")->GetID());
    if (pControl1) pControl1->SetValue(iWirelessEnc);         
       
