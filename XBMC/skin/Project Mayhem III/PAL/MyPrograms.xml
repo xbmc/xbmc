@@ -99,7 +99,7 @@
 				<onright>50</onright>
 				<onup>98</onup>
 				<ondown>20</ondown>
-				<visible>System.Platform.XBOX + System.KaiEnabled</visible>
+				<visible>System.KaiEnabled</visible>
 			</control>
 			<control type="image">
 				<description>Kai disconnected icon</description>
