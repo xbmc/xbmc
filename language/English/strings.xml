@@ -1642,7 +1642,7 @@
   <string id="20371">Set Season Thumb</string>
   <string id="20372">Season Image</string>
   <string id="20373">Season</string>
-  <string id="20374">Downloading Video information</string>
+  <string id="20374">Downloading Movie information</string>
   <string id="20375">Unassign Content</string>
   <string id="20376">First Aired:</string>
   <string id="20377">Refresh TV Show Information</string>
@@ -1676,6 +1676,8 @@
   <string id="20405">Remove Episode Bookmark</string>
   <string id="20406">Set Episode Bookmark</string>
   <string id="20407">Scraper Settings</string>
+  <string id="20408">Downloading Music Video information</string>
+  <string id="20409">Downloading TV Show information</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
