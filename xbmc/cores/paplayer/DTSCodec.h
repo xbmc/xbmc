@@ -4,6 +4,7 @@
 #include "FileSystem/File.h"
 #include "ICodec.h"
 #include "CachingCodec.h"
+#include "FileReader.h"
 #include "DllDCACodec.h"
 
 #ifdef HAS_DTS_CODEC

@@ -69,7 +69,6 @@ bool CViewDatabase::UpdateOldVersion(int version)
 
 bool CViewDatabase::GetViewState(const CStdString &path, int window, CViewState &state)
 {
-  //DWORD titleID = 0;
   try
   {
     if (NULL == m_pDB.get()) return false;

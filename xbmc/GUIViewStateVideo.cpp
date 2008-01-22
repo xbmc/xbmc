@@ -104,7 +104,6 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
   else if (items.IsVideoDb())
   {
     NODE_TYPE NodeType=CVideoDatabaseDirectory::GetDirectoryChildType(items.m_strPath);
-    //NODE_TYPE ParentNodeType=CVideoDatabaseDirectory::GetDirectoryType(items.m_strPath);
     CQueryParams params;
     CVideoDatabaseDirectory::GetQueryParams(items.m_strPath,params);
     
@@ -409,7 +408,6 @@ VECSHARES& CGUIViewStateWindowVideoPlaylist::GetShares()
   m_shares.clear();
   //  Playlist share
   CShare share;
-  //share.strName;
   share.strPath= "playlistvideo://";
   share.m_strThumbnailImage="defaultFolderBig.png";
   share.m_iDriveType = SHARE_TYPE_LOCAL;

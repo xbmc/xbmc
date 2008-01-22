@@ -20,7 +20,7 @@
  */
 
 #include "stdafx.h"
-#include "./ProgramDatabase.h"
+#include "ProgramDatabase.h"
 #include "utils/fstrcmp.h"
 #include "Util.h"
 #ifdef HAS_XBOX_HARDWARE

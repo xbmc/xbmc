@@ -129,6 +129,8 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
   {
     CShare& share = shares[i];
     CFileItem* pItem = new CFileItem(share);
+    if (pItem->IsLastFM() || pItem->IsShoutCast() || (pItem->m_strPath.Left(14).Equals("musicsearch://")))
+      pItem->SetCanQueue(false);
     CStdString strPathUpper = pItem->m_strPath;
     strPathUpper.ToUpper();
 

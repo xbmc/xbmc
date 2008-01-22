@@ -35,7 +35,7 @@ using namespace XFILE;
 using namespace DIRECTORY;
 using namespace VIDEO;
 
-#define VIDEO_DATABASE_VERSION 13
+#define VIDEO_DATABASE_VERSION 14
 #define VIDEO_DATABASE_OLD_VERSION 3.f
 #define VIDEO_DATABASE_NAME "MyVideos34.db"
 #define RECENTLY_ADDED_LIMIT  25
@@ -127,7 +127,7 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE TABLE actors ( idActor integer primary key, strActor text, strThumb text )\n");
 
     CLog::Log(LOGINFO, "create path table");
-    m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text, strContent text, strScraper text, strHash text, scanRecursive integer, useFolderNames bool)\n");
+    m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text, strContent text, strScraper text, strHash text, scanRecursive integer, useFolderNames bool, strSettings text)\n");
     m_pDS->exec("CREATE UNIQUE INDEX ix_path ON path ( strPath )\n");
 
     CLog::Log(LOGINFO, "create files table");
@@ -837,7 +837,7 @@ long CVideoDatabase::AddMovie(const CStdString& strFilenameAndPath)
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
     
-    long lFileId, lMovieId=-1; //,lEpisodeId=-1;
+    long lFileId, lMovieId=-1;
     lFileId = GetFile(strFilenameAndPath);
     if (lFileId < 0)
       lFileId = AddFile(strFilenameAndPath);
@@ -1505,7 +1505,6 @@ void CVideoDatabase::GetMoviesByActor(const CStdString& strActor, VECMOVIES& mov
     CStdString strSQL=FormatSQL("select movie.*,files.strFileName,path.strPath from movie join files on files.idFile=movie.idFile join path on files.idPath=path.idPath join actorlinkmovie on actorlinkmovie.idmovie=movie.idmovie join actors on actors.idActor=actorlinkmovie.idActor where actors.stractor='%s'", strActor.c_str());
     m_pDS->query( strSQL.c_str() );
 
-    //long lLastPathId = -1;
     while (!m_pDS->eof())
     {
       movies.push_back(GetDetailsForMovie(m_pDS));
@@ -1530,7 +1529,6 @@ void CVideoDatabase::GetTvShowsByActor(const CStdString& strActor, VECMOVIES& mo
     CStdString strSQL=FormatSQL("select tvshow.*,path.strPath,path.strPath from tvshow join path on tvshowlinkpath.idpath = path.idpath join tvshowlinkpath on tvshowlinkpath.idshow=tvshow.idshow join actorlinktvshow on actorlinktvshow.idshow=tvshow.idshow join actors on actors.idActor=actorlinktvshow.idActor where actors.stractor='%s'", strActor.c_str());
     m_pDS->query( strSQL.c_str() );
 
-    //long lLastPathId = -1;
     while (!m_pDS->eof())
     {
       movies.push_back(GetDetailsForTvShow(m_pDS));
@@ -1555,7 +1553,6 @@ void CVideoDatabase::GetEpisodesByActor(const CStdString& strActor, VECMOVIES& m
     CStdString strSQL=FormatSQL("select episode.*,files.strFileName,path.strPath,tvshow.c%02d from episode join files on files.idFile=episode.idfile join tvshowlinkepisode on tvshowlinkepisode.idepisode=episode.idepisode join tvshow on tvshowlinkepisode.idshow=tvshow.idshow join path on files.idPath=path.idPath join actorlinkepisode on actorlinkepisode.idepisode=episode.idepisode join actors on actors.idActor=actorlinkepisode.idActor where actors.stractor='%s'", VIDEODB_ID_TV_TITLE,strActor.c_str());
     m_pDS->query( strSQL.c_str() );
 
-    //long lLastPathId = -1;
     while (!m_pDS->eof())
     {
       CVideoInfoTag movie=GetDetailsForEpisode(m_pDS);
@@ -1586,7 +1583,6 @@ void CVideoDatabase::GetMusicVideosByArtist(const CStdString& strArtist, CFileIt
       strSQL=FormatSQL("select musicvideo.*,files.strFileName,path.strPath from musicvideo join files on files.idFile=musicvideo.idFile join path on files.idPath=path.idPath join artistlinkmusicvideo on artistlinkmusicvideo.idmvideo=musicvideo.idmvideo join actors on actors.idActor=artistlinkmusicvideo.idArtist where actors.stractor='%s'", strArtist.c_str());
     m_pDS->query( strSQL.c_str() );
 
-    //long lLastPathId = -1;
     while (!m_pDS->eof())
     {
       CVideoInfoTag tag = GetDetailsForMusicVideo(m_pDS);
@@ -1917,7 +1913,6 @@ long CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, 
 {
   try
   {
-    //long lFileId = GetFile(strFilenameAndPath);
     if (lEpisodeId == -1)
     {
       lEpisodeId = GetEpisodeInfo(strFilenameAndPath);
@@ -3015,12 +3010,12 @@ void CVideoDatabase::RemoveContentForPath(const CStdString& strPath, CGUIDialogP
         bEncodedChecked = true;
       }
     }
-    strSQL = FormatSQL("update path set strContent = '', strScraper='', strHash='',useFolderNames=0,scanRecursive=0 where strPath like '%%%s%%'",strPath1.c_str());
+    strSQL = FormatSQL("update path set strContent = '', strScraper='', strHash='',strSettings='',useFolderNames=0,scanRecursive=0 where strPath like '%%%s%%'",strPath1.c_str());
     pDS->exec(strSQL);
 
     CStdString strEncoded(strPath);
     CUtil::URLEncode(strEncoded);
-    strSQL = FormatSQL("update path set strContent = '', strScraper='',strHash='',useFolderNames=0,scanRecursive=0 where strPath like '%%%s%%'",strEncoded.c_str());
+    strSQL = FormatSQL("update path set strContent = '', strScraper='',strHash='',strSettings='',useFolderNames=0,scanRecursive=0 where strPath like '%%%s%%'",strEncoded.c_str());
     pDS->exec(strSQL);
   }
   catch (...)
@@ -3055,7 +3050,7 @@ void CVideoDatabase::SetScraperForPath(const CStdString& filePath, const SScrape
     }
 
     // Update
-    CStdString strSQL=FormatSQL("update path set strContent='%s',strScraper='%s', scanRecursive=%i, useFolderNames=%i where idPath=%u", info.strContent.c_str(), info.strPath.c_str(),settings.recurse,settings.parent_name,lPathId);
+    CStdString strSQL=FormatSQL("update path set strContent='%s',strScraper='%s', scanRecursive=%i, useFolderNames=%i, strSettings='%s' where idPath=%u", info.strContent.c_str(), info.strPath.c_str(),settings.recurse,settings.parent_name,info.settings.GetSettings().c_str(),lPathId);
     m_pDS->exec(strSQL.c_str());
   }
   catch (...)
@@ -3242,6 +3237,11 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       m_pDS->exec(createColIndex.c_str());
       createColIndex.Format("CREATE INDEX ix_episode_bookmark on episode (c%02d)", VIDEODB_ID_EPISODE_BOOKMARK);
       m_pDS->exec(createColIndex.c_str());
+    }
+    if (iVersion < 14)
+    {
+      // add the scraper settings column
+      m_pDS->exec("alter table path add strSettings text");
     }
   }
   catch (...)
@@ -3799,7 +3799,6 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
     {
       map<long, CActor> mapActors;
       map<long, CActor>::iterator it;
-      //long lLastPathId = -1;
 
       while (!m_pDS->eof())
       {
@@ -3942,7 +3941,6 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
     {
       map<long, pair<CStdString,bool> > mapYears;
       map<long, pair<CStdString,bool> >::iterator it;
-      //long lLastPathId = -1;
       while (!m_pDS->eof())
       {
         long lYear = 0;
@@ -4073,7 +4071,6 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
     {
       map<long, CStdString> mapYears;
       map<long, CStdString>::iterator it;
-      //long lLastPathId = -1;
       while (!m_pDS->eof())
       {
         long lYear = m_pDS->fv(0).get_asLong();
@@ -5118,7 +5115,7 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
     long lPathId = GetPath(strPath1);
     if (lPathId > -1)
     {
-      CStdString strSQL=FormatSQL("select path.strContent,path.strScraper,path.scanRecursive,path.useFolderNames from path where path.idPath=%u",lPathId);
+      CStdString strSQL=FormatSQL("select path.strContent,path.strScraper,path.scanRecursive,path.useFolderNames,path.strSettings from path where path.idPath=%u",lPathId);
       m_pDS->query( strSQL.c_str() );
     }
 
@@ -5129,6 +5126,7 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
     {
       info.strContent = m_pDS->fv("path.strContent").get_asString();
       info.strPath = m_pDS->fv("path.strScraper").get_asString();
+      info.settings.LoadUserXML(m_pDS->fv("path.strSettings").get_asString());
       settings.parent_name = m_pDS->fv("path.useFolderNames").get_asBool();
       settings.recurse = m_pDS->fv("path.scanRecursive").get_asInteger();
     }
@@ -5140,12 +5138,13 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
       {
         iFound++;
 
-        CStdString strSQL=FormatSQL("select path.strContent,path.strScraper,path.scanRecursive,path.useFolderNames from path where strPath like '%s'",strParent.c_str());
+        CStdString strSQL=FormatSQL("select path.strContent,path.strScraper,path.scanRecursive,path.useFolderNames,path.strSettings from path where strPath like '%s'",strParent.c_str());
         m_pDS->query(strSQL.c_str());
         if (!m_pDS->eof())
         {
           info.strContent = m_pDS->fv("path.strContent").get_asString();
           info.strPath = m_pDS->fv("path.strScraper").get_asString();
+          info.settings.LoadUserXML(m_pDS->fv("path.strSettings").get_asString());
           settings.parent_name = m_pDS->fv("path.useFolderNames").get_asBool();
           settings.recurse = m_pDS->fv("path.scanRecursive").get_asInteger();
 
@@ -5562,7 +5561,6 @@ bool CVideoDatabase::GetMusicVideosByWhere(const CStdString &baseDir, const CStd
     // get data from returned rows
     items.Reserve(iRowsFound);
     // get songs from returned subtable
-    //int count = 0;
     while (!m_pDS->eof())
     {
       CFileItem *item = new CFileItem(GetDetailsForMusicVideo(m_pDS));
@@ -6692,7 +6690,6 @@ bool CVideoDatabase::GetArbitraryQuery(const CStdString& strQuery, const CStdStr
       strResult = m_pDB->getErrorMsg();
       return false;
     }
-    //int iRowsFound = m_pDS->num_rows();
     strResult=strOpenRecordSet;
     while (!m_pDS->eof())
     {

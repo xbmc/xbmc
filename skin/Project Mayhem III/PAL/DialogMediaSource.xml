@@ -8,7 +8,7 @@
 		<posy>130</posy>
 	</coordinates>
 	<controls>
-		<control type="image" id="0">
+		<control type="image">
 			<posx>-300</posx>
 			<posy>-300</posy>
 			<width>1300</width>
@@ -16,7 +16,7 @@
 			<texture>black.png</texture>
 			<animation effect="fade" time="2000">WindowOpen</animation>
 		</control>
-		<control type="image" id="1">
+		<control type="image">
 			<description>background image</description>
 			<posx>-15</posx>
 			<posy>-15</posy>
@@ -34,7 +34,7 @@
 			<font>special13</font>
 			<textcolor>dialogheader</textcolor>
 		</control>
-		<control type="label" id="0">
+		<control type="label">
 			<description>path label</description>
 			<posx>10</posx>
 			<posy>35</posy>
@@ -43,26 +43,66 @@
 			<font>font12</font>
 			<label>1021</label>
 		</control>
-		<control type="listcontrol" id="10">
-			<description>Path List Control</description>
+		<control type="list" id="10">
 			<posx>10</posx>
 			<posy>60</posy>
 			<width>380</width>
-			<height>190</height>
-			<font>font12</font>
-			<textoffsetx>8</textoffsetx>
-			<aligny>center</aligny>
-			<texturefocus>input-focus.png</texturefocus>
-			<texturenofocus>input-nofocus.png</texturenofocus>
-			<textureheight>32</textureheight>
-			<spacebetweenitems>8</spacebetweenitems>
-			<itemwidth>0</itemwidth>
-			<textxoff>0</textxoff>
-			<font2>-</font2>
+			<height>160</height>
 			<onup>9001</onup>
 			<onleft>9000</onleft>
 			<onright>9000</onright>
 			<ondown>12</ondown>
+			<pagecontrol>-</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<itemlayout height="40">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>380</width>
+					<height>32</height>
+					<texture>input-nofocus.png</texture>
+				</control>
+				<control type="label">
+					<posx>5</posx>
+					<posy>0</posy>
+					<width>370</width>
+					<height>32</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Label</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="40">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>380</width>
+					<height>32</height>
+					<texture>input-nofocus.png</texture>
+					<visible>!Control.hasfocus(10)</visible>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>380</width>
+					<height>32</height>
+					<texture>input-focus.png</texture>
+					<visible>Control.hasfocus(10)</visible>
+				</control>
+				<control type="label">
+					<posx>5</posx>
+					<posy>0</posy>
+					<width>370</width>
+					<height>32</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Label</info>
+				</control>
+			</focusedlayout>
 		</control>
 		<control type="group" id="9000">
 			<control type="button" id="11">
@@ -120,7 +160,7 @@
 				<ondown>12</ondown>
 			</control>
 		</control>
-		<control type="label" id="0">
+		<control type="label">
 			<description>Name Label</description>
 			<posx>10</posx>
 			<posy>222</posy>

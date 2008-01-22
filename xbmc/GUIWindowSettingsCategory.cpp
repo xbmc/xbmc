@@ -1612,7 +1612,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     }
   }
     
-  else if (strSetting.Equals("Network.httpproxyport"))
+  else if (strSetting.Equals("network.httpproxyport"))
   {
     CSettingString *pSetting = (CSettingString *)pSettingControl->GetSetting();
     // check that it's a valid port
@@ -1736,6 +1736,10 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       g_audioManager.Enable(true);
     else
       g_audioManager.Enable(!g_application.IsPlaying() || g_application.IsPaused());
+  }
+  else if (strSetting.Equals("lookandfeel.enablemouse"))
+  {
+    g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
   }
   else if (strSetting.Equals("videoscreen.resolution"))
   { // new resolution choosen... - update if necessary

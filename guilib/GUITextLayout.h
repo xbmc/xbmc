@@ -70,4 +70,3 @@ private:
   static void AppendToUTF32(const CStdString &text, DWORD colStyle, vector<DWORD> &utf32);
   static void DrawOutlineText(CGUIFont *font, float x, float y, const vector<DWORD> &colors, DWORD outlineColor, DWORD outlineWidth, const vector<DWORD> &text, DWORD align, float maxWidth);
 };
-

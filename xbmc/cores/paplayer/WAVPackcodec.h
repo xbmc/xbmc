@@ -1,6 +1,4 @@
 #pragma once
-#include "ICodec.h"
-#include "FileSystem/File.h"
 #include "DllWAVPack.h"
 #include "CachingCodec.h"
 

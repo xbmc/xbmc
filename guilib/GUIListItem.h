@@ -76,17 +76,9 @@ public:
 
   bool m_bIsFolder;     ///< is item a folder or a file
 
-  void SetProperty(const CStdString &strKey, const char *strValue);
-  void SetProperty(const CStdString &strKey, int nVal);
-  void SetProperty(const CStdString &strKey, bool bVal);
-  void SetProperty(const CStdString &strKey, double dVal);
-
-  bool       HasProperty(const CStdString &strKey) const;
-
-  CStdString GetProperty(const CStdString &strKey) const;
-  bool       GetPropertyBOOL(const CStdString &strKey) const;
-  int        GetPropertyInt(const CStdString &strKey) const;
-  double     GetPropertyDouble(const CStdString &strKey) const;
+  void SetProperty(const std::string &strKey, const std::string &strValue);
+  std::string GetProperty(const std::string &strKey) const;
+  void ClearProperty(const std::string &strKey);
 
 protected:
   CStdString m_strLabel;      // text of column1
@@ -99,14 +91,6 @@ protected:
   CGUIListItemLayout *m_focusedLayout;
   bool m_bSelected;     // item is selected or not
 
-  struct icompare
-  {
-    bool operator()(const CStdString &s1, const CStdString &s2) const
-    {
-      return s1.CompareNoCase(s2) < 0;
-    }
-  };
-
-  std::map<CStdString, CStdString, icompare> m_mapProperties;
+  std::map<std::string, std::string> m_mapProperties;
 };
 #endif

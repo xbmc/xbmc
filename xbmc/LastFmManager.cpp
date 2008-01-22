@@ -136,7 +136,7 @@ bool CLastFmManager::RadioHandShake()
   Parameter("subscriber", html, m_RadioSubscriber);
   Parameter("banned",     html, m_RadioBanned);
 
-  if (m_RadioSession == "FAILED")
+  if (m_RadioSession.CompareNoCase("failed") == 0)
   {
     CLog::Log(LOGERROR, "Last.fm return failed response, possible bad username or password?");
     m_RadioSession = "";

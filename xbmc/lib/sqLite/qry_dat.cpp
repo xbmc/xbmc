@@ -659,7 +659,6 @@ string field_value::gft() {
     }
 
   return tmp;
-
   }
 
 } //namespace 

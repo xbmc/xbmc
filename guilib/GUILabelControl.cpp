@@ -3,18 +3,179 @@
 #include "../xbmc/utils/CharsetConverter.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
-CGUILabelControl::CGUILabelControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const string& strLabel, const CLabelInfo& labelInfo, bool wrapMultiLine, bool bHasPath)
+#include "LocalizeStrings.h"  // for CGUIInfoLabel
+
+CGUIInfoLabel::CGUIInfoLabel()
+{
+}
+
+CGUIInfoLabel::CGUIInfoLabel(const CStdString &label, const CStdString &fallback)
+{
+  SetLabel(label, fallback);
+}
+
+void CGUIInfoLabel::SetLabel(const CStdString &label, const CStdString &fallback)
+{
+  m_fallback = fallback;
+  Parse(label);
+}
+
+CStdString CGUIInfoLabel::GetLabel(DWORD contextWindow, bool preferImage) const
+{
+  CStdString label;
+  for (unsigned int i = 0; i < m_info.size(); i++)
+  {
+    const CInfoPortion &portion = m_info[i];
+    if (portion.m_info)
+    {
+      CStdString infoLabel;
+      if (preferImage)
+        infoLabel = g_infoManager.GetImage(portion.m_info, contextWindow);
+      if (infoLabel.IsEmpty())
+        infoLabel = g_infoManager.GetLabel(portion.m_info, contextWindow);
+      if (!infoLabel.IsEmpty())
+      {
+        label += portion.m_prefix;
+        label += infoLabel;
+        label += portion.m_postfix;
+      }
+    }
+    else
+    { // no info, so just append the prefix
+      label += portion.m_prefix;
+    }
+  }
+  if (label.IsEmpty())  // empty label, use the fallback
+    return m_fallback;
+  return label;
+}
+
+CStdString CGUIInfoLabel::GetItemLabel(const CGUIListItem *item, bool preferImages) const
+{
+  if (!item->IsFileItem()) return "";
+  CStdString label;
+  for (unsigned int i = 0; i < m_info.size(); i++)
+  {
+    const CInfoPortion &portion = m_info[i];
+    if (portion.m_info)
+    {
+      CStdString infoLabel;
+      if (preferImages)
+        infoLabel = g_infoManager.GetItemImage((const CFileItem *)item, portion.m_info);
+      else
+        infoLabel = g_infoManager.GetItemLabel((const CFileItem *)item, portion.m_info);
+      if (!infoLabel.IsEmpty())
+      {
+        label += portion.m_prefix;
+        label += infoLabel;
+        label += portion.m_postfix;
+      }
+    }
+    else
+    { // no info, so just append the prefix
+      label += portion.m_prefix;
+    }
+  }
+  if (label.IsEmpty())
+    return m_fallback;
+  return label;
+}
+
+bool CGUIInfoLabel::IsEmpty() const
+{
+  return m_info.size() == 0;
+}
+
+bool CGUIInfoLabel::IsConstant() const
+{
+  return m_info.size() == 0 || (m_info.size() == 1 && m_info[0].m_info == 0);
+}
+
+void CGUIInfoLabel::Parse(const CStdString &label)
+{
+  m_info.clear();
+  CStdString work(label);
+  // Step 1: Replace all $LOCALIZE[number] with the real string
+  int pos1 = work.Find("$LOCALIZE[");
+  while (pos1 >= 0)
+  {
+    int pos2 = StringUtils::FindEndBracket(work, '[', ']', pos1 + 10);
+    if (pos2 > pos1)
+    {
+      CStdString left = work.Left(pos1);
+      CStdString right = work.Mid(pos2 + 1);
+      CStdString replace = g_localizeStringsTemp.Get(atoi(work.Mid(pos1 + 10).c_str()));
+      if (replace == "")
+         replace = g_localizeStrings.Get(atoi(work.Mid(pos1 + 10).c_str()));
+      work = left + replace + right;
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "Error parsing label - missing ']'");
+      return;
+    }
+    pos1 = work.Find("$LOCALIZE[", pos1);
+  }
+  // Step 2: Find all $INFO[info,prefix,postfix] blocks
+  pos1 = work.Find("$INFO[");
+  while (pos1 >= 0)
+  {
+    // output the first block (contents before first $INFO)
+    if (pos1 > 0)
+      m_info.push_back(CInfoPortion(0, work.Left(pos1), ""));
+
+    // ok, now decipher the $INFO block
+    int pos2 = StringUtils::FindEndBracket(work, '[', ']', pos1 + 6);
+    if (pos2 > pos1)
+    {
+      // decipher the block
+      CStdString block = work.Mid(pos1 + 6, pos2 - pos1 - 6);
+      CStdStringArray params;
+      StringUtils::SplitString(block, ",", params);
+      int info = g_infoManager.TranslateString(params[0]);
+      CStdString prefix, postfix;
+      if (params.size() > 1)
+        prefix = params[1];
+      if (params.size() > 2)
+        postfix = params[2];
+      m_info.push_back(CInfoPortion(info, prefix, postfix));
+      // and delete it from our work string
+      work = work.Mid(pos2 + 1);
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "Error parsing label - missing ']'");
+      return;
+    }
+    pos1 = work.Find("$INFO[");
+  }
+  // add any last block
+  if (!work.IsEmpty())
+    m_info.push_back(CInfoPortion(0, work, ""));
+}
+
+CGUIInfoLabel::CInfoPortion::CInfoPortion(int info, const CStdString &prefix, const CStdString &postfix)
+{
+  m_info = info;
+  m_prefix = prefix;
+  m_postfix = postfix;
+  // filter our prefix and postfix for comma's and $$
+  m_prefix.Replace("$COMMA", ","); m_prefix.Replace("$$", "$");
+  m_postfix.Replace("$COMMA", ","); m_postfix.Replace("$$", "$");
+  m_prefix.Replace("$LBRACKET", "["); m_prefix.Replace("$RBRACKET", "]");
+  m_postfix.Replace("$LBRACKET", "["); m_postfix.Replace("$RBRACKET", "]");
+}
+
+CGUILabelControl::CGUILabelControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool wrapMultiLine, bool bHasPath)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height), m_textLayout(labelInfo.font, wrapMultiLine)
 {
   m_bHasPath = bHasPath;
   m_iCursorPos = 0; 
-  SetLabel(strLabel);
   m_label = labelInfo;
   m_bShowCursor = false;
   m_dwCounter = 0;
   ControlType = GUICONTROL_LABEL;
   m_ScrollInsteadOfTruncate = false;
-  m_singleInfo = 0;
   m_startHighlight = m_endHighlight = 0;
 }
 
@@ -29,27 +190,20 @@ void CGUILabelControl::ShowCursor(bool bShow)
 
 void CGUILabelControl::SetCursorPos(int iPos)
 {
-  if (iPos > (int)m_strLabel.length()) iPos = m_strLabel.length();
+  CStdString label = m_infoLabel.GetLabel(m_dwParentID);
+  if (iPos > (int)label.length()) iPos = label.length();
   if (iPos < 0) iPos = 0;
   m_iCursorPos = iPos;
 }
 
-void CGUILabelControl::SetInfo(int singleInfo)
+void CGUILabelControl::SetInfo(const CGUIInfoLabel &infoLabel)
 {
-  m_singleInfo = singleInfo;
+  m_infoLabel = infoLabel;
 }
 
 void CGUILabelControl::Render()
 {
-  CStdString label;
-	if (m_singleInfo)
-	{ 
-		label = g_infoManager.GetLabel(m_singleInfo, m_dwParentID);
-	}
-	else
-	{
-    label = g_infoManager.GetMultiInfo(m_multiInfo, m_dwParentID);
-	}
+  CStdString label(m_infoLabel.GetLabel(m_dwParentID));
 
   if (m_bShowCursor)
   { // cursor location assumes utf16 text, so deal with that (inefficient, but it's not as if it's a high-use area
@@ -122,21 +276,14 @@ bool CGUILabelControl::CanFocus() const
 
 void CGUILabelControl::SetLabel(const string &strLabel)
 {
-  if (m_strLabel.compare(strLabel) == 0)
-    return;
-  m_strLabel = strLabel;
-
   // shorten the path label
   if ( m_bHasPath )
-  {
-    m_multiInfo.clear();
-    m_multiInfo.push_back(CInfoPortion(0, ShortenPath(strLabel), ""));
-  }
+    m_infoLabel.SetLabel(ShortenPath(strLabel), "");
   else // parse the label for info tags
-    g_infoManager.ParseLabel(strLabel, m_multiInfo);
+    m_infoLabel.SetLabel(strLabel, "");
   SetWidthControl(m_ScrollInsteadOfTruncate);
-  if (m_iCursorPos > (int)m_strLabel.size())
-    m_iCursorPos = m_strLabel.size();
+  if (m_iCursorPos > (int)strLabel.size())
+    m_iCursorPos = strLabel.size();
 }
 
 void CGUILabelControl::SetWidthControl(bool bScroll)

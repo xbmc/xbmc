@@ -1,4 +1,3 @@
-
 #ifndef __GNUC__
 #pragma comment(linker, "/merge:PY_TEXT=PYTHON")
 #pragma comment(linker, "/merge:PY_DATA=PY_RW")

@@ -13,7 +13,6 @@
 			<width>115</width>
 			<visible>Player.Paused</visible>
 			<texture>video-pause.png</texture>
-			<colorkey>0</colorkey>
 		</control>
 		<control type="image" id="0">
 			<description>2x image</description>
@@ -24,7 +23,6 @@
 			<width>115</width>
 			<visible>Player.Forwarding2x</visible>
 			<texture>video-2x.png</texture>
-			<colorkey>0</colorkey>
 		</control>
 		<control type="image" id="0">
 			<description>4x image</description>
@@ -35,7 +33,6 @@
 			<width>115</width>
 			<visible>Player.Forwarding4x</visible>
 			<texture>video-4x.png</texture>
-			<colorkey>0</colorkey>
 		</control>
 		<control type="image" id="0">
 			<description>8x image</description>
@@ -46,7 +43,6 @@
 			<width>115</width>
 			<visible>Player.Forwarding8x</visible>
 			<texture>video-8x.png</texture>
-			<colorkey>0</colorkey>
 		</control>
 		<control type="image" id="0">
 			<description>16x image</description>
@@ -57,7 +53,6 @@
 			<width>115</width>
 			<visible>Player.Forwarding16x</visible>
 			<texture>video-16x.png</texture>
-			<colorkey>0</colorkey>
 		</control>
 		<control type="image" id="0">
 			<description>32x image</description>
@@ -68,7 +63,6 @@
 			<width>115</width>
 			<visible>Player.Forwarding32x</visible>
 			<texture>video-32x.png</texture>
-			<colorkey>0</colorkey>
 		</control>
 		<control type="image" id="0">
 			<description>-2x image</description>
@@ -79,7 +73,6 @@
 			<width>115</width>
 			<visible>Player.Rewinding2x</visible>
 			<texture>video-2xr.png</texture>
-			<colorkey>0</colorkey>
 		</control>
 		<control type="image" id="0">
 			<description>-4x image</description>
@@ -90,7 +83,6 @@
 			<width>115</width>
 			<visible>Player.Rewinding4x</visible>
 			<texture>video-4xr.png</texture>
-			<colorkey>0</colorkey>
 		</control>
 		<control type="image" id="0">
 			<description>-8x image</description>
@@ -101,7 +93,6 @@
 			<width>115</width>
 			<visible>Player.Rewinding8x</visible>
 			<texture>video-8xr.png</texture>
-			<colorkey>0</colorkey>
 		</control>
 		<control type="image" id="0">
 			<description>-16x image</description>
@@ -112,7 +103,6 @@
 			<width>115</width>
 			<visible>Player.Rewinding16x</visible>
 			<texture>video-16xr.png</texture>
-			<colorkey>0</colorkey>
 		</control>
 		<control type="image" id="0">
 			<description>-32x image</description>
@@ -123,7 +113,6 @@
 			<width>115</width>
 			<visible>Player.Rewinding32x</visible>
 			<texture>video-32xr.png</texture>
-			<colorkey>0</colorkey>
 		</control>
 		<!-- progressbar dialog -->
 		<control type="image" id="23">

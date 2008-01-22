@@ -85,10 +85,10 @@ namespace PYXBMC
     CLabelInfo spinLabel;
     spinLabel.font = g_fontManager.GetFont(pControl->strFont);
     spinLabel.textColor = spinLabel.focusedColor = pControl->pControlSpin->dwColor;
-    CImage up; up.file = pControl->pControlSpin->strTextureUp;
-    CImage down; down.file = pControl->pControlSpin->strTextureDown;
-    CImage upfocus; upfocus.file = pControl->pControlSpin->strTextureUpFocus;
-    CImage downfocus; downfocus.file = pControl->pControlSpin->strTextureDownFocus;
+    CImage up(pControl->pControlSpin->strTextureUp);
+    CImage down(pControl->pControlSpin->strTextureDown);
+    CImage upfocus(pControl->pControlSpin->strTextureUpFocus);
+    CImage downfocus(pControl->pControlSpin->strTextureDownFocus);
 
     pControl->pGUIControl = new CGUITextBox(pControl->iParentId, pControl->iControlId,
       (float)pControl->dwPosX, (float)pControl->dwPosY, (float)pControl->dwWidth, (float)pControl->dwHeight,

@@ -30,6 +30,7 @@
 #include "GUIRadioButtonControl.h"
 #include "GUISpinControlEx.h"
 #include "FileSystem/HDDirectory.h"
+#include "VideoInfoScanner.h"
 
 #define CONTROL_AREA                  2
 #define CONTROL_DEFAULT_BUTTON        3
@@ -38,6 +39,7 @@
 #define CONTROL_DEFAULT_SEPARATOR     6
 #define ID_BUTTON_OK                  10
 #define ID_BUTTON_CANCEL              11
+#define ID_BUTTON_DEFAULT             12
 #define CONTROL_HEADING_LABEL         20
 #define CONTROL_START_CONTROL         100
 
@@ -56,9 +58,6 @@ bool CGUIDialogPluginSettings::OnMessage(CGUIMessage& message)
     {
       CGUIDialog::OnMessage(message);
 
-      if (!m_settings.Load(m_url))
-        return false;
-
       FreeControls();
       CreateControls();
       break;
@@ -70,6 +69,8 @@ bool CGUIDialogPluginSettings::OnMessage(CGUIMessage& message)
 
       if (iControl == ID_BUTTON_OK)
         SaveSettings();
+      else if (iControl == ID_BUTTON_DEFAULT)
+        SetDefaults();
       else
         ShowVirtualKeyboard(iControl);
 
@@ -94,11 +95,38 @@ void CGUIDialogPluginSettings::ShowAndGetInput(CURL& url)
   DIRECTORY::CPluginDirectory::LoadPluginStrings(url);
 
   // Create the dialog
-  CGUIDialog* pDialog = (CGUIDialog*) m_gWindowManager.GetWindow(WINDOW_DIALOG_PLUGIN_SETTINGS);
+  CGUIDialogPluginSettings* pDialog = (CGUIDialogPluginSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_PLUGIN_SETTINGS);
+
+  pDialog->m_strHeading = m_url.GetFileName();
+  CUtil::RemoveSlashAtEnd(pDialog->m_strHeading);
+  pDialog->m_strHeading.Format("$LOCALIZE[1045] - %s", pDialog->m_strHeading.c_str());
+
+  CPluginSettings settings;
+  settings.Load(m_url);
+  pDialog->m_settings = settings;
+
   pDialog->DoModal();
+
+  settings = pDialog->m_settings;
+  settings.Save();
 
   // Unload temporary language strings
   DIRECTORY::CPluginDirectory::ClearPluginStrings();
+
+  return;
+}
+
+// \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
+void CGUIDialogPluginSettings::ShowAndGetInput(SScraperInfo& info)
+{
+  // Create the dialog
+  CGUIDialogPluginSettings* pDialog = (CGUIDialogPluginSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_PLUGIN_SETTINGS);
+
+  pDialog->m_settings = info.settings;
+  pDialog->m_strHeading.Format("$LOCALIZE[20407] - %s", info.strTitle.c_str());
+
+  pDialog->DoModal();
+  info.settings.LoadUserXML(static_cast<CScraperSettings&>(pDialog->m_settings).GetSettings());
 
   return;
 }
@@ -244,9 +272,7 @@ bool CGUIDialogPluginSettings::SaveSettings(void)
     setting = setting->NextSiblingElement("setting");
     controlId++;
   }
-
-  // Save the model into an XML file
-  return m_settings.Save();
+  return true;
 }
 
 void CGUIDialogPluginSettings::FreeControls()
@@ -281,10 +307,7 @@ void CGUIDialogPluginSettings::CreateControls()
     return;
 
   // set our dialog heading
-  CStdString strHeading = m_url.GetFileName();
-  CUtil::RemoveSlashAtEnd(strHeading);
-  strHeading.Format("$LOCALIZE[1045] - %s", strHeading.c_str());
-  SET_CONTROL_LABEL(CONTROL_HEADING_LABEL, strHeading);
+  SET_CONTROL_LABEL(CONTROL_HEADING_LABEL, m_strHeading);
 
   // Create our base path, used for type "fileenum" settings
   CStdString basepath = "Q:\\plugins\\";
@@ -306,8 +329,14 @@ void CGUIDialogPluginSettings::CreateControls()
     CStdString lvalues;
     if (setting->Attribute("lvalues"))
       lvalues = setting->Attribute("lvalues");
+    CStdString entries;
+    if (setting->Attribute("entries"))
+      entries = setting->Attribute("entries");
     CStdString label;
-    label.Format("$LOCALIZE[%s]", setting->Attribute("label"));
+    if (setting->Attribute("label") && atoi(setting->Attribute("label")) > 0)
+      label.Format("$LOCALIZE[%s]", setting->Attribute("label"));
+    else
+      label = setting->Attribute("label");
 
     if (strcmpi(type, "text") == 0 || strcmpi(type, "ipaddress") == 0 ||
       strcmpi(type, "integer") == 0 || strcmpi(type, "video") == 0 ||
@@ -331,6 +360,7 @@ void CGUIDialogPluginSettings::CreateControls()
     else if (strcmpi(type, "enum") == 0)
     {
       vector<CStdString> valuesVec;
+      vector<CStdString> entryVec;
 
       pControl = new CGUISpinControlEx(*pOriginalSpin);
       if (!pControl) return;
@@ -340,18 +370,22 @@ void CGUIDialogPluginSettings::CreateControls()
         CUtil::Tokenize(lvalues, valuesVec, "|");
       else
         CUtil::Tokenize(values, valuesVec, "|");
-
+      if (!entries.IsEmpty())
+        CUtil::Tokenize(entries, entryVec, "|");
       for (unsigned int i = 0; i < valuesVec.size(); i++)
       {
+        int iAdd = i;
+        if (entryVec.size() > i)
+          iAdd = atoi(entryVec[i]);
         if (!lvalues.IsEmpty())
         {
           CStdString replace = g_localizeStringsTemp.Get(atoi(valuesVec[i]));
           if (replace.IsEmpty())
             replace = g_localizeStrings.Get(atoi(valuesVec[i]));
-          ((CGUISpinControlEx *)pControl)->AddLabel(replace, i);
+          ((CGUISpinControlEx *)pControl)->AddLabel(replace, iAdd);
         }
         else
-          ((CGUISpinControlEx *)pControl)->AddLabel(valuesVec[i], i);
+          ((CGUISpinControlEx *)pControl)->AddLabel(valuesVec[i], iAdd);
       }
       ((CGUISpinControlEx *)pControl)->SetValue(atoi(m_settings.Get(id)));
     }
@@ -413,11 +447,19 @@ void CGUIDialogPluginSettings::EnableControls()
   while (setting)
   {
     const CGUIControl* control = GetControl(controlId);
-    // set enable status
-    ((CGUIControl*) control)->SetEnabled(GetCondition(setting->Attribute("enable"), controlId));
-    // set visible status
-    ((CGUIControl*) control)->SetVisible(GetCondition(setting->Attribute("visible"), controlId));
-
+    if (control)
+    {
+      // set enable status
+      if (setting->Attribute("enable"))
+        ((CGUIControl*) control)->SetEnabled(GetCondition(setting->Attribute("enable"), controlId));
+      else
+        ((CGUIControl*) control)->SetEnabled(true);
+      // set visible status
+      if (setting->Attribute("visible"))
+        ((CGUIControl*) control)->SetVisible(GetCondition(setting->Attribute("visible"), controlId));
+      else
+        ((CGUIControl*) control)->SetVisible(true);
+    }
     setting = setting->NextSiblingElement("setting");
     controlId++;
   }
@@ -484,6 +526,48 @@ bool CGUIDialogPluginSettings::TranslateSingleString(const CStdString &strCondit
     return true;
   }
   return false;
+}
+
+// Go over all the settings and set their default values
+void CGUIDialogPluginSettings::SetDefaults()
+{
+  int controlId = CONTROL_START_CONTROL;
+  TiXmlElement *setting = m_settings.GetPluginRoot()->FirstChildElement("setting");
+  while (setting)
+  {
+    CStdString id;
+    if (setting->Attribute("id"))
+      id = setting->Attribute("id");
+    const CGUIControl* control = GetControl(controlId);
+    if (control)
+    {
+      CStdString value;
+      switch (control->GetControlType())
+      {
+        case CGUIControl::GUICONTROL_BUTTON:
+          ((CGUIButtonControl*) control)->SetLabel2(setting->Attribute("default"));
+          break;
+        case CGUIControl::GUICONTROL_RADIO:
+          ((CGUIRadioButtonControl*) control)->SetSelected(setting->Attribute("default") == "true");
+          break;
+        case CGUIControl::GUICONTROL_SPINEX:
+          {
+            if (strcmpi(setting->Attribute("type"), "fileenum") == 0)
+            { // need to run through all our settings and find the one that matches
+              ((CGUISpinControlEx*) control)->SetValueFromLabel(setting->Attribute("default"));
+            }
+            else
+              ((CGUISpinControlEx*) control)->SetValue(atoi(setting->Attribute("default")));
+          }
+          break;
+        default:
+          break;
+      }
+    }
+    setting = setting->NextSiblingElement("setting");
+    controlId++;
+  }
+  EnableControls();
 }
 
 CURL CGUIDialogPluginSettings::m_url;

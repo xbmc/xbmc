@@ -230,8 +230,6 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
 #define SCANSIZE  8192
 #define CHECKNUMFRAMES 5
 
-  //int nDuration = 0;
-  //int nPrependedBytes = 0;
   unsigned char* xing;
   unsigned char* vbri;
   unsigned char buffer[SCANSIZE + 1];

@@ -428,7 +428,6 @@ bool CPartyModeManager::ReapSongs()
   if (m_bIsVideo)
     iPlaylist = PLAYLIST_VIDEO;
 
-  //CPlayList& playlist = g_playlistPlayer.GetPlaylist(iPlaylist);
 
   // reap any played songs
   int iCurrentSong = g_playlistPlayer.GetCurrentSong();
