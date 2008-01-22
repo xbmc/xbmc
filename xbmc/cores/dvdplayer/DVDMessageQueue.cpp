@@ -197,7 +197,7 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
 }
 
 
-unsigned CDVDMessageQueue::GetPacketCount(CDVDMsg::Message type) 
+unsigned CDVDMessageQueue::GetPacketCount(CDVDMsg::Message type)
 {    
   if (!m_bInitialized)
     return 0;

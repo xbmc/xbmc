@@ -1,7 +1,6 @@
 #pragma once
 
-#include "../../utils/SharedSection.h"
-
+#include "utils/SharedSection.h"
 #define DVD_TIME_BASE 1000000
 #define DVD_NOPTS_VALUE    (-1LL<<52) // should be possible to represent in both double and __int64
 

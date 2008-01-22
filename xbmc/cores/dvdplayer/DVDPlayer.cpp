@@ -14,8 +14,8 @@
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
 
-#include "../../Util.h"
-#include "../../utils/GUIInfoManager.h"
+#include "Util.h"
+#include "utils/GUIInfoManager.h"
 #include "DVDPerformanceCounter.h"
 
 #include "../../FileSystem/cdioSupport.h"

@@ -363,12 +363,10 @@ void CGraphicContext::ClipToViewWindow()
 
 void CGraphicContext::SetFullScreenViewWindow(RESOLUTION &res)
 {
-  {
-    m_videoRect.left = g_settings.m_ResInfo[res].Overscan.left;
-    m_videoRect.top = g_settings.m_ResInfo[res].Overscan.top;
-    m_videoRect.right = g_settings.m_ResInfo[res].Overscan.right;
-    m_videoRect.bottom = g_settings.m_ResInfo[res].Overscan.bottom;
-  }
+  m_videoRect.left = g_settings.m_ResInfo[res].Overscan.left;
+  m_videoRect.top = g_settings.m_ResInfo[res].Overscan.top;
+  m_videoRect.right = g_settings.m_ResInfo[res].Overscan.right;
+  m_videoRect.bottom = g_settings.m_ResInfo[res].Overscan.bottom;
 }
 
 void CGraphicContext::SetFullScreenVideo(bool bOnOff)

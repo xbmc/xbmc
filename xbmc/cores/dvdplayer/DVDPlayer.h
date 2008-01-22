@@ -1,6 +1,6 @@
 #pragma once
 #include "../IPlayer.h"
-#include "../../utils/Thread.h"
+#include "utils/Thread.h"
 
 #include "IDVDPlayer.h"
 

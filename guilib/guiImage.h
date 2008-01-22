@@ -152,7 +152,7 @@ protected:
   SDL_Palette* m_pPalette;
   vector <CGLTexture*> m_vecTextures;
 #endif  
-  float m_diffuseScaleU, m_diffuseScaleV;  
+  float m_diffuseScaleU, m_diffuseScaleV;
   bool m_bDynamicResourceAlloc;
 
   // for when we are changing textures
