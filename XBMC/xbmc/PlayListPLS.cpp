@@ -221,7 +221,6 @@ void CPlayListPLS::Save(const CStdString& strFileName) const
 bool CPlayListASX::LoadAsxIniInfo(std::istream &stream)
 {
   CLog::Log(LOGINFO, "Parsing INI style ASX");
-  //string::size_type equals = 0, end = 0;
 
   std::string name, value;
 
@@ -332,7 +331,6 @@ bool CPlayListASX::LoadData(std::istream& stream)
 
         TiXmlElement *pRef = pElement->FirstChildElement("ref");
         TiXmlElement *pTitle = pElement->FirstChildElement("title");
-        //TiXmlElement *pDuration = pElement->FirstChildElement("duration"); /* <DURATION VALUE="hh:mm:ss.fract"/> */
 
         if(pTitle)
           title = pTitle->GetText();

@@ -208,7 +208,7 @@ BOOL XKGeneral::ReadINIFileItem(LPCSTR INIFileName, LPCSTR INISection, LPCSTR IN
   if (iniFile != INVALID_HANDLE_VALUE)
   {
     LPCSTR sTempSection = NULL;
-    LPCSTR sNextSection = NULL ;
+    LPCSTR sNextSection = NULL;
     LPCSTR sTempItem = NULL;
     ULONG sectionOffset = 0;
     DWORD filesize = GetFileSize(iniFile, NULL);

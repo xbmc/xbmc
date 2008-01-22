@@ -11,24 +11,34 @@
 #include "GUIControl.h"
 #include "GUITextLayout.h"
 
-class CInfoPortion
+class CGUIListItem;
+
+class CGUIInfoLabel
 {
 public:
-  CInfoPortion(int info, const CStdString &prefix, const CStdString &postfix)
+  CGUIInfoLabel();
+  CGUIInfoLabel(const CStdString &label, const CStdString &fallback = "");
+
+  void SetLabel(const CStdString &label, const CStdString &fallback);
+  CStdString GetLabel(DWORD contextWindow, bool preferImage = false) const;
+  CStdString GetItemLabel(const CGUIListItem *item, bool preferImage = false) const;
+  bool IsConstant() const;
+  bool IsEmpty() const;
+
+private:
+  void Parse(const CStdString &label);
+
+  class CInfoPortion
   {
-    m_info = info;
-    m_prefix = prefix;
-    m_postfix = postfix;
-    // filter our prefix and postfix for comma's and $$
-    m_prefix.Replace("$COMMA", ","); m_prefix.Replace("$$", "$");
-    m_postfix.Replace("$COMMA", ","); m_postfix.Replace("$$", "$");
-    m_prefix.Replace("$LBRACKET", "["); m_prefix.Replace("$RBRACKET", "]");
-    m_postfix.Replace("$LBRACKET", "["); m_postfix.Replace("$RBRACKET", "]");
+  public:
+    CInfoPortion(int info, const CStdString &prefix, const CStdString &postfix);
+    int m_info;
+    CStdString m_prefix;
+    CStdString m_postfix;
   };
 
-  int m_info;
-  CStdString m_prefix;
-  CStdString m_postfix;
+  CStdString m_fallback;
+  vector<CInfoPortion> m_info;
 };
 
 /*!
@@ -39,7 +49,7 @@ class CGUILabelControl :
       public CGUIControl
 {
 public:
-  CGUILabelControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const string& strLabel, const CLabelInfo& labelInfo, bool wrapMultiLine, bool bHasPath);
+  CGUILabelControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool wrapMultiLine, bool bHasPath);
   virtual ~CGUILabelControl(void);
   virtual void Render();
   virtual bool CanFocus() const;
@@ -50,7 +60,7 @@ public:
   void ShowCursor(bool bShow = true);
   void SetCursorPos(int iPos);
   int GetCursorPos() const { return m_iCursorPos;};
-  void SetInfo(int singleInfo);
+  void SetInfo(const CGUIInfoLabel&labelInfo);
   void SetWidthControl(bool bScroll);
   void SetTruncate(bool bTruncate);
   void SetAlignment(DWORD align);
@@ -62,9 +72,7 @@ protected:
 protected:
   CLabelInfo m_label;
   CGUITextLayout m_textLayout;
-  CStdString m_renderLabel;
 
-  string m_strLabel;
   bool m_bHasPath;
   bool m_bShowCursor;
   int m_iCursorPos;
@@ -74,8 +82,7 @@ protected:
   CScrollInfo m_ScrollInfo;
 
   // multi-info stuff
-  int                   m_singleInfo;
-  vector<CInfoPortion>  m_multiInfo;
+  CGUIInfoLabel m_infoLabel;
 
   unsigned int m_startHighlight;
   unsigned int m_endHighlight;

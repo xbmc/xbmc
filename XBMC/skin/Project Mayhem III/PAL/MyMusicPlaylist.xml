@@ -18,7 +18,7 @@
 			<height>488</height>
 			<texture>background-bottom.png</texture>
 		</control>
-		<control type="label" id="1">
+		<control type="label">
 			<description>xbox media center label</description>
 			<posx>200</posx>
 			<posy>43</posy>
@@ -26,7 +26,7 @@
 			<label>9</label>
 			<font>special12</font>
 		</control>
-		<control type="label" id="1">
+		<control type="label">
 			<description>description label</description>
 			<posx>207</posx>
 			<posy>43</posy>
@@ -46,12 +46,12 @@
 		</control>
 		<control type="group" id="9000">
 			<posx>20</posx>
-			<posy>-20</posy>
+			<posy>100</posy>
 			<include>buttonpanelslide</include>
 			<control type="button" id="2">
 				<description>View As Icons button</description>
 				<posx>0</posx>
-				<posy>120</posy>
+				<posy>0</posy>
 				<label>100</label>
 				<font>font13</font>
 				<onleft>50</onleft>
@@ -62,7 +62,7 @@
 			<control type="radiobutton" id="20">
 				<description>Shuffle button</description>
 				<posx>0</posx>
-				<posy>157</posy>
+				<posy>37</posy>
 				<label>191</label>
 				<onleft>50</onleft>
 				<onright>50</onright>
@@ -72,7 +72,7 @@
 			<control type="button" id="26">
 				<description>Repeat button</description>
 				<posx>0</posx>
-				<posy>194</posy>
+				<posy>74</posy>
 				<onleft>50</onleft>
 				<onright>50</onright>
 				<onup>20</onup>
@@ -81,7 +81,7 @@
 			<control type="button" id="21">
 				<description>Save button</description>
 				<posx>0</posx>
-				<posy>231</posy>
+				<posy>111</posy>
 				<label>190</label>
 				<font>font13</font>
 				<onleft>50</onleft>
@@ -92,7 +92,7 @@
 			<control type="button" id="22">
 				<description>Clear button</description>
 				<posx>0</posx>
-				<posy>268</posy>
+				<posy>148</posy>
 				<label>192</label>
 				<font>font13</font>
 				<onleft>50</onleft>

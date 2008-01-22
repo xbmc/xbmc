@@ -1,6 +1,6 @@
 
 #include "../stdafx.h"
-#include "./OSDSubMenu.h"
+#include "OSDSubMenu.h"
 #include "GUIFontManager.h"
 
 #ifdef _DEBUG

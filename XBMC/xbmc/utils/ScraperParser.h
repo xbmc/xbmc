@@ -7,6 +7,8 @@
 #include <vector>
 
 class CHTTP;
+class CScraperSettings;
+
 class CScraperUrl
 {
 public:
@@ -57,7 +59,7 @@ public:
   bool Load(const CStdString& strXMLFile);
   const CStdString GetName() { return m_name; }
   const CStdString GetContent() { return m_content; }
-  const CStdString Parse(const CStdString& strTag);
+  const CStdString Parse(const CStdString& strTag, CScraperSettings* pSettings=NULL);
   bool HasFunction(const CStdString& strTag);
 
   CStdString m_param[9];
@@ -76,6 +78,7 @@ private:
 
   const char* m_name;
   const char* m_content;
+  CScraperSettings* m_settings;
 };
 
 #endif

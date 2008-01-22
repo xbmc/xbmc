@@ -101,8 +101,8 @@ namespace PYXBMC
   }
 
   // InfoTagMusic_GetDisc
-  /*PyDoc_STRVAR(getDisc__doc__,
-    "getDisc() -- returns an integer.\n");*/
+  PyDoc_STRVAR(getDisc__doc__,
+    "getDisc() -- returns an integer.\n");
 
   PyObject* InfoTagMusic_GetDisc(InfoTagMusic *self, PyObject *args)
   {
@@ -126,6 +126,7 @@ namespace PYXBMC
     {"getGenre", (PyCFunction)InfoTagMusic_GetGenre, METH_VARARGS, getGenre__doc__},
     {"getDuration", (PyCFunction)InfoTagMusic_GetDuration, METH_VARARGS, getDuration__doc__},
     {"getTrack", (PyCFunction)InfoTagMusic_GetTrack, METH_VARARGS, getTrack__doc__},
+    {"getDisc", (PyCFunction)InfoTagMusic_GetDisc, METH_VARARGS, getDisc__doc__},
     {"getReleaseDate", (PyCFunction)InfoTagMusic_GetReleaseDate, METH_VARARGS, getReleaseDate__doc__},
     {NULL, NULL, 0, NULL}
   };

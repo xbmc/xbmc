@@ -889,7 +889,6 @@ bool CMusicDatabase::GetArbitraryQuery(const CStdString& strQuery, const CStdStr
 	  strResult = m_pDB->getErrorMsg();
 	  return false;
 	}
-	//int iRowsFound = m_pDS->num_rows();
 	strResult=strOpenRecordSet;
 	while (!m_pDS->eof())
 	{
@@ -1071,7 +1070,6 @@ bool CMusicDatabase::GetTop100Albums(VECALBUMS& albums)
       m_pDS->close();
       return false;
     }
-    //int iCount = 1;
     while (!m_pDS->eof())
     {
       albums.push_back(GetAlbumFromDataset());

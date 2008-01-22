@@ -1,6 +1,6 @@
 
 #include "../stdafx.h"
-#include "./OSDOptionIntRange.h"
+#include "OSDOptionIntRange.h"
 #include "GUIFontManager.h"
 
 #ifdef _DEBUG

@@ -275,6 +275,16 @@ namespace VIDEO
       }
     }
     
+    if (!m_info.settings.GetPluginRoot()) // check for settings, if they are around load defaults - to workaround the nastyness
+    {
+      CScraperParser parser;
+      CStdString strPath;
+      if (!m_info.strContent.IsEmpty())
+        strPath="q:\\system\\scrapers\\video\\"+m_info.strPath;
+      if (!strPath.IsEmpty() && parser.Load(strPath) && parser.HasFunction("GetSettings"))
+        m_info.settings.LoadSettingsXML("q:\\system\\scrapers\\video\\"+m_info.strPath);
+    }
+
     if (!bSkip)
     {
       if (m_pObserver)

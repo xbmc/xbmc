@@ -1,7 +1,6 @@
-﻿<window id="128">
+<window id="128">
 	<defaultcontrol>10</defaultcontrol>
-	<animation effect="fade" time="400">WindowOpen</animation>
-	<animation effect="fade" time="400">WindowClose</animation>
+	<include>dialogeffect</include>
 	<coordinates>
 		<system>1</system>
 		<posx>155</posx>
@@ -32,8 +31,8 @@
 			<posy>35</posy>
 			<height>32</height>
 			<width>400</width>
-			<texturefocus>list-focus.png</texturefocus>
-			<texturenofocus>-</texturenofocus>
+			<texturefocus>input-focus.png</texturefocus>
+			<texturenofocus>input-nofocus.png</texturenofocus>
 			<textureup>scroll-up.png</textureup>
 			<texturedown>scroll-down.png</texturedown>
 			<textureupfocus>scroll-up-focus.png</textureupfocus>
@@ -59,8 +58,8 @@
 			<font>font12</font>
 			<textoffsetx>12</textoffsetx>
 			<aligny>center</aligny>
-			<texturefocus>list-focus.png</texturefocus>
-			<texturenofocus>-</texturenofocus>
+			<texturefocus>input-focus.png</texturefocus>
+			<texturenofocus>input-nofocus.png</texturenofocus>
 			<label>-</label>
 			<onup>10</onup>
 			<onleft>12</onleft>
@@ -94,8 +93,8 @@
 			<font>font12</font>
 			<textoffsetx>12</textoffsetx>
 			<aligny>center</aligny>
-			<texturefocus>list-focus.png</texturefocus>
-			<texturenofocus>-</texturenofocus>
+			<texturefocus>input-focus.png</texturefocus>
+			<texturenofocus>input-nofocus.png</texturenofocus>
 			<label>-</label>
 			<onup>11</onup>
 			<onleft>16</onleft>
@@ -111,8 +110,8 @@
 			<font>font12</font>
 			<textoffsetx>12</textoffsetx>
 			<aligny>center</aligny>
-			<texturefocus>list-focus.png</texturefocus>
-			<texturenofocus>-</texturenofocus>
+			<texturefocus>input-focus.png</texturefocus>
+			<texturenofocus>input-nofocus.png</texturenofocus>
 			<label>1013</label>
 			<onup>16</onup>
 			<onleft>13</onleft>
@@ -128,8 +127,8 @@
 			<font>font12</font>
 			<textoffsetx>12</textoffsetx>
 			<aligny>center</aligny>
-			<texturefocus>list-focus.png</texturefocus>
-			<texturenofocus>-</texturenofocus>
+			<texturefocus>input-focus.png</texturefocus>
+			<texturenofocus>input-nofocus.png</texturenofocus>
 			<label>1014</label>
 			<onup>13</onup>
 			<onleft>14</onleft>
@@ -145,8 +144,8 @@
 			<font>font12</font>
 			<textoffsetx>12</textoffsetx>
 			<aligny>center</aligny>
-			<texturefocus>list-focus.png</texturefocus>
-			<texturenofocus>-</texturenofocus>
+			<texturefocus>input-focus.png</texturefocus>
+			<texturenofocus>input-nofocus.png</texturenofocus>
 			<label>15052</label>
 			<onup>14</onup>
 			<onleft>15</onleft>

@@ -6,11 +6,12 @@
 CGUIEditControl::CGUIEditControl(DWORD dwParentID, DWORD dwControlId,
                                  float posX, float posY, float width, float height,
                                  const CLabelInfo& labelInfo, const string& strLabel)
-    : CGUILabelControl(dwParentID, dwControlId, posX, posY, width, height, strLabel, labelInfo, false, false)
+    : CGUILabelControl(dwParentID, dwControlId, posX, posY, width, height, labelInfo, false, false)
 {
   ControlType = GUICONTROL_EDIT;
   m_pObserver = NULL;
   m_originalPosX = posX;
+  SetLabel(strLabel);
   ShowCursor(true);
 }
 
@@ -24,6 +25,7 @@ void CGUIEditControl::SetObserver(IEditControlObserver* aObserver)
 
 void CGUIEditControl::OnKeyPress(const CAction &action) // FIXME TESTME: NEW/CHANGED parameter and NOT tested CAN'T do it/DON'T know where (window 2700)/how exactly
 {
+  CStdString label(m_infoLabel.GetLabel(m_dwParentID));
   if (action.wID >= KEY_VKEY && action.wID < KEY_ASCII)
   {
     // input from the keyboard (vkey, not ascii)
@@ -33,7 +35,7 @@ void CGUIEditControl::OnKeyPress(const CAction &action) // FIXME TESTME: NEW/CHA
       // left
       m_iCursorPos--;
     }
-    if (b == 0x27 && m_iCursorPos < (int)m_strLabel.length())
+    if (b == 0x27 && m_iCursorPos < (int)label.length())
     {
       // right
       m_iCursorPos++;
@@ -49,7 +51,7 @@ void CGUIEditControl::OnKeyPress(const CAction &action) // FIXME TESTME: NEW/CHA
     {
     case 27:
       { // escape
-        m_strLabel.clear();
+        label.clear();
         m_iCursorPos = 0;
         break;
       }
@@ -58,8 +60,8 @@ void CGUIEditControl::OnKeyPress(const CAction &action) // FIXME TESTME: NEW/CHA
         // enter
         if (m_pObserver)
         {
-          CStdString strLineOfText = m_strLabel;
-          m_strLabel.clear();
+          CStdString strLineOfText = label;
+          label.clear();
           m_iCursorPos = 0;
           m_pObserver->OnEditTextComplete(strLineOfText);
         }
@@ -70,7 +72,7 @@ void CGUIEditControl::OnKeyPress(const CAction &action) // FIXME TESTME: NEW/CHA
         // backspace or delete??
         if (m_iCursorPos > 0)
         {
-          m_strLabel.erase(m_iCursorPos - 1, 1);
+          label.erase(m_iCursorPos - 1, 1);
           m_iCursorPos--;
         }
         break;
@@ -78,17 +80,16 @@ void CGUIEditControl::OnKeyPress(const CAction &action) // FIXME TESTME: NEW/CHA
     default:
       {
         // use character input // FIXME TESTME: NEW/CHANGED and NOT tested CAN'T do it/DON'T know where/how exactly (conversion from utf8 to WCHAR and back) 
-        CStdStringA utf8StrLabel = m_strLabel;
         CStdStringW wStrLabel;
-        g_charsetConverter.utf8ToW(utf8StrLabel, wStrLabel);
+        g_charsetConverter.utf8ToW(label, wStrLabel);
         wStrLabel.insert( wStrLabel.begin() + m_iCursorPos, (WCHAR)action.wID);
-        g_charsetConverter.wToUTF8(wStrLabel, utf8StrLabel);
+        g_charsetConverter.wToUTF8(wStrLabel, label);
         m_iCursorPos++;
         break;
       }
     }
   }
-
+  SetLabel(label);
   RecalcLabelPosition();
 }
 
@@ -99,7 +100,7 @@ void CGUIEditControl::RecalcLabelPosition()
   float fTextWidth, fTextHeight;
 
   // this is possibly not quite correct (utf8 issues)
-  CStdString strTempLabel = m_strLabel;
+  CStdString strTempLabel = m_infoLabel.GetLabel(m_dwParentID);
   CStdString strTempPart = strTempLabel.Mid(0, m_iCursorPos);
 
   m_textLayout.Update(strTempPart);

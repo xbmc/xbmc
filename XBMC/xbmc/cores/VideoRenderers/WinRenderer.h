@@ -204,6 +204,7 @@ public:
 protected:
   virtual void Render(DWORD flags);
 };
+
 #else
 #include "LinuxRenderer.h"
 #endif

@@ -32,7 +32,7 @@ public:
   virtual void SetColorDiffuse(D3DCOLOR color);
   void SetLabel(const string& strLabel);
   void SetAltLabel(const string& label);
-  virtual const string& GetLabel() const;
+  virtual CStdString GetLabel() const;
   void SetToggleSelect(int toggleSelect) { m_toggleSelect = toggleSelect; };
   void SetAltClickActions(const vector<CStdString> &clickActions);
 

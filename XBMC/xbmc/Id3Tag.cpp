@@ -503,9 +503,6 @@ CStdString CID3Tag::ParseMP3Genre(const CStdString& str) const
       // if the temp string is natural number try to convert it to a genre string
       if (StringUtils::IsNaturalNumber(t))
       {
-        char * pEnd;
-        /*long l = */strtol(t.c_str(), &pEnd, 0);
-
         id3_ucs4_t* ucs4=m_dll.id3_latin1_ucs4duplicate((id3_latin1_t*)t.c_str());
         const id3_ucs4_t* genre=m_dll.id3_genre_name(ucs4);
         m_dll.id3_ucs4_free(ucs4);

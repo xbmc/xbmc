@@ -54,7 +54,6 @@ CGUIWindowLoginScreen::~CGUIWindowLoginScreen(void)
 
 bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
 {
-  //bool bResult=false;
   switch ( message.GetMessage() )
   {
   case GUI_MSG_WINDOW_DEINIT:

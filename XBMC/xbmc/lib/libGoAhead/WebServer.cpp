@@ -378,7 +378,6 @@ static int websHomePageHandler(webs_t wp, char_t *urlPrefix, char_t *webDir,
 /*
  *	If the empty or "/" URL is invoked, redirect default URLs to the home page
  */
-	//bool redirected = false;
 	char dir[1024];
 	char files[][20] = {
 			{"index.html"},

@@ -392,6 +392,8 @@ namespace PYXBMC
             self->item->GetVideoInfoTag()->m_strShowTitle = tmp;
           else if (strcmpi(PyString_AsString(key), "premiered") == 0)
             self->item->GetVideoInfoTag()->m_strPremiered = tmp;
+          else if (strcmpi(PyString_AsString(key), "votes") == 0)
+            self->item->GetVideoInfoTag()->m_strVotes = tmp;
           else if (strcmpi(PyString_AsString(key), "date") == 0)
           {
             if (strlen(tmp) == 10)

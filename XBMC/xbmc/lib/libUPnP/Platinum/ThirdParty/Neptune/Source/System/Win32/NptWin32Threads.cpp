@@ -520,12 +520,24 @@ NPT_Win32Thread::Start()
     unsigned int thread_id;
 #endif
     m_ThreadHandle = (HANDLE)
+#ifdef _XBOX
+// xbox can't grow stack space, so it allocates default size directly
+// assume we can do with 64k of stack.
+      _beginthreadex(NULL, 
+                       0x10000, 
+                       EntryPoint, 
+                       reinterpret_cast<void*>(this), 
+                       0, 
+                       &thread_id);
+#else
         _beginthreadex(NULL, 
                        0, 
                        EntryPoint, 
                        reinterpret_cast<void*>(this), 
                        0, 
                        &thread_id);
+#endif
+
     if (m_ThreadHandle == 0) {
         // failed
         m_ThreadId = 0;

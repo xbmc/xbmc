@@ -61,7 +61,6 @@ bool CGUIDialogSmartPlaylistRule::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
-      //int iAction = message.GetParam1();
       if (iControl == CONTROL_OK)
         OnOK();
       else if (iControl == CONTROL_CANCEL)

@@ -627,7 +627,7 @@ __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
     SetRequestHeaders();
 
     /* set offset */
-    /* CURLcode ret = */g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RESUME_FROM_LARGE, nextPos);
+    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RESUME_FROM_LARGE, nextPos);
 
 //    if (CURLE_OK == ret)
 //      CLog::Log(LOGDEBUG, "FileCurl::Seek(%p) - resetting file fetch to %i (successful)", this, nextPos);
