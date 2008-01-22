@@ -169,3 +169,4 @@ void CGUILargeImage::SetAspectRatio(GUIIMAGE_ASPECT_RATIO ratio, DWORD align)
   CGUIImage::SetAspectRatio(ratio, align);
   m_fallbackImage.SetAspectRatio(ratio, align);
 }
+

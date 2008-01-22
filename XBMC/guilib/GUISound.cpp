@@ -32,7 +32,7 @@ CGUISound::CGUISound()
 CGUISound::~CGUISound()
 {
 #ifndef HAS_SDL_AUDIO
-  FreeBuffer();  
+  FreeBuffer();
 #endif
 }
 

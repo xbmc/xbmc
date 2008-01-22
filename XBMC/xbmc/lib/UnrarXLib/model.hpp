@@ -10,6 +10,7 @@ const int INT_BITS=7, PERIOD_BITS=7, TOT_BITS=INT_BITS+PERIOD_BITS,
           INTERVAL=1 << INT_BITS, BIN_SCALE=1 << TOT_BITS, MAX_FREQ=124;
 
 #pragma pack(1)
+
 struct SEE2_CONTEXT
 { // SEE-contexts for PPM-contexts with masked symbols
   ushort Summ;
