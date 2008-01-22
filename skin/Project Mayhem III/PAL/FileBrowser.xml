@@ -2,18 +2,21 @@
 	<defaultcontrol always="true">450</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<include>dialogeffect</include>
-	<coordinates>
-		<system>1</system>
-		<posx>110</posx>
-		<posy>110</posy>
-	</coordinates>
 	<controls>
+		<control type="image" id="0">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>576</height>
+			<texture>black.png</texture>
+			<animation effect="fade" time="2000">WindowOpen</animation>
+		</control>
 		<control type="image" id="1">
 			<description>background image</description>
-			<posx>-15</posx>
-			<posy>-15</posy>
-			<width>520</width>
-			<height>420</height>
+			<posx>25</posx>
+			<posy>35</posy>
+			<width>670</width>
+			<height>535</height>
 			<texture>dialog-panel2.png</texture>
 		</control>
 		<control type="label" id="411">
@@ -186,8 +189,8 @@
 				<texturenofocus border="10">keyboard-btn-backspace.png</texturenofocus>
 				<texturefocus border="10">keyboard-btn-backspace-focus.png</texturefocus>
 				<onleft>450</onleft>
-				<onright>414</onright>
-				<onup>415</onup>
+				<onright>450</onright>
+				<onup>450</onup>
 				<ondown>414</ondown>
 			</control>
 			<control type="button" id="414">
@@ -202,7 +205,7 @@
 				<texturenofocus border="10">keyboard-btn-backspace.png</texturenofocus>
 				<texturefocus border="10">keyboard-btn-backspace-focus.png</texturefocus>
 				<onleft>450</onleft>
-				<onright>415</onright>
+				<onright>450</onright>
 				<onup>413</onup>
 				<ondown>415</ondown>
 			</control>
@@ -218,9 +221,9 @@
 				<texturenofocus border="10">keyboard-btn-backspace.png</texturenofocus>
 				<texturefocus border="10">keyboard-btn-backspace-focus.png</texturefocus>
 				<onleft>450</onleft>
-				<onright>413</onright>
+				<onright>450</onright>
 				<onup>414</onup>
-				<ondown>413</ondown>
+				<ondown>450</ondown>
 			</control>
 		</control>
 	</controls>

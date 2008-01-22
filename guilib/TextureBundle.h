@@ -12,9 +12,9 @@ class CTextureBundle
   };
 
 #ifndef _LINUX
-  HANDLE 	m_hFile;
-  FILETIME      m_TimeStamp;
-  OVERLAPPED    m_Ovl[2];
+  HANDLE m_hFile;
+  FILETIME m_TimeStamp;
+  OVERLAPPED m_Ovl[2];
 #else
   FILE* 	m_hFile;
   time_t 	m_TimeStamp;

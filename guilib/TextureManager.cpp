@@ -837,13 +837,13 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
                                        D3DX_FILTER_NONE , D3DX_FILTER_NONE, dwColorKey, &info, NULL, &pTexture) != D3D_OK)
 #endif                                       
       {
-        if (!strnicmp(strPath.c_str(), "q:\\skin", 7))        
+        if (!strnicmp(strPath.c_str(), "q:\\skin", 7))
           CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());
         return 0;
       }
     }
     else
-    {    
+    {
       // normal picture
       // convert from utf8
       CStdString texturePath;

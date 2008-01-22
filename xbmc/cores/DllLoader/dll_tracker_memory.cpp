@@ -223,7 +223,6 @@ extern "C" void tracker_heapobjects_free_all(DllTrackInfo* pInfo)
   }
 #endif
 }
-
 #ifndef _LINUX
 
 HANDLE

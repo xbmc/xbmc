@@ -68,6 +68,7 @@ public:
     }
   }
   MethodPtr m_pMethod;
+
 protected:
   GUIEvent* m_pInstance;
 };
