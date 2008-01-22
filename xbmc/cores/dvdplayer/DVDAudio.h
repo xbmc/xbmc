@@ -3,7 +3,7 @@
 
 #include "../mplayer/IDirectSoundRenderer.h"
 #include "../mplayer/IAudioCallback.h"
-#include "../../utils/CriticalSection.h"
+#include "utils/CriticalSection.h"
 
 #ifndef _LINUX
 enum CodecID;
