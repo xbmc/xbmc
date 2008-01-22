@@ -46,8 +46,6 @@ using namespace PLAYLIST;
 #define MAX_PARAS 20
 #define NO_EID -1
 
-#define XBMC_NONE      T("none")
-
 CXbmcHttp* m_pXbmcHttp;
 CXbmcHttpShim* pXbmcHttpShim;
 CUdpBroadcast* pUdpBroadcast;
@@ -239,6 +237,20 @@ void resetTags()
   closeFinalTag=false;
 }
 
+CStdString procMask(CStdString mask)
+{
+  mask=mask.ToLower();
+  if(mask=="[music]")
+    return g_stSettings.m_musicExtensions;
+  if(mask=="[video]")
+    return g_stSettings.m_videoExtensions;
+  if(mask=="[pictures]")
+    return g_stSettings.m_pictureExtensions;
+  if(mask=="[files]")
+    return "";
+  return mask;
+}
+
 int splitParameter(const CStdString &parameter, CStdString& command, CStdString paras[], const CStdString &sep)
 //returns -1 if no command, -2 if too many parameters else the number of parameters
 //assumption: sep.length()==1
@@ -329,6 +341,7 @@ bool checkForFunctionTypeParas(CStdString &cmd, CStdString &paras)
   }
   return false;
 }
+
 bool playableFile(const CStdString &filename)
 {
   CFileItem item(filename, false);  
@@ -361,8 +374,8 @@ CStdString flushResult(int eid, webs_t wp, const CStdString &output)
 }
 
 int displayDir(int numParas, CStdString paras[]) {
-  //mask = ".mp3|.wma" -> matching files
-  //mask = "*" -> just folders
+  //mask = ".mp3|.wma" or one of "[music]", "[video]", "[pictures]", "[files]"-> matching files
+  //mask = "*" or "/" -> just folders
   //mask = "" -> all files and folder
   //option = "1" -> append date&time to file name
 
@@ -381,36 +394,25 @@ int displayDir(int numParas, CStdString paras[]) {
     return SetResponse(openTag+"Error:Missing folder");
   }
   if (numParas>1)
-    mask=paras[1];
-    if (numParas>2)
-      option=paras[2];
-
+    mask=procMask(paras[1]);
+  if (numParas>2)
+    option=paras[2];
   IDirectory *pDirectory = CFactoryDirectory::Create(folder);
-
   if (!pDirectory) 
   {
     return SetResponse(openTag+"Error");  
   }
   pDirectory->SetMask(mask);
-  CStdString tail=folder.Right(folder.length()-1);
-  bool bResult;
-  //bResult=((pDirectory->Exists(folder))||(tail==":")||(tail==":\\")||(tail==":/"));
-  //if (!bResult)
-  //{
-  //  return SetResponse(openTag+"Error:Not folder");
-  //}
-  bResult=pDirectory->GetDirectory(folder,dirItems);
-  if (!bResult)
+  if (!pDirectory->GetDirectory(folder,dirItems))
   {
     return SetResponse(openTag+"Error:Not folder");
   }
-
   dirItems.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
   CStdString aLine="";
   for (int i=0; i<dirItems.Size(); ++i)
   {
     CFileItem *itm = dirItems[i];
-    if (mask=="*" || (mask =="" && itm->m_bIsFolder))
+    if (mask=="*" || mask=="/" || (mask =="" && itm->m_bIsFolder))
       if (!CUtil::HasSlashAtEnd(itm->m_strPath))
         aLine=closeTag+openTag + itm->m_strPath + "\\" ;
       else
@@ -464,7 +466,7 @@ void SetCurrentMediaItem(CFileItem& newItem)
   }
 }
 
-void AddItemToPlayList(const CFileItem* pItem, int playList, int sortMethod, CStdString mask)
+void AddItemToPlayList(const CFileItem* pItem, int playList, int sortMethod, CStdString mask, bool recursive)
 //if playlist==-1 then use slideshow
 {
   if (pItem->m_bIsFolder)
@@ -476,10 +478,11 @@ void AddItemToPlayList(const CFileItem* pItem, int playList, int sortMethod, CSt
     IDirectory *pDirectory = CFactoryDirectory::Create(strDirectory);
     if (mask!="")
       pDirectory->SetMask(mask);
-    /*bool bResult=*/pDirectory->GetDirectory(strDirectory,items);
+    pDirectory->GetDirectory(strDirectory, items);
     items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
     for (int i=0; i < items.Size(); ++i)
-      AddItemToPlayList(items[i], playList, sortMethod, mask);
+	  if (!(CFileItem*)items[i]->m_bIsFolder || recursive)
+        AddItemToPlayList(items[i], playList, sortMethod, mask, recursive);
   }
   else
   {
@@ -554,8 +557,6 @@ bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoSt
   if (autoStart)
     if (g_playlistPlayer.GetPlaylist( iPlaylist ).size() )
     {
-      //CPlayList& playlist = g_playlistPlayer.GetPlaylist( iPlaylist );
-      //const CPlayList::CPlayListItem& item = playlist[0];
       g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
       g_playlistPlayer.Reset();
       g_application.getApplicationMessenger().PlayListPlayerPlay();
@@ -566,6 +567,30 @@ bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoSt
   else
     return true;
   return false;
+}
+
+void copyThumb(CStdString srcFn, CStdString destFn)
+//Copies src file to dest, unless src=="" o src doesn't exist in which case dest is deleted
+{
+  if (destFn=="")
+    return;
+  if (srcFn=="")
+  {
+	if (CFile::Exists(destFn))
+	  CFile::Delete(destFn);
+  }
+  else
+    if (srcFn!=lastThumbFn)
+	  if (CFile::Exists(srcFn))
+	  {
+        CFile::Cache(srcFn, destFn);
+	    lastThumbFn=srcFn;
+	  }
+	  else
+	  {
+	    CPicture pic;
+        pic.CacheSkinImage(srcFn, destFn);
+	  }
 }
 
 CUdpBroadcast::CUdpBroadcast() : CUdpClient()
@@ -980,10 +1005,9 @@ int CXbmcHttp::xbmcQueryVideoDataBase(int numParas, CStdString paras[])
 
 int CXbmcHttp::xbmcAddToPlayList(int numParas, CStdString paras[])
 {
-  //parameters=playList;mask
-  CStdString strFileName;
-  CStdString mask="";
-  bool changed=false;
+  //parameters=playList;mask;recursive
+  CStdString strFileName, mask="";
+  bool changed=false, recursive=true;
   int playList ;
 
   if (numParas==0)
@@ -998,7 +1022,9 @@ int CXbmcHttp::xbmcAddToPlayList(int numParas, CStdString paras[])
       if (playList==-1)
         playList=g_playlistPlayer.GetCurrentPlaylist();
       if(numParas>2) //includes mask
-        mask=paras[2];
+        mask=procMask(paras[2]);
+	  if (numParas>3) //recursive
+	    recursive=(paras[3]=="1");
     }
     strFileName=paras[0] ;
     CFileItem *pItem = new CFileItem(strFileName);
@@ -1012,7 +1038,7 @@ int CXbmcHttp::xbmcAddToPlayList(int numParas, CStdString paras[])
       pItem->m_bIsShareOrDrive=false;
       if (bResult || CFile::Exists(pItem->m_strPath))
       {
-        AddItemToPlayList(pItem, playList, 0, mask);
+        AddItemToPlayList(pItem, playList, 0, mask, recursive);
         changed=true;
       }
     }
@@ -1026,7 +1052,6 @@ int CXbmcHttp::xbmcAddToPlayList(int numParas, CStdString paras[])
       return SetResponse(openTag+"Error");
   }
 }
-
 
 int CXbmcHttp::xbmcGetTagFromFilename(int numParas, CStdString paras[]) 
 {
@@ -1084,7 +1109,6 @@ int CXbmcHttp::xbmcGetTagFromFilename(int numParas, CStdString paras[])
     else
     {
       return SetResponse(openTag+"Error:System not set to use tags");
-      
     }
   if (tag->Loaded())
   {
@@ -1196,30 +1220,6 @@ int CXbmcHttp::xbmcGetMovieDetails(int numParas, CStdString paras[])
     return SetResponse(openTag+"Error:No file name") ;
 }
 
-void copyThumb(CStdString srcFn, CStdString destFn)
-//Copies src file to dest, unless src=="" o src doesn't exist in which case dest is deleted
-{
-  if (destFn=="")
-    return;
-  if (srcFn=="")
-  {
-	if (CFile::Exists(destFn))
-	  CFile::Delete(destFn);
-  }
-  else
-    if (srcFn!=lastThumbFn)
-	  if (CFile::Exists(srcFn))
-	  {
-        CFile::Cache(srcFn, destFn);
-	    lastThumbFn=srcFn;
-	  }
-	  else
-	  {
-	    CPicture pic;
-        pic.CacheSkinImage(srcFn, destFn);
-	  }
-}
-
 int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
 {
   CStdString output="", tmp="", tag="", thumbFn="", thumbNothingPlaying="", thumb="";
@@ -1310,14 +1310,14 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
           output.Format("%s%i",output+closeTag+openTag+"Season"+tag+":",tagVal->m_iSeason);
         if (tagVal->m_iEpisode != -1)
           output.Format("%s%i",output+closeTag+openTag+"Episode"+tag+":",tagVal->m_iEpisode);
-		thumb=g_infoManager.GetImage(VIDEOPLAYER_COVER, -1);
+	  }
+	  thumb=g_infoManager.GetImage(VIDEOPLAYER_COVER, -1);
 		
 		//CPicture pic;
         //pic.CacheSkinImage("defaultAlbumCover.png", cachedThumb);
 
-		copyThumb(thumb,thumbFn);
-	    output+=closeTag+openTag+"Thumb"+tag+":"+thumb;
-      }
+	  copyThumb(thumb,thumbFn);
+	  output+=closeTag+openTag+"Thumb"+tag+":"+thumb;
     }
     else if (g_application.IsPlayingAudio())
     { // Audio information
@@ -1525,12 +1525,15 @@ int CXbmcHttp::xbmcAddToSlideshow(int numParas, CStdString paras[])
 //filename (;mask)
 {
   CStdString mask="";
+  bool recursive=true;
   if (numParas<1)
     return SetResponse(openTag+"Error:Missing parameter");
   else
   {
     if (numParas>1)
-      mask=paras[1];
+      mask=procMask(paras[1]);
+	if (numParas>2)
+	  recursive=paras[2]=="1";
     CFileItem *pItem = new CFileItem(paras[0]);
     pItem->m_strPath=paras[0].c_str();
     IDirectory *pDirectory = CFactoryDirectory::Create(pItem->m_strPath);
@@ -1539,7 +1542,7 @@ int CXbmcHttp::xbmcAddToSlideshow(int numParas, CStdString paras[])
     bool bResult=pDirectory->Exists(pItem->m_strPath);
     pItem->m_bIsFolder=bResult;
     pItem->m_bIsShareOrDrive=false;
-    AddItemToPlayList(pItem, -1, 0, mask); //add to slideshow
+    AddItemToPlayList(pItem, -1, 0, mask, recursive); //add to slideshow
     delete pItem;
     return SetResponse(openTag+"OK");
   }
@@ -2979,12 +2982,9 @@ CStdString CXbmcHttpShim::xbmcExternalCall(char *command)
   }
   else //no parameters
     execute = cmd;
-  if (CUtil::UrlDecode(parameter))
-    return xbmcProcessCommand(NO_EID, NULL, (char_t *) execute.c_str(), (char_t *) parameter.c_str());
-  else
-	return "Error: Illegal escape sequence";
+  CUtil::UrlDecode(parameter);
+  return xbmcProcessCommand(NO_EID, NULL, (char_t *) execute.c_str(), (char_t *) parameter.c_str());
 }
-
 
 /* Parse an XBMC HTTP API command */
 CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *command, char_t *parameter)
@@ -2995,26 +2995,25 @@ CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *comman
   bool legalCmd=true;
   CLog::Log(LOGDEBUG, "XBMCHTTPShim: Received command %s (%s)", cmd.c_str(), paras.c_str());
   int cnt=0;
+
+  checkForFunctionTypeParas(cmd, paras);
   if (wp!=NULL)
   {
     if ((eid==NO_EID) && (incWebHeader))
       websHeader(wp);
 	//we are being called via the webserver (rather than Python) so add any specific checks here
-    if ((!strcmpi(command,"webserverstatus")) && (strcmp(parameter,XBMC_NONE)))
+    if ((cmd=="webserverstatus") && (paras!=""))//(strcmp(parameter,XBMC_NONE)))
 	{
-	  response="Error:Can't turn off WebServer via a web call";
+	  response="Error:Can't turn off/on WebServer via a web call";
 	  legalCmd=false;
 	}
   }
   if (legalCmd)
   {
-	if ((*parameter==0) || !strcmp(parameter,XBMC_NONE))
-	  if (checkForFunctionTypeParas(cmd, paras))
+	  if (paras!="")
 		g_application.getApplicationMessenger().HttpApi(cmd+"; "+paras);
 	  else
 		g_application.getApplicationMessenger().HttpApi(cmd);
-	else
-	  g_application.getApplicationMessenger().HttpApi(cmd+"; "+paras);
 	//wait for response - max 20s
 	Sleep(0);
 	response=g_application.getApplicationMessenger().GetResponse();
@@ -3068,8 +3067,8 @@ void CXbmcHttpShim::xbmcForm(webs_t wp, char_t *path, char_t *query)
 
   if (shuttingDown)
 	return;
-  command = websGetVar(wp, WEB_COMMAND, XBMC_NONE); 
-  parameter = websGetVar(wp, WEB_PARAMETER, XBMC_NONE);
+  command = websGetVar(wp, WEB_COMMAND, ""); 
+  parameter = websGetVar(wp, WEB_PARAMETER, "");
 
   // do the command
 

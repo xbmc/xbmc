@@ -337,8 +337,6 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
   CIMDB IMDB;
   IMDB.SetScraperInfo(info);
 
-  //bool bUpdate = false;
-  //bool bFound = false;
 
   if (!pDlgProgress) return ;
   if (!pDlgSelect) return ;
@@ -739,7 +737,6 @@ void CGUIWindowVideoBase::OnQueueItem(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
 
-  //int iOldSize=g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).size();
 
   CFileItem item(*m_vecItems[iItem]);
   if (item.IsRAR() || item.IsZIP())

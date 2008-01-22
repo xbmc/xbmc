@@ -102,7 +102,6 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
 {
   CMusicDatabaseDirectory dir;
   NODE_TYPE NodeType=dir.GetDirectoryChildType(items.m_strPath);
-  //NODE_TYPE ParentNodeType=dir.GetDirectoryType(items.m_strPath);
 
   CStdString strTrackLeft=g_guiSettings.GetString("musicfiles.librarytrackformat");
   if (strTrackLeft.IsEmpty())
@@ -633,7 +632,6 @@ VECSHARES& CGUIViewStateWindowMusicPlaylist::GetShares()
   m_shares.clear();
   //  Playlist share
   CShare share;
-  //  share.strName;
   share.strPath = "playlistmusic://";
   share.m_strThumbnailImage="defaultFolderBig.png";
   share.m_iDriveType = SHARE_TYPE_LOCAL;

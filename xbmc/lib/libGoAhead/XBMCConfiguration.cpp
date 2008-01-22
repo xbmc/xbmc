@@ -130,8 +130,8 @@ int CXbmcConfiguration::GetBookmark( int eid, webs_t wp, CStdString& response, i
   try { nr = atoi(id); }
   catch (...)
   {
-    if (eid!=-1) websError(wp, 500, T("Id is not a number\n")); else
-    response="<li>Error:Id is not a number";
+    if (eid!=-1) websError(wp, 500, T("Id is not a number\n"));
+      else response="<li>Error:Id is not a number";
     return -1;
   }
 

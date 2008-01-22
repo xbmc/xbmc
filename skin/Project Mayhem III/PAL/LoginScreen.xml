@@ -39,37 +39,14 @@
 			<label>20096</label>
 			<font>special13</font>
 		</control>
-		<control type="group">
-			<posx>410</posx>
+		<control type="label">
+			<description>date label</description>
+			<posx>360</posx>
 			<posy>113</posy>
-			<control type="label" id="0">
-				<description>Date label</description>
-				<posx>0</posx>
-				<posy>0</posy>
-				<label>date</label>
-				<info>System.Date</info>
-				<align>right</align>
-				<font>special12</font>
-			</control>
-			<control type="label" id="1">
-				<description>Suffix label</description>
-				<posx>10</posx>
-				<posy>-2</posy>
-				<label>|</label>
-				<align>left</align>
-				<font>special12</font>
-				<textcolor>grey</textcolor>
-			</control>
-			<control type="label" id="0">
-				<description>Time label</description>
-				<posx>20</posx>
-				<posy>0</posy>
-				<label>time</label>
-				<info>System.Time</info>
-				<align>left</align>
-				<font>special12</font>
-				<textcolor>grey</textcolor>
-			</control>
+			<label>$INFO[System.Date] [COLOR=grey] |  $INFO[System.Time][/COLOR]</label>
+			<align>center</align>
+			<aligy>center</aligy>
+			<font>special12</font>
 		</control>
 		<control type="fixedlist" id="52">
 			<posx>-190</posx>

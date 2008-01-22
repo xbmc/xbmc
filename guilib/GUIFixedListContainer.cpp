@@ -281,3 +281,13 @@ void CGUIFixedListContainer::SelectItem(int item)
   }
 }
 
+bool CGUIFixedListContainer::HasPreviousPage() const
+{
+  return (m_offset > 0);
+}
+
+bool CGUIFixedListContainer::HasNextPage() const
+{
+  return (m_offset != (int)m_items.size() - m_itemsPerPage && (int)m_items.size() >= m_itemsPerPage);
+}
+

@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: smuto-->
 <!--Email: smuto.promyk@gmail.com-->
-<!--Date of translation: 12/19/2007-->
+<!--Date of translation: 01/15/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 11025-->
+<!--Based on english strings version 11293-->
 <strings>
   <string id="0">Gry i Programy</string>
   <string id="1">Zdjęcia</string>
@@ -329,6 +329,7 @@
   <string id="406">Wilgotność</string>
   <string id="407">na</string>
   <string id="408">z</string>
+  <string id="409">Domyślne</string>
   <string id="410">Łączę się z Weather.com</string>
   <string id="411">Pobieram pogodę dla:</string>
   <string id="412">Nie mogę uzyskać danych pogodowych</string>
@@ -589,11 +590,8 @@
   <string id="746">Zmień na widok z plikami</string>
   <string id="747">Za mało pamięci, aby wyświetlić obraz</string>
   <string id="748">Edytuj ścieżkę</string>
-  <string id="749">Dodaj udział</string>
   <string id="750">Czy jesteś pewny?</string>
-  <string id="751">Usuń udział</string>
-  <string id="752">Edytuj ścieżkę udziału</string>
-  <string id="753">Edytuj nazwę udziału</string>
+  <string id="751">Usuń źródło</string>
   <string id="754">Dodaj ścieżkę do programu</string>
   <string id="755">Edytuj ścieżkę do programu</string>
   <string id="756">Edytuj nazwę programu</string>
@@ -621,7 +619,6 @@
   <string id="1002">XBMC nie mógł nawiązać połączenia sieciowego.</string>
   <string id="1003">Może to być spowodowane brakiem dostępu do sieci.</string>
   <string id="1004">Czy chcesz mimo to kontynuować?</string>
-  <string id="1005">Wprowadź nazwę dla tego udziału</string>
   <string id="1006">Adres IP</string>
   <string id="1007">Dodaj miejsce sieciowe</string>
   <string id="1008">Protokół</string>
@@ -827,7 +824,7 @@ naciśnij  Back, aby anulować</string>
   <string id="12348">Zablokowany</string>
   <string id="12353">Reaktywuj blokadę</string>
   <string id="12356">Zmień blokadę</string>
-  <string id="12357">Dziel blokadę</string>
+  <string id="12357">Zablokuj źródło</string>
   <string id="12358">Hasło było puste. Spróbuj ponownie.</string>
   <string id="12360">Zabezpieczenie</string>
   <string id="12362">Wyłącz Xboksa, gdy ilość prób zostanie przekroczona</string>
@@ -1479,7 +1476,7 @@ dla tej wizualizacji</string>
   <string id="20187">Odczytuję wartości zapisane w EEPROM-ie</string>
   <string id="20188">Odczytuję wartości zapisane w BIOS-ie</string>
   <string id="20189">Automatyczne przewijanie tekstu dla opisów i fabuły</string>
-  <string id="20190">Własny</string>
+  <string id="20190">Własne</string>
   <string id="20250">Party on! (wideo)</string>
   <string id="20251">Mixing drinks (wideo)</string>
   <string id="20252">Filling glasses (wideo)</string>
@@ -1582,6 +1579,7 @@ dla tej wizualizacji</string>
   <string id="20404">Dystrybutor:</string>
   <string id="20405">Odcinek - usuń zakładkę</string>
   <string id="20406">Odcinek - ustaw zakładkę</string>
+  <string id="20407">Ustawienia scrapera</string>
   <string id="21330">Pokazuj ukryte pliki i foldery</string>
   <string id="21331">Klient TuxBox</string>
   <string id="21332">UWAGA: Urządzenie TuxBox jest w trybie nagrywania!</string>
@@ -1602,6 +1600,7 @@ dla tej wizualizacji</string>
   <string id="21365">Usuń udostępniany udział</string>
   <string id="21366">Katalog z napisami</string>
   <string id="21367">Filmy i alternatywny katalog dla napisów</string>
+  <string id="21369">Włącz obsługę myszy</string>
   <string id="21370">Dźwięki nawigacyjne podczas odtwarzania mediów</string>
   <string id="21371">Miniaturka</string>
   <string id="21372">Narzuć region dla DVD Playera</string>

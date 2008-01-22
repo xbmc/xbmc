@@ -142,8 +142,8 @@ namespace PYXBMC
   }
 
   // InfoTagVideo_GetPath
-  /*PyDoc_STRVAR(getPath__doc__,
-    "getPath() -- returns a string.\n");*/
+  PyDoc_STRVAR(getPath__doc__,
+    "getPath() -- returns a string.\n");
 
   PyObject* InfoTagVideo_GetPath(InfoTagVideo *self, PyObject *args)
   {
@@ -199,6 +199,7 @@ namespace PYXBMC
     {"getVotes", (PyCFunction)InfoTagVideo_GetVotes, METH_VARARGS, getVotes__doc__},
     {"getCast", (PyCFunction)InfoTagVideo_GetCast, METH_VARARGS, getCast__doc__},
     {"getFile", (PyCFunction)InfoTagVideo_GetFile, METH_VARARGS, getFile__doc__},
+    {"getPath", (PyCFunction)InfoTagVideo_GetPath, METH_VARARGS, getPath__doc__},
     //{"getDVDLabel", (PyCFunction)InfoTagVideo_GetDVDLabel, METH_VARARGS, getDVDLabel__doc__},
     {"getIMDBNumber", (PyCFunction)InfoTagVideo_GetIMDBNumber, METH_VARARGS, getIMDBNumber__doc__},
     {"getYear", (PyCFunction)InfoTagVideo_GetYear, METH_VARARGS, getYear__doc__},

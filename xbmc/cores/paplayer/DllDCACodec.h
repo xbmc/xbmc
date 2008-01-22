@@ -12,6 +12,8 @@ typedef __int16          int16_t;
 
 #include "../dvdplayer/DVDCodecs/Audio/libdts/dts.h"
 
+#include "../dvdplayer/DVDCodecs/Audio/libdts/dts.h"
+
 #ifdef LIBDTS_DOUBLE
 typedef float convert_t;
 #else

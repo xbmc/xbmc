@@ -83,7 +83,7 @@ protected:
 };
 
 extern CWinRenderManager g_renderManager;
+
 #else
 #include "RenderManager.h"
 #endif
-

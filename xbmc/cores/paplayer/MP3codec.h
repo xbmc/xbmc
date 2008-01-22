@@ -1,7 +1,6 @@
 #pragma once
 #include "CachingCodec.h"
 #include "../../MusicInfoTagLoaderMP3.h"
-#include "FileSystem/File.h"
 #include "DllMadCodec.h"
 
 class MP3Codec : public CachingCodec

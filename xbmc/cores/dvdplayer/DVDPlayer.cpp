@@ -252,16 +252,19 @@ void CDVDPlayer::GetFileMetaData(const CStdString &strPath, CFileItem *pItem)
     int nHours = nLenMsec / 1000 / 60 / 60;
     int nMinutes = ((nLenMsec / 1000) - nHours * 3600) / 60;
     int nSec = (nLenMsec / 1000)  - nHours * 3600 - nMinutes * 60;
+    strDuration.Format("%d", nLenMsec);
+    pItem->SetProperty("duration-msec", strDuration);
     strDuration.Format("%02d:%02d:%02d", nHours, nMinutes, nSec);
-    pItem->SetProperty("duration-msec", nLenMsec);
     pItem->SetProperty("duration-str", strDuration);
     pItem->SetProperty("title", pContext->title);
     pItem->SetProperty("author", pContext->author);
     pItem->SetProperty("copyright", pContext->copyright);
     pItem->SetProperty("comment", pContext->comment);
     pItem->SetProperty("album", pContext->album);
-    pItem->SetProperty("year", pContext->year);
-    pItem->SetProperty("track", pContext->track);
+    strDuration.Format("%d", pContext->year);
+    pItem->SetProperty("year", strDuration);
+    strDuration.Format("%d", pContext->track);
+    pItem->SetProperty("track", strDuration);
     pItem->SetProperty("genre", pContext->genre);
   }
 

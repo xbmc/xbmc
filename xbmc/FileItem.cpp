@@ -385,7 +385,7 @@ void CFileItem::Serialize(CArchive& ar)
       ar << 0;
 
     ar << (int)m_mapProperties.size();
-    std::map<CStdString, CStdString,icompare>::const_iterator iter = m_mapProperties.begin();
+    std::map<std::string, std::string>::const_iterator iter = m_mapProperties.begin();
     while (iter != m_mapProperties.end())
     {
       CStdString strKey = iter->first;
@@ -489,8 +489,8 @@ bool CFileItem::IsVideo() const
 bool CFileItem::IsAudio() const
 {
   if (IsCDDA()) return true;
-  if (IsShoutCast()) return true;
-  if (IsLastFM()) return true;
+  if (IsShoutCast() && !m_bIsFolder) return true;
+  if (IsLastFM() && !m_bIsFolder) return true;
 
   /* check preset content type */
   if( m_contenttype.Left(6).Equals("audio/") )

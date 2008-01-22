@@ -67,6 +67,7 @@ void CFanController::Process()
   {
     GetGPUTempInternal();
     GetCPUTempInternal();
+    GetFanSpeedInternal();
 
     // Use the highest temperature, if the temperatures are
     // equal, go with the CPU temperature.
@@ -129,7 +130,10 @@ void CFanController::Stop()
 
 int CFanController::GetFanSpeed()
 {
-  GetFanSpeedInternal();
+  if (m_ThreadHandle == NULL)
+  {
+    GetFanSpeedInternal();
+  }
   return currentFanSpeed;
 }
 

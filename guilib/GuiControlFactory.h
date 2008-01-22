@@ -31,6 +31,8 @@ public:
   static bool GetAlignment(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment);
   static bool GetAlignmentY(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment);
   static bool GetAnimations(const TiXmlNode *control, const FRECT &rect, vector<CAnimation> &animation);
+  static void GetInfoLabel(const TiXmlNode *pControlNode, const CStdString &labelTag, CGUIInfoLabel &infoLabel);
+  static void GetInfoLabels(const TiXmlNode *pControlNode, const CStdString &labelTag, vector<CGUIInfoLabel> &infoLabels);
   static bool GetColor(const TiXmlNode* pRootNode, const char* strTag, DWORD &value);
   static CStdString GetLabel(const CStdString &label);
   static bool GetConditionalVisibility(const TiXmlNode* control, int &condition);

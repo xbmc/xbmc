@@ -28,33 +28,37 @@
 			</control>
 			<control type="fadelabel" id="101">
 				<description>current Directory text label left</description>
-				<align>left</align>
 				<posx>78</posx>
 				<posy>45</posy>
 				<width>270</width>
 				<font>font12</font>
+				<align>left</align>
+				<aligny>center</aligny>
 			</control>
 			<control type="fadelabel" id="102">
 				<description>current Directory text label right</description>
-				<align>left</align>
 				<posx>367</posx>
 				<posy>45</posy>
 				<width>270</width>
 				<font>font12</font>
+				<align>left</align>
+				<aligny>center</aligny>
 			</control>
 			<control type="label" id="12">
 				<description>number of files in left list text label</description>
 				<posx>78</posx>
-				<posy>495</posy>
+				<posy>500</posy>
 				<label>-</label>
 				<font>font12</font>
+				<aligny>center</aligny>
 			</control>
 			<control type="label" id="13">
 				<description>number of files in right list text label</description>
 				<posx>367</posx>
-				<posy>495</posy>
+				<posy>500</posy>
 				<label>-</label>
 				<font>font12</font>
+				<aligny>center</aligny>
 			</control>
 			<control type="image">
 				<description>filemanager List Sel Left</description>
@@ -65,20 +69,103 @@
 				<texture>filemanager_Panel_Sel.png</texture>
 				<visible>Control.HasFocus(20)</visible>
 			</control>
-			<control type="listcontrol" id="20">
+			<control type="list" id="20">
 				<description>Left File list</description>
-				<selectedcolor>green</selectedcolor>
 				<posx>76</posx>
-				<posy>82</posy>
+				<posy>83</posy>
 				<width>280</width>
-				<height>433</height>
-				<texturefocus>input-focus.png</texturefocus>
-				<texturenofocus>input-nofocus.png</texturenofocus>
+				<height>390</height>
 				<onleft>21</onleft>
 				<onright>21</onright>
 				<onup>20</onup>
 				<ondown>20</ondown>
-				<font>font12</font>
+				<pagecontrol>-</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<itemlayout height="30">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>280</width>
+						<height>28</height>
+						<texture>input-nofocus.png</texture>
+					</control>
+					<control type="image">
+						<posx>4</posx>
+						<posy>2</posy>
+						<width>24</width>
+						<height>24</height>
+						<info>ListItem.Icon</info>
+					</control>
+					<control type="label">
+						<posx>30</posx>
+						<posy>0</posy>
+						<width>240</width>
+						<height>28</height>
+						<font>font12</font>
+						<aligny>center</aligny>
+						<selectedcolor>green</selectedcolor>
+						<align>left</align>
+						<info>ListItem.Label</info>
+					</control>
+					<control type="label">
+						<posx>275</posx>
+						<posy>0</posy>
+						<width>200</width>
+						<height>28</height>
+						<font>font12</font>
+						<aligny>center</aligny>
+						<selectedcolor>green</selectedcolor>
+						<align>right</align>
+						<info>ListItem.Label2</info>
+					</control>
+				</itemlayout>
+				<focusedlayout height="30">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>280</width>
+						<height>28</height>
+						<texture>input-nofocus.png</texture>
+						<visible>!Control.hasfocus(20)</visible>
+					</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>280</width>
+						<height>28</height>
+						<texture>input-focus.png</texture>
+						<visible>Control.hasfocus(20)</visible>
+					</control>
+					<control type="image">
+						<posx>4</posx>
+						<posy>2</posy>
+						<width>24</width>
+						<height>24</height>
+						<info>ListItem.Icon</info>
+					</control>
+					<control type="label">
+						<posx>30</posx>
+						<posy>0</posy>
+						<width>240</width>
+						<height>28</height>
+						<font>font12</font>
+						<aligny>center</aligny>
+						<selectedcolor>green</selectedcolor>
+						<align>left</align>
+						<info>ListItem.Label</info>
+					</control>
+					<control type="label">
+						<posx>275</posx>
+						<posy>0</posy>
+						<width>200</width>
+						<height>28</height>
+						<font>font12</font>
+						<aligny>center</aligny>
+						<selectedcolor>green</selectedcolor>
+						<align>right</align>
+						<info>ListItem.Label2</info>
+					</control>
+				</focusedlayout>
 			</control>
 			<control type="image">
 				<description>filemanager List Sel Right</description>
@@ -89,25 +176,108 @@
 				<texture>filemanager_Panel_Sel.png</texture>
 				<visible>Control.HasFocus(21)</visible>
 			</control>
-			<control type="listcontrol" id="21">
+			<control type="list" id="21">
 				<description>Right File list</description>
-				<selectedcolor>green</selectedcolor>
 				<posx>365</posx>
-				<posy>82</posy>
+				<posy>83</posy>
 				<width>280</width>
-				<height>433</height>
-				<texturefocus>input-focus.png</texturefocus>
-				<texturenofocus>input-nofocus.png</texturenofocus>
+				<height>390</height>
 				<onleft>20</onleft>
 				<onright>20</onright>
 				<onup>21</onup>
 				<ondown>21</ondown>
-				<font>font12</font>
+				<pagecontrol>-</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<itemlayout height="30">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>280</width>
+						<height>28</height>
+						<texture>input-nofocus.png</texture>
+					</control>
+					<control type="image">
+						<posx>4</posx>
+						<posy>2</posy>
+						<width>24</width>
+						<height>24</height>
+						<info>ListItem.Icon</info>
+					</control>
+					<control type="label">
+						<posx>30</posx>
+						<posy>0</posy>
+						<width>240</width>
+						<height>28</height>
+						<font>font12</font>
+						<aligny>center</aligny>
+						<selectedcolor>green</selectedcolor>
+						<align>left</align>
+						<info>ListItem.Label</info>
+					</control>
+					<control type="label">
+						<posx>275</posx>
+						<posy>0</posy>
+						<width>200</width>
+						<height>28</height>
+						<font>font12</font>
+						<aligny>center</aligny>
+						<selectedcolor>green</selectedcolor>
+						<align>right</align>
+						<info>ListItem.Label2</info>
+					</control>
+				</itemlayout>
+				<focusedlayout height="30">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>280</width>
+						<height>28</height>
+						<texture>input-nofocus.png</texture>
+						<visible>!Control.hasfocus(21)</visible>
+					</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>280</width>
+						<height>28</height>
+						<texture>input-focus.png</texture>
+						<visible>Control.hasfocus(21)</visible>
+					</control>
+					<control type="image">
+						<posx>4</posx>
+						<posy>2</posy>
+						<width>24</width>
+						<height>24</height>
+						<info>ListItem.Icon</info>
+					</control>
+					<control type="label">
+						<posx>30</posx>
+						<posy>0</posy>
+						<width>240</width>
+						<height>28</height>
+						<font>font12</font>
+						<aligny>center</aligny>
+						<selectedcolor>green</selectedcolor>
+						<align>left</align>
+						<info>ListItem.Label</info>
+					</control>
+					<control type="label">
+						<posx>275</posx>
+						<posy>0</posy>
+						<width>200</width>
+						<height>28</height>
+						<font>font12</font>
+						<aligny>center</aligny>
+						<selectedcolor>green</selectedcolor>
+						<align>right</align>
+						<info>ListItem.Label2</info>
+					</control>
+				</focusedlayout>
 			</control>
 		</control>
 		<control type="group">
 			<include>contentpanelslide</include>
-			<visible>System.HasDriveG</visible>
+			<visible>System.Platform.XBOX + System.HasDriveG</visible>
 			<control type="label">
 				<description>free space label</description>
 				<posx>74</posx>
@@ -151,7 +321,7 @@
 		</control>
 		<control type="group">
 			<include>contentpanelslide</include>
-			<visible>System.HasDriveF + !System.HasDriveG</visible>
+			<visible>System.Platform.XBOX + System.HasDriveF + !System.HasDriveG</visible>
 			<control type="label">
 				<description>free space label</description>
 				<posx>74</posx>
