@@ -524,8 +524,11 @@ void CGUIControl::QueueAnimation(ANIMATION_TYPE animType)
   // rule out the animations we shouldn't perform
   if (!IsVisible() || !HasRendered()) 
   { // hidden or never rendered - don't allow exit or entry animations for this control
-    if (animType == ANIM_TYPE_WINDOW_CLOSE && !IsAnimating(ANIM_TYPE_WINDOW_OPEN))
+    if (animType == ANIM_TYPE_WINDOW_CLOSE)
+    { // could be animating a (delayed) window open anim, so reset it
+      ResetAnimation(ANIM_TYPE_WINDOW_OPEN);
       return;
+    }
   }
   if (!IsVisible())
   { // hidden - only allow hidden anims if we're animating a visible anim
