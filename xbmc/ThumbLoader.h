@@ -1,6 +1,5 @@
-
-#pragma once
-
+#ifndef THUMBLOADER_H
+#define THUMBLOADER_H
 #include "BackgroundInfoLoader.h"
 
 #include "cores/ffmpeg/DllAvFormat.h"
@@ -40,3 +39,4 @@ public:
   virtual ~CMusicThumbLoader();
   virtual bool LoadItem(CFileItem* pItem);
 };
+#endif

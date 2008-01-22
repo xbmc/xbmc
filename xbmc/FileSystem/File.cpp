@@ -182,7 +182,6 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
     CStopWatch timer;
     timer.StartZero();
     float start = 0.0f;
-    //float callback = 0.0f;
     while (llFileSize > 0)
     {
       g_application.ResetScreenSaver();

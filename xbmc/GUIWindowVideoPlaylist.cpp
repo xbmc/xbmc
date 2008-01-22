@@ -389,7 +389,6 @@ void CGUIWindowVideoPlaylist::SavePlayList()
 
 void CGUIWindowVideoPlaylist::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
-  //bool isPlaying = (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO) && (g_application.IsPlayingVideo());
   int itemPlaying = g_playlistPlayer.GetCurrentSong();
   if (m_movingFrom >= 0)
   {

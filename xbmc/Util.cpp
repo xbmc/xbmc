@@ -1840,12 +1840,13 @@ int CUtil::GetDVDIfoTitle(const CStdString& strFile)
   return atoi(strFilename.Mid(4, 2).c_str());
 }
 
-bool CUtil::UrlDecode(CStdString& strURLData)
-//returns false if illegal escape code found (probably someone forgot to escape a '%')
+void CUtil::UrlDecode(CStdString& strURLData)
+//modified to be more accomodating - if a non hex value follows a % take the characters directly and don't raise an error.
+// However % characters should really be escaped like any other non safe character (www.rfc-editor.org/rfc/rfc1738.txt)
 {
   CStdString strResult;
 
-  /* resulet will always be less than source */
+  /* result will always be less than source */
   strResult.reserve( strURLData.length() );
 
   for (unsigned int i = 0; i < strURLData.size(); ++i)
@@ -1858,12 +1859,15 @@ bool CUtil::UrlDecode(CStdString& strURLData)
       {
         CStdString strTmp;
         strTmp.assign(strURLData.substr(i + 1, 2));
-        int dec_num;
+        int dec_num=-1;
         sscanf(strTmp,"%x",(unsigned int *)&dec_num);
 		if (dec_num<0 || dec_num>255)
-		  return false;
-        strResult += (char)dec_num;
-        i += 2;
+		  strResult += kar;
+		else
+		{
+          strResult += (char)dec_num;
+          i += 2;
+		}
       }
       else
         strResult += kar;
@@ -1871,7 +1875,6 @@ bool CUtil::UrlDecode(CStdString& strURLData)
     else strResult += kar;
   }
   strURLData = strResult;
-  return true;
 }
 
 void CUtil::URLEncode(CStdString& strURLData)
@@ -2071,6 +2074,7 @@ DWORD CUtil::GetXbeID( const CStdString& strFilePath)
       }
     }
   }
+
 #endif
 
   return dwReturn;
@@ -4187,7 +4191,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     GetSkinThemes(vecTheme);
 
     int iTheme = -1;
-    //int iThemes = vecTheme.size();
+
     CStdString strTmpTheme;
     // find current theme
     if (!g_guiSettings.GetString("lookandfeel.skintheme").Equals("skindefault"))
@@ -4908,6 +4912,7 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
   CStdString strReceiveMessage = "ping";
   int iUDPPort = 4905;
   char sztmp[512];
+
   static int udp_server_socket, inited=0;
 #ifndef _LINUX
   int cliLen;
@@ -4915,6 +4920,7 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
   socklen_t cliLen;
 #endif
   int t1,t2,t3,t4, life=0;
+
   struct sockaddr_in	server;
   struct sockaddr_in	cliAddr;
   struct timeval timeout={0,500};

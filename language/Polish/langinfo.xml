@@ -1,16 +1,14 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <language>
   <charsets>
-    <gui unicodefont="false">CP1250</gui>
+    <gui unicodefont="true">ISO-8859-2</gui>
     <subtitle>CP1250</subtitle>
   </charsets>
-
   <dvd>
     <menu>pl</menu>
     <audio>pl</audio>
     <subtitle>pl</subtitle>
   </dvd>
-
   <regions>
     <region name="Polska">
       <dateshort>DD.MM.YYYY</dateshort>
@@ -18,12 +16,6 @@
       <time symbolAM="" symbolPM="">HH:mm:ss</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
-      <timezone>CEST</timezone>
     </region>
   </regions>
-
-  <sorttokens>
-    <token>The</token>
-  </sorttokens>
-  
 </language>

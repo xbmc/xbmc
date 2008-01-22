@@ -43,7 +43,6 @@ CGUIListItem::~CGUIListItem(void)
 void CGUIListItem::SetLabel(const CStdString& strLabel)
 {
   m_strLabel = strLabel;
-  SetProperty("label",strLabel);
   SetInvalid();
 }
 
@@ -56,7 +55,6 @@ const CStdString& CGUIListItem::GetLabel() const
 void CGUIListItem::SetLabel2(const CStdString& strLabel2)
 {
   m_strLabel2 = strLabel2;
-  SetProperty("label2",strLabel2);
   SetInvalid();
 }
 
@@ -215,60 +213,24 @@ void CGUIListItem::SetInvalid()
   if (m_focusedLayout) m_focusedLayout->SetInvalid();
 }
 
-void CGUIListItem::SetProperty(const CStdString &strKey, const char *strValue)
+void CGUIListItem::SetProperty(const std::string &strKey, const std::string &strValue)
 {
   m_mapProperties[strKey] = strValue;
 }
 
-CStdString CGUIListItem::GetProperty(const CStdString &strKey) const
+std::string CGUIListItem::GetProperty(const std::string &strKey) const
 {
-  std::map<CStdString,CStdString>::const_iterator iter = m_mapProperties.find(strKey);
+  std::map<std::string,std::string>::const_iterator iter = m_mapProperties.find(strKey);
   if (iter == m_mapProperties.end())
     return "";
 
   return iter->second;
 }
 
-bool CGUIListItem::HasProperty(const CStdString &strKey) const
+void CGUIListItem::ClearProperty(const std::string &strKey)
 {
-  std::map<CStdString,CStdString>::const_iterator iter = m_mapProperties.find(strKey);
-  if (iter == m_mapProperties.end())
-    return FALSE;
-
-  return TRUE;
-}
-
-void CGUIListItem::SetProperty(const CStdString &strKey, int nVal)
-{
-  CStdString strVal;
-  strVal.Format("%d",nVal);
-  SetProperty(strKey, strVal);
-}
-
-void CGUIListItem::SetProperty(const CStdString &strKey, bool bVal)
-{
-  SetProperty(strKey, bVal?"1":"0");
-}
-
-void CGUIListItem::SetProperty(const CStdString &strKey, double dVal)
-{
-  CStdString strVal;
-  strVal.Format("%f",dVal);
-  SetProperty(strKey, strVal);
-}
-
-bool CGUIListItem::GetPropertyBOOL(const CStdString &strKey) const
-{
-  return GetProperty(strKey) == "1";
-}
-
-int CGUIListItem::GetPropertyInt(const CStdString &strKey) const
-{
-  return atoi(GetProperty(strKey).c_str()) ;
-}
-
-double CGUIListItem::GetPropertyDouble(const CStdString &strKey) const
-{
-  return atof(GetProperty(strKey).c_str()) ;
+  std::map<std::string,std::string>::iterator iter = m_mapProperties.find(strKey);
+  if (iter != m_mapProperties.end())
+    m_mapProperties.erase(iter);
 }
 

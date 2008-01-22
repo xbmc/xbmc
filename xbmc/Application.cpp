@@ -40,7 +40,7 @@
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
 #else
-#include "GUILabelControl.h"  // needed for CInfoPortion
+#include "GUILabelControl.h"  // needed for CInfoLabel
 #include "guiImage.h"
 #endif
 #include "utils/KaiClient.h"
@@ -467,9 +467,9 @@ void CApplication::InitBasicD3D()
     m_splash->Hide();
 #endif
   }
-  
 
 #ifndef HAS_SDL  
+
   m_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
   m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 #endif  
@@ -5217,9 +5217,8 @@ bool CApplication::OnMessage(CGUIMessage& message)
     {
       // see if it is a user set string
       CLog::Log(LOGDEBUG,"%s : Translating %s", __FUNCTION__, message.GetStringParam().c_str());
-      vector<CInfoPortion> info;
-      g_infoManager.ParseLabel(message.GetStringParam(), info);
-      message.SetStringParam(g_infoManager.GetMultiInfo(info, 0));
+      CGUIInfoLabel info(message.GetStringParam(), "");
+      message.SetStringParam(info.GetLabel(0));
       CLog::Log(LOGDEBUG,"%s : To %s", __FUNCTION__, message.GetStringParam().c_str());
 
       // user has asked for something to be executed
@@ -5467,13 +5466,12 @@ void CApplication::Restart(bool bSamePosition)
   // get player state, needed for dvd's
   CStdString state = m_pPlayer->GetPlayerState();
 
+  // set the requested starttime
+  m_itemCurrentFile.m_lStartOffset = (long)(time * 75.0);
+
   // reopen the file
   if ( PlayFile(m_itemCurrentFile, true) && m_pPlayer )
-  {
-    // and seek to the position
     m_pPlayer->SetPlayerState(state);
-    SeekTime(time);
-  }
 }
 
 const CStdString& CApplication::CurrentFile()

@@ -1,6 +1,6 @@
 #pragma once
 #include "CachingCodec.h"
-#include "FileSystem/File.h"
+#include "FileReader.h"
 #include "DllAACCodec.h"
 
 class AACCodec : public CachingCodec

@@ -115,7 +115,7 @@ void CGUIToggleButtonControl::SetAltLabel(const string &label)
     m_selectButton.SetLabel(label);
 }
 
-const string& CGUIToggleButtonControl::GetLabel() const
+CStdString CGUIToggleButtonControl::GetLabel() const
 {
   if (m_bSelected)
     return m_selectButton.GetLabel();

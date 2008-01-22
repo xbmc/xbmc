@@ -560,7 +560,6 @@ bool CGUIWindowMusicPlayList::Update(const CStdString& strDirectory)
 void CGUIWindowMusicPlayList::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
   // is this playlist playing?
-  //bool isPlaying = (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC && g_application.IsPlayingAudio());
   int itemPlaying = g_playlistPlayer.GetCurrentSong();
 
   if (itemNumber >= 0 && itemNumber < m_vecItems.Size())

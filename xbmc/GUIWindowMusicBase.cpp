@@ -819,7 +819,7 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
     {
       buttons.Add(CONTEXT_BUTTON_LASTFM_UNBAN_ITEM, 15296); //unban
     }
-    else if (!item->GetExtraInfo().Equals("lastfmitem"))
+    else if (item->CanQueue())
     {
       buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347); //queue
 
@@ -1296,11 +1296,13 @@ bool CGUIWindowMusicBase::GetDirectory(const CStdString &strDirectory, CFileItem
     newPlaylist = new CFileItem("newplaylist://", false);
     newPlaylist->SetLabel(g_localizeStrings.Get(525));
     newPlaylist->SetLabelPreformated(true);
+    newPlaylist->SetCanQueue(false);
     items.Add(newPlaylist);
 
     newPlaylist = new CFileItem("newsmartplaylist://music", false);
     newPlaylist->SetLabel(g_localizeStrings.Get(21437));
     newPlaylist->SetLabelPreformated(true);
+    newPlaylist->SetCanQueue(false);
     items.Add(newPlaylist);
   }
 

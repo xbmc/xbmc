@@ -1,4 +1,4 @@
-﻿<window id="11">
+<window id="11">
 	<defaultcontrol>8</defaultcontrol>
 	<controls>
 		<control type="videowindow" id="20">
@@ -41,23 +41,27 @@
 		<control type="image" id="1">
 			<description>rectangle image</description>
 			<posx>0</posx>
-			<posy>256</posy>
+			<posy>70</posy>
 			<width>720</width>
 			<height>57</height>
 			<texture>bluebar.png</texture>
 		</control>
 		<control type="label" id="2">
 			<description>coordinates label</description>
-			<posx>55</posx>
-			<posy>260</posy>
+			<posx>20</posx>
+			<posy>75</posy>
+			<width>680</width>
 			<label>-</label>
+			<align>center</align>
 			<font>font13</font>
 		</control>
 		<control type="label" id="3">
 			<description>help information</description>
-			<posx>55</posx>
-			<posy>280</posy>
+			<posx>20</posx>
+			<posy>100</posy>
+			<width>680</width>
 			<label>-</label>
+			<align>center</align>
 			<font>font13</font>
 		</control>
 	</controls>

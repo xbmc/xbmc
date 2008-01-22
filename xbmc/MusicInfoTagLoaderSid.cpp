@@ -146,8 +146,7 @@ bool CMusicInfoTagLoaderSid::Load(const CStdString& strFileName, CMusicInfoTag& 
       }
       temp3 += iStart;
     }
-    /*int iFind = */reg.RegFind(temp3);
-    if( reg.RegFind(temp3) > -1 )
+    if(reg.RegFind(temp3) > -1)
     {
       char* szTitle = reg.GetReplaceString("\\1");
       char* szArtist = reg.GetReplaceString("\\2");

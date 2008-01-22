@@ -25,32 +25,15 @@ CGUIFadeLabelControl::~CGUIFadeLabelControl(void)
     delete m_fadeAnim;
 }
 
-void CGUIFadeLabelControl::SetInfo(const vector<int> &vecInfo)
+void CGUIFadeLabelControl::SetInfo(const vector<CGUIInfoLabel> &infoLabels)
 {
   m_lastLabel = -1;
-  if (vecInfo.size())
-    m_infoLabels.clear();
-  for (unsigned int i = 0; i < vecInfo.size(); i++)
-  {
-    vector<CInfoPortion> info;
-    info.push_back(CInfoPortion(vecInfo[i], "", ""));
-    m_infoLabels.push_back(info);
-  }
-}
-
-void CGUIFadeLabelControl::SetLabel(const vector<string> &vecLabel)
-{
-  m_lastLabel = -1;
-  m_infoLabels.clear();
-  for (unsigned int i = 0; i < vecLabel.size(); i++)
-    AddLabel(vecLabel[i]);
+  m_infoLabels = infoLabels;
 }
 
 void CGUIFadeLabelControl::AddLabel(const string &label)
 {
-  vector<CInfoPortion> info;
-  g_infoManager.ParseLabel(label, info);
-  m_infoLabels.push_back(info);
+  m_infoLabels.push_back(CGUIInfoLabel(label));
 }
 
 void CGUIFadeLabelControl::DoRender(DWORD currentTime)
@@ -70,7 +53,7 @@ void CGUIFadeLabelControl::Render()
 	if (m_currentLabel >= m_infoLabels.size() )
 		m_currentLabel = 0;
 
-  if (m_textLayout.Update(g_infoManager.GetMultiInfo(m_infoLabels[m_currentLabel], m_dwParentID)))
+  if (m_textLayout.Update(m_infoLabels[m_currentLabel].GetLabel(m_dwParentID)))
   { // changed label - update our suffix based on length of available text
     float width, height;
     m_textLayout.GetTextExtent(width, height);
