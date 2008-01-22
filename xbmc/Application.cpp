@@ -26,8 +26,8 @@
 #include "utils/LCD.h"
 #include "xbox/IoSupport.h"
 #include "xbox/XKHDD.h"
-#include "xbox/xbeheader.h"
 #endif
+#include "xbox/xbeheader.h"
 #include "Util.h"
 #include "TextureManager.h"
 #include "cores/PlayerCoreFactory.h"
