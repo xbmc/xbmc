@@ -334,6 +334,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
     }
     pMsg->Release();
   }
+  return 0;
 }
 
 void CDVDPlayerAudio::OnStartup()
