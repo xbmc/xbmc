@@ -41,13 +41,13 @@ void XCriticalSection::Initialize()
 {
 	if (m_isDestroyed)
 	{
-		printf("CRITSEC[0x%08lx]: Trying to initialize destroyed section.\n", this);
+		printf("CRITSEC[0x%p]: Trying to initialize destroyed section.\n", (void *)this);
 		return;
 	}
 	
 	if (m_isInitialized)
 	{
-		printf("CRITSEC[0x%08lx]: Trying to initialze initialized section.\n", this);
+		printf("CRITSEC[0x%p]: Trying to initialze initialized section.\n", (void *)this);
 		return;
 	}
 	
@@ -69,13 +69,13 @@ void XCriticalSection::Destroy()
 {
 	if (m_isDestroyed)
 	{
-		printf("CRITSEC[0x%08lx]: Trying to destroy destroyed section.\n", this);
+		printf("CRITSEC[0x%p]: Trying to destroy destroyed section.\n", (void *)this);
 		return;
 	}
 	
 	if (m_isInitialized == false)
 	{
-		printf("CRITSEC[0x%08lx]: Trying to destroy uninitialized section.\n", this);
+		printf("CRITSEC[0x%p]: Trying to destroy uninitialized section.\n", (void *)this);
 		return;
 	}
 	
@@ -94,13 +94,13 @@ void XCriticalSection::Enter()
 {	
 	if (m_isDestroyed)
 	{
-		printf("CRITSEC[0x%08lx]: Trying to enter destroyed section.\n");
+		printf("CRITSEC[0x%p]: Trying to enter destroyed section.\n", (void *)this);
 		return;
 	}
 	
 	if (m_isInitialized == false)
 	{
-		printf("CRITSEC[0x%08lx]: Trying to enter uninitialized section.\n", this);
+		printf("CRITSEC[0x%p]: Trying to enter uninitialized section.\n", (void *)this);
 		return;
 	}
 	
@@ -121,19 +121,19 @@ void XCriticalSection::Leave()
 {
 	if (Owning() == false)
 	{
-		printf("CritSect[0x%08lx] WARNING: Some other thread trying to leave our critical section.\n", this);
+		printf("CritSect[0x%p] WARNING: Some other thread trying to leave our critical section.\n", (void *)this);
 		return;
 	}
 	
 	if (m_isDestroyed)
 	{
-		printf("CRITSEC[0x%08lx]: Trying to leave destroyed section.\n");
+		printf("CRITSEC[0x%p]: Trying to leave destroyed section.\n", (void *)this);
 		return;
 	}
 	
 	if (m_isInitialized == false)
 	{
-		printf("CRITSEC[0x%08lx]: Trying to leave initialized section.\n", this);
+		printf("CRITSEC[0x%p]: Trying to leave initialized section.\n", (void *)this);
 		return;
 	}
 	
@@ -147,7 +147,7 @@ void XCriticalSection::Leave()
 	}
 	else
 	{
-		printf("CritSect[0x%08lx] WARNING: Trying to leave, already left.\n", this);
+		printf("CritSect[0x%p] WARNING: Trying to leave, already left.\n", (void *)this);
 	}
 	
 	pthread_mutex_unlock(&m_countMutex);
@@ -158,13 +158,13 @@ DWORD XCriticalSection::Exit()
 {
 	if (m_isDestroyed)
 	{
-		printf("CRITSEC[0x%08lx]: Trying to exit destroyed section.\n");
+		printf("CRITSEC[0x%p]: Trying to exit destroyed section.\n", (void *)this);
 		return 0;
 	}
 	
 	if (m_isInitialized == false)
 	{
-		printf("CRITSEC[0x%08lx]: Trying to exit uninitialized section.\n", this);
+		printf("CRITSEC[0x%p]: Trying to exit uninitialized section.\n", (void *)this);
 		return 0;
 	}
 	
@@ -195,13 +195,13 @@ void XCriticalSection::Restore(DWORD count)
 {
 	if (m_isDestroyed)
 	{
-		printf("CRITSEC[0x%08lx]: Trying to restore destroyed section.\n");
+		printf("CRITSEC[0x%p]: Trying to restore destroyed section.\n", (void *)this);
 		return;
 	}
 	
 	if (m_isInitialized == false)
 	{
-		printf("CRITSEC[0x%08lx]: Trying to restore uninitialized section.\n", this);
+		printf("CRITSEC[0x%p]: Trying to restore uninitialized section.\n", (void *)this);
 		return;
 	}
 
