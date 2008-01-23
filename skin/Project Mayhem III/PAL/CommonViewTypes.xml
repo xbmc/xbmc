@@ -78,6 +78,9 @@
 					<posy>0</posy>
 					<visible>Control.HasFocus(50)</visible>
 					<texture>list-focus.png</texture>
+					<animation type="Unfocus">
+						<effect reversible="false" type="fade" start="100" end="0" time="250" />
+					</animation>
 				</control>
 				<control type="image">
 					<posx>5</posx>

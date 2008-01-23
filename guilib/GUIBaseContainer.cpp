@@ -61,6 +61,7 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
           subItem = m_lastItem->GetFocusedLayout()->GetFocus();
         item->GetFocusedLayout()->SetFocus(subItem ? subItem : 1);
       }
+      item->GetFocusedLayout()->ResetAnimation(ANIM_TYPE_UNFOCUS);
       item->GetFocusedLayout()->Render(item, m_dwParentID, m_renderTime);
     }
     m_lastItem = item;
@@ -74,7 +75,9 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
       CGUIListItemLayout *layout = new CGUIListItemLayout(*m_layout);
       item->SetLayout(layout);
     }
-    if (item->GetLayout())
+    if (item->GetFocusedLayout() && item->GetFocusedLayout()->IsAnimating(ANIM_TYPE_UNFOCUS))
+      item->GetFocusedLayout()->Render(item, m_dwParentID, m_renderTime);
+    else if (item->GetLayout())
       item->GetLayout()->Render(item, m_dwParentID, m_renderTime);
   }
   g_graphicsContext.RestoreOrigin();
