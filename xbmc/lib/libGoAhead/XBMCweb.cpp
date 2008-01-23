@@ -375,7 +375,7 @@ int CXbmcWeb::xbmcNavigatorState( int eid, webs_t wp, char_t *parameter)
     while( xbmcNavigator[cmd].xbmcAppStateCode != -1)
     {
       // if we have a match
-      if(xbmcNavigator[cmd].xbmcAppStateCode == navigatorState)
+      if((DWORD)xbmcNavigator[cmd].xbmcAppStateCode == navigatorState)
       {
         if( eid != NO_EID) {
           ejSetResult( eid, xbmcNavigator[cmd].xbmcNavigateParameter);
