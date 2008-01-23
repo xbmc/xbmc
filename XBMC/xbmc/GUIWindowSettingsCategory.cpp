@@ -1258,7 +1258,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     }
     else if (strSetting.Equals("lookandfeel.enablemouse"))
     {
-       CGUICheckMarkControl *pControl = (CGUICheckMarkControl *)GetControl(pSettingControl->GetID());
        g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
     }
   }
