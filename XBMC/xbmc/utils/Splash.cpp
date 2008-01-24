@@ -30,6 +30,7 @@ void CSplash::Process()
 
   g_graphicsContext.Lock();
   g_graphicsContext.Get3DDevice()->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
+  
   g_graphicsContext.SetCameraPosition(CPoint(0, 0));
   float w = g_graphicsContext.GetWidth() * 0.5f;
   float h = g_graphicsContext.GetHeight() * 0.5f;

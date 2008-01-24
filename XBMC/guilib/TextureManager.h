@@ -8,7 +8,8 @@
 
 #include "TextureBundle.h"
 
-#pragma once 
+#pragma once
+
 /*!
  \ingroup textures
  \brief 

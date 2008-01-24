@@ -5,6 +5,7 @@
 
 #include "../lib/libiconv/iconv.h"
 #include "../lib/libfribidi/fribidi.h"
+
 #include <vector>
 
 class CCharsetConverter

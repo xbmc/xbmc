@@ -56,7 +56,6 @@ void CVisualisation::Render()
 {
   // ask visz. to render itself
   m_pVisz->Render();
-  // CLog::Log(LOGERROR, "Test");
 }
 
 void CVisualisation::Stop()

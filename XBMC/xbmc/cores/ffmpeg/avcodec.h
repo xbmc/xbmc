@@ -58,7 +58,7 @@
 enum CodecID {
     CODEC_ID_NONE,
     CODEC_ID_MPEG1VIDEO,
-    CODEC_ID_MPEG2VIDEO, ///< preferred ID for MPEG-1/2 video decoding
+    CODEC_ID_MPEG2VIDEO, /* preferred ID for MPEG-1/2 video decoding */
     CODEC_ID_MPEG2VIDEO_XVMC,
     CODEC_ID_H261,
     CODEC_ID_H263,

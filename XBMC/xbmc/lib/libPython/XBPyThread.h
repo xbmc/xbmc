@@ -2,7 +2,7 @@
 #define XBPYTHREAD_H_
 
 #include "python/Python.h"
-#include "..\..\utils\Thread.h"
+#include "../../utils/Thread.h"
 
 class XBPyThread : public CThread
 {

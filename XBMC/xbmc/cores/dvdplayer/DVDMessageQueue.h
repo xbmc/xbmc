@@ -62,7 +62,8 @@ private:
   
   bool m_bAbortRequest;
   bool m_bInitialized;
-  
+
   int m_iDataSize;
   int m_iMaxDataSize;
 };
+

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AACCodec.h"
+#include "AACcodec.h"
 
 
 AACCodec::AACCodec()

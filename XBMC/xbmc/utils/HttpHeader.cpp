@@ -30,7 +30,7 @@ void CHttpHeader::Parse(CStdString strData)
     if (iValueStart > 0)
     {
       strParam = strData.substr(iIter, iValueStart);
-      strValue = strData.substr(iValueStart + 1, iValueEnd);
+      strValue = strData.substr(iValueStart + 1, iValueEnd - iValueStart - 1);
       
       /*
       CUtil::Lower(strParam.c_str()
