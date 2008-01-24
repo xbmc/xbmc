@@ -114,7 +114,7 @@ bool CFileHD::OpenForWrite(const CURL& url, bool bBinary, bool bOverWrite)
   m_hFile.attach(CreateFile(strPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, bOverWrite ? CREATE_ALWAYS : OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL));
   if (!m_hFile.isValid()) 
     return false;
-  
+
   m_i64FilePos = 0;
   LARGE_INTEGER i64Size;
   GetFileSizeEx((HANDLE)m_hFile, &i64Size);
@@ -144,7 +144,7 @@ int CFileHD::Write(const void *lpBuf, __int64 uiBufSize)
     return 0;
   
   DWORD nBytesWriten;
-  if ( WriteFile((HANDLE)m_hFile, lpBuf, (DWORD)uiBufSize, &nBytesWriten, NULL) )
+  if ( WriteFile((HANDLE)m_hFile, (void*) lpBuf, (DWORD)uiBufSize, &nBytesWriten, NULL) )
     return nBytesWriten;
   
   return 0;
@@ -162,17 +162,20 @@ __int64 CFileHD::Seek(__int64 iFilePosition, int iWhence)
   LARGE_INTEGER lPos, lNewPos;
   lPos.QuadPart = iFilePosition;
   int bSuccess;
+
+  __int64 length = GetLength();
+
   switch (iWhence)
   {
   case SEEK_SET:
-    if (iFilePosition <= GetLength())
+    if (iFilePosition <= length || length == 0)
       bSuccess = SetFilePointerEx((HANDLE)m_hFile, lPos, &lNewPos, FILE_BEGIN);
     else
       bSuccess = false;
     break;
 
   case SEEK_CUR:
-    if ((GetPosition()+iFilePosition) <= GetLength())
+    if ((GetPosition()+iFilePosition) <= length || length == 0)
       bSuccess = SetFilePointerEx((HANDLE)m_hFile, lPos, &lNewPos, FILE_CURRENT);
     else
       bSuccess = false;

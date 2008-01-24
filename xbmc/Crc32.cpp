@@ -57,3 +57,4 @@ void Crc32::ComputeFromLowerCase(const CStdString& strValue)
   strLower.MakeLower();
   Compute(strLower.c_str(), strLower.size());
 }
+

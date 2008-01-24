@@ -56,7 +56,9 @@
 
 #define FALSE 0
 #define TRUE 1
+#ifndef NULL
 #define NULL 0
+#endif
 typedef char* LPTSTR;
 
 class CRegExp
@@ -77,7 +79,7 @@ public:
 	};
   int GetSubCount();
   int GetSubStart(int iSub);
-  int CRegExp::GetSubLenght(int iSub);
+  int GetSubLenght(int iSub);
 
 private:
 	char *regnext(char *node);

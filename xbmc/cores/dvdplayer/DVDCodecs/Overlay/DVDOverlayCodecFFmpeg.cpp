@@ -103,12 +103,12 @@ int CDVDOverlayCodecFFmpeg::Decode(BYTE* data, int size)
 
   if (len < 0)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - avcodec_decode_subtitle returned failure");
+    CLog::Log(LOGERROR, "%s - avcodec_decode_subtitle returned failure", __FUNCTION__);
     return OC_ERROR;
   }
 
   if (len != size)
-    CLog::Log(LOGWARNING, __FUNCTION__" - avcodec_decode_subtitle didn't consume the full packet");
+    CLog::Log(LOGWARNING, "%s - avcodec_decode_subtitle didn't consume the full packet", __FUNCTION__);
 
   if (!gotsub)
     return OC_BUFFER;
@@ -152,9 +152,8 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
     CDVDOverlayImage* overlay = new CDVDOverlayImage();
 
     overlay->iPTSStartTime = DVD_MSEC_TO_TIME(m_Subtitle.start_display_time);
-    overlay->iPTSStopTime = 0.0; // in ffmpeg this is a timeout value
-//    overlay->iPTSStopTime  = DVD_MSEC_TO_TIME(m_Subtitle.end_display_time);
-
+    overlay->iPTSStopTime  = DVD_MSEC_TO_TIME(m_Subtitle.end_display_time);
+    overlay->replace  = true;
     overlay->linesize = rect.w;
     overlay->data     = (BYTE*)malloc(rect.w * rect.h);
     overlay->palette  = (DWORD*)malloc(rect.nb_colors*4);

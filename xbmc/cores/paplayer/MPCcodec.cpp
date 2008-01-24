@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "MPCCodec.h"
+#include "MPCcodec.h"
 
 
 // Callbacks for file reading
@@ -18,7 +18,7 @@ mpc_bool_t Mpc_Callback_Seek(void *data, int position)
   int seek = (int)file->Seek(position, SEEK_SET);
   if (seek >= 0)
     return 1;
-  CLog::Log(LOGERROR, "MPCCodec:Seek callback.  Seeking to position %i failed.", position);
+  CLog::Log(LOGERROR, "MPCCodec:Seek callback.  Seeking to position %lu failed.", position);
   return 0;
 }
 

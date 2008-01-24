@@ -4,15 +4,17 @@
 #include "winxml.h"
 #include "pyutil.h"
 #include "action.h"
-#include "GuiButtonControl.h"
+#include "GUIButtonControl.h"
 #include "GUICheckMarkControl.h"
 
 #define ACTIVE_WINDOW	m_gWindowManager.GetActiveWindow()
 
+#ifndef __GNUC__
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
 #pragma bss_seg("PY_BSS")
 #pragma const_seg("PY_RDATA")
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -178,6 +180,8 @@ namespace PYXBMC
     case CGUIControl::GUICONTROL_GROUP:
       pControl = (Control*)ControlGroup_Type.tp_alloc(&ControlGroup_Type, 0);
       break;
+    default:
+      break;
     }
 
     if (!pControl)
@@ -249,10 +253,19 @@ namespace PYXBMC
         // old window does not exist anymore, switch to home
         else m_gWindowManager.ActivateWindow(WINDOW_HOME);
       }
+      // free the window's resources and unload it (free all guicontrols)
+      self->pWindow->FreeResources(true);
     }
-
-    // free the window's resources and unload it (free all guicontrols)
-    self->pWindow->FreeResources(true);
+    else
+    {
+      // BUG:
+      // This is an existing window, so no resources are free'd.  Note that
+      // THIS WILL FAIL for any controls newly created by python - they will
+      // remain after the script ends.  Ideally this would be remedied by
+      // a flag in Control that specifies that it was python created - any python
+      // created controls could then be removed + free'd from the window.
+      // how this works with controlgroups though could be a bit tricky.
+    }
 
     // and free our list of controls
     std::vector<Control*>::iterator it = self->vecControls.begin();
@@ -794,10 +807,12 @@ namespace PYXBMC
     "and resets (not delete) all controls that are associated with this window.");
 
 // Restore code and data sections to normal.
+#ifndef __GNUC__
 #pragma code_seg()
 #pragma data_seg()
 #pragma bss_seg()
 #pragma const_seg()
+#endif
 
   PyTypeObject Window_Type;
 

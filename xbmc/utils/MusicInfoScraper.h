@@ -1,7 +1,7 @@
 #pragma once
 #include "MusicAlbumInfo.h"
 #include "MusicArtistInfo.h"
-#include "http.h"
+#include "HTTP.h"
 
 struct SScraperInfo;
 

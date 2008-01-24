@@ -168,36 +168,37 @@
 #define MUSICPLAYER_COMMENT         220
 #define MUSICPLAYER_LYRICS          221
 
-#define VIDEOPLAYER_TITLE           250
-#define VIDEOPLAYER_GENRE           251
-#define VIDEOPLAYER_DIRECTOR        252
-#define VIDEOPLAYER_YEAR            253
-#define VIDEOPLAYER_COVER           258
-#define VIDEOPLAYER_USING_OVERLAYS  259
-#define VIDEOPLAYER_ISFULLSCREEN    260
-#define VIDEOPLAYER_HASMENU         261
-#define VIDEOPLAYER_PLAYLISTLEN     262
-#define VIDEOPLAYER_PLAYLISTPOS     263
-#define VIDEOPLAYER_EVENT           264
-#define VIDEOPLAYER_ORIGINALTITLE   265
-#define VIDEOPLAYER_PLOT            266
-#define VIDEOPLAYER_PLOT_OUTLINE    267
-#define VIDEOPLAYER_EPISODE         268
-#define VIDEOPLAYER_SEASON          269
-#define VIDEOPLAYER_RATING          270
-#define VIDEOPLAYER_TVSHOW          271
-#define VIDEOPLAYER_PREMIERED       272
-#define VIDEOPLAYER_CONTENT         273
-#define VIDEOPLAYER_STUDIO          274
-#define VIDEOPLAYER_MPAA            275
-#define VIDEOPLAYER_CAST            276
-#define VIDEOPLAYER_CAST_AND_ROLE   277
-#define VIDEOPLAYER_ARTIST          278
-#define VIDEOPLAYER_ALBUM           279
-#define VIDEOPLAYER_WRITER          280
-#define VIDEOPLAYER_TAGLINE         281
-#define VIDEOPLAYER_HAS_INFO        282
-#define VIDEOPLAYER_TOP250          283
+#define VIDEOPLAYER_TITLE             250
+#define VIDEOPLAYER_GENRE             251
+#define VIDEOPLAYER_DIRECTOR          252
+#define VIDEOPLAYER_YEAR              253
+#define VIDEOPLAYER_COVER             258
+#define VIDEOPLAYER_USING_OVERLAYS    259
+#define VIDEOPLAYER_ISFULLSCREEN      260
+#define VIDEOPLAYER_HASMENU           261
+#define VIDEOPLAYER_PLAYLISTLEN       262
+#define VIDEOPLAYER_PLAYLISTPOS       263
+#define VIDEOPLAYER_EVENT             264
+#define VIDEOPLAYER_ORIGINALTITLE     265
+#define VIDEOPLAYER_PLOT              266
+#define VIDEOPLAYER_PLOT_OUTLINE      267
+#define VIDEOPLAYER_EPISODE           268
+#define VIDEOPLAYER_SEASON            269
+#define VIDEOPLAYER_RATING            270
+#define VIDEOPLAYER_TVSHOW            271
+#define VIDEOPLAYER_PREMIERED         272
+#define VIDEOPLAYER_CONTENT           273
+#define VIDEOPLAYER_STUDIO            274
+#define VIDEOPLAYER_MPAA              275
+#define VIDEOPLAYER_CAST              276
+#define VIDEOPLAYER_CAST_AND_ROLE     277
+#define VIDEOPLAYER_ARTIST            278
+#define VIDEOPLAYER_ALBUM             279
+#define VIDEOPLAYER_WRITER            280
+#define VIDEOPLAYER_TAGLINE           281
+#define VIDEOPLAYER_HAS_INFO          282
+#define VIDEOPLAYER_TOP250            283
+#define VIDEOPLAYER_RATING_AND_VOTES  284
 
 #define AUDIOSCROBBLER_ENABLED      300
 #define AUDIOSCROBBLER_CONN_STATE   301
@@ -224,6 +225,7 @@
 #define CONTAINER_HAS_NEXT          372
 #define CONTAINER_HAS_PREVIOUS      373
 #define CONTAINER_SUBITEM           374
+#define CONTAINER_TVSHOWTHUMB       375
 
 #define MUSICPM_ENABLED             380
 #define MUSICPM_SONGSPLAYED         381
@@ -386,6 +388,7 @@
 #define LISTITEM_WRITER             (LISTITEM_START + 36)
 #define LISTITEM_TAGLINE            (LISTITEM_START + 37)
 #define LISTITEM_TOP250             (LISTITEM_START + 38)
+#define LISTITEM_RATING_AND_VOTES   (LISTITEM_START + 39)
 
 #define LISTITEM_PROPERTY_START     (LISTITEM_START + 200)
 #define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 1000)
@@ -397,7 +400,7 @@
 #define COMBINED_VALUES_START        100000
 
 // forward
-class CInfoPortion;
+class CInfoLabel;
 class CGUIWindow;
 
 // structure to hold multiple integer data
@@ -514,13 +517,9 @@ public:
   void SetNextWindow(int windowID) { m_nextWindowID = windowID; };
   void SetPreviousWindow(int windowID) { m_prevWindowID = windowID; };
 
-  void ParseLabel(const CStdString &strLabel, vector<CInfoPortion> &multiInfo);
-  CStdString GetMultiInfo(const vector<CInfoPortion> &multiInfo, DWORD contextWindow, bool preferImage = false);
-
   void ResetCache();
 
   CStdString GetItemLabel(const CFileItem *item, int info) const;
-  CStdString GetItemMultiLabel(const CFileItem *item, const vector<CInfoPortion> &multiInfo);
   CStdString GetItemImage(const CFileItem *item, int info) const;
 
   // Called from tuxbox service thread to update current status
@@ -535,7 +534,7 @@ protected:
   bool CheckWindowCondition(CGUIWindow *window, int condition) const;
   CGUIWindow *GetWindowWithCondition(DWORD contextWindow, int condition) const;
 
-  bool GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow = 0);
+  bool GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow = 0, const CGUIListItem *item = NULL);
   CStdString GetMultiInfoLabel(const GUIInfo &info, DWORD dwContextWindow = 0) const;
   int TranslateSingleString(const CStdString &strCondition);
   int TranslateListItem(const CStdString &info);

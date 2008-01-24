@@ -1,7 +1,9 @@
 #include "stdafx.h"
-#include "musicalbuminfo.h"
+#include "./MusicAlbumInfo.h"
 #include "ScraperParser.h"
 #include "XMLUtils.h"
+#include "./HTMLTable.h"
+#include "./HTMLUtil.h"
 
 using namespace MUSIC_GRABBER;
 

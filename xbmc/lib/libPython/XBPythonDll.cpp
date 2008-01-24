@@ -47,15 +47,15 @@ class CVaPassNext{
 
 #define FUNCTION(function) \
     void* (__cdecl* p_##function)(); \
-    void* ##function() { return p_##function(); }
+    void* function() { return p_##function(); }
 
 #define FUNCTION4(function) \
     void* (__cdecl* p_##function)(void* a); \
-    void* ##function(void* a) { return p_##function(a); }
+    void* function(void* a) { return p_##function(a); }
 
 #define FUNCTION8(function) \
     void* (__cdecl* p_##function)(void* a, void* b); \
-    void* ##function(void* a, void* b) { return p_##function(a, b); }
+    void* function(void* a, void* b) { return p_##function(a, b); }
 
 #define VA_FUNC_START(x) \
       void* ret; \
@@ -69,31 +69,31 @@ class CVaPassNext{
 
 #define VA_FUNCTION8(function) \
     void* (__cdecl* p_va_##function)(void* a, ...); \
-    void* ##function(void* a, ...) { VA_FUNC_START(a) p_va_##function(a, va_pass(va)); VA_FUNC_END }
+    void* function(void* a, ...) { VA_FUNC_START(a) p_va_##function(a, va_pass(va)); VA_FUNC_END }
 
 #define VA_FUNCTION12(function) \
     void* (__cdecl* p_va_##function)(void* a, void* b, ...); \
-    void* ##function(void* a, void* b, ...) { VA_FUNC_START(b) p_va_##function(a, b, va_pass(va)); VA_FUNC_END }
+    void* function(void* a, void* b, ...) { VA_FUNC_START(b) p_va_##function(a, b, va_pass(va)); VA_FUNC_END }
 
 #define VA_FUNCTION16(function) \
     void* (__cdecl* p_va_##function)(void* a, void* b, void* c, ...); \
-    void* ##function(void* a, void* b, void* c, ...) { VA_FUNC_START(c) p_va_##function(a, b, c, va_pass(va)); VA_FUNC_END }
+    void* function(void* a, void* b, void* c, ...) { VA_FUNC_START(c) p_va_##function(a, b, c, va_pass(va)); VA_FUNC_END }
 
 #define VA_FUNCTION20(function) \
     void* (__cdecl* p_va_##function)(void* a, void* b, void* c, void* d, ...); \
-    void* ##function(void* a, void* b, void* c, void* d, ...) { VA_FUNC_START(d) p_va_##function(a, b, c, d, va_pass(va)); VA_FUNC_END }
+    void* function(void* a, void* b, void* c, void* d, ...) { VA_FUNC_START(d) p_va_##function(a, b, c, d, va_pass(va)); VA_FUNC_END }
 
 #define FUNCTION12(function) \
     void* (__cdecl* p_##function)(void* a, void* b, void* c); \
-    void* ##function(void* a, void* b, void* c) { return p_##function(a, b, c); }
+    void* function(void* a, void* b, void* c) { return p_##function(a, b, c); }
 
 #define FUNCTION16(function) \
     void* (__cdecl* p_##function)(void* a, void* b, void* c, void* d); \
-    void* ##function(void* a, void* b, void* c, void* d) { return p_##function(a, b, c, d); }
+    void* function(void* a, void* b, void* c, void* d) { return p_##function(a, b, c, d); }
 
 #define FUNCTION20(function) \
     void* (__cdecl* p_##function)(void* a, void* b, void* c, void* d, void* e); \
-    void* ##function(void* a, void* b, void* c, void* d, void* e) { return p_##function(a, b, c, d, e); }
+    void* function(void* a, void* b, void* c, void* d, void* e) { return p_##function(a, b, c, d, e); }
 
 extern "C"
 {

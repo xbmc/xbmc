@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "OGGCodec.h"
-#include "../../oggtag.h"
+#include "OGGcodec.h"
+#include "../../OggTag.h"
 #include "../../Util.h"
 
 
@@ -13,6 +13,7 @@ OGGCodec::OGGCodec()
   m_CodecName = "OGG";
   m_TimeOffset = 0.0;
   m_CurrentStream=0;
+  m_TotalTime = 0;
   m_VorbisFile.datasource = NULL;
 }
 
@@ -39,7 +40,7 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
   {
     //  Extract the bitstream to play
     CStdString strFileName=CUtil::GetFileName(strFile);
-    int iStart=strFileName.ReverseFind("-")+1;
+    int iStart=strFileName.ReverseFind('-')+1;
     m_CurrentStream = atoi(strFileName.substr(iStart, strFileName.size()-iStart-10).c_str())-1;
     //  The directory we are in, is the file
     //  that contains the bitstream to play,
@@ -99,7 +100,7 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
 
   if (m_SampleRate==0 || m_Channels==0 || m_BitsPerSample==0 || m_TotalTime==0)
   {
-    CLog::Log(LOGERROR, "OGGCodec: incomplete stream info from %s, SampleRate=%i, Channels=%i, BitsPerSample=%i, TotalTime=%i", strFile1.c_str(), m_SampleRate, m_Channels, m_BitsPerSample, m_TotalTime);
+    CLog::Log(LOGERROR, "OGGCodec: incomplete stream info from %s, SampleRate=%i, Channels=%i, BitsPerSample=%i, TotalTime=%llu", strFile1.c_str(), m_SampleRate, m_Channels, m_BitsPerSample, m_TotalTime);
     return false;
   }
 
@@ -151,14 +152,17 @@ int OGGCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 
   //  the maximum chunk size the vorbis decoder seem to return with one call is 4096
   long lRead=m_dll.ov_read(&m_VorbisFile, (char*)pBuffer, size, 0, 2, 1, &iBitStream);
-  
+
+  if (lRead == OV_HOLE)
+    return READ_SUCCESS;
+
   //  Our logical bitstream changed, we reached the eof
-  if (m_CurrentStream!=iBitStream)
+  if (lRead > 0 && m_CurrentStream!=iBitStream)
     lRead=0;
 
   if (lRead<0)
   {
-    CLog::Log(LOGERROR, "OGGCodec: Read error %i", lRead);
+    CLog::Log(LOGERROR, "OGGCodec: Read error %lu", lRead);
     return READ_ERROR;
   }
   else if (lRead==0)

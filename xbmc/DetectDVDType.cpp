@@ -21,14 +21,14 @@
 
 #include "stdafx.h"
 #include "DetectDVDType.h"
-#include "Filesystem/cdiosupport.h"
-#include "Filesystem/iso9660.h"
+#include "FileSystem/cdioSupport.h"
+#include "FileSystem/iso9660.h"
 #ifdef HAS_UNDOCUMENTED
-#include "xbox/undocumented.h"
+#include "xbox/Undocumented.h"
 #endif
-#include "application.h"
-#include "util.h"
-#include "picture.h"
+#include "Application.h"
+#include "Util.h"
+#include "Picture.h"
 
 using namespace XFILE;
 using namespace MEDIA_DETECT;
@@ -58,6 +58,7 @@ CDetectDVDMedia::~CDetectDVDMedia()
 void CDetectDVDMedia::OnStartup()
 {
   // SetPriority( THREAD_PRIORITY_LOWEST );
+  CLog::Log(LOGDEBUG, "Compiled with libcdio Version 0.%d", LIBCDIO_VERSION_NUM);
 }
 
 void CDetectDVDMedia::Process()
@@ -291,10 +292,10 @@ void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA
     for (unsigned int i = 0; i < thumbs.size(); ++i)
     {
       CUtil::AddFileToFolder(m_diskPath, thumbs[i], strThumb);
-      CLog::Log(LOGDEBUG,__FUNCTION__": looking for disc thumb:[%s]", strThumb.c_str());
+      CLog::Log(LOGDEBUG,"%s: looking for disc thumb:[%s]", __FUNCTION__, strThumb.c_str());
       if (CFile::Exists(strThumb))
       {
-        CLog::Log(LOGDEBUG,__FUNCTION__": found disc thumb:[%s], caching as:[%s]", strThumb.c_str(), strCache.c_str());
+        CLog::Log(LOGDEBUG,"%s: found disc thumb:[%s], caching as:[%s]", __FUNCTION__, strThumb.c_str(), strCache.c_str());
         CPicture pic;
         pic.DoCreateThumbnail(strThumb, strCache);
         break;

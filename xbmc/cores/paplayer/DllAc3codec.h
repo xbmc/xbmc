@@ -7,7 +7,7 @@ typedef unsigned __int8 uint8_t;
 typedef __int16 int16_t;
 typedef __int32 int32_t;
 
-#include "..\dvdplayer\dvdcodecs\audio\liba52\a52.h"
+#include "../dvdplayer/DVDCodecs/Audio/liba52/a52.h"
 
 #ifdef LIBA52_DOUBLE
 typedef float convert_t;
@@ -18,6 +18,7 @@ typedef sample_t convert_t;
 class DllAc3CodecInterface
 {
 public:
+  virtual ~DllAc3CodecInterface() {}
   virtual a52_state_t * a52_init (uint32_t mm_accel)=0;
   virtual sample_t * a52_samples (a52_state_t * state)=0;
   virtual int a52_syncinfo (a52_state_t * state, uint8_t * buf, int * flags, int * sample_rate, int * bit_rate)=0;

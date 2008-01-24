@@ -84,3 +84,4 @@ bool CubeCodec::IsSupportedFormat(const CStdString& strExt)
   
   return false;
 }
+

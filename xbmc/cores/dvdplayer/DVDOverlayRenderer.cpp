@@ -49,9 +49,9 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlayImage*
 
     palette[3][i] = (BYTE)((color >> 24) & 0xff);
     
-    double r = (color & 0xff) / 255.0;
-    double g = ((color >> 8) & 0xff) / 255.0;
-    double b = ((color >> 16) & 0xff) / 255.0;
+    double r = ((color >> 16) & 0xff) / 255.0;
+    double g = ((color >> 8 ) & 0xff) / 255.0;
+    double b = ((color >> 0 ) & 0xff) / 255.0;
     
     palette[0][i] = (BYTE)(255 * CLAMP(0.299 * r + 0.587 * g + 0.114 * b, 0.0, 1.0));
     palette[1][i] = (BYTE)(127.5 + 255 * CLAMP( 0.500 * r - 0.419 * g - 0.081 * b, -0.5, 0.5));

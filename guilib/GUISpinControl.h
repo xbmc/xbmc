@@ -43,6 +43,7 @@ public:
   void SetRange(int iStart, int iEnd);
   void SetFloatRange(float fStart, float fEnd);
   void SetValue(int iValue);
+  void SetValueFromLabel(const CStdString &label);
   void SetFloatValue(float fValue);
   int GetValue() const;
   float GetFloatValue() const;

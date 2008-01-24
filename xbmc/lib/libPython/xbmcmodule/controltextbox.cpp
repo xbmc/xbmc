@@ -1,14 +1,16 @@
 #include "stdafx.h"
-#include "..\python\python.h"
-#include "GuiTextBox.h"
+#include "../python/Python.h"
+#include "GUITextBox.h"
 #include "GUIFontManager.h"
 #include "control.h"
 #include "pyutil.h"
 
+#ifndef __GNUC__
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
 #pragma bss_seg("PY_BSS")
 #pragma const_seg("PY_RDATA")
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -52,7 +54,7 @@ namespace PYXBMC
     // set default values if needed
     self->strFont = cFont ? cFont : "font13";
 
-    if (cTextColor) sscanf(cTextColor, "%x", &self->dwTextColor);
+    if (cTextColor) sscanf(cTextColor, "%lx", &self->dwTextColor);
     else self->dwTextColor = 0xffffffff;
 
     // default values for spin control
@@ -78,10 +80,10 @@ namespace PYXBMC
     CLabelInfo spinLabel;
     spinLabel.font = g_fontManager.GetFont(pControl->strFont);
     spinLabel.textColor = spinLabel.focusedColor = pControl->pControlSpin->dwColor;
-    CImage up; up.file = pControl->pControlSpin->strTextureUp;
-    CImage down; down.file = pControl->pControlSpin->strTextureDown;
-    CImage upfocus; upfocus.file = pControl->pControlSpin->strTextureUpFocus;
-    CImage downfocus; downfocus.file = pControl->pControlSpin->strTextureDownFocus;
+    CImage up(pControl->pControlSpin->strTextureUp);
+    CImage down(pControl->pControlSpin->strTextureDown);
+    CImage upfocus(pControl->pControlSpin->strTextureUpFocus);
+    CImage downfocus(pControl->pControlSpin->strTextureDownFocus);
 
     pControl->pGUIControl = new CGUITextBox(pControl->iParentId, pControl->iControlId,
       (float)pControl->dwPosX, (float)pControl->dwPosY, (float)pControl->dwWidth, (float)pControl->dwHeight,
@@ -197,10 +199,12 @@ namespace PYXBMC
     "  - self.textbox = xbmcgui.ControlTextBox(100, 250, 300, 300, textColor='0xFFFFFFFF')\n");
 
 // Restore code and data sections to normal.
+#ifndef __GNUC__
 #pragma code_seg()
 #pragma data_seg()
 #pragma bss_seg()
 #pragma const_seg()
+#endif
 
   PyTypeObject ControlTextBox_Type;
 

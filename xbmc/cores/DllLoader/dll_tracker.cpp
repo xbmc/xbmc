@@ -1,11 +1,12 @@
 
 #include "stdafx.h"
 #include "dll_tracker.h"
-#include "dll_tracker_memory.h"
 #include "dll_tracker_library.h"
+#include "dll_tracker_memory.h"
 #include "dll_tracker_file.h"
-#include "dll_tracker_socket.h"
 #include "dll_tracker_critical_section.h"
+#include "dll_tracker_socket.h"
+
 #include "DllLoader.h"
 
 #ifdef _cplusplus
@@ -32,9 +33,9 @@ void tracker_dll_free(DllLoader* pDll)
     {
       try
       {
+        tracker_library_free_all(*it);
         tracker_memory_free_all(*it);
         tracker_heapobjects_free_all(*it);
-        tracker_library_free_all(*it);
         tracker_file_free_all(*it);
         tracker_socket_free_all(*it);
         tracker_critical_section_free_all(*it);

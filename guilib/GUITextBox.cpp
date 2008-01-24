@@ -27,7 +27,6 @@ CGUITextBox::CGUITextBox(DWORD dwParentID, DWORD dwControlId, float posX, float 
   m_upDown.SetShowRange(true); // show the range by default
   ControlType = GUICONTROL_TEXTBOX;
   m_pageControl = 0;
-  m_singleInfo = 0;
   m_renderTime = 0;
   m_lastRenderTime = 0;
   m_scrollTime = scrollTime;
@@ -76,19 +75,13 @@ void CGUITextBox::DoRender(DWORD currentTime)
 
 void CGUITextBox::Render()
 {
-  CStdString renderLabel;
-	if (m_singleInfo)
-		renderLabel = g_infoManager.GetLabel(m_singleInfo, m_dwParentID);
-	else
-    renderLabel = g_infoManager.GetMultiInfo(m_multiInfo, m_dwParentID);
-
-  if (CGUITextLayout::Update(renderLabel, m_width))
+  if (CGUITextLayout::Update(m_info.GetLabel(m_dwParentID), m_width))
   { // needed update, so reset to the top of the textbox and update our sizing/page control
     m_offset = 0;
     m_scrollOffset = 0;
     ResetAutoScrolling();
 
-    m_itemHeight = m_font->GetTextHeight(1);   // note: GetLineHeight() is more correct, but seems a bit too much spacing
+    m_itemHeight = m_font->GetLineHeight();
     float fTotalHeight = m_height;
     if (!m_pageControl)
       fTotalHeight -=  m_upDown.GetHeight() + 5;
@@ -235,7 +228,7 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
       m_upDown.SetRange(1, 1);
       m_upDown.SetValue(1);
 
-      SetLabel( message.GetLabel() );
+      m_info.SetLabel(message.GetLabel(), "");
     }
 
     if (message.GetMessage() == GUI_MSG_LABEL_RESET)
@@ -354,11 +347,6 @@ void CGUITextBox::OnPageDown()
   }
 }
 
-void CGUITextBox::SetLabel(const string &strText)
-{
-  g_infoManager.ParseLabel(strText, m_multiInfo);
-}
-
 void CGUITextBox::UpdatePageControl()
 {
   // and update our page control
@@ -413,7 +401,7 @@ bool CGUITextBox::OnMouseWheel(char wheel, const CPoint &point)
   { // increase or decrease our offset by the appropriate amount.
     int offset = m_offset - wheel;
     // check that we are within the correct bounds.
-    if (offset + m_itemsPerPage > (int)m_lines.size())
+    if (offset + (int)m_itemsPerPage > (int)m_lines.size())
       offset = (m_lines.size() >= m_itemsPerPage) ? m_lines.size() - m_itemsPerPage : 0;
     ScrollToOffset(offset);
     // update the page control...
@@ -467,9 +455,9 @@ void CGUITextBox::SetPageControl(DWORD pageControl)
   m_pageControl = pageControl;
 }
 
-void CGUITextBox::SetInfo(int singleInfo)
+void CGUITextBox::SetInfo(const CGUIInfoLabel &infoLabel)
 {
-  m_singleInfo = singleInfo;
+  m_info = infoLabel;
 }
 
 void CGUITextBox::SetColorDiffuse(D3DCOLOR color)
@@ -508,3 +496,4 @@ void CGUITextBox::ResetAutoScrolling()
   if (m_autoScrollRepeatAnim)
     m_autoScrollRepeatAnim->ResetAnimation();
 }
+

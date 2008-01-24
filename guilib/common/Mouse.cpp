@@ -7,7 +7,7 @@
 #include "DirectInputMouse.h"
 #endif
 
-#include "../key.h"
+#include "../Key.h"
 #include "../GraphicContext.h"
 
 #define MOUSE_DOUBLE_CLICK_LENGTH 500L
@@ -21,6 +21,7 @@ CMouse::CMouse()
   m_exclusiveWindowID = WINDOW_INVALID;
   m_exclusiveControlID = WINDOW_INVALID;
   m_pointerState = MOUSE_STATE_NORMAL;
+  m_mouseEnabled = true;
   memset(&m_mouseState, 0, sizeof(m_mouseState));
 }
 
@@ -134,7 +135,7 @@ void CMouse::SetResolution(int maxX, int maxY, float speedX, float speedY)
 // IsActive - returns true if we have been active in the last MOUSE_ACTIVE_LENGTH period
 bool CMouse::IsActive() const
 {
-  return m_mouseState.active;
+  return m_mouseState.active && m_mouseEnabled;
 }
 
 // turns off mouse activation
@@ -153,7 +154,7 @@ CPoint CMouse::GetLocation() const
   return CPoint((float)m_mouseState.x, (float)m_mouseState.y);
 }
 
-void CMouse::SetLocation(CPoint &point)
+void CMouse::SetLocation(const CPoint &point)
 {
   m_mouseState.x = (int)point.x;
   m_mouseState.y = (int)point.y;

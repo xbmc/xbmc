@@ -10,8 +10,8 @@
 			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1&lt;/title&gt;&lt;/entity&gt;" dest="5">
 				<expression repeat="yes" noclean="1">&lt;TITLE&gt;allmusic[ (]+ ([^&gt;]*) &gt; Overview</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;entity&gt;&lt;year&gt;\1&lt;/year&gt;&lt;artist&gt;\2&lt;/artist&gt;&lt;title&gt;\4&lt;/title&gt;&lt;url&gt;http://wm01.allmusic.com/cg/amg.dll?p=amg&amp;amp;sql=\3&lt;/url&gt;&lt;/entity&gt;" dest="5+">
-				<expression repeat="yes" noclean="1,2,3,4">&lt;td class=&quot;cell&quot;&gt;([0-9]*)[^&gt;]*&gt;[^&gt;]*&gt;([^&lt;]*)[^&gt;]*&gt;[^\?]*[^&gt;]*[^\?]*[^&quot;]*sql=([^&quot;]*)&quot;&gt;([^&lt;]*)[^&gt;]*&gt;[^&gt;]*&gt;&lt;[^=]*class="cell</expression>
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;year&gt;\1&lt;/year&gt;&lt;artist&gt;\2&lt;/artist&gt;&lt;title&gt;\5&lt;/title&gt;&lt;url&gt;http://wm01.allmusic.com/cg/amg.dll?p=amg&amp;amp;sql=\4&lt;/url&gt;&lt;/entity&gt;" dest="5+">
+				<expression repeat="yes" noclean="1,2,3,4">class=&quot;cell&quot;&gt;([0-9]*)[^&gt;]*&gt;[^&gt;]*&gt;([^&lt;]*)[^&gt;]*&gt;([^:]*[^\?]*)?[^&quot;]*sql=([^&quot;]*)&quot;&gt;([^&lt;]*)[^&gt;]*&gt;</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>		

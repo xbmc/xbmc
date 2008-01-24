@@ -23,12 +23,12 @@
 #include "VideoInfoScanner.h"
 #include "FileSystem/DirectoryCache.h"
 #include "Util.h"
-#include "nfofile.h"
+#include "NfoFile.h"
 #include "utils/RegExp.h"
 #include "utils/md5.h"
 #include "Picture.h"
 #include "FileSystem/StackDirectory.h"
-#include "xbox/xkgeneral.h"
+#include "xbox/XKGeneral.h"
 
 #define REGEXSAMPLEFILE "[-\\._ ]sample[-\\._ ]"
 
@@ -65,7 +65,7 @@ namespace VIDEO
 
       m_bCanInterrupt = true;
 
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Starting scan");
+      CLog::Log(LOGDEBUG, "%s - Starting scan", __FUNCTION__);
 
       // Reset progress vars
       m_currentItem=0;
@@ -108,7 +108,7 @@ namespace VIDEO
       fileCountReader.StopThread();
 
       m_database.Close();
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Finished scan");
+      CLog::Log(LOGDEBUG, "%s - Finished scan", __FUNCTION__);
 
       dwTick = timeGetTime() - dwTick;
       CStdString strTmp, strTmp1;
@@ -204,13 +204,13 @@ namespace VIDEO
       if (!m_database.GetPathHash(strDirectory, dbHash) || dbHash != hash)
       { // path has changed - rescan
         if (dbHash.IsEmpty())
-          CLog::Log(LOGDEBUG, __FUNCTION__" Scanning dir '%s' as not in the database", strDirectory.c_str());
+          CLog::Log(LOGDEBUG, "%s Scanning dir '%s' as not in the database", __FUNCTION__, strDirectory.c_str());
         else
-          CLog::Log(LOGDEBUG, __FUNCTION__" Rescanning dir '%s' due to change", strDirectory.c_str());
+          CLog::Log(LOGDEBUG, "%s Rescanning dir '%s' due to change", __FUNCTION__, strDirectory.c_str());
       }
       else
       {
-        CLog::Log(LOGDEBUG, __FUNCTION__" Skipping dir '%s' due to no change", strDirectory.c_str());
+        CLog::Log(LOGDEBUG, "%s Skipping dir '%s' due to no change", __FUNCTION__, strDirectory.c_str());
         m_currentItem += numFilesInFolder;
 
         // notify our observer of our progress
@@ -255,13 +255,13 @@ namespace VIDEO
       if (!m_database.GetPathHash(strDirectory, dbHash) || dbHash != hash)
       { // path has changed - rescan
         if (dbHash.IsEmpty())
-          CLog::Log(LOGDEBUG, __FUNCTION__" Scanning dir '%s' as not in the database", strDirectory.c_str());
+          CLog::Log(LOGDEBUG, "%s Scanning dir '%s' as not in the database", __FUNCTION__, strDirectory.c_str());
         else
-          CLog::Log(LOGDEBUG, __FUNCTION__" Rescanning dir '%s' due to change", strDirectory.c_str());
+          CLog::Log(LOGDEBUG, "%s Rescanning dir '%s' due to change", __FUNCTION__, strDirectory.c_str());
       }
       else
       {
-        CLog::Log(LOGDEBUG, __FUNCTION__" Skipping dir '%s' due to no change", strDirectory.c_str());
+        CLog::Log(LOGDEBUG, "%s Skipping dir '%s' due to no change", __FUNCTION__, strDirectory.c_str());
         m_currentItem += numFilesInFolder;
 
         // notify our observer of our progress
@@ -275,18 +275,42 @@ namespace VIDEO
       }
     }
     
+    if (!m_info.settings.GetPluginRoot()) // check for settings, if they are around load defaults - to workaround the nastyness
+    {
+      CScraperParser parser;
+      CStdString strPath;
+      if (!m_info.strContent.IsEmpty())
+        strPath="q:\\system\\scrapers\\video\\"+m_info.strPath;
+      if (!strPath.IsEmpty() && parser.Load(strPath) && parser.HasFunction("GetSettings"))
+        m_info.settings.LoadSettingsXML("q:\\system\\scrapers\\video\\"+m_info.strPath);
+    }
+
     if (!bSkip)
     {
-      if (m_pObserver)
-        m_pObserver->OnStateChanged(FETCHING_VIDEO_INFO);
+	  if (m_info.strContent.Equals("movies"))
+	  {
+		if (m_pObserver)
+          m_pObserver->OnStateChanged(FETCHING_MOVIE_INFO);
+	      RetrieveVideoInfo(items,settings.parent_name_root,m_info);
+          m_database.SetPathHash(strDirectory, hash);
+	  }
+	  if (m_info.strContent.Equals("musicvideos"))
+	  {
+		if (m_pObserver)
+          m_pObserver->OnStateChanged(FETCHING_MUSICVIDEO_INFO);
+	      RetrieveVideoInfo(items,settings.parent_name_root,m_info);
+          m_database.SetPathHash(strDirectory, hash);
+	  }
+      if (m_info.strContent.Equals("tvshows"))
+	  {
+		if (m_pObserver)
+          m_pObserver->OnStateChanged(FETCHING_TVSHOW_INFO);
+	  }
+	}
 
-      RetrieveVideoInfo(items,settings.parent_name_root,m_info);
-      if (m_info.strContent.Equals("movies") || m_info.strContent.Equals("musicvideos"))
-        m_database.SetPathHash(strDirectory, hash);
-    }
     if (m_pObserver)
       m_pObserver->OnDirectoryScanned(strDirectory);
-    CLog::Log(LOGDEBUG, __FUNCTION__" - Finished dir: %s", strDirectory.c_str());
+    CLog::Log(LOGDEBUG, "%s - Finished dir: %s", __FUNCTION__, strDirectory.c_str());
 
     for (int i = 0; i < items.Size(); ++i)
     {
@@ -508,7 +532,7 @@ namespace VIDEO
                 {
                   if (nfoReader.m_strScraper == "NFO")
                   {
-                    CLog::Log(LOGDEBUG, __FUNCTION__" Got details from nfo");
+                    CLog::Log(LOGDEBUG, "%s Got details from nfo", __FUNCTION__);
                     CVideoInfoTag movieDetails;
                     nfoReader.GetDetails(movieDetails);
                     AddMovieAndGetThumb(pItem, "movies", movieDetails, -1, bDirNames, m_dlgProgress);
@@ -547,7 +571,7 @@ namespace VIDEO
                 {
                   if (nfoReader.m_strScraper == "NFO")
                   {
-                    CLog::Log(LOGDEBUG, __FUNCTION__" Got details from nfo");
+                    CLog::Log(LOGDEBUG, "%s Got details from nfo", __FUNCTION__);
                     CVideoInfoTag movieDetails;
                     nfoReader.GetDetails(movieDetails);
                     AddMovieAndGetThumb(pItem, "musicvideos", movieDetails, -1, false, m_dlgProgress);
@@ -625,7 +649,7 @@ namespace VIDEO
     int count=0;
     // load subfolder
     CFileItemList items;
-    CLog::Log(LOGDEBUG, __FUNCTION__" - processing dir: %s", strPath.c_str());
+    CLog::Log(LOGDEBUG, "%s - processing dir: %s", __FUNCTION__, strPath.c_str());
     CDirectory::GetDirectory(strPath, items, g_stSettings.m_videoExtensions, true);
     if (m_info.strContent.Equals("movies"))
       items.Stack();
@@ -642,7 +666,7 @@ namespace VIDEO
       else if (pItem->IsVideo() && !pItem->IsPlayList() && !pItem->IsNFO())
         count++;
     }
-    CLog::Log(LOGDEBUG, __FUNCTION__" - finished processing dir: %s", strPath.c_str());
+    CLog::Log(LOGDEBUG, "%s - finished processing dir: %s", __FUNCTION__, strPath.c_str());
     return count;
   }
 
@@ -815,7 +839,7 @@ namespace VIDEO
       }
 
       string image;
-      if (!pItem->HasThumbnail() && http.Get(strImage, image))
+      if ( (pItem->GetProperty("HasAutoThumb") == "1" || !pItem->HasThumbnail()) && http.Get(strImage, image))
       {
         try
         {
@@ -1110,3 +1134,4 @@ namespace VIDEO
     }
   }
 }
+

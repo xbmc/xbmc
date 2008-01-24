@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "MP3Codec.h"
+#include "MP3codec.h"
 
 #define DECODER_DELAY 529 // decoder delay in samples
 
@@ -128,7 +128,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
     id3v2Size=(int)offsets[0];
     m_file.Seek(id3v2Size);
   }
-  int iread = m_file.Read(m_InputBuffer, 8192);
+  m_file.Read(m_InputBuffer, 8192);
   int sendsize = 8192;
   int result = m_pDecoder->decode(m_InputBuffer, 8192, m_InputBuffer + 8192, &sendsize, (unsigned int *)&m_Formatdata);
   if ( (result == 0 || result == 1) && sendsize )

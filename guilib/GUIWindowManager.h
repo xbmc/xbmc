@@ -110,3 +110,4 @@ private:
  */
 extern CGUIWindowManager m_gWindowManager;
 #endif
+

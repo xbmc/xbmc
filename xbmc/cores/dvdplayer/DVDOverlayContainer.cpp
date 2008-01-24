@@ -35,9 +35,13 @@ void CDVDOverlayContainer::Add(CDVDOverlay* pOverlay)
   for(int i = m_overlays.size();i>0;)
   {
     i--;
-    if(m_overlays[i]->iPTSStopTime != 0)
-      break;
-
+    if(m_overlays[i]->iPTSStopTime)
+    {
+      if(!m_overlays[i]->replace)
+        break;
+      if(m_overlays[i]->iPTSStopTime <= pOverlay->iPTSStartTime)
+        break;
+    }
     if(m_overlays[i]->iPTSStartTime != pOverlay->iPTSStartTime)
       m_overlays[i]->iPTSStopTime = pOverlay->iPTSStartTime;
   }

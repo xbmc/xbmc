@@ -1,5 +1,6 @@
 <window id="132">
 	<defaultcontrol>3</defaultcontrol>
+	<include>dialogeffect</include>
 	<coordinates>
 		<system>1</system>
 		<posx>161</posx>
@@ -22,7 +23,6 @@
 			<width>446</width>
 			<height>406</height>
 			<texture>dialog-panel2.png</texture>
-			<include>homemisc</include>
 		</control>
 		<control type="image">
 			<description>scraper image</description>
@@ -32,7 +32,6 @@
 			<height>120</height>
 			<aspectratio>keep</aspectratio>
 			<info>ListItem.Icon</info>
-			<include>homemisc</include>
 		</control>
 		<control type="label" id="1000">
 			<description>directory contains label</description>
@@ -43,7 +42,6 @@
 			<font>special13</font>
 			<textcolor>white</textcolor>
 			<label>$LOCALIZE[ 20344 ]</label>
-			<include>homemisc</include>
 		</control>
 		<control type="spincontrolex" id="3">
 			<description>directory content select spincontrol</description>
@@ -65,7 +63,6 @@
 			<textoffsety>0</textoffsety>
 			<aligny>center</aligny>
 			<subtype>text</subtype>
-			<include>homemisc</include>
 		</control>
 		<control type="list" id="4">
 			<posx>150</posx>
@@ -78,7 +75,6 @@
 			<onright>60</onright>
 			<scrolltime>200</scrolltime>
 			<pagecontrol>60</pagecontrol>
-			<include>homemisc</include>
 			<itemlayout height="32">
 				<control type="image">
 					<posx>0</posx>
@@ -152,7 +148,6 @@
 			<ondown>28</ondown>
 			<onleft>5</onleft>
 			<onright>5</onright>
-			<include>homemisc</include>
 		</control>
 		<control type="button">
 			<posx>385</posx>
@@ -164,7 +159,6 @@
 			<texturefocus border="4">scrollbar_arrow_up_focus.png</texturefocus>
 			<texturenofocus border="4">scrollbar_arrow_up.png</texturenofocus>
 			<visible>Control.IsVisible(60)</visible>
-			<include>homemisc</include>
 		</control>
 		<control type="button">
 			<posx>385</posx>
@@ -176,7 +170,6 @@
 			<texturefocus border="4">scrollbar_arrow_down_focus.png</texturefocus>
 			<texturenofocus border="4">scrollbar_arrow_down.png</texturenofocus>
 			<visible>Control.IsVisible(60)</visible>
-			<include>homemisc</include>
 		</control>
 		<control type="scrollbar" id="60">
 			<posx>385</posx>
@@ -193,7 +186,6 @@
 			<onright>5</onright>
 			<showonepage>false</showonepage>
 			<orientation>vertical</orientation>
-			<include>homemisc</include>
 		</control>
 		<control type="button" id="7">
 			<description>Default Button</description>
@@ -205,7 +197,6 @@
 			<aligny>center</aligny>
 			<texturefocus>input-focus.png</texturefocus>
 			<texturenofocus>-</texturenofocus>
-			<include>homemisc</include>
 		</control>
 		<control type="radiobutton" id="8">
 			<description>Default RadioButton</description>
@@ -219,14 +210,28 @@
 			<aligny>center</aligny>
 			<textureradiofocus>settings-check-box.png</textureradiofocus>
 			<textureradionofocus>settings-check-boxNF.png</textureradionofocus>
-			<include>homemisc</include>
 		</control>
 		<control type="image" id="11">
 			<description>separator image</description>
 			<width>350</width>
 			<height>5</height>
 			<texture>separatorOSD.png</texture>
-			<include>homemisc</include>
+		</control>
+		<control type="button" id="6">
+			<description>Settings button</description>
+			<posx>128</posx>
+			<posy>325</posy>
+			<width>90</width>
+			<height>32</height>
+			<align>center</align>
+			<label>5</label>
+			<font>font10</font>
+			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+			<onleft>29</onleft>
+			<onright>28</onright>
+			<onup>30</onup>
+			<ondown>3</ondown>
 		</control>
 		<control type="button" id="28">
 			<description>OK button</description>
@@ -239,11 +244,10 @@
 			<font>font10</font>
 			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
 			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
-			<onleft>29</onleft>
+			<onleft>6</onleft>
 			<onright>29</onright>
 			<onup>30</onup>
 			<ondown>3</ondown>
-			<include>homemisc</include>
 		</control>
 		<control type="button" id="29">
 			<description>Cancel button</description>
@@ -257,10 +261,9 @@
 			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
 			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
 			<onleft>28</onleft>
-			<onright>28</onright>
+			<onright>6</onright>
 			<onup>30</onup>
 			<ondown>3</ondown>
-			<include>homemisc</include>
 		</control>
 	</controls>
 </window>

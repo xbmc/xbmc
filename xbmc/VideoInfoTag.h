@@ -1,9 +1,21 @@
 #pragma once
 
-#include "utils/archive.h"
+#include "utils/Archive.h"
 #include "utils/ScraperParser.h"
+#include "PluginSettings.h"
 
 #include <vector>
+
+class CScraperSettings : public CBasicSettings
+{
+public:
+  CScraperSettings();
+  virtual ~CScraperSettings();
+  bool LoadUserXML(const CStdString& strXML);
+  bool LoadSettingsXML(const CStdString& strScraper, const CStdString& strFunction="GetSettings", const CScraperUrl* url=NULL);
+  bool Load(const CStdString& strSettings, const CStdString& strSaved);
+  CStdString GetSettings() const;
+};
 
 struct SScraperInfo
 {
@@ -11,6 +23,7 @@ struct SScraperInfo
   CStdString strPath;
   CStdString strThumb;
   CStdString strContent; // dupe, whatever
+  CScraperSettings settings;
 };
 
 struct SActorInfo
@@ -42,7 +55,7 @@ public:
   CStdString m_strVotes;
   vector< CStdString> m_artist;
   vector< SActorInfo > m_cast;
-  typedef vector< SActorInfo >::const_iterator iCast;
+  typedef std::vector< SActorInfo >::const_iterator iCast;
 
   CStdString m_strRuntime;
   CStdString m_strFile;

@@ -15,12 +15,11 @@ CGUIMultiSelectTextControl::CSelectableString::CSelectableString(CGUIFont *font,
   m_text.GetTextExtent(m_length, height);
 }
 
-CGUIMultiSelectTextControl::CGUIMultiSelectTextControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& textureFocus, const CImage& textureNoFocus, const CLabelInfo& labelInfo, const CStdString &labelText)
+CGUIMultiSelectTextControl::CGUIMultiSelectTextControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& textureFocus, const CImage& textureNoFocus, const CLabelInfo& labelInfo, const CGUIInfoLabel &content)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
     , m_button(dwParentID, dwControlId, posX, posY, width, height, textureFocus, textureNoFocus, labelInfo)
 {
-  if (!labelText.IsEmpty())
-    g_infoManager.ParseLabel(labelText, m_multiInfo);
+  m_info = content;
   m_label = labelInfo;
   m_selectedItem = 0;
   m_offset = 0;
@@ -45,8 +44,8 @@ void CGUIMultiSelectTextControl::DoRender(DWORD currentTime)
 void CGUIMultiSelectTextControl::Render()
 {
   // update our information text
-  if (m_multiInfo.size())
-    UpdateText(g_infoManager.GetMultiInfo(m_multiInfo, m_dwParentID));
+  if (!m_info.IsEmpty())
+    UpdateText(m_info.GetLabel(m_dwParentID));
 
   // check our selected item is in range
   unsigned int numSelectable = GetNumSelectable();
@@ -190,7 +189,7 @@ bool CGUIMultiSelectTextControl::MoveRight()
 
 void CGUIMultiSelectTextControl::SelectItemFromPoint(const CPoint &point)
 {
-  unsigned int item = GetItemFromPoint(point);
+  int item = GetItemFromPoint(point);
   if (item != -1)
   {
     ScrollToItem(item);
@@ -225,7 +224,7 @@ bool CGUIMultiSelectTextControl::OnMouseClick(DWORD dwButton, const CPoint &poin
   return false;
 }
 
-unsigned int CGUIMultiSelectTextControl::GetItemFromPoint(const CPoint &point) const
+int CGUIMultiSelectTextControl::GetItemFromPoint(const CPoint &point) const
 {
   if (!m_label.font) return -1;
   float posX = m_posX;
@@ -327,7 +326,7 @@ CStdString CGUIMultiSelectTextControl::GetDescription() const
 {
   // We currently just return the entire string - should we bother returning the
   // particular subitems of this?
-  CStdString strLabel(g_infoManager.GetMultiInfo(m_multiInfo, m_dwParentID));
+  CStdString strLabel(m_info.GetLabel(m_dwParentID));
   return strLabel;
 }
 
@@ -401,3 +400,4 @@ void CGUIMultiSelectTextControl::ScrollToItem(unsigned int item)
   m_scrollSpeed = (m_offset - m_scrollOffset) / time_to_scroll;
   m_selectedItem = item;
 }
+

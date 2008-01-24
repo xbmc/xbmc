@@ -28,7 +28,9 @@
 #ifndef FFMPEG_INTEGER_H
 #define FFMPEG_INTEGER_H
 
-//#include <stdint.h>
+#ifdef _LINUX
+#include <stdint.h>
+#endif
 
 #define AV_INTEGER_SIZE 8
 
@@ -80,4 +82,4 @@ AVInteger av_int2i(int64_t a);
  */
 int64_t av_i2int(AVInteger a);
 
-#endif // INTEGER_H
+#endif /* FFMPEG_INTEGER_H */

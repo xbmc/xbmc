@@ -1060,16 +1060,19 @@
     <gamepad>
       <dpadleft>PreviousPicture</dpadleft>
       <dpadright>NextPicture</dpadright>
+      <black>Close</black>
     </gamepad>
 
     <remote>
       <skipplus>NextPicture</skipplus>
       <skipminus>PreviousPicture</skipminus>
+      <info>Close</info>
     </remote>
 
     <keyboard>
       <period>NextPicture</period>
       <comma>PreviousPicture</comma>
+      <i>Close</i>
     </keyboard>
   </PictureInfo>
 

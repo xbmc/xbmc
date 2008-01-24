@@ -21,11 +21,11 @@
 
 #include "stdafx.h"
 #include "GUIWindowMusicNav.h"
-#include "util.h"
-#include "Utils/GUIInfoManager.h"
+#include "Util.h"
+#include "utils/GUIInfoManager.h"
 #include "PlayListM3U.h"
-#include "application.h"
-#include "playlistplayer.h"
+#include "Application.h"
+#include "PlayListPlayer.h"
 #include "GUIPassword.h"
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
 #include "GUILabelControl.h"
@@ -37,7 +37,7 @@
 #include "FileSystem/MusicDatabaseDirectory.h"
 #include "FileSystem/VideoDatabaseDirectory.h"
 #include "PartyModeManager.h"
-#include "PlaylistFactory.h"
+#include "PlayListFactory.h"
 #include "GUIDialogMusicScan.h"
 #include "VideoDatabase.h"
 #include "GUIWindowVideoNav.h"
@@ -442,7 +442,7 @@ void CGUIWindowMusicNav::OnWindowLoaded()
     info.align = XBFONT_CENTER_X | XBFONT_CENTER_Y;
     info.font = g_fontManager.GetFont("font13");
     info.textColor = 0xffffffff;
-    CGUILabelControl *pLabel = new CGUILabelControl(GetID(),CONTROL_LABELEMPTY,pList->GetXPosition(),pList->GetYPosition(),pList->GetWidth(),pList->GetHeight(),"",info,false,false);
+    CGUILabelControl *pLabel = new CGUILabelControl(GetID(),CONTROL_LABELEMPTY,pList->GetXPosition(),pList->GetYPosition(),pList->GetWidth(),pList->GetHeight(),info,false,false);
     pLabel->SetAnimations(pList->GetAnimations());
     Add(pLabel);
   }
@@ -466,29 +466,45 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     SScraperInfo info;
     m_musicdatabase.GetScraperForPath(item->m_strPath,info);
     // enable music info button on an album or on a song.
-    if (item->IsAudio() && !item->IsPlayList() && !item->IsSmartPlayList())
+    if (item->IsAudio() && !item->IsPlayList() && !item->IsSmartPlayList() && !item->IsLastFM() && !item->IsShoutCast())
       buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658);
     else if (item->IsVideoDb())
     {
       if (!item->m_bIsFolder) // music video
        buttons.Add(CONTEXT_BUTTON_INFO, 20393);
     }
-    else if (!inPlaylists && dir.HasAlbumInfo(item->m_strPath) && !dir.IsAllItem(item->m_strPath) && !info.strContent.IsEmpty())
-      buttons.Add(CONTEXT_BUTTON_INFO, 13351);
-    else if (!inPlaylists && dir.IsArtistDir(item->m_strPath) && !dir.IsAllItem(item->m_strPath) && !info.strContent.IsEmpty())
-      buttons.Add(CONTEXT_BUTTON_INFO, 21891);
-
-    if (!musicScan || !musicScan->IsScanning())
+    else if (
+      !inPlaylists && 
+      dir.HasAlbumInfo(item->m_strPath) && 
+      !dir.IsAllItem(item->m_strPath) && 
+      !item->IsParentFolder() && 
+      !item->IsLastFM() && 
+      !item->IsShoutCast() && 
+      !item->m_strPath.Left(14).Equals("musicsearch://")
+      )
     {
-      // enable query all albums button only in album view
-      if (dir.HasAlbumInfo(item->m_strPath) && !dir.IsAllItem(item->m_strPath) && item->m_bIsFolder && !item->IsVideoDb() && !info.strContent.IsEmpty())
-        buttons.Add(CONTEXT_BUTTON_INFO_ALL, 20059);
-
-      // enable query all artist button only in album view
-      if (dir.IsArtistDir(item->m_strPath) && !dir.IsAllItem(item->m_strPath) && item->m_bIsFolder && !item->IsVideoDb() && !info.strContent.IsEmpty())
-        buttons.Add(CONTEXT_BUTTON_INFO_ALL, 21884);
+      buttons.Add(CONTEXT_BUTTON_INFO, 13351);
     }
-    // turn off set artist image if not at artist listing.
+
+    // enable query all albums button only in album view
+    if (
+      dir.HasAlbumInfo(item->m_strPath) && 
+      !dir.IsAllItem(item->m_strPath) && 
+      item->m_bIsFolder && !item->IsVideoDb() && 
+      !item->IsParentFolder() && 
+      !item->IsLastFM() && 
+      !item->IsShoutCast() &&
+      !item->m_strPath.Left(14).Equals("musicsearch://")
+      )
+    {
+      buttons.Add(CONTEXT_BUTTON_INFO_ALL, 20059);
+    }
+
+    // enable query all artist button only in album view
+    if (dir.IsArtistDir(item->m_strPath) && !dir.IsAllItem(item->m_strPath) && item->m_bIsFolder && !item->IsVideoDb() && !info.strContent.IsEmpty())
+      buttons.Add(CONTEXT_BUTTON_INFO_ALL, 21884);
+
+	// turn off set artist image if not at artist listing.
     if (dir.IsArtistDir(item->m_strPath) && !dir.IsAllItem(item->m_strPath) || (item->m_strPath.Left(14).Equals("videodb://3/4/") && item->m_strPath.size() > 14 && item->m_bIsFolder))
       buttons.Add(CONTEXT_BUTTON_SET_ARTIST_THUMB, 13359);
 

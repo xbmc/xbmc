@@ -2,10 +2,12 @@
 #include "infotagvideo.h"
 #include "pyutil.h"
 
+#ifndef __GNUC__
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
 #pragma bss_seg("PY_BSS")
 #pragma const_seg("PY_RDATA")
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -196,6 +198,7 @@ namespace PYXBMC
     {"getVotes", (PyCFunction)InfoTagVideo_GetVotes, METH_VARARGS, getVotes__doc__},
     {"getCast", (PyCFunction)InfoTagVideo_GetCast, METH_VARARGS, getCast__doc__},
     {"getFile", (PyCFunction)InfoTagVideo_GetFile, METH_VARARGS, getFile__doc__},
+    {"getPath", (PyCFunction)InfoTagVideo_GetPath, METH_VARARGS, getPath__doc__},
     //{"getDVDLabel", (PyCFunction)InfoTagVideo_GetDVDLabel, METH_VARARGS, getDVDLabel__doc__},
     {"getIMDBNumber", (PyCFunction)InfoTagVideo_GetIMDBNumber, METH_VARARGS, getIMDBNumber__doc__},
     {"getYear", (PyCFunction)InfoTagVideo_GetYear, METH_VARARGS, getYear__doc__},
@@ -209,10 +212,12 @@ namespace PYXBMC
     "");
 
 // Restore code and data sections to normal.
+#ifndef __GNUC__
 #pragma code_seg()
 #pragma data_seg()
 #pragma bss_seg()
 #pragma const_seg()
+#endif
 
   PyTypeObject InfoTagVideo_Type;
 

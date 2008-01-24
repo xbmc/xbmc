@@ -1,4 +1,5 @@
 #pragma once
+#include "./HTTP.h"
 
 class TiXmlDocument;
 class CScraperUrl;

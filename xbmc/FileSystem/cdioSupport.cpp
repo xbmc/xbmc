@@ -46,19 +46,19 @@ xbox_cdio_log_handler (cdio_log_level_t level, const char message[])
   switch (level)
   {
   case CDIO_LOG_ERROR:
-    CLog::DebugLog("**ERROR: %s", message);
+    CLog::Log(LOGDEBUG,"**ERROR: %s", message);
     break;
   case CDIO_LOG_DEBUG:
-    CLog::DebugLog("--DEBUG: %s", message);
+    CLog::Log(LOGDEBUG,"--DEBUG: %s", message);
     break;
   case CDIO_LOG_WARN:
-    CLog::DebugLog("++ WARN: %s", message);
+    CLog::Log(LOGDEBUG,"++ WARN: %s", message);
     break;
   case CDIO_LOG_INFO:
-    CLog::DebugLog("   INFO: %s", message);
+    CLog::Log(LOGDEBUG,"   INFO: %s", message);
     break;
   case CDIO_LOG_ASSERT:
-    CLog::DebugLog("!ASSERT: %s", message);
+    CLog::Log(LOGDEBUG,"!ASSERT: %s", message);
     break;
   default:
     //cdio_assert_not_reached ();
@@ -229,7 +229,7 @@ void CCdIoSupport::PrintAnalysis(int fs, int num_audio)
   {
   case FS_UDF:
   case FS_ISO_UDF:
-    CLog::Log(LOGINFO, "UDF: version %x.%02.2x\n",
+    CLog::Log(LOGINFO, "UDF: version %x.%2.2x\n",
               m_nUDFVerMajor, m_nUDFVerMinor);
     break;
   }
@@ -533,7 +533,7 @@ CCdInfo* CCdIoSupport::GetCdInfo()
   {
     char buf[1024];
     sprintf(buf, "%s: Error in automatically selecting driver with input\n",
-            NULL);
+            __FUNCTION__);
     OutputDebugString( buf );
     return NULL;
   }
@@ -816,3 +816,4 @@ ULONG CCdIoSupport::CddbDiscId()
 
   return ((n % 0xff) << 24 | t << 8 | m_nNumTracks);
 }
+

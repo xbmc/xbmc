@@ -3,6 +3,7 @@
 
 class CDVDInputStream;
 enum CodecID;
+enum AVDiscard;
 
 enum StreamType
 {
@@ -13,6 +14,15 @@ enum StreamType
   STREAM_SUBTITLE // subtitle stream
 };
 
+enum StreamSource {
+  STREAM_SOURCE_NONE          = 0x000,
+  STREAM_SOURCE_DEMUX         = 0x100, 
+  STREAM_SOURCE_NAV           = 0x200,
+  STREAM_SOURCE_DEMUX_SUB     = 0x300,
+  STREAM_SOURCE_TEXT          = 0x400,
+};
+
+#define STREAM_SOURCE_MASK(a) ((a) & 0xf00)
 
 /*
  * CDemuxStream
@@ -27,6 +37,7 @@ public:
     iPhysicalId = 0;
     codec = (CodecID)0; // CODEC_ID_NONE
     type = STREAM_NONE;
+    source = STREAM_SOURCE_NONE;
     iDuration = 0;
     pPrivate = NULL;
     ExtraData = NULL;
@@ -35,17 +46,23 @@ public:
     disabled = false;
   }
 
+  virtual ~CDemuxStream() {}
+
   virtual void GetStreamInfo(std::string& strInfo)
   {
     strInfo = "";
   }
 
-  virtual void GetStreamName(CStdString& strInfo);
+  virtual void GetStreamName(std::string& strInfo);
+
+  virtual void      SetDiscard(AVDiscard discard);
+  virtual AVDiscard GetDiscard();
 
   int iId;         // most of the time starting from 0
   int iPhysicalId; // id
   CodecID codec;
   StreamType type;
+  int source;
 
   int iDuration; // in mseconds
   void* pPrivate; // private pointer for the demuxer
@@ -69,6 +86,7 @@ public:
     type = STREAM_VIDEO;
   }
 
+  virtual ~CDemuxStreamVideo() {}
   int iFpsScale; // scale of 1000 and a rate of 29970 will result in 29.97 fps
   int iFpsRate;
   int iHeight; // height of the stream reported by the demuxer
@@ -87,6 +105,8 @@ public:
     iBitRate = 0;
     type = STREAM_AUDIO;
   }
+
+  virtual ~CDemuxStreamAudio() {}
 
   void GetStreamType(std::string& strInfo);
 
@@ -108,36 +128,26 @@ public:
   int identifier;
 };
 
+typedef struct DemuxPacket
+{
+  BYTE* pData;   // data
+  int iSize;     // data size
+  int iStreamId; // integer representing the stream index
+  int iGroupId;  // the group this data belongs to, used to group data from different streams together
+  
+  double pts; // pts in DVD_TIME_BASE
+  double dts; // dts in DVD_TIME_BASE
+  double duration; // duration in DVD_TIME_BASE if available
+} DemuxPacket;
+
 
 class CDVDDemux
 {
 public:
 
-  typedef struct DemuxPacket
-  {
-    BYTE* pData; // data
-    int iSize; // data size
-    int iStreamId; // integer representing the stream index
-    int iGroupId; // the group this data belongs to, used to group data from different streams together
-    
-    double pts; // pts in DVD_TIME_BASE
-    double dts; // dts in DVD_TIME_BASE
-    double duration; // duration in DVD_TIME_BASE if available
-  }
-  DemuxPacket;
-
   CDVDDemux() {}
   virtual ~CDVDDemux() {}
   
-  /*
-   * Open the demuxer, returns true on success
-   */
-  virtual bool Open(CDVDInputStream* pInput) = 0;
-  
-  /*
-   * Dispose, Free all resources
-   */
-  virtual void Dispose() = 0;
   
   /*
    * Reset the entire demuxer (same result as closing and opening it)
@@ -188,6 +198,10 @@ public:
   virtual int GetNrOfStreams() = 0;
   
   /*
+   * returns opened filename
+   */
+  virtual std::string GetFileName() = 0;
+  /*
    * return nr of audio streams, 0 if none
    */
   int GetNrOfAudioStreams();
@@ -217,8 +231,4 @@ public:
    */
   CDemuxStreamSubtitle* GetStreamFromSubtitleId(int iSubtitleIndex);
   
-protected:
-  CDVDInputStream* m_pInput;
-
-  // global stream info
 };

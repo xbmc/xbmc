@@ -6,7 +6,7 @@
 #include "../Xbox/VoiceManager.h"
 #include "../Xbox/MediaPacketQueue.h"
 #endif
-#include "stopwatch.h"
+#include "Stopwatch.h"
 
 #define KAI_SYSTEM_PORT  34522
 #define KAI_SYSTEM_ROOT  "Arena"
@@ -18,6 +18,7 @@ class CKaiRequestList;
 class IBuddyObserver
 {
 public:
+  virtual ~IBuddyObserver() {}
   virtual void OnInitialise(CKaiClient* pClient) = 0;
   virtual void OnDeInitialise() = 0;
   virtual void OnEngineDetached() = 0;

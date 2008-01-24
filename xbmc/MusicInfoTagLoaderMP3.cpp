@@ -20,10 +20,10 @@
  */
 
 #include "stdafx.h"
-#include "musicinfotagloadermp3.h"
+#include "MusicInfoTagLoaderMP3.h"
 #include "Util.h"
-#include "apev2tag.h"
-#include "id3tag.h"
+#include "APEv2Tag.h"
+#include "Id3Tag.h"
 
 
 using namespace MUSIC_INFO;
@@ -230,8 +230,6 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
 #define SCANSIZE  8192
 #define CHECKNUMFRAMES 5
 
-  int nDuration = 0;
-  int nPrependedBytes = 0;
   unsigned char* xing;
   unsigned char* vbri;
   unsigned char buffer[SCANSIZE + 1];

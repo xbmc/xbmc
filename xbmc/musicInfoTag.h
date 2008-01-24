@@ -3,7 +3,7 @@
 class CSong;
 class CAlbum;
 
-#include "utils/archive.h"
+#include "utils/Archive.h"
 
 namespace MUSIC_INFO
 {
@@ -15,7 +15,7 @@ public:
   CMusicInfoTag(const CMusicInfoTag& tag);
   virtual ~CMusicInfoTag();
   const CMusicInfoTag& operator =(const CMusicInfoTag& tag);
-  bool CMusicInfoTag::operator !=(const CMusicInfoTag& tag) const;
+  bool operator !=(const CMusicInfoTag& tag) const;
   bool Loaded() const;
   const CStdString& GetTitle() const;
   const CStdString& GetURL() const;

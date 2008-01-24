@@ -39,7 +39,7 @@
 #include "../MusicInfoLoader.h"
 #include "LabelFormatter.h"
 
-#include "GUILabelControl.h"  // for CInfoPortion
+#include "GUILabelControl.h"  // for CInfoLabel
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -433,6 +433,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.episode")) ret = VIDEOPLAYER_EPISODE;
     else if (strTest.Equals("videoplayer.season")) ret = VIDEOPLAYER_SEASON;
     else if (strTest.Equals("videoplayer.rating")) ret = VIDEOPLAYER_RATING;
+    else if (strTest.Equals("videoplayer.ratingandvotes")) ret = VIDEOPLAYER_RATING_AND_VOTES;
     else if (strTest.Equals("videoplayer.tvshowtitle")) ret = VIDEOPLAYER_TVSHOW;
     else if (strTest.Equals("videoplayer.premiered")) ret = VIDEOPLAYER_PREMIERED;
     else if (strTest.Left(19).Equals("videoplayer.content")) return AddMultiInfo(GUIInfo(bNegate ? -VIDEOPLAYER_CONTENT : VIDEOPLAYER_CONTENT, ConditionalStringParameter(strTest.Mid(20,strTest.size()-21)), 0));
@@ -495,6 +496,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
         return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, id, offset));
     }
     else if (info.Equals("folderthumb")) ret = CONTAINER_FOLDERTHUMB;
+    else if (info.Equals("tvshowthumb")) ret = CONTAINER_TVSHOWTHUMB;
     else if (info.Equals("folderpath")) ret = CONTAINER_FOLDERPATH;
     else if (info.Equals("viewmode")) ret = CONTAINER_VIEWMODE;
     else if (info.Equals("onnext")) ret = CONTAINER_ON_NEXT;
@@ -675,6 +677,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("date")) return LISTITEM_DATE;
   else if (info.Equals("size")) return LISTITEM_SIZE;
   else if (info.Equals("rating")) return LISTITEM_RATING;
+  else if (info.Equals("ratingandvotes")) return LISTITEM_RATING_AND_VOTES;
   else if (info.Equals("programcount")) return LISTITEM_PROGRAM_COUNT;
   else if (info.Equals("duration")) return LISTITEM_DURATION;
   else if (info.Equals("isselected")) return LISTITEM_ISSELECTED;
@@ -803,6 +806,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case VIDEOPLAYER_EPISODE:
   case VIDEOPLAYER_SEASON:
   case VIDEOPLAYER_RATING:
+  case VIDEOPLAYER_RATING_AND_VOTES:
   case VIDEOPLAYER_TVSHOW:
   case VIDEOPLAYER_PREMIERED:
   case VIDEOPLAYER_STUDIO:
@@ -1391,8 +1395,9 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
   else if (condition >= MULTI_INFO_START && condition <= MULTI_INFO_END)
   {
     // cache return value
-    bool result = GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START], dwContextWindow);
-    CacheBool(condition1, dwContextWindow, result);
+    bool result = GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START], dwContextWindow, item);
+    if (!item)
+      CacheBool(condition1, dwContextWindow, result);
     return result;
   }
   else if (condition == SYSTEM_HASLOCKS)  
@@ -1583,7 +1588,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
 }
 
 /// \brief Examines the multi information sent and returns true or false accordingly.
-bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow)
+bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow, const CGUIListItem *item)
 {
   bool bReturn = false;
   int condition = abs(info.m_info);
@@ -1603,7 +1608,11 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
       }
       break;
     case STRING_IS_EMPTY:
-      bReturn = GetLabel(info.m_data1, dwContextWindow).IsEmpty();
+      // note: Get*Image() falls back to Get*Label(), so this should cover all of them
+      if (item && item->IsFileItem() && info.m_data1 >= LISTITEM_START && info.m_data1 < LISTITEM_END)
+        bReturn = GetItemImage((CFileItem *)item, info.m_data1).IsEmpty();
+      else
+        bReturn = GetImage(info.m_data1, dwContextWindow).IsEmpty();
       break;
     case CONTROL_GROUP_HAS_FOCUS:
       {
@@ -1912,6 +1921,12 @@ CStdString CGUIInfoManager::GetImage(int info, DWORD contextWindow)
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
     if (window)
       return GetItemImage(&const_cast<CFileItemList&>(((CGUIMediaWindow*)window)->CurrentDirectory()), LISTITEM_THUMB);
+  }
+  else if (info == CONTAINER_TVSHOWTHUMB)
+  {
+    CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+    if (window)
+      return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("tvshowthumb");
   }
   else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_ACTUAL_ICON ||
           info == LISTITEM_OVERLAY || info == LISTITEM_RATING)
@@ -2295,9 +2310,17 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_RATING:
       {
         CStdString strRating;
-        if (m_currentFile.GetVideoInfoTag()->m_fRating > 0)
+        if (m_currentFile.GetVideoInfoTag()->m_fRating > 0.f)
           strRating.Format("%2.2f", m_currentFile.GetVideoInfoTag()->m_fRating);
         return strRating;
+      }
+      break;
+    case VIDEOPLAYER_RATING_AND_VOTES:
+      {
+        CStdString strRatingAndVotes;
+        if (m_currentFile.GetVideoInfoTag()->m_fRating > 0.f)
+   	      strRatingAndVotes.Format("%2.2f (%s %s)", m_currentFile.GetVideoInfoTag()->m_fRating, m_currentFile.GetVideoInfoTag()->m_strVotes, g_localizeStrings.Get(20350));
+        return strRatingAndVotes;
       }
       break;
     case VIDEOPLAYER_YEAR:
@@ -2899,37 +2922,13 @@ int CGUIInfoManager::ConditionalStringParameter(const CStdString &parameter)
   return (int)m_stringParameters.size() - 1;
 }
 
-CStdString CGUIInfoManager::GetItemMultiLabel(const CFileItem *item, const vector<CInfoPortion> &multiInfo)
-{
-  CStdString label;
-  for (unsigned int i = 0; i < multiInfo.size(); i++)
-  {
-    const CInfoPortion &portion = multiInfo[i];
-    if (portion.m_info)
-    {
-      CStdString infoLabel = g_infoManager.GetItemLabel(item, portion.m_info);
-      if (!infoLabel.IsEmpty())
-      {
-        label += portion.m_prefix;
-        label += infoLabel;
-        label += portion.m_postfix;
-      }
-    }
-    else
-    { // no info, so just append the prefix
-      label += portion.m_prefix;
-    }
-  }
-  return label;
-}
-
 // This is required as in order for the "* All Albums" etc. items to sort
 // correctly, they must have fake artist/album etc. information generated.
 // This looks nasty if we attempt to render it to the GUI, thus this (further)
 // workaround
 const CStdString &CorrectAllItemsSortHack(const CStdString &item)
 {
-  if (item.size() == 1 && item[0] == 0x01 || item[1] == 0xff)
+  if (item.size() == 1 && item[0] == 0x01 || ((unsigned char) item[1]) == 0xff)
     return StringUtils::EmptyString;
   return item;
 }
@@ -3029,6 +3028,16 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
         rating.Format("%2.2f", item->GetVideoInfoTag()->m_fRating);
       return rating;
     }
+  case LISTITEM_RATING_AND_VOTES:
+    {
+      if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_fRating > 0.f) // movie rating
+      {
+        CStdString strRatingAndVotes;
+          strRatingAndVotes.Format("%2.2f (%s %s)", item->GetVideoInfoTag()->m_fRating, item->GetVideoInfoTag()->m_strVotes, g_localizeStrings.Get(20350));
+        return strRatingAndVotes;
+      }
+    }
+    break;
   case LISTITEM_PROGRAM_COUNT:
     {
       CStdString count;
@@ -3059,9 +3068,11 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
 
       return item->GetVideoInfoTag()->m_strPlot;
     }
+    break;
   case LISTITEM_PLOT_OUTLINE:
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strPlotOutline;
+    break;
   case LISTITEM_EPISODE:
     if (item->HasVideoInfoTag())
     {
@@ -3086,9 +3097,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
     break;
   case LISTITEM_TVSHOW:
     if (item->HasVideoInfoTag())
-    {
       return item->GetVideoInfoTag()->m_strShowTitle;
-    }
     break;
   case LISTITEM_COMMENT:
     if (item->HasMusicInfoTag())
@@ -3096,7 +3105,6 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
     break;
   case LISTITEM_ACTUAL_ICON:
     return item->GetIconImage();
-    break;
   case LISTITEM_ICON:
     {
       CStdString strThumb = item->GetThumbnailImage();
@@ -3110,13 +3118,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
       }
       return strThumb;
     }
-    break;
   case LISTITEM_OVERLAY:
     return item->GetOverlayImage();
-    break;
   case LISTITEM_THUMB:
     return item->GetThumbnailImage();
-    break;
   case LISTITEM_PATH:
     return item->m_strPath;
   case LISTITEM_PICTURE_PATH:
@@ -3201,97 +3206,6 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
   else if (condition == LISTITEM_ISSELECTED)
     return item->IsSelected();
   return false;
-}
-
-CStdString CGUIInfoManager::GetMultiInfo(const vector<CInfoPortion> &multiInfo, DWORD contextWindow, bool preferImage)
-{
-  CStdString label;
-  for (unsigned int i = 0; i < multiInfo.size(); i++)
-  {
-    const CInfoPortion &portion = multiInfo[i];
-    if (portion.m_info)
-    {
-      CStdString infoLabel;
-      if (preferImage)
-        infoLabel = g_infoManager.GetImage(portion.m_info, contextWindow);
-      if (infoLabel.IsEmpty())
-        infoLabel = g_infoManager.GetLabel(portion.m_info, contextWindow);
-      if (!infoLabel.IsEmpty())
-      {
-        label += portion.m_prefix;
-        label += infoLabel;
-        label += portion.m_postfix;
-      }
-    }
-    else
-    { // no info, so just append the prefix
-      label += portion.m_prefix;
-    }
-  }
-  return label;
-}
-
-void CGUIInfoManager::ParseLabel(const CStdString &strLabel, vector<CInfoPortion> &multiInfo)
-{
-  multiInfo.clear();
-  CStdString work(strLabel);
-  // Step 1: Replace all $LOCALIZE[number] with the real string
-  int pos1 = work.Find("$LOCALIZE[");
-  while (pos1 >= 0)
-  {
-    int pos2 = StringUtils::FindEndBracket(work, '[', ']', pos1 + 10);
-    if (pos2 > pos1)
-    {
-      CStdString left = work.Left(pos1);
-      CStdString right = work.Mid(pos2 + 1);
-      CStdString replace = g_localizeStringsTemp.Get(atoi(work.Mid(pos1 + 10).c_str()));
-      if (replace == "")
-         replace = g_localizeStrings.Get(atoi(work.Mid(pos1 + 10).c_str()));
-      work = left + replace + right;
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "Error parsing label - missing ']'");
-      return;
-    }
-    pos1 = work.Find("$LOCALIZE[", pos1);
-  }
-  // Step 2: Find all $INFO[info,prefix,postfix] blocks
-  pos1 = work.Find("$INFO[");
-  while (pos1 >= 0)
-  {
-    // output the first block (contents before first $INFO)
-    if (pos1 > 0)
-      multiInfo.push_back(CInfoPortion(0, work.Left(pos1), ""));
-
-    // ok, now decipher the $INFO block
-    int pos2 = StringUtils::FindEndBracket(work, '[', ']', pos1 + 6);
-    if (pos2 > pos1)
-    {
-      // decipher the block
-      CStdString block = work.Mid(pos1 + 6, pos2 - pos1 - 6);
-      CStdStringArray params;
-      StringUtils::SplitString(block, ",", params);
-      int info = TranslateString(params[0]);
-      CStdString prefix, postfix;
-      if (params.size() > 1)
-        prefix = params[1];
-      if (params.size() > 2)
-        postfix = params[2];
-      multiInfo.push_back(CInfoPortion(info, prefix, postfix));
-      // and delete it from our work string
-      work = work.Mid(pos2 + 1);
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "Error parsing label - missing ']'");
-      return;
-    }
-    pos1 = work.Find("$INFO[");
-  }
-  // add any last block
-  if (!work.IsEmpty())
-    multiInfo.push_back(CInfoPortion(0, work, ""));
 }
 
 void CGUIInfoManager::ResetCache()

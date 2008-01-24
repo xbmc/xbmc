@@ -1,6 +1,6 @@
 #pragma once
 #include "utils/Thread.h"
-#include "musicDatabase.h"
+#include "MusicDatabase.h"
 
 class CAlbum;
 class CArtist;
@@ -12,6 +12,7 @@ enum SCAN_STATE { PREPARING = 0, REMOVING_OLD, CLEANING_UP_DATABASE, READING_MUS
 class IMusicInfoScannerObserver
 {
 public:
+  virtual ~IMusicInfoScannerObserver() {}
   virtual void OnStateChanged(SCAN_STATE state) = 0;
   virtual void OnDirectoryChanged(const CStdString& strDirectory) = 0;
   virtual void OnDirectoryScanned(const CStdString& strDirectory) = 0;

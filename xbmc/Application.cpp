@@ -20,27 +20,27 @@
  */
 
 #include "stdafx.h"
-#include "application.h"
+#include "Application.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "xbox/XKEEPROM.h"
-#include "utils/lcd.h"
-#include "xbox/iosupport.h"
+#include "utils/LCD.h"
+#include "xbox/IoSupport.h"
 #include "xbox/XKHDD.h"
 #endif
 #include "xbox/xbeheader.h"
-#include "util.h"
-#include "texturemanager.h"
-#include "cores/playercorefactory.h"
-#include "playlistplayer.h"
-#include "musicdatabase.h"
-#include "videodatabase.h"
-#include "autorun.h"
+#include "Util.h"
+#include "TextureManager.h"
+#include "cores/PlayerCoreFactory.h"
+#include "PlayListPlayer.h"
+#include "MusicDatabase.h"
+#include "VideoDatabase.h"
+#include "Autorun.h"
 #include "ActionManager.h"
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
 #else
-#include "GUILabelControl.h"  // needed for CInfoPortion
-#include "GUIImage.h"
+#include "GUILabelControl.h"  // needed for CInfoLabel
+#include "guiImage.h"
 #endif
 #include "utils/KaiClient.h"
 #ifdef HAS_XBOX_HARDWARE
@@ -50,9 +50,8 @@
 #endif
 #include "XBVideoConfig.h"
 #include "LangCodeExpander.h"
-#include "lib/libGoAhead/xbmchttp.h"
 #include "utils/GUIInfoManager.h"
-#include "PlaylistFactory.h"
+#include "PlayListFactory.h"
 #include "GUIFontManager.h"
 #include "GUIColorManager.h"
 #include "SkinInfo.h"
@@ -61,12 +60,12 @@
 #include "GUIAudioManager.h"
 #include "lib/libscrobbler/scrobbler.h"
 #include "GUIPassword.h"
-#include "applicationmessenger.h"
-#include "sectionloader.h"
+#include "ApplicationMessenger.h"
+#include "SectionLoader.h"
 #include "cores/DllLoader/DllLoaderContainer.h"
-#include "guiusermessages.h"
-#include "filesystem/directoryCache.h"
-#include "filesystem/StackDirectory.h"
+#include "GUIUserMessages.h"
+#include "FileSystem/DirectoryCache.h"
+#include "FileSystem/StackDirectory.h"
 #include "FileSystem/DllLibCurl.h"
 #include "utils/TuxBoxUtil.h"
 #include "utils/SystemInfo.h"
@@ -76,7 +75,7 @@
 #include "SmartPlaylist.h"
 
 #ifdef HAS_FILESYSTEM
-#include "filesystem/filedaap.h"
+#include "FileSystem/FileDAAP.h"
 #endif
 #ifdef HAS_UPNP
 #include "UPnP.h"
@@ -89,16 +88,17 @@
 #ifdef HAS_KARAOKE
 #include "CdgParser.h"
 #endif
-#include "audiocontext.h"
+#include "AudioContext.h"
 #include "GUIFontTTF.h"
 #include "xbox/network.h"
-#include "utils/win32exception.h"
-#include "lib/libGoAhead/webserver.h"
+#include "utils/Win32Exception.h"
+#include "lib/libGoAhead/XBMChttp.h"
+#include "lib/libGoAhead/WebServer.h"
 #ifdef HAS_FTP_SERVER
 #include "lib/libfilezilla/xbfilezilla.h"
 #endif
 #ifdef HAS_TIME_SERVER
-#include "utils/sntp.h"
+#include "utils/Sntp.h"
 #endif
 #ifdef HAS_XFONT
 #include <xfont.h>  // for textout functions
@@ -130,7 +130,7 @@
 #include "GUIWindowVisualisation.h"
 #include "GUIWindowSystemInfo.h"
 #include "GUIWindowScreensaver.h"
-#include "GUIWindowSlideshow.h"
+#include "GUIWindowSlideShow.h"
 #include "GUIWindowBuddies.h"
 #include "GUIWindowStartup.h"
 #include "GUIWindowFullScreen.h"
@@ -286,7 +286,6 @@ CApplication::CApplication(void)
   m_iScreenSaveLock = 0;
   m_dwSaverTick = timeGetTime(); // CB: SCREENSAVER PATCH
   m_dwSkinTime = 0;
-
   m_bInitializing = true;
   m_eForcedNextPlayer = EPC_NONE;
   m_strPlayListFile = "";
@@ -372,6 +371,7 @@ void CApplication::InitBasicD3D()
     CLog::Log(LOGERROR, "Resetting to mode %s", g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode);
     CLog::Log(LOGERROR, "Done reset");
   }
+
   // Transfer the resolution information to our graphics context
   g_graphicsContext.SetD3DParameters(&m_d3dpp);
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
@@ -397,6 +397,7 @@ void CApplication::InitBasicD3D()
   {
     m_splash->Stop();
   }
+
   m_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
   m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 }
@@ -416,6 +417,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
   {
     m_splash->Stop();
   }
+
   m_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
   m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 
@@ -637,11 +639,13 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
     }
   }
   else
+  {
 #ifdef _XBOX
     Sleep(INFINITE);
 #else
     SendMessage(g_hWnd, WM_CLOSE, 0, 0);
 #endif
+  }
 }
 
 LONG WINAPI CApplication::UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *ExceptionInfo)
@@ -678,8 +682,9 @@ LONG WINAPI CApplication::UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *E
 
   return ExceptionInfo->ExceptionRecord->ExceptionCode;
 }
+
 #ifdef _XBOX
-#include "xbox/undocumented.h"
+#include "xbox/Undocumented.h"
 extern "C" HANDLE __stdcall KeGetCurrentThread(VOID);
 #endif
 extern "C" void __stdcall init_emu_environ();
@@ -708,7 +713,6 @@ HRESULT CApplication::Create(HWND hWnd)
   CUtil::GetHomePath(strExecutablePath);
   CIoSupport::GetPartition(strExecutablePath.c_str()[0], szDevicePath);
   strcat(szDevicePath, &strExecutablePath.c_str()[2]);
-
   CIoSupport::RemapDriveLetter('Q', szDevicePath);
 
   // check logpath
@@ -720,7 +724,15 @@ HRESULT CApplication::Create(HWND hWnd)
   ::MoveFile(strLogFile.c_str(), strLogFileOld.c_str());
 
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
-  CLog::Log(LOGNOTICE, "Starting XBoxMediaCenter.  Built on %s", __DATE__);
+#if defined(_LINUX) && !defined(__APPLE__)
+  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: GNU/Linux.  Built on %s", __DATE__);
+#elif defined(__APPLE__)
+  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Mac OS X.  Built on %s", __DATE__);
+#elif defined(_WIN32) && !defined(HAS_XBOX_HARDWARE)
+  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Windows.  Built on %s", __DATE__);
+#else
+  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Xbox.  Built on %s", __DATE__);
+#endif
   CLog::Log(LOGNOTICE, "Q is mapped to: %s", strExecutablePath.c_str());
   char szXBEFileName[1024];
   CIoSupport::GetXbePath(szXBEFileName);
@@ -734,7 +746,7 @@ HRESULT CApplication::Create(HWND hWnd)
   {
     //no profiles yet, make one based on the default settings
     CProfile profile;
-    profile.setDirectory("q:\\userdata");
+    profile.setDirectory("q:\\UserData");
     profile.setName("Master user");
     profile.setLockMode(LOCK_MODE_EVERYONE);
     profile.setLockCode("");
@@ -1025,7 +1037,7 @@ HRESULT CApplication::Create(HWND hWnd)
   CLog::Log(LOGINFO, "Checking skinpath existance, and existence of keymap.xml:%s...", (strHomePath + "\\skin").c_str());
   CStdString keymapPath;
 
-  keymapPath = g_settings.GetUserDataItem("keymap.xml");
+  keymapPath = g_settings.GetUserDataItem("Keymap.xml");
 #ifdef _XBOX
   if (access(strHomePath + "\\skin", 0) || access(keymapPath.c_str(), 0))
   {
@@ -1047,8 +1059,10 @@ HRESULT CApplication::Create(HWND hWnd)
 #else
 #define D3DCREATE_MULTITHREADED 0
 #endif
+
   g_graphicsContext.SetD3DParameters(&m_d3dpp);
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
+  
   if ( FAILED( hr = m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL,
                                          D3DCREATE_MULTITHREADED | D3DCREATE_HARDWARE_VERTEXPROCESSING,
                                          &m_d3dpp, &m_pd3dDevice ) ) )
@@ -1086,6 +1100,7 @@ HRESULT CApplication::Create(HWND hWnd)
   g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTEXF_LINEAR /*g_stSettings.m_minFilter*/ );
   g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
   CUtil::InitGamma();
+  
   // set GUI res and force the clear of the screen
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE, true);
 
@@ -1144,6 +1159,8 @@ HRESULT CApplication::Create(HWND hWnd)
 #ifdef HAS_XBOX_D3D
   D3DDevice::SetWaitCallback(WaitCallback);
 #endif
+
+  g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
 
   return CXBApplicationEx::Create(hWnd);
 }
@@ -1350,6 +1367,7 @@ HRESULT CApplication::Initialize()
         m_gWindowManager.ActivateWindow(startWindow);
     }
   }
+
   /* setup network based on our settings */
   /* network will start it's init procedure */
   g_network.Initialize(g_guiSettings.GetInt("network.assignment"),
@@ -1455,7 +1473,7 @@ void CApplication::StartWebServer()
     CSectionLoader::Load("LIBHTTP");
     m_pWebServer = new CWebServer();
     m_pWebServer->Start(g_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), "Q:\\web", false);
-	if (m_pXbmcHttp)
+    if (m_pXbmcHttp)
       m_pXbmcHttp->xbmcBroadcast("StartUp", 1);
   }
 }
@@ -1779,7 +1797,7 @@ void CApplication::CheckDate()
   GetLocalTime(&CurTime);
   GetLocalTime(&NewTime);
   CLog::Log(LOGINFO, "- Current Date is: %i-%i-%i",CurTime.wDay, CurTime.wMonth, CurTime.wYear);
-  if ((CurTime.wYear > 2099) || (CurTime.wYear < 2001) )	// XBOX MS Dashboard also uses min/max DateYear 2001/2099 !!
+  if ((CurTime.wYear > 2099) || (CurTime.wYear < 2001) )        // XBOX MS Dashboard also uses min/max DateYear 2001/2099 !!
   {
     CLog::Log(LOGNOTICE, "- The Date is Wrong: Setting New Date!");
     NewTime.wYear		= 2004;	// 2004
@@ -1793,7 +1811,7 @@ void CApplication::CheckDate()
     SystemTimeToFileTime(&NewTime, &stNewTime);
     SystemTimeToFileTime(&CurTime, &stCurTime);
 #ifdef HAS_XBOX_HARDWARE
-    NtSetSystemTime(&stNewTime, &stCurTime);	// Set a Default Year 2004!
+    NtSetSystemTime(&stNewTime, &stCurTime);    // Set a Default Year 2004!
 #endif
     CLog::Log(LOGNOTICE, "- New Date is now: %i-%i-%i",NewTime.wDay, NewTime.wMonth, NewTime.wYear);
   }
@@ -1828,7 +1846,7 @@ void CApplication::CancelDelayLoadSkin()
 
 void CApplication::ReloadSkin()
 {
-  CGUIMessage msg(GUI_MSG_LOAD_SKIN, -1, m_gWindowManager.GetActiveWindow());
+  CGUIMessage msg(GUI_MSG_LOAD_SKIN, (DWORD) -1, m_gWindowManager.GetActiveWindow());
   g_graphicsContext.SendMessage(msg);
   // Reload the skin, restoring the previously focused control
   CGUIWindow* pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
@@ -1927,7 +1945,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   CUtil::AddFileToFolder(skinPath, "strings.xml", skinPath);
 
   CUtil::AddFileToFolder(strSkinPath, "language", skinEnglishPath);
-  CUtil::AddFileToFolder(skinEnglishPath, "english", skinEnglishPath);
+  CUtil::AddFileToFolder(skinEnglishPath, "English", skinEnglishPath);
   CUtil::AddFileToFolder(skinEnglishPath, "strings.xml", skinEnglishPath);
 
   g_localizeStrings.LoadSkinStrings(skinPath, skinEnglishPath);
@@ -1937,7 +1955,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
   CLog::Log(LOGINFO, "  load new skin...");
   CGUIWindowHome *pHome = (CGUIWindowHome *)m_gWindowManager.GetWindow(WINDOW_HOME);
-  if (!g_SkinInfo.Check(strSkinPath) || !pHome || !pHome->Load("home.xml"))
+  if (!g_SkinInfo.Check(strSkinPath) || !pHome || !pHome->Load("Home.xml"))
   {
     // failed to load home.xml
     // fallback to default skin
@@ -1955,7 +1973,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   LARGE_INTEGER end, freq;
   QueryPerformanceCounter(&end);
   QueryPerformanceFrequency(&freq);
-  CLog::DebugLog("Load Skin XML: %.2fms", 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart);
+  CLog::Log(LOGDEBUG,"Load Skin XML: %.2fms", 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart);
 
   CLog::Log(LOGINFO, "  initialize new skin...");
   m_guiPointer.AllocResources(true);
@@ -2041,7 +2059,7 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
   RESOLUTION resToUse = INVALID;
 
   // Start from wherever home.xml is
-  g_SkinInfo.GetSkinPath("home.xml", &resToUse);
+  g_SkinInfo.GetSkinPath("Home.xml", &resToUse);
   std::vector<CStdString> vecSkinPath;
   if (resToUse == HDTV_1080i)
     vecSkinPath.push_back(strSkinPath+g_SkinInfo.GetDirFromRes(HDTV_1080i));
@@ -2389,7 +2407,7 @@ bool CApplication::OnKey(CKey& key)
 	}
   }
   if (!key.IsAnalogButton())
-    CLog::Log(LOGDEBUG, __FUNCTION__": %i pressed, action is %i", key.GetButtonCode(), action.wID);
+    CLog::Log(LOGDEBUG, "%s: %i pressed, action is %i", __FUNCTION__, (int) key.GetButtonCode(), action.wID);
 
   //  Play a sound based on the action
   g_audioManager.PlayActionSound(action);
@@ -2610,7 +2628,7 @@ bool CApplication::OnAction(const CAction &action)
           iSpeed = -iSpeed;
         g_application.SetPlaySpeed(iSpeed);
         if (iSpeed == 1)
-          CLog::DebugLog("Resetting playspeed");
+          CLog::Log(LOGDEBUG,"Resetting playspeed");
         return true;
       }
     }
@@ -2649,9 +2667,13 @@ bool CApplication::OnAction(const CAction &action)
       speed /= 50; //50 fps
 
     if (action.wID == ACTION_VOLUME_UP)
-      volume += (int)(action.fAmount1 * action.fAmount1 * speed);
+    {
+      volume += (int)((float)fabs(action.fAmount1) * action.fAmount1 * speed);
+    }
     else
-      volume -= (int)(action.fAmount1 * action.fAmount1 * speed);
+    {
+      volume -= (int)((float)fabs(action.fAmount1) * action.fAmount1 * speed);
+    }
 
     SetHardwareVolume(volume);
 
@@ -3142,7 +3164,7 @@ bool CApplication::ProcessKeyboard()
   {
     // got a valid keypress - convert to a key code
     WORD wkeyID = (WORD)vkey | KEY_VKEY;
-    //  CLog::DebugLog("Keyboard: time=%i key=%i", timeGetTime(), vkey);
+    //  CLog::Log(LOGDEBUG,"Keyboard: time=%i key=%i", timeGetTime(), vkey);
     CKey key(wkeyID);
     return OnKey(key);
   }
@@ -3243,6 +3265,7 @@ void CApplication::Stop()
     UnloadSkin();
 
     m_gWindowManager.Delete(WINDOW_MUSIC_PLAYLIST);
+    m_gWindowManager.Delete(WINDOW_MUSIC_PLAYLIST_EDITOR);
     m_gWindowManager.Delete(WINDOW_MUSIC_FILES);
     m_gWindowManager.Delete(WINDOW_MUSIC_NAV);
     m_gWindowManager.Delete(WINDOW_MUSIC_INFO);
@@ -3291,6 +3314,7 @@ void CApplication::Stop()
     m_gWindowManager.Delete(WINDOW_DIALOG_PLUGIN_SETTINGS);
 
     m_gWindowManager.Delete(WINDOW_STARTUP);
+    m_gWindowManager.Delete(WINDOW_LOGIN_SCREEN);
     m_gWindowManager.Delete(WINDOW_VISUALISATION);
     m_gWindowManager.Delete(WINDOW_SETTINGS_MENU);
     m_gWindowManager.Delete(WINDOW_SETTINGS_PROFILES);
@@ -3558,7 +3582,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   //Is TuxBox, this should probably be moved to CFileTuxBox
   if(item.IsTuxBox())
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__" - TuxBox URL Detected %s",item.m_strPath.c_str());
+    CLog::Log(LOGDEBUG, "%s - TuxBox URL Detected %s",__FUNCTION__, item.m_strPath.c_str());
     CFileItem item_new;
     if(g_tuxbox.CreateNewItem(item, item_new))
     {
@@ -3718,6 +3742,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
     g_audioManager.Enable(false);
+
   return bResult;
 }
 
@@ -3996,6 +4021,7 @@ bool CApplication::ResetScreenSaverWindow()
         m_gWindowManager.PreviousWindow();  // show the previous window
       return true;
     }
+
     // Fade to dim or black screensaver is active --> fade in
     D3DGAMMARAMP Ramp;
     for (float fade = fFadeLevel; fade <= 1; fade += 0.01f)
@@ -4076,7 +4102,7 @@ void CApplication::CheckScreenSaver()
 void CApplication::ActivateScreenSaver(bool forceType /*= false */)
 {
   D3DGAMMARAMP Ramp;
-  FLOAT fFadeLevel;
+  FLOAT fFadeLevel = 0;
 
   m_bScreenSave = true;
   m_bInactive = true;
@@ -4119,6 +4145,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     m_gWindowManager.ActivateWindow(WINDOW_SCREENSAVER);
     return ;
   }
+  
   // Fade to fFadeLevel
   m_pd3dDevice->GetGammaRamp(&m_OldRamp); // Store the old gamma ramp
   for (float fade = 1.f; fade >= fFadeLevel; fade -= 0.01f)
@@ -4589,11 +4616,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
   case GUI_MSG_EXECUTE:
     {
       // see if it is a user set string
-      CLog::Log(LOGDEBUG,__FUNCTION__" : Translating %s", message.GetStringParam().c_str());
-      vector<CInfoPortion> info;
-      g_infoManager.ParseLabel(message.GetStringParam(), info);
-      message.SetStringParam(g_infoManager.GetMultiInfo(info, 0));
-      CLog::Log(LOGDEBUG,__FUNCTION__" : To %s", message.GetStringParam().c_str());
+      CLog::Log(LOGDEBUG,"%s : Translating %s", __FUNCTION__, message.GetStringParam().c_str());
+      CGUIInfoLabel info(message.GetStringParam(), "");
+      message.SetStringParam(info.GetLabel(0));
+      CLog::Log(LOGDEBUG,"%s : To %s", __FUNCTION__, message.GetStringParam().c_str());
 
       // user has asked for something to be executed
       if (CUtil::IsBuiltIn(message.GetStringParam()))
@@ -4823,13 +4849,12 @@ void CApplication::Restart(bool bSamePosition)
   // get player state, needed for dvd's
   CStdString state = m_pPlayer->GetPlayerState();
 
+  // set the requested starttime
+  m_itemCurrentFile.m_lStartOffset = (long)(time * 75.0);
+
   // reopen the file
   if ( PlayFile(m_itemCurrentFile, true) && m_pPlayer )
-  {
-    // and seek to the position
     m_pPlayer->SetPlayerState(state);
-    SeekTime(time);
-  }
 }
 
 const CStdString& CApplication::CurrentFile()

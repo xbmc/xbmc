@@ -78,7 +78,7 @@ extern "C" HMODULE __stdcall dllLoadLibraryExtended(LPCSTR lib_file, LPCSTR sour
     
   if (dll)
   {
-    CLog::Log(LOGDEBUG, "LoadLibrary('%s') returning: 0x%x", libname, (void*)dll);
+    CLog::Log(LOGDEBUG, "LoadLibrary('%s') returning: 0x%p", libname, (void*)dll);
     return (HMODULE)dll->GetHModule();
   }
 
@@ -123,7 +123,7 @@ extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule)
   // to make sure systems dlls are never deleted
   if (dllhandle->IsSystemDll()) return 1;
   
-  CLog::Log(LOGDEBUG, "FreeLibrary(%s) -> 0x%x", dllhandle->GetName(), (void*)dllhandle);
+  CLog::Log(LOGDEBUG, "FreeLibrary(%s) -> 0x%p", dllhandle->GetName(), (void*)dllhandle);
 
   DllLoaderContainer::ReleaseModule(dllhandle);
 
@@ -139,7 +139,7 @@ extern "C" FARPROC __stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function)
 
   if( !dll )
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Invalid hModule specified");
+    CLog::Log(LOGERROR, "%s - Invalid hModule specified",__FUNCTION__);
     return NULL;
   }
 
@@ -149,7 +149,7 @@ extern "C" FARPROC __stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function)
   {
     if( ((DllLoader*) dll)->ResolveExport(LOW_WORD(function), &address) )
     {
-      CLog::Log(LOGDEBUG, __FUNCTION__"(0x%x(%s), %d) => 0x%x", hModule, dll->GetName(), LOW_WORD(function), address);
+      CLog::Log(LOGDEBUG, "%s(0x%p(%s), %d) => 0x%p", __FUNCTION__, hModule, dll->GetName(), LOW_WORD(function), address);
     }
     else if( dll->IsSystemDll() )
     {
@@ -162,19 +162,19 @@ extern "C" FARPROC __stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function)
       if( track )
         tracker_dll_data_track(track->pDll, (uintptr_t)address);
 
-      CLog::Log(LOGDEBUG, __FUNCTION__" - created dummy function %s!%s", dll->GetName(), ordinal);
+      CLog::Log(LOGDEBUG, "%s - created dummy function %s!%s",__FUNCTION__, dll->GetName(), ordinal);
     }
     else
     {
       address = NULL;
-      CLog::Log(LOGDEBUG, __FUNCTION__"(0x%x(%s), '%s') => 0x%x", hModule, dll->GetName(), function, address);
+      CLog::Log(LOGDEBUG, "%s(0x%p(%s), '%s') => 0x%p",__FUNCTION__ , hModule, dll->GetName(), function, address);
     }
   }
   else
   {
     if( dll->ResolveExport(function, &address) )
     {
-      CLog::Log(LOGDEBUG, __FUNCTION__"(0x%x(%s), '%s') => 0x%x", hModule, dll->GetName(), function, address);
+      CLog::Log(LOGDEBUG, "%s(0x%p(%s), '%s') => 0x%p",__FUNCTION__ , hModule, dll->GetName(), function, address);
     }
     else
     {
@@ -186,12 +186,12 @@ extern "C" FARPROC __stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function)
       {
         address = (void*)create_dummy_function(dll->GetName(), function);
         tracker_dll_data_track(track->pDll, (uintptr_t)address);
-        CLog::Log(LOGDEBUG, __FUNCTION__" - created dummy function %s!%s", dll->GetName(), function);
+        CLog::Log(LOGDEBUG, "%s - created dummy function %s!%s", __FUNCTION__, dll->GetName(), function);
       }
       else
       {      
         address = NULL;
-        CLog::Log(LOGDEBUG, __FUNCTION__"(0x%x(%s), '%s') => 0x%x", hModule, dll->GetName(), function, address);
+        CLog::Log(LOGDEBUG, "%s(0x%p(%s), '%s') => 0x%p", __FUNCTION__, hModule, dll->GetName(), function, address);
       }
     }
   }
@@ -237,7 +237,7 @@ extern "C" DWORD WINAPI dllGetModuleFileNameA(HMODULE hModule, LPSTR lpFilename,
   if (NULL == hModule)
   {
     strncpy(lpFilename, "xbmc.xbe", nSize);
-    CLog::Log(LOGDEBUG, "GetModuleFileNameA(0x%x, 0x%x, %d) => '%s'\n",
+    CLog::Log(LOGDEBUG, "GetModuleFileNameA(0x%p, 0x%p, %lu) => '%s'\n",
               hModule, lpFilename, nSize, lpFilename);
     return 8;
   }
@@ -245,7 +245,7 @@ extern "C" DWORD WINAPI dllGetModuleFileNameA(HMODULE hModule, LPSTR lpFilename,
   LibraryLoader* dll = DllLoaderContainer::GetModule(hModule);
   if( !dll )
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Invalid hModule specified");
+    CLog::Log(LOGERROR, "%s - Invalid hModule specified", __FUNCTION__);
     return 0;
   }
 

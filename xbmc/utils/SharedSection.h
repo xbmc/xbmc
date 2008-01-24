@@ -64,3 +64,4 @@ protected:
   // Ownership flag
   bool m_bIsOwner;
 };
+

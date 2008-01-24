@@ -5,6 +5,7 @@
 class DllLibFlacInterface
 {
 public:
+    virtual ~DllLibFlacInterface() {}
     virtual FLAC__StreamDecoder *FLAC__stream_decoder_new()=0;
     virtual void 	FLAC__stream_decoder_delete(FLAC__StreamDecoder *decoder)=0;
     virtual FLAC__StreamDecoderInitStatus FLAC__stream_decoder_init_stream(

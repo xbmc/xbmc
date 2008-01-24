@@ -23,6 +23,7 @@ extern "C"
 class DllLibMpeg2Interface
 {
 public:
+  virtual ~DllLibMpeg2Interface() {}
   virtual uint32_t mpeg2_accel (uint32_t accel)=0;
   virtual mpeg2dec_t * mpeg2_init (void)=0;
   virtual const mpeg2_info_t * mpeg2_info (mpeg2dec_t * mpeg2dec)=0;

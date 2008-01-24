@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "APECodec.h"
+#include "APEcodec.h"
 #include "../../APEv2Tag.h"
 
 
@@ -73,7 +73,6 @@ __int64 APECodec::Seek(__int64 iSeekTime)
 
 int APECodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 {
-  DWORD time = timeGetTime();
   int sizeToRead = min(size / m_BytesPerBlock, BLOCK_READ_SIZE);
   int iRetVal = m_dll.GetData(m_handle, (char *)pBuffer, sizeToRead, actualsize);
   *actualsize *= m_BytesPerBlock;
@@ -91,3 +90,4 @@ bool APECodec::CanInit()
 {
   return m_dll.CanLoad();
 }
+

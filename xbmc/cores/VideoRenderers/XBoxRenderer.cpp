@@ -19,8 +19,8 @@
 */
 #include "stdafx.h"
 #include "XBoxRenderer.h"
-#include "../../application.h"
-#include "../../util.h"
+#include "../../Application.h"
+#include "../../Util.h"
 #include "../../XBVideoConfig.h"
 
 // http://www.martinreddy.net/gfx/faqs/colorconv.faq
@@ -797,7 +797,7 @@ int CXBoxRenderer::GetImage(YV12Image *image, int source, bool readonly)
     else
     {
       if( WaitForSingleObject(m_eventTexturesDone[source], 500) == WAIT_TIMEOUT )
-        CLog::Log(LOGWARNING, __FUNCTION__" - Timeout waiting for texture %d", source);
+        CLog::Log(LOGWARNING, CStdString(__FUNCTION__) + " - Timeout waiting for texture %d", source);
 
       m_image[source].flags |= IMAGE_FLAG_WRITING;
     }
@@ -902,7 +902,7 @@ unsigned int CXBoxRenderer::DrawSlice(unsigned char *src[], int stride[], int w,
     return -1;
 
   if( WaitForSingleObject(m_eventTexturesDone[index], 500) == WAIT_TIMEOUT )
-    CLog::Log(LOGWARNING, __FUNCTION__" - Timeout waiting for texture %d", index);
+    CLog::Log(LOGWARNING, CStdString(__FUNCTION__) + " - Timeout waiting for texture %d", index);
 
   YV12Image &im = m_image[index];
   // copy Y
@@ -1245,7 +1245,7 @@ void CXBoxRenderer::RenderLowMem(DWORD flags)
   }
 
   if( WaitForSingleObject(m_eventTexturesDone[index], 500) == WAIT_TIMEOUT )
-    CLog::Log(LOGWARNING, __FUNCTION__" - Timeout waiting for texture %d", index);
+    CLog::Log(LOGWARNING, CStdString(__FUNCTION__) + " - Timeout waiting for texture %d", index);
 
   for (int i = 0; i < 3; ++i)
   {
@@ -1355,7 +1355,7 @@ void CXBoxRenderer::DeleteYV12Texture(int index)
 void CXBoxRenderer::ClearYV12Texture(int index)
 {
   if( WaitForSingleObject(m_eventTexturesDone[index], 1000) == WAIT_TIMEOUT )
-    CLog::Log(LOGWARNING, __FUNCTION__" - Timeout waiting for texture %d", index);
+    CLog::Log(LOGWARNING, CStdString(__FUNCTION__) + " - Timeout waiting for texture %d", index);
 
   YV12Image &im = m_image[index];
 
@@ -1459,3 +1459,4 @@ void CXBoxRenderer::TextureCallback(DWORD dwContext)
 {
   SetEvent((HANDLE)dwContext);
 }
+

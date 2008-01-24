@@ -188,3 +188,4 @@ void CGUIProgressControl::SetColorDiffuse(D3DCOLOR color)
   m_guiMid.SetColorDiffuse(color);
   m_guiOverlay.SetColorDiffuse(color);
 }
+

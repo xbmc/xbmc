@@ -1,5 +1,5 @@
 #pragma once
-#include "thread.h"
+#include "Thread.h"
 
 #include "GUILabelControl.h"  // for CInfoPortion
 #define MAX_ROWS 20
@@ -40,7 +40,7 @@ protected:
   unsigned char GetLCDCharsetCharacter( UINT _nCharacter, int _nCharset=-1);
   void LoadMode(TiXmlNode *node, LCD_MODE mode);
 private:
-  vector< vector<CInfoPortion> > m_lcdMode[LCD_MODE_MAX];
+  vector<CGUIInfoLabel> m_lcdMode[LCD_MODE_MAX];
   UINT m_eCurrentCharset;
 };
 extern ILCD* g_lcd;

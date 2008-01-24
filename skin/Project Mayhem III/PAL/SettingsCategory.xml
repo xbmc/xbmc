@@ -18,7 +18,7 @@
 			<height>488</height>
 			<texture>background-bottom.png</texture>
 		</control>
-		<control type="label" id="1">
+		<control type="label">
 			<description>xbox media center label</description>
 			<posx>200</posx>
 			<posy>43</posy>
@@ -26,7 +26,7 @@
 			<label>9</label>
 			<font>special12</font>
 		</control>
-		<control type="label" id="1">
+		<control type="label">
 			<description>description label</description>
 			<posx>207</posx>
 			<posy>43</posy>
@@ -61,13 +61,13 @@
 			<description>control area</description>
 			<posx>190</posx>
 			<posy>100</posy>
-			<width>500</width>
+			<width>485</width>
 			<height>425</height>
 			<itemgap>0</itemgap>
 			<pagecontrol>90</pagecontrol>
 			<include>contentpanelslide</include>
 			<onleft>3</onleft>
-			<onright>60</onright>
+			<onright>90</onright>
 			<onup>5</onup>
 			<ondown>5</ondown>
 		</control>
@@ -115,18 +115,43 @@
 			<height>5</height>
 			<texture>separator.png</texture>
 		</control>
-		<control type="spincontrol" id="90">
-			<description>Next page button</description>
-			<posx>610</posx>
-			<posy>526</posy>
-			<subtype>page</subtype>
-			<font>font12</font>
+		<control type="button">
+			<posx>680</posx>
+			<posy>100</posy>
+			<include>scrollbar_width</include>
+			<height>20</height>
+			<onclick>PageUp(90)</onclick>
+			<texturefocus border="4">scrollbar_arrow_up_focus.png</texturefocus>
+			<texturenofocus border="4">scrollbar_arrow_up.png</texturenofocus>
+			<include>contentpanelslide</include>
+			<visible>Control.IsVisible(90)</visible>
+		</control>
+		<control type="button">
+			<posx>680</posx>
+			<posy>500</posy>
+			<include>scrollbar_width</include>
+			<height>20</height>
+			<onclick>PageDown(90)</onclick>
+			<texturefocus border="4">scrollbar_arrow_down_focus.png</texturefocus>
+			<texturenofocus border="4">scrollbar_arrow_down.png</texturenofocus>
+			<include>contentpanelslide</include>
+			<visible>Control.IsVisible(90)</visible>
+		</control>
+		<control type="scrollbar" id="90">
+			<posx>680</posx>
+			<posy>120</posy>
+			<include>scrollbar_width</include>
+			<height>380</height>
+			<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
+			<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
+			<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
+			<textureslidernib>-</textureslidernib>
+			<textureslidernibfocus>-</textureslidernibfocus>
 			<onleft>5</onleft>
 			<onright>3</onright>
-			<ondown>60</ondown>
-			<onup>5</onup>
-			<include>contentpanelslide</include>
 			<showonepage>false</showonepage>
+			<orientation>vertical</orientation>
+			<include>contentpanelslide</include>
 		</control>
 		<include>windowswitchtransition</include>
 	</controls>

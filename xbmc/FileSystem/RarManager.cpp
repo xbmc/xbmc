@@ -248,7 +248,7 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
         continue;
     }
 
-    int iMask = (pIterator->item.HostOS==3 ? 0x0040000:16); // win32 or unix attribs?
+    unsigned int iMask = (pIterator->item.HostOS==3 ? 0x0040000:16); // win32 or unix attribs?
     if (((pIterator->item.FileAttr & iMask) == iMask) || (vec.size() > iDepth+1 && bMask)) // we have a directory
     {
       if (!bMask) continue;
@@ -310,7 +310,7 @@ CFileInfo* CRarManager::GetFileInRar(const CStdString& strRarPath, const CStdStr
 
 bool CRarManager::GetPathInCache(CStdString& strPathInCache, const CStdString& strRarPath, const CStdString& strPathInRar)
 {
-	std::map<CStdString,std::pair<ArchiveList_struct*,std::vector<CFileInfo> > >::iterator j = m_ExFiles.find(strRarPath);
+  std::map<CStdString,std::pair<ArchiveList_struct*,std::vector<CFileInfo> > >::iterator j = m_ExFiles.find(strRarPath);
   if (j == m_ExFiles.end())
     return false;
 

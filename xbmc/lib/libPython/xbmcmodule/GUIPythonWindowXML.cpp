@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include "GUIPythonWindowXML.h"
-#include "guiwindow.h"
+#include "GUIWindow.h"
 #include "pyutil.h"
-#include "../../../application.h"
+#include "../../../Application.h"
 #include "../../../GUIMediaWindow.h"
 #include "window.h"
 #include "control.h"
 #include "action.h"
-#include "../../../util.h"
+#include "../../../Util.h"
 
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY       3

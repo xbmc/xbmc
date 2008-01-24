@@ -145,14 +145,14 @@ const CDateTimeSpan& CDateTimeSpan::operator -=(const CDateTimeSpan& right)
 
 void CDateTimeSpan::ToULargeInt(ULARGE_INTEGER& time) const
 {
-  time.HighPart=m_timeSpan.dwHighDateTime;
-  time.LowPart=m_timeSpan.dwLowDateTime;
+  time.u.HighPart=m_timeSpan.dwHighDateTime;
+  time.u.LowPart=m_timeSpan.dwLowDateTime;
 }
 
 void CDateTimeSpan::FromULargeInt(const ULARGE_INTEGER& time)
 {
-  m_timeSpan.dwHighDateTime=time.HighPart;
-  m_timeSpan.dwLowDateTime=time.LowPart;
+  m_timeSpan.dwHighDateTime=time.u.HighPart;
+  m_timeSpan.dwLowDateTime=time.u.LowPart;
 }
 
 void CDateTimeSpan::SetDateTimeSpan(int day, int hour, int minute, int second)
@@ -612,9 +612,9 @@ bool CDateTime::ToFileTime(const SYSTEMTIME& time, FILETIME& fileTime) const
 
 bool CDateTime::ToFileTime(const time_t& time, FILETIME& fileTime) const
 {
-  LONGLONG ll = Int32x32To64(time, 10000000)+0x19DB1DED53E8000;
+  LONGLONG ll = Int32x32To64(time, 10000000)+0x19DB1DED53E8000LL;
 
-  fileTime.dwLowDateTime  = (DWORD)&ll;
+  fileTime.dwLowDateTime  = (DWORD)ll;
   fileTime.dwHighDateTime = (DWORD)(ll >> 32);
 
   return true;
@@ -638,14 +638,14 @@ bool CDateTime::ToFileTime(const tm& time, FILETIME& fileTime) const
 
 void CDateTime::ToULargeInt(ULARGE_INTEGER& time) const
 {
-  time.HighPart=m_time.dwHighDateTime;
-  time.LowPart=m_time.dwLowDateTime;
+  time.u.HighPart=m_time.dwHighDateTime;
+  time.u.LowPart=m_time.dwLowDateTime;
 }
 
 void CDateTime::FromULargeInt(const ULARGE_INTEGER& time)
 {
-  m_time.dwHighDateTime=time.HighPart;
-  m_time.dwLowDateTime=time.LowPart;
+  m_time.dwHighDateTime=time.u.HighPart;
+  m_time.dwLowDateTime=time.u.LowPart;
 }
 
 void CDateTime::SetFromDateString(const CStdString &date)
@@ -772,7 +772,7 @@ void CDateTime::GetAsTime(time_t& time) const
   ULARGE_INTEGER filetime;
   ToULargeInt(filetime);
 
-  time=(time_t)(filetime.QuadPart-0x19DB1DED53E8000UL)/10000000UL;
+  time=(time_t)(filetime.QuadPart-0x19DB1DED53E8000LL)/10000000UL;
 }
 
 void CDateTime::GetAsTm(tm& time) const

@@ -1,4 +1,3 @@
-#pragma once
 #include "stdafx.h"
 #include "DllLibCurl.h"
 
@@ -59,7 +58,7 @@ void DllLibCurlGlobal::CheckIdle()
   {
     if( !it->m_busy && it->m_idletimestamp + idletime < GetTickCount())
     {
-      CLog::Log(LOGINFO, __FUNCTION__" - Closing session to %s://%s\n", it->m_protocol.c_str(), it->m_hostname.c_str());
+      CLog::Log(LOGINFO, "%s - Closing session to %s://%s\n", __FUNCTION__, it->m_protocol.c_str(), it->m_hostname.c_str());
 
       if(it->m_easy)
         easy_cleanup(it->m_easy);
@@ -135,7 +134,7 @@ void DllLibCurlGlobal::easy_aquire(const char *protocol, const char *hostname, C
   m_sessions.push_back(session);
 
 
-  CLog::Log(LOGINFO, __FUNCTION__" - Created session to %s://%s\n", protocol, hostname);
+  CLog::Log(LOGINFO, "%s - Created session to %s://%s\n", __FUNCTION__, protocol, hostname);
 
   return;
 

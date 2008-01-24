@@ -19,7 +19,6 @@ CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, float 
   m_dwFocusCounter = 0;
   m_dwFlickerCounter = 0;
   m_dwFrameCounter = 0;
-  m_strLabel = "";
   m_strLabel2 = "";
   m_label = labelInfo;
   ControlType = GUICONTROL_BUTTON;
@@ -70,7 +69,7 @@ void CGUIButtonControl::Render()
   bool bRenderText = (m_dwFlickerCounter > 0) ? (m_dwFrameCounter % 60 > 30) : true;
   m_dwFlickerCounter = (m_dwFlickerCounter > 0) ? (m_dwFlickerCounter - 1) : 0;
 
-  m_textLayout.Update(g_infoManager.GetMultiInfo(m_multiInfo, m_dwParentID));
+  m_textLayout.Update(m_info.GetLabel(m_dwParentID));
 
   if (bRenderText)
   {
@@ -182,9 +181,8 @@ void CGUIButtonControl::DynamicResourceAlloc(bool bOnOff)
 }
 
 void CGUIButtonControl::SetLabel(const string &label)
-{
-  m_strLabel = label;
-  g_infoManager.ParseLabel(label, m_multiInfo);
+{ // NOTE: No fallback for buttons at this point
+  m_info.SetLabel(label, "");
 }
 
 void CGUIButtonControl::SetLabel2(const string &label2)
@@ -245,7 +243,7 @@ void CGUIButtonControl::Flicker(bool bFlicker)
 
 CStdString CGUIButtonControl::GetDescription() const
 {
-  CStdString strLabel(g_infoManager.GetMultiInfo(m_multiInfo, m_dwParentID));
+  CStdString strLabel(m_info.GetLabel(m_dwParentID));
   return strLabel;
 }
 
@@ -311,3 +309,4 @@ void CGUIButtonControl::SetSelected(bool bSelected)
     m_bInvalidated = true;
   }
 }
+

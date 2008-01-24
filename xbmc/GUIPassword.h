@@ -43,3 +43,4 @@ protected:
 };
 
 extern CGUIPassword g_passwordManager;
+

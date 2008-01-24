@@ -8,12 +8,12 @@
 
 using namespace DIRECTORY;
 
-CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CStdString& strTexturePath, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop, DWORD timeToPauseAtEnd)
+CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CGUIInfoLabel& texturePath, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop, DWORD timeToPauseAtEnd)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {
-  m_currentPath = m_texturePath = strTexturePath;
-  CUtil::AddSlashAtEnd(m_currentPath);
-  CUtil::AddSlashAtEnd(m_texturePath);
+  m_texturePath = texturePath;
+  if (m_texturePath.IsConstant())
+    m_currentPath = m_texturePath.GetLabel(WINDOW_INVALID);
   m_currentImage = 0;
   m_timePerImage = timePerImage;
   m_timeToPauseAtEnd = timeToPauseAtEnd;
@@ -23,7 +23,6 @@ CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, 
   m_aspectRatio = CGUIImage::ASPECT_RATIO_STRETCH;
   ControlType = GUICONTROL_MULTI_IMAGE;
   m_bDynamicResourceAlloc=false;
-  m_Info = 0;
   m_directoryLoaded = false;
 }
 
@@ -47,18 +46,12 @@ void CGUIMultiImage::UpdateVisibility(const CGUIListItem *item)
 
   // check for conditional information before we
   // alloc as this can free our resources
-  if (m_Info)
+  if (!m_texturePath.IsConstant())
   {
-    CStdString texturePath = g_infoManager.GetImage(m_Info, WINDOW_INVALID);
+    CStdString texturePath(m_texturePath.GetLabel(m_dwParentID));
     if (texturePath != m_currentPath && !texturePath.IsEmpty())
     {
       m_currentPath = texturePath;
-      FreeResources();
-      LoadDirectory();
-    }
-    else if (texturePath.IsEmpty() && m_currentPath != m_texturePath)
-    {
-      m_currentPath = m_texturePath;
       FreeResources();
       LoadDirectory();
     }
@@ -159,7 +152,7 @@ bool CGUIMultiImage::OnMessage(CGUIMessage &message)
 {
   if (message.GetMessage() == GUI_MSG_REFRESH_THUMBS)
   {
-    if (m_Info)
+    if (!m_texturePath.IsConstant())
       FreeResources();
     return true;
   }
@@ -284,6 +277,7 @@ void CGUIMultiImage::LoadDirectory()
     // Load in our images from the directory specified
     // m_currentPath is relative (as are all skin paths)
     CStdString realPath = g_TextureManager.GetTexturePath(m_currentPath);
+    CUtil::AddSlashAtEnd(realPath);
     CHDDirectory dir;
     CFileItemList items;
     dir.GetDirectory(realPath, items);
@@ -301,3 +295,4 @@ void CGUIMultiImage::LoadDirectory()
   // flag as loaded - no point in constantly reloading them
   m_directoryLoaded = true;
 }
+

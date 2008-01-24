@@ -1,7 +1,7 @@
 
 #include "stdafx.h"
 #include "PlayerCoreFactory.h"
-#include "dvdplayer\DVDPlayer.h"
+#include "dvdplayer/DVDPlayer.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "mplayer\mplayer.h"
 #else
@@ -10,9 +10,9 @@
 #ifdef HAS_MODPLAYER
 #include "modplayer.h"
 #endif
-#include "paplayer\paplayer.h"
+#include "paplayer/paplayer.h"
 #include "paplayer/wmacodec.h"
-#include "..\GUIDialogContextMenu.h"
+#include "../GUIDialogContextMenu.h"
 #include "../XBAudioConfig.h"
 #include "../FileSystem/FileCurl.h"
 #include "../utils/HttpHeader.h"
@@ -56,8 +56,10 @@ IPlayer* CPlayerCoreFactory::CreatePlayer(const EPLAYERCORES eCore, IPlayerCallb
 #endif
 //    case EPC_SIDPLAYER: return new SidPlayer(callback);
     case EPC_PAPLAYER: return new PAPlayer(callback); // added by dataratt
-  }
-  return NULL;
+
+    default:
+       return NULL; 
+  }  
 }
 
 EPLAYERCORES CPlayerCoreFactory::GetPlayerCore(const CStdString& strCore)
@@ -82,8 +84,8 @@ CStdString CPlayerCoreFactory::GetPlayerName(const EPLAYERCORES eCore)
     case EPC_MODPLAYER: return "MODPlayer";
 //    case EPC_SIDPLAYER: return "SIDPlayer";
     case EPC_PAPLAYER: return "PAPlayer";
+    default: return "";
   }
-  return "";
 }
 
 void CPlayerCoreFactory::GetPlayers( VECPLAYERCORES &vecCores )

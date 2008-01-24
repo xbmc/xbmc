@@ -22,12 +22,12 @@
 #include "stdafx.h"
 #include "PartyModeManager.h"
 #include "Application.h"
-#include "playlistplayer.h"
+#include "PlayListPlayer.h"
 #include "MusicDatabase.h"
 #include "VideoDatabase.h"
 #include "Util.h"
 #include "FileItem.h"
-#include "GUIWindowMusicPlayList.h"
+#include "GUIWindowMusicPlaylist.h"
 #include "SmartPlaylist.h"
 #include "GUIDialogProgress.h"
 
@@ -173,8 +173,8 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
     pDialog->Close();
     return false;
   }
+  CLog::Log(LOGDEBUG, "%s time for song fetch: %lu", __FUNCTION__, timeGetTime() - time);
 
-  CLog::Log(LOGDEBUG, __FUNCTION__" time for song fetch: %i", timeGetTime() - time);
   // start playing
   g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
   Play(0);
@@ -428,7 +428,6 @@ bool CPartyModeManager::ReapSongs()
   if (m_bIsVideo)
     iPlaylist = PLAYLIST_VIDEO;
 
-  CPlayList& playlist = g_playlistPlayer.GetPlaylist(iPlaylist);
 
   // reap any played songs
   int iCurrentSong = g_playlistPlayer.GetCurrentSong();

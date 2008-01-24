@@ -12,11 +12,12 @@ namespace VIDEO
     int  recurse;           /* recurse into sub folders (indicate levels) */
   } SScanSettings;
 
-  enum SCAN_STATE { PREPARING = 0, REMOVING_OLD, CLEANING_UP_DATABASE, FETCHING_VIDEO_INFO, COMPRESSING_DATABASE, WRITING_CHANGES };
+  enum SCAN_STATE { PREPARING = 0, REMOVING_OLD, CLEANING_UP_DATABASE, FETCHING_MOVIE_INFO, FETCHING_MUSICVIDEO_INFO, FETCHING_TVSHOW_INFO, COMPRESSING_DATABASE, WRITING_CHANGES };
 
   class IVideoInfoScannerObserver
   {
   public:
+    virtual ~IVideoInfoScannerObserver() { }
     virtual void OnStateChanged(SCAN_STATE state) = 0;
     virtual void OnDirectoryChanged(const CStdString& strDirectory) = 0;
     virtual void OnDirectoryScanned(const CStdString& strDirectory) = 0;
@@ -67,3 +68,4 @@ namespace VIDEO
     set<CStdString> m_pathsToCount;
   };
 }
+

@@ -44,3 +44,4 @@ public:
 	}
 	operator wchar *() { return m_szPtr; }
 };
+

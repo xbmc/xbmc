@@ -1,6 +1,6 @@
 #pragma once
-#include "../iplayer.h"
-#include "../../utils/thread.h"
+#include "../IPlayer.h"
+#include "../../utils/Thread.h"
 #include "AudioDecoder.h"
 #include "../ssrc.h"
 
@@ -75,7 +75,9 @@ public:
 
   static bool HandlesType(const CStdString &type);
   virtual void DoAudioWork();
+
 protected:
+
   virtual void OnStartup() {}
   virtual void Process();
   virtual void OnExit();
@@ -125,14 +127,17 @@ private:
   void UpdateCacheLevel();
 
   int m_currentStream;
+
 #ifdef HAS_XBOX_AUDIO
   IDirectSoundStream *m_pStream[2];
 #else
   LPDIRECTSOUNDBUFFER m_pStream[2];
 #endif
-  AudioPacket         m_packet[2][PACKET_COUNT];
 
-  __int64                 m_bytesSentOut;
+  AudioPacket      m_packet[2][PACKET_COUNT];
+
+
+  __int64          m_bytesSentOut;
 
   // format (this should be stored/retrieved from the audio device object probably)
   unsigned int     m_SampleRate;

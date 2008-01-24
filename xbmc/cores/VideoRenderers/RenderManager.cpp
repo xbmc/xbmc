@@ -52,7 +52,7 @@ CXBoxRenderManager::CXBoxRenderManager()
 
   m_presentdelay = 5; //Just a guess to what delay we have
   m_presentfield = FS_NONE;
-  m_presenttime = 0L;
+  m_presenttime = 0;
   m_rendermethod = 0;
 }
 
@@ -75,6 +75,7 @@ bool CXBoxRenderManager::Configure(unsigned int width, unsigned int height, unsi
   if(!m_pRenderer) 
   {
     RestoreCriticalSection(g_graphicsContext, locks);
+    CLog::Log(LOGERROR, "%s called without a valid Renderer object", __FUNCTION__);
     return false;
   }
 
@@ -417,6 +418,7 @@ void CXBoxRenderManager::PresentWeave()
 
 void CXBoxRenderManager::Process()
 {
+  CLog::Log(LOGINFO, "Starting async renderer thread");
   float actualdelay = (float)m_presentdelay;
 
   SetPriority(THREAD_PRIORITY_TIME_CRITICAL);
@@ -425,7 +427,10 @@ void CXBoxRenderManager::Process()
   {
     //Wait for new frame or an stop event
     m_eventFrame.Wait();
-    if( m_bStop ) return;
+    if( m_bStop )
+    { 
+      return;
+    }
 
     DWORD dwTimeStamp = GetTickCount();
     try
@@ -446,3 +451,4 @@ void CXBoxRenderManager::Process()
     actualdelay = ( actualdelay * (TC-1) + (GetTickCount() - dwTimeStamp) ) / TC;
   }
 }
+

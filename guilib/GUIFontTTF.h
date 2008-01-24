@@ -48,20 +48,21 @@ public:
 
   void Clear();
 
-  bool Load(const CStdString& strFilename, float height = 20.0f, float aspect = 1.0f);
+  bool Load(const CStdString& strFilename, float height = 20.0f, float aspect = 1.0f, float lineSpacing = 1.0f);
 
   void Begin();
   void End();
 
   const CStdString& GetFileName() const { return m_strFileName; };
-
+  
 protected:
   void AddReference();
   void RemoveReference();
 
   float GetTextWidthInternal(vector<DWORD>::const_iterator start, vector<DWORD>::const_iterator end);
   float GetCharWidthInternal(DWORD ch);
-  float GetTextHeight(int numLines);
+  float GetTextHeight(float lineSpacing, int numLines) const;
+  float GetLineHeight(float lineSpacing) const;
 
   void DrawTextInternal(float x, float y, const vector<DWORD> &colors, const vector<DWORD> &text,
                             DWORD alignment, float maxPixelWidth);
@@ -84,7 +85,6 @@ protected:
   void ClearCharacterCache();
 
   LPDIRECT3DDEVICE8 m_pD3DDevice;
-
   LPDIRECT3DTEXTURE8 m_texture;      // texture that holds our rendered characters (8bit alpha only)
   unsigned int m_textureWidth;       // width of our texture
   unsigned int m_textureHeight;      // heigth of our texture
@@ -100,7 +100,6 @@ protected:
 
   unsigned int m_cellBaseLine;
   unsigned int m_cellHeight;
-  unsigned int m_lineHeight;
 
   DWORD m_dwNestedBeginCount;             // speedups
 
@@ -113,6 +112,7 @@ protected:
   static int justification_word_weight;
 
   CStdString m_strFileName;
+
 private:
   int m_referenceCount;
 };

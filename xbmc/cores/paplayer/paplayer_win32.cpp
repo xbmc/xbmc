@@ -1,10 +1,10 @@
 #include "../../stdafx.h"
-#include "PAPlayer.h"
+#include "paplayer.h"
 #include "CodecFactory.h"
 #include "../../utils/GUIInfoManager.h"
 #include "AudioContext.h"
-#include "../../filesystem/fileshoutcast.h"
-#include "../../application.h"
+#include "../../FileSystem/FileShoutcast.h"
+#include "../../Application.h"
 #ifdef HAS_KARAOKE
 #include "../../CdgParser.h"
 #endif
@@ -523,7 +523,7 @@ void PAPlayer::UpdateCacheLevel()
     {
       m_CacheLevel = codec->GetCacheLevel();
       m_LastCacheLevelCheck = GetTickCount();
-      //CLog::DebugLog("Cachelevel: %i%%", m_CacheLevel);
+      //CLog::Log(LOGDEBUG,"Cachelevel: %i%%", m_CacheLevel);
     }
   }
 }
@@ -1125,7 +1125,7 @@ void PAPlayer::DoAudioWork()
 {
   if (m_pCallback && m_visBufferLength)
   {
-    m_pCallback->OnAudioData(m_visBuffer, m_visBufferLength);
+    m_pCallback->OnAudioData((const unsigned char *)m_visBuffer, m_visBufferLength);
     m_visBufferLength = 0;
   }
 }
@@ -1227,3 +1227,4 @@ void PAPlayer::WaitForStream()
 #endif
   }
 }
+

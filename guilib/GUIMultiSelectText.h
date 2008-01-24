@@ -13,7 +13,7 @@ class CGUIMultiSelectTextControl : public CGUIControl
 public:
   CGUIMultiSelectTextControl(DWORD dwParentID, DWORD dwControlId,
                     float posX, float posY, float width, float height,
-                    const CImage& textureFocus, const CImage& textureNoFocus, const CLabelInfo &label, const CStdString &labelText);
+                    const CImage& textureFocus, const CImage& textureNoFocus, const CLabelInfo &label, const CGUIInfoLabel &content);
 
   virtual ~CGUIMultiSelectTextControl(void);
 
@@ -44,7 +44,7 @@ protected:
   void AddString(const CStdString &text, bool selectable, const CStdString &clickAction = "");
   void PositionButtons();
   unsigned int GetNumSelectable() const;
-  unsigned int GetItemFromPoint(const CPoint &point) const;
+  int GetItemFromPoint(const CPoint &point) const;
   void ScrollToItem(unsigned int item);
 
   // the static strings and buttons strings
@@ -60,7 +60,7 @@ protected:
   vector<CSelectableString> m_items;
 
   CLabelInfo m_label;
-  vector<CInfoPortion>  m_multiInfo;
+  CGUIInfoLabel  m_info;
   CStdString m_oldText;
   DWORD      m_renderTime;
 

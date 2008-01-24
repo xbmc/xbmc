@@ -1,7 +1,7 @@
 #pragma once
 
 #include "utils/Thread.h"
-#include "playlist.h"
+#include "PlayList.h"
 
 class CLastFmManager : CThread
 {

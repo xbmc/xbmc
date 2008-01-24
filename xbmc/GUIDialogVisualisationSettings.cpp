@@ -23,7 +23,7 @@
 #include "GUIDialogVisualisationSettings.h"
 #include "GUIWindowSettingsCategory.h"
 #include "GUIControlGroupList.h"
-#include "util.h"
+#include "Util.h"
 #include "utils/GUIInfoManager.h"
 
 
@@ -136,7 +136,6 @@ void CGUIDialogVisualisationSettings::SetupPage()
     SET_CONTROL_HIDDEN(CONTROL_NONE_AVAILABLE);
   }
 
-  int numSettings = m_pSettings->size();
 
   // run through and create our controls
   for (unsigned int i = 0; i < m_pSettings->size(); i++)
@@ -248,3 +247,4 @@ void CGUIDialogVisualisationSettings::OnInitWindow()
   m_lastControlID = CONTROL_START;
   CGUIDialog::OnInitWindow();
 }
+

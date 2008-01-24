@@ -21,17 +21,17 @@
 
 #include "stdafx.h"
 #include "GUIWindowPrograms.h"
-#include "util.h"
+#include "Util.h"
 #include "Shortcut.h"
-#include "filesystem/HDDirectory.h"
+#include "FileSystem/HDDirectory.h"
 #include "GUIPassword.h"
 #include "GUIDialogTrainerSettings.h"
 #include "GUIDialogMediaSource.h"
 #include "xbox/xbeheader.h"
 #include "utils/Trainer.h"
-#include "utils/kaiclient.h"
+#include "utils/KaiClient.h"
 #include "utils/LabelFormatter.h"
-#include "autorun.h"
+#include "Autorun.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -325,6 +325,8 @@ bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_LAUNCH_IN:
     OnChooseVideoModeAndLaunch(itemNumber);
     return true;
+  default:
+    break;
   }
   return CGUIMediaWindow::OnContextButton(itemNumber, button);
 }

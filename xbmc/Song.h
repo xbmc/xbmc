@@ -7,7 +7,7 @@
 #include <map>
 #include <vector>
 
-#include "MusicInfotag.h"
+#include "musicInfoTag.h"
 #include "utils/IMDB.h"
 
 using namespace MUSIC_INFO;

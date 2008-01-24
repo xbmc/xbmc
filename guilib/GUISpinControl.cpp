@@ -374,7 +374,8 @@ void CGUISpinControl::Render()
 
   m_textLayout.Update(text);
   // Calculate the size of our text (for use in HitTest)
-  float fTextWidth, fTextHeight;
+  float fTextWidth = 0;
+  float fTextHeight = 0;
   m_textLayout.GetTextExtent(fTextWidth, fTextHeight);
   // Position the arrows
   if ( !(m_label.align & (XBFONT_RIGHT | XBFONT_CENTER_X)) )
@@ -412,13 +413,13 @@ void CGUISpinControl::Render()
       fPosY = m_posY + m_label.offsetY;
 
     float fPosX = m_posX + m_label.offsetX - 3;
-    if ( !IsDisabled() /*HasFocus()*/ )
-      m_textLayout.Render(fPosX, fPosY, 0, m_label.textColor, m_label.shadowColor, m_label.align, 0);
+    if (IsDisabled())
+      m_textLayout.Render(fPosX, fPosY, 0, m_label.disabledColor, m_label.shadowColor, m_label.align, 0, true);
     else if (HasFocus() && m_label.focusedColor)
       m_textLayout.Render(fPosX, fPosY, 0, m_label.focusedColor, m_label.shadowColor, m_label.align, 0);
     else
-      m_textLayout.Render(fPosX, fPosY, 0, m_label.disabledColor, m_label.shadowColor, m_label.align, 0, true);
-
+      m_textLayout.Render(fPosX, fPosY, 0, m_label.textColor, m_label.shadowColor, m_label.align, 0);
+ 
     // set our hit rectangle for MouseOver events
     if (!(m_label.align & (XBFONT_RIGHT | XBFONT_CENTER_X)))
       m_hitRect.SetRect(fPosX, fPosY, fPosX + fTextWidth, fPosY + fTextHeight);
@@ -439,6 +440,19 @@ void CGUISpinControl::SetFloatRange(float fStart, float fEnd)
 {
   m_fStart = fStart;
   m_fEnd = fEnd;
+}
+
+void CGUISpinControl::SetValueFromLabel(const CStdString &label)
+{
+  if (m_iType == SPIN_CONTROL_TYPE_TEXT)
+  {
+    m_iValue = 0;
+    for (unsigned int i = 0; i < m_vecLabels.size(); i++)
+      if (label == m_vecLabels[i])
+        m_iValue = i;
+  }
+  else
+    m_iValue = atoi(label.c_str());
 }
 
 void CGUISpinControl::SetValue(int iValue)

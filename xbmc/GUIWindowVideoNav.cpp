@@ -21,19 +21,19 @@
 
 #include "stdafx.h"
 #include "GUIWindowVideoNav.h"
-#include "GUIWIndowVideoFiles.h"
+#include "GUIWindowVideoFiles.h"
 #include "utils/GUIInfoManager.h"
+#include "Util.h"
 #include "utils/RegExp.h"
-#include "util.h"
 #include "PlayListM3U.h"
-#include "application.h"
-#include "playlistplayer.h"
+#include "Application.h"
+#include "PlayListPlayer.h"
 #include "GUIPassword.h"
 #include "GUILabelControl.h"
 #include "GUIDialogFileBrowser.h"
 #include "Picture.h"
 #include "FileSystem/VideoDatabaseDirectory.h"
-#include "PlaylistFactory.h"
+#include "PlayListFactory.h"
 #include "GUIFontManager.h"
 #include "GUIDialogVideoScan.h"
 #include "PartyModeManager.h"
@@ -342,23 +342,38 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(items.m_strPath);
       
       items.SetThumbnailImage("");
+      items.ClearProperty("tvshowthumb");
       if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_EPISODES || node == NODE_TYPE_SEASONS || node == NODE_TYPE_RECENTLY_ADDED_EPISODES)
       {
-        CFileItem item;
+        // grab the show thumb
+        CFileItem showItem;
+        m_database.GetFilePath(params.GetTvShowId(),showItem.m_strPath,2);
+        showItem.SetVideoThumb();
+        items.SetProperty("tvshowthumb", showItem.GetThumbnailImage());
+
+        // the container folder thumb is the parent (i.e. season or show)
         if (node == NODE_TYPE_EPISODES || node == NODE_TYPE_RECENTLY_ADDED_EPISODES)
         {
           g_infoManager.m_content = "episodes";
+          // grab the season thumb as the folder thumb
+          CStdString strLabel;
+          if (params.GetSeason() == 0)
+            strLabel = g_localizeStrings.Get(20381);
+          else
+            strLabel.Format(g_localizeStrings.Get(20358), params.GetSeason());
+
+          CFileItem item(strLabel);
           item.m_strPath = items.m_strPath;
+          item.m_bIsFolder = true;
+          item.GetVideoInfoTag()->m_strPath = showItem.m_strPath;
+          item.SetCachedSeasonThumb();
+          items.SetThumbnailImage(item.GetThumbnailImage());
         }
         else
-          g_infoManager.m_content = "seasons";
-
-        if (!item.HasThumbnail())
         {
-          m_database.GetFilePath(params.GetTvShowId(),item.m_strPath,2);
-          item.SetVideoThumb();
+          g_infoManager.m_content = "seasons";
+          items.SetThumbnailImage(showItem.GetThumbnailImage());
         }
-        items.SetThumbnailImage(item.GetThumbnailImage());
       }
       else if (node == NODE_TYPE_TITLE_MOVIES || node == NODE_TYPE_RECENTLY_ADDED_MOVIES)
         g_infoManager.m_content = "movies";
@@ -619,7 +634,7 @@ void CGUIWindowVideoNav::OnWindowLoaded()
     info.align = XBFONT_CENTER_X | XBFONT_CENTER_Y;
     info.font = g_fontManager.GetFont("font13");
     info.textColor = 0xffffffff;
-    CGUILabelControl *pLabel = new CGUILabelControl(GetID(),CONTROL_LABELEMPTY,pList->GetXPosition(),pList->GetYPosition(),pList->GetWidth(),pList->GetHeight(),"",info,false,false);
+    CGUILabelControl *pLabel = new CGUILabelControl(GetID(),CONTROL_LABELEMPTY,pList->GetXPosition(),pList->GetYPosition(),pList->GetWidth(),pList->GetHeight(),info,false,false);
     pLabel->SetAnimations(pList->GetAnimations());
     Add(pLabel);
   }
@@ -744,7 +759,6 @@ void CGUIWindowVideoNav::DeleteItem(CFileItem* pItem)
 
 void CGUIWindowVideoNav::OnFinalizeFileItems(CFileItemList& items)
 {
-  int iItem=0;
   m_unfilteredItems.AppendPointer(items);
   // now filter as necessary
   CVideoDatabaseDirectory dir;
@@ -852,7 +866,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
   {
     SScraperInfo info;
     VIDEO::SScanSettings settings;
-    int iFound = GetScraperForItem(item, info, settings);
+    GetScraperForItem(item, info, settings);
     
     if (info.strContent.Equals("tvshows"))
       buttons.Add(CONTEXT_BUTTON_INFO, item->m_bIsFolder ? 20351 : 20352);
@@ -1014,6 +1028,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"imdbthumbs",strPath);
       CUtil::WipeDir(strPath);
       DIRECTORY::CDirectory::Create(strPath);
+      CFileItem* noneitem = new CFileItem("thumb://None", false);
       int i=1;
       CVideoInfoTag tag;
       if (button != CONTEXT_BUTTON_SET_ARTIST_THUMB && button != CONTEXT_BUTTON_SET_PLUGIN_THUMB)
@@ -1068,6 +1083,11 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
               items.Add(item);              
               break;
             }
+            else
+            {
+              noneitem->SetThumbnailImage("DefaultFolderBig.png");
+              noneitem->SetLabel(g_localizeStrings.Get(20018));
+            }
           }
         }
       }
@@ -1086,6 +1106,11 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         item->SetLabel(g_localizeStrings.Get(20016));
         items.Add(item);
       }
+      else
+      {
+        noneitem->SetThumbnailImage("DefaultFolderBig.png");
+        noneitem->SetLabel(g_localizeStrings.Get(20018));
+      }
 
       if (button == CONTEXT_BUTTON_SET_PLUGIN_THUMB)
       {
@@ -1100,6 +1125,11 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
             item->SetLabel(g_localizeStrings.Get(20016));
             items.Add(item);
           }
+          else
+          {
+            noneitem->SetThumbnailImage("DefaultFolderBig.png");
+            noneitem->SetLabel(g_localizeStrings.Get(20018));
+          }
         }
         CStdString strThumb;
         CUtil::AddFileToFolder(strPath,"folder.jpg",strThumb);
@@ -1110,6 +1140,11 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           item->SetLabel(g_localizeStrings.Get(20017));
           items.Add(item);
         }
+        else
+        {
+          noneitem->SetThumbnailImage("DefaultFolderBig.png");
+          noneitem->SetLabel(g_localizeStrings.Get(20018));
+        }
         CUtil::AddFileToFolder(strPath,"default.tbn",strThumb);
         if (CFile::Exists(strThumb))
         {
@@ -1117,6 +1152,11 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           item->SetThumbnailImage(strThumb);
           item->SetLabel(g_localizeStrings.Get(20017));
           items.Add(item);
+        }
+        else
+        {
+          noneitem->SetThumbnailImage("DefaultFolderBig.png");
+          noneitem->SetLabel(g_localizeStrings.Get(20018));
         }
       }
       if (button == CONTEXT_BUTTON_SET_ARTIST_THUMB)
@@ -1148,12 +1188,33 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           pItem->SetThumbnailImage(strThumb);
           items.Add(pItem);
         }
+        else
+        {
+          noneitem->SetThumbnailImage("DefaultArtistBig.png");
+          noneitem->SetLabel(g_localizeStrings.Get(20018));
+        }
       }
 
-      CFileItem *item = new CFileItem("thumb://None", false);
-      item->SetThumbnailImage("DefaultActorBig.png");
-      item->SetLabel(g_localizeStrings.Get(20018));
-      items.Add(item);
+      if (button == CONTEXT_BUTTON_SET_ACTOR_THUMB)
+      {
+        CStdString picturePath;
+        CStdString strThumb;
+        CUtil::AddFileToFolder(picturePath,"folder.jpg",strThumb);
+        if (XFILE::CFile::Exists(strThumb))
+        {
+          CFileItem* pItem = new CFileItem(strThumb,false);
+          pItem->SetLabel(g_localizeStrings.Get(20017));
+          pItem->SetThumbnailImage(strThumb);
+          items.Add(pItem);
+        }
+        else
+        {
+          noneitem->SetThumbnailImage("DefaultActorBig.png");
+          noneitem->SetLabel(g_localizeStrings.Get(20018));
+        }
+      }
+
+      items.Add(noneitem);
 
       CStdString result;
       if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_videoSources, g_localizeStrings.Get(20019), result))
@@ -1250,6 +1311,9 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       Update(m_vecItems.m_strPath);
       return true;
     }
+  
+  default:
+    break;
 
   }
   return CGUIWindowVideoBase::OnContextButton(itemNumber, button);
@@ -1271,3 +1335,4 @@ void CGUIWindowVideoNav::OnLinkMovieToTvShow(int itemnumber)
     CUtil::DeleteVideoDatabaseDirectoryCache();
   }
 }
+

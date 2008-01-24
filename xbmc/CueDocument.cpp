@@ -33,8 +33,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "cuedocument.h"
-#include "util.h"
+#include "CueDocument.h"
+#include "Util.h"
 
 
 CCueDocument::CCueDocument(void)

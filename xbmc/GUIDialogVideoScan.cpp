@@ -22,8 +22,8 @@
 #include "stdafx.h"
 #include "GUIDialogVideoScan.h"
 #include "GUIProgressControl.h"
-#include "application.h"
-#include "util.h"
+#include "Application.h"
+#include "Util.h"
 
 #define CONTROL_LABELSTATUS       401
 #define CONTROL_LABELDIRECTORY    402
@@ -157,7 +157,7 @@ void CGUIDialogVideoScan::UpdateState()
 
   SET_CONTROL_LABEL(CONTROL_LABELSTATUS, GetStateString());
 
-  if (m_ScanState == FETCHING_VIDEO_INFO || m_ScanState == CLEANING_UP_DATABASE)
+  if (m_ScanState == FETCHING_MOVIE_INFO || m_ScanState == FETCHING_MUSICVIDEO_INFO || m_ScanState == FETCHING_TVSHOW_INFO || m_ScanState == CLEANING_UP_DATABASE)
   {
     CURL url(m_strCurrentDir);
     CStdString strStrippedPath;
@@ -194,10 +194,12 @@ int CGUIDialogVideoScan::GetStateString()
     return 701;
   else if (m_ScanState == CLEANING_UP_DATABASE)
     return 700;
-  else if (m_ScanState == FETCHING_VIDEO_INFO)
-  {
+  else if (m_ScanState == FETCHING_MOVIE_INFO)
     return 20374;
-  }
+  else if (m_ScanState == FETCHING_MUSICVIDEO_INFO)
+    return 20408;
+  else if (m_ScanState == FETCHING_TVSHOW_INFO)
+    return 20409;
   else if (m_ScanState == COMPRESSING_DATABASE)
     return 331;
   else if (m_ScanState == WRITING_CHANGES)

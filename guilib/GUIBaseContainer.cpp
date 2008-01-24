@@ -426,14 +426,19 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
   CGUIControl::UpdateVisibility(item);
   if (m_staticContent)
   { // update our item list with our new content, but only add those items that should
-    // be visible.
+    // be visible.  Save the previous item and keep it if we are adding that one.
+    CGUIListItem *lastItem = m_lastItem;
     Reset();
     for (unsigned int i = 0; i < m_staticItems.size(); ++i)
     {
       CFileItem *item = (CFileItem *)m_staticItems[i];
       // m_idepth is used to store the visibility condition
-      if (!item->m_idepth || g_infoManager.GetBool(item->m_idepth, GetParentID(), item))
+      if (!item->m_idepth || g_infoManager.GetBool(item->m_idepth, GetParentID()))
+      {
         m_items.push_back(item);
+        if (item == lastItem)
+          m_lastItem = lastItem;
+      }
     }
   }
 }
@@ -659,7 +664,7 @@ bool CGUIBaseContainer::GetCondition(int condition, int data) const
   case CONTAINER_SUBITEM:
     {
       CGUIListItemLayout *layout = GetFocusedLayout();
-      return layout ? (layout->GetFocus() == data) : false;
+      return layout ? (layout->GetFocus() == (unsigned int)data) : false;
     }
   default:
     return false;

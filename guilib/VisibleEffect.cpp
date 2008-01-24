@@ -12,6 +12,7 @@ CAnimEffect::CAnimEffect(const TiXmlElement *node, EFFECT_TYPE effect)
   m_delay = m_length = 0;
   m_pTweener = NULL;
   // time and delay
+
   float temp;
   if (g_SkinInfo.ResolveConstant(node->Attribute("time"), temp)) m_length = (unsigned int)(temp * g_SkinInfo.GetEffectsSlowdown());
   if (g_SkinInfo.ResolveConstant(node->Attribute("delay"), temp)) m_delay = (unsigned int)(temp * g_SkinInfo.GetEffectsSlowdown());
@@ -326,6 +327,7 @@ CAnimation::CAnimation()
   m_type = ANIM_TYPE_NONE;
   m_reversible = true;
   m_condition = 0;
+  m_repeatAnim = ANIM_REPEAT_NONE;
   m_currentState = ANIM_STATE_NONE;
   m_currentProcess = ANIM_PROCESS_NONE;
   m_queuedProcess = ANIM_PROCESS_NONE;
@@ -489,7 +491,7 @@ void CAnimation::Calculate(const CPoint &center)
   {
     CAnimEffect *effect = m_effects[i];
     if (effect->GetLength())
-      effect->Calculate(m_amount, center);
+      effect->Calculate(m_delay + m_amount, center);
     else
     { // effect has length zero, so either apply complete
       if (m_currentProcess == ANIM_PROCESS_NORMAL)
@@ -605,6 +607,7 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
       m_repeatAnim = ANIM_REPEAT_LOOP;
   }
 
+  m_delay = 0xffffffff;
   if (!effect)
   { // old layout:
     // <animation effect="fade" start="0" end="100" delay="10" time="2000" condition="blahdiblah" reversible="false">focus</animation>

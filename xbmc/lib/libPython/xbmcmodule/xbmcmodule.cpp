@@ -20,10 +20,12 @@
 
 using namespace XFILE;
 
+#ifndef __GNUC__
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
 #pragma bss_seg("PY_BSS")
 #pragma const_seg("PY_RDATA")
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -390,7 +392,7 @@ namespace PYXBMC
 
   PyObject* XBMC_GetInfoLabel(PyObject *self, PyObject *args)
   {
-    char *cLine;
+    char *cLine = NULL;
     if (!PyArg_ParseTuple(args, "s", &cLine)) return NULL;
 
     int ret = g_infoManager.TranslateString(cLine);
@@ -580,6 +582,51 @@ namespace PYXBMC
     return Py_BuildValue("s", strPath.c_str());
   }
 
+  // getRegion function
+  PyDoc_STRVAR(getRegion__doc__,
+    "getRegion(id) -- Returns your regions setting as a string for the specified id.\n"
+    "\n"
+    "id             : string - id of setting to return\n"
+    "\n"
+    "*Note, choices are (dateshort, datelong, time, meridiem, tempunit, speedunit)\n"
+    "\n"
+    "example:\n"
+    "  - date_long_format = xbmc.getRegion('datelong')\n");
+
+  PyObject* XBMC_GetRegion(PyObject *self, PyObject *args, PyObject *kwds)
+  {
+    static char *keywords[] = { "id", NULL };
+    char *id = NULL;
+    // parse arguments to constructor
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      "s",
+      keywords,
+      &id
+      ))
+    {
+      return NULL;
+    };
+
+    CStdString result;
+
+    if (strcmpi(id, "datelong") == 0)
+      result = g_langInfo.GetDateFormat(true);
+    else if (strcmpi(id, "dateshort") == 0)
+      result = g_langInfo.GetDateFormat(false);
+    else if (strcmpi(id, "tempunit") == 0)
+      result = g_langInfo.GetTempUnitString();
+    else if (strcmpi(id, "speedunit") == 0)
+      result = g_langInfo.GetSpeedUnitString();
+    else if (strcmpi(id, "time") == 0)
+      result = g_langInfo.GetTimeFormat();
+    else if (strcmpi(id, "meridiem") == 0)
+      result.Format("%s/%s", g_langInfo.GetMeridiemSymbol(CLangInfo::MERIDIEM_SYMBOL_AM), g_langInfo.GetMeridiemSymbol(CLangInfo::MERIDIEM_SYMBOL_PM));
+
+    return Py_BuildValue("s", result.c_str());
+  }
+
   // define c functions to be used in python here
   PyMethodDef xbmcMethods[] = {
     {"output", (PyCFunction)XBMC_Output, METH_VARARGS, output__doc__},
@@ -613,6 +660,8 @@ namespace PYXBMC
 
     {"makeLegalFilename", (PyCFunction)XBMC_MakeLegalFilename, METH_VARARGS, makeLegalFilename__doc__},
     {"translatePath", (PyCFunction)XBMC_TranslatePath, METH_VARARGS, translatePath__doc__},
+
+    {"getRegion", (PyCFunction)XBMC_GetRegion, METH_VARARGS|METH_KEYWORDS, getRegion__doc__},
     {NULL, NULL, 0, NULL}
   };
 

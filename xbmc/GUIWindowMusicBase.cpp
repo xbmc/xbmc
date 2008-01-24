@@ -33,14 +33,14 @@
 #include "PlayListPlayer.h"
 #include "FileSystem/DirectoryCache.h"
 #ifdef HAS_CDDA_RIPPER
-#include "CDRip/CDDARipper.h"
+#include "cdrip/CDDARipper.h"
 #endif
 #include "GUIPassword.h"
 #include "GUIDialogMusicScan.h"
 #include "GUIDialogMediaSource.h"
 #include "PartyModeManager.h"
 #include "utils/GUIInfoManager.h"
-#include "filesystem/MusicDatabaseDirectory.h"
+#include "FileSystem/MusicDatabaseDirectory.h"
 #include "GUIDialogSongInfo.h"
 #include "GUIDialogSmartPlaylistEditor.h"
 #include "LastFmManager.h"
@@ -322,7 +322,7 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
     }
     if (!foundAlbum)
     {
-      CLog::Log(LOGINFO, __FUNCTION__" called on a folder containing no songs with tag info - nothing can be done");
+      CLog::Log(LOGINFO, "%s called on a folder containing no songs with tag info - nothing can be done", __FUNCTION__);
       if (m_dlgProgress && bShowInfo) m_dlgProgress->Close();
       return;
     }
@@ -1014,7 +1014,7 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
     {
       buttons.Add(CONTEXT_BUTTON_LASTFM_UNBAN_ITEM, 15296); //unban
     }
-    else if (!item->GetExtraInfo().Equals("lastfmitem"))
+    else if (item->CanQueue())
     {
       buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347); //queue
 
@@ -1247,7 +1247,7 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
 
     // activate the playlist window if its not activated yet
-    if (bIsDAAPplaylist && GetID() == m_gWindowManager.GetActiveWindow())
+    if (bIsDAAPplaylist && GetID() == (DWORD) m_gWindowManager.GetActiveWindow())
       m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
 
     // play!
@@ -1291,7 +1291,7 @@ void CGUIWindowMusicBase::LoadPlayList(const CStdString& strPlayList)
     if (m_guiState.get())
       m_guiState->SetPlaylistDirectory("playlistmusic://");
     // activate the playlist window if its not activated yet
-    if (GetID() == m_gWindowManager.GetActiveWindow() && iSize > 1)
+    if (GetID() == (DWORD) m_gWindowManager.GetActiveWindow() && iSize > 1)
     {
       m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
     }
@@ -1488,11 +1488,13 @@ bool CGUIWindowMusicBase::GetDirectory(const CStdString &strDirectory, CFileItem
     newPlaylist = new CFileItem("newplaylist://", false);
     newPlaylist->SetLabel(g_localizeStrings.Get(525));
     newPlaylist->SetLabelPreformated(true);
+    newPlaylist->SetCanQueue(false);
     items.Add(newPlaylist);
 
     newPlaylist = new CFileItem("newsmartplaylist://music", false);
     newPlaylist->SetLabel(g_localizeStrings.Get(21437));
     newPlaylist->SetLabelPreformated(true);
+    newPlaylist->SetCanQueue(false);
     items.Add(newPlaylist);
   }
 
@@ -1504,3 +1506,4 @@ void CGUIWindowMusicBase::OnPrepareFileItems(CFileItemList &items)
   if (!items.m_strPath.Equals("plugin://music/"))
     items.SetCachedMusicThumbs();
 }
+

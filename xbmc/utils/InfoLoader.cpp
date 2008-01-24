@@ -100,3 +100,4 @@ void CInfoLoader::ResetTimer()
 {
   m_refreshTime = timeGetTime();
 }
+

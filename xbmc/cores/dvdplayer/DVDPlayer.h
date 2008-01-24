@@ -38,6 +38,7 @@ DVDInfo;
 typedef struct
 {
   int              id;     // demuxerid of current playing stream
+  int              source;
   double           dts;    // last dts from demuxer, used to find disncontinuities
   CDVDStreamInfo   hint;   // stream hints, used to notice stream changes
   void*            stream; // pointer or integer, identifying stream playing. if it changes stream changed
@@ -45,13 +46,50 @@ typedef struct
 
   void Clear()
   {
-    id = -1;
-    dts = DVD_NOPTS_VALUE;
+    id     = -1;
+    source = STREAM_SOURCE_NONE;
+    dts    = DVD_NOPTS_VALUE;
     hint.Clear();
     stream = NULL;
     inited = false;
   }
 } CCurrentStream;
+
+typedef struct 
+{
+  StreamType   type;
+  std::string  filename;
+  std::string  language;
+  std::string  name;
+  int          source;
+  int          id;  
+} SelectionStream;
+
+class CSelectionStreams
+{
+  CCriticalSection m_section;
+  SelectionStream  m_invalid;  
+public:
+  CSelectionStreams()
+  {
+    m_invalid.id = -1;
+    m_invalid.source = STREAM_SOURCE_NONE;
+    m_invalid.type = STREAM_NONE;
+  }
+  std::vector<SelectionStream> m_Streams;
+
+  int              IndexOf (StreamType type, int source, int id);
+  int              IndexOf (StreamType type, CDVDPlayer& p);
+  int              Count   (StreamType type) { return IndexOf(type, STREAM_SOURCE_NONE, -1) + 1; }
+  SelectionStream& Get     (StreamType type, int index);
+  
+  void             Clear   (StreamType type, StreamSource source);
+  int              Source  (StreamSource source, std::string filename);
+
+  void             Update  (SelectionStream& s);
+  void             Update  (CDVDInputStream* input, CDVDDemux* demuxer);
+};
+
 
 #define DVDPLAYER_AUDIO 1
 #define DVDPLAYER_VIDEO 2
@@ -126,7 +164,8 @@ public:
 
   virtual int OnDVDNavResult(void* pData, int iMessage);
   
-private:
+protected:  
+  friend class CSelectionStreams;
   void LockStreams()                                            { EnterCriticalSection(&m_critStreamSection); }
   void UnlockStreams()                                          { LeaveCriticalSection(&m_critStreamSection); }
   
@@ -134,19 +173,18 @@ private:
   virtual void OnExit();
   virtual void Process();
 
-  bool OpenDefaultAudioStream();
-  bool OpenAudioStream(int iStream);
-  bool OpenVideoStream(int iStream);
-  bool OpenSubtitleStream(int iStream);
+  bool OpenAudioStream(int iStream, int source);
+  bool OpenVideoStream(int iStream, int source);
+  bool OpenSubtitleStream(int iStream, int source);
   bool CloseAudioStream(bool bWaitForBuffers);
   bool CloseVideoStream(bool bWaitForBuffers);
   bool CloseSubtitleStream(bool bKeepOverlays);
 
-  void ProcessAudioData(CDemuxStream* pStream, CDVDDemux::DemuxPacket* pPacket);
-  void ProcessVideoData(CDemuxStream* pStream, CDVDDemux::DemuxPacket* pPacket);
-  void ProcessSubData(CDemuxStream* pStream, CDVDDemux::DemuxPacket* pPacket);
+  void ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket);
+  void ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket);
+  void ProcessSubData(CDemuxStream* pStream, DemuxPacket* pPacket);
   
-  void FindExternalSubtitles();
+  bool AddSubtitleFile(const std::string& filename);
   /**
    * one of the DVD_PLAYSPEED defines
    */
@@ -161,7 +199,12 @@ private:
 
   void SyncronizePlayers(DWORD sources);
   void SyncronizeDemuxer(DWORD timeout);
-  void CheckContinuity(CDVDDemux::DemuxPacket* pPacket, unsigned int source);
+  void CheckContinuity(DemuxPacket* pPacket, unsigned int source);
+
+  bool ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream);
+  bool IsValidStream(CCurrentStream& stream);
+  bool IsBetterStream(CCurrentStream& current, StreamType type, CDemuxStream* stream);
+
 
   bool m_bAbortRequest;
 
@@ -173,7 +216,7 @@ private:
   CCurrentStream m_CurrentVideo;
   CCurrentStream m_CurrentSubtitle;
 
-  std::vector<std::string>  m_vecSubtitleFiles; // external subtitle files
+  CSelectionStreams m_SelectionStreams;
 
   int m_playSpeed;
 
@@ -191,7 +234,7 @@ private:
   
   CDVDInputStream* m_pInputStream;  // input stream for current playing file
   CDVDDemux* m_pDemuxer;            // demuxer for current playing file
-  
+  CDVDDemux* m_pSubtitleDemuxer;
   DVDInfo m_dvd;
   
   HANDLE m_hReadyEvent;

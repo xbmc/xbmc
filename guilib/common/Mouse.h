@@ -20,6 +20,7 @@ struct MouseState
 class IMouseDevice
 {
 public:
+  virtual ~IMouseDevice() {}
   virtual void Initialize(void *appData = NULL)=0;
   virtual void Acquire()=0;
   virtual bool Update(MouseState &state)=0;
@@ -30,7 +31,7 @@ class CMouse
 public:
 
   CMouse();
-  ~CMouse();
+  virtual ~CMouse();
 
   void Initialize(void *appData = NULL);
   void Update();
@@ -45,9 +46,10 @@ public:
   DWORD GetExclusiveControlID() const { return m_exclusiveControlID; };
   const CPoint &GetExclusiveOffset() const { return m_exclusiveOffset; };
   void SetState(DWORD state) { m_pointerState = state; };
+  void SetEnabled(bool enabled) { m_mouseEnabled = enabled; };
   DWORD GetState() const { return m_pointerState; };
   CPoint GetLocation() const;
-  void SetLocation(CPoint &point);
+  void SetLocation(const CPoint &point);
   CPoint GetLastMove() const;
   char GetWheel() const;
 
@@ -60,6 +62,7 @@ private:
   // state of the mouse
   DWORD m_pointerState;
   MouseState m_mouseState;
+  bool m_mouseEnabled;
   bool m_lastDown[5];
 
   // mouse device

@@ -76,7 +76,7 @@ double CPTSInputQueue::Get(__int64 bytes, bool consume)
 
 CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock) 
 : CThread()
-, m_dvdAudio(m_bStop)
+, m_dvdAudio((bool&)m_bStop)
 {
   m_pClock = pClock;
   m_pAudioCodec = NULL;  
@@ -251,7 +251,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 
         // increase audioclock to after the packet
         m_audioClock += audioframe.duration;
-        datatimeout = audioframe.duration*2;
+        datatimeout = (unsigned int)(audioframe.duration*2.0);
       }
 
       //If we are asked to drop this packet, return a size of zero. then it won't be played
@@ -334,6 +334,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
     }
     pMsg->Release();
   }
+  return 0;
 }
 
 void CDVDPlayerAudio::OnStartup()

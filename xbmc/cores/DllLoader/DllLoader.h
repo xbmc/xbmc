@@ -31,7 +31,7 @@ class DllLoader : public CoffLoader, public LibraryLoader
 {
 public:
   DllLoader(const char *dll, bool track = false, bool bSystemDll = false, bool bLoadSymbols = false, Export* exports = NULL);
-  ~DllLoader();
+  virtual ~DllLoader();
 
   virtual bool Load();
   virtual void Unload();
@@ -54,7 +54,7 @@ protected:
   void AddExport(char* sFunctionName, void* function, void* track_function = NULL);
   void SetExports(Export* exports) { m_pStaticExports = exports; }
 
-private:
+protected:
   // Just pointers; dont' delete...
   ImportDirTable_t *ImportDirTable;
   ExportDirTable_t *ExportDirTable;

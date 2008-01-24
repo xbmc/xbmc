@@ -82,3 +82,4 @@ void CPictureThumbLoader::OnLoaderFinish()
 {
   m_regenerateThumbs = false;
 }
+

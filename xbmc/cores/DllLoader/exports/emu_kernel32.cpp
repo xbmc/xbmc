@@ -1,8 +1,11 @@
 #include "stdafx.h"
 #include "emu_kernel32.h"
 #include "emu_dummy.h"
-#include "..\..\..\xbox\iosupport.h"
+
+#include "../../../xbox/IoSupport.h"
+
 #include <process.h>
+
 #include "../dll_tracker.h"
 
 vector<string> m_vecAtoms;
@@ -557,13 +560,13 @@ extern "C" LCID WINAPI dllGetThreadLocale(void)
 extern "C" BOOL WINAPI dllSetPriorityClass(HANDLE hProcess, DWORD dwPriorityClass)
 {
   not_implement("kernel32.dll fake function SetPriorityClass called\n"); //warning
-  return NULL;
+  return false;
 }
 
 extern "C" DWORD WINAPI dllFormatMessageA(DWORD dwFlags, LPCVOID lpSource, DWORD dwMessageId, DWORD dwLanguageId, LPTSTR lpBuffer, DWORD nSize, va_list* Arguments)
 {
   not_implement("kernel32.dll fake function FormatMessage called\n"); //warning
-  return NULL;
+  return 0;
 }
 
 extern "C" DWORD WINAPI dllGetFullPathNameA(LPCTSTR lpFileName, DWORD nBufferLength, LPTSTR lpBuffer, LPTSTR* lpFilePart)
@@ -590,13 +593,13 @@ extern "C" DWORD WINAPI dllGetFullPathNameA(LPCTSTR lpFileName, DWORD nBufferLen
 extern "C" DWORD WINAPI dllExpandEnvironmentStringsA(LPCTSTR lpSrc, LPTSTR lpDst, DWORD nSize)
 {
   not_implement("kernel32.dll fake function GetFullPathNameA called\n"); //warning
-  return NULL;
+  return 0;
 }
 
 extern "C" UINT WINAPI dllGetWindowsDirectoryA(LPTSTR lpBuffer, UINT uSize)
 {
   not_implement("kernel32.dll fake function dllGetWindowsDirectory called\n"); //warning
-  return NULL;
+  return 0;
 }
 
 extern "C" UINT WINAPI dllGetSystemDirectoryA(LPTSTR lpBuffer, UINT uSize)
@@ -708,7 +711,7 @@ extern "C" BOOL WINAPI dllTlsFree(DWORD dwTlsIndex)
 
 extern "C" BOOL WINAPI dllTlsSetValue(int dwTlsIndex, LPVOID lpTlsValue)
 {
-  if(dwTlsIndex == (DWORD)(-1)) 
+  if (dwTlsIndex == -1) 
     return FALSE;
   BOOL retval = TlsSetValue(dwTlsIndex, lpTlsValue);
 
@@ -787,12 +790,13 @@ extern "C" DWORD WINAPI dllWaitForMultipleObjects(DWORD nCount, CONST HANDLE *lp
 #ifdef API_DEBUG
   CLog::Log(LOGDEBUG, "WaitForMultipleObjects(..)");
 #endif
+
   return WaitForMultipleObjects(nCount, lpHandles, fWaitAll, dwMilliseconds);
 }
 
 extern "C" BOOL WINAPI dllGetProcessAffinityMask(HANDLE hProcess, LPDWORD lpProcessAffinityMask, LPDWORD lpSystemAffinityMask)
 {
-  CLog::Log(LOGDEBUG, "GetProcessAffinityMask(0x%x, 0x%x, 0x%x) => 1\n",
+  CLog::Log(LOGDEBUG, "GetProcessAffinityMask(0x%p, 0x%p, 0x%p) => 1\n",
             (void*)hProcess, (void*)lpProcessAffinityMask, (void*)lpSystemAffinityMask);
   if (lpProcessAffinityMask)*lpProcessAffinityMask = 1;
   if (lpSystemAffinityMask)*lpSystemAffinityMask = 1;
@@ -942,7 +946,7 @@ SFlsSlot, *LPSFlsSlot;
 #ifdef _XBOX
 #define FLS_OUT_OF_INDEXES (DWORD)0xFFFFFFFF
 #endif
-SFlsSlot flsSlots[FLS_NUM_SLOTS] = { false, NULL, NULL };
+SFlsSlot flsSlots[FLS_NUM_SLOTS] = { { false, NULL, NULL } };
 
 extern "C" DWORD WINAPI dllFlsAlloc(PFLS_CALLBACK_FUNCTION lpCallback)
 {
@@ -1120,7 +1124,7 @@ extern "C" BOOL WINAPI dllDVDReadFileLayerChangeHack(HANDLE hFile, LPVOID lpBuff
       LONG low = 0;
       LONG high = 0;
       low = SetFilePointer(hFile, low, &high, FILE_CURRENT);
-      CLog::Log(LOGWARNING, "DVDReadFile() warning - invalid data read from block at %d (%d) - rereading", low, high);
+      CLog::Log(LOGWARNING, "DVDReadFile() warning - invalid data read from block at %li (%li) - rereading", low, high);
       SetFilePointer(hFile, (int)numChecked - (int)*lpNumberOfBytesRead - DVD_CHUNK_SIZE, NULL, FILE_CURRENT);
       DWORD numRead;
       ret = ReadFile(hFile, (BYTE *)lpBuffer + numChecked - DVD_CHUNK_SIZE, DVD_CHUNK_SIZE, &numRead, lpOverlapped);

@@ -185,10 +185,13 @@ bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strT
   if (flipX && strcmpi(flipX, "true") == 0) image.orientation = 1;
   const char *flipY = pNode->Attribute("flipy");
   if (flipY && strcmpi(flipY, "true") == 0) image.orientation = 3 - image.orientation;  // either 3 or 2
-  const char *diffuse = pNode->Attribute("diffuse");
-  if (diffuse) image.diffuse = diffuse;
-  image.file = pNode->FirstChild() ? pNode->FirstChild()->Value() : "";
-  image.file.Replace('/', '\\');
+  image.diffuse = pNode->Attribute("diffuse");
+  CStdString fallback = pNode->Attribute("fallback");
+  CStdString file = pNode->FirstChild() ? pNode->FirstChild()->Value() : "";
+  image.diffuse.Replace("/", "\\");
+  file.Replace("/", "\\");
+  fallback.Replace("/", "\\");
+  image.file.SetLabel(file, fallback);
   return true;
 }
 
@@ -380,6 +383,69 @@ bool CGUIControlFactory::GetNavigation(const TiXmlElement *node, const char *tag
   return true;
 }
 
+void CGUIControlFactory::GetInfoLabel(const TiXmlNode *pControlNode, const CStdString &labelTag, CGUIInfoLabel &infoLabel)
+{
+  vector<CGUIInfoLabel> labels;
+  GetInfoLabels(pControlNode, labelTag, labels);
+  if (labels.size())
+    infoLabel = labels[0];
+}
+
+void CGUIControlFactory::GetInfoLabels(const TiXmlNode *pControlNode, const CStdString &labelTag, vector<CGUIInfoLabel> &infoLabels)
+{
+  // we can have the following infolabels:
+  // 1.  <number>1234</number> -> direct number
+  // 2.  <label>number</label> -> lookup in localizestrings
+  // 3.  <label fallback="blah">$LOCALIZE(blah) $INFO(blah)</label> -> infolabel with given fallback
+  // 4.  <info>ListItem.Album</info> (uses <label> as fallback)
+  int labelNumber = 0;
+  if (XMLUtils::GetInt(pControlNode, "number", labelNumber))
+  {
+    CStdString label;
+    label.Format("%i", labelNumber);
+    infoLabels.push_back(CGUIInfoLabel(label));
+    return; // done
+  }
+  const TiXmlElement *labelNode = pControlNode->FirstChildElement(labelTag);
+  while (labelNode)
+  {
+    if (labelNode->FirstChild())
+    {
+      CStdString label = labelNode->FirstChild()->Value();
+      CStdString fallback = labelNode->Attribute("fallback");
+      if (label.size() && label[0] != '-')
+      {
+        if (StringUtils::IsNaturalNumber(label))
+          label = g_localizeStrings.Get(atoi(label));
+        else
+        { // TODO: UTF-8: What if the xml is encoded as UTF-8 already?
+          g_charsetConverter.stringCharsetToUtf8(label);
+        }
+        infoLabels.push_back(CGUIInfoLabel(label, fallback));
+      }
+    }
+    labelNode = labelNode->NextSiblingElement(labelTag);
+  }
+  const TiXmlNode *infoNode = pControlNode->FirstChild("info");
+  if (infoNode)
+  { // <info> nodes override <label>'s (backward compatibility)
+    CStdString fallback;
+    if (infoLabels.size())
+      fallback = infoLabels[0].GetLabel(0);
+    infoLabels.clear();
+    while (infoNode)
+    {
+      if (infoNode->FirstChild())
+      {
+        CStdString info;
+        info.Format("$INFO[%s]", infoNode->FirstChild()->Value());
+        infoLabels.push_back(CGUIInfoLabel(info, fallback));
+      }
+      infoNode = infoNode->NextSibling("info");
+    }
+  }
+}
+
 // Convert a string to a GUI label, by translating/parsing the label for localisable strings
 CStdString CGUIControlFactory::GetLabel(const CStdString &label)
 {
@@ -391,9 +457,8 @@ CStdString CGUIControlFactory::GetLabel(const CStdString &label)
     g_charsetConverter.stringCharsetToUtf8(viewLabel);
   }
   // translate the label
-  vector<CInfoPortion> info;
-  g_infoManager.ParseLabel(viewLabel, info);
-  return g_infoManager.GetMultiInfo(info, 0);
+  CGUIInfoLabel info(viewLabel, "");
+  return info.GetLabel(0);
 }
 
 CStdString CGUIControlFactory::GetType(const TiXmlElement *pControlNode)
@@ -423,7 +488,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   // resolve again with strType set so that <default> tags are added
   g_SkinInfo.ResolveIncludes(pControlNode, strType);
 
-  int id = 0;
+  DWORD id = 0;
   float posX = 0, posY = 0;
   float width = 0, height = 0;
 
@@ -434,9 +499,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   D3DCOLOR colorDiffuse = 0xFFFFFFFF;
   DWORD defaultControl = 0;
   CStdString strTmp;
-  vector<int> vecInfo;
-  vector<string> vecLabel;
-  string strLabel;
+  int singleInfo = 0;
+  CStdString strLabel;
   int iUrlSet=0;
   int iToggleSelect;
 
@@ -525,7 +589,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
 
   bool bScrollLabel = false;
   bool bPulse = true;
-  CStdString texturePath;
   DWORD timePerImage = 0;
   DWORD fadeTime = 0;
   DWORD timeToPauseAtEnd = 0;
@@ -568,7 +631,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   // check if we are a <controlgroup>
   if (strcmpi(pControlNode->Value(), "controlgroup") == 0)
   {
-    if (pControlNode->Attribute("id", &id))
+    if (pControlNode->Attribute("id", (int*) &id))
       id += 9000;       // offset at 9000 for old controlgroups
                         // NOTE: An old control group with no id means that it can't be focused
                         //       Which isn't too good :(
@@ -576,8 +639,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   }
   else
 #endif
-  if (!pControlNode->Attribute("id", &id))
-    XMLUtils::GetInt(pControlNode, "id", id);       // backward compatibility - not desired
+  if (!pControlNode->Attribute("id", (int*) &id))
+    XMLUtils::GetInt(pControlNode, "id", (int&) id);       // backward compatibility - not desired
   // TODO: Perhaps we should check here whether id is valid for focusable controls
   // such as buttons etc.  For labels/fadelabels/images it does not matter
 
@@ -663,17 +726,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetMultipleString(pControlNode, "onfocus", focusActions);
   GetMultipleString(pControlNode, "altclick", altclickActions);
 
-  vector<CStdString> strVecInfo;
-  if (GetMultipleString(pControlNode, "info", strVecInfo))
-  {
-    vecInfo.clear();
-    for (unsigned int i = 0; i < strVecInfo.size(); i++)
-    {
-      int info = g_infoManager.TranslateString(strVecInfo[i]);
-      if (info)
-        vecInfo.push_back(info);
-    }
-  }
+  CStdString infoString;
+  if (XMLUtils::GetString(pControlNode, "info", infoString))
+    singleInfo = g_infoManager.TranslateString(infoString);
+
   GetTexture(pControlNode, "texturefocus", textureFocus);
   GetTexture(pControlNode, "texturenofocus", textureNoFocus);
   GetTexture(pControlNode, "alttexturefocus", textureAltFocus);
@@ -775,7 +831,11 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetTexture(pControlNode, "midtexture", textureMid);
   GetTexture(pControlNode, "righttexture", textureRight);
   GetTexture(pControlNode, "overlaytexture", textureOverlay);
+
+  // the <texture> tag can be overridden by the <info> tag
   GetTexture(pControlNode, "texture", texture);
+  GetInfoLabel(pControlNode, "texture", texture.file);
+
   GetTexture(pControlNode, "bordertexture", borderTexture);
   GetFloat(pControlNode, "rangemin", rMin);
   GetFloat(pControlNode, "rangemax", rMax);
@@ -809,41 +869,19 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetFloat(pControlNode, "itemwidthbig", itemWidthBig);
   GetFloat(pControlNode, "itemheightbig", itemHeightBig);
 
-  int labelNumber = 0;
-  if (XMLUtils::GetInt(pControlNode, "number", labelNumber))
+  // fade label can have a whole bunch, but most just have one
+  vector<CGUIInfoLabel> infoLabels;
+  GetInfoLabels(pControlNode, "label", infoLabels);
+  
+  if (XMLUtils::GetString(pControlNode, "label", strLabel))
   {
-    CStdString label;
-    label.Format("%i", labelNumber);
-    strLabel = label;
-  }
-  vector<CStdString> strVecLabel;
-  if (GetMultipleString(pControlNode, "label", strVecLabel))
-  {
-    CStdString label;
-    vecLabel.clear();
-    for (unsigned int i = 0; i < strVecLabel.size(); i++)
-    {
-      label = strVecLabel[i];
-      if (label.size() > 0)
-      {
-        if (label[0] != '-')
-        {
-          if (StringUtils::IsNaturalNumber(label))
-          {
-            DWORD dwLabelID = atol(label.c_str());
-            label = g_localizeStrings.Get(dwLabelID);
-          }
-          else
-          { // TODO: UTF-8: What if the xml is encoded as UTF-8 already?
-            CStdString utf8String;
-            g_charsetConverter.stringCharsetToUtf8(label, utf8String);
-            label = utf8String;
-          }
-          vecLabel.push_back(label);
-        }
-      }
-      if (i == 0 && vecLabel.size())
-        strLabel = vecLabel[0];
+    if (strLabel == "-")
+      strLabel.Empty();
+    if (StringUtils::IsNaturalNumber(strLabel))
+      strLabel = g_localizeStrings.Get(atoi(strLabel.c_str()));
+    else
+    { // TODO: UTF-8: What if the xml is encoded as UTF-8 already?
+      g_charsetConverter.stringCharsetToUtf8(strLabel);
     }
   }
   if (XMLUtils::GetString(pControlNode, "altlabel", altLabel))
@@ -880,7 +918,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   XMLUtils::GetBoolean(pControlNode, "scroll", bScrollLabel);
   XMLUtils::GetBoolean(pControlNode,"pulseonselect", bPulse);
 
-  GetPath(pControlNode,"imagepath", texturePath);
+  CGUIInfoLabel texturePath;
+  GetInfoLabel(pControlNode,"imagepath", texturePath);
   XMLUtils::GetDWORD(pControlNode,"timeperimage", timePerImage);
   XMLUtils::GetDWORD(pControlNode,"fadetime", fadeTime);
   XMLUtils::GetDWORD(pControlNode,"pauseatend", timeToPauseAtEnd);
@@ -892,6 +931,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetFloat(pControlNode, "radioheight", radioHeight);
   GetFloat(pControlNode, "radioposx", radioPosX);
   GetFloat(pControlNode, "radioposy", radioPosY);
+  GetFloat(pControlNode, "spinposx", radioPosX);
   CStdString borderStr;
   if (XMLUtils::GetString(pControlNode, "bordersize", borderStr))
     GetRectFromString(borderStr, borderSize);
@@ -973,8 +1013,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   {
     control = new CGUILabelControl(
       dwParentId, id, posX, posY, width, height,
-      strLabel, labelInfo, wrapMultiLine, bHasPath);
-    ((CGUILabelControl *)control)->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
+      labelInfo, wrapMultiLine, bHasPath);
+    if (infoLabels.size())
+      ((CGUILabelControl *)control)->SetInfo(infoLabels[0]);
     ((CGUILabelControl *)control)->SetWidthControl(bScrollLabel);
   }
   else if (strType == "edit")
@@ -994,8 +1035,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       dwParentId, id, posX, posY, width, height,
       labelInfo, scrollOut, timeToPauseAtEnd);
 
-    ((CGUIFadeLabelControl *)control)->SetLabel(vecLabel);
-    ((CGUIFadeLabelControl *)control)->SetInfo(vecInfo);
+    ((CGUIFadeLabelControl *)control)->SetInfo(infoLabels);
   }
   else if (strType == "rss")
   {
@@ -1068,9 +1108,12 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   }
   else if (strType == "multiselect")
   {
+    CGUIInfoLabel label;
+    if (infoLabels.size())
+      label = infoLabels[0];
     control = new CGUIMultiSelectTextControl(
       dwParentId, id, posX, posY, width, height,
-      textureFocus, textureNoFocus, labelInfo, strLabel);
+      textureFocus, textureNoFocus, labelInfo, label);
   }
   else if (strType == "spincontrol")
   {
@@ -1104,7 +1147,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       dwParentId, id, posX, posY, width, height,
       textureBar, textureNib, textureNibFocus, SPIN_CONTROL_TYPE_TEXT);
 
-    ((CGUISliderControl *)control)->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
+    ((CGUISliderControl *)control)->SetInfo(singleInfo);
     ((CGUISliderControl *)control)->SetControlOffsetX(controlOffsetX);
     ((CGUISliderControl *)control)->SetControlOffsetY(controlOffsetY);
   }
@@ -1116,7 +1159,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       textureBar, textureNib, textureNibFocus, labelInfo, SPIN_CONTROL_TYPE_TEXT);
 
     ((CGUISettingsSliderControl *)control)->SetText(strLabel);
-    ((CGUISettingsSliderControl *)control)->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
+    ((CGUISettingsSliderControl *)control)->SetInfo(singleInfo);
   }
   else if (strType == "scrollbar")
   {
@@ -1129,7 +1172,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     control = new CGUIProgressControl(
       dwParentId, id, posX, posY, width, height,
       textureBackground, textureLeft, textureMid, textureRight, textureOverlay, rMin, rMax);
-    ((CGUIProgressControl *)control)->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
+    ((CGUIProgressControl *)control)->SetInfo(singleInfo);
   }
   else if (strType == "image")
   {
@@ -1139,21 +1182,18 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     else
       control = new CGUIBorderedImage(
         dwParentId, id, posX, posY, width, height, texture, borderTexture, borderSize, dwColorKey);
-    ((CGUIImage *)control)->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     ((CGUIImage *)control)->SetAspectRatio(aspectRatio, aspectAlign);
   }
   else if (strType == "largeimage")
   {
     control = new CGUILargeImage(
       dwParentId, id, posX, posY, width, height, texture);
-    ((CGUILargeImage *)control)->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     ((CGUILargeImage *)control)->SetAspectRatio(aspectRatio, aspectAlign);
   }
   else if (strType == "multiimage")
   {
     control = new CGUIMultiImage(
       dwParentId, id, posX, posY, width, height, texturePath, timePerImage, fadeTime, randomized, loop, timeToPauseAtEnd);
-    ((CGUIMultiImage *)control)->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     ((CGUIMultiImage *)control)->SetAspectRatio(aspectRatio);
   }
   else if (strType == "list")
@@ -1248,8 +1288,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       labelInfo, scrollTime);
 
     ((CGUITextBox *)control)->SetPageControl(pageControl);
-    ((CGUITextBox *)control)->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
-    ((CGUITextBox *)control)->SetLabel(strLabel);
+    if (infoLabels.size())
+      ((CGUITextBox *)control)->SetInfo(infoLabels[0]);
     ((CGUITextBox *)control)->SetAutoScrolling(pControlNode);
   }
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
@@ -1342,6 +1382,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       labelInfo, textureFocus, textureNoFocus, textureUp, textureDown, textureUpFocus, textureDownFocus,
       labelInfo, iType);
 
+    ((CGUISpinControlEx *)control)->SetSpinPosition(radioPosX);
     ((CGUISpinControlEx *)control)->SetText(strLabel);
     ((CGUISpinControlEx *)control)->SetReverse(bReverse);
   }

@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "XBVideoConfig.h"
 #ifdef HAS_XBOX_HARDWARE
-#include "xbox/undocumented.h"
+#include "xbox/Undocumented.h"
 #endif
 
 XBVideoConfig g_videoConfig;

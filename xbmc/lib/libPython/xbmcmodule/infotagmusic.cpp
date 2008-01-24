@@ -2,10 +2,12 @@
 #include "infotagmusic.h"
 #include "pyutil.h"
 
+#ifndef __GNUC__
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
 #pragma bss_seg("PY_BSS")
 #pragma const_seg("PY_RDATA")
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -121,6 +123,7 @@ namespace PYXBMC
     {"getGenre", (PyCFunction)InfoTagMusic_GetGenre, METH_VARARGS, getGenre__doc__},
     {"getDuration", (PyCFunction)InfoTagMusic_GetDuration, METH_VARARGS, getDuration__doc__},
     {"getTrack", (PyCFunction)InfoTagMusic_GetTrack, METH_VARARGS, getTrack__doc__},
+    {"getDisc", (PyCFunction)InfoTagMusic_GetDisc, METH_VARARGS, getDisc__doc__},
     {"getReleaseDate", (PyCFunction)InfoTagMusic_GetReleaseDate, METH_VARARGS, getReleaseDate__doc__},
     {NULL, NULL, 0, NULL}
   };
@@ -131,10 +134,12 @@ namespace PYXBMC
     "");
 
 // Restore code and data sections to normal.
+#ifndef __GNUC__
 #pragma code_seg()
 #pragma data_seg()
 #pragma bss_seg()
 #pragma const_seg()
+#endif
 
   PyTypeObject InfoTagMusic_Type;
 

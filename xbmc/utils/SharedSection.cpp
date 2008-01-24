@@ -158,3 +158,4 @@ void CExclusiveLock::Leave()
   m_cs.LeaveExclusive();
   m_bIsOwner = false;
 }
+

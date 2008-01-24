@@ -1,18 +1,25 @@
 #pragma once
-#include "../../../../DynamicDll.h"
+#include "../../DynamicDll.h"
 
 extern "C" {
 #define HAVE_MMX
+#ifndef __STDC_CONSTANT_MACROS
 #define __STDC_CONSTANT_MACROS
+#endif
+#ifndef __STDC_LIMIT_MACROS
 #define __STDC_LIMIT_MACROS
+#endif
+#ifndef __GNUC__
 #pragma warning(disable:4244)
-#include "..\..\ffmpeg\avutil.h"
-#include "..\..\ffmpeg\postprocess.h"
+#endif
+#include "avutil.h"
+#include "postprocess.h"
 }
 
 class DllAvCodecInterface
 {
 public:
+  //virtual ~DllPostProcInterface() {}
   virtual void pp_postprocess(uint8_t * src[3], int srcStride[3], uint8_t * dst[3], int dstStride[3],
                    int horizontalSize, int verticalSize, QP_STORE_T *QP_store,  int QP_stride,
 		           pp_mode_t *mode, pp_context_t *ppContext, int pict_type)=0;	           

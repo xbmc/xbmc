@@ -5,7 +5,7 @@
 
 #include "stdafx.h"
 #include "HTTP.h"
-#include "../dnsnamecache.h"
+#include "../DNSNameCache.h"
 #include "../Util.h"
 #include "../xbox/network.h"
 
@@ -417,6 +417,7 @@ bool CHTTP::Connect()
     }
     m_socket.attach(socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)); // new socket
   }
+
   hEvent = WSACreateEvent();
   return true;
 }

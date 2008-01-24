@@ -13,8 +13,10 @@ extern "C" {
 #ifndef __STDC_LIMIT_MACROS
 #define __STDC_LIMIT_MACROS
 #endif
+#ifndef __GNUC__
 #pragma warning(disable:4244)
-#include "../ffmpeg/avcodec.h"
+#endif
+#include "../../ffmpeg/avcodec.h"
 }
 
 // 0x100000 is the video starting range

@@ -1,3 +1,6 @@
+#ifndef BUTTON_TRANSLATOR_H
+#define BUTTON_TRANSLATOR_H
+
 #pragma once
 
 struct CButtonAction
@@ -17,6 +20,7 @@ public:
   void GetAction(WORD wWindow, const CKey &key, CAction &action);
   WORD TranslateWindowString(const char *szWindow);
   bool TranslateActionString(const char *szAction, WORD &wAction);
+
 private:
   typedef multimap<WORD, CButtonAction> buttonMap; // our button map to fill in
   map<WORD, buttonMap> translatorMap;       // mapping of windows to button maps
@@ -30,3 +34,5 @@ private:
 };
 
 extern CButtonTranslator g_buttonTranslator;
+
+#endif

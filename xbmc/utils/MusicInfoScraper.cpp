@@ -1,7 +1,9 @@
 #include "stdafx.h"
 
-#include "musicinfoscraper.h"
-#include "../util.h"
+#include "./MusicInfoScraper.h"
+#include "./HTMLUtil.h"
+#include "./HTMLTable.h"
+#include "../Util.h"
 #include "ScraperParser.h"
 #include "HTTP.h"
 

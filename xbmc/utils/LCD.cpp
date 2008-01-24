@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "lcd.h"
+#include "LCD.h"
 #include "GUIInfoManager.h"
 #include "../Util.h"
 
@@ -432,11 +432,7 @@ void ILCD::LoadMode(TiXmlNode *node, LCD_MODE mode)
   while (line)
   {
     if (line->FirstChild())
-    {
-      vector<CInfoPortion> info;
-      g_infoManager.ParseLabel(line->FirstChild()->Value(), info);
-      m_lcdMode[mode].push_back(info);
-    }
+      m_lcdMode[mode].push_back(CGUIInfoLabel(line->FirstChild()->Value()));
     line = line->NextSibling("line");
   }
 }
@@ -453,7 +449,7 @@ void ILCD::Render(LCD_MODE mode)
   unsigned int inLine = 0;
   while (outLine < 4 && inLine < m_lcdMode[mode].size())
   {
-    CStdString utf8Line = g_infoManager.GetMultiInfo(m_lcdMode[mode][inLine++], 0);
+    CStdString utf8Line = m_lcdMode[mode][inLine++].GetLabel(0);
     if (!utf8Line.IsEmpty())
     {
       // convert to the user char set

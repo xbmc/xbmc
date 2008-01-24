@@ -267,7 +267,7 @@ void CDVDPlayerVideo::Process()
     if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
     {
       CDVDMsgDemuxerPacket* pMsgDemuxerPacket = (CDVDMsgDemuxerPacket*)pMsg;
-      CDVDDemux::DemuxPacket* pPacket = pMsgDemuxerPacket->GetPacket();
+      DemuxPacket* pPacket = pMsgDemuxerPacket->GetPacket();
 
       if (m_DetectedStill)
       {
@@ -530,7 +530,7 @@ void CDVDPlayerVideo::StepFrame()
 void CDVDPlayerVideo::Flush()
 { 
   /* flush using message as this get's called from dvdplayer thread */
-  /* and any demux packet that has been taken out of queue need to *
+  /* and any demux packet that has been taken out of queue need to */
   /* be disposed of before we flush */
   m_messageQueue.Flush();
   m_messageQueue.Put(new CDVDMsgGeneralFlush());  
@@ -735,8 +735,8 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
     // calculate frame dropping pattern to render at this speed
     // we do that by deciding if this or next frame is closest
     // to the flip timestamp
-    double current   = abs(m_dropbase -  m_droptime);
-    double next      = abs(m_dropbase - (m_droptime + iFrameDuration));
+    double current   = fabs(m_dropbase -  m_droptime);
+    double next      = fabs(m_dropbase - (m_droptime + iFrameDuration));
     double frametime = (double)DVD_TIME_BASE / maxfps;
 
     m_droptime += iFrameDuration;

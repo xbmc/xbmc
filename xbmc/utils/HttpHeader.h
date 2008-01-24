@@ -20,9 +20,10 @@ public:
   void GetHeader(CStdString& strHeader);
   
   CStdString GetContentType() { return GetValue(HTTPHEADER_CONTENT_TYPE); }
-  
+
   void Clear();
   
 protected:
   HeaderParams m_params;
 };
+

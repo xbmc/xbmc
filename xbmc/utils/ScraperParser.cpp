@@ -1,16 +1,17 @@
 #include "ScraperParser.h"
 
+#include "stdafx.h"
+
+#include <cstring>
 #include "RegExp.h"
-#include "htmlutil.h"
+#include "HTMLUtil.h"
+#include "CharsetConverter.h"
 #include "URL.h"
 #include "HTTP.h"
-#include "charsetconverter.h"
-#include "stdafx.h"
 
 #include "Picture.h"
 #include "Util.h"
 
-#include <cstring>
 #include <sstream>
 
 CScraperUrl::CScraperUrl(const CStdString& strUrl)
@@ -232,6 +233,7 @@ CScraperParser::CScraperParser()
   m_pRootElement = NULL;
   m_name = m_content = NULL;
   m_document = NULL;
+  m_settings = NULL;
 }
 
 CScraperParser::~CScraperParser()
@@ -242,6 +244,7 @@ CScraperParser::~CScraperParser()
 
   m_document = NULL;
   m_name = m_content = NULL;
+  m_settings = NULL;
 }
 
 bool CScraperParser::Load(const CStdString& strXMLFile)
@@ -298,18 +301,30 @@ bool CScraperParser::Load(const CStdString& strXMLFile)
 void CScraperParser::ReplaceBuffers(CStdString& strDest)
 {
   char temp[5];
+  // insert buffers
+  int iIndex;
   for (int i=0;i<9;++i)
   {
+    iIndex = 0;
     sprintf(temp,"$$%i",i+1);
-    int iIndex = 0;
     while ((iIndex = strDest.find(temp,iIndex)) != CStdString::npos) // COPIED FROM CStdString WITH THE ADDITION OF $ ESCAPING
     {
       strDest.replace(strDest.begin()+iIndex,strDest.begin()+iIndex+strlen(temp),m_param[i]);
       iIndex += m_param[i].length();
     }
   }
-  int iIndex = 0;
-  while ((iIndex = strDest.find("\\n",iIndex))!=CStdString::npos)
+  // insert settings
+  iIndex = 0;
+  while ((iIndex = strDest.find("$INFO[",iIndex)) != CStdString::npos && m_settings)
+  {
+    int iEnd = strDest.Find("]",iIndex);
+    CStdString strInfo = strDest.Mid(iIndex+6,iEnd-iIndex-6);
+    CStdString strReplace = m_settings->Get(strInfo);
+    strDest.replace(strDest.begin()+iIndex,strDest.begin()+iEnd+1,strReplace);
+    iIndex += strReplace.length();
+  }
+  iIndex = 0;
+  while ((iIndex = strDest.find("\\n",iIndex)) != CStdString::npos)
     strDest.replace(strDest.begin()+iIndex,strDest.begin()+iIndex+2,"\n");
 }
 
@@ -430,7 +445,7 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
       {
         char temp[4];
         sprintf(temp,"\\%i",iBuf+1);
-        int i2=0;
+        size_t i2=0;
         while ((i2 = strOutput.Find(temp,i2)) != CStdString::npos)
         {
           strOutput.Insert(i2,"!!!CLEAN!!!");
@@ -443,7 +458,7 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
       {
         char temp[4];
         sprintf(temp,"\\%i",iBuf+1);
-        int i2=0;
+        size_t i2=0;
         while ((i2 = strOutput.Find(temp,i2)) != CStdString::npos)
         {
           strOutput.Insert(i2,"!!!TRIM!!!");
@@ -454,8 +469,7 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
       }
     }
     int i = reg.RegFind(curInput.c_str());
-    int iPos=0;
-    while (i > -1 && i < (int)curInput.size())
+    while (i > -1 && (i < (int)curInput.size() || curInput.size() == 0))
     {
       if (!bAppend)
       {
@@ -507,7 +521,7 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
         {
           CStdString strResultNoCase = strResult;
           strResultNoCase.ToLower();
-          if (strResultNoCase.Find(m_param[iCompare-1]) != CStdString::npos)
+          if ((size_t) strResultNoCase.Find(m_param[iCompare-1]) != CStdString::npos)
             dest += strResult;
         }
         else
@@ -563,18 +577,43 @@ void CScraperParser::ParseNext(TiXmlElement* element)
       else
         strInput = m_param[0];
 
-      ParseExpression(strInput, m_param[iDest-1],pReg,bAppend);
+      const char* szConditional = pReg->Attribute("conditional");
+      bool bExecute = true;
+      if (szConditional)
+      {
+        bool bInverse=false;
+        if (szConditional[0] == '!')
+        {
+          bInverse = true;
+          szConditional++;
+        }
+        CStdString strSetting;
+        if (m_settings)
+           strSetting = m_settings->Get(szConditional);
+        if (strSetting.IsEmpty()) // setting isnt around - treat as if the value is false
+          bExecute = !bInverse;
+        else
+          bExecute = bInverse?!strSetting.Equals("true"):strSetting.Equals("true");
+      }
+
+      if (bExecute)
+        ParseExpression(strInput, m_param[iDest-1],pReg,bAppend);
+
       pReg = pReg->NextSiblingElement("RegExp");
   }
 }
 
-const CStdString CScraperParser::Parse(const CStdString& strTag)
+const CStdString CScraperParser::Parse(const CStdString& strTag, CScraperSettings* pSettings)
 {
   TiXmlElement* pChildElement = m_pRootElement->FirstChildElement(strTag.c_str());
   if(pChildElement == NULL) return "";
   int iResult = 1; // default to param 1
   pChildElement->QueryIntAttribute("dest",&iResult);
   TiXmlElement* pChildStart = pChildElement->FirstChildElement("RegExp");
+  if (pSettings)
+    m_settings = pSettings;
+  else
+    m_settings = NULL;
   ParseNext(pChildStart);
   CStdString tmp = m_param[iResult-1];
   
@@ -597,11 +636,11 @@ bool CScraperParser::HasFunction(const CStdString& strTag)
 
 void CScraperParser::Clean(CStdString& strDirty)
 {
-  int i=0;
+  size_t i=0;
   CStdString strBuffer;
   while ((i=strDirty.Find("!!!CLEAN!!!",i)) != CStdString::npos)
   {
-    int i2;
+    size_t i2;
     if ((i2=strDirty.Find("!!!CLEAN!!!",i+11)) != CStdString::npos)
     {
       strBuffer = strDirty.substr(i+11,i2-i-11);
@@ -621,7 +660,7 @@ void CScraperParser::Clean(CStdString& strDirty)
   i=0;
   while ((i=strDirty.Find("!!!TRIM!!!",i)) != CStdString::npos)
   {
-    int i2;
+    size_t i2;
     if ((i2=strDirty.Find("!!!TRIM!!!",i+10)) != CStdString::npos)
     {
       strBuffer = strDirty.substr(i+10,i2-i-10);
@@ -827,3 +866,4 @@ void CScraperParser::ClearBuffers()
   for (int i=0;i<9;++i)
     m_param[i].clear();
 }
+

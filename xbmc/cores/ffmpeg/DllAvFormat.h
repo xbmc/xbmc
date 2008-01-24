@@ -1,11 +1,17 @@
 #pragma once
 #include "DynamicDll.h"
+#include "DllAvCodec.h"
 
 extern "C" {
+#ifndef HAVE_MMX
 #define HAVE_MMX
+#endif
+#ifndef __STDC_CONSTANT_MACROS
 #define __STDC_CONSTANT_MACROS
-#define __STDC_LIMIT_MACROS
+#endif
+#ifndef __GNUC__
 #pragma warning(disable:4244)
+#endif
 #include "..\ffmpeg\avformat.h"
 }
 
@@ -13,10 +19,12 @@ extern "C" {
 class DllAvFormatInterface
 {
 public:
-  virtual void av_register_all(void)=0;
+  virtual ~DllAvFormatInterface() {}
+  virtual void av_register_all_dont_call(void)=0;
   virtual AVInputFormat *av_find_input_format(const char *short_name)=0;
   virtual int url_feof(ByteIOContext *s)=0;
   virtual void av_close_input_file(AVFormatContext *s)=0;
+  virtual void av_close_input_stream(AVFormatContext *s)=0;
   virtual int av_read_frame(AVFormatContext *s, AVPacket *pkt)=0;
   virtual int av_read_play(AVFormatContext *s)=0;
   virtual int av_read_pause(AVFormatContext *s)=0;
@@ -33,8 +41,8 @@ public:
   virtual AVInputFormat *av_probe_input_format(AVProbeData *pd, int is_opened)=0;
   virtual void dump_format(AVFormatContext *ic, int index, const char *url, int is_output)=0;
   virtual void av_destruct_packet_nofree(AVPacket *pkt)=0;
-  virtual int url_fdopen(ByteIOContext *s, URLContext *h)=0;
-  virtual int url_fopen(ByteIOContext *s, const char *filename, int flags)=0;
+  virtual int url_fdopen(ByteIOContext **s, URLContext *h)=0;
+  virtual int url_fopen(ByteIOContext **s, const char *filename, int flags)=0;
   virtual int url_fclose(ByteIOContext *s)=0;
   virtual offset_t url_fseek(ByteIOContext *s, offset_t offset, int whence)=0;
   virtual void av_read_frame_flush(AVFormatContext *s)=0;
@@ -43,11 +51,12 @@ public:
 
 class DllAvFormat : public DllDynamic, DllAvFormatInterface
 {
-  DECLARE_DLL_WRAPPER(DllAvFormat, Q:\\system\\players\\dvdplayer\\avformat-51.dll)
-  DEFINE_METHOD0(void, av_register_all)
+  DECLARE_DLL_WRAPPER(DllAvFormat, Q:\\system\\players\\dvdplayer\\avformat-52.dll)
+  DEFINE_METHOD0(void, av_register_all_dont_call)
   DEFINE_METHOD1(AVInputFormat*, av_find_input_format, (const char *p1))
   DEFINE_METHOD1(int, url_feof, (ByteIOContext *p1))
   DEFINE_METHOD1(void, av_close_input_file, (AVFormatContext *p1))
+  DEFINE_METHOD1(void, av_close_input_stream, (AVFormatContext *p1))
   DEFINE_FUNC_ALIGNED2(int, __cdecl, av_read_frame, AVFormatContext *, AVPacket *)
   DEFINE_METHOD1(int, av_read_play, (AVFormatContext *p1))
   DEFINE_METHOD1(int, av_read_pause, (AVFormatContext *p1))
@@ -64,17 +73,18 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_FUNC_ALIGNED2(AVInputFormat*, __cdecl, av_probe_input_format, AVProbeData*, int)
   DEFINE_METHOD4(void, dump_format, (AVFormatContext *p1, int p2, const char *p3, int p4))
   DEFINE_METHOD1(void, av_destruct_packet_nofree, (AVPacket *p1))
-  DEFINE_METHOD2(int, url_fdopen, (ByteIOContext *p1, URLContext *p2))
-  DEFINE_METHOD3(int, url_fopen, (ByteIOContext *p1, const char *p2, int p3))
+  DEFINE_METHOD2(int, url_fdopen, (ByteIOContext **p1, URLContext *p2))
+  DEFINE_METHOD3(int, url_fopen, (ByteIOContext **p1, const char *p2, int p3))
   DEFINE_METHOD1(int, url_fclose, (ByteIOContext *p1))
   DEFINE_METHOD3(offset_t, url_fseek, (ByteIOContext *p1, offset_t p2, int p3))
   DEFINE_FUNC_ALIGNED1(void, __cdecl, av_read_frame_flush, AVFormatContext*)
   DEFINE_FUNC_ALIGNED3(int, __cdecl, get_buffer, ByteIOContext*, unsigned char *, int)
   BEGIN_METHOD_RESOLVE()
-    RESOLVE_METHOD(av_register_all)
+    RESOLVE_METHOD_RENAME(av_register_all, av_register_all_dont_call)
     RESOLVE_METHOD(av_find_input_format)
     RESOLVE_METHOD(url_feof)
     RESOLVE_METHOD(av_close_input_file)
+    RESOLVE_METHOD(av_close_input_stream)
     RESOLVE_METHOD(av_read_frame)
     RESOLVE_METHOD(av_read_play)
     RESOLVE_METHOD(av_read_pause)
@@ -95,4 +105,10 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
     RESOLVE_METHOD(av_read_frame_flush)
     RESOLVE_METHOD(get_buffer)
   END_METHOD_RESOLVE()
+public:  
+  void av_register_all()
+  {
+    CSingleLock lock(DllAvCodec::m_critSection);
+    av_register_all_dont_call();
+  }
 };

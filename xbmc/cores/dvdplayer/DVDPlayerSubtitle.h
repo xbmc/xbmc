@@ -27,6 +27,7 @@ public:
 
   void UpdateOverlayInfo(CDVDInputStreamNavigator* pStream, int iAction) { m_pOverlayContainer->UpdateOverlayInfo(pStream, &m_dvdspus, iAction); }
 
+  bool AcceptsData();
   void SendMessage(CDVDMsg* pMsg);
   bool OpenStream(CDVDStreamInfo &hints, string& filename);
   void CloseStream(bool flush);

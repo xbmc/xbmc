@@ -31,14 +31,14 @@ typedef          long long s64;
 #endif
 #else
 
-#ifdef _WIN32
+//#ifdef _WIN32 
 typedef unsigned char      u8;
 typedef unsigned short     u16;
 typedef unsigned long      u32;
 typedef unsigned __int64   u64;
 typedef          __int64   s64;
 #define U64F "I64"
-#endif
+//#endif
 #endif
 
 #ifndef EXPECT_CAN_EXIT
@@ -79,3 +79,4 @@ extern void rtv_free_lines(int num, char ** lines);
 } while(0)
 
 #endif
+

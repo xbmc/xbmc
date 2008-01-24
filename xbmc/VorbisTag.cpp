@@ -20,7 +20,7 @@
  */
 
 #include "stdafx.h"
-#include "vorbistag.h"
+#include "VorbisTag.h"
 
 
 using namespace MUSIC_INFO;

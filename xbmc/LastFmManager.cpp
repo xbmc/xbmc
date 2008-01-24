@@ -22,14 +22,14 @@
 #include "stdafx.h"
 #include "LastFmManager.h"
 #include "ApplicationRenderer.h"
-#include "playlistplayer.h"
-#include "util.h"
-#include "playlistfactory.h"
+#include "PlayListPlayer.h"
+#include "Util.h"
+#include "PlayListFactory.h"
 #include "Picture.h"
-#include "utils/http.h"
+#include "utils/HTTP.h"
 #include "utils/md5.h"
 #include "FileSystem/File.h"
-#include "Utils/GUIInfoManager.h"
+#include "utils/GUIInfoManager.h"
 #include "MusicDatabase.h"
 #include <sstream>
 
@@ -80,7 +80,7 @@ void CLastFmManager::Parameter(const CStdString& key, const CStdString& data, CS
 {
   value = "";
   vector<CStdString> params;
-  int iNumItems = StringUtils::SplitString(data, "\n", params);
+  StringUtils::SplitString(data, "\n", params);
   for (int i = 0; i < (int)params.size(); i++)
   {
     CStdString tmp = params[i];
@@ -136,7 +136,7 @@ bool CLastFmManager::RadioHandShake()
   Parameter("subscriber", html, m_RadioSubscriber);
   Parameter("banned",     html, m_RadioBanned);
 
-  if (m_RadioSession == "failed")
+  if (m_RadioSession.CompareNoCase("failed") == 0)
   {
     CLog::Log(LOGERROR, "Last.fm return failed response, possible bad username or password?");
     m_RadioSession = "";
@@ -413,7 +413,7 @@ void CLastFmManager::CacheTrackThumb(const int nrInitialTracksToAdd)
 
         Crc32 crc;
         crc.ComputeFromLowerCase(coverUrl);
-        crcFile.Format("%08x.tbn", crc);
+        crcFile.Format("%08x.tbn", (__int32)crc);
         CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, crcFile, cachedFile);
         CUtil::AddFileToFolder(g_settings.GetLastFMThumbFolder(), crcFile, thumbFile);
         item.SetThumbnailImage("");
@@ -428,7 +428,7 @@ void CLastFmManager::CacheTrackThumb(const int nrInitialTracksToAdd)
         }
         catch(...)
         {
-          CLog::Log(LOGERROR, "LastFmManager: exception while caching %s to %s.", coverUrl, thumbFile);
+          CLog::Log(LOGERROR, "LastFmManager: exception while caching %s to %s.", coverUrl.c_str(), thumbFile.c_str());
         }
       }
       if (!item.HasThumbnail())

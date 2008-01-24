@@ -9,11 +9,11 @@ public:
   {
     data = NULL;
     palette = NULL;
-    linesize = NULL;
-    x = NULL;
-    y = NULL;
-    width = NULL;
-    height = NULL;
+    linesize = 0;
+    x = 0;
+    y = 0;
+    width = 0;
+    height = 0;
   }
 
   ~CDVDOverlayImage()

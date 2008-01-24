@@ -255,6 +255,7 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
   CStdString strFileName;
   m_fd = OpenFile(url, strFileName);
 
+  CLog::Log(LOGDEBUG,"CFileSMB::Open - opened %s, fd=%d",url.GetFileName().c_str(), m_fd);
   if (m_fd == -1)
   {
     // write error to logfile
@@ -406,7 +407,7 @@ unsigned int CFileSMB::Read(void *lpBuf, __int64 uiBufSize)
 
   if ( bytesRead < 0 )
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Error( %s )", get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
+    CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
     return 0;
   }
 
@@ -425,7 +426,7 @@ __int64 CFileSMB::Seek(__int64 iFilePosition, int iWhence)
 
   if ( pos < 0 )
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Error( %s )", get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
+    CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
     return -1;
   }
 
@@ -436,6 +437,7 @@ void CFileSMB::Close()
 {
   if (m_fd != -1)
   {
+    CLog::Log(LOGDEBUG,"CFileSMB::Close closing fd %d", m_fd);
     CSingleLock lock(smb);
     smbc_close(m_fd);
   }
@@ -463,7 +465,7 @@ bool CFileSMB::Delete(const CURL& url)
   int result = smbc_unlink(strFile.c_str());
 
   if(result != 0)
-    CLog::Log(LOGERROR, __FUNCTION__" - Error( %s )", get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
+    CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
 
   return (result == 0);
 }
@@ -478,7 +480,7 @@ bool CFileSMB::Rename(const CURL& url, const CURL& urlnew)
   int result = smbc_rename(strFile.c_str(), strFileNew.c_str());
 
   if(result != 0)
-    CLog::Log(LOGERROR, __FUNCTION__" - Error( %s )", get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
+    CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
 
   return (result == 0);
 }

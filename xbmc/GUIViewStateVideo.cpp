@@ -21,7 +21,7 @@
 
 #include "stdafx.h"
 #include "GUIViewStateVideo.h"
-#include "playlistplayer.h"
+#include "PlayListPlayer.h"
 #include "FileSystem/VideoDatabaseDirectory.h"
 #include "FileSystem/PluginDirectory.h"
 #include "GUIBaseContainer.h"
@@ -104,7 +104,6 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
   else if (items.IsVideoDb())
   {
     NODE_TYPE NodeType=CVideoDatabaseDirectory::GetDirectoryChildType(items.m_strPath);
-    NODE_TYPE ParentNodeType=CVideoDatabaseDirectory::GetDirectoryType(items.m_strPath);
     CQueryParams params;
     CVideoDatabaseDirectory::GetQueryParams(items.m_strPath,params);
     
@@ -280,8 +279,9 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
         SetSortOrder(SORT_ORDER_NONE);
       }
       break;
+    default:
+      break;
     } 
-
   }
   else
   {
@@ -408,7 +408,6 @@ VECSHARES& CGUIViewStateWindowVideoPlaylist::GetShares()
   m_shares.clear();
   //  Playlist share
   CShare share;
-  share.strName;
   share.strPath= "playlistvideo://";
   share.m_strThumbnailImage="defaultFolderBig.png";
   share.m_iDriveType = SHARE_TYPE_LOCAL;
@@ -416,3 +415,4 @@ VECSHARES& CGUIViewStateWindowVideoPlaylist::GetShares()
 
   return CGUIViewStateWindowVideo::GetShares();
 }
+

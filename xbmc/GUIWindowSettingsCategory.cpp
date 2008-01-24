@@ -26,19 +26,19 @@
 #include "Util.h"
 #include "GUILabelControl.h"
 #include "GUICheckMarkControl.h"
-#include "Utils/Weather.h"
+#include "utils/Weather.h"
 #include "MusicDatabase.h"
 #include "ProgramDatabase.h"
 #include "ViewDatabase.h"
 #include "XBAudioConfig.h"
 #include "XBVideoConfig.h"
 #ifdef HAS_XBOX_HARDWARE
-#include "Utils/LED.h"
-#include "Utils/FanController.h"
-#include "xbox/xkhdd.h"
+#include "utils/LED.h"
+#include "utils/FanController.h"
+#include "xbox/XKHDD.h"
 #endif
 #ifdef HAS_LCD
-#include "Utils/LCDFactory.h"
+#include "utils/LCDFactory.h"
 #endif
 #include "PlayListPlayer.h"
 #include "SkinInfo.h"
@@ -55,7 +55,7 @@
 #include "GUIWindowPrograms.h"
 #include "MediaManager.h"
 #include "xbox/network.h"
-#include "lib/libGoAhead/webserver.h"
+#include "lib/libGoAhead/WebServer.h"
 #include "GUIControlGroupList.h"
 #include "XBTimeZone.h"
 
@@ -148,9 +148,9 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
   case GUI_MSG_FOCUSED:
     {
       CGUIWindow::OnMessage(message);
-      unsigned int focusedControl = GetFocusedControlID();
-      if (focusedControl >= CONTROL_START_BUTTONS && focusedControl < CONTROL_START_BUTTONS + m_vecSections.size() &&
-          focusedControl - CONTROL_START_BUTTONS != m_iSection)
+      DWORD focusedControl = GetFocusedControlID();
+      if (focusedControl >= CONTROL_START_BUTTONS && focusedControl < (DWORD) (CONTROL_START_BUTTONS + m_vecSections.size()) &&
+          focusedControl - CONTROL_START_BUTTONS != (DWORD) m_iSection)
       {
         if (m_vecSections[focusedControl-CONTROL_START_BUTTONS]->m_strCategory == "masterlock")
         {
@@ -188,7 +188,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
             m_strNewSkinFontSet=strFontSet;
           }
           else
-            CLog::Log(LOGERROR, "No ttf font found but needed.", strFontSet.c_str());
+            CLog::Log(LOGERROR, "No ttf font found but needed: %s", strFontSet.c_str());
         }
 
         g_charsetConverter.reset();
@@ -1152,28 +1152,24 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }*/
   else if (strSetting.Equals("karaoke.port0voicemask"))
   {
-    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     g_guiSettings.SetString("karaoke.port0voicemask", pControl->GetCurrentLabel());
     FillInVoiceMaskValues(0, g_guiSettings.GetSetting("karaoke.port0voicemask"));
   }
   else if (strSetting.Equals("karaoke.port1voicemask"))
   {
-    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     g_guiSettings.SetString("karaoke.port1voicemask", pControl->GetCurrentLabel());
     FillInVoiceMaskValues(1, g_guiSettings.GetSetting("karaoke.port1voicemask"));
   }
   else if (strSetting.Equals("karaoke.port2voicemask"))
   {
-    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     g_guiSettings.SetString("karaoke.port2voicemask", pControl->GetCurrentLabel());
     FillInVoiceMaskValues(2, g_guiSettings.GetSetting("karaoke.port2voicemask"));
   }
   else if (strSetting.Equals("karaoke.port2voicemask"))
   {
-    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     g_guiSettings.SetString("karaoke.port3voicemask", pControl->GetCurrentLabel());
     FillInVoiceMaskValues(3, g_guiSettings.GetSetting("karaoke.port3voicemask"));
@@ -1249,8 +1245,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
   else if (strSetting.Equals("musicplayer.outputtoallspeakers"))
   {
-    CSettingBool *pSetting = (CSettingBool*)pSettingControl->GetSetting();
-
     if (!g_application.IsPlaying())
     {
       g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
@@ -1402,11 +1396,12 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       g_application.m_pWebServer->SetPassword(g_guiSettings.GetString("servers.webserverpassword").c_str());
     }
   }
+  
   else if (strSetting.Equals("network.ipaddress"))
   {
     if (g_guiSettings.GetInt("network.assignment") == NETWORK_STATIC)
     {
-      CStdString strDefault = g_guiSettings.GetString("network.ipaddress").Left(g_guiSettings.GetString("network.ipaddress").ReverseFind("."))+".1";
+      CStdString strDefault = g_guiSettings.GetString("network.ipaddress").Left(g_guiSettings.GetString("network.ipaddress").ReverseFind('.'))+".1";
       if (g_guiSettings.GetString("network.gateway").Equals("0.0.0.0"))
         g_guiSettings.SetString("network.gateway",strDefault);
       if (g_guiSettings.GetString("network.dns").Equals("0.0.0.0"))
@@ -1414,6 +1409,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 
     }
   }
+    
   else if (strSetting.Equals("network.httpproxyport"))
   {
     CSettingString *pSetting = (CSettingString *)pSettingControl->GetSetting();
@@ -1479,7 +1475,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
   else if (strSetting.Equals("lookandfeel.font"))
   { // new font choosen...
-    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     CStdString strSkinFontSet = pControl->GetCurrentLabel();
     if (strSkinFontSet != ".svn" && strSkinFontSet != g_guiSettings.GetString("lookandfeel.font"))
@@ -1495,7 +1490,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
   else if (strSetting.Equals("lookandfeel.skin"))
   { // new skin choosen...
-    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     CStdString strSkin = pControl->GetCurrentLabel();
     CStdString strSkinPath = "Q:\\skin\\" + strSkin;
@@ -1540,6 +1534,10 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       g_audioManager.Enable(true);
     else
       g_audioManager.Enable(!g_application.IsPlaying() || g_application.IsPaused());
+  }
+  else if (strSetting.Equals("lookandfeel.enablemouse"))
+  {
+    g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
   }
   else if (strSetting.Equals("videoscreen.resolution"))
   { // new resolution choosen... - update if necessary
@@ -1726,7 +1724,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
   else if (strSetting.Equals("locale.country"))
   {
-    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
 
     const CStdString& strRegion=pControl->GetCurrentLabel();
@@ -2022,12 +2019,13 @@ void CGUIWindowSettingsCategory::CheckNetworkSettings()
     }
 
 
-    // update our settings variables
+    // update our settings variables    
     m_iNetworkAssignment = g_guiSettings.GetInt("network.assignment");
     m_strNetworkIPAddress = g_guiSettings.GetString("network.ipaddress");
     m_strNetworkSubnet = g_guiSettings.GetString("network.subnet");
     m_strNetworkGateway = g_guiSettings.GetString("network.gateway");
     m_strNetworkDNS = g_guiSettings.GetString("network.dns");
+
     // replace settings
     /*   g_guiSettings.SetInt("network.assignment", m_iNetworkAssignment);
        g_guiSettings.SetString("network.ipaddress", m_strNetworkIPAddress);
@@ -2121,7 +2119,7 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
   {
     CHDDirectory directory;
     CFileItemList items;
-    CStdString strPath = "Q:\\media\\fonts\\";
+    CStdString strPath = "Q:\\media\\Fonts\\";
     if (directory.GetDirectory(strPath, items))
     {
       for (int i = 0; i < items.Size(); ++i)
@@ -2146,7 +2144,6 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
 
 void CGUIWindowSettingsCategory::FillInSkinFonts(CSetting *pSetting)
 {
-  CSettingString *pSettingString = (CSettingString*)pSetting;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->SetType(SPIN_CONTROL_TYPE_TEXT);
   pControl->Clear();
@@ -2156,7 +2153,7 @@ void CGUIWindowSettingsCategory::FillInSkinFonts(CSetting *pSetting)
   m_strNewSkinFontSet.Empty();
 
   RESOLUTION res;
-  CStdString strPath = g_SkinInfo.GetSkinPath("font.xml", &res);
+  CStdString strPath = g_SkinInfo.GetSkinPath("Font.xml", &res);
 
   TiXmlDocument xmlDoc;
   if (!xmlDoc.LoadFile(strPath.c_str()))
@@ -2215,7 +2212,6 @@ void CGUIWindowSettingsCategory::FillInSkinFonts(CSetting *pSetting)
 
 void CGUIWindowSettingsCategory::FillInSkins(CSetting *pSetting)
 {
-  CSettingString *pSettingString = (CSettingString*)pSetting;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->SetType(SPIN_CONTROL_TYPE_TEXT);
   pControl->Clear();
@@ -2263,7 +2259,6 @@ void CGUIWindowSettingsCategory::FillInSkins(CSetting *pSetting)
 
 void CGUIWindowSettingsCategory::FillInSoundSkins(CSetting *pSetting)
 {
-  CSettingString *pSettingString = (CSettingString*)pSetting;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->SetType(SPIN_CONTROL_TYPE_TEXT);
   pControl->Clear();
@@ -2279,7 +2274,8 @@ void CGUIWindowSettingsCategory::FillInSoundSkins(CSetting *pSetting)
   int iCurrentSoundSkin = 0;
   int iSoundSkin = 0;
   vector<CStdString> vecSoundSkins;
-  for (int i = 0; i < items.Size(); ++i)
+  int i;
+  for (i = 0; i < items.Size(); ++i)
   {
     CFileItem* pItem = items[i];
     if (pItem->m_bIsFolder)
@@ -2298,7 +2294,7 @@ void CGUIWindowSettingsCategory::FillInSoundSkins(CSetting *pSetting)
     iCurrentSoundSkin=1;
 
   sort(vecSoundSkins.begin(), vecSoundSkins.end(), sortstringbyname());
-  for (unsigned int i = 0; i < vecSoundSkins.size(); ++i)
+  for (i = 0; i < (int) vecSoundSkins.size(); ++i)
   {
     CStdString strSkin = vecSoundSkins[i];
     if (strcmpi(strSkin.c_str(), g_guiSettings.GetString("lookandfeel.soundskin").c_str()) == 0)
@@ -2630,9 +2626,9 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
   directory.GetDirectory(strPath, items);
 
   int iCurrentScr = -1;
-  int iScr = 0;
   vector<CStdString> vecScr;
-  for (int i = 0; i < items.Size(); ++i)
+  int i;
+  for (i = 0; i < items.Size(); ++i)
   {
     CFileItem* pItem = items[i];
     if (!pItem->m_bIsFolder)
@@ -2654,7 +2650,7 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
     strDefaultScr.Delete(strDefaultScr.size() - 4, 4);
 
   sort(vecScr.begin(), vecScr.end(), sortstringbyname());
-  for (unsigned int i = 0; i < vecScr.size(); ++i)
+  for (i = 0; i < (int) vecScr.size(); ++i)
   {
     CStdString strScr = vecScr[i];
 
@@ -2685,7 +2681,6 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
 
 void CGUIWindowSettingsCategory::FillInFTPServerUser(CSetting *pSetting)
 {
-  CSettingString *pSettingString = (CSettingString*)pSetting;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->SetType(SPIN_CONTROL_TYPE_TEXT);
   pControl->Clear();
@@ -2744,7 +2739,6 @@ bool CGUIWindowSettingsCategory::SetFTPServerUserPass()
 
 void CGUIWindowSettingsCategory::FillInRegions(CSetting *pSetting)
 {
-  CSettingString *pSettingString = (CSettingString*)pSetting;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->SetType(SPIN_CONTROL_TYPE_TEXT);
   pControl->Clear();
@@ -2869,7 +2863,6 @@ void CGUIWindowSettingsCategory::FillInSkinColors(CSetting *pSetting)
 {
   // There is a default theme (just default.xml)
   // any other *.xml files are additional color themes on top of this one.
-  CSettingString *pSettingString = (CSettingString*)pSetting;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   CStdString strSettingString = g_guiSettings.GetString("lookandfeel.skincolors");
 

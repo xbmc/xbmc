@@ -1,6 +1,7 @@
 #include "include.h"
 #include "GUIListLabel.h"
 #include "../xbmc/utils/CharsetConverter.h"
+#include <limits>
 
 CGUIListLabel::CGUIListLabel(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool alwaysScroll)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
@@ -30,7 +31,7 @@ void CGUIListLabel::SetSelected(bool selected)
 void CGUIListLabel::Render()
 {
   DWORD color = m_selected ? m_label.selectedColor : m_label.textColor;
-  bool needsToScroll(m_renderRect.Width() + 0.5f < m_textWidth); // 0.5f to deal with floating point rounding issues
+  bool needsToScroll = (m_renderRect.Width() + 0.5f < m_textWidth); // 0.5f to deal with floating point rounding issues
   if (m_scrolling && needsToScroll)
     m_textLayout.RenderScrolling(m_renderRect.x1, m_renderRect.y1, m_label.angle, color, m_label.shadowColor, 0, m_renderRect.Width(), m_scrollInfo);
   else

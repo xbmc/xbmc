@@ -290,3 +290,4 @@ void CGUIDialogLockSettings::OnInitWindow()
 {
   CGUIDialogSettings::OnInitWindow();
 }
+

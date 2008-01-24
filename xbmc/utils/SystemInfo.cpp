@@ -21,16 +21,16 @@
 #include "stdafx.h"
 #include "SystemInfo.h"
 #include <conio.h>
-#include "../settings.h"
+#include "../Settings.h"
 #include "../utils/log.h"
-#include "../cores/dllloader/dllloader.h"
-#include "../utils/http.h"
+#include "../cores/DllLoader/DllLoader.h"
+#include "../utils/HTTP.h"
 #ifdef HAS_XBOX_HARDWARE
-#include "../xbox/undocumented.h"
-#include "../xbox/xkutils.h"
-#include "../xbox/xkhdd.h"
-#include "../xbox/xkflash.h"
-#include "../xbox/xkrc4.h"
+#include "../xbox/Undocumented.h"
+#include "../xbox/XKUtils.h"
+#include "../xbox/XKHDD.h"
+#include "../xbox/XKflash.h"
+#include "../xbox/XKRC4.h"
 
 extern "C" XPP_DEVICE_TYPE XDEVICE_TYPE_IR_REMOTE_TABLE;
 #endif
@@ -919,6 +919,7 @@ double CSysInfo::RDTSC(void)
   x+=a;
   return x;
 }
+
 CStdString CSysInfo::GetModCHIPDetected()
 {
   CXBoxFlash *mbFlash=new CXBoxFlash(); //Max description Leng= 40
@@ -1132,6 +1133,7 @@ CStdString CSysInfo::MD5BufferNew(char *buffer,long PosizioneInizio,int KBytes)
   strReturn.Format("%s", md5sumstring);
   return strReturn;
 }
+
 CStdString CSysInfo::GetAVPackInfo()
 {  
   //AV-Pack Detection PICReg(0x04)
@@ -1148,6 +1150,7 @@ CStdString CSysInfo::GetAVPackInfo()
   else if (cAVPack == XKUtils::AV_PACK_Missing) return g_localizeStrings.Get(13292)+" "+"Missing or Unknown";
   else return g_localizeStrings.Get(13292)+" "+"Unknown";
 }
+
 CStdString CSysInfo::GetVideoEncoder()
 {
   int iTemp;
@@ -1172,6 +1175,7 @@ CStdString CSysInfo::GetVideoEncoder()
     return g_localizeStrings.Get(13286)+" "+"UNKNOWN"; 
   }
 }
+
 CStdString CSysInfo::SmartXXModCHIP()
 {
   // SmartXX ModChip Detection
@@ -1250,6 +1254,7 @@ CStdString CSysInfo::GetXBVerInfo()
     strXBoxVer.Format("%s %s", g_localizeStrings.Get(13288), g_localizeStrings.Get(13205)); // "Unknown"
   return strXBoxVer;
 }
+
 CStdString CSysInfo::GetUnits(int iFrontPort)
 {
   // Get the Connected Units on the Front USB Ports!
@@ -1320,6 +1325,7 @@ CStdString CSysInfo::GetUnits(int iFrontPort)
 
   return strReturn;
 }
+
 CStdString CSysInfo::GetMACAddress()
 {
   char macaddress[20] = "";
@@ -1330,6 +1336,7 @@ CStdString CSysInfo::GetMACAddress()
   strMacAddress.Format("%s: %s", g_localizeStrings.Get(149), macaddress);
   return strMacAddress;
 }
+
 CStdString CSysInfo::GetXBOXSerial(bool bLabel)
 {
   CHAR serial[SERIALNUMBER_SIZE + 1] = "";
@@ -1342,6 +1349,7 @@ CStdString CSysInfo::GetXBOXSerial(bool bLabel)
     strXBOXSerial.Format("%s %s",g_localizeStrings.Get(13289), serial);
   return strXBOXSerial;
 }
+
 CStdString CSysInfo::GetXBProduceInfo()
 {
   CStdString serial = GetXBOXSerial(false);
@@ -1381,6 +1389,7 @@ CStdString CSysInfo::GetXBProduceInfo()
     info[0x00]);
   return strXBProDate;
 }
+
 CStdString CSysInfo::GetVideoXBERegion()
 {
   //Print Video Standard & XBE Region...
@@ -1422,6 +1431,7 @@ CStdString CSysInfo::GetVideoXBERegion()
   strVideoXBERegion.Format("%s %s, %s", g_localizeStrings.Get(13293), VideoStdString, XBEString);
   return strVideoXBERegion;
 }
+
 CStdString CSysInfo::GetDVDZone()
 {
   //Print DVD [Region] Zone ..
@@ -1442,6 +1452,7 @@ CStdString CSysInfo::GetXBLiveKey()
   strXBLiveKey.Format("%s %s",g_localizeStrings.Get(13298), livekey);
   return strXBLiveKey;
 }
+
 CStdString CSysInfo::GetHDDKey()
 {
   //Print HDD Key...
@@ -1517,11 +1528,13 @@ CStdString CSysInfo::GetTrayState()
   return trayState;
 }
 #endif
+
 CStdString CSysInfo::GetHddSpaceInfo(int drive, bool shortText)
 {
  int percent;
  return GetHddSpaceInfo( percent, drive, shortText);
 }
+
 CStdString CSysInfo::GetHddSpaceInfo(int& percent, int drive, bool shortText)
 {
   int total, totalFree, totalUsed, percentFree, percentused;
@@ -1746,6 +1759,7 @@ CStdString CSysInfo::GetSystemUpTime(bool bTotalUptime)
   }
   return strSystemUptime;
 }
+
 CStdString CSysInfo::GetInternetState()
 {
   // Internet connection state!

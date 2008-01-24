@@ -159,3 +159,4 @@ bool CGUIIncludes::ResolveConstant(const CStdString &constant, float &value)
     value = it->second;
   return true;
 }
+

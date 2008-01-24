@@ -213,7 +213,7 @@ CStdString CPictureInfoTag::GetInfo(int info) const
     value = m_exifInfo.Comments;
     break;
   case SLIDE_EXIF_DATE_TIME:
-    if (m_exifInfo.DateTime && m_exifInfo.DateTime[0] != ' ')
+    if (m_exifInfo.DateTime && strlen(m_exifInfo.DateTime) >= 19 && m_exifInfo.DateTime[0] != ' ')
     {
       CStdString dateTime = m_exifInfo.DateTime;
       int year  = atoi(dateTime.Mid(0, 4).c_str());
@@ -463,3 +463,4 @@ int CPictureInfoTag::TranslateString(const CStdString &info)
   else if (info.Equals("altitude")) return SLIDE_EXIF_GPS_ALTITUDE;
   return 0;
 }
+

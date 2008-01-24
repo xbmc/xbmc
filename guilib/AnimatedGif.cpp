@@ -360,7 +360,7 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
               fread((char*)&tag, 1, sizeof(gifnetscape), fd);
               nLoops = tag.iIterations;
               if (nLoops) nLoops++;
-              int iterm = getbyte(fd); // terminator
+              getbyte(fd);
             }
             else
             {
@@ -368,7 +368,7 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
               {
                 for (n = 0;n < nBlockLength;n++) getbyte(fd);
               }
-              while (nBlockLength = getbyte(fd));
+              while ((nBlockLength = getbyte(fd)) != 0);
             }
           }
           break;
@@ -438,7 +438,7 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
         // to fix: this allocates an extra byte per block
         long ImgStart, ImgEnd;
         ImgEnd = ImgStart = ftell(fd);
-        while (n = getbyte(fd)) fseek (fd, ImgEnd += n + 1, SEEK_SET );
+        while ((n = getbyte(fd)) !=  0) fseek (fd, ImgEnd += n + 1, SEEK_SET );
         fseek (fd, ImgStart, SEEK_SET);
 
         // Allocate Space for Compressed Image

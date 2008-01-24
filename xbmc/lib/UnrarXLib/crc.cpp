@@ -42,7 +42,7 @@ uint CRC(uint StartCRC,const void *Addr,uint Size)
     Size-=8;
   }
 #endif
-  for (int I=0;I<Size;I++)
+  for (unsigned int I=0;I<Size;I++)
     StartCRC=CRCTab[(byte)(StartCRC^Data[I])]^(StartCRC>>8);
   return(StartCRC);
 }
@@ -51,7 +51,7 @@ uint CRC(uint StartCRC,const void *Addr,uint Size)
 ushort OldCRC(ushort StartCRC,const void *Addr,uint Size)
 {
   byte *Data=(byte *)Addr;
-  for (int I=0;I<Size;I++)
+  for (unsigned int I=0;I<Size;I++)
   {
     StartCRC=(StartCRC+Data[I])&0xffff;
     StartCRC=((StartCRC<<1)|(StartCRC>>15))&0xffff;

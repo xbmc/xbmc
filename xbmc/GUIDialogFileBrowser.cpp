@@ -21,8 +21,8 @@
 
 #include "stdafx.h"
 #include "GUIDialogFileBrowser.h"
-#include "util.h"
-#include "detectdvdtype.h"
+#include "Util.h"
+#include "DetectDVDType.h"
 #include "GUIDialogNetworkSetup.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIDialogContextMenu.h"
@@ -196,7 +196,7 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_SETFOCUS:
     {
-      if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != message.GetControlId())
+      if (m_viewControl.HasControl(message.GetControlId()) && (DWORD) m_viewControl.GetCurrentControl() != message.GetControlId())
       {
         m_viewControl.SetFocused();
         return true;
@@ -884,3 +884,4 @@ CGUIControl *CGUIDialogFileBrowser::GetFirstFocusableControl(int id)
     id = m_viewControl.GetCurrentControl();
   return CGUIWindow::GetFirstFocusableControl(id);
 }
+

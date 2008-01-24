@@ -20,19 +20,19 @@
  */
 
 #include "stdafx.h"
-#include "application.h"
+#include "Application.h"
 #include "GUIWindowLoginScreen.h"
 #include "GUIWindowSettingsProfile.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogProfileSettings.h"
-#include "utils/guiinfomanager.h"
+#include "utils/GUIInfoManager.h"
 #include "GUIPassword.h"
 #include "lib/libPython/XBPython.h"
 #include "lib/libscrobbler/scrobbler.h"
-#include "utils/weather.h"
-#include "utils/fancontroller.h"
+#include "utils/Weather.h"
+#include "utils/FanController.h"
 #include "xbox/network.h"
-#include "skininfo.h"
+#include "SkinInfo.h"
 
 using namespace XFILE;
 
@@ -52,7 +52,6 @@ CGUIWindowLoginScreen::~CGUIWindowLoginScreen(void)
 
 bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
 {
-  bool bResult=false;
   switch ( message.GetMessage() )
   {
   case GUI_MSG_WINDOW_DEINIT:
@@ -100,11 +99,10 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
             {
               g_network.NetworkMessage(CNetwork::SERVICES_DOWN,1);
               g_network.Deinitialize();
-              #ifdef HAS_XBOX_HARDWARE
+#ifdef HAS_XBOX_HARDWARE
               CLog::Log(LOGNOTICE, "stop fancontroller");
               CFanController::Instance()->Stop();
-              #endif
-              
+#endif
               g_settings.LoadProfile(m_viewControl.GetSelectedItem());
               g_network.Initialize(g_guiSettings.GetInt("network.assignment"),
                 g_guiSettings.GetString("network.ipaddress").c_str(),
@@ -153,7 +151,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
     break;
     case GUI_MSG_SETFOCUS:
     {
-      if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != message.GetControlId())
+      if (m_viewControl.HasControl(message.GetControlId()) && (DWORD) m_viewControl.GetCurrentControl() != message.GetControlId())
       {
         m_viewControl.SetFocused();
         return true;

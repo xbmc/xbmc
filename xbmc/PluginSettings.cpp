@@ -4,11 +4,94 @@
 #include "FileSystem/File.h"
 #include "FileSystem/Directory.h"
 
+
+CBasicSettings::CBasicSettings()
+{
+}
+
+CBasicSettings::~CBasicSettings()
+{
+}
+
+void CBasicSettings::Clear()
+{
+  m_pluginXmlDoc.Clear();
+  m_userXmlDoc.Clear();
+}
+
+void CBasicSettings::Set(const CStdString& key, const CStdString& value)
+{
+  if (key == "") return;
+
+  // Try to find the setting and change its value
+  if (!m_userXmlDoc.RootElement())
+  {
+    TiXmlElement node("settings");
+    m_userXmlDoc.InsertEndChild(node);
+  }
+  TiXmlElement *setting = m_userXmlDoc.RootElement()->FirstChildElement("setting");
+  while (setting)
+  {
+    const char *id = setting->Attribute("id");
+    if (id && strcmpi(id, key) == 0)
+    {
+      setting->SetAttribute("value", value.c_str());
+      return;
+    }
+
+    setting = setting->NextSiblingElement("setting");
+  }
+  
+  // Setting not found, add it
+  TiXmlElement nodeSetting("setting");
+  nodeSetting.SetAttribute("id", key.c_str());
+  nodeSetting.SetAttribute("value", value.c_str());
+  m_userXmlDoc.RootElement()->InsertEndChild(nodeSetting);
+}
+
+CStdString CBasicSettings::Get(const CStdString& key)
+{
+  if (m_userXmlDoc.RootElement())
+  {
+    // Try to find the setting and return its value
+    TiXmlElement *setting = m_userXmlDoc.RootElement()->FirstChildElement("setting");
+    while (setting)
+    {
+      const char *id = setting->Attribute("id");
+      if (id && strcmpi(id, key) == 0)
+        return setting->Attribute("value");
+
+      setting = setting->NextSiblingElement("setting");
+    }
+  }
+
+  if (m_pluginXmlDoc.RootElement())
+  {
+    // Try to find the setting in the plugin and return its default value
+    TiXmlElement* setting = m_pluginXmlDoc.RootElement()->FirstChildElement("setting");
+    while (setting)
+    {
+      const char *id = setting->Attribute("id");
+      if (id && strcmpi(id, key) == 0 && setting->Attribute("default"))
+        return setting->Attribute("default");
+
+      setting = setting->NextSiblingElement("setting");
+    }
+  }
+
+  // Otherwise return empty string
+  return "";
+}
+
 CPluginSettings::CPluginSettings()
 {
 }
 
-bool CPluginSettings::Load(const CURL url)
+CPluginSettings::~CPluginSettings()
+{
+}
+
+bool CPluginSettings::Load(const CURL& url)
 {
   m_url = url;  
 
@@ -62,10 +145,6 @@ bool CPluginSettings::Load(const CURL url)
   return true;
 }
 
-CPluginSettings::~CPluginSettings()
-{
-}
-
 bool CPluginSettings::Save(void)
 {
   // break down the path into directories
@@ -88,78 +167,12 @@ bool CPluginSettings::Save(void)
   return m_userXmlDoc.SaveFile(m_userFileName);
 }
 
-void CPluginSettings::Set(const CStdString key, const CStdString value)
-{
-  if (key == "") return;
-
-  bool done = false;
-  
-  // Try to find the setting and change its value
-  TiXmlElement *setting = m_userXmlDoc.RootElement()->FirstChildElement("setting");
-  while (setting && !done)
-  {
-    const char *id = setting->Attribute("id");
-    if (id && strcmpi(id, key) == 0)
-    {
-      setting->SetAttribute("value", value.c_str());
-      done = true;
-    }
-
-    setting = setting->NextSiblingElement("setting");
-  }
-  
-  // Setting not found, add it
-  if (!done)
-  {
-    TiXmlElement nodeSetting("setting");
-    nodeSetting.SetAttribute("id", key.c_str());
-    nodeSetting.SetAttribute("value", value.c_str());
-    m_userXmlDoc.RootElement()->InsertEndChild(nodeSetting);
-  }
-}
-
-CStdString CPluginSettings::Get(const CStdString key)
-{
-  CStdString result;
-  
-  // Try to find the setting and return its value
-  TiXmlElement *setting = m_userXmlDoc.RootElement()->FirstChildElement("setting");
-  while (setting)
-  {
-    const char *id = setting->Attribute("id");
-    if (id && strcmpi(id, key) == 0)
-    {
-      result = setting->Attribute("value");
-      return result;
-    }
-
-    setting = setting->NextSiblingElement("setting");
-  }
-  
-  // Try to find the setting in the plugin and return its default value
-  setting = m_pluginXmlDoc.RootElement()->FirstChildElement("setting");
-  while (setting)
-  {
-    const char *id = setting->Attribute("id");
-    if (id && strcmpi(id, key) == 0 && setting->Attribute("default"))
-    {
-      result = setting->Attribute("default");
-      return result;
-    }
-
-    setting = setting->NextSiblingElement("setting");
-  }
-  
-  // Otherwise return empty string
-  return result;
-}
-
-TiXmlElement* CPluginSettings::GetPluginRoot()
+TiXmlElement* CBasicSettings::GetPluginRoot()
 {
   return m_pluginXmlDoc.RootElement();
 }
 
-bool CPluginSettings::SettingsExist(const CStdString &strPath)
+bool CPluginSettings::SettingsExist(const CStdString& strPath)
 {
   CURL url(strPath);
   CStdString pluginFileName = "Q:\\plugins\\";
@@ -185,6 +198,13 @@ bool CPluginSettings::SettingsExist(const CStdString &strPath)
     return false;
 
   return true;
+}
+
+CPluginSettings& CPluginSettings::operator=(const CBasicSettings& settings)
+{
+  *((CBasicSettings*)this) = settings;
+
+  return *this;
 }
 
 CPluginSettings g_currentPluginSettings;

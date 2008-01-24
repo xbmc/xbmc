@@ -20,9 +20,9 @@
  */
 
 #include "stdafx.h"
-#include "settings.h"
-#include "application.h"
-#include "util.h"
+#include "Settings.h"
+#include "Application.h"
+#include "Util.h"
 #include "GUIWindowFileManager.h"
 #include "GUIDialogButtonMenu.h"
 #include "GUIFontManager.h"
@@ -34,9 +34,9 @@
 #include "AudioContext.h"
 #include "utils/GUIInfoManager.h"
 #include "xbox/Network.h"
-#include "filesystem/MultiPathDirectory.h"
+#include "FileSystem/MultiPathDirectory.h"
 #include "GUIBaseContainer.h" // for VIEW_TYPE enum
-#include "utils/fancontroller.h"
+#include "utils/FanController.h"
 #include "MediaManager.h"
 #include "XBVideoConfig.h"
 #ifdef HAS_XBOX_HARDWARE
@@ -353,10 +353,10 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
     if (pRootElement)
       strValue = pRootElement->Value();
     if ( strValue != "sources")
-      CLog::Log(LOGERROR, __FUNCTION__" sources.xml file does not contain <sources>");
+      CLog::Log(LOGERROR, "%s sources.xml file does not contain <sources>", __FUNCTION__);
   }
   else
-    CLog::Log(LOGERROR, __FUNCTION__" Error loading %s: Line %d, %s", strXMLFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    CLog::Log(LOGERROR, "%s Error loading %s: Line %d, %s", __FUNCTION__, strXMLFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
 
   // look for external sources file
   CStdString strCached = "Z:\\remotesources.xml";
@@ -401,10 +401,10 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
       if (pRootElement)
         strValue = pRootElement->Value();
       if ( strValue != "sources")
-        CLog::Log(LOGERROR, __FUNCTION__" remote_sources.xml file does not contain <sources>");
+        CLog::Log(LOGERROR, "%s remote_sources.xml file does not contain <sources>", __FUNCTION__);
     }
     else
-      CLog::Log(LOGERROR, __FUNCTION__" unable to load file: %s, Line %d, %s", strXMLFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+      CLog::Log(LOGERROR, "%s unable to load file: %s, Line %d, %s", __FUNCTION__, strXMLFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
   }
 
   if (pRootElement)
@@ -527,7 +527,7 @@ CStdString CSettings::GetDefaultShareFromType(const CStdString &type)
 
 void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSHARES& items, CStdString& strDefault)
 {
-  CLog::Log(LOGDEBUG, "  Parsing <%s> tag", strTagName.c_str());
+  //CLog::Log(LOGDEBUG, "  Parsing <%s> tag", strTagName.c_str());
   strDefault = "";
 
   items.clear();
@@ -573,13 +573,13 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 
 bool CSettings::GetShare(const CStdString &category, const TiXmlNode *source, CShare &share)
 {
-  CLog::Log(LOGDEBUG,"    ---- SOURCE START ----");
+  //CLog::Log(LOGDEBUG,"    ---- SOURCE START ----");
   const TiXmlNode *pNodeName = source->FirstChild("name");
   CStdString strName;
   if (pNodeName && pNodeName->FirstChild())
   {
     strName = pNodeName->FirstChild()->Value();
-    CLog::Log(LOGDEBUG,"    Found name: %s", strName.c_str());
+    //CLog::Log(LOGDEBUG,"    Found name: %s", strName.c_str());
   }
   // get multiple paths
   vector<CStdString> vecPaths;
@@ -590,7 +590,7 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *source, CS
     {
       CStdString strPath = pPathName->FirstChild()->Value();
       // make sure there are no virtualpaths or stack paths defined in xboxmediacenter.xml
-      CLog::Log(LOGDEBUG,"    Found path: %s", strPath.c_str());
+      //CLog::Log(LOGDEBUG,"    Found path: %s", strPath.c_str());
       if (!CUtil::IsVirtualPath(strPath) && !CUtil::IsStack(strPath))
       {
         // translate special tags
@@ -599,10 +599,12 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *source, CS
           CStdString strPathOld(strPath);
           strPath = CUtil::TranslateSpecialSource(strPath);
           if (!strPath.IsEmpty())
-            CLog::Log(LOGDEBUG,"    -> Translated to path: %s", strPath.c_str());
+          {
+            //CLog::Log(LOGDEBUG,"    -> Translated to path: %s", strPath.c_str());
+          }
           else
           {
-            CLog::Log(LOGERROR,"    -> Skipping invalid token: %s", strPathOld.c_str());
+            //CLog::Log(LOGERROR,"    -> Skipping invalid token: %s", strPathOld.c_str());
             pPathName = pPathName->NextSibling("path");
             continue;
           }
@@ -674,7 +676,7 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *source, CS
 
     share.FromNameAndPaths(category, strName, verifiedPaths);
 
-    CLog::Log(LOGDEBUG,"      Adding source:");
+/*    CLog::Log(LOGDEBUG,"      Adding source:");
     CLog::Log(LOGDEBUG,"        Name: %s", share.strName.c_str());
     if (CUtil::IsVirtualPath(share.strPath) || CUtil::IsMultiPath(share.strPath))
     {
@@ -683,7 +685,7 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *source, CS
     }
     else
       CLog::Log(LOGDEBUG,"        Path: %s", share.strPath.c_str());
-
+*/
     share.m_iBadPwdCount = 0;
     if (pLockMode)
     {
@@ -749,7 +751,7 @@ void CSettings::GetInteger(const TiXmlElement* pRootElement, const char *tagName
   { // default
     iValue = iDefault;
   }
-  CLog::Log(LOGDEBUG, "  %s: %d", tagName, iValue);
+  //CLog::Log(LOGDEBUG, "  %s: %d", tagName, iValue);
 }
 
 void CSettings::GetFloat(const TiXmlElement* pRootElement, const char *tagName, float& fValue, const float fDefault, const float fMin, const float fMax)
@@ -763,7 +765,7 @@ void CSettings::GetFloat(const TiXmlElement* pRootElement, const char *tagName, 
   { // default
     fValue = fDefault;
   }
-  CLog::Log(LOGDEBUG, "  %s: %f", tagName, fValue);
+  //CLog::Log(LOGDEBUG, "  %s: %f", tagName, fValue);
 }
 
 void CSettings::GetViewState(const TiXmlElement *pRootElement, const CStdString &strTagName, CViewState &viewState)
@@ -1766,7 +1768,7 @@ bool CSettings::LoadProfile(int index)
   CStdString strOldFont = g_guiSettings.GetString("lookandfeel.font");
   CStdString strOldTheme = g_guiSettings.GetString("lookandfeel.skintheme");
   CStdString strOldColors = g_guiSettings.GetString("lookandfeel.skincolors");
-  int iOldRes = g_guiSettings.GetInt("videoscreen.resolution");
+  //int iOldRes = g_guiSettings.GetInt("videoscreen.resolution");
   if (Load(bSourcesXML,bSourcesXML))
   {
     CreateDirectory(g_settings.GetDatabaseFolder(), NULL);
@@ -2253,10 +2255,10 @@ bool CSettings::AddShare(const CStdString &type, const CShare &share)
   {
     shareToAdd.strPath = CUtil::TranslateSpecialSource(strPath1);
     if (!share.strPath.IsEmpty())
-      CLog::Log(LOGDEBUG, __FUNCTION__ " Translated (%s) to Path (%s)",strPath1.c_str(),shareToAdd.strPath.c_str());
+      CLog::Log(LOGDEBUG, "%s Translated (%s) to Path (%s)",__FUNCTION__ ,strPath1.c_str(),shareToAdd.strPath.c_str());
     else
     {
-      CLog::Log(LOGDEBUG, __FUNCTION__ " Skipping invalid special directory token: %s",strPath1.c_str());
+      CLog::Log(LOGDEBUG, "%s Skipping invalid special directory token: %s",__FUNCTION__,strPath1.c_str());
       return false;
     }
   }
@@ -2433,7 +2435,7 @@ void CSettings::SetSkinString(int setting, const CStdString &label)
     return;
   }
   assert(false);
-  CLog::Log(LOGFATAL,__FUNCTION__" : Unknown setting requested");
+  CLog::Log(LOGFATAL, "%s : Unknown setting requested", __FUNCTION__);
 }
 
 void CSettings::ResetSkinSetting(const CStdString &setting)
@@ -2498,7 +2500,7 @@ void CSettings::SetSkinBool(int setting, bool set)
     return;
   }
   assert(false);
-  CLog::Log(LOGFATAL,__FUNCTION__" : Unknown setting requested");
+  CLog::Log(LOGFATAL,"%s : Unknown setting requested", __FUNCTION__);
 }
 
 void CSettings::ResetSkinSettings()
@@ -2737,7 +2739,7 @@ void CSettings::LoadRSSFeeds()
 {
   CStdString rssXML;
   //rssXML.Format("%s\\RSSFeeds.xml", GetUserDataFolder().c_str());
-  rssXML = GetUserDataItem("rssfeeds.xml");
+  rssXML = GetUserDataItem("RssFeeds.xml");
   TiXmlDocument rssDoc;
   if (!CFile::Exists(rssXML))
   { // set defaults, or assume no rss feeds??

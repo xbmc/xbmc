@@ -146,7 +146,7 @@ int CSimpleFileCache::ReadFromCache(char *pBuffer, size_t iMaxSize)
 		return m_bEndOfInput?CACHE_RC_EOF : CACHE_RC_WOULD_BLOCK;
 	}
 
-	if ((__int64)iMaxSize > iAvailable)
+	if (iMaxSize > iAvailable)
 		iMaxSize = (size_t)iAvailable;
 
 	DWORD iRead = 0;
@@ -158,24 +158,24 @@ int CSimpleFileCache::ReadFromCache(char *pBuffer, size_t iMaxSize)
 	return iRead;
 }
 
-__int64 CSimpleFileCache::WaitForData(__int64 iMinAvail, unsigned int iMillis) 
+__int64 CSimpleFileCache::WaitForData(unsigned int iMinAvail, unsigned int iMillis) 
 {
   if( iMillis == 0 || IsEndOfInput() )
     return GetAvailableRead();
 
-	DWORD dwTimeout = GetTickCount() + iMillis;
+  DWORD dwTimeout = GetTickCount() + iMillis;
   DWORD dwTime;
-	while ( !IsEndOfInput() && (dwTime = GetTickCount()) < dwTimeout ) 
+  while ( !IsEndOfInput() && (dwTime = GetTickCount()) < dwTimeout ) 
   {
     __int64 iAvail = GetAvailableRead();
-		if (iAvail >= iMinAvail)
-			return iAvail;
+    if (iAvail >= iMinAvail)
+      return iAvail;
 
-		// busy look (sleep max 1 sec each round)
-		DWORD dwRc = WaitForSingleObject(m_hDataAvailEvent, max(dwTimeout - dwTime, 1000) );
+    // busy look (sleep max 1 sec each round)
+    DWORD dwRc = WaitForSingleObject(m_hDataAvailEvent, max(dwTimeout - dwTime, 1000) );
     if (dwRc == WAIT_FAILED || dwRc == WAIT_ABANDONED)
-			return CACHE_RC_ERROR;
-	}
+      return CACHE_RC_ERROR;
+  }
 
   if( IsEndOfInput() )
     return GetAvailableRead();
@@ -203,7 +203,7 @@ __int64 CSimpleFileCache::Seek(__int64 iFilePosition, int iWhence) {
 	}
 
 	__int64 nDiff = iTarget - m_nWritePosition;
-	if ( nDiff > 500000 || (nDiff > 0 && WaitForData(nDiff, 5000) == CACHE_RC_TIMEOUT)  ) {		
+	if ( nDiff > 500000 || (nDiff > 0 && WaitForData((unsigned int)nDiff, 5000) == CACHE_RC_TIMEOUT)  ) {		
 		CLog::Log(LOGWARNING,"%s - attempt to seek pass read data (seek to %lld. max: %lld. reset read pointer. (%lld:%d)", __FUNCTION__, iTarget, m_nWritePosition, iFilePosition, iWhence);
 		return  CACHE_RC_ERROR;
 	}
