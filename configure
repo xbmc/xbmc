@@ -1266,6 +1266,7 @@ Optional Features:
   --enable-joystick       enable SDL joystick support (default is yes)
   --enable-xrandr         enable XRandR support (default is yes)
   --enable-mms            enable libmms support (default is yes)
+  --enable-gmyth          enable gmyth support (default is no)
 
 Some influential environment variables:
   CXX         C++ compiler command
@@ -1762,6 +1763,14 @@ if test "${enable_mms+set}" = set; then
   enableval=$enable_mms; use_mms=$enableval
 else
   use_mms=yes
+fi
+
+
+# Check whether --enable-gmyth was given.
+if test "${enable_gmyth+set}" = set; then
+  enableval=$enable_gmyth; use_gmyth=$enableval
+else
+  use_gmyth=no
 fi
 
 
@@ -4528,6 +4537,353 @@ else
   { echo "$as_me:$LINENO: result: == MMS support disabled. ==" >&5
 echo "${ECHO_T}== MMS support disabled. ==" >&6; }
 fi
+
+if test "$use_gmyth" = "yes"; then
+
+{ echo "$as_me:$LINENO: checking for main in -lglib-2.0" >&5
+echo $ECHO_N "checking for main in -lglib-2.0... $ECHO_C" >&6; }
+if test "${ac_cv_lib_glib_2_0_main+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lglib-2.0  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_glib_2_0_main=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_glib_2_0_main=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_glib_2_0_main" >&5
+echo "${ECHO_T}$ac_cv_lib_glib_2_0_main" >&6; }
+if test $ac_cv_lib_glib_2_0_main = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBGLIB_2_0 1
+_ACEOF
+
+  LIBS="-lglib-2.0 $LIBS"
+
+else
+  use_gmyth="no";{ echo "$as_me:$LINENO: result: == Could not find glib-2.0. GMyth support disabled. ==" >&5
+echo "${ECHO_T}== Could not find glib-2.0. GMyth support disabled. ==" >&6; }
+fi
+
+
+{ echo "$as_me:$LINENO: checking for main in -lgobject-2.0" >&5
+echo $ECHO_N "checking for main in -lgobject-2.0... $ECHO_C" >&6; }
+if test "${ac_cv_lib_gobject_2_0_main+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lgobject-2.0  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_gobject_2_0_main=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_gobject_2_0_main=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_gobject_2_0_main" >&5
+echo "${ECHO_T}$ac_cv_lib_gobject_2_0_main" >&6; }
+if test $ac_cv_lib_gobject_2_0_main = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBGOBJECT_2_0 1
+_ACEOF
+
+  LIBS="-lgobject-2.0 $LIBS"
+
+else
+  use_gmyth="no";{ echo "$as_me:$LINENO: result: == Could not find gobject-2.0. GMyth support disabled. ==" >&5
+echo "${ECHO_T}== Could not find gobject-2.0. GMyth support disabled. ==" >&6; }
+fi
+
+
+{ echo "$as_me:$LINENO: checking for main in -lgthread-2.0" >&5
+echo $ECHO_N "checking for main in -lgthread-2.0... $ECHO_C" >&6; }
+if test "${ac_cv_lib_gthread_2_0_main+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lgthread-2.0  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_gthread_2_0_main=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_gthread_2_0_main=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_gthread_2_0_main" >&5
+echo "${ECHO_T}$ac_cv_lib_gthread_2_0_main" >&6; }
+if test $ac_cv_lib_gthread_2_0_main = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBGTHREAD_2_0 1
+_ACEOF
+
+  LIBS="-lgthread-2.0 $LIBS"
+
+else
+  use_gmyth="no";{ echo "$as_me:$LINENO: result: == Could not find gthread-2.0. GMyth support disabled. ==" >&5
+echo "${ECHO_T}== Could not find gthread-2.0. GMyth support disabled. ==" >&6; }
+fi
+
+
+{ echo "$as_me:$LINENO: checking for main in -lcurl" >&5
+echo $ECHO_N "checking for main in -lcurl... $ECHO_C" >&6; }
+if test "${ac_cv_lib_curl_main+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lcurl  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_curl_main=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_curl_main=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_curl_main" >&5
+echo "${ECHO_T}$ac_cv_lib_curl_main" >&6; }
+if test $ac_cv_lib_curl_main = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBCURL 1
+_ACEOF
+
+  LIBS="-lcurl $LIBS"
+
+else
+  use_gmyth="no";{ echo "$as_me:$LINENO: result: == Could not find libcurl. GMyth support disabled. ==" >&5
+echo "${ECHO_T}== Could not find libcurl. GMyth support disabled. ==" >&6; }
+fi
+
+
+{ echo "$as_me:$LINENO: checking for main in -lgmyth" >&5
+echo $ECHO_N "checking for main in -lgmyth... $ECHO_C" >&6; }
+if test "${ac_cv_lib_gmyth_main+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lgmyth  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_gmyth_main=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_gmyth_main=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_gmyth_main" >&5
+echo "${ECHO_T}$ac_cv_lib_gmyth_main" >&6; }
+if test $ac_cv_lib_gmyth_main = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBGMYTH 1
+_ACEOF
+
+  LIBS="-lgmyth $LIBS"
+
+else
+  use_gmyth="no";{ echo "$as_me:$LINENO: result: == Could not find libgmyth. GMyth support disabled. ==" >&5
+echo "${ECHO_T}== Could not find libgmyth. GMyth support disabled. ==" >&6; }
+fi
+
+else
+  { echo "$as_me:$LINENO: result: == GMyth support disabled. ==" >&5
+echo "${ECHO_T}== GMyth support disabled. ==" >&6; }
+fi
+
 
 # Checks for header files.
 
@@ -11532,6 +11888,13 @@ if test "$use_mms" = "yes"; then
   SDL_DEFINES="$SDL_DEFINES -DHAS_MMS"
 else
   final_message="$final_message\n  MMS:\t\tNo"
+fi
+
+if test "$use_gmyth" = "yes"; then
+  final_message="$final_message\n  GMyth:\t\tYes"
+  SDL_DEFINES="$SDL_DEFINES -DHAS_GMYTH"
+else
+  final_message="$final_message\n  GMyth:\t\tNo"
 fi
 
 
