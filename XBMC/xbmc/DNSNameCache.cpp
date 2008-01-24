@@ -136,7 +136,7 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAdres
 
     closesocket(sd);
 #ifndef _LINUX
-      WSACleanup();
+    WSACleanup();
 #endif
 
     return true;

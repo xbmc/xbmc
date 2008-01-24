@@ -118,7 +118,7 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
         CPlayListItem newItem(strInfo, strFileName, lDuration);
         Add(newItem);
 
-        // Reset the values just in case there part of the File.have the extended marker
+        // Reset the values just in case there part of the file have the extended marker
         // and part don't
         strInfo = "";
         lDuration = 0;

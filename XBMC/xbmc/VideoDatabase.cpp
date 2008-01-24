@@ -1784,7 +1784,7 @@ void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, co
       AddActorToMovie(lMovieId, lActor, it->strRole);
     }
     
-    unsigned int i = 0;
+    unsigned int i;
     for (i = 0; i < vecGenres.size(); ++i)
     {
       AddGenreToMovie(lMovieId, vecGenres[i]);
@@ -1856,7 +1856,7 @@ long CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideo
       AddActorToTvShow(lTvShowId, lActor, it->strRole);
     }
     
-    unsigned int i=0;
+    unsigned int i;
     for (i = 0; i < vecGenres.size(); ++i)
     {
       AddGenreToTvShow(lTvShowId, vecGenres[i]);
@@ -1936,7 +1936,7 @@ long CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, 
       AddActorToEpisode(lEpisodeId, lActor, it->strRole);
     }
     
-    unsigned int i = 0;
+    unsigned int i;
     for (i = 0; i < vecGenres.size(); ++i)
     {
       AddGenreToEpisode(lEpisodeId, vecGenres[i]);

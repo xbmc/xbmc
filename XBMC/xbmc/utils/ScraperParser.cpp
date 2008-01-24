@@ -10,7 +10,6 @@
 #include "RegExp.h"
 #include "HTMLUtil.h"
 #include "CharsetConverter.h"
-#include "Util.h"
 #include "URL.h"
 #include "HTTP.h"
 
@@ -329,7 +328,7 @@ void CScraperParser::ReplaceBuffers(CStdString& strDest)
     iIndex += strReplace.length();
   }
   iIndex = 0;
-  while ((iIndex = strDest.find("\\n",iIndex))!= CStdString::npos)
+  while ((iIndex = strDest.find("\\n",iIndex)) != CStdString::npos)
     strDest.replace(strDest.begin()+iIndex,strDest.begin()+iIndex+2,"\n");
 }
 
