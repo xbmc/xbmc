@@ -151,9 +151,9 @@ bool CSkinInfo::Check(const CStdString& strSkinDir)
     }
   }
   // Check to see if we have a good path
-  CStdString strFontXML = strGoodPath + "\\font.xml";
-  CStdString strHomeXML = strGoodPath + "\\home.xml";
-  CStdString strReferencesXML = strGoodPath + "\\references.xml";
+  CStdString strFontXML = strGoodPath + "\\Font.xml";
+  CStdString strHomeXML = strGoodPath + "\\Home.xml";
+  CStdString strReferencesXML = strGoodPath + "\\References.xml";
   if ( CFile::Exists(strFontXML) &&
        CFile::Exists(strHomeXML) && bVersionOK )
   {
@@ -203,14 +203,14 @@ CStdString CSkinInfo::GetDirFromRes(RESOLUTION res)
   switch (res)
   {
   case PAL_4x3:
-    strRes = "\\pal";
+    strRes = "\\PAL";
     break;
   case PAL_16x9:
-    strRes = "\\pal16x9";
+    strRes = "\\PAL16x9";
     break;
   case NTSC_4x3:
   case HDTV_480p_4x3:
-    strRes = "\\ntsc";
+    strRes = "\\NTSC";
     break;
   case NTSC_16x9:
   case HDTV_480p_16x9:

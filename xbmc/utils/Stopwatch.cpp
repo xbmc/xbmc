@@ -10,7 +10,6 @@ CStopWatch::CStopWatch()
   // Get the timer frequency (ticks per second)
   LARGE_INTEGER timerFreq;
   QueryPerformanceFrequency( &timerFreq );
-
   m_timerPeriod = 1.0f / (float)timerFreq.QuadPart;
 }
 

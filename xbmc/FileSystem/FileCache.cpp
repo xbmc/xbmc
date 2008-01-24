@@ -184,7 +184,7 @@ void CFileCache::Process()
       // done inside the cache strategy. only if unrecoverable error happened, WriteToCache would return error and we break.
       if (iWrite < 0) 
       {
-        CLog::Log(LOGERROR,"CFileCache::Process - error writing to cache");
+      	CLog::Log(LOGERROR,"CFileCache::Process - error writing to cache");
         m_bStop = true;
         break;
       }
@@ -195,7 +195,6 @@ void CFileCache::Process()
     }
 
   }
-
 }
 
 void CFileCache::OnExit()

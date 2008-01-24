@@ -318,3 +318,4 @@ bool CDatabase::UpdateVersionNumber()
 
   return true;
 }
+

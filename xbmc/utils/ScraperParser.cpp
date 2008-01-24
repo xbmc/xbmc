@@ -324,7 +324,7 @@ void CScraperParser::ReplaceBuffers(CStdString& strDest)
     iIndex += strReplace.length();
   }
   iIndex = 0;
-  while ((iIndex = strDest.find("\\n",iIndex))!= CStdString::npos)
+  while ((iIndex = strDest.find("\\n",iIndex)) != CStdString::npos)
     strDest.replace(strDest.begin()+iIndex,strDest.begin()+iIndex+2,"\n");
 }
 
@@ -469,7 +469,6 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
       }
     }
     int i = reg.RegFind(curInput.c_str());
-    int iPos=0;
     while (i > -1 && (i < (int)curInput.size() || curInput.size() == 0))
     {
       if (!bAppend)

@@ -4760,8 +4760,10 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
   CStdString strReceiveMessage = "ping";
   int iUDPPort = 4905;
   char sztmp[512];
+
   static int udp_server_socket, inited=0;
 	int cliLen, t1,t2,t3,t4, init_counter=0, life=0;
+
   struct sockaddr_in	server;
   struct sockaddr_in	cliAddr;
   struct timeval timeout={0,500};

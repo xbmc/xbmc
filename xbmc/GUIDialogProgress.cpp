@@ -191,3 +191,4 @@ void CGUIDialogProgress::SetHeading(int iString)
   m_strHeading = g_localizeStrings.Get(iString);
   CGUIDialogBoxBase::SetHeading(m_strHeading);
 }
+

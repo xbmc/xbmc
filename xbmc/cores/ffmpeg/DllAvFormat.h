@@ -3,10 +3,15 @@
 #include "DllAvCodec.h"
 
 extern "C" {
+#ifndef HAVE_MMX
 #define HAVE_MMX
+#endif
+#ifndef __STDC_CONSTANT_MACROS
 #define __STDC_CONSTANT_MACROS
-#define __STDC_LIMIT_MACROS
+#endif
+#ifndef __GNUC__
 #pragma warning(disable:4244)
+#endif
 #include "..\ffmpeg\avformat.h"
 }
 
@@ -14,6 +19,7 @@ extern "C" {
 class DllAvFormatInterface
 {
 public:
+  virtual ~DllAvFormatInterface() {}
   virtual void av_register_all_dont_call(void)=0;
   virtual AVInputFormat *av_find_input_format(const char *short_name)=0;
   virtual int url_feof(ByteIOContext *s)=0;

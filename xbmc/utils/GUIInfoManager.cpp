@@ -2928,7 +2928,7 @@ int CGUIInfoManager::ConditionalStringParameter(const CStdString &parameter)
 // workaround
 const CStdString &CorrectAllItemsSortHack(const CStdString &item)
 {
-  if (item.size() == 1 && item[0] == 0x01 || item[1] == 0xff)
+  if (item.size() == 1 && item[0] == 0x01 || ((unsigned char) item[1]) == 0xff)
     return StringUtils::EmptyString;
   return item;
 }

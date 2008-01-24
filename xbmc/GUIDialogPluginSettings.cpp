@@ -548,7 +548,7 @@ void CGUIDialogPluginSettings::SetDefaults()
           ((CGUIButtonControl*) control)->SetLabel2(setting->Attribute("default"));
           break;
         case CGUIControl::GUICONTROL_RADIO:
-          ((CGUIRadioButtonControl*) control)->SetSelected(setting->Attribute("default") == "true");
+          ((CGUIRadioButtonControl*) control)->SetSelected(strcmpi(setting->Attribute("default"), "true") == 0);
           break;
         case CGUIControl::GUICONTROL_SPINEX:
           {
