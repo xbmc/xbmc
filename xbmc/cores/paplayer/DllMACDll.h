@@ -69,7 +69,6 @@ public:
   virtual APE_DECOMPRESS_HANDLE Create(const str_ansi *, int *)=0;
   virtual __int64 GetDuration(const char *filename)=0;
   virtual IAPETag* GetAPETag(const char *filename, BOOL bCheckID3Tag)=0;
-
 };
 
 class DllMACDll : public DllDynamic, DllMACDllInterface

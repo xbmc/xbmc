@@ -488,7 +488,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   // resolve again with strType set so that <default> tags are added
   g_SkinInfo.ResolveIncludes(pControlNode, strType);
 
-  int id = 0;
+  DWORD id = 0;
   float posX = 0, posY = 0;
   float width = 0, height = 0;
 
@@ -631,7 +631,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   // check if we are a <controlgroup>
   if (strcmpi(pControlNode->Value(), "controlgroup") == 0)
   {
-    if (pControlNode->Attribute("id", &id))
+    if (pControlNode->Attribute("id", (int*) &id))
       id += 9000;       // offset at 9000 for old controlgroups
                         // NOTE: An old control group with no id means that it can't be focused
                         //       Which isn't too good :(
@@ -639,8 +639,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   }
   else
 #endif
-  if (!pControlNode->Attribute("id", &id))
-    XMLUtils::GetInt(pControlNode, "id", id);       // backward compatibility - not desired
+  if (!pControlNode->Attribute("id", (int*) &id))
+    XMLUtils::GetInt(pControlNode, "id", (int&) id);       // backward compatibility - not desired
   // TODO: Perhaps we should check here whether id is valid for focusable controls
   // such as buttons etc.  For labels/fadelabels/images it does not matter
 

@@ -496,3 +496,4 @@ bool CGUIPanelContainer::HasNextPage() const
 {
   return (m_offset != (int)GetRows() - m_itemsPerPage && (int)GetRows() > m_itemsPerPage);
 }
+

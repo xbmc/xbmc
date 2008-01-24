@@ -1998,7 +1998,7 @@ void CGUIWindowBuddies::OnChat(CStdString& aVector, CStdString& aOpponent, CStdS
     else
     {
       // if a player has written a message and we're not in the chat window
-      if (window_state != State::Chat)
+      if (window_state != Chat)
       {
         // alert us by flashing the tab briefly
         FlickerTab(CONTROL_KAI_TAB_CHAT);
