@@ -81,7 +81,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       {
         // set this here to if the stat should fail
         bIsDir = (dirEnt->smbc_type == SMBC_DIR);
-       
+
 #ifndef _LINUX 
         struct __stat64 info = {0};
 #else

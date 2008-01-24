@@ -72,7 +72,7 @@ protected:
   volatile bool m_bStop;
   HANDLE m_ThreadHandle;
 
-private:	
+private:
   bool m_bAutoDelete;
   HANDLE m_StopEvent;
   unsigned m_ThreadId;

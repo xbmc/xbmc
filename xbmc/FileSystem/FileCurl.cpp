@@ -636,7 +636,7 @@ __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
 
 
     /* restart */
-    /* CURLMcode addRet = */ g_curlInterface.multi_add_handle(m_multiHandle, m_easyHandle);
+    g_curlInterface.multi_add_handle(m_multiHandle, m_easyHandle);
 
     /* reset stillrunning as we now are going to reget data */
     m_stillRunning = 1;
@@ -753,7 +753,7 @@ unsigned int CFileCurl::Read(void* lpBuf, __int64 uiBufSize)
 {
   /* only request 1 byte, for truncated reads (only if not eof) */
   if(m_filePos < m_fileSize && !FillBuffer(1))
-    return (unsigned int) 0;
+    return 0;
 
   /* ensure only available data is considered */
   unsigned int want = (unsigned int)XMIN(m_buffer.GetMaxReadSize(), uiBufSize);
@@ -769,7 +769,7 @@ unsigned int CFileCurl::Read(void* lpBuf, __int64 uiBufSize)
   if (!m_stillRunning && m_fileSize && m_filePos != m_fileSize)
   {
     CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retreived pos %lld, size %lld", __FUNCTION__, m_filePos, m_fileSize);
-    return (unsigned int) 0;
+    return 0;
   }
 
   return 0;

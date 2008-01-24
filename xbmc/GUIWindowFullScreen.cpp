@@ -432,7 +432,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
       m_bShowViewModeInfo = false;
 
-      if ( CUtil::IsUsingTTFSubtitles())
+      if (CUtil::IsUsingTTFSubtitles())
       {
         CSingleLock lock (m_fontLock);
 

@@ -302,5 +302,3 @@ private:
   static HANDLE m_hCurrentCpuUsage;
 };
 
-//static int iAdditionalChecked = -1;
-

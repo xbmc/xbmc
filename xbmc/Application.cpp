@@ -975,7 +975,6 @@ HRESULT CApplication::Create(HWND hWnd)
   }
 #endif
 
-  
 #if defined(HAS_SDL) && defined(_WIN32)
   SDL_SysWMinfo wmInfo;
   SDL_VERSION(&wmInfo.version)
@@ -2038,12 +2037,12 @@ void CApplication::CheckDate()
   if ((CurTime.wYear > 2099) || (CurTime.wYear < 2001) )        // XBOX MS Dashboard also uses min/max DateYear 2001/2099 !!
   {
     CLog::Log(LOGNOTICE, "- The Date is Wrong: Setting New Date!");
-    NewTime.wYear               = 2004; // 2004
-    NewTime.wMonth              = 1;    // January
-    NewTime.wDayOfWeek  = 1;    // Monday
-    NewTime.wDay                = 5;    // Monday 05.01.2004!!
-    NewTime.wHour               = 12;
-    NewTime.wMinute             = 0;
+    NewTime.wYear		= 2004;	// 2004
+    NewTime.wMonth		= 1;	// January
+    NewTime.wDayOfWeek	= 1;	// Monday
+    NewTime.wDay		= 5;	// Monday 05.01.2004!!
+    NewTime.wHour		= 12;
+    NewTime.wMinute		= 0;
 
     FILETIME stNewTime, stCurTime;
     SystemTimeToFileTime(&NewTime, &stNewTime);
@@ -3863,7 +3862,6 @@ void CApplication::Stop()
     CLog::Log(LOGNOTICE, "unload sections");
     CSectionLoader::UnloadAll();
 
-
 #ifdef HAS_PERFORMANCE_SAMPLE
     CLog::Log(LOGNOTICE, "performance statistics");
     m_perfStats.DumpStats();
@@ -4477,7 +4475,6 @@ void CApplication::StopPlaying()
     g_partyModeManager.Disable();
   }
   OnPlayBackStopped();
-
 }
 
 bool CApplication::NeedRenderFullScreen()

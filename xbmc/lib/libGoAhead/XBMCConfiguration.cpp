@@ -374,8 +374,8 @@ int CXbmcConfiguration::SaveBookmark( int eid, webs_t wp, CStdString& response, 
 	if (ejArgs(argc, argv, T("%s %s %s %s"), &type, &name, &path, &position) < 4) {
         if (eid!=-1) websError(wp, 500, T("Insufficient args\n use: function(command, type, name, path, postion)"));
           else response="<li>Error:Insufficient args, use: function(command, type, name, path, postion)";
-	return -1;
-      }
+		return -1;
+	}
   VECSHARES* pShares = g_settings.GetSharesFromType(type);
   int nr = 0;
 	try { nr = atoi(position); }

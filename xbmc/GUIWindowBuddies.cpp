@@ -423,8 +423,7 @@ void CGUIWindowBuddies::OnClickSpeexButton(CGUIMessage& aMessage)
   CBuddyItem* pBuddy;
   if ( (pBuddy = GetBuddySelection()) )
   {
-    CStdString contact = pBuddy->GetName();  
-    m_pKaiClient->EnableContactVoice(contact, !pBuddy->m_bSpeex);
+    m_pKaiClient->EnableContactVoice(pBuddy->GetName(), !pBuddy->m_bSpeex);
   }
 }
 
@@ -443,10 +442,9 @@ void CGUIWindowBuddies::OnClickInviteButton(CGUIMessage& aMessage)
       CStdString aVector;
       if (dialog.GetSelectedVector(aVector))
       {
-        CStdString contact = pBuddy->GetName();  
         CStdString strMessage = "";
         dialog.GetPersonalMessage(strMessage);
-        m_pKaiClient->Invite(contact, aVector, strMessage);
+        m_pKaiClient->Invite(pBuddy->GetName(), aVector, strMessage);
       }
     }
   }
@@ -470,8 +468,7 @@ void CGUIWindowBuddies::OnClickPlayButton(CGUIMessage& aMessage)
   {
   case Arenas:
     {
-      CStdString currentVector = m_pKaiClient->GetCurrentVector();  
-      Play(currentVector);
+      Play( m_pKaiClient->GetCurrentVector() );
       break;
     }
   case Games:
@@ -483,8 +480,7 @@ void CGUIWindowBuddies::OnClickPlayButton(CGUIMessage& aMessage)
       }
       else
       {
-        CStdString currentVector = m_pKaiClient->GetCurrentVector();  
-        Play(currentVector);
+        Play( m_pKaiClient->GetCurrentVector() );
       }
       break;
     }
@@ -616,8 +612,7 @@ void CGUIWindowBuddies::OnClickListItem(CGUIMessage& aMessage)
         if (pDialog->IsConfirmed())
         {
           // if the user accepted the invitation, send a reciept
-          CStdString name = pBuddy->GetName();
-          m_pKaiClient->Invite(name, invite.vector, strAccepted);
+          m_pKaiClient->Invite(pBuddy->GetName(), invite.vector, strAccepted);
 
           // join the arena
           ChangeState(Arenas);
