@@ -4,8 +4,10 @@
 #include "../DllLoader.h"
 //#include "emu_msvcrt.h"
 
+#ifndef __GNUC__
 #pragma warning (disable:4391)
 #pragma warning (disable:4392)
+#endif
 
 extern "C" void* dll_close();
 extern "C" void* dll_lseek();

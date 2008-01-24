@@ -797,7 +797,7 @@ int CXBoxRenderer::GetImage(YV12Image *image, int source, bool readonly)
     else
     {
       if( WaitForSingleObject(m_eventTexturesDone[source], 500) == WAIT_TIMEOUT )
-        CLog::Log(LOGWARNING, __FUNCTION__" - Timeout waiting for texture %d", source);
+        CLog::Log(LOGWARNING, CStdString(__FUNCTION__) + " - Timeout waiting for texture %d", source);
 
       m_image[source].flags |= IMAGE_FLAG_WRITING;
     }

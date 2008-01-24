@@ -28,7 +28,7 @@
 // sadly D3DXCreateTexture won't consider linear formats with non power of 2 textures as valid, thus we use standard instead
 #define D3DXCreateTexture(device, width, height, levels, usage, format, pool, texture) (device)->CreateTexture(width, height, levels, usage, format, pool, texture)
 
-#else //_XBOX
+#else
 
 #define GAMMA_RAMP_FLAG  D3DSGR_CALIBRATE
 

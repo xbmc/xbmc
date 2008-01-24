@@ -18,6 +18,5 @@ private:
   bool        FillBuffer(LPBYTE pbData, int iLength);
   void        FreeBuffer();
 
-private:
   LPDIRECTSOUNDBUFFER m_soundBuffer;
 };

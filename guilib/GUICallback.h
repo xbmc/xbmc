@@ -67,11 +67,11 @@ public:
       assert(0);
     }
   }
+  MethodPtr m_pMethod;
+
 protected:
   GUIEvent* m_pInstance;
-  MethodPtr m_pMethod;
 };
-
 
 template <class Class, class Cookie>
 class GUIEventHandler : public GUIEvent<Cookie>

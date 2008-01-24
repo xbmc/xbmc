@@ -50,7 +50,6 @@
 #endif
 #include "XBVideoConfig.h"
 #include "LangCodeExpander.h"
-#include "lib/libGoAhead/xbmchttp.h"
 #include "utils/GUIInfoManager.h"
 #include "PlayListFactory.h"
 #include "GUIFontManager.h"
@@ -93,6 +92,7 @@
 #include "GUIFontTTF.h"
 #include "xbox/network.h"
 #include "utils/Win32Exception.h"
+#include "lib/libGoAhead/XBMChttp.h"
 #include "lib/libGoAhead/WebServer.h"
 #ifdef HAS_FTP_SERVER
 #include "lib/libfilezilla/xbfilezilla.h"
@@ -397,7 +397,7 @@ void CApplication::InitBasicD3D()
   {
     m_splash->Stop();
   }
-  
+
   m_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
   m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 }
@@ -639,11 +639,13 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
     }
   }
   else
+  {
 #ifdef _XBOX
     Sleep(INFINITE);
 #else
     SendMessage(g_hWnd, WM_CLOSE, 0, 0);
 #endif
+  }
 }
 
 LONG WINAPI CApplication::UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *ExceptionInfo)
@@ -680,6 +682,7 @@ LONG WINAPI CApplication::UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *E
 
   return ExceptionInfo->ExceptionRecord->ExceptionCode;
 }
+
 #ifdef _XBOX
 #include "xbox/Undocumented.h"
 extern "C" HANDLE __stdcall KeGetCurrentThread(VOID);
@@ -1056,8 +1059,10 @@ HRESULT CApplication::Create(HWND hWnd)
 #else
 #define D3DCREATE_MULTITHREADED 0
 #endif
+
   g_graphicsContext.SetD3DParameters(&m_d3dpp);
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
+  
   if ( FAILED( hr = m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL,
                                          D3DCREATE_MULTITHREADED | D3DCREATE_HARDWARE_VERTEXPROCESSING,
                                          &m_d3dpp, &m_pd3dDevice ) ) )
@@ -1095,6 +1100,7 @@ HRESULT CApplication::Create(HWND hWnd)
   g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTEXF_LINEAR /*g_stSettings.m_minFilter*/ );
   g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
   CUtil::InitGamma();
+  
   // set GUI res and force the clear of the screen
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE, true);
 
@@ -4139,6 +4145,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     m_gWindowManager.ActivateWindow(WINDOW_SCREENSAVER);
     return ;
   }
+  
   // Fade to fFadeLevel
   m_pd3dDevice->GetGammaRamp(&m_OldRamp); // Store the old gamma ramp
   for (float fade = 1.f; fade >= fFadeLevel; fade -= 0.01f)

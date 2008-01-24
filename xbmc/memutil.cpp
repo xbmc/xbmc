@@ -195,7 +195,7 @@ void fast_memset(void* d, int c, unsigned n)
 
   fms_exit_post:
     }
-  }
+}
 
 #ifdef _XBOX
 void usleep(int t)

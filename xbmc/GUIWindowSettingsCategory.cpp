@@ -2119,7 +2119,7 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
   {
     CHDDirectory directory;
     CFileItemList items;
-    CStdString strPath = "Q:\\media\\fonts\\";
+    CStdString strPath = "Q:\\media\\Fonts\\";
     if (directory.GetDirectory(strPath, items))
     {
       for (int i = 0; i < items.Size(); ++i)
@@ -2144,7 +2144,6 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
 
 void CGUIWindowSettingsCategory::FillInSkinFonts(CSetting *pSetting)
 {
-  CSettingString *pSettingString = (CSettingString*)pSetting;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->SetType(SPIN_CONTROL_TYPE_TEXT);
   pControl->Clear();

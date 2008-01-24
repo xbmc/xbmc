@@ -15,7 +15,7 @@
     int iSize_##str = wcslen(str); \
     for (int pos = 0; pos < iSize_##str; pos++) if (str[pos] == '/') str[pos] = '\\';
 
-#include "..\dll_tracker_file.h"
+#include "../dll_tracker_file.h"
 #include "emu_msvcrt.h"
 
 extern "C"
