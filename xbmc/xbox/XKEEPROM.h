@@ -77,6 +77,7 @@ Reason: Prepared for Public Release
 #elif !defined (_LINUX)
 	#error ERR: Have to Define _WINDOWS or _XBOX or _LINUX!!
 #endif
+
 #include "XKGeneral.h"
 #include "XKRC4.h"
 #include "XKSHA1.h"

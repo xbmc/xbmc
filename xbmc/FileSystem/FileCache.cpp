@@ -162,7 +162,6 @@ void CFileCache::Process()
       // since there is no more to read - wait either for seek or close 
       // WaitForSingleObject is CThread::WaitForSingleObject that will also listen to the
       // end thread event.
-      //
       
       // Make sure the event is reset before we wait!
       m_seekEvent.Reset();

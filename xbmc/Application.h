@@ -204,7 +204,7 @@ public:
   int GlobalIdleTime();
   void NewFrame();
   void SetQuiet(bool bQuiet);
-  
+
 protected:
   friend class CApplicationMessenger;
   // screensaver

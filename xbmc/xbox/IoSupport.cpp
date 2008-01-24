@@ -76,6 +76,7 @@ stDriveMapping driveMapping[] =
     { 'Y', "Y:", 4},
     { 'Z', "Z:", 5},
   };
+
 #include "../../Tools/Win32/XBMC_PC.h"
 
 #else
@@ -747,8 +748,8 @@ LARGE_INTEGER CIoSupport::GetDriveSize()
   return drive_size;
 }
 
-bool CIoSupport::ReadPartitionTable(){
-
+bool CIoSupport::ReadPartitionTable()
+{
 #ifdef _XBOX
   unsigned int retval;
 
