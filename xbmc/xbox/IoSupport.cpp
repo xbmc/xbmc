@@ -66,7 +66,9 @@ stDriveMapping driveMapping[] =
   };
 
 #include "../../Tools/Win32/XBMC_PC.h"
+
 #endif
+
 #define NUM_OF_DRIVES ( sizeof( driveMapping) / sizeof( driveMapping[0] ) )
 
 

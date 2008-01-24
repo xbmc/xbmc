@@ -55,7 +55,6 @@ XBPyThread::~XBPyThread()
       delete argv[i];
     delete argv;
   }
-
 }
 
 int XBPyThread::evalFile(const char *src)

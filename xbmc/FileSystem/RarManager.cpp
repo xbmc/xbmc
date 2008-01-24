@@ -310,7 +310,7 @@ CFileInfo* CRarManager::GetFileInRar(const CStdString& strRarPath, const CStdStr
 
 bool CRarManager::GetPathInCache(CStdString& strPathInCache, const CStdString& strRarPath, const CStdString& strPathInRar)
 {
-	std::map<CStdString,std::pair<ArchiveList_struct*,std::vector<CFileInfo> > >::iterator j = m_ExFiles.find(strRarPath);
+  std::map<CStdString,std::pair<ArchiveList_struct*,std::vector<CFileInfo> > >::iterator j = m_ExFiles.find(strRarPath);
   if (j == m_ExFiles.end())
     return false;
 

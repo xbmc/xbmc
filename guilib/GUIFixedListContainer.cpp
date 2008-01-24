@@ -290,3 +290,4 @@ bool CGUIFixedListContainer::HasNextPage() const
 {
   return (m_offset != (int)m_items.size() - m_itemsPerPage && (int)m_items.size() >= m_itemsPerPage);
 }
+

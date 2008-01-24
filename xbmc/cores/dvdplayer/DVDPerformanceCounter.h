@@ -1,7 +1,7 @@
 
 #pragma once
 
-#define FILETIME_TO_ULARGE_INTEGER(ularge, filetime) { ularge.HighPart = filetime.dwHighDateTime; ularge.LowPart = filetime.dwLowDateTime; }
+#define FILETIME_TO_ULARGE_INTEGER(ularge, filetime) { ularge.u.HighPart = filetime.dwHighDateTime; ularge.u.LowPart = filetime.dwLowDateTime; }
 
 class CDVDMessageQueue;
 

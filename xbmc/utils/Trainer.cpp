@@ -174,3 +174,4 @@ void CTrainer::SetOptions(unsigned char* options)
 {
   memcpy(m_pTrainerData+m_iOptions,options,100);
 }
+

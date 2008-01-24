@@ -192,3 +192,4 @@ bool CMediaManager::SetLocationPath(const CStdString& oldPath, const CStdString&
 
   return false;
 }
+

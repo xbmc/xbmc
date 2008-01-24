@@ -3,16 +3,27 @@
 #include "../../DynamicDll.h"
 
 extern "C" {
+#ifndef HAVE_MMX
 #define HAVE_MMX
+#endif
+#ifndef __STDC_CONSTANT_MACROS
 #define __STDC_CONSTANT_MACROS
+#endif
+#ifndef __STDC_LIMIT_MACROS
 #define __STDC_LIMIT_MACROS
+#endif
+
+#ifndef __GNUC__
 #pragma warning(disable:4244)
+#endif
+
 #include "avcodec.h"
 }
 
 class DllAvCodecInterface
 {
 public:
+  virtual ~DllAvCodecInterface() {}
   virtual void avcodec_flush_buffers(AVCodecContext *avctx)=0;
   virtual int avcodec_open_dont_call(AVCodecContext *avctx, AVCodec *codec)=0;
   virtual AVCodec *avcodec_find_decoder(enum CodecID id)=0;
@@ -101,6 +112,7 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va);
 class DllAvUtilInterface
 {
 public:
+  virtual ~DllAvUtilInterface() {}
 #if LIBAVUTIL_VERSION_INT < (50<<16)
   virtual void av_log_set_callback(void (*)(void*, int, const char*, va_list))=0;
 #endif
@@ -161,3 +173,4 @@ public:
     return false;
   }
 };
+

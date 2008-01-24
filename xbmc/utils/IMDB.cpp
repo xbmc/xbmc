@@ -135,6 +135,7 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
     }
     movie = movie->NextSiblingElement();
   }
+
   return true;
 }
 

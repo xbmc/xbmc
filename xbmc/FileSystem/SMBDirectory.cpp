@@ -94,7 +94,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
           iSize = info.st_size;          
         }
         else
-          CLog::Log(LOGERROR, __FUNCTION__" - Failed to stat file %s", strFullName.c_str());
+          CLog::Log(LOGERROR, "%s - Failed to stat file %s", __FUNCTION__, strFullName.c_str());
 
       }
 

@@ -76,7 +76,7 @@ enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_SET_ACTOR_THUMB,
                       CONTEXT_BUTTON_SET_PLUGIN_THUMB,
                       CONTEXT_BUTTON_UNLINK_BOOKMARK,
-            		      CONTEXT_BUTTON_PLUGIN_SETTINGS,
+            	      CONTEXT_BUTTON_PLUGIN_SETTINGS,
                       CONTEXT_BUTTON_LASTFM_UNLOVE_ITEM,
                       CONTEXT_BUTTON_LASTFM_UNBAN_ITEM
                     };

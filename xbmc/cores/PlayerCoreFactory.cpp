@@ -1,7 +1,7 @@
 
 #include "stdafx.h"
 #include "PlayerCoreFactory.h"
-#include "dvdplayer\DVDPlayer.h"
+#include "dvdplayer/DVDPlayer.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "mplayer\mplayer.h"
 #else

@@ -19,7 +19,6 @@ bool       DllLoaderContainer::m_bTrack = true;
 
 Export export_advapi32[];
 Export export_ole32[];
-Export export_xbp[];
 Export export_winmm[];
 Export export_user32[];
 Export export_msdmo[];
@@ -37,6 +36,7 @@ Export export_comctl32[];
 Export export_msvcrt[];
 Export export_pncrt[];
 Export export_iconvx[];
+Export export_xbp[];
 
 DllLoader kernel32("kernel32.dll",        false, true, false, export_kernel32);
 DllLoader msvcr80("msvcr80.dll",          false, true, false, export_msvcrt);

@@ -3,11 +3,11 @@
 #include <stdio.h>
 #include <math.h>
 #include <io.h>
+#include <direct.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/timeb.h>
 #include <fcntl.h>
-#include <direct.h>
 #include <time.h>
 #include <signal.h>
 #include "../../../Util.h"

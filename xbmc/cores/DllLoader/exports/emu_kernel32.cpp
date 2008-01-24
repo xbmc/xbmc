@@ -790,12 +790,13 @@ extern "C" DWORD WINAPI dllWaitForMultipleObjects(DWORD nCount, CONST HANDLE *lp
 #ifdef API_DEBUG
   CLog::Log(LOGDEBUG, "WaitForMultipleObjects(..)");
 #endif
+
   return WaitForMultipleObjects(nCount, lpHandles, fWaitAll, dwMilliseconds);
 }
 
 extern "C" BOOL WINAPI dllGetProcessAffinityMask(HANDLE hProcess, LPDWORD lpProcessAffinityMask, LPDWORD lpSystemAffinityMask)
 {
-  CLog::Log(LOGDEBUG, "GetProcessAffinityMask(0x%x, 0x%x, 0x%x) => 1\n",
+  CLog::Log(LOGDEBUG, "GetProcessAffinityMask(0x%p, 0x%p, 0x%p) => 1\n",
             (void*)hProcess, (void*)lpProcessAffinityMask, (void*)lpSystemAffinityMask);
   if (lpProcessAffinityMask)*lpProcessAffinityMask = 1;
   if (lpSystemAffinityMask)*lpSystemAffinityMask = 1;

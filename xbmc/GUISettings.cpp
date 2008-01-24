@@ -586,7 +586,7 @@ CSettingsGroup *CGUISettings::GetGroup(DWORD dwGroupID)
     if (settingsGroups[i]->GetGroupID() == dwGroupID)
       return settingsGroups[i];
   }
-  CLog::DebugLog("Error: Requested setting group (%i) was not found.  It must be case-sensitive", dwGroupID);
+  CLog::Log(LOGDEBUG,"Error: Requested setting group (%lu) was not found.  It must be case-sensitive", dwGroupID);
   return NULL;
 }
 
@@ -613,7 +613,6 @@ bool CGUISettings::GetBool(const char *strSetting) const
   }
   // Assert here and write debug output
   CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
-  ASSERT(false);
   return false;
 }
 
@@ -945,7 +944,6 @@ void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool adv
             (*it).second->FromString(strValue);
             if (advanced)
               (*it).second->SetAdvanced();
-            CLog::Log(LOGDEBUG, "  %s: %s", (*it).first.c_str(), (*it).second->ToString().c_str());
           }
         }
       }

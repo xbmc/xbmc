@@ -1,6 +1,6 @@
 #pragma once
+#include "DllLibshnplay.h"
 #include "CachingCodec.h"
-#include "Dlllibshnplay.h"
 
 class SHNCodec : public CachingCodec
 {
