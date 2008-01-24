@@ -62,3 +62,4 @@ void access_violation::writelog(const char *prefix) const
       CLog::Log(LOGERROR, "%s at 0x%08x: Reading location 0x%08x", what(), where(), address());
 
 }
+

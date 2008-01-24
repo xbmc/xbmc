@@ -2580,3 +2580,4 @@ void CFileItemList::SetReplaceListing(bool replace)
 {
   m_replaceListing = replace;
 }
+

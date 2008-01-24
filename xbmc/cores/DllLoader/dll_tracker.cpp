@@ -4,8 +4,8 @@
 #include "dll_tracker_library.h"
 #include "dll_tracker_memory.h"
 #include "dll_tracker_file.h"
-#include "dll_tracker_socket.h"
 #include "dll_tracker_critical_section.h"
+#include "dll_tracker_socket.h"
 
 #include "DllLoader.h"
 

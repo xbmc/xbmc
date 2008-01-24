@@ -36,12 +36,12 @@ protected:
   unsigned int m_lastLabel;
 
   CLabelInfo m_label;
-  CGUITextLayout m_textLayout;
 
   bool m_scrollOut;   // true if we scroll the text all the way to the left before fading in the next label
   bool m_shortText;   // true if the text we have is shorter than the width of the control
 
   CScrollInfo m_scrollInfo;
+  CGUITextLayout m_textLayout;
   CAnimation *m_fadeAnim;
   DWORD m_renderTime;
 };

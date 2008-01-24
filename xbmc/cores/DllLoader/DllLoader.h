@@ -54,7 +54,7 @@ protected:
   void AddExport(char* sFunctionName, void* function, void* track_function = NULL);
   void SetExports(Export* exports) { m_pStaticExports = exports; }
 
-private:
+protected:
   // Just pointers; dont' delete...
   ImportDirTable_t *ImportDirTable;
   ExportDirTable_t *ExportDirTable;

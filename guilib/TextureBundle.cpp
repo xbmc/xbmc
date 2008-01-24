@@ -14,7 +14,7 @@
 
 #ifdef _XBOX
 #pragma comment(lib,"xbmc/lib/liblzo/lzo.lib")
-#else
+#elif !defined(__GNUC__)
 #pragma comment(lib,"../../xbmc/lib/liblzo/lzo.lib")
 #endif
 
@@ -444,7 +444,7 @@ HRESULT CTextureBundle::LoadTexture(LPDIRECT3DDEVICE8 pDevice, const CStdString&
 
   DWORD flags = *(DWORD*)Next;
   Next += sizeof(DWORD);
-  if (flags & XPRFLAG_ANIM || (flags >> 16) > 1)
+  if ((flags & XPRFLAG_ANIM) || (flags >> 16) > 1)
     goto PackedLoadError;
 
   if (flags & XPRFLAG_PALETTE)

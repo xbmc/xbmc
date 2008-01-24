@@ -10,7 +10,7 @@
 //
 //
 
-#include "stdafx.h" 
+#include "stdafx.h"
 #include "CacheMemBuffer.h"
 #include "Util.h"
 #include "../utils/log.h"
