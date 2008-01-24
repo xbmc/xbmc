@@ -30,7 +30,8 @@
 
 //////////////////////////////////////////////////////////////////////
 XCriticalSection::XCriticalSection()
-	: m_count(0)
+	: m_ownerThread(0)
+	, m_count(0)
 	, m_isDestroyed(false)
 	, m_isInitialized(false)
 {
@@ -143,6 +144,8 @@ void XCriticalSection::Leave()
 	if (m_count > 0)
 	{
 		m_count--;
+		if(m_count == 0)
+			m_ownerThread = 0;
 		SAFELY(pthread_mutex_unlock(&m_mutex));
 	}
 	else
