@@ -39,6 +39,7 @@
 #include "../utils/Network.h"
 #include "FileTuxBox.h"
 #include "HDHomeRun.h"
+#include "GMythDirectory.h"
 #include "Application.h"
 
 using namespace XFILE;
@@ -109,6 +110,9 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #ifdef HAS_FILESYSTEM_DAAP
     else if (strProtocol == "daap") return new CFileDAAP();
 #endif
+#endif
+#ifdef HAS_GMYTH
+    else if (strProtocol == "myth") return new CGMythFile();
 #endif
   }
 

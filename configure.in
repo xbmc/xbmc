@@ -41,6 +41,12 @@ AC_ARG_ENABLE([mms],
             [use_mms=$enableval],
             [use_mms=yes])
 
+AC_ARG_ENABLE([gmyth],
+            [AS_HELP_STRING([--enable-gmyth],
+               [enable gmyth support (default is no)])],
+            [use_gmyth=$enableval],
+            [use_gmyth=no])
+
 # Checks for programs.
 AC_PROG_AWK
 AC_PROG_CXX
@@ -88,6 +94,17 @@ if test "$use_mms" = "yes"; then
 else
   AC_MSG_RESULT(== MMS support disabled. ==)
 fi
+
+if test "$use_gmyth" = "yes"; then
+  AC_CHECK_LIB([glib-2.0], [main],, use_gmyth="no";AC_MSG_RESULT(== Could not find glib-2.0. GMyth support disabled. ==))
+  AC_CHECK_LIB([gobject-2.0], [main],, use_gmyth="no";AC_MSG_RESULT(== Could not find gobject-2.0. GMyth support disabled. ==))
+  AC_CHECK_LIB([gthread-2.0], [main],, use_gmyth="no";AC_MSG_RESULT(== Could not find gthread-2.0. GMyth support disabled. ==))
+  AC_CHECK_LIB([curl], [main],, use_gmyth="no";AC_MSG_RESULT(== Could not find libcurl. GMyth support disabled. ==))
+  AC_CHECK_LIB([gmyth], [main],, use_gmyth="no";AC_MSG_RESULT(== Could not find libgmyth. GMyth support disabled. ==))
+else
+  AC_MSG_RESULT(== GMyth support disabled. ==)
+fi
+
 
 # Checks for header files.
 AC_HEADER_DIRENT
@@ -195,6 +212,13 @@ if test "$use_mms" = "yes"; then
   SDL_DEFINES="$SDL_DEFINES -DHAS_MMS"
 else
   final_message="$final_message\n  MMS:\t\tNo"
+fi
+
+if test "$use_gmyth" = "yes"; then
+  final_message="$final_message\n  GMyth:\t\tYes"
+  SDL_DEFINES="$SDL_DEFINES -DHAS_GMYTH"
+else
+  final_message="$final_message\n  GMyth:\t\tNo"
 fi
 
 
