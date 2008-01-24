@@ -62,7 +62,6 @@ void CVisualisation::Render()
   g_graphicsContext.BeginPaint();
   m_pVisz->Render();
   g_graphicsContext.EndPaint();
-
 }
 
 void CVisualisation::Stop()

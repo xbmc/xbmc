@@ -1243,7 +1243,6 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
 
   DWORD dwTick=timeGetTime();
 
-//printf("Scanning\n");
   while (m_musicInfoLoader.IsLoading())
   {
     if (bShowProgress)
@@ -1271,7 +1270,6 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
     } // if (bShowProgress)
     Sleep(1);
   } // while (m_musicInfoLoader.IsLoading())
-//printf("Scanning done\n");
 
   if (bProgressVisible && m_dlgProgress)
     m_dlgProgress->Close();

@@ -577,7 +577,6 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
     pItem->m_strPath = mvids[i]->GetVideoInfoTag()->m_strFileNameAndPath;
     items.Add(pItem);
   }
-
 }
 
 /// \brief React on the selected search item

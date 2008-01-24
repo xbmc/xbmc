@@ -194,7 +194,7 @@ bool CHTTP::ReadData(string& strData)
         if (!Recv( -1))
         {
           strData.clear();
-            CLog::Log(LOGERROR, "Recv failed: %d", WSAGetLastError());
+          CLog::Log(LOGERROR, "Recv failed: %d", WSAGetLastError());
           Close();
           return false;
         }
@@ -429,7 +429,7 @@ bool CHTTP::Connect()
     {
       if (e == WSAECANCELLED)
         CLog::Log(LOGNOTICE, "HTTP: User canceled");
-      
+
       Close();
       return false;
     }
@@ -718,8 +718,7 @@ bool CHTTP::Recv(int iLen)
 #ifndef _LINUX
   WSABUF buf;
   WSAOVERLAPPED ovl;
-  DWORD flags;
-  DWORD n;
+  DWORD n, flags;
 #else
   ssize_t n;
 #endif

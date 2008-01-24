@@ -281,9 +281,9 @@ bool CFile::Open(const CStdString& strFileName, bool bBinary, unsigned int flags
     CURL url(strFileName);
     if (m_flags & READ_CACHED)
     {
-		m_pFile = new CFileCache();
-		return m_pFile->Open(url, bBinary);
-	}
+      m_pFile = new CFileCache();
+      return m_pFile->Open(url, bBinary);
+    }
 
     m_pFile = CFileFactory::CreateLoader(url);
     if (!m_pFile)
@@ -350,16 +350,16 @@ bool CFile::Open(const CStdString& strFileName, bool bBinary, unsigned int flags
 }
 
 void CFile::Attach(IFile *pFile, unsigned int flags) {
-	m_pFile = pFile;
-	m_flags = flags;
-    if (m_flags & READ_BUFFERED)
+  m_pFile = pFile;
+  m_flags = flags;
+  if (m_flags & READ_BUFFERED)
+  {
+    if (m_pFile->GetChunkSize())
     {
-      if (m_pFile->GetChunkSize())
-      {
-        m_pBuffer = new CFileStreamBuffer(0);
-        m_pBuffer->Attach(m_pFile);
-      }
+      m_pBuffer = new CFileStreamBuffer(0);
+      m_pBuffer->Attach(m_pFile);
     }
+  }
 }
 
 IFile* CFile::Detach() {
