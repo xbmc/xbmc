@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 // XboxMediaCenter
 //
 // libraries:
