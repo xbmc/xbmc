@@ -54,16 +54,6 @@ bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
       CLog::Log(LOGERROR, "%s: Error creating demuxer", __FUNCTION__);
       return false;
     }
-    
-    if (!m_pDemuxer->Open(m_pInputStream))
-    {
-      CLog::Log(LOGERROR, "%s: Error opening demuxer", __FUNCTION__);
-      delete m_pDemuxer;
-      m_pDemuxer = NULL;
-      delete m_pInputStream;
-      m_pInputStream = NULL;
-      return false;
-    }
   }
   catch(...)
   {
@@ -172,7 +162,7 @@ int DVDPlayerCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
     return READ_SUCCESS;
   }
 
-  CDVDDemux::DemuxPacket* pPacket = NULL;
+  DemuxPacket* pPacket = NULL;
 
   do
   {

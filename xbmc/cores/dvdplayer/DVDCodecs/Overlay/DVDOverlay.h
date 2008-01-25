@@ -21,6 +21,7 @@ public:
     iPTSStartTime = 0LL;
     iPTSStopTime = 0LL;
     bForced = false;
+    replace = false;
     
     m_references = 1;
 #ifdef DVDDEBUG_OVERLAY_TRACKER
@@ -68,6 +69,7 @@ public:
   double iPTSStartTime;
   double iPTSStopTime;
   bool bForced; // display, no matter what
+  bool replace; // replace by next nomatter what stoptime it has
   int iGroupId;
 #ifdef DVDDEBUG_OVERLAY_TRACKER
   int m_bTrackerReference;

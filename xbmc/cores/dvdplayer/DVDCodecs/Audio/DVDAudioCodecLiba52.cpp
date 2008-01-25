@@ -229,7 +229,6 @@ int CDVDAudioCodecLiba52::Decode(BYTE* pData, int iSize)
           m_decodedDataSize = 0;
           return -1;
         }
- 
         m_decodedDataSize += 2*resample_int16(m_fSamples, (int16_t*)(m_decodedData + m_decodedDataSize/2), m_iOutputMapping);
       }
 
