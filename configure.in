@@ -215,10 +215,10 @@ else
 fi
 
 if test "$use_gmyth" = "yes"; then
-  final_message="$final_message\n  GMyth:\t\tYes"
+  final_message="$final_message\n  GMyth:\tYes"
   SDL_DEFINES="$SDL_DEFINES -DHAS_GMYTH"
 else
-  final_message="$final_message\n  GMyth:\t\tNo"
+  final_message="$final_message\n  GMyth:\tNo"
 fi
 
 
