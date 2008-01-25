@@ -26,7 +26,7 @@ public:
   virtual ~DllAvCodecInterface() {}
   virtual void avcodec_register_all(void)=0;
   virtual void avcodec_flush_buffers(AVCodecContext *avctx)=0;
-  virtual int avcodec_open(AVCodecContext *avctx, AVCodec *codec)=0;
+  virtual int avcodec_open_dont_call(AVCodecContext *avctx, AVCodec *codec)=0;
   virtual AVCodec *avcodec_find_decoder(enum CodecID id)=0;
   virtual int avcodec_close(AVCodecContext *avctx)=0;
   virtual AVFrame *avcodec_alloc_frame(void)=0;
@@ -56,7 +56,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
 #ifndef _LINUX
   DECLARE_DLL_WRAPPER(DllAvCodec, Q:\\system\\players\\dvdplayer\\avcodec-51.dll)
   DEFINE_FUNC_ALIGNED1(void, __cdecl, avcodec_flush_buffers, AVCodecContext*)
-  DEFINE_FUNC_ALIGNED2(int, __cdecl, avcodec_open, AVCodecContext*, AVCodec *)
+  DEFINE_FUNC_ALIGNED2(int, __cdecl, avcodec_open_dont_call, AVCodecContext*, AVCodec *)
   DEFINE_FUNC_ALIGNED5(int, __cdecl, avcodec_decode_video, AVCodecContext*, AVFrame*, int*, uint8_t*, int)
   DEFINE_FUNC_ALIGNED5(int, __cdecl, avcodec_decode_audio2, AVCodecContext*, int16_t*, int*, uint8_t*, int)
   DEFINE_FUNC_ALIGNED5(int, __cdecl, avcodec_decode_subtitle, AVCodecContext*, AVSubtitle*, int*, const uint8_t *, int)
@@ -70,7 +70,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DECLARE_DLL_WRAPPER(DllAvCodec, Q:\\system\\players\\dvdplayer\\avcodec-51-i486-linux.so)
 #endif
   DEFINE_METHOD1(void, avcodec_flush_buffers, (AVCodecContext* p1))
-  DEFINE_METHOD2(int, avcodec_open, (AVCodecContext* p1, AVCodec *p2))
+  DEFINE_METHOD2(int, avcodec_open_dont_call, (AVCodecContext* p1, AVCodec *p2))
   DEFINE_METHOD5(int, avcodec_decode_video, (AVCodecContext* p1, AVFrame *p2, int *p3, uint8_t *p4, int p5))
   DEFINE_METHOD5(int, avcodec_decode_audio2, (AVCodecContext* p1, int16_t *p2, int *p3, uint8_t *p4, int p5))
   DEFINE_METHOD5(int, avcodec_decode_subtitle, (AVCodecContext* p1, AVSubtitle *p2, int *p3, const uint8_t *p4, int p5))
@@ -98,7 +98,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_METHOD2(int, avcodec_thread_init, (AVCodecContext *p1, int p2))
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(avcodec_flush_buffers)
-    RESOLVE_METHOD(avcodec_open)
+    RESOLVE_METHOD_RENAME(avcodec_open,avcodec_open_dont_call)
     RESOLVE_METHOD(avcodec_find_decoder)
     RESOLVE_METHOD(avcodec_close)
     RESOLVE_METHOD(avcodec_alloc_frame)
@@ -121,16 +121,13 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD(avcodec_default_release_buffer)
     RESOLVE_METHOD(avcodec_thread_init)
   END_METHOD_RESOLVE()
-
 public:
-  virtual bool Load() { 
-	bool bLoaded = DllDynamic::Load(); 
-	if (bLoaded) {
-		avcodec_register_all(); 
-		CLog::Log(LOGDEBUG,"DllAvCodec loaded"); 
-	}
-	return bLoaded;
-  }
+    static CCriticalSection m_critSection;
+    int avcodec_open(AVCodecContext *avctx, AVCodec *codec)
+    {
+      CSingleLock lock(DllAvCodec::m_critSection);
+      return avcodec_open_dont_call(avctx,codec);
+    }
 };
 
 // calback used for logging

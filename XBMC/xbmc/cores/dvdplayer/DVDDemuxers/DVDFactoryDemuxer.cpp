@@ -17,9 +17,18 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream)
 
     /* check so we got the meta information as requested in our http header */
     if( header->GetValue("icy-metaint").length() > 0 )
-      return new CDVDDemuxShoutcast();
+    {
+      auto_ptr<CDVDDemuxShoutcast> demuxer(new CDVDDemuxShoutcast());
+      if(demuxer->Open(pInputStream))
+        return demuxer.release();
+      else
+        return NULL;
+    }
   }
-  
-  return new CDVDDemuxFFmpeg();
+  auto_ptr<CDVDDemuxFFmpeg> demuxer(new CDVDDemuxFFmpeg());
+  if(demuxer->Open(pInputStream))
+    return demuxer.release();
+  else
+    return NULL;
 }
 

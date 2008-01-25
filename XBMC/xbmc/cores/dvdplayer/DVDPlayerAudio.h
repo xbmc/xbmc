@@ -120,7 +120,7 @@ protected:
     {
       msg = msg2;
       msg->Acquire();
-      CDVDDemux::DemuxPacket* p = msg->GetPacket();      
+      DemuxPacket* p = msg->GetPacket();      
       data = p->pData;
       size = p->iSize;
       dts = p->dts;

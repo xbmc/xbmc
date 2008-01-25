@@ -287,13 +287,27 @@ namespace VIDEO
 
     if (!bSkip)
     {
-      if (m_pObserver)
-        m_pObserver->OnStateChanged(FETCHING_VIDEO_INFO);
+	  if (m_info.strContent.Equals("movies"))
+	  {
+		if (m_pObserver)
+          m_pObserver->OnStateChanged(FETCHING_MOVIE_INFO);
+	      RetrieveVideoInfo(items,settings.parent_name_root,m_info);
+          m_database.SetPathHash(strDirectory, hash);
+	  }
+	  if (m_info.strContent.Equals("musicvideos"))
+	  {
+		if (m_pObserver)
+          m_pObserver->OnStateChanged(FETCHING_MUSICVIDEO_INFO);
+	      RetrieveVideoInfo(items,settings.parent_name_root,m_info);
+          m_database.SetPathHash(strDirectory, hash);
+	  }
+      if (m_info.strContent.Equals("tvshows"))
+	  {
+		if (m_pObserver)
+          m_pObserver->OnStateChanged(FETCHING_TVSHOW_INFO);
+	  }
+	}
 
-      RetrieveVideoInfo(items,settings.parent_name_root,m_info);
-      if (m_info.strContent.Equals("movies") || m_info.strContent.Equals("musicvideos"))
-        m_database.SetPathHash(strDirectory, hash);
-    }
     if (m_pObserver)
       m_pObserver->OnDirectoryScanned(strDirectory);
     CLog::Log(LOGDEBUG, "%s - Finished dir: %s", __FUNCTION__, strDirectory.c_str());
