@@ -28,8 +28,7 @@ public:
   virtual __int64 GetLength() = 0;
   virtual std::string GetContent() { return m_content; };
 
-  const char* GetFileName();
-  bool HasExtension(char* sExtension);
+  std::string& GetFileName() { return m_strFileName; }
   
   int GetBlockSize() { return DVDSTREAM_BLOCK_SIZE_FILE; }
   bool IsStreamType(DVDStreamType type) const { return m_streamType == type; }
@@ -39,7 +38,7 @@ public:
 
 protected:
   DVDStreamType m_streamType;
-  char* m_strFileName;
+  std::string m_strFileName;
   BitstreamStats m_stats;
   std::string m_content;
 };

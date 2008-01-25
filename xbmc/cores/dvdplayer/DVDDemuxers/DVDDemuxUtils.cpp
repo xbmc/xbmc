@@ -3,7 +3,7 @@
 #include "DVDDemuxUtils.h"
 #include "../../ffmpeg/avcodec.h"
 
-void CDVDDemuxUtils::FreeDemuxPacket(CDVDDemux::DemuxPacket* pPacket)
+void CDVDDemuxUtils::FreeDemuxPacket(DemuxPacket* pPacket)
 {
   if (pPacket)
   {
@@ -17,14 +17,14 @@ void CDVDDemuxUtils::FreeDemuxPacket(CDVDDemux::DemuxPacket* pPacket)
   }
 }
 
-CDVDDemux::DemuxPacket* CDVDDemuxUtils::AllocateDemuxPacket(int iDataSize)
+DemuxPacket* CDVDDemuxUtils::AllocateDemuxPacket(int iDataSize)
 {
-  CDVDDemux::DemuxPacket* pPacket = new CDVDDemux::DemuxPacket;
+  DemuxPacket* pPacket = new DemuxPacket;
   if (!pPacket) return NULL;
 
   try 
   {    
-    memset(pPacket, 0, sizeof(CDVDDemux::DemuxPacket));
+    memset(pPacket, 0, sizeof(DemuxPacket));
     
     if (iDataSize > 0)
     {

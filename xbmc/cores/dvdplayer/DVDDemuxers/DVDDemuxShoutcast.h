@@ -23,8 +23,9 @@ public:
   void Flush();
   void Abort(){}
   void SetSpeed(int iSpeed){};
+  virtual std::string GetFileName();
 
-  CDVDDemux::DemuxPacket* Read();
+  DemuxPacket* Read();
 
   bool Seek(int iTime, bool bBackword = false);
   int GetStreamLenght();
@@ -36,4 +37,5 @@ protected:
   CDemuxStreamAudioShoutcast* m_pDemuxStream;
 
   int m_iMetaStreamInterval;
+  CDVDInputStream* m_pInput;
 };
