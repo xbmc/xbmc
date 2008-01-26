@@ -63,7 +63,6 @@ CAnimEffect::CAnimEffect(const TiXmlElement *node, EFFECT_TYPE effect)
     else
       m_pTweener = new LinearTweener();
   }
-  m_referenceCount = 1;
 }
 
 CAnimEffect::CAnimEffect(unsigned int delay, unsigned int length, EFFECT_TYPE effect)
@@ -72,27 +71,35 @@ CAnimEffect::CAnimEffect(unsigned int delay, unsigned int length, EFFECT_TYPE ef
   m_length = length;
   m_effect = effect;
   m_pTweener = new LinearTweener();
-  m_referenceCount = 1;
 }
 
 CAnimEffect::~CAnimEffect()
 {
-  assert(m_referenceCount == 0);
   if (m_pTweener) 
-    delete m_pTweener;
+    m_pTweener->Free();
 }
 
-void CAnimEffect::AddReference()
+CAnimEffect::CAnimEffect(const CAnimEffect &src)
 {
-  m_referenceCount++;
+  m_pTweener = NULL;
+  *this = src;
 }
 
-void CAnimEffect::Free()
+const CAnimEffect &CAnimEffect::operator=(const CAnimEffect &src)
 {
-  assert(m_referenceCount);
-  m_referenceCount--;
-  if (!m_referenceCount)
-    delete this;
+  if (&src == this) return *this;
+
+  m_matrix = src.m_matrix;
+  m_effect = src.m_effect;
+  m_length = src.m_length;
+  m_delay = src.m_delay;
+
+  if (m_pTweener)
+    m_pTweener->Free();
+  m_pTweener = src.m_pTweener;
+  if (m_pTweener)
+    m_pTweener->IncRef();
+  return *this;
 }
 
 void CAnimEffect::Calculate(unsigned int time, const CPoint &center)
@@ -346,7 +353,7 @@ CAnimation::CAnimation(const CAnimation &src)
 CAnimation::~CAnimation()
 {
   for (unsigned int i = 0; i < m_effects.size(); i++)
-    m_effects[i]->Free();
+    delete m_effects[i];
   m_effects.clear();
 }
 
@@ -367,14 +374,24 @@ const CAnimation &CAnimation::operator =(const CAnimation &src)
   m_amount = src.m_amount;
   // clear all our effects
   for (unsigned int i = 0; i < m_effects.size(); i++)
-    m_effects[i]->Free();
+    delete m_effects[i];
   m_effects.clear();
   // and assign the others across
   for (unsigned int i = 0; i < src.m_effects.size(); i++)
   {
-    CAnimEffect *effect = src.m_effects[i];
-    m_effects.push_back(effect);
-    effect->AddReference();
+    CAnimEffect *newEffect = NULL;
+    if (src.m_effects[i]->GetType() == CAnimEffect::EFFECT_TYPE_FADE)
+      newEffect = new CFadeEffect(*(CFadeEffect *)src.m_effects[i]);
+    else if (src.m_effects[i]->GetType() == CAnimEffect::EFFECT_TYPE_ZOOM)
+      newEffect = new CZoomEffect(*(CZoomEffect *)src.m_effects[i]);
+    else if (src.m_effects[i]->GetType() == CAnimEffect::EFFECT_TYPE_SLIDE)
+      newEffect = new CSlideEffect(*(CSlideEffect *)src.m_effects[i]);
+    else if (src.m_effects[i]->GetType() == CAnimEffect::EFFECT_TYPE_ROTATE_X ||
+             src.m_effects[i]->GetType() == CAnimEffect::EFFECT_TYPE_ROTATE_Y || 
+             src.m_effects[i]->GetType() == CAnimEffect::EFFECT_TYPE_ROTATE_Z)
+      newEffect = new CRotateEffect(*(CRotateEffect *)src.m_effects[i]);
+    if (newEffect)
+      m_effects.push_back(newEffect);
   }
   return *this;
 }
