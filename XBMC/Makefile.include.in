@@ -32,6 +32,11 @@ clean:
 	$(RM) $(OBJS) $(LIB) $(PCH:.h=.h.gch)
 	for d in $(DIRS); do (cd $$d; $(MAKE) clean ); done
 
+distclean:
+	@echo "Removing all object file (.o)"
+	@find . -name "*.o" -exec echo 'Removing "{}"' \; -exec rm "{}" \;
+	@echo "Done."
+
 depend: $(PCH) $(SRCS)
 	-$(CXX) -MM $(DEFINES) $(INCLUDES) $(SRCS) > Makefile.depend
 	-for d in $(DIRS); do (cd $$d; $(MAKE) depend ); done
