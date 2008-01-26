@@ -32,9 +32,10 @@ public:
 
   CAnimEffect(const TiXmlElement *node, EFFECT_TYPE effect);
   CAnimEffect(unsigned int delay, unsigned int length, EFFECT_TYPE effect);
+  CAnimEffect(const CAnimEffect &src);
+
   virtual ~CAnimEffect();
-  void Free();
-  void AddReference();
+  const CAnimEffect &operator=(const CAnimEffect &src);
 
   void Calculate(unsigned int time, const CPoint &center);
   void ApplyState(ANIMATION_STATE state, const CPoint &center);
@@ -42,6 +43,7 @@ public:
   unsigned int GetDelay() const { return m_delay; };
   unsigned int GetLength() const { return m_delay + m_length; };
   const TransformMatrix &GetTransform() const { return m_matrix; };
+  EFFECT_TYPE GetType() const { return m_effect; };
 
 protected:
   TransformMatrix m_matrix;
@@ -55,8 +57,6 @@ private:
   unsigned int m_delay;
 
   Tweener *m_pTweener;
-  // reference tracking
-  unsigned int m_referenceCount;
 };
 
 class CFadeEffect : public CAnimEffect
