@@ -127,3 +127,4 @@ void CDemuxStream::SetDiscard(AVDiscard discard)
 {
   return;
 }
+
