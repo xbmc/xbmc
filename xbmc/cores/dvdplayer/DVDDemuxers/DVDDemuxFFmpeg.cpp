@@ -357,8 +357,9 @@ void CDVDDemuxFFmpeg::Dispose()
   {    
     if (m_streams[i]) 
     {
-      if (m_streams[i]->ExtraData)
-        delete[] m_streams[i]->ExtraData;
+      // NOTE: deleting a void* is undefined!
+      //if (m_streams[i]->ExtraData)
+      //  delete[] m_streams[i]->ExtraData;
       delete m_streams[i];
     }
     m_streams[i] = NULL;
@@ -435,7 +436,7 @@ void CDVDDemuxFFmpeg::SetSpeed(int iSpeed)
 
 double CDVDDemuxFFmpeg::ConvertTimestamp(int64_t pts, int den, int num)
 {
-  if (pts ==  AV_NOPTS_VALUE)
+  if (pts == (int64_t)AV_NOPTS_VALUE)
     return DVD_NOPTS_VALUE;
 
   // do calculations in floats as they can easily overflow otherwise
@@ -443,7 +444,7 @@ double CDVDDemuxFFmpeg::ConvertTimestamp(int64_t pts, int den, int num)
   double timestamp = (double)pts * num  / den;
   double starttime = 0.0f;
 
-  if (m_pFormatContext->start_time != AV_NOPTS_VALUE)
+  if (m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE)
     starttime = (double)m_pFormatContext->start_time / AV_TIME_BASE;
 
   if(timestamp > starttime)
@@ -590,7 +591,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
 bool CDVDDemuxFFmpeg::Seek(int iTime, bool bBackword)
 {
   __int64 seek_pts = (__int64)iTime * (AV_TIME_BASE / 1000);
-  if (m_pFormatContext->start_time != AV_NOPTS_VALUE && seek_pts < m_pFormatContext->start_time)
+  if (m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE && seek_pts < m_pFormatContext->start_time)
   {
     seek_pts += m_pFormatContext->start_time;
   }
@@ -618,7 +619,7 @@ int CDVDDemuxFFmpeg::GetStreamLenght()
     return 0;
 
   /* apperently ffmpeg messes up sometimes, so check for negative value too */
-  if (m_pFormatContext->duration == AV_NOPTS_VALUE || m_pFormatContext->duration < 0LL)
+  if (m_pFormatContext->duration == (int64_t)AV_NOPTS_VALUE || m_pFormatContext->duration < 0LL)
   {
     // no duration is available for us
     // try to calculate it
@@ -715,7 +716,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
     }
 
     // generic stuff
-    if (pStream->duration != AV_NOPTS_VALUE) 
+    if (pStream->duration != (int64_t)AV_NOPTS_VALUE) 
       m_streams[iId]->iDuration = (int)ConvertTimestamp(pStream->duration, pStream->time_base.den, pStream->time_base.num);
 
     m_streams[iId]->codec = pStream->codec->codec_id;
