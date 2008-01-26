@@ -48,6 +48,12 @@ void CGUITextLayout::Render(float x, float y, float angle, DWORD color, DWORD sh
     static const float degrees_to_radians = 0.01745329252f;
     g_graphicsContext.AddTransform(TransformMatrix::CreateZRotation(angle * degrees_to_radians, x, y, g_graphicsContext.GetScalingPixelRatio()));
   }
+  // center our text vertically
+  if (alignment & XBFONT_CENTER_Y)
+  {
+    y -= m_font->GetTextHeight(m_lines.size()) * 0.5f;;
+    alignment &= ~XBFONT_CENTER_Y;
+  }
   m_font->Begin();
   for (vector<CGUIString>::iterator i = m_lines.begin(); i != m_lines.end(); i++)
   {
@@ -82,6 +88,12 @@ void CGUITextLayout::RenderScrolling(float x, float y, float angle, DWORD color,
     static const float degrees_to_radians = 0.01745329252f;
     g_graphicsContext.AddTransform(TransformMatrix::CreateZRotation(angle * degrees_to_radians, x, y, g_graphicsContext.GetScalingPixelRatio()));
   }
+  // center our text vertically
+  if (alignment & XBFONT_CENTER_Y)
+  {
+    y -= m_font->GetTextHeight(m_lines.size()) * 0.5f;;
+    alignment &= ~XBFONT_CENTER_Y;
+  }
   m_font->Begin();
   // NOTE: This workaround is needed as otherwise multi-line text that scrolls
   //       will scroll in proportion to the number of lines.  Ideally we should
@@ -112,6 +124,12 @@ void CGUITextLayout::RenderOutline(float x, float y, DWORD color, DWORD outlineC
   if (m_colors.size())
     m_colors[0] = color;
 
+  // center our text vertically
+  if (alignment & XBFONT_CENTER_Y)
+  {
+    y -= m_font->GetTextHeight(m_lines.size()) * 0.5f;;
+    alignment &= ~XBFONT_CENTER_Y;
+  }
   m_font->Begin();
   for (vector<CGUIString>::iterator i = m_lines.begin(); i != m_lines.end(); i++)
   {
