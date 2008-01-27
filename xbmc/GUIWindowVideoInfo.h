@@ -36,6 +36,7 @@ protected:
   void OnSearchItemFound(const CFileItem* pItem);
   void Play(bool resume = false);
   void OnGetThumb();
+  void PlayTrailer();
   CFileItem m_movieItem;
   bool m_bViewReview;
   bool m_bRefresh;

@@ -1,5 +1,6 @@
 #include "include.h"
 #include "XMLUtils.h"
+#include "../xbmc/Util.h"
 
 bool XMLUtils::GetHex(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwHexValue)
 {
@@ -61,12 +62,15 @@ bool XMLUtils::GetBoolean(const TiXmlNode* pRootNode, const char* strTag, bool& 
 
 bool XMLUtils::GetString(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringValue)
 {
-  const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
-  if (!pNode) return false;
-  pNode = pNode->FirstChild();
+  const TiXmlElement* pElement = pRootNode->FirstChildElement(strTag );
+  if (!pElement) return false;
+  const char* encoded = pElement->Attribute("urlencoded");
+  const TiXmlNode* pNode = pElement->FirstChild();
   if (pNode != NULL)
   {
     strStringValue = pNode->Value();
+    if (encoded && stricmp(encoded,"yes") == 0)
+      CUtil::UrlDecode(strStringValue);
     return true;
   }
   strStringValue.Empty();
@@ -119,4 +123,5 @@ void XMLUtils::SetBoolean(TiXmlNode* pRootNode, const char *strTag, bool value)
 {
   SetString(pRootNode, strTag, value ? "true" : "false");
 }
+
 
