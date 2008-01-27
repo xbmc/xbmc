@@ -49,6 +49,7 @@ public:
   CStdString m_strGenre;
   CStdString m_strTagLine;
   CStdString m_strPlotOutline;
+  CStdString m_strTrailer;
   CStdString m_strPlot;
   CScraperUrl m_strPictureURL;
   CStdString m_strTitle;
