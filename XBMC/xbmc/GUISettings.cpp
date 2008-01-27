@@ -407,6 +407,12 @@ CGUISettings::CGUISettings(void)
   AddBool(8, "masterlock.loginlock",20116,true);
   // hidden masterlock settings
   AddInt(0,"masterlock.maxretries", 12364, 3, 3, 1, 100, SPIN_CONTROL_TEXT);
+  
+#ifdef HAS_CWIID  
+  AddCategory(4, "wiiremote", 21884);
+  AddBool(1, "wiiremote.enable", 305, false);
+  AddBool(2, "wiiremote.mouseemulation", 21885, true);
+#endif
 
   // video settings
   AddGroup(5, 3);

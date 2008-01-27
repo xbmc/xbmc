@@ -22,6 +22,11 @@
 #include "stdafx.h"
 #include "GUIWindowPointer.h"
 
+//FIXME This should be somewere else. Probably were the include for Mouse.h is
+#ifdef HAS_CWIID
+#include "common/WiiRemote.h"
+#endif
+
 
 #define ID_POINTER 10
 
@@ -76,9 +81,48 @@ void CGUIWindowPointer::OnWindowLoaded()
 
 void CGUIWindowPointer::Render()
 {
+#ifdef HAS_CWIID
+  // Depending if we prioritize mouse or wiiremote. If Mouse then the wiiremote wins if it have IR sources and the mouse is active but hasn't moved since last update
+  // if we prioritize the wiiremote the outcome is the opposite, the mouse wins if it has moved since last update and the wiiremote is at most active with no IR sources
+#ifndef WIIREMOTE_PRIORITIZE_MOUSE
+  if (g_WiiRemote.HaveIRSources())
+  {
+    float x, y;
+    x = g_graphicsContext.GetWidth()  * g_WiiRemote.GetMouseX();
+    y = g_graphicsContext.GetHeight() * g_WiiRemote.GetMouseY();
+       
+    SetPosition(x, y);
+    SetPointer(MOUSE_STATE_NORMAL);    //I am a bit uncertain if this should/could be anything else
+  }
+  else
+  {
+    CPoint location(g_Mouse.GetLocation());
+    SetPosition(location.x, location.y);
+    SetPointer(g_Mouse.GetState());
+  }
+#else
+  if (!g_Mouse.HasMoved() && g_WiiRemote.HaveIRSources())
+  {
+    float x, y;
+    x = g_graphicsContext.GetWidth()  * g_WiiRemote.GetMouseX();
+    y = g_graphicsContext.GetHeight() * g_WiiRemote.GetMouseY();
+    
+    SetPosition(x, y);
+    SetPointer(MOUSE_STATE_NORMAL);    
+  }
+  else
+  {
+    CPoint location(g_Mouse.GetLocation());
+    SetPosition(location.x, location.y);
+    SetPointer(g_Mouse.GetState());
+  }
+#endif
+
+#else
   CPoint location(g_Mouse.GetLocation());
   SetPosition(location.x, location.y);
   SetPointer(g_Mouse.GetState());
+#endif
   CGUIWindow::Render();
 }
 

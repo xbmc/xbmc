@@ -31,6 +31,10 @@
 #include "common/LIRC.h"
 #endif
 
+#ifdef HAS_CWIID
+#include "common/WiiRemote.h"
+#endif
+
 //-----------------------------------------------------------------------------
 // Global access to common members
 //-----------------------------------------------------------------------------

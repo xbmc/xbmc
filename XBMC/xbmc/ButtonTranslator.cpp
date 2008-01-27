@@ -160,6 +160,26 @@ WORD CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const ch
 }
 #endif
 
+#ifdef HAS_CWIID
+/* MapWiiremoteAction does the exact same thing as MappAction for the keyboard */
+void CButtonTranslator::MapWiiremoteAction(WORD wButtonCode, const char *szAction, buttonMap &map)
+{
+  WORD wAction = ACTION_NONE;
+  if (!TranslateActionString(szAction, wAction) || !wButtonCode)
+    return;   // no valid action, or an invalid buttoncode
+  // have a valid action, and a valid button - map it.
+  // check to see if we've already got this (button,action) pair defined
+  buttonMap::iterator it = map.find(wButtonCode);
+  if (it == map.end() || (*it).second.wID != wAction)
+  {
+    CButtonAction button;
+    button.wID = wAction;
+    button.strID = szAction;
+    map.insert(pair<WORD, CButtonAction>(wButtonCode, button));
+  }
+}
+#endif
+
 #ifdef HAS_SDL_JOYSTICK
 void CButtonTranslator::MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick)
 {
@@ -488,6 +508,19 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, WORD wWindowID)
     {
       MapJoystickActions(wWindowID, pDevice);
       pDevice = pDevice->NextSibling("joystick");
+    }
+  }
+#endif
+#ifdef HAS_CWIID
+  if ((pDevice = pWindow->FirstChild("wiiremote")) != NULL)
+  { // map wiiremote actions
+    TiXmlElement *pButton = pDevice->FirstChildElement();
+    while (pButton)
+    {
+      WORD wButtonCode = TranslateWiiremoteString(pButton->Value());
+      if (pButton->FirstChild())
+        MapWiiremoteAction(wButtonCode, pButton->FirstChild()->Value(), map);
+      pButton = pButton->NextSiblingElement();
     }
   }
 #endif
@@ -942,6 +975,33 @@ WORD CButtonTranslator::TranslateKeyboardString(const char *szButton)
   }
   return wButtonCode;
 }
+
+#ifdef HAS_CWIID
+/* This function takes a string from and returns an buttonID - Taken from TranslateKeyboardString( .. ) */
+WORD CButtonTranslator::TranslateWiiremoteString(const char *szButton)
+{
+  if (!szButton)
+    return 0;
+  WORD wButtonCode = 0;
+  CStdString strKey = szButton;
+  strKey.ToLower();
+  if      (strKey.Equals("left"))  wButtonCode = WIIREMOTE_LEFT;
+  else if (strKey.Equals("right")) wButtonCode = WIIREMOTE_RIGHT;
+  else if (strKey.Equals("up"))    wButtonCode = WIIREMOTE_UP;
+  else if (strKey.Equals("down"))  wButtonCode = WIIREMOTE_DOWN;
+  else if (strKey.Equals("a"))     wButtonCode = WIIREMOTE_A;
+  else if (strKey.Equals("b"))     wButtonCode = WIIREMOTE_B;
+  else if (strKey.Equals("minus")) wButtonCode = WIIREMOTE_MINUS;  
+  else if (strKey.Equals("plus"))  wButtonCode = WIIREMOTE_PLUS;
+  else if (strKey.Equals("one"))   wButtonCode = WIIREMOTE_1;
+  else if (strKey.Equals("two"))   wButtonCode = WIIREMOTE_2;
+  else if (strKey.Equals("home"))  wButtonCode = WIIREMOTE_HOME;
+    
+  else CLog::Log(LOGERROR, "Wiiremote Translator: Can't find button %s", strKey.c_str());  
+
+  return wButtonCode;
+}
+#endif
 
 void CButtonTranslator::Clear()
 {
