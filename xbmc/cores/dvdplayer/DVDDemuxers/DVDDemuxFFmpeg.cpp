@@ -357,9 +357,8 @@ void CDVDDemuxFFmpeg::Dispose()
   {    
     if (m_streams[i]) 
     {
-      // NOTE: deleting a void* is undefined!
-      //if (m_streams[i]->ExtraData)
-      //  delete[] m_streams[i]->ExtraData;
+      if (m_streams[i]->ExtraData)
+        delete[] (BYTE*)(m_streams[i]->ExtraData);
       delete m_streams[i];
     }
     m_streams[i] = NULL;
