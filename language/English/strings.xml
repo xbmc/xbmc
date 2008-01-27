@@ -1678,6 +1678,7 @@
   <string id="20407">Scraper Settings</string>
   <string id="20408">Downloading Music Video information</string>
   <string id="20409">Downloading TV Show information</string>
+  <string id="20410">Trailer</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>

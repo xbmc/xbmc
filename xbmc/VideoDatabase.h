@@ -60,6 +60,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_ORIGINALTITLE = 16,
   VIDEODB_ID_THUMBURL_SPOOF = 17,
   VIDEODB_ID_STUDIOS = 18,
+  VIDEODB_ID_TRAILER = 19,
   VIDEODB_ID_MAX
 } VIDEODB_IDS;
 
@@ -87,7 +88,8 @@ const struct SDbTableOffsets
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strDirector) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strOriginalTitle) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPictureURL.m_spoof) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strStudio) }
+  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strStudio) },
+  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strTrailer) }
 };
 
 typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
