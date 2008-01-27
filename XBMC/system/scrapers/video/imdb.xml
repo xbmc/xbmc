@@ -11,6 +11,9 @@
 			<RegExp input="$$1" output="&lt;setting label=&quot;Enable MoviePosterDB&quot; type=&quot;bool&quot; id=&quot;movieposterdb&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
+			<RegExp input="$$1" output="&lt;setting label=&quot;Fetch Trailer Link&quot; type=&quot;bool&quot; id=&quot;trailer&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
 			<RegExp input="$$1" output="&lt;setting type=&quot;sep&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
@@ -106,6 +109,9 @@
 			<RegExp conditional="movieposterdb" input="$$1" output="&lt;url function=&quot;GetMoviePosterDB&quot;&gt;http://www.movieposterdb.com/movie/\1&lt;/url&gt;" dest="5+">
 				<expression>/title/tt([t0-9]*)/faq</expression>
 			</RegExp>
+			<RegExp conditional="trailer" input="$$1" output="&lt;url function=&quot;GetTrailer&quot;&gt;http://$INFO[url]\1&lt;/url&gt;" dest="5+">
+				<expression>link=([^&apos;]*)&apos;[^&gt]*&gt;view trailer&lt;/a&gt;</expression>
+			</RegExp>
 			<RegExp input="$$2" output="&lt;url function=&quot;GetIMDBPoster&quot;&gt;http://$INFO[url]/title/\1/posters&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
@@ -180,6 +186,16 @@
 				<expression repeat="yes" noclean="1">&lt;img src=&quot;([^&quot;]*)/t_([^&quot;]*)&quot;[^_]*Version[s]&lt;/b&gt;</expression>
 			</RegExp>
 	</GetMoviePosterDB>
+	<GetTrailer clearbuffers="no" dest="5">
+		<RegExp conditional="trailer" input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetTrailerLink&quot;&gt;http://$INFO[url]\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression clear="yes" noclean="1">var videoSrc = &apos;([^&apos;]*)&apos;</expression>
+		</RegExp>
+	</GetTrailer>
+	<GetTrailerLink clearbuffers="no" dest="5">
+		<RegExp conditional="trailer" input="$$1" output="&lt;details&gt;&lt;trailer&gt;\1&lt;/trailer&gt;&lt;/details&gt;" dest="5">
+			<expression clear="yes" noclean="1">addVariable\(&quot;file[^&quot;]*&quot;([^&quot;]*)&quot;\)</expression>
+		</RegExp>
+	</GetTrailerLink>
 	<GetIMDBPoster dest="5">
 		<RegExp input="$$8$$9" output="&lt;details&gt;&lt;thumbs&gt;\1&lt;/thumbs&gt;&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="\1" dest="6">
