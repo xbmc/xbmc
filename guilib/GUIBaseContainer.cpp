@@ -56,12 +56,12 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
       }
       if (item != m_lastItem && HasFocus())
       {
+        item->GetFocusedLayout()->ResetAnimation(ANIM_TYPE_UNFOCUS);      
         unsigned int subItem = 1;
         if (m_lastItem && m_lastItem->GetFocusedLayout())
           subItem = m_lastItem->GetFocusedLayout()->GetFocus();
         item->GetFocusedLayout()->SetFocus(subItem ? subItem : 1);
       }
-      item->GetFocusedLayout()->ResetAnimation(ANIM_TYPE_UNFOCUS);
       item->GetFocusedLayout()->Render(item, m_dwParentID, m_renderTime);
     }
     m_lastItem = item;
