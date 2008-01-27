@@ -38,6 +38,20 @@
 
 <keymap>
   <global>
+    <wiiremote>
+      <a>Select</a>
+      <b>PreviousMenu</b>      
+      <left>Left</left>
+      <right>Right</right>
+      <up>Up</up>
+      <down>Down</down> 
+      <plus>VolumeUp</plus>
+      <minus>VolumeDown</minus>      
+      <home>XBMC.ActivateWindow(Home)</home>     
+      <one>ContextMenu</one>
+      <two></two>
+    </wiiremote>
+    
     <remote>
       <three>VolumeUp</three>
       <six>VolumeDown</six>
@@ -206,6 +220,12 @@
     <keyboard>
       <i>info</i>
     </keyboard>
+    
+    <wiiremote> 
+      <home>Fullscreen</home> 
+      <one>ActivateWindow(PlayerControls)</one>    
+      <two>ActivateWindow(shutdownmenu)</two>
+    </wiiremote>
   </Home>
   
 
@@ -237,6 +257,13 @@
       <m>Move</m>
       <r>Rename</r>
     </keyboard>
+    
+    <wiiremote>
+      <plus>Copy</plus>
+      <minus>Rename</minus>
+      <one>Highlight</one>
+      <two>Delete</two>
+    </wiiremote>
   </MyFiles>
   
 
@@ -273,6 +300,13 @@
       <u>MoveItemUp</u>
       <d>MoveItemDown</d>
     </keyboard>
+    
+    <wiiremote>
+      <b>Playlist</b>      <!-- Close playlist -->
+      <plus>MoveItemUp</plus>
+      <minus>MoveItemDown</minus>      
+      <two>Delete</two>
+    </wiiremote>
   </MyMusicPlaylist>
 
   <MyMusicPlaylistEditor>
@@ -281,13 +315,21 @@
       <d>MoveItemDown</d>
       <delete>Delete</delete>
     </keyboard>
+
     <gamepad>
       <Y>Queue</Y>
     </gamepad>
     <remote>
       <zero>Queue</zero>
     </remote>
+    
+    <wiiremote>
+      <plus>MoveItemUp</plus>
+      <minus>MoveItemDown</minus>      
+      <two>Delete</two>
+    </wiiremote>        
   </MyMusicPlaylistEditor>
+  
   <MyMusicFiles>
     <gamepad>
       <Y>Queue</Y>
@@ -312,6 +354,10 @@
       <space>Playlist</space>
       <q>Queue</q>
     </keyboard>
+    
+    <wiiremote>  
+      <b>ParentDir</b>
+    </wiiremote>
   </MyMusicFiles>
 
 
@@ -339,6 +385,12 @@
       <space>Playlist</space>
       <q>Queue</q>
     </keyboard>
+    
+    <wiiremote>
+      <one>Queue</one>
+      <two>Playlist</two>
+      <b>ParentDir</b>
+    </wiiremote>
   </MyMusicLibrary>
 
 
@@ -411,6 +463,17 @@
       <up>BigStepForward</up>
       <down>BigStepBack</down>
     </keyboard>
+    
+    <wiiremote>
+      <right>FastForward</right>
+      <left>Rewind</left>
+      <up>Play</up>
+      <down>Stop</down>
+      <a>OSD</a>
+      <b>ShowSubtitles</b>
+      <one>Info</one>
+      <two>AspectRatio</two>
+    </wiiremote>
   </FullscreenVideo>
 
 
@@ -429,6 +492,12 @@
     <remote>
       <menu>Close</menu>
     </remote>
+    
+    <wiiremote>
+      <b>Close</b>
+      <one>Close</one>
+      <two>Close</two>
+    </wiiremote>
   </PlayerControls>
 
 
@@ -498,6 +567,17 @@
       <s>ShowPreset</s>
       <l>LockPreset</l>
     </keyboard>
+    
+    <wiiremote>
+      <up>Pause</up>
+      <down>Stop</down>
+      <right>IncreaseRating</right>
+      <left>DecreaseRating</left>
+      <a>ActivateWindow(MusicOSD)</a>
+      <b>ActivateWindow(Home)</b>
+      <one>ActivateWindow(PlayerControls)</one>
+      <two>ActivateWindow(MusicPlaylist)</two>
+    </wiiremote>
   </Visualisation>
 
   <MusicOSD>
@@ -534,6 +614,12 @@
       <v>ActivateWindow(VisualisationSettings)</v>
       <n>ActivateWindow(MusicPlaylist)</n>
     </keyboard>
+    
+    <wiiremote>
+      <b>Close</b>
+      <one>Info</one>
+      <two>ShowPreset</two>
+    </wiiremote>
   </MusicOSD>
 
 
@@ -567,6 +653,11 @@
       <v>Close</v>
       <n>ActivateWindow(MusicPlaylist)</n>
     </keyboard>
+    
+    <wiiremote>
+      <b>Close</b>
+      <one>ActivateWindow(VisualisationPresetList)</one>
+    </wiiremote>
 
   </VisualisationSettings>
 
@@ -603,7 +694,10 @@
       <v>Close</v>
       <n>ActivateWindow(MusicPlaylist)</n>
     </keyboard>
-
+    
+    <wiiremote>
+      <b>Close</b>
+    </wiiremote>
   </VisualisationPresetList>
 
 
@@ -678,6 +772,14 @@
       <minus>ZoomOut</minus>
       <r>Rotate</r>
     </keyboard>
+    
+    <wiiremote>
+      <up>ZoomIn</up>
+      <down>ZoomOut</down>
+      <a>Info</a>
+      <one>CodecInfo</one>
+      <two>ZoomNormal</two>
+    </wiiremote>
   </SlideShow>
 
 
@@ -711,6 +813,11 @@
       <d>ResetCalibration</d>
       <r>NextResolution</r>
     </keyboard>
+    
+    <wiiremote>
+      <a>NextCalibration</a>
+      <two>ResetCalibration</two>      
+    </wiiremote>
   </ScreenCalibration>
 
 
@@ -740,6 +847,11 @@
       <return>NextCalibration</return>
       <d>ResetCalibration</d>
     </keyboard>
+    
+    <wiiremote>
+      <a>NextCalibration</a>
+      <two>ResetCalibration</two>      
+    </wiiremote>
   </GUICalibration>
 
 
@@ -760,6 +872,10 @@
     <keyboard>
       <escape>Close</escape>
     </keyboard>
+    
+    <wiiremote>
+      <b>Close</b>
+    </wiiremote>
   </SelectDialog>
   
 
@@ -787,6 +903,10 @@
       <backspace>HideSubMenu</backspace>
       <escape>Close</escape>
     </keyboard>
+    
+    <wiiremote>
+      <b>Close</b>
+    </wiiremote>
   </VideoOSD>
 
   <VideoMenu>
@@ -863,6 +983,10 @@
       <backspace>HideSubMenu</backspace>
       <escape>Close</escape>
     </keyboard>
+    
+    <wiiremote>
+      <b>Close</b>
+    </wiiremote>
   </OSDVideoSettings>
 
   <OSDAudioSettings>
@@ -893,6 +1017,10 @@
       <backspace>HideSubMenu</backspace>
       <escape>Close</escape>
     </keyboard>
+    
+    <wiiremote>
+      <b>Close</b>
+    </wiiremote>
   </OSDAudioSettings>
 
   <VideoBookmarks>
@@ -924,6 +1052,11 @@
       <backspace>HideSubMenu</backspace>
       <escape>Close</escape>
     </keyboard>
+    
+    <wiiremote>
+      <b>Close</b>    
+      <two>Delete</two>
+    </wiiremote>
   </VideoBookmarks>
   
 
@@ -949,6 +1082,12 @@
       <delete>Delete</delete>
       <space>Playlist</space>
     </keyboard>
+    
+    <wiiremote>
+      <one>Queue</one>
+      <two>Playlist</two>
+      <b>ParentDir</b>
+    </wiiremote>
   </MyVideoLibrary>
 
 
@@ -976,6 +1115,10 @@
       <space>Playlist</space>
       <q>Queue</q>
     </keyboard>
+
+    <wiiremote>
+      <b>ParentDir</b>
+    </wiiremote>
   </MyVideoFiles>
 
 
@@ -1012,6 +1155,13 @@
       <u>MoveItemUp</u>
       <d>MoveItemDown</d>
     </keyboard>
+    
+    <wiiremote>
+      <b>Playlist</b>
+      <plus>MoveItemUp</plus>
+      <minus>MoveItemDown</minus>
+      <two>Delete</two>
+    </wiiremote>
   </MyVideoPlaylist>
 
 
@@ -1050,6 +1200,13 @@
       <pageminus>CursorLeft</pageminus>
       <pageplus>CursorRight</pageplus>
     </remote>
+    
+    <wiiremote>
+      <minus>CursorLeft</minus>
+      <plus>CursorRight</plus>
+      <one>Shift</one>
+      <two>BackSpace</two>
+    </wiiremote>
   </VirtualKeyboard>
 
 
@@ -1081,6 +1238,10 @@
     <keyboard>
       <menu>Close</menu>
     </keyboard>
+    
+    <wiiremote>
+      <b>Close</b>    
+    </wiiremote>
   </ContextMenu>
 
   <FileStackingDialog>
@@ -1109,6 +1270,10 @@
     <keyboard>
       <i>XBMC.ActivateWindow(ScriptsDebugInfo)</i>
     </keyboard>
+    
+    <wiiremote>
+      <two>XBMC.ActivateWindow(ScriptsDebugInfo)</two>
+    </wiiremote>
   </Scripts>
 
 
@@ -1124,6 +1289,9 @@
     <keyboard>
       <i>Info</i> <!-- clears debug python info -->
     </keyboard>
+    <wiiremote>
+      <two>Info</two> <!-- clears debug python info -->
+    </wiiremote>
   </ScriptsDebugInfo>
 
 
@@ -1154,6 +1322,12 @@
       <nine>Number9</nine>
       <back>BackSpace</back>
     </remote>
+    
+    <wiiremote>
+      <minus>SkipPrevious</minus>
+      <plus>SkipNext</plus>
+      <two>BackSpace</two>
+    </wiiremote>
   </NumericInput>
 
 
@@ -1182,6 +1356,7 @@
     <remote>
       <back>PreviousMenu</back>
     </remote>
+    
   </Weather>
 
   <Settings>
