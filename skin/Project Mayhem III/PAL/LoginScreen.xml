@@ -116,6 +116,7 @@
 					<height>225</height>
 					<texture>keyboard-numeric-bg.png</texture>
 					<animation effect="zoom" start="20,25,180,180" end="0,0,220,225" time="150">focus</animation>
+					<animation effect="zoom" end="20,25,180,180" start="0,0,220,225" time="150">unfocus</animation>
 				</control>
 				<control type="image">
 					<posx>27</posx>
@@ -125,6 +126,7 @@
 					<aspectratio>keep</aspectratio>
 					<info>ListItem.Icon</info>
 					<animation effect="zoom" start="45,40,140,140" end="25,15,180,180" time="150">focus</animation>
+					<animation effect="zoom" end="45,40,140,140" start="25,15,180,180" time="150">unfocus</animation>
 				</control>
 				<control type="image">
 					<posx>0</posx>
@@ -133,6 +135,7 @@
 					<height>225</height>
 					<texture>keyboard-numeric-overlay2.png</texture>
 					<animation effect="zoom" start="20,25,180,180" end="0,0,220,225" time="150">focus</animation>
+					<animation effect="zoom" end="20,25,180,180" start="0,0,220,225" time="150">unfocus</animation>
 				</control>
 				<control type="image">
 					<posx>0</posx>
@@ -141,6 +144,7 @@
 					<height>220</height>
 					<texture flipy="true" diffuse="diffuse_mirror.png">keyboard-numeric-bg.png</texture>
 					<animation effect="zoom" start="20,180,180,180" end="0,193,220,225" time="150">focus</animation>
+					<animation effect="zoom" end="20,180,180,180" start="0,193,220,225" time="150">unfocus</animation>
 				</control>
 				<control type="image">
 					<posx>27</posx>
@@ -150,29 +154,30 @@
 					<texture flipy="true" diffuse="diffuse_mirror.png" /> 
 					<info>ListItem.Icon</info>
 					<animation effect="zoom" start="45,205,140,140" end="25,225,180,180" time="150">focus</animation>
+					<animation effect="zoom" end="45,205,140,140" start="25,225,180,180" time="150">unfocus</animation>
 				</control>
 				<control type="label">
 					<posx>110</posx>
-					<posy>230</posy>
+					<posy>205</posy>
 					<width>220</width>
 					<height>16</height>
 					<font>special13</font>
 					<align>center</align>
 					<scroll>true</scroll>
 					<info>ListItem.Label</info>
-				</control>
-				<control type="label">
-					<posx>110</posx>
-					<posy>258</posy>
-					<width>350</width>
-					<height>16</height>
-					<font>font12</font>
-					<align>center</align>
-					<scroll>true</scroll>
-					<align>right</align>
-					<info>ListItem.Label2</info>
+					<animation reversible="false" effect="slide" start="0,0" end="0,25" time="150">focus</animation>
+					<animation reversible="false" effect="slide" end="0,0" start="0,25" time="150">unfocus</animation>
 				</control>
 			</focusedlayout>
+		</control>
+		<control type="label">
+			<posx>0</posx>
+			<posy>430</posy>
+			<width>720</width>
+			<font>font12</font>
+			<align>center</align>
+			<scroll>true</scroll>
+			<info>Container(52).ListItem.Label2</info>
 		</control>
 		<control type="image">
 			<description>background image</description>
