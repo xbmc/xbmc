@@ -117,6 +117,52 @@ float CGUIListItemLayout::Size(ORIENTATION orientation) const
   return (orientation == HORIZONTAL) ? m_width : m_height;
 }
 
+bool CGUIListItemLayout::IsAnimating(ANIMATION_TYPE animType)
+{
+  for (iControls it = m_controls.begin(); it != m_controls.end(); it++)
+  {
+    CListBase *layoutItem = *it;
+    if (layoutItem->m_type == CListBase::LIST_LABEL)
+    {
+      CGUIListLabel &label = ((CListLabel *)layoutItem)->m_label;
+      if (label.IsAnimating(animType))
+        return true;
+    }
+    else if (layoutItem->m_type == CListBase::LIST_SELECT_LABEL)
+    {
+      if (((CListSelectLabel *)layoutItem)->m_label.IsAnimating(animType))
+        return true;
+    }
+    else
+    {
+      if (((CListTexture *)layoutItem)->m_image.IsAnimating(animType))
+        return true;
+    }
+  }
+  return false;
+}
+
+void CGUIListItemLayout::ResetAnimation(ANIMATION_TYPE animType)
+{
+  for (iControls it = m_controls.begin(); it != m_controls.end(); it++)
+  {
+    CListBase *layoutItem = *it;
+    if (layoutItem->m_type == CListBase::LIST_LABEL)
+    {
+      CGUIListLabel &label = ((CListLabel *)layoutItem)->m_label;
+      label.ResetAnimation(animType);
+    }
+    else if (layoutItem->m_type == CListBase::LIST_SELECT_LABEL)
+    {
+      ((CListSelectLabel *)layoutItem)->m_label.ResetAnimation(animType);
+    }
+    else
+    {
+      ((CListTexture *)layoutItem)->m_image.ResetAnimation(animType);
+    }
+  }
+}
+
 void CGUIListItemLayout::Render(CGUIListItem *item, DWORD parentID, DWORD time)
 {
   if (m_invalidated)
