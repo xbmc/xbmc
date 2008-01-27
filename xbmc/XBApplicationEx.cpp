@@ -21,6 +21,8 @@
 #endif
 #include "GUIFontManager.h"
 
+
+
 //-----------------------------------------------------------------------------
 // Global access to common members
 //-----------------------------------------------------------------------------
@@ -362,6 +364,10 @@ void CXBApplicationEx::ReadInput()
 
   // Read the input from the mouse
   g_Mouse.Update();
+
+#ifdef HAS_CWIID
+  g_WiiRemote.Update();
+#endif
 
 #ifdef HAS_LIRC
   g_RemoteControl.Update();

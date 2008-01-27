@@ -31,8 +31,7 @@ public:
   bool TranslateJoystickString(WORD wWindow, const char* szDevice, int id, 
                                bool axis, WORD& action, CStdString& strAction,
                                bool &fullrange);
-#endif
-
+#endif                          
 
 private:
   typedef multimap<WORD, CButtonAction> buttonMap; // our button map to fill in
@@ -58,6 +57,11 @@ private:
   typedef map<WORD, map<int, string> > JoystickMap; // <window, <button/axis, action> >
   map<string, JoystickMap> m_joystickButtonMap;      // <joy name, button map>
   map<string, JoystickMap> m_joystickAxisMap;        // <joy name, axis map>
+#endif
+
+#ifdef HAS_CWIID
+  WORD TranslateWiiremoteString(const char *szButton);
+  void MapWiiremoteAction(WORD wButtonCode, const char *szAction, buttonMap &map);
 #endif
 
 };
