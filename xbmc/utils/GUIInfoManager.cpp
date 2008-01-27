@@ -447,6 +447,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.writer")) return VIDEOPLAYER_WRITER;
     else if (strTest.Equals("videoplayer.tagline")) return VIDEOPLAYER_TAGLINE;
     else if (strTest.Equals("videoplayer.hasinfo")) return VIDEOPLAYER_HAS_INFO;
+	else if (strTest.Equals("videoplayer.trailer")) return VIDEOPLAYER_TRAILER;
   }
   else if (strCategory.Equals("playlist"))
   {
@@ -700,6 +701,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("writer")) return LISTITEM_WRITER;
   else if (info.Equals("tagline")) return LISTITEM_TAGLINE;
   else if (info.Equals("top250")) return LISTITEM_TOP250;
+  else if (info.Equals("trailer")) return LISTITEM_TRAILER;
   else if (info.Left(9).Equals("property(")) return AddListItemProp(info.Mid(9, info.GetLength() - 10));
   return 0;
 }
@@ -818,6 +820,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case VIDEOPLAYER_ALBUM:
   case VIDEOPLAYER_WRITER:
   case VIDEOPLAYER_TAGLINE:
+  case VIDEOPLAYER_TRAILER:
     strLabel = GetVideoLabel(info);
   break;
   case PLAYLIST_LENGTH:
@@ -2343,6 +2346,8 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       break;
     case VIDEOPLAYER_PLOT:
       return m_currentFile.GetVideoInfoTag()->m_strPlot;
+	case VIDEOPLAYER_TRAILER:
+      return m_currentFile.GetVideoInfoTag()->m_strTrailer;
     case VIDEOPLAYER_PLOT_OUTLINE:
       return m_currentFile.GetVideoInfoTag()->m_strPlotOutline;
     case VIDEOPLAYER_EPISODE:
@@ -3159,6 +3164,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
   case LISTITEM_TAGLINE:
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strTagLine;
+    break;
+  case LISTITEM_TRAILER:
+    if (item->HasVideoInfoTag())
+      return item->GetVideoInfoTag()->m_strTrailer;
     break;
   case LISTITEM_TOP250:
     if (item->HasVideoInfoTag())
