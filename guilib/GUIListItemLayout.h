@@ -65,7 +65,8 @@ public:
   unsigned int GetFocus() const;
   void SetFocus(unsigned int focus);
   void ResetScrolling();
-
+  bool IsAnimating(ANIMATION_TYPE animType);
+  void ResetAnimation(ANIMATION_TYPE animType);
   void SetInvalid() { m_invalidated = true; };
 
 //#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
