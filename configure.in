@@ -47,6 +47,12 @@ AC_ARG_ENABLE([gmyth],
             [use_gmyth=$enableval],
             [use_gmyth=no])
 
+AC_ARG_ENABLE([cwiid],
+            [AS_HELP_STRING([--enable-cwiid],
+               [enable Wii remote support (default is no)])],
+            [use_cwiid=$enableval],
+            [use_cwiid=no])
+
 # Checks for programs.
 AC_PROG_AWK
 AC_PROG_CXX
@@ -103,6 +109,12 @@ if test "$use_gmyth" = "yes"; then
   AC_CHECK_LIB([gmyth], [main],, use_gmyth="no";AC_MSG_RESULT(== Could not find libgmyth. GMyth support disabled. ==))
 else
   AC_MSG_RESULT(== GMyth support disabled. ==)
+fi
+
+if test "$use_cwiid" = "yes"; then
+  AC_CHECK_LIB([cwiid], [main],, use_cwiid="no";AC_MSG_RESULT(== Could not find libcwiid. Wii remote support disabled. ==))
+else
+  AC_MSG_RESULT(== Wii remote support disabled. ==)
 fi
 
 
@@ -221,6 +233,12 @@ else
   final_message="$final_message\n  GMyth:\tNo"
 fi
 
+if test "$use_cwiid" = "yes"; then
+  final_message="$final_message\n  Wii Remote:\tYes"
+  SDL_DEFINES="$SDL_DEFINES -DHAS_CWIID"
+else
+  final_message="$final_message\n  Wii Remote:\tNo"
+fi
 
 if test -d "/usr/include/lzo"; then
   LZO_INCLUDES="-I/usr/include/lzo"

@@ -264,6 +264,9 @@ protected:
   bool ProcessKeyboard();
   bool ProcessRemote(float frameTime);
   bool ProcessGamepad(float frameTime);
+#ifdef HAS_CWIID
+  bool ProcessWiiRemote();
+#endif
   void CheckForDebugButtonCombo();
   void StartFtpEmergencyRecoveryMode();
   float NavigationIdleTime();
