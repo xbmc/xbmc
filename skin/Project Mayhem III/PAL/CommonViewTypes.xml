@@ -78,9 +78,6 @@
 					<posy>0</posy>
 					<visible>Control.HasFocus(50)</visible>
 					<texture>list-focus.png</texture>
-					<animation type="Unfocus">
-						<effect reversible="false" type="fade" start="100" end="0" time="250" />
-					</animation>
 				</control>
 				<control type="image">
 					<posx>5</posx>
@@ -755,7 +752,11 @@
 					<posx>5</posx>
 					<posy>5</posy>
 					<texture>folder-focus.png</texture>
-					<animation effect="zoom" end="0,0,120,120" time="100">focus</animation>
+                                        <animation effect="zoom" reversible="false" center="auto" start="100" end="110" time="100">focus</animation>
+                                        <animation type="unfocus">
+                                                <effect reversible="false" type="fade" start="100" end="0" time="200" />
+                                                <effect reversible="false" type="zoom" center="auto" start="110" end="100" time="100" />
+                                        </animation>
 				</control>
 				<control type="image">
 					<posx>10</posx>
@@ -763,7 +764,8 @@
 					<width>100</width>
 					<height>100</height>
 					<info>ListItem.Icon</info>
-					<animation effect="zoom" end="5,5,110,110" time="100">focus</animation>
+                                        <animation reversible="false" effect="zoom" center="auto" start="100" end="110" time="100">focus</animation>
+                                        <animation reversible="false" effect="zoom" center="auto" start="110" end="100" time="100">unfocus</animation>
 				</control>
 				<control type="image">
 					<posx>80</posx>
@@ -771,7 +773,8 @@
 					<width>32</width>
 					<height>32</height>
 					<info>ListItem.Overlay</info>
-					<animation effect="slide" end="5,5" time="100">focus</animation>
+					<animation reversible="false" effect="slide" start="0,0" end="5,5" time="100">focus</animation>
+					<animation reversible="false" effect="slide" end="0,0" start="5,5" time="100">unfocus</animation>
 				</control>
 				<control type="label">
 					<posx>60</posx>
@@ -782,7 +785,8 @@
 					<selectedcolor>green</selectedcolor>
 					<align>center</align>
 					<info>ListItem.Label</info>
-					<animation effect="slide" end="0,5" time="100">focus</animation>
+					<animation reversible="false" effect="slide" start="0,0" end="0,5" time="100">focus</animation>
+					<animation reversible="false" effect="slide" end="0,0" start="0,5" time="100">unfocus</animation>
 				</control>
 			</focusedlayout>
 		</control>
@@ -834,7 +838,11 @@
 					<posx>5</posx>
 					<posy>15</posy>
 					<texture>folder-focus.png</texture>
-					<animation effect="zoom" end="0,10,160,160" time="100">focus</animation>
+                                        <animation effect="zoom" reversible="false" center="auto" start="100" end="110" time="100">focus</animation>
+                                        <animation type="unfocus">
+                                                <effect reversible="false" type="fade" start="100" end="0" time="200" />
+                                                <effect reversible="false" type="zoom" center="auto" start="110" end="100" time="100" />
+                                        </animation>
 				</control>
 				<control type="image">
 					<posx>10</posx>
@@ -842,7 +850,8 @@
 					<width>140</width>
 					<height>140</height>
 					<info>ListItem.Icon</info>
-					<animation effect="zoom" end="5,15,150,150" time="100">focus</animation>
+                                        <animation reversible="false" effect="zoom" center="auto" start="100" end="110" time="100">focus</animation>
+                                        <animation reversible="false" effect="zoom" center="auto" start="110" end="100" time="100">unfocus</animation>
 				</control>
 				<control type="image">
 					<posx>115</posx>
@@ -850,7 +859,8 @@
 					<width>36</width>
 					<height>36</height>
 					<info>ListItem.Overlay</info>
-					<animation effect="slide" end="5,5" time="100">focus</animation>
+					<animation reversible="false" effect="slide" start="0,0" end="5,5" time="100">focus</animation>
+					<animation reversible="false" effect="slide" end="0,0" start="5,5" time="100">unfocus</animation>
 				</control>
 				<control type="label">
 					<posx>75</posx>
@@ -861,7 +871,8 @@
 					<selectedcolor>green</selectedcolor>
 					<align>center</align>
 					<info>ListItem.Label</info>
-					<animation effect="slide" end="0,5" time="100">focus</animation>
+					<animation reversible="false" effect="slide" start="0,0" end="0,7" time="100">focus</animation>
+					<animation reversible="false" effect="slide" end="0,0" start="0,7" time="100">unfocus</animation>
 				</control>
 			</focusedlayout>
 		</control>
@@ -903,7 +914,11 @@
 					<posx>5</posx>
 					<posy>5</posy>
 					<texture>folder-focus.png</texture>
-					<animation effect="zoom" end="0,0,125,130" time="100">focus</animation>
+                                        <animation effect="zoom" reversible="false" center="auto" start="100" end="105" time="100">focus</animation>
+                                        <animation type="unfocus">
+                                                <effect reversible="false" type="fade" start="100" end="0" time="200" />
+                                                <effect reversible="false" type="zoom" center="auto" start="110" end="100" time="100" />
+                                        </animation>
 				</control>
 				<control type="image">
 					<posx>10</posx>
@@ -911,7 +926,8 @@
 					<width>105</width>
 					<height>110</height>
 					<info>ListItem.Icon</info>
-					<animation effect="zoom" end="5,5,115,120" time="100">focus</animation>
+                                        <animation reversible="false" effect="zoom" center="auto" start="100" end="105" time="100">focus</animation>
+                                        <animation reversible="false" effect="zoom" center="auto" start="105" end="100" time="100">unfocus</animation>
 				</control>
 				<control type="image">
 					<posx>80</posx>
@@ -919,7 +935,8 @@
 					<width>32</width>
 					<height>32</height>
 					<info>ListItem.Overlay</info>
-					<animation effect="slide" end="5,5" time="100">focus</animation>
+					<animation reversible="false" effect="slide" start="0,0" end="5,5" time="100">focus</animation>
+					<animation reversible="false" effect="slide" end="0,0" start="5,5" time="100">unfocus</animation>
 				</control>
 			</focusedlayout>
 		</control>
@@ -1030,7 +1047,11 @@
 					<posx>5</posx>
 					<posy>5</posy>
 					<texture>folder-focus.png</texture>
-					<animation effect="zoom" end="0,0,120,185" time="100">focus</animation>
+                                        <animation effect="zoom" reversible="false" center="auto" start="100" end="110" time="100">focus</animation>
+                                        <animation type="unfocus">
+                                                <effect reversible="false" type="fade" start="100" end="0" time="200" />
+                                                <effect reversible="false" type="zoom" center="auto" start="110" end="100" time="100" />
+                                        </animation>
 				</control>
 				<control type="image">
 					<posx>10</posx>
@@ -1038,7 +1059,8 @@
 					<width>100</width>
 					<height>165</height>
 					<info>ListItem.Icon</info>
-					<animation effect="zoom" end="5,5,110,175" time="100">focus</animation>
+                                        <animation reversible="false" effect="zoom" center="auto" start="100" end="110" time="100">focus</animation>
+                                        <animation reversible="false" effect="zoom" center="auto" start="110" end="100" time="100">unfocus</animation>
 				</control>
 				<control type="image">
 					<posx>85</posx>
@@ -1046,7 +1068,8 @@
 					<width>30</width>
 					<height>30</height>
 					<info>ListItem.Overlay</info>
-					<animation effect="slide" end="5,5" time="100">focus</animation>
+					<animation reversible="false" effect="slide" start="0,0" end="5,5" time="100">focus</animation>
+					<animation reversible="false" effect="slide" end="0,0" start="5,5" time="100">unfocus</animation>
 				</control>
 			</focusedlayout>
 		</control>
@@ -1139,23 +1162,25 @@
 			</itemlayout>
 			<focusedlayout height="300" width="120">
 				<control type="image">
-					<posx>10</posx>
+					<posx>2</posx>
 					<posy>50</posy>
 					<width>100</width>
 					<height>200</height>
 					<info>ListItem.Icon</info>
 					<aspectratio aligny="bottom">keep</aspectratio>
-					<animation effect="zoom" end="-15,-20,150,300" time="150">focus</animation>
+					<animation effect="zoom" start="2,50,100,200" end="-15,-20,150,300" time="200">focus</animation>
+					<animation effect="zoom" end="2,50,100,200" start="-15,-20,150,300" time="150">unfocus</animation>
 				</control>
 				<control type="image">
-					<posx>10</posx>
+					<posx>2</posx>
 					<posy>250</posy>
 					<width>100</width>
 					<height>200</height>
 					<info>ListItem.Icon</info>
 					<texture flipy="true" diffuse="diffuse_mirror.png" /> 
 					<aspectratio aligny="top">keep</aspectratio>
-					<animation effect="zoom" end="-15,280,150,300" time="150">focus</animation>
+					<animation effect="zoom" start="2,250,100,200" end="-15,280,150,300" time="200">focus</animation>
+					<animation effect="zoom" end="2,250,100,200" start="-15,280,150,300" time="150">unfocus</animation>
 				</control>
 				<control type="image">
 					<posx>70</posx>
@@ -1163,7 +1188,8 @@
 					<width>32</width>
 					<height>32</height>
 					<info>ListItem.Overlay</info>
-					<animation effect="slide" end="30,20" time="150">focus</animation>
+					<animation effect="slide" start="0,0" end="30,20" time="200">focus</animation>
+					<animation effect="slide" end="0,0" start="30,20" time="150">unfocus</animation>
 				</control>
 			</focusedlayout>
 		</control>
@@ -1300,7 +1326,7 @@
 					<aspectratio aligny="top">keep</aspectratio>
 				</control>
 				<control type="image">
-					<posx>70</posx>
+					<posx>85</posx>
 					<posy>225</posy>
 					<width>32</width>
 					<height>32</height>
@@ -1309,31 +1335,34 @@
 			</itemlayout>
 			<focusedlayout height="300" width="150">
 				<control type="image">
-					<posx>10</posx>
+					<posx>2</posx>
 					<posy>50</posy>
 					<width>120</width>
 					<height>200</height>
 					<info>ListItem.Icon</info>
 					<aspectratio aligny="bottom">keep</aspectratio>
-					<animation effect="zoom" end="-20,-20,190,300" time="150">focus</animation>
+					<animation effect="zoom" start="2,50,120,200" end="-20,-20,190,300" time="200">focus</animation>
+					<animation effect="zoom" end="2,50,120,200" start="-20,-20,190,300" time="150">unfocus</animation>
 				</control>
 				<control type="image">
-					<posx>10</posx>
+					<posx>2</posx>
 					<posy>250</posy>
 					<width>120</width>
 					<height>200</height>
 					<info>ListItem.Icon</info>
 					<texture flipy="true" diffuse="diffuse_mirror.png" /> 
 					<aspectratio aligny="top">keep</aspectratio>
-					<animation effect="zoom" end="-20,280,190,300" time="150">focus</animation>
+					<animation effect="zoom" start="2,250,120,200" end="-20,280,190,300" time="200">focus</animation>
+					<animation effect="zoom" end="2,250,120,200" start="-20,280,190,300" time="150">unfocus</animation>
 				</control>
 				<control type="image">
-					<posx>70</posx>
+					<posx>85</posx>
 					<posy>225</posy>
 					<width>32</width>
 					<height>32</height>
 					<info>ListItem.Overlay</info>
-					<animation effect="slide" end="30,20" time="150">focus</animation>
+					<animation effect="slide" start="0,0" end="45,30" time="200">focus</animation>
+					<animation effect="slide" end="0,0" start="45,30" time="150">unfocus</animation>
 				</control>
 			</focusedlayout>
 		</control>
@@ -1642,7 +1671,7 @@
 					<aspectratio aligny="top">keep</aspectratio>
 				</control>
 				<control type="image">
-					<posx>80</posx>
+					<posx>85</posx>
 					<posy>225</posy>
 					<width>32</width>
 					<height>32</height>
@@ -1651,31 +1680,34 @@
 			</itemlayout>
 			<focusedlayout height="300" width="150">
 				<control type="image">
-					<posx>10</posx>
+					<posx>2</posx>
 					<posy>50</posy>
 					<width>120</width>
 					<height>200</height>
 					<info>ListItem.Icon</info>
 					<aspectratio aligny="bottom">keep</aspectratio>
-					<animation effect="zoom" end="-20,-20,190,300" time="150">focus</animation>
+					<animation effect="zoom" start="2,50,120,200" end="-20,-20,190,300" time="200">focus</animation>
+					<animation effect="zoom" end="2,50,120,200" start="-20,-20,190,300" time="150">unfocus</animation>
 				</control>
 				<control type="image">
-					<posx>10</posx>
+					<posx>2</posx>
 					<posy>250</posy>
 					<width>120</width>
 					<height>200</height>
 					<info>ListItem.Icon</info>
 					<texture flipy="true" diffuse="diffuse_mirror.png" /> 
 					<aspectratio aligny="top">keep</aspectratio>
-					<animation effect="zoom" end="-20,280,190,300" time="150">focus</animation>
+					<animation effect="zoom" start="2,250,120,200" end="-20,280,190,300" time="200">focus</animation>
+					<animation effect="zoom" end="2,250,120,200" start="-20,280,190,300" time="150">unfocus</animation>
 				</control>
 				<control type="image">
-					<posx>100</posx>
-					<posy>235</posy>
+					<posx>85</posx>
+					<posy>225</posy>
 					<width>32</width>
 					<height>32</height>
 					<info>ListItem.Overlay</info>
-					<animation effect="slide" end="30,20" time="150">focus</animation>
+					<animation effect="slide" start="0,0" end="45,30" time="200">focus</animation>
+					<animation effect="slide" end="0,0" start="45,30" time="150">unfocus</animation>
 				</control>
 			</focusedlayout>
 		</control>
