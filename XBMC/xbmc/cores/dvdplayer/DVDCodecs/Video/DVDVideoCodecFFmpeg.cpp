@@ -148,6 +148,12 @@ void CDVDVideoCodecFFmpeg::Dispose()
   if (m_pCodecContext)
   {
     if (m_pCodecContext->codec) m_dllAvCodec.avcodec_close(m_pCodecContext);
+    if (m_pCodecContext->extradata)
+    {
+      m_dllAvUtil.av_free(m_pCodecContext->extradata);
+      m_pCodecContext->extradata = NULL;
+      m_pCodecContext->extradata_size = 0;
+    }
     m_dllAvUtil.av_free(m_pCodecContext);
     m_pCodecContext = NULL;
   }
