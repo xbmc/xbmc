@@ -11,13 +11,13 @@
 			<RegExp input="$$1" output="&lt;setting label=&quot;Enable MoviePosterDB&quot; type=&quot;bool&quot; id=&quot;movieposterdb&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Trailer&quot; type=&quot;bool&quot; id=&quot;trailer&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Fetch Trailer Link&quot; type=&quot;bool&quot; id=&quot;trailer&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;setting type=&quot;sep&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;Input Alternative iMDB Source&quot; type=&quot;text&quot; id=&quot;url&quot; default=&quot;akas.imdb.com&quot;&gt;&lt;/setting&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Use Alternative IMDB Source&quot; type=&quot;text&quot; id=&quot;url&quot; default=&quot;akas.imdb.com&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
 			<expression noclean="1"></expression>
