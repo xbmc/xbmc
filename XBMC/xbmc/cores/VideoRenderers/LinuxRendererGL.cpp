@@ -662,49 +662,43 @@ void CLinuxRendererGL::ChooseBestResolution(float fps)
 
 bool CLinuxRendererGL::ValidateRenderTarget()
 {
-  if (!m_pBuffer)
+  if (!m_bValidated)
   {
-    // try pbuffer first
-    //m_pBuffer = new CSurface(256, 256, false, g_graphicsContext.getScreenSurface(), NULL, NULL, false, false, true);
-    m_pBuffer = new CSurface(256, 256, false, g_graphicsContext.getScreenSurface(), g_graphicsContext.getScreenSurface(), NULL, false, false, false);
-    if (m_pBuffer && !m_pBuffer->IsValid())
-    {
-      delete m_pBuffer;
-      m_pBuffer = new CSurface(256, 256, false, g_graphicsContext.getScreenSurface(), g_graphicsContext.getScreenSurface(), NULL, false, false, false);
-      if (m_pBuffer->IsValid())
-        CLog::Log(LOGNOTICE, "GL: Created non-pbuffer OpenGL context");
-    }
-  }
-  if (m_pBuffer && m_pBuffer->IsValid())
-  {
+    CSurface *screen = g_graphicsContext.getScreenSurface();
     int maj, min;
-    m_pBuffer->GetGLVersion(maj, min);
+    screen->GetGLVersion(maj, min);
     if (!glewIsSupported("GL_ARB_texture_non_power_of_two"))
     {
-      CLog::Log(LOGINFO, "GL: OpenGL version %d.%d detected", maj, min);
+      CLog::Log(LOGNOTICE, "GL: OpenGL version %d.%d detected", maj, min);
       if (!glewIsSupported("GL_ARB_texture_rectangle"))
       {
-        CLog::Log(LOGERROR, "GL: GL_ARB_texture_rectangle not supported and OpenGL version is not 2.x");
-        CLog::Log(LOGERROR, "GL: Reverting to POT textures");
+        CLog::Log(LOGNOTICE, "GL: GL_ARB_texture_rectangle not supported and OpenGL version is not 2.x");
+        CLog::Log(LOGNOTICE, "GL: Reverting to POT textures");
         m_renderMethod |= RENDER_POT;
-        return true;
       }
-      CLog::Log(LOGINFO, "GL: NPOT textures are supported through GL_ARB_texture_rectangle extension");
-      m_textureTarget = GL_TEXTURE_RECTANGLE_ARB;
-      glEnable(GL_TEXTURE_RECTANGLE_ARB);
+      else
+      {
+        CLog::Log(LOGNOTICE, "GL: NPOT textures are supported through GL_ARB_texture_rectangle extension");
+        m_textureTarget = GL_TEXTURE_RECTANGLE_ARB;
+        glEnable(GL_TEXTURE_RECTANGLE_ARB);
+      }
     }
     else
     {
-      CLog::Log(LOGINFO, "GL: OpenGL version %d.%d detected", maj, min);
-      CLog::Log(LOGINFO, "GL: NPOT texture support detected");
+      CLog::Log(LOGNOTICE, "GL: OpenGL version %d.%d detected", maj, min);
+      CLog::Log(LOGNOTICE, "GL: NPOT texture support detected");
     }
+    m_bValidated = true;
+
+    // create the yuv textures    
+    for (int i = 0 ; i < m_NumYV12Buffers ; i++)
+    {
+      CreateYV12Texture(i);
+    }
+    LoadShaders();
+    return true;
   }
-  else
-  {
-    CLog::Log(LOGERROR, "GL: Could not create OpenGL context that is required for video playback");
-    return false;
-  }
-  return true;
+  return false;  
 }
 
 bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
@@ -720,14 +714,7 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
   ManageDisplay();
 
   // make sure we have a valid context that supports rendering
-  if (!ValidateRenderTarget())
-    return false;
-
-  // FIXME:
-  for (int i = 0 ; i < m_NumYV12Buffers ; i++)
-  {
-    CreateYV12Texture(i);
-  }
+  m_bValidated = false;
 
   if (m_rgbBuffer != NULL)
   {
@@ -743,7 +730,6 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
 
 int CLinuxRendererGL::NextYV12Texture()
 {
-  //return 0;
   return (m_iYV12RenderBuffer + 1) % m_NumYV12Buffers;
 }
 
@@ -751,6 +737,12 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
 {
   if (!image) return -1;
 
+  if (!m_bValidated)
+  {
+    g_application.NewFrame();
+    Sleep(500); // let GUI thread initialize textures
+    return -1;
+  }
   //CSingleLock lock(g_graphicsContext);
 
   //  source = 0;
@@ -836,7 +828,6 @@ void CLinuxRendererGL::LoadTextures(int source)
   }
 
   // if we don't have a shader, fallback to SW YUV2RGB for now
-
   if (m_renderMethod & RENDER_SW)
   {
     struct SwsContext *context = m_dllSwScale.sws_getContext(im.width, im.height, PIX_FMT_YUV420P,
@@ -862,6 +853,7 @@ void CLinuxRendererGL::LoadTextures(int source)
   }
   else
   {
+    // FIXME: we need a better/more efficient way to detect deinterlacing?
     deinterlacing = (g_stSettings.m_currentVideoSettings.m_InterlaceMethod==VS_INTERLACEMETHOD_RENDER_BOB ||
                      (g_stSettings.m_currentVideoSettings.m_InterlaceMethod==VS_INTERLACEMETHOD_RENDER_BOB_INVERTED) ||
                      (g_stSettings.m_currentVideoSettings.m_InterlaceMethod==VS_INTERLACEMETHOD_AUTO)) && (m_renderQuality != RQ_MULTIPASS);
@@ -1029,6 +1021,10 @@ void CLinuxRendererGL::Update(bool bPauseDrawing)
 
 void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
+  // if its first pass, just init textures and return
+  if (ValidateRenderTarget())
+    return;
+
   int index = m_iYV12RenderBuffer;
   if (!m_YUVTexture[index][FIELD_FULL][0]) return ;
 
@@ -1158,6 +1154,7 @@ unsigned int CLinuxRendererGL::PreInit()
 {
   CSingleLock lock(g_graphicsContext);
   m_bConfigured = false;
+  m_bValidated = false;
   UnInit();
   m_iResolution = PAL_4x3;
 
@@ -1175,15 +1172,10 @@ unsigned int CLinuxRendererGL::PreInit()
   // setup the background colour
   m_clearColour = 0 ; //(g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;
 
-  // make sure we have a valid context that supports rendering
-  if (!ValidateRenderTarget())
-    return false;
-
   if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllSwScale.Load())
         CLog::Log(LOGERROR,"CLinuxRendererGL::PreInit - failed to load rescale libraries!");
 
   m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
-  LoadShaders();
   return true;
 }
 
