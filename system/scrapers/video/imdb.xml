@@ -11,13 +11,13 @@
 			<RegExp input="$$1" output="&lt;setting label=&quot;Enable MoviePosterDB&quot; type=&quot;bool&quot; id=&quot;movieposterdb&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;Fetch Trailer Link&quot; type=&quot;bool&quot; id=&quot;trailer&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Trailer&quot; type=&quot;bool&quot; id=&quot;trailer&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;setting type=&quot;sep&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;Input Alternative IMDb Source&quot; type=&quot;text&quot; id=&quot;url&quot; default=&quot;akas.imdb.com&quot;&gt;&lt;/setting&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Input Alternative iMDB Source&quot; type=&quot;text&quot; id=&quot;url&quot; default=&quot;akas.imdb.com&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
 			<expression noclean="1"></expression>
@@ -110,7 +110,7 @@
 				<expression>/title/tt([t0-9]*)/faq</expression>
 			</RegExp>
 			<RegExp conditional="trailer" input="$$1" output="&lt;url function=&quot;GetTrailer&quot;&gt;http://$INFO[url]\1&lt;/url&gt;" dest="5+">
-				<expression>link=([^&apos;]*)&apos;[^&gt]*&gt;view trailer&lt;/a&gt;</expression>
+				<expression>/rg/title-top/trailers/images/b\.gif\?link=([^&apos;]*)</expression>
 			</RegExp>
 			<RegExp input="$$2" output="&lt;url function=&quot;GetIMDBPoster&quot;&gt;http://$INFO[url]/title/\1/posters&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;" dest="5+">
 				<expression></expression>
@@ -192,8 +192,14 @@
 		</RegExp>
 	</GetTrailer>
 	<GetTrailerLink clearbuffers="no" dest="5">
-		<RegExp conditional="trailer" input="$$1" output="&lt;details&gt;&lt;trailer&gt;\1&lt;/trailer&gt;&lt;/details&gt;" dest="5">
-			<expression clear="yes" noclean="1">addVariable\(&quot;file[^&quot;]*&quot;([^&quot;]*)&quot;\)</expression>
+		<RegExp conditional="trailer" input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp conditional="trailer" input="$$1" output="&lt;trailer urlencoded=&quot;yes&quot;&gt;http://www.totaleclips.com/Player/Bounce.aspx?eclipid=\1&amp;amp;bitrateid=\2&amp;amp;vendorid=\3&amp;amp;type=\4&lt;/trailer&gt;" dest="2">
+				<expression noclean="1">&quot;file&quot;[^&quot;]*&quot;[^&quot;]*eclipid%3D([^%]*)[^&quot;]*bitrateid%3D([^%]*)[^&quot;]*vendorid%3D([^%]*)[^&quot;]*type%3D([^&quot;]*)</expression>
+			</RegExp>
+			<RegExp conditional="trailer" input="$$1" output="&lt;trailer urlencoded=&quot;yes&quot;&gt;\1&lt;/trailer&gt;" dest="2">
+				<expression noclean="1">&quot;file&quot;[^&quot;]*&quot;([^&quot;]*)</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
 		</RegExp>
 	</GetTrailerLink>
 	<GetIMDBPoster dest="5">
