@@ -780,6 +780,7 @@ void CGUIWindowVideoInfo::PlayTrailer()
   item.m_strPath = m_movieItem.GetVideoInfoTag()->m_strTrailer;
   *item.GetVideoInfoTag() = *m_movieItem.GetVideoInfoTag();
   item.GetVideoInfoTag()->m_strTitle.Format("%s (%s)",m_movieItem.GetVideoInfoTag()->m_strTitle.c_str(),g_localizeStrings.Get(20410));
+  item.SetThumbnailImage(m_movieItem.GetThumbnailImage());
   g_applicationMessenger.PlayFile(item);
 }
 
