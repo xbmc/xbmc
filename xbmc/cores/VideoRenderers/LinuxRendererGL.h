@@ -203,6 +203,7 @@ protected:
   unsigned int m_iSourceHeight;   // height
 
   bool m_bConfigured;
+  bool m_bValidated;
   GLenum m_textureTarget;
   unsigned short m_renderMethod;
   RenderQuality m_renderQuality;
