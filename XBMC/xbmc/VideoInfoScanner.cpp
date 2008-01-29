@@ -284,7 +284,6 @@ namespace VIDEO
       if (!strPath.IsEmpty() && parser.Load(strPath) && parser.HasFunction("GetSettings"))
 	  {
         m_info.settings.LoadSettingsXML("q:\\system\\scrapers\\video\\"+m_info.strPath);
-        m_info.settings.SaveFromDefault();
 	  }
     }
 
