@@ -5110,9 +5110,10 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strPath1(strPath);
-    CUtil::AddSlashAtEnd(strPath1);
+    CStdString strPath1;
+    CUtil::GetDirectory(strPath,strPath1);
     long lPathId = GetPath(strPath1);
+
     if (lPathId > -1)
     {
       CStdString strSQL=FormatSQL("select path.strContent,path.strScraper,path.scanRecursive,path.useFolderNames,path.strSettings from path where path.idPath=%u",lPathId);
