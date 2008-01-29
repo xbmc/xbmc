@@ -188,7 +188,7 @@
 	</GetMoviePosterDB>
 	<GetTrailer clearbuffers="no" dest="5">
 		<RegExp conditional="trailer" input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetTrailerLink&quot;&gt;http://$INFO[url]\1player\2&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression noclean="1">videoSrc = &apos;[^&apos;]*(/video/[^/]*/[^/]*/)(\?bitrate=[0-9]*)?</expression>
+			<expression noclean="1">videoSrc = &apos;[^&apos;]*(/video/[^/]*/[^/]*/)[^\?]*(\?bitrate=[0-9]*)?</expression>
 		</RegExp>
 	</GetTrailer>
 	<GetTrailerLink clearbuffers="no" dest="5">
