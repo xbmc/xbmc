@@ -10,6 +10,10 @@
 
 #ifdef __APPLE__
 #include "CocoaUtils.h"
+#include <mach/mach.h>
+#include <mach/clock.h>
+#include <mach/mach_error.h>
+#include "Thread.h"
 #endif
 
 #ifdef _LINUX
@@ -206,8 +210,46 @@ BOOL WINAPI GetThreadTimes (
     TimeTToFileTime(time(NULL),lpExitTime);
   if (lpKernelTime)
     TimeTToFileTime(0,lpKernelTime);
-#if _POSIX_THREAD_CPUTIME != -1
-    
+  
+#ifdef __APPLE__
+  
+  if (lpUserTime)
+  {
+     lpUserTime->dwLowDateTime = 0;
+     lpUserTime->dwHighDateTime = 0;
+     pthread_t thread = (pthread_t)SDL_GetThreadID(hThread->m_hThread);
+     if(thread)
+     {
+       kern_return_t   ret;
+       clock_serv_t    aClock;
+       mach_timespec_t aTime;
+
+       // Get the clock.
+       ret = host_get_clock_service(mach_host_self(), SYSTEM_CLOCK, &aClock);
+       if (ret != KERN_SUCCESS)
+       {
+         CLog::Log(LOGERROR, "host_get_clock_service() failed: %s", mach_error_string(ret));
+         return false;
+       }
+         
+       // Query it for the time.
+       ret = clock_get_time(aClock, &aTime);
+       if (ret != KERN_SUCCESS) 
+       {
+         CLog::Log(LOGERROR, "clock_get_time() failed: %s", mach_error_string(ret));
+         return false;
+       }
+
+       //if(pthread_getcpuclockid(thread, &clock) == 0)
+       {
+         unsigned long long time = ((__int64)aTime.tv_sec * 1000000L) + aTime.tv_nsec/100; 
+         lpUserTime->dwLowDateTime = (time & 0xFFFFFFFF);
+         lpUserTime->dwHighDateTime = (time >> 32);
+       }
+     }
+   }
+  
+#elif _POSIX_THREAD_CPUTIME != -1
     if(lpUserTime)
     {
       lpUserTime->dwLowDateTime = 0;
