@@ -305,6 +305,7 @@ namespace VIDEO
 	  {
 		if (m_pObserver)
           m_pObserver->OnStateChanged(FETCHING_TVSHOW_INFO);
+		  RetrieveVideoInfo(items,settings.parent_name_root,m_info);
 	  }
 	}
 
