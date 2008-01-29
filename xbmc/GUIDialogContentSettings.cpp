@@ -444,6 +444,7 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, VIDEO::SScanSettings
     if (!scraper.strContent.IsEmpty() && !scraper.strContent.Equals("None") && !scraper.settings.GetPluginRoot())
     { // load default scraper settings
       scraper.settings.LoadSettingsXML("q:\\system\\scrapers\\video\\"+scraper.strPath);
+      scraper.settings.SaveFromDefault();
     }
     
     return true;

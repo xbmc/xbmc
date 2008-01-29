@@ -9,6 +9,7 @@ public:
   CBasicSettings();
   virtual ~CBasicSettings();
 
+  bool SaveFromDefault(void);
   virtual bool Load(const CURL& url)  { return false; }
   virtual bool Save(void) { return false; }
   void Clear();
