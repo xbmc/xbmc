@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		8DD76F790486A8DE00D96B5E /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */; };
 		E33466A60D2E5103005A65EC /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E33466A50D2E5103005A65EC /* IOKit.framework */; };
+		E34486750D4DD18B0020377B /* libswscale-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E34486730D4DD18B0020377B /* libswscale-osx.a */; };
+		E34486760D4DD18B0020377B /* libpostproc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E34486740D4DD18B0020377B /* libpostproc-osx.a */; };
 		E35EF2490D380AE900DB5CD5 /* libSDL-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E35EF2450D380AE900DB5CD5 /* libSDL-osx.a */; };
 		E35EF24A0D380AE900DB5CD5 /* libSDL_image-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E35EF2460D380AE900DB5CD5 /* libSDL_image-osx.a */; };
 		E35EF24B0D380AE900DB5CD5 /* libSDL_mixer-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E35EF2470D380AE900DB5CD5 /* libSDL_mixer-osx.a */; };
@@ -758,6 +760,9 @@
 		E3A4781A0D29032C00F3C3A6 /* GUIDialogAccessPoints.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A478190D29032C00F3C3A6 /* GUIDialogAccessPoints.cpp */; };
 		E3A4781D0D29035000F3C3A6 /* LinuxFileSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A4781C0D29035000F3C3A6 /* LinuxFileSystem.cpp */; };
 		E3D87AEB0D3182F4000CF031 /* XCriticalSection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3D87AE90D3182F4000CF031 /* XCriticalSection.cpp */; };
+		E3FFF0070D46FD1D003D79C3 /* libavutil-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3FFF0020D46FD1D003D79C3 /* libavutil-osx.a */; };
+		E3FFF0090D46FD1D003D79C3 /* libavcodec-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3FFF0040D46FD1D003D79C3 /* libavcodec-osx.a */; };
+		E3FFF02F0D470BD8003D79C3 /* libavformat-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3FFF02E0D470BD8003D79C3 /* libavformat-osx.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -776,6 +781,8 @@
 		09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
 		8DD76F7E0486A8DE00D96B5E /* XBMC */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XBMC; sourceTree = BUILT_PRODUCTS_DIR; };
 		E33466A50D2E5103005A65EC /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
+		E34486730D4DD18B0020377B /* libswscale-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libswscale-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libswscale-osx.a"; sourceTree = "<group>"; };
+		E34486740D4DD18B0020377B /* libpostproc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpostproc-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libpostproc-osx.a"; sourceTree = "<group>"; };
 		E35EF2450D380AE900DB5CD5 /* libSDL-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libSDL-osx.a"; path = "xbmc/lib/libSDL-OSX/libSDL-osx.a"; sourceTree = "<group>"; };
 		E35EF2460D380AE900DB5CD5 /* libSDL_image-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libSDL_image-osx.a"; path = "xbmc/lib/libSDL-OSX/libSDL_image-osx.a"; sourceTree = "<group>"; };
 		E35EF2470D380AE900DB5CD5 /* libSDL_mixer-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libSDL_mixer-osx.a"; path = "xbmc/lib/libSDL-OSX/libSDL_mixer-osx.a"; sourceTree = "<group>"; };
@@ -2693,6 +2700,9 @@
 		E3A4781C0D29035000F3C3A6 /* LinuxFileSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LinuxFileSystem.cpp; sourceTree = "<group>"; };
 		E3D87AE90D3182F4000CF031 /* XCriticalSection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XCriticalSection.cpp; sourceTree = "<group>"; };
 		E3D87AEA0D3182F4000CF031 /* XCriticalSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XCriticalSection.h; sourceTree = "<group>"; };
+		E3FFF0020D46FD1D003D79C3 /* libavutil-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavutil-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavutil-osx.a"; sourceTree = "<group>"; };
+		E3FFF0040D46FD1D003D79C3 /* libavcodec-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavcodec-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavcodec-osx.a"; sourceTree = "<group>"; };
+		E3FFF02E0D470BD8003D79C3 /* libavformat-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavformat-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavformat-osx.a"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2730,6 +2740,11 @@
 				E35EF24C0D380AE900DB5CD5 /* libSDLmain-osx.a in Frameworks */,
 				E35EF2550D380C3D00DB5CD5 /* QuickTime.framework in Frameworks */,
 				E35EF3240D380E1E00DB5CD5 /* Carbon.framework in Frameworks */,
+				E3FFF0070D46FD1D003D79C3 /* libavutil-osx.a in Frameworks */,
+				E3FFF0090D46FD1D003D79C3 /* libavcodec-osx.a in Frameworks */,
+				E3FFF02F0D470BD8003D79C3 /* libavformat-osx.a in Frameworks */,
+				E34486750D4DD18B0020377B /* libswscale-osx.a in Frameworks */,
+				E34486760D4DD18B0020377B /* libpostproc-osx.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2759,6 +2774,11 @@
 		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				E34486730D4DD18B0020377B /* libswscale-osx.a */,
+				E34486740D4DD18B0020377B /* libpostproc-osx.a */,
+				E3FFF02E0D470BD8003D79C3 /* libavformat-osx.a */,
+				E3FFF0020D46FD1D003D79C3 /* libavutil-osx.a */,
+				E3FFF0040D46FD1D003D79C3 /* libavcodec-osx.a */,
 				E35EF3230D380E1E00DB5CD5 /* Carbon.framework */,
 				E35EF2540D380C3D00DB5CD5 /* QuickTime.framework */,
 				E35EF2450D380AE900DB5CD5 /* libSDL-osx.a */,
@@ -6529,6 +6549,21 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = (
+					xbmc/lib/,
+					/Library/Frameworks/Python.framework/Versions/2.4/Headers/,
+					"xbmc/lib/libSDL-OSX",
+					xbmc/lib/libportaudio,
+					xbmc/cores,
+					xbmc/cores/ffmpeg,
+					xbmc/cores/dvdplayer,
+					xbmc,
+					xbmc/linux,
+					guilib,
+					/opt/local/include,
+					/opt/local/include/freetype2/,
+					/usr/X11R6/include/,
+				);
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6555,6 +6590,7 @@
 					"\"$(SRCROOT)/xbmc/lib/zlib\"",
 					"\"$(SRCROOT)/../../../../../opt/local/lib\"",
 					"\"$(SRCROOT)/xbmc/lib/libportaudio\"",
+					"\"$(SRCROOT)/xbmc/lib/libffmpeg-OSX\"",
 				);
 				PRODUCT_NAME = XBMC;
 				ZERO_LINK = YES;
@@ -6566,6 +6602,21 @@
 			buildSettings = {
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
+				HEADER_SEARCH_PATHS = (
+					xbmc/lib/,
+					/Library/Frameworks/Python.framework/Versions/2.4/Headers/,
+					"xbmc/lib/libSDL-OSX",
+					xbmc/lib/libportaudio,
+					xbmc/cores,
+					xbmc/cores/ffmpeg,
+					xbmc/cores/dvdplayer,
+					xbmc,
+					xbmc/linux,
+					guilib,
+					/opt/local/include,
+					/opt/local/include/freetype2/,
+					/usr/X11R6/include/,
+				);
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6592,6 +6643,7 @@
 					"\"$(SRCROOT)/xbmc/lib/zlib\"",
 					"\"$(SRCROOT)/../../../../../opt/local/lib\"",
 					"\"$(SRCROOT)/xbmc/lib/libportaudio\"",
+					"\"$(SRCROOT)/xbmc/lib/libffmpeg-OSX\"",
 				);
 				PRODUCT_NAME = XBMC;
 			};
