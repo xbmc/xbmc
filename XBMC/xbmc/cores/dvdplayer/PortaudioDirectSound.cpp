@@ -18,8 +18,7 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
-#include <portaudio.h>
-
+#include "CPortAudio.h"
 #include "stdafx.h"
 #include "PortAudioDirectSound.h"
 #include "AudioContext.h"
@@ -73,133 +72,18 @@ PortAudioDirectSound::PortAudioDirectSound(IAudioCallback* pCallback, int iChann
 
   printf("Asked to open device: [%s]\n", device.c_str());
 
-  int nErr;
+  m_pStream = CPortAudio::CreateOutputStream(device,
+                                             m_uiChannels, 
+                                             m_uiSamplesPerSec, 
+                                             m_uiBitsPerSample,
+                                             m_bPassthrough,
+                                             m_dwPacketSize);
+  
+  // Start the stream.
+  SAFELY(Pa_StartStream(m_pStream));
 
-#if 0
-  /* if this is first access to audio, global sound config might not be loaded */
-  if(!snd_config)
-    snd_config_update();
-
-  snd_config_t *config = snd_config;
-  deviceuse = device;
-
-  nErr = snd_config_copy(&config, snd_config);
-  CHECK_ALSA_RETURN(LOGERROR,"config_copy",nErr);
-
-  if(!m_bPassthrough)
-  {
-    // TODO - add an option to only downmix if user want's us
-    if(iChannels == 6)
-      deviceuse = "xbmc_51to2:'" + EscapeDevice(deviceuse) + "'";
-
-    // setup channel mapping to linux default
-    if (strstr(strAudioCodec, "AAC"))
-    {
-      if(iChannels == 6)
-        deviceuse = "xbmc_aac51:'" + EscapeDevice(deviceuse) + "'";
-      else if(iChannels == 5)
-        deviceuse = "xbmc_aac50:'" + EscapeDevice(deviceuse) + "'";
-    }
-    else if (strstr(strAudioCodec, "DMO") || strstr(strAudioCodec, "FLAC") || strstr(strAudioCodec, "PCM"))
-    {
-      if(iChannels == 6)
-        deviceuse = "xbmc_win51:'" + EscapeDevice(deviceuse) + "'";
-      else if(iChannels == 5)
-        deviceuse = "xbmc_win50:'" + EscapeDevice(deviceuse) + "'";
-    }
-    else if (strstr(strAudioCodec, "OggVorbis"))
-    {
-      if(iChannels == 6)
-        deviceuse = "xbmc_ogg51:'" + EscapeDevice(deviceuse) + "'";
-      else if(iChannels == 5)
-        deviceuse = "xbmc_ogg50:'" + EscapeDevice(deviceuse) + "'";
-    }
-
-
-    if(deviceuse != device)
-    {
-      snd_input_t* input;
-      nErr = snd_input_stdio_open(&input, _P("Q:\\system\\asound.conf").c_str(), "r");
-      if(nErr >= 0)
-      {
-        nErr = snd_config_load(config, input);
-        CHECK_ALSA_RETURN(LOGERROR,"config_load", nErr);
-
-        snd_input_close(input);
-        CHECK_ALSA_RETURN(LOGERROR,"input_close", nErr);
-      }
-      else
-      {
-        CLog::Log(LOGWARNING, "%s - Unable to load alsa configuration \"%s\" for device \"%s\" - %s", __FUNCTION__, _P("Q:\\system\\asound.conf").c_str(), deviceuse.c_str(), snd_strerror(nErr));
-        deviceuse = device;
-      }
-    }
-  }
-
-  CLog::Log(LOGDEBUG, "%s - using alsa device %s", __FUNCTION__, deviceuse.c_str());
-
-  nErr = snd_pcm_open_lconf(&m_pPlayHandle, deviceuse.c_str(), SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK, config);
-  CHECK_ALSA_RETURN(LOGERROR,"pcm_open_lconf",nErr);
-
-  snd_config_delete(config);
-
-  /* Allocate Hardware Parameters structures and fills it with config space for PCM */
-  snd_pcm_hw_params_malloc(&hw_params);
-
-  /* Allocate Software Parameters structures and fills it with config space for PCM */
-  snd_pcm_sw_params_malloc(&sw_params);
-
-  nErr = snd_pcm_hw_params_any(m_pPlayHandle, hw_params);
-  CHECK_ALSA_RETURN(LOGERROR,"hw_params_any",nErr);
-
-  nErr = snd_pcm_hw_params_set_access(m_pPlayHandle, hw_params, SND_PCM_ACCESS_RW_INTERLEAVED);
-  CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_access",nErr);
-
-  // always use 16 bit samples
-  nErr = snd_pcm_hw_params_set_format(m_pPlayHandle, hw_params, SND_PCM_FORMAT_S16_LE);
-  CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_format",nErr);
-
-  nErr = snd_pcm_hw_params_set_rate_near(m_pPlayHandle, hw_params, &m_uiSamplesPerSec, NULL);
-  CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_rate",nErr);
-
-  nErr = snd_pcm_hw_params_set_channels(m_pPlayHandle, hw_params, iChannels);
-  CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_channels",nErr);
-
-  m_maxFrames = m_dwPacketSize ;
-  nErr = snd_pcm_hw_params_set_period_size_near(m_pPlayHandle, hw_params, &m_maxFrames, 0);
-  CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_period_size",nErr);
-
-  m_BufferSize = snd_pcm_bytes_to_frames(m_pPlayHandle,m_dwPacketSize * 10); // buffer big enough - but not too big...
-  nErr = snd_pcm_hw_params_set_buffer_size_near(m_pPlayHandle, hw_params, &m_BufferSize);
-  CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_buffer_size",nErr);
-
-  unsigned int periodDuration = 0;
-  nErr = snd_pcm_hw_params_get_period_time(hw_params,&periodDuration, 0);
-  CHECK_ALSA(LOGERROR,"hw_params_get_period_time",nErr);
-
-  /* Assign them to the playback handle and free the parameters structure */
-  nErr = snd_pcm_hw_params(m_pPlayHandle, hw_params);
-  CHECK_ALSA_RETURN(LOGERROR,"snd_pcm_hw_params",nErr);
-
-  nErr = snd_pcm_sw_params_current(m_pPlayHandle, sw_params);
-  CHECK_ALSA_RETURN(LOGERROR,"sw_params_current",nErr);
-
-  nErr = snd_pcm_sw_params_set_start_threshold(m_pPlayHandle, sw_params, m_dwPacketSize);
-  CHECK_ALSA_RETURN(LOGERROR,"sw_params_set_start_threshold",nErr);
-
-  nErr = snd_pcm_sw_params(m_pPlayHandle, sw_params);
-  CHECK_ALSA_RETURN(LOGERROR,"snd_pcm_sw_params",nErr);
-
-  m_bCanPause = !!snd_pcm_hw_params_can_pause(hw_params);
-
-  snd_pcm_hw_params_free (hw_params);
-  snd_pcm_sw_params_free (sw_params);  
-
-  nErr = snd_pcm_prepare (m_pPlayHandle);
-  CHECK_ALSA(LOGERROR,"snd_pcm_prepare",nErr);
-
+  m_bCanPause = false;
   m_bIsAllocated = true;
-#endif
 }
 
 //***********************************************************************************************
@@ -213,55 +97,41 @@ PortAudioDirectSound::~PortAudioDirectSound()
 //***********************************************************************************************
 HRESULT PortAudioDirectSound::Deinitialize()
 {
-#if 0
   CLog::Log(LOGDEBUG,"PortAudioDirectSound::Deinitialize\n");
-
-  m_bIsAllocated = false;
-  if (m_pPlayHandle)
+  
+  if (m_pStream)
   {
-    snd_pcm_drop(m_pPlayHandle);
-    snd_pcm_close(m_pPlayHandle);
+    SAFELY(Pa_StopStream(m_pStream));
+    SAFELY(Pa_CloseStream(m_pStream));
   }
-
-  m_pPlayHandle=NULL;
-  	CLog::Log(LOGDEBUG,"PortAudioDirectSound::Deinitialize - set active\n");
+  
+  m_bIsAllocated = false;
+  m_pStream = 0;
+  
+ 	CLog::Log(LOGDEBUG,"PortAudioDirectSound::Deinitialize - set active\n");
   g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
-#endif
+
   return S_OK;
 }
 
-void PortAudioDirectSound::Flush() {
-#if 0
-  if (m_pPlayHandle == NULL)
-     return;
-
-  int nErr = snd_pcm_drop(m_pPlayHandle);
-  CHECK_ALSA(LOGERROR,"flush-drop",nErr);
-  nErr = snd_pcm_prepare(m_pPlayHandle);
-  CHECK_ALSA(LOGERROR,"flush-prepare",nErr);
-  nErr = snd_pcm_start(m_pPlayHandle);
-  CHECK_ALSA(LOGERROR,"flush-start",nErr); 
-#endif
+//***********************************************************************************************
+void PortAudioDirectSound::Flush() 
+{
+  if (m_pStream)
+  {
+    SAFELY(Pa_AbortStream(m_pStream));
+    SAFELY(Pa_StartStream(m_pStream));
+  }
 }
 
 //***********************************************************************************************
 HRESULT PortAudioDirectSound::Pause()
 {
-  if (m_bPause) return S_OK;
+  if (m_bPause) 
+    return S_OK;
+  
   m_bPause = true;
-
-#if 0
-  if(m_bCanPause)
-  {
-    int nErr = snd_pcm_pause(m_pPlayHandle,1); // this is not supported on all devices.     
-    CHECK_ALSA(LOGERROR,"pcm_pause",nErr);
-    if(nErr<0)
-      m_bCanPause = false;
-  }
-#endif 
-
-  if(!m_bCanPause)
-    Flush();
+  Flush();
 
   return S_OK;
 }
@@ -269,31 +139,21 @@ HRESULT PortAudioDirectSound::Pause()
 //***********************************************************************************************
 HRESULT PortAudioDirectSound::Resume()
 {
-#if 0
-  // Resume is called not only after Pause but also at certain other points. like after stop when DVDPlayer is flushed.  
-  if(m_bCanPause && m_bPause)
-    snd_pcm_pause(m_pPlayHandle,0);
-#endif
-
   // If we are not pause, stream might not be prepared to start flush will do this for us
-  if(!m_bPause)
+  if (!m_bPause)
     Flush();
 
   m_bPause = false;
-
   return S_OK;
 }
 
 //***********************************************************************************************
 HRESULT PortAudioDirectSound::Stop()
 {
-#if 0
-  if (m_pPlayHandle)
-     snd_pcm_drop(m_pPlayHandle);
-#endif
+  if (m_pStream)
+    SAFELY(Pa_StopStream(m_pStream));
 
   m_bPause = false;
-
   return S_OK;
 }
 
@@ -340,114 +200,55 @@ HRESULT PortAudioDirectSound::SetCurrentVolume(LONG nVolume)
 //***********************************************************************************************
 DWORD PortAudioDirectSound::GetSpace()
 {
-  if (!m_bIsAllocated) return 0;
-
-#if 0
-  int nSpace = snd_pcm_avail_update(m_pPlayHandle);
-  if (nSpace < 0) {
-     CLog::Log(LOGWARNING,"PortAudioDirectSound::GetSpace - get space failed. err: %d (%s)", nSpace, snd_strerror(nSpace));
-     nSpace = 0;
-  }
-
-  return nSpace;
-#endif
-  return 0;
+  if (!m_bIsAllocated) 
+    return 0;
+  
+  // Figure out how much space is available.
+  DWORD numFrames = Pa_GetStreamWriteAvailable(m_pStream);
+  
+  printf("Returning %d bytes free\n", numFrames * (m_uiBitsPerSample/8));
+  return numFrames * (m_uiBitsPerSample/8);
 }
 
 //***********************************************************************************************
 DWORD PortAudioDirectSound::AddPackets(unsigned char *data, DWORD len)
 {
-#if 0
-  if (!m_pPlayHandle) {
-	CLog::Log(LOGERROR,"PortAudioDirectSound::AddPackets - sanity failed. no play handle!");
-	return len; 
-  }
-#endif
-  
-  // If we are paused we don't accept any data as pause doesn't always
-  // work, and then playback would start again
-  //
-  if(m_bPause)
-    return 0;
-
-  DWORD nAvailSpace = GetSpace();
-
-#if 0
-  // if there is no room in the buffer - even for one frame, return 
-  if ( snd_pcm_frames_to_bytes(m_pPlayHandle,nAvailSpace) < (int) len )
+  if (!m_pStream) 
   {
-    if (nAvailSpace <= m_maxFrames || (DWORD)snd_pcm_frames_to_bytes(m_pPlayHandle,nAvailSpace) <= m_dwPacketSize)
-       return 0;
-
-    len = snd_pcm_frames_to_bytes(m_pPlayHandle,nAvailSpace);
+    CLog::Log(LOGERROR,"PortAudioDirectSound::AddPackets - sanity failed. no play handle!");
+    return len; 
   }
+  
+  // Find out how much space we have available.
+  DWORD framesPassedIn = len / (m_uiChannels * m_uiBitsPerSample/8);
+  DWORD framesToWrite  = MIN(Pa_GetStreamWriteAvailable(m_pStream), framesPassedIn);
+  
+  unsigned char* pcmPtr = data;
+  
+  // Handle volume de-amplification.
+  if (!m_bPassthrough)
+    m_amp.DeAmplify((short *)pcmPtr, framesToWrite * m_uiChannels);
+  
+  // Write data to the stream.
+  SAFELY(Pa_WriteStream(m_pStream, pcmPtr, framesToWrite));
 
-  unsigned char *pcmPtr = data;
-
-  while (pcmPtr < data + (int)len){  
-	int nPeriodSize = snd_pcm_frames_to_bytes(m_pPlayHandle,m_maxFrames); // write max frames.
-	if ( pcmPtr + nPeriodSize > data + (int)len) {
-		nPeriodSize = data + (int)len - pcmPtr;
-	}
-	
-	int framesToWrite = snd_pcm_bytes_to_frames(m_pPlayHandle,nPeriodSize);
-
-	// handle volume de-amp 
-	if (!m_bPassthrough)
-           m_amp.DeAmplify((short *)pcmPtr, framesToWrite * m_uiChannels);
-	
-	int writeResult = snd_pcm_writei(m_pPlayHandle, pcmPtr, framesToWrite);
-	if (  writeResult == -EPIPE  ) {
-		CLog::Log(LOGDEBUG, "PortAudioDirectSound::AddPackets - buffer underun (tried to write %d frames)",
-						framesToWrite);
-		int err = snd_pcm_prepare(m_pPlayHandle);
-		CHECK_ALSA(LOGERROR,"prepare after EPIPE", err);
-	}
-	else if (writeResult != framesToWrite) {
-		CLog::Log(LOGERROR, "PortAudioDirectSound::AddPackets - failed to write %d frames. "
-						"bad write (err: %d) - %s",
-						framesToWrite, writeResult, snd_strerror(writeResult));
-	}
-
-    if (writeResult>0)
-		pcmPtr += snd_pcm_frames_to_bytes(m_pPlayHandle,writeResult);
-	else
-		pcmPtr += snd_pcm_frames_to_bytes(m_pPlayHandle,framesToWrite); 
-  }
-#endif
-
-  return len;
+  return framesToWrite * m_uiChannels * (m_uiBitsPerSample/8);
 }
 
 //***********************************************************************************************
 FLOAT PortAudioDirectSound::GetDelay()
 {
-  double delay = 0.0;
-
-#if 0
-  double fbps = (double)m_uiSamplesPerSec * 2.0 * (double)m_uiChannels;
-  snd_pcm_sframes_t frames = 0;
-    
-  int nErr = snd_pcm_delay(m_pPlayHandle, &frames);
-  CHECK_ALSA(LOGERROR,"snd_pcm_delay",nErr); 
-  if (nErr < 0)
-     return (double)snd_pcm_frames_to_bytes(m_pPlayHandle,m_BufferSize) / fbps;
-
-  if (frames < 0) {
-#if SND_LIB_VERSION >= 0x000901 /* snd_pcm_forward() exists since 0.9.0rc8 */
-    snd_pcm_forward(m_pPlayHandle, -frames);
-#endif
-    frames = 0;
-  }
-
-  int nBytes = snd_pcm_frames_to_bytes(m_pPlayHandle,frames);
-  delay = (double)nBytes / fbps;
+  if (m_pStream == 0)
+    return 0.0;
+  
+  const PaStreamInfo* streamInfo = Pa_GetStreamInfo(m_pStream);
+  FLOAT delay = (FLOAT)streamInfo->outputLatency;
 
   if (g_audioContext.IsAC3EncoderActive())
     delay += 0.049;
   else
     delay += 0.008;
-#endif
+
   return delay;
 }
 
