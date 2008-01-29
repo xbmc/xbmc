@@ -14,6 +14,8 @@ CPTSOutputQueue::CPTSOutputQueue()
 
 void CPTSOutputQueue::Add(double pts, double delay, double duration)
 {
+  CSingleLock lock(m_sync);
+  
   TPTSItem item;
   item.pts = pts;
   item.timestamp = CDVDClock::GetAbsoluteClock() + delay;
@@ -26,6 +28,8 @@ void CPTSOutputQueue::Add(double pts, double delay, double duration)
 }
 void CPTSOutputQueue::Flush()
 {
+  CSingleLock lock(m_sync);
+  
   while( !m_queue.empty() ) m_queue.pop();
   m_current.pts = DVD_NOPTS_VALUE;
   m_current.timestamp = 0.0;
@@ -33,7 +37,9 @@ void CPTSOutputQueue::Flush()
 }
 
 double CPTSOutputQueue::Current()
-{   
+{
+  CSingleLock lock(m_sync);
+  
   while( !m_queue.empty() && CDVDClock::GetAbsoluteClock() >= m_queue.front().timestamp )
   {
     m_current = m_queue.front();
@@ -47,15 +53,21 @@ double CPTSOutputQueue::Current()
 
 void CPTSInputQueue::Add(__int64 bytes, double pts)
 {
+  CSingleLock lock(m_sync);
+  
   m_list.insert(m_list.begin(), make_pair(bytes, pts));
 }
 
 void CPTSInputQueue::Flush()
 {
+  CSingleLock lock(m_sync);
+  
   m_list.clear();
 }
 double CPTSInputQueue::Get(__int64 bytes, bool consume)
 {
+  CSingleLock lock(m_sync);
+  
   IT it = m_list.begin();
   for(; it != m_list.end(); it++)
   {
