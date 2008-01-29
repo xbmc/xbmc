@@ -35,7 +35,9 @@ namespace XCURL
 
   class DllLibCurl : public DllDynamic, DllLibCurlInterface
   {
-#ifndef _LINUX
+#ifdef __APPLE__
+    DECLARE_DLL_WRAPPER(DllLibCurl, Q:\\system\\libcurl-osx.so)
+#elif !defined(_LINUX)
     DECLARE_DLL_WRAPPER(DllLibCurl, Q:\\system\\libcurl.dll)
 #else
     DECLARE_DLL_WRAPPER(DllLibCurl, /usr/lib/libcurl.so)
