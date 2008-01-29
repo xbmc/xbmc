@@ -2,6 +2,11 @@
 #include <string>
 #include <string.h>
 
+#ifdef __APPLE__
+#include <sys/types.h>
+#include <sys/sysctl.h>
+#endif
+
 using namespace std;
 
 // In seconds
@@ -9,6 +14,19 @@ using namespace std;
 
 CCPUInfo::CCPUInfo(void)
 {
+#ifdef __APPLE__
+  size_t len = 4;
+  
+  // The number of cores.
+  if (sysctlbyname("hw.activecpu", &m_cpuCount, &len, NULL, 0) == -1) 
+      m_cpuCount = 1;
+  
+  char buffer[512];
+  len = 512;
+  if (sysctlbyname("machdep.cpu.brand_string", &buffer, &len, NULL, 0) == 0)
+    m_cpuModel = buffer;
+  
+#else
   m_fProcStat = fopen("/proc/stat", "r");
   m_fProcTemperature = fopen("/proc/acpi/thermal_zone/THRM/temperature", "r");
   if (m_fProcTemperature == NULL)
@@ -55,6 +73,7 @@ CCPUInfo::CCPUInfo(void)
     m_cpuCount = 1;
     m_cpuModel = "Unknown";
   }
+#endif
 }
 
 CCPUInfo::~CCPUInfo()
