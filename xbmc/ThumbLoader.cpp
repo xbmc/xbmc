@@ -29,6 +29,7 @@
 #endif
 
 #include "stdafx.h"
+#include "StackDirectory.h"
 #include "ThumbLoader.h"
 #include "Util.h"
 #include "Picture.h"
@@ -41,6 +42,7 @@
 #include "cores/dvdplayer/DVDPlayer.h"
 
 using namespace XFILE;
+using namespace DIRECTORY;
 
 CVideoThumbLoader::CVideoThumbLoader() 
 {  
@@ -98,7 +100,17 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
       // create unique thumb for auto generated thumbs
       cachedThumb = strPath + "auto-" + strFileName;
       if (pItem->IsVideo() && !pItem->IsInternetStream() && !pItem->IsPlayList() && !CFile::Exists(cachedThumb))
-        CVideoThumbLoader::ExtractThumb(pItem->m_strPath, cachedThumb);
+      {
+        if (pItem->IsStack())
+        {
+          CStackDirectory stack;
+          CVideoThumbLoader::ExtractThumb(stack.GetFirstStackedFile(pItem->m_strPath), cachedThumb);
+        }
+        else
+        {
+          CVideoThumbLoader::ExtractThumb(pItem->m_strPath, cachedThumb);
+        }
+      }
   
       if (CFile::Exists(cachedThumb))
       {
