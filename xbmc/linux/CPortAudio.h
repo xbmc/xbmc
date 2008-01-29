@@ -10,7 +10,7 @@
     int err;           \
     if (0) printf("[PortAudio] DEBUG: %s\n", #op); \
     if ((err=op) != 0) \
-       printf("[PortAudio] ERROR: %s.\n", Pa_GetErrorText(err)); \
+       printf("[PortAudio] ERROR[%s:%d]: %s.\n", __FILE__, __LINE__, Pa_GetErrorText(err)); \
 }
 
 class CPortAudio
