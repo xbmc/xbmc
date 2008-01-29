@@ -1612,21 +1612,21 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags)
 
   // Y
   glEnable(m_textureTarget);
-  glActiveTexture(GL_TEXTURE0);
+  glActiveTextureARB(GL_TEXTURE0);
   glBindTexture(m_textureTarget, m_YUVTexture[index][field][0]);
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
   // U
-  glActiveTexture(GL_TEXTURE1);
+  glActiveTextureARB(GL_TEXTURE1);
   glEnable(m_textureTarget);
   glBindTexture(m_textureTarget, m_YUVTexture[index][field][1]);
 
   // V
-  glActiveTexture(GL_TEXTURE2);
+  glActiveTextureARB(GL_TEXTURE2);
   glEnable(m_textureTarget);
   glBindTexture(m_textureTarget, m_YUVTexture[index][field][2]);
 
-  glActiveTexture(GL_TEXTURE0);
+  glActiveTextureARB(GL_TEXTURE0);
   VerifyGLState();
 
   if (m_reloadShaders)
@@ -1652,24 +1652,24 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags)
   {
     // Use regular normalized texture coordinates
 
-    glMultiTexCoord2f(GL_TEXTURE0, 0, 0);
-    glMultiTexCoord2f(GL_TEXTURE1, 0, 0);
-    glMultiTexCoord2f(GL_TEXTURE2, 0, 0);
+    glMultiTexCoord2fARB(GL_TEXTURE0, 0, 0);
+    glMultiTexCoord2fARB(GL_TEXTURE1, 0, 0);
+    glMultiTexCoord2fARB(GL_TEXTURE2, 0, 0);
     glVertex4f((float)rd.left, (float)rd.top, 0, 1.0f );
 
-    glMultiTexCoord2f(GL_TEXTURE0, im.texcoord_x, 0);
-    glMultiTexCoord2f(GL_TEXTURE1, im.texcoord_x, 0);
-    glMultiTexCoord2f(GL_TEXTURE2, im.texcoord_x, 0);
+    glMultiTexCoord2fARB(GL_TEXTURE0, im.texcoord_x, 0);
+    glMultiTexCoord2fARB(GL_TEXTURE1, im.texcoord_x, 0);
+    glMultiTexCoord2fARB(GL_TEXTURE2, im.texcoord_x, 0);
     glVertex4f((float)rd.right, (float)rd.top, 0, 1.0f);
 
-    glMultiTexCoord2f(GL_TEXTURE0, im.texcoord_x, im.texcoord_y);
-    glMultiTexCoord2f(GL_TEXTURE1, im.texcoord_x, im.texcoord_y);
-    glMultiTexCoord2f(GL_TEXTURE2, im.texcoord_x, im.texcoord_y);
+    glMultiTexCoord2fARB(GL_TEXTURE0, im.texcoord_x, im.texcoord_y);
+    glMultiTexCoord2fARB(GL_TEXTURE1, im.texcoord_x, im.texcoord_y);
+    glMultiTexCoord2fARB(GL_TEXTURE2, im.texcoord_x, im.texcoord_y);
     glVertex4f((float)rd.right, (float)rd.bottom, 0, 1.0f);
 
-    glMultiTexCoord2f(GL_TEXTURE0, 0, im.texcoord_y);
-    glMultiTexCoord2f(GL_TEXTURE1, 0, im.texcoord_y);
-    glMultiTexCoord2f(GL_TEXTURE2, 0, im.texcoord_y);
+    glMultiTexCoord2fARB(GL_TEXTURE0, 0, im.texcoord_y);
+    glMultiTexCoord2fARB(GL_TEXTURE1, 0, im.texcoord_y);
+    glMultiTexCoord2fARB(GL_TEXTURE2, 0, im.texcoord_y);
     glVertex4f((float)rd.left, (float)rd.bottom, 0, 1.0f);
   }
   else
@@ -1677,24 +1677,24 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags)
     // Use supported rectangle texture extension (texture coordinates
     // are not normalized)
 
-    glMultiTexCoord2f(GL_TEXTURE0, (float)rs.left, (float)rs.top );
-    glMultiTexCoord2f(GL_TEXTURE1, (float)rs.left / 2.0f, (float)rs.top / 2.0f);
-    glMultiTexCoord2f(GL_TEXTURE2, (float)rs.left / 2.0f, (float)rs.top / 2.0f );
+    glMultiTexCoord2fARB(GL_TEXTURE0, (float)rs.left, (float)rs.top );
+    glMultiTexCoord2fARB(GL_TEXTURE1, (float)rs.left / 2.0f, (float)rs.top / 2.0f);
+    glMultiTexCoord2fARB(GL_TEXTURE2, (float)rs.left / 2.0f, (float)rs.top / 2.0f );
     glVertex4f((float)rd.left, (float)rd.top, 0, 1.0f );
 
-    glMultiTexCoord2f(GL_TEXTURE0, (float)rs.right, (float)rs.top );
-    glMultiTexCoord2f(GL_TEXTURE1, (float)rs.right / 2.0f, (float)rs.top / 2.0f );
-    glMultiTexCoord2f(GL_TEXTURE2, (float)rs.right / 2.0f, (float)rs.top / 2.0f );
+    glMultiTexCoord2fARB(GL_TEXTURE0, (float)rs.right, (float)rs.top );
+    glMultiTexCoord2fARB(GL_TEXTURE1, (float)rs.right / 2.0f, (float)rs.top / 2.0f );
+    glMultiTexCoord2fARB(GL_TEXTURE2, (float)rs.right / 2.0f, (float)rs.top / 2.0f );
     glVertex4f((float)rd.right, (float)rd.top, 0, 1.0f);
 
-    glMultiTexCoord2f(GL_TEXTURE0, (float)rs.right, (float)rs.bottom );
-    glMultiTexCoord2f(GL_TEXTURE1, (float)rs.right / 2.0f, (float)rs.bottom / 2.0f );
-    glMultiTexCoord2f(GL_TEXTURE2, (float)rs.right / 2.0f, (float)rs.bottom / 2.0f );
+    glMultiTexCoord2fARB(GL_TEXTURE0, (float)rs.right, (float)rs.bottom );
+    glMultiTexCoord2fARB(GL_TEXTURE1, (float)rs.right / 2.0f, (float)rs.bottom / 2.0f );
+    glMultiTexCoord2fARB(GL_TEXTURE2, (float)rs.right / 2.0f, (float)rs.bottom / 2.0f );
     glVertex4f((float)rd.right, (float)rd.bottom, 0, 1.0f);
 
-    glMultiTexCoord2f(GL_TEXTURE0, (float)rs.left, (float)rs.bottom );
-    glMultiTexCoord2f(GL_TEXTURE1, (float)rs.left / 2.0f, (float)rs.bottom / 2.0f );
-    glMultiTexCoord2f(GL_TEXTURE2, (float)rs.left / 2.0f, (float)rs.bottom / 2.0f );
+    glMultiTexCoord2fARB(GL_TEXTURE0, (float)rs.left, (float)rs.bottom );
+    glMultiTexCoord2fARB(GL_TEXTURE1, (float)rs.left / 2.0f, (float)rs.bottom / 2.0f );
+    glMultiTexCoord2fARB(GL_TEXTURE2, (float)rs.left / 2.0f, (float)rs.bottom / 2.0f );
     glVertex4f((float)rd.left, (float)rd.bottom, 0, 1.0f);
   }
   glEnd();
@@ -1705,13 +1705,13 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags)
 
   VerifyGLState();
 
-  glActiveTexture(GL_TEXTURE1);
+  glActiveTextureARB(GL_TEXTURE1);
   glDisable(m_textureTarget);
 
-  glActiveTexture(GL_TEXTURE2);
+  glActiveTextureARB(GL_TEXTURE2);
   glDisable(m_textureTarget);
 
-  glActiveTexture(GL_TEXTURE0);
+  glActiveTextureARB(GL_TEXTURE0);
   glDisable(m_textureTarget);
 
   glMatrixMode(GL_MODELVIEW);
@@ -1749,24 +1749,24 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags)
 
   // Y
   glEnable(m_textureTarget);
-  glActiveTexture(GL_TEXTURE0);
+  glActiveTextureARB(GL_TEXTURE0);
   glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][0]);
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
   VerifyGLState();
 
   // U
-  glActiveTexture(GL_TEXTURE1);
+  glActiveTextureARB(GL_TEXTURE1);
   glEnable(m_textureTarget);
   glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][1]);
   VerifyGLState();
 
   // V
-  glActiveTexture(GL_TEXTURE2);
+  glActiveTextureARB(GL_TEXTURE2);
   glEnable(m_textureTarget);
   glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][2]);
   VerifyGLState();
 
-  glActiveTexture(GL_TEXTURE0);
+  glActiveTextureARB(GL_TEXTURE0);
   VerifyGLState();
 
   if (m_reloadShaders)
@@ -1863,24 +1863,24 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags)
 
   glBegin(GL_QUADS);
 
-  glMultiTexCoord2f(GL_TEXTURE0, 0, 0);
-  glMultiTexCoord2f(GL_TEXTURE1, 0, 0);
-  glMultiTexCoord2f(GL_TEXTURE2, 0, 0);
+  glMultiTexCoord2fARB(GL_TEXTURE0, 0, 0);
+  glMultiTexCoord2fARB(GL_TEXTURE1, 0, 0);
+  glMultiTexCoord2fARB(GL_TEXTURE2, 0, 0);
   glVertex2f((float)0, (float)0);
 
-  glMultiTexCoord2f(GL_TEXTURE0, 1, 0);
-  glMultiTexCoord2f(GL_TEXTURE1, 1, 0);
-  glMultiTexCoord2f(GL_TEXTURE2, 1, 0);
+  glMultiTexCoord2fARB(GL_TEXTURE0, 1, 0);
+  glMultiTexCoord2fARB(GL_TEXTURE1, 1, 0);
+  glMultiTexCoord2fARB(GL_TEXTURE2, 1, 0);
   glVertex2f((float)im.width, (float)0);
 
-  glMultiTexCoord2f(GL_TEXTURE0, 1, 1);
-  glMultiTexCoord2f(GL_TEXTURE1, 1, 1);
-  glMultiTexCoord2f(GL_TEXTURE2, 1, 1);
+  glMultiTexCoord2fARB(GL_TEXTURE0, 1, 1);
+  glMultiTexCoord2fARB(GL_TEXTURE1, 1, 1);
+  glMultiTexCoord2fARB(GL_TEXTURE2, 1, 1);
   glVertex2f((float)im.width, (float)imgheight);
 
-  glMultiTexCoord2f(GL_TEXTURE0, 0, 1);
-  glMultiTexCoord2f(GL_TEXTURE1, 0, 1);
-  glMultiTexCoord2f(GL_TEXTURE2, 0, 1);
+  glMultiTexCoord2fARB(GL_TEXTURE0, 0, 1);
+  glMultiTexCoord2fARB(GL_TEXTURE1, 0, 1);
+  glMultiTexCoord2fARB(GL_TEXTURE2, 0, 1);
   glVertex2f((float)0, (float)imgheight);
 
   glEnd();
@@ -1899,11 +1899,11 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags)
 
   m_fbo.EndRender();
 
-  glActiveTexture(GL_TEXTURE1);
+  glActiveTextureARB(GL_TEXTURE1);
   glDisable(m_textureTarget);
-  glActiveTexture(GL_TEXTURE2);
+  glActiveTextureARB(GL_TEXTURE2);
   glDisable(m_textureTarget);
-  glActiveTexture(GL_TEXTURE0);
+  glActiveTextureARB(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, m_fbo.Texture());
   VerifyGLState();
 
@@ -1927,16 +1927,16 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags)
   VerifyGLState();
   glBegin(GL_QUADS);
 
-  glMultiTexCoord2f(GL_TEXTURE0, 0, 0);
+  glMultiTexCoord2fARB(GL_TEXTURE0, 0, 0);
   glVertex4f((float)rd.left, (float)rd.top, 0, 1.0f );
 
-  glMultiTexCoord2f(GL_TEXTURE0, im.texcoord_x, 0);
+  glMultiTexCoord2fARB(GL_TEXTURE0, im.texcoord_x, 0);
   glVertex4f((float)rd.right, (float)rd.top, 0, 1.0f);
 
-  glMultiTexCoord2f(GL_TEXTURE0, im.texcoord_x, im.texcoord_y);
+  glMultiTexCoord2fARB(GL_TEXTURE0, im.texcoord_x, im.texcoord_y);
   glVertex4f((float)rd.right, (float)rd.bottom, 0, 1.0f);
 
-  glMultiTexCoord2f(GL_TEXTURE0, 0, im.texcoord_y);
+  glMultiTexCoord2fARB(GL_TEXTURE0, 0, im.texcoord_y);
   glVertex4f((float)rd.left, (float)rd.bottom, 0, 1.0f);
 
   glEnd();
@@ -2001,7 +2001,7 @@ void CLinuxRendererGL::RenderSoftware(DWORD flags)
 
   // Y
   glEnable(m_textureTarget);
-  glActiveTexture(GL_TEXTURE0);
+  glActiveTextureARB(GL_TEXTURE0);
   glBindTexture(m_textureTarget, m_YUVTexture[index][field][0]);
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
@@ -2141,7 +2141,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
   }
 
   //g_graphicsContext.BeginPaint(m_pBuffer);
-  //g_graphicsContext.BeginPaint();
+  g_graphicsContext.BeginPaint();
 
   glEnable(m_textureTarget);
   for(int f = 0;f<MAX_FIELDS;f++)
@@ -2214,7 +2214,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     }
   }
   //g_graphicsContext.EndPaint(m_pBuffer);
-  //g_graphicsContext.EndPaint();
+  g_graphicsContext.EndPaint();
   SetEvent(m_eventTexturesDone[index]);
   return true;
 }
