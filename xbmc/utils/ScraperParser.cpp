@@ -307,7 +307,7 @@ void CScraperParser::ReplaceBuffers(CStdString& strDest)
   {
     iIndex = 0;
     sprintf(temp,"$$%i",i+1);
-    while ((iIndex = strDest.find(temp,iIndex)) != CStdString::npos) // COPIED FROM CStdString WITH THE ADDITION OF $ ESCAPING
+    while (((size_t)iIndex = strDest.find(temp,iIndex)) != CStdString::npos) // COPIED FROM CStdString WITH THE ADDITION OF $ ESCAPING
     {
       strDest.replace(strDest.begin()+iIndex,strDest.begin()+iIndex+strlen(temp),m_param[i]);
       iIndex += m_param[i].length();
@@ -315,7 +315,7 @@ void CScraperParser::ReplaceBuffers(CStdString& strDest)
   }
   // insert settings
   iIndex = 0;
-  while ((iIndex = strDest.find("$INFO[",iIndex)) != CStdString::npos && m_settings)
+  while (((size_t)iIndex = strDest.find("$INFO[",iIndex)) != CStdString::npos && m_settings)
   {
     int iEnd = strDest.Find("]",iIndex);
     CStdString strInfo = strDest.Mid(iIndex+6,iEnd-iIndex-6);
@@ -324,7 +324,7 @@ void CScraperParser::ReplaceBuffers(CStdString& strDest)
     iIndex += strReplace.length();
   }
   iIndex = 0;
-  while ((iIndex = strDest.find("\\n",iIndex)) != CStdString::npos)
+  while (((size_t)iIndex = strDest.find("\\n",iIndex)) != CStdString::npos)
     strDest.replace(strDest.begin()+iIndex,strDest.begin()+iIndex+2,"\n");
 }
 
