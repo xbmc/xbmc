@@ -29,7 +29,7 @@
 #endif
 
 #include "stdafx.h"
-#include "StackDirectory.h"
+#include "FileSystem/StackDirectory.h"
 #include "ThumbLoader.h"
 #include "Util.h"
 #include "Picture.h"
