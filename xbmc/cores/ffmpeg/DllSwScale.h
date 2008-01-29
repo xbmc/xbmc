@@ -18,9 +18,15 @@ extern "C" {
 #pragma warning(disable:4244)
 #endif
 
+#ifdef __APPLE__
+#include "libffmpeg-OSX/avutil.h"
+#include "libffmpeg-OSX/swscale.h"
+#include "libffmpeg-OSX/rgb2rgb.h"
+#else
 #include "avutil.h"
 #include "swscale.h"
 #include "rgb2rgb.h"
+#endif
 }
 
 class DllSwScaleInterface
@@ -31,12 +37,39 @@ public:
                                   SwsFilter *srcFilter, SwsFilter *dstFilter, double *param)=0;
 
    virtual int sws_scale(struct SwsContext *context, uint8_t* src[], int srcStride[], int srcSliceY,
-              int srcSliceH, uint8_t* dst[], int dstStride[])=0;
+                         int srcSliceH, uint8_t* dst[], int dstStride[])=0;
 
    virtual void sws_rgb2rgb_init(int flags)=0;
 
    virtual void sws_freeContext(struct SwsContext *context)=0;
 };
+
+#ifdef __APPLE__
+
+// We call into this library directly.
+class DllSwScale : public DllDynamic, public DllSwScaleInterface
+{
+public:
+  virtual ~DllSwScale() {}
+  virtual struct SwsContext *sws_getContext(int srcW, int srcH, int srcFormat, int dstW, int dstH, int dstFormat, int flags,
+                               SwsFilter *srcFilter, SwsFilter *dstFilter, double *param) 
+    { return ::sws_getContext(srcW, srcH, srcFormat, dstW, dstH, dstFormat, flags, srcFilter, dstFilter, param); }
+
+  virtual int sws_scale(struct SwsContext *context, uint8_t* src[], int srcStride[], int srcSliceY,
+                int srcSliceH, uint8_t* dst[], int dstStride[])  
+    { return ::sws_scale(context, src, srcStride, srcSliceY, srcSliceH, dst, dstStride); }
+
+  virtual void sws_rgb2rgb_init(int flags) { ::sws_rgb2rgb_init(flags); }
+
+  virtual void sws_freeContext(struct SwsContext *context) { ::sws_freeContext(context); }
+  
+  // DLL faking.
+  virtual bool ResolveExports() { return true; }
+  virtual bool Load() { return true; }
+  virtual void Unload() {}
+};
+
+#else
 
 class DllSwScale : public DllDynamic, public DllSwScaleInterface
 {
@@ -60,3 +93,4 @@ class DllSwScale : public DllDynamic, public DllSwScaleInterface
   END_METHOD_RESOLVE()
 };
 
+#endif
