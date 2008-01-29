@@ -25,22 +25,24 @@ void CSharedSection::EnterShared()
   if( !m_exclusive )
   { //exclusve will be set if this thread already owns this object
     ResetEvent(m_eventFree);
-	EnterCriticalSection(&m_helperLock);
+    EnterCriticalSection(&m_helperLock);
     m_sharedLock++;
-	LeaveCriticalSection(&m_helperLock);
+    LeaveCriticalSection(&m_helperLock);
   }
   LeaveCriticalSection(&m_critSection);
 }
 
 void CSharedSection::LeaveShared()
 {
-  if( !m_exclusive )
+  // NO! We always need to do this to keep the count right and set the event.
+  //if( !m_exclusive )
   {
-	EnterCriticalSection(&m_helperLock);
+    EnterCriticalSection(&m_helperLock);
     m_sharedLock--;
-    if( m_sharedLock == 0 ) 
+    if (m_sharedLock == 0)
       SetEvent(m_eventFree);
-	LeaveCriticalSection(&m_helperLock);
+    
+    LeaveCriticalSection(&m_helperLock);
   }
 }
 
@@ -49,6 +51,7 @@ void CSharedSection::EnterExclusive()
   EnterCriticalSection(&m_critSection);
   if( m_sharedLock != 0 )
     WaitForSingleObject(m_eventFree, INFINITE);
+
   m_exclusive = true;
 }
 
