@@ -22,13 +22,10 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#ifndef __ALSA_DIRECT_SOUND_H__
-#define __ALSA_DIRECT_SOUND_H__
+#ifndef __PORTAUDIO_DIRECT_SOUND_H__
+#define __PORTAUDIO_DIRECT_SOUND_H__
 
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
-
+#include "portaudio.h"
 #include "../mplayer/IDirectSoundRenderer.h"
 #include "../mplayer/IAudioCallback.h"
 #include "../ssrc.h"
@@ -66,7 +63,7 @@ public:
   virtual void Flush();
 
 private:
-  //snd_pcm_t 		*m_pPlayHandle;
+  PaStream*  m_pStream;
   //snd_pcm_uframes_t 	m_maxFrames;
 
   IAudioCallback* m_pCallback;
