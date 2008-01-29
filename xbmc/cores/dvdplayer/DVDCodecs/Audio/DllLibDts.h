@@ -34,7 +34,9 @@ public:
 
 class DllLibDts : public DllDynamic, DllLibDtsInterface
 {
-#ifndef _LINUX
+#ifdef __APPLE__
+  DECLARE_DLL_WRAPPER(DllLibDts, Q:\\system\\players\\dvdplayer\\libdts-osx.so)
+#elif !defined(_LINUX)
   DECLARE_DLL_WRAPPER(DllLibDts, Q:\\system\\players\\dvdplayer\\libdts.dll)
 #else
   DECLARE_DLL_WRAPPER(DllLibDts, Q:\\system\\players\\dvdplayer\\libdts-i486-linux.so)
