@@ -62,6 +62,20 @@ public:
     return 0;
   }
 
+#ifdef _LINUX
+  // should be called from the GUI thread after playback has finished
+  void OnClose()
+  {
+    CSharedLock lock(m_sharedSection);    
+    if (m_pRenderer)
+    {
+      m_pRenderer->OnClose();
+      delete m_pRenderer;
+      m_pRenderer = NULL;      
+    }
+  }
+#endif
+
   void FlipPage(DWORD timestamp = 0L, int source = -1, EFIELDSYNC sync = FS_NONE);
   unsigned int PreInit();
   void UnInit();
@@ -92,13 +106,13 @@ public:
   inline bool Paused() { return m_bPauseDrawing; };
   inline bool IsStarted() { return m_bIsStarted;}
 
-  #ifdef HAS_SDL_OPENGL
+#ifdef HAS_SDL_OPENGL
   CLinuxRendererGL *m_pRenderer;
-  #elif defined(HAS_SDL)
+#elif defined(HAS_SDL)
   CLinuxRenderer *m_pRenderer;
-  #else
+#else
   CXBoxRenderer *m_pRenderer;
-  #endif
+#endif
 
   void Present();
 
