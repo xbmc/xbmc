@@ -217,8 +217,10 @@ void CXBoxRenderManager::UnInit()
   if (m_pRenderer)
   {
     m_pRenderer->UnInit();
+#ifndef _LINUX
     delete m_pRenderer;
     m_pRenderer = NULL;
+#endif
   }
 }
 

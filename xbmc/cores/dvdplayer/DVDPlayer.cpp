@@ -21,7 +21,9 @@
 #include "../../FileSystem/cdioSupport.h"
 #include "../../Picture.h"
 #include "../ffmpeg/DllSwScale.h"
-
+#ifdef HAS_VIDEO_PLAYBACK
+#include "cores/VideoRenderers/RenderManager.h"
+#endif
 #include "../../xbmc/utils/PerformanceSample.h"
 
 
@@ -364,9 +366,10 @@ bool CDVDPlayer::CloseFile()
   // since this main thread cleans up all other resources and threads
   // we are done after the StopThread call
   StopThread();
-
   CLog::Log(LOGNOTICE, "DVDPlayer: finished waiting");
-
+#if defined(_LINUX) && defined(HAS_VIDEO_PLAYBACK)
+  g_renderManager.OnClose();
+#endif
   return true;
 }
 
