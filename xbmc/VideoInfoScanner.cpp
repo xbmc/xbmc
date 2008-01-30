@@ -281,35 +281,36 @@ namespace VIDEO
       CStdString strPath;
       if (!m_info.strContent.IsEmpty())
         strPath="q:\\system\\scrapers\\video\\"+m_info.strPath;
-      if (!strPath.IsEmpty() && parser.Load(strPath) && parser.HasFunction("GetSettings"))
-	  {
+      if (!strPath.IsEmpty() && parser.Load(strPath) && parser.HasFunction("GetSettings") && m_info.settings.GetSettings().IsEmpty())
+      {
         m_info.settings.LoadSettingsXML("q:\\system\\scrapers\\video\\"+m_info.strPath);
-	  }
+        m_info.settings.SaveFromDefault();
+      }
     }
 
     if (!bSkip)
     {
-	  if (m_info.strContent.Equals("movies"))
-	  {
-		if (m_pObserver)
+      if (m_info.strContent.Equals("movies"))
+      {
+        if (m_pObserver)
           m_pObserver->OnStateChanged(FETCHING_MOVIE_INFO);
-	      RetrieveVideoInfo(items,settings.parent_name_root,m_info);
-          m_database.SetPathHash(strDirectory, hash);
-	  }
-	  if (m_info.strContent.Equals("musicvideos"))
-	  {
-		if (m_pObserver)
+        RetrieveVideoInfo(items,settings.parent_name_root,m_info);
+        m_database.SetPathHash(strDirectory, hash);
+      }
+      if (m_info.strContent.Equals("musicvideos"))
+      {
+        if (m_pObserver)
           m_pObserver->OnStateChanged(FETCHING_MUSICVIDEO_INFO);
-	      RetrieveVideoInfo(items,settings.parent_name_root,m_info);
-          m_database.SetPathHash(strDirectory, hash);
-	  }
+        RetrieveVideoInfo(items,settings.parent_name_root,m_info);
+        m_database.SetPathHash(strDirectory, hash);
+      }
       if (m_info.strContent.Equals("tvshows"))
-	  {
-		if (m_pObserver)
+      {
+        if (m_pObserver)
           m_pObserver->OnStateChanged(FETCHING_TVSHOW_INFO);
-		  RetrieveVideoInfo(items,settings.parent_name_root,m_info);
-	  }
-	}
+        RetrieveVideoInfo(items,settings.parent_name_root,m_info);
+      }
+    }
 
     if (m_pObserver)
       m_pObserver->OnDirectoryScanned(strDirectory);
