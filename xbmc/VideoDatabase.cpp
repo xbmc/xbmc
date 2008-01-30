@@ -714,7 +714,7 @@ long CVideoDatabase::GetTvShowInfo(const CStdString& strPath)
   return -1;
 }
 
-long CVideoDatabase::GetEpisodeInfo(const CStdString& strFilenameAndPath, long lEpisodeId) // input value is episode number hint - for twoparters
+long CVideoDatabase::GetEpisodeInfo(const CStdString& strFilenameAndPath, long lEpisodeId, long lSeasonId) // input value is episode/season number hint - for multiparters
 {
   try
   {
@@ -735,18 +735,19 @@ long CVideoDatabase::GetEpisodeInfo(const CStdString& strFilenameAndPath, long l
     CLog::Log(LOGDEBUG,"CVideoDatabase::GetEpisodeInfo(%s), query = %s", strFilenameAndPath.c_str(), strSQL.c_str());
     pDS->query(strSQL.c_str());
     if (pDS->num_rows() > 0)
-    {
+    { 
+      long lTmpEpisodeId = pDS->fv("episode.idEpisode").get_asLong();
       if (lEpisodeId == -1)
-        lEpisodeId = pDS->fv("episode.idEpisode").get_asLong();
+        lEpisodeId = lTmpEpisodeId;
       else // use the hint!
       {
         while (!pDS->eof())
         {
           CVideoInfoTag tag;
-          GetEpisodeInfo(strFilenameAndPath,tag,pDS->fv("episode.idEpisode").get_asLong());
-          if (tag.m_iEpisode == lEpisodeId)
-          {
-            lEpisodeId = pDS->fv("episode.idEpisode").get_asLong();
+          GetEpisodeInfo(strFilenameAndPath,tag,lTmpEpisodeId);
+          if (tag.m_iEpisode == lEpisodeId && (lSeasonId == -1 || tag.m_iSeason == lSeasonId)) {
+            // match on the episode hint, and there's no season hint or a season hint match
+            lEpisodeId = lTmpEpisodeId;
             break;
           }
           pDS->next();
