@@ -5,6 +5,7 @@
 #include "../xbmc/utils/GUIInfoManager.h"
 #include "../xbmc/Util.h"
 #ifdef HAS_SDL
+#include <GL/glew.h>
 #include <SDL/SDL_rotozoom.h>
 #endif
 
@@ -526,37 +527,37 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
 #endif
 #elif defined(HAS_SDL_OPENGL)
   // set all the attributes we need to...
-  
+   
   // Top-left vertex (corner)
   DWORD color = g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[0],m_diffuseColor));
-  glColor4ub((GLubyte)((color >> 16) & 0xff), (GLubyte)((color >> 8) & 0xff), (GLubyte)(color & 0xff), (GLubyte)(color >> 24)); 
-  glMultiTexCoord2f(GL_TEXTURE0_ARB, texture.x1, texture.y1);
+  glColor4ub((GLubyte)((color >> 16) & 0xff), (GLubyte)((color >> 8) & 0xff), (GLubyte)(color & 0xff), (GLubyte)(color >> 24));
+  glMultiTexCoord2fARB(GL_TEXTURE0_ARB, texture.x1, texture.y1);
   if (m_diffuseTexture)
-    glMultiTexCoord2f(GL_TEXTURE1_ARB, diffuse.x1, diffuse.y1);
+    glMultiTexCoord2fARB(GL_TEXTURE1_ARB, diffuse.x1, diffuse.y1);
   glVertex3f(x1, y1, z1);
   
   // Bottom-left vertex (corner)
   color = g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[1],m_diffuseColor));  
-  glColor4ub((GLubyte)((color >> 16) & 0xff), (GLubyte)((color >> 8) & 0xff), (GLubyte)(color & 0xff), (GLubyte)(color >> 24)); 
-  glMultiTexCoord2f(GL_TEXTURE0_ARB, texture.x2, texture.y1);
+  glColor4ub((GLubyte)((color >> 16) & 0xff), (GLubyte)((color >> 8) & 0xff), (GLubyte)(color & 0xff), (GLubyte)(color >> 24));
+  glMultiTexCoord2fARB(GL_TEXTURE0_ARB, texture.x2, texture.y1);
   if (m_diffuseTexture)
-    glMultiTexCoord2f(GL_TEXTURE1_ARB, diffuse.x2, diffuse.y1);
+    glMultiTexCoord2fARB(GL_TEXTURE1_ARB, diffuse.x2, diffuse.y1);
   glVertex3f(x2, y2, z2);
   
   // Bottom-right vertex (corner)
   color = g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[2],m_diffuseColor));  
-  glColor4ub((GLubyte)((color >> 16) & 0xff), (GLubyte)((color >> 8) & 0xff), (GLubyte)(color & 0xff), (GLubyte)(color >> 24)); 
-  glMultiTexCoord2f(GL_TEXTURE0_ARB, texture.x2, texture.y2);
+  glColor4ub((GLubyte)((color >> 16) & 0xff), (GLubyte)((color >> 8) & 0xff), (GLubyte)(color & 0xff), (GLubyte)(color >> 24));
+  glMultiTexCoord2fARB(GL_TEXTURE0_ARB, texture.x2, texture.y2);
   if (m_diffuseTexture)
-    glMultiTexCoord2f(GL_TEXTURE1_ARB, diffuse.x2, diffuse.y2);
+    glMultiTexCoord2fARB(GL_TEXTURE1_ARB, diffuse.x2, diffuse.y2);
   glVertex3f(x3, y3, z3);
   
   // Top-right vertex (corner)
   color = g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[3],m_diffuseColor));  
-  glColor4ub((GLubyte)((color >> 16) & 0xff), (GLubyte)((color >> 8) & 0xff), (GLubyte)(color & 0xff), (GLubyte)(color >> 24)); 
-  glMultiTexCoord2f(GL_TEXTURE0_ARB, texture.x1, texture.y2);
+  glColor4ub((GLubyte)((color >> 16) & 0xff), (GLubyte)((color >> 8) & 0xff), (GLubyte)(color & 0xff), (GLubyte)(color >> 24));
+  glMultiTexCoord2fARB(GL_TEXTURE0_ARB, texture.x1, texture.y2);
   if (m_diffuseTexture)
-    glMultiTexCoord2f(GL_TEXTURE1_ARB, diffuse.x1, diffuse.y2);
+    glMultiTexCoord2fARB(GL_TEXTURE1_ARB, diffuse.x1, diffuse.y2);
   glVertex3f(x4, y4, z4);
 #endif
 }
