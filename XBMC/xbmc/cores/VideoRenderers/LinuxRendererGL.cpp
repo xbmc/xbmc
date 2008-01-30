@@ -111,18 +111,14 @@ void CLinuxRendererGL::DeleteOSDTextures(int index)
   CSingleLock lock(g_graphicsContext);
   if (m_pOSDYTexture[index])
   {
-    g_graphicsContext.BeginPaint();
     if (glIsTexture(m_pOSDYTexture[index]))
       glDeleteTextures(1, &m_pOSDYTexture[index]);
-    g_graphicsContext.EndPaint();
     m_pOSDYTexture[index] = 0;
   }
   if (m_pOSDATexture[index])
   {
-    g_graphicsContext.BeginPaint();
     if (glIsTexture(m_pOSDATexture[index]))
       glDeleteTextures(1, &m_pOSDATexture[index]);
-    g_graphicsContext.EndPaint();
     m_pOSDATexture[index] = 0;
     CLog::Log(LOGDEBUG, "Deleted OSD textures (%i)", index);
   }
@@ -663,7 +659,7 @@ void CLinuxRendererGL::ChooseBestResolution(float fps)
 bool CLinuxRendererGL::ValidateRenderTarget()
 {
   if (!m_bValidated)
-  {
+  {      
     CSurface *screen = g_graphicsContext.getScreenSurface();
     int maj, min;
     screen->GetGLVersion(maj, min);
@@ -1173,7 +1169,7 @@ unsigned int CLinuxRendererGL::PreInit()
   m_clearColour = 0 ; //(g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;
 
   if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllSwScale.Load())
-        CLog::Log(LOGERROR,"CLinuxRendererGL::PreInit - failed to load rescale libraries!");
+    CLog::Log(LOGERROR,"CLinuxRendererGL::PreInit - failed to load rescale libraries!");
 
   m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
   return true;
@@ -1318,21 +1314,11 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
     m_renderMethod = RENDER_SW;
   }
   return;
-
 }
 
 void CLinuxRendererGL::UnInit()
 {
   CSingleLock lock(g_graphicsContext);
-
-  m_fbo.Cleanup();
-
-  // YV12 textures, subtitle and osd stuff
-  for (int i = 0; i < NUM_BUFFERS; ++i)
-  {
-    DeleteYV12Texture(i);
-    DeleteOSDTextures(i);
-  }
 
   if (m_pBuffer)
   {
@@ -1345,12 +1331,28 @@ void CLinuxRendererGL::UnInit()
     delete [] m_rgbBuffer;
     m_rgbBuffer = NULL;
   }
+}
 
+
+// called from GUI thread after playback has finished to release GL resources
+void CLinuxRendererGL::OnClose()
+{
+  CLog::Log(LOGDEBUG, "LinuxRendererGL: Cleaning up GL resources");
+
+  // YV12 textures, subtitle and osd stuff
+  for (int i = 0; i < NUM_BUFFERS; ++i)
+  {
+    DeleteYV12Texture(i);
+    DeleteOSDTextures(i);
+  }
+
+  // cleanup framebuffer object if it was in use
+  m_fbo.Cleanup();
+  m_bValidated = false;
 }
 
 void CLinuxRendererGL::Render(DWORD flags)
 {
-
   // obtain current field, if interlaced
   if( flags & RENDER_FLAG_ODD)
   {
@@ -1390,8 +1392,6 @@ void CLinuxRendererGL::Render(DWORD flags)
     m_currentField = FIELD_FULL;
   }
 
-  //g_graphicsContext.BeginPaint();
-
   if (m_renderMethod & RENDER_GLSL)
   {
     UpdateVideoFilter();
@@ -1428,7 +1428,6 @@ void CLinuxRendererGL::Render(DWORD flags)
 
   if( flags & RENDER_FLAG_NOOSD )
   {
-    //g_graphicsContext.EndPaint();
     return;
   }
 
@@ -1445,7 +1444,6 @@ void CLinuxRendererGL::Render(DWORD flags)
       g_application.RenderMemoryStatus();
     VerifyGLState();
   }
-  //g_graphicsContext.EndPaint();
 }
 
 void CLinuxRendererGL::SetViewMode(int iViewMode)
@@ -1717,8 +1715,6 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags)
   glMatrixMode(GL_MODELVIEW);
 
   VerifyGLState();
-
-  //g_graphicsContext.EndPaint();
 }
 
 void CLinuxRendererGL::RenderMultiPass(DWORD flags)
@@ -1732,8 +1728,6 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags)
   {
     g_graphicsContext.ClipToViewWindow();
   }
-
-  //g_graphicsContext.BeginPaint();
 
   glDisable(GL_DEPTH_TEST);
   VerifyGLState();
@@ -1952,7 +1946,6 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags)
 
   glDisable(m_textureTarget);
   VerifyGLState();
-  //g_graphicsContext.EndPaint();
 }
 
 void CLinuxRendererGL::RenderSoftware(DWORD flags)
@@ -1986,8 +1979,6 @@ void CLinuxRendererGL::RenderSoftware(DWORD flags)
   {
     g_graphicsContext.ClipToViewWindow();
   }
-
-  //g_graphicsContext.BeginPaint();
 
   glDisable(GL_DEPTH_TEST);
 
@@ -2054,7 +2045,6 @@ void CLinuxRendererGL::RenderSoftware(DWORD flags)
 
   glDisable(m_textureTarget);
   VerifyGLState();
-  //g_graphicsContext.EndPaint();
 }
 
 void CLinuxRendererGL::CreateThumbnail(SDL_Surface * surface, unsigned int width, unsigned int height)
@@ -2072,8 +2062,8 @@ void CLinuxRendererGL::DeleteYV12Texture(int index)
 
   if( fields[FIELD_FULL][0] == 0 ) return;
 
+  CLog::Log(LOGDEBUG, "Deleted YV12 texture %i", index);
   /* finish up all textures, and delete them */
-  g_graphicsContext.BeginPaint(m_pBuffer);
   for(int f = 0;f<MAX_FIELDS;f++)
   {
     for(int p = 0;p<MAX_PLANES;p++)
@@ -2089,7 +2079,6 @@ void CLinuxRendererGL::DeleteYV12Texture(int index)
       }
     }
   }
-  g_graphicsContext.EndPaint(m_pBuffer);
 
   for(int p = 0;p<MAX_PLANES;p++)
   {
@@ -2099,7 +2088,6 @@ void CLinuxRendererGL::DeleteYV12Texture(int index)
       im.plane[p] = NULL;
     }
   }
-  CLog::Log(LOGDEBUG, "Deleted YV12 texture %i", index);
 }
 
 void CLinuxRendererGL::ClearYV12Texture(int index)
@@ -2139,9 +2127,6 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     im.texcoord_x = 1.0;
     im.texcoord_y = 1.0;
   }
-
-  //g_graphicsContext.BeginPaint(m_pBuffer);
-  g_graphicsContext.BeginPaint();
 
   glEnable(m_textureTarget);
   for(int f = 0;f<MAX_FIELDS;f++)
@@ -2213,8 +2198,6 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
       VerifyGLState();
     }
   }
-  //g_graphicsContext.EndPaint(m_pBuffer);
-  g_graphicsContext.EndPaint();
   SetEvent(m_eventTexturesDone[index]);
   return true;
 }
