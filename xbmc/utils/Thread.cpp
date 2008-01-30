@@ -317,9 +317,8 @@ bool CThread::SetPriority(const int iPriority)
 #ifndef _LINUX
     return ( SetThreadPriority( m_ThreadHandle, iPriority ) == TRUE );
 #else
-	return true;
+    return true;
 #endif
-
   }
   else
   {

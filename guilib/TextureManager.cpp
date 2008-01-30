@@ -595,8 +595,8 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
 #ifndef _LINUX
     bPacked = (GetFileAttributes(strPackedPath.c_str()) != -1);
 #else
-	 struct stat statBuf;
-	 bPacked = (stat(strPackedPath.c_str(), &statBuf) != -1);
+    struct stat statBuf;
+    bPacked = (stat(strPackedPath.c_str(), &statBuf) != -1);
 #endif
   }
   else
@@ -613,7 +613,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
 #ifndef HAS_SDL    
       LPDIRECT3DTEXTURE8* pTextures;
 #else
-	   SDL_Surface** pTextures;
+      SDL_Surface** pTextures;
 #endif	   
       int nLoops = 0;
       int* Delay;
