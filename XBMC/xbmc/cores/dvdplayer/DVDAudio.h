@@ -8,7 +8,11 @@
 #ifndef _LINUX
 enum CodecID;
 #else
+#ifdef __APPLE__
+#include "libffmpeg-OSX/avcodec.h"
+#else
 #include "ffmpeg/avcodec.h"
+#endif
 #endif
 typedef struct stDVDAudioFrame DVDAudioFrame;
 
