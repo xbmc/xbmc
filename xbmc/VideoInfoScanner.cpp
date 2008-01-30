@@ -925,7 +925,7 @@ namespace VIDEO
         }
 
         CVideoInfoTag episodeDetails;
-        if (m_database.GetEpisodeInfo(iter->second.m_url[0].m_url,iter2->first.second) > -1)
+        if (m_database.GetEpisodeInfo(iter->second.m_url[0].m_url,iter2->first.second,iter2->first.first) > -1)
           continue;
 
         if (!IMDB.GetEpisodeDetails(iter2->second,episodeDetails,pDlgProgress))
@@ -1137,4 +1137,5 @@ namespace VIDEO
     }
   }
 }
+
 
