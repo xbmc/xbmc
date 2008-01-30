@@ -736,14 +736,14 @@ long CVideoDatabase::GetEpisodeInfo(const CStdString& strFilenameAndPath, long l
     pDS->query(strSQL.c_str());
     if (pDS->num_rows() > 0)
     { 
-      long lTmpEpisodeId = pDS->fv("episode.idEpisode").get_asLong();
       if (lEpisodeId == -1)
-        lEpisodeId = lTmpEpisodeId;
+        lEpisodeId = pDS->fv("episode.idEpisode").get_asLong();
       else // use the hint!
       {
         while (!pDS->eof())
         {
           CVideoInfoTag tag;
+          long lTmpEpisodeId = pDS->fv("episode.idEpisode").get_asLong();
           GetEpisodeInfo(strFilenameAndPath,tag,lTmpEpisodeId);
           if (tag.m_iEpisode == lEpisodeId && (lSeasonId == -1 || tag.m_iSeason == lSeasonId)) {
             // match on the episode hint, and there's no season hint or a season hint match
