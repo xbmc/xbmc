@@ -2717,7 +2717,11 @@ void CApplication::RenderMemoryStatus()
       }
       float x = xShift + 0.04f * g_graphicsContext.GetWidth() + g_settings.m_ResInfo[res].Overscan.left;
       float y = yShift + 0.04f * g_graphicsContext.GetHeight() + g_settings.m_ResInfo[res].Overscan.top;
+
+#ifndef __APPLE__
+			 // Disable this for now as it might still be responsible for some crashes.
       CGUITextLayout::DrawOutlineText(g_fontManager.GetFont("font13"), x, y, 0xffffffff, 0xff000000, 2, wszText);
+#endif
     }
   }
 }
