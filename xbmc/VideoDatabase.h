@@ -270,7 +270,7 @@ public:
 
   long GetMovieInfo(const CStdString& strFilenameAndPath);
   long GetTvShowInfo(const CStdString& strPath);
-  long GetEpisodeInfo(const CStdString& strFilenameAndPath, long lEpisodeId=-1); // lEpisodeId is used for hinting due to two parters...
+  long GetEpisodeInfo(const CStdString& strFilenameAndPath, long lEpisodeId=-1, long lSeasonId=-1); // lEpisodeId, lSeasonId are used for multipart episodes as hints
   long GetMusicVideoInfo(const CStdString& strFilenameAndPath);
   void GetEpisodesByFile(const CStdString& strFilenameAndPath, vector<CVideoInfoTag>& episodes);
 
