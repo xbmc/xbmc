@@ -68,6 +68,8 @@ public:
   CGUIListItem *GetListItem(int offset) const;
 
   virtual bool GetCondition(int condition, int data) const;
+  unsigned int GetNumPages() const;
+  unsigned int GetCurrentPage() const;
 
 #ifdef _DEBUG
   virtual void DumpTextureUse();
