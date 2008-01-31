@@ -227,6 +227,8 @@
 #define CONTAINER_HAS_PREVIOUS      373
 #define CONTAINER_SUBITEM           374
 #define CONTAINER_TVSHOWTHUMB       375
+#define CONTAINER_NUM_PAGES         376
+#define CONTAINER_CURRENT_PAGE      377
 
 #define MUSICPM_ENABLED             380
 #define MUSICPM_SONGSPLAYED         381

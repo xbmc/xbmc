@@ -517,6 +517,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (info.Left(8).Equals("subitem("))
       return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_SUBITEM : CONTAINER_SUBITEM, id, atoi(info.Mid(8, info.GetLength() - 9))));
     else if (info.Equals("hasthumb")) ret = CONTAINER_HAS_THUMB;
+    else if (info.Equals("numpages")) ret = CONTAINER_NUM_PAGES;
+    else if (info.Equals("currentpage")) ret = CONTAINER_CURRENT_PAGE;
     else if (info.Left(5).Equals("sort("))
     {
       SORT_METHOD sort = SORT_METHOD_NONE;
@@ -973,6 +975,10 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
       }
       break;
     }
+  case CONTAINER_NUM_PAGES:
+  case CONTAINER_CURRENT_PAGE:
+    return GetMultiInfoLabel(GUIInfo(info), contextWindow);
+    break;
   case SYSTEM_BUILD_VERSION:
     strLabel = GetVersion();
     break;
@@ -1882,6 +1888,31 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
   else if (info.m_info == SYSTEM_TIME)
   {
     return GetTime((TIME_FORMAT)info.m_data1);
+  }
+  else if (info.m_info == CONTAINER_NUM_PAGES || info.m_info == CONTAINER_CURRENT_PAGE)
+  {
+    const CGUIControl *control = NULL;
+    if (info.m_data1)
+    { // container specified
+      CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
+      if (window)
+        control = window->GetControl(info.m_data1);
+    }
+    else
+    { // no container specified - assume a mediawindow
+      CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      if (window)
+        control = window->GetControl(window->GetViewContainerID());
+    }
+    if (control && control->IsContainer())
+    {
+      CStdString strNum;
+      if (info.m_info == CONTAINER_NUM_PAGES)
+        strNum.Format("%u", ((CGUIBaseContainer *)control)->GetNumPages());
+      else
+        strNum.Format("%u", ((CGUIBaseContainer *)control)->GetCurrentPage());
+      return strNum;
+    }
   }
   return StringUtils::EmptyString;
 }
