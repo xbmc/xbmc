@@ -75,9 +75,11 @@ CXBoxRenderManager::CXBoxRenderManager()
 
 CXBoxRenderManager::~CXBoxRenderManager()
 {
+#ifndef _LINUX
   DWORD locks = ExitCriticalSection(g_graphicsContext);
   CExclusiveLock lock(m_sharedSection);
   RestoreCriticalSection(g_graphicsContext, locks);
+#endif
 
   if (m_pRenderer)
     delete m_pRenderer;
