@@ -137,9 +137,11 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   CStdString strLowerPath;
   if (bContainsPath)
     strPath = strFileName;
-  else {
-    strPath = g_SkinInfo.GetSkinPath(strFileName, &resToUse);
+  else 
+  {
+    // FIXME: strLowerPath needs to eventually go since resToUse can get incorrectly overridden
     strLowerPath =  g_SkinInfo.GetSkinPath(CStdString(strFileName).ToLower(), &resToUse);
+    strPath = g_SkinInfo.GetSkinPath(strFileName, &resToUse);
   }
 
   if ( !xmlDoc.LoadFile(strPath.c_str()) && !xmlDoc.LoadFile(strPath.ToLower().c_str()) && !xmlDoc.LoadFile(strLowerPath.c_str()))
