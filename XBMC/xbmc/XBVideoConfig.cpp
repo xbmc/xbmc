@@ -139,7 +139,7 @@ void XBVideoConfig::GetDesktopResolution(int &w, int &h)
   Display * pRootDisplay = XOpenDisplay(NULL);
   if (pRootDisplay == NULL)
   {
-     fprintf(stderr, "Cannot get root display. Is X11 running??\n");
+     fprintf(stderr, "Cannot get root display. Is X11 running and is your DISPLAY variable set?\n");
      exit(1);
   }
 
