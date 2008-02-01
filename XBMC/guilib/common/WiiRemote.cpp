@@ -163,7 +163,9 @@ void CWiiRemote::Initialize()
   ToggleBit(m_rptMode, CWIID_RPT_BTN);
     
   //If wiiremote is used as a mouse, then report the IR sources
+#ifndef CWIID_OLD  
   if (m_useIRMouse) 
+#endif
     ToggleBit(m_rptMode, CWIID_RPT_IR);	
     
   //Have the first LED on the Wiiremote shine when connected
@@ -273,7 +275,38 @@ int  CWiiRemote::GetKey()
    reset_Key() could have been called automaticly but then it isn't as strong*/
 bool CWiiRemote::GetNewKey()
 {
-  return m_newKey;
+  if (m_connected)
+  { 
+    if (m_newKey)    
+      return true;
+    else
+    { 
+    /* This is to emulate the Keyboard's repeat button behaviour. It takes a while to initialize the repeat and after it repeats.
+       We only report that there is a new key to emulate repeat behaviour, as cwiid reports buttons differently if we have defined     CWIID_OLD or not*/
+      EnterCriticalSection(m_lock);
+      if (m_buttonRepeat)
+      {
+        if (timeGetTime() - m_lastKeyPressed > WIIREMOTE_BUTTON_REPEAT_TIME)
+        {
+          m_newKey = true;
+          m_lastKeyPressed = timeGetTime();
+        }
+      }
+      else
+      {
+        if (timeGetTime() - m_lastKeyPressed > WIIREMOTE_BUTTON_DELAY_TIME)     
+        {
+          m_buttonRepeat = true;
+          m_newKey = true;
+          m_lastKeyPressed = timeGetTime();
+        }
+      }
+      LeaveCriticalSection(m_lock);
+      return m_newKey;
+    }
+  }
+  else
+    return false;
 }
 
 /* Resets the newKey flag */
@@ -292,10 +325,13 @@ void CWiiRemote::EnableMouseEmulation()
   EnterCriticalSection(m_lock);    
   m_useIRMouse = true;
 
+#ifndef CWIID_OLD
   //We toggle IR Reporting (Save resources?)  
-  ToggleBit(m_rptMode, CWIID_RPT_IR);
+  if (!(m_rptMode & CWIID_RPT_IR))
+    ToggleBit(m_rptMode, CWIID_RPT_IR);   
   if (m_connected)
     SetRptMode();
+#endif
   LeaveCriticalSection(m_lock);    
   
   CLog::Log(LOGNOTICE, "Enable Wiiremote mouse emulation");
@@ -308,10 +344,13 @@ void CWiiRemote::DisableMouseEmulation()
   EnterCriticalSection(m_lock);  
   m_useIRMouse = false;
 
+#ifndef CWIID_OLD
   //We toggle IR Reporting (Save resources?)  
-  ToggleBit(m_rptMode, CWIID_RPT_IR);
+  if (m_rptMode & CWIID_RPT_IR)
+    ToggleBit(m_rptMode, CWIID_RPT_IR);
   if (m_connected)
     SetRptMode();
+#endif
   LeaveCriticalSection(m_lock);    
   
   CLog::Log(LOGNOTICE, "Disable Wiiremote mouse emulation");
@@ -402,7 +441,7 @@ bool CWiiRemote::DisableWiiRemote()
 
 
 //---------------------Private-------------------------------------------------------------------
-
+p
 /* Connect is designed to be run in a different thread as it only 
    exits if wiiremote is either disabled or a connection is made*/
 bool CWiiRemote::Connect()
@@ -416,9 +455,7 @@ bool CWiiRemote::Connect()
   {
     int flags;
     ToggleBit(flags, CWIID_FLAG_MESG_IFC);
-#ifdef CWIID_OLD
-    ToggleBit(flags, CWIID_FLAG_REPEAT_BTN);  //This make buttons to be reported in MessageCallback even if there are no new keys. This is needed for the CWIID_OLD hack
-#endif
+
     m_wiiremoteHandle = cwiid_connect(&m_btaddr, flags);
     if (m_wiiremoteHandle != NULL)
     {
@@ -497,29 +534,7 @@ void CWiiRemote::ProcessKey(int Key)
     m_newKey = true;
     m_buttonRepeat = false;
     m_lastKeyPressed = timeGetTime();
-  }
-  else
-  { 
-    /* This is to emulate the Keyboard's repeat button behaviour. It takes a while to initialize the repeat and after it repeats.
-       We only report that there is a new key to emulate repeat behaviour, as cwiid reports buttons differently if we have defined CWIID_OLD or not*/
-    if (m_buttonRepeat)
-    {
-      if (timeGetTime() - m_lastKeyPressed > WIIREMOTE_BUTTON_REPEAT_TIME)
-      {
-        m_newKey = true;
-        m_lastKeyPressed = timeGetTime();
-      }
-    }
-    else
-    {
-      if (timeGetTime() - m_lastKeyPressed > WIIREMOTE_BUTTON_DELAY_TIME)
-      {
-        m_buttonRepeat = true;
-        m_newKey = true;
-        m_lastKeyPressed = timeGetTime();
-      }
-    }
-  }    	 
+  }  
 }
 
 /* Tell cwiid wich data will be reported */
@@ -527,14 +542,10 @@ void CWiiRemote::SetRptMode()
 { //Sets our wiiremote to report something, for example IR, Buttons
 #ifdef CWIID_OLD
   if (cwiid_command(m_wiiremoteHandle, CWIID_CMD_RPT_MODE, m_rptMode))
-  {
     CLog::Log(LOGERROR, "Error setting Wiiremote report mode");
-  }
 #else  
   if (cwiid_set_rpt_mode(m_wiiremoteHandle, m_rptMode))
-  {
     CLog::Log(LOGERROR, "Error setting Wiiremote report mode");
-  }
 #endif
 }
 /* Tell cwiid the LED states */
@@ -542,14 +553,10 @@ void CWiiRemote::SetLedState()
 { //Sets our leds on the wiiremote
 #ifdef CWIID_OLD
   if (cwiid_command(m_wiiremoteHandle, CWIID_CMD_LED, m_ledState))
-  {
     CLog::Log(LOGERROR, "Error setting Wiiremote LED state");
-  }
 #else  
   if (cwiid_set_led(m_wiiremoteHandle, m_ledState))
-  {
     CLog::Log(LOGERROR, "Error setting Wiiremote LED state");
-  }
 #endif
 }
 
