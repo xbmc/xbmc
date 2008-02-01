@@ -441,7 +441,6 @@ bool CWiiRemote::DisableWiiRemote()
 
 
 //---------------------Private-------------------------------------------------------------------
-p
 /* Connect is designed to be run in a different thread as it only 
    exits if wiiremote is either disabled or a connection is made*/
 bool CWiiRemote::Connect()
