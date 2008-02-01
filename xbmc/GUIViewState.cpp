@@ -217,12 +217,14 @@ void CGUIViewState::SetSortMethod(SORT_METHOD sortMethod)
   }
 }
 
-SORT_METHOD CGUIViewState::SetNextSortMethod()
+SORT_METHOD CGUIViewState::SetNextSortMethod(int direction /* = 1 */)
 {
-  m_currentSortMethod++;
+  m_currentSortMethod += direction;
 
-  if (m_currentSortMethod>=(int)m_sortMethods.size())
+  if (m_currentSortMethod >= (int)m_sortMethods.size())
     m_currentSortMethod=0;
+  if (m_currentSortMethod < 0)
+    m_currentSortMethod = m_sortMethods.size() ? (int)m_sortMethods.size() - 1 : 0;
 
   SaveViewState();
 
