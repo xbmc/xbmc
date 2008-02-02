@@ -687,11 +687,11 @@ bool CLinuxRendererGL::ValidateRenderTarget()
     m_bValidated = true;
 
     // create the yuv textures    
+    LoadShaders();
     for (int i = 0 ; i < m_NumYV12Buffers ; i++)
     {
       CreateYV12Texture(i);
     }
-    LoadShaders();
     return true;
   }
   return false;  
