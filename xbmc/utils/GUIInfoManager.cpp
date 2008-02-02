@@ -333,6 +333,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.platform.linux")) ret = SYSTEM_PLATFORM_LINUX;
     else if (strTest.Equals("system.platform.xbox")) ret = SYSTEM_PLATFORM_XBOX;
     else if (strTest.Equals("system.platform.windows")) ret = SYSTEM_PLATFORM_WINDOWS;
+    else if (strTest.Left(15).Equals("system.getbool("))
+      return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_GET_BOOL : SYSTEM_GET_BOOL, ConditionalStringParameter(strTest.Mid(15,strTest.size()-16)), 0));
   }
   else if (strTest.Left(8).Equals("isempty("))
   {
@@ -1712,6 +1714,9 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
       break;
     case SYSTEM_HAS_ALARM:
       bReturn = g_alarmClock.hasAlarm(m_stringParameters[info.m_data1]);
+      break;
+    case SYSTEM_GET_BOOL:
+      bReturn = g_guiSettings.GetBool(m_stringParameters[info.m_data1]);
       break;
     case CONTAINER_CONTENT:
       bReturn = m_stringParameters[info.m_data1].Equals(m_content);
