@@ -46,16 +46,12 @@ using namespace PLAYLIST;
 
 CXbmcHttp* m_pXbmcHttp;
 CXbmcHttpShim* pXbmcHttpShim;
-CUdpBroadcast* pUdpBroadcast;
-
 
 //Response format
 CStdString openTag, closeTag, userHeader, userFooter, openRecordSet, closeRecordSet, openRecord, closeRecord, openField, closeField, openBroadcast, closeBroadcast;
 bool incWebHeader, incWebFooter, closeFinalTag;
 
-bool autoGetPictureThumbs = true;
 bool shuttingDown = false;
-
 CStdString lastThumbFn="";
 
 /*
@@ -568,7 +564,7 @@ bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoSt
 }
 
 void copyThumb(CStdString srcFn, CStdString destFn)
-//Copies src file to dest, unless src=="" o src doesn't exist in which case dest is deleted
+//Copies src file to dest, unless src=="" or src doesn't exist in which case dest is deleted
 {
   if (destFn=="")
     return;
@@ -614,7 +610,14 @@ CXbmcHttp::CXbmcHttp()
   resetTags();
   CKey temp;
   key = temp;
+  lastKey = temp;
   lastThumbFn="";
+  repeatKeyRate=0;
+  MarkTime=0;
+  pUdpBroadcast=NULL;
+  lastThumbFn="";
+  shuttingDown = false;
+  autoGetPictureThumbs = true;
 }
 
 CXbmcHttp::~CXbmcHttp()
@@ -1878,6 +1881,12 @@ CStdString CXbmcHttp::GetCloseTag()
 
 CKey CXbmcHttp::GetKey()
 {
+  if (repeatKeyRate!=0)
+    if (GetTickCount() >= MarkTime + repeatKeyRate)
+	{
+	  MarkTime=GetTickCount();
+	  key=lastKey;
+	}
   return key;
 }
 
@@ -1917,8 +1926,20 @@ int CXbmcHttp::xbmcSetKey(int numParas, CStdString paras[])
     }
     CKey tempKey(dwButtonCode, bLeftTrigger, bRightTrigger, fLeftThumbX, fLeftThumbY, fRightThumbX, fRightThumbY) ;
 	tempKey.SetFromHttpApi(true);
-    key = tempKey ;
+    key = tempKey;
+	lastKey = key;
     return SetResponse(openTag+"OK");
+  }
+}
+
+int CXbmcHttp::xbmcSetKeyRepeat(int numParas, CStdString paras[])
+{
+  if (numParas!=1)
+    return SetResponse(openTag+"Error:Should be only one parameter");
+  else
+  {
+    repeatKeyRate = atoi(paras[0]);
+	return SetResponse(openTag+"OK");
   }
 }
 
@@ -2893,6 +2914,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
       else if (command == "getmoviedetails")          retVal = xbmcGetMovieDetails(numParas, paras);
       else if (command == "showpicture")              retVal = xbmcShowPicture(numParas, paras);
       else if (command == "sendkey")                  retVal = xbmcSetKey(numParas, paras);
+	  else if (command == "keyrepeat")                retVal = xbmcSetKeyRepeat(numParas, paras);
       else if (command == "fileexists")               retVal = xbmcFileExists(numParas, paras);
       else if (command == "fileupload")               retVal = xbmcSetFile(numParas, paras);
       else if (command == "getguistatus")             retVal = xbmcGetGUIStatus();
