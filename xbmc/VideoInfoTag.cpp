@@ -5,6 +5,7 @@
 #include "utils/HTTP.h"
 #include "utils/log.h"
 #include "utils/CharsetConverter.h"
+#include "Util.h"
 
 #include <sstream>
 
@@ -147,6 +148,7 @@ void CVideoInfoTag::Reset()
   m_strFirstAired= "";
   m_strStudio = "";
   m_strAlbum = "";
+  m_strTrailer = "";
   m_iTop250 = 0;
   m_iYear = 0;
   m_iSeason = -1;
@@ -209,6 +211,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   XMLUtils::SetString(movie, "aired", m_strFirstAired);
   XMLUtils::SetString(movie, "studio", m_strStudio);
   XMLUtils::SetString(movie, "album", m_strAlbum);
+  XMLUtils::SetString(movie, "trailer", m_strTrailer);
 
   // cast
   for (iCast it = m_cast.begin(); it != m_cast.end(); ++it)
@@ -283,6 +286,7 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
   XMLUtils::GetString(movie, "code", m_strProductionCode);
   XMLUtils::GetString(movie, "aired", m_strFirstAired);
   XMLUtils::GetString(movie, "album", m_strAlbum);
+  XMLUtils::GetString(movie, "trailer", m_strTrailer);
 
   m_strPictureURL.ParseElement(movie->FirstChildElement("thumbs"));
   if (m_strPictureURL.m_url.size() == 0)
@@ -434,6 +438,7 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar << m_strTitle;
     ar << m_strVotes;
     ar << m_strStudio;
+	ar << m_strTrailer;
     ar << (int)m_cast.size();
     for (unsigned int i=0;i<m_cast.size();++i)
     {
@@ -484,6 +489,7 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar >> m_strTitle;
     ar >> m_strVotes;
     ar >> m_strStudio;
+    ar >> m_strTrailer;
     int iCastSize;
     ar >> iCastSize;
     for (int i=0;i<iCastSize;++i)

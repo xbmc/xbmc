@@ -705,11 +705,25 @@ void CGUIBaseContainer::GetCurrentLayouts()
 
 bool CGUIBaseContainer::HasNextPage() const
 {
-   return false;
+  return false;
 }
 
 bool CGUIBaseContainer::HasPreviousPage() const
 {
-   return false;
+  return false;
 }
 
+unsigned int CGUIBaseContainer::GetNumPages() const
+{
+  return (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage;
+}
+
+unsigned int CGUIBaseContainer::GetCurrentPage() const
+{
+  // TODO: Probably won't work for wraplist, but the concept of which page doesn't
+  //       make as much sense in that case anyway
+  unsigned int page = m_offset / m_itemsPerPage + 1;
+  if (m_offset + m_itemsPerPage >= (int)GetRows())
+    return GetNumPages();
+  return page;
+}

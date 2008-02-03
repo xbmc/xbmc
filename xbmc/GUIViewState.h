@@ -15,7 +15,7 @@ public:
   void SaveViewAsControl(int viewAsControl);
   int GetViewAsControl() const;
 
-  SORT_METHOD SetNextSortMethod();
+  SORT_METHOD SetNextSortMethod(int direction = 1);
   SORT_METHOD GetSortMethod() const;
   int GetSortMethodLabel() const;
   void GetSortMethodLabelMasks(LABEL_MASKS& masks) const;

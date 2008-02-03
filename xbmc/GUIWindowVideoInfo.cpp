@@ -32,6 +32,7 @@
 #include "GUIDialogFileBrowser.h"
 #include "utils/GUIInfoManager.h"
 #include "VideoInfoScanner.h"
+#include "Application.h"
 
 using namespace XFILE;
 
@@ -50,6 +51,7 @@ using namespace XFILE;
 #define CONTROL_ACTOR_IMAGE         34
 #define CONTROL_STUDIO              36
 #define CONTROL_TOP250              37
+#define CONTROL_TRAILER             38
 
 
 #define CONTROL_IMAGE                3
@@ -60,6 +62,7 @@ using namespace XFILE;
 #define CONTROL_BTN_PLAY             8
 #define CONTROL_BTN_RESUME           9
 #define CONTROL_BTN_GET_THUMB       10
+#define CONTROL_BTN_PLAY_TRAILER    11
 
 #define CONTROL_LIST                50
 
@@ -200,6 +203,10 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       {
         OnGetThumb();
       }
+	  else if (iControl == CONTROL_BTN_PLAY_TRAILER)
+      {
+        PlayTrailer();
+      }
 /*      else if (iControl == CONTROL_DISC)
       {
         int iItem = 0;
@@ -281,6 +288,9 @@ void CGUIWindowVideoInfo::Update()
 
   strTmp = m_movieItem.GetVideoInfoTag()->m_strPlotOutline; strTmp.Trim();
   SetLabel(CONTROL_PLOTOUTLINE, strTmp);
+
+  strTmp = m_movieItem.GetVideoInfoTag()->m_strTrailer; strTmp.Trim();
+  SetLabel(CONTROL_TRAILER, strTmp);
 
   strTmp = m_movieItem.GetVideoInfoTag()->m_strMPAARating; strTmp.Trim();
   SetLabel(CONTROL_MPAARATING, strTmp);
@@ -764,6 +774,16 @@ void CGUIWindowVideoInfo::OnGetThumb()
   g_graphicsContext.SendMessage(msg);
   // Update our screen
   Update();
+}
+
+void CGUIWindowVideoInfo::PlayTrailer()
+{
+  CFileItem item;
+  item.m_strPath = m_movieItem.GetVideoInfoTag()->m_strTrailer;
+  *item.GetVideoInfoTag() = *m_movieItem.GetVideoInfoTag();
+  item.GetVideoInfoTag()->m_strTitle.Format("%s (%s)",m_movieItem.GetVideoInfoTag()->m_strTitle.c_str(),g_localizeStrings.Get(20410));
+  item.SetThumbnailImage(m_movieItem.GetThumbnailImage());
+  g_application.getApplicationMessenger().PlayFile(item);
 }
 
 void CGUIWindowVideoInfo::SetLabel(int iControl, const CStdString &strLabel)
