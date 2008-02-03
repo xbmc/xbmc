@@ -1,6 +1,6 @@
 <window id="2003">
 	<defaultcontrol always="true">5</defaultcontrol>
-	<allowoverlay>no</allowoverlay>
+	<allowoverlay>yes</allowoverlay>
 	<include>dialogeffect</include>
 	<controls>
 		<control type="image">
@@ -45,7 +45,7 @@
 				<posy>75</posy>
 				<width>355</width>
 				<label>$INFO[listitem.title]</label>
-				<font>special13</font>
+				<font>font13</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 				<scroll>true</scroll>
 			</control>
@@ -713,7 +713,7 @@
 				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
 				<onleft>62</onleft>
 				<onright>4</onright>
-				<onup>10</onup>
+				<onup>11</onup>
 				<ondown>8</ondown>
 			</control>
 			<control type="button" id ="8">
@@ -778,7 +778,24 @@
 				<onleft>4</onleft>
 				<onright>4</onright>
 				<onup>6</onup>
+				<ondown>11</ondown>
+			</control>
+			<control type="button" id ="11">
+				<description>Trailer</description>
+				<posx>536</posx>
+				<posy>75</posy>
+				<width>135</width>
+				<height>32</height>
+				<label>20410</label>
+				<font>font10</font>
+				<align>center</align>
+				<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+				<onleft>4</onleft>
+				<onright>4</onright>
+				<onup>10</onup>
 				<ondown>5</ondown>
+				<visible>!IsEmpty(ListItem.Trailer)</visible>
 			</control>
 		</control>
 		<control type="image">

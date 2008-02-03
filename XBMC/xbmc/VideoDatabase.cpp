@@ -714,7 +714,7 @@ long CVideoDatabase::GetTvShowInfo(const CStdString& strPath)
   return -1;
 }
 
-long CVideoDatabase::GetEpisodeInfo(const CStdString& strFilenameAndPath, long lEpisodeId) // input value is episode number hint - for twoparters
+long CVideoDatabase::GetEpisodeInfo(const CStdString& strFilenameAndPath, long lEpisodeId, long lSeasonId) // input value is episode/season number hint - for multiparters
 {
   try
   {
@@ -735,7 +735,7 @@ long CVideoDatabase::GetEpisodeInfo(const CStdString& strFilenameAndPath, long l
     CLog::Log(LOGDEBUG,"CVideoDatabase::GetEpisodeInfo(%s), query = %s", strFilenameAndPath.c_str(), strSQL.c_str());
     pDS->query(strSQL.c_str());
     if (pDS->num_rows() > 0)
-    {
+    { 
       if (lEpisodeId == -1)
         lEpisodeId = pDS->fv("episode.idEpisode").get_asLong();
       else // use the hint!
@@ -743,10 +743,11 @@ long CVideoDatabase::GetEpisodeInfo(const CStdString& strFilenameAndPath, long l
         while (!pDS->eof())
         {
           CVideoInfoTag tag;
-          GetEpisodeInfo(strFilenameAndPath,tag,pDS->fv("episode.idEpisode").get_asLong());
-          if (tag.m_iEpisode == lEpisodeId)
-          {
-            lEpisodeId = pDS->fv("episode.idEpisode").get_asLong();
+          long lTmpEpisodeId = pDS->fv("episode.idEpisode").get_asLong();
+          GetEpisodeInfo(strFilenameAndPath,tag,lTmpEpisodeId);
+          if (tag.m_iEpisode == lEpisodeId && (lSeasonId == -1 || tag.m_iSeason == lSeasonId)) {
+            // match on the episode hint, and there's no season hint or a season hint match
+            lEpisodeId = lTmpEpisodeId;
             break;
           }
           pDS->next();
@@ -5110,9 +5111,10 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strPath1(strPath);
-    CUtil::AddSlashAtEnd(strPath1);
+    CStdString strPath1;
+    CUtil::GetDirectory(strPath,strPath1);
     long lPathId = GetPath(strPath1);
+
     if (lPathId > -1)
     {
       CStdString strSQL=FormatSQL("select path.strContent,path.strScraper,path.scanRecursive,path.useFolderNames,path.strSettings from path where path.idPath=%u",lPathId);

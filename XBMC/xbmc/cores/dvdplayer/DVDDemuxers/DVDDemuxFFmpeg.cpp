@@ -715,8 +715,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
     }
 
     // generic stuff
-    if (pStream->duration != (int64_t)AV_NOPTS_VALUE) 
-      m_streams[iId]->iDuration = (int)ConvertTimestamp(pStream->duration, pStream->time_base.den, pStream->time_base.num);
+    if (pStream->duration != (int64_t)AV_NOPTS_VALUE) m_streams[iId]->iDuration = (int)((pStream->duration / AV_TIME_BASE) & 0xFFFFFFFF);
 
     m_streams[iId]->codec = pStream->codec->codec_id;
     m_streams[iId]->iId = iId;

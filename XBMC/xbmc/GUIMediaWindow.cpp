@@ -305,6 +305,17 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       return true;
     }
     break;
+  case GUI_MSG_CHANGE_SORT_METHOD:
+    {
+      if (m_guiState.get())
+      {
+        if (message.GetParam2())
+          m_guiState->SetNextSortMethod((int)message.GetParam2());
+      }
+      UpdateFileList();
+      return true;
+    }
+    break;
   }
 
   return CGUIWindow::OnMessage(message);
