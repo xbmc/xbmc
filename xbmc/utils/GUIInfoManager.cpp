@@ -337,6 +337,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.platform.linux")) ret = SYSTEM_PLATFORM_LINUX;
     else if (strTest.Equals("system.platform.xbox")) ret = SYSTEM_PLATFORM_XBOX;
     else if (strTest.Equals("system.platform.windows")) ret = SYSTEM_PLATFORM_WINDOWS;
+    else if (strTest.Left(15).Equals("system.getbool("))
+      return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_GET_BOOL : SYSTEM_GET_BOOL, ConditionalStringParameter(strTest.Mid(15,strTest.size()-16)), 0));
   }
   else if (strTest.Left(8).Equals("isempty("))
   {
@@ -453,6 +455,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.writer")) return VIDEOPLAYER_WRITER;
     else if (strTest.Equals("videoplayer.tagline")) return VIDEOPLAYER_TAGLINE;
     else if (strTest.Equals("videoplayer.hasinfo")) return VIDEOPLAYER_HAS_INFO;
+	else if (strTest.Equals("videoplayer.trailer")) return VIDEOPLAYER_TRAILER;
   }
   else if (strCategory.Equals("playlist"))
   {
@@ -522,6 +525,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (info.Left(8).Equals("subitem("))
       return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_SUBITEM : CONTAINER_SUBITEM, id, atoi(info.Mid(8, info.GetLength() - 9))));
     else if (info.Equals("hasthumb")) ret = CONTAINER_HAS_THUMB;
+    else if (info.Equals("numpages")) ret = CONTAINER_NUM_PAGES;
+    else if (info.Equals("currentpage")) ret = CONTAINER_CURRENT_PAGE;
     else if (info.Left(5).Equals("sort("))
     {
       SORT_METHOD sort = SORT_METHOD_NONE;
@@ -706,6 +711,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("writer")) return LISTITEM_WRITER;
   else if (info.Equals("tagline")) return LISTITEM_TAGLINE;
   else if (info.Equals("top250")) return LISTITEM_TOP250;
+  else if (info.Equals("trailer")) return LISTITEM_TRAILER;
   else if (info.Left(9).Equals("property(")) return AddListItemProp(info.Mid(9, info.GetLength() - 10));
   return 0;
 }
@@ -824,6 +830,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case VIDEOPLAYER_ALBUM:
   case VIDEOPLAYER_WRITER:
   case VIDEOPLAYER_TAGLINE:
+  case VIDEOPLAYER_TRAILER:
     strLabel = GetVideoLabel(info);
   break;
   case PLAYLIST_LENGTH:
@@ -976,6 +983,10 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
       }
       break;
     }
+  case CONTAINER_NUM_PAGES:
+  case CONTAINER_CURRENT_PAGE:
+    return GetMultiInfoLabel(GUIInfo(info), contextWindow);
+    break;
   case SYSTEM_BUILD_VERSION:
     strLabel = GetVersion();
     break;
@@ -1768,6 +1779,9 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
     case SYSTEM_HAS_ALARM:
       bReturn = g_alarmClock.hasAlarm(m_stringParameters[info.m_data1]);
       break;
+    case SYSTEM_GET_BOOL:
+      bReturn = g_guiSettings.GetBool(m_stringParameters[info.m_data1]);
+      break;
     case CONTAINER_CONTENT:
       bReturn = m_stringParameters[info.m_data1].Equals(m_content);
       break;
@@ -1943,6 +1957,31 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
   else if (info.m_info == SYSTEM_TIME)
   {
     return GetTime((TIME_FORMAT)info.m_data1);
+  }
+  else if (info.m_info == CONTAINER_NUM_PAGES || info.m_info == CONTAINER_CURRENT_PAGE)
+  {
+    const CGUIControl *control = NULL;
+    if (info.m_data1)
+    { // container specified
+      CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
+      if (window)
+        control = window->GetControl(info.m_data1);
+    }
+    else
+    { // no container specified - assume a mediawindow
+      CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      if (window)
+        control = window->GetControl(window->GetViewContainerID());
+    }
+    if (control && control->IsContainer())
+    {
+      CStdString strNum;
+      if (info.m_info == CONTAINER_NUM_PAGES)
+        strNum.Format("%u", ((CGUIBaseContainer *)control)->GetNumPages());
+      else
+        strNum.Format("%u", ((CGUIBaseContainer *)control)->GetCurrentPage());
+      return strNum;
+    }
   }
   return StringUtils::EmptyString;
 }
@@ -2407,6 +2446,8 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       break;
     case VIDEOPLAYER_PLOT:
       return m_currentFile.GetVideoInfoTag()->m_strPlot;
+	case VIDEOPLAYER_TRAILER:
+      return m_currentFile.GetVideoInfoTag()->m_strTrailer;
     case VIDEOPLAYER_PLOT_OUTLINE:
       return m_currentFile.GetVideoInfoTag()->m_strPlotOutline;
     case VIDEOPLAYER_EPISODE:
@@ -3233,6 +3274,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
   case LISTITEM_TAGLINE:
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strTagLine;
+    break;
+  case LISTITEM_TRAILER:
+    if (item->HasVideoInfoTag())
+      return item->GetVideoInfoTag()->m_strTrailer;
     break;
   case LISTITEM_TOP250:
     if (item->HasVideoInfoTag())
