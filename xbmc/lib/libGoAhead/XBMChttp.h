@@ -79,6 +79,7 @@ public:
   int xbmcQueryVideoDataBase(int numParas, CStdString paras[]);
   int xbmcDownloadInternetFile(int numParas, CStdString paras[]);
   int xbmcSetKey(int numParas, CStdString paras[]);
+  int xbmcSetKeyRepeat(int numParas, CStdString paras[]);
   int xbmcGetMovieDetails(int numParas, CStdString paras[]);
   int xbmcDeleteFile(int numParas, CStdString paras[]);
   int xbmcCopyFile(int numParas, CStdString paras[]);
@@ -121,9 +122,13 @@ public:
 
 private:
   CKey key;
+  CUdpBroadcast* pUdpBroadcast;
   CUdpClient UdpClient;
   bool UdpClientInit;
-
+  CKey lastKey;
+  int repeatKeyRate; //ms
+  DWORD MarkTime;
+  bool autoGetPictureThumbs;
 };
 
 /****************
