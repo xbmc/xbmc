@@ -3540,6 +3540,8 @@ const BUILT_IN commands[] = {
   { "Container.NextViewMode",     false,  "Move to the next view type (and refresh the listing)" },
   { "Container.PreviousViewMode", false,  "Move to the previous view type (and refresh the listing)" },
   { "Container.SetViewMode",      true,   "Move to the view with the given id" },
+  { "Container.NextSortMethod",   false,  "Change to the next sort method" },
+  { "Container.PreviousSortMethod",false, "Change to the previous sort method" },
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -4457,6 +4459,16 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("container.setviewmode"))
   {
     CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetFocusedWindow(), 0, atoi(parameter.c_str()));
+    g_graphicsContext.SendMessage(message);
+  }
+  else if (execute.Equals("container.nextsortmethod"))
+  {
+    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetFocusedWindow(), 0, 0, 1);
+    g_graphicsContext.SendMessage(message);
+  }
+  else if (execute.Equals("container.previoussortmethod"))
+  {
+    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetFocusedWindow(), 0, 0, -1);
     g_graphicsContext.SendMessage(message);
   }
   else

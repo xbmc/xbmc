@@ -111,7 +111,7 @@ namespace PYXBMC
     if (!self->item) return NULL;
 
     PyGUILock();
-    const char *cLabel =  self->item->GetLabel().c_str();
+    const char *cLabel = self->item->GetLabel().c_str();
     PyGUIUnlock();
 
     return Py_BuildValue("s", cLabel);
@@ -394,6 +394,8 @@ namespace PYXBMC
             self->item->GetVideoInfoTag()->m_strPremiered = tmp;
           else if (strcmpi(PyString_AsString(key), "votes") == 0)
             self->item->GetVideoInfoTag()->m_strVotes = tmp;
+          else if (strcmpi(PyString_AsString(key), "trailer") == 0)
+            self->item->GetVideoInfoTag()->m_strTrailer = tmp;
           else if (strcmpi(PyString_AsString(key), "date") == 0)
           {
             if (strlen(tmp) == 10)
@@ -423,6 +425,8 @@ namespace PYXBMC
             self->item->GetMusicInfoTag()->SetArtist(tmp);
           else if (strcmpi(PyString_AsString(key), "title") == 0)
             self->item->GetMusicInfoTag()->SetTitle(tmp);
+          else if (strcmpi(PyString_AsString(key), "lyrics") == 0)
+            self->item->SetProperty("lyrics", tmp);
           else if (strcmpi(PyString_AsString(key), "date") == 0)
           {
             if (strlen(tmp) == 10)
@@ -460,6 +464,86 @@ namespace PYXBMC
     return Py_None;
   }
 
+  PyDoc_STRVAR(setProperty__doc__,
+    "setProperty(key, value) -- Sets a listitem property, similar to an infolabel.\n"
+    "\n"
+    "key            : string - property name.\n"
+    "value          : string - value of property.\n"
+    "\n"
+    "*Note, Key is NOT case sensitive.\n"
+    "       You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
+    "\n"
+    "example:\n"
+    "  - self.list.getSelectedItem().setProperty('AspectRatio', '1.85 : 1')\n");
+
+  PyObject* ListItem_SetProperty(ListItem *self, PyObject *args, PyObject *kwds)
+  {
+    if (!self->item) return NULL;
+
+    static char *keywords[] = { "key", "value", NULL };
+    char *key = NULL;
+    char *value = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      "ss",
+      keywords,
+      &key,
+      &value))
+    {
+      return NULL;
+    }
+    if (!key || !value) return NULL;
+
+    PyGUILock();
+    CStdString lowerKey = key;
+    self->item->SetProperty(lowerKey.ToLower(), value);
+    PyGUIUnlock();
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
+  PyDoc_STRVAR(getProperty__doc__,
+    "setProperty(key) -- Returns a listitem property as a string, similar to an infolabel.\n"
+    "\n"
+    "key            : string - property name.\n"
+    "\n"
+    "*Note, Key is NOT case sensitive.\n"
+    "       You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
+    "\n"
+    "example:\n"
+    "  - AspectRatio = self.list.getSelectedItem().getProperty('AspectRatio')\n");
+
+  PyObject* ListItem_GetProperty(ListItem *self, PyObject *args, PyObject *kwds)
+  {
+    if (!self->item) return NULL;
+
+    static char *keywords[] = { "key", NULL };
+    char *key = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      "s",
+      keywords,
+      &key))
+    {
+      return NULL;
+    }
+    if (!key) return NULL;
+
+    PyGUILock();
+    CStdString lowerKey = key;
+    string value = self->item->GetProperty(lowerKey.ToLower());
+    PyGUIUnlock();
+
+    return Py_BuildValue("s", value.c_str());
+  }
+
   PyMethodDef ListItem_methods[] = {
     {"getLabel" , (PyCFunction)ListItem_GetLabel, METH_VARARGS, getLabel__doc__},
     {"setLabel" , (PyCFunction)ListItem_SetLabel, METH_VARARGS, setLabel__doc__},
@@ -470,6 +554,8 @@ namespace PYXBMC
     {"select", (PyCFunction)ListItem_Select, METH_VARARGS, select__doc__},
     {"isSelected", (PyCFunction)ListItem_IsSelected, METH_VARARGS, isSelected__doc__},
     {"setInfo", (PyCFunction)ListItem_SetInfo, METH_KEYWORDS, setInfo__doc__},
+    {"setProperty", (PyCFunction)ListItem_SetProperty, METH_KEYWORDS, setProperty__doc__},
+    {"getProperty", (PyCFunction)ListItem_GetProperty, METH_KEYWORDS, getProperty__doc__},
     {NULL, NULL, 0, NULL}
   };
 
