@@ -2354,7 +2354,7 @@ void CUtil::ClearSubtitles()
   }
 }
 
-static char * sub_exts[] = { ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".smi", ".rt", ".txt", ".ssa", ".aqt", ".jss", ".ass", ".idx", ".ifo", NULL};
+static const char * sub_exts[] = { ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".smi", ".rt", ".txt", ".ssa", ".aqt", ".jss", ".ass", ".idx", ".ifo", NULL};
 
 void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached, XFILE::IFileCallback *pCallback )
 {
@@ -2362,7 +2362,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   CLog::Log(LOGDEBUG,"%s: START", __FUNCTION__);
 
   // new array for commons sub dirs
-  char * common_sub_dirs[] = {"subs",
+  const char * common_sub_dirs[] = {"subs",
                               "Subs",
                               "subtitles",
                               "Subtitles",
