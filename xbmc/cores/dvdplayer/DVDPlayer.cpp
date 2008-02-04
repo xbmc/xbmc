@@ -994,6 +994,9 @@ void CDVDPlayer::OnExit()
     }
     m_pInputStream = NULL;
 
+    // clean up all selection streams
+    m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_NONE);
+
     // if we didn't stop playing, advance to the next item in xbmc's playlist
     if (!m_bAbortRequest) m_callback.OnPlayBackEnded();
 
