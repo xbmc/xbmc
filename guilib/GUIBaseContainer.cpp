@@ -727,3 +727,4 @@ unsigned int CGUIBaseContainer::GetCurrentPage() const
     return GetNumPages();
   return page;
 }
+
