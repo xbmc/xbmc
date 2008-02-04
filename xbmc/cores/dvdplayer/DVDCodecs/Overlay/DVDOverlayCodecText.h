@@ -17,5 +17,6 @@ public:
   virtual CDVDOverlay* GetOverlay();
   
 private:
+  bool             m_bIsSSA;
   CDVDOverlayText* m_pOverlay;
 };
