@@ -9,7 +9,6 @@
 #include "gmyth/gmyth_scheduler.h"
 #include "gmyth/gmyth_util.h"
 #include "gmyth/gmyth_epg.h"
-#include "gmyth/gmyth_backendinfo.h"
 #include "gmyth/gmyth_file_transfer.h"
 #include "gmyth/gmyth_livetv.h"
 #include "gmyth/gmyth_common.h"
@@ -93,15 +92,22 @@ bool CGMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
       if ((channel->channel_name == NULL) || (channel->channel_num == NULL))
         continue;
 
+      // skip any channels with no channel number
+      if(strcmp(channel->channel_num->str, "0") == 0)
+      {
+        CLog::Log(LOGDEBUG, "%s - Skipped Channel ""%s"" ", __FUNCTION__, channel->channel_name->str);
+        continue;
+      }
+
       CStdString name, path;
       name = channel->channel_num->str;
       name+= " - ";
       name+= channel->channel_name->str;
 
-      if(strcmp(channel->channel_num->str, "0") == 0)
-        path.Format("%s/%s.ts", base.c_str(), channel->channel_name->str);
-      else
-        path.Format("%s/%s.ts", base.c_str(), channel->channel_num->str);
+      path.Format("%s/%s.ts", base.c_str(), channel->channel_num->str);
+
+      if(channel->channel_icon)
+        CLog::Log(LOGDEBUG, "%s - Channel ""%s"" Icon: ""%s""", __FUNCTION__, name.c_str(), channel->channel_icon->str);
 
       CFileItem *item = new CFileItem(path, false);
       item->SetLabel(name);
@@ -277,6 +283,7 @@ void CGMythFile::Close()
   }
   if(m_livetv)
   {
+    gmyth_recorder_close(m_livetv->recorder);
     g_object_unref(m_livetv);
     m_livetv = NULL;
   }
@@ -315,7 +322,7 @@ CGMythFile::~CGMythFile()
 
 bool CGMythFile::Exists(const CURL& url)
 {
-  return true;
+  return false;
 }
 
 __int64 CGMythFile::Seek(__int64 pos, int whence)
