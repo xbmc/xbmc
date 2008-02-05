@@ -462,8 +462,9 @@ void CGUIWindowManager::Process(bool renderOnly /*= false*/)
   if (GetCurrentThreadId() != g_application.GetThreadId())
   {
     // make sure graphics lock is not held
-    ExitCriticalSection(g_graphicsContext);
+    DWORD locks = ExitCriticalSection(g_graphicsContext);
     g_application.getApplicationMessenger().WindowManagerProcess(renderOnly);
+    RestoreCriticalSection(g_graphicsContext, locks);
   }
   else
     Process_Internal(renderOnly);
