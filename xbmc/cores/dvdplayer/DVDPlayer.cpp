@@ -578,10 +578,13 @@ void CDVDPlayer::Process()
   if (m_pDlgCache)
     m_pDlgCache->SetMessage(g_localizeStrings.Get(10213));
 
-  m_clock.SetSpeed(DVD_PLAYSPEED_PAUSE);
-  m_dvdPlayerAudio.SetSpeed(DVD_PLAYSPEED_PAUSE);
-  m_dvdPlayerVideo.SetSpeed(DVD_PLAYSPEED_PAUSE);
-  m_caching = true;
+  if(!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+  {
+    m_clock.SetSpeed(DVD_PLAYSPEED_PAUSE);
+    m_dvdPlayerAudio.SetSpeed(DVD_PLAYSPEED_PAUSE);
+    m_dvdPlayerVideo.SetSpeed(DVD_PLAYSPEED_PAUSE);
+    m_caching = true;
+  }
 
   while (!m_bAbortRequest)
   {
