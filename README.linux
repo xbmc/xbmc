@@ -214,6 +214,15 @@ need to install a newer verison of libcdio
   Recompile xbmc after make clean and ./configure
   SVN 10557+ will print the libcdio version it has been compiled with to stdout (first line). 
 
+----------------------------------------
+6.7 Basic MythTV support
+----------------------------------------
+Added to the SVN reision 11410
+basic mythtv backend support. currently only recorded shows are working properly,
+live streams fail to start. use a share like myth://user:pass@hostname/ for the 
+share since there is no browsing for available server currently. 
+enable using --enable-gmyth on configure line. 
+requires glib-2.0, gobject-2.0, gthread-2.0, curl, gmyth
 
 -----------------------------------------------------------------------------
 7. Endword
