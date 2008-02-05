@@ -208,13 +208,9 @@ void XCriticalSection::Restore(DWORD count)
 		return;
 	}
 
-	pthread_mutex_lock(&m_countMutex);
-	
 	// Restore the specified count.
 	for (DWORD i=0; i<count; i++)
-		Enter();
-	
-	pthread_mutex_unlock(&m_countMutex);
+		Enter();	
 }
 
 // The C API.
