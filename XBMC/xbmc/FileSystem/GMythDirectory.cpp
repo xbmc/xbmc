@@ -218,6 +218,12 @@ bool CGMythFile::Open(const CURL& url, bool binary)
   else if (path.Left(9) == "channels/")
   {
     CStdString channel = path.Mid(9);
+    if(!CUtil::GetExtension(channel).Equals(".ts"))
+    {
+      CLog::Log(LOGERROR, "%s - invalid channel url %s", __FUNCTION__, channel.c_str());
+      Close();
+      return false;
+    }
     CUtil::RemoveExtension(channel);
 
     m_livetv = gmyth_livetv_new(info);
