@@ -17,6 +17,7 @@ CDlgCache::CDlgCache(DWORD dwDelay, const CStdString& strHeader, const CStdStrin
 
   m_strHeader = strHeader;
   m_strLinePrev = strMsg;
+  bSentCancel = false;
 
   if(dwDelay == 0)
     OpenDialog();    
@@ -28,6 +29,8 @@ CDlgCache::CDlgCache(DWORD dwDelay, const CStdString& strHeader, const CStdStrin
 
 void CDlgCache::Close(bool bForceClose)
 {
+  bSentCancel = true;
+
   if (m_pDlg->IsDialogRunning())
     m_pDlg->Close(bForceClose);
 
@@ -50,7 +53,6 @@ void CDlgCache::OpenDialog()
 
   m_pDlg->SetLine(2, m_strLinePrev);
   m_pDlg->StartModal();
-  m_pDlg->Render();
   bSentCancel = false;
 }
 
@@ -97,7 +99,13 @@ void CDlgCache::Process()
       {
         CSingleLock lock(g_graphicsContext);
         m_pDlg->Progress();
-        if( !bSentCancel && m_pDlg->IsCanceled())
+        if( bSentCancel )
+        {
+          Sleep(10);
+          continue;
+        }
+
+        if(m_pDlg->IsCanceled())
         {
           bSentCancel = true;
 #ifdef HAS_MPLAYER
@@ -106,7 +114,7 @@ void CDlgCache::Process()
         }
         else if( !m_pDlg->IsDialogRunning() && GetTickCount() > m_dwTimeStamp 
               && !m_gWindowManager.IsWindowActive(WINDOW_DIALOG_YES_NO) )
-          OpenDialog();        
+          OpenDialog();
       }
       catch(...)
       {
