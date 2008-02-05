@@ -234,7 +234,7 @@ HRESULT CALSADirectSound::Deinitialize()
 }
 
 void CALSADirectSound::Flush() {
-  if (m_pPlayHandle == NULL)
+  if (!m_bIsAllocated)
      return;
 
   int nErr = snd_pcm_drop(m_pPlayHandle);
@@ -248,6 +248,9 @@ void CALSADirectSound::Flush() {
 //***********************************************************************************************
 HRESULT CALSADirectSound::Pause()
 {
+  if (!m_bIsAllocated)
+     return -1;
+
   if (m_bPause) return S_OK;
   m_bPause = true;
 
@@ -268,6 +271,9 @@ HRESULT CALSADirectSound::Pause()
 //***********************************************************************************************
 HRESULT CALSADirectSound::Resume()
 {
+  if (!m_bIsAllocated)
+     return -1;
+
   // Resume is called not only after Pause but also at certain other points. like after stop when DVDPlayer is flushed.  
   if(m_bCanPause && m_bPause)
     snd_pcm_pause(m_pPlayHandle,0);
@@ -284,8 +290,10 @@ HRESULT CALSADirectSound::Resume()
 //***********************************************************************************************
 HRESULT CALSADirectSound::Stop()
 {
-  if (m_pPlayHandle)
-     snd_pcm_drop(m_pPlayHandle);
+  if (!m_bIsAllocated)
+     return -1;
+
+  snd_pcm_drop(m_pPlayHandle);
 
   m_bPause = false;
 
@@ -313,7 +321,8 @@ LONG CALSADirectSound::GetCurrentVolume() const
 //***********************************************************************************************
 void CALSADirectSound::Mute(bool bMute)
 {
-  if (!m_bIsAllocated) return;
+  if (!m_bIsAllocated) 
+    return;
 
   if (bMute)
     SetCurrentVolume(GetMinimumVolume());
@@ -349,8 +358,8 @@ DWORD CALSADirectSound::GetSpace()
 //***********************************************************************************************
 DWORD CALSADirectSound::AddPackets(unsigned char *data, DWORD len)
 {
-  if (!m_pPlayHandle) {
-	CLog::Log(LOGERROR,"CALSADirectSound::AddPackets - sanity failed. no play handle!");
+  if (!m_bIsAllocated) {
+	CLog::Log(LOGERROR,"CALSADirectSound::AddPackets - sanity failed. no valid play handle!");
 	return len; 
   }
   // if we are paused we don't accept any data as pause doesn't always
