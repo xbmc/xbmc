@@ -217,7 +217,7 @@ need to install a newer verison of libcdio
 ----------------------------------------
 6.7 Basic MythTV support
 ----------------------------------------
-Added to the SVN reision 11410
+Added to the SVN revision 11410
 basic mythtv backend support. currently only recorded shows are working properly,
 live streams fail to start. use a share like myth://user:pass@hostname/ for the 
 share since there is no browsing for available server currently. 
