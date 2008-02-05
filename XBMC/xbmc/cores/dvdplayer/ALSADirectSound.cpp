@@ -417,6 +417,9 @@ DWORD CALSADirectSound::AddPackets(unsigned char *data, DWORD len)
 //***********************************************************************************************
 FLOAT CALSADirectSound::GetDelay()
 {
+  if (!m_bIsAllocated) 
+    return 0.0;
+
   double delay = 0.0;
 
   double fbps = (double)m_uiSamplesPerSec * 2.0 * (double)m_uiChannels;
