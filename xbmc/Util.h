@@ -182,6 +182,7 @@ public:
   static bool IsCDDA(const CStdString& strFile);
   static bool IsMemCard(const CStdString& strFile);
   static bool IsTuxBox(const CStdString& strFile);
+  static bool IsMythTV(const CStdString& strFile);
   static void GetFileAndProtocol(const CStdString& strURL, CStdString& strDir);
   static int GetDVDIfoTitle(const CStdString& strPathFile);
   static void UrlDecode(CStdString& strURLData);

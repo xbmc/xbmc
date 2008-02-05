@@ -80,6 +80,15 @@ bool CVideoThumbLoader::ExtractThumb(const CStdString &strPath, const CStdString
   if (!g_guiSettings.GetBool("myvideos.autothumb"))
     return false;
 
+  if (CUtil::IsMythTV(strPath)
+  ||  CUtil::IsUPnP(strPath)
+  ||  CUtil::IsTuxBox(strPath)
+  ||  CUtil::IsDAAP(strPath))
+    return false;
+
+  if (CUtil::IsRemote(strPath) && !CUtil::IsOnLAN(strPath))
+    return false;
+
   CLog::Log(LOGDEBUG,"%s - trying to extract thumb from video file %s", __FUNCTION__, strPath.c_str());
   return CDVDPlayer::ExtractThumb(strPath, strTarget);
 }
