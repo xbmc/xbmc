@@ -398,10 +398,10 @@ void CRssReader::UpdateObserver()
   getFeed(feed);
   if (feed.size() > 0)
   {
+    g_graphicsContext.Lock();
     m_pObserver->OnFeedUpdate(feed);
+    g_graphicsContext.Unlock();
   }
-  g_graphicsContext.Unlock();
-
 }
 
 void CRssReader::CheckForUpdates()
