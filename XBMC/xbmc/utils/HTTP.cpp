@@ -1188,6 +1188,12 @@ void CHTTP::Close()
 
 //------------------------------------------------------------------------------------------------------------------
 
+void CHTTP::Reset()
+{
+  m_cancelled = false;
+  m_RecvBytes = 0;
+}
+
 void CHTTP::Cancel()
 {
 #ifdef _XBOX

@@ -576,6 +576,7 @@ void CIMDB::CloseThread()
 {
   m_http.Cancel();
   StopThread();
+  m_http.Reset();
   m_state = DO_NOTHING;
   m_found = false;
 }
