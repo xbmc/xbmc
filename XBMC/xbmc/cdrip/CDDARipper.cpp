@@ -347,7 +347,7 @@ bool CCDDARipper::RipCD()
   return true;
 }
 
-char* CCDDARipper::GetExtension(int iEncoder)
+const char* CCDDARipper::GetExtension(int iEncoder)
 {
   if (iEncoder == CDDARIP_ENCODER_WAV) return ".wav";
   if (iEncoder == CDDARIP_ENCODER_VORBIS) return ".ogg";
