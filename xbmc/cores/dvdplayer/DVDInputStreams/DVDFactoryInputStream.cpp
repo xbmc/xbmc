@@ -23,9 +23,10 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
        || file.substr(0, 6) == "udp://"
        || file.substr(0, 6) == "tcp://")
     return new CDVDInputStreamFFmpeg();
-
+#ifdef HAS_GMYTH
   else if(file.substr(0, 7) == "myth://")
     return new CDVDInputStreamMyth();
+#endif
 
   //else if (item.IsShoutCast())
   //  /* this should be replaced with standard file as soon as ffmpeg can handle raw aac */
