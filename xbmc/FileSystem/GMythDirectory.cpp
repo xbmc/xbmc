@@ -186,7 +186,7 @@ bool CGMythFile::Open(const CURL& url, bool binary)
   gmyth_backend_info_set_hostname(info, url.GetHostName().c_str());
   gmyth_backend_info_set_port(info, url.GetPort());
 
-/*
+
   if (!url.GetUserName().IsEmpty())
       gmyth_backend_info_set_username(info, url.GetUserName().c_str());
   else
@@ -198,7 +198,7 @@ bool CGMythFile::Open(const CURL& url, bool binary)
       gmyth_backend_info_set_password(info, "mythtv");
 
   gmyth_backend_info_set_db_name(info, "mythconverg");
-*/
+
 
   if(path.Left(11) == "recordings/")
   {
@@ -397,4 +397,45 @@ unsigned int CGMythFile::Read(void* buffer, __int64 size)
 
   return size;
 }
+
+bool CGMythFile::SkipNext()
+{
+  if(!m_livetv)
+    return false;
+
+  return gmyth_livetv_next_program_chain(m_livetv);
+}
+
+bool CGMythFile::GetVideoInfoTag(CVideoInfoTag& tag)
+{
+  if(m_livetv && m_livetv->proginfo)
+  {
+    if(m_livetv->proginfo->title)
+      tag.m_strTitle = m_livetv->proginfo->title->str;
+
+    return true;
+  }
+  return false;
+}
+
+int CGMythFile::GetTotalTime()
+{
+  if(m_livetv && m_livetv->proginfo)
+  {
+    GTimeVal start = {}, end = {};
+
+    if(m_livetv->proginfo->startts)
+      start = *m_livetv->proginfo->startts;
+    if(m_livetv->proginfo->endts)
+      end = *m_livetv->proginfo->endts;
+    return (end.tv_sec - start.tv_sec) * 1000 + (end.tv_usec - start.tv_usec) / 1000; 
+  }
+  return 0;
+}
+
+int CGMythFile::GetTime()
+{
+  return -1;
+}
+
 #endif

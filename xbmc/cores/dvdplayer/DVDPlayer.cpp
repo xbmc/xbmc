@@ -5,6 +5,7 @@
 #include "DVDInputStreams/DVDInputStream.h"
 #include "DVDInputStreams/DVDFactoryInputStream.h"
 #include "DVDInputStreams/DVDInputStreamNavigator.h"
+#include "DVDInputStreams/DVDInputStreamMyth.h"
 
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
@@ -1573,15 +1574,16 @@ __int64 CDVDPlayer::GetTime()
     else
       return ((CDVDInputStreamNavigator*)m_pInputStream)->GetTime(); // we should take our buffers into account
   }
+#ifdef HAS_GMYTH
+  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_MYTH))
+  {
+    int msec = ((CDVDInputStreamMyth*)m_pInputStream)->GetTime();
+    if (msec >= 0)
+      return msec;
+  }
+#endif
 
-  __int64 iMsecs = (__int64)(m_clock.GetClock() * 1000 / DVD_TIME_BASE);
-  //if (m_pDemuxer)
-  //{
-  //  int iMsecsStart = m_pDemuxer->GetStreamStart();
-  //  if (iMsecs > iMsecsStart) iMsecs -=iMsecsStart;
-  //}
-
-  return iMsecs;
+  return (__int64)(m_clock.GetClock() * 1000 / DVD_TIME_BASE);
 }
 
 // return length in msec
@@ -1595,6 +1597,15 @@ __int64 CDVDPlayer::GetTotalTimeInMsec()
     else
       return ((CDVDInputStreamNavigator*)m_pInputStream)->GetTotalTime(); // we should take our buffers into account
   }
+
+#ifdef HAS_GMYTH
+  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_MYTH))
+  {
+    int msec = ((CDVDInputStreamMyth*)m_pInputStream)->GetTotalTime();
+    if (msec > 0)
+      return msec;
+  }
+#endif
 
   if (m_pDemuxer) return m_pDemuxer->GetStreamLenght();
   return 0;
