@@ -28,9 +28,7 @@
 #ifndef FFMPEG_RATIONAL_H
 #define FFMPEG_RATIONAL_H
 
-#ifdef _LINUX
 #include <stdint.h>
-#endif
 
 /**
  * Rational number num/den.
