@@ -365,8 +365,11 @@ void CTextureBundle::GetTexturesFromPath(const CStdString &path, std::vector<CSt
   if (!CUtil::HasSlashAtEnd(testPath))
     testPath += "\\";
 #else
-  // In linux we already have a / at the end. We need to replace
+  // In linux we already have a / at the end (usually). We need to replace
   // with backslash since this is how it is stored in the XPR
+  if (!CUtil::HasSlashAtEnd(testPath))
+    testPath += "\\";
+
   testPath.Replace('/', '\\');
 #endif
   int testLength = testPath.GetLength();
