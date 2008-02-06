@@ -26,11 +26,7 @@
 #ifndef FFMPEG_COMMON_H
 #define FFMPEG_COMMON_H
 
-#ifdef _LINUX
 #include <inttypes.h>
-#else
-//#include "inttypes.h"
-#endif
 
 #ifdef HAVE_AV_CONFIG_H
 /* only include the following when compiling package */
@@ -100,9 +96,7 @@ extern const uint8_t ff_log2_tab[256];
 
 static inline int av_log2(unsigned int v)
 {
-    int n;
-
-    n = 0;
+    int n = 0;
     if (v & 0xffff0000) {
         v >>= 16;
         n += 16;
@@ -118,9 +112,7 @@ static inline int av_log2(unsigned int v)
 
 static inline int av_log2_16bit(unsigned int v)
 {
-    int n;
-
-    n = 0;
+    int n = 0;
     if (v & 0xff00) {
         v >>= 8;
         n += 8;
