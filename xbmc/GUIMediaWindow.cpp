@@ -501,6 +501,9 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
 
   ClearFileItems();
 
+  m_vecItems.SetThumbnailImage("");
+  m_vecItems.ClearProperty("tvshowthumb");
+
   if (!GetDirectory(strDirectory, m_vecItems))
   {
     CLog::Log(LOGERROR,"CGUIMediaWindow::GetDirectory(%s) failed", strDirectory.c_str());
@@ -1146,4 +1149,6 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   }
   return false;
 }
+
+
 
