@@ -377,8 +377,8 @@ bool CHTTP::Connect()
     return false;
 
   sockaddr_in service;
+  memset(&service, 0, sizeof(sockaddr_in));
   service.sin_family = AF_INET;
-  memset(service.sin_zero, 0, sizeof(service.sin_zero));
 
   if (m_bProxyEnabled)
   {
@@ -393,6 +393,16 @@ bool CHTTP::Connect()
     if (service.sin_addr.s_addr == INADDR_NONE)
     {
       CStdString strIpAddress = "";
+#ifdef _LINUX
+      struct hostent *host = gethostbyname(m_strHostName.c_str());
+      if (host == NULL || host->h_addr == NULL)
+      {
+        CLog::Log(LOGWARNING, "ERROR: Problem accessing the DNS. (addr: %s)", m_strHostName.c_str());
+        return false;
+      }
+      //CLog::Log(LOGDEBUG,"host name = %s resolved: <%s>\n", host->h_name, inet_ntoa(*(struct in_addr*)host->h_addr));
+      service.sin_addr = *(struct in_addr*)host->h_addr;
+#else
       CDNSNameCache::Lookup(m_strHostName, strIpAddress);
       service.sin_addr.s_addr = inet_addr(strIpAddress.c_str());
       if (service.sin_addr.s_addr == INADDR_NONE || strIpAddress == "")
@@ -401,6 +411,7 @@ bool CHTTP::Connect()
         WSASetLastError(WSAHOST_NOT_FOUND);
         return false;
       }
+#endif
     }
     service.sin_port = htons(m_iPort);
   }
@@ -676,35 +687,36 @@ bool CHTTP::Send(char* pBuffer, int iLen)
     }
 #else
 
-  	while (!m_cancelled)
-  	{
-  	  n = -1;
-  	  
-      fd_set socks;
-  	  FD_ZERO(&socks);	
-  	  FD_SET((SOCKET)m_socket, &socks);
-  	  struct timeval timeout;  /* Timeout for select */
-  	  timeout.tv_sec = 0;
-  		timeout.tv_usec = 500000;
-  		
-  		int writesocks = select((SOCKET)m_socket+1, (fd_set *) 0, &socks, (fd_set *) 0, &timeout);
-  		if (writesocks == -1 && errno != EINTR)
-  		{
-  			CLog::Log(LOGNOTICE, "HTTP: send select failed: %s", strerror(errno));
-  			break;
-  		}
-  		else if (FD_ISSET((SOCKET)m_socket, &socks))
-  		{
-        n = send(m_socket, buf, iLen, 0);
-        if (n > 0  || (n == -1 && errno != EAGAIN && errno != EINTR))
-          break;
-  		}
-  	}
+  while (!m_cancelled)
+  {
+    n = -1;
 
-    if (m_cancelled || n <= 0)
-      return false;
-    else
-		  buf += n;
+    fd_set socks;
+    FD_ZERO(&socks);	
+    FD_SET((SOCKET)m_socket, &socks);
+    struct timeval timeout;  /* Timeout for select */
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 500000;
+
+    int writesocks = select((SOCKET)m_socket+1, (fd_set *) 0, &socks, (fd_set *) 0, &timeout);
+    if (writesocks == -1 && errno != EINTR)
+    {
+      CLog::Log(LOGNOTICE, "HTTP: send select failed: %s", strerror(errno));
+      break;
+    }
+    else if (FD_ISSET((SOCKET)m_socket, &socks))
+    {
+      n = send(m_socket, buf, iLen, 0);
+      if (n > 0  || (n == -1 && errno != EAGAIN && errno != EINTR && errno != EINPROGRESS))
+        break;
+    }
+  }
+
+  if (m_cancelled || n <= 0)
+    return false;
+  else
+    buf += n;
+
 #endif
     iPos += n;
     iLen -= n;
@@ -792,17 +804,16 @@ bool CHTTP::Recv(int iLen)
       timeout.tv_usec = 5000000;
       
       int readsocks = select((SOCKET)m_socket+1, &socks, (fd_set *) 0, (fd_set *) 0, &timeout);
-      if (readsocks == -1 && errno != EINTR)
+      if (readsocks == 0)
       {
-        CLog::Log(LOGNOTICE, "HTTP: recv select failed: %s", strerror(errno));
+        CLog::Log(LOGDEBUG,"%s, timeout on recv.", __FUNCTION__);
         break;
       }
-      else if (FD_ISSET((SOCKET)m_socket, &socks))
-      {
-        n = recv(m_socket, buf, iLen, 0);
-        if (n >= 0 || (n == -1 && errno != EAGAIN && errno != EINTR))
-          break;
-      }
+
+      // try to recv data (non blocking socket anyway)
+      n = recv(m_socket, buf, iLen, 0);
+      if (n >= 0 || (n == -1 && errno != EAGAIN && errno != EINPROGRESS))
+        break;
     }
     
     if (m_cancelled || n == -1)
