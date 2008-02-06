@@ -36,6 +36,9 @@ public:
     PLAYER_SET_STATE,               // restore the dvdplayer to a certain state
     PLAYER_SEEK,                    // 
     PLAYER_SETSPEED,                // set the playback speed
+
+    PLAYER_CHANNEL_NEXT,            // switches to next playback channel
+    PLAYER_CHANNEL_PREV,            // switches to previous playback channel
     
     
     // demuxer related messages

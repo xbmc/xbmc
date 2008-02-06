@@ -16,8 +16,9 @@ public:
 };
 
 }
+typedef struct _GMythBackendInfo GMythBackendInfo;
 typedef struct _GMythLiveTV GMythLiveTV;
-typedef struct _GMythFile GMythFile;
+typedef struct _GMythFileTransfer GMythFileTransfer;
 typedef struct _GByteArray GByteArray;
 
 namespace XFILE
@@ -39,16 +40,23 @@ public:
   virtual CStdString    GetContent() { return ""; }
   virtual bool          SkipNext();
 
+  bool                  NextChannel();
+  bool                  PrevChannel();
+
   bool                  GetVideoInfoTag(CVideoInfoTag& tag);
   int                   GetTotalTime();
-  int                   GetTime();
+  int                   GetStartTime();
 protected:
-    GMythLiveTV    *m_livetv;
-    GMythFile      *m_file;
-    GByteArray     *m_array;
-    unsigned int    m_used;
-    char*           m_filename;
-    char*           m_channel;
+
+  bool SetupTransfer();
+
+  GMythBackendInfo  *m_info;
+  GMythLiveTV       *m_livetv;
+  GMythFileTransfer *m_file;
+  GByteArray        *m_array;
+  unsigned int       m_used;
+  char*              m_filename;
+  char*              m_channel;
 };
 
 }
