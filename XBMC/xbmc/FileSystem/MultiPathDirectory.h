@@ -10,7 +10,7 @@ public:
   CMultiPathDirectory(void);
   virtual ~CMultiPathDirectory(void);
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-  virtual bool Exists(const CStdString& strPath);
+  virtual bool Exists(const char* strPath);
   virtual bool Remove(const char* strPath);
 
   static CStdString GetFirstPath(const CStdString &strPath);
