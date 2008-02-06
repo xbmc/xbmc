@@ -37,7 +37,11 @@ public:
   virtual void          Close();
   virtual unsigned int  Read(void* buffer, __int64 size);
   virtual CStdString    GetContent() { return ""; }
+  virtual bool          SkipNext();
 
+  bool                  GetVideoInfoTag(CVideoInfoTag& tag);
+  int                   GetTotalTime();
+  int                   GetTime();
 protected:
     GMythLiveTV    *m_livetv;
     GMythFile      *m_file;
