@@ -39,7 +39,7 @@
 #include "../utils/Network.h"
 #include "FileTuxBox.h"
 #include "HDHomeRun.h"
-#include "GMythDirectory.h"
+#include "GMythFile.h"
 #include "Application.h"
 
 using namespace XFILE;
