@@ -89,18 +89,18 @@ class CIoSupport
 public:
   static VOID GetXbePath(char* szDest);
 
-  static HRESULT MapDriveLetter  (char cDriveLetter, char* szDevice);
+  static HRESULT MapDriveLetter  (char cDriveLetter, const char* szDevice);
   static HRESULT UnmapDriveLetter(char cDriveLetter);
-  static HRESULT RemapDriveLetter(char cDriveLetter, char* szDevice);
+  static HRESULT RemapDriveLetter(char cDriveLetter, const char* szDevice);
 
-  static HRESULT Dismount(char * szDevice);
+  static HRESULT Dismount(const char* szDevice);
 
   static bool DriveExists(char cDrive);
   static bool PartitionExists(int nPartition);
 
-  static void GetPartition(char cDriveLetter, char * szPartition);
+  static void GetPartition(char cDriveLetter, char* szPartition);
   static const char* GetPartition(char cDriveLetter);
-  static void GetDrive(char * szPartition, char * cDriveLetter);
+  static void GetDrive(const char* szPartition, char* cDriveLetter);
 
   static bool ReadPartitionTable();
   static bool HasPartitionTable();

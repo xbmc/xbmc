@@ -1414,7 +1414,7 @@ extern "C"
   char* dll_getcwd(char *buffer, int maxlen)
   {
     not_implement("msvcrt.dll fake function dll_getcwd() called\n");
-    return "Q:";
+    return (char*)"Q:";
   }
 
   int dll_putenv(const char* envstring)

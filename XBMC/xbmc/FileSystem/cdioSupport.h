@@ -75,8 +75,8 @@ typedef struct signature
 {
   unsigned int buf_num;
   unsigned int offset;
-  char *sig_str;
-  char *description;
+  const char *sig_str;
+  const char *description;
 }
 signature_t;
 
