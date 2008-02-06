@@ -19,8 +19,11 @@ public:
   virtual bool    IsEOF();
   virtual __int64 GetLength();
 
+  bool            NextChannel();
+  bool            PrevChannel();
+
   int             GetTotalTime();
-  int             GetTime();
+  int             GetStartTime();
   std::string     GetTitle();
 protected:
   XFILE::CGMythFile* m_pFile;
