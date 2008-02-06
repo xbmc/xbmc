@@ -90,10 +90,22 @@ int CDVDInputStreamMyth::GetTotalTime()
   return m_pFile->GetTotalTime();
 }
 
-int CDVDInputStreamMyth::GetTime()
+int CDVDInputStreamMyth::GetStartTime()
 {
   if(!m_pFile) return -1;
-  return m_pFile->GetTime();
+  return m_pFile->GetStartTime();
+}
+
+bool CDVDInputStreamMyth::NextChannel()
+{
+  if(!m_pFile) return false;
+  return m_pFile->NextChannel();
+}
+
+bool CDVDInputStreamMyth::PrevChannel()
+{
+  if(!m_pFile) return false;
+  return m_pFile->PrevChannel();
 }
 
 std::string CDVDInputStreamMyth::GetTitle()

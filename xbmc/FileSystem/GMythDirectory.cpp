@@ -13,6 +13,7 @@
 #include "gmyth/gmyth_livetv.h"
 #include "gmyth/gmyth_common.h"
 
+#define XLOG(level, message, args...) CLog::Log(level, "CGMyth::%s - " message, __FUNCTION__, ##args)
 
 using namespace DIRECTORY;
 using namespace XFILE;
@@ -95,7 +96,7 @@ bool CGMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
       // skip any channels with no channel number
       if(strcmp(channel->channel_num->str, "0") == 0)
       {
-        CLog::Log(LOGDEBUG, "%s - Skipped Channel ""%s"" ", __FUNCTION__, channel->channel_name->str);
+        XLOG(LOGDEBUG, "Skipped Channel ""%s""", channel->channel_name->str);
         continue;
       }
 
@@ -107,7 +108,7 @@ bool CGMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
       path.Format("%s/%s.ts", base.c_str(), channel->channel_num->str);
 
       if(channel->channel_icon)
-        CLog::Log(LOGDEBUG, "%s - Channel ""%s"" Icon: ""%s""", __FUNCTION__, name.c_str(), channel->channel_icon->str);
+        XLOG(LOGDEBUG, "Channel ""%s"" Icon: ""%s""", name.c_str(), channel->channel_icon->str);
 
       CFileItem *item = new CFileItem(path, false);
       item->SetLabel(name);
@@ -129,7 +130,7 @@ bool CGMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
 
     if (!gmyth_scheduler_connect_with_timeout(scheduler, info, 10))
     {
-        CLog::Log(LOGERROR, "%s - failed to connect to server on %s", __FUNCTION__, base.c_str());
+        XLOG(LOGERROR, "failed to connect to server on %s", base.c_str());
         g_object_unref(scheduler);
         g_object_unref(info);
         return false;
@@ -138,7 +139,7 @@ bool CGMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
     length = gmyth_scheduler_get_recorded_list(scheduler, &clist);
     if (length < 0) 
     {
-        CLog::Log(LOGERROR, "%s - failed to retreive list of recordings from %s", __FUNCTION__, base.c_str());
+        XLOG(LOGERROR, "failed to retreive list of recordings from %s", base.c_str());
         gmyth_scheduler_disconnect(scheduler);
         g_object_unref(scheduler);
         g_object_unref(info);
@@ -179,60 +180,44 @@ bool CGMythFile::Open(const CURL& url, bool binary)
     return false;
 
   CStdString path(url.GetFileName());
-  GMythBackendInfo *info = gmyth_backend_info_new();
-  if(!info)
+  m_info = gmyth_backend_info_new();
+  if(!m_info)
     return false;
 
-  gmyth_backend_info_set_hostname(info, url.GetHostName().c_str());
-  gmyth_backend_info_set_port(info, url.GetPort());
+  gmyth_backend_info_set_hostname(m_info, url.GetHostName().c_str());
+  gmyth_backend_info_set_port(m_info, url.GetPort());
 
 
   if (!url.GetUserName().IsEmpty())
-      gmyth_backend_info_set_username(info, url.GetUserName().c_str());
+      gmyth_backend_info_set_username(m_info, url.GetUserName().c_str());
   else
-      gmyth_backend_info_set_username(info, "mythtv");
+      gmyth_backend_info_set_username(m_info, "mythtv");
 
   if (!url.GetPassWord().IsEmpty())
-      gmyth_backend_info_set_password(info, url.GetPassWord().c_str());
+      gmyth_backend_info_set_password(m_info, url.GetPassWord().c_str());
   else
-      gmyth_backend_info_set_password(info, "mythtv");
+      gmyth_backend_info_set_password(m_info, "mythtv");
 
-  gmyth_backend_info_set_db_name(info, "mythconverg");
+  gmyth_backend_info_set_db_name(m_info, "mythconverg");
 
 
   if(path.Left(11) == "recordings/")
   {
     CStdString file = path.Mid(11);
-
-    m_file = GMYTH_FILE(gmyth_file_transfer_new(info));
-    if (!m_file) 
-    {
-      CLog::Log(LOGERROR, "%s - failed to create transfer", __FUNCTION__);
-      g_object_unref(info);
-      return false;
-    }
     m_filename = g_strdup(file.c_str());
-    if (!gmyth_file_transfer_open(GMYTH_FILE_TRANSFER(m_file), m_filename)) 
-    {
-      CLog::Log(LOGERROR, "%s - failed to open transfer", __FUNCTION__);
-      g_object_unref(info);
-      return false;
-    }
-    g_object_unref(info);
-    return true;
   } 
   else if (path.Left(9) == "channels/")
   {
     CStdString channel = path.Mid(9);
     if(!CUtil::GetExtension(channel).Equals(".ts"))
     {
-      CLog::Log(LOGERROR, "%s - invalid channel url %s", __FUNCTION__, channel.c_str());
+      XLOG(LOGERROR, "invalid channel url %s", channel.c_str());
       Close();
       return false;
     }
     CUtil::RemoveExtension(channel);
 
-    m_livetv = gmyth_livetv_new(info);
+    m_livetv = gmyth_livetv_new(m_info);
     if (!m_livetv)
     {
       Close();
@@ -245,45 +230,77 @@ bool CGMythFile::Open(const CURL& url, bool binary)
       Close();
       return false;
     }
-    m_file = GMYTH_FILE(gmyth_livetv_create_file_transfer(m_livetv));
-    if (!m_file) 
+  }
+  else
+  {
+    XLOG(LOGERROR, "invalid path specified %s", path.c_str());
+    return false;
+  }
+
+  // setup actual transfer
+  if (!SetupTransfer())
+  {
+    Close();
+    return false;
+  }
+  return true;
+}
+
+bool CGMythFile::SetupTransfer()
+{
+  if(m_file)
+  {
+    gmyth_file_transfer_close(m_file);
+    g_object_unref(m_file);
+    m_file = NULL;
+  }
+
+  if(m_livetv)
+  {
+    /* live tv, reget filename as it might have changed */
+    if(m_filename)
     {
-      CLog::Log(LOGERROR, "%s - failed to create transfer", __FUNCTION__);
-      Close();
-      return false;
+      g_free(m_filename);
+      m_filename = NULL;
     }
+
     if (m_livetv->uri)
       m_filename = g_strdup(gmyth_uri_get_path(m_livetv->uri));
     else
       m_filename = g_strdup(m_livetv->proginfo->pathname->str);
 
-    if (!gmyth_file_transfer_open(GMYTH_FILE_TRANSFER(m_file), m_filename)) 
-    {
-      CLog::Log(LOGERROR, "%s - failed to open transfer", __FUNCTION__);
-      Close();
-      return false;
-    }
-    g_object_unref(info);
-    return true;
+    m_file = GMYTH_FILE_TRANSFER(gmyth_livetv_create_file_transfer(m_livetv));
   }
   else
-    CLog::Log(LOGERROR, "%s - invalid path specified %s", __FUNCTION__, path.c_str());
+  {
+    m_file = gmyth_file_transfer_new(m_info);
+  }
 
-  g_object_unref(info);
-  return false;
+  if (!m_file) 
+  {
+    XLOG(LOGERROR, "failed to create transfer");
+    return false;
+  }
+  CLog::Log(LOGDEBUG, "%s - opening filename ""%s""",__FUNCTION__, m_filename);
+  if (!gmyth_file_transfer_open(m_file, m_filename)) 
+  {
+    XLOG(LOGERROR, "failed to open transfer");
+    return false;
+  }
+  return true;
 }
 
 void CGMythFile::Close()
 {
   if(m_file)
   {
-    gmyth_file_transfer_close(GMYTH_FILE_TRANSFER(m_file));
+    gmyth_file_transfer_close(m_file);
     g_object_unref(m_file);
     m_file = NULL;
   }
   if(m_livetv)
   {
-    gmyth_recorder_close(m_livetv->recorder);
+    gmyth_livetv_stop_playing(m_livetv);
     g_object_unref(m_livetv);
     m_livetv = NULL;
   }
@@ -298,11 +315,17 @@ void CGMythFile::Close()
     g_free(m_channel);
     m_channel = NULL;
   }
+  if(m_info)
+  {
+    g_object_unref(m_info);
+    m_info = NULL;
+  }
 }
 
 CGMythFile::CGMythFile()
 {
   m_array = (GByteArray*)g_array_new(false, true, sizeof(gchar));
+  m_info = NULL;
   m_file = NULL;
   m_livetv = NULL;
   m_used = 0;
@@ -334,9 +357,9 @@ __int64 CGMythFile::Seek(__int64 pos, int whence)
     else
       return true;
   }
-
+  XLOG(LOGDEBUG, "seek to pos %lld, whence %d", pos, whence);
   if(m_file)
-    return gmyth_file_transfer_seek(GMYTH_FILE_TRANSFER(m_file), pos, whence);
+    return gmyth_file_transfer_seek(m_file, pos, whence);
   else
     return -1;
 }
@@ -349,7 +372,7 @@ __int64 CGMythFile::GetPosition()
 __int64 CGMythFile::GetLength()
 {
   if(m_file)
-    return gmyth_file_transfer_get_filesize(GMYTH_FILE_TRANSFER(m_file));
+    return gmyth_file_transfer_get_filesize(m_file);
   else
     return -1;
 }
@@ -372,20 +395,20 @@ unsigned int CGMythFile::Read(void* buffer, __int64 size)
 
     g_array_set_size((GArray*)m_array, 0);
 
-    int ret = gmyth_file_transfer_read (GMYTH_FILE_TRANSFER(m_file), m_array, size, true);
+    int ret = gmyth_file_transfer_read (m_file, m_array, size, true);
     if(ret == GMYTH_FILE_READ_ERROR)
     {
-      CLog::Log(LOGERROR, "%s - read failed", __FUNCTION__);
+      XLOG(LOGERROR, "read failed");
       return 0;
     }
     else if(ret == GMYTH_FILE_READ_NEXT_PROG_CHAIN)
     {
-      CLog::Log(LOGINFO, "%s - next program chain", __FUNCTION__);
+      XLOG(LOGINFO, "next program chain");
       continue;
     }
     else if(ret != GMYTH_FILE_READ_OK)
     {
-      CLog::Log(LOGWARNING, "%s - unknown status %d", __FUNCTION__, ret);
+      XLOG(LOGWARNING, "unknown status %d", ret);
       return 0;
     }
     break;
@@ -422,20 +445,66 @@ int CGMythFile::GetTotalTime()
 {
   if(m_livetv && m_livetv->proginfo)
   {
-    GTimeVal start = {}, end = {};
-
-    if(m_livetv->proginfo->startts)
-      start = *m_livetv->proginfo->startts;
-    if(m_livetv->proginfo->endts)
-      end = *m_livetv->proginfo->endts;
-    return (end.tv_sec - start.tv_sec) * 1000 + (end.tv_usec - start.tv_usec) / 1000; 
+    if(m_livetv->proginfo->startts && m_livetv->proginfo->endts)
+    {
+      GTimeVal *start = m_livetv->proginfo->startts;
+      GTimeVal *end   = m_livetv->proginfo->endts;
+      return (end->tv_sec - start->tv_sec) * 1000 + (end->tv_usec - start->tv_usec) / 1000; 
+    }
   }
   return 0;
 }
 
-int CGMythFile::GetTime()
+int CGMythFile::GetStartTime()
 {
-  return -1;
+  if(m_livetv && m_livetv->proginfo)
+  {
+    if(m_livetv->proginfo->startts && m_livetv->proginfo->recstartts)
+    {
+      GTimeVal *start = m_livetv->proginfo->startts;
+      GTimeVal *end   = m_livetv->proginfo->recstartts;
+      return (end->tv_sec - start->tv_sec) * 1000 + (end->tv_usec - start->tv_usec) / 1000; 
+    }
+  }
+  return 0;
+}
+
+bool CGMythFile::NextChannel()
+{
+  if(!m_livetv) return false;
+  if(!gmyth_recorder_pause_recording(m_livetv->recorder))
+  {
+    XLOG(LOGERROR, "failed to pause recording");
+    return false;
+  }
+  if(!gmyth_recorder_change_channel(m_livetv->recorder, CHANNEL_DIRECTION_DOWN))
+  {
+    XLOG(LOGERROR, "failed to change channel");
+    return false;
+  }
+  if(!gmyth_livetv_next_program_chain(m_livetv))
+    XLOG(LOGERROR, "failed to get the next program info");
+
+  return true;
+}
+
+bool CGMythFile::PrevChannel()
+{
+  if(!m_livetv) return false;
+  if(!gmyth_recorder_pause_recording(m_livetv->recorder))
+  {
+    XLOG(LOGERROR, "failed to pause recording");
+    return false;
+  }
+  if(!gmyth_recorder_change_channel(m_livetv->recorder, CHANNEL_DIRECTION_UP))
+  {
+    XLOG(LOGERROR, "failed to change channel");
+    return false;
+  }
+
+  if(!gmyth_livetv_next_program_chain(m_livetv))
+    XLOG(LOGERROR, "failed to get the next program info");
+  return true;
 }
 
 #endif

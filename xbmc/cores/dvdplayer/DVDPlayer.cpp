@@ -1284,6 +1284,20 @@ void CDVDPlayer::HandleMessages()
         if(m_pDemuxer)
           m_pDemuxer->SetSpeed(speed);
       } 
+      else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT) || pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREV))
+      {
+        if( m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_MYTH) )
+        {
+          bool result;
+          if(pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT))
+            result = ((CDVDInputStreamMyth*)m_pInputStream)->NextChannel();
+          else
+            result = ((CDVDInputStreamMyth*)m_pInputStream)->PrevChannel();
+
+          if(result)
+            FlushBuffers(false);
+        }
+      }
     }
     catch (...)
     {
@@ -1577,9 +1591,10 @@ __int64 CDVDPlayer::GetTime()
 #ifdef HAS_GMYTH
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_MYTH))
   {
-    int msec = ((CDVDInputStreamMyth*)m_pInputStream)->GetTime();
-    if (msec >= 0)
-      return msec;
+    int msec;
+    msec  = (__int64)(m_clock.GetClock() * 1000 / DVD_TIME_BASE);
+    msec += ((CDVDInputStreamMyth*)m_pInputStream)->GetStartTime();
+    return msec;
   }
 #endif
 
@@ -2184,6 +2199,21 @@ bool CDVDPlayer::OnAction(const CAction &action)
     }
   }
 
+  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_MYTH))
+  {
+    switch (action.wID)
+    {
+      case ACTION_PAGE_UP:
+        m_messenger.Put(new CDVDMsg(CDVDMsg::PLAYER_CHANNEL_NEXT));
+        return true;
+      break;
+
+      case ACTION_PAGE_DOWN:
+        m_messenger.Put(new CDVDMsg(CDVDMsg::PLAYER_CHANNEL_PREV));
+        return true;
+      break;
+    }
+  }
   // return false to inform the caller we didn't handle the message
   return false;
 }
