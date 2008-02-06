@@ -38,6 +38,8 @@ public:
   int Open(const string& strURL, const char* verb, const char* pData);
   void Close();
 
+  void Reset();
+
 protected:
   bool Send(char* pBuffer, int iLen);
   bool Connect();
