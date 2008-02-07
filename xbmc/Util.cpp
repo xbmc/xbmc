@@ -3694,6 +3694,18 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         database.GetMusicVideoInfo("",*item.GetVideoInfoTag(),params.GetMVideoId());
       item.m_strPath = item.GetVideoInfoTag()->m_strFileNameAndPath;
     }
+    
+    // restore to previous window if needed
+    if( m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW ||
+        m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
+        m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION )
+        m_gWindowManager.PreviousWindow();
+
+    // reset screensaver
+    g_application.ResetScreenSaver();
+    g_application.ResetScreenSaverWindow();
+    
+    // play media
     if (!g_application.PlayMedia(item, item.IsAudio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO))
     {
       CLog::Log(LOGERROR, "XBMC.PlayMedia could not play media: %s", strParameterCaseIntact.c_str());
