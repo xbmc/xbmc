@@ -263,15 +263,15 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       pd.filename = strFile.c_str();
 
       // read data using avformat's buffers
-      pd.buf_size = m_dllAvFormat.get_buffer(m_ioContext, pd.buf, sizeof(probe_buffer));
-      m_dllAvFormat.url_fseek(m_ioContext , 0, SEEK_SET);
-      
+      pd.buf_size = m_dllAvFormat.get_buffer(m_ioContext, pd.buf, sizeof(probe_buffer));            
       if (pd.buf_size == 0)
       {
         CLog::Log(LOGERROR, "%s - error reading from input stream, %s", __FUNCTION__, strFile.c_str());
         return false;
       }
-      
+      // restore position again
+      m_dllAvFormat.url_fseek(m_ioContext , 0, SEEK_SET);
+
       iformat = m_dllAvFormat.av_probe_input_format(&pd, 1);
       if (!iformat)
       {
