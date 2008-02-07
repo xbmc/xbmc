@@ -205,6 +205,7 @@ protected:
 
   bool m_bConfigured;
   bool m_bValidated;
+  bool m_bFullYUVRange;
   GLenum m_textureTarget;
   unsigned short m_renderMethod;
   RenderQuality m_renderQuality;
