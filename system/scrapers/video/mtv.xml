@@ -19,10 +19,7 @@
 	<GetDetails dest="3">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5">
-				<expression clear="yes" trim="1" noclean="1">&lt;meta name=&quot;mtv_vt&quot; content=[^&apos;]([^&quot;]*)[^&quot;]*&quot;</expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5">
-				<expression trim="1" noclean="1">&lt;meta name=&quot;mtv_vt&quot; content=&quot;&apos;([^&apos;]*)[^&apos;]*[^&quot;]*&quot;</expression>
+				<expression trim="1" noclean="1">&quot;([^&quot;]*)&quot; \|</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;artist&gt;\1&lt;/artist&gt;" dest="5+">
 				<expression trim="1" noclean="1">&lt;meta name=&quot;mtv_an&quot; content=&quot;([^&quot;]*)&quot;</expression>
