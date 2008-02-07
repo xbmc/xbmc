@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: scape@xboxmediacenter.com-->
@@ -1526,7 +1526,7 @@
   <string id="20335">Möchten Sie im Ordner rekursiv nach Inhalten suchen?</string>
   <string id="20336">Quellen freigeben</string>
   <string id="20337">Darsteller</string>
-  <string id="20338">Aufgabe entfernen</string>
+  <string id="20338">Film</string>
   <string id="20339">Regisseur</string>
   <string id="20340">Möchten Sie alle Elemente innerhalb dieses Pfades</string>
   <string id="20341">aus der Datenbank entfernen?</string>
