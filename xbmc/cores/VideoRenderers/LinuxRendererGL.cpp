@@ -60,6 +60,7 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_yTex = 0;
   m_uTex = 0;
   m_vTex = 0;
+  m_bFullYUVRange = false;
 
   m_iYV12RenderBuffer = 0;
   m_pOSDYBuffer = NULL;
@@ -703,6 +704,18 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
   m_iSourceWidth = width;
   m_iSourceHeight = height;
 
+  // setup what colorspace we live in
+  if(flags & CONF_FLAGS_YUV_FULLRANGE)
+  {
+    CLog::Log(LOGDEBUG, "Selected full range YUV to RGB conversion");
+    m_bFullYUVRange = true;
+  }
+  else
+  {
+    CLog::Log(LOGDEBUG, "Selected limited range YUV to RGB conversion");
+    m_bFullYUVRange = false;
+  }
+
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(d_width, d_height);
   ChooseBestResolution(m_fps);
@@ -1244,20 +1257,18 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
     {
       if (m_renderQuality == RQ_SINGLEPASS)
       {
-        m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB); // create regular progressive scan shader
-        //m_pYUVShader = new YUV2RGBBobShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB); // create bob deinterlacing shader
+        m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_bFullYUVRange); // create regular progressive scan shader
         CLog::Log(LOGNOTICE, "GL: Selecting Single Pass YUV 2 RGB shader");
       }
       else if (m_renderQuality == RQ_MULTIPASS)
       {
-        //m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB); // create regular progressive scan shader
-        m_pYUVShader = new YUV2RGBBobShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB); // create bob deinterlacing shader
+        m_pYUVShader = new YUV2RGBBobShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_bFullYUVRange); // create bob deinterlacing shader
         CLog::Log(LOGNOTICE, "GL: Selecting Multipass Pass YUV 2 RGB shader");
       }
     }
     else
     {
-      m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB); // create regular progressive scan shader
+      m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_bFullYUVRange); // create regular progressive scan shader
       CLog::Log(LOGNOTICE, "GL: Selecting YUV 2 RGB Progressive Shader");
     }
 
@@ -1286,7 +1297,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
       m_pYUVShader = NULL;
     }
 
-    m_pYUVShader = new YUV2RGBProgressiveShaderARB(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB); // create regular progressive scan shader
+    m_pYUVShader = new YUV2RGBProgressiveShaderARB(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_bFullYUVRange); // create regular progressive scan shader
     CLog::Log(LOGNOTICE, "GL: Selecting Single Pass ARB YUV2RGB shader");
 
     if (m_pYUVShader && m_pYUVShader->CompileAndLink())

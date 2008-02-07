@@ -17,7 +17,8 @@ namespace Shaders {
     virtual void SetField(int field) { field    = field; }
     virtual void SetWidth(int w)     { m_width  = w; }
     virtual void SetHeight(int h)    { m_height = h; }
-
+    virtual void SetFullRange(bool range) {m_bFullYUVRange = range; }
+    
   protected:
     int   m_width;
     int   m_height;
@@ -27,6 +28,7 @@ namespace Shaders {
     GLint m_yTexUnit;
     GLint m_uTexUnit;
     GLint m_vTexUnit;
+    bool  m_bFullYUVRange;
 
     // shader attribute handles
     GLint m_hYTex;
@@ -47,6 +49,7 @@ namespace Shaders {
     virtual void SetField(int field) { field    = field; }
     virtual void SetWidth(int w)     { m_width  = w; }
     virtual void SetHeight(int h)    { m_height = h; }
+    virtual void SetFullRange(bool range) {m_bFullYUVRange = range; }
 
   protected:
     int   m_width;
@@ -57,6 +60,7 @@ namespace Shaders {
     GLint m_yTexUnit;
     GLint m_uTexUnit;
     GLint m_vTexUnit;
+    bool  m_bFullYUVRange;
 
     // shader attribute handles
     GLint m_hYTex;
@@ -70,7 +74,7 @@ namespace Shaders {
   class YUV2RGBProgressiveShaderARB : public BaseYUV2RGBARBShader
   {
   public:
-    YUV2RGBProgressiveShaderARB(bool rect=false);
+    YUV2RGBProgressiveShaderARB(bool rect=false, bool fullrange=false);
     void OnCompiledAndLinked();
     bool OnEnabled();
   };
@@ -78,7 +82,7 @@ namespace Shaders {
   class YUV2RGBProgressiveShader : public BaseYUV2RGBGLSLShader
   {
   public:
-    YUV2RGBProgressiveShader(bool rect=false);
+    YUV2RGBProgressiveShader(bool rect=false, bool fullrange=false);
     void OnCompiledAndLinked();
     bool OnEnabled();
   };
@@ -86,7 +90,7 @@ namespace Shaders {
   class YUV2RGBBobShader : public BaseYUV2RGBGLSLShader
   {
   public:
-    YUV2RGBBobShader(bool rect=false);
+    YUV2RGBBobShader(bool rect=false, bool fullrange=false);
     void OnCompiledAndLinked();
     bool OnEnabled();
   };
