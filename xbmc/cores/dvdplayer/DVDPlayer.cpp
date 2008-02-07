@@ -1286,6 +1286,7 @@ void CDVDPlayer::HandleMessages()
       } 
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT) || pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREV))
       {
+#ifdef HAS_GMYTH
         if( m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_MYTH) )
         {
           bool result;
@@ -1297,6 +1298,7 @@ void CDVDPlayer::HandleMessages()
           if(result)
             FlushBuffers(false);
         }
+#endif
       }
     }
     catch (...)
@@ -2198,7 +2200,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
       return true; // message is handled
     }
   }
-
+#ifdef HAS_GMYTH
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_MYTH))
   {
     switch (action.wID)
@@ -2214,6 +2216,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
       break;
     }
   }
+#endif
   // return false to inform the caller we didn't handle the message
   return false;
 }
