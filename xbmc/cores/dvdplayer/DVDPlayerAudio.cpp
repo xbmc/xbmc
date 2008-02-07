@@ -139,7 +139,7 @@ bool CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints )
 void CDVDPlayerAudio::CloseStream(bool bWaitForBuffers)
 {
   // wait until buffers are empty
-  if (bWaitForBuffers) m_messageQueue.WaitUntilEmpty();
+  if (bWaitForBuffers && m_speed > 0) m_messageQueue.WaitUntilEmpty();
 
   // send abort message to the audio queue
   m_messageQueue.Abort();
