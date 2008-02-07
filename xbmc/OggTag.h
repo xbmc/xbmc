@@ -1,5 +1,5 @@
 //------------------------------
-// COggTag in 2003 by Bobbin007
+// COggTag in 2003 by Bobbin007 
 //------------------------------
 #include "VorbisTag.h"
 #include "cores/paplayer/ReplayGain.h"
