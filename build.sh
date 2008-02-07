@@ -1,10 +1,11 @@
 #!/bin/bash
 
 error() {
-  if [[ $? != 0 ]]
+  RET=$?
+  if [[ $RET != 0 ]]
   then
     echo
-    echo " FAILED! Exiting."
+    echo -e "\n FAILED! Exiting. ($RET)"
     exit
   fi
 }
@@ -32,6 +33,8 @@ usage() {
   echo "                                      can pass more than one"
   echo "   WEB=<path/to/web_int.rar>        : Web interface to use."
   echo "                                      Default = PM3"
+  echo "   VERBOSE                          : Print way too much stuff than to"
+  echo "                                      be useful in most cases."
   echo " These options can be defaulted in ~/.xbmc-build-settings."
   echo " Just make a white space separated list on the first line."
   exit
@@ -101,6 +104,9 @@ parse_args() {
         ;;
       NOCONFIG)
         CONFIGURE=0
+        ;;
+      VERBOSE)
+        VERBOSE=1
         ;;
       *)
         echo " Invalid option $OPT"
@@ -191,12 +197,17 @@ compile() {
     if (( CLEAN ))
     then
       echo " Cleaning source directory."
-      make -C "${SOURCEDIR}" clean &> /dev/null
+      if (( VERBOSE ))
+      then
+        make -C "${SOURCEDIR}" clean
+      else
+        make -C "${SOURCEDIR}" clean &> /dev/null
+      fi
     else
       echo " Skipping source directory cleaning."
     fi
     echo " Compiling source."
-    CORES=$(grep "processor" /proc/cpuinfo | wc -l)
+    CORES=$(grep "^processor" /proc/cpuinfo | wc -l)
     echo "  Detected ${CORES} procs/cores, using -j${CORES}"
     if (( $SHOW_MAKE ))
     then
@@ -224,9 +235,19 @@ copy() {
     if [[ -e "$BACKUPDIR" ]] 
     then
       echo "  Removing old $BACKUPDIR first."
-      rm -rf "$BACKUPDIR" &> /dev/null
+      if (( VERBOSE ))
+      then
+        rm -vrf "$BACKUPDIR"
+      else
+        rm -rf "$BACKUPDIR" &> /dev/null
+      fi
     fi
-    mv "$BUILDDIR" "${BACKUPDIR}"  &> /dev/null
+    if (( VERBOSE ))
+    then
+      mv -v "$BUILDDIR" "${BACKUPDIR}"
+    else
+      mv "$BUILDDIR" "${BACKUPDIR}" &> /dev/null
+    fi
     if [[ $? != 0 ]]
     then
       echo " You don't have permission to move"
@@ -238,7 +259,12 @@ copy() {
   fi
 
   echo " Creating ${BUILDDIR}."
-  mkdir "$BUILDDIR" &> /dev/null
+  if (( VERBOSE ))
+  then
+    mkdir -v "$BUILDDIR"
+  else
+    mkdir "$BUILDDIR" &> /dev/null
+  fi
   error
 
   for I in credits language media screensavers scripts skin sounds system userdata visualisations web xbmc-xrandr XboxMediaCenter README.linux copying.txt Changelog.txt
@@ -246,24 +272,50 @@ copy() {
     printf "\r Copying %-16.16s" $I 
     if [[ "$I" == "skin" ]]
     then
-      mkdir -p "${BUILDDIR}/skin/Project Mayhem III" &> /dev/null
+      if (( VERBOSE ))
+      then
+        mkdir -vp "${BUILDDIR}/skin/Project Mayhem III"
+      else
+        mkdir -p "${BUILDDIR}/skin/Project Mayhem III" &> /dev/null
+      fi
       for J in $(ls "${SOURCEDIR}/skin/Project Mayhem III")
       do
         if [[ "$J" == "media" ]]
         then
-          mkdir "${BUILDDIR}/skin/Project Mayhem III/media" &> /dev/null
-          cp "${SOURCEDIR}/skin/Project Mayhem III/media/Textures.xpr" "${BUILDDIR}/skin/Project Mayhem III/media" &> /dev/null
+          if (( VERBOSE )) 
+          then
+            mkdir -v "${BUILDDIR}/skin/Project Mayhem III/media"
+            cp "${SOURCEDIR}/skin/Project Mayhem III/media/Textures.xpr" "${BUILDDIR}/skin/Project Mayhem III/media"
+          else
+            mkdir "${BUILDDIR}/skin/Project Mayhem III/media" &> /dev/null
+            cp "${SOURCEDIR}/skin/Project Mayhem III/media/Textures.xpr" "${BUILDDIR}/skin/Project Mayhem III/media" &> /dev/null
+          fi
         else
-          cp -rf "${SOURCEDIR}/skin/Project Mayhem III/${J}" "${BUILDDIR}/skin/Project Mayhem III" &> /dev/null
+          if (( VERBOSE ))
+          then
+            cp -vrf "${SOURCEDIR}/skin/Project Mayhem III/${J}" "${BUILDDIR}/skin/Project Mayhem III"
+          else
+            cp -rf "${SOURCEDIR}/skin/Project Mayhem III/${J}" "${BUILDDIR}/skin/Project Mayhem III" &> /dev/null
+          fi
         fi
       done
     elif [[ "$I" == "userdata" ]]
     then
       if [[ -e "$BACKUPDIR/UserData" ]]
       then
-        cp -rf "$BACKUPDIR/UserData" "$BUILDDIR" &> /dev/null
+        if (( VERBOSE ))
+        then 
+          cp -vrf "$BACKUPDIR/UserData" "$BUILDDIR"
+        else
+          cp -rf "$BACKUPDIR/UserData" "$BUILDDIR" &> /dev/null
+        fi
       else
-        cp -rf "${SOURCEDIR}/${I}" "$BUILDDIR" &> /dev/null
+        if (( VERBOSE ))
+        then 
+          cp -vrf "${SOURCEDIR}/${I}" "$BUILDDIR"
+        else
+          cp -rf "${SOURCEDIR}/${I}" "$BUILDDIR" &> /dev/null
+        fi
       fi
     elif [[ "$I" == "web" ]]
     then
@@ -274,24 +326,45 @@ copy() {
       fi
       if ! [[ $RAR == "" ]]
       then
-        mkdir -p "$BUILDDIR/web" &> /dev/null
-        "$RAR" x -y -inul "$WEB" "$BUILDDIR/web/"
+        if (( VERBOSE ))
+        then
+          mkdir -vp "$BUILDDIR/web"
+          "$RAR" x -y "$WEB" "$BUILDDIR/web/"
+        else
+          mkdir -p "$BUILDDIR/web" &> /dev/null
+          "$RAR" x -y -inul "$WEB" "$BUILDDIR/web/"
+        fi
       fi
     elif [[ "$I" == "XboxMediaCenter" ]]
     then
       if [[ -e "${SOURCEDIR}/$I" ]]
       then
-        mv "${SOURCEDIR}/${I}" "$BUILDDIR" &> /dev/null
+        if (( VERBOSE ))
+        then
+          mv -v "${SOURCEDIR}/${I}" "$BUILDDIR"
+        else
+          mv "${SOURCEDIR}/${I}" "$BUILDDIR" &> /dev/null
+        fi
       elif [[ -e "${BACKUPDIR}/${I}" ]]
       then
         echo
         echo " Couldn't find new binary, using old one from backup!"
-        cp -f "${BACKUPDIR}/${I}" "${BUILDDIR}/${I}" &> /dev/null
+        if (( VERBOSE ))
+        then
+          cp -vf "${BACKUPDIR}/${I}" "${BUILDDIR}/${I}"
+        else
+          cp -f "${BACKUPDIR}/${I}" "${BUILDDIR}/${I}" &> /dev/null
+        fi
       else 
         ls "..." &> /dev/null  # force $? to be non-zero
       fi
     else
-      cp -rf "${SOURCEDIR}/${I}" "$BUILDDIR" &> /dev/null
+      if (( VERBOSE ))
+      then
+        cp -vrf "${SOURCEDIR}/${I}" "$BUILDDIR"
+      else
+        cp -rf "${SOURCEDIR}/${I}" "$BUILDDIR" &> /dev/null
+      fi
     fi
     error
   done
@@ -313,7 +386,12 @@ cleanup() {
   if [ -d $1 ]
   then
     printf "\r Cleaning %-60.60s" $1
-    rm -rf $I/src $I/.svn $I/*.DLL $I/*.dll &> /dev/null
+    if (( VERBOSE ))
+    then
+      rm -vrf $I/src $I/.svn $I/*.DLL $I/*.dll
+    else
+      rm -rf $I/src $I/.svn $I/*.DLL $I/*.dll &> /dev/null
+    fi
     for I in $1/* #$(ls -d $1/* 2> /dev/null)
     do
       cleanup "${I}"
@@ -333,13 +411,23 @@ merge() {
       done
     else
       echo "  Merged ${1#"${BACKUPDIR}/"}"
-      cp -rf "$BACKUPDIR/$1" "$BUILDDIR/$1" &> /dev/null
+      if (( VERBOSE ))
+      then
+        cp -vrf "$BACKUPDIR/$1" "$BUILDDIR/$1"
+      else
+        cp -rf "$BACKUPDIR/$1" "$BUILDDIR/$1" &> /dev/null
+      fi
     fi
   else
     if ! [[ -e "$BUILDDIR/$1" ]]
     then
       echo "  Merged ${1#"${BACKUPDIR}/"}"
-      cp -f "$BACKUPDIR/$1" "$BUILDDIR/$1" &> /dev/null
+      if (( VERBOSE ))
+      then
+        cp -vf "$BACKUPDIR/$1" "$BUILDDIR/$1"
+      else
+        cp -f "$BACKUPDIR/$1" "$BUILDDIR/$1" &> /dev/null
+      fi
     fi
   fi
 }
@@ -391,6 +479,7 @@ CONFIGOPTS=""
 (( SHOW_MAKE=1 ))
 (( CONFIGURE=1 ))
 (( DEBUG=1 ))
+(( VERBOSE=0 ))
 
 if ! [[ -e "$SOURCEDIR/.firstrun" ]]
 then
@@ -403,10 +492,16 @@ fi
 
 echo -ne "]0;Building XBMC"
 
-touch "/root/.test" &> /dev/null
-
-if ! (( $? ))
+if (( VERBOSE ))
 then
+  touch "/root/.test"
+else
+  touch "/root/.test" &> /dev/null
+fi
+
+if ! (( $? )) 
+then
+  rm "/root/.test" &> /dev/null
   PROMPT=""
   echo " There is really no reason to run this as root or with sudo."
   while [[ $PROMPT != "y" && $PROMPT != "n" ]]
@@ -444,13 +539,23 @@ then
     exit
   fi
 else
-  mkdir -p "$BUILDDIR" &> /dev/null
+  if (( VERBOSE ))
+  then
+    mkdir -vp "$BUILDDIR"
+  else
+    mkdir -p "$BUILDDIR" &> /dev/null
+  fi
   if [[ $? != 0 ]]
   then
     echo " You don't have permission to create $BUILDDIR"
     exit
   fi
-  rm -rf "$BUILDDIR" &> /dev/null
+  if (( VERBOSE ))
+  then
+    rm -vrf "$BUILDDIR"
+  else
+    rm -rf "$BUILDDIR" &> /dev/null
+  fi
 fi
 
 if [[ $WEB == "" ]]
