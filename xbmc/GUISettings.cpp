@@ -533,8 +533,6 @@ CGUISettings::CGUISettings(void)
   AddString(2, "smb.password",    1204,   "", BUTTON_CONTROL_HIDDEN_INPUT, true, 1204);
   AddString(3, "smb.winsserver",  1207,   "",  BUTTON_CONTROL_IP_INPUT);
   AddString(4, "smb.workgroup",   1202,   "WORKGROUP", BUTTON_CONTROL_INPUT, false, 1202);
-  AddSeparator(6, "smb.sep1");
-  AddBool(7,   "smb.showhidden", 21330, false);
 
   AddCategory(6, "upnp", 20110);
   AddBool(1,    "upnp.client", 20111, false);
@@ -597,6 +595,8 @@ CGUISettings::CGUISettings(void)
   AddSeparator(6, "filelists.sep1");
   AddBool(7, "filelists.allowfiledeletion", 14071, false);
   AddBool(8, "filelists.disableaddsourcebuttons", 21382,  false);
+  AddSeparator(9, "filelists.sep2");
+  AddBool(10, "filelists.showhidden", 21330, false);
 
   AddCategory(7, "screensaver", 360);
   AddString(1, "screensaver.mode", 356, "Dim", SPIN_CONTROL_TEXT);
