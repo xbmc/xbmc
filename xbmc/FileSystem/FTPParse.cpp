@@ -45,7 +45,7 @@ static time_t base; /* time() value on this OS at the beginning of 1970 TAI */
 static long now; /* current time */
 static int flagneedcurrentyear = 1;
 static long currentyear; /* approximation to current year */
-static char *months[12] = {"jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"} ;
+static const char *months[12] = {"jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"} ;
 static void initbase(void)
 {
   struct tm *t;
@@ -109,7 +109,7 @@ static long guesstai(long month,long mday)
   return currentyear; // return something
 }
 
-static int check(char *buf,char *monthname)
+static int check(char *buf,const char *monthname)
 {
   if ((buf[0] != monthname[0]) && (buf[0] != monthname[0] - 32)) return 0;
   if ((buf[1] != monthname[1]) && (buf[1] != monthname[1] - 32)) return 0;
