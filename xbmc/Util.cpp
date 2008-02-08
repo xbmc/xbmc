@@ -18,6 +18,10 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#ifdef __APPLE__
+#include <sys/param.h>
+#include <mach-o/dyld.h>
+#endif
 
 #ifdef _LINUX
 #include <sys/types.h>
@@ -1574,9 +1578,33 @@ void CUtil::GetHomePath(CStdString& strPath)
     strPath = getenv("XBMC_HOME");
   else
   {
+#ifdef __APPLE__
+    int      result = -1;
+    char     given_path[2*MAXPATHLEN];
+    uint32_t path_size = 2*MAXPATHLEN;
+
+      result = _NSGetExecutablePath(given_path, &path_size);
+      if (result == 0)
+      {
+        // Move backwards to last /.
+        for (int n=strlen(given_path)-1; given_path[n] != '/'; n--)
+          given_path[n] = '\0';
+        
+        // Assume local path inside application bundle.
+        strcat(given_path, "../Resources/XBMC/");
+        
+        // Convert to real path.
+        char real_path[2*MAXPATHLEN];
+        if (realpath(given_path, real_path) != NULL)
+          strPath = real_path;
+        else
+          printf("ERROR obtaining real path for '%s'\n", given_path);
+      }
+#else
     char *szFileName = strrchr(szXBEFileName, '/');
     *szFileName = 0;
     strPath = szXBEFileName;
+#endif
   }
 #endif
 }
