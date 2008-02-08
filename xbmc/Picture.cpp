@@ -158,8 +158,8 @@ bool CPicture::CacheSkinImage(const CStdString &srcFile, const CStdString &destF
   int iImages = g_TextureManager.Load(srcFile, 0);
   if (iImages > 0)
   {
-    int width, height;
-    bool linear;
+    int width = 0, height = 0;
+    bool linear = false;
     LPDIRECT3DPALETTE8 palette;
     LPDIRECT3DTEXTURE8 texture = g_TextureManager.GetTexture(srcFile, 0, width, height, palette, linear);
     if (texture)
