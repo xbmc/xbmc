@@ -19,7 +19,9 @@ public:
 
 class DllLibFaad : public DllDynamic, DllLibFaadInterface
 {
-#ifndef _LINUX
+#ifdef __APPLE__
+  DECLARE_DLL_WRAPPER(DllLibFaad, Q:\\system\\players\\dvdplayer\\libfaad-osx.so)
+#elif !defined(_LINUX)
   DECLARE_DLL_WRAPPER(DllLibFaad, Q:\\system\\players\\dvdplayer\\libfaad.dll)
 #else
   DECLARE_DLL_WRAPPER(DllLibFaad, Q:\\system\\players\\dvdplayer\\libfaad-i486-linux.so)
