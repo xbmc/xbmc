@@ -109,7 +109,10 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 
   if (url.GetProtocol().Equals("lastfm") ||
       url.GetProtocol().Equals("shout"))
+  {
     vecCores.push_back(EPC_PAPLAYER);
+    return;
+  }
    
 #ifdef HAS_MMS
   if (url.GetProtocol().Equals("mms"))
