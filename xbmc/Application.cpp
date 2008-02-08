@@ -4082,10 +4082,30 @@ bool CApplication::PlayMediaSync(const CFileItem& item, int iPlaylist)
   }
   else if (item.IsPlayList() || item.IsInternetStream())
   {
+    CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    if (item.IsInternetStream() && dlgProgress)
+    {  
+       dlgProgress->ShowProgressBar(false);
+       dlgProgress->SetHeading(260);
+       dlgProgress->SetLine(0, 14003); 
+       dlgProgress->SetLine(1, "");
+       dlgProgress->SetLine(2, "");
+       dlgProgress->StartModal();
+    }
+
     //is or could be a playlist
     auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(item));
-    if (pPlayList.get() && pPlayList->Load(item.m_strPath))
+    bool gotPlayList = (pPlayList.get() && pPlayList->Load(item.m_strPath));
+    if (item.IsInternetStream() && dlgProgress)
     {
+       dlgProgress->Close();
+       if (dlgProgress->IsCanceled())
+          return true;
+    } 
+
+    if (gotPlayList)
+    {
+
       if (iPlaylist != PLAYLIST_NONE)
         return ProcessAndStartPlaylist(item.m_strPath, *pPlayList, iPlaylist);
       else

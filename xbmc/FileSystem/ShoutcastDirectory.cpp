@@ -96,6 +96,7 @@ bool CShoutcastDirectory::ParseStations(TiXmlElement *root, CFileItemList &items
 
     url.SetOptions("?id=" + id);
     url.GetURL(path);
+    //printf("%s: %s\n", name.c_str(), path.c_str());
 
     CFileItem* pItem = new CFileItem;
     pItem->m_bIsFolder = false;
@@ -142,11 +143,7 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
   if (g_directoryCache.GetDirectory(strRoot, items))
     return true;
 
-  /* display progress dialog after 2 seconds */
-  DWORD dwTimeStamp = GetTickCount() + 2000;
-
   CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  bool dialogopen = false;
   if (dlgProgress)
   {
     dlgProgress->ShowProgressBar(false);
@@ -154,6 +151,7 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
     dlgProgress->SetLine(0, 14003);
     dlgProgress->SetLine(1, "");
     dlgProgress->SetLine(2, "");
+    dlgProgress->StartModal();
   }
 
   CURL url(strRoot);
@@ -201,16 +199,7 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
     data += buffer;
     data_size += size_read;
 
-    if( dialogopen )
-    {
-      dlgProgress->Progress();
-    }
-    else if( GetTickCount() > dwTimeStamp )
-    {
-      dlgProgress->StartModal();
-      dlgProgress->Progress();
-      dialogopen = true;
-    }
+    dlgProgress->Progress();
 
     if (dlgProgress->IsCanceled())
     {
