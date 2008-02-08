@@ -354,7 +354,9 @@ CApplication::CApplication(void)
 #endif
 
 #ifdef HAS_SDL
-  m_framesSem = SDL_CreateSemaphore(0);
+  m_frameCount = 0;
+  m_frameMutex = SDL_CreateMutex();
+  m_frameCond = SDL_CreateCond();
 #endif
 
   m_bPresentFrame = false;
@@ -362,8 +364,11 @@ CApplication::CApplication(void)
 
 CApplication::~CApplication(void)
 {
-  if (m_framesSem)
-    SDL_DestroySemaphore(m_framesSem);
+  if (m_frameMutex)
+    SDL_DestroyMutex(m_frameMutex);
+  
+  if (m_frameCond)
+    SDL_DestroyCond(m_frameCond);
 }
 
 // text out routine for below
@@ -956,8 +961,10 @@ HRESULT CApplication::Create(HWND hWnd)
   RESOLUTION initialResolution = g_videoConfig.GetInitialMode();
 #endif
 
+#ifndef __APPLE__
   // Transfer the resolution information to our graphics context
   g_graphicsContext.SetVideoResolution(initialResolution, TRUE);
+#endif
 
   // Initialize core peripheral port support. Note: If these parameters
   // are 0 and NULL, respectively, then the default number and types of
@@ -2604,7 +2611,13 @@ void CApplication::DoRender()
 void CApplication::NewFrame()
 {
 #ifdef HAS_SDL
-  SDL_SemPost(m_framesSem);
+  SDL_mutexP(m_frameMutex);
+
+  // We just posted another frame. Keep track and notify. 
+  m_frameCount++;
+  SDL_CondSignal(m_frameCond);
+  
+  SDL_mutexV(m_frameMutex);
 #endif
 }
 
@@ -2632,11 +2645,16 @@ void CApplication::Render()
       if (lastFrameTime + singleVideoFrameTime > currentTime)
         nDelayTime = lastFrameTime + singleVideoFrameTime - currentTime;
 
-      // if the semaphore is not empty - there is a video frame that needs to be presented. we need to wait long enough
-      // so that rendering loop will not delay the next frame's presentation.
 #ifdef _LINUX
-      if (SDL_SemWaitTimeout2(m_framesSem, 100) == 0)
+      SDL_mutexP(m_frameMutex);
+      
+      // If we have frames or if we get notified of one, consume it.
+      if (m_frameCount > 0 || SDL_CondWaitTimeout(m_frameCond, m_frameMutex, 100) == 0)
+      {
+        m_frameCount--;
         m_bPresentFrame = true;
+      }
+      SDL_mutexV(m_frameMutex);
 #endif
     }
     else
@@ -5836,6 +5854,13 @@ bool CApplication::SwitchToFullScreen()
   // See if we're playing a video, and are in GUI mode
   if ( IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
   {
+#ifdef HAS_SDL
+    // Reset frame count so that timing is FPS will be correct.
+    SDL_mutexP(m_frameMutex);
+    m_frameCount = 0;
+    SDL_mutexV(m_frameMutex);
+#endif
+    
     // then switch to fullscreen mode
     m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
     g_TextureManager.Flush();
