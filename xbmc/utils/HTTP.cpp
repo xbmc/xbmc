@@ -800,8 +800,8 @@ bool CHTTP::Recv(int iLen)
       FD_ZERO(&socks);	
       FD_SET((SOCKET)m_socket, &socks);
       struct timeval timeout;  /* Timeout for select */
-      timeout.tv_sec = 0;
-      timeout.tv_usec = 5000000;
+      timeout.tv_sec = 1;
+      timeout.tv_usec = 0;
       
       int readsocks = select((SOCKET)m_socket+1, &socks, (fd_set *) 0, (fd_set *) 0, &timeout);
       if (readsocks == 0)
