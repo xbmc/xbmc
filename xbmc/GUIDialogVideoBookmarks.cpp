@@ -258,7 +258,7 @@ void CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
   }
 #else
 #ifdef __GNUC__
-#warning FIXME: CGUIDialogVideoBookmarks::AddBookmark() not implemented
+// TODO: CGUIDialogVideoBookmarks::AddBookmark() not implemented
 #endif
 #endif
   lock.Leave();
