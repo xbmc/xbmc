@@ -32,6 +32,10 @@ using namespace Surface;
 #endif
 #include "XRandR.h"
 
+#ifdef __APPLE__
+#include "CocoaUtils.h"
+#endif
+
 XBVideoConfig g_videoConfig;
 
 XBVideoConfig::XBVideoConfig()
@@ -135,6 +139,10 @@ bool XBVideoConfig::HasHDPack() const
 #ifdef HAS_SDL
 void XBVideoConfig::GetDesktopResolution(int &w, int &h)
 {
+#ifdef __APPLE__
+  Cocoa_GetScreenResolution(&w, &h);
+#endif
+  
 #ifdef HAS_GLX
   Display * pRootDisplay = XOpenDisplay(NULL);
   if (pRootDisplay == NULL)
