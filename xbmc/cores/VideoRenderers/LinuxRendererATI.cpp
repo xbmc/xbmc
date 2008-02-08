@@ -195,7 +195,7 @@ void CLinuxRendererATI::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     if (alpha<255)
     {
 #ifdef  __GNUC__
-#warning Alpha blending currently disabled
+// FIXME: Alpha blending currently disabled
 #endif
       //glDisable(GL_BLEND);
     } else {
