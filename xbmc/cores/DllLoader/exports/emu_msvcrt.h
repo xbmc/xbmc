@@ -74,7 +74,6 @@ extern "C"
   int dll_fsetpos(FILE* stream, const fpos_t* pos);
   int dll_fileno(FILE* stream);
   void dll_clearerr(FILE* stream);
-  char* dll_strdup( const char* str);
   int dll_initterm(PFV * start, PFV * end);
   HANDLE dll_beginthreadex(LPSECURITY_ATTRIBUTES lpThreadAttributes, DWORD dwStackSize,
                            LPTHREAD_START_ROUTINE lpStartAddress, LPVOID lpParameter, DWORD dwCreationFlags,

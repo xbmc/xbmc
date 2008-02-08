@@ -79,7 +79,7 @@ bool CIoSupport::m_fPartitionTableIsValid;
 
 // cDriveLetter e.g. 'D'
 // szDevice e.g. "Cdrom0" or "Harddisk0\Partition6"
-HRESULT CIoSupport::MapDriveLetter(char cDriveLetter, char * szDevice)
+HRESULT CIoSupport::MapDriveLetter(char cDriveLetter, const char* szDevice)
 {
 #ifdef _XBOX
   char szSourceDevice[MAX_PATH+32];
@@ -134,14 +134,14 @@ HRESULT CIoSupport::UnmapDriveLetter(char cDriveLetter)
 #endif
 }
 
-HRESULT CIoSupport::RemapDriveLetter(char cDriveLetter, char * szDevice)
+HRESULT CIoSupport::RemapDriveLetter(char cDriveLetter, const char* szDevice)
 {
   UnmapDriveLetter(cDriveLetter);
 
   return MapDriveLetter(cDriveLetter, szDevice);
 }
 // to be used with CdRom devices.
-HRESULT CIoSupport::Dismount(char * szDevice)
+HRESULT CIoSupport::Dismount(const char* szDevice)
 {
 #ifdef _XBOX
   char szSourceDevice[MAX_PATH+32];
@@ -165,7 +165,7 @@ HRESULT CIoSupport::Dismount(char * szDevice)
 #endif
 }
 
-void CIoSupport::GetPartition(char cDriveLetter, char * szPartition)
+void CIoSupport::GetPartition(char cDriveLetter, char* szPartition)
 {
   char upperLetter = toupper(cDriveLetter);
   if (upperLetter >= 'F' && upperLetter <= 'O')
@@ -182,7 +182,7 @@ void CIoSupport::GetPartition(char cDriveLetter, char * szPartition)
   *szPartition = 0;
 }
 
-void CIoSupport::GetDrive(char * szPartition, char * cDriveLetter)
+void CIoSupport::GetDrive(const char* szPartition, char* cDriveLetter)
 {
   int part_str_len = strlen(szPartition);
   int part_num;
