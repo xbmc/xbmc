@@ -18,6 +18,11 @@ void* InitializeAutoReleasePool();
 void DestroyAutoReleasePool(void* pool);
 
 //
+// Graphics.
+//
+void Cocoa_GetScreenResolution(int* w, int* h);
+
+//
 // Open GL.
 //
 void  Cocoa_GL_MakeCurrentContext(void* theContext);
