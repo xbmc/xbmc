@@ -427,7 +427,7 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
    struct iw_event iwe_buf, *iwe = &iwe_buf;
 
    CStdString essId;
-   int quality;
+   int quality = 0;
    EncMode encryption = ENC_NONE;
    bool first = true;
 
