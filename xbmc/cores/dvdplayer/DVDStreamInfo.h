@@ -5,7 +5,13 @@ enum StreamType;
 enum CodecID;
 #else
 #include "DVDDemuxers/DVDDemux.h"
+#ifdef __APPLE__
+extern "C" { 
+#include "libffmpeg-OSX/avcodec.h"
+}
+#else
 #include "../ffmpeg/avcodec.h"
+#endif
 #endif
 
 class CDemuxStream;
