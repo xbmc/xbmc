@@ -137,7 +137,7 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
   *pMsg = NULL;
   
   DVDMessageListItem* msgItem;
-  int ret;
+  int ret = 0;
 
   if (!m_bInitialized)
   {

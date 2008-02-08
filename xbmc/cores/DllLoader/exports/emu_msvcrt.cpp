@@ -124,8 +124,6 @@ bool emu_is_root_drive(const char* path)
 
 extern "C"
 {
-  char* dll_strdup( const char* str);
-
   void dll_sleep(unsigned long imSec)
   {
     Sleep(imSec);
@@ -1369,7 +1367,7 @@ extern "C"
   char* dll_getcwd(char *buffer, int maxlen)
   {
     not_implement("msvcrt.dll fake function dll_getcwd() called\n");
-    return "Q:";
+    return (char*)"Q:";
   }
 
   int dll_putenv(const char* envstring)
