@@ -46,7 +46,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
                    CSurface* window, SDL_Surface* parent, bool fullscreen,
                    bool pixmap, bool pbuffer, int antialias) 
 {
-  CLog::Log(LOGDEBUG, "Constructing surface %dx%d, shared=0x%08lx, fullscreen=%d\n", width, height, shared, fullscreen);
+  CLog::Log(LOGDEBUG, "Constructing surface %dx%d, shared=%p, fullscreen=%d\n", width, height, (void *)shared, fullscreen);
   m_bOK = false;
   m_iWidth = width;
   m_iHeight = height;
