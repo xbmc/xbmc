@@ -16,7 +16,11 @@ extern "C" {
 #ifndef __GNUC__
 #pragma warning(disable:4244)
 #endif
+#ifdef __APPLE__
+#include "libffmpeg-OSX/avcodec.h"
+#else
 #include "../../ffmpeg/avcodec.h"
+#endif
 }
 
 // 0x100000 is the video starting range
