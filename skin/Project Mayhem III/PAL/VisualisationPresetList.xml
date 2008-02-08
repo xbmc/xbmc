@@ -41,8 +41,8 @@
 			<height>310</height>
 			<onleft>60</onleft>
 			<onright>60</onright>
-			<onup>3</onup>
-			<ondown>3</ondown>
+			<onup>2</onup>
+			<ondown>2</ondown>
 			<pagecontrol>60</pagecontrol>
 			<scrolltime>200</scrolltime>
 			<itemlayout height="31">
