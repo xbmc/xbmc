@@ -631,7 +631,12 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     }
 
 #else
+#ifdef __APPLE__
+    // Allow for fullscreen.
+    m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0, g_advancedSettings.m_fullScreen);
+#else
     m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0);
+#endif
     SDL_WM_SetCaption("XBMC", NULL);
 #endif
     
@@ -665,7 +670,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 
     m_bWidescreen = (res == HDTV_1080i || res == HDTV_720p || res == PAL60_16x9 || 
                         res == PAL_16x9 || res == NTSC_16x9);
-  
+    
     // set the mouse resolution
     if ((g_settings.m_ResInfo[m_Resolution].iWidth != g_settings.m_ResInfo[res].iWidth) || (g_settings.m_ResInfo[m_Resolution].iHeight != g_settings.m_ResInfo[res].iHeight))
     {
@@ -826,6 +831,11 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * g_settings.m_ResInfo[res].iHeight);
     snprintf(g_settings.m_ResInfo[res].strMode, sizeof(g_settings.m_ResInfo[res].strMode), 
              "%dx%d (Desktop)", g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight);
+    
+    // Set widescreen flag if appropriate. The number 1.4 is arbitrary, but chosen because 4:3 = 1.3333.
+    if ((float)g_settings.m_ResInfo[res].iWidth/(float)g_settings.m_ResInfo[res].iHeight >= 1.4)
+      g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
+    
     break;
   case WINDOW:
     g_settings.m_ResInfo[WINDOW] = g_settings.m_ResInfo[PAL60_4x3];
