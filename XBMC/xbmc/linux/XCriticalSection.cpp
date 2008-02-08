@@ -95,13 +95,15 @@ void XCriticalSection::Enter()
 {	
 	if (m_isDestroyed)
 	{
-		CLog::Log(LOGWARNING, "CRITSEC[%p]: Trying to enter destroyed section.", (void *)this);
+	  // This has to be a printf, otherwise we may recurse.
+		printf("CRITSEC[%p]: Trying to enter destroyed section.\n", (void *)this);
 		return;
 	}
 	
 	if (m_isInitialized == false)
 	{
-		CLog::Log(LOGWARNING, "CRITSEC[%p]: Trying to enter uninitialized section.", (void *)this);
+	  // This has to be a printf, otherwise we may recurse.
+		printf("CRITSEC[%p]: Trying to enter uninitialized section.\n", (void *)this);
 		return;
 	}
 	
@@ -122,19 +124,19 @@ void XCriticalSection::Leave()
 {
 	if (Owning() == false)
 	{
-		CLog::Log(LOGWARNING, "CritSect[%p]: Some other thread trying to leave our critical section.", (void *)this);
+	  printf("CritSect[%p]: Some other thread trying to leave our critical section.\n", (void *)this);
 		return;
 	}
 	
 	if (m_isDestroyed)
 	{
-		CLog::Log(LOGWARNING, "CRITSEC[%p]: Trying to leave destroyed section.", (void *)this);
+		printf("CRITSEC[%p]: Trying to leave destroyed section.\n", (void *)this);
 		return;
 	}
 	
 	if (m_isInitialized == false)
 	{
-		CLog::Log(LOGWARNING, "CRITSEC[%p]: Trying to leave uninitialized section.", (void *)this);
+	  printf("CRITSEC[%p]: Trying to leave uninitialized section.\n", (void *)this);
 		return;
 	}
 	
@@ -150,7 +152,7 @@ void XCriticalSection::Leave()
 	}
 	else
 	{
-		CLog::Log(LOGWARNING, "CritSect[%p]: Trying to leave, already left.", (void *)this);
+	  printf("CritSect[%p]: Trying to leave, already left.\n", (void *)this);
 	}
 	
 	pthread_mutex_unlock(&m_countMutex);
