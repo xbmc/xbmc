@@ -189,7 +189,7 @@ bool CPicture::CacheSkinImage(const CStdString &srcFile, const CStdString &destF
     SDL_Surface* texture = g_TextureManager.GetTexture(srcFile, 0, width, height, palette, linear);
 #elif defined(HAS_SDL_OPENGL)
 #ifdef __GNUC__
-#warning fix this code to support OpenGL
+// TODO: fix this code to support OpenGL
 #endif
     SDL_Surface* texture = NULL;
 #endif
@@ -247,7 +247,7 @@ bool CPicture::CreateThumbnailFromSwizzledTexture(SDL_Surface* &texture, int wid
   }
 #else
 #ifdef __GNUC__
-#warning FIXME CPicture::CreateThumbnailFromSwizzledTexture not implemented
+// FIXME: CPicture::CreateThumbnailFromSwizzledTexture not implemented
 #endif
 #endif
   return false;

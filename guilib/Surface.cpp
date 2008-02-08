@@ -538,7 +538,7 @@ void CSurface::EnableVSync(bool enable)
     CLog::Log(LOGINFO, "GL: Enabling VSYNC");
 
 #ifdef __GNUC__
-#warning using vsync on nvidia always true
+// FIXME: using vsync on nvidia always true
 #endif
     // the following setenv will currently have no effect on rendering. it should be set before screen setup.
     // workaround needed.

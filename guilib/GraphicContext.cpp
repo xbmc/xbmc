@@ -356,7 +356,7 @@ void CGraphicContext::ClipToViewWindow()
 #endif
 #else
 #ifdef  __GNUC__
-#warning CGraphicContext::ClipToViewWindow not implemented
+// TODO: CGraphicContext::ClipToViewWindow not implemented
 #endif
 #endif
 }
@@ -1112,7 +1112,7 @@ int CGraphicContext::BlitToScreen(SDL_Surface *src, SDL_Rect *srcrect, SDL_Rect 
 
 #ifdef HAS_SDL_OPENGL
 #ifdef  __GNUC__
-#warning TODO CGraphicContext needs to cleanup unused surfaces
+// TODO: CGraphicContext needs to cleanup unused surfaces
 #endif
 bool CGraphicContext::ValidateSurface(CSurface* dest)
 {
