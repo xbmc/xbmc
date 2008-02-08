@@ -609,6 +609,16 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
       newHeight = PadPow2(newHeight);
       SDL_Surface* newTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, m_textureWidth, newHeight, 8,
           0, 0, 0, 0xff);
+      
+#ifdef __APPLE__
+      // Because of an SDL bug (?), bpp gets set to 4 even though we asked for 1, in fullscreen mode.
+      // To be completely honest, we probably shouldn't even be using an SDL surface in OpenGL mode, since
+      // we only use it to store the image before copying it (no blitting!) to an OpenGL texture.
+      //
+      if (newTexture->pitch != m_textureWidth)
+        newTexture->pitch = m_textureWidth;
+#endif
+      
 #else
 		  SDL_Surface* newTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, m_textureWidth, newHeight, 32,
         0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
@@ -682,12 +692,14 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
       source += bitmap.width;
       target += m_texture->pitch;
     }
+    // THE SOURCE VALUES ARE THE SAME IN BOTH SITUATIONS.
+    
     // Since we have a new texture, we need to delete the old one
     // the Begin(); End(); stuff is handled by whoever called us
     if (m_glTextureLoaded)
     {
       if (glIsTexture(m_glTexture))
-	glDeleteTextures(1, &m_glTexture);
+        glDeleteTextures(1, &m_glTexture);
       m_glTextureLoaded = false;
     }        
 #else
@@ -769,7 +781,7 @@ void CGUIFontTTF::Begin()
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
  
-      // Set the texture image
+      // Set the texture image -- THIS WORKS, so the pixels must be wrong.
       glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, m_texture->w, m_texture->h, 0,
                    GL_ALPHA, GL_UNSIGNED_BYTE, m_texture->pixels); 
     
@@ -930,9 +942,9 @@ struct CUSTOMVERTEX {
   float tr = texture.x2 / m_textureWidth;
   float tt = texture.y1 / m_textureHeight;
   float tb = texture.y2 / m_textureHeight;
-  
+
   GLubyte colors[4] = { (GLubyte)((dwColor >> 16) & 0xff), (GLubyte)((dwColor >> 8) & 0xff), (GLubyte)(dwColor & 0xff), (GLubyte)(dwColor >> 24) };
-  
+
   // Top-left vertex (corner)
   glColor4ubv(colors); 
   glTexCoord2f(tl, tt);
@@ -952,6 +964,7 @@ struct CUSTOMVERTEX {
   glColor4ubv(colors); 
   glTexCoord2f(tl, tb);
   glVertex3f(x4, y4, z4);
+
 #endif
 }
 
