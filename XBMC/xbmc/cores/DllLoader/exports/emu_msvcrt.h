@@ -87,7 +87,6 @@ extern "C"
   int dll_fileno(FILE* stream);
   void dll_rewind(FILE* stream);
   void dll_clearerr(FILE* stream);
-  char* dll_strdup( const char* str);
   int dll_initterm(PFV * start, PFV * end);
   uintptr_t dll_beginthread(void( *start_address )( void * ),unsigned stack_size,void *arglist);
   HANDLE dll_beginthreadex(LPSECURITY_ATTRIBUTES lpThreadAttributes, DWORD dwStackSize,

@@ -298,7 +298,7 @@ void CWebServer::Process()
 	 *	service. SocketSelect will block until an event occurs. SocketProcess
 	 *	will actually do the servicing.
 	 */
-	int sockReady, sockSelect;
+	int sockReady = -1, sockSelect = -1;
 
   /* set our thread priority */
   SetPriority(THREAD_PRIORITY_NORMAL);
