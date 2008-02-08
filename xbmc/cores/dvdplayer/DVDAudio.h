@@ -9,7 +9,9 @@
 enum CodecID;
 #else
 #ifdef __APPLE__
+extern "C" {
 #include "libffmpeg-OSX/avcodec.h"
+}
 #else
 #include "ffmpeg/avcodec.h"
 #endif
