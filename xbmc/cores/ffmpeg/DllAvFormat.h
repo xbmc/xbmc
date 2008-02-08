@@ -62,10 +62,16 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
 {
 public:
   virtual ~DllAvFormat() {}
-  virtual void av_register_all() { ::av_register_all(); } 
+  virtual void av_register_all() 
+  { 
+    CSingleLock lock(DllAvCodec::m_critSection);
+    ::av_register_all();
+  } 
+  virtual void av_register_all_dont_call() { *(int* )0x0 = 0; } 
   virtual AVInputFormat *av_find_input_format(const char *short_name) { return ::av_find_input_format(short_name); }
   virtual int url_feof(ByteIOContext *s) { return ::url_feof(s); }
   virtual void av_close_input_file(AVFormatContext *s) { ::av_close_input_file(s); }
+  virtual void av_close_input_stream(AVFormatContext *s) { ::av_close_input_stream(s); }
   virtual int av_read_frame(AVFormatContext *s, AVPacket *pkt) { return ::av_read_frame(s, pkt); }
   virtual int av_read_play(AVFormatContext *s) { return ::av_read_play(s); }
   virtual int av_read_pause(AVFormatContext *s) { return ::av_read_pause(s); }
