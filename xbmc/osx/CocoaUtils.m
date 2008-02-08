@@ -39,3 +39,13 @@ void Cocoa_GL_SwapBuffers(void* theContext)
 	NSOpenGLContext* context = (NSOpenGLContext* )theContext;
 	[ context flushBuffer ];
 }
+
+void Cocoa_GetScreenResolution(int* w, int* h)
+{
+  // Figure out the screen size.
+  CGDirectDisplayID display_id = kCGDirectMainDisplay;
+  CFDictionaryRef   save_mode  = CGDisplayCurrentMode(display_id);
+
+  CFNumberGetValue(CFDictionaryGetValue(save_mode, kCGDisplayWidth), kCFNumberSInt32Type, w);
+  CFNumberGetValue(CFDictionaryGetValue(save_mode, kCGDisplayHeight), kCFNumberSInt32Type, h);
+}
