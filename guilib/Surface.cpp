@@ -31,6 +31,8 @@ bool CSurface::b_glewInit = 0;
 std::string CSurface::s_glVendor = "";
 std::string CSurface::s_glRenderer = "";
 
+#include "GraphicContext.h"
+
 #if defined(HAS_SDL_OPENGL) && !defined(__APPLE__)
 static int (*_glXGetVideoSyncSGI)(unsigned int*) = 0;
 static int (*_glXWaitVideoSyncSGI)(int, int, unsigned int*) = 0;
@@ -44,7 +46,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
                    CSurface* window, SDL_Surface* parent, bool fullscreen,
                    bool pixmap, bool pbuffer, int antialias) 
 {
-  CLog::Log(LOGDEBUG, "Constructing surface");
+  CLog::Log(LOGDEBUG, "Constructing surface %dx%d, shared=0x%08lx, fullscreen=%d\n", width, height, shared, fullscreen);
   m_bOK = false;
   m_iWidth = width;
   m_iHeight = height;
@@ -290,7 +292,23 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
 	  SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, m_iAlphaSize);
 	  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, m_bDoublebuffer ? 1:0);
 #ifdef __APPLE__
+	  // Enable vertical sync to avoid any tearing.
 	  SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
+	  
+	  // We always want to use a shared context as we jump around in resolution, 
+	  // otherwise we lose all our textures. However, contexts do not share correctly
+	  // between fullscreen and non-fullscreen.
+	  //
+	  shared = g_graphicsContext.getScreenSurface();
+	  
+	  // If we're coming from or going to fullscreen do NOT share.
+	  if (g_graphicsContext.getScreenSurface() != 0 &&
+	      (fullscreen == false && g_graphicsContext.getScreenSurface()->m_bFullscreen == true ||
+	       fullscreen == true  && g_graphicsContext.getScreenSurface()->m_bFullscreen == false))
+	  {
+	    shared =0;
+	  }
+	  
 	  m_SDLSurface = SDL_SetVideoMode(m_iWidth, m_iHeight, 0, options, shared ? shared->m_glContext : 0);
 #else
 	  m_SDLSurface = SDL_SetVideoMode(m_iWidth, m_iHeight, 0, options);
@@ -320,11 +338,11 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
 	  
 #ifdef __APPLE__
 	
-	  // Get the context.
-	  SDL_SysWMinfo info;
-	  info.version.major = 1;
-	  SDL_GetWMInfo(&info);
-	  m_glContext = info.info.quartz.nsContext;
+  	  // Get the context.
+  	  SDL_SysWMinfo info;
+  	  info.version.major = 1;
+  	  SDL_GetWMInfo(&info);
+  	  m_glContext = info.info.quartz.nsContext;
   	}
   	else
   	{
