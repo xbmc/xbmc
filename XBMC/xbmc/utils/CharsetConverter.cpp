@@ -439,7 +439,7 @@ void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSourceCharset,
 void CCharsetConverter::wToUTF8(const CStdStringW& strSource, CStdStringA &strDest)
 {
   if (m_iconvWtoUtf8 == (iconv_t) - 1)
-#ifndef _LINUX
+#if !defined(_LINUX)
     m_iconvWtoUtf8 = iconv_open("UTF-8", "UTF-16LE");
 #else    
     m_iconvWtoUtf8 = iconv_open("UTF-8", "WCHAR_T");
@@ -457,7 +457,7 @@ void CCharsetConverter::wToUTF8(const CStdStringW& strSource, CStdStringA &strDe
     if (iconv(m_iconvWtoUtf8, &src, &inBytes, &dst, &outBytes))
 #endif
     { // failed :(
-      ASSERT(0);
+      CLog::Log(LOGERROR, "CCharsetConverter::wToUTF8 failed for subtitle.");
       strDest.ReleaseBuffer();
       strDest = strSource;
       return;
