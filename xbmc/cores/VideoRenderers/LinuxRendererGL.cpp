@@ -1685,7 +1685,9 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags)
   {
     // Use supported rectangle texture extension (texture coordinates
     // are not normalized)
-
+    float deint = (field!=FIELD_FULL) && (g_stSettings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_NONE)
+      && (g_stSettings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_DEINTERLACE)?2.0f:1.0f;
+    
     glMultiTexCoord2fARB(GL_TEXTURE0, (float)rs.left, (float)rs.top );
     glMultiTexCoord2fARB(GL_TEXTURE1, (float)rs.left / 2.0f, (float)rs.top / 2.0f);
     glMultiTexCoord2fARB(GL_TEXTURE2, (float)rs.left / 2.0f, (float)rs.top / 2.0f );
@@ -1696,22 +1698,21 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags)
     glMultiTexCoord2fARB(GL_TEXTURE2, (float)rs.right / 2.0f, (float)rs.top / 2.0f );
     glVertex4f((float)rd.right, (float)rd.top, 0, 1.0f);
 
-    glMultiTexCoord2fARB(GL_TEXTURE0, (float)rs.right, (float)rs.bottom );
-    glMultiTexCoord2fARB(GL_TEXTURE1, (float)rs.right / 2.0f, (float)rs.bottom / 2.0f );
-    glMultiTexCoord2fARB(GL_TEXTURE2, (float)rs.right / 2.0f, (float)rs.bottom / 2.0f );
+    glMultiTexCoord2fARB(GL_TEXTURE0, (float)rs.right, (float)rs.bottom / deint );
+    glMultiTexCoord2fARB(GL_TEXTURE1, (float)rs.right / 2.0f, (float)rs.bottom / (2.0f * deint) );
+    glMultiTexCoord2fARB(GL_TEXTURE2, (float)rs.right / 2.0f, (float)rs.bottom / (2.0f * deint) );
     glVertex4f((float)rd.right, (float)rd.bottom, 0, 1.0f);
 
-    glMultiTexCoord2fARB(GL_TEXTURE0, (float)rs.left, (float)rs.bottom );
-    glMultiTexCoord2fARB(GL_TEXTURE1, (float)rs.left / 2.0f, (float)rs.bottom / 2.0f );
-    glMultiTexCoord2fARB(GL_TEXTURE2, (float)rs.left / 2.0f, (float)rs.bottom / 2.0f );
+    glMultiTexCoord2fARB(GL_TEXTURE0, (float)rs.left, (float)rs.bottom / deint );
+    glMultiTexCoord2fARB(GL_TEXTURE1, (float)rs.left / 2.0f, (float)rs.bottom / (2.0f * deint) );
+    glMultiTexCoord2fARB(GL_TEXTURE2, (float)rs.left / 2.0f, (float)rs.bottom / (2.0f * deint) );
     glVertex4f((float)rd.left, (float)rd.bottom, 0, 1.0f);
   }
-  glEnd();
 
+  glEnd();
   VerifyGLState();
 
   m_pYUVShader->Disable();
-
   VerifyGLState();
 
   glActiveTextureARB(GL_TEXTURE1);
