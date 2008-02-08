@@ -63,10 +63,17 @@ extern "C" { AVOption* av_set_string(void *obj, const char *name, const char *va
 class DllAvCodec : public DllDynamic, DllAvCodecInterface
 {
 public:
+  static CCriticalSection m_critSection;
+  
   virtual ~DllAvCodec() {}
   virtual void avcodec_register_all() { ::avcodec_register_all(); }
   virtual void avcodec_flush_buffers(AVCodecContext *avctx) { ::avcodec_flush_buffers(avctx); }
-  virtual int avcodec_open(AVCodecContext *avctx, AVCodec *codec) { return ::avcodec_open(avctx, codec); }
+  virtual int avcodec_open(AVCodecContext *avctx, AVCodec *codec) 
+  { 
+    CSingleLock lock(DllAvCodec::m_critSection);
+    return ::avcodec_open(avctx, codec); 
+  }
+  virtual int avcodec_open_dont_call(AVCodecContext *avctx, AVCodec *codec) { *(int *)0x0 = 0; return 0; } 
   virtual AVCodec *avcodec_find_decoder(enum CodecID id) { return ::avcodec_find_decoder(id); }
   virtual int avcodec_close(AVCodecContext *avctx) { return ::avcodec_close(avctx); }
   
