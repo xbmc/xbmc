@@ -160,12 +160,13 @@ update() {
       then
         echo " Updating source code."
         svn up "$SOURCEDIR" 2>&1 | tee "$SOURCEDIR/.build.sh.svn"
-        grep "^Updated to" "$SOURCEDIR/.build.sh.svn" &> /dev/null
+        grep "$HEAD_REVISION" "$SOURCEDIR/.build.sh.svn" &> /dev/null
         error
         LOCAL_REVISION="$HEADREVISION"
       fi
     else
       echo " Your source is up to date."
+      UPDATE=0
     fi
   fi
 }
@@ -585,7 +586,6 @@ then
     sed -i "s/build.sh//g" "$SOURCEDIR/.build.sh.svn" #&> /dev/null
     echo " Detected new version of build.sh"
     echo " Rerunning with \"$CMD\""
-    read -n1
     $CMD
     exit
   fi
