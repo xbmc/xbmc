@@ -133,8 +133,6 @@ bool emu_is_root_drive(const char* path)
 
 extern "C"
 {
-  char* dll_strdup( const char* str);
-
   void dll_sleep(unsigned long imSec)
   {
     Sleep(imSec);
