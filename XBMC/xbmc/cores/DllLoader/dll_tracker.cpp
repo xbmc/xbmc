@@ -79,7 +79,7 @@ char* tracker_getdllname(uintptr_t caller)
   DllTrackInfo *track = tracker_get_dlltrackinfo(caller);
   if(track)
     return track->pDll->GetFileName();
-  return "";
+  return (char*)"";
 }
 
 DllTrackInfo* tracker_get_dlltrackinfo(uintptr_t caller)

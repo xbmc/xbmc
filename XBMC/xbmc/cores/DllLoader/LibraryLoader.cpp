@@ -35,19 +35,19 @@ char* LibraryLoader::GetName()
     if (sName) return sName + 1;
     else return m_sFileName;
   }
-  return "";
+  return (char*)"";
 }
 
 char* LibraryLoader::GetFileName()
 {
   if (m_sFileName) return m_sFileName;
-  return "";
+  return (char*)"";
 }
 
 char* LibraryLoader::GetPath()
 {
   if (m_sPath) return m_sPath;
-  return "";
+  return (char*)"";
 }
   
 int LibraryLoader::IncrRef()
