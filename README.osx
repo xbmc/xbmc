@@ -1,0 +1,92 @@
+TOC
+1. Introduction
+2. Getting the source code
+3. Installing the required MacPorts packages
+4. How to compile
+	4.1 Using XCode
+	4.2 Using Eclipse
+	4.3 Using Command line
+5. How to run
+6. Tips n' Tricks section
+7. Endword
+
+-----------------------------------------------------------------------------
+1. Introduction
+-----------------------------------------------------------------------------
+
+This is a very early port of XBMC to OS X. It's target is developers
+and not end-users. We don't offer end-user support yet, and we're not
+really interested to hear about bugs unless you can help track it
+down and possibly help with fixing it. We currently recommend OS X 10.5.1
+as a development platform.
+
+NOTE TO NEW OS X USERS: All lines that are prefixed with the '$'
+character are commands that need to be typed into a Terminal window. 
+Note that the '$' character itself should NOT be typed as part of the 
+command.
+
+
+-----------------------------------------------------------------------------
+2. Getting the source code
+-----------------------------------------------------------------------------
+
+   $ cd $HOME
+   $ svn checkout https://xbmc.svn.sourceforge.net/svnroot/xbmc/branches/linuxport/XBMC
+
+-----------------------------------------------------------------------------
+3. Installing the required MacPorts packages
+-----------------------------------------------------------------------------
+
+Install MacPorts (http://www.macports.org/). Then install the following
+packages from the Terminal window:
+
+	$ sudo port install glew freetype fribidi libcdio lzo 
+
+-----------------------------------------------------------------------------
+4. How to compile
+-----------------------------------------------------------------------------
+
+----------------------------------------
+4.1 Using Xcode
+----------------------------------------
+
+Start XCode and load the XBMC project. Click the "Build" button.
+
+----------------------------------------
+4.2 Using Eclipse
+----------------------------------------
+
+Make sure you install support for C++ (the CDT plugins). Checkout the 
+linuxport branch into your Eclipse project root. Right click on the
+project and select Build (note that this call out to the xcodebuild tool).
+
+----------------------------------------
+4.3 Using Terminal
+----------------------------------------
+
+Issue the following command from the top-level directory:
+
+$ xcodebuild -parallelizeTargets -configuration Debug
+
+You can also specify "Release" as a configuration.
+
+-----------------------------------------------------------------------------
+5. How to run
+-----------------------------------------------------------------------------
+
+Set the XBMC_HOME environment variable to point to a runtime environment 
+(a good one is the directory inside XBMC.app, namely 
+XBMC.app/Content/Resources/XBMC).
+
+Then, to run the debug version:
+
+$ build/Debug/XBMC
+
+And the release version:
+
+$ build/Release/XBMC 
+
+-----------------------------------------------------------------------------
+6. Tips n' Tricks section
+-----------------------------------------------------------------------------
+
