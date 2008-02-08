@@ -247,7 +247,9 @@ protected:
   bool m_bPresentFrame;
 
 #ifdef HAS_SDL
-  SDL_sem *m_framesSem;
+  int        m_frameCount;
+  SDL_mutex* m_frameMutex;
+  SDL_cond*  m_frameCond;
 #endif
 
   static LONG WINAPI UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *ExceptionInfo);
