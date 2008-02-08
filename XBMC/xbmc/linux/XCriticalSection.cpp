@@ -74,7 +74,7 @@ void XCriticalSection::Destroy()
 		return;
 	}
 	
-	if (m_isInitialized == false)
+	if (!m_isInitialized)
 	{
 		CLog::Log(LOGWARNING, "CRITSEC[%p]: Trying to destroy uninitialized section.", (void *)this);
 		return;
@@ -95,14 +95,14 @@ void XCriticalSection::Enter()
 {	
 	if (m_isDestroyed)
 	{
-	  // This has to be a printf, otherwise we may recurse.
+		// This has to be a printf, otherwise we may recurse.
 		printf("CRITSEC[%p]: Trying to enter destroyed section.\n", (void *)this);
 		return;
 	}
 	
-	if (m_isInitialized == false)
+	if (!m_isInitialized)
 	{
-	  // This has to be a printf, otherwise we may recurse.
+		// This has to be a printf, otherwise we may recurse.
 		printf("CRITSEC[%p]: Trying to enter uninitialized section.\n", (void *)this);
 		return;
 	}
@@ -122,9 +122,9 @@ void XCriticalSection::Enter()
 //////////////////////////////////////////////////////////////////////
 void XCriticalSection::Leave()
 {
-	if (Owning() == false)
+	if (!Owning())
 	{
-	  printf("CritSect[%p]: Some other thread trying to leave our critical section.\n", (void *)this);
+		printf("CritSect[%p]: Some other thread trying to leave our critical section.\n", (void *)this);
 		return;
 	}
 	
@@ -134,9 +134,9 @@ void XCriticalSection::Leave()
 		return;
 	}
 	
-	if (m_isInitialized == false)
+	if (!m_isInitialized)
 	{
-	  printf("CRITSEC[%p]: Trying to leave uninitialized section.\n", (void *)this);
+		printf("CRITSEC[%p]: Trying to leave uninitialized section.\n", (void *)this);
 		return;
 	}
 	
@@ -152,7 +152,7 @@ void XCriticalSection::Leave()
 	}
 	else
 	{
-	  printf("CritSect[%p]: Trying to leave, already left.\n", (void *)this);
+		printf("CritSect[%p]: Trying to leave, already left.\n", (void *)this);
 	}
 	
 	pthread_mutex_unlock(&m_countMutex);
@@ -167,14 +167,14 @@ DWORD XCriticalSection::Exit()
 		return 0;
 	}
 	
-	if (m_isInitialized == false)
+	if (!m_isInitialized)
 	{
 		CLog::Log(LOGWARNING, "CRITSEC[%p]: Trying to exit uninitialized section.", (void *)this);
 		return 0;
 	}
 	
 	// Only an owning thread can get out of a critical section.
-	if (Owning() == false)
+	if (!Owning())
 	    return 0;
 
 	pthread_mutex_lock(&m_countMutex);
@@ -204,7 +204,7 @@ void XCriticalSection::Restore(DWORD count)
 		return;
 	}
 	
-	if (m_isInitialized == false)
+	if (!m_isInitialized)
 	{
 		CLog::Log(LOGWARNING, "CRITSEC[%p]: Trying to restore uninitialized section.", (void *)this);
 		return;
