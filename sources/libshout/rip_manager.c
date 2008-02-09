@@ -456,13 +456,11 @@ rip_manager_stop()
     
     // Make sure the ripping started before we try to stop
     debug_printf ("Waiting for m_started_sem...\n");
-   printf ("Waiting for m_started_sem...\n");
     threadlib_waitfor_sem(&m_started_sem);
     m_ripping = FALSE;
 
     // Causes the code running in the thread to bail
     debug_printf ("Closing m_sock...\n");
-    printf ("Closing m_sock...\n");
     socklib_close(&m_sock);
 
     // Kill external process
@@ -473,16 +471,12 @@ rip_manager_stop()
 
     // blocks until everything is ok and closed
     debug_printf ("Waiting for m_hthread to close...\n");
-    printf ("Waiting for m_hthread to close...\n");
     threadlib_waitforclose(&m_hthread);
     debug_printf ("Destroying subsystems...\n");
-    printf ("Destroying subsystems...\n");
     destroy_subsystems();
     debug_printf ("Destroying m_started_sem\n");
-    printf ("Destroying m_started_sem\n");
     threadlib_destroy_sem(&m_started_sem);
     debug_printf ("Done with rip_manager_stop\n");
-    printf ("Done with rip_manager_stop\n");
 }
 
 void
