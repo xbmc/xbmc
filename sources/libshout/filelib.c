@@ -160,6 +160,7 @@ filelib_init (BOOL do_individual_tracks,
 	      int get_date_stamp,
 	      char* icy_name)
 {
+#ifndef XBMC
     mchar tmp_output_directory[SR_MAX_PATH];
     mchar tmp_output_pattern[SR_MAX_PATH];
     mchar tmp_showfile_pattern[SR_MAX_PATH];
@@ -275,6 +276,7 @@ filelib_init (BOOL do_individual_tracks,
 	mkdir_recursive (m_showfile_directory, 1);
 	filelib_open_showfiles ();
     }
+#endif
 
     return SR_SUCCESS;
 }
@@ -608,6 +610,7 @@ file_exists (mchar *filename)
 error_code
 filelib_write_cue (TRACK_INFO* ti, int secs)
 {
+#ifndef XBMC
     static int track_no = 1;
     int rc;
     char buf1[MAX_TRACK_LEN];
@@ -627,7 +630,7 @@ filelib_write_cue (TRACK_INFO* ti, int secs)
     rc = snprintf (buf2, MAX_TRACK_LEN, "    INDEX 01 %02d:%02d:00\n", 
 		   secs / 60, secs % 60);
     filelib_write (m_cue_file, buf2, rc);
-
+#endif
     return SR_SUCCESS;
 }
 
@@ -789,6 +792,7 @@ parse_and_subst_pat (mchar* newfile,
 error_code
 filelib_start (TRACK_INFO* ti)
 {
+#ifndef XBMC
     mchar newfile[TEMP_STR_LEN];
     mchar fnbase[TEMP_STR_LEN];
     mchar fnbase1[TEMP_STR_LEN];
@@ -825,6 +829,9 @@ filelib_start (TRACK_INFO* ti)
     }
     mstrcpy (m_incomplete_filename, newfile);
     return filelib_open_for_write(&m_file, newfile);
+#else
+    return SR_SUCCESS;
+#endif
 }
 
 static long
@@ -950,6 +957,7 @@ filelib_end (TRACK_INFO* ti,
 	     BOOL truncate_dup,
 	     mchar *fullpath)
 {
+#ifndef XBMC
     BOOL ok_to_write = TRUE;
     mchar newfile[TEMP_STR_LEN];
 
@@ -1000,6 +1008,7 @@ filelib_end (TRACK_INFO* ti,
     }
     if (m_count != -1)
 	m_count++;
+#endif
     return SR_SUCCESS;
 }
 
@@ -1060,7 +1069,11 @@ filelib_write (FHANDLE fp, char *buf, u_long size)
 error_code
 filelib_write_track(char *buf, u_long size)
 {
+#ifndef XBMC
     return filelib_write (m_file, buf, size);
+#else
+    return SR_SUCCESS;
+#endif
 }
 
 static error_code
@@ -1100,6 +1113,7 @@ filelib_open_showfiles ()
     return rc;
 }
 
+#ifndef XBMC
 error_code
 filelib_write_show(char *buf, u_long size)
 {
@@ -1113,11 +1127,14 @@ filelib_write_show(char *buf, u_long size)
     }
     return rc;
 }
+#endif
 
 void
 filelib_shutdown()
 {
+#ifndef XBMC
     close_files();
+#endif
 }
 
 /* GCS: This should get only the name, not the directory */

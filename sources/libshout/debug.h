@@ -24,7 +24,12 @@
 void debug_open (void);
 void debug_set_filename (char* filename);
 void debug_close (void);
-void debug_printf (char* fmt, ...);
+#ifdef XBMC
+void debug_printf2 (char* fmt, ...);
+#define debug_printf debug_printf2
+#else
+void debug_printf2 (char* fmt, ...);
+#endif
 void debug_mprintf (mchar* fmt, ...);
 void debug_enable (void);
 void debug_print_error (void);

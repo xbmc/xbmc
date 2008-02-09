@@ -83,7 +83,11 @@ debug_close (void)
 }
 
 void
+#ifdef XBMC
+debug_printf2 (char* fmt, ...)
+#else
 debug_printf (char* fmt, ...)
+#endif
 {
     int was_open = 1;
     va_list argptr;
