@@ -187,18 +187,13 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
   if (iSong < 0) iSong = 0;
   if (iSong >= playlist.size()) iSong = playlist.size() - 1;
 
-  // for shoutcast playlist, no need to expand as the playlist contains links to streams and 
-  // the expansion operation just takes too much time
-  if (playlist[iSong].m_strPath.substr(0,8) != "shout://")
+  // check if the item itself is a playlist, and can be expanded
+  // only allow a few levels, this could end up in a loop
+  // if they refer to each other in a loop
+  for(int i=0;i<5;i++)
   {
-     // check if the item itself is a playlist, and can be expanded
-     // only allow a few levels, this could end up in a loop
-     // if they refer to each other in a loop
-     for(int i=0;i<5;i++)
-     {
-       if(!playlist.Expand(iSong))
-         break;
-     }
+     if(!playlist.Expand(iSong))
+        break;
   }
 
   m_bChanged = true;
