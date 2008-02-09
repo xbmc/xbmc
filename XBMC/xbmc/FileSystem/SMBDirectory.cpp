@@ -30,6 +30,9 @@ CSMBDirectory::CSMBDirectory(void)
 
 CSMBDirectory::~CSMBDirectory(void)
 {
+#ifdef _LINUX
+  smb.SetIdle();
+#endif
 }
 
 bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
@@ -51,7 +54,14 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   CStdString strAuth;
   int fd = OpenDir(url, strAuth);
   if (fd < 0)
+#ifdef _LINUX
+  {
+    smb.SetIdle();
     return false;
+  }
+#else
+    return false;
+#endif
 
   if (!CUtil::HasSlashAtEnd(strRoot)) strRoot += "/";
   if (!CUtil::HasSlashAtEnd(strAuth)) strAuth += "/";
