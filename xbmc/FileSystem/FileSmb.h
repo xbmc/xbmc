@@ -45,6 +45,7 @@ public:
   void PurgeEx(const CURL& url);
 #ifdef _LINUX
   void Run();
+  void SetIdle();
 #endif  
   CStdString URLEncode(const CStdString &value);
   CStdString URLEncode(const CURL &url);
@@ -56,6 +57,7 @@ private:
   CStdString m_strLastShare;
 #ifdef _LINUX
   int m_LastActive;
+  bool m_Idle;
   CThread *m_IdleThread;
 #endif
 };
