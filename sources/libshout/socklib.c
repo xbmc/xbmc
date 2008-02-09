@@ -272,6 +272,9 @@ socklib_recvall (HSOCKET *socket_handle, char* buffer, int size, int timeout)
     int sock;
     fd_set fds;
     struct timeval tv;
+#ifdef XBMC
+    int local_timeout = 0;
+#endif
     
     sock = socket_handle->s;
     FD_ZERO(&fds);
@@ -283,7 +286,7 @@ socklib_recvall (HSOCKET *socket_handle, char* buffer, int size, int timeout)
 	    /* Wait up to 'timeout' seconds for data on socket to be 
 	       ready for read */
 	    FD_SET(sock, &fds);
-	    tv.tv_sec = timeout;
+	    tv.tv_sec = 1;
 	    tv.tv_usec = 0;
 	    ret = select(sock + 1, &fds, NULL, NULL, &tv);
 	    if (ret == SOCKET_ERROR) {
@@ -291,7 +294,14 @@ socklib_recvall (HSOCKET *socket_handle, char* buffer, int size, int timeout)
 		return SR_ERROR_SELECT_FAILED;
 	    }
 	    if (ret != 1)
-		return SR_ERROR_TIMEOUT;
+#ifdef XBMC
+	    {
+	        local_timeout++;
+                continue;
+            }
+            if (local_timeout >= timeout)
+#endif
+	    	return SR_ERROR_TIMEOUT;
 	}
 
         ret = recv(socket_handle->s, &buffer[read], size, 0);
