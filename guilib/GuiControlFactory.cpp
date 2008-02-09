@@ -175,6 +175,8 @@ bool CGUIControlFactory::GetAspectRatio(const TiXmlNode* pRootNode, const char* 
 
 bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strTag, CImage &image)
 {
+  CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio = CGUIImage::ASPECT_RATIO_STRETCH;;
+  DWORD aspectAlign = ASPECT_ALIGN_CENTER | ASPECT_ALIGNY_CENTER;
   const TiXmlElement* pNode = pRootNode->FirstChildElement(strTag);
   if (!pNode) return false;
   const char *border = pNode->Attribute("border");
@@ -192,6 +194,11 @@ bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strT
   file.Replace("/", "\\");
   fallback.Replace("/", "\\");
   image.file.SetLabel(file, fallback);
+  if (GetAspectRatio(pNode, "aspectratio", aspectRatio, aspectAlign))
+  {
+    image.ratio = (int)aspectRatio;
+    image.align = aspectAlign;
+  }
   return true;
 }
 

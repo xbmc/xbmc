@@ -11,7 +11,8 @@
 
 #define MIX_ALPHA(a,c) (((a * (c >> 24)) / 255) << 24) | (c & 0x00ffffff)
 
-CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture, DWORD dwColorKey)
+CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, 
+                     float width, float height, const CImage& texture, DWORD dwColorKey)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {
   memset(m_alpha, 0xff, 4);
@@ -24,8 +25,8 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY
   m_dwColorKey = dwColorKey;
   m_iCurrentImage = 0;
   m_dwFrameCounter = (DWORD) -1;
-  m_aspectRatio = ASPECT_RATIO_STRETCH;
-  m_aspectAlign = ASPECT_ALIGN_CENTER | ASPECT_ALIGNY_CENTER;
+  m_aspectRatio = (GUIIMAGE_ASPECT_RATIO)texture.ratio;
+  m_aspectAlign = texture.align;
   m_iCurrentLoop = 0;
   m_iImageWidth = 0;
   m_iImageHeight = 0;
