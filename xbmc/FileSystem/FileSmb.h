@@ -46,6 +46,7 @@ public:
 #ifdef _LINUX
   void Run();
   void SetIdle();
+  bool IsInit();
 #endif  
   CStdString URLEncode(const CStdString &value);
   CStdString URLEncode(const CURL &url);
