@@ -10,7 +10,7 @@ namespace Shaders {
   class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
   {
   public:
-    BaseYUV2RGBGLSLShader();
+    BaseYUV2RGBGLSLShader(unsigned flags);
     virtual void SetYTexture(GLint ytex) { m_yTexUnit = ytex; }
     virtual void SetUTexture(GLint utex) { m_uTexUnit = utex; }
     virtual void SetVTexture(GLint vtex) { m_vTexUnit = vtex; }
@@ -18,8 +18,10 @@ namespace Shaders {
     virtual void SetWidth(int w)     { m_width  = w; }
     virtual void SetHeight(int h)    { m_height = h; }
     virtual void SetFullRange(bool range) {m_bFullYUVRange = range; }
+    string       BuildYUVMatrix();
     
   protected:
+    unsigned m_flags;
     int   m_width;
     int   m_height;
     float m_stepX;
@@ -42,16 +44,17 @@ namespace Shaders {
   class BaseYUV2RGBARBShader : public CARBShaderProgram
   {
   public:
-    BaseYUV2RGBARBShader();
+    BaseYUV2RGBARBShader(unsigned flags);
     virtual void SetYTexture(GLint ytex) { m_yTexUnit = ytex; }
     virtual void SetUTexture(GLint utex) { m_uTexUnit = utex; }
     virtual void SetVTexture(GLint vtex) { m_vTexUnit = vtex; }
     virtual void SetField(int field) { field    = field; }
     virtual void SetWidth(int w)     { m_width  = w; }
     virtual void SetHeight(int h)    { m_height = h; }
-    virtual void SetFullRange(bool range) {m_bFullYUVRange = range; }
+    virtual void SetFlags(bool range) {m_bFullYUVRange = range; }
 
   protected:
+    unsigned m_flags;
     int   m_width;
     int   m_height;
     float m_stepX;
@@ -74,7 +77,7 @@ namespace Shaders {
   class YUV2RGBProgressiveShaderARB : public BaseYUV2RGBARBShader
   {
   public:
-    YUV2RGBProgressiveShaderARB(bool rect=false, bool fullrange=false);
+    YUV2RGBProgressiveShaderARB(bool rect=false, unsigned flags=0);
     void OnCompiledAndLinked();
     bool OnEnabled();
   };
@@ -82,7 +85,7 @@ namespace Shaders {
   class YUV2RGBProgressiveShader : public BaseYUV2RGBGLSLShader
   {
   public:
-    YUV2RGBProgressiveShader(bool rect=false, bool fullrange=false);
+    YUV2RGBProgressiveShader(bool rect=false, unsigned flags=0);
     void OnCompiledAndLinked();
     bool OnEnabled();
   };
@@ -90,7 +93,7 @@ namespace Shaders {
   class YUV2RGBBobShader : public BaseYUV2RGBGLSLShader
   {
   public:
-    YUV2RGBBobShader(bool rect=false, bool fullrange=false);
+    YUV2RGBBobShader(bool rect=false, unsigned flags=0);
     void OnCompiledAndLinked();
     bool OnEnabled();
   };
