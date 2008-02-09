@@ -20,19 +20,56 @@
 
 
 #include "include.h"
+#include "../RenderFlags.h"
 #include "YUV2RGBShader.h"
 #include <string>
+#include <sstream>
 
 #ifdef HAS_SDL_OPENGL
 
 using namespace Shaders;
 using namespace std;
 
+//
+// Transformation matrixes for different colorspaces.
+//
+static float yuv_coef_bt601[4][4] = 
+{
+    { 1.0,      1.0,     1.0,     0.0 },
+    { 0.0,     -0.344,   1.773,   0.0 },
+    { 1.403,   -0.714,   0.0,     0.0 },
+    { 0.0,      0.0,     0.0,     0.0 } 
+};
+
+static float yuv_coef_bt709[4][4] =
+{
+    { 1.0,      1.0,     1.0,     0.0 },
+    { 0.0,     -0.1870,  1.8556,  0.0 },
+    { 1.5701,  -0.4664,  0.0,     0.0 },
+    { 0.0,      0.0,     0.0,     0.0 }
+};
+
+static float yuv_coef_ebu[4][4] = 
+{
+    { 1.0,      1.0,     1.0,     0.0 },
+    { 0.0,     -0.3960,  2.029,   0.0 },
+    { 1.140,   -0.581,   0.0,     0.0 },
+    { 0.0,      0.0,     0.0,     0.0 }
+};
+
+static float yuv_coef_smtp240m[4][4] =
+{
+    { 1.0,      1.0,     1.0,     0.0 },
+    { 0.0,     -0.2253,  1.8270,  0.0 },
+    { 1.5756,  -0.5000,  0.0,     0.0 },
+    { 0.0,      0.0,     0.0,     0.0 }
+};
+
 //////////////////////////////////////////////////////////////////////
 // BaseYUV2RGBGLSLShader - base class for GLSL YUV2RGB shaders
 //////////////////////////////////////////////////////////////////////
 
-BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader()
+BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(unsigned flags)
 {
   m_width      = 1;
   m_height     = 1;
@@ -42,7 +79,7 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader()
   m_yTexUnit   = 0;
   m_uTexUnit   = 0;
   m_vTexUnit   = 0;
-  m_bFullYUVRange = false;
+  m_flags      = flags;
 
   // shader attribute handles
   m_hYTex  = -1;
@@ -65,12 +102,54 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader()
   SetVertexShaderSource(shaderv);
 }
 
+string BaseYUV2RGBGLSLShader::BuildYUVMatrix()
+{
+  // Pick the matrix.
+  float (*matrix)[4];
+  switch(CONF_FLAGS_YUVCOEF_MASK(m_flags))
+  {
+    case CONF_FLAGS_YUVCOEF_240M:
+      matrix = yuv_coef_smtp240m; break;
+    case CONF_FLAGS_YUVCOEF_BT709:
+      matrix = yuv_coef_bt709; break;
+    case CONF_FLAGS_YUVCOEF_BT601:    
+      matrix = yuv_coef_bt601; break;
+    case CONF_FLAGS_YUVCOEF_EBU:
+      matrix = yuv_coef_ebu; break;
+    default:
+      matrix = yuv_coef_bt601; break;
+  }
+  
+  // Convert to GLSL language.
+  stringstream strStream;
+  strStream << "mat4( \n";
+  for (int x=0; x<4; x++)
+  {
+    strStream << "vec4(";
+    
+    for (int y=0; y<4; y++)
+    {
+      strStream << matrix[x][y];
+      if (y != 3)
+        strStream << ", ";
+    }
+    
+    strStream << ")";
+    if (x != 3)
+      strStream << ", ";
+    strStream << " \n";
+  }
+  
+  strStream << "); \n";
+  return strStream.str();
+}
+
 
 //////////////////////////////////////////////////////////////////////
 // BaseYUV2RGBGLSLShader - base class for GLSL YUV2RGB shaders
 //////////////////////////////////////////////////////////////////////
 
-BaseYUV2RGBARBShader::BaseYUV2RGBARBShader()
+BaseYUV2RGBARBShader::BaseYUV2RGBARBShader(unsigned flags)
 {
   m_width         = 1;
   m_height        = 1;
@@ -80,7 +159,7 @@ BaseYUV2RGBARBShader::BaseYUV2RGBARBShader()
   m_yTexUnit      = 0;
   m_uTexUnit      = 0;
   m_vTexUnit      = 0;
-  m_bFullYUVRange = true;
+  m_flags         = flags;
 
   // shader attribute handles
   m_hYTex  = -1;
@@ -89,18 +168,16 @@ BaseYUV2RGBARBShader::BaseYUV2RGBARBShader()
   m_hStepX = -1;
   m_hStepY = -1;
   m_hField = -1;
-
 }
-
 
 //////////////////////////////////////////////////////////////////////
 // YUV2RGBProgressiveShader - YUV2RGB with no deinterlacing
 // Use for weave deinterlacing / progressive
 //////////////////////////////////////////////////////////////////////
 
-YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, bool fullrange)
+YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, unsigned flags)
+  : BaseYUV2RGBGLSLShader(flags)
 {
-  SetFullRange(fullrange);
   string target = "";
   if (rect)
     target="Rect";
@@ -111,15 +188,12 @@ YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, bool fullrange)
     "void main()\n"
     "{\n"
     "vec4 yuv, rgb;\n"
-    "mat4 yuvmat = mat4( \n" // TODO: allow custom coefficients
-    "                vec4(1.0,      1.0,     1.0,     0.0), \n"
-    "                vec4(0.0,     -0.39465, 2.03211, 0.0), \n"
-    "                vec4(1.13983, -0.58060, 0.0,     0.0), \n"
-    "                vec4(0.0,      0.0,     0.0,     0.0) ); \n";
-  if (!fullrange)
+    "mat4 yuvmat = " + BuildYUVMatrix();
+  
+  if (!(flags & CONF_FLAGS_YUV_FULLRANGE))
   {
     shaderf +=
-      "yuv.rgba = vec4((texture2D"+target+"(ytex, gl_TexCoord[0].xy).r - 16.0/256.0) * 1.164383562,\n"
+      "yuv.rgba = vec4(((texture2D"+target+"(ytex, gl_TexCoord[0].xy).r - 16.0/256.0) * 1.164383562),\n"
       "                ((texture2D"+target+"(utex, gl_TexCoord[1].xy).r - 16.0/256.0) * 1.138392857 - 0.5),\n"
       "                ((texture2D"+target+"(vtex, gl_TexCoord[2].xy).r - 16.0/256.0) * 1.138392857 - 0.5),\n"
       "                0.0);\n";
@@ -164,9 +238,9 @@ bool YUV2RGBProgressiveShader::OnEnabled()
 // YUV2RGBBobShader - YUV2RGB with Bob deinterlacing
 //////////////////////////////////////////////////////////////////////
 
-YUV2RGBBobShader::YUV2RGBBobShader(bool rect, bool fullrange)
+YUV2RGBBobShader::YUV2RGBBobShader(bool rect, unsigned flags)
+  : BaseYUV2RGBGLSLShader(flags)
 {
-  SetFullRange(fullrange);
   string target = "";
   if (rect)
     target="Rect";
@@ -186,16 +260,12 @@ YUV2RGBBobShader::YUV2RGBBobShader(bool rect, bool fullrange)
     "offsetUV = gl_TexCoord[1].xy ;"
     "offsetY.y  -= (temp1 - stepY/2 + float(field)*stepY);"
     "offsetUV.y -= (temp1 - stepY/2 + float(field)*stepY)/2;"
-    "mat4 yuvmat = mat4( \n"
-    "                vec4(1.0,      1.0,     1.0,     0.0), \n"
-    "                vec4(0.0,     -0.39465, 2.03211, 0.0), \n"
-    "                vec4(1.13983, -0.58060, 0.0,     0.0), \n"
-    "                vec4(0.0,      0.0,     0.0,     0.0) ); \n"
+    "mat4 yuvmat = " + BuildYUVMatrix() +
     "yuv = vec4(texture2D"+target+"(ytex, offsetY).r,"
     "           texture2D"+target+"(utex, offsetUV).r,"
     "           texture2D"+target+"(vtex, offsetUV).r,"
     "           0.0);";
-    if (!fullrange)
+    if (!(flags & CONF_FLAGS_YUV_FULLRANGE))
     {
       shaderf +=
         "yuv.rgba = vec4( (yuv.r - 16.0/256.0) * 1.164383562,"
@@ -245,15 +315,15 @@ bool YUV2RGBBobShader::OnEnabled()
 // YUV2RGBProgressiveShaderARB - YUV2RGB with no deinterlacing
 //////////////////////////////////////////////////////////////////////
 
-YUV2RGBProgressiveShaderARB::YUV2RGBProgressiveShaderARB(bool rect, bool fullrange)
+YUV2RGBProgressiveShaderARB::YUV2RGBProgressiveShaderARB(bool rect, unsigned flags)
+  : BaseYUV2RGBARBShader(flags)
 {
-  SetFullRange(fullrange);
   string source = "";
   if (!rect)
   {
     source ="!!ARBfp1.0\n"
       "PARAM c[2] = { { 0, -0.1720674, 0.88599992, 1 },\n"
-      "		{ 0.70099545, -0.35706902, 0, 2 } };\n"
+      "		             { 0.70099545, -0.35706902, 0, 2 } };\n"
       "TEMP R0;\n"
       "TEMP R1;\n"
       "TEX R1.x, fragment.texcoord[2], texture[2], 2D;\n"
@@ -272,7 +342,7 @@ YUV2RGBProgressiveShaderARB::YUV2RGBProgressiveShaderARB(bool rect, bool fullran
   {
     source ="!!ARBfp1.0\n"
       "PARAM c[2] = { { 0, -0.1720674, 0.88599992, 1 },\n"
-      "		{ 0.70099545, -0.35706902, 0, 2 } };\n"
+      "		             { 0.70099545, -0.35706902, 0, 2 } };\n"
       "TEMP R0;\n"
       "TEMP R1;\n"
       "TEX R1.x, fragment.texcoord[2], texture[2], RECT;\n"
