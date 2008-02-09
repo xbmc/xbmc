@@ -15,9 +15,7 @@
 #define WIN32 1
 #endif
 
-#include "../lib/libshout/types.h"
 #include "../lib/libshout/rip_manager.h"
-#include "../lib/libshout/util.h"
 #include "../lib/libshout/filelib.h"
 #include "RingBuffer.h"
 #include "ShoutcastRipFile.h"
@@ -62,7 +60,7 @@ void rip_callback(int message, void *data)
       m_fileState.bBuffering = false;
     }
     else if (info->status == RM_STATUS_RECONNECTING)
-    {}
+	{ }
     break;
   case RM_ERROR:
     ERROR_INFO *errInfo;
@@ -88,7 +86,8 @@ void rip_callback(int message, void *data)
 
 }
 
-error_code filelib_write(char *buf, u_long size)
+extern "C" {
+error_code filelib_write_show(char *buf, u_long size)
 {
   if ((int)size > m_ringbuf.Size())
   {
@@ -100,6 +99,8 @@ error_code filelib_write(char *buf, u_long size)
   m_ripFile.Write( buf, size ); //will only write, if it has to
   return SR_SUCCESS;
 }
+}
+
 CFileShoutcast* m_pShoutCastRipper = NULL;
 
 CFileShoutcast::CFileShoutcast()
@@ -171,15 +172,9 @@ bool CFileShoutcast::Open(const CURL& url, bool bBinary)
   m_dwLastTime = timeGetTime();
   int ret;
   RIP_MANAGER_OPTIONS m_opt;
-  m_opt.relay_port = 8000;
-  m_opt.max_port = 18000;
-  m_opt.flags = OPT_AUTO_RECONNECT |
-                OPT_SEPERATE_DIRS |
-                OPT_SEARCH_PORTS |
-                OPT_ADD_ID3;
+  set_rip_manager_options_defaults(&m_opt);
 
   CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-
   strcpy(m_opt.output_directory, "./");
   m_opt.proxyurl[0] = '\0';
 
@@ -200,7 +195,7 @@ bool CFileShoutcast::Open(const CURL& url, bool bBinary)
   CStdString strUrl;
   url.GetURL(strUrl);
   strUrl.Replace("shout://", "http://");
-
+  printf("Opening url: %s\n", strUrl.c_str());
   strncpy(m_opt.url, strUrl.c_str(), MAX_URL_LEN);
   sprintf(m_opt.useragent, "x%s", url.GetFileName().c_str());
   if (dlgProgress)
@@ -221,7 +216,7 @@ bool CFileShoutcast::Open(const CURL& url, bool bBinary)
   }
   int iShoutcastTimeout = 10 * SHOUTCASTTIMEOUT; //i.e: 10 * 10 = 100 * 100ms = 10s
   int iCount = 0;
-  while (!m_fileState.bRipDone && !m_fileState.bRipStarted && !m_fileState.bRipError)
+  while (!m_fileState.bRipDone && !m_fileState.bRipStarted && !m_fileState.bRipError && (!dlgProgress || !dlgProgress->IsCanceled()))
   {
     if (iCount <= iShoutcastTimeout) //Normally, this isn't the problem,
       //because if RIP_MANAGER fails, this would be here
@@ -242,13 +237,20 @@ bool CFileShoutcast::Open(const CURL& url, bool bBinary)
     }
     iCount++;
   }
+  
+  if (dlgProgress && dlgProgress->IsCanceled())
+  {
+     Close();
+     dlgProgress->Close();
+     return false;
+  }
 
   /* store content type of stream */
-  m_contenttype = m_ripInfo.contenttype;
+  m_contenttype = rip_manager_get_content_type();
 
   //CHANGED CODE: Don't reset timer anymore.
 
-  while (!m_fileState.bRipDone && !m_fileState.bRipError && m_fileState.bBuffering)
+  while (!m_fileState.bRipDone && !m_fileState.bRipError && m_fileState.bBuffering && (!dlgProgress || !dlgProgress->IsCanceled()))
   {
     if (iCount <= iShoutcastTimeout) //Here is the real problem: Sometimes the buffer fills just to
       //slowly, thus the quality of the stream will be bad, and should be
@@ -289,6 +291,12 @@ bool CFileShoutcast::Open(const CURL& url, bool bBinary)
       return false;
     }
     iCount++;
+  }
+  if (dlgProgress && dlgProgress->IsCanceled())
+  {
+     Close();
+     dlgProgress->Close();
+     return false;
   }
   if ( m_fileState.bRipError )
   {
@@ -363,8 +371,6 @@ bool CFileShoutcast::IsRecording()
   return m_ripFile.IsRecording();
 }
 
-
-
 bool CFileShoutcast::GetMusicInfoTag(CMusicInfoTag& tag)
 {
   m_ripFile.GetMusicInfoTag(tag);
@@ -373,5 +379,15 @@ bool CFileShoutcast::GetMusicInfoTag(CMusicInfoTag& tag)
 
 CStdString CFileShoutcast::GetContent()
 {
-  return m_contenttype;
+  switch (m_contenttype)
+  {
+  case CONTENT_TYPE_MP3:
+	return "audio/mpeg";
+  case CONTENT_TYPE_OGG:
+	return "audio/ogg";
+  case CONTENT_TYPE_AAC:
+	return "audio/aac";
+  default:
+	return "application/octet-stream"; 
+  }
 }
