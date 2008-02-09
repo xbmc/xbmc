@@ -68,6 +68,8 @@ if test "$use_gl" = "yes"; then
 fi
 
 AC_CHECK_LIB([Xinerama], [main],, AC_MSG_ERROR(libXinerama is required. Please see README.linux))
+AC_CHECK_LIB([mad], [main],, AC_MSG_ERROR(libmad is required. Please see README.linux))
+AC_CHECK_LIB([tre], [main],, AC_MSG_ERROR(libtre is required. Please see README.linux))
 
 AC_CHECK_LIB([SDL], [main])
 if test "$use_gl" = "no"; then
