@@ -2,16 +2,16 @@
 <scraper name="IMDb" content="movies" thumb="imdb.gif">
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
-			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Full Cast Credits&quot; type=&quot;bool&quot; id=&quot;fullcredits&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Full Cast Credits&quot; type=&quot;bool&quot; id=&quot;fullcredits&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5">
 				<expression></expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;setting label=&quot;Enable IMPAwards&quot; type=&quot;bool&quot; id=&quot;impawards&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;Enable MoviePosterDB&quot; type=&quot;bool&quot; id=&quot;movieposterdb&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Enable MoviePosterDB&quot; type=&quot;bool&quot; id=&quot;movieposterdb&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Trailer&quot; type=&quot;bool&quot; id=&quot;trailer&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Trailer&quot; type=&quot;bool&quot; id=&quot;trailer&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;setting type=&quot;sep&quot;&gt;&lt;/setting&gt;" dest="5+">
@@ -110,7 +110,7 @@
 				<expression>/title/tt([t0-9]*)/faq</expression>
 			</RegExp>
 			<RegExp conditional="trailer" input="$$1" output="&lt;url function=&quot;GetTrailer&quot;&gt;http://$INFO[url]\1&lt;/url&gt;" dest="5+">
-				<expression>&lt;a href=&quot;([^&quot;]*)&quot; onClick=[^&gt;]*(link=/video/|link=/title/[^&apos;]*screenplay)</expression>
+				<expression>&lt;a href=&quot;([^&quot;]*)&quot; onClick=[^&gt;]*(link=/video/|link=/title/[^&apos;]*screenplay|link=/title/[^/]*/trailers-)</expression>
 			</RegExp>
 			<RegExp input="$$2" output="&lt;url function=&quot;GetIMDBPoster&quot;&gt;http://$INFO[url]/title/\1/posters&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;" dest="5+">
 				<expression></expression>
