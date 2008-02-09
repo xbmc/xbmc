@@ -30,7 +30,11 @@
 struct _SMBCCTX;
 typedef _SMBCCTX SMBCCTX;
 
+#ifdef _LINUX
+class CSMB : public CCriticalSection, public IRunnable
+#else
 class CSMB : public CCriticalSection
+#endif
 {
 public:
   CSMB();
@@ -39,7 +43,9 @@ public:
   void Deinit();
   void Purge();
   void PurgeEx(const CURL& url);
-  
+#ifdef _LINUX
+  void Run();
+#endif  
   CStdString URLEncode(const CStdString &value);
   CStdString URLEncode(const CURL &url);
 
@@ -48,6 +54,10 @@ private:
   SMBCCTX *m_context;
   CStdString m_strLastHost;
   CStdString m_strLastShare;
+#ifdef _LINUX
+  int m_LastActive;
+  CThread *m_IdleThread;
+#endif
 };
 
 extern CSMB smb;
