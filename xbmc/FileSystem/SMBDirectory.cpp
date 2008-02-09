@@ -161,7 +161,9 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   }
 
   smbc_closedir(fd);
-
+#ifdef _LINUX
+  smb.SetIdle();
+#endif
   if (m_cacheDirectory)
     g_directoryCache.SetDirectory(strPath, vecCacheItems);
 
