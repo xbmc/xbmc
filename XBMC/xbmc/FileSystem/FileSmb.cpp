@@ -281,6 +281,10 @@ DWORD CSMB::ConvertUnixToNT(int error)
 #endif
 
 #ifdef _LINUX
+/* This is a quick fix to know if there is active files still even if reported IDLE, for exampla if paused a video and
+   navigating a folder. The folder checkup will say it's idle even if it's a file playing. TODO Clean up this code a bit*/
+static int OpenFiles = 0;
+
 bool CSMB::IsInit()
 {
   if (m_context == NULL)
@@ -297,7 +301,7 @@ void CSMB::Run()
     event->WaitMSec(30000);
     {
       CSingleLock(*this);
-      if (m_Idle)
+      if (m_Idle && OpenFiles == 0)
       {
         if ((timeGetTime() - m_LastActive) > 60000)
         {
@@ -325,11 +329,19 @@ CFileSMB::CFileSMB()
 {
   smb.Init();
   m_fd = -1;
+#ifdef _LINUX
+  CSingleLock lock(smb);
+  OpenFiles++;
+#endif
 }
 
 CFileSMB::~CFileSMB()
 {
   Close();
+#ifdef _LINUX
+  CSingleLock lock(smb);
+  OpenFiles--;
+#endif
 }
 
 __int64 CFileSMB::GetPosition()
