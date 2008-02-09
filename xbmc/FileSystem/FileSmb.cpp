@@ -281,6 +281,13 @@ DWORD CSMB::ConvertUnixToNT(int error)
 #endif
 
 #ifdef _LINUX
+bool CSMB::IsInit()
+{
+  if (m_context == NULL)
+    return false;
+  else
+    return true;
+}
 void CSMB::Run()
 {
   CEvent *event = new CEvent();
@@ -297,11 +304,9 @@ void CSMB::Run()
           CLog::Log(LOGDEBUG, "Closing unused samba sessions");
           smb.Deinit();
           Continue = false;
-          m_Idle = false;
+          m_Idle = true;
         }
       }
-      else
-        printf("Not idle\n");
     }
   }
   delete event;
@@ -589,7 +594,8 @@ void CFileSMB::Close()
 #ifndef _LINUX
     smbc_close(m_fd);
 #else
-    smb.SetIdle();
+    if (smb.IsInit())
+      smbc_close(m_fd);
     //No need to close as it will be clensed out
 #endif
   }
