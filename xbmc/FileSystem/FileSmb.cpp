@@ -157,7 +157,8 @@ void CSMB::Init()
         m_IdleThread->StopThread();
       m_IdleThread = new CThread(this);
       m_IdleThread->Create();
-      m_LastActive = timeGetTime();      
+      m_LastActive = timeGetTime();
+      m_Idle = false;
 #endif
     }
     else
@@ -168,7 +169,10 @@ void CSMB::Init()
   }
 #ifdef _LINUX
   else
+  {
     m_LastActive = timeGetTime();
+    m_Idle = false;
+  }
 #endif
 }
 
@@ -282,17 +286,31 @@ void CSMB::Run()
   CEvent *event = new CEvent();
   bool Continue = true;
   while (Continue)
-  {
-    CSingleLock(*this);
-    event->WaitMSec(10000);
-    if ((timeGetTime() - m_LastActive) > 10000)
+  {    
+    event->WaitMSec(30000);
     {
-      CLog::Log(LOGDEBUG, "Closing unused samba sessions");
-      smb.Deinit();
-      Continue = false;
+      CSingleLock(*this);
+      if (m_Idle)
+      {
+        if ((timeGetTime() - m_LastActive) > 60000)
+        {
+          CLog::Log(LOGDEBUG, "Closing unused samba sessions");
+          smb.Deinit();
+          Continue = false;
+          m_Idle = false;
+        }
+      }
+      else
+        printf("Not idle\n");
     }
   }
   delete event;
+}
+
+void CSMB::SetIdle()
+{
+  CSingleLock(*this);
+  m_Idle = true;
 }
 #endif
 
@@ -571,9 +589,13 @@ void CFileSMB::Close()
 #ifndef _LINUX
     smbc_close(m_fd);
 #else
+    smb.SetIdle();
     //No need to close as it will be clensed out
 #endif
   }
+#ifdef _LINUX
+  smb.SetIdle();
+#endif
   m_fd = -1;
 }
 
