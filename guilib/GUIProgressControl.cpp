@@ -4,7 +4,13 @@
 
 
 
-CGUIProgressControl::CGUIProgressControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& backGroundTexture, const CImage& leftTexture, const CImage& midTexture, const CImage& rightTexture, const CImage& overlayTexture, float min, float max)
+CGUIProgressControl::CGUIProgressControl(DWORD dwParentID, DWORD dwControlId, 
+                                         float posX, float posY, float width, 
+                                         float height, const CImage& backGroundTexture, 
+                                         const CImage& leftTexture, 
+                                         const CImage& midTexture, 
+                                         const CImage& rightTexture, 
+                                         const CImage& overlayTexture, float min, float max)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
     , m_guiBackground(dwParentID, dwControlId, posX, posY, width, height, backGroundTexture)
     , m_guiLeft(dwParentID, dwControlId, posX, posY, width, height, leftTexture)

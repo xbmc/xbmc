@@ -43,6 +43,8 @@ public:
   {
     memset(&border, 0, sizeof(FRECT));
     orientation = 0;
+    align = ASPECT_ALIGN_CENTER | ASPECT_ALIGNY_CENTER;
+    ratio = 0;  // ASPECT_RATIO_STRETCH
   };
 
   void operator=(const CImage &left)
@@ -51,10 +53,14 @@ public:
     memcpy(&border, &left.border, sizeof(FRECT));
     orientation = left.orientation;
     diffuse = left.diffuse;
+    align = left.align;
+    ratio = left.ratio;
   };
   CGUIInfoLabel file;
   FRECT      border;  // scaled  - unneeded if we get rid of scale on load
   int        orientation; // orientation of the texture (0 - 7 == EXIForientation - 1)
+  DWORD      align;
+  int        ratio;  
   CStdString diffuse; // diffuse overlay texture (unimplemented)
 };
 
@@ -101,11 +107,15 @@ public:
   virtual void SetAspectRatio(GUIIMAGE_ASPECT_RATIO ratio, DWORD align = ASPECT_ALIGN_CENTER | ASPECT_ALIGNY_CENTER);
   void SetAlpha(unsigned char alpha);
   void SetAlpha(unsigned char a0, unsigned char a1, unsigned char a2, unsigned char a3);
+  void SetBorderLeft(float b) { m_image.border.left = b; }
+  void SetBorderRight(float b) { m_image.border.right = b; }
+  void SetBorderTop(float b) { m_image.border.top = b; }
+  void SetBorderBottom(float b) { m_image.border.bottom = b; }
 
   const CStdString& GetFileName() const { return m_strFileName;};
   int GetTextureWidth() const;
   int GetTextureHeight() const;
-
+  
   void CalculateSize();
 #ifdef _DEBUG
   virtual void DumpTextureUse();
