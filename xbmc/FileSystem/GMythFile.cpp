@@ -207,13 +207,13 @@ __int64 CGMythFile::Seek(__int64 pos, int whence)
   if(whence == SEEK_POSSIBLE)
   {
     if(m_livetv)
-      return false;
+      return 0;
     else
-      return true;
+      return 1;
   }
 
   if(m_livetv)
-    return false;
+    return -1;
 
   if(m_file)
     return gmyth_file_transfer_seek(m_file, pos, whence);
