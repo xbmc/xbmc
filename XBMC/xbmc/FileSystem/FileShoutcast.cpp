@@ -117,7 +117,7 @@ CFileShoutcast::CFileShoutcast()
     m_fileState.bRipDone = false;
     m_fileState.bRipStarted = false;
     m_fileState.bRipError = false;
-    m_ringbuf.Create(1024*256);
+    m_ringbuf.Create(1024*1024); // must be big enough. some stations use 192kbps.
     m_pShoutCastRipper = this;
   }
 }
