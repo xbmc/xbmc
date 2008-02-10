@@ -319,18 +319,23 @@ YUV2RGBProgressiveShaderARB::YUV2RGBProgressiveShaderARB(bool rect, unsigned fla
   : BaseYUV2RGBARBShader(flags)
 {
   string source = "";
-  if (!rect)
+  string target = "2D";
+  if (rect)
+  {
+    target = "RECT";
+  }
+  if (flags & CONF_FLAGS_YUV_FULLRANGE)
   {
     source ="!!ARBfp1.0\n"
       "PARAM c[2] = { { 0, -0.1720674, 0.88599992, 1 },\n"
       "		             { 0.70099545, -0.35706902, 0, 2 } };\n"
       "TEMP R0;\n"
       "TEMP R1;\n"
-      "TEX R1.x, fragment.texcoord[2], texture[2], 2D;\n"
-      "TEX R0.x, fragment.texcoord[1], texture[1], 2D;\n"
+      "TEX R1.x, fragment.texcoord[2], texture[2], "+target+";\n"
+      "TEX R0.x, fragment.texcoord[1], texture[1], "+target+";\n"
       "MUL R0.z, R0.x, c[1].w;\n"
       "MUL R0.y, R1.x, c[1].w;\n"
-      "TEX R0.x, fragment.texcoord[0], texture[0], 2D;\n"
+      "TEX R0.x, fragment.texcoord[0], texture[0], "+target+";\n"
       "ADD R0.z, R0, -c[0].w;\n"
       "MAD R1.xyz, R0.z, c[0], R0.x;\n"
       "ADD R0.x, R0.y, -c[0].w;\n"
@@ -340,21 +345,26 @@ YUV2RGBProgressiveShaderARB::YUV2RGBProgressiveShaderARB(bool rect, unsigned fla
   }
   else
   {
-    source ="!!ARBfp1.0\n"
-      "PARAM c[2] = { { 0, -0.1720674, 0.88599992, 1 },\n"
-      "		             { 0.70099545, -0.35706902, 0, 2 } };\n"
+    source = "!!ARBfp1.0\n"
+      "PARAM c[3] = { { 1, 0.0625, 1.1643835, 1.1383928 },\n"
+      "               { 0.5, 0, -0.18700001, 1.8556 },\n"
+      "               { 1.5700999, -0.4664, 0 } };\n"
       "TEMP R0;\n"
       "TEMP R1;\n"
-      "TEX R1.x, fragment.texcoord[2], texture[2], RECT;\n"
-      "TEX R0.x, fragment.texcoord[1], texture[1], RECT;\n"
-      "MUL R0.z, R0.x, c[1].w;\n"
-      "MUL R0.y, R1.x, c[1].w;\n"
-      "TEX R0.x, fragment.texcoord[0], texture[0], RECT;\n"
-      "ADD R0.z, R0, -c[0].w;\n"
-      "MAD R1.xyz, R0.z, c[0], R0.x;\n"
-      "ADD R0.x, R0.y, -c[0].w;\n"
-      "MAD result.color.xyz, R0.x, c[1], R1;\n"
-      "MOV result.color.w, c[0];\n"
+      "TEX R1.x, fragment.texcoord[1], texture[1], "+target+"\n;"
+      "ADD R0.z, R1.x, -c[0].y;\n"
+      "TEX R0.x, fragment.texcoord[2], texture[2], "+target+"\n;"
+      "ADD R0.x, R0, -c[0].y;\n"
+      "MUL R0.y, R0.x, c[0].w;\n"
+      "TEX R0.x, fragment.texcoord[0], texture[0], "+target+";\n"
+      "ADD R0.x, R0, -c[0].y;\n"
+      "MUL R0.z, R0, c[0].w;\n"
+      "MUL R0.x, R0, c[0].z;\n"
+      "ADD R0.z, R0, -c[1].x;\n"
+      "MAD R1.xyz, R0.z, c[1].yzww, R0.x;\n"
+      "ADD R0.x, R0.y, -c[1];\n"
+      "MAD result.color.xyz, R0.x, c[2], R1;\n"
+      "MOV result.color.w, c[0].x;\n"
       "END\n";
   }
   SetPixelShaderSource(source);
