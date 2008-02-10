@@ -89,16 +89,25 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 
 ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdString& strContent, unsigned int filecache)
 {
+  CURL urlFile(strFile);
   if( strContent.Equals("audio/mpeg") )
     return new MP3Codec();
   else if( strContent.Equals("audio/aac") 
     || strContent.Equals("audio/aacp") )
+  {
+    if (urlFile.GetProtocol() == "shout" )
+    {
+      DVDPlayerCodec *pCodec = new DVDPlayerCodec;
+      pCodec->SetContentType(strContent);
+      return pCodec; 
+    }
+    
     return new AACCodec();
+  }
   else if( strContent.Equals("audio/x-ms-wma") )
     return new DVDPlayerCodec();
 
-  CURL urlFile(strFile);
-  if (urlFile.GetProtocol() == "lastfm" || urlFile.GetProtocol() == "shout" )
+  if (urlFile.GetProtocol() == "lastfm" || urlFile.GetProtocol() == "shout")
   {
     return new MP3Codec(); // if we got this far with internet radio - content-type was wrong. gamble on mp3.
   }
