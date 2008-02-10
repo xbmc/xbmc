@@ -1373,8 +1373,7 @@ void CDVDPlayer::HandleMessages()
             CloseAudioStream(false);
             CloseSubtitleStream(false);
 
-            if(m_pDemuxer)
-              m_pDemuxer->Reset();
+            OpenDemuxStream();
           }
         }
 #endif
