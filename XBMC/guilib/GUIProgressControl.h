@@ -22,7 +22,7 @@ public:
                       float width, float height, const CImage& backGroundTexture, 
                       const CImage& leftTexture, const CImage& midTexture, 
                       const CImage& rightTexture, const CImage& overlayTexture, 
-                      float min, float max);
+                      float min, float max, bool reveal=false);
   virtual ~CGUIProgressControl(void);
   virtual void Render();
   virtual bool CanFocus() const;
@@ -48,5 +48,6 @@ protected:
   float m_RangeMax;
   int m_iInfoCode;
   float m_fPercent;
+  bool m_bReveal;
 };
 #endif
