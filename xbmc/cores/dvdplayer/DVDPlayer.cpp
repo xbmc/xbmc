@@ -2511,6 +2511,8 @@ bool CDVDPlayer::ExtractThumb(const CStdString &strPath, const CStdString &strTa
           if (pPacket)
           {
             int iDecoderState = pVideoCodec->Decode(pPacket->pData, pPacket->iSize, pPacket->pts);
+            CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+
             if (iDecoderState & VC_PICTURE)
             {
               bHasFrame = true;

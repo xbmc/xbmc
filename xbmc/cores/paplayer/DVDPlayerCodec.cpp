@@ -4,6 +4,7 @@
 
 #include "DVDInputStreams/DVDFactoryInputStream.h"
 #include "DVDDemuxers/DVDFactoryDemuxer.h"
+#include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDStreamInfo.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
 
@@ -24,18 +25,29 @@ DVDPlayerCodec::~DVDPlayerCodec()
   DeInit();
 }
 
+void DVDPlayerCodec::SetContentType(const CStdString &strContent)
+{
+  m_strContentType = strContent;
+}
+
 bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
-  m_pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, strFile, "");
+  CStdString strFileToOpen = strFile;
+
+  CURL urlFile(strFile);
+  if (urlFile.GetProtocol() == "shout" )
+    strFileToOpen.Replace("shout://","http://");
+
+  m_pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, strFileToOpen, m_strContentType);
   if (!m_pInputStream)
   {
-    CLog::Log(LOGERROR, "%s: Error creating input stream for %s", __FUNCTION__, strFile.c_str());
+    CLog::Log(LOGERROR, "%s: Error creating input stream for %s", __FUNCTION__, strFileToOpen.c_str());
     return false;
   }
 
-  if (!m_pInputStream->Open(strFile.c_str(), ""))
+  if (!m_pInputStream->Open(strFileToOpen.c_str(), m_strContentType))
   {
-    CLog::Log(LOGERROR, "%s: Error opening file %s", __FUNCTION__, strFile.c_str());
+    CLog::Log(LOGERROR, "%s: Error opening file %s", __FUNCTION__, strFileToOpen.c_str());
     if (m_pInputStream)
       delete m_pInputStream;
     m_pInputStream = NULL;
@@ -102,11 +114,39 @@ bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
     return false;
   }
 
-  // We always ask ffmpeg to return s16le 
-  m_BitsPerSample = m_pAudioCodec->GetBitsPerSample();
-  m_SampleRate = m_pAudioCodec->GetSampleRate();
-  m_Channels = m_pAudioCodec->GetChannels();
- 
+  // we have to decode initial data in order to get channels/samplerate
+  // for sanity - we read no more than 10 packets
+  DemuxPacket* pPacket;
+  for (int nPacket=0; nPacket < 10 && (m_Channels == 0 || m_SampleRate == 0); nPacket++)
+  {
+    do
+    {
+      pPacket = m_pDemuxer->Read();
+    } while (pPacket && pPacket->iStreamId != m_nAudioStream);
+
+    // dummy data - just to get the channels/sample rate
+    if (pPacket)
+    {
+      m_pAudioCodec->Decode(pPacket->pData, pPacket->iSize);
+      m_pAudioCodec->GetData(&m_audioData);
+
+      // We always ask ffmpeg to return s16le 
+      m_BitsPerSample = m_pAudioCodec->GetBitsPerSample();
+      m_SampleRate = m_pAudioCodec->GetSampleRate();
+      m_Channels = m_pAudioCodec->GetChannels();
+
+      CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+    }
+    else 
+      break;
+  }
+
+  if (m_Channels == 0) // no data - just guess and hope for the best
+    m_Channels == 2;
+
+  if (m_SampleRate == 0)
+    m_SampleRate = 44100;
+
   return true;
 }
 
@@ -175,6 +215,8 @@ int DVDPlayerCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   }
   
   int decodeLen = m_pAudioCodec->Decode(pPacket->pData, pPacket->iSize);
+  CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+
   if (decodeLen < 0)
     return READ_ERROR;
   
