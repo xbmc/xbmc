@@ -181,6 +181,7 @@ config() {
   DIR=$PWD
   cd "$SOURCEDIR"
   ./configure $CONFIGOPTS
+  error
   cd "$DIR"
 }
 
