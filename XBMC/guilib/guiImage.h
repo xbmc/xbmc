@@ -107,15 +107,11 @@ public:
   virtual void SetAspectRatio(GUIIMAGE_ASPECT_RATIO ratio, DWORD align = ASPECT_ALIGN_CENTER | ASPECT_ALIGNY_CENTER);
   void SetAlpha(unsigned char alpha);
   void SetAlpha(unsigned char a0, unsigned char a1, unsigned char a2, unsigned char a3);
-  void SetBorderLeft(float b) { m_image.border.left = b; }
-  void SetBorderRight(float b) { m_image.border.right = b; }
-  void SetBorderTop(float b) { m_image.border.top = b; }
-  void SetBorderBottom(float b) { m_image.border.bottom = b; }
 
   const CStdString& GetFileName() const { return m_strFileName;};
   int GetTextureWidth() const;
   int GetTextureHeight() const;
-  
+
   void CalculateSize();
 #ifdef _DEBUG
   virtual void DumpTextureUse();
