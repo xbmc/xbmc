@@ -256,10 +256,27 @@ void CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
     surface->Release();
     texture->Release();
   }
-#else
-#ifdef __GNUC__
-// TODO: CGUIDialogVideoBookmarks::AddBookmark() not implemented
+#elif defined(HAS_SDL)
+  SDL_Surface *texture = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 32, 
+                                              0x00ff0000, 0x0000ff00, 0x000000ff, 
+                                              0xff000000);
+  if (texture)
+  {
+    SDL_LockSurface(texture);
+#ifdef HAS_VIDEO_PLAYBACK
+    g_renderManager.CreateThumbnail(texture, width, height);
 #endif
+    Crc32 crc;
+    crc.ComputeFromLowerCase(g_application.CurrentFile());
+    bookmark.thumbNailImage.Format("%s//%08x_%i.jpg", g_settings.GetBookmarksThumbFolder().c_str(), 
+                                   (unsigned __int32) crc, m_vecItems.Size() + 1);
+    CPicture pic;
+    if (!pic.CreateThumbnailFromSurface((BYTE *)texture->pixels, width, height, texture->pitch, 
+                                        bookmark.thumbNailImage))
+      bookmark.thumbNailImage.Empty();
+    SDL_UnlockSurface(texture);
+    SDL_FreeSurface(texture);
+  }
 #endif
   lock.Leave();
   videoDatabase.Open();
