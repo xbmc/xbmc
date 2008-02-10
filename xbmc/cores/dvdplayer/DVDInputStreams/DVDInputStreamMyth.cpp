@@ -1,7 +1,7 @@
 #ifdef HAS_GMYTH
 #include "stdafx.h"
 #include "DVDInputStreamMyth.h"
-#include "FileSystem/GMythDirectory.h"
+#include "FileSystem/GMythFile.h"
 
 using namespace XFILE;
 
@@ -108,11 +108,17 @@ bool CDVDInputStreamMyth::PrevChannel()
   return m_pFile->PrevChannel();
 }
 
-std::string CDVDInputStreamMyth::GetTitle()
+CVideoInfoTag* CDVDInputStreamMyth::GetVideoInfoTag()
 {
-  CVideoInfoTag tag;
   if(m_pFile)
-    m_pFile->GetVideoInfoTag(tag);
-  return tag.m_strTitle;
+    return m_pFile->GetVideoInfoTag();
+  return NULL;
 }
+
+bool CDVDInputStreamMyth::NextStream()
+{
+  if(!m_pFile) return false;
+  return m_pFile->SkipNext();
+}
+
 #endif

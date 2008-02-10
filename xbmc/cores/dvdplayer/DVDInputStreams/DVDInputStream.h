@@ -27,9 +27,9 @@ public:
   virtual int Read(BYTE* buf, int buf_size) = 0;
   virtual __int64 Seek(__int64 offset, int whence) = 0;
   virtual __int64 GetLength() = 0;
-  virtual std::string GetContent() { return m_content; };
-
-  std::string& GetFileName() { return m_strFileName; }
+  virtual std::string& GetContent() { return m_content; };
+  virtual std::string& GetFileName() { return m_strFileName; }
+  virtual bool NextStream() { return false; }
   
   int GetBlockSize() { return DVDSTREAM_BLOCK_SIZE_FILE; }
   bool IsStreamType(DVDStreamType type) const { return m_streamType == type; }

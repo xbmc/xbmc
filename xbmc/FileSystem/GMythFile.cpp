@@ -86,6 +86,11 @@ bool CGMythFile::Open(const CURL& url, bool binary)
     Close();
     return false;
   }
+
+  // if we are live, print program info
+  if(m_livetv && m_livetv->proginfo)
+    XLOG(LOGINFO, " ** PROGRAM INFO **\n%s\n ** ************ **", gmyth_program_info_to_string(m_livetv->proginfo));
+
   return true;
 }
 
@@ -130,6 +135,7 @@ bool CGMythFile::SetupTransfer()
     XLOG(LOGERROR, "failed to open transfer");
     return false;
   }
+  m_held = false;
   return true;
 }
 
@@ -174,6 +180,7 @@ CGMythFile::CGMythFile()
   m_used = 0;
   m_filename = NULL;
   m_channel = NULL;
+  m_held = false;
 }
 
 CGMythFile::~CGMythFile()
@@ -222,6 +229,9 @@ __int64 CGMythFile::GetLength()
 
 unsigned int CGMythFile::Read(void* buffer, __int64 size)
 {
+  if(m_held)
+    return 0;
+
   // return anything added in last read
   if(m_used && m_array->len > m_used)
   {
@@ -247,7 +257,13 @@ unsigned int CGMythFile::Read(void* buffer, __int64 size)
     else if(ret == GMYTH_FILE_READ_NEXT_PROG_CHAIN)
     {
       XLOG(LOGINFO, "next program chain");
-      continue;
+
+      if(!m_used)
+        continue; /* first read request */
+
+      /* file user must call skipnext to get next program */
+      m_held = true;
+      return 0;
     }
     else if(ret != GMYTH_FILE_READ_OK)
     {
@@ -269,19 +285,38 @@ bool CGMythFile::SkipNext()
   if(!m_livetv)
     return false;
 
-  return gmyth_livetv_next_program_chain(m_livetv);
+  if(!gmyth_livetv_next_program_chain(m_livetv))
+  {
+    XLOG(LOGERROR, "failed to get next program chain");
+    return false;
+  }
+  m_held = false;
+  return true;
 }
 
-bool CGMythFile::GetVideoInfoTag(CVideoInfoTag& tag)
+CVideoInfoTag* CGMythFile::GetVideoInfoTag()
 {
   if(m_livetv && m_livetv->proginfo)
   {
+    if(m_livetv->proginfo->chanstr)
+    {
+      m_infotag.m_strTitle = m_livetv->proginfo->chanstr->str;
+      m_infotag.m_strTitle += " : ";
+    }
     if(m_livetv->proginfo->title)
-      tag.m_strTitle = m_livetv->proginfo->title->str;
+      m_infotag.m_strShowTitle = m_livetv->proginfo->title->str;
 
-    return true;
+    m_infotag.m_strTitle += m_infotag.m_strShowTitle;
+
+    if(m_livetv->proginfo->description)
+    {
+      m_infotag.m_strPlotOutline = m_livetv->proginfo->description->str;
+      m_infotag.m_strPlot = m_livetv->proginfo->description->str;
+    }
+    m_infotag.m_iSeason = 1; /* set this so xbmc knows it's a tv show */
+    return &m_infotag;
   }
-  return false;
+  return NULL;
 }
 
 int CGMythFile::GetTotalTime()
@@ -323,12 +358,12 @@ bool CGMythFile::NextChannel()
   if(!gmyth_recorder_change_channel(m_livetv->recorder, CHANNEL_DIRECTION_DOWN))
   {
     XLOG(LOGERROR, "failed to change channel");
-    return false;
+    //return false;
   }
   if(!gmyth_livetv_next_program_chain(m_livetv))
     XLOG(LOGERROR, "failed to get the next program info");
 
-  return true;
+  return SetupTransfer();
 }
 
 bool CGMythFile::PrevChannel()
@@ -342,12 +377,13 @@ bool CGMythFile::PrevChannel()
   if(!gmyth_recorder_change_channel(m_livetv->recorder, CHANNEL_DIRECTION_UP))
   {
     XLOG(LOGERROR, "failed to change channel");
-    return false;
+    //return false;
   }
 
   if(!gmyth_livetv_next_program_chain(m_livetv))
     XLOG(LOGERROR, "failed to get the next program info");
-  return true;
+
+  return SetupTransfer();
 }
 
 #endif

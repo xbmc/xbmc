@@ -7,6 +7,7 @@ typedef struct _GMythBackendInfo GMythBackendInfo;
 typedef struct _GMythLiveTV GMythLiveTV;
 typedef struct _GMythFileTransfer GMythFileTransfer;
 typedef struct _GByteArray GByteArray;
+typedef struct _GMythProgramInfo GMythProgramInfo;
 
 namespace XFILE
 {
@@ -30,7 +31,7 @@ public:
   bool                  NextChannel();
   bool                  PrevChannel();
 
-  bool                  GetVideoInfoTag(CVideoInfoTag& tag);
+  CVideoInfoTag*        GetVideoInfoTag();
   int                   GetTotalTime();
   int                   GetStartTime();
 protected:
@@ -44,6 +45,8 @@ protected:
   unsigned int       m_used;
   char*              m_filename;
   char*              m_channel;
+  bool               m_held;
+  CVideoInfoTag      m_infotag;
 };
 
 }
