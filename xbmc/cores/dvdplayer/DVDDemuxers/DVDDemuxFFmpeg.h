@@ -92,14 +92,15 @@ protected:
   CDemuxStream* m_streams[MAX_STREAMS]; // maximum number of streams that ffmpeg can handle
 
   ByteIOContext* m_ioContext;
-  
+
   DllAvFormat m_dllAvFormat;
   DllAvCodec  m_dllAvCodec;
   DllAvUtil   m_dllAvUtil;
-  
-  double m_iCurrentPts; // used for stream length estimation
-  bool   m_bMatroska;
-  int m_speed;
+
+  double   m_iCurrentPts; // used for stream length estimation
+  bool     m_bMatroska;
+  int      m_speed;
+  unsigned m_program;
 
   CDVDInputStream* m_pInput;
 };
