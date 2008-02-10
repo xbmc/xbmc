@@ -19,12 +19,14 @@ public:
   virtual bool    IsEOF();
   virtual __int64 GetLength();
 
+  virtual bool    NextStream();
+
   bool            NextChannel();
   bool            PrevChannel();
 
   int             GetTotalTime();
   int             GetStartTime();
-  std::string     GetTitle();
+  CVideoInfoTag*  GetVideoInfoTag();
 protected:
   XFILE::CGMythFile* m_pFile;
   bool m_eof;

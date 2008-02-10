@@ -215,6 +215,7 @@ protected:
   bool IsValidStream(CCurrentStream& stream);
   bool IsBetterStream(CCurrentStream& current, StreamType type, CDemuxStream* stream);
 
+  void UpdateApplication();
 
   bool m_bAbortRequest;
 
