@@ -356,7 +356,7 @@ bool CGMythFile::NextChannel()
     XLOG(LOGERROR, "failed to pause recording");
     return false;
   }
-  if(!gmyth_recorder_change_channel(m_livetv->recorder, CHANNEL_DIRECTION_DOWN))
+  if(!gmyth_recorder_change_channel(m_livetv->recorder, CHANNEL_DIRECTION_UP))
   {
     XLOG(LOGERROR, "failed to change channel");
     //return false;
@@ -375,7 +375,7 @@ bool CGMythFile::PrevChannel()
     XLOG(LOGERROR, "failed to pause recording");
     return false;
   }
-  if(!gmyth_recorder_change_channel(m_livetv->recorder, CHANNEL_DIRECTION_UP))
+  if(!gmyth_recorder_change_channel(m_livetv->recorder, CHANNEL_DIRECTION_DOWN))
   {
     XLOG(LOGERROR, "failed to change channel");
     //return false;
