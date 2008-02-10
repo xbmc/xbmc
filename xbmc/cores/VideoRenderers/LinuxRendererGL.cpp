@@ -2050,9 +2050,36 @@ void CLinuxRendererGL::RenderSoftware(DWORD flags)
   VerifyGLState();
 }
 
-void CLinuxRendererGL::CreateThumbnail(SDL_Surface * surface, unsigned int width, unsigned int height)
+void CLinuxRendererGL::CreateThumbnail(SDL_Surface* surface, unsigned int width, unsigned int height)
 {
-  //CSingleLock lock(g_graphicsContext);
+  // get our screen rect
+  const RECT& rv = g_graphicsContext.GetViewWindow();
+
+  // save current video rect
+  RECT saveSize = rd;
+
+  // new video rect is thumbnail size
+  rd.left = rd.top = 0;
+  rd.right = width;
+  rd.bottom = height;
+
+  // clear framebuffer and invert Y axis to get non-inverted image
+  glClear(GL_COLOR_BUFFER_BIT);
+  glMatrixMode(GL_MODELVIEW);
+  glPushMatrix();
+  glTranslatef(0, height, 0);
+  glScalef(1.0, -1.0f, 1.0f);
+  Render(RENDER_FLAG_NOOSD);
+
+  // read pixels
+  glReadPixels(0, rv.bottom-height, width, height, GL_BGRA, GL_UNSIGNED_BYTE, surface->pixels);
+
+  // revert model view matrix
+  glMatrixMode(GL_MODELVIEW);
+  glPopMatrix();
+
+  // restore original video rect
+  rd = saveSize;
 }
 
 //********************************************************************************************************
