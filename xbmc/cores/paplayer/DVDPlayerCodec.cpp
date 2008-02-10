@@ -142,7 +142,7 @@ bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
   }
 
   if (m_Channels == 0) // no data - just guess and hope for the best
-    m_Channels == 2;
+    m_Channels = 2;
 
   if (m_SampleRate == 0)
     m_SampleRate = 44100;
