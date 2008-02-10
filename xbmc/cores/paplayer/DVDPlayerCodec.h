@@ -20,12 +20,17 @@ public:
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
   virtual bool CanInit();
   virtual bool CanSeek();
+
+  void SetContentType(const CStdString &strContent);
   
 private:
   __int64 m_iDataPos;  
   CDVDDemux* m_pDemuxer;
   CDVDInputStream* m_pInputStream;
   CDVDAudioCodec* m_pAudioCodec;
+
+  CStdString m_strContentType;
+
   int m_nAudioStream;
   
   int m_audioLen;
