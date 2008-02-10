@@ -118,7 +118,12 @@ CVideoInfoTag* CDVDInputStreamMyth::GetVideoInfoTag()
 bool CDVDInputStreamMyth::NextStream()
 {
   if(!m_pFile) return false;
-  return m_pFile->SkipNext();
+  if(m_pFile->SkipNext())
+  {
+    m_eof = false;
+    return true;
+  }
+  return false;
 }
 
 #endif
