@@ -2265,12 +2265,12 @@ bool CDVDPlayer::OnAction(const CAction &action)
     switch (action.wID)
     {
       case ACTION_PAGE_UP:
-        m_messenger.Put(new CDVDMsg(CDVDMsg::PLAYER_CHANNEL_PREV));
+        m_messenger.Put(new CDVDMsg(CDVDMsg::PLAYER_CHANNEL_NEXT));
         return true;
       break;
 
       case ACTION_PAGE_DOWN:
-        m_messenger.Put(new CDVDMsg(CDVDMsg::PLAYER_CHANNEL_NEXT));
+        m_messenger.Put(new CDVDMsg(CDVDMsg::PLAYER_CHANNEL_PREV));
         return true;
       break;
     }
