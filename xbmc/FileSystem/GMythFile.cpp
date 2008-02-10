@@ -136,6 +136,7 @@ bool CGMythFile::SetupTransfer()
     return false;
   }
   m_held = false;
+  m_used = 0;
   return true;
 }
 
@@ -201,6 +202,8 @@ bool CGMythFile::Exists(const CURL& url)
 
 __int64 CGMythFile::Seek(__int64 pos, int whence)
 {
+  XLOG(LOGDEBUG, "seek to pos %lld, whence %d", pos, whence);
+
   if(whence == SEEK_POSSIBLE)
   {
     if(m_livetv)
@@ -208,7 +211,10 @@ __int64 CGMythFile::Seek(__int64 pos, int whence)
     else
       return true;
   }
-  XLOG(LOGDEBUG, "seek to pos %lld, whence %d", pos, whence);
+
+  if(m_livetv)
+    return false;
+
   if(m_file)
     return gmyth_file_transfer_seek(m_file, pos, whence);
   else
@@ -259,11 +265,9 @@ unsigned int CGMythFile::Read(void* buffer, __int64 size)
     {
       XLOG(LOGINFO, "next program chain");
 
-      if(!m_used)
-        continue; /* first read request */
-
       /* file user must call skipnext to get next program */
       m_held = true;
+      XLOG(LOGDEBUG, "holding data until SkipNext()");
       return 0;
     }
     else if(ret != GMYTH_FILE_READ_OK)
@@ -271,6 +275,13 @@ unsigned int CGMythFile::Read(void* buffer, __int64 size)
       XLOG(LOGWARNING, "unknown status %d", ret);
       return 0;
     }
+
+    if(m_livetv && m_array->len == 0)
+    {
+      XLOG(LOGWARNING, "empty data returned, retrying");
+      continue;
+    }
+
     break;
   }
 
@@ -283,7 +294,7 @@ unsigned int CGMythFile::Read(void* buffer, __int64 size)
 
 bool CGMythFile::SkipNext()
 {
-  if(!m_livetv)
+  if(!m_livetv || !m_held)
     return false;
 
   if(!gmyth_livetv_next_program_chain(m_livetv))

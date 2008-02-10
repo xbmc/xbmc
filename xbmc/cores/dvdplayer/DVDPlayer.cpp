@@ -396,6 +396,39 @@ void CDVDPlayer::OnStartup()
   g_dvdPerformanceCounter.EnableMainPerformance(ThreadHandle());
 }
 
+bool CDVDPlayer::OpenDemuxStream()
+{
+  if(m_pDemuxer)
+    SAFE_DELETE(m_pDemuxer);
+
+  try
+  {
+    while(true)
+    {
+      m_pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(m_pInputStream);
+      if(!m_pDemuxer && m_pInputStream->NextStream())
+      {
+        CLog::Log(LOGDEBUG, "%s - New stream available from input, retry open");
+        continue;
+      }
+      break;
+    }
+
+    if(!m_pDemuxer)
+    {
+      CLog::Log(LOGERROR, "%s - Error creating demuxer", __FUNCTION__);
+      return false;
+    }
+
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, "%s - Exception thrown when opeing demuxer", __FUNCTION__);
+    return false;
+  }
+  return true;
+}
+
 bool CDVDPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
 {
 
@@ -537,21 +570,8 @@ void CDVDPlayer::Process()
     return;
 
   CLog::Log(LOGNOTICE, "Creating Demuxer");
-  
-  try
-  {
-    m_pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(m_pInputStream);
-    if(!m_pDemuxer)
-    {
-      CLog::Log(LOGERROR, "%s - Error creating demuxer", __FUNCTION__);
-      return;
-    }
-  }
-  catch(...)
-  {
-    CLog::Log(LOGERROR, "%s - Exception thrown when opeing demuxer", __FUNCTION__);
+  if(!OpenDemuxStream())
     return;
-  }
 
   if (m_pDlgCache && m_pDlgCache->IsCanceled())
     return;
@@ -704,8 +724,8 @@ void CDVDPlayer::Process()
 
       if(m_pInputStream->NextStream())
       {
-        if(m_pDemuxer)
-          m_pDemuxer->Reset();
+        if(!OpenDemuxStream())
+          break;
 
         m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_DEMUX);
         m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
