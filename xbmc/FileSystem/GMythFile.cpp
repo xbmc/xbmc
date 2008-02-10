@@ -149,7 +149,8 @@ void CGMythFile::Close()
   }
   if(m_livetv)
   {
-    gmyth_livetv_stop_playing(m_livetv);
+    if(gmyth_recorder_is_recording(m_livetv->recorder))
+      gmyth_livetv_stop_playing(m_livetv);
     g_object_unref(m_livetv);
     m_livetv = NULL;
   }
