@@ -78,53 +78,55 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
             g_charsetConverter.stringCharsetToUtf8(strLabel);
 #endif
 
-            /* Checks if the file is hidden. If it is then we don't really need to add it */
-            if (!(wfd.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) || g_guiSettings.GetBool("filelists.showhidden"))
-            {
-              CFileItem *pItem = new CFileItem(strLabel);
-              pItem->m_strPath = strRoot;
-              pItem->m_strPath += wfd.cFileName;
-#ifndef _LINUX
-              g_charsetConverter.stringCharsetToUtf8(pItem->m_strPath);
-#endif
-              pItem->m_bIsFolder = true;
-              CUtil::AddSlashAtEnd(pItem->m_strPath);
-              FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
-              pItem->m_dateTime=localTime;
-
-              vecCacheItems.Add(pItem);
-              items.Add(new CFileItem(*pItem));
-            }
-          }
-        }
-        else
-        {
-          /* Checks if the file is hidden. If it is then we don't really need to add it */
-          if (!(wfd.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) || g_guiSettings.GetBool("filelists.showhidden"))
-          {
-            CStdString strLabel=wfd.cFileName;
-#ifndef _LINUX
-            g_charsetConverter.stringCharsetToUtf8(strLabel);
-#endif
             CFileItem *pItem = new CFileItem(strLabel);
             pItem->m_strPath = strRoot;
             pItem->m_strPath += wfd.cFileName;
 #ifndef _LINUX
             g_charsetConverter.stringCharsetToUtf8(pItem->m_strPath);
 #endif
-
-            pItem->m_bIsFolder = false;
-            pItem->m_dwSize = CUtil::ToInt64(wfd.nFileSizeHigh, wfd.nFileSizeLow);
+            pItem->m_bIsFolder = true;
+            CUtil::AddSlashAtEnd(pItem->m_strPath);
             FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
             pItem->m_dateTime=localTime;
-            if ( IsAllowed( wfd.cFileName) )
-            {
-              vecCacheItems.Add(pItem);
+
+            vecCacheItems.Add(pItem);
+#ifdef _LINUX
+            /* Checks if the file is hidden. If it is then we don't really need to add it */
+            if (!(wfd.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) || g_guiSettings.GetBool("filelists.showhidden"))
               items.Add(new CFileItem(*pItem));
-            }
-            else
-              vecCacheItems.Add(pItem);
+#else
+            items.Add(new CFileItem(*pItem));
+#endif
           }
+        }
+        else
+        {
+          CStdString strLabel=wfd.cFileName;
+#ifndef _LINUX
+          g_charsetConverter.stringCharsetToUtf8(strLabel);
+#endif
+          CFileItem *pItem = new CFileItem(strLabel);
+          pItem->m_strPath = strRoot;
+          pItem->m_strPath += wfd.cFileName;
+#ifndef _LINUX
+          g_charsetConverter.stringCharsetToUtf8(pItem->m_strPath);
+#endif
+          pItem->m_bIsFolder = false;
+          pItem->m_dwSize = CUtil::ToInt64(wfd.nFileSizeHigh, wfd.nFileSizeLow);
+          FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
+          pItem->m_dateTime=localTime;
+#ifdef _LINUX
+          /* Checks if the file is hidden. If it is then we don't really need to add it */
+          if ((!(wfd.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) || g_guiSettings.GetBool("filelists.showhidden")) && IsAllowed(wfd.cFileName))
+#else
+          if ( IsAllowed( wfd.cFileName) )
+#endif
+          {
+            vecCacheItems.Add(pItem);
+            items.Add(new CFileItem(*pItem));
+          }
+          else
+            vecCacheItems.Add(pItem);
         }
       }
     }
