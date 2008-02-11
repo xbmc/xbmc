@@ -152,14 +152,6 @@ void CSMB::Init()
       else
         lp_do_parameter( -1, "dos charset", "CP850");
 #endif
-#ifdef _LINUX
-      if (m_IdleThread != NULL)
-        m_IdleThread->StopThread();
-      m_IdleThread = new CThread(this);
-      m_IdleThread->Create();
-      m_LastActive = timeGetTime();
-      m_Idle = false;
-#endif
     }
     else
     {
@@ -168,11 +160,7 @@ void CSMB::Init()
     }
   }
 #ifdef _LINUX
-  else
-  {
-    m_LastActive = timeGetTime();
-    m_Idle = false;
-  }
+  m_LastActive = timeGetTime();
 #endif
 }
 
@@ -283,8 +271,6 @@ DWORD CSMB::ConvertUnixToNT(int error)
 #ifdef _LINUX
 /* This is a quick fix to know if there is active files still even if reported IDLE, for exampla if paused a video and
    navigating a folder. The folder checkup will say it's idle even if it's a file playing. TODO Clean up this code a bit*/
-static int OpenFiles = 0;
-
 bool CSMB::IsInit()
 {
   if (m_context == NULL)
@@ -292,34 +278,37 @@ bool CSMB::IsInit()
   else
     return true;
 }
-void CSMB::Run()
+
+/* This is called from CApplication::ProcessSlow() and is used to tell if smbclient have been idle for too long */
+void CSMB::CheckIfIdle()
 {
-  CEvent *event = new CEvent();
-  bool Continue = true;
-  while (Continue)
-  {    
-    event->WaitMSec(30000);
-    {
-      CSingleLock(*this);
-      if (m_Idle && OpenFiles == 0)
-      {
-        if ((timeGetTime() - m_LastActive) > 60000)
-        {
-          CLog::Log(LOGDEBUG, "Closing unused samba sessions");
-          smb.Deinit();
-          Continue = false;
-          m_Idle = true;
-        }
-      }
-    }
+  if (!smb.IsInit())
+    return;
+  if (m_OpenConnections == 0)
+  { /* I've set the the maxiumum IDLE time to be 1 min and 30 sec. */
+    if ((timeGetTime() - m_LastActive) > 90000)
+      smb.Deinit();
   }
-  delete event;
+  else if (m_OpenConnections < 0)
+  {
+    CLog::Log(LOGERROR, "Less then zero open connections: %i", m_OpenConnections);
+  }
 }
 
-void CSMB::SetIdle()
+/* The following two function is used to keep track on how many Opened files/directories there are.
+   This makes the idle timer not count if a movie is paused for example */
+void CSMB::AddActiveConnection()
 {
   CSingleLock(*this);
-  m_Idle = true;
+  m_OpenConnections++;
+}
+void CSMB::AddIdleConnection()
+{
+  CSingleLock(*this);
+  m_OpenConnections--;
+  /* If we close a file we reset the idle timer so that we don't have any wierd behaviours if a user
+     leaves the movie paused for a long while and then press stop */
+  m_LastActive = timeGetTime();  
 }
 #endif
 
@@ -330,8 +319,7 @@ CFileSMB::CFileSMB()
   smb.Init();
   m_fd = -1;
 #ifdef _LINUX
-  CSingleLock lock(smb);
-  OpenFiles++;
+  smb.AddActiveConnection();
 #endif
 }
 
@@ -339,8 +327,7 @@ CFileSMB::~CFileSMB()
 {
   Close();
 #ifdef _LINUX
-  CSingleLock lock(smb);
-  OpenFiles--;
+  smb.AddIdleConnection();
 #endif
 }
 
@@ -608,12 +595,8 @@ void CFileSMB::Close()
 #else
     if (smb.IsInit())
       smbc_close(m_fd);
-    //No need to close as it will be clensed out
 #endif
   }
-#ifdef _LINUX
-  smb.SetIdle();
-#endif
   m_fd = -1;
 }
 
