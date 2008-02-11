@@ -84,6 +84,9 @@
 #include "UPnP.h"
 #include "FileSystem/UPnPDirectory.h"
 #endif
+#ifdef _LINUX
+#include "FileSystem/SMBDirectory.h"
+#endif
 #include "PartyModeManager.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
@@ -5545,6 +5548,10 @@ void CApplication::ProcessSlow()
 
   //Check to see if current playing Title has changed and whether we should broadcast the fact
   CheckForTitleChange();
+  
+#ifdef _LINUX
+  smb.CheckIfIdle();
+#endif
 }
 
 // Global Idle Time in Seconds
