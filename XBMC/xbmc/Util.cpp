@@ -5559,6 +5559,11 @@ bool CUtil::SupportsFileOperations(const CStdString& strPath)
     return true;
   if (IsSmb(strPath))
     return true;
+  if (IsMythTV(strPath))
+  {
+    CURL url(strPath);
+    return url.GetFileName().Left(11).Equals("recordings/") && url.GetFileName().length() > 11;
+  }
   if (IsStack(strPath))
   {
     CStackDirectory dir;
