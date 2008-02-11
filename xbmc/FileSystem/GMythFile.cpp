@@ -23,26 +23,11 @@ bool CGMythFile::Open(const CURL& url, bool binary)
     return false;
 
   CStdString path(url.GetFileName());
-  m_info = gmyth_backend_info_new();
-  if(!m_info)
+  if(!SetupInfo(url))
+  {
+    Close();
     return false;
-
-  gmyth_backend_info_set_hostname(m_info, url.GetHostName().c_str());
-  gmyth_backend_info_set_port(m_info, url.GetPort());
-
-
-  if (!url.GetUserName().IsEmpty())
-      gmyth_backend_info_set_username(m_info, url.GetUserName().c_str());
-  else
-      gmyth_backend_info_set_username(m_info, "mythtv");
-
-  if (!url.GetPassWord().IsEmpty())
-      gmyth_backend_info_set_password(m_info, url.GetPassWord().c_str());
-  else
-      gmyth_backend_info_set_password(m_info, "mythtv");
-
-  gmyth_backend_info_set_db_name(m_info, "mythconverg");
-
+  }
 
   if(path.Left(11) == "recordings/")
   {
@@ -91,6 +76,58 @@ bool CGMythFile::Open(const CURL& url, bool binary)
   if(m_livetv && m_livetv->proginfo)
     XLOG(LOGINFO, " ** PROGRAM INFO **\n%s\n ** ************ **", gmyth_program_info_to_string(m_livetv->proginfo));
 
+  return true;
+}
+
+bool CGMythFile::SetupInfo(const CURL& url)
+{
+  m_info = gmyth_backend_info_new();
+  if(!m_info)
+    return false;
+
+  gmyth_backend_info_set_hostname(m_info, url.GetHostName().c_str());
+  int port = url.GetPort();
+  if(port == 0)
+    port = 6543;
+
+  gmyth_backend_info_set_port(m_info, port);
+
+  if (!url.GetUserName().IsEmpty())
+      gmyth_backend_info_set_username(m_info, url.GetUserName().c_str());
+  else
+      gmyth_backend_info_set_username(m_info, "mythtv");
+
+  if (!url.GetPassWord().IsEmpty())
+      gmyth_backend_info_set_password(m_info, url.GetPassWord().c_str());
+  else
+      gmyth_backend_info_set_password(m_info, "mythtv");
+
+  gmyth_backend_info_set_db_name(m_info, "mythconverg");
+  return true;
+}
+
+bool CGMythFile::SetupRecording(const CURL& url, const CStdString& base)
+{
+  if(!CUtil::GetExtension(base).Equals(".nuv")
+  && !CUtil::GetExtension(base).Equals(".mpg"))
+    return false;
+
+  if(!SetupInfo(url))
+    return false;
+
+  m_scheduler = gmyth_scheduler_new();
+  if (!gmyth_scheduler_connect_with_timeout(m_scheduler, m_info, 10))
+  {
+    XLOG(LOGERROR, "failed to connect to server on %s", base.c_str());
+    return false;
+  }
+
+  m_recording = gmyth_scheduler_get_recorded_info(m_scheduler, base.c_str());
+  if(!m_recording)
+  {
+    XLOG(LOGERROR, "failed to get recording for file %s", base.c_str());
+    return false;
+  }
   return true;
 }
 
@@ -155,16 +192,26 @@ void CGMythFile::Close()
     g_object_unref(m_livetv);
     m_livetv = NULL;
   }
-
   if(m_filename)
   {
     g_free(m_filename);
     m_filename = NULL;
   }
+  if(m_recording)
+  {
+    g_free(m_recording);
+    m_recording = NULL;
+  }
   if(m_channel)
   {
     g_free(m_channel);
     m_channel = NULL;
+  }
+  if(m_scheduler)
+  {
+    gmyth_scheduler_disconnect(m_scheduler);
+    g_object_unref(m_scheduler);
+    m_scheduler = NULL;
   }
   if(m_info)
   {
@@ -179,6 +226,8 @@ CGMythFile::CGMythFile()
   m_info = NULL;
   m_file = NULL;
   m_livetv = NULL;
+  m_scheduler = NULL;
+  m_recording = NULL;
   m_used = 0;
   m_filename = NULL;
   m_channel = NULL;
@@ -197,6 +246,42 @@ CGMythFile::~CGMythFile()
 
 bool CGMythFile::Exists(const CURL& url)
 {
+  CStdString path(url.GetFileName());
+
+  if(path.Left(11) == "recordings/")
+  {
+    if(!SetupRecording(url, path.Mid(11)))
+    {
+      Close();
+      return false;
+    }
+
+    Close();
+    return true;
+  }
+  return false;
+}
+
+bool CGMythFile::Delete(const CURL& url) 
+{ 
+  CStdString path(url.GetFileName());
+
+  if(path.Left(11) == "recordings/")
+  {
+    if(!SetupRecording(url, path.Mid(11)))
+    {
+      Close();
+      return false;
+    }
+
+    if(!gmyth_scheduler_delete_recorded(m_scheduler, ((RecordedInfo*)m_recording)->record_id))
+    {
+      XLOG(LOGERROR, "failed to delete recording %d", ((RecordedInfo*)m_recording)->record_id);
+      Close();
+      return false;
+    }
+    return true;
+  }
   return false;
 }
 
