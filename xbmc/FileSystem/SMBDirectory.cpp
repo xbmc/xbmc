@@ -26,12 +26,15 @@ using namespace DIRECTORY;
 
 CSMBDirectory::CSMBDirectory(void)
 {
+#ifdef _LINUX
+  smb.AddActiveConnection();
+#endif
 } 
 
 CSMBDirectory::~CSMBDirectory(void)
 {
 #ifdef _LINUX
-  smb.SetIdle();
+  smb.AddIdleConnection();
 #endif
 }
 
@@ -54,14 +57,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   CStdString strAuth;
   int fd = OpenDir(url, strAuth);
   if (fd < 0)
-#ifdef _LINUX
-  {
-    smb.SetIdle();
     return false;
-  }
-#else
-    return false;
-#endif
 
   if (!CUtil::HasSlashAtEnd(strRoot)) strRoot += "/";
   if (!CUtil::HasSlashAtEnd(strAuth)) strAuth += "/";
@@ -110,7 +106,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
           char value[5];
           /* We poll for extended attributes which symbolizes bits but split up into a string. Where 0x02 is hidden and 0x12 is hidden directory.
              According to the libsmbclient.h it's supposed to return 0 if ok, or the length of the string. It seems always to return the length wich is 4 */
-          if (smbc_getxattr(strFullName, "system.dos_attr.mode", value, sizeof(value)) < 0)
+          if (smbc_getxattr(strFullName, "system.dos_attr.mode", value, sizeof(value)) > 0)
           {
             if (value[3] & SMBC_DOS_MODE_HIDDEN && !g_guiSettings.GetBool("filelists.showhidden"))
               hidden = true;
@@ -173,9 +169,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   }
 
   smbc_closedir(fd);
-#ifdef _LINUX
-  smb.SetIdle();
-#endif
+
   if (m_cacheDirectory)
     g_directoryCache.SetDirectory(strPath, vecCacheItems);
 
