@@ -282,16 +282,16 @@ bool CSMB::IsInit()
 /* This is called from CApplication::ProcessSlow() and is used to tell if smbclient have been idle for too long */
 void CSMB::CheckIfIdle()
 {
+  CSingleLock(*this);
   if (!smb.IsInit())
     return;
   if (m_OpenConnections == 0)
   { /* I've set the the maxiumum IDLE time to be 1 min and 30 sec. */
     if ((timeGetTime() - m_LastActive) > 90000)
+    {
+      CLog::Log(LOGNOTICE, "Samba is idle. Closing the remaining connections");
       smb.Deinit();
-  }
-  else if (m_OpenConnections < 0)
-  {
-    CLog::Log(LOGERROR, "Less then zero open connections: %i", m_OpenConnections);
+    }
   }
 }
 
