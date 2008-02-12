@@ -22,9 +22,12 @@
 #include "../utils/GUIInfoManager.h"
 
 #ifndef HAS_SHOUTCAST
-extern "C" {
-error_code rip_manager_start(void (*status_callback)(int message, void *data), RIP_MANAGER_OPTIONS *options) { }
-void                       rip_manager_stop() { }
+extern "C" 
+{
+  error_code rip_manager_start(void (*status_callback)(int message, void *data), RIP_MANAGER_OPTIONS *options) { }
+  void       rip_manager_stop() { }
+  void       set_rip_manager_options_defaults(RIP_MANAGER_OPTIONS*) {}
+  int        rip_manager_get_content_type() {}
 }
 #endif
 
