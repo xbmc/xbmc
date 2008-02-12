@@ -166,7 +166,7 @@ bool CGMythFile::SetupTransfer()
     XLOG(LOGERROR, "failed to create transfer");
     return false;
   }
-  CLog::Log(LOGDEBUG, "%s - opening filename ""%s""",__FUNCTION__, m_filename);
+  XLOG(LOGDEBUG, "opening filename ""%s""", m_filename);
   if (!gmyth_file_transfer_open(m_file, m_filename)) 
   {
     XLOG(LOGERROR, "failed to open transfer");
@@ -348,6 +348,14 @@ unsigned int CGMythFile::Read(void* buffer, __int64 size)
     }
     else if(ret == GMYTH_FILE_READ_NEXT_PROG_CHAIN)
     {
+      /* no need to halt if we haven't returned any data */
+      if(m_used == 0)
+      {
+        if(!gmyth_livetv_next_program_chain(m_livetv))
+          XLOG(LOGERROR, "failed to get the next program info");
+        continue;
+      }
+
       XLOG(LOGINFO, "next program chain");
 
       /* file user must call skipnext to get next program */

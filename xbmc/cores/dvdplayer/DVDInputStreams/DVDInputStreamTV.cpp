@@ -1,32 +1,38 @@
-#ifdef HAS_GMYTH
 #include "stdafx.h"
-#include "DVDInputStreamMyth.h"
+#include "DVDInputStreamTV.h"
 #include "FileSystem/GMythFile.h"
+
 
 using namespace XFILE;
 
-CDVDInputStreamMyth::CDVDInputStreamMyth() : CDVDInputStream(DVDSTREAM_TYPE_MYTH)
+CDVDInputStreamTV::CDVDInputStreamTV() : CDVDInputStream(DVDSTREAM_TYPE_MYTH)
 {
   m_pFile = NULL;
+  m_pLiveTV = NULL;
   m_eof = true;
 }
 
-CDVDInputStreamMyth::~CDVDInputStreamMyth()
+CDVDInputStreamTV::~CDVDInputStreamTV()
 {
   Close();
 }
 
-bool CDVDInputStreamMyth::IsEOF()
+bool CDVDInputStreamTV::IsEOF()
 {
   return !m_pFile || m_eof;
 }
 
-bool CDVDInputStreamMyth::Open(const char* strFile, const std::string& content)
+bool CDVDInputStreamTV::Open(const char* strFile, const std::string& content)
 {
   if (!CDVDInputStream::Open(strFile, content)) return false;
 
+#ifdef HAS_GMYTH
   m_pFile = new CGMythFile();
+#endif
+#ifdef HAS_GMYTH
   if (!m_pFile) return false;
+  m_pLiveTV = ((CGMythFile*)m_pFile)->GetLiveTV();
+#endif
 
   CURL url(strFile);
   // open file in binary mode
@@ -41,7 +47,7 @@ bool CDVDInputStreamMyth::Open(const char* strFile, const std::string& content)
 }
 
 // close file and reset everyting
-void CDVDInputStreamMyth::Close()
+void CDVDInputStreamTV::Close()
 {
   if (m_pFile)
   {
@@ -51,10 +57,11 @@ void CDVDInputStreamMyth::Close()
 
   CDVDInputStream::Close();
   m_pFile = NULL;
+  m_pLiveTV = NULL;
   m_eof = true;
 }
 
-int CDVDInputStreamMyth::Read(BYTE* buf, int buf_size)
+int CDVDInputStreamTV::Read(BYTE* buf, int buf_size)
 {
   if(!m_pFile) return -1;
 
@@ -66,7 +73,7 @@ int CDVDInputStreamMyth::Read(BYTE* buf, int buf_size)
   return (int)(ret & 0xFFFFFFFF);
 }
 
-__int64 CDVDInputStreamMyth::Seek(__int64 offset, int whence)
+__int64 CDVDInputStreamTV::Seek(__int64 offset, int whence)
 {
   if(!m_pFile) return -1;
   __int64 ret = m_pFile->Seek(offset, whence);
@@ -77,45 +84,45 @@ __int64 CDVDInputStreamMyth::Seek(__int64 offset, int whence)
   return ret;
 }
 
-__int64 CDVDInputStreamMyth::GetLength()
+__int64 CDVDInputStreamTV::GetLength()
 {
   if (!m_pFile) return 0;
   return m_pFile->GetLength();
 }
 
 
-int CDVDInputStreamMyth::GetTotalTime()
+int CDVDInputStreamTV::GetTotalTime()
 {
-  if(!m_pFile) return -1;
-  return m_pFile->GetTotalTime();
+  if(!m_pLiveTV) return -1;
+  return m_pLiveTV->GetTotalTime();
 }
 
-int CDVDInputStreamMyth::GetStartTime()
+int CDVDInputStreamTV::GetStartTime()
 {
-  if(!m_pFile) return -1;
-  return m_pFile->GetStartTime();
+  if(!m_pLiveTV) return -1;
+  return m_pLiveTV->GetStartTime();
 }
 
-bool CDVDInputStreamMyth::NextChannel()
+bool CDVDInputStreamTV::NextChannel()
 {
-  if(!m_pFile) return false;
-  return m_pFile->NextChannel();
+  if(!m_pLiveTV) return false;
+  return m_pLiveTV->NextChannel();
 }
 
-bool CDVDInputStreamMyth::PrevChannel()
+bool CDVDInputStreamTV::PrevChannel()
 {
-  if(!m_pFile) return false;
-  return m_pFile->PrevChannel();
+  if(!m_pLiveTV) return false;
+  return m_pLiveTV->PrevChannel();
 }
 
-CVideoInfoTag* CDVDInputStreamMyth::GetVideoInfoTag()
+CVideoInfoTag* CDVDInputStreamTV::GetVideoInfoTag()
 {
-  if(m_pFile)
-    return m_pFile->GetVideoInfoTag();
+  if(m_pLiveTV)
+    return m_pLiveTV->GetVideoInfoTag();
   return NULL;
 }
 
-bool CDVDInputStreamMyth::NextStream()
+bool CDVDInputStreamTV::NextStream()
 {
   if(!m_pFile) return false;
   if(m_pFile->SkipNext())
@@ -125,5 +132,3 @@ bool CDVDInputStreamMyth::NextStream()
   }
   return false;
 }
-
-#endif

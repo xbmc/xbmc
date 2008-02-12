@@ -6,7 +6,7 @@
 #include "DVDInputStreamNavigator.h"
 #include "DVDInputStreamHttp.h"
 #include "DVDInputStreamFFmpeg.h"
-#include "DVDInputStreamMyth.h"
+#include "DVDInputStreamTV.h"
 #include "../../../FileSystem/cdioSupport.h"
 
 CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, const std::string& file, const std::string& content)
@@ -25,7 +25,7 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
     return new CDVDInputStreamFFmpeg();
 #ifdef HAS_GMYTH
   else if(file.substr(0, 7) == "myth://")
-    return new CDVDInputStreamMyth();
+    return new CDVDInputStreamTV();
 #endif
 
   //else if (item.IsShoutCast())
