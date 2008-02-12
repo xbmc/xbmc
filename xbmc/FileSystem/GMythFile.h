@@ -1,4 +1,21 @@
 #pragma once
+
+namespace XFILE
+{
+class ILiveTVInterface
+{
+public:
+  virtual ~ILiveTVInterface() {}
+  virtual bool           NextChannel() = 0;
+  virtual bool           PrevChannel() = 0;
+
+  virtual int            GetTotalTime() = 0;
+  virtual int            GetStartTime() = 0;
+
+  virtual CVideoInfoTag* GetVideoInfoTag() = 0;
+};
+}
+
 #ifdef HAS_GMYTH
 
 #include "IFile.h"
@@ -13,7 +30,9 @@ typedef struct _GMythScheduler GMythScheduler;
 namespace XFILE
 {
 
-class CGMythFile : public IFile  
+class CGMythFile 
+  : public IFile
+  ,        ILiveTVInterface
 {
 public:
   CGMythFile();
@@ -31,12 +50,15 @@ public:
   virtual bool          Delete(const CURL& url);
   virtual bool          Exists(const CURL& url);
 
-  bool                  NextChannel();
-  bool                  PrevChannel();
+  virtual ILiveTVInterface* GetLiveTV() {return (ILiveTVInterface*)this;}
 
-  CVideoInfoTag*        GetVideoInfoTag();
-  int                   GetTotalTime();
-  int                   GetStartTime();
+  virtual bool           NextChannel();
+  virtual bool           PrevChannel();
+
+  virtual CVideoInfoTag* GetVideoInfoTag();
+  virtual int            GetTotalTime();
+  virtual int            GetStartTime();
+
 protected:
   bool SetupInfo(const CURL& url);
   bool SetupTransfer();
