@@ -84,7 +84,7 @@
 #include "UPnP.h"
 #include "FileSystem/UPnPDirectory.h"
 #endif
-#ifdef _LINUX
+#if defined(_LINUX) && defined(HAS_FILESYSTEM_SMB)
 #include "FileSystem/SMBDirectory.h"
 #endif
 #include "PartyModeManager.h"
@@ -5549,7 +5549,7 @@ void CApplication::ProcessSlow()
   //Check to see if current playing Title has changed and whether we should broadcast the fact
   CheckForTitleChange();
   
-#ifdef _LINUX
+#if defined(_LINUX) && defined(HAS_FILESYSTEM_SMB)
   smb.CheckIfIdle();
 #endif
 }
