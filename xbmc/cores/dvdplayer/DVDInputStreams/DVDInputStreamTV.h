@@ -1,17 +1,17 @@
-#ifdef HAS_GMYTH
 #pragma once
 
 #include "DVDInputStream.h"
 
 namespace XFILE {
-class CGMythFile;
+class IFile;
+class ILiveTVInterface;
 }
 
-class CDVDInputStreamMyth : public CDVDInputStream
+class CDVDInputStreamTV : public CDVDInputStream
 {
 public:
-  CDVDInputStreamMyth();
-  virtual ~CDVDInputStreamMyth();
+  CDVDInputStreamTV();
+  virtual ~CDVDInputStreamTV();
   virtual bool    Open(const char* strFile, const std::string &content);
   virtual void    Close();
   virtual int     Read(BYTE* buf, int buf_size);
@@ -28,7 +28,7 @@ public:
   int             GetStartTime();
   CVideoInfoTag*  GetVideoInfoTag();
 protected:
-  XFILE::CGMythFile* m_pFile;
+  XFILE::IFile*            m_pFile;
+  XFILE::ILiveTVInterface* m_pLiveTV;
   bool m_eof;
 };
-#endif
