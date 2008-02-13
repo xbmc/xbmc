@@ -255,7 +255,11 @@ CSettings::CSettings(void)
   g_advancedSettings.m_controllerDeadzone = 0.2f;
   g_advancedSettings.m_displayRemoteCodes = false;
 
+#ifdef __APPLE__
+  g_advancedSettings.m_thumbSize = 512;
+#else
   g_advancedSettings.m_thumbSize = 192;
+#endif
 
   g_advancedSettings.m_sambadoscodepage = "";
   g_advancedSettings.m_sambaclienttimeout = 10;
@@ -264,7 +268,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_detectAsUdf = false;
   g_settings.bUseLoginScreen = false;
 
-  g_advancedSettings.m_musicThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG|cover.jpg|Cover.jpg";
+  g_advancedSettings.m_musicThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG|cover.jpg|Cover.jpg|cover.jpeg";
   g_advancedSettings.m_dvdThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG";
   g_advancedSettings.m_bMusicLibraryHideAllItems = false;
   g_advancedSettings.m_bMusicLibraryAllItemsOnBottom = false;
