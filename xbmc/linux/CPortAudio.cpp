@@ -55,6 +55,12 @@ PaStream* CPortAudio::CreateOutputStream(const CStdString& strName, int channels
     printf("BitsPerSample:            [%d]\n", bitsPerSample);
     printf("PacketSize:               [%d]\n", packetSize);
     
+#if 0
+    // Beginnings of downmixing...
+    if (isDigital == false && channels > 2)
+      channels = 2;
+#endif
+    
     std::vector<PaDeviceInfo* > deviceList = CPortAudio::GetDeviceList();
     std::vector<PaDeviceInfo* >::const_iterator iter = deviceList.begin();
 
@@ -78,7 +84,8 @@ PaStream* CPortAudio::CreateOutputStream(const CStdString& strName, int channels
           if (strName.Equals(deviceInfo->name) || 
               (isDigital == true && 
                   (strstr(deviceInfo->name, "Digital") != 0 ||
-                   strstr(deviceInfo->name, "S/P-DIF") != 0)))
+                   strstr(deviceInfo->name, "S/P-DIF") != 0)) ||
+              (backupDevice != -1 && strName.Equals("Default")))
           {
             printf("Picked device:            [%s]\n", deviceInfo->name);
             pickedDevice = i;
