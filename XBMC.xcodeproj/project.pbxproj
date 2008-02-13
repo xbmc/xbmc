@@ -8,9 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		8DD76F790486A8DE00D96B5E /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */; };
+		E30B3E8F0D5D59290030A311 /* libShout-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E30B3E8E0D5D59290030A311 /* libShout-osx.a */; };
 		E33206380D5070AA00435CE3 /* DVDDemuxVobsub.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E33206370D5070AA00435CE3 /* DVDDemuxVobsub.cpp */; };
 		E332063A0D5070E000435CE3 /* FileReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E33206390D5070E000435CE3 /* FileReader.cpp */; };
 		E33466A60D2E5103005A65EC /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E33466A50D2E5103005A65EC /* IOKit.framework */; };
+		E33979930D62FC46004ECDDA /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E33979920D62FC46004ECDDA /* libsqlite3.0.dylib */; };
+		E33979960D62FD48004ECDDA /* DVDInputStreamTV.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E33979940D62FD47004ECDDA /* DVDInputStreamTV.cpp */; };
 		E34486750D4DD18B0020377B /* libswscale-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E34486730D4DD18B0020377B /* libswscale-osx.a */; };
 		E34486760D4DD18B0020377B /* libpostproc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E34486740D4DD18B0020377B /* libpostproc-osx.a */; };
 		E35EF2490D380AE900DB5CD5 /* libSDL-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E35EF2450D380AE900DB5CD5 /* libSDL-osx.a */; };
@@ -712,7 +715,6 @@
 		E38E242D0D26317D00618676 /* libGLEW.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E24250D26317D00618676 /* libGLEW.dylib */; };
 		E38E242E0D26317D00618676 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E24260D26317D00618676 /* libiconv.dylib */; };
 		E38E242F0D26317D00618676 /* liblzo.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E24270D26317D00618676 /* liblzo.dylib */; };
-		E38E24300D26317D00618676 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E24280D26317D00618676 /* libsqlite3.dylib */; };
 		E38E24310D26317D00618676 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E24290D26317D00618676 /* libz.dylib */; };
 		E38E25350D26365C00618676 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25330D26365C00618676 /* AppKit.framework */; };
 		E38E25360D26365C00618676 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25340D26365C00618676 /* ApplicationServices.framework */; };
@@ -762,6 +764,9 @@
 		E3A4781A0D29032C00F3C3A6 /* GUIDialogAccessPoints.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A478190D29032C00F3C3A6 /* GUIDialogAccessPoints.cpp */; };
 		E3A4781D0D29035000F3C3A6 /* LinuxFileSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A4781C0D29035000F3C3A6 /* LinuxFileSystem.cpp */; };
 		E3D87AEB0D3182F4000CF031 /* XCriticalSection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3D87AE90D3182F4000CF031 /* XCriticalSection.cpp */; };
+		E3EB8F060D5D5C0300FFF489 /* libmad.0.2.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3EB8F030D5D5C0300FFF489 /* libmad.0.2.1.dylib */; };
+		E3EB8F070D5D5C0300FFF489 /* libogg.0.5.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3EB8F040D5D5C0300FFF489 /* libogg.0.5.3.dylib */; };
+		E3EB8F080D5D5C0300FFF489 /* libvorbis.0.3.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3EB8F050D5D5C0300FFF489 /* libvorbis.0.3.1.dylib */; };
 		E3FFF0070D46FD1D003D79C3 /* libavutil-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3FFF0020D46FD1D003D79C3 /* libavutil-osx.a */; };
 		E3FFF0090D46FD1D003D79C3 /* libavcodec-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3FFF0040D46FD1D003D79C3 /* libavcodec-osx.a */; };
 		E3FFF02F0D470BD8003D79C3 /* libavformat-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3FFF02E0D470BD8003D79C3 /* libavformat-osx.a */; };
@@ -782,9 +787,13 @@
 /* Begin PBXFileReference section */
 		09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
 		8DD76F7E0486A8DE00D96B5E /* XBMC */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XBMC; sourceTree = BUILT_PRODUCTS_DIR; };
+		E30B3E8E0D5D59290030A311 /* libShout-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libShout-osx.a"; path = "xbmc/lib/libshout/libShout-osx.a"; sourceTree = "<group>"; };
 		E33206370D5070AA00435CE3 /* DVDDemuxVobsub.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDDemuxVobsub.cpp; sourceTree = "<group>"; };
 		E33206390D5070E000435CE3 /* FileReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileReader.cpp; sourceTree = "<group>"; };
 		E33466A50D2E5103005A65EC /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
+		E33979920D62FC46004ECDDA /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = /usr/lib/libsqlite3.0.dylib; sourceTree = "<absolute>"; };
+		E33979940D62FD47004ECDDA /* DVDInputStreamTV.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDInputStreamTV.cpp; sourceTree = "<group>"; };
+		E33979950D62FD47004ECDDA /* DVDInputStreamTV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDInputStreamTV.h; sourceTree = "<group>"; };
 		E34486730D4DD18B0020377B /* libswscale-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libswscale-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libswscale-osx.a"; sourceTree = "<group>"; };
 		E34486740D4DD18B0020377B /* libpostproc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpostproc-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libpostproc-osx.a"; sourceTree = "<group>"; };
 		E35EF2450D380AE900DB5CD5 /* libSDL-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libSDL-osx.a"; path = "xbmc/lib/libSDL-OSX/libSDL-osx.a"; sourceTree = "<group>"; };
@@ -2653,7 +2662,6 @@
 		E38E24250D26317D00618676 /* libGLEW.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.dylib; path = ../../../../../opt/local/lib/libGLEW.dylib; sourceTree = SOURCE_ROOT; };
 		E38E24260D26317D00618676 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = ../../../../../opt/local/lib/libiconv.dylib; sourceTree = SOURCE_ROOT; };
 		E38E24270D26317D00618676 /* liblzo.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = liblzo.dylib; path = ../../../../../opt/local/lib/liblzo.dylib; sourceTree = SOURCE_ROOT; };
-		E38E24280D26317D00618676 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = ../../../../../opt/local/lib/libsqlite3.dylib; sourceTree = SOURCE_ROOT; };
 		E38E24290D26317D00618676 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = ../../../../../opt/local/lib/libz.dylib; sourceTree = SOURCE_ROOT; };
 		E38E25330D26365C00618676 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		E38E25340D26365C00618676 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
@@ -2704,6 +2712,9 @@
 		E3A4781C0D29035000F3C3A6 /* LinuxFileSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LinuxFileSystem.cpp; sourceTree = "<group>"; };
 		E3D87AE90D3182F4000CF031 /* XCriticalSection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XCriticalSection.cpp; sourceTree = "<group>"; };
 		E3D87AEA0D3182F4000CF031 /* XCriticalSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XCriticalSection.h; sourceTree = "<group>"; };
+		E3EB8F030D5D5C0300FFF489 /* libmad.0.2.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmad.0.2.1.dylib; path = ../../../../../opt/local/lib/libmad.0.2.1.dylib; sourceTree = SOURCE_ROOT; };
+		E3EB8F040D5D5C0300FFF489 /* libogg.0.5.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libogg.0.5.3.dylib; path = ../../../../../opt/local/lib/libogg.0.5.3.dylib; sourceTree = SOURCE_ROOT; };
+		E3EB8F050D5D5C0300FFF489 /* libvorbis.0.3.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvorbis.0.3.1.dylib; path = ../../../../../opt/local/lib/libvorbis.0.3.1.dylib; sourceTree = SOURCE_ROOT; };
 		E3FFF0020D46FD1D003D79C3 /* libavutil-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavutil-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavutil-osx.a"; sourceTree = "<group>"; };
 		E3FFF0040D46FD1D003D79C3 /* libavcodec-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavcodec-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavcodec-osx.a"; sourceTree = "<group>"; };
 		E3FFF02E0D470BD8003D79C3 /* libavformat-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavformat-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavformat-osx.a"; sourceTree = "<group>"; };
@@ -2728,7 +2739,6 @@
 				E38E242D0D26317D00618676 /* libGLEW.dylib in Frameworks */,
 				E38E242E0D26317D00618676 /* libiconv.dylib in Frameworks */,
 				E38E242F0D26317D00618676 /* liblzo.dylib in Frameworks */,
-				E38E24300D26317D00618676 /* libsqlite3.dylib in Frameworks */,
 				E38E24310D26317D00618676 /* libz.dylib in Frameworks */,
 				E38E25350D26365C00618676 /* AppKit.framework in Frameworks */,
 				E38E25360D26365C00618676 /* ApplicationServices.framework in Frameworks */,
@@ -2749,6 +2759,11 @@
 				E3FFF02F0D470BD8003D79C3 /* libavformat-osx.a in Frameworks */,
 				E34486750D4DD18B0020377B /* libswscale-osx.a in Frameworks */,
 				E34486760D4DD18B0020377B /* libpostproc-osx.a in Frameworks */,
+				E30B3E8F0D5D59290030A311 /* libShout-osx.a in Frameworks */,
+				E3EB8F060D5D5C0300FFF489 /* libmad.0.2.1.dylib in Frameworks */,
+				E3EB8F070D5D5C0300FFF489 /* libogg.0.5.3.dylib in Frameworks */,
+				E3EB8F080D5D5C0300FFF489 /* libvorbis.0.3.1.dylib in Frameworks */,
+				E33979930D62FC46004ECDDA /* libsqlite3.0.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2778,6 +2793,11 @@
 		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				E33979920D62FC46004ECDDA /* libsqlite3.0.dylib */,
+				E3EB8F030D5D5C0300FFF489 /* libmad.0.2.1.dylib */,
+				E3EB8F040D5D5C0300FFF489 /* libogg.0.5.3.dylib */,
+				E3EB8F050D5D5C0300FFF489 /* libvorbis.0.3.1.dylib */,
+				E30B3E8E0D5D59290030A311 /* libShout-osx.a */,
 				E34486730D4DD18B0020377B /* libswscale-osx.a */,
 				E34486740D4DD18B0020377B /* libpostproc-osx.a */,
 				E3FFF02E0D470BD8003D79C3 /* libavformat-osx.a */,
@@ -2803,7 +2823,6 @@
 				E38E24250D26317D00618676 /* libGLEW.dylib */,
 				E38E24260D26317D00618676 /* libiconv.dylib */,
 				E38E24270D26317D00618676 /* liblzo.dylib */,
-				E38E24280D26317D00618676 /* libsqlite3.dylib */,
 				E38E24290D26317D00618676 /* libz.dylib */,
 				E38E238B0D2626E600618676 /* AudioToolbox.framework */,
 				E38E238C0D2626E600618676 /* AudioUnit.framework */,
@@ -3857,6 +3876,8 @@
 		E38E15570D25F9FA00618676 /* DVDInputStreams */ = {
 			isa = PBXGroup;
 			children = (
+				E33979940D62FD47004ECDDA /* DVDInputStreamTV.cpp */,
+				E33979950D62FD47004ECDDA /* DVDInputStreamTV.h */,
 				E38E15580D25F9FA00618676 /* DllDvdNav.h */,
 				E38E15590D25F9FA00618676 /* DVDFactoryInputStream.cpp */,
 				E38E155A0D25F9FA00618676 /* DVDFactoryInputStream.h */,
@@ -6543,6 +6564,7 @@
 				E36578880D3AA7B40033CC1C /* DVDPlayerCodec.cpp in Sources */,
 				E33206380D5070AA00435CE3 /* DVDDemuxVobsub.cpp in Sources */,
 				E332063A0D5070E000435CE3 /* FileReader.cpp in Sources */,
+				E33979960D62FD48004ECDDA /* DVDInputStreamTV.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
