@@ -9,6 +9,7 @@ using namespace XFILE;
 CSplash::CSplash(const CStdString& imageName)
 {
   m_ImageName = imageName;
+  fade = 0.5;
 }
 
 
