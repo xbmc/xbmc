@@ -77,7 +77,11 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   if (!m_bPassthrough)
     device = g_guiSettings.GetString("audiooutput.audiodevice");
   else
+  {
     device = g_guiSettings.GetString("audiooutput.passthroughdevice");
+    if (device.Find("AES0=6") < 0)
+      device += ":AES0=6";
+  }
 
   int nErr;
 
