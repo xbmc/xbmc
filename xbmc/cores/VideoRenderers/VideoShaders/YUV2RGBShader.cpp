@@ -65,6 +65,27 @@ static float yuv_coef_smtp240m[4][4] =
     { 0.0,      0.0,     0.0,     0.0 }
 };
 
+static float** PickYUVConversionMatrix(unsigned flags)
+{
+  // Pick the matrix.
+   float (*matrix)[4];
+   switch(CONF_FLAGS_YUVCOEF_MASK(flags))
+   {
+     case CONF_FLAGS_YUVCOEF_240M:
+       matrix = yuv_coef_smtp240m; break;
+     case CONF_FLAGS_YUVCOEF_BT709:
+       matrix = yuv_coef_bt709; break;
+     case CONF_FLAGS_YUVCOEF_BT601:    
+       matrix = yuv_coef_bt601; break;
+     case CONF_FLAGS_YUVCOEF_EBU:
+       matrix = yuv_coef_ebu; break;
+     default:
+       matrix = yuv_coef_bt601; break;
+   }
+   
+   return (float**)matrix;
+}
+
 //////////////////////////////////////////////////////////////////////
 // BaseYUV2RGBGLSLShader - base class for GLSL YUV2RGB shaders
 //////////////////////////////////////////////////////////////////////
@@ -105,20 +126,7 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(unsigned flags)
 string BaseYUV2RGBGLSLShader::BuildYUVMatrix()
 {
   // Pick the matrix.
-  float (*matrix)[4];
-  switch(CONF_FLAGS_YUVCOEF_MASK(m_flags))
-  {
-    case CONF_FLAGS_YUVCOEF_240M:
-      matrix = yuv_coef_smtp240m; break;
-    case CONF_FLAGS_YUVCOEF_BT709:
-      matrix = yuv_coef_bt709; break;
-    case CONF_FLAGS_YUVCOEF_BT601:    
-      matrix = yuv_coef_bt601; break;
-    case CONF_FLAGS_YUVCOEF_EBU:
-      matrix = yuv_coef_ebu; break;
-    default:
-      matrix = yuv_coef_bt601; break;
-  }
+  float (*matrix)[4] = (float (*)[4])PickYUVConversionMatrix(m_flags);
   
   // Convert to GLSL language.
   stringstream strStream;
@@ -311,6 +319,23 @@ bool YUV2RGBBobShader::OnEnabled()
   return true;
 }
 
+string BaseYUV2RGBARBShader::BuildYUVMatrix()
+{
+  // Pick the matrix.
+  float (*matrix)[4] = (float (*)[4])PickYUVConversionMatrix(m_flags);
+  
+  // Convert to ARB matrix.
+  stringstream strStream;
+  strStream << "{ ";
+  strStream << "  { 1.0,   0.0625, 1.1643835,  1.1383928 },\n";
+  strStream << "  { 0.5,   0.0, " << matrix[1][1] << ", " << matrix[1][2] << " },\n";
+  strStream << "  {" << matrix[2][0] << ", " << matrix[2][1] << ", 0.0, 0.0 }\n"; 
+  strStream << "};\n";
+
+  return strStream.str();
+}
+
+
 //////////////////////////////////////////////////////////////////////
 // YUV2RGBProgressiveShaderARB - YUV2RGB with no deinterlacing
 //////////////////////////////////////////////////////////////////////
@@ -346,9 +371,7 @@ YUV2RGBProgressiveShaderARB::YUV2RGBProgressiveShaderARB(bool rect, unsigned fla
   else
   {
     source = "!!ARBfp1.0\n"
-      "PARAM c[3] = { { 1, 0.0625, 1.1643835, 1.1383928 },\n"
-      "               { 0.5, 0, -0.18700001, 1.8556 },\n"
-      "               { 1.5700999, -0.4664, 0 } };\n"
+      "PARAM c[3] = " + BuildYUVMatrix() + 
       "TEMP R0;\n"
       "TEMP R1;\n"
       "TEX R1.x, fragment.texcoord[1], texture[1], "+target+"\n;"
