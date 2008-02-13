@@ -821,12 +821,13 @@ HRESULT CApplication::Create(HWND hWnd)
   // map Q to home drive of xbe to load the config file
   static CStdString strExecutablePath;
   CUtil::GetHomePath(strExecutablePath);
-
+  
 #ifndef _LINUX  
   char szDevicePath[MAX_PATH];
 
   CIoSupport::GetPartition(strExecutablePath.c_str()[0], szDevicePath);
   strcat(szDevicePath, &strExecutablePath.c_str()[2]);
+  
   CIoSupport::RemapDriveLetter('Q', szDevicePath);
 #else
   CIoSupport::RemapDriveLetter('Q', (char*) strExecutablePath.c_str());
@@ -858,13 +859,38 @@ HRESULT CApplication::Create(HWND hWnd)
   CLog::Log(LOGNOTICE, "Log File is located: %s", strLogFile.c_str());
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 
+#ifdef __APPLE__
+    // Make sure the required directories exist.
+    CStdString str = getenv("HOME");
+    str.append("/Library/Application Support/XBMC");
+    CreateDirectory(str.c_str(), NULL);
+    str.append("/UserData");
+    CreateDirectory(str.c_str(), NULL);
+    
+    // See if the keymap file exists, and if not, copy it from our "virgin" one.
+    str.append("/Keymap.xml");
+    printf("Checking for existence of %s\n", str.c_str());
+    if (access(str.c_str(), 0) == -1)
+    {
+      CStdString srcFile = _P("q:\\UserData\\Keymap.xml");
+      printf("Copying from %s to %s\n", srcFile.c_str(), str.c_str());
+      CopyFile(srcFile.c_str(), str.c_str(), TRUE);
+    }
+#endif
+  
   g_settings.m_vecProfiles.clear();
   g_settings.LoadProfiles(_P("q:\\system\\profiles.xml"));
   if (g_settings.m_vecProfiles.size() == 0)
   {
     //no profiles yet, make one based on the default settings
     CProfile profile;
+#ifdef __APPLE__
+    CStdString s = getenv("HOME");
+    s.append("/Library/Application Support/XBMC/UserData");
+    profile.setDirectory(s.c_str());
+#else
     profile.setDirectory(_P("q:\\UserData"));
+#endif
     profile.setName("Master user");
     profile.setLockMode(LOCK_MODE_EVERYONE);
     profile.setLockCode("");
@@ -895,13 +921,18 @@ HRESULT CApplication::Create(HWND hWnd)
       strMnt += g_settings.GetUserDataFolder().substr(2);
     }
 
-#ifndef _LINUX
+#ifdef __APPLE__
+    // Put the user data folder somewhere standard for the platform.
+    CStdString str = getenv("HOME");
+    str.append("/Library/Application Support/XBMC");
+    CIoSupport::RemapDriveLetter('T', str.c_str());
+#elif !defined(_LINUX)
     CIoSupport::GetPartition(strMnt.c_str()[0], szDevicePath);
     strcat(szDevicePath, &strMnt.c_str()[2]);
     CIoSupport::RemapDriveLetter('T',szDevicePath);
 #else
     CIoSupport::RemapDriveLetter('T',(char*) strMnt.c_str());
-#endif    
+#endif
   }
 
 #ifdef HAS_XRANDR
@@ -1235,6 +1266,7 @@ HRESULT CApplication::Create(HWND hWnd)
   CStdString keymapPath;
 
   keymapPath = g_settings.GetUserDataItem("Keymap.xml");
+  
 #ifdef _XBOX
   if (access(strHomePath + "\\skin", 0) || access(keymapPath.c_str(), 0))
   {
