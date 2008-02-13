@@ -40,7 +40,7 @@ command.
 Install MacPorts (http://www.macports.org/). Then install the following
 packages from the Terminal window:
 
-	$ sudo port install glew freetype fribidi libcdio lzo 
+	$ sudo port install glew freetype fribidi libcdio lzo python24
 
 -----------------------------------------------------------------------------
 4. How to compile
