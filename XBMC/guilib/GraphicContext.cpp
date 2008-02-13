@@ -578,6 +578,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     Lock();
     m_iScreenWidth = g_settings.m_ResInfo[res].iWidth;
     m_iScreenHeight = g_settings.m_ResInfo[res].iHeight;
+    RESOLUTION lastRes = m_Resolution;
     m_Resolution = res;
 #ifdef HAS_SDL_2D
     int options = SDL_HWSURFACE | SDL_DOUBLEBUF;
@@ -672,7 +673,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
                         res == PAL_16x9 || res == NTSC_16x9);
     
     // set the mouse resolution
-    if ((g_settings.m_ResInfo[m_Resolution].iWidth != g_settings.m_ResInfo[res].iWidth) || (g_settings.m_ResInfo[m_Resolution].iHeight != g_settings.m_ResInfo[res].iHeight))
+    if ((g_settings.m_ResInfo[lastRes].iWidth != g_settings.m_ResInfo[res].iWidth) || (g_settings.m_ResInfo[lastRes].iHeight != g_settings.m_ResInfo[res].iHeight))
     {
       g_Mouse.SetResolution(g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight, 1, 1);
     }
