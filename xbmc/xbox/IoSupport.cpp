@@ -40,6 +40,10 @@
 #include <linux/cdrom.h>
 #endif
 #endif
+#ifdef __APPLE__
+#include <sys/param.h>
+#include <mach-o/dyld.h>
+#endif
 #include "../FileSystem/cdioSupport.h"
 #include "../DetectDVDType.h"
 
@@ -585,6 +589,14 @@ VOID CIoSupport::GetXbePath(char* szDest)
 #elif WIN32
   GetCurrentDirectory(XBMC_MAX_PATH, szDest);
   strcat(szDest, "\\XBMC_PC.exe");
+#elif __APPLE__
+  int      result = -1;
+  char     given_path[2*MAXPATHLEN];
+  uint32_t path_size = 2*MAXPATHLEN;
+
+  result = _NSGetExecutablePath(given_path, &path_size);
+  if (result == 0)
+    realpath(given_path, szDest);
 #else
   /* Get our PID and build the name of the link in /proc */
   pid_t pid = getpid();
