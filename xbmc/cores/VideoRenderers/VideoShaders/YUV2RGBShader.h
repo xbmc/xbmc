@@ -52,6 +52,7 @@ namespace Shaders {
     virtual void SetWidth(int w)     { m_width  = w; }
     virtual void SetHeight(int h)    { m_height = h; }
     virtual void SetFlags(bool range) {m_bFullYUVRange = range; }
+    string       BuildYUVMatrix();
 
   protected:
     unsigned m_flags;
