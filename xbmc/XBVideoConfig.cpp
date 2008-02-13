@@ -355,13 +355,9 @@ void XBVideoConfig::GetModes()
 
 RESOLUTION XBVideoConfig::GetSafeMode() const
 {
-#ifdef __APPLE__
-  // We're slightly more ambitious here.
-  return HDTV_720p;
-#else
+  // TODO: auto detect user's desktop resolution and accordingly return a safe mode
   if (HasPAL()) return PAL_4x3;
   return NTSC_4x3;
-#endif
 }
 
 RESOLUTION XBVideoConfig::GetBestMode() const
