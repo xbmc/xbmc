@@ -1575,7 +1575,9 @@ void CUtil::GetHomePath(CStdString& strPath)
 	  printf("WARNING: The XBMC_HOME environment variable is not set.\n");
   
   if (getenv("XBMC_HOME") != NULL)
+  {
     strPath = getenv("XBMC_HOME");
+  }
   else
   {
 #ifdef __APPLE__
@@ -1583,23 +1585,23 @@ void CUtil::GetHomePath(CStdString& strPath)
     char     given_path[2*MAXPATHLEN];
     uint32_t path_size = 2*MAXPATHLEN;
 
-      result = _NSGetExecutablePath(given_path, &path_size);
-      if (result == 0)
-      {
-        // Move backwards to last /.
-        for (int n=strlen(given_path)-1; given_path[n] != '/'; n--)
-          given_path[n] = '\0';
-        
-        // Assume local path inside application bundle.
-        strcat(given_path, "../Resources/XBMC/");
-        
-        // Convert to real path.
-        char real_path[2*MAXPATHLEN];
-        if (realpath(given_path, real_path) != NULL)
-          strPath = real_path;
-        else
-          printf("ERROR obtaining real path for '%s'\n", given_path);
-      }
+    result = _NSGetExecutablePath(given_path, &path_size);
+    if (result == 0)
+    {
+      // Move backwards to last /.
+      for (int n=strlen(given_path)-1; given_path[n] != '/'; n--)
+        given_path[n] = '\0';
+      
+      // Assume local path inside application bundle.
+      strcat(given_path, "../Resources/XBMC/");
+      
+      // Convert to real path.
+      char real_path[2*MAXPATHLEN];
+      if (realpath(given_path, real_path) != NULL)
+        strPath = real_path;
+      else
+        CLog::Log(LOGERROR, "ERROR obtaining real path for '%s'\n", given_path);
+    }
 #else
     char *szFileName = strrchr(szXBEFileName, '/');
     *szFileName = 0;
@@ -5745,6 +5747,19 @@ CStdString CUtil::TranslatePath(const CStdString& path)
 		
 	if (path.length() > 0 && path[1] == ':')
 	{
+#ifdef __APPLE__
+	  // Special mappings for OS X.
+	  if (path[0] == 'Q' || path[0] == 'q')
+	  {
+	    if (path.Equals("q:\\system\\profiles.xml", false))
+	    {
+	      CStdString str = getenv("HOME");
+	      str.append("/Library/Application Support/XBMC/profiles.xml");
+	      return str;
+	    }
+	  }
+#endif
+	  
 	   const char *p = CIoSupport::GetPartition(path[0]);
 	   if (p != NULL)
 	   {
