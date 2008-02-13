@@ -25,6 +25,8 @@
 
 using namespace XFILE;
 
+#define SEEK_CHECK_RET(x) if (!(x)) return -1;
+
 CacheMemBuffer::CacheMemBuffer()
  : CCacheStrategy()
 {
@@ -174,23 +176,23 @@ __int64 CacheMemBuffer::Seek(__int64 iFilePosition, int iWhence)
   {
     CRingBuffer saveHist, saveUnRead;
     __int64 nToSkip = iFilePosition - iHistoryStart;
-    ASSERT(m_HistoryBuffer.ReadBinary(saveHist, (int)nToSkip));
+    SEEK_CHECK_RET(m_HistoryBuffer.ReadBinary(saveHist, (int)nToSkip));
 
-    ASSERT(saveUnRead.Copy(m_buffer));
+    SEEK_CHECK_RET(saveUnRead.Copy(m_buffer));
 
-    ASSERT(m_buffer.Copy(m_HistoryBuffer));
+    SEEK_CHECK_RET(m_buffer.Copy(m_HistoryBuffer));
     int nSpace = m_buffer.GetMaxWriteSize();
     int nToCopy = saveUnRead.GetMaxReadSize();
 
     if (nToCopy < nSpace)
       nSpace = nToCopy;
 
-    ASSERT(saveUnRead.ReadBinary(m_buffer, nSpace));
+    SEEK_CHECK_RET(saveUnRead.ReadBinary(m_buffer, nSpace));
     nToCopy -= nSpace;
     if (nToCopy > 0)
       m_forwardBuffer.Copy(saveUnRead);
 
-    ASSERT(m_HistoryBuffer.Copy(saveHist));
+    SEEK_CHECK_RET(m_HistoryBuffer.Copy(saveHist));
     m_HistoryBuffer.Clear();
 
     m_nStartPosition = iFilePosition; 
