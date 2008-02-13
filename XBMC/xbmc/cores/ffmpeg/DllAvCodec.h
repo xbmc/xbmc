@@ -75,8 +75,11 @@ public:
   }
   virtual int avcodec_open_dont_call(AVCodecContext *avctx, AVCodec *codec) { *(int *)0x0 = 0; return 0; } 
   virtual AVCodec *avcodec_find_decoder(enum CodecID id) { return ::avcodec_find_decoder(id); }
-  virtual int avcodec_close(AVCodecContext *avctx) { return ::avcodec_close(avctx); }
-  
+  virtual int avcodec_close(AVCodecContext *avctx) 
+  {
+    CSingleLock lock(DllAvCodec::m_critSection);
+    return ::avcodec_close(avctx); 
+  }
   virtual AVFrame *avcodec_alloc_frame() { return ::avcodec_alloc_frame(); }
   virtual int avpicture_fill(AVPicture *picture, uint8_t *ptr, int pix_fmt, int width, int height) { return ::avpicture_fill(picture, ptr, pix_fmt, width, height); }
   virtual int avcodec_decode_video(AVCodecContext *avctx, AVFrame *picture, int *got_picture_ptr, uint8_t *buf, int buf_size) { return ::avcodec_decode_video(avctx, picture, got_picture_ptr, buf, buf_size); }
