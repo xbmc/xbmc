@@ -40,11 +40,35 @@ void Cocoa_GL_SwapBuffers(void* theContext)
 	[ context flushBuffer ];
 }
 
+#define MAX_DISPLAYS 32
+
 void Cocoa_GetScreenResolution(int* w, int* h)
 {
   // Figure out the screen size.
   CGDirectDisplayID display_id = kCGDirectMainDisplay;
-  CFDictionaryRef   save_mode  = CGDisplayCurrentMode(display_id);
+  
+  const char* strDisplayNum = getenv("SDL_VIDEO_FULLSCREEN_DISPLAY");
+  if (strDisplayNum != 0)
+  {
+	int display_num = atoi(strDisplayNum);
+	if (display_num != 0)
+	{
+		CGDirectDisplayID displayArray[MAX_DISPLAYS];
+		CGDisplayCount    numDisplays;
+		
+		// Get the list of displays.
+		CGGetActiveDisplayList(MAX_DISPLAYS, displayArray, &numDisplays);
+		printf("There are %d displays, requested was %d.\n", numDisplays, display_num);
+		
+		if (display_num <= numDisplays)
+		{
+			printf("Replacing display ID %d with %d\n", display_id, displayArray[display_num-1]);
+			display_id = displayArray[display_num-1];
+		}
+	}
+  }
+  
+  CFDictionaryRef save_mode  = CGDisplayCurrentMode(display_id);
 
   CFNumberGetValue(CFDictionaryGetValue(save_mode, kCGDisplayWidth), kCFNumberSInt32Type, w);
   CFNumberGetValue(CFDictionaryGetValue(save_mode, kCGDisplayHeight), kCFNumberSInt32Type, h);
