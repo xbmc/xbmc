@@ -255,11 +255,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_controllerDeadzone = 0.2f;
   g_advancedSettings.m_displayRemoteCodes = false;
 
-#ifdef __APPLE__
   g_advancedSettings.m_thumbSize = 512;
-#else
-  g_advancedSettings.m_thumbSize = 192;
-#endif
 
   g_advancedSettings.m_sambadoscodepage = "";
   g_advancedSettings.m_sambaclienttimeout = 10;
