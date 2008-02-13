@@ -102,9 +102,7 @@
 #define HAS_PYTHON
 #define HAS_TRAINER
 #define HAS_AUDIO
-#ifndef __APPLE__
 #define HAS_SHOUTCAST
-#endif
 #define HAS_RAR
 #undef  HAS_LIRC
 #define HAS_KAI
@@ -133,9 +131,7 @@
 #define HAS_WEB_SERVER
 #define HAS_UPNP
 #undef  HAS_AUDIO
-#ifndef __APPLE__
 #define  HAS_SHOUTCAST
-#endif
 #define HAS_SDL
 #define HAS_RAR
 #define HAS_FILESYSTEM_CDDA
