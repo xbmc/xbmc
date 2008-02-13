@@ -269,24 +269,15 @@ DWORD CSMB::ConvertUnixToNT(int error)
 #endif
 
 #ifdef _LINUX
-/* This is a quick fix to know if there is active files still even if reported IDLE, for exampla if paused a video and
-   navigating a folder. The folder checkup will say it's idle even if it's a file playing. TODO Clean up this code a bit*/
-bool CSMB::IsInit()
-{
-  if (m_context == NULL)
-    return false;
-  else
-    return true;
-}
-
 /* This is called from CApplication::ProcessSlow() and is used to tell if smbclient have been idle for too long */
 void CSMB::CheckIfIdle()
 {
-  CSingleLock(*this);
-  if (!smb.IsInit())
-    return;
+/* We check if there are open connections. This is done without a lock to not halt the mainthread. It should be thread safe as
+   worst case scenario is that m_OpenConnections could read 0 and then changed to 1 if this happens it will enter the if wich will lead to another check, wich is locked.
+   TODO The better choice would be to use TryEnterCritical (when ported) or check if locked because then it most certainly isn't idle */
   if (m_OpenConnections == 0)
   { /* I've set the the maxiumum IDLE time to be 1 min and 30 sec. */
+    CSingleLock(*this);
     if ((timeGetTime() - m_LastActive) > 90000)
     {
       CLog::Log(LOGNOTICE, "Samba is idle. Closing the remaining connections");
@@ -334,8 +325,8 @@ CFileSMB::~CFileSMB()
 __int64 CFileSMB::GetPosition()
 {
   if (m_fd == -1) return 0;
-  CSingleLock lock(smb);
   smb.Init();
+  CSingleLock lock(smb);
   __int64 pos = smbc_lseek(m_fd, 0, SEEK_CUR);
   if ( pos < 0 )
     return 0;
@@ -363,8 +354,8 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
   }
   m_url = url;
 
-  CSingleLock lock(smb);
   smb.Init();
+  CSingleLock lock(smb);
   // opening a file to another computer share will create a new session
   // when opening smb://server xbms will try to find folder.jpg in all shares
   // listed, which will create lot's of open sessions.
@@ -534,8 +525,8 @@ int CFileSMB::Stat(const CURL& url, struct __stat64* buffer)
 unsigned int CFileSMB::Read(void *lpBuf, __int64 uiBufSize)
 {
   if (m_fd == -1) return 0;
-  CSingleLock lock(smb);
   smb.Init();
+  CSingleLock lock(smb);
   /* work around stupid bug in samba */
   /* some samba servers has a bug in it where the */
   /* 17th bit will be ignored in a request of data */
@@ -567,8 +558,8 @@ __int64 CFileSMB::Seek(__int64 iFilePosition, int iWhence)
   if(iWhence == SEEK_POSSIBLE)
     return 1;
 
-  CSingleLock lock(smb);
   smb.Init();
+  CSingleLock lock(smb);
   INT64 pos = smbc_lseek(m_fd, iFilePosition, iWhence);
 
   if ( pos < 0 )
@@ -590,12 +581,7 @@ void CFileSMB::Close()
   {
     CLog::Log(LOGDEBUG,"CFileSMB::Close closing fd %d", m_fd);
     CSingleLock lock(smb);
-#ifndef _LINUX
     smbc_close(m_fd);
-#else
-    if (smb.IsInit())
-      smbc_close(m_fd);
-#endif
   }
   m_fd = -1;
 }
@@ -606,8 +592,8 @@ int CFileSMB::Write(const void* lpBuf, __int64 uiBufSize)
   DWORD dwNumberOfBytesWritten = 0;
 
   // lpBuf can be safely casted to void* since xmbc_write will only read from it.
-  CSingleLock lock(smb);
   smb.Init();
+  CSingleLock lock(smb);
   dwNumberOfBytesWritten = smbc_write(m_fd, (void*)lpBuf, (DWORD)uiBufSize);
 
   return (int)dwNumberOfBytesWritten;

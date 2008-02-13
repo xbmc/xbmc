@@ -43,7 +43,6 @@ public:
   void CheckIfIdle();
   void AddActiveConnection();
   void AddIdleConnection();
-  bool IsInit();
 #endif  
   CStdString URLEncode(const CStdString &value);
   CStdString URLEncode(const CURL &url);
