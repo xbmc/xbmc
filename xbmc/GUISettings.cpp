@@ -922,8 +922,13 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   }
   // Get hardware based stuff...
   CLog::Log(LOGNOTICE, "Getting hardware information now...");
+#ifdef __APPLE__
+  // Force digital for now -- FIXME, change this when mixdown is supported.
+  SetInt("audiooutput.mode", AUDIO_DIGITAL);
+#else
   if (GetInt("audiooutput.mode") == AUDIO_DIGITAL && !g_audioConfig.HasDigitalOutput())
     SetInt("audiooutput.mode", AUDIO_ANALOG);
+#endif
   SetBool("audiooutput.ac3passthrough", g_audioConfig.GetAC3Enabled());
   SetBool("audiooutput.dtspassthrough", g_audioConfig.GetDTSEnabled());
   CLog::Log(LOGINFO, "Using %s output", GetInt("audiooutput.mode") == AUDIO_ANALOG ? "analog" : "digital");
