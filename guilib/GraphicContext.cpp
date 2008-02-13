@@ -851,14 +851,16 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 
 float CGraphicContext::GetPixelRatio(RESOLUTION iRes) const
 {
+#ifndef _LINUX
   if (iRes == HDTV_1080i || iRes == HDTV_720p) return 1.0f;
   if (iRes == HDTV_480p_4x3 || iRes == NTSC_4x3 || iRes == PAL60_4x3) return 4320.0f / 4739.0f;
   if (iRes == HDTV_480p_16x9 || iRes == NTSC_16x9 || iRes == PAL60_16x9) return 4320.0f / 4739.0f*4.0f / 3.0f;
   if (iRes == PAL_16x9) return 128.0f / 117.0f*4.0f / 3.0f;
+  return 128.0f / 117.0f;
+#endif
   // TODO: use XRandR to query physical size and obtain exact pixel ratio
   // for now, just assume square pixels (most monitors' native resolution)
-  if (iRes >= WINDOW) return 1.0f;
-  return 128.0f / 117.0f;
+  return 1.0f;
 }
 
 void CGraphicContext::Clear()
