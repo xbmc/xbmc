@@ -1441,7 +1441,7 @@ void CSettings::LoadAdvancedSettings()
 
   GetInteger(pRootElement, "remoterepeat", g_advancedSettings.m_remoteRepeat, 480, 1, INT_MAX);
   GetFloat(pRootElement, "controllerdeadzone", g_advancedSettings.m_controllerDeadzone, 0.2f, 0.0f, 1.0f);
-  GetInteger(pRootElement, "thumbsize", g_advancedSettings.m_thumbSize, 192, 64, 512);
+  GetInteger(pRootElement, "thumbsize", g_advancedSettings.m_thumbSize, 192, 64, 1024);
 
   XMLUtils::GetBoolean(pRootElement, "playlistasfolders", g_advancedSettings.m_playlistAsFolders);
   XMLUtils::GetBoolean(pRootElement, "detectasudf", g_advancedSettings.m_detectAsUdf);
