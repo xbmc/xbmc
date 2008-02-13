@@ -234,13 +234,16 @@ public:
   //
   BOOL Append(const CRingBuffer &buf)
   {
-	::EnterCriticalSection(&m_critSection);
+    ::EnterCriticalSection(&m_critSection);
 	
     if (m_pBuf == NULL)
       Create(buf.GetMaxReadSize() + 1);
 
     if (buf.GetMaxReadSize() > GetMaxWriteSize())
+    {
+      ::LeaveCriticalSection(&m_critSection );
       return FALSE;
+    }
 
     int iReadPtr = buf.m_iReadPtr;
     if (iReadPtr < buf.m_iWritePtr)
