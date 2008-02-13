@@ -28,6 +28,8 @@
 
 #include "stdafx.h"
 #include "Application.h"
+#include "FileItem.h"
+#include "PlayListPlayer.h"
 
 
 CApplication g_application;
@@ -37,6 +39,7 @@ void main()
 int main(int argc, char* argv[])
 #endif
 {
+  CFileItemList playlist;
   if (argc > 1)
   {
     for (int i=1; i<argc;i++)
@@ -44,23 +47,36 @@ int main(int argc, char* argv[])
       if (strnicmp(argv[i], "-q", 2) == 0)
         g_application.SetQuiet(true);
       
-      if (strnicmp(argv[i], "-fs", 3) == 0)
+      else if (strnicmp(argv[i], "-fs", 3) == 0)
       {
         printf("Running in fullscreen mode...\n");
         g_advancedSettings.m_fullScreen = true;
+      }
+      else if (argv[i][0] != '-')
+      {
+        CFileItem *pItem = new CFileItem(argv[i]);
+        pItem->m_strPath = argv[i];
+        playlist.Add(pItem);
       }
     }
   }
   
   g_application.Create(NULL);
+  if (playlist.Size() > 0)
+  {
+    g_playlistPlayer.Add(0,playlist);
+    g_playlistPlayer.SetCurrentPlaylist(0);
+  }
+
+  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY, (DWORD) -1};
+  g_application.getApplicationMessenger().SendMessage(tMsg, false);
+
   while (1)
   {
     g_application.Run();
   }
 
-#ifndef _LINUX
   return 0;
-#endif
 }
 
 extern "C"
