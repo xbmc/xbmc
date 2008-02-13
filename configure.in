@@ -70,7 +70,8 @@ fi
 AC_CHECK_LIB([Xinerama], [main],, AC_MSG_ERROR(libXinerama is required. Please see README.linux))
 AC_CHECK_LIB([mad], [main],, AC_MSG_ERROR(libmad is required. Please see README.linux))
 AC_CHECK_LIB([tre], [main],, AC_MSG_ERROR(libtre is required. Please see README.linux))
-
+AC_CHECK_LIB([ogg], [main],, AC_MSG_ERROR(libogg is required. Please see README.linux))
+AC_CHECK_LIB([vorbis], [main],, AC_MSG_ERROR(libvorbis is required. Please see README.linux)) 
 AC_CHECK_LIB([SDL], [main])
 if test "$use_gl" = "no"; then
   AC_MSG_RESULT(== WARNING: OpenGL support is disabled. XBMC will run VERY slow. ==)
@@ -99,6 +100,7 @@ fi
 
 if test "$use_mms" = "yes"; then
   AC_CHECK_LIB([mms], [mms_connect],, use_mms="no";AC_MSG_RESULT(== Could not find libmms. MMS support disabled. ==))
+  AC_CHECK_LIB([mms], [mms_seek],, use_mms="no";AC_MSG_RESULT(== Could not find libmms. MMS support disabled. ==))
 else
   AC_MSG_RESULT(== MMS support disabled. ==)
 fi
