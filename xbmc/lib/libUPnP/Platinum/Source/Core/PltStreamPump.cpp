@@ -149,7 +149,7 @@ PLT_PipeInputStreamPump::Receive(NPT_InputStream& input,
 +---------------------------------------------------------------------*/
 PLT_PipeOutputStreamPump::PLT_PipeOutputStreamPump(NPT_InputStreamReference& input,
                                                    NPT_Size                  size /* 65535 */,
-                                                   NPT_Size                  max_bytes_to_read /* = -1 */) : 
+                                                   NPT_Size                  max_bytes_to_read /* = 0 */) : 
     PLT_StreamPump(size),
     m_Input(input),
     m_MaxBytesToRead(max_bytes_to_read),
@@ -178,7 +178,7 @@ PLT_PipeOutputStreamPump::Transmit(NPT_OutputStream& output)
         NPT_Size max_space   = m_RingBuffer->GetSpace();
         if (max_space) {
             NPT_Size max_to_read = max_space;
-            if (m_MaxBytesToRead != -1) {
+            if (m_MaxBytesToRead != 0) {
                 // if a total maximum amount was set, make sure we don't read more
                 max_to_read = ((m_MaxBytesToRead - m_TotalBytesRead) < max_space) ? (m_MaxBytesToRead - m_TotalBytesRead) : max_space;
             }

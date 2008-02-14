@@ -37,9 +37,9 @@ public:
     NPT_Result Browse(
         PLT_DeviceDataReference& device, 
         const char*              object_id, 
-        const char*              browse_flag,
         NPT_UInt32               start_index,
         NPT_UInt32               count,
+        bool                     browse_metadata = false,
         const char*              filter = "*",
         const char*              sort_criteria = "",
         void*                    userdata = NULL);

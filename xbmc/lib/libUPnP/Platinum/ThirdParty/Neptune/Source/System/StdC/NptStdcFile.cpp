@@ -17,12 +17,17 @@
 #include <sys/stat.h>
 #endif
 
+#include "NptConfig.h"
 #include "NptUtils.h"
 #include "NptFile.h"
 #include "NptThreads.h"
 #include "NptInterfaces.h"
 #include "NptStrings.h"
 #include "NptDebug.h"
+
+#if defined(NPT_CONFIG_HAVE_SHARE_H)
+#include <share.h>
+#endif
 
 /*----------------------------------------------------------------------
 |   compatibility wrappers
@@ -33,6 +38,7 @@ static int fopen_s(FILE**      file,
                    const char* mode)
 {
     *file = fopen(filename, mode);
+
 #if defined(_WIN32_WCE)
     if (*file == NULL) return ENOENT;
 #else
@@ -82,6 +88,7 @@ public:
     // NPT_FileInterface methods
     NPT_Result Seek(NPT_Position offset);
     NPT_Result Tell(NPT_Position& offset);
+    NPT_Result Flush();
 
 protected:
     // constructors and destructors
@@ -114,6 +121,16 @@ NPT_Result
 NPT_StdcFileStream::Tell(NPT_Position& offset)
 {
     offset = ftell(m_FileReference->GetFile());
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_StdcFileStream::Flush
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_StdcFileStream::Flush()
+{
+    fflush(m_FileReference->GetFile());
     return NPT_SUCCESS;
 }
 
@@ -222,6 +239,9 @@ public:
     }
     NPT_Result Tell(NPT_Position& offset) {
         return NPT_StdcFileStream::Tell(offset);
+    }
+    NPT_Result Flush() {
+        return NPT_StdcFileStream::Flush();
     }
 };
 
@@ -340,7 +360,12 @@ NPT_StdcFile::Open(NPT_File::OpenMode mode)
         }
 
         // open the file
+#if defined(NPT_CONFIG_HAVE_FSOPEN)
+        file = _fsopen(name, fmode, _SH_DENYWR);
+        int open_result = file == NULL ? ENOENT : 0; 
+#else
         int open_result = fopen_s(&file, name, fmode);
+#endif
 
         // test the result of the open
         if (open_result != 0) {

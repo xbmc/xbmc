@@ -37,47 +37,66 @@ public:
     ~PLT_Service();
     
     // class methods
-    NPT_Result InitURLs(const char* service_name, const char* device_uuid);
-    bool IsInitted() {
+    NPT_Result  InitURLs(const char* service_name, const char* device_uuid);
+    bool        IsInitted() {
         return (m_ActionDescs.GetItemCount() > 0);
     }
 
     // static methods
     static bool IsTrue(NPT_String& value) {
-        if (value.Compare("1", true) && value.Compare("true", true) && value.Compare("yes", true)) {
+        if (value.Compare("1", true)    && 
+            value.Compare("true", true) && 
+            value.Compare("yes", true)) {
             return false;
         }
         return true;
     }
 
     // accessor methods
-    const NPT_String& GetSCPDURL()      const   { return m_SCPDURL;     }
-    const NPT_String& GetControlURL()   const   { return m_ControlURL;  }
-    const NPT_String& GetEventSubURL()  const   { return m_EventSubURL; }
-    const NPT_String& GetServiceID()    const   { return m_ServiceID;   }
-    const NPT_String& GetServiceType()  const   { return m_ServiceType; }    
-    PLT_DeviceData*   GetDevice()               { return m_Device; }
+    const NPT_String&   GetSCPDURL()      const   { return m_SCPDURL;     }
+    const NPT_String&   GetControlURL()   const   { return m_ControlURL;  }
+    const NPT_String&   GetEventSubURL()  const   { return m_EventSubURL; }
+    const NPT_String&   GetServiceID()    const   { return m_ServiceID;   }
+    const NPT_String&   GetServiceType()  const   { return m_ServiceType; }    
+    PLT_DeviceData*     GetDevice()               { return m_Device; }
 
     // XML
-    NPT_Result GetSCPDXML(NPT_String& xml);
-    NPT_Result SetSCPDXML(const char* xml);
-    NPT_Result GetDescription(NPT_XmlElementNode* parent, NPT_XmlElementNode** service = NULL);
+    NPT_Result          GetSCPDXML(NPT_String& xml);
+    NPT_Result          SetSCPDXML(const char* xml);
+    NPT_Result          GetDescription(NPT_XmlElementNode* parent, NPT_XmlElementNode** service = NULL);
 
     // State Variables
     NPT_Result          SetStateVariable(const char* name, const char* value, bool publish = true);
+    NPT_Result          SetStateVariableRate(const char* name, NPT_TimeInterval rate);
     NPT_Result          IncStateVariable(const char* name, bool publish = true);
     PLT_StateVariable*  FindStateVariable(const char* name);
     bool                IsSubscribable();
-    NPT_Result          NotifySubs(PLT_StateVariable* var = NULL);
-    NPT_Result          NotifySub(PLT_EventSubscriber* sub, PLT_StateVariable* var = NULL);
-    NPT_Result          AddChanged(PLT_StateVariable* var = NULL);
-    NPT_Result          NotifyChanged();
 
     // Actions
     PLT_ActionDesc*     FindActionDesc(const char* name);
 
 private:    
-    void Cleanup();
+    void                Cleanup();
+    NPT_Result          AddChanged(PLT_StateVariable* var);
+    NPT_Result          UpdateLastChange(NPT_List<PLT_StateVariable*>& vars);
+    NPT_Result          NotifyChanged();
+
+
+    /*----------------------------------------------------------------------
+    |    PLT_ServiceEventTask
+    +---------------------------------------------------------------------*/
+    class PLT_ServiceEventTask : public PLT_ThreadTask
+    {
+    public:
+        PLT_ServiceEventTask(PLT_Service* service) : m_Service(service) {}
+
+        void DoRun() { 
+            while (!IsAborting(10)) m_Service->NotifyChanged();
+        }
+
+    private:
+        PLT_Service* m_Service;
+    };
 
     // Events
     NPT_Result ProcessNewSubscription(
@@ -100,7 +119,7 @@ private:
 
 
 protected:
-    friend class PLT_StateVariable; // so that we can call NotifySub from StateVariable
+    friend class PLT_StateVariable; // so that we can call AddChanged from StateVariable
     friend class PLT_DeviceHost;
     friend class PLT_DeviceData;
     
@@ -111,11 +130,14 @@ protected:
     NPT_String      m_SCPDURL;
     NPT_String      m_ControlURL;
     NPT_String      m_EventSubURL;
+    PLT_ServiceEventTask* m_EventTask;
     
-    NPT_Array<PLT_ActionDesc*>       m_ActionDescs;
-    NPT_Array<PLT_StateVariable*>    m_StateVariables;
-    NPT_Array<PLT_StateVariable*>    m_StateChanged;
-    NPT_List<PLT_EventSubscriber*>   m_Subscribers;
+    NPT_Array<PLT_ActionDesc*>      m_ActionDescs;
+    NPT_List<PLT_StateVariable*>    m_StateVars;
+    NPT_Mutex                       m_Lock;
+    NPT_List<PLT_StateVariable*>    m_StateVarsChanged;
+    NPT_List<PLT_StateVariable*>    m_StateVarsToPublish;
+    NPT_List<PLT_EventSubscriber*>  m_Subscribers;
 };
 
 /*----------------------------------------------------------------------
@@ -173,13 +195,13 @@ class PLT_ServiceIDFinder
 {
 public:
     // methods
-    PLT_ServiceIDFinder(const char* id) : m_id(id) {}
+    PLT_ServiceIDFinder(const char* id) : m_Id(id) {}
     virtual ~PLT_ServiceIDFinder() {}
     bool operator()(PLT_Service* const & service) const;
 
 private:
     // members
-    NPT_String m_id;
+    NPT_String m_Id;
 };
 
 /*----------------------------------------------------------------------
@@ -189,13 +211,13 @@ class PLT_ServiceTypeFinder
 {
 public:
     // methods
-    PLT_ServiceTypeFinder(const char* type) : m_type(type) {}
+    PLT_ServiceTypeFinder(const char* type) : m_Type(type) {}
     virtual ~PLT_ServiceTypeFinder() {}
     bool operator()(PLT_Service* const & service) const;
 
 private:
     // members
-    NPT_String m_type;
+    NPT_String m_Type;
 };
 
 /*----------------------------------------------------------------------
@@ -205,9 +227,9 @@ class PLT_LastChangeXMLIterator
 {
 public:
     // methods
-    PLT_LastChangeXMLIterator(NPT_XmlElementNode* node) 
-      : m_Node(node) {}
+    PLT_LastChangeXMLIterator(NPT_XmlElementNode* node) : m_Node(node) {}
     virtual ~PLT_LastChangeXMLIterator() {}
+
     NPT_Result operator()(PLT_StateVariable* const & var) const;
 
 private:
