@@ -129,7 +129,7 @@ PLT_DeviceHost::Start(PLT_SsdpListenTask* task)
     
     // the XBOX cannot receive multicast, so we blast every 7 secs
 #ifdef _XBOX
-        repeat.m_Seconds = 7;
+    repeat.m_Seconds = 7;
 #endif
 
     PLT_ThreadTask* announce_task = new PLT_SsdpDeviceAnnounceTask(this, repeat, true, m_Broadcast);
