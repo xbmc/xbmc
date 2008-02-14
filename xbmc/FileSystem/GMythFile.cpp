@@ -387,7 +387,7 @@ unsigned int CGMythFile::Read(void* buffer, __int64 size)
 
 bool CGMythFile::SkipNext()
 {
-  if(!m_livetv || !m_held)
+  if(!m_livetv)
     return false;
 
   if(!gmyth_livetv_next_program_chain(m_livetv))
