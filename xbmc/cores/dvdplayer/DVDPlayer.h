@@ -212,7 +212,7 @@ protected:
   void CheckContinuity(DemuxPacket* pPacket, unsigned int source);
 
   bool ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream);
-  bool IsValidStream(CCurrentStream& stream);
+  bool IsValidStream(CCurrentStream& stream, StreamType type);
   bool IsBetterStream(CCurrentStream& current, StreamType type, CDemuxStream* stream);
 
   bool OpenDemuxStream();

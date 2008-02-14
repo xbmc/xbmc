@@ -487,7 +487,7 @@ bool CDVDPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
   return false;
 }
 
-bool CDVDPlayer::IsValidStream(CCurrentStream& stream)
+bool CDVDPlayer::IsValidStream(CCurrentStream& stream, StreamType type)
 {
   if(stream.id<0)
     return true; // we consider non selected as valid
@@ -500,12 +500,16 @@ bool CDVDPlayer::IsValidStream(CCurrentStream& stream)
     CDemuxStream* st = m_pSubtitleDemuxer->GetStream(stream.id);
     if(st == NULL || st->disabled)
       return false;
+    if(st->type != type)
+      return false;
     return true;
   }
   if(source == STREAM_SOURCE_DEMUX)
   {
     CDemuxStream* st = m_pDemuxer->GetStream(stream.id);
     if(st == NULL || st->disabled)
+      return false;
+    if(st->type != type)
       return false;
     return true;
   }
@@ -801,14 +805,14 @@ void CDVDPlayer::Process()
       }
 
       // check so that none of our streams has become invalid
-      if (!IsValidStream(m_CurrentAudio))    CloseAudioStream(false);
-      if (!IsValidStream(m_CurrentVideo))    CloseVideoStream(false);
-      if (!IsValidStream(m_CurrentSubtitle)) CloseSubtitleStream(false);
+      if (!IsValidStream(m_CurrentAudio,    STREAM_AUDIO))    CloseAudioStream(false);
+      if (!IsValidStream(m_CurrentVideo,    STREAM_VIDEO))    CloseVideoStream(false);
+      if (!IsValidStream(m_CurrentSubtitle, STREAM_SUBTITLE)) CloseSubtitleStream(false);
 
       // check if there is any better stream to use (normally for dvd's)
-      if (IsBetterStream(m_CurrentSubtitle, STREAM_SUBTITLE, pStream)) OpenSubtitleStream(pStream->iId, pStream->source);
-      if (IsBetterStream(m_CurrentAudio,    STREAM_AUDIO,    pStream)) OpenAudioStream(pStream->iId, pStream->source);        
+      if (IsBetterStream(m_CurrentAudio,    STREAM_AUDIO,    pStream)) OpenAudioStream(pStream->iId, pStream->source);
       if (IsBetterStream(m_CurrentVideo,    STREAM_VIDEO,    pStream)) OpenVideoStream(pStream->iId, pStream->source);
+      if (IsBetterStream(m_CurrentSubtitle, STREAM_SUBTITLE, pStream)) OpenSubtitleStream(pStream->iId, pStream->source);
     }
     catch (...)
     {
