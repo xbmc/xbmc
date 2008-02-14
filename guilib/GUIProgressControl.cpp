@@ -4,7 +4,14 @@
 
 
 
-CGUIProgressControl::CGUIProgressControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& backGroundTexture, const CImage& leftTexture, const CImage& midTexture, const CImage& rightTexture, const CImage& overlayTexture, float min, float max)
+CGUIProgressControl::CGUIProgressControl(DWORD dwParentID, DWORD dwControlId, 
+                                         float posX, float posY, float width, 
+                                         float height, const CImage& backGroundTexture, 
+                                         const CImage& leftTexture, 
+                                         const CImage& midTexture, 
+                                         const CImage& rightTexture, 
+                                         const CImage& overlayTexture, float min, float max,
+                                         bool reveal)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
     , m_guiBackground(dwParentID, dwControlId, posX, posY, width, height, backGroundTexture)
     , m_guiLeft(dwParentID, dwControlId, posX, posY, width, height, leftTexture)
@@ -17,6 +24,7 @@ CGUIProgressControl::CGUIProgressControl(DWORD dwParentID, DWORD dwControlId, fl
   m_fPercent = 0;
   m_iInfoCode = 0;
   ControlType = GUICONTROL_PROGRESS;
+  m_bReveal = reveal;
 }
 
 CGUIProgressControl::~CGUIProgressControl(void)
@@ -58,8 +66,9 @@ void CGUIProgressControl::Render()
     m_guiBackground.Render();
 
     float fWidth = m_fPercent;
+    float fFullWidth = (float)(m_guiBackground.GetTextureWidth() - m_guiLeft.GetTextureWidth() - m_guiRight.GetTextureWidth());
     fWidth /= 100.0f;
-    fWidth *= m_guiBackground.GetTextureWidth() - m_guiLeft.GetTextureWidth() - m_guiRight.GetTextureWidth();
+    fWidth *= fFullWidth;
 
     float posX = m_guiBackground.GetXPosition();
     float posY = m_guiBackground.GetYPosition();
@@ -81,8 +90,18 @@ void CGUIProgressControl::Render()
       else
         m_guiMid.SetPosition(posX, posY);
       m_guiMid.SetHeight(fScaleY * m_guiMid.GetTextureHeight());
-      m_guiMid.SetWidth(fScaleX * fWidth);
-      m_guiMid.Render();
+      if (m_bReveal)
+      {
+        m_guiMid.SetWidth(fScaleX * fFullWidth);
+        g_graphicsContext.SetClipRegion(posX, posY+offset, fScaleX * fWidth, fScaleY * m_guiMid.GetTextureHeight());
+        m_guiMid.Render();
+        g_graphicsContext.RestoreClipRegion();
+      }
+      else
+      {
+        m_guiMid.SetWidth(fScaleX * fWidth);
+        m_guiMid.Render();
+      }
       posX += fWidth * fScaleX;
     }
 
