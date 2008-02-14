@@ -558,6 +558,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
   {
     g_advancedSettings.m_fullScreen = 1;
     m_bFullScreenRoot = true;
+    g_settings.m_ResInfo[WINDOW] = g_settings.m_ResInfo[m_Resolution];
   }
   else
   {
