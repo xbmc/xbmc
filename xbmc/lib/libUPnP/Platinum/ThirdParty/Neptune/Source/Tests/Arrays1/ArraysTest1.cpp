@@ -27,19 +27,19 @@ static unsigned int A_Count = 0;
 class A {
 public:
     A() : _a(0), _b(0), _c(&_a) {
-        printf("A::A()\n");
+        //printf("A::A()\n");
         A_Count++;
     }
     A(int a, char b) : _a(a), _b(b), _c(&_a) {
-        printf("A::A(%d, %d)\n", a, b);
+        //printf("A::A(%d, %d)\n", a, b);
         A_Count++;
     }
     A(const A& other) : _a(other._a), _b(other._b), _c(&_a) {
-        printf("A::A(copy: a=%d, b=%d)\n", _a, _b);
+        //printf("A::A(copy: a=%d, b=%d)\n", _a, _b);
         A_Count++;
     }
     ~A() {
-        printf("A::~A(), a=%d, b=%d\n", _a, _b);
+        //printf("A::~A(), a=%d, b=%d\n", _a, _b);
         A_Count--;
     }
     bool Check() { return _c == &_a; }
@@ -192,4 +192,9 @@ main(int /*argc*/, char** /*argv*/)
     j_array.Add(12);
     CHECK(i_array != j_array);
     CHECK(!(i_array == j_array));
+
+    NPT_Array<int> k_array;
+    k_array.Add(1);
+    k_array = i_array;
+    CHECK(k_array == i_array);
 }

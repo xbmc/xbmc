@@ -15,13 +15,9 @@
 #include "PltDeviceHost.h"
 #include "PltUPnP.h"
 #include "PltHttp.h"
+#include "PltVersion.h"
 
 NPT_SET_LOCAL_LOGGER("platinum.core.ssdp")
-
-/*----------------------------------------------------------------------
-|   defines
-+---------------------------------------------------------------------*/
-#define SSDP_PROTOCOL_VERSION "HTTP/1.1"
 
 /*----------------------------------------------------------------------
 |   constants
@@ -38,7 +34,7 @@ PLT_SsdpSender::SendSsdp(NPT_HttpRequest&   request,
                          const char*        target,
                          NPT_UdpSocket&     socket,
                          bool               notify,
-                         NPT_SocketAddress* addr /* = NULL */)
+                         const NPT_SocketAddress* addr /* = NULL */)
 {
     NPT_CHECK_SEVERE(FormatPacket(request, usn, target, socket, notify));
 
@@ -67,7 +63,7 @@ PLT_SsdpSender::SendSsdp(NPT_HttpResponse&  response,
                          const char*        target,
                          NPT_UdpSocket&     socket,
                          bool               notify, 
-                         NPT_SocketAddress* addr /* = NULL */)
+                         const NPT_SocketAddress* addr /* = NULL */)
 {
     NPT_CHECK_SEVERE(FormatPacket(response, usn, target, socket, notify));
 
@@ -117,7 +113,7 @@ NPT_Result
 PLT_SsdpDeviceSearchResponseInterfaceIterator::operator()(NPT_NetworkInterface*& net_if) const 
 {
     NPT_Result res;
-    NPT_SocketAddress* remote_addr = m_RemoteAddr;
+    const NPT_SocketAddress* remote_addr = &m_RemoteAddr;
 
     NPT_List<NPT_NetworkInterfaceAddress>::Iterator netaddr = net_if->GetAddresses().GetFirstItem();
     if (!netaddr) {
@@ -142,12 +138,12 @@ PLT_SsdpDeviceSearchResponseInterfaceIterator::operator()(NPT_NetworkInterface*&
         return res;
     }
 
-    NPT_HttpResponse response(200, "OK", "HTTP/1.1");
+    NPT_HttpResponse response(200, "OK", NPT_HTTP_PROTOCOL_1_1);
 
     // get location URL based on ip address of interface
     // by connecting, the kernel chooses which interface to use to route to the remote
     // this is the IP we should use in our Location
-    if (NPT_FAILED(res = socket.Connect(*m_RemoteAddr, 5000))) {
+    if (NPT_FAILED(res = socket.Connect(m_RemoteAddr, 5000))) {
         return res;
     }
     NPT_SocketInfo info;
@@ -168,7 +164,7 @@ PLT_SsdpDeviceSearchResponseInterfaceIterator::operator()(NPT_NetworkInterface*&
 
     PLT_UPnPMessageHelper::SetLocation(&response, m_Device->GetDescriptionUrl(local_addr.GetIpAddress().ToString()));
     PLT_UPnPMessageHelper::SetLeaseTime(&response, (NPT_Timeout)((float)m_Device->GetLeaseTime()));
-    PLT_UPnPMessageHelper::SetServer(&response, "WINDOWS, UPnP/1.0, Platinum");
+    PLT_UPnPMessageHelper::SetServer(&response, "UPnP/1.0, Platinum UPnP SDK/" PLT_PLATINUM_VERSION_STRING);
     response.GetHeaders().SetHeader("EXT", "");
 
     // process search response twice to be NMPR compliant
@@ -187,8 +183,9 @@ PLT_SsdpDeviceSearchResponseTask::DoRun()
     NPT_List<NPT_NetworkInterface*> if_list;
     NPT_CHECK_LABEL_WARNING(NPT_NetworkInterface::GetNetworkInterfaces(if_list), done);
 
-    if_list.Apply(PLT_SsdpDeviceSearchResponseInterfaceIterator(&m_Addr, m_Device, m_ST));
+    if_list.Apply(PLT_SsdpDeviceSearchResponseInterfaceIterator(m_Device, m_RemoteAddr, m_ST));
     if_list.Apply(NPT_ObjectDeleter<NPT_NetworkInterface>());
+
 done:
     return;
 }
@@ -302,6 +299,7 @@ PLT_SsdpListenTask::DoInit()
 
         if_list.Apply(NPT_ObjectDeleter<NPT_NetworkInterface>());
     }
+
 done: 
     return;
 }
@@ -410,12 +408,19 @@ PLT_SsdpSearchTask::DoRun()
     do {
         // get the address of the server
         NPT_IpAddress server_address;
-        NPT_CHECK_LABEL_SEVERE(server_address.ResolveName(m_Request->GetUrl().GetHost(), timeout), done);
-        NPT_SocketAddress address(server_address, m_Request->GetUrl().GetPort());
+        NPT_CHECK_LABEL_SEVERE(server_address.ResolveName(m_Request->GetUrl().GetHost(), 
+                                                          timeout), 
+                               done);
+        NPT_SocketAddress address(server_address, 
+                                  m_Request->GetUrl().GetPort());
 
         // send request
-        PLT_OutputDatagramStreamReference output_stream(new PLT_OutputDatagramStream(m_Socket, 4096, &address));
-        NPT_CHECK_LABEL_SEVERE(client.SendRequest((NPT_OutputStreamReference&)output_stream, *m_Request), done);
+        PLT_OutputDatagramStreamReference output_stream(new PLT_OutputDatagramStream(m_Socket, 
+                                                                                     4096, 
+                                                                                     &address));
+        NPT_CHECK_LABEL_SEVERE(client.SendRequest((NPT_OutputStreamReference&)output_stream, 
+                                                  *m_Request), 
+                               done);
         output_stream = NULL;
 
         // keep track of when we sent the request
@@ -425,8 +430,10 @@ PLT_SsdpSearchTask::DoRun()
         while (!IsAborting(0)) {
             // read response
             PLT_InputDatagramStreamReference input_stream(new PLT_InputDatagramStream(m_Socket));
-            NPT_Result res = client.WaitForResponse((NPT_InputStreamReference&)input_stream, *m_Request, info, response);
-            
+            NPT_Result res = client.WaitForResponse((NPT_InputStreamReference&)input_stream, 
+                                                    *m_Request, 
+                                                    info, 
+                                                    response);
             // callback to process response
             if (NPT_SUCCEEDED(res)) {
                 // get source info
@@ -437,8 +444,7 @@ PLT_SsdpSearchTask::DoRun()
                 delete response;
                 response = NULL;
             } else if (res != NPT_ERROR_TIMEOUT) {
-                //FIXME: need to log!
-                return;
+                NPT_LOG_WARNING_1("PLT_SsdpSearchTask got an error (%d) waiting for response", res);
             }
 
             input_stream = NULL;

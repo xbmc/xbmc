@@ -430,6 +430,26 @@ main(int /*argc*/, char** /*argv*/)
     in0.Insert("yaya", 3);
     StringTest("Insert at 3", in0, "yoyyayaohello");
 
+    printf(":: testing Erase\n");
+    NPT_String er0;
+    er0.Erase(0, 0);
+    StringTest("1", er0, "");
+    er0.Erase(0, 1);
+    StringTest("1", er0, "");
+    er0.Erase(1, 1);
+    StringTest("1", er0, "");
+    er0 = "hello world";
+    er0.Erase(0, 1);
+    StringTest("1", er0, "ello world");
+    er0.Erase(4);
+    StringTest("1", er0, "elloworld");
+    er0.Erase(7, 3);
+    StringTest("1", er0, "ellowor");
+    er0.Erase(5, 2);
+    StringTest("1", er0, "ellow");
+    er0.Erase(0, 5);
+    StringTest("1", er0, "");
+
     printf("------------------------- done -----\n");
     return 0;
 }

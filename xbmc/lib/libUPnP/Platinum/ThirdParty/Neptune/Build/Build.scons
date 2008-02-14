@@ -162,13 +162,17 @@ if os.path.exists(target_config_file):
 #######################################################
 # modules
 #######################################################
+LibraryModule(name                  = 'Zlib',
+              source_root           = '.',
+              build_source_dirs     = ['ThirdParty/zlib-1.2.3'])
+
 LibraryModule(name                  = 'Neptune', 
               build_source_dirs     = ['Core'],
               build_source_files    = env['NPT_SYSTEM_SOURCES'],
-              linked_modules        = env['NPT_EXTRA_LIBS'])
+              linked_modules        = env['NPT_EXTRA_LIBS']+['Zlib'])
            
 for app in ['NetPump', 'NetConfig', 'NetPing', 'NetEcho']:
     Application(app, 'Source/Apps/'+app)
     
-for test in ['Arrays1', 'BufferedStreams1', 'HttpClient1', 'HttpServer1', 'Lists1', 'Maps1', 'Misc1', 'RingBuffer1', 'Strings1', 'Xml1', 'Udp1', 'Threads1', 'Url1']:
+for test in ['Arrays1', 'BufferedStreams1', 'HttpClient1', 'Directory1', 'HttpServer1', 'Lists1', 'Maps1', 'Misc1', 'RingBuffer1', 'Strings1', 'Xml1', 'Udp1', 'Threads1', 'Url1', 'Zip1']:
     Application(test+'Test', 'Source/Tests/'+test)

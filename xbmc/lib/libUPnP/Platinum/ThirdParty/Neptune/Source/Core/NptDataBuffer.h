@@ -38,6 +38,7 @@ class NPT_DataBuffer
     virtual NPT_Result SetBufferSize(NPT_Size bufferSize);
     virtual NPT_Size   GetBufferSize() const { return m_BufferSize; }
     virtual NPT_Result Reserve(NPT_Size size);
+    virtual NPT_Result Clear();
 
     // data handling methods
     virtual const NPT_Byte* GetData() const { return m_Buffer; }
@@ -45,9 +46,6 @@ class NPT_DataBuffer
     virtual NPT_Size        GetDataSize() const { return m_DataSize; }
     virtual NPT_Result      SetDataSize(NPT_Size size);
     virtual NPT_Result      SetData(const NPT_Byte* data, NPT_Size dataSize);
-
- private:
-    NPT_Result Clear();
 
  protected:
     // members

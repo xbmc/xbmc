@@ -56,10 +56,10 @@ NPT_SimpleMessageQueue::QueueMessage(NPT_Message*        message,
 |   NPT_SimpleMessageQueue::PumpMessage
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_SimpleMessageQueue::PumpMessage(bool blocking)
+NPT_SimpleMessageQueue::PumpMessage(NPT_Timeout timeout /* = NPT_TIMEOUT_INFINITE */)
 {
     NPT_SimpleMessageCapsule* capsule;
-    NPT_Result result = m_Queue.Pop(capsule, blocking);
+    NPT_Result result = m_Queue.Pop(capsule, timeout);
     if (NPT_SUCCEEDED(result) && capsule) {
         if (capsule->m_Handler && capsule->m_Message) {
             result = capsule->m_Handler->HandleMessage(capsule->m_Message);

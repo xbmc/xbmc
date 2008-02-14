@@ -26,10 +26,6 @@ public:
 
     PLT_ThreadTask();
 
-    NPT_Result Start(PLT_TaskManager*  task_manager = NULL, 
-                     NPT_TimeInterval* delay = NULL,
-                     bool              auto_destroy = true);
-    NPT_Result Stop();
     NPT_Result Kill();
 
     virtual bool IsAborting(NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) {
@@ -37,6 +33,11 @@ public:
     }
 
 protected:
+    NPT_Result Start(PLT_TaskManager*  task_manager = NULL, 
+                     NPT_TimeInterval* delay = NULL,
+                     bool              auto_destroy = true);
+    NPT_Result Stop(bool blocking = true);
+
     // overridable
     virtual void DoAbort()   {}
     virtual void DoRun()     {}

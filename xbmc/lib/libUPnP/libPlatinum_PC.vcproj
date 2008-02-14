@@ -60,7 +60,7 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories=".\Platinum\ThirdParty\Neptune\Source\Core;.\Platinum\Source\Core;.\Platinum\Source\Devices\MediaServer;.\Platinum\ThirdParty\Neptune\Source\System\Win32"
+				AdditionalIncludeDirectories=".\Platinum\Source\Core;.\Platinum\Source\Devices\MediaServer;.\Platinum\ThirdParty\Neptune\Source\Core;.\Platinum\ThirdParty\Neptune\Source\System\Win32"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;;NPT_CONFIG_ENABLE_LOGGING"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
@@ -329,6 +329,19 @@
 					RelativePath=".\Platinum\Source\Devices\MediaRenderer\PltMediaRendererSCPDs.cpp">
 				</File>
 			</Filter>
+			<Filter
+				Name="MediaConnect"
+				Filter="">
+				<File
+					RelativePath=".\Platinum\Source\Devices\MediaConnect\PltMediaConnect.cpp">
+				</File>
+				<File
+					RelativePath=".\Platinum\Source\Devices\MediaConnect\PltMediaConnect.h">
+				</File>
+				<File
+					RelativePath=".\Platinum\Source\Devices\MediaConnect\PltMediaConnectSCPDs.cpp">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Neptune"
@@ -389,6 +402,9 @@
 				</File>
 				<File
 					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptDefs.h">
+				</File>
+				<File
+					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptDirectory.cpp">
 				</File>
 				<File
 					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptDirectory.h">
