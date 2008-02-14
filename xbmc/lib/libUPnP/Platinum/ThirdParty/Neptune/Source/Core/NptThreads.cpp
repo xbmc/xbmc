@@ -66,7 +66,10 @@ NPT_ThreadCallbackSlot::ReceiveCallback(NPT_ThreadCallbackReceiver& receiver,
     if (timeout) {
         // wait until there is a pending callback
         //NPT_Debug("NPT_ThreadCallbackSlot::ReceiveCallback - waiting...\n");
-        NPT_CHECK(m_Pending.WaitUntilEquals(1, timeout));
+        NPT_Result result = m_Pending.WaitUntilEquals(1, timeout);
+        if (NPT_FAILED(result)) return result; // don't log here because the result
+                                               // could be NPT_ERROR_TIMEOUT which
+                                               // is an expected normal case.
         //NPT_Debug("NPT_ThreadCallbackSlot::ReceiveCallback - got it\n");
     } else {
         // see if something is pending

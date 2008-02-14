@@ -55,13 +55,13 @@ PLT_MediaBrowser::OnDeviceAdded(PLT_DeviceDataReference& device)
     
     type = "urn:schemas-upnp-org:service:ContentDirectory:1";
     if (NPT_FAILED(device->FindServiceByType(type, serviceCDS))) {
-        NPT_LOG_INFO_1("Service %s not found", (const char*)type);
+        NPT_LOG_WARNING_1("Service %s not found", (const char*)type);
         return NPT_FAILURE;
     }
     
     type = "urn:schemas-upnp-org:service:ConnectionManager:1";
     if (NPT_FAILED(device->FindServiceByType(type, serviceCMR))) {
-        NPT_LOG_INFO_1("Service %s not found", (const char*)type);
+        NPT_LOG_WARNING_1("Service %s not found", (const char*)type);
         return NPT_FAILURE;
     }    
     
@@ -129,10 +129,10 @@ PLT_MediaBrowser::OnDeviceRemoved(PLT_DeviceDataReference& device)
 +---------------------------------------------------------------------*/
 NPT_Result 
 PLT_MediaBrowser::Browse(PLT_DeviceDataReference&   device, 
-                         const char*                obj_id, 
-                         const char*                browse_flag,
+                         const char*                obj_id,
                          NPT_UInt32                 start_index,
                          NPT_UInt32                 count,
+                         bool                       browse_metadata,
                          const char*                filter,
                          const char*                sort_criteria,
                          void*                      userdata)
@@ -161,12 +161,8 @@ PLT_MediaBrowser::Browse(PLT_DeviceDataReference&   device,
         return NPT_ERROR_INVALID_PARAMETERS;
     }
 
-    if (NPT_String(browse_flag).Compare("BrowseMetadata", true) && NPT_String(browse_flag).Compare("BrowseDirectChildren", true)) {
-        return NPT_ERROR_INVALID_PARAMETERS;
-    }
-
     // set the browse_flag
-    if (NPT_FAILED(action->SetArgumentValue("BrowseFlag", browse_flag))) {
+    if (NPT_FAILED(action->SetArgumentValue("BrowseFlag", browse_metadata?"BrowseMetadata":"BrowseDirectChildren"))) {
         return NPT_ERROR_INVALID_PARAMETERS;
     }
  

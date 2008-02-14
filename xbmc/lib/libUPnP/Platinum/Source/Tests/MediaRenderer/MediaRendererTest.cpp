@@ -72,7 +72,7 @@ main(int /* argc */, char** argv)
             NULL,
             Options.friendly_name?Options.friendly_name:"Platinum Media Renderer"));
     upnp.AddDevice(device);
-    NPT_String uuid = device->GetUUID();
+    bool added = true;
 
     upnp.Start();
 
@@ -80,9 +80,17 @@ main(int /* argc */, char** argv)
     while (gets(buf)) {
         if (*buf == 'q')
             break;
+
+        if (*buf == 's') {
+            if (added) {
+                upnp.RemoveDevice(device);
+            } else {
+                upnp.AddDevice(device);
+            }
+            added = !added;
+        }
     }
 
     upnp.Stop();
-
     return 0;
 }

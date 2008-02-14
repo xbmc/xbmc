@@ -50,13 +50,12 @@ PLT_TaskManager::StopTask(PLT_ThreadTask* task)
 {
     {
         NPT_AutoLock lock(m_TasksLock);
-        // if task is not found, then it might have been autodestroyed already
-        NPT_CHECK_SEVERE(m_Tasks.Remove(task));
+        // if task is not found, then it might 
+        // have been auto-destroyed already so return now
+        NPT_CHECK_WARNING(m_Tasks.Remove(task));
     }
 
-    task->Stop();
-
-    return NPT_SUCCESS;
+    return task->Stop();
 }
 
 /*----------------------------------------------------------------------
@@ -72,12 +71,14 @@ PLT_TaskManager::StopAllTasks()
         delete queue;
     }  
 
-    // stop all tasks first
+    // stop all tasks first but don't block
+    // otherwise when RemoveTask is called by PLT_ThreadTask::Run
+    // it will deadlock with m_TasksLock
     {      
         NPT_AutoLock lock(m_TasksLock);
         NPT_List<PLT_ThreadTask*>::Iterator task = m_Tasks.GetFirstItem();
         while (task) {
-            (*task)->Stop();
+            (*task)->Stop(false);
             ++task;
         }
     }
@@ -91,7 +92,7 @@ PLT_TaskManager::StopAllTasks()
                 return NPT_SUCCESS;
         }
 
-        NPT_System::Sleep(NPT_TimeInterval(0, 100));
+        NPT_System::Sleep(NPT_TimeInterval(0, 10000));
     }
 
     return NPT_SUCCESS;
@@ -116,7 +117,7 @@ PLT_TaskManager::AddTask(PLT_ThreadTask* task)
 /*----------------------------------------------------------------------
 |   PLT_TaskManager::RemoveTask
 +---------------------------------------------------------------------*/
-// called by a ThreadTask::Run when done
+// called by a PLT_ThreadTask::Run when done
 NPT_Result
 PLT_TaskManager::RemoveTask(PLT_ThreadTask* task)
 {
@@ -131,6 +132,7 @@ PLT_TaskManager::RemoveTask(PLT_ThreadTask* task)
         m_Tasks.Remove(task);
     }
     
+    // cleanup task only if auto-destroy flag was set
     if (task->m_AutoDestroy) delete task;
 
     return NPT_SUCCESS;

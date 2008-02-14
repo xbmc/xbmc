@@ -33,23 +33,16 @@ PLT_DeviceHost::PLT_DeviceHost(const char*  description_path,
                                const char*  device_type,
                                const char*  friendly_name,
                                bool         show_ip,
-                               unsigned int port) :
+                               NPT_UInt16   port) :
     PLT_DeviceData(NPT_HttpUrl(NULL, 0, description_path), 
                    uuid, 
                    NPT_TimeInterval(1800, 0), 
                    device_type, 
                    friendly_name), 
-    m_TaskManager(NULL),
     m_HttpServer(NULL),
-    m_SsdpAnnounceTask(NULL),
-    m_Broadcast(false)
+    m_Broadcast(false),
+    m_Port(port)
 {
-#ifdef _XBOX
-    m_HttpServer = new PLT_HttpServer(port, 5);
-#else
-    m_HttpServer = new PLT_HttpServer(port);
-#endif
-
     if (show_ip) {
         NPT_List<NPT_String> ips;
         PLT_UPnPMessageHelper::GetIPAddresses(ips);
@@ -64,23 +57,20 @@ PLT_DeviceHost::PLT_DeviceHost(const char*  description_path,
 +---------------------------------------------------------------------*/
 PLT_DeviceHost::~PLT_DeviceHost() 
 {
-    Stop();
-
-    delete m_HttpServer;
-    m_RequestHandlers.Apply(NPT_ObjectDeleter<NPT_HttpRequestHandler>());
 }
 
 /*----------------------------------------------------------------------
 |   PLT_DeviceHost::Start
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_DeviceHost::Start(PLT_TaskManager* task_manager, PLT_DeviceHostReference& self)
+PLT_DeviceHost::Start(PLT_SsdpListenTask* task)
 {
-    // keep the task manager around
-    m_TaskManager = task_manager;
-    m_Self = self;
-
     // start the server
+#ifdef _XBOX
+    m_HttpServer = new PLT_HttpServer(m_Port, 5);  
+#else
+    m_HttpServer = new PLT_HttpServer(m_Port);  
+#endif
     NPT_CHECK_SEVERE(m_HttpServer->Start());
 
     // read back assigned port in case we passed 0
@@ -95,8 +85,8 @@ PLT_DeviceHost::Start(PLT_TaskManager* task_manager, PLT_DeviceHostReference& se
     m_RequestHandlers.Add(handler);
 
     // adapter to redirect to host for dynamic
-    PLT_HttpDeviceHostRequestHandler* device_hanlder = new PLT_HttpDeviceHostRequestHandler(this);
-    m_RequestHandlers.Add(device_hanlder);
+    PLT_HttpDeviceHostRequestHandler* device_handler = new PLT_HttpDeviceHostRequestHandler(this);
+    m_RequestHandlers.Add(device_handler);
 
     // service handlers
     NPT_HttpUrl url;
@@ -118,7 +108,7 @@ PLT_DeviceHost::Start(PLT_TaskManager* task_manager, PLT_DeviceHostReference& se
             control_url = GetURLBase().GetPath() + control_url;
         }
         url.SetPathPlus(control_url);
-        m_HttpServer->AddRequestHandler(device_hanlder, url.GetPath(), false);
+        m_HttpServer->AddRequestHandler(device_handler, url.GetPath(), false);
 
         // dynamic control url
         NPT_String event_url = m_Services[i]->GetEventSubURL();
@@ -126,29 +116,27 @@ PLT_DeviceHost::Start(PLT_TaskManager* task_manager, PLT_DeviceHostReference& se
             event_url = GetURLBase().GetPath() + event_url;
         }
         url.SetPathPlus(event_url);
-        m_HttpServer->AddRequestHandler(device_hanlder, url.GetPath(), false);
+        m_HttpServer->AddRequestHandler(device_handler, url.GetPath(), false);
     }
 
     // we should not advertise right away, spec says randomly less than 100ms
     NPT_TimeInterval delay(0, NPT_System::GetRandomInteger() % 100000000);
 
-    // calculate when we should send another announcement    
-    NPT_Size         leaseTime = (NPT_Size)(float)GetLeaseTime();
+    // calculate when we should send another announcement
+    NPT_Size leaseTime = (NPT_Size)(float)GetLeaseTime();
     NPT_TimeInterval repeat;
     repeat.m_Seconds = leaseTime?(int)((leaseTime >> 1) + ((unsigned short)NPT_System::GetRandomInteger() % (leaseTime >> 2))):30;
-
+    
+    // the XBOX cannot receive multicast, so we blast every 7 secs
 #ifdef _XBOX
-    // since we can't hear multicast, but send it
-    // we announce every 7 seconds to keep clients happy
-    if (repeat.m_Seconds > 7) {
         repeat.m_Seconds = 7;
-    }
 #endif
 
+    PLT_ThreadTask* announce_task = new PLT_SsdpDeviceAnnounceTask(this, repeat, true, m_Broadcast);
+    m_TaskManager.StartTask(announce_task, &delay);
 
-    m_SsdpAnnounceTask = new PLT_SsdpDeviceAnnounceTask(m_Self, repeat, true, m_Broadcast);
-    m_TaskManager->StartTask(m_SsdpAnnounceTask, &delay, false);
-    
+    // register ourselves as a listener for ssdp requests
+    task->AddListener(this);
     return NPT_SUCCESS;
 }
 
@@ -156,22 +144,29 @@ PLT_DeviceHost::Start(PLT_TaskManager* task_manager, PLT_DeviceHostReference& se
 |   PLT_DeviceHost::Stop
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_DeviceHost::Stop()
+PLT_DeviceHost::Stop(PLT_SsdpListenTask* task)
 {    
-    m_HttpServer->Stop();
+    // unregister ourselves as a listener for ssdp requests
+    task->RemoveListener(this);
 
-    if (m_SsdpAnnounceTask) {
-        //m_TaskManager->StopTask(m_SsdpAnnounceTask);
-        m_SsdpAnnounceTask->Kill();
-        m_SsdpAnnounceTask = NULL;
+    // remove all our running tasks
+    m_TaskManager.StopAllTasks();
 
+    if (m_HttpServer) {
+        // stop our internal http server
+        m_HttpServer->Stop();
+        delete m_HttpServer;
+        m_HttpServer = NULL;
+
+        // notify we're gone
         NPT_List<NPT_NetworkInterface*> if_list;
         NPT_NetworkInterface::GetNetworkInterfaces(if_list);
-        if_list.Apply(PLT_SsdpAnnounceInterfaceIterator(m_Self, true, m_Broadcast));
+        if_list.Apply(PLT_SsdpAnnounceInterfaceIterator(this, true, m_Broadcast));
         if_list.Apply(NPT_ObjectDeleter<NPT_NetworkInterface>());
     }
 
-    m_Self = NULL;
+    m_RequestHandlers.Apply(NPT_ObjectDeleter<NPT_HttpRequestHandler>());
+    m_RequestHandlers.Clear();
     return NPT_SUCCESS;
 }
 
@@ -190,7 +185,7 @@ PLT_DeviceHost::Announce(PLT_DeviceData*  device,
         // get location URL based on ip address of interface
         PLT_UPnPMessageHelper::SetNTS(&req, "ssdp:alive");
         PLT_UPnPMessageHelper::SetLeaseTime(&req, (NPT_Timeout)(float)device->GetLeaseTime());
-        PLT_UPnPMessageHelper::SetServer(&req, "Platinum/" PLT_PLATINUM_VERSION_STRING);
+        PLT_UPnPMessageHelper::SetServer(&req, "UPnP/1.0, Platinum UPnP SDK/" PLT_PLATINUM_VERSION_STRING);
     } else {
         PLT_UPnPMessageHelper::SetNTS(&req, "ssdp:byebye");
     }
@@ -238,18 +233,6 @@ PLT_DeviceHost::Announce(PLT_DeviceData*  device,
         socket, 
         true, 
         &addr);
-
-
-    // embedded devices
-    for (int j=0; j < (int)device->m_EmbeddedDevices.GetItemCount(); j++) {
-        Announce(device->m_EmbeddedDevices[j].AsPointer(), 
-            req, 
-            socket, 
-            byebye);
-    }
-
-//    res = m_EmbeddedDevices.ApplyUntilFailure(PLT_SsdpAnnounceIterator<PLT_DeviceHost>(req, stream, byebye));
-//    if (NPT_FAILED(res)) return res;
 
     return res;
 }
@@ -373,8 +356,14 @@ PLT_DeviceHost::ProcessHttpPostRequest(NPT_HttpRequest&  request,
         NPT_XmlElementNode* child = (*args)->AsElementNode();
         if (!child) continue;
 
+        // Total HACK for xbox360 upnp uncompliance!
+        NPT_String name = child->GetTag();
+        if (action_desc->GetName() == "Browse" && name == "ContainerID") {
+            name = "ObjectID";
+        }
+
         res = action->SetArgumentValue(
-            child->GetTag(),
+            name,
             child->GetText()?*child->GetText():"");
 
         if (NPT_FAILED(res)) {
@@ -484,7 +473,7 @@ PLT_DeviceHost::ProcessHttpSubscriberRequest(NPT_HttpRequest&  request,
             }
 
             // send the info to the service
-            service->ProcessNewSubscription(m_TaskManager,
+            service->ProcessNewSubscription(&m_TaskManager,
                                             info.local_address, 
                                             strCallbackURLs, 
                                             timeout, 
@@ -562,8 +551,8 @@ PLT_DeviceHost::ProcessSsdpSearchRequest(NPT_HttpRequest& request,
 
         // create a task to respond to the request
         NPT_TimeInterval timer((MX==0)?0:((int)(0 + ((unsigned short)NPT_System::GetRandomInteger() % ((MX>10)?10:MX)))), 0);
-        PLT_SsdpDeviceSearchResponseTask* task = new PLT_SsdpDeviceSearchResponseTask(m_Self, info.remote_address, st);
-        m_TaskManager->StartTask(task, &timer);
+        PLT_SsdpDeviceSearchResponseTask* task = new PLT_SsdpDeviceSearchResponseTask(this, info.remote_address, st);
+        m_TaskManager.StartTask(task, &timer);
         return NPT_SUCCESS;
     }
 
@@ -578,7 +567,7 @@ PLT_DeviceHost::SendSsdpSearchResponse(PLT_DeviceData*    device,
                                        NPT_HttpResponse&  response, 
                                        NPT_UdpSocket&     socket, 
                                        const char*        st,
-                                       NPT_SocketAddress* addr /* = NULL */)
+                                       const NPT_SocketAddress* addr /* = NULL */)
 {    
     NPT_LOG_FINE("PLT_DeviceHost responding to a M-SEARCH request.");
 
@@ -629,13 +618,6 @@ PLT_DeviceHost::SendSsdpSearchResponse(PLT_DeviceData*    device,
                      addr);
         }
     }
-
-    // embedded devices
-    for (int j=0; j < (int)device->m_EmbeddedDevices.GetItemCount(); j++) {
-        SendSsdpSearchResponse(device->m_EmbeddedDevices[j].AsPointer(), response, socket, st, addr);
-    }
-    
-    //m_EmbeddedDevices.Apply(NPT_ProcessSearchResponseIterator<PLT_DeviceHost>(response, stream, st, addr));
 
     return NPT_SUCCESS;
 }

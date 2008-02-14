@@ -47,21 +47,22 @@ public:
 
     NPT_Result Start();
     NPT_Result Stop();
+    Plt_DowloaderState GetState() { return m_State; }
 
+    // PLT_HttpClientTask method
     NPT_Result ProcessResponse(NPT_Result        res, 
                                NPT_HttpRequest*  request, 
                                NPT_SocketInfo&   info, 
                                NPT_HttpResponse* response);
 
-    Plt_DowloaderState GetState() { return m_State; }
 
 private:
     // members
-    NPT_String                      m_URL;
-    NPT_OutputStreamReference       m_Output;
-    PLT_TaskManager*                m_TaskManager;
-    PLT_HttpDownloadTask*           m_Task;
-    Plt_DowloaderState              m_State;
+    NPT_String                m_URL;
+    NPT_OutputStreamReference m_Output;
+    PLT_TaskManager*          m_TaskManager;
+    PLT_HttpDownloadTask*     m_Task;
+    Plt_DowloaderState        m_State;
 };
 
 #endif /* _PLT_DOWNLOADER_H_ */

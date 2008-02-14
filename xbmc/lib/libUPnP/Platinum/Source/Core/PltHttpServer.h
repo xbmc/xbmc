@@ -33,7 +33,8 @@ class PLT_HttpServer : public PLT_HttpServerListener,
 
 public:
     PLT_HttpServer(unsigned int port = 0,
-                   NPT_Cardinal max_clients = 0);
+                   NPT_Cardinal max_clients = 0,
+                   bool         reuse_address = false);
     virtual ~PLT_HttpServer();
 
     // PLT_HttpServerListener method
@@ -49,6 +50,7 @@ public:
 private:
     PLT_TaskManager*          m_TaskManager;
     unsigned int              m_Port;
+    bool                      m_ReuseAddress;
     PLT_HttpServerListenTask* m_HttpListenTask;
 };
 
