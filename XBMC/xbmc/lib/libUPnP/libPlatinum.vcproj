@@ -455,6 +455,19 @@ copy Release\libPlatinum.lib ..\..\xbmc\lib\libUPnP
 					RelativePath=".\Platinum\Source\Devices\MediaRenderer\PltMediaRendererSCPDs.cpp">
 				</File>
 			</Filter>
+			<Filter
+				Name="MediaConnect"
+				Filter="">
+				<File
+					RelativePath=".\Platinum\Source\Devices\MediaConnect\PltMediaConnect.cpp">
+				</File>
+				<File
+					RelativePath=".\Platinum\Source\Devices\MediaConnect\PltMediaConnect.h">
+				</File>
+				<File
+					RelativePath=".\Platinum\Source\Devices\MediaConnect\PltMediaConnectSCPDs.cpp">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Neptune"
@@ -466,7 +479,7 @@ copy Release\libPlatinum.lib ..\..\xbmc\lib\libUPnP
 				RelativePath=".\Platinum\ThirdParty\Neptune\Source\Neptune\Neptune.h">
 			</File>
 			<File
-				RelativePath=".\Platinum\ThirdParty\Neptune\Source\Config\NptConfig.h">
+				RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptConfig.h">
 			</File>
 			<File
 				RelativePath=".\Platinum\ThirdParty\Neptune\Source\Neptune\NptVersion.h">
@@ -518,6 +531,9 @@ copy Release\libPlatinum.lib ..\..\xbmc\lib\libUPnP
 				</File>
 				<File
 					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptDefs.h">
+				</File>
+				<File
+					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptDirectory.cpp">
 				</File>
 				<File
 					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptDirectory.h">

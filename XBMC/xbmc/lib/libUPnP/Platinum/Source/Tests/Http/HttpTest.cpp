@@ -1,6 +1,6 @@
 /*****************************************************************
 |
-|   Platinum - Test HTTP
+|   Platinum - HTTP tests
 |
 |   (c) 2004 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
@@ -17,6 +17,7 @@
 #include "PltTaskManager.h"
 #include "PltHttpServer.h"
 #include "PltDownloader.h"
+#include "PltRingBufferStream.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -32,65 +33,38 @@ struct Options {
     NPT_String  path;
 } Options;
 
-// NPT_Result
-// GetBodyStream(NPT_HttpMessage* message, PLT_RingBufferStream*& stream)
-// {
-//     stream = NULL;
-// 
-//     if (!message) return NPT_FAILURE;
-// 
-//     NPT_HttpEntity* entity = message->GetEntity();
-//     if (!entity) return NPT_FAILURE;
-// 
-//     NPT_InputStreamReference input;
-//     if (NPT_FAILED(entity->GetInputStream(input))) return NPT_FAILURE;
-// 
-//     // read body length
-//     NPT_Size len = -1;
-//     PLT_HttpHelper::GetContentLength(message, len);
-// 
-//     stream = new PLT_RingBufferStream(input, 4096, len);
-//     return NPT_SUCCESS;
-//}
-
 /*----------------------------------------------------------------------
-|   DumpBody
+|   PLT_HttpCustomRequestHandler
 +---------------------------------------------------------------------*/
-// static NPT_Result 
-// DumpBody(PLT_Downloader& downloader, NPT_InputStreamReference& stream, NPT_Size& size)
-// {
-//     char buffer[2048];
-//     NPT_Result ret = NPT_ERROR_WOULD_BLOCK;
-// 
-//     size = 0;
-// 
-//     do {
-//         Plt_DowloaderState state = downloader.GetState();
-// 
-//         NPT_Size bytes_read = 0;
-//         ret = stream->Read(buffer, 2048, &bytes_read);
-// 
-//         if (NPT_SUCCEEDED(ret)) {
-//             PLT_Log(PLT_LOG_LEVEL_1, "Read %d bytes\n", bytes_read);
-//             size += bytes_read;
-//         } else if (ret == NPT_ERROR_WOULD_BLOCK) {
-//             switch (state) {
-//                 case PLT_DOWNLOADER_SUCCESS:
-//                     return NPT_SUCCESS;
-// 
-//                 case PLT_DOWNLOADER_ERROR:
-//                     return NPT_FAILURE;
-// 
-//                 default:
-//                     NPT_System::Sleep(NPT_TimeInterval(0, 10000));
-//                     ret = NPT_SUCCESS;
-//                     break;
-//             }
-//         }
-//     } while (NPT_SUCCEEDED(ret));
-// 
-//     return ret;
-//}
+class PLT_HttpCustomRequestHandler : public NPT_HttpRequestHandler
+{
+public:
+    // constructors
+    PLT_HttpCustomRequestHandler(NPT_InputStreamReference& body, 
+                                 const char*               mime_type) :
+        m_Body(body),
+        m_MimeType(mime_type) {}
+
+    // NPT_HttpRequetsHandler methods
+    virtual NPT_Result SetupResponse(NPT_HttpRequest&  request, 
+                                     NPT_HttpResponse& response,
+                                     NPT_SocketInfo&   client_info) {
+        NPT_COMPILER_UNUSED(request);
+        NPT_COMPILER_UNUSED(client_info);
+
+        NPT_HttpEntity* entity = response.GetEntity();
+        if (entity == NULL) return NPT_ERROR_INVALID_STATE;
+
+        entity->SetContentType(m_MimeType);
+        entity->SetInputStream(m_Body);
+
+        return NPT_SUCCESS;
+    }
+
+private:
+    NPT_InputStreamReference m_Body;
+    NPT_String               m_MimeType;
+};
 
 /*----------------------------------------------------------------------
 |   Test1
@@ -100,14 +74,15 @@ Test1(PLT_TaskManager* task_manager, const char* url, NPT_Size& size)
 {
     NPT_LOG_INFO("########### TEST 1 ######################");
 
-    NPT_MemoryStreamReference stream(new NPT_MemoryStream());
-    PLT_Downloader downloader(task_manager, url, (NPT_OutputStreamReference&)stream);
+    NPT_MemoryStreamReference memory_stream(new NPT_MemoryStream());
+    NPT_OutputStreamReference output_stream(memory_stream);
+    PLT_Downloader downloader(task_manager, url, output_stream);
     downloader.Start();
 
     while (1) {
         switch(downloader.GetState()) {
             case PLT_DOWNLOADER_SUCCESS: {
-                size = stream->GetDataSize();
+                size = memory_stream->GetDataSize();
                 return true;
             }
 
@@ -116,7 +91,135 @@ Test1(PLT_TaskManager* task_manager, const char* url, NPT_Size& size)
 
             default:
                 NPT_System::Sleep(NPT_TimeInterval(0, 10000));
-                // watchdog?
+                break;
+        }
+    };
+
+    return false;
+}
+
+/*----------------------------------------------------------------------
+|   DumpBody
++---------------------------------------------------------------------*/
+ static NPT_Result 
+ReadBody(PLT_Downloader& downloader, NPT_InputStreamReference& stream, NPT_Size& size)
+{
+    NPT_Size avail;
+    char buffer[2048];
+    NPT_Result ret = NPT_ERROR_WOULD_BLOCK;
+
+    /* reset output param first */
+    size = 0;
+
+    /*
+       we test for availability first to avoid
+       getting stuck in Read forever in case blocking is true
+       and the download is done writing to the stream
+    */
+    NPT_CHECK(stream->GetAvailable(avail));
+
+    if (avail) {
+         ret = stream->Read(buffer, 2048, &size);
+         NPT_LOG_FINER_2("Read %d bytes (result = %d)\n", size, ret);
+         return ret;
+     } else {
+         Plt_DowloaderState state = downloader.GetState();
+         switch (state) {
+             case PLT_DOWNLOADER_ERROR:
+                 return NPT_FAILURE;
+
+             case PLT_DOWNLOADER_SUCCESS:
+                 /* no more data expected */
+                 return NPT_ERROR_EOS;
+
+             default:
+                 NPT_System::Sleep(NPT_TimeInterval(0, 10000));
+                 break;
+         }
+     }
+ 
+     return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   Test2
++---------------------------------------------------------------------*/
+static bool
+Test2(PLT_TaskManager* task_manager, const char* url, NPT_Size& size)
+{
+    NPT_LOG_INFO("########### TEST 2 ######################");
+
+    /* reset output param first */
+    size = 0;
+
+    PLT_RingBufferStreamReference ringbuffer_stream(new PLT_RingBufferStream());
+    NPT_OutputStreamReference output_stream(ringbuffer_stream);
+    NPT_InputStreamReference  input_stream(ringbuffer_stream);
+    PLT_Downloader downloader(task_manager, url, output_stream);
+    downloader.Start();
+
+    while (1) {
+        switch(downloader.GetState()) {
+            case PLT_DOWNLOADER_SUCCESS:
+                ringbuffer_stream->SetEos();
+                /* fallthrough */
+
+            case PLT_DOWNLOADER_DOWNLOADING: {
+                    NPT_Size bytes_read;
+                    NPT_Result res = ReadBody(downloader, input_stream, bytes_read);
+                    if (NPT_FAILED(res)) {
+                        return (res==NPT_ERROR_EOS)?true:false;
+                    }
+                    size += bytes_read;
+                }
+                break;
+
+            case PLT_DOWNLOADER_ERROR:
+                return false;
+
+            default:
+                NPT_System::Sleep(NPT_TimeInterval(0, 10000));
+                break;
+        }
+    };
+
+    return false;
+}
+
+/*----------------------------------------------------------------------
+|   Test3
++---------------------------------------------------------------------*/
+static bool
+Test3(PLT_TaskManager* task_manager, const char* url, PLT_RingBufferStreamReference& ringbuffer_stream, NPT_Size& size)
+{
+    NPT_LOG_INFO("########### TEST 3 ######################");
+
+    /* reset output param first */
+    size = 0;
+
+    NPT_MemoryStreamReference memory_stream(new NPT_MemoryStream());
+    NPT_OutputStreamReference output_stream(memory_stream);
+    PLT_Downloader downloader(task_manager, url, output_stream);
+    downloader.Start();
+
+    /* asynchronously write onto ring buffer stream */
+    char buffer[32768];
+    ringbuffer_stream->WriteFully(buffer, 32768);
+
+    /* mark as done */
+    ringbuffer_stream->SetEos();
+
+    while (1) {
+        switch(downloader.GetState()) {
+            case PLT_DOWNLOADER_SUCCESS:
+                size = memory_stream->GetDataSize();
+                return true;
+
+            case PLT_DOWNLOADER_ERROR:
+                return false;
+
+            default:
+                NPT_System::Sleep(NPT_TimeInterval(0, 10000));
                 break;
         }
     };
@@ -130,9 +233,9 @@ Test1(PLT_TaskManager* task_manager, const char* url, NPT_Size& size)
 static void
 PrintUsageAndExit(char** args)
 {
-    fprintf(stderr, "usage: %s [-p <port>] <path>\n", args[0]);
+    fprintf(stderr, "usage: %s [-p <port>] [-f <filepath>]\n", args[0]);
     fprintf(stderr, "-p : optional server port\n");
-    fprintf(stderr, "<path> : local filepath to serve\n");
+    fprintf(stderr, "-f : optional local filepath to serve\n");
     exit(1);
 }
 
@@ -150,25 +253,19 @@ ParseCommandLine(char** args)
     Options.path = "";
 
     while ((arg = *tmp++)) {
-        if (!strcmp(arg, "-p")) {
+        if (Options.port == 0 && !strcmp(arg, "-p")) {
             long port;
             if (NPT_FAILED(NPT_ParseInteger(*tmp++, port, false))) {
                 fprintf(stderr, "ERROR: invalid port\n");
                 exit(1);
             }
             Options.port = port;
-        } else if (Options.path.IsEmpty()) {
-            Options.path = arg;
+        } else if (Options.path.IsEmpty() && !strcmp(arg, "-f")) {
+            Options.path = *tmp++;
         } else {
             fprintf(stderr, "ERROR: too many arguments\n");
             PrintUsageAndExit(args);
         }
-    }
-
-    /* check args */
-    if (Options.path.IsEmpty()) {
-        fprintf(stderr, "ERROR: path missing\n");
-        PrintUsageAndExit(args);
     }
 }
 
@@ -180,32 +277,64 @@ main(int argc, char** argv)
 {
     NPT_COMPILER_UNUSED(argc);
 
+    NPT_HttpRequestHandler *handler, *custom_handler;
+    NPT_Reference<NPT_DataBuffer> buffer;
+    NPT_Size size;
+    bool result;
+    PLT_RingBufferStreamReference ringbuffer_stream(new PLT_RingBufferStream());
+
     /* parse command line */
     ParseCommandLine(argv);
 
-    /* extract folder path */
-    int index1 = Options.path.ReverseFind('\\');
-    int index2 = Options.path.ReverseFind('/');
-    if (index1 <= 0 && index2 <=0) {
-        fprintf(stderr, "ERROR: invalid path\n");
-        exit(1);
+    /* create http server */
+    PLT_HttpServer http_server(Options.port?Options.port:80);
+    NPT_String url = "http://127.0.0.1:" + NPT_String::FromInteger(http_server.GetPort());
+    NPT_String custom_url = url;
+
+    if (!Options.path.IsEmpty()) {
+        /* extract folder path */
+        int index1 = Options.path.ReverseFind('\\');
+        int index2 = Options.path.ReverseFind('/');
+        if (index1 <= 0 && index2 <=0) {
+            fprintf(stderr, "ERROR: invalid path\n");
+            exit(1);
+        }
+
+        NPT_DirectoryEntryInfo info;
+        NPT_CHECK_SEVERE(NPT_DirectoryEntry::GetInfo(Options.path, info));
+
+        /* add file request handler */
+        handler = new NPT_HttpFileRequestHandler(
+            Options.path.Left(index1>index2?index1:index2), 
+            "/");
+        http_server.AddRequestHandler(handler, "/", true);
+
+        /* build url*/
+        url += "/" + Options.path.SubString((index1>index2?index1:index2)+1);
+    } else {
+        /* create random data */
+        buffer = new NPT_DataBuffer(32768);
+        buffer->SetDataSize(32768);
+
+        /* add static handler */
+        handler = new NPT_HttpStaticRequestHandler(buffer->GetData(),
+            buffer->GetDataSize(),
+            "text/xml");
+        http_server.AddRequestHandler(handler, "/test");
+
+        /* build url*/
+        url += "/test";
     }
 
-    NPT_DirectoryEntryInfo info;
-    NPT_CHECK_SEVERE(NPT_DirectoryEntry::GetInfo(Options.path, info));
+    /* add custom handler */
+    NPT_InputStreamReference stream(ringbuffer_stream);
+    custom_handler = new PLT_HttpCustomRequestHandler(stream,
+        "text/xml");
+    http_server.AddRequestHandler(custom_handler, "/custom");
+    custom_url += "/custom";
 
-    /* and the http server */
-    PLT_HttpServer http_server(Options.port?Options.port:80);
-    NPT_HttpFileRequestHandler* handler = new NPT_HttpFileRequestHandler(
-        Options.path.Left(index1>index2?index1:index2), 
-        "/");
-    http_server.AddRequestHandler(handler, "/", true);
-
-    /* start it */
+    /* start server */
     NPT_CHECK_SEVERE(http_server.Start());
-
-    NPT_String url = "http://127.0.0.1:" + NPT_String::FromInteger(http_server.GetPort());
-    url += "/" + Options.path.SubString((index1>index2?index1:index2)+1);
 
     /* a task manager for the tests downloader */
     PLT_TaskManager task_manager;
@@ -213,19 +342,20 @@ main(int argc, char** argv)
     /* small delay to let the server start */
     NPT_System::Sleep(NPT_TimeInterval(1, 0));
     
-    NPT_Size size;
-    bool result = Test1(&task_manager, url.GetChars(), size);
+    /* execute tests */
+    result = Test1(&task_manager, url.GetChars(), size);
+    if (!result) return -1;
+
+    result = Test2(&task_manager, url.GetChars(), size);
+    if (!result) return -1;
+
+    result = Test3(&task_manager, custom_url.GetChars(), ringbuffer_stream, size);
     if (!result) return -1;
 
     NPT_System::Sleep(NPT_TimeInterval(1, 0));
 
-    char buf[256];
-    while (gets(buf)) {
-        if (*buf == 'q')
-            break;
-    }
-
     http_server.Stop();
     delete handler;
+    delete custom_handler;
     return 0;
 }

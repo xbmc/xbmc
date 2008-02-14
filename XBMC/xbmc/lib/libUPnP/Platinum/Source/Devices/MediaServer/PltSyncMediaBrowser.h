@@ -101,12 +101,12 @@ public:
 protected:
     NPT_Result Browse(PLT_BrowseDataReference& browse_data,
                       PLT_DeviceDataReference& device, 
-                      const char*              object_id, 
-                      const char*              browse_flag, 
+                      const char*              object_id,
                       NPT_Int32                index, 
-                      NPT_Int32                count, 
-                      const char*              filter, 
-                      const char*              sort);
+                      NPT_Int32                count,
+                      bool                     browse_metadata = false,
+                      const char*              filter = "*", 
+                      const char*              sort = "");
 private:
     NPT_Result Find(const char* ip, PLT_DeviceDataReference& device);
     NPT_Result WaitForResponse(NPT_SharedVariable& shared_var);

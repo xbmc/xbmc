@@ -13,6 +13,14 @@
 #include "NptWin32MessageQueue.h"
 
 /*----------------------------------------------------------------------
+|       platform adaptation
++---------------------------------------------------------------------*/
+#if defined(_WIN32_WCE)
+#define GetWindowLongPtr GetWindowLong
+#define SetWindowLongPtr SetWindowLong
+#endif
+
+/*----------------------------------------------------------------------
 |       constants
 +---------------------------------------------------------------------*/
 const int NPT_WIN32_MESSAGE_ID_BASE = WM_USER + 9200;
@@ -67,13 +75,17 @@ NPT_Win32WindowMessageQueue::NPT_Win32WindowMessageQueue()
         NULL);
 
     // set a pointer to ourself as user data */
+#if defined(_MSC_VER)
 #pragma warning( push )
 #pragma warning( disable: 4244) // we have to test for this because SetWindowLongPtr
                                 // is incorrectly defined, so we'll get a C4244 warning
+#endif // _MSC_VER
     if (m_WindowHandle) {
         SetWindowLongPtr(m_WindowHandle, GWL_USERDATA, NPT_POINTER_TO_LONG(this));
     }
+#if defined(_MSC_VER)
 #pragma warning( pop )
+#endif // _MSC_VER
     m_hInstance = wclass.hInstance;
 }
 
@@ -83,7 +95,7 @@ NPT_Win32WindowMessageQueue::NPT_Win32WindowMessageQueue()
 NPT_Win32WindowMessageQueue::~NPT_Win32WindowMessageQueue() 
 {
     // remove ourself as user data to ensure we're not called anymore
-    SetWindowLong(m_WindowHandle, GWL_USERDATA, 0);
+    SetWindowLongPtr(m_WindowHandle, GWL_USERDATA, 0);
 
     // destroy the hidden window
     DestroyWindow(m_WindowHandle);
@@ -102,16 +114,20 @@ NPT_Win32WindowMessageQueue::WindowProcedure(HWND   window,
                                              LPARAM lparam)
 {
     // if it is a windows message, just pass it along
-    if (message != NPT_WIN32_MESSAGE_ID_BASE) {
+    if (message != (UINT) NPT_WIN32_MESSAGE_ID_BASE) {
         return DefWindowProc(window, message, wparam, lparam);
     }
 
     // dispatch the message to the handler
+#if defined(_MSC_VER)
 #pragma warning( push )
 #pragma warning( disable: 4312) // we have to test for this because GetWindowLongPtr
                                 // is incorrectly defined, so we'll get a C4244 warning
+#endif // _MSC_VER
     NPT_Win32WindowMessageQueue* queue = reinterpret_cast<NPT_Win32WindowMessageQueue *>(GetWindowLongPtr(window, GWL_USERDATA));
+#if defined(_MSC_VER)
 #pragma warning( pop )  
+#endif // _MSC_VER
     if (queue == NULL) {
         return 0; 
     }
@@ -124,7 +140,7 @@ NPT_Win32WindowMessageQueue::WindowProcedure(HWND   window,
 |       NPT_Win32WindowMessageQueue::PumpMessage
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_Win32WindowMessageQueue::PumpMessage(bool blocking)
+NPT_Win32WindowMessageQueue::PumpMessage(bool)
 {
     // you cannot pump messages on this type of queue, since they will
     // be pumped by the main windows message loop 
