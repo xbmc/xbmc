@@ -517,6 +517,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   float fMax = 1.0f;
   float fInterval = 0.1f;
   bool bReverse = true;
+  bool bReveal = false;
   CImage textureBackground, textureLeft, textureRight, textureMid, textureOverlay;
   float rMin = 0.0f;
   float rMax = 100.0f;
@@ -814,6 +815,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   }
 
   XMLUtils::GetBoolean(pControlNode, "reverse", bReverse);
+  XMLUtils::GetBoolean(pControlNode, "reveal", bReveal);
 
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   CStdString hideLabels;
@@ -1171,7 +1173,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   {
     control = new CGUIProgressControl(
       dwParentId, id, posX, posY, width, height,
-      textureBackground, textureLeft, textureMid, textureRight, textureOverlay, rMin, rMax);
+      textureBackground, textureLeft, textureMid, textureRight, 
+      textureOverlay, rMin, rMax, bReveal);
     ((CGUIProgressControl *)control)->SetInfo(singleInfo);
   }
   else if (strType == "image")
