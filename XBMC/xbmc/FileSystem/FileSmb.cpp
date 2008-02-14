@@ -278,7 +278,7 @@ void CSMB::CheckIfIdle()
   if (m_OpenConnections == 0)
   { /* I've set the the maxiumum IDLE time to be 1 min and 30 sec. */
     CSingleLock(*this);
-    if ((timeGetTime() - m_LastActive) > 90000)
+    if (m_context != NULL && (timeGetTime() - m_LastActive) > 90000)
     {
       CLog::Log(LOGNOTICE, "Samba is idle. Closing the remaining connections");
       smb.Deinit();
