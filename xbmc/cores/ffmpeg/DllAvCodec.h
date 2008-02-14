@@ -32,7 +32,7 @@ public:
   virtual void avcodec_flush_buffers(AVCodecContext *avctx)=0;
   virtual int avcodec_open_dont_call(AVCodecContext *avctx, AVCodec *codec)=0;
   virtual AVCodec *avcodec_find_decoder(enum CodecID id)=0;
-  virtual int avcodec_close(AVCodecContext *avctx)=0;
+  virtual int avcodec_close_dont_call(AVCodecContext *avctx)=0;
   virtual AVFrame *avcodec_alloc_frame(void)=0;
   virtual int avpicture_fill(AVPicture *picture, uint8_t *ptr, int pix_fmt, int width, int height)=0;
   virtual int avcodec_decode_video(AVCodecContext *avctx, AVFrame *picture, int *got_picture_ptr, uint8_t *buf, int buf_size)=0;
@@ -74,6 +74,7 @@ public:
     return ::avcodec_open(avctx, codec); 
   }
   virtual int avcodec_open_dont_call(AVCodecContext *avctx, AVCodec *codec) { *(int *)0x0 = 0; return 0; } 
+  virtual int avcodec_close_dont_call(AVCodecContext *avctx) { *(int *)0x0 = 0; return 0; } 
   virtual AVCodec *avcodec_find_decoder(enum CodecID id) { return ::avcodec_find_decoder(id); }
   virtual int avcodec_close(AVCodecContext *avctx) 
   {
@@ -141,7 +142,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
 
   DEFINE_METHOD0(void, avcodec_register_all)
   DEFINE_METHOD1(AVCodec*, avcodec_find_decoder, (enum CodecID p1))
-  DEFINE_METHOD1(int, avcodec_close, (AVCodecContext *p1))
+  DEFINE_METHOD1(int, avcodec_close_dont_call, (AVCodecContext *p1))
   DEFINE_METHOD0(AVFrame*, avcodec_alloc_frame)
   DEFINE_METHOD5(int, avpicture_fill, (AVPicture *p1, uint8_t *p2, int p3, int p4, int p5))
   DEFINE_METHOD3(int, avpicture_get_size, (int p1, int p2, int p3))
@@ -157,8 +158,8 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(avcodec_flush_buffers)
     RESOLVE_METHOD_RENAME(avcodec_open,avcodec_open_dont_call)
+    RESOLVE_METHOD_RENAME(avcodec_close,avcodec_close_dont_call)
     RESOLVE_METHOD(avcodec_find_decoder)
-    RESOLVE_METHOD(avcodec_close)
     RESOLVE_METHOD(avcodec_alloc_frame)
     RESOLVE_METHOD(avcodec_register_all)
     RESOLVE_METHOD(avpicture_fill)
@@ -185,6 +186,11 @@ public:
     {
       CSingleLock lock(DllAvCodec::m_critSection);
       return avcodec_open_dont_call(avctx,codec);
+    }
+    int avcodec_close(AVCodecContext *avctx)
+    {
+      CSingleLock lock(DllAvCodec::m_critSection);
+      return avcodec_close_dont_call(avctx);
     }
 };
 #endif
