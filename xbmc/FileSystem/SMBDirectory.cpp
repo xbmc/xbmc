@@ -22,6 +22,12 @@
 #include <libsmbclient.h>
 #endif
 
+struct CachedDirEntry
+{
+  unsigned int type;
+  CStdString name;
+};
+
 using namespace DIRECTORY;
 
 CSMBDirectory::CSMBDirectory(void)
@@ -55,6 +61,8 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   //Separate roots for the authentication and the containing items to allow browsing to work correctly
   CStdString strRoot = strPath;
   CStdString strAuth;
+
+  lock.Leave(); // OpenDir is locked
   int fd = OpenDir(url, strAuth);
   if (fd < 0)
     return false;
@@ -62,40 +70,60 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   if (!CUtil::HasSlashAtEnd(strRoot)) strRoot += "/";
   if (!CUtil::HasSlashAtEnd(strAuth)) strAuth += "/";
 
-  struct smbc_dirent* dirEnt;
   CStdString strFile;
 
+  // need to keep the samba lock for as short as possible.
+  // so we first cache all directory entries and then go over them again asking for stat
+  // "stat" is locked each time. that way the lock is freed between stat requests
+  std::vector<CachedDirEntry> vecEntries;
+  struct smbc_dirent* dirEnt;
+
+  lock.Enter(); 
   while ((dirEnt = smbc_readdir(fd)))
   {
+    CachedDirEntry aDir;
+    aDir.type = dirEnt->smbc_type;
+    aDir.name = dirEnt->name;
+    vecEntries.push_back(aDir);
+  }
+  smbc_closedir(fd);
+  lock.Leave();
+
+  for (size_t i=0; i<vecEntries.size(); i++)
+  {
+    CachedDirEntry aDir = vecEntries[i];
+
     // We use UTF-8 internally, as does SMB
-    strFile = dirEnt->name;
+    strFile = aDir.name;
 
     if (!strFile.Equals(".") && !strFile.Equals("..")
-      && dirEnt->smbc_type != SMBC_PRINTER_SHARE && dirEnt->smbc_type != SMBC_IPC_SHARE)
+      && aDir.type != SMBC_PRINTER_SHARE && aDir.type != SMBC_IPC_SHARE)
     {
      __int64 iSize = 0;
       bool bIsDir = true;
       __int64 lTimeDate = 0;
       bool hidden = false;
 
-      if(strFile.Right(1).Equals("$") && dirEnt->smbc_type == SMBC_FILE_SHARE )
+      if(strFile.Right(1).Equals("$") && aDir.type == SMBC_FILE_SHARE )
         continue;
 
       // only stat files that can give proper responses
-      if ( dirEnt->smbc_type == SMBC_FILE ||
-           dirEnt->smbc_type == SMBC_DIR )
+      if ( aDir.type == SMBC_FILE ||
+           aDir.type == SMBC_DIR )
       {
         // set this here to if the stat should fail
-        bIsDir = (dirEnt->smbc_type == SMBC_DIR);
-
+        bIsDir = (aDir.type == SMBC_DIR);
+       
 #ifndef _LINUX 
         struct __stat64 info = {0};
 #else
-	      struct stat info = {0};
+        struct stat info = {0};
 #endif
 
         // make sure we use the authenticated path wich contains any default username
         CStdString strFullName = strAuth + smb.URLEncode(strFile);
+ 
+        lock.Enter();
 
         if( smbc_stat(strFullName.c_str(), &info) == 0 )
         {
@@ -124,6 +152,8 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         else
           CLog::Log(LOGERROR, "%s - Failed to stat file %s", __FUNCTION__, strFullName.c_str());
 
+        lock.Leave();
+
       }
 
       FILETIME fileTime, localTime;
@@ -139,7 +169,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
         // needed for network / workgroup browsing
         // skip if root if we are given a server
-        if (dirEnt->smbc_type == SMBC_SERVER)
+        if (aDir.type == SMBC_SERVER)
         {
           /* create url with same options, user, pass.. but no filename or host*/
           CURL rooturl(strRoot);
@@ -147,7 +177,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
           rooturl.SetHostName("");
           pItem->m_strPath = smb.URLEncode(rooturl);
         }
-        pItem->m_strPath += dirEnt->name;
+        pItem->m_strPath += aDir.name;
         if (!CUtil::HasSlashAtEnd(pItem->m_strPath)) pItem->m_strPath += '/';
         pItem->m_bIsFolder = true;
         pItem->m_dateTime=localTime;
@@ -157,18 +187,16 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       else
       {
         CFileItem *pItem = new CFileItem(strFile);
-        pItem->m_strPath = strRoot + dirEnt->name;
+        pItem->m_strPath = strRoot + aDir.name;
         pItem->m_bIsFolder = false;
         pItem->m_dwSize = iSize;
         pItem->m_dateTime=localTime;
 
         vecCacheItems.Add(pItem);
-        if (!hidden && IsAllowed(dirEnt->name)) items.Add(new CFileItem(*pItem));
+        if (!hidden && IsAllowed(aDir.name)) items.Add(new CFileItem(*pItem));
       }
     }
   }
-
-  smbc_closedir(fd);
 
   if (m_cacheDirectory)
     g_directoryCache.SetDirectory(strPath, vecCacheItems);
