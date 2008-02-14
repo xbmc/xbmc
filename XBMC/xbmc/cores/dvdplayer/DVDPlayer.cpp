@@ -403,7 +403,7 @@ bool CDVDPlayer::OpenDemuxStream()
 
   try
   {
-    while(true)
+    while(!m_bStop)
     {
       m_pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(m_pInputStream);
       if(!m_pDemuxer && m_pInputStream->NextStream())
