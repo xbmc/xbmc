@@ -96,9 +96,12 @@ PLT_Downloader::ProcessResponse(NPT_Result        res,
         return NPT_FAILURE;
     }
 
-    //FIXME: We should read up to the content length if provided in 1.1
-    //       For now, we send 1.0 requests so it's ok.
-    res = NPT_StreamToStreamCopy(*body, *m_Output);
+    // Read body (no content length means until socket is closed)
+    res = NPT_StreamToStreamCopy(*body.AsPointer(), 
+        *m_Output.AsPointer(), 
+        0, 
+        entity->GetContentLength());
+
     if (NPT_FAILED(res)) {
         m_State = PLT_DOWNLOADER_ERROR;
         return res;

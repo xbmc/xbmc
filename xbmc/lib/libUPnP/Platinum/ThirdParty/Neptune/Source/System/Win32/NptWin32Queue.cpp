@@ -33,15 +33,15 @@ public:
     // methods
                NPT_Win32Queue(NPT_Cardinal max_items);
               ~NPT_Win32Queue();
-    NPT_Result Push(NPT_QueueItem* item, bool blocking); 
-    NPT_Result Pop(NPT_QueueItem*& item, bool blocking);
+    NPT_Result Push(NPT_QueueItem* item, NPT_Timeout timeout); 
+    NPT_Result Pop(NPT_QueueItem*& item, NPT_Timeout timeout);
 
 
 private:
     // members
     NPT_Cardinal             m_MaxItems;
     NPT_Win32CriticalSection m_Mutex;
-    HANDLE                   m_CanPushOrPopCondition;
+    NPT_Win32Event*          m_CanPushOrPopCondition;
     NPT_List<NPT_QueueItem*> m_Items; // should be volatile ?
 };
 
@@ -52,7 +52,7 @@ NPT_Win32Queue::NPT_Win32Queue(NPT_Cardinal max_items) :
     m_MaxItems(max_items)
 {
     NPT_Debug(":: NPT_Win32Queue::NPT_Win32Queue\n");
-    m_CanPushOrPopCondition = CreateEvent(NULL, TRUE, FALSE, NULL);
+    m_CanPushOrPopCondition = new NPT_Win32Event(true);
 }
 
 /*----------------------------------------------------------------------
@@ -61,14 +61,14 @@ NPT_Win32Queue::NPT_Win32Queue(NPT_Cardinal max_items) :
 NPT_Win32Queue::~NPT_Win32Queue()
 {
     // destroy resources
-    CloseHandle(m_CanPushOrPopCondition);
+    delete m_CanPushOrPopCondition;
 }
 
 /*----------------------------------------------------------------------
 |   NPT_Win32Queue::Push
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_Win32Queue::Push(NPT_QueueItem* item, bool blocking)
+NPT_Win32Queue::Push(NPT_QueueItem* item, NPT_Timeout timeout)
 {
     // lock the mutex that protects the list
     NPT_CHECK(m_Mutex.Lock());
@@ -76,26 +76,19 @@ NPT_Win32Queue::Push(NPT_QueueItem* item, bool blocking)
     // check that we have not exceeded the max
     if (m_MaxItems) {
         while (m_Items.GetItemCount() >= m_MaxItems) {
-            if (!blocking) {
-                m_Mutex.Unlock();
-                return NPT_FAILURE;
-            }
-
             // we must wait until some items have been removed
 
             // unlock the mutex so that another thread can pop
             m_Mutex.Unlock();
 
             // wait for the condition to signal that we can push
-            DWORD result;
-            result = WaitForSingleObject(m_CanPushOrPopCondition, INFINITE);
-            if (result != WAIT_OBJECT_0) return NPT_FAILURE;
+            NPT_CHECK(m_CanPushOrPopCondition->Wait(timeout));
 
             // relock the mutex so that we can check the list again
             NPT_CHECK(m_Mutex.Lock());
 
             // reset the condition to false (the list will be full again)
-            ResetEvent(m_CanPushOrPopCondition);
+            m_CanPushOrPopCondition->Reset();
         }
     }
 
@@ -105,7 +98,7 @@ NPT_Win32Queue::Push(NPT_QueueItem* item, bool blocking)
     // if the list was previously empty, signal the condition
     // to wake up the threads waiting to pop
     if (m_Items.GetItemCount() == 1) {    
-        SetEvent(m_CanPushOrPopCondition);
+        m_CanPushOrPopCondition->Signal();
     }
 
     // unlock the mutex
@@ -118,13 +111,13 @@ NPT_Win32Queue::Push(NPT_QueueItem* item, bool blocking)
 |   NPT_Win32Queue::Pop
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_Win32Queue::Pop(NPT_QueueItem*& item, bool blocking)
+NPT_Win32Queue::Pop(NPT_QueueItem*& item, NPT_Timeout timeout)
 {
     // lock the mutex that protects the list
     NPT_CHECK(m_Mutex.Lock());
 
     NPT_Result result;
-    if (blocking) {
+    if (timeout) {
         while ((result = m_Items.PopHead(item)) == NPT_ERROR_LIST_EMPTY) {
             // no item in the list, wait for one
 
@@ -132,15 +125,13 @@ NPT_Win32Queue::Pop(NPT_QueueItem*& item, bool blocking)
             m_Mutex.Unlock();
 
             // wait for the condition to signal that we can pop
-            DWORD result;
-            result = WaitForSingleObject(m_CanPushOrPopCondition, INFINITE);
-            if (result != WAIT_OBJECT_0) return NPT_FAILURE;
+            NPT_CHECK(m_CanPushOrPopCondition->Wait(timeout));
 
             // relock the mutex so that we can check the list again
             NPT_CHECK(m_Mutex.Lock());
 
             // reset the condition to false (the list will be empty again)
-            ResetEvent(m_CanPushOrPopCondition);
+            m_CanPushOrPopCondition->Reset();
         }
     } else {
         result = m_Items.PopHead(item);
@@ -150,7 +141,7 @@ NPT_Win32Queue::Pop(NPT_QueueItem*& item, bool blocking)
         // if the list was previously full, signal the condition
         // to wake up the threads waiting to push
         if (m_Items.GetItemCount() == m_MaxItems-1) {    
-            SetEvent(m_CanPushOrPopCondition);
+            m_CanPushOrPopCondition->Signal();
         }
     }
 

@@ -72,7 +72,9 @@ class NPT_File : public NPT_FileInterface
 {
 public:
     // class methods
-    static NPT_Result Load(const char* filename, NPT_DataBuffer& buffer);
+    static NPT_Result Load(const char* filename, NPT_String& data, NPT_FileInterface::OpenMode mode = NPT_FILE_OPEN_MODE_READ);
+    static NPT_Result Load(const char* filename, NPT_DataBuffer& buffer, NPT_FileInterface::OpenMode mode = NPT_FILE_OPEN_MODE_READ);
+    static NPT_Result Save(const char* filename, NPT_DataBuffer& buffer);
 
     // constructors and destructor
     NPT_File(const char* name);
@@ -80,6 +82,7 @@ public:
 
     // methods
     NPT_Result Load(NPT_DataBuffer& buffer);
+    NPT_Result Save(NPT_DataBuffer& buffer);
 
     // NPT_FileInterface methods
     NPT_Result Open(OpenMode mode) {

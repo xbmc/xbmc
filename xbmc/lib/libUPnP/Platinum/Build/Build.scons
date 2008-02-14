@@ -111,8 +111,8 @@ def BuildApp(name,
     
     # copy to Targets folder
     inst = local_env.Install (dir=env.GetBuildPath('#/Targets/'+env['target']+'/'+env['build_config']), source=prog)
-    if env['build_config'] == 'Release':
-        local_env.AddPostAction (inst, env.Action ('strip $TARGET'))
+    if env['build_config'] == 'Release' and env['STRIP']:
+    		local_env.AddPostAction (inst, env.Action (env['STRIP']+' $TARGET'))
     else:
         local_env.AddPostAction (inst, env.Action (''))
     
@@ -196,6 +196,7 @@ Import("env")
 ### defaults
 env['NPT_EXTRA_LIBS'] = ''
 env['PLT_EXTRA_LIBS'] = ''
+env['STRIP'] = 'strip'
 
 if env['build_config'] == 'Debug':
 	env['PLT_GLOBAL_CPP_DEFINES'] = {'NPT_CONFIG_ENABLE_LOGGING':None}

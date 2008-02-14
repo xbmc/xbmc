@@ -39,8 +39,7 @@ typedef struct {
     NPT_String role;
 } PLT_PersonRole;
 
-class PLT_PersonRoles
-  : public NPT_List<PLT_PersonRole>
+class PLT_PersonRoles  : public NPT_List<PLT_PersonRole>
 {
 public:
     NPT_Result Add(const NPT_String& name, const NPT_String& role = "");
@@ -94,10 +93,10 @@ typedef struct {
 } PLT_ExtraInfo;
 
 typedef struct {
-  NPT_UInt32 dvdregioncode;
-  NPT_UInt32 original_track_number;
-  NPT_String toc;
-  NPT_String user_annotation;
+    NPT_UInt32 dvdregioncode;
+    NPT_UInt32 original_track_number;
+    NPT_String toc;
+    NPT_String user_annotation;
 } PLT_MiscInfo;
 
 typedef struct {
