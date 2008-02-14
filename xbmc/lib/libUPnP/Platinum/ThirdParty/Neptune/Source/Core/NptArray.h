@@ -56,7 +56,7 @@ public:
     NPT_Result   Erase(NPT_Ordinal first, NPT_Ordinal last) { return Erase(&m_Items[first], &m_Items[last]); }
     NPT_Result   Insert(Iterator where, const T& item, NPT_Cardinal count = 1);
     NPT_Result   Reserve(NPT_Cardinal count);
-    NPT_Cardinal GetCapacity(NPT_Cardinal count) const;
+    NPT_Cardinal GetCapacity() const { return m_Capacity; }
     NPT_Result   Resize(NPT_Cardinal count);
     NPT_Result   Resize(NPT_Cardinal count, const T& fill);
     NPT_Result   Clear();
@@ -202,6 +202,7 @@ NPT_Array<T>::operator=(const NPT_Array<T>& copy)
 
     // copy all elements from the other object
     Reserve(copy.GetItemCount());
+    m_ItemCount = copy.m_ItemCount;
     for (NPT_Ordinal i=0; i<copy.m_ItemCount; i++) {
         new ((void*)&m_Items[i]) T(copy.m_Items[i]);
     }
@@ -318,8 +319,8 @@ NPT_Array<T>::Erase(Iterator first, Iterator last)
     if (first == NULL || last == NULL) return NPT_ERROR_INVALID_PARAMETERS;
 
     // check the bounds
-    NPT_Ordinal first_index = (NPT_Ordinal)NPT_POINTER_TO_LONG(first-m_Items);
-    NPT_Ordinal last_index  = (NPT_Ordinal)NPT_POINTER_TO_LONG(last-m_Items);
+    NPT_Ordinal first_index = (NPT_Ordinal)(NPT_POINTER_TO_LONG(first-m_Items));
+    NPT_Ordinal last_index  = (NPT_Ordinal)(NPT_POINTER_TO_LONG(last-m_Items));
     if (first_index >= m_ItemCount ||
         last_index  >= m_ItemCount ||
         first_index > last_index) {
@@ -352,11 +353,11 @@ NPT_Result
 NPT_Array<T>::Insert(Iterator where, const T& item, NPT_Cardinal repeat)
 {
     // check bounds
-    NPT_Ordinal where_index = where?(NPT_Ordinal)NPT_POINTER_TO_LONG(where-m_Items):m_ItemCount;
+    NPT_Ordinal where_index = where?((NPT_Ordinal)NPT_POINTER_TO_LONG(where-m_Items)):m_ItemCount;
     if (where > &m_Items[m_ItemCount] || repeat == 0) return NPT_ERROR_INVALID_PARAMETERS;
 
     NPT_Cardinal needed = m_ItemCount+repeat;
-    if (needed < m_Capacity) {
+    if (needed > m_Capacity) {
         // allocate more memory
         NPT_Cardinal new_capacity;
         T* new_items = Allocate(needed, new_capacity);

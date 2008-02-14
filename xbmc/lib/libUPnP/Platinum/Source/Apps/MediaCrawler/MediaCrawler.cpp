@@ -279,9 +279,9 @@ CMediaCrawler::OnBrowseDevice(PLT_ActionReference& action,
     // until the response has been received.
     res = Browse(device,
         server_object_id,
-        browseFlagValue,
         start_index,
         req_count,
+        (browseFlagValue == "BrowseMetadata")?1:0,
         filter,
         sort,
         new CMediaCrawlerBrowseInfoReference(browse_info));		
@@ -406,39 +406,34 @@ CMediaCrawler::UpdateDidl(const char* server_uuid, const NPT_String& didl, NPT_S
                 NPT_XmlElementNode* resource = res[i];
                 NPT_XmlAttribute*   attribute_prot;
                 const NPT_String*   url;
-                if (NPT_SUCCEEDED(PLT_XmlHelper::GetAttribute(resource, "protocolInfo", attribute_prot)) && (url = resource->GetText()) != NULL) {
+                if (NPT_SUCCEEDED(PLT_XmlHelper::GetAttribute(resource, "protocolInfo", attribute_prot)) && (url = resource->GetText())) {
+                    // special case for Windows Media Connect
+                    // When a browse is done on the same machine, WMC uses localhost 
+                    // instead of the IP for all resources urls which means we cannot advertise that 
+                    // since it would be useless for a remote device 
+                    // so we try to replace it with the right IP address by looking at which interface we received the
+                    // initial browse request on to make sure the remote device will be able to access the modified resource
+                    // urls (in case the local PC has more than 1 NICs)
+
+                    // replace the url
+                    NPT_List<NPT_XmlNode*>& children = resource->GetChildren();
+                    NPT_HttpUrl http_url(NPT_Uri::PercentDecode(*url));
+                    if ((http_url.GetHost() == "localhost" || http_url.GetHost() == "127.0.0.1") && info) {
+                        if (info->local_address.GetIpAddress().AsLong()) {
+                            http_url.SetHost(info->local_address.GetIpAddress().ToString());
+
+                            // replace text
+                            children.Apply(NPT_ObjectDeleter<NPT_XmlNode>());
+                            children.Clear();
+                            resource->AddText(http_url.ToString());
+                            url = resource->GetText();
+                        }
+                    }
+
                     CStreamHandler* handler = NULL;
                     NPT_Result res = NPT_ContainerFind(m_StreamHandlers, CStreamHandlerFinder(attribute_prot->GetValue(), *url), handler);
                     if (NPT_SUCCEEDED(res)) {
                         handler->ModifyResource(resource);
-                    } else {
-                        // special case for Windows Media Connect
-                        // When a browse is done on the same machine, WMC uses localhost 
-                        // instead of the IP for all resources urls which means we cannot advertise that 
-                        // since it would be useless for a remote device 
-                        // so we try to replace it with the right IP address by looking at which interface we received the
-                        // initial browse request on to make sure the remote device will be able to access the modified resource
-                        // urls (in case the local PC has more than 1 NICs)
-
-                        // replace the url
-                        NPT_List<NPT_XmlNode*>& children = resource->GetChildren();
-                        if (children.GetItemCount() != 1 || !(*children.GetFirstItem())->AsTextNode())
-                            continue;
-
-                        const NPT_String* text = resource->GetText();
-                        if (text) {
-                            NPT_HttpUrl url(NPT_Uri::Decode(*text));
-                            if ((url.GetHost() == "localhost" || url.GetHost() == "127.0.0.1") && info) {
-                                if (info->local_address.GetIpAddress().AsLong()) {
-                                    url.SetHost(info->local_address.GetIpAddress().ToString());
-
-                                    // replace text
-                                    children.Apply(NPT_ObjectDeleter<NPT_XmlNode>());
-                                    children.Clear();
-                                    resource->AddText(url.ToString());
-                                }
-                            }
-                        }
                     }
                 }
             }
@@ -491,7 +486,7 @@ CMediaCrawler::ProcessFileRequest(NPT_HttpRequest&  request,
             // copy response code and reason
             response.SetStatus(out_response->GetStatusCode(), out_response->GetReasonPhrase());
 
-            // copy headesr
+            // copy headers
             NPT_List<NPT_HttpHeader*>::Iterator headers = out_response->GetHeaders().GetHeaders().GetFirstItem();
             while (headers) {
                 response.GetHeaders().SetHeader((*headers)->GetName(), (*headers)->GetValue());

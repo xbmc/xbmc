@@ -176,6 +176,7 @@ public:
             ips.Add("127.0.0.1");
         }
 
+        if_list.Apply(NPT_ObjectDeleter<NPT_NetworkInterface>());
         return NPT_SUCCESS;
     }
 };

@@ -36,7 +36,7 @@ class NPT_SimpleMessageQueue : public NPT_MessageQueue
     // NPT_MessageQueue methods
     virtual NPT_Result QueueMessage(NPT_Message*        message, 
                                     NPT_MessageHandler* handler);
-    virtual NPT_Result PumpMessage(bool blocking = true);
+    virtual NPT_Result PumpMessage(NPT_Timeout timeout = NPT_TIMEOUT_INFINITE);
 
  private:
     // members

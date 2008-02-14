@@ -41,8 +41,8 @@
 #define PLT_FILTER_FIELD_CREATOR                    "dc:creator"
 #define PLT_FILTER_FIELD_ARTIST                     "upnp:artist"
 #define PLT_FILTER_FIELD_ACTOR                      "upnp:actor"
-#define PLT_FILTER_FIELD_AUTHOR                     "upnp:actor"
-#define PLT_FILTER_FIELD_ALBUM                      "upnp:author"
+#define PLT_FILTER_FIELD_AUTHOR                     "upnp:author"
+#define PLT_FILTER_FIELD_ALBUM                      "upnp:album"
 #define PLT_FILTER_FIELD_GENRE                      "upnp:genre"
 #define PLT_FILTER_FIELD_ALBUMARTURI                "upnp:albumArtURI"
 #define PLT_FILTER_FIELD_DESCRIPTION                "upnp:longDescription"
@@ -71,10 +71,10 @@ public:
     static NPT_Result  ToDidl(PLT_MediaObject& object, NPT_String filter, NPT_String& didl);
     static NPT_Result  FromDidl(const char* didl, PLT_MediaObjectListReference& objects);
 
-    static const char* AppendXmlEscape(NPT_String& out, NPT_String& in);
-    static const char* AppendXmlUnEscape(NPT_String& out, NPT_String& in);
+    static void        AppendXmlEscape(NPT_String& out, NPT_String& in);
+    static void        AppendXmlUnEscape(NPT_String& out, NPT_String& in);
     static NPT_Result  ParseTimeStamp(NPT_String timestamp, NPT_UInt32& seconds);
-    static const char* FormatTimeStamp(NPT_String& out, NPT_UInt32 seconds);
+    static void        FormatTimeStamp(NPT_String& out, NPT_UInt32 seconds);
 
     static NPT_Result  ParseTimeStamp(NPT_String in, NPT_TimeStamp& timestamp) {
         NPT_UInt32 seconds;

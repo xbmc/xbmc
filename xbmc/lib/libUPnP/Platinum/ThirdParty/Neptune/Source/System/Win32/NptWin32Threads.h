@@ -35,6 +35,25 @@ private:
 };
 
 /*----------------------------------------------------------------------
+|   NPT_Win32Event
++---------------------------------------------------------------------*/
+class NPT_Win32Event
+{
+public:
+    // methods
+             NPT_Win32Event(bool manual = false);
+    virtual ~NPT_Win32Event();
+
+    virtual NPT_Result Wait(NPT_Timeout timeout = NPT_TIMEOUT_INFINITE);
+    virtual void       Signal();
+    virtual void       Reset();
+
+private:
+    // members
+    HANDLE m_Event;
+};
+
+/*----------------------------------------------------------------------
 |   NPT_Win32CriticalSection
 +---------------------------------------------------------------------*/
 class NPT_Win32CriticalSection

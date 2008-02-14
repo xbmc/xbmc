@@ -21,6 +21,7 @@
 class PLT_HttpHelper {
  public:
     static bool         IsConnectionKeepAlive(NPT_HttpMessage* message);
+    static bool         IsBodyStreamSeekable(NPT_HttpMessage* message);
 
     static NPT_Result   ToLog(NPT_LoggerReference logger, int level, NPT_HttpRequest* request);
     static NPT_Result   ToLog(NPT_LoggerReference logger, int level, NPT_HttpResponse* response);

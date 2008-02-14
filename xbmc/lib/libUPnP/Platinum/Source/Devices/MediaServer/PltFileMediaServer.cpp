@@ -49,18 +49,23 @@ PLT_FileMediaServer::PLT_FileMediaServer(const char*  path,
                                          const char*  friendly_name, 
                                          bool         show_ip, 
                                          const char*  uuid, 
-                                         unsigned int port,
-                                         unsigned int file_serverport) :	
-    PLT_MediaServer(friendly_name, show_ip, uuid, port, file_serverport)
+                                         NPT_UInt16   port,
+                                         NPT_UInt16   fileserver_port) :	
+    PLT_MediaServer(friendly_name, 
+                    show_ip,
+                    uuid, 
+                    port),
+    m_FileServer(NULL),
+    m_FileServerPort(fileserver_port)
 {
     /* set up the server root path */
     m_Path  = path;
-    if (m_Path.Find(NPT_WIN32_DIR_DELIMITER_STR) != -1) {
-        m_DirDelimiter = NPT_WIN32_DIR_DELIMITER_STR;
-    } else if (m_Path.Find(NPT_UNIX_DIR_DELIMITER_STR) != -1) {
-        m_DirDelimiter = NPT_UNIX_DIR_DELIMITER_STR;
+    if (m_Path.Find("\\") != -1) {
+        m_DirDelimiter = "\\";
+    } else if (m_Path.Find("/") != -1) {
+        m_DirDelimiter = "/";
     } else {
-        m_DirDelimiter = NPT_UNIX_DIR_DELIMITER_STR;
+        m_DirDelimiter = "/";
     }
 
     if (!m_Path.EndsWith(m_DirDelimiter)) {
@@ -68,7 +73,6 @@ PLT_FileMediaServer::PLT_FileMediaServer(const char*  path,
     }
 
     m_FileServerHandler = new PLT_HttpFileRequestHandler(this);
-    m_FileServer->AddRequestHandler(m_FileServerHandler, "/", true);
 }
 
 /*----------------------------------------------------------------------
@@ -100,9 +104,12 @@ PLT_FileMediaServer::AddMetadataHandler(PLT_MetadataHandler* handler)
 |   PLT_FileMediaServer::Start
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_FileMediaServer::Start(PLT_TaskManager* task_manager, PLT_DeviceHostReference& self)
-{
-    NPT_CHECK_SEVERE(PLT_MediaServer::Start(task_manager, self));
+PLT_FileMediaServer::Start(PLT_SsdpListenTask* task)
+{   
+    // start our file server
+    m_FileServer = new PLT_HttpServer(m_FileServerPort);
+    NPT_CHECK_SEVERE(m_FileServer->Start());
+    m_FileServer->AddRequestHandler(m_FileServerHandler, "/", true);
 
     // FIXME: hack for now: find the first valid non local ip address
     // to use in item resources. TODO: we should advertise all ips as
@@ -115,7 +122,20 @@ PLT_FileMediaServer::Start(PLT_TaskManager* task_manager, PLT_DeviceHostReferenc
     m_FileBaseUri     = NPT_HttpUrl(*ips.GetFirstItem(), m_FileServer->GetPort(), "/content");
     m_AlbumArtBaseUri = NPT_HttpUrl(*ips.GetFirstItem(), m_FileServer->GetPort(), "/albumart");
 
-    return NPT_SUCCESS;
+    return PLT_MediaServer::Start(task);
+}
+
+/*----------------------------------------------------------------------
+|   PLT_FileMediaServer::Stop
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_FileMediaServer::Stop(PLT_SsdpListenTask* task)
+{
+    // stop our file server
+    m_FileServer->Stop();
+    delete m_FileServer;
+
+    return PLT_MediaServer::Stop(task);
 }
 
 /*----------------------------------------------------------------------
@@ -140,11 +160,22 @@ PLT_FileMediaServer::ProcessFileRequest(NPT_HttpRequest&  request,
 
     // File requested
     NPT_String path = m_FileBaseUri.GetPath();
-    NPT_String strUri = NPT_Uri::Decode(request.GetUrl().GetPath());
+    NPT_String strUri = NPT_Uri::PercentDecode(request.GetUrl().GetPath());
 
     NPT_HttpUrlQuery query(request.GetUrl().GetQuery());
     NPT_String file_path = query.GetField("path");
+
+    // hack for XBMC support for 360, we urlencoded the ? to that the 360 doesn't strip out the query
+    // but then the query ends being parsed as part of the path
+    int index = strUri.Find("path=");
+    if (index>0) file_path = strUri.Right(strUri.GetLength()-index-5);
     if (file_path.GetLength() == 0) goto failure;
+
+    // HACK for wmp: somehow they inverse our slashes !
+    // do it only if we're on windows
+    if (m_DirDelimiter == "\\") {
+        file_path.Replace('/', '\\');
+    }
 
     if (path.Compare(strUri.Left(path.GetLength()), true) == 0) {
         NPT_Integer start, end;
@@ -479,7 +510,7 @@ PLT_FileMediaServer::BuildFromFilePath(const NPT_String& filepath,
                         uri.SetQuery(query.ToString());
                         //uri.SetPath(uri.GetPath() + url);
 
-                        object->m_ExtraInfo.album_art_uri = NPT_Uri::Encode(uri.ToString(), NPT_Uri::UnsafeCharsToEncode);
+                        object->m_ExtraInfo.album_art_uri = NPT_Uri::PercentEncode(uri.ToString(), NPT_Uri::UnsafeCharsToEncode);
                     }
 
                     /* duration */
