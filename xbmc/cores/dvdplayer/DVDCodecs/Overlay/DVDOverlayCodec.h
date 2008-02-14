@@ -15,7 +15,7 @@ class CDVDOverlayCodec
 {
 public:
 
-  CDVDOverlayCodec(char* name)
+  CDVDOverlayCodec(const char* name)
   {
     m_codecName = name;
   }
