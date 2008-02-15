@@ -271,10 +271,15 @@ __int64 CCMythFile::Seek(__int64 pos, int whence)
   XLOG(LOGDEBUG, "seek to pos %lld, whence %d", pos, whence);
 
   if(whence == SEEK_POSSIBLE)
-    return true;
+  {
+    if(m_recorder)
+      return false;
+    else
+      return true;
+  }
 
   if(m_recorder)
-    return cmyth_livetv_seek(m_recorder, pos, whence);
+    return false; //cmyth_livetv_seek(m_recorder, pos, whence);
   else
     return cmyth_file_seek(m_file, pos, whence);
 
