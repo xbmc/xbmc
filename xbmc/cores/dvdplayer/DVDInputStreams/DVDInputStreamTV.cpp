@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DVDInputStreamTV.h"
 #include "FileSystem/GMythFile.h"
+#include "FileSystem/CMythFile.h"
 
 
 using namespace XFILE;
@@ -26,13 +27,9 @@ bool CDVDInputStreamTV::Open(const char* strFile, const std::string& content)
 {
   if (!CDVDInputStream::Open(strFile, content)) return false;
 
-#ifdef HAS_GMYTH
-  m_pFile = new CGMythFile();
-#endif
-#ifdef HAS_GMYTH
+  m_pFile = new CCMythFile();
   if (!m_pFile) return false;
-  m_pLiveTV = ((CGMythFile*)m_pFile)->GetLiveTV();
-#endif
+  m_pLiveTV = ((CCMythFile*)m_pFile)->GetLiveTV();
 
   CURL url(strFile);
   // open file in binary mode
@@ -42,7 +39,7 @@ bool CDVDInputStreamTV::Open(const char* strFile, const std::string& content)
     m_pFile = NULL;
     return false;
   }
-  m_eof = true;
+  m_eof = false;
   return true;
 }
 
@@ -120,6 +117,11 @@ CVideoInfoTag* CDVDInputStreamTV::GetVideoInfoTag()
   if(m_pLiveTV)
     return m_pLiveTV->GetVideoInfoTag();
   return NULL;
+}
+
+bool CDVDInputStreamTV::SeekTime(int iTimeInMsec)
+{
+  return false;
 }
 
 bool CDVDInputStreamTV::NextStream()

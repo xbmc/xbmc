@@ -50,6 +50,7 @@
 #include "DirectoryTuxBox.h"
 #include "HDHomeRun.h"
 #include "GMythDirectory.h"
+#include "CMythDirectory.h"
 
 using namespace DIRECTORY;
 
@@ -123,8 +124,11 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     if (strProtocol == "upnp") return new CUPnPDirectory();
 #endif
     if (strProtocol == "hdhomerun") return new CDirectoryHomeRun();
+    if (strProtocol == "myth") return new CCMythDirectory();
+    if (strProtocol == "cmyth") return new CCMythDirectory();
 #ifdef HAS_GMYTH
-    if (strProtocol == "myth") return new CGMythDirectory();
+    if (strProtocol == "myth") return new CCMythDirectory();
+    if (strProtocol == "gmyth") return new CGMythDirectory();
 #endif
   }
 
