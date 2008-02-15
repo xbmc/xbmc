@@ -21,12 +21,15 @@ public:
 
   virtual bool    NextStream();
 
+
   bool            NextChannel();
   bool            PrevChannel();
 
   int             GetTotalTime();
   int             GetStartTime();
+
   CVideoInfoTag*  GetVideoInfoTag();
+  bool            SeekTime(int iTimeInMsec);
 protected:
   XFILE::IFile*            m_pFile;
   XFILE::ILiveTVInterface* m_pLiveTV;
