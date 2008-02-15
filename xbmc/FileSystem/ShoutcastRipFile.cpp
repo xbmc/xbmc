@@ -119,7 +119,11 @@ bool CShoutcastRipFile::Record()
   {
     char logFilename[1024];
     CStdString strHomePath = g_guiSettings.GetString("mymusic.recordingpath");
+#ifndef _LINUX
     sprintf(logFilename, "%s\\recordings.log", strHomePath.c_str() );
+#else
+    sprintf(logFilename, "%s/recordings.log", strHomePath.c_str() );
+#endif
     m_logFile = fopen( logFilename, "at+");
   }
 
@@ -234,7 +238,11 @@ void CShoutcastRipFile::PrepareRecording( )
 
     CStdString strHomePath = g_guiSettings.GetString("mymusic.recordingpath");
     char szFilePath[1024];
+#ifndef _LINUX
     sprintf( szFilePath, "%s\\%s", strHomePath.c_str(), directoryName );
+#else
+    sprintf( szFilePath, "%s/%s", strHomePath.c_str(), directoryName );
+#endif
     SetFilename( szFilePath, m_szFilteredFileName );
     //get the artist and trackname
     char szArtist[1124];
@@ -287,7 +295,11 @@ void CShoutcastRipFile::PrepareRecording( )
     char szTitle[1124];             //i.e.
 
     //Set the filename
+#ifndef _LINUX
     sprintf( szFilePath, "%s\\%s", strHomePath.c_str(), directoryName );
+#else
+    sprintf( szFilePath, "%s/%s", strHomePath.c_str(), directoryName );
+#endif
     SetFilename( szFilePath, directoryName ); //file name like Directory
 
     //set the remaining tags
@@ -339,12 +351,20 @@ void CShoutcastRipFile::SetFilename( const char* filePath, const char* fileName 
   {
     if ( m_recState.bHasMetaData )
     {
+#ifndef _LINUX
       strcat( szTempFilePath, "\\%i - %s.mp3" );  //will be "TRACKNUMBER - FILENAME.mp3"
+#else
+      strcat( szTempFilePath, "/%i - %s.mp3" );  //will be "TRACKNUMBER - FILENAME.mp3"
+#endif
       sprintf(szNewFileName, szTempFilePath, i, szMaxFileName );
     }
     else
     {
+#ifndef _LINUX
       strcat( szTempFilePath, "\\%s - %i.mp3" );  //will be "FILENAME - TRACKNUMBER.mp3"
+#else
+      strcat( szTempFilePath, "/%s - %i.mp3" );  //will be "FILENAME - TRACKNUMBER.mp3"
+#endif
       sprintf(szNewFileName, szTempFilePath, szMaxFileName, i );
     }
     memset(&wfd, 0, sizeof(wfd));
