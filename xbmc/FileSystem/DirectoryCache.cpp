@@ -3,6 +3,7 @@
 #include "DirectoryCache.h"
 #include "../Util.h"
 
+using namespace std;
 using namespace DIRECTORY;
 
 CDirectoryCache g_directoryCache;

@@ -31,6 +31,7 @@
 #include "SmartPlaylist.h"
 #include "GUIDialogProgress.h"
 
+using namespace std;
 using namespace PLAYLIST;
 
 #define QUEUE_DEPTH       10

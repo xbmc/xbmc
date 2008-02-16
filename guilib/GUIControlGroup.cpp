@@ -1,6 +1,8 @@
 #include "include.h"
 #include "GUIControlGroup.h"
 
+using namespace std;
+
 CGUIControlGroup::CGUIControlGroup(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height)
 : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {

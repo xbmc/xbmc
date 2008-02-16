@@ -153,9 +153,9 @@ NPT_Result
 PLT_SyncMediaBrowser::Browse(PLT_BrowseDataReference& browse_data,
                              PLT_DeviceDataReference& device, 
                              const char*              object_id, 
-                             const char*              browse_flag, 
                              NPT_Int32                index, 
-                             NPT_Int32                count, 
+                             NPT_Int32                count,
+                             bool                     browse_metadata,
                              const char*              filter, 
                              const char*              sort)
 {
@@ -179,9 +179,9 @@ PLT_SyncMediaBrowser::Browse(PLT_BrowseDataReference& browse_data,
     // to block until the response comes back.
     res = m_MediaBrowser->Browse(device,
         (const char*)object_id,
-        browse_flag,
         index,
         count,
+        browse_metadata,
         filter,
         sort,
         new PLT_BrowseDataReference(browse_data));		
@@ -215,9 +215,9 @@ PLT_SyncMediaBrowser::Browse(PLT_DeviceDataReference&      device,
         res = Browse(browse_data,
             device,
             (const char*)object_id,
-            "BrowseDirectChildren",
             index,
             1024,
+            false,
             "*",
             "");		
         if (NPT_FAILED(res)) 

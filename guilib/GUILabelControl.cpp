@@ -5,6 +5,8 @@
 
 #include "LocalizeStrings.h"  // for CGUIInfoLabel
 
+using namespace std;
+
 CGUIInfoLabel::CGUIInfoLabel()
 {
 }
@@ -376,4 +378,5 @@ void CGUILabelControl::SetHighlight(unsigned int start, unsigned int end)
   m_startHighlight = start;
   m_endHighlight = end;
 }
+
 

@@ -77,7 +77,7 @@ public:
   bool IsWindowTopMost(const CStdString &xmlFile) const;
   bool IsOverlayAllowed() const;
   void ShowOverlay(CGUIWindow::OVERLAY_STATE state);
-  void GetActiveModelessWindows(vector<DWORD> &ids);
+  void GetActiveModelessWindows(std::vector<DWORD> &ids);
 #ifdef _DEBUG
   void DumpTextureUse();
 #endif
@@ -91,20 +91,20 @@ private:
   void Process_Internal(bool renderOnly = false);
   void Render_Internal();
 
-  map<DWORD, CGUIWindow *> m_mapWindows;
-  vector <CGUIWindow*> m_vecCustomWindows;
-  vector <CGUIWindow*> m_activeDialogs;
-  typedef vector<CGUIWindow*>::iterator iDialog;
-  typedef vector<CGUIWindow*>::const_iterator ciDialog;
-  typedef vector<CGUIWindow*>::reverse_iterator rDialog;
-  typedef vector<CGUIWindow*>::const_reverse_iterator crDialog;
+  std::map<DWORD, CGUIWindow *> m_mapWindows;
+  std::vector <CGUIWindow*> m_vecCustomWindows;
+  std::vector <CGUIWindow*> m_activeDialogs;
+  typedef std::vector<CGUIWindow*>::iterator iDialog;
+  typedef std::vector<CGUIWindow*>::const_iterator ciDialog;
+  typedef std::vector<CGUIWindow*>::reverse_iterator rDialog;
+  typedef std::vector<CGUIWindow*>::const_reverse_iterator crDialog;
 
-  stack<DWORD> m_windowHistory;
+  std::stack<DWORD> m_windowHistory;
 
   IWindowManagerCallback* m_pCallback;
-  vector < pair<CGUIMessage*,DWORD> > m_vecThreadMessages;
+  std::vector < std::pair<CGUIMessage*,DWORD> > m_vecThreadMessages;
   CRITICAL_SECTION m_critSection;
-  vector <IMsgTargetCallback*> m_vecMsgTargets;
+  std::vector <IMsgTargetCallback*> m_vecMsgTargets;
 
   bool m_bShowOverlay;
 };

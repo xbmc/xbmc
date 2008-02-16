@@ -30,6 +30,7 @@
 #include "../utils/Win32Exception.h"
 #endif
 
+using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
 

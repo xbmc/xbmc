@@ -9,6 +9,8 @@
 #include "../DVDClock.h"
 #include "../DVDSubtitles/DVDSubtitleStream.h"
 
+using namespace std;
+
 void CDVDDemuxVobsub::CStream::SetDiscard(AVDiscard discard)
 {  
   if(discard == AVDISCARD_NONE && m_discard != AVDISCARD_NONE)
@@ -40,7 +42,7 @@ CDVDDemuxVobsub::~CDVDDemuxVobsub()
   m_Streams.clear();
 }
 
-bool CDVDDemuxVobsub::Open(const std::string& filename)
+bool CDVDDemuxVobsub::Open(const string& filename)
 {
   m_Filename = filename;
 

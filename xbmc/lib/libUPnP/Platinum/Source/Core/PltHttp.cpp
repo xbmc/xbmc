@@ -234,22 +234,39 @@ PLT_HttpHelper::ParseBody(NPT_HttpMessage* message, NPT_XmlElementNode*& tree)
 bool
 PLT_HttpHelper::IsConnectionKeepAlive(NPT_HttpMessage* message) 
 {
-    NPT_String protocol = message->GetProtocol();
     NPT_String connection;
-    if (NPT_FAILED(message->GetHeaders().GetHeaderValue(NPT_HTTP_HEADER_CONNECTION, connection))) {
-        if (!protocol.Compare(NPT_HTTP_PROTOCOL_1_1, true))
-            return true;
-
-        return false;
-    }
+    message->GetHeaders().GetHeaderValue(NPT_HTTP_HEADER_CONNECTION, 
+                                         connection);
 
     // if we have the keep-alive header then no matter what protocol version we want keep-alive
     // if we are in HTTP 1.1 and we don't have the keep-alive header, make sure we also don't have the Connection: close header.
-    if ((!protocol.Compare(NPT_HTTP_PROTOCOL_1_1, true) && connection.Compare("Close", true)) || !connection.Compare("keep-alive", true)) {
+    NPT_String protocol = message->GetProtocol();
+    if ((!protocol.Compare(NPT_HTTP_PROTOCOL_1_1, true) && connection.Compare("Close", true)) || 
+        !connection.Compare("keep-alive", true)) {
         return true; 
     }
 
     return false;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_HttpHelper::IsBodyStreamSeekable
++---------------------------------------------------------------------*/
+bool
+PLT_HttpHelper::IsBodyStreamSeekable(NPT_HttpMessage* message)
+{
+    NPT_HttpEntity* entity = message->GetEntity();
+    NPT_InputStreamReference stream;
+    if (!entity || NPT_FAILED(entity->GetInputStream(stream))) return true;
+
+    // try to get current position and seek there
+    NPT_Position position;
+    if (NPT_FAILED(stream->Tell(position)) || 
+        NPT_FAILED(stream->Seek(position))) {
+        return false;
+    }
+
+    return true;
 }
 
 /*----------------------------------------------------------------------
@@ -326,6 +343,8 @@ PLT_HttpHelper::ToLog(NPT_LoggerReference logger, int level, NPT_HttpRequest* re
 {
     NPT_COMPILER_UNUSED(logger);
     NPT_COMPILER_UNUSED(level);
+
+    NPT_CHECK_POINTER(request);
 
     NPT_StringOutputStreamReference stream(new NPT_StringOutputStream);
     request->GetHeaders().GetHeaders().Apply(NPT_HttpHeaderPrinter((NPT_OutputStreamReference&)stream));
@@ -408,6 +427,8 @@ PLT_HttpHelper::ToLog(NPT_LoggerReference logger, int level, NPT_HttpResponse* r
 {
     NPT_COMPILER_UNUSED(logger);
     NPT_COMPILER_UNUSED(level);
+
+    NPT_CHECK_POINTER(response);
 
     NPT_StringOutputStreamReference stream(new NPT_StringOutputStream);
     response->GetHeaders().GetHeaders().Apply(NPT_HttpHeaderPrinter((NPT_OutputStreamReference&)stream));
@@ -504,7 +525,7 @@ PLT_HttpClient::SendRequest(NPT_OutputStreamReference& output_stream,
     NPT_CHECK_SEVERE(output_stream->WriteFully(header_stream.GetData(), header_stream.GetDataSize()));
 
     // send request body
-    if (!body_stream.IsNull()) {
+    if (!body_stream.IsNull() && entity->GetContentLength()) {
         NPT_CHECK_SEVERE(NPT_StreamToStreamCopy(*body_stream.AsPointer(), *output_stream.AsPointer()));
     }
 
@@ -534,21 +555,16 @@ PLT_HttpClient::WaitForResponse(NPT_InputStreamReference& input_stream,
     // unbuffer the stream
     buffered_input_stream->SetBufferSize(0);
 
-    // decide what to do next based on the response 
-    //switch (response->GetStatusCode()) {
-    //    // redirections
-    //    case NPT_HTTP_STATUS_301_MOVED_PERMANENTLY:
-    //    case NPT_HTTP_STATUS_302_FOUND:
-    //}
-
     // create an entity if one is expected in the response
     if (request.GetMethod() == NPT_HTTP_METHOD_GET || request.GetMethod() == NPT_HTTP_METHOD_POST) {
         NPT_HttpEntity* response_entity = new NPT_HttpEntity(response->GetHeaders());
+        // Transfer-Encoding: chunked ?
         if (response_entity->GetTransferEncoding() == "chunked") {
-            NPT_InputStreamReference tmpRef = (NPT_InputStreamReference)buffered_input_stream;
-            buffered_input_stream = new NPT_HttpChunkedInputStream(tmpRef);
+            NPT_InputStreamReference body_stream(new NPT_HttpChunkedDecoderInputStream(buffered_input_stream));
+            response_entity->SetInputStream((NPT_InputStreamReference)body_stream);
+        } else {
+            response_entity->SetInputStream((NPT_InputStreamReference)buffered_input_stream);
         }
-        response_entity->SetInputStream((NPT_InputStreamReference)buffered_input_stream);
         response->SetEntity(response_entity);
     }
 

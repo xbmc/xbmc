@@ -131,11 +131,11 @@ protected:
   DWORD m_dwGamesUpdateTimer;
   DWORD m_dwArenaUpdateTimer;
 
-  typedef map<CStdString, Invitation> INVITETABLE;
+  typedef std::map<CStdString, Invitation> INVITETABLE;
   INVITETABLE m_invitations;
 
   CKaiVector m_vectors;
 
-  typedef map<CStdString, DWORD> TITLETABLE;
+  typedef std::map<CStdString, DWORD> TITLETABLE;
   TITLETABLE m_titles;
 };

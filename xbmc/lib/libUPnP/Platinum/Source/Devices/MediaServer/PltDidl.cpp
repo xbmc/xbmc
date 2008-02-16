@@ -19,18 +19,17 @@ NPT_SET_LOCAL_LOGGER("platinum.media.server.didl")
 /*----------------------------------------------------------------------
 |   globals
 +---------------------------------------------------------------------*/
-
 const char* didl_header         = "<DIDL-Lite xmlns=\"urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/\""
                                             " xmlns:dc=\"http://purl.org/dc/elements/1.1/\""
                                             " xmlns:upnp=\"urn:schemas-upnp-org:metadata-1-0/upnp/\""
                                             " xmlns:dlna=\"urn:schemas-dlna-org:metadata-1-0\">";
-const char* didl_footer         = "\r\n</DIDL-Lite>";
+const char* didl_footer         = "</DIDL-Lite>";
 const char* didl_namespace_dc   = "http://purl.org/dc/elements/1.1/";
 const char* didl_namespace_upnp = "urn:schemas-upnp-org:metadata-1-0/upnp/";
 const char* didl_namespace_dlna = "urn:schemas-dlna-org:metadata-1-0";
 
 /*----------------------------------------------------------------------
-|   PLT_MediaServer::ConvertFilterToMask
+|   PLT_Didl::ConvertFilterToMask
 +---------------------------------------------------------------------*/
 NPT_UInt32 
 PLT_Didl::ConvertFilterToMask(NPT_String filter)
@@ -97,9 +96,9 @@ PLT_Didl::ConvertFilterToMask(NPT_String filter)
 }
 
 /*----------------------------------------------------------------------
-|   PLT_MediaServer::AppendXmlUnEscape
+|   PLT_Didl::AppendXmlUnEscape
 +---------------------------------------------------------------------*/
-const char*
+void
 PLT_Didl::AppendXmlUnEscape(NPT_String& out, NPT_String& in)
 {
     const char* input = (const char*) in;
@@ -125,14 +124,12 @@ PLT_Didl::AppendXmlUnEscape(NPT_String& out, NPT_String& in)
             i++;
         }
     }
-
-    return out;
 }
 
 /*----------------------------------------------------------------------
-|   PLT_MediaServer::AppendXmlEscape
+|   PLT_Didl::AppendXmlEscape
 +---------------------------------------------------------------------*/
-const char*
+void
 PLT_Didl::AppendXmlEscape(NPT_String& out, NPT_String& in)
 {
     for (int i=0; i<(int)in.GetLength(); i++) {
@@ -150,14 +147,12 @@ PLT_Didl::AppendXmlEscape(NPT_String& out, NPT_String& in)
             out += in[i];
         }
     }
-
-    return out;
 }
 
 /*----------------------------------------------------------------------
-|   PLT_MediaServer::FormatTimeStamp
+|   PLT_Didl::FormatTimeStamp
 +---------------------------------------------------------------------*/
-const char*
+void
 PLT_Didl::FormatTimeStamp(NPT_String& out, NPT_UInt32 seconds)
 {
     NPT_Integer hours = seconds/3600;
@@ -182,7 +177,7 @@ PLT_Didl::FormatTimeStamp(NPT_String& out, NPT_UInt32 seconds)
 
     NPT_Integer secs = seconds%60;
     if (secs == 0) {
-        out += "00:";
+        out += "00";
     } else {
         if (secs < 10) {
             out += '0';
@@ -190,11 +185,11 @@ PLT_Didl::FormatTimeStamp(NPT_String& out, NPT_UInt32 seconds)
         out += NPT_String::FromInteger(secs);
     }
 
-    return out;
+    out += ".000";
 }
 
 /*----------------------------------------------------------------------
-|   PLT_MediaServer::ParseTimeStamp
+|   PLT_Didl::ParseTimeStamp
 +---------------------------------------------------------------------*/
 NPT_Result
 PLT_Didl::ParseTimeStamp(NPT_String timestamp, NPT_UInt32& seconds)
@@ -257,7 +252,7 @@ PLT_Didl::ParseTimeStamp(NPT_String timestamp, NPT_UInt32& seconds)
 }
 
 /*----------------------------------------------------------------------
-|   PLT_MediaServer::ToDidl
+|   PLT_Didl::ToDidl
 +---------------------------------------------------------------------*/
 NPT_Result
 PLT_Didl::ToDidl(PLT_MediaObject& object, NPT_String filter, NPT_String& didl)
@@ -271,7 +266,7 @@ PLT_Didl::ToDidl(PLT_MediaObject& object, NPT_String filter, NPT_String& didl)
 }
 
 /*----------------------------------------------------------------------
-|   PLT_MediaServer::FromDidl
+|   PLT_Didl::FromDidl
 +---------------------------------------------------------------------*/
 NPT_Result  
 PLT_Didl::FromDidl(const char* xml, PLT_MediaObjectListReference& objects)

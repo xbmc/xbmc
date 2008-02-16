@@ -9,6 +9,8 @@
 #include "../xbmc/Util.h"
 #include "../xbmc/FileSystem/File.h"
 
+using namespace std;
+
 GUIFontManager g_fontManager;
 
 GUIFontManager::GUIFontManager(void)

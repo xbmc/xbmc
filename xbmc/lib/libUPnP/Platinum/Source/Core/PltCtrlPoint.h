@@ -25,6 +25,7 @@
 class PLT_HttpServer;
 class PLT_CtrlPointHouseKeepingTask;
 class PLT_SsdpSearchTask;
+class PLT_SsdpListenTask;
 
 /*----------------------------------------------------------------------
 |   PLT_CtrlPointListener class
@@ -83,8 +84,8 @@ public:
 protected:
     virtual ~PLT_CtrlPoint();
 
-    NPT_Result   Start(PLT_TaskManager* task_manager);
-    NPT_Result   Stop();
+    NPT_Result   Start(PLT_SsdpListenTask* task);
+    NPT_Result   Stop(PLT_SsdpListenTask* task);
 
     NPT_Result   ProcessSsdpNotify(NPT_HttpRequest& request, NPT_SocketInfo info);
     NPT_Result   ProcessSsdpMessage(NPT_HttpMessage* message, 
@@ -122,23 +123,21 @@ private:
     friend class PLT_UPnP;
     friend class PLT_UPnP_CtrlPointStartIterator;
     friend class PLT_UPnP_CtrlPointStopIterator;
-	friend class PLT_CtrlPointGetDescriptionTask;
+    friend class PLT_EventSubscriberRemoverIterator;
+    friend class PLT_CtrlPointGetDescriptionTask;
     friend class PLT_CtrlPointGetSCPDTask;
     friend class PLT_CtrlPointInvokeActionTask;
     friend class PLT_CtrlPointHouseKeepingTask;
     friend class PLT_CtrlPointSubscribeEventTask;
 
-    NPT_AtomicVariable                              m_ReferenceCount;
-    NPT_List<NPT_String>                            m_UUIDsToIgnore;
-    PLT_CtrlPointHouseKeepingTask*                  m_HouseKeepingTask;
-    NPT_List<PLT_SsdpSearchTask*>                   m_SsdpSearchTasks;
-    NPT_Lock<PLT_CtrlPointListenerList>             m_ListenerList;
-    PLT_HttpServer*                                 m_EventHttpServer;
-    NPT_HttpRequestHandler*                         m_EventHttpServerHandler;
-    PLT_TaskManager*                                m_TaskManager;
-    NPT_Lock<NPT_List<PLT_DeviceDataReference> >    m_Devices;
-    NPT_Lock<NPT_List<PLT_EventSubscriber*> >       m_Subscribers;
-    NPT_String                                      m_AutoSearch;
+    NPT_List<NPT_String>                              m_UUIDsToIgnore;
+    NPT_Lock<PLT_CtrlPointListenerList>               m_ListenerList;
+    PLT_HttpServer*                                   m_EventHttpServer;
+    NPT_HttpRequestHandler*                           m_EventHttpServerHandler;
+    PLT_TaskManager                                   m_TaskManager;
+    NPT_Lock<NPT_List<PLT_DeviceDataReference> >      m_Devices;
+    NPT_Lock<NPT_List<PLT_EventSubscriber*> >         m_Subscribers;
+    NPT_String                                        m_AutoSearch;
 };
 
 typedef NPT_Reference<PLT_CtrlPoint> PLT_CtrlPointReference;

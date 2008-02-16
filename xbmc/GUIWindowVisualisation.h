@@ -18,5 +18,5 @@ protected:
   DWORD m_dwInitTimer;
   DWORD m_dwLockedTimer;
   bool m_bShowPreset;
-  CMusicInfoTag m_tag;    // current tag info, for finding when the info manager updates
+  MUSIC_INFO::CMusicInfoTag m_tag;    // current tag info, for finding when the info manager updates
 };

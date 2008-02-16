@@ -34,8 +34,8 @@ public:
 #endif                          
 
 private:
-  typedef multimap<WORD, CButtonAction> buttonMap; // our button map to fill in
-  map<WORD, buttonMap> translatorMap;       // mapping of windows to button maps
+  typedef std::multimap<WORD, CButtonAction> buttonMap; // our button map to fill in
+  std::map<WORD, buttonMap> translatorMap;       // mapping of windows to button maps
   WORD GetActionCode(WORD wWindow, const CKey &key, CStdString &strAction);
   WORD TranslateGamepadString(const char *szButton);
   WORD TranslateRemoteString(const char *szButton);
@@ -47,16 +47,16 @@ private:
 #ifdef HAS_LIRC
   bool LoadLircMap();
   void MapRemote(TiXmlNode *pRemote, const char* szDevice); 
-  typedef map<CStdString, CStdString> lircButtonMap;
-  map<CStdString, lircButtonMap> lircRemotesMap;
+  typedef std::map<CStdString, CStdString> lircButtonMap;
+  std::map<CStdString, lircButtonMap> lircRemotesMap;
 #endif
 
 #ifdef HAS_SDL_JOYSTICK
   void MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick); 
 
-  typedef map<WORD, map<int, string> > JoystickMap; // <window, <button/axis, action> >
-  map<string, JoystickMap> m_joystickButtonMap;      // <joy name, button map>
-  map<string, JoystickMap> m_joystickAxisMap;        // <joy name, axis map>
+  typedef std::map<WORD, std::map<int, std::string> > JoystickMap; // <window, <button/axis, action> >
+  std::map<std::string, JoystickMap> m_joystickButtonMap;      // <joy name, button map>
+  std::map<std::string, JoystickMap> m_joystickAxisMap;        // <joy name, axis map>
 #endif
 
 #ifdef HAS_CWIID
@@ -69,3 +69,4 @@ private:
 extern CButtonTranslator g_buttonTranslator;
 
 #endif
+

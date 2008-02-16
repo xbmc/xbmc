@@ -4,6 +4,8 @@
 #include <vector>
 #include "SkinInfo.h"
 
+using namespace std;
+
 static int iPyGUILockRef = 0;
 static TiXmlDocument pySkinReferences;
 

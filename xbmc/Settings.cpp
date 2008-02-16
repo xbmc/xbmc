@@ -44,8 +44,10 @@
 #include "utils/MemoryUnitManager.h"
 #endif
 
+using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
+using namespace MEDIA_DETECT;
 
 struct CSettings::stSettings g_stSettings;
 struct CSettings::AdvancedSettings g_advancedSettings;

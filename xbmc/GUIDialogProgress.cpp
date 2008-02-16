@@ -25,6 +25,8 @@
 #include "Application.h"
 #include "utils/GUIInfoManager.h"
 
+using namespace std;
+
 #define CONTROL_CANCEL_BUTTON 10
 #define CONTROL_PROGRESS_BAR 20
 

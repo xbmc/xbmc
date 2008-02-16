@@ -31,7 +31,7 @@ public:
   bool OpenForWrite(const char* strFileName);
   unsigned int Write(void *lpBuf, __int64 uiBufSize);
 protected:
-  CAutoPtrHandle m_hFile;
+  AUTOPTR::CAutoPtrHandle m_hFile;
   __int64 m_i64FileLength;
   __int64 m_i64FilePos;
 };

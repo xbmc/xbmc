@@ -18,6 +18,8 @@
 
 #include <sstream>
 
+using namespace std;
+
 CScraperUrl::CScraperUrl(const CStdString& strUrl)
 {
   ParseString(strUrl);

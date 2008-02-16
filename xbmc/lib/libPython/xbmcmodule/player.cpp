@@ -10,6 +10,8 @@
 #include "infotagmusic.h"
 #include "listitem.h"
 
+using namespace MUSIC_INFO;
+
 // player callback class
 
 #ifndef __GNUC__

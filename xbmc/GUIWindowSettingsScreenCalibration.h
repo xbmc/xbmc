@@ -19,7 +19,7 @@ protected:
   void EnableControl(int iControl);
   void UpdateFromControl(int iControl);
   UINT m_iCurRes;
-  vector<RESOLUTION> m_Res;
+  std::vector<RESOLUTION> m_Res;
   int m_iControl;
   float m_fPixelRatioBoxHeight;
 };

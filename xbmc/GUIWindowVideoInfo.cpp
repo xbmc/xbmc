@@ -34,6 +34,7 @@
 #include "VideoInfoScanner.h"
 #include "Application.h"
 
+using namespace std;
 using namespace XFILE;
 
 #define CONTROL_TITLE               20

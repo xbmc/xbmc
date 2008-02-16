@@ -23,6 +23,8 @@ using namespace Surface;
 #endif
 #include "XRandR.h"
 
+using namespace std;
+
 CGraphicContext g_graphicsContext;
 extern bool g_fullScreen;
 

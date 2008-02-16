@@ -26,12 +26,19 @@
 #ifndef FFMPEG_MEM_H
 #define FFMPEG_MEM_H
 
-#ifdef __GNUC__
+#ifdef __ICC
+  #define DECLARE_ALIGNED(n,t,v)       t v __attribute__ ((aligned (n)))
+  #define DECLARE_ASM_CONST(n,t,v)     const t __attribute__ ((aligned (n))) v
+#elif __GNUC__
   #define DECLARE_ALIGNED(n,t,v)       t v __attribute__ ((aligned (n)))
   #define DECLARE_ASM_CONST(n,t,v)     static const t v attribute_used __attribute__ ((aligned (n)))
-#else
+#elif _MSVC
   #define DECLARE_ALIGNED(n,t,v)      __declspec(align(n)) t v
   #define DECLARE_ASM_CONST(n,t,v)    __declspec(align(n)) static const t v
+#else
+  #warning No align and asm directives, this might fail.
+  #define DECLARE_ALIGNED(n,t,v)      t v
+  #define DECLARE_ASM_CONST(n,t,v)    static const t v
 #endif
 
 /**

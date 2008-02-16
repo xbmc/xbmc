@@ -5,6 +5,7 @@
 #include "../VideoDatabase.h"
 #include "TextureManager.h"
 
+using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
 using namespace VIDEODATABASEDIRECTORY;

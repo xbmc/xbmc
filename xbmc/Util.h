@@ -32,8 +32,6 @@ typedef enum
   VIDEO_PAL60
 } F_VIDEO;
 
-using namespace std;
-
 struct sortstringbyname
 {
   bool operator()(const CStdString& strItem1, const CStdString& strItem2)
@@ -233,7 +231,7 @@ public:
   static void TakeScreenshot(const char* fn, bool flash);
   static void SetBrightnessContrastGamma(float Brightness, float Contrast, float Gamma, bool bImmediate);
   static void SetBrightnessContrastGammaPercent(int iBrightNess, int iContrast, int iGamma, bool bImmediate);
-  static void Tokenize(const CStdString& path, vector<CStdString>& tokens, const string& delimiters);
+  static void Tokenize(const CStdString& path, std::vector<CStdString>& tokens, const std::string& delimiters);
   static void FlashScreen(bool bImmediate, bool bOn);
   static void RestoreBrightnessContrastGamma();
   static void InitGamma();

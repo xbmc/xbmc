@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "xbeheader.h"
 
+using namespace AUTOPTR;
 
 CXBE::CXBE()
 {

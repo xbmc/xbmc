@@ -8,6 +8,8 @@
 #include "DVDDemuxFFmpeg.h"
 #include "DVDDemuxShoutcast.h"
 
+using namespace std;
+
 CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream)
 {
   if (pInputStream->IsStreamType(DVDSTREAM_TYPE_HTTP))

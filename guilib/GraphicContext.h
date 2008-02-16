@@ -230,17 +230,17 @@ protected:
 #ifndef HAS_SDL    
   LPDIRECT3DDEVICE8 m_pd3dDevice;
   D3DPRESENT_PARAMETERS* m_pd3dParams;
-  stack<D3DVIEWPORT8*> m_viewStack;
+  std::stack<D3DVIEWPORT8*> m_viewStack;
   DWORD m_stateBlock;
 #else
   Surface::CSurface* m_screenSurface;  
 #endif
 #ifdef HAS_SDL_2D
-  stack<SDL_Rect*> m_viewStack;
+  std::stack<SDL_Rect*> m_viewStack;
 #endif
 #ifdef HAS_SDL_OPENGL
-  stack<GLint*> m_viewStack;
-  map<Uint32, Surface::CSurface*> m_surfaces;
+  std::stack<GLint*> m_viewStack;
+  std::map<Uint32, Surface::CSurface*> m_surfaces;
   CCriticalSection m_surfaceLock;
 #endif
 
@@ -264,13 +264,13 @@ private:
   RESOLUTION m_windowResolution;
   float m_guiScaleX;
   float m_guiScaleY;
-  stack<CPoint> m_cameras;
-  stack<CPoint> m_origins;
-  stack<CRect>  m_clipRegions;
+  std::stack<CPoint> m_cameras;
+  std::stack<CPoint> m_origins;
+  std::stack<CRect>  m_clipRegions;
 
   TransformMatrix m_guiTransform;
   TransformMatrix m_finalTransform;
-  stack<TransformMatrix> m_groupTransform;
+  std::stack<TransformMatrix> m_groupTransform;
 };
 
 /*!

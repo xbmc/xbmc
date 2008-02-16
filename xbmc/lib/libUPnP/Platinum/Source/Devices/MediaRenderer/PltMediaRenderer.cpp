@@ -45,7 +45,7 @@ PLT_MediaRenderer::PLT_MediaRenderer(PlaybackCmdListener* listener,
     if (NPT_SUCCEEDED(service->SetSCPDXML((const char*) RDR_AVTransportSCPD))) {
         service->InitURLs("AVTransport", m_UUID);
         AddService(service);
-        service->SetStateVariable("LastChange", "<Event xmlns = \"urn:schemas-upnp-org:metadata-1-0/AVT/\"/>", false);
+        service->SetStateVariableRate("LastChange", NPT_TimeInterval(0.2f));
 
         // GetCurrentTransportActions
         service->SetStateVariable("CurrentTransportActions", "", false);
@@ -93,7 +93,7 @@ PLT_MediaRenderer::PLT_MediaRenderer(PlaybackCmdListener* listener,
         AddService(service);
         service->SetStateVariable("CurrentConnectionIDs", "0", false);
         // put all supported mime types here instead
-        service->SetStateVariable("SinkProtocolInfo", "http-get:*:*:*;rtsp:*:*:*;http-get:*:video/mpeg:*;http-get:*:audio/mpeg:*", false);
+        service->SetStateVariable("SinkProtocolInfo", "http-get:*:*:*", false);
         service->SetStateVariable("SourceProtocolInfo", "", false);
     }
 
@@ -105,7 +105,7 @@ PLT_MediaRenderer::PLT_MediaRenderer(PlaybackCmdListener* listener,
     if (NPT_SUCCEEDED(service->SetSCPDXML((const char*) RDR_RenderingControlSCPD))) {
         service->InitURLs("RenderingControl", m_UUID);
         AddService(service);
-        service->SetStateVariable("LastChange", "<Event xmlns = \"urn:schemas-upnp-org:metadata-1-0/RCS/\"/>", false);
+        service->SetStateVariableRate("LastChange", NPT_TimeInterval(0.2f));
     }
 }
 

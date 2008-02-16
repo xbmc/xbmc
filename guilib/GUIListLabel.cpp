@@ -62,7 +62,7 @@ void CGUIListLabel::SetLabel(const CStdString &label)
     // recalculate our text layout
     float width, height;
     m_textLayout.GetTextExtent(m_textWidth, height);
-    width = min(m_textWidth, m_width);
+    width = std::min(m_textWidth, m_width);
     if (m_label.align & XBFONT_CENTER_Y)
       m_renderRect.y1 = m_posY + (m_height - height) * 0.5f;
     else

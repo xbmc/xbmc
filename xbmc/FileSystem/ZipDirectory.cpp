@@ -6,6 +6,7 @@
 
 #include <vector>
 
+using namespace std;
 namespace DIRECTORY
 {
   CZipDirectory::CZipDirectory()

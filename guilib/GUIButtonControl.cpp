@@ -6,6 +6,7 @@
 #include "GUIFontManager.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
+using namespace std;
 
 CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& textureFocus, const CImage& textureNoFocus, const CLabelInfo& labelInfo)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)

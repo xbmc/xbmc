@@ -28,6 +28,9 @@
 #include "FileSystem/PlaylistFileDirectory.h"
 #include "PlayListM3U.h"
 
+using namespace AUTOPTR;
+using namespace MEDIA_DETECT;
+
 #define CONTROL_LIST              50
 #define CONTROL_LABELFILES        12
 

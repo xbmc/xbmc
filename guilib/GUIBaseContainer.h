@@ -53,7 +53,7 @@ public:
   void SetPageControl(DWORD id);
 
   virtual CStdString GetDescription() const;
-  virtual void SaveStates(vector<CControlState> &states);
+  virtual void SaveStates(std::vector<CControlState> &states);
   int GetSelectedItem() const;
 
   virtual void DoRender(DWORD currentTime);
@@ -103,16 +103,16 @@ protected:
   ORIENTATION m_orientation;
   int m_itemsPerPage;
 
-  vector<CGUIListItem*> m_items;
-  typedef vector<CGUIListItem*> ::iterator iItems;
+  std::vector<CGUIListItem*> m_items;
+  typedef std::vector<CGUIListItem*> ::iterator iItems;
   CGUIListItem *m_lastItem;
 
   DWORD m_pageControl;
 
   DWORD m_renderTime;
 
-  vector<CGUIListItemLayout> m_layouts;
-  vector<CGUIListItemLayout> m_focusedLayouts;
+  std::vector<CGUIListItemLayout> m_layouts;
+  std::vector<CGUIListItemLayout> m_focusedLayouts;
 
   CGUIListItemLayout *m_layout;
   CGUIListItemLayout *m_focusedLayout;
@@ -127,7 +127,7 @@ protected:
   CStdString m_label;
 
   bool m_staticContent;
-  vector<CGUIListItem*> m_staticItems;
+  std::vector<CGUIListItem*> m_staticItems;
   bool m_wasReset;  // true if we've received a Reset message until we've rendered once.  Allows
                     // us to make sure we don't tell the infomanager that we've been moving when
                     // the "movement" was simply due to the list being repopulated (thus cursor position

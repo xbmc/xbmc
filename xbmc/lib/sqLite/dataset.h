@@ -68,7 +68,7 @@ class Dataset;		// forward declaration of class Dataset
 class Database  {
 protected:
   bool active;
-  string error, // Error description
+  std::string error, // Error description
     host, port, db, login, passwd, //Login info
     sequence_table; //Sequence table for nextid
 
@@ -146,8 +146,8 @@ enum dsStates { dsSelect, dsInsert, dsEdit, dsUpdate, dsDelete, dsInactive };
 enum sqlType {sqlSelect,sqlUpdate,sqlInsert,sqlDelete,sqlExec};
 
 
-typedef std::list<string> StringList;
-typedef std::map<string,field_value> ParamList;
+typedef std::list<std::string> StringList;
+typedef std::map<std::string,field_value> ParamList;
 
 
 class Dataset  {
@@ -166,7 +166,7 @@ protected:
   bool active;			// Is Query Opened?
   bool haveError;
   int frecno; 			// number of current row bei bewegung
-  string sql;
+  std::string sql;
 
   ParamList plist;              // Paramlist for locate
   bool fbof, feof;
@@ -174,8 +174,8 @@ protected:
 
 
 /* Variables to store SQL statements */
-  string empty_sql; 		// Executed when result set is empty
-  string select_sql; 		// May be only single string variable
+  std::string empty_sql; 		// Executed when result set is empty
+  std::string select_sql; 		// May be only single string variable
 
   StringList update_sql; 		// May be an array in complex queries
 /* Field values for updating must has prefix :NEW_ and :OLD_ and field name
@@ -218,7 +218,7 @@ protected:
   virtual void fill_fields(void)=0;
 
 /* Parse Sql - replacing fields with prefixes :OLD_ and :NEW_ with current values of OLD or NEW field. */
-  void parse_sql(string &sql);
+  void parse_sql(std::string &sql);
 
 /* Returns old field value (for :OLD) */
   virtual const field_value f_old(const char *f);
@@ -257,10 +257,10 @@ public:
   virtual int num_rows()= 0;
 
 /* Open SQL query */
-  virtual void open(const string &sql) = 0;
+  virtual void open(const std::string &sql) = 0;
   virtual void open() = 0;
 /* func. executes a query without results to return */
-  virtual int  exec (const string &sql) = 0;
+  virtual int  exec (const std::string &sql) = 0;
   virtual int  exec() = 0;
   virtual const void* getExecRes()=0;
 /* as open, but with our query exept Sql */
@@ -358,16 +358,16 @@ public:
 
 /*add a new value to select_sql*/
   void set_select_sql(const char *sel_sql);
-  void set_select_sql(const string &select_sql);
+  void set_select_sql(const std::string &select_sql);
 /*add a new value to update_sql*/
   void add_update_sql(const char *upd_sql);
-  void add_update_sql(const string &upd_sql);
+  void add_update_sql(const std::string &upd_sql);
 /*add a new value to insert_sql*/
   void add_insert_sql(const char *ins_sql);
-  void add_insert_sql(const string &ins_sql);
+  void add_insert_sql(const std::string &ins_sql);
   /*add a new value to delete_sql*/
   void add_delete_sql(const char *del_sql);
-  void add_delete_sql(const string &del_sql);
+  void add_delete_sql(const std::string &del_sql);
 
 /*clear update_sql*/
   void clear_update_sql();

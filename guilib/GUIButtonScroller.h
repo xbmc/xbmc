@@ -18,8 +18,8 @@ public:
   }
   int id;
   int info;
-  string strLabel;
-  vector<CStdString> clickActions;
+  std::string strLabel;
+  std::vector<CStdString> clickActions;
   CGUIImage *imageFocus;
   CGUIImage *imageNoFocus;
 };
@@ -45,12 +45,12 @@ public:
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
   void ClearButtons();
-  void AddButton(const string &strLabel, const CStdString &strExecute, const int iIcon);
+  void AddButton(const std::string &strLabel, const CStdString &strExecute, const int iIcon);
   void SetActiveButton(int iButton);
   int GetActiveButton() const;
   int GetActiveButtonID() const;
   virtual CStdString GetDescription() const;
-  virtual void SaveStates(vector<CControlState> &states);
+  virtual void SaveStates(std::vector<CControlState> &states);
   void LoadButtons(TiXmlNode *node);
 
 protected:
@@ -91,8 +91,8 @@ private:
   float m_fScrollSpeed;   // speed of scrolling
   float m_fAnalogScrollSpeed;  // speed of analog scroll (triggers)
   // stuff we need for the buttons...
-  vector<CButton*> m_vecButtons;
-  typedef vector<CButton*>::iterator ivecButtons;
+  std::vector<CButton*> m_vecButtons;
+  typedef std::vector<CButton*>::iterator ivecButtons;
   CGUIImage m_imgFocus;
   CGUIImage m_imgNoFocus;
 

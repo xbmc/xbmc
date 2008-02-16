@@ -66,12 +66,14 @@ UdpServerLoop(int port)
         NPT_Debug("listening on port %d\n", port);
     }
 
-    listener.Bind(NPT_SocketAddress(NPT_IpAddress::Any, port));
+    NPT_Result result = listener.Bind(NPT_SocketAddress(NPT_IpAddress::Any, port));
+    if (NPT_FAILED(result)) {
+        NPT_Debug("ERROR: Bind() failed (%d)\n", result);
+    }
 
     // packet loop
     NPT_DataBuffer packet(32768);
     NPT_SocketAddress address;
-    NPT_Result result;
 
     do {
         result = listener.Receive(packet, &address);
@@ -94,7 +96,11 @@ TcpServerLoop(int port)
 {
     NPT_TcpServerSocket listener;
 
-    listener.Bind(NPT_SocketAddress(NPT_IpAddress::Any, port));
+    NPT_Result result = listener.Bind(NPT_SocketAddress(NPT_IpAddress::Any, port)); 
+    if (NPT_FAILED(result)) {
+        NPT_Debug("ERROR: Bind() failed (%d)\n", result);
+    }
+		
     NPT_Socket* client;
 
     for (;;) {

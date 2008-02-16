@@ -81,7 +81,7 @@ enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_LASTFM_UNBAN_ITEM
                     };
 
-class CContextButtons : public vector< pair<CONTEXT_BUTTON, CStdString> >
+class CContextButtons : public std::vector< std::pair<CONTEXT_BUTTON, CStdString> >
 {
 public:
   void Add(CONTEXT_BUTTON, const CStdString &label);

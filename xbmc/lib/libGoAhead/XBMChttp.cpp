@@ -38,9 +38,12 @@
 #include "../../xbox/XKHDD.h"
 #endif
 
+using namespace std;
+using namespace MUSIC_GRABBER;
 using namespace XFILE;
 using namespace DIRECTORY;
 using namespace PLAYLIST;
+using namespace MUSIC_INFO;
 
 #define XML_MAX_INNERTEXT_SIZE 256
 #define MAX_PARAS 20

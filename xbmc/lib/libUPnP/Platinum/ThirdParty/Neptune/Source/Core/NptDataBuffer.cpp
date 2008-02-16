@@ -101,8 +101,10 @@ NPT_DataBuffer::operator=(const NPT_DataBuffer& copy)
         m_BufferSize    = copy.m_BufferSize;
         m_DataSize      = copy.m_DataSize;
 
-        m_Buffer = new NPT_Byte[m_BufferSize];
-        NPT_CopyMemory(m_Buffer, copy.m_Buffer, m_BufferSize);
+        if (m_BufferSize) {
+            m_Buffer = new NPT_Byte[m_BufferSize];
+            NPT_CopyMemory(m_Buffer, copy.m_Buffer, m_BufferSize);
+        }
     }
     return *this;
 }

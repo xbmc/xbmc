@@ -12,7 +12,7 @@ public:
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
   virtual bool Exists(const CStdString& strPath);
 
-  bool GetPathes(const CStdString& strPath, vector<CStdString>& vecPaths);
+  bool GetPathes(const CStdString& strPath, std::vector<CStdString>& vecPaths);
 
 protected:
   bool GetTypeAndSource(const CStdString& strPath, CStdString& strType, CStdString& strSource);

@@ -24,9 +24,11 @@ class PLT_RingBufferStream : public NPT_DelegatingInputStream,
                              public NPT_DelegatingOutputStream
 {
 public:
-    PLT_RingBufferStream(NPT_Size buffer_size = 4096);
-    PLT_RingBufferStream(NPT_RingBufferReference& buffer);
+    PLT_RingBufferStream(NPT_Size buffer_size = 4096, bool blocking = true);
+    PLT_RingBufferStream(NPT_RingBufferReference& buffer, bool blocking = true);
     virtual ~PLT_RingBufferStream();
+
+    void SetEos() {m_Eos = true;}
 
     // NPT_InputStream methods
     NPT_Result Read(void*     buffer, 
@@ -52,6 +54,7 @@ public:
 protected:
     // NPT_DelegatingInputStream methods
     NPT_Result InputSeek(NPT_Position offset) {
+        NPT_COMPILER_UNUSED(offset);
         return NPT_FAILURE;
     }
     NPT_Result InputTell(NPT_Position& offset) { 
@@ -62,6 +65,7 @@ protected:
 
     // NPT_DelegatingOutputStream methods
     NPT_Result OutputSeek(NPT_Position offset) {
+        NPT_COMPILER_UNUSED(offset);
         return NPT_FAILURE;
     }
     NPT_Result OutputTell(NPT_Position& offset) {
@@ -76,6 +80,7 @@ private:
     NPT_Offset                  m_TotalBytesWritten;
     NPT_Mutex                   m_Lock;
     bool                        m_Eos;
+    bool                        m_Blocking;
 };
 
 typedef NPT_Reference<PLT_RingBufferStream> PLT_RingBufferStreamReference;

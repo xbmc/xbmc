@@ -4,6 +4,7 @@
 #include "../PlayListFactory.h"
 #include "../Util.h"
 
+using namespace std;
 using namespace PLAYLIST;
 
 namespace DIRECTORY

@@ -42,7 +42,7 @@ typedef struct
   DWORD dwMessage;
   DWORD dwParam1;
   DWORD dwParam2;
-  string strParam;
+  std::string strParam;
   HANDLE hWaitEvent;
   LPVOID lpVoid;
 }
@@ -59,7 +59,7 @@ public:
   void ProcessWindowMessages();
 
 
-  void MediaPlay(string filename);
+  void MediaPlay(std::string filename);
   void MediaStop();
   void MediaPause();
   void MediaRestart(bool bWait);
@@ -69,8 +69,8 @@ public:
   void PlayListPlayerNext();
   void PlayListPlayerPrevious();
   void PlayFile(const CFileItem &item, bool bRestart = false); // thread safe version of g_application.PlayFile()
-  void PictureShow(string filename);
-  void PictureSlideShow(string pathname, bool bScreensaver = false);
+  void PictureShow(std::string filename);
+  void PictureSlideShow(std::string pathname, bool bScreensaver = false);
   void Shutdown();
   void Restart();
   void RebootToDashBoard();
@@ -80,7 +80,7 @@ public:
 
   CStdString GetResponse();
   int SetResponse(CStdString response);
-  void HttpApi(string cmd);
+  void HttpApi(std::string cmd);
   void ExecBuiltIn(const CStdString &command);
 
   void NetworkMessage(DWORD dwMessage, DWORD dwParam = 0);
@@ -94,8 +94,8 @@ private:
   void ProcessMessage(ThreadMessage *pMsg);
 
 
-  vector<ThreadMessage*> m_vecMessages;
-  vector<ThreadMessage*> m_vecWindowMessages;
+  std::vector<ThreadMessage*> m_vecMessages;
+  std::vector<ThreadMessage*> m_vecWindowMessages;
   CCriticalSection m_critSection;
   CCriticalSection m_critBuffer;
   CStdString bufferResponse;

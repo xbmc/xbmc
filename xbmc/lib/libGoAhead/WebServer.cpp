@@ -22,6 +22,8 @@
 #include "XBMChttp.h"
 #include "includes.h"
 
+using namespace std;
+
 static CXbmcWeb* pXbmcWeb;
 static CXbmcConfiguration* pXbmcWebConfig;
 

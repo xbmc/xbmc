@@ -27,7 +27,7 @@
 
 #include <fstream>
 
-
+using namespace std;
 using namespace MUSIC_INFO;
 
 CMusicInfoTagLoaderSid::CMusicInfoTagLoaderSid(void)
