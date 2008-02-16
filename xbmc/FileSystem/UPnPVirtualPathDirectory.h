@@ -27,8 +27,6 @@
 #include "VirtualPathDirectory.h"
 #include "NptStrings.h"
 
-using namespace DIRECTORY;
-
 namespace DIRECTORY
 {
 /*----------------------------------------------------------------------
