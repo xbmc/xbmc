@@ -3,6 +3,8 @@
 #include "ShoutcastRipFile.h"
 #include "../Id3Tag.h"
 
+using namespace MUSIC_INFO;
+
 #define MAX_RECORDED_TRACKS 999
 
 #if !defined(WIN32)

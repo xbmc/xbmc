@@ -26,6 +26,8 @@
 #include "RegExp.h"
 #include "../Util.h"
 
+using namespace MUSIC_INFO;
+
 /* LabelFormatter
  * ==============
  *

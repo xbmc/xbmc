@@ -82,7 +82,7 @@ public:
   void SetVolume(long nVolume)                          { m_dvdAudio.SetVolume(nVolume); }
   void SetDynamicRangeCompression(long drc)             { m_dvdAudio.SetDynamicRangeCompression(drc); }
 
-  string GetPlayerInfo();
+  std::string GetPlayerInfo();
 
   // holds stream information for current playing stream
   CDVDStreamInfo m_streaminfo;

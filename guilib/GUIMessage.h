@@ -209,15 +209,15 @@ public:
   void SetParam1(DWORD dwParam1);
   void SetParam2(DWORD dwParam2);
   void SetLPVOID(void* lpVoid);
-  void SetLabel(const string& strLabel);
+  void SetLabel(const std::string& strLabel);
   void SetLabel(int iString);               // for convience - looks up in strings.xml
-  const string& GetLabel() const;
-  void SetStringParam(const string& strParam);
-  const string& GetStringParam() const;
+  const std::string& GetLabel() const;
+  void SetStringParam(const std::string& strParam);
+  const std::string& GetStringParam() const;
 
 private:
-  string m_strLabel;
-  string m_strParam;
+  std::string m_strLabel;
+  std::string m_strParam;
   DWORD m_dwSenderID;
   DWORD m_dwControlID;
   DWORD m_dwMessage;

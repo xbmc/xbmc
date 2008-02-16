@@ -4,6 +4,8 @@
 #include "../DVDInputStreams/DVDFactoryInputStream.h"
 #include "../DVDInputStreams/DVDInputStream.h"
 
+using namespace std;
+
 char* strnchr(char *s, size_t len, char c)
 {
   size_t pos;

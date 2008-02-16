@@ -22,6 +22,8 @@
 #include "stdafx.h"
 #include "GUIDialogBoxBase.h"
 
+using namespace std;
+
 CGUIDialogBoxBase::CGUIDialogBoxBase(DWORD dwID, const CStdString &xmlFile)
     : CGUIDialog(dwID, xmlFile)
 {

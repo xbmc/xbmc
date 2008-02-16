@@ -26,7 +26,7 @@ class CGUIEditControl : public CGUILabelControl
 {
 public:
   CGUIEditControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY,
-                  float width, float height, const CLabelInfo& labelInfo, const string& strLabel);
+                  float width, float height, const CLabelInfo& labelInfo, const std::string& strLabel);
 
   virtual ~CGUIEditControl(void);
 

@@ -12,7 +12,7 @@ public:
   CDVDSubtitleStream();
   virtual ~CDVDSubtitleStream();
   
-  bool Open(const string& strFile);
+  bool Open(const std::string& strFile);
   void Close();
   int Read(BYTE* buf, int buf_size);
   __int64 Seek(__int64 offset, int whence);

@@ -39,6 +39,7 @@ to maintain a single distribution point for the source code.
 #include "../DNSNameCache.h"
 #include "../xbox/Network.h"
 
+using namespace AUTOPTR;
 
 #pragma code_seg("SNTP_TEXT")
 #pragma data_seg("SNTP_DATA")

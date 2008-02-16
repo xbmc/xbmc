@@ -9,6 +9,7 @@
 
 #define EXTRACTION_WARN_SIZE 50*1024*1024
 
+using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
 

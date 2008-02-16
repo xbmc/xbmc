@@ -4,8 +4,6 @@
 
 #include "APEv2Tag.h"
 
-using namespace MUSIC_INFO;
-
 namespace MUSIC_INFO
 {
 

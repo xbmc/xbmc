@@ -1,6 +1,8 @@
 
 #include "stdafx.h"
 #include "./HTMLUtil.h"
+
+using namespace std;
 using namespace HTML;
 
 

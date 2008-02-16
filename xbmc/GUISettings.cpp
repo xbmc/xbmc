@@ -35,6 +35,8 @@
 #endif
 #include "MediaManager.h"
 
+using namespace std;
+
 // String id's of the masks
 #define MASK_MINS   14044
 #define MASK_SECS   14045

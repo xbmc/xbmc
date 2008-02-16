@@ -32,6 +32,7 @@
 #include "ProgramDatabase.h"
 #include "utils/Trainer.h"
 
+using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
 using namespace PLAYLIST;

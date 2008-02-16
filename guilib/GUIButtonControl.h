@@ -35,14 +35,14 @@ public:
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual void SetPosition(float posX, float posY);
   virtual void SetColorDiffuse(D3DCOLOR color);
-  void SetLabel(const string & aLabel);
-  void SetLabel2(const string & aLabel2);
-  void SetClickActions(const vector<CStdString>& clickActions) { m_clickActions = clickActions; };
-  const vector<CStdString> &GetClickActions() const { return m_clickActions; };
-  void SetFocusActions(const vector<CStdString>& focusActions) { m_focusActions = focusActions; };
+  void SetLabel(const std::string & aLabel);
+  void SetLabel2(const std::string & aLabel2);
+  void SetClickActions(const std::vector<CStdString>& clickActions) { m_clickActions = clickActions; };
+  const std::vector<CStdString> &GetClickActions() const { return m_clickActions; };
+  void SetFocusActions(const std::vector<CStdString>& focusActions) { m_focusActions = focusActions; };
   const CLabelInfo& GetLabelInfo() const { return m_label; };
   virtual CStdString GetLabel() const { return GetDescription(); };
-  virtual const string& GetLabel2() const { return m_strLabel2; };
+  virtual const std::string& GetLabel2() const { return m_strLabel2; };
   void SetTabButton(bool bIsTabButton = TRUE) { m_bTabButton = bIsTabButton; };
   void SetSelected(bool bSelected);
   void Flicker(bool bFlicker = TRUE);
@@ -50,7 +50,7 @@ public:
   virtual CStdString GetDescription() const;
   void SetAlpha(unsigned char alpha);
 
-  void PythonSetLabel(const CStdString &strFont, const string &strText, DWORD dwTextColor, DWORD dwShadowColor, DWORD dwFocusedColor);
+  void PythonSetLabel(const CStdString &strFont, const std::string &strText, DWORD dwTextColor, DWORD dwShadowColor, DWORD dwFocusedColor);
   void PythonSetDisabledColor(DWORD dwDisabledColor);
 
   void RAMSetTextColor(DWORD dwTextColor);
@@ -69,14 +69,14 @@ protected:
   DWORD m_dwFrameCounter;
   unsigned char m_alpha;
 
-  string m_strLabel2;
+  std::string m_strLabel2;
   CGUIInfoLabel  m_info;
   CLabelInfo m_label;
   CGUITextLayout m_textLayout;
   CGUITextLayout m_textLayout2;
 
-  vector<CStdString> m_clickActions;
-  vector<CStdString> m_focusActions;
+  std::vector<CStdString> m_clickActions;
+  std::vector<CStdString> m_focusActions;
   bool m_bTabButton;
 
   bool m_bSelected;

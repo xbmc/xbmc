@@ -35,6 +35,8 @@
 #include "lib/libGoAhead/XBMChttp.h"
 #include "xbox/network.h"
 
+using namespace std;
+
 extern HWND g_hWnd;
 
 CApplicationMessenger g_applicationMessenger;

@@ -3,8 +3,6 @@
 #include "ImusicInfoTagLoader.h"
 #include "cores/paplayer/DllNosefart.h"
 
-using namespace MUSIC_INFO;
-
 namespace MUSIC_INFO
 {
 	class CMusicInfoTagLoaderNSF: public IMusicInfoTagLoader

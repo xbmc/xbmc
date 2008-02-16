@@ -60,7 +60,7 @@ protected:
   // current path and history
   CFileItemList m_vecItems;
   CDirectoryHistory m_history;
-  auto_ptr<CGUIViewState> m_guiState;
+  std::auto_ptr<CGUIViewState> m_guiState;
 
   // save control state on window exit
   int m_iLastControl;

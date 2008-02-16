@@ -35,7 +35,7 @@ public:
   void GetSongs(VECSONGS &songs);
   CStdString GetMediaPath();
   CStdString GetMediaTitle();
-  void GetMediaFiles(vector<CStdString>& mediaFiles);
+  void GetMediaFiles(std::vector<CStdString>& mediaFiles);
 
 private:
 

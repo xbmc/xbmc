@@ -118,7 +118,7 @@ protected:
   DWORD m_dwFrameCounter;
   GUIIMAGE_ASPECT_RATIO m_aspectRatio;
   DWORD                 m_aspectAlign;
-  vector <LPDIRECT3DTEXTURE8> m_vecTextures;
+  std::vector <LPDIRECT3DTEXTURE8> m_vecTextures;
   LPDIRECT3DTEXTURE8 m_diffuseTexture;
   LPDIRECT3DPALETTE8 m_diffusePalette;
   LPDIRECT3DPALETTE8 m_pPalette;

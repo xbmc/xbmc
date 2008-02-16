@@ -2,6 +2,7 @@
 #include "GUIMultiSelectText.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
+using namespace std;
 
 CGUIMultiSelectTextControl::CSelectableString::CSelectableString(CGUIFont *font, const CStdString &text, bool selectable, const CStdString &clickAction)
  : m_text(font, false)

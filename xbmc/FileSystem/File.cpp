@@ -27,6 +27,7 @@
 #include "FileCache.h"
 #include "../utils/Win32Exception.h"
 
+using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
 

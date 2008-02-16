@@ -2,6 +2,7 @@
 #include "FLACcodec.h"
 #include "../../FlacTag.h"
 
+using namespace MUSIC_INFO;
 
 FLACCodec::FLACCodec()
 {

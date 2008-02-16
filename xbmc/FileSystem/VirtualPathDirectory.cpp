@@ -5,6 +5,7 @@
 #include "../Settings.h"
 #include "../Util.h"
 
+using namespace std;
 using namespace DIRECTORY;
 
 // virtualpath://type/sourcename

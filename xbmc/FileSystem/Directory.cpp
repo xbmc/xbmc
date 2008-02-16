@@ -6,6 +6,7 @@
 #include "../utils/Win32Exception.h"
 #include "../Util.h"
 
+using namespace std;
 using namespace DIRECTORY;
 
 CDirectory::CDirectory()

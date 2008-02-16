@@ -27,7 +27,7 @@ public:
 
 protected:
 
-  typedef map<DWORD, CStdString> TITLEVECTORMAP;
+  typedef std::map<DWORD, CStdString> TITLEVECTORMAP;
   TITLEVECTORMAP m_mapTitles;
   CRITICAL_SECTION m_critical;
   bool m_bDirty;

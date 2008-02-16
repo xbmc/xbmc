@@ -32,9 +32,9 @@ class CPlayListItem : public CFileItem
 
     virtual bool LoadMusicTag();
 
-    void SetMusicTag(const CMusicInfoTag &tag);
+    void SetMusicTag(const MUSIC_INFO::CMusicInfoTag &tag);
     void SetVideoTag(const CVideoInfoTag &tag);
-    const CMusicInfoTag* GetMusicTag() const;
+    const MUSIC_INFO::CMusicInfoTag* GetMusicTag() const;
     const CVideoInfoTag* GetVideoTag() const;
 
     bool IsUnPlayable() const;
@@ -94,8 +94,8 @@ protected:
   int m_iPlayableItems;
   bool m_bShuffled;
   bool m_bWasPlayed;
-  vector <CPlayListItem> m_vecItems;
-  typedef vector <CPlayListItem>::iterator ivecItems;
+  std::vector <CPlayListItem> m_vecItems;
+  typedef std::vector <CPlayListItem>::iterator ivecItems;
 
 private:
   void Add(CPlayListItem& item, int iPosition, int iOrderOffset);

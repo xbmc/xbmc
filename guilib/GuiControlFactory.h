@@ -30,16 +30,16 @@ public:
   static bool GetTexture(const TiXmlNode* pRootNode, const char* strTag, CImage &image);
   static bool GetAlignment(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment);
   static bool GetAlignmentY(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment);
-  static bool GetAnimations(const TiXmlNode *control, const FRECT &rect, vector<CAnimation> &animation);
+  static bool GetAnimations(const TiXmlNode *control, const FRECT &rect, std::vector<CAnimation> &animation);
   static void GetInfoLabel(const TiXmlNode *pControlNode, const CStdString &labelTag, CGUIInfoLabel &infoLabel);
-  static void GetInfoLabels(const TiXmlNode *pControlNode, const CStdString &labelTag, vector<CGUIInfoLabel> &infoLabels);
+  static void GetInfoLabels(const TiXmlNode *pControlNode, const CStdString &labelTag, std::vector<CGUIInfoLabel> &infoLabels);
   static bool GetColor(const TiXmlNode* pRootNode, const char* strTag, DWORD &value);
   static CStdString GetLabel(const CStdString &label);
   static bool GetConditionalVisibility(const TiXmlNode* control, int &condition);
-  static bool GetMultipleString(const TiXmlNode* pRootNode, const char* strTag, vector<CStdString>& vecStringValue);
+  static bool GetMultipleString(const TiXmlNode* pRootNode, const char* strTag, std::vector<CStdString>& vecStringValue);
   static void GetRectFromString(const CStdString &string, FRECT &rect);
 private:
-  bool GetNavigation(const TiXmlElement *node, const char *tag, DWORD &direction, vector<CStdString> &actions);
+  bool GetNavigation(const TiXmlElement *node, const char *tag, DWORD &direction, std::vector<CStdString> &actions);
   bool GetCondition(const TiXmlNode *control, const char *tag, int &condition);
   static bool GetConditionalVisibility(const TiXmlNode* control, int &condition, bool &allowHiddenFocus);
   bool GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringPath);

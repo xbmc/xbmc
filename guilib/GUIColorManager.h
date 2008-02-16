@@ -27,9 +27,9 @@ public:
 protected:
   bool LoadXML(TiXmlDocument &xmlDoc);
 
-  map<CStdString, DWORD> m_colors;
-  typedef map<CStdString, DWORD>::iterator iColor;
-  typedef map<CStdString, DWORD>::const_iterator icColor;
+  std::map<CStdString, DWORD> m_colors;
+  typedef std::map<CStdString, DWORD>::iterator iColor;
+  typedef std::map<CStdString, DWORD>::const_iterator icColor;
 };
 
 /*!
