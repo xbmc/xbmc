@@ -80,7 +80,7 @@ protected:
 
   CGUISpinControl m_upDown;
   CGUIButtonControl m_imgButton;
-  string m_strSuffix;
+  std::string m_strSuffix;
   CGUIList* m_pList;
 };
 #endif

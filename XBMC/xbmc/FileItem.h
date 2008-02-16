@@ -10,8 +10,6 @@
 #include "VideoInfoTag.h"
 #include "PictureInfoTag.h"
 
-using namespace MUSIC_INFO;
-
 typedef enum {
   SORT_METHOD_NONE=0,
   SORT_METHOD_LABEL,
@@ -164,15 +162,15 @@ public:
     return m_musicInfoTag != NULL;
   }
 
-  inline CMusicInfoTag* GetMusicInfoTag()
+  inline MUSIC_INFO::CMusicInfoTag* GetMusicInfoTag()
   {
     if (!m_musicInfoTag)
-      m_musicInfoTag = new CMusicInfoTag;
+      m_musicInfoTag = new MUSIC_INFO::CMusicInfoTag;
 
     return m_musicInfoTag;
   }
 
-  inline const CMusicInfoTag* GetMusicInfoTag() const
+  inline const MUSIC_INFO::CMusicInfoTag* GetMusicInfoTag() const
   {
     return m_musicInfoTag;
   }
@@ -287,7 +285,7 @@ private:
   bool m_bLabelPreformated;
   CStdString m_contenttype;
   CStdString m_extrainfo;
-  CMusicInfoTag* m_musicInfoTag;
+  MUSIC_INFO::CMusicInfoTag* m_musicInfoTag;
   CVideoInfoTag* m_videoInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
 };
@@ -409,5 +407,5 @@ private:
   bool m_replaceListing;
   CStdString m_content;
 
-  vector<SORT_METHOD_DETAILS> m_sortDetails;
+  std::vector<SORT_METHOD_DETAILS> m_sortDetails;
 };

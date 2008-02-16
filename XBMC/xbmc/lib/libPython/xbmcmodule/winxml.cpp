@@ -7,6 +7,8 @@
 #include "../../../../guilib/SkinInfo.h"
 #include "../../../Util.h"
 
+using namespace std;
+
 #define ACTIVE_WINDOW m_gWindowManager.GetActiveWindow()
 
 #ifndef __GNUC__

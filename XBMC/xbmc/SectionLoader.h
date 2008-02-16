@@ -33,9 +33,9 @@ public:
   static void UnloadDelayed();
   static void UnloadAll();
 protected:
-  vector<CSection> m_vecLoadedSections;
-  typedef vector<CSection>::iterator ivecLoadedSections;
-  vector<CDll> m_vecLoadedDLLs;
+  std::vector<CSection> m_vecLoadedSections;
+  typedef std::vector<CSection>::iterator ivecLoadedSections;
+  std::vector<CDll> m_vecLoadedDLLs;
   CCriticalSection m_critSection;
 };
 extern class CSectionLoader g_sectionLoader;

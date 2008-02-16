@@ -3,6 +3,7 @@
 #include "../xbmc/utils/CharsetConverter.h"
 #include "GUIFontManager.h"
 
+using namespace std;
 
 CGUICheckMarkControl::CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& textureCheckMark, const CImage& textureCheckMarkNF, float checkWidth, float checkHeight, const CLabelInfo &labelInfo)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)

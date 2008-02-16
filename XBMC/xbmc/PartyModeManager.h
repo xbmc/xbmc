@@ -32,7 +32,7 @@ public:
 private:
   void Process();
   bool AddRandomSongs(int iSongs = 0);
-  bool AddInitialSongs(vector<pair<int,long> > &songIDs);
+  bool AddInitialSongs(std::vector<std::pair<int,long> > &songIDs);
   void Add(CFileItem *pItem);
   bool ReapSongs();
   bool MovePlaying();
@@ -43,7 +43,7 @@ private:
   void UpdateStats();
   std::pair<CStdString,CStdString> GetWhereClauseWithHistory() const;
   void AddToHistory(int type, long songID);
-  void GetRandomSelection(vector<pair<int,long> > &in, unsigned int number, vector<pair<int, long> > &out);
+  void GetRandomSelection(std::vector<std::pair<int,long> > &in, unsigned int number, std::vector<std::pair<int, long> > &out);
 
   // state
   bool m_bEnabled;
@@ -63,7 +63,7 @@ private:
 
   // history
   unsigned int m_songsInHistory;
-  vector<pair<int,long> > m_history;
+  std::vector<std::pair<int,long> > m_history;
 };
 
 extern CPartyModeManager g_partyModeManager;

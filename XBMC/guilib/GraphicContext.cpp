@@ -12,6 +12,8 @@
 #endif
 #include "SkinInfo.h"
 
+using namespace std;
+
 CGraphicContext g_graphicsContext;
 
 /* quick access to a skin setting, fine unless we starts clearing video settings */

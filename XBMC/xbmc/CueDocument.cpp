@@ -36,6 +36,7 @@
 #include "CueDocument.h"
 #include "Util.h"
 
+using namespace std;
 
 CCueDocument::CCueDocument(void)
 {

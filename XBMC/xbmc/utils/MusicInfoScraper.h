@@ -2,8 +2,6 @@
 #include "MusicAlbumInfo.h"
 #include "HTTP.h"
 
-using namespace MUSIC_GRABBER;
-
 namespace MUSIC_GRABBER
 {
 class CMusicInfoScraper : public CThread
@@ -25,7 +23,7 @@ protected:
   void LoadAlbuminfo();
   virtual void OnStartup();
   virtual void Process();
-  vector<CMusicAlbumInfo> m_vecAlbums;
+  std::vector<CMusicAlbumInfo> m_vecAlbums;
   CStdString m_strAlbum;
   CStdString m_strArtist;
   int m_iAlbum;

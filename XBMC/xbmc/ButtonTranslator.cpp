@@ -26,6 +26,8 @@
 #include "SkinInfo.h"
 #include "Key.h"
 
+using namespace std;
+
 CButtonTranslator g_buttonTranslator;
 extern CStdString g_LoadErrorStr;
 

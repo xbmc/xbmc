@@ -32,6 +32,8 @@
 #include "FileSystem/HDDirectory.h"
 #include "VideoInfoScanner.h"
 
+using namespace std;
+
 #define CONTROL_AREA                  2
 #define CONTROL_DEFAULT_BUTTON        3
 #define CONTROL_DEFAULT_RADIOBUTTON   4

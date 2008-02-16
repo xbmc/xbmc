@@ -32,7 +32,7 @@ protected:
   int GetSelectedItem();
   void HighlightItem(int item);
 
-  vector<CStdString> GetPaths();
+  std::vector<CStdString> GetPaths();
 
   CStdString m_type;
   CStdString m_name;

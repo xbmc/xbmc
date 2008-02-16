@@ -174,7 +174,7 @@ int CAudioDecoder::ReadSamples(int numsamples)
   CSingleLock lock(m_critSection);
 
   // Read in more data
-  int maxsize = min<unsigned int>(INPUT_SAMPLES, m_pcmBuffer.GetMaxWriteSize() / sizeof(float));
+  int maxsize = std::min<unsigned int>(INPUT_SAMPLES, m_pcmBuffer.GetMaxWriteSize() / sizeof(float));
   numsamples = min(numsamples, maxsize);
   numsamples -= (numsamples % m_codec->m_Channels);  // make sure it's divisible by our number of channels
   if ( numsamples )

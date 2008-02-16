@@ -84,9 +84,9 @@ public:
 
 private:
   virtual int_type underflow();
-  virtual streamsize showmanyc();
-	virtual pos_type seekoff(off_type, ios_base::seekdir,	ios_base::openmode = ios_base::in | ios_base::out);
-	virtual pos_type seekpos(pos_type, ios_base::openmode = ios_base::in | ios_base::out);
+  virtual std::streamsize showmanyc();
+  virtual pos_type seekoff(off_type, std::ios_base::seekdir,std::ios_base::openmode = std::ios_base::in | std::ios_base::out);
+  virtual pos_type seekpos(pos_type, std::ios_base::openmode = std::ios_base::in | std::ios_base::out);
 
   IFile* m_file;
   char*  m_buffer;

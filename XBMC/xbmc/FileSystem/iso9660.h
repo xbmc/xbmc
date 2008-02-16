@@ -187,24 +187,24 @@ protected:
   void IsoDateTimeToFileTime(iso9660_Datetime* isoDateTime, FILETIME* filetime);
   struct iso_dirtree* ReadRecursiveDirFromSector( DWORD sector, const char * );
   struct iso_dirtree* FindFolder( char *Folder );
-  string GetThinText(WCHAR* strTxt, int iLen );
+  std::string GetThinText(WCHAR* strTxt, int iLen );
   bool ReadSectorFromCache(iso9660::isofile* pContext, DWORD sector, byte** ppBuffer);
   void ReleaseSectorFromCache(iso9660::isofile* pContext, DWORD sector);
-  const string ParseName(struct iso9660_Directory& isodir);
+  const std::string ParseName(struct iso9660_Directory& isodir);
   HANDLE AllocFileContext();
   void FreeFileContext(HANDLE hFile);
   isofile* GetFileContext(HANDLE hFile);
   bool IsRockRidge(struct iso9660_Directory& isodir);
   struct iso_dirtree* m_dirtree;
   struct iso9660info m_info;
-  string m_strReturn;
+  std::string m_strReturn;
 
   struct iso9660_Directory m_openfileinfo;
   struct iso_dirtree* m_searchpointer;
   struct iso_directories* m_paths;
   struct iso_directories* m_lastpath;
 
-  vector<struct iso_dirtree*> m_vecDirsAndFiles;
+  std::vector<struct iso_dirtree*> m_vecDirsAndFiles;
 
   HANDLE m_hCDROM;
   isofile* m_isoFiles[MAX_ISO_FILES];

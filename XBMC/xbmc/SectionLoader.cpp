@@ -23,6 +23,7 @@
 #include "SectionLoader.h"
 #include "cores/DllLoader/DllLoaderContainer.h"
 
+using namespace std;
 
 class CSectionLoader g_sectionLoader;
 

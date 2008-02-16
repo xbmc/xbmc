@@ -2,6 +2,8 @@
 #include "EncoderLame.h"
 #include "../Id3Tag.h"
 
+using namespace MUSIC_INFO;
+
 // taken from Lame from main.c
 int CEncoderLame::parse_args_from_string(lame_global_flags * const gfp, const char *p,
                             char *inPath, char *outPath)

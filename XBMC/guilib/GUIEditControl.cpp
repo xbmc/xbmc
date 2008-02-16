@@ -3,6 +3,8 @@
 #include "../xbmc/Util.h"
 #include "../xbmc/utils/CharsetConverter.h"
 
+using namespace std;
+
 CGUIEditControl::CGUIEditControl(DWORD dwParentID, DWORD dwControlId,
                                  float posX, float posY, float width, float height,
                                  const CLabelInfo& labelInfo, const string& strLabel)

@@ -28,6 +28,7 @@
 #include "VideoDatabase.h"
 #include "XBAudioConfig.h"
 
+using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
 

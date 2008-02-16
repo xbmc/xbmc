@@ -20,8 +20,8 @@ public:
   bool Ban(bool askConfirmation = true);
   bool CanLove();
   bool CanBan();
-  bool Unlove(const CMusicInfoTag& musicinfotag, bool askConfirmation = true);
-  bool Unban(const CMusicInfoTag& musicinfotag, bool askConfirmation = true);
+  bool Unlove(const MUSIC_INFO::CMusicInfoTag& musicinfotag, bool askConfirmation = true);
+  bool Unban(const MUSIC_INFO::CMusicInfoTag& musicinfotag, bool askConfirmation = true);
 
   //scrobbler
   bool CanScrobble(const CFileItem &fileitem);
@@ -51,8 +51,8 @@ private:
   void AddToPlaylist(const int nrTracks);
   bool CallXmlRpc(const CStdString& action, const CStdString& artist, const CStdString& title);
   void CreateMD5Hash(const CStdString& bufferToHash, CStdString& hash);
-  bool Love(const CMusicInfoTag& musicinfotag);
-  bool Ban(const CMusicInfoTag& musicinfotag);
+  bool Love(const MUSIC_INFO::CMusicInfoTag& musicinfotag);
+  bool Ban(const MUSIC_INFO::CMusicInfoTag& musicinfotag);
 
   CStdString m_RadioUrl;
   CStdString m_RadioSession;

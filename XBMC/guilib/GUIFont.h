@@ -46,20 +46,20 @@ public:
   CStdString& GetFontName();
 
   void DrawText( float x, float y, DWORD color, DWORD shadowColor,
-                 const vector<DWORD> &text, DWORD alignment, float maxPixelWidth)
+                 const std::vector<DWORD> &text, DWORD alignment, float maxPixelWidth)
   {
-    vector<DWORD> colors;
+    std::vector<DWORD> colors;
     colors.push_back(color);
     DrawText(x, y, colors, shadowColor, text, alignment, maxPixelWidth);
   };
 
-  void DrawText( float x, float y, const vector<DWORD> &colors, DWORD shadowColor,
-                 const vector<DWORD> &text, DWORD alignment, float maxPixelWidth);
+  void DrawText( float x, float y, const std::vector<DWORD> &colors, DWORD shadowColor,
+                 const std::vector<DWORD> &text, DWORD alignment, float maxPixelWidth);
 
-  void DrawScrollingText( float x, float y, const vector<DWORD> &colors, DWORD shadowColor,
-                 const vector<DWORD> &text, DWORD alignment, float maxPixelWidth, CScrollInfo &scrollInfo);
+  void DrawScrollingText( float x, float y, const std::vector<DWORD> &colors, DWORD shadowColor,
+                 const std::vector<DWORD> &text, DWORD alignment, float maxPixelWidth, CScrollInfo &scrollInfo);
 
-  float GetTextWidth( const vector<DWORD> &text )
+  float GetTextWidth( const std::vector<DWORD> &text )
   {
     if (!m_font) return 0;
     CSingleLock lock(g_graphicsContext);

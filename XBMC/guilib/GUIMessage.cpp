@@ -2,7 +2,7 @@
 #include "GUIMessage.h"
 #include "LocalizeStrings.h"
 
-
+using namespace std;
 
 CGUIMessage::CGUIMessage(DWORD dwMsg, DWORD dwSenderID, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, void* lpVoid)
 {

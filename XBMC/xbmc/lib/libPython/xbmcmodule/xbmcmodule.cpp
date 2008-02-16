@@ -18,6 +18,7 @@
 #include "pyutil.h"
 #include "../../../PlayListPlayer.h"
 
+using namespace std;
 using namespace XFILE;
 
 #ifndef __GNUC__

@@ -23,6 +23,8 @@
 #include "Database.h"
 #include "Util.h"
 
+using namespace AUTOPTR;
+using namespace dbiplus;
 
 CDatabase::CDatabase(void)
 {

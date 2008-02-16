@@ -6,6 +6,7 @@
 #include "../Application.h"
 #include "Visualisation.h" 
 
+using namespace std;
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

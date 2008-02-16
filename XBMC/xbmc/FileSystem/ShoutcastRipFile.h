@@ -36,7 +36,7 @@ public:
   bool IsRecording();
   void Write( char *buf, unsigned long size );
   void Reset();
-  void GetMusicInfoTag(CMusicInfoTag& tag);
+  void GetMusicInfoTag(MUSIC_INFO::CMusicInfoTag& tag);
 protected:
 
 
@@ -57,7 +57,7 @@ private:
   char m_szStreamName[1024];
   FILE* m_ripFile;
   FILE* m_logFile;
-  CMusicInfoTag m_Tag;
+  MUSIC_INFO::CMusicInfoTag m_Tag;
 };
 
 

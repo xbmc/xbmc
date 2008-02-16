@@ -53,6 +53,7 @@
 
 #define CONTROL_LABELFILES        12
 
+using namespace std;
 
 CGUIMediaWindow::CGUIMediaWindow(DWORD id, const char *xmlFile)
     : CGUIWindow(id, xmlFile)
