@@ -28,14 +28,14 @@ public:
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual void SetColorDiffuse(D3DCOLOR color);
 
-  void SetLabel(const string& strLabel);
-  const string GetLabel() const { return m_strLabel; };
+  void SetLabel(const std::string& strLabel);
+  const std::string GetLabel() const { return m_strLabel; };
   const CLabelInfo& GetLabelInfo() const { return m_label; };
   void SetSelected(bool bOnOff);
   bool GetSelected() const;
   bool OnMouseClick(DWORD dwButton, const CPoint &point);
 
-  void PythonSetLabel(const CStdString &strFont, const string &strText, DWORD dwTextColor);
+  void PythonSetLabel(const CStdString &strFont, const std::string &strText, DWORD dwTextColor);
   void PythonSetDisabledColor(DWORD dwDisabledColor);
 
 protected:
@@ -44,7 +44,7 @@ protected:
 
   CLabelInfo m_label;
   CGUITextLayout m_textLayout;
-  string m_strLabel;
+  std::string m_strLabel;
   bool m_bSelected;
 };
 #endif

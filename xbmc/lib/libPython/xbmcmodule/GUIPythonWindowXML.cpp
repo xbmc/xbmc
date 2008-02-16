@@ -9,6 +9,8 @@
 #include "action.h"
 #include "../../../Util.h"
 
+using namespace std;
+
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY       3
 #define CONTROL_BTNSORTASC      4

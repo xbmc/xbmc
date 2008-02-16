@@ -25,6 +25,8 @@
 #include "PlayListFactory.h"
 #include <sstream>
 
+using namespace std;
+using namespace MUSIC_INFO;
 using namespace XFILE;
 using namespace PLAYLIST;
 

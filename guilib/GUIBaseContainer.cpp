@@ -6,6 +6,8 @@
 #include "XMLUtils.h"
 #include "SkinInfo.h"
 
+using namespace std;
+
 CGUIBaseContainer::CGUIBaseContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {

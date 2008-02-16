@@ -9,8 +9,6 @@
 
 #include "musicInfoTag.h"
 
-using namespace MUSIC_INFO;
-
 /*!
  \ingroup music
  \brief Class to store and read album information from CMusicDatabase
@@ -60,7 +58,7 @@ class CSong
 {
 public:
   CSong() ;
-  CSong(CMusicInfoTag& tag);
+  CSong(MUSIC_INFO::CMusicInfoTag& tag);
   virtual ~CSong(){};
   void Clear() ;
 

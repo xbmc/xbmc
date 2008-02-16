@@ -45,14 +45,14 @@ public:
   CGUIControl *GetFocusedControl() const;
   const CGUIControl *GetControl(int id) const;
   CGUIControl *GetFirstFocusableControl(int id);
-  void GetContainers(vector<CGUIControl *> &containers) const;
+  void GetContainers(std::vector<CGUIControl *> &containers) const;
 
   virtual void AddControl(CGUIControl *control);
   virtual bool RemoveControl(int id);
   virtual void ClearAll();
   void SetDefaultControl(DWORD id) { m_defaultControl = id; };
 
-  virtual void SaveStates(vector<CControlState> &states);
+  virtual void SaveStates(std::vector<CControlState> &states);
 
   virtual bool IsGroup() const { return true; };
 
@@ -61,10 +61,10 @@ public:
 #endif
 protected:
   // sub controls
-  vector<CGUIControl *> m_children;
-  typedef vector<CGUIControl *>::iterator iControls;
-  typedef vector<CGUIControl *>::const_iterator ciControls;
-  typedef vector<CGUIControl *>::const_reverse_iterator crControls;
+  std::vector<CGUIControl *> m_children;
+  typedef std::vector<CGUIControl *>::iterator iControls;
+  typedef std::vector<CGUIControl *>::const_iterator ciControls;
+  typedef std::vector<CGUIControl *>::const_reverse_iterator crControls;
 
   int m_defaultControl;
   int m_focusedControl;

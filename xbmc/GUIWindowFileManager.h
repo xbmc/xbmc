@@ -74,7 +74,7 @@ protected:
 
   DIRECTORY::CVirtualDirectory m_rootDir;
   CFileItemList m_vecItems[2];
-  typedef vector <CFileItem*> ::iterator ivecItems;
+  typedef std::vector <CFileItem*> ::iterator ivecItems;
   CFileItem m_Directory[2];
   CStdString m_strParentPath[2];
   CGUIDialogProgress* m_dlgProgress;

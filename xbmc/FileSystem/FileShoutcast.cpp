@@ -23,6 +23,7 @@
 #include "ShoutcastRipFile.h"
 #include "../utils/GUIInfoManager.h"
 
+using namespace MUSIC_INFO;
 using namespace XFILE;
 
 const int SHOUTCASTTIMEOUT = 100;

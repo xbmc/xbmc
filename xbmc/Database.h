@@ -1,8 +1,6 @@
 #pragma once
 #include "lib/sqLite/sqlitedataset.h"
 
-using namespace dbiplus;
-
 class CDatabase
 {
 public:
@@ -32,9 +30,9 @@ protected:
   float m_preV2version;
 //#endif
   CStdString m_strDatabaseFile;
-  auto_ptr<SqliteDatabase> m_pDB;
-  auto_ptr<Dataset> m_pDS;
-  auto_ptr<Dataset> m_pDS2;
+  std::auto_ptr<dbiplus::SqliteDatabase> m_pDB;
+  std::auto_ptr<dbiplus::Dataset> m_pDS;
+  std::auto_ptr<dbiplus::Dataset> m_pDS2;
 
 private:
   virtual bool UpdateOldVersion(int version);

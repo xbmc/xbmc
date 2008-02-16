@@ -45,6 +45,6 @@ protected:
   CStdString       m_fallbackPath;
   CStdString       m_backupMediaDir;
   CGUIViewControl  m_viewControl;
-  auto_ptr<CGUIViewState> m_guiState;
+  std::auto_ptr<CGUIViewState> m_guiState;
   CFileItemList    m_vecItems;
 };

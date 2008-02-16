@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "MP3codec.h"
 
+using namespace MUSIC_INFO;
+
 #define DECODER_DELAY 529 // decoder delay in samples
 
 MP3Codec::MP3Codec()

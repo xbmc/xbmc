@@ -31,8 +31,8 @@ public:
   void GetInfo(SCR_INFO *info);
 
 protected:
-  auto_ptr<struct ScreenSaver> m_pScr;
-  auto_ptr<DllScreensaver> m_pDll;
+  std::auto_ptr<struct ScreenSaver> m_pScr;
+  std::auto_ptr<DllScreensaver> m_pDll;
   CStdString m_strScreenSaverName;
 };
 

@@ -24,6 +24,7 @@
 #include "FileSystem/cddb.h"
 #include "DetectDVDType.h"
 
+using namespace MEDIA_DETECT;
 using namespace MUSIC_INFO;
 using namespace CDDB;
 

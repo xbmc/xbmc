@@ -65,5 +65,5 @@ protected:
   CGUISettingsSliderControl *m_pOriginalSlider;
   CGUIImage *m_pOriginalSeparator;
 
-  vector<SettingInfo> m_settings;
+  std::vector<SettingInfo> m_settings;
 };

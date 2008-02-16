@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "ThumbnailCache.h"
 
+using namespace std;
 using namespace XFILE;
 
 CThumbnailCache* CThumbnailCache::m_pCacheInstance = NULL;

@@ -14,6 +14,6 @@ public:
   static bool Lookup(const CStdString& strHostName, CStdString& strIpAdres);
 
 protected:
-  vector<CDNSName> m_vecDNSNames;
-  typedef vector<CDNSName>::iterator ivecDNSNames;
+  std::vector<CDNSName> m_vecDNSNames;
+  typedef std::vector<CDNSName>::iterator ivecDNSNames;
 };

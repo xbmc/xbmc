@@ -8,6 +8,8 @@
 
 #include "../dll_tracker.h"
 
+using namespace std;
+
 vector<string> m_vecAtoms;
 
 //#define API_DEBUG

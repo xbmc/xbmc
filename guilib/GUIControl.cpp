@@ -6,6 +6,8 @@
 #include "../xbmc/Util.h"
 #include "GUIWindowManager.h"
 
+using namespace std;
+
 CGUIControl::CGUIControl()
 {
   m_hasRendered = false;

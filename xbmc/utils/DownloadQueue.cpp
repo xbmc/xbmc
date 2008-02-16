@@ -4,6 +4,7 @@
 #include "HTTP.h"
 #include "../Util.h"
 
+using namespace std;
 
 WORD CDownloadQueue::m_wNextQueueId = 0;
 

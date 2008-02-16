@@ -4,6 +4,8 @@
 #include "../../../utils/GUIInfoManager.h"
 #include "../guilib/GuiControlFactory.h"
 
+using namespace std;
+
 #ifndef __GNUC__
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")

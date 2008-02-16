@@ -37,11 +37,11 @@ public:
 private:
           bool        LoadWindowSound(TiXmlNode* pWindowNode, const CStdString& strIdentifier, CStdString& strFile);
 
-  typedef map<WORD, CStdString> actionSoundMap;
-  typedef map<WORD, CWindowSounds> windowSoundMap;
+  typedef std::map<WORD, CStdString> actionSoundMap;
+  typedef std::map<WORD, CWindowSounds> windowSoundMap;
 
-  typedef map<CStdString, CGUISound*> pythonSoundsMap;
-  typedef map<DWORD, CGUISound*> windowSoundsMap;
+  typedef std::map<CStdString, CGUISound*> pythonSoundsMap;
+  typedef std::map<DWORD, CGUISound*> windowSoundsMap;
 
   actionSoundMap      m_actionSoundMap;
   windowSoundMap      m_windowSoundMap;

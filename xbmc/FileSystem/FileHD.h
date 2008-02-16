@@ -35,7 +35,7 @@ public:
   virtual bool Rename(const CURL& url, const CURL& urlnew);
 protected:
   CStdString GetLocal(const CURL &url); /* crate a properly format path from an url */
-  CAutoPtrHandle m_hFile;
+  AUTOPTR::CAutoPtrHandle m_hFile;
   __int64 m_i64FileLength;
   __int64 m_i64FilePos;
 };

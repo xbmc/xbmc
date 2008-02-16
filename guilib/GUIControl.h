@@ -131,9 +131,9 @@ public:
   virtual float GetWidth() const;
   virtual float GetHeight() const;
   virtual void SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWORD dwRight);
-  virtual void SetNavigationActions(const vector<CStdString> &up, const vector<CStdString> &down,
-                                    const vector<CStdString> &left, const vector<CStdString> &right);
-  void ExecuteActions(const vector<CStdString> &actions);
+  virtual void SetNavigationActions(const std::vector<CStdString> &up, const std::vector<CStdString> &down,
+                                    const std::vector<CStdString> &left, const std::vector<CStdString> &right);
+  void ExecuteActions(const std::vector<CStdString> &actions);
   DWORD GetControlIdUp() const { return m_dwControlUp;};
   DWORD GetControlIdDown() const { return m_dwControlDown;};
   DWORD GetControlIdLeft() const { return m_dwControlLeft;};
@@ -156,8 +156,8 @@ public:
   virtual void SetPulseOnSelect(bool pulse) { m_pulseOnSelect = pulse; };
   virtual CStdString GetDescription() const { return ""; };
 
-  void SetAnimations(const vector<CAnimation> &animations);
-  const vector<CAnimation> &GetAnimations() const { return m_animations; };
+  void SetAnimations(const std::vector<CAnimation> &animations);
+  const std::vector<CAnimation> &GetAnimations() const { return m_animations; };
 
   virtual void QueueAnimation(ANIMATION_TYPE anim);
   virtual bool IsAnimating(ANIMATION_TYPE anim);
@@ -168,7 +168,7 @@ public:
   virtual bool IsContainer() const { return false; };
 
   void SetParentControl(CGUIControl *control) { m_parentControl = control; };
-  virtual void SaveStates(vector<CControlState> &states);
+  virtual void SaveStates(std::vector<CControlState> &states);
 
   enum GUICONTROLTYPES {
     GUICONTROL_UNKNOWN,
@@ -228,10 +228,10 @@ protected:
   DWORD m_dwControlRight;
   DWORD m_dwControlUp;
   DWORD m_dwControlDown;
-  vector<CStdString> m_leftActions;
-  vector<CStdString> m_rightActions;
-  vector<CStdString> m_upActions;
-  vector<CStdString> m_downActions;
+  std::vector<CStdString> m_leftActions;
+  std::vector<CStdString> m_rightActions;
+  std::vector<CStdString> m_upActions;
+  std::vector<CStdString> m_downActions;
 
   float m_posX;
   float m_posY;
@@ -261,7 +261,7 @@ protected:
   bool m_enabled;
 
   // animation effects
-  vector<CAnimation> m_animations;
+  std::vector<CAnimation> m_animations;
   CPoint m_camera;
   bool m_hasCamera;
   TransformMatrix m_transform;

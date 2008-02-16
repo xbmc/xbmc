@@ -36,8 +36,6 @@
 #define _QRYDAT_H
 
 
-using namespace std;
-
 namespace dbiplus {
 
 enum fType { 
@@ -61,7 +59,7 @@ enum fType {
 class field_value {
 private:
   fType field_type;
-  string str_value;
+  std::string str_value;
   union {
     bool   bool_value;
     char   char_value;
@@ -94,7 +92,7 @@ public:
 
   fType get_fType() const {return field_type;}
   bool get_isNull() const {return is_null;}
-  string get_asString() const;
+  std::string get_asString() const;
   bool get_asBool() const;
   char get_asChar() const;
   short get_asShort() const;
@@ -107,7 +105,7 @@ public:
 
   field_value& operator= (const char *s)
     {set_asString(s); return *this;}
-  field_value& operator= (const string &s)
+    field_value& operator= (const std::string &s)
     {set_asString(s); return *this;}
   field_value& operator= (const bool b)
     {set_asBool(b); return *this;}
@@ -128,7 +126,7 @@ public:
   field_value& operator= (const field_value & fv);
   
   //class ostream;
-  friend ostream& operator<< (ostream& os, const field_value &fv)
+  friend std::ostream& operator<< (std::ostream& os, const field_value &fv)
   {switch (fv.get_fType()) {
     case ft_String: {
       return os << fv.get_asString();
@@ -174,7 +172,7 @@ public:
 
   void set_isNull(){is_null=true;}
   void set_asString(const char *s);
-  void set_asString(const string & s);
+  void set_asString(const std::string & s);
   void set_asBool(const bool b);
   void set_asChar(const char c);
   void set_asShort(const short s);
@@ -186,13 +184,13 @@ public:
   void set_asDouble(const double d);
 
   fType get_field_type();
-  string gft();
+  std::string gft();
 };
 
 struct field_prop {
-  string name,display_name;
+  std::string name,display_name;
   fType type;
-  string field_table; //?
+  std::string field_table; //?
   bool read_only;
   unsigned int field_len;
   unsigned int field_flags;
@@ -205,10 +203,10 @@ struct field {
 }; 
 
 
-typedef map<int,field> Fields;
-typedef map<int,field_value> sql_record;
-typedef map<int,field_prop> record_prop;
-typedef map<int,sql_record> query_data;
+typedef std::map<int,field> Fields;
+typedef std::map<int,field_value> sql_record;
+typedef std::map<int,field_prop> record_prop;
+typedef std::map<int,sql_record> query_data;
 typedef field_value variant;
 
 //typedef Fields::iterator fld_itor;

@@ -4,8 +4,6 @@
 #include "cores/paplayer/DllAdplug.h"
 #include "cores/paplayer/AdplugCodec.h"
 
-using namespace MUSIC_INFO;
-
 namespace MUSIC_INFO
 {
 	class CMusicInfoTagLoaderAdplug: public IMusicInfoTagLoader

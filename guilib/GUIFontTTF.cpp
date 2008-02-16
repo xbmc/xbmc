@@ -26,6 +26,7 @@
 #endif
 #endif
 
+using namespace std;
 namespace MathUtils {
   inline int round_int (double x);
 }

@@ -23,9 +23,6 @@
 #include "utils/IMDB.h"
 #include "utils/Stopwatch.h"
 
-using namespace MEDIA_DETECT;
-using namespace MUSIC_INFO;
-
 class CWebServer;
 class CXBFileZilla;
 class CSNTPClient;
@@ -142,8 +139,8 @@ public:
   CGUIWindowPointer m_guiPointer;
 
   CIdleThread m_idleThread;
-  CAutorun m_Autorun;
-  CDetectDVDMedia m_DetectDVDType;
+  MEDIA_DETECT::CAutorun m_Autorun;
+  MEDIA_DETECT::CDetectDVDMedia m_DetectDVDType;
   CDelayController m_ctrDpad;
   CSNTPClient *m_psntpClient;
   CWebServer* m_pWebServer;
