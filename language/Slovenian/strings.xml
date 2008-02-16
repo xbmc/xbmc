@@ -10,6 +10,7 @@
   <string id="6">Xbox Media Center SVN</string>
   <string id="7">Moje datoteke</string>
   <string id="8">Vreme</string>
+  <string id="9">Xbox Media Center</string>
  
   <string id="11">Ponedeljek</string>
   <string id="12">Torek</string>
@@ -47,13 +48,13 @@
   <string id="110">Ustvari slièice</string>
   <string id="111">Bližnjice</string>
   <string id="112">Pavza</string>
-  <string id="113">Moji Dokumenti: Izvor</string>
-  <string id="114">Moji Dokumenti: Destinacija</string>
+  <string id="113">Moji dokumenti: Izvor</string>
+  <string id="114">Moji dokumenti: Cilj</string>
   <string id="115">Kopiraj</string>
   <string id="116">Premakni</string>
   <string id="117">Izbriši</string>
   <string id="118">Preimenuj</string>
-  <string id="119">Nova Mapa</string>
+  <string id="119">Nova mapa</string>
   <string id="120">Potrdi kopiranje datotek</string>
   <string id="121">Potrdi premikanje datotek</string>
   <string id="122">Potrdi brisanje datotek</string>
@@ -61,16 +62,16 @@
   <string id="124">Ali naj prenesem datoteke?</string>
   <string id="125">Ali naj zbrišem datoteke?</string>
   <string id="126">Status</string>
-  <string id="127">Objekti</string>
+  <string id="127">Datotek</string>
   <string id="128">Splošno</string>
   <string id="129">Predogled slik</string>
-  <string id="130">Sistemske info.</string>
+  <string id="130">Sistemske informacije</string>
   <string id="131">Zaslon</string>
   <string id="132">Albumi</string>
   <string id="133">Izvajalci</string>
   <string id="134">Pesmi</string>
   <string id="135">Žanri</string>
-  <string id="136">Playlista</string>
+  <string id="136">Predvajalni seznam</string>
   <string id="137">Iskanje</string>
   <string id="138">SISTEMSKE INFORMACIJE</string>
   <string id="139">Temperature:</string>
@@ -84,9 +85,9 @@
   <string id="147">Statièen:</string>
   <string id="148">DHCP</string>
   <string id="149">MAC:</string>
-  <string id="150">IP:</string>
+  <string id="150">IP</string>
   <string id="151">Povezava:</string>
-  <string id="152">Polovièen duplex</string>
+  <string id="152">Polovièni duplex</string>
   <string id="153">Celi duplex</string>
   <string id="154">Shramba</string>
   <string id="155">Pogon</string>
@@ -94,11 +95,11 @@
   <string id="157">Video</string>
   <string id="158">Prosti pomnilnik</string>
   <string id="159">Ni povezave</string>
-  <string id="160">Prost</string>
+  <string id="160">Prosto</string>
   <string id="161">Ni dosegljiv</string>
   <string id="162">DVD vratca odprta</string>
   <string id="163">Berem,...</string>
-  <string id="164">Ni medija,...</string>
+  <string id="164">Ni medija...</string>
   <string id="165">Medij prisoten,..</string>
   <string id="166">Preobleka</string>
   <string id="167">Omogoèi FTP strežnik</string>
@@ -120,7 +121,7 @@
   <string id="183">Ocena:</string>
   <string id="184">Osveži</string>
   <string id="185">Išèem Album</string>
-  <string id="186">V redu</string>
+  <string id="186">Potrdi</string>
   <string id="187">Ne najdem albumov</string>
   <string id="188">Izberi vse</string>
   <string id="189">Pregledujem info. o mediju</string>
@@ -145,8 +146,8 @@
   <string id="208">Predvajaj</string>
   <string id="209">Naslednji</string>
   <string id="210">Prejšnji</string>
-  <string id="213">Kalibriraj uporabniški vmesnik...</string>
-  <string id="214">Video kalibracija...</string>
+  <string id="213">Kalibriraj uporabniški vmesnik</string>
+  <string id="214">Video kalibracija</string>
   <string id="215">Mehèanje</string>
   <string id="216">Poveèava</string>
   <string id="217">Kolièina Pixlov</string>
@@ -154,14 +155,14 @@
   <string id="219">Prosim vstavite medij</string>
   <string id="220">Daljinsko deljenje</string>
   <string id="221">Mreža ni povezana</string>
-  <string id="222">Ne potrdi</string>
+  <string id="222">Preklièi</string>
   <string id="224">Hitrost</string>
   <string id="225">Èas predogleda slike</string>
   <string id="227">Preišèi Audio nosilce na freedb</string>
-  <string id="228">Razmeèi playlisto ob zagonu</string>
+  <string id="228">Razpostavi Predvajalni seznam ob zagonu</string>
   <string id="229">HDD èas ustavitve</string>
   <string id="230">Video Filtri</string>
-  <string id="231">Noben</string>
+  <string id="231">Nobena</string>
   <string id="232">Toèka</string>
   <string id="233">Linearno</string>
   <string id="234">Antisotropièno</string>
@@ -169,7 +170,7 @@
   <string id="236">Gaussianovo kubièno</string>
   <string id="237">Pomanševanje</string>
   <string id="238">Poveèevanje</string>
-  <string id="239">Oèisti playlisto ob izhodu</string>
+  <string id="239">Oèisti Predvajalni seznam ob izhodu</string>
   <string id="240">DVD-Video</string>
   <string id="241">VCD/SVCD</string>
   <string id="242">Audio-CD</string>
@@ -181,7 +182,7 @@
   <string id="248">Jezik</string>
   <string id="249">Glasba</string>
   <string id="250">Vizualizacija</string>
-  <string id="251">Izberi destinacijsko mapo</string>
+  <string id="251">Izberi ciljno mapo</string>
   <string id="252">Stereo zvok na vse zvoènike</string>
   <string id="253">Število kanalov</string>
   <string id="254">DTS sprejemnik </string>
@@ -218,7 +219,7 @@
   <string id="286">Postprocesni Filter</string>
   <string id="287">Podnapisi</string>
   <string id="288">Pisava</string>
-  <string id="289">- Velikost</string>
+  <string id="289">- velikost</string>
   <string id="290">Dinamièna Kompresija</string>
   <string id="291">Video</string>
   <string id="292">Audio</string>
@@ -226,22 +227,23 @@
   <string id="294">Ustvari zaznamek</string>
   <string id="296">Izbriši zaznamke</string>
   <string id="297">Audio èasovni zamik</string>
+  <string id="298">Zaznamki</string>
   <string id="303">Zamik</string>
   <string id="304">Jezik</string>
-  <string id="305">Vkljuèen</string>
+  <string id="305">Vkljuèeno</string>
   <string id="306">Brez-prepletanja</string>
-  <string id="307">- Samodejno Postprocesiranje</string>
-  <string id="308">- Vertikalni Deblokirni Filter</string>
-  <string id="309">- Horizontalni Deblokirni Filter</string>
-  <string id="310">- Auto Osvetlitev/Kontrast</string>
-  <string id="311">- Dering</string>
+  <string id="307">- samodejno postprocesiranje</string>
+  <string id="308">- Vertikalni deblokirni filter</string>
+  <string id="309">- horizontalni deblokirni filter</string>
+  <string id="310">- samodejna osvetlitev/Kontrast</string>
+  <string id="311">- dering</string>
   <string id="312">(0=auto)</string>
   <string id="313">Èišèenje baze podatkov</string>
   <string id="314">Pripravljanje...</string>
   <string id="315">Napaka v podatkovni bazi</string>
   <string id="316">Poizvedujem za pesmimi...</string>
   <string id="317">Podatkovna baza je zbrisana uspešno</string>
-  <string id="318">Brišem pesmi,...</string>
+  <string id="318">Brišem pesmi...</string>
   <string id="319">Napaka pri brisanju pesmi</string>
   <string id="320">Brišem izvajalce...</string>
   <string id="321">Napaka pri brisanju Izvajalcev</string>
@@ -256,10 +258,10 @@
   <string id="330">Dejanje bo vzelo nekaj èasa...</string>
   <string id="331">Stiskam podatkovno bazo....</string>
   <string id="332">Napaka pri stiskanju podatkovne baze</string>
-  <string id="333">Ali želiš zbrisati glasbeno bazo?</string>
-  <string id="334">Izbriši Glasbeno bazo...</string>
+  <string id="333">Želiš izbrisati glasbeno bazo?</string>
+  <string id="334">Izbriši glasbeno bazo</string>
   <string id="335">Zaèetek</string>
-  <string id="336">Izrisna Konverzacija</string>
+  <string id="336">Izrisna konverzacija</string>
   <string id="337">Audio izhod</string>
   <string id="338">Analogno</string>
   <string id="339">Digitalno</string>
@@ -270,7 +272,7 @@
   <string id="344">Igralci</string>
   <string id="345">Leto</string>
   <string id="350">Programi</string>
-  <string id="351">Izkljuèi</string>
+  <string id="351">Izkljuèeno</string>
   <string id="352">Zamegljeno</string>
   <string id="353">Èrno</string>
   <string id="354">Sledi Matrice</string>
@@ -328,12 +330,14 @@
   <string id="406">Vlažnost</string>
   <string id="407">Od</string>
   <string id="408">piha</string>
+  <string id="409">Privzeto</string>
+
   <string id="410">Povezujem se z Weather.com strežnikom</string>
   <string id="411">Pridobivam vremensko napoved za:</string>
   <string id="412">Vremenske napovedi ni moè prejeti!</string>
   <string id="413">Manualno</string>
   <string id="414">Ni recenzije za izbrani album</string>
-  <string id="415">Prenašam thumbnail...</string>
+  <string id="415">Prenašam slièice...</string>
   <string id="416">Ni prisoten</string>
   <string id="417">Izgled: Velike Ikone</string>
   <string id="418">Moj Video/Žanr</string>
@@ -365,7 +369,7 @@
   <string id="444">Video</string>
   <string id="445">Audio</string>
   <string id="446">DVD</string>
-  <string id="447">Avtozagon</string>
+  <string id="447">Samodejni zagon</string>
   <string id="448">LCD</string>
   <string id="449">Vkljuèen</string>
   <string id="450">Stolpci</string>
@@ -390,9 +394,9 @@
   <string id="470">Zasluge</string>
   <string id="471">Modèip</string>
   <string id="474">Izkljuèi</string>
-  <string id="475">Samo Glasba</string>
-  <string id="476">Glasba in Video</string>
-  <string id="477">Ne morem naložiti playliste</string>
+  <string id="475">Samo glasba</string>
+  <string id="476">Glasba in video</string>
+  <string id="477">Ne morem naložiti Predvajalnega seznama</string>
   <string id="478">OSD</string>
   <string id="479">Izgled ter jezik</string>
   <string id="480">Izgled</string>
@@ -400,7 +404,7 @@
   <string id="482">Vse o XBMC</string>
   <string id="483">album 2</string>
   <string id="484">Izvajalec</string>
-  <string id="485">Izbriši Album</string>
+  <string id="485">Izbriši album</string>
   <string id="486">Ponovi</string>
   <string id="487">Ponovi enkrat</string>
   <string id="488">Ponovi mape</string>
@@ -409,7 +413,7 @@
   <string id="492">Zamenjaj dimenzije Vobsubs</string>
   <string id="493">Napredne opcije (Samo za eksperte)</string>
   <string id="494">Overall Audio Headroom</string>
-  <string id="495">Nastavi Video na GUI Resolucijo</string>
+  <string id="495">Nastavi video na GUI resolucijo</string>
   <string id="496">Kalibracija</string>
   <string id="497">Skrij konènice datotek</string>
   <string id="498">Sortiraj : Tip</string>
@@ -434,10 +438,10 @@
   <string id="520">Uredi XBE naslov</string>
   <string id="521">Kompilacije</string>
   <string id="522">Odstrani izvor</string>
-  <string id="523">Zamenja medij</string>
-  <string id="524">Izberi Playlisto</string>
-  <string id="525">Nova Playlista...</string>
-  <string id="526">Dodaj v Playlisto</string>
+  <string id="523">Zamenjaj medij</string>
+  <string id="524">Izberi Predvajalni seznam</string>
+  <string id="525">Nov Predvajalni seznam...</string>
+  <string id="526">Dodaj v Predvajalni seznam</string>
   <string id="527">Roèno dodaj v knjižnico</string>
   <string id="528">Vnesi naslov</string>
   <string id="529">Napaka: podvojeni naslov</string>
@@ -456,6 +460,7 @@
   <string id="542">DVD</string>
   <string id="543">DVD 2</string>
   <string id="544">Informacije o mediju</string>
+
   <string id="550">Razvrsti: %s</string>
   <string id="551">ime</string>
   <string id="552">datum</string>
@@ -465,7 +470,7 @@
   <string id="556">naslov</string>
   <string id="557">izvajalec</string>
   <string id="558">album</string>
-  <string id="559">Playlista</string>
+  <string id="559">Predvajalni seznam</string>
   <string id="560">ID</string>
   <string id="561">datoteka</string>
   <string id="562">Leto</string>
@@ -476,13 +481,17 @@
   <string id="567">Števec predvajanj</string>
   <string id="568">Nazadnje predvajano</string>
   <string id="569">Komentiraj</string>
+  <string id="570">Dodatn datum</string>
+  <string id="571">Privzeto</string>
+  <string id="572">Studio</string>
+
   <string id="580">Smer sortiranja</string>
   <string id="581">Naèin sortiranja</string>
   <string id="582">Naèin pogleda</string>
   <string id="583">Zapomni si pogled za razliène mape</string>
   <string id="584">Narašèajoèe</string>
   <string id="585">Padajoèe</string>
-  <string id="586">Uredi Playlisto</string>
+  <string id="586">Uredi Predvajalni seznam</string>
   <string id="587">Filter</string>
   <string id="588">Ustavi zabavni naèin</string>
   <string id="589">Zabavni naèin</string>
@@ -494,6 +503,7 @@
   <string id="595">Ponovi: Izkljuèen</string>
   <string id="596">Ponovi: Enkrat</string>
   <string id="597">Ponovi: Vse</string>
+
   <string id="600">Zripaj Audio CD</string>
   <string id="601">Srednji</string>
   <string id="602">Standardni</string>
@@ -505,6 +515,7 @@
   <string id="608">Ne morem zripati CD-ja ali zapisa</string>
   <string id="609">CDDAR IP pot ni nastavljena v XboxMediaCenter.xml</string>
   <string id="610">Ripaj Audio posnetek</string>
+
   <string id="620">CD Ripanje</string>
   <string id="621">Enkoder</string>
   <string id="622">Kvaliteta</string>
@@ -538,16 +549,17 @@
   <string id="653">Posodobi knjinico</string>
   <string id="654">Prikaži debug informacije</string>
   <string id="655">Prebrskaj za Executable</string>
-  <string id="656">Prebrskaj za Playlistp</string>
+  <string id="656">Prebrskaj za Predvajalni seznam</string>
   <string id="657">Prebrskaj za mapo</string>
   <string id="658">Informacija o pesmi</string>
   <string id="659">Komentar:</string>
+  <string id="660">Ojaèanje glasnosti</string>
 
   <string id="700">Èišèenje knjižnice</string>
   <string id="701">Odstrani stare pesmi iz knjižnice</string>
   <string id="702">Ta povezava je že bila skenirana</string>
   <string id="705">Omrežje</string>
-  <string id="706">HTTP Proxy Host</string>
+  <string id="706">HTTP Proxy gostitelj</string>
   <string id="707">HTTP Proxy vrata</string>
   <string id="708">Uporabi HTTP Proxy</string>
   <string id="709">XLink Kai XNadimek</string>
@@ -561,8 +573,8 @@
   <string id="717">Roèno (Statièen)</string>
   <string id="718">Privzeto (Dashboard)</string>
   <string id="719">- IP Naslov</string>
-  <string id="720">- Maska podomrežja</string>
-  <string id="721">- Privzeti prehod</string>
+  <string id="720">- maska podomrežja</string>
+  <string id="721">- privzeti prehod</string>
   <string id="722">- DNS strežnik</string>
   <string id="723">Shrani in ponovno zaženi</string>
   <string id="724">Vnešen je bil napaèen naslov.Vrednosti morajo biti tipa AAA.BBB.CCC.DDD</string>
@@ -577,8 +589,8 @@
   <string id="733">Geslo Web Strežnika</string>
   <string id="734">Ni prehoda</string>
   <string id="735">Nabor znakov</string>
-  <string id="736">- Stil</string>
-  <string id="737">- Barva</string>
+  <string id="736">- stil</string>
+  <string id="737">- barva</string>
   <string id="738">Normalno</string>
   <string id="739">Krepko</string>
   <string id="740">Poševno</string>
@@ -612,7 +624,7 @@
   <string id="768">Reserved</string>
   <string id="769">Reserved</string>
   <string id="770">Napaka %i: skupna raba ni dostopna</string>
-  <string id="771">- Auto Fatx omejevalec</string>
+  <string id="771">- Samodejni Fatx omejevalec</string>
   <string id="772">Audio</string>
   <string id="773">Išèem</string>
   <string id="774">Mapa za predogled</string>
@@ -655,42 +667,51 @@
   <string id="1033">Prebrskaj za datoteko</string>
   <string id="1034">Podmenu</string>
   <string id="1035">Vkljuèi podmenu gumbe</string>
-  <string id="1036">Priljubkljene</string>
+  <string id="1036">Priljubljene</string>
+  <string id="1037">Video vstavki</string>
+  <string id="1038">Glasba vstavki</string>
+  <string id="1039">Slike vstavki</string>
+  <string id="1040">Nalagam mapo</string>
+  <string id="1041">Retrieved %i items</string>
+  <string id="1042">Retrieved %i of %i items</string>
+  <string id="1043">Programi vstavki</string>
+  <string id="1044">Nastavi slièico vstavku</string>
+  <string id="1045">Nastavitve vstavka</string>
 
-  <string id="1200">SMB klient</string>
+  <string id="1200">SMB odjemalec</string>
   <string id="1202">Delovna skupina</string>
   <string id="1203">Privzeto uporabniško ime</string>
   <string id="1204">Privzeto geslo</string>
 
-  <string id="1207">WINS-strežnik</string>
+  <string id="1207">WINS strežnik</string>
 
   <string id="1210">Odstrani</string>
   <string id="1211">Glasba</string>
   <string id="1212">Video</string>
   <string id="1213">Slike</string>
   <string id="1214">Datoteke</string>
-  <string id="1215">Glasba in Video</string>
-  <string id="1216">Glasba in Slike</string>
-  <string id="1217">Glasba in Datoteke</string>
-  <string id="1218">Video in Slike</string>
-  <string id="1219">Video in Datoteke</string>
-  <string id="1220">Slike in Datoteke</string>
-  <string id="1221">Glasba, Video in Slike</string>
-  <string id="1222">Glasba, Video, Slike in Datoteke</string>
+  <string id="1215">Glasba in video</string>
+  <string id="1216">Glasba in slike</string>
+  <string id="1217">Glasba in datoteke</string>
+  <string id="1218">Video in slike</string>
+  <string id="1219">Video in datoteke</string>
+  <string id="1220">Slike in datoteke</string>
+  <string id="1221">Glasba, video in slike</string>
+  <string id="1222">Glasba, video, slike in datoteke</string>
   <string id="1223">Izkljuèeno</string>
-  <string id="1226">Datoteke, Glasba in Video</string>
-  <string id="1227">Datoteke, Slike in Glasba</string>
-  <string id="1228">Datoteke, Slike in Video</string>
-  <string id="1229">Glasba in Programi</string>
-  <string id="1230">Video in Programi</string>
-  <string id="1231">Slike in Programi</string>
-  <string id="1232">Glasba, Video, Slike in Programi</string>
-  <string id="1233">Programi, Video in Glasba</string>
-  <string id="1234">Programi, Slike in Glasba</string>
-  <string id="1235">Programi, Slike in Video</string>
+  <string id="1226">Datoteke, glasba in video</string>
+  <string id="1227">Datoteke, slike in glasba</string>
+  <string id="1228">Datoteke, slike in video</string>
+  <string id="1229">Glasba in programi</string>
+  <string id="1230">Video in programi</string>
+  <string id="1231">Slike in programi</string>
+  <string id="1232">Glasba, video, slike in programi</string>
+  <string id="1233">Programi, video in glasba</string>
+  <string id="1234">Programi, slike in glasba</string>
+  <string id="1235">Programi, slike in Video</string>
 
-  <string id="1245">FTP Uporabniško Ime</string>
-  <string id="1246">FTP Uporabniško geslo</string>
+  <string id="1245">FTP uporabniško ime</string>
+  <string id="1246">FTP uporabniško geslo</string>
   <string id="1247">Uprabniško geslo je uspešno nastavljeno</string>
 
   <string id="1250">Xbox povezava</string>
@@ -720,9 +741,13 @@
   <string id="1411">z</string>
   <string id="1412">vetrovno</string>
   <string id="1413">drizzle</string>
+  <string id="1414">T-Storm</string>
+
+  <!-- strings through to 1450 reserved for weather translation -->
+
   <string id="2050">Èas delovanja:</string>
 
-  <string id="4501">Tip LCD zaslona:</string>
+  <string id="4501">Tip LCD zaslona</string>
 
   <string id="10000">Domov</string>
   <string id="10001">Programi</string>
@@ -749,13 +774,13 @@
   <string id="10022">Videi/Igralci</string>
   <string id="10023">Videi/Leta</string>
   <string id="10025">Videi/Naslovi</string>
-  <string id="10028">Videi/Playlista</string>
+  <string id="10028">Videi/Predvajalni seznam</string>
   <string id="10034">Nastavitve-&gt;Profili</string>
 
   <string id="10100">Da/Ne dialog</string>
   <string id="10101">Dialog napredka dialog</string>
 
-  <string id="10500">Glasba/Playlista</string>
+  <string id="10500">Glasba/Predvajalni seznam</string>
   <string id="10501">Glasba/Datoteke</string>
   <string id="10502">Glasba/Knjižnica</string>
   <string id="10503">Glasba/100 najboljših</string>
@@ -783,7 +808,7 @@
 
   <string id="12000">Izberi dialog</string>
   <string id="12001">Glasba/info.</string>
-  <string id="12002">V redu Dialog</string>
+  <string id="12002">Potrdi Dialog</string>
   <string id="12003">Videi/Info.</string>
   <string id="12004">Skripte/Info.</string>
   <string id="12005">Celozaslonski Video</string>
@@ -804,6 +829,7 @@
   <string id="12020">Vprašaj</string>
   <string id="12021">Zaèni na zaèetku</string>
   <string id="12022">Zaèni iz zadnje znane pozicije</string>
+  <string id="12023">Potrjujem obstojeèe trenerje...</string>
 
   <string id="12310">0</string>
   <string id="12311">1</string>
@@ -816,9 +842,8 @@
   <string id="12318">8</string>
   <string id="12319">9</string>
   <string id="12320">c</string>
-  <string id="12321">v redu</string>
+  <string id="12321">Potrdi</string>
   <string id="12322">*</string>
-  <string id="12324">XBMC Administratorska zašèita</string>
   <string id="12325">Zaklenjeno!Vnesi pravilno geslo...</string>
   <string id="12326">Vnesi geslo</string>
   <string id="12327">Vnesi administratorsko geslo</string>
@@ -854,10 +879,10 @@
   <string id="12376">Nastavi kot privzeto za vse filme</string>
   <string id="12377">To dejanje bo zbrisalo vse prejšnje posnete podatke</string>
   <string id="12378">Prikaži vsako sliko za</string>
-  <string id="12379">Uporabi PAN in pomanjšaj efekt</string>
-  <string id="12380">Pred. NTSC v PAL izrisu</string>
-  <string id="12381">Pred. PAL v NTSC izrisu</string>
-  <string id="12382">Pred. NTSC v PAL60</string>
+  <string id="12379">Uporabi PAN in ZOOM efekt</string>
+  <string id="12380">Predvajaj NTSC v PAL</string>
+  <string id="12381">Predvajaj PAL v NTSC</string>
+  <string id="12382">Predvajaj NTSC v PAL60</string>
   <string id="12383">12 urni èasovni prikaz</string>
   <string id="12384">24 urni èasovni prikaz</string>
   <string id="12385">Dan/Mesec</string>
@@ -876,7 +901,7 @@
 
   <string id="13000">Sistem</string>
   <string id="13001">Takojšnja ustavitev trdega diska</string>
-  <string id="13002">Samo Video</string>
+  <string id="13002">Samo video</string>
   <string id="13003">- Zakasnitev</string>
   <string id="13004">- Minimalen datoteèni èas</string>
   <string id="13005">Ugasni</string>
@@ -884,15 +909,19 @@
   <string id="13007">Uporabi svojo pot do MSDash</string>
 
   <string id="13100">Filter proti utripanju</string>
+  <string id="13105">Vertikalna sinhronizacija</string>
+  <string id="13106">Onemogoèeno</string>
+  <string id="13107">Vkljuèeno med predvajanjem videa</string>
+  <string id="13108">Vedno vkljuèeno</string>
 
   <string id="13150">HDD geslo:</string>
-  <string id="13151">HDD Temperatura:</string>
-  <string id="13152">DVD Model:</string>
-  <string id="13153">DVD Firmware:</string>
-  <string id="13154">HDD Model:</string>
-  <string id="13155">HDD Serijska:</string>
-  <string id="13156">HDD Firmware:</string>
-  <string id="13157">HDD Geslo:</string>
+  <string id="13151">HDD temperatura:</string>
+  <string id="13152">DVD model:</string>
+  <string id="13153">DVD frmware:</string>
+  <string id="13154">HDD model:</string>
+  <string id="13155">HDD serijska:</string>
+  <string id="13156">HDD firmware:</string>
+  <string id="13157">HDD geslo:</string>
   <string id="13158">HDD stanje :</string>
   <string id="13159">Maska podomrežja:</string>
   <string id="13160">Prehod:</string>
@@ -959,26 +988,26 @@
   <string id="13296">Xbox je povezan</string>
   <string id="13297">Xbox ni povezan.Preveri mrežne nastavitve.</string>
   <string id="13298">XBLIVE geslo:</string>
-  <string id="13299">Željena Temperatura</string>
+  <string id="13299">Željena temperatura</string>
   <string id="13300">Hitrost ventilatorja</string>
   <string id="13301">Samodejna kontrola temperature</string>
   <string id="13302">Roèna nastavitev hitrosti ventilatorja</string>
   <string id="13303">Izgled pisav</string>
   <string id="13304">Vkljuèi Flipping Bi-Directional Strings</string>
-  <string id="13305">Uporabi RSS Novice</string>
+  <string id="13305">Uporabi RSS novice</string>
   <string id="13306">Skrij ostale datoteke v mapi</string>
   <string id="13307">Naèin poimenovanja pesmi</string>
   <string id="13308">Želiš ponovno zagnati XBOX</string>
   <string id="13309">namesto samo XBMC?</string>
-  <string id="13310">Zoom Efekt</string>
-  <string id="13311">Efekt Lebdenja</string>
+  <string id="13310">Zoom efekt</string>
+  <string id="13311">Efekt lebdenja</string>
   <string id="13312">Odprava èrnih robov</string>
   <string id="13313">Ponovno zaženi</string>
-  <string id="13314">Crossfade</string>
-  <string id="13315">Regenerate Thumbnails</string>
-  <string id="13316">Recursive Thumbnails</string>
-  <string id="13317">View Slideshow</string>
-  <string id="13318">Recursive Slideshow</string>
+  <string id="13314">Navzkrižni prehod</string>
+  <string id="13315">Regeneriraj slike</string>
+  <string id="13316">Recurzivne slike</string>
+  <string id="13317">Poglej prezentacijo</string>
+  <string id="13318">Recurzivna prezentacija</string>
   <string id="13319">Nakljuèno</string>
   <string id="13320">Stereo</string>
   <string id="13321">Samo Levo</string>
@@ -999,7 +1028,7 @@
   <string id="13336">Tipka odstrani</string>
   <string id="13338">Sprednja LED</string>
   <string id="13339">Barva sprednje LED</string>
-  <string id="13340">Pusti kot je</string>
+  <string id="13340">Privzeto</string>
   <string id="13341">Zelena</string>
   <string id="13342">Oranžna</string>
   <string id="13343">Rdeèa</string>
@@ -1013,10 +1042,10 @@
   <string id="13351">Informacije o albumu</string>
   <string id="13352">Skeniraj vse v bazo</string>
   <string id="13353">Ustavi skeniranje</string>
-  <string id="13354">Metoda izrisa:</string>
-  <string id="13355">Nizko kvalitetno senèenje pik</string>
+  <string id="13354">Metoda izrisa</string>
+  <string id="13355">Nizko kvalitetno senèenje</string>
   <string id="13356">Strojni Overlay</string>
-  <string id="13357">Visoko kvalitetno senèenje pik</string>
+  <string id="13357">Visoko kvalitetno senèenje</string>
   <string id="13358">Predvajaj predmet</string>
   <string id="13359">Nastavi sliko izvajalca</string>
   <string id="13360">Generiraj slike</string>
@@ -1033,38 +1062,42 @@
   <string id="13384">Glasovna maska - Port 3</string>
   <string id="13385">Glasovna maska - Port 4</string>
   <string id="13386">Uporabi iskanje po èasu</string>
-  <string id="13387">Predloga za poimenovanje posnetkov Desno</string>
+  <string id="13387">Predloga za poimenovanje posnetkov</string>
   <string id="13388">Prednastavitve</string>
   <string id="13389">Ni prednastavitev za vizualizacijo</string>
   <string id="13390">Ni nastavitev za vizualizacijo</string>
   <string id="13391">Odpri/Zapri</string>
   <string id="13392">Uporabi vizualizacijo pri predvajanju glasbe</string>
-  <string id="13393">Preraèunaj Velikost</string>
+  <string id="13393">Preraèunaj velikost</string>
   <string id="13394">Preraèunaj velikost mape</string>
   <string id="13395">Video nastavitve</string>
   <string id="13396">Nastavitve: Audio in Podnapisi</string>
   <string id="13397">Vkljuèi Podnapise</string>
   <string id="13398">Oznake</string>
   <string id="13399">Pri sortiranju izpusti "The"</string>
-  <string id="13400">Navzkrižni fade albumskih posnetkov</string>
+  <string id="13400">Navzkrižni prehod albumskih posnetkov</string>
   <string id="13401">Prebrskaj za %s</string>
   <string id="13402">Prikaži pozicijo posnetka</string>
   <string id="13403">Izbriši Privzeto</string>
   <string id="13404">Ponovi</string>
   <string id="13405">Pridobi slièice</string>
+  <string id="13406">Informacije o sliki</string>
+  <string id="13407">%s Presets</string>
+  <string id="13408">(IMDb Rating)</string>
+  <string id="13409">Top 250:</string>
 
   <string id="14000">Združi</string>
   <string id="14001">Razdruži</string>
-  <string id="14003">Prenašam playlisto datokek...</string>
+  <string id="14003">Prenašam Predvajalni seznam...</string>
   <string id="14004">Prenašam Stream listo...</string>
   <string id="14005">Parsam stream listo....</string>
   <string id="14006">Prenos stream liste ni uspel</string>
   <string id="14007">Prenenos datoteke predvajalne liste ni uspel</string>
-  <string id="14008">Vkljuèi Kai Opozorila</string>
+  <string id="14008">Vkljuèi Kai opozorila</string>
   <string id="14009">Mapa za igre</string>
   <string id="14010">Samodejni prikaz slièic baziran na</string>
   <string id="14011">Vkljuèi samodejni preklop na slikovni pogled</string>
-  <string id="14012">- Uporabi Velike Ikone</string>
+  <string id="14012">- Uporabi velike ikone</string>
   <string id="14013">- Prekinjalo temeljeèe na</string>
   <string id="14014">- Odstotkih</string>
   <string id="14015">Ni datotek in vsaj ena slièica</string>
@@ -1079,7 +1112,7 @@
   <string id="14024">Vnesi najbližje veèje mesto</string>
   <string id="14025">Video/Audio/DVD/HDD medpomnilnik</string>
   <string id="14026">Video medpomnilnik - DVDRom</string>
-  <string id="14027">- Lokalno Omrežje</string>
+  <string id="14027">- Lokalno omrežje</string>
   <string id="14028">- Internet</string>
   <string id="14030">Audio medpomnilnik - DVDRom</string>
   <string id="14031">- Lokalno omrežje</string>
@@ -1087,7 +1120,7 @@
   <string id="14034">DVD medpomnilnik - DVDRom</string>
   <string id="14035">- Lokalno omrežje</string>
   <string id="14036">Strežniki</string>
-  <string id="14037">Izgled, poèutje</string>
+  <string id="14037">Izgled in poèutje</string>
   <string id="14038">Omrežne nastavitve spremenjene</string>
   <string id="14039">XBMC zahteva ponovni zagon, da spremeni vaše</string>
   <string id="14040">mrežne nastavitve. Ali želiš ponovno zagnati program?</string>
@@ -1113,9 +1146,9 @@
   <string id="14060">Nepoznan tip medpomnilnika - Internet</string>
   <string id="14061">Samodejno</string>
   <string id="14062">Vnesi uporabniško ime za</string>
-  <string id="14063">Datum in Èas</string>
-  <string id="14064">Nastavi Datum</string>
-  <string id="14065">Nastavi Èas</string>
+  <string id="14063">Datum in èas</string>
+  <string id="14064">Nastavi datum</string>
+  <string id="14065">Nastavi èas</string>
   <string id="14066">Vnesi èas v 24 urnem  HH:MM formatu</string>
   <string id="14067">Vnesi datum v DD/MM/YYYY formatu</string>
   <string id="14068">Vnesi IP naslov</string>
@@ -1150,12 +1183,12 @@
   <string id="15017">Pogled: Igre</string>
   <string id="15018">Potrdi</string>
   <string id="15019">Dodaj</string>
-  <string id="15020">Host</string>
+  <string id="15020">Gostitelj</string>
   <string id="15021">Arene</string>
   <string id="15022">Pogled: Arene</string>
   <string id="15023">Predvajaj</string>
   <string id="15024">Dodaj</string>
-  <string id="15025">Host</string>
+  <string id="15025">Gostitelj</string>
   <string id="15026">Zaèni pogovor</string>
   <string id="15027">Pogled: Pogovor</string>
   <string id="15028">Tipkovnica</string>
@@ -1188,7 +1221,7 @@
   <string id="15055">Izberi igro:</string>
   <string id="15056">Vnesi sporoèilo:</string>
   <string id="15057">Pošlji</string>
-  <string id="15058">Host</string>
+  <string id="15058">Gostitelj</string>
   <string id="15059">Povabilo sprejeto!</string>
   <string id="15060">Sporoèilo tu</string>
   <string id="15061">Povabljen si v igro %s.</string>
@@ -1201,14 +1234,14 @@
   <string id="15106">Zapomni si izbrano datoteko pri naslednji izbiri</string>
   <string id="15107">Buffering...</string>
   <string id="15108">Navigacijski zvoki</string>
-  <string id="15109">Privzeta preobleka</string>
+  <string id="15109">Privzeto</string>
   <string id="15111">Tema preobleke</string>
   <string id="15112">Privzeta tema</string>
 
-  <string id="15200">Zadnji.FM</string>
-  <string id="15201">Prenesi pesmi na zadnji .FM</string>
-  <string id="15202">Zadnji.FM Uporabniško ime</string>
-  <string id="15203">Zadnji .FM Geslo</string>
+  <string id="15200">Last.FM</string>
+  <string id="15201">Prenesi pesmi na Last.FM</string>
+  <string id="15202">Last.FM Uporabniško ime</string>
+  <string id="15203">Last.FM Geslo</string>
   <string id="15204">Povezava ni mogoèa: Spim.....</string>
   <string id="15205">Prosimo posodobite XBMC</string>
   <string id="15206">Nepravilna avtorizacija: Preveri uporabniško ime in geslo</string>
@@ -1221,9 +1254,10 @@
   <string id="15213">Predvajaj z uporabo...</string>
   <string id="15214">Uporabi gladko A/V Sinhronizacijo</string>
   <string id="15215">Skrij imena datotek v gumbkovnem pogledu</string>
+  <string id="15216">Predvajaj v Party naèinu</string>
 
-  <string id="15250">Prenesi zadnjo FM radio postajo na zadnjo FM</string>
-  <string id="15251">Povezujem se na zadnjo. FM...</string>
+  <string id="15250">Prenesi Last.FM radio postajo na Last.FM</string>
+  <string id="15251">Povezujem se na Last.FM...</string>
   <string id="15252">Izberi postajo...</string>
   <string id="15253">Izberi podobnega izvajalca...</string>
   <string id="15254">Poišèi podobne tage...</string>
@@ -1232,13 +1266,13 @@
   <string id="15257">Najbolši izvajalci za tag %name%</string>
   <string id="15258">Najbolši albumi za tag %name%</string>
   <string id="15259">Najboljše skladbe za tag %name%</string>
-  <string id="15260">Poslušaj tag %name% zadnje.fm radio</string>
+  <string id="15260">Poslušaj tag %name% Last.FM radio</string>
   <string id="15261">Podobni izvajalci kot %name%</string>
   <string id="15262">Najbolši %name% albumi</string>
   <string id="15263">Najbolši %name% zapisa</string>
   <string id="15264">Najbolši %name% tagi</string>
   <string id="15265">Najveèji privrženci %name%</string>
-  <string id="15266">Poslušaj %name% zadnji privrženèevi.fm radio</string>
+  <string id="15266">Poslušaj %name% privrženèev Last.FM radio</string>
   <string id="15267">Poslušaj %name% zadjnega podobnega izvajalca fm. radia</string>
   <string id="15268">Najbolši izvajalci za uporabnika %name%</string>
   <string id="15269">Najbolši albumi za uporabnika %name%</string>
@@ -1248,15 +1282,29 @@
   <string id="15273">Tedenska lestvica umetnikov za %name%</string>
   <string id="15274">Tedenska lestvica albumov za %name%</string>
   <string id="15275">Tedenska lestvica skladb za %name%</string>
-  <string id="15276">Poslušaj %name% zadnji sosedski .fm radio</string>
-  <string id="15277">Poslušaj %name% zadji personalni .fm. radio</string>
-  <string id="15278">Poslušaj %name% željen zadnji zapis .fm radio</string>
-  <string id="15279">Prenašam listo iz zadnjega .fm</string>
-  <string id="15280">Ne morem prenesti liste iz zadnjega.fm</string>
+  <string id="15276">Poslušaj %name% sosedski Last.FM radio</string>
+  <string id="15277">Poslušaj %name% osebni Last.FM radio</string>
+  <string id="15278">Poslušaj %name% željen zapis Last.FM radio</string>
+  <string id="15279">Prenašam listo iz Last.FM</string>
+  <string id="15280">Ne morem prenesti liste iz Last.FM</string>
   <string id="15281">Vnesi ime izvajalca za iskanje </string>
   <string id="15282">Vnesi tag ime za iskanje podobnih</string>
   <string id="15283">Zadnje poslušane skladbe %name%</string>
   <string id="15284">Poslušaj %name%'s priporoèila Last.FM radio</string>
+  <string id="15285">Top tags for user %name%</string>
+  <string id="15286">Poslušaj %name%-ov seznam Last.FM radio</string>
+  <string id="15287">Želiš dodati trenutno skladbo med priljubljene?</string>
+  <string id="15288">Želiš prepovedati trenutno skladbo</string>
+  <string id="15289">Dodano med priljubljene: '%s'.</string>
+  <string id="15290">Ni bilo mogoèe dodati '%s' med priljubljene.</string>
+  <string id="15291">Prepovedano: '%s'.</string>
+  <string id="15292">Ni bilo moè prepovedati '%s'.</string>
+  <string id="15293">Tracks recently loved by %name%</string>
+  <string id="15294">Tracks recently banned by %name%</string>
+  <string id="15295">Remove from loved tracks</string>
+  <string id="15296">Un-ban</string>
+  <string id="15297">Do you want to remove this track from your loved tracks?</string>
+  <string id="15298">Do you want to un-ban this track?</string>
 
   <string id="15300">Povezava ni bila najdena oz. je napaèna</string>
   <string id="15301">Povezava z strežnikom ni mogoèa</string>
@@ -1267,7 +1315,7 @@
   <string id="15311">Povezava:</string>
  
   <string id="16000">Generalno</string>
-  <string id="16001">Konfiguriraj Audio strojno opremo...</string>
+  <string id="16001">Nastavi audio strojno opremo</string>
   <string id="16002">CDDB lookup</string>
   <string id="16003">Predvajalnik</string>
   <string id="16004">Predvajaj iz DVD enote</string>
@@ -1298,6 +1346,7 @@
   <string id="16032">Ne morem inicializirati podatkovne baze</string>
   <string id="16033">Ne morem odpreti podatkovne baze</string>
   <string id="16034">Pesmi nisem mogel pridobiti iz baze</string>
+  <string id="16035">Party naèin predvajalni seznam</string>
 
   <string id="16100">Vsi posnetki</string>
   <string id="16101">Nepogledani</string>
@@ -1334,18 +1383,22 @@
   <string id="20012">Video predvajalna lista</string>
   <string id="20013">Želiš zagnati igro?</string>
   <string id="20014">Razporedi: predvajalna lista</string>
-  <string id="20015">IMDb Thumb</string>
-  <string id="20016">Prisotni Thumb</string>
-  <string id="20017">Lokalni Thumb</string>
-  <string id="20018">Brez Thumb</string>
-  <string id="20019">Izberi Thumbnail</string>
+  <string id="20015">IMDb slika</string>
+  <string id="20016">Prisotna slika</string>
+  <string id="20017">Lokalna slika</string>
+  <string id="20018">Brez slike</string>
+  <string id="20019">Izberi slièico</string>
   <string id="20020">Naenkrat ni moè uporabljati KAI in Trainerja</string>
   <string id="20021">Iberi katerega želiš uporabiti</string>
+  <!-- string id 20022 will always be set to an empty string (LocalizeStrings.cpp)-->
   <string id="20022"></string>
   <string id="20023">Konflikt</string>
   <string id="20024">Novo skeniranje</string>
   <string id="20025">Skeniraj vse</string>
   <string id="20026">Regija</string>
+
+  <!-- string id's 20027 thru 20034 are reserved for temperaturestrings  (LocalizeStrings.cpp)-->
+
   <string id="20038">Zakleni glasbeni del</string>
   <string id="20039">Zakleni video del</string>
   <string id="20040">Zakleni slikovni del</string>
@@ -1357,15 +1410,15 @@
   <string id="20046">Izstopi iz Master opcije</string>
   <string id="20047">Kreiraj profil '%s' ?</string>
   <string id="20048">Zaženi z svežimi nastavitvami</string>
-  <string id="20049">Najbolši možen</string>
+  <string id="20049">Najbolša možna</string>
   <string id="20050">Samodejno preklopi med 16x9 in 4x3</string>
   <string id="20051">Obravnavaj razdeljene datoteke kot eno datoteko</string>
   <string id="20052">Pozor</string>
   <string id="20053">Zapustil Master opcijo</string>
   <string id="20054">Vstopil v Master opcijo</string>
-  <string id="20055">Allmusic.com Thumb</string>
-  <string id="20056">Izvorni Thumbnail</string>
-  <string id="20057">Odstrani Thumbnail</string>
+  <string id="20055">Allmusic.com slika</string>
+  <string id="20056">Izvorna slièica</string>
+  <string id="20057">Odstrani slièico</string>
   <string id="20058">Dodaj profil...</string>
   <string id="20059">Info poizvedba za vse albume</string>
   <string id="20060">Medijske informacije</string>
@@ -1390,10 +1443,10 @@
   <string id="20079">Vkljuèi animacije</string>
   <string id="20080">Izkljuèi RSS novice med predvajanjem glasbe</string>
   <string id="20081">Vkljuèi gumb za oštevilèenje</string>
-  <string id="20082">Prikaži XLink Kai info.</string>
-  <string id="20083">Prikaži glasbene info.</string>
-  <string id="20084">Prikaži vremenske info.</string>
-  <string id="20085">Prikaži sistemske info.</string>
+  <string id="20082">Prikaži XLink Kai informacije</string>
+  <string id="20083">Prikaži glasbene informacije</string>
+  <string id="20084">Prikaži vremenske informacije</string>
+  <string id="20085">Prikaži sistemske informacije</string>
   <string id="20086">Prikaži prosti del na trdem disku C: E: F:</string>
   <string id="20087">Prikaži prosti del na trdem disku E: F: G:</string>
   <string id="20088">Vremenske informacije</string>
@@ -1402,11 +1455,11 @@
   <string id="20091">Zaklepna koda</string>
   <string id="20092">Naloži profil</string>
   <string id="20093">Ime profila</string>
-  <string id="20094">Medijski podatki</string>
+  <string id="20094">Podatki o mediju</string>
   <string id="20095">Vnesi zaklepno kodo za profil</string>
   <string id="20096">Prijavno okno</string>
-  <string id="20097">Preiskujem album info.</string>
-  <string id="20098">Preiskujem info. za album</string>
+  <string id="20097">Preiskujem informacije o albumu</string>
+  <string id="20098">Preiskujem informacije za album</string>
   <string id="20099">Ne morem ripati CD-ja ali zapisa med predvajanjem Cd-ja</string>
   <string id="20100">Master zaklepna koda in nastavitve</string> 
   <string id="20101">Vnos Master kode, vedno vkljuèi Master naèin</string>
@@ -1418,7 +1471,7 @@
   <string id="20107">Loèeno (zakljenjeno)</string>
   <string id="20108">Root</string>
   <string id="20109">Poveèava preobleke</string>
-  <string id="20110">UPnP klijent</string>
+  <string id="20110">UPnP odjemalec</string>
   <string id="20111">Samodejni zagon</string>
   <string id="20112">Zadnji vpis: %s</string>
   <string id="20113">Nikoli vpisan</string>
@@ -1468,9 +1521,9 @@
   <string id="20158">Mrežne informacije</string>
   <string id="20159">Video informacije</string>
   <string id="20160">Info. strojne opreme</string>
-  <string id="20161">Skupaj: %s MB, uporabljeno: %s MB, na voljo: %s MB</string>
-  <string id="20162">Celoten HDD uporabljen: %u%%  Na voljo: %u%%</string>
-  <string id="20163">%s: %s MB od %s MB na voljo</string>
+  <string id="20161">Skupaj</string>
+  <string id="20162">Uporabljeno</string>
+  <string id="20163">od</string>
   <string id="20164">Zaklepanje ni podprto</string>
   <string id="20165">Ni zaklenjeno</string>
   <string id="20166">Zaklenjeno</string>
@@ -1483,7 +1536,7 @@
   <string id="20173">FTP Strežnik</string>
   <string id="20174">Skupna raba iTunes glasbe (DAAP)</string>
   <string id="20175">UPnP Strežnik</string>
-  <string id="20176">Prikaži video info.</string>
+  <string id="20176">Prikaži video informacije</string>
   <string id="20177">Uporabi</string>
   <string id="20178">Shift</string>
   <string id="20179">Caps Lock</string>
@@ -1492,28 +1545,34 @@
   <string id="20182">Presledek</string>
   <string id="20183">Osveži preobleko</string>
   <string id="20184">Rotiraj z uporabo EXIF informacije</string>
-  <string id="20185">Odèitavam vrednosti strojne opreme</string>
+  <string id="20185"></string>
   <string id="20186">Prosim poèakaj</string>
-  <string id="20187">Branje vrednosti iz EEPROM-a</string>
-  <string id="20188">Branje iz EEPROM-a konèano</string>
+  <string id="20187">Shranjujem EEPROM</string>
+  <string id="20188">Shranjujem BIOS</string>
+  <string id="20189"></string>
+  <string id="20190">Po meri</string>
 
-  <string id="20189">Odèitavanje opravljeno</string>
-  <string id="20190">Odèitavanje info.o trdem disku</string>
-  <string id="20191">Odèitavanje HDD vrednosti</string>
-  <string id="20192">Odèitavanje HDD gesla</string>
-  <string id="20193">Odèitavanje HDD temperature</string>
-  <string id="20194">Odèitavanje DVD-ROM info.</string>
-  <string id="20195">Odèitavanje Modela/Firmwara</string>
-  <string id="20196">Odèitavanje mrežnih nastavitev</string>
-  <string id="20197">Odèitavanje MAC naslova</string>
-  <string id="20198">Odèitavnaje online info.</string>
-  <string id="20199">Odèitavanje Xbox Verzije, Serijske in CPE</string>
-  <string id="20300">Odèitavanje Xbox strojne opreme</string>
-  <string id="20301">Zaznava Modèipa</string>
-  <string id="20302">Zaznava BIOSa</string>
-  <string id="20303">Zazanava CPE hitrosti</string>
-  <string id="20304">Zaznava datuma proizvodnje</string>
-  <string id="20305">Zaznava priklopljenih naprav</string>
+  <!-- string id's 20200 thru 20211 are reserved for speedstrings (LocalizeStrings.cpp)-->
+  
+  <string id="20250">Party on! (videos)</string>
+  <string id="20251">Mixing drinks (videos)</string>
+  <string id="20252">Filling glasses (videos)</string>
+
+  <string id="20191"></string>
+  <string id="20192"></string>
+  <string id="20193"></string>
+  <string id="20194"></string>
+  <string id="20195"></string>
+  <string id="20196"></string>
+  <string id="20197"></string>
+  <string id="20198"></string>
+  <string id="20199"></string>
+  <string id="20300"></string>
+  <string id="20301"></string>
+  <string id="20302"></string>
+  <string id="20303"></string>
+  <string id="20304"></string>
+  <string id="20305"></string>
 
   <string id="20306">Neznano. Prosim dodaj MD5 iz xbmc.log v BiosIDs.ini.</string>
   <string id="20307">Sekundarni DNS</string>
@@ -1537,7 +1596,7 @@
   <string id="20325">Ponastavitev kalibracije</string>
   <string id="20326">To bo ponastavilo kalibracijske vrednosti za %s</string>
   <string id="20327">na privzete vrednosti.</string>
-  <string id="20328">Prebrskaj za destinacijo</string>
+  <string id="20328">Prebrskaj za ciljem</string>
   <string id="20329"></string>
   <string id="20330">Uporabi imena map za Lookups</string>
   <string id="20331">Datoteka</string>
@@ -1554,7 +1613,7 @@
   <string id="20342">Filmi</string>
   <string id="20343">TV Shows</string>
   <string id="20344">Ta mapa vsebuje</string>
-  <string id="20345">Run Automated Scan</string>
+  <string id="20345">Zaženi avtomatizirano iskanje</string>
   <string id="20346">Scan Recursively</string>
   <string id="20347">as</string>
   <string id="20348">Directors</string>
@@ -1589,12 +1648,42 @@
   <string id="20377">Osveži informacije o TV Show</string>
   <string id="20378">Osfeži informacije za vse epizode?</string>
   <string id="20379">Mapa vsebuje en TV Show</string>
-  <string id="20380">Exclude folder from scans</string>
+  <string id="20380">Izkljuèi mapo iz iskanja</string>
+  <string id="20381">Specials</string>
+  <string id="20382">Samodejno izberi slièico sezone</string>
+  <string id="20383">Mapa vsebuje samostojene Video</string>
+  <string id="20384">Povezava do TV Show</string>
+  <string id="20385">Odstrani povezavo do TV Show</string>
+  <string id="20386">Nazadnje dodani filmi</string>
+  <string id="20387">Nazadnje dodane epizode</string>
+  <string id="20388">Studios</string>
+  <string id="20389">Videospoti</string>
+  <string id="20390">Nazadnje dodani videospoti</string>
+  <string id="20391">Videospot</string>
+  <string id="20392">Odstrani Videospot iz knjižnice</string>
+  <string id="20393">Informacije o videospotu</string>
+  <string id="20394">Nalagam informacije o videospotu</string>
+  <string id="20395">Mixed</string>
+  <string id="20396">Pojdi na albume po izvajalcu</string>
+  <string id="20397">Pojdi na album Album</string>
+  <string id="20398">Predvajaj pesem</string>
+  <string id="20399">Pojdi na videospote iz albuma</string>
+  <string id="20400">Pojdi na videospote po izvajalcu</string>
+  <string id="20401">Predvajaj videospote</string>
+  <string id="20402">Samodejno poberi slièico igralca</string>
+  <string id="20403">Nastavi slièico igralca</string>
+  <string id="20404">Studio:</string>
+  <string id="20405">Odstrani zaznamek epizode</string>
+  <string id="20406">Ustvari zaznamek epizode</string>
+  <string id="20407">Scraper Settings</string>
+  <string id="20408">Prenašam informacije o videospotu</string>
+  <string id="20409">Prenašam TV-Show informacije</string>
+  <string id="20410">Prikolica</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Prikaži skrite datoteke in mape</string>
   
-  <string id="21331">TuxBox klient</string>
+  <string id="21331">TuxBox odjemalec</string>
   <string id="21332">WARNING: Target TuxBox device is in Recording-Mode!</string>
   <string id="21333">The Stream will be Stopped!</string>
   <string id="21334">Zap to Channel: %s Failed!</string>
@@ -1603,18 +1692,18 @@
   <string id="21337">TuxBox Device</string>
   <!-- up to 21355 is reserved for the TuxBox Client!! !-->
   
-  <string id="21356">UPnP Music</string>
+  <string id="21356">UPnP Glasba</string>
   <string id="21357">UPnP Video</string>
   <string id="21358">UPnP Pictures</string>
-  <string id="21359">Dodaj Media Share...</string>
-  <string id="21360">Vkljuèi UPnP Server</string>
-  <string id="21361">Manage UPnP Music Shares</string>
-  <string id="21362">Manage UPnP Video Shares</string>
-  <string id="21363">Manage UPnP Picture Shares</string>
-  <string id="21364">Uredi Media Share</string>
-  <string id="21365">Odstrani Media Share</string>  
+  <string id="21359">Dodaj Media skupno rabo...</string>
+  <string id="21360">Vkljuèi UPnP strežnik</string>
+  <string id="21361">Urejaj UPnP skupno rabo glasbe</string>
+  <string id="21362">Urejaj UPnP Video skupno rabo</string>
+  <string id="21363">Urejaj UPnP skupno rabo Slik</string>
+  <string id="21364">Uredi Media skupno rabo</string>
+  <string id="21365">Odstrani Media skupno rabo</string>  
   <string id="21366">Mapa s podnapisi</string>
-  <string id="21367">Movie &amp; Alternate Subtitle Directory</string>
+  <string id="21367">Movie &amp; Dodatna mapa s podnapisi</string>
   
   <string id="21370">Vkljuèi navigacijske zvoke med predvajanjem vsebine</string>  
   <string id="21371">Slièice</string>
@@ -1627,16 +1716,15 @@
   <string id="21378">Omogoèi 480p</string>
   <string id="21379">Omogoèi 720p</string>
   <string id="21380">Omogoèi 1080i</string>
-  <string id="21381">Vnesi ime za novo Playlisto</string>
-  <string id="21382">Onemogoèi dodaj izvor gumbe v seznamih datotek</string>
+  <string id="21381">Vnesi ime za Predvajalni seznam</string>
+  <string id="21382">Onemogoèi ikono "Dodaj izvor" v seznamih datotek</string>
   <string id="21383">Vkljuèi drsnike</string>
-  <string id="21384">Make watched filtering a toggle in video library</string>
+  <string id="21384">Uporabi filter "Pogledani" v video knjižnici</string>
   <string id="21385">Odpri</string>
-  
   <string id="21386">Acoustic Management Level</string>
   <string id="21387">Hitro</string>
   <string id="21388">Tiho</string>
-  
+  <string id="21389">Omogoèi ozadja po meri</string> 
   <string id="21390">Power Management Level</string>
   <string id="21391">High Power</string>
   <string id="21392">Low Power</string>
@@ -1644,43 +1732,110 @@
   <string id="21394">Low Standby</string>
   <string id="21395">Unable to cache files bigger than 4 gb</string>
   <string id="21396">Chapter</string>
-
   <string id="21397">Visoko kvalitetno senèenje V2</string>	
-  
   <string id="21398">Omogoèi predvajalni seznam ob zagonu</string>
-
+  <string id="21399">Uporabi TWEEN animacije</string>
   <string id="21400">vsebuje</string>
   <string id="21401">ne vsebuje</string>
   <string id="21402">je</string>
   <string id="21403">ni</string>
-  <string id="21404">starts with</string>
-  <string id="21405">ends with</string>
-  <string id="21406">greater than</string>
-  <string id="21407">less than</string>
-  <string id="21408">after</string>
-  <string id="21409">before</string>
-  <string id="21410">in the last</string>
-  <string id="21411">not in the last</string>
+  <string id="21404">priène z</string>
+  <string id="21405">konèa z</string>
+  <string id="21406">veèje kot</string>
+  <string id="21407">manj kot</string>
+  <string id="21408">po</string>
+  <string id="21409">pred</string>
+  <string id="21410">v zadnjih</string>
+  <string id="21411">ne v zadnjih</string>
 
-  <string id="21420">Value to match</string>
-  <string id="21421">Smart Playlist Rule</string>
+  <string id="21420">Vrednost ustrezanja</string>
+  <string id="21421">Novo pravilo pametnega predvajalnega seznama</string>
   <string id="21422">Match songs where</string>
-  <string id="21423">New Rule...</string>
-  <string id="21424">Songs must match</string>
-  <string id="21425">all of the rules</string>
-  <string id="21426">one or more of the rules</string>
-  <string id="21427">Limit to</string>
-  <string id="21428">No Limit</string>
-  <string id="21429">Order by</string>
-  <string id="21430">ascending</string>
-  <string id="21431">descending</string>
-  <string id="21432">Edit Smart Playlist</string>
-  <string id="21433">Name of the playlist</string>
-  <string id="21434">Find songs matching</string>
-  <string id="21435">Edit</string>
-  <string id="21436">%i songs</string>
-  <string id="21437">New Smart Playlist...</string>
+  <string id="21423">Novo pravilo...</string>
+  <string id="21424">Pesem mora ustrezati</string>
+  <string id="21425">vsa pravila</string>
+  <string id="21426">eno ali veè pravil</string>
+  <string id="21427">Omeji na</string>
+  <string id="21428">Brez omejitve</string>
+  <string id="21429">Urejeno po</string>
+  <string id="21430">Narašèajoèe</string>
+  <string id="21431">padajoèe</string>
+  <string id="21432">Uredi pameten predvajalni seznam</string>
+  <string id="21433">Ime predvajalnega sezmama</string>
+  <string id="21434">Najdi pesmi z ujemanjem</string>
+  <string id="21435">Uredi</string>
+  <string id="21436">%i pesmi</string>
+  <string id="21437">Nov pameten predvajalni seznam...</string>
+  <string id="21438">%c pogon</string>
+  <string id="21439">Uredo Party naèin pravila</string>
 
-  <string id="29999">Filter proti utripanju - Samodejni popravek</string>
+  <string id="21800">Ime datoteke</string>
+  <string id="21801">Pot datoteke</string>
+  <string id="21802">Velikost datoteke</string>
+  <string id="21803">Èas/datum datoteke</string>
+  <string id="21804">Slide Index</string>
+  <string id="21805">Resolucija</string>
+  <string id="21806">Komentar</string>
+  <string id="21807">Barvno/ÈB</string>
+  <string id="21808">Jpeg Process</string>
 
+  <string id="21820">Datum/èas</string>
+  <string id="21821">Opis</string>
+  <string id="21822">Camera Make</string>
+  <string id="21823">Camera Model</string>
+  <string id="21824">Exif Comment</string>
+  <string id="21825">Firmware</string>
+  <string id="21826">Aperture</string>
+  <string id="21827">Focal Length</string>
+  <string id="21828">Focus Distance</string>
+  <string id="21829">Exposure</string>
+  <string id="21830">Exposure Time</string>
+  <string id="21831">Exposure Bias</string>
+  <string id="21832">Exposure Mode</string>
+  <string id="21833">Flash Used</string>
+  <string id="21834">Whitebalance</string>
+  <string id="21835">Light Source</string>
+  <string id="21836">Metering Mode</string>
+  <string id="21837">ISO</string>
+  <string id="21838">Digital Zoom</string>
+  <string id="21839">CCD Width</string>
+  <string id="21840">GPS Latitude</string>
+  <string id="21841">GPS Longitude</string>
+  <string id="21842">GPS Altitude</string>
+  <string id="21843">Orientation</string>
+
+  <string id="21860">Supplemental Categories</string>
+  <string id="21861">Keywords</string>
+  <string id="21862">Caption</string>
+  <string id="21863">Author</string>
+  <string id="21864">Headline</string>
+  <string id="21865">Special Instructions</string>
+  <string id="21866">Category</string>
+  <string id="21867">Byline</string>
+  <string id="21868">Byline Title</string>
+  <string id="21869">Credit</string>
+  <string id="21870">Source</string>
+  <string id="21871">Copyright Notice</string>
+  <string id="21872">Object Name</string>
+  <string id="21873">City</string>
+  <string id="21874">State</string>
+  <string id="21875">Country</string>
+  <string id="21876">Original Tx Reference</string>
+  <string id="21877">Date Created</string>
+  <string id="21878">Copyright Flag</string>
+  <string id="21879">Country Code</string>
+  <string id="21880">Reference Service</string>
+  <string id="21881">Vkljuèi UPnP Renderer</string>
+  <string id="21882">Poskusi preskoèiti intro pred DVD Menu-jem</string>
+  <string id="21883">Ripped Audio CDs</string>
+ 
+  <!-- strings 21900 thru 21999 reserved for slideshow info -->
+
+  <string id="22000">Posodobi knjižnico ob zagonu</string>
+  <string id="22001">Vedno posodabljaj knjižnico v ozadju</string>
+
+  <string id="29999">Uveljavi nastavitve filtra proti utripanju za igre</string>
+
+  <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
+  <!-- strings 31000 thru 31999 reserved for skins -->
 </strings>
