@@ -13,8 +13,8 @@ class CGUIList
 {
 public:
   typedef bool (*GUILISTITEMCOMPARISONFUNC) (CGUIItem* pObject1, CGUIItem* pObject2);
-  typedef vector<CGUIItem*> GUILISTITEMS;
-  typedef vector<CGUIItem*> ::iterator GUILISTITERATOR;
+  typedef std::vector<CGUIItem*> GUILISTITEMS;
+  typedef std::vector<CGUIItem*> ::iterator GUILISTITERATOR;
 
   CGUIList();
   virtual ~CGUIList(void);

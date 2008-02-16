@@ -5,6 +5,7 @@
 #include "../Util.h"
 #include "../MusicDatabase.h"
 
+using namespace MUSIC_INFO;
 using namespace DIRECTORY;
 
 #define AUDIOSCROBBLER_BASE_URL      "http://ws.audioscrobbler.com/1.0/"

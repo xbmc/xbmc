@@ -24,6 +24,7 @@
 #include "../../musicInfoTagLoaderFactory.h"
 #include "../../MusicDatabase.h"
 
+using namespace std;
 using namespace DIRECTORY;
 using namespace PLAYLIST;
 

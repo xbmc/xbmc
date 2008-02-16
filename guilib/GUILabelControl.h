@@ -38,7 +38,7 @@ private:
   };
 
   CStdString m_fallback;
-  vector<CInfoPortion> m_info;
+  std::vector<CInfoPortion> m_info;
 };
 
 /*!
@@ -56,7 +56,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
 
   const CLabelInfo& GetLabelInfo() const { return m_label; };
-  void SetLabel(const string &strLabel);
+  void SetLabel(const std::string &strLabel);
   void ShowCursor(bool bShow = true);
   void SetCursorPos(int iPos);
   int GetCursorPos() const { return m_iCursorPos;};

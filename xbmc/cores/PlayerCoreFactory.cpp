@@ -17,6 +17,8 @@
 #include "../FileSystem/FileCurl.h"
 #include "../utils/HttpHeader.h"
 
+using namespace AUTOPTR;
+
 CPlayerCoreFactory::CPlayerCoreFactory()
 {}
 CPlayerCoreFactory::~CPlayerCoreFactory()

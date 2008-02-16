@@ -9,6 +9,8 @@
 #include "../xbmc/utils/CharsetConverter.h"
 #include "../xbmc/FileItem.h"
 
+using namespace std;
+
 CGUIListItemLayout::CListBase::CListBase()
 {
 }

@@ -38,7 +38,7 @@ public:
   void SetFocusedItem(unsigned int item);
 
   // overrides to allow all focus anims to translate down to the focus image
-  virtual void SetAnimations(const vector<CAnimation> &animations);
+  virtual void SetAnimations(const std::vector<CAnimation> &animations);
   virtual void SetFocus(bool focus);
 protected:
   void AddString(const CStdString &text, bool selectable, const CStdString &clickAction = "");
@@ -57,7 +57,7 @@ protected:
     bool m_selectable;
     CStdString m_clickAction;
   };
-  vector<CSelectableString> m_items;
+  std::vector<CSelectableString> m_items;
 
   CLabelInfo m_label;
   CGUIInfoLabel  m_info;
@@ -74,6 +74,6 @@ protected:
   // buttons
   CGUIButtonControl m_button;
   unsigned int m_selectedItem;
-  vector<CGUIButtonControl> m_buttons;
+  std::vector<CGUIButtonControl> m_buttons;
 };
 

@@ -102,7 +102,7 @@ public:
     @retval 1   This tripped song submission, Scrobbler is now connecting.
     @retval 2   The submission was cached.
   */
-  int AddSong(const CMusicInfoTag& tag);
+  int AddSong(const MUSIC_INFO::CMusicInfoTag& tag);
 
   /**
     Set the user's password if it's changed since the constructor.

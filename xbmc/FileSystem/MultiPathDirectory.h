@@ -15,12 +15,12 @@ public:
 
   static CStdString GetFirstPath(const CStdString &strPath);
   static bool SupportsFileOperations(const CStdString &strPath);
-  static bool GetPaths(const CStdString& strPath, vector<CStdString>& vecPaths);
-  static CStdString ConstructMultiPath(const vector<CStdString> &vecPaths);
+  static bool GetPaths(const CStdString& strPath, std::vector<CStdString>& vecPaths);
+  static CStdString ConstructMultiPath(const std::vector<CStdString> &vecPaths);
 
 private:
   void MergeItems(CFileItemList &items);
   static void AddToMultiPath(CStdString& strMultiPath, const CStdString& strPath);
-  CStdString ConstructMultiPath(const CFileItemList& items, const vector<int> &stack);
+  CStdString ConstructMultiPath(const CFileItemList& items, const std::vector<int> &stack);
 };
 }

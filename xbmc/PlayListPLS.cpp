@@ -25,6 +25,7 @@
 #include "Util.h"
 #include "utils/HTTP.h"
 
+using namespace std;
 using namespace XFILE;
 using namespace PLAYLIST;
 

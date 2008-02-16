@@ -14,6 +14,8 @@
 #include "StringUtils.h"
 #include <math.h>
 
+using namespace std;
+
 /* empty string for use in returns by ref */
 const CStdString StringUtils::EmptyString = "";
 

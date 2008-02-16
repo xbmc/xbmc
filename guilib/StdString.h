@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-using namespace std;
 #ifdef _XBOX
 #include <xtl.h>
 #include <malloc.h>

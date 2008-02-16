@@ -28,6 +28,7 @@
 #include "Platinum.h"
 #include "PltSyncMediaBrowser.h"
 
+using namespace MUSIC_INFO;
 using namespace DIRECTORY;
 using namespace XFILE;
 

@@ -29,7 +29,7 @@ public:
   SETTING_TYPE type;
   char *name;
   int  current;
-  vector<const char *> entry;
+  std::vector<const char *> entry;
 };
 
 struct Visualisation
@@ -42,7 +42,7 @@ public:
   void (__cdecl* Stop)();
   void (__cdecl* GetInfo)(VIS_INFO *info);
   bool (__cdecl* OnAction)(long flags, void *param);
-  void (__cdecl *GetSettings)(vector<VisSetting> **vecSettings);
+  void (__cdecl *GetSettings)(std::vector<VisSetting> **vecSettings);
   void (__cdecl *UpdateSetting)(int num);
   void (__cdecl *GetPresets)(char ***pPresets, int *currentPreset, int *numPresets, bool *locked);
 } ;

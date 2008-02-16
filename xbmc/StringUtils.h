@@ -15,8 +15,6 @@
 #include "../guilib/StdString.h"
 #include <vector>
 
-using namespace std;
-
 typedef std::vector<CStdString> CStdStringArray;
 
 enum TIME_FORMAT { TIME_FORMAT_GUESS = 0,

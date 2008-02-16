@@ -8,6 +8,7 @@
 #include "../FileSystem/MemoryUnits/Fat32FileSystem.h"
 #include "../Application.h"
 
+using namespace std;
 using namespace XFILE;
 
 // Undocumented stuff

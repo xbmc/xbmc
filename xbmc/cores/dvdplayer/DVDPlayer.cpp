@@ -17,6 +17,8 @@
 #include "utils/GUIInfoManager.h"
 #include "DVDPerformanceCounter.h"
 
+using namespace std;
+
 void CSelectionStreams::Clear(StreamType type, StreamSource source)
 {
   CSingleLock lock(m_section);

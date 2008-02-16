@@ -48,29 +48,29 @@ public:
     inline bool GetDeinterlace() { return m_bDeinterlace; };
     inline void SetDeinterlace(bool mDeint) { m_bDeinterlace = mDeint; };
       
-    const string& GetSubtitleCharset() { return m_subcp; };
-    void SetSubtitleCharset(const string& subcp) { m_subcp = subcp; };
+    const std::string& GetSubtitleCharset() { return m_subcp; };
+    void SetSubtitleCharset(const std::string& subcp) { m_subcp = subcp; };
       
-    const string GetChannelMapping() const;
-    void SetChannelMapping(const string& strMapping);
+    const std::string GetChannelMapping() const;
+    void SetChannelMapping(const std::string& strMapping);
     void SetSpeed(float fSpeed);
     float GetSpeed() const;
     void SetFPS(float fFPS);
     float GetFPS() const;
     void GetOptions(int& argc, char* argv[]);
-    void SetDVDDevice(const string & strDevice);
-    void SetFlipBiDiCharset(const string& strCharset);
-    void SetRawAudioFormat(const string& strHexRawAudioFormat);
+    void SetDVDDevice(const std::string & strDevice);
+    void SetFlipBiDiCharset(const std::string& strCharset);
+    void SetRawAudioFormat(const std::string& strHexRawAudioFormat);
 
     void SetAutoSync(int iAutoSync);
 
-    void SetEdl(const string& strEdl);
+    void SetEdl(const std::string& strEdl);
 
-    void SetAudioOutput(const string& output) { m_videooutput = output; }
-    void SetVideoOutput(const string& output) { m_audiooutput = output; }
-    void SetAudioCodec(const string& codec) { m_videocodec = codec; }
-    void SetVideoCodec(const string& codec) { m_audiocodec = codec; }
-    void SetDemuxer(const string& demuxer) { m_demuxer = demuxer; }
+    void SetAudioOutput(const std::string& output) { m_videooutput = output; }
+    void SetVideoOutput(const std::string& output) { m_audiooutput = output; }
+    void SetAudioCodec(const std::string& codec) { m_videocodec = codec; }
+    void SetVideoCodec(const std::string& codec) { m_audiocodec = codec; }
+    void SetDemuxer(const std::string& demuxer) { m_demuxer = demuxer; }
     void SetSyncSpeed(const float synccomp) { m_synccomp = synccomp; }
     void SetFullscreen(bool fullscreen) { m_fullscreen = fullscreen; }
 
@@ -92,20 +92,20 @@ public:
     bool m_bNonInterleaved;
     bool m_bForceIndex;
     bool m_bLimitedHWAC3;
-    string m_videooutput;
-    string m_audiooutput;
-    string m_videocodec;
-    string m_audiocodec;
-    string m_demuxer;
+    std::string m_videooutput;
+    std::string m_audiooutput;
+    std::string m_videocodec;
+    std::string m_audiocodec;
+    std::string m_demuxer;
     bool m_bDisableAO;
-    string m_subcp;
-    string m_strEdl;
-    string m_strChannelMapping;
-    string m_strDvdDevice;
-    string m_strFlipBiDiCharset;
-    string m_strHexRawAudioFormat;
+    std::string m_subcp;
+    std::string m_strEdl;
+    std::string m_strChannelMapping;
+    std::string m_strDvdDevice;
+    std::string m_strFlipBiDiCharset;
+    std::string m_strHexRawAudioFormat;
     float m_synccomp;
-    vector<string> m_vecOptions;
+    std::vector<std::string> m_vecOptions;
     bool m_fullscreen;
   };
   CMPlayer(IPlayerCallback& callback);

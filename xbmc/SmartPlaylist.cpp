@@ -31,6 +31,7 @@
 #include "LocalizeStrings.h"
 #include "Util.h"
 
+using namespace std;
 using namespace DIRECTORY;
 
 typedef struct

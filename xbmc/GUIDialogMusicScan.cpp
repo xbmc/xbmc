@@ -25,6 +25,7 @@
 #include "Application.h"
 #include "Util.h"
 
+using namespace MUSIC_INFO;
 
 #define CONTROL_LABELSTATUS     401
 #define CONTROL_LABELDIRECTORY  402

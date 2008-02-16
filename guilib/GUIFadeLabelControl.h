@@ -26,12 +26,12 @@ public:
   virtual bool CanFocus() const;
   virtual bool OnMessage(CGUIMessage& message);
 
-  void SetInfo(const vector<CGUIInfoLabel> &vecInfo);
+  void SetInfo(const std::vector<CGUIInfoLabel> &vecInfo);
 
 protected:
-  void AddLabel(const string &label);
+  void AddLabel(const std::string &label);
 
-  vector< CGUIInfoLabel > m_infoLabels;
+  std::vector< CGUIInfoLabel > m_infoLabels;
   unsigned int m_currentLabel;
   unsigned int m_lastLabel;
 

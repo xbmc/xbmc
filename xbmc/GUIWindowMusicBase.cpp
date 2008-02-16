@@ -45,10 +45,12 @@
 #include "GUIDialogSmartPlaylistEditor.h"
 #include "LastFmManager.h"
 
+using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
 using namespace PLAYLIST;
 using namespace MUSIC_GRABBER;
+using namespace MEDIA_DETECT;
 
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY       3

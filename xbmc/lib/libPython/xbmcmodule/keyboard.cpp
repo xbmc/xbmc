@@ -3,6 +3,8 @@
 #include "pyutil.h"
 #include "../../../Util.h"
 
+using namespace std;
+
 #ifndef __GNUC__
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
