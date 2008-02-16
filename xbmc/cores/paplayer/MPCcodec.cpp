@@ -151,7 +151,7 @@ int MPCCodec::ReadSamples(float *pBuffer, int numsamples, int *actualsamples)
     return READ_ERROR;
   *actualsamples = 0;
   // start by emptying out our frame buffer
-  int copied = min(m_sampleBufferSize, numsamples);
+  int copied = std::min(m_sampleBufferSize, numsamples);
   memcpy(pBuffer, m_sampleBuffer, copied*sizeof(float));
   numsamples -= copied;
   m_sampleBufferSize -= copied;
@@ -173,7 +173,7 @@ int MPCCodec::ReadSamples(float *pBuffer, int numsamples, int *actualsamples)
     return READ_ERROR;
 
   // have valid float data - copy it across
-  copied = min(ret * 2, numsamples);
+  copied = std::min(ret * 2, numsamples);
   ASSERT(ret <= FRAMELEN * 2);
 
   memcpy(pBuffer, m_sampleBuffer, copied*sizeof(float));

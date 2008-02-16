@@ -216,10 +216,13 @@
 
 #include "cores/dlgcache.h"
 
+using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
+using namespace MEDIA_DETECT;
 using namespace PLAYLIST;
 using namespace VIDEO;
+using namespace MUSIC_INFO;
 
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory

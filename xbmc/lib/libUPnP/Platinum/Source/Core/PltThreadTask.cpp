@@ -59,14 +59,15 @@ PLT_ThreadTask::Start(PLT_TaskManager*  task_manager /* = NULL */,
 |   PLT_ThreadTask::Stop
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_ThreadTask::Stop()
+PLT_ThreadTask::Stop(bool blocking /* = true */)
 {
     m_Abort.SetValue(1);
 
-    // call 
+    // tell thread we want to die
     DoAbort();
 
-    return m_Thread?m_Thread->Wait():NPT_SUCCESS;
+    // wait for thread to be dead
+    return (blocking && m_Thread)?m_Thread->Wait():NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------
@@ -84,6 +85,7 @@ PLT_ThreadTask::Kill()
 
     Stop();
 
+    // cleanup
     delete this;
     return NPT_SUCCESS;
 }

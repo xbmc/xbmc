@@ -21,7 +21,7 @@
 PLT_CtrlPointGetDescriptionTask::PLT_CtrlPointGetDescriptionTask(const NPT_HttpUrl&       url,
                                                                  PLT_CtrlPoint*           ctrl_point, 
                                                                  PLT_DeviceDataReference& device) :
-    PLT_HttpClientSocketTask(new NPT_TcpClientSocket(), new NPT_HttpRequest(url, "GET")), 
+    PLT_HttpClientSocketTask(new NPT_HttpRequest(url, "GET")), 
     m_CtrlPoint(ctrl_point), 
     m_Device(device) 
 {
@@ -54,7 +54,7 @@ PLT_CtrlPointGetDescriptionTask::ProcessResponse(NPT_Result        res,
 PLT_CtrlPointGetSCPDTask::PLT_CtrlPointGetSCPDTask(const NPT_HttpUrl&       url,
                                                    PLT_CtrlPoint*           ctrl_point, 
                                                    PLT_DeviceDataReference& device) :  
-    PLT_HttpClientSocketTask(new NPT_TcpClientSocket(), new NPT_HttpRequest(url, "GET")), 
+    PLT_HttpClientSocketTask(new NPT_HttpRequest(url, "GET")), 
     m_CtrlPoint(ctrl_point), 
     m_Device(device) 
 {
@@ -87,7 +87,7 @@ PLT_CtrlPointInvokeActionTask::PLT_CtrlPointInvokeActionTask(NPT_HttpRequest*   
                                                              PLT_CtrlPoint*       ctrl_point, 
                                                              PLT_ActionReference& action,
                                                              void*                userdata) : 
-    PLT_HttpClientSocketTask(new NPT_TcpClientSocket(), request), 
+    PLT_HttpClientSocketTask(request), 
     m_CtrlPoint(ctrl_point), 
     m_Action(action), 
     m_Userdata(userdata)
@@ -148,7 +148,7 @@ PLT_CtrlPointSubscribeEventTask::PLT_CtrlPointSubscribeEventTask(NPT_HttpRequest
                                                                  PLT_CtrlPoint*   ctrl_point, 
                                                                  PLT_Service*     service,
                                                                  void*            userdata) : 
-    PLT_HttpClientSocketTask(new NPT_TcpClientSocket(), request), 
+    PLT_HttpClientSocketTask(request), 
     m_CtrlPoint(ctrl_point), 
     m_Service(service), 
     m_Userdata(userdata) 

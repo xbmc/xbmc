@@ -2,6 +2,8 @@
 #include "GUISpinControl.h"
 #include "../xbmc/utils/CharsetConverter.h"
 
+using namespace std;
+
 #define SPIN_BUTTON_DOWN 1
 #define SPIN_BUTTON_UP   2
 

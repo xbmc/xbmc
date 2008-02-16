@@ -20,7 +20,6 @@
 #include <queue>
 #include "StdString.h"
 #include "StringUtils.h"
-using namespace std;
 
 #ifdef _XBOX
 #if defined(_DEBUG) && defined(_MEMTRACKING)
@@ -55,7 +54,6 @@ using namespace std;
 #include "ApplicationMessenger.h"
 #include "Crc32.h"
 #include "AutoPtrHandle.h"
-using namespace AUTOPTR;
 
 // Often used
 #include "GUIDialogOK.h"

@@ -10,6 +10,7 @@
 #include "../Util.h"
 #include "Application.h"
 
+using namespace std;
 using namespace DIRECTORY;
 
 #define CONTROL_BTNREFRESH  2

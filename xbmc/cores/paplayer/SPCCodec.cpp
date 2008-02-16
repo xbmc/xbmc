@@ -4,6 +4,7 @@
 #include "../DllLoader/SoLoader.h"
 #include "../../MusicInfoTagLoaderSPC.h"
 
+using namespace MUSIC_INFO;
 using namespace XFILE;
 
 SPCCodec::SPCCodec()

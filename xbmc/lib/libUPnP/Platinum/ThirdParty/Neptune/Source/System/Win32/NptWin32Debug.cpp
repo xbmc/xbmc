@@ -62,7 +62,7 @@ NPT_Debug(const char* format, ...)
         int result;
 
         /* try to format the message (it might not fit) */
-#if (_MSC_VER >= 1400) && !defined(_WIN32_WCE)
+#if defined(_MSC_VER) && (_MSC_VER >= 1400) && !defined(_WIN32_WCE)
         /* use the secure function for VC 8 and above */
         result = _vsnprintf_s(buffer, buffer_size, _TRUNCATE, format, args);
 #else

@@ -52,7 +52,7 @@ private:
   int m_iChannels;
   int m_iSamplesPerSec;
   int m_iBitsPerSample;
-  list<CAudioBuffer*> m_vecBuffers;
+  std::list<CAudioBuffer*> m_vecBuffers;
   int m_iNumBuffers;        // Number of Audio buffers
   bool m_bWantsFreq;
   float m_fFreq[2*AUDIO_BUFFER_SIZE];         // Frequency data

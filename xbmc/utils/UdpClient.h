@@ -37,8 +37,8 @@ protected:
 
   SOCKET client_socket;
 
-  vector<UdpCommand> commands;
-  typedef vector<UdpCommand> ::iterator COMMANDITERATOR;
+  std::vector<UdpCommand> commands;
+  typedef std::vector<UdpCommand> ::iterator COMMANDITERATOR;
 
   CRITICAL_SECTION critical_section;
 };

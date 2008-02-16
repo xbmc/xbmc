@@ -26,7 +26,7 @@ public:
   bool RemoveLocation(const CStdString& path);
   bool SetLocationPath(const CStdString& oldPath, const CStdString& newPath);
 protected:
-  vector<CNetworkLocation> m_locations;
+  std::vector<CNetworkLocation> m_locations;
 };
 
 extern class CMediaManager g_mediaManager;

@@ -19,7 +19,7 @@ public:
   void SetPercentage(int iPercentage);
   int GetPercentage() const { return m_percentage; };
   void ShowProgressBar(bool bOnOff);
-  void SetHeading(const string& strLine);
+  void SetHeading(const std::string& strLine);
   void SetHeading(int iString);             // for convenience to lookup in strings.xml
 
   // Implements IProgressCallback
@@ -32,7 +32,7 @@ public:
 protected:
   bool m_bCanCancel;
   bool m_bCanceled;
-  string m_strHeading;
+  std::string m_strHeading;
 
   int  m_iCurrent;
   int  m_iMax;

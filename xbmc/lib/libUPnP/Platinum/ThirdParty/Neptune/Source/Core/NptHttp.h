@@ -48,13 +48,15 @@ const int NPT_HTTP_PROTOCOL_MAX_HEADER_COUNT = 100;
 #define NPT_HTTP_HEADER_CONTENT_LENGTH      "Content-Length"
 #define NPT_HTTP_HEADER_CONTENT_TYPE        "Content-Type"
 #define NPT_HTTP_HEADER_CONTENT_ENCODING    "Content-Encoding"
+#define NPT_HTTP_HEADER_TRANSFER_ENCODING   "Transfer-Encoding"
 #define NPT_HTTP_HEADER_LOCATION            "Location"
 #define NPT_HTTP_HEADER_RANGE               "Range"
 #define NPT_HTTP_HEADER_CONTENT_RANGE       "Content-Range"
-#define NPT_HTTP_HEADER_TRANSFER_ENCODING   "Transfer-Encoding"
+#define NPT_HTTP_HEADER_COOKIE              "Cookie"
 
 const int NPT_ERROR_HTTP_INVALID_RESPONSE_LINE = NPT_ERROR_BASE_HTTP - 0;
 const int NPT_ERROR_HTTP_INVALID_REQUEST_LINE  = NPT_ERROR_BASE_HTTP - 1;
+const int NPT_ERROR_HTTP_NO_PROXY              = NPT_ERROR_BASE_HTTP - 2;
 
 #define NPT_HTTP_LINE_TERMINATOR "\r\n"
 
@@ -62,6 +64,25 @@ const int NPT_ERROR_HTTP_INVALID_REQUEST_LINE  = NPT_ERROR_BASE_HTTP - 1;
 |   types
 +---------------------------------------------------------------------*/
 typedef unsigned int NPT_HttpStatusCode;
+typedef NPT_UrlQuery NPT_HttpUrlQuery; // for backward compatibility
+
+/*----------------------------------------------------------------------
+|   NPT_HttpUrl
++---------------------------------------------------------------------*/
+class NPT_HttpUrl : public NPT_Url {
+public:
+    // constructors
+    NPT_HttpUrl() {}
+    NPT_HttpUrl(const char* host, 
+                NPT_UInt16  port, 
+                const char* path,
+                const char* query = NULL,
+                const char* fragment = NULL);
+    NPT_HttpUrl(const char* url, bool ignore_scheme = false);
+
+    // methods
+    virtual NPT_String ToString(bool with_fragment = true) const;
+};
 
 /*----------------------------------------------------------------------
 |   NPT_HttpProtocol
@@ -70,81 +91,7 @@ class NPT_HttpProtocol
 {
 public:
     // class methods
-    const char* GetSatusCodeString(NPT_HttpStatusCode status_code);
-};
-
-/*----------------------------------------------------------------------
-|   NPT_HttpUrlQuery
-+---------------------------------------------------------------------*/
-class NPT_HttpUrlQuery
-{
-public:
-    // types
-    struct Field {
-        Field(const char* name, const char* value) :
-            m_Name(name), m_Value(value) {}
-        NPT_String m_Name;
-        NPT_String m_Value;
-    };
-
-    // constructor
-    NPT_HttpUrlQuery() {}
-    NPT_HttpUrlQuery(const char* query);
-
-    // accessors
-    NPT_List<Field>& GetFields() { return m_Fields; }
-
-    // methods
-    NPT_Result  AddField(const char* name, const char* value);
-    const char* GetField(const char* name);
-    NPT_String  ToString();
-
-private:
-    // members
-    NPT_List<Field> m_Fields;
-};
-
-/*----------------------------------------------------------------------
-|   NPT_HttpUrl
-+---------------------------------------------------------------------*/
-class NPT_HttpUrl : public NPT_Uri {
-public:
-    // constructors and destructor
-    NPT_HttpUrl();
-    NPT_HttpUrl(const char* url, bool ignore_scheme = false);
-    NPT_HttpUrl(const char* host, 
-                NPT_UInt16  port, 
-                const char* path,
-                const char* query = NULL,
-                const char* fragment = NULL);
-
-    // methods
-    NPT_UInt16        GetPort() const     { return m_Port;     }
-    const NPT_String& GetHost() const     { return m_Host;     }
-    const NPT_String& GetPath() const     { return m_Path;     }
-    const NPT_String& GetQuery() const    { return m_Query;    }
-    const NPT_String& GetFragment() const { return m_Fragment; }
-    bool              IsValid() const;
-    bool              HasQuery()    const { return m_HasQuery;    } 
-    bool              HasFragment() const { return m_HasFragment; }
-    NPT_Result        SetHost(const char*  host);
-    NPT_Result        SetPort(NPT_UInt16 port);
-    NPT_Result        SetPath(const char*  path);
-    NPT_Result        SetPathPlus(const char* path_plus);
-    NPT_Result        SetQuery(const char* query);
-    NPT_Result        SetFragment(const char* fragment);
-    NPT_String        ToRequestString(bool with_fragment = false) const;
-    NPT_String        ToString(bool with_fragment = true) const;
-
-private:
-    // members
-    NPT_String m_Host;
-    NPT_UInt16 m_Port;
-    NPT_String m_Path;
-    bool       m_HasQuery;
-    NPT_String m_Query;
-    bool       m_HasFragment;
-    NPT_String m_Fragment;
+    const char* GetStatusCodeString(NPT_HttpStatusCode status_code);
 };
 
 /*----------------------------------------------------------------------
@@ -209,7 +156,6 @@ public:
     NPT_Result SetInputStream(const char* string);
     NPT_Result GetInputStream(NPT_InputStreamReference& stream);
     NPT_Result Load(NPT_DataBuffer& buffer);
-    NPT_Result SetHeaders(const NPT_HttpHeaders& headers);
 
     // field access
     NPT_Result        SetContentType(const char* type);
@@ -327,6 +273,40 @@ protected:
 };
 
 /*----------------------------------------------------------------------
+|   NPT_HttpProxyAddress
++---------------------------------------------------------------------*/
+class NPT_HttpProxyAddress
+{
+public:
+    NPT_HttpProxyAddress() : m_Port(NPT_HTTP_INVALID_PORT) {}
+    NPT_HttpProxyAddress(const char* hostname, NPT_UInt16 port) :
+        m_HostName(hostname), m_Port(port) {}
+
+    const NPT_String& GetHostName() const { return m_HostName; } 
+    void              SetHostName(const char* hostname) { m_HostName = hostname; }
+    NPT_UInt16        GetPort() const { return m_Port; }
+    void              SetPort(NPT_UInt16 port) { m_Port = port; }
+
+private:
+    NPT_String m_HostName;
+    NPT_UInt16 m_Port;
+};
+
+/*----------------------------------------------------------------------
+|   NPT_HttpProxySelector
++---------------------------------------------------------------------*/
+class NPT_HttpProxySelector
+{
+public:
+    // class methods
+    static NPT_HttpProxySelector* GetSystemDefault();
+
+    // methods
+    virtual ~NPT_HttpProxySelector() {};
+    virtual NPT_Result GetProxyForUrl(const NPT_HttpUrl& url, NPT_HttpProxyAddress& proxy) = 0;
+};
+
+/*----------------------------------------------------------------------
 |   NPT_HttpClient
 +---------------------------------------------------------------------*/
 class NPT_HttpClient {
@@ -336,14 +316,29 @@ public:
         NPT_Timeout m_ConnectionTimeout;
         NPT_Timeout m_IoTimeout;
         NPT_Timeout m_NameResolverTimeout;
-        bool        m_UseProxy;
-        NPT_String  m_ProxyHostname;
-        NPT_UInt16  m_ProxyPort;
         bool        m_FollowRedirect;
     };
 
-    // constructors and destructor
-             NPT_HttpClient();
+    class Connector {
+    public:
+        virtual ~Connector() {}
+
+        virtual NPT_Result Connect(const char*                hostname, 
+                                   NPT_UInt16                 port, 
+                                   NPT_Timeout                connection_timeout,
+                                   NPT_Timeout                io_timeout,
+                                   NPT_Timeout                name_resolver_timeout,
+                                   NPT_InputStreamReference&  input_stream,
+                                   NPT_OutputStreamReference& output_stream) = 0;
+
+    };
+
+    /**
+     * @param connector Pointer to a Connector instance, or NULL to use 
+     * the default (TCP) connector.
+     */
+    NPT_HttpClient(Connector* connector = NULL);
+
     virtual ~NPT_HttpClient();
 
     // methods
@@ -351,6 +346,8 @@ public:
                            NPT_HttpResponse*& response);
     NPT_Result SetConfig(const Config& config);
     NPT_Result SetProxy(const char* hostname, NPT_UInt16 port);
+    NPT_Result SetProxySelector(NPT_HttpProxySelector* selector);
+    NPT_Result SetConnector(Connector* connector);
     NPT_Result SetTimeouts(NPT_Timeout connection_timeout,
                            NPT_Timeout io_timeout,
                            NPT_Timeout name_resolver_timeout);
@@ -361,7 +358,10 @@ protected:
                                NPT_HttpResponse*& response);
 
     // members
-    Config m_Config;
+    Config                 m_Config;
+    NPT_HttpProxySelector* m_ProxySelector;
+    bool                   m_ProxySelectorIsOwned;
+    Connector*             m_Connector;
 };
 
 /*----------------------------------------------------------------------
@@ -447,19 +447,23 @@ class NPT_HttpServer {
 public:
     // types
     struct Config {
-        NPT_Timeout m_ConnectionTimeout;
-        NPT_Timeout m_IoTimeout;
-        NPT_UInt16  m_ListenPort;
+        NPT_Timeout   m_ConnectionTimeout;
+        NPT_Timeout   m_IoTimeout;
+        NPT_IpAddress m_ListenAddress;
+        NPT_UInt16    m_ListenPort;
+        bool          m_ReuseAddress;
     };
 
     // constructors and destructor
-    NPT_HttpServer();
+    NPT_HttpServer(NPT_UInt16 listen_port = NPT_HTTP_DEFAULT_PORT,
+                   bool       reuse_address = true);
     virtual ~NPT_HttpServer();
 
     // methods
     NPT_Result SetConfig(const Config& config);
-    NPT_Result SetListenPort(NPT_UInt16 port);
+    NPT_Result SetListenPort(NPT_UInt16 port, bool reuse_address = true);
     NPT_Result SetTimeouts(NPT_Timeout connection_timeout, NPT_Timeout io_timeout);
+    void       Abort();
     NPT_Result WaitForNewClient(NPT_InputStreamReference&  input,
                                 NPT_OutputStreamReference& output,
                                 NPT_SocketInfo&            client_info);
@@ -472,7 +476,7 @@ public:
     NPT_HttpRequestHandler* FindRequestHandler(NPT_HttpRequest& request);
 
     /**
-     * Simple 
+     * Parse the request from a new client, form a response, and send it back. 
      */
     NPT_Result RespondToClient(NPT_InputStreamReference&  input,
                                NPT_OutputStreamReference& output,
@@ -495,10 +499,13 @@ protected:
         bool                    m_IncludeChildren;
     };
 
+    // methods
+    NPT_Result Bind();
+
     // members
     NPT_TcpServerSocket      m_Socket;
+    NPT_UInt16               m_BoundPort;
     Config                   m_Config;
-    bool                     m_Bound;
     NPT_List<HandlerConfig*> m_RequestHandlers;
 };
 
@@ -533,20 +540,30 @@ protected:
 };
 
 /*----------------------------------------------------------------------
-|   NPT_HttpChunkedInputStream
+|   NPT_HttpChunkedDecoderInputStream
 +---------------------------------------------------------------------*/
-class NPT_HttpChunkedInputStream : public NPT_BufferedInputStream
+class NPT_HttpChunkedDecoderInputStream : public NPT_InputStream
 {
 public:
     // constructors and destructor
-    NPT_HttpChunkedInputStream(NPT_InputStreamReference& stream,
-                            NPT_Size buffer_size = NPT_BUFFERED_BYTE_STREAM_DEFAULT_SIZE)
-                            : NPT_BufferedInputStream(stream, buffer_size < 512 ? 512 : buffer_size)
-      , m_ChunkRemain(0)
-    {}
-    virtual NPT_Result SetBufferSize(NPT_Size size);
+    NPT_HttpChunkedDecoderInputStream(NPT_BufferedInputStreamReference& stream);
+    virtual ~NPT_HttpChunkedDecoderInputStream();
+
+    // NPT_InputStream methods
+    NPT_Result Read(void*     buffer, 
+                    NPT_Size  bytes_to_read, 
+                    NPT_Size* bytes_read = NULL);
+    NPT_Result Seek(NPT_Position offset);
+    NPT_Result Tell(NPT_Position& offset);
+    NPT_Result GetSize(NPT_Size& size);
+    NPT_Result GetAvailable(NPT_Size& available);
+
 protected:
-    virtual NPT_Result FillBuffer();
-    NPT_Size m_ChunkRemain;
+    // members
+    NPT_BufferedInputStreamReference m_Source;
+    NPT_Size m_ChunkSize;
+    bool     m_InChunk;
 };
+
 #endif // _NPT_HTTP_H_
+

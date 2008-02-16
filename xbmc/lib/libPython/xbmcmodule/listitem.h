@@ -22,7 +22,7 @@ namespace PYXBMC
     CFileItem* item;
   } ListItem;
 
-  extern ListItem* ListItem_FromString(string strLabel);
+  extern ListItem* ListItem_FromString(std::string strLabel);
 
   void initListItem_Type();
 }

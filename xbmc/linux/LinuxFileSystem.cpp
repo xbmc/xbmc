@@ -1,5 +1,7 @@
-  #include "LinuxFileSystem.h"
+#include "LinuxFileSystem.h"
 #include "RegExp.h"
+
+using namespace std;
 
 // Example of what pmount returns
 // /dev/sdc1 on /media/YUVAL'S DOK type vfat (rw,nosuid,nodev,shortname=mixed,uid=1000,utf8,umask=077,usefree)

@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: jutski (->7/2006) Mikko70 (1/2007->)-->
-<!--Date of translation: 15/1/2008-->
-<!--Finnish strings based on English strings version 11293 -->
+<!--Date of translation: 8/2/2008-->
+<!--Finnish strings based on English strings version 11432 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -637,7 +637,7 @@
   <string id="1000">Näytönsäästäjän esikatselu</string>
   <string id="1001">Ei saada yhteyttä</string>
   <string id="1002">XBMC ei saanut yhteyttä verkko-osoitteeseen.</string>
-  <string id="1003">Tämä saattaa johtua siitä, ettei verkkoa ole yhdistetty.</string>
+  <string id="1003">Saatta olla ettei verkkoyhteyttä ole.</string>
   <string id="1004">Haluatko silti lisätä sijainnin?</string>
   <string id="1005"></string>
   <string id="1006">IP-osoite</string>
@@ -1551,8 +1551,8 @@
   <string id="20186">Odota hetki</string>
   <string id="20187">Varmuuskopioidaan EEPROM:in tiedot</string>
   <string id="20188">Varmuuskopioidaan Bios:in tiedot</string>
-  <string id="20189">Automaattinen vieritys käytössä juonelle ja esittelylle</string>
-  <string id="20190">Oma valinta</string>
+  <string id="20189">Juonen ja esittelyn automaattinen vieritys käytössä</string>
+  <string id="20190">Muokautus</string>
   <string id="20191"></string>
   <string id="20192"></string>
   <string id="20193"></string>
@@ -1646,7 +1646,7 @@
   <string id="20373">Tuotantokausi</string>
   <string id="20374">Ladataan tiedot elokuvista</string>
   <string id="20375">Määrittelemätön sisältö</string>
-  <string id="20376">Ensimmäisenä tehty:</string>
+  <string id="20376">Ensimmäinen esitys:</string>
   <string id="20377">Päivitä TV-ohjelman tiedot</string>
   <string id="20378">Päivitetäänkö kaikkien jaksojen tiedot?</string>
   <string id="20379">Kansio sisältää yhden TV-ohjelman</string>
@@ -1677,6 +1677,10 @@
   <string id="20404">Studio:</string>
   <string id="20405">Poista jakson kirjanmerkki</string>
   <string id="20406">Aseta jakson kirjanmerkki</string>
+  <string id="20407">Hakupaikan asetukset</string>
+  <string id="20408">Ladataan tiedot musiikkivideosta</string>
+  <string id="20409">Ladataan tiedot TV-ohjelmasta</string>
+  <string id="20410">Esittely</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Näytä piilotetut tiedostot ja kansiot</string>
@@ -1733,7 +1737,7 @@
   <string id="21396">Luku</string> 
   <string id="21397">Pixel Shader V2 (korkealaatu)</string>
   <string id="21398">Käynnistyessä soittolista käytössä</string>  
-  <string id="21399">Tween animimointi käytössä</string>
+  <string id="21399">Tween animointi käytössä</string>
   <string id="21400">sisältää</string>
   <string id="21401">ei sisällä</string>
   <string id="21402">on</string>
@@ -1795,7 +1799,7 @@
   <string id="21834">Valkotasapaino</string>
   <string id="21835">Valon lähde</string>
   <string id="21836">Mittaustapa</string>
-  <string id="21837">ISO arvo</string>
+  <string id="21837">ISO-arvo</string>
   <string id="21838">Digitaalinen zoomaus</string>
   <string id="21839">Kuvakennon leveys</string>
   <string id="21840">GPS-Leveysaste</string>
@@ -1839,4 +1843,3 @@
   <!-- strings 31000 thru 31999 reserved for skins -->
 
 </strings>
-

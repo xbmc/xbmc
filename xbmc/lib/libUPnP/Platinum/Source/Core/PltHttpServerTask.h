@@ -100,8 +100,8 @@ template <class T>
 class PLT_HttpListenTask : public PLT_ThreadTask
 {
 public:
-    PLT_HttpListenTask<T>(T* data, NPT_TcpServerSocket* socket, bool clenaup_socket = true) : 
-        m_Data(data), m_Socket(socket), m_CleanupSocket(clenaup_socket) {}
+    PLT_HttpListenTask<T>(T* data, NPT_TcpServerSocket* socket, bool cleanup_socket = true) : 
+        m_Data(data), m_Socket(socket), m_CleanupSocket(cleanup_socket) {}
 
 protected:
     virtual ~PLT_HttpListenTask<T>() { 
@@ -112,10 +112,10 @@ protected:
     // PLT_ThreadTask methods
     virtual void DoAbort() { m_Socket->Disconnect(); }
     virtual void DoRun() {
-        while (1) {
+        while (!IsAborting(0)) {
             NPT_Socket* client = NULL;
             NPT_Result  result = m_Socket->WaitForNewClient(client, 5000);
-            if (IsAborting(0) || (NPT_FAILED(result) && result != NPT_ERROR_TIMEOUT)) {
+            if (NPT_FAILED(result) && result != NPT_ERROR_TIMEOUT) {
                 if (client) delete client;
                 break;
             }

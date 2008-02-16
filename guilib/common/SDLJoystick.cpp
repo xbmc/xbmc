@@ -6,6 +6,8 @@
 
 #ifdef HAS_SDL_JOYSTICK
 
+using namespace std;
+
 CJoystick g_Joystick; // global
 
 CJoystick::CJoystick()

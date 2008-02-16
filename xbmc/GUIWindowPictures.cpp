@@ -38,6 +38,8 @@
 #define CONTROL_THUMBS             51
 #define CONTROL_LABELFILES         12
 
+using namespace std;
+using namespace MEDIA_DETECT;
 using namespace XFILE;
 using namespace DIRECTORY;
 using namespace PLAYLIST;

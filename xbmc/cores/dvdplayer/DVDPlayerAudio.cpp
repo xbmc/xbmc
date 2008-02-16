@@ -7,6 +7,8 @@
 #include "DVDPerformanceCounter.h"
 #include <sstream>
 
+using namespace std;
+
 CPTSOutputQueue::CPTSOutputQueue()
 {
   Flush();

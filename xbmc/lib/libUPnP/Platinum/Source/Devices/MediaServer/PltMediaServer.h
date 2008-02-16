@@ -41,16 +41,13 @@ class PLT_MediaServer : public PLT_DeviceHost
 {
 public:
     // PLT_DeviceHost methods
-    virtual NPT_Result Start(PLT_TaskManager* task_manager, PLT_DeviceHostReference& self);
-    virtual NPT_Result Stop();
     virtual NPT_Result OnAction(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
 
 protected:
     PLT_MediaServer(const char*  friendly_name,
                     bool         show_ip = false,
                     const char*  uuid = NULL,
-                    unsigned int port = 0,
-                    unsigned int fileserver_port = 0);
+                    NPT_UInt16   port = 0);
     virtual ~PLT_MediaServer();
 
     // class methods
@@ -68,18 +65,10 @@ protected:
     virtual NPT_Result OnBrowse(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
     virtual NPT_Result OnSearch(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
 
-    // X_MS_MediaReceiverRegistrar
-    virtual NPT_Result OnIsAuthorized(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
-    virtual NPT_Result OnIsValidated(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
-    virtual NPT_Result OnRegisterDevice(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
-
     // overridable methods
     virtual NPT_Result OnBrowseMetadata(PLT_ActionReference& action, const char* object_id, NPT_SocketInfo* info = NULL);
     virtual NPT_Result OnBrowseDirectChildren(PLT_ActionReference& action, const char* object_id, NPT_SocketInfo* info = NULL);
     virtual NPT_Result OnSearch(PLT_ActionReference& action, const NPT_String& object_id, const NPT_String& searchCriteria, NPT_SocketInfo* info = NULL);
-
-
-    PLT_HttpServer* m_FileServer;
 };
 
 #endif /* _PLT_MEDIA_SERVER_H_ */

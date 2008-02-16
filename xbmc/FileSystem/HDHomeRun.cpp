@@ -178,7 +178,7 @@ unsigned int CFileHomeRun::Read(void* lpBuf, __int64 uiBufSize)
   DWORD timestamp = GetTickCount() + 5000;
   while(1) 
   {
-    datasize = (unsigned int)min((unsigned int) uiBufSize,UINT_MAX);
+    datasize = (unsigned int)std::min((unsigned int) uiBufSize,UINT_MAX);
     uint8_t* ptr = m_dll.device_stream_recv(m_device, datasize, &datasize);
     if(ptr)
     {

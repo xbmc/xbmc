@@ -48,10 +48,10 @@ protected:
   bool m_randomized;
   bool m_loop;
   CGUIImage::GUIIMAGE_ASPECT_RATIO m_aspectRatio;
-  vector <CGUIImage *> m_images;
+  std::vector <CGUIImage *> m_images;
 
   bool m_bDynamicResourceAlloc;
   bool m_directoryLoaded;
-  vector<CStdString> m_files;
+  std::vector<CStdString> m_files;
 };
 #endif

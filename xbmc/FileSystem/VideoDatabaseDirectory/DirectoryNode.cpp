@@ -21,6 +21,7 @@
 #include "DirectoryNodeRecentlyAddedMusicVideos.h"
 #include "DirectoryNodeTitleMusicVideos.h"
 
+using namespace std;
 using namespace DIRECTORY::VIDEODATABASEDIRECTORY;
 
 //  Constructor is protected use ParseURL()

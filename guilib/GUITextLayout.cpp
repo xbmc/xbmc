@@ -6,6 +6,8 @@
 #include "../xbmc/utils/CharsetConverter.h"
 #include "../xbmc/StringUtils.h"
 
+using namespace std;
+
 CGUIString::CGUIString(iString start, iString end, bool carriageReturn)
 {
   m_text.assign(start, end);

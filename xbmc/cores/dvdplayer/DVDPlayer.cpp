@@ -28,6 +28,7 @@
 #endif
 #include "../../xbmc/utils/PerformanceSample.h"
 
+using namespace std;
 
 void CSelectionStreams::Clear(StreamType type, StreamSource source)
 {

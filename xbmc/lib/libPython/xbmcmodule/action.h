@@ -26,7 +26,7 @@ namespace PYXBMC
     float fAmount2;
     float fRepeat;
     unsigned long buttonCode;
-    string strAction;
+    std::string strAction;
   } Action;
 
   extern PyTypeObject Action_Type;

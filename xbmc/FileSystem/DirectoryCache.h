@@ -26,16 +26,16 @@ public:
   static void InitMusicThumbCache();
   static void ClearMusicThumbCache();
 protected:
-  static void InitCache(set<CStdString>& dirs);
-  static void ClearCache(set<CStdString>& dirs);
+  static void InitCache(std::set<CStdString>& dirs);
+  static void ClearCache(std::set<CStdString>& dirs);
   static bool IsCacheDir(const CStdString &strPath);
 
-  vector<CDir*> m_vecCache;
-  typedef vector<CDir*>::iterator ivecCache;
+  std::vector<CDir*> m_vecCache;
+  typedef std::vector<CDir*>::iterator ivecCache;
 
   static CCriticalSection m_cs;
-  set<CStdString> m_thumbDirs;
-  set<CStdString> m_musicThumbDirs;
+  std::set<CStdString> m_thumbDirs;
+  std::set<CStdString> m_musicThumbDirs;
   int m_iThumbCacheRefCount;
   int m_iMusicThumbCacheRefCount;
 };

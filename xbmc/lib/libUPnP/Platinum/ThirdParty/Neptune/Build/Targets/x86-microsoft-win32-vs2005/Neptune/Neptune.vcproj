@@ -194,6 +194,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\..\Source\Core\NptDirectory.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\Source\Core\NptFile.cpp"
 				>
 			</File>

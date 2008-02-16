@@ -64,8 +64,8 @@ namespace VIDEO
     CStdString m_strStartDir;
     CVideoDatabase m_database;
     SScraperInfo m_info;
-    map<CStdString,SScanSettings> m_pathsToScan;
-    set<CStdString> m_pathsToCount;
+    std::map<CStdString,SScanSettings> m_pathsToScan;
+    std::set<CStdString> m_pathsToCount;
   };
 }
 

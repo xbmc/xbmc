@@ -26,8 +26,6 @@ namespace CDDB
 
 #define CDDB_PORT 8880
 
-using namespace MEDIA_DETECT;
-
 
 struct toc
 {
@@ -46,8 +44,8 @@ public:
   void setCacheDir(const CStdString& pCacheDir );
 
 //  int queryCDinfo(int real_track_count, toc cdtoc[]);
-  bool queryCDinfo(CCdInfo* pInfo, int inexact_list_select);
-  bool queryCDinfo(CCdInfo* pInfo);
+  bool queryCDinfo(MEDIA_DETECT::CCdInfo* pInfo, int inexact_list_select);
+  bool queryCDinfo(MEDIA_DETECT::CCdInfo* pInfo);
   int getLastError() const;
   const char * getLastErrorText() const;
   const CStdString& getYear() const;
@@ -63,20 +61,20 @@ public:
   bool queryCache( unsigned long discid );
   bool writeCacheFile( const char* pBuffer, unsigned long discid );
   bool isCDCached( int nr_of_tracks, toc cdtoc[] );
-  bool isCDCached( CCdInfo* pInfo );
+  bool isCDCached( MEDIA_DETECT::CCdInfo* pInfo );
 
 protected:
   CStdString m_strNull;
-  CAutoPtrSocket m_cddb_socket;
+  AUTOPTR::CAutoPtrSocket m_cddb_socket;
   const static int recv_buffer = 4096;
   int m_lastError;
-  map<int, CStdString> m_mapTitles;
-  map<int, CStdString> m_mapArtists;
-  map<int, CStdString> m_mapExtended_track;
+  std::map<int, CStdString> m_mapTitles;
+  std::map<int, CStdString> m_mapArtists;
+  std::map<int, CStdString> m_mapExtended_track;
 
-  map<int, CStdString> m_mapInexact_cddb_command_list;
-  map<int, CStdString> m_mapInexact_artist_list;
-  map<int, CStdString> m_mapInexact_title_list;
+  std::map<int, CStdString> m_mapInexact_cddb_command_list;
+  std::map<int, CStdString> m_mapInexact_artist_list;
+  std::map<int, CStdString> m_mapInexact_title_list;
 
 
   CStdString m_strDisk_artist;
@@ -89,7 +87,7 @@ protected:
   void parseData(const char *buffer);
   bool Send( const void *buffer, int bytes );
   bool Send( const char *buffer);
-  string Recv(bool wait4point);
+  std::string Recv(bool wait4point);
   bool openSocket();
   bool closeSocket();
   struct toc cdtoc[100];

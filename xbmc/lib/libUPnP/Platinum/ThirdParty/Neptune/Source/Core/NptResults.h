@@ -30,13 +30,20 @@ do {                                          \
         return NPT_ERROR_INVALID_PARAMETERS;  \
     }                                         \
 } while(0)
-#define NPT_CHECK_LABEL(x, label)   \
+#define NPT_CHECK_LABEL(_x, label)  \
 do {                                \
-    NPT_Result _result = (x);       \
+    NPT_Result _result = (_x);      \
     if (_result != NPT_SUCCESS) {   \
         NPT_Debug("%s(%d): @@@ NPT_CHECK failed, result=%d\n", __FILE__, __LINE__, _result); \
         goto label;                 \
     }                               \
+} while(0)
+#define NPT_CHECK_POINTER_LABEL(_p, label)   \
+do {                                         \
+    if (_p == NULL) {                        \
+        NPT_Debug("%s(%d): @@@ NULL pointer parameter\n", __FILE__, __LINE__); \
+        goto label;                          \
+    }                                        \
 } while(0)
 #else
 #define NPT_CHECK(_x)               \
@@ -50,12 +57,18 @@ do {                                \
 do {                                                        \
     if ((_p) == NULL) return NPT_ERROR_INVALID_PARAMETERS;  \
 } while(0)
-#define NPT_CHECK_LABEL(x, label)   \
+#define NPT_CHECK_LABEL(_x, label)  \
 do {                                \
-    NPT_Result _result = (x);       \
+    NPT_Result _result = (_x);      \
     if (_result != NPT_SUCCESS) {   \
         goto label;                 \
     }                               \
+} while(0)
+#define NPT_CHECK_POINTER_LABEL(_p, label)   \
+do {                                         \
+    if ((_p) == NULL) {                      \
+        goto label;                          \
+    }                                        \
 } while(0)
 #endif
 
@@ -86,6 +99,7 @@ const int NPT_ERROR_BASE_XML            = NPT_ERROR_BASE-600;
 const int NPT_ERROR_BASE_UNIX           = NPT_ERROR_BASE-700;
 const int NPT_ERROR_BASE_HTTP           = NPT_ERROR_BASE-800;
 const int NPT_ERROR_BASE_THREADS        = NPT_ERROR_BASE-900;
+const int NPT_ERROR_BASE_SERIAL_PORT    = NPT_ERROR_BASE-1000;
 
 // general errors
 const int NPT_ERROR_INVALID_PARAMETERS  = NPT_ERROR_BASE_GENERAL - 0;
@@ -104,5 +118,6 @@ const int NPT_ERROR_NOT_IMPLEMENTED     = NPT_ERROR_BASE_GENERAL - 12;
 const int NPT_ERROR_NOT_SUPPORTED       = NPT_ERROR_BASE_GENERAL - 13;
 const int NPT_ERROR_TIMEOUT             = NPT_ERROR_BASE_GENERAL - 14;
 const int NPT_ERROR_WOULD_BLOCK         = NPT_ERROR_BASE_GENERAL - 15;
+const int NPT_ERROR_TERMINATED          = NPT_ERROR_BASE_GENERAL - 16;
 
 #endif // _NPT_RESULTS_H_

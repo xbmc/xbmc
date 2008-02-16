@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DirectoryNodeOverview.h"
 
+using namespace std;
 using namespace DIRECTORY::MUSICDATABASEDIRECTORY;
 
 CDirectoryNodeOverview::CDirectoryNodeOverview(const CStdString& strName, CDirectoryNode* pParent)

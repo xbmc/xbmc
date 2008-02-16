@@ -117,7 +117,7 @@ main(int /*argc*/, char** /*argv*/)
     i_map[5] = 6;
     i_map[6] = 7;
     i_map[9] = 0;
-    CHECK(i_map[0] == 0 || i_map[0] != 0); // unknown value
+    CHECK(i_map[0] == 0 || i_map[0] != 0); // unknown value (will cause a valgrind warning)
     CHECK(i_map.GetEntryCount() == 4);
 
     NPT_Map<NPT_String,A> a1_map;

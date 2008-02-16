@@ -16,7 +16,7 @@ protected:
 
   static CThumbnailCache* m_pCacheInstance;
 
-  map<CStdString, bool> m_Cache;
+  std::map<CStdString, bool> m_Cache;
 
   static CCriticalSection m_cs;
 };

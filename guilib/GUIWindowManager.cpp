@@ -12,6 +12,8 @@
 #include "../Tools/Win32/XBMC_PC.h"
 #endif
 
+using namespace std;
+
 CGUIWindowManager m_gWindowManager;
 
 CGUIWindowManager::CGUIWindowManager(void)

@@ -29,8 +29,8 @@
     bool bIsPythonWindow; \
     bool bModal; \
     bool bUsingXML; \
-    string sXMLFileName; \
-    string sFallBackPath; \
+    std::string sXMLFileName; \
+    std::string sFallBackPath; \
     CGUIWindow* pWindow; \
     std::vector<Control*> vecControls;
 

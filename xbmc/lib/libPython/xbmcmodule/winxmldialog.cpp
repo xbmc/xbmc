@@ -25,6 +25,8 @@
 extern "C" {
 #endif
 
+using namespace std;
+
 namespace PYXBMC
 {
   PyObject* WindowXMLDialog_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
@@ -40,8 +42,8 @@ namespace PYXBMC
     PyObject* pyOXMLname, * pyOname;
     PyObject * pyDName = NULL;
     bool bForceDefaultSkin = false;
-    string strXMLname, strFallbackPath;
-    string strDefault = "Default";
+    std::string strXMLname, strFallbackPath;
+    std::string strDefault = "Default";
 
     if (!PyArg_ParseTuple(args, "OO|Ob", &pyOXMLname, &pyOname, &pyDName, &bForceDefaultSkin )) return NULL;
     PyGetUnicodeString(strXMLname, pyOXMLname);

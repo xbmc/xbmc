@@ -74,6 +74,7 @@
 #include "GUIDialogAccessPoints.h"
 #endif
 
+using namespace std;
 using namespace DIRECTORY;
 
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY

@@ -10,12 +10,13 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#if (defined(_WIN32) || defined(_WIN32_WCE)) && !defined(_XBOX)
+#if defined(_WIN32) || defined(_WIN32_WCE)
 
 // Win32 includes
 #define __WIN32__
 #endif
-#if defined(__WIN32__)
+
+#if defined(__WIN32__) && !defined(_XBOX)
 #define STRICT
 #define NPT_WIN32_USE_WINSOCK2
 #ifdef NPT_WIN32_USE_WINSOCK2
@@ -589,7 +590,7 @@ NPT_BsdSocketFd::SetBlockingMode(bool blocking)
 {
     int flags = fcntl(m_SocketFd, F_GETFL, 0);
     if (blocking) {
-        flags ^= O_NONBLOCK;
+        flags &= ~O_NONBLOCK;
     } else {
         flags |= O_NONBLOCK;
     }
@@ -1202,7 +1203,7 @@ NPT_BsdUdpSocket::NPT_BsdUdpSocket() :
                sizeof(option));
 
 #ifdef _XBOX
-    // set flag on the socket the allows sending of multicast
+    // set flag on the socket to allow sending of multicast
     if (!NPT_BSD_SOCKET_IS_INVALID(m_SocketFdReference->GetSocketFd())) {
         *(DWORD*)((char*)m_SocketFdReference->GetSocketFd()+0xc) |= 0x02000000;
     }

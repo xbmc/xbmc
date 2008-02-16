@@ -3,7 +3,7 @@
 #include "GUIInfoManager.h"
 #include "../Util.h"
 
-
+using namespace std;
 
 void ILCD::StringToLCDCharSet(CStdString& strText)
 {

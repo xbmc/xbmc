@@ -37,6 +37,8 @@
 #pragma warning (disable:4715)
 #endif
 
+using namespace std;
+
 namespace dbiplus {
 
 //Constructors 

@@ -6,6 +6,7 @@
 #include "../xbmc/utils/GUIInfoManager.h"
 #include "../xbmc/Util.h"
 
+using namespace std;
 using namespace DIRECTORY;
 
 CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CGUIInfoLabel& texturePath, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop, DWORD timeToPauseAtEnd)

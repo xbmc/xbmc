@@ -20,6 +20,8 @@
 #include "Util.h"
 #include "log.h"
 
+using namespace std;
+
 CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkLinux* network, CStdString interfaceName) 
       
 {

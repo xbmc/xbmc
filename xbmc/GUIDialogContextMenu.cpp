@@ -35,6 +35,9 @@
 #include "GUIDialogLockSettings.h"
 #include "MediaManager.h"
 
+using namespace std;
+using namespace MEDIA_DETECT;
+
 #define BACKGROUND_IMAGE 999
 #define BACKGROUND_BOTTOM 998
 #define BUTTON_TEMPLATE 1000

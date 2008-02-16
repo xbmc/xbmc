@@ -38,8 +38,9 @@
 #include "lib/libGoAhead/XBMChttp.h"
 #endif
 #include "utils/Network.h"
-
 #include "GUIWindowManager.h"
+
+using namespace std;
 
 extern HWND g_hWnd;
 

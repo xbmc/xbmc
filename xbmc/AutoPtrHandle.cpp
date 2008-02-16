@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 
+using namespace AUTOPTR;
 
 CAutoPtrHandle::CAutoPtrHandle(HANDLE hHandle)
     : m_hHandle(hHandle)
