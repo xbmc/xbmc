@@ -8,6 +8,7 @@
 #include "../Temperature.h"
 #include "../xbox/network.h"
 
+using namespace std;
 using namespace DIRECTORY;
 
 #define CONTROL_BTNREFRESH  2

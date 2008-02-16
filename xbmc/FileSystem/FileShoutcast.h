@@ -39,7 +39,7 @@ public:
   virtual bool Record();
   virtual void StopRecording();
   virtual bool IsRecording();
-  virtual bool GetMusicInfoTag(CMusicInfoTag& tag);
+  virtual bool GetMusicInfoTag(MUSIC_INFO::CMusicInfoTag& tag);
   virtual CStdString GetContent();
 protected:
   void outputTimeoutMessage(const char* message);

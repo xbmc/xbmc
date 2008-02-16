@@ -30,6 +30,8 @@
 #include "Picture.h"
 #include "GUIDialogContextMenu.h"
 
+using namespace std;
+
 #define BOOKMARK_THUMB_WIDTH g_advancedSettings.m_thumbSize
 
 #define CONTROL_ADD_BOOKMARK          2

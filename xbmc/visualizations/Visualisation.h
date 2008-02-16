@@ -33,7 +33,7 @@ public:
   void Stop();
   void GetInfo(VIS_INFO *info);
   bool OnAction(VIS_ACTION action, void *param = NULL);
-  void GetSettings(vector<VisSetting> **vecSettings);
+  void GetSettings(std::vector<VisSetting> **vecSettings);
   void UpdateSetting(int num);
   void GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked);
   void GetCurrentPreset(char **pPreset, bool *locked);
@@ -41,8 +41,8 @@ public:
   char *GetPreset();
 
 protected:
-  auto_ptr<struct Visualisation> m_pVisz;
-  auto_ptr<DllVisualisation> m_pDll;
+  std::auto_ptr<struct Visualisation> m_pVisz;
+  std::auto_ptr<DllVisualisation> m_pDll;
   CStdString m_strVisualisationName;
 };
 

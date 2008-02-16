@@ -2,6 +2,8 @@
 #include "Fat32Device.h"
 #include "../../xbox/Undocumented.h"
 
+using namespace std;
+
 static int cacheHit = 0;
 static int cacheMiss = 0;
 

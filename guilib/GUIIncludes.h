@@ -17,10 +17,10 @@ public:
 
 private:
   bool HasIncludeFile(const CStdString &includeFile) const;
-  map<CStdString, TiXmlElement> m_includes;
-  map<CStdString, TiXmlElement> m_defaults;
-  map<CStdString, float> m_constants;
-  vector<CStdString> m_files;
-  typedef vector<CStdString>::const_iterator iFiles;
+  std::map<CStdString, TiXmlElement> m_includes;
+  std::map<CStdString, TiXmlElement> m_defaults;
+  std::map<CStdString, float> m_constants;
+  std::vector<CStdString> m_files;
+  typedef std::vector<CStdString>::const_iterator iFiles;
 };
 

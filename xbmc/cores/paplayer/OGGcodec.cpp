@@ -3,6 +3,7 @@
 #include "../../OggTag.h"
 #include "../../Util.h"
 
+using namespace MUSIC_INFO;
 
 OGGCodec::OGGCodec()
 {

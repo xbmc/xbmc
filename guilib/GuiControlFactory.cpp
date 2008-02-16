@@ -43,6 +43,8 @@
 #include "GUIFontManager.h"
 #include "GUIColorManager.h"
 
+using namespace std;
+
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
 #include "SkinInfo.h"
 #endif

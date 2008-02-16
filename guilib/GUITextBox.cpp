@@ -5,6 +5,8 @@
 #include "GUILabelControl.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
+using namespace std;
+
 #define CONTROL_LIST  0
 #define CONTROL_UPDOWN 9998
 CGUITextBox::CGUITextBox(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height,

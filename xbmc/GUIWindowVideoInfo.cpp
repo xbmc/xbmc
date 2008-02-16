@@ -33,6 +33,7 @@
 #include "utils/GUIInfoManager.h"
 #include "VideoInfoScanner.h"
 
+using namespace std;
 using namespace XFILE;
 
 #define CONTROL_TITLE               20

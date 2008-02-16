@@ -38,7 +38,7 @@ public:
 
   double GetEffectsSlowdown() const { return m_effectsSlowDown; };
 
-  const vector<CStartupWindow> &GetStartupWindows() { return m_startupWindows; };
+  const std::vector<CStartupWindow> &GetStartupWindows() { return m_startupWindows; };
 
   bool OnlyAnimateToHome() { return m_onlyAnimateToHome; };
 
@@ -64,7 +64,7 @@ protected:
   double m_effectsSlowDown;
   CGUIIncludes m_includes;
 
-  vector<CStartupWindow> m_startupWindows;
+  std::vector<CStartupWindow> m_startupWindows;
   bool m_onlyAnimateToHome;
 
   float m_skinzoom;

@@ -30,11 +30,11 @@ public:
   virtual void SetWidth(float width);
   virtual void SetHeight(float height);
   virtual void SetColorDiffuse(D3DCOLOR color);
-  void SetLabel(const string& strLabel);
-  void SetAltLabel(const string& label);
+  void SetLabel(const std::string& strLabel);
+  void SetAltLabel(const std::string& label);
   virtual CStdString GetLabel() const;
   void SetToggleSelect(int toggleSelect) { m_toggleSelect = toggleSelect; };
-  void SetAltClickActions(const vector<CStdString> &clickActions);
+  void SetAltClickActions(const std::vector<CStdString> &clickActions);
 
 protected:
   virtual void OnClick();

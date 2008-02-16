@@ -7,6 +7,8 @@
 #include "GUIButtonControl.h"
 #include "GUICheckMarkControl.h"
 
+using namespace std;
+
 #define ACTIVE_WINDOW	m_gWindowManager.GetActiveWindow()
 
 #ifndef __GNUC__

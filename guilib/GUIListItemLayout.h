@@ -22,7 +22,7 @@ class CGUIListItemLayout
   class CListLabel : public CListBase
   {
   public:
-    CListLabel(float posX, float posY, float width, float height, int visibleCondition, const CLabelInfo &label, bool alwyasScroll, const CGUIInfoLabel &content, const vector<CAnimation> &animations);
+    CListLabel(float posX, float posY, float width, float height, int visibleCondition, const CLabelInfo &label, bool alwyasScroll, const CGUIInfoLabel &content, const std::vector<CAnimation> &animations);
     virtual ~CListLabel();
 
     CGUIListLabel m_label;
@@ -32,7 +32,7 @@ class CGUIListItemLayout
   class CListSelectLabel : public CListBase
   {
   public:
-    CListSelectLabel(float posX, float posY, float width, float height, int visibleCondition, const CImage &imageFocus, const CImage &imageNoFocus, const CLabelInfo &label, const CGUIInfoLabel &content, const vector<CAnimation> &animations);
+    CListSelectLabel(float posX, float posY, float width, float height, int visibleCondition, const CImage &imageFocus, const CImage &imageNoFocus, const CLabelInfo &label, const CGUIInfoLabel &content, const std::vector<CAnimation> &animations);
     virtual ~CListSelectLabel();
 
     CGUIMultiSelectTextControl m_label;
@@ -42,7 +42,7 @@ class CGUIListItemLayout
   class CListTexture : public CListBase
   {
   public:
-    CListTexture(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, const CImage &borderImage, const FRECT &borderSize, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, DWORD aspectAlign, D3DCOLOR colorDiffuse, const vector<CAnimation> &animations);
+    CListTexture(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, const CImage &borderImage, const FRECT &borderSize, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, DWORD aspectAlign, D3DCOLOR colorDiffuse, const std::vector<CAnimation> &animations);
     virtual ~CListTexture();
     CGUIBorderedImage m_image;
   };
@@ -50,7 +50,7 @@ class CGUIListItemLayout
   class CListImage: public CListTexture
   {
   public:
-    CListImage(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, const CImage &borderImage, const FRECT &borderSize, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, DWORD aspectAlign, D3DCOLOR colorDiffuse, const CGUIInfoLabel &content, const vector<CAnimation> &animations);
+    CListImage(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, const CImage &borderImage, const FRECT &borderSize, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, DWORD aspectAlign, D3DCOLOR colorDiffuse, const CGUIInfoLabel &content, const std::vector<CAnimation> &animations);
     virtual ~CListImage();
     CGUIInfoLabel m_info;
   };
@@ -88,9 +88,9 @@ protected:
   void RenderLabel(CListLabel *label, bool selected, bool scroll);
   void Update(CFileItem *item, DWORD parentID);
 
-  vector<CListBase*> m_controls;
-  typedef vector<CListBase*>::iterator iControls;
-  typedef vector<CListBase*>::const_iterator ciControls;
+  std::vector<CListBase*> m_controls;
+  typedef std::vector<CListBase*>::iterator iControls;
+  typedef std::vector<CListBase*>::const_iterator ciControls;
   float m_width;
   float m_height;
   bool m_focused;

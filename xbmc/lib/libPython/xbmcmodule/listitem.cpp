@@ -3,6 +3,8 @@
 #include "listitem.h"
 #include "pyutil.h"
 
+using namespace std;
+
 #ifndef __GNUC__
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")

@@ -29,7 +29,7 @@ public:
 
   bool AcceptsData();
   void SendMessage(CDVDMsg* pMsg);
-  bool OpenStream(CDVDStreamInfo &hints, string& filename);
+  bool OpenStream(CDVDStreamInfo &hints, std::string& filename);
   void CloseStream(bool flush);
 
 private:

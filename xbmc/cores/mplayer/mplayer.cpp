@@ -15,6 +15,7 @@
 #include "../../utils/win32exception.h"
 #include "../DllLoader/exports/emu_registry.h"
 
+using namespace std;
 using namespace XFILE;
 
 #define KEY_ENTER 13

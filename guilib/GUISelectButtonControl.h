@@ -99,7 +99,7 @@ protected:
   CGUIImage m_imgLeftFocus;
   CGUIImage m_imgRight;
   CGUIImage m_imgRightFocus;
-  vector<string> m_vecItems;
+  std::vector<std::string> m_vecItems;
   int m_iCurrentItem;
   int m_iDefaultItem;
   int m_iStartFrame;

@@ -18,6 +18,7 @@
 #include "emu_dummy.h"
 #include "util/EmuFileWrapper.h"
 
+using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
 

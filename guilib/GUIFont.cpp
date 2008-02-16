@@ -3,6 +3,7 @@
 #include "GraphicContext.h"
 #include "../xbmc/utils/SingleLock.h"
 
+using namespace std;
 namespace MathUtils {
   inline int round_int (double x);
 }

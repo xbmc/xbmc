@@ -27,6 +27,7 @@
 #include "Util.h"
 #include "Picture.h"
 
+using namespace AUTOPTR;
 using namespace XFILE;
 using namespace MUSIC_INFO;
 

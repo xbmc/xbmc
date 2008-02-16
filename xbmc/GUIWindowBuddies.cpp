@@ -29,6 +29,8 @@
 #include "xbox/xbeheader.h"
 #include "ProgramDatabase.h"
 
+using namespace AUTOPTR;
+using namespace MEDIA_DETECT;
 using namespace XFILE;
 
 #define KAI_CONSOLE_PEN_NORMAL 0

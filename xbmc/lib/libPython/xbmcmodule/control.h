@@ -73,16 +73,16 @@ namespace PYXBMC
   typedef struct {
     PyObject_HEAD_XBMC_CONTROL
     DWORD dwColor;
-    string strTextureUp;
-    string strTextureDown;
-    string strTextureUpFocus;
-    string strTextureDownFocus;
+    std::string strTextureUp;
+    std::string strTextureDown;
+    std::string strTextureUpFocus;
+    std::string strTextureDownFocus;
   } ControlSpin;
 
   typedef struct {
     PyObject_HEAD_XBMC_CONTROL
-    string strFont;
-    string strText;
+    std::string strFont;
+    std::string strText;
     DWORD dwTextColor;
     DWORD dwDisabledColor;
     DWORD dwAlign;
@@ -93,22 +93,22 @@ namespace PYXBMC
 
   typedef struct {
     PyObject_HEAD_XBMC_CONTROL
-    string strFont;
+    std::string strFont;
     DWORD dwTextColor;
-    std::vector<string> vecLabels;
+    std::vector<std::string> vecLabels;
     DWORD dwAlign;
   } ControlFadeLabel;
 
   typedef struct {
     PyObject_HEAD_XBMC_CONTROL
-    string strFont;
+    std::string strFont;
     DWORD dwTextColor;
     ControlSpin* pControlSpin;
   } ControlTextBox;
 
   typedef struct {
     PyObject_HEAD_XBMC_CONTROL
-    string strFileName;
+    std::string strFileName;
     DWORD strColorKey;
     DWORD aspectRatio;
     DWORD strColorDiffuse;
@@ -116,11 +116,11 @@ namespace PYXBMC
 
   typedef struct {
   PyObject_HEAD_XBMC_CONTROL
-    string strTextureLeft;
-    string strTextureMid;
-    string strTextureRight;
-    string strTextureBg;
-    string strTextureOverlay;
+    std::string strTextureLeft;
+    std::string strTextureMid;
+    std::string strTextureRight;
+    std::string strTextureBg;
+    std::string strTextureOverlay;
     DWORD strColorKey;
     DWORD aspectRatio;
     DWORD strColorDiffuse;
@@ -128,11 +128,11 @@ namespace PYXBMC
 
   typedef struct {
     PyObject_HEAD_XBMC_CONTROL
-    string strFont;
-    string strText;
-    string strText2;
-    string strTextureFocus;
-    string strTextureNoFocus;
+    std::string strFont;
+    std::string strText;
+    std::string strText2;
+    std::string strTextureFocus;
+    std::string strTextureNoFocus;
     DWORD dwTextColor;
     DWORD dwDisabledColor;
     DWORD dwTextXOffset;
@@ -145,10 +145,10 @@ namespace PYXBMC
 
   typedef struct {
     PyObject_HEAD_XBMC_CONTROL
-    string strFont;
-    string strText;
-    string strTextureFocus;
-    string strTextureNoFocus;
+    std::string strFont;
+    std::string strText;
+    std::string strTextureFocus;
+    std::string strTextureNoFocus;
     DWORD dwTextColor;
     DWORD dwDisabledColor;
     DWORD dwCheckWidth;
@@ -159,13 +159,13 @@ namespace PYXBMC
   typedef struct {
     PyObject_HEAD_XBMC_CONTROL
     std::vector<PYXBMC::ListItem*> vecItems;
-    string strFont;
+    std::string strFont;
     ControlSpin* pControlSpin;
 
     DWORD dwTextColor;
     DWORD dwSelectedColor;
-    string strTextureButton;
-    string strTextureButtonFocus;
+    std::string strTextureButton;
+    std::string strTextureButtonFocus;
 
     DWORD dwImageHeight;
     DWORD dwImageWidth;

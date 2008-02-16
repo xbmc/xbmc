@@ -17,6 +17,8 @@
 #include "../xbmc/ButtonTranslator.h"
 #include "XMLUtils.h"
 
+using namespace std;
+
 CStdString CGUIWindow::CacheFilename = "";
 
 CGUIWindow::CGUIWindow(DWORD dwID, const CStdString &xmlFile)

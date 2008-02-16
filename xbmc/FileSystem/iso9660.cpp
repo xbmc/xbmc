@@ -30,6 +30,7 @@ class iso9660 m_isoReader;
 #define BUFFER_SIZE MODE2_DATA_SIZE
 #define RET_ERR -1
 
+using namespace std;
 
 //******************************************************************************************************************
 const string iso9660::ParseName(struct iso9660_Directory& isodir)

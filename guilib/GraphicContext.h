@@ -172,7 +172,7 @@ protected:
   IMsgSenderCallback* m_pCallback;
   LPDIRECT3DDEVICE8 m_pd3dDevice;
   D3DPRESENT_PARAMETERS* m_pd3dParams;
-  stack<D3DVIEWPORT8*> m_viewStack;
+  std::stack<D3DVIEWPORT8*> m_viewStack;
   DWORD m_stateBlock;
   int m_iScreenHeight;
   int m_iScreenWidth;
@@ -191,13 +191,13 @@ private:
   RESOLUTION m_windowResolution;
   float m_guiScaleX;
   float m_guiScaleY;
-  stack<CPoint> m_cameras;
-  stack<CPoint> m_origins;
-  stack<CRect>  m_clipRegions;
+  std::stack<CPoint> m_cameras;
+  std::stack<CPoint> m_origins;
+  std::stack<CRect>  m_clipRegions;
 
   TransformMatrix m_guiTransform;
   TransformMatrix m_finalTransform;
-  stack<TransformMatrix> m_groupTransform;
+  std::stack<TransformMatrix> m_groupTransform;
 };
 
 /*!

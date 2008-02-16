@@ -43,7 +43,7 @@ private:
   unsigned int m_Formatdata[8];
 
   // Seeking helpers
-  CVBRMP3SeekHelper m_seekInfo;
+  MUSIC_INFO::CVBRMP3SeekHelper m_seekInfo;
 
   // Gapless playback
   bool m_IgnoreFirst;     // Ignore first samples if this is true (for gapless playback)
