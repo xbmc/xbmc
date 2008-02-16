@@ -4,6 +4,8 @@
 #include "../xbmc/Settings.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
+using namespace std;
+
 #define MIX_ALPHA(a,c) (((a * (c >> 24)) / 255) << 24) | (c & 0x00ffffff)
 
 CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture, DWORD dwColorKey)

@@ -11,6 +11,7 @@
 #include <XGraphics.h>
 #endif
 
+using namespace std;
 
 extern "C" void dllprintf( const char *format, ... );
 

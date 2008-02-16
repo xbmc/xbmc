@@ -7,6 +7,7 @@
 #include "XMLUtils.h"
 #include "GuiControlFactory.h"
 
+using namespace std;
 
 GUIFontManager g_fontManager;
 

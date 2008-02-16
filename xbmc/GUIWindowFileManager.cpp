@@ -39,8 +39,10 @@
 #include "utils/GUIInfoManager.h"
 #include "xbox/network.h"
 
+using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
+using namespace MEDIA_DETECT;
 using namespace PLAYLIST;
 
 #define ACTION_COPY   1

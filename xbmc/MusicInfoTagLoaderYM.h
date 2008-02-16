@@ -3,8 +3,6 @@
 #include "ImusicInfoTagLoader.h"
 #include "cores/paplayer/DllStSound.h"
 
-using namespace MUSIC_INFO;
-
 namespace MUSIC_INFO
 {
 	class CMusicInfoTagLoaderYM: public IMusicInfoTagLoader

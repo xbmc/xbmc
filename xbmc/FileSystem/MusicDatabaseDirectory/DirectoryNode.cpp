@@ -22,6 +22,7 @@
 #include "DirectoryNodeYearAlbum.h"
 #include "DirectoryNodeYearSong.h"
 
+using namespace std;
 using namespace DIRECTORY::MUSICDATABASEDIRECTORY;
 
 //  Constructor is protected use ParseURL()

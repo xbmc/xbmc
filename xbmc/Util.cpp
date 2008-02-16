@@ -92,6 +92,7 @@
 #include "DNSNameCache.h"
 #include "FileSystem/PluginDirectory.h"
 
+using namespace std;
 namespace MathUtils {
 
 inline int round_int (double x)

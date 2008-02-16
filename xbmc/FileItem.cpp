@@ -40,6 +40,7 @@
 #include "SortFileItem.h"
 #include "utils/TuxBoxUtil.h"
 
+using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
 using namespace PLAYLIST;

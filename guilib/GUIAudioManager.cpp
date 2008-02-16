@@ -7,6 +7,7 @@
 #include "../xbmc/ButtonTranslator.h"
 #include "../xbmc/utils/SingleLock.h"
 
+using namespace std;
 
 CGUIAudioManager g_audioManager;
 

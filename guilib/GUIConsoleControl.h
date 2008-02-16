@@ -52,11 +52,11 @@ protected:
     DWORD colour;
   };
 
-  typedef vector<Line> LINEVECTOR;
+  typedef std::vector<Line> LINEVECTOR;
   LINEVECTOR m_lines;
   LINEVECTOR m_queuedLines;
 
-  typedef vector<D3DCOLOR> PALETTE;
+  typedef std::vector<D3DCOLOR> PALETTE;
   PALETTE m_palette;
 
   INT m_nMaxLines;

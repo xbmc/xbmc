@@ -42,6 +42,9 @@
 #include "NptNetwork.h"
 #include "NptConsole.h"
 
+using namespace std;
+using namespace MUSIC_INFO;
+
 NPT_SET_LOCAL_LOGGER("xbmc.upnp")
 
 typedef struct {

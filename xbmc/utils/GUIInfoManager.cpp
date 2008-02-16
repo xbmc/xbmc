@@ -41,8 +41,10 @@
 
 #include "GUILabelControl.h"  // for CInfoLabel
 
+using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
+using namespace MEDIA_DETECT;
 
 CGUIInfoManager g_infoManager;
 

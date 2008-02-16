@@ -28,5 +28,5 @@ protected:
   CGUIButtonControl *m_pOriginalSettingsButton;
 
   CVisualisation *m_pVisualisation;
-  vector<VisSetting> *m_pSettings;
+  std::vector<VisSetting> *m_pSettings;
 };

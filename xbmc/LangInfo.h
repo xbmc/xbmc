@@ -101,9 +101,10 @@ protected:
     SPEED_UNIT m_speedUnit;
   };
 
-  typedef map<CStdString, CRegion> MAPREGIONS;
-  typedef map<CStdString, CRegion>::iterator ITMAPREGIONS;
-  typedef pair<CStdString, CRegion> PAIR_REGIONS;
+
+  typedef std::map<CStdString, CRegion> MAPREGIONS;
+  typedef std::map<CStdString, CRegion>::iterator ITMAPREGIONS;
+  typedef std::pair<CStdString, CRegion> PAIR_REGIONS;
   MAPREGIONS m_regions;
   CRegion* m_currentRegion; // points to the current region
   CRegion m_defaultRegion; // default, will be used if no region available via langinfo.xml

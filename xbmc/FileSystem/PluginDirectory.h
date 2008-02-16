@@ -6,7 +6,6 @@
 #include <string>
 #include "StdString.h"
 #include <vector>
-using namespace std;
 
 namespace DIRECTORY
 {

@@ -55,7 +55,7 @@ protected:
   void JumpToSection(DWORD dwWindowId, const CStdString &section);
   void JumpToPreviousSection();
 
-  vector<CBaseSettingControl *> m_vecSettings;
+  std::vector<CBaseSettingControl *> m_vecSettings;
   int m_iSection;
   int m_iScreen;
   RESOLUTION m_NewResolution;

@@ -47,8 +47,8 @@ public:
   void SetFloatValue(float fValue);
   int GetValue() const;
   float GetFloatValue() const;
-  void AddLabel(const string& strLabel, int iValue);
-  const string GetLabel() const;
+  void AddLabel(const std::string& strLabel, int iValue);
+  const std::string GetLabel() const;
   void SetReverse(bool bOnOff);
   int GetMaximum() const;
   int GetMinimum() const;
@@ -84,8 +84,8 @@ protected:
   int m_iSelect;
   bool m_bReverse;
   float m_fInterval;
-  vector<string> m_vecLabels;
-  vector<int> m_vecValues;
+  std::vector<std::string> m_vecLabels;
+  std::vector<int> m_vecValues;
   CGUIImage m_imgspinUp;
   CGUIImage m_imgspinDown;
   CGUIImage m_imgspinUpFocus;

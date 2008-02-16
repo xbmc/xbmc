@@ -7,7 +7,7 @@
 class CDVDSubtitleParserSubrip : public CDVDSubtitleParser
 {
 public:
-  CDVDSubtitleParserSubrip(CDVDSubtitleStream* pStream, const string& strFile);
+  CDVDSubtitleParserSubrip(CDVDSubtitleStream* pStream, const std::string& strFile);
   virtual ~CDVDSubtitleParserSubrip();
   
   virtual bool Init();

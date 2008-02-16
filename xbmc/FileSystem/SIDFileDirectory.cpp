@@ -5,6 +5,7 @@
 #include "../MusicInfoLoader.h"
 #include "DirectoryCache.h"
 
+using namespace MUSIC_INFO;
 using namespace DIRECTORY;
 
 CSIDFileDirectory::CSIDFileDirectory(void)

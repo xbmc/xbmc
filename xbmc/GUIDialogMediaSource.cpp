@@ -29,6 +29,7 @@
 #include "Util.h"
 #include "FileSystem/PluginDirectory.h"
 
+using namespace std;
 using namespace DIRECTORY;
 
 #define CONTROL_HEADING         2

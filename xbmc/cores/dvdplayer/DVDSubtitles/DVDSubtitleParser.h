@@ -7,7 +7,7 @@
 class CDVDSubtitleParser
 {
 public:
-  CDVDSubtitleParser(CDVDSubtitleStream* pStream, const string& strFile)
+  CDVDSubtitleParser(CDVDSubtitleStream* pStream, const std::string& strFile)
   {
     m_pStream = pStream;
     m_strFileName = strFile;
@@ -25,6 +25,6 @@ public:
   
 protected:
   CDVDSubtitleStream* m_pStream;
-  string m_strFileName;
+  std::string m_strFileName;
 };
 

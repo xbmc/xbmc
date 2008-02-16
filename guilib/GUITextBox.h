@@ -42,6 +42,7 @@ public:
   virtual void SetPulseOnSelect(bool pulse);
   virtual void SetNavigation(DWORD up, DWORD down, DWORD left, DWORD right);
   void SetPageControl(DWORD pageControl);
+
   virtual bool HitTest(const CPoint &point) const;
   virtual bool CanFocus() const;
   virtual bool OnMouseOver(const CPoint &point);

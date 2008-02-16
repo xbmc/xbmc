@@ -2,8 +2,6 @@
 
 #include "MusicInfoTagLoaderMP3.h"
 
-using namespace MUSIC_INFO;
-
 namespace MUSIC_INFO
 {
 
