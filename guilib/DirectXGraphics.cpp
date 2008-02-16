@@ -450,7 +450,7 @@ void GetTextureFromData(D3DTexture *pTex, void *texData, SDL_Surface* *ppTexture
       {
         BYTE *src = texDataStart + y * pitch;
         BYTE *dest = dstPixels + y * destPitch;
-        memcpy(dest, src, min((unsigned int)pitch, (unsigned int)destPitch));
+        memcpy(dest, src, std::min((unsigned int)pitch, (unsigned int)destPitch));
       }
     }
 #ifdef HAS_SDL

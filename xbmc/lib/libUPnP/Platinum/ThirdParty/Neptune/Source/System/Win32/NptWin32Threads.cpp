@@ -128,31 +128,11 @@ NPT_Win32CriticalSection::Unlock()
 }
 
 /*----------------------------------------------------------------------
-|   NPT_Win32Event
-+---------------------------------------------------------------------*/
-class NPT_Win32Event
-{
-public:
-    // methods
-    NPT_Win32Event(bool bManual = false);
-    virtual ~NPT_Win32Event();
-
-    // NPT_Mutex methods
-    virtual NPT_Result Wait(NPT_Timeout timeout = NPT_TIMEOUT_INFINITE);
-    virtual void       Signal();
-    virtual void       Reset();
-
-private:
-    // members
-    HANDLE m_Event;
-};
-
-/*----------------------------------------------------------------------
 |   NPT_Win32Event::NPT_Win32Event
 +---------------------------------------------------------------------*/
-NPT_Win32Event::NPT_Win32Event(bool bManual)
+NPT_Win32Event::NPT_Win32Event(bool manual)
 {
-    m_Event = CreateEvent(NULL, (bManual==true)?TRUE:FALSE, FALSE, NULL);
+    m_Event = CreateEvent(NULL, (manual==true)?TRUE:FALSE, FALSE, NULL);
 }
 
 /*----------------------------------------------------------------------
@@ -416,7 +396,7 @@ class NPT_Win32Thread : public NPT_ThreadInterface
                                 bool          detached);
                ~NPT_Win32Thread();
     NPT_Result  Start(); 
-    NPT_Result  Wait();
+    NPT_Result  Wait(NPT_Timeout timeout = NPT_TIMEOUT_INFINITE);
 
  private:
     // methods
@@ -520,24 +500,12 @@ NPT_Win32Thread::Start()
     unsigned int thread_id;
 #endif
     m_ThreadHandle = (HANDLE)
-#ifdef _XBOX
-// xbox can't grow stack space, so it allocates default size directly
-// assume we can do with 64k of stack.
-      _beginthreadex(NULL, 
-                       0x10000, 
-                       EntryPoint, 
-                       reinterpret_cast<void*>(this), 
-                       0, 
-                       &thread_id);
-#else
         _beginthreadex(NULL, 
-                       0, 
+                       NPT_CONFIG_THREAD_STACK_SIZE, 
                        EntryPoint, 
                        reinterpret_cast<void*>(this), 
                        0, 
                        &thread_id);
-#endif
-
     if (m_ThreadHandle == 0) {
         // failed
         m_ThreadId = 0;
@@ -561,7 +529,7 @@ NPT_Win32Thread::Run()
 |   NPT_Win32Thread::Wait
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_Win32Thread::Wait()
+NPT_Win32Thread::Wait(NPT_Timeout timeout /* = NPT_TIMEOUT_INFINITE */)
 {
     // check that we're not detached
     if (m_ThreadHandle == 0 || m_Detached) {
@@ -570,7 +538,7 @@ NPT_Win32Thread::Wait()
 
     // wait for the thread to finish
     //NPT_Debug(":: NPT_Win32Thread::Wait - joining thread id %d\n", m_ThreadId);
-    DWORD result = WaitForSingleObject(m_ThreadHandle, INFINITE);
+    DWORD result = WaitForSingleObject(m_ThreadHandle, timeout==NPT_TIMEOUT_INFINITE?INFINITE:timeout);
     if (result != WAIT_OBJECT_0) {
         return NPT_FAILURE;
     } else {

@@ -13,6 +13,8 @@
 #include "../xbmc/utils/SingleLock.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
+using namespace std;
+
 #define LABEL_ROW1 10
 #define LABEL_ROW2 11
 #define LABEL_ROW3 12

@@ -466,7 +466,7 @@ public:
   void SetCurrentSlide(CFileItem &item);
   const CFileItem &GetCurrentSlide() const { return m_currentSlide; };
   void ResetCurrentSlide();
-  void SetCurrentSongTag(const CMusicInfoTag &tag) 
+  void SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag &tag) 
   {
     CLog::Log(LOGDEBUG, "Asked to SetCurrentTag");
     *m_currentFile.GetMusicInfoTag() = tag; 
@@ -478,7 +478,7 @@ public:
     m_currentFile.m_lStartOffset = 0;
   };
 
-  const CMusicInfoTag *GetCurrentSongTag() const
+  const MUSIC_INFO::CMusicInfoTag *GetCurrentSongTag() const
   { 
     if (m_currentFile.HasMusicInfoTag())
       return m_currentFile.GetMusicInfoTag(); 
@@ -517,7 +517,7 @@ public:
   void ToggleShowInfo() { m_playerShowInfo = !m_playerShowInfo; };
   bool m_performingSeek;
 
-  string GetSystemHeatInfo(int info);
+  std::string GetSystemHeatInfo(int info);
 
   void UpdateFPS();
   inline float GetFPS() const { return m_fps; };
@@ -595,7 +595,7 @@ protected:
 
   CStdString m_launchingXBE;
 
-  map<int, int> m_containerMoves;  // direction of list moving
+  std::map<int, int> m_containerMoves;  // direction of list moving
   int m_nextWindowID;
   int m_prevWindowID;
 
@@ -604,7 +604,7 @@ protected:
   public:
     CStdString m_info;    // the text expression
     int m_id;             // the id used to identify this expression
-    list<int> m_postfix;  // the postfix binary expression
+    std::list<int> m_postfix;  // the postfix binary expression
     void operator=(const CCombinedValue& mSrc);
   };
 

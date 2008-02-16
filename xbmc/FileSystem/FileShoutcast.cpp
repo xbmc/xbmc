@@ -21,6 +21,10 @@
 #include "ShoutcastRipFile.h"
 #include "../utils/GUIInfoManager.h"
 
+using namespace std;
+using namespace XFILE;
+using namespace MUSIC_INFO;
+
 #ifndef HAS_SHOUTCAST
 extern "C" 
 {
@@ -30,8 +34,6 @@ extern "C"
   int        rip_manager_get_content_type() {}
 }
 #endif
-
-using namespace XFILE;
 
 const int SHOUTCASTTIMEOUT = 100;
 static CRingBuffer m_ringbuf;

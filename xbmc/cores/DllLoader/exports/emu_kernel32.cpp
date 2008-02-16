@@ -15,6 +15,8 @@
 #define __except catch
 #endif
 
+using namespace std;
+
 vector<string> m_vecAtoms;
 
 //#define API_DEBUG

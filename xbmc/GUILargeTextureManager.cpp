@@ -52,9 +52,9 @@ void CGUILargeTextureManager::Process()
     CFileItem file(path, false);
     if (file.IsPicture() && !(file.IsZIP() || file.IsRAR() || file.IsCBR() || file.IsCBZ())) // ignore non-pictures
 #ifndef HAS_SDL_OPENGL
-      texture = pic.Load(path, min(g_graphicsContext.GetWidth(), 1024), min(g_graphicsContext.GetHeight(), 720));
+      texture = pic.Load(path, std::min(g_graphicsContext.GetWidth(), 1024), std::min(g_graphicsContext.GetHeight(), 720));
 #else
-      texture = new CGLTexture(pic.Load(path, min(g_graphicsContext.GetWidth(), 1024), min(g_graphicsContext.GetHeight(), 720)));
+      texture = new CGLTexture(pic.Load(path, std::min(g_graphicsContext.GetWidth(), 1024), std::min(g_graphicsContext.GetHeight(), 720)));
 #endif
     // and add to our allocated list
     lock.Enter();

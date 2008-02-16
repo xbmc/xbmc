@@ -9,7 +9,7 @@
 typedef struct {
   int id;
   bool bDone;
-  string strFile;
+  std::string strFile;
   XBPyThread *pyThread;
 }PyElem;
 

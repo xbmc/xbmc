@@ -36,7 +36,7 @@ public:
   }
   bool GetButton (int& id, bool consider_repeat=true);
   bool GetAxis (int &id) { if (!IsAxisActive()) return false; id=m_AxisId; return true; }
-  string GetJoystick() { return (m_JoyId>-1)?m_JoystickNames[m_JoyId]:""; }
+  std::string GetJoystick() { return (m_JoyId>-1)?m_JoystickNames[m_JoyId]:""; }
   int GetAxisWithMaxAmount();
   void SetSafeRange(int val) { m_SafeRange=(val>32767)?32767:val; }
 
@@ -55,8 +55,8 @@ private:
   int m_SafeRange; // dead zone
   Uint32 m_pressTicks;
   WORD m_ActiveFlags;
-  vector<SDL_Joystick*> m_Joysticks;
-  vector<string> m_JoystickNames;
+  std::vector<SDL_Joystick*> m_Joysticks;
+  std::vector<std::string> m_JoystickNames;
 };
 
 extern CJoystick g_Joystick;

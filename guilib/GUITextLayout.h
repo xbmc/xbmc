@@ -40,7 +40,7 @@ public:
   bool Update(const CStdString &text, float maxWidth = 0);
 
   unsigned int GetTextLength() const;
-  void GetFirstText(vector<DWORD> &text) const;
+  void GetFirstText(std::vector<DWORD> &text) const;
   void Reset();
 
   void SetWrap(bool bWrap=true);
@@ -49,14 +49,14 @@ public:
   static void DrawText(CGUIFont *font, float x, float y, DWORD color, DWORD shadowColor, const CStdString &text, DWORD align);
   static void DrawOutlineText(CGUIFont *font, float x, float y, DWORD color, DWORD outlineColor, DWORD outlineWidth, const CStdString &text);
 protected:
-  void ParseText(const CStdString &text, vector<DWORD> &parsedText);
-  void WrapText(vector<DWORD> &text, float maxWidth);
-  void LineBreakText(vector<DWORD> &text);
+  void ParseText(const CStdString &text, std::vector<DWORD> &parsedText);
+  void WrapText(std::vector<DWORD> &text, float maxWidth);
+  void LineBreakText(std::vector<DWORD> &text);
 
   // our text to render
-  vector<DWORD> m_colors;
-  vector<CGUIString> m_lines;
-  typedef vector<CGUIString>::iterator iLine;
+  std::vector<DWORD> m_colors;
+  std::vector<CGUIString> m_lines;
+  typedef std::vector<CGUIString>::iterator iLine;
 
   // the layout and font details
   CGUIFont *m_font;        // has style, colour info
@@ -67,7 +67,7 @@ protected:
 
   CStdString m_lastText;
 private:
-  static void AppendToUTF32(const CStdString &text, DWORD colStyle, vector<DWORD> &utf32);
-  static void DrawOutlineText(CGUIFont *font, float x, float y, const vector<DWORD> &colors, DWORD outlineColor, DWORD outlineWidth, const vector<DWORD> &text, DWORD align, float maxWidth);
+  static void AppendToUTF32(const CStdString &text, DWORD colStyle, std::vector<DWORD> &utf32);
+  static void DrawOutlineText(CGUIFont *font, float x, float y, const std::vector<DWORD> &colors, DWORD outlineColor, DWORD outlineWidth, const std::vector<DWORD> &text, DWORD align, float maxWidth);
 };
 

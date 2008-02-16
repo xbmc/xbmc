@@ -12,7 +12,7 @@ public:
   void Parse(const CStdString& strTableRow);
 
 protected:
-  vector<CStdString> m_vecColums;
+  std::vector<CStdString> m_vecColums;
 };
 
 class CHTMLTable
@@ -24,6 +24,6 @@ public:
   int GetRows() const;
   const CHTMLRow& GetRow(int iRow) const;
 protected:
-  vector<CHTMLRow> m_vecRows;
+  std::vector<CHTMLRow> m_vecRows;
 };
 }

@@ -5,6 +5,7 @@
 #include "../OggTag.h"
 #include "DirectoryCache.h"
 
+using namespace MUSIC_INFO;
 using namespace DIRECTORY;
 
 COGGFileDirectory::COGGFileDirectory(void)

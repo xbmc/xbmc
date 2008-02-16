@@ -55,7 +55,7 @@ private:
 
   void SetDefaults();
   void readCharMapFromXML(const TiXmlElement* pXMLMap, std::map<WCHAR, WCHAR>& charToCharMap, const char* mapRootElement);
-  void readByteMapFromXML(const TiXmlElement* pXMLMap, map<BYTE, WCHAR>& charToCharMap, const char* mapRootElement);
+  void readByteMapFromXML(const TiXmlElement* pXMLMap, std::map<BYTE, WCHAR>& charToCharMap, const char* mapRootElement);
 };
 
 extern CKeyboardLayoutConfiguration g_keyboardLayoutConfiguration;

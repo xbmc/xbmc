@@ -135,7 +135,7 @@ int SHNCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   if (!m_handle)
     return READ_ERROR;
 
-  int samplesToRead = min(size * 8 / m_BitsPerSample / m_Channels, BLOCK_READ_SIZE);
+  int samplesToRead = std::min(size * 8 / m_BitsPerSample / m_Channels, BLOCK_READ_SIZE);
   int samplesRead = 0;
   if (m_dll.Read(m_handle, pBuffer, samplesToRead, &samplesRead))
   {

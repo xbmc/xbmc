@@ -8,6 +8,7 @@
 #endif
 #include "../Util.h"
 
+using namespace std;
 using namespace DIRECTORY;
 
 CDirectory::CDirectory()

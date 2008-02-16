@@ -12,6 +12,7 @@
 #include "pyutil.h"
 #include "listitem.h"
 
+using namespace std;
 using namespace PLAYLIST;
 
 #ifndef __GNUC__

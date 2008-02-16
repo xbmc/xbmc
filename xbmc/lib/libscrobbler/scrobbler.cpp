@@ -27,6 +27,8 @@
 #include "../../Util.h"
 #include "../../Application.h"
 
+using namespace std;
+using namespace MUSIC_INFO;
 using namespace XFILE;
 
 #define LS_VER    "1.4"

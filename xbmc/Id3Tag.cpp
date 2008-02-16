@@ -24,6 +24,7 @@
 #include "Util.h"
 #include "Picture.h"
 
+using namespace std;
 using namespace MUSIC_INFO;
 
 CID3Tag::CID3Tag()

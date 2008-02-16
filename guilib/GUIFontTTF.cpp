@@ -20,6 +20,8 @@
 
 #define USE_RELEASE_LIBS
 
+using namespace std;
+
 // our free type library (debug)
 #ifdef _XBOX
 #if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)

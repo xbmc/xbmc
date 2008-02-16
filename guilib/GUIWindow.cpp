@@ -21,6 +21,8 @@
 #include "utils/PerformanceSample.h"
 #endif
 
+using namespace std;
+
 CStdString CGUIWindow::CacheFilename = "";
 
 CGUIWindow::CGUIWindow(DWORD dwID, const CStdString &xmlFile)

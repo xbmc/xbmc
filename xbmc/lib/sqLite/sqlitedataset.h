@@ -135,14 +135,14 @@ or insert() operations default = false) */
 
 /* opens a query  & then sets a query results */
   virtual void open();
-  virtual void open(const string &sql);
+  virtual void open(const std::string &sql);
 /* func. executes a query without results to return */
   virtual int  exec ();
-  virtual int  exec (const string &sql);
+  virtual int  exec (const std::string &sql);
   virtual const void* getExecRes();
 /* as open, but with our query exept Sql */
   virtual bool query(const char *query);
-  virtual bool query(const string &query);
+  virtual bool query(const std::string &query);
 /* func. closes a query */
   virtual void close(void);
 /* Cancel changes, made in insert or edit states of dataset */

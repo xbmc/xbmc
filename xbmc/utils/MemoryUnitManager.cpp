@@ -8,6 +8,7 @@
 #include "../FileSystem/MemoryUnits/Fat32FileSystem.h"
 #include "../Application.h"
 
+using namespace std;
 using namespace XFILE;
 
 // Undocumented stuff
@@ -262,3 +263,4 @@ void CMemoryUnitManager::Notify(unsigned long port, unsigned long slot, bool suc
     g_application.SetKaiNotification(g_localizeStrings.Get(20138), portSlot, NULL);
 #endif
 }
+

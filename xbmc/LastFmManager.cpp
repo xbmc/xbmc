@@ -33,6 +33,8 @@
 #include "MusicDatabase.h"
 #include <sstream>
 
+using namespace std;
+using namespace MUSIC_INFO;
 using namespace PLAYLIST;
 using namespace XFILE;
 

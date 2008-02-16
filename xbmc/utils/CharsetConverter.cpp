@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Util.h"
 
+using namespace std;
+
 #define ICONV_PREPARE(iconv) iconv=(iconv_t)-1
 #define ICONV_SAFE_CLOSE(iconv) if (iconv!=(iconv_t)-1) { iconv_close(iconv); iconv=(iconv_t)-1; }
 

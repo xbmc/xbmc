@@ -1,7 +1,7 @@
 #pragma once
 #include "Database.h"
 
-typedef vector<CStdString> VECPROGRAMPATHS;
+typedef std::vector<CStdString> VECPROGRAMPATHS;
 
 #define COMPARE_PERCENTAGE     0.90f // 90%
 #define COMPARE_PERCENTAGE_MIN 0.50f // 50%

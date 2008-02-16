@@ -69,7 +69,12 @@
 #define STRICT
 #endif
 #define vsnprintf _vsnprintf
-#define snprintf _snprintf
+#define snprintf  _snprintf
+#endif
+
+/* XBox */
+#if defined(_XBOX)
+#define NPT_CONFIG_THREAD_STACK_SIZE 0x10000
 #endif
 
 /* QNX */
@@ -84,6 +89,12 @@
 /* linux */
 #if defined(__linux__)
 #undef NPT_CONFIG_HAVE_SOCKADDR_SA_LEN
+#endif
+
+/* symbian */
+#if defined(__SYMBIAN32__)
+/* If defined, specify the stack size of each NPT_Thread. */
+#define NPT_CONFIG_THREAD_STACK_SIZE   0x14000
 #endif
 
 /*----------------------------------------------------------------------
@@ -117,11 +128,17 @@
 #if defined(_WIN64)
 typedef __int64 NPT_PointerLong;
 #else
+#if _MSC_VER >= 1400
 typedef __w64 long NPT_PointerLong;
+#else
+typedef long NPT_PointerLong;
+#endif
 #endif
 #define NPT_POINTER_TO_LONG(_p) ((NPT_PointerLong) (_p) )
 #if _MSC_VER >= 1400 && !defined(_WIN32_WCE)
 #define NPT_CONFIG_HAVE_FOPEN_S
+#define NPT_CONFIG_HAVE_FSOPEN
+#define NPT_CONFIG_HAVE_SHARE_H
 #define NPT_vsnprintf(s,c,f,a)  _vsnprintf_s(s,c,_TRUNCATE,f,a)
 #define NPT_snprintf(s,c,f,...) _snprintf_s(s,c,_TRUNCATE,f,__VA_ARGS__)
 #define NPT_strncpy(d,s,c)       strncpy_s(d,c,s,_TRUNCATE)
@@ -149,8 +166,6 @@ typedef __w64 long NPT_PointerLong;
 #undef NPT_CONFIG_HAVE_NEW_H
 #include "e32std.h"
 #define explicit
-#undef NPT_CONFIG_HAVE_VSNPRINTF
-#undef NPT_CONFIG_HAVE_SNPRINTF
 #endif
 
 /*----------------------------------------------------------------------
@@ -168,6 +183,10 @@ typedef __w64 long NPT_PointerLong;
 #endif
 #if !defined(NPT_vsnprintf)
 #define NPT_vsnprintf vsnprintf
+#endif
+
+#if !defined(NPT_CONFIG_THREAD_STACK_SIZE)
+#define NPT_CONFIG_THREAD_STACK_SIZE 0
 #endif
 
 /*----------------------------------------------------------------------

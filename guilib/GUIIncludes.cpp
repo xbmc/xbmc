@@ -2,6 +2,8 @@
 #include "GUIIncludes.h"
 #include "SkinInfo.h"
 
+using namespace std;
+
 CGUIIncludes::CGUIIncludes()
 {
 }

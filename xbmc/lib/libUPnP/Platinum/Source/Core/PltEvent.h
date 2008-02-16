@@ -23,7 +23,6 @@ class PLT_StateVariable;
 class PLT_DeviceData;
 class PLT_Service;
 class PLT_TaskManager;
-class PLT_EventSubscriberTask;
 
 /*----------------------------------------------------------------------
 |   PLT_EventSubscriber class
@@ -45,18 +44,22 @@ public:
     NPT_Result          SetSID(NPT_String value);
     NPT_Result          FindCallbackURL(const char* callback_url);
     NPT_Result          AddCallbackURL(const char* callback_url);
-    NPT_Result          Notify(NPT_Array<PLT_StateVariable*>& vars);
+    NPT_Result          Notify(NPT_List<PLT_StateVariable*>& vars);
+    void                Cancel() {
+        if (m_SubscriberTask) m_TaskManager->StopTask(m_SubscriberTask);
+        m_SubscriberTask = NULL;
+    }
     
 protected:
     //members
-    PLT_TaskManager*       m_TaskManager;
-    PLT_EventSubscriberTask* m_SubscriberTask;
-    PLT_Service*           m_Service;
-    NPT_Ordinal            m_EventKey;
-    NPT_String             m_SID;
-    NPT_SocketAddress      m_LocalIf;
-    NPT_Array<NPT_String>  m_CallbackURLs;
-    NPT_TimeStamp          m_ExpirationTime;
+    PLT_TaskManager*          m_TaskManager;
+    PLT_Service*              m_Service;
+    NPT_Ordinal               m_EventKey;
+    PLT_HttpClientSocketTask* m_SubscriberTask;
+    NPT_String                m_SID;
+    NPT_SocketAddress         m_LocalIf;
+    NPT_Array<NPT_String>     m_CallbackURLs;
+    NPT_TimeStamp             m_ExpirationTime;
 };
 
 /*----------------------------------------------------------------------
@@ -68,7 +71,7 @@ public:
     // methods
     PLT_EventSubscriberFinderBySID(const char* sid) : m_SID(sid) {}
 
-    bool operator()(const PLT_EventSubscriber* const & sub) const {
+    bool operator()(PLT_EventSubscriber* const & sub) const {
         return m_SID.Compare(sub->GetSID(), true) ? false : true;
     }
 
@@ -105,35 +108,11 @@ public:
     // methods
     PLT_EventSubscriberFinderByService(PLT_Service* service) : m_Service(service) {}
     virtual ~PLT_EventSubscriberFinderByService() {}
-    bool operator()(PLT_EventSubscriber* const & eventSub) const ;
+    bool operator()(PLT_EventSubscriber* const & eventSub) const;
 
 private:
     // members
     PLT_Service* m_Service;
-};
-
-/*----------------------------------------------------------------------
-|   PLT_EventSubscriberTask class
-+---------------------------------------------------------------------*/
-class PLT_EventSubscriberTask : public PLT_ThreadTask
-{
-public:
-    PLT_EventSubscriberTask();
-    virtual ~PLT_EventSubscriberTask();
-
-    NPT_Result AddRequest(NPT_HttpRequest* request) { return m_Requests.Push(request, false); }
-protected:
-    // PLT_ThreadTask methods
-    virtual void DoAbort();
-    virtual void DoRun();
-
-    virtual NPT_Result ProcessResponse(NPT_HttpRequest*  request, 
-                                       NPT_SocketInfo&   info, 
-                                       NPT_HttpResponse* response);
-
-private:
-    NPT_Queue<NPT_HttpRequest> m_Requests;
-    NPT_Reference<NPT_Socket>  m_Socket;
 };
 
 #endif /* _PLT_EVENT_H_ */

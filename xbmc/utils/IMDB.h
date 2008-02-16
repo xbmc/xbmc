@@ -18,7 +18,7 @@
 class TiXmlDocument;
 class CGUIDialogProgress;
 
-typedef vector<CScraperUrl> IMDB_MOVIELIST;
+typedef std::vector<CScraperUrl> IMDB_MOVIELIST;
 typedef std::map<std::pair<int,int>,CScraperUrl> IMDB_EPISODELIST;
 
 class CIMDB : public CThread

@@ -22,7 +22,7 @@ NPT_SET_LOCAL_LOGGER("platinum.core.statevariable")
 +---------------------------------------------------------------------*/
 PLT_StateVariable::PLT_StateVariable(PLT_Service* service) : 
     m_Service(service), 
-    m_AllowedValueRange(NULL) 
+    m_AllowedValueRange(NULL)
 {
 }
 
@@ -87,6 +87,18 @@ PLT_StateVariable::IsSendingEvents()
 }
 
 /*----------------------------------------------------------------------
+|   PLT_StateVariable::SetRate
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_StateVariable::SetRate(NPT_TimeInterval rate)
+{
+    if (!IsSendingEvents()) return NPT_FAILURE;
+
+    m_Rate = rate;
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
 |   PLT_StateVariable::SetValue
 +---------------------------------------------------------------------*/
 NPT_Result
@@ -104,12 +116,27 @@ PLT_StateVariable::SetValue(const char* value, bool publish)
         }
 
         m_Value = value;
-        if (publish == true) {
-            m_Service->AddChanged(this);
-        }    
+        if (publish) m_Service->AddChanged(this); 
     }
 
     return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_StateVariable::IsReadyToPublish
++---------------------------------------------------------------------*/
+bool
+PLT_StateVariable::IsReadyToPublish()
+{
+    NPT_TimeStamp now;
+    NPT_System::GetCurrentTimeStamp(now);
+
+    if (m_Rate == NPT_TimeStamp() || m_LastEvent + m_Rate <= now ) {
+        m_LastEvent = now;
+        return true;
+    }
+
+    return false;
 }
 
 /*----------------------------------------------------------------------
@@ -125,6 +152,6 @@ PLT_StateVariable::ValidateValue(const char* value)
         }
     }
 
-    // there are more to it than allowed values, we need to test for range, etc..
+    // TODO: there are more to it than allowed values, we need to test for range, etc..
     return NPT_SUCCESS;    
 }

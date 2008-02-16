@@ -36,6 +36,8 @@ using namespace Surface;
 #include "CocoaUtils.h"
 #endif
 
+using namespace std;
+
 XBVideoConfig g_videoConfig;
 
 XBVideoConfig::XBVideoConfig()

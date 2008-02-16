@@ -10,6 +10,7 @@
 #include "../utils/Network.h"
 #include "Application.h"
 
+using namespace std;
 using namespace XFILE;
 
 //////////////////////////////////////////////////////////////////////

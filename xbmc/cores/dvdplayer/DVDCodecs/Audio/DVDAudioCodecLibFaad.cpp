@@ -89,7 +89,7 @@ int CDVDAudioCodecLibFaad::Decode(BYTE* pData, int iSize)
   if (!m_pHandle)
     return -1;
 
-  int iBytesToCopy = min(iSize, LIBFAAD_INPUT_SIZE - m_InputBufferSize);
+  int iBytesToCopy = std::min(iSize, LIBFAAD_INPUT_SIZE - m_InputBufferSize);
   memcpy(m_InputBuffer + m_InputBufferSize, pData, iBytesToCopy);
   m_InputBufferSize += iBytesToCopy;
   

@@ -9,6 +9,7 @@
 #include "../utils/SingleLock.h"
 #include "../Application.h"
 
+using namespace AUTOPTR;
 using namespace XFILE;
  
 #define READ_CACHE_CHUNK_SIZE (64*1024)

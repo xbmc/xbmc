@@ -52,7 +52,7 @@ protected:
   bool m_needsCleanup;
   CMusicDatabase m_musicDatabase;
 
-  set<CStdString> m_pathsToScan;
-  set<CStdString> m_pathsToCount;
+  std::set<CStdString> m_pathsToScan;
+  std::set<CStdString> m_pathsToCount;
 };
 }

@@ -5,6 +5,7 @@
 #include "../MusicInfoTagLoaderNSF.h"
 #include "DirectoryCache.h"
 
+using namespace MUSIC_INFO;
 using namespace DIRECTORY;
 
 CNSFFileDirectory::CNSFFileDirectory(void)

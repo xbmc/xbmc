@@ -10,7 +10,9 @@
 #include "../musicInfoTagLoaderFactory.h"
 #include "../utils/LabelFormatter.h"
 
+using namespace std;
 using namespace XFILE;
+using namespace MUSIC_INFO;
 
 CCDDARipper::CCDDARipper()
 {

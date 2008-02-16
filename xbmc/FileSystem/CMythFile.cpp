@@ -336,7 +336,7 @@ unsigned int CCMythFile::Read(void* buffer, __int64 size)
     return 0;
   }
 
-  size = min(m_remain, (int)size);
+  size = std::min(m_remain, (int)size);
   if(m_recorder)
     ret = cmyth_livetv_get_block(m_recorder, (char*)buffer, size);
   else

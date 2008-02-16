@@ -132,7 +132,7 @@ protected:
   GUIIMAGE_ASPECT_RATIO m_aspectRatio;
   DWORD                 m_aspectAlign;
 #ifndef HAS_SDL
-  vector <LPDIRECT3DTEXTURE8> m_vecTextures;
+  std::vector <LPDIRECT3DTEXTURE8> m_vecTextures;
   LPDIRECT3DTEXTURE8 m_diffuseTexture;
   LPDIRECT3DPALETTE8 m_diffusePalette;
   LPDIRECT3DPALETTE8 m_pPalette;
@@ -150,7 +150,7 @@ protected:
   CGLTexture* m_diffuseTexture;
   SDL_Palette* m_diffusePalette;
   SDL_Palette* m_pPalette;
-  vector <CGLTexture*> m_vecTextures;
+  std::vector <CGLTexture*> m_vecTextures;
 #endif  
   float m_diffuseScaleU, m_diffuseScaleV;
   bool m_bDynamicResourceAlloc;

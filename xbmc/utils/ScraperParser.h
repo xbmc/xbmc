@@ -40,7 +40,7 @@ public:
   const SUrlEntry GetFirstThumb() const;
   const SUrlEntry GetSeasonThumb(int) const;
   void Clear();
-  static bool Get(const SUrlEntry&, string&, CHTTP& http);
+  static bool Get(const SUrlEntry&, std::string&, CHTTP& http);
   static bool DownloadThumbnail(const CStdString &thumb, const SUrlEntry& entry);
 
   CStdString m_xml;

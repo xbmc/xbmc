@@ -26,6 +26,7 @@
 #include "AudioContext.h"
 #include "utils/GUIInfoManager.h"
 
+using namespace MUSIC_INFO;
 using namespace XFILE;
 
 //CdgLoader

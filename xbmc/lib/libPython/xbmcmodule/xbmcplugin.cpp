@@ -7,6 +7,7 @@
 #include "pyutil.h"
 #include "FileItem.h"
 
+using namespace std;
 using namespace XFILE;
 
 #ifndef __GNUC__
@@ -157,8 +158,6 @@ namespace PYXBMC
 
   PyDoc_STRVAR(getSetting__doc__,
     "getSetting(id) -- Returns the value of a setting as a string.\n"
-    "\n"
-    "id        : string - id of the setting that the module needs to access.\n"
     "\n"
     "id        : string - id of the setting that the module needs to access.\n"
     "\n"

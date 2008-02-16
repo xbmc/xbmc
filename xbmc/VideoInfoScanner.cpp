@@ -32,6 +32,7 @@
 
 #define REGEXSAMPLEFILE "[-\\._ ]sample[-\\._ ]"
 
+using namespace std;
 using namespace DIRECTORY;
 using namespace XFILE;
 

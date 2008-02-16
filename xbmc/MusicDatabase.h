@@ -119,7 +119,7 @@ public:
   bool IncrTop100CounterByFileName(const CStdString& strFileName1);
   bool RemoveSongsFromPath(const CStdString &path, CSongMap &songs);
   bool CleanupOrphanedItems();
-  bool GetPaths(set<CStdString> &paths);
+  bool GetPaths(std::set<CStdString> &paths);
   bool SetPathHash(const CStdString &path, const CStdString &hash);
   bool GetPathHash(const CStdString &path, CStdString &hash);
   bool GetGenresNav(const CStdString& strBaseDir, CFileItemList& items);
@@ -153,11 +153,11 @@ public:
   bool SetSongRating(const CStdString &filePath, char rating);
 
 protected:
-  map<CStdString, int /*CArtistCache*/> m_artistCache;
-  map<CStdString, int /*CGenreCache*/> m_genreCache;
-  map<CStdString, int /*CPathCache*/> m_pathCache;
-  map<CStdString, int /*CPathCache*/> m_thumbCache;
-  map<CStdString, CAlbumCache> m_albumCache;
+  std::map<CStdString, int /*CArtistCache*/> m_artistCache;
+  std::map<CStdString, int /*CGenreCache*/> m_genreCache;
+  std::map<CStdString, int /*CPathCache*/> m_pathCache;
+  std::map<CStdString, int /*CPathCache*/> m_thumbCache;
+  std::map<CStdString, CAlbumCache> m_albumCache;
   virtual bool CreateTables();
   long AddAlbum(const CStdString& strAlbum1, long lArtistId, const CStdString &extraArtists, const CStdString &strArtist1, long idThumb, long idGenre, const CStdString &extraGenres, long year);
   long AddGenre(const CStdString& strGenre);
@@ -171,7 +171,7 @@ protected:
   bool GetAlbumInfoSongs(long idAlbumInfo, VECSONGS& songs);
 private:
   bool GetAlbumsByWhere(const CStdString &baseDir, const CStdString &where, CFileItemList &items);
-  void SplitString(const CStdString &multiString, vector<CStdString> &vecStrings, CStdString &extraStrings);
+  void SplitString(const CStdString &multiString, std::vector<CStdString> &vecStrings, CStdString &extraStrings);
   CSong GetSongFromDataset(bool bWithMusicDbPath=false);
   CAlbum GetAlbumFromDataset();
   void GetFileItemFromDataset(CFileItem* item, const CStdString& strMusicDBbasePath);
