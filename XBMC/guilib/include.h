@@ -17,7 +17,6 @@
 #include <queue>
 #include <stdio.h>
 #include "StdString.h"
-using namespace std;
 #ifdef _XBOX
 #ifdef _DEBUG
 #define _CRTDBG_MAP_ALLOC

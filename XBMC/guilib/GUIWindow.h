@@ -109,7 +109,7 @@ public:
   virtual bool HasListItems() const { return false; };
   virtual CFileItem *GetCurrentListItem(int offset = 0) { return NULL; };
   virtual int GetViewContainerID() const { return 0; };
-  void GetContainers(vector<CGUIControl *> &containers) const;
+  void GetContainers(std::vector<CGUIControl *> &containers) const;
   virtual bool IsActive() const;
   bool IsAllocated() const { return m_WindowAllocated; };
   void SetCoordsRes(RESOLUTION res) { m_coordsRes = res; };
@@ -168,7 +168,7 @@ protected:
   static CStdString CacheFilename;
 //#endif
 
-  vector<CGUIControl*> m_vecControls;
+  std::vector<CGUIControl*> m_vecControls;
   typedef std::vector<CGUIControl*>::iterator ivecControls;
   typedef std::vector<CGUIControl*>::const_iterator ciControls;
   DWORD m_dwWindowId;
@@ -192,18 +192,18 @@ protected:
 
   bool   m_hasCamera;
   CPoint m_camera;      // 3D camera position (x,y coords - z is fixed currently)
-  vector<CAnimation> m_animations;
+  std::vector<CAnimation> m_animations;
 
   int m_renderOrder;      // for render order of dialogs
   bool m_hasRendered;
 
-  vector<COrigin> m_origins;  // positions of dialogs depending on base window
+  std::vector<COrigin> m_origins;  // positions of dialogs depending on base window
 
   // control states
   bool m_saveLastControl;
   int m_lastControlID;
   int m_focusedControl;
-  vector<CControlState> m_controlStates;
+  std::vector<CControlState> m_controlStates;
   DWORD m_previousWindow;
 };
 

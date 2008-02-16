@@ -6,6 +6,8 @@
 
 #include "../xbmc/utils/SingleLock.h"
 
+using namespace std;
+
 #ifndef _LINUX
 namespace MathUtils {
   int round_int (double x);

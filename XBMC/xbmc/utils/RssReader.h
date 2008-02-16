@@ -23,7 +23,7 @@
 class IRssObserver
 {
 public:
-  virtual void OnFeedUpdate(const vector<DWORD> &feed) = 0;
+  virtual void OnFeedUpdate(const std::vector<DWORD> &feed) = 0;
   virtual ~IRssObserver() {}
 };
 
@@ -33,9 +33,9 @@ public:
   CRssReader();
   virtual ~CRssReader();
 
-  void Create(IRssObserver* aObserver, const vector<string>& aUrl, const vector<int>& times, int spacesBetweenFeeds);
+  void Create(IRssObserver* aObserver, const std::vector<std::string>& aUrl, const std::vector<int>& times, int spacesBetweenFeeds);
   bool Parse(LPSTR szBuffer, int iFeed);
-  void getFeed(vector<DWORD> &text);
+  void getFeed(std::vector<DWORD> &text);
   void AddTag(const CStdString addTag);
   void AddToQueue(int iAdd);
   void UpdateObserver();
@@ -60,7 +60,7 @@ private:
   int m_spacesBetweenFeeds;
   TiXmlDocument m_xml;
   std::list<CStdString> m_tagSet;
-  std::vector<string> m_vecUrls;
+  std::vector<std::string> m_vecUrls;
   std::vector<int> m_vecQueue;
   bool m_bIsRunning;
   iconv_t m_iconv;

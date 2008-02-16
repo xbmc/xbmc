@@ -31,6 +31,8 @@
 #include "ViewDatabase.h"
 #include "AutoSwitch.h"
 
+using namespace std;
+
 CStdString CGUIViewState::m_strPlaylistDirectory;
 VECSHARES CGUIViewState::m_shares;
 

@@ -173,7 +173,7 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
 
   if (m_iBufferSize > 0)
   {
-    copied = min(m_dwPacketSize - m_iBufferSize, len);
+    copied = std::min(m_dwPacketSize - m_iBufferSize, len);
 
     memcpy(m_pBuffer + m_iBufferSize, data, copied);
     data += copied;
@@ -206,7 +206,7 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
 
     if(m_pBuffer)
     {
-      m_iBufferSize = min(len, m_dwPacketSize);
+      m_iBufferSize = std::min(len, m_dwPacketSize);
       memcpy(m_pBuffer, data, m_iBufferSize);
     }
   }

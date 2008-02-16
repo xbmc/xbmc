@@ -28,6 +28,7 @@
 #include "FileSystem/MusicDatabaseDirectory/DirectoryNode.h"
 #include "Util.h"
 
+using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
 using namespace MUSIC_INFO;

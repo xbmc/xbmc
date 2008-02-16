@@ -14,6 +14,8 @@
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
 
+using namespace std;
+
 CDVDPlayerSubtitle::CDVDPlayerSubtitle(CDVDOverlayContainer* pOverlayContainer)
 {
   m_pOverlayContainer = pOverlayContainer;

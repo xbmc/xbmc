@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DirectoryNodeTop100.h"
 
+using namespace std;
 using namespace DIRECTORY::MUSICDATABASEDIRECTORY;
 
 CDirectoryNodeTop100::CDirectoryNodeTop100(const CStdString& strName, CDirectoryNode* pParent)

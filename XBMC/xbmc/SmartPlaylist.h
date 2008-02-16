@@ -95,12 +95,12 @@ public:
   CStdString GetWhereClause(bool needWhere = true);
   CStdString GetOrderClause();
 
-  const vector<CSmartPlaylistRule> &GetRules() const;
+  const std::vector<CSmartPlaylistRule> &GetRules() const;
 
 private:
   friend class CGUIDialogSmartPlaylistEditor;
 
-  vector<CSmartPlaylistRule> m_playlistRules;
+  std::vector<CSmartPlaylistRule> m_playlistRules;
   CStdString m_playlistName;
   CStdString m_playlistType;
   bool m_matchAllRules;

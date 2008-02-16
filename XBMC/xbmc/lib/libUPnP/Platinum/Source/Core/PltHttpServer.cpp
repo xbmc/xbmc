@@ -20,10 +20,12 @@ NPT_SET_LOCAL_LOGGER("platinum.core.http.server")
 /*----------------------------------------------------------------------
 |   PLT_HttpServer::PLT_HttpServer
 +---------------------------------------------------------------------*/
-PLT_HttpServer::PLT_HttpServer(unsigned int            port,
-                               NPT_Cardinal            max_clients) :
+PLT_HttpServer::PLT_HttpServer(unsigned int port,
+                               NPT_Cardinal max_clients,
+                               bool         reuse_address /* = false */) :
     m_TaskManager(new PLT_TaskManager(max_clients)),
     m_Port(port),
+    m_ReuseAddress(reuse_address),
     m_HttpListenTask(NULL)
 {
 }
@@ -44,14 +46,14 @@ PLT_HttpServer::Start()
 {
     // if we're given a port for our http server, try it
     if (m_Port) {
-        NPT_CHECK_SEVERE(SetListenPort(m_Port));
+        NPT_CHECK_SEVERE(SetListenPort(m_Port, m_ReuseAddress));
     } else {
         // randomly try a port for our http server
         int retries = 100;
         do {    
             int random = NPT_System::GetRandomInteger();
             int port = (unsigned short)(50000 + (random % 15000));
-            if (NPT_SUCCEEDED(SetListenPort(port))) {
+            if (NPT_SUCCEEDED(SetListenPort(port, m_ReuseAddress))) {
                 break;
             }
         } while (--retries > 0);
@@ -147,16 +149,22 @@ PLT_FileServer::ServeFile(NPT_String        filename,
         return NPT_SUCCESS;
     } else {
         // set the content type if we can
-        if (filename.EndsWith(".htm") ||filename.EndsWith(".html") ) {
+        if (filename.EndsWith(".htm", true) ||filename.EndsWith(".html", true) ) {
             PLT_HttpHelper::SetContentType(response, "text/html");
-        } else if (filename.EndsWith(".xml")) {
+        } else if (filename.EndsWith(".xml", true)) {
             PLT_HttpHelper::SetContentType(response, "text/xml; charset=\"utf-8\"");
-        } else if (filename.EndsWith(".mp3")) {
+        } else if (filename.EndsWith(".mp3", true)) {
             PLT_HttpHelper::SetContentType(response, "audio/mpeg");
-        } else if (filename.EndsWith(".mpg")) {
+        } else if (filename.EndsWith(".mpg", true)) {
             PLT_HttpHelper::SetContentType(response, "video/mpeg");
-        } else if (filename.EndsWith(".wma")) {
+        } else if (filename.EndsWith(".avi", true) || filename.EndsWith(".divx", true)) {
+            PLT_HttpHelper::SetContentType(response, "video/avi");
+        } else if (filename.EndsWith(".wma", true)) {
             PLT_HttpHelper::SetContentType(response, "audio/x-ms-wma"); 
+        } else if (filename.EndsWith(".avi", true) || filename.EndsWith(".divx", true)) {
+            PLT_HttpHelper::SetContentType(response, "video/avi"); 
+        } else if (filename.EndsWith(".jpg", true)) {
+            PLT_HttpHelper::SetContentType(response, "image/jpeg");
         } else {
             PLT_HttpHelper::SetContentType(response, "application/octet-stream");
         }

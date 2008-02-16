@@ -40,8 +40,8 @@ protected:
   void UpdateViewAsControl(const CStdString &viewLabel);
   int GetView(VIEW_TYPE type, int id) const;
 
-  vector<CGUIControl *> m_vecViews;
-  typedef vector<CGUIControl *>::const_iterator ciViews;
+  std::vector<CGUIControl *> m_vecViews;
+  typedef std::vector<CGUIControl *>::const_iterator ciViews;
 
   CFileItemList*        m_fileItems;
   int                   m_viewAsControl;

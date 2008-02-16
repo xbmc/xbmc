@@ -18,6 +18,7 @@
 #define MAX_PICTURE_HEIGHT 4096
 #endif
 
+using namespace std;
 
 extern "C" void dllprintf( const char *format, ... );
 

@@ -49,9 +49,9 @@ protected:
   CGUIFontTTF* GetFontFile(const CStdString& strFontFile);
   bool OpenFontFile(TiXmlDocument& xmlDoc);
 
-  vector<CGUIFont*> m_vecFonts;
-  vector<CGUIFontTTF*> m_vecFontFiles;
-  vector<OrigFontInfo> m_vecFontInfo;
+  std::vector<CGUIFont*> m_vecFonts;
+  std::vector<CGUIFontTTF*> m_vecFontFiles;
+  std::vector<OrigFontInfo> m_vecFontInfo;
   bool m_fontsetUnicode;
   RESOLUTION m_skinResolution;
 };

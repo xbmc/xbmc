@@ -4,6 +4,8 @@
 #include "../../Util.h"
 #include "../../MusicInfoTagLoaderSid.h"
 
+using namespace MUSIC_INFO;
+
 SIDCodec::SIDCodec()
 {
   m_CodecName = "SID";

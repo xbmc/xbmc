@@ -25,7 +25,7 @@ public:
   void ClearPathHistory();
   void DumpPathHistory();
 private:
-  vector<CHistoryItem> m_vecHistory;
-  vector<CStdString> m_vecPathHistory; ///< History of traversed directories
+  std::vector<CHistoryItem> m_vecHistory;
+  std::vector<CStdString> m_vecPathHistory; ///< History of traversed directories
   CStdString m_strNull;
 };

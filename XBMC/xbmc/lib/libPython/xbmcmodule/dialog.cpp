@@ -12,6 +12,8 @@
 #include "../xbmc/GUIDialogNumeric.h"
 #include "../xbmc/GUIDialogGamepad.h"
 
+using namespace std;
+
 #define ACTIVE_WINDOW  m_gWindowManager.GetActiveWindow()
 
 #ifndef __GNUC__

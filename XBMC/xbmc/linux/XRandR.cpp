@@ -6,6 +6,8 @@
 #include "Util.h"
 #include "../xbmc/utils/log.h"
 
+using namespace std;
+
 CXRandR::CXRandR(bool query)
 {
   m_bInit = false;

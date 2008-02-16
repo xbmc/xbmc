@@ -30,7 +30,7 @@ public:
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
   const CStdString GetCurrentLabel() const;
-  void SetText(const string & aLabel) {m_buttonControl.SetLabel(aLabel);};
+  void SetText(const std::string & aLabel) {m_buttonControl.SetLabel(aLabel);};
   virtual void SetVisible(bool bVisible);
   virtual void SetColorDiffuse(D3DCOLOR color);
   const CLabelInfo& GetButtonLabelInfo() { return m_buttonControl.GetLabelInfo(); };

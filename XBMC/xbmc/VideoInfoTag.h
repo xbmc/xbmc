@@ -56,8 +56,8 @@ public:
   CScraperUrl m_strPictureURL;
   CStdString m_strTitle;
   CStdString m_strVotes;
-  vector< CStdString> m_artist;
-  vector< SActorInfo > m_cast;
+  std::vector< CStdString> m_artist;
+  std::vector< SActorInfo > m_cast;
   typedef std::vector< SActorInfo >::const_iterator iCast;
 
   CStdString m_strRuntime;

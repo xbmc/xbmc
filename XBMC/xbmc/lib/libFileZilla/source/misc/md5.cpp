@@ -50,7 +50,7 @@ documentation and/or software.
 #include <assert.h>
 #include <iostream>
 
-
+using namespace std;
 
 
 // MD5 simple initialization method

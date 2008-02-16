@@ -5,6 +5,8 @@
 #include "guiImage.h" // for FRECT
 #include "Tween.h"
 
+using namespace std;
+
 CAnimEffect::CAnimEffect(const TiXmlElement *node, EFFECT_TYPE effect)
 {
   m_effect = effect;

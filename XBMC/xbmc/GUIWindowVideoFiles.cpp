@@ -17,6 +17,8 @@
 #include "FileSystem/MultiPathDirectory.h"
 #include "utils/RegExp.h"
 
+using namespace std;
+using namespace MEDIA_DETECT;
 using namespace XFILE;
 using namespace PLAYLIST;
 using namespace VIDEO;

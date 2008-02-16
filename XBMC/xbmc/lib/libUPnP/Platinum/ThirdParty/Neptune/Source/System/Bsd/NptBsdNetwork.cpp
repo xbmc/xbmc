@@ -114,11 +114,12 @@ NPT_NetworkInterface::GetNetworkInterfaces(NPT_List<NPT_NetworkInterface*>& inte
         }
         
         // get detailed info about the interface
+        NPT_Flags flags = 0;
+#if defined(SIOCGIFFLAGS)
         struct ifreq query = *entry;
         if (ioctl(net, SIOCGIFFLAGS, &query) < 0) continue;
         
         // process the flags
-        NPT_Flags flags = 0;
         if ((query.ifr_flags & IFF_UP) == 0) {
             // the interface is not up, ignore it
             continue;
@@ -140,7 +141,8 @@ NPT_NetworkInterface::GetNetworkInterfaces(NPT_List<NPT_NetworkInterface*>& inte
         if (query.ifr_flags & IFF_MULTICAST) {
             flags |= NPT_NETWORK_INTERFACE_FLAG_MULTICAST;
         }
-        
+#endif // defined(SIOCGIFFLAGS)
+  
         // get the mac address        
         NPT_MacAddress mac;
 #if defined(SIOCGIFHWADDR)

@@ -14,6 +14,8 @@
 #include "DVDCodecs/Overlay/DVDOverlayCodecCC.h"
 #include <sstream>
 
+using namespace std;
+
 CDVDPlayerVideo::CDVDPlayerVideo(CDVDClock* pClock, CDVDOverlayContainer* pOverlayContainer) 
 : CThread()
 {

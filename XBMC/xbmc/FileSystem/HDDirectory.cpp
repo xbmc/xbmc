@@ -6,6 +6,7 @@
 #include "DirectoryCache.h"
 #include "iso9660.h"
 
+using namespace AUTOPTR;
 using namespace DIRECTORY;
 
 CHDDirectory::CHDDirectory(void)

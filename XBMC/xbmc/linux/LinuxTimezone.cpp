@@ -3,6 +3,8 @@
 #include "Util.h"
 #include "getdelim.h"
 
+using namespace std;
+
 CLinuxTimezone::CLinuxTimezone()
 {
    char* line = NULL;

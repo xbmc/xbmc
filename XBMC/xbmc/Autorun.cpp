@@ -38,6 +38,7 @@
 #include "utils/Trainer.h"
 #endif
 
+using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
 using namespace PLAYLIST;

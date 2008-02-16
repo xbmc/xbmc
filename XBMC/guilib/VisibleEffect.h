@@ -179,5 +179,5 @@ private:
   unsigned int m_delay;
   unsigned int m_amount;
 
-  vector<CAnimEffect *> m_effects;
+  std::vector<CAnimEffect *> m_effects;
 };

@@ -1895,7 +1895,9 @@ class NPT_XmlNodeWriter
 {
 public:
     NPT_XmlNodeWriter(NPT_XmlSerializer& serializer) : 
-      m_Serializer(serializer), m_AttributeWriter(serializer) {}
+        m_Serializer(serializer), m_AttributeWriter(serializer) {
+        m_Serializer.StartDocument();
+    }
     void operator()(NPT_XmlNode*& node) const {
         if (NPT_XmlElementNode* element = node->AsElementNode()) {
             const NPT_String& prefix = element->GetPrefix();
@@ -1949,7 +1951,9 @@ public:
     NPT_XmlNodeCanonicalWriter(NPT_XmlSerializer& serializer, 
                                MapChainLink*      map_chain = NULL) : 
         m_MapChain(map_chain),
-        m_Serializer(serializer) {}
+        m_Serializer(serializer) {
+        m_Serializer.StartDocument();
+    }
     void operator()(NPT_XmlNode*& node) const;
 
 private:
@@ -2234,7 +2238,7 @@ NPT_XmlSerializer::~NPT_XmlSerializer()
 NPT_Result 
 NPT_XmlSerializer::StartDocument()
 {
-    return m_Output->WriteString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+    return m_Output->WriteString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n");
 }
 
 /*----------------------------------------------------------------------
@@ -2329,7 +2333,7 @@ NPT_XmlSerializer::OutputEscapedString(const char* text, bool attribute)
 void
 NPT_XmlSerializer::OutputIndentation(bool start)
 {
-    if (m_Depth || !start) m_Output->Write("\n", 1);
+    if (m_Depth || !start) m_Output->Write("\r\n", 2);
 
     // ensure we have enough chars in the prefix string
     unsigned int prefix_length = m_Indentation*m_Depth;

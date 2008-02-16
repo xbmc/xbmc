@@ -105,6 +105,7 @@ public:
 class NPT_LogManager {
 public:
     // class methods
+    static void SetConfig(const char* config);
     static bool ConfigValueIsBooleanTrue(NPT_String& value);
     static bool ConfigValueIsBooleanFalse(NPT_String& value);
     static NPT_Logger* GetLogger(const char* name);
@@ -221,6 +222,18 @@ do {                                                                    \
         goto _label;                                                                   \
     }                                                                                  \
 } while(0)
+#define NPT_CHECK_POINTER_LL(_logger, _level, _p) do {                                 \
+    if ((_p) == NULL) {                                                                  \
+        NPT_LOG_L(_logger, _level, "@@@ NULL pointer parameter");                        \
+        return NPT_ERROR_INVALID_PARAMETERS;                                                     \
+    }                                                                                  \
+} while(0)
+#define NPT_CHECK_POINTER_LABEL_LL(_logger, _level, _p, _label) do {                   \
+    if ((_p) == NULL) {                                                                  \
+        NPT_LOG_L(_logger, _level, "@@@ NULL pointer parameter");                        \
+        goto _label;                                                                   \
+    }                                                                                  \
+} while(0)
 
 #else /* NPT_CONFIG_ENABLE_LOGGING */
 #define NPT_DEFINE_LOGGER(_logger, _name)
@@ -237,6 +250,8 @@ do {                                                                    \
 
 #define NPT_CHECK_LL(_logger, _level, _result) NPT_CHECK(_result)
 #define NPT_CHECK_LABEL_LL(_logger, _level, _result, _label) NPT_CHECK_LABEL(_result, _label)
+#define NPT_CHECK_POINTER_LL(_logger, _level, _p) NPT_CHECK_POINTER(_p)
+#define NPT_CHECK_POINTER_LABEL_LL(_logger, _level, _p, _label) NPT_CHECK_POINTER_LABEL(_p, _label)
 
 #endif /* NPT_CONFIG_ENABLE_LOGGING */
 
@@ -402,5 +417,37 @@ do {                                                                    \
 #define NPT_CHECK_LABEL_FINER(_result, _label) NPT_CHECK_LABEL_L(NPT_LOG_LEVEL_FINER, _result, _label)
 #define NPT_CHECK_LABEL_FINEST_L(_logger, _result, _label) NPT_CHECK_LABEL_LL(_logger, NPT_LOG_LEVEL_FINEST, _result, _label)
 #define NPT_CHECK_LABEL_FINEST(_result, _label) NPT_CHECK_LABEL_L(NPT_LOG_LEVEL_FINEST, _result, _label)
+
+#define NPT_CHECK_POINTER_L(_level, _p) NPT_CHECK_POINTER_LL(_NPT_LocalLogger, _level, _p)
+#define NPT_CHECK_POINTER_FATAL_L(_logger, _p) NPT_CHECK_POINTER_LL(_logger, NPT_LOG_LEVEL_FATAL, _p)
+#define NPT_CHECK_POINTER_FATAL(_p) NPT_CHECK_POINTER_L(NPT_LOG_LEVEL_FATAL, _p)
+#define NPT_CHECK_POINTER_SEVERE_L(_logger, _p) NPT_CHECK_POINTER_LL(_logger, NPT_LOG_LEVEL_SEVERE, _p)
+#define NPT_CHECK_POINTER_SEVERE(_p) NPT_CHECK_POINTER_L(NPT_LOG_LEVEL_SEVERE, _p)
+#define NPT_CHECK_POINTER_WARNING_L(_logger, _p) NPT_CHECK_POINTER_LL(_logger, NPT_LOG_LEVEL_WARNING, _p)
+#define NPT_CHECK_POINTER_WARNING(_p) NPT_CHECK_POINTER_L(NPT_LOG_LEVEL_WARNING, _p)
+#define NPT_CHECK_POINTER_INFO_L(_logger, _p) NPT_CHECK_POINTER_LL(_logger, NPT_LOG_LEVEL_INFO, _p)
+#define NPT_CHECK_POINTER_INFO(_p) NPT_CHECK_POINTER_L(NPT_LOG_LEVEL_INFO, _p)
+#define NPT_CHECK_POINTER_FINE_L(_logger, _p) NPT_CHECK_POINTER_LL(_logger, NPT_LOG_LEVEL_FINE, _p)
+#define NPT_CHECK_POINTER_FINE(_p) NPT_CHECK_POINTER_L(NPT_LOG_LEVEL_FINE, _p)
+#define NPT_CHECK_POINTER_FINER_L(_logger, _p) NPT_CHECK_POINTER_LL(_logger, NPT_LOG_LEVEL_FINER, _p)
+#define NPT_CHECK_POINTER_FINER(_p) NPT_CHECK_POINTER_L(NPT_LOG_LEVEL_FINER, _p)
+#define NPT_CHECK_POINTER_FINEST_L(_logger, _p) NPT_CHECK_POINTER_LL(_logger, NPT_LOG_LEVEL_FINEST, _p)
+#define NPT_CHECK_POINTER_FINEST(_p) NPT_CHECK_POINTER_L(NPT_LOG_LEVEL_FINEST, _p)
+
+#define NPT_CHECK_POINTER_LABEL_L(_level, _p, _label) NPT_CHECK_POINTER_LABEL_LL(_NPT_LocalLogger, _level, _p, _label)
+#define NPT_CHECK_POINTER_LABEL_FATAL_L(_logger, _p, _label) NPT_CHECK_POINTER_LABEL_LL(_logger, NPT_LOG_LEVEL_FATAL, _p, _label)
+#define NPT_CHECK_POINTER_LABEL_FATAL(_p, _label) NPT_CHECK_POINTER_LABEL_L(NPT_LOG_LEVEL_FATAL, _p, _label)
+#define NPT_CHECK_POINTER_LABEL_SEVERE_L(_logger, _p, _label) NPT_CHECK_POINTER_LABEL_LL(_logger, NPT_LOG_LEVEL_SEVERE, _p, _label)
+#define NPT_CHECK_POINTER_LABEL_SEVERE(_p, _label) NPT_CHECK_POINTER_LABEL_L(NPT_LOG_LEVEL_SEVERE, _p, _label)
+#define NPT_CHECK_POINTER_LABEL_WARNING_L(_logger, _p, _label) NPT_CHECK_POINTER_LABEL_LL(_logger, NPT_LOG_LEVEL_WARNING, _p, _label)
+#define NPT_CHECK_POINTER_LABEL_WARNING(_p, _label) NPT_CHECK_POINTER_LABEL_L(NPT_LOG_LEVEL_WARNING, _p, _label)
+#define NPT_CHECK_POINTER_LABEL_INFO_L(_logger, _p, _label) NPT_CHECK_POINTER_LABEL_LL(_logger, NPT_LOG_LEVEL_INFO, _p, _label)
+#define NPT_CHECK_POINTER_LABEL_INFO(_p, _label) NPT_CHECK_POINTER_LABEL_L(NPT_LOG_LEVEL_INFO, _p, _label)
+#define NPT_CHECK_POINTER_LABEL_FINE_L(_logger, _p, _label) NPT_CHECK_POINTER_LABEL_LL(_logger, NPT_LOG_LEVEL_FINE, _p, _label)
+#define NPT_CHECK_POINTER_LABEL_FINE(_p, _label) NPT_CHECK_POINTER_LABEL_L(NPT_LOG_LEVEL_FINE, _p, _label)
+#define NPT_CHECK_POINTER_LABEL_FINER_L(_logger, _p, _label) NPT_CHECK_POINTER_LABEL_LL(_logger, NPT_LOG_LEVEL_FINER, _p, _label)
+#define NPT_CHECK_POINTER_LABEL_FINER(_p, _label) NPT_CHECK_POINTER_LABEL_L(NPT_LOG_LEVEL_FINER, _p, _label)
+#define NPT_CHECK_POINTER_LABEL_FINEST_L(_logger, _p, _label) NPT_CHECK_POINTER_LABEL_LL(_logger, NPT_LOG_LEVEL_FINEST, _p, _label)
+#define NPT_CHECK_POINTER_LABEL_FINEST(_p, _label) NPT_CHECK_POINTER_LABEL_L(NPT_LOG_LEVEL_FINEST, _p, _label)
 
 #endif /* _NPT_LOGGING_H_ */

@@ -63,7 +63,7 @@ public:
   int y;
   int wmm;
   int hmm;
-  vector<XMode> modes;
+  std::vector<XMode> modes;
 };
 
 class CXRandR

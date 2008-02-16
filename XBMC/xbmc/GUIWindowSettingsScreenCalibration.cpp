@@ -10,6 +10,7 @@
 #include "Application.h"
 #include "Util.h"
 
+using namespace std;
 
 #define CONTROL_LABEL_ROW1  2
 #define CONTROL_LABEL_ROW2  3

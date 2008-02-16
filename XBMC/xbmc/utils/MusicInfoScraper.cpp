@@ -6,7 +6,7 @@
 #include "./HTMLTable.h"
 #include "../Util.h"
 
-
+using namespace MUSIC_GRABBER;
 using namespace HTML;
 
 CMusicInfoScraper::CMusicInfoScraper(void)

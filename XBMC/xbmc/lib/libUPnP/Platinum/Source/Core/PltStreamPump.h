@@ -92,7 +92,7 @@ class PLT_PipeOutputStreamPump : public PLT_StreamPump,
 public:
     PLT_PipeOutputStreamPump(NPT_InputStreamReference& input, 
                              NPT_Size                  size = 65535,
-                             NPT_Size                  max_bytes_to_read = -1);
+                             NPT_Size                  max_bytes_to_read = 0);
     virtual ~PLT_PipeOutputStreamPump();
 
     NPT_Result Transmit(NPT_OutputStream& output);

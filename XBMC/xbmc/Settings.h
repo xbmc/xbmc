@@ -12,6 +12,7 @@ class CProfile;
 #include "XBVideoConfig.h"
 
 #include <vector>
+#include <map>
 
 #define SHARE_TYPE_UNKNOWN      0
 #define SHARE_TYPE_LOCAL        1
@@ -92,7 +93,7 @@ public:
   CShare() { m_iDriveType=SHARE_TYPE_UNKNOWN; m_iLockMode=LOCK_MODE_EVERYONE; m_iBadPwdCount=0; m_iHasLock=0; m_ignore=false; };
   virtual ~CShare() {};
 
-  void FromNameAndPaths(const CStdString &category, const CStdString &name, const vector<CStdString> &paths);
+  void FromNameAndPaths(const CStdString &category, const CStdString &name, const std::vector<CStdString> &paths);
   bool isWritable() const;
   CStdString strName; ///< Name of the share, can be choosen freely.
   CStdString strStatus; ///< Status of the share (eg has disk etc.)
@@ -141,7 +142,7 @@ public:
 
   CStdString m_strThumbnailImage; ///< Path to a thumbnail image for the share, or blank for default
 
-  vector<CStdString> vecPaths;
+  std::vector<CStdString> vecPaths;
   bool m_ignore; /// <Do not store in xml
 };
 
@@ -293,7 +294,7 @@ public:
     bool m_prioritiseAPEv2tags;
     CStdString m_musicItemSeparator;
     CStdString m_videoItemSeparator;
-    vector<CStdString> m_musicTagsFromFileFilters;
+    std::vector<CStdString> m_musicTagsFromFileFilters;
 
     bool m_bVideoLibraryHideAllItems;
     bool m_bVideoLibraryAllItemsOnBottom;
@@ -386,7 +387,7 @@ public:
     VOICE_MASK m_karaokeVoiceMask[4];
   };
 
-  std::map<int,std::pair<std::vector<int>,std::vector<string> > > m_mapRssUrls;
+  std::map<int,std::pair<std::vector<int>,std::vector<std::string> > > m_mapRssUrls;
   std::map<int, CSkinString> m_skinStrings;
   std::map<int, CSkinBool> m_skinBools;
 
