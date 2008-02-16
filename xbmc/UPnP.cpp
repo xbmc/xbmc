@@ -44,6 +44,7 @@
 
 using namespace std;
 using namespace MUSIC_INFO;
+using namespace DIRECTORY;
 
 NPT_SET_LOCAL_LOGGER("xbmc.upnp")
 

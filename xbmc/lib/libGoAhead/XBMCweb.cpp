@@ -27,6 +27,7 @@
 using namespace std;
 using namespace DIRECTORY;
 using namespace PLAYLIST;
+using namespace MUSIC_INFO;
 
 #ifndef __GNUC__
 #pragma code_seg("WEB_TEXT")

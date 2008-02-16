@@ -75,5 +75,5 @@ protected:
   // member variables to save frequently used g_guiSettings (which is slow)
   bool m_hideExtensions;
   CMusicDatabase m_musicdatabase;
-  CMusicInfoLoader m_musicInfoLoader;
+  MUSIC_INFO::CMusicInfoLoader m_musicInfoLoader;
 };

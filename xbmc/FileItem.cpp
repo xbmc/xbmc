@@ -44,6 +44,7 @@ using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
 using namespace PLAYLIST;
+using namespace MUSIC_INFO;
 
 CFileItem::CFileItem(const CSong& song)
 {
