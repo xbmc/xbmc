@@ -27,6 +27,7 @@
 #include "UPnPVirtualPathDirectory.h"
 
 using namespace std;
+using namespace DIRECTORY;
 
 /*----------------------------------------------------------------------
 |   CUPnPVirtualPathDirectory::FindSharePath

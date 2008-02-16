@@ -51,6 +51,7 @@ using namespace DIRECTORY;
 using namespace PLAYLIST;
 using namespace MUSIC_GRABBER;
 using namespace MEDIA_DETECT;
+using namespace MUSIC_INFO;
 
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY       3

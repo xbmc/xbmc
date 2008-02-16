@@ -146,7 +146,7 @@ void CGUIDialogSongInfo::SetSong(CFileItem *item)
   m_song = *item;
   m_song.LoadMusicTag();
   m_startRating = m_song.GetMusicInfoTag()->GetRating();
-  CMusicInfoLoader::LoadAdditionalTagInfo(&m_song);
+  MUSIC_INFO::CMusicInfoLoader::LoadAdditionalTagInfo(&m_song);
   m_needsUpdate = false;
 }
 
