@@ -285,47 +285,51 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   if (shared == 0)
   {
 #endif
-	  int options = SDL_OPENGL | (fullscreen?SDL_FULLSCREEN:0);
-	  SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   m_iRedSize);
-	  SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, m_iGreenSize);
-	  SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  m_iBlueSize);
-	  SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, m_iAlphaSize);
-	  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, m_bDoublebuffer ? 1:0);
+    int options = SDL_OPENGL | (fullscreen?SDL_FULLSCREEN:0);
+    SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   m_iRedSize);
+    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, m_iGreenSize);
+    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  m_iBlueSize);
+    SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, m_iAlphaSize);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, m_bDoublebuffer ? 1:0);
 #ifdef __APPLE__
-	  // Enable vertical sync to avoid any tearing.
-	  SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
-	  
-	  // We always want to use a shared context as we jump around in resolution, 
-	  // otherwise we lose all our textures. However, contexts do not share correctly
-	  // between fullscreen and non-fullscreen.
-	  //
-	  shared = g_graphicsContext.getScreenSurface();
-	  
-	  // If we're coming from or going to fullscreen do NOT share.
-	  if (g_graphicsContext.getScreenSurface() != 0 &&
-	      (fullscreen == false && g_graphicsContext.getScreenSurface()->m_bFullscreen == true ||
-	       fullscreen == true  && g_graphicsContext.getScreenSurface()->m_bFullscreen == false))
-	  {
-	    shared =0;
-	  }
-	  
-	  m_SDLSurface = SDL_SetVideoMode(m_iWidth, m_iHeight, 0, options, shared ? shared->m_glContext : 0);
+    // Enable vertical sync to avoid any tearing.
+    SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
+    
+    // We always want to use a shared context as we jump around in resolution, 
+    // otherwise we lose all our textures. However, contexts do not share correctly
+    // between fullscreen and non-fullscreen.
+    //
+    shared = g_graphicsContext.getScreenSurface();
+    
+    // If we're coming from or going to fullscreen do NOT share.
+    if (g_graphicsContext.getScreenSurface() != 0 &&
+	(fullscreen == false && g_graphicsContext.getScreenSurface()->m_bFullscreen == true ||
+	 fullscreen == true  && g_graphicsContext.getScreenSurface()->m_bFullscreen == false))
+    {
+      shared =0;
+    }
+    
+    //m_SDLSurface = SDL_SetVideoMode(m_iWidth, m_iHeight, 0, options, shared ? shared->m_glContext : 0);
+    m_SDLSurface = SDL_SetVideoMode(m_iWidth, m_iHeight, 0, options); 
+
+    // the context SDL creates isn't full screen compatible, so we create new one
+    Cocoa_GL_ReplaceSDLWindowContext();
 #else
-	  m_SDLSurface = SDL_SetVideoMode(m_iWidth, m_iHeight, 0, options);
+    m_SDLSurface = SDL_SetVideoMode(m_iWidth, m_iHeight, 0, options);
 #endif
-	  if (m_SDLSurface) 
-	  {
-	    m_bOK = true;
-	  }
-	
-	  if (!b_glewInit)
-	  {
-	    if (glewInit()!=GLEW_OK)
-	    {
-	      CLog::Log(LOGERROR, "GL: Critical Error. Could not initialise GL Extension Wrangler Library");
-	    }
-	    else
-	    {
+    if (m_SDLSurface) 
+    {
+      m_bOK = true;
+    }
+    
+    if (!b_glewInit)
+    {
+      if (glewInit()!=GLEW_OK)
+      {
+	CLog::Log(LOGERROR, "GL: Critical Error. Could not initialise GL Extension Wrangler Library");
+      }
+      else
+      {
         b_glewInit = true;
         if (s_glVendor.length()==0)
         {
@@ -333,24 +337,20 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
           s_glRenderer = (const char*)glGetString(GL_RENDERER);
           CLog::Log(LOGINFO, "GL: OpenGL Vendor String: %s", s_glVendor.c_str());
         }
-	    }
-	  }
-	  
-#ifdef __APPLE__
-	
-  	  // Get the context.
-  	  SDL_SysWMinfo info;
-  	  info.version.major = 1;
-  	  SDL_GetWMInfo(&info);
-  	  m_glContext = info.info.quartz.nsContext;
-  	}
-  	else
-  	{
-  		// Take the shared context.
-  		m_glContext = shared->m_glContext;
-  		MakeCurrent();
-  		m_bOK = true;
-  	}
+      }
+    }
+    
+#ifdef __APPLE__    
+    // Get the context.
+    m_glContext = Cocoa_GL_GetCurrentContext();
+  }
+  else
+  {
+    // Take the shared context.
+    m_glContext = shared->m_glContext;
+    MakeCurrent();
+    m_bOK = true;
+  }
   
 #endif
   
@@ -517,8 +517,8 @@ CSurface::~CSurface()
 #ifdef __APPLE__
   if (m_glContext && !IsShared())
   {
-	  CLog::Log(LOGINFO, "Surface: Whacking context 0x%08lx", m_glContext);
-	  Cocoa_GL_ReleaseContext(m_glContext);
+    CLog::Log(LOGINFO, "Surface: Whacking context 0x%08lx", m_glContext);
+    Cocoa_GL_ReleaseContext(m_glContext);
   }
 #endif
   
@@ -531,8 +531,19 @@ void CSurface::EnableVSync(bool enable)
   if (m_bVSync==enable)
     return;
 
-#ifndef __APPLE__
-  
+#ifdef __APPLE__
+  if (enable)
+  {
+    CLog::Log(LOGINFO, "GL: Enabling VSYNC");
+    Cocoa_GL_EnableVSync(true);
+  }
+  else
+  {
+    CLog::Log(LOGINFO, "GL: Disabling VSYNC");
+    Cocoa_GL_EnableVSync(false);
+  }
+  return;
+#else
   if (enable)
   {
     CLog::Log(LOGINFO, "GL: Enabling VSYNC");
@@ -686,6 +697,8 @@ void CSurface::Flip()
     }
     else
       glXSwapBuffers(s_dpy, m_glWindow);
+#elif defined(__APPLE__)
+    Cocoa_GL_SwapBuffers(m_glContext);
 #elif defined(HAS_SDL_OPENGL)
     SDL_GL_SwapBuffers();
 #else
@@ -724,11 +737,18 @@ bool CSurface::MakeCurrent()
 #ifdef __APPLE__
   if (m_glContext)
   {
-	  Cocoa_GL_MakeCurrentContext(m_glContext);
-	  return true;
+    Cocoa_GL_MakeCurrentContext(m_glContext);
+    return true;
   }
 #endif
   return false;
+}
+
+void CSurface::RefreshCurrentContext()
+{
+#ifdef __APPLE__
+  m_glContext = Cocoa_GL_GetCurrentContext();
+#endif
 }
 
 void CSurface::ReleaseContext()
@@ -754,6 +774,9 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight)
     XResizeWindow(s_dpy, m_glWindow, newWidth, newHeight);
     glXWaitX();
   }
+#endif
+#ifdef __APPLE__
+  Cocoa_GL_ResizeWindow(m_glContext, newWidth, newHeight);
 #endif
   return false;
 }

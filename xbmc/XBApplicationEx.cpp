@@ -335,12 +335,14 @@ void CXBApplicationEx::ReadInput()
       break;
       
     case SDL_VIDEORESIZE:
+#ifndef __APPLE__
       g_settings.m_ResInfo[WINDOW].iWidth = event.resize.w;
       g_settings.m_ResInfo[WINDOW].iHeight = event.resize.h; 
       g_graphicsContext.ResetOverscan(g_settings.m_ResInfo[WINDOW]);
       g_graphicsContext.SetVideoResolution(windowres, FALSE, false);
       g_Mouse.SetResolution(g_settings.m_ResInfo[WINDOW].iWidth, g_settings.m_ResInfo[WINDOW].iHeight, 1, 1);
       g_fontManager.ReloadTTFFonts();
+#endif
       break;
 
 #ifdef HAS_SDL_JOYSTICK
