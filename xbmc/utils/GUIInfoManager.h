@@ -325,6 +325,8 @@
 #define SYSTEM_TOTAL_SPACE_Y        702
 #define SYSTEM_TOTAL_SPACE_Z        703
 #define SYSTEM_GET_BOOL             704
+#define SYSTEM_GET_CORE_USAGE       705
+#define SYSTEM_HAS_CORE_ID          706
 
 #define SYSTEM_PLATFORM_XBOX        740
 #define SYSTEM_PLATFORM_LINUX       741

@@ -589,9 +589,8 @@ void CGUIWindowFullScreen::RenderFullScreen()
     g_application.m_pPlayer->GetGeneralInfo(strGeneral);
     {
       CStdString strGeneralFPS;
-      float fCpuUsage = CUtil::CurrentCpuUsage();
-
-      strGeneralFPS.Format("fps:%02.2f cpu:%02.2f %s", g_infoManager.GetFPS(), fCpuUsage, strGeneral.c_str() );
+      CStdString strCores = g_cpuInfo.GetCoresUsageString();
+      strGeneralFPS.Format("fps:%02.2f %s\n%s", g_infoManager.GetFPS(), strCores.c_str(), strGeneral.c_str() );
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3);
       msg.SetLabel(strGeneralFPS);
       OnMessage(msg);
