@@ -53,6 +53,7 @@ public:
   void ReleaseContext();
   void EnableVSync(bool enable=true);
   bool ResizeSurface(int newWidth, int newHeight);
+  void RefreshCurrentContext();
 #ifdef HAS_GLX
   GLXContext GetContext() {return m_glContext;}
   GLXWindow GetWindow() {return m_glWindow;}
