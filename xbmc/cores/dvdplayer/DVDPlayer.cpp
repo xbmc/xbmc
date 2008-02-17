@@ -638,7 +638,7 @@ void CDVDPlayer::Process()
     m_pDlgCache->SetMessage(g_localizeStrings.Get(10213));
 
   if(!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) 
-  && !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_MYTH))
+  && !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
   {
     m_clock.SetSpeed(DVD_PLAYSPEED_PAUSE);
     m_dvdPlayerAudio.SetSpeed(DVD_PLAYSPEED_PAUSE);
@@ -1363,7 +1363,7 @@ void CDVDPlayer::HandleMessages()
       } 
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT) || pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREV))
       {
-        if( m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_MYTH) )
+        if( m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV) )
         {
           bool result;
           if(pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT))
@@ -1675,7 +1675,7 @@ __int64 CDVDPlayer::GetTime()
       return ((CDVDInputStreamNavigator*)m_pInputStream)->GetTime(); // we should take our buffers into account
   }
 
-  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_MYTH))
+  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
   {
     int msec;
     msec  = (__int64)(m_clock.GetClock() * 1000 / DVD_TIME_BASE);
@@ -1698,7 +1698,7 @@ __int64 CDVDPlayer::GetTotalTimeInMsec()
       return ((CDVDInputStreamNavigator*)m_pInputStream)->GetTotalTime(); // we should take our buffers into account
   }
 
-  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_MYTH))
+  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
   {
     int msec = ((CDVDInputStreamTV*)m_pInputStream)->GetTotalTime();
     if (msec > 0)
@@ -2282,7 +2282,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
     }
   }
 
-  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_MYTH))
+  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
   {
     switch (action.wID)
     {
@@ -2438,7 +2438,7 @@ bool CDVDPlayer::AddSubtitleFile(const std::string& filename)
 
 void CDVDPlayer::UpdateApplication()
 {
-  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_MYTH))
+  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
   {
     CDVDInputStreamTV* pStream = static_cast<CDVDInputStreamTV*>(m_pInputStream);
     CVideoInfoTag *tag = pStream->GetVideoInfoTag();
