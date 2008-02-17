@@ -7,10 +7,12 @@
 #include <sys/sysctl.h>
 #endif
 
+#include "log.h"
+
 using namespace std;
 
 // In seconds
-#define MINIMUM_TIME_BETWEEN_READS 3
+#define MINIMUM_TIME_BETWEEN_READS 2
 
 CCPUInfo::CCPUInfo(void)
 {
@@ -32,7 +34,6 @@ CCPUInfo::CCPUInfo(void)
   if (m_fProcTemperature == NULL)
     m_fProcTemperature = fopen("/proc/acpi/thermal_zone/THR1/temperature", "r");
   m_lastUsedPercentage = 0;
-  readProcStat(m_userTicks, m_niceTicks, m_systemTicks, m_idleTicks);  
 
   FILE* cpuinfo = fopen("/proc/cpuinfo", "r");
   m_cpuCount = 0;
@@ -41,10 +42,19 @@ CCPUInfo::CCPUInfo(void)
   {
     char buffer[512];
 
+    int nCurrId = 0;
     while (fgets(buffer, sizeof(buffer), cpuinfo))
     {
       if (strncmp(buffer, "processor", strlen("processor"))==0)
       {
+        char *needle = strstr(buffer, ":");
+        CoreInfo core;
+        if (needle)
+        {
+          core.m_id = atoi(needle+2);
+          nCurrId = core.m_id;
+          m_cores[core.m_id] = core;
+        }   
         m_cpuCount++;
       }
       else if (strncmp(buffer, "cpu MHz", strlen("cpu MHz"))==0)
@@ -54,6 +64,17 @@ CCPUInfo::CCPUInfo(void)
         {
           needle+=2;
           sscanf(needle, "%f", &m_cpuFreq);
+          m_cores[nCurrId].m_fSpeed = m_cpuFreq;
+        }
+      }
+      else if (strncmp(buffer, "vendor_id", strlen("vendor_id"))==0)
+      {
+        char *needle = strstr(buffer, ":");
+        if (needle && strlen(needle)>3)
+        {
+          needle+=2;
+          m_cores[nCurrId].m_strVendor = needle;
+          m_cores[nCurrId].m_strVendor.Trim();
         }
       }
       else if (strncmp(buffer, "model name", strlen("model name"))==0)
@@ -63,6 +84,8 @@ CCPUInfo::CCPUInfo(void)
         {
           needle+=2;
           m_cpuModel = needle;
+          m_cores[nCurrId].m_strModel = m_cpuModel;
+          m_cores[nCurrId].m_strModel.Trim();
         }
       }
     }
@@ -73,6 +96,8 @@ CCPUInfo::CCPUInfo(void)
     m_cpuCount = 1;
     m_cpuModel = "Unknown";
   }
+
+  readProcStat(m_userTicks, m_niceTicks, m_systemTicks, m_idleTicks);  
 #endif
 }
 
@@ -146,6 +171,24 @@ CTemperature CCPUInfo::getTemperature()
     return CTemperature();
 }
 
+bool CCPUInfo::HasCoreId(int nCoreId) const
+{
+  std::map<int, CoreInfo>::const_iterator iter = m_cores.find(nCoreId);
+  if (iter != m_cores.end())
+    return true;
+  return false;
+}
+
+const CoreInfo &CCPUInfo::GetCoreInfo(int nCoreId)
+{
+  std::map<int, CoreInfo>::iterator iter = m_cores.find(nCoreId);
+  if (iter != m_cores.end())
+    return iter->second;
+
+  static CoreInfo dummy;
+  return dummy;
+}
+
 bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice, 
     unsigned long long& system, unsigned long long& idle)
 {
@@ -159,13 +202,44 @@ bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
   if (!fgets(buf, sizeof(buf), m_fProcStat))
     return false;
     
-  int num = sscanf(buf, "cpu %llu %llu %llu %llu %*s", &user, &nice, &system, &idle);
-  if (num < 4)
-    return false;
-   
-  m_lastReadTime = time(NULL);
-  
+  int num = sscanf(buf, "cpu %llu %llu %llu %llu %*s\n", &user, &nice, &system, &idle);
+  while (fgets(buf, sizeof(buf), m_fProcStat) && num >= 4)
+  {
+    unsigned long long coreUser, coreNice, coreSystem, coreIdle;
+    int nCpu=0;
+    num = sscanf(buf, "cpu%d %llu %llu %llu %llu %*s\n", &nCpu, &coreUser, &coreNice, &coreSystem, &coreIdle);
+    std::map<int, CoreInfo>::iterator iter = m_cores.find(nCpu);
+    if (num > 4 && iter != m_cores.end())
+    {
+      coreUser -= iter->second.m_user;
+      coreNice -= iter->second.m_nice;
+      coreSystem -= iter->second.m_system;
+      coreIdle -= iter->second.m_idle;
+      iter->second.m_fPct = ((double)(coreUser + coreNice + coreSystem) * 100.0) / (double)(coreUser + coreNice + coreSystem + coreIdle);      
+      iter->second.m_user += coreUser;
+      iter->second.m_nice += coreNice;
+      iter->second.m_system += coreSystem;
+      iter->second.m_idle += coreIdle;
+      gettimeofday(&iter->second.m_lastSample, NULL);
+    }
+  }
+
+  m_lastReadTime = time(NULL);  
   return true;
+}
+
+CStdString CCPUInfo::GetCoresUsageString() const
+{
+  CStdString strCores;
+  std::map<int, CoreInfo>::const_iterator iter = m_cores.begin();
+  while (iter != m_cores.end())
+  {
+    CStdString strCore;
+    strCore.Format("Core%d: %4.2f%% ",iter->first, iter->second.m_fPct);
+    strCores+=strCore;
+    iter++;
+  }
+  return strCores; 
 }
 
 CCPUInfo g_cpuInfo;
