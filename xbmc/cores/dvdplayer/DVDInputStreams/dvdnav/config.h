@@ -32,7 +32,7 @@
 #define inline __inline
 /* #undef size_t */
 
-#define ssize_t __int64
+#define ssize_t int
 
 #ifndef PATH_MAX
 #define PATH_MAX MAX_PATH

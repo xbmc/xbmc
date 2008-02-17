@@ -58,16 +58,16 @@
 
 #define vsnprintf _vsnprintf
 
-typedef __int64 int64_t;
+typedef signed __int64 int64_t;
 typedef unsigned __int64 u_int64_t;
 
-typedef int int32_t;
+typedef signed int int32_t;
 typedef unsigned int u_int32_t;
 
-typedef short int16_t;
+typedef signed short int16_t;
 typedef unsigned short u_int16_t;
 
-typedef char int8_t;
+typedef signed char int8_t;
 typedef unsigned char u_int8_t;
 
 #else /* WIN32 */
