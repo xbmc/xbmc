@@ -342,6 +342,10 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.platform.windows")) ret = SYSTEM_PLATFORM_WINDOWS;
     else if (strTest.Left(15).Equals("system.getbool("))
       return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_GET_BOOL : SYSTEM_GET_BOOL, ConditionalStringParameter(strTest.Mid(15,strTest.size()-16)), 0));
+    else if (strTest.Left(17).Equals("system.coreusage("))
+      return AddMultiInfo(GUIInfo(SYSTEM_GET_CORE_USAGE, atoi(strTest.Mid(17,strTest.size()-18)), 0));
+    else if (strTest.Left(17).Equals("system.hascoreid("))
+      return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_HAS_CORE_ID : SYSTEM_HAS_CORE_ID, ConditionalStringParameter(strTest.Mid(17,strTest.size()-18)), 0));
   }
   else if (strTest.Left(8).Equals("isempty("))
   {
@@ -1785,6 +1789,9 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
     case SYSTEM_GET_BOOL:
       bReturn = g_guiSettings.GetBool(m_stringParameters[info.m_data1]);
       break;
+    case SYSTEM_HAS_CORE_ID:
+      bReturn = g_cpuInfo.HasCoreId(info.m_data1);
+      break;
     case CONTAINER_CONTENT:
       bReturn = m_stringParameters[info.m_data1].Equals(m_content);
       break;
@@ -1986,6 +1993,13 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
       return strNum;
     }
   }
+  else if (info.m_info == SYSTEM_GET_CORE_USAGE)
+  {
+    CStdString strCpu;
+    strCpu.Format("%4.2f", g_cpuInfo.GetCoreInfo(info.m_data1).m_fPct);
+    return strCpu;
+  }
+
   return StringUtils::EmptyString;
 }
 

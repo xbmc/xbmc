@@ -2733,6 +2733,8 @@ void CApplication::RenderMemoryStatus()
   MEASURE_FUNCTION;
 
   g_infoManager.UpdateFPS();
+  g_cpuInfo.getUsedPercentage(); // must call it to recalculate pct values
+
 #if !defined(_DEBUG) && !defined(PROFILE)
   if (LOG_LEVEL_DEBUG_FREEMEM <= g_advancedSettings.m_logLevel)
 #endif
@@ -2754,8 +2756,9 @@ void CApplication::RenderMemoryStatus()
       wszText.Format(L"FreeMem %d/%d Kb, FPS %2.1f, CPU %2.0f%%", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, g_infoManager.GetFPS(), (1.0f - m_idleThread.GetRelativeUsage())*100);
 #else
       double dCPU = m_resourceCounter.GetCPUUsage();
-      wszText.Format(L"FreeMem %d/%d Kb, FPS %2.1f, CPU-Total %d%%. CPU-XBMC %4.2f%%", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, 
-               g_infoManager.GetFPS(), g_cpuInfo.getUsedPercentage(), dCPU);
+      CStdString strCores = g_cpuInfo.GetCoresUsageString();
+      wszText.Format(L"FreeMem %d/%d Kb, FPS %2.1f, %s. CPU-XBMC %4.2f%%", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, 
+               g_infoManager.GetFPS(), strCores.c_str(), dCPU);
 #endif
 
       static int yShift = 20;
