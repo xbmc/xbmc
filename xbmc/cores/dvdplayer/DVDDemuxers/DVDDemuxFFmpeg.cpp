@@ -617,6 +617,13 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
 
 bool CDVDDemuxFFmpeg::Seek(int iTime, bool bBackword)
 {
+  if(!m_pInput->Seek(0, SEEK_POSSIBLE) 
+  && !m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG))
+  {
+    CLog::Log(LOGDEBUG, "%s - input stream reports it is not seekable", __FUNCTION__);
+    return false;
+  }
+
   __int64 seek_pts = (__int64)iTime * (AV_TIME_BASE / 1000);
   if (m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE && seek_pts < m_pFormatContext->start_time)
   {
