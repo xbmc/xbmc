@@ -20,6 +20,8 @@
 using namespace Surface;
 #ifdef HAS_GLX
 #include <X11/extensions/Xinerama.h>
+#elif defined (__APPLE__)
+#include "../xbmc/osx/CocoaUtils.h"
 #endif
 #include "XRandR.h"
 
@@ -547,6 +549,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 #else
 void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool forceClear /* = false */)
 {
+  RESOLUTION lastRes = m_Resolution;    
   if (res == AUTORES)
   {
     res = g_videoConfig.GetBestMode();
@@ -560,7 +563,8 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
   {
     g_advancedSettings.m_fullScreen = 1;
     m_bFullScreenRoot = true;
-    g_settings.m_ResInfo[WINDOW] = g_settings.m_ResInfo[m_Resolution];
+    if (res!=m_Resolution)
+      g_settings.m_ResInfo[WINDOW] = g_settings.m_ResInfo[m_Resolution];
   }
   else
   {
@@ -581,8 +585,6 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     Lock();
     m_iScreenWidth = g_settings.m_ResInfo[res].iWidth;
     m_iScreenHeight = g_settings.m_ResInfo[res].iHeight;
-    RESOLUTION lastRes = m_Resolution;
-    m_Resolution = res;
 #ifdef HAS_SDL_2D
     int options = SDL_HWSURFACE | SDL_DOUBLEBUF;
     if (g_advancedSettings.m_fullScreen) options |= SDL_FULLSCREEN;
@@ -637,7 +639,19 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 #else
 #ifdef __APPLE__
     // Allow for fullscreen.
-    m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0, g_advancedSettings.m_fullScreen);
+    if (!m_screenSurface)
+      m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0, g_advancedSettings.m_fullScreen);
+    else
+      m_screenSurface->ResizeSurface(m_iScreenWidth, m_iScreenHeight);
+    if (g_advancedSettings.m_fullScreen)
+    {
+      SetFullScreenRoot(true);
+    }
+    else if (lastRes>=DESKTOP )
+    {
+      SetFullScreenRoot(false);
+    }
+
 #else
     m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0);
 #endif
@@ -671,7 +685,6 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     glDisable(GL_DEPTH_TEST);
     VerifyGLState();
 #endif
-
     m_bWidescreen = (res == HDTV_1080i || res == HDTV_720p || res == PAL60_16x9 || 
                         res == PAL_16x9 || res == NTSC_16x9);
     
@@ -1344,10 +1357,10 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
 #endif
 
 #ifdef __APPLE__
-	// Need extra parameter.
-    SDL_SetVideoMode(width, height, 0, SDL_FULLSCREEN, 0);
+    Cocoa_GL_SetFullScreen(true);
+    m_screenSurface->RefreshCurrentContext();
 #else
-	SDL_SetVideoMode(width, height, 0, SDL_FULLSCREEN);
+    SDL_SetVideoMode(width, height, 0, SDL_FULLSCREEN);
 #endif
     m_screenSurface->ResizeSurface(width, height);
     glViewport(0, 0, m_iFullScreenWidth, m_iFullScreenHeight);
@@ -1357,10 +1370,10 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
   else
   {
 #ifdef __APPLE__
-	// Need extra parameter.
-    SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0, SDL_RESIZABLE, 0);
+    Cocoa_GL_SetFullScreen(false);
+    m_screenSurface->RefreshCurrentContext();
 #else
-	SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0, SDL_RESIZABLE);
+    SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0, SDL_RESIZABLE);
 #endif
     m_screenSurface->ResizeSurface(m_iScreenWidth, m_iScreenHeight);
     glViewport(0, 0, m_iScreenWidth, m_iScreenHeight);
