@@ -69,7 +69,7 @@ void CSplash::Show()
 #elif defined(HAS_SDL_2D) 
   SDL_Flip(g_graphicsContext.getScreenSurface()->SDL());
 #elif defined(HAS_SDL_OPENGL)
-  SDL_GL_SwapBuffers();
+  g_graphicsContext.Flip();
 #endif
   g_graphicsContext.Unlock();
 }
