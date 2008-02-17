@@ -6,7 +6,7 @@
 
 using namespace XFILE;
 
-CDVDInputStreamTV::CDVDInputStreamTV() : CDVDInputStream(DVDSTREAM_TYPE_MYTH)
+CDVDInputStreamTV::CDVDInputStreamTV() : CDVDInputStream(DVDSTREAM_TYPE_TV)
 {
   m_pFile = NULL;
   m_pLiveTV = NULL;
