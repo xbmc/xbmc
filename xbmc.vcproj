@@ -1420,6 +1420,18 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\FileSystem\cdioSupport.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\FileSystem\CMythDirectory.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\CMythDirectory.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\CMythFile.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\CMythFile.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\FileSystem\DAAPDirectory.cpp">
 				</File>
 				<File
@@ -3510,6 +3522,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					</File>
 					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamNavigator.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamTV.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamTV.h">
 					</File>
 					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\DVDStateSerializer.cpp">

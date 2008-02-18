@@ -6,6 +6,7 @@
 #include "DVDInputStreamNavigator.h"
 #include "DVDInputStreamHttp.h"
 #include "DVDInputStreamFFmpeg.h"
+#include "DVDInputStreamTV.h"
 
 CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, const std::string& file, const std::string& content)
 {
@@ -21,6 +22,10 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
        || file.substr(0, 6) == "udp://"
        || file.substr(0, 6) == "tcp://")
     return new CDVDInputStreamFFmpeg();
+  else if(file.substr(0, 7) == "myth://"
+       || file.substr(0, 7) == "cmyth://"
+       || file.substr(0, 7) == "gmyth://")
+    return new CDVDInputStreamTV();
 
   //else if (item.IsShoutCast())
   //  /* this should be replaced with standard file as soon as ffmpeg can handle raw aac */
