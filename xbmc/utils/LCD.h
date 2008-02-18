@@ -1,6 +1,6 @@
 #pragma once
 #include "Thread.h"
-
+#include "../../guilib/tinyXML/tinyxml.h"
 #include "GUILabelControl.h"  // for CInfoPortion
 #define MAX_ROWS 20
 

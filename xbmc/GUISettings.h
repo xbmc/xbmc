@@ -39,6 +39,7 @@
 #define LCD_TYPE_LCD_HD44780 1
 #define LCD_TYPE_LCD_KS0073  2
 #define LCD_TYPE_VFD         3
+#define LCD_TYPE_LCDPROC     4
 
 #define MODCHIP_SMARTXX   0
 #define MODCHIP_XENIUM    1
