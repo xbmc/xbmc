@@ -22,13 +22,13 @@ bool SoLoader::Load()
     return true;
     
   CStdString strFileName= _P(GetFileName());
-  if(strFileName.IsEmpty())
+  if(strFileName == "xbmc.so")
     CLog::Log(LOGDEBUG, "Loading Internal Library\n");
   else
     CLog::Log(LOGDEBUG, "Loading: %s\n", strFileName.c_str());
   int flags = RTLD_LAZY;
   if (m_bGlobal) flags |= RTLD_GLOBAL;
-  if (strFileName.IsEmpty())
+  if (strFileName == "xbmc.so")
     m_soHandle = RTLD_DEFAULT;
   else
     m_soHandle = dlopen(strFileName.c_str(), flags);
