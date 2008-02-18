@@ -23,7 +23,9 @@
  */
 #include <sys/types.h>
 #include <stdlib.h>
+#ifndef _MSC_VER
 #include <unistd.h>
+#endif
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
@@ -111,7 +113,7 @@ cmyth_send_message(cmyth_conn_t conn, char *request)
 		} else {
 			conn->conn_hang = 0;
 		}
-		w = write(conn->conn_fd, msg + written, reqlen - written);
+		w = send(conn->conn_fd, msg + written, reqlen - written, 0);
 		if (w < 0) {
 			cmyth_dbg(CMYTH_DBG_ERROR, "%s: write() failed (%d)\n",
 				  __FUNCTION__, errno);
@@ -173,7 +175,7 @@ cmyth_rcv_length(cmyth_conn_t conn)
 			continue;
 		} else if (r > 0) {
 			conn->conn_hang = 0;
-			r = read(conn->conn_fd, &buf[rtot], 8 - rtot);
+			r = recv(conn->conn_fd, &buf[rtot], 8 - rtot, 0);
 		}
 		if (r <= 0) {
 			cmyth_dbg(CMYTH_DBG_ERROR, "%s: read() failed (%d)\n",
@@ -242,7 +244,7 @@ cmyth_conn_refill(cmyth_conn_t conn, int len)
 			continue;
 		} else if (r > 0) {
 			conn->conn_hang = 0;
-			r = read(conn->conn_fd, p, len);
+			r = recv(conn->conn_fd, p, len, 0);
 		}
 		if (r <= 0) {
 			if (total == 0) {
@@ -2688,7 +2690,7 @@ cmyth_rcv_data(cmyth_conn_t conn, int *err, unsigned char *buf, int count)
 		} else {
 			conn->conn_hang = 0;
 		}
-		r = read(conn->conn_fd, p, count);
+		r = recv(conn->conn_fd, p, count, 0);
 		if (r < 0) {
 			if (total == 0) {
 				cmyth_dbg(CMYTH_DBG_ERROR,
