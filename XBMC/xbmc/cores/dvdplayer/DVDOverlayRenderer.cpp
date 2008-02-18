@@ -1,4 +1,3 @@
-
 #include "stdafx.h"
 #include "DVDOverlayRenderer.h"
 #include "DVDCodecs/Overlay/DVDOverlaySpu.h"
@@ -59,8 +58,8 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlayImage*
   }
 
   // we try o fit it in if it's outside the image
-  int y = max(0,min(pOverlay->y, pPicture->height-pOverlay->height));
-  int x = max(0,min(pOverlay->x, pPicture->width-pOverlay->width));
+  int y = std::max(0,std::min(pOverlay->y, pPicture->height-pOverlay->height));
+  int x = std::max(0,std::min(pOverlay->x, pPicture->width-pOverlay->width));
 
   for(int i=0;i<pOverlay->height;i++)
   {

@@ -1352,4 +1352,9 @@ void CLinuxRenderer::CreateThumbnail(SDL_Surface * surface, unsigned int width, 
 #endif
 }
 
+// called from GUI thread after playback has finished to release resources
+void CLinuxRenderer::OnClose()
+{
+}
+
 #endif // HAS_SDL_OPENGL

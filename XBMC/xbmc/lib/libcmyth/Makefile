@@ -10,11 +10,3 @@ include ../../../Makefile.include
 OBJSC+=$(SRCSC:.c=.o)
 
 lib: $(OBJSC)
-
-clean: 
-	$(RM) $(OBJSC) $(LIB) $(PCH:.h=.h.gch)
-	for d in $(DIRS); do (cd $$d; $(MAKE) clean ); done
-
-depend: $(PCH) $(SRCSC)
-	-$(CC) -MM $(DEFINES) $(INCLUDES) $(SRCSC) > Makefile.depend
-	-for d in $(DIRS); do (cd $$d; $(MAKE) depend ); done
