@@ -202,9 +202,12 @@ protected:
   void CheckContinuity(DemuxPacket* pPacket, unsigned int source);
 
   bool ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream);
-  bool IsValidStream(CCurrentStream& stream);
+  bool IsValidStream(CCurrentStream& stream, StreamType type);
   bool IsBetterStream(CCurrentStream& current, StreamType type, CDemuxStream* stream);
 
+  bool OpenDemuxStream();
+
+  void UpdateApplication();
 
   bool m_bAbortRequest;
 
@@ -223,8 +226,8 @@ protected:
   double m_lastpts; // holds last display pts during ff/rw operations
   
   // classes
-  CDVDPlayerAudio m_dvdPlayerAudio; // audio part
   CDVDPlayerVideo m_dvdPlayerVideo; // video part
+  CDVDPlayerAudio m_dvdPlayerAudio; // audio part
   CDVDPlayerSubtitle m_dvdPlayerSubtitle; // subtitle part
   
   CDVDMessageQueue m_messenger;     // thread messenger, only the dvdplayer.cpp class itself may send message to this!
@@ -240,3 +243,4 @@ protected:
   HANDLE m_hReadyEvent;
   CRITICAL_SECTION m_critStreamSection; // need to have this lock when switching streams (audio / video)
 };
+
