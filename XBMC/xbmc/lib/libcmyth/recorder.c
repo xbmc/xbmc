@@ -28,16 +28,26 @@
  */
 #include <sys/types.h>
 #include <stdlib.h>
+#ifndef _MSC_VER
 #include <unistd.h>
+#endif
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
+#ifdef _MSC_VER
+#include <time.h>
+#else
 #include <sys/time.h>
+#endif
 #include <mvp_refmem.h>
 #include <cmyth.h>
 #include <cmyth_local.h>
 
-#if 0
+#ifdef _MSC_VER
+static void nullprint(a, ...) { return; }
+#define PRINTF nullprint
+#define TRC  nullprint
+#elif 0
 #define PRINTF(x...) PRINTF(x)
 #define TRC(fmt, args...) PRINTF(fmt, ## args) 
 #else

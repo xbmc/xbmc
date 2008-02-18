@@ -40,7 +40,9 @@
  */
 #include <sys/types.h>
 #include <stdlib.h>
+#ifndef _MSC_VER
 #include <unistd.h>
+#endif
 #include <errno.h>
 #include <mvp_refmem.h>
 #include <mvp_atomic.h>
