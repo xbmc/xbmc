@@ -109,7 +109,7 @@ class CLinuxRenderer
 {
 public:
   CLinuxRenderer();
-  ~CLinuxRenderer();
+  virtual ~CLinuxRenderer();
 
   virtual void GetVideoRect(RECT &rs, RECT &rd);
   virtual float GetAspectRatio();
@@ -131,6 +131,7 @@ public:
   virtual unsigned int PreInit();
   virtual void         UnInit();
   virtual void         Reset(); /* resets renderer after seek for example */
+  virtual void         OnClose(); // called from main GUI thread
 
   void AutoCrop(bool bCrop);
   void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
