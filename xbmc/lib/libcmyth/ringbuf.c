@@ -277,7 +277,7 @@ cmyth_ringbuf_get_block(cmyth_recorder_t rec, char *buf, unsigned long len)
 	tv.tv_usec = 0;
 	FD_ZERO(&fds);
 	FD_SET(rec->rec_ring->conn_data->conn_fd, &fds);
-	if (select(rec->rec_ring->conn_data->conn_fd+1,
+	if (select((int)rec->rec_ring->conn_data->conn_fd+1,
 		   NULL, &fds, NULL, &tv) == 0) {
 		rec->rec_ring->conn_data->conn_hang = 1;
 		return 0;
