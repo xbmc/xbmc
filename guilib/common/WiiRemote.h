@@ -36,18 +36,10 @@
 #define WIIREMOTE_BUTTON_DELAY_TIME 500
 
 
-#define WIIREMOTE_PRINT_ALL_ERRORS                  // Uncomment to have libcwiid drop library wide errors into the terminal (couldn't connect etc. )
 #define CWIID_OLD                                     // Uncomment if the system is running cwiid that is older than 6.0 (The one from ubuntu gutsy repository is < 6.0)
 
 //CWIID
 #include <cwiid.h>
-//Misc
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "stdafx.h"
-
-//Error handling
 //Bluetooth specific
 #include <sys/socket.h>
 #include <bluetooth/bluetooth.h>
@@ -124,13 +116,13 @@ private:
   unsigned char    m_ledState;
   unsigned char    m_rptMode;
   bdaddr_t         m_btaddr;
-#ifndef CWIID_OLD
+
   static void MessageCallback(cwiid_wiimote_t *wiiremote, int mesgCount, union cwiid_mesg mesg[], struct timespec *timestamp);
-#else
+#ifdef CWIID_OLD
   static void MessageCallback(cwiid_wiimote_t *wiiremote, int mesgCount, union cwiid_mesg mesg[]);
 #endif
 
-#ifndef WIIREMOTE_PRINT_ALL_ERRORS
+#ifndef _DEBUG
 /* This takes the errors generated at pre-connect and silence them as they are mostly not needed */
   static void ErrorCallback(struct wiimote *wiiremote, const char *str, va_list ap);
 #endif
