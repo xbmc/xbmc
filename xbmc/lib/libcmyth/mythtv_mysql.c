@@ -730,7 +730,7 @@ cmyth_mysql_get_commbreak_list(cmyth_database_t db, int chanid, char * start_ts_
 	MYSQL_ROW row;
 	const char *query_str = "SELECT m.type AS type, m.mark AS mark, s.offset AS offset FROM recordedmarkup m INNER JOIN recordedseek AS s ON (m.chanid = s.chanid AND m.starttime = s.starttime AND (FLOOR(m.mark / 15) + 1) = s.mark) WHERE m.chanid = ? AND m.starttime = ? AND m.type IN (?, ?) ORDER BY mark;";
 	int rows = 0;
-  int i;
+	int i;
 	cmyth_mysql_query_t * query;
 	cmyth_commbreak_t commbreak = NULL;
 	query = cmyth_mysql_query_create(db,query_str);
@@ -1003,10 +1003,10 @@ cmyth_chanlist_t cmyth_mysql_get_chanlist(cmyth_database_t db)
 	MYSQL_ROW row;
 	const char *query_str = "SELECT chanid, channum, name, icon FROM channel;";
 	int rows = 0;
-  int i;
+	int i;
 	cmyth_mysql_query_t * query;
-  cmyth_channel_t channel;
-  cmyth_chanlist_t chanlist;
+	cmyth_channel_t channel;
+	cmyth_chanlist_t chanlist;
 	query = cmyth_mysql_query_create(db,query_str);
 
 	res = cmyth_mysql_query_result(query);

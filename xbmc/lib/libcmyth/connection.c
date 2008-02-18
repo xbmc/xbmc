@@ -166,7 +166,7 @@ cmyth_connect(char *server, unsigned short port, unsigned buflen,
 	cmyth_socket_t fd;
 	void (*old_sighandler)(int);
 	int old_alarm;
-  int temp, size;
+	int temp, size;
 
 	/*
 	 * First try to establish the connection with the server.
@@ -205,17 +205,17 @@ cmyth_connect(char *server, unsigned short port, unsigned buflen,
 	 * on the data sockets causes stuttering during playback.
 	 */
 	if (tcp_rcvbuf == 0)
-    tcp_rcvbuf = 4096;
-  
-  temp = tcp_rcvbuf;
-  size = sizeof(temp);
+		tcp_rcvbuf = 4096;
+
+	temp = tcp_rcvbuf;
+	size = sizeof(temp);
 	setsockopt(fd, SOL_SOCKET, SO_RCVBUF, (void*)&temp, size);
-  if(getsockopt(fd, SOL_SOCKET, SO_RCVBUF, (void*)&temp, &size)) {
+	if(getsockopt(fd, SOL_SOCKET, SO_RCVBUF, (void*)&temp, &size)) {
 		cmyth_dbg(CMYTH_DBG_ERROR, "%s: could not get rcvbuf from socket(%d)\n",
 			  __FUNCTION__, errno);
-    temp = tcp_rcvbuf;
-  }
-  tcp_rcvbuf = temp;
+		temp = tcp_rcvbuf;
+	}
+	tcp_rcvbuf = temp;
 
 	cmyth_dbg(CMYTH_DBG_PROTO, "%s: connecting to %d.%d.%d.%d fd = %d\n",
 		  __FUNCTION__,

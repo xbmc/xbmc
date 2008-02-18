@@ -636,7 +636,7 @@ cmyth_livetv_chain_select(cmyth_recorder_t rec, struct timeval *timeout)
 {
 	fd_set fds;
 	int ret;
-  cmyth_socket_t fd;
+	cmyth_socket_t fd;
 
 	cmyth_dbg(CMYTH_DBG_DEBUG, "%s [%s:%d]: (trace) {\n", __FUNCTION__,
 				__FILE__, __LINE__);
@@ -779,8 +779,8 @@ cmyth_livetv_chain_request_block(cmyth_recorder_t rec, unsigned long len)
 
 	pthread_mutex_lock(&mutex);
 
-  if(len > (unsigned int)rec->rec_conn->conn_tcp_rcvbuf)
-    len = (unsigned int)rec->rec_conn->conn_tcp_rcvbuf;
+	if(len > (unsigned int)rec->rec_conn->conn_tcp_rcvbuf)
+		len = (unsigned int)rec->rec_conn->conn_tcp_rcvbuf;
 
 	do {
 		retry = 0;

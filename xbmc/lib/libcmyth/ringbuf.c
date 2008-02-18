@@ -292,7 +292,7 @@ cmyth_ringbuf_select(cmyth_recorder_t rec, struct timeval *timeout)
 {
 	fd_set fds;
 	int ret;
-  cmyth_socket_t fd;
+	cmyth_socket_t fd;
 	if (rec == NULL)
 		return -EINVAL;
 
@@ -343,8 +343,8 @@ cmyth_ringbuf_request_block(cmyth_recorder_t rec, unsigned long len)
 
 	pthread_mutex_lock(&mutex);
 
-  if(len > (unsigned int)rec->rec_conn->conn_tcp_rcvbuf)
-    len = (unsigned int)rec->rec_conn->conn_tcp_rcvbuf;
+	if(len > (unsigned int)rec->rec_conn->conn_tcp_rcvbuf)
+		len = (unsigned int)rec->rec_conn->conn_tcp_rcvbuf;
 
 	snprintf(msg, sizeof(msg),
 		 "QUERY_RECORDER %u[]:[]REQUEST_BLOCK_RINGBUF[]:[]%ld",
