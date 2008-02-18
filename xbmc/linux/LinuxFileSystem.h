@@ -7,7 +7,8 @@
 class CLinuxFileSystem
 {
 public:
-   static std::vector<CStdString> GetRemoveableDrives();
+  static std::vector<CStdString> GetRemoveableDrives();
+  static std::vector<CStdString> GetAllMountedDrives();
 };
 
 #endif
