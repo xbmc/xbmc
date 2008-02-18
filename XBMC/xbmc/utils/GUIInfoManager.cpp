@@ -1355,7 +1355,11 @@ int CGUIInfoManager::GetInt(int info, DWORD contextWindow) const
         return ret;
       }
     case SYSTEM_CPU_USAGE:
+#ifdef _LINUX
+      return g_cpuInfo.getUsedPercentage();
+#else
       return 100 - ((int)(100.0f *g_application.m_idleThread.GetRelativeUsage()));
+#endif
   }
   return 0;
 }
@@ -2812,7 +2816,13 @@ string CGUIInfoManager::GetSystemHeatInfo(int info)
       text.Format("%i%%", m_fanSpeed * 2);
       break;
     case SYSTEM_CPU_USAGE:
+#ifdef __APPLE__
+      text.Format("%s %d%", g_localizeStrings.Get(13271).c_str(), g_cpuInfo.getUsedPercentage());
+#elif defined _LINUX
+      text.Format("%s %s", g_localizeStrings.Get(13271).c_str(), g_cpuInfo.GetCoresUsageString());
+#else
       text.Format("%s %2.0f%%", g_localizeStrings.Get(13271).c_str(), (1.0f - g_application.m_idleThread.GetRelativeUsage())*100);
+#endif
       break;
   }
   return text;
