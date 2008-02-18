@@ -1551,6 +1551,7 @@
   <string id="20188">Backing up BIOS</string>
   <string id="20189">Enable Auto Scrolling for Plot &amp; Review</string>
   <string id="20190">Custom</string>
+  <string id="20191">Enable debug logging</string>
 
   <!-- string id's 20200 thru 20211 are reserved for speedstrings (LocalizeStrings.cpp)-->
   
