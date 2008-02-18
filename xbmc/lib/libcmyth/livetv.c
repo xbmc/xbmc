@@ -617,7 +617,7 @@ cmyth_livetv_chain_get_block(cmyth_recorder_t rec, char *buf,
 	tv.tv_usec = 0;
 	FD_ZERO(&fds);
 	FD_SET(rec->rec_livetv_file->file_data->conn_fd, &fds);
-	if (select(rec->rec_livetv_file->file_data->conn_fd+1,
+	if (select((int)rec->rec_livetv_file->file_data->conn_fd+1,
 		   NULL, &fds, NULL, &tv) == 0) {
 		rec->rec_livetv_file->file_data->conn_hang = 1;
 		cmyth_dbg(CMYTH_DBG_DEBUG, "%s [%s:%d]: (trace) }\n",
