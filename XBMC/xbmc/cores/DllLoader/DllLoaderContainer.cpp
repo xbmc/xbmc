@@ -154,7 +154,7 @@ LibraryLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCu
 #ifndef _LINUX
   if (strlen(sName) > 1 && sName[1] == ':')
 #else
-  if (strlen(sName) > 1 && (sName[1] == ':' || sName[0] == '/'))
+  if (strlen(sName) > 1 && (sName[1] == ':' || sName[0] == '/') || strcmp(sName, "xbmc.so") == 0)
 #endif
   { //  Has a path, just try to load
     return LoadDll(sName, bLoadSymbols);
