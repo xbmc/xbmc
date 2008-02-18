@@ -25,7 +25,9 @@
  */
 #include <sys/types.h>
 #include <stdlib.h>
+#ifndef _MSC_VER
 #include <unistd.h>
+#endif
 #include <ctype.h>
 #include <stdio.h>
 #include <errno.h>
@@ -92,7 +94,7 @@ cmyth_timestamp_t
 cmyth_timestamp_from_string(char *str)
 {
 	cmyth_timestamp_t ret;
-	int i;
+	unsigned int i;
 	int datetime = 1;
 	char *yyyy = &str[0];
 	char *MM = &str[5];
