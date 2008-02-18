@@ -55,7 +55,7 @@ bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
       user = "mythtv";
     if(pass == "")
       pass = "mythtv";
-    cmyth_database_t db = cmyth_database_init((char*)url.GetHostName().c_str(), "mythconverg", (char*)user.c_str(), (char*)pass.c_str());
+    cmyth_database_t db = cmyth_database_init((char*)url.GetHostName().c_str(), (char*)"mythconverg", (char*)user.c_str(), (char*)pass.c_str());
     if(!db)
     {
       XLOG(LOGERROR, "unable to connect to db with url %s", strPath.c_str());
