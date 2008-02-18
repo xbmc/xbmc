@@ -46,7 +46,7 @@ __mvp_atomic_increment(mvp_atomic_t *valp)
 	 * Don't know how to atomic increment for a generic architecture
 	 * so punt and just increment the value.
 	 */
-#warning unknown architecture, atomic deccrement is not...
+#warning unknown architecture, atomic increment is not...
 	__val = ++(*valp);
 #endif
 	return __val;

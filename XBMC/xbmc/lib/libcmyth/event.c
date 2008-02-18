@@ -104,7 +104,7 @@ cmyth_event_select(cmyth_conn_t conn, struct timeval *timeout)
 {
 	fd_set fds;
 	int ret;
-  cmyth_socket_t fd;
+	cmyth_socket_t fd;
 
 	cmyth_dbg(CMYTH_DBG_DEBUG, "%s [%s:%d]: (trace) {\n", __FUNCTION__,
 				__FILE__, __LINE__);
