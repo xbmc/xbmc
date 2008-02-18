@@ -870,6 +870,22 @@ void CDVDPlayer::Process()
 
   }
 
+  // if we are caching, start playing it agian
+  if (m_caching && !m_bAbortRequest)
+  {
+    m_clock.SetSpeed(m_playSpeed);
+    m_dvdPlayerAudio.SetSpeed(m_playSpeed);
+    m_dvdPlayerVideo.SetSpeed(m_playSpeed);
+    m_caching = false;
+  }
+
+  // playback ended, make sure anything buffered is displayed
+  if (m_pDlgCache)
+  {
+    m_pDlgCache->Close();
+    m_pDlgCache = NULL;
+  }
+
   while (!m_bAbortRequest && 
          ((!m_dvdPlayerAudio.m_messageQueue.RecievedAbortRequest() && 
          m_dvdPlayerAudio.m_messageQueue.GetDataSize() > 0) ||
@@ -1116,15 +1132,6 @@ void CDVDPlayer::OnExit()
   try
   {
     CLog::Log(LOGNOTICE, "CDVDPlayer::OnExit()");
-
-    // if we are caching, start playing it agian
-    if (m_caching && !m_bAbortRequest)
-    {
-      m_clock.SetSpeed(m_playSpeed);
-      m_dvdPlayerAudio.SetSpeed(m_playSpeed);
-      m_dvdPlayerVideo.SetSpeed(m_playSpeed);
-      m_caching = false;
-    }
 
     // close each stream
     if (!m_bAbortRequest) CLog::Log(LOGNOTICE, "DVDPlayer: eof, waiting for queues to empty");
