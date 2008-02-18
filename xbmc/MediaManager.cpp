@@ -155,7 +155,7 @@ void CMediaManager::GetLocalDrives(VECSHARES &localDrives, bool includeQ)
 #endif
 
 #ifdef _LINUX
-  vector<CStdString> result = CLinuxFileSystem::GetRemoveableDrives();
+  vector<CStdString> result = CLinuxFileSystem::GetAllMountedDrives();
   for (unsigned int i = 0; i < result.size(); i++)
   {
      CShare share;
