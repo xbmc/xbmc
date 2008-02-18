@@ -877,7 +877,7 @@ unsigned int CWinRenderer::PreInit()
       CLog::Log(LOGERROR,  (char*)pError->GetBufferPointer());
       return 1;
     }
-    m_pD3DDevice->CreatePixelShader((D3DPIXELSHADERDEF*)pShader->GetBufferPointer(), &m_hLowMemShader);
+    //m_pD3DDevice->CreatePixelShader((D3DPIXELSHADERDEF*)pShader->GetBufferPointer(), &m_hLowMemShader);
     pShader->Release();
   }
 
