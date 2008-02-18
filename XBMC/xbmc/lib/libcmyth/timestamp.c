@@ -94,7 +94,7 @@ cmyth_timestamp_t
 cmyth_timestamp_from_string(char *str)
 {
 	cmyth_timestamp_t ret;
-	int i;
+	unsigned int i;
 	int datetime = 1;
 	char *yyyy = &str[0];
 	char *MM = &str[5];
