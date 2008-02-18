@@ -718,56 +718,52 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *source, CS
   return false;
 }
 
-void CSettings::GetString(const TiXmlElement* pRootElement, const char *tagName, CStdString &strValue, const CStdString& strDefaultValue)
+bool CSettings::GetString(const TiXmlElement* pRootElement, const char *tagName, CStdString &strValue, const CStdString& strDefaultValue)
 {
   if (XMLUtils::GetString(pRootElement, tagName, strValue))
   { // tag exists
     // check for "-" for backward compatibility
-    if (strValue.Equals("-"))
-      strValue = strDefaultValue;
+    if (!strValue.Equals("-"))
+      return true;
   }
-  else
-  { // tag doesn't exist - set default
-    strValue = strDefaultValue;
-  }
-  return;
-  //CLog::Log(LOGDEBUG, "  %s: %s", strTagName.c_str(), strValue.c_str());
+  // tag doesn't exist - set default
+  strValue = strDefaultValue;
+  return false;
 }
 
-void CSettings::GetString(const TiXmlElement* pRootElement, const char *tagName, char *szValue, const CStdString& strDefaultValue)
+bool CSettings::GetString(const TiXmlElement* pRootElement, const char *tagName, char *szValue, const CStdString& strDefaultValue)
 {
   CStdString strValue;
-  GetString(pRootElement, tagName, strValue, strDefaultValue);
+  bool ret = GetString(pRootElement, tagName, strValue, strDefaultValue);
   if (szValue)
     strcpy(szValue, strValue.c_str());
+  return ret;
 }
 
-void CSettings::GetInteger(const TiXmlElement* pRootElement, const char *tagName, int& iValue, const int iDefault, const int iMin, const int iMax)
+bool CSettings::GetInteger(const TiXmlElement* pRootElement, const char *tagName, int& iValue, const int iDefault, const int iMin, const int iMax)
 {
   if (XMLUtils::GetInt(pRootElement, tagName, iValue))
   { // check range
-    if ((iValue < iMin) || (iValue > iMax))
-      iValue = iDefault;
+    if (iValue < iMin) iValue = iMin;
+    if (iValue > iMax) iValue = iMax;
+    return true;
   }
-  else
-  { // default
-    iValue = iDefault;
-  }
-  //CLog::Log(LOGDEBUG, "  %s: %d", tagName, iValue);
+  // default
+  iValue = iDefault;
+  return false;
 }
 
-void CSettings::GetFloat(const TiXmlElement* pRootElement, const char *tagName, float& fValue, const float fDefault, const float fMin, const float fMax)
+bool CSettings::GetFloat(const TiXmlElement* pRootElement, const char *tagName, float& fValue, const float fDefault, const float fMin, const float fMax)
 {
   if (XMLUtils::GetFloat(pRootElement, tagName, fValue))
   { // check range
-    if ((fValue < fMin) || (fValue > fMax))
-      fValue = fDefault;
+    if (fValue < fMin) fValue = fMin;
+    if (fValue > fMax) fValue = fMax;
+    return true;
   }
-  else
-  { // default
-    fValue = fDefault;
-  }
-  //CLog::Log(LOGDEBUG, "  %s: %f", tagName, fValue);
+  // default
+  fValue = fDefault;
+  return false;
 }
 
 void CSettings::GetViewState(const TiXmlElement *pRootElement, const CStdString &strTagName, CViewState &viewState)
