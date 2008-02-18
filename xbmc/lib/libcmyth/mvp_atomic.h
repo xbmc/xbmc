@@ -41,7 +41,11 @@ __mvp_atomic_increment(mvp_atomic_t *valp)
 	 * Don't know how to atomic increment for a generic architecture
 	 * so punt and just increment the value.
 	 */
-#warning unknown architecture, atomic increment is not...
+#ifdef _MSC_VER
+#pragma message("unknown architecture, atomic deccrement is not...")
+#else
+#warning unknown architecture, atomic deccrement is not...
+#endif
 	__val = ++(*valp);
 #endif
 	return __val;
@@ -98,7 +102,11 @@ __mvp_atomic_decrement(mvp_atomic_t *valp)
 	 * Don't know how to atomic decrement for a generic architecture
 	 * so punt and just decrement the value.
 	 */
+#ifdef _MSC_VER
+#pragma message("unknown architecture, atomic deccrement is not...")
+#else
 #warning unknown architecture, atomic deccrement is not...
+#endif
 	__val = --(*valp);
 #endif
 	return __val;

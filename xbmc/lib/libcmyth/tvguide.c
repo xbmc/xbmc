@@ -19,11 +19,17 @@
 
 #include <sys/types.h>
 #include <stdlib.h>
+#ifndef _MSVC
 #include <unistd.h>
+#endif
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
+#ifdef _MSVC
+#include <time.h>
+#else
 #include <sys/time.h>
+#endif
 #include <mysql/mysql.h>
 #include <mvp_refmem.h>
 #include <cmyth.h>

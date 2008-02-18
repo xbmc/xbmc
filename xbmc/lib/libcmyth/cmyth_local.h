@@ -25,15 +25,51 @@
 #ifndef __CMYTH_LOCAL_H
 #define __CMYTH_LOCAL_H
 
+#ifdef _MSC_VER
+#include <stdio.h>
+#include <malloc.h>
+#else
 #include <unistd.h>
+#endif
 #include <cmyth.h>
 #include <time.h>
-#include <pthread.h>
 #include <mysql/mysql.h>
 
+#ifdef _MSC_VER
+#define pthread_mutex_lock(a)
+#define pthread_mutex_unlock(a)
+#define PTHREAD_MUTEX_INITIALIZER NULL;
+typedef void* pthread_mutex_t;
+extern pthread_mutex_t mutex;
+#define mutex __cmyth_mutex
+#define ECANCELED -1
+#define SHUT_RDWR SD_BOTH
+typedef SOCKET cmyth_socket_t;
+#define snprintf _snprintf
+#define sleep(a) Sleep(a)
+static inline struct tm* localtime_r (const time_t *clock, struct tm *result) { 
+	struct tm* data;
+  if (!clock || !result) return NULL;
+  data = localtime(clock);
+  if (!data) return NULL;
+	memcpy(result,data,sizeof(*result)); 
+	return result; 
+}
+static inline __int64 atoll(const char* s)
+{
+  __int64 value;
+  if(sscanf(s,"%I64d", &value))
+    return value;
+  else
+    return 0;
+}
+#else
+#include <pthread.h>
 #define mutex __cmyth_mutex
 extern pthread_mutex_t mutex;
-
+#define closesocket(fd) close(fd)
+typedef int cmyth_socket_t;
+#endif
 /*
  * Some useful constants
  */
@@ -50,7 +86,7 @@ extern pthread_mutex_t mutex;
  * MythTV backend connection
  */
 struct cmyth_conn {
-	int		conn_fd;	/**< socket file descriptor */
+	cmyth_socket_t conn_fd;	/**< socket file descriptor */
 	unsigned char	*conn_buf;	/**< connection buffer */
 	int		conn_buflen;	/**< buffer size */
 	int		conn_len;	/**< amount of data in buffer */
