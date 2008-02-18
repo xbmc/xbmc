@@ -22,10 +22,16 @@ bool SoLoader::Load()
     return true;
     
   CStdString strFileName= _P(GetFileName());
-  CLog::Log(LOGDEBUG, "Loading: %s\n", strFileName.c_str());  
+  if(strFileName.IsEmpty())
+    CLog::Log(LOGDEBUG, "Loading Internal Library\n");
+  else
+    CLog::Log(LOGDEBUG, "Loading: %s\n", strFileName.c_str());
   int flags = RTLD_LAZY;
   if (m_bGlobal) flags |= RTLD_GLOBAL;
-  m_soHandle = dlopen(strFileName.c_str(), flags);
+  if (strFileName.IsEmpty())
+    m_soHandle = RTLD_DEFAULT;
+  else
+    m_soHandle = dlopen(strFileName.c_str(), flags);
   if (!m_soHandle)
   {
     CLog::Log(LOGERROR, "Unable to load %s, reason: %s", strFileName.c_str(), dlerror());
