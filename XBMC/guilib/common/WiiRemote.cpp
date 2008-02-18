@@ -23,14 +23,18 @@
 CWiiRemote g_WiiRemote;
 CCriticalSection CWiiRemote::m_lock;
 
+#ifdef CWIID_OLD
+void CWiiRemote::MessageCallback(cwiid_wiimote_t *wiiremote, int mesg_count, union cwiid_mesg mesg[])
+{
+  MessageCallback(wiiremote, mesg_count, mesg, NULL);
+}
+
+#endif
+
 /* The MessageCallback for the Wiiremote.
    This callback is used for error reports, mainly to see if the connection has been broken 
    This callback is also used for getting the IR sources, if this is done in update as with buttons we usually only get 1 IR source at a time wich is much harder to calculate */
-#ifndef CWIID_OLD
 void CWiiRemote::MessageCallback(cwiid_wiimote_t *wiiremote, int mesg_count, union cwiid_mesg mesg[], struct timespec *timestamp)
-#else
-void CWiiRemote::MessageCallback(cwiid_wiimote_t *wiiremote, int mesg_count, union cwiid_mesg mesg[])
-#endif
 {
   EnterCriticalSection(m_lock);
   for (int i=0; i < mesg_count; i++)
@@ -91,7 +95,7 @@ void CWiiRemote::MessageCallback(cwiid_wiimote_t *wiiremote, int mesg_count, uni
   LeaveCriticalSection(m_lock);
 }
 
-#ifndef WIIREMOTE_PRINT_ALL_ERRORS
+#ifndef _DEBUG
 /* This takes the errors generated at pre-connect and silence them as they are mostly not needed */
 void CWiiRemote::ErrorCallback(struct wiimote *wiiremote, const char *str, va_list ap)
 {
@@ -447,7 +451,7 @@ bool CWiiRemote::Connect()
 {
   if (!m_enabled) //If the Wiiremote isn't enabled we don't need to check for them
     return false;
-#ifndef WIIREMOTE_PRINT_ALL_ERRORS
+#ifndef _DEBUG
   cwiid_set_err(ErrorCallback);
 #endif
   while (!m_connected)
