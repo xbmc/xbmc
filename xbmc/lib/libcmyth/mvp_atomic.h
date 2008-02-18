@@ -1,6 +1,9 @@
 #ifndef __MVP_ATOMIC_H
 #define __MVP_ATOMIC_H
 
+#ifdef _MSC_VER
+#include <windows.h>
+#endif
 /**
  * Atomically incremente a reference count variable.
  * \param valp address of atomic variable
@@ -36,6 +39,8 @@ __mvp_atomic_increment(mvp_atomic_t *valp)
 		      : "=&r" (__val)
 		      : "r" (valp)
 		      : "cc", "memory");
+#elif defined _MSC_VER
+  __val = InterlockedIncrement(valp);
 #else
 	/*
 	 * Don't know how to atomic increment for a generic architecture
@@ -93,6 +98,8 @@ __mvp_atomic_decrement(mvp_atomic_t *valp)
 	while (__newval != __oldval);
 	/*  The value for __val is in '__oldval' */
 	__val = __oldval;
+#elif defined _MSC_VER
+  __val = InterlockedDecrement(valp);
 #else
 	/*
 	 * Don't know how to atomic decrement for a generic architecture
