@@ -553,19 +553,30 @@ void CGUIDialogPluginSettings::SetDefaults()
       switch (control->GetControlType())
       {
         case CGUIControl::GUICONTROL_BUTTON:
-          ((CGUIButtonControl*) control)->SetLabel2(setting->Attribute("default"));
+          if (setting->Attribute("default"))
+            ((CGUIButtonControl*) control)->SetLabel2(setting->Attribute("default"));
+          else
+            ((CGUIButtonControl*) control)->SetLabel2("");
           break;
         case CGUIControl::GUICONTROL_RADIO:
-          ((CGUIRadioButtonControl*) control)->SetSelected(strcmpi(setting->Attribute("default"), "true") == 0);
+          if (setting->Attribute("default"))
+            ((CGUIRadioButtonControl*) control)->SetSelected(strcmpi(setting->Attribute("default"), "true") == 0);
+          else
+            ((CGUIRadioButtonControl*) control)->SetSelected(false);
           break;
         case CGUIControl::GUICONTROL_SPINEX:
           {
-            if (strcmpi(setting->Attribute("type"), "fileenum") == 0 || strcmpi(setting->Attribute("type"), "labelenum") == 0)
-            { // need to run through all our settings and find the one that matches
-              ((CGUISpinControlEx*) control)->SetValueFromLabel(setting->Attribute("default"));
+            if (setting->Attribute("default"))
+            {
+              if (strcmpi(setting->Attribute("type"), "fileenum") == 0 || strcmpi(setting->Attribute("type"), "labelenum") == 0)
+              { // need to run through all our settings and find the one that matches
+                  ((CGUISpinControlEx*) control)->SetValueFromLabel(setting->Attribute("default"));
+              }
+              else
+                ((CGUISpinControlEx*) control)->SetValue(atoi(setting->Attribute("default")));
             }
             else
-              ((CGUISpinControlEx*) control)->SetValue(atoi(setting->Attribute("default")));
+              ((CGUISpinControlEx*) control)->SetValue(0);
           }
           break;
         default:
