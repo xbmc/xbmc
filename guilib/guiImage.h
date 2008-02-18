@@ -141,8 +141,8 @@ protected:
   void CalcBoundingBox(float *x, float *y, int n, int *b);
   void GetTexel(float u, float v, SDL_Surface *src, BYTE *texel);
   void RenderWithEffects(SDL_Surface *src, float *x, float *y, float *u, float *v, DWORD *c, SDL_Surface *diffuse, float diffuseScaleU, float diffuseScaleV, CCachedTexture &dst);
-  vector <SDL_Surface*> m_vecTextures;
-  vector <CCachedTexture> m_vecCachedTextures;
+  std::vector <SDL_Surface*> m_vecTextures;
+  std::vector <CCachedTexture> m_vecCachedTextures;
   SDL_Surface* m_diffuseTexture;
   SDL_Palette* m_diffusePalette;
   SDL_Palette* m_pPalette;

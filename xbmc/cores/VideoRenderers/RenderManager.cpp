@@ -134,8 +134,10 @@ void CXBoxRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   CSharedLock lock(m_sharedSection); 
   RestoreCriticalSection(g_graphicsContext, locks);
 
+#ifdef HAS_SDL_OPENGL  
   if (m_pRenderer)
     m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_LAST, alpha);
+#endif
 }
 
 unsigned int CXBoxRenderManager::PreInit()

@@ -31,7 +31,9 @@ void CGUILargeTextureManager::Process()
   }
   else
   {
+#ifdef HAS_SDL_GL
     g_graphicsContext.ValidateSurface(pBuffer);
+#endif
   }
   while (m_queued.size() && !m_bStop)
   { // load the top item in the queue
