@@ -1,24 +1,9 @@
 #pragma once
 
-namespace XFILE
-{
-class ILiveTVInterface
-{
-public:
-  virtual ~ILiveTVInterface() {}
-  virtual bool           NextChannel() = 0;
-  virtual bool           PrevChannel() = 0;
-
-  virtual int            GetTotalTime() = 0;
-  virtual int            GetStartTime() = 0;
-
-  virtual CVideoInfoTag* GetVideoInfoTag() = 0;
-};
-}
-
 #ifdef HAS_GMYTH
 
 #include "IFile.h"
+#include "LiveTV.h"
 
 typedef struct _GMythBackendInfo GMythBackendInfo;
 typedef struct _GMythLiveTV GMythLiveTV;
