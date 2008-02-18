@@ -874,12 +874,16 @@ inline const Type& SSMAX(const Type& arg1, const Type& arg2)
 			res						= conv.in(st,
 										pSrcA, pSrcA + nSrc, pNextSrcA,
 										pDstW, pDstW + nDst, pNextDstW);
-
-			ASSERT(SSCodeCvt::ok == res);
-			ASSERT(SSCodeCvt::error != res);
-			ASSERT(pNextDstW >= pDstW);
-			ASSERT(pNextSrcA >= pSrcA);
-
+#ifdef _LINUX
+#define ASSERT2(a) if (!(a)) {fprintf(stderr, "StdString: Assertion Failed on line %d\n", __LINE__);} 
+#else
+#define ASSERT2 ASSERT
+#endif
+			ASSERT2(SSCodeCvt::ok == res);
+			ASSERT2(SSCodeCvt::error != res);
+			ASSERT2(pNextDstW >= pDstW);
+			ASSERT2(pNextSrcA >= pSrcA);
+#undef ASSERT2
 			// Null terminate the converted string
 
 			if ( pNextDstW - pDstW > nDst )
