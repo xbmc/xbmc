@@ -59,8 +59,7 @@ bool CCMythFile::HandleEvents()
     case CMYTH_EVENT_LIVETV_CHAIN_UPDATE:
     {
       XLOG(LOGDEBUG, "MythTV event %s",buf);
-      char * pfx = "LIVETV_CHAIN UPDATE ";
-      char * chainid = buf + strlen(pfx);
+      char * chainid = buf + strlen("LIVETV_CHAIN UPDATE ");
       cmyth_livetv_chain_update(m_recorder, chainid, 4096);
       break;
     }
