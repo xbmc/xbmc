@@ -485,7 +485,7 @@ cmyth_file_seek(cmyth_file_t file, long long offset, int whence)
 	return ret;
 }
 
-
+#ifdef _MSC_VER
 
 struct errentry {
     unsigned long oscode;           /* OS return value */
@@ -601,4 +601,4 @@ void __cdecl _dosmaperr (
     errno = EINVAL;
 }
 
-
+#endif
