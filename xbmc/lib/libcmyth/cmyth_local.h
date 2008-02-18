@@ -36,6 +36,7 @@
 #include <mysql/mysql.h>
 
 #ifdef _MSC_VER
+#pragma warning(disable:4267)
 #define pthread_mutex_lock(a)
 #define pthread_mutex_unlock(a)
 #define PTHREAD_MUTEX_INITIALIZER NULL;
