@@ -174,7 +174,7 @@ void CDVDPlayerVideo::Process()
 
   while (!m_bStop)
   {
-    while (m_speed == DVD_PLAYSPEED_PAUSE && !m_messageQueue.RecievedAbortRequest() && m_iNrOfPicturesNotToSkip==0) Sleep(5);
+    while (!m_bStop && m_speed == DVD_PLAYSPEED_PAUSE && !m_messageQueue.RecievedAbortRequest() && m_iNrOfPicturesNotToSkip==0) Sleep(5);
 
     int iQueueTimeOut = (int)(m_DetectedStill ? frametime / 4 : frametime * 4) / 1000;
     
@@ -318,7 +318,7 @@ void CDVDPlayerVideo::Process()
       }
 
       // loop while no error
-      while (!(iDecoderState & VC_ERROR))
+      while (!m_bStop && !(iDecoderState & VC_ERROR))
       {
         // check for a new picture
         if (iDecoderState & VC_PICTURE)
@@ -383,7 +383,7 @@ void CDVDPlayerVideo::Process()
               // guess next frame pts. iDuration is always valid
               pts += picture.iDuration * m_speed / abs(m_speed);
             }
-            while (picture.iRepeatPicture-- > 0);
+            while (!m_bStop && picture.iRepeatPicture-- > 0);
             
             if( iResult & EOS_ABORT )
             {
@@ -481,7 +481,9 @@ void CDVDPlayerVideo::ProcessVideoUserData(DVDVideoUserData* pVideoUserData, dou
       if (!m_pOverlayCodecCC)
       {
         m_pOverlayCodecCC = new CDVDOverlayCodecCC();
-        if (!m_pOverlayCodecCC->Open(CDVDStreamInfo(), CDVDCodecOptions()))
+        CDVDCodecOptions options;
+        CDVDStreamInfo info;
+        if (!m_pOverlayCodecCC->Open(info, options))
         {
           delete m_pOverlayCodecCC;
           m_pOverlayCodecCC = NULL;
@@ -640,6 +642,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
     }
 
 #ifdef HAS_VIDEO_PLAYBACK
+    CLog::Log(LOGDEBUG,"%s - change configuration. %dx%d. framerate: %4.2f",__FUNCTION__,pPicture->iWidth, pPicture->iHeight,m_fFrameRate);
     if(!g_renderManager.Configure(pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight, m_fFrameRate, flags))
     {
       CLog::Log(LOGERROR, "%s - failed to configure renderer", __FUNCTION__);
@@ -811,7 +814,7 @@ void CDVDPlayerVideo::UpdateMenuPicture()
   }
 }
 
-string CDVDPlayerVideo::GetPlayerInfo()
+std::string CDVDPlayerVideo::GetPlayerInfo()
 {
   std::ostringstream s;
   s << "vq size:" << min(100,100 * m_messageQueue.GetDataSize() / m_messageQueue.GetMaxDataSize()) << "%";
