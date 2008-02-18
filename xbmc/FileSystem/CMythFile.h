@@ -1,7 +1,7 @@
 #pragma once
 
-#include "GMythFile.h"
 #include "IFile.h"
+#include "ILiveTV.h"
 
 typedef struct cmyth_ringbuf  *cmyth_ringbuf_t;
 typedef struct cmyth_conn     *cmyth_conn_t;
@@ -9,6 +9,8 @@ typedef struct cmyth_recorder *cmyth_recorder_t;
 typedef struct cmyth_proginfo *cmyth_proginfo_t;
 typedef struct cmyth_proglist *cmyth_proglist_t;
 typedef struct cmyth_file     *cmyth_file_t;
+
+class DllLibCMyth;
 
 namespace XFILE
 {
@@ -45,6 +47,8 @@ public:
 protected:
   bool HandleEvents();
   bool ChangeChannel(int direction, const char* channel);
+
+  DllLibCMyth     *m_dll;
 
   cmyth_conn_t      m_control;
   cmyth_conn_t      m_event;
