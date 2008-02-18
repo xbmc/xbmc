@@ -303,7 +303,7 @@ cmyth_file_select(cmyth_file_t file, struct timeval *timeout)
 {
 	fd_set fds;
 	int ret;
-  cmyth_socket_t fd;
+	cmyth_socket_t fd;
 
 	if (file == NULL || file->file_data == NULL)
 		return -EINVAL;
@@ -355,8 +355,8 @@ cmyth_file_request_block(cmyth_file_t file, unsigned long len)
 
 	pthread_mutex_lock(&mutex);
 
-  if(len > (unsigned int)file->file_control->conn_tcp_rcvbuf)
-    len = (unsigned int)file->file_control->conn_tcp_rcvbuf;
+	if(len > (unsigned int)file->file_control->conn_tcp_rcvbuf)
+		len = (unsigned int)file->file_control->conn_tcp_rcvbuf;
 
 	snprintf(msg, sizeof(msg),
 		 "QUERY_FILETRANSFER %ld[]:[]REQUEST_BLOCK[]:[]%ld",
@@ -602,3 +602,4 @@ void __cdecl _dosmaperr (
 }
 
 #endif
+
