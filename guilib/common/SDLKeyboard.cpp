@@ -165,11 +165,11 @@ void CLowLevelKeyboard::Update(SDL_Event& m_keyEvent)
 
         else if (m_keyEvent.key.keysym.scancode == 234) m_VKey = 0xa6; // Browser back
         else if (m_keyEvent.key.keysym.scancode == 233) m_VKey = 0xa7; // Browser forward
-  //      else if (m_keyEvent.key.keysym.scancode == ) m_VKey = 0xa8; // Browser refresh
+        else if (m_keyEvent.key.keysym.scancode == 231) m_VKey = 0xa8; // Browser refresh
   //      else if (m_keyEvent.key.keysym.scancode == ) m_VKey = 0xa9; // Browser stop
         else if (m_keyEvent.key.keysym.scancode == 122) m_VKey = 0xaa; // Browser search
         else if (m_keyEvent.key.keysym.scancode == 0xe5) m_VKey = 0xaa; // Browser search
-  //      else if (m_keyEvent.key.keysym.scancode == ) m_VKey = 0xab; // Browser favorites
+        else if (m_keyEvent.key.keysym.scancode == 230) m_VKey = 0xab; // Browser favorites
         else if (m_keyEvent.key.keysym.scancode == 130) m_VKey = 0xac; // Browser home
         else if (m_keyEvent.key.keysym.scancode == 0xa0) m_VKey = 0xad; // Volume mute
         else if (m_keyEvent.key.keysym.scancode == 0xae) m_VKey = 0xae; // Volume down
@@ -179,7 +179,7 @@ void CLowLevelKeyboard::Update(SDL_Event& m_keyEvent)
         else if (m_keyEvent.key.keysym.scancode == 0xa4) m_VKey = 0xb2; // Stop
         else if (m_keyEvent.key.keysym.scancode == 0xa2) m_VKey = 0xb3; // Play_Pause
         else if (m_keyEvent.key.keysym.scancode == 0xec) m_VKey = 0xb4; // Launch mail
-  //      else if (m_keyEvent.key.keysym.scancode == ) m_VKey = 0xb5; // Launch media_select
+        else if (m_keyEvent.key.keysym.scancode == 129) m_VKey = 0xb5; // Launch media_select
         else if (m_keyEvent.key.keysym.scancode == 198) m_VKey = 0xb6; // Launch App1/PC icon
         else if (m_keyEvent.key.keysym.scancode == 0xa1) m_VKey = 0xb7; // Launch App2/Calculator
         else if (m_keyEvent.key.keysym.scancode == 34) m_VKey = 0xba; // OEM 1: [ on us keyboard

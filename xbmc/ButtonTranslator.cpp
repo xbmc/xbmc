@@ -496,7 +496,7 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, WORD wWindowID)
     TiXmlElement *pButton = pDevice->FirstChildElement();
     while (pButton)
     {
-      WORD wButtonCode = TranslateKeyboardString(pButton->Value());
+      WORD wButtonCode = TranslateKeyboardButton(pButton);
       if (pButton->FirstChild())
         MapAction(wButtonCode, pButton->FirstChild()->Value(), map);
       pButton = pButton->NextSiblingElement();
@@ -782,6 +782,12 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   return wWindowID;
 }
 
+WORD CButtonTranslator::TranslateGamepadButton(TiXmlElement *pButton)
+{
+  const char *szButton = pButton->Value();
+  return TranslateGamepadString(szButton);
+}
+  
 WORD CButtonTranslator::TranslateGamepadString(const char *szButton)
 {
   if (!szButton) return 0;
@@ -818,6 +824,12 @@ WORD CButtonTranslator::TranslateGamepadString(const char *szButton)
   else if (strButton.Equals("dpaddown")) wButtonCode = KEY_BUTTON_DPAD_DOWN;
   else CLog::Log(LOGERROR, "Gamepad Translator: Can't find button %s", strButton.c_str());
   return wButtonCode;
+}
+
+WORD CButtonTranslator::TranslateRemoteButton(TiXmlElement *pButton)
+{
+  const char *szButton = pButton->Value();
+  return TranslateRemoteString(szButton);
 }
 
 WORD CButtonTranslator::TranslateRemoteString(const char *szButton)
@@ -880,6 +892,12 @@ WORD CButtonTranslator::TranslateRemoteString(const char *szButton)
   return wButtonCode;
 }
 
+WORD CButtonTranslator::TranslateUniversalRemoteButton(TiXmlElement *pButton)
+{
+  const char *szButton = pButton->Value();
+  return TranslateUniversalRemoteString(szButton);
+}
+
 WORD CButtonTranslator::TranslateUniversalRemoteString(const char *szButton)
 {
   if (!szButton || strlen(szButton) < 4 || strnicmp(szButton, "obc", 3)) return 0;
@@ -890,8 +908,14 @@ WORD CButtonTranslator::TranslateUniversalRemoteString(const char *szButton)
   return wButtonCode;
 }
 
-WORD CButtonTranslator::TranslateKeyboardString(const char *szButton)
+/**
+ * replaces the obsolete:
+ *    WORD CButtonTranslator::TranslateKeyboardString(const char *szButton);
+ */
+WORD CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
 {
+  const char *szButton = pButton->Value();
+  
   if (!szButton) return 0;
   WORD wButtonCode = 0;
   if (strlen(szButton) == 1)
@@ -973,6 +997,28 @@ WORD CButtonTranslator::TranslateKeyboardString(const char *szButton)
     else if (strKey.Equals("backslash") || strKey.Equals("pipe")) wButtonCode = 0xF0EC;
     else if (strKey.Equals("closesquarebracket") || strKey.Equals("closebrace")) wButtonCode = 0xF0ED;
     else if (strKey.Equals("quote") || strKey.Equals("doublequote")) wButtonCode = 0xF0EE;
+    else if (strKey.Equals("launch_mail")) wButtonCode = 0xF0B4;
+    else if (strKey.Equals("browser_home")) wButtonCode = 0xF0AC;
+    else if (strKey.Equals("browser_favorites")) wButtonCode = 0xF0AB;
+    else if (strKey.Equals("browser_refresh")) wButtonCode = 0xF0A8;
+    else if (strKey.Equals("browser_search")) wButtonCode = 0xF0AA;
+    else if (strKey.Equals("launch_app1_pc_icon")) wButtonCode = 0xF0B6;
+    else if (strKey.Equals("launch_media_select")) wButtonCode = 0xF0B5;
+    else if (strKey.Equals("play_pause")) wButtonCode = 0xF0B3;
+    else if (strKey.Equals("stop")) wButtonCode = 0xF0B2;
+    else if (strKey.Equals("volume_up")) wButtonCode = 0xF0AF;
+    else if (strKey.Equals("volume_mute")) wButtonCode = 0xF0AD;
+    else if (strKey.Equals("volume_down")) wButtonCode = 0xF0AE;
+    else if (strKey.Equals("prev_track")) wButtonCode = 0xF0B1;
+    else if (strKey.Equals("next_track")) wButtonCode = 0xF0B0;
+    else if (strKey.Equals("key"))
+    {
+      int id = 0;
+      if (pButton->QueryIntAttribute("id", &id) == TIXML_SUCCESS)
+        wButtonCode = id;
+      else
+        CLog::Log(LOGERROR, "Keyboard Translator: `key' button has no id");
+    }
     else CLog::Log(LOGERROR, "Keyboard Translator: Can't find button %s", strKey.c_str());
   }
   return wButtonCode;
