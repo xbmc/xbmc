@@ -124,6 +124,7 @@
 
 #ifdef _LINUX
 #ifndef __APPLE__
+#define HAS_LCD
 #include "../config.h"
 #endif
 #define HAS_PYTHON
