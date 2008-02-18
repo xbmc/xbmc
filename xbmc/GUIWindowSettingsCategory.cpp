@@ -504,11 +504,17 @@ void CGUIWindowSettingsCategory::CreateSettings()
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       pControl->AddLabel(g_localizeStrings.Get(351), LCD_TYPE_NONE);
+#ifdef _XBOX
       pControl->AddLabel("LCD - HD44780", LCD_TYPE_LCD_HD44780);
       pControl->AddLabel("LCD - KS0073", LCD_TYPE_LCD_KS0073);
       pControl->AddLabel("VFD", LCD_TYPE_VFD);
+#endif
+#ifdef _LINUX
+      pControl->AddLabel("LCDproc", LCD_TYPE_LCDPROC);
+#endif
       pControl->SetValue(pSettingInt->GetData());
     }
+#ifdef _XBOX
     else if (strSetting.Equals("lcd.modchip"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -518,6 +524,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel("Xecuter3", MODCHIP_XECUTER3);
       pControl->SetValue(pSettingInt->GetData());
     }
+#endif
     else if (strSetting.Equals("harddisk.aamlevel"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -1234,7 +1241,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("system.leddisableonplayback") != LED_PLAYBACK_OFF && g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_OFF && g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_NO_CHANGE);
     }
-    else if (strSetting.Equals("lcd.modchip") || strSetting.Equals("lcd.backlight") || strSetting.Equals("lcd.disableonplayback"))
+    else if (
+#ifdef _XBOX
+             strSetting.Equals("lcd.modchip") ||
+#endif
+	     strSetting.Equals("lcd.backlight") ||
+             strSetting.Equals("lcd.disableonplayback"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE);
@@ -1245,7 +1257,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       // X3 can't controll the Contrast via software graying out!
       if(g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE)
       {
+#ifdef _XBOX
         if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.modchip") != MODCHIP_XECUTER3);
+#else
+	if (pControl) pControl->SetEnabled(true);
+#endif
       }
       else 
       { 
@@ -1483,12 +1499,19 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 #ifdef HAS_LCD
   else if (strSetting.Equals("lcd.type"))
   {
+#ifdef _LINUX
+    g_lcd->Stop();
+    CLCDFactory factory;
+    delete g_lcd;
+    g_lcd = factory.Create();
+#endif
     g_lcd->Initialize();
   }
   else if (strSetting.Equals("lcd.backlight"))
   {
     g_lcd->SetBackLight(((CSettingInt *)pSettingControl->GetSetting())->GetData());
   }
+#ifdef _XBOX
   else if (strSetting.Equals("lcd.modchip"))
   {
     g_lcd->Stop();
@@ -1497,6 +1520,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_lcd = factory.Create();
     g_lcd->Initialize();
   }
+#endif
   else if (strSetting.Equals("lcd.contrast"))
   {
     g_lcd->SetContrast(((CSettingInt *)pSettingControl->GetSetting())->GetData());

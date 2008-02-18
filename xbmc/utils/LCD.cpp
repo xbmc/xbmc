@@ -220,16 +220,16 @@ CStdString ILCD::GetBigDigit( UINT _nCharset, int _nDigit, UINT _nLine, UINT _nM
     return "";
 
   // Define the 2x1 line characters
-  unsigned char arrMedNumbers[10][2][1] = { {0x0a, 0x0c}, // 0
-                                            {0x08, 0x08}, // 1 // 0xaf
-                                            {0x0e, 0x0d}, // 2
-                                            {0x09, 0x0b}, // 3
-                                            {0x0c, 0x08}, // 4
-                                            {0x0d, 0x0b}, // 5
-                                            {0x0d, 0x0c}, // 6
-                                            {0x0e, 0x08}, // 7
-                                            {0x0f, 0x0c}, // 8
-                                            {0x0f, 0x0b}, // 9
+  unsigned char arrMedNumbers[10][2][1] = { {{0x0a}, {0x0c}}, // 0
+                                            {{0x08}, {0x08}}, // 1 // 0xaf
+                                            {{0x0e}, {0x0d}}, // 2
+                                            {{0x09}, {0x0b}}, // 3
+                                            {{0x0c}, {0x08}}, // 4
+                                            {{0x0d}, {0x0b}}, // 5
+                                            {{0x0d}, {0x0c}}, // 6
+                                            {{0x0e}, {0x08}}, // 7
+                                            {{0x0f}, {0x0c}}, // 8
+                                            {{0x0f}, {0x0b}}, // 9
                                           };
 
   // Define the 2x2 bold line characters
@@ -298,7 +298,6 @@ CStdString ILCD::GetBigDigit( UINT _nCharset, int _nDigit, UINT _nLine, UINT _nM
                                               {0x0b, 0xa0, 0x0a}, }, // 9
                                           };
 
-  unsigned char* arrChars[CUSTOM_CHARSET_MAX] = { NULL, (unsigned char*)&arrMedNumbers, (unsigned char*)&arrBigNumbers };
 
   if ( _nDigit < 0 )
   {
@@ -310,8 +309,7 @@ CStdString ILCD::GetBigDigit( UINT _nCharset, int _nDigit, UINT _nLine, UINT _nM
   // Set the current size, and value (base numer)
   nCurrentSize = 1;
   nCurrentValue = 10;
-  nValue;
-
+  
   // Build the characters
   strDigits = "";
 
@@ -385,12 +383,16 @@ void ILCD::LoadSkin(const CStdString &xmlFile)
   if (!doc.LoadFile(xmlFile.c_str()))
   {
     CLog::Log(LOGERROR, "Unable to load LCD skin file %s", xmlFile.c_str());
-    goto done;
+    TiXmlBase::SetCondenseWhiteSpace(condensed);
+    return;
   }
 
   TiXmlElement *element = doc.RootElement();
   if (!element || strcmp(element->Value(), "lcd") != 0)
-    goto done;
+  {
+    TiXmlBase::SetCondenseWhiteSpace(condensed);
+    return;
+  }
 
   TiXmlElement *mode = element->FirstChildElement();
   while (mode)
@@ -421,7 +423,6 @@ void ILCD::LoadSkin(const CStdString &xmlFile)
     }
     mode = mode->NextSiblingElement();
   }
-done:
   TiXmlBase::SetCondenseWhiteSpace(condensed);
 }
 

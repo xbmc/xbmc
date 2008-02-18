@@ -229,7 +229,9 @@ using namespace MUSIC_INFO;
 #define USE_RELEASE_LIBS
 
 #ifdef HAS_LCD
+#ifdef _XBOX
 #pragma comment (lib,"xbmc/lib/libXenium/XeniumSPIg.lib")
+#endif
 #endif
 #ifdef HAS_KAI_VOICE
 #pragma comment (lib,"xbmc/lib/libSpeex/libSpeex.lib")
@@ -1715,7 +1717,7 @@ HRESULT CApplication::Initialize()
 void CApplication::PrintXBEToLCD(const char* xbePath)
 {
 #ifdef HAS_LCD
-  int pLine = 0;
+#ifdef _XBOX
   CStdString strXBEName;
   if (!CUtil::GetXBEDescription(xbePath, strXBEName))
   {
@@ -1731,6 +1733,7 @@ void CApplication::PrintXBEToLCD(const char* xbePath)
     g_infoManager.SetLaunchingXBEName(strXBEName);
     g_lcd->Render(ILCD::LCD_MODE_XBE_LAUNCH);
   }
+#endif
 #endif
 }
 
@@ -3190,7 +3193,7 @@ void CApplication::SetKaiNotification(const CStdString& aCaption, const CStdStri
 void CApplication::UpdateLCD()
 {
 #ifdef HAS_LCD
-  static lTickCount = 0;
+  static long lTickCount = 0;
 
   if (!g_lcd || g_guiSettings.GetInt("lcd.type") == LCD_TYPE_NONE)
     return ;
