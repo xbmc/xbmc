@@ -25,11 +25,17 @@
 
 #include <sys/types.h>
 #include <stdlib.h>
+#ifndef _MSC_VER
 #include <unistd.h>
+#endif
 #include <stdio.h>
+#ifdef _MSC_VER
+#include <winsock2.h>
+#else
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#endif
 #include <errno.h>
 #include <string.h>
 #include <signal.h>
@@ -70,7 +76,7 @@ cmyth_conn_destroy(cmyth_conn_t conn)
 			  "%s: shutdown and close connection fd = %d\n",
 			  __FUNCTION__, conn->conn_fd);
 		shutdown(conn->conn_fd, SHUT_RDWR);
-		close(conn->conn_fd);
+		closesocket(conn->conn_fd);
 	}
 	cmyth_dbg(CMYTH_DBG_DEBUG, "%s }\n", __FUNCTION__);
 }
@@ -137,7 +143,7 @@ cmyth_conn_create(void)
  * Failure: A NULL cmyth_conn_t
  */
 static char my_hostname[128];
-static volatile int my_fd;
+static volatile cmyth_socket_t my_fd;
 
 static void
 sighandler(int sig)
@@ -145,7 +151,7 @@ sighandler(int sig)
 	/*
 	 * XXX: This is not thread safe...
 	 */
-	close(my_fd);
+	closesocket(my_fd);
 	my_fd = -1;
 }
 
@@ -157,9 +163,10 @@ cmyth_connect(char *server, unsigned short port, unsigned buflen,
 	struct hostent *host;
 	struct sockaddr_in addr;
 	unsigned char *buf = NULL;
-	int fd;
+	cmyth_socket_t fd;
 	void (*old_sighandler)(int);
 	int old_alarm;
+  int temp, size;
 
 	/*
 	 * First try to establish the connection with the server.
@@ -186,19 +193,29 @@ cmyth_connect(char *server, unsigned short port, unsigned buflen,
 	memcpy(&addr.sin_addr, host->h_addr_list[0], host->h_length);
 
 	fd = socket(PF_INET, SOCK_STREAM, 0);
-	/*
-	 * Set a 4kb tcp receive buffer on all myth protocol sockets,
-	 * otherwise we risk the connection hanging.  Oddly, setting this
-	 * on the data sockets causes stuttering during playback.
-	 */
-	if (tcp_rcvbuf > 0)
-		setsockopt(fd, SOL_SOCKET, SO_RCVBUF,
-			   (void*)&tcp_rcvbuf, sizeof(tcp_rcvbuf));
 	if (fd < 0) {
 		cmyth_dbg(CMYTH_DBG_ERROR, "%s: cannot create socket (%d)\n",
 			  __FUNCTION__, errno);
 		return NULL;
 	}
+
+	/*
+	 * Set a 4kb tcp receive buffer on all myth protocol sockets,
+	 * otherwise we risk the connection hanging.  Oddly, setting this
+	 * on the data sockets causes stuttering during playback.
+	 */
+	if (tcp_rcvbuf == 0)
+    tcp_rcvbuf = 4096;
+  
+  temp = tcp_rcvbuf;
+  size = sizeof(temp);
+	setsockopt(fd, SOL_SOCKET, SO_RCVBUF, (void*)&temp, size);
+  if(getsockopt(fd, SOL_SOCKET, SO_RCVBUF, (void*)&temp, &size)) {
+		cmyth_dbg(CMYTH_DBG_ERROR, "%s: could not get rcvbuf from socket(%d)\n",
+			  __FUNCTION__, errno);
+    temp = tcp_rcvbuf;
+  }
+  tcp_rcvbuf = temp;
 
 	cmyth_dbg(CMYTH_DBG_PROTO, "%s: connecting to %d.%d.%d.%d fd = %d\n",
 		  __FUNCTION__,
@@ -207,21 +224,27 @@ cmyth_connect(char *server, unsigned short port, unsigned buflen,
 		  (ntohl(addr.sin_addr.s_addr) & 0x0000FF00) >>  8,
 		  (ntohl(addr.sin_addr.s_addr) & 0x000000FF),
 		  fd);
+#ifndef _MSC_VER
 	old_sighandler = signal(SIGALRM, sighandler);
 	old_alarm = alarm(5);
+#endif
 	my_fd = fd;
 	if (connect(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
 		cmyth_dbg(CMYTH_DBG_ERROR,
 			  "%s: connect failed on port %d to '%s' (%d)\n",
 			  __FUNCTION__, port, server, errno);
-		close(fd);
+		closesocket(fd);
+#ifndef _MSC_VER
 		signal(SIGALRM, old_sighandler);
 		alarm(old_alarm);
+#endif
 		return NULL;
 	}
 	my_fd = -1;
+#ifndef _MSC_VER
 	signal(SIGALRM, old_sighandler);
 	alarm(old_alarm);
+#endif
 
 	if ((my_hostname[0] == '\0') &&
 	    (gethostname(my_hostname, sizeof(my_hostname)) < 0)) {
@@ -269,7 +292,7 @@ cmyth_connect(char *server, unsigned short port, unsigned buflen,
 		  (ntohl(addr.sin_addr.s_addr) & 0x000000FF),
 		  fd);
 	shutdown(fd, 2);
-	close(fd);
+	closesocket(fd);
 	return NULL;
 }
 
@@ -668,7 +691,7 @@ int
 cmyth_conn_check_block(cmyth_conn_t conn, unsigned long size)
 {
 	fd_set check;
-	struct timeval timeout = { .tv_usec = 0, .tv_sec = 0 };
+	struct timeval timeout = {0,0};
 	int length;
 	int err = 0;
 	unsigned long sent;
