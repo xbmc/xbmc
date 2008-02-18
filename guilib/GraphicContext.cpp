@@ -69,6 +69,8 @@ CGraphicContext::~CGraphicContext(void)
     SDL_Rect *viewport = m_viewStack.top();
 #elif defined(HAS_SDL_OPENGL)
     GLint* viewport = m_viewStack.top();
+#else
+    int *viewport;
 #endif
     m_viewStack.pop();
     if (viewport) delete [] viewport;
@@ -1363,8 +1365,10 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     SDL_SetVideoMode(width, height, 0, SDL_FULLSCREEN);
 #endif
     m_screenSurface->ResizeSurface(width, height);
+#ifdef HAS_SDL_OPENGL
     glViewport(0, 0, m_iFullScreenWidth, m_iFullScreenHeight);
     glScissor(0, 0, m_iFullScreenWidth, m_iFullScreenHeight);
+#endif
     g_Mouse.SetResolution(m_iFullScreenWidth, m_iFullScreenHeight, 1, 1);
   }
   else
@@ -1376,8 +1380,10 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0, SDL_RESIZABLE);
 #endif
     m_screenSurface->ResizeSurface(m_iScreenWidth, m_iScreenHeight);
+#ifdef HAS_SDL_OPENGL
     glViewport(0, 0, m_iScreenWidth, m_iScreenHeight);
     glScissor(0, 0, m_iScreenWidth, m_iScreenHeight);
+#endif
     g_Mouse.SetResolution(g_settings.m_ResInfo[m_Resolution].iWidth, g_settings.m_ResInfo[m_Resolution].iHeight, 1, 1);
   }
   m_bFullScreenRoot = fs;
