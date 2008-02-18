@@ -31,11 +31,13 @@ bool SoLoader::Load()
   if (strFileName == "xbmc.so")
     m_soHandle = RTLD_DEFAULT;
   else
-    m_soHandle = dlopen(strFileName.c_str(), flags);
-  if (!m_soHandle)
   {
-    CLog::Log(LOGERROR, "Unable to load %s, reason: %s", strFileName.c_str(), dlerror());
-    return false;
+    m_soHandle = dlopen(strFileName.c_str(), flags);
+    if (!m_soHandle)
+    {
+      CLog::Log(LOGERROR, "Unable to load %s, reason: %s", strFileName.c_str(), dlerror());
+      return false;
+    }
   }
   
   return true;  
