@@ -196,6 +196,22 @@
       <eight>Number8</eight>
       <nine>Number9</nine>
       <backslash>ToggleFullScreen</backslash>
+      <browser_home>XBMC.ActivateWindow(Home)</browser_home>
+      <browser_favorites>ActivateWindow(Favourites)</browser_favorites>
+      <browser_refresh></browser_refresh>
+      <browser_search></browser_search>
+      <launch_app1_pc_icon>ActivateWindow(MyPrograms)</launch_app1_pc_icon>
+      <launch_media_select>XBMC.ActivateWindow(MyMusic)</launch_media_select>
+      <play_pause>Pause</play_pause>
+      <stop>Stop</stop>
+      <volume_up>VolumeUp</volume_up>
+      <volume_mute>Mute</volume_mute>
+      <volume_down>VolumeDown</volume_down>
+      <next_track>SkipNext</next_track>
+      <prev_track>SkipPrevious</prev_track>
+      <launch_mail></launch_mail>
+      <key id="61620"></key> <!-- same as above, launch_mail, but using button code (based on vkey id) -->
+      <end>XBMC.ShutDown()</end>
     </keyboard>
   </global>
 
