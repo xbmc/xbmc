@@ -16,6 +16,8 @@ CPTSOutputQueue::CPTSOutputQueue()
 
 void CPTSOutputQueue::Add(double pts, double delay, double duration)
 {
+  CSingleLock lock(m_sync);
+  
   TPTSItem item;
   item.pts = pts;
   item.timestamp = CDVDClock::GetAbsoluteClock() + delay;
@@ -28,6 +30,8 @@ void CPTSOutputQueue::Add(double pts, double delay, double duration)
 }
 void CPTSOutputQueue::Flush()
 {
+  CSingleLock lock(m_sync);
+  
   while( !m_queue.empty() ) m_queue.pop();
   m_current.pts = DVD_NOPTS_VALUE;
   m_current.timestamp = 0.0;
@@ -35,7 +39,9 @@ void CPTSOutputQueue::Flush()
 }
 
 double CPTSOutputQueue::Current()
-{   
+{
+  CSingleLock lock(m_sync);
+  
   while( !m_queue.empty() && CDVDClock::GetAbsoluteClock() >= m_queue.front().timestamp )
   {
     m_current = m_queue.front();
@@ -49,15 +55,21 @@ double CPTSOutputQueue::Current()
 
 void CPTSInputQueue::Add(__int64 bytes, double pts)
 {
+  CSingleLock lock(m_sync);
+  
   m_list.insert(m_list.begin(), make_pair(bytes, pts));
 }
 
 void CPTSInputQueue::Flush()
 {
+  CSingleLock lock(m_sync);
+  
   m_list.clear();
 }
 double CPTSInputQueue::Get(__int64 bytes, bool consume)
 {
+  CSingleLock lock(m_sync);
+  
   IT it = m_list.begin();
   for(; it != m_list.end(); it++)
   {
@@ -199,10 +211,10 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
   // make sure the sent frame is clean
   memset(&audioframe, 0, sizeof(DVDAudioFrame));
 
-  for (;;)
+  while (!m_bStop)
   {
     /* NOTE: the audio packet can contain several frames */
-    while( m_decode.size > 0 )
+    while( !m_bStop && m_decode.size > 0 )
     {
       if( !m_pAudioCodec ) 
         return DECODE_FLAG_ERROR;
@@ -360,14 +372,18 @@ void CDVDPlayerAudio::Process()
   while (!m_bStop)
   {
     //make sure player doesn't keep processing data while paused
-    while (m_speed == DVD_PLAYSPEED_PAUSE && !m_messageQueue.RecievedAbortRequest()) Sleep(5);
+    while (!m_bStop && m_speed == DVD_PLAYSPEED_PAUSE && !m_messageQueue.RecievedAbortRequest()) Sleep(5);
 
     //Don't let anybody mess with our global variables
     EnterCriticalSection(&m_critCodecSection);
     result = DecodeFrame(audioframe, m_speed != DVD_PLAYSPEED_NORMAL); // blocks if no audio is available, but leaves critical section before doing so
     LeaveCriticalSection(&m_critCodecSection);
 
-    if( result & DECODE_FLAG_ERROR )  continue;
+    if( result & DECODE_FLAG_ERROR ) 
+    { 
+      CLog::Log(LOGDEBUG, "CDVDPlayerAudio::Process - Decode Error");
+      continue;
+    }
 
     if( result & DECODE_FLAG_ABORT )
     {
@@ -422,7 +438,7 @@ void CDVDPlayerAudio::Process()
     }
     
     // don't try to fix a desynced clock, until we played out the full audio buffer
-    if( abs(m_pClock->DistanceToDisc()) < m_dvdAudio.GetDelay() )
+    if( fabs(m_pClock->DistanceToDisc()) < m_dvdAudio.GetDelay() )
       continue;
     
     if( m_ptsOutput.Current() == DVD_NOPTS_VALUE )
@@ -434,10 +450,11 @@ void CDVDPlayerAudio::Process()
     double clock = m_pClock->GetClock();
     double error = m_ptsOutput.Current() - clock;
 
-    if( abs(error) > DVD_MSEC_TO_TIME(5) )
+    if( fabs(error) > DVD_MSEC_TO_TIME(10) )
     {
       m_pClock->Discontinuity(CLOCK_DISC_NORMAL, clock+error, 0);
-      CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuty - was:%f, should be:%f, error:%f", clock, clock+error, error);
+      if(m_speed == DVD_PLAYSPEED_NORMAL)
+        CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuty - was:%f, should be:%f, error:%f", clock, clock+error, error);
     }
   }
 }
