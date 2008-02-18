@@ -54,7 +54,7 @@
 static void
 cmyth_posmap_destroy(cmyth_posmap_t pm)
 {
-	int i;
+	unsigned int i;
 
 	cmyth_dbg(CMYTH_DBG_DEBUG, "%s\n", __FUNCTION__);
 	if (!pm) {
