@@ -19,18 +19,28 @@
 
 #include <sys/types.h>
 #include <stdlib.h>
+#ifndef _MSC_VER
 #include <unistd.h>
+#endif
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
+#ifdef _MSC_VER
+#include <time.h>
+#else
 #include <sys/time.h>
+#endif
 #include <mysql/mysql.h>
 #include <mvp_refmem.h>
 #include <cmyth.h>
 #include <cmyth_local.h>
 #include <mvp_string.h>
 
-#if 0
+#ifdef _MSC_VER
+static void nullprint(a, ...) { return; }
+#define PRINTF nullprint
+#define TRC  nullprint
+#elif 0
 #define PRINTF(x...) PRINTF(x)
 #define TRC(fmt, args...) PRINTF(fmt, ## args) 
 #else
@@ -720,9 +730,10 @@ cmyth_mysql_get_commbreak_list(cmyth_database_t db, int chanid, char * start_ts_
 	MYSQL_ROW row;
 	const char *query_str = "SELECT m.type AS type, m.mark AS mark, s.offset AS offset FROM recordedmarkup m INNER JOIN recordedseek AS s ON (m.chanid = s.chanid AND m.starttime = s.starttime AND (FLOOR(m.mark / 15) + 1) = s.mark) WHERE m.chanid = ? AND m.starttime = ? AND m.type IN (?, ?) ORDER BY mark;";
 	int rows = 0;
+	int i;
 	cmyth_mysql_query_t * query;
-	query = cmyth_mysql_query_create(db,query_str);
 	cmyth_commbreak_t commbreak = NULL;
+	query = cmyth_mysql_query_create(db,query_str);
 
 	if (cmyth_mysql_query_param_int(query, chanid) < 0
 		|| cmyth_mysql_query_param_str(query, start_ts_dt) < 0
@@ -751,7 +762,7 @@ cmyth_mysql_get_commbreak_list(cmyth_database_t db, int chanid, char * start_ts_
 	}
 	memset(breaklist->commbreak_list, 0, breaklist->commbreak_count * sizeof(cmyth_commbreak_t));
 
-	int i = 0;
+	i = 0;
 	while ((row = mysql_fetch_row(res))) {
 		if ((i % 2) == 0) {
 			if (safe_atoi(row[0]) != CMYTH_COMMBREAK_START) {
@@ -992,9 +1003,11 @@ cmyth_chanlist_t cmyth_mysql_get_chanlist(cmyth_database_t db)
 	MYSQL_ROW row;
 	const char *query_str = "SELECT chanid, channum, name, icon FROM channel;";
 	int rows = 0;
+	int i;
 	cmyth_mysql_query_t * query;
+	cmyth_channel_t channel;
+	cmyth_chanlist_t chanlist;
 	query = cmyth_mysql_query_create(db,query_str);
-	cmyth_channel_t channel = NULL;
 
 	res = cmyth_mysql_query_result(query);
 	ref_release(query);
@@ -1003,7 +1016,7 @@ cmyth_chanlist_t cmyth_mysql_get_chanlist(cmyth_database_t db)
 		return NULL;
 	}
 
-	cmyth_chanlist_t chanlist = cmyth_chanlist_create();
+	chanlist = cmyth_chanlist_create();
 
 	chanlist->chanlist_count = mysql_num_rows(res);
 	chanlist->chanlist_list = malloc(chanlist->chanlist_count * sizeof(cmyth_chanlist_t));
@@ -1015,7 +1028,7 @@ cmyth_chanlist_t cmyth_mysql_get_chanlist(cmyth_database_t db)
 	}
 	memset(chanlist->chanlist_list, 0, chanlist->chanlist_count * sizeof(cmyth_chanlist_t));
 
-	int i = 0;
+	i = 0;
 	while ((row = mysql_fetch_row(res))) {
 		channel = cmyth_channel_create();
 		channel->chanid = safe_atoll(row[0]);

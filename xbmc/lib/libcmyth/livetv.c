@@ -26,7 +26,9 @@
  */
 #include <sys/types.h>
 #include <stdlib.h>
+#ifndef _MSC_VER
 #include <unistd.h>
+#endif
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
@@ -35,7 +37,11 @@
 #include <cmyth_local.h>
 #include <string.h>
 
-#if 0
+#ifdef _MSC_VER
+static void nullprint(a, ...) { return; }
+#define PRINTF nullprint
+#define TRC  nullprint
+#elif 0
 #define PRINTF(x...) PRINTF(x)
 #define TRC(fmt, args...) PRINTF(fmt, ## args) 
 #else
@@ -611,7 +617,7 @@ cmyth_livetv_chain_get_block(cmyth_recorder_t rec, char *buf,
 	tv.tv_usec = 0;
 	FD_ZERO(&fds);
 	FD_SET(rec->rec_livetv_file->file_data->conn_fd, &fds);
-	if (select(rec->rec_livetv_file->file_data->conn_fd+1,
+	if (select((int)rec->rec_livetv_file->file_data->conn_fd+1,
 		   NULL, &fds, NULL, &tv) == 0) {
 		rec->rec_livetv_file->file_data->conn_hang = 1;
 		cmyth_dbg(CMYTH_DBG_DEBUG, "%s [%s:%d]: (trace) }\n",
@@ -622,14 +628,15 @@ cmyth_livetv_chain_get_block(cmyth_recorder_t rec, char *buf,
 	}
 	cmyth_dbg(CMYTH_DBG_DEBUG, "%s [%s:%d]: (trace) }\n",
 				__FUNCTION__, __FILE__, __LINE__);
-	return read(rec->rec_livetv_file->file_data->conn_fd, buf, len);
+	return recv(rec->rec_livetv_file->file_data->conn_fd, buf, len, 0);
 }
 
 static int
 cmyth_livetv_chain_select(cmyth_recorder_t rec, struct timeval *timeout)
 {
 	fd_set fds;
-	int fd, ret;
+	int ret;
+	cmyth_socket_t fd;
 
 	cmyth_dbg(CMYTH_DBG_DEBUG, "%s [%s:%d]: (trace) {\n", __FUNCTION__,
 				__FILE__, __LINE__);
@@ -643,7 +650,7 @@ cmyth_livetv_chain_select(cmyth_recorder_t rec, struct timeval *timeout)
 	FD_ZERO(&fds);
 	FD_SET(fd, &fds);
 
-	ret = select(fd+1, &fds, NULL, NULL, timeout);
+	ret = select((int)fd+1, &fds, NULL, NULL, timeout);
 
 	if (ret == 0)
 		rec->rec_livetv_file->file_data->conn_hang = 1;
@@ -771,6 +778,9 @@ cmyth_livetv_chain_request_block(cmyth_recorder_t rec, unsigned long len)
 	}
 
 	pthread_mutex_lock(&mutex);
+
+	if(len > (unsigned int)rec->rec_conn->conn_tcp_rcvbuf)
+		len = (unsigned int)rec->rec_conn->conn_tcp_rcvbuf;
 
 	do {
 		retry = 0;

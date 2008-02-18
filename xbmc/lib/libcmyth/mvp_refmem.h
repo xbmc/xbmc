@@ -24,8 +24,6 @@
 #ifndef __REFMEM_H
 #define __REFMEM_H
 
-#include "mvp_atomic.h"
-
 /*
  * -----------------------------------------------------------------
  * Types

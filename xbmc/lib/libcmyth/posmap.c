@@ -27,7 +27,9 @@
  */
 #include <sys/types.h>
 #include <stdlib.h>
+#ifndef _MSC_VER
 #include <unistd.h>
+#endif
 #include <stdio.h>
 #include <mvp_refmem.h>
 #include <cmyth.h>
@@ -52,7 +54,7 @@
 static void
 cmyth_posmap_destroy(cmyth_posmap_t pm)
 {
-	int i;
+	unsigned int i;
 
 	cmyth_dbg(CMYTH_DBG_DEBUG, "%s\n", __FUNCTION__);
 	if (!pm) {
