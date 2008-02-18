@@ -26,7 +26,9 @@
  */
 #include <sys/types.h>
 #include <stdlib.h>
+#ifndef _MSC_VER
 #include <unistd.h>
+#endif
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
@@ -282,14 +284,15 @@ cmyth_ringbuf_get_block(cmyth_recorder_t rec, char *buf, unsigned long len)
 	} else {
 		rec->rec_ring->conn_data->conn_hang = 0;
 	}
-	return read(rec->rec_ring->conn_data->conn_fd, buf, len);
+	return recv(rec->rec_ring->conn_data->conn_fd, buf, len, 0);
 }
 
 int
 cmyth_ringbuf_select(cmyth_recorder_t rec, struct timeval *timeout)
 {
 	fd_set fds;
-	int fd, ret;
+	int ret;
+  cmyth_socket_t fd;
 	if (rec == NULL)
 		return -EINVAL;
 
@@ -298,7 +301,7 @@ cmyth_ringbuf_select(cmyth_recorder_t rec, struct timeval *timeout)
 	FD_ZERO(&fds);
 	FD_SET(fd, &fds);
 
-	ret = select(fd+1, &fds, NULL, NULL, timeout);
+	ret = select((int)fd+1, &fds, NULL, NULL, timeout);
 
 	if (ret == 0)
 		rec->rec_ring->conn_data->conn_hang = 1;
@@ -339,6 +342,9 @@ cmyth_ringbuf_request_block(cmyth_recorder_t rec, unsigned long len)
 	}
 
 	pthread_mutex_lock(&mutex);
+
+  if(len > (unsigned int)rec->rec_conn->conn_tcp_rcvbuf)
+    len = (unsigned int)rec->rec_conn->conn_tcp_rcvbuf;
 
 	snprintf(msg, sizeof(msg),
 		 "QUERY_RECORDER %u[]:[]REQUEST_BLOCK_RINGBUF[]:[]%ld",
