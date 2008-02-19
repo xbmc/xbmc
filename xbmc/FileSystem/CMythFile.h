@@ -48,6 +48,10 @@ protected:
   bool HandleEvents();
   bool ChangeChannel(int direction, const char* channel);
 
+  bool SetupConnection(const CURL& url);
+  bool SetupRecording(const CURL& url);
+  bool SetupLiveTV(const CURL& url);
+
   DllLibCMyth     *m_dll;
 
   cmyth_conn_t      m_control;
