@@ -105,32 +105,7 @@ bool CCMythFile::Open(const CURL& url, bool binary)
   {
     CStdString file = path.Mid(11);
 
-    m_programlist = m_dll->proglist_get_all_recorded(m_control);
-    if(!m_programlist)
-    {
-      CLog::Log(LOGERROR, "%s - unable to get list of recordings", __FUNCTION__);
-      return false;
-    }
-    int count = m_dll->proglist_get_count(m_programlist);
-    for(int i=0; i<count; i++)
-    {
-      cmyth_proginfo_t program = m_dll->proglist_get_item(m_programlist, i);
-      if(program)
-      {
-        char* path = m_dll->proginfo_pathname(program);
-        if(path)
-        {
-          CStdString recording = CUtil::GetFileName(path);
-          if(file == recording)
-            m_program = (cmyth_proginfo_t)m_dll->ref_hold(program);
-          m_dll->ref_release(path);
-        }
-        m_dll->ref_release(program);
-      }
-      if(m_program)
-        break;
-    }
-
+    m_program = m_dll->proginfo_get_from_basename(m_control, file.c_str());
     if(!m_program)
     {
       CLog::Log(LOGERROR, "%s - unable to get find selected file", __FUNCTION__);
