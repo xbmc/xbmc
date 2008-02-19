@@ -25,6 +25,7 @@ public:
 private:
   void* m_soHandle;
   bool m_bGlobal;
+  bool m_bLoaded;
 };
 
 #endif
