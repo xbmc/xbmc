@@ -102,7 +102,7 @@ vector<CStdString> CLinuxFileSystem::GetAllMountedDrives()
         if (strcmp(mount, "/") == 0)
           continue;
         // Here we choose wich filesystems are approved
-        if (strcmp(fs, "fuseblk") == 0 || strcmp(fs, "vfat") == 0 || strcmp(fs, "ext3") == 0)
+        if (strcmp(fs, "fuseblk") == 0 || strcmp(fs, "vfat") == 0 || strcmp(fs, "ext2") == 0 || strcmp(fs, "ext3") == 0 || strcmp(fs, "reiserfs") == 0)
           result.push_back(mount);
 #endif
 
