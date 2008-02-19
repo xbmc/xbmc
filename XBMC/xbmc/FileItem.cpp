@@ -386,7 +386,7 @@ void CFileItem::Serialize(CArchive& ar)
       ar << 0;
 
     ar << (int)m_mapProperties.size();
-    std::map<std::string, std::string>::const_iterator iter = m_mapProperties.begin();
+    std::map<CStdString, CStdString,icompare>::const_iterator iter = m_mapProperties.begin();
     while (iter != m_mapProperties.end())
     {
       CStdString strKey = iter->first;
