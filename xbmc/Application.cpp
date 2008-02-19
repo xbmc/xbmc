@@ -840,7 +840,9 @@ HRESULT CApplication::Create(HWND hWnd)
 #endif  
 
   // check logpath
-#ifdef _LINUX
+#ifdef __APPLE__
+  g_stSettings.m_logFolder = "/var/tmp/";
+#elif defined (_LINUX)
   char* logPath = new char[MAX_PATH];  
   sprintf(logPath, "%s/", strExecutablePath.c_str());
   g_stSettings.m_logFolder = logPath;
