@@ -674,6 +674,9 @@ extern int cmyth_proginfo_get_recorder_num(cmyth_conn_t control,
 					   cmyth_rec_num_t rnum,
 					   cmyth_proginfo_t prog);
 
+extern cmyth_proginfo_t cmyth_proginfo_get_from_basename(cmyth_conn_t control,
+							 const char* basename);
+
 /**
  * Retrieve the title of a program.
  * \param prog proginfo handle

@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #ifndef _MSC_VER
 #include <unistd.h>
+#include <sys/socket.h>
 #endif
 #include <stdio.h>
 #include <string.h>
