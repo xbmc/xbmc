@@ -69,15 +69,10 @@ bool CCMythFile::HandleEvents()
   }
 }
 
-bool CCMythFile::Open(const CURL& url, bool binary)
+bool CCMythFile::SetupConnection(const CURL& url)
 {
-  if(!binary)
-    return false;
-  
   if(!m_dll->IsLoaded())
     return false;
-
-  Close();
 
   m_dll->dbg_level(CMYTH_DBG_DETAIL);
 
@@ -98,65 +93,107 @@ bool CCMythFile::Open(const CURL& url, bool binary)
     CLog::Log(LOGERROR, "%s - unable to connect to server %s, port %d", __FUNCTION__, url.GetHostName().c_str(), port);
     return false;
   }
+  return true;
+}
+
+bool CCMythFile::SetupRecording(const CURL& url)
+{
+  CStdString path(url.GetFileName());
+
+  if(path.Left(11) != "recordings/")
+    return false;
+
+  m_filename = path.Mid(11);
+
+  m_program = m_dll->proginfo_get_from_basename(m_control, m_filename.c_str());
+  if(!m_program)
+  {
+    CLog::Log(LOGERROR, "%s - unable to get find selected file", __FUNCTION__);
+    return false;
+  }
+
+  m_file = m_dll->conn_connect_file(m_program, m_control, 16*1024, 4096);
+  if(!m_file)
+  {
+    CLog::Log(LOGERROR, "%s - unable to connect to file", __FUNCTION__);
+    return false;
+  }
+  return true;
+}
+
+bool CCMythFile::SetupLiveTV(const CURL& url)
+{
+  CStdString path(url.GetFileName());
+
+  if(path.Left(9) != "channels/")
+    return false;
+
+  CStdString channel = path.Mid(9);
+  if(!CUtil::GetExtension(channel).Equals(".ts"))
+  {
+    CLog::Log(LOGERROR, "%s - invalid channel url %s", __FUNCTION__, channel.c_str());
+    return false;
+  }
+  CUtil::RemoveExtension(channel);
+
+  m_recorder = m_dll->conn_get_free_recorder(m_control);
+  if(!m_recorder)
+  {
+    CLog::Log(LOGERROR, "%s - unable to get recorder", __FUNCTION__);
+    return false;
+  }
+
+  if(!m_dll->recorder_is_recording(m_recorder))
+  {
+    CLog::Log(LOGDEBUG, "%s - recorder isn't running, let's start it", __FUNCTION__);
+    char* msg = NULL;
+    if(!(m_recorder = m_dll->spawn_live_tv(m_recorder, 16*1024, 4096, prog_update_callback, &msg)))
+    {
+      CLog::Log(LOGERROR, "%s - unable to spawn live tv: %s", __FUNCTION__, msg ? msg : "");
+      return false;
+    }
+  }
+
+  if(!ChangeChannel(CHANNEL_DIRECTION_SAME, channel.c_str()))
+    return false;
+
+  if(!m_dll->recorder_is_recording(m_recorder))
+  {
+    CLog::Log(LOGERROR, "%s - recorder hasn't started", __FUNCTION__);
+    return false;
+  }
+  char * filename = m_dll->recorder_get_filename(m_recorder);
+  m_filename = filename;
+  ref_release(filename);
+  return true;
+}
+
+bool CCMythFile::Open(const CURL& url, bool binary)
+{
+  if(!binary)
+    return false;
+
+  Close();
 
   CStdString path(url.GetFileName());
 
   if(path.Left(11) == "recordings/")
   {
-    CStdString file = path.Mid(11);
-
-    m_program = m_dll->proginfo_get_from_basename(m_control, file.c_str());
-    if(!m_program)
-    {
-      CLog::Log(LOGERROR, "%s - unable to get find selected file", __FUNCTION__);
+    if(!SetupConnection(url))
       return false;
-    }
 
-    m_file = m_dll->conn_connect_file(m_program, m_control, 16*1024, 4096);
-    if(!m_file)
-    {
-      CLog::Log(LOGERROR, "%s - unable to connect to file", __FUNCTION__);
+    if(!SetupRecording(url))
       return false;
-    }
+
     CLog::Log(LOGDEBUG, "%s - file: size %lld, start %lld, ", __FUNCTION__,  m_dll->file_length(m_file), m_dll->file_start(m_file));
   } 
   else if (path.Left(9) == "channels/")
   {
-    CStdString channel = path.Mid(9);
-    if(!CUtil::GetExtension(channel).Equals(".ts"))
-    {
-      CLog::Log(LOGERROR, "%s - invalid channel url %s", __FUNCTION__, channel.c_str());
-      return false;
-    }
-    CUtil::RemoveExtension(channel);
-
-    m_recorder = m_dll->conn_get_free_recorder(m_control);
-    if(!m_recorder)
-    {
-      CLog::Log(LOGERROR, "%s - unable to get recorder", __FUNCTION__);
-      return false;
-    }
-
-    if(!m_dll->recorder_is_recording(m_recorder))
-    {
-      CLog::Log(LOGDEBUG, "%s - recorder isn't running, let's start it", __FUNCTION__);
-      char* msg = NULL;
-      if(!(m_recorder = m_dll->spawn_live_tv(m_recorder, 16*1024, 4096, prog_update_callback, &msg)))
-      {
-        CLog::Log(LOGERROR, "%s - unable to spawn live tv: %s", __FUNCTION__, msg ? msg : "");
-        return false;
-      }
-    }
-
-    if(!ChangeChannel(CHANNEL_DIRECTION_SAME, channel.c_str()))
+    if(!SetupConnection(url))
       return false;
 
-    if(!m_dll->recorder_is_recording(m_recorder))
-    {
-      CLog::Log(LOGERROR, "%s - recorder hasn't started", __FUNCTION__);
+    if(!SetupLiveTV(url))
       return false;
-    }
-    m_filename = m_dll->recorder_get_filename(m_recorder);
 
     CLog::Log(LOGDEBUG, "%s - recorder has started on filename %s", __FUNCTION__, m_filename.c_str());
 
@@ -179,6 +216,9 @@ bool CCMythFile::Open(const CURL& url, bool binary)
 
 void CCMythFile::Close()
 {
+  if(!m_dll->IsLoaded())
+    return;
+
   if(m_program)
   {
     m_dll->ref_release(m_program);
@@ -231,7 +271,17 @@ bool CCMythFile::Exists(const CURL& url)
 
   if(path.Left(11) == "recordings/")
   {
+    if(!SetupConnection(url))
+      return false;
 
+    m_filename = path.Mid(11);
+    m_program = m_dll->proginfo_get_from_basename(m_control, m_filename.c_str());
+    if(!m_program)
+    {
+      CLog::Log(LOGERROR, "%s - unable to get find selected file", __FUNCTION__);
+      return false;
+    }
+    return true;
   }
   return false;
 }
@@ -242,6 +292,15 @@ bool CCMythFile::Delete(const CURL& url)
 
   if(path.Left(11) == "recordings/")
   {
+    /* this will setup all interal variables */
+    if(!Exists(url))
+      return false;
+    if(!m_program)
+      return false;
+
+    if(m_dll->proginfo_delete_recording(m_control, m_program))
+      return false;
+    return true;
   }
   return false;
 }
