@@ -8,11 +8,12 @@ SoLoader::SoLoader(const char *so, bool bGlobal) : LibraryLoader(so)
 {
   m_soHandle = NULL;
   m_bGlobal = bGlobal;
+  m_bLoaded = false;
 }
 
 SoLoader::~SoLoader()
 {
-  if (m_soHandle)
+  if (m_bLoaded)
     Unload();
 }
 
@@ -39,7 +40,7 @@ bool SoLoader::Load()
       return false;
     }
   }
-  
+  m_bLoaded = true;
   return true;  
 }
 
@@ -52,13 +53,13 @@ void SoLoader::Unload()
     if (dlclose(m_soHandle) != 0)
        CLog::Log(LOGERROR, "Unable to unload %s, reason: %s", GetName(), dlerror());
   }
-    
+  m_bLoaded = false;
   m_soHandle = NULL;
 }
   
 int SoLoader::ResolveExport(const char* symbol, void** f)
 {
-  if (!m_soHandle && !Load())
+  if (!m_bLoaded && !Load())
   {
     CLog::Log(LOGWARNING, "Unable to resolve: %s %s, reason: so not loaded", GetName(), symbol);
     return 0;
