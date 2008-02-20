@@ -295,7 +295,16 @@ public:
 
   static CStdString TranslatePath(const CStdString& path);
   static CStdString TranslatePathConvertCase(const CStdString& path);
-  
+
+#ifdef _LINUX
+  // this will run the command using sudo in a new process.
+  // the user that runs xbmc should be allowed to issue the given sudo command.
+  // in order to allow a user to run sudo without supplying the password you'll need to edit sudoers
+  // # sudo visudo
+  // and add a line at the end defining the user and allowed commands
+  static bool SudoCommand(const CStdString &strCommand);  
+#endif
+
 private:
   
   static HANDLE m_hCurrentCpuUsage;

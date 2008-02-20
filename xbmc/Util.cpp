@@ -26,7 +26,11 @@
 #ifdef _LINUX
 #include <sys/types.h>
 #include <dirent.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/wait.h>
 #endif
+
 #include "stdafx.h"
 #include "Application.h"
 #include "GUIWindowVideoBase.h"
@@ -5852,3 +5856,36 @@ CStdString CUtil::TranslatePathConvertCase(const CStdString& path)
    return translatedPath;
 #endif
 }
+
+#ifdef _LINUX
+bool CUtil::SudoCommand(const CStdString &strCommand)
+{
+  CLog::Log(LOGDEBUG, "Executing sudo command: <%s>", strCommand.c_str());
+  pid_t child = fork();
+  int n = 0;
+  if (child == 0)
+  {
+    close(0); // close stdin to avoid sudo request password
+    close(1);
+    close(2);
+    CStdStringArray arrArgs;
+    StringUtils::SplitString(strCommand, " ", arrArgs);
+    if (arrArgs.size() > 0)
+    {
+      char **args = (char **)alloca(sizeof(char *) * (arrArgs.size() + 3));
+      memset(args, 0, (sizeof(char *) * (arrArgs.size() + 3)));
+      args[0] = "/usr/bin/sudo";
+      args[1] = "-S";
+      for (size_t i=0; i<arrArgs.size(); i++)
+      {
+        args[i+2] = (char *)arrArgs[i].c_str();  
+      }
+      execvp("/usr/bin/sudo", args);
+    }
+  }
+  else
+    waitpid(child, &n, 0);
+
+  return WEXITSTATUS(n) == 0;
+}
+#endif
