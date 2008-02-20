@@ -16,6 +16,14 @@ static void prog_update_callback(cmyth_proginfo_t prog)
   CLog::Log(LOGDEBUG, "%s - prog_update_callback", __FUNCTION__);
 }
 
+#ifndef PRId64
+#ifdef _MSC_VER
+#define PRId64 "I64d"
+#else
+#define PRId64 "lld"
+#endif
+#endif
+
 void CCMythFile::Process()
 {
   char buf[128];
@@ -219,7 +227,7 @@ bool CCMythFile::Open(const CURL& url, bool binary)
     if(!SetupRecording(url))
       return false;
 
-    CLog::Log(LOGDEBUG, "%s - file: size %lld, start %lld, ", __FUNCTION__,  m_dll->file_length(m_file), m_dll->file_start(m_file));
+    CLog::Log(LOGDEBUG, "%s - file: size %"PRId64", start %"PRId64", ", __FUNCTION__,  m_dll->file_length(m_file), m_dll->file_start(m_file));
   } 
   else if (path.Left(9) == "channels/")
   {
@@ -342,7 +350,7 @@ bool CCMythFile::Delete(const CURL& url)
 
 __int64 CCMythFile::Seek(__int64 pos, int whence)
 {
-  CLog::Log(LOGDEBUG, "%s - seek to pos %lld, whence %d", __FUNCTION__, pos, whence);
+  CLog::Log(LOGDEBUG, "%s - seek to pos %"PRId64", whence %d", __FUNCTION__, pos, whence);
 
   if(whence == SEEK_POSSIBLE)
   {
