@@ -41,6 +41,7 @@ public:
   void PurgeEx(const CURL& url);
 #ifdef _LINUX
   void CheckIfIdle();
+  void SetActivityTime();
   void AddActiveConnection();
   void AddIdleConnection();
 #endif  
