@@ -90,6 +90,9 @@ bool CCMythFile::HandleEvents()
     case CMYTH_EVENT_SIGNAL:
       CLog::Log(LOGDEBUG, "%s - MythTV event SIGNAL", __FUNCTION__);
       break;
+    case CMYTH_EVENT_ASK_RECORDING:
+      CLog::Log(LOGDEBUG, "%s - MythTV event CMYTH_EVENT_ASK_RECORDING", __FUNCTION__);
+      break;
     }
 
     lock.Enter();
