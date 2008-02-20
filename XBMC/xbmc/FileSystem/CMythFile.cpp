@@ -198,7 +198,7 @@ bool CCMythFile::SetupLiveTV(const CURL& url)
   }
   char * filename = m_dll->recorder_get_filename(m_recorder);
   m_filename = filename;
-  ref_release(filename);
+  m_dll->ref_release(filename);
   return true;
 }
 
