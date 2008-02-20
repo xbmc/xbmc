@@ -56,6 +56,8 @@ bool CCMythFile::HandleEvents()
     CStdString data = m_events.front().second;
     m_events.pop();
 
+    lock.Leave();
+
     switch (next) {
     case CMYTH_EVENT_UNKNOWN:
       CLog::Log(LOGDEBUG, "%s - MythTV unknown event (error?)", __FUNCTION__);
@@ -89,6 +91,8 @@ bool CCMythFile::HandleEvents()
       CLog::Log(LOGDEBUG, "%s - MythTV event SIGNAL", __FUNCTION__);
       break;
     }
+
+    lock.Enter();
   }
   return true;
 }
