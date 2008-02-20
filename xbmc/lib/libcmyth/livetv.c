@@ -691,6 +691,7 @@ cmyth_livetv_chain_switch(cmyth_recorder_t rec, int dir)
 		PRINTF("**SSDEBUG:(cmyth_livetv_chain_switch) dir: %d\n", dir);
 		dir = rec->rec_livetv_chain->chain_ct
 				- rec->rec_livetv_chain->chain_current - 1;
+		ret = 1;
 	}
 
 	if((dir < 0 && rec->rec_livetv_chain->chain_current + dir >= 0)
@@ -728,7 +729,7 @@ cmyth_livetv_chain_switch_last(cmyth_recorder_t rec)
 	}
 
 	if(rec->rec_conn->conn_version < 26)
-		return 0;
+		return 1;
 
 	pthread_mutex_lock(&mutex);
 	dir = rec->rec_livetv_chain->chain_ct
@@ -741,7 +742,7 @@ cmyth_livetv_chain_switch_last(cmyth_recorder_t rec)
 		rec->rec_livetv_chain->chain_switch_on_create=1;
 	}
 	pthread_mutex_unlock(&mutex);
-	return 0;
+	return 1;
 }
 
 /*
