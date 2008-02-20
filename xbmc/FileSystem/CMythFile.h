@@ -16,8 +16,9 @@ namespace XFILE
 {
 
 class CCMythFile 
-  : public IFile
-  ,        ILiveTVInterface
+  : public  IFile
+  ,         ILiveTVInterface
+  , private CThread
 {
 public:
   CCMythFile();
@@ -45,10 +46,18 @@ public:
 
   virtual CVideoInfoTag* GetVideoInfoTag();
 protected:
+  virtual void Process();
+
   bool HandleEvents();
   bool ChangeChannel(int direction, const char* channel);
 
-  DllLibCMyth     *m_dll;
+  bool FlushTransfer();
+
+  bool SetupConnection(const CURL& url);
+  bool SetupRecording(const CURL& url);
+  bool SetupLiveTV(const CURL& url);
+
+  DllLibCMyth*      m_dll;
 
   cmyth_conn_t      m_control;
   cmyth_conn_t      m_event;
@@ -57,8 +66,11 @@ protected:
   cmyth_proglist_t  m_programlist;
   cmyth_file_t      m_file;
   CStdString        m_filename;
-  int               m_remain;
   CVideoInfoTag     m_infotag;
+
+  CCriticalSection  m_section;
+  typedef std::pair<int, std::string> MythEvent;
+  std::queue<MythEvent> m_events;
 };
 
 }
