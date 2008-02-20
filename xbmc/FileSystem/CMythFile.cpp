@@ -72,6 +72,7 @@ bool CCMythFile::HandleEvents()
       break;
     case CMYTH_EVENT_CLOSE:
       CLog::Log(LOGDEBUG, "%s - MythTV event CMYTH_EVENT_CLOSE", __FUNCTION__);
+      Close();
       break;
     case CMYTH_EVENT_RECORDING_LIST_CHANGE:
       CLog::Log(LOGDEBUG, "%s - MythTV event RECORDING_LIST_CHANGE", __FUNCTION__);
@@ -92,7 +93,8 @@ bool CCMythFile::HandleEvents()
     {
       CLog::Log(LOGDEBUG, "%s - MythTV event %s", __FUNCTION__, data.c_str());
       string chainid = data.substr(strlen("LIVETV_CHAIN UPDATE "));
-      m_dll->livetv_chain_update(m_recorder, (char*)chainid.c_str(), 4096);
+      if(m_recorder)
+        m_dll->livetv_chain_update(m_recorder, (char*)chainid.c_str(), 4096);
       break;
     }
     case CMYTH_EVENT_SIGNAL:
@@ -397,6 +399,10 @@ unsigned int CCMythFile::Read(void* buffer, __int64 size)
 
   /* check for any events */
   HandleEvents();
+
+  /* file might have gotten closed */
+  if(!m_recorder && !m_file)
+    return 0;
 
   while(true)
   {
