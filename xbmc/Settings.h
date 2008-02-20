@@ -98,6 +98,7 @@ public:
   CStdString strName; ///< Name of the share, can be choosen freely.
   CStdString strStatus; ///< Status of the share (eg has disk etc.)
   CStdString strPath; ///< Path of the share, eg. iso9660:// or F:
+  CStdString strOriginalPath; ///< Original Path of the share (strPath can be modified to point to another path)
 
   /*!
   \brief The type of the share.
