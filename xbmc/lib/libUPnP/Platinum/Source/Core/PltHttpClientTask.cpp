@@ -109,6 +109,7 @@ PLT_HttpClientSocketTask::DoRun()
     NPT_HttpRequest*      request;
     NPT_SocketInfo        info;
     bool                  reuse_connector = true;
+    NPT_Result            res;
 
     do {
         // pop next request or wait for one for 100ms
@@ -134,7 +135,7 @@ retry:
             }
 
             // send request
-            NPT_Result res = client.SendRequest(*request, response);
+            res = client.SendRequest(*request, response);
 
             // retry if we reused a previous connector
             if (NPT_FAILED(res) && reuse_connector) {
@@ -145,7 +146,7 @@ retry:
                 NPT_InputStreamReference input_stream;
 
                 // rewind request body if any to be able to resend it
-                if (entity && entity->GetInputStream(input_stream)) {
+                if (entity && NPT_SUCCEEDED(entity->GetInputStream(input_stream))) {
                     input_stream->Seek(0);
                 }
 
