@@ -210,7 +210,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     // allows internal ffmpeg protocols to be used
     if( m_dllAvFormat.av_open_input_file(&m_pFormatContext, strFile.c_str(), iformat, FFMPEG_FILE_BUFFER_SIZE, NULL) < 0 )
     {
-      CLog::DebugLog("Error, could not open file %s", strFile.c_str());
+      CLog::Log(LOGDEBUG, "Error, could not open file %s", strFile.c_str());
       Dispose();
       return false;
     }
@@ -230,7 +230,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       context->max_packet_size = FFMPEG_DVDNAV_BUFFER_SIZE;
       context->is_streamed = 1;
     }
-    else if( m_pInput->IsStreamType(DVDSTREAM_TYPE_FILE) )
+    else
     {
       if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
         context->is_streamed = 1;
@@ -283,7 +283,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     // open the demuxer
     if (m_dllAvFormat.av_open_input_stream(&m_pFormatContext, m_ioContext, strFile.c_str(), iformat, NULL) < 0)
     {
-      CLog::DebugLog("Error, could not open file", strFile.c_str());
+      CLog::Log(LOGERROR, "Error, could not open file %s", strFile.c_str());
       Dispose();
       return false;
     }
@@ -296,10 +296,11 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   // so we do this for files only
   if (streaminfo)
   {
+    CLog::Log(LOGDEBUG, "%s - av_find_stream_info starting", __FUNCTION__);
     int iErr = m_dllAvFormat.av_find_stream_info(m_pFormatContext);
     if (iErr < 0)
     {
-      CLog::Log(LOGDEBUG,"could not find codec parameters for %s", strFile.c_str());
+      CLog::Log(LOGWARNING,"could not find codec parameters for %s", strFile.c_str());
       if (m_pFormatContext->nb_streams == 1 && m_pFormatContext->streams[0]->codec->codec_id == CODEC_ID_AC3)
       {
         // special case, our codecs can still handle it.
@@ -310,6 +311,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
         return false;
       }
     }
+    CLog::Log(LOGDEBUG, "%s - av_find_stream_info finished", __FUNCTION__);
   }
   // reset any timeout
   g_urltimeout = 0;
