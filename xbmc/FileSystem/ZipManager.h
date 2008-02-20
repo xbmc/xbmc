@@ -66,8 +66,8 @@ public:
   bool ExtractArchive(const CStdString& strArchive, const CStdString& strPath);
   void CleanUp(const CStdString& strArchive, const CStdString& strPath); // deletes extracted archive. use with care!
   void release(const CStdString& strPath); // release resources used by list zip
+  static void readHeader(const char* buffer, SZipEntry& info);
 private:
-  void readHeader(XFILE::CFile& mFile, SZipEntry& info);
   std::map<CStdString,std::vector<SZipEntry> > mZipMap;
   std::map<CStdString,__int64> mZipDate;
 };
