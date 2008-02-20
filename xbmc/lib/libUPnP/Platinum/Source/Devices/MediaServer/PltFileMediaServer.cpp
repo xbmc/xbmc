@@ -55,8 +55,8 @@ PLT_FileMediaServer::PLT_FileMediaServer(const char*  path,
                     show_ip,
                     uuid, 
                     port),
-    m_FileServer(NULL),
-    m_FileServerPort(fileserver_port)
+    m_FileServerPort(fileserver_port),
+    m_FileServer(NULL)
 {
     /* set up the server root path */
     m_Path  = path;
