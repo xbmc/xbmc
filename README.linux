@@ -244,6 +244,27 @@ Press and hold the Power button to close the connection.
 Known Issues:
   * If more than two IR Sources exists mouse emulation doesn't work good.
 
+----------------------------------------
+6.9 experimental - SMB mount shares 
+----------------------------------------
+
+this is an experimental feature. it will mount all smb sources externally (on filesystem under /media/xbmc/smb)
+and make xbmc access those shares as if they are local (let the OS do all the dirty work).
+this feature is turned off by default since its currently performing worse than the current libsmbclient solution.
+in order to enable this feature, smbfs is needed. 
+a simple "sudo apt-get install smbfs" would do.
+
+since mounting/unmounting can only be done by root, xbmc uses "sudo" to perform this action.
+you will beed to add the user that runs xbmc to the sudoers file.
+1. sudo visudo
+2. add the following line to the end of the file ("xbmc" is used as an example, this should be the user id that runs xmbc):
+xbmc ALL=NOPASSWD: /bin/mount, /bin/umount, /bin/mkdir
+^
+|--instead of "xbmc" use the user id which runs xbmc.
+
+3. turn on the "mount SMB shares" option. under Settings->Network->SMB Client
+
+
 -----------------------------------------------------------------------------
 7. Endword
 -----------------------------------------------------------------------------

@@ -22,6 +22,8 @@
 #include <libsmbclient.h>
 #endif
 
+#define XBMC_SMB_MOUNT_PATH "/media/xbmc/smb/"
+
 struct CachedDirEntry
 {
   unsigned int type;
@@ -414,3 +416,41 @@ bool CSMBDirectory::Exists(const char* strPath)
 
   return (info.st_mode & S_IFDIR) ? true : false;
 }
+
+CStdString CSMBDirectory::MountShare(const CStdString &smbPath, const CStdString &strType, const CStdString &strName, 
+    const CStdString &strUser, const CStdString &strPass)
+{
+#ifdef _LINUX
+  UnMountShare(strType, strName);
+
+  CStdString strMountPoint = GetMountPoint(strType, strName);
+  CUtil::SudoCommand("mkdir -p " + strMountPoint);
+
+  CStdString strCmd = "mount -t cifs " + smbPath + " " + strMountPoint + 
+    " -o rw";
+  if (!strUser.IsEmpty())
+    strCmd += ",user=" + strUser + ",password=" + strPass; 
+  else 
+    strCmd += ",guest";
+
+  if (CUtil::SudoCommand(strCmd))
+    return strMountPoint;
+#endif
+  return StringUtils::EmptyString;
+}
+
+void CSMBDirectory::UnMountShare(const CStdString &strType, const CStdString &strName)
+{
+#ifdef _LINUX
+  CStdString strCmd = "umount " + GetMountPoint(strType, strName);
+  CUtil::SudoCommand(strCmd);
+#endif
+}
+
+CStdString CSMBDirectory::GetMountPoint(const CStdString &strType, const CStdString &strName)
+{
+  CStdString strPath = strType + strName;
+  CUtil::URLEncode(strPath);
+  return XBMC_SMB_MOUNT_PATH + strPath;
+}
+
