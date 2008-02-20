@@ -286,6 +286,11 @@ void CSMB::CheckIfIdle()
   }
 }
 
+void CSMB::SetActivityTime()
+{
+  m_LastActive = timeGetTime();
+}
+
 /* The following two function is used to keep track on how many Opened files/directories there are.
    This makes the idle timer not count if a movie is paused for example */
 void CSMB::AddActiveConnection()
@@ -354,8 +359,6 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
   }
   m_url = url;
 
-  smb.Init();
-  CSingleLock lock(smb);
   // opening a file to another computer share will create a new session
   // when opening smb://server xbms will try to find folder.jpg in all shares
   // listed, which will create lot's of open sessions.
@@ -375,17 +378,19 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
 #endif
     return false;
   }
-  __int64 ret = smbc_lseek(m_fd, 0, SEEK_END);
 
-  if ( ret < 0 )
+  CSingleLock lock(smb);
+  struct stat tmpBuffer;
+  if (smbc_stat(strFileName, &tmpBuffer) < 0)
   {
     smbc_close(m_fd);
     m_fd = -1;    
     return false;
   }
+  
+  m_fileSize = tmpBuffer.st_size;
 
-  m_fileSize = ret;
-  ret = smbc_lseek(m_fd, 0, SEEK_SET);
+  __int64 ret = smbc_lseek(m_fd, 0, SEEK_SET);
   if ( ret < 0 )
   {
     smbc_close(m_fd);
@@ -525,8 +530,8 @@ int CFileSMB::Stat(const CURL& url, struct __stat64* buffer)
 unsigned int CFileSMB::Read(void *lpBuf, __int64 uiBufSize)
 {
   if (m_fd == -1) return 0;
-  smb.Init();
-  CSingleLock lock(smb);
+  CSingleLock lock(smb); // Init not called since it has to be "inited" by now
+  smb.SetActivityTime();
   /* work around stupid bug in samba */
   /* some samba servers has a bug in it where the */
   /* 17th bit will be ignored in a request of data */
@@ -558,8 +563,8 @@ __int64 CFileSMB::Seek(__int64 iFilePosition, int iWhence)
   if(iWhence == SEEK_POSSIBLE)
     return 1;
 
-  smb.Init();
-  CSingleLock lock(smb);
+  CSingleLock lock(smb); // Init not called since it has to be "inited" by now
+  smb.SetActivityTime();
   INT64 pos = smbc_lseek(m_fd, iFilePosition, iWhence);
 
   if ( pos < 0 )
