@@ -238,14 +238,6 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       context->max_packet_size = FFMPEG_DVDNAV_BUFFER_SIZE;
       context->is_streamed = 1;
     }
-    if (m_pInput->IsStreamType(DVDSTREAM_TYPE_TV))
-    {
-      if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
-      {
-        context->is_streamed = 1;
-        streaminfo = false;
-      }
-    }
     else
     {
       if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
@@ -299,7 +291,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     // open the demuxer
     if (m_dllAvFormat.av_open_input_stream(&m_pFormatContext, m_ioContext, strFile.c_str(), iformat, NULL) < 0)
     {
-      CLog::Log(LOGERROR, "Error, could not open file", strFile.c_str());
+      CLog::Log(LOGERROR, "Error, could not open file %s", strFile.c_str());
       Dispose();
       return false;
     }
