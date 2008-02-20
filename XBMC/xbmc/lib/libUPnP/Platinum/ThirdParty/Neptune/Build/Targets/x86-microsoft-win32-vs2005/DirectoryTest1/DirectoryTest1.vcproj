@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="MiscTest1"
-	ProjectGUID="{85255DB0-110B-460E-8AC9-406516F790BB}"
-	RootNamespace="MiscTest1"
+	Name="DirectoryTest1"
+	ProjectGUID="{E039454E-B79B-4E7F-8D18-7863086CF696}"
+	RootNamespace="DirectoryTest1"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -20,7 +20,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
-			CharacterSet="1"
+			CharacterSet="2"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -96,8 +96,8 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
-			CharacterSet="1"
-			WholeProgramOptimization="0"
+			CharacterSet="2"
+			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -116,7 +116,6 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				WholeProgramOptimization="false"
 				AdditionalIncludeDirectories="..\..\..\..\Source\Core"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
@@ -178,7 +177,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\..\..\Source\Tests\Misc1\MiscTest1.cpp"
+				RelativePath="..\..\..\..\Source\Tests\Directory1\DirectoryTest1.cpp"
 				>
 			</File>
 		</Filter>

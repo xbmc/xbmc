@@ -1,5 +1,5 @@
 LoadTool('gcc-generic', env)
 
 ### Neptune System Files
-env['NPT_SYSTEM_SOURCES']={'Source/System/StdC':'*.cpp', 'Source/System/Bsd':'*.cpp', 'Source/System/Posix':'*.cpp'}
-env['NPT_EXTRA_LIBS']='pthread'
+env['NPT_SYSTEM_SOURCES']={'System/StdC':'*.cpp', 'System/Bsd':'*.cpp', 'System/Posix':'*.cpp', 'System/Null':'NptNullSerialPort.cpp'}
+env['NPT_EXTRA_LIBS']=['pthread']

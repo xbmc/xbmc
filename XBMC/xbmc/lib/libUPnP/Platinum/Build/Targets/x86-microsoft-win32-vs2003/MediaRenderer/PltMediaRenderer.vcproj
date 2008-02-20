@@ -104,29 +104,11 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
-			<File
-				RelativePath="..\..\..\..\Source\Devices\MediaRenderer\PltMediaController.cpp">
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\Devices\MediaRenderer\PltMediaRenderer.cpp">
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\Devices\MediaRenderer\PltMediaRendererSCPDs.cpp">
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
-			<File
-				RelativePath="..\..\..\..\Source\Devices\MediaRenderer\PltMediaController.h">
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\Devices\MediaRenderer\PltMediaControllerListener.h">
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\Devices\MediaRenderer\PltMediaRenderer.h">
-			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
