@@ -540,6 +540,9 @@ CGUISettings::CGUISettings(void)
   AddString(2, "smb.password",    1204,   "", BUTTON_CONTROL_HIDDEN_INPUT, true, 1204);
   AddString(3, "smb.winsserver",  1207,   "",  BUTTON_CONTROL_IP_INPUT);
   AddString(4, "smb.workgroup",   1202,   "WORKGROUP", BUTTON_CONTROL_INPUT, false, 1202);
+#ifdef _LINUX
+  AddBool  (5, "smb.mountshares", 1208,   false);
+#endif
 
   AddCategory(6, "upnp", 20110);
   AddBool(1,    "upnp.client", 20111, false);

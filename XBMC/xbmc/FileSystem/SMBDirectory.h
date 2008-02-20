@@ -16,6 +16,15 @@ public:
 
   int Open(const CURL &url);
 
+  //MountShare will try to mount the smb share and return the path to the mount point (or empty string if failed)
+  static CStdString MountShare(const CStdString &smbPath, const CStdString &strType, const CStdString &strName, 
+    const CStdString &strUser, const CStdString &strPass);
+
+  static void UnMountShare(const CStdString &strType, const CStdString &strName);
+  static CStdString GetMountPoint(const CStdString &strType, const CStdString &strName);
+
+  static bool MountShare(const CStdString &strType, CShare &share);
+
 private:
   int OpenDir(const CURL &url, CStdString& strAuth);
 };
