@@ -43,6 +43,7 @@
 #ifdef HAS_XBOX_HARDWARE
 #include "utils/MemoryUnitManager.h"
 #endif
+#include "FileSystem/SMBDirectory.h"
 
 using namespace std;
 using namespace XFILE;
@@ -124,8 +125,36 @@ void CShare::FromNameAndPaths(const CStdString &category, const CStdString &name
   // check - convert to url and back again to make sure strPath is accurate
   // in terms of what we expect
   CUtil::AddSlashAtEnd(strPath);
+
+  strOriginalPath = strPath;
+
   CURL url(strPath);
   url.GetURL(strPath);
+
+#ifdef HAS_FILESYSTEM_SMB
+  // if its smb - we try to mount it and change the path to the mount point
+  if (CUtil::IsSmb(strPath) && g_guiSettings.GetBool("smb.mountshares"))
+  {
+    CStdString strRes;
+    CStdString strPassword = url.GetPassWord();
+    CStdString strUserName = url.GetUserName();
+    CStdString strPathToShare = "//"+url.GetHostName() + "/" + url.GetShareName();
+    if(!url.GetUserName().IsEmpty())
+      strRes = DIRECTORY::CSMBDirectory::MountShare(strPathToShare, category, strName, strUserName, strPassword);
+    else
+      strRes = DIRECTORY::CSMBDirectory::MountShare(strPathToShare, category, strName, "", "");
+    if (!strRes.IsEmpty())
+    {
+      strRes += url.GetFileName().Mid(url.GetShareName().GetLength() );
+      if (CFile::Exists(strRes))
+      {
+        strPath = strRes;
+        CUtil::AddSlashAtEnd(strPath);
+        m_iDriveType = SHARE_TYPE_LOCAL;
+      }
+    }
+  }
+#endif
 }
 
 CSettings::CSettings(void)
