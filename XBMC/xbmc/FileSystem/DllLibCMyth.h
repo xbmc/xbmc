@@ -42,6 +42,7 @@ public:
   virtual int              livetv_request_block     (cmyth_recorder_t rec, unsigned long len)=0;
   virtual long long        livetv_seek              (cmyth_recorder_t rec, long long offset, int whence)=0;
   virtual int              livetv_chain_update      (cmyth_recorder_t rec, char * chainid, int tcp_rcvbuf)=0;
+  virtual int              livetv_chain_switch_last (cmyth_recorder_t rec)=0;
   virtual cmyth_recorder_t spawn_live_tv            (cmyth_recorder_t rec, unsigned buflen, int tcp_rcvbuf,
                                                      void (*prog_update_callback)(cmyth_proginfo_t),
                                                      char ** err)=0;
@@ -118,6 +119,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
   DEFINE_METHOD2(int,                 livetv_request_block,     (cmyth_recorder_t p1, unsigned long p2))
   DEFINE_METHOD3(long long,           livetv_seek,              (cmyth_recorder_t p1, long long p2, int p3))
   DEFINE_METHOD3(int,                 livetv_chain_update,      (cmyth_recorder_t p1, char * p2, int p3))
+  DEFINE_METHOD1(int,                 livetv_chain_switch_last, (cmyth_recorder_t p1))
   DEFINE_METHOD5(cmyth_recorder_t,    spawn_live_tv,            (cmyth_recorder_t p1, unsigned p2, int p3, void (*p4)(cmyth_proginfo_t), char ** p5))
 
   DEFINE_METHOD3(int,                 file_get_block,           (cmyth_file_t p1, char *p2, unsigned long p3))
@@ -182,6 +184,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
     RESOLVE_METHOD_RENAME(cmyth_livetv_request_block, livetv_request_block)
     RESOLVE_METHOD_RENAME(cmyth_livetv_seek, livetv_seek)
     RESOLVE_METHOD_RENAME(cmyth_livetv_chain_update, livetv_chain_update)
+    RESOLVE_METHOD_RENAME(cmyth_livetv_chain_switch_last, livetv_chain_switch_last)
     RESOLVE_METHOD_RENAME(cmyth_spawn_live_tv, spawn_live_tv)
 
     RESOLVE_METHOD_RENAME(cmyth_file_get_block, file_get_block)
