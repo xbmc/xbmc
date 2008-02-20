@@ -148,7 +148,7 @@ def Application(name, dir):
 Import("env")
 
 ### defaults
-env['NPT_EXTRA_LIBS'] = ''
+env['NPT_EXTRA_LIBS'] = []
 
 if (env['build_config'] == 'Debug'):
     env.Append(CPPDEFINES=['NPT_DEBUG'])
@@ -166,13 +166,18 @@ LibraryModule(name                  = 'Zlib',
               source_root           = '.',
               build_source_dirs     = ['ThirdParty/zlib-1.2.3'])
 
-LibraryModule(name                  = 'Neptune', 
+extra_cpp_flags = []
+if not env.has_key('NPT_CONFIG_NO_ZIP'):
+    extra_cpp_flags = ['NPT_CONFIG_ENABLE_ZIP']
+    
+LibraryModule(name                  = 'Neptune',
               build_source_dirs     = ['Core'],
               build_source_files    = env['NPT_SYSTEM_SOURCES'],
+              extra_cpp_defines     = extra_cpp_flags,
               linked_modules        = env['NPT_EXTRA_LIBS']+['Zlib'])
            
 for app in ['NetPump', 'NetConfig', 'NetPing', 'NetEcho']:
     Application(app, 'Source/Apps/'+app)
     
-for test in ['Arrays1', 'BufferedStreams1', 'HttpClient1', 'Directory1', 'HttpServer1', 'Lists1', 'Maps1', 'Misc1', 'RingBuffer1', 'Strings1', 'Xml1', 'Udp1', 'Threads1', 'Url1', 'Zip1']:
+for test in ['Arrays1', 'BufferedStreams1', 'HttpClient1', 'HttpServer1', 'Lists1', 'Maps1', 'Misc1', 'RingBuffer1', 'Strings1', 'Xml1', 'Udp1', 'Threads1', 'Url1', 'Zip1']:
     Application(test+'Test', 'Source/Tests/'+test)

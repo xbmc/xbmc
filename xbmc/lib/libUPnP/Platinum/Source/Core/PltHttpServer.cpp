@@ -148,33 +148,33 @@ PLT_FileServer::ServeFile(NPT_String        filename,
         response->SetStatus(404, "File Not Found");
         return NPT_SUCCESS;
     } else {
+        NPT_HttpEntity* entity = new NPT_HttpEntity();
+        entity->SetContentLength(total_len);
+        response->SetEntity(entity);
+
         // set the content type if we can
         if (filename.EndsWith(".htm", true) ||filename.EndsWith(".html", true) ) {
-            PLT_HttpHelper::SetContentType(response, "text/html");
+            entity->SetContentType("text/html");
         } else if (filename.EndsWith(".xml", true)) {
-            PLT_HttpHelper::SetContentType(response, "text/xml; charset=\"utf-8\"");
+            entity->SetContentType("text/xml; charset=\"utf-8\"");
         } else if (filename.EndsWith(".mp3", true)) {
-            PLT_HttpHelper::SetContentType(response, "audio/mpeg");
+            entity->SetContentType("audio/mpeg");
         } else if (filename.EndsWith(".mpg", true)) {
-            PLT_HttpHelper::SetContentType(response, "video/mpeg");
+            entity->SetContentType("video/mpeg");
         } else if (filename.EndsWith(".avi", true) || filename.EndsWith(".divx", true)) {
-            PLT_HttpHelper::SetContentType(response, "video/avi");
+            entity->SetContentType("video/avi");
         } else if (filename.EndsWith(".wma", true)) {
-            PLT_HttpHelper::SetContentType(response, "audio/x-ms-wma"); 
+            entity->SetContentType("audio/x-ms-wma"); 
         } else if (filename.EndsWith(".avi", true) || filename.EndsWith(".divx", true)) {
-            PLT_HttpHelper::SetContentType(response, "video/avi"); 
+            entity->SetContentType("video/avi"); 
         } else if (filename.EndsWith(".jpg", true)) {
-            PLT_HttpHelper::SetContentType(response, "image/jpeg");
+            entity->SetContentType("image/jpeg");
         } else {
-            PLT_HttpHelper::SetContentType(response, "application/octet-stream");
+            entity->SetContentType("application/octet-stream");
         }
 
-        if (request_is_head) {            
-            NPT_HttpEntity* entity = new NPT_HttpEntity();
-            entity->SetContentLength(total_len);
-            response->SetEntity(entity);
-            return NPT_SUCCESS;
-        }
+        // request is HEAD, returns without setting a body
+        if (request_is_head) return NPT_SUCCESS;
 
         // see if it was a byte range request
         if (start != -1 || end != -1) {
@@ -199,26 +199,18 @@ PLT_FileServer::ServeFile(NPT_String        filename,
             }
 
             // in case the range request was invalid or we can't seek then respond appropriately
-            if (start_offset == -1 || end_offset == -1 || start_offset > end_offset || 
-                NPT_FAILED(stream->Seek(start_offset))) {
-                    response->SetStatus(416, "Requested range not satisfiable");
-                } else {
-                    len = end_offset - start_offset + 1;
-                    response->SetStatus(206, "Partial Content");
-                    PLT_HttpHelper::SetContentRange(response, start_offset, end_offset, total_len);
+            if (start_offset == -1 || end_offset == -1 || start_offset > end_offset || NPT_FAILED(stream->Seek(start_offset))) {
+                response->SetStatus(416, "Requested range not satisfiable");
+            } else {
+                len = end_offset - start_offset + 1;
+                response->SetStatus(206, "Partial Content");
+                PLT_HttpHelper::SetContentRange(response, start_offset, end_offset, total_len);
 
-                    NPT_InputStreamReference body(stream);
-                    NPT_HttpEntity* entity = new NPT_HttpEntity();
-                    entity->SetInputStream(body);
-                    entity->SetContentLength(len);
-                    response->SetEntity(entity);
-                }
+                entity->SetInputStream(stream);
+                entity->SetContentLength(len);
+            }
         } else {
-            NPT_InputStreamReference body(stream);
-            NPT_HttpEntity* entity = new NPT_HttpEntity();
-            entity->SetInputStream(body);
-            entity->SetContentLength(total_len);
-            response->SetEntity(entity);
+            entity->SetInputStream(stream);
         }
         return NPT_SUCCESS;
     }
