@@ -42,12 +42,12 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories="..\..\..\..\Source\Core;..\..\..\..\Source\System\Win32"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;NPT_DEBUG;_CRT_SECURE_NO_DEPRECATE"
+				AdditionalIncludeDirectories="..\..\..\..\Source\Core;..\..\..\..\Source\System\Win32;&quot;..\..\..\..\ThirdParty\zlib-1.2.3&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;NPT_CONFIG_ENABLE_LOGGING;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				ExceptionHandling="0"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
+				RuntimeLibrary="1"
 				BufferSecurityCheck="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -114,11 +114,11 @@
 				Optimization="3"
 				OmitFramePointers="true"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories="..\..\..\..\Source\Core;..\..\..\..\Source\System\Win32"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE"
+				AdditionalIncludeDirectories="..\..\..\..\Source\Core;..\..\..\..\Source\System\Win32;&quot;..\..\..\..\ThirdParty\zlib-1.2.3&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;NPT_CONFIG_ENABLE_LOGGING;_CRT_SECURE_NO_WARNINGS"
 				StringPooling="true"
 				ExceptionHandling="0"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				BufferSecurityCheck="true"
 				EnableFunctionLevelLinking="true"
 				FloatingPointModel="2"
@@ -138,6 +138,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalDependencies="ws2_32.lib"
 				OutputFile="$(OutDir)/Neptune.lib"
 			/>
 			<Tool
@@ -298,6 +299,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\..\Source\System\Win32\NptWin32SerialPort.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\Source\System\Win32\NptWin32System.cpp"
 				>
 			</File>
@@ -307,6 +312,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\..\Source\Core\NptXml.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Source\Core\NptZip.cpp"
 				>
 			</File>
 		</Filter>
@@ -416,6 +425,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\..\Source\Core\NptSerialPort.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\Source\Core\NptSimpleMessageQueue.h"
 				>
 			</File>
@@ -477,6 +490,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\..\Source\Core\NptXml.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Source\Core\NptZip.h"
 				>
 			</File>
 		</Filter>

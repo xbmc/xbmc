@@ -105,65 +105,11 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
-			<File
-				RelativePath="..\..\..\..\Source\Devices\MediaServer\PltDidl.cpp">
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\Devices\MediaServer\PltFileMediaServer.cpp">
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\Devices\MediaServer\PltMediaBrowser.cpp">
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\Devices\MediaServer\PltMediaCache.cpp">
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\Devices\MediaServer\PltMediaItem.cpp">
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\Devices\MediaServer\PltMediaPlaylist.cpp">
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\Devices\MediaServer\PltMediaServer.cpp">
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\Devices\MediaServer\PltMediaServerSCPDs.cpp">
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\Devices\MediaServer\PltSyncMediaBrowser.cpp">
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
-			<File
-				RelativePath="..\..\..\..\Source\Devices\MediaServer\PltDidl.h">
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\Devices\MediaServer\PltFileMediaServer.h">
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\Devices\MediaServer\PltMediaBrowser.h">
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\Devices\MediaServer\PltMediaBrowserListener.h">
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\Devices\MediaServer\PltMediaCache.h">
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\Devices\MediaServer\PltMediaItem.h">
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\Devices\MediaServer\PltMediaPlaylist.h">
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\Devices\MediaServer\PltMediaServer.h">
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\Devices\MediaServer\PltSyncMediaBrowser.h">
-			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
