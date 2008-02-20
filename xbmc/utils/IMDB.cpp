@@ -40,6 +40,7 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
     return false;
 
   movielist.clear();
+  ClearCache();
 
   CStdString strHTML, strYear;
   CScraperUrl scrURL;
@@ -599,4 +600,13 @@ bool CIMDB::ScrapeFilename(const CStdString& strFileName, CVideoInfoTag& details
       return true;
   }
   return false;
+}
+
+void CIMDB::ClearCache()
+{
+  // wipe cache
+  CStdString strCachePath;
+  CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"scrapers",strCachePath);
+  CUtil::WipeDir(strCachePath);
+  DIRECTORY::CDirectory::Create(strCachePath);
 }

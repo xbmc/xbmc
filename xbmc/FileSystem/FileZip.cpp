@@ -49,6 +49,11 @@ bool CFileZip::Open(const CURL&url, bool bBinary)
     return false;
   }
   mFile.Seek(mZipItem.offset,SEEK_SET);
+  return InitDecompress();
+}
+
+bool CFileZip::InitDecompress()
+{
   m_iFilePos = 0;
   m_iZipFilePos = 0;
   m_iAvailBuffer = 0;
@@ -57,14 +62,17 @@ bool CFileZip::Open(const CURL&url, bool bBinary)
   m_ZStream.zfree = Z_NULL;
   m_ZStream.opaque = Z_NULL;
   if( mZipItem.method != 0 )
+  {
     if (inflateInit2(&m_ZStream,-MAX_WBITS) != Z_OK)
     { 
       CLog::Log(LOGERROR,"FileZip: error initializing zlib!");
       return false;
     }
+  }
   m_ZStream.next_in = (Bytef*)m_szBuffer;
   m_ZStream.avail_in = 0;
   m_ZStream.total_out = 0;
+
   return true;
 }
 
@@ -451,4 +459,34 @@ void CFileZip::StartProgressBar()
 void CFileZip::StopProgressBar()
 {
   m_dlgProgress->Close();
+}
+
+int CFileZip::UnpackFromMemory(std::string& strDest, const std::string& strInput)
+{
+  unsigned int iPos=0;
+  int iResult=0;
+  while( iPos+30 < strInput.size())
+  {
+    CZipManager::readHeader(strInput.data()+iPos,mZipItem);
+    if( mZipItem.header != ZIP_LOCAL_HEADER ) 
+      return iResult;
+
+    if (!InitDecompress())
+      return iResult;
+    // we have a file - fill the buffer
+    m_ZStream.avail_in = mZipItem.csize;
+    m_ZStream.next_in = (Bytef*)strInput.data()+iPos+30+mZipItem.flength+mZipItem.elength;
+    // init m_zipitem
+    strDest.reserve(mZipItem.usize);
+    char* temp = new char[mZipItem.usize+1];
+    int iCurrResult = Read(temp,mZipItem.usize);
+    Close();
+    if (iCurrResult > 0)
+      strDest.append(temp,temp+iCurrResult);
+    delete[] temp;
+    iResult += iCurrResult;
+    iPos += 30+mZipItem.flength+mZipItem.elength+mZipItem.csize;
+  }
+
+  return iResult;
 }
