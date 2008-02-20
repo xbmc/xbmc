@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="PltMediaRenderer"
-	ProjectGUID="{9181C9EC-B518-4F51-BF65-71D57958278A}"
-	RootNamespace="PltMediaRenderer"
+	Name="MediaConnect"
+	ProjectGUID="{44414C6A-4683-4280-9A64-E90B10D4B61B}"
+	RootNamespace="MediaConnect"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -17,10 +17,9 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="Debug"
-			IntermediateDirectory="Debug"
-			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="1"
 			CharacterSet="2"
 			>
 			<Tool
@@ -41,14 +40,12 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\Source\Core;..\..\..\..\Source\Devices\MediaServer;..\..\..\..\Source\Devices\MediaRenderer;..\..\..\..\ThirdParty\Neptune\Source\Core"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;NPT_CONFIG_ENABLE_LOGGING;_CRT_SECURE_NO_DEPRECATE"
+				AdditionalIncludeDirectories="..\..\..\..\Source\Core;..\..\..\..\Source\Devices\MediaConnect;..\..\..\..\Source\Devices\MediaServer;..\..\..\..\ThirdParty\Neptune\Source\Core"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;NPT_CONFIG_ENABLE_LOGGING;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
-				BufferSecurityCheck="true"
+				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(IntDir)/PltMediaRenderer.pdb"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
@@ -63,12 +60,17 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/PltMediaRenderer.lib"
-				IgnoreAllDefaultLibraries="true"
+				Name="VCLinkerTool"
+				LinkIncremental="2"
+				GenerateDebugInformation="true"
+				SubSystem="1"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -80,16 +82,23 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="copy &quot;$(TargetPath)&quot; &quot;$(ProjectDir)..\..\..\..\Targets\x86-microsoft-win32-vs2005\Debug\$(TargetFileName)&quot;"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="Release"
-			IntermediateDirectory="Release"
-			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="1"
 			CharacterSet="2"
+			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -108,11 +117,10 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\..\..\Source\Core;..\..\..\..\Source\Devices\MediaServer;..\..\..\..\Source\Devices\MediaRenderer;..\..\..\..\ThirdParty\Neptune\Source\Core"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE"
-				RuntimeLibrary="2"
+				AdditionalIncludeDirectories="..\..\..\..\Source\Core;..\..\..\..\Source\Devices\MediaConnect;..\..\..\..\Source\Devices\MediaServer;..\..\..\..\ThirdParty\Neptune\Source\Core"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE"
+				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(IntDir)/PltMediaRenderer.pdb"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -127,11 +135,19 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/PltMediaRenderer.lib"
+				Name="VCLinkerTool"
+				LinkIncremental="1"
+				GenerateDebugInformation="true"
+				SubSystem="1"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -143,7 +159,14 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="copy &quot;$(TargetPath)&quot; &quot;$(ProjectDir)\..\..\..\..\Targets\x86-microsoft-win32-vs2005\Release\$(TargetFileName)&quot;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -152,19 +175,11 @@
 	<Files>
 		<Filter
 			Name="Source Files"
-			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
+			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\..\..\Source\Devices\MediaRenderer\PltMediaController.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\Devices\MediaRenderer\PltMediaRenderer.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\Devices\MediaRenderer\PltMediaRendererSCPDs.cpp"
+				RelativePath="..\..\..\..\Source\Apps\MediaConnect\main.cpp"
 				>
 			</File>
 		</Filter>
@@ -173,22 +188,10 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
-			<File
-				RelativePath="..\..\..\..\Source\Devices\MediaRenderer\PltMediaController.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\Devices\MediaRenderer\PltMediaControllerListener.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\Devices\MediaRenderer\PltMediaRenderer.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 		</Filter>
