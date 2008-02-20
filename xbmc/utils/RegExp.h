@@ -61,6 +61,55 @@
 #endif
 typedef char* LPTSTR;
 
+#ifdef HAS_PCRE
+
+#include <string>
+namespace PCRE {
+#ifdef _WIN32
+#include "lib/libpcre/pcre.h"
+#else
+#include <pcre.h>
+#endif
+}
+
+// maximum of 20 backreferences
+// OVEVCOUNT must be a multiple of 3
+const int OVECCOUNT=(20+1)*3;
+
+class CRegExp
+{
+public:
+  CRegExp();
+  ~CRegExp();
+  
+  CRegExp *RegComp( const char *re );
+  int RegFind(const char *str);
+  char* GetReplaceString( const char* sReplaceExp );
+  int GetFindLen()
+  {
+    if (!m_re || !m_bMatched)
+      return 0;
+    
+    return (m_iOvector[1] - m_iOvector[0]);
+  };
+  int GetSubCount() { return m_iMatchCount; }
+  int GetSubStart(int iSub) { return m_iOvector[iSub*2]; }
+  int GetSubLenght(int iSub) { return (m_iOvector[iSub*2+1] - m_iOvector[iSub*2+1]); }
+
+private:
+  void Cleanup() { if (m_re) { PCRE::pcre_free(m_re); m_re = NULL; } }
+
+private:
+  PCRE::pcre* m_re;
+  int         m_iOvector[OVECCOUNT];
+  int         m_iMatchCount;
+  int         m_iOptions;
+  bool        m_bMatched;
+  std::string m_subject;
+};
+
+#else // HAS_PCRE
+
 class CRegExp
 {
 public:
@@ -150,6 +199,8 @@ private:
 	char *regbol;		// Beginning of input, for ^ check. 
 };
 
+#endif // HAS_PCRE
 
 #endif
+
 
