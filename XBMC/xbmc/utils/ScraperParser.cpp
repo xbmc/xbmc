@@ -8,6 +8,7 @@
 #include "CharsetConverter.h"
 #include "URL.h"
 #include "HTTP.h"
+#include "FileSystem/FileZip.h"
 
 #include "Picture.h"
 #include "Util.h"
@@ -76,6 +77,10 @@ bool CScraperUrl::ParseElement(const TiXmlElement* element)
 			url.m_post = true;
 		else
 			url.m_post = false;
+    const char* pCache = element->Attribute("cache");
+    if (pCache)
+      url.m_cache = pCache;
+
 		const char* szType = element->Attribute("type");
 		url.m_type = URL_TYPE_GENERAL;
 		if (szType && stricmp(szType,"season") == 0)
@@ -161,8 +166,25 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, CHTTP& http)
 {
   CURL url(scrURL.m_url);
   http.SetReferer(scrURL.m_spoof);
+  CStdString strCachePath;
 
-  if(scrURL.m_post)
+  if (!scrURL.m_cache.IsEmpty())
+  {
+    CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"scrapers\\"+scrURL.m_cache,strCachePath);
+    if (XFILE::CFile::Exists(strCachePath))
+    {
+      XFILE::CFile file;
+      file.Open(strCachePath);
+      char* temp = new char[(int)file.GetLength()];
+      file.Read(temp,file.GetLength());
+      strHTML.append(temp,temp+file.GetLength());
+      file.Close();
+      delete[] temp;
+      return true;
+    }
+  }
+
+  if (scrURL.m_post)
   {
     CStdString strOptions = url.GetOptions();
     strOptions = strOptions.substr(1);
@@ -176,7 +198,28 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, CHTTP& http)
   else 
     if (!http.Get(scrURL.m_url, strHTML))
       return false;
-  
+
+  if (scrURL.m_url.Find(".zip") > -1)
+  {
+    XFILE::CFileZip file;
+    CStdString strBuffer;
+    int iSize = file.UnpackFromMemory(strBuffer,strHTML);
+    if (iSize)
+    {
+      strHTML.clear();
+      strHTML.append(strBuffer.c_str(),strBuffer.data()+iSize);      
+    }
+  }
+
+  if (!scrURL.m_cache.IsEmpty())
+  {
+    CStdString strCachePath;
+    CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"scrapers\\"+scrURL.m_cache,strCachePath);
+    XFILE::CFile file;
+    if (file.OpenForWrite(strCachePath,true,true))
+      file.Write(strHTML.data(),strHTML.size());
+    file.Close();
+  }
   return true;
 }
 
@@ -868,4 +911,5 @@ void CScraperParser::ClearBuffers()
   for (int i=0;i<9;++i)
     m_param[i].clear();
 }
+
 
