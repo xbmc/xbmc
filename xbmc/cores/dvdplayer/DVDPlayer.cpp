@@ -400,11 +400,12 @@ bool CDVDPlayer::OpenDemuxStream()
 bool CDVDPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
 {
 
-
   // check if we should read from subtitle demuxer
   if(m_dvdPlayerSubtitle.AcceptsData() && m_pSubtitleDemuxer )
   {
-    packet = m_pSubtitleDemuxer->Read();
+    if(m_pSubtitleDemuxer)
+      packet = m_pSubtitleDemuxer->Read();
+
     if(packet)
     {
       stream = m_pSubtitleDemuxer->GetStream(packet->iStreamId);
@@ -425,7 +426,9 @@ bool CDVDPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
   }
 
   // read a data frame from stream.
-  packet = m_pDemuxer->Read();
+  if(m_pDemuxer)
+    packet = m_pDemuxer->Read();
+
   if(packet)
   {
     stream = m_pDemuxer->GetStream(packet->iStreamId);
@@ -641,6 +644,9 @@ void CDVDPlayer::Process()
 
     // handle messages send to this thread, like seek or demuxer reset requests
     HandleMessages();
+
+    if(m_bAbortRequest)
+      break;
 
     // check if we are too slow and need to recache
     if(!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
