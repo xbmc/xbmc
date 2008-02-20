@@ -99,7 +99,7 @@ char* CRegExp::GetReplaceString( const char* sReplaceExp )
   int no;
   size_t len;
   
-  if( sReplaceExp == NULL || !m_bMatchFound )
+  if( sReplaceExp == NULL || !m_bMatched )
     return NULL;
   
   
@@ -121,11 +121,9 @@ char* CRegExp::GetReplaceString( const char* sReplaceExp )
         c = *src++;
       replacelen++;
     } 
-    else if (startp[no] != NULL && endp[no] != NULL &&
-             endp[no] > startp[no]) 
+    else if (no < m_iMatchCount && (m_iOvector[no*2]>=0))
     {
       // Get tagged expression
-      //len = endp[no] - startp[no];
       len = m_iOvector[no*2+1] - m_iOvector[no*2];
       replacelen += len;
     }
@@ -158,15 +156,12 @@ char* CRegExp::GetReplaceString( const char* sReplaceExp )
       if (c == '\\' && (*src == '\\' || *src == '&'))
         c = *src++;
       *buf++ = c;
-    } 
-    else if (startp[no] != NULL && endp[no] != NULL &&
-             endp[no] > startp[no]) 
+    }
+    else if (no < m_iMatchCount && (m_iOvector[no*2]>=0)) 
     {
       // Get tagged expression
-      len = endp[no] - startp[no];
-      int tagpos = startp[no] - startp[0];
-      
-      strncpy(buf, m_subject.c_str() + tagpos, len);
+      len = m_iOvector[no*2+1] - m_iOvector[no*2];
+      strncpy(buf, m_subject.c_str()+m_iOvector[no*2], len);
       buf += len;
     }
   }
