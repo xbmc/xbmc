@@ -133,6 +133,7 @@ namespace VIDEO
     m_bUpdateAll = bUpdateAll;
     m_info = info;
     m_pathsToScan.clear();
+    CIMDB::ClearCache();
 
     if (strDirectory.IsEmpty())
     { // scan all paths in the database.  We do this by scanning all paths in the db, and crossing them off the list as
@@ -1139,5 +1140,6 @@ namespace VIDEO
     }
   }
 }
+
 
 
