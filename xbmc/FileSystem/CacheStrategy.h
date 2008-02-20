@@ -19,6 +19,12 @@
 #endif
 #include "../utils/CriticalSection.h"
 
+#ifndef PRId64
+#ifdef _MSC_VER
+#define PRId64 "I64d"
+#endif
+#endif
+
 namespace XFILE {
 
 #define CACHE_RC_OK  0

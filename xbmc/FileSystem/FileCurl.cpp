@@ -8,6 +8,12 @@
 using namespace XFILE;
 using namespace XCURL;
 
+#ifndef PRId64
+#ifdef _MSC_VER
+#define PRId64 "I64d"
+#endif
+#endif
+
 extern "C" int __stdcall dllselect(int ntfs, fd_set *readfds, fd_set *writefds, fd_set *errorfds, const timeval *timeout);
 
 // curl calls this routine to debug
@@ -528,7 +534,7 @@ bool CFileCurl::ReadString(char *szLine, int iLineLength)
   /* check if we finished prematurely */
   if (!m_stillRunning && m_fileSize && m_filePos != m_fileSize && !want)
   {
-    CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retreived pos %lld, size %lld", __FUNCTION__, m_filePos, m_fileSize);
+    CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retreived pos %"PRId64", size %"PRId64, __FUNCTION__, m_filePos, m_fileSize);
     return false;
   }
 
@@ -751,7 +757,7 @@ unsigned int CFileCurl::Read(void* lpBuf, __int64 uiBufSize)
   /* check if we finished prematurely */
   if (!m_stillRunning && m_fileSize && m_filePos != m_fileSize)
   {
-    CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retreived pos %lld, size %lld", __FUNCTION__, m_filePos, m_fileSize);
+    CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retreived pos %"PRId64", size %"PRId64, __FUNCTION__, m_filePos, m_fileSize);
     return 0;
   }
 
