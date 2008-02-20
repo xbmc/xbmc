@@ -6,6 +6,175 @@
 #include <string.h>
 #include "RegExp.h"
 
+#ifdef HAS_PCRE
+
+#include <pcre.h>
+#include "include.h"
+#include "log.h"
+
+using namespace PCRE;
+
+CRegExp::CRegExp()
+{
+  m_re          = NULL;
+  m_iOptions    = PCRE_NEWLINE_ANY | PCRE_CASELESS | PCRE_UTF8;
+  m_bMatched    = false;
+  m_iMatchCount = 0;
+}
+
+CRegExp::~CRegExp()
+{
+  Cleanup();
+}
+
+CRegExp* CRegExp::RegComp(const char *re)
+{
+  if (!re)
+    return NULL;
+
+  m_bMatched         = false;
+  m_iMatchCount      = 0;
+  const char *errMsg = NULL;
+  int errOffset      = 0;
+
+  Cleanup();
+ 
+  m_re = pcre_compile(re, m_iOptions, &errMsg, &errOffset, NULL);
+  if (!m_re)
+  {
+    CLog::Log(LOGERROR, "PCRE: %s. Compilation failed at offset %d in expression '%s'",
+              errMsg, errOffset, re);
+    return NULL;
+  }
+
+  return this;
+}
+
+int CRegExp::RegFind(const char* str)
+{
+  m_bMatched    = false;
+  m_iMatchCount = 0;
+
+  if (!m_re)
+  {
+    CLog::Log(LOGERROR, "PCRE: Called before compilation");
+    return -1;
+  }
+  
+  if (!str)
+  {
+    CLog::Log(LOGERROR, "PCRE: Called without a string to match");
+    return -1;
+  }
+  
+  m_subject = str;
+  int rc = pcre_exec(m_re, NULL, str, strlen(str), 0, 0, m_iOvector, OVECCOUNT);
+
+  if (rc<1)
+  {
+    switch(rc)
+    {
+    case PCRE_ERROR_NOMATCH:
+      return -1;
+      
+    case PCRE_ERROR_MATCHLIMIT:
+      CLog::Log(LOGERROR, "PCRE: Match limit reached");
+      return -1;
+
+    default:
+      CLog::Log(LOGERROR, "PCRE: Unknown error: %d", rc);
+      return -1;
+    }
+  }
+  m_bMatched = true;
+  m_iMatchCount = rc;
+  return m_iOvector[0];
+}
+
+char* CRegExp::GetReplaceString( const char* sReplaceExp )
+{
+  char *src = (char *)sReplaceExp;
+  char *buf;
+  char c;
+  int no;
+  size_t len;
+  
+  if( sReplaceExp == NULL || !m_bMatchFound )
+    return NULL;
+  
+  
+  // First compute the length of the string
+  int replacelen = 0;
+  while ((c = *src++) != '\0') 
+  {
+    if (c == '&')
+      no = 0;
+    else if (c == '\\' && isdigit(*src))
+      no = *src++ - '0';
+    else
+      no = -1;
+    
+    if (no < 0) 
+    {	
+      // Ordinary character. 
+      if (c == '\\' && (*src == '\\' || *src == '&'))
+        c = *src++;
+      replacelen++;
+    } 
+    else if (startp[no] != NULL && endp[no] != NULL &&
+             endp[no] > startp[no]) 
+    {
+      // Get tagged expression
+      //len = endp[no] - startp[no];
+      len = m_iOvector[no*2+1] - m_iOvector[no*2];
+      replacelen += len;
+    }
+  }
+  
+  // Now allocate buf
+  buf = (char *)malloc((replacelen + 1)*sizeof(char));
+  if( buf == NULL )
+    return NULL;
+  
+  char* sReplaceStr = buf;
+  
+  // Add null termination
+  buf[replacelen] = '\0';
+  
+  // Now we can create the string
+  src = (char *)sReplaceExp;
+  while ((c = *src++) != '\0') 
+  {
+    if (c == '&')
+      no = 0;
+    else if (c == '\\' && isdigit(*src))
+      no = *src++ - '0';
+    else
+      no = -1;
+    
+    if (no < 0) 
+    {	
+      // Ordinary character. 
+      if (c == '\\' && (*src == '\\' || *src == '&'))
+        c = *src++;
+      *buf++ = c;
+    } 
+    else if (startp[no] != NULL && endp[no] != NULL &&
+             endp[no] > startp[no]) 
+    {
+      // Get tagged expression
+      len = endp[no] - startp[no];
+      int tagpos = startp[no] - startp[0];
+      
+      strncpy(buf, m_subject.c_str() + tagpos, len);
+      buf += len;
+    }
+  }
+  
+  return sReplaceStr;  
+}
+
+#else // HAS_PCRE
 
 // definition	number	opnd?	meaning 
 #define	END		0		// no	End of program. 
@@ -981,3 +1150,4 @@ char* CRegExp::GetReplaceString( const char* sReplaceExp )
 	return nReplaced;
 }*/
 
+#endif //HAS_PCRE
