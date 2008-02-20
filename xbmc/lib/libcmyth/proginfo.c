@@ -1623,3 +1623,84 @@ cmyth_get_delete_list(cmyth_conn_t conn, char * msg, cmyth_proglist_t prog)
         return prog_count;
 }
 
+cmyth_proginfo_t
+cmyth_proginfo_get_from_basename(cmyth_conn_t control, const char* basename)
+{
+	int err = 0;
+	int count, i;
+	char msg[256];
+	char *base;
+	cmyth_proginfo_t prog = NULL;
+	cmyth_proglist_t list = NULL;
+
+	if (!control) {
+		cmyth_dbg(CMYTH_DBG_ERROR, "%s: no connection\n",
+			  __FUNCTION__);
+		return NULL;
+	}
+
+	if(control->conn_version >= 32) {
+		pthread_mutex_lock(&mutex);
+
+		snprintf(msg, sizeof(msg), "QUERY_RECORDING BASENAME %s",
+			 basename);
+
+		if ((err=cmyth_send_message(control, msg)) < 0) {
+			cmyth_dbg(CMYTH_DBG_ERROR,
+				  "%s: cmyth_send_message() failed (%d)\n",
+			  	__FUNCTION__, err);
+			goto out;
+		}
+
+		prog = cmyth_proginfo_create();
+
+		count = cmyth_rcv_length(control);
+		if (count < 0) {
+			cmyth_dbg(CMYTH_DBG_ERROR,
+				  "%s: cmyth_rcv_length() failed (%d)\n",
+				  __FUNCTION__, count);
+			goto out;
+		}
+		if (cmyth_rcv_proginfo(control, &err, prog, count) != count) {
+			cmyth_dbg(CMYTH_DBG_ERROR,
+				  "%s: cmyth_rcv_proginfo() < count\n", __FUNCTION__);
+			goto out;
+		}
+
+		pthread_mutex_unlock(&mutex);
+		return prog;
+out:
+		pthread_mutex_unlock(&mutex);
+		if(prog)
+			ref_release(prog);
+		return NULL;
+
+	} else {
+
+		list = cmyth_proglist_get_all_recorded(control);
+		if (!list) {
+			cmyth_dbg(CMYTH_DBG_ERROR, "%s: no program list\n",
+				  __FUNCTION__);
+		}
+
+		count = cmyth_proglist_get_count(list);
+		for (i = 0;i < count; i++) {
+			prog = cmyth_proglist_get_item(list, i);
+			if (!prog) {
+				cmyth_dbg(CMYTH_DBG_DEBUG, "%s: no program info\n",
+					  __FUNCTION__);
+				continue;
+			}
+			base = strrchr(prog->proginfo_pathname, '/');
+			if (!base || strcmp(base+1, basename) !=0) {
+				ref_release(prog);
+				prog = NULL;
+				continue;
+			}
+			break;
+		}
+		ref_release(list);
+		return prog;
+	}
+
+}
