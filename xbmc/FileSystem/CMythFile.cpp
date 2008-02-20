@@ -16,28 +16,52 @@ static void prog_update_callback(cmyth_proginfo_t prog)
   CLog::Log(LOGDEBUG, "%s - prog_update_callback", __FUNCTION__);
 }
 
-bool CCMythFile::HandleEvents()
+void CCMythFile::Process()
 {
   char buf[128];
-  cmyth_event_t next;
+  int  next;
 
   struct timeval to;
-  to.tv_sec = 0;
+  to.tv_sec = 1;
   to.tv_usec = 0;
 
-  while(true)
+  while(!m_bStop)
   {
     /* check if there are any new events */
     if(m_dll->event_select(m_event, &to) <= 0)
-      return false;
+      continue;
 
-    next = m_dll->event_get(m_event, buf, 128);
+    buf[sizeof(buf)-1] = 0;
+    next = m_dll->event_get(m_event, buf, sizeof(buf));
+
+    if(next == CMYTH_EVENT_UNKNOWN)
+      CLog::Log(LOGDEBUG, "%s - MythTV unknown event (error?)", __FUNCTION__);
+
+    { CSingleLock lock(m_section);
+      m_events.push(make_pair<int, string>(next, buf));
+    }
+  }
+}
+
+bool CCMythFile::HandleEvents()
+{
+  CSingleLock lock(m_section);
+
+  if(m_events.empty())
+    return false;
+
+  while(!m_events.empty())
+  {
+    int next        = m_events.front().first;
+    CStdString data = m_events.front().second;
+    m_events.pop();
+
     switch (next) {
     case CMYTH_EVENT_UNKNOWN:
       CLog::Log(LOGDEBUG, "%s - MythTV unknown event (error?)", __FUNCTION__);
       break;
     case CMYTH_EVENT_CLOSE:
-      CLog::Log(LOGDEBUG, "%s - Event socket closed, shutting down myth", __FUNCTION__);
+      CLog::Log(LOGDEBUG, "%s - MythTV event CMYTH_EVENT_CLOSE", __FUNCTION__);
       break;
     case CMYTH_EVENT_RECORDING_LIST_CHANGE:
       CLog::Log(LOGDEBUG, "%s - MythTV event RECORDING_LIST_CHANGE", __FUNCTION__);
@@ -56,10 +80,9 @@ bool CCMythFile::HandleEvents()
       break;
     case CMYTH_EVENT_LIVETV_CHAIN_UPDATE:
     {
-      CLog::Log(LOGDEBUG, "%s - MythTV event %s", __FUNCTION__,buf);
-      char * pfx = (char*)"LIVETV_CHAIN UPDATE ";
-      char * chainid = buf + strlen(pfx);
-      m_dll->livetv_chain_update(m_recorder, chainid, 4096);
+      CLog::Log(LOGDEBUG, "%s - MythTV event %s", __FUNCTION__, data.c_str());
+      string chainid = data.substr(strlen("LIVETV_CHAIN UPDATE "));
+      m_dll->livetv_chain_update(m_recorder, (char*)chainid.c_str(), 4096);
       break;
     }
     case CMYTH_EVENT_SIGNAL:
@@ -67,6 +90,7 @@ bool CCMythFile::HandleEvents()
       break;
     }
   }
+  return true;
 }
 
 bool CCMythFile::SetupConnection(const CURL& url)
@@ -93,6 +117,9 @@ bool CCMythFile::SetupConnection(const CURL& url)
     CLog::Log(LOGERROR, "%s - unable to connect to server %s, port %d", __FUNCTION__, url.GetHostName().c_str(), port);
     return false;
   }
+  /* start event handler thread */
+  Create(false, THREAD_MINSTACKSIZE);
+
   return true;
 }
 
@@ -219,6 +246,8 @@ void CCMythFile::Close()
   if(!m_dll->IsLoaded())
     return;
 
+  StopThread();
+
   if(m_program)
   {
     m_dll->ref_release(m_program);
@@ -255,7 +284,6 @@ CCMythFile::CCMythFile()
   m_recorder    = NULL;
   m_control     = NULL;
   m_file        = NULL;
-  m_remain      = 0;
   m_dll->Load();
 }
 
@@ -312,17 +340,20 @@ __int64 CCMythFile::Seek(__int64 pos, int whence)
   if(whence == SEEK_POSSIBLE)
   {
     if(m_recorder)
-      return false;
+      return 0;
     else
-      return true;
+      return 1;
   }
 
+  __int64 result;
   if(m_recorder)
-    return false; //m_dll->livetv_seek(m_recorder, pos, whence);
+    result = -1; //m_dll->livetv_seek(m_recorder, pos, whence);
+  else if(m_file)
+    result = m_dll->file_seek(m_file, pos, whence);
   else
-    return m_dll->file_seek(m_file, pos, whence);
+    result = -1;
 
-  return -1;
+  return result;
 }
 
 __int64 CCMythFile::GetPosition()
@@ -343,56 +374,68 @@ __int64 CCMythFile::GetLength()
 
 unsigned int CCMythFile::Read(void* buffer, __int64 size)
 { 
-  /* check for any events */
-  HandleEvents();
-
   struct timeval to;
   to.tv_sec = 10;
   to.tv_usec = 0;
   int ret;
+  unsigned long remain;
 
-  if(m_remain == 0)
+  /* check for any events */
+  HandleEvents();
+
+  while(true)
   {
     if(m_recorder)
       ret = m_dll->livetv_request_block(m_recorder, (unsigned long)size);
     else
       ret = m_dll->file_request_block(m_file, (unsigned long)size);
+
     if(ret <= 0)
     {
       CLog::Log(LOGERROR, "%s - error requesting block of data (%d)", __FUNCTION__, ret);
+      if(HandleEvents())
+        continue;
       return 0;
     }
-    m_remain = ret;
+    break;
   }
 
-  if(m_recorder)
-    ret = m_dll->livetv_select(m_recorder, &to);
-  else
-    ret = m_dll->file_select(m_file, &to);
-  if(ret <= 0)
+  remain = (unsigned long)ret;
+  size = 0;
+  do
   {
-    CLog::Log(LOGERROR, "%s - timeout waiting for data (%d)", __FUNCTION__, ret);
-    return 0;
-  }
+    if(m_recorder)
+      ret = m_dll->livetv_select(m_recorder, &to);
+    else
+      ret = m_dll->file_select(m_file, &to);
 
-  size = min(m_remain, (int)size);
-  if(m_recorder)
-    ret = m_dll->livetv_get_block(m_recorder, (char*)buffer, (unsigned long)size);
-  else
-    ret = m_dll->file_get_block(m_file, (char*)buffer, (unsigned long)size);
-  if(ret <= 0)
-  {
-    CLog::Log(LOGERROR, "%s - failed to retrieve block (%d)", __FUNCTION__, ret);
-    return 0;
-  }
-  if(ret > m_remain)
-  {
-    CLog::Log(LOGERROR, "%s - received more data than we requested, probably a buffer overrun", __FUNCTION__);
-    m_remain = 0;
-    return 0;
-  }
-  m_remain -= ret;
-  return ret;
+    if(ret <= 0)
+    {
+      CLog::Log(LOGERROR, "%s - timeout waiting for data (%d)", __FUNCTION__, ret);
+      return 0;
+    }
+
+    if(m_recorder)
+      ret = m_dll->livetv_get_block(m_recorder, (char*)buffer+size, remain);
+    else
+      ret = m_dll->file_get_block(m_file,       (char*)buffer+size, remain);
+
+    if(ret <= 0)
+    {
+      CLog::Log(LOGERROR, "%s - failed to retrieve block (%d)", __FUNCTION__, ret);
+      return 0;
+    }
+
+    if(ret > (int)remain)
+    {
+      CLog::Log(LOGERROR, "%s - potential buffer overrun", __FUNCTION__);
+      return size;
+    }
+    remain -= ret;
+    size   += ret;
+  } while(remain > 0);
+
+  return size;
 }
 
 bool CCMythFile::SkipNext()
@@ -463,6 +506,8 @@ int CCMythFile::GetStartTime()
 
 bool CCMythFile::ChangeChannel(int direction, const char* channel)
 {
+  CLog::Log(LOGDEBUG, "%s - channel change started", __FUNCTION__);
+
   if(m_dll->recorder_pause(m_recorder) < 0)
   {
     CLog::Log(LOGDEBUG, "%s - failed to pause recorder", __FUNCTION__);
@@ -471,6 +516,7 @@ bool CCMythFile::ChangeChannel(int direction, const char* channel)
 
   if(channel)
   {
+    CLog::Log(LOGDEBUG, "%s - chainging channel to %s", __FUNCTION__, channel);
     if(m_dll->recorder_set_channel(m_recorder, (char*)channel) < 0)
     {
       CLog::Log(LOGDEBUG, "%s - failed to change channel", __FUNCTION__);
@@ -479,6 +525,7 @@ bool CCMythFile::ChangeChannel(int direction, const char* channel)
   }
   else
   {
+    CLog::Log(LOGDEBUG, "%s - chainging channel direction %d", __FUNCTION__, direction);
     if(m_dll->recorder_change_channel(m_recorder, (cmyth_channeldir_t)direction) < 0)
     {
       CLog::Log(LOGDEBUG, "%s - failed to change channel", __FUNCTION__);
@@ -490,6 +537,10 @@ bool CCMythFile::ChangeChannel(int direction, const char* channel)
     m_dll->ref_release(m_program);
   m_program = m_dll->recorder_get_cur_proginfo(m_recorder);
 
+  if(!m_dll->livetv_chain_switch_last(m_recorder))
+    CLog::Log(LOGDEBUG, "%s - failed to change to last item in chain", __FUNCTION__);
+
+  CLog::Log(LOGDEBUG, "%s - channel change done", __FUNCTION__);
   return true;
 }
 
