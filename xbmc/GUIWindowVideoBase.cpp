@@ -427,6 +427,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
   CScraperUrl scrUrl;
   bool hasDetails(false);
   
+  CIMDB::ClearCache();
   m_database.Open();
   // 2. Look for a nfo File to get the search URL
   SScanSettings settings;
@@ -1726,4 +1727,5 @@ void CGUIWindowVideoBase::OnScan(const CStdString& strPath, const SScraperInfo& 
   if (pDialog)
     pDialog->StartScanning(strPath,info,settings,false);
 }
+
 

@@ -26,7 +26,9 @@ namespace XFILE
     virtual __int64 Seek(__int64 iFilePosition, int iWhence = SEEK_SET);
     virtual void Close();
 
+    int UnpackFromMemory(std::string& strDest, const std::string& strInput);
   private:
+    bool InitDecompress();
     bool FillBuffer();
     void DestroyBuffer(void* lpBuffer, int iBufSize);
     void StartProgressBar();
