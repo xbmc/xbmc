@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #ifndef _MSC_VER
 #include <unistd.h>
+#include <sys/socket.h>
 #endif
 #include <stdio.h>
 #include <string.h>
@@ -1486,7 +1487,7 @@ cmyth_rcv_proginfo(cmyth_conn_t conn, int *err, cmyth_proginfo_t buf,
 		goto fail;
 	}
 	/* FIXME: doesn't seem to match the dump? */
-	cmyth_dbg(CMYTH_DBG_INFO, "%s: GOT TO ICON/NAME\n", __FUNCTION__);
+	cmyth_dbg(CMYTH_DBG_DEBUG, "%s: GOT TO ICON/NAME\n", __FUNCTION__);
 	if (buf->proginfo_chanicon)
 		ref_release(buf->proginfo_chanicon);
 	if (buf->proginfo_channame)
@@ -1536,7 +1537,7 @@ cmyth_rcv_proginfo(cmyth_conn_t conn, int *err, cmyth_proginfo_t buf,
 	/*
 	 * Get proginfo_start_ts (timestamp)
 	 */
-	cmyth_dbg(CMYTH_DBG_INFO, "%s: GOT TO START_TS\n", __FUNCTION__);
+	cmyth_dbg(CMYTH_DBG_DEBUG, "%s: GOT TO START_TS\n", __FUNCTION__);
 	if (buf->proginfo_version >= 14) {
 		consumed = cmyth_rcv_datetime(conn, err,
 					      &(buf->proginfo_start_ts),
@@ -1557,7 +1558,7 @@ cmyth_rcv_proginfo(cmyth_conn_t conn, int *err, cmyth_proginfo_t buf,
 	/*
 	 * Get proginfo_end_ts (timestamp)
 	 */
-	cmyth_dbg(CMYTH_DBG_INFO, "%s: GOT TO END_TS\n", __FUNCTION__);
+	cmyth_dbg(CMYTH_DBG_DEBUG, "%s: GOT TO END_TS\n", __FUNCTION__);
 	if (buf->proginfo_version >= 14) {
 		consumed = cmyth_rcv_datetime(conn, err,
 					      &(buf->proginfo_end_ts), count);

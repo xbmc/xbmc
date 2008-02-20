@@ -93,6 +93,7 @@ typedef enum {
 	CMYTH_EVENT_QUIT_LIVETV,
 	CMYTH_EVENT_LIVETV_CHAIN_UPDATE,
 	CMYTH_EVENT_SIGNAL,
+	CMYTH_EVENT_ASK_RECORDING,
 } cmyth_event_t;
 
 #define CMYTH_NUM_SORTS 2
@@ -673,6 +674,9 @@ extern int cmyth_proginfo_forget_recording(cmyth_conn_t control,
 extern int cmyth_proginfo_get_recorder_num(cmyth_conn_t control,
 					   cmyth_rec_num_t rnum,
 					   cmyth_proginfo_t prog);
+
+extern cmyth_proginfo_t cmyth_proginfo_get_from_basename(cmyth_conn_t control,
+							 const char* basename);
 
 /**
  * Retrieve the title of a program.

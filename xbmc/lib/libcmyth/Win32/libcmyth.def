@@ -202,3 +202,7 @@ EXPORTS
 	cmyth_timestamp_to_display_string
 	cmyth_datetime_to_string
 	cmyth_timestamp_compare
+	cmyth_livetv_chain_switch_last
+	cmyth_proginfo_get_from_basename
+	cmyth_proginfo_delete_recording
+	
