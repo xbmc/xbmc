@@ -51,6 +51,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HttpTest", "HttpTest\HttpTe
 		{12AFF2E5-6D95-4809-9728-9551677C078A} = {12AFF2E5-6D95-4809-9728-9551677C078A}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MediaConnect", "MediaConnect\MediaConnect.vcproj", "{9C2D7AD1-AD4B-4C5D-BD59-371D164087C8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{568611D3-AFA7-4294-99C1-E9AED0D8057E} = {568611D3-AFA7-4294-99C1-E9AED0D8057E}
+		{12AFF2E5-6D95-4809-9728-9551677C078A} = {12AFF2E5-6D95-4809-9728-9551677C078A}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -93,6 +99,10 @@ Global
 		{D3DAAD44-FD60-4CC9-8CEC-30D587F42979}.Debug.Build.0 = Debug|Win32
 		{D3DAAD44-FD60-4CC9-8CEC-30D587F42979}.Release.ActiveCfg = Release|Win32
 		{D3DAAD44-FD60-4CC9-8CEC-30D587F42979}.Release.Build.0 = Release|Win32
+		{9C2D7AD1-AD4B-4C5D-BD59-371D164087C8}.Debug.ActiveCfg = Debug|Win32
+		{9C2D7AD1-AD4B-4C5D-BD59-371D164087C8}.Debug.Build.0 = Debug|Win32
+		{9C2D7AD1-AD4B-4C5D-BD59-371D164087C8}.Release.ActiveCfg = Release|Win32
+		{9C2D7AD1-AD4B-4C5D-BD59-371D164087C8}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
