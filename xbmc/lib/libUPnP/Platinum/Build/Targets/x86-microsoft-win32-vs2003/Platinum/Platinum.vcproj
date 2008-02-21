@@ -38,7 +38,8 @@
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				CommandLine="mkdir &quot;$(ProjectDir)..\..\..\..\Targets\x86-microsoft-win32-vs2003\Debug&quot;"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -77,7 +78,8 @@
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				CommandLine="mkdir &quot;$(ProjectDir)..\..\..\..\Targets\x86-microsoft-win32-vs2003\Release&quot;"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -218,6 +220,16 @@
 					RelativePath="..\..\..\..\Source\Devices\MediaRenderer\PltMediaRendererSCPDs.cpp">
 				</File>
 			</Filter>
+			<Filter
+				Name="MediaConnect"
+				Filter="">
+				<File
+					RelativePath="..\..\..\..\Source\Devices\MediaConnect\PltMediaConnect.cpp">
+				</File>
+				<File
+					RelativePath="..\..\..\..\Source\Devices\MediaConnect\PltMediaConnectSCPDs.cpp">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -353,6 +365,13 @@
 				</File>
 				<File
 					RelativePath="..\..\..\..\Source\Devices\MediaRenderer\PltMediaRenderer.h">
+				</File>
+			</Filter>
+			<Filter
+				Name="MediaConnect"
+				Filter="">
+				<File
+					RelativePath="..\..\..\..\Source\Devices\MediaConnect\PltMediaConnect.h">
 				</File>
 			</Filter>
 		</Filter>
