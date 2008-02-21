@@ -32,7 +32,6 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib"
 				OutputFile="$(OutDir)/LightSampleTest.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories=""
@@ -81,7 +80,6 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib"
 				OutputFile="$(OutDir)/LightSampleTest.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories=""
