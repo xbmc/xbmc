@@ -36,6 +36,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalDependencies="ws2_32.lib"
 				OutputFile="$(OutDir)/Neptune.lib"
 				SuppressStartupBanner="FALSE"/>
 			<Tool
@@ -85,6 +86,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalDependencies="ws2_32.lib"
 				OutputFile="$(OutDir)/Neptune.lib"/>
 			<Tool
 				Name="VCMIDLTool"/>
