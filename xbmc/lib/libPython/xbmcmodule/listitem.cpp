@@ -435,24 +435,18 @@ namespace PYXBMC
       else if (strcmpi(cType, "pictures") == 0)
       {
         // TODO: Figure out how to set picture tags
-        if (!PyGetUnicodeString(tmp, value, 1)) continue;
-        if (strcmpi(PyString_AsString(key), "title") == 0)
-          self->item->m_strTitle = tmp;
-        else if (strcmpi(PyString_AsString(key), "count") == 0)
+        if (strcmpi(PyString_AsString(key), "count") == 0)
           self->item->m_iprogramCount = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "size") == 0)
           self->item->m_dwSize = (__int64)PyLong_AsLongLong(value);
-        else if (strcmpi(PyString_AsString(key), "picturepath") == 0)
-          self->item->m_strPath = tmp;
-        //else if (strcmpi(PyString_AsString(key), "picturedatetime") == 0)
-        //  self->item->GetPictureInfoTag()->m_exifInfo.DateTime = PyString_AsString(value);
-        //else if (strcmpi(PyString_AsString(key), "pictureresolution") == 0)
-        //{
-          // TODO: Grab a tuple and set width/height
-          //value.Format("%d x %d", m_exifInfo.Width, m_exifInfo.Height);
-          //self->item->GetPictureInfoTag()->m_exifInfo.Width = PyInt_AsLong(value);
-          //self->item->GetPictureInfoTag()->m_exifInfo.Height = PyInt_AsLong(value);
-        //}
+        else
+        {
+          if (!PyGetUnicodeString(tmp, value, 1)) continue;
+          if (strcmpi(PyString_AsString(key), "title") == 0)
+            self->item->m_strTitle = tmp;
+          else if (strcmpi(PyString_AsString(key), "picturepath") == 0)
+            self->item->m_strPath = tmp;
+        }
       }
     }
     PyGUIUnlock();
