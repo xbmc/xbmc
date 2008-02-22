@@ -37,10 +37,10 @@ public:
   virtual void OnDown();
   virtual bool GetCondition(int condition, int data) const;
 protected:
-  virtual bool MoveUp(DWORD nextControl);
-  virtual bool MoveDown(DWORD nextControl);
-  virtual bool MoveLeft(DWORD nextControl);
-  virtual bool MoveRight(DWORD nextControl);
+  virtual bool MoveUp(bool wrapAround);
+  virtual bool MoveDown(bool wrapAround);
+  virtual bool MoveLeft(bool wrapAround);
+  virtual bool MoveRight(bool wrapAround);
   virtual void Scroll(int amount);
   float AnalogScrollSpeed() const;
   virtual void ValidateOffset();
