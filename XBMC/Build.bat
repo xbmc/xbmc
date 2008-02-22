@@ -215,7 +215,7 @@ rem	CONFIG START
 :MAKE_BUILD_EXE
   ECHO Copying files...
   rmdir BUILD_WIN32 /S /Q
-  md BUILD_WIN32
+  md BUILD_WIN32\Xbmc_pc
 
   Echo .svn>exclude.txt
   Echo Thumbs.db>>exclude.txt
@@ -223,36 +223,38 @@ rem	CONFIG START
   Echo dsstdfx.bin>>exclude.txt
   Echo exclude.txt>>exclude.txt
 
-  xcopy %EXE% BUILD_WIN32
-  xcopy UserData BUILD_WIN32\UserData /E /Q /I /Y /EXCLUDE:exclude.txt
+  xcopy %EXE% BUILD_WIN32\Xbmc_pc
+  xcopy UserData BUILD_WIN32\Xbmc_pc\UserData /E /Q /I /Y /EXCLUDE:exclude.txt
   xcopy *.txt BUILD_WIN32 /EXCLUDE:exclude.txt
   rem xcopy *.xml BUILD_WIN32\
   
   rem xcopy tools\Win32\run_me_first.bat BUILD_WIN32 /EXCLUDE:exclude.txt
-  Echo subst q: ..>run_me.bat
+  Echo subst q: Xbmc_pc>run_me.bat
   Echo subst p: q:\userdata>>run_me.bat
   Echo subst t: q:\userdata>>run_me.bat
-  Echo subst z: q:\cache>>run_me.bat
-  Echo XBMC_PC.exe>>run_me.bat
-  Echo subst q: /D>>run_me.bat
-  Echo subst p: /D>>run_me.bat
-  Echo subst t: /D>>run_me.bat
+  Echo if not exist q:\Temp md Temp>>run_me.bat
+  Echo subst z: Temp>>run_me.bat
+  Echo Xbmc_pc\XBMC_PC.exe>>run_me.bat
   Echo subst z: /D>>run_me.bat
+  Echo subst t: /D>>run_me.bat
+  Echo subst p: /D>>run_me.bat
+  Echo subst q: /D>>run_me.bat
+  
   xcopy run_me.bat BUILD_WIN32
   del run_me.bat
   
   cd "skin\Project Mayhem III"
   CALL build.bat
   cd ..\..
-  xcopy "skin\Project Mayhem III\BUILD\Project Mayhem III" "BUILD_WIN32\skin\Project Mayhem III" /E /Q /I /Y /EXCLUDE:exclude.txt
+  xcopy "skin\Project Mayhem III\BUILD\Project Mayhem III" "BUILD_WIN32\Xbmc_pc\skin\Project Mayhem III" /E /Q /I /Y /EXCLUDE:exclude.txt
 
-  xcopy credits BUILD_WIN32\credits /Q /I /Y /EXCLUDE:exclude.txt
-  xcopy language BUILD_WIN32\language /E /Q /I /Y /EXCLUDE:exclude.txt
-  xcopy screensavers BUILD_WIN32\screensavers /E /Q /I /Y /EXCLUDE:exclude.txt
-  xcopy visualisations BUILD_WIN32\visualisations /E /Q /I /Y /EXCLUDE:exclude.txt
-  xcopy system BUILD_WIN32\system /E /Q /I /Y /EXCLUDE:exclude.txt
-  xcopy media BUILD_WIN32\media /E /Q /I /Y /EXCLUDE:exclude.txt
-  xcopy sounds BUILD_WIN32\sounds /E /Q /I /Y /EXCLUDE:exclude.txt
+  xcopy credits BUILD_WIN32\Xbmc_pc\credits /Q /I /Y /EXCLUDE:exclude.txt
+  xcopy language BUILD_WIN32\Xbmc_pc\language /E /Q /I /Y /EXCLUDE:exclude.txt
+  xcopy screensavers BUILD_WIN32\Xbmc_pc\screensavers /E /Q /I /Y /EXCLUDE:exclude.txt
+  xcopy visualisations BUILD_WIN32\Xbmc_pc\visualisations /E /Q /I /Y /EXCLUDE:exclude.txt
+  xcopy system BUILD_WIN32\Xbmc_pc\system /E /Q /I /Y /EXCLUDE:exclude.txt
+  xcopy media BUILD_WIN32\Xbmc_pc\media /E /Q /I /Y /EXCLUDE:exclude.txt
+  xcopy sounds BUILD_WIN32\Xbmc_pc\sounds /E /Q /I /Y /EXCLUDE:exclude.txt
 
   del exclude.txt
   ECHO ------------------------------------------------------------
