@@ -28,6 +28,7 @@
 #include <stdlib.h>
 #ifndef _MSC_VER
 #include <unistd.h>
+#include <sys/socket.h>
 #endif
 #include <stdio.h>
 #include <errno.h>
@@ -35,7 +36,6 @@
 #include <mvp_refmem.h>
 #include <cmyth.h>
 #include <cmyth_local.h>
-#include <string.h>
 
 /*
  * cmyth_ringbuf_destroy(cmyth_ringbuf_t rb)

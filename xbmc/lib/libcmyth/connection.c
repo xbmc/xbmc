@@ -166,7 +166,8 @@ cmyth_connect(char *server, unsigned short port, unsigned buflen,
 	cmyth_socket_t fd;
 	void (*old_sighandler)(int);
 	int old_alarm;
-	int temp, size;
+	int temp;
+	socklen_t size;
 
 	/*
 	 * First try to establish the connection with the server.
