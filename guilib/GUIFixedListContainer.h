@@ -23,8 +23,8 @@ public:
 
 protected:
   virtual void Scroll(int amount);
-  virtual bool MoveDown(DWORD nextControl);
-  virtual bool MoveUp(DWORD nextControl);
+  virtual bool MoveDown(bool wrapAround);
+  virtual bool MoveUp(bool wrapAround);
   virtual void ValidateOffset();
   virtual bool SelectItemFromPoint(const CPoint &point);
   virtual void SelectItem(int item);

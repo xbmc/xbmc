@@ -141,13 +141,13 @@ bool CGUIWrappingListContainer::OnMessage(CGUIMessage& message)
   return CGUIBaseContainer::OnMessage(message);
 }
 
-bool CGUIWrappingListContainer::MoveUp(DWORD control)
+bool CGUIWrappingListContainer::MoveUp(bool wrapAround)
 {
   Scroll(-1);
   return true;
 }
 
-bool CGUIWrappingListContainer::MoveDown(DWORD control)
+bool CGUIWrappingListContainer::MoveDown(bool wrapAround)
 {
   Scroll(+1);
   return true;
