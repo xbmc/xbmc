@@ -79,8 +79,8 @@ protected:
   virtual bool SelectItemFromPoint(const CPoint &point);
   virtual void RenderItem(float posX, float posY, CGUIListItem *item, bool focused);
   virtual void Scroll(int amount);
-  virtual bool MoveDown(DWORD nextControl);
-  virtual bool MoveUp(DWORD nextControl);
+  virtual bool MoveDown(bool wrapAround);
+  virtual bool MoveUp(bool wrapAround);
   virtual void MoveToItem(int item);
   virtual void ValidateOffset();
   virtual int  CorrectOffset(int offset, int cursor) const;
