@@ -11,6 +11,7 @@ namespace DIRECTORY
       CDirectoryNodeTitleMusicVideos(const CStdString& strEntryName, CDirectoryNode* pParent);
     protected:
       virtual bool GetContent(CFileItemList& items);
+      virtual NODE_TYPE GetChildType();
     };
   }
 }
