@@ -194,3 +194,8 @@
 #endif
 
 #endif
+
+#if (defined(HAS_XBOX_D3D)  && defined(HAS_SDL))
+#error "Cannot have both HAS_XBOX_D3D and HAS_SDL defined simultaneously!"
+#endif
+

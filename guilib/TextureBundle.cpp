@@ -451,7 +451,9 @@ bool CTextureBundle::PreloadFile(const CStdString& Filename)
 #else
       struct sysinfo info;
       sysinfo(&info);
-      CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %lu bytes, have %lu bytes)", name.c_str(), ReadSize, info.totalram);             
+      CLog::Log(LOGERROR, "Out of memory loading texture: %s "
+                          "(need %u bytes, have %lu bytes)",
+                name.c_str(), ReadSize, info.totalram);
 #endif
     }
   }
@@ -491,8 +493,10 @@ HRESULT CTextureBundle::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
 #else
     struct sysinfo info;
     sysinfo(&info);
-    CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %lu bytes, have %lu bytes)", name.c_str(),
-              m_CurFileHeader[m_LoadIdx]->second.UnpackedSize, info.totalram);
+    CLog::Log(LOGERROR, "Out of memory loading texture: %s "
+                        "(need %u bytes, have %lu bytes)",
+              name.c_str(), m_CurFileHeader[m_LoadIdx]->second.UnpackedSize,
+              info.totalram);
 #endif
     return E_OUTOFMEMORY;
   }
@@ -560,7 +564,11 @@ HRESULT CTextureBundle::LoadTexture(const CStdString& Filename, D3DXIMAGE_INFO* 
   if (r != S_OK)
     return r;
 
-  D3DTexture* pTex = (D3DTexture*)(new char[sizeof(D3DTexture) + sizeof(DWORD)]);
+  D3DTexture *pTex = (D3DTexture *)(new char[sizeof (D3DTexture)
+#ifdef HAS_XBOX_D3D
+                                            + sizeof (DWORD)
+#endif /* HAS_XBOX_D3D */
+                                           ]);
   D3DPalette* pPal = 0;
   void* ResData = 0;
 
@@ -598,18 +606,15 @@ HRESULT CTextureBundle::LoadTexture(const CStdString& Filename, D3DXIMAGE_INFO* 
   if ((pTex->Common & D3DCOMMON_TYPE_MASK) != D3DCOMMON_TYPE_TEXTURE)
     goto PackedLoadError;
 
-#ifndef HAS_SDL
-  *ppTexture = (LPDIRECT3DTEXTURE8)pTex;
-#else
-  *ppTexture = (SDL_Surface*)pTex;
-#endif
-  
 #ifdef HAS_XBOX_D3D
+  *ppTexture = (LPDIRECT3DTEXTURE8)pTex;
   (*ppTexture)->Register(ResData);
-#else
+  *(DWORD *)(pTex + 1) = (DWORD)(BYTE *)UnpackedBuf;
+#else /* !HAS_XBOX_D3D */
   GetTextureFromData(pTex, ResData, ppTexture);
-#endif
-  *(DWORD*)(pTex + 1) = (DWORD)(BYTE*)UnpackedBuf;
+  delete[] pTex;
+#endif /* HAS_XBOX_D3D */
+
 #ifdef HAS_XBOX_D3D
   if (pPal)
   {
@@ -690,7 +695,12 @@ int CTextureBundle::LoadAnim(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, 
   *ppDelays = new int[nTextures];
   for (int i = 0; i < nTextures; ++i)
   {
-    ppTex[i] = (D3DTexture*)(new char[sizeof(D3DTexture) + sizeof(DWORD)]);
+    ppTex[i] = (D3DTexture *)(new char[sizeof (D3DTexture)
+#ifdef HAS_XBOX_D3D
+                                       + sizeof (DWORD)
+#endif /* HAS_XBOX_D3D */
+                                      ]);
+
     memcpy(ppTex[i], Next, sizeof(D3DTexture));
     Next += sizeof(D3DTexture);
 
@@ -711,25 +721,18 @@ int CTextureBundle::LoadAnim(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, 
     if ((ppTex[i]->Common & D3DCOMMON_TYPE_MASK) != D3DCOMMON_TYPE_TEXTURE)
       goto PackedAnimError;
 
-#ifndef HAS_SDL
-    (*ppTextures)[i] = (LPDIRECT3DTEXTURE8)ppTex[i];
-#else
-    (*ppTextures)[i] = (SDL_Surface*)ppTex[i];
-#endif
-
 #ifdef HAS_XBOX_D3D
+    (*ppTextures)[i] = (LPDIRECT3DTEXTURE8)ppTex[i];
     (*ppTextures)[i]->Register(ResData);
-#else
+    *(DWORD *)(ppTex[i] + 1) = 0;
+#else /* !HAS_XBOX_D3D */
     GetTextureFromData(ppTex[i], ResData, &(*ppTextures)[i]);
-#endif
-    *(DWORD*)(ppTex[i] + 1) = 0;
+    delete[] ppTex[i];
+#endif /* HAS_XBOX_D3D */
   }
-  *(DWORD*)(ppTex[0] + 1) = (DWORD)(BYTE*)UnpackedBuf;
-
-#ifndef HAS_XBOX_D3D
-  for (int i = 0; i < nTextures; ++i)
-    delete [] ppTex[i];
-#endif
+#ifdef HAS_XBOX_D3D
+  *(DWORD *)(ppTex[0] + 1) = (DWORD)(BYTE *)UnpackedBuf;
+#endif /* HAS_XBOX_D3D */
 
   delete [] ppTex;
   ppTex = 0;
