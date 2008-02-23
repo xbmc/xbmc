@@ -162,7 +162,28 @@ void CGUIWrappingListContainer::Scroll(int amount)
 
 void CGUIWrappingListContainer::ValidateOffset()
 {
-  // no need to check the range here
+  if (m_itemsPerPage <= (int)m_items.size())
+    return;
+
+  // no need to check the range here, but we need to check we have
+  // more items than slots.
+  ResetExtraItems();
+  if (m_items.size())
+  {
+    unsigned int numItems = m_items.size();
+    while (m_items.size() < (unsigned int)m_itemsPerPage)
+    {
+      // add additional copies of items, as we require extras at render time
+      for (unsigned int i = 0; i < numItems; i++)
+      {
+        if (m_items[i]->IsFileItem())
+          m_items.push_back(new CFileItem(*(CFileItem *)m_items[i]));
+        else
+          m_items.push_back(new CGUIListItem(*m_items[i]));
+        m_extraItems++;
+      }
+    }
+  }
 }
 
 int CGUIWrappingListContainer::CorrectOffset(int offset, int cursor) const
@@ -251,26 +272,4 @@ void CGUIWrappingListContainer::Reset()
 {
   ResetExtraItems();
   CGUIBaseContainer::Reset();
-}
-
-void CGUIWrappingListContainer::CalculateLayout()
-{
-  CGUIBaseContainer::CalculateLayout();
-  ResetExtraItems();
-  if (m_items.size())
-  {
-    unsigned int numItems = m_items.size();
-    while (m_items.size() < (unsigned int)m_itemsPerPage)
-    {
-      // add additional copies of items, as we require extras at render time
-      for (unsigned int i = 0; i < numItems; i++)
-      {
-        if (m_items[i]->IsFileItem())
-          m_items.push_back(new CFileItem(*(CFileItem *)m_items[i]));
-        else
-          m_items.push_back(new CGUIListItem(*m_items[i]));
-        m_extraItems++;
-      }
-    }
-  }
 }
