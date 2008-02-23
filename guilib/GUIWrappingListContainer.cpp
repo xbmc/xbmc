@@ -1,6 +1,6 @@
 #include "include.h"
 #include "GUIWrappingListContainer.h"
-#include "GUIListItem.h"
+#include "../xbmc/FileItem.h"
 
 CGUIWrappingListContainer::CGUIWrappingListContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int fixedPosition)
     : CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, orientation, scrollTime)
@@ -8,6 +8,7 @@ CGUIWrappingListContainer::CGUIWrappingListContainer(DWORD dwParentID, DWORD dwC
   m_cursor = fixedPosition;
   ControlType = GUICONTAINER_WRAPLIST;
   m_type = VIEW_TYPE_LIST;
+  m_extraItems = 0;
 }
 
 CGUIWrappingListContainer::~CGUIWrappingListContainer(void)
@@ -175,6 +176,18 @@ int CGUIWrappingListContainer::CorrectOffset(int offset, int cursor) const
   return 0;
 }
 
+int CGUIWrappingListContainer::GetSelectedItem() const
+{
+  if (m_items.size() > m_extraItems)
+  {
+    int numItems = (int)(m_items.size() - m_extraItems);
+    int correctOffset = (m_offset + m_cursor) % numItems;
+    if (correctOffset < 0) correctOffset += numItems;
+    return correctOffset;
+  }
+  return 0;
+}
+
 bool CGUIWrappingListContainer::SelectItemFromPoint(const CPoint &point)
 {
   if (!m_focusedLayout || !m_layout)
@@ -221,3 +234,43 @@ void CGUIWrappingListContainer::SelectItem(int item)
     ScrollToOffset(item - m_cursor);
 }
 
+void CGUIWrappingListContainer::ResetExtraItems()
+{
+  // delete any extra items
+  if (m_extraItems)
+  {
+    for (unsigned int i = m_items.size() - m_extraItems; i < m_items.size(); i++)
+      delete m_items[i];
+    m_items.erase(m_items.begin() + m_items.size() - m_extraItems, m_items.end());
+  }
+  unsigned int test = m_items.size();
+  m_extraItems = 0;
+}
+
+void CGUIWrappingListContainer::Reset()
+{
+  ResetExtraItems();
+  CGUIBaseContainer::Reset();
+}
+
+void CGUIWrappingListContainer::CalculateLayout()
+{
+  CGUIBaseContainer::CalculateLayout();
+  ResetExtraItems();
+  if (m_items.size())
+  {
+    unsigned int numItems = m_items.size();
+    while (m_items.size() < (unsigned int)m_itemsPerPage)
+    {
+      // add additional copies of items, as we require extras at render time
+      for (unsigned int i = 0; i < numItems; i++)
+      {
+        if (m_items[i]->IsFileItem())
+          m_items.push_back(new CFileItem(*(CFileItem *)m_items[i]));
+        else
+          m_items.push_back(new CGUIListItem(*m_items[i]));
+        m_extraItems++;
+      }
+    }
+  }
+}
