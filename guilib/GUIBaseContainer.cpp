@@ -151,7 +151,7 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
     }
     if (message.GetMessage() == GUI_MSG_ITEM_SELECTED)
     {
-      message.SetParam1(CorrectOffset(m_offset, m_cursor));
+      message.SetParam1(GetSelectedItem());
       return true;
     }
     else if (message.GetMessage() == GUI_MSG_PAGE_CHANGE)
@@ -359,7 +359,7 @@ bool CGUIBaseContainer::OnMouseWheel(char wheel, const CPoint &point)
 CStdString CGUIBaseContainer::GetDescription() const
 {
   CStdString strLabel;
-  int item = CorrectOffset(m_offset, m_cursor);
+  int item = GetSelectedItem();
   if (item >= 0 && item < (int)m_items.size())
   {
     CGUIListItem *pItem = m_items[item];
@@ -383,7 +383,7 @@ void CGUIBaseContainer::SetFocus(bool bOnOff)
 
 void CGUIBaseContainer::SaveStates(vector<CControlState> &states)
 {
-  states.push_back(CControlState(GetID(), CorrectOffset(m_offset, m_cursor)));
+  states.push_back(CControlState(GetID(), GetSelectedItem()));
 }
 
 void CGUIBaseContainer::SetPageControl(DWORD id)
@@ -449,6 +449,7 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
           m_lastItem = lastItem;
       }
     }
+    CalculateLayout();
   }
 }
 
