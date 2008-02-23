@@ -235,7 +235,7 @@ void CGUIBaseContainer::Scroll(int amount)
 
 int CGUIBaseContainer::GetSelectedItem() const
 {
-  return CorrectOffset(m_cursor, m_offset);
+  return CorrectOffset(m_offset, m_cursor);
 }
 
 CGUIListItem *CGUIBaseContainer::GetListItem(int offset) const
