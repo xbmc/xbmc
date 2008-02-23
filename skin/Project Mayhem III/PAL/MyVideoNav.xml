@@ -163,7 +163,7 @@
 				<onup>14</onup>
 				<ondown>19</ondown>
 			</control>
-
+ 
 			<control type="radiobutton" id="19">
 				<description>Filter</description>
 				<posx>0</posx>
@@ -182,25 +182,35 @@
 				<onleft>50</onleft>
 				<onright>50</onright>
 				<onup>19</onup>
+				<ondown>17</ondown>
+			</control>
+			<control type="radiobutton" id="17">
+				<description>Flatten Library button</description>
+				<posx>0</posx>
+				<posy>259</posy>
+				<label>20411</label>
+				<onleft>50</onleft>
+				<onright>50</onright>
+				<onup>16</onup>
 				<ondown>11</ondown>
 			</control>
                         <control type="radiobutton" id="11">
 				<description>Unlock Shares</description>
 				<posx>0</posx>
-				<posy>259</posy>
+				<posy>296</posy>
 				<label>20336</label>
 				<onleft>50</onleft>
 				<onright>50</onright>
 				<onclick>xbmc.mastermode</onclick>
 				<selected>system.ismaster</selected>
 				<visible>system.haslocks</visible>
-				<onup>16</onup>
+				<onup>17</onup>
 				<ondown>20</ondown>
 			</control>
 			<control type="group">
 				<description>LastFM Love Hate Stuff</description>
 				<posx>0</posx>
-				<posy>296</posy>
+				<posy>333</posy>
 				<visible>LastFM.RadioPlaying</visible>
 				<animation effect="slide" start="0,0" end="0,-37" time="0" condition="!system.haslocks">conditional</animation>
 				<control type="image">
@@ -280,3 +290,5 @@
 		<include>windowswitchtransition</include>
 	</controls>
 </window>
+
+
