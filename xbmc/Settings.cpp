@@ -154,6 +154,7 @@ CSettings::CSettings(void)
 
   g_stSettings.m_bMyVideoPlaylistRepeat = false;
   g_stSettings.m_bMyVideoPlaylistShuffle = false;
+  g_stSettings.m_bMyVideoNavFlatten = false;
 
   g_stSettings.m_nVolumeLevel = 0;
   g_stSettings.m_dynamicRangeCompressionLevel = 0;
@@ -976,6 +977,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 
     GetString(pElement, "defaultlibview", g_settings.m_defaultVideoLibSource, g_settings.m_defaultVideoLibSource);
     GetInteger(pElement, "watchmode", g_stSettings.m_iMyVideoWatchMode, VIDEO_SHOW_ALL, VIDEO_SHOW_ALL, VIDEO_SHOW_WATCHED);
+    XMLUtils::GetBoolean(pElement, "flatten", g_stSettings.m_bMyVideoNavFlatten);
 
     TiXmlElement *pChild = pElement->FirstChildElement("playlist");
     if (pChild)
@@ -1673,6 +1675,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
   SetString(pNode, "defaultlibview", g_settings.m_defaultVideoLibSource);
 
   SetInteger(pNode, "watchmode", g_stSettings.m_iMyVideoWatchMode);
+  SetBoolean(pNode, "flatten", g_stSettings.m_bMyVideoNavFlatten);
 
   { // playlist window
     TiXmlElement childNode("playlist");
