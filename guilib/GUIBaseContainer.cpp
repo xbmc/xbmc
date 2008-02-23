@@ -449,7 +449,6 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
           m_lastItem = lastItem;
       }
     }
-    CalculateLayout();
   }
 }
 

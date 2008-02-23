@@ -30,7 +30,6 @@ protected:
   virtual bool SelectItemFromPoint(const CPoint &point);
   virtual void SelectItem(int item);
   virtual void Reset();
-  virtual void CalculateLayout();
 
   void ResetExtraItems();
   unsigned int m_extraItems;
