@@ -13,13 +13,25 @@ CDirectoryNodeOverview::CDirectoryNodeOverview(const CStdString& strName, CDirec
 
 NODE_TYPE CDirectoryNodeOverview::GetChildType()
 {
-  if (GetName()=="1")
-    return NODE_TYPE_MOVIES_OVERVIEW;
-  else if (GetName()=="2")
-    return NODE_TYPE_TVSHOWS_OVERVIEW;
-  else if (GetName() == "3")
-    return NODE_TYPE_MUSICVIDEOS_OVERVIEW;
-  else if (GetName() == "4")
+  if (g_stSettings.m_bMyVideoNavFlatten)
+  {
+    if (GetName()=="1")
+      return NODE_TYPE_TITLE_MOVIES;
+    else if (GetName()=="2")
+      return NODE_TYPE_TITLE_TVSHOWS;
+    else if (GetName() == "3")
+      return NODE_TYPE_TITLE_MUSICVIDEOS;
+  }
+  else
+  {
+    if (GetName()=="1")
+      return NODE_TYPE_MOVIES_OVERVIEW;
+    else if (GetName()=="2")
+      return NODE_TYPE_TVSHOWS_OVERVIEW;
+    else if (GetName() == "3")
+      return NODE_TYPE_MUSICVIDEOS_OVERVIEW;
+  }
+  if (GetName() == "4")
     return NODE_TYPE_RECENTLY_ADDED_MOVIES;
   else if (GetName() == "5")
     return NODE_TYPE_RECENTLY_ADDED_EPISODES;
@@ -55,7 +67,11 @@ bool CDirectoryNodeOverview::GetContent(CFileItemList& items)
   CStdString path = BuildPath();
   for (int i = 0; i < (int)vec.size(); ++i)
   {
-    CFileItem* pItem = new CFileItem(path + vec[i].first + "/", true);
+    CFileItem* pItem;
+    if (g_stSettings.m_bMyVideoNavFlatten)
+      pItem = new CFileItem(path + vec[i].first + "/2/", true);
+    else
+      pItem = new CFileItem(path + vec[i].first + "/", true);
     pItem->SetLabel(g_localizeStrings.Get(vec[i].second));
     pItem->SetLabelPreformated(true);
     pItem->SetCanQueue(false);
