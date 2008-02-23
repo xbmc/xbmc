@@ -54,7 +54,7 @@ public:
 
   virtual CStdString GetDescription() const;
   virtual void SaveStates(std::vector<CControlState> &states);
-  int GetSelectedItem() const;
+  virtual int GetSelectedItem() const;
 
   virtual void DoRender(DWORD currentTime);
   void LoadLayout(TiXmlElement *layout);
@@ -87,7 +87,7 @@ protected:
   virtual void UpdateLayout();
   virtual void CalculateLayout();
   virtual void SelectItem(int item) {};
-  void Reset();
+  virtual void Reset();
   bool InsideLayout(const CGUIListItemLayout *layout, const CPoint &point);
 
   inline float Size() const;
