@@ -13,25 +13,13 @@ CDirectoryNodeOverview::CDirectoryNodeOverview(const CStdString& strName, CDirec
 
 NODE_TYPE CDirectoryNodeOverview::GetChildType()
 {
-  if (g_stSettings.m_bMyVideoNavFlatten)
-  {
-    if (GetName()=="1")
-      return NODE_TYPE_TITLE_MOVIES;
-    else if (GetName()=="2")
-      return NODE_TYPE_TITLE_TVSHOWS;
-    else if (GetName() == "3")
-      return NODE_TYPE_TITLE_MUSICVIDEOS;
-  }
-  else
-  {
-    if (GetName()=="1")
-      return NODE_TYPE_MOVIES_OVERVIEW;
-    else if (GetName()=="2")
-      return NODE_TYPE_TVSHOWS_OVERVIEW;
-    else if (GetName() == "3")
-      return NODE_TYPE_MUSICVIDEOS_OVERVIEW;
-  }
-  if (GetName() == "4")
+  if (GetName()=="1")
+    return NODE_TYPE_MOVIES_OVERVIEW;
+  else if (GetName()=="2")
+    return NODE_TYPE_TVSHOWS_OVERVIEW;
+  else if (GetName() == "3")
+    return NODE_TYPE_MUSICVIDEOS_OVERVIEW;
+  else if (GetName() == "4")
     return NODE_TYPE_RECENTLY_ADDED_MOVIES;
   else if (GetName() == "5")
     return NODE_TYPE_RECENTLY_ADDED_EPISODES;

@@ -11,11 +11,6 @@ CDirectoryNodeTitleMovies::CDirectoryNodeTitleMovies(const CStdString& strName, 
 
 }
 
-NODE_TYPE CDirectoryNodeTitleMovies::GetChildType()
-{
-  return NODE_TYPE_TITLE_MOVIES;
-}
-
 bool CDirectoryNodeTitleMovies::GetContent(CFileItemList& items)
 {
   CVideoDatabase videodatabase;

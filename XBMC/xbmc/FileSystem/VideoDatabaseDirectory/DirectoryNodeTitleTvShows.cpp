@@ -13,10 +13,7 @@ CDirectoryNodeTitleTvShows::CDirectoryNodeTitleTvShows(const CStdString& strName
 
 NODE_TYPE CDirectoryNodeTitleTvShows::GetChildType()
 {
-  if (GetParent()->GetType() == NODE_TYPE_OVERVIEW)
-    return NODE_TYPE_TITLE_TVSHOWS;
-  else
-    return NODE_TYPE_SEASONS;
+  return NODE_TYPE_SEASONS;
 }
 
 bool CDirectoryNodeTitleTvShows::GetContent(CFileItemList& items)
