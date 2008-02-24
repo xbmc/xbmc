@@ -14,6 +14,9 @@
 			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Trailer&quot; type=&quot;bool&quot; id=&quot;trailer&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
+			<RegExp input="$$1" output="&lt;setting label=&quot;IMDB Poster &amp;amp; Actor Thumb(s) Size&quot; type=&quot;labelenum&quot; values=&quot;192|256|384|512|1024&quot; id=&quot;imdbscale&quot; default=&quot;192&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
 			<RegExp input="$$1" output="&lt;setting type=&quot;sep&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
@@ -128,8 +131,8 @@
 	</GetMoviePlot>
 	<GetMovieCast clearbuffers="no" dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;actor&gt;&lt;thumb&gt;\2\3&lt;/thumb&gt;&lt;name&gt;\4&lt;/name&gt;&lt;role&gt;\5&lt;/role&gt;&lt;/actor&gt;" dest="2+">
-				<expression repeat="yes" noclean="1,2,3" trim="4,5">&lt;img src=&quot;(([^&quot;]*VM.)[^&quot;]*(jpg))?[^&gt;]*[^&quot;]*&quot;nm&quot;&gt;&lt;a href=&quot;[^&quot;]*&quot;&gt;([^&lt;]*)&lt;[^&quot;]*&quot;ddd&quot;&gt; ... [^&quot;]*&quot;char&quot;&gt;([^:]*)&lt;/td&gt;</expression>
+			<RegExp input="$$1" output="&lt;actor&gt;&lt;thumb&gt;\2_SY$INFO[imdbscale]_\3&lt;/thumb&gt;&lt;name&gt;\4&lt;/name&gt;&lt;role&gt;\5&lt;/role&gt;&lt;/actor&gt;" dest="2+">
+				<expression repeat="yes" noclean="1,2,3" trim="4,5">&lt;img src=&quot;(([^&quot;]*VM\.)[^&quot;]*(\.jpg))?[^&gt;]*[^&quot;]*&quot;nm&quot;&gt;&lt;a href=&quot;[^&quot;]*&quot;&gt;([^&lt;]*)&lt;[^&quot;]*&quot;ddd&quot;&gt; ... [^&quot;]*&quot;char&quot;&gt;([^:]*)&lt;/td&gt;</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>
@@ -195,8 +198,8 @@
 	</GetTrailerLink>
 	<GetIMDBPoster dest="5">
 		<RegExp input="$$8$$9" output="&lt;details&gt;&lt;thumbs&gt;\1&lt;/thumbs&gt;&lt;/details&gt;" dest="5">
-                        <RegExp input="$$1" output="&lt;thumb&gt;\2\3&lt;/thumb&gt;" dest="9">
-	                        <expression noclean="1,2,3">&lt;div class=&quot;photo&quot;&gt;[^&lt;]*&lt;a[^&lt;]*&lt;img border=&quot;0&quot; alt=&quot;[^&quot;]*&quot; title=&quot;[^&quot;]*&quot; src=&quot;(([^&quot;]*VM.)[^&quot;]*(jpg))?</expression>
+                        <RegExp input="$$1" output="&lt;thumb&gt;\2_SY$INFO[imdbscale]_\3&lt;/thumb&gt;" dest="9">
+	                        <expression noclean="1,2,3">&lt;div class=&quot;photo&quot;&gt;[^&lt;]*&lt;a[^&lt;]*&lt;img border=&quot;0&quot; alt=&quot;[^&quot;]*&quot; title=&quot;[^&quot;]*&quot; src=&quot;(([^&quot;]*VM\.)[^&quot;]*(\.jpg))?</expression>
                         </RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>
