@@ -77,11 +77,7 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   if (!m_bPassthrough)
     device = g_guiSettings.GetString("audiooutput.audiodevice");
   else
-  {
     device = g_guiSettings.GetString("audiooutput.passthroughdevice");
-    if (device.Find("AES0=6") < 0)
-      device += ":AES0=6";
-  }
 
   int nErr;
 
@@ -95,7 +91,25 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   nErr = snd_config_copy(&config, snd_config);
   CHECK_ALSA_RETURN(LOGERROR,"config_copy",nErr);
 
-  if(!m_bPassthrough)
+  if(m_bPassthrough)
+  {
+    if(deviceuse.Find("AES") < 0)
+    {
+      /* http://www.alsa-project.org/alsa-doc/alsa-lib/group___digital___audio___interface.html */
+      deviceuse += ":AES0=0x6";
+      deviceuse += ",AES1=0x82";
+      deviceuse += ",AES2=0x0";
+      if(uiSamplesPerSec == 48000)
+        deviceuse += ",AES3=0x2";
+      else if(uiSamplesPerSec == 44100)
+        deviceuse += ",AES3=0x0";
+      else if(uiSamplesPerSec == 32000)
+        deviceuse += ",AES3=0x3";
+      else
+        deviceuse += ",AES3=0x1"; /* just a guess, maybe works for 96k */
+    }
+  }
+  else
   {
     // TODO - add an option to only downmix if user want's us
     if(iChannels == 6)
@@ -148,6 +162,13 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   CLog::Log(LOGDEBUG, "%s - using alsa device %s", __FUNCTION__, deviceuse.c_str());
 
   nErr = snd_pcm_open_lconf(&m_pPlayHandle, deviceuse.c_str(), SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK, config);
+  if(nErr < 0 && deviceuse != deviceuse)
+  {
+    CLog::Log(LOGERROR, "%s - failed to open custom device %s, retry with default %s", __FUNCTION__, deviceuse.c_str(), device.c_str());
+    nErr = snd_pcm_open_lconf(&m_pPlayHandle, device.c_str(), SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK, config);
+
+  }
+
   CHECK_ALSA_RETURN(LOGERROR,"pcm_open_lconf",nErr);
 
   snd_config_delete(config);
