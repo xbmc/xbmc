@@ -279,6 +279,9 @@ namespace PYXBMC
     "type           : string - type of media(video/music/pictures).\n"
     "infoLabels     : dictionary - pairs of { label: value }.\n"
     "\n"
+    "*Note, To set pictures exif info, prepend 'exif:' to the label. (e.g. exif:resolution).\n"
+    "       See CPictureInfoTag::TranslateString in PictureInfoTag.cpp for valid strings.\n"
+    "\n"
     "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
     "       Once you use a keyword, all following arguments require the keyword.\n"
     "\n"
@@ -434,7 +437,6 @@ namespace PYXBMC
       }
       else if (strcmpi(cType, "pictures") == 0)
       {
-        // TODO: Figure out how to set picture tags
         if (strcmpi(PyString_AsString(key), "count") == 0)
           self->item->m_iprogramCount = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "size") == 0)
@@ -446,7 +448,15 @@ namespace PYXBMC
             self->item->m_strTitle = tmp;
           else if (strcmpi(PyString_AsString(key), "picturepath") == 0)
             self->item->m_strPath = tmp;
+          else
+          {
+            CStdString exifkey = PyString_AsString(key);
+            if (!exifkey.Left(5).Equals("exif:") || exifkey.length() < 6) continue;
+            int info = CPictureInfoTag::TranslateString(exifkey.Mid(5, exifkey.GetLength() - 5));
+            self->item->GetPictureInfoTag()->SetInfo(info, tmp);
+          }
         }
+        self->item->GetPictureInfoTag()->SetLoaded(true);
       }
     }
     PyGUIUnlock();
