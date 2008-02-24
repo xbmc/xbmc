@@ -171,7 +171,7 @@ void CPictureInfoTag::GetStringFromArchive(CArchive &ar, char *string, size_t le
   string[length] = 0;
 }
 
-CStdString CPictureInfoTag::GetInfo(int info) const
+const CStdString CPictureInfoTag::GetInfo(int info) const
 {
   if (!m_isLoaded)
     return "";
@@ -401,6 +401,8 @@ CStdString CPictureInfoTag::GetInfo(int info) const
   case SLIDE_IPTC_COPYRIGHT:        value = m_iptcInfo.Copyright;               break;
   case SLIDE_IPTC_COUNTRY_CODE:     value = m_iptcInfo.CountryCode;             break;
   case SLIDE_IPTC_REF_SERVICE:      value = m_iptcInfo.ReferenceService;        break;
+  default:
+    break;
   }
   return value;
 }
@@ -464,3 +466,32 @@ int CPictureInfoTag::TranslateString(const CStdString &info)
   return 0;
 }
 
+void CPictureInfoTag::SetInfo(int info, const CStdString& value)
+{
+  switch (info)
+  {
+  case SLIDE_RESOLUTION:
+    {
+      std::vector<CStdString> dimension;
+      CUtil::Tokenize(value, dimension, ",");
+      if (dimension.size() == 2)
+      {
+        m_exifInfo.Width = atoi(dimension[0].c_str());
+        m_exifInfo.Height = atoi(dimension[1].c_str());
+      }
+      break;
+    }
+  case SLIDE_EXIF_DATE_TIME:
+    {
+      strcpy(m_exifInfo.DateTime, value.c_str());
+      break;
+    }
+  default:
+    break;
+  }
+}
+
+void CPictureInfoTag::SetLoaded(bool loaded)
+{
+  m_isLoaded = loaded;
+}

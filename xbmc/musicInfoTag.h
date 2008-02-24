@@ -39,12 +39,12 @@ public:
   const CStdString& GetLyrics() const;
   char  GetRating() const;
 
-  void SetURL(const CStdString& strURL) ;
-  void SetTitle(const CStdString& strTitle) ;
-  void SetArtist(const CStdString& strArtist) ;
-  void SetAlbum(const CStdString& strAlbum) ;
+  void SetURL(const CStdString& strURL);
+  void SetTitle(const CStdString& strTitle);
+  void SetArtist(const CStdString& strArtist);
+  void SetAlbum(const CStdString& strAlbum);
   void SetAlbumArtist(const CStdString& strAlbumArtist);
-  void SetGenre(const CStdString& strGenre) ;
+  void SetGenre(const CStdString& strGenre);
   void SetYear(int year);
   void SetReleaseDate(SYSTEMTIME& dateTime);
   void SetTrackNumber(int iTrack);
