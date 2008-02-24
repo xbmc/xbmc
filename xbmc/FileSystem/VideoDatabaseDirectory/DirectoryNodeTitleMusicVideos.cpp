@@ -11,11 +11,6 @@ CDirectoryNodeTitleMusicVideos::CDirectoryNodeTitleMusicVideos(const CStdString&
 
 }
 
-NODE_TYPE CDirectoryNodeTitleMusicVideos::GetChildType()
-{
-  return NODE_TYPE_TITLE_MUSICVIDEOS;
-}
-
 bool CDirectoryNodeTitleMusicVideos::GetContent(CFileItemList& items)
 {
   CVideoDatabase videodatabase;
