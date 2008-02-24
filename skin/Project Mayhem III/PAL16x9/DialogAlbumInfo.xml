@@ -233,8 +233,24 @@
 			<onleft>61</onleft>
 			<onright>50</onright>
 			<onup>6</onup>
-			<ondown>5</ondown>
+			<ondown>11</ondown>
 		</control>
+                <control type="button" id ="11">
+                        <description>Tune in on lastfm</description>
+                        <posx>55</posx>
+                        <posy>477</posy>
+                        <width>135</width>
+                        <height>32</height>
+                        <label>13410</label>
+                        <font>font10</font>
+                        <align>center</align>
+                        <texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+                        <texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+                        <onleft>61</onleft>
+                        <onright>50</onright>
+                        <onup>10</onup>
+                        <ondown>5</ondown>
+                </control>
 		</control>
                         <control type="list" id="50">
 				<description>Track List Container + Scrollbar Area</description>
