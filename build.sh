@@ -159,6 +159,9 @@ update() {
       if [[ $PROMPT == "y" ]]
       then
         echo " Updating source code."
+        # a bit of a sorry hack to account for the odd chance that
+        # a commit occurs while we're waiting for user input 
+        HEAD_REVISION=$(expr "$(svn info "$SOURCEDIR" -r HEAD 2>&1 | grep "Revision")" : '.*: \(.*\)')
         svn up "$SOURCEDIR" 2>&1 | tee "$SOURCEDIR/.build.sh.svn"
         grep "$HEAD_REVISION" "$SOURCEDIR/.build.sh.svn" &> /dev/null
         error
