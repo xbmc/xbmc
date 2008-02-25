@@ -474,6 +474,9 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
 {
   AVPacket pkt;
   DemuxPacket* pPacket = NULL;
+  // on some cases where the received packet is invalid we will need to return an empty packet (0 length) otherwise the main loop (in CDVDPlayer) 
+  // would consider this the end of stream and stop.
+  bool bReturnEmpty = false;
   Lock();
   if (m_pFormatContext)
   {
@@ -499,13 +502,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
     if (result == AVERROR(EINTR) || result == AVERROR(EAGAIN))
     {
       // timeout, probably no real error, return empty packet
-      pPacket = CDVDDemuxUtils::AllocateDemuxPacket(0);
-      if(pPacket)
-      {
-        pPacket->dts = DVD_NOPTS_VALUE;
-        pPacket->pts = DVD_NOPTS_VALUE;
-        pPacket->iStreamId = -1;
-      }
+      bReturnEmpty = true;
     }
     else if (result < 0)
     {
@@ -517,6 +514,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
       if (pkt.size < 0 || pkt.stream_index >= MAX_STREAMS)
       {
         CLog::Log(LOGERROR, "CDVDDemuxFFmpeg::Read() no valid packet");
+        bReturnEmpty = true;
       }
       else
       {
@@ -533,6 +531,9 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
               break;
             }
           }
+
+          if (!pPacket)
+            bReturnEmpty = true;
         }
         else
           pPacket = CDVDDemuxUtils::AllocateDemuxPacket(pkt.size);
@@ -581,6 +582,17 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
     }
   }
   Unlock();
+
+  if (bReturnEmpty && !pPacket)
+  {
+      pPacket = CDVDDemuxUtils::AllocateDemuxPacket(0);
+      if(pPacket)
+      {
+        pPacket->dts = DVD_NOPTS_VALUE;
+        pPacket->pts = DVD_NOPTS_VALUE;
+        pPacket->iStreamId = -1;
+      }
+  }
 
   if (!pPacket) return NULL;
 

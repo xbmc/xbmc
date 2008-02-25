@@ -455,8 +455,6 @@ bool CDVDPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
       if (!stream)
       {
         CLog::Log(LOGERROR, "%s - Error demux packet doesn't belong to any stream", __FUNCTION__);
-        CDVDDemuxUtils::FreeDemuxPacket(packet);
-        packet = NULL;
         return false;
       }
       if(stream->source == STREAM_SOURCE_NONE)
@@ -478,8 +476,6 @@ bool CDVDPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
     if (!stream) 
     {
       CLog::Log(LOGERROR, "%s - Error demux packet doesn't belong to any stream", __FUNCTION__);
-      CDVDDemuxUtils::FreeDemuxPacket(packet);
-      packet = NULL;
       return false;
     }
     if(stream->source == STREAM_SOURCE_NONE)
@@ -733,6 +729,11 @@ void CDVDPlayer::Process()
     DemuxPacket* pPacket = NULL;
     CDemuxStream *pStream = NULL;
     ReadPacket(pPacket, pStream);
+    if (pPacket &&  pPacket->iStreamId == -1)
+    {
+      CDVDDemuxUtils::FreeDemuxPacket(pPacket); 
+      continue;
+    }
 
     if (!pPacket)
     {
