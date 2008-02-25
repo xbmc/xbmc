@@ -591,7 +591,8 @@ void CDVDPlayer::Process()
     return;
 
   // find any available external subtitles for non dvd files
-  if( !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) )
+  if( !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) 
+  &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
   {
     std::vector<std::string> filenames;
     CDVDFactorySubtitle::GetSubtitles(filenames, m_filename);
