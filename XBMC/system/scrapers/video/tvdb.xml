@@ -35,7 +35,7 @@
 	<!--	input: $(#urls+1): extra !-->
 	<!-- 	returns: results in xml format <details><plot>*</plot><director>*</director><premiered>*</premiered><episodeguide>*</episodeguide></details> -->
 	<GetDetails dest="7">
-		<RegExp input="$$4" output="&lt;details&gt;\1&lt;/details&gt;" dest="7">
+		<RegExp input="$$4" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;\1&lt;/details&gt;" dest="7">
 			<RegExp input="$$1" output="\1" dest="5">
 				<expression noclean="1">&lt;Series&gt;.*&lt;id&gt;$$2&lt;/id&gt;(.*)</expression>
 			</RegExp>
@@ -107,7 +107,7 @@
 	<!-- 	input: $1=html -->
 	<!-- 	returns: results in xml format <details><writer>*</writer><director>*</director><cast>*</cast><rating>*</rating><rank>*</rank><plot>*</plot> -->
 	<GetEpisodeDetails dest="3">
-		<RegExp input="$$4" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+		<RegExp input="$$4" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;\1&lt;/details&gt;" dest="3">
 			<RegExp input="$$1" output="\1" dest="8">
 				<expression noclean="1">&lt;Episode&gt;.*?&lt;id&gt;$$2&lt;/id&gt;(.*?)&lt;/Episode&gt;</expression>
 			</RegExp>
@@ -173,6 +173,9 @@
 			</RegExp>
 			<RegExp input="$$8" output="&lt;displayafterseason&gt;\1&lt;/displayafterseason&gt;" dest="4+">
 				<expression>&lt;airsafter_season&gt;([^&lt;]+)&lt;/airsafter_season&gt;</expression>
+			</RegExp>
+			<RegExp input="$$8" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="4+">
+				<expression>&lt;Rating&gt;([^&lt;]+)&lt;/Rating&gt;</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>
