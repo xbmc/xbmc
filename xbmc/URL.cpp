@@ -109,9 +109,9 @@ CURL::CURL(const CStdString& strURL)
     //format 4: zip://CachePath,AutoDelMask,Password, RarPath,\FilePathInRar
 
     CRegExp reg;
-    reg.RegComp("...://([^,]*),([0-9]*),([^,]*),([^,]*),[\\/]+(.*)$");
+    reg.RegComp("...://([^,]*),([0-9]*),([^,]*),([^,]*),[\\\\/]+(.*)$");
 
-    if(reg.RegFind(strURL) == 0) /* if found at position 0 */
+    if(reg.RegFind(strURL.c_str()) == 0) /* if found at position 0 */
     {
       char* szCache = reg.GetReplaceString("\\1");
       char* szFlags = reg.GetReplaceString("\\2");
