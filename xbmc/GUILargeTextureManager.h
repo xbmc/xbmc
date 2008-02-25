@@ -93,9 +93,9 @@ protected:
   void QueueImage(CLargeTexture *image);
 
 private:
-  vector<CLargeTexture *> m_queued;
-  vector<CLargeTexture *> m_allocated;
-  typedef vector<CLargeTexture *>::iterator listIterator;
+  std::vector<CLargeTexture *> m_queued;
+  std::vector<CLargeTexture *> m_allocated;
+  typedef std::vector<CLargeTexture *>::iterator listIterator;
 
   CCriticalSection m_listSection;
   bool m_running;

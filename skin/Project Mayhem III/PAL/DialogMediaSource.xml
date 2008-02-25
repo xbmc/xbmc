@@ -201,8 +201,8 @@
 				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
 				<label>186</label>
 				<onup>12</onup>
-				<onleft>20</onleft>
-				<onright>19</onright>
+				<onleft>19</onleft>
+				<onright>20</onright>
 				<ondown>10</ondown>
 			</control>
 			<control type="button" id="19">
@@ -219,8 +219,8 @@
 				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
 				<label>222</label>
 				<onup>12</onup>
-				<onleft>18</onleft>
-				<onright>20</onright>
+				<onleft>20</onleft>
+				<onright>18</onright>
 				<ondown>10</ondown>
 			</control>`
 			<control type="button" id="20">
@@ -237,8 +237,8 @@
 				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
 				<label>20333</label>
 				<onup>12</onup>
-				<onleft>19</onleft>
-				<onright>18</onright>
+				<onleft>18</onleft>
+				<onright>19</onright>
 				<ondown>10</ondown>
 			</control>
 		</control>

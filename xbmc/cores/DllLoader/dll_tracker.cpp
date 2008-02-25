@@ -27,8 +27,12 @@ void tracker_dll_add(DllLoader* pDll)
 
 void tracker_dll_free(DllLoader* pDll)
 {
-  for (TrackedDllsIter it = g_trackedDlls.begin(); it != g_trackedDlls.end(); ++it)
+  for (TrackedDllsIter it = g_trackedDlls.begin(); it != g_trackedDlls.end();)
   {
+    // NOTE: This code assumes that the same dll pointer can be in more than one
+    //       slot of the vector g_trackedDlls.  If it's not, then it can be
+    //       simplified by returning after we've found the one we want, saving
+    //       the iterator shuffling, and reducing potential bugs.
     if ((*it)->pDll == pDll)
     {
       try
@@ -52,6 +56,8 @@ void tracker_dll_free(DllLoader* pDll)
       delete (*it);
       it = g_trackedDlls.erase(it);
     }
+    else
+      it++;
   }
 }
 
@@ -73,7 +79,7 @@ char* tracker_getdllname(uintptr_t caller)
   DllTrackInfo *track = tracker_get_dlltrackinfo(caller);
   if(track)
     return track->pDll->GetFileName();
-  return "";
+  return (char*)"";
 }
 
 DllTrackInfo* tracker_get_dlltrackinfo(uintptr_t caller)

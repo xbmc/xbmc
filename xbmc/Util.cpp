@@ -92,6 +92,7 @@
 #include "DNSNameCache.h"
 #include "FileSystem/PluginDirectory.h"
 
+using namespace std;
 namespace MathUtils {
 
 inline int round_int (double x)
@@ -2334,7 +2335,7 @@ void CUtil::ClearSubtitles()
   }
 }
 
-static char * sub_exts[] = { ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".smi", ".rt", ".txt", ".ssa", ".aqt", ".jss", ".ass", ".idx", ".ifo", NULL};
+static const char * sub_exts[] = { ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".smi", ".rt", ".txt", ".ssa", ".aqt", ".jss", ".ass", ".idx", ".ifo", NULL};
 
 void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached, XFILE::IFileCallback *pCallback )
 {
@@ -2342,7 +2343,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   CLog::Log(LOGDEBUG,"%s: START", __FUNCTION__);
 
   // new array for commons sub dirs
-  char * common_sub_dirs[] = {"subs",
+  const char * common_sub_dirs[] = {"subs",
                               "Subs",
                               "subtitles",
                               "Subtitles",
@@ -3400,6 +3401,9 @@ const BUILT_IN commands[] = {
   { "Container.NextViewMode",     false,  "Move to the next view type (and refresh the listing)" },
   { "Container.PreviousViewMode", false,  "Move to the previous view type (and refresh the listing)" },
   { "Container.SetViewMode",      true,   "Move to the view with the given id" },
+  { "Container.NextSortMethod",   false,  "Change to the next sort method" },
+  { "Container.PreviousSortMethod",false, "Change to the previous sort method" },
+  { "Container.SetSortMethod",    true,   "Change to the specified sort method" },
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -3692,6 +3696,18 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         database.GetMusicVideoInfo("",*item.GetVideoInfoTag(),params.GetMVideoId());
       item.m_strPath = item.GetVideoInfoTag()->m_strFileNameAndPath;
     }
+    
+    // restore to previous window if needed
+    if( m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW ||
+        m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
+        m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION )
+        m_gWindowManager.PreviousWindow();
+
+    // reset screensaver
+    g_application.ResetScreenSaver();
+    g_application.ResetScreenSaverWindow();
+    
+    // play media
     if (!g_application.PlayMedia(item, item.IsAudio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO))
     {
       CLog::Log(LOGERROR, "XBMC.PlayMedia could not play media: %s", strParameterCaseIntact.c_str());
@@ -4305,6 +4321,21 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("container.setviewmode"))
   {
     CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetFocusedWindow(), 0, atoi(parameter.c_str()));
+    g_graphicsContext.SendMessage(message);
+  }
+  else if (execute.Equals("container.nextsortmethod"))
+  {
+    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetFocusedWindow(), 0, 0, 1);
+    g_graphicsContext.SendMessage(message);
+  }
+  else if (execute.Equals("container.previoussortmethod"))
+  {
+    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetFocusedWindow(), 0, 0, -1);
+    g_graphicsContext.SendMessage(message);
+  }
+  else if (execute.Equals("container.setsortmethod"))
+  {
+    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetFocusedWindow(), 0, atoi(parameter.c_str()));
     g_graphicsContext.SendMessage(message);
   }
   else

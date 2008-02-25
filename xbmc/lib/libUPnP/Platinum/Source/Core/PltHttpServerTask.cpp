@@ -123,6 +123,9 @@ PLT_HttpServerSocketTask::Read(NPT_BufferedInputStreamReference& buffered_input_
     NPT_CHECK_FINE(NPT_HttpRequest::Parse(*buffered_input_stream, &info.local_address, request));
     if (!request) return NPT_FAILURE;
 
+    // read socket info again to refresh the remote address in case it was a udp socket
+    GetInfo(info);
+
     // create an entity
     NPT_HttpEntity* request_entity = new NPT_HttpEntity(request->GetHeaders());
     request->SetEntity(request_entity);
@@ -193,6 +196,9 @@ PLT_HttpServerSocketTask::Write(NPT_HttpResponse* response,
         // force content length to 0 is there is no message body
         headers.SetHeader(NPT_HTTP_HEADER_CONTENT_LENGTH, "0");
     }
+
+    //headers.SetHeader("DATE", "Wed, 13 Feb 2008 22:32:57 GMT");
+    //headers.SetHeader("Accept-Ranges", "bytes");
 
     NPT_LOG_FINE("PLT_HttpServerTask Sending response:");
     PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINE, response);

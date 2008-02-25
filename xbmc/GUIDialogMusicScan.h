@@ -3,7 +3,7 @@
 #include "MusicInfoScanner.h"
 #include "utils/CriticalSection.h"
 
-class CGUIDialogMusicScan: public CGUIDialog, public IMusicInfoScannerObserver
+class CGUIDialogMusicScan: public CGUIDialog, public MUSIC_INFO::IMusicInfoScannerObserver
 {
 public:
   CGUIDialogMusicScan(void);
@@ -26,7 +26,7 @@ protected:
   virtual void OnStateChanged(MUSIC_INFO::SCAN_STATE state);
   virtual void OnSetProgress(int currentItem, int itemCount);
 
-  CMusicInfoScanner m_musicInfoScanner;
+  MUSIC_INFO::CMusicInfoScanner m_musicInfoScanner;
   MUSIC_INFO::SCAN_STATE m_ScanState;
   CStdString m_strCurrentDir;
 

@@ -14,14 +14,23 @@
 #include <unistd.h>
 #include <time.h>
 #include <sys/time.h>
+#if defined(__SYMBIAN32__)
+#include <errno.h>
+#else
 #include <cerrno>
+#endif
 
 #include "NptConfig.h"
 #include "NptTypes.h"
 #include "NptThreads.h"
-#include "NptDebug.h"
+#include "NptLogging.h"
 #include "NptTime.h"
 #include "NptSystem.h"
+
+/*----------------------------------------------------------------------
+|       logging
++---------------------------------------------------------------------*/
+NPT_SET_LOCAL_LOGGER("neptune.threads.posix")
 
 /*----------------------------------------------------------------------
 |       NPT_PosixMutex
@@ -351,7 +360,7 @@ class NPT_PosixThread : public NPT_ThreadInterface
                                 bool          detached);
                ~NPT_PosixThread();
     NPT_Result  Start(); 
-    NPT_Result  Wait();
+    NPT_Result  Wait(NPT_Timeout timeout = NPT_TIMEOUT_INFINITE);
 
  private:
     // methods
@@ -364,12 +373,13 @@ class NPT_PosixThread : public NPT_ThreadInterface
     NPT_Result Interrupt() { return NPT_ERROR_NOT_IMPLEMENTED; }
 
     // members
-    NPT_Thread*    m_Delegator;
-    NPT_Runnable&  m_Target;
-    bool           m_Detached;
-    pthread_t      m_ThreadId;
-    bool           m_Joined;
-    NPT_PosixMutex m_JoinLock;
+    NPT_Thread*        m_Delegator;
+    NPT_Runnable&      m_Target;
+    bool               m_Detached;
+    pthread_t          m_ThreadId;
+    bool               m_Joined;
+    NPT_PosixMutex     m_JoinLock;
+    NPT_SharedVariable m_Done;
 };
 
 /*----------------------------------------------------------------------
@@ -384,7 +394,8 @@ NPT_PosixThread::NPT_PosixThread(NPT_Thread*   delegator,
     m_ThreadId(0),
     m_Joined(false)
 {
-    NPT_Debug(":: NPT_PosixThread::NPT_PosixThread\n");
+    NPT_LOG_FINE("NPT_PosixThread::NPT_PosixThread");
+    m_Done.SetValue(0);
 }
 
 /*----------------------------------------------------------------------
@@ -392,7 +403,7 @@ NPT_PosixThread::NPT_PosixThread(NPT_Thread*   delegator,
 +---------------------------------------------------------------------*/
 NPT_PosixThread::~NPT_PosixThread()
 {
-    NPT_Debug(":: NPT_PosixThread::~NPT_PosixThread %d\n", m_ThreadId);
+    NPT_LOG_FINE_1("NPT_PosixThread::~NPT_PosixThread %d\n", m_ThreadId);
 
     if (!m_Detached) {
         // we're not detached, and not in the Run() method, so we need to 
@@ -409,7 +420,7 @@ NPT_PosixThread::EntryPoint(void* argument)
 {
     NPT_PosixThread* thread = reinterpret_cast<NPT_PosixThread*>(argument);
 
-    NPT_Debug(":: NPT_PosixThread::EntryPoint - in =======================\n");
+    NPT_LOG_FINE("NPT_PosixThread::EntryPoint - in =======================");
     
     // set random seed
     NPT_TimeStamp now;
@@ -419,12 +430,15 @@ NPT_PosixThread::EntryPoint(void* argument)
     // run the thread 
     thread->Run();
     
-    NPT_Debug(":: NPT_PosixThread::EntryPoint - out ======================\n");
+    NPT_LOG_FINE("NPT_PosixThread::EntryPoint - out ======================");
 
     // we're done with the thread object
     // if we're detached, we need to delete ourselves
     if (thread->m_Detached) {
         delete thread->m_Delegator;
+    } else {
+        // notify we're done
+        thread->m_Done.SetValue(1);
     }
 
     // done
@@ -437,13 +451,22 @@ NPT_PosixThread::EntryPoint(void* argument)
 NPT_Result
 NPT_PosixThread::Start()
 {
-    NPT_Debug(":: NPT_PosixThread::Start - creating thread\n");
+    NPT_LOG_FINE("NPT_PosixThread::Start - creating thread");
+
+    pthread_attr_t *attributes = NULL;
+
+#if defined(NPT_CONFIG_THREAD_STACK_SIZE)
+    pthread_attr_t stack_size_attributes;
+    pthread_attr_init(&stack_size_attributes);
+    pthread_attr_setstacksize(&stack_size_attributes, NPT_CONFIG_THREAD_STACK_SIZE);
+    attributes = &stack_size_attributes;
+#endif
 
     // create the native thread
-    int result = pthread_create(&m_ThreadId, NULL, EntryPoint, 
+    int result = pthread_create(&m_ThreadId, attributes, EntryPoint, 
                                 reinterpret_cast<void*>(this));
-    NPT_Debug(":: NPT_PosixThread::Start - id = %d, res=%d\n", 
-              m_ThreadId, result);
+    NPT_LOG_FINE_2("NPT_PosixThread::Start - id = %d, res=%d", 
+                   m_ThreadId, result);
     if (result) {
         // failed
         return NPT_FAILURE;
@@ -469,12 +492,12 @@ NPT_PosixThread::Run()
 |       NPT_PosixThread::Wait
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_PosixThread::Wait()
+NPT_PosixThread::Wait(NPT_Timeout timeout /* = NPT_TIMEOUT_INFINITE */)
 {
     void* return_value;
     int   result;
 
-    NPT_Debug(":: NPT_PosixThread::Wait - waiting for id %d\n", m_ThreadId);
+    NPT_LOG_FINE_1("NPT_PosixThread::Wait - waiting for id %d", m_ThreadId);
 
     // check that we're not detached
     if (m_ThreadId == 0 || m_Detached) {
@@ -484,15 +507,23 @@ NPT_PosixThread::Wait()
     // wait for the thread to finish
     m_JoinLock.Lock();
     if (m_Joined) {
-        NPT_Debug(":: NPT_PosixThread::Wait - %d already joined\n", 
-                  m_ThreadId);
-        result = NPT_SUCCESS;
+        NPT_LOG_FINE_1("NPT_PosixThread::Wait - %d already joined", m_ThreadId);
+        result = 0;
     } else {
-        NPT_Debug(":: NPT_PosixThread::Wait - joining thread id %d\n", 
-                  m_ThreadId);
+        NPT_LOG_FINE_1("NPT_PosixThread::Wait - joining thread id %d", m_ThreadId);
+        if (timeout != NPT_TIMEOUT_INFINITE) {
+            result = m_Done.WaitUntilEquals(1, timeout);
+            if (NPT_FAILED(result)) {
+                result = -1;
+                goto timedout;
+            }
+        }
+
         result = pthread_join(m_ThreadId, &return_value);
         m_Joined = true;
     }
+
+timedout:
     m_JoinLock.Unlock();
     if (result != 0) {
         return NPT_FAILURE;
@@ -516,17 +547,4 @@ NPT_Thread::NPT_Thread(NPT_Runnable& target, bool detached)
 {
     m_Delegate = new NPT_PosixThread(this, target, detached);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 

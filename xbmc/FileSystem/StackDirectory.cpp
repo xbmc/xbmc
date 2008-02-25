@@ -6,6 +6,7 @@
 
 #define PRE_2_1_STACK_COMPATIBILITY
 
+using namespace std;
 namespace DIRECTORY
 {
   CStackDirectory::CStackDirectory()

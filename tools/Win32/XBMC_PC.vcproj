@@ -4,6 +4,7 @@
 	Version="7.10"
 	Name="XBMC_PC"
 	ProjectGUID="{3A68081D-E8F9-4523-9436-530DE9E5530A}"
+	RootNamespace="XBMC_PC"
 	Keyword="Win32Proj">
 	<Platforms>
 		<Platform
@@ -19,7 +20,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../xbmc/;../../guilib/;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32"
+				AdditionalIncludeDirectories="../../xbmc/;../../guilib/;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_WIN32_WINNT=0x0500;WINVER=0x0500"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="0"
@@ -36,7 +37,7 @@
 				AdditionalDependencies="d3dxof.lib dxguid.lib d3dx8dt.lib d3d8.lib d3dx8.lib dinput8.lib dsound.lib winmm.lib ws2_32.lib"
 				OutputFile="$(OutDir)/XBMC_PC.exe"
 				LinkIncremental="2"
-				IgnoreDefaultLibraryNames="libc;msvcrt"
+				IgnoreDefaultLibraryNames="libc;msvcrt;libci"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/XBMC_PC.pdb"
 				SubSystem="2"
@@ -73,7 +74,7 @@
 				Optimization="0"
 				InlineFunctionExpansion="0"
 				OmitFramePointers="FALSE"
-				AdditionalIncludeDirectories="../../xbmc;../../guilib;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32"
+				AdditionalIncludeDirectories="../../xbmc;../../guilib;../..;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_WIN32_WINNT=0x0500;WINVER=0x0500"
 				StringPooling="FALSE"
 				MinimalRebuild="TRUE"
@@ -511,6 +512,12 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamNavigator.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamTV.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamTV.h">
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDStateSerializer.cpp">
@@ -2160,6 +2167,18 @@
 					RelativePath="..\..\xbmc\FileSystem\cdioSupport.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\FileSystem\CMythDirectory.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\CMythDirectory.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\CMythFile.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\CMythFile.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileSystem\Directory.cpp">
 				</File>
 				<File
@@ -2176,6 +2195,9 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\DirectoryTuxBox.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\DllLibCMyth.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\DllLibCurl.cpp">

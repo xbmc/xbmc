@@ -8,11 +8,14 @@
 #include "CharsetConverter.h"
 #include "URL.h"
 #include "HTTP.h"
+#include "FileSystem/FileZip.h"
 
 #include "Picture.h"
 #include "Util.h"
 
 #include <sstream>
+
+using namespace std;
 
 CScraperUrl::CScraperUrl(const CStdString& strUrl)
 {
@@ -74,6 +77,10 @@ bool CScraperUrl::ParseElement(const TiXmlElement* element)
 			url.m_post = true;
 		else
 			url.m_post = false;
+    const char* pCache = element->Attribute("cache");
+    if (pCache)
+      url.m_cache = pCache;
+
 		const char* szType = element->Attribute("type");
 		url.m_type = URL_TYPE_GENERAL;
 		if (szType && stricmp(szType,"season") == 0)
@@ -159,8 +166,25 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, CHTTP& http)
 {
   CURL url(scrURL.m_url);
   http.SetReferer(scrURL.m_spoof);
+  CStdString strCachePath;
 
-  if(scrURL.m_post)
+  if (!scrURL.m_cache.IsEmpty())
+  {
+    CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"scrapers\\"+scrURL.m_cache,strCachePath);
+    if (XFILE::CFile::Exists(strCachePath))
+    {
+      XFILE::CFile file;
+      file.Open(strCachePath);
+      char* temp = new char[(int)file.GetLength()];
+      file.Read(temp,file.GetLength());
+      strHTML.append(temp,temp+file.GetLength());
+      file.Close();
+      delete[] temp;
+      return true;
+    }
+  }
+
+  if (scrURL.m_post)
   {
     CStdString strOptions = url.GetOptions();
     strOptions = strOptions.substr(1);
@@ -174,7 +198,28 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, CHTTP& http)
   else 
     if (!http.Get(scrURL.m_url, strHTML))
       return false;
-  
+
+  if (scrURL.m_url.Find(".zip") > -1)
+  {
+    XFILE::CFileZip file;
+    CStdString strBuffer;
+    int iSize = file.UnpackFromMemory(strBuffer,strHTML);
+    if (iSize)
+    {
+      strHTML.clear();
+      strHTML.append(strBuffer.c_str(),strBuffer.data()+iSize);      
+    }
+  }
+
+  if (!scrURL.m_cache.IsEmpty())
+  {
+    CStdString strCachePath;
+    CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"scrapers\\"+scrURL.m_cache,strCachePath);
+    XFILE::CFile file;
+    if (file.OpenForWrite(strCachePath,true,true))
+      file.Write(strHTML.data(),strHTML.size());
+    file.Close();
+  }
   return true;
 }
 
@@ -307,7 +352,7 @@ void CScraperParser::ReplaceBuffers(CStdString& strDest)
   {
     iIndex = 0;
     sprintf(temp,"$$%i",i+1);
-    while ((iIndex = strDest.find(temp,iIndex)) != CStdString::npos) // COPIED FROM CStdString WITH THE ADDITION OF $ ESCAPING
+    while ((size_t)(iIndex = strDest.find(temp,iIndex)) != CStdString::npos) // COPIED FROM CStdString WITH THE ADDITION OF $ ESCAPING
     {
       strDest.replace(strDest.begin()+iIndex,strDest.begin()+iIndex+strlen(temp),m_param[i]);
       iIndex += m_param[i].length();
@@ -315,7 +360,7 @@ void CScraperParser::ReplaceBuffers(CStdString& strDest)
   }
   // insert settings
   iIndex = 0;
-  while ((iIndex = strDest.find("$INFO[",iIndex)) != CStdString::npos && m_settings)
+  while ((size_t)(iIndex = strDest.find("$INFO[",iIndex)) != CStdString::npos && m_settings)
   {
     int iEnd = strDest.Find("]",iIndex);
     CStdString strInfo = strDest.Mid(iIndex+6,iEnd-iIndex-6);
@@ -324,7 +369,7 @@ void CScraperParser::ReplaceBuffers(CStdString& strDest)
     iIndex += strReplace.length();
   }
   iIndex = 0;
-  while ((iIndex = strDest.find("\\n",iIndex)) != CStdString::npos)
+  while ((size_t)(iIndex = strDest.find("\\n",iIndex)) != CStdString::npos)
     strDest.replace(strDest.begin()+iIndex,strDest.begin()+iIndex+2,"\n");
 }
 
@@ -850,7 +895,7 @@ char* CScraperParser::ConvertHTMLToAnsi(const char *szHTML)
 
 char* CScraperParser::RemoveWhiteSpace(const char *string2)
 {
-  if (!string2) return "";
+  if (!string2) return (char*)"";
   char* string = (char*)string2;
   size_t pos = strlen(string)-1;
   while ((string[pos] == ' ' || string[pos] == '\n') && string[pos] && pos)
@@ -866,4 +911,5 @@ void CScraperParser::ClearBuffers()
   for (int i=0;i<9;++i)
     m_param[i].clear();
 }
+
 

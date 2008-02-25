@@ -60,8 +60,8 @@ protected:
   void OnInfoAll(int iItem, bool bCurrent=false);
   virtual void OnQueueItem(int iItem);
   enum ALLOW_SELECTION { SELECTION_ALLOWED = 0, SELECTION_AUTO, SELECTION_FORCED };
-  bool FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, CMusicAlbumInfo& album, const SScraperInfo& info, ALLOW_SELECTION allowSelection);
-  bool FindArtistInfo(const CStdString& strArtist, CMusicArtistInfo& artist, const SScraperInfo& info, ALLOW_SELECTION allowSelection);
+  bool FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, MUSIC_GRABBER::CMusicAlbumInfo& album, const SScraperInfo& info, ALLOW_SELECTION allowSelection);
+  bool FindArtistInfo(const CStdString& strArtist, MUSIC_GRABBER::CMusicArtistInfo& artist, const SScraperInfo& info, ALLOW_SELECTION allowSelection);
 
   void ShowAlbumInfo(const CAlbum &album, const CStdString &strPath, bool bRefresh, bool bShowInfo = true);
   void ShowArtistInfo(const CArtist &artist, const CStdString &strPath, bool bRefresh, bool bShowInfo = true);
@@ -73,11 +73,11 @@ protected:
   void OnSearch();
   virtual void LoadPlayList(const CStdString& strPlayList);
   
-  typedef vector <CFileItem*>::iterator ivecItems; ///< CFileItem* vector Iterator
+  typedef std::vector <CFileItem*>::iterator ivecItems; ///< CFileItem* vector Iterator
   CGUIDialogProgress* m_dlgProgress; ///< Progress dialog
 
   // member variables to save frequently used g_guiSettings (which is slow)
   bool m_hideExtensions;
   CMusicDatabase m_musicdatabase;
-  CMusicInfoLoader m_musicInfoLoader;
+  MUSIC_INFO::CMusicInfoLoader m_musicInfoLoader;
 };

@@ -12,7 +12,7 @@ public:
   LRESULT MsgProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );
   BOOL ProcessMessage(MSG *msg);
   bool GetCursorPos(POINT &point);
-
+  bool m_fullscreen;
   static INT_PTR CALLBACK ActivateWindowProc( HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam );
 
   HINSTANCE GetInstance() const { return m_hInstance; };
@@ -28,7 +28,6 @@ protected:
   bool m_focused;
   bool m_closing;
   bool m_inDialog;
-  bool m_fullscreen;
   HWND m_hWnd;
   HINSTANCE m_hInstance;
   HACCEL m_hAccel;

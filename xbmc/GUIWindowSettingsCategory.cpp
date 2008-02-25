@@ -59,6 +59,7 @@
 #include "GUIControlGroupList.h"
 #include "XBTimeZone.h"
 
+using namespace std;
 using namespace DIRECTORY;
 
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
@@ -1145,6 +1146,19 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       pSettingString->SetData("None");
     else
       pSettingString->SetData(pControl->GetCurrentLabel() + ".vis");
+  }
+  else if (strSetting.Equals("system.debuglogging"))
+  {
+    if (g_guiSettings.GetBool("system.debuglogging") && g_advancedSettings.m_logLevel < LOG_LEVEL_DEBUG_FREEMEM)
+    {
+      g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG_FREEMEM;
+      CLog::Log(LOGNOTICE, "Enabled debug logging due to GUI setting");
+    }
+    else if (!g_guiSettings.GetBool("system.debuglogging") && g_advancedSettings.m_logLevel == LOG_LEVEL_DEBUG_FREEMEM)
+    {
+      CLog::Log(LOGNOTICE, "Disabled debug logging due to GUI setting");
+      g_advancedSettings.m_logLevel = LOG_LEVEL_NORMAL;
+    }
   }
   /*else if (strSetting.Equals("musicfiles.repeat"))
   {

@@ -69,8 +69,8 @@ public:
   void Flush();
 protected:
   CStdString m_strTextureName;
-  vector<CTexture*> m_vecTexures;
-  typedef vector<CTexture*>::iterator ivecTextures;
+  std::vector<CTexture*> m_vecTexures;
+  typedef std::vector<CTexture*>::iterator ivecTextures;
 };
 
 /*!
@@ -99,12 +99,12 @@ public:
   CStdString GetTexturePath(const CStdString& textureName);
   void GetBundledTexturesFromPath(const CStdString& texturePath, std::vector<CStdString> &items);
 protected:
-  vector<CTextureMap*> m_vecTextures;
-  typedef vector<CTextureMap*>::iterator ivecTextures;
+  std::vector<CTextureMap*> m_vecTextures;
+  typedef std::vector<CTextureMap*>::iterator ivecTextures;
   // we have 2 texture bundles (one for the base textures, one for the theme)
   CTextureBundle m_TexBundle[2];
-  list<CStdString> m_PreLoadNames[2];
-  list<CStdString>::iterator m_iNextPreload[2];
+  std::list<CStdString> m_PreLoadNames[2];
+  std::list<CStdString>::iterator m_iNextPreload[2];
 };
 
 /*!

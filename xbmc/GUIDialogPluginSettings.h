@@ -24,7 +24,7 @@ private:
   bool SaveSettings(void);
   void ShowVirtualKeyboard(int iControl);
   static CURL m_url;
-  bool TranslateSingleString(const CStdString &strCondition, vector<CStdString> &enableVec);
+  bool TranslateSingleString(const CStdString &strCondition, std::vector<CStdString> &enableVec);
   CBasicSettings m_settings;
   CStdString m_strHeading;
 };

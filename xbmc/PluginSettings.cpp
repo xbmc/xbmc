@@ -13,6 +13,26 @@ CBasicSettings::~CBasicSettings()
 {
 }
 
+bool CBasicSettings::SaveFromDefault(void)
+{
+  if (!GetPluginRoot()) //if scraper has no settings return false
+    return false;
+
+  TiXmlElement *setting = GetPluginRoot()->FirstChildElement("setting");
+  while (setting)
+  {
+      CStdString id;
+      if (setting->Attribute("id"))
+          id = setting->Attribute("id");
+      CStdString value;
+      if (setting->Attribute("default"))
+          value = setting->Attribute("default");
+      Set(id,value);
+      setting = setting->NextSiblingElement("setting");
+  }
+  return true;
+}
+
 void CBasicSettings::Clear()
 {
   m_pluginXmlDoc.Clear();

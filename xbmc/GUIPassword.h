@@ -4,8 +4,8 @@
 class CShare;
 typedef std::vector<CShare> VECSHARES;
 
-typedef map<CStdString, CStdString> MAPPASSWORDS;
-typedef map<CStdString, CStdString>::iterator IMAPPASSWORDS;
+typedef std::map<CStdString, CStdString> MAPPASSWORDS;
+typedef std::map<CStdString, CStdString>::iterator IMAPPASSWORDS;
 
 class CGUIPassword
 {

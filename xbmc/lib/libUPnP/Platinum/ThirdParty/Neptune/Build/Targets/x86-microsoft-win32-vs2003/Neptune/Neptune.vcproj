@@ -36,6 +36,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalDependencies="ws2_32.lib"
 				OutputFile="$(OutDir)/Neptune.lib"
 				SuppressStartupBanner="FALSE"/>
 			<Tool
@@ -85,6 +86,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalDependencies="ws2_32.lib"
 				OutputFile="$(OutDir)/Neptune.lib"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -117,6 +119,9 @@
 				RelativePath="..\..\..\..\Source\Core\NptBase64.cpp">
 			</File>
 			<File
+				RelativePath="..\..\..\..\Source\System\Bsd\NptBsdSockets.cpp">
+			</File>
+			<File
 				RelativePath="..\..\..\..\Source\Core\NptBufferedStreams.cpp">
 			</File>
 			<File
@@ -130,6 +135,9 @@
 			</File>
 			<File
 				RelativePath="..\..\..\..\Source\Core\NptDebug.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\..\Source\Core\NptDirectory.cpp">
 			</File>
 			<File
 				RelativePath="..\..\..\..\Source\Core\NptFile.cpp">
@@ -159,6 +167,9 @@
 				RelativePath="..\..\..\..\Source\Core\NptSockets.cpp">
 			</File>
 			<File
+				RelativePath="..\..\..\..\Source\System\StdC\NptStdcEnvironment.cpp">
+			</File>
+			<File
 				RelativePath="..\..\..\..\Source\System\StdC\NptStdcFile.cpp">
 			</File>
 			<File
@@ -181,6 +192,27 @@
 			</File>
 			<File
 				RelativePath="..\..\..\..\Source\Core\NptUtils.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\..\Source\System\Win32\NptWin32Console.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\..\Source\System\Win32\NptWin32Debug.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\..\Source\System\Win32\NptWin32Directory.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\..\Source\System\Win32\NptWin32Network.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\..\Source\System\Win32\NptWin32Queue.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\..\Source\System\Win32\NptWin32System.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\..\Source\System\Win32\NptWin32Threads.cpp">
 			</File>
 			<File
 				RelativePath="..\..\..\..\Source\Core\NptXml.cpp">
@@ -302,6 +334,12 @@
 				RelativePath="..\..\..\..\Source\Core\NptVersion.h">
 			</File>
 			<File
+				RelativePath="..\..\..\..\Source\System\Win32\NptWin32Network.h">
+			</File>
+			<File
+				RelativePath="..\..\..\..\Source\System\Win32\NptWin32Threads.h">
+			</File>
+			<File
 				RelativePath="..\..\..\..\Source\Core\NptXml.h">
 			</File>
 		</Filter>
@@ -309,43 +347,6 @@
 			Name="Resource Files"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}">
-		</Filter>
-		<Filter
-			Name="System"
-			Filter="">
-			<File
-				RelativePath="..\..\..\..\Source\System\Bsd\NptBsdSockets.cpp">
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\System\StdC\NptStdcEnvironment.cpp">
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\System\Win32\NptWin32Console.cpp">
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\System\Win32\NptWin32Debug.cpp">
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\System\Win32\NptWin32Directory.cpp">
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\System\Win32\NptWin32Network.cpp">
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\System\Win32\NptWin32Network.h">
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\System\Win32\NptWin32Queue.cpp">
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\System\Win32\NptWin32System.cpp">
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\System\Win32\NptWin32Threads.cpp">
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\System\Win32\NptWin32Threads.h">
-			</File>
 		</Filter>
 	</Files>
 	<Globals>

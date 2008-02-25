@@ -32,6 +32,8 @@
 #include "FileSystem/HDDirectory.h"
 #include "VideoInfoScanner.h"
 
+using namespace std;
+
 #define CONTROL_AREA                  2
 #define CONTROL_DEFAULT_BUTTON        3
 #define CONTROL_DEFAULT_RADIOBUTTON   4
@@ -259,7 +261,7 @@ bool CGUIDialogPluginSettings::SaveSettings(void)
         value = ((CGUIRadioButtonControl*) control)->IsSelected() ? "true" : "false";
         break;
       case CGUIControl::GUICONTROL_SPINEX:
-        if (strcmpi(type, "fileenum") == 0)
+        if (strcmpi(type, "fileenum") == 0 || strcmpi(type, "labelenum") == 0)
           value = ((CGUISpinControlEx*) control)->GetLabel();
         else
           value.Format("%i", ((CGUISpinControlEx*) control)->GetValue());
@@ -357,7 +359,7 @@ void CGUIDialogPluginSettings::CreateControls()
       ((CGUIRadioButtonControl *)pControl)->SetLabel(label);
       ((CGUIRadioButtonControl *)pControl)->SetSelected(m_settings.Get(id) == "true");
     }
-    else if (strcmpi(type, "enum") == 0)
+    else if (strcmpi(type, "enum") == 0 || strcmpi(type, "labelenum") == 0)
     {
       vector<CStdString> valuesVec;
       vector<CStdString> entryVec;
@@ -387,7 +389,13 @@ void CGUIDialogPluginSettings::CreateControls()
         else
           ((CGUISpinControlEx *)pControl)->AddLabel(valuesVec[i], iAdd);
       }
-      ((CGUISpinControlEx *)pControl)->SetValue(atoi(m_settings.Get(id)));
+      if (strcmpi(type, "labelenum") == 0)
+      { // need to run through all our settings and find the one that matches
+        ((CGUISpinControlEx*) pControl)->SetValueFromLabel(m_settings.Get(id));
+      }
+      else
+        ((CGUISpinControlEx*) pControl)->SetValue(atoi(m_settings.Get(id)));
+
     }
     else if (strcmpi(type, "fileenum") == 0)
     {
@@ -545,19 +553,30 @@ void CGUIDialogPluginSettings::SetDefaults()
       switch (control->GetControlType())
       {
         case CGUIControl::GUICONTROL_BUTTON:
-          ((CGUIButtonControl*) control)->SetLabel2(setting->Attribute("default"));
+          if (setting->Attribute("default"))
+            ((CGUIButtonControl*) control)->SetLabel2(setting->Attribute("default"));
+          else
+            ((CGUIButtonControl*) control)->SetLabel2("");
           break;
         case CGUIControl::GUICONTROL_RADIO:
-          ((CGUIRadioButtonControl*) control)->SetSelected(strcmpi(setting->Attribute("default"), "true") == 0);
+          if (setting->Attribute("default"))
+            ((CGUIRadioButtonControl*) control)->SetSelected(strcmpi(setting->Attribute("default"), "true") == 0);
+          else
+            ((CGUIRadioButtonControl*) control)->SetSelected(false);
           break;
         case CGUIControl::GUICONTROL_SPINEX:
           {
-            if (strcmpi(setting->Attribute("type"), "fileenum") == 0)
-            { // need to run through all our settings and find the one that matches
-              ((CGUISpinControlEx*) control)->SetValueFromLabel(setting->Attribute("default"));
+            if (setting->Attribute("default"))
+            {
+              if (strcmpi(setting->Attribute("type"), "fileenum") == 0 || strcmpi(setting->Attribute("type"), "labelenum") == 0)
+              { // need to run through all our settings and find the one that matches
+                  ((CGUISpinControlEx*) control)->SetValueFromLabel(setting->Attribute("default"));
+              }
+              else
+                ((CGUISpinControlEx*) control)->SetValue(atoi(setting->Attribute("default")));
             }
             else
-              ((CGUISpinControlEx*) control)->SetValue(atoi(setting->Attribute("default")));
+              ((CGUISpinControlEx*) control)->SetValue(0);
           }
           break;
         default:

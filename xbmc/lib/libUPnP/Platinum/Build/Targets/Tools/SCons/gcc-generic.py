@@ -24,6 +24,7 @@ def generate(env, gcc_cross_prefix=None, gcc_extra_options='', gcc_relaxed_warni
         env['CC']     = gcc_cross_prefix+'-gcc ' + gcc_extra_options
         env['CXX']    = gcc_cross_prefix+'-g++ ' + gcc_extra_options
         env['LINK']   = gcc_cross_prefix+'-g++ ' + gcc_extra_options
+        env['STRIP']  = gcc_cross_prefix+'-strip'
 
     env['CPPFLAGS']    = ' '.join([c_compiler_defines])
     env['CCFLAGS']     = ' '.join([c_compiler_compliance_flags, c_compiler_flags, c_compiler_warnings])

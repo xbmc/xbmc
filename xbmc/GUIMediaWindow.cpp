@@ -53,6 +53,7 @@
 
 #define CONTROL_LABELFILES        12
 
+using namespace std;
 
 CGUIMediaWindow::CGUIMediaWindow(DWORD id, const char *xmlFile)
     : CGUIWindow(id, xmlFile)
@@ -305,6 +306,19 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       return true;
     }
     break;
+  case GUI_MSG_CHANGE_SORT_METHOD:
+    {
+      if (m_guiState.get())
+      {
+        if (message.GetParam1())
+          m_guiState->SetCurrentSortMethod((int)message.GetParam1());
+        else if (message.GetParam2())
+          m_guiState->SetNextSortMethod((int)message.GetParam2());
+      }
+      UpdateFileList();
+      return true;
+    }
+    break;
   }
 
   return CGUIWindow::OnMessage(message);
@@ -489,6 +503,9 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   m_history.SetSelectedItem(strSelectedItem, strOldDirectory);
 
   ClearFileItems();
+
+  m_vecItems.SetThumbnailImage("");
+  m_vecItems.ClearProperty("tvshowthumb");
 
   if (!GetDirectory(strDirectory, m_vecItems))
   {
@@ -1134,5 +1151,13 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     break;
   }
   return false;
+}
+
+int CGUIMediaWindow::GetContainerSortMethod()
+{
+  if (m_guiState.get())
+    return m_guiState->GetSortMethodLabel();
+  else 
+    return 0;
 }
 

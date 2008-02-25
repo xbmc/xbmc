@@ -42,6 +42,7 @@
 #include "VideoDatabase.h"
 #include "GUIWindowVideoNav.h"
 
+using namespace std;
 using namespace DIRECTORY;
 using namespace PLAYLIST;
 using namespace MUSICDATABASEDIRECTORY;

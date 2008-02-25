@@ -5,6 +5,7 @@
 #include "../VideoDatabase.h"
 #include "TextureManager.h"
 
+using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
 using namespace VIDEODATABASEDIRECTORY;
@@ -19,7 +20,15 @@ CVideoDatabaseDirectory::~CVideoDatabaseDirectory(void)
 
 bool CVideoDatabaseDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
-  auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strPath));
+  CStdString path(strPath);
+  CUtil::AddSlashAtEnd(path);
+  if (g_stSettings.m_bMyVideoNavFlatten)
+  {
+    // flatten movie, tvshow, and musicvideo overviews into title
+    if (path == "videodb://1/" || path == "videodb://2/" || path == "videodb://3/")
+      path += "1/";
+  }
+  auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
 
   if (!pNode.get())
     return false;

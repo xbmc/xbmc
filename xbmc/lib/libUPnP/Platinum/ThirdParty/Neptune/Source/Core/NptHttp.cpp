@@ -2,7 +2,7 @@
 |
 |   Neptune - HTTP Protocol
 |
-|   (c) 2001-2006 Gilles Boccon-Gibod
+|   (c) 2001-2007 Gilles Boccon-Gibod
 |   Author: Gilles Boccon-Gibod (bok@bok.net)
 |
  ****************************************************************/
@@ -17,7 +17,12 @@
 #include "NptVersion.h"
 #include "NptUtils.h"
 #include "NptFile.h"
-#include <stdlib.h>
+#include "NptLogging.h"
+
+/*----------------------------------------------------------------------
+|   logging
++---------------------------------------------------------------------*/
+NPT_SET_LOCAL_LOGGER("neptune.http")
 
 /*----------------------------------------------------------------------
 |   constants
@@ -25,200 +30,11 @@
 const unsigned int NPT_HTTP_MAX_REDIRECTS = 20;
 
 /*----------------------------------------------------------------------
-|   NPT_HttpUrlQuery::NPT_HttpUrlQuery
-+---------------------------------------------------------------------*/ 
-NPT_HttpUrlQuery::NPT_HttpUrlQuery(const char* query)
-{
-    const char* cursor = query;
-    NPT_String  name;
-    NPT_String  value;
-    bool        in_name = true;
-    do {
-        if (*cursor == '\0' || *cursor == '&') {
-            if (!name.IsEmpty() && !value.IsEmpty()) {
-                AddField(NPT_Uri::Decode(name), NPT_Uri::Decode(value));   
-            }
-            name.SetLength(0);
-            value.SetLength(0);
-            in_name = true;
-        } else if (*cursor == '=' && in_name) {
-            in_name = false;
-        } else {
-            char c = *cursor == '+'?' ':*cursor;
-            if (in_name) {
-                name += c;
-            } else {
-                value += c;
-            }
-        }
-    } while (*cursor++);
-}
-
-/*----------------------------------------------------------------------
-|   NPT_HttpUrlQuery::ToString
-+---------------------------------------------------------------------*/
-NPT_String 
-NPT_HttpUrlQuery::ToString()
-{
-    NPT_String encoded;
-    bool       separator = false;
-    for (NPT_List<Field>::Iterator it = m_Fields.GetFirstItem();
-         it;
-         ++it) {
-         Field& field = *it;
-         if (separator) encoded += "&";
-         separator = true;
-         encoded += NPT_Uri::Encode(field.m_Name, NPT_Uri::QueryCharsToEncode);
-         encoded += "=";
-         encoded += NPT_Uri::Encode(field.m_Value, NPT_Uri::QueryCharsToEncode);
-    }
-
-    return encoded;
-}
-
-/*----------------------------------------------------------------------
-|   NPT_HttpUrlQuery::AddField
-+---------------------------------------------------------------------*/
-NPT_Result 
-NPT_HttpUrlQuery::AddField(const char* name, const char* value)
-{
-    return m_Fields.Add(Field(name, value));
-}
-
-/*----------------------------------------------------------------------
-|   NPT_HttpUrlQuery::GetField
-+---------------------------------------------------------------------*/
-const char* 
-NPT_HttpUrlQuery::GetField(const char* name)
-{
-    for (NPT_List<Field>::Iterator it = m_Fields.GetFirstItem();
-         it;
-         ++it) {
-         Field& field = *it;
-         if (field.m_Name == name) return field.m_Value;
-    }
-
-    // field not found
-    return NULL;
-}
-
-/*----------------------------------------------------------------------
-|   types
-+---------------------------------------------------------------------*/
-typedef enum {
-    NPT_HTTP_URL_PARSER_STATE_START,
-    NPT_HTTP_URL_PARSER_STATE_SCHEME,
-    NPT_HTTP_URL_PARSER_STATE_LEADING_SLASH,
-    NPT_HTTP_URL_PARSER_STATE_HOST,
-    NPT_HTTP_URL_PARSER_STATE_PORT,
-    NPT_HTTP_URL_PARSER_STATE_PATH,
-    NPT_HTTP_URL_PARSER_STATE_QUERY
-} NPT_HttpUrlParserState;
-
-/*----------------------------------------------------------------------
 |   NPT_HttpUrl::NPT_HttpUrl
 +---------------------------------------------------------------------*/
-NPT_HttpUrl::NPT_HttpUrl() : 
-    m_Port(NPT_HTTP_INVALID_PORT),
-    m_Path("/"),
-    m_HasQuery(false),
-    m_HasFragment(false)
+NPT_HttpUrl::NPT_HttpUrl(const char* url, bool ignore_scheme) :
+    NPT_Url(url, ignore_scheme?SCHEME_ID_UNKNOWN:SCHEME_ID_HTTP, NPT_HTTP_DEFAULT_PORT)
 {
-}
-
-/*----------------------------------------------------------------------
-|   NPT_HttpUrl::NPT_HttpUrl
-+---------------------------------------------------------------------*/
-NPT_HttpUrl::NPT_HttpUrl(const char* url, bool ignore_scheme) : 
-    m_Port(NPT_HTTP_INVALID_PORT),
-    m_HasQuery(false),
-    m_HasFragment(false)
-{
-    // check parameters
-    if (url == NULL) return;
-
-    // set the uri scheme
-    if (NPT_FAILED(SetSchemeFromUri(url))) {
-        return;
-    }
-    if (ignore_scheme) {
-        if (m_SchemeId != SCHEME_ID_HTTP) return;
-    } else {
-        url += m_Scheme.GetLength()+1;
-    }
-
-    // intialize the parser
-    NPT_HttpUrlParserState state = NPT_HTTP_URL_PARSER_STATE_START;
-    const char* mark = url;
-
-    // parse the URL
-    char c;
-    do  {
-        c = *url++;
-        switch (state) {
-          case NPT_HTTP_URL_PARSER_STATE_START:
-            if (c == '/') {
-                state = NPT_HTTP_URL_PARSER_STATE_LEADING_SLASH;
-            } else {
-                return;
-            }
-            break;
-
-          case NPT_HTTP_URL_PARSER_STATE_LEADING_SLASH:
-            if (c == '/') {
-                state = NPT_HTTP_URL_PARSER_STATE_HOST;
-                mark = url;
-            } else {
-                return;
-            }
-            break;
-
-          case NPT_HTTP_URL_PARSER_STATE_HOST:
-            if (c == ':' || c == '/' || c == '\0') {
-                m_Host.Assign(mark, (NPT_Size)(url-1-mark));
-                if (c == ':') {
-                    mark = url;
-                    state = NPT_HTTP_URL_PARSER_STATE_PORT;
-                } else {
-                    mark = url-1;
-                    m_Port = NPT_HTTP_DEFAULT_PORT;
-                    state = NPT_HTTP_URL_PARSER_STATE_PATH;
-                }
-            }
-            break;
-
-          case NPT_HTTP_URL_PARSER_STATE_PORT:
-            if (c >= '0' && c <= '9') {
-                unsigned int val = m_Port*10+(c-'0');
-                if (val > 65535) {
-                    m_Port = NPT_HTTP_INVALID_PORT;
-                    return;
-                }
-                m_Port = val;
-            } else if (c == '/' || c == '\0') {
-                mark = url-1;
-                state = NPT_HTTP_URL_PARSER_STATE_PATH;
-            } else {
-                // invalid character
-                m_Port = NPT_HTTP_INVALID_PORT;
-                return;
-            }
-            break;
-
-          case NPT_HTTP_URL_PARSER_STATE_PATH:
-            if (*mark) {
-                SetPathPlus(mark);
-                return;
-            }
-            break;
-
-          default:
-            break;
-        }
-    } while (c);
-
-    // if we get here, the path is implicit
-    m_Path = "/";
 }
 
 /*----------------------------------------------------------------------
@@ -229,179 +45,8 @@ NPT_HttpUrl::NPT_HttpUrl(const char* host,
                          const char* path,
                          const char* query,
                          const char* fragment) :
-    m_Host(host),
-    m_Port(port),
-    m_Path(path),
-    m_HasQuery(query != NULL),
-    m_Query(query),
-    m_HasFragment(fragment != NULL),
-    m_Fragment(fragment)
+    NPT_Url("http", host, port, path, query, fragment)
 {
-    SetScheme("http");
-}    
-
-/*----------------------------------------------------------------------
-|   NPT_HttpUrl::IsValid
-+---------------------------------------------------------------------*/
-bool
-NPT_HttpUrl::IsValid() const
-{
-    return m_Port != NPT_HTTP_INVALID_PORT && !m_Host.IsEmpty();
-}
-
-/*----------------------------------------------------------------------
-|   NPT_HttpUrl::SetHost
-+---------------------------------------------------------------------*/
-NPT_Result 
-NPT_HttpUrl::SetHost(const char* host)
-{
-    const char* port = host;
-    while (*port && *port != ':') port++;
-    if (*port) {
-        m_Host.Assign(host, (NPT_Size)(port-host));
-        long port_number;
-        if (NPT_SUCCEEDED(NPT_ParseInteger(port+1, port_number, false))) {
-            m_Port = (short)port_number;
-        }
-    } else {
-        m_Host = host;
-    }
-
-    return NPT_SUCCESS;
-}
-
-/*----------------------------------------------------------------------
-|   NPT_HttpUrl::SetHost
-+---------------------------------------------------------------------*/
-NPT_Result 
-NPT_HttpUrl::SetPort(NPT_UInt16 port)
-{
-    m_Port = port;
-    return NPT_SUCCESS;
-}
-
-/*----------------------------------------------------------------------
-|   NPT_HttpUrl::SetPath
-+---------------------------------------------------------------------*/
-NPT_Result 
-NPT_HttpUrl::SetPath(const char* path)
-{
-    m_Path = path;
-
-    return NPT_SUCCESS;
-}
-
-/*----------------------------------------------------------------------
-|   NPT_HttpUrl::SetPathPlus
-+---------------------------------------------------------------------*/
-NPT_Result
-NPT_HttpUrl::SetPathPlus(const char* path_plus)
-{
-    // check parameters
-    if (path_plus == NULL) return NPT_ERROR_INVALID_PARAMETERS;
-
-    // reset any existing values
-    m_Path.SetLength(0);
-    m_Query.SetLength(0);
-    m_Fragment.SetLength(0);
-    m_HasQuery = false;
-    m_HasFragment = false;
-
-    // intialize the parser
-    NPT_HttpUrlParserState state = NPT_HTTP_URL_PARSER_STATE_PATH;
-    const char* mark = path_plus;
-
-    // parse the path+
-    char c;
-    do  {
-        c = *path_plus++;
-        switch (state) {
-          case NPT_HTTP_URL_PARSER_STATE_PATH:
-            if (c == '\0' || c == '?' || c == '#') {
-                if (path_plus-1 > mark) {
-                    m_Path.Append(mark, (NPT_Size)(path_plus-1-mark));
-                }
-                if (c == '?') {
-                    m_HasQuery = true;
-                    state = NPT_HTTP_URL_PARSER_STATE_QUERY;
-                    mark = path_plus;
-                } else if (c == '#') {
-                    m_HasFragment = true;
-                    m_Fragment = path_plus;
-                    return NPT_SUCCESS;
-                }
-            }
-            break;
-
-          case NPT_HTTP_URL_PARSER_STATE_QUERY:
-            if (c == '\0' || c == '#') {
-                m_Query.Assign(mark, (NPT_Size)(path_plus-1-mark));
-                if (c == '#') {
-                    m_HasFragment = true;
-                    m_Fragment = path_plus;
-                }
-                return NPT_SUCCESS;
-            }
-            break;
-
-          default: 
-            break;
-        }
-    } while (c);
-
-    return NPT_SUCCESS;
-}
-
-/*----------------------------------------------------------------------
-|   NPT_HttpUrl::SetQuery
-+---------------------------------------------------------------------*/
-NPT_Result 
-NPT_HttpUrl::SetQuery(const char* query)
-{
-    m_Query = query;
-    m_HasQuery = query!=NULL;
-
-    return NPT_SUCCESS;
-}
-
-/*----------------------------------------------------------------------
-|   NPT_HttpUrl::SetFragment
-+---------------------------------------------------------------------*/
-NPT_Result 
-NPT_HttpUrl::SetFragment(const char* fragment)
-{
-    m_Fragment = fragment;
-    m_HasFragment = fragment!=NULL;
-
-    return NPT_SUCCESS;
-}
-
-/*----------------------------------------------------------------------
-|   NPT_HttpUrl::ToRequestString
-+---------------------------------------------------------------------*/
-NPT_String
-NPT_HttpUrl::ToRequestString(bool with_fragment) const
-{
-    NPT_String result;
-    NPT_Size   length = m_Path.GetLength()+1;
-    if (m_HasQuery)    length += 1+m_Query.GetLength();
-    if (with_fragment) length += 1+m_Fragment.GetLength();
-    result.Reserve(length);
-
-    if (m_Path.IsEmpty()) {
-        result += "/";
-    } else {
-        result += Encode(m_Path, UnsafeCharsToEncode, false);
-    }
-    if (m_HasQuery) {
-        result += "?";
-        result += Encode(m_Query, UnsafeCharsToEncode, false);;
-    }
-    if (with_fragment && m_HasFragment) {
-        result += "#";
-        result += Encode(m_Fragment, UnsafeCharsToEncode, false);
-    }
-    return result;
 }
 
 /*----------------------------------------------------------------------
@@ -410,21 +55,7 @@ NPT_HttpUrl::ToRequestString(bool with_fragment) const
 NPT_String
 NPT_HttpUrl::ToString(bool with_fragment) const
 {
-    NPT_String result;
-    NPT_String request = ToRequestString(with_fragment);
-    NPT_Size   length = m_Scheme.GetLength()+3+m_Host.GetLength()+6+request.GetLength();
-
-    result.Reserve(length);
-    result += m_Scheme;
-    result += "://";
-    result += m_Host;
-    if (m_Port != NPT_HTTP_DEFAULT_PORT) {
-        NPT_String port = NPT_String::FromInteger(m_Port);
-        result += ":";
-        result += port;
-    }
-    result += request;
-    return result;
+    return NPT_Url::ToStringWithDefaultPort(NPT_HTTP_DEFAULT_PORT, with_fragment);
 }
 
 /*----------------------------------------------------------------------
@@ -908,7 +539,7 @@ NPT_HttpRequest::Parse(NPT_BufferedInputStream& stream,
 
     // update the URL
     if (!proxy_style_request) {
-        //request->m_Url.SetScheme("http");
+        request->m_Url.SetScheme("http");
         request->m_Url.SetPathPlus(uri);
         request->m_Url.SetPort(NPT_HTTP_DEFAULT_PORT);
 
@@ -943,7 +574,6 @@ NPT_HttpRequest::~NPT_HttpRequest()
 NPT_Result
 NPT_HttpRequest::Emit(NPT_OutputStream& stream, bool use_proxy) const
 {
-    //NPT_Debug("NPT_HttpRequest::Emit ++\n");
     // write the request line
     stream.WriteString(m_Method);
     stream.WriteFully(" ", 1);
@@ -961,8 +591,6 @@ NPT_HttpRequest::Emit(NPT_OutputStream& stream, bool use_proxy) const
 
     // finish with an empty line
     stream.WriteFully(NPT_HTTP_LINE_TERMINATOR, 2);
-
-    //NPT_Debug("NPT_HttpRequest::Emit --\n");
 
     return NPT_SUCCESS;
 }
@@ -1006,7 +634,6 @@ NPT_HttpResponse::SetStatus(NPT_HttpStatusCode status_code,
 NPT_Result
 NPT_HttpResponse::Emit(NPT_OutputStream& stream) const
 {
-    //NPT_Debug("NPT_HttpResponse::Emit ++\n");
     // write the request line
     stream.WriteString(m_Protocol);
     stream.WriteFully(" ", 1);
@@ -1015,18 +642,11 @@ NPT_HttpResponse::Emit(NPT_OutputStream& stream) const
     stream.WriteString(m_ReasonPhrase);
     stream.WriteFully(NPT_HTTP_LINE_TERMINATOR, 2);
 
-    //NPT_Debug("%s %s %s\n", 
-    //    (const char*)m_Protocol,
-    //    (const char*)NPT_String::FromInteger(m_StatusCode), 
-    //    (const char*)m_ReasonPhrase);
-
     // emit headers
     m_Headers.Emit(stream);
 
     // finish with an empty line
     stream.WriteFully(NPT_HTTP_LINE_TERMINATOR, 2);
-
-    //NPT_Debug("NPT_HttpResponse::Emit --\n");
 
     return NPT_SUCCESS;
 }
@@ -1075,16 +695,110 @@ NPT_HttpResponse::Parse(NPT_BufferedInputStream& stream,
 }
 
 /*----------------------------------------------------------------------
+|   NPT_HttpTcpConnector
++---------------------------------------------------------------------*/
+class NPT_HttpTcpConnector : public NPT_HttpClient::Connector
+{
+    virtual NPT_Result Connect(const char*                   hostname, 
+                               NPT_UInt16                    port, 
+                               NPT_Timeout                   connection_timeout,
+                               NPT_Timeout                   io_timeout,
+                               NPT_Timeout                   name_resolver_timeout,
+                               NPT_InputStreamReference&     input_stream, 
+                               NPT_OutputStreamReference&    output_stream);
+};
+
+/*----------------------------------------------------------------------
+|   NPT_HttpTcpConnector::Connect
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_HttpTcpConnector::Connect(const char*                hostname, 
+                              NPT_UInt16                 port, 
+                              NPT_Timeout                connection_timeout,
+                              NPT_Timeout                io_timeout,
+                              NPT_Timeout                name_resolver_timeout,
+                              NPT_InputStreamReference&  input_stream, 
+                              NPT_OutputStreamReference& output_stream)
+{
+    // get the address and port to which we need to connect
+    NPT_IpAddress address;
+    NPT_CHECK(address.ResolveName(hostname, name_resolver_timeout));
+
+    // connect to the server
+    NPT_LOG_FINE_2("NPT_HttpTcpConnector::Connect - will connect to %s:%d\n", hostname, port);
+    NPT_TcpClientSocket connection;
+    connection.SetReadTimeout(io_timeout);
+    connection.SetWriteTimeout(io_timeout);
+    NPT_SocketAddress socket_address(address, port);
+    NPT_CHECK(connection.Connect(socket_address, connection_timeout));
+
+    // get the streams
+    NPT_CHECK(connection.GetInputStream(input_stream));
+    NPT_CHECK(connection.GetOutputStream(output_stream));
+
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_HttpProxySelector::GetSystemDefault()
++---------------------------------------------------------------------*/
+//// temporary place holder implementation
+NPT_HttpProxySelector*
+NPT_HttpProxySelector::GetSystemDefault()
+{
+    return NULL;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_HttpStaticProxySelector
++---------------------------------------------------------------------*/
+class NPT_HttpStaticProxySelector : public NPT_HttpProxySelector
+{
+public:
+    // constructor
+    NPT_HttpStaticProxySelector(const char* hostname, NPT_UInt16 port);
+
+    // NPT_HttpProxySelector methods
+    NPT_Result GetProxyForUrl(const NPT_HttpUrl& url, NPT_HttpProxyAddress& proxy);
+
+private:
+    // members
+    NPT_HttpProxyAddress m_Proxy;
+};
+
+/*----------------------------------------------------------------------
+|   NPT_HttpStaticProxySelector::NPT_HttpStaticProxySelector
++---------------------------------------------------------------------*/
+NPT_HttpStaticProxySelector::NPT_HttpStaticProxySelector(const char* hostname, NPT_UInt16 port) :
+    m_Proxy(hostname, port)
+{
+}
+
+/*----------------------------------------------------------------------
+|   NPT_HttpStaticProxySelector::GetProxyForUrl
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_HttpStaticProxySelector::GetProxyForUrl(const NPT_HttpUrl& /* url */, 
+                                            NPT_HttpProxyAddress& proxy)
+{
+    proxy = m_Proxy;
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
 |   NPT_HttpClient::NPT_HttpClient
 +---------------------------------------------------------------------*/
-NPT_HttpClient::NPT_HttpClient()
+NPT_HttpClient::NPT_HttpClient(Connector* connector) :
+    m_ProxySelector(NPT_HttpProxySelector::GetSystemDefault()),
+    m_ProxySelectorIsOwned(false),
+    m_Connector(connector)
 {
     m_Config.m_FollowRedirect      = true;
-    m_Config.m_UseProxy            = false;
-    m_Config.m_ProxyPort           = NPT_HTTP_INVALID_PORT;
     m_Config.m_ConnectionTimeout   = NPT_HTTP_CLIENT_DEFAULT_CONNECTION_TIMEOUT;
     m_Config.m_IoTimeout           = NPT_HTTP_CLIENT_DEFAULT_CONNECTION_TIMEOUT;
     m_Config.m_NameResolverTimeout = NPT_HTTP_CLIENT_DEFAULT_NAME_RESOLVER_TIMEOUT;
+
+    if (connector == NULL) m_Connector = new NPT_HttpTcpConnector();
 }
 
 /*----------------------------------------------------------------------
@@ -1092,6 +806,10 @@ NPT_HttpClient::NPT_HttpClient()
 +---------------------------------------------------------------------*/
 NPT_HttpClient::~NPT_HttpClient()
 {
+    if (m_ProxySelectorIsOwned) {
+        delete m_ProxySelector;
+    }
+    delete m_Connector;
 }
 
 /*----------------------------------------------------------------------
@@ -1111,15 +829,45 @@ NPT_HttpClient::SetConfig(const Config& config)
 NPT_Result
 NPT_HttpClient::SetProxy(const char* hostname, NPT_UInt16 port)
 {
-    m_Config.m_ProxyHostname = hostname;
-    m_Config.m_ProxyPort     = port;
-    if (m_Config.m_ProxyHostname.IsEmpty()) {
-        // remove the proxy
-        m_Config.m_UseProxy = false;
-    } else {
-        m_Config.m_UseProxy = true;
+    if (m_ProxySelectorIsOwned) {
+        delete m_ProxySelector;
+        m_ProxySelector = NULL;
+        m_ProxySelectorIsOwned = false;
     }
 
+    // only set a proxy selector is hostname is not null, disable the
+    // proxy otherwise
+    if (hostname != NULL && port != NPT_HTTP_INVALID_PORT) {
+        m_ProxySelector = new NPT_HttpStaticProxySelector(hostname, port);
+        m_ProxySelectorIsOwned = true;
+    }
+
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_HttpClient::SetProxy
++---------------------------------------------------------------------*/
+NPT_Result 
+NPT_HttpClient::SetProxySelector(NPT_HttpProxySelector* selector)
+{
+    if (m_ProxySelectorIsOwned) {
+        delete m_ProxySelector;
+    }
+    m_ProxySelector = selector;
+    m_ProxySelectorIsOwned = false;
+
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_HttpClient::SetConnector
++---------------------------------------------------------------------*/
+NPT_Result 
+NPT_HttpClient::SetConnector(Connector* connector)
+{
+    delete m_Connector;
+    m_Connector = connector;
     return NPT_SUCCESS;
 }
 
@@ -1149,33 +897,51 @@ NPT_HttpClient::SendRequestOnce(NPT_HttpRequest&   request,
     response = NULL;
 
     // get the address and port to which we need to connect
-    NPT_IpAddress server_address;
+    NPT_HttpProxyAddress proxy;
+    bool                 use_proxy = false;
+    if (m_ProxySelector) {
+        // we have a proxy selector, ask it to select a proxy for this URL
+        NPT_Result result = m_ProxySelector->GetProxyForUrl(request.GetUrl(), proxy);
+        if (NPT_FAILED(result) && result != NPT_ERROR_HTTP_NO_PROXY) {
+            NPT_LOG_WARNING_1("NPT_HttpClient::SendRequestOnce - proxy selector failure (%d)", result);
+            return result;
+        }
+        use_proxy = true;
+    }
+
+    // decide which host we need to connect to
+    const char* server_hostname;
     NPT_UInt16    server_port;
-    if (m_Config.m_UseProxy) {
-        NPT_CHECK(server_address.ResolveName(m_Config.m_ProxyHostname, m_Config.m_NameResolverTimeout));
-        server_port = m_Config.m_ProxyPort;
+    if (use_proxy) {
+        // the proxy is set
+        server_hostname = (const char*)proxy.GetHostName();
+        server_port = proxy.GetPort();
     } else {
-        NPT_CHECK(server_address.ResolveName(request.GetUrl().GetHost(), m_Config.m_NameResolverTimeout));
+        // no proxy selector, so no proxy: connect directly
+        server_hostname = (const char*)request.GetUrl().GetHost();
         server_port = request.GetUrl().GetPort();
     }
 
-    // connect to the server
-    NPT_SocketAddress address(server_address, server_port);
-    NPT_Debug("NPT_HttpClient::SendRequest - will connect to %s:%d\n", (const char*)request.GetUrl().GetHost(), request.GetUrl().GetPort());
-    NPT_TcpClientSocket connection;
-    connection.SetReadTimeout(m_Config.m_IoTimeout);
-    connection.SetWriteTimeout(m_Config.m_IoTimeout);
-    NPT_CHECK(connection.Connect(address, m_Config.m_ConnectionTimeout));
-
-    // get the socket stream to send the request
+    // connect to the server or proxy
+    NPT_InputStreamReference  input_stream;
     NPT_OutputStreamReference output_stream;
-    NPT_CHECK(connection.GetOutputStream(output_stream));
+    NPT_CHECK_WARNING(m_Connector->Connect(server_hostname,
+                                           server_port,
+                                           m_Config.m_ConnectionTimeout,
+                                           m_Config.m_IoTimeout,
+                                           m_Config.m_NameResolverTimeout,
+                                           input_stream,
+                                           output_stream));
 
     // add any headers that may be missing
     NPT_HttpHeaders& headers = request.GetHeaders();
-    headers.SetHeader(NPT_HTTP_HEADER_CONNECTION, "close");
-    headers.SetHeader(NPT_HTTP_HEADER_USER_AGENT, 
-                      "Neptune/" NPT_NEPTUNE_VERSION_STRING);
+    if (!headers.GetHeader(NPT_HTTP_HEADER_CONNECTION)) {
+        headers.SetHeader(NPT_HTTP_HEADER_CONNECTION, "close");
+    }
+    if (!headers.GetHeader(NPT_HTTP_HEADER_USER_AGENT)) {
+        headers.SetHeader(NPT_HTTP_HEADER_USER_AGENT, 
+                          "Neptune/" NPT_NEPTUNE_VERSION_STRING);
+    }
     NPT_String host = request.GetUrl().GetHost();
     if (request.GetUrl().GetPort() != NPT_HTTP_DEFAULT_PORT) {
         host += ":";
@@ -1189,7 +955,7 @@ NPT_HttpClient::SendRequestOnce(NPT_HttpRequest&   request,
     if (entity && NPT_SUCCEEDED(entity->GetInputStream(body_stream))) {
         // content length
         headers.SetHeader(NPT_HTTP_HEADER_CONTENT_LENGTH, 
-            NPT_String::FromInteger(entity->GetContentLength()));
+                          NPT_String::FromInteger(entity->GetContentLength()));
 
         // content type
         NPT_String content_type = entity->GetContentType();
@@ -1211,22 +977,18 @@ NPT_HttpClient::SendRequestOnce(NPT_HttpRequest&   request,
     NPT_MemoryStream header_stream;
 
     // emit the request headers into the header buffer
-    request.Emit(header_stream, m_Config.m_UseProxy);
+    request.Emit(header_stream, use_proxy);
 
     // send the headers
     NPT_CHECK(output_stream->WriteFully(header_stream.GetData(), header_stream.GetDataSize()));
 
     // send request body
-    if (!body_stream.IsNull()) {
-        NPT_CHECK(NPT_StreamToStreamCopy(*body_stream.AsPointer(), *output_stream.AsPointer()));
+    if (!body_stream.IsNull() && entity->GetContentLength()) {
+        NPT_CHECK(NPT_StreamToStreamCopy(*body_stream.AsPointer(), *output_stream.AsPointer(), 0, entity->GetContentLength()));
     }
 
     // flush the output stream so that everything is sent to the server
     output_stream->Flush();
-
-    // get the input stream to read the response
-    NPT_InputStreamReference input_stream;
-    NPT_CHECK(connection.GetInputStream(input_stream));
 
     // create a buffered stream for this socket stream
     NPT_BufferedInputStreamReference buffered_input_stream(new NPT_BufferedInputStream(input_stream));
@@ -1240,7 +1002,13 @@ NPT_HttpClient::SendRequestOnce(NPT_HttpRequest&   request,
     // create an entity if one is expected in the response
     if (request.GetMethod() == NPT_HTTP_METHOD_GET || request.GetMethod() == NPT_HTTP_METHOD_POST) {
         NPT_HttpEntity* response_entity = new NPT_HttpEntity(response->GetHeaders());
-        response_entity->SetInputStream((NPT_InputStreamReference)buffered_input_stream);
+        // Transfer-Encoding: chunked ?
+        if (response_entity->GetTransferEncoding() == "chunked") {
+            NPT_InputStreamReference body_stream(new NPT_HttpChunkedDecoderInputStream(buffered_input_stream));
+            response_entity->SetInputStream((NPT_InputStreamReference)body_stream);
+        } else {
+            response_entity->SetInputStream((NPT_InputStreamReference)buffered_input_stream);
+        }
         response->SetEntity(response_entity);
     }
     
@@ -1274,13 +1042,18 @@ NPT_HttpClient::SendRequest(NPT_HttpRequest&   request,
             if (location) {
                 // replace the request url
                 if (NPT_SUCCEEDED(request.SetUrl(location->GetValue()))) {
-                    NPT_Debug("NPT_HttpClient::SendRequest - redirecting to %s\n", location->GetValue().GetChars());
+                    NPT_LOG_FINE_1("NPT_HttpClient::SendRequest - redirecting to %s\n", location->GetValue().GetChars());
                     keep_going = true;
                     delete response;
                     response = NULL;
                 }
             }
-        }       
+        } else if (response && response->GetStatusCode() == 100) {
+            NPT_LOG_FINE("NPT_HttpClient::SendRequest - received 100 continue\n");
+            keep_going = true;
+            delete response;
+            response = NULL;
+        }
     } while (keep_going && watchdog--);
 
     return result;
@@ -1289,12 +1062,15 @@ NPT_HttpClient::SendRequest(NPT_HttpRequest&   request,
 /*----------------------------------------------------------------------
 |   NPT_HttpServer::NPT_HttpServer
 +---------------------------------------------------------------------*/
-NPT_HttpServer::NPT_HttpServer() :
-    m_Bound(false)
+NPT_HttpServer::NPT_HttpServer(NPT_UInt16 listen_port, 
+                               bool       reuse_address /* = true */) :
+    m_BoundPort(0)
 {
-    m_Config.m_ListenPort        = NPT_HTTP_DEFAULT_PORT;
+    m_Config.m_ListenAddress     = NPT_IpAddress::Any;
+    m_Config.m_ListenPort        = listen_port;
     m_Config.m_IoTimeout         = NPT_HTTP_SERVER_DEFAULT_IO_TIMEOUT;
     m_Config.m_ConnectionTimeout = NPT_HTTP_SERVER_DEFAULT_CONNECTION_TIMEOUT;
+    m_Config.m_ReuseAddress      = reuse_address;
 }
 
 /*----------------------------------------------------------------------
@@ -1306,6 +1082,27 @@ NPT_HttpServer::~NPT_HttpServer()
 }
 
 /*----------------------------------------------------------------------
+|   NPT_HttpServer::Bind
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_HttpServer::Bind()
+{
+    // check if we're already bound
+    if (m_BoundPort != 0) return NPT_SUCCESS;
+
+    // bind
+    NPT_Result result = m_Socket.Bind(
+        NPT_SocketAddress(NPT_IpAddress::Any, m_Config.m_ListenPort), 
+        m_Config.m_ReuseAddress);
+    if (NPT_FAILED(result)) return result;
+
+    // remember that we're bound
+    m_BoundPort = m_Config.m_ListenPort;
+    
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
 |   NPT_HttpServer::SetConfig
 +---------------------------------------------------------------------*/
 NPT_Result
@@ -1313,20 +1110,19 @@ NPT_HttpServer::SetConfig(const Config& config)
 {
     m_Config = config;
 
-    return NPT_SUCCESS;
+    // check that we can bind to this listen port
+    return Bind();
 }
 
 /*----------------------------------------------------------------------
 |   NPT_HttpServer::SetListenPort
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_HttpServer::SetListenPort(NPT_UInt16 port)
+NPT_HttpServer::SetListenPort(NPT_UInt16 port, bool reuse_address)
 {
-    NPT_CHECK(m_Socket.Bind(NPT_SocketAddress(NPT_IpAddress::Any, port)));
-    
     m_Config.m_ListenPort = port;
-    m_Bound = true;
-    return NPT_SUCCESS;
+    m_Config.m_ReuseAddress = reuse_address;
+    return Bind();
 }
 
 /*----------------------------------------------------------------------
@@ -1343,6 +1139,15 @@ NPT_HttpServer::SetTimeouts(NPT_Timeout connection_timeout,
 }
 
 /*----------------------------------------------------------------------
+|   NPT_HttpServer::Abort
++---------------------------------------------------------------------*/
+void
+NPT_HttpServer::Abort()
+{
+    m_Socket.Disconnect();
+}
+
+/*----------------------------------------------------------------------
 |   NPT_HttpServer::WaitForNewClient
 +---------------------------------------------------------------------*/
 NPT_Result
@@ -1350,24 +1155,21 @@ NPT_HttpServer::WaitForNewClient(NPT_InputStreamReference&  input,
                                  NPT_OutputStreamReference& output,
                                  NPT_SocketInfo&            client_info)
 {
-    if (!m_Bound) {
-        NPT_CHECK(SetListenPort(m_Config.m_ListenPort));
-    }
+    // ensure that we're bound 
+    NPT_CHECK(Bind());
 
     // wait for a connection
     NPT_Socket*         client;
-    NPT_Debug("NPT_HttpServer::WaitForRequest - waiting for connection on port %d...\n", m_Config.m_ListenPort);
+    NPT_LOG_FINE_1("NPT_HttpServer::WaitForRequest - waiting for connection on port %d...\n", m_Config.m_ListenPort);
     NPT_CHECK(m_Socket.WaitForNewClient(client, m_Config.m_ConnectionTimeout));
     if (client == NULL) return NPT_ERROR_INTERNAL;
 
     // get the client info
     client->GetInfo(client_info);
 
-#if defined(NPT_DEBUG)
-    NPT_Debug("NPT_HttpServer::WaitForRequest - client connected (%s)\n",
+    NPT_LOG_FINE_2("NPT_HttpServer::WaitForRequest - client connected (%s)\n",
                 client_info.local_address.ToString().GetChars(),
                 client_info.remote_address.ToString().GetChars());
-#endif // NPT_DEBUG
 
     // configure the socket
     client->SetReadTimeout(m_Config.m_IoTimeout);
@@ -1452,24 +1254,25 @@ NPT_HttpServer::RespondToClient(NPT_InputStreamReference&  input,
 
     NPT_HttpResponder responder(input, output);
     NPT_CHECK(responder.ParseRequest(request, &(client_info.local_address)));
-    bool headers_only = request->GetMethod()==NPT_HTTP_METHOD_HEAD;
 
     NPT_HttpRequestHandler* handler = FindRequestHandler(*request);
     if (handler == NULL) {
         response = new NPT_HttpResponse(404, "Not Found", NPT_HTTP_PROTOCOL_1_0);
     } else {
-        // create a repsones object
+        // create a response object
         response = new NPT_HttpResponse(200, "OK", NPT_HTTP_PROTOCOL_1_0);
 
         // prepare the response
         response->SetEntity(new NPT_HttpEntity());
 
         // ask the handler to setup the response
-        handler->SetupResponse(*request, *response, client_info);
+        if (NPT_FAILED(handler->SetupResponse(*request, *response, client_info))) {
+            response->SetStatus(500, "Internal Server Error");
+        }
     }
 
     // send the response
-    result = responder.SendResponse(*response, headers_only);
+    result = responder.SendResponse(*response, request->GetMethod()==NPT_HTTP_METHOD_HEAD);
 
     // cleanup
     delete response;
@@ -1739,80 +1542,122 @@ NPT_HttpFileRequestHandler::GetContentType(const NPT_String& filename)
     return m_DefaultMimeType;
 }
 
+/*----------------------------------------------------------------------
+|   NPT_HttpChunkedDecoderInputStream::NPT_HttpChunkedDecoderInputStream
++---------------------------------------------------------------------*/
+NPT_HttpChunkedDecoderInputStream::NPT_HttpChunkedDecoderInputStream(
+    NPT_BufferedInputStreamReference& stream) :
+    m_Source(stream),
+    m_ChunkSize(0),
+    m_InChunk(false)
+{
+}
 
 /*----------------------------------------------------------------------
-|   NPT_HttpChunkedInputStream::FillBuffer
+|   NPT_HttpChunkedDecoderInputStream::~NPT_HttpChunkedDecoderInputStream
++---------------------------------------------------------------------*/
+NPT_HttpChunkedDecoderInputStream::~NPT_HttpChunkedDecoderInputStream()
+{
+}
+
+/*----------------------------------------------------------------------
+|   NPT_HttpChunkedDecoderInputStream::NPT_HttpChunkedDecoderInputStream
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_HttpChunkedInputStream::FillBuffer()
+NPT_HttpChunkedDecoderInputStream::Read(void*     buffer, 
+                                        NPT_Size  bytes_to_read, 
+                                        NPT_Size* bytes_read /* = NULL */)
 {
-    // shortcut
-    if (m_Eos) return NPT_ERROR_EOS;
+    // update output params first
+    if (bytes_read) *bytes_read = 0;
 
-    // check that there is nothing left in the buffer and the buffer
-    // size is not 0
-    NPT_ASSERT(m_Buffer.valid == m_Buffer.offset);
-    NPT_ASSERT(m_Buffer.size != 0);
+    // read next chunk size
+    if (!m_InChunk) {
+        // buffered mode
+        m_Source->SetBufferSize(4096);
 
-    // allocate the read buffer if it has not been done yet
-    if (m_Buffer.data == NULL) {
-        m_Buffer.data = new NPT_Byte[m_Buffer.size];
-        if (m_Buffer.data == NULL) return NPT_ERROR_OUT_OF_MEMORY;
-    }
-    NPT_Result result = NPT_SUCCESS;
-    if(m_ChunkRemain == 0) {
-        // read next chunk size
-        NPT_Byte *p = m_Buffer.data;
-        NPT_Size size;
-        do {
-            result = m_Source->Read(p, 1, &size);
-            if(NPT_FAILED(result)) goto error;
+        NPT_String size_line;
+        NPT_CHECK(m_Source->ReadLine(size_line));
 
-            if(*p == '\r' || *p == '\n' || *p == ';') {
-                m_ChunkRemain = strtol((const char*)m_Buffer.data, NULL, 16);                
-                while(*p != '\n') { // read this full line
-                    result = m_Source->Read(p, 1, &size);
-                    if(NPT_FAILED(result)) goto error;
-                }
-                break;
-            }
-        } while((++p - m_Buffer.data) < (NPT_Offset)m_Buffer.size);
-    }
+        // decode line
+        int delimiter = size_line.Find(';');
+        if (delimiter) size_line = size_line.Left(delimiter);
+        long size;
+        NPT_CHECK(NPT_ParseInteger(size_line, size));
 
-    // if the chunk size is 0, we are at the end of the file
-    if(m_ChunkRemain == 0) {
-        return NPT_ERROR_EOS;
+        // 0 = end of body
+        if (size == 0) {
+            // read footers until empty line
+            NPT_String footer;
+            do {
+                NPT_CHECK(m_Source->ReadLine(footer));
+                if (footer.IsEmpty()) return NPT_ERROR_EOS;
+            } while (1);
+        }
+
+        // read chunk now
+        m_ChunkSize = size;
+        m_InChunk = false;
+
+        // unbuffer source
+        m_Source->SetBufferSize(0);
     }
 
-    // refill the buffer
-    m_Buffer.valid = m_Buffer.size > m_ChunkRemain ? m_ChunkRemain : m_Buffer.size;
-    m_Buffer.offset = 0;
-    result = m_Source->Read(m_Buffer.data, m_Buffer.valid, &m_Buffer.valid);
-    if(NPT_FAILED(result)) goto error;
+    // read no more than what's left in chunk
+    NPT_Size tmp;
+    bytes_to_read = (m_ChunkSize>bytes_to_read)?bytes_to_read:m_ChunkSize;
+    NPT_CHECK(m_Source->Read(buffer, bytes_to_read, &tmp));
 
-    m_ChunkRemain -= m_Buffer.valid;
+    // ready to go to next chunk?
+    m_ChunkSize -= tmp;
+    if (m_ChunkSize == 0) {
+        m_InChunk = true;
 
-    // when a chunk ends, it is followed by \r\n, strip that here
-    if(m_ChunkRemain == 0) {
-        NPT_Byte c;
-        NPT_Size size;
-        do {
-            result = m_Source->Read(&c, 1, &size);
-            if(NPT_FAILED(result)) goto error;
-        } while(c != '\n');
-
+        // when a chunk is finished, a \r\n follows
+        NPT_String tmp;
+        NPT_CHECK(m_Source->ReadLine(tmp));
     }
 
-    return result;
-error:
-    m_Buffer.valid = 0;
-    return result;
+    // update output params
+    if (bytes_read) *bytes_read = tmp;
+    return NPT_SUCCESS;
 }
 
-NPT_Result
-NPT_HttpChunkedInputStream::SetBufferSize(NPT_Size size)
+/*----------------------------------------------------------------------
+|   NPT_HttpChunkedDecoderInputStream::Seek
++---------------------------------------------------------------------*/
+NPT_Result 
+NPT_HttpChunkedDecoderInputStream::Seek(NPT_Position /*offset*/)
 {
-    if(size < 512) size = 512;
-    return NPT_BufferedInputStream::SetBufferSize(size);
+    // not implemented yet
+    return NPT_ERROR_NOT_IMPLEMENTED;
 }
 
+/*----------------------------------------------------------------------
+|   NPT_HttpChunkedDecoderInputStream::Tell
++---------------------------------------------------------------------*/
+NPT_Result 
+NPT_HttpChunkedDecoderInputStream::Tell(NPT_Position& offset)
+{
+    // not implemented yet
+    offset = 0;
+    return NPT_ERROR_NOT_IMPLEMENTED;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_HttpChunkedDecoderInputStream::GetSize
++---------------------------------------------------------------------*/
+NPT_Result 
+NPT_HttpChunkedDecoderInputStream::GetSize(NPT_Size& size)
+{
+    return m_Source->GetSize(size);
+}
+
+/*----------------------------------------------------------------------
+|   NPT_HttpChunkedDecoderInputStream::GetAvailable
++---------------------------------------------------------------------*/
+NPT_Result 
+NPT_HttpChunkedDecoderInputStream::GetAvailable(NPT_Size& available)
+{
+    return m_Source->GetAvailable(available);
+}

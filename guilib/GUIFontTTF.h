@@ -59,18 +59,18 @@ protected:
   void AddReference();
   void RemoveReference();
 
-  float GetTextWidthInternal(vector<DWORD>::const_iterator start, vector<DWORD>::const_iterator end);
+  float GetTextWidthInternal(std::vector<DWORD>::const_iterator start, std::vector<DWORD>::const_iterator end);
   float GetCharWidthInternal(DWORD ch);
   float GetTextHeight(float lineSpacing, int numLines) const;
   float GetLineHeight(float lineSpacing) const;
 
-  void DrawTextInternal(float x, float y, const vector<DWORD> &colors, const vector<DWORD> &text,
+  void DrawTextInternal(float x, float y, const std::vector<DWORD> &colors, const std::vector<DWORD> &text,
                             DWORD alignment, float maxPixelWidth);
 
-  void DrawTextInternal(float x, float y, DWORD color, const vector<DWORD> &text,
+  void DrawTextInternal(float x, float y, DWORD color, const std::vector<DWORD> &text,
                             DWORD alignment, float maxPixelWidth)
   {
-    vector<DWORD> colors;
+    std::vector<DWORD> colors;
     colors.push_back(color);
     DrawTextInternal(x, y, colors, text, alignment, maxPixelWidth);
   }

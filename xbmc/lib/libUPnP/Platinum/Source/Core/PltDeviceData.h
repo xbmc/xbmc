@@ -57,11 +57,11 @@ public:
     virtual NPT_Result  GetDescription(NPT_XmlElementNode* parent, NPT_XmlElementNode** device = NULL);
     virtual NPT_String  GetIconUrl(const char* mimetype = NULL, NPT_Integer maxsize = 0, NPT_Integer maxdepth = 0);
 
-    const NPT_TimeInterval& GetLeaseTime()    const { return m_LeaseTime;    }
-    const NPT_String&       GetUUID()         const { return m_UUID;         }
-    const NPT_String&       GetFriendlyName() const { return m_FriendlyName; }
-    const NPT_String&       GetType()         const { return m_DeviceType;   }        
-
+    const NPT_TimeInterval& GetLeaseTime()        const { return m_LeaseTime;        }
+    const NPT_String&    GetUUID()             const { return m_UUID;             }
+    const NPT_String&    GetFriendlyName()     const { return m_FriendlyName;     }
+    const NPT_String&    GetType()             const { return m_DeviceType;       }
+    const NPT_String&    GetModelDescription() const { return m_ModelDescription; }
 
     NPT_Result FindServiceByType(const char* type, PLT_Service*& service);
     NPT_Result FindServiceById(const char* id, PLT_Service*& service);
@@ -74,12 +74,10 @@ public:
 protected:
     NPT_TimeStamp GetLeaseTimeLastUpdate();
     NPT_Result    SetLeaseTime(NPT_TimeInterval lease_time);
-    NPT_Result    SetURLBase(const char* url_base);
-    NPT_Result    AddDevice(PLT_DeviceDataReference& device);
+    NPT_Result    SetDescriptionUrl(NPT_HttpUrl& description_url);
+    NPT_Result    SetURLBase(NPT_HttpUrl& url_base);
     NPT_Result    AddService(PLT_Service* service);
     NPT_Result    SetDescription(const char* szDescription);
-    NPT_Result    SetDescriptionUrl(NPT_HttpUrl description_url);
-
 
 private:
     NPT_Result    SetDescriptionDevice(NPT_XmlElementNode* device_node);
@@ -94,6 +92,7 @@ public:
     NPT_String m_SerialNumber;
     NPT_String m_UPC;
     NPT_String m_PresentationURL;
+    NPT_String m_DlnaDoc;
 
 protected:
     virtual ~PLT_DeviceData();
@@ -104,20 +103,16 @@ protected:
     friend class PLT_DeviceHost;
 
     //members
-    NPT_AtomicVariable  m_ReferenceCount;
-    bool                m_Root;
-    NPT_String          m_UUID;
-    NPT_HttpUrl         m_URLDescription;
-    NPT_String          m_URLBasePath;
-    NPT_String          m_DeviceType;
-    NPT_String          m_FriendlyName;
-
-    NPT_TimeInterval    m_LeaseTime;
-    NPT_TimeStamp       m_LeaseTimeLastUpdate;
-
-    NPT_Array<PLT_Service*>             m_Services;
-    NPT_Array<PLT_DeviceDataReference>  m_EmbeddedDevices;
-    NPT_Array<PLT_DeviceIcon>           m_IconList;
+    bool                      m_Root;
+    NPT_String                m_UUID;
+    NPT_HttpUrl               m_URLDescription;
+    NPT_String                m_URLBasePath;
+    NPT_String                m_DeviceType;
+    NPT_String                m_FriendlyName;
+    NPT_TimeInterval          m_LeaseTime;
+    NPT_TimeStamp             m_LeaseTimeLastUpdate;
+    NPT_Array<PLT_Service*>   m_Services;
+    NPT_Array<PLT_DeviceIcon> m_Icons;
 };
 
 /*----------------------------------------------------------------------

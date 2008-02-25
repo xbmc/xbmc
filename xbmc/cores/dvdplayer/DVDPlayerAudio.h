@@ -38,6 +38,7 @@ private:
   typedef struct {double pts; double timestamp; double duration;} TPTSItem;
   TPTSItem m_current;
   std::queue<TPTSItem> m_queue;
+  CCriticalSection m_sync;
 
 public:
   CPTSOutputQueue();
@@ -51,6 +52,7 @@ class CPTSInputQueue
 private:
   typedef std::list<std::pair<__int64, double> >::iterator IT;
   std::list<std::pair<__int64, double> > m_list;
+  CCriticalSection m_sync;
 public:
   void   Add(__int64 bytes, double pts);
   double Get(__int64 bytes, bool consume);
@@ -82,7 +84,7 @@ public:
   void SetVolume(long nVolume)                          { m_dvdAudio.SetVolume(nVolume); }
   void SetDynamicRangeCompression(long drc)             { m_dvdAudio.SetDynamicRangeCompression(drc); }
 
-  string GetPlayerInfo();
+  std::string GetPlayerInfo();
 
   // holds stream information for current playing stream
   CDVDStreamInfo m_streaminfo;
@@ -130,7 +132,7 @@ protected:
       if(msg) msg->Release();
       msg  = NULL;
       data = NULL;
-      size = NULL;
+      size = 0;
       dts  = DVD_NOPTS_VALUE;
     }
   } m_decode;

@@ -22,6 +22,7 @@
 #include "../xbox/network.h"
 #include "FileTuxBox.h"
 #include "HDHomeRun.h"
+#include "CMythFile.h"
 
 using namespace XFILE;
 
@@ -73,6 +74,8 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     else if (strProtocol == "xbms") return new CFileXBMSP();
     else if (strProtocol == "rtv") return new CFileRTV();
     else if (strProtocol == "daap") return new CFileDAAP();
+    else if (strProtocol == "myth") return new CCMythFile();
+    else if (strProtocol == "cmyth") return new CCMythFile();
 #endif
   }
 

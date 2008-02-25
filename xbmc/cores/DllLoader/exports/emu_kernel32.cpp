@@ -8,6 +8,8 @@
 
 #include "../dll_tracker.h"
 
+using namespace std;
+
 vector<string> m_vecAtoms;
 
 //#define API_DEBUG
@@ -387,7 +389,7 @@ extern "C" LPTSTR WINAPI dllGetCommandLineA()
 #ifdef API_DEBUG
   CLog::Log(LOGDEBUG, "GetCommandLineA() => \"c:\\xbmc.xbe\"\n");
 #endif
-  return "c:\\xbmc.xbe";
+  return (LPTSTR)"c:\\xbmc.xbe";
 }
 
 extern "C" HMODULE WINAPI dllExitProcess(UINT uExitCode)
@@ -475,7 +477,7 @@ extern "C" int WINAPI dllGetStartupInfoA(LPSTARTUPINFOA lpStartupInfo)
   lpStartupInfo->lpDesktop = NULL;
   lpStartupInfo->lpReserved = NULL;
   lpStartupInfo->lpReserved2 = 0;
-  lpStartupInfo->lpTitle = "Xbox Media Center";
+  lpStartupInfo->lpTitle = (LPTSTR)"Xbox Media Center";
   lpStartupInfo->wShowWindow = 0;
   return 1;
 }

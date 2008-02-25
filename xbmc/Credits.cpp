@@ -34,6 +34,8 @@
 #include "Util.h"
 #include "GUIFont.h"
 
+using namespace std;
+
 // Transition effects for text, must specific exactly one in and one out effect
 enum CRED_EFFECTS
 {

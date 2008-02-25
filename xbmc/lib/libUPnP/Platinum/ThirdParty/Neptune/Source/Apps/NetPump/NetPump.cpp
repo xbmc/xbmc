@@ -37,7 +37,8 @@ typedef enum {
     ENDPOINT_TYPE_TCP_SERVER,
     ENDPOINT_TYPE_MULTICAST_CLIENT,
     ENDPOINT_TYPE_MULTICAST_SERVER,
-    ENDPOINT_TYPE_FILE
+    ENDPOINT_TYPE_FILE,
+    ENDPOINT_TYPE_SERIAL_PORT
 } EndPointType;
 
 typedef enum {
@@ -75,6 +76,10 @@ typedef struct {
         struct {
             char* name;
         }         file;
+        struct {
+            char*        name;
+            unsigned int speed;
+        }         serial_port;
     }            info;
 } EndPoint;
 
@@ -109,6 +114,8 @@ PrintUsageAndExit(void)
             "    multicast [client <groupname> <port> <ttl>]|[server <groupname> <port>]\n"
             "  or\n"
             "    file [<filename>|" NPT_FILE_STANDARD_INPUT "|" NPT_FILE_STANDARD_OUTPUT "|" NPT_FILE_STANDARD_ERROR "\n"
+            "  or\n"
+            "    serial <portname> <speed>\n"
             "\n"
             "options are:\n"
             "  --verbose: show more info\n"
@@ -267,8 +274,8 @@ GetEndPointStreams(EndPoint*                  endpoint,
             }
 
             // bind to the address
-            server.Bind(NPT_SocketAddress(NPT_IpAddress::Any, 
-                        endpoint->info.tcp_server.port));
+            NPT_CHECK(server.Bind(NPT_SocketAddress(NPT_IpAddress::Any, 
+                        endpoint->info.tcp_server.port)));
 
             // wait for connection
             NPT_CHECK(server.WaitForNewClient(client));
@@ -346,6 +353,24 @@ GetEndPointStreams(EndPoint*                  endpoint,
             }
             if (output_stream) {
                 NPT_CHECK(file.GetOutputStream(*output_stream));
+            }
+
+            return NPT_SUCCESS;
+        }
+        break;
+
+      case ENDPOINT_TYPE_SERIAL_PORT:
+        {
+            // create a serial port object
+            NPT_SerialPort serial_port(endpoint->info.serial_port.name);
+            NPT_CHECK(serial_port.Open(endpoint->info.serial_port.speed));
+
+            // get the streams
+            if (input_stream) {
+                NPT_CHECK(serial_port.GetInputStream(*input_stream));
+            }
+            if (output_stream) {
+                NPT_CHECK(serial_port.GetOutputStream(*output_stream));
             }
 
             return NPT_SUCCESS;
@@ -559,6 +584,25 @@ main(int argc, char** argv)
                 NPT_Debug("ERROR: missing argument for 'file' endpoint\n");
                 exit(1);
             }
+        } else if (!strcmp(arg, "serial")) {
+            if (argv[0]) {
+                current_endpoint->type = ENDPOINT_TYPE_SERIAL_PORT;
+                current_endpoint->info.serial_port.name = *argv++;
+            } else {
+                NPT_Debug("ERROR: missing argument for 'serial' endpoint\n");
+                exit(1);
+            }
+            if (argv[0]) {
+                long speed = 0;
+                if (NPT_FAILED(NPT_ParseInteger(*argv++, speed))) {
+                    NPT_Debug("ERROR: invalid speed for 'serial' endpoint\n");
+                    exit(1);
+                } 
+                current_endpoint->info.serial_port.speed = (unsigned int)speed;
+            } else {
+                NPT_Debug("ERROR: missing argument for 'serial' endpoint\n");
+                exit(1);
+            }
         } else {
             NPT_Debug("ERROR: invalid argument (%s)\n", arg);
             exit(1);
@@ -651,6 +695,7 @@ main(int argc, char** argv)
         } while (NPT_SUCCEEDED(result));
     }
 
+    delete buffer;
     return 0;
 }
 

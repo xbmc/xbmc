@@ -25,6 +25,7 @@
 #include "Application.h"
 #include "Util.h"
 
+using namespace MUSIC_INFO;
 
 #define CONTROL_LABELSTATUS     401
 #define CONTROL_LABELDIRECTORY  402
@@ -172,6 +173,7 @@ void CGUIDialogMusicScan::UpdateState()
     CURL url(m_strCurrentDir);
     CStdString strStrippedPath;
     url.GetURLWithoutUserDetails(strStrippedPath);
+	CUtil::UrlDecode(strStrippedPath);
 
     SET_CONTROL_LABEL(CONTROL_LABELDIRECTORY, strStrippedPath);
 

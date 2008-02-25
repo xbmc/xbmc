@@ -60,14 +60,14 @@ public:
   CZipManager();
   ~CZipManager();
 
-  bool GetZipList(const CStdString& strPath, vector<SZipEntry>& items);
+  bool GetZipList(const CStdString& strPath, std::vector<SZipEntry>& items);
   bool HasMultipleEntries(const CStdString& strPath);
   bool GetZipEntry(const CStdString& strPath, SZipEntry& item);
   bool ExtractArchive(const CStdString& strArchive, const CStdString& strPath);
   void CleanUp(const CStdString& strArchive, const CStdString& strPath); // deletes extracted archive. use with care!
   void release(const CStdString& strPath); // release resources used by list zip
+  static void readHeader(const char* buffer, SZipEntry& info);
 private:
-  void readHeader(XFILE::CFile& mFile, SZipEntry& info);
   std::map<CStdString,std::vector<SZipEntry> > mZipMap;
   std::map<CStdString,__int64> mZipDate;
 };

@@ -15,6 +15,10 @@
 #include "../Util.h"
 
 
+using namespace std;
+using namespace MUSIC_INFO;
+using namespace MEDIA_DETECT;
+using namespace AUTOPTR;
 using namespace CDDB;
 
 //-------------------------------------------------------------------------------------------------------------------

@@ -17,6 +17,8 @@
 #include "../FileSystem/FileCurl.h"
 #include "../utils/HttpHeader.h"
 
+using namespace AUTOPTR;
+
 CPlayerCoreFactory::CPlayerCoreFactory()
 {}
 CPlayerCoreFactory::~CPlayerCoreFactory()
@@ -109,7 +111,9 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   if (url.GetProtocol().Equals("rtv"))
     vecCores.push_back(EPC_MPLAYER); // vecCores.push_back(EPC_DVDPLAYER);
 
-  if (url.GetProtocol().Equals("hdhomerun"))
+  if (url.GetProtocol().Equals("hdhomerun")
+  ||  url.GetProtocol().Equals("myth")
+  ||  url.GetProtocol().Equals("cmyth"))
     vecCores.push_back(EPC_DVDPLAYER);
 
   if (url.GetProtocol().Equals("lastfm"))

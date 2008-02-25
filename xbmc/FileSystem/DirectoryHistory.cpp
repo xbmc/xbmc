@@ -3,6 +3,7 @@
 #include "DirectoryHistory.h"
 #include "../Util.h"
 
+using namespace std;
 
 CDirectoryHistory::CDirectoryHistory()
 {

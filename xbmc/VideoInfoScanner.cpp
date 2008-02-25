@@ -32,6 +32,7 @@
 
 #define REGEXSAMPLEFILE "[-\\._ ]sample[-\\._ ]"
 
+using namespace std;
 using namespace DIRECTORY;
 using namespace XFILE;
 
@@ -132,6 +133,7 @@ namespace VIDEO
     m_bUpdateAll = bUpdateAll;
     m_info = info;
     m_pathsToScan.clear();
+    CIMDB::ClearCache();
 
     if (strDirectory.IsEmpty())
     { // scan all paths in the database.  We do this by scanning all paths in the db, and crossing them off the list as
@@ -281,32 +283,36 @@ namespace VIDEO
       CStdString strPath;
       if (!m_info.strContent.IsEmpty())
         strPath="q:\\system\\scrapers\\video\\"+m_info.strPath;
-      if (!strPath.IsEmpty() && parser.Load(strPath) && parser.HasFunction("GetSettings"))
+      if (!strPath.IsEmpty() && parser.Load(strPath) && parser.HasFunction("GetSettings") && m_info.settings.GetSettings().IsEmpty())
+      {
         m_info.settings.LoadSettingsXML("q:\\system\\scrapers\\video\\"+m_info.strPath);
+        m_info.settings.SaveFromDefault();
+      }
     }
 
     if (!bSkip)
     {
-	  if (m_info.strContent.Equals("movies"))
-	  {
-		if (m_pObserver)
+      if (m_info.strContent.Equals("movies"))
+      {
+        if (m_pObserver)
           m_pObserver->OnStateChanged(FETCHING_MOVIE_INFO);
-	      RetrieveVideoInfo(items,settings.parent_name_root,m_info);
-          m_database.SetPathHash(strDirectory, hash);
-	  }
-	  if (m_info.strContent.Equals("musicvideos"))
-	  {
-		if (m_pObserver)
+        RetrieveVideoInfo(items,settings.parent_name_root,m_info);
+        m_database.SetPathHash(strDirectory, hash);
+      }
+      if (m_info.strContent.Equals("musicvideos"))
+      {
+        if (m_pObserver)
           m_pObserver->OnStateChanged(FETCHING_MUSICVIDEO_INFO);
-	      RetrieveVideoInfo(items,settings.parent_name_root,m_info);
-          m_database.SetPathHash(strDirectory, hash);
-	  }
+        RetrieveVideoInfo(items,settings.parent_name_root,m_info);
+        m_database.SetPathHash(strDirectory, hash);
+      }
       if (m_info.strContent.Equals("tvshows"))
-	  {
-		if (m_pObserver)
+      {
+        if (m_pObserver)
           m_pObserver->OnStateChanged(FETCHING_TVSHOW_INFO);
-	  }
-	}
+        RetrieveVideoInfo(items,settings.parent_name_root,m_info);
+      }
+    }
 
     if (m_pObserver)
       m_pObserver->OnDirectoryScanned(strDirectory);
@@ -922,7 +928,7 @@ namespace VIDEO
         }
 
         CVideoInfoTag episodeDetails;
-        if (m_database.GetEpisodeInfo(iter->second.m_url[0].m_url,iter2->first.second) > -1)
+        if (m_database.GetEpisodeInfo(iter->second.m_url[0].m_url,iter2->first.second,iter2->first.first) > -1)
           continue;
 
         if (!IMDB.GetEpisodeDetails(iter2->second,episodeDetails,pDlgProgress))
@@ -1134,4 +1140,6 @@ namespace VIDEO
     }
   }
 }
+
+
 

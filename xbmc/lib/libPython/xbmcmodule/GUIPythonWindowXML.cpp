@@ -9,6 +9,8 @@
 #include "action.h"
 #include "../../../Util.h"
 
+using namespace std;
+
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY       3
 #define CONTROL_BTNSORTASC      4
@@ -98,7 +100,7 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_SETFOCUS:
     {
-      if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != message.GetControlId())
+      if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != (int)message.GetControlId())
       {
         m_viewControl.SetFocused();
         return true;
@@ -150,7 +152,7 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
         return true;
       }
 
-      if(pCallbackWindow && iControl && iControl != this->GetID()) // pCallbackWindow &&  != this->GetID())
+      if(pCallbackWindow && iControl && iControl != (int)this->GetID()) // pCallbackWindow &&  != this->GetID())
       {
         CGUIControl* controlClicked = (CGUIControl*)this->GetControl(iControl);
 

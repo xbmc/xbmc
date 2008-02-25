@@ -9,6 +9,8 @@
 #include "../DVDClock.h"
 #include "../DVDSubtitles/DVDSubtitleStream.h"
 
+using namespace std;
+
 void CDVDDemuxVobsub::CStream::SetDiscard(AVDiscard discard)
 {  
   if(discard == AVDISCARD_NONE && m_discard != AVDISCARD_NONE)
@@ -40,7 +42,7 @@ CDVDDemuxVobsub::~CDVDDemuxVobsub()
   m_Streams.clear();
 }
 
-bool CDVDDemuxVobsub::Open(const std::string& filename)
+bool CDVDDemuxVobsub::Open(const string& filename)
 {
   m_Filename = filename;
 
@@ -214,7 +216,7 @@ bool CDVDDemuxVobsub::ParseTimestamp(SState& state, char* line)
   STimestamp timestamp;
 
   while(*line == ' ') line++;
-  if(sscanf(line, "%d:%d:%d:%d, filepos:%I64x", &h, &m, &s, &ms, &timestamp.pos) != 5)
+  if(sscanf(line, "%d:%d:%d:%d, filepos:%llx", &h, &m, &s, &ms, &timestamp.pos) != 5)
     return false;
 
   timestamp.id  = state.id;

@@ -37,11 +37,8 @@ public:
                         const char*  friendly_name,
                         bool         show_ip = false,
                         const char*  uuid = NULL,
-                        unsigned int port = 0,
-                        unsigned int fileserver_port = 0);
-
-    // PLT_DeviceHost methods
-    virtual NPT_Result Start(PLT_TaskManager* task_manager, PLT_DeviceHostReference& self);
+                        NPT_UInt16   port = 0,
+                        NPT_UInt16   fileserver_port = 0);
 
     NPT_Result AddMetadataHandler(PLT_MetadataHandler* handler);
 
@@ -51,8 +48,13 @@ public:
 protected:
     virtual ~PLT_FileMediaServer();
 
+    // PLT_DeviceHost methods
+    virtual NPT_Result Start(PLT_SsdpListenTask* task);
+    virtual NPT_Result Stop(PLT_SsdpListenTask* task);
+
     virtual NPT_Result OnAlbumArtRequest(NPT_String filepath, NPT_HttpResponse& response);
     
+    // PLT_MediaServer methods
     virtual NPT_Result OnBrowseMetadata(PLT_ActionReference& action, const char* object_id, NPT_SocketInfo* info = NULL);
     virtual NPT_Result OnBrowseDirectChildren(PLT_ActionReference& action, const char* object_id, NPT_SocketInfo* info = NULL);
 
@@ -66,14 +68,17 @@ protected:
         NPT_SocketInfo*     info = NULL, 
         bool                keep_extension_in_title = false);
 
+public:
+    NPT_UInt16                     m_FileServerPort;
+
 protected:
     friend class PLT_MediaItem;
 
-    NPT_String    m_Path;
-    NPT_String    m_DirDelimiter;
-    NPT_HttpUrl   m_FileBaseUri;
-    NPT_HttpUrl   m_AlbumArtBaseUri;
-
+    NPT_String                     m_Path;
+    NPT_String                     m_DirDelimiter;
+    NPT_HttpUrl                    m_FileBaseUri;
+    NPT_HttpUrl                    m_AlbumArtBaseUri;
+    PLT_HttpServer*                m_FileServer;
     NPT_HttpRequestHandler*        m_FileServerHandler;
     NPT_List<PLT_MetadataHandler*> m_MetadataHandlers;
 };

@@ -53,8 +53,8 @@ public:
   void SetPageControl(DWORD id);
 
   virtual CStdString GetDescription() const;
-  virtual void SaveStates(vector<CControlState> &states);
-  int GetSelectedItem() const;
+  virtual void SaveStates(std::vector<CControlState> &states);
+  virtual int GetSelectedItem() const;
 
   virtual void DoRender(DWORD currentTime);
   void LoadLayout(TiXmlElement *layout);
@@ -68,6 +68,8 @@ public:
   CGUIListItem *GetListItem(int offset) const;
 
   virtual bool GetCondition(int condition, int data) const;
+  unsigned int GetNumPages() const;
+  unsigned int GetCurrentPage() const;
 
 #ifdef _DEBUG
   virtual void DumpTextureUse();
@@ -77,15 +79,15 @@ protected:
   virtual bool SelectItemFromPoint(const CPoint &point);
   virtual void RenderItem(float posX, float posY, CGUIListItem *item, bool focused);
   virtual void Scroll(int amount);
-  virtual bool MoveDown(DWORD nextControl);
-  virtual bool MoveUp(DWORD nextControl);
+  virtual bool MoveDown(bool wrapAround);
+  virtual bool MoveUp(bool wrapAround);
   virtual void MoveToItem(int item);
   virtual void ValidateOffset();
   virtual int  CorrectOffset(int offset, int cursor) const;
   virtual void UpdateLayout();
   virtual void CalculateLayout();
   virtual void SelectItem(int item) {};
-  void Reset();
+  virtual void Reset();
   bool InsideLayout(const CGUIListItemLayout *layout, const CPoint &point);
 
   inline float Size() const;
@@ -101,16 +103,16 @@ protected:
   ORIENTATION m_orientation;
   int m_itemsPerPage;
 
-  vector<CGUIListItem*> m_items;
-  typedef vector<CGUIListItem*> ::iterator iItems;
+  std::vector<CGUIListItem*> m_items;
+  typedef std::vector<CGUIListItem*> ::iterator iItems;
   CGUIListItem *m_lastItem;
 
   DWORD m_pageControl;
 
   DWORD m_renderTime;
 
-  vector<CGUIListItemLayout> m_layouts;
-  vector<CGUIListItemLayout> m_focusedLayouts;
+  std::vector<CGUIListItemLayout> m_layouts;
+  std::vector<CGUIListItemLayout> m_focusedLayouts;
 
   CGUIListItemLayout *m_layout;
   CGUIListItemLayout *m_focusedLayout;
@@ -125,7 +127,7 @@ protected:
   CStdString m_label;
 
   bool m_staticContent;
-  vector<CGUIListItem*> m_staticItems;
+  std::vector<CGUIListItem*> m_staticItems;
   bool m_wasReset;  // true if we've received a Reset message until we've rendered once.  Allows
                     // us to make sure we don't tell the infomanager that we've been moving when
                     // the "movement" was simply due to the list being repopulated (thus cursor position

@@ -10,10 +10,10 @@
     <subtitle>el</subtitle>
   </dvd>
   <regions>
-    <region>
-      <dateshort>D/M/YYYY</dateshort>
+    <region name="Ελλάδα">
+      <dateshort>DD-MM-YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY</datelong>
-      <time symbolAM="πμ" symbolPM="μμ">h:mm:ss xx</time>
+      <time symbolAM="πμ" symbolPM="μμ">h:mm:ss</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
     </region>

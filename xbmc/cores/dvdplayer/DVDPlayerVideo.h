@@ -72,7 +72,7 @@ public:
   double GetCurrentPts()                           { return m_iCurrentPts; }
 
   double GetOutputDelay(); /* returns the expected delay, from that a packet is put in queue */
-  string GetPlayerInfo();
+  std::string GetPlayerInfo();
 
   void SetSpeed(int iSpeed);
 

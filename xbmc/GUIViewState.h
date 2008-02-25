@@ -12,11 +12,12 @@ public:
   void SaveViewAsControl(int viewAsControl);
   int GetViewAsControl() const;
 
-  SORT_METHOD SetNextSortMethod();
+  SORT_METHOD SetNextSortMethod(int direction = 1);
+  void SetCurrentSortMethod(int method);
   SORT_METHOD GetSortMethod() const;
   int GetSortMethodLabel() const;
   void GetSortMethodLabelMasks(LABEL_MASKS& masks) const;
-  void GetSortMethods(vector< pair<int,int> > &sortMethods) const;
+  void GetSortMethods(std::vector< std::pair<int,int> > &sortMethods) const;
 
   SORT_ORDER SetNextSortOrder();
   SORT_ORDER GetSortOrder() const { return m_sortOrder; };
@@ -51,7 +52,7 @@ protected:
 private:
   int m_currentViewAsControl;
 
-  vector<SORT_METHOD_DETAILS> m_sortMethods;
+  std::vector<SORT_METHOD_DETAILS> m_sortMethods;
   int m_currentSortMethod;
 
   SORT_ORDER m_sortOrder;

@@ -7,6 +7,8 @@
 #include "ScraperParser.h"
 #include "HTTP.h"
 
+using namespace MUSIC_GRABBER;
+using namespace HTML;
 CMusicInfoScraper::CMusicInfoScraper(const SScraperInfo& info)
 {
   m_bSuccessfull=false;
@@ -250,10 +252,8 @@ void CMusicInfoScraper::LoadAlbuminfo()
 
   CMusicAlbumInfo& album=m_vecAlbums[m_iAlbum];
   album.GetAlbum().strArtist.Empty();
-  if (!album.Load(m_http,m_info))
-    return;
-
-  m_bSuccessfull=true;
+  if (album.Load(m_http,m_info))
+    m_bSuccessfull=true;
 }
 
 void CMusicInfoScraper::LoadArtistinfo()
@@ -263,10 +263,8 @@ void CMusicInfoScraper::LoadArtistinfo()
 
   CMusicArtistInfo& artist=m_vecArtists[m_iArtist];
   artist.GetArtist().strArtist.Empty();
-  if (!artist.Load(m_http,m_info))
-    return;
-
-  m_bSuccessfull=true;
+  if (artist.Load(m_http,m_info))
+    m_bSuccessfull=true;
 }
 
 bool CMusicInfoScraper::Completed()

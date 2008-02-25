@@ -14,6 +14,8 @@
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
 
+using namespace std;
+
 CDVDPlayerSubtitle::CDVDPlayerSubtitle(CDVDOverlayContainer* pOverlayContainer)
 {
   m_pOverlayContainer = pOverlayContainer;
@@ -146,7 +148,7 @@ bool CDVDPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, string &filename)
   if(hints.codec == CODEC_ID_DVD_SUBTITLE && filename == "dvd")
     return true;
 
-  if(hints.codec == CODEC_ID_TEXT)
+  if(hints.codec == CODEC_ID_TEXT || hints.codec == CODEC_ID_SSA)
     m_pOverlayCodec = new CDVDOverlayCodecText();
   else
     m_pOverlayCodec = new CDVDOverlayCodecFFmpeg();

@@ -10,7 +10,9 @@
 #include "../musicInfoTagLoaderFactory.h"
 #include "../utils/LabelFormatter.h"
 
+using namespace std;
 using namespace XFILE;
+using namespace MUSIC_INFO;
 
 CCDDARipper::CCDDARipper()
 {
@@ -339,7 +341,7 @@ bool CCDDARipper::RipCD()
   return true;
 }
 
-char* CCDDARipper::GetExtension(int iEncoder)
+const char* CCDDARipper::GetExtension(int iEncoder)
 {
   if (iEncoder == CDDARIP_ENCODER_WAV) return ".wav";
   if (iEncoder == CDDARIP_ENCODER_VORBIS) return ".ogg";

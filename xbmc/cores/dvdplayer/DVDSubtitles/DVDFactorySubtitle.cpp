@@ -6,6 +6,8 @@
 #include "DVDSubtitleParserSubrip.h"
 #include "Util.h"
 
+using namespace std;
+
 bool CDVDFactorySubtitle::GetSubtitles(VecSubtitleFiles& vecSubtitles, string& strFile)
 {
   CLog::Log(LOGINFO, "CDVDFactorySubtitle::GetSubtitles, searching subtitles");

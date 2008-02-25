@@ -16,7 +16,6 @@
 #include "PltDidl.h"
 #include "PltXmlHelper.h"
 #include "PltService.h"
-#include "../MediaRenderer/PltMediaController.h"
 
 NPT_SET_LOCAL_LOGGER("platinum.media.server.item")
 
@@ -27,12 +26,13 @@ extern const char* didl_namespace_upnp;
 |   PLT_PersonRoles::AddPerson
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_PersonRoles::Add(const NPT_String& name, const NPT_String& role /*= ""*/)
+PLT_PersonRoles::Add(const NPT_String& name, const NPT_String& role /* = "" */)
 {
-  PLT_PersonRole person;
-  person.name = name;
-  person.role = role;
-  return NPT_List<PLT_PersonRole>::Add(person);
+    PLT_PersonRole person;
+    person.name = name;
+    person.role = role;
+
+    return NPT_List<PLT_PersonRole>::Add(person);
 }
 
 /*----------------------------------------------------------------------
@@ -41,17 +41,24 @@ PLT_PersonRoles::Add(const NPT_String& name, const NPT_String& role /*= ""*/)
 NPT_Result
 PLT_PersonRoles::ToDidl(NPT_String& didl, const NPT_String& tag)
 {
-    for (NPT_List<PLT_PersonRole>::Iterator it = NPT_List<PLT_PersonRole>::GetFirstItem(); it; it++) {
-        if(it->role.IsEmpty()) {
-            didl += "<upnp:" + tag + ">";
-        } else {
-            didl += "<upnp:" + tag + " upnp:role=\"";
-            PLT_Didl::AppendXmlEscape(didl, it->role);
-            didl += "\">";
+    NPT_String tmp;
+    for (NPT_List<PLT_PersonRole>::Iterator it = 
+         NPT_List<PLT_PersonRole>::GetFirstItem(); it; it++) {
+        // if there's an empty artist, allow it only if there's nothing else
+        if (it->name.IsEmpty() && m_ItemCount>1 && !tmp.IsEmpty()) continue;
+
+        tmp += "<upnp:" + tag;
+        if (!it->role.IsEmpty()) {
+            tmp += " upnp:role=\"";
+            PLT_Didl::AppendXmlEscape(tmp, it->role);
+            tmp += "\"";
         }
-        PLT_Didl::AppendXmlEscape(didl, it->name);
-        didl += "</upnp:" + tag + ">";
+        tmp += ">";
+        PLT_Didl::AppendXmlEscape(tmp, it->name);
+        tmp += "</upnp:" + tag + ">";
     }
+
+    didl += tmp;
     return NPT_SUCCESS;
 }
 
@@ -61,7 +68,7 @@ PLT_PersonRoles::ToDidl(NPT_String& didl, const NPT_String& tag)
 NPT_Result
 PLT_PersonRoles::FromDidl(const NPT_Array<NPT_XmlElementNode*>& nodes)
 {
-    for (NPT_Cardinal i = 0; i < nodes.GetItemCount(); i++) {
+    for (NPT_Cardinal i=0; i<nodes.GetItemCount(); i++) {
         PLT_PersonRole person;
         const NPT_String* name = nodes[i]->GetText();
         const NPT_String* role = nodes[i]->GetAttribute("role", didl_namespace_upnp);
@@ -111,14 +118,18 @@ PLT_MediaObject::GetExtFromFilePath(const NPT_String filepath, const char* dir_d
 const char*
 PLT_MediaObject::GetProtInfoFromExt(const char* ext)
 {
-    const char*      ret = NULL;
-    NPT_String extension = ext;
+    const char* ret = NULL;
+    NPT_String  extension = ext;
 
     //TODO: we need to add more!
     if (extension.Compare(".mp3", true) == 0) {
         ret = "http-get:*:audio/mpeg:*";
     } else if (extension.Compare(".wma", true) == 0) {
         ret = "http-get:*:audio/x-ms-wma:*";
+    } else if (extension.Compare(".avi", true) == 0 || extension.Compare(".divx", true) == 0) {
+        ret = "http-get:*:video/avi:*";
+    } else if (extension.Compare(".jpg", true) == 0) {
+        ret = "http-get:*:image/jpeg:*";
     } else {
         ret = "http-get:*:application/octet-stream:*";
     }
@@ -132,13 +143,15 @@ PLT_MediaObject::GetProtInfoFromExt(const char* ext)
 const char*
 PLT_MediaObject::GetUPnPClassFromExt(const char* ext)
 {
-    const char*      ret = NULL;
-    NPT_String extension = ext;
+    const char* ret = NULL;
+    NPT_String  extension = ext;
 
-    if (extension.Compare(".mp3", true) == 0) {
+    if (extension.Compare(".mp3", true) == 0 || extension.Compare(".wma", true) == 0) {
         ret = "object.item.audioItem.musicTrack";
-    } else if (extension.Compare(".wma", true) == 0) {
-        ret = "object.item.audioItem.musicTrack";
+    } else if (extension.Compare(".avi", true) == 0 || extension.Compare(".divx", true) == 0) {
+        ret = "object.item.videoItem.movie";
+    } else if (extension.Compare(".jpg", true) == 0) {
+        ret = "object.item.imageItem.photo";
     } else {
         ret = "object.item";
     }
@@ -197,13 +210,8 @@ PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
     PLT_Didl::AppendXmlEscape(didl, m_Title);
     didl += "</dc:title>";
 
-    // class is required
-    didl += "<upnp:class>";
-    PLT_Didl::AppendXmlEscape(didl, m_ObjectClass.type);
-    didl += "</upnp:class>";
-
     // creator
-    if (mask & PLT_FILTER_MASK_CREATOR && m_Creator.GetLength() > 0) {
+    if (mask & PLT_FILTER_MASK_CREATOR && !m_Creator.IsEmpty()) {
         didl += "<dc:creator>";
         PLT_Didl::AppendXmlEscape(didl, m_Creator);
         didl += "</dc:creator>";
@@ -211,6 +219,8 @@ PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
 
     // artist
     if (mask & PLT_FILTER_MASK_ARTIST) {
+        // force an empty artist just in case
+        if (m_People.artists.GetItemCount() == 0) m_People.artists.Add("");
         m_People.artists.ToDidl(didl, "artist");
     }
 
@@ -225,7 +235,7 @@ PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
     }
     
     // album
-    if (mask & PLT_FILTER_MASK_ALBUM && m_Affiliation.album.GetLength() > 0) {
+    if (mask & PLT_FILTER_MASK_ALBUM && !m_Affiliation.album.IsEmpty()) {
         didl += "<upnp:album>";
         PLT_Didl::AppendXmlEscape(didl, m_Affiliation.album);
         didl += "</upnp:album>";
@@ -233,7 +243,8 @@ PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
 
     // genre
     if (mask & PLT_FILTER_MASK_GENRE) {
-        for (NPT_List<NPT_String>::Iterator it = m_Affiliation.genre.GetFirstItem(); it; ++it) {
+        for (NPT_List<NPT_String>::Iterator it = 
+             m_Affiliation.genre.GetFirstItem(); it; ++it) {
             didl += "<upnp:genre>";
             PLT_Didl::AppendXmlEscape(didl, (*it));
             didl += "</upnp:genre>";        
@@ -241,20 +252,20 @@ PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
     }
 
     // album art URI
-    if (mask & PLT_FILTER_MASK_ALBUMARTURI && m_ExtraInfo.album_art_uri.GetLength() > 0) {
-        if(m_ExtraInfo.album_art_uri_dlna_profile.GetLength() > 0) {
-          didl += "<upnp:albumArtURI dlna:profileID=\"";
-          didl += PLT_Didl::AppendXmlEscape(didl, m_ExtraInfo.album_art_uri_dlna_profile);
-          didl += "\">";
-        } else {
-          didl += "<upnp:albumArtURI>";
+    if (mask & PLT_FILTER_MASK_ALBUMARTURI && !m_ExtraInfo.album_art_uri.IsEmpty()) {
+        didl += "<upnp:albumArtURI";
+        if (!m_ExtraInfo.album_art_uri_dlna_profile.IsEmpty()) {
+            didl += " dlna:profileID=\"";
+            PLT_Didl::AppendXmlEscape(didl, m_ExtraInfo.album_art_uri_dlna_profile);
+            didl += "\"";
         }
+        didl += ">";
         PLT_Didl::AppendXmlEscape(didl, m_ExtraInfo.album_art_uri);
         didl += "</upnp:albumArtURI>";
     }
 
     // description
-    if (mask & PLT_FILTER_MASK_DESCRIPTION && m_Description.long_description.GetLength() > 0) {
+    if (mask & PLT_FILTER_MASK_DESCRIPTION && !m_Description.long_description.IsEmpty()) {
         didl += "<upnp:longDescription>";
         PLT_Didl::AppendXmlEscape(didl, m_Description.long_description);
         didl += "</upnp:longDescription>";
@@ -269,33 +280,42 @@ PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
 
     // resource
     if (mask & PLT_FILTER_MASK_RES) {
-        for (unsigned int i=0; i<m_Resources.GetItemCount(); i++) {
+        for (NPT_Cardinal i=0; i<m_Resources.GetItemCount(); i++) {
             if (m_Resources[i].m_ProtocolInfo.GetLength() > 0) {
                 // protocol info is required
-                didl += "<res protocolInfo=\"";
-                PLT_Didl::AppendXmlEscape(didl, m_Resources[i].m_ProtocolInfo);
+                didl += "<res";
 
                 if (mask & PLT_FILTER_MASK_RES_DURATION && m_Resources[i].m_Duration != -1) {
-                    didl += "\" duration=\"";
+                    didl += " duration=\"";
                     PLT_Didl::FormatTimeStamp(didl, m_Resources[i].m_Duration);
+                    didl += "\"";
                 }
 
                 if (mask & PLT_FILTER_MASK_RES_SIZE && m_Resources[i].m_Size != -1) {
-                    didl += "\" size=\"";
+                    didl += " size=\"";
                     didl += NPT_String::FromInteger(m_Resources[i].m_Size);
+                    didl += "\"";
                 }
 
-                if (mask & PLT_FILTER_MASK_RES_PROTECTION && m_Resources[i].m_Protection.GetLength() > 0) {
-                    didl += "\" protection=\"";
+                if (mask & PLT_FILTER_MASK_RES_PROTECTION && !m_Resources[i].m_Protection.IsEmpty()) {
+                    didl += " protection=\"";
                     PLT_Didl::AppendXmlEscape(didl, m_Resources[i].m_Protection);
+                    didl += "\"";
                 }
 
+                didl += " protocolInfo=\"";
+                PLT_Didl::AppendXmlEscape(didl, m_Resources[i].m_ProtocolInfo);
                 didl += "\">";
                 PLT_Didl::AppendXmlEscape(didl, m_Resources[i].m_Uri);
                 didl += "</res>";
             }
         }
     }
+
+    // class is required
+    didl += "<upnp:class>";
+    PLT_Didl::AppendXmlEscape(didl, m_ObjectClass.type);
+    didl += "</upnp:class>";
 
     return NPT_SUCCESS;
 }
@@ -307,7 +327,7 @@ NPT_Result
 PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
 {
     NPT_String str, xml;
-    NPT_Array<NPT_XmlElementNode*> resources;
+    NPT_Array<NPT_XmlElementNode*> children;
     NPT_Result res;
 
     // serialize the entry Didl as a we might need to pass it to a renderer
@@ -336,47 +356,47 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
     // read non-required elements
     PLT_XmlHelper::GetChildText(entry, "creator", m_Creator, didl_namespace_dc);
 
-    PLT_XmlHelper::GetChildren(entry, resources, "artist", didl_namespace_upnp);
-    m_People.artists.FromDidl(resources);
+    PLT_XmlHelper::GetChildren(entry, children, "artist", didl_namespace_upnp);
+    m_People.artists.FromDidl(children);
 
     PLT_XmlHelper::GetChildText(entry, "album", m_Affiliation.album, didl_namespace_upnp);
 
-    resources.Clear();
-    PLT_XmlHelper::GetChildren(entry, resources, "genre", didl_namespace_upnp);
-    for (unsigned int i=0; i<resources.GetItemCount(); i++) {
-        if(resources[i]->GetText()) {
-            m_Affiliation.genre.Add(*resources[i]->GetText());
+    children.Clear();
+    PLT_XmlHelper::GetChildren(entry, children, "genre", didl_namespace_upnp);
+    for (NPT_Cardinal i=0; i<children.GetItemCount(); i++) {
+        if (children[i]->GetText()) {
+            m_Affiliation.genre.Add(*children[i]->GetText());
         }
     }
 
     PLT_XmlHelper::GetChildText(entry, "albumArtURI", m_ExtraInfo.album_art_uri, didl_namespace_upnp);
     PLT_XmlHelper::GetChildText(entry, "longDescription", m_Description.long_description, didl_namespace_upnp);
     PLT_XmlHelper::GetChildText(entry, "originalTrackNumber", str, didl_namespace_upnp);
-    if( NPT_FAILED(str.ToInteger((long&)m_MiscInfo.original_track_number)) )
+    if (NPT_FAILED(str.ToInteger((long&)m_MiscInfo.original_track_number)))
         m_MiscInfo.original_track_number = 0;
 
-    resources.Clear();
-    PLT_XmlHelper::GetChildren(entry, resources, "res");
-    if (resources.GetItemCount() > 0) {
-        for (unsigned int i=0; i<resources.GetItemCount(); i++) {
+    children.Clear();
+    PLT_XmlHelper::GetChildren(entry, children, "res");
+    if (children.GetItemCount() > 0) {
+        for (NPT_Cardinal i=0; i<children.GetItemCount(); i++) {
             PLT_MediaItemResource resource;
-            if (resources[i]->GetText() == NULL) {
+            if (children[i]->GetText() == NULL) {
                 goto cleanup;
             }
 
-            resource.m_Uri = *resources[i]->GetText();
-            if (NPT_FAILED(PLT_XmlHelper::GetAttribute(resources[i], "protocolInfo", resource.m_ProtocolInfo))) {
+            resource.m_Uri = *children[i]->GetText();
+            if (NPT_FAILED(PLT_XmlHelper::GetAttribute(children[i], "protocolInfo", resource.m_ProtocolInfo))) {
                 goto cleanup;
             }
 
-            if (NPT_SUCCEEDED(PLT_XmlHelper::GetAttribute(resources[i], "size", str))) {
+            if (NPT_SUCCEEDED(PLT_XmlHelper::GetAttribute(children[i], "size", str))) {
                 if (NPT_FAILED(str.ToInteger((long&)resource.m_Size))) {
                     // if error while converting, ignore and set to -1 to show we don't know the size
                     resource.m_Size = -1;
                 }
             }
 
-            if (NPT_SUCCEEDED(PLT_XmlHelper::GetAttribute(resources[i], "duration", str))) {
+            if (NPT_SUCCEEDED(PLT_XmlHelper::GetAttribute(children[i], "duration", str))) {
                 if (NPT_FAILED(PLT_Didl::ParseTimeStamp(str, (NPT_UInt32&)resource.m_Duration))) {
                     // if error while converting, ignore and set to -1 to indicate we don't know the duration
                     resource.m_Duration = -1;

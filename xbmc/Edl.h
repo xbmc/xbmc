@@ -71,8 +71,8 @@ private:
   bool m_bCached;
   bool m_bScenes;
   char m_szBuffer[1024]; // Buffer for file reading
-  vector<Cut> m_vecCutlist;
-  vector<double> m_vecScenelist;
+  std::vector<Cut> m_vecCutlist;
+  std::vector<double> m_vecScenelist;
 };
 
 #endif // CEDL_H

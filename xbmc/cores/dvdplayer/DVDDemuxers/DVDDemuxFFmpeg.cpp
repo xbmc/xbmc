@@ -79,23 +79,24 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
-
+/*
 static int dvd_file_open(URLContext *h, const char *filename, int flags)
 {
   return -1;
 }
+*/
 
 static int dvd_file_read(URLContext *h, BYTE* buf, int size)
 {
   CDVDInputStream* pInputStream = (CDVDInputStream*)h->priv_data;
   return pInputStream->Read(buf, size);
 }
-
+/*
 static int dvd_file_write(URLContext *h, BYTE* buf, int size)
 {
   return -1;
 }
-
+*/
 static __int64 dvd_file_seek(URLContext *h, __int64 pos, int whence)
 {  
   CDVDInputStream* pInputStream = (CDVDInputStream*)h->priv_data;
@@ -160,12 +161,10 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
   if (!pInput) return false;
 
-  if (!m_dllAvFormat.Load() || !m_dllAvCodec.Load() || !m_dllAvUtil.Load() )
-  {
+  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllAvFormat.Load())  {
     CLog::Log(LOGERROR,"CDVDDemuxFFmpeg::Open - failed to load ffmpeg libraries");
     return false;
   }
-
 
   // register codecs
   m_dllAvFormat.av_register_all();
@@ -211,7 +210,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     // allows internal ffmpeg protocols to be used
     if( m_dllAvFormat.av_open_input_file(&m_pFormatContext, strFile.c_str(), iformat, FFMPEG_FILE_BUFFER_SIZE, NULL) < 0 )
     {
-      CLog::DebugLog("Error, could not open file %s", strFile.c_str());
+      CLog::Log(LOGDEBUG, "Error, could not open file %s", strFile.c_str());
       Dispose();
       return false;
     }
@@ -231,7 +230,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       context->max_packet_size = FFMPEG_DVDNAV_BUFFER_SIZE;
       context->is_streamed = 1;
     }
-    else if( m_pInput->IsStreamType(DVDSTREAM_TYPE_FILE) )
+    else
     {
       if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
         context->is_streamed = 1;
@@ -263,15 +262,15 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       pd.filename = strFile.c_str();
 
       // read data using avformat's buffers
-      pd.buf_size = m_dllAvFormat.get_buffer(m_ioContext, pd.buf, sizeof(probe_buffer));
-      m_dllAvFormat.url_fseek(m_ioContext , 0, SEEK_SET);
-      
+      pd.buf_size = m_dllAvFormat.get_buffer(m_ioContext, pd.buf, sizeof(probe_buffer));            
       if (pd.buf_size == 0)
       {
         CLog::Log(LOGERROR, "%s - error reading from input stream, %s", __FUNCTION__, strFile.c_str());
         return false;
       }
-      
+      // restore position again
+      m_dllAvFormat.url_fseek(m_ioContext , 0, SEEK_SET);
+
       iformat = m_dllAvFormat.av_probe_input_format(&pd, 1);
       if (!iformat)
       {
@@ -284,7 +283,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     // open the demuxer
     if (m_dllAvFormat.av_open_input_stream(&m_pFormatContext, m_ioContext, strFile.c_str(), iformat, NULL) < 0)
     {
-      CLog::DebugLog("Error, could not open file", strFile.c_str());
+      CLog::Log(LOGERROR, "Error, could not open file %s", strFile.c_str());
       Dispose();
       return false;
     }
@@ -297,10 +296,11 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   // so we do this for files only
   if (streaminfo)
   {
+    CLog::Log(LOGDEBUG, "%s - av_find_stream_info starting", __FUNCTION__);
     int iErr = m_dllAvFormat.av_find_stream_info(m_pFormatContext);
     if (iErr < 0)
     {
-      CLog::Log(LOGDEBUG,"could not find codec parameters for %s", strFile.c_str());
+      CLog::Log(LOGWARNING,"could not find codec parameters for %s", strFile.c_str());
       if (m_pFormatContext->nb_streams == 1 && m_pFormatContext->streams[0]->codec->codec_id == CODEC_ID_AC3)
       {
         // special case, our codecs can still handle it.
@@ -311,6 +311,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
         return false;
       }
     }
+    CLog::Log(LOGDEBUG, "%s - av_find_stream_info finished", __FUNCTION__);
   }
   // reset any timeout
   g_urltimeout = 0;
@@ -322,9 +323,23 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   m_dllAvFormat.dump_format(m_pFormatContext, 0, strFile.c_str(), 0);
 
   // add the ffmpeg streams to our own stream array
-  for (unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
+  m_program = 0;
+  if (m_pFormatContext->nb_programs)
   {
-    AddStream(i);
+    // discard nonselected programs
+    for (unsigned int i = 0; i < m_pFormatContext->nb_programs; i++)
+    {
+      if(i != m_program)
+        m_pFormatContext->programs[m_program]->discard = AVDISCARD_ALL;
+    }
+    // add streams from selected program
+    for (unsigned int i = 0; i < m_pFormatContext->programs[m_program]->nb_stream_indexes; i++)
+      AddStream(m_pFormatContext->programs[m_program]->stream_index[i]);
+  }
+  else
+  {
+    for (unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
+      AddStream(i);
   }
 
   return true;
@@ -351,7 +366,7 @@ void CDVDDemuxFFmpeg::Dispose()
     if (m_streams[i]) 
     {
       if (m_streams[i]->ExtraData)
-        delete[] m_streams[i]->ExtraData;
+        delete[] (BYTE*)(m_streams[i]->ExtraData);
       delete m_streams[i];
     }
     m_streams[i] = NULL;
@@ -428,7 +443,7 @@ void CDVDDemuxFFmpeg::SetSpeed(int iSpeed)
 
 double CDVDDemuxFFmpeg::ConvertTimestamp(__int64 pts, int den, int num)
 {
-  if (pts == AV_NOPTS_VALUE)
+  if (pts == (int64_t)AV_NOPTS_VALUE)
     return DVD_NOPTS_VALUE;
 
   // do calculations in floats as they can easily overflow otherwise
@@ -436,7 +451,7 @@ double CDVDDemuxFFmpeg::ConvertTimestamp(__int64 pts, int den, int num)
   double timestamp = (double)pts * num  / den;
   double starttime = 0.0f;
 
-  if (m_pFormatContext->start_time != AV_NOPTS_VALUE)
+  if (m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE)
     starttime = (double)m_pFormatContext->start_time / AV_TIME_BASE;
 
   if(timestamp > starttime)
@@ -489,7 +504,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
       Flush();
     }
     else
-    {        
+    {
       // XXX, in some cases ffmpeg returns a negative packet size
       if (pkt.size < 0 || pkt.stream_index >= MAX_STREAMS)
       {
@@ -499,7 +514,21 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
       {
         AVStream *stream = m_pFormatContext->streams[pkt.stream_index];
 
-        pPacket = CDVDDemuxUtils::AllocateDemuxPacket(pkt.size);
+        if (m_pFormatContext->nb_programs)
+        {
+          /* check so packet belongs to selected program */
+          for (unsigned int i = 0; i < m_pFormatContext->programs[m_program]->nb_stream_indexes; i++)
+          {
+            if(pkt.stream_index == (int)m_pFormatContext->programs[m_program]->stream_index[i])
+            {
+              pPacket = CDVDDemuxUtils::AllocateDemuxPacket(pkt.size);
+              break;
+            }
+          }
+        }
+        else
+          pPacket = CDVDDemuxUtils::AllocateDemuxPacket(pkt.size);
+
         if (pPacket)
         {
           // lavf sometimes bugs out and gives 0 dts/pts instead of no dts/pts
@@ -525,10 +554,10 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
 
           // copy contents into our own packet
           pPacket->iSize = pkt.size;
-          
+
           // maybe we can avoid a memcpy here by detecting where pkt.destruct is pointing too?
           memcpy(pPacket->pData, pkt.data, pPacket->iSize);
-          
+
           pPacket->pts = ConvertTimestamp(pkt.pts, stream->time_base.den, stream->time_base.num);
           pPacket->dts = ConvertTimestamp(pkt.dts, stream->time_base.den, stream->time_base.num);
           pPacket->duration =  DVD_SEC_TO_TIME((double)pkt.duration * stream->time_base.num / stream->time_base.den);
@@ -536,7 +565,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
           // used to guess streamlength
           if (pPacket->dts != DVD_NOPTS_VALUE && (pPacket->dts > m_iCurrentPts || m_iCurrentPts == DVD_NOPTS_VALUE))
             m_iCurrentPts = pPacket->dts;
-          
+
           pPacket->iStreamId = pkt.stream_index; // XXX just for now
         }
       }
@@ -546,7 +575,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
   Unlock();
 
   if (!pPacket) return NULL;
-  
+
   // check streams, can we make this a bit more simple?
   if (pPacket && pPacket->iStreamId >= 0 && pPacket->iStreamId <= MAX_STREAMS)
   {
@@ -582,8 +611,15 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
 
 bool CDVDDemuxFFmpeg::Seek(int iTime, bool bBackword)
 {
+  if(!m_pInput->Seek(0, SEEK_POSSIBLE) 
+  && !m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG))
+  {
+    CLog::Log(LOGDEBUG, "%s - input stream reports it is not seekable", __FUNCTION__);
+    return false;
+  }
+
   __int64 seek_pts = (__int64)iTime * (AV_TIME_BASE / 1000);
-  if (m_pFormatContext->start_time != AV_NOPTS_VALUE && seek_pts < m_pFormatContext->start_time)
+  if (m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE && seek_pts < m_pFormatContext->start_time)
   {
     seek_pts += m_pFormatContext->start_time;
   }
@@ -607,8 +643,11 @@ bool CDVDDemuxFFmpeg::SeekByte(__int64 pos)
 
 int CDVDDemuxFFmpeg::GetStreamLenght()
 {
+  if (!m_pFormatContext)
+    return 0;
+
   /* apperently ffmpeg messes up sometimes, so check for negative value too */
-  if (m_pFormatContext->duration == AV_NOPTS_VALUE || m_pFormatContext->duration < 0LL)
+  if (m_pFormatContext->duration == (int64_t)AV_NOPTS_VALUE || m_pFormatContext->duration < 0LL)
   {
     // no duration is available for us
     // try to calculate it
@@ -705,7 +744,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
     }
 
     // generic stuff
-    if (pStream->duration != AV_NOPTS_VALUE) m_streams[iId]->iDuration = (int)((pStream->duration / AV_TIME_BASE) & 0xFFFFFFFF);
+    if (pStream->duration != (int64_t)AV_NOPTS_VALUE) m_streams[iId]->iDuration = (int)((pStream->duration / AV_TIME_BASE) & 0xFFFFFFFF);
 
     m_streams[iId]->codec = pStream->codec->codec_id;
     m_streams[iId]->iId = iId;

@@ -31,6 +31,7 @@ int main(void)
     // Create controller
     PLT_MicroMediaController controller(ctrlPoint);
 
+#ifdef HAS_SERVER
     // create device
     PLT_DeviceHostReference server(
         new PLT_FileMediaServer(
@@ -51,11 +52,13 @@ int main(void)
     server->m_ManufacturerURL = "http://www.plutinosoft.com/";
 
     // add device
-    //upnp.AddDevice(server);
+    upnp.AddDevice(server);
 
     // remove device uuid from ctrlpoint
     ctrlPoint->IgnoreUUID(server->GetUUID());
+#endif
 
+#ifdef HAS_RENDERER
     // create device
     PLT_DeviceHostReference renderer(
         new PLT_MediaRenderer(NULL, "Platinum Media Renderer"));
@@ -65,8 +68,9 @@ int main(void)
     renderer->m_Manufacturer = "Plutinosoft";
 
     // add device
-    //upnp.AddDevice(renderer);
+    upnp.AddDevice(renderer);
     ctrlPoint->IgnoreUUID(renderer->GetUUID());
+#endif
 
     // add control point to upnp engine and start it
     upnp.AddCtrlPoint(ctrlPoint);
@@ -75,7 +79,7 @@ int main(void)
 
     // tell control point to perform extra broadcast discover 
     // in case our device doesn't support multicast
-    ctrlPoint->Discover(NPT_HttpUrl("255.255.255.255", 1900, "*"), "upnp:rootdevice", 1);
+    //ctrlPoint->Discover(NPT_HttpUrl("255.255.255.255", 1900, "*"), "upnp:rootdevice", 1);
 
     // start to process commands 
     controller.ProcessCommandLoop();

@@ -39,7 +39,7 @@ public:
   virtual void SetEnabled(bool bEnable);
   virtual void SetColorDiffuse(D3DCOLOR color);
 
-  void SetText(const string &label) {m_buttonControl.SetLabel(label);};
+  void SetText(const std::string &label) {m_buttonControl.SetLabel(label);};
   virtual float GetXPosition() const { return m_buttonControl.GetXPosition();};
   virtual float GetYPosition() const { return m_buttonControl.GetYPosition();};
   virtual CStdString GetDescription() const;

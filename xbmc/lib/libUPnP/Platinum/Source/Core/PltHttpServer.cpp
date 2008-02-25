@@ -20,10 +20,12 @@ NPT_SET_LOCAL_LOGGER("platinum.core.http.server")
 /*----------------------------------------------------------------------
 |   PLT_HttpServer::PLT_HttpServer
 +---------------------------------------------------------------------*/
-PLT_HttpServer::PLT_HttpServer(unsigned int            port,
-                               NPT_Cardinal            max_clients) :
+PLT_HttpServer::PLT_HttpServer(unsigned int port,
+                               NPT_Cardinal max_clients,
+                               bool         reuse_address /* = false */) :
     m_TaskManager(new PLT_TaskManager(max_clients)),
     m_Port(port),
+    m_ReuseAddress(reuse_address),
     m_HttpListenTask(NULL)
 {
 }
@@ -44,14 +46,14 @@ PLT_HttpServer::Start()
 {
     // if we're given a port for our http server, try it
     if (m_Port) {
-        NPT_CHECK_SEVERE(SetListenPort(m_Port));
+        NPT_CHECK_SEVERE(SetListenPort(m_Port, m_ReuseAddress));
     } else {
         // randomly try a port for our http server
         int retries = 100;
         do {    
             int random = NPT_System::GetRandomInteger();
             int port = (unsigned short)(50000 + (random % 15000));
-            if (NPT_SUCCEEDED(SetListenPort(port))) {
+            if (NPT_SUCCEEDED(SetListenPort(port, m_ReuseAddress))) {
                 break;
             }
         } while (--retries > 0);
@@ -146,27 +148,33 @@ PLT_FileServer::ServeFile(NPT_String        filename,
         response->SetStatus(404, "File Not Found");
         return NPT_SUCCESS;
     } else {
+        NPT_HttpEntity* entity = new NPT_HttpEntity();
+        entity->SetContentLength(total_len);
+        response->SetEntity(entity);
+
         // set the content type if we can
-        if (filename.EndsWith(".htm") ||filename.EndsWith(".html") ) {
-            PLT_HttpHelper::SetContentType(response, "text/html");
-        } else if (filename.EndsWith(".xml")) {
-            PLT_HttpHelper::SetContentType(response, "text/xml; charset=\"utf-8\"");
-        } else if (filename.EndsWith(".mp3")) {
-            PLT_HttpHelper::SetContentType(response, "audio/mpeg");
-        } else if (filename.EndsWith(".mpg")) {
-            PLT_HttpHelper::SetContentType(response, "video/mpeg");
-        } else if (filename.EndsWith(".wma")) {
-            PLT_HttpHelper::SetContentType(response, "audio/x-ms-wma"); 
+        if (filename.EndsWith(".htm", true) ||filename.EndsWith(".html", true) ) {
+            entity->SetContentType("text/html");
+        } else if (filename.EndsWith(".xml", true)) {
+            entity->SetContentType("text/xml; charset=\"utf-8\"");
+        } else if (filename.EndsWith(".mp3", true)) {
+            entity->SetContentType("audio/mpeg");
+        } else if (filename.EndsWith(".mpg", true)) {
+            entity->SetContentType("video/mpeg");
+        } else if (filename.EndsWith(".avi", true) || filename.EndsWith(".divx", true)) {
+            entity->SetContentType("video/avi");
+        } else if (filename.EndsWith(".wma", true)) {
+            entity->SetContentType("audio/x-ms-wma"); 
+        } else if (filename.EndsWith(".avi", true) || filename.EndsWith(".divx", true)) {
+            entity->SetContentType("video/avi"); 
+        } else if (filename.EndsWith(".jpg", true)) {
+            entity->SetContentType("image/jpeg");
         } else {
-            PLT_HttpHelper::SetContentType(response, "application/octet-stream");
+            entity->SetContentType("application/octet-stream");
         }
 
-        if (request_is_head) {            
-            NPT_HttpEntity* entity = new NPT_HttpEntity();
-            entity->SetContentLength(total_len);
-            response->SetEntity(entity);
-            return NPT_SUCCESS;
-        }
+        // request is HEAD, returns without setting a body
+        if (request_is_head) return NPT_SUCCESS;
 
         // see if it was a byte range request
         if (start != -1 || end != -1) {
@@ -191,26 +199,18 @@ PLT_FileServer::ServeFile(NPT_String        filename,
             }
 
             // in case the range request was invalid or we can't seek then respond appropriately
-            if (start_offset == -1 || end_offset == -1 || start_offset > end_offset || 
-                NPT_FAILED(stream->Seek(start_offset))) {
-                    response->SetStatus(416, "Requested range not satisfiable");
-                } else {
-                    len = end_offset - start_offset + 1;
-                    response->SetStatus(206, "Partial Content");
-                    PLT_HttpHelper::SetContentRange(response, start_offset, end_offset, total_len);
+            if (start_offset == -1 || end_offset == -1 || start_offset > end_offset || NPT_FAILED(stream->Seek(start_offset))) {
+                response->SetStatus(416, "Requested range not satisfiable");
+            } else {
+                len = end_offset - start_offset + 1;
+                response->SetStatus(206, "Partial Content");
+                PLT_HttpHelper::SetContentRange(response, start_offset, end_offset, total_len);
 
-                    NPT_InputStreamReference body(stream);
-                    NPT_HttpEntity* entity = new NPT_HttpEntity();
-                    entity->SetInputStream(body);
-                    entity->SetContentLength(len);
-                    response->SetEntity(entity);
-                }
+                entity->SetInputStream(stream);
+                entity->SetContentLength(len);
+            }
         } else {
-            NPT_InputStreamReference body(stream);
-            NPT_HttpEntity* entity = new NPT_HttpEntity();
-            entity->SetInputStream(body);
-            entity->SetContentLength(total_len);
-            response->SetEntity(entity);
+            entity->SetInputStream(stream);
         }
         return NPT_SUCCESS;
     }

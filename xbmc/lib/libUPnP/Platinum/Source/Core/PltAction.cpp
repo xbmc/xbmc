@@ -324,7 +324,6 @@ PLT_Action::FormatSoapRequest(NPT_OutputStream& stream)
 
     NPT_String str;
     NPT_CHECK_SEVERE(PLT_XmlHelper::Serialize(*envelope, str));
-    str = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>" + str;
     delete envelope;
 
     return stream.Write((const char*)str, str.GetLength());
@@ -360,15 +359,15 @@ PLT_Action::FormatSoapResponse(NPT_OutputStream& stream)
             NPT_CHECK_SEVERE(node->AddText(argument->GetValue()));
             NPT_CHECK_SEVERE(response->AddChild(node));
 
-            if (m_ActionDesc->GetService()->GetServiceType().StartsWith("urn:microsoft.com")) {
-                // if the service is from microsoft, we need to add
-                // additionnal attributes and namespaces
-                PLT_StateVariable* var = argument->GetDesc()->GetRelatedStateVariable();
-                if (var) {
-                    node->SetNamespaceUri("dt", "urn:schemas-microsoft-com:datatypes");
-                    node->SetAttribute("dt", "dt", var->GetDataType());
-                }
-            }
+//            if (m_ActionDesc->GetService()->GetServiceType().StartsWith("urn:microsoft.com")) {
+//                // if the service is from microsoft, we need to add
+//                // additionnal attributes and namespaces
+//                PLT_StateVariable* var = argument->GetDesc()->GetRelatedStateVariable();
+//                if (var) {
+//                    node->SetNamespaceUri("dt", "urn:schemas-microsoft-com:datatypes");
+//                    node->SetAttribute("dt", "dt", var->GetDataType());
+//                }
+//            }
         }
     }
 
@@ -377,7 +376,6 @@ PLT_Action::FormatSoapResponse(NPT_OutputStream& stream)
     NPT_CHECK_SEVERE(PLT_XmlHelper::Serialize(*envelope, str));
     delete envelope;
 
-    str = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>" + str;
     return stream.Write((const char*)str, str.GetLength());
 }
 
@@ -415,8 +413,6 @@ PLT_Action::FormatSoapError(unsigned int code, NPT_String desc, NPT_OutputStream
     NPT_String str;
     NPT_CHECK_SEVERE(PLT_XmlHelper::Serialize(*envelope, str));
     delete envelope;
-
-    str = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>" + str;
 
     return stream.Write((const char*)str, str.GetLength());
 }

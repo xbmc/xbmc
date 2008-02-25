@@ -31,6 +31,8 @@
 #include "ViewDatabase.h"
 #include "AutoSwitch.h"
 
+using namespace std;
+
 CStdString CGUIViewState::m_strPlaylistDirectory;
 VECSHARES CGUIViewState::m_shares;
 
@@ -205,6 +207,23 @@ void CGUIViewState::AddSortMethod(SORT_METHOD sortMethod, int buttonLabel, LABEL
   m_sortMethods.push_back(sort);
 }
 
+void CGUIViewState::SetCurrentSortMethod(int method)
+{
+  bool ignoreThe = g_guiSettings.GetBool("filelists.ignorethewhensorting");
+
+  if (method < SORT_METHOD_NONE || method >= SORT_METHOD_MAX)
+    return; // invalid
+
+  // compensate for "Ignore The" options to make it easier on the skin
+  if (ignoreThe && (method == SORT_METHOD_LABEL || method == SORT_METHOD_TITLE || method == SORT_METHOD_ARTIST || method == SORT_METHOD_ALBUM || method == SORT_METHOD_STUDIO))
+    method++;
+  else if (!ignoreThe && (method == SORT_METHOD_LABEL_IGNORE_THE || method == SORT_METHOD_TITLE_IGNORE_THE || method == SORT_METHOD_ARTIST_IGNORE_THE || method==SORT_METHOD_ALBUM_IGNORE_THE || method == SORT_METHOD_STUDIO_IGNORE_THE))
+    method--;
+
+  SetSortMethod((SORT_METHOD)method);
+  SaveViewState();
+}
+
 void CGUIViewState::SetSortMethod(SORT_METHOD sortMethod)
 {
   for (int i=0; i<(int)m_sortMethods.size(); ++i)
@@ -217,12 +236,14 @@ void CGUIViewState::SetSortMethod(SORT_METHOD sortMethod)
   }
 }
 
-SORT_METHOD CGUIViewState::SetNextSortMethod()
+SORT_METHOD CGUIViewState::SetNextSortMethod(int direction /* = 1 */)
 {
-  m_currentSortMethod++;
+  m_currentSortMethod += direction;
 
-  if (m_currentSortMethod>=(int)m_sortMethods.size())
+  if (m_currentSortMethod >= (int)m_sortMethods.size())
     m_currentSortMethod=0;
+  if (m_currentSortMethod < 0)
+    m_currentSortMethod = m_sortMethods.size() ? (int)m_sortMethods.size() - 1 : 0;
 
   SaveViewState();
 
@@ -370,4 +391,5 @@ void CGUIViewStateFromItems::SaveViewState()
 {
   SaveViewToDb(m_items.m_strPath, m_gWindowManager.GetActiveWindow());
 }
+
 

@@ -154,7 +154,7 @@ public:
   int FrameWidth, FrameHeight; ///< Dimensions of ImageSet in pixels.
   int nLoops;          // Number of Loops (0 = infinite)
 
-  vector<CAnimatedGif*> m_vecimg;        ///< Images' Vector.
+  std::vector<CAnimatedGif*> m_vecimg;        ///< Images' Vector.
 
   void AddImage (CAnimatedGif*);   ///< Append new image to vector (push_back)
 

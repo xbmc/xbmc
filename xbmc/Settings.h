@@ -11,6 +11,7 @@ class CProfile;
 #include "FileItem.h"
 
 #include <vector>
+#include <map>
 
 #define SHARE_TYPE_UNKNOWN      0
 #define SHARE_TYPE_LOCAL        1
@@ -91,7 +92,7 @@ public:
   CShare() { m_iDriveType=SHARE_TYPE_UNKNOWN; m_iLockMode=LOCK_MODE_EVERYONE; m_iBadPwdCount=0; m_iHasLock=0; m_ignore=false; };
   virtual ~CShare() {};
 
-  void FromNameAndPaths(const CStdString &category, const CStdString &name, const vector<CStdString> &paths);
+  void FromNameAndPaths(const CStdString &category, const CStdString &name, const std::vector<CStdString> &paths);
   bool isWritable() const;
   CStdString strName; ///< Name of the share, can be choosen freely.
   CStdString strStatus; ///< Status of the share (eg has disk etc.)
@@ -140,7 +141,7 @@ public:
 
   CStdString m_strThumbnailImage; ///< Path to a thumbnail image for the share, or blank for default
 
-  vector<CStdString> vecPaths;
+  std::vector<CStdString> vecPaths;
   bool m_ignore; /// <Do not store in xml
 };
 
@@ -292,7 +293,7 @@ public:
     bool m_prioritiseAPEv2tags;
     CStdString m_musicItemSeparator;
     CStdString m_videoItemSeparator;
-    vector<CStdString> m_musicTagsFromFileFilters;
+    std::vector<CStdString> m_musicTagsFromFileFilters;
 
     bool m_bVideoLibraryHideAllItems;
     bool m_bVideoLibraryAllItemsOnBottom;
@@ -356,6 +357,7 @@ public:
 
     bool m_bMyVideoPlaylistRepeat;
     bool m_bMyVideoPlaylistShuffle;
+    bool m_bMyVideoNavFlatten;
 
     int m_iVideoStartWindow;
 
@@ -380,7 +382,7 @@ public:
     VOICE_MASK m_karaokeVoiceMask[4];
   };
 
-  std::map<int,std::pair<std::vector<int>,std::vector<string> > > m_mapRssUrls;
+  std::map<int,std::pair<std::vector<int>,std::vector<std::string> > > m_mapRssUrls;
   std::map<int, CSkinString> m_skinStrings;
   std::map<int, CSkinBool> m_skinBools;
 
@@ -452,10 +454,10 @@ public:
   bool SaveSources();
 
 protected:
-  void GetInteger(const TiXmlElement* pRootElement, const char *strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);
-  void GetFloat(const TiXmlElement* pRootElement, const char *strTagName, float& fValue, const float fDefault, const float fMin, const float fMax);
-  void GetString(const TiXmlElement* pRootElement, const char *strTagName, CStdString& strValue, const CStdString& strDefaultValue);
-  void GetString(const TiXmlElement* pRootElement, const char *strTagName, char *szValue, const CStdString& strDefaultValue);
+  bool GetInteger(const TiXmlElement* pRootElement, const char *strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);
+  bool GetFloat(const TiXmlElement* pRootElement, const char *strTagName, float& fValue, const float fDefault, const float fMin, const float fMax);
+  bool GetString(const TiXmlElement* pRootElement, const char *strTagName, CStdString& strValue, const CStdString& strDefaultValue);
+  bool GetString(const TiXmlElement* pRootElement, const char *strTagName, char *szValue, const CStdString& strDefaultValue);
   bool GetShare(const CStdString &category, const TiXmlNode *source, CShare &share);
   void GetShares(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSHARES& items, CStdString& strDefault);
   bool SetShares(TiXmlNode *root, const char *section, const VECSHARES &shares, const char *defaultPath);

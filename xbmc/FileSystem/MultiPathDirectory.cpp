@@ -5,6 +5,7 @@
 #include "../Settings.h"
 #include "../Util.h"
 
+using namespace std;
 using namespace DIRECTORY;
 
 //
@@ -89,9 +90,9 @@ bool CMultiPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
   return true;
 }
 
-bool CMultiPathDirectory::Exists(const CStdString& strPath)
+bool CMultiPathDirectory::Exists(const char* strPath)
 {
-  CLog::Log(LOGDEBUG,"Testing Existance (%s)", strPath.c_str());
+  CLog::Log(LOGDEBUG,"Testing Existance (%s)", strPath);
 
   vector<CStdString> vecPaths;
   if (!GetPaths(strPath, vecPaths))

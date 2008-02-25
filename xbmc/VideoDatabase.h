@@ -4,11 +4,11 @@
 #include "settings/VideoSettings.h"
 #include <set>
 
-typedef vector<CStdString> VECMOVIEYEARS;
-typedef vector<CStdString> VECMOVIEACTORS;
-typedef vector<CStdString> VECMOVIEGENRES;
-typedef vector<CVideoInfoTag> VECMOVIES;
-typedef vector<CStdString> VECMOVIESFILES;
+typedef std::vector<CStdString> VECMOVIEYEARS;
+typedef std::vector<CStdString> VECMOVIEACTORS;
+typedef std::vector<CStdString> VECMOVIEGENRES;
+typedef std::vector<CVideoInfoTag> VECMOVIES;
+typedef std::vector<CStdString> VECMOVIESFILES;
 
 #define VIDEO_SHOW_ALL 0
 #define VIDEO_SHOW_UNWATCHED 1
@@ -219,7 +219,7 @@ public:
   } type;
 };
 
-typedef vector<CBookmark> VECBOOKMARKS;
+typedef std::vector<CBookmark> VECBOOKMARKS;
 
 #define COMPARE_PERCENTAGE     0.90f // 90%
 #define COMPARE_PERCENTAGE_MIN 0.50f // 50%
@@ -259,7 +259,7 @@ public:
 
   void GetFilePath(long lMovieId, CStdString &filePath, int iType=0); // 0=movies, 1=episodes, 2=tvshows, 3=musicvideo
   bool GetPathHash(const CStdString &path, CStdString &hash);
-  bool GetPaths(map<CStdString,VIDEO::SScanSettings> &paths);
+  bool GetPaths(std::map<CStdString,VIDEO::SScanSettings> &paths);
 
   void GetMovieInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, long lMovieId = -1);
   void GetTvShowInfo(const CStdString& strPath, CVideoInfoTag& details, long lTvShowId = -1);
@@ -268,9 +268,9 @@ public:
 
   long GetMovieInfo(const CStdString& strFilenameAndPath);
   long GetTvShowInfo(const CStdString& strPath);
-  long GetEpisodeInfo(const CStdString& strFilenameAndPath, long lEpisodeId=-1); // lEpisodeId is used for hinting due to two parters...
+  long GetEpisodeInfo(const CStdString& strFilenameAndPath, long lEpisodeId=-1, long lSeasonId=-1); // lEpisodeId, lSeasonId are used for multipart episodes as hints
   long GetMusicVideoInfo(const CStdString& strFilenameAndPath);
-  void GetEpisodesByFile(const CStdString& strFilenameAndPath, vector<CVideoInfoTag>& episodes);
+  void GetEpisodesByFile(const CStdString& strFilenameAndPath, std::vector<CVideoInfoTag>& episodes);
 
   void SetDetailsForMovie(const CStdString& strFilenameAndPath, const CVideoInfoTag& details);
   long SetDetailsForTvShow(const CStdString& strPath, const CVideoInfoTag& details);
@@ -326,8 +326,8 @@ public:
   void SetVideoSettings(const CStdString &strFilenameAndPath, const CVideoSettings &settings);
   void EraseVideoSettings();
 
-  bool GetStackTimes(const CStdString &filePath, vector<long> &times);
-  void SetStackTimes(const CStdString &filePath, vector<long> &times);
+  bool GetStackTimes(const CStdString &filePath, std::vector<long> &times);
+  void SetStackTimes(const CStdString &filePath, std::vector<long> &times);
   void SetScraperForPath(const CStdString& filePath, const SScraperInfo& info, const VIDEO::SScanSettings& settings);
   bool SetPathHash(const CStdString &path, const CStdString &hash);
   bool LinkMovieToTvshow(long idMovie, long idShow);
@@ -400,12 +400,12 @@ protected:
   void AddStudioToMovie(long lMovieId, long lStudioId);
   void AddStudioToMusicVideo(long lMVideoId, long lStudioId);
 
-  void AddGenreAndDirectorsAndStudios(const CVideoInfoTag& details, vector<long>& vecDirectors, vector<long>& vecGenres, vector<long>& vecStudios);
+  void AddGenreAndDirectorsAndStudios(const CVideoInfoTag& details, std::vector<long>& vecDirectors, std::vector<long>& vecGenres, std::vector<long>& vecStudios);
 
-  CVideoInfoTag GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool needsCast = false);
-  CVideoInfoTag GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool needsCast = false);
-  CVideoInfoTag GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool needsCast = false);
-  CVideoInfoTag GetDetailsForMusicVideo(auto_ptr<Dataset> &pDS);
+  CVideoInfoTag GetDetailsForMovie(std::auto_ptr<dbiplus::Dataset> &pDS, bool needsCast = false);
+  CVideoInfoTag GetDetailsForTvShow(std::auto_ptr<dbiplus::Dataset> &pDS, bool needsCast = false);
+  CVideoInfoTag GetDetailsForEpisode(std::auto_ptr<dbiplus::Dataset> &pDS, bool needsCast = false);
+  CVideoInfoTag GetDetailsForMusicVideo(std::auto_ptr<dbiplus::Dataset> &pDS);
 
 private:
   virtual bool CreateTables();

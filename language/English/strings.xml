@@ -1551,6 +1551,7 @@
   <string id="20188">Backing up BIOS</string>
   <string id="20189">Enable Auto Scrolling for Plot &amp; Review</string>
   <string id="20190">Custom</string>
+  <string id="20191">Enable debug logging</string>
 
   <!-- string id's 20200 thru 20211 are reserved for speedstrings (LocalizeStrings.cpp)-->
   
@@ -1678,6 +1679,7 @@
   <string id="20407">Scraper Settings</string>
   <string id="20408">Downloading Music Video information</string>
   <string id="20409">Downloading TV Show information</string>
+  <string id="20411">Flatten</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>

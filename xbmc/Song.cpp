@@ -22,6 +22,8 @@
 #include "stdafx.h"
 #include "Song.h"
 
+using namespace std;
+using namespace MUSIC_INFO;
 
 CSong::CSong(CMusicInfoTag& tag)
 {

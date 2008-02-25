@@ -12,7 +12,7 @@ public:
 
 protected:
   virtual void OnInitWindow();
-  vector<CFileItem*> m_vecListItems;
+  std::vector<CFileItem*> m_vecListItems;
 
   void OnPopupMenu(int iItem);
   void DoRename(int iItem);

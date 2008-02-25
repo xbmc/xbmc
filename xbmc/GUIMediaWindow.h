@@ -21,6 +21,7 @@ public:
   int GetViewContainerID() const { return m_viewControl.GetCurrentControl(); };
   virtual bool HasListItems() const { return true; };
   virtual CFileItem *GetCurrentListItem(int offset = 0);
+  int GetContainerSortMethod();
 
 protected:
   CGUIControl *GetFirstFocusableControl(int id);
@@ -60,7 +61,7 @@ protected:
   // current path and history
   CFileItemList m_vecItems;
   CDirectoryHistory m_history;
-  auto_ptr<CGUIViewState> m_guiState;
+  std::auto_ptr<CGUIViewState> m_guiState;
 
   // save control state on window exit
   int m_iLastControl;

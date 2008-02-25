@@ -58,9 +58,9 @@ protected:
   int m_scanType; // 0 - load from files, 1 - albums, 2 - artists
   CMusicDatabase m_musicDatabase;
 
-  set<CStdString> m_pathsToScan;
-  set<CAlbum> m_albumsToScan;
-  set<CArtist> m_artistsToScan;
-  set<CStdString> m_pathsToCount;
+  std::set<CStdString> m_pathsToScan;
+  std::set<CAlbum> m_albumsToScan;
+  std::set<CArtist> m_artistsToScan;
+  std::set<CStdString> m_pathsToCount;
 };
 }

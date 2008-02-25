@@ -226,6 +226,8 @@
 #define CONTAINER_HAS_PREVIOUS      373
 #define CONTAINER_SUBITEM           374
 #define CONTAINER_TVSHOWTHUMB       375
+#define CONTAINER_NUM_PAGES         376
+#define CONTAINER_CURRENT_PAGE      377
 
 #define MUSICPM_ENABLED             380
 #define MUSICPM_SONGSPLAYED         381
@@ -318,6 +320,7 @@
 #define SYSTEM_TOTAL_SPACE_X        701
 #define SYSTEM_TOTAL_SPACE_Y        702
 #define SYSTEM_TOTAL_SPACE_Z        703
+#define SYSTEM_GET_BOOL             704
 
 #define SYSTEM_PLATFORM_XBOX        740
 #define SYSTEM_PLATFORM_LINUX       741
@@ -458,7 +461,7 @@ public:
   void SetCurrentSlide(CFileItem &item);
   const CFileItem &GetCurrentSlide() const { return m_currentSlide; };
   void ResetCurrentSlide();
-  void SetCurrentSongTag(const CMusicInfoTag &tag) 
+  void SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag &tag) 
   {
     //CLog::Log(LOGDEBUG, "Asked to SetCurrentTag");
     *m_currentFile.GetMusicInfoTag() = tag; 
@@ -470,7 +473,7 @@ public:
     m_currentFile.m_lStartOffset = 0;
   };
 
-  const CMusicInfoTag *GetCurrentSongTag() const
+  const MUSIC_INFO::CMusicInfoTag *GetCurrentSongTag() const
   { 
     if (m_currentFile.HasMusicInfoTag())
       return m_currentFile.GetMusicInfoTag(); 
@@ -509,7 +512,7 @@ public:
   void ToggleShowInfo() { m_playerShowInfo = !m_playerShowInfo; };
   bool m_performingSeek;
 
-  string GetSystemHeatInfo(int info);
+  std::string GetSystemHeatInfo(int info);
 
   void UpdateFPS();
   inline float GetFPS() const { return m_fps; };
@@ -587,7 +590,7 @@ protected:
 
   CStdString m_launchingXBE;
 
-  map<int, int> m_containerMoves;  // direction of list moving
+  std::map<int, int> m_containerMoves;  // direction of list moving
   int m_nextWindowID;
   int m_prevWindowID;
 
@@ -596,7 +599,7 @@ protected:
   public:
     CStdString m_info;    // the text expression
     int m_id;             // the id used to identify this expression
-    list<int> m_postfix;  // the postfix binary expression
+    std::list<int> m_postfix;  // the postfix binary expression
     void operator=(const CCombinedValue& mSrc);
   };
 

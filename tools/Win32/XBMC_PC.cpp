@@ -277,8 +277,8 @@ void CXBMC_PC::LoadSettings()
     WndStatus.ptMinPosition.y = 0;
     WndStatus.ptMaxPosition.x = -GetSystemMetrics(SM_CXBORDER);
     WndStatus.ptMaxPosition.y =-GetSystemMetrics(SM_CYBORDER);
-
-    SetWindowPlacement(m_hWnd, &WndStatus);
+    if (!this->m_fullscreen)
+      SetWindowPlacement(m_hWnd, &WndStatus);
   }
 }
 
@@ -299,6 +299,15 @@ HRESULT CXBMC_PC::Create( HINSTANCE hInstance )
 //   SAFE_RELEASE( m_pD3D );
 //  return DisplayErrorMsg( hr, MSGERR_APPMUSTEXIT );
 //  }
+  int nArgs;
+  LPWSTR * szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
+  for(int  i=0; i<nArgs; i++)  {
+      if (lstrcmpW(szArglist[i], L"-fs") == 0) {
+          m_fullscreen = true;
+      }
+  }
+  // Free memory allocated for CommandLineToArgvW arguments.
+   LocalFree(szArglist);
 
   // Unless a substitute hWnd has been specified, create a window to
   // render into
@@ -311,22 +320,28 @@ HRESULT CXBMC_PC::Create( HINSTANCE hInstance )
                           (HBRUSH)GetStockObject(WHITE_BRUSH),
                           NULL, _T("XBoxMediaCenterPC") };
     RegisterClass( &wndClass );
-
+    HMENU toolMenu;
     // Set the window's initial style
-    m_dwWindowStyle = WS_OVERLAPPED|WS_CAPTION|WS_SYSMENU|WS_THICKFRAME|
-                      WS_MINIMIZEBOX|WS_MAXIMIZEBOX|WS_VISIBLE;
+    if (m_fullscreen) {
+      m_dwWindowStyle = WS_POPUP | WS_VISIBLE;
+      m_dwCreationWidth = GetSystemMetrics(SM_CXSCREEN);
+      m_dwCreationHeight = GetSystemMetrics(SM_CYSCREEN);
+      toolMenu = NULL;
+    } else {
+      m_dwWindowStyle = WS_OVERLAPPED|WS_CAPTION|WS_SYSMENU|WS_THICKFRAME|
+                        WS_MINIMIZEBOX|WS_MAXIMIZEBOX|WS_VISIBLE;  
+      toolMenu = LoadMenu( hInstance, MAKEINTRESOURCE(IDR_MENU) );                        
+    }
 
-    // Set the window's initial width
+    // Set the window's initial width 
     RECT rc;
     SetRect( &rc, 0, 0, m_dwCreationWidth, m_dwCreationHeight );
-    AdjustWindowRect( &rc, m_dwWindowStyle, TRUE );
+    AdjustWindowRect( &rc, m_dwWindowStyle, !m_fullscreen );
 
     // Create the render window
-    m_hWnd = CreateWindow( _T("XBoxMediaCenterPC"), m_strWindowTitle.c_str(), m_dwWindowStyle,
-                            CW_USEDEFAULT, CW_USEDEFAULT,
-                            (rc.right-rc.left), (rc.bottom-rc.top), 0L,
-                            LoadMenu( hInstance, MAKEINTRESOURCE(IDR_MENU) ),
-                            hInstance, 0L );
+    //int foo  = rc.bottom-rc.top;
+    m_hWnd = CreateWindow(_T("XBoxMediaCenterPC"), m_strWindowTitle.c_str(), m_dwWindowStyle,
+                            0, 0, (rc.right-rc.left), (rc.bottom-rc.top), 0L, toolMenu , hInstance, 0L );
   }
 
   // The focus window can be a specified to be a different window than the

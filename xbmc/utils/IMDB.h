@@ -18,7 +18,7 @@
 class TiXmlDocument;
 class CGUIDialogProgress;
 
-typedef vector<CScraperUrl> IMDB_MOVIELIST;
+typedef std::vector<CScraperUrl> IMDB_MOVIELIST;
 typedef std::map<std::pair<int,int>,CScraperUrl> IMDB_EPISODELIST;
 
 class CIMDB : public CThread
@@ -45,6 +45,7 @@ public:
   bool ScrapeFilename(const CStdString& strFileName, CVideoInfoTag& details);
 
   void SetScraperInfo(const SScraperInfo& info) { m_info = info; }
+  static void ClearCache();
 protected:
   void RemoveAllAfter(char* szMovie, const char* szSearch);
   CHTTP m_http;

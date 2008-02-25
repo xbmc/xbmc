@@ -4,9 +4,6 @@
 #include "HTTP.h"
 
 struct SScraperInfo;
-
-using namespace MUSIC_GRABBER;
-
 namespace MUSIC_GRABBER
 {
 class CMusicInfoScraper : public CThread
@@ -33,8 +30,8 @@ protected:
   void LoadArtistinfo();
   virtual void OnStartup();
   virtual void Process();
-  vector<CMusicAlbumInfo> m_vecAlbums;
-  vector<CMusicArtistInfo> m_vecArtists;
+  std::vector<CMusicAlbumInfo> m_vecAlbums;
+  std::vector<CMusicArtistInfo> m_vecArtists;
   CStdString m_strAlbum;
   CStdString m_strArtist;
   int m_iAlbum;

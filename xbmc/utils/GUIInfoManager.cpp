@@ -41,8 +41,11 @@
 
 #include "GUILabelControl.h"  // for CInfoLabel
 
+using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
+using namespace MEDIA_DETECT;
+using namespace MUSIC_INFO;
 
 CGUIInfoManager g_infoManager;
 
@@ -333,6 +336,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.platform.linux")) ret = SYSTEM_PLATFORM_LINUX;
     else if (strTest.Equals("system.platform.xbox")) ret = SYSTEM_PLATFORM_XBOX;
     else if (strTest.Equals("system.platform.windows")) ret = SYSTEM_PLATFORM_WINDOWS;
+    else if (strTest.Left(15).Equals("system.getbool("))
+      return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_GET_BOOL : SYSTEM_GET_BOOL, ConditionalStringParameter(strTest.Mid(15,strTest.size()-16)), 0));
   }
   else if (strTest.Left(8).Equals("isempty("))
   {
@@ -516,6 +521,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (info.Left(8).Equals("subitem("))
       return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_SUBITEM : CONTAINER_SUBITEM, id, atoi(info.Mid(8, info.GetLength() - 9))));
     else if (info.Equals("hasthumb")) ret = CONTAINER_HAS_THUMB;
+    else if (info.Equals("numpages")) ret = CONTAINER_NUM_PAGES;
+    else if (info.Equals("currentpage")) ret = CONTAINER_CURRENT_PAGE;
+    else if (info.Equals("sortmethod")) ret = CONTAINER_SORT_METHOD;
     else if (info.Left(5).Equals("sort("))
     {
       SORT_METHOD sort = SORT_METHOD_NONE;
@@ -970,6 +978,17 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
       }
       break;
     }
+  case CONTAINER_SORT_METHOD:
+    {
+      CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      if (window)
+        strLabel = g_localizeStrings.Get(((CGUIMediaWindow*)window)->GetContainerSortMethod());
+    }
+    break;
+  case CONTAINER_NUM_PAGES:
+  case CONTAINER_CURRENT_PAGE:
+    return GetMultiInfoLabel(GUIInfo(info), contextWindow);
+    break;
   case SYSTEM_BUILD_VERSION:
     strLabel = GetVersion();
     break;
@@ -1704,6 +1723,9 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
     case SYSTEM_HAS_ALARM:
       bReturn = g_alarmClock.hasAlarm(m_stringParameters[info.m_data1]);
       break;
+    case SYSTEM_GET_BOOL:
+      bReturn = g_guiSettings.GetBool(m_stringParameters[info.m_data1]);
+      break;
     case CONTAINER_CONTENT:
       bReturn = m_stringParameters[info.m_data1].Equals(m_content);
       break;
@@ -1879,6 +1901,31 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
   else if (info.m_info == SYSTEM_TIME)
   {
     return GetTime((TIME_FORMAT)info.m_data1);
+  }
+  else if (info.m_info == CONTAINER_NUM_PAGES || info.m_info == CONTAINER_CURRENT_PAGE)
+  {
+    const CGUIControl *control = NULL;
+    if (info.m_data1)
+    { // container specified
+      CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
+      if (window)
+        control = window->GetControl(info.m_data1);
+    }
+    else
+    { // no container specified - assume a mediawindow
+      CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      if (window)
+        control = window->GetControl(window->GetViewContainerID());
+    }
+    if (control && control->IsContainer())
+    {
+      CStdString strNum;
+      if (info.m_info == CONTAINER_NUM_PAGES)
+        strNum.Format("%u", ((CGUIBaseContainer *)control)->GetNumPages());
+      else
+        strNum.Format("%u", ((CGUIBaseContainer *)control)->GetCurrentPage());
+      return strNum;
+    }
   }
   return StringUtils::EmptyString;
 }
