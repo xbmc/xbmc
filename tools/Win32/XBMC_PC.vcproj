@@ -2173,6 +2173,12 @@
 					RelativePath="..\..\xbmc\FileSystem\CMythFile.h">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\FileSystem\CMythSession.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\CMythSession.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileSystem\Directory.cpp">
 				</File>
 				<File

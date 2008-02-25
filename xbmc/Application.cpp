@@ -67,6 +67,7 @@
 #include "FileSystem/DirectoryCache.h"
 #include "FileSystem/StackDirectory.h"
 #include "FileSystem/DllLibCurl.h"
+#include "FileSystem/CMythSession.h"
 #include "utils/TuxBoxUtil.h"
 #include "utils/SystemInfo.h"
 #include "ApplicationRenderer.h"
@@ -4762,6 +4763,9 @@ void CApplication::ProcessSlow()
 
   // check for any idle curl connections
   g_curlInterface.CheckIdle();
+
+  // check for any idle myth sessions
+  CCMythSession::CheckIdle();
 
 #ifdef HAS_TIME_SERVER
   // check for any needed sntp update
