@@ -100,13 +100,13 @@
 			<RegExp conditional="fullcredits" input="$$2" output="&lt;url function=&quot;GetMovieCast&quot;&gt;http://$INFO[url]/title/\1/fullcredits#cast&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
-			<RegExp input="$$2" output="&lt;url function=&quot;GetMovieDirectors&quot;&gt;http://$INFO[url]/title/\1/fullcredits#directors&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;" dest="5+">
+			<RegExp input="$$2" output="&lt;url cache=&quot;$$2-credits.html&quot; function=&quot;GetMovieDirectors&quot;&gt;http://$INFO[url]/title/\1/fullcredits&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
-			<RegExp input="$$2" output="&lt;url function=&quot;GetMovieWriters&quot;&gt;http://$INFO[url]/title/\1/fullcredits#writers&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;" dest="5+">
+			<RegExp input="$$2" output="&lt;url cache=&quot;$$2-credits.html&quot; function=&quot;GetMovieWriters&quot;&gt;http://$INFO[url]/title/\1/fullcredits&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
-			<RegExp conditional="impawards" input="$$2" output="&lt;url function=&quot;GetIMPALink&quot;&gt;http://$INFO[url]/title/\1/posters&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;" dest="5+">
+			<RegExp conditional="impawards" input="$$2" output="&lt;url cache=&quot;$$2-posters.html&quot; function=&quot;GetIMPALink&quot;&gt;http://$INFO[url]/title/\1/posters&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
 			<RegExp conditional="movieposterdb" input="$$1" output="&lt;url function=&quot;GetMoviePosterDB&quot;&gt;http://www.movieposterdb.com/movie/\1&lt;/url&gt;" dest="5+">
@@ -115,7 +115,7 @@
 			<RegExp conditional="trailer" input="$$1" output="&lt;url function=&quot;GetTrailer&quot;&gt;http://$INFO[url]\1&lt;/url&gt;" dest="5+">
 				<expression>&lt;a href=&quot;([^&quot;]*(trailers-screenplay|videos-)[^&quot;]*)&quot;</expression>
 			</RegExp>
-			<RegExp input="$$2" output="&lt;url function=&quot;GetIMDBPoster&quot;&gt;http://$INFO[url]/title/\1/posters&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;" dest="5+">
+			<RegExp input="$$2" output="&lt;url cache=&quot;$$2-posters.html&quot; function=&quot;GetIMDBPoster&quot;&gt;http://$INFO[url]/title/\1/posters&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
 			<expression noclean="1"></expression>
