@@ -70,6 +70,7 @@
 #include "FileSystem/DirectoryCache.h"
 #include "FileSystem/StackDirectory.h"
 #include "FileSystem/DllLibCurl.h"
+#include "FileSystem/CMythSession.h"
 #include "utils/TuxBoxUtil.h"
 #include "utils/SystemInfo.h"
 #include "ApplicationRenderer.h"
@@ -896,7 +897,7 @@ HRESULT CApplication::Create(HWND hWnd)
     s.append("/Library/Application Support/XBMC/UserData");
     profile.setDirectory(s.c_str());
 #else
-    profile.setDirectory(_P("q:\\UserData"));
+    profile.setDirectory("q:\\UserData");
 #endif
     profile.setName("Master user");
     profile.setLockMode(LOCK_MODE_EVERYONE);
@@ -5561,6 +5562,9 @@ void CApplication::ProcessSlow()
 
   // check for any idle curl connections
   g_curlInterface.CheckIdle();
+
+  // check for any idle myth sessions
+  CCMythSession::CheckIdle();
 
 #ifdef HAS_TIME_SERVER
   // check for any needed sntp update
