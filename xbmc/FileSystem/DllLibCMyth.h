@@ -61,6 +61,7 @@ public:
   virtual char*             proginfo_channame       (cmyth_proginfo_t prog)=0;
   virtual char*             proginfo_chansign       (cmyth_proginfo_t prog)=0;
   virtual char*             proginfo_recgroup       (cmyth_proginfo_t prog)=0;
+  virtual char*             proginfo_category       (cmyth_proginfo_t prog)=0;
   virtual long long         proginfo_length         (cmyth_proginfo_t prog)=0;
   virtual int               proginfo_length_sec     (cmyth_proginfo_t prog)=0;
   virtual cmyth_timestamp_t proginfo_start          (cmyth_proginfo_t prog)=0;
@@ -76,6 +77,7 @@ public:
   virtual void             dbg_level                (int l)=0;
 
   virtual time_t           timestamp_to_unixtime    (cmyth_timestamp_t ts)=0;
+  virtual int              timestamp_compare        (cmyth_timestamp_t ts1, cmyth_timestamp_t ts2)=0;
   virtual cmyth_database_t database_init            (char *host, char *db_name, char *user, char *pass)=0;
   virtual cmyth_chanlist_t mysql_get_chanlist       (cmyth_database_t db)=0;
 };
@@ -137,6 +139,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
   DEFINE_METHOD1(char*,               proginfo_channame,        (cmyth_proginfo_t p1))
   DEFINE_METHOD1(char*,               proginfo_chansign,        (cmyth_proginfo_t p1))
   DEFINE_METHOD1(char*,               proginfo_recgroup,        (cmyth_proginfo_t p1))
+  DEFINE_METHOD1(char*,               proginfo_category,        (cmyth_proginfo_t p1))
   DEFINE_METHOD1(long long,           proginfo_length,          (cmyth_proginfo_t p1))
   DEFINE_METHOD1(int,                 proginfo_length_sec,      (cmyth_proginfo_t p1))
   DEFINE_METHOD1(cmyth_timestamp_t,   proginfo_start,           (cmyth_proginfo_t p1))
@@ -152,6 +155,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
   DEFINE_METHOD1(void,                dbg_level,                (int p1))
 
   DEFINE_METHOD1(time_t,              timestamp_to_unixtime,    (cmyth_timestamp_t p1))
+  DEFINE_METHOD2(int,                 timestamp_compare,        (cmyth_timestamp_t p1, cmyth_timestamp_t p2))
   DEFINE_METHOD4(cmyth_database_t,    database_init,            (char *p1, char *p2, char *p3, char *p4))
   DEFINE_METHOD1(cmyth_chanlist_t,    mysql_get_chanlist,       (cmyth_database_t p1))
   BEGIN_METHOD_RESOLVE()
@@ -196,12 +200,14 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
     RESOLVE_METHOD_RENAME(cmyth_file_length, file_length)
     RESOLVE_METHOD_RENAME(cmyth_file_start, file_start)
 
+    RESOLVE_METHOD_RENAME(cmyth_proginfo_pathname, proginfo_pathname)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_title, proginfo_title)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_description, proginfo_description)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_chanstr, proginfo_chanstr)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_channame, proginfo_channame)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_chansign, proginfo_chansign)
-    RESOLVE_METHOD_RENAME(cmyth_proginfo_pathname, proginfo_pathname)
+    RESOLVE_METHOD_RENAME(cmyth_proginfo_recgroup, proginfo_recgroup)
+    RESOLVE_METHOD_RENAME(cmyth_proginfo_category, proginfo_category)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_length, proginfo_length)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_length_sec, proginfo_length_sec)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_start, proginfo_start)
@@ -209,7 +215,6 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
     RESOLVE_METHOD_RENAME(cmyth_proginfo_rec_start, proginfo_rec_start)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_rec_end, proginfo_rec_end)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_rec_status, proginfo_rec_status)
-    RESOLVE_METHOD_RENAME(cmyth_proginfo_recgroup, proginfo_recgroup)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_get_from_basename, proginfo_get_from_basename)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_delete_recording, proginfo_delete_recording)
 
@@ -218,6 +223,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
     RESOLVE_METHOD_RENAME(cmyth_dbg_level, dbg_level)
 
     RESOLVE_METHOD_RENAME(cmyth_timestamp_to_unixtime, timestamp_to_unixtime)
+    RESOLVE_METHOD_RENAME(cmyth_timestamp_compare, timestamp_compare)
     RESOLVE_METHOD_RENAME(cmyth_database_init, database_init)
     RESOLVE_METHOD_RENAME(cmyth_mysql_get_chanlist, mysql_get_chanlist)
   END_METHOD_RESOLVE()
