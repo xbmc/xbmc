@@ -83,6 +83,15 @@ CCMythSession::CCMythSession(const CURL& url)
 
   m_dll = new DllLibCMyth;
   m_dll->Load();
+  if(m_dll->IsLoaded())
+  {
+    if(g_advancedSettings.m_logLevel >= LOG_LEVEL_DEBUG_SAMBA)
+      m_dll->dbg_level(CMYTH_DBG_ALL);
+    else if(g_advancedSettings.m_logLevel >= LOG_LEVEL_DEBUG)
+      m_dll->dbg_level(CMYTH_DBG_DETAIL);
+    else
+      m_dll->dbg_level(CMYTH_DBG_ERROR);
+  }
 }
 
 CCMythSession::~CCMythSession()
