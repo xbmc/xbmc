@@ -587,7 +587,7 @@ bool CFileRar::OpenInArchive()
   strncpy(m_pCmd->ExtrPath, m_strCacheDir.c_str(), sizeof(m_pCmd->Command) - 2);
   m_pCmd->ExtrPath[sizeof(m_pCmd->Command) - 2] = '\0';
   AddEndSlash(m_pCmd->ExtrPath);
-  m_pCmd->ParseArg("-va",NULL);
+  m_pCmd->ParseArg((char *)"-va",NULL);
   CStdString strPath = m_strPathInRar;
   strPath.Replace('/', '\\');
 

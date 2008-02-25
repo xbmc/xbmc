@@ -5874,8 +5874,8 @@ bool CUtil::SudoCommand(const CStdString &strCommand)
     {
       char **args = (char **)alloca(sizeof(char *) * (arrArgs.size() + 3));
       memset(args, 0, (sizeof(char *) * (arrArgs.size() + 3)));
-      args[0] = "/usr/bin/sudo";
-      args[1] = "-S";
+      args[0] = (char *)"/usr/bin/sudo";
+      args[1] = (char *)"-S";
       for (size_t i=0; i<arrArgs.size(); i++)
       {
         args[i+2] = (char *)arrArgs[i].c_str();  
