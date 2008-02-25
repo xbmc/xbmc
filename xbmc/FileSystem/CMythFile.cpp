@@ -427,7 +427,7 @@ CVideoInfoTag* CCMythFile::GetVideoInfoTag()
     if((str = m_dll->proginfo_title(m_program)))
     {
       m_infotag.m_strTitle    += " : ";
-      m_infotag.m_strTitle     = str;
+      m_infotag.m_strTitle    += str;
       m_infotag.m_strShowTitle = str;
       m_dll->ref_release(str);
     }
