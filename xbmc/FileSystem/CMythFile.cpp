@@ -11,42 +11,23 @@ extern "C" {
 using namespace XFILE;
 using namespace std;
 
-#ifndef PRId64
-#ifdef _MSC_VER
-#define PRId64 "I64d"
-#endif
-#endif
-
 static void prog_update_callback(cmyth_proginfo_t prog)
 {
   CLog::Log(LOGDEBUG, "%s - prog_update_callback", __FUNCTION__);
 }
 
-void CCMythFile::Process()
+#ifndef PRId64
+#ifdef _MSC_VER
+#define PRId64 "I64d"
+#else
+#define PRId64 "lld"
+#endif
+#endif
+
+void CCMythFile::OnEvent(int event, const string& data)
 {
-  char buf[128];
-  int  next;
-
-  struct timeval to;
-  to.tv_sec = 1;
-  to.tv_usec = 0;
-
-  while(!m_bStop)
-  {
-    /* check if there are any new events */
-    if(m_dll->event_select(m_event, &to) <= 0)
-      continue;
-
-    buf[sizeof(buf)-1] = 0;
-    next = m_dll->event_get(m_event, buf, sizeof(buf));
-
-    if(next == CMYTH_EVENT_UNKNOWN)
-      CLog::Log(LOGDEBUG, "%s - MythTV unknown event (error?)", __FUNCTION__);
-
-    { CSingleLock lock(m_section);
-      m_events.push(make_pair<int, string>(next, buf));
-    }
-  }
+  CSingleLock lock(m_section);
+  m_events.push(std::make_pair<int, string>(event, data));
 }
 
 bool CCMythFile::HandleEvents()
@@ -65,39 +46,15 @@ bool CCMythFile::HandleEvents()
     lock.Leave();
 
     switch (next) {
-    case CMYTH_EVENT_UNKNOWN:
-      CLog::Log(LOGDEBUG, "%s - MythTV unknown event (error?)", __FUNCTION__);
-      break;
     case CMYTH_EVENT_CLOSE:
-      CLog::Log(LOGDEBUG, "%s - MythTV event CMYTH_EVENT_CLOSE", __FUNCTION__);
-      break;
-    case CMYTH_EVENT_RECORDING_LIST_CHANGE:
-      CLog::Log(LOGDEBUG, "%s - MythTV event RECORDING_LIST_CHANGE", __FUNCTION__);
-      if (m_programlist)
-        m_dll->ref_release(m_programlist);
-//      m_programlist = m_dll->proglist_get_all_recorded(m_control);
-      break;
-    case CMYTH_EVENT_SCHEDULE_CHANGE:
-      CLog::Log(LOGDEBUG, "%s - MythTV event SCHEDULE_CHANGE", __FUNCTION__);
-      break;
-    case CMYTH_EVENT_DONE_RECORDING:
-      CLog::Log(LOGDEBUG, "%s - MythTV event DONE_RECORDING", __FUNCTION__);
-      break;
-    case CMYTH_EVENT_QUIT_LIVETV:
-      CLog::Log(LOGDEBUG, "%s - MythTV event QUIT_LIVETV", __FUNCTION__);
+      Close();
       break;
     case CMYTH_EVENT_LIVETV_CHAIN_UPDATE:
-    {
-      CLog::Log(LOGDEBUG, "%s - MythTV event %s", __FUNCTION__, data.c_str());
-      string chainid = data.substr(strlen("LIVETV_CHAIN UPDATE "));
-      m_dll->livetv_chain_update(m_recorder, (char*)chainid.c_str(), 4096);
-      break;
-    }
-    case CMYTH_EVENT_SIGNAL:
-      CLog::Log(LOGDEBUG, "%s - MythTV event SIGNAL", __FUNCTION__);
-      break;
-    case CMYTH_EVENT_ASK_RECORDING:
-      CLog::Log(LOGDEBUG, "%s - MythTV event CMYTH_EVENT_ASK_RECORDING", __FUNCTION__);
+      {
+        string chainid = data.substr(strlen("LIVETV_CHAIN UPDATE "));
+        if(m_recorder)
+          m_dll->livetv_chain_update(m_recorder, (char*)chainid.c_str(), 4096);
+      }
       break;
     }
 
@@ -106,33 +63,32 @@ bool CCMythFile::HandleEvents()
   return true;
 }
 
-bool CCMythFile::SetupConnection(const CURL& url)
+bool CCMythFile::SetupConnection(const CURL& url, bool control, bool event, bool database)
 {
-  if(!m_dll->IsLoaded())
+  if(!m_session)
+    m_session =  CCMythSession::AquireSession(url);
+
+  if(!m_session)
     return false;
 
-  m_dll->dbg_level(CMYTH_DBG_DETAIL);
-
-  int port = url.GetPort();
-  if(port == 0)
-    port = 6543;
-
-  m_control = m_dll->conn_connect_ctrl((char*)url.GetHostName().c_str(), port, 16*1024, 4096);
-  if(!m_control)
+  if(!m_dll)
   {
-    CLog::Log(LOGERROR, "%s - unable to connect to server %s, port %d", __FUNCTION__, url.GetHostName().c_str(), port);
-    return false;
+    m_dll = m_session->GetLibrary();
+    if(!m_dll)
+      return false;
   }
 
-  m_event = m_dll->conn_connect_event((char*)url.GetHostName().c_str(), port, 16*1024, 4096);
-  if(!m_event)
+  if(control && !m_control)
   {
-    CLog::Log(LOGERROR, "%s - unable to connect to server %s, port %d", __FUNCTION__, url.GetHostName().c_str(), port);
-    return false;
+    m_control = m_session->GetControl();
+    if(!m_control)
+      return false;
   }
-  /* start event handler thread */
-  Create(false, THREAD_MINSTACKSIZE);
-
+  if(event)
+  {
+    if(!m_session->SetListener(this))
+      return false;
+  }
   return true;
 }
 
@@ -219,7 +175,7 @@ bool CCMythFile::Open(const CURL& url, bool binary)
 
   if(path.Left(11) == "recordings/")
   {
-    if(!SetupConnection(url))
+    if(!SetupConnection(url, true, false, false))
       return false;
 
     if(!SetupRecording(url))
@@ -229,7 +185,7 @@ bool CCMythFile::Open(const CURL& url, bool binary)
   } 
   else if (path.Left(9) == "channels/")
   {
-    if(!SetupConnection(url))
+    if(!SetupConnection(url, true, true, false))
       return false;
 
     if(!SetupLiveTV(url))
@@ -256,20 +212,13 @@ bool CCMythFile::Open(const CURL& url, bool binary)
 
 void CCMythFile::Close()
 {
-  if(!m_dll->IsLoaded())
+  if(!m_dll)
     return;
-
-  StopThread();
 
   if(m_program)
   {
     m_dll->ref_release(m_program);
     m_program = NULL;
-  }
-  if(m_programlist)
-  {
-    m_dll->ref_release(m_programlist);
-    m_programlist = NULL;
   }
   if(m_recorder)
   {
@@ -282,28 +231,27 @@ void CCMythFile::Close()
     m_dll->ref_release(m_file);
     m_file = NULL;
   }
-  if(m_control)
+  if(m_session)
   {
-    m_dll->ref_release(m_control);
-    m_control = NULL;
+    m_session->SetListener(NULL);
+    CCMythSession::ReleaseSession(m_session);
+    m_session = NULL;
   }
 }
 
 CCMythFile::CCMythFile()
 {
-  m_dll         = new DllLibCMyth();
+  m_dll         = NULL;
   m_program     = NULL;
-  m_programlist = NULL;
   m_recorder    = NULL;
   m_control     = NULL;
   m_file        = NULL;
-  m_dll->Load();
+  m_session     = NULL;
 }
 
 CCMythFile::~CCMythFile()
 {
   Close();
-  delete m_dll;
 }
 
 bool CCMythFile::Exists(const CURL& url)
@@ -312,7 +260,7 @@ bool CCMythFile::Exists(const CURL& url)
 
   if(path.Left(11) == "recordings/")
   {
-    if(!SetupConnection(url))
+    if(!SetupConnection(url, true, false, false))
       return false;
 
     m_filename = path.Mid(11);
@@ -396,6 +344,10 @@ unsigned int CCMythFile::Read(void* buffer, __int64 size)
   /* check for any events */
   HandleEvents();
 
+  /* file might have gotten closed */
+  if(!m_recorder && !m_file)
+    return 0;
+
   while(true)
   {
     if(m_recorder)
@@ -442,17 +394,18 @@ unsigned int CCMythFile::Read(void* buffer, __int64 size)
     if(ret > (int)remain)
     {
       CLog::Log(LOGERROR, "%s - potential buffer overrun", __FUNCTION__);
-      return (unsigned int)size;
+      return size;
     }
     remain -= ret;
     size   += ret;
   } while(remain > 0);
 
-  return (unsigned int)size;
+  return size;
 }
 
 bool CCMythFile::SkipNext()
 {
+  HandleEvents();
   if(m_recorder)
     return m_dll->recorder_is_recording(m_recorder) > 0;
 
