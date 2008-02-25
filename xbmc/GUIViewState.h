@@ -13,6 +13,7 @@ public:
   int GetViewAsControl() const;
 
   SORT_METHOD SetNextSortMethod(int direction = 1);
+  void SetCurrentSortMethod(int method);
   SORT_METHOD GetSortMethod() const;
   int GetSortMethodLabel() const;
   void GetSortMethodLabelMasks(LABEL_MASKS& masks) const;
