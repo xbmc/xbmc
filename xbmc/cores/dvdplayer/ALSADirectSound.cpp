@@ -93,7 +93,7 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
 
   if(m_bPassthrough)
   {
-    if(deviceuse.Find("AES") < 0)
+    if(deviceuse == "iec958")
     {
       /* http://www.alsa-project.org/alsa-doc/alsa-lib/group___digital___audio___interface.html */
       deviceuse += ":AES0=0x6";
