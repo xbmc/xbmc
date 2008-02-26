@@ -452,10 +452,13 @@ bool CDVDPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
 
     if(packet)
     {
+      if(packet->iStreamId < 0)
+        return true;
+
       stream = m_pSubtitleDemuxer->GetStream(packet->iStreamId);
       if (!stream)
       {
-        CLog::Log(LOGERROR, "%s - Error demux packet doesn't belong to any stream", __FUNCTION__);
+        CLog::Log(LOGERROR, "%s - Error demux packet doesn't belong to a valid stream", __FUNCTION__);
         return false;
       }
       if(stream->source == STREAM_SOURCE_NONE)
@@ -473,10 +476,13 @@ bool CDVDPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
 
   if(packet)
   {
+    if(packet->iStreamId < 0)
+      return true;
+
     stream = m_pDemuxer->GetStream(packet->iStreamId);
     if (!stream) 
     {
-      CLog::Log(LOGERROR, "%s - Error demux packet doesn't belong to any stream", __FUNCTION__);
+      CLog::Log(LOGERROR, "%s - Error demux packet doesn't belong to a valid stream", __FUNCTION__);
       return false;
     }
     if(stream->source == STREAM_SOURCE_NONE)
@@ -731,8 +737,9 @@ void CDVDPlayer::Process()
     DemuxPacket* pPacket = NULL;
     CDemuxStream *pStream = NULL;
     ReadPacket(pPacket, pStream);
-    if (pPacket &&  pPacket->iStreamId == -1)
+    if (pPacket && !pStream)
     {
+      /* probably a empty packet, just free it and move on */
       CDVDDemuxUtils::FreeDemuxPacket(pPacket); 
       continue;
     }
