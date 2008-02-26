@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xboxmediacenter.com-->
-<!--Date of translation: 01/06/2008-->
+<!--Date of translation: 02/24/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 11214-->
+<!--Based on english strings version 11774-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -328,6 +328,7 @@
   <string id="406">Fuktighet</string>
   <string id="407">Från</string>
   <string id="408">vid</string>
+  <string id="409">Standard</string>
   <string id="410">Kontaktar Weather.com</string>
   <string id="411">Hämtar väder för:</string>
   <string id="412">Kunde inte hämta väderdata</string>
@@ -1470,6 +1471,7 @@ den här visualiseringen</string>
   <string id="20188">Tar backup av BIOS</string>
   <string id="20189">Aktivera automatisk rullning för handling och recension</string>
   <string id="20190">Egen</string>
+  <string id="20191">Aktivera debug-loggning</string>
   <string id="20250">Festa på! (filmer)</string>
   <string id="20251">Blandar drinkar (filmer)</string>
   <string id="20252">Fyller glasen (filmer)</string>
@@ -1540,7 +1542,7 @@ den här visualiseringen</string>
   <string id="20371">Sätt säsongsminiatyr</string>
   <string id="20372">Säsongsbild</string>
   <string id="20373">Säsong</string>
-  <string id="20374">Ladda ner videoinformation</string>
+  <string id="20374">Hämtar Film-information</string>
   <string id="20375">Oassocierat innehåll</string>
   <string id="20376">Först sänt:</string>
   <string id="20377">Uppdatera TV serieinformation</string>
@@ -1573,6 +1575,11 @@ den här visualiseringen</string>
   <string id="20404">Studio:</string>
   <string id="20405">Ta bort avsnittsbokmärke</string>
   <string id="20406">Lägg till avsnittsbokmärke</string>
+  <string id="20407">Scraper-inställningar</string>
+  <string id="20408">Hämtar Musikvideo-information</string>
+  <string id="20409">Hämtar TV serie-information</string>
+  <string id="20410">Trailer</string>
+  <string id="20411">Lägg ihop</string>
   <string id="21330">Visa dolda filer och mappar</string>
   <string id="21331">TuxBox klient</string>
   <string id="21332">VARNING: Vald TuxBox enhet är i inspelningsläge!</string>

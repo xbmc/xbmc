@@ -55,9 +55,9 @@ AC_ARG_ENABLE([cwiid],
 
 AC_ARG_ENABLE([pcre],
             [AS_HELP_STRING([--enable-pcre],
-               [enable PCRE based regular expression support (default is no)])],
+               [enable PCRE based regular expression support (default is yes)])],
             [use_pcre=$enableval],
-            [use_pcre=no])
+            [use_pcre=yes])
 
 # Checks for programs.
 AC_PROG_AWK

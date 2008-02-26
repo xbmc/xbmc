@@ -34,8 +34,8 @@ public:
 protected:
   virtual void Scroll(int amount);
   void SetCursor(int cursor);
-  virtual bool MoveDown(DWORD nextControl);
-  virtual bool MoveUp(DWORD nextControl);
+  virtual bool MoveDown(bool wrapAround);
+  virtual bool MoveUp(bool wrapAround);
   virtual void ValidateOffset();
   virtual void SelectItem(int item);
 };

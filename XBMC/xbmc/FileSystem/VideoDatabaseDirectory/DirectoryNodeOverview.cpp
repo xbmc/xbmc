@@ -55,7 +55,11 @@ bool CDirectoryNodeOverview::GetContent(CFileItemList& items)
   CStdString path = BuildPath();
   for (int i = 0; i < (int)vec.size(); ++i)
   {
-    CFileItem* pItem = new CFileItem(path + vec[i].first + "/", true);
+    CFileItem* pItem;
+    if (g_stSettings.m_bMyVideoNavFlatten)
+      pItem = new CFileItem(path + vec[i].first + "/2/", true);
+    else
+      pItem = new CFileItem(path + vec[i].first + "/", true);
     pItem->SetLabel(g_localizeStrings.Get(vec[i].second));
     pItem->SetLabelPreformated(true);
     pItem->SetCanQueue(false);

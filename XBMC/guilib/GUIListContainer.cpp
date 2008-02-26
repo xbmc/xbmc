@@ -191,7 +191,7 @@ bool CGUIListContainer::OnMessage(CGUIMessage& message)
   return CGUIBaseContainer::OnMessage(message);
 }
 
-bool CGUIListContainer::MoveUp(DWORD control)
+bool CGUIListContainer::MoveUp(bool wrapAround)
 {
   if (m_cursor > 0)
   {
@@ -201,7 +201,7 @@ bool CGUIListContainer::MoveUp(DWORD control)
   {
     ScrollToOffset(m_offset - 1);
   }
-  else if ( control == 0 || control == GetID() )
+  else if (wrapAround)
   {
     if (m_items.size() > 0)
     { // move 2 last item in list, and set our container moving up
@@ -217,7 +217,7 @@ bool CGUIListContainer::MoveUp(DWORD control)
   return true;
 }
 
-bool CGUIListContainer::MoveDown(DWORD control)
+bool CGUIListContainer::MoveDown(bool wrapAround)
 {
   if (m_offset + m_cursor + 1 < (int)m_items.size())
   {
@@ -230,7 +230,7 @@ bool CGUIListContainer::MoveDown(DWORD control)
       ScrollToOffset(m_offset + 1);
     }
   }
-  else if( control == 0 || control == GetID() )
+  else if(wrapAround)
   { // move first item in list, and set our container moving in the "down" direction
     SetCursor(0);
     ScrollToOffset(0);

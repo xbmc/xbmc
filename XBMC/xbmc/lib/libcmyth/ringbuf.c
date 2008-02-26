@@ -36,6 +36,7 @@
 #include <mvp_refmem.h>
 #include <cmyth.h>
 #include <cmyth_local.h>
+#include <string.h>
 
 /*
  * cmyth_ringbuf_destroy(cmyth_ringbuf_t rb)

@@ -319,18 +319,19 @@ CGUISettings::CGUISettings(void)
   AddGroup(4, 13000);
   AddCategory(4, "system", 13281);
   // advanced only configuration
-  AddInt(1, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
+  AddBool(1, "system.debuglogging", 20191, false);
+  AddInt(2, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
 #ifdef HAS_XBOX_HARDWARE
-  AddSeparator(2, "system.sep2");
-  AddInt(3, "system.ledcolour", 13339, LED_COLOUR_NO_CHANGE, LED_COLOUR_NO_CHANGE, 1, LED_COLOUR_OFF, SPIN_CONTROL_TEXT);
-  AddInt(4, "system.leddisableonplayback", 13345, LED_PLAYBACK_OFF, LED_PLAYBACK_OFF, 1, LED_PLAYBACK_VIDEO_MUSIC, SPIN_CONTROL_TEXT);
-  AddBool(5, "system.ledenableonpaused", 20313, true);
-  AddSeparator(6, "system.sep3");
-  AddBool(7, "system.fanspeedcontrol", 13302, false);
-  AddInt(8, "system.fanspeed", 13300, CFanController::Instance()->GetFanSpeed(), 1, 1, 50, SPIN_CONTROL_TEXT);
-  AddSeparator(9, "system.sep4");
-  AddBool(10, "system.autotemperature", 13301, false);
-  AddInt(11, "system.targettemperature", 13299, 55, 40, 1, 68, SPIN_CONTROL_TEXT);
+  AddSeparator(3, "system.sep2");
+  AddInt(4, "system.ledcolour", 13339, LED_COLOUR_NO_CHANGE, LED_COLOUR_NO_CHANGE, 1, LED_COLOUR_OFF, SPIN_CONTROL_TEXT);
+  AddInt(5, "system.leddisableonplayback", 13345, LED_PLAYBACK_OFF, LED_PLAYBACK_OFF, 1, LED_PLAYBACK_VIDEO_MUSIC, SPIN_CONTROL_TEXT);
+  AddBool(6, "system.ledenableonpaused", 20313, true);
+  AddSeparator(7, "system.sep3");
+  AddBool(8, "system.fanspeedcontrol", 13302, false);
+  AddInt(9, "system.fanspeed", 13300, CFanController::Instance()->GetFanSpeed(), 1, 1, 50, SPIN_CONTROL_TEXT);
+  AddSeparator(10, "system.sep4");
+  AddBool(11, "system.autotemperature", 13301, false);
+  AddInt(12, "system.targettemperature", 13299, 55, 40, 1, 68, SPIN_CONTROL_TEXT);
 #endif
 
 #ifdef HAS_LCD
@@ -929,6 +930,12 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   for (mapIter it = settingsMap.begin(); it != settingsMap.end(); it++)
   {
     LoadFromXML(pRootElement, it, hideSettings);
+  }
+  // setup logging...
+  if (GetBool("system.debuglogging") && g_advancedSettings.m_logLevel < LOG_LEVEL_DEBUG_FREEMEM)
+  {
+    g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG_FREEMEM;
+    CLog::Log(LOGNOTICE, "Enabled debug logging due to GUI setting");
   }
   // Get hardware based stuff...
   CLog::Log(LOGNOTICE, "Getting hardware information now...");

@@ -54,7 +54,7 @@ public:
 
   virtual CStdString GetDescription() const;
   virtual void SaveStates(std::vector<CControlState> &states);
-  int GetSelectedItem() const;
+  virtual int GetSelectedItem() const;
 
   virtual void DoRender(DWORD currentTime);
   void LoadLayout(TiXmlElement *layout);
@@ -79,15 +79,15 @@ protected:
   virtual bool SelectItemFromPoint(const CPoint &point);
   virtual void RenderItem(float posX, float posY, CGUIListItem *item, bool focused);
   virtual void Scroll(int amount);
-  virtual bool MoveDown(DWORD nextControl);
-  virtual bool MoveUp(DWORD nextControl);
+  virtual bool MoveDown(bool wrapAround);
+  virtual bool MoveUp(bool wrapAround);
   virtual void MoveToItem(int item);
   virtual void ValidateOffset();
   virtual int  CorrectOffset(int offset, int cursor) const;
   virtual void UpdateLayout();
   virtual void CalculateLayout();
   virtual void SelectItem(int item) {};
-  void Reset();
+  virtual void Reset();
   bool InsideLayout(const CGUIListItemLayout *layout, const CPoint &point);
 
   inline float Size() const;

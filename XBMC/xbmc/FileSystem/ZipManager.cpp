@@ -79,7 +79,9 @@ bool CZipManager::GetZipList(const CStdString& strPath, std::vector<SZipEntry>& 
   }
 
   SZipEntry ze;
-  readHeader(mFile, ze);
+  char temp[30];
+  mFile.Read(temp,30);
+  readHeader(temp, ze);
   if( ze.header != ZIP_LOCAL_HEADER ) 
   {      
     CLog::Log(LOGDEBUG,"ZipManager: not a zip file!");
@@ -100,8 +102,10 @@ bool CZipManager::GetZipList(const CStdString& strPath, std::vector<SZipEntry>& 
 
   while (mFile.GetPosition() != mFile.GetLength())
   {
-    readHeader(mFile, ze);
+    mFile.Read(temp,30);
+    readHeader(temp, ze);
     if (ze.header != ZIP_LOCAL_HEADER)
+    {
       if (ze.header != ZIP_CENTRAL_HEADER)
       {
         CLog::Log(LOGDEBUG,"ZipManager: broken file %s!",strFile.c_str());
@@ -113,23 +117,23 @@ bool CZipManager::GetZipList(const CStdString& strPath, std::vector<SZipEntry>& 
         mFile.Close();
         return true;
       }
-
-      CStdString strName;
-      mFile.Read(strName.GetBuffer(ze.flength), ze.flength);
-      strName.ReleaseBuffer();
-      g_charsetConverter.stringCharsetToUtf8(strName);
-      ZeroMemory(ze.name, 255);
-      strncpy(ze.name, strName.c_str(), strName.size()>254 ? 254 : strName.size());
-      mFile.Seek(ze.elength,SEEK_CUR);
-      ze.offset = mFile.GetPosition();
-      mFile.Seek(ze.csize,SEEK_CUR);
-      if (ze.flags & 8)
-      {
-        mFile.Read(&ze.crc32,4);
-        mFile.Read(&ze.csize,4);
-        mFile.Read(&ze.usize,4);
-      }
-      items.push_back(ze);
+    }
+    CStdString strName;
+    mFile.Read(strName.GetBuffer(ze.flength), ze.flength);
+    strName.ReleaseBuffer();
+    g_charsetConverter.stringCharsetToUtf8(strName);
+    ZeroMemory(ze.name, 255);
+    strncpy(ze.name, strName.c_str(), strName.size()>254 ? 254 : strName.size());
+    mFile.Seek(ze.elength,SEEK_CUR);
+    ze.offset = mFile.GetPosition();
+    mFile.Seek(ze.csize,SEEK_CUR);
+    if (ze.flags & 8)
+    {
+      mFile.Read(&ze.crc32,4);
+      mFile.Read(&ze.csize,4);
+      mFile.Read(&ze.usize,4);
+    }
+    items.push_back(ze);
   }
   mFile.Close();
   return false; // should never get here with healthy .zips until central header is dealt with
@@ -206,19 +210,19 @@ void CZipManager::CleanUp(const CStdString& strArchive, const CStdString& strPat
   }
 }
 
-void CZipManager::readHeader(CFile& mFile, SZipEntry& info)
+void CZipManager::readHeader(const char* buffer, SZipEntry& info)
 {
-  mFile.Read(&info.header,4);
-  mFile.Read(&info.version,2);
-  mFile.Read(&info.flags,2);
-  mFile.Read(&info.method,2);
-  mFile.Read(&info.mod_time,2);
-  mFile.Read(&info.mod_date,2);
-  mFile.Read(&info.crc32,4);
-  mFile.Read(&info.csize,4);
-  mFile.Read(&info.usize,4);
-  mFile.Read(&info.flength,2);
-  mFile.Read(&info.elength,2);
+  memcpy(&info.header,buffer,4);
+  memcpy(&info.version,buffer+4,2);
+  memcpy(&info.flags,buffer+6,2);
+  memcpy(&info.method,buffer+8,2);
+  memcpy(&info.mod_time,buffer+10,2);
+  memcpy(&info.mod_date,buffer+12,2);
+  memcpy(&info.crc32,buffer+14,4);
+  memcpy(&info.csize,buffer+18,4);
+  memcpy(&info.usize,buffer+22,4);
+  memcpy(&info.flength,buffer+26,2);
+  memcpy(&info.elength,buffer+28,2);
 }
 
 void CZipManager::release(const CStdString& strPath)
@@ -232,4 +236,5 @@ void CZipManager::release(const CStdString& strPath)
     mZipDate.erase(it2);
   }
 }
+
 
