@@ -89,15 +89,8 @@ void CSMB::Init()
     m_context->callbacks.auth_fn = xb_smbc_auth;
     orig_cache = m_context->callbacks.get_cached_srv_fn;
     m_context->callbacks.get_cached_srv_fn = xb_smbc_cache;
-#ifndef _LINUX
     m_context->options.one_share_per_server = true;
-#else
-    // the one_share_per_server behavior causes problems when using more than one smb shares 
-    // concurently. for example - listening to music from one smb share and viewing slide show from the
-    // other.
-    // we dont have a problem under linux to support many concurrent connections so we turn this off.
-    m_context->options.one_share_per_server = false;
-#endif
+    m_context->options.browse_max_lmb_count = 0;
 
     /* set connection timeout. since samba always tries two ports, divide this by two the correct value */
     m_context->timeout = g_advancedSettings.m_sambaclienttimeout * 1000;    
@@ -273,12 +266,11 @@ DWORD CSMB::ConvertUnixToNT(int error)
 void CSMB::CheckIfIdle()
 {
 /* We check if there are open connections. This is done without a lock to not halt the mainthread. It should be thread safe as
-   worst case scenario is that m_OpenConnections could read 0 and then changed to 1 if this happens it will enter the if wich will lead to another check, wich is locked.
-   TODO The better choice would be to use TryEnterCritical (when ported) or check if locked because then it most certainly isn't idle */
+   worst case scenario is that m_OpenConnections could read 0 and then changed to 1 if this happens it will enter the if wich will lead to another check, wich is locked.  */
   if (m_OpenConnections == 0)
   { /* I've set the the maxiumum IDLE time to be 1 min and 30 sec. */
     CSingleLock(*this);
-    if (m_context != NULL && (timeGetTime() - m_LastActive) > 90000)
+    if (m_OpenConnections == 0 /* check again - when locked */ && m_context != NULL && (timeGetTime() - m_LastActive) > 90000)
     {
       CLog::Log(LOGNOTICE, "Samba is idle. Closing the remaining connections");
       smb.Deinit();
