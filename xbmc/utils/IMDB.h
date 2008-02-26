@@ -45,6 +45,7 @@ public:
   bool ScrapeFilename(const CStdString& strFileName, CVideoInfoTag& details);
 
   void SetScraperInfo(const SScraperInfo& info) { m_info = info; }
+  static void ClearCache();
 protected:
   void RemoveAllAfter(char* szMovie, const char* szSearch);
   CHTTP m_http;

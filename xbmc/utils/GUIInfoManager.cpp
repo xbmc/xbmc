@@ -534,6 +534,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (info.Equals("hasthumb")) ret = CONTAINER_HAS_THUMB;
     else if (info.Equals("numpages")) ret = CONTAINER_NUM_PAGES;
     else if (info.Equals("currentpage")) ret = CONTAINER_CURRENT_PAGE;
+    else if (info.Equals("sortmethod")) ret = CONTAINER_SORT_METHOD;
     else if (info.Left(5).Equals("sort("))
     {
       SORT_METHOD sort = SORT_METHOD_NONE;
@@ -990,6 +991,13 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
       }
       break;
     }
+  case CONTAINER_SORT_METHOD:
+    {
+      CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      if (window)
+        strLabel = g_localizeStrings.Get(((CGUIMediaWindow*)window)->GetContainerSortMethod());
+    }
+    break;
   case CONTAINER_NUM_PAGES:
   case CONTAINER_CURRENT_PAGE:
     return GetMultiInfoLabel(GUIInfo(info), contextWindow);

@@ -60,6 +60,7 @@ using namespace VIDEODATABASEDIRECTORY;
 
 #define CONTROL_FILTER            15
 #define CONTROL_BTNPARTYMODE      16
+#define CONTROL_BTNFLATTEN        17
 #define CONTROL_LABELEMPTY        18
 
 CGUIWindowVideoNav::CGUIWindowVideoNav(void)
@@ -223,6 +224,15 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
         //       but for those perhaps we can just display them all, and only filter when we get a list
         //       of actual videos?
         Update(m_vecItems.m_strPath);
+        return true;
+      }
+      else if (iControl == CONTROL_BTNFLATTEN)
+      {
+        g_stSettings.m_bMyVideoNavFlatten = !g_stSettings.m_bMyVideoNavFlatten;
+        g_settings.Save();
+        CUtil::DeleteVideoDatabaseDirectoryCache();
+        SetupShares();
+        Update("");
         return true;
       }
       else if (iControl == CONTROL_BTNSHOWALL)
@@ -445,6 +455,8 @@ void CGUIWindowVideoNav::UpdateButtons()
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTN_FILTER, !m_filter.IsEmpty());
 
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNPARTYMODE, g_partyModeManager.IsEnabled());
+
+  SET_CONTROL_SELECTED(GetID(),CONTROL_BTNFLATTEN, g_stSettings.m_bMyVideoNavFlatten);
 }
 
 /// \brief Search for genres, artists and albums with search string \e strSearch in the musicdatabase and return the found \e items
@@ -1335,4 +1347,6 @@ void CGUIWindowVideoNav::OnLinkMovieToTvShow(int itemnumber)
     CUtil::DeleteVideoDatabaseDirectoryCache();
   }
 }
+
+
 

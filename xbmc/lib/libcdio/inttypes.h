@@ -7,18 +7,13 @@
  * Should be installed into /usr/include
  * as inttypes.h*/
 typedef char *  caddr_t;
-#ifdef _MSC_VER
-typedef signed __int8 int8_t;
-typedef unsigned __int8 u_int8_t;
-#else
-typedef char int8_t;
+typedef signed char int8_t;
 typedef unsigned char u_int8_t;
-#endif
-typedef short int16_t;
+typedef signed short int16_t;
 typedef unsigned short u_int16_t;
-typedef int int32_t;
+typedef signed int int32_t;
 typedef unsigned int u_int32_t;
-typedef __int64 int64_t;
+typedef signed __int64 int64_t;
 typedef unsigned __int64 u_int64_t;
 typedef int32_t register_t;
 typedef u_int8_t uint8_t;

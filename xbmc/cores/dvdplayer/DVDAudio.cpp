@@ -16,6 +16,7 @@
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDPlayerAudio.h"
 
+using namespace std;
 
 CDVDAudio::CDVDAudio(volatile bool &bStop)
   : m_bStop(bStop)

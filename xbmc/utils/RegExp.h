@@ -61,11 +61,20 @@
 #endif
 typedef char* LPTSTR;
 
+#ifndef HAS_PCRE
+#define HAS_PCRE
+#endif
+
 #ifdef HAS_PCRE
 
 #include <string>
 namespace PCRE {
+#ifdef _WIN32
+#define PCRE_STATIC
+#include "lib/libpcre/pcre.h"
+#else
 #include <pcre.h>
+#endif
 }
 
 // maximum of 20 backreferences
@@ -198,4 +207,5 @@ private:
 #endif // HAS_PCRE
 
 #endif
+
 

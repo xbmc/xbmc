@@ -10,7 +10,7 @@ PLATFORM_TO_TARGET_MAP = {
     'linux2'     : 'x86-unknown-linux',
     'win32'      : 'x86-microsoft-win32',
     'cygwin'     : 'x86-unknown-cygwin',
-    'darwin'     : 'powerpc-apple-macosx'
+    'darwin'     : 'universal-apple-macosx'
 }
   
 CROSS_PLATFORMS = ['ppu-sony-ps3', 'arm-unknown-linux', 'mips-unknown-linux', 'powerpc-unknown-linux', 'arm-gp2x-linux', 'arm-symbian-symbianos']

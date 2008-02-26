@@ -36,6 +36,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalDependencies="ws2_32.lib"
 				OutputFile="$(OutDir)/Neptune.lib"
 				SuppressStartupBanner="FALSE"/>
 			<Tool
@@ -85,6 +86,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalDependencies="ws2_32.lib"
 				OutputFile="$(OutDir)/Neptune.lib"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -126,10 +128,16 @@
 				RelativePath="..\..\..\..\Source\Core\NptCommon.cpp">
 			</File>
 			<File
+				RelativePath="..\..\..\..\Source\Core\NptConsole.cpp">
+			</File>
+			<File
 				RelativePath="..\..\..\..\Source\Core\NptDataBuffer.cpp">
 			</File>
 			<File
 				RelativePath="..\..\..\..\Source\Core\NptDebug.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\..\Source\Core\NptDirectory.cpp">
 			</File>
 			<File
 				RelativePath="..\..\..\..\Source\Core\NptFile.cpp">
@@ -159,6 +167,9 @@
 				RelativePath="..\..\..\..\Source\Core\NptSockets.cpp">
 			</File>
 			<File
+				RelativePath="..\..\..\..\Source\System\StdC\NptStdcEnvironment.cpp">
+			</File>
+			<File
 				RelativePath="..\..\..\..\Source\System\StdC\NptStdcFile.cpp">
 			</File>
 			<File
@@ -183,7 +194,13 @@
 				RelativePath="..\..\..\..\Source\Core\NptUtils.cpp">
 			</File>
 			<File
+				RelativePath="..\..\..\..\Source\System\Win32\NptWin32Console.cpp">
+			</File>
+			<File
 				RelativePath="..\..\..\..\Source\System\Win32\NptWin32Debug.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\..\Source\System\Win32\NptWin32Directory.cpp">
 			</File>
 			<File
 				RelativePath="..\..\..\..\Source\System\Win32\NptWin32Network.cpp">

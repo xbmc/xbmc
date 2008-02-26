@@ -32,7 +32,6 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib"
 				OutputFile="$(OutDir)/SsdpProxy.exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
@@ -80,7 +79,6 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib"
 				OutputFile="$(OutDir)/SsdpProxy.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"

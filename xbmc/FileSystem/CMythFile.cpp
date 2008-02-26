@@ -398,13 +398,13 @@ unsigned int CCMythFile::Read(void* buffer, __int64 size)
     if(ret > (int)remain)
     {
       CLog::Log(LOGERROR, "%s - potential buffer overrun", __FUNCTION__);
-      return size;
+      return (unsigned long)size;
     }
     remain -= ret;
     size   += ret;
   } while(remain > 0);
 
-  return size;
+  return (unsigned long)size;
 }
 
 bool CCMythFile::SkipNext()

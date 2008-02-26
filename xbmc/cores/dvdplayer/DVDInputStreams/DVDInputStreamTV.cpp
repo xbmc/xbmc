@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "DVDInputStreamTV.h"
-#include "FileSystem/GMythFile.h"
 #include "FileSystem/CMythFile.h"
 
 

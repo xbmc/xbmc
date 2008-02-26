@@ -67,12 +67,15 @@ public:
   void Reset();
   virtual void Serialize(CArchive& ar);
   const CPictureInfoTag& operator=(const CPictureInfoTag& item);
-  CStdString GetInfo(int info) const;
+  const CStdString GetInfo(int info) const;
 
   bool Loaded() const { return m_isLoaded; };
   bool Load(const CStdString &path);
 
   static int TranslateString(const CStdString &info);
+
+  void SetInfo(int info, const CStdString& value);
+  void SetLoaded(bool loaded = true);
 
 private:
   void GetStringFromArchive(CArchive &ar, char *string, size_t length);
