@@ -724,6 +724,7 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
 
   m_rgbBufferSize = width*height*4;
   m_rgbBuffer = new BYTE[m_rgbBufferSize];
+  m_bConfigured = true;
 
   return true;
 }
@@ -1021,6 +1022,7 @@ void CLinuxRendererGL::Update(bool bPauseDrawing)
 
 void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
+  if (!m_bConfigured) return;
   // if its first pass, just init textures and return
   if (ValidateRenderTarget())
     return;
