@@ -145,9 +145,9 @@ void CFileCache::Process()
     if (m_seekEvent.WaitMSec(0)) 
     {
       m_seekEvent.Reset();
-      CLog::Log(LOGDEBUG,"%s, request seek on source to %lld", __FUNCTION__, m_seekPos);  
+      CLog::Log(LOGDEBUG,"%s, request seek on source to %"PRId64, __FUNCTION__, m_seekPos);  
       if ((m_nSeekResult = m_source.Seek(m_seekPos, SEEK_SET)) != m_seekPos)
-        CLog::Log(LOGERROR,"%s, error %d seeking. seek returned %lld", __FUNCTION__, (int)GetLastError(), m_nSeekResult);
+        CLog::Log(LOGERROR,"%s, error %d seeking. seek returned %"PRId64, __FUNCTION__, (int)GetLastError(), m_nSeekResult);
       else
         m_pCache->Reset(m_seekPos);
 
@@ -304,10 +304,9 @@ __int64 CFileCache::Seek(__int64 iFilePosition, int iWhence)
 
     m_seekPos = iTarget;
     m_seekEvent.Set();
-    
-    if (WaitForSingleObject(m_seekEnded.GetHandle(),INFINITE) != WAIT_OBJECT_0) 
+    if (!m_seekEnded.WaitMSec(INFINITE)) 
     {
-      CLog::Log(LOGWARNING,"%s - seek to %lld failed.", __FUNCTION__, m_seekPos);
+      CLog::Log(LOGWARNING,"%s - seek to %"PRId64" failed.", __FUNCTION__, m_seekPos);
       return -1;
     }
   }

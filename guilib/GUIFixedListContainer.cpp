@@ -166,11 +166,11 @@ bool CGUIFixedListContainer::OnMessage(CGUIMessage& message)
   return CGUIBaseContainer::OnMessage(message);
 }
 
-bool CGUIFixedListContainer::MoveUp(DWORD control)
+bool CGUIFixedListContainer::MoveUp(bool wrapAround)
 {
   if (m_offset > -m_cursor)
     ScrollToOffset(m_offset - 1);
-  else if ( control == 0 || control == GetID() )
+  else if (wrapAround)
   {
     if (m_items.size() > 0)
     { // move 2 last item in list
@@ -185,13 +185,13 @@ bool CGUIFixedListContainer::MoveUp(DWORD control)
   return true;
 }
 
-bool CGUIFixedListContainer::MoveDown(DWORD control)
+bool CGUIFixedListContainer::MoveDown(bool wrapAround)
 {
   if (m_offset + m_cursor + 1 < (int)m_items.size())
   {
     ScrollToOffset(m_offset + 1);
   }
-  else if( control == 0 || control == GetID() )
+  else if (wrapAround)
   { // move first item in list
     ScrollToOffset(-m_cursor);
     g_infoManager.SetContainerMoving(GetID(), 1);

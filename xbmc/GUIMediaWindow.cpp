@@ -310,7 +310,9 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
     {
       if (m_guiState.get())
       {
-        if (message.GetParam2())
+        if (message.GetParam1())
+          m_guiState->SetCurrentSortMethod((int)message.GetParam1());
+        else if (message.GetParam2())
           m_guiState->SetNextSortMethod((int)message.GetParam2());
       }
       UpdateFileList();
@@ -1151,5 +1153,11 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   return false;
 }
 
-
+int CGUIMediaWindow::GetContainerSortMethod()
+{
+  if (m_guiState.get())
+    return m_guiState->GetSortMethodLabel();
+  else 
+    return 0;
+}
 

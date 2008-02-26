@@ -455,7 +455,7 @@ void CDVDPlayerAudio::Process()
 
     if( fabs(error) > DVD_MSEC_TO_TIME(10) )
     {
-      m_pClock->Discontinuity(CLOCK_DISC_NORMAL, clock+error, 0);      
+      m_pClock->Discontinuity(CLOCK_DISC_NORMAL, clock+error, 0);
       if(m_speed == DVD_PLAYSPEED_NORMAL)
         CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuty - was:%f, should be:%f, error:%f", clock, clock+error, error);
     }

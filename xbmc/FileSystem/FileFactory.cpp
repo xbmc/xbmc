@@ -110,6 +110,8 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #endif
 #ifdef HAS_FILESYSTEM_DAAP
     else if (strProtocol == "daap") return new CFileDAAP();
+    else if (strProtocol == "myth") return new CCMythFile();
+    else if (strProtocol == "cmyth") return new CCMythFile();
 #endif
 #endif
     else if (strProtocol == "myth") return new CCMythFile();

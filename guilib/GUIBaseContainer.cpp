@@ -151,7 +151,7 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
     }
     if (message.GetMessage() == GUI_MSG_ITEM_SELECTED)
     {
-      message.SetParam1(CorrectOffset(m_offset, m_cursor));
+      message.SetParam1(GetSelectedItem());
       return true;
     }
     else if (message.GetMessage() == GUI_MSG_PAGE_CHANGE)
@@ -173,7 +173,8 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
 
 void CGUIBaseContainer::OnUp()
 {
-  if (m_orientation == VERTICAL && MoveUp(m_dwControlUp))
+  bool wrapAround = m_dwControlUp == GetID() || !(m_dwControlUp || m_upActions.size());
+  if (m_orientation == VERTICAL && MoveUp(wrapAround))
     return;
   // with horizontal lists it doesn't make much sense to have multiselect labels
   CGUIControl::OnUp();
@@ -181,7 +182,8 @@ void CGUIBaseContainer::OnUp()
 
 void CGUIBaseContainer::OnDown()
 {
-  if (m_orientation == VERTICAL && MoveDown(m_dwControlDown))
+  bool wrapAround = m_dwControlDown == GetID() || !(m_dwControlDown || m_downActions.size());
+  if (m_orientation == VERTICAL && MoveDown(wrapAround))
     return;
   // with horizontal lists it doesn't make much sense to have multiselect labels
   CGUIControl::OnDown();
@@ -189,7 +191,8 @@ void CGUIBaseContainer::OnDown()
 
 void CGUIBaseContainer::OnLeft()
 {
-  if (m_orientation == HORIZONTAL && MoveUp(m_dwControlLeft))
+  bool wrapAround = m_dwControlLeft == GetID() || !(m_dwControlLeft || m_leftActions.size());
+  if (m_orientation == HORIZONTAL && MoveUp(wrapAround))
     return;
   else if (m_orientation == VERTICAL)
   {
@@ -202,7 +205,8 @@ void CGUIBaseContainer::OnLeft()
 
 void CGUIBaseContainer::OnRight()
 {
-  if (m_orientation == HORIZONTAL && MoveDown(m_dwControlRight))
+  bool wrapAround = m_dwControlRight == GetID() || !(m_dwControlRight || m_rightActions.size());
+  if (m_orientation == HORIZONTAL && MoveDown(wrapAround))
     return;
   else if (m_orientation == VERTICAL)
   {
@@ -213,12 +217,12 @@ void CGUIBaseContainer::OnRight()
   CGUIControl::OnRight();
 }
 
-bool CGUIBaseContainer::MoveUp(DWORD control)
+bool CGUIBaseContainer::MoveUp(bool wrapAround)
 {
   return true;
 }
 
-bool CGUIBaseContainer::MoveDown(DWORD control)
+bool CGUIBaseContainer::MoveDown(bool wrapAround)
 {
   return true;
 }
@@ -231,7 +235,7 @@ void CGUIBaseContainer::Scroll(int amount)
 
 int CGUIBaseContainer::GetSelectedItem() const
 {
-  return CorrectOffset(m_cursor, m_offset);
+  return CorrectOffset(m_offset, m_cursor);
 }
 
 CGUIListItem *CGUIBaseContainer::GetListItem(int offset) const
@@ -355,7 +359,7 @@ bool CGUIBaseContainer::OnMouseWheel(char wheel, const CPoint &point)
 CStdString CGUIBaseContainer::GetDescription() const
 {
   CStdString strLabel;
-  int item = CorrectOffset(m_offset, m_cursor);
+  int item = GetSelectedItem();
   if (item >= 0 && item < (int)m_items.size())
   {
     CGUIListItem *pItem = m_items[item];
@@ -379,7 +383,7 @@ void CGUIBaseContainer::SetFocus(bool bOnOff)
 
 void CGUIBaseContainer::SaveStates(vector<CControlState> &states)
 {
-  states.push_back(CControlState(GetID(), CorrectOffset(m_offset, m_cursor)));
+  states.push_back(CControlState(GetID(), GetSelectedItem()));
 }
 
 void CGUIBaseContainer::SetPageControl(DWORD id)

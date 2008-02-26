@@ -194,6 +194,7 @@ CSettings::CSettings(void)
 
   g_stSettings.m_bMyVideoPlaylistRepeat = false;
   g_stSettings.m_bMyVideoPlaylistShuffle = false;
+  g_stSettings.m_bMyVideoNavFlatten = false;
 
   g_stSettings.m_nVolumeLevel = 0;
   g_stSettings.m_dynamicRangeCompressionLevel = 0;
@@ -767,56 +768,52 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *source, CS
   return false;
 }
 
-void CSettings::GetString(const TiXmlElement* pRootElement, const char *tagName, CStdString &strValue, const CStdString& strDefaultValue)
+bool CSettings::GetString(const TiXmlElement* pRootElement, const char *tagName, CStdString &strValue, const CStdString& strDefaultValue)
 {
   if (XMLUtils::GetString(pRootElement, tagName, strValue))
   { // tag exists
     // check for "-" for backward compatibility
-    if (strValue.Equals("-"))
-      strValue = strDefaultValue;
+    if (!strValue.Equals("-"))
+      return true;
   }
-  else
-  { // tag doesn't exist - set default
-    strValue = strDefaultValue;
-  }
-  return;
-  //CLog::Log(LOGDEBUG, "  %s: %s", strTagName.c_str(), strValue.c_str());
+  // tag doesn't exist - set default
+  strValue = strDefaultValue;
+  return false;
 }
 
-void CSettings::GetString(const TiXmlElement* pRootElement, const char *tagName, char *szValue, const CStdString& strDefaultValue)
+bool CSettings::GetString(const TiXmlElement* pRootElement, const char *tagName, char *szValue, const CStdString& strDefaultValue)
 {
   CStdString strValue;
-  GetString(pRootElement, tagName, strValue, strDefaultValue);
+  bool ret = GetString(pRootElement, tagName, strValue, strDefaultValue);
   if (szValue)
     strcpy(szValue, strValue.c_str());
+  return ret;
 }
 
-void CSettings::GetInteger(const TiXmlElement* pRootElement, const char *tagName, int& iValue, const int iDefault, const int iMin, const int iMax)
+bool CSettings::GetInteger(const TiXmlElement* pRootElement, const char *tagName, int& iValue, const int iDefault, const int iMin, const int iMax)
 {
   if (XMLUtils::GetInt(pRootElement, tagName, iValue))
   { // check range
-    if ((iValue < iMin) || (iValue > iMax))
-      iValue = iDefault;
+    if (iValue < iMin) iValue = iMin;
+    if (iValue > iMax) iValue = iMax;
+    return true;
   }
-  else
-  { // default
-    iValue = iDefault;
-  }
-  //CLog::Log(LOGDEBUG, "  %s: %d", tagName, iValue);
+  // default
+  iValue = iDefault;
+  return false;
 }
 
-void CSettings::GetFloat(const TiXmlElement* pRootElement, const char *tagName, float& fValue, const float fDefault, const float fMin, const float fMax)
+bool CSettings::GetFloat(const TiXmlElement* pRootElement, const char *tagName, float& fValue, const float fDefault, const float fMin, const float fMax)
 {
   if (XMLUtils::GetFloat(pRootElement, tagName, fValue))
   { // check range
-    if ((fValue < fMin) || (fValue > fMax))
-      fValue = fDefault;
+    if (fValue < fMin) fValue = fMin;
+    if (fValue > fMax) fValue = fMax;
+    return true;
   }
-  else
-  { // default
-    fValue = fDefault;
-  }
-  //CLog::Log(LOGDEBUG, "  %s: %f", tagName, fValue);
+  // default
+  fValue = fDefault;
+  return false;
 }
 
 void CSettings::GetViewState(const TiXmlElement *pRootElement, const CStdString &strTagName, CViewState &viewState)
@@ -1075,6 +1072,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 
     GetString(pElement, "defaultlibview", g_settings.m_defaultVideoLibSource, g_settings.m_defaultVideoLibSource);
     GetInteger(pElement, "watchmode", g_stSettings.m_iMyVideoWatchMode, VIDEO_SHOW_ALL, VIDEO_SHOW_ALL, VIDEO_SHOW_WATCHED);
+    XMLUtils::GetBoolean(pElement, "flatten", g_stSettings.m_bMyVideoNavFlatten);
 
     TiXmlElement *pChild = pElement->FirstChildElement("playlist");
     if (pChild)
@@ -1277,7 +1275,13 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "clienttimeout", g_advancedSettings.m_sambaclienttimeout, 10, 5, 100);
   }
 
-  GetInteger(pRootElement, "loglevel", g_advancedSettings.m_logLevel, LOG_LEVEL_NORMAL, LOG_LEVEL_NONE, LOG_LEVEL_MAX);
+  if (GetInteger(pRootElement, "loglevel", g_advancedSettings.m_logLevel, LOG_LEVEL_NORMAL, LOG_LEVEL_NONE, LOG_LEVEL_MAX))
+  { // read the loglevel setting, so set the setting advanced to hide it in GUI
+    // as altering it will do nothing - we don't write to advancedsettings.xml
+    CSetting *setting = g_guiSettings.GetSetting("system.debuglogging");
+    if (setting)
+      setting->SetAdvanced();
+  }
   GetString(pRootElement, "cddbaddress", g_advancedSettings.m_cddbAddress, "freedb.freedb.org");
 
   XMLUtils::GetBoolean(pRootElement, "usepcdvdrom", g_advancedSettings.m_usePCDVDROM);
@@ -1770,6 +1774,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
   SetString(pNode, "defaultlibview", g_settings.m_defaultVideoLibSource);
 
   SetInteger(pNode, "watchmode", g_stSettings.m_iMyVideoWatchMode);
+  SetBoolean(pNode, "flatten", g_stSettings.m_bMyVideoNavFlatten);
 
   { // playlist window
     TiXmlElement childNode("playlist");

@@ -27,6 +27,7 @@ public:
   {
     CStdString m_spoof;
     CStdString m_url;
+    CStdString m_cache;
     URLTYPES m_type;
     bool m_post;
     int m_season;
@@ -82,4 +83,5 @@ private:
 };
 
 #endif
+
 

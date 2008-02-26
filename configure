@@ -1269,7 +1269,7 @@ Optional Features:
   --enable-gmyth          enable gmyth support (default is no)
   --enable-cwiid          enable Wii remote support (default is no)
   --enable-pcre           enable PCRE based regular expression support
-                          (default is no)
+                          (default is yes)
 
 Some influential environment variables:
   CXX         C++ compiler command
@@ -1789,7 +1789,7 @@ fi
 if test "${enable_pcre+set}" = set; then
   enableval=$enable_pcre; use_pcre=$enableval
 else
-  use_pcre=no
+  use_pcre=yes
 fi
 
 
