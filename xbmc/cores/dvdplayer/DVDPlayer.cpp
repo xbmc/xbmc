@@ -281,7 +281,8 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 
     // if playing a file close it first
     // this has to be changed so we won't have to close it.
-    CloseFile();
+    if(ThreadHandle())
+      CloseFile();
 
     m_bAbortRequest = false;
     SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
