@@ -204,7 +204,7 @@ __int64 CSimpleFileCache::Seek(__int64 iFilePosition, int iWhence) {
 
 	__int64 nDiff = iTarget - m_nWritePosition;
 	if ( nDiff > 500000 || (nDiff > 0 && WaitForData((unsigned int)nDiff, 5000) == CACHE_RC_TIMEOUT)  ) {		
-		CLog::Log(LOGWARNING,"%s - attempt to seek pass read data (seek to %lld. max: %lld. reset read pointer. (%lld:%d)", __FUNCTION__, iTarget, m_nWritePosition, iFilePosition, iWhence);
+		CLog::Log(LOGWARNING,"%s - attempt to seek pass read data (seek to %"PRId64". max: %lld. reset read pointer. (%"PRId64":%d)", __FUNCTION__, iTarget, m_nWritePosition, iFilePosition, iWhence);
 		return  CACHE_RC_ERROR;
 	}
 

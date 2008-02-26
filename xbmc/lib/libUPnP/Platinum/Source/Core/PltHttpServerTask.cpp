@@ -197,6 +197,9 @@ PLT_HttpServerSocketTask::Write(NPT_HttpResponse* response,
         headers.SetHeader(NPT_HTTP_HEADER_CONTENT_LENGTH, "0");
     }
 
+    //headers.SetHeader("DATE", "Wed, 13 Feb 2008 22:32:57 GMT");
+    //headers.SetHeader("Accept-Ranges", "bytes");
+
     NPT_LOG_FINE("PLT_HttpServerTask Sending response:");
     PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINE, response);
 

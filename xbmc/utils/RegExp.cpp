@@ -8,7 +8,11 @@
 
 #ifdef HAS_PCRE
 
+#ifdef _WIN32
+#include "lib/libpcre/pcre.h"
+#else
 #include <pcre.h>
+#endif
 #include "include.h"
 #include "log.h"
 
@@ -17,7 +21,8 @@ using namespace PCRE;
 CRegExp::CRegExp()
 {
   m_re          = NULL;
-  m_iOptions    = PCRE_NEWLINE_ANY | PCRE_DOTALL | PCRE_UTF8;
+//  m_iOptions    = PCRE_NEWLINE_ANY | PCRE_DOTALL | PCRE_UTF8;
+  m_iOptions    = PCRE_NEWLINE_ANY | PCRE_DOTALL;
   m_bMatched    = false;
   m_iMatchCount = 0;
 }
@@ -1146,3 +1151,4 @@ char* CRegExp::GetReplaceString( const char* sReplaceExp )
 }*/
 
 #endif //HAS_PCRE
+

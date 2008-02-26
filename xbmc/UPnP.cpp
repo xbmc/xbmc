@@ -58,6 +58,7 @@ static const mimetype_extension_struct mimetype_extension_map[] = {
     {"wma",  "audio/x-ms-wma"},
     {"wmv",  "video/x-ms-wmv"},
     {"mpg",  "video/mpeg"},
+    {"divx",  "video/avi"},
     {"jpg",  "image/jpeg"},
     {NULL, NULL}
 };
@@ -231,7 +232,7 @@ class CUPnPServer : public PLT_MediaConnect
 {
 public:
     CUPnPServer(const char* friendly_name, const char* uuid = NULL) : 
-        PLT_MediaConnect("", friendly_name, true, uuid, 0, 80) { // 51066 makes the 360 happy but xbox can't bind there for some reasons
+        PLT_MediaConnect("", friendly_name, true, uuid, 0, 81) { // force a lower port other than 80 for 360 to be happy
         // hack: override path to make sure it's empty
         // urls will contain full paths to local files
         m_Path = "";
@@ -328,9 +329,6 @@ CUPnPServer::GetProtocolInfo(const CFileItem* item, const NPT_String& protocol)
         else if( item->IsPicture() )
             content = "image/" + ext;
     }
-
-    // hack: to make 360 happy
-    if (content == "video/divx") content = "video/avi";
     
     /* nothing we can figure out */
     if( content.IsEmpty() ) {
@@ -425,7 +423,6 @@ CUPnPServer::BuildObject(CFileItem*      item,
                 object->m_MiscInfo.original_track_number = tag->GetTrackNumber();
                 resource.m_Duration = tag->GetDuration();                
             }
-
         } else if( item->IsVideoDb() || item->IsVideo() ) {
             object->m_ObjectClass.type = "object.item.videoItem";
             object->m_Affiliation.album = "[Unknown Series]"; // required to make WMP to show title
@@ -464,7 +461,6 @@ CUPnPServer::BuildObject(CFileItem*      item,
                 object->m_Description.long_description = tag->m_strPlot;
                 resource.m_Duration = StringUtils::TimeStringToSeconds(tag->m_strRuntime.c_str());
             }
-
         } else if( item->IsPicture() ) {
             object->m_ObjectClass.type = "object.item.imageItem.photo";
         } else {

@@ -374,6 +374,7 @@ bool CDVDPlayer::CloseFile()
   // since this main thread cleans up all other resources and threads
   // we are done after the StopThread call
   StopThread();
+
   CLog::Log(LOGNOTICE, "DVDPlayer: finished waiting");
 #if defined(_LINUX) && defined(HAS_VIDEO_PLAYBACK)
   g_renderManager.OnClose();
@@ -1149,6 +1150,15 @@ void CDVDPlayer::OnExit()
   try
   {
     CLog::Log(LOGNOTICE, "CDVDPlayer::OnExit()");
+
+    // if we are caching, start playing it agian
+    if (m_caching && !m_bAbortRequest)
+    {
+      m_clock.SetSpeed(m_playSpeed);
+      m_dvdPlayerAudio.SetSpeed(m_playSpeed);
+      m_dvdPlayerVideo.SetSpeed(m_playSpeed);
+      m_caching = false;
+    }
 
     // close each stream
     if (!m_bAbortRequest) CLog::Log(LOGNOTICE, "DVDPlayer: eof, waiting for queues to empty");
@@ -2310,11 +2320,13 @@ bool CDVDPlayer::OnAction(const CAction &action)
   {
     switch (action.wID)
     {
+      case ACTION_NEXT_ITEM:
       case ACTION_PAGE_UP:
         m_messenger.Put(new CDVDMsg(CDVDMsg::PLAYER_CHANNEL_NEXT));
         return true;
       break;
 
+      case ACTION_PREV_ITEM:
       case ACTION_PAGE_DOWN:
         m_messenger.Put(new CDVDMsg(CDVDMsg::PLAYER_CHANNEL_PREV));
         return true;

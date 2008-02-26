@@ -208,41 +208,45 @@ bool CGUIPanelContainer::OnMessage(CGUIMessage& message)
 
 void CGUIPanelContainer::OnLeft()
 {
-  if (m_orientation == VERTICAL && MoveLeft(m_dwControlLeft))
+  bool wrapAround = m_dwControlLeft == GetID() || !(m_dwControlLeft || m_leftActions.size());
+  if (m_orientation == VERTICAL && MoveLeft(wrapAround))
     return;
-  if (m_orientation == HORIZONTAL && MoveUp(m_dwControlLeft))
+  if (m_orientation == HORIZONTAL && MoveUp(wrapAround))
     return;
   CGUIControl::OnLeft();
 }
 
 void CGUIPanelContainer::OnRight()
 {
-  if (m_orientation == VERTICAL && MoveRight(m_dwControlRight))
+  bool wrapAround = m_dwControlRight == GetID() || !(m_dwControlRight || m_rightActions.size());
+  if (m_orientation == VERTICAL && MoveRight(wrapAround))
     return;
-  if (m_orientation == HORIZONTAL && MoveDown(m_dwControlRight))
+  if (m_orientation == HORIZONTAL && MoveDown(wrapAround))
     return;
   return CGUIControl::OnRight();
 }
 
 void CGUIPanelContainer::OnUp()
 {
-  if (m_orientation == VERTICAL && MoveUp(m_dwControlUp))
+  bool wrapAround = m_dwControlUp == GetID() || !(m_dwControlUp || m_upActions.size());
+  if (m_orientation == VERTICAL && MoveUp(wrapAround))
     return;
-  if (m_orientation == HORIZONTAL && MoveLeft(m_dwControlUp))
+  if (m_orientation == HORIZONTAL && MoveLeft(wrapAround))
     return;
   CGUIControl::OnUp();
 }
 
 void CGUIPanelContainer::OnDown()
 {
-  if (m_orientation == VERTICAL && MoveDown(m_dwControlDown))
+  bool wrapAround = m_dwControlDown == GetID() || !(m_dwControlDown || m_downActions.size());
+  if (m_orientation == VERTICAL && MoveDown(wrapAround))
     return;
-  if (m_orientation == HORIZONTAL && MoveRight(m_dwControlDown))
+  if (m_orientation == HORIZONTAL && MoveRight(wrapAround))
     return;
   return CGUIControl::OnDown();
 }
 
-bool CGUIPanelContainer::MoveDown(DWORD nextControl)
+bool CGUIPanelContainer::MoveDown(bool wrapAround)
 {
   if (m_cursor + m_itemsPerRow < m_itemsPerPage * m_itemsPerRow && (m_offset + 1 + m_cursor / m_itemsPerRow) * m_itemsPerRow < (int)m_items.size())
   { // move to last item if necessary
@@ -257,7 +261,7 @@ bool CGUIPanelContainer::MoveDown(DWORD nextControl)
       SetCursor((int)m_items.size() - 1 - (m_offset + 1)*m_itemsPerRow);
     ScrollToOffset(m_offset + 1);
   }
-  else if (!nextControl || nextControl == GetID())
+  else if (wrapAround)
   { // move first item in list
     SetCursor(m_cursor % m_itemsPerRow);
     ScrollToOffset(0);
@@ -268,13 +272,13 @@ bool CGUIPanelContainer::MoveDown(DWORD nextControl)
   return true;
 }
 
-bool CGUIPanelContainer::MoveUp(DWORD nextControl)
+bool CGUIPanelContainer::MoveUp(bool wrapAround)
 {
   if (m_cursor >= m_itemsPerRow)
     SetCursor(m_cursor - m_itemsPerRow);
   else if (m_offset > 0)
     ScrollToOffset(m_offset - 1);
-  else if (!nextControl || nextControl == GetID())
+  else if (wrapAround)
   { // move last item in list in this column
     SetCursor((m_cursor % m_itemsPerRow) + (m_itemsPerPage - 1) * m_itemsPerRow);
     int offset = max((int)GetRows() - m_itemsPerPage, 0);
@@ -289,12 +293,12 @@ bool CGUIPanelContainer::MoveUp(DWORD nextControl)
   return true;
 }
 
-bool CGUIPanelContainer::MoveLeft(DWORD nextControl)
+bool CGUIPanelContainer::MoveLeft(bool wrapAround)
 {
   int col = m_cursor % m_itemsPerRow;
   if (col > 0)
     SetCursor(m_cursor - 1);
-  else if (!nextControl || nextControl == GetID())
+  else if (wrapAround)
   { // wrap around
     SetCursor(m_cursor + m_itemsPerRow - 1);
     if (m_offset * m_itemsPerRow + m_cursor >= (int)m_items.size())
@@ -305,12 +309,12 @@ bool CGUIPanelContainer::MoveLeft(DWORD nextControl)
   return true;
 }
 
-bool CGUIPanelContainer::MoveRight(DWORD nextControl)
+bool CGUIPanelContainer::MoveRight(bool wrapAround)
 {
   int col = m_cursor % m_itemsPerRow;
   if (col + 1 < m_itemsPerRow && m_offset * m_itemsPerRow + m_cursor + 1 < (int)m_items.size())
     SetCursor(m_cursor + 1);
-  else if (!nextControl || nextControl == GetID()) // move first item in row
+  else if (wrapAround) // move first item in row
     SetCursor(m_cursor - col);
   else
     return false;

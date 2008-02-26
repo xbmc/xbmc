@@ -6,6 +6,12 @@
 #include "../DVDDemuxSPU.h"
 #include "DVDStateSerializer.h"
 
+#ifndef PRId64
+#ifdef _MSC_VER
+#define PRId64 "I64d"
+#endif
+#endif
+
 #define HOLDMODE_NONE 0
 #define HOLDMODE_HELD 1 /* set internally when we wish to flush demuxer */
 #define HOLDMODE_SKIP 2 /* set by inputstream user, when they wish to skip the held mode */
@@ -477,7 +483,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
           }
           m_iVobUnitCorrection += gap;
           
-          CLog::Log(LOGDEBUG, "DVDNAV_NAV_PACKET - DISCONTINUITY FROM:%lld TO:%lld DIFF:%lld", (m_iVobUnitStop * 1000)/90, ((__int64)pci->pci_gi.vobu_s_ptm*1000)/90, (gap*1000)/90);
+          CLog::Log(LOGDEBUG, "DVDNAV_NAV_PACKET - DISCONTINUITY FROM:%"PRId64" TO:%"PRId64" DIFF:%"PRId64, (m_iVobUnitStop * 1000)/90, ((__int64)pci->pci_gi.vobu_s_ptm*1000)/90, (gap*1000)/90);
         }
 
         m_iVobUnitStart = pci->pci_gi.vobu_s_ptm;
