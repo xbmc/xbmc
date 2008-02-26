@@ -260,6 +260,10 @@ bool CCMythFile::Exists(const CURL& url)
 
   if(path.Left(11) == "recordings/")
   {
+    if(CUtil::GetExtension(path).Equals(".tbn")
+    || CUtil::GetExtension(path).Equals(".jpg"))
+      return false;
+
     if(!SetupConnection(url, true, false, false))
       return false;
 
@@ -267,7 +271,7 @@ bool CCMythFile::Exists(const CURL& url)
     m_program = m_dll->proginfo_get_from_basename(m_control, m_filename.c_str());
     if(!m_program)
     {
-      CLog::Log(LOGERROR, "%s - unable to get find selected file", __FUNCTION__);
+      CLog::Log(LOGERROR, "%s - unable to get find %s", __FUNCTION__, m_filename.c_str());
       return false;
     }
     return true;
