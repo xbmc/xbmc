@@ -234,7 +234,6 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
 //***********************************************************************************************
 CALSADirectSound::~CALSADirectSound()
 {
-  CLog::Log(LOGDEBUG,"CALSADirectSound() dtor\n");
   Deinitialize();
 }
 
@@ -242,8 +241,6 @@ CALSADirectSound::~CALSADirectSound()
 //***********************************************************************************************
 HRESULT CALSADirectSound::Deinitialize()
 {
-  CLog::Log(LOGDEBUG,"CALSADirectSound::Deinitialize\n");
-
   m_bIsAllocated = false;
   if (m_pPlayHandle)
   {
@@ -252,9 +249,7 @@ HRESULT CALSADirectSound::Deinitialize()
   }
 
   m_pPlayHandle=NULL;
-  	CLog::Log(LOGDEBUG,"CALSADirectSound::Deinitialize - set active\n");
   g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
-	
   return S_OK;
 }
 
