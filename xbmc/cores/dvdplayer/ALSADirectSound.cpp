@@ -54,6 +54,7 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   g_audioContext.SetupSpeakerConfig(iChannels, bAudioOnAllSpeakers, bIsMusic);
   g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
 
+  m_pPlayHandle = NULL;
   m_bPause = false;
   m_bCanPause = false;
   m_bIsAllocated = false;
