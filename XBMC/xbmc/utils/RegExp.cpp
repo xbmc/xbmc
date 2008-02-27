@@ -22,14 +22,7 @@ CRegExp::CRegExp()
 {
   m_re          = NULL;
 //  m_iOptions    = PCRE_NEWLINE_ANY | PCRE_DOTALL | PCRE_UTF8;
-#if PCRE_MAJOR>6
-  m_iOptions    = PCRE_NEWLINE_ANY | PCRE_DOTALL;
-#else
-#ifdef __GNUC__
-#warning Old version of PCRE detected, XBMC requires PCRE version 7.0+ for full functionality.
-#endif
   m_iOptions    = PCRE_DOTALL;
-#endif
   m_bMatched    = false;
   m_iMatchCount = 0;
 }
