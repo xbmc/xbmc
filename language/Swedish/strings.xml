@@ -1721,7 +1721,16 @@ den här visualiseringen</string>
   <string id="21883">Rippade ljudcds</string>
   <string id="22000">Uppdatera bibliotek vid uppstart</string>
   <string id="22001">Uppdatera alltid biblioteket i bakgrunden</string>
-  <string id="21884">WiiRemote</string>
+
+  <!-- WiiRemote/Wiimote Input Device -->
+  <string id="21884">Wii Remote</string>
   <string id="21885">Aktivera musemulering</string>
+  <string id="21886">Ingen Bluetooth sändare ansluten</string>
+  <string id="21887">Wii Remote ansluten</string>
+  <string id="21888">%i%% batteri kvarstår</string>
+  <string id="21889">Wii Remote otillgänglig</string>
+  <string id="21890">Wii Remote kopplades bort</string>
+  <string id="21891">Tryck 1 och 2 för att återansluta</string>
+
   <string id="29999">Aktivera fladderfilter lagningsinställning till spel</string>
 </strings>
