@@ -21,8 +21,7 @@ using namespace PCRE;
 CRegExp::CRegExp()
 {
   m_re          = NULL;
-//  m_iOptions    = PCRE_NEWLINE_ANY | PCRE_DOTALL | PCRE_UTF8;
-  m_iOptions    = PCRE_NEWLINE_ANY | PCRE_DOTALL;
+  m_iOptions    = PCRE_DOTALL;
   m_bMatched    = false;
   m_iMatchCount = 0;
 }
