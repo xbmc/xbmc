@@ -30,11 +30,16 @@
 #include "avutil.h"
 #include <sys/types.h> /* size_t */
 
-#define AV_STRINGIFY(s)         AV_TOSTRING(s)
-#define AV_TOSTRING(s) #s
+#define LIBAVCODEC_VERSION_MAJOR 51
+#define LIBAVCODEC_VERSION_MINOR 50
+#define LIBAVCODEC_VERSION_MICRO  1
 
-#define LIBAVCODEC_VERSION_INT  ((51<<16)+(50<<8)+1)
-#define LIBAVCODEC_VERSION      51.50.1
+#define LIBAVCODEC_VERSION_INT  AV_VERSION_INT(LIBAVCODEC_VERSION_MAJOR, \
+                                               LIBAVCODEC_VERSION_MINOR, \
+                                               LIBAVCODEC_VERSION_MICRO)
+#define LIBAVCODEC_VERSION      AV_VERSION(LIBAVCODEC_VERSION_MAJOR,    \
+                                           LIBAVCODEC_VERSION_MINOR,    \
+                                           LIBAVCODEC_VERSION_MICRO)
 #define LIBAVCODEC_BUILD        LIBAVCODEC_VERSION_INT
 
 #define LIBAVCODEC_IDENT        "Lavc" AV_STRINGIFY(LIBAVCODEC_VERSION)
@@ -277,6 +282,8 @@ enum CodecID {
     CODEC_ID_NELLYMOSER,
     CODEC_ID_MUSEPACK8,
     CODEC_ID_SPEEX,
+    CODEC_ID_WMAVOICE,
+    CODEC_ID_WMAPRO,
 
     /* subtitle codecs */
     CODEC_ID_DVD_SUBTITLE= 0x17000,
@@ -1325,6 +1332,7 @@ typedef struct AVCodecContext {
 #define FF_IDCT_SIMPLEARMV6   17
 #define FF_IDCT_SIMPLEVIS     18
 #define FF_IDCT_WMV2          19
+#define FF_IDCT_FAAN          20
 
     /**
      * slice count
