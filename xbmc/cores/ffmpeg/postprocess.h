@@ -27,8 +27,18 @@
  *     external api for the pp stuff
  */
 
-#define LIBPOSTPROC_VERSION_INT ((51<<16)+(1<<8)+0)
-#define LIBPOSTPROC_VERSION     51.1.0
+#include "avutil.h"
+
+#define LIBPOSTPROC_VERSION_MAJOR 51
+#define LIBPOSTPROC_VERSION_MINOR  1
+#define LIBPOSTPROC_VERSION_MICRO  0
+
+#define LIBPOSTPROC_VERSION_INT AV_VERSION_INT(LIBPOSTPROC_VERSION_MAJOR, \
+                                               LIBPOSTPROC_VERSION_MINOR, \
+                                               LIBPOSTPROC_VERSION_MICRO)
+#define LIBPOSTPROC_VERSION     AV_VERSION(LIBPOSTPROC_VERSION_MAJOR, \
+                                           LIBPOSTPROC_VERSION_MINOR, \
+                                           LIBPOSTPROC_VERSION_MICRO)
 #define LIBPOSTPROC_BUILD       LIBPOSTPROC_VERSION_INT
 
 #define LIBPOSTPROC_IDENT       "postproc" AV_STRINGIFY(LIBPOSTPROC_VERSION)
