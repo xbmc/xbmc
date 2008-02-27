@@ -1873,8 +1873,16 @@
   <string id="21881">Enable UPnP Renderer</string>
   <string id="21882">Attempt to skip introduction before DVD Menu</string>
   <string id="21883">Ripped Audio CDs</string>
-  <string id="21884">WiiRemote</string>
+
+  <!-- WiiRemote/Wiimote Input Device -->
+  <string id="21884">Wii Remote</string>
   <string id="21885">Enable mouse emulation</string>
+  <string id="21886">No Bluetooth radio found</string>
+  <string id="21887">Wii Remote connected</string>
+  <string id="21888">%i%% battery remaining</string>
+  <string id="21889">Wii Remote unavailable</string>
+  <string id="21890">Wii Remote disconnected</string>
+  <string id="21891">Press 1 and 2 to reconnect</string>
   <!-- strings 21900 thru 21999 reserved for slideshow info -->
 
   <string id="22000">Update library on startup</string>
