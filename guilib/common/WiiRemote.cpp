@@ -20,6 +20,9 @@
 #ifdef HAS_CWIID
 #include "WiiRemote.h"
 
+// To avoid recursive include issues, we need to include these here.  I know it's naughty... --micolous (2008-02-28)
+#include "../../xbmc/Application.h"
+#include "../LocalizeStrings.h"
 CWiiRemote g_WiiRemote;
 CCriticalSection CWiiRemote::m_lock;
 
@@ -172,8 +175,9 @@ void CWiiRemote::Initialize()
 #endif
     ToggleBit(m_rptMode, CWIID_RPT_IR);	
     
-  //Have the first LED on the Wiiremote shine when connected
+  //Have the first and fourth LED on the Wiiremote shine when connected
   ToggleBit(m_ledState, CWIID_LED1_ON);	
+  ToggleBit(m_ledState, CWIID_LED4_ON);
 	
   CSingleLock lock (m_lock);
 
@@ -409,6 +413,9 @@ bool CWiiRemote::EnableWiiRemote()
   if (hci_get_route(NULL) < 0)
   {
     m_enabled = false;
+    CStdString strMsgTitle = g_localizeStrings.Get(21889);
+    CStdString strMsgText = g_localizeStrings.Get(21886);
+    g_application.m_guiDialogKaiToast.QueueNotification(strMsgTitle,strMsgText);
     CLog::Log(LOGERROR, "Cannot enable Wiiremote support because no bluetooth device was found");
   }
   else
@@ -464,6 +471,20 @@ bool CWiiRemote::Connect()
     {
       EnterCriticalSection(m_lock);
       SetupWiiRemote();
+      // get battery state etc.
+      cwiid_state wiiremote_state;
+      int err = cwiid_get_state(m_wiiremoteHandle, &wiiremote_state);
+      if (!err)
+      {
+        CStdString strMsgTitle = g_localizeStrings.Get(21887);
+        CStdString strMsgTextRaw = g_localizeStrings.Get(21888);
+        CStdString strMsgText;
+
+        strMsgText.Format(strMsgTextRaw.c_str(),static_cast<int>(((float)(wiiremote_state.battery)/CWIID_BATTERY_MAX)*100.0));
+        g_application.m_guiDialogKaiToast.QueueNotification(strMsgTitle,strMsgText);
+      }
+      else
+        CLog::Log(LOGERROR, "Problem probing for status of Wiiremote; cwiid_get_state returned non-zero");
 #ifdef CWIID_OLD
       /* CheckIn to say that this is the last msg, If this isn't called it could give issues if we Connects -> Disconnect and then try to connect again 
          the CWIID_OLD hack would automaticly disconnect the wiiremote as the lastmsg is too old. */
@@ -498,6 +519,9 @@ void CWiiRemote::DisconnectNow(bool startConnectThread)
   if (m_connected) //It shouldn't be enabled at the same time as it is connected
   {
     cwiid_disconnect(m_wiiremoteHandle); 
+    CStdString strMsgTitle = g_localizeStrings.Get(21890);
+    CStdString strMsgText = g_localizeStrings.Get(21891);
+    g_application.m_guiDialogKaiToast.QueueNotification(strMsgTitle, strMsgText);
     CLog::Log(LOGNOTICE, "Sucessfully disconnected a Wiiremote");			
   }
   m_connected = false;
