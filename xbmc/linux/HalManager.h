@@ -18,10 +18,10 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#ifndef __APPLE
+#include "../../guilib/system.h"
+#ifdef HAS_HAL
 #ifndef HALMANAGER_H
 #define HALMANAGER_H
-#endif
 
 #include <string.h>
 #include <stdio.h>
@@ -69,4 +69,5 @@ static void DeviceAdded(LibHalContext *ctx, const char *udi);
 };
 
 extern CHalManager g_HalManager;
-#endif //__APPLE__
+#endif
+#endif // HAS_HAL
