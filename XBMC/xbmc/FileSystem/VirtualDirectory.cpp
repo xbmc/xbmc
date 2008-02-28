@@ -8,6 +8,10 @@
 #include "../utils/MemoryUnitManager.h"
 #endif
 #include "../DetectDVDType.h"
+#if defined(_LINUX) && !defined(__APPLE__)
+#include "linux/LinuxFileSystem.h"
+#include <vector>
+#endif
 
 using namespace XFILE;
 
@@ -230,6 +234,19 @@ void CVirtualDirectory::GetShares(VECSHARES &shares) const
   {
 #ifdef HAS_XBOX_HARDWARE
     g_memoryUnitManager.GetMemoryUnitShares(shares);
+#endif
+#if defined(_LINUX) && !defined(__APPLE__)
+  static int DevTypes[] = {0, 5, 6, 7, 8, 9, 10, 13}; //These numbers can be found in libhal-storage.h. 9 is Camera and 10 is Audio player, these are uncertain.
+
+  std::vector<CStdString> result = CLinuxFileSystem::GetDevices(DevTypes, 8);
+  for (unsigned int i = 0; i < result.size(); i++)
+  {
+     CShare share;
+     share.strPath = result[i];
+     share.strName = CUtil::GetFileName(result[i]);
+     share.m_ignore = true;
+     shares.push_back(share);
+  }
 #endif
     CUtil::AutoDetectionGetShare(shares);
   }
