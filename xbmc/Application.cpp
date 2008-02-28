@@ -213,7 +213,9 @@
 #ifdef HAS_CWIID
 #include "common/WiiRemote.h"
 #endif
-
+#if defined(_LINUX) && !defined(__APPLE__)
+#include "linux/HalManager.h"
+#endif
 
 #include "cores/dlgcache.h"
 
@@ -1709,6 +1711,10 @@ HRESULT CApplication::Initialize()
       scanner->StartScanning("",info,settings,false);
     }
   }
+
+#if defined(_LINUX) && !defined(__APPLE__)
+  g_HalManager.Initialize();
+#endif
 
   m_slowTimer.StartZero();
 
@@ -5600,6 +5606,16 @@ void CApplication::ProcessSlow()
   
 #if defined(_LINUX) && defined(HAS_FILESYSTEM_SMB)
   smb.CheckIfIdle();
+#endif
+
+// Update HalManager to get newly connected media
+#if defined(_LINUX) && !defined(__APPLE__)
+  while(g_HalManager.Update()) ;  //If there is 1 message it might be another one in queue, we take care of them directly
+  if (CLinuxFileSystem::AnyDeviceChange())
+  { // changes have occured - update our shares
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_REMOVED_MEDIA);
+    m_gWindowManager.SendThreadMessage(msg);
+  }
 #endif
 }
 
