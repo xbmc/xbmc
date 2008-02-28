@@ -7,6 +7,7 @@
 #include <stdio.h>
 #define BYTE char
 #include "../utils/log.h"
+#include "../utils/CriticalSection.h"
 
 // This class is not used by apple but I still leave it here as it could be usefull.
 class CDevice
@@ -47,6 +48,7 @@ class CLinuxFileSystem
 private:
 #ifdef HAS_HAL
   static bool m_DeviceChange;
+  static CCriticalSection m_lock;
   static std::vector<CDevice> m_Devices;
 
   static void UpdateDevices();
@@ -60,6 +62,7 @@ public:
   static bool ApproveDevice(CDevice *device);
 #endif
   static std::vector<CStdString> GetDevices();
+  static std::vector<CStdString> GetRemovableDevices();
   static std::vector<CStdString> GetDevices(int *DeviceType, int len);
 };
 
