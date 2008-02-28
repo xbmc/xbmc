@@ -4,15 +4,19 @@
 #include "HalManager.h"
 #endif
 
+#include "SingleLock.h"
+
 using namespace std;
 
 #ifdef HAS_HAL
 vector<CDevice> CLinuxFileSystem::m_Devices;
 bool CLinuxFileSystem::m_DeviceChange;
+CCriticalSection CLinuxFileSystem::m_lock;
 
 /* This is never used */
 void CLinuxFileSystem::UpdateDevices()
 {
+  CSingleLock lock(m_lock);
   m_Devices.clear();
   m_Devices = CHalManager::GetDevices();
 }
@@ -20,6 +24,7 @@ void CLinuxFileSystem::UpdateDevices()
 /* Here can approved devices be choosen, this is always called for a device in HalManager before it's sent to adddevice. */
 bool CLinuxFileSystem::ApproveDevice(CDevice *device)
 {
+  CSingleLock lock(m_lock);
   bool approve = true;
   //This is only because it's easier to read...
   const char *fs = device->FileSystem.c_str();
@@ -45,9 +50,30 @@ vector<CStdString> CLinuxFileSystem::GetDevices()
 {
   return GetDevices(NULL, -1);
 }
+
+vector<CStdString> CLinuxFileSystem::GetRemovableDevices()
+{
+  CSingleLock lock(m_lock);
+#ifndef HAS_HAL
+  return GetDevices();
+#else
+  UpdateDevices();
+  vector<CStdString> result;
+  for (size_t i = 0; i < m_Devices.size(); i++)
+  {
+    if (m_Devices[i].Mounted && m_Devices[i].Approved && (m_Devices[i].Removable || m_Devices[i].HotPlugged))
+    {
+      result.push_back(m_Devices[i].MountPoint);
+    }
+  }
+  return result;
+#endif
+}
+
 /* if DeviceType == NULL we return all devices */
 vector<CStdString> CLinuxFileSystem::GetDevices(int *DeviceType, int len)
 {
+  CSingleLock lock(m_lock);
   vector<CStdString> result;
 #ifndef HAS_HAL
   if (DeviceType == NULL) // -1 is considered all devices, this is only needed in the Browse dialog. The other choices are for VirtualDirectory
@@ -118,6 +144,7 @@ vector<CStdString> CLinuxFileSystem::GetDevices(int *DeviceType, int len)
 /* Remove a device based on the UUID for the partition. Hal Cannot make a CDevice from something removed that is why we need UUID */
 bool CLinuxFileSystem::RemoveDevice(CStdString UUID)
 {
+  CSingleLock lock(m_lock);
   int remove = -1;
   for (unsigned int i = 0; i < m_Devices.size(); i++)
   {
@@ -140,6 +167,7 @@ bool CLinuxFileSystem::RemoveDevice(CStdString UUID)
 /* Add a device that LinuxFileSystem can use. Approved or not it is sent here. */
 bool CLinuxFileSystem::AddDevice(CDevice Device)
 {
+  CSingleLock lock(m_lock);
   bool add = true;
   for (unsigned int i = 0; i < m_Devices.size(); i++)
   {
@@ -160,6 +188,7 @@ bool CLinuxFileSystem::AddDevice(CDevice Device)
 /* If any device have been added since the last call, this will return true */
 bool CLinuxFileSystem::AnyDeviceChange()
 {
+  CSingleLock lock(m_lock);
   if (m_DeviceChange)
   {
     m_DeviceChange = false;
@@ -169,3 +198,4 @@ bool CLinuxFileSystem::AnyDeviceChange()
     return false;
 }
 #endif // HAS_HAL
+
