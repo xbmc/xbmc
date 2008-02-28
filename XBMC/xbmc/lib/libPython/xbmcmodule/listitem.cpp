@@ -141,8 +141,8 @@ namespace PYXBMC
 
   PyObject* ListItem_SetLabel(ListItem *self, PyObject *args)
   {
-    PyObject* unicodeLine = NULL;
     if (!self->item) return NULL;
+    PyObject* unicodeLine = NULL;
 
     if (!PyArg_ParseTuple(args, "O", &unicodeLine)) return NULL;
 
@@ -279,10 +279,11 @@ namespace PYXBMC
     "type           : string - type of media(video/music/pictures).\n"
     "infoLabels     : dictionary - pairs of { label: value }.\n"
     "\n"
-    "*Note, To set pictures exif info, prepend 'exif:' to the label. (e.g. exif:resolution).\n"
+    "*Note, To set pictures exif info, prepend 'exif:' to the label. Exif values must be passed\n"
+    "       as strings, separate value pairs with a comma. (eg. {'exif:resolution': '720,480'}\n"
     "       See CPictureInfoTag::TranslateString in PictureInfoTag.cpp for valid strings.\n"
     "\n"
-    "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       You can use the above as keywords for arguments and skip certain optional arguments.\n"
     "       Once you use a keyword, all following arguments require the keyword.\n"
     "\n"
     "example:\n"
@@ -452,7 +453,7 @@ namespace PYXBMC
           {
             CStdString exifkey = PyString_AsString(key);
             if (!exifkey.Left(5).Equals("exif:") || exifkey.length() < 6) continue;
-            int info = CPictureInfoTag::TranslateString(exifkey.Mid(5, exifkey.GetLength() - 5));
+            int info = CPictureInfoTag::TranslateString(exifkey.Mid(5));
             self->item->GetPictureInfoTag()->SetInfo(info, tmp);
           }
         }
@@ -484,12 +485,12 @@ namespace PYXBMC
 
     static char *keywords[] = { "key", "value", NULL };
     char *key = NULL;
-    char *value = NULL;
+    PyObject *value = NULL;
 
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "ss",
+      "sO",
       keywords,
       &key,
       &value))
@@ -498,9 +499,13 @@ namespace PYXBMC
     }
     if (!key || !value) return NULL;
 
+    string uText;
+    if (value && !PyGetUnicodeString(uText, value, 1))
+      return NULL;
+
     PyGUILock();
     CStdString lowerKey = key;
-    self->item->SetProperty(lowerKey.ToLower(), value);
+    self->item->SetProperty(lowerKey.ToLower(), uText);
     PyGUIUnlock();
 
     Py_INCREF(Py_None);
