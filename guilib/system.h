@@ -135,6 +135,9 @@
 #define  HAS_SHOUTCAST
 #define HAS_SDL
 #define HAS_RAR
+#ifndef __APPLE__
+#define HAS_HAL
+#endif
 #define HAS_FILESYSTEM_CDDA
 #ifndef __APPLE__
 #define HAS_FILESYSTEM_SMB

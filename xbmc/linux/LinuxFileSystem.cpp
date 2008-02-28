@@ -1,12 +1,12 @@
 #include "LinuxFileSystem.h"
 #include "RegExp.h"
-#ifndef __APPLE__
+#ifdef HAS_HAL
 #include "HalManager.h"
 #endif
 
 using namespace std;
 
-#ifndef __APPLE__
+#ifdef HAS_HAL
 vector<CDevice> CLinuxFileSystem::m_Devices;
 bool CLinuxFileSystem::m_DeviceChange;
 
@@ -39,7 +39,7 @@ bool CLinuxFileSystem::ApproveDevice(CDevice *device)
   device->Approved = approve;
   return approve;
 }
-#endif //__APPLE__
+#endif //HAS_HAL
 
 vector<CStdString> CLinuxFileSystem::GetDevices()
 {
@@ -49,13 +49,15 @@ vector<CStdString> CLinuxFileSystem::GetDevices()
 vector<CStdString> CLinuxFileSystem::GetDevices(int *DeviceType, int len)
 {
   vector<CStdString> result;
-#ifdef __APPLE__
+#ifndef HAS_HAL
   if (DeviceType == NULL) // -1 is considered all devices, this is only needed in the Browse dialog. The other choices are for VirtualDirectory
   {
     CRegExp reMount;
-
+#ifdef __APPLE__
     reMount.RegComp("on (.+) \\(([^,]+)");
-
+#else
+ 	  reMount.RegComp("on (.+) type ([^ ]+)"); 
+#endif
     char line[1024];
 
     FILE* pipe = popen("mount", "r");
@@ -68,15 +70,22 @@ vector<CStdString> CLinuxFileSystem::GetDevices(int *DeviceType, int len)
         {
           char* mount = reMount.GetReplaceString("\\1");
           char* fs    = reMount.GetReplaceString("\\2");
-
+#ifdef __APPLE__
           // Ignore the stuff that doesn't make sense.
-          if (strcmp(fs, "devfs") == 0 || strcmp(fs, "fdesc") == 0 || strcmp(fs, "autofs") == 0)
-            continue;
+        if (strcmp(fs, "devfs") == 0 || strcmp(fs, "fdesc") == 0 || strcmp(fs, "autofs") == 0)
+          continue;
               
-          // Skip this for now, until we can figure out the name of the root volume.
-          if (strcmp(mount, "/") == 0)
-            continue;
-
+        // Skip this for now, until we can figure out the name of the root volume.
+        if (strcmp(mount, "/") == 0)
+          continue;
+#else 
+	        // Ignore root 
+	        if (strcmp(mount, "/") == 0) 
+	          continue; 
+	        // Here we choose wich filesystems are approved 
+	        if (strcmp(fs, "fuseblk") == 0 || strcmp(fs, "vfat") == 0 || strcmp(fs, "ext2") == 0 || strcmp(fs, "ext3") == 0 || strcmp(fs, "reiserfs") == 0 || strcmp(fs, "xfs") == 0 || strcmp(fs, "ntfs-3g") == 0) 
+	          result.push_back(mount); 
+#endif 
           free(fs);
           free(mount);
         }
@@ -84,7 +93,7 @@ vector<CStdString> CLinuxFileSystem::GetDevices(int *DeviceType, int len)
       pclose(pipe);
     }
   }
-#else
+#else //#ifdef HAS_HAL
   for (unsigned int i = 0; i < m_Devices.size(); i++)
   {
     if (m_Devices[i].Mounted && m_Devices[i].Approved)
@@ -105,7 +114,7 @@ vector<CStdString> CLinuxFileSystem::GetDevices(int *DeviceType, int len)
   return result;
 }
 
-#ifndef __APPLE__
+#ifdef HAS_HAL
 /* Remove a device based on the UUID for the partition. Hal Cannot make a CDevice from something removed that is why we need UUID */
 bool CLinuxFileSystem::RemoveDevice(CStdString UUID)
 {
@@ -159,4 +168,4 @@ bool CLinuxFileSystem::AnyDeviceChange()
   else
     return false;
 }
-#endif //__APPLE__
+#endif // HAS_HAL

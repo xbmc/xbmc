@@ -1,6 +1,7 @@
 #ifndef LINUX_FILESYSTEM_H
 #define LINUX_FILESYSTEM_H
 
+#include "../../guilib/system.h"
 #include <vector>
 #include "StdString.h"
 #include <stdio.h>
@@ -44,14 +45,14 @@ public:
 class CLinuxFileSystem
 {
 private:
-#ifndef __APPLE
+#ifdef HAS_HAL
   static bool m_DeviceChange;
   static std::vector<CDevice> m_Devices;
 
   static void UpdateDevices();
 #endif
 public:
-#ifndef __APPLE__
+#ifdef HAS_HAL
   static bool AnyDeviceChange();
   static bool AddDevice(CDevice);
   static bool RemoveDevice(CStdString UUID);
