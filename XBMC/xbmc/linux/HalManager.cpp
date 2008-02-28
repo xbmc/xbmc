@@ -66,7 +66,7 @@ void CHalManager::DevicePropertyModified(LibHalContext *ctx, const char *udi, co
   if (TryVolume)
   {
     CLog::Log(LOGNOTICE, "HAL: Mount found %s", udi);
-    libhal_volume_free(TryVolume;
+    libhal_volume_free(TryVolume);
     CDevice dev;
     if (g_HalManager.DeviceFromVolumeUdi(udi, &dev))
       CLinuxFileSystem::AddDevice(dev);
