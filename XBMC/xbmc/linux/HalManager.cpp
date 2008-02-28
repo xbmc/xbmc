@@ -18,10 +18,11 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#ifndef __APPLE__
+#include "../../guilib/system.h"
 #include "HalManager.h"
-#include <libhal-storage.h>
 #include "RegExp.h"
+#ifdef HAS_HAL
+#include <libhal-storage.h>
 
 //#define HAL_HANDLEMOUNT
 
@@ -369,4 +370,4 @@ bool CHalManager::Update()
   else
     return false;
 }
-#endif //__APPLE__
+#endif // HAS_HAL

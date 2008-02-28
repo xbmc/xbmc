@@ -8,7 +8,7 @@
 #include "../utils/MemoryUnitManager.h"
 #endif
 #include "../DetectDVDType.h"
-#if defined(_LINUX) && !defined(__APPLE__)
+#ifdef HAS_HAL // This should be ifdef _LINUX when hotplugging is supported on osx
 #include "linux/LinuxFileSystem.h"
 #include <vector>
 #endif
@@ -235,7 +235,7 @@ void CVirtualDirectory::GetShares(VECSHARES &shares) const
 #ifdef HAS_XBOX_HARDWARE
     g_memoryUnitManager.GetMemoryUnitShares(shares);
 #endif
-#if defined(_LINUX) && !defined(__APPLE__)
+#ifdef HAS_HAL
   static int DevTypes[] = {0, 5, 6, 7, 8, 9, 10, 13}; //These numbers can be found in libhal-storage.h. 9 is Camera and 10 is Audio player, these are uncertain.
 
   std::vector<CStdString> result = CLinuxFileSystem::GetDevices(DevTypes, 8);
