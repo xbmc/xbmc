@@ -26,7 +26,7 @@
 		</RegExp>
 		<RegExp input="$$4" output="&lt;results&gt;\1&lt;/results&gt;" dest="1">
 			<RegExp input="$$3" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url cache=&quot;\1.xml&quot;&gt;http://www.thetvdb.com/api/1D62F2F90030C444/series/\1/all/$INFO[language].zip&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="4">
-				<expression repeat="yes">&lt;seriesid&gt;([0-9]*)&lt;/seriesid&gt;[^&lt;]*&lt;language&gt;[^&lt;]*&lt;/language&gt;[^&lt;]*&lt;translation&gt;([^&lt;]*)&lt;/translation&gt;</expression>
+				<expression repeat="yes">&lt;seriesid&gt;([0-9]*)&lt;/seriesid&gt;[^&lt;]*&lt;language&gt;[^&lt;]*&lt;/language&gt;[^&lt;]*&lt;SeriesName&gt;([^&lt;]*)&lt;/SeriesName&gt;</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>
