@@ -5525,7 +5525,7 @@ fi
 { echo "$as_me:$LINENO: result: $ac_cv_lib_hal_main" >&5
 echo "${ECHO_T}$ac_cv_lib_hal_main" >&6; }
 if test $ac_cv_lib_hal_main = yes; then
-  LZO_INCLUDES="$LZO_INCLUDES -DDBUS_API_SUBJECT_TO_CHANGE -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/hal -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include"
+  LZO_INCLUDES="$LZO_INCLUDES -DDBUS_API_SUBJECT_TO_CHANGE -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/hal"
 
 else
   { { echo "$as_me:$LINENO: error: == Could not find a required library. Please see README.linux" >&5
