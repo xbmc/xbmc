@@ -70,7 +70,10 @@ vector<CStdString> CLinuxFileSystem::GetRemovableDevices()
 #endif
 }
 
-/* if DeviceType == NULL we return all devices */
+/* if DeviceType == NULL we return all devices 
+   To decide wich types types are approved to be returned send for example int DevTypes[] = {0, 5, 6, 7, 8, 9, 10, 13}.
+   this will return all removable types like pendrives, memcards and such but NOT removable hdd's have type 1.
+   for more information on these for now is in libhal-storage.h. TODO Make defined types that can be common on all O/S */
 vector<CStdString> CLinuxFileSystem::GetDevices(int *DeviceType, int len)
 {
   CSingleLock lock(m_lock);
