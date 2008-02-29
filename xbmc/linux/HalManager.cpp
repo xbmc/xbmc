@@ -131,6 +131,7 @@ std::vector<CDevice> CHalManager::GetDevices()
 
     for (unsigned int j = 0; j < temp.size(); j++)
     {
+      CLog::Log(LOGDEBUG, "HAL: %s", temp[j].toString().c_str());
       Devices.push_back(temp[j]);
     }
   }
