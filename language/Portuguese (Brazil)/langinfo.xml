@@ -1,23 +1,31 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <language>
   <charsets>
-    <gui unicodefont="true">CP1252</gui>
-    <subtitle>CP1252</subtitle>
+	<gui unicodefont="true">CP1252</gui>
+	<subtitle>CP1252</subtitle>
   </charsets>
-
+  
   <dvd>
-    <menu>pt</menu>
-    <audio>pt</audio>
-    <subtitle>pt</subtitle>
+	<menu>pt</menu>
+	<audio>pt</audio>
+	<subtitle>pt</subtitle>
   </dvd>
-
+  
   <regions>
-    <region>
-      <dateshort>D/M/YYYY</dateshort>
-      <datelong>DDDD, D' de 'MMMM' de 'YYYY</datelong>
-      <time symbolAM="" symbolPM="">HH:mm:ss</time>
-      <tempunit>C</tempunit>
-      <speedunit>kmh</speedunit>
-    </region>
+	<region name="Brazil">
+	  <dateshort>D/M/YYYY</dateshort>
+	  <datelong>DDDD, D' de 'MMMM' de 'YYYY</datelong>
+	  <time symbolAM="" symbolPM="">H:mm:ss</time>
+	  <tempunit>C</tempunit>
+	  <speedunit>kmh</speedunit>
+	</region>
   </regions>
+
+  <sorttokens>
+	<token>The</token>
+	<token>O</token>
+	<token>A</token>
+	<token>Os</token>
+	<token>As</token>
+  </sorttokens>
 </language>

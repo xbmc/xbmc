@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: jutski (->7/2006) Mikko70 (1/2007->)-->
-<!--Date of translation: 8/2/2008-->
-<!--Finnish strings based on English strings version 11432 -->
+<!--Date of translation: 25/2/2008-->
+<!--Finnish strings based on English strings version 11774-->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -611,9 +611,9 @@
   <string id="752"></string>
   <string id="753"></string>
   <string id="754">Lisää linkki ohjelmaan</string>
-  <string id="755">Muokkaa ohjelman polkua</string>
-  <string id="756">Muokkaa ohjelman nimeä</string>
-  <string id="757">Muokkaa polun syvyyttä</string>
+  <string id="755">Muokkaa ohjelman polku</string>
+  <string id="756">Muokkaa ohjelman nimi</string>
+  <string id="757">Muokkaa polun syvyys</string>
   <string id="758"></string>
   <string id="759">Suuri luettelo</string>
   <string id="760">Keltainen</string>
@@ -637,7 +637,7 @@
   <string id="1000">Näytönsäästäjän esikatselu</string>
   <string id="1001">Ei saada yhteyttä</string>
   <string id="1002">XBMC ei saanut yhteyttä verkko-osoitteeseen.</string>
-  <string id="1003">Saatta olla ettei verkkoyhteyttä ole.</string>
+  <string id="1003">Saattaa olla ettei verkkoyhteyttä ole.</string>
   <string id="1004">Haluatko silti lisätä sijainnin?</string>
   <string id="1005"></string>
   <string id="1006">IP-osoite</string>
@@ -1552,8 +1552,8 @@
   <string id="20187">Varmuuskopioidaan EEPROM:in tiedot</string>
   <string id="20188">Varmuuskopioidaan Bios:in tiedot</string>
   <string id="20189">Juonen ja esittelyn automaattinen vieritys käytössä</string>
-  <string id="20190">Muokautus</string>
-  <string id="20191"></string>
+  <string id="20190">Mukautus</string>
+  <string id="20191">XBMC:n suoritusloki käytössä</string>
   <string id="20192"></string>
   <string id="20193"></string>
   <string id="20194"></string>
@@ -1681,6 +1681,7 @@
   <string id="20408">Ladataan tiedot musiikkivideosta</string>
   <string id="20409">Ladataan tiedot TV-ohjelmasta</string>
   <string id="20410">Esittely</string>
+  <string id="20411">Kutista</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Näytä piilotetut tiedostot ja kansiot</string>
