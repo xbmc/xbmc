@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 01/07/2008-->
+<!--Date of translation: 02/25/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 11214-->
+<!--Based on english strings version 11774-->
 <strings>
   <string id="0">Programmer</string>
   <string id="1">Billeder</string>
@@ -303,7 +303,7 @@
   <string id="380">byger</string>
   <string id="381">nogle</string>
   <string id="382">spredte</string>
-  <string id="383">vind</string>
+  <string id="383">blæst</string>
   <string id="384">hård</string>
   <string id="385">få skyer</string>
   <string id="386">skyfrit</string>
@@ -329,6 +329,7 @@
   <string id="406">Fugtighed</string>
   <string id="407">Fra</string>
   <string id="408">med</string>
+  <string id="409">Standarder</string>
   <string id="410">Forbinder til Weather.com</string>
   <string id="411">Henter vejrdata til:</string>
   <string id="412">Kan ikke hente vejrdata</string>
@@ -1112,7 +1113,7 @@
   <string id="14063">Dato og Tid</string>
   <string id="14064">Indstil dato</string>
   <string id="14065">Indstil tid</string>
-  <string id="14066">Indtast tiden i 24 timers format (TT:MM)</string>
+  <string id="14066">Indtast tiden i 24-timers format (TT:MM)</string>
   <string id="14067">Indtast datoen i DD/MM/ÅÅÅÅ format</string>
   <string id="14068">Indtast IP-adressen</string>
   <string id="14069">Ønsker du at anvende disse instillinger nu?</string>
@@ -1618,6 +1619,11 @@
   <string id="20404">Studio:</string>
   <string id="20405">Slet episode-bogmærke</string>
   <string id="20406">Opret episode-bogmærke</string>
+  <string id="20407">Indstillinger til scraperfunktion</string>
+  <string id="20408">Henter information om musikvideo</string>
+  <string id="20409">Henter information om TV-serie</string>
+  <string id="20410">Trailer</string>
+  <string id="20411">Fladgør liste</string>
   <string id="21330">Vis skjulte filer og mapper</string>
   <string id="21331">TuxBox-klient</string>
   <string id="21332">ADVARSEL: den valgte TuxBox er i optagetilstand!</string>
