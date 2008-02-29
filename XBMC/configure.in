@@ -134,7 +134,7 @@ else
   AC_MSG_RESULT(== PCRE support disabled. ==)
 fi
 
-AC_CHECK_LIB([hal], [main],LZO_INCLUDES="$LZO_INCLUDES -DDBUS_API_SUBJECT_TO_CHANGE -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/hal -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include"
+AC_CHECK_LIB([hal], [main],LZO_INCLUDES="$LZO_INCLUDES -DDBUS_API_SUBJECT_TO_CHANGE -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/hal"
                           , AC_MSG_ERROR(== Could not find a required library. Please see README.linux) )
 AC_CHECK_LIB([dbus-1], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux) )
 AC_CHECK_LIB([hal-storage], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux) )
