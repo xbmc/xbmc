@@ -51,6 +51,25 @@ vector<CStdString> CLinuxFileSystem::GetDevices()
   return GetDevices(NULL, -1);
 }
 
+vector<CStdString> CLinuxFileSystem::GetLocalDevices()
+{
+  CSingleLock lock(m_lock);
+#ifndef HAS_HAL
+  return GetDevices();
+#else
+  UpdateDevices();
+  vector<CStdString> result;
+  for (size_t i = 0; i < m_Devices.size(); i++)
+  {
+    if (m_Devices[i].Mounted && m_Devices[i].Approved && !m_Devices[i].HotPlugged)
+    {
+      result.push_back(m_Devices[i].MountPoint);
+    }
+  }
+  return result;
+#endif
+}
+
 vector<CStdString> CLinuxFileSystem::GetRemovableDevices()
 {
   CSingleLock lock(m_lock);
@@ -61,7 +80,7 @@ vector<CStdString> CLinuxFileSystem::GetRemovableDevices()
   vector<CStdString> result;
   for (size_t i = 0; i < m_Devices.size(); i++)
   {
-    if (m_Devices[i].Mounted && m_Devices[i].Approved && (m_Devices[i].Removable || m_Devices[i].HotPlugged))
+    if (m_Devices[i].Mounted && m_Devices[i].Approved && m_Devices[i].HotPlugged)
     {
       result.push_back(m_Devices[i].MountPoint);
     }
