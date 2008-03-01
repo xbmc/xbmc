@@ -130,6 +130,12 @@ void CDVDVideoCodecFFmpeg::Dispose()
   if (m_pCodecContext)
   {
     if (m_pCodecContext->codec) m_dllAvCodec.avcodec_close(m_pCodecContext);
+    if (m_pCodecContext->extradata)
+    {
+      m_dllAvUtil.av_free(m_pCodecContext->extradata);
+      m_pCodecContext->extradata = NULL;
+      m_pCodecContext->extradata_size = 0;
+    }
     m_dllAvUtil.av_free(m_pCodecContext);
     m_pCodecContext = NULL;
   }
@@ -177,12 +183,12 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
 
   if (len < 0)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - avcodec_decode_video returned failure");
+    CLog::Log(LOGERROR, "%s - avcodec_decode_video returned failure", __FUNCTION__);
     return VC_ERROR;
   }
 
   if (len != iSize)
-    CLog::Log(LOGWARNING, __FUNCTION__" - avcodec_decode_video didn't consume the full packet");
+    CLog::Log(LOGWARNING, "%s - avcodec_decode_video didn't consume the full packet. size: %d, consumed: %d", __FUNCTION__, iSize, len);
 
   if (!iGotPicture)
     return VC_BUFFER;
@@ -216,7 +222,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
     // convert the picture
     struct SwsContext *context = m_dllSwScale.sws_getContext(m_pCodecContext->width, m_pCodecContext->height, 
 			m_pCodecContext->pix_fmt, m_pCodecContext->width, m_pCodecContext->height, 
-			PIX_FMT_YUV420P, SWS_BILINEAR, NULL, NULL, NULL);
+			PIX_FMT_YUV420P, SWS_FAST_BILINEAR, NULL, NULL, NULL);
 
     uint8_t *src[] = { m_pFrame->data[0], m_pFrame->data[1], m_pFrame->data[2] };
     int     srcStride[] = { m_pFrame->linesize[0], m_pFrame->linesize[1], m_pFrame->linesize[2] };
@@ -225,7 +231,6 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
     m_dllSwScale.sws_scale(context, src, srcStride, 0, m_pCodecContext->height, dst, dstStride);
 
     m_dllSwScale.sws_freeContext(context); 
-
 
     m_pConvertFrame->coded_picture_number = m_pFrame->coded_picture_number;
     m_pConvertFrame->interlaced_frame = m_pFrame->interlaced_frame;
