@@ -63,6 +63,55 @@ void CCMythSession::ReleaseSession(CCMythSession* session)
     m_sessions.push_back(session);
 }
 
+
+bool CCMythSession::ProgramToTag(cmyth_proginfo_t info, CVideoInfoTag* tag)
+{
+  if(!info)
+    return false;
+
+  char *str;
+
+  if((str = m_dll->proginfo_chansign(info)))
+  {
+    tag->m_strTitle = str;
+    m_dll->ref_release(str);
+  }
+
+  if((str = m_dll->proginfo_title(info)))
+  {
+    tag->m_strTitle    += " : ";
+    tag->m_strTitle    += str;
+    tag->m_strShowTitle = str;
+    tag->m_strOriginalTitle = str;
+    m_dll->ref_release(str);
+  }
+
+  if((str = m_dll->proginfo_description(info)))
+  {
+    tag->m_strPlotOutline = str;
+    tag->m_strPlot        = str;
+    m_dll->ref_release(str);
+  }
+
+  if((str = m_dll->proginfo_category(info)))
+  {
+    tag->m_strGenre = str;
+    m_dll->ref_release(str);
+  }
+
+  cmyth_timestamp_t start = m_dll->proginfo_rec_start(info);
+  cmyth_timestamp_t end = m_dll->proginfo_rec_end(info);
+  double diff = difftime(m_dll->timestamp_to_unixtime(end), m_dll->timestamp_to_unixtime(start));
+  m_dll->ref_release(start);
+  m_dll->ref_release(end);
+  StringUtils::SecondsToTimeString((long)diff, tag->m_strRuntime, TIME_FORMAT_GUESS);
+
+  tag->m_iSeason  = 0; /* set this so xbmc knows it's a tv show */
+  tag->m_iEpisode = 0;
+  return true;
+}
+
+
 CCMythSession::CCMythSession(const CURL& url)
 {
   m_control   = NULL;

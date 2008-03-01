@@ -46,6 +46,7 @@ extern pthread_mutex_t mutex;
 #define ECANCELED -1
 #define SHUT_RDWR SD_BOTH
 typedef SOCKET cmyth_socket_t;
+typedef int socklen_t;
 #define snprintf _snprintf
 #define sleep(a) Sleep(a)
 static inline struct tm* localtime_r (const time_t *clock, struct tm *result) { 
@@ -87,7 +88,7 @@ typedef int cmyth_socket_t;
  * MythTV backend connection
  */
 struct cmyth_conn {
-	cmyth_socket_t conn_fd;	/**< socket file descriptor */
+	cmyth_socket_t	conn_fd;	/**< socket file descriptor */
 	unsigned char	*conn_buf;	/**< connection buffer */
 	int		conn_buflen;	/**< buffer size */
 	int		conn_len;	/**< amount of data in buffer */

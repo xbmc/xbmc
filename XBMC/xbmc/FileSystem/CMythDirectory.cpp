@@ -157,20 +157,14 @@ bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
           CFileItem *item = new CFileItem(path, false);
           item->SetLabel(name);
 
+          /* fill video info tag */
+          session->ProgramToTag(program, item->GetVideoInfoTag());
+
+
           if(dll->proginfo_rec_status(program) == RS_RECORDING)
             item->SetLabel2("(Recording)");
           else
-          {
-            cmyth_timestamp_t start = dll->proginfo_rec_start(program);
-            cmyth_timestamp_t end = dll->proginfo_rec_end(program);
-            double diff = difftime(dll->timestamp_to_unixtime(end), dll->timestamp_to_unixtime(start));
-            dll->ref_release(start);
-            dll->ref_release(end);
-
-            CStdString time;
-            StringUtils::SecondsToTimeString((long)diff, time, TIME_FORMAT_GUESS);
-            item->SetLabel2(time);
-          }
+            item->SetLabel2(item->GetVideoInfoTag()->m_strRuntime);
 
           item->SetLabelPreformated(true);
           items.Add(item);
