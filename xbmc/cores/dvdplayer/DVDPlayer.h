@@ -37,14 +37,25 @@ typedef struct DVDInfo
 }
 DVDInfo;
 
-typedef struct
+class CCurrentStream
 {
+public:
   int              id;     // demuxerid of current playing stream
   int              source;
   double           dts;    // last dts from demuxer, used to find disncontinuities
   CDVDStreamInfo   hint;   // stream hints, used to notice stream changes
   void*            stream; // pointer or integer, identifying stream playing. if it changes stream changed
   bool             inited;
+
+  // stuff to handle starting after seek
+  double                     startpts;
+  CDVDMsgGeneralSynchronize* startsync;
+
+  CCurrentStream()
+  {
+    startsync = NULL;
+    Clear();
+  }
 
   void Clear()
   {
@@ -54,8 +65,12 @@ typedef struct
     hint.Clear();
     stream = NULL;
     inited = false;
+    if(startsync) 
+      startsync->Release();
+    startsync = NULL;
+    startpts  = DVD_NOPTS_VALUE;
   }
-} CCurrentStream;
+};
 
 typedef struct 
 {
@@ -93,8 +108,9 @@ public:
 };
 
 
-#define DVDPLAYER_AUDIO 1
-#define DVDPLAYER_VIDEO 2
+#define DVDPLAYER_AUDIO    1
+#define DVDPLAYER_VIDEO    2
+#define DVDPLAYER_SUBTITLE 3
 
 class CDVDPlayer : public IPlayer, public CThread, public IDVDPlayer
 {
@@ -137,7 +153,7 @@ public:
   virtual void SetSubtitle(int iStream);
   virtual bool GetSubtitleVisible();
   virtual void SetSubtitleVisible(bool bVisible);
-  virtual bool GetSubtitleExtension(CStdString &strSubtitleExtension);
+  virtual bool GetSubtitleExtension(CStdString &strSubtitleExtension) { return false; }
   virtual bool AddSubtitle(const CStdString& strSubPath);
 
   virtual int GetAudioStreamCount();
@@ -207,9 +223,10 @@ protected:
   void HandleMessages();
   bool IsInMenu() const;
 
-  void SyncronizePlayers(DWORD sources);
+  void SyncronizePlayers(DWORD sources, double pts = DVD_NOPTS_VALUE);
   void SyncronizeDemuxer(DWORD timeout);
   void CheckContinuity(DemuxPacket* pPacket, unsigned int source);
+  void CheckPlayerInit(CCurrentStream& current, unsigned int source, bool& drop);
 
   bool ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream);
   bool IsValidStream(CCurrentStream& stream, StreamType type);
@@ -233,8 +250,8 @@ protected:
 
   int m_playSpeed;
 
-  double m_lastpts; // holds last display pts during ff/rw operations
-  
+  double m_lastpts;  // holds last display pts during ff/rw operations
+
   bool   m_bCaching;
   time_t m_tmLastSeek;
 

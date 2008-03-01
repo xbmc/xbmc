@@ -185,7 +185,7 @@ public:
   /*
    * Seek, time in msec calculated from stream start
    */
-  virtual bool Seek(int iTime, bool bBackword = false) = 0;
+  virtual bool SeekTime(int time, bool backwords = false, double* startpts = NULL) = 0;
 
   /*
    * Set the playspeed, if demuxer can handle different

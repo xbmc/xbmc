@@ -50,7 +50,7 @@ public:
     // video related messages
     
     VIDEO_NOSKIP,                   // next pictures is not to be skipped by the video renderer
-    VIDEO_SET_ASPECT,                // set aspectratio of video
+    VIDEO_SET_ASPECT,               // set aspectratio of video
 
     // subtitle related messages
     SUBTITLE_CLUTCHANGE
@@ -141,12 +141,6 @@ public:
   bool m_clock;
 };
 
-class CDVDMsgGeneralFlush : public CDVDMsg
-{
-public:
-  CDVDMsgGeneralFlush() : CDVDMsg(GENERAL_FLUSH)  {}
-};
-
 class CDVDStreamInfo;
 class CDVDMsgGeneralStreamChange : public CDVDMsg
 {
@@ -189,8 +183,9 @@ public:
   T m_value;
 };
 
-typedef CDVDMsgType<bool> CDVDMsgBool;
-typedef CDVDMsgType<int> CDVDMsgInt;
+typedef CDVDMsgType<bool>   CDVDMsgBool;
+typedef CDVDMsgType<int>    CDVDMsgInt;
+typedef CDVDMsgType<double> CDVDMsgDouble;
 
 ////////////////////////////////////////////////////////////////////////////////
 //////
@@ -228,19 +223,22 @@ private:
 class CDVDMsgPlayerSeek : public CDVDMsg
 {
 public:
-  CDVDMsgPlayerSeek(int time, bool backward, bool flush = true)
+  CDVDMsgPlayerSeek(int time, bool backward, bool flush = true, bool accurate = true)
     : CDVDMsg(PLAYER_SEEK)
     , m_time(time)
     , m_backward(backward)
     , m_flush(flush)
+    , m_accurate(accurate)
   {}
   int  GetTime()              { return m_time; }
   bool GetBackward()          { return m_backward; }
   bool GetFlush()             { return m_flush; }
+  bool GetAccurate()          { return m_accurate; }
 private:
   int  m_time;
   bool m_backward;
   bool m_flush;
+  bool m_accurate;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -252,13 +250,14 @@ private:
 class CDVDMsgDemuxerPacket : public CDVDMsg
 {
 public:
-  CDVDMsgDemuxerPacket(DemuxPacket* pPacket, unsigned int packetSize);
+  CDVDMsgDemuxerPacket(DemuxPacket* packet, bool drop = false);
   virtual ~CDVDMsgDemuxerPacket();
-  DemuxPacket* GetPacket()   { return m_pPacket; }
-  unsigned int GetPacketSize()          { return m_packetSize; }
-public: // XXX, test : should be private
-  DemuxPacket* m_pPacket;
-  unsigned int m_packetSize;
+  DemuxPacket* GetPacket()      { return m_packet; }
+  unsigned int GetPacketSize()  { if(m_packet) return m_packet->iSize; else return 0; }
+  bool         GetPacketDrop()  { return m_drop; }
+private:
+  DemuxPacket* m_packet;
+  bool         m_drop;
 };
 
 class CDVDMsgDemuxerReset : public CDVDMsg
@@ -267,26 +266,14 @@ public:
   CDVDMsgDemuxerReset() : CDVDMsg(DEMUXER_RESET)  {}
 };
 
+
+
 ////////////////////////////////////////////////////////////////////////////////
 //////
 ////// VIDEO_ Messages
 //////
 ////////////////////////////////////////////////////////////////////////////////
 
-class CDVDMsgVideoNoSkip : public CDVDMsg
-{
-public:
-  CDVDMsgVideoNoSkip() : CDVDMsg(VIDEO_NOSKIP)  {}
-};
-
-class CDVDMsgVideoSetAspect : public CDVDMsg
-{
-public:
-  CDVDMsgVideoSetAspect(float aspect) : CDVDMsg(VIDEO_SET_ASPECT) { m_aspect = aspect; }
-  float GetAspect() { return m_aspect; }
-private:
-  float m_aspect;
-};
 
 ////////////////////////////////////////////////////////////////////////////////
 //////
