@@ -2,6 +2,7 @@
 #include "stdafx.h"
 #include "DVDDemuxFFmpeg.h"
 #include "../DVDInputStreams/DVDInputStream.h"
+#include "../DVDInputStreams/DVDInputStreamNavigator.h"
 #include "DVDDemuxUtils.h"
 #include "../DVDClock.h" // for DVD_TIME_BASE
 #include "utils/Win32Exception.h"
@@ -322,6 +323,8 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   // print some extra information
   m_dllAvFormat.dump_format(m_pFormatContext, 0, strFile.c_str(), 0);
 
+  UpdateCurrentPTS();
+
   // add the ffmpeg streams to our own stream array
   m_program = 0;
   if (m_pFormatContext->nb_programs)
@@ -441,7 +444,7 @@ void CDVDDemuxFFmpeg::SetSpeed(int iSpeed)
   }
 }
 
-double CDVDDemuxFFmpeg::ConvertTimestamp(__int64 pts, int den, int num)
+double CDVDDemuxFFmpeg::ConvertTimestamp(int64_t pts, int den, int num)
 {
   if (pts == (int64_t)AV_NOPTS_VALUE)
     return DVD_NOPTS_VALUE;
@@ -466,6 +469,9 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
 {
   AVPacket pkt;
   DemuxPacket* pPacket = NULL;
+  // on some cases where the received packet is invalid we will need to return an empty packet (0 length) otherwise the main loop (in CDVDPlayer) 
+  // would consider this the end of stream and stop.
+  bool bReturnEmpty = false;
   Lock();
   if (m_pFormatContext)
   {
@@ -491,13 +497,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
     if (result == AVERROR(EINTR) || result == AVERROR(EAGAIN))
     {
       // timeout, probably no real error, return empty packet
-      pPacket = CDVDDemuxUtils::AllocateDemuxPacket(0);
-      if(pPacket)
-      {
-        pPacket->dts = DVD_NOPTS_VALUE;
-        pPacket->pts = DVD_NOPTS_VALUE;
-        pPacket->iStreamId = -1;
-      }
+      bReturnEmpty = true;
     }
     else if (result < 0)
     {
@@ -509,6 +509,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
       if (pkt.size < 0 || pkt.stream_index >= MAX_STREAMS)
       {
         CLog::Log(LOGERROR, "CDVDDemuxFFmpeg::Read() no valid packet");
+        bReturnEmpty = true;
       }
       else
       {
@@ -525,6 +526,9 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
               break;
             }
           }
+
+          if (!pPacket)
+            bReturnEmpty = true;
         }
         else
           pPacket = CDVDDemuxUtils::AllocateDemuxPacket(pkt.size);
@@ -574,6 +578,17 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
   }
   Unlock();
 
+  if (bReturnEmpty && !pPacket)
+  {
+      pPacket = CDVDDemuxUtils::AllocateDemuxPacket(0);
+      if(pPacket)
+      {
+        pPacket->dts = DVD_NOPTS_VALUE;
+        pPacket->pts = DVD_NOPTS_VALUE;
+        pPacket->iStreamId = -1;
+      }
+  }
+
   if (!pPacket) return NULL;
 
   // check streams, can we make this a bit more simple?
@@ -609,8 +624,23 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
   return pPacket;
 }
 
-bool CDVDDemuxFFmpeg::Seek(int iTime, bool bBackword)
+bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
 {
+  if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
+  {
+    CLog::Log(LOGDEBUG, "%s - seeking using navigator", __FUNCTION__);
+    if (((CDVDInputStreamNavigator*)m_pInput)->SeekTime(time))
+    {
+      // since seek happens behind demuxers back, we have to reset it
+      // this won't be a problem if we setup ffmpeg properly later
+      Reset();
+
+      // todo, calculate starting pts in this case
+      return true;
+    }
+    return false;
+  }
+
   if(!m_pInput->Seek(0, SEEK_POSSIBLE) 
   && !m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG))
   {
@@ -618,17 +648,30 @@ bool CDVDDemuxFFmpeg::Seek(int iTime, bool bBackword)
     return false;
   }
 
-  __int64 seek_pts = (__int64)iTime * (AV_TIME_BASE / 1000);
+  __int64 seek_pts = (__int64)time * (AV_TIME_BASE / 1000);
   if (m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE && seek_pts < m_pFormatContext->start_time)
-  {
     seek_pts += m_pFormatContext->start_time;
-  }
-  
+
   Lock();
-  int ret = m_dllAvFormat.av_seek_frame(m_pFormatContext, -1, seek_pts, bBackword ? AVSEEK_FLAG_BACKWARD : 0);
-  m_iCurrentPts = DVD_NOPTS_VALUE;
+  int ret = m_dllAvFormat.av_seek_frame(m_pFormatContext, -1, seek_pts, backwords ? AVSEEK_FLAG_BACKWARD : 0);
+
+  if(ret >= 0)
+    UpdateCurrentPTS();
   Unlock();
-  
+
+  if(m_iCurrentPts == DVD_NOPTS_VALUE)
+    CLog::Log(LOGDEBUG, "%s - unknown positon after seek", __FUNCTION__);
+  else
+    CLog::Log(LOGDEBUG, "%s - seek ended up on time %d", __FUNCTION__, (int)(m_iCurrentPts / DVD_TIME_BASE * 1000));
+
+  // in this case the start time is requested time
+  if(startpts)
+    *startpts = DVD_MSEC_TO_TIME(time);
+
+  // demuxer will return failure, if you seek to eof
+  if (m_pInput->IsEOF() && ret <= 0)
+    return true;
+
   return (ret >= 0);
 }
 
@@ -636,9 +679,27 @@ bool CDVDDemuxFFmpeg::SeekByte(__int64 pos)
 {
   Lock();
   int ret = m_dllAvFormat.av_seek_frame(m_pFormatContext, -1, pos, AVSEEK_FLAG_BYTE);
-  m_iCurrentPts = DVD_NOPTS_VALUE;
+
+  if(ret >= 0)
+    UpdateCurrentPTS();
+
   Unlock();
   return (ret >= 0);
+}
+
+void CDVDDemuxFFmpeg::UpdateCurrentPTS()
+{
+  m_iCurrentPts = DVD_NOPTS_VALUE;
+  for(int i=0;i<MAX_STREAMS;i++)
+  {
+    AVStream *stream = m_pFormatContext->streams[i];
+    if(stream && stream->cur_dts != (int64_t)AV_NOPTS_VALUE)
+    {
+      double ts = ConvertTimestamp(stream->cur_dts, stream->time_base.den, stream->time_base.num);
+      if(m_iCurrentPts == DVD_NOPTS_VALUE || m_iCurrentPts > ts )
+        m_iCurrentPts = ts;
+    }
+  }
 }
 
 int CDVDDemuxFFmpeg::GetStreamLenght()

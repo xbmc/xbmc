@@ -33,7 +33,7 @@ CDVDPlayerSubtitle::~CDVDPlayerSubtitle()
   
 void CDVDPlayerSubtitle::Flush()
 {
-  SendMessage(new CDVDMsgGeneralFlush());
+  SendMessage(new CDVDMsg(CDVDMsg::GENERAL_FLUSH));
 }
 
 void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
