@@ -260,6 +260,10 @@ bool CCMythFile::Exists(const CURL& url)
 
   if(path.Left(11) == "recordings/")
   {
+    if(CUtil::GetExtension(path).Equals(".tbn")
+    || CUtil::GetExtension(path).Equals(".jpg"))
+      return false;
+
     if(!SetupConnection(url, true, false, false))
       return false;
 
@@ -267,7 +271,7 @@ bool CCMythFile::Exists(const CURL& url)
     m_program = m_dll->proginfo_get_from_basename(m_control, m_filename.c_str());
     if(!m_program)
     {
-      CLog::Log(LOGERROR, "%s - unable to get find selected file", __FUNCTION__);
+      CLog::Log(LOGERROR, "%s - unable to get find %s", __FUNCTION__, m_filename.c_str());
       return false;
     }
     return true;
@@ -414,35 +418,9 @@ bool CCMythFile::SkipNext()
 
 CVideoInfoTag* CCMythFile::GetVideoInfoTag()
 {
-  if(m_program)
-  {
-    char *str;
-
-    if((str = m_dll->proginfo_chanstr(m_program)))
-    {
-      m_infotag.m_strTitle = str;
-      m_dll->ref_release(str);
-    }
-
-    if((str = m_dll->proginfo_title(m_program)))
-    {
-      m_infotag.m_strTitle    += " : ";
-      m_infotag.m_strTitle    += str;
-      m_infotag.m_strShowTitle = str;
-      m_dll->ref_release(str);
-    }
-
-    if((str = m_dll->proginfo_description(m_program)))
-    {
-      m_infotag.m_strPlotOutline = str;
-      m_infotag.m_strPlot        = str;
-      m_dll->ref_release(str);
-    }
-
-    m_infotag.m_iSeason  = 1; /* set this so xbmc knows it's a tv show */
-    m_infotag.m_iEpisode = 1;
+  if(m_session->ProgramToTag(m_program, &m_infotag))
     return &m_infotag;
-  }
+
   return NULL;
 }
 

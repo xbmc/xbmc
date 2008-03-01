@@ -32,6 +32,8 @@ public:
   cmyth_conn_t     GetControl();
   cmyth_database_t GetDatabase();
   DllLibCMyth*     GetLibrary() { return m_dll; }
+
+  bool             ProgramToTag(cmyth_proginfo_t info, CVideoInfoTag* tag);
 private:
   CCMythSession(const CURL& url);
   ~CCMythSession();
