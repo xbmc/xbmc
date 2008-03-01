@@ -817,6 +817,8 @@ void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
   CheckContinuity(pPacket, DVDPLAYER_AUDIO);
   if(pPacket->dts != DVD_NOPTS_VALUE)
     m_CurrentAudio.dts = pPacket->dts;
+  else if(pPacket->pts != DVD_NOPTS_VALUE)
+    m_CurrentAudio.dts = pPacket->pts;
 
   bool drop;
   CheckPlayerInit(m_CurrentAudio, DVDPLAYER_AUDIO, drop);
@@ -845,6 +847,8 @@ void CDVDPlayer::ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket)
     CheckContinuity( pPacket, DVDPLAYER_VIDEO );
     if(pPacket->dts != DVD_NOPTS_VALUE)
       m_CurrentVideo.dts = pPacket->dts;
+    else if(pPacket->pts != DVD_NOPTS_VALUE)
+      m_CurrentVideo.dts = pPacket->pts;
   }
 
   bool drop;
@@ -870,6 +874,8 @@ void CDVDPlayer::ProcessSubData(CDemuxStream* pStream, DemuxPacket* pPacket)
   }
   if(pPacket->dts != DVD_NOPTS_VALUE)
     m_CurrentSubtitle.dts = pPacket->dts;
+  else if(pPacket->pts != DVD_NOPTS_VALUE)
+    m_CurrentSubtitle.dts = pPacket->pts;
 
   bool drop;
   CheckPlayerInit(m_CurrentSubtitle, DVDPLAYER_SUBTITLE, drop);
@@ -884,9 +890,9 @@ void CDVDPlayer::CheckPlayerInit(CCurrentStream& current, unsigned int source, b
 {
   drop = false;
 
-  if(current.startsync && current.dts != DVD_NOPTS_VALUE)
+  if(current.startsync)
   {
-    if(current.startpts < current.dts
+    if(current.startpts < current.dts && current.dts != DVD_NOPTS_VALUE
     || current.startpts == DVD_NOPTS_VALUE)
     {
       if(source == DVDPLAYER_VIDEO)
@@ -899,7 +905,8 @@ void CDVDPlayer::CheckPlayerInit(CCurrentStream& current, unsigned int source, b
       current.startpts = DVD_NOPTS_VALUE;
       current.startsync = NULL;
     }
-    else if((current.startpts - current.dts) > DVD_SEC_TO_TIME(20))
+    else if((current.startpts - current.dts) > DVD_SEC_TO_TIME(20)
+         &&  current.dts != DVD_NOPTS_VALUE)
     {
       CLog::Log(LOGDEBUG, "%s - too far to decode before finishing seek", __FUNCTION__);
       if(m_CurrentAudio.startpts != DVD_NOPTS_VALUE)
