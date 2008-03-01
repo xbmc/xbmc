@@ -116,7 +116,6 @@ CAc97DirectSound::~CAc97DirectSound()
 //***********************************************************************************************
 HRESULT CAc97DirectSound::Deinitialize()
 {
-  OutputDebugString("CAc97DirectSound::Deinitialize\n");
   m_bIsAllocated = false;
 
   if (m_pbSampleData[0])
