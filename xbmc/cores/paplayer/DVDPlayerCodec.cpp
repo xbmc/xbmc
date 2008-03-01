@@ -178,7 +178,7 @@ void DVDPlayerCodec::DeInit()
 
 __int64 DVDPlayerCodec::Seek(__int64 iSeekTime)
 {  
-  m_pDemuxer->Seek(iSeekTime, true);
+  m_pDemuxer->SeekTime(iSeekTime, true);
   m_audioLen = 0;
   m_audioPos = 0;
   m_audioData = NULL;

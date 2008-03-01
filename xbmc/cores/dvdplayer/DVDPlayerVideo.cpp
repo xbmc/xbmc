@@ -215,12 +215,9 @@ void CDVDPlayerVideo::Process()
 
     if (pMsg->IsType(CDVDMsg::GENERAL_SYNCHRONIZE))
     {
+      ((CDVDMsgGeneralSynchronize*)pMsg)->Wait( &m_bStop, SYNCSOURCE_AUDIO );
       CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_SYNCHRONIZE");
-
-      CDVDMsgGeneralSynchronize* pMsgGeneralSynchronize = (CDVDMsgGeneralSynchronize*)pMsg;
-      pMsgGeneralSynchronize->Wait(&m_bStop, SYNCSOURCE_VIDEO);
-
-      pMsgGeneralSynchronize->Release();
+      pMsg->Release();
 
       /* we may be very much off correct pts here, but next picture may be a still*/
       /* make sure it isn't dropped */
@@ -251,7 +248,7 @@ void CDVDPlayerVideo::Process()
     else if (pMsg->IsType(CDVDMsg::VIDEO_SET_ASPECT))
     {
       CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::VIDEO_SET_ASPECT");
-      m_fForcedAspectRatio = ((CDVDMsgVideoSetAspect*)pMsg)->GetAspect();
+      m_fForcedAspectRatio = *((CDVDMsgDouble*)pMsg);
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH)) // private message sent by (CDVDPlayerVideo::Flush())
     {
@@ -268,11 +265,11 @@ void CDVDPlayerVideo::Process()
       // (setting it to 2 will skip some menu stills, 5 is working ok for me).
       m_iNrOfPicturesNotToSkip = 5;
     }
-    
+
     if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
     {
-      CDVDMsgDemuxerPacket* pMsgDemuxerPacket = (CDVDMsgDemuxerPacket*)pMsg;
-      DemuxPacket* pPacket = pMsgDemuxerPacket->GetPacket();
+      DemuxPacket* pPacket = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacket();
+      bool bPacketDrop     = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacketDrop();
 
       if (m_DetectedStill)
       {
@@ -288,19 +285,20 @@ void CDVDPlayerVideo::Process()
       { // if we dropped too many pictures in a row, insert a forced picture
         m_iNrOfPicturesNotToSkip++;
       }
-      else if (m_speed < 0)
-      { // playing backward, don't drop any pictures
-        m_iNrOfPicturesNotToSkip = 5;
-      }
-
-      // if we have pictures that can't be skipped, never request drop
-      if( m_iNrOfPicturesNotToSkip > 0 || !m_bDropFrames )
-        bRequestDrop = false;
 
 #ifdef PROFILE
       bRequestDrop = false;
+#else
+      if (m_iNrOfPicturesNotToSkip > 0) bRequestDrop = false;
+      if (m_speed < 0)                  bRequestDrop = false;
+      if (m_bDropFrames == false)       bRequestDrop = false;
 #endif
-      
+
+      // if player want's us to drop this packet, do so nomatter what
+      if(bPacketDrop)
+        bRequestDrop = true;
+
+
       EnterCriticalSection(&m_critCodecSection);
       // tell codec if next frame should be dropped
       // problem here, if one packet contains more than one frame
@@ -314,7 +312,7 @@ void CDVDPlayerVideo::Process()
       // picture from a demux packet, this should be reasonable
       // for libavformat as a demuxer as it normally packetizes
       // pictures when they come from demuxer
-      if(bRequestDrop && iDecoderState & VC_BUFFER)
+      if(bRequestDrop && !bPacketDrop && (iDecoderState & VC_BUFFER))
       {
         m_iDroppedFrames++;
         iDropped++;
@@ -332,17 +330,27 @@ void CDVDPlayerVideo::Process()
           if (m_pVideoCodec->GetPicture(&picture))
           {
             picture.iGroupId = pPacket->iGroupId;
-            
-            if (picture.iDuration == 0)
-              // should not use frametime here. cause framerate can change while playing video
+
+            if(picture.iDuration == 0)
               picture.iDuration = frametime;
+
+            if(bRequestDrop)
+              picture.iFlags |= DVP_FLAG_DROPPED;
 
             if (m_iNrOfPicturesNotToSkip > 0)
             {
               picture.iFlags |= DVP_FLAG_NOSKIP;
               m_iNrOfPicturesNotToSkip--;
             }
-            
+
+            /* try to figure out a pts for this frame */
+            if(picture.pts == DVD_NOPTS_VALUE && pPacket->dts != DVD_NOPTS_VALUE)
+              picture.pts = pPacket->dts;
+
+            /* use forced aspect if any */
+            if( m_fForcedAspectRatio != 0.0f )
+              picture.iDisplayWidth = (int) (picture.iDisplayHeight * m_fForcedAspectRatio);
+
             //Deinterlace if codec said format was interlaced or if we have selected we want to deinterlace
             //this video
             EINTERLACEMETHOD mInt = g_stSettings.m_currentVideoSettings.m_InterlaceMethod;
@@ -358,15 +366,9 @@ void CDVDPlayerVideo::Process()
               picture.iFlags |= DVP_FLAG_NOAUTOSYNC;
             }
 
-            /* try to figure out a pts for this frame */
+            /* if frame has a pts (usually originiating from demux packet), use that */
             if(picture.pts != DVD_NOPTS_VALUE)
               pts = picture.pts;
-            else if(pPacket->dts != DVD_NOPTS_VALUE)
-              pts = pPacket->dts;
-            
-            /* use forced aspect if any */
-            if( m_fForcedAspectRatio != 0.0f )
-              picture.iDisplayWidth = (int) (picture.iDisplayHeight * m_fForcedAspectRatio);
 
             int iResult;
             do 
@@ -387,7 +389,7 @@ void CDVDPlayerVideo::Process()
               pts += picture.iDuration * m_speed / abs(m_speed);
             }
             while (!m_bStop && picture.iRepeatPicture-- > 0);
-            
+
             if( iResult & EOS_ABORT )
             {
               //if we break here and we directly try to decode again wihout 
@@ -397,8 +399,8 @@ void CDVDPlayerVideo::Process()
               iDecoderState = m_pVideoCodec->Decode(NULL, 0, DVD_NOPTS_VALUE);
               break;
             }
-            
-            if( iResult & EOS_DROPPED )
+
+            if( (iResult & EOS_DROPPED) && !bPacketDrop )
             {
               m_iDroppedFrames++;
               iDropped++;
@@ -540,7 +542,7 @@ void CDVDPlayerVideo::Flush()
   /* and any demux packet that has been taken out of queue need to */
   /* be disposed of before we flush */
   m_messageQueue.Flush();
-  m_messageQueue.Put(new CDVDMsgGeneralFlush());  
+  m_messageQueue.Put(new CDVDMsg(CDVDMsg::GENERAL_FLUSH));
 }
 
 void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest, double pts)

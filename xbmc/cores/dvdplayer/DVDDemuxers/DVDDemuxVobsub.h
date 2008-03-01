@@ -17,7 +17,7 @@ public:
   virtual void          Abort() {};
   virtual void          Flush();
   virtual DemuxPacket*  Read();
-  virtual bool          Seek(int time, bool backwords);
+  virtual bool          SeekTime(int time, bool backwords, double* startpts = NULL);
   virtual void          SetSpeed(int speed) {}
   virtual CDemuxStream* GetStream(int index) { return m_Streams[index]; }
   virtual int           GetNrOfStreams()     { return m_Streams.size(); }
