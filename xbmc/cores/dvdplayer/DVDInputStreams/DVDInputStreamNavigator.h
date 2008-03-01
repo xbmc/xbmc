@@ -92,7 +92,7 @@ public:
 
   float GetVideoAspectRatio();
 
-  bool Seek(int iTimeInMsec); //seek within current pg(c)
+  bool SeekTime(int iTimeInMsec); //seek within current pg(c)
   virtual int GetCurrentGroupId() { return m_icurrentGroupId; }
 
   double GetTimeStampCorrection() { return (double)(m_iVobUnitCorrection * 1000) / 90; }
