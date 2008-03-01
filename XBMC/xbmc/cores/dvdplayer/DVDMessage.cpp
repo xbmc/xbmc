@@ -52,16 +52,14 @@ void CDVDMsgGeneralSynchronize::Wait(volatile bool *abort, DWORD source)
 /**
  * CDVDMsgDemuxerPacket --- DEMUXER_PACKET
  */
-CDVDMsgDemuxerPacket::CDVDMsgDemuxerPacket(DemuxPacket* pPacket, unsigned int packetSize) : CDVDMsg(DEMUXER_PACKET)
+CDVDMsgDemuxerPacket::CDVDMsgDemuxerPacket(DemuxPacket* packet, bool drop) : CDVDMsg(DEMUXER_PACKET)
 {
-  m_pPacket = pPacket;
-  m_packetSize = packetSize;
+  m_packet = packet;
+  m_drop   = drop;
 }
 
 CDVDMsgDemuxerPacket::~CDVDMsgDemuxerPacket()
 {
-  if (m_pPacket)
-  {
-    CDVDDemuxUtils::FreeDemuxPacket(m_pPacket);
-  }
+  if (m_packet)
+    CDVDDemuxUtils::FreeDemuxPacket(m_packet);
 }
