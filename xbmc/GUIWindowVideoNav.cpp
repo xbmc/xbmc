@@ -88,6 +88,8 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_WINDOW_INIT:
     {
+/* We don't want to show Autosourced items (ie removable pendrives, memorycards) in Library mode */
+      m_rootDir.AllowNonLocalShares(false);
       // check for valid quickpath parameter
       CStdString strDestination = message.GetStringParam();
       if (!strDestination.IsEmpty())
