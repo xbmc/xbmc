@@ -249,12 +249,9 @@ protected:
   CSelectionStreams m_SelectionStreams;
 
   int m_playSpeed;
-
-  double m_lastpts;  // holds last display pts during ff/rw operations
-
-  bool   m_bCaching;
   time_t m_tmLastSeek;
-
+  double m_lastpts;  // holds last display pts during ff/rw operations
+  
   // classes
   CDVDPlayerVideo m_dvdPlayerVideo; // video part
   CDVDPlayerAudio m_dvdPlayerAudio; // audio part
