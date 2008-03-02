@@ -17,7 +17,7 @@ public:
   int type; // 0=Action, 1=Control;
 #endif
 
-  PyXBMCAction() { }
+  PyXBMCAction(): dwParam(0), pCallbackWindow(NULL), pObject(NULL), controlId(0), type(0) { }
   virtual ~PyXBMCAction() ;
 };
 

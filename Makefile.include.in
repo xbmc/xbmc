@@ -16,10 +16,14 @@ DEFINES+=-D_LINUX -D_FILE_DEFINED -D_REENTRANT -D_LARGEFILE64_SOURCE -D_FILE_OFF
 	rm -f ${<:.c=.o}
 	$(CC) -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.c=.o}
 
+.S.o:
+	rm -f ${<:.S=.o}
+	$(CC) -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.S=.o}
+
 %.h.gch : %.h
 	$(CXX) -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o $@
 
-OBJS+=${SRCS:.cpp=.o}
+OBJS+=$(patsubst %.cpp,%.o,$(patsubst %.S,%.o,$(SRCS)))
 
 .PHONY : lib pch clean depend
 
