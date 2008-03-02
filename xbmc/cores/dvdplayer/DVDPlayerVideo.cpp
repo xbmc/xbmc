@@ -334,7 +334,7 @@ void CDVDPlayerVideo::Process()
             if(picture.iDuration == 0)
               picture.iDuration = frametime;
 
-            if(bRequestDrop)
+            if(bPacketDrop)
               picture.iFlags |= DVP_FLAG_DROPPED;
 
             if (m_iNrOfPicturesNotToSkip > 0)
