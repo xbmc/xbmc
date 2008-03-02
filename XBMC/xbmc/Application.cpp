@@ -1482,7 +1482,7 @@ void CApplication::StartWebServer()
     m_pWebServer = new CWebServer();
     m_pWebServer->Start(g_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), "Q:\\web", false);
     if (m_pXbmcHttp)
-      m_pXbmcHttp->xbmcBroadcast("StartUp", 1);
+	  g_applicationMessenger.HttpApi("broadcastlevel; StartUp;1");
   }
 }
 
@@ -2430,7 +2430,7 @@ bool CApplication::OnAction(const CAction &action)
   {
     CStdString tmp;
     tmp.Format("%i",action.wID);
-    m_pXbmcHttp->xbmcBroadcast("OnAction:"+tmp, 2);
+	g_applicationMessenger.HttpApi("broadcastlevel; OnAction:"+tmp+";2");
   }
 
   // special case for switching between GUI & fullscreen mode.
@@ -3090,7 +3090,7 @@ void  CApplication::CheckForTitleChange()
       CStdString msg=m_pXbmcHttp->GetOpenTag()+"MovieTitle:"+tagVal->m_strTitle+m_pXbmcHttp->GetCloseTag();
 	  if (m_prevMedia!=msg)
 	  {
-	    m_pXbmcHttp->xbmcBroadcast("MediaChanged:"+msg, 1);
+		g_applicationMessenger.HttpApi("broadcastlevel; MediaChanged:"+msg+";1");
         m_prevMedia=msg;
 	  }
     }
@@ -3107,7 +3107,7 @@ void  CApplication::CheckForTitleChange()
 		  msg+=m_pXbmcHttp->GetOpenTag()+"AudioArtist:"+tagVal->GetArtist()+m_pXbmcHttp->GetCloseTag();
 	  if (m_prevMedia!=msg)
 	  {
-        m_pXbmcHttp->xbmcBroadcast("MediaChanged:"+msg, 1);
+	    g_applicationMessenger.HttpApi("broadcastlevel; MediaChanged:"+msg+";1");
 	    m_prevMedia=msg;
 	  }
     }
@@ -3237,7 +3237,7 @@ void CApplication::Stop()
     CLog::Log(LOGNOTICE, "stop all");
 
 	if (m_pXbmcHttp)
-      m_pXbmcHttp->xbmcBroadcast("ShutDown", 1);
+	  g_applicationMessenger.HttpApi("broadcastlevel; ShutDown;1");
 
     StopServices();
     //Sleep(5000);
@@ -3764,7 +3764,7 @@ void CApplication::OnPlayBackEnded()
   g_pythonParser.OnPlayBackEnded();
   // Let's tell the outside world as well
   if (m_pXbmcHttp)
-    m_pXbmcHttp->xbmcBroadcast("OnPlayBackEnded", 1);
+	g_applicationMessenger.HttpApi("broadcastlevel; OnPlayBackEnded;1");
 
   CLog::Log(LOGDEBUG, "Playback has finished");
 
@@ -3787,7 +3787,7 @@ void CApplication::OnPlayBackStarted()
 
   // Let's tell the outside world as well
   if (m_pXbmcHttp)
-    m_pXbmcHttp->xbmcBroadcast("OnPlayBackStarted", 1);
+	g_applicationMessenger.HttpApi("broadcastlevel; OnPlayBackStarted;1");
 
   CLog::Log(LOGDEBUG, "Playback has started");
 
@@ -3808,7 +3808,7 @@ void CApplication::OnQueueNextItem()
 
   // Let's tell the outside world as well
   if (m_pXbmcHttp)
-    m_pXbmcHttp->xbmcBroadcast("OnQueueNextItem", 1);
+	g_applicationMessenger.HttpApi("broadcastlevel; OnQueueNextItem;1");
 
   CLog::Log(LOGDEBUG, "Player has asked for the next item");
 
@@ -3824,7 +3824,7 @@ void CApplication::OnPlayBackStopped()
 
   // Let's tell the outside world as well
   if (m_pXbmcHttp)
-    m_pXbmcHttp->xbmcBroadcast("OnPlayBackStopped", 1);
+    g_applicationMessenger.HttpApi("broadcastlevel; OnPlayBackStopped;1");
 
   OutputDebugString("Playback was stopped\n");
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0, 0, 0, NULL );
