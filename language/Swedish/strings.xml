@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xboxmediacenter.com-->
-<!--Date of translation: 02/24/2008-->
+<!--Date of translation: 03/01/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 11774-->
+<!--Based on english strings version 11819-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -1025,6 +1025,7 @@ den här visualiseringen</string>
   <string id="13407">%s förinställningar</string>
   <string id="13408">(IMDb användarbetyg)</string>
   <string id="13409">Topp 250:</string>
+  <string id="13410">Ställ in på lastfm</string>
   <string id="14000">Stapling: På</string>
   <string id="14001">Stapling: Av</string>
   <string id="14003">Laddar ner spellista...</string>
