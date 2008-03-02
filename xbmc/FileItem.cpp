@@ -1959,7 +1959,8 @@ bool CFileItemList::Save()
 void CFileItemList::RemoveDiscCache()
 {
   CLog::Log(LOGDEBUG,"Clearing cached fileitems [%s]",m_strPath.c_str());
-  CFile::Delete(GetDiscCacheFile());
+  if (CFile::Exists(GetDiscCacheFile()))
+    CFile::Delete(GetDiscCacheFile());
 }
 
 CStdString CFileItemList::GetDiscCacheFile()
