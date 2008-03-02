@@ -244,6 +244,7 @@ void XBPython::Initialize()
       {
         CLog::Log(LOGFATAL, "Python: error loading python24.dll");
         Finalize();
+        LeaveCriticalSection(&m_critSection);
         return;
       }
 
@@ -260,6 +261,7 @@ void XBPython::Initialize()
       {
         CLog::Log(LOGERROR, "Python: Missing files, unable to execute script");
         Finalize();
+        LeaveCriticalSection(&m_critSection);
         return;
       }
 #endif        
