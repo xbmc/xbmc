@@ -1001,7 +1001,13 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   m_replayGain.bAvoidClipping = GetBool("musicplayer.replaygainavoidclipping");
 
 #ifdef _LINUX  
-  g_timezone.SetTimezone(GetString("locale.timezone"));
+  CStdString timezone = GetString("locale.timezone");
+  if(timezone == "0" || timezone.IsEmpty())
+  {
+    timezone = g_timezone.GetOSConfiguredTimezone();
+    SetString("locale.timezone", timezone);
+  }
+  g_timezone.SetTimezone(timezone);
 #endif  
 }
 
