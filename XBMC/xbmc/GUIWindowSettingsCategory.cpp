@@ -1216,14 +1216,16 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videoplayer.useexternaldvdplayer"));
     }
+    else if (strSetting.Equals("cddaripper.path") || strSetting.Equals("mymusic.recordingpath") || strSetting.Equals("pictures.screenshotpath")
 #ifdef HAS_TRAINER
-    else if (strSetting.Equals("myprograms.trainerpath") || strSetting.Equals("cddaripper.path") || strSetting.Equals("mymusic.recordingpath") || strSetting.Equals("pictures.screenshotpath"))
+             || strSetting.Equals("myprograms.trainerpath")
+#endif
+            )
     {
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
       if (pControl && g_guiSettings.GetString(strSetting, false).IsEmpty())
         pControl->SetLabel2("");
     }
-#endif
     else if (strSetting.Equals("myprograms.dashboard"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
