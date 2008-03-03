@@ -324,12 +324,16 @@ string BaseYUV2RGBARBShader::BuildYUVMatrix()
   // Pick the matrix.
   float (*matrix)[4] = (float (*)[4])PickYUVConversionMatrix(m_flags);
   
-  // Convert to ARB matrix.
+  // Convert to ARB matrix. The forth vector is needed because the generated code
+  // uses negation on a vector, and also negation on an element of the vector, so
+  // I needed to add another "pre-negated" vector in.
+  //
   stringstream strStream;
   strStream << "{ ";
-  strStream << "  { 1.0,   0.0625, 1.1643835,  1.1383928 },\n";
-  strStream << "  { 0.5,   0.0, " << matrix[1][1] << ", " << matrix[1][2] << " },\n";
-  strStream << "  {" << matrix[2][0] << ", " << matrix[2][1] << ", 0.0, 0.0 }\n"; 
+  strStream << "  {     1.0,                   -0.0625,             1.1643835,               1.1383928        },\n";
+  strStream << "  {    -0.5,                    0.0, "          <<  matrix[1][1] << ", " <<  matrix[1][2] << "},\n";
+  strStream << "  {" << matrix[2][0] << ", " << matrix[2][1] << ",  0.0,                     0.0              },\n"; 
+  strStream << "  {    -0.5,                    0.0, "          << -matrix[1][1] << ", " << -matrix[1][2] << "}\n";
   strStream << "};\n";
 
   return strStream.str();
@@ -349,11 +353,16 @@ YUV2RGBProgressiveShaderARB::YUV2RGBProgressiveShaderARB(bool rect, unsigned fla
   {
     target = "RECT";
   }
+  
+  // N.B. If you're changing this code, bear in mind that the GMA X3100 
+  // (at least with OS X drivers in 10.5.2), doesn't allow for negation 
+  // of constants, like "-c[0].y".
+  //
   if (flags & CONF_FLAGS_YUV_FULLRANGE)
   {
     source ="!!ARBfp1.0\n"
-      "PARAM c[2] = { { 0, -0.1720674, 0.88599992, 1 },\n"
-      "		             { 0.70099545, -0.35706902, 0, 2 } };\n"
+      "PARAM c[2] = { { 0,           -0.1720674,  0.88599992, -1 },\n"
+      "		             { 0.70099545,  -0.35706902, 0,           2 } };\n"
       "TEMP R0;\n"
       "TEMP R1;\n"
       "TEX R1.x, fragment.texcoord[2], texture[2], "+target+";\n"
@@ -361,31 +370,32 @@ YUV2RGBProgressiveShaderARB::YUV2RGBProgressiveShaderARB(bool rect, unsigned fla
       "MUL R0.z, R0.x, c[1].w;\n"
       "MUL R0.y, R1.x, c[1].w;\n"
       "TEX R0.x, fragment.texcoord[0], texture[0], "+target+";\n"
-      "ADD R0.z, R0, -c[0].w;\n"
+      "ADD R0.z, R0, c[0].w;\n"
       "MAD R1.xyz, R0.z, c[0], R0.x;\n"
-      "ADD R0.x, R0.y, -c[0].w;\n"
+      "ADD R0.x, R0.y, c[0].w;\n"
       "MAD result.color.xyz, R0.x, c[1], R1;\n"
       "MOV result.color.w, c[0];\n"
       "END\n";
   }
   else
   {
-    source = "!!ARBfp1.0\n"
-      "PARAM c[3] = " + BuildYUVMatrix() + 
+    source = 
+      "!!ARBfp1.0\n"
+      "PARAM c[4] = \n" + BuildYUVMatrix() +
       "TEMP R0;\n"
       "TEMP R1;\n"
       "TEX R1.x, fragment.texcoord[1], texture[1], "+target+"\n;"
-      "ADD R0.z, R1.x, -c[0].y;\n"
+      "ADD R0.z, R1.x, c[0].y;\n"
       "TEX R0.x, fragment.texcoord[2], texture[2], "+target+"\n;"
-      "ADD R0.x, R0, -c[0].y;\n"
+      "ADD R0.x, R0, c[0].y;\n"
       "MUL R0.y, R0.x, c[0].w;\n"
-      "TEX R0.x, fragment.texcoord[0], texture[0], "+target+";\n"
-      "ADD R0.x, R0, -c[0].y;\n"
+      "TEX R0.x, fragment.texcoord[0], texture[0], "+target+"\n;"
+      "ADD R0.x, R0, c[0].y;\n"
       "MUL R0.z, R0, c[0].w;\n"
       "MUL R0.x, R0, c[0].z;\n"
-      "ADD R0.z, R0, -c[1].x;\n"
+      "ADD R0.z, R0, c[1].x;\n"
       "MAD R1.xyz, R0.z, c[1].yzww, R0.x;\n"
-      "ADD R0.x, R0.y, -c[1];\n"
+      "ADD R0.x, R0.y, c[3];\n"
       "MAD result.color.xyz, R0.x, c[2], R1;\n"
       "MOV result.color.w, c[0].x;\n"
       "END\n";
