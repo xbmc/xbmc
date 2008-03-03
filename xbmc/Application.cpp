@@ -2208,9 +2208,9 @@ void CApplication::DoRender()
 
 
   // if we're recording an audio stream then show blinking REC
-  if (IsPlayingAudio())
+  if (!g_graphicsContext.IsFullScreenVideo())
   {
-    if (m_pPlayer->IsRecording() )
+    if (m_pPlayer && m_pPlayer->IsRecording() )
     {
       static int iBlinkRecord = 0;
       iBlinkRecord++;
