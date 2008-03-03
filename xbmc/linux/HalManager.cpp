@@ -20,41 +20,37 @@
  */
 #include "../../guilib/system.h"
 #include "HalManager.h"
-#include "RegExp.h"
 #ifdef HAS_HAL
 #include <libhal-storage.h>
-
+#include "LinuxFileSystem.h"
+#include "SingleLock.h"
 //#define HAL_HANDLEMOUNT
 
 bool CHalManager::NewMessage;
 DBusError CHalManager::m_Error;
+CCriticalSection CHalManager::m_lock;
+
 /* A Removed device, It isn't possible to make a LibHalVolume from a removed device therefor
    we catch the UUID from the udi on the removal */
 void CHalManager::DeviceRemoved(LibHalContext *ctx, const char *udi)
 {
   NewMessage = true;
   CLog::Log(LOGDEBUG, "HAL: Removed %s", udi);
-  CRegExp regUUID;
-  regUUID.RegComp("/org/freedesktop/Hal/devices/volume_uuid_([^ ]+)");
-  if (regUUID.RegFind(udi) != -1)
-  {
-    CStdString UUID = regUUID.GetReplaceString("\\1");
-    // the udi have UUID with xxx_xxx instead of xxx-xxx
-    UUID.Replace('_', '-');
-    CLinuxFileSystem::RemoveDevice(UUID);
-  }
+  g_HalManager.RemoveDevice(udi);
 }
 
 void CHalManager::DeviceNewCapability(LibHalContext *ctx, const char *udi, const char *capability)
 {
   NewMessage = true;
   CLog::Log(LOGDEBUG, "HAL: Device got new capability %s", udi);
+  g_HalManager.ParseDevice(udi);
 }
 
 void CHalManager::DeviceLostCapability(LibHalContext *ctx, const char *udi, const char *capability)
 {
   NewMessage = true;
   CLog::Log(LOGDEBUG, "HAL: Device lost capability %s", udi);
+  g_HalManager.ParseDevice(udi);
 }
 
 /* HAL Property modified callback. If a device is mounted. This is called. */
@@ -62,82 +58,52 @@ void CHalManager::DevicePropertyModified(LibHalContext *ctx, const char *udi, co
 {
   NewMessage = true;
   CLog::Log(LOGDEBUG, "HAL: Property modified %s", udi);
-  LibHalVolume *TryVolume = libhal_volume_from_udi(ctx, udi);
-
-  if (TryVolume)
-  {
-    CLog::Log(LOGNOTICE, "HAL: Mount found %s", udi);
-    libhal_volume_free(TryVolume);
-    CDevice dev;
-    if (g_HalManager.DeviceFromVolumeUdi(udi, &dev))
-      CLinuxFileSystem::AddDevice(dev);
-    else
-      CLog::Log(LOGERROR, "HAL: Couldn't create device from %s", udi);
-  }
+  g_HalManager.ParseDevice(udi);
 }
 
 void CHalManager::DeviceCondition(LibHalContext *ctx, const char *udi, const char *condition_name, const char *condition_details)
 {
   CLog::Log(LOGDEBUG, "HAL: Condition %s", udi);
   NewMessage = true;
+  g_HalManager.ParseDevice(udi);
 }
+
 /* HAL Device added. This is before mount. And here is the place to mount the volume in the future */
 void CHalManager::DeviceAdded(LibHalContext *ctx, const char *udi)
 {
   NewMessage = true;
   CLog::Log(LOGDEBUG, "HAL: Added %s", udi);
-#ifdef HAL_HANDLEMOUNT
-  char **capabilities;
-	if (!(capabilities = libhal_device_get_property_strlist (ctx, udi, "info.capabilities", NULL)))
-		return;
-
-  bool volume, block;
-  volume = block = false;
-
-/* There probably is a better thing of seeing this using HAL but if the capabilities are both volume and block
-   The device i ready to be mounted. */
-  for (int i = 0; capabilities[i]; i++)
-  {
-    if (strcmp(capabilities[i], "volume"))
-      volume = true;
-    else if (strcmp(capabilities[i], "block"))
-      block = true;
-  }
-
-  if (volume && block)
-    printf("MOUNTABLE!\n"); // TODO Here we CAN run a pmount on the Device
-#endif
+  g_HalManager.ParseDevice(udi);
 }
 
 CHalManager g_HalManager;
 
-// Return all volumes that currently are available (Mostly needed at startup, the rest of the volumes comes as events.)
-std::vector<CDevice> CHalManager::GetDevices()
+/* Iterate through all devices currently on the computer. Needed mostly at startup */
+void CHalManager::GenerateGDL()
 {
-  std::vector<CDevice> Devices;
-
-  if (g_HalManager.m_Context == NULL)
-    return Devices; //Empty..
+  if (m_Context == NULL)
+    return;
 
   char **GDL;
   int i = 0;
+  CLog::Log(LOGDEBUG, "HAL: Clearing old global device list, if any");
+  m_Volumes.clear();
 
-  CLog::Log(LOGNOTICE, "HAL: Generating global device list ...");
-  GDL = libhal_get_all_devices (g_HalManager.m_Context, &i, &m_Error);
+  CLog::Log(LOGNOTICE, "HAL: Generating global device list");
+  GDL = libhal_get_all_devices(g_HalManager.m_Context, &i, &m_Error);
 
   for (i = 0; GDL[i]; i++)
   {
-    std::vector<CDevice> temp = DeviceFromDriveUdi(GDL[i]);
-
-    for (unsigned int j = 0; j < temp.size(); j++)
-    {
-      CLog::Log(LOGDEBUG, "HAL: %s", temp[j].toString().c_str());
-      Devices.push_back(temp[j]);
-    }
+    ParseDevice(GDL[i]);
   }
   CLog::Log(LOGINFO, "HAL: Generated global device list, found %i", i);
+}
 
-  return Devices;
+// Return all volumes that currently are available (Mostly needed at startup, the rest of the volumes comes as events.)
+std::vector<CStorageDevice> CHalManager::GetVolumeDevices()
+{
+  CSingleLock lock(m_lock);
+  return m_Volumes;
 }
 
 CHalManager::CHalManager()
@@ -166,10 +132,7 @@ void CHalManager::Initialize()
     return;
   }
 
-  std::vector<CDevice> CurrentDevices = CHalManager::GetDevices();
-
-  for (unsigned int i = 0; i < CurrentDevices.size(); i++)
-    CLinuxFileSystem::AddDevice(CurrentDevices[i]);
+  GenerateGDL();
 
   CLog::Log(LOGINFO, "HAL: Sucessfully initialized");
 }
@@ -254,16 +217,14 @@ LibHalContext *CHalManager::InitializeHal()
 	return ctx;
 }
 
-// Helper function. creates a CDevice from a HAL udi
-bool CHalManager::DeviceFromVolumeUdi(const char *udi, CDevice *device)
+// Helper function. creates a CStorageDevice from a HAL udi
+bool CHalManager::DeviceFromVolumeUdi(const char *udi, CStorageDevice *device)
 {
   if (g_HalManager.m_Context == NULL)
     return false;
 
   LibHalVolume *tempVolume;
   LibHalDrive  *tempDrive;
-  int  Type;
-  bool HotPlugged;
   bool Created = false;
 
   tempVolume = libhal_volume_from_udi(g_HalManager.m_Context, udi);
@@ -271,13 +232,15 @@ bool CHalManager::DeviceFromVolumeUdi(const char *udi, CDevice *device)
   {
     const char *DriveUdi = libhal_volume_get_storage_device_udi(tempVolume);
     tempDrive = libhal_drive_from_udi(g_HalManager.m_Context, DriveUdi);
+
     if (tempDrive)
     {
-      HotPlugged = (bool)libhal_drive_is_hotpluggable(tempDrive);
-      Type = libhal_drive_get_type(tempDrive);
+      char * FriendlyName   = libhal_device_get_property_string(g_HalManager.m_Context, udi, "info.product", NULL);
+      device->FriendlyName  = FriendlyName;
+      libhal_free_string(FriendlyName);
 
-      device->HotPlugged  = HotPlugged;
-      device->Type        = Type;
+      device->HotPlugged  = (bool)libhal_drive_is_hotpluggable(tempDrive);
+      device->Type        = libhal_drive_get_type(tempDrive);
       device->Mounted     = (bool)libhal_volume_is_mounted(tempVolume);
       device->MountPoint  = libhal_volume_get_mount_point(tempVolume);
       device->Label       = libhal_volume_get_label(tempVolume);
@@ -297,10 +260,10 @@ bool CHalManager::DeviceFromVolumeUdi(const char *udi, CDevice *device)
   return Created;
 }
 
-// Creates a CDevice for each partition/volume on a Drive.
-std::vector<CDevice> CHalManager::DeviceFromDriveUdi(const char *udi)
+// Creates a CStorageDevice for each partition/volume on a Drive.
+std::vector<CStorageDevice> CHalManager::DeviceFromDriveUdi(const char *udi)
 {
-  std::vector<CDevice> Devices;
+  std::vector<CStorageDevice> Devices;
   if (g_HalManager.m_Context == NULL)
     return Devices; //Empty...
 
@@ -328,7 +291,10 @@ std::vector<CDevice> CHalManager::DeviceFromDriveUdi(const char *udi)
 
         if (tempVolume)    
         {
-          CDevice dev;
+          CStorageDevice dev(AllVolumes[n]);
+          char * FriendlyName = libhal_device_get_property_string(g_HalManager.m_Context, AllVolumes[n], "info.product", NULL);
+          dev.FriendlyName    = FriendlyName;
+          libhal_free_string(FriendlyName);
 
           dev.HotPlugged  = HotPlugged;
           dev.Type        = Type;
@@ -348,13 +314,15 @@ std::vector<CDevice> CHalManager::DeviceFromDriveUdi(const char *udi)
     }
     libhal_drive_free(tempDrive);
   }
-
+ 
+  libhal_free_string_array(AllVolumes);
   return Devices;
 }
 
 // Called from ProcessSlow to trigger the callbacks from DBus
 bool CHalManager::Update()
 {
+  CSingleLock lock(m_lock);
   if (g_HalManager.m_Context == NULL)
     return false;
 
@@ -370,5 +338,120 @@ bool CHalManager::Update()
   }
   else
     return false;
+}
+
+/* libhal-storage type to readable form */
+const char *CHalManager::StorageTypeToString(int DeviceType)
+{
+  switch (DeviceType)
+  {
+  case 0:  return "removable disk";
+  case 1:  return "disk";
+  case 2:  return "cdrom";
+  case 3:  return "floppy";
+  case 4:  return "tape";
+  case 5:  return "compact flash";
+  case 6:  return "memory stick";
+  case 7:  return "smart media";
+  case 8:  return "sd mmc";
+  case 9:  return "camera";
+  case 10: return "audio player";
+  case 11: return "zip";
+  case 12: return "jaz";
+  case 13: return "flashkey";
+  case 14: return "magneto-optical";
+  default: return NULL;
+  }
+}
+
+/* Readable libhal-storage type to int type */
+int CHalManager::StorageTypeFromString(const char *DeviceString)
+{
+  if      (strcmp(DeviceString, "removable disk") == 0)  return 0;
+  else if (strcmp(DeviceString, "disk") == 0)            return 1;
+  else if (strcmp(DeviceString, "cdrom") == 0)           return 2;
+  else if (strcmp(DeviceString, "floppy") == 0)          return 3;
+  else if (strcmp(DeviceString, "tape") == 0)            return 4;
+  else if (strcmp(DeviceString, "compact flash") == 0)   return 5;
+  else if (strcmp(DeviceString, "memory stick") == 0)    return 6;
+  else if (strcmp(DeviceString, "smart media") == 0)     return 7;
+  else if (strcmp(DeviceString, "sd mmc") == 0)          return 8;
+  else if (strcmp(DeviceString, "camera") == 0)          return 9;
+  else if (strcmp(DeviceString, "audio player") == 0)    return 10;
+  else if (strcmp(DeviceString, "zip") == 0)             return 11;
+  else if (strcmp(DeviceString, "jaz") == 0)             return 12;
+  else if (strcmp(DeviceString, "flashkey") == 0)        return 13;
+  else if (strcmp(DeviceString, "magneto-optical") == 0) return 14;
+  return -1;
+}
+
+/* Parse newly found device and add it to our remembered devices */
+void CHalManager::ParseDevice(const char *udi)
+{
+  CSingleLock lock(m_lock);
+  char *category;
+  category = libhal_device_get_property_string(m_Context, udi, "info.category", NULL);
+  if (category == NULL)
+    return;
+
+  else if (strcmp(category, "volume") == 0)
+  {
+    CStorageDevice temp(udi);
+    if (!DeviceFromVolumeUdi(udi, &temp))
+      return;
+#ifdef HAL_HANDLEMOUNT
+/* Here it can be checked if the device isn't mounted and then mount */
+    if (!temp.Mounted)
+      printf("%s MOUNTABLE!\n", temp.FriendlyName.c_str());
+#endif
+    int update = -1;
+    for (unsigned int i = 0; i < m_Volumes.size(); i++)
+    {
+      if (strcmp(m_Volumes[i].UDI.c_str(), udi) == 0)
+      {
+        update = i;
+        break;
+      }
+    }
+    if (update == -1)
+    {
+      CLog::Log(LOGDEBUG, "HAL: Added - %s | %s", CHalManager::StorageTypeToString(temp.Type),  temp.toString().c_str());
+      m_Volumes.push_back(temp);
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, "HAL: Update - %s | %s", CHalManager::StorageTypeToString(temp.Type),  temp.toString().c_str());
+      m_Volumes[update] = temp;
+    }
+    CLinuxFileSystem::AddDevice(temp);
+  }
+/*
+  else if (strcmp(category, "camera") == 0)
+  { // PTP-Devices }
+  else if (strcmp(category, "bluetooth_hci") == 0)
+  { // Bluetooth-Devices }
+  else if (strcmp(category, "portable audio player") == 0)
+  { // MTP-Devices } 
+  else if (strcmp(category, "alsa") == 0)
+  { //Alsa Devices }
+*/
+
+	libhal_free_string(category);
+}
+/* Here we should iterate through our remembered devices if any of them are removed */
+bool CHalManager::RemoveDevice(const char *udi)
+{
+  CSingleLock lock(m_lock);
+  for (unsigned int i = 0; i < m_Volumes.size(); i++)
+  {
+    if (strcmp(m_Volumes[i].UDI.c_str(), udi) == 0)
+    {
+      CLog::Log(LOGNOTICE, "HAL: Removed - %s | %s", CHalManager::StorageTypeToString(m_Volumes[i].Type), m_Volumes[i].toString().c_str());
+      CLinuxFileSystem::RemoveDevice(m_Volumes[i].UUID.c_str());
+      m_Volumes.erase(m_Volumes.begin() + i);
+      return true;
+    }
+  }
+  return false;
 }
 #endif // HAS_HAL
