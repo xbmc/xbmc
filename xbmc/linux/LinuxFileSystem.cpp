@@ -1,15 +1,11 @@
 #include "LinuxFileSystem.h"
 #include "RegExp.h"
-#ifdef HAS_HAL
-#include "HalManager.h"
-#endif
-
 #include "SingleLock.h"
 
 using namespace std;
 
 #ifdef HAS_HAL
-vector<CDevice> CLinuxFileSystem::m_Devices;
+vector<CStorageDevice> CLinuxFileSystem::m_Devices;
 bool CLinuxFileSystem::m_DeviceChange;
 CCriticalSection CLinuxFileSystem::m_lock;
 
@@ -18,11 +14,11 @@ void CLinuxFileSystem::UpdateDevices()
 {
   CSingleLock lock(m_lock);
   m_Devices.clear();
-  m_Devices = CHalManager::GetDevices();
+  m_Devices = g_HalManager.GetVolumeDevices();
 }
 
 /* Here can approved devices be choosen, this is always called for a device in HalManager before it's sent to adddevice. */
-bool CLinuxFileSystem::ApproveDevice(CDevice *device)
+bool CLinuxFileSystem::ApproveDevice(CStorageDevice *device)
 {
   CSingleLock lock(m_lock);
   bool approve = true;
@@ -46,16 +42,16 @@ bool CLinuxFileSystem::ApproveDevice(CDevice *device)
 }
 #endif //HAS_HAL
 
-vector<CStdString> CLinuxFileSystem::GetDevices()
+vector<CStdString> CLinuxFileSystem::GetDrives()
 {
-  return GetDevices(NULL, -1);
+  return GetDrives(NULL, -1);
 }
 
-vector<CStdString> CLinuxFileSystem::GetLocalDevices()
+vector<CStdString> CLinuxFileSystem::GetLocalDrives()
 {
   CSingleLock lock(m_lock);
 #ifndef HAS_HAL
-  return GetDevices();
+  return GetDrives();
 #else
   UpdateDevices();
   vector<CStdString> result;
@@ -70,7 +66,7 @@ vector<CStdString> CLinuxFileSystem::GetLocalDevices()
 #endif
 }
 
-vector<CStdString> CLinuxFileSystem::GetRemovableDevices()
+vector<CStdString> CLinuxFileSystem::GetRemovableDrives()
 {
   CSingleLock lock(m_lock);
 #ifndef HAS_HAL
@@ -93,7 +89,7 @@ vector<CStdString> CLinuxFileSystem::GetRemovableDevices()
    To decide wich types types are approved to be returned send for example int DevTypes[] = {0, 5, 6, 7, 8, 9, 10, 13}.
    this will return all removable types like pendrives, memcards and such but NOT removable hdd's have type 1.
    for more information on these for now is in libhal-storage.h. TODO Make defined types that can be common on all O/S */
-vector<CStdString> CLinuxFileSystem::GetDevices(int *DeviceType, int len)
+vector<CStdString> CLinuxFileSystem::GetDrives(int *DeviceType, int len)
 {
   CSingleLock lock(m_lock);
   vector<CStdString> result;
@@ -163,16 +159,16 @@ vector<CStdString> CLinuxFileSystem::GetDevices(int *DeviceType, int len)
 }
 
 #ifdef HAS_HAL
-/* Remove a device based on the UUID for the partition. Hal Cannot make a CDevice from something removed that is why we need UUID */
-bool CLinuxFileSystem::RemoveDevice(CStdString UUID)
+/* Remove a device based on the UUID for the partition. Hal Cannot make a CStorageDevice from something removed that is why we need UUID */
+bool CLinuxFileSystem::RemoveDevice(const char *UUID)
 {
   CSingleLock lock(m_lock);
   int remove = -1;
   for (unsigned int i = 0; i < m_Devices.size(); i++)
   {
-    if (strcmp(m_Devices[i].UUID.c_str(), UUID.c_str()) == 0)
+    if (strcmp(m_Devices[i].UUID.c_str(), UUID) == 0)
     {
-      CLog::Log(LOGNOTICE, "LFS: Removed - %s", m_Devices[i].toString().c_str());
+      CLog::Log(LOGNOTICE, "LFS: Removed - %s | %s", CHalManager::StorageTypeToString(m_Devices[i].Type), m_Devices[i].FriendlyName.c_str());
       remove = i;
     }
   }
@@ -183,28 +179,41 @@ bool CLinuxFileSystem::RemoveDevice(CStdString UUID)
     return true;
   }
   else
+  {
+    CLog::Log(LOGWARNING, "LSF: Storage list inconsistancy detected. Rebuilding device list");
+    UpdateDevices();
     return false;
+  }
 }
 
 /* Add a device that LinuxFileSystem can use. Approved or not it is sent here. */
-bool CLinuxFileSystem::AddDevice(CDevice Device)
+bool CLinuxFileSystem::AddDevice(CStorageDevice Device)
 {
   CSingleLock lock(m_lock);
-  bool add = true;
+  int add = -1;
   for (unsigned int i = 0; i < m_Devices.size(); i++)
   {
     if (strcmp(m_Devices[i].UUID.c_str(), Device.UUID.c_str()) == 0)
-      add = false;
+    {
+      add = i;
+      break;
+    }
   }
 
-  if (add)
+  if (add == -1)
   {
-    CLog::Log(LOGNOTICE, "LFS: Added - %s", Device.toString().c_str());
+    CLog::Log(LOGNOTICE, "LFS: Added - %s | %s", CHalManager::StorageTypeToString(Device.Type), Device.FriendlyName.c_str());
     m_Devices.push_back(Device);
     m_DeviceChange = true;
   }
+  else
+  {
+    CLog::Log(LOGNOTICE, "LFS: Updated - %s | %s", CHalManager::StorageTypeToString(Device.Type), Device.FriendlyName.c_str());
+    m_Devices[add] = Device;
+    m_DeviceChange = true;
+  }
 
-  return add;
+  return m_DeviceChange;
 }
 
 /* If any device have been added since the last call, this will return true */
@@ -220,4 +229,3 @@ bool CLinuxFileSystem::AnyDeviceChange()
     return false;
 }
 #endif // HAS_HAL
-

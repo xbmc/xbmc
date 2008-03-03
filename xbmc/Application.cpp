@@ -214,7 +214,7 @@
 #include "common/WiiRemote.h"
 #endif
 #ifdef HAS_HAL
-#include "linux/HalManager.h"
+#include "linux/LinuxFileSystem.h"
 #endif
 
 #include "cores/dlgcache.h"

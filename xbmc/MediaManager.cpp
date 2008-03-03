@@ -158,9 +158,9 @@ void CMediaManager::GetLocalDrives(VECSHARES &localDrives, bool includeQ)
 #ifdef HAS_HAL
 /* HalManager will autosource items so we only want the nonremovable
    devices here. removable devices will be added in CVirtualDirectory */
-  vector<CStdString> result = CLinuxFileSystem::GetLocalDevices();
+  vector<CStdString> result = CLinuxFileSystem::GetLocalDrives();
 #else
-  vector<CStdString> result = CLinuxFileSystem::GetDevices();
+  vector<CStdString> result = CLinuxFileSystem::GetLocalDrives();
 #endif
   for (unsigned int i = 0; i < result.size(); i++)
   {
