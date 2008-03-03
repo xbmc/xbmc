@@ -1047,7 +1047,7 @@ cmyth_chanlist_t cmyth_mysql_get_chanlist(cmyth_database_t db)
 }
 
 
-extern int cmyth_livetv_keep_recording(cmyth_recorder_t rec, cmyth_database_t db, int keep)
+int cmyth_livetv_keep_recording(cmyth_recorder_t rec, cmyth_database_t db, int keep)
 {
 	cmyth_proginfo_t prog;
 	int autoexpire;
