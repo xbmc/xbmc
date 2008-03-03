@@ -501,12 +501,12 @@ bool CCMythFile::ChangeChannel(int direction, const char* channel)
     }
   }
 
+  if(!m_dll->livetv_chain_switch_last(m_recorder))
+    CLog::Log(LOGDEBUG, "%s - failed to change to last item in chain", __FUNCTION__);
+
   if(m_program)
     m_dll->ref_release(m_program);
   m_program = m_dll->recorder_get_cur_proginfo(m_recorder);
-
-  if(!m_dll->livetv_chain_switch_last(m_recorder))
-    CLog::Log(LOGDEBUG, "%s - failed to change to last item in chain", __FUNCTION__);
 
   CLog::Log(LOGDEBUG, "%s - channel change done", __FUNCTION__);
   return true;
