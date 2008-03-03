@@ -1270,6 +1270,7 @@ Optional Features:
   --enable-cwiid          enable Wii remote support (default is no)
   --enable-pcre           enable PCRE based regular expression support
                           (default is yes)
+  --enable-halmount       enable automounting feature (default is no)
 
 Some influential environment variables:
   CXX         C++ compiler command
@@ -1790,6 +1791,13 @@ if test "${enable_pcre+set}" = set; then
   enableval=$enable_pcre; use_pcre=$enableval
 else
   use_pcre=yes
+fi
+
+# Check whether --enable-halmount was given.
+if test "${enable_halmount+set}" = set; then
+  enableval=$enable_halmount; use_halmount=$enableval
+else
+  use_halmount=yes
 fi
 
 
@@ -12756,6 +12764,12 @@ fi
 fi
 
 
+if test "$use_halmount" = "yes"; then
+  final_message="$final_message\n  Automount:\tYes"
+  SDL_DEFINES="$SDL_DEFINES -DHAL_HANDLEMOUNT"
+else
+  final_message="$final_message\n  Automount:\tNo"
+fi
 
 
 
