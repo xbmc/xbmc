@@ -165,6 +165,24 @@ bool CCMythFile::SetupLiveTV(const CURL& url)
     CLog::Log(LOGERROR, "%s - recorder hasn't started", __FUNCTION__);
     return false;
   }
+
+  m_program = m_dll->recorder_get_cur_proginfo(m_recorder);
+  if(m_program)
+  {
+    if(m_dll->proginfo_rec_status(m_program) != RS_RECORDING)
+      return false;
+
+    char* str;
+    if((str = m_dll->proginfo_recgroup(m_program)))
+    {
+      if(strcmp(str, "LiveTV") != 0)
+        m_recording = true;
+      m_dll->ref_release(str);
+    }
+  }
+  else
+    CLog::Log(LOGWARNING, "%s - failed to get current program info", __FUNCTION__);
+
   char * filename = m_dll->recorder_get_filename(m_recorder);
   m_filename = filename;
   m_dll->ref_release(filename);
@@ -199,10 +217,6 @@ bool CCMythFile::Open(const CURL& url, bool binary)
       return false;
 
     CLog::Log(LOGDEBUG, "%s - recorder has started on filename %s", __FUNCTION__, m_filename.c_str());
-
-    m_program = m_dll->recorder_get_cur_proginfo(m_recorder);
-    if(!m_program)
-      CLog::Log(LOGWARNING, "%s - failed to get current program info", __FUNCTION__);
   }
   else
   {
@@ -255,6 +269,7 @@ CCMythFile::CCMythFile()
   m_database    = NULL;
   m_file        = NULL;
   m_session     = NULL;
+  m_recording   = false;
 }
 
 CCMythFile::~CCMythFile()
@@ -517,23 +532,7 @@ bool CCMythFile::CanRecord()
 
 bool CCMythFile::IsRecording()
 {
-  if(m_program && m_recorder)
-  {
-    if(m_dll->proginfo_rec_status(m_program) != RS_RECORDING)
-      return false;
-
-    char* str;
-    if((str = m_dll->proginfo_recgroup(m_program)))
-    {
-      if(strcmp(str, "LiveTV") != 0)
-      {
-        m_dll->ref_release(str);
-        return true;
-      }
-      m_dll->ref_release(str);
-    }
-  }
-  return false;
+  return m_recording;
 }
 
 bool CCMythFile::Record(bool bOnOff)
@@ -553,8 +552,6 @@ bool CCMythFile::Record(bool bOnOff)
     return false;
   }
 
-  if(m_program)
-    m_dll->ref_release(m_program);
-  m_program = m_dll->recorder_get_cur_proginfo(m_recorder);
+  m_recording = bOnOff;
   return true;
 }
