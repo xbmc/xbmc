@@ -1369,7 +1369,7 @@ cmyth_rcv_proginfo(cmyth_conn_t conn, int *err, cmyth_proginfo_t buf,
 	tmp_str[sizeof(tmp_str) - 1] = '\0';
 
 	buf->proginfo_version = conn->conn_version;
-	cmyth_dbg(CMYTH_DBG_INFO, "%s: VERSION IS %ld\n",
+	cmyth_dbg(CMYTH_DBG_DEBUG, "%s: VERSION IS %ld\n",
 		  __FUNCTION__, buf->proginfo_version);
 	/*
 	 * Get proginfo_title (string)
