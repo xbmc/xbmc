@@ -396,13 +396,32 @@ void CHalManager::ParseDevice(const char *udi)
 
   else if (strcmp(category, "volume") == 0)
   {
-    CStorageDevice temp(udi);
-    if (!DeviceFromVolumeUdi(udi, &temp))
+    CStorageDevice dev(udi);
+    if (!DeviceFromVolumeUdi(udi, &dev))
       return;
 #ifdef HAL_HANDLEMOUNT
 /* Here it can be checked if the device isn't mounted and then mount */
-    if (!temp.Mounted)
-      printf("%s MOUNTABLE!\n", temp.FriendlyName.c_str());
+    if (!dev.Mounted && dev.HotPlugged && dev.Approved)
+    {
+      char **capability;
+      capability =libhal_device_get_property_strlist (m_Context, udi, "info.capabilities", NULL);
+      if (strcmp(capability[0], "volume") == 0 && strcmp(capability[1], "block") == 0)
+      {
+        CLog::Log(LOGNOTICE, "HAL: Trying to mount %s", dev.FriendlyName.c_str());
+        CStdString MountCmd;
+        MountCmd.Format("pmount-hal %s", udi);
+        system(MountCmd.c_str());
+        // Reload some needed things.
+        if (!DeviceFromVolumeUdi(udi, &dev))
+          return;
+
+        if (dev.Mounted && dev.Approved)
+        {
+          CLog::Log(LOGINFO, "HAL: mounted %s on %s", dev.FriendlyName.c_str(), dev.MountPoint.c_str());
+        }
+      }
+      libhal_free_string_array(capability);
+    }
 #endif
     int update = -1;
     for (unsigned int i = 0; i < m_Volumes.size(); i++)
@@ -415,15 +434,15 @@ void CHalManager::ParseDevice(const char *udi)
     }
     if (update == -1)
     {
-      CLog::Log(LOGDEBUG, "HAL: Added - %s | %s", CHalManager::StorageTypeToString(temp.Type),  temp.toString().c_str());
-      m_Volumes.push_back(temp);
+      CLog::Log(LOGDEBUG, "HAL: Added - %s | %s", CHalManager::StorageTypeToString(dev.Type),  dev.toString().c_str());
+      m_Volumes.push_back(dev);
     }
     else
     {
-      CLog::Log(LOGDEBUG, "HAL: Update - %s | %s", CHalManager::StorageTypeToString(temp.Type),  temp.toString().c_str());
-      m_Volumes[update] = temp;
+      CLog::Log(LOGDEBUG, "HAL: Update - %s | %s", CHalManager::StorageTypeToString(dev.Type),  dev.toString().c_str());
+      m_Volumes[update] = dev;
     }
-    CLinuxFileSystem::AddDevice(temp);
+    CLinuxFileSystem::AddDevice(dev);
   }
 /*
   else if (strcmp(category, "camera") == 0)

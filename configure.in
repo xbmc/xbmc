@@ -58,6 +58,11 @@ AC_ARG_ENABLE([pcre],
                [enable PCRE based regular expression support (default is yes)])],
             [use_pcre=$enableval],
             [use_pcre=yes])
+AC_ARG_ENABLE([halmount],
+            [AS_HELP_STRING([--enable-halmount],
+               [enable automounting feature (default is no)])],
+            [use_halmount=$enableval],
+            [use_halmount=yes])
 
 # Checks for programs.
 AC_PROG_AWK
@@ -282,6 +287,12 @@ AC_CHECK_FILE(/usr/lib/python2.4/config/libpython2.4-pic.a,
        AC_MSG_ERROR(==Can not find libPython anywhere))
     )
 
+if test "$use_halmount" = "yes"; then
+  final_message="$final_message\n  Automount:\tYes"
+  SDL_DEFINES="$SDL_DEFINES -DHAL_HANDLEMOUNT"
+else
+  final_message="$final_message\n  Automount:\tNo"
+fi
 
 AC_SUBST(DEBUG_FLAGS)
 AC_SUBST(SDL_DEFINES)
