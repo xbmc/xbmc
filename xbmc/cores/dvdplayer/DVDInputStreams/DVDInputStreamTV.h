@@ -5,6 +5,7 @@
 namespace XFILE {
 class IFile;
 class ILiveTVInterface;
+class IRecordable;
 }
 
 class CDVDInputStreamTV : public CDVDInputStream
@@ -30,8 +31,14 @@ public:
 
   CVideoInfoTag*  GetVideoInfoTag();
   bool            SeekTime(int iTimeInMsec);
+
+  bool            CanRecord();
+  bool            IsRecording();
+  bool            Record(bool bOnOff);
+
 protected:
   XFILE::IFile*            m_pFile;
   XFILE::ILiveTVInterface* m_pLiveTV;
+  XFILE::IRecordable*      m_pRecordable;
   bool m_eof;
 };

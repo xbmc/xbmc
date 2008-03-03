@@ -2354,3 +2354,23 @@ void CDVDPlayer::UpdateApplication()
   }
 }
 
+bool CDVDPlayer::CanRecord()
+{
+  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
+    return static_cast<CDVDInputStreamTV*>(m_pInputStream)->CanRecord();
+  return false;
+}
+
+bool CDVDPlayer::IsRecording()
+{
+  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
+    return static_cast<CDVDInputStreamTV*>(m_pInputStream)->IsRecording();
+  return false;
+}
+
+bool CDVDPlayer::Record(bool bOnOff)
+{
+  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
+    return static_cast<CDVDInputStreamTV*>(m_pInputStream)->Record(bOnOff);
+  return false;
+}
