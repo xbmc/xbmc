@@ -1045,3 +1045,98 @@ cmyth_chanlist_t cmyth_mysql_get_chanlist(cmyth_database_t db)
 	cmyth_dbg(CMYTH_DBG_ERROR, "%s: rows= %d\n", __FUNCTION__, rows);
 	return chanlist;
 }
+
+
+extern int cmyth_livetv_keep_recording(cmyth_recorder_t rec, cmyth_database_t db, int keep)
+{
+	cmyth_proginfo_t prog;
+	int autoexpire;
+	const char* recgroup;
+	cmyth_mysql_query_t * query;
+	MYSQL_RES *res= NULL;
+	char timestamp[CMYTH_TIMESTAMP_LEN+1];
+
+	if(cmyth_db_check_connection(db) != 0)
+	{
+		cmyth_dbg(CMYTH_DBG_ERROR, "%s: cmyth_db_check_connection failed\n", __FUNCTION__);
+		return -1;
+	}
+
+	prog = cmyth_recorder_get_cur_proginfo(rec);
+	if(!prog) {
+		cmyth_dbg(CMYTH_DBG_ERROR, "%s: cmyth_recorder_get_cur_proginfo failed\n", __FUNCTION__);
+		return -1;
+	}
+
+	if(keep) {
+		char* str;
+		str = cmyth_conn_get_setting(rec->rec_conn, prog->proginfo_hostname, "AutoExpireDefault");
+		if(!str) {
+			cmyth_dbg(CMYTH_DBG_ERROR, "%s: failed to get AutoExpireDefault\n", __FUNCTION__);
+			ref_release(prog);
+			return -1;
+		}
+		autoexpire = atol(str);
+		recgroup = "Default";
+		ref_release(str);
+	} else {
+		autoexpire = 10000;
+		recgroup = "LiveTV";
+	}
+
+
+	sprintf(timestamp,
+		"%4.4ld-%2.2ld-%2.2ld %2.2ld:%2.2ld:%2.2ld",
+		prog->proginfo_rec_start_ts->timestamp_year,
+		prog->proginfo_rec_start_ts->timestamp_month,
+		prog->proginfo_rec_start_ts->timestamp_day,
+		prog->proginfo_rec_start_ts->timestamp_hour,
+		prog->proginfo_rec_start_ts->timestamp_minute,
+		prog->proginfo_rec_start_ts->timestamp_second);
+
+	query = cmyth_mysql_query_create(db,"UPDATE recorded SET autoexpire = ?, recgroup = ? WHERE chanid = ? AND starttime = ?");
+
+	if(cmyth_mysql_query_param_long(query,autoexpire) < 0
+	|| cmyth_mysql_query_param_str(query,recgroup) < 0
+	|| cmyth_mysql_query_param_long(query,prog->proginfo_chanId) < 0
+        || cmyth_mysql_query_param_str(query,timestamp) < 0)
+	{
+		cmyth_dbg(CMYTH_DBG_ERROR,"%s, binding of query parameters failed! Maybe we're out of memory?\n", __FUNCTION__);
+		ref_release(query);
+		ref_release(prog);
+		return -1;
+	}
+
+	if(cmyth_mysql_query(query) < 0)
+	{
+		cmyth_dbg(CMYTH_DBG_ERROR,"%s, finalisation/execution of query failed!\n", __FUNCTION__);
+		ref_release(query);
+		ref_release(prog);
+		return -1;
+	}
+	ref_release(query);
+
+	if(rec->rec_conn->conn_version >= 26)
+	{
+		char msg[256];
+		int err;
+		snprintf(msg, sizeof(msg), "QUERY_RECORDER %d[]:[]SET_LIVE_RECORDING[]:[]%d",
+		 	rec->rec_id, keep);
+
+		if ((err=cmyth_send_message(rec->rec_conn, msg)) < 0) {
+			cmyth_dbg(CMYTH_DBG_ERROR,
+			    "%s: cmyth_send_message() failed (%d)\n",
+			    __FUNCTION__, err);
+			return -1;
+		}
+
+		if ((err=cmyth_rcv_okay(rec->rec_conn, "ok")) < 0) {
+			cmyth_dbg(CMYTH_DBG_ERROR,
+			    "%s: cmyth_rcv_okay() failed (%d)\n",
+			    __FUNCTION__, err);
+			return -1;
+		}
+	}
+	return 1;
+}
+

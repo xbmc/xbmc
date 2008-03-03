@@ -372,6 +372,8 @@ extern int cmyth_rcv_recorder(cmyth_conn_t conn, int *err,
 #define cmyth_rcv_ringbuf __cmyth_rcv_ringbuf
 extern int cmyth_rcv_ringbuf(cmyth_conn_t conn, int *err, cmyth_ringbuf_t buf,
 			     int count);
+#define cmyth_datetime_to_dbstring __cmyth_datetime_to_dbstring
+extern int cmyth_datetime_to_dbstring(char *str, cmyth_timestamp_t ts);
 
 /*
  * From proginfo.c
@@ -427,6 +429,6 @@ extern char * cmyth_mysql_query_string(cmyth_mysql_query_t * query);
 
 extern MYSQL_RES * cmyth_mysql_query_result(cmyth_mysql_query_t * query);
 
-
+extern int cmyth_mysql_query(cmyth_mysql_query_t * query);
 
 #endif /* __CMYTH_LOCAL_H */
