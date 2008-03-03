@@ -1098,3 +1098,63 @@ cmyth_conn_get_free_recorder_count(cmyth_conn_t conn)
 
 	return ret;
 }
+
+char *
+cmyth_conn_get_setting(cmyth_conn_t conn, const char* hostname, const char* setting)
+{
+	char msg[256];
+	int count, err;
+	char* result;
+
+	if(conn->conn_version < 17) {
+		cmyth_dbg(CMYTH_DBG_ERROR, "%s: protocol version doesn't support QUERY_SETTING\n",
+			  __FUNCTION__);
+		return NULL;
+	}
+
+	if (!conn) {
+		cmyth_dbg(CMYTH_DBG_ERROR, "%s: no connection\n",
+			  __FUNCTION__);
+		return NULL;
+	}
+
+	pthread_mutex_lock(&mutex);
+
+	snprintf(msg, sizeof(msg), "QUERY_SETTING %s %s", hostname, setting);
+	if ((err = cmyth_send_message(conn, msg)) < 0) {
+		cmyth_dbg(CMYTH_DBG_ERROR,
+			  "%s: cmyth_send_message() failed (%d)\n",
+			  __FUNCTION__, err);
+		goto err;
+	}
+
+	if ((count=cmyth_rcv_length(conn)) < 0) {
+		cmyth_dbg(CMYTH_DBG_ERROR,
+			  "%s: cmyth_rcv_length() failed (%d)\n",
+			  __FUNCTION__, count);
+		goto err;
+	}
+
+	result = ref_alloc(count+1);
+	count -= cmyth_rcv_string(conn, &err,
+				    result, count, count);
+	if (err < 0) {
+		cmyth_dbg(CMYTH_DBG_ERROR,
+			  "%s: cmyth_rcv_string() failed (%d)\n",
+			  __FUNCTION__, err);
+		goto err;
+	}
+
+	while(count > 0 && !err) {
+		char buffer[100];
+		count -= cmyth_rcv_string(conn, &err, buffer, sizeof(buffer)-1, count);
+		buffer[sizeof(buffer)-1] = 0;
+		cmyth_dbg(CMYTH_DBG_ERROR, "%s: odd left over data %s\n", __FUNCTION__, buffer);
+	}
+
+	pthread_mutex_unlock(&mutex);
+	return result;
+err:
+	pthread_mutex_unlock(&mutex);
+	return NULL;
+}

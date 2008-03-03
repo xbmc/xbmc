@@ -14,6 +14,7 @@ namespace XFILE
 class CCMythFile 
   : public  IFile
   ,         ILiveTVInterface
+  ,         IRecordable
   , private CCMythSession::IEventListener
 {
 public:
@@ -41,6 +42,13 @@ public:
   virtual int            GetStartTime();
 
   virtual CVideoInfoTag* GetVideoInfoTag();
+
+  virtual IRecordable*   GetRecordable() {return (IRecordable*)this;}
+
+  virtual bool           CanRecord();
+  virtual bool           IsRecording();
+  virtual bool           Record(bool bOnOff);
+
 protected:
   virtual void OnEvent(int event, const std::string& data);
 
@@ -51,9 +59,10 @@ protected:
   bool SetupRecording(const CURL& url);
   bool SetupLiveTV(const CURL& url);
 
-  CCMythSession*     m_session;
+  CCMythSession*    m_session;
   DllLibCMyth*      m_dll;
   cmyth_conn_t      m_control;
+  cmyth_database_t  m_database;
   cmyth_recorder_t  m_recorder;
   cmyth_proginfo_t  m_program;
   cmyth_file_t      m_file;
