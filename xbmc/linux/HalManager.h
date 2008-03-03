@@ -52,12 +52,9 @@ public:
   CStdString MountPoint;
   CStdString Label;
   CStdString UUID;
+  CStdString DevID;
   int  Type;
   CStdString FileSystem;
-  CStdString Vendor;
-  CStdString Model;
-  CStdString Serial;
-  CStdString Firmware;
 
   CStdString toString()
   { // Not the prettiest but it's better than having to reproduce it elsewere in the code...

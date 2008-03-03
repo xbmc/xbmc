@@ -238,6 +238,9 @@ bool CHalManager::DeviceFromVolumeUdi(const char *udi, CStorageDevice *device)
       char * FriendlyName   = libhal_device_get_property_string(g_HalManager.m_Context, udi, "info.product", NULL);
       device->FriendlyName  = FriendlyName;
       libhal_free_string(FriendlyName);
+      char *block = libhal_device_get_property_string(g_HalManager.m_Context, udi, "block.device", NULL);
+      device->DevID         = block;
+      libhal_free_string(block);
 
       device->HotPlugged  = (bool)libhal_drive_is_hotpluggable(tempDrive);
       device->Type        = libhal_drive_get_type(tempDrive);
@@ -295,6 +298,9 @@ std::vector<CStorageDevice> CHalManager::DeviceFromDriveUdi(const char *udi)
           char * FriendlyName = libhal_device_get_property_string(g_HalManager.m_Context, AllVolumes[n], "info.product", NULL);
           dev.FriendlyName    = FriendlyName;
           libhal_free_string(FriendlyName);
+          char *block = libhal_device_get_property_string(g_HalManager.m_Context, AllVolumes[n], "block.device", NULL);
+          dev.DevID           = block;
+          libhal_free_string(block);
 
           dev.HotPlugged  = HotPlugged;
           dev.Type        = Type;
@@ -409,7 +415,13 @@ void CHalManager::ParseDevice(const char *udi)
       {
         CLog::Log(LOGNOTICE, "HAL: Trying to mount %s", dev.FriendlyName.c_str());
         CStdString MountCmd;
-        MountCmd.Format("pmount-hal %s", udi);
+        if (dev.Label.size() > 0)
+          MountCmd.Format("pmount %s %s", dev.DevID.c_str(), dev.Label.c_str());
+        else
+        {
+          // TODO autoname the device to something better than sdxy when no label is present
+          MountCmd.Format("pmount %s", dev.DevID.c_str());
+        }
         system(MountCmd.c_str());
         // Reload some needed things.
         if (!DeviceFromVolumeUdi(udi, &dev))
@@ -467,6 +479,15 @@ bool CHalManager::RemoveDevice(const char *udi)
     {
       CLog::Log(LOGNOTICE, "HAL: Removed - %s | %s", CHalManager::StorageTypeToString(m_Volumes[i].Type), m_Volumes[i].toString().c_str());
       CLinuxFileSystem::RemoveDevice(m_Volumes[i].UUID.c_str());
+#ifdef HAL_HANDLEMOUNT
+      if (m_Volumes[i].Mounted)
+      {
+      CLog::Log(LOGNOTICE, "HAL: Detected unsafe storage removal %s", m_Volumes[i].FriendlyName.c_str());
+      CStdString uMountCmd;
+      uMountCmd.Format("pumount -l %s", m_Volumes[i].DevID.c_str());
+      system(uMountCmd.c_str());
+      }
+#endif
       m_Volumes.erase(m_Volumes.begin() + i);
       return true;
     }
