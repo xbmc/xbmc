@@ -139,9 +139,9 @@ public:
   virtual void Update(bool bPauseDrawing)                       { m_dvdPlayerVideo.Update(bPauseDrawing); }
   virtual void GetVideoRect(RECT& SrcRect, RECT& DestRect)      { m_dvdPlayerVideo.GetVideoRect(SrcRect, DestRect); }
   virtual void GetVideoAspectRatio(float& fAR)                  { fAR = m_dvdPlayerVideo.GetAspectRatio(); }
-  virtual bool CanRecord() { return false; }
-  virtual bool IsRecording() { return false; }
-  virtual bool Record(bool bOnOff) { return false; }
+  virtual bool CanRecord();
+  virtual bool IsRecording();
+  virtual bool Record(bool bOnOff);
   virtual void SetAVDelay(float fValue = 0.0f);
   virtual float GetAVDelay();
 
