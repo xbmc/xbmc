@@ -89,6 +89,13 @@ bool CCMythFile::SetupConnection(const CURL& url, bool control, bool event, bool
     if(!m_session->SetListener(this))
       return false;
   }
+  if(database && !m_database)
+  {
+    m_database = m_session->GetDatabase();
+    if(!m_database)
+      return false;
+  }
+
   return true;
 }
 
@@ -158,6 +165,24 @@ bool CCMythFile::SetupLiveTV(const CURL& url)
     CLog::Log(LOGERROR, "%s - recorder hasn't started", __FUNCTION__);
     return false;
   }
+
+  m_program = m_dll->recorder_get_cur_proginfo(m_recorder);
+  if(m_program)
+  {
+    if(m_dll->proginfo_rec_status(m_program) != RS_RECORDING)
+      return false;
+
+    char* str;
+    if((str = m_dll->proginfo_recgroup(m_program)))
+    {
+      if(strcmp(str, "LiveTV") != 0)
+        m_recording = true;
+      m_dll->ref_release(str);
+    }
+  }
+  else
+    CLog::Log(LOGWARNING, "%s - failed to get current program info", __FUNCTION__);
+
   char * filename = m_dll->recorder_get_filename(m_recorder);
   m_filename = filename;
   m_dll->ref_release(filename);
@@ -185,7 +210,7 @@ bool CCMythFile::Open(const CURL& url, bool binary)
   } 
   else if (path.Left(9) == "channels/")
   {
-    if(!SetupConnection(url, true, true, false))
+    if(!SetupConnection(url, true, true, true))
       return false;
 
     if(!SetupLiveTV(url))
@@ -193,9 +218,6 @@ bool CCMythFile::Open(const CURL& url, bool binary)
 
     CLog::Log(LOGDEBUG, "%s - recorder has started on filename %s", __FUNCTION__, m_filename.c_str());
 
-    m_program = m_dll->recorder_get_cur_proginfo(m_recorder);
-    if(!m_program)
-      CLog::Log(LOGWARNING, "%s - failed to get current program info", __FUNCTION__);
   }
   else
   {
@@ -245,8 +267,10 @@ CCMythFile::CCMythFile()
   m_program     = NULL;
   m_recorder    = NULL;
   m_control     = NULL;
+  m_database    = NULL;
   m_file        = NULL;
   m_session     = NULL;
+  m_recording   = false;
 }
 
 CCMythFile::~CCMythFile()
@@ -496,4 +520,39 @@ bool CCMythFile::NextChannel()
 bool CCMythFile::PrevChannel()
 {
   return ChangeChannel(CHANNEL_DIRECTION_DOWN, NULL);
+}
+
+
+bool CCMythFile::CanRecord()
+{
+  if(m_recorder)
+    return true;
+
+  return false;
+}
+
+bool CCMythFile::IsRecording()
+{
+  return m_recording;
+}
+
+bool CCMythFile::Record(bool bOnOff)
+{
+  if(!m_recorder || !m_database)
+    return false;
+
+  int ret;
+  if(bOnOff)
+    ret = m_dll->livetv_keep_recording(m_recorder, m_database, 1);
+  else
+    ret = m_dll->livetv_keep_recording(m_recorder, m_database, 0);
+
+  if(ret < 0)
+  {
+    CLog::Log(LOGERROR, "%s - failed to turn on recording", __FUNCTION__);
+    return false;
+  }
+
+  m_recording = bOnOff;
+  return true;
 }
