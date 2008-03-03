@@ -71,6 +71,8 @@ protected:
 
   CCriticalSection  m_section;
   std::queue<std::pair<int, std::string> > m_events;
+
+  bool              m_recording;
 };
 
 }
