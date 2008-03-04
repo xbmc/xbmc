@@ -44,8 +44,12 @@ public:
 class CStorageDevice : public CHalDevice
 {
 public:
+#ifdef HAL_HANDLEMOUNT
+  CStorageDevice(const char *udi) : CHalDevice(udi) { HotPlugged = false; Mounted = false; Approved = false; MountedByXBMC = false; }
+  bool MountedByXBMC;
+#else
   CStorageDevice(const char *udi) : CHalDevice(udi) { HotPlugged = false; Mounted = false; Approved = false; }
-
+#endif
   bool Mounted;
   bool Approved;
   bool HotPlugged;
