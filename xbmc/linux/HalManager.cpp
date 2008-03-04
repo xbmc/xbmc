@@ -113,6 +113,20 @@ CHalManager::CHalManager()
 // Shutdown the connection and free the context
 CHalManager::~CHalManager()
 {
+#ifdef HAL_HANDLEMOUNT
+// Unmount all media XBMC have mounted
+  for (unsigned int i = 0; i < m_Volumes.size(); i++)
+  {
+    if (m_Volumes[i].MountedByXBMC && m_Volumes[i].Mounted)
+    {
+      CLog::Log(LOGNOTICE, "HAL: Unmounts %s", m_Volumes[i].FriendlyName.c_str());
+      CStdString uMountCmd;
+      uMountCmd.Format("pumount -l %s", m_Volumes[i].DevID.c_str());
+      CLog::Log(LOGDEBUG, "HAL: %s", uMountCmd.c_str());
+      system(uMountCmd.c_str());
+    }
+  }
+#endif
   dbus_error_free(&m_Error); // Needed?
 
 	if (m_Context != NULL)	
@@ -416,19 +430,34 @@ void CHalManager::ParseDevice(const char *udi)
         CLog::Log(LOGNOTICE, "HAL: Trying to mount %s", dev.FriendlyName.c_str());
         CStdString MountCmd;
         if (dev.Label.size() > 0)
-          MountCmd.Format("pmount %s %s", dev.DevID.c_str(), dev.Label.c_str());
+        {
+          // pmount /dev/sdxy USB\ DISK
+          CStdString formatedLabel;
+          for (unsigned int i = 0; i < dev.Label.size(); i++)
+          {
+            if (dev.Label[i] == ' ')
+              formatedLabel.append("\\ ");
+            else
+            {
+              formatedLabel.Format("%s%c",formatedLabel.c_str(), dev.Label[i]);
+            }
+          }
+          MountCmd.Format("pmount %s %s", dev.DevID.c_str(), formatedLabel.c_str());
+        }
         else
         {
           // TODO autoname the device to something better than sdxy when no label is present
           MountCmd.Format("pmount %s", dev.DevID.c_str());
         }
+        CLog::Log(LOGDEBUG, "HAL: %s", MountCmd.c_str());
         system(MountCmd.c_str());
         // Reload some needed things.
         if (!DeviceFromVolumeUdi(udi, &dev))
           return;
 
-        if (dev.Mounted && dev.Approved)
+        if (dev.Mounted)
         {
+          dev.MountedByXBMC = true;
           CLog::Log(LOGINFO, "HAL: mounted %s on %s", dev.FriendlyName.c_str(), dev.MountPoint.c_str());
         }
       }
@@ -452,6 +481,11 @@ void CHalManager::ParseDevice(const char *udi)
     else
     {
       CLog::Log(LOGDEBUG, "HAL: Update - %s | %s", CHalManager::StorageTypeToString(dev.Type),  dev.toString().c_str());
+#ifdef HAL_HANDLEMOUNT
+// If the device was mounted by XBMC before and it is still mounted then it mounted by XBMC still.
+      if (dev.Mounted == m_Volumes[update].Mounted)
+        dev.MountedByXBMC = m_Volumes[update].MountedByXBMC;
+#endif
       m_Volumes[update] = dev;
     }
     CLinuxFileSystem::AddDevice(dev);
@@ -482,10 +516,11 @@ bool CHalManager::RemoveDevice(const char *udi)
 #ifdef HAL_HANDLEMOUNT
       if (m_Volumes[i].Mounted)
       {
-      CLog::Log(LOGNOTICE, "HAL: Detected unsafe storage removal %s", m_Volumes[i].FriendlyName.c_str());
-      CStdString uMountCmd;
-      uMountCmd.Format("pumount -l %s", m_Volumes[i].DevID.c_str());
-      system(uMountCmd.c_str());
+        CLog::Log(LOGNOTICE, "HAL: Detected unsafe storage removal %s", m_Volumes[i].FriendlyName.c_str());
+        CStdString uMountCmd;
+        uMountCmd.Format("pumount -l %s", m_Volumes[i].DevID.c_str());
+        CLog::Log(LOGDEBUG, "HAL: %s", uMountCmd.c_str());
+        system(uMountCmd.c_str());
       }
 #endif
       m_Volumes.erase(m_Volumes.begin() + i);
