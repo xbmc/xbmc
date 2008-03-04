@@ -558,6 +558,7 @@ void CXbmcHttp::copyThumb(CStdString srcFn, CStdString destFn)
 	{
 	  if (CFile::Exists(destFn))
 	    CFile::Delete(destFn);
+	  lastThumbFn=srcFn;
 	}
     catch (...)
     {
@@ -567,11 +568,9 @@ void CXbmcHttp::copyThumb(CStdString srcFn, CStdString destFn)
     if (srcFn!=lastThumbFn)
 	  try
 	  {
+	    lastThumbFn=srcFn;
 	    if (CFile::Exists(srcFn))
-	    {
           CFile::Cache(srcFn, destFn);
-	      lastThumbFn=srcFn;
-	    }
 	    else
 	    {
 	      CPicture pic;
