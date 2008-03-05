@@ -431,18 +431,8 @@ void CHalManager::ParseDevice(const char *udi)
         CStdString MountCmd;
         if (dev.Label.size() > 0)
         {
-          // pmount /dev/sdxy USB\ DISK
-          CStdString formatedLabel;
-          for (unsigned int i = 0; i < dev.Label.size(); i++)
-          {
-            if (dev.Label[i] == ' ')
-              formatedLabel.append("\\ ");
-            else
-            {
-              formatedLabel.Format("%s%c",formatedLabel.c_str(), dev.Label[i]);
-            }
-          }
-          MountCmd.Format("pmount %s %s", dev.DevID.c_str(), formatedLabel.c_str());
+          // pmount /dev/sdxy "USB DISK"
+          MountCmd.Format("pmount %s \"%s\"", dev.DevID.c_str(), dev.Label.c_str());
         }
         else
         {
