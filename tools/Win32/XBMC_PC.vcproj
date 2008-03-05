@@ -130,8 +130,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../xbmc/;../../guilib/;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_WIN32_WINNT=0x0500;WINVER=0x0500;HAS_SDL"
+				AdditionalIncludeDirectories="../../xbmc/cores/dvdplayer;../../tools/Win32;../../xbmc/cores;../../xbmc/;../../guilib/;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32"
+				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0500;WINVER=0x0500;HAS_SDL"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="1"
@@ -145,11 +145,12 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089"
 				AdditionalDependencies="opengl32.lib winmm.lib ws2_32.lib"
-				OutputFile="$(OutDir)/XBMC_PC.exe"
+				OutputFile="../../XBMC_run/XBMC/XBMC.exe"
 				LinkIncremental="2"
 				IgnoreDefaultLibraryNames="libc;msvcrt"
+				ModuleDefinitionFile=""
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile="$(OutDir)/XBMC_PC.pdb"
+				ProgramDatabaseFile="$(OutDir)/XBMC.pdb"
 				SubSystem="2"
 				EntryPointSymbol=""
 				TargetMachine="1"/>
@@ -185,24 +186,25 @@
 				Optimization="0"
 				InlineFunctionExpansion="0"
 				OmitFramePointers="FALSE"
-				AdditionalIncludeDirectories="../../xbmc;../../guilib;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_WIN32_WINNT=0x0500;WINVER=0x0500;HAS_SDL"
+				AdditionalIncludeDirectories="../../xbmc/cores/dvdplayer;../../tools/Win32;../../xbmc/cores;../../xbmc/;../../guilib/;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32"
+				PreprocessorDefinitions="_MSVC;WIN32;NDEBUG;_WINDOWS;_WIN32_WINNT=0x0500;WINVER=0x0500;HAS_SDL"
 				StringPooling="FALSE"
 				MinimalRebuild="TRUE"
 				RuntimeLibrary="0"
 				BufferSecurityCheck="FALSE"
 				EnableFunctionLevelLinking="FALSE"
+				EnableEnhancedInstructionSet="1"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="3"/>
+				DebugInformationFormat="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="FALSE"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089"
-				AdditionalDependencies="ws2_32.lib winmm.lib SDL.lib SDL_image.lib opengl32.lib DSound.lib glew32.lib glu32.lib"
+				AdditionalDependencies="opengl32.lib winmm.lib ws2_32.lib"
 				OutputFile="$(OutDir)/XBMC_PC.exe"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libci"
@@ -251,10 +253,22 @@
 			<File
 				RelativePath=".\XBMC_PC.rc">
 			</File>
+			<File
+				RelativePath="..\..\xbmc\win32\XCriticalSection.cpp">
+			</File>
+			<File
+				RelativePath="..\..\xbmc\win32\XCriticalSection.h">
+			</File>
 		</Filter>
 		<Filter
 			Name="cores"
 			Filter="">
+			<File
+				RelativePath="..\..\xbmc\cores\dlgcache.cpp">
+			</File>
+			<File
+				RelativePath="..\..\xbmc\cores\dlgcache.h">
+			</File>
 			<File
 				RelativePath="..\..\xbmc\cores\DummyVideoPlayer.cpp">
 			</File>
@@ -302,6 +316,18 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\dvdplayer\DVDDemuxSPU.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxVobsub.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxVobsub.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamTV.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamTV.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\dvdplayer\DVDMessage.cpp">
@@ -878,6 +904,12 @@
 					RelativePath="..\..\xbmc\cores\paplayer\DTSCodec.h">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\cores\paplayer\DVDPlayerCodec.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\paplayer\DVDPlayerCodec.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\paplayer\FLACcodec.cpp">
 				</File>
 				<File
@@ -1063,6 +1095,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\DllLoader\LibraryLoader.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\DllLoader\Win32DllLoader.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\DllLoader\Win32DllLoader.h">
 				</File>
 				<Filter
 					Name="exports"
@@ -1674,6 +1712,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\CharsetConverter.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\CPUInfo.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\CPUInfo.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\Crc32.cpp">
@@ -2348,6 +2392,9 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\FileShoutcast.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\FileShoutcast.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\FileTuxBox.cpp">
@@ -3043,9 +3090,6 @@
 				RelativePath="..\..\xbmc\FileItem.h">
 			</File>
 			<File
-				RelativePath="..\..\xbmc\FileSystem\FileShoutcast.h">
-			</File>
-			<File
 				RelativePath="..\..\xbmc\utils\fstrcmp.h">
 			</File>
 			<File
@@ -3443,10 +3487,10 @@
 					RelativePath="..\..\xbmc\lib\libPython\XBPython.h">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libPython\XBPythonDll.cpp">
+					RelativePath="..\..\xbmc\lib\libPython\XBPythonDll.h">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libPython\XBPythonDll.h">
+					RelativePath="..\..\xbmc\lib\libPython\XBPythonDll_win32.cpp">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\lib\libPython\XBPyThread.cpp">
