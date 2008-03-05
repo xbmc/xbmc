@@ -555,3 +555,4 @@ bool CCMythFile::Record(bool bOnOff)
   m_recording = bOnOff;
   return true;
 }
+

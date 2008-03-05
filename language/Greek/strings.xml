@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 02/11/2008-->
+<!--Date of translation: 03/02/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 11432-->
+<!--Based on english strings version 11774-->
 <strings>
   <string id="0">Προγράμματα</string>
   <string id="1">Φωτογραφίες</string>
@@ -434,8 +434,8 @@
   <string id="515">Είδος</string>
   <string id="516">Αρχειοθέτηση σε ένα φάκελο</string>
   <string id="517">Πρόσφατα παιγμένα άλμπουμ</string>
-  <string id="518">Τρέξιμο</string>
-  <string id="519">Τρέξιμο σε...</string>
+  <string id="518">Εκκίνηση</string>
+  <string id="519">Εκκίνηση σε...</string>
   <string id="520">Επεξεργασία XBE τίτλου</string>
   <string id="521">Συντάξεις</string>
   <string id="522">Διαγραφή πηγής</string>
@@ -712,7 +712,7 @@
   <string id="1255">Αποστολή ονόματος και συνθηματικού Χρήστη FTP</string>
   <string id="1256">Διάστημα Μεταλλικού θορύβου</string>
   <string id="1257">Να συνδεθείτε στο Xbox που εντοπίστηκε;</string>
-  <string id="1396">Μετατοπίζοντας</string>
+  <string id="1396">Μετακινούμενη</string>
   <string id="1397">και</string>
   <string id="1398">Παγωνιά</string>
   <string id="1399">Το βράδυ</string>
@@ -726,14 +726,14 @@
   <string id="1407">Εγγύτητα</string>
   <string id="1408">Πάγος</string>
   <string id="1409">Κρύσταλλοι</string>
-  <string id="1410">Ήρεμο</string>
+  <string id="1410">Άπνοια</string>
   <string id="1411">και</string>
   <string id="1412">ξηρασία</string>
   <string id="1413">ψιλοβρόχι</string>
   <string id="1414">Έντονη Καταιγίδα</string>
-  <string id="2050">Runtime:</string>
+  <string id="2050">Κατά την εκτέλεση:</string>
   <string id="4501">Τύπος LCD</string>
-  <string id="10000">Home</string>
+  <string id="10000">Αρχική τοποθεσία</string>
   <string id="10001">Προγράμματα</string>
   <string id="10002">Φωτογραφίες</string>
   <string id="10003">Αρχεία</string>
@@ -897,7 +897,7 @@
   <string id="13155">Σειριακός αριθμός</string>
   <string id="13156">Έκδοση Υλικού</string>
   <string id="13157">Συνθηματικό</string>
-  <string id="13158">Πρόοδος</string>
+  <string id="13158">Κατάσταση</string>
   <string id="13159">Μάσκα Subnet</string>
   <string id="13160">Πύλη</string>
   <string id="13161">Πρωτεύον DNS</string>
@@ -1102,7 +1102,7 @@
   <string id="14049">%i kb</string>
   <string id="14050">%i.0 dB</string>
   <string id="14051">Διαμόρφωση  Ώρας</string>
-  <string id="14052"> Διαμόρφωση Ημ/νίας</string>
+  <string id="14052">Διαμόρφωση Ημ/νίας</string>
   <string id="14053">Φίλτρα GUI</string>
   <string id="14054">Ενεργοποίηση Αναζητήσεων στο Διαδίκτυο</string>
   <string id="14055">Χρήση σάρωσης στο Παρασκήνιο</string>
@@ -1307,7 +1307,7 @@
   <string id="16034">Απέτυχε το πάρσιμο τραγουδιών από τη βάση δεδομένων.</string>
   <string id="16035">Λίστα Αναπαραγωγής PartyΜode</string>
   <string id="16100">Όλα τα βίντεο</string>
-  <string id="16101">Μη παιγμένα</string>
+  <string id="16101">Μη Παιγμένα</string>
   <string id="16102">Παιγμένα</string>
   <string id="16103">Σημείωση ως παιγμένα</string>
   <string id="16104">Σημείωση ως μη παιγμένα</string>
@@ -1454,9 +1454,9 @@
   <string id="20138">Αδύνατη Προσάρτηση Μονάδας Μνήμης</string>
   <string id="20139">Στη θύρα %i ,υποδοχή %i</string>
   <string id="20140">Κλείδωμα Προφύλαξης Οθόνης</string>
-  <string id="20141">Τοποθέτησε</string>
+  <string id="20141">Ορισμός</string>
   <string id="20142">Όνομα χρήστη</string>
-  <string id="20143">Εισάγετε συνθηματικό για</string>
+  <string id="20143">Εισαγωγή συνθηματικού για</string>
   <string id="20144">Χρονοδιακόπτης Τερματισμού</string>
   <string id="20145">Χρόνος Τερματισμού (σε λεπτά)</string>
   <string id="20146">Ξεκίνησε, τερματισμός σε</string>
@@ -1466,7 +1466,7 @@
   <string id="20150">Προσωπικός Χρονοδιακόπτης Τερματισμού</string>
   <string id="20151">Ακύρωση του Χρονοδιακόπτη Τερματισμού</string>
   <string id="20152">Κλείδωμα ρυθμίσεων για %s</string>
-  <string id="20153">Αναζήτησε...</string>
+  <string id="20153">Αναζήτηση...</string>
   <string id="20154">Βασικές Πληροφορίες</string>
   <string id="20155">Πληροφορίες Αποθηκευτικού Χώρου</string>
   <string id="20156">Πληροφορίες Σκληρού Δίσκου</string>
@@ -1478,9 +1478,9 @@
   <string id="20162">Χρησιμοποιημένα</string>
   <string id="20163">από τα</string>
   <string id="20164">Δεν υποστηρίζεται το Κλείδωμα</string>
-  <string id="20165">Ξεκλείδωτο</string>
-  <string id="20166">Κλειδωμένο</string>
-  <string id="20167">Παγωμένο</string>
+  <string id="20165">Ξεκλείδωτοs</string>
+  <string id="20166">Κλειδωμένοs</string>
+  <string id="20167">Παγωμένοs</string>
   <string id="20168">Απαιτεί επανεκκίνηση</string>
   <string id="20169">Εβδομάδα</string>
   <string id="20170">Γραμμή</string>
@@ -1504,7 +1504,7 @@
   <string id="20188">Διάβασμα από το EPPROM ολοκληρώθηκε</string>
   <string id="20189">Ενεργοποίηση αυτόματης κύλισης για την ανασκόπηση Πλοκής και Κριτικής</string>
   <string id="20190">Προσωπικό</string>
-  <string id="20191">Εντοπισμός τιμών Σκληρού Δίσκου</string>
+  <string id="20191">Ενεργοποίηση καταγραφής αποσφαλμάτωσης</string>
   <string id="20192">Εντοπισμός κλειδιού Σκληρού Δίσκου</string>
   <string id="20193">Εντοπισμός θερμοκρασίας Σκληρού Δίσκου</string>
   <string id="20194">Εντοπισμός πληροφοριών DVD-ROM</string>
@@ -1627,6 +1627,7 @@
   <string id="20408">Μεταφορτώνονται πληροφορίες για το Μουσικό Βίντεο</string>
   <string id="20409">Μεταφορτώνονται πληροφορίες για τη Τηλεοπτική Σειρά </string>
   <string id="20410">Διαφημιστικό</string>
+  <string id="20411">Ισοπέδωση</string>
   <string id="21330">Προβολή κρυφών αρχείων και φακέλων</string>
   <string id="21331">Πελάτης TuxBox</string>
   <string id="21332">ΠΡΟΣΟΧΗ: Η συσκευή TuxBox βρίσκεται σε Recording-Mode!</string>

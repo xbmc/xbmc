@@ -349,16 +349,16 @@ bool CScraperParser::Load(const CStdString& strXMLFile)
 
 void CScraperParser::ReplaceBuffers(CStdString& strDest)
 {
-  char temp[5];
   // insert buffers
   int iIndex;
-  for (int i=0;i<MAX_SCRAPER_BUFFERS;++i)
+  for (int i=MAX_SCRAPER_BUFFERS-1; i>=0; i--)
   {
+    CStdString temp;
     iIndex = 0;
-    sprintf(temp,"$$%i",i+1);
+    temp.Format("$$%i",i+1);
     while ((size_t)(iIndex = strDest.find(temp,iIndex)) != CStdString::npos) // COPIED FROM CStdString WITH THE ADDITION OF $ ESCAPING
     {
-      strDest.replace(strDest.begin()+iIndex,strDest.begin()+iIndex+strlen(temp),m_param[i]);
+      strDest.replace(strDest.begin()+iIndex,strDest.begin()+iIndex+temp.GetLength(),m_param[i]);
       iIndex += m_param[i].length();
     }
   }

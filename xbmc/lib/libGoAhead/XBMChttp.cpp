@@ -52,34 +52,48 @@ using namespace MUSIC_INFO;
 CXbmcHttp* m_pXbmcHttp;
 CXbmcHttpShim* pXbmcHttpShim;
 
-//Response format
-CStdString openTag, closeTag, userHeader, userFooter, openRecordSet, closeRecordSet, openRecord, closeRecord, openField, closeField, openBroadcast, closeBroadcast;
-bool incWebHeader, incWebFooter, closeFinalTag;
 
-bool shuttingDown = false;
-CStdString lastThumbFn="";
-
-/*
-** Translation Table as described in RFC1113
-*/
-static const char cb64[]="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-
-/*
-** Translation Table to decode
-*/
-static const char cd64[]="|$$$}rstuvwxyz{$$$$$$$>?@ABCDEFGHIJKLMNOPQRSTUVW$$$$$$XYZ[\\]^_`abcdefghijklmnopq";
-
-/*
-** encodeblock
-**
-** encode 3 8-bit binary bytes as 4 '6-bit' characters
-*/
-void encodeblock( unsigned char in[3], unsigned char out[4], int len )
+CUdpBroadcast::CUdpBroadcast() : CUdpClient()
 {
-    out[0] = cb64[ in[0] >> 2 ];
-    out[1] = cb64[ ((in[0] & 0x03) << 4) | ((in[1] & 0xf0) >> 4) ];
-    out[2] = (unsigned char) (len > 1 ? cb64[ ((in[1] & 0x0f) << 2) | ((in[2] & 0xc0) >> 6) ] : '=');
-    out[3] = (unsigned char) (len > 2 ? cb64[ in[2] & 0x3f ] : '=');
+  Create();
+}
+
+CUdpBroadcast::~CUdpBroadcast()
+{
+  Destroy();
+}
+
+bool CUdpBroadcast::broadcast(CStdString message, int port)
+{
+  if (port>0)
+    return Broadcast(port, message);
+  else
+    return false;
+}
+
+
+CXbmcHttp::CXbmcHttp()
+{
+  resetTags();
+  CKey temp;
+  key = temp;
+  lastKey = temp;
+  lastThumbFn="";
+  repeatKeyRate=0;
+  MarkTime=0;
+  pUdpBroadcast=NULL;
+  shuttingDown=false;
+  autoGetPictureThumbs=true;
+}
+
+CXbmcHttp::~CXbmcHttp()
+{
+  if (pUdpBroadcast)
+  {
+    delete pUdpBroadcast;
+    pUdpBroadcast=NULL;
+  }
+  CLog::Log(LOGDEBUG, "xbmcHttp ends");
 }
 
 /*
@@ -87,12 +101,15 @@ void encodeblock( unsigned char in[3], unsigned char out[4], int len )
 **
 ** base64 encode a stream adding padding and line breaks as per spec.
 */
-CStdString encodeFileToBase64( CStdString inFilename, int linesize )
+CStdString CXbmcHttp::encodeFileToBase64( CStdString inFilename, int linesize )
 {
-  unsigned char in[3], out[4];
+  unsigned char in[3];//, out[4];
   int i, len, blocksout = 0;
   CStdString strBase64="";
   FILE *infile;
+
+//  Translation Table as described in RFC1113
+  static const char cb64[]="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
   infile = fopen( inFilename.c_str(), "rb" );
   bool bOutput=false;
@@ -111,9 +128,10 @@ CStdString encodeFileToBase64( CStdString inFilename, int linesize )
       }
       if( len ) 
       {
-        encodeblock( in, out, len );
-        for( i = 0; i < 4; i++ )
-          strBase64 += out[i];
+		strBase64 += cb64[ in[0] >> 2 ];
+        strBase64 += cb64[ ((in[0] & 0x03) << 4) | ((in[1] & 0xf0) >> 4) ];
+        strBase64 += (unsigned char) (len > 1 ? cb64[ ((in[1] & 0x0f) << 2) | ((in[2] & 0xc0) >> 6) ] : '=');
+        strBase64 += (unsigned char) (len > 2 ? cb64[ in[2] & 0x3f ] : '=');
         blocksout++;
       }
       if(linesize == 0 && feof(infile))
@@ -136,29 +154,20 @@ CStdString encodeFileToBase64( CStdString inFilename, int linesize )
 }
 
 /*
-** decodeblock
-**
-** decode 4 '6-bit' characters into 3 8-bit binary bytes
-*/
-void decodeblock( unsigned char in[4], unsigned char out[3] )
-{   
-    out[ 0 ] = (unsigned char ) ((in[0] << 2 | in[1] >> 4) & 255);
-    out[ 1 ] = (unsigned char ) ((in[1] << 4 | in[2] >> 2) & 255);
-    out[ 2 ] = (unsigned char ) (((in[2] << 6) & 0xc0) | in[3]);
-}
-
-/*
 ** decode
 **
 ** decode a base64 encoded stream discarding padding, line breaks and noise
 */
-bool decodeBase64ToFile( const CStdString &inString, const CStdString &outfilename, bool append = false )
+bool CXbmcHttp::decodeBase64ToFile( const CStdString &inString, const CStdString &outfilename, bool append)
 {
-  unsigned char in[4], out[3], v;
+  unsigned char in[4], v; //out[3];
   bool ret=true;
   int i, len ;
   unsigned int ptr=0;
   FILE *outfile;
+
+// Translation Table to decode
+  static const char cd64[]="|$$$}rstuvwxyz{$$$$$$$>?@ABCDEFGHIJKLMNOPQRSTUVW$$$$$$XYZ[\\]^_`abcdefghijklmnopq";
 
   try
   {
@@ -189,9 +198,9 @@ bool decodeBase64ToFile( const CStdString &inString, const CStdString &outfilena
       }
       if( len ) 
       {
-        decodeblock( in, out );
-        for( i = 0; i < len - 1; i++ )
-          putc( out[i], outfile );
+		putc((unsigned char ) ((in[0] << 2 | in[1] >> 4) & 255), outfile );
+        putc((unsigned char ) ((in[1] << 4 | in[2] >> 2) & 255), outfile );
+        putc((unsigned char ) ((in[2] << 6) & 0xc0) | in[3], outfile );
       }
     }
     fclose(outfile);
@@ -203,7 +212,7 @@ bool decodeBase64ToFile( const CStdString &inString, const CStdString &outfilena
   return ret;
 }
 
-__int64 fileSize(const CStdString &filename)
+__int64 CXbmcHttp::fileSize(const CStdString &filename)
 {
   if (CFile::Exists(filename))
   {
@@ -217,7 +226,7 @@ __int64 fileSize(const CStdString &filename)
     return -1;
 }
 
-void resetTags()
+void CXbmcHttp::resetTags()
 {
   openTag="<li>"; 
   closeTag="\n";
@@ -236,7 +245,7 @@ void resetTags()
   closeFinalTag=false;
 }
 
-CStdString procMask(CStdString mask)
+CStdString CXbmcHttp::procMask(CStdString mask)
 {
   mask=mask.ToLower();
   if(mask=="[music]")
@@ -250,7 +259,7 @@ CStdString procMask(CStdString mask)
   return mask;
 }
 
-int splitParameter(const CStdString &parameter, CStdString& command, CStdString paras[], const CStdString &sep)
+int CXbmcHttp::splitParameter(const CStdString &parameter, CStdString& command, CStdString paras[], const CStdString &sep)
 //returns -1 if no command, -2 if too many parameters else the number of parameters
 //assumption: sep.length()==1
 {
@@ -322,32 +331,14 @@ int splitParameter(const CStdString &parameter, CStdString& command, CStdString 
   }
 }
 
-bool checkForFunctionTypeParas(CStdString &cmd, CStdString &paras)
-{
-  int open, close;
-  open = cmd.Find("(");
-  if (open>0)
-  {
-	close=cmd.length();
-	while (close>open && cmd.Mid(close,1)!=")")
-	  close--;
-	if (close>open)
-	{
-	  paras = cmd.Mid(open + 1, close - open - 1);
-	  cmd = cmd.Left(open);
-	  return (close-open)>1;
-	}
-  }
-  return false;
-}
 
-bool playableFile(const CStdString &filename)
+bool CXbmcHttp::playableFile(const CStdString &filename)
 {
   CFileItem item(filename, false);  
   return item.IsInternetStream() || CFile::Exists(filename);
 }
 
-int SetResponse(const CStdString &response)
+int CXbmcHttp::SetResponse(const CStdString &response)
 {
   if (response.length()>=closeTag.length())
   {
@@ -360,19 +351,8 @@ int SetResponse(const CStdString &response)
   return g_application.getApplicationMessenger().SetResponse(response);
 }
 
-CStdString flushResult(int eid, webs_t wp, const CStdString &output)
+int CXbmcHttp::displayDir(int numParas, CStdString paras[]) 
 {
-  if (output!="")
-    if (eid==NO_EID && wp!=NULL)
-      websWriteBlock(wp, (char_t *) output.c_str(), output.length()) ;
-    else if (eid!=NO_EID)
-      ejSetResult( eid, (char_t *)output.c_str());
-    else
-      return output;
-  return "";
-}
-
-int displayDir(int numParas, CStdString paras[]) {
   //mask = ".mp3|.wma" or one of "[music]", "[video]", "[pictures]", "[files]"-> matching files
   //mask = "*" or "/" -> just folders
   //mask = "" -> all files and folder
@@ -432,7 +412,7 @@ int displayDir(int numParas, CStdString paras[]) {
   return SetResponse(output);
 }
 
-void SetCurrentMediaItem(CFileItem& newItem)
+void CXbmcHttp::SetCurrentMediaItem(CFileItem& newItem)
 {
   //  No audio file, we are finished here
   if (!newItem.IsAudio() )
@@ -465,7 +445,7 @@ void SetCurrentMediaItem(CFileItem& newItem)
   }
 }
 
-void AddItemToPlayList(const CFileItem* pItem, int playList, int sortMethod, CStdString mask, bool recursive)
+void CXbmcHttp::AddItemToPlayList(const CFileItem* pItem, int playList, int sortMethod, CStdString mask, bool recursive)
 //if playlist==-1 then use slideshow
 {
   if (pItem->m_bIsFolder)
@@ -498,7 +478,7 @@ void AddItemToPlayList(const CFileItem* pItem, int playList, int sortMethod, CSt
   }
 }
 
-void LoadPlayListOld(const CStdString& strPlayList, int playList)
+void CXbmcHttp::LoadPlayListOld(const CStdString& strPlayList, int playList)
 {
   // load a playlist like .m3u, .pls
   // first get correct factory to load playlist
@@ -521,7 +501,7 @@ void LoadPlayListOld(const CStdString& strPlayList, int playList)
   }
 }
 
-bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoStart)
+bool CXbmcHttp::LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoStart)
 {
   //CStdString strPath = item.m_strPath;
   CFileItem *item = new CFileItem(CUtil::GetFileName(strPath));
@@ -568,71 +548,41 @@ bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoSt
   return false;
 }
 
-void copyThumb(CStdString srcFn, CStdString destFn)
+void CXbmcHttp::copyThumb(CStdString srcFn, CStdString destFn)
 //Copies src file to dest, unless src=="" or src doesn't exist in which case dest is deleted
 {
+
   if (destFn=="")
     return;
   if (srcFn=="")
   {
-	if (CFile::Exists(destFn))
-	  CFile::Delete(destFn);
+    try
+	{
+	  if (CFile::Exists(destFn))
+	    CFile::Delete(destFn);
+	  lastThumbFn=srcFn;
+	}
+    catch (...)
+    {
+    }
   }
   else
     if (srcFn!=lastThumbFn)
-	  if (CFile::Exists(srcFn))
+	  try
 	  {
-        CFile::Cache(srcFn, destFn);
 	    lastThumbFn=srcFn;
-	  }
-	  else
-	  {
-	    CPicture pic;
-        pic.CacheSkinImage(srcFn, destFn);
-	  }
-}
-
-CUdpBroadcast::CUdpBroadcast() : CUdpClient()
-{
-  Create();
-}
-
-CUdpBroadcast::~CUdpBroadcast()
-{
-  Destroy();
-}
-
-bool CUdpBroadcast::broadcast(CStdString message, int port)
-{
-  if (port>0)
-    return Broadcast(port, message);
-  else
-    return false;
-}
-
-CXbmcHttp::CXbmcHttp()
-{
-  resetTags();
-  CKey temp;
-  key = temp;
-  lastKey = temp;
-  lastThumbFn="";
-  repeatKeyRate=0;
-  MarkTime=0;
-  pUdpBroadcast=NULL;
-  lastThumbFn="";
-  shuttingDown = false;
-  autoGetPictureThumbs = true;
-}
-
-CXbmcHttp::~CXbmcHttp()
-{
-  if (pUdpBroadcast)
-  {
-    delete pUdpBroadcast;
-    pUdpBroadcast=NULL;
-  }
-  CLog::Log(LOGDEBUG, "xbmcHttp ends");
+	    if (CFile::Exists(srcFn))
+          CFile::Cache(srcFn, destFn);
+	    else
+	    {
+	      CPicture pic;
+          pic.CacheSkinImage(srcFn, destFn);
+	    }
+      }
+      catch (...)
+      {
+        return;
+      }
 }
 
 int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
@@ -2539,14 +2489,32 @@ int CXbmcHttp::xbmcGetSystemInfoByName(int numParas, CStdString paras[])
   }
 }
 
-int CXbmcHttp::xbmcSpinDownHardDisk()
+int CXbmcHttp::xbmcSpinDownHardDisk(int numParas, CStdString paras[])
 {
+  if (numParas==1)
+	if (paras[0].ToLower()=="false")
+	  if (g_application.m_dwSpinDownTime!=0)
+	    return SetResponse(openTag+"OK:Not spun down");
+	  else
+	  {
+	    #ifdef HAS_XBOX_HARDWARE
+          XKHDD::SpindownHarddisk(false);
+        #endif
+        g_application.m_dwSpinDownTime = timeGetTime();
+        return SetResponse(openTag+"OK");
+	  }
+  if (g_application.m_dwSpinDownTime==0)
+	return SetResponse(openTag+"OK:Already spun down");
   if (m_gWindowManager.HasModalDialog())
-	return SetResponse(openTag+"Error:Can't spin down now");
+	return SetResponse(openTag+"Error:Can't spin down now (modal dialog)");
 #ifdef HAS_XBOX_HARDWARE
   if (g_application.MustBlockHDSpinDown())
-	return SetResponse(openTag+"Error:Can't spin down now");
-  XKHDD::SpindownHarddisk();
+	return SetResponse(openTag+"Error:Can't spin down now (must block)");
+  if (g_application.IsPlaying() && g_application.CurrentFileItem().IsHD())
+	return SetResponse(openTag+"Error:Can't spin down now (playing media on hard disk)");
+    XKHDD::SpindownHarddisk();
+  g_application.m_dwSpinDownTime = 0;
+  g_application.m_bSpinDown = true;
 #endif
   return SetResponse(openTag+"OK");
 }
@@ -2758,6 +2726,24 @@ int CXbmcHttp::xbmcRecordStatus(int numParas, CStdString paras[])
         return SetResponse(openTag+"Can't record");
 }
 
+int CXbmcHttp::xbmcGetLogLevel()
+{
+  CStdString level;
+  level.Format("%i", g_advancedSettings.m_logLevel);
+  return SetResponse(openTag+level);
+}
+
+int CXbmcHttp::xbmcSetLogLevel(int numParas, CStdString paras[])
+{
+  if (numParas!=1)
+    return SetResponse(openTag+"Error:Must have one parameter");
+  else
+  {
+    g_advancedSettings.m_logLevel=atoi(paras[0]);
+	return SetResponse(openTag+"OK");
+  }
+}
+
 int CXbmcHttp::xbmcWebServerStatus(int numParas, CStdString paras[])
 {
   if (numParas==0)
@@ -2942,13 +2928,22 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
       else if (command == "setresponseformat")        retVal = xbmcSetResponseFormat(numParas, paras);
 	  else if (command == "querymusicdatabase")       retVal = xbmcQueryMusicDataBase(numParas, paras);
 	  else if (command == "queryvideodatabase")       retVal = xbmcQueryVideoDataBase(numParas, paras);
-	  else if (command == "spindownharddisk")         retVal = xbmcSpinDownHardDisk();
+	  else if (command == "spindownharddisk")         retVal = xbmcSpinDownHardDisk(numParas, paras);
 	  else if (command == "broadcast")                retVal = xbmcBroadcast(numParas, paras);
 	  else if (command == "setbroadcast")             retVal = xbmcSetBroadcast(numParas, paras);
 	  else if (command == "getbroadcast")             retVal = xbmcGetBroadcast();
 	  else if (command == "action")                   retVal = xbmcOnAction(numParas, paras);
 	  else if (command == "getrecordstatus")          retVal = xbmcRecordStatus(numParas, paras);
 	  else if (command == "webserverstatus")          retVal = xbmcWebServerStatus(numParas, paras);
+	  else if (command == "setloglevel")              retVal = xbmcSetLogLevel(numParas, paras);
+	  else if (command == "getloglevel")              retVal = xbmcGetLogLevel();
+
+	  //only callable internally
+	  else if (command == "broadcastlevel")
+	  {
+	    retVal = xbmcBroadcast(paras[0], atoi(paras[1]));
+		retVal = 0;
+	  }
 
       //Old command names
       else if (command == "deletefile")               retVal = xbmcDeleteFile(numParas, paras);
@@ -2983,11 +2978,42 @@ CXbmcHttpShim::~CXbmcHttpShim()
 CLog::Log(LOGDEBUG, "xbmcHttpShim ends");
 }
 
+bool CXbmcHttpShim::checkForFunctionTypeParas(CStdString &cmd, CStdString &paras)
+{
+  int open, close;
+  open = cmd.Find("(");
+  if (open>0)
+  {
+	close=cmd.length();
+	while (close>open && cmd.Mid(close,1)!=")")
+	  close--;
+	if (close>open)
+	{
+	  paras = cmd.Mid(open + 1, close - open - 1);
+	  cmd = cmd.Left(open);
+	  return (close-open)>1;
+	}
+  }
+  return false;
+}
+
+CStdString CXbmcHttpShim::flushResult(int eid, webs_t wp, const CStdString &output)
+{
+  if (output!="")
+    if (eid==NO_EID && wp!=NULL)
+      websWriteBlock(wp, (char_t *) output.c_str(), output.length()) ;
+    else if (eid!=NO_EID)
+      ejSetResult( eid, (char_t *)output.c_str());
+    else
+      return output;
+  return "";
+}
 
 CStdString CXbmcHttpShim::xbmcExternalCall(char *command)
 {
-  if (shuttingDown)
-    return "";
+  if (m_pXbmcHttp)
+    if (m_pXbmcHttp->shuttingDown)
+      return "";
   int open, close;
   CStdString parameter="", cmd=command, execute;
   open = cmd.Find("(");
@@ -3014,8 +3040,9 @@ CStdString CXbmcHttpShim::xbmcExternalCall(char *command)
 /* Parse an XBMC HTTP API command */
 CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *command, char_t *parameter)
 {
-  if (shuttingDown)
-    return "";
+  if (m_pXbmcHttp)
+    if (m_pXbmcHttp->shuttingDown)
+      return "";
   CStdString cmd=command, paras=parameter, response="[No response yet]", retVal;
   bool legalCmd=true;
   CLog::Log(LOGDEBUG, "XBMCHTTPShim: Received command %s (%s)", cmd.c_str(), paras.c_str());
@@ -3024,8 +3051,15 @@ CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *comman
   checkForFunctionTypeParas(cmd, paras);
   if (wp!=NULL)
   {
-    if ((eid==NO_EID) && (incWebHeader))
-      websHeader(wp);
+    if (eid==NO_EID)
+	  if (m_pXbmcHttp)
+	  {
+	    if (m_pXbmcHttp->incWebHeader)
+          websHeader(wp);
+	  }
+	  else
+	    websHeader(wp);
+
 	//we are being called via the webserver (rather than Python) so add any specific checks here
     if ((cmd=="webserverstatus") && (paras!=""))//(strcmp(parameter,XBMC_NONE)))
 	{
@@ -3055,9 +3089,10 @@ CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *comman
 	}
   }
   //flushresult
-  retVal=flushResult(eid, wp, userHeader+response+userFooter);
-  if ((wp!=NULL) && (incWebFooter))
-    websFooter(wp);
+  retVal=flushResult(eid, wp, m_pXbmcHttp->userHeader+response+m_pXbmcHttp->userFooter);
+  if (m_pXbmcHttp) //this should always be true unless something is very wrong
+    if ((wp!=NULL) && (m_pXbmcHttp->incWebFooter))
+      websFooter(wp);
   return retVal;
 }
 
@@ -3068,8 +3103,9 @@ CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *comman
 int CXbmcHttpShim::xbmcCommand( int eid, webs_t wp, int argc, char_t **argv)
 {
   char_t	*command, *parameter;
-  if (shuttingDown)
-    return -1;
+  if (m_pXbmcHttp)
+    if (m_pXbmcHttp->shuttingDown)
+      return -1;
 
   int parameters = ejArgs(argc, argv, T("%s %s"), &command, &parameter);
   if (parameters < 1) 
@@ -3090,8 +3126,9 @@ void CXbmcHttpShim::xbmcForm(webs_t wp, char_t *path, char_t *query)
 {
   char_t  *command, *parameter;
 
-  if (shuttingDown)
-	return;
+  if (m_pXbmcHttp)
+    if (m_pXbmcHttp->shuttingDown)
+      return;
   command = websGetVar(wp, WEB_COMMAND, ""); 
   parameter = websGetVar(wp, WEB_PARAMETER, "");
 
