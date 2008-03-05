@@ -421,6 +421,7 @@ void CHalManager::ParseDevice(const char *udi)
       return;
 #ifdef HAL_HANDLEMOUNT
 /* Here it can be checked if the device isn't mounted and then mount */
+//TODO Have mountpoints be other than in /media/*
     if (!dev.Mounted && dev.HotPlugged && dev.Approved)
     {
       char **capability;
@@ -432,12 +433,33 @@ void CHalManager::ParseDevice(const char *udi)
         if (dev.Label.size() > 0)
         {
           // pmount /dev/sdxy "USB DISK"
+          CStdString MountPoint;
+          MountPoint.Format("/media/%s", dev.Label.c_str());
+          struct stat St;
+          if (stat("/media", &St) != 0)
+            return; //If /media doesn't exist something is wrong.
+          while(stat (MountPoint.c_str(), &St) == 0 && S_ISDIR (St.st_mode))
+          {
+            CLog::Log(LOGDEBUG, "HAL: Proposed Mountpoint already existed");
+            MountPoint.append("_");
+          }
           MountCmd.Format("pmount %s \"%s\"", dev.DevID.c_str(), dev.Label.c_str());
         }
         else
         {
-          // TODO autoname the device to something better than sdxy when no label is present
-          MountCmd.Format("pmount %s", dev.DevID.c_str());
+          CStdString MountPoint;
+          MountPoint.Format("/media/%s", StorageTypeToString(dev.Type));
+          int Nbr = 0;
+          struct stat St;
+          if (stat("/media", &St) != 0)
+            return; //If /media doesn't exist something is wrong.
+          while(stat (MountPoint.c_str(), &St) == 0 && S_ISDIR (St.st_mode))
+          {
+            CLog::Log(LOGDEBUG, "HAL: Proposed Mountpoint already existed");
+            Nbr++;
+            MountPoint.Format("/media/%s%i", StorageTypeToString(dev.Type), Nbr);
+          }
+          MountCmd.Format("pmount %s \"%s\"", dev.DevID.c_str(), MountPoint.c_str());
         }
         CLog::Log(LOGDEBUG, "HAL: %s", MountCmd.c_str());
         system(MountCmd.c_str());
