@@ -205,4 +205,4 @@ EXPORTS
 	cmyth_livetv_chain_switch_last
 	cmyth_proginfo_get_from_basename
 	cmyth_proginfo_delete_recording
-	
+	cmyth_livetv_keep_recording

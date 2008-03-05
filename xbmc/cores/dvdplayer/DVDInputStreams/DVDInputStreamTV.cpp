@@ -8,6 +8,7 @@ using namespace XFILE;
 CDVDInputStreamTV::CDVDInputStreamTV() : CDVDInputStream(DVDSTREAM_TYPE_TV)
 {
   m_pFile = NULL;
+  m_pRecordable = NULL;
   m_pLiveTV = NULL;
   m_pRecordable = NULL;
   m_eof = true;
@@ -154,3 +155,4 @@ bool CDVDInputStreamTV::Record(bool bOnOff)
     return m_pRecordable->Record(bOnOff);
   return false;
 }
+
