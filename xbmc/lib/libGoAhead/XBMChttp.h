@@ -25,7 +25,9 @@ public:
   int	xbmcCommand( int eid, webs_t wp, int argc, char_t **argv);
   CStdString xbmcProcessCommand( int eid, webs_t wp, char_t *command, char_t *parameter);
   CStdString xbmcExternalCall(char *command);
-
+  bool checkForFunctionTypeParas(CStdString &cmd, CStdString &paras);
+private:
+  CStdString flushResult(int eid, webs_t wp, const CStdString &output);
 };
 
 class CUdpBroadcast : public CUdpClient
@@ -39,6 +41,9 @@ public:
 class CXbmcHttp
 {
 public:
+  CStdString userHeader, userFooter;
+  bool incWebFooter, incWebHeader, shuttingDown;
+
   CXbmcHttp();
   ~CXbmcHttp();
 
@@ -104,7 +109,7 @@ public:
   int xbmcGetGUIDescription();
   int xbmcAutoGetPictureThumbs(int numParas, CStdString paras[]);
   int xbmcSetResponseFormat(int numParas, CStdString paras[]);
-  int xbmcSpinDownHardDisk();
+  int xbmcSpinDownHardDisk(int numParas, CStdString paras[]);
   int xbmcBroadcast(int numParas, CStdString paras[]);
   bool xbmcBroadcast(CStdString message, int level=0);
   int xbmcSetBroadcast(int numParas, CStdString paras[]);
@@ -115,6 +120,8 @@ public:
   int xbmcGetVideoLabel(int numParas, CStdString paras[]);
   int xbmcGetSkinSetting(int numParas, CStdString paras[]);
   int xbmcWebServerStatus(int numParas, CStdString paras[]);
+  int xbmcGetLogLevel();
+  int xbmcSetLogLevel(int numParas, CStdString paras[]);
   CKey GetKey();
   void ResetKey();
   CStdString GetOpenTag();
@@ -129,6 +136,27 @@ private:
   int repeatKeyRate; //ms
   DWORD MarkTime;
   bool autoGetPictureThumbs;
+  CStdString lastThumbFn;
+  CStdString openTag, closeTag,  openRecordSet, closeRecordSet, openRecord, closeRecord, openField, closeField, openBroadcast, closeBroadcast;
+  bool  closeFinalTag;
+
+  void encodeblock( unsigned char in[3], unsigned char out[4], int len );
+  CStdString encodeFileToBase64( CStdString inFilename, int linesize );
+  void decodeblock( unsigned char in[4], unsigned char out[3] );
+  bool decodeBase64ToFile( const CStdString &inString, const CStdString &outfilename, bool append = false );
+  __int64 fileSize(const CStdString &filename);
+  void resetTags();
+  CStdString procMask(CStdString mask);
+  int splitParameter(const CStdString &parameter, CStdString& command, CStdString paras[], const CStdString &sep);
+  bool playableFile(const CStdString &filename);
+  int SetResponse(const CStdString &response);
+  CStdString flushResult(int eid, webs_t wp, const CStdString &output);
+  int displayDir(int numParas, CStdString paras[]);
+  void SetCurrentMediaItem(CFileItem& newItem);
+  void AddItemToPlayList(const CFileItem* pItem, int playList, int sortMethod, CStdString mask, bool recursive);
+  void LoadPlayListOld(const CStdString& strPlayList, int playList);
+  bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoStart);
+  void copyThumb(CStdString srcFn, CStdString destFn);
 };
 
 /****************

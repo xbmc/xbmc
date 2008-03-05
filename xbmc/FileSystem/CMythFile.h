@@ -43,6 +43,7 @@ public:
 
   virtual CVideoInfoTag* GetVideoInfoTag();
 
+
   virtual IRecordable*   GetRecordable() {return (IRecordable*)this;}
 
   virtual bool           CanRecord();
@@ -76,3 +77,4 @@ protected:
 };
 
 }
+

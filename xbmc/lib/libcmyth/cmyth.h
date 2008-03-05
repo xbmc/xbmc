@@ -523,6 +523,8 @@ extern long long cmyth_livetv_seek(cmyth_recorder_t rec,
 
 extern int cmyth_livetv_keep_recording(cmyth_recorder_t rec, cmyth_database_t db, int keep);
 
+extern int cmyth_livetv_keep_recording(cmyth_recorder_t rec, cmyth_database_t db, int keep);
+
 extern int mythtv_new_livetv(void);
 
 /*
