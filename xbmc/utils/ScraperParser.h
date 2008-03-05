@@ -6,6 +6,8 @@
 
 #include <vector>
 
+#define MAX_SCRAPER_BUFFERS 20
+
 class CHTTP;
 class CScraperSettings;
 
@@ -63,7 +65,7 @@ public:
   const CStdString Parse(const CStdString& strTag, CScraperSettings* pSettings=NULL);
   bool HasFunction(const CStdString& strTag);
 
-  CStdString m_param[9];
+  CStdString m_param[MAX_SCRAPER_BUFFERS];
   static char* ConvertHTMLToAnsi(const char *szHTML);
 
 private:
