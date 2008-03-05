@@ -352,7 +352,7 @@ void CScraperParser::ReplaceBuffers(CStdString& strDest)
   char temp[5];
   // insert buffers
   int iIndex;
-  for (int i=0;i<9;++i)
+  for (int i=0;i<MAX_SCRAPER_BUFFERS;++i)
   {
     iIndex = 0;
     sprintf(temp,"$$%i",i+1);
@@ -411,73 +411,27 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
         dest=""; // clear no matter if regexp fails
 
     const char* szNoClean = pExpression->Attribute("noclean");
-    bool bClean[10];
-    for (int iBuf=0;iBuf<10;++iBuf)
+    bool bClean[MAX_SCRAPER_BUFFERS];
+    for (int iBuf=0;iBuf<MAX_SCRAPER_BUFFERS;++iBuf)
       bClean[iBuf] = true;
     if (szNoClean)
     {
-      int iChar=0;
-      while (iChar > -1 && iChar < (int)strlen(szNoClean))
-      {   
-        char temp[3];
-        if (szNoClean[iChar] <= '9' && szNoClean[iChar] >= '0')
-        {
-          temp[0] = szNoClean[iChar++];
-          int j=1;
-          if (szNoClean[iChar] <= '9' && szNoClean[iChar] >= '0')
-            temp[j++] = szNoClean[iChar++];
-
-          temp[j] = '\0';
-        }
-        else
-          break;
-
-        int param=atoi(temp);
-        if (!param--)
-        {
-          iChar = -1;
-          break;
-        }
-        //CLog::Log(LOGDEBUG,"not cleaning %i",param+1);
-        bClean[param] = false;
-        if (szNoClean[iChar++]!= ',')
-          iChar = -1;
-      }
+      std::vector<CStdString> vecBufs;
+      CUtil::Tokenize(szNoClean,vecBufs,",");
+      for (size_t nToken=0; nToken < vecBufs.size(); nToken++)
+        bClean[atoi(vecBufs[nToken].c_str())-1] = false;
     }
 
     const char* szTrim = pExpression->Attribute("trim");
-    bool bTrim[10];
-    for (int iBuf=0;iBuf<10;++iBuf)
+    bool bTrim[MAX_SCRAPER_BUFFERS];
+    for (int iBuf=0;iBuf<MAX_SCRAPER_BUFFERS;++iBuf)
       bTrim[iBuf] = false;
     if (szTrim)
     {
-      int iChar=0;
-      while (iChar > -1 && iChar < (int)strlen(szTrim))
-      {   
-        char temp[3];
-        if (szTrim[iChar] <= '9' && szTrim[iChar] >= '0')
-        {
-          temp[0] = szTrim[iChar++];
-          int j=1;
-          if (szTrim[iChar] <= '9' && szTrim[iChar] >= '0')
-            temp[j++] = szTrim[iChar++];
-
-          temp[j] = '\0';
-        }
-        else
-          break;
-
-        int param=atoi(temp);
-        if (!param--)
-        {
-          iChar = -1;
-          break;
-        }
-        //CLog::Log(LOGDEBUG,"not cleaning %i",param+1);
-        bTrim[param] = true;
-        if (szTrim[iChar++]!= ',')
-          iChar = -1;
-      }
+      std::vector<CStdString> vecBufs;
+      CUtil::Tokenize(szTrim,vecBufs,",");
+      for (size_t nToken=0; nToken < vecBufs.size(); nToken++)
+        bTrim[atoi(vecBufs[nToken].c_str())-1] = true;
     }
 
     int iOptional = -1;
@@ -488,7 +442,7 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
     if (iCompare > -1)
       m_param[iCompare-1].ToLower();
     CStdString curInput = input;
-    for (int iBuf=0;iBuf<9;++iBuf)
+    for (int iBuf=0;iBuf<MAX_SCRAPER_BUFFERS;++iBuf)
     {
       if (bClean[iBuf])
       {
@@ -912,7 +866,7 @@ char* CScraperParser::RemoveWhiteSpace(const char *string2)
 void CScraperParser::ClearBuffers()
 {
   //clear all m_param strings
-  for (int i=0;i<9;++i)
+  for (int i=0;i<MAX_SCRAPER_BUFFERS;++i)
     m_param[i].clear();
 }
 
