@@ -134,24 +134,24 @@
 			<expression clear="yes" noclean="1">value=&quot;/([^&quot;]*)/[^&quot;]*\.html&quot;&gt;</expression>
 		</RegExp>
 		<RegExp input="$$1" output="&lt;thumb&gt;http://www.impawards.com/$$4/posters/\1&lt;/thumb&gt;" dest="8+">
-			<expression noclean="1">&lt;img SRC=&quot;posters/([^&quot;]*)&quot;</expression>
+			<expression clear="yes" noclean="1">&lt;img SRC=&quot;posters/([^&quot;]*)&quot;</expression>
 		</RegExp>
-		<RegExp input="$$1" output="&lt;thumb&gt;http://www.impawards.com/$$4/posters/\1&lt;/thumb&gt;" dest="8+">
-			<expression repeat="yes" noclean="1">thumbs/imp_([^&gt;]*)&gt;</expression>
+		<RegExp input="$$1" output="&lt;thumb&gt;http://www.impawards.com/$$4/posters/\1&lt;/thumb&gt;" dest="9+">
+			<expression clear="yes" repeat="yes" noclean="1">thumbs/imp_([^&gt;]*)&gt;</expression>
 		</RegExp>
 	</GetIMPAPosters>
 	<GetMoviePosterDB clearbuffers="no" dest="5">
-		<RegExp input="$$1" output="&lt;thumb&gt;\1/l_\2&lt;/thumb&gt;" dest="8+">
-			<expression repeat="yes" noclean="1,2">&quot;poster&quot;.*?src=&quot;(.*?)t_(.*?)&quot;</expression>
+		<RegExp input="$$1" output="&lt;thumb&gt;\1/l_\2&lt;/thumb&gt;" dest="10+">
+			<expression clear="yes" repeat="yes" noclean="1,2">&quot;poster&quot;.*?src=&quot;(.*?)t_(.*?)&quot;</expression>
 		</RegExp>
 	</GetMoviePosterDB>
 	<GetIMDBPoster dest="5">
-		<RegExp input="$$8$$9" output="&lt;details&gt;&lt;thumbs&gt;\1&lt;/thumbs&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$8$$9$$10$$11" output="&lt;details&gt;&lt;thumbs&gt;\1&lt;/thumbs&gt;&lt;/details&gt;" dest="5">
                         <RegExp input="$$1" output="\1_SY$INFO[imdbscale]_\2" dest="6">
 	                        <expression noclean="1,2">&lt;a name=&quot;poster&quot;.*?src=&quot;(.*?)_SY.*?(.jpg)&quot;.*?&lt;/a&gt;</expression>
                         </RegExp>
-                        <RegExp input="$$6" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="9">
-	                        <expression noclean="1">(.*?_SY[0-9]+_.jpg)</expression>
+                        <RegExp input="$$6" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="11">
+	                        <expression clear="yes" noclean="1">(.*?_SY[0-9]+_.jpg)</expression>
                         </RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>
