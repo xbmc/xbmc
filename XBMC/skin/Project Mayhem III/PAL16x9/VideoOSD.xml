@@ -3,6 +3,40 @@
 	<include>dialogeffect</include>
 	<controls>
 		<control type="button" id="208">
+			<description>REC button</description>
+			<posx>35</posx>
+			<posy>304</posy>
+			<width>128</width>
+			<height>163</height>
+			<texturefocus>osd_button_rec.png</texturefocus>
+			<texturenofocus>osd_button_recNF.png</texturenofocus>
+			<label>-</label>
+			<font>-</font>
+			<onleft>210</onleft>
+			<onright>918</onright>
+			<onup>918</onup>
+			<ondown>210</ondown>
+			<onclick>XBMC.PlayerControl(record)</onclick>
+			<visible>!VideoPlayer.HasMenu + Player.CanRecord</visible>
+		</control>
+		<control type="button" id="209">
+			<description>REC button 2</description>
+			<posx>35</posx>
+			<posy>304</posy>
+			<width>128</width>
+			<height>163</height>
+			<texturefocus>-</texturefocus>
+			<texturenofocus>osd_button_rec2.png</texturenofocus>
+			<label>-</label>
+			<font>-</font>
+			<onleft>211</onleft>
+			<onright>921</onright>
+			<onup>921</onup>
+			<ondown>211</ondown>
+			<onclick>XBMC.PlayerControl(record)</onclick>
+			<visible>!VideoPlayer.HasMenu + Player.CanRecord + Player.Recording</visible>
+		</control>
+		<control type="button" id="208">
 			<description>DVD menu button</description>
 			<posx>35</posx>
 			<posy>304</posy>
@@ -17,7 +51,7 @@
 			<onup>918</onup>
 			<ondown>210</ondown>
 			<onclick>XBMC.PlayerControl(ShowVideoMenu)</onclick>
-			<visible>VideoPlayer.HasMenu</visible>
+			<visible>VideoPlayer.HasMenu | !Player.CanRecord</visible>
 		</control>
 		<control type="button" id="209">
 			<description>DVD menu button 2</description>
@@ -34,7 +68,7 @@
 			<onup>921</onup>
 			<ondown>211</ondown>
 			<onclick>XBMC.PlayerControl(ShowVideoMenu)</onclick>
-			<visible>VideoPlayer.HasMenu</visible>
+			<visible>VideoPlayer.HasMenu | !Player.CanRecord</visible>
 		</control>
 		<control type="image" id="1">
 			<description>Panel</description>

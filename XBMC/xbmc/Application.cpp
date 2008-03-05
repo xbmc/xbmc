@@ -1785,7 +1785,7 @@ void CApplication::StartWebServer()
     m_pWebServer->Start(m_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), _P("Q:\\web"), false);
 #endif
     if (m_pXbmcHttp)
-      m_pXbmcHttp->xbmcBroadcast("StartUp", 1);
+	  getApplicationMessenger().HttpApi("broadcastlevel; StartUp;1");
   }
 #endif
 }
@@ -2911,7 +2911,7 @@ bool CApplication::OnAction(const CAction &action)
   {
     CStdString tmp;
     tmp.Format("%i",action.wID);
-    m_pXbmcHttp->xbmcBroadcast("OnAction:"+tmp, 2);
+	getApplicationMessenger().HttpApi("broadcastlevel; OnAction:"+tmp+";2");
   }
 #endif
 
@@ -3753,7 +3753,7 @@ void  CApplication::CheckForTitleChange()
       CStdString msg=m_pXbmcHttp->GetOpenTag()+"MovieTitle:"+tagVal->m_strTitle+m_pXbmcHttp->GetCloseTag();
 	  if (m_prevMedia!=msg)
 	  {
-	    m_pXbmcHttp->xbmcBroadcast("MediaChanged:"+msg, 1);
+		getApplicationMessenger().HttpApi("broadcastlevel; MediaChanged:"+msg+";1");
         m_prevMedia=msg;
 	  }
     }
@@ -3770,7 +3770,7 @@ void  CApplication::CheckForTitleChange()
 		  msg+=m_pXbmcHttp->GetOpenTag()+"AudioArtist:"+tagVal->GetArtist()+m_pXbmcHttp->GetCloseTag();
 	  if (m_prevMedia!=msg)
 	  {
-        m_pXbmcHttp->xbmcBroadcast("MediaChanged:"+msg, 1);
+	    getApplicationMessenger().HttpApi("broadcastlevel; MediaChanged:"+msg+";1");
 	    m_prevMedia=msg;
 	  }
     }
@@ -3910,7 +3910,7 @@ void CApplication::Stop()
 
 #ifdef HAS_WEB_SERVER    
     if (m_pXbmcHttp)
-      m_pXbmcHttp->xbmcBroadcast("ShutDown", 1);
+	  getApplicationMessenger().HttpApi("broadcastlevel; ShutDown;1");
 #endif
 
     StopServices();
@@ -4496,7 +4496,7 @@ void CApplication::OnPlayBackEnded()
 #ifdef HAS_WEB_SERVER      
   // Let's tell the outside world as well
   if (m_pXbmcHttp)
-    m_pXbmcHttp->xbmcBroadcast("OnPlayBackEnded", 1);
+	getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackEnded;1");
 #endif
 
   CLog::Log(LOGDEBUG, "Playback has finished");
@@ -4523,7 +4523,7 @@ void CApplication::OnPlayBackStarted()
 #ifdef HAS_WEB_SERVER      
   // Let's tell the outside world as well
   if (m_pXbmcHttp)
-    m_pXbmcHttp->xbmcBroadcast("OnPlayBackStarted", 1);
+	getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStarted;1");
 #endif
 
   CLog::Log(LOGDEBUG, "Playback has started");
@@ -4550,7 +4550,7 @@ void CApplication::OnQueueNextItem()
 #ifdef HAS_WEB_SERVER      
   // Let's tell the outside world as well
   if (m_pXbmcHttp)
-    m_pXbmcHttp->xbmcBroadcast("OnQueueNextItem", 1);
+	getApplicationMessenger().HttpApi("broadcastlevel; OnQueueNextItem;1");
 #endif
   CLog::Log(LOGDEBUG, "Player has asked for the next item");
 
@@ -4569,7 +4569,7 @@ void CApplication::OnPlayBackStopped()
 #ifdef HAS_WEB_SERVER      
   // Let's tell the outside world as well
   if (m_pXbmcHttp)
-    m_pXbmcHttp->xbmcBroadcast("OnPlayBackStopped", 1);
+    getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStopped;1");
 #endif
 
   OutputDebugString("Playback was stopped\n");
