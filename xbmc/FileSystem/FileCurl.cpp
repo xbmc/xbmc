@@ -718,6 +718,14 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
     m_httpheader.Parse("Content-Type: audio/mpeg\r\n");
   }
 
+  /* hack for google video */
+  if ( m_httpheader.GetContentType().Equals("text/html") && !m_httpheader.GetValue("Content-Disposition").IsEmpty() )
+  {
+    CStdString strValue = m_httpheader.GetValue("Content-Disposition");
+    if (strValue.Find("filename=") > -1 && strValue.Find(".flv") > -1)
+      m_httpheader.Parse("Content-Type: video/flv\r\n");
+  }
+
   if(buffer)
   {
 
