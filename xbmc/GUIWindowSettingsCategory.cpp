@@ -1209,7 +1209,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     CStdString path(g_settings.GetDatabaseFolder());
     VECSHARES shares;
     g_mediaManager.GetLocalDrives(shares);
-    if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(651), path, true))
+    if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
     {
       CUtil::AddFileToFolder(path, "videodb.xml", path);
       CVideoDatabase videodatabase;
