@@ -227,6 +227,18 @@ extern cmyth_file_t cmyth_conn_connect_file(cmyth_proginfo_t prog,
 					    cmyth_conn_t control,
 					    unsigned buflen, int tcp_rcvbuf);
 
+
+/**
+ * Create a file connection to a backend.
+ * \param path path to file
+ * \param control control handle
+ * \param buflen buffer size for the connection to use
+ * \param tcp_rcvbuf if non-zero, the TCP receive buffer size for the socket
+ * \return file handle
+ */
+extern cmyth_file_t cmyth_conn_connect_path(char* path, cmyth_conn_t control,
+					    unsigned buflen, int tcp_rcvbuf);
+
 /**
  * Create a ring buffer connection to a recorder.
  * \param rec recorder handle
