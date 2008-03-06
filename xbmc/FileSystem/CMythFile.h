@@ -59,6 +59,7 @@ protected:
   bool SetupConnection(const CURL& url, bool control, bool event, bool database);
   bool SetupRecording(const CURL& url);
   bool SetupLiveTV(const CURL& url);
+  bool SetupPath(const CURL& url);
 
   CCMythSession*    m_session;
   DllLibCMyth*      m_dll;
