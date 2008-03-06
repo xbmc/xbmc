@@ -3569,6 +3569,7 @@ const BUILT_IN commands[] = {
   { "Dialog.Close",               true,   "Close a dialog" },
   { "System.LogOff",              false,  "Log off current user" },
   { "System.PWMControl",          true,   "Control PWM RGB LEDs" },
+  { "System.Exec",          	  true,   "Execute shell commands" },
   { "Resolution",                 true,   "Change XBMC's Resolution" },
   { "SetFocus",                   true,   "Change current focus to a different control id" }, 
   { "BackupSystemInfo",           false,  "Backup System Informations to local hdd" },
@@ -3765,6 +3766,12 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     }
     else
       g_pythonParser.evalFile(strParameterCaseIntact.c_str());
+  }
+#endif
+#ifdef _LINUX
+  else if (execute.Equals("system.exec"))
+  {
+    system(strParameterCaseIntact.c_str());
   }
 #endif
   else if (execute.Equals("resolution"))
