@@ -84,7 +84,6 @@ bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
           dll->ref_release(str);
         }
 
-        path.Format("%s/%d.ts", base.c_str(), num);
 
         if(num <= 0)
         {
@@ -93,9 +92,15 @@ bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
         else
         {
           CLog::Log(LOGDEBUG, "%s - Channel '%s' Icon '%s'", __FUNCTION__, name.c_str(), icon.c_str());
+          path.Format("%s/%d.ts", base.c_str(), num);
           CFileItem *item = new CFileItem(path, false);
           item->SetLabel(name);
           item->SetLabelPreformated(true);
+          if(icon.length() > 0)
+          {
+            path.Format("%s/path%s", base.c_str(), icon.c_str());
+            item->SetThumbnailImage(icon);
+          }
           items.Add(item);
         }
         dll->ref_release(channel);

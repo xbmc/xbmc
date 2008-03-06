@@ -13,6 +13,7 @@ public:
   virtual cmyth_conn_t     conn_connect_ctrl        (char *server, unsigned short port, unsigned buflen, int tcp_rcvbuf)=0;
   virtual cmyth_conn_t     conn_connect_event       (char *server, unsigned short port, unsigned buflen, int tcp_rcvbuf)=0;
   virtual cmyth_file_t     conn_connect_file        (cmyth_proginfo_t prog, cmyth_conn_t control, unsigned buflen, int tcp_rcvbuf)=0;
+  virtual cmyth_file_t     conn_connect_path        (char* path, cmyth_conn_t control, unsigned buflen, int tcp_rcvbuf)=0;
   virtual cmyth_recorder_t conn_get_free_recorder   (cmyth_conn_t conn)=0;
 
   virtual cmyth_event_t    event_get                (cmyth_conn_t conn, char * data, int len)=0;
@@ -95,6 +96,8 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
   DEFINE_METHOD4(cmyth_conn_t,        conn_connect_ctrl,        (char *p1, unsigned short p2, unsigned p3, int p4))
   DEFINE_METHOD4(cmyth_conn_t,        conn_connect_event,       (char *p1, unsigned short p2, unsigned p3, int p4))
   DEFINE_METHOD4(cmyth_file_t,        conn_connect_file,        (cmyth_proginfo_t p1, cmyth_conn_t p2, unsigned p3, int p4))
+  DEFINE_METHOD4(cmyth_file_t,        conn_connect_path,        (char* p1, cmyth_conn_t p2, unsigned p3, int p4))
+
   DEFINE_METHOD1(cmyth_recorder_t,    conn_get_free_recorder,   (cmyth_conn_t p1))
 
   DEFINE_METHOD3(cmyth_event_t,       event_get,                (cmyth_conn_t p1, char * p2, int p3))
@@ -164,6 +167,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
     RESOLVE_METHOD_RENAME(cmyth_conn_connect_ctrl, conn_connect_ctrl)
     RESOLVE_METHOD_RENAME(cmyth_conn_connect_event, conn_connect_event)
     RESOLVE_METHOD_RENAME(cmyth_conn_connect_file, conn_connect_file)
+    RESOLVE_METHOD_RENAME(cmyth_conn_connect_path, conn_connect_path)
     RESOLVE_METHOD_RENAME(cmyth_conn_get_free_recorder, conn_get_free_recorder)
 
     RESOLVE_METHOD_RENAME(cmyth_event_get, event_get)
