@@ -5745,11 +5745,11 @@ void CUtil::WipeDir(const CStdString& strPath) // DANGEROUS!!!!
     if (!::RemoveDirectory((items[i]->m_strPath+"\\").c_str()))
       CLog::Log(LOGDEBUG,"this sucks %lu!",GetLastError());
   }
-#ifdef _LINUX
-  ::RemoveDirectory((strPath+"/").c_str());
-#else /* !_LINUX */
-  ::RemoveDirectory((strPath+"\\").c_str());
-#endif /* _LINUX */
+
+  CStdString tmpPath = strPath;
+  AddSlashAtEnd(tmpPath);
+  if (!::RemoveDirectory(tmpPath.c_str()))
+    CLog::Log(LOGDEBUG, "Could not rmdir %s", tmpPath.c_str());
 }
 
 void CUtil::ClearFileItemCache()
