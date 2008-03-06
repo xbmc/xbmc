@@ -212,13 +212,19 @@ compile() {
       echo " Skipping source directory cleaning."
     fi
     echo " Compiling source."
-    CORES=$(grep "^processor" /proc/cpuinfo | wc -l)
-    echo "  Detected ${CORES} procs/cores, using -j${CORES}"
+    if [[ $MAKEFLAGS = "" ]]
+    then
+      CORES=$(grep "^processor" /proc/cpuinfo | wc -l)
+      echo "  Detected ${CORES} procs/cores, using -j${CORES}"
+      MAKEFLAGS=-j${CORES}
+    else
+      echo "Using MAKEFLAGS=${MAKEFLAGS}"
+    fi
     if (( $SHOW_MAKE ))
     then
-      make -j${CORES} -C "${SOURCEDIR}" 2>&1 | tee "${SOURCEDIR}/compile.log"
+      make ${MAKEFLAGS} -C "${SOURCEDIR}" 2>&1 | tee "${SOURCEDIR}/compile.log"
     else
-      make -j${CORES} -C "${SOURCEDIR}" 2>&1 | tee "${SOURCEDIR}/compile.log" | grep -E "Linking|Building|Compiling"
+      make ${MAKEFLAGS} -C "${SOURCEDIR}" 2>&1 | tee "${SOURCEDIR}/compile.log" | grep -E "Linking|Building|Compiling"
     fi
    
     grep Error "${SOURCEDIR}/compile.log"
