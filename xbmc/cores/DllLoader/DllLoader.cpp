@@ -715,20 +715,25 @@ bool DllLoader::Load()
   if (strstr(GetName(), "QuickTime.qts"))
   {
     int i;
-    DWORD dispatch_addr;
-    DWORD imagebase_addr;
-    DWORD dispatch_rva;
+    uintptr_t dispatch_addr;
+    uintptr_t imagebase_addr;
+    uintptr_t dispatch_rva;
 
     ResolveExport("theQuickTimeDispatcher", (void **)&dispatch_addr);
-    imagebase_addr = (DWORD)hModule;
-    CLog::Log(LOGDEBUG, "Virtual Address of theQuickTimeDispatcher = 0x%lx", dispatch_addr);
-    CLog::Log(LOGDEBUG, "ImageBase of %s = 0x%lx", GetName(), imagebase_addr);
+    imagebase_addr = (uintptr_t)hModule;
+    CLog::Log(LOGDEBUG,
+              "Virtual Address of theQuickTimeDispatcher = %p",
+              (void *)dispatch_addr);
+    CLog::Log(LOGDEBUG, "ImageBase of %s = %p",
+              GetName(), (void *)imagebase_addr);
 
     dispatch_rva = dispatch_addr - imagebase_addr;
 
-    CLog::Log(LOGDEBUG, "Relative Virtual Address of theQuickTimeDispatcher = %lu", dispatch_rva);
+    CLog::Log(LOGDEBUG,
+              "Relative Virtual Address of theQuickTimeDispatcher = %p",
+              (void *)dispatch_rva);
 
-    DWORD base = imagebase_addr;
+    uintptr_t base = imagebase_addr;
     if (dispatch_rva == 0x124C30)
     {
       CLog::Log(LOGINFO, "QuickTime5 DLLs found\n");

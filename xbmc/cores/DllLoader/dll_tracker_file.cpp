@@ -97,7 +97,7 @@ extern "C"
     uintptr_t loc = (uintptr_t)_ReturnAddress();
     
     FILE* fd = dll_fopen(_P(sFileName), mode);
-    if (fd) tracker_file_track(loc, (unsigned)fd, FILE_XBMC_FOPEN, sFileName);
+    if (fd) tracker_file_track(loc, (uintptr_t)fd, FILE_XBMC_FOPEN, sFileName);
     return fd;
   }
   
@@ -105,7 +105,7 @@ extern "C"
   {
     uintptr_t loc = (uintptr_t)_ReturnAddress();
     
-    tracker_file_free(loc, (unsigned)stream, FILE_XBMC_FOPEN);
+    tracker_file_free(loc, (uintptr_t)stream, FILE_XBMC_FOPEN);
     return dll_fclose(stream);
   }
   
@@ -113,9 +113,9 @@ extern "C"
   {
     uintptr_t loc = (uintptr_t)_ReturnAddress();
     
-    tracker_file_free(loc, (unsigned)stream, FILE_XBMC_FOPEN);
+    tracker_file_free(loc, (uintptr_t)stream, FILE_XBMC_FOPEN);
     stream = dll_freopen(path, mode, stream);
-    if (stream) tracker_file_track(loc, (unsigned)stream, FILE_XBMC_FOPEN, path);
+    if (stream) tracker_file_track(loc, (uintptr_t)stream, FILE_XBMC_FOPEN, path);
     return stream;
   }
 

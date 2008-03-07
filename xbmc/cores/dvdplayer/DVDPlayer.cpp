@@ -2080,7 +2080,9 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
               m_dvd.iDVDStillTime += time;
           }
           m_dvd.state = DVDSTATE_STILL;
-          CLog::Log(LOGDEBUG, "DVDNAV_STILL_FRAME - waiting %i sec, with delay of %ld sec", still_event->length, time / 1000);
+          CLog::Log(LOGDEBUG,
+                    "DVDNAV_STILL_FRAME - waiting %i sec, with delay of %d sec",
+                    still_event->length, time / 1000);
         }
         return NAVRESULT_HOLD;
       }

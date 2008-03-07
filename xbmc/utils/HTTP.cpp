@@ -351,7 +351,8 @@ bool CHTTP::Download(const string &strURL, const string &strFileName, LPDWORD pd
   HANDLE hFile = CreateFile(strFileName.c_str(), GENERIC_WRITE, FILE_SHARE_READ, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
   if (hFile == INVALID_HANDLE_VALUE)
   {
-    CLog::Log(LOGERROR, "Unable to open file %s: %lu", strFileName.c_str(), GetLastError());
+    CLog::Log(LOGERROR, "Unable to open file %s: %u",
+              strFileName.c_str(), GetLastError());
     return false;
   }
   if (strData.size())

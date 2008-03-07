@@ -516,7 +516,11 @@ void CMusicInfoTagLoaderWMA::SetTagValueBinary(const CStdString& strFrameName, c
           else
           {
             CUtil::ThumbCacheAdd(strCoverArt, false);
-            CLog::Log(LOGERROR, "Tag loader wma: Unable to create album art for %s (extension=%s, size=%lu)", tag.GetURL().c_str(), strExtension.c_str(), picture.dwDataLen);
+            CLog::Log(LOGERROR, "Tag loader wma: "
+                                "Unable to create album art for %s "
+                                "(extension=%s, size=%u)",
+                      tag.GetURL().c_str(), strExtension.c_str(),
+                      picture.dwDataLen);
           }
         }
       }

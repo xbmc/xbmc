@@ -935,7 +935,8 @@ void CGUIImage::DumpTextureUse()
   if (m_texturesAllocated && m_vecTextures.size())
   {
     if (GetID())
-      CLog::Log(LOGDEBUG, "Image control %lu using texture %s", GetID(), m_strFileName.c_str());
+      CLog::Log(LOGDEBUG, "Image control %u using texture %s",
+                GetID(), m_strFileName.c_str());
     else
       CLog::Log(LOGDEBUG, "Using texture %s", m_strFileName.c_str());
   }

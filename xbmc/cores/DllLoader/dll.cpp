@@ -8,8 +8,8 @@
 #include "Util.h"
 
 #define DEFAULT_DLLPATH "Q:\\system\\players\\mplayer\\codecs\\"
-#define HIGH_WORD(a) ((WORD)(((DWORD)(a) >> 16) & MAXWORD))
-#define LOW_WORD(a) ((WORD)(((DWORD)(a)) & MAXWORD))
+#define HIGH_WORD(a) ((uintptr_t)(a) >> 16)
+#define LOW_WORD(a) ((WORD)(((uintptr_t)(a)) & MAXWORD))
 
 //#define API_DEBUG
 
@@ -238,7 +238,7 @@ extern "C" DWORD WINAPI dllGetModuleFileNameA(HMODULE hModule, LPSTR lpFilename,
   if (NULL == hModule)
   {
     strncpy(lpFilename, "xbmc.xbe", nSize);
-    CLog::Log(LOGDEBUG, "GetModuleFileNameA(0x%p, 0x%p, %lu) => '%s'\n",
+    CLog::Log(LOGDEBUG, "GetModuleFileNameA(0x%p, 0x%p, %u) => '%s'\n",
               hModule, lpFilename, nSize, lpFilename);
     return 8;
   }

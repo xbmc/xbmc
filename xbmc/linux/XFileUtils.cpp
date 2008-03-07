@@ -462,8 +462,9 @@ BOOL   RemoveDirectory(LPCTSTR lpPathName)
   return 0;
 }
 
-DWORD  SetFilePointer(HANDLE hFile, LONG lDistanceToMove, PLONG lpDistanceToMoveHigh, DWORD dwMoveMethod) {
-
+DWORD  SetFilePointer(HANDLE hFile, int32_t lDistanceToMove,
+                      int32_t *lpDistanceToMoveHigh, DWORD dwMoveMethod)
+{
 	if (hFile == NULL)
 		return 0;
 
@@ -489,7 +490,7 @@ DWORD  SetFilePointer(HANDLE hFile, LONG lDistanceToMove, PLONG lpDistanceToMove
 #endif
 	
 	if (lpDistanceToMoveHigh) {
-		*lpDistanceToMoveHigh = (LONG)(currOff >> 32);
+		*lpDistanceToMoveHigh = (int32_t)(currOff >> 32);
 	}
 	
 	return (DWORD)currOff;
