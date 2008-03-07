@@ -471,6 +471,7 @@ DWORD  SetFilePointer(HANDLE hFile, LONG lDistanceToMove, PLONG lpDistanceToMove
 	if (lpDistanceToMoveHigh) {
 		LONGLONG helper = *lpDistanceToMoveHigh;
 		helper <<= 32;
+		offset &= 0xFFFFFFFF;   // Zero out the upper half (sign ext)
 		offset |= helper;
 	}
 
