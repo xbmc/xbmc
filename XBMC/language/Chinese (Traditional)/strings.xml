@@ -331,6 +331,7 @@
   <string id="406">濕度</string>
   <string id="407">風向</string>
   <string id="408">風速</string>
+  <string id="409">預設值</string>
 
   <string id="410">前往 Weather.com</string>
   <string id="411">取得天氣資料：</string>
@@ -554,6 +555,7 @@
   <string id="658">歌曲資訊</string>
   <string id="659">評論：</string>
   <string id="660">音量放大</string>
+  <string id="661">選擇匯出資料夾</string>
 
   <string id="700">清除音樂資料庫</string>
   <string id="701">移除音樂資料庫舊歌曲</string>
@@ -602,11 +604,11 @@
   <string id="746">選擇到檔案顯示</string>
   <string id="747">圖像載入錯誤</string>
   <string id="748">編輯路徑</string>
-  <string id="749">新增共享</string>
+  <string id="749"></string>
   <string id="750">確定？</string>
-  <string id="751">移除共享</string>
-  <string id="752">編輯共享路徑</string>
-  <string id="753">編輯共享名稱</string>
+  <string id="751">移除來源</string>
+  <string id="752"></string>
+  <string id="753"></string>
   <string id="754">新增程式連結</string>
   <string id="755">編輯程式路徑</string>
   <string id="756">編輯程式名稱</string>
@@ -636,7 +638,7 @@
   <string id="1002">XBMC 無法連線到網路！</string>
   <string id="1003">這可能是由於網路沒有連線。</string>
   <string id="1004">可以用其他方式來新增它嗎？</string>
-  <string id="1005">輸入共享名稱</string>
+  <string id="1005"></string>
   <string id="1006">IP 位址</string>
   <string id="1007">新增網路位置</string>
   <string id="1008">協定</string>
@@ -742,6 +744,7 @@
   <string id="1412">風</string>
   <string id="1413">細雨</string>
   <string id="1414">雷雨</string>
+
   <!-- strings through to 1450 reserved for weather translation -->
 
   <string id="2050">運行時間：</string>
@@ -868,7 +871,7 @@
   <string id="12348">項目被鎖定</string>
   <string id="12353">重新上鎖</string>
   <string id="12356">更改鎖定</string>
-  <string id="12357">共享鎖定</string>
+  <string id="12357">來源鎖定</string>
   <string id="12358">密碼不能空白，請重試！</string>
   <string id="12360">主機鎖定</string>
   <string id="12362">超過重試次數就關機</string>
@@ -1084,6 +1087,7 @@
   <string id="13407">%s 預設</string>
   <string id="13408">(IMDb 用戶評價)</string>
   <string id="13409">排名前 250：</string>
+  <string id="13410">收聽 lastfm</string>
 
   <string id="14000">堆疊開啟</string>
   <string id="14001">堆疊關閉</string>
@@ -1253,6 +1257,7 @@
   <string id="15213">播放方式…</string>
   <string id="15214">使用平滑的影音同步</string>
   <string id="15215">顯示縮圖時隱藏檔案名稱</string>
+  <string id="15216">播放在派對模式</string>
 
   <string id="15250">上傳 Last.FM 電台到 Last.FM</string>
   <string id="15251">連線到 Last.FM…</string>
@@ -1547,8 +1552,9 @@
   <string id="20186">請稍後…</string>
   <string id="20187">備份 EEPROM</string>
   <string id="20188">備份 BIOS</string>
-  <string id="20189">啓用 劇情和評論自動捲動</string>
+  <string id="20189">啟用 劇情和評論自動捲動</string>
   <string id="20190">自訂</string>
+  <string id="20191">啟用  除錯記錄</string>
 
   <!-- string id's 20200 thru 20211 are reserved for speedstrings (LocalizeStrings.cpp)-->
 
@@ -1556,7 +1562,6 @@
   <string id="20251">混合飲料(影片)</string>
   <string id="20252">填裝玻璃(影片)</string>
 
-  <string id="20191"></string>
   <string id="20192"></string>
   <string id="20193"></string>
   <string id="20194"></string>
@@ -1640,7 +1645,7 @@
   <string id="20371">設定影集縮圖</string>
   <string id="20372">影集圖像</string>
   <string id="20373">季</string>
-  <string id="20374">載入影片資訊</string>
+  <string id="20374">載入電影資訊</string>
   <string id="20375">不指定內容</string>
   <string id="20376">首次播出：</string>
   <string id="20377">重新整理電視節目資訊</string>
@@ -1673,6 +1678,11 @@
   <string id="20404">影片製作公司：</string>
   <string id="20405">移除影集書籤</string>
   <string id="20406">設定影集書籤</string>
+  <string id="20407">Scraper 設定</string>
+  <string id="20408">下載音樂錄影帶資訊</string>
+  <string id="20409">下載電視節目資訊</string>
+  <string id="20410">預告片</string>
+  <string id="20411">鋪平</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">顯示隱藏檔案和目錄</string>
@@ -1699,6 +1709,7 @@
   <string id="21366">自訂字幕資料夾</string>
   <string id="21367">電影和替代字幕資料夾</string>
 
+  <string id="21369">啟用 滑鼠</string>
   <string id="21370">媒體播放時使用瀏覽音效</string>
   <string id="21371">縮略圖</string>
   <string id="21372">強制 DVD 播放器區碼</string>
@@ -1825,7 +1836,11 @@
 
   <!-- strings 21900 thru 21999 reserved for slideshow info -->
 
+  <string id="22000">在啟動時更新資料庫</string>
+  <string id="22001">總是在幕後更新資料庫</string>
+
   <string id="29999">遊戲應用閃爍過濾</string>
-  <!-- strings 30000 thru 31000 reserved for plugin settings -->
-  <!-- strings 31001 thru 32000 reserved for skins -->
+
+  <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
+  <!-- strings 31000 thru 31999 reserved for skins -->
 </strings>
