@@ -103,11 +103,11 @@ namespace PYXBMC
     if (cFont) self->strFont = cFont;
     if (cTextColor)
     {
-      sscanf( cTextColor, "%lx", &self->dwTextColor );
+      sscanf( cTextColor, "%x", &self->dwTextColor );
     }
     if (cSelectedColor)
     {
-      sscanf( cSelectedColor, "%lx", &self->dwSelectedColor );
+      sscanf( cSelectedColor, "%x", &self->dwSelectedColor );
     }
     //if (cShadowColor) sscanf( cShadowColor, "%x", &self->dwShadowColor );
 

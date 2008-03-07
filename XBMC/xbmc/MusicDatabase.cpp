@@ -133,7 +133,8 @@ bool CMusicDatabase::CreateTables()
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "musicbase::unable to create tables:%lu", GetLastError());
+    CLog::Log(LOGERROR, "musicbase::unable to create tables:%u",
+              GetLastError());
     return false;
   }
 
@@ -1357,15 +1358,18 @@ bool CMusicDatabase::Search(const CStdString& search, CFileItemList &items)
   DWORD time = timeGetTime();
   // first grab all the artists that match
   SearchArtists(search, items);
-  CLog::Log(LOGDEBUG, "%s Artist search in %lu ms", __FUNCTION__, timeGetTime() - time); time = timeGetTime();
+  CLog::Log(LOGDEBUG, "%s Artist search in %u ms",
+            __FUNCTION__, timeGetTime() - time); time = timeGetTime();
 
   // then albums that match
   SearchAlbums(search, items);
-  CLog::Log(LOGDEBUG, "%s Album search in %lu ms", __FUNCTION__, timeGetTime() - time); time = timeGetTime();
+  CLog::Log(LOGDEBUG, "%s Album search in %u ms",
+            __FUNCTION__, timeGetTime() - time); time = timeGetTime();
 
   // and finally songs
   SearchSongs(search, items);
-  CLog::Log(LOGDEBUG, "%s Songs search in %lu ms", __FUNCTION__, timeGetTime() - time); time = timeGetTime();
+  CLog::Log(LOGDEBUG, "%s Songs search in %u ms",
+            __FUNCTION__, timeGetTime() - time); time = timeGetTime();
   return true;
 }
 
@@ -2774,7 +2778,8 @@ bool CMusicDatabase::GetSongsNav(const CStdString& strBaseDir, CFileItemList& it
       return false;
     }
 
-    CLog::Log(LOGDEBUG,"Time for actual SQL query = %lu", timeGetTime() - time); time = timeGetTime();
+    CLog::Log(LOGDEBUG,"Time for actual SQL query = %u",
+              timeGetTime() - time); time = timeGetTime();
 
     // get data from returned rows
     items.Reserve(iRowsFound);
@@ -2788,7 +2793,8 @@ bool CMusicDatabase::GetSongsNav(const CStdString& strBaseDir, CFileItemList& it
       m_pDS->next();
     }
 
-    CLog::Log(LOGDEBUG,"Time to retrieve songs from dataset = %lu", timeGetTime() - time);
+    CLog::Log(LOGDEBUG,"Time to retrieve songs from dataset = %u",
+              timeGetTime() - time);
 
     // cleanup
     m_pDS->close();

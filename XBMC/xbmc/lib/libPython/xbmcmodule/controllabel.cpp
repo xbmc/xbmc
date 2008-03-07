@@ -77,10 +77,10 @@ namespace PYXBMC
     }
 
     if (cFont) self->strFont = cFont;
-    if (cTextColor) sscanf(cTextColor, "%lx", &self->dwTextColor);
+    if (cTextColor) sscanf(cTextColor, "%x", &self->dwTextColor);
     if (cDisabledColor)
     {
-      sscanf( cDisabledColor, "%lx", &self->dwDisabledColor );
+      sscanf( cDisabledColor, "%x", &self->dwDisabledColor );
     }
 
     return (PyObject*)self;

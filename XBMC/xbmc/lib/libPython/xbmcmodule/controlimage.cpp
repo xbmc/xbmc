@@ -58,9 +58,9 @@ namespace PYXBMC
 
     // check if filename exists
     self->strFileName = cImage;
-    if (cColorKey) sscanf(cColorKey, "%lx", &self->strColorKey);
+    if (cColorKey) sscanf(cColorKey, "%x", &self->strColorKey);
     else self->strColorKey = 0;
-    if (cColorDiffuse) sscanf(cColorDiffuse, "%lx", &self->strColorDiffuse);
+    if (cColorDiffuse) sscanf(cColorDiffuse, "%x", &self->strColorDiffuse);
     else self->strColorDiffuse = 0;
 
     return (PyObject*)self;
@@ -105,7 +105,7 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, "s|s", &cImage, &cColorKey)) return NULL;
 
     self->strFileName = cImage;
-    if (cColorKey) sscanf(cColorKey, "%lx", &self->strColorKey);
+    if (cColorKey) sscanf(cColorKey, "%x", &self->strColorKey);
     else self->strColorKey = 0;
 
     PyGUILock();
@@ -133,7 +133,7 @@ namespace PYXBMC
 
     if (!PyArg_ParseTuple(args, "s", &cColorDiffuse)) return NULL;
 
-    if (cColorDiffuse) sscanf(cColorDiffuse, "%lx", &self->strColorDiffuse);
+    if (cColorDiffuse) sscanf(cColorDiffuse, "%x", &self->strColorDiffuse);
     else self->strColorDiffuse = 0;
 
     PyGUILock();

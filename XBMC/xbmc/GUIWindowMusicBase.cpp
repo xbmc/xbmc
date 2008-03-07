@@ -508,7 +508,8 @@ void CGUIWindowMusicBase::RetrieveMusicInfo()
 
   OnRetrieveMusicInfo(m_vecItems);
 
-  CLog::Log(LOGDEBUG, "RetrieveMusicInfo() took %lu msec", timeGetTime()-dwStartTick);
+  CLog::Log(LOGDEBUG, "RetrieveMusicInfo() took %u msec",
+            timeGetTime() - dwStartTick);
 }
 
 /// \brief Add selected list/thumb control item to playlist and start playing

@@ -64,7 +64,7 @@ namespace PYXBMC
     }
 
     if (cFont) self->strFont = cFont;
-    if (cTextColor) sscanf(cTextColor, "%lx", &self->dwTextColor);
+    if (cTextColor) sscanf(cTextColor, "%x", &self->dwTextColor);
 
     self->pGUIControl = NULL;
 

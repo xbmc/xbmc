@@ -19,7 +19,8 @@ mpc_bool_t Mpc_Callback_Seek(void *data, mpc_int32_t position)
   int seek = (int)file->Seek(position, SEEK_SET);
   if (seek >= 0)
     return 1;
-  CLog::Log(LOGERROR, "MPCCodec:Seek callback.  Seeking to position %lu failed.", position);
+  CLog::Log(LOGERROR, "MPCCodec:Seek callback.  Seeking to position %u failed.",
+            position);
   return 0;
 }
 

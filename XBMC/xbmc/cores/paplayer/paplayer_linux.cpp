@@ -836,7 +836,8 @@ void PAPlayer::HandleSeeking()
   {
     DWORD time = timeGetTime();
     m_timeOffset = m_decoder[m_currentDecoder].Seek(m_SeekTime);
-    CLog::Log(LOGDEBUG, "Seek to time %f took %lu ms", 0.001f * m_SeekTime, timeGetTime() - time);
+    CLog::Log(LOGDEBUG, "Seek to time %f took %u ms",
+              0.001f * m_SeekTime, timeGetTime() - time);
     FlushStreams();
     m_bytesSentOut = 0;
     m_SeekTime = -1;

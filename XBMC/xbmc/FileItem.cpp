@@ -1407,7 +1407,7 @@ void CFileItemList::Sort(FILEITEMLISTCOMPARISONFUNC func)
   DWORD dwStart = GetTickCount();
   std::sort(m_items.begin(), m_items.end(), func);
   DWORD dwElapsed = GetTickCount() - dwStart;
-  CLog::Log(LOGDEBUG,"%s, sorting took %lu millis", __FUNCTION__, dwElapsed);
+  CLog::Log(LOGDEBUG,"%s, sorting took %u millis", __FUNCTION__, dwElapsed);
 }
 
 void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)

@@ -84,10 +84,10 @@ namespace PYXBMC
     }
 
     if (cFont) self->strFont = cFont;
-    if (cTextColor) sscanf(cTextColor, "%lx", &self->dwTextColor);
+    if (cTextColor) sscanf(cTextColor, "%x", &self->dwTextColor);
     if (cDisabledColor)
     {
-      sscanf( cDisabledColor, "%lx", &self->dwDisabledColor );
+      sscanf( cDisabledColor, "%x", &self->dwDisabledColor );
     }
     self->strTextureFocus = cTextureFocus ?
       cTextureFocus :
@@ -152,7 +152,7 @@ namespace PYXBMC
 
     if (cDisabledColor)
     {
-      sscanf(cDisabledColor, "%lx", &self->dwDisabledColor);
+      sscanf(cDisabledColor, "%x", &self->dwDisabledColor);
     }
 
     PyGUILock();
@@ -197,11 +197,11 @@ namespace PYXBMC
     if (cFont) self->strFont = cFont;
     if (cTextColor)
     {
-      sscanf(cTextColor, "%lx", &self->dwTextColor);
+      sscanf(cTextColor, "%x", &self->dwTextColor);
     }
     if (cDisabledColor)
     {
-      sscanf(cDisabledColor, "%lx", &self->dwDisabledColor);
+      sscanf(cDisabledColor, "%x", &self->dwDisabledColor);
     }
 
     PyGUILock();
