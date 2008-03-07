@@ -64,13 +64,15 @@ void CCMythSession::ReleaseSession(CCMythSession* session)
 }
 
 
-bool CCMythSession::ProgramToTag(cmyth_proginfo_t info, CVideoInfoTag* tag)
+bool CCMythSession::UpdateItem(CFileItem &item, cmyth_proginfo_t info)
 {
   if(!info)
     return false;
 
-  char *str;
 
+  CVideoInfoTag* tag = item.GetVideoInfoTag();
+
+  char *str;
   if((str = m_dll->proginfo_chansign(info)))
   {
     tag->m_strTitle = str;
@@ -108,6 +110,35 @@ bool CCMythSession::ProgramToTag(cmyth_proginfo_t info, CVideoInfoTag* tag)
 
   tag->m_iSeason  = 0; /* set this so xbmc knows it's a tv show */
   tag->m_iEpisode = 0;
+
+
+  if(m_dll->proginfo_rec_status(info) == RS_RECORDING)
+  {
+    CStdString file;
+    if((str = m_dll->proginfo_chanicon(info)))
+    {
+      CURL url(item.m_strPath);
+      file.Format("icon/%s", str);
+      url.SetFileName(file);
+      url.GetURL(file);
+      item.SetThumbnailImage(file);
+      m_dll->ref_release(str);
+    }
+
+    if((str = m_dll->proginfo_chanstr(info)))
+    {
+      CURL url(item.m_strPath);
+      file.Format("channels/%s.ts", str);
+      url.SetFileName(file);
+      url.GetURL(file);
+      if(item.m_strPath != file)
+        item.m_strPath = file;
+      m_dll->ref_release(str);
+    }
+    item.SetCachedVideoThumb();
+  }
+
+
   return true;
 }
 

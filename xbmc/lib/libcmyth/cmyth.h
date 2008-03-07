@@ -878,6 +878,13 @@ extern long cmyth_proginfo_card_id(cmyth_proginfo_t prog);
  */
 extern char *cmyth_proginfo_recgroup(cmyth_proginfo_t prog);
 
+/**
+ * Retrieve the channel icon path this program info
+ * \param prog proginfo handle
+ * \return null-terminated string
+ */
+extern char *cmyth_proginfo_chanicon(cmyth_proginfo_t prog);
+
 /*
  * -----------------------------------------------------------------
  * Program List Operations
