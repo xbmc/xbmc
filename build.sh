@@ -79,6 +79,12 @@ parse_args() {
       NOCOPY)
         (( COPY=0 ))
         ;;
+      QUICKCOPY)
+        (( QUICKCOPY=1 ))
+        ;;
+      NOCHANGELOG)
+        (( CHANGELOG=0 ))
+        ;;
       CONFIRM)
         (( CONFIRM=1 ))
         ;;
@@ -486,6 +492,8 @@ CONFIGOPTS=""
 (( COMPILE=1 ))
 (( CLEAN=1 ))
 (( COPY=1 ))
+(( QUICKCOPY=0 ))
+(( CHANGELOG=1 ))
 (( CONFIRM=0 ))
 (( SHOW_MAKE=1 ))
 (( CONFIGURE=1 ))
@@ -609,7 +617,7 @@ else
   echo " Skipping compile."
 fi
 
-if (( UPDATE || COMPILE || COPY ))
+if (( (UPDATE || COMPILE || COPY) && CHANGELOG ))
 then
   echo " Generating Changelog.txt"
   "$SOURCEDIR/tools/Changelog/Changelog.py" -r $LOCAL_REVISION -d "$SOURCEDIR"
@@ -617,8 +625,21 @@ fi
 
 if (( COPY ))
 then
-  copy
-  fix
+  if (( QUICKCOPY ))
+  then
+    if [[ -e "${SOURCEDIR}/XboxMediaCenter" ]]
+    then
+      if (( VERBOSE ))
+      then
+        mv -v "${SOURCEDIR}/XboxMediaCenter" "$BUILDDIR"
+      else
+        mv "${SOURCEDIR}/XboxMediaCenter" "$BUILDDIR" &> /dev/null
+      fi
+    fi
+  else
+    copy
+    fix
+  fi
 else
   echo " Skipping XBMC file structure creation."
 fi
