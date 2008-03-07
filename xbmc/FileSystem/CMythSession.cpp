@@ -262,7 +262,7 @@ void CCMythSession::Process()
 
 void CCMythSession::Disconnect()
 {
-  if(!m_dll)
+  if(!m_dll || !m_dll->IsLoaded())
     return;
 
   StopThread();
@@ -322,4 +322,11 @@ bool CCMythSession::SetListener(IEventListener *listener)
   }
   m_listener = listener;
   return true;
+}
+
+DllLibCMyth* CCMythSession::GetLibrary()
+{
+  if(m_dll->IsLoaded())
+    return m_dll;
+  return NULL;
 }
