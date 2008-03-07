@@ -65,6 +65,20 @@ static inline __int64 atoll(const char* s)
   else
     return 0;
 }
+
+static const char *inet_ntop(int af, const void *src, char *dst, socklen_t size)
+{
+  char* addr;
+  if(af != AF_INET)
+    return NULL;
+  addr = inet_ntoa(*(struct in_addr*)src);
+  if(!addr)
+    return NULL;
+  if((socklen_t)strlen(addr)+1 > size)
+    return NULL;
+  return strcpy(dst, addr);
+}
+
 #else
 #include <pthread.h>
 #define mutex __cmyth_mutex
