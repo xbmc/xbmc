@@ -98,8 +98,8 @@ bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
           item->SetLabelPreformated(true);
           if(icon.length() > 0)
           {
-            path.Format("%s/path%s", base.c_str(), icon.c_str());
-            item->SetThumbnailImage(icon);
+            path.Format("%s/icon/%s", base.Left(base.length()-9).c_str(), CUtil::GetFileName(icon).c_str());
+            item->SetThumbnailImage(path);
           }
           items.Add(item);
         }
@@ -159,12 +159,11 @@ bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
           CLog::Log(LOGDEBUG, "%s - recording %s (%s) has status %d", __FUNCTION__, name.c_str(), recording.c_str(), dll->proginfo_rec_status(program));
           path.Format("%s/%s", base.c_str(), recording.c_str());
 
-          CFileItem *item = new CFileItem(path, false);
+          CFileItem *item = new CFileItem("", false);
+
+          session->UpdateItem(*item, program);
           item->SetLabel(name);
-
-          /* fill video info tag */
-          session->ProgramToTag(program, item->GetVideoInfoTag());
-
+          item->m_strPath = path;
 
           if(dll->proginfo_rec_status(program) == RS_RECORDING)
             item->SetLabel2("(Recording)");

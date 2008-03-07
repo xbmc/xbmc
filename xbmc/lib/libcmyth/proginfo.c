@@ -1598,6 +1598,17 @@ cmyth_proginfo_recgroup(cmyth_proginfo_t prog)
 	return ref_hold(prog->proginfo_recgroup);
 }
 
+char *
+cmyth_proginfo_chanicon(cmyth_proginfo_t prog)
+{
+	if (!prog) {
+		cmyth_dbg(CMYTH_DBG_ERROR, "%s: NULL program information\n",
+			  __FUNCTION__);
+		return NULL;
+	}
+	return ref_hold(prog->proginfo_chanicon);
+}
+
 int 
 cmyth_get_delete_list(cmyth_conn_t conn, char * msg, cmyth_proglist_t prog)
 {

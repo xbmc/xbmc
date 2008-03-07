@@ -114,11 +114,11 @@ bool CDVDInputStreamTV::PrevChannel()
   return m_pLiveTV->PrevChannel();
 }
 
-CVideoInfoTag* CDVDInputStreamTV::GetVideoInfoTag()
+bool CDVDInputStreamTV::UpdateItem(CFileItem& item)
 {
   if(m_pLiveTV)
-    return m_pLiveTV->GetVideoInfoTag();
-  return NULL;
+    return m_pLiveTV->UpdateItem(item);
+  return false;
 }
 
 bool CDVDInputStreamTV::SeekTime(int iTimeInMsec)
