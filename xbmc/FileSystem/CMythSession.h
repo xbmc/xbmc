@@ -33,7 +33,7 @@ public:
   cmyth_database_t GetDatabase();
   DllLibCMyth*     GetLibrary() { return m_dll; }
 
-  bool             ProgramToTag(cmyth_proginfo_t info, CVideoInfoTag* tag);
+  bool             UpdateItem(CFileItem &item, cmyth_proginfo_t info);
 private:
   CCMythSession(const CURL& url);
   ~CCMythSession();
