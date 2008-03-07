@@ -433,8 +433,6 @@ bool CDVDPlayer::OpenDemuxStream()
     m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
   }
 
-  UpdateApplication();
-
   return true;
 }
 
@@ -2495,11 +2493,12 @@ void CDVDPlayer::UpdateApplication()
   if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
   {
     CDVDInputStreamTV* pStream = static_cast<CDVDInputStreamTV*>(m_pInputStream);
-    CVideoInfoTag *tag = pStream->GetVideoInfoTag();
-    if(tag)
+
+    CFileItem item(g_application.CurrentFileItem());
+    if(pStream->UpdateItem(item))
     {
-      *g_application.CurrentFileItem().GetVideoInfoTag() = *tag;
-      g_infoManager.SetCurrentItem(g_application.CurrentFileItem());
+      g_application.CurrentFileItem() = item;
+      g_infoManager.SetCurrentItem(item);
     }
   }
 }

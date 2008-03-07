@@ -10,7 +10,7 @@ public:
   virtual int            GetTotalTime() = 0;
   virtual int            GetStartTime() = 0;
 
-  virtual CVideoInfoTag* GetVideoInfoTag() = 0;
+  virtual bool           UpdateItem(CFileItem& item)=0;
 };
 
 class IRecordable

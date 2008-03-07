@@ -598,7 +598,7 @@ cmyth_conn_connect_path(char* path, cmyth_conn_t control,
 	}
 
 	inet_ntop(addr.sin_family, &addr.sin_addr, host, sizeof(host));
-	port = addr.sin_port;
+	port = ntohs(addr.sin_port);
 
 	ret = cmyth_file_create(control);
 	if (!ret) {
