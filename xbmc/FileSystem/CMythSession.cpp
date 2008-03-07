@@ -114,6 +114,8 @@ bool CCMythSession::UpdateItem(CFileItem &item, cmyth_proginfo_t info)
 
   if(m_dll->proginfo_rec_status(info) == RS_RECORDING)
   {
+    tag->m_strStatus = "livetv";
+
     CStdString file;
     if((str = m_dll->proginfo_chanicon(info)))
     {
