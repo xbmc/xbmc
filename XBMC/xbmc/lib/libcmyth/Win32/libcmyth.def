@@ -206,3 +206,5 @@ EXPORTS
 	cmyth_proginfo_get_from_basename
 	cmyth_proginfo_delete_recording
 	cmyth_livetv_keep_recording
+	cmyth_conn_connect_path
+	cmyth_proginfo_chanicon

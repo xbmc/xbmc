@@ -13,6 +13,7 @@ public:
   virtual cmyth_conn_t     conn_connect_ctrl        (char *server, unsigned short port, unsigned buflen, int tcp_rcvbuf)=0;
   virtual cmyth_conn_t     conn_connect_event       (char *server, unsigned short port, unsigned buflen, int tcp_rcvbuf)=0;
   virtual cmyth_file_t     conn_connect_file        (cmyth_proginfo_t prog, cmyth_conn_t control, unsigned buflen, int tcp_rcvbuf)=0;
+  virtual cmyth_file_t     conn_connect_path        (char* path, cmyth_conn_t control, unsigned buflen, int tcp_rcvbuf)=0;
   virtual cmyth_recorder_t conn_get_free_recorder   (cmyth_conn_t conn)=0;
 
   virtual cmyth_event_t    event_get                (cmyth_conn_t conn, char * data, int len)=0;
@@ -62,6 +63,7 @@ public:
   virtual char*             proginfo_channame       (cmyth_proginfo_t prog)=0;
   virtual char*             proginfo_chansign       (cmyth_proginfo_t prog)=0;
   virtual char*             proginfo_recgroup       (cmyth_proginfo_t prog)=0;
+  virtual char*             proginfo_chanicon       (cmyth_proginfo_t prog)=0;
   virtual char*             proginfo_category       (cmyth_proginfo_t prog)=0;
   virtual long long         proginfo_length         (cmyth_proginfo_t prog)=0;
   virtual int               proginfo_length_sec     (cmyth_proginfo_t prog)=0;
@@ -89,6 +91,8 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
   DEFINE_METHOD4(cmyth_conn_t,        conn_connect_ctrl,        (char *p1, unsigned short p2, unsigned p3, int p4))
   DEFINE_METHOD4(cmyth_conn_t,        conn_connect_event,       (char *p1, unsigned short p2, unsigned p3, int p4))
   DEFINE_METHOD4(cmyth_file_t,        conn_connect_file,        (cmyth_proginfo_t p1, cmyth_conn_t p2, unsigned p3, int p4))
+  DEFINE_METHOD4(cmyth_file_t,        conn_connect_path,        (char* p1, cmyth_conn_t p2, unsigned p3, int p4))
+
   DEFINE_METHOD1(cmyth_recorder_t,    conn_get_free_recorder,   (cmyth_conn_t p1))
 
   DEFINE_METHOD3(cmyth_event_t,       event_get,                (cmyth_conn_t p1, char * p2, int p3))
@@ -135,6 +139,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
   DEFINE_METHOD1(char*,               proginfo_channame,        (cmyth_proginfo_t p1))
   DEFINE_METHOD1(char*,               proginfo_chansign,        (cmyth_proginfo_t p1))
   DEFINE_METHOD1(char*,               proginfo_recgroup,        (cmyth_proginfo_t p1))
+  DEFINE_METHOD1(char*,               proginfo_chanicon,        (cmyth_proginfo_t p1))
   DEFINE_METHOD1(char*,               proginfo_category,        (cmyth_proginfo_t p1))
   DEFINE_METHOD1(long long,           proginfo_length,          (cmyth_proginfo_t p1))
   DEFINE_METHOD1(int,                 proginfo_length_sec,      (cmyth_proginfo_t p1))
@@ -158,6 +163,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
     RESOLVE_METHOD_RENAME(cmyth_conn_connect_ctrl, conn_connect_ctrl)
     RESOLVE_METHOD_RENAME(cmyth_conn_connect_event, conn_connect_event)
     RESOLVE_METHOD_RENAME(cmyth_conn_connect_file, conn_connect_file)
+    RESOLVE_METHOD_RENAME(cmyth_conn_connect_path, conn_connect_path)
     RESOLVE_METHOD_RENAME(cmyth_conn_get_free_recorder, conn_get_free_recorder)
 
     RESOLVE_METHOD_RENAME(cmyth_event_get, event_get)
@@ -204,6 +210,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
     RESOLVE_METHOD_RENAME(cmyth_proginfo_channame, proginfo_channame)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_chansign, proginfo_chansign)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_recgroup, proginfo_recgroup)
+    RESOLVE_METHOD_RENAME(cmyth_proginfo_chanicon, proginfo_chanicon)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_category, proginfo_category)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_length, proginfo_length)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_length_sec, proginfo_length_sec)
