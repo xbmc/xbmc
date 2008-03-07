@@ -261,7 +261,9 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
       // if control is disabled then move 2 the next control
       if ( !CanFocus() )
       {
-        CLog::Log(LOGERROR, "Control %lu in window %lu has been asked to focus, but it can't", GetID(), GetParentID());
+        CLog::Log(LOGERROR, "Control %u in window %u has been asked to focus, "
+                            "but it can't",
+                  GetID(), GetParentID());
         return false;
       }
       SetFocus(true);

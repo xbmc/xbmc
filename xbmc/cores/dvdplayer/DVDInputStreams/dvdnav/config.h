@@ -73,8 +73,18 @@ typedef unsigned short      uint16_t;
 typedef signed short        int16_t;
 typedef unsigned int        uint32_t;
 typedef signed int          int32_t;
+#if __WORDSIZE == 64
+typedef unsigned long       uint64_t;
+typedef signed long         int64_t;
+#else /* __WORDSIZE != 64 */
 typedef unsigned __int64    uint64_t;
 typedef signed __int64      int64_t;
-#ifndef __APPLE__
-typedef unsigned int        uintptr_t;
 #endif
+#ifndef __APPLE__
+#if __WORDSIZE == 64
+typedef unsigned long       uintptr_t;
+#else /* __WORDSIZE != 64 */
+typedef unsigned int        uintptr_t;
+#endif /* __WORDSIZE == 64 */
+#endif /* !__APPLE__ */
+

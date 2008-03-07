@@ -649,7 +649,9 @@ CSettingsGroup *CGUISettings::GetGroup(DWORD dwGroupID)
     if (settingsGroups[i]->GetGroupID() == dwGroupID)
       return settingsGroups[i];
   }
-  CLog::Log(LOGDEBUG,"Error: Requested setting group (%lu) was not found.  It must be case-sensitive", dwGroupID);
+  CLog::Log(LOGDEBUG, "Error: Requested setting group (%u) was not found.  "
+                      "It must be case-sensitive",
+            dwGroupID);
   return NULL;
 }
 

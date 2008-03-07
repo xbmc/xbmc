@@ -161,7 +161,7 @@ void CLog::DebugLogMemory()
 
 void CLog::MemDump(BYTE *pData, int length)
 {
-  Log(LOGDEBUG, "MEM_DUMP: Dumping from %x", (unsigned int)pData);
+  Log(LOGDEBUG, "MEM_DUMP: Dumping from %p", pData);
   for (int i = 0; i < length; i+=16)
   {
     CStdString strLine;

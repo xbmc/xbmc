@@ -61,7 +61,7 @@ namespace PYXBMC
     // set default values if needed
     self->strFont = cFont ? cFont : "font13";
 
-    if (cTextColor) sscanf(cTextColor, "%lx", &self->dwTextColor);
+    if (cTextColor) sscanf(cTextColor, "%x", &self->dwTextColor);
     else self->dwTextColor = 0xffffffff;
 
     // default values for spin control

@@ -476,7 +476,7 @@ void CGUIControlGroup::GetContainers(vector<CGUIControl *> &containers) const
 #ifdef _DEBUG
 void CGUIControlGroup::DumpTextureUse()
 {
-  CLog::Log(LOGDEBUG, "%s for controlgroup %lu", __FUNCTION__, GetID());
+  CLog::Log(LOGDEBUG, "%s for controlgroup %u", __FUNCTION__, GetID());
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     (*it)->DumpTextureUse();

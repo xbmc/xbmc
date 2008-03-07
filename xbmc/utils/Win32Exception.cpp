@@ -10,9 +10,11 @@
 void win32_exception::writelog(const char *prefix)  const
 {
   if( prefix )
-    CLog::Log(LOGERROR, "%s : %s (code:0x%08x) at 0x%08x", prefix, what(), (unsigned int) code(), (unsigned int) where());
+    CLog::Log(LOGERROR, "%s : %s (code:0x%08x) at %p",
+              prefix, what(), (unsigned int) code(), where());
   else
-    CLog::Log(LOGERROR, "%s (code:0x%08x) at 0x%08x", what(), (unsigned int) code(), (unsigned int) where());
+    CLog::Log(LOGERROR, "%s (code:0x%08x) at %p",
+              what(), (unsigned int) code(), where());
 }
 
 

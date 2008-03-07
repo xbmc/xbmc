@@ -279,6 +279,19 @@ else
   LZO_INCLUDES="$LZO_INCLUDES"
 fi
 
+AC_CANONICAL_HOST
+case $host in
+    i*86-*-linux-gnu)
+       ARCH="i486-linux"
+       ;;
+    x86_64-*-linux-gnu)
+       ARCH="x86_64-linux"
+       ;;
+    *)
+       AC_MSG_ERROR(==unsupported host)
+esac
+AC_SUBST([ARCH])
+
 # check for where libpython is
 AC_CHECK_FILE(/usr/lib/python2.4/config/libpython2.4-pic.a,
     AC_SUBST(python_lib_a,/usr/lib/python2.4/config/libpython2.4-pic.a),
@@ -297,7 +310,7 @@ fi
 AC_SUBST(DEBUG_FLAGS)
 AC_SUBST(SDL_DEFINES)
 AC_SUBST(LZO_INCLUDES)
-AC_CONFIG_FILES([Makefile Makefile.include xbmc/lib/libPython/linux/Makefile])
+AC_CONFIG_FILES([Makefile Makefile.include xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile])
 AC_OUTPUT
 
 final_message="$final_message\n$dashes"

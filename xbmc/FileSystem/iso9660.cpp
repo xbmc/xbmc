@@ -695,7 +695,7 @@ HANDLE iso9660::OpenFile(const char *filename)
 
   *(pointer2 + 1) = 0;
 
-  int loop = (int)FindFirstFile( work, &fileinfo );
+  intptr_t loop = (intptr_t)FindFirstFile( work, &fileinfo );
   while ( loop > 0)
   {
     if ( !stricmp(fileinfo.cFileName, pointer ) )
@@ -958,7 +958,7 @@ __int64 iso9660::GetFilePosition(HANDLE hFile)
 //************************************************************************************
 void iso9660::FreeFileContext(HANDLE hFile)
 {
-  int iFile = (int)hFile;
+  intptr_t iFile = (intptr_t)hFile;
   if (iFile >= 1 && iFile < MAX_ISO_FILES)
   {
     if (m_isoFiles[iFile ]) delete m_isoFiles[iFile ];
@@ -983,7 +983,7 @@ HANDLE iso9660::AllocFileContext()
 //************************************************************************************
 iso9660::isofile* iso9660::GetFileContext(HANDLE hFile)
 {
-  int iFile = (int)hFile;
+  intptr_t iFile = (intptr_t)hFile;
   if (iFile >= 1 && iFile < MAX_ISO_FILES)
   {
     return m_isoFiles[iFile];
