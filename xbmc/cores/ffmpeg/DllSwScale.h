@@ -75,6 +75,8 @@ class DllSwScale : public DllDynamic, public DllSwScaleInterface
 {
 #ifdef __APPLE__
   DECLARE_DLL_WRAPPER(DllSwScale, Q:\\system\\players\\dvdplayer\\swscale-51-osx.so)
+#elif defined(__x86_64__)
+  DECLARE_DLL_WRAPPER(DllSwScale, Q:\\system\\players\\dvdplayer\\swscale-51-x86_64-linux.so)
 #else
   DECLARE_DLL_WRAPPER(DllSwScale, Q:\\system\\players\\dvdplayer\\swscale-51-i486-linux.so)
 #endif
