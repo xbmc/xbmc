@@ -1114,4 +1114,3 @@ cmyth_spawn_live_tv(cmyth_recorder_t rec, unsigned buflen, int tcp_rcvbuf,
 
 	return rtrn;
 }
-

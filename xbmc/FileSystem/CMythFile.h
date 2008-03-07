@@ -41,7 +41,7 @@ public:
   virtual int            GetTotalTime();
   virtual int            GetStartTime();
 
-  virtual CVideoInfoTag* GetVideoInfoTag();
+  virtual bool           UpdateItem(CFileItem& item);
 
   virtual IRecordable*   GetRecordable() {return (IRecordable*)this;}
 
@@ -58,6 +58,7 @@ protected:
   bool SetupConnection(const CURL& url, bool control, bool event, bool database);
   bool SetupRecording(const CURL& url);
   bool SetupLiveTV(const CURL& url);
+  bool SetupIcon(const CURL& url);
 
   CCMythSession*    m_session;
   DllLibCMyth*      m_dll;
