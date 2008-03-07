@@ -1682,7 +1682,7 @@
   <string id="20409">Downloading TV Show information</string>
   <string id="20410">Trailer</string>
   <string id="20411">Flatten</string>
-  <string id="20412">Flatten tvshow if only a single season</string>
+  <string id="20412">Flatten TV Show if only a single season</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
