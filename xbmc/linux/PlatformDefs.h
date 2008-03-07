@@ -53,11 +53,15 @@
 #define byte		unsigned char
 #define __int8 		char
 #define __int16		short
-#define __int32		long
+#define __int32		int
 #define __int64		long long
 #define __uint64	unsigned long long
 
+#ifdef __x86_64__
+#define __stdcall
+#else /* !__x86_64__ */
 #define __stdcall   __attribute__((__stdcall__))
+#endif /* __x86_64__ */
 #define __cdecl
 #define WINBASEAPI
 #define NTAPI       __stdcall
@@ -93,7 +97,7 @@ typedef off64_t   __off64_t;
 #include <sched.h>
 #endif
 
-typedef unsigned long 	DWORD;
+typedef unsigned int 	DWORD;
 typedef unsigned short 	WORD;
 typedef unsigned char 	BYTE;
 typedef char				CHAR;
@@ -139,7 +143,7 @@ typedef long 				LONG_PTR;
 typedef unsigned long 	ULONG_PTR;
 typedef ULONG_PTR 		DWORD_PTR;
 typedef __int64		 	__time64_t;
-typedef int (*FARPROC)(void);
+typedef intptr_t (*FARPROC)(void);
 
 #define MAXWORD		0xffff
 #define MAXDWORD	0xffffffff
@@ -155,7 +159,7 @@ typedef union _LARGE_INTEGER
 {  
 	struct {    
 		DWORD LowPart;    
-		LONG HighPart;  
+		int32_t HighPart;  
 	} u;  
 	LONGLONG QuadPart;
 } LARGE_INTEGER, *PLARGE_INTEGER;

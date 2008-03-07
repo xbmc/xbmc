@@ -100,7 +100,7 @@ namespace PYXBMC
 
     if (!PyArg_ParseTuple(args, "s", &cColor))	return NULL;
 
-    if (cColor) sscanf(cColor, "%lx", &self->dwColor);
+    if (cColor) sscanf(cColor, "%x", &self->dwColor);
 
     PyGUILock();
     //if (self->pGUIControl)

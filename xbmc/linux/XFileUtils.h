@@ -32,7 +32,8 @@ BOOL   CreateDirectory(LPCTSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttri
 BOOL   RemoveDirectory(LPCTSTR lpPathName);
 DWORD  GetCurrentDirectory(DWORD nBufferLength, LPSTR lpBuffer);
 
-DWORD  SetFilePointer(HANDLE hFile, LONG lDistanceToMove, PLONG lpDistanceToMoveHigh, DWORD dwMoveMethod);
+DWORD  SetFilePointer(HANDLE hFile, int32_t lDistanceToMove,
+                      int32_t *lpDistanceToMoveHigh, DWORD dwMoveMethod);
 BOOL   SetFilePointerEx(HANDLE hFile, LARGE_INTEGER liDistanceToMove,PLARGE_INTEGER lpNewFilePointer, DWORD dwMoveMethod);
 BOOL   SetEndOfFile(HANDLE hFile);
 

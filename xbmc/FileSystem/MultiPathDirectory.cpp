@@ -254,7 +254,9 @@ void CMultiPathDirectory::MergeItems(CFileItemList &items)
     i++;
   }
 
-  CLog::Log(LOGDEBUG, "CMultiPathDirectory::MergeItems, items = %i,  took %ld ms", items.Size(), GetTickCount()-dwTime);
+  CLog::Log(LOGDEBUG,
+            "CMultiPathDirectory::MergeItems, items = %i,  took %d ms",
+            items.Size(), GetTickCount()-dwTime);
 }
 
 bool CMultiPathDirectory::SupportsFileOperations(const CStdString &strPath)

@@ -55,7 +55,8 @@ bool CViewDatabase::CreateTables()
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s unable to create tables:%lu", __FUNCTION__, GetLastError());
+    CLog::Log(LOGERROR, "%s unable to create tables:%u",
+              __FUNCTION__, GetLastError());
     return false;
   }
 

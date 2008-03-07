@@ -66,7 +66,8 @@ bool CProgramDatabase::CreateTables()
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "programdatabase::unable to create tables:%lu", GetLastError());
+    CLog::Log(LOGERROR, "programdatabase::unable to create tables:%u",
+              GetLastError());
     return false;
   }
 
@@ -199,7 +200,7 @@ bool CProgramDatabase::SetTitleId(const CStdString& strFileName, DWORD dwTitleId
     int idFile = m_pDS->fv("files.idFile").get_asLong();
     m_pDS->close();
 
-    CLog::Log(LOGDEBUG, "CProgramDatabase::SetTitle(%s), idFile=%i, region=%lu",
+    CLog::Log(LOGDEBUG, "CProgramDatabase::SetTitle(%s), idFile=%i, region=%u",
               strFileName.c_str(), idFile,dwTitleId);
 
     strSQL=FormatSQL("update files set titleId=%u where idFile=%i",
@@ -236,7 +237,8 @@ bool CProgramDatabase::GetXBEPathByTitleId(const DWORD titleId, CStdString& strP
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "CProgramDatabase::GetXBEPathByTitleId(%lu) failed", titleId);
+    CLog::Log(LOGERROR, "CProgramDatabase::GetXBEPathByTitleId(%u) failed",
+              titleId);
   }
   return false;
 }

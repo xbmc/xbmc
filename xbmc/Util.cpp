@@ -5743,7 +5743,7 @@ void CUtil::WipeDir(const CStdString& strPath) // DANGEROUS!!!!
   {
     CLog::Log(LOGDEBUG,"wipe dir %s",items[i]->m_strPath.c_str());
     if (!::RemoveDirectory((items[i]->m_strPath+"\\").c_str()))
-      CLog::Log(LOGDEBUG,"this sucks %lu!",GetLastError());
+      CLog::Log(LOGDEBUG,"this sucks %u!", GetLastError());
   }
 
   CStdString tmpPath = strPath;

@@ -1216,7 +1216,8 @@ bool CGUIWindow::OnMove(int fromControl, int moveAction)
   if (!control) control = GetControl(fromControl);
   if (!control)
   { // no current control??
-    CLog::Log(LOGERROR, "Unable to find control %i in window %lu", fromControl, GetID());
+    CLog::Log(LOGERROR, "Unable to find control %i in window %u",
+              fromControl, GetID());
     return false;
   }
   vector<int> moveHistory;
@@ -1283,7 +1284,7 @@ void CGUIWindow::GetContainers(vector<CGUIControl *> &containers) const
 #ifdef _DEBUG
 void CGUIWindow::DumpTextureUse()
 {
-  CLog::Log(LOGDEBUG, "%s for window %lu", __FUNCTION__, GetID());
+  CLog::Log(LOGDEBUG, "%s for window %u", __FUNCTION__, GetID());
   for (ivecControls it = m_vecControls.begin();it != m_vecControls.end(); ++it)
   {
     (*it)->DumpTextureUse();

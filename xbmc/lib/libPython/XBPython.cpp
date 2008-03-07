@@ -27,7 +27,11 @@ XBPython g_pythonParser;
 #define PYTHON_LIBDIR "Q:\\system\\python\\lib\\"
 #define PYTHON_EXT "Q:\\system\\python\\lib\\*.pyd"
 #else
+#ifdef __x86_64__
+#define PYTHON_DLL "Q:\\system\\python\\python24-x86_64-linux.so"
+#else /* !__x86_64__ */
 #define PYTHON_DLL "Q:\\system\\python\\python24-i486-linux.so"
+#endif /* __x86_64__ */
 #endif
 
 extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR file);
