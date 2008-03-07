@@ -62,6 +62,8 @@ class DllPostProc : public DllDynamic, DllPostProcInterface
 {
 #ifndef _LINUX
   DECLARE_DLL_WRAPPER(DllPostProc, Q:\\system\\players\\dvdplayer\\postproc-51.dll)
+#elif defined(__x86_64__)
+  DECLARE_DLL_WRAPPER(DllPostProc, Q:\\system\\players\\dvdplayer\\postproc-51-x86_64-linux.so)
 #else
   DECLARE_DLL_WRAPPER(DllPostProc, Q:\\system\\players\\dvdplayer\\postproc-51-i486-linux.so)
 #endif
