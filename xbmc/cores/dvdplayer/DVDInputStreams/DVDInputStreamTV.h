@@ -29,12 +29,13 @@ public:
   int             GetTotalTime();
   int             GetStartTime();
 
-  CVideoInfoTag*  GetVideoInfoTag();
   bool            SeekTime(int iTimeInMsec);
 
   bool            CanRecord();
   bool            IsRecording();
   bool            Record(bool bOnOff);
+
+  bool            UpdateItem(CFileItem& item);
 
 protected:
   XFILE::IFile*            m_pFile;

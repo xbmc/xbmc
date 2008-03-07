@@ -106,6 +106,9 @@ bool CCMythFile::SetupRecording(const CURL& url)
   if(path.Left(11) != "recordings/")
     return false;
 
+  if(!SetupConnection(url, true, false, false))
+    return false;
+
   m_filename = path.Mid(11);
 
   m_program = m_dll->proginfo_get_from_basename(m_control, m_filename.c_str());
@@ -129,6 +132,9 @@ bool CCMythFile::SetupLiveTV(const CURL& url)
   CStdString path(url.GetFileName());
 
   if(path.Left(9) != "channels/")
+    return false;
+
+  if(!SetupConnection(url, true, true, true))
     return false;
 
   CStdString channel = path.Mid(9);
@@ -189,20 +195,35 @@ bool CCMythFile::SetupLiveTV(const CURL& url)
   return true;
 }
 
-bool CCMythFile::Open(const CURL& url, bool binary)
+bool CCMythFile::SetupIcon(const CURL& url)
 {
-  if(!binary)
+  CStdString path(url.GetFileName());
+
+  if(path.Left(5) != "icon/")
     return false;
 
+  if(!SetupConnection(url, true, false, false))
+    return false;
+
+  m_filename = "/channels/" + path.Mid(5);
+
+  m_file = m_dll->conn_connect_path((char*)m_filename.c_str(), m_control, 16*1024, 4096);
+  if(!m_file)
+  {
+    CLog::Log(LOGERROR, "%s - unable to connect to file", __FUNCTION__);
+    return false;
+  }
+  return true;
+}
+
+bool CCMythFile::Open(const CURL& url, bool binary)
+{
   Close();
 
   CStdString path(url.GetFileName());
 
   if(path.Left(11) == "recordings/")
   {
-    if(!SetupConnection(url, true, false, false))
-      return false;
-
     if(!SetupRecording(url))
       return false;
 
@@ -210,14 +231,19 @@ bool CCMythFile::Open(const CURL& url, bool binary)
   } 
   else if (path.Left(9) == "channels/")
   {
-    if(!SetupConnection(url, true, true, true))
-      return false;
 
     if(!SetupLiveTV(url))
       return false;
 
     CLog::Log(LOGDEBUG, "%s - recorder has started on filename %s", __FUNCTION__, m_filename.c_str());
 
+  }
+  else if (path.Left(5) == "icon/")
+  {
+    if(!SetupIcon(url))
+      return false;
+
+    CLog::Log(LOGDEBUG, "%s - file: size %"PRId64", start %"PRId64", ", __FUNCTION__,  m_dll->file_length(m_file), m_dll->file_start(m_file));
   }
   else
   {
@@ -300,6 +326,9 @@ bool CCMythFile::Exists(const CURL& url)
     }
     return true;
   }
+  else if(path.Left(5) == "icon/")
+    return true;
+
   return false;
 }
 
@@ -440,12 +469,12 @@ bool CCMythFile::SkipNext()
   return false;
 }
 
-CVideoInfoTag* CCMythFile::GetVideoInfoTag()
+bool CCMythFile::UpdateItem(CFileItem& item)
 {
-  if(m_session->ProgramToTag(m_program, &m_infotag))
-    return &m_infotag;
+  if(!m_program || !m_session)
+    return false;
 
-  return NULL;
+  return m_session->UpdateItem(item, m_program);
 }
 
 int CCMythFile::GetTotalTime()
@@ -556,3 +585,4 @@ bool CCMythFile::Record(bool bOnOff)
   m_recording = bOnOff;
   return true;
 }
+
