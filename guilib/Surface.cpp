@@ -303,14 +303,14 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     
     // If we're coming from or going to fullscreen do NOT share.
     if (g_graphicsContext.getScreenSurface() != 0 &&
-	(fullscreen == false && g_graphicsContext.getScreenSurface()->m_bFullscreen == true ||
-	 fullscreen == true  && g_graphicsContext.getScreenSurface()->m_bFullscreen == false))
+        (fullscreen == false && g_graphicsContext.getScreenSurface()->m_bFullscreen == true ||
+         fullscreen == true  && g_graphicsContext.getScreenSurface()->m_bFullscreen == false))
     {
       shared =0;
     }
-    
-    //m_SDLSurface = SDL_SetVideoMode(m_iWidth, m_iHeight, 0, options, shared ? shared->m_glContext : 0);
-    m_SDLSurface = SDL_SetVideoMode(m_iWidth, m_iHeight, 0, options); 
+
+    // Make sure we DON'T call with SDL_FULLSCREEN, because we need a view!
+    m_SDLSurface = SDL_SetVideoMode(m_iWidth, m_iHeight, 0, SDL_OPENGL); 
 
     // the context SDL creates isn't full screen compatible, so we create new one
     Cocoa_GL_ReplaceSDLWindowContext();
@@ -528,20 +528,23 @@ CSurface::~CSurface()
 void CSurface::EnableVSync(bool enable)
 {
 #ifdef HAS_SDL_OPENGL
+#ifndef __APPLE__
   if (m_bVSync==enable)
     return;
+#endif
 
 #ifdef __APPLE__
-  if (enable)
+  if (enable == true && m_bVSync == false)
   {
     CLog::Log(LOGINFO, "GL: Enabling VSYNC");
     Cocoa_GL_EnableVSync(true);
   }
-  else
+  else if (enable == false && m_bVSync == true)
   {
     CLog::Log(LOGINFO, "GL: Disabling VSYNC");
     Cocoa_GL_EnableVSync(false);
   }
+  m_bVSync = enable;
   return;
 #else
   if (enable)
@@ -777,7 +780,11 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight)
 #endif
 #ifdef __APPLE__
   Cocoa_GL_ResizeWindow(m_glContext, newWidth, newHeight);
+  
+  // If we've resize, we likely lose the vsync settings.
+  m_bVSync = false;
 #endif
+  
   return false;
 }
 
