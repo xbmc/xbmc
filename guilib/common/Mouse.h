@@ -52,6 +52,7 @@ public:
   void SetLocation(const CPoint &point);
   CPoint GetLastMove() const;
   char GetWheel() const;
+  void UpdateMouseWheel(char dir);
 
 private:
   // exclusive access to mouse from a control
