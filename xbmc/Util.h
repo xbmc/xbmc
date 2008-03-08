@@ -302,7 +302,12 @@ public:
   // in order to allow a user to run sudo without supplying the password you'll need to edit sudoers
   // # sudo visudo
   // and add a line at the end defining the user and allowed commands
-  static bool SudoCommand(const CStdString &strCommand);  
+  static bool SudoCommand(const CStdString &strCommand);
+  
+  //
+  // Forks to execute a shell command.
+  //
+  static bool Command(const CStdStringArray& arrArgs);
 #endif
 
 private:
