@@ -774,7 +774,7 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
     else
     {
       if( WaitForSingleObject(m_eventTexturesDone[source], 500) == WAIT_TIMEOUT )
-        CLog::Log(LOGWARNING, CStdString(__FUNCTION__) + " - Timeout waiting for texture %d", source);
+        CLog::Log(LOGWARNING, "%s - Timeout waiting for texture %d", __FUNCTION__, source);
 
       m_image[source].flags |= IMAGE_FLAG_WRITING;
     }

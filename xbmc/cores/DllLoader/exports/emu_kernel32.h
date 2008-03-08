@@ -52,7 +52,7 @@ typedef struct _SYSTEM_INFO
     {
       WORD wProcessorArchitecture;
       WORD wReserved;
-    };
+    } x;
   };
   DWORD dwPageSize;
   LPVOID lpMinimumApplicationAddress;

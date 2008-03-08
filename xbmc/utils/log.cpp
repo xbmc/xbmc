@@ -189,7 +189,7 @@ void CLog::MemDump(BYTE *pData, int length)
         strLine += '.';
       alpha++;
     }
-    Log(LOGDEBUG, strLine.c_str());
+    Log(LOGDEBUG, "%s", strLine.c_str());
   }
 }
 
