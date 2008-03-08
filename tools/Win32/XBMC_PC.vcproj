@@ -145,7 +145,7 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089"
 				AdditionalDependencies="opengl32.lib winmm.lib ws2_32.lib"
-				OutputFile="$(OutDir)/XBMC.exe"
+				OutputFile="../../XBMC_run/XBMC/XBMC.exe"
 				LinkIncremental="2"
 				IgnoreDefaultLibraryNames="libc;msvcrt"
 				ModuleDefinitionFile=""
@@ -3482,6 +3482,9 @@
 				Name="libPython"
 				Filter="">
 				<File
+					RelativePath="..\..\xbmc\win32\WIN32XBPythonDll.cpp">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\lib\libPython\XBPython.cpp">
 				</File>
 				<File
@@ -3489,9 +3492,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\lib\libPython\XBPythonDll.h">
-				</File>
-				<File
-					RelativePath="..\..\xbmc\lib\libPython\XBPythonDll_win32.cpp">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\lib\libPython\XBPyThread.cpp">
