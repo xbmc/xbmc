@@ -282,7 +282,7 @@ void PAPlayer::FreeStream(int stream)
 {
   if (m_pStream[stream])
   {
-      printf("[PortAudio] INFO: Destroying stream %d.\n", stream);
+      CLog::Log(LOGINFO, "[PortAudio] INFO: Destroying stream 0x%08lx.", stream);
       SAFELY(Pa_StopStream(m_pStream[stream]));
       SAFELY(Pa_CloseStream(m_pStream[stream]));
   }
@@ -310,7 +310,7 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
     // See if we actually need to create a new one or can cache an existing one.
     if (m_pStream[num] != 0 && m_channelCount[num] == channels && m_sampleRate[num] == samplerate && m_bitsPerSample[num] == bitspersample)
     {
-        printf("[PortAudio] INFO: Using existing stream.\n");
+        CLog::Log(LOGDEBUG, "[PortAudio] INFO: Using existing stream.");
         Pa_AbortStream(m_pStream[num]);
     }
     else
@@ -319,7 +319,7 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
         FreeStream(num);
 
         // Create a new stream.
-        printf("[PortAudio] INFO: Creating stream %d.\n", num);
+        CLog::Log(LOGINFO, "[PortAudio] INFO: Creating stream %d.", num);
         m_pStream[num] = CPortAudio::CreateOutputStream(g_guiSettings.GetString("audiooutput.audiodevice"),
                                                        channels, 
                                                        m_SampleRateOutput, 
@@ -398,10 +398,8 @@ void PAPlayer::SetDynamicRangeCompression(long drc)
 void PAPlayer::Process()
 {
   CLog::Log(LOGDEBUG, "PAPlayer: Thread started");
-  printf("m_startEvent.wait(100)\n");
   if (m_startEvent.WaitMSec(100))
   {
-    printf("m_startEvent.reset(100)\n");
     m_startEvent.Reset();
 
     m_callback.OnPlayBackStarted();
@@ -427,7 +425,6 @@ void PAPlayer::Process()
       m_callback.OnPlayBackEnded();
     }
   }
-  printf("Thread DEAD\n");
   CLog::Log(LOGDEBUG, "PAPlayer: Thread end");
 }
 
