@@ -5787,9 +5787,15 @@ CStdString CUtil::TranslatePath(const CStdString& path)
 	  {
 	    if (path.Equals("q:\\system\\profiles.xml", false))
 	    {
-	      CStdString str = getenv("HOME");
+	      CStdString str = getenv("HOME");  
 	      str.append("/Library/Application Support/XBMC/profiles.xml");
 	      return str;
+	    }
+	    else if (path.Equals("q:\\system\\mediasources.xml", false))
+	    {
+        CStdString str = getenv("HOME");  
+        str.append("/Library/Application Support/XBMC/mediasources.xml");
+        return str;
 	    }
 	  }
 #endif
@@ -5874,6 +5880,41 @@ CStdString CUtil::TranslatePathConvertCase(const CStdString& path)
 }
 
 #ifdef _LINUX
+
+// 
+// FIXME, this should be merged with the function below.
+//
+bool CUtil::Command(const CStdStringArray& arrArgs)
+{
+  printf("Executing: ");
+  for (size_t i=0; i<arrArgs.size(); i++)
+    printf("%s ", arrArgs[i].c_str());
+  printf("\n");
+  
+  pid_t child = fork();
+  int n = 0;
+  if (child == 0)
+  {
+    close(0);
+    close(1);
+    close(2);
+    if (arrArgs.size() > 0)
+    {
+      char **args = (char **)alloca(sizeof(char *) * (arrArgs.size() + 3));
+      memset(args, 0, (sizeof(char *) * (arrArgs.size() + 3)));
+      for (size_t i=0; i<arrArgs.size(); i++)
+        args[i] = (char *)arrArgs[i].c_str();
+      execvp(args[0], args);
+    }
+  }
+  else
+  {
+    waitpid(child, &n, 0);
+  }
+
+  return WEXITSTATUS(n) == 0;
+}
+
 bool CUtil::SudoCommand(const CStdString &strCommand)
 {
   CLog::Log(LOGDEBUG, "Executing sudo command: <%s>", strCommand.c_str());
