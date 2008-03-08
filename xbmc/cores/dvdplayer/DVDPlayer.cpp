@@ -1095,6 +1095,9 @@ void CDVDPlayer::OnExit()
   {
     CLog::Log(LOGNOTICE, "CDVDPlayer::OnExit()");
 
+    // set event to inform openfile something went wrong in case openfile is still waiting for this event
+    SetEvent(m_hReadyEvent);
+
     // if we are caching, start playing it agian
     if (m_caching && !m_bAbortRequest)
     {
@@ -1159,9 +1162,6 @@ void CDVDPlayer::OnExit()
     m_pInputStream = NULL;
     m_pDemuxer = NULL;   
   }
-
-  // set event to inform openfile something went wrong in case openfile is still waiting for this event
-  SetEvent(m_hReadyEvent);
 }
 
 void CDVDPlayer::HandleMessages()
@@ -1284,6 +1284,11 @@ void CDVDPlayer::HandleMessages()
           m_dvd.iDVDStillStartTime = 0;
           m_dvd.iDVDStillTime = 0;
         }
+      }
+      else if (pMsg->IsType(CDVDMsg::PLAYER_SET_RECORD))
+      {
+        if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
+          static_cast<CDVDInputStreamTV*>(m_pInputStream)->Record(*(CDVDMsgBool*)pMsg);
       }
       else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH))
       {
@@ -2355,21 +2360,24 @@ void CDVDPlayer::UpdateApplication()
 
 bool CDVDPlayer::CanRecord()
 {
-  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
+  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
     return static_cast<CDVDInputStreamTV*>(m_pInputStream)->CanRecord();
   return false;
 }
 
 bool CDVDPlayer::IsRecording()
 {
-  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
+  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
     return static_cast<CDVDInputStreamTV*>(m_pInputStream)->IsRecording();
   return false;
 }
 
 bool CDVDPlayer::Record(bool bOnOff)
 {
-  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
-    return static_cast<CDVDInputStreamTV*>(m_pInputStream)->Record(bOnOff);
+  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
+  {
+    m_messenger.Put(new CDVDMsgBool(CDVDMsg::PLAYER_SET_RECORD, bOnOff));
+    return true;
+  }
   return false;
 }
