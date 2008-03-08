@@ -307,7 +307,6 @@ cmyth_database_t CCMythSession::GetDatabase()
 
 bool CCMythSession::SetListener(IEventListener *listener)
 {
-  CSingleLock lock(m_section);
   if(!m_event && listener)
   {
     if(!m_dll->IsLoaded())
@@ -322,6 +321,7 @@ bool CCMythSession::SetListener(IEventListener *listener)
     /* start event handler thread */
     CThread::Create(false, THREAD_MINSTACKSIZE);
   }
+  CSingleLock lock(m_section);
   m_listener = listener;
   return true;
 }

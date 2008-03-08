@@ -24,6 +24,18 @@ static void prog_update_callback(cmyth_proginfo_t prog)
 #endif
 #endif
 
+CStdString CCMythFile::GetString(char *str)
+{
+  CStdString result;
+  if(str)
+  {
+    result = str;
+    m_dll->ref_release(str);
+    result.Trim();
+  }
+  return result;
+}
+
 void CCMythFile::OnEvent(int event, const string& data)
 {
   CSingleLock lock(m_section);
@@ -148,50 +160,70 @@ bool CCMythFile::SetupLiveTV(const CURL& url)
   m_recorder = m_dll->conn_get_free_recorder(m_control);
   if(!m_recorder)
   {
+    CLog::Log(LOGERROR, "%s - unable to get free recorder", __FUNCTION__);
+
+    for(int i=0;i<16;i++)
+    {
+      m_recorder = m_dll->conn_get_recorder_from_num(m_control, i);
+      if(!m_recorder)
+        continue;
+
+      cmyth_proginfo_t program;
+      program = m_dll->recorder_get_cur_proginfo(m_recorder);
+      if(!program)
+      {
+        m_dll->ref_release(m_recorder);
+        m_recorder = NULL;
+        continue;
+      }
+      if(channel != GetString(m_dll->proginfo_chanstr(program)))
+      {
+        m_dll->ref_release(program);
+        m_dll->ref_release(m_recorder);
+        m_recorder = NULL;
+        continue;
+      }
+
+      m_dll->ref_release(program);
+      break;
+    }
+  }
+
+  if(!m_recorder)
+  {
     CLog::Log(LOGERROR, "%s - unable to get recorder", __FUNCTION__);
     return false;
   }
 
-  if(!m_dll->recorder_is_recording(m_recorder))
-  {
+  m_recording = !!m_dll->recorder_is_recording(m_recorder);
+  if(!m_recording)
     CLog::Log(LOGDEBUG, "%s - recorder isn't running, let's start it", __FUNCTION__);
-    char* msg = NULL;
-    if(!(m_recorder = m_dll->spawn_live_tv(m_recorder, 16*1024, 4096, prog_update_callback, &msg)))
-    {
-      CLog::Log(LOGERROR, "%s - unable to spawn live tv: %s", __FUNCTION__, msg ? msg : "");
-      return false;
-    }
-  }
 
-  if(!ChangeChannel(CHANNEL_DIRECTION_SAME, channel.c_str()))
-    return false;
-
-  if(!m_dll->recorder_is_recording(m_recorder))
+  char* msg = NULL;
+  if(!(m_recorder = m_dll->spawn_live_tv(m_recorder, 16*1024, 4096, prog_update_callback, &msg)))
   {
-    CLog::Log(LOGERROR, "%s - recorder hasn't started", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s - unable to spawn live tv: %s", __FUNCTION__, msg ? msg : "");
     return false;
   }
 
   m_program = m_dll->recorder_get_cur_proginfo(m_recorder);
   if(m_program)
   {
-    if(m_dll->proginfo_rec_status(m_program) != RS_RECORDING)
-      return false;
-
-    char* str;
-    if((str = m_dll->proginfo_recgroup(m_program)))
+    if(GetString(m_dll->proginfo_chanstr(m_program)) != channel)
     {
-      if(strcmp(str, "LiveTV") != 0)
-        m_recording = true;
-      m_dll->ref_release(str);
+      if(!ChangeChannel(CHANNEL_DIRECTION_SAME, channel.c_str()))
+        return false;
     }
   }
-  else
-    CLog::Log(LOGWARNING, "%s - failed to get current program info", __FUNCTION__);
 
-  char * filename = m_dll->recorder_get_filename(m_recorder);
-  m_filename = filename;
-  m_dll->ref_release(filename);
+  if(m_recording)
+  {
+    /* recorder was running when we started, seek to last position */
+    if(!m_dll->livetv_seek(m_recorder, 0, SEEK_END))
+      CLog::Log(LOGDEBUG, "%s - failed to seek to last position", __FUNCTION__);
+  }
+
+  m_filename = GetString(m_dll->recorder_get_filename(m_recorder));
   return true;
 }
 
