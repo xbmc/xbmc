@@ -423,6 +423,7 @@ bool CHTTP::Connect()
 #elif !defined(_LINUX)
   WSADATA wsaData;
   WSAStartup(0x0101, &wsaData);
+  m_socket.attach(socket(AF_INET, SOCK_STREAM, IPPROTO_TCP));
 #else
   m_socket.attach(socket(AF_INET, SOCK_STREAM, IPPROTO_TCP));
   
