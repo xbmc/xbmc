@@ -18,6 +18,14 @@
 #include "../utils/log.h"
 #include "../utils/SingleLock.h"
 
+#ifndef PRId64
+#ifdef _MSC_VER
+#define PRId64 "I64d"
+#else
+#define PRId64 "lld"
+#endif
+#endif
+
 namespace XFILE {
 
 CCacheStrategy::CCacheStrategy() : m_bEndOfInput(false)
