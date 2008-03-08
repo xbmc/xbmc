@@ -8,9 +8,8 @@
 #define SAFELY(op)     \
 {                      \
     int err;           \
-    if (0) printf("[PortAudio] DEBUG: %s\n", #op); \
     if ((err=op) != 0) \
-       printf("[PortAudio] ERROR[%s:%d]: %s.\n", __FILE__, __LINE__, Pa_GetErrorText(err)); \
+       CLog::Log(LOGERROR, "[PortAudio] ERROR[%s:%d]: %s.", __FILE__, __LINE__, Pa_GetErrorText(err)); \
 }
 
 class CPortAudio
