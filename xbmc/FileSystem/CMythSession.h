@@ -31,7 +31,7 @@ public:
   bool             SetListener(IEventListener *listener);
   cmyth_conn_t     GetControl();
   cmyth_database_t GetDatabase();
-  DllLibCMyth*     GetLibrary() { return m_dll; }
+  DllLibCMyth*     GetLibrary();
 
   bool             UpdateItem(CFileItem &item, cmyth_proginfo_t info);
 private:
