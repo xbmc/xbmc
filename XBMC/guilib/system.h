@@ -139,9 +139,7 @@
 #define HAS_HAL
 #endif
 #define HAS_FILESYSTEM_CDDA
-#ifndef __APPLE__
 #define HAS_FILESYSTEM_SMB
-#endif
 #define HAS_FILESYSTEM
 #define HAS_SYSINFO
 #define HAS_VIDEO_PLAYBACK
