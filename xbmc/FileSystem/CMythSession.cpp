@@ -114,6 +114,8 @@ bool CCMythSession::UpdateItem(CFileItem &item, cmyth_proginfo_t info)
 
   if(m_dll->proginfo_rec_status(info) == RS_RECORDING)
   {
+    tag->m_strStatus = "livetv";
+
     CStdString file;
     if((str = m_dll->proginfo_chanicon(info)))
     {
@@ -262,7 +264,7 @@ void CCMythSession::Process()
 
 void CCMythSession::Disconnect()
 {
-  if(!m_dll)
+  if(!m_dll || !m_dll->IsLoaded())
     return;
 
   StopThread();
@@ -305,7 +307,6 @@ cmyth_database_t CCMythSession::GetDatabase()
 
 bool CCMythSession::SetListener(IEventListener *listener)
 {
-  CSingleLock lock(m_section);
   if(!m_event && listener)
   {
     if(!m_dll->IsLoaded())
@@ -320,6 +321,14 @@ bool CCMythSession::SetListener(IEventListener *listener)
     /* start event handler thread */
     CThread::Create(false, THREAD_MINSTACKSIZE);
   }
+  CSingleLock lock(m_section);
   m_listener = listener;
   return true;
+}
+
+DllLibCMyth* CCMythSession::GetLibrary()
+{
+  if(m_dll->IsLoaded())
+    return m_dll;
+  return NULL;
 }

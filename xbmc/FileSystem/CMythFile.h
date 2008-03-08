@@ -61,6 +61,8 @@ protected:
   bool SetupLiveTV(const CURL& url);
   bool SetupIcon(const CURL& url);
 
+  CStdString GetString(char* str);
+
   CCMythSession*    m_session;
   DllLibCMyth*      m_dll;
   cmyth_conn_t      m_control;
