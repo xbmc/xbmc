@@ -7,6 +7,7 @@
 #include "emu_dummy.h"
 #include "emu_socket.h"
 
+using namespace std;
 
 #define MAX_SOCKETS 100
 #define SO_ERROR    0x1007
@@ -319,7 +320,7 @@ extern "C"
         socket.start = socket.data;
         socket.end = socket.start + len2;
       }
-      len2 = min(len, socket.end - socket.start);
+      len2 = std::min(len, socket.end - socket.start);
       memcpy(buf, socket.start, len2);
       return len2;
     }
@@ -331,7 +332,7 @@ extern "C"
     len2 = 0;
     if(socket.start < socket.end)
     {
-      len2 = min(len, socket.end - socket.start);
+      len2 = std::min(len, socket.end - socket.start);
       memcpy(buf, socket.start, len2);
       socket.start += len2;
       buf++;
