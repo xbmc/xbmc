@@ -1,5 +1,7 @@
 #include <pthread.h>
 #include "CPortAudio.h"
+#include "PlatformDefs.h"
+#include "log.h"
 
 #ifdef __APPLE__
 #include "pa_mac_core.h"
@@ -48,18 +50,12 @@ PaStream* CPortAudio::CreateOutputStream(const CStdString& strName, int channels
 {
     PaStream* ret = 0;
     
-    printf("Asked to create device:   [%s]\n", strName.c_str());
-    printf("Device should be digital: [%d]\n", isDigital);
-    printf("Channels:                 [%d]\n", channels);
-    printf("Sample Rate:              [%d]\n", sampleRate);
-    printf("BitsPerSample:            [%d]\n", bitsPerSample);
-    printf("PacketSize:               [%d]\n", packetSize);
-    
-#if 0
-    // Beginnings of downmixing...
-    if (isDigital == false && channels > 2)
-      channels = 2;
-#endif
+    CLog::Log(LOGNOTICE, "Asked to create device:   [%s]", strName.c_str());
+    CLog::Log(LOGNOTICE, "Device should be digital: [%d]\n", isDigital);
+    CLog::Log(LOGNOTICE, "Channels:                 [%d]\n", channels);
+    CLog::Log(LOGNOTICE, "Sample Rate:              [%d]\n", sampleRate);
+    CLog::Log(LOGNOTICE, "BitsPerSample:            [%d]\n", bitsPerSample);
+    CLog::Log(LOGNOTICE, "PacketSize:               [%d]\n", packetSize);
     
     std::vector<PaDeviceInfo* > deviceList = CPortAudio::GetDeviceList();
     std::vector<PaDeviceInfo* >::const_iterator iter = deviceList.begin();
@@ -79,7 +75,7 @@ PaStream* CPortAudio::CreateOutputStream(const CStdString& strName, int channels
           if (backupDevice == -1)
             backupDevice = i;
           
-          printf("Considering:              [%s]\n", deviceInfo->name);
+          CLog::Log(LOGDEBUG, "Considering:              [%s]\n", deviceInfo->name);
           
           if (strName.Equals(deviceInfo->name) || 
               (isDigital == true && 
@@ -87,7 +83,7 @@ PaStream* CPortAudio::CreateOutputStream(const CStdString& strName, int channels
                    strstr(deviceInfo->name, "S/P-DIF") != 0)) ||
               (backupDevice != -1 && strName.Equals("Default")))
           {
-            printf("Picked device:            [%s]\n", deviceInfo->name);
+            CLog::Log(LOGNOTICE, "Picked device:            [%s]\n", deviceInfo->name);
             pickedDevice = i;
           }
         }
@@ -111,17 +107,20 @@ PaStream* CPortAudio::CreateOutputStream(const CStdString& strName, int channels
       outputParameters.suggestedLatency = Pa_GetDeviceInfo(pickedDevice)->defaultLowOutputLatency;
       
 #ifdef __APPLE__
-      // We want to change sample rates to fit our needs.
-      PaMacCoreStreamInfo macStream;
-      PaMacCore_SetupStreamInfo(&macStream, paMacCoreChangeDeviceParameters | paMacCoreFailIfConversionRequired);
-      outputParameters.hostApiSpecificStreamInfo = &macStream;
+      // We want to change sample rates to fit our needs, but only if we're doing digital out.
+      if (isDigital == true)
+      {
+        PaMacCoreStreamInfo macStream;
+        PaMacCore_SetupStreamInfo(&macStream, paMacCoreChangeDeviceParameters | paMacCoreFailIfConversionRequired);
+        outputParameters.hostApiSpecificStreamInfo = &macStream;
+      }
 #endif
   
       err = Pa_OpenStream(&ret, 0, &outputParameters, (double)sampleRate, framesPerBuffer, paNoFlag, 0, 0);
     }
     
     if (err != 0)
-        printf("[PortAudio] Error opening stream: %d.\n", err);
+        CLog::Log(LOGERROR, "[PortAudio] Error opening stream: %d.\n", err);
     
     return ret;
 }
