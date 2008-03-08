@@ -34,6 +34,7 @@ public:
     PLAYER_SET_SUBTITLESTREAM,      //
     PLAYER_SET_SUBTITLESTREAM_VISIBLE, //
     PLAYER_SET_STATE,               // restore the dvdplayer to a certain state
+    PLAYER_SET_RECORD,              // set record state
     PLAYER_SEEK,                    // 
     PLAYER_SETSPEED,                // set the playback speed
 

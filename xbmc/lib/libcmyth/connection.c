@@ -1290,6 +1290,9 @@ cmyth_conn_get_setting(cmyth_conn_t conn, const char* hostname, const char* sett
 	pthread_mutex_unlock(&mutex);
 	return result;
 err:
+	if(result)
+		ref_release(result);
 	pthread_mutex_unlock(&mutex);
 	return NULL;
 }
+
