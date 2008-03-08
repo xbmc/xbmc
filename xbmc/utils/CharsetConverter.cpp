@@ -203,7 +203,9 @@ void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &wStr
 
   if (m_iconvUtf8toW == (iconv_t) - 1)
   {
-#ifndef _LINUX
+#ifdef __APPLE__
+    m_iconvUtf8toW = iconv_open("UTF-32LE", "UTF-8");
+#elif !defined(_LINUX)
     m_iconvUtf8toW = iconv_open("UTF-16LE", "UTF-8");
 #else
     m_iconvUtf8toW = iconv_open("WCHAR_T", "UTF-8");
@@ -242,7 +244,9 @@ void CCharsetConverter::subtitleCharsetToW(const CStdStringA& strSource, CStdStr
   if (m_iconvSubtitleCharsetToW == (iconv_t) - 1)
   {
     CStdString strCharset=g_langInfo.GetSubtitleCharSet();
-#ifndef _LINUX
+#ifdef __APPLE__
+    m_iconvSubtitleCharsetToW = iconv_open("UTF-32LE", strCharset.c_str());
+#elif !defined(_LINUX)
     m_iconvSubtitleCharsetToW = iconv_open("UTF-16LE", strCharset.c_str());
 #else
     m_iconvSubtitleCharsetToW = iconv_open("WCHAR_T", strCharset.c_str());
@@ -441,7 +445,9 @@ void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSourceCharset,
 void CCharsetConverter::wToUTF8(const CStdStringW& strSource, CStdStringA &strDest)
 {
   if (m_iconvWtoUtf8 == (iconv_t) - 1)
-#if !defined(_LINUX)
+#ifdef __APPLE__
+    m_iconvWtoUtf8 = iconv_open("UTF-8", "UTF-32LE");
+#elif !defined(_LINUX)
     m_iconvWtoUtf8 = iconv_open("UTF-8", "UTF-16LE");
 #else    
     m_iconvWtoUtf8 = iconv_open("UTF-8", "WCHAR_T");
@@ -500,7 +506,9 @@ void CCharsetConverter::utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA 
 void CCharsetConverter::utf16LEtoW(const char* strSource, CStdStringW &strDest)
 {
   if (m_iconvUtf16LEtoW == (iconv_t) - 1)
-#ifndef _LINUX
+#ifdef __APPLE__
+    m_iconvUtf16LEtoW = iconv_open("UTF-32LE", "UTF-16LE");
+#elif !defined(_LINUX)
     m_iconvUtf16LEtoW = iconv_open("UTF-16LE", "UTF-16LE");
 #else    
     m_iconvUtf16LEtoW = iconv_open("WCHAR_T", "UTF16LE");
