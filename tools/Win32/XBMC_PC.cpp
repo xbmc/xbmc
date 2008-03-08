@@ -550,11 +550,11 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
 
   g_xbmcPC = &myApp;
 
-  if (GetDriveType("Q:\\") == DRIVE_NO_ROOT_DIR)
+  /*if (GetDriveType("Q:\\") == DRIVE_NO_ROOT_DIR)
   {
     MessageBox(NULL, "No Q:\\ Drive found, Exiting XBMC_PC", "XBMC_PC: Fatal Error", MB_OK);
     return 0;
-  }
+  }*/
   if (GetDriveType("Q:\\") == DRIVE_CDROM)
   {
     MessageBox(NULL, "Q:\\ Drive can not be DVD/CD Drive, Exiting XBMC_PC", "XBMC_PC: Fatal Error", MB_OK);
@@ -562,10 +562,12 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
   }
 
   if (FAILED(myApp.Create(hInst, commandLine)))
-    return 1;
+	  return 1;
 
   return myApp.Run();
 }
+
+
 
 #ifndef HAS_SDL
 //-----------------------------------------------------------------------------

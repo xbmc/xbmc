@@ -636,7 +636,7 @@ void CSurface::EnableVSync(bool enable)
         CLog::Log(LOGWARNING, "%s - wglSwapIntervalEXT failed", __FUNCTION__);
     }
 #endif
-
+#ifdef HAS_GLX
     // now let's see if we have some system to do specific vsync handling
     if (_glXGetSyncValuesOML && _glXSwapBuffersMscOML && !m_iVSyncMode)
     {
@@ -654,7 +654,7 @@ void CSurface::EnableVSync(bool enable)
       else
         CLog::Log(LOGWARNING, "%s - glXGetVideoSyncSGI failed, glcontext probably not direct", __FUNCTION__);
     }
-
+#endif
     if(!m_iVSyncMode)
     {
       m_iVSyncMode = 0;
