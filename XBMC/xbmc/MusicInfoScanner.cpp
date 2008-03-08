@@ -126,7 +126,7 @@ void CMusicInfoScanner::Process()
     CStdString strTmp, strTmp1;
     StringUtils::SecondsToTimeString(dwTick / 1000, strTmp1);
     strTmp.Format("My Music: Scanning for music info using worker thread, operation took %s", strTmp1);
-    CLog::Log(LOGNOTICE, strTmp.c_str());
+    CLog::Log(LOGNOTICE, "%s", strTmp.c_str());
 
     m_bRunning = false;
     if (m_pObserver)

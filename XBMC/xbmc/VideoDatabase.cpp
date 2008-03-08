@@ -526,7 +526,7 @@ bool CVideoDatabase::LinkMovieToTvshow(long idMovie, long idShow)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, CStdString(__FUNCTION__) + "(%u, %u) failed", idMovie, idShow);
+    CLog::Log(LOGERROR, "%s(%ld, %ld) failed", __FUNCTION__, idMovie, idShow);
   }
 
   return false;
@@ -552,7 +552,7 @@ bool CVideoDatabase::IsLinkedToTvshow(long idMovie)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, CStdString(__FUNCTION__) +"(%u) failed", idMovie);
+    CLog::Log(LOGERROR, "%s(%ld) failed", __FUNCTION__, idMovie);
   }
 
   return false;
@@ -6284,7 +6284,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver)
     sql = "delete from genrelinktvshow where idShow not in (select distinct idShow from tvshowlinkepisode)";
     m_pDS->exec(sql.c_str());
 
-    CLog::Log(LOGDEBUG, CStdString(__FUNCTION__) + " Cleaning movielinktvshow table");
+    CLog::Log(LOGDEBUG, "%s Cleaning movielinktvshow table", __FUNCTION__);
     sql = "delete from movielinktvshow where idShow not in (select distinct idShow from tvshowlinkepisode)";
     m_pDS->exec(sql.c_str());
     sql = "delete from movielinktvshow where idMovie not in (select distinct idMovie from movie)";
