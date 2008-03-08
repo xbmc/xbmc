@@ -1055,6 +1055,10 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
         m_packet[stream][nextPacket].status = 1;//XMEDIAPACKET_STATUS_PENDING;
         m_packet[stream][nextPacket].stream = stream;
 
+#ifdef _WIN32PC
+		    StreamCallback(&m_packet[stream][nextPacket].packet);
+#endif
+
         DWORD  offset = nextPacket * PACKET_SIZE;
         LPVOID start;
         DWORD  size;
