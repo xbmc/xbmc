@@ -2526,16 +2526,11 @@ bool CDVDPlayer::IsRecording()
 
 bool CDVDPlayer::Record(bool bOnOff)
 {
-<<<<<<< .working
-  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
-    return static_cast<CDVDInputStreamTV*>(m_pInputStream)->Record(bOnOff);
-=======
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
   {
     m_messenger.Put(new CDVDMsgBool(CDVDMsg::PLAYER_SET_RECORD, bOnOff));
     return true;
   }
->>>>>>> .merge-right.r11950
   return false;
 }
 
