@@ -24,7 +24,9 @@ using namespace Surface;
 #elif defined (__APPLE__)
 #include "../xbmc/osx/CocoaUtils.h"
 #endif
+#ifdef HAS_XRANDR
 #include "XRandR.h"
+#endif
 
 using namespace std;
 
@@ -564,8 +566,11 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
     res = g_videoConfig.GetSafeMode();
   }
-  
+#ifdef _WIN32PC
+  if (res>=DESKTOP || g_advancedSettings.m_fullScreen)
+#else
   if (res>=DESKTOP)
+#endif
   {
     g_advancedSettings.m_fullScreen = 1;
     m_bFullScreenRoot = true;
@@ -668,6 +673,8 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     if (needsResize)
       m_screenSurface->ResizeSurface(m_iScreenWidth, m_iScreenHeight);
 
+#elif defined(_WIN32) && !defined(HAS_XBOX_HARDWARE)
+    m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0, g_advancedSettings.m_fullScreen);
 #else
     m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0);
 #endif
