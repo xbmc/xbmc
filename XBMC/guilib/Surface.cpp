@@ -303,8 +303,8 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     
     // If we're coming from or going to fullscreen do NOT share.
     if (g_graphicsContext.getScreenSurface() != 0 &&
-        (!fullscreen && g_graphicsContext.getScreenSurface()->m_bFullscreen ||
-         fullscreen && !g_graphicsContext.getScreenSurface()->m_bFullscreen))
+        (fullscreen == false && g_graphicsContext.getScreenSurface()->m_bFullscreen == true ||
+         fullscreen == true  && g_graphicsContext.getScreenSurface()->m_bFullscreen == false))
     {
       shared =0;
     }
@@ -534,12 +534,12 @@ void CSurface::EnableVSync(bool enable)
 #endif
 
 #ifdef __APPLE__
-  if (enable && !m_bVSync)
+  if (enable == true && m_bVSync == false)
   {
     CLog::Log(LOGINFO, "GL: Enabling VSYNC");
     Cocoa_GL_EnableVSync(true);
   }
-  else if (!enable && m_bVSync)
+  else if (enable == false && m_bVSync == true)
   {
     CLog::Log(LOGINFO, "GL: Disabling VSYNC");
     Cocoa_GL_EnableVSync(false);
