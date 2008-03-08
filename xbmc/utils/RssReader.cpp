@@ -155,6 +155,7 @@ void CRssReader::getFeed(vector<DWORD> &text)
   {
     for (int j = 0; j < m_spacesBetweenFeeds; j++)
       text.push_back(L' ');
+    
     for (unsigned int j = 0; j < m_strFeed[i].size(); j++)
     {
       DWORD letter = m_strFeed[i][j] | ((m_strColors[i][j] - 48) << 16);
@@ -291,7 +292,7 @@ void CRssReader::fromRSSToUTF16(const CStdStringA& strSource, CStdStringW& strDe
 			strDest = flippedStrSource;
 			return;
 		}
-
+		
 		outBuf[(originalOutBytes - outBytes) / 2] = '\0';
 		strDest = outBuf;
 	}
@@ -325,7 +326,10 @@ bool CRssReader::Parse(LPSTR szBuffer, int iFeed)
   }
 
   CLog::Log(LOGDEBUG, "RSS feed encoding: %s", m_encoding.c_str());
-#ifndef _LINUX  
+  
+#ifdef __APPLE__
+  m_iconv = iconv_open("UTF-32LE", m_encoding.c_str());
+#elif !defined(_LINUX)  
   m_iconv = iconv_open("UTF-16LE", m_encoding.c_str());
 #else
   m_iconv = iconv_open("WCHAR_T", m_encoding.c_str());
