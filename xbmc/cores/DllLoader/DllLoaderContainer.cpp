@@ -4,6 +4,9 @@
 #ifdef _LINUX
 #include "SoLoader.h"
 #endif
+#ifdef _WIN32PC
+#include "Win32DllLoader.h"
+#endif
 #include "DllLoader.h"
 #include "dll_tracker.h" // for python unload hack
 
@@ -240,6 +243,10 @@ LibraryLoader* DllLoaderContainer::LoadDll(const char* sName, bool bLoadSymbols)
 #ifdef _LINUX
   if (strstr(sName, ".so") != NULL || strstr(sName, ".vis") != NULL || strstr(sName, ".xbs") != NULL)
     pLoader = new SoLoader(sName, bLoadSymbols);
+  else
+#elif defined(_WIN32PC)
+  if (!strnicmp(sName + (strlen(sName) - 4), ".vis", 4))
+    pLoader = new Win32DllLoader(sName);
   else
 #endif
     pLoader = new DllLoader(sName, m_bTrack, false, bLoadSymbols);

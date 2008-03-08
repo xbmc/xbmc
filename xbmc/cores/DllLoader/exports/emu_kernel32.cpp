@@ -247,7 +247,12 @@ extern "C" void WINAPI dllGetSystemInfo(LPSYSTEM_INFO lpSystemInfo)
 #ifdef API_DEBUG
   CLog::Log(LOGDEBUG, "GetSystemInfo(0x%x) =>", lpSystemInfo);
 #endif
+#ifdef _WIN32PC
+  // VS 2003 complains about x even so it's defined
+  lpSystemInfo->wProcessorArchitecture = 0; //#define PROCESSOR_ARCHITECTURE_INTEL 0
+#else
   lpSystemInfo->x.wProcessorArchitecture = 0; //#define PROCESSOR_ARCHITECTURE_INTEL 0
+#endif
   lpSystemInfo->dwPageSize = 4096;   //Xbox page size
   lpSystemInfo->lpMinimumApplicationAddress = (void *)0x00000000;
   lpSystemInfo->lpMaximumApplicationAddress = (void *)0x7fffffff;
@@ -1150,8 +1155,13 @@ extern "C" BOOL WINAPI dllDVDReadFileLayerChangeHack(HANDLE hFile, LPVOID lpBuff
       p++;
     if (p == (BYTE *)lpBuffer + numChecked)
     { // fully NULL block - reread
+#ifdef _WIN32PC
+      LONG low = 0;
+      LONG high = 0;
+#else
       int32_t low = 0;
       int32_t high = 0;
+#endif 
       low = SetFilePointer(hFile, low, &high, FILE_CURRENT);
       CLog::Log(LOGWARNING,
                 "DVDReadFile() warning - "

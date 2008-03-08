@@ -10,9 +10,11 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/timeb.h>
+#ifdef _LINUX
 #include <sys/ioctl.h>
 #ifndef __APPLE__
 #include <linux/cdrom.h>
+#endif
 #endif
 #include <fcntl.h>
 #include <time.h>
@@ -1621,4 +1623,5 @@ extern "C"
 #endif
 
 }
+
 
