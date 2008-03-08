@@ -52,7 +52,7 @@ private:
 
   AUTOPTR::CAutoPtrSocket m_socket;
 #ifndef _LINUX
-  WSAEVENT hEvent;
+  HANDLE hEvent;
 #endif
   std::string m_strProxyServer;
   std::string m_strProxyUsername;
@@ -78,4 +78,5 @@ private:
 };
 
 #endif // !defined(AFX_HTTP_H__A368CB6F_3D08_4966_9F9F_961A59CB4EC7__INCLUDED_)
+
 

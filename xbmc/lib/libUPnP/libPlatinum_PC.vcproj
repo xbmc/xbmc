@@ -144,10 +144,11 @@
 				AdditionalIncludeDirectories=".\Platinum\ThirdParty\Neptune\Source\Core;.\Platinum\Source\Core;.\Platinum\Source\Devices\MediaServer;.\Platinum\ThirdParty\Neptune\Source\System\Win32"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				RuntimeLibrary="0"
+				EnableEnhancedInstructionSet="1"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
-				DebugInformationFormat="3"/>
+				DebugInformationFormat="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
