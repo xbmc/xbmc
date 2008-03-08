@@ -13,7 +13,7 @@ public:
   PyObject* pCallbackWindow;
   PyObject* pObject;
   int controlId; // for XML window
-#ifdef _LINUX
+#if defined(_LINUX) || defined(_WIN32PC)  
   int type; // 0=Action, 1=Control;
 #endif
 

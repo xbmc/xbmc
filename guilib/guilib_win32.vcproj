@@ -108,13 +108,14 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa"
 				Optimization="0"
-				AdditionalIncludeDirectories="../xbmc/;freetype2/include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;HAS_SDL"
+				AdditionalIncludeDirectories="../tools/Win32;../xbmc/;freetype2/include"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;HAS_SDL;_MSVC"
 				StringPooling="FALSE"
 				MinimalRebuild="TRUE"
 				ExceptionHandling="FALSE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
+				EnableEnhancedInstructionSet="0"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="include.h"
 				WarningLevel="3"
@@ -153,20 +154,23 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="freetype2\include"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;HAS_SDL"
+				AdditionalIncludeDirectories="../tools/win32;../xbmc;freetype2\include"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;HAS_SDL;_MSVC"
+				MinimalRebuild="FALSE"
 				RuntimeLibrary="0"
+				EnableEnhancedInstructionSet="1"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="include.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="3"/>
+				DebugInformationFormat="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalDependencies="SDL.lib SDL_image.lib opengl32.lib DSound.lib glew32.lib glu32.lib"
 				OutputFile="$(OutDir)/guilib.lib"
-				AdditionalLibraryDirectories="SDL.lib SDL_image.lib opengl32.lib DSound.lib glew32.lib glu32.lib"
+				AdditionalLibraryDirectories=""
 				IgnoreDefaultLibraryNames=""/>
 			<Tool
 				Name="VCMIDLTool"/>

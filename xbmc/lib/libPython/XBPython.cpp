@@ -135,7 +135,7 @@ bool XBPython::FileExist(const char* strFile)
 {
   if (!strFile) return false;
 
-  if (access(strFile, 0) != 0)
+  if (access(_P(strFile), 0) != 0)
   {
     CLog::Log(LOGERROR, "Python: Cannot find '%s'", strFile);
     return false;
