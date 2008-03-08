@@ -131,7 +131,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="../../xbmc/cores/dvdplayer;../../tools/Win32;../../xbmc/cores;../../xbmc/;../../guilib/;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32"
-				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0500;WINVER=0x0500;HAS_SDL"
+				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0500;WINVER=0x0500;HAS_SDL;NOMINMAX"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="1"
@@ -187,7 +187,7 @@
 				InlineFunctionExpansion="0"
 				OmitFramePointers="FALSE"
 				AdditionalIncludeDirectories="../../xbmc/cores/dvdplayer;../../tools/Win32;../../xbmc/cores;../../xbmc/;../../guilib/;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32"
-				PreprocessorDefinitions="_MSVC;WIN32;NDEBUG;_WINDOWS;_WIN32_WINNT=0x0500;WINVER=0x0500;HAS_SDL"
+				PreprocessorDefinitions="_MSVC;WIN32;NDEBUG;_WINDOWS;_WIN32_WINNT=0x0500;WINVER=0x0500;HAS_SDL;NOMINMAX"
 				StringPooling="FALSE"
 				MinimalRebuild="TRUE"
 				RuntimeLibrary="0"
@@ -2963,12 +2963,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\xbox\Network.h">
-				</File>
-				<File
-					RelativePath="..\..\xbmc\xbox\xbeheader.cpp">
-				</File>
-				<File
-					RelativePath="..\..\xbmc\xbox\xbeheader.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\xbox\XKGeneral.cpp">
