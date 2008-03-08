@@ -70,7 +70,7 @@ PortAudioDirectSound::PortAudioDirectSound(IAudioCallback* pCallback, int iChann
   else
     device = g_guiSettings.GetString("audiooutput.passthroughdevice");
 
-  printf("Asked to open device: [%s]\n", device.c_str());
+  CLog::Log(LOGINFO, "Asked to open device: [%s]\n", device.c_str());
 
   m_pStream = CPortAudio::CreateOutputStream(device,
                                              m_uiChannels, 
@@ -89,7 +89,7 @@ PortAudioDirectSound::PortAudioDirectSound(IAudioCallback* pCallback, int iChann
 //***********************************************************************************************
 PortAudioDirectSound::~PortAudioDirectSound()
 {
-  CLog::Log(LOGDEBUG,"PortAudioDirectSound() dtor\n");
+  CLog::Log(LOGDEBUG,"PortAudioDirectSound() dtor");
   Deinitialize();
 }
 
@@ -97,7 +97,7 @@ PortAudioDirectSound::~PortAudioDirectSound()
 //***********************************************************************************************
 HRESULT PortAudioDirectSound::Deinitialize()
 {
-  CLog::Log(LOGDEBUG,"PortAudioDirectSound::Deinitialize\n");
+  CLog::Log(LOGDEBUG,"PortAudioDirectSound::Deinitialize");
   
   if (m_pStream)
   {
@@ -108,7 +108,7 @@ HRESULT PortAudioDirectSound::Deinitialize()
   m_bIsAllocated = false;
   m_pStream = 0;
   
- 	CLog::Log(LOGDEBUG,"PortAudioDirectSound::Deinitialize - set active\n");
+ 	CLog::Log(LOGDEBUG,"PortAudioDirectSound::Deinitialize - set active");
   g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
 
   return S_OK;
@@ -200,13 +200,11 @@ HRESULT PortAudioDirectSound::SetCurrentVolume(LONG nVolume)
 //***********************************************************************************************
 DWORD PortAudioDirectSound::GetSpace()
 {
-  if (!m_bIsAllocated) 
+  if (!m_pStream)
     return 0;
   
   // Figure out how much space is available.
   DWORD numFrames = Pa_GetStreamWriteAvailable(m_pStream);
-  
-  printf("Returning %d bytes free\n", numFrames * (m_uiBitsPerSample/8));
   return numFrames * (m_uiBitsPerSample/8);
 }
 
@@ -221,7 +219,14 @@ DWORD PortAudioDirectSound::AddPackets(unsigned char *data, DWORD len)
   
   // Find out how much space we have available.
   DWORD framesPassedIn = len / (m_uiChannels * m_uiBitsPerSample/8);
-  DWORD framesToWrite  = MIN(Pa_GetStreamWriteAvailable(m_pStream), framesPassedIn);
+  DWORD framesToWrite  = Pa_GetStreamWriteAvailable(m_pStream);
+  
+  // Clip to the amount we got passed in. I was using MIN above, but that
+  // was a very bad idea since Pa_GetStreamWriteAvailable would get called
+  // twice and could return different answers!
+  //
+  if (framesToWrite > framesPassedIn)
+    framesToWrite = framesPassedIn;
   
   unsigned char* pcmPtr = data;
   
