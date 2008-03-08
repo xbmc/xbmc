@@ -1053,7 +1053,6 @@ extern int cmyth_livetv_keep_recording(cmyth_recorder_t rec, cmyth_database_t db
 	int autoexpire;
 	const char* recgroup;
 	cmyth_mysql_query_t * query;
-	MYSQL_RES *res= NULL;
 	char timestamp[CMYTH_TIMESTAMP_LEN+1];
 
 	if(cmyth_db_check_connection(db) != 0)

@@ -181,7 +181,7 @@ NPT_NetworkInterface::GetNetworkInterfaces(NPT_List<NPT_NetworkInterface*>& inte
 void 
 NPT_Console::Output(const char* message)
 {
-    CLog::Log(LOGDEBUG, message);
+    CLog::Log(LOGDEBUG, "%s", message);
 }
 
 /*----------------------------------------------------------------------

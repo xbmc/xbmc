@@ -956,7 +956,7 @@ extern "C"
         memcpy(buf, buffer, size * count);
         buf[size * count] = 0; // string termination
         
-        CLog::Log(LOGDEBUG, buf);
+        CLog::Log(LOGDEBUG, "%s", buf);
         
         free(buf);
         return count;

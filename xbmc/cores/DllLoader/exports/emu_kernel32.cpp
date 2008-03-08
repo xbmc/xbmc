@@ -247,7 +247,7 @@ extern "C" void WINAPI dllGetSystemInfo(LPSYSTEM_INFO lpSystemInfo)
 #ifdef API_DEBUG
   CLog::Log(LOGDEBUG, "GetSystemInfo(0x%x) =>", lpSystemInfo);
 #endif
-  lpSystemInfo->wProcessorArchitecture = 0; //#define PROCESSOR_ARCHITECTURE_INTEL 0
+  lpSystemInfo->x.wProcessorArchitecture = 0; //#define PROCESSOR_ARCHITECTURE_INTEL 0
   lpSystemInfo->dwPageSize = 4096;   //Xbox page size
   lpSystemInfo->lpMinimumApplicationAddress = (void *)0x00000000;
   lpSystemInfo->lpMaximumApplicationAddress = (void *)0x7fffffff;

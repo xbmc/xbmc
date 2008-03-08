@@ -64,7 +64,7 @@ bool CGLSLVertexShader::Compile()
     GLchar log[LOG_SIZE];
     CLog::Log(LOGERROR, "GL: Error compiling shader");
     glGetShaderInfoLog(m_vertexShader, LOG_SIZE, NULL, log);
-    CLog::Log(LOGERROR, (const char*)log);
+    CLog::Log(LOGERROR, "%s", log);
     m_lastLog = log;
     m_compiled = false;
   }
@@ -73,7 +73,7 @@ bool CGLSLVertexShader::Compile()
     GLchar log[LOG_SIZE];
     CLog::Log(LOGDEBUG, "GL: Shader compilation log:");
     glGetShaderInfoLog(m_vertexShader, LOG_SIZE, NULL, log);
-    CLog::Log(LOGDEBUG, (const char*)log);
+    CLog::Log(LOGDEBUG, "%s", log);
     m_lastLog = log;
     m_compiled = true;
   }
@@ -174,7 +174,7 @@ bool CGLSLPixelShader::Compile()
     GLchar log[LOG_SIZE];
     CLog::Log(LOGERROR, "GL: Error compiling shader");
     glGetShaderInfoLog(m_pixelShader, LOG_SIZE, NULL, log);
-    CLog::Log(LOGERROR, (const char*)log);
+    CLog::Log(LOGERROR, "%s", log);
     m_lastLog = log;
     m_compiled = false;
   }
@@ -183,7 +183,7 @@ bool CGLSLPixelShader::Compile()
     GLchar log[LOG_SIZE];
     CLog::Log(LOGDEBUG, "GL: Shader compilation log:");
     glGetShaderInfoLog(m_pixelShader, LOG_SIZE, NULL, log);
-    CLog::Log(LOGDEBUG, (const char*)log);
+    CLog::Log(LOGDEBUG, "%s", log);
     m_lastLog = log;
     m_compiled = true;
   }
@@ -317,7 +317,7 @@ bool CGLSLShaderProgram::CompileAndLink()
     GLchar log[LOG_SIZE];
     CLog::Log(LOGERROR, "GL: Error linking shader");
     glGetProgramInfoLog(m_shaderProgram, LOG_SIZE, NULL, log);
-    CLog::Log(LOGERROR, (const char*)log);
+    CLog::Log(LOGERROR, "%s", log);
     goto error;
   }
   VerifyGLState();
@@ -330,7 +330,7 @@ bool CGLSLShaderProgram::CompileAndLink()
     GLchar log[LOG_SIZE];
     CLog::Log(LOGERROR, "GL: Error validating shader");
     glGetProgramInfoLog(m_shaderProgram, LOG_SIZE, NULL, log);
-    CLog::Log(LOGERROR, (const char*)log);
+    CLog::Log(LOGERROR, "%s", log);
     goto error;
   }
   VerifyGLState();
