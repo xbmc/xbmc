@@ -109,7 +109,7 @@
 				AdditionalOptions="/EHa"
 				Optimization="0"
 				AdditionalIncludeDirectories="../tools/Win32;../xbmc/;freetype2/include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;HAS_SDL;_MSVC"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;HAS_SDL;_MSVC;NOMINMAX"
 				StringPooling="FALSE"
 				MinimalRebuild="TRUE"
 				ExceptionHandling="FALSE"
@@ -155,7 +155,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="../tools/win32;../xbmc;freetype2\include"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;HAS_SDL;_MSVC"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;HAS_SDL;_MSVC;NOMINMAX"
 				MinimalRebuild="FALSE"
 				RuntimeLibrary="0"
 				EnableEnhancedInstructionSet="1"
