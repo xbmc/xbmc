@@ -15,6 +15,8 @@ public:
   virtual cmyth_file_t     conn_connect_file        (cmyth_proginfo_t prog, cmyth_conn_t control, unsigned buflen, int tcp_rcvbuf)=0;
   virtual cmyth_file_t     conn_connect_path        (char* path, cmyth_conn_t control, unsigned buflen, int tcp_rcvbuf)=0;
   virtual cmyth_recorder_t conn_get_free_recorder   (cmyth_conn_t conn)=0;
+  virtual cmyth_recorder_t conn_get_recorder_from_num(cmyth_conn_t conn, int num)=0;
+
 
   virtual cmyth_event_t    event_get                (cmyth_conn_t conn, char * data, int len)=0;
   virtual int              event_select             (cmyth_conn_t conn, struct timeval *timeout)=0;
@@ -33,6 +35,7 @@ public:
   virtual int              recorder_spawn_livetv    (cmyth_recorder_t rec)=0;
   virtual char*            recorder_get_filename    (cmyth_recorder_t rec)=0;
   virtual cmyth_proginfo_t recorder_get_cur_proginfo(cmyth_recorder_t rec)=0;
+  virtual cmyth_proginfo_t recorder_get_next_proginfo(cmyth_recorder_t rec, cmyth_proginfo_t current, cmyth_browsedir_t direction)=0;
   virtual int              recorder_change_channel  (cmyth_recorder_t rec, cmyth_channeldir_t direction)=0;
   virtual int              recorder_pause           (cmyth_recorder_t rec)=0;
   virtual int              recorder_stop_livetv     (cmyth_recorder_t rec)=0;
@@ -74,6 +77,9 @@ public:
   virtual cmyth_proginfo_rec_status_t proginfo_rec_status(cmyth_proginfo_t prog)=0;
   virtual cmyth_proginfo_t  proginfo_get_from_basename   (cmyth_conn_t control, const char* basename)=0;
   virtual int               proginfo_delete_recording(cmyth_conn_t control, cmyth_proginfo_t prog)=0;
+  virtual int               proginfo_chan_id        (cmyth_proginfo_t prog)=0;
+  virtual cmyth_proginfo_t  proginfo_get_detail     (cmyth_conn_t control, cmyth_proginfo_t p)=0;
+
 
   virtual void             ref_release              (void* ptr)=0;
   virtual void*            ref_hold                 (void* ptr)=0;
@@ -100,6 +106,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
   DEFINE_METHOD4(cmyth_file_t,        conn_connect_path,        (char* p1, cmyth_conn_t p2, unsigned p3, int p4))
 
   DEFINE_METHOD1(cmyth_recorder_t,    conn_get_free_recorder,   (cmyth_conn_t p1))
+  DEFINE_METHOD2(cmyth_recorder_t,    conn_get_recorder_from_num,(cmyth_conn_t p1, int p2))
 
   DEFINE_METHOD3(cmyth_event_t,       event_get,                (cmyth_conn_t p1, char * p2, int p3))
   DEFINE_METHOD2(int,                 event_select,             (cmyth_conn_t p1, struct timeval *p2))
@@ -117,6 +124,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
   DEFINE_METHOD1(int,                 recorder_spawn_livetv,    (cmyth_recorder_t p1))
   DEFINE_METHOD1(char*,               recorder_get_filename,    (cmyth_recorder_t p1))
   DEFINE_METHOD1(cmyth_proginfo_t,    recorder_get_cur_proginfo, (cmyth_recorder_t p1))
+  DEFINE_METHOD3(cmyth_proginfo_t,    recorder_get_next_proginfo, (cmyth_recorder_t p1, cmyth_proginfo_t p2, cmyth_browsedir_t p3))
   DEFINE_METHOD2(int,                 recorder_change_channel,  (cmyth_recorder_t p1, cmyth_channeldir_t p2))
   DEFINE_METHOD1(int,                 recorder_pause,           (cmyth_recorder_t p1))
   DEFINE_METHOD1(int,                 recorder_stop_livetv,     (cmyth_recorder_t p1))
@@ -156,6 +164,8 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
   DEFINE_METHOD1(cmyth_proginfo_rec_status_t, proginfo_rec_status, (cmyth_proginfo_t p1))
   DEFINE_METHOD2(cmyth_proginfo_t,    proginfo_get_from_basename,    (cmyth_conn_t p1, const char* p2))
   DEFINE_METHOD2(int,                 proginfo_delete_recording, (cmyth_conn_t p1, cmyth_proginfo_t p2))
+  DEFINE_METHOD1(int,                 proginfo_chan_id,         (cmyth_proginfo_t p1))
+  DEFINE_METHOD2(cmyth_proginfo_t,    proginfo_get_detail,      (cmyth_conn_t p1, cmyth_proginfo_t p2))
 
   DEFINE_METHOD1(void,                ref_release,              (void* p1))
   DEFINE_METHOD1(void*,               ref_hold,                 (void* p1))
@@ -171,6 +181,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
     RESOLVE_METHOD_RENAME(cmyth_conn_connect_file, conn_connect_file)
     RESOLVE_METHOD_RENAME(cmyth_conn_connect_path, conn_connect_path)
     RESOLVE_METHOD_RENAME(cmyth_conn_get_free_recorder, conn_get_free_recorder)
+    RESOLVE_METHOD_RENAME(cmyth_conn_get_recorder_from_num, conn_get_recorder_from_num)
 
     RESOLVE_METHOD_RENAME(cmyth_event_get, event_get)
     RESOLVE_METHOD_RENAME(cmyth_event_select, event_select)
@@ -187,6 +198,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
     RESOLVE_METHOD_RENAME(cmyth_recorder_spawn_livetv, recorder_spawn_livetv)
     RESOLVE_METHOD_RENAME(cmyth_recorder_get_filename, recorder_get_filename)
     RESOLVE_METHOD_RENAME(cmyth_recorder_get_cur_proginfo, recorder_get_cur_proginfo)
+    RESOLVE_METHOD_RENAME(cmyth_recorder_get_next_proginfo, recorder_get_next_proginfo)
     RESOLVE_METHOD_RENAME(cmyth_recorder_change_channel, recorder_change_channel)
     RESOLVE_METHOD_RENAME(cmyth_recorder_pause, recorder_pause)
     RESOLVE_METHOD_RENAME(cmyth_recorder_stop_livetv, recorder_stop_livetv)
@@ -227,6 +239,8 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
     RESOLVE_METHOD_RENAME(cmyth_proginfo_rec_status, proginfo_rec_status)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_get_from_basename, proginfo_get_from_basename)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_delete_recording, proginfo_delete_recording)
+    RESOLVE_METHOD_RENAME(cmyth_proginfo_chan_id, proginfo_chan_id)
+    RESOLVE_METHOD_RENAME(cmyth_proginfo_get_detail, proginfo_get_detail)
 
     RESOLVE_METHOD(ref_release)
     RESOLVE_METHOD(ref_hold)

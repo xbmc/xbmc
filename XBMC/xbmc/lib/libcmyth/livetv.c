@@ -874,6 +874,22 @@ cmyth_livetv_chain_seek(cmyth_recorder_t rec, long long offset, int whence)
 		if ((offset == 0) && (whence == SEEK_CUR))
 			return fp->file_pos;
 
+    if (whence == SEEK_END) {
+      /* HACK, since the below code doesn't support anything *
+       * but relative seeks, we convert stuff to relative    */
+      whence = SEEK_CUR;
+			c = 0;
+
+      ct = rec->rec_livetv_chain->chain_ct;
+      do {
+        cur = rec->rec_livetv_chain->chain_current;
+        c  += rec->rec_livetv_chain->chain_files[cur]->file_length;
+        cur++;
+      } while(cur < ct);
+      c -= fp->file_pos;
+      offset = c - offset;
+    }
+
 		pthread_mutex_lock(&mutex);
 
 	/* Loop in case we need to jump forward or back in the chain */
