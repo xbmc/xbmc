@@ -174,6 +174,11 @@ char CMouse::GetWheel() const
   return m_mouseState.dz;
 }
 
+void CMouse::UpdateMouseWheel(char dir)
+{
+  m_mouseState.dz = dir;
+}
+
 void CMouse::SetExclusiveAccess(DWORD dwControlID, DWORD dwWindowID, const CPoint &point)
 {
   m_exclusiveControlID = dwControlID;
