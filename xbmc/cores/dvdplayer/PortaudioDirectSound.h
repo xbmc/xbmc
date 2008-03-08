@@ -62,6 +62,8 @@ public:
   virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers);
   virtual void Flush();
 
+  bool IsValid() { return m_pStream != 0; }
+  
 private:
   PaStream*  m_pStream;
   //snd_pcm_uframes_t 	m_maxFrames;
