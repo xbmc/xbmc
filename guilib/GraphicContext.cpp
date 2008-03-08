@@ -1,5 +1,6 @@
 #include "include.h"
 #include "GraphicContext.h"
+#include "GUIFontManager.h"
 #include "GUIMessage.h"
 #include "IMsgSenderCallback.h"
 #include "../xbmc/Settings.h"
@@ -556,17 +557,23 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
   {
     res = g_videoConfig.GetBestMode();
   }
+  
   if (!IsValidResolution(res))
-  { // Choose a failsafe resolution that we can actually display
+  { 
+    // Choose a failsafe resolution that we can actually display
     CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
     res = g_videoConfig.GetSafeMode();
   }
+  
   if (res>=DESKTOP)
   {
     g_advancedSettings.m_fullScreen = 1;
     m_bFullScreenRoot = true;
     if (res!=m_Resolution)
-      g_settings.m_ResInfo[WINDOW] = g_settings.m_ResInfo[m_Resolution];
+    {
+      if (m_Resolution != INVALID)
+        g_settings.m_ResInfo[WINDOW] = g_settings.m_ResInfo[m_Resolution];
+    }
   }
   else
   {
@@ -576,6 +583,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     g_xrandr.RestoreState();
 #endif
   }
+  
   if (res==WINDOW)
   {
     g_advancedSettings.m_fullScreen = 0;
@@ -640,11 +648,14 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 
 #else
 #ifdef __APPLE__
+    // Make sure this gets set early.
+    m_Resolution = res;
+    
     // Allow for fullscreen.
+    bool needsResize = (m_screenSurface != 0);
     if (!m_screenSurface)
       m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0, g_advancedSettings.m_fullScreen);
-    else
-      m_screenSurface->ResizeSurface(m_iScreenWidth, m_iScreenHeight);
+    
     if (g_advancedSettings.m_fullScreen)
     {
       SetFullScreenRoot(true);
@@ -653,6 +664,9 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     {
       SetFullScreenRoot(false);
     }
+    
+    if (needsResize)
+      m_screenSurface->ResizeSurface(m_iScreenWidth, m_iScreenHeight);
 
 #else
     m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0);
@@ -771,6 +785,9 @@ void CGraphicContext::ResetOverscan(RESOLUTION res, OVERSCAN &overscan)
 
 void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 {
+  // For now these are all on the first screen.
+  g_settings.m_ResInfo[res].iScreen = 0;
+  
   // 1080i
   switch (res)
   {
@@ -848,8 +865,14 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     g_videoConfig.GetDesktopResolution(g_settings.m_ResInfo[res].iWidth,
                                        g_settings.m_ResInfo[res].iHeight);
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * g_settings.m_ResInfo[res].iHeight);
+#ifdef __APPLE__
+    // Terminology is confusing Apple users, bless their hearts.
+    snprintf(g_settings.m_ResInfo[res].strMode, sizeof(g_settings.m_ResInfo[res].strMode), 
+             "%dx%d (Full screen)", g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight);
+#else
     snprintf(g_settings.m_ResInfo[res].strMode, sizeof(g_settings.m_ResInfo[res].strMode), 
              "%dx%d (Desktop)", g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight);
+#endif
     
     // Set widescreen flag if appropriate. The number 1.4 is arbitrary, but chosen because 4:3 = 1.3333.
     if ((float)g_settings.m_ResInfo[res].iWidth/(float)g_settings.m_ResInfo[res].iHeight >= 1.4)
@@ -1359,8 +1382,9 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
 #endif
 
 #ifdef __APPLE__
-    Cocoa_GL_SetFullScreen(true);
+    Cocoa_GL_SetFullScreen(g_settings.m_ResInfo[m_Resolution].iScreen, g_settings.m_ResInfo[m_Resolution].iWidth, g_settings.m_ResInfo[m_Resolution].iHeight, true);
     m_screenSurface->RefreshCurrentContext();
+    g_fontManager.ReloadTTFFonts();
 #else
     SDL_SetVideoMode(width, height, 0, SDL_FULLSCREEN);
 #endif
@@ -1374,8 +1398,9 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
   else
   {
 #ifdef __APPLE__
-    Cocoa_GL_SetFullScreen(false);
+    Cocoa_GL_SetFullScreen(g_settings.m_ResInfo[m_Resolution].iScreen, g_settings.m_ResInfo[m_Resolution].iWidth, g_settings.m_ResInfo[m_Resolution].iHeight, false);
     m_screenSurface->RefreshCurrentContext();
+    g_fontManager.ReloadTTFFonts();
 #else
     SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0, SDL_RESIZABLE);
 #endif
@@ -1386,6 +1411,11 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
 #endif
     g_Mouse.SetResolution(g_settings.m_ResInfo[m_Resolution].iWidth, g_settings.m_ResInfo[m_Resolution].iHeight, 1, 1);
   }
+  
+  // Make sure VSync is enabled if it needs to be.
+  if (g_videoConfig.GetVSyncMode() == VSYNC_ALWAYS)
+     m_screenSurface->EnableVSync();
+  
   m_bFullScreenRoot = fs;
   g_advancedSettings.m_fullScreen = fs;
   SetFullScreenViewWindow(m_Resolution);

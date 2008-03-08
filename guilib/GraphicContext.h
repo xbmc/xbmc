@@ -89,13 +89,14 @@ struct OVERSCAN
 struct RESOLUTION_INFO
 {
   OVERSCAN Overscan;
+  int iScreen;
   int iWidth;
   int iHeight;
   int iSubtitles;
   DWORD dwFlags;
   float fPixelRatio;
   float fRefreshRate;
-  char strMode[32];
+  char strMode[48];
   char strOutput[32];
   char strId[16];
 };
