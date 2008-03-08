@@ -13,6 +13,8 @@
 #include "PlatformDefs.h"
 #include "linux/XSyncUtils.h"
 #include "XCriticalSection.h"
+#else
+#include "win32/XCriticalSection.h"
 #endif
 
 class CCriticalSection
