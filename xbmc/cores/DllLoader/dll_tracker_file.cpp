@@ -59,7 +59,7 @@ extern "C" void tracker_file_free_all(DllTrackInfo* pInfo)
     for (FileListIter it = pInfo->fileList.begin(); it != pInfo->fileList.end(); ++it)
     {
       file = *it;
-      CLog::Log(LOGDEBUG,file->name);
+      CLog::Log(LOGDEBUG, "%p", file->name);
       free(file->name);
       
       if (file->type == FILE_XBMC_OPEN) dll_close(file->handle);

@@ -495,7 +495,7 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
             int offset = 0;
             while (offset <= iwe_buf.u.data.length)
             {
-               switch (custom[offset])
+               switch ((unsigned char)custom[offset])
                {
                   case 0xdd: /* WPA1 */
                      if (encryption != ENC_WPA2)

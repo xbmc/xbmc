@@ -30,7 +30,7 @@ enum StreamSource {
   STREAM_SOURCE_DEMUX         = 0x100, 
   STREAM_SOURCE_NAV           = 0x200,
   STREAM_SOURCE_DEMUX_SUB     = 0x300,
-  STREAM_SOURCE_TEXT          = 0x400,
+  STREAM_SOURCE_TEXT          = 0x400
 };
 
 #define STREAM_SOURCE_MASK(a) ((a) & 0xf00)
