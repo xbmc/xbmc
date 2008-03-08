@@ -185,11 +185,13 @@
 #endif
 #endif
 #ifdef _WIN32
+#define _WIN32PC       // precompiler definition for the windows build
 #undef HAS_SDL_AUDIO   // use dsound for audio on win32
 #undef HAS_DVD_SWSCALE // no win32 build of swscale yet
 #undef HAS_SCREENSAVER // no screensavers
 #undef HAS_PERFORMANCE_SAMPLE // no performance sampling
 #undef HAS_LINUX_NETWORK
+#undef HAS_SHOUTCAST
 #define snprintf _snprintf
 #endif
 #endif
