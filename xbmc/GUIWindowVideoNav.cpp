@@ -929,7 +929,8 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
             buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
           if (item->m_bIsFolder || !item->GetVideoInfoTag()->m_bWatched)
             buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
-          buttons.Add(CONTEXT_BUTTON_EDIT, 16105); //Edit Title
+          if (node != NODE_TYPE_SEASONS)
+            buttons.Add(CONTEXT_BUTTON_EDIT, 16105); //Edit Title
         }
         if (m_database.GetTvShowCount() > 0 && item->HasVideoInfoTag() && !item->m_bIsFolder && item->GetVideoInfoTag()->m_iEpisode == -1 && item->GetVideoInfoTag()->m_artist.size() == 0) // movie entry
         {
