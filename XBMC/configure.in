@@ -58,11 +58,19 @@ AC_ARG_ENABLE([pcre],
                [enable PCRE based regular expression support (default is yes)])],
             [use_pcre=$enableval],
             [use_pcre=yes])
+
 AC_ARG_ENABLE([halmount],
             [AS_HELP_STRING([--enable-halmount],
                [enable automounting feature (default is no)])],
             [use_halmount=$enableval],
             [use_halmount=no])
+
+AC_PATH_PROG(CCACHE,ccache,none)
+AC_ARG_ENABLE([ccache],
+            [AS_HELP_STRING([--enable-ccache],
+               [enable building with ccache feature (default is yes if ccache is installed)])],
+            [use_ccache=$enableval],
+            [use_ccache=yes])
 
 # Checks for programs.
 AC_PROG_AWK
@@ -305,6 +313,20 @@ if test "$use_halmount" = "yes"; then
   SDL_DEFINES="$SDL_DEFINES -DHAL_HANDLEMOUNT"
 else
   final_message="$final_message\n  Automount:\tNo"
+fi
+
+if test "$use_ccache" = "yes"; then
+  if test "$ac_cv_path_CCACHE" = "none"; then
+     echo "ccache not found. Falling back to default CC"
+     final_message="$final_message\n  ccache:\tNo"
+  else
+    CC="$ac_cv_path_CCACHE $CC"
+    CXX="$ac_cv_path_CCACHE $CXX"
+    AC_MSG_NOTICE(enabling ccache)
+    final_message="$final_message\n  ccache:\tYes"
+  fi
+else
+  final_message="$final_message\n  ccache:\tNo"
 fi
 
 AC_SUBST(DEBUG_FLAGS)
