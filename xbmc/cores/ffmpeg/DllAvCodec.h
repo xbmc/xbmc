@@ -125,6 +125,8 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
 #else
 #ifdef __APPLE__
   DECLARE_DLL_WRAPPER(DllAvCodec, Q:\\system\\players\\dvdplayer\\avcodec-51-osx.so)
+#elif !defined(_LINUX)
+  DECLARE_DLL_WRAPPER(DllAvFormat, Q:\\system\\players\\dvdplayer\\avcodec-51.dll)
 #elif defined(__x86_64__)
   DECLARE_DLL_WRAPPER(DllAvCodec, Q:\\system\\players\\dvdplayer\\avcodec-51-x86_64-linux.so)
 #else
