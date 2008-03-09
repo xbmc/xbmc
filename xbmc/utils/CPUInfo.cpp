@@ -14,6 +14,20 @@ using namespace std;
 // In seconds
 #define MINIMUM_TIME_BETWEEN_READS 2
 
+#ifdef _WIN32PC
+/* replacement gettimeofday implementation, copy from dvdnav_internal.h */
+#include <sys/timeb.h>
+static inline int _private_gettimeofday( struct timeval *tv, void *tz )
+{
+  struct timeb t;
+  ftime( &t );
+  tv->tv_sec = t.time;
+  tv->tv_usec = t.millitm * 1000;
+  return 0;
+}
+#define gettimeofday(TV, TZ) _private_gettimeofday((TV), (TZ))
+#endif
+
 CCPUInfo::CCPUInfo(void)
 {
 #ifdef __APPLE__

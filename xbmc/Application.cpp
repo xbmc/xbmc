@@ -193,7 +193,9 @@
 #include "GUIDialogSmartPlaylistRule.h"
 #include "GUIDialogPictureInfo.h"
 #include "GUIDialogPluginSettings.h"
+#ifdef HAS_LINUX_NETWORK
 #include "GUIDialogAccessPoints.h"
+#endif
 
 #ifdef HAS_PERFORMACE_SAMPLE
 #include "utils/PerformanceSample.h"
@@ -1578,7 +1580,9 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogBusy);      // window id = 138
   m_gWindowManager.Add(new CGUIDialogPictureInfo);      // window id = 139
   m_gWindowManager.Add(new CGUIDialogPluginSettings);      // window id = 140
+#ifdef HAS_LINUX_NETWORK
   m_gWindowManager.Add(new CGUIDialogAccessPoints);      // window id = 141
+#endif
 
   CGUIDialogLockSettings* pDialog = NULL;
   CStdString strPath;
