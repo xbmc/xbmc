@@ -298,7 +298,7 @@ cmyth_database_t CCMythSession::GetDatabase()
     if(!m_dll->IsLoaded())
       return false;
 
-    m_database = cmyth_database_init((char*)m_hostname.c_str(), (char*)"mythconverg", (char*)m_username.c_str(), (char*)m_password.c_str());
+    m_database = m_dll->database_init((char*)m_hostname.c_str(), (char*)"mythconverg", (char*)m_username.c_str(), (char*)m_password.c_str());
     if(!m_database)
       CLog::Log(LOGERROR, "%s - unable to connect to database %s, port %d", __FUNCTION__, m_hostname.c_str(), m_port);
   }
