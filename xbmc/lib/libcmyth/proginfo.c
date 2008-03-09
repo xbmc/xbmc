@@ -1663,8 +1663,6 @@ cmyth_proginfo_get_from_basename(cmyth_conn_t control, const char* basename)
 			goto out;
 		}
 
-		prog = cmyth_proginfo_create();
-
 		count = cmyth_rcv_length(control);
 		if (count < 0) {
 			cmyth_dbg(CMYTH_DBG_ERROR,
@@ -1672,6 +1670,22 @@ cmyth_proginfo_get_from_basename(cmyth_conn_t control, const char* basename)
 				  __FUNCTION__, count);
 			goto out;
 		}
+
+		i = cmyth_rcv_string(control, &err, msg, sizeof(msg), count);
+		if (err) {
+			cmyth_dbg(CMYTH_DBG_ERROR, "%s: cmyth_rcv_string() failed\n",
+				  __FUNCTION__);
+			goto out;
+		}
+		count -= i;
+
+		if (strcmp(msg, "OK") != 0) {
+			cmyth_dbg(CMYTH_DBG_ERROR, "%s: didn't recieve OK as response\n",
+				  __FUNCTION__);
+			goto out;
+		}
+
+		prog = cmyth_proginfo_create();
 		if (cmyth_rcv_proginfo(control, &err, prog, count) != count) {
 			cmyth_dbg(CMYTH_DBG_ERROR,
 				  "%s: cmyth_rcv_proginfo() < count\n", __FUNCTION__);
