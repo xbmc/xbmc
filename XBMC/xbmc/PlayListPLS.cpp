@@ -173,11 +173,16 @@ bool CPlayListPLS::Load(const CStdString &strFile)
   m_vecItems.resize(iMaxSize);
 
   // check for missing entries
-  for (ivecItems p = m_vecItems.begin(); p != m_vecItems.end(); ++p)
+  ivecItems p = m_vecItems.begin();
+  while ( p != m_vecItems.end())
   {
-    while (p->GetFileName().empty() && p != m_vecItems.end())
+    if (p->GetFileName().empty())
     {
       p = m_vecItems.erase(p);
+    }
+    else
+    {
+       ++p;
     }
   }
 
