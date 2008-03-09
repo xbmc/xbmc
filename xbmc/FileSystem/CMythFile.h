@@ -59,7 +59,7 @@ protected:
   bool SetupConnection(const CURL& url, bool control, bool event, bool database);
   bool SetupRecording(const CURL& url);
   bool SetupLiveTV(const CURL& url);
-  bool SetupIcon(const CURL& url);
+  bool SetupFile(const CURL& url);
 
   CStdString GetString(char* str);
 

@@ -59,6 +59,8 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
   if(!control)
     return false;
 
+  CURL url(base);
+
   cmyth_proglist_t list = m_dll->proglist_get_all_recorded(control);
   if(!list)
   {
@@ -80,17 +82,24 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
       CStdString name, path;
 
       path = GetString(m_dll->proginfo_pathname(program));
+      path = CUtil::GetFileName(path);
       name = GetString(m_dll->proginfo_title(program));
 
       CFileItem *item = new CFileItem("", false);
       m_session->UpdateItem(*item, program);
-      item->m_strPath = base + "/" + CUtil::GetFileName(path);;
+
+      url.SetFileName("recordings/" + path);
+      url.GetURL(item->m_strPath);
 
       item->SetLabel(name);
       if(m_dll->proginfo_rec_status(program) == RS_RECORDING)
         item->SetLabel2("(Recording)");
       else
         item->SetLabel2(item->GetVideoInfoTag()->m_strRuntime);
+
+      url.SetFileName("files/" + path +  ".png");
+      url.GetURL(path);
+      item->SetThumbnailImage(path);
 
       item->SetLabelPreformated(true);
       items.Add(item);
@@ -151,7 +160,7 @@ bool CCMythDirectory::GetChannelsDb(const CStdString& base, CFileItemList &items
         item->SetLabelPreformated(true);
         if(icon.length() > 0)
         {
-          url.SetFileName("icon/" + CUtil::GetFileName(icon));
+          url.SetFileName("files/channels/" + CUtil::GetFileName(icon));
           url.GetURL(icon);
           item->SetThumbnailImage(icon);
         }
@@ -214,7 +223,7 @@ bool CCMythDirectory::GetChannels(const CStdString& base, CFileItemList &items)
 
     if(icon.length() > 0)
     {
-      url.SetFileName("icon/" + CUtil::GetFileName(icon));
+      url.SetFileName("files/channels/" + CUtil::GetFileName(icon));
       url.GetURL(icon);
       item->SetThumbnailImage(icon);
     }
