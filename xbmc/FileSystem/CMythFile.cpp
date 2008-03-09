@@ -227,17 +227,17 @@ bool CCMythFile::SetupLiveTV(const CURL& url)
   return true;
 }
 
-bool CCMythFile::SetupIcon(const CURL& url)
+bool CCMythFile::SetupFile(const CURL& url)
 {
   CStdString path(url.GetFileName());
 
-  if(path.Left(5) != "icon/")
+  if(path.Left(6) != "files/")
     return false;
 
   if(!SetupConnection(url, true, false, false))
     return false;
 
-  m_filename = "/channels/" + path.Mid(5);
+  m_filename = path.Mid(5);
 
   m_file = m_dll->conn_connect_path((char*)m_filename.c_str(), m_control, 16*1024, 4096);
   if(!m_file)
@@ -270,9 +270,9 @@ bool CCMythFile::Open(const CURL& url, bool binary)
     CLog::Log(LOGDEBUG, "%s - recorder has started on filename %s", __FUNCTION__, m_filename.c_str());
 
   }
-  else if (path.Left(5) == "icon/")
+  else if (path.Left(6) == "files/")
   {
-    if(!SetupIcon(url))
+    if(!SetupFile(url))
       return false;
 
     CLog::Log(LOGDEBUG, "%s - file: size %"PRId64", start %"PRId64", ", __FUNCTION__,  m_dll->file_length(m_file), m_dll->file_start(m_file));
@@ -358,7 +358,7 @@ bool CCMythFile::Exists(const CURL& url)
     }
     return true;
   }
-  else if(path.Left(5) == "icon/")
+  else if(path.Left(6) == "files/")
     return true;
 
   return false;
