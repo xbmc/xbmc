@@ -2506,7 +2506,7 @@ void CApplication::RenderNoPresent()
 
   // don't do anything that would require graphiccontext to be locked before here in fullscreen.
   // that stuff should go into renderfullscreen instead as that is called from the renderin thread
-#if defined(HAS_XBOX_HARDWARE) || defined (_LINUX)
+
   // dont show GUI when playing full screen video
   if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && !IsPaused())
   {
@@ -2535,7 +2535,6 @@ void CApplication::RenderNoPresent()
 #endif
     return;
   }
-#endif
 
   g_graphicsContext.AcquireCurrentContext();
 
@@ -2702,7 +2701,6 @@ void CApplication::Render()
       if (lastFrameTime + singleVideoFrameTime > currentTime)
         nDelayTime = lastFrameTime + singleVideoFrameTime - currentTime;
 
-#ifdef _LINUX
       SDL_mutexP(m_frameMutex);
       
       // If we have frames or if we get notified of one, consume it.
@@ -2712,7 +2710,6 @@ void CApplication::Render()
         m_bPresentFrame = true;
       }
       SDL_mutexV(m_frameMutex);
-#endif
     }
     else
     {
