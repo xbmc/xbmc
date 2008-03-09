@@ -134,9 +134,9 @@ int CSelectionStreams::Source(StreamSource source, std::string filename)
 void CSelectionStreams::Update(SelectionStream& s)
 {
   CSingleLock lock(m_section);
-  int index = IndexOf(STREAM_NONE, s.source, s.id);
+  int index = IndexOf(s.type, s.source, s.id);
   if(index >= 0)
-    m_Streams[index] = s;
+    Get(s.type, index) = s;
   else
     m_Streams.push_back(s);
 }
