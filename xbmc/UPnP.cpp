@@ -1196,11 +1196,7 @@ CUPnPRenderer::UpdateState()
 NPT_Result
 CUPnPRenderer::OnNext(PLT_ActionReference& action)
 {
-#ifndef _LINUX
-    g_applicationMessenger.PlayListPlayerNext();
-#else
     g_application.getApplicationMessenger().PlayListPlayerNext();
-#endif
     return NPT_SUCCESS;
 }
 
@@ -1211,11 +1207,7 @@ NPT_Result
 CUPnPRenderer::OnPause(PLT_ActionReference& action)
 {
     if(!g_application.IsPaused())
-#ifndef _LINUX
-        g_applicationMessenger.MediaPause();
-#else
-        g_application.getApplicationMessenger().MediaPause();
-#endif
+      g_application.getApplicationMessenger().MediaPause();
     return NPT_SUCCESS;
 }
 
@@ -1226,11 +1218,7 @@ NPT_Result
 CUPnPRenderer::OnPlay(PLT_ActionReference& action)
 {
     if(g_application.IsPaused())
-#ifndef _LINUX
-        g_applicationMessenger.MediaPause();
-#else
-        g_application.getApplicationMessenger().MediaPause();
-#endif
+      g_application.getApplicationMessenger().MediaPause();
     return NPT_SUCCESS;
 }
 
@@ -1240,11 +1228,7 @@ CUPnPRenderer::OnPlay(PLT_ActionReference& action)
 NPT_Result
 CUPnPRenderer::OnPrevious(PLT_ActionReference& action)
 {
-#ifndef _LINUX
-    g_applicationMessenger.PlayListPlayerPrevious();
-#else
     g_application.getApplicationMessenger().PlayListPlayerPrevious();
-#endif
     return NPT_SUCCESS;
 }
 
@@ -1254,11 +1238,7 @@ CUPnPRenderer::OnPrevious(PLT_ActionReference& action)
 NPT_Result
 CUPnPRenderer::OnStop(PLT_ActionReference& action)
 {
-#ifndef _LINUX
-    g_applicationMessenger.MediaStop();
-#else
     g_application.getApplicationMessenger().MediaStop();
-#endif
     return NPT_SUCCESS;
 }
 
@@ -1284,11 +1264,7 @@ CUPnPRenderer::OnSetAVTransportURI(PLT_ActionReference& action)
     service->SetStateVariable("AVTransportURIMetaData", meta);
     NPT_CHECK_SEVERE(action->SetArgumentsOutFromStateVariable());
 
-#ifndef _LINUX
-    g_applicationMessenger.MediaPlay((const char*)uri);
-#else
     g_application.getApplicationMessenger().MediaPlay((const char*)uri);
-#endif
     if (!g_application.IsPlaying()) {
         service->SetStateVariable("TransportState", "STOPPED");
         service->SetStateVariable("TransportStatus", "TransportStatus");          

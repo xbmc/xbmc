@@ -13,7 +13,7 @@
 #include "../StringUtils.h"
 #include "../Temperature.h"
 #include "../utils/CriticalSection.h"
-#ifdef _LINUX
+#ifndef _XBOX
 #include "CPUInfo.h"
 #endif
 #include "IMsgTargetCallback.h"
