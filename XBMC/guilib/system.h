@@ -192,6 +192,9 @@
 #undef HAS_PERFORMANCE_SAMPLE // no performance sampling
 #undef HAS_LINUX_NETWORK
 #undef HAS_SHOUTCAST
+#undef HAS_KAI
+#undef HAS_KAI_VOICE
+#undef HAS_TRAINER
 #define snprintf _snprintf
 #endif
 #endif

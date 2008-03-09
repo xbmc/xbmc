@@ -30,7 +30,9 @@
 using namespace Surface;
 #include <X11/extensions/Xinerama.h>
 #endif
+#ifdef HAS_XRANDR
 #include "XRandR.h"
+#endif
 
 #ifdef __APPLE__
 #include "CocoaUtils.h"

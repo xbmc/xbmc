@@ -2180,9 +2180,6 @@
 					RelativePath="..\..\xbmc\GUIViewStatePicturesProgramsScripts.h">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIWindowBuddies.cpp">
-				</File>
-				<File
 					RelativePath="..\..\xbmc\GUIWindowFileManager.cpp">
 				</File>
 				<File
