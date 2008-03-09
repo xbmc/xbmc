@@ -213,12 +213,12 @@ void CCMythSession::Process()
   int  next;
 
   struct timeval to;
-  to.tv_sec = 1;
-  to.tv_usec = 0;
 
   while(!m_bStop)
   {
     /* check if there are any new events */
+    to.tv_sec = 0;
+    to.tv_usec = 100000;
     if(m_dll->event_select(m_event, &to) <= 0)
       continue;
 
