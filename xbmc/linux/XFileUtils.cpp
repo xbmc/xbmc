@@ -201,6 +201,13 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
   if (dwFlagsAndAttributes & FILE_FLAG_NO_BUFFERING)
     flags |= O_SYNC;
 
+  // we always open files with fileflag O_NONBLOCK to support
+  // cdrom devices, but we then turn it of for actual reads
+  // apperently it's used for multiple things, read mode
+  // and how opens are handled. devices must be opened
+  // with this flag set to work correctly
+  flags |= O_NONBLOCK;
+
   CStdString strResultFile(lpFileName);
 
   fd = open(lpFileName, flags, mode);
@@ -225,6 +232,11 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
     CLog::Log(LOGWARNING,"%s, error %d opening file <%s>, flags:%x, mode:%x. ", __FUNCTION__, errno, lpFileName, flags, mode);
     return INVALID_HANDLE_VALUE;
   }
+
+  // turn of nonblocking reads/writes as we don't
+  // support this anyway currently
+  fcntl(fd, F_GETFL, &flags);
+  fcntl(fd, F_SETFL, flags & ~O_NONBLOCK);
 
   HANDLE result = new CXHandle(CXHandle::HND_FILE);
   result->fd = fd;
