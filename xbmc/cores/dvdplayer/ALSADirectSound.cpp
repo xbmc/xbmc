@@ -426,10 +426,8 @@ DWORD CALSADirectSound::AddPackets(unsigned char *data, DWORD len)
 						framesToWrite, writeResult, snd_strerror(writeResult));
 	}
 
-    if (writeResult>0)
+	if (writeResult>0)
 		pcmPtr += snd_pcm_frames_to_bytes(m_pPlayHandle,writeResult);
-	else
-		pcmPtr += snd_pcm_frames_to_bytes(m_pPlayHandle,framesToWrite); 
   }
 
   return len;
@@ -448,8 +446,10 @@ FLOAT CALSADirectSound::GetDelay()
     
   int nErr = snd_pcm_delay(m_pPlayHandle, &frames);
   CHECK_ALSA(LOGERROR,"snd_pcm_delay",nErr); 
-  if (nErr < 0)
-     return (double)snd_pcm_frames_to_bytes(m_pPlayHandle,m_BufferSize) / fbps;
+  if (nErr < 0) {
+    frames = 0;
+    Flush();
+  }
 
   if (frames < 0) {
 #if SND_LIB_VERSION >= 0x000901 /* snd_pcm_forward() exists since 0.9.0rc8 */
@@ -458,8 +458,7 @@ FLOAT CALSADirectSound::GetDelay()
     frames = 0;
   }
 
-  int nBytes = snd_pcm_frames_to_bytes(m_pPlayHandle,frames);
-  delay = (double)nBytes / fbps;
+  delay = (double)snd_pcm_frames_to_bytes(m_pPlayHandle,frames) / fbps;
 
   if (g_audioContext.IsAC3EncoderActive())
     delay += 0.049;
