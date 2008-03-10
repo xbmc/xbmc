@@ -28,10 +28,10 @@ using namespace MUSIC_INFO;
 #ifndef HAS_SHOUTCAST
 extern "C" 
 {
-  error_code rip_manager_start(void (*status_callback)(int message, void *data), RIP_MANAGER_OPTIONS *options) { }
+  error_code rip_manager_start(void (*status_callback)(int message, void *data), RIP_MANAGER_OPTIONS *options) { return 0; }
   void       rip_manager_stop() { }
   void       set_rip_manager_options_defaults(RIP_MANAGER_OPTIONS*) {}
-  int        rip_manager_get_content_type() {}
+  int        rip_manager_get_content_type() { return 0; }
 }
 #endif
 
