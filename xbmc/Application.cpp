@@ -207,6 +207,9 @@
 #include <SDL/SDL_mixer.h>
 #ifdef _WIN32
 #include <SDL/SDL_syswm.h>
+#if !defined(HAS_XBOX_HARDWARE)
+#include <shlobj.h>
+#endif
 #endif
 #endif
 #ifdef HAS_XRANDR
@@ -835,13 +838,16 @@ HRESULT CApplication::Create(HWND hWnd)
   static CStdString strExecutablePath;
   CUtil::GetHomePath(strExecutablePath);
   
-#ifndef _LINUX  
+#ifdef HAS_XBOX_HARDWARE 
   char szDevicePath[MAX_PATH];
 
   CIoSupport::GetPartition(strExecutablePath.c_str()[0], szDevicePath);
   strcat(szDevicePath, &strExecutablePath.c_str()[2]);
   
   CIoSupport::RemapDriveLetter('Q', szDevicePath);
+#elif defined(_WIN32)
+  CIoSupport::RemapDriveLetter('Q', (char*) strExecutablePath.c_str());
+  SetEnvironmentVariable("XBMC_HOME", strExecutablePath.c_str());
 #else
   CIoSupport::RemapDriveLetter('Q', (char*) strExecutablePath.c_str());
   setenv("XBMC_HOME", strExecutablePath.c_str(), 0);
@@ -891,6 +897,30 @@ HRESULT CApplication::Create(HWND hWnd)
       printf("Copying from %s to %s\n", srcFile.c_str(), str.c_str());
       CopyFile(srcFile.c_str(), str.c_str(), TRUE);
     }
+#elif defined(_WIN32PC)
+  // Make sure the required directories exist.
+  TCHAR szPath[MAX_PATH];
+  CStdString strWin32UserFolder,strPath;
+  if(SUCCEEDED(SHGetFolderPath(NULL,CSIDL_APPDATA|CSIDL_FLAG_CREATE,NULL,0,szPath))) 
+    strWin32UserFolder = szPath;
+  else
+    strWin32UserFolder = strExecutablePath;
+
+  SetEnvironmentVariable("XBMC_PROFILE_HOME", strWin32UserFolder.c_str());
+
+  CUtil::AddFileToFolder(strWin32UserFolder,"XBMC",strPath);
+  CreateDirectory(strPath.c_str(), NULL);
+  CUtil::AddFileToFolder(strPath,"UserData",strPath);
+  CreateDirectory(strPath.c_str(), NULL);
+  // See if the keymap file exists, and if not, copy it from our "virgin" one.
+  CUtil::AddFileToFolder(strPath,"Keymap.xml",strPath);
+  printf("Checking for existence of %s\n", strPath.c_str());
+  if (access(strPath.c_str(), 0) == -1)
+  {
+    CStdString srcFile = _P("q:\\UserData\\Keymap.xml");
+    printf("Copying from %s to %s\n", srcFile.c_str(), strPath.c_str());
+    CopyFile(srcFile.c_str(), strPath.c_str(), TRUE);
+  }
 #endif
   
   g_settings.m_vecProfiles.clear();
@@ -903,6 +933,11 @@ HRESULT CApplication::Create(HWND hWnd)
     CStdString s = getenv("HOME");
     s.append("/Library/Application Support/XBMC/UserData");
     profile.setDirectory(s.c_str());
+#elif defined(_WIN32PC)
+  CStdString strPath;
+  CUtil::AddFileToFolder(strWin32UserFolder,"XBMC",strPath);
+  CUtil::AddFileToFolder(strPath,"UserData",strPath);
+  profile.setDirectory(strWin32UserFolder.c_str());
 #else
     profile.setDirectory("q:\\UserData");
 #endif
@@ -941,10 +976,15 @@ HRESULT CApplication::Create(HWND hWnd)
     CStdString str = getenv("HOME");
     str.append("/Library/Application Support/XBMC");
     CIoSupport::RemapDriveLetter('T', str.c_str());
-#elif !defined(_LINUX)
+#elif defined(HAS_XBOX_HARDWARE)
     CIoSupport::GetPartition(strMnt.c_str()[0], szDevicePath);
     strcat(szDevicePath, &strMnt.c_str()[2]);
     CIoSupport::RemapDriveLetter('T',szDevicePath);
+#elif defined(_WIN32PC)
+    CStdString strPath;
+    CUtil::AddFileToFolder(strWin32UserFolder,"XBMC",strPath);
+    CUtil::AddFileToFolder(strPath,"UserData",strPath);
+    CIoSupport::RemapDriveLetter('T', strPath.c_str());
 #else
     CIoSupport::RemapDriveLetter('T',(char*) strMnt.c_str());
 #endif
@@ -1120,15 +1160,9 @@ HRESULT CApplication::Create(HWND hWnd)
   }
 #endif
 
-#ifdef _LINUX
-  // CIoSupport::RemapDriveLetter('C', "/"); // disabled for now since '/' doesn't work. 'C' is remapped later near line 833.
-  // CIoSupport::RemapDriveLetter('E', "/mnt");
-#else
+#ifdef HAS_XBOX_HARDWARE
   CIoSupport::RemapDriveLetter('C', "Harddisk0\\Partition2");
   CIoSupport::RemapDriveLetter('E', "Harddisk0\\Partition1");
-#endif
-
-#ifdef HAS_XBOX_HARDWARE
   CIoSupport::Dismount("Cdrom0");
   CIoSupport::RemapDriveLetter('D', "Cdrom0");
 
@@ -1162,6 +1196,11 @@ HRESULT CApplication::Create(HWND hWnd)
   CIoSupport::RemapDriveLetter('Z',"Harddisk0\\Partition5");
 #elif defined(_LINUX)
   CIoSupport::RemapDriveLetter('Z',"/tmp/xbmc");
+  CreateDirectory(_P("Z:\\"), NULL);
+#elif defined(_WIN32PC)
+  CUtil::AddFileToFolder(strWin32UserFolder,"XBMC",strPath);
+  CUtil::AddFileToFolder(strPath,"cache",strPath);
+  CIoSupport::RemapDriveLetter('Z',strPath.c_str());
   CreateDirectory(_P("Z:\\"), NULL);
 #endif
 
