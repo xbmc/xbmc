@@ -110,6 +110,7 @@ CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock)
   m_droptime = 0;
   m_speed = DVD_PLAYSPEED_NORMAL;
   m_stalled = false;
+  m_started = false;
 
   InitializeCriticalSection(&m_critCodecSection);
   m_messageQueue.SetMaxDataSize(30 * 16 * 1024);
@@ -143,6 +144,7 @@ bool CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints )
   m_droptime = 0;
   m_audioClock = 0;
   m_stalled = false;
+  m_started = false;
 
   CLog::Log(LOGNOTICE, "Creating audio thread");
   Create();
@@ -310,7 +312,8 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
     
     if (ret == MSGQ_TIMEOUT) 
     {
-      m_stalled = true;
+      if(m_started)
+        m_stalled = true;
       continue;
     }
 
@@ -320,6 +323,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
     if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
     {
       m_stalled = false;
+      m_started = true;
       m_decode.Attach((CDVDMsgDemuxerPacket*)pMsg);
       m_ptsInput.Add( m_decode.size, m_decode.dts );
     }

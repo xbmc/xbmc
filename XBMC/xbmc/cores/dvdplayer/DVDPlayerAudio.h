@@ -146,6 +146,7 @@ protected:
   int     m_speed;
   double  m_droptime;
   bool    m_stalled;
+  bool    m_started;
   CRITICAL_SECTION m_critCodecSection;
 };
 
