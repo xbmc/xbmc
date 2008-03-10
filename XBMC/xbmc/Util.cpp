@@ -1764,9 +1764,15 @@ bool CUtil::IsMultiPath(const CStdString& strPath)
 
 bool CUtil::IsDVD(const CStdString& strFile)
 {
-  CStdString strFileLow = strFile; strFileLow.MakeLower();
+  CStdString strFileLow = strFile; 
+  strFileLow.MakeLower();
+#if defined(_WIN32PC)
+  if(GetDriveType(strFile.c_str()) == DRIVE_CDROM)
+    return true;
+#else
   if (strFileLow == "d:/"  || strFileLow == "d:\\"  || strFileLow == "d:" || strFileLow == "iso9660://" || strFileLow == "udf://" || strFileLow == "dvd://1" )
     return true;
+#endif
 
   return false;
 }
@@ -2337,7 +2343,11 @@ bool CUtil::IsHD(const CStdString& strFileName)
 {
   if (strFileName.size() <= 2) return false;
   char szDriveletter = tolower(strFileName.GetAt(0));
+#if defined(_WIN32PC)
+  if ( (szDriveletter >= 'c' && szDriveletter <= 'z' && GetDriveType(strFileName.c_str()) != DRIVE_CDROM) )
+#else
   if ( (szDriveletter >= 'c' && szDriveletter <= 'z' && szDriveletter != 'd') )
+#endif
   {
     if (strFileName.GetAt(1) == ':') return true;
   }
@@ -5798,6 +5808,21 @@ CStdString CUtil::TranslatePath(const CStdString& path)
         return str;
 	    }
 	  }
+#elif defined(_WIN32PC)
+    if (path[0] == 'Q' || path[0] == 'q')
+    {
+      if (path.Equals("q:\\system\\profiles.xml", false))
+      {
+        TCHAR szPath[MAX_PATH];
+        CStdString strPath;
+        if(GetEnvironmentVariable("XBMC_PROFILE_HOME",szPath,MAX_PATH-1)!=0) 
+        {
+          CUtil::AddFileToFolder(CStdString(szPath),"XBMC",strPath);
+          CUtil::AddFileToFolder(strPath,"profiles.xml",strPath);
+          return strPath;
+        }
+      }
+    }
 #endif
 	  
 	   const char *p = CIoSupport::GetPartition(path[0]);
@@ -5812,7 +5837,11 @@ CStdString CUtil::TranslatePath(const CStdString& path)
 	else
 		result = path;
 	
-	result.Replace('\\', '/');
+#ifdef _LINUX
+  result.Replace('\\', '/');
+#else
+  result.Replace('/', '\\');
+#endif
 		
 	return result;
 }
