@@ -48,7 +48,10 @@ CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(string& strFile)
 
   CDVDSubtitleStream* pStream = new CDVDSubtitleStream();
   if(!pStream->Open(strFile))
-    return false;
+  {
+    delete pStream;
+    return NULL;
+  }
 
   for (int t = 0; !pParser && t < 256; t++)
   {
@@ -152,7 +155,8 @@ CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(string& strFile)
     }
   }
   pStream->Close();
-  
+  if (!pParser)
+    delete pStream; 
   return pParser;
 }
 
