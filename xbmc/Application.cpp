@@ -937,7 +937,7 @@ HRESULT CApplication::Create(HWND hWnd)
   CStdString strPath;
   CUtil::AddFileToFolder(strWin32UserFolder,"XBMC",strPath);
   CUtil::AddFileToFolder(strPath,"UserData",strPath);
-  profile.setDirectory(strWin32UserFolder.c_str());
+  profile.setDirectory(strPath.c_str());
 #else
     profile.setDirectory("q:\\UserData");
 #endif
