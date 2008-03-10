@@ -44,7 +44,7 @@ struct sortstringbyname
   }
 };
 
-#ifndef _LINUX
+#ifdef HAS_XBOX_HARDWARE
 #define _P(x) x
 #define PTH_IC(x) (x)
 #define PATH_SEPARATOR_CHAR '\\'
@@ -52,8 +52,13 @@ struct sortstringbyname
 #else
 #define PTH_IC(x) CUtil::TranslatePathConvertCase(x)
 #define _P(x) CUtil::TranslatePath(x)
+#ifdef _WIN32PC
+#define PATH_SEPARATOR_CHAR '\\'
+#define PATH_SEPARATOR_STRING "\\"
+#else
 #define PATH_SEPARATOR_CHAR '/'
 #define PATH_SEPARATOR_STRING "/"
+#endif
 #endif
 
 struct XBOXDETECTION
