@@ -5840,7 +5840,8 @@ CStdString CUtil::TranslatePath(const CStdString& path)
 #ifdef _LINUX
   result.Replace('\\', '/');
 #else
-  result.Replace('/', '\\');
+  if(result.Mid(1, 1) == ":")
+    result.Replace('/', '\\');
 #endif
 		
 	return result;
