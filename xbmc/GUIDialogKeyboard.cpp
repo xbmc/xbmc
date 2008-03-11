@@ -72,6 +72,13 @@ CGUIDialogKeyboard::~CGUIDialogKeyboard(void)
 
 void CGUIDialogKeyboard::OnInitWindow()
 {
+#ifdef __APPLE__
+  // Override skin defaults to always make the defaul control 'DONE' to allow
+  // natual entry on keyboards.
+  //
+  m_dwDefaultFocusControlID = 300;
+#endif
+
   CGUIDialog::OnInitWindow();
 
   m_bIsConfirmed = false;
@@ -99,7 +106,11 @@ void CGUIDialogKeyboard::OnInitWindow()
 
 bool CGUIDialogKeyboard::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_BACKSPACE)
+  if (action.wID == ACTION_BACKSPACE 
+#ifdef __APPLE__
+	|| action.wID == ACTION_PARENT_DIR
+#endif
+     )
   {
     Backspace();
     return true;
@@ -177,6 +188,7 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
 bool CGUIDialogKeyboard::OnMessage(CGUIMessage& message)
 {
   CGUIDialog::OnMessage(message);
+  
 
   switch ( message.GetMessage() )
   {
