@@ -19,7 +19,11 @@
 <folderInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.277492429." name="/" resourcePath="">
 <toolChain errorParsers="" id="cdt.managedbuild.toolchain.gnu.macosx.exe.debug.181128994" name="MacOSX GCC" nonInternalBuilderId="cdt.managedbuild.target.gnu.builder.macosx.exe.debug" superClass="cdt.managedbuild.toolchain.gnu.macosx.exe.debug">
 <targetPlatform id="cdt.managedbuild.target.gnu.platform.macosx.exe.debug.611397248" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.macosx.exe.debug"/>
-<builder arguments="-configuration Debug" autoBuildTarget="all" buildPath="${workspace_loc:/XBMC/}" cleanBuildTarget="clean" command="xcodebuild" enableAutoBuild="false" enableCleanBuild="false" enabledIncrementalBuild="true" id="cdt.managedbuild.target.gnu.builder.macosx.exe.debug.2011146033" incrementalBuildTarget="" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="false" parallelizationNumber="4" stopOnErr="true" superClass="cdt.managedbuild.target.gnu.builder.macosx.exe.debug"/>
+<builder arguments="-configuration Debug" autoBuildTarget="all" buildPath="${workspace_loc:/XBMC/}" cleanBuildTarget="clean" command="xcodebuild" enableAutoBuild="false" enableCleanBuild="false" enabledIncrementalBuild="true" id="cdt.managedbuild.target.gnu.builder.macosx.exe.debug.2011146033" incrementalBuildTarget="" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="false" parallelizationNumber="4" stopOnErr="true" superClass="cdt.managedbuild.target.gnu.builder.macosx.exe.debug">
+<outputEntries>
+<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name=""/>
+</outputEntries>
+</builder>
 <tool id="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.debug.1750093173" name="MacOS X C Linker" superClass="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.debug"/>
 <tool errorParsers="org.eclipse.cdt.core.GLDErrorParser" id="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.debug.835214875" name="MacOS X C++ Linker" superClass="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.debug">
 <inputType id="cdt.managedbuild.tool.macosx.cpp.linker.input.998173657" superClass="cdt.managedbuild.tool.macosx.cpp.linker.input">
@@ -38,7 +42,6 @@
 <option id="gnu.cpp.compiler.option.preprocessor.def.1419763403" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 <listOptionValue builtIn="false" value="HAS_SDL_OPENGL=1"/>
 <listOptionValue builtIn="false" value="HAS_SDL=1"/>
-<listOptionValue builtIn="false" value="_LINUX=1"/>
 </option>
 <option id="gnu.cpp.compiler.option.include.paths.980820199" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libportaudio}&quot;"/>
@@ -71,7 +74,100 @@
 <option id="gnu.c.compiler.option.preprocessor.def.symbols.582675919" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
 <listOptionValue builtIn="false" value="HAS_SDL_OPENGL=1"/>
 <listOptionValue builtIn="false" value="HAS_SDL=1"/>
-<listOptionValue builtIn="false" value="_LINUX=1"/>
+</option>
+<option id="gnu.c.compiler.option.preprocessor.undef.symbol.759674984" superClass="gnu.c.compiler.option.preprocessor.undef.symbol" valueType="undefDefinedSymbols">
+<listOptionValue builtIn="false" value="__SSE2_MATH__"/>
+<listOptionValue builtIn="false" value="_LINUX"/>
+<listOptionValue builtIn="false" value="__FLT_MIN_10_EXP__"/>
+<listOptionValue builtIn="false" value="_FILE_OFFSET_BITS"/>
+<listOptionValue builtIn="false" value="__LDBL_MIN__"/>
+<listOptionValue builtIn="false" value="__FLT_HAS_QUIET_NAN__"/>
+<listOptionValue builtIn="false" value="__strong"/>
+<listOptionValue builtIn="false" value="__LDBL_DIG__"/>
+<listOptionValue builtIn="false" value="__INTMAX_MAX__"/>
+<listOptionValue builtIn="false" value="__STDC_HOSTED__"/>
+<listOptionValue builtIn="false" value="__LDBL_DENORM_MIN__"/>
+<listOptionValue builtIn="false" value="__NO_INLINE__"/>
+<listOptionValue builtIn="false" value="__DBL_MIN_10_EXP__"/>
+<listOptionValue builtIn="false" value="__LDBL_MANT_DIG__"/>
+<listOptionValue builtIn="false" value="__LDBL_HAS_QUIET_NAN__"/>
+<listOptionValue builtIn="false" value="__FLT_MAX_10_EXP__"/>
+<listOptionValue builtIn="false" value="__INT_MAX__"/>
+<listOptionValue builtIn="false" value="__INTMAX_TYPE__"/>
+<listOptionValue builtIn="false" value="__LONG_LONG_MAX__"/>
+<listOptionValue builtIn="false" value="__LDBL_MAX__"/>
+<listOptionValue builtIn="false" value="__REGISTER_PREFIX__"/>
+<listOptionValue builtIn="false" value="HAS_SDL_JOYSTICK"/>
+<listOptionValue builtIn="false" value="__DBL_MAX_EXP__"/>
+<listOptionValue builtIn="false" value="SILENT"/>
+<listOptionValue builtIn="false" value="__FLT_EPSILON__"/>
+<listOptionValue builtIn="false" value="HAS_VIDEO_PLAYBACK"/>
+<listOptionValue builtIn="false" value="__DBL_MIN_EXP__"/>
+<listOptionValue builtIn="false" value="__APPLE_CC__"/>
+<listOptionValue builtIn="false" value="__WINT_TYPE__"/>
+<listOptionValue builtIn="false" value="__PIC__"/>
+<listOptionValue builtIn="false" value="__LDBL_MIN_10_EXP__"/>
+<listOptionValue builtIn="false" value="__VERSION__"/>
+<listOptionValue builtIn="false" value="__LDBL_HAS_INFINITY__"/>
+<listOptionValue builtIn="false" value="__FLT_DIG__"/>
+<listOptionValue builtIn="false" value="__STDC_CONSTANT_MACROS"/>
+<listOptionValue builtIn="false" value="__FLT_MAX__"/>
+<listOptionValue builtIn="false" value="__WCHAR_MAX__"/>
+<listOptionValue builtIn="false" value="__FLT_RADIX__"/>
+<listOptionValue builtIn="false" value="__LDBL_EPSILON__"/>
+<listOptionValue builtIn="false" value="__DYNAMIC__"/>
+<listOptionValue builtIn="false" value="i386"/>
+<listOptionValue builtIn="false" value="__FLT_DENORM_MIN__"/>
+<listOptionValue builtIn="false" value="_DEBUG"/>
+<listOptionValue builtIn="false" value="__SHRT_MAX__"/>
+<listOptionValue builtIn="false" value="__FLT_MAX_EXP__"/>
+<listOptionValue builtIn="false" value="__LONG_MAX__"/>
+<listOptionValue builtIn="false" value="__DECIMAL_DIG__"/>
+<listOptionValue builtIn="false" value="__DBL_DIG__"/>
+<listOptionValue builtIn="false" value="__USER_LABEL_PREFIX__"/>
+<listOptionValue builtIn="false" value="__weak"/>
+<listOptionValue builtIn="false" value="__FLT_MIN_EXP__"/>
+<listOptionValue builtIn="false" value="__LDBL_MAX_EXP__"/>
+<listOptionValue builtIn="false" value="__i386"/>
+<listOptionValue builtIn="false" value="__SSE2__"/>
+<listOptionValue builtIn="false" value="__DBL_HAS_INFINITY__"/>
+<listOptionValue builtIn="false" value="__PTRDIFF_TYPE__"/>
+<listOptionValue builtIn="false" value="__UINTMAX_TYPE__"/>
+<listOptionValue builtIn="false" value="__LITTLE_ENDIAN__"/>
+<listOptionValue builtIn="false" value="__MACH__"/>
+<listOptionValue builtIn="false" value="__GXX_ABI_VERSION"/>
+<listOptionValue builtIn="false" value="__SIZE_TYPE__"/>
+<listOptionValue builtIn="false" value="_REENTRANT"/>
+<listOptionValue builtIn="false" value="__FLT_EVAL_METHOD__"/>
+<listOptionValue builtIn="false" value="__DBL_MAX_10_EXP__"/>
+<listOptionValue builtIn="false" value="__DBL_MIN__"/>
+<listOptionValue builtIn="false" value="__GNUC__"/>
+<listOptionValue builtIn="false" value="__LDBL_MAX_10_EXP__"/>
+<listOptionValue builtIn="false" value="__DBL_MANT_DIG__"/>
+<listOptionValue builtIn="false" value="__SCHAR_MAX__"/>
+<listOptionValue builtIn="false" value="OBJC_NEW_PROPERTIES"/>
+<listOptionValue builtIn="false" value="__FINITE_MATH_ONLY__"/>
+<listOptionValue builtIn="false" value="__APPLE__"/>
+<listOptionValue builtIn="false" value="__CONSTANT_CFSTRINGS__"/>
+<listOptionValue builtIn="false" value="__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__"/>
+<listOptionValue builtIn="false" value="__GNUC_MINOR__"/>
+<listOptionValue builtIn="false" value="__FLT_MIN__"/>
+<listOptionValue builtIn="false" value="__i386__"/>
+<listOptionValue builtIn="false" value="__GNUC_PATCHLEVEL__"/>
+<listOptionValue builtIn="false" value="__DBL_MAX__"/>
+<listOptionValue builtIn="false" value="__LDBL_MIN_EXP__"/>
+<listOptionValue builtIn="false" value="__DBL_EPSILON__"/>
+<listOptionValue builtIn="false" value="_FILE_DEFINED"/>
+<listOptionValue builtIn="false" value="__SSE__"/>
+<listOptionValue builtIn="false" value="_LARGEFILE64_SOURCE"/>
+<listOptionValue builtIn="false" value="__DBL_HAS_QUIET_NAN__"/>
+<listOptionValue builtIn="false" value="__FLT_MANT_DIG__"/>
+<listOptionValue builtIn="false" value="__MMX__"/>
+<listOptionValue builtIn="false" value="__DBL_DENORM_MIN__"/>
+<listOptionValue builtIn="false" value="__SSE_MATH__"/>
+<listOptionValue builtIn="false" value="__FLT_HAS_INFINITY__"/>
+<listOptionValue builtIn="false" value="__CHAR_BIT__"/>
+<listOptionValue builtIn="false" value="__WCHAR_TYPE__"/>
 </option>
 <inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.916105654" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 </tool>
@@ -2295,6 +2391,7 @@
 </profile>
 </scannerConfigBuildInfo>
 </storageModule>
+<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cconfiguration>
 <cconfiguration id="cdt.managedbuild.config.macosx.exe.release.2032528784">
 <storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.macosx.exe.release.2032528784" moduleId="org.eclipse.cdt.core.settings" name="Release">
@@ -4269,6 +4366,7 @@
 </profile>
 </scannerConfigBuildInfo>
 </storageModule>
+<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cconfiguration>
 </storageModule>
 <storageModule moduleId="cdtBuildSystem" version="4.0.0">
