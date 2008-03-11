@@ -21,12 +21,12 @@
 #include "stdafx.h"
 #include "CriticalSection.h"
 
-#define SAFELY(expr)            \
-    {                           \
-	int err = 0;                \
-	if ((err=expr) != 0)        \
-	    { CLog::Log(LOGERROR, "(%s): %d", #expr, err); abort(); }\
-    }
+#define SAFELY(expr)                                   \
+{                                                      \
+	int err = 0;                                         \
+	if ((err=expr) != 0)                                 \
+	    { CLog::Log(LOGERROR, "(%s): [%s:%d] %d", #expr, __FILE__, __LINE__, err); } \
+}
 
 //////////////////////////////////////////////////////////////////////
 XCriticalSection::XCriticalSection()
@@ -54,15 +54,15 @@ void XCriticalSection::Initialize()
 	
 	// Setup for recursive locks.
 	pthread_mutexattr_t attr;
-    SAFELY(pthread_mutexattr_init(&attr));
-    SAFELY(pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE));
+	SAFELY(pthread_mutexattr_init(&attr));
+	SAFELY(pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE));
     
-    // Create the mutexes
-    SAFELY(pthread_mutex_init(&m_mutex, &attr));
-    SAFELY(pthread_mutex_init(&m_countMutex, &attr));
-    
-    SAFELY(pthread_mutexattr_destroy(&attr));
-    m_isInitialized = true;
+	// Create the mutexes
+	SAFELY(pthread_mutex_init(&m_mutex, &attr));
+	SAFELY(pthread_mutex_init(&m_countMutex, &attr));
+	
+	SAFELY(pthread_mutexattr_destroy(&attr));
+	m_isInitialized = true;
 }
 
 //////////////////////////////////////////////////////////////////////
