@@ -6,12 +6,6 @@
 #include "../DVDDemuxSPU.h"
 #include "DVDStateSerializer.h"
 
-#ifndef PRId64
-#ifdef _MSC_VER
-#define PRId64 "I64d"
-#endif
-#endif
-
 #define HOLDMODE_NONE 0
 #define HOLDMODE_HELD 1 /* set internally when we wish to flush demuxer */
 #define HOLDMODE_SKIP 2 /* set by inputstream user, when they wish to skip the held mode */
