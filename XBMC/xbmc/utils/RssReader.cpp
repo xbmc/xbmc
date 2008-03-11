@@ -292,7 +292,7 @@ void CRssReader::fromRSSToUTF16(const CStdStringA& strSource, CStdStringW& strDe
 			strDest = flippedStrSource;
 			return;
 		}
-		
+
 		outBuf[(originalOutBytes - outBytes) / 2] = '\0';
 		strDest = outBuf;
 	}

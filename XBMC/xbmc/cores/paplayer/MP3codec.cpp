@@ -1,4 +1,4 @@
-	#include "stdafx.h"
+#include "stdafx.h"
 #include "MP3codec.h"
 
 using namespace MUSIC_INFO;
@@ -77,7 +77,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   m_pDecoder = m_dll.CreateAudioDecoder(' ',NULL);
 
   if ( m_pDecoder )
-    CLog::Log(LOGINFO, "MP3Codec: Loaded decoder at %p", (void *)m_pDecoder);
+    CLog::Log(LOGINFO, "MP3Codec: Loaded decoder at %p", (void*)m_pDecoder);
   else
     return false;
 
