@@ -1,3 +1,4 @@
+
 /*
 * know bugs:
 * - when opening a server for the first time with ip adres and the second time
@@ -22,7 +23,11 @@
 #include <libsmbclient.h>
 #endif
 
+#ifdef __APPLE__
+#define XBMC_SMB_MOUNT_PATH "Library/Application Support/XBMC/Mounts/"
+#else
 #define XBMC_SMB_MOUNT_PATH "/media/xbmc/smb/"
+#endif
 
 struct CachedDirEntry
 {
@@ -424,6 +429,39 @@ CStdString CSMBDirectory::MountShare(const CStdString &smbPath, const CStdString
   UnMountShare(strType, strName);
 
   CStdString strMountPoint = GetMountPoint(strType, strName);
+  
+#ifdef __APPLE__
+  // Create the directory.
+  CUtil::UrlDecode(strMountPoint);
+  CreateDirectory(strMountPoint, NULL);
+  
+  // Massage the path.
+  CStdString smbFullPath = "//";
+  if (smbFullPath.length() > 0)
+  {
+    smbFullPath += strUser;
+    if (strPass.length() > 0)
+      smbFullPath += ":" + strPass;
+    
+    smbFullPath += "@";
+  }
+  
+  CStdString newPath = smbPath;
+  newPath.TrimLeft("/");
+  smbFullPath += newPath;
+  
+  // Make the mount command.
+  CStdStringArray args;
+  args.push_back("/sbin/mount_smbfs");
+  args.push_back("-o");
+  args.push_back("nobrowse");
+  args.push_back(smbFullPath);
+  args.push_back(strMountPoint);
+  
+  // Execute it.
+  if (CUtil::Command(args))
+    return strMountPoint;
+#else
   CUtil::SudoCommand("mkdir -p " + strMountPoint);
 
   CStdString strCmd = "mount -t cifs " + smbPath + " " + strMountPoint + 
@@ -436,12 +474,25 @@ CStdString CSMBDirectory::MountShare(const CStdString &smbPath, const CStdString
   if (CUtil::SudoCommand(strCmd))
     return strMountPoint;
 #endif
+#endif
   return StringUtils::EmptyString;
 }
 
 void CSMBDirectory::UnMountShare(const CStdString &strType, const CStdString &strName)
 {
-#ifdef _LINUX
+#ifdef __APPLE__
+  // Decode the path.
+  CStdString strMountPoint = GetMountPoint(strType, strName);
+  CUtil::UrlDecode(strMountPoint);
+  
+  // Make the unmount command.
+  CStdStringArray args;
+  args.push_back("/sbin/umount");
+  args.push_back(strMountPoint);
+  
+  // Execute command.
+  CUtil::Command(args);
+#elif defined(_LINUX)
   CStdString strCmd = "umount " + GetMountPoint(strType, strName);
   CUtil::SudoCommand(strCmd);
 #endif
@@ -451,6 +502,12 @@ CStdString CSMBDirectory::GetMountPoint(const CStdString &strType, const CStdStr
 {
   CStdString strPath = strType + strName;
   CUtil::URLEncode(strPath);
+  
+#ifdef __APPLE__
+  CStdString str = getenv("HOME");
+  return str + "/" + XBMC_SMB_MOUNT_PATH + strPath;
+#else
   return XBMC_SMB_MOUNT_PATH + strPath;
+#endif
 }
 
