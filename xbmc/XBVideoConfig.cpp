@@ -141,7 +141,7 @@ bool XBVideoConfig::HasHDPack() const
 }
 
 #ifdef HAS_SDL
-void XBVideoConfig::GetDesktopResolution(int &w, int &h)
+void XBVideoConfig::GetDesktopResolution(int &w, int &h) const
 {
 #ifdef __APPLE__
   Cocoa_GetScreenResolution(&w, &h);
@@ -331,6 +331,7 @@ void XBVideoConfig::GetModes()
        continue;
      if (i<MAX_RESOLUTIONS)
      {
+       m_ResInfo[m_iNumResolutions].iScreen = 0;
        m_ResInfo[m_iNumResolutions].iWidth = modes[i]->w;
        m_ResInfo[m_iNumResolutions].iHeight = modes[i]->h;
        m_ResInfo[m_iNumResolutions].fPixelRatio = 1.0f;
@@ -352,6 +353,38 @@ void XBVideoConfig::GetModes()
          bHasNTSC = true;
      }
    }
+   
+#ifdef __APPLE__
+   // Add other fullscreen settings for other monitors.
+   int numDisplays = Cocoa_GetNumDisplays();
+   for (int i=1; i<numDisplays; i++)
+   {
+     int w, h;
+     Cocoa_GetScreenResolutionOfAnotherScreen(i, &w, &h);
+     CLog::Log(LOGINFO, "Extra display %d is %dx%d\n", i, w, h);
+     
+     m_ResInfo[m_iNumResolutions].iScreen = i;
+     m_ResInfo[m_iNumResolutions].iWidth = w;
+     m_ResInfo[m_iNumResolutions].iHeight = h;
+     m_ResInfo[m_iNumResolutions].fPixelRatio = 1.0f;
+     m_ResInfo[m_iNumResolutions].iSubtitles = (int)(0.9*h);
+     snprintf(m_ResInfo[m_iNumResolutions].strMode,
+               sizeof(m_ResInfo[m_iNumResolutions].strMode),
+               "%d x %d (Full screen #%d)", w, h, i+1);
+     if ((float)w / (float)h >= 1.59)
+       m_ResInfo[m_iNumResolutions].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
+     else
+       m_ResInfo[m_iNumResolutions].dwFlags = 0;
+     g_graphicsContext.ResetOverscan(m_ResInfo[m_iNumResolutions]);
+     g_settings.m_ResInfo[CUSTOM+m_iNumResolutions] = m_ResInfo[m_iNumResolutions];
+     m_iNumResolutions++;
+     if (w == 720 && h == 576)
+       bHasPAL = true;
+     if (w == 720 && h == 480)
+       bHasNTSC = true;
+   }
+#endif
+   
    g_graphicsContext.ResetScreenParameters(DESKTOP);
    g_graphicsContext.ResetScreenParameters(WINDOW);
 }
@@ -359,8 +392,21 @@ void XBVideoConfig::GetModes()
 
 RESOLUTION XBVideoConfig::GetSafeMode() const
 {
-  // TODO: auto detect user's desktop resolution and accordingly return a safe mode
-  if (HasPAL()) return PAL_4x3;
+  // Get the desktop resolution to see what we're dealing with here.
+  int w, h;
+  GetDesktopResolution(w, h);
+  
+  // If we've got quite a few pixels, go with 720p.
+  if (w > 1280 && h > 720)
+    return HDTV_720p;
+  
+  // A few less pixels, but still enough for 480p.
+  if (w > 854 && h > 420)
+    return HDTV_480p_16x9;
+  
+  if (HasPAL()) 
+    return PAL_4x3;
+  
   return NTSC_4x3;
 }
 
