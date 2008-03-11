@@ -10,11 +10,18 @@
 const int CODEC_ID_MPEG1VIDEO = 1;
 #endif
 
+enum MPEGProfile
+{
+  MPEG_422_HL = 0x82,
+  MPEG_422_ML = 0x52,
+};
+
 //Decoder specific flags used internal to decoder
 #define DVP_FLAG_LIBMPEG2_MASK      0x0000f00
 #define DVP_FLAG_LIBMPEG2_ALLOCATED 0x0000100 //Set to indicate that this has allocated data
 #define DVP_FLAG_LIBMPEG2_INUSE     0x0000200 //Set to show that libmpeg2 might need to read data from here again
 
+#undef ALIGN
 #define ALIGN(value, alignment) (((value)+(alignment-1))&~(alignment-1))
 
 CDVDVideoCodecLibMpeg2::CDVDVideoCodecLibMpeg2()
@@ -25,6 +32,7 @@ CDVDVideoCodecLibMpeg2::CDVDVideoCodecLibMpeg2()
   m_pCurrentBuffer = NULL;
   m_irffpattern = 0;
   m_bFilm = false;
+  m_bIs422 = false;
   m_bmpeg1 = false;
 }
 
@@ -55,6 +63,17 @@ DVDVideoPicture* CDVDVideoCodecLibMpeg2::GetBuffer(unsigned int width, unsigned 
 
         //Allocate for YV12 frame
         unsigned int iPixels = width*height;
+        unsigned int iChromaPixels = iPixels/4;
+        
+        // If we're dealing with a 4:2:2 format, then we actually need more pixels to
+        // store the chroma, as "the two chroma components are sampled at half the 
+        // sample rate of luma, so horizontal chroma resolution is cut in half."
+        //
+        // FIXME: Do we need to handle 4:4:4 and 4:1:1 as well?
+        //
+        if (m_bIs422)
+          iChromaPixels = iPixels/2;
+        
         m_pVideoBuffer[i].iLineSize[0] = width;   //Y
         m_pVideoBuffer[i].iLineSize[1] = width/2; //U
         m_pVideoBuffer[i].iLineSize[2] = width/2; //V
@@ -64,13 +83,13 @@ DVDVideoPicture* CDVDVideoCodecLibMpeg2::GetBuffer(unsigned int width, unsigned 
         m_pVideoBuffer[i].iHeight = height;
         
         m_pVideoBuffer[i].data[0] = (BYTE*)_aligned_malloc(iPixels, 16);    //Y
-        m_pVideoBuffer[i].data[1] = (BYTE*)_aligned_malloc(iPixels/4, 16);  //U
-        m_pVideoBuffer[i].data[2] = (BYTE*)_aligned_malloc(iPixels/4, 16);  //V
+        m_pVideoBuffer[i].data[1] = (BYTE*)_aligned_malloc(iChromaPixels, 16);  //U
+        m_pVideoBuffer[i].data[2] = (BYTE*)_aligned_malloc(iChromaPixels, 16);  //V
       
         //Set all data to 0 for less artifacts.. hmm.. what is black in YUV??
         memset( m_pVideoBuffer[i].data[0], 0, iPixels );
-        memset( m_pVideoBuffer[i].data[1], 0, iPixels/4 );
-        memset( m_pVideoBuffer[i].data[2], 0, iPixels/4 );
+        memset( m_pVideoBuffer[i].data[1], 0, iChromaPixels );
+        memset( m_pVideoBuffer[i].data[2], 0, iChromaPixels );
       }
       m_pVideoBuffer[i].pts = DVD_NOPTS_VALUE;
       m_pVideoBuffer[i].iFlags = DVP_FLAG_LIBMPEG2_INUSE | DVP_FLAG_ALLOCATED; //Mark as inuse
@@ -134,7 +153,11 @@ bool CDVDVideoCodecLibMpeg2::Open(CDVDStreamInfo &hints, CDVDCodecOptions &optio
   else
     m_bmpeg1 = false;
 
+#ifdef __APPLE__
+  m_dll.mpeg2_accel(MPEG2_ACCEL_X86_SSE3 | MPEG2_ACCEL_X86_SSE2 | MPEG2_ACCEL_X86_MMXEXT | MPEG2_ACCEL_X86_MMX);
+#else
   m_dll.mpeg2_accel(MPEG2_ACCEL_X86_MMX);
+#endif
 
   m_pHandle = m_dll.mpeg2_init();
   if (!m_pHandle) return false;
@@ -193,6 +216,10 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, double pts)
     {
     case STATE_SEQUENCE:
       {
+        // Check for 4:2:2 here.
+        if (m_pInfo->sequence->profile_level_id == MPEG_422_HL || m_pInfo->sequence->profile_level_id == MPEG_422_ML)
+          m_bIs422 = true;
+        
         //New sequence of frames
         //Release all buffers
         ReleaseBuffer(NULL);
@@ -426,6 +453,13 @@ bool CDVDVideoCodecLibMpeg2::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   if(m_pCurrentBuffer && m_pCurrentBuffer->iFlags & DVP_FLAG_ALLOCATED)
   {
     memcpy(pDvdVideoPicture, m_pCurrentBuffer, sizeof(DVDVideoPicture));
+    
+    // If we're decoding a 4:2:2 image, we need to skip every other line to get
+    // down to 4:2:0. We lose image quality, but hopefully nobody will notice.
+    //
+    if (m_bIs422)
+      pDvdVideoPicture->iLineSize[2] <<= 1;
+    
     return true;
   }
   else
