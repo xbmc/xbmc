@@ -107,6 +107,13 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   // set acceleration
   m_pCodecContext->dsp_mask = FF_MM_FORCE | FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE;
   
+  // This doesn't seem to help with the H.264 MT patch. "Basically, the code decodes 
+  // up to 128 macroblocks in one thread while doing prediction+idct+deblock of the 
+  // previously decoded 128 blocks in another thread." This could explain the lack of
+  // much difference.
+  //
+  //m_pCodecContext->skip_loop_filter = AVDISCARD_BIDIR;
+
   // set any special options
   for(CDVDCodecOptions::iterator it = options.begin(); it != options.end(); it++)
   {
