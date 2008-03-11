@@ -1152,10 +1152,10 @@ float CGraphicContext::GetFPS() const
   return Cocoa_GetScreenRefreshRate(g_settings.m_ResInfo[m_Resolution].iScreen);
 #else
   if (m_Resolution == PAL_4x3 || m_Resolution == PAL_16x9)
-    return 50f;
+    return 50.0f;
   else if (m_Resolution == HDTV_1080i)
-    return 30f;
-  return 60f;
+    return 30.0f;
+  return 60.0f;
 #endif
 }
 
