@@ -104,7 +104,7 @@ void CApplicationRenderer::Process()
       }
     }
 
-    float t0 = (1000.0f/(float)g_graphicsContext.GetFPS());
+    float t0 = (1000.0f/g_graphicsContext.GetFPS());
     float t1 = m_time + t0; //time when we expect a new render
     float t2 = (float)timeGetTime();
     if (t1 < t2) //we're late rendering
