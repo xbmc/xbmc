@@ -9,10 +9,17 @@
 #ifndef _OSX_UTILS_H_
 #define _OSX_UTILS_H_
 
+#include "AppleRemoteKeys.h"
+
 #ifdef __cplusplus
 extern "C" 
 {
 #endif
+  //
+  // Initialization.
+  //
+  void Cocoa_Initialize(void* pApplication);
+
   //
   // Pools.
   //
@@ -23,7 +30,10 @@ extern "C"
   // Graphics.
   //
   void Cocoa_GetScreenResolution(int* w, int* h);
-  int  Cocoa_GetCurrentDisplay();
+  double Cocoa_GetScreenRefreshRate(int screen);
+  void Cocoa_GetScreenResolutionOfAnotherScreen(int display, int* w, int* h);
+  int  Cocoa_GetNumDisplays();
+  int  Cocoa_GetDisplay(int screen);
   
   //
   // Open GL.
@@ -32,11 +42,11 @@ extern "C"
   void  Cocoa_GL_ReleaseContext(void* context);
   void  Cocoa_GL_SwapBuffers(void* theContext);
   void* Cocoa_GL_GetWindowPixelFormat();
-  void* Cocoa_GL_GetFullScreenPixelFormat();
+  void* Cocoa_GL_GetFullScreenPixelFormat(int screen);
   void* Cocoa_GL_GetCurrentContext();
   void* Cocoa_GL_CreateContext(void* pixFmt, void* shareCtx);
   void  Cocoa_GL_ResizeWindow(void *theContext, int w, int h);
-  void  Cocoa_GL_SetFullScreen(bool fs);
+  void  Cocoa_GL_SetFullScreen(int screen, int width, int height, bool fs);
   void  Cocoa_GL_EnableVSync(bool enable);
 
   //
