@@ -1,5 +1,6 @@
 
 #include "stdafx.h"
+#include "AudioContext.h"
 #include "DVDAudioCodecLiba52.h"
 #include "../../DVDStreamInfo.h"
 
@@ -116,6 +117,12 @@ void CDVDAudioCodecLiba52::SetupChannels()
       case A52_3F2R   : m_iOutputMapping = 0x25431; break;
     }
   }
+  
+#ifdef __APPLE__
+  // If we're not passing through, go to 2-channel mixdown.
+  if (g_audioContext.IsPassthroughActive() == false)
+    m_iOutputMapping = 0x21;
+#endif
 
   int channels = 0;
   unsigned int m = m_iOutputMapping<<4;
@@ -211,11 +218,18 @@ int CDVDAudioCodecLiba52::Decode(BYTE* pData, int iSize)
       
       float fLevel = 1.0f;      
       int iFlags = m_iSourceFlags;
-
+      
+#ifdef __APPLE__
+      // If we're not passing through, go to 2-channel mixdown.
+      if (g_audioContext.IsPassthroughActive() == false)
+        iFlags = A52_STEREO;
+#endif
+  
       /* adjust level should always be set, to keep samples in proper range */
       /* after any downmixing has been done */
+#ifndef __APPLE__
       iFlags |= A52_ADJUST_LEVEL;
-
+#endif
       m_dll.a52_frame(m_pState, m_inputBuffer, &iFlags, &fLevel, 384);
 
       // [a52_dynrng (state, ...); this is only optional]
