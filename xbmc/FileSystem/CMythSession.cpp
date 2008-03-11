@@ -10,14 +10,6 @@ extern "C" {
 using namespace XFILE;
 using namespace std;
 
-#ifndef PRId64
-#ifdef _MSC_VER
-#define PRId64 "I64d"
-#else
-#define PRId64 "lld"
-#endif
-#endif
-
 CCriticalSection            CCMythSession::m_section_session;
 std::vector<CCMythSession*> CCMythSession::m_sessions;
 
