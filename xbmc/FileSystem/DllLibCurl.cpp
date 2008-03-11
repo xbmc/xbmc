@@ -50,20 +50,23 @@ void DllLibCurlGlobal::Unload()
 void DllLibCurlGlobal::CheckIdle()
 {
   CSingleLock lock(m_critSection);
-  /* 5 seconds idle time before closing handle */
-  const DWORD idletime = 5000;
+  /* 20 seconds idle time before closing handle */
+  const DWORD idletime = 30000;
 
   VEC_CURLSESSIONS::iterator it = m_sessions.begin();
   while(it != m_sessions.end())
   {
     if( !it->m_busy && it->m_idletimestamp + idletime < GetTickCount())
     {
-      CLog::Log(LOGINFO, "%s - Closing session to %s://%s\n", __FUNCTION__, it->m_protocol.c_str(), it->m_hostname.c_str());
+      CLog::Log(LOGINFO, "%s - Closing session to %s ://%s (easy=0x%08lx, multi=%08lx)\n", __FUNCTION__, it->m_protocol.c_str(), it->m_hostname.c_str(), it->m_easy, it->m_multi);
 
-      if(it->m_easy)
-        easy_cleanup(it->m_easy);
+			// It's important to clean up multi *before* cleaning up easy, because the multi cleanup
+			// code accesses stuff in the easy's structure.
+			//
       if(it->m_multi)
         multi_cleanup(it->m_multi);
+      if(it->m_easy)
+        easy_cleanup(it->m_easy);
 
       Unload();
 
