@@ -80,7 +80,7 @@ public:
 class DllDvdNav : public DllDynamic, DllDvdNavInterface
 {
 #ifdef __APPLE__
-  DECLARE_DLL_WRAPPER(DllDvdNav, Q:\\system\\players\\dvdplayer\\libdvdnav-so.so)
+  DECLARE_DLL_WRAPPER(DllDvdNav, Q:\\system\\players\\dvdplayer\\libdvdnav-osx.so)
 #elif !defined(_LINUX)
   DECLARE_DLL_WRAPPER(DllDvdNav, Q:\\system\\players\\dvdplayer\\libdvdnav.dll)
 #else
