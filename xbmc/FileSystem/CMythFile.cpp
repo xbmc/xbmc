@@ -16,14 +16,6 @@ static void prog_update_callback(cmyth_proginfo_t prog)
   CLog::Log(LOGDEBUG, "%s - prog_update_callback", __FUNCTION__);
 }
 
-#ifndef PRId64
-#ifdef _MSC_VER
-#define PRId64 "I64d"
-#else
-#define PRId64 "lld"
-#endif
-#endif
-
 CStdString CCMythFile::GetString(char *str)
 {
   CStdString result;
