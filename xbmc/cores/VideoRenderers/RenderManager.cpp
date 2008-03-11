@@ -315,6 +315,12 @@ float CXBoxRenderManager::GetMaximumFPS()
       fps *= 0.5;
   }
 
+#ifdef __APPLE__
+  // Experimental. Use the actual refresh rate of the display.
+  if (g_videoConfig.GetVSyncMode() == VSYNC_ALWAYS || g_videoConfig.GetVSyncMode() == VSYNC_VIDEO) 
+    fps = g_graphicsContext.GetFPS();
+#endif
+  
   return fps;
 }
 
