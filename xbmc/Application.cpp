@@ -218,6 +218,9 @@
 #ifdef HAS_CWIID
 #include "common/WiiRemote.h"
 #endif
+#ifdef __APPLE__
+#include "CocoaUtils.h"
+#endif
 #ifdef HAS_HAL
 #include "linux/LinuxFileSystem.h"
 #endif
@@ -807,6 +810,26 @@ extern "C" HANDLE __stdcall KeGetCurrentThread(VOID);
 #endif
 extern "C" void __stdcall init_emu_environ();
 
+#ifdef __APPLE__
+//
+// Utility function used to copy files from the application bundle
+// over to the user data directory in Application Support/XBMC.
+//
+static void CopyUserDataIfNeeded(CStdString strPath, LPCTSTR file)
+{
+  strPath.append("/");
+  strPath.append(file);
+  //printf("Checking for existance of %s\n", strPath.c_str());
+  if (access(strPath.c_str(), 0) == -1)
+  {
+    CStdString srcFile = _P("q:\\UserData\\");
+    srcFile.append(file);
+    //printf("Copying from %s to %s\n", srcFile.c_str(), strPath.c_str());
+    CopyFile(srcFile.c_str(), strPath.c_str(), TRUE);
+  }
+}
+#endif
+
 HRESULT CApplication::Create(HWND hWnd)
 {
 #ifdef _LINUX
@@ -818,8 +841,17 @@ HRESULT CApplication::Create(HWND hWnd)
 #ifndef HAS_SDL
   HRESULT hr = S_OK;
 #endif
+
+  // Check logpath...needs to be done before the first log to be meaningful.
+#ifdef __APPLE__
+  g_stSettings.m_logFolder = "/var/tmp/";
+#elif defined (_LINUX)
+  char* logPath = new char[MAX_PATH];  
+  sprintf(logPath, "%s/", strExecutablePath.c_str());
+  g_stSettings.m_logFolder = logPath;
+#endif  
   
-  //grab a handle to our thread to be used later in identifying the render thread
+  // Grab a handle to our thread to be used later in identifying the render thread.
   m_threadID = GetCurrentThreadId();
 
   init_emu_environ();
@@ -853,14 +885,6 @@ HRESULT CApplication::Create(HWND hWnd)
   setenv("XBMC_HOME", strExecutablePath.c_str(), 0);
 #endif  
 
-  // check logpath
-#ifdef __APPLE__
-  g_stSettings.m_logFolder = "/var/tmp/";
-#elif defined (_LINUX)
-  char* logPath = new char[MAX_PATH];  
-  sprintf(logPath, "%s/", strExecutablePath.c_str());
-  g_stSettings.m_logFolder = logPath;
-#endif  
   CStdString strLogFile, strLogFileOld;
 
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
@@ -881,22 +905,48 @@ HRESULT CApplication::Create(HWND hWnd)
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 
 #ifdef __APPLE__
-    // Make sure the required directories exist.
-    CStdString str = getenv("HOME");
-    str.append("/Library/Application Support/XBMC");
-    CreateDirectory(str.c_str(), NULL);
-    str.append("/UserData");
-    CreateDirectory(str.c_str(), NULL);
-    
-    // See if the keymap file exists, and if not, copy it from our "virgin" one.
-    str.append("/Keymap.xml");
-    printf("Checking for existence of %s\n", str.c_str());
-    if (access(str.c_str(), 0) == -1)
-    {
-      CStdString srcFile = _P("q:\\UserData\\Keymap.xml");
-      printf("Copying from %s to %s\n", srcFile.c_str(), str.c_str());
-      CopyFile(srcFile.c_str(), str.c_str(), TRUE);
-    }
+  // Intialize the Cocoa subsystem.
+  Cocoa_Initialize(this);
+
+  // Make sure the required directories exist.
+  CStdString str = getenv("HOME");
+  str.append("/Library/Application Support");
+  CreateDirectory(str.c_str(), NULL);
+  str.append("/XBMC");
+  CreateDirectory(str.c_str(), NULL);
+  CStdString str2 = str;
+  str2.append("/Mounts");
+  CreateDirectory(str2.c_str(), NULL);
+  str.append("/UserData");
+  CreateDirectory(str.c_str(), NULL);
+  
+  // See if the keymap file exists, and if not, copy it from our "virgin" one.
+  CopyUserDataIfNeeded(str, "Keymap.xml");
+  CopyUserDataIfNeeded(str, "RssFeeds.xml");
+#elif defined(_WIN32PC)
+  // Make sure the required directories exist.
+  TCHAR szPath[MAX_PATH];
+  CStdString strWin32UserFolder,strPath;
+  if(SUCCEEDED(SHGetFolderPath(NULL,CSIDL_APPDATA|CSIDL_FLAG_CREATE,NULL,0,szPath))) 
+    strWin32UserFolder = szPath;
+  else
+    strWin32UserFolder = strExecutablePath;
+
+  SetEnvironmentVariable("XBMC_PROFILE_HOME", strWin32UserFolder.c_str());
+
+  CUtil::AddFileToFolder(strWin32UserFolder,"XBMC",strPath);
+  CreateDirectory(strPath.c_str(), NULL);
+  CUtil::AddFileToFolder(strPath,"UserData",strPath);
+  CreateDirectory(strPath.c_str(), NULL);
+  // See if the keymap file exists, and if not, copy it from our "virgin" one.
+  CUtil::AddFileToFolder(strPath,"Keymap.xml",strPath);
+  printf("Checking for existence of %s\n", strPath.c_str());
+  if (access(strPath.c_str(), 0) == -1)
+  {
+    CStdString srcFile = _P("q:\\UserData\\Keymap.xml");
+    printf("Copying from %s to %s\n", srcFile.c_str(), strPath.c_str());
+    CopyFile(srcFile.c_str(), strPath.c_str(), TRUE);
+  }
 #elif defined(_WIN32PC)
   // Make sure the required directories exist.
   TCHAR szPath[MAX_PATH];
@@ -2905,8 +2955,16 @@ bool CApplication::OnKey(CKey& key)
       { // see if we've got an ascii key
         if (g_Keyboard.GetUnicode()) 
         {
-          action.wID = (WORD)g_Keyboard.GetAscii() | KEY_ASCII; // Only for backwards compatibility
-          action.unicode = g_Keyboard.GetUnicode();
+#ifdef __APPLE__
+          // If not plain ASCII, use the button translator.
+          if (g_Keyboard.GetAscii() < 32 || g_Keyboard.GetAscii() > 126)
+            g_buttonTranslator.GetAction(iWin, key, action);
+          else
+#endif
+          {
+            action.wID = (WORD)g_Keyboard.GetAscii() | KEY_ASCII; // Only for backwards compatibility
+            action.unicode = g_Keyboard.GetUnicode();
+          }
         }
         else
         {
@@ -3977,15 +4035,25 @@ void CApplication::Stop()
     //g_lcd->StopThread();
     CLog::Log(LOGNOTICE, "stop python");
     m_applicationMessenger.Cleanup();
-#ifdef HAS_PYTHON    
+#ifdef HAS_PYTHON
     g_pythonParser.FreeResources();
 #endif
 
     CLog::Log(LOGNOTICE, "clean cached files!");
     g_RarManager.ClearCache(true);
 
+#ifndef __APPLE__
+    // There's a bug unloading skins where it can get stuck in an infinite loop waiting for
+    // some control's animation to finish. For now I'm disabling the unload skin, since 
+    // it works around the hang and actually exits much quicker. In case someone wants to
+    // actually fix the bug, I can reproduce every time like this:
+    //
+    //   1. Start in PM3. Change to xTV. Exit.
+    //   3. Start in xTV. Change to PM3. Exit.
+    //
     CLog::Log(LOGNOTICE, "unload skin");
     UnloadSkin();
+#endif
 
     m_gWindowManager.Delete(WINDOW_MUSIC_PLAYLIST);
     m_gWindowManager.Delete(WINDOW_MUSIC_PLAYLIST_EDITOR);
@@ -4840,6 +4908,11 @@ bool CApplication::ResetScreenSaverWindow()
     }
     m_pd3dDevice->SetGammaRamp(0, &m_OldRamp); // put the old gamma ramp back in place
 #else
+    
+#ifdef __APPLE__
+   if (g_advancedSettings.m_fullScreen == true)
+   {
+#endif
 	 Uint16 RampRed[256];
 	 Uint16 RampGreen[256];
 	 Uint16 RampBlue[256];
@@ -4855,6 +4928,9 @@ bool CApplication::ResetScreenSaverWindow()
     	SDL_SetGammaRamp(RampRed, RampGreen, RampBlue);
     }
     SDL_SetGammaRamp(m_OldRampRed, m_OldRampGreen, m_OldRampBlue);
+#ifdef __APPLE__
+   }
+#endif
 #endif
     return true;
   }
@@ -4981,6 +5057,10 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     m_pd3dDevice->SetGammaRamp(GAMMA_RAMP_FLAG, &Ramp); // use immediate to get a smooth fade
   }
 #else
+#ifdef __APPLE__
+   if (g_advancedSettings.m_fullScreen == true)
+   {
+#endif
   SDL_GetGammaRamp(m_OldRampRed, m_OldRampGreen, m_OldRampBlue); // Store the old gamma ramp
   Uint16 RampRed[256];
   Uint16 RampGreen[256];
@@ -4996,6 +5076,9 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     Sleep(5);
   	SDL_SetGammaRamp(RampRed, RampGreen, RampBlue);
   }
+#ifdef __APPLE__
+  }
+#endif
 #endif      
 }
 

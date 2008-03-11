@@ -119,6 +119,7 @@ public:
   bool IsPaused() const;
   bool IsPlayingAudio() const ;
   bool IsPlayingVideo() const ;
+  bool IsPlayingFullScreenVideo() const ;
   bool OnKey(CKey& key);
   bool OnAction(const CAction &action);
   void RenderMemoryStatus();
