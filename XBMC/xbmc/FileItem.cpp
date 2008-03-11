@@ -225,7 +225,11 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_strPath = item.m_strPath;
 #ifdef DEBUG
   if (m_bIsFolder && !m_strPath.IsEmpty() && !IsFileFolder())  // should root paths be "/" ?
+  {
+#ifndef __APPLE__
     ASSERT(CUtil::HasSlashAtEnd(m_strPath));
+#endif
+  }
 #endif
   m_bIsParentFolder = item.m_bIsParentFolder;
   m_iDriveType = item.m_iDriveType;
