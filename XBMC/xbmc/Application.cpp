@@ -4733,6 +4733,11 @@ bool CApplication::IsPlayingVideo() const
   return false;
 }
 
+bool CApplication::IsPlayingFullScreenVideo() const
+{
+  return IsPlayingVideo() && g_graphicsContext.IsFullScreenVideo();
+}
+
 void CApplication::StopPlaying()
 {
   int iWin = m_gWindowManager.GetActiveWindow();
