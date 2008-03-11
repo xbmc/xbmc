@@ -841,7 +841,10 @@ HRESULT CApplication::Create(HWND hWnd)
 #ifndef HAS_SDL
   HRESULT hr = S_OK;
 #endif
-
+  // map Q to home drive of xbe to load the config file
+  static CStdString strExecutablePath;
+  CUtil::GetHomePath(strExecutablePath);
+  
   // Check logpath...needs to be done before the first log to be meaningful.
 #ifdef __APPLE__
   g_stSettings.m_logFolder = "/var/tmp/";
@@ -866,10 +869,6 @@ HRESULT CApplication::Create(HWND hWnd)
   win32_exception::install_handler();
 #endif
 
-  // map Q to home drive of xbe to load the config file
-  static CStdString strExecutablePath;
-  CUtil::GetHomePath(strExecutablePath);
-  
 #ifdef HAS_XBOX_HARDWARE 
   char szDevicePath[MAX_PATH];
 

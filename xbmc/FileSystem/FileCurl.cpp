@@ -21,6 +21,9 @@ using namespace XCURL;
 extern "C" int __stdcall dllselect(int ntfs, fd_set *readfds, fd_set *writefds, fd_set *errorfds, const timeval *timeout);
 #define dllselect select
 #endif
+#ifdef _LINUX
+#define dllselect select
+#endif
 
 // curl calls this routine to debug
 extern "C" int debug_callback(CURL_HANDLE *handle, curl_infotype info, char *output, size_t size, void *data)
