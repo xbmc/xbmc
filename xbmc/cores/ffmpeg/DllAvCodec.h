@@ -18,6 +18,7 @@ extern "C" {
 #endif
 
 #ifdef __APPLE__
+#include "libffmpeg-OSX/log.h"
 #include "libffmpeg-OSX/avcodec.h"
 #else
 #include "avcodec.h"
