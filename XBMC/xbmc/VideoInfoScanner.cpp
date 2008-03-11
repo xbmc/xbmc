@@ -1104,7 +1104,7 @@ namespace VIDEO
       if (!items[i]->HasThumbnail())
       {
         CStdString strExpression;
-        strExpression.Format("season[ ._-](0?%i)\\.tbn",items[i]->GetVideoInfoTag()->m_iSeason);
+        strExpression.Format("season[ ._-]?(0?%i)\\.tbn",items[i]->GetVideoInfoTag()->m_iSeason);
         bool bDownload=true;
         CRegExp reg;
         if (reg.RegComp(strExpression.c_str()))
