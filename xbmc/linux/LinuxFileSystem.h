@@ -15,9 +15,10 @@
 class CLinuxFileSystem
 {
 private:
+  static CCriticalSection m_lock;
+
 #ifdef HAS_HAL
   static bool m_DeviceChange;
-  static CCriticalSection m_lock;
   static std::vector<CStorageDevice> m_Devices;
 
   static void UpdateDevices();
