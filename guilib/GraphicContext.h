@@ -138,7 +138,7 @@ public:
 
   int GetWidth() const { return m_iScreenWidth; }
   int GetHeight() const { return m_iScreenHeight; }
-  int GetFPS() const;
+  float GetFPS() const;
   bool SendMessage(CGUIMessage& message);
   void setMessageSender(IMsgSenderCallback* pCallback);
   DWORD GetNewID();

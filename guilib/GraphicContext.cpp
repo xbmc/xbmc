@@ -1145,13 +1145,18 @@ bool CGraphicContext::RectIsAngled(float x1, float y1, float x2, float y2) const
   return false;
 }
 
-int CGraphicContext::GetFPS() const
+float CGraphicContext::GetFPS() const
 {
+#ifdef __APPLE__
+  // Get the actual refresh rate of the display
+  return Cocoa_GetScreenRefreshRate(g_settings.m_ResInfo[m_Resolution].iScreen);
+#else
   if (m_Resolution == PAL_4x3 || m_Resolution == PAL_16x9)
-    return 50;
+    return 50f;
   else if (m_Resolution == HDTV_1080i)
-    return 30;
-  return 60;
+    return 30f;
+  return 60f;
+#endif
 }
 
 #ifdef HAS_SDL_2D
