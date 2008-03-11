@@ -8,6 +8,13 @@
 #import <Cocoa/Cocoa.h>
 #import <OpenGL/OpenGL.h>
 #include "CocoaUtils.h"
+#import "XBMCMain.h"
+
+void Cocoa_Initialize(void* pApplication)
+{
+  // Intialize the Apple remote code.
+  [[XBMCMain sharedInstance] setApplication: pApplication];
+}
 
 void* InitializeAutoReleasePool()
 {
@@ -42,53 +49,71 @@ void Cocoa_GL_SwapBuffers(void* theContext)
 
 #define MAX_DISPLAYS 32
 
-int Cocoa_GetCurrentDisplay()
+int Cocoa_GetNumDisplays()
 {
-  // Figure out the screen size.
-  CGDirectDisplayID display_id = kCGDirectMainDisplay;
+	CGDirectDisplayID displayArray[MAX_DISPLAYS];
+	CGDisplayCount    numDisplays;
+  
+	// Get the list of displays.
+	CGGetActiveDisplayList(MAX_DISPLAYS, displayArray, &numDisplays);
+	return numDisplays;
+}
 
-  const char* strDisplayNum = getenv("SDL_VIDEO_FULLSCREEN_DISPLAY");
-  if (strDisplayNum != 0)
-  {
-    int display_num = atoi(strDisplayNum);
-    if (display_num != 0)
-    {
-      CGDirectDisplayID displayArray[MAX_DISPLAYS];
-      CGDisplayCount    numDisplays;
+int Cocoa_GetDisplay(int screen)
+{
+	CGDirectDisplayID displayArray[MAX_DISPLAYS];
+	CGDisplayCount    numDisplays;
+  
+	// Get the list of displays.
+	CGGetActiveDisplayList(MAX_DISPLAYS, displayArray, &numDisplays);
+	return displayArray[screen];
+}
 
-      // Get the list of displays.
-      CGGetActiveDisplayList(MAX_DISPLAYS, displayArray, &numDisplays);
-      fprintf(stderr, "There are %d displays, requested was %d.\n", numDisplays, display_num);
-
-      if (display_num <= numDisplays)
-      {
-        fprintf(stderr, "Replacing display ID %d with %d\n", display_id, displayArray[display_num-1]);
-        display_id = displayArray[display_num-1];
-      }
-    }
-  }
-  return (int)display_id;
+void Cocoa_GetScreenResolutionOfAnotherScreen(int screen, int* w, int* h)
+{
+	CFDictionaryRef mode = CGDisplayCurrentMode(Cocoa_GetDisplay(screen));
+  CFNumberGetValue(CFDictionaryGetValue(mode, kCGDisplayWidth), kCFNumberSInt32Type, w);
+  CFNumberGetValue(CFDictionaryGetValue(mode, kCGDisplayHeight), kCFNumberSInt32Type, h);
 }
 
 void Cocoa_GetScreenResolution(int* w, int* h)
 {
   // Figure out the screen size.
-  CGDirectDisplayID display_id = Cocoa_GetCurrentDisplay();
-  CFDictionaryRef save_mode  = CGDisplayCurrentMode(display_id);
-
-  CFNumberGetValue(CFDictionaryGetValue(save_mode, kCGDisplayWidth), kCFNumberSInt32Type, w);
-  CFNumberGetValue(CFDictionaryGetValue(save_mode, kCGDisplayHeight), kCFNumberSInt32Type, h);
+  CGDirectDisplayID display_id = kCGDirectMainDisplay;
+  CFDictionaryRef mode  = CGDisplayCurrentMode(display_id);
+  
+  CFNumberGetValue(CFDictionaryGetValue(mode, kCGDisplayWidth), kCFNumberSInt32Type, w);
+  CFNumberGetValue(CFDictionaryGetValue(mode, kCGDisplayHeight), kCFNumberSInt32Type, h);
 }
+
+// get a double value from a dictionary
+static double getDictDouble(CFDictionaryRef refDict, CFStringRef key)
+{
+  double double_value;
+  CFNumberRef number_value = (CFNumberRef) CFDictionaryGetValue(refDict, key);
+  if (!number_value) // if can't get a number for the dictionary
+    return -1;  // fail
+  if (!CFNumberGetValue(number_value, kCFNumberDoubleType, &double_value)) // or if cant convert it
+    return -1; // fail
+  return double_value; // otherwise return the long value
+}
+
+double Cocoa_GetScreenRefreshRate(int screen)
+{
+  // Figure out the refresh rate.
+  CFDictionaryRef mode = CGDisplayCurrentMode(Cocoa_GetDisplay(screen));
+  return getDictDouble (mode, kCGDisplayRefreshRate);
+ }
 
 void Cocoa_GL_ResizeWindow(void *theContext, int w, int h)
 {
   if (!theContext)
     return;
-
+  
   NSOpenGLContext* context = Cocoa_GL_GetCurrentContext();
   NSView* view;
   NSWindow* window;
-
+  
   view = [context view];
   if (view && w>0 && h>0)
   {
@@ -99,86 +124,139 @@ void Cocoa_GL_ResizeWindow(void *theContext, int w, int h)
       [window update];
       [view setFrameSize:NSMakeSize(w, h)];
       [context update];
+      [window center];
     }
   }
 }
 
-void Cocoa_GL_SetFullScreen(bool fs)
+static NSOpenGLContext* lastOwnedContext = 0;
+
+void Cocoa_GL_SetFullScreen(int screen, int width, int height, bool fs)
 {
   static NSView* lastView = NULL;
-  NSOpenGLContext* context = (NSOpenGLContext*)Cocoa_GL_GetCurrentContext();
+  static int fullScreenDisplay = 0;
+  static NSScreen* lastScreen = NULL;
 
+  // If we're already fullscreen then we must be moving to a different display.
+  // Recurse to reset fullscreen mode and then continue.
+  //
+  if (fs == true && lastScreen != NULL)
+	Cocoa_GL_SetFullScreen(0, 0, 0, false);
+  
+  NSOpenGLContext* context = (NSOpenGLContext*)Cocoa_GL_GetCurrentContext();
+  
   if (!context)
     return;
-
+  
   if (fs)
   {
+    // Fade to black to hide resolution-switching flicker and garbage.
+  	CGDisplayFadeReservationToken fade_token = kCGDisplayFadeReservationInvalidToken;
+    if (CGAcquireDisplayFadeReservation (5, &fade_token) == kCGErrorSuccess )
+      CGDisplayFade(fade_token, 0.3, kCGDisplayBlendNormal, kCGDisplayBlendSolidColor, 0.0, 0.0, 0.0, TRUE);
+    
     // obtain fullscreen pixel format
-    NSOpenGLPixelFormat* pixFmt = (NSOpenGLPixelFormat*)Cocoa_GL_GetFullScreenPixelFormat();
+    NSOpenGLPixelFormat* pixFmt = (NSOpenGLPixelFormat*)Cocoa_GL_GetFullScreenPixelFormat(screen);
     if (!pixFmt)
       return;
-
+    
     // create our new context (sharing with the current one)
-    NSOpenGLContext* newContext = (NSOpenGLContext*)Cocoa_GL_CreateContext((void*) pixFmt,
-                                                                           (void*)context);
-
+    NSOpenGLContext* newContext = (NSOpenGLContext*)Cocoa_GL_CreateContext((void*) pixFmt, (void*)context);
+    
     // release pixelformat
     [pixFmt release];
     pixFmt = nil;
-
+    
     if (!newContext)
       return;
     
-    // save the view
+    // Save and make sure the view is on the screen that we're activating (to hide it).
     lastView = [context view];
-
+    lastScreen = [[lastView window] screen];
+    NSScreen* pScreen = [[NSScreen screens] objectAtIndex:screen];
+    [[lastView window] setFrameOrigin:[pScreen frame].origin];
+    
     // clear the current context
     [NSOpenGLContext clearCurrentContext];
-
-    // capture all displays before going fullscreen
-    CGDisplayCapture(Cocoa_GetCurrentDisplay());
-
+    
+    // Capture the display before going fullscreen.
+    fullScreenDisplay = Cocoa_GetDisplay(screen);
+    CGDisplayCapture(fullScreenDisplay);
+    
+    // If we don't hide menu bar, it will get events and interrupt the program.
+    if (fullScreenDisplay == kCGDirectMainDisplay)
+      HideMenuBar();
+    
     // set fullscreen
     [newContext setFullScreen];
     
-    // release old context
-    Cocoa_GL_ReleaseContext((void*)context);
-
+    // Release old context if we created it.
+    if (lastOwnedContext == context)
+      Cocoa_GL_ReleaseContext((void*)context);
+    
     // activate context
     [newContext makeCurrentContext];
+    lastOwnedContext = newContext;
+    
+    if (fade_token != kCGDisplayFadeReservationInvalidToken) 
+    {
+      CGDisplayFade(fade_token, 0.5, kCGDisplayBlendSolidColor, kCGDisplayBlendNormal, 0.0, 0.0, 0.0, FALSE);
+      CGReleaseDisplayFadeReservation(fade_token);
+    }
   }
   else
   {
+  	// Fade to black to hide resolution-switching flicker and garbage.
+  	CGDisplayFadeReservationToken fade_token = kCGDisplayFadeReservationInvalidToken;
+    if (CGAcquireDisplayFadeReservation (5, &fade_token) == kCGErrorSuccess )
+      CGDisplayFade(fade_token, 0.3, kCGDisplayBlendNormal, kCGDisplayBlendSolidColor, 0.0, 0.0, 0.0, TRUE);
+    
     // exit fullscreen
     [context clearDrawable];
-
+    
+    if (fullScreenDisplay == kCGDirectMainDisplay)
+      ShowMenuBar();
+    
     // release display
-    CGDisplayRelease(Cocoa_GetCurrentDisplay());
-
+    CGDisplayRelease(fullScreenDisplay);
+    
     // obtain windowed pixel format
     NSOpenGLPixelFormat* pixFmt = (NSOpenGLPixelFormat*)Cocoa_GL_GetWindowPixelFormat();
     if (!pixFmt)
       return;
     
     // create our new context (sharing with the current one)
-    NSOpenGLContext* newContext = (NSOpenGLContext*)Cocoa_GL_CreateContext((void*) pixFmt,
-                                                                           (void*)context);
+    NSOpenGLContext* newContext = (NSOpenGLContext*)Cocoa_GL_CreateContext((void* )pixFmt, (void* )context);
     
     // release pixelformat
     [pixFmt release];
     pixFmt = nil;
-      
+    
     if (!newContext)
       return;
     
-    // assign view from old context
+    // assign view from old context, move back to original screen.
     [newContext setView:lastView];
+    [[lastView window] setFrameOrigin:[lastScreen frame].origin];
     
     // release the fullscreen context
-    Cocoa_GL_ReleaseContext((void*)context);
+    if (lastOwnedContext == context)
+      Cocoa_GL_ReleaseContext((void*)context);
     
     // activate context
     [newContext makeCurrentContext];
+    lastOwnedContext = newContext;
+    
+    if (fade_token != kCGDisplayFadeReservationInvalidToken) 
+    {
+      CGDisplayFade(fade_token, 0.5, kCGDisplayBlendSolidColor, kCGDisplayBlendNormal, 0.0, 0.0, 0.0, FALSE);
+      CGReleaseDisplayFadeReservation(fade_token);
+    }
+    
+    // Reset.
+    lastView = NULL;
+    lastScreen = NULL;
+    fullScreenDisplay = 0;
   }
 }
 
@@ -190,13 +268,10 @@ void Cocoa_GL_EnableVSync(bool enable)
   {
     GLint interval;
     if (enable)
-    {
       interval = 1;
-    }
     else
-    {
       interval = 0;
-    }
+    
     CGLSetParameter(cglContext, kCGLCPSwapInterval, &interval);
   }
 }
@@ -204,31 +279,31 @@ void Cocoa_GL_EnableVSync(bool enable)
 void* Cocoa_GL_GetWindowPixelFormat()
 {
   NSOpenGLPixelFormatAttribute wattrs[] =
-    {
-      NSOpenGLPFADoubleBuffer,
-      NSOpenGLPFAWindow,
-      NSOpenGLPFANoRecovery,
-      NSOpenGLPFAAccelerated,
-      //NSOpenGLPFAColorSize, 32,
-      //NSOpenGLPFAAlphaSize, 8,
-      0
-    };
+  {
+    NSOpenGLPFADoubleBuffer,
+    NSOpenGLPFAWindow,
+    NSOpenGLPFANoRecovery,
+    NSOpenGLPFAAccelerated,
+    //NSOpenGLPFAColorSize, 32,
+    //NSOpenGLPFAAlphaSize, 8,
+    0
+  };
   NSOpenGLPixelFormat* pixFmt = [[NSOpenGLPixelFormat alloc] initWithAttributes:wattrs];
   return (void*)pixFmt;
 }
 
-void* Cocoa_GL_GetFullScreenPixelFormat()
+void* Cocoa_GL_GetFullScreenPixelFormat(int screen)
 {
   NSOpenGLPixelFormatAttribute fsattrs[] =
-    {
-      NSOpenGLPFADoubleBuffer,
-      NSOpenGLPFAFullScreen,
-      NSOpenGLPFANoRecovery,
-      NSOpenGLPFAAccelerated,
-      NSOpenGLPFAScreenMask,
-      CGDisplayIDToOpenGLDisplayMask((CGDirectDisplayID)Cocoa_GetCurrentDisplay()),
-      0
-    };
+  {
+    NSOpenGLPFADoubleBuffer,
+    NSOpenGLPFAFullScreen,
+    NSOpenGLPFANoRecovery,
+    NSOpenGLPFAAccelerated,
+    NSOpenGLPFAScreenMask,
+    CGDisplayIDToOpenGLDisplayMask((CGDirectDisplayID)Cocoa_GetDisplay(screen)),
+    0
+  };
   NSOpenGLPixelFormat* pixFmt = [[NSOpenGLPixelFormat alloc] initWithAttributes:fsattrs];
   return (void*)pixFmt;
 }
@@ -244,7 +319,7 @@ void* Cocoa_GL_CreateContext(void* pixFmt, void* shareCtx)
   if (!pixFmt)
     return nil;
   NSOpenGLContext* newContext = [[NSOpenGLContext alloc] initWithFormat:pixFmt
-                                 shareContext:(NSOpenGLContext*)shareCtx];
+                                                           shareContext:(NSOpenGLContext*)shareCtx];
   return newContext;
 }
 
@@ -252,29 +327,31 @@ void Cocoa_GL_ReplaceSDLWindowContext()
 {
   NSOpenGLContext* context = (NSOpenGLContext*)Cocoa_GL_GetCurrentContext();
   NSView* view = [context view];
-
+  
   if (!view)
     return;
-
+  
   // disassociate view from context
   [context clearDrawable];
-
+  
   // release the context
-  Cocoa_GL_ReleaseContext((void*)context);
-
+  if (lastOwnedContext == context)
+    Cocoa_GL_ReleaseContext((void*)context);
+  
   // obtain window pixelformat
   NSOpenGLPixelFormat* pixFmt = (NSOpenGLPixelFormat*)Cocoa_GL_GetWindowPixelFormat();
   if (!pixFmt)
     return;
-
+  
   NSOpenGLContext* newContext = (NSOpenGLContext*)Cocoa_GL_CreateContext((void*)pixFmt, nil);
   [pixFmt release];
-
+  
   if (!newContext)
     return;
-
+  
   // associate with current view
   [newContext setView:view];
   [newContext makeCurrentContext];
+  lastOwnedContext = newContext;
 }
 
