@@ -4,10 +4,11 @@
 
 using namespace std;
 
+CCriticalSection CLinuxFileSystem::m_lock;
+
 #ifdef HAS_HAL
 vector<CStorageDevice> CLinuxFileSystem::m_Devices;
 bool CLinuxFileSystem::m_DeviceChange;
-CCriticalSection CLinuxFileSystem::m_lock;
 
 /* This is never used */
 void CLinuxFileSystem::UpdateDevices()
@@ -70,7 +71,12 @@ vector<CStdString> CLinuxFileSystem::GetRemovableDrives()
 {
   CSingleLock lock(m_lock);
 #ifndef HAS_HAL
+#ifndef __APPLE__
   return GetDevices();
+#else
+  vector<CStdString> result;
+  return result;
+#endif
 #else
   UpdateDevices();
   vector<CStdString> result;
@@ -122,6 +128,8 @@ vector<CStdString> CLinuxFileSystem::GetDrives(int *DeviceType, int len)
         // Skip this for now, until we can figure out the name of the root volume.
         if (strcmp(mount, "/") == 0)
           continue;
+        
+        result.push_back(mount);
 #else 
 	        // Ignore root 
 	        if (strcmp(mount, "/") == 0) 
