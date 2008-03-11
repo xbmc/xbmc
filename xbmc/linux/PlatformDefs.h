@@ -31,6 +31,14 @@
 #include <SDL/SDL_mutex.h>
 #endif
 
+#ifndef PRId64
+#ifdef _MSC_VER
+#define PRId64 "I64d"
+#else
+#define PRId64 "lld"
+#endif
+#endif
+
 #ifdef _LINUX
 
 #define XXLog(a,b) printf("%s", (b))
