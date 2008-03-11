@@ -595,7 +595,12 @@ CGUISettings::CGUISettings(void)
   AddString(3, "videoscreen.guicalibration",214,"", BUTTON_CONTROL_STANDARD);
   AddInt(4, "videoscreen.flickerfilter", 13100, 5, 0, 1, 5, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(5, "videoscreen.soften", 215, false);
+#ifdef __APPLE__
+  // Default to vsync always on!
+  AddInt(6, "videoscreen.vsync", 13105, 2, 0, 1, 3, SPIN_CONTROL_TEXT);
+#else
   AddInt(6, "videoscreen.vsync", 13105, 3, 0, 1, 3, SPIN_CONTROL_TEXT);
+#endif
 
   AddCategory(7, "filelists", 14018);
   AddBool(1, "filelists.hideparentdiritems", 13306, false);
@@ -941,13 +946,8 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   }
   // Get hardware based stuff...
   CLog::Log(LOGNOTICE, "Getting hardware information now...");
-#ifdef __APPLE__
-  // Force digital for now -- FIXME, change this when mixdown is supported.
-  SetInt("audiooutput.mode", AUDIO_DIGITAL);
-#else
   if (GetInt("audiooutput.mode") == AUDIO_DIGITAL && !g_audioConfig.HasDigitalOutput())
     SetInt("audiooutput.mode", AUDIO_ANALOG);
-#endif
   SetBool("audiooutput.ac3passthrough", g_audioConfig.GetAC3Enabled());
   SetBool("audiooutput.dtspassthrough", g_audioConfig.GetDTSEnabled());
   CLog::Log(LOGINFO, "Using %s output", GetInt("audiooutput.mode") == AUDIO_ANALOG ? "analog" : "digital");
@@ -960,6 +960,7 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
     SetInt("videooutput.aspect", VIDEO_WIDESCREEN);
   else
     SetInt("videooutput.aspect", VIDEO_NORMAL);
+  
   SetBool("videooutput.hd480p", g_videoConfig.Has480p());
   SetBool("videooutput.hd720p", g_videoConfig.Has720p());
   SetBool("videooutput.hd1080i", g_videoConfig.Has1080i());
