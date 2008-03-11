@@ -323,11 +323,15 @@ void CXBApplicationEx::ReadInput()
 
 #ifdef HAS_SDL
   //SDL_PumpEvents();
-
+  
   static RESOLUTION windowres = WINDOW;
   SDL_Event event;
+  bool eventIsValid = false;
+  
   if (SDL_PollEvent(&event))
   {
+    eventIsValid = true;
+    
     switch(event.type)
     {
     case SDL_QUIT:
@@ -366,6 +370,17 @@ void CXBApplicationEx::ReadInput()
 
   // Read the input from the mouse
   g_Mouse.Update();
+  
+#ifdef __APPLE__
+  // Some extra work for mouse wheel.
+  if (eventIsValid && event.type == SDL_MOUSEBUTTONDOWN)
+  {
+    if (event.button.button == 4)
+      g_Mouse.UpdateMouseWheel(1);
+    else if (event.button.button == 5)
+      g_Mouse.UpdateMouseWheel(-1);
+  }
+#endif
 
 #ifdef HAS_CWIID
   g_WiiRemote.Update();
