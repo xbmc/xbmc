@@ -928,6 +928,7 @@ WORD CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
   { // for keys such as return etc. etc.
     CStdString strKey = szButton;
     strKey.ToLower();
+    
     if (strKey.Equals("return")) wButtonCode = 0xF00D;
     else if (strKey.Equals("enter")) wButtonCode = 0xF06C;
     else if (strKey.Equals("escape")) wButtonCode = 0xF01B;
@@ -994,7 +995,12 @@ WORD CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
     else if (strKey.Equals("forwardslash") || strKey.Equals("questionmark")) wButtonCode = 0xF0BF;
     else if (strKey.Equals("leftquote") || strKey.Equals("tilde")) wButtonCode = 0xF0C0;
     else if (strKey.Equals("opensquarebracket") || strKey.Equals("openbrace")) wButtonCode = 0xF0EB;
+#ifdef __APPLE__
+    // Why are these different. Why did the Linux one have to change???
+    else if (strKey.Equals("backslash") || strKey.Equals("pipe")) wButtonCode = 0xF0EC;
+#else
     else if (strKey.Equals("backslash") || strKey.Equals("pipe")) wButtonCode = 0xFFEC;
+#endif
     else if (strKey.Equals("closesquarebracket") || strKey.Equals("closebrace")) wButtonCode = 0xF0ED;
     else if (strKey.Equals("quote") || strKey.Equals("doublequote")) wButtonCode = 0xF0EE;
     else if (strKey.Equals("launch_mail")) wButtonCode = 0xF0B4;
