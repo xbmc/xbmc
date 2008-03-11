@@ -186,8 +186,10 @@
 #endif
 #ifdef _WIN32
 #define _WIN32PC       // precompiler definition for the windows build
+#define HAS_AC3_CODEC
+#define HAS_DTS_CODEC
+#define HAS_DVD_SWSCALE
 #undef HAS_SDL_AUDIO   // use dsound for audio on win32
-#undef HAS_DVD_SWSCALE // no win32 build of swscale yet
 #undef HAS_SCREENSAVER // no screensavers
 #undef HAS_PERFORMANCE_SAMPLE // no performance sampling
 #undef HAS_LINUX_NETWORK
@@ -196,6 +198,9 @@
 #undef HAS_KAI_VOICE
 #undef HAS_TRAINER
 #define snprintf _snprintf
+#ifndef PRId64
+#define PRId64 "I64d"
+#endif
 #endif
 #endif
 
