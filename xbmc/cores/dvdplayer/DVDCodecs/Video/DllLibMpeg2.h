@@ -44,7 +44,9 @@ public:
 
 class DllLibMpeg2 : public DllDynamic, DllLibMpeg2Interface
 {
-#ifndef _LINUX
+#ifdef __APPLE__
+  DECLARE_DLL_WRAPPER(DllLibMpeg2, Q:\\system\\players\\dvdplayer\\libmpeg2-osx.so)
+#elif !defined(_LINUX)
   DECLARE_DLL_WRAPPER(DllLibMpeg2, Q:\\system\\players\\dvdplayer\\libmpeg2.dll)
 #else
   DECLARE_DLL_WRAPPER(DllLibMpeg2, Q:\\system\\players\\dvdplayer\\libmpeg2-i486-linux.so)
