@@ -445,7 +445,7 @@ unsigned int CCMythFile::Read(void* buffer, __int64 size)
   if(ret <= 0)
   {
     CLog::Log(LOGERROR, "%s - error requesting block of data (%d)", __FUNCTION__, ret);
-    return -EAGAIN;
+    return 0;
   }
 
   remain = (unsigned long)ret;
