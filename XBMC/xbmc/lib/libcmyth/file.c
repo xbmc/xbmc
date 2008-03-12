@@ -45,9 +45,7 @@
 static void
 cmyth_file_destroy(cmyth_file_t file)
 {
-	int err, count;
-	int r;
-	long c;
+	int err;
 	char msg[256];
 
 	cmyth_dbg(CMYTH_DBG_DEBUG, "%s {\n", __FUNCTION__);
@@ -72,18 +70,10 @@ cmyth_file_destroy(cmyth_file_t file)
 			goto fail;
 		}
 
-		if ((count = cmyth_rcv_length(file->file_control)) < 0) {
+		if ((err=cmyth_rcv_okay(file->file_control, "ok")) < 0) {
 			cmyth_dbg(CMYTH_DBG_ERROR,
-				  "%s: cmyth_rcv_length() failed (%d)\n",
-				  __FUNCTION__, count);
-			err = count;
-			goto fail;
-		}
-		if ((r = cmyth_rcv_long(file->file_control,
-					&err, &c, count)) < 0) {
-			cmyth_dbg(CMYTH_DBG_ERROR,
-				  "%s: cmyth_rcv_long() failed (%d)\n",
-				  __FUNCTION__, r);
+				  "%s: cmyth_rcv_okay() failed (%d)\n",
+				  __FUNCTION__, err);
 			goto fail;
 		}
 	    fail:
