@@ -491,6 +491,18 @@ void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& it
   }
 
   tempItems.Clear();
+  m_database.GetMusicVideoGenresByName(strSearch, tempItems);
+  if (tempItems.Size())
+  {
+    CStdString strGenre = g_localizeStrings.Get(515); // Genre
+    for (int i = 0; i < (int)tempItems.Size(); i++)
+    {
+      tempItems[i]->SetLabel("[" + strGenre + " - "+g_localizeStrings.Get(20389)+"] " + tempItems[i]->GetLabel());
+    }
+    items.Append(tempItems);
+  }
+
+  tempItems.Clear();
   m_database.GetMovieActorsByName(strSearch, tempItems);
   if (tempItems.Size())
   {
