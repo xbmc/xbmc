@@ -389,6 +389,8 @@ cmyth_file_request_block(cmyth_file_t file, unsigned long len)
 	}
 
 	file->file_pos += c;
+	if(file->file_pos > file->file_length)
+		file->file_length = file->file_pos;
 	ret = c;
 
     out:
@@ -479,6 +481,9 @@ cmyth_file_seek(cmyth_file_t file, long long offset, int whence)
 		file->file_pos = file->file_length - offset;
 		break;
 	}
+
+	if(file->file_pos > file->file_length)
+		file->file_length = file->file_pos;
 
 	ret = file->file_pos;
 

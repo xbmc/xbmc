@@ -428,21 +428,15 @@ unsigned int CCMythFile::Read(void* buffer, __int64 size)
   if(!m_recorder && !m_file)
     return 0;
 
-  while(true)
-  {
-    if(m_recorder)
-      ret = m_dll->livetv_request_block(m_recorder, (unsigned long)size);
-    else
-      ret = m_dll->file_request_block(m_file, (unsigned long)size);
+  if(m_recorder)
+    ret = m_dll->livetv_request_block(m_recorder, (unsigned long)size);
+  else
+    ret = m_dll->file_request_block(m_file, (unsigned long)size);
 
-    if(ret <= 0)
-    {
-      CLog::Log(LOGERROR, "%s - error requesting block of data (%d)", __FUNCTION__, ret);
-      if(HandleEvents())
-        continue;
-      return 0;
-    }
-    break;
+  if(ret <= 0)
+  {
+    CLog::Log(LOGERROR, "%s - error requesting block of data (%d)", __FUNCTION__, ret);
+    return -EAGAIN;
   }
 
   remain = (unsigned long)ret;
