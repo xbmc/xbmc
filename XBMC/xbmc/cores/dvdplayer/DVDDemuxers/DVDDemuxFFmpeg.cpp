@@ -231,6 +231,17 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       context->max_packet_size = FFMPEG_DVDNAV_BUFFER_SIZE;
       context->is_streamed = 1;
     }
+    if (m_pInput->IsStreamType(DVDSTREAM_TYPE_TV))
+    {
+      if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
+        context->is_streamed = 1;
+
+      // this actually speeds up channel changes by almost a second
+      // however, it alsa makes player not buffer anything, this
+      // leads to buffer underruns in audio renderer
+      //if(context->is_streamed)
+      //  streaminfo = false;
+    }
     else
     {
       if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
@@ -569,6 +580,31 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
           // used to guess streamlength
           if (pPacket->dts != DVD_NOPTS_VALUE && (pPacket->dts > m_iCurrentPts || m_iCurrentPts == DVD_NOPTS_VALUE))
             m_iCurrentPts = pPacket->dts;
+
+
+          // check if stream has passed full duration, needed for live streams
+          if(pkt.dts != (int64_t)AV_NOPTS_VALUE)
+          {
+              int64_t duration;
+              duration = pkt.dts;
+              if(stream->start_time != (int64_t)AV_NOPTS_VALUE)
+                duration -= stream->start_time;
+
+              if(duration > stream->duration)
+              {
+                stream->duration = duration;
+                duration = m_dllAvUtil.av_rescale_rnd(stream->duration, stream->time_base.num * AV_TIME_BASE, stream->time_base.den, AV_ROUND_NEAR_INF);
+                if(duration > m_pFormatContext->duration)
+                  m_pFormatContext->duration = duration;
+              }
+          }
+
+          // check if stream seem to have grown since start
+          if(m_pFormatContext->pb)
+          {
+            if(m_pFormatContext->pb->pos > m_pFormatContext->file_size)
+              m_pFormatContext->file_size = m_pFormatContext->pb->pos;
+          }
 
           pPacket->iStreamId = pkt.stream_index; // XXX just for now
         }
