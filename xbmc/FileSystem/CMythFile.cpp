@@ -245,6 +245,13 @@ bool CCMythFile::SetupFile(const CURL& url)
     CLog::Log(LOGERROR, "%s - unable to connect to file", __FUNCTION__);
     return false;
   }
+
+  if(m_dll->file_length(m_file) == 0)
+  {
+    CLog::Log(LOGERROR, "%s - file is empty, probably doesn't even exist", __FUNCTION__);
+    return false;
+  }
+
   return true;
 }
 
@@ -442,9 +449,15 @@ unsigned int CCMythFile::Read(void* buffer, __int64 size)
   else
     ret = m_dll->file_request_block(m_file, (unsigned long)size);
 
-  if(ret <= 0)
+  if(ret < 0)
   {
     CLog::Log(LOGERROR, "%s - error requesting block of data (%d)", __FUNCTION__, ret);
+    return 0;
+  }
+
+  if(ret == 0)
+  {
+    CLog::Log(LOGERROR, "%s - hit eof", __FUNCTION__);
     return 0;
   }
 
