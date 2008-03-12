@@ -817,10 +817,15 @@ cmyth_livetv_chain_request_block(cmyth_recorder_t rec, unsigned long len)
 	}
 	while (retry);
 
-	if(rec->rec_ring)
+	if(rec->rec_ring) {
 		rec->rec_ring->file_pos += c;
-	else
+		if(rec->rec_ring->file_pos > rec->rec_ring->file_length)
+			rec->rec_ring->file_length = rec->rec_ring->file_pos;
+	} else {
 		rec->rec_livetv_file->file_pos += c;
+		if(rec->rec_livetv_file->file_pos > rec->rec_livetv_file->file_length)
+			rec->rec_livetv_file->file_length = rec->rec_livetv_file->file_pos;
+	}
 	ret = c;
 
     out:
@@ -969,6 +974,10 @@ cmyth_livetv_chain_seek(cmyth_recorder_t rec, long long offset, int whence)
 					fp->file_pos = fp->file_length - offset;
 				break;
 			}
+
+			if(fp->file_pos > fp->file_length)
+				fp->file_length = fp->file_pos;
+
 		}
 	} while(c == -1);
 
