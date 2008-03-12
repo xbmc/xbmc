@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<!--$Revision 11850$-->
+<!--$Revision 11916$-->
 <strings>
   <string id="0">Programas</string>
   <string id="1">Imagens</string>
@@ -231,7 +231,7 @@
   <string id="303">Atraso</string>
   <string id="304">Idioma</string>
   <string id="305">Ativado</string>
-  <string id="306">Não intercalado</string>
+  <string id="306">Não-intercalado</string>
   <string id="307">- Pós-processamento automático</string>
   <string id="308">- Filtro anti-quadros vertical</string>
   <string id="309">- Filtro anti-quadros horizontal</string>
@@ -261,14 +261,14 @@
   <string id="333">Deseja excluir a coleção de músicas?</string>
   <string id="334">Apagar a coleção...</string>
   <string id="335">Iniciar</string>
-  <string id="336">Ajustar quadros por segundo</string>
+  <string id="336">Conversão de quadros/seg.</string>
   <string id="337">Saída de áudio</string>
   <string id="338">Analógico</string>
   <string id="339">Digital</string>
   <string id="340">Artistas variados</string>
   <string id="341">Iniciar DVD/CD</string>
   <string id="342">Filmes</string>
-  <string id="343">Ajustar quadros por segundo</string>
+  <string id="343">Ajustar quadros/seg.</string>
   <string id="344">Atores</string>
   <string id="345">Ano</string>
   <string id="350">Programas</string>
@@ -291,9 +291,9 @@
   <string id="367">Org por: votação</string>
   <string id="368">IMDB</string>
   <string id="369">Título</string>
-  <string id="370">Trovoada</string>
+  <string id="370">Trovoadas</string>
   <string id="371">Parcialmente</string>
-  <string id="372">Normal</string>
+  <string id="372">Permanece</string>
   <string id="373">Ensolarado</string>
   <string id="374">Nublado</string>
   <string id="375">Neve</string>
@@ -301,9 +301,9 @@
   <string id="377">Leve</string>
   <string id="378">AM</string>
   <string id="379">PM</string>
-  <string id="380">Chuvoso</string>
+  <string id="380">Chuvas rápidas</string>
   <string id="381">Pouco</string>
-  <string id="382">Disperso</string>
+  <string id="382">Dispersas</string>
   <string id="383">Vento</string>
   <string id="384">Forte</string>
   <string id="385">Claro</string>
@@ -326,7 +326,7 @@
   <string id="402">Ambiente</string>
   <string id="403">Índice UV</string>
   <string id="404">Vento</string>
-  <string id="405">Ponto orvalho</string>
+  <string id="405">P. de orvalho</string>
   <string id="406">Umidade</string>
   <string id="407">Desde</string>
   <string id="408">até</string>
@@ -353,7 +353,7 @@
   <string id="428">Insira o CD/DVD correto</string>
   <string id="429">Por favor insira o próximo CD/DVD</string>
   <string id="430">Org: DVD#</string>
-  <string id="431">Sem cache</string>
+  <string id="431">Não utilizar cache</string>
   <string id="432">Excluir filme da coleção</string>
   <string id="433">Deseja excluir '%s'?</string>
   <string id="434"></string>
@@ -381,7 +381,7 @@
   <string id="456">Modo</string>
   <string id="457">Visualização</string>
   <string id="459">Legendas</string>
-  <string id="460">Stream de áudio</string>
+  <string id="460">Canal de áudio</string>
   <string id="461">[ativo]</string>
   <string id="462">Legenda</string>
   <string id="463">Luz de fundo</string>
@@ -415,7 +415,7 @@
   <string id="494">Margem total de áudio (dB)</string>
   <string id="495">Ampliar área do vídeo para a mesma resolução da tela</string>
   <string id="496">Calibragem</string>
-  <string id="497">Ocultar extensões dos arquivos de mídia</string>
+  <string id="497">Ocultar extensão dos arquivos de mídia</string>
   <string id="498">Org por: tipo</string>
   <string id="499">Impossível fazer conexão com www.allmusic.com</string>
   <string id="500">A pesquisa de informação do álbum falhou</string>
@@ -507,7 +507,7 @@
   <string id="600">Extrair CD de áudio</string>
   <string id="601">Média</string>
   <string id="602">Padrão</string>
-  <string id="603">Extremo</string>
+  <string id="603">Extrema</string>
   <string id="604">Taxa de bits constante</string>
   <string id="605">Extraindo...</string>
   <string id="606">Número da faixa:</string>
@@ -554,10 +554,11 @@
   <string id="658">Informação da música</string>
   <string id="659">Comentário:</string>
   <string id="660">Amplificação de volume</string>
+  <string id="661">Pasta de exportação</string>
 
   <string id="700">Limpando a coleção</string>
   <string id="701">Removendo as músicas antigas da coleção</string>
-  <string id="702">Este diretório já foi examinado anteriormente</string>
+  <string id="702">Este caminho já foi examinado anteriormente</string>
   <string id="705">Rede</string>
   <string id="706">Host do proxy HTTP:</string>
   <string id="707">Porta do proxy HTTP:</string>
@@ -727,7 +728,7 @@
   <string id="1397">e</string>
   <string id="1398">Congelando</string>
   <string id="1399">Tarde</string>
-  <string id="1400">Isolada</string>
+  <string id="1400">Isoladas</string>
   <string id="1401">Chuva de trovões</string>
   <string id="1402">Trovão</string>
   <string id="1403">Sol</string>
@@ -880,9 +881,9 @@
   <string id="12377">Isto irá zerar qualquer valor previamente salvo</string>
   <string id="12378">Mostrar imagem por</string>
   <string id="12379">Usar efeitos de pan e zoom</string>
-  <string id="12380">Executar vídeos NTSC em taxas PAL</string>
-  <string id="12381">Executar vídeos PAL em taxas NTSC</string>
-  <string id="12382">Executar vídeos NTSC em PAL60</string>
+  <string id="12380">NTSC em taxas PAL</string>
+  <string id="12381">PAL em taxas NTSC</string>
+  <string id="12382">NTSC em PAL60</string>
   <string id="12383">12 horas</string>
   <string id="12384">24 horas</string>
   <string id="12385">Dia/Mês</string>
@@ -1090,9 +1091,9 @@
   <string id="14000">Agrupar</string>
   <string id="14001">Desagrupar</string>
   <string id="14003">Recebendo arquivo da lista de execução...</string>
-  <string id="14004">Recebendo lista de streams...</string>
-  <string id="14005">Conferindo lista de streams...</string>
-  <string id="14006">Falha ao receber a lista de streams</string>
+  <string id="14004">Recebendo lista de canais...</string>
+  <string id="14005">Conferindo lista de canais...</string>
+  <string id="14006">Falha ao receber a lista de canais</string>
   <string id="14007">Falha ao receber a lista de músicas</string>
   <string id="14008">Ativar notificações do Kai</string>
   <string id="14009">Diretório de jogos</string>
@@ -1336,7 +1337,7 @@
   <string id="16020">Desentrelaçar</string>
   <string id="16021">Sincronização irregular</string>
   <string id="16022">Sincronização plana</string>
-  <string id="16023">Tratamento entrelaçado</string>
+  <string id="16023">Entrelaçamento</string>
   <string id="16024">Cancelando...</string>
   <string id="16025">Coloque o nome do artista</string>
   <string id="16026">Execução da lista de reprodução cancelada</string>
@@ -1612,7 +1613,7 @@
   <string id="20340">Deseja remover todos os itens</string>
   <string id="20341">deste caminho do banco de dados?</string>
   <string id="20342">Filmes</string>
-  <string id="20343">Shows de TV</string>
+  <string id="20343">Programas de TV</string>
   <string id="20344">Este diretório contém</string>
   <string id="20345">Executar exame automatizado</string>
   <string id="20346">Examinar recursivamente</string>
@@ -1620,20 +1621,20 @@
   <string id="20348">Diretores</string>
   <string id="20349">Nenhum arquivo de vídeo encontrado neste caminho!</string>
   <string id="20350">votos</string>
-  <string id="20351">Informação do show de TV</string>
+  <string id="20351">Informação do programa de TV</string>
   <string id="20352">Informação do episódio</string>
-  <string id="20353">Carregando detalhes do show de TV</string>
+  <string id="20353">Carregando detalhes do programa de TV</string>
   <string id="20354">Obtendo guia do episódio</string>
   <string id="20355">Carregando info. para episódios no diretório</string>
-  <string id="20356">Selecione o show de TV:</string>
-  <string id="20357">Adicione o nome do show de TV</string>
+  <string id="20356">Selecione o programa de TV:</string>
+  <string id="20357">Adicione o nome do programa de TV</string>
   <string id="20358">Temporada %i</string>
   <string id="20359">Episódio</string>
   <string id="20360">Episódios</string>
   <string id="20361">Carregando detalhes do episódio</string>
   <string id="20362">Remover episódio da coleção</string>
-  <string id="20363">Remover show de TV da coleção</string>
-  <string id="20364">Show de TV</string>
+  <string id="20363">Remover programa de TV da coleção</string>
+  <string id="20364">Programa de TV</string>
   <string id="20365">Enredo do episódio</string>
   <string id="20366">* Todas as temporadas</string>
   <string id="20367">Ocultar vistos</string>
@@ -1646,15 +1647,15 @@
   <string id="20374">Recebendo informação do filme</string>
   <string id="20375">Desmarcar conteúdo</string>
   <string id="20376">Primeira vez exibido:</string>
-  <string id="20377">Recarregar informação do show de TV</string>
+  <string id="20377">Recarregar informação do programa de TV</string>
   <string id="20378">Recarregar info. para todos os episódios?</string>
-  <string id="20379">Pasta contém um show de TV único</string>
+  <string id="20379">Pasta contém um único programa de TV</string>
   <string id="20380">Excluir pasta da lista de procura</string>
   <string id="20381">Especiais</string>
   <string id="20382">Obter ícones de temporada automaticamente</string>
   <string id="20383">Pasta contém um vídeo único</string>
-  <string id="20384">Link para show de TV</string>
-  <string id="20385">Remover link para show de TV</string>
+  <string id="20384">Link para programa de TV</string>
+  <string id="20385">Remover link para programa de TV</string>
   <string id="20386">Filmes adicionados recentemente</string>
   <string id="20387">Episódios adicionados recentemente</string>
   <string id="20388">Estúdios</string>
@@ -1678,18 +1679,19 @@
   <string id="20406">Selecionar marcador do episódio</string>
   <string id="20407">Opções de scraper</string>
   <string id="20408">Recebendo informação de vídeo musical</string>
-  <string id="20409">Recebendo inrfomação de show de TV</string>
+  <string id="20409">Recebendo informação de show de TV</string>
   <string id="20410">Trailer</string>
-  <string id="20411">Achatar</string>
+  <string id="20411">Unificar</string>
+  <string id="20412">Unificar programa de TV com temporada única</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Exibir arquivos e diretórios ocultos</string>
 
   <string id="21331">Cliente TuxBox</string>
   <string id="21332">AVISO: dispositivo TuxBox está em modo de gravação!</string>
-  <string id="21333">Este stream será finalizado!</string>
+  <string id="21333">Este canal será finalizado!</string>
   <string id="21334">Mudar para canal: %s falhou!</string>
-  <string id="21335">Tem certeza que deseja iniciar o stream?</string>
+  <string id="21335">Tem certeza que deseja iniciar o canal?</string>
   <string id="21336">Conectando a: %s</string>
   <string id="21337">Dispositivo TuxBox</string>
   <!-- up to 21355 is reserved for the TuxBox Client!! !-->
@@ -1773,7 +1775,7 @@
   <string id="21439">Editar regras do modo-festa</string>
 
   <string id="21800">Nome do arquivo</string>
-  <string id="21801">Diretório do arquivo</string>
+  <string id="21801">Caminho do arquivo</string>
   <string id="21802">Tamanho do arquivo</string>
   <string id="21803">Data/hora do arquivo</string>
   <string id="21804">Índice de apresentação</string>
