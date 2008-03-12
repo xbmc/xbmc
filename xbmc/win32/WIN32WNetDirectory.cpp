@@ -7,6 +7,8 @@
 #include "FileSystem/iso9660.h"
 #include "../GUIPassword.h"
 #include "WIN32Util.h"
+#include "Application.h"
+#include "../GUIPassword.h"
 
 using namespace AUTOPTR;
 using namespace DIRECTORY;
@@ -18,7 +20,8 @@ CWNetDirectory::CWNetDirectory(void)
 
 CWNetDirectory::~CWNetDirectory(void)
 {
-  WNetCancelConnection2((LPCTSTR)strMntPoint.c_str(),NULL,NULL);
+  CWIN32Util::UmountShare(strMntPoint.c_str());
+  strMntPoint = "";
 }
 
 bool CWNetDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items)
@@ -27,13 +30,13 @@ bool CWNetDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &ite
   WIN32_FIND_DATA wfd;
 
   CStdString strPath=strPath1;
+  CStdString strAuth;
+  CURL url(strPath);
 
-  g_charsetConverter.utf8ToStringCharset(strPath);
+  if(strMntPoint==StringUtils::EmptyString)
+    strMntPoint = OpenDir(url,strAuth);
 
-  if(strMntPoint=="")
-    strMntPoint = CWIN32Util::MountShare(strPath);
-
-  if(strMntPoint=="")
+  if(strMntPoint==StringUtils::EmptyString)
     return false;
 
   CFileItemList vecCacheItems;
@@ -41,14 +44,11 @@ bool CWNetDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &ite
 
 
   CStdString strRoot = strMntPoint;
-  CURL url(strMntPoint);
 
   memset(&wfd, 0, sizeof(wfd));
-  if (!CUtil::HasSlashAtEnd(strMntPoint) )
-    strRoot += "\\";
+  CUtil::AddFileToFolder(strRoot,CWIN32Util::GetLocalPath(strPath1),strRoot);
 
   strRoot.Replace("/", "\\");
-
 
   CStdString strSearchMask = strRoot;
 
@@ -125,16 +125,139 @@ bool CWNetDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &ite
   return true;
 }
 
+CStdString CWNetDirectory::Open(const CURL &url)
+{
+  CStdString strAuth;  
+  return OpenDir(url, strAuth);
+}
+
+/// \brief Checks authentication against SAMBA share and prompts for username and password if needed
+/// \param strAuth The SMB style path
+/// \return SMB file descriptor
+CStdString CWNetDirectory::OpenDir(const CURL& url, CStdString& strAuth)
+{
+  DWORD dwError=0;
+
+  
+  /* make a writeable copy */
+  CURL urlIn(url);
+
+  /* set original url */
+  strAuth = CWIN32Util::URLEncode(urlIn);
+
+  CStdString strPath;
+  CStdString strShare;
+  /* must url encode this as, auth code will look for the encoded value */
+  strShare  = urlIn.GetHostName();
+  strShare += "/";
+  strShare += urlIn.GetShareName();
+
+  IMAPPASSWORDS it = g_passwordManager.m_mapSMBPasswordCache.find(strShare);
+  if(it != g_passwordManager.m_mapSMBPasswordCache.end())
+  {
+    // if share found in cache use it to supply username and password
+    CURL url(it->second);		// map value contains the full url of the originally authenticated share. map key is just the share
+    CStdString strPassword = url.GetPassWord();
+    CStdString strUserName = url.GetUserName();
+    urlIn.SetPassword(strPassword);
+    urlIn.SetUserName(strUserName);
+  }
+  
+  // for a finite number of attempts use the following instead of the while loop:
+  // for(int i = 0; i < 3, fd < 0; i++)
+  while (strMntPoint == StringUtils::EmptyString)
+  {    
+    /* samba has a stricter url encoding, than our own.. CURL can decode it properly */
+    /* however doesn't always encode it correctly (spaces for example) */
+    strPath = CWIN32Util::URLEncode(urlIn);
+  
+    
+    CLog::Log(LOGDEBUG, "%s - Using authentication url %s", __FUNCTION__, strPath.c_str());
+    {     
+      strMntPoint = CWIN32Util::MountShare(strPath, &dwError);
+    }
+    
+    if (strMntPoint == StringUtils::EmptyString)
+    {
+
+      // if we have an 'invalid handle' error we don't display the error
+      // because most of the time this means there is no cdrom in the server's
+      // cdrom drive.
+      if (dwError == ERROR_NO_NET_OR_BAD_PATH)
+        break;
+
+      // NOTE: be sure to warn in XML file about Windows account lock outs when too many attempts
+      // if the error is access denied, prompt for a valid user name and password
+      if (dwError == ERROR_ACCESS_DENIED)
+      {
+        if (m_allowPrompting)
+        {
+          g_passwordManager.SetSMBShare(strPath);
+          if (!g_passwordManager.GetSMBShareUserPassword())  // Do this bit via a threadmessage?
+          	break;
+
+          /* must do this as our urlencoding for spaces is invalid for samba */
+          /* and doing double url encoding will fail */
+          /* curl doesn't decode / encode filename yet */
+          CURL urlnew( g_passwordManager.GetSMBShare() );
+          urlIn.SetUserName(urlnew.GetUserName());
+          urlIn.SetPassword(urlnew.GetPassWord());
+        }
+        else
+          break;
+      }
+      else
+      {
+        CStdString cError;
+        if (dwError == ERROR_BAD_NET_NAME)
+          cError.Format(g_localizeStrings.Get(770).c_str(),dwError);
+        else
+          cError.Format("Error: %x",dwError);
+        
+        if (m_allowPrompting)
+        {
+          CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+          pDialog->SetHeading(257);
+          pDialog->SetLine(0, cError);
+          pDialog->SetLine(1, "");
+          pDialog->SetLine(2, "");
+
+          ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, m_gWindowManager.GetActiveWindow()};
+          g_application.getApplicationMessenger().SendMessage(tMsg, false);
+        }
+        break;
+      }
+    }
+  }
+
+  if (strMntPoint == StringUtils::EmptyString)
+  {
+    // write error to logfile
+    CLog::Log(LOGERROR, "SMBDirectory->GetDirectory: Unable to open directory : '%s'\n nt_err : '%x' ", strPath.c_str(),dwError );
+  }
+  else if (strPath != strAuth && !strShare.IsEmpty()) // we succeeded so, if path was changed, return the correct one and cache it
+  {
+    g_passwordManager.m_mapSMBPasswordCache[strShare] = strPath;
+    strAuth = strPath;
+  }  
+
+  return strMntPoint;
+}
+
 bool CWNetDirectory::Create(const char* strPath)
 {
-  CStdString strPath1 = strPath;
+  CStdString strPath1;
+  
+  CURL url(strPath);
 
-  g_charsetConverter.utf8ToStringCharset(strPath1);
+  strPath1 = Open(url);
 
-  CURL url(strPath1);
+  if(strPath1==StringUtils::EmptyString)
+    return false;
 
-  if (!CUtil::HasSlashAtEnd(strPath1))
-    strPath1 += '\\';
+  CUtil::AddFileToFolder(strPath1,CWIN32Util::GetLocalPath(strPath),strPath1);
+
+  strPath1.Replace("/", "\\");
 
   if(::CreateDirectory(strPath1.c_str(), NULL))
     return true;
@@ -146,21 +269,37 @@ bool CWNetDirectory::Create(const char* strPath)
 
 bool CWNetDirectory::Remove(const char* strPath)
 {
-  CStdString strPath1 = strPath;
-  g_charsetConverter.utf8ToStringCharset(strPath1);
+  CStdString strPath1;
+  
+  CURL url(strPath);
+
+  strPath1 = Open(url);
+
+  if(strPath1==StringUtils::EmptyString)
+    return false;
+
+  CUtil::AddFileToFolder(strPath1,CWIN32Util::GetLocalPath(strPath),strPath1);
+
+  strPath1.Replace("/", "\\");
   return ::RemoveDirectory(strPath1) ? true : false;
 }
 
 bool CWNetDirectory::Exists(const char* strPath)
 {
-  CStdString strReplaced=strPath;
-  g_charsetConverter.utf8ToStringCharset(strReplaced);
-  strReplaced.Replace("/","\\");
-  CUtil::GetFatXQualifiedPath(strReplaced);
-  if (!CUtil::HasSlashAtEnd(strReplaced))
-    strReplaced += '\\';
+  CStdString strPath1;
   
-  DWORD attributes = GetFileAttributes(strReplaced.c_str());
+  CURL url(strPath);
+
+  strPath1 = Open(url);
+
+  if(strPath1==StringUtils::EmptyString)
+    return false;
+
+  CUtil::AddFileToFolder(strPath1,CWIN32Util::GetLocalPath(strPath),strPath1);
+
+  strPath1.Replace("/", "\\");
+  
+  DWORD attributes = GetFileAttributes(strPath1.c_str());
   if (FILE_ATTRIBUTE_DIRECTORY == attributes) return true;
   return false;
 }
