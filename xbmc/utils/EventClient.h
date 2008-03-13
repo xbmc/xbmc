@@ -86,6 +86,7 @@ namespace EVENTCLIENT
     std::map<unsigned int, EVENTPACKET::CEventPacket*>  m_seqPackets;
     std::queue<EVENTPACKET::CEventPacket*>              m_readyPackets;
     std::string       m_deviceName;
+    unsigned int      m_iSeqPayloadSize;
     int               m_iCurrentSeqLen;
     time_t            m_lastPing;
     SOCKETS::CAddress m_remoteAddr;

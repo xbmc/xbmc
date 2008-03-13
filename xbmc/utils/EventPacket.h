@@ -151,7 +151,14 @@ namespace EVENTPACKET
     unsigned int Size() { return m_iTotalPackets; }
     unsigned int Sequence() { return m_iSeq; }
     void*        Payload() { return m_pPayload; }
-    unsigned int PayloadSize() { return m_sPayloadSize; }
+    unsigned int PayloadSize() { return m_iPayloadSize; }
+    void         SetPayload(unsigned int psize, void *payload)
+    {
+      if (m_pPayload)
+        free(m_pPayload);
+      m_pPayload = payload;
+      m_iPayloadSize = psize;
+    }
 
   protected:
     bool           m_bValid;
@@ -159,7 +166,7 @@ namespace EVENTPACKET
     unsigned int   m_iTotalPackets;
     unsigned char  m_header[32];
     void*          m_pPayload;
-    unsigned short m_sPayloadSize;
+    unsigned int   m_iPayloadSize;
     unsigned char  m_cMajVer;
     unsigned char  m_cMinVer;
     PacketType     m_eType;
