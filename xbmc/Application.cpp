@@ -946,30 +946,6 @@ HRESULT CApplication::Create(HWND hWnd)
     printf("Copying from %s to %s\n", srcFile.c_str(), strPath.c_str());
     CopyFile(srcFile.c_str(), strPath.c_str(), TRUE);
   }
-#elif defined(_WIN32PC)
-  // Make sure the required directories exist.
-  TCHAR szPath[MAX_PATH];
-  CStdString strWin32UserFolder,strPath;
-  if(SUCCEEDED(SHGetFolderPath(NULL,CSIDL_APPDATA|CSIDL_FLAG_CREATE,NULL,0,szPath))) 
-    strWin32UserFolder = szPath;
-  else
-    strWin32UserFolder = strExecutablePath;
-
-  SetEnvironmentVariable("XBMC_PROFILE_HOME", strWin32UserFolder.c_str());
-
-  CUtil::AddFileToFolder(strWin32UserFolder,"XBMC",strPath);
-  CreateDirectory(strPath.c_str(), NULL);
-  CUtil::AddFileToFolder(strPath,"UserData",strPath);
-  CreateDirectory(strPath.c_str(), NULL);
-  // See if the keymap file exists, and if not, copy it from our "virgin" one.
-  CUtil::AddFileToFolder(strPath,"Keymap.xml",strPath);
-  printf("Checking for existence of %s\n", strPath.c_str());
-  if (access(strPath.c_str(), 0) == -1)
-  {
-    CStdString srcFile = _P("q:\\UserData\\Keymap.xml");
-    printf("Copying from %s to %s\n", srcFile.c_str(), strPath.c_str());
-    CopyFile(srcFile.c_str(), strPath.c_str(), TRUE);
-  }
 #endif
   
   g_settings.m_vecProfiles.clear();
