@@ -45,7 +45,7 @@ bool CFileFileReader::Open(const CURL& url, bool bBinary)
   CStdString strURL;
   url.GetURL(strURL);
   strURL = strURL.Mid(13);
-  return m_reader.Open(strURL,false,true);
+  return m_reader.Open(strURL,bBinary,READ_CACHED);
 }
 
 bool CFileFileReader::Exists(const CURL& url)
