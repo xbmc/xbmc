@@ -134,6 +134,12 @@ bool CSocketListener::Listen(int timeout)
 
   m_iReadyCount = 0;
   m_iCurrentSocket = 0;
+  
+  FD_ZERO(&m_fdset);
+  for (unsigned int i = 0 ; i<m_sockets.size() ; i++)
+  {
+    FD_SET(m_sockets[i]->Socket(), &m_fdset);
+  }
 
   // set our timeout
   struct timeval tv;

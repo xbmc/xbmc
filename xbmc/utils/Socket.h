@@ -144,6 +144,7 @@ namespace SOCKETS
     bool Broadcast(const CAddress& addr, const int datasize, const void* data)
     {
       // TODO
+      return false;
     }
     int  Socket() { return m_iSock; }
     void Close();

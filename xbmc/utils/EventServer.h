@@ -1,6 +1,7 @@
 #ifndef __EVENT_SERVER_H__
 #define __EVENT_SERVER_H__
 
+#include "system.h"
 #include "include.h"
 #include "Thread.h"
 #include "Socket.h"
@@ -16,27 +17,35 @@ namespace EVENTSERVER
   /**********************************************************************/
   /* UDP Event Server Class                                             */
   /**********************************************************************/
-  class CEventServer : CThread, public IRunnable
+  class CEventServer : public IRunnable
   {
   public:
-    CEventServer();
-    
+    static CEventServer* GetInstance();
     // ProcessPacket() -> create client if needed and push to client
     // RefreshClients() -> delete timed out clients
 
     // IRunnable entry point for thread
-    void  Run();
+    virtual void  Run();
+    
+    // start / stop server
+    void StartServer();
+    void StopServer();
 
   protected:
+    CEventServer();
     void Cleanup();
     void ProcessPacket(SOCKETS::CAddress& addr, int packetSize);
+    void ExecuteEvents();
 
+    CThread*                                m_pThread;
+    static CEventServer*                    m_pInstance;
     std::map<unsigned long, EVENTCLIENT::CEventClient*>  m_clients;
     SOCKETS::CUDPSocket*                    m_pSocket;
     int                                     m_iPort;
     int                                     m_iListenTimeout;
     int                                     m_iMaxClients;
     unsigned char*                          m_pPacketBuffer;   
+    bool                                    m_bStop;
   };
 
 }

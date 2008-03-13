@@ -7,11 +7,34 @@
 
 namespace EVENTPACKET
 {
-  const int PACKET_SIZE   = 1024;
-  const int HEADER_SIZE   = 32;
-  const char HEADER_SIG[] = "XBMC";
-  
-  
+  const int PACKET_SIZE       = 1024;
+  const int HEADER_SIZE       = 32;
+  const char HEADER_SIG[]     = "XBMC";
+  const int HEADER_SIG_LENGTH = 4;
+
+  /************************************************************************/
+  /*                                                                      */
+  /* - Generic packet structure (maximum 1024 bytes per packet)           */
+  /* - Header is 32 bytes long, so 992 bytes available for payload        */
+  /* - large payloads can be split into multiple packets using H4 and H5  */
+  /*   H5 should contain total no. of packets in such a case              */
+  /* - H6 contains length of P1, which is limited to 992 bytes            */
+  /* - if H5 is 0 or 1, then H4 will be ignored (single packet msg)       */
+  /* - H7 must be set to zeros for now                                    */
+  /*                                                                      */
+  /*     -----------------------------                                    */
+  /*     | -H1 Signature ("XBMC")    | - 4  x CHAR                4B      */
+  /*     | -H2 Version (eg. 2.0)     | - 2  x UNSIGNED CHAR       2B      */
+  /*     | -H3 PacketType            | - 1  x UNSIGNED SHORT      2B      */
+  /*     | -H4 Sequence number       | - 1  x UNSIGNED LONG       4B      */
+  /*     | -H5 No. of packets in msg | - 1  x UNSIGNED LONG       4B      */
+  /*     | -H6 Payload size          | - 1  x UNSIGNED SHORT      2B      */
+  /*     | -H7 Reserved              | - 14 x UNSIGNED CHAR      14B      */
+  /*     |---------------------------|                                    */
+  /*     | -P1 payload               | -                                  */
+  /*     -----------------------------                                    */
+  /************************************************************************/
+   
   /************************************************************************
      The payload format for each packet type is decribed below each
      packet type.
@@ -86,7 +109,9 @@ namespace EVENTPACKET
 
     PT_NOTIFICATION  = 0x07,
     /************************************************************************/
-    /* Payload format: TODO                                                 */
+    /* Payload format:                                                      */
+    /* %s - Title message                                                   */
+    /* %s - Message                                                         */
     /************************************************************************/
 
     PT_BLOB          = 0x08,
@@ -102,29 +127,6 @@ namespace EVENTPACKET
 
     PT_LAST // NO-OP
   };
-
-  /************************************************************************/
-  /*                                                                      */
-  /* - Generic packet structure (maximum 1024 bytes per packet)           */
-  /* - Header is 32 bytes long, so 992 bytes available for payload        */
-  /* - large payloads can be split into multiple packets using H4 and H5  */
-  /*   H5 should contain total no. of packets in such a case              */
-  /* - H6 contains length of P1, which is limited to 992 bytes            */
-  /* - if H5 is 0 or 1, then H4 will be ignored (single packet msg)       */
-  /* - H7 must be set to zeros for now                                    */
-  /*                                                                      */
-  /*     -----------------------------                                    */
-  /*     | -H1 Signature ("XBMC")    | - 4  x CHAR                4B      */
-  /*     | -H2 Version (eg. 2.0)     | - 2  x UNSIGNED CHAR       2B      */
-  /*     | -H3 PacketType            | - 1  x UNSIGNED SHORT      2B      */
-  /*     | -H4 Sequence number       | - 1  x UNSIGNED LONG       4B      */
-  /*     | -H5 No. of packets in msg | - 1  x UNSIGNED LONG       4B      */
-  /*     | -H6 Payload size          | - 1  x UNSIGNED SHORT      2B      */
-  /*     | -H7 Reserved              | - 14 x UNSIGNED CHAR      14B      */
-  /*     |---------------------------|                                    */
-  /*     | -P1 payload               | -                                  */
-  /*     -----------------------------                                    */
-  /************************************************************************/
 
   class CEventPacket
   {
