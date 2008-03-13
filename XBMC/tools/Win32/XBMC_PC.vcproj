@@ -147,7 +147,7 @@
 				AdditionalDependencies="opengl32.lib winmm.lib ws2_32.lib"
 				OutputFile="$(OutDir)/XBMC.exe"
 				LinkIncremental="2"
-				IgnoreDefaultLibraryNames="libc;msvcrt"
+				IgnoreDefaultLibraryNames="libc;msvcrt;libcmt"
 				ModuleDefinitionFile=""
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/XBMC.pdb"
@@ -1353,6 +1353,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\PluginSettings.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\ScraperSettings.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\ScraperSettings.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\Settings.cpp">
