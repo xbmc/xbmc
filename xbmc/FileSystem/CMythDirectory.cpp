@@ -26,18 +26,6 @@ CCMythDirectory::~CCMythDirectory()
   Release();
 }
 
-CStdString CCMythDirectory::GetString(char *str)
-{
-  CStdString result;
-  if(str)
-  {
-    result = str;
-    m_dll->ref_release(str);
-    result.Trim();
-  }
-  return result;
-}
-
 void CCMythDirectory::Release()
 {
   if(m_recorder)
@@ -73,7 +61,7 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
     cmyth_proginfo_t program = m_dll->proglist_get_item(list, i);
     if(program)
     {
-      if(GetString(m_dll->proginfo_recgroup(program)).Equals("LiveTV"))
+      if(GetValue(m_dll->proginfo_recgroup(program)).Equals("LiveTV"))
       {
         m_dll->ref_release(program);
         continue;
@@ -81,9 +69,9 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
 
       CStdString name, path;
 
-      path = GetString(m_dll->proginfo_pathname(program));
+      path = GetValue(m_dll->proginfo_pathname(program));
       path = CUtil::GetFileName(path);
-      name = GetString(m_dll->proginfo_title(program));
+      name = GetValue(m_dll->proginfo_title(program));
 
       CFileItem *item = new CFileItem("", false);
       m_session->UpdateItem(*item, program);
@@ -100,8 +88,8 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
       url.SetFileName("files/" + path +  ".png");
       url.GetURL(path);
       item->SetThumbnailImage(path);
-
       item->SetLabelPreformated(true);
+
       items.Add(item);
       m_dll->ref_release(program);
     }
@@ -143,7 +131,7 @@ bool CCMythDirectory::GetChannelsDb(const CStdString& base, CFileItemList &items
       else
         name.Format("%d");
 
-      icon = GetString(m_dll->channel_icon(channel));
+      icon = GetValue(m_dll->channel_icon(channel));
 
       if(num <= 0)
       {
@@ -203,10 +191,10 @@ bool CCMythDirectory::GetChannels(const CStdString& base, CFileItemList &items)
   {
     CStdString num, progname, channame, icon, sign;
 
-    num      = GetString(m_dll->proginfo_chanstr (program));
-    sign     = GetString(m_dll->proginfo_chansign(program));
-    progname = GetString(m_dll->proginfo_title   (program));
-    icon     = GetString(m_dll->proginfo_chanicon(program));
+    num      = GetValue(m_dll->proginfo_chanstr (program));
+    sign     = GetValue(m_dll->proginfo_chansign(program));
+    progname = GetValue(m_dll->proginfo_title   (program));
+    icon     = GetValue(m_dll->proginfo_chanicon(program));
 
     if(sign.length() > 0)
       channame.Format("%s - %s", num, sign.c_str());

@@ -22,7 +22,8 @@ private:
   bool GetChannels  (const CStdString& base, CFileItemList &items);
   bool GetChannelsDb(const CStdString& base, CFileItemList &items);
 
-  CStdString GetString(char* str);
+  CStdString GetValue(char* str)           { return m_session->GetValue(str); }
+  CDateTime  GetValue(cmyth_timestamp_t t) { return m_session->GetValue(t); }
 
   XFILE::CCMythSession* m_session;
   DllLibCMyth*          m_dll;

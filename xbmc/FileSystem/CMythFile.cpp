@@ -16,18 +16,6 @@ static void prog_update_callback(cmyth_proginfo_t prog)
   CLog::Log(LOGDEBUG, "%s - prog_update_callback", __FUNCTION__);
 }
 
-CStdString CCMythFile::GetString(char *str)
-{
-  CStdString result;
-  if(str)
-  {
-    result = str;
-    m_dll->ref_release(str);
-    result.Trim();
-  }
-  return result;
-}
-
 void CCMythFile::OnEvent(int event, const string& data)
 {
   CSingleLock lock(m_section);
@@ -168,7 +156,7 @@ bool CCMythFile::SetupLiveTV(const CURL& url)
         m_recorder = NULL;
         continue;
       }
-      if(channel != GetString(m_dll->proginfo_chanstr(program)))
+      if(channel != GetValue(m_dll->proginfo_chanstr(program)))
       {
         m_dll->ref_release(program);
         m_dll->ref_release(m_recorder);
@@ -201,7 +189,7 @@ bool CCMythFile::SetupLiveTV(const CURL& url)
   m_program = m_dll->recorder_get_cur_proginfo(m_recorder);
   if(m_program)
   {
-    if(GetString(m_dll->proginfo_chanstr(m_program)) != channel)
+    if(GetValue(m_dll->proginfo_chanstr(m_program)) != channel)
     {
       if(!ChangeChannel(CHANNEL_DIRECTION_SAME, channel.c_str()))
         return false;
@@ -215,7 +203,7 @@ bool CCMythFile::SetupLiveTV(const CURL& url)
       CLog::Log(LOGDEBUG, "%s - failed to seek to last position", __FUNCTION__);
   }
 
-  m_filename = GetString(m_dll->recorder_get_filename(m_recorder));
+  m_filename = GetValue(m_dll->recorder_get_filename(m_recorder));
   return true;
 }
 
