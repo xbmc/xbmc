@@ -49,7 +49,7 @@ int xbp_chdir(const char *dirname)
 {
   if (strlen(dirname) > MAX_PATH) return -1;
 
-  strcpy(xbp_cw_dir, dirname);
+  strcpy(xbp_cw_dir, _P(dirname).c_str());
   CORRECT_SEP_STR(xbp_cw_dir);
 
   return 0;
@@ -62,7 +62,7 @@ char* xbp__tempnam(const char *dir, const char *prefix)
   CORRECT_SEP_STR(p);
   char* res = _tempnam(p, prefix);
   free(p);
-  return res;
+  return strdup(_P(res).c_str());
 #else
   CStdString result = dir;
   result += "/";
@@ -76,7 +76,7 @@ int xbp_unlink(const char *filename)
 {
   char* p = strdup(filename);
   CORRECT_SEP_STR(p);
-  int res = unlink(p);
+  int res = unlink(_P(p).c_str());
   free(p);
   return res;
 }
@@ -85,7 +85,7 @@ int xbp_access(const char *path, int mode)
 {
   char* p = strdup(path);
   CORRECT_SEP_STR(p);
-  int res = access(p, mode);
+  int res = access(_P(p).c_str(), mode);
   free(p);
   return res;
 }
@@ -94,7 +94,7 @@ int xbp_chmod(const char *filename, int pmode)
 {
   char* p = strdup(filename);
   CORRECT_SEP_STR(p);
-  int res = chmod(p, pmode);
+  int res = chmod(_P(p).c_str(), pmode);
   free(p);
   return res;
 }
@@ -103,7 +103,7 @@ int xbp_rmdir(const char *dirname)
 {
   char* p = strdup(dirname);
   CORRECT_SEP_STR(p);
-  int res = rmdir(p);
+  int res = rmdir(_P(p).c_str());
   free(p);
   return res;
 }
@@ -112,7 +112,7 @@ int xbp_utime(const char *filename, struct utimbuf *times)
 {
   char* p = strdup(filename);
   CORRECT_SEP_STR(p);
-  int res = utime(p, times);
+  int res = utime(_P(p).c_str(), times);
   free(p);
   return res;
 }
@@ -123,7 +123,7 @@ int xbp_rename(const char *oldname, const char *newname)
   char* n = strdup(newname);
   CORRECT_SEP_STR(o);
   CORRECT_SEP_STR(n);
-  int res = rename(o, n);
+  int res = rename(_P(o).c_str(), _P(n).c_str());
   free(o);
   free(n);
   return res;
@@ -134,7 +134,7 @@ int xbp_mkdir(const char *dirname)
   char* p = strdup(dirname);
   CORRECT_SEP_STR(p);
 #ifndef _LINUX
-  int res = mkdir(p);
+  int res = mkdir(_P(p).c_str());
 #else
   int res = mkdir(p, 0755);
 #endif
@@ -146,7 +146,7 @@ int xbp_open(const char *filename, int oflag, int pmode)
 {
   char* p = strdup(filename);
   CORRECT_SEP_STR(p);
-  int res = open(p, oflag, pmode);
+  int res = open(_P(p).c_str(), oflag, pmode);
   free(p);
   return res;
 }
@@ -170,7 +170,7 @@ FILE* xbp_fopen(const char *filename, const char *mode)
 	}
 
   // don't use emulated files, they do not work in python yet
-  return fopen(cName, mode);
+  return fopen(_P(cName).c_str(), mode);
 }
 
 #ifdef _LINUX
@@ -224,7 +224,7 @@ HANDLE xbp_FindFirstFile(LPCTSTR lpFileName, LPWIN32_FIND_DATA lpFindFileData)
     e[0] = '\0';
   }
   
-  HANDLE res = FindFirstFile(p, lpFindFileData);
+  HANDLE res = FindFirstFile(_P(p).c_str(), lpFindFileData);
   free(p);
   return res;
 }
