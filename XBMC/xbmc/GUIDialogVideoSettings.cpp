@@ -84,10 +84,12 @@ void CGUIDialogVideoSettings::CreateSettings()
 
   AddSeparator(8);
   AddButton(VIDEO_SETTINGS_MAKE_DEFAULT, 12376);
+#ifdef HAS_XBOX_HARDWARE
   m_flickerFilter = g_guiSettings.GetInt("videoplayer.flicker");
   AddSpin(VIDEO_SETTINGS_FLICKER, 13100, &m_flickerFilter, 0, 5, g_localizeStrings.Get(351).c_str());
   m_soften = g_guiSettings.GetBool("videoplayer.soften");
   AddBool(VIDEO_SETTINGS_SOFTEN, 215, &m_soften);
+#endif
   AddButton(VIDEO_SETTINGS_CALIBRATION, 214);
   if (g_application.GetCurrentPlayer() == EPC_MPLAYER)
   {
