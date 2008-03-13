@@ -4889,28 +4889,24 @@ bool CApplication::ResetScreenSaverWindow()
     m_pd3dDevice->SetGammaRamp(0, &m_OldRamp); // put the old gamma ramp back in place
 #else
     
-#ifdef __APPLE__
    if (g_advancedSettings.m_fullScreen == true)
    {
-#endif
-	 Uint16 RampRed[256];
-	 Uint16 RampGreen[256];
-	 Uint16 RampBlue[256];
-    for (float fade = fFadeLevel; fade <= 1; fade += 0.01f)
-    {
-      for (int i = 0;i < 256;i++)
-      {
-        RampRed[i] = (Uint16)((float)m_OldRampRed[i] * fade);
-        RampGreen[i] = (Uint16)((float)m_OldRampGreen[i] * fade);
-        RampBlue[i] = (Uint16)((float)m_OldRampBlue[i] * fade);
-      }
-      Sleep(5);
-    	SDL_SetGammaRamp(RampRed, RampGreen, RampBlue);
-    }
-    SDL_SetGammaRamp(m_OldRampRed, m_OldRampGreen, m_OldRampBlue);
-#ifdef __APPLE__
+     Uint16 RampRed[256];
+     Uint16 RampGreen[256];
+     Uint16 RampBlue[256];
+     for (float fade = fFadeLevel; fade <= 1; fade += 0.01f)
+     {
+       for (int i = 0;i < 256;i++)
+       {
+         RampRed[i] = (Uint16)((float)m_OldRampRed[i] * fade);
+         RampGreen[i] = (Uint16)((float)m_OldRampGreen[i] * fade);
+         RampBlue[i] = (Uint16)((float)m_OldRampBlue[i] * fade);
+       }
+       Sleep(5);
+       SDL_SetGammaRamp(RampRed, RampGreen, RampBlue);
+     }
+     SDL_SetGammaRamp(m_OldRampRed, m_OldRampGreen, m_OldRampBlue);
    }
-#endif
 #endif
     return true;
   }
