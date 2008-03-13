@@ -21,9 +21,8 @@ bool CubeCodec::Init(const CStdString &strFile, unsigned int filecache)
   
   m_dll.Init();
 
-  CStdString strFileToLoad = strFile;
-  strFileToLoad = "filereader://"+strFileToLoad;
-  
+  CStdString strFileToLoad = "filereader://"+strFile;
+
   m_adx = m_dll.LoadADX(strFileToLoad.c_str(),&m_SampleRate,&m_BitsPerSample,&m_Channels);
   if (!m_adx)
   {
