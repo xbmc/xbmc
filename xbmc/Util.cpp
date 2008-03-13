@@ -5513,12 +5513,12 @@ void CUtil::WipeDir(const CStdString& strPath) // DANGEROUS!!!!
   CUtil::GetRecursiveDirsListing(strPath,items);
   for (int i=items.Size()-1;i>-1;--i) // need to wipe them backwards
   {
-    CLog::Log(LOGDEBUG,"wipe dir %s",items[i]->m_strPath.c_str());
-    if (!::RemoveDirectory((items[i]->m_strPath+"\\").c_str()))
-      CLog::Log(LOGDEBUG,"this sucks %lu!",GetLastError());
+    ::RemoveDirectory((items[i]->m_strPath+"\\").c_str());
   }
-  if (!::RemoveDirectory((strPath+"\\").c_str()))
-    CLog::Log(LOGDEBUG,"wtf %lu",GetLastError());
+
+  CStdString tmpPath = strPath;
+  AddSlashAtEnd(tmpPath);
+  ::RemoveDirectory(tmpPath.c_str());
 }
 
 void CUtil::ClearFileItemCache()
