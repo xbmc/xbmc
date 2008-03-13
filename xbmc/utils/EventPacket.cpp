@@ -11,10 +11,10 @@ bool CEventPacket::Parse(int datasize, const void *data)
     return false;
 
   // check signature
-  if (memcmp(data, (const void*)HEADER_SIG, sizeof(HEADER_SIG)) != 0)
+  if (memcmp(data, (const void*)HEADER_SIG, HEADER_SIG_LENGTH) != 0)
     return false;
 
-  buf += sizeof(HEADER_SIZE);
+  buf += HEADER_SIG_LENGTH;
 
   // extract protocol version
   m_cMajVer = (*buf++);
@@ -39,7 +39,7 @@ bool CEventPacket::Parse(int datasize, const void *data)
 
   // get payload size
   buf += 4;
-  m_sPayloadSize = ntohl(*((uint16_t*)buf));
+  m_sPayloadSize = ntohs(*((uint16_t*)buf));
 
   buf += 2;
   if ((m_sPayloadSize + HEADER_SIZE) != datasize)

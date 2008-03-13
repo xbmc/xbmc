@@ -21,13 +21,21 @@ namespace EVENTCLIENT
   class CEventClient
   {
   public:
-    CEventClient() {}
-    CEventClient(SOCKETS::CAddress& addr) 
+    CEventClient() 
     {
-      // todo: initialize stuff 
+      m_bGreeted = false; 
+    }
+
+    CEventClient(SOCKETS::CAddress& addr)
+    {
+      m_bGreeted = false;
       m_remoteAddr = addr; 
     }
-    virtual ~CEventClient() {}
+
+    virtual ~CEventClient() 
+    {
+      FreeQueues();
+    }
 
     // add packet to queue
     bool AddPacket(EVENTPACKET::CEventPacket *packet);
@@ -41,12 +49,26 @@ namespace EVENTCLIENT
     // execute the queued up events
     void ExecuteEvents();
 
+    // deallocate all packets in the queues
+    void FreeQueues();
+
   protected:
     bool ProcessPacket(EVENTPACKET::CEventPacket *packet);
 
+    // packet handlers
     virtual bool OnPacketHELO(EVENTPACKET::CEventPacket *packet);
     virtual bool OnPacketBYE(EVENTPACKET::CEventPacket *packet);
     virtual bool OnPacketBUTTON(EVENTPACKET::CEventPacket *packet);
+    virtual bool OnPacketNOTIFICATION(EVENTPACKET::CEventPacket *packet);
+
+    // returns true if the client has received the HELO packet
+    bool Greeted() { return m_bGreeted; }
+
+    // reset the timeout counter
+    void ResetTimeout()
+    {
+      m_lastPing = time(NULL);
+    }
 
     // helper functions
 
@@ -68,6 +90,7 @@ namespace EVENTCLIENT
     time_t            m_lastPing;
     SOCKETS::CAddress m_remoteAddr;
     EVENTPACKET::LogoType m_eLogoType;
+    bool              m_bGreeted;
   };
 
 }
