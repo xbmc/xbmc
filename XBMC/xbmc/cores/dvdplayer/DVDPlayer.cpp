@@ -272,7 +272,7 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 
     if(file.IsInternetStream())
       m_pDlgCache = new CDlgCache(0, strHeader, file.GetLabel());
-    else if(!file.IsDVDFile(false, true) && !file.IsDVDImage())
+    else if(!file.IsDVDFile(false, true) && !file.IsDVDImage() && !file.IsDVD())
       m_pDlgCache = new CDlgCache(3000, strHeader, file.GetLabel());
 
     CStdString strFile = file.m_strPath;
