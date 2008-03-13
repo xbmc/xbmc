@@ -55,6 +55,28 @@ void CCMythSession::ReleaseSession(CCMythSession* session)
     m_sessions.push_back(session);
 }
 
+CDateTime CCMythSession::GetValue(cmyth_timestamp_t t)
+{
+  CDateTime result;
+  if(t)
+  {
+    result = m_dll->timestamp_to_unixtime(t);
+    m_dll->ref_release(t);
+  }
+  return result;
+}
+
+CStdString CCMythSession::GetValue(char *str)
+{
+  CStdString result;
+  if(str)
+  {
+    result = str;
+    m_dll->ref_release(str);
+    result.Trim();
+  }
+  return result;
+}
 
 bool CCMythSession::UpdateItem(CFileItem &item, cmyth_proginfo_t info)
 {
@@ -64,70 +86,51 @@ bool CCMythSession::UpdateItem(CFileItem &item, cmyth_proginfo_t info)
 
   CVideoInfoTag* tag = item.GetVideoInfoTag();
 
-  char *str;
-  if((str = m_dll->proginfo_chansign(info)))
-  {
-    tag->m_strTitle = str;
-    m_dll->ref_release(str);
-  }
+  tag->m_strTitle       = GetValue(m_dll->proginfo_chansign(info));
+  tag->m_strShowTitle   = GetValue(m_dll->proginfo_title(info));
+  tag->m_strPlot        = GetValue(m_dll->proginfo_description(info));
+  tag->m_strGenre       = GetValue(m_dll->proginfo_category(info));
 
-  if((str = m_dll->proginfo_title(info)))
-  {
-    tag->m_strTitle    += " : ";
-    tag->m_strTitle    += str;
-    tag->m_strShowTitle = str;
-    tag->m_strOriginalTitle = str;
-    m_dll->ref_release(str);
-  }
+  tag->m_strPlotOutline   = tag->m_strPlot;
+  tag->m_strOriginalTitle = tag->m_strShowTitle;
 
-  if((str = m_dll->proginfo_description(info)))
-  {
-    tag->m_strPlotOutline = str;
-    tag->m_strPlot        = str;
-    m_dll->ref_release(str);
-  }
+  if(tag->m_strShowTitle.length() > 0)
+    tag->m_strTitle += " : " + tag->m_strShowTitle;
 
-  if((str = m_dll->proginfo_category(info)))
-  {
-    tag->m_strGenre = str;
-    m_dll->ref_release(str);
-  }
-
-  cmyth_timestamp_t start = m_dll->proginfo_rec_start(info);
-  cmyth_timestamp_t end = m_dll->proginfo_rec_end(info);
-  double diff = difftime(m_dll->timestamp_to_unixtime(end), m_dll->timestamp_to_unixtime(start));
-  m_dll->ref_release(start);
-  m_dll->ref_release(end);
-  StringUtils::SecondsToTimeString((long)diff, tag->m_strRuntime, TIME_FORMAT_GUESS);
+  CDateTimeSpan span = GetValue(m_dll->proginfo_rec_start(info)) - GetValue(m_dll->proginfo_rec_end(info));
+  StringUtils::SecondsToTimeString( span.GetSeconds()
+                                  + span.GetMinutes() * 60 
+                                  + span.GetHours() * 3600, tag->m_strRuntime, TIME_FORMAT_GUESS);
 
   tag->m_iSeason  = 0; /* set this so xbmc knows it's a tv show */
   tag->m_iEpisode = 0;
 
+  item.m_dateTime = GetValue(m_dll->proginfo_rec_start(info));
+  item.m_dwSize   = m_dll->proginfo_length(info);
 
   if(m_dll->proginfo_rec_status(info) == RS_RECORDING)
   {
     tag->m_strStatus = "livetv";
 
-    CStdString file;
-    if((str = m_dll->proginfo_chanicon(info)))
+    CStdString temp;
+
+    temp = GetValue(m_dll->proginfo_chanicon(info));
+    if(temp.length() > 0)
     {
       CURL url(item.m_strPath);
-      file.Format("icon/%s", str);
-      url.SetFileName(file);
-      url.GetURL(file);
-      item.SetThumbnailImage(file);
-      m_dll->ref_release(str);
+      url.SetFileName("files/channels/" + temp);
+      url.GetURL(temp);
+      item.SetThumbnailImage(temp);
     }
 
-    if((str = m_dll->proginfo_chanstr(info)))
+    temp = GetValue(m_dll->proginfo_chanstr(info));
+    if(temp.length() > 0)
     {
       CURL url(item.m_strPath);
-      file.Format("channels/%s.ts", str);
-      url.SetFileName(file);
-      url.GetURL(file);
-      if(item.m_strPath != file)
-        item.m_strPath = file;
-      m_dll->ref_release(str);
+      url.SetFileName("channels/" + temp + ".ts");
+      url.GetURL(temp);
+      if(item.m_strPath != temp)
+        item.m_strPath = temp;
     }
     item.SetCachedVideoThumb();
   }
