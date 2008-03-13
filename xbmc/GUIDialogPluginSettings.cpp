@@ -31,6 +31,7 @@
 #include "GUISpinControlEx.h"
 #include "FileSystem/HDDirectory.h"
 #include "VideoInfoScanner.h"
+#include "ScraperSettings.h"
 
 using namespace std;
 
