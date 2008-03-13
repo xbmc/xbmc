@@ -1,4 +1,4 @@
-#include "include.h"
+#include "stdafx.h"
 #include "EventServer.h"
 #include "EventPacket.h"
 #include "EventClient.h"
@@ -12,10 +12,14 @@ using namespace EVENTCLIENT;
 using namespace SOCKETS;
 using namespace std;
 
+CEventServer* CEventServer::m_pInstance = NULL;
+
 CEventServer::CEventServer()
 {
   m_pSocket       = NULL;
   m_pPacketBuffer = NULL;
+  m_bStop         = false;
+  m_pThread       = NULL;
   
   // set default port
   m_iPort = 22222;
@@ -25,6 +29,37 @@ CEventServer::CEventServer()
 
   // max clients
   m_iMaxClients = 20;
+}
+
+CEventServer* CEventServer::GetInstance()
+{
+  if (!m_pInstance)
+  {
+    m_pInstance = new CEventServer();
+  }
+  return m_pInstance;
+}
+
+void CEventServer::StartServer()
+{
+  if (m_pThread)
+    return;
+
+  m_bStop = false;
+  m_pThread = new CThread(this);
+  m_pThread->Create();
+  m_pThread->SetName("EventServer");
+}
+
+void CEventServer::StopServer()
+{
+  m_bStop = true;
+  if (m_pThread)
+  {
+    m_pThread->WaitForThreadExit(2000);
+    delete m_pThread;
+  }
+  m_pThread = NULL;    
 }
 
 void CEventServer::Cleanup()
@@ -84,9 +119,9 @@ void CEventServer::Run()
         ProcessPacket(addr, packetSize);
       }
     }
-    
-    // execute events for connected clients
-    // ExecuteEvents();
+
+    // execute events
+    ExecuteEvents();
 
     // refresh client list
     // RefreshClients();
@@ -94,10 +129,22 @@ void CEventServer::Run()
     // broadcast
     // BroadcastBeacon();
   }
+
+  Cleanup();
 }
 
 void CEventServer::ProcessPacket(CAddress& addr, int pSize)
 {
+  // check packet validity
+  CEventPacket* packet = new CEventPacket(pSize, m_pPacketBuffer);
+
+  if (!packet->IsValid())
+  {
+    CLog::Log(LOGDEBUG, "ES: Received invalid packet");
+    delete packet;
+    return;
+  }
+
   // first check if we have a client for this address
   map<unsigned long, CEventClient*>::iterator iter = m_clients.find(addr.ULong());
   
@@ -120,10 +167,17 @@ void CEventServer::ProcessPacket(CAddress& addr, int pSize)
     m_clients[addr.ULong()] = client;
   }
   
-  // send packet to client to parse
-  CEventPacket* packet = new CEventPacket(pSize, m_pPacketBuffer);
-  if (packet->IsValid())
-    m_clients[addr.ULong()]->AddPacket(packet);
+  m_clients[addr.ULong()]->AddPacket(packet);
+
 }
 
+void CEventServer::ExecuteEvents()
+{
+  map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
 
+  while (iter != m_clients.end())
+  {
+    iter->second->ExecuteEvents();
+    iter++;
+  }
+}
