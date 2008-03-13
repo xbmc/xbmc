@@ -1406,7 +1406,7 @@ extern "C"
     CStdString newDir(dir);
     newDir.Replace("/", "\\");
     newDir.Replace("\\\\", "\\");
-    return mkdir(newDir.c_str());
+    return mkdir(_P(newDir).c_str());
 #else
     return mkdir(dir, 0755);
 #endif
