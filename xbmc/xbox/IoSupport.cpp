@@ -73,12 +73,10 @@ stDriveMapping driveMapping[] =
 #elif defined(WIN32)
 stDriveMapping driveMapping[] =
   {
-    { 'C', "C:", 2},
-    { 'D', "D:", -1},
-    { 'E', "E:", 1},
-    { 'X', "X:", 3},
-    { 'Y', "Y:", 4},
-    { 'Z', "Z:", 5},
+    {'P', new char[MAX_PATH], 0},
+    {'Q', new char[MAX_PATH], 0},
+    {'T', new char[MAX_PATH], 0},
+    {'Z', new char[MAX_PATH], 0},
   };
 
 #include "../../Tools/Win32/XBMC_PC.h"
@@ -128,11 +126,6 @@ HRESULT CIoSupport::MapDriveLetter(char cDriveLetter, const char* szDevice)
     CLog::Log(LOGERROR, "Failed to create symbolic link!  (status=0x%08x)", status);
 
   return status;
-#elif WIN32
-  if ((strnicmp(szDevice, "Harddisk0", 9) == 0) ||
-      (strnicmp(szDevice, "Cdrom", 5) == 0))
-    return S_OK;
-  return E_FAIL;
 #else
   char upperLetter = toupper(cDriveLetter);
   for (unsigned int i=0; i < NUM_OF_DRIVES; i++)

@@ -365,7 +365,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   bXboxMediacenter = bSettings = false;
 
   CStdString strMnt = GetProfileUserDataFolder();
-#ifndef _LINUX  
+#ifdef _XBOX
   char szDevicePath[1024];
   if (GetProfileUserDataFolder().Left(2).Equals("Q:"))
   {
