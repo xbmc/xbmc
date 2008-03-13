@@ -2,7 +2,6 @@
 #pragma once
 
 #include "CachingCodec.h"
-#include "FileReader.h"
 #include "DllAc3codec.h"
 
 #ifdef HAS_AC3_CODEC
