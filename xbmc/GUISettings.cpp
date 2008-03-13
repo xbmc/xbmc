@@ -453,13 +453,17 @@ CGUISettings::CGUISettings(void)
   AddInt(4, "videoplayer.rendermethod", 13354, RENDER_HQ_RGB_SHADER, RENDER_LQ_RGB_SHADER, 1, RENDER_HQ_RGB_SHADERV2, SPIN_CONTROL_TEXT);
   AddInt(5, "videoplayer.displayresolution", 169, (int)AUTORES, (int)HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddInt(6, "videoplayer.framerateconversions", 336, FRAME_RATE_LEAVE_AS_IS, FRAME_RATE_LEAVE_AS_IS, 1, FRAME_RATE_USE_PAL60, SPIN_CONTROL_TEXT);
+#ifdef HAS_XBOX_HARDWARE
   AddInt(7, "videoplayer.flicker", 13100, 1, 0, 1, 5, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(8, "videoplayer.soften", 215, false);
+#endif
   AddSeparator(9, "videoplayer.sep2");
   AddString(10, "videoplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(11, "videoplayer.sep3");
+#ifdef HAS_XBOX_HARDWARE
   AddBool(12, "videoplayer.useexternaldvdplayer", 20001, false);
   AddString(13, "videoplayer.externaldvdplayer", 20002, "",  BUTTON_CONTROL_PATH_INPUT, true, 655);
+#endif
   AddInt(14, "videoplayer.dvdplayerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(15, "videoplayer.dvdautomenu", 21882, false);
 
