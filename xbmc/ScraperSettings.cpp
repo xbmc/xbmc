@@ -3,7 +3,7 @@
 #include "Util.h"
 #include "FileSystem/File.h"
 #include "FileSystem/Directory.h"
-#include "HTTP.h"
+#include "utils/HTTP.h"
 #include <sstream>
 
 CScraperSettings::CScraperSettings()
