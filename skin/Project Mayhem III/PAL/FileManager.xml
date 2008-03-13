@@ -280,9 +280,9 @@
 			<visible>System.Platform.XBOX + System.HasDriveG</visible>
 			<control type="label">
 				<description>free space label</description>
-				<posx>74</posx>
+				<posx>65</posx>
 				<posy>525</posy>
-				<width>142</width>
+				<width>154</width>
 				<label>$INFO[System.Freespace(C)]</label>
 				<textcolor>lightgrey</textcolor>
 				<font>font10</font>
@@ -290,9 +290,9 @@
 			</control>
 			<control type="label">
 				<description>free space label</description>
-				<posx>207</posx>
+				<posx>203</posx>
 				<posy>525</posy>
-				<width>142</width>
+				<width>154</width>
 				<label>$INFO[System.Freespace(E)]</label>
 				<textcolor>lightgrey</textcolor>
 				<font>font10</font>
@@ -300,9 +300,9 @@
 			</control>
 			<control type="label">
 				<description>free space label</description>
-				<posx>353</posx>
+				<posx>352</posx>
 				<posy>525</posy>
-				<width>142</width>
+				<width>154</width>
 				<label>$INFO[System.Freespace(F)]</label>
 				<textcolor>lightgrey</textcolor>
 				<font>font10</font>
@@ -310,9 +310,9 @@
 			</control>
 			<control type="label">
 				<description>free space label</description>
-				<posx>506</posx>
+				<posx>510</posx>
 				<posy>525</posy>
-				<width>142</width>
+				<width>157</width>
 				<label>$INFO[System.Freespace(G)]</label>
 				<textcolor>lightgrey</textcolor>
 				<font>font10</font>
