@@ -5805,21 +5805,6 @@ CStdString CUtil::TranslatePath(const CStdString& path)
         return str;
 	    }
 	  }
-#elif defined(_WIN32PC)
-    if (path[0] == 'Q' || path[0] == 'q')
-    {
-      if (path.Equals("q:\\system\\profiles.xml", false))
-      {
-        TCHAR szPath[MAX_PATH];
-        CStdString strPath;
-        if(GetEnvironmentVariable("XBMC_PROFILE_HOME",szPath,MAX_PATH-1)!=0) 
-        {
-          CUtil::AddFileToFolder(CStdString(szPath),"XBMC",strPath);
-          CUtil::AddFileToFolder(strPath,"profiles.xml",strPath);
-          return strPath;
-        }
-      }
-    }
 #endif
 	  
 	   const char *p = CIoSupport::GetPartition(path[0]);
