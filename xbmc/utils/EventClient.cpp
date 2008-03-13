@@ -14,10 +14,40 @@ bool CEventClient::AddPacket(CEventPacket *packet)
   if (!packet)
     return false;
 
-  if ( packet->Size() != packet->Sequence() )
+  if ( packet->Size() > 1 )
   {
     m_seqPackets[ packet->Sequence() ] = packet;
-    // TODO: combine seq and insert into queue
+    m_iSeqPayloadSize += m_seqPackets[packet->Sequence()]->PayloadSize();
+    if (m_seqPackets.size() == packet->Size())
+    {
+      unsigned int offset = 0;
+      void *newPayload = NULL;
+      newPayload = malloc(m_iSeqPayloadSize);
+      if (newPayload)
+      {
+        unsigned char *payloadPtr = (unsigned char *)newPayload;
+        for (unsigned int i = 1 ; i<=packet->Size() ; i++)
+        {
+          memcpy((void*)(payloadPtr + offset), m_seqPackets[i]->Payload(),
+                 m_seqPackets[i]->PayloadSize());
+          offset += m_seqPackets[i]->PayloadSize();
+          if (i>1)
+          {
+            delete m_seqPackets[i];
+            m_seqPackets[i] = NULL;
+          }
+        }
+        m_seqPackets[1]->SetPayload(m_iSeqPayloadSize, newPayload);
+        m_readyPackets.push(m_seqPackets[1]);
+        m_seqPackets.clear();
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "ES: Could not assemble packets, Out of Memory");
+        FreeQueues();
+        return false;
+      }
+    }
   }
   else
   {
