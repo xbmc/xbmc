@@ -39,14 +39,14 @@ bool CEventPacket::Parse(int datasize, const void *data)
 
   // get payload size
   buf += 4;
-  m_sPayloadSize = ntohs(*((uint16_t*)buf));
+  m_iPayloadSize = ntohs(*((uint16_t*)buf));
 
   buf += 2;
-  if ((m_sPayloadSize + HEADER_SIZE) != datasize)
+  if ((m_iPayloadSize + HEADER_SIZE) != datasize)
     return false;
 
   // get payload
-  if (m_sPayloadSize)
+  if (m_iPayloadSize)
   {
     // forward past reserved bytes
     buf += 14;
@@ -57,13 +57,13 @@ bool CEventPacket::Parse(int datasize, const void *data)
       m_pPayload = NULL;
     }
 
-    m_pPayload = malloc(m_sPayloadSize);
+    m_pPayload = malloc(m_iPayloadSize);
     if (!m_pPayload)
     {
       CLog::Log(LOGERROR, "ES: Out of memory");
       return false;
     }
-    memcpy(m_pPayload, buf, (size_t)m_sPayloadSize);
+    memcpy(m_pPayload, buf, (size_t)m_iPayloadSize);
   }
 
   return  (m_bValid = true);
