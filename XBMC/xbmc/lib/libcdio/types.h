@@ -2,7 +2,8 @@
     $Id$
 
     Copyright (C) 2000 Herbert Valerio Riedel <hvr@gnu.org>
-    Copyright (C) 2002, 2003, 2004 Rocky Bernstein <rocky@panix.com>
+    Copyright (C) 2002, 2003, 2004, 2005, 2006
+    Rocky Bernstein <rocky@panix.com>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -31,15 +32,20 @@
 extern "C" {
 #endif /* __cplusplus */
 
+#ifndef EXTERNAL_LIBCDIO_CONFIG_H
+#define EXTERNAL_LIBCDIO_CONFIG_H
+#include "cdio_config.h"
+#endif
+
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+
   /* provide some C99 definitions */
 
 #if defined(HAVE_SYS_TYPES_H) 
 #include <sys/types.h>
 #endif 
-
-#if defined(_XBOX) || defined(WIN32)
-#include "inttypes.h"
-#endif
 
 #if defined(HAVE_STDINT_H)
 # include <stdint.h>
@@ -55,6 +61,8 @@ extern "C" {
   /* fixme */
 #endif /* HAVE_STDINT_H */
   
+typedef uint8_t ubyte;
+
   /* default HP/UX macros are broken */
 #if defined(__hpux__)
 # undef UINT16_C
@@ -100,23 +108,17 @@ extern "C" {
 # endif
 #endif
   
-#if defined(HAVE_STDBOOL_H)
-#include <stdbool.h>
-#else
-  /* ISO/IEC 9899:1999 <stdbool.h> missing -- enabling workaround */
+#ifndef __cplusplus
+# if defined(HAVE_STDBOOL_H)
+#  include <stdbool.h>
+# else
+   /* ISO/IEC 9899:1999 <stdbool.h> missing -- enabling workaround */
   
-# ifndef __cplusplus
-  typedef enum
-    {
-      false = 0,
-      true = 1
-    } _cdio_Bool;
-  
-#  define false   false
-#  define true    true
-#  define bool _cdio_Bool
-# endif
-#endif
+#   define false   0
+#   define true    1
+#   define bool uint8_t
+# endif /*HAVE_STDBOOL_H*/
+#endif /*C++*/
   
   /* some GCC optimizations -- gcc 2.5+ */
   
@@ -134,7 +136,7 @@ extern "C" {
 #define GNUC_UNUSED                             \
   __attribute__((unused))
 #define GNUC_PACKED                             \
-  //__attribute__((packed))
+  __attribute__((packed))
 #else   /* !__GNUC__ */
 #define GNUC_PRINTF( format_idx, arg_idx )
 #define GNUC_SCANF( format_idx, arg_idx )
@@ -158,7 +160,7 @@ extern "C" {
 # define PRAGMA_BEGIN_PACKED
 # define PRAGMA_END_PACKED
 #endif
-
+  
   /*
    * user directed static branch prediction gcc 2.96+
    */
@@ -183,26 +185,37 @@ extern "C" {
     One CD-ROMs addressing scheme especially used in audio formats
     (Red Book) is an address by minute, sector and frame which
     BCD-encoded in three bytes. An alternative format is an lba_t.
+
+    Note: the fields in this structure are BCD encoded. Use
+    cdio_to_bcd8() or cdio_from_bcd8() to convert an integer into or
+    out of this format. The format specifier %x (not %d) can be used
+    if you need to format or print values in this structure.
     
     @see lba_t
   */
-#if defined(_XBOX) || defined(WIN32)
-  #pragma pack(1)
-#else
   PRAGMA_BEGIN_PACKED
-#endif
-  struct msf_rec {
-    uint8_t m, s, f;
+  struct msf_s {
+    uint8_t m, s, f; /* BCD encoded! */
   } GNUC_PACKED;
-#if defined(_XBOX) || defined(WIN32)
-  #pragma pack()
-#else
   PRAGMA_END_PACKED
-#endif
   
-  typedef struct msf_rec msf_t;
+  typedef struct msf_s msf_t;
 
 #define msf_t_SIZEOF 3
+
+  /*!
+    \brief UTF-8 char definition 
+
+    Type to denote UTF-8 strings.
+  */
+
+  typedef char cdio_utf8_t;
+
+  typedef enum  {
+    nope  = 0,
+    yep   = 1,
+    dunno = 2
+  } bool_3way_t;
   
   /* type used for bit-fields in structs (1 <= bits <= 8) */
 #if defined(__GNUC__)
@@ -223,16 +236,23 @@ extern "C" {
    */
   typedef int32_t lba_t;
   
-  /*! The type of a Logical Sector Number. Note that an lba lsn be negative
-    and the MMC3 specs allow for a conversion of a negative lba
+  /*! The type of a Logical Sector Number. Note that an lba can be negative
+    and the MMC3 specs allow for a conversion of a negative lba.
 
     @see msf_t
   */
   typedef int32_t lsn_t;
   
+  /* Address in either MSF or logical format */
+  union cdio_cdrom_addr		
+  {
+    msf_t	msf;
+    lba_t	lba;
+  };
+
   /*! The type of a track number 0..99. */
   typedef uint8_t track_t;
-
+  
   /*! The type of a session number 0..99. */
   typedef uint8_t session_t;
   
@@ -277,86 +297,6 @@ extern "C" {
   typedef char cdio_isrc_t[CDIO_ISRC_SIZE+1];
 
   typedef int cdio_fs_anal_t;
-
-  /*! The type of an drive capability bit mask. See below for values*/
-  typedef uint32_t cdio_drive_read_cap_t;
-  typedef uint32_t cdio_drive_write_cap_t;
-  typedef uint32_t cdio_drive_misc_cap_t;
-  
-  /*!
-    \brief Drive types returned by cdio_get_drive_cap()
-    
-    NOTE: Setting a bit here means the presence of a capability.
-  */ 
-
-#define CDIO_DRIVE_CAP_ERROR          0x40000 /**< Error */
-#define CDIO_DRIVE_CAP_UNKNOWN        0x80000 /**< Dunno. It can be on if we
-					        have only partial information 
-                                                or are not completely certain
-                                              */
-
-#define CDIO_DRIVE_CAP_MISC_CLOSE_TRAY     0x00001 /**< caddy systems can't 
-                                                   close... */
-#define CDIO_DRIVE_CAP_MISC_EJECT          0x00002 /**< but can eject.  */
-#define CDIO_DRIVE_CAP_MISC_LOCK	   0x00004 /**< disable manual eject */
-#define CDIO_DRIVE_CAP_MISC_SELECT_SPEED   0x00008 /**< programmable speed */
-#define CDIO_DRIVE_CAP_MISC_SELECT_DISC    0x00010 /**< select disc from 
-                                                      juke-box */
-#define CDIO_DRIVE_CAP_MISC_MULTI_SESSION  0x00020 /**< read sessions>1 */
-#define CDIO_DRIVE_CAP_MISC_MEDIA_CHANGED  0x00080 /**< media changed */
-#define CDIO_DRIVE_CAP_MISC_RESET          0x00100 /**< hard reset device */
-#define CDIO_DRIVE_CAP_MISC_FILE           0x20000 /**< drive is really a file,
-                                                      i.e a CD file image */
-
-  /*! Reading masks.. */
-#define CDIO_DRIVE_CAP_READ_AUDIO       0x00001 /**< drive can play CD audio */
-#define CDIO_DRIVE_CAP_READ_CD_DA       0x00002 /**< drive can read CD-DA */
-#define CDIO_DRIVE_CAP_READ_CD_G        0x00004 /**< drive can read CD+G  */
-#define CDIO_DRIVE_CAP_READ_CD_R        0x00008 /**< drive can read CD-R  */
-#define CDIO_DRIVE_CAP_READ_CD_RW       0x00010 /**< drive can read CD-RW */
-#define CDIO_DRIVE_CAP_READ_DVD_R       0x00020 /**< drive can read DVD-R */
-#define CDIO_DRIVE_CAP_READ_DVD_PR      0x00040 /**< drive can read DVD+R */
-#define CDIO_DRIVE_CAP_READ_DVD_RAM     0x00080 /**< drive can read DVD-RAM */
-#define CDIO_DRIVE_CAP_READ_DVD_ROM     0x00100 /**< drive can read DVD-ROM */
-#define CDIO_DRIVE_CAP_READ_DVD_RW      0x00200 /**< drive can read DVD-RW  */
-#define CDIO_DRIVE_CAP_READ_DVD_RPW     0x00400 /**< drive can read DVD+RW  */
-#define CDIO_DRIVE_CAP_READ_C2_ERRS     0x00800 /**< has C2 error correction */
-#define CDIO_DRIVE_CAP_READ_MODE2_FORM1 0x01000 /**< can read mode 2 form 1 */
-#define CDIO_DRIVE_CAP_READ_MODE2_FORM2 0x02000 /**< can read mode 2 form 2 */
-#define CDIO_DRIVE_CAP_READ_MCN         0x04000 /**< can read MCN      */
-#define CDIO_DRIVE_CAP_READ_ISRC        0x08000 /**< can read ISRC     */
-
-  /*! Writing masks.. */
-#define CDIO_DRIVE_CAP_WRITE_CD_R       0x00001 /**< drive can write CD-R */
-#define CDIO_DRIVE_CAP_WRITE_CD_RW      0x00002 /**< drive can write CD-R */
-#define CDIO_DRIVE_CAP_WRITE_DVD_R      0x00004 /**< drive can write DVD-R */
-#define CDIO_DRIVE_CAP_WRITE_DVD_PR     0x00008 /**< drive can write DVD+R */
-#define CDIO_DRIVE_CAP_WRITE_DVD_RAM    0x00010 /**< drive can write DVD-RAM */
-#define CDIO_DRIVE_CAP_WRITE_DVD_RW     0x00020 /**< drive can write DVD-RW */
-#define CDIO_DRIVE_CAP_WRITE_DVD_RPW    0x00040 /**< drive can write DVD+RW */
-#define CDIO_DRIVE_CAP_WRITE_MT_RAINIER 0x00080 /**< Mount Rainier           */
-#define CDIO_DRIVE_CAP_WRITE_BURN_PROOF 0x00100 /**< burn proof */
-
-/**< Masks derived from above... */
-#define CDIO_DRIVE_CAP_WRITE_CD (                \
-    CDIO_DRIVE_CAP_WRITE_CD_R                    \
-    | CDIO_DRIVE_CAP_WRITE_CD_RW                 \
-    ) 
-/**< Has some sort of CD writer ability */
-
-/**< Masks derived from above... */
-#define CDIO_DRIVE_CAP_WRITE_DVD (               \
-    | CDIO_DRIVE_CAP_WRITE_DVD_R                 \
-    | CDIO_DRIVE_CAP_WRITE_DVD_PR                \
-    | CDIO_DRIVE_CAP_WRITE_DVD_RAM               \
-    | CDIO_DRIVE_CAP_WRITE_DVD_RW                \
-    | CDIO_DRIVE_CAP_WRITE_DVD_RPW               \
-    ) 
-/**< Has some sort of DVD writer ability */
-
-#define CDIO_DRIVE_CAP_WRITE \
-   (CDIO_DRIVE_CAP_WRITE_CD | CDIO_DRIVE_CAP_WRITE_DVD)
-/**< Has some sort of DVD or CD writing ability */
 
   /*! 
     track flags

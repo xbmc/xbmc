@@ -1,7 +1,7 @@
 /* -*- c -*-
     $Id$
 
-    Copyright (C) 2005 Rocky Bernstein <rocky@panix.com>
+    Copyright (C) 2005, 2006 Rocky Bernstein <rocky@panix.com>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,24 +24,6 @@
 #ifndef __CDIO_TRACK_H__
 #define __CDIO_TRACK_H__
 
-/*! The leadout track is always 0xAA, regardless of # of tracks on
-    disc, or what value may be used internally. For example although
-    OS X uses a different value for the lead-out track internally than
-    given below, programmers should use CDIO_CDROM_LEADOUT_TRACK and
-    not worry about this.
- */
-#define	CDIO_CDROM_LEADOUT_TRACK 0xAA
-
-/*! Largest CD track number */
-#define CDIO_CD_MAX_TRACKS    99 
-/*! Smallest CD track number */
-#define CDIO_CD_MIN_TRACK_NO   1
-
-/*! 
-  Constant for invalid track number
-*/
-#define CDIO_INVALID_TRACK   0xFF
-  
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
@@ -76,6 +58,47 @@ extern "C" {
 			      */
   } track_flags_t;
     
+  /*! The leadout track is always 0xAA, regardless of # of tracks on
+    disc, or what value may be used internally. For example although
+    OS X uses a different value for the lead-out track internally than
+    given below, programmers should use CDIO_CDROM_LEADOUT_TRACK and
+    not worry about this.
+  */
+
+  /*! An enumeration for some of the CDIO_CDROM_* \#defines below. This
+    isn't really an enumeration one would really use in a program; it
+    is to be helpful in debuggers where wants just to refer to the
+    CDIO_CDROM_* names and get something.
+  */
+  extern enum cdio_track_enums {
+    CDIO_CDROM_LBA           = 0x01, /**< "logical block": first frame is #0 */
+    CDIO_CDROM_MSF           = 0x02, /**< "minute-second-frame": binary, not
+					BCD here! */
+    CDIO_CDROM_DATA_TRACK    = 0x04, 
+    CDIO_CDROM_CDI_TRACK     = 0x10,
+    CDIO_CDROM_XA_TRACK      = 0x20,
+    CDIO_CD_MAX_TRACKS       =   99, /**< Largest CD track number */
+    CDIO_CDROM_LEADOUT_TRACK = 0xAA, /**< Lead-out track number */
+    CDIO_INVALID_TRACK       = 0xFF, /**<  Constant for invalid track number */
+
+   } cdio_track_enums;
+  
+#define CDIO_CD_MIN_TRACK_NO  1 /**< Smallest CD track number */
+  
+  /*! track modes (Table 350) 
+    reference: MMC-3 draft revsion - 10g
+  */
+  typedef enum {
+    AUDIO,			/**< 2352 byte block length */
+    MODE1,			/**< 2048 byte block length */
+    MODE1_RAW,			/**< 2352 byte block length */
+    MODE2,			/**< 2336 byte block length */
+    MODE2_FORM1,		/**< 2048 byte block length */
+    MODE2_FORM2,		/**< 2324 byte block length */
+    MODE2_FORM_MIX,		/**< 2336 byte block length */
+    MODE2_RAW			/**< 2352 byte block length */
+  } trackmode_t;
+  
   /*! 
     Get CD-Text information for a CdIo_t object.
 
@@ -104,7 +127,7 @@ extern "C" {
   track_t cdio_get_last_track_num (const CdIo_t *p_cdio);
   
 
-  /*! Find the track which contans lsn.
+  /*! Find the track which contains lsn.
     CDIO_INVALID_TRACK is returned if the lsn outside of the CD or
     if there was some error. 
     
@@ -161,7 +184,7 @@ extern "C" {
   lba_t cdio_get_track_lba(const CdIo_t *p_cdio, track_t i_track);
   
   /*!  
-    Return the starting MSF (minutes/secs/frames) for track number
+    Return the starting LSN for track number
     i_track in p_cdio.  Track numbers usually start at something 
     greater than 0, usually 1.
 

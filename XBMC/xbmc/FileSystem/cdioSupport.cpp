@@ -1,14 +1,10 @@
 #include "stdafx.h"
 #include "cdioSupport.h"
-#ifndef _LINUX
 #include "../lib/libcdio/cdio.h"
 #include "../lib/libcdio/logging.h"
-#include "../lib/libcdio/Util.h"
-#else
-#include <cdio/cdio.h>
-#include <cdio/logging.h>
-#include <cdio/util.h>
-#include <cdio/cd_types.h>
+#include "../lib/libcdio/util.h"
+#ifdef _LINUX
+#include "../lib/libcdio/cd_types.h"
 #endif
 
 using namespace MEDIA_DETECT;
