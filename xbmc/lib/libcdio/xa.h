@@ -2,7 +2,7 @@
     $Id$
 
     Copyright (C) 2000 Herbert Valerio Riedel <hvr@gnu.org>
-    Copyright (C) 2003, 2004 Rocky Bernstein <rocky@panix.com>
+    Copyright (C) 2003, 2004, 2005, 2006 Rocky Bernstein <rocky@panix.com>
 
     See also iso9660.h by Eric Youngdale (1993) and in cdrtools. These
     are 
@@ -27,46 +27,58 @@
 /*!
    \file xa.h 
    \brief Things related to the ISO-9660 XA (Extended Attributes) format
+
+   Applications will probably not include this directly but via 
+   the iso9660.h header.
 */
 
 
 #ifndef __CDIO_XA_H__
 #define __CDIO_XA_H__
 
-#include <types.h>
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
+  /*! An enumeration for some of the XA_* \#defines below. This isn't
+    really an enumeration one would really use in a program it is to
+    be helpful in debuggers where wants just to refer to the XA_*
+    names and get something.
+  */
+  typedef enum {
+    ISO_XA_MARKER_OFFSET =   1024,
+    XA_PERM_RSYS =         0x0001,  /**< System Group Read */
+    XA_PERM_XSYS =         0x0004,  /**< System Group Execute */
+    
+    XA_PERM_RUSR =         0x0010,  /**< User (owner) Read */
+    XA_PERM_XUSR =         0x0040,  /**< User (owner) Execute */
+    
+    XA_PERM_RGRP =         0x0100,  /**< Group Read */
+    XA_PERM_XGRP =         0x0400,  /**< Group Execute */
+    
+    XA_PERM_ROTH =         0x1000,  /**< Other (world) Read */
+    XA_PERM_XOTH =         0x4000,  /**< Other (world) Execute */
+    
+    XA_ATTR_MODE2FORM1  =   (1 << 11),
+    XA_ATTR_MODE2FORM2  =   (1 << 12),
+    XA_ATTR_INTERLEAVED =   (1 << 13),
+    XA_ATTR_CDDA        =   (1 << 14),
+    XA_ATTR_DIRECTORY   =   (1 << 15),
+    
+    XA_PERM_ALL_READ    =   (XA_PERM_RUSR | XA_PERM_RSYS | XA_PERM_RGRP),
+    XA_PERM_ALL_EXEC    =   (XA_PERM_XUSR | XA_PERM_XSYS | XA_PERM_XGRP),
+    XA_PERM_ALL_ALL     =   (XA_PERM_ALL_READ | XA_PERM_ALL_EXEC),
+    
+    XA_FORM1_DIR  = (XA_ATTR_DIRECTORY | XA_ATTR_MODE2FORM1 | XA_PERM_ALL_ALL),
+    XA_FORM1_FILE =  (XA_ATTR_MODE2FORM1 | XA_PERM_ALL_ALL),
+    XA_FORM2_FILE =  (XA_ATTR_MODE2FORM2 | XA_PERM_ALL_ALL)
+  } xa_misc_enum_t;
+  
+extern const char ISO_XA_MARKER_STRING[sizeof("CD-XA001")-1];
 
 #define ISO_XA_MARKER_STRING    "CD-XA001"
-#define ISO_XA_MARKER_OFFSET    1024
 
-/* XA attribute definitions */
-#define XA_PERM_RSYS          0x0001   /**< System Group Read */
-#define XA_PERM_XSYS          0x0004   /**< System Group Execute */
-
-#define XA_PERM_RUSR          0x0010   /**< User (owner) Read */
-#define XA_PERM_XUSR          0x0040   /**< User (owner) Execute */
-
-#define XA_PERM_RGRP          0x0100   /**< Group Read */
-#define XA_PERM_XGRP          0x0400   /**< Group Execute */
-
-#define	XA_PERM_ROTH	      0x1000   /**< Other (world) Read */
-#define	XA_PERM_XOTH	      0x4000   /**< Other (world) Execute */
-
-#define XA_ATTR_MODE2FORM1     (1 << 11)
-#define XA_ATTR_MODE2FORM2     (1 << 12)
-#define XA_ATTR_INTERLEAVED    (1 << 13)
-#define XA_ATTR_CDDA           (1 << 14)
-#define XA_ATTR_DIRECTORY      (1 << 15)
-
-/* some aggregations */
-#define XA_PERM_ALL_READ       (XA_PERM_RUSR | XA_PERM_RSYS | XA_PERM_RGRP)
-#define XA_PERM_ALL_EXEC       (XA_PERM_XUSR | XA_PERM_XSYS | XA_PERM_XGRP)
-#define XA_PERM_ALL_ALL        (XA_PERM_ALL_READ | XA_PERM_ALL_EXEC)
-
-#define XA_FORM1_DIR    (XA_ATTR_DIRECTORY | XA_ATTR_MODE2FORM1 | XA_PERM_ALL_ALL)
-#define XA_FORM1_FILE   (XA_ATTR_MODE2FORM1 | XA_PERM_ALL_ALL)
-#define XA_FORM2_FILE   (XA_ATTR_MODE2FORM2 | XA_PERM_ALL_ALL)
-
-/*! \brief "Extended Architecture according to the Philips Yellow Book.
+/*! \brief "Extended Architecture" according to the Philips Yellow Book.
  
 CD-ROM EXtended Architecture is a modification to the CD-ROM
 specification that defines two new types of sectors.  CD-ROM XA was
@@ -88,19 +100,24 @@ fully compatible.
 
  Note structure is big-endian.
 */
-typedef struct iso9660_xa 
+typedef struct iso9660_xa_s
 {
   uint16_t group_id;      /**< 0 */
   uint16_t user_id;       /**< 0 */
   uint16_t attributes;    /**< XA_ATTR_ */ 
-  uint8_t  signature[2];  /**< { 'X', 'A' } */
+  char     signature[2];  /**< { 'X', 'A' } */
   uint8_t  filenum;       /**< file number, see also XA subheader */
   uint8_t  reserved[5];   /**< zero */
 } GNUC_PACKED iso9660_xa_t;
-
+  
+  
+  /*!
+    Returns POSIX mode bitstring for a given file.
+  */
+  posix_mode_t iso9660_get_posix_filemode_from_xa(uint16_t i_perms);
 
 /*!
-  Returns a string which interpreting the extended attribute xa_attr. 
+  Returns a string interpreting the extended attribute xa_attr. 
   For example:
   \verbatim
   d---1xrxrxr
@@ -108,7 +125,7 @@ typedef struct iso9660_xa
   -a--1xrxrxr
   \endverbatim
   
-  A description of the characters in the string follows
+  A description of the characters in the string follows.
   The 1st character is either "d" if the entry is a directory, or "-" if not
   The 2nd character is either "a" if the entry is CDDA (audio), or "-" if not
   The 3rd character is either "i" if the entry is interleaved, or "-" if not
@@ -139,6 +156,19 @@ iso9660_get_xa_attr_str (uint16_t xa_attr);
 iso9660_xa_t *
 iso9660_xa_init (iso9660_xa_t *_xa, uint16_t uid, uint16_t gid, uint16_t attr, 
 		 uint8_t filenum);
+
+#ifdef __cplusplus
+}
+
+/** The below variables are trickery to force the above enum symbol
+    values to be recorded in debug symbol tables. They are used to
+    allow one to refer to the enumeration value names in the typedefs
+    above in a debugger and debugger expressions.
+*/
+extern xa_misc_enum_t debugger_xa_misc_enum;
+
+  
+#endif /* __cplusplus */
 
 #endif /* __CDIO_XA_H__ */
 

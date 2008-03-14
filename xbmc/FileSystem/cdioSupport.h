@@ -19,7 +19,7 @@
 #include "../lib/libcdio/cd_Types.h"
 #include "../lib/libcdio/cdtext.h"
 #else
-#include <cdio/cdio.h>
+#include "../lib/libcdio/cdio.h"
 #endif
 
 namespace MEDIA_DETECT

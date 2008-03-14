@@ -29,9 +29,9 @@
 #ifndef __CDIO_BYTESEX_H__
 #define __CDIO_BYTESEX_H__
 
-#include <types.h>
-#include <bytesex_asm.h>
-#include <logging.h>
+#include "types.h"
+#include "bytesex_asm.h"
+#include "logging.h"
 
 /** 16-bit big-endian to little-endian */
 #define UINT16_SWAP_LE_BE_C(val) ((uint16_t) ( \
@@ -145,24 +145,32 @@ CVT_TO_FUNC(64)
 
 /** ISO9660-related field conversion routines */
 
+/** Convert from uint8_t to ISO 9660 7.1.1 format */
 #define to_711(i)   uint8_to_le(i)
+
+/** Convert from ISO 9660 7.1.1 format to uint8_t */
 #define from_711(i) uint8_from_le(i)
 
+/** Convert from uint16_t to ISO 9669 7.2.1 format */
 #define to_721(i)   uint16_to_le(i)
+
+/** Convert from ISO 9660 7.2.1 format to uint16_t */
 #define from_721(i) uint16_from_le(i)
 
-#define to_721(i)   uint16_to_le(i)
-#define from_721(i) uint16_from_le(i)
-
+/** Convert from uint16_t to ISO 9669 7.2.2 format */
 #define to_722(i)   uint16_to_be(i)
+
+/** Convert from ISO 9660 7.2.2 format to uint16_t */
 #define from_722(i) uint16_from_be(i)
 
+/** Convert from uint16_t to ISO 9669 7.2.3 format */
 static inline uint32_t
 to_723(uint16_t i)
 {
   return uint32_swap_le_be(i) | i;
 }
 
+/** Convert from ISO 9660 7.2.3 format to uint16_t */
 static inline uint16_t 
 from_723 (uint32_t p)
 {
@@ -172,18 +180,26 @@ from_723 (uint32_t p)
   return (0xFFFF & p);
 }
 
+/** Convert from uint16_t to ISO 9669 7.3.1 format */
 #define to_731(i)   uint32_to_le(i)
+
+/** Convert from ISO 9660 7.3.1 format to uint32_t */
 #define from_731(i) uint32_from_le(i)
 
+/** Convert from uint32_t to ISO 9669 7.3.2 format */
 #define to_732(i)   uint32_to_be(i)
+
+/** Convert from ISO 9660 7.3.2 format to uint32_t */
 #define from_732(i) uint32_from_be(i)
 
+/** Convert from uint16_t to ISO 9669 7.3.3 format */
 static inline uint64_t
 to_733(uint32_t i)
 {
   return uint64_swap_le_be(i) | i;
 }
 
+/** Convert from ISO 9660 7.3.3 format to uint32_t */
 static inline uint32_t 
 from_733 (uint64_t p)
 {
