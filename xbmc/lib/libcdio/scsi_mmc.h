@@ -28,9 +28,9 @@
 #ifndef __SCSI_MMC_H__
 #define __SCSI_MMC_H__
 
-#include <cdio.h>
-#include <types.h>
-#include <dvd.h>
+#include "cdio.h"
+#include "types.h"
+#include "dvd.h"
 
 /*! \brief The opcode-portion (generic packet commands) of an MMC command.
 

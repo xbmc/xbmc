@@ -39,7 +39,7 @@
 #include "Picture.h"
 #if defined (LIBCDIO_VERSION_NUM) && (LIBCDIO_VERSION_NUM > 77)
 #define USING_CDIO78
-#include <cdio/mmc.h>
+#include "lib/libcdio/mmc.h"
 #endif
 
 using namespace XFILE;

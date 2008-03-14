@@ -1,7 +1,7 @@
 /* -*- c -*-
     $Id$
 
-    Copyright (C) 2004, 2005 Rocky Bernstein <rocky@panix.com>
+    Copyright (C) 2004, 2005, 2006 Rocky Bernstein <rocky@panix.com>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,6 +28,26 @@
 extern "C" {
 #endif /* __cplusplus */
 
+  /*! disc modes. The first combined from MMC-3 5.29.2.8 (Send CUESHEET)
+    and GNU/Linux /usr/include/linux/cdrom.h and we've added DVD.
+  */
+  typedef enum {
+    CDIO_DISC_MODE_CD_DA,	    /**< CD-DA */
+    CDIO_DISC_MODE_CD_DATA,	    /**< CD-ROM form 1 */
+    CDIO_DISC_MODE_CD_XA,	    /**< CD-ROM XA form2 */
+    CDIO_DISC_MODE_CD_MIXED,	    /**< Some combo of above. */
+    CDIO_DISC_MODE_DVD_ROM,         /**< DVD ROM (e.g. movies) */
+    CDIO_DISC_MODE_DVD_RAM,         /**< DVD-RAM */
+    CDIO_DISC_MODE_DVD_R,           /**< DVD-R */
+    CDIO_DISC_MODE_DVD_RW,          /**< DVD-RW */
+    CDIO_DISC_MODE_DVD_PR,          /**< DVD+R */
+    CDIO_DISC_MODE_DVD_PRW,         /**< DVD+RW */
+    CDIO_DISC_MODE_DVD_OTHER,       /**< Unknown/unclassified DVD type */
+    CDIO_DISC_MODE_NO_INFO,
+    CDIO_DISC_MODE_ERROR,
+    CDIO_DISC_MODE_CD_I	        /**< CD-i. */
+  } discmode_t;
+
   extern const char *discmode2str[];
   
   /*! 
@@ -44,7 +64,6 @@ extern "C" {
   */
   lsn_t cdio_get_disc_last_lsn(const CdIo_t *p_cdio);
   
-
   /*!  
     Return the Joliet level recognized for p_cdio.
   */
@@ -53,7 +72,7 @@ extern "C" {
   /*!
     Get the media catalog number (MCN) from the CD.
 
-    @return the media catalog number r NULL if there is none or we
+    @return the media catalog number or NULL if there is none or we
     don't have the ability to get it.
 
     Note: string is malloc'd so caller has to free() the returned
@@ -70,12 +89,21 @@ extern "C" {
   */
   track_t cdio_get_num_tracks (const CdIo_t *p_cdio);
   
+  /*! 
+    Return true if discmode is some sort of CD.
+  */
+  bool cdio_is_discmode_cdrom (discmode_t discmode);
+  
+  /*! 
+    Return true if discmode is some sort of DVD.
+  */
+  bool cdio_is_discmode_dvd (discmode_t discmode);
+  
   /*! cdio_stat_size is deprecated. @see cdio_get_disc_last_lsn  */
 #define cdio_stat_size cdio_get_disc_last_lsn
-  
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
 #endif /* __CDIO_DISC_H__ */
-

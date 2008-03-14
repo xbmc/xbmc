@@ -30,7 +30,7 @@
 #define __CDIO_BYTESEX_ASM_H__
 #if !defined(DISABLE_ASM_OPTIMIZE)
 
-#include <types.h>
+#include "types.h"
 
 #if defined(__powerpc__) && defined(__GNUC__)
 

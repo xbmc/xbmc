@@ -23,14 +23,14 @@
  *  \brief  The top-level header for list-related data structures.
 
     Note: this header will is slated to get removed and libcdio will use 
-   glib.h routines instead. 
+    glib.h routines instead. 
 */
 
 
 #ifndef __CDIO_DS_H__
 #define __CDIO_DS_H__
 
-#include <types.h>
+#include "types.h"
 
 /** opaque types... */
 typedef struct _CdioList CdioList_t;
@@ -73,11 +73,11 @@ CdioListNode_t *_cdio_list_find (CdioList_t *p_list,
 
 /** node operations */
 
-CdioListNode *_cdio_list_begin (const CdioList_t *p_list);
+CdioListNode_t *_cdio_list_begin (const CdioList_t *p_list);
 
-CdioListNode *_cdio_list_end (CdioList_t *p_list);
+CdioListNode_t *_cdio_list_end (CdioList_t *p_list);
 
-CdioListNode *_cdio_list_node_next (CdioListNode_t *p_node);
+CdioListNode_t *_cdio_list_node_next (CdioListNode_t *p_node);
 
 void _cdio_list_node_free (CdioListNode_t *p_node, int i_free_data);
 

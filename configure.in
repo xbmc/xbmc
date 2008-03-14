@@ -99,7 +99,6 @@ fi
 
 AC_CHECK_LIB([SDL_image], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
 AC_CHECK_LIB([SDL_mixer], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
-AC_CHECK_LIB([cdio], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
 AC_CHECK_LIB([dl], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux) )
 AC_CHECK_LIB([freetype], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
 AC_CHECK_LIB([fribidi], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux))

@@ -27,7 +27,7 @@
 #ifndef __CDIO_DVD_H__
 #define __CDIO_DVD_H__
 
-#include <types.h>
+#include "types.h"
 
 /*! Values used in a READ DVD STRUCTURE */
 
