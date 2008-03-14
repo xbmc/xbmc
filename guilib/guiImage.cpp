@@ -483,14 +483,14 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
 #elif defined(HAS_SDL_2D)
 #define USE_NEW_SDL_SCALING
   SDL_Surface* surface = m_vecTextures[m_iCurrentImage]; 
-#ifdef USE_NEW_SDL_SCALING
   float x[4] = { x1, x2, x3, x4 };
   float y[4] = { y1, y2, y3, y4 };
   float u[2] = { u1, u2 };
   float v[2] = { v1, v2 };
   DWORD c[4] = { g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[0],m_diffuseColor)),
                  g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[1],m_diffuseColor)),
-                 g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[2],m_diffuseColor)),                   g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[3],m_diffuseColor)) };
+                 g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[2],m_diffuseColor)),
+                 g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[3],m_diffuseColor)) };
   
   // cache texture based on:
   // 1.  Bounding box
@@ -500,33 +500,65 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
   CCachedTexture &cached = m_vecCachedTextures[m_iCurrentImage];
   if (!cached.surface || cached.width != b[2] || cached.height != b[3] || c[0]  != cached.diffuseColor)
   { // need to re-render the surface
+#ifdef USE_NEW_SDL_SCALING
     RenderWithEffects(surface, x, y, u, v, c, m_diffuseTexture, m_diffuseScaleU, m_diffuseScaleV, cached);
+#else
+    // If the texture isn't scewed or don't have a diffuse texture we lighten the calculations a bit
+    if (x1 == x4 || x2 == x3 || y3 == y4 || y1 == y2 || !m_diffuseTexture)
+    {
+      SDL_Surface* zoomed = m_vecCachedTextures[m_iCurrentImage].surface;
+      double zoomX = 1, zoomY = 1;
+      bool   CreateNewX = true, CreateNewY = true;
+      if ((b[2]) == (int)surface->w)
+        CreateNewX = false;
+      else
+        zoomX = ((double)(b[2]) + 1) / surface->w / (double)(u[1] - u[0]);
+      if ((b[3]) == (int)surface->h)
+        CreateNewY = false;
+      else
+        zoomY = ((double)(b[3]) + 1) / surface->h / (double)(v[1] - v[0]);
+
+      if (CreateNewX || CreateNewY)
+      { 
+        if (zoomed != NULL) 
+          SDL_FreeSurface(zoomed);
+
+        zoomed = zoomSurface(surface, zoomX, zoomY, 1);
+      }
+      else if (zoomed == NULL)
+        zoomed = zoomSurface(surface, zoomX, zoomY, 1);
+
+      SDL_LockSurface(zoomed);
+      unsigned int* dst = (unsigned int*) zoomed->pixels;
+      cached.diffuseColor = c[0];
+      cached.width  = b[2];
+      cached.height = b[3];
+      int alpha;
+      float alphaFactor = (float) ((float)((c[0] & 0xff000000) >> 24) / 255.0f);
+      for (int y = 0; y < zoomed->h; y++)
+      {
+        for (int x = 0; x < zoomed->w; x++)
+      	{
+          alpha = (int) (alphaFactor * (((unsigned int) dst[x] & 0xff000000) >> 24));
+          dst[x] = (alpha << 24) | (dst[x] & 0x00ffffff);
+        }
+      	dst += zoomed->w;
+      }
+
+      SDL_UnlockSurface(zoomed);
+
+      // Copy the surface to the screen (without angle).
+      m_vecCachedTextures[m_iCurrentImage].surface = zoomed;
+    }
+    else
+      RenderWithEffects(surface, x, y, u, v, c, m_diffuseTexture, m_diffuseScaleU, m_diffuseScaleV, cached);
+#endif
   }
   if (cached.surface)
   {
     SDL_Rect dst = { (Sint16)b[0], (Sint16)b[1], 0, 0 };
     g_graphicsContext.BlitToScreen(cached.surface, NULL, &dst);
   }
-#else
-  DWORD colour = g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[0],m_diffuseColor));
-  if (colour & 0xff000000)
-  {
-    SDL_Surface* zoomed = m_vecCachedTextures[m_iCurrentImage].surface;
-    double zoomX = (double) (x3 - x1 + 1) / texture->w / (u2 - u1);
-    double zoomY = (double) (y3 - y1 + 1) / texture->h / (v2 - v1);
-    if (zoomed == NULL ||
-        (int) ((double) texture->w * zoomX) != zoomed->w ||
-        (int) ((double) texture->h * zoomY) != zoomed->h)
-    { 
-      if (zoomed != NULL)
-        SDL_FreeSurface(zoomed);
-      zoomed = zoomSurface(texture, zoomX, zoomY, 1);
-      m_vecCachedTextures[m_iCurrentImage].surface = zoomed;
-    }
-    SDL_Rect dst = { (Sint16) x1, (Sint16) y1, 0, 0 };
-    g_graphicsContext.BlitToScreen(zoomed, NULL,  &dst);
-  }
-#endif
 #elif defined(HAS_SDL_OPENGL)
   // set all the attributes we need to...
    

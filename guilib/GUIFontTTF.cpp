@@ -934,7 +934,7 @@ struct CUSTOMVERTEX {
   SDL_UnlockSurface(m_texture);
 
   // Copy the surface to the screen (without angle). 
-  SDL_Rect dstRect2 = { (Sint16) posX, (Sint16) posY, 0 , 0 };
+  SDL_Rect dstRect2 = { (Sint16) x1, (Sint16) y1, 0 , 0 };
   g_graphicsContext.BlitToScreen(tempSurface, NULL, &dstRect2);
   
   SDL_FreeSurface(tempSurface);  
