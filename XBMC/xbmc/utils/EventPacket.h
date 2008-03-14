@@ -64,8 +64,10 @@ namespace EVENTPACKET
     /************************************************************************/
     /* Payload format                                                       */
     /* %s -  device name (max 128 chars)                                    */
-    /* %c -  logotype ( 0=>NOLOGO, 1=>JPEG , 2=>PNG , 3=>GIF )              */
-    /* %d -  reserved ( 0 )                                                 */
+    /* %c -  icontype ( 0=>NOICON, 1=>JPEG , 2=>PNG , 3=>GIF )              */
+    /* %s -  my port ( 0=>not listening )                                   */
+    /* %d -  reserved1 ( 0 )                                                */
+    /* %d -  reserved2 ( 0 )                                                */
     /* XX -  imagedata ( can span multiple packets )                        */
     /************************************************************************/
 
@@ -77,15 +79,16 @@ namespace EVENTPACKET
     PT_BUTTON        = 0x03,
     /************************************************************************/
     /* Payload format                                                       */
-    /* %s -  device map                                                     */
-    /*       "KB", "MS", "RM1" or valid SDL joystick map name               */
     /* %i - button code                                                     */
     /* %i - flags 0x01 => use button name instead of code                   */
     /*            0x02 => btn down                                          */
     /*            0x04 => btn up                                            */
     /*            0x08 => use amount                                        */
     /*            0x10 => queue event                                       */
+    /*            0x20 => do not repeat                                     */
     /* %i - amount ( 0 => 65k maps to -1 => 1 )                             */
+    /* %s - device map                                                     */
+    /*      "KB", "MS", "RM1" or valid SDL joystick map name               */
     /* %s - button name                                                     */
     /************************************************************************/
 
@@ -110,8 +113,11 @@ namespace EVENTPACKET
     PT_NOTIFICATION  = 0x07,
     /************************************************************************/
     /* Payload format:                                                      */
-    /* %s - Title message                                                   */
+    /* %s - Caption                                                         */
     /* %s - Message                                                         */
+    /* %c - icontype ( 0=>NOICON, 1=>JPEG , 2=>PNG , 3=>GIF )               */
+    /* %d - reserved ( 0 )                                                  */
+    /* XX - imagedata ( can span multiple packets )                         */
     /************************************************************************/
 
     PT_BLOB          = 0x08,

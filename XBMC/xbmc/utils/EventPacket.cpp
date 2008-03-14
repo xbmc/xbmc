@@ -1,4 +1,4 @@
-#include "include.h"
+#include "stdafx.h"
 #include "EventPacket.h"
 #include "Socket.h"
 
@@ -42,7 +42,7 @@ bool CEventPacket::Parse(int datasize, const void *data)
   m_iPayloadSize = ntohs(*((uint16_t*)buf));
 
   buf += 2;
-  if ((m_iPayloadSize + HEADER_SIZE) != datasize)
+  if ((m_iPayloadSize + HEADER_SIZE) != (unsigned int)datasize)
     return false;
 
   // get payload
