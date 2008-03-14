@@ -51,7 +51,7 @@
 			<onup>918</onup>
 			<ondown>210</ondown>
 			<onclick>XBMC.PlayerControl(ShowVideoMenu)</onclick>
-			<visible>VideoPlayer.HasMenu | !Player.CanRecord</visible>
+			<visible>VideoPlayer.HasMenu</visible>
 		</control>
 		<control type="button" id="209">
 			<description>DVD menu button 2</description>
@@ -68,7 +68,7 @@
 			<onup>921</onup>
 			<ondown>211</ondown>
 			<onclick>XBMC.PlayerControl(ShowVideoMenu)</onclick>
-			<visible>VideoPlayer.HasMenu | !Player.CanRecord</visible>
+			<visible>VideoPlayer.HasMenu</visible>
 		</control>
 		<control type="image" id="1">
 			<description>Panel</description>
