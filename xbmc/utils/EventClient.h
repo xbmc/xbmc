@@ -52,6 +52,8 @@ namespace EVENTCLIENT
     // deallocate all packets in the queues
     void FreeQueues();
 
+    // 
+
   protected:
     bool ProcessPacket(EVENTPACKET::CEventPacket *packet);
 
@@ -59,6 +61,7 @@ namespace EVENTCLIENT
     virtual bool OnPacketHELO(EVENTPACKET::CEventPacket *packet);
     virtual bool OnPacketBYE(EVENTPACKET::CEventPacket *packet);
     virtual bool OnPacketBUTTON(EVENTPACKET::CEventPacket *packet);
+    virtual bool OnPacketMOUSE(EVENTPACKET::CEventPacket *packet);
     virtual bool OnPacketNOTIFICATION(EVENTPACKET::CEventPacket *packet);
 
     // returns true if the client has received the HELO packet
@@ -82,6 +85,12 @@ namespace EVENTCLIENT
 
     // Parses a single byte (same behavior as ParseString)
     bool ParseByte(unsigned char* &payload, int &psize, unsigned char& parsedVal);
+    
+    // Parse a single 32-bit integer (converts from network order to host order)
+    bool ParseUInt32(unsigned char* &payload, int &psize, unsigned int& parsedVal);
+
+    // Parse a single 16-bit integer (converts from network order to host order)
+    bool ParseUInt16(unsigned char* &payload, int &psize, unsigned short& parsedVal);
 
     std::map<unsigned int, EVENTPACKET::CEventPacket*>  m_seqPackets;
     std::queue<EVENTPACKET::CEventPacket*>              m_readyPackets;
@@ -90,8 +99,20 @@ namespace EVENTCLIENT
     int               m_iCurrentSeqLen;
     time_t            m_lastPing;
     SOCKETS::CAddress m_remoteAddr;
+    int               m_iRemotePort;
     EVENTPACKET::LogoType m_eLogoType;
     bool              m_bGreeted;
+
+    // button and mouse state
+    unsigned int      m_iKeyCode;
+    std::string       m_buttonName;
+    std::string       m_mapName;    
+    float             m_fAmount;
+    bool              m_bRepeat;
+    float             m_fLastPress;
+    float             m_fRepeatDelay;
+    float             m_fMouseX;
+    float             m_fMouseY;
   };
 
 }
