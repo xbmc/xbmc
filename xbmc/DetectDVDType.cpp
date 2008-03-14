@@ -82,9 +82,9 @@ void CDetectDVDMedia::Process()
 
   while (( !m_bStop ) && (!g_advancedSettings.m_usePCDVDROM))
   {
-    Sleep(500);
     UpdateDvdrom();
     m_bStartup = false;
+    Sleep(500);
     if ( m_bAutorun )
     {
       m_evAutorun.Set();
