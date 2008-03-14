@@ -404,7 +404,10 @@ void CAutorun::HandleAutorun()
   }
 
   if (CDetectDVDMedia::m_evAutorun.WaitMSec(0))
+  {
     ExecuteAutorun();
+    CDetectDVDMedia::m_evAutorun.Reset();
+  }
 }
 
 void CAutorun::Enable()
