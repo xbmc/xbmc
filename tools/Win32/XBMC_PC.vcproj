@@ -1241,6 +1241,12 @@
 					RelativePath="..\..\xbmc\PluginSettings.h">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\ScraperSettings.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\ScraperSettings.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\Settings.cpp">
 				</File>
 				<File
