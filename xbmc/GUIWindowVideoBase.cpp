@@ -933,7 +933,14 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       else
       { // get players
         VECPLAYERCORES vecCores;
-        CPlayerCoreFactory::GetPlayers(*item, vecCores);
+        if (item->IsVideoDb())
+        {
+          CFileItem item2;
+          item2.m_strPath = item->GetVideoInfoTag()->m_strFileNameAndPath;
+          CPlayerCoreFactory::GetPlayers(item2, vecCores);
+        }
+        else
+          CPlayerCoreFactory::GetPlayers(*item, vecCores);
         if (vecCores.size() >= 1)
           buttons.Add(CONTEXT_BUTTON_PLAY_WITH, 15213);
       }
