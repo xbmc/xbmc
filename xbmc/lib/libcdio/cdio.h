@@ -32,7 +32,7 @@
 /** Application Interface or Protocol version number. If the public
  *  interface changes, we increase this number.
  */
-#define CDIO_API_VERSION 4
+#define CDIO_API_VERSION 5
 
 #include "version.h"
 
@@ -50,9 +50,9 @@
 extern "C" {
 #endif /* __cplusplus */
 
-/* For compatability. */
+/* For compatibility. */
 #define CdIo CdIo_t
-
+    
   /** This is an opaque structure for the CD object. */
   typedef struct _CdIo CdIo_t; 
 
@@ -65,21 +65,21 @@ extern "C" {
 
 /* Drive(r)/Device-related functions. Perhaps we should break out 
    Driver from device?
-  */
+*/
 #include "device.h"
-  
+
+/* Disc-related functions. */
+#include "disc.h"
+
 /* Sector (frame, or block)-related functions. Uses driver_return_code_t
    from <cdio/device.h> so it should come after that. 
-  */
+*/
 #include "read.h"
-  
+
 /* CD-Text-related functions. */
 #include "cdtext.h"
 
 /* Track-related functions. */
 #include "track.h"
-  
-/* Disc-related functions. */
-#include "disc.h"
 
 #endif /* __CDIO_H__ */

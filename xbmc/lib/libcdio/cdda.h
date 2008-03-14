@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2004, 2005 Rocky Bernstein <rocky@panix.com>
+  Copyright (C) 2004, 2005, 2006 Rocky Bernstein <rocky@gnu.org>
   Copyright (C) 2001 Xiph.org
   and Heiko Eissfeldt heiko@escape.colossus.de
 
@@ -19,6 +19,7 @@
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+
 /** \file cdda.h
  *
  *  \brief The top-level interface header for libcdio_cdda.
@@ -29,14 +30,38 @@
 #ifndef _CDDA_INTERFACE_H_
 #define _CDDA_INTERFACE_H_
 
-#include <cdio.h>
-#include <paranoia.h>
+#include "cdio.h"
 
-#define CD_FRAMESAMPLES (CDIO_CD_FRAMESIZE_RAW / 4)
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
-#ifdef  HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#endif
+  /** cdrom_paranoia is an opaque structure which is used in all of the
+      library operations.
+  */
+  typedef struct cdrom_paranoia_s cdrom_paranoia_t;
+  typedef struct cdrom_drive_s   cdrom_drive_t;
+  
+  /** For compatibility. cdrom_drive_t is deprecated, use cdrom_drive_t
+      instead. */
+
+  /**
+     Flags for simulating jitter used in testing.
+
+     The enumeration type one probably wouldn't really use in a program.
+     It is here instead of defines to give symbolic names that can be
+     helpful in debuggers where wants just to say refer to
+     CDDA_TEST_JITTER_SMALL and get the correct value.
+  */
+  typedef enum {
+    CDDA_MESSAGE_FORGETIT = 0,
+    CDDA_MESSAGE_PRINTIT  = 1,
+    CDDA_MESSAGE_LOGIT    = 2,
+    CD_FRAMESAMPLES       = CDIO_CD_FRAMESIZE_RAW / 4,
+    MAXTRK                = (CDIO_CD_MAX_TRACKS+1)
+  } paranoia_cdda_enums_t;
+  
+
 #include <signal.h>
 
 /** We keep MAXTRK since this header is exposed publicly and other
@@ -50,17 +75,8 @@ typedef struct TOC_s {
   int32_t       dwStartSector;
 } TOC_t;
 
-/** For compatibility. TOC is depricated, use TOC_t instead. */
+/** For compatibility. TOC is deprecated, use TOC_t instead. */
 #define TOC TOC_t
-
-/** interface types */
-#define GENERIC_SCSI	0
-#define COOKED_IOCTL	1
-#define TEST_INTERFACE	2
-
-#define CDDA_MESSAGE_FORGETIT 0
-#define CDDA_MESSAGE_PRINTIT 1
-#define CDDA_MESSAGE_LOGIT 2
 
 /** \brief Structure for cdparanoia's CD-ROM access */
 struct cdrom_drive_s {
@@ -72,12 +88,13 @@ struct cdrom_drive_s {
 
   char *drive_model;
   int drive_type;
-  int cdpinterface;
   int bigendianp; /**< Whether data returned on the CDDA is bigendian or
 		       not. 1 if big endian, 0 if little endian and -1 if
 		       we don't know.
 		   */
-  int nsectors;
+  int nsectors;   /**< Number of sectors use in reading. Multiply by 
+		   CDIO_CD_FRAMESIZE_RAW to get number of bytes used in
+		  the read buffer. */
 
   int cd_extra;   /**< -1 if we can't get multisession info, 0 if
                        there is one session only or the multi-session
@@ -123,12 +140,27 @@ struct cdrom_drive_s {
 };
 
 
-/**< jitter testing. The first two bits are set to determine
-     the byte-distance we will jitter the data; 0 is no shifting.
+  /**
+     Flags for simulating jitter used in testing.
+
+     The enumeration type one probably wouldn't really use in a program.
+     It is here instead of defines to give symbolic names that can be
+     helpful in debuggers where wants just to say refer to
+     CDDA_TEST_JITTER_SMALL and get the correct value.
+  */
+  typedef enum {
+    CDDA_TEST_JITTER_SMALL   = 1,
+    CDDA_TEST_JITTER_LARGE   = 2,
+    CDDA_TEST_JITTER_MASSIVE = 3,
+    CDDA_TEST_FRAG_SMALL     = (1<<3),
+    CDDA_TEST_FRAG_LARGE     = (2<<3),
+    CDDA_TEST_FRAG_MASSIVE   = (3<<3),
+    CDDA_TEST_UNDERRUN       = 64 
+  } paranoia_jitter_t;
+  
+/** jitter testing. The first two bits are set to determine the
+     byte-distance we will jitter the data; 0 is no shifting.
  */
-#define CDDA_TEST_JITTER_SMALL      1 
-#define CDDA_TEST_JITTER_LARGE      2 
-#define CDDA_TEST_JITTER_MASSIVE    3 
 
 /**< jitter testing. Set the below bit to always cause jittering on reads.
      The below bit only has any effect if the first two (above) bits are 
@@ -162,26 +194,23 @@ struct cdrom_drive_s {
 extern cdrom_drive_t *cdio_cddap_find_a_cdrom(int messagedest, 
 					      char **ppsz_message);
 
-/** Returns a paranoia CD-ROM drive object with a CD-DA in it.  
-    @see cdda_identify_cdio
+/** Returns a paranoia CD-ROM drive object with a CD-DA in it or NULL
+    if there was an error.
+    @see cdio_cddap_identify_cdio
  */
 extern cdrom_drive_t *cdio_cddap_identify(const char *psz_device, 
 					  int messagedest, 
 					  char **ppsz_message);
 
-/** Returns a paranoia CD-ROM drive ojbect with a CD-DA in it.  
-    In contrast to cdda_identify, we start out with an initialzed p_cdio
-    object. For example you may have used that for other purposes such
-    as to get CDDB/CD-Text information.
-    @see cdda_identify
+/** Returns a paranoia CD-ROM drive object with a CD-DA in it or NULL
+    if there was an error.  In contrast to cdio_cddap_identify, we
+    start out with an initialized p_cdio object. For example you may
+    have used that for other purposes such as to get CDDB/CD-Text
+    information.  @see cdio_cddap_identify
  */
 cdrom_drive_t *cdio_cddap_identify_cdio(CdIo_t *p_cdio, 
 					int messagedest, char **ppsz_messages);
 
-/** Obsolete interface. Don't use. @see cdda_identify */
-extern cdrom_drive_t *cdio_cddap_identify_cooked(const char *ppsz_device,
-						 int messagedest, 
-						 char **ppsz_message);
 /** drive-oriented functions */
 
 extern int     cdio_cddap_speed_set(cdrom_drive_t *d, int speed);
@@ -280,18 +309,21 @@ extern int data_bigendianp(cdrom_drive_t *d);
 
 /** transport errors: */
 
-#define TR_OK            0
-#define TR_EWRITE        1  /**< Error writing packet command (transport) */
-#define TR_EREAD         2  /**< Error reading packet data (transport) */
-#define TR_UNDERRUN      3  /**< Read underrun */
-#define TR_OVERRUN       4  /**< Read overrun */
-#define TR_ILLEGAL       5  /**< Illegal/rejected request */
-#define TR_MEDIUM        6  /**< Medium error */
-#define TR_BUSY          7  /**< Device busy */
-#define TR_NOTREADY      8  /**< Device not ready */
-#define TR_FAULT         9  /**< Device failure */
-#define TR_UNKNOWN      10  /**< Unspecified error */
-#define TR_STREAMING    11  /**< loss of streaming */
+typedef enum {
+  TR_OK =            0,
+  TR_EWRITE =        1  /**< Error writing packet command (transport) */,
+  TR_EREAD =         2  /**< Error reading packet data (transport) */,
+  TR_UNDERRUN =      3  /**< Read underrun */,
+  TR_OVERRUN =       4  /**< Read overrun */,
+  TR_ILLEGAL =       5  /**< Illegal/rejected request */,
+  TR_MEDIUM =        6  /**< Medium error */,
+  TR_BUSY =          7  /**< Device busy */,
+  TR_NOTREADY =      8  /**< Device not ready */,
+  TR_FAULT =         9  /**< Device failure */,
+  TR_UNKNOWN =      10  /**< Unspecified error */,
+  TR_STREAMING =    11  /**< loss of streaming */,
+} transport_error_t;
+  
 
 #ifdef NEED_STRERROR_TR
 const char *strerror_tr[]={
@@ -312,6 +344,7 @@ const char *strerror_tr[]={
 
 /** Errors returned by lib: 
 
+\verbatim 
 001: Unable to set CDROM to read audio mode
 002: Unable to read table of contents lead-out
 003: CDROM reporting illegal number of tracks
@@ -334,6 +367,7 @@ const char *strerror_tr[]={
 401: Invalid track number
 402: Track not audio data
 403: No audio tracks on disc
+\endverbatim
 
 */
 
@@ -358,7 +392,22 @@ const char *strerror_tr[]={
 #define cdda_track_preemp       cdio_cddap_track_preemp
 #define cdda_disc_firstsector   cdio_cddap_disc_firstsector
 #define cdda_disc_lastsector    cdio_cddap_disc_lastsector
+#define cdrom_drive             cdrom_drive_t
+
 #endif /*DO_NOT_WANT_PARANOIA_COMPATIBILITY*/
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+/** The below variables are trickery to force the above enum symbol
+    values to be recorded in debug symbol tables. They are used to
+    allow one to refer to the enumeration value names in the typedefs
+    above in a debugger and debugger expressions
+*/
+
+extern paranoia_jitter_t     debug_paranoia_jitter;
+extern paranoia_cdda_enums_t debug_paranoia_cdda_enums;
 
 #endif /*_CDDA_INTERFACE_H_*/
 
