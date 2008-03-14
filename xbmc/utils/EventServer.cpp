@@ -20,6 +20,7 @@ CEventServer::CEventServer()
   m_pPacketBuffer = NULL;
   m_bStop         = false;
   m_pThread       = NULL;
+  m_bRunning      = false;
   
   // set default port
   m_iPort = 22222;
@@ -108,6 +109,8 @@ void CEventServer::Run()
   // add our socket to the 'select' listener
   listener.AddSocket(m_pSocket);
 
+  m_bRunning = true;
+
   while (!m_bStop)
   {
     // start listening until we timeout
@@ -130,6 +133,7 @@ void CEventServer::Run()
     // BroadcastBeacon();
   }
 
+  m_bRunning = false;
   Cleanup();
 }
 
