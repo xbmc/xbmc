@@ -87,6 +87,7 @@ void CDetectDVDMedia::Process()
     Sleep(500);
     if ( m_bAutorun )
     {
+      Sleep(1500); // Media in drive, wait 1.5s more to be sure the device is ready for playback
       m_evAutorun.Set();
       m_bAutorun = false;
     }
