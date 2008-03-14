@@ -4008,11 +4008,7 @@ void CApplication::Stop()
     g_DaapClient.Release();
 #endif
     //g_lcd->StopThread();
-    CLog::Log(LOGNOTICE, "stop python");
     m_applicationMessenger.Cleanup();
-#ifdef HAS_PYTHON
-    g_pythonParser.FreeResources();
-#endif
 
     CLog::Log(LOGNOTICE, "clean cached files!");
     g_RarManager.ClearCache(true);
@@ -4028,6 +4024,13 @@ void CApplication::Stop()
     //
     CLog::Log(LOGNOTICE, "unload skin");
     UnloadSkin();
+#endif
+
+/* Python resource freeing must be done after skin has been unloaded, not before
+   some windows still need it when deinitializing during skin unloading. */
+CLog::Log(LOGNOTICE, "stop python"); 
+#ifdef HAS_PYTHON
+    g_pythonParser.FreeResources();
 #endif
 
     m_gWindowManager.Delete(WINDOW_MUSIC_PLAYLIST);
@@ -5597,6 +5600,7 @@ void CApplication::Process()
 
   // process messages, even if a movie is playing
   m_applicationMessenger.ProcessMessages();
+  if (g_application.m_bStop) return; //we're done, everything has been unloaded
 
   // check for memory unit changes
 #ifdef HAS_XBOX_HARDWARE
