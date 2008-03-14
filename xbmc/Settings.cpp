@@ -1020,7 +1020,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   if (pElement)
   {
     GetInteger(pElement, "interlacemethod", (int &)g_stSettings.m_defaultVideoSettings.m_InterlaceMethod, VS_INTERLACEMETHOD_NONE, 1, VS_INTERLACEMETHOD_RENDER_BLEND);
-    GetInteger(pElement, "filmgrain", g_stSettings.m_defaultVideoSettings.m_FilmGrain, 0, 1, 100);
+    GetInteger(pElement, "filmgrain", g_stSettings.m_defaultVideoSettings.m_FilmGrain, 0, 0, 10);
     GetInteger(pElement, "viewmode", g_stSettings.m_defaultVideoSettings.m_ViewMode, VIEW_MODE_NORMAL, VIEW_MODE_NORMAL, VIEW_MODE_CUSTOM);
     GetFloat(pElement, "zoomamount", g_stSettings.m_defaultVideoSettings.m_CustomZoomAmount, 1.0f, 0.5f, 2.0f);
     GetFloat(pElement, "pixelratio", g_stSettings.m_defaultVideoSettings.m_CustomPixelRatio, 1.0f, 0.5f, 2.0f);
