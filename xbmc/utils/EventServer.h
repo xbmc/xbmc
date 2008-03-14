@@ -26,7 +26,11 @@ namespace EVENTSERVER
 
     // IRunnable entry point for thread
     virtual void  Run();
-    
+    bool          Running()
+    {
+      return m_bRunning;
+    }
+
     // start / stop server
     void StartServer();
     void StopServer();
@@ -44,8 +48,9 @@ namespace EVENTSERVER
     int                                     m_iPort;
     int                                     m_iListenTimeout;
     int                                     m_iMaxClients;
-    unsigned char*                          m_pPacketBuffer;   
+    unsigned char*                          m_pPacketBuffer;
     bool                                    m_bStop;
+    bool                                    m_bRunning;
   };
 
 }
