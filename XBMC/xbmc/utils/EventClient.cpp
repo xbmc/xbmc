@@ -3,6 +3,7 @@
 #include "EventClient.h"
 #include "EventPacket.h"
 #include "Application.h"
+#include "SingleLock.h"
 #include <map>
 #include <queue>
 
@@ -47,7 +48,7 @@ bool CEventClient::AddPacket(CEventPacket *packet)
       {
         m_iSeqPayloadSize = 0;
         CLog::Log(LOGERROR, "ES: Could not assemble packets, Out of Memory");
-        FreeQueues();
+        FreePacketQueues();
         return false;
       }
     }
@@ -192,7 +193,7 @@ bool CEventClient::OnPacketBYE(CEventPacket *packet)
     return false;
 
   m_bGreeted = false;
-  FreeQueues();
+  FreePacketQueues();
 
   return true;
 }
@@ -209,7 +210,7 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
   unsigned short flags;
   unsigned short bcode;
   unsigned short amount;
-  
+
   // parse the button code
   if (!ParseUInt16(payload, psize, bcode))
     return false;
@@ -222,16 +223,45 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
   if (!ParseUInt16(payload, psize, amount))
     return false;
 
-  // TODO: optimize so that the next two are only if !(flags & 0x1)
-
   // parse the map to use
   if (!ParseString(payload, psize, map))
     return false;
 
   // parse button name
-  if (!ParseString(payload, psize, button))
-    return false;
+  if (flags & PTB_USE_NAME)
+  {
+    if (!ParseString(payload, psize, button))
+      return false;
+  }
 
+  if (flags & PTB_QUEUE)
+  {
+    CSingleLock lock(m_critSection);
+    m_buttonQueue.push (
+      new CEventButtonState( (flags & PTB_USE_NAME) ? 0 : bcode,
+                        map,
+                        button,
+                        (float)amount/65535.0f,
+                        false /* queued buttons cannot be repeated */ )
+      );
+  }
+  else
+  {
+    CSingleLock lock(m_critSection);
+    if ( flags & PTB_DOWN )
+    {
+      m_currentButton.m_iKeyCode   = (flags & PTB_USE_NAME) ? 0 : bcode;
+      m_currentButton.m_mapName    = map;
+      m_currentButton.m_buttonName = button;
+      m_currentButton.m_fAmount    = (flags & PTB_USE_AMOUNT) ? amount : 1.0f;
+      m_currentButton.m_bRepeat    = (flags & PTB_NO_REPEAT) ? false : true;
+      m_currentButton.SetActive();
+    }
+    else
+    {
+      m_currentButton.Reset();
+    }
+  }
   return true;
 }
 
@@ -357,7 +387,7 @@ bool CEventClient::ParseUInt16(unsigned char* &payload, int &psize, unsigned sho
   return true;
 }
 
-void CEventClient::FreeQueues()
+void CEventClient::FreePacketQueues()
 {
   while ( ! m_readyPackets.empty() )
   {
@@ -375,4 +405,35 @@ void CEventClient::FreeQueues()
     iter++;
   }
   m_seqPackets.clear();
+}
+
+unsigned short CEventClient::GetButtonCode()
+{
+  CSingleLock lock(m_critSection);
+  unsigned short bcode = 0;
+
+  // TODO: repeat delay
+  // TODO: button names
+
+  if ( ! m_buttonQueue.empty() )
+  {
+    CEventButtonState *btn = m_buttonQueue.front();
+    m_buttonQueue.pop();
+
+    if ( btn )
+    {
+      if (btn->Active())
+      {
+        bcode = btn->KeyCode();
+      }
+      delete btn;
+    }
+  }
+  else if ( m_currentButton.Active() )
+  {
+    bcode = m_currentButton.KeyCode();
+    if ( ! m_currentButton.Repeat() )
+      m_currentButton.Reset();
+  }
+  return bcode;
 }
