@@ -371,7 +371,6 @@ void CXBApplicationEx::ReadInput()
   // Read the input from the mouse
   g_Mouse.Update();
   
-#if defined(__APPLE__) || defined(_WIN32PC)
   // Some extra work for mouse wheel.
   if (eventIsValid && event.type == SDL_MOUSEBUTTONDOWN)
   {
@@ -380,7 +379,6 @@ void CXBApplicationEx::ReadInput()
     else if (event.button.button == 5)
       g_Mouse.UpdateMouseWheel(-1);
   }
-#endif
 
 #ifdef HAS_CWIID
   g_WiiRemote.Update();
