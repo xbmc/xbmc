@@ -177,6 +177,8 @@ char CMouse::GetWheel() const
 void CMouse::UpdateMouseWheel(char dir)
 {
   m_mouseState.dz = dir;
+  m_mouseState.active = true;
+  m_lastActiveTime = timeGetTime();
 }
 
 void CMouse::SetExclusiveAccess(DWORD dwControlID, DWORD dwWindowID, const CPoint &point)
