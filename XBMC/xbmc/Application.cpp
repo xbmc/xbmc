@@ -224,6 +224,9 @@
 #ifdef HAS_HAL
 #include "linux/LinuxFileSystem.h"
 #endif
+#ifdef HAS_EVENT_SERVER
+#include "EventServer.h"
+#endif
 
 #include "cores/dlgcache.h"
 
@@ -234,6 +237,9 @@ using namespace MEDIA_DETECT;
 using namespace PLAYLIST;
 using namespace VIDEO;
 using namespace MUSIC_INFO;
+#ifdef HAS_EVENT_SERVER
+using namespace EVENTSERVER;
+#endif
 
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
@@ -2007,6 +2013,20 @@ void CApplication::StopUPnP()
 #endif
 }
 
+void CApplication::StartEventServer()
+{
+#ifdef HAS_EVENT_SERVER
+  CEventServer::GetInstance()->StartServer();
+#endif
+}
+
+void CApplication::StopEventServer()
+{
+#ifdef HAS_EVENT_SERVER
+  CEventServer::GetInstance()->StopServer();
+#endif
+}
+
 void CApplication::StartUPnPRenderer()
 {
 #ifdef HAS_UPNP
@@ -3343,6 +3363,9 @@ void CApplication::FrameMove()
 #ifdef HAS_CWIID
   ProcessWiiRemote();
 #endif
+#ifdef HAS_EVENT_SERVER
+  ProcessEventServer(frameTime);
+#endif
 }
 
 bool CApplication::ProcessGamepad(float frameTime)
@@ -3899,6 +3922,23 @@ bool CApplication::ProcessHTTPApiButtons()
   }
   return false;
 #endif  
+}
+
+bool CApplication::ProcessEventServer(float frameTime)
+{
+#ifdef HAS_EVENT_SERVER
+  CEventServer* es = CEventServer::GetInstance();
+  if (!es || !es->Running())
+    return false;
+
+  WORD wKeyID = es->GetButtonCode();
+  if (wKeyID)
+  {
+    CKey key(wKeyID | KEY_VKEY);
+    return OnKey( key );
+  }
+#endif  
+  return false;
 }
 
 bool CApplication::ProcessKeyboard()
