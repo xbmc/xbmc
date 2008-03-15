@@ -22,7 +22,7 @@ private:
   bool GetCondition(const CStdString &condition, const int controlId);
   
   bool SaveSettings(void);
-  void ShowVirtualKeyboard(int iControl);
+  bool ShowVirtualKeyboard(int iControl);
   static CURL m_url;
   bool TranslateSingleString(const CStdString &strCondition, std::vector<CStdString> &enableVec);
   CBasicSettings m_settings;
