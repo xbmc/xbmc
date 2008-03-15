@@ -96,6 +96,9 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
 #ifdef HAS_UPNP
       g_application.StartUPnP();
 #endif
+#ifdef HAS_EVENT_SERVER
+      g_application.StartEventServer();
+#endif
       CScrobbler::GetInstance()->Init();
     }
     break;
@@ -116,6 +119,9 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
 #endif
 #ifndef HAS_UPNP
       g_application.StopUPnP();
+#endif
+#ifdef HAS_EVENT_SERVER
+      g_application.StopEventServer();
 #endif
       CScrobbler::GetInstance()->Term();
       // smb.Deinit(); if any file is open over samba this will break.

@@ -81,11 +81,25 @@ namespace EVENTCLIENT
     void Initialize()
     {
       m_bGreeted = false;
-      m_fRepeatDelay = 750.0f;
-      m_fRepeatSpeed = 200.0f;
-      m_fLastRepeat = 0.0f;
+      m_iRepeatDelay = 750;
+      m_iRepeatSpeed = 100;
+      m_iNextRepeat = 0;
       m_fMouseX = 0.0f;
       m_fMouseY = 0.0f;
+      m_iCurrentSeqLen = 0;
+      m_lastPing = 0;
+      m_lastSeq = 0;
+      m_iRemotePort = 0;
+    }
+
+    std::string Name()
+    {
+      return m_deviceName;
+    }
+
+    SOCKETS::CAddress& Address()
+    {
+      return m_remoteAddr;
     }
 
     virtual ~CEventClient()
@@ -122,6 +136,8 @@ namespace EVENTCLIENT
     virtual bool OnPacketMOUSE(EVENTPACKET::CEventPacket *packet);
     virtual bool OnPacketNOTIFICATION(EVENTPACKET::CEventPacket *packet);
 
+    bool CheckButtonRepeat();
+
     // returns true if the client has received the HELO packet
     bool Greeted() { return m_bGreeted; }
 
@@ -150,27 +166,29 @@ namespace EVENTCLIENT
     // Parse a single 16-bit integer (converts from network order to host order)
     bool ParseUInt16(unsigned char* &payload, int &psize, unsigned short& parsedVal);
 
-    std::map<unsigned int, EVENTPACKET::CEventPacket*>  m_seqPackets;
-    std::queue<EVENTPACKET::CEventPacket*>              m_readyPackets;
     std::string       m_deviceName;
-    unsigned int      m_iSeqPayloadSize;
     int               m_iCurrentSeqLen;
     time_t            m_lastPing;
     time_t            m_lastSeq;
-    SOCKETS::CAddress m_remoteAddr;
     int               m_iRemotePort;
-    EVENTPACKET::LogoType m_eLogoType;
     bool              m_bGreeted;
+    unsigned int      m_iRepeatDelay;
+    unsigned int      m_iRepeatSpeed;
+    unsigned int      m_iNextRepeat;
+    float             m_fMouseX;
+    float             m_fMouseY;
+
+    SOCKETS::CAddress m_remoteAddr;
+
+    EVENTPACKET::LogoType m_eLogoType;
     CCriticalSection  m_critSection;
+
+    std::map <unsigned int, EVENTPACKET::CEventPacket*>  m_seqPackets;
+    std::queue <EVENTPACKET::CEventPacket*> m_readyPackets;
 
     // button and mouse state
     std::queue<CEventButtonState*>  m_buttonQueue;
     CEventButtonState m_currentButton;
-    float        m_fRepeatDelay;
-    float        m_fRepeatSpeed;
-    float        m_fLastRepeat;
-    float        m_fMouseX;
-    float        m_fMouseY;
   };
 
 } // EVENTCLIENT

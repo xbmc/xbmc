@@ -1,8 +1,13 @@
 #include "stdafx.h"
+
+#ifdef HAS_EVENT_SERVER
+
 #include "EventServer.h"
 #include "EventPacket.h"
 #include "EventClient.h"
 #include "Socket.h"
+#include "CriticalSection.h"
+#include "SingleLock.h"
 #include <map>
 #include <queue>
 
@@ -23,13 +28,15 @@ CEventServer::CEventServer()
   m_bRunning      = false;
 
   // set default port
-  m_iPort = 22222;
+  m_iPort = 9777;
 
   // default timeout in ms for receiving a single packet
   m_iListenTimeout = 1000;
 
   // max clients
   m_iMaxClients = 20;
+
+  InitializeCriticalSection( &m_critSection );
 }
 
 CEventServer* CEventServer::GetInstance()
@@ -85,7 +92,8 @@ void CEventServer::Run()
   CSocketListener listener;
   int packetSize = 0;
 
-  CLog::Log(LOGNOTICE, "ES: Starting UDP Event server");
+  any_addr.SetAddress ("127.0.0.1");  // for now only listen on localhost
+  CLog::Log(LOGNOTICE, "ES: Starting UDP Event server on %s", any_addr.Address());
 
   Cleanup();
 
@@ -127,7 +135,7 @@ void CEventServer::Run()
     ExecuteEvents();
 
     // refresh client list
-    // RefreshClients();
+    RefreshClients();
 
     // broadcast
     // BroadcastBeacon();
@@ -170,9 +178,27 @@ void CEventServer::ProcessPacket(CAddress& addr, int pSize)
 
     m_clients[addr.ULong()] = client;
   }
-
   m_clients[addr.ULong()]->AddPacket(packet);
+}
 
+void CEventServer::RefreshClients()
+{
+  CSingleLock lock(m_critSection);
+  map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
+
+  while ( iter != m_clients.end() )
+  {
+    if (! (iter->second->Alive()))
+    {
+      CLog::Log(LOGNOTICE, "ES: Client %s from %s timed out", iter->second->Name().c_str(), 
+                iter->second->Address().Address());
+      delete iter->second;   
+      m_clients.erase(iter);
+      iter = m_clients.begin();
+    }
+    else
+      iter++;
+  }
 }
 
 void CEventServer::ExecuteEvents()
@@ -188,6 +214,7 @@ void CEventServer::ExecuteEvents()
 
 unsigned short CEventServer::GetButtonCode()
 {
+  CSingleLock lock(m_critSection);
   map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
   unsigned short bcode = 0;
 
@@ -200,3 +227,5 @@ unsigned short CEventServer::GetButtonCode()
   }
   return bcode;
 }
+
+#endif // HAS_EVENT_SERVER
