@@ -62,7 +62,8 @@ struct DAAP_SClientTAG
 
     HTTP_ConnectionWatch *update_watch;
 
-#if !defined(_XBOX) && !defined(_LINUX) 
+#if !defined(_XBOX) && !defined(_LINUX) && !defined(_WIN32)
+  // why is this here?
 	SDiscover *discover;
 #endif
 };

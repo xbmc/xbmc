@@ -2326,6 +2326,12 @@
 					RelativePath="..\..\xbmc\FileSystem\CMythSession.h">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\FileSystem\DAAPDirectory.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\DAAPDirectory.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileSystem\Directory.cpp">
 				</File>
 				<File
@@ -2383,6 +2389,12 @@
 					RelativePath="..\..\xbmc\FileSystem\FileCurl.h">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\FileSystem\FileDAAP.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\FileDAAP.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileSystem\FileFactory.cpp">
 				</File>
 				<File
@@ -2393,6 +2405,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\FileHD.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\FileISO.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\FileISO.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\FileLastFM.cpp">
@@ -2411,6 +2429,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\FileRar.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\FileRTV.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\FileRTV.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\FileShoutcast.cpp">
@@ -2467,6 +2491,12 @@
 					RelativePath="..\..\xbmc\FileSystem\iso9660.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\FileSystem\ISO9660Directory.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\ISO9660Directory.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileSystem\LastFMDirectory.cpp">
 				</File>
 				<File
@@ -2492,6 +2522,18 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\NptXbmcFile.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\NSFFileDirectory.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\NSFFileDirectory.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\OGGFileDirectory.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\OGGFileDirectory.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\PlaylistDirectory.cpp">
@@ -2524,10 +2566,22 @@
 					RelativePath="..\..\xbmc\FileSystem\RarManager.h">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\FileSystem\RTVDirectory.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\RTVDirectory.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileSystem\ShoutcastDirectory.cpp">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\ShoutcastRipFile.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\SIDFileDirectory.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\SIDFileDirectory.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\SmartPlaylistDirectory.cpp">
