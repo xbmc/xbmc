@@ -68,14 +68,12 @@ namespace EVENTCLIENT
     CEventClient()
     {
       Initialize();
-      InitializeCriticalSection (&m_critSection);
     }
 
     CEventClient(SOCKETS::CAddress& addr)
     {
       m_remoteAddr = addr;
       Initialize();
-      InitializeCriticalSection (&m_critSection);
     }
 
     void Initialize()
@@ -105,7 +103,6 @@ namespace EVENTCLIENT
     virtual ~CEventClient()
     {
       FreePacketQueues();
-      DeleteCriticalSection (&m_critSection);
     }
 
     // add packet to queue

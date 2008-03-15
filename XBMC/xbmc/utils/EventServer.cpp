@@ -35,8 +35,6 @@ CEventServer::CEventServer()
 
   // max clients
   m_iMaxClients = 20;
-
-  InitializeCriticalSection( &m_critSection );
 }
 
 CEventServer* CEventServer::GetInstance()
