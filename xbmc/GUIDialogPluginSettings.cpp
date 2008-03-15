@@ -562,9 +562,6 @@ void CGUIDialogPluginSettings::SetDefaults()
   TiXmlElement *setting = m_settings.GetPluginRoot()->FirstChildElement("setting");
   while (setting)
   {
-    CStdString id;
-    if (setting->Attribute("id"))
-      id = setting->Attribute("id");
     const CGUIControl* control = GetControl(controlId);
     if (control)
     {
@@ -572,7 +569,7 @@ void CGUIDialogPluginSettings::SetDefaults()
       switch (control->GetControlType())
       {
         case CGUIControl::GUICONTROL_BUTTON:
-          if (setting->Attribute("default"))
+          if (setting->Attribute("default") && setting->Attribute("id"))
             ((CGUIButtonControl*) control)->SetLabel2(setting->Attribute("default"));
           else
             ((CGUIButtonControl*) control)->SetLabel2("");
