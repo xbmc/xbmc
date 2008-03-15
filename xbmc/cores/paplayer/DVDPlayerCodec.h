@@ -24,7 +24,6 @@ public:
   void SetContentType(const CStdString &strContent);
   
 private:
-  __int64 m_iDataPos;  
   CDVDDemux* m_pDemuxer;
   CDVDInputStream* m_pInputStream;
   CDVDAudioCodec* m_pAudioCodec;
@@ -33,9 +32,11 @@ private:
 
   int m_nAudioStream;
   
-  int m_audioLen;
   int m_audioPos;
-  BYTE* m_audioData;
+  DemuxPacket* m_pPacket ;
+
+  BYTE *m_decoded;
+  int  m_nDecodedLen;
 };
 
 #endif

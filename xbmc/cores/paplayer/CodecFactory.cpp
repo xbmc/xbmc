@@ -42,7 +42,11 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
   else if (strFileType.Equals("mpc") || strFileType.Equals("mp+") || strFileType.Equals("mpp"))
     return new MPCCodec();
   else if (strFileType.Equals("shn"))
+#ifdef _XBOX
     return new SHNCodec();
+#else
+    return new DVDPlayerCodec();
+#endif
   else if (strFileType.Equals("flac"))
     return new FLACCodec();
   else if (strFileType.Equals("wav"))
