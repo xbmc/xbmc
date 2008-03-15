@@ -1,4 +1,7 @@
 #include "stdafx.h"
+
+#ifdef HAS_EVENT_SERVER
+
 #include "EventPacket.h"
 #include "Socket.h"
 
@@ -69,3 +72,4 @@ bool CEventPacket::Parse(int datasize, const void *data)
   return  (m_bValid = true);
 }
 
+#endif // HAS_EVENT_SERVER

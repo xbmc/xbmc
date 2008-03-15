@@ -1,4 +1,7 @@
 #include "stdafx.h"
+
+#ifdef HAS_EVENT_SERVER
+
 #include "Util.h"
 #include "EventClient.h"
 #include "EventPacket.h"
@@ -18,13 +21,18 @@ bool CEventClient::AddPacket(CEventPacket *packet)
 
   if ( packet->Size() > 1 )
   {
+    ResetTimeout();
     m_seqPackets[ packet->Sequence() ] = packet;
-    m_iSeqPayloadSize += packet->PayloadSize();
     if (m_seqPackets.size() == packet->Size())
     {
+      unsigned int iSeqPayloadSize = 0;
+      for (unsigned int i = 1 ; i<=packet->Size() ; i++)
+      {
+        iSeqPayloadSize += m_seqPackets[i]->PayloadSize();
+      }
       unsigned int offset = 0;
       void *newPayload = NULL;
-      newPayload = malloc(m_iSeqPayloadSize);
+      newPayload = malloc(iSeqPayloadSize);
       if (newPayload)
       {
         unsigned char *payloadPtr = (unsigned char *)newPayload;
@@ -39,14 +47,12 @@ bool CEventClient::AddPacket(CEventPacket *packet)
             m_seqPackets[i] = NULL;
           }
         }
-        m_seqPackets[1]->SetPayload(m_iSeqPayloadSize, newPayload);
+        m_seqPackets[1]->SetPayload(iSeqPayloadSize, newPayload);
         m_readyPackets.push(m_seqPackets[1]);
         m_seqPackets.clear();
-        m_iSeqPayloadSize = 0;
       }
       else
       {
-        m_iSeqPayloadSize = 0;
         CLog::Log(LOGERROR, "ES: Could not assemble packets, Out of Memory");
         FreePacketQueues();
         return false;
@@ -67,8 +73,11 @@ void CEventClient::ExecuteEvents()
     while ( ! m_readyPackets.empty() )
     {
       ProcessPacket( m_readyPackets.front() );
-      delete m_readyPackets.front();
-      m_readyPackets.pop();
+      if ( ! m_readyPackets.empty() ) // in case the BYE packet cleared the queues
+      {
+        delete m_readyPackets.front();
+        m_readyPackets.pop();
+      }
     }
   }
 }
@@ -194,7 +203,8 @@ bool CEventClient::OnPacketBYE(CEventPacket *packet)
 
   m_bGreeted = false;
   FreePacketQueues();
-
+  m_currentButton.Reset();
+  
   return true;
 }
 
@@ -256,6 +266,7 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
       m_currentButton.m_fAmount    = (flags & PTB_USE_AMOUNT) ? amount : 1.0f;
       m_currentButton.m_bRepeat    = (flags & PTB_NO_REPEAT) ? false : true;
       m_currentButton.SetActive();
+      m_iNextRepeat = 0;
     }
     else
     {
@@ -389,6 +400,7 @@ bool CEventClient::ParseUInt16(unsigned char* &payload, int &psize, unsigned sho
 
 void CEventClient::FreePacketQueues()
 {
+  CSingleLock lock(m_critSection);
   while ( ! m_readyPackets.empty() )
   {
     delete m_readyPackets.front();
@@ -412,7 +424,6 @@ unsigned short CEventClient::GetButtonCode()
   CSingleLock lock(m_critSection);
   unsigned short bcode = 0;
 
-  // TODO: repeat delay
   // TODO: button names
 
   if ( ! m_buttonQueue.empty() )
@@ -434,6 +445,40 @@ unsigned short CEventClient::GetButtonCode()
     bcode = m_currentButton.KeyCode();
     if ( ! m_currentButton.Repeat() )
       m_currentButton.Reset();
+    else
+    {
+      if ( ! CheckButtonRepeat() )
+      {
+        bcode = 0;
+      }
+    }
   }
   return bcode;
 }
+
+bool CEventClient::CheckButtonRepeat()
+{
+  unsigned int now = timeGetTime();
+
+  if ( m_iNextRepeat == 0 )
+  {
+    m_iNextRepeat = now + m_iRepeatDelay;
+    return true;
+  }
+  else if ( now > m_iNextRepeat )
+  {
+    m_iNextRepeat = now + m_iRepeatSpeed;
+    return true;
+  }
+  return false;
+}
+
+bool CEventClient::Alive()
+{
+  // 60 seconds timeout
+  if ( (time(NULL) - m_lastPing) > 60 )
+    return false;
+  return true;
+}
+
+#endif // HAS_EVENT_SERVER
