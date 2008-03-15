@@ -28,6 +28,14 @@ def release_key():
 	packet = PacketBUTTON(code=0x01, down=0)
 	packet.send(sock, addr)
 
+def send_message(caption, msg):
+	packet = PacketNOTIFICATION(
+		caption,
+		msg,
+		ICON_PNG,
+		"icons/bluetooth.png")
+	packet.send(sock, addr)
+
 while loop_forever is True:
 
         target_name = "BD Remote Control"
@@ -35,10 +43,16 @@ while loop_forever is True:
         remote = bluetooth.BluetoothSocket(bluetooth.L2CAP)
 
         target_connected = False
-        while target_connected is False:            
 
-            if not target_address:
-                print "Searching for BD Remote Control"
+	packet = PacketHELO(devicename="PS3 Bluetooth Remote",
+			    icon_type=ICON_PNG,
+			    icon_file="icons/bluetooth.png")
+	packet.send(sock, addr)
+
+	
+        while target_connected is False:
+		send_message("Action Required!", "Press Start+Enter on your remote.")
+		print "Searching for BD Remote Control"
                 print "(Press Start + Enter on remote to make discoverable)"
                 nearby_devices = bluetooth.discover_devices()
             
@@ -47,28 +61,36 @@ while loop_forever is True:
                         target_address = bdaddr
                         break
 
-            if target_address is not None:
-                print "Found BD Remote Control with address ", target_address
-                print "Attempting to pair with remote"
+		if target_address is not None:
+			print "Found BD Remote Control with address ", target_address
+			send_message("Bluetooth Pairing", "Pairing your remote, please wait.")
+			print "Attempting to pair with remote"
                     
-                try:
-                    remote.connect((target_address,19))
-                    target_connected = True
-                    print "Remote Paired.\a"
-                except:
-                    print "ERROR - Could Not Connect. Trying again..."
+			try:
+				remote.connect((target_address,19))
+				target_connected = True
+				print "Remote Paired.\a"
+				send_message("Pairing Success",
+					     "Your remote was successfully paired and is ready to be used.")
+			except:
+				send_message("Pairing Failed",
+					     "An error occurred while attempting to pair.")
+				print "ERROR - Could Not Connect. Trying again..."
                         
-            else:
-                print "Could not find BD Remote Control. Trying again..."
+		else:
+			send_message("Error", "No remotes were found.")
+			print "Could not find BD Remote Control. Trying again..."
 
 
         done = False
-	packet = PacketHELO(devicename="PS3 Bluetooth Remote",
-			    icon_type=ICON_PNG,
-			    icon_file="icons/bluetooth.png")
-	packet.send(sock, addr)
 	
         while not done:
+		# re-send HELO packet in case we timed out
+		packet = PacketHELO(devicename="PS3 Bluetooth Remote",
+				    icon_type=ICON_PNG,
+				    icon_file="icons/bluetooth.png")
+		packet.send(sock, addr)
+	
                 datalen = 0
                 try:
                         data = remote.recv(1024)
