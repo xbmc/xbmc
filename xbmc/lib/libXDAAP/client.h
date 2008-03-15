@@ -85,11 +85,9 @@ typedef void (*DAAP_fnClientStatus)(DAAP_SClient *, DAAP_Status, int, void*);
 typedef int (*DAAP_fnClientEnumerateHosts)(DAAP_SClient *, DAAP_SClientHost *host,
                                           void *);
 
-#if defined(_XBOX ) || defined(_LINUX)
 /* Async write callback, flag=1 for header, flag=2 for data, flag<=0 for finished */
 typedef int (*DAAP_fnHttpWrite)(const char *buffer, int size, int flag, int contentlength, void* context);
 
-#endif
 
 /* Interface - Client */
 DAAP_SClient *DAAP_Client_Create(DAAP_fnClientStatus pfnCallback,
