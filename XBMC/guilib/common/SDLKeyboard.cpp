@@ -209,36 +209,6 @@ void CLowLevelKeyboard::Update(SDL_Event& m_keyEvent)
       }
     }
   }
-/*
-  Initial support for the
-  PS3 Controller using the SDL Joystick API
-
-  /\ - 12
-  O  - 13
-  X  - 14
-  [] - 15
-  
-  top - 4
-  right - 5
-  bottom - 6
-  left - 7
-  
-  select - 0
-  start - 3
-
-  left analog click - 1
-  right analog click - 2
-
-  left shoulder - 10
-  right shoulder - 11
-
-  left analog shoulder - 8
-  right analog shoulder - 9
-
-  Controller reports 28 axes, one for each pressure sensitive button with values ranging 
-  from [-32k, 32k].
-
-*/
   else
   {
     Reset();
