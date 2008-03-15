@@ -21,11 +21,11 @@ addr = (host, port)
 sock = socket(AF_INET,SOCK_DGRAM)
 
 def send_key(key):
-	packet = PacketBUTTON(code=key, repeat=1) # 0x28 => down arrow
+	packet = PacketBUTTON(code=key, repeat=1)
 	packet.send(sock, addr)
 
 def release_key():
-	packet = PacketBUTTON(code=0x01, down=0) # 0x28 => down arrow
+	packet = PacketBUTTON(code=0x01, down=0)
 	packet.send(sock, addr)
 
 while loop_forever is True:
@@ -318,14 +318,13 @@ while loop_forever is True:
                                 #os.system("xte 'key Space'")
 
                         else:
-                                print "Unknown or garbage data"
+                                print "Unknown data"
                 else:
-                        print "Unknown or garbage data"
+                        print "Unknown data"
 
         print "Disconnected."
         try:
                 remote.close()
         except:
-                print "Can not close. Oh well."
+                print "Cannot close."
 
-print "Program Ended."
