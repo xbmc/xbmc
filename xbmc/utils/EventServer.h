@@ -19,10 +19,7 @@ namespace EVENTSERVER
   {
   public:
     static CEventServer* GetInstance();
-    virtual ~CEventServer()
-    {
-      DeleteCriticalSection( &m_critSection );
-    }
+    virtual ~CEventServer() {}
 
     // IRunnable entry point for thread
     virtual void  Run();
