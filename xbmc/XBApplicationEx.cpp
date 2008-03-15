@@ -371,7 +371,7 @@ void CXBApplicationEx::ReadInput()
   // Read the input from the mouse
   g_Mouse.Update();
   
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(_WIN32PC)
   // Some extra work for mouse wheel.
   if (eventIsValid && event.type == SDL_MOUSEBUTTONDOWN)
   {
