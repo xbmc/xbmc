@@ -43,7 +43,11 @@
 #ifdef HAS_XBOX_HARDWARE
 #include "utils/MemoryUnitManager.h"
 #endif
+#ifdef _WIN32PC
+#include "win32/WIN32Util.h"
+#endif
 #include "FileSystem/SMBDirectory.h"
+
 
 using namespace std;
 using namespace XFILE;
@@ -140,9 +144,17 @@ void CShare::FromNameAndPaths(const CStdString &category, const CStdString &name
     CStdString strUserName = url.GetUserName();
     CStdString strPathToShare = "//"+url.GetHostName() + "/" + url.GetShareName();
     if(!url.GetUserName().IsEmpty())
+#ifdef _WIN32PC
+      strRes = CWIN32Util::MountShare(strPathToShare, strUserName, strPassword);
+#else
       strRes = DIRECTORY::CSMBDirectory::MountShare(strPathToShare, category, strName, strUserName, strPassword);
+#endif
     else
+#ifdef _WIN32PC
+      strRes = CWIN32Util::MountShare(strPathToShare, "", "");
+#else
       strRes = DIRECTORY::CSMBDirectory::MountShare(strPathToShare, category, strName, "", "");
+#endif
     if (!strRes.IsEmpty())
     {
       strRes += url.GetFileName().Mid(url.GetShareName().GetLength() );
