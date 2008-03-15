@@ -47,7 +47,7 @@ private:
   WORD TranslateUniversalRemoteButton(TiXmlElement *pButton);
   WORD TranslateUniversalRemoteString(const char *szButton);
   
-  // no String variant, because pButton is always needed
+  WORD TranslateKeyboardString(const char *szButton);
   WORD TranslateKeyboardButton(TiXmlElement *pButton);
   
   void MapWindowActions(TiXmlNode *pWindow, WORD wWindowID);

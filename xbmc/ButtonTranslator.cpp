@@ -908,15 +908,8 @@ WORD CButtonTranslator::TranslateUniversalRemoteString(const char *szButton)
   return wButtonCode;
 }
 
-/**
- * replaces the obsolete:
- *    WORD CButtonTranslator::TranslateKeyboardString(const char *szButton);
- */
-WORD CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
+WORD CButtonTranslator::TranslateKeyboardString(const char *szButton)
 {
-  const char *szButton = pButton->Value();
-  
-  if (!szButton) return 0;
   WORD wButtonCode = 0;
   if (strlen(szButton) == 1)
   { // single character
@@ -1017,17 +1010,31 @@ WORD CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
     else if (strKey.Equals("volume_down")) wButtonCode = 0xF0AE;
     else if (strKey.Equals("prev_track")) wButtonCode = 0xF0B1;
     else if (strKey.Equals("next_track")) wButtonCode = 0xF0B0;
-    else if (strKey.Equals("key"))
-    {
-      int id = 0;
-      if (pButton->QueryIntAttribute("id", &id) == TIXML_SUCCESS)
-        wButtonCode = id;
-      else
-        CLog::Log(LOGERROR, "Keyboard Translator: `key' button has no id");
-    }
-    else CLog::Log(LOGERROR, "Keyboard Translator: Can't find button %s", strKey.c_str());
+    else
+      CLog::Log(LOGERROR, "Keyboard Translator: Can't find button %s", strKey.c_str());      
   }
   return wButtonCode;
+}
+
+WORD CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
+{
+  const char *szButton = pButton->Value();
+  
+  if (!szButton) return 0;
+  CStdString strKey = szButton;
+  if (strKey.Equals("key"))
+  {
+    int id = 0;
+    if (pButton->QueryIntAttribute("id", &id) == TIXML_SUCCESS)
+      return id;
+    else
+      CLog::Log(LOGERROR, "Keyboard Translator: `key' button has no id");
+  }
+  else
+  {
+    return TranslateKeyboardString(szButton);
+  }
+  return 0;
 }
 
 #ifdef HAS_CWIID
