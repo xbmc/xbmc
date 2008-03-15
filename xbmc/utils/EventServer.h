@@ -2,14 +2,12 @@
 #define __EVENT_SERVER_H__
 
 #include "system.h"
-#include "include.h"
 #include "Thread.h"
 #include "Socket.h"
 #include "EventClient.h"
+#include "CriticalSection.h"
 #include <map>
 #include <queue>
-
-#ifdef _LINUX
 
 namespace EVENTSERVER
 {
@@ -21,8 +19,10 @@ namespace EVENTSERVER
   {
   public:
     static CEventServer* GetInstance();
-    // ProcessPacket() -> create client if needed and push to client
-    // RefreshClients() -> delete timed out clients
+    virtual ~CEventServer()
+    {
+      DeleteCriticalSection( &m_critSection );
+    }
 
     // IRunnable entry point for thread
     virtual void  Run();
@@ -43,20 +43,21 @@ namespace EVENTSERVER
     void Cleanup();
     void ProcessPacket(SOCKETS::CAddress& addr, int packetSize);
     void ExecuteEvents();
+    void RefreshClients();
 
-    CThread*                                m_pThread;
-    static CEventServer*                    m_pInstance;
     std::map<unsigned long, EVENTCLIENT::CEventClient*>  m_clients;
-    SOCKETS::CUDPSocket*                    m_pSocket;
-    int                                     m_iPort;
-    int                                     m_iListenTimeout;
-    int                                     m_iMaxClients;
-    unsigned char*                          m_pPacketBuffer;
-    bool                                    m_bStop;
-    bool                                    m_bRunning;
+    CThread*             m_pThread;
+    static CEventServer* m_pInstance;
+    SOCKETS::CUDPSocket* m_pSocket;
+    int              m_iPort;
+    int              m_iListenTimeout;
+    int              m_iMaxClients;
+    unsigned char*   m_pPacketBuffer;
+    bool             m_bStop;
+    bool             m_bRunning;
+    CCriticalSection m_critSection;
   };
 
 }
 
-#endif // _LINUX
 #endif // __EVENT_SERVER_H__

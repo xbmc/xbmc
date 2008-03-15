@@ -1,8 +1,9 @@
-#include "include.h"
+#include "stdafx.h"
+
+#ifdef HAS_EVENT_SERVER
+
 #include "Socket.h"
 #include <vector>
-
-#ifdef _LINUX
 
 using namespace SOCKETS;
 using namespace std;
@@ -210,4 +211,4 @@ CBaseSocket* CSocketListener::GetNextReadySocket()
   return NULL;
 }
 
-#endif // _LINUX
+#endif // HAS_EVENT_SERVER

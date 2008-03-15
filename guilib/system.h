@@ -130,6 +130,7 @@
 #define HAS_PYTHON
 #undef  HAS_TRAINER
 #define HAS_WEB_SERVER
+#define HAS_EVENT_SERVER
 #define HAS_UPNP
 #undef  HAS_AUDIO
 #define  HAS_SHOUTCAST
