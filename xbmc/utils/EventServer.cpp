@@ -21,7 +21,7 @@ CEventServer::CEventServer()
   m_bStop         = false;
   m_pThread       = NULL;
   m_bRunning      = false;
-  
+
   // set default port
   m_iPort = 22222;
 
@@ -60,7 +60,7 @@ void CEventServer::StopServer()
     m_pThread->WaitForThreadExit(2000);
     delete m_pThread;
   }
-  m_pThread = NULL;    
+  m_pThread = NULL;
 }
 
 void CEventServer::Cleanup()
@@ -84,11 +84,11 @@ void CEventServer::Run()
   CAddress any_addr;
   CSocketListener listener;
   int packetSize = 0;
-  
+
   CLog::Log(LOGNOTICE, "ES: Starting UDP Event server");
 
   Cleanup();
-  
+
   // create socket and initialize buffer
   m_pSocket = CSocketFactory::CreateUDPSocket();
   m_pPacketBuffer = (unsigned char *)malloc(PACKET_SIZE);
@@ -105,7 +105,7 @@ void CEventServer::Run()
     CLog::Log(LOGERROR, "ES: Could not listen on port %d", m_iPort);
     return;
   }
-  
+
   // add our socket to the 'select' listener
   listener.AddSocket(m_pSocket);
 
@@ -151,7 +151,7 @@ void CEventServer::ProcessPacket(CAddress& addr, int pSize)
 
   // first check if we have a client for this address
   map<unsigned long, CEventClient*>::iterator iter = m_clients.find(addr.ULong());
-  
+
   if ( iter == m_clients.end() )
   {
     if ( m_clients.size() >= (unsigned int)m_iMaxClients)
@@ -159,7 +159,7 @@ void CEventServer::ProcessPacket(CAddress& addr, int pSize)
       CLog::Log(LOGWARNING, "ES: Cannot accept any more clients, maximum client count reached");
       return;
     }
-    
+
     // new client
     CEventClient* client = new CEventClient ( addr );
     if (client==NULL)
@@ -170,7 +170,7 @@ void CEventServer::ProcessPacket(CAddress& addr, int pSize)
 
     m_clients[addr.ULong()] = client;
   }
-  
+
   m_clients[addr.ULong()]->AddPacket(packet);
 
 }
@@ -184,4 +184,19 @@ void CEventServer::ExecuteEvents()
     iter->second->ExecuteEvents();
     iter++;
   }
+}
+
+unsigned short CEventServer::GetButtonCode()
+{
+  map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
+  unsigned short bcode = 0;
+
+  while (iter != m_clients.end())
+  {
+    bcode = iter->second->GetButtonCode();
+    if (bcode)
+      return bcode;
+    iter++;
+  }
+  return bcode;
 }

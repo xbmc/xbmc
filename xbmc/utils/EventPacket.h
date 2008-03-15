@@ -58,6 +58,16 @@ namespace EVENTPACKET
     LT_GIF  = 0x03
   };
 
+  enum ButtonFlags
+  {
+    PTB_USE_NAME   = 0x01,
+    PTB_DOWN       = 0x02,
+    PTB_UP         = 0x04,
+    PTB_USE_AMOUNT = 0x08,
+    PTB_QUEUE      = 0x10,
+    PTB_NO_REPEAT  = 0x20
+  };
+
   enum PacketType
   {
     PT_HELO          = 0x01,
@@ -87,9 +97,9 @@ namespace EVENTPACKET
     /*            0x10 => queue event                                       */
     /*            0x20 => do not repeat                                     */
     /* %i - amount ( 0 => 65k maps to -1 => 1 )                             */
-    /* %s - device map                                                     */
-    /*      "KB", "MS", "RM1" or valid SDL joystick map name               */
-    /* %s - button name                                                     */
+    /* %s - device map                                                      */
+    /*      "KB", "MS", "RM1" or valid SDL joystick map name                */
+    /* %s - button name (optional if flags & 0x01)                          */
     /************************************************************************/
 
     PT_MOUSE         = 0x04,
@@ -113,8 +123,8 @@ namespace EVENTPACKET
     PT_NOTIFICATION  = 0x07,
     /************************************************************************/
     /* Payload format:                                                      */
-    /* %s - Caption                                                         */
-    /* %s - Message                                                         */
+    /* %s - caption                                                         */
+    /* %s - message                                                         */
     /* %c - icontype ( 0=>NOICON, 1=>JPEG , 2=>PNG , 3=>GIF )               */
     /* %d - reserved ( 0 )                                                  */
     /* XX - imagedata ( can span multiple packets )                         */
@@ -128,7 +138,7 @@ namespace EVENTPACKET
     
     PT_DEBUG         = 0xFF,
     /************************************************************************/
-    /* Payload format: TODO                                                 */
+    /* Payload format:                                                      */
     /************************************************************************/
 
     PT_LAST // NO-OP
