@@ -209,6 +209,7 @@
 #include <SDL/SDL_syswm.h>
 #if !defined(HAS_XBOX_HARDWARE)
 #include <shlobj.h>
+#include <win32/MockXboxSymbols.h>
 #endif
 #endif
 #endif
@@ -253,6 +254,7 @@ using namespace EVENTSERVER;
 #ifdef HAS_KAI_VOICE
 #pragma comment (lib,"xbmc/lib/libSpeex/libSpeex.lib")
 #endif
+
 
 #if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)
  #ifdef HAS_FILESYSTEM
@@ -303,6 +305,9 @@ using namespace EVENTSERVER;
   #pragma comment (lib,"../../xbmc/lib/libiconv/libiconv.lib")
   #pragma comment (lib,"../../xbmc/lib/libfribidi/libfribidi.lib")
   #pragma comment (lib,"../../xbmc/lib/libpcre/libpcre.lib")
+#ifdef _WIN32PC // until the other filesystems have been implemented
+  #pragma comment (lib,"../../xbmc/lib/libsmb/libsmb.lib")
+#endif
  #endif
  #ifdef HAS_MIKMOD
   #pragma comment (lib,"xbmc/lib/mikxbox/mikxbox.lib")
