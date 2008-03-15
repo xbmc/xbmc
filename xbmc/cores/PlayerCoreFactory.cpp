@@ -111,7 +111,6 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
       url.GetProtocol().Equals("shout"))
   {
     vecCores.push_back(EPC_PAPLAYER);
-    return;
   }
    
 #ifdef HAS_MMS
