@@ -70,9 +70,9 @@ extern "C" {
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#ifdef _XBOX
+#ifndef _LINUX
 #include <sys/utime.h>
-#elif
+#else
 #include <utime.h>
 #endif
 
