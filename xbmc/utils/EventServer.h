@@ -26,7 +26,7 @@ namespace EVENTSERVER
 
     // IRunnable entry point for thread
     virtual void  Run();
-    bool          Running()
+    bool Running()
     {
       return m_bRunning;
     }
@@ -34,6 +34,9 @@ namespace EVENTSERVER
     // start / stop server
     void StartServer();
     void StopServer();
+    
+    // get events
+    unsigned short GetButtonCode();
 
   protected:
     CEventServer();
