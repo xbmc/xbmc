@@ -8,17 +8,19 @@
 #include "DVDStreamInfo.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
 
+#include "AudioDecoder.h"
+
 DVDPlayerCodec::DVDPlayerCodec()
 {
   m_CodecName = "DVDPlayer";
-  m_iDataPos = -1; 
   m_pDemuxer = NULL;
   m_pInputStream = NULL;
   m_pAudioCodec = NULL;
-  m_audioLen = 0;
   m_audioPos = 0;
-  m_audioData = NULL;
-  }
+  m_pPacket = NULL;
+  m_decoded = NULL;;
+  m_nDecodedLen = 0;
+}
 
 DVDPlayerCodec::~DVDPlayerCodec()
 {
@@ -32,6 +34,9 @@ void DVDPlayerCodec::SetContentType(const CStdString &strContent)
 
 bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
+  m_decoded = NULL;;
+  m_nDecodedLen = 0;
+
   CStdString strFileToOpen = strFile;
 
   CURL urlFile(strFile);
@@ -116,30 +121,20 @@ bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
 
   // we have to decode initial data in order to get channels/samplerate
   // for sanity - we read no more than 10 packets
-  DemuxPacket* pPacket;
   for (int nPacket=0; nPacket < 10 && (m_Channels == 0 || m_SampleRate == 0); nPacket++)
   {
-    do
-    {
-      pPacket = m_pDemuxer->Read();
-    } while (pPacket && pPacket->iStreamId != m_nAudioStream);
+    BYTE dummy[256];
+    int nSize = 256;
+    ReadPCM(dummy, nSize, &nSize);
 
-    // dummy data - just to get the channels/sample rate
-    if (pPacket)
-    {
-      m_pAudioCodec->Decode(pPacket->pData, pPacket->iSize);
-      m_pAudioCodec->GetData(&m_audioData);
+    // We always ask ffmpeg to return s16le 
+    m_BitsPerSample = m_pAudioCodec->GetBitsPerSample();
+    m_SampleRate = m_pAudioCodec->GetSampleRate();
+    m_Channels = m_pAudioCodec->GetChannels();
 
-      // We always ask ffmpeg to return s16le 
-      m_BitsPerSample = m_pAudioCodec->GetBitsPerSample();
-      m_SampleRate = m_pAudioCodec->GetSampleRate();
-      m_Channels = m_pAudioCodec->GetChannels();
-
-      CDVDDemuxUtils::FreeDemuxPacket(pPacket);
-    }
-    else 
-      break;
   }
+
+  m_nDecodedLen = 0;
 
   if (m_Channels == 0) // no data - just guess and hope for the best
     m_Channels = 2;
@@ -147,11 +142,17 @@ bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
   if (m_SampleRate == 0)
     m_SampleRate = 44100;
 
+  m_TotalTime = m_pDemuxer->GetStreamLenght();
+
   return true;
 }
 
 void DVDPlayerCodec::DeInit()
 {
+  if (m_pPacket)
+    CDVDDemuxUtils::FreeDemuxPacket(m_pPacket);
+  m_pPacket = NULL;
+
   if (m_pDemuxer != NULL)
   {
     delete m_pDemuxer;
@@ -170,63 +171,83 @@ void DVDPlayerCodec::DeInit()
     m_pAudioCodec = NULL;
   }
   
-  m_iDataPos = -1;
-  m_audioLen = 0;
   m_audioPos = 0;
-  m_audioData = NULL;
+  m_decoded = NULL;;
+  m_nDecodedLen = 0;
 }
 
 __int64 DVDPlayerCodec::Seek(__int64 iSeekTime)
 {  
+  if (m_pPacket)
+    CDVDDemuxUtils::FreeDemuxPacket(m_pPacket);
+  m_pPacket = NULL;
+
   m_pDemuxer->SeekTime(iSeekTime, true);
-  m_audioLen = 0;
-  m_audioPos = 0;
-  m_audioData = NULL;
+
+  m_decoded = NULL;;
+  m_nDecodedLen = 0;
+
   return iSeekTime;
 }
 
 int DVDPlayerCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 {
-  if (m_iDataPos == -1)
+  if (m_decoded && m_nDecodedLen > 0)
   {
-    m_iDataPos = 0;
-  }
-  
-  if (m_audioLen > 0 && m_audioPos < m_audioLen)
-  {
-    *actualsize = m_audioLen - m_audioPos;
-    if (*actualsize > size)
-      *actualsize = size;
-    memcpy(pBuffer,       m_audioData + m_audioPos, *actualsize);
-    m_audioPos += *actualsize;
+    int nLen = (size<m_nDecodedLen)?size:m_nDecodedLen;
+    *actualsize = nLen;
+    memcpy(pBuffer, m_decoded, *actualsize);  
+    m_nDecodedLen -= nLen;
+    m_decoded += (*actualsize);
     return READ_SUCCESS;
   }
 
-  DemuxPacket* pPacket = NULL;
+  m_decoded = NULL;
+  m_nDecodedLen = 0;
 
-  do
+  if (m_pPacket && m_audioPos >= m_pPacket->iSize)
   {
-    pPacket = m_pDemuxer->Read();
-  } while (pPacket && pPacket->iStreamId != m_nAudioStream);
-
-  if (!pPacket)
-  {
-    return READ_EOF;
+    CDVDDemuxUtils::FreeDemuxPacket(m_pPacket);
+    m_audioPos = 0;
+    m_pPacket = NULL;
   }
-  
-  int decodeLen = m_pAudioCodec->Decode(pPacket->pData, pPacket->iSize);
-  CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+
+  if (m_pPacket == NULL)
+  {
+    do
+    {
+      m_pPacket = m_pDemuxer->Read();
+    } while (m_pPacket && m_pPacket->iStreamId != m_nAudioStream);
+
+    if (!m_pPacket)
+    {
+      return READ_EOF;
+    }
+    m_audioPos = 0;
+  }
+
+  int decodeLen = m_pAudioCodec->Decode(m_pPacket->pData + m_audioPos, m_pPacket->iSize - m_audioPos);
 
   if (decodeLen < 0)
+  {
+    CDVDDemuxUtils::FreeDemuxPacket(m_pPacket);
+    m_pPacket = NULL;
+    m_audioPos = 0;
     return READ_ERROR;
+  }
+
+  m_audioPos += decodeLen;
   
-  m_audioLen = m_pAudioCodec->GetData(&m_audioData);
-  *actualsize = (m_audioLen > size ? size : m_audioLen);
-  m_audioPos = *actualsize;
-  memcpy(pBuffer, m_audioData, *actualsize);
-  
-  m_iDataPos += *actualsize;
-  
+  m_nDecodedLen = m_pAudioCodec->GetData(&m_decoded);
+
+  *actualsize = (m_nDecodedLen <= size) ? m_nDecodedLen : size;
+  if (*actualsize > 0)
+  {
+    memcpy(pBuffer, m_decoded, *actualsize);
+    m_nDecodedLen -= *actualsize;
+    m_decoded += (*actualsize);
+  }
+
   return READ_SUCCESS;
 }
 
