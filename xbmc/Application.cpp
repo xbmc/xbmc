@@ -255,15 +255,14 @@ using namespace EVENTSERVER;
 #pragma comment (lib,"xbmc/lib/libSpeex/libSpeex.lib")
 #endif
 
-
 #if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)
- #ifdef HAS_FILESYSTEM
-  #pragma comment (lib,"xbmc/lib/libXBMS/libXBMSd.lib")    // SECTIONNAME=LIBXBMS
-  #pragma comment (lib,"xbmc/lib/libsmb/libsmbd.lib")      // SECTIONNAME=LIBSMB
-  #pragma comment (lib,"xbmc/lib/libxdaap/libxdaapd.lib") // SECTIONNAME=LIBXDAAP
-  #pragma comment (lib,"xbmc/lib/libRTV/libRTVd.lib")    // SECTIONNAME=LIBRTV
- #endif
  #ifdef _XBOX
+  #ifdef HAS_FILESYSTEM
+    #pragma comment (lib,"xbmc/lib/libXBMS/libXBMSd.lib")    // SECTIONNAME=LIBXBMS
+    #pragma comment (lib,"xbmc/lib/libsmb/libsmbd.lib")      // SECTIONNAME=LIBSMB
+    #pragma comment (lib,"xbmc/lib/libxdaap/libxdaapd.lib") // SECTIONNAME=LIBXDAAP
+    #pragma comment (lib,"xbmc/lib/libRTV/libRTVd.lib")    // SECTIONNAME=LIBRTV
+  #endif
   #pragma comment (lib,"xbmc/lib/libGoAhead/goaheadd.lib") // SECTIONNAME=LIBHTTP
   #pragma comment (lib,"xbmc/lib/sqLite/libSQLite3d.lib")
   #pragma comment (lib,"xbmc/lib/libshout/libshoutd.lib" )
@@ -272,6 +271,12 @@ using namespace EVENTSERVER;
   #pragma comment (lib,"xbmc/lib/libfribidi/libfribidid.lib")
   #pragma comment (lib,"xbmc/lib/libpcre/libpcred.lib")
  #else
+  #if defined(HAS_FILESYSTEM) && !defined(_LINUX)
+    #pragma comment (lib,"../../xbmc/lib/libXBMS/libXBMSd.lib")    // SECTIONNAME=LIBXBMS
+    #pragma comment (lib,"../../xbmc/lib/libsmb/libsmbd.lib")      // SECTIONNAME=LIBSMB
+    #pragma comment (lib,"../../xbmc/lib/libxdaap/libxdaapd.lib") // SECTIONNAME=LIBXDAAP
+    #pragma comment (lib,"../../xbmc/lib/libRTV/libRTVd_win32.lib")
+  #endif
   #pragma comment (lib,"../../xbmc/lib/libGoAhead/goahead_win32d.lib") // SECTIONNAME=LIBHTTP
   #pragma comment (lib,"../../xbmc/lib/sqLite/libSQLite3_win32d.lib")
   #pragma comment (lib,"../../xbmc/lib/libshout/libshout_win32d.lib" )
@@ -285,12 +290,15 @@ using namespace EVENTSERVER;
  #endif
 #else
  #if defined (HAS_FILESYSTEM) && !defined (_LINUX)
-  #pragma comment (lib,"xbmc/lib/libXBMS/libXBMS.lib")
-  #pragma comment (lib,"xbmc/lib/libsmb/libsmb.lib")
-  #pragma comment (lib,"xbmc/lib/libxdaap/libxdaap.lib") // SECTIONNAME=LIBXDAAP
-  #pragma comment (lib,"xbmc/lib/libRTV/libRTV.lib")
+
  #endif
  #ifdef _XBOX
+  #ifdef HAS_FILESYSTEM
+    #pragma comment (lib,"xbmc/lib/libXBMS/libXBMS.lib")
+    #pragma comment (lib,"xbmc/lib/libsmb/libsmb.lib")
+    #pragma comment (lib,"xbmc/lib/libxdaap/libxdaap.lib") // SECTIONNAME=LIBXDAAP
+    #pragma comment (lib,"xbmc/lib/libRTV/libRTV.lib")    // SECTIONNAME=LIBRTV
+  #endif
   #pragma comment (lib,"xbmc/lib/libGoAhead/goahead.lib")
   #pragma comment (lib,"xbmc/lib/sqLite/libSQLite3.lib")
   #pragma comment (lib,"xbmc/lib/libcdio/libcdio.lib")
@@ -298,6 +306,12 @@ using namespace EVENTSERVER;
   #pragma comment (lib,"xbmc/lib/libiconv/libiconv.lib")
   #pragma comment (lib,"xbmc/lib/libfribidi/libfribidi.lib")
  #elif !defined(_LINUX)
+  #ifdef HAS_FILESYSTEM
+    #pragma comment (lib,"../../xbmc/lib/libXBMS/libXBMS.lib")
+    #pragma comment (lib,"../../xbmc/lib/libsmb/libsmb.lib")
+    #pragma comment (lib,"../../xbmc/lib/libxdaap/libxdaap.lib")
+    #pragma comment (lib,"../../xbmc/lib/libRTV/libRTV_win32.lib")
+  #endif
   #pragma comment (lib,"../../xbmc/lib/libGoAhead/goahead_win32.lib")
   #pragma comment (lib,"../../xbmc/lib/sqLite/libSQLite3_win32.lib")
   #pragma comment (lib,"../../xbmc/lib/libshout/libshout_win32.lib" )
@@ -305,9 +319,6 @@ using namespace EVENTSERVER;
   #pragma comment (lib,"../../xbmc/lib/libiconv/libiconv.lib")
   #pragma comment (lib,"../../xbmc/lib/libfribidi/libfribidi.lib")
   #pragma comment (lib,"../../xbmc/lib/libpcre/libpcre.lib")
-#ifdef _WIN32PC // until the other filesystems have been implemented
-  #pragma comment (lib,"../../xbmc/lib/libsmb/libsmb.lib")
-#endif
  #endif
  #ifdef HAS_MIKMOD
   #pragma comment (lib,"xbmc/lib/mikxbox/mikxbox.lib")

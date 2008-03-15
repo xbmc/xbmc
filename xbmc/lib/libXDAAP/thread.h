@@ -64,7 +64,7 @@
 #define ts_thread_cb(name)            static void* name(void *arg)
 #define ts_thread_defaultret          NULL
 
-#elif defined(SYSTEM_WIN32) /* win32 */
+#elif defined(_WIN32) /* win32 */
 
 #define THREADS_WIN32
 #ifdef _XBOX
