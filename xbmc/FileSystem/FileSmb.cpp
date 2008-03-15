@@ -372,7 +372,11 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
   }
 
   CSingleLock lock(smb);
+#ifndef _LINUX
+  struct __stat64 tmpBuffer = {0};
+#else
   struct stat tmpBuffer;
+#endif
   if (smbc_stat(strFileName, &tmpBuffer) < 0)
   {
     smbc_close(m_fd);
@@ -501,7 +505,11 @@ int CFileSMB::Stat(const CURL& url, struct __stat64* buffer)
 
   CSingleLock lock(smb);
 
+#ifndef _LINUX
+  struct __stat64 tmpBuffer = {0};
+#else
   struct stat tmpBuffer;
+#endif
   int iResult = smbc_stat(strFileName, &tmpBuffer);
 
   buffer->st_dev = tmpBuffer.st_dev;
@@ -512,9 +520,15 @@ int CFileSMB::Stat(const CURL& url, struct __stat64* buffer)
   buffer->st_gid = tmpBuffer.st_gid;
   buffer->st_rdev = tmpBuffer.st_rdev;
   buffer->st_size = tmpBuffer.st_size;
+#ifndef _LINUX
+  buffer->st_atime = tmpBuffer.st_atime;
+  buffer->st_mtime = tmpBuffer.st_mtime;
+  buffer->st_ctime = tmpBuffer.st_ctime;
+#else
   buffer->_st_atime = tmpBuffer.st_atime;
   buffer->_st_mtime = tmpBuffer.st_mtime;
   buffer->_st_ctime = tmpBuffer.st_ctime;
+#endif
 
   return iResult;
 }
@@ -523,7 +537,9 @@ unsigned int CFileSMB::Read(void *lpBuf, __int64 uiBufSize)
 {
   if (m_fd == -1) return 0;
   CSingleLock lock(smb); // Init not called since it has to be "inited" by now
+#ifdef _LINUX
   smb.SetActivityTime();
+#endif
   /* work around stupid bug in samba */
   /* some samba servers has a bug in it where the */
   /* 17th bit will be ignored in a request of data */
@@ -556,7 +572,9 @@ __int64 CFileSMB::Seek(__int64 iFilePosition, int iWhence)
     return 1;
 
   CSingleLock lock(smb); // Init not called since it has to be "inited" by now
+#ifdef _LINUX
   smb.SetActivityTime();
+#endif
   INT64 pos = smbc_lseek(m_fd, iFilePosition, iWhence);
 
   if ( pos < 0 )
