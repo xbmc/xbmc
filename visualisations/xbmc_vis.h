@@ -2,14 +2,21 @@
 #define __XBMC_VIS_H__
 
 #include <vector>
-#ifndef _LINUX
+#ifdef HAS_XBOX_HARDWARE
 #include <xtl.h>
 #else
-#include "../../xbmc/linux/PlatformInclude.h"
-#include "../../xbmc/utils/log.h"
+#ifdef _LINUX
+#include "../xbmc/linux/PlatformInclude.h"
+#include <sys/sysinfo.h>
+#else
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#include <windows.h>
+#endif
+#include "../xbmc/utils/log.h"
 #include <sys/stat.h>
 #include <errno.h>
-#include <sys/sysinfo.h>
 #endif
 
 using namespace std;
@@ -31,19 +38,19 @@ int htoi(const char *str) /* Convert hex string to integer */
 }
 
 //#define NEW_STRING(str, ch) { str = new char[strlen(ch) + 1]; strcpy(str, ch); };
-#ifndef _LINUX
+#ifdef HAS_XBOX_HARDWARE
 #pragma comment (lib, "lib/xbox_dx8.lib" )
 #endif
 
 extern "C"
 {
   // exports for d3d hacks
-#ifndef _LINUX
+#ifndef HAS_SDL_OPENGL
   void d3dSetTextureStageState( int x, DWORD dwY, DWORD dwZ);
   void d3dSetRenderState(DWORD dwY, DWORD dwZ);
 #endif
 
-#ifdef _LINUX
+#ifdef HAS_SDL_OPENGL
 #ifndef D3DCOLOR_RGBA
 #define D3DCOLOR_RGBA(r,g,b,a) (r||(g<<8)||(b<<16)||(a<<24))
 #endif
@@ -121,7 +128,7 @@ extern "C"
   #define VIS_ACTION_LOCK_PRESET    5
 
   // Functions that your visualisation must implement
-#ifndef _LINUX
+#ifndef HAS_SDL_OPENGL
   void Create(LPDIRECT3DDEVICE8 pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName, float fPixelRatio);
 #else
   void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName, float fPixelRatio);
@@ -139,7 +146,7 @@ extern "C"
   // Structure to transfer the above functions to XBMC
   struct Visualisation
   {
-#ifndef _LINUX
+#ifndef HAS_SDL_OPENGL
     void (__cdecl *Create)(LPDIRECT3DDEVICE8 pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName, float fPixelRatio);
 #else
     void (__cdecl *Create)(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName, float fPixelRatio);
