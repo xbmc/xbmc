@@ -218,7 +218,7 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
           // This usually happens in right-to-left languages where they want to
           // specify in the RSS body that the text should be RTL.
           // <title>
-          //  	<div dir="RTL">��� ����: ���� �� �����</div> 
+          //  <div dir="RTL">��� ����: ���� �� �����</div> 
           // </title>
           if (htmlText.Equals("div") || htmlText.Equals("span"))
           {
@@ -262,44 +262,44 @@ void CRssReader::fromRSSToUTF16(const CStdStringA& strSource, CStdStringW& strDe
 
   if (m_shouldFlip)
   {
-  	g_charsetConverter.logicalToVisualBiDi(strSource, flippedStrSource, m_encoding, FRIBIDI_TYPE_RTL);
+    g_charsetConverter.logicalToVisualBiDi(strSource, flippedStrSource, m_encoding, FRIBIDI_TYPE_RTL);
   }
   else
   {
-  	flippedStrSource = strSource;
+    flippedStrSource = strSource;
   }
   
   if (m_iconv != (iconv_t) - 1)
-    {
-  	const char* src = flippedStrSource.c_str();
-  	size_t inBytes = flippedStrSource.length() + 1;
+  {
+    const char* src = flippedStrSource.c_str();
+    size_t inBytes = flippedStrSource.length() + 1;
 
-  	wchar_t outBuf[1024];
-  	char* dst = (char*) &outBuf[0];
-  	size_t outBytes=1024;
-  	size_t originalOutBytes = outBytes;
+    wchar_t outBuf[1024];
+    char* dst = (char*) &outBuf[0];
+    size_t outBytes=1024;
+    size_t originalOutBytes = outBytes;
 
-  	iconv(m_iconv, NULL, &inBytes, NULL, &outBytes);
+    iconv(m_iconv, NULL, &inBytes, NULL, &outBytes);
 
 #if defined(_LINUX) && !defined(__APPLE__)
-  	if (iconv(m_iconv, (char**) &src, &inBytes, &dst, &outBytes) == (size_t) -1)
+    if (iconv(m_iconv, (char**) &src, &inBytes, &dst, &outBytes) == (size_t) -1)
 #else
-  	if (iconv(m_iconv, &src, &inBytes, &dst, &outBytes) == (size_t) -1)
+    if (iconv(m_iconv, &src, &inBytes, &dst, &outBytes) == (size_t) -1)
 #endif
-  	{
-  		// For some reason it failed (maybe wrong charset?). Nothing to do but
-  		// return the original..
-  		strDest = flippedStrSource;
-  		return;
-  	}
+    {
+      // For some reason it failed (maybe wrong charset?). Nothing to do but
+      // return the original..
+      strDest = flippedStrSource;
+      return;
+    }
 
-  	outBuf[(originalOutBytes - outBytes) / 2] = '\0';
-  	strDest = outBuf;
+    outBuf[(originalOutBytes - outBytes) / 2] = '\0';
+    strDest = outBuf;
   }
   else
   {
-  	strDest = flippedStrSource;
-  	return;
+    strDest = flippedStrSource;
+    return;
   }
 }
 
@@ -318,11 +318,11 @@ bool CRssReader::Parse(LPSTR szBuffer, int iFeed)
   m_encoding = "UTF-8";
   if (m_xml.RootElement())
   {
-  TiXmlDeclaration *tiXmlDeclaration = m_xml.RootElement()->Parent()->FirstChild()->ToDeclaration();
-  if (tiXmlDeclaration != NULL && strlen(tiXmlDeclaration->Encoding()) > 0)
-  {
-  	m_encoding = tiXmlDeclaration->Encoding();
-  }
+    TiXmlDeclaration *tiXmlDeclaration = m_xml.RootElement()->Parent()->FirstChild()->ToDeclaration();
+    if (tiXmlDeclaration != NULL && strlen(tiXmlDeclaration->Encoding()) > 0)
+    {
+      m_encoding = tiXmlDeclaration->Encoding();
+    }
   }
 
   CLog::Log(LOGDEBUG, "RSS feed encoding: %s", m_encoding.c_str());
