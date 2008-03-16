@@ -32,6 +32,9 @@
 #include "ntddcdrm.h"
 #endif
 #endif
+#ifdef _WIN32PC
+#include "ntddcdrm.h"
+#endif
 #ifdef _LINUX
 #include <sys/types.h>
 #include <sys/ioctl.h>
@@ -349,6 +352,10 @@ HANDLE CIoSupport::OpenCDROM()
   hDevice = new CXHandle(CXHandle::HND_FILE);
   hDevice->fd = fd;
   hDevice->m_bCDROM = true;
+#elif defined(_WIN32)
+  hDevice = CreateFile(MEDIA_DETECT::CCdIoSupport::GetDeviceFileName(), GENERIC_READ, FILE_SHARE_READ,
+                       NULL, OPEN_EXISTING,
+                       FILE_FLAG_RANDOM_ACCESS, NULL );
 #else
 
   hDevice = CreateFile("\\\\.\\Cdrom0", GENERIC_READ, FILE_SHARE_READ,
@@ -582,8 +589,9 @@ VOID CIoSupport::GetXbePath(char* szDest)
   sprintf(szDest, "%c:\\%s", cDriveLetter, szTemp);
 
 #elif WIN32
-  GetCurrentDirectory(XBMC_MAX_PATH, szDest);
-  strcat(szDest, "\\XBMC_PC.exe");
+  char szAppPath[MAX_PATH] = "";
+  ::GetModuleFileName(0, szAppPath, sizeof(szAppPath) - 1);
+  strncpy(szDest,szAppPath,sizeof(szAppPath));
 #elif __APPLE__
   int      result = -1;
   char     given_path[2*MAXPATHLEN];
