@@ -4,7 +4,6 @@
 
 //#include "DVDSubtitleParserSpu.h"
 #include "DVDSubtitleParserSubrip.h"
-#include "DVDSubtitleParserMicroDVD.h"
 #include "Util.h"
 
 using namespace std;
@@ -59,11 +58,11 @@ CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(string& strFile)
     if (pStream->ReadLine(line, sizeof(line)))
     {
       // from xine
-      if ((sscanf (line, "{%d}{}", &i)==1) ||
-          (sscanf (line, "{%d}{%d}", &i, &i)==2)) 
-      {
-        pParser = new CDVDSubtitleParserMicroDVD(pStream, strFile.c_str());
-      }
+      //if ((sscanf (line, "{%d}{}", &i)==1) ||
+      //    (sscanf (line, "{%d}{%d}", &i, &i)==2)) 
+      //{
+       // pParser = new CDVDSubtitleParserMicroDVD(pStream, strFile.c_str());
+      //}
 
       if (sscanf(line, "%d:%d:%d,%d --> %d:%d:%d,%d", &i, &i, &i, &i, &i, &i, &i, &i) == 8)
       {
