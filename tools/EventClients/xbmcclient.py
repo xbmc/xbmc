@@ -176,19 +176,37 @@ class PacketNOTIFICATION (Packet):
 
 class PacketBUTTON (Packet):
     """
-    TODO: documentation
+    valid map_names are
+    "KB" => standard keyboard map
+    "XG" => xbox gamepad map
+    "R1" => xbox remote map
+    "R2" => xbox universal remote map
+    "LI:devicename" => LIRC remote map where 'devicename' is the
+                       actual device's name
     """
-    def __init__(self, code=0, repeat=1, down=1, queue=0):
+    def __init__(self, code=0, repeat=1, down=1, queue=0,
+                 map_name="", button_name="", amount=None):
         Packet.__init__(self)
+        self.flags = 0
         self.packettype = PT_BUTTON
         if type (code ) == str:
             code = ord(code)
-        self.code = code
-        self.amount = 0
-        if down:
-            self.flags = BT_DOWN
+            
+        # assign code only if we don't have a map and button name
+        if not (map_name and button_name):
+            self.code = code
         else:
-            self.flags = BT_UP
+            self.flags |= BT_USE_NAME
+            self.code = 0
+        if amount:
+            self.flags |= BT_USE_AMOUNT
+            self.amount = int(amount)
+        else:
+            self.amount = 0
+        if down:
+            self.flags |= BT_DOWN
+        else:
+            self.flags |= BT_UP
         if not repeat:
             self.flags |= BT_NO_REPEAT
         if queue:
@@ -196,8 +214,8 @@ class PacketBUTTON (Packet):
         self.set_payload ( format_uint16(self.code) )
         self.append_payload( format_uint16(self.flags) )
         self.append_payload( format_uint16(self.amount) )
-        self.append_payload( format_string ("") )
-        self.append_payload( format_string ("") )
+        self.append_payload( format_string (map_name) )
+        self.append_payload( format_string (button_name) )
 
 
 class PacketBYE (Packet):
