@@ -871,7 +871,7 @@ int CCdIoSupport::CddbDecDigitSum(int n)
 // Return the number of seconds (discarding frame portion) of an MSF
 UINT CCdIoSupport::MsfSeconds(msf_t *msf)
 {
-#ifndef _LINUX
+#ifdef _XBOX
   return from_bcd8(msf->m)*60 + from_bcd8(msf->s);
 #else
   return cdio_from_bcd8(msf->m)*60 + cdio_from_bcd8(msf->s);
