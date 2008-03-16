@@ -204,7 +204,7 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="FALSE"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089"
-				AdditionalDependencies="opengl32.lib winmm.lib ws2_32.lib"
+				AdditionalDependencies="opengl32.lib winmm.lib ws2_32.lib Mpr.lib"
 				OutputFile="$(OutDir)/XBMC.exe"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libci"
