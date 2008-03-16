@@ -109,10 +109,8 @@ namespace PYXBMC
 
   PyObject* ControlProgress_SetPercent(ControlProgress *self, PyObject *args)
   {
-    float *cPercent;
-
-    if (!PyArg_ParseTuple(args, "f", &cPercent)) return NULL;
-    float fPercent = *cPercent;
+    float fPercent=0.0;
+    if (!PyArg_ParseTuple(args, "f", &fPercent)) return NULL;
     PyGUILock();
     if (self->pGUIControl)
     {
