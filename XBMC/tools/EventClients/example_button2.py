@@ -31,16 +31,32 @@ def main():
     # wait for notification window to close (in XBMC)
     time.sleep(5)
 
-    # press the down arrow key and hold it down
-    packet = PacketBUTTON(code=0x28, repeat=1) # 0x28 => down arrow
+    # send a up key press using the xbox gamepad map "XG" and button
+    # name "dpadup" ( see PacketBUTTON doc for more details)
+    packet = PacketBUTTON(map_name="XG", button_name="dpadup")
+    packet.send(sock, addr)
+
+    # wait for a few seconds to see its effect
+    time.sleep(5)
+
+    # send a down key press using the raw keyboard code
+    packet = PacketBUTTON(code=0x28)
+    packet.send(sock, addr)
+
+    # wait for a few seconds to see its effect
+    time.sleep(5)
+
+    # send a right key press using the keyboard map "KB" and button
+    # name "right"
+    packet = PacketBUTTON(map_name="KB", button_name="right")
     packet.send(sock, addr)
 
     # wait for a few seconds to see its effect
     time.sleep(5)
 
     # that's enough, release the button. During release, button code
-    # shouldn't matter.
-    packet = PacketBUTTON(code=0x28, down=0) 
+    # doesn't matter.
+    packet = PacketBUTTON(code=0x28, down=0)
     packet.send(sock, addr)
     
     # ok we're done, close the connection
