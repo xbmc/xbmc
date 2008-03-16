@@ -90,16 +90,21 @@ namespace EVENTPACKET
     /************************************************************************/
     /* Payload format                                                       */
     /* %i - button code                                                     */
-    /* %i - flags 0x01 => use button name instead of code                   */
+    /* %i - flags 0x01 => use button map/name instead of code               */
     /*            0x02 => btn down                                          */
     /*            0x04 => btn up                                            */
     /*            0x08 => use amount                                        */
     /*            0x10 => queue event                                       */
     /*            0x20 => do not repeat                                     */
     /* %i - amount ( 0 => 65k maps to -1 => 1 )                             */
-    /* %s - device map                                                      */
-    /*      "KB", "MS", "RM1" or valid SDL joystick map name                */
-    /* %s - button name (optional if flags & 0x01)                          */
+    /* %s - device map (case sensitive and required if flags & 0x01)        */
+    /*      "KB" - Standard keyboard map                                    */
+    /*      "XG" - Xbox Gamepad                                             */
+    /*      "R1" - Xbox Remote                                              */
+    /*      "R2" - Xbox Universal Remote                                    */
+    /*      "LI:devicename" -  valid LIRC device map where 'devicename'     */
+    /*                         is the actual name of the LIRC device        */
+    /* %s - button name (required if flags & 0x01)                          */
     /************************************************************************/
 
     PT_MOUSE         = 0x04,

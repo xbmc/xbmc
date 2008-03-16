@@ -1,3 +1,23 @@
+/*
+* XBoxMediaCenter
+* UDP Event Server
+* Copyright (c) 2008 d4rk
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
+
 #include "stdafx.h"
 
 #ifdef HAS_EVENT_SERVER
@@ -7,6 +27,8 @@
 #include "EventPacket.h"
 #include "Application.h"
 #include "SingleLock.h"
+#include "ButtonTranslator.h"
+#include "Key.h"
 #include <map>
 #include <queue>
 
@@ -14,6 +36,59 @@ using namespace EVENTCLIENT;
 using namespace EVENTPACKET;
 using namespace std;
 
+/************************************************************************/
+/* CEventButtonState                                                    */
+/************************************************************************/
+void CEventButtonState::Load()
+{
+  if ( (m_iKeyCode == 0) )
+  { 
+    if ( (m_mapName.length() > 0) && (m_buttonName.length() > 0) )
+    {
+      if ( m_mapName.compare("KB") == 0 ) // standard keyboard map
+      {
+        m_iKeyCode = g_buttonTranslator.TranslateKeyboardString( m_buttonName.c_str() );
+      }
+      else if  ( m_mapName.compare("XG") == 0 ) // xbox gamepad map
+      {
+        m_iKeyCode = g_buttonTranslator.TranslateGamepadString( m_buttonName.c_str() );
+      }
+      else if  ( m_mapName.compare("R1") == 0 ) // xbox remote map
+      {
+        m_iKeyCode = g_buttonTranslator.TranslateRemoteString( m_buttonName.c_str() );
+      }
+      else if  ( m_mapName.compare("R2") == 0 ) // xbox unviversal remote map
+      {
+        m_iKeyCode = g_buttonTranslator.TranslateUniversalRemoteString( m_buttonName.c_str() );
+      }
+      else if ( (m_mapName.length() > 3) && 
+                (m_mapName.compare(0, 2, "LI:") == 0) ) // starts with LI: ?
+      {
+#ifdef HAS_LIRC
+        string lircDevice = m_mapName.substr(3);
+        m_iKeyCode = g_buttonTranslator.TranslateLircRemoteString( lircDevice.c_str(),
+                                                                   m_buttonName.c_str() );
+#else
+        CLog::Log(LOGERROR, "ES: LIRC support not enabled");
+#endif
+      }
+      else
+      {
+        Reset(); // disable key since its invalid
+        CLog::Log(LOGERROR, "ES: Could not map %s : %s to a key", m_mapName.c_str(),
+                  m_buttonName.c_str());
+      }
+    }
+  }
+  else
+  {
+    m_iKeyCode |= KEY_VKEY;
+  }
+}
+
+/************************************************************************/
+/* CEventClient                                                         */
+/************************************************************************/
 bool CEventClient::AddPacket(CEventPacket *packet)
 {
   if (!packet)
@@ -21,6 +96,7 @@ bool CEventClient::AddPacket(CEventPacket *packet)
 
   if ( packet->Size() > 1 )
   {
+    // TODO: limit payload size
     ResetTimeout();
     m_seqPackets[ packet->Sequence() ] = packet;
     if (m_seqPackets.size() == packet->Size())
@@ -233,13 +309,13 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
   if (!ParseUInt16(payload, psize, amount))
     return false;
 
-  // parse the map to use
-  if (!ParseString(payload, psize, map))
-    return false;
-
   // parse button name
   if (flags & PTB_USE_NAME)
   {
+    // parse the map to use
+    if (!ParseString(payload, psize, map))
+      return false;
+
     if (!ParseString(payload, psize, button))
       return false;
   }
@@ -263,9 +339,10 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
       m_currentButton.m_iKeyCode   = (flags & PTB_USE_NAME) ? 0 : bcode;
       m_currentButton.m_mapName    = map;
       m_currentButton.m_buttonName = button;
-      m_currentButton.m_fAmount    = (flags & PTB_USE_AMOUNT) ? amount : 1.0f;
-      m_currentButton.m_bRepeat    = (flags & PTB_NO_REPEAT) ? false : true;
+      m_currentButton.m_fAmount    = (flags & PTB_USE_AMOUNT) ? amount/65535.0f : 1.0f;
+      m_currentButton.m_bRepeat    = (flags & PTB_NO_REPEAT) ? false : true;      
       m_currentButton.SetActive();
+      m_currentButton.Load();
       m_iNextRepeat = 0;
     }
     else
