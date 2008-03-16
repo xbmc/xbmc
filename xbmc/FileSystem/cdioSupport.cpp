@@ -607,7 +607,7 @@ void CCdIoSupport::GetCdTextInfo(trackinfo *pti, int trackNum)
 
 CCdInfo* CCdIoSupport::GetCdInfo()
 {
-#ifdef _LINUX
+#ifndef HAS_XBOX_HARDWARE
   char* source_name = GetDeviceFileName();
 #else
   char* source_name = "\\\\.\\D:";
