@@ -138,12 +138,13 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
           if ((info.st_mode & S_IXOTH) && !g_guiSettings.GetBool("filelists.showhidden"))
             hidden = true;
 #else             
-          char value[5];
+          char value[20];
           /* We poll for extended attributes which symbolizes bits but split up into a string. Where 0x02 is hidden and 0x12 is hidden directory.
              According to the libsmbclient.h it's supposed to return 0 if ok, or the length of the string. It seems always to return the length wich is 4 */
           if (smbc_getxattr(strFullName, "system.dos_attr.mode", value, sizeof(value)) > 0)
           {
-            if (value[3] & SMBC_DOS_MODE_HIDDEN && !g_guiSettings.GetBool("filelists.showhidden"))
+            long longvalue = strtol(value, NULL, 16);
+            if (longvalue & SMBC_DOS_MODE_HIDDEN && !g_guiSettings.GetBool("filelists.showhidden"))
               hidden = true;
           }
           else
