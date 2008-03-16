@@ -68,6 +68,12 @@ namespace EVENTPACKET
     PTB_NO_REPEAT  = 0x20
   };
 
+  enum MouseFlags
+  {
+    PTM_ABSOLUTE = 0x01
+    /* PTM_RELATIVE = 0x02 */
+  };
+
   enum PacketType
   {
     PT_HELO          = 0x01,
@@ -110,9 +116,10 @@ namespace EVENTPACKET
     PT_MOUSE         = 0x04,
     /************************************************************************/
     /* Payload format                                                       */
-    /* %c - type ( 1=>absolute, 2=>relative )                               */
-    /* %i - mousex                                                          */
-    /* %i - mousey                                                          */
+    /* %c - flags                                                           */
+    /*    - 0x01 absolute position                                          */
+    /* %i - mousex (0-65535 => maps to screen width)                        */
+    /* %i - mousey (0-65535 => maps to screen height)                       */
     /************************************************************************/
 
     PT_PING          = 0x05,

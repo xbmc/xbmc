@@ -41,6 +41,7 @@ namespace EVENTSERVER
     
     // get events
     unsigned short GetButtonCode();
+    bool GetMousePos(float &x, float &y);
 
   protected:
     CEventServer();
