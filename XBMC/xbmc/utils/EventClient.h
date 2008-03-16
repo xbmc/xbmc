@@ -83,7 +83,7 @@ namespace EVENTCLIENT
     {
       m_bGreeted = false;
       m_iRepeatDelay = 750;
-      m_iRepeatSpeed = 100;
+      m_iRepeatSpeed = 25;
       m_iNextRepeat = 0;
       m_fMouseX = 0.0f;
       m_fMouseY = 0.0f;
