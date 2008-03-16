@@ -150,7 +150,7 @@ void CGUIVisualisationControl::LoadVisualisation()
   m_pVisualisation = factory.LoadVisualisation(strVisz);
   if (m_pVisualisation)
   {
-	g_graphicsContext.ApplyStateBlock();
+    g_graphicsContext.ApplyStateBlock();
     float x = g_graphicsContext.ScaleFinalXCoord(GetXPosition(), GetYPosition());
     float y = g_graphicsContext.ScaleFinalYCoord(GetXPosition(), GetYPosition());
     float w = g_graphicsContext.ScaleFinalXCoord(GetXPosition() + GetWidth(), GetYPosition() + GetHeight()) - x;

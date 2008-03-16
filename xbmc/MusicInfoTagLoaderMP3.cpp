@@ -179,8 +179,8 @@ bool CMusicInfoTagLoaderMP3::ReadSeekAndReplayGainInfo(const CStdString &strFile
 int CMusicInfoTagLoaderMP3::IsMp3FrameHeader(unsigned long head)
 {
   const long freqs[9] = { 44100, 48000, 32000,
-			 22050, 24000, 16000 ,
-			 11025 , 12000 , 8000 };
+                          22050, 24000, 16000 ,
+                          11025 , 12000 , 8000 };
   
  const int tabsel_123[2][3][16] = {
   { {128,32,64,96,128,160,192,224,256,288,320,352,384,416,448,},
@@ -213,13 +213,13 @@ int CMusicInfoTagLoaderMP3::IsMp3FrameHeader(unsigned long head)
     return 0;
 
   int srate = 0;
-	if(!((head >> 20) &  1)) 
-		srate			= 6 + ((head>>10)&0x3);		
-	else 
-		srate			= ((head>>10)&0x3) + ((1-((head >> 19) &  1)) * 3);
+  if(!((head >> 20) &  1)) 
+    srate = 6 + ((head>>10)&0x3);
+  else 
+    srate = ((head>>10)&0x3) + ((1-((head >> 19) &  1)) * 3);
 
- 	int framesize = tabsel_123[1 - ((head >> 19) &  1)][(4-((head>>17)&3))-1][((head>>12)&0xf)]*144000/(freqs[srate]<<(1 - ((head >> 19) &  1)))+((head>>9)&0x1);
-	return framesize;
+  int framesize = tabsel_123[1 - ((head >> 19) &  1)][(4-((head>>17)&3))-1][((head>>12)&0xf)]*144000/(freqs[srate]<<(1 - ((head >> 19) &  1)))+((head>>9)&0x1);
+  return framesize;
 }
 
 //TODO: merge duplicate, but slitely different implemented) code and consts in IsMp3FrameHeader(above) and ReadDuration (below).
@@ -306,7 +306,7 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
       if ((j + 4) >= SCANSIZE)
       {
         //no valid frame found in buffer
-	      firstValidFrameLocation = -1;
+        firstValidFrameLocation = -1;
         break;
       }
     }

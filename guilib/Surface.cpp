@@ -326,7 +326,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     {
       if (glewInit()!=GLEW_OK)
       {
-	CLog::Log(LOGERROR, "GL: Critical Error. Could not initialise GL Extension Wrangler Library");
+        CLog::Log(LOGERROR, "GL: Critical Error. Could not initialise GL Extension Wrangler Library");
       }
       else
       {
@@ -506,7 +506,7 @@ CSurface::~CSurface()
 #else
   if (IsValid() && m_SDLSurface
 #ifdef __APPLE__
-	  && !IsShared()
+      && !IsShared()
 #endif
      ) 
   {
@@ -795,7 +795,7 @@ void CSurface::GetGLVersion(int& maj, int& min)
   {
     const char* ver = (const char*)glGetString(GL_VERSION);
     if (ver != 0)
-    	sscanf(ver, "%d.%d", &m_iGLMajVer, &m_iGLMinVer);
+      sscanf(ver, "%d.%d", &m_iGLMajVer, &m_iGLMinVer);
   }
   maj = m_iGLMajVer;
   min = m_iGLMinVer;

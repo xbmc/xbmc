@@ -5,7 +5,7 @@
 
 #include <vector>
 #include "GUIDialog.h"
-#include "Network.h"
+#include "utils/Network.h"
 
 class CGUIDialogAccessPoints : public CGUIDialog
 {

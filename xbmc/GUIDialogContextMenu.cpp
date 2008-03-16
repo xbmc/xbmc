@@ -577,13 +577,13 @@ void CGUIDialogContextMenu::SwitchMedia(const CStdString& strType, const CStdStr
   // what should we display?
   vector <CStdString> vecTypes;
   if (!strType.Equals("music"))
-    vecTypes.push_back(g_localizeStrings.Get(2));	// My Music
+    vecTypes.push_back(g_localizeStrings.Get(2)); // My Music
   if (!strType.Equals("video"))
-    vecTypes.push_back(g_localizeStrings.Get(3));	// My Videos
+    vecTypes.push_back(g_localizeStrings.Get(3)); // My Videos
   if (!strType.Equals("pictures"))
-    vecTypes.push_back(g_localizeStrings.Get(1));	// My Pictures
+    vecTypes.push_back(g_localizeStrings.Get(1)); // My Pictures
   if (!strType.Equals("files"))
-    vecTypes.push_back(g_localizeStrings.Get(7));	// My Files
+    vecTypes.push_back(g_localizeStrings.Get(7)); // My Files
 
   // something went wrong
   if (vecTypes.size() != 3)

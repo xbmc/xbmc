@@ -56,7 +56,7 @@ class CPlayListItem : public CFileItem
   void Add(CPlayListItem& item);
   void Add(CPlayList& playlist);
   void Add(CFileItem *pItem);
-	void Add(CFileItemList& items);
+  void Add(CFileItemList& items);
 
   // for Party Mode
   void Insert(CPlayList& playlist, int iPosition = -1);

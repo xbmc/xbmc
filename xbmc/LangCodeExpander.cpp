@@ -717,7 +717,7 @@ extern const LCENTRY g_iso639_2[536] =
   { MAKECODE('\0','r','a','j'), "Rajasthani" },
   { MAKECODE('\0','r','a','p'), "Rapanui" },
   { MAKECODE('\0','r','a','r'), "Rarotongan" },
-//	{ "qaa-qtz", "Reserved for local use" },
+// { "qaa-qtz", "Reserved for local use" },
   { MAKECODE('\0','r','o','a'), "Romance (Other)" },
   { MAKECODE('\0','r','u','m'), "Romanian" },
   { MAKECODE('\0','r','o','n'), "Romanian" },

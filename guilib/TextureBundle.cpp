@@ -649,7 +649,7 @@ int CTextureBundle::LoadAnim(LPDIRECT3DDEVICE8 pDevice, const CStdString& Filena
                              LPDIRECT3DPALETTE8* ppPalette, int& nLoops, int** ppDelays)
 #else
 int CTextureBundle::LoadAnim(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, SDL_Surface*** ppTextures,
-               				  SDL_Palette** ppPalette, int& nLoops, int** ppDelays)
+                             SDL_Palette** ppPalette, int& nLoops, int** ppDelays)
 #endif
 {
   DWORD ResDataOffset;

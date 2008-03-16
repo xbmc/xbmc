@@ -47,28 +47,29 @@ void ILED::CLEDControl(int ixLED)
 
 ILEDSmartxxRGB::ILEDSmartxxRGB()
 {
-	strCurrentStatus = "NULL";
-	strLastStatus = "NULL";
+  strCurrentStatus = "NULL";
+  strLastStatus = "NULL";
   
   s_RGBs.strTransition = "NULL";
-	s_CurRGB.red = 0;
-	s_CurRGB.green = 0;
-	s_CurRGB.blue = 0;
+  s_CurRGB.red = 0;
+  s_CurRGB.green = 0;
+  s_CurRGB.blue = 0;
   s_CurRGB.white = 0;
-	
+
   dwLastTime = 0;
-	iSleepTime = 0;
+  iSleepTime = 0;
 }
 
 ILEDSmartxxRGB::~ILEDSmartxxRGB()
 {
 }
+
 void ILEDSmartxxRGB::OnStartup()
 {
   if (g_sysinfo.SmartXXModCHIP().Equals("SmartXX V3") || g_sysinfo.SmartXXModCHIP().Equals("SmartXX OPX"))
   {
-	  SetThreadPriority(GetCurrentThread(),THREAD_PRIORITY_LOWEST);
-	  CLog::Log(LOGDEBUG,"Starting SmartXX RGB LED thread");
+    SetThreadPriority(GetCurrentThread(),THREAD_PRIORITY_LOWEST);
+    CLog::Log(LOGDEBUG,"Starting SmartXX RGB LED thread");
     SetRGBStatus("general");
   }
 }
@@ -76,124 +77,121 @@ void ILEDSmartxxRGB::Process()
 {
   bool bSettingsRGBTrue = true; // for settings!
   bool bRepeat = false;
-	while(!m_bStop && bSettingsRGBTrue)
-	{
-		dwFrameTime = timeGetTime() - dwLastTime;
+  while(!m_bStop && bSettingsRGBTrue)
+  {
+    dwFrameTime = timeGetTime() - dwLastTime;
 
     if( (s_RGBs.strTransition.IsEmpty() || s_RGBs.strTransition.Equals("none")) && !strLastTransition.Equals("none") )
-		{
-			strLastTransition = "none";
+    {
+      strLastTransition = "none";
       s_CurRGB.red = s_RGBs.red1;
-			s_CurRGB.green = s_RGBs.green1;
+      s_CurRGB.green = s_RGBs.green1;
       s_CurRGB.blue = s_RGBs.blue1;
       s_CurRGB.white = s_RGBs.white1;
 
-			SetRGBLed(s_CurRGB.red,s_CurRGB.green,s_CurRGB.blue, s_CurRGB.white);
-		}
+      SetRGBLed(s_CurRGB.red,s_CurRGB.green,s_CurRGB.blue, s_CurRGB.white);
+    }
     else if(s_RGBs.strTransition.Equals("switch") && !strLastTransition.Equals("switch"))
-		{
+    {
       if(dwFrameTime >= s_RGBs.iTime )
-			{
-				s_CurRGB.red = s_RGBs.red2;
-				s_CurRGB.green = s_RGBs.green2;
-        s_CurRGB.blue = s_RGBs.blue2;	
+      {
+        s_CurRGB.red = s_RGBs.red2;
+        s_CurRGB.green = s_RGBs.green2;
+        s_CurRGB.blue = s_RGBs.blue2;
         s_CurRGB.white = s_RGBs.white2;
         strLastTransition = "switch";
         SetRGBLed(s_CurRGB.red,s_CurRGB.green,s_CurRGB.blue,s_CurRGB.white);
-			}
-			else
+      }
+      else
       {
         s_CurRGB.red = s_RGBs.red1;
-			  s_CurRGB.green = s_RGBs.green1;
+        s_CurRGB.green = s_RGBs.green1;
         s_CurRGB.blue = s_RGBs.blue1;
         s_CurRGB.white = s_RGBs.white1;
         SetRGBLed(s_CurRGB.red,s_CurRGB.green,s_CurRGB.blue,s_CurRGB.white);
       }
-				
-		}
+    }
     else if(s_RGBs.strTransition.Equals("blink"))
-		{
-			strLastTransition = "blink";
-			if(dwFrameTime >= s_RGBs.iTime )
-			{
-				s_CurRGB.red = (s_CurRGB.red != s_RGBs.red1) ? s_RGBs.red1 : s_RGBs.red2;
-				s_CurRGB.green = (s_CurRGB.green != s_RGBs.green1) ? s_RGBs.green1 : s_RGBs.green2;
-        s_CurRGB.blue = (s_CurRGB.blue != s_RGBs.blue1) ? s_RGBs.blue1 : s_RGBs.blue2;	
-        s_CurRGB.white= (s_CurRGB.white != s_RGBs.white1) ? s_RGBs.white1 : s_RGBs.white2;	
-				dwLastTime = timeGetTime();
+    {
+      strLastTransition = "blink";
+      if(dwFrameTime >= s_RGBs.iTime )
+      {
+        s_CurRGB.red = (s_CurRGB.red != s_RGBs.red1) ? s_RGBs.red1 : s_RGBs.red2;
+        s_CurRGB.green = (s_CurRGB.green != s_RGBs.green1) ? s_RGBs.green1 : s_RGBs.green2;
+        s_CurRGB.blue = (s_CurRGB.blue != s_RGBs.blue1) ? s_RGBs.blue1 : s_RGBs.blue2;
+        s_CurRGB.white= (s_CurRGB.white != s_RGBs.white1) ? s_RGBs.white1 : s_RGBs.white2;
+        dwLastTime = timeGetTime();
         SetRGBLed(s_CurRGB.red,s_CurRGB.green,s_CurRGB.blue,s_CurRGB.white);
-			}
-			else
-				iSleepTime = s_RGBs.iTime - dwFrameTime;
-
-		}
+      }
+      else
+        iSleepTime = s_RGBs.iTime - dwFrameTime;
+    }
     else if(s_RGBs.strTransition.Equals("fade"))
-		{
+    {
       if(!strLastTransition.Equals("fade"))
-			{
-				s_CurRGB.red = s_RGBs.red1;
-				s_CurRGB.green = s_RGBs.green1;
-				s_CurRGB.blue = s_RGBs.blue1;
+      {
+        s_CurRGB.red = s_RGBs.red1;
+        s_CurRGB.green = s_RGBs.green1;
+        s_CurRGB.blue = s_RGBs.blue1;
         s_CurRGB.white = s_RGBs.white1;
-				strLastTransition = "fade";
-			}
+        strLastTransition = "fade";
+      }
 
-			if(dwFrameTime >= s_RGBs.iTime )
-			{
-				if(s_CurRGB.red > s_RGBs.red2 )
-					s_CurRGB.red--;
-				else if(s_CurRGB.red < s_RGBs.red2)
-					s_CurRGB.red++;
+      if(dwFrameTime >= s_RGBs.iTime )
+      {
+        if(s_CurRGB.red > s_RGBs.red2 )
+          s_CurRGB.red--;
+        else if(s_CurRGB.red < s_RGBs.red2)
+          s_CurRGB.red++;
         
-				if(s_CurRGB.green > s_RGBs.green2)
-					s_CurRGB.green--;
-				else if(s_CurRGB.green < s_RGBs.green2)
-					s_CurRGB.green++;
+        if(s_CurRGB.green > s_RGBs.green2)
+          s_CurRGB.green--;
+        else if(s_CurRGB.green < s_RGBs.green2)
+          s_CurRGB.green++;
         
-				if(s_CurRGB.blue > s_RGBs.blue2)
-					s_CurRGB.blue--;
-				else if(s_CurRGB.blue < s_RGBs.blue2)
-					s_CurRGB.blue++;
+        if(s_CurRGB.blue > s_RGBs.blue2)
+          s_CurRGB.blue--;
+        else if(s_CurRGB.blue < s_RGBs.blue2)
+          s_CurRGB.blue++;
 
         if(s_CurRGB.white > s_RGBs.white2)
           s_CurRGB.white--;
         else if(s_CurRGB.white < s_RGBs.white2)
           s_CurRGB.white++;
         
-				dwLastTime = timeGetTime();
+         dwLastTime = timeGetTime();
         SetRGBLed(s_CurRGB.red,s_CurRGB.green,s_CurRGB.blue,s_CurRGB.white);
-			}
-			else
-				iSleepTime = s_RGBs.iTime - dwFrameTime;
-			
-		}
+      }
+      else
+        iSleepTime = s_RGBs.iTime - dwFrameTime;
+    }
     else if(s_RGBs.strTransition.Equals("fadeloop"))
-		{
+    {
       if(!strLastTransition.Equals("fadeloop"))
-			{
-				s_CurRGB.red = s_RGBs.red1;
-				s_CurRGB.green = s_RGBs.green1;
-				s_CurRGB.blue = s_RGBs.blue1;
+      {
+        s_CurRGB.red = s_RGBs.red1;
+        s_CurRGB.green = s_RGBs.green1;
+        s_CurRGB.blue = s_RGBs.blue1;
         s_CurRGB.white = s_RGBs.white1;
-				strLastTransition = "fadeloop";
-			}
+        strLastTransition = "fadeloop";
+      }
 
-			if(dwFrameTime >= s_RGBs.iTime )
-			{
-				if(s_CurRGB.red > s_RGBs.red2 )
-					s_CurRGB.red--;
-				else if(s_CurRGB.red < s_RGBs.red2)
-					s_CurRGB.red++;
+      if(dwFrameTime >= s_RGBs.iTime )
+      {
+        if(s_CurRGB.red > s_RGBs.red2 )
+          s_CurRGB.red--;
+        else if(s_CurRGB.red < s_RGBs.red2)
+          s_CurRGB.red++;
         
-				if(s_CurRGB.green > s_RGBs.green2)
-					s_CurRGB.green--;
-				else if(s_CurRGB.green < s_RGBs.green2)
-					s_CurRGB.green++;
+        if(s_CurRGB.green > s_RGBs.green2)
+          s_CurRGB.green--;
+        else if(s_CurRGB.green < s_RGBs.green2)
+          s_CurRGB.green++;
         
-				if(s_CurRGB.blue > s_RGBs.blue2)
-					s_CurRGB.blue--;
-				else if(s_CurRGB.blue < s_RGBs.blue2)
-					s_CurRGB.blue++;
+        if(s_CurRGB.blue > s_RGBs.blue2)
+          s_CurRGB.blue--;
+        else if(s_CurRGB.blue < s_RGBs.blue2)
+          s_CurRGB.blue++;
 
         if(s_CurRGB.white > s_RGBs.white2)
           s_CurRGB.white--;
@@ -205,47 +203,45 @@ void ILEDSmartxxRGB::Process()
           strLastTransition.clear();
         }
         
-				dwLastTime = timeGetTime();
+        dwLastTime = timeGetTime();
         SetRGBLed(s_CurRGB.red,s_CurRGB.green,s_CurRGB.blue,s_CurRGB.white);
-			}
-			else
-				iSleepTime = s_RGBs.iTime - dwFrameTime;
-      
-			
-		}
+      }
+      else
+        iSleepTime = s_RGBs.iTime - dwFrameTime;
+    }
     else if(s_RGBs.strTransition.Equals("faderepeat"))
-		{
+    {
       if(!strLastTransition.Equals("faderepeat"))
-			{
-				s_CurRGB.red = (bRepeat) ? s_RGBs.red1 : s_RGBs.red2;
-				s_CurRGB.green = (bRepeat) ? s_RGBs.green1 : s_RGBs.green2;
+      {
+        s_CurRGB.red = (bRepeat) ? s_RGBs.red1 : s_RGBs.red2;
+        s_CurRGB.green = (bRepeat) ? s_RGBs.green1 : s_RGBs.green2;
         s_CurRGB.blue = (bRepeat) ? s_RGBs.blue1 : s_RGBs.blue2;
         s_CurRGB.white = (bRepeat) ? s_RGBs.white1 : s_RGBs.white2;
-				strLastTransition = "faderepeat";
-			}
+        strLastTransition = "faderepeat";
+      }
 
-			if(dwFrameTime >= s_RGBs.iTime )
-			{
+      if(dwFrameTime >= s_RGBs.iTime )
+      {
         int i_RGB_R=0,i_RGB_G=0,i_RGB_B=0,i_RGB_W=0;
         i_RGB_R = (!bRepeat) ? s_RGBs.red1 : s_RGBs.red2;
         i_RGB_G = (!bRepeat) ? s_RGBs.green1 : s_RGBs.green2;
         i_RGB_B = (!bRepeat) ? s_RGBs.blue1 : s_RGBs.blue2;
         i_RGB_W = (!bRepeat) ? s_RGBs.white1 : s_RGBs.white2;
 
-				if(s_CurRGB.red > i_RGB_R )
-					s_CurRGB.red--;
-				else if(s_CurRGB.red < i_RGB_R)
-					s_CurRGB.red++;
+        if(s_CurRGB.red > i_RGB_R )
+          s_CurRGB.red--;
+        else if(s_CurRGB.red < i_RGB_R)
+          s_CurRGB.red++;
         
-				if(s_CurRGB.green > i_RGB_G)
-					s_CurRGB.green--;
-				else if(s_CurRGB.green < i_RGB_G)
-					s_CurRGB.green++;
+        if(s_CurRGB.green > i_RGB_G)
+          s_CurRGB.green--;
+        else if(s_CurRGB.green < i_RGB_G)
+          s_CurRGB.green++;
         
-				if(s_CurRGB.blue > i_RGB_B)
-					s_CurRGB.blue--;
-				else if(s_CurRGB.blue < i_RGB_B)
-					s_CurRGB.blue++;
+         if(s_CurRGB.blue > i_RGB_B)
+           s_CurRGB.blue--;
+         else if(s_CurRGB.blue < i_RGB_B)
+          s_CurRGB.blue++;
 
         if(s_CurRGB.white > i_RGB_W)
           s_CurRGB.white--;
@@ -259,12 +255,12 @@ void ILEDSmartxxRGB::Process()
         }
         SetRGBLed(s_CurRGB.red,s_CurRGB.green,s_CurRGB.blue,s_CurRGB.white);
         dwLastTime = timeGetTime();
-			}
-		}
-		if(iSleepTime < 0)
-			iSleepTime = 0;
-		Sleep(iSleepTime);
-	}
+      }
+    }
+    if(iSleepTime < 0)
+      iSleepTime = 0;
+    Sleep(iSleepTime);
+  }
 }
 
 void ILEDSmartxxRGB::OnExit()
@@ -276,7 +272,7 @@ void ILEDSmartxxRGB::OnExit()
   if ( g_sysinfo.SmartXXModCHIP().Equals("SmartXX OPX") )
     g_lcd->SetBackLight(g_guiSettings.GetInt("lcd.backlight"));
 
-	CLog::Log(LOGDEBUG,"Stopping SmartXX RGB LED thread");
+  CLog::Log(LOGDEBUG,"Stopping SmartXX RGB LED thread");
 }
 
 bool ILEDSmartxxRGB::Start()
@@ -300,55 +296,55 @@ bool ILEDSmartxxRGB::IsRunning()
 
 void ILEDSmartxxRGB::getRGBValues(const CStdString &strRGBa, const CStdString &strRGBb, const CStdString &strWhiteA, const CStdString &strWhiteB, RGBVALUES* s_rgb)
 {
-	DWORD red=0,green=0,blue=0,white=0;
-	
+  DWORD red=0,green=0,blue=0,white=0;
+  
   int ret = sscanf(strRGBa,"#%2X%2X%2X",&red,&green,&blue); 
-	if(ret == 3)
-	{
-		s_rgb->red1 = int(red/2);
-		s_rgb->green1 = int(green/2);
-		s_rgb->blue1 = int(blue/2);
-	}
-	else
-	{
-		s_rgb->red1 = 0;
-		s_rgb->green1 = 0;
-		s_rgb->blue1 = 0;
-	}
+  if(ret == 3)
+  {
+    s_rgb->red1 = int(red/2);
+    s_rgb->green1 = int(green/2);
+    s_rgb->blue1 = int(blue/2);
+  }
+  else
+  {
+    s_rgb->red1 = 0;
+    s_rgb->green1 = 0;
+    s_rgb->blue1 = 0;
+  }
 
-	ret = sscanf(strRGBb,"#%2X%2X%2X",&red,&green,&blue);
-	if(ret == 3)
-	{
-		s_rgb->red2 = int(red/2);
-		s_rgb->green2 = int(green/2);
-		s_rgb->blue2 = int(blue/2);
-	}
-	else
-	{
-		s_rgb->red2 = 0;
-		s_rgb->green2 = 0;
-		s_rgb->blue2 = 0;
-	}
+  ret = sscanf(strRGBb,"#%2X%2X%2X",&red,&green,&blue);
+  if(ret == 3)
+  {
+    s_rgb->red2 = int(red/2);
+    s_rgb->green2 = int(green/2);
+    s_rgb->blue2 = int(blue/2);
+  }
+  else
+  {
+    s_rgb->red2 = 0;
+    s_rgb->green2 = 0;
+    s_rgb->blue2 = 0;
+  }
   
   ret = sscanf(strWhiteA,"#%2X",&white);
-	if(ret == 1)
-	{
+  if(ret == 1)
+  {
     s_rgb->white1 = int(white/2);
-	}
-	else
-	{
+  }
+  else
+  {
     s_rgb->white1 = 0;
-	}
+  }
 
   ret = sscanf(strWhiteB,"#%2X",&white);
-	if(ret == 1)
-	{
+  if(ret == 1)
+  {
     s_rgb->white2 = int(white/2);
-	}
-	else
-	{
+  }
+  else
+  {
     s_rgb->white2 = 0;
-	}
+  }
 }
 
 bool ILEDSmartxxRGB::SetRGBStatus(const CStdString &strStatus)

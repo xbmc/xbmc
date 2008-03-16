@@ -18,20 +18,20 @@ typedef PSTRING POBJECT_STRING;
 
 extern "C"
 {
-	XBOXAPI NTSTATUS WINAPI 
+  XBOXAPI NTSTATUS WINAPI 
 MU_CreateDeviceObject(
     IN  ULONG            Port,
     IN  ULONG            Slot,
     IN  POBJECT_STRING  DeviceName
     );
 
-	XBOXAPI VOID WINAPI 
+  XBOXAPI VOID WINAPI 
 MU_CloseDeviceObject(
     IN  ULONG  Port,
     IN  ULONG  Slot
     );
 
-	XBOXAPI PDEVICE_OBJECT WINAPI
+  XBOXAPI PDEVICE_OBJECT WINAPI
 MU_GetExistingDeviceObject(
     IN  ULONG  Port,
     IN  ULONG  Slot
@@ -143,23 +143,23 @@ bool CMemoryUnitManager::MountDevice(unsigned long port, unsigned long slot)
   }
 
   NTSTATUS Status;
-	CHAR szDeviceName[64];
-	OBJECT_STRING DeviceName;
-	PDEVICE_OBJECT DeviceObject;
+  CHAR szDeviceName[64];
+  OBJECT_STRING DeviceName;
+  PDEVICE_OBJECT DeviceObject;
 
-	// setup the string buffer - leave room for NULL and '\\'
-	DeviceName.Length = 0;
-	DeviceName.MaximumLength = sizeof(szDeviceName)/sizeof(CHAR)-2;
-	DeviceName.Buffer = szDeviceName;
+  // setup the string buffer - leave room for NULL and '\\'
+  DeviceName.Length = 0;
+  DeviceName.MaximumLength = sizeof(szDeviceName)/sizeof(CHAR)-2;
+  DeviceName.Buffer = szDeviceName;
 
-	// create the device object
+  // create the device object
   CLog::Log(LOGDEBUG, __FUNCTION__" Creating MU device (port %i, slot %i)", port, slot);
-	Status = MU_CreateDeviceObject(port, slot, &DeviceName);
+  Status = MU_CreateDeviceObject(port, slot, &DeviceName);
 
-	if(NT_SUCCESS(Status))
-	{
+  if(NT_SUCCESS(Status))
+  {
     CLog::Log(LOGDEBUG, __FUNCTION__" Getting MU device (port %i, slot %i)", port, slot);
-		DeviceObject = MU_GetExistingDeviceObject(port, slot);
+    DeviceObject = MU_GetExistingDeviceObject(port, slot);
 
     CFatXDevice *device = new CFatXDevice(port, slot, DeviceObject);
     if (device->Mount(DeviceName.Buffer))
@@ -194,7 +194,7 @@ bool CMemoryUnitManager::UnMountDevice(unsigned long port, unsigned long slot)
       CLog::Log(LOGDEBUG, __FUNCTION__" Found MU device to unmount (port %i, slot %i)", port, slot);
       device->UnMount();
       CLog::Log(LOGDEBUG, __FUNCTION__" Closing device object (port %i, slot %i)", port, slot);
-    	MU_CloseDeviceObject(port, slot);
+      MU_CloseDeviceObject(port, slot);
       CLog::Log(LOGDEBUG, __FUNCTION__" Device object is closed");
       delete device;
       CLog::Log(LOGDEBUG, __FUNCTION__" Device is deleted");

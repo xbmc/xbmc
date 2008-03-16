@@ -149,7 +149,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
       if (m_pScreenSaver)
       {
         OutputDebugString("ScreenSaver::Create()\n");
-		g_graphicsContext.ApplyStateBlock();
+        g_graphicsContext.ApplyStateBlock();
         m_pScreenSaver->Create();
       }
 #endif

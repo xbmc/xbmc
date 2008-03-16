@@ -152,7 +152,7 @@ bool CSkinInfo::Check(const CStdString& strSkinDir)
 #else
         strGoodPath += "/";
 #endif
-		  CStdString resolution = pChild->FirstChild()->Value();
+        CStdString resolution = pChild->FirstChild()->Value();
         if (resolution == "pal") resolution = "PAL";
         else if (resolution == "pal16x9") resolution = "PAL16x9";
         else if (resolution == "ntsc") resolution = "NTSC";

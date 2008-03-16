@@ -1253,7 +1253,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 #ifdef _XBOX
              strSetting.Equals("lcd.modchip") ||
 #endif
-	     strSetting.Equals("lcd.backlight") ||
+             strSetting.Equals("lcd.backlight") ||
              strSetting.Equals("lcd.disableonplayback"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -1268,7 +1268,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 #ifdef _XBOX
         if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.modchip") != MODCHIP_XECUTER3);
 #else
-	if (pControl) pControl->SetEnabled(true);
+        if (pControl) pControl->SetEnabled(true);
 #endif
       }
       else 
@@ -2774,10 +2774,10 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
       if (strExtension == ".vis")
       {
 #ifdef _LINUX
-	void *handle = dlopen((const char*)pItem->m_strPath, RTLD_LAZY);
-	if (!handle)
-	  continue;
-	dlclose(handle);
+        void *handle = dlopen((const char*)pItem->m_strPath, RTLD_LAZY);
+        if (!handle)
+          continue;
+        dlclose(handle);
 #endif
         CStdString strLabel = pItem->GetLabel();
         vecVis.push_back(strLabel.Mid(0, strLabel.size() - 4));
@@ -3084,13 +3084,13 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
       if (strExtension == ".xbs")
       {
 #ifdef _LINUX
-	void *handle = dlopen((const char*)pItem->m_strPath, RTLD_LAZY);
-	if (!handle)
-	{
+        void *handle = dlopen((const char*)pItem->m_strPath, RTLD_LAZY);
+        if (!handle)
+        {
           CLog::Log(LOGERROR, "FillInScreensavers: Unable to load %s, reason: %s", (const char*) pItem->m_strPath, dlerror());
-	  continue;
-	}
-	dlclose(handle);
+          continue;
+        }
+        dlclose(handle);
 #endif
         CStdString strLabel = pItem->GetLabel();
         vecScr.push_back(strLabel.Mid(0, strLabel.size() - 4));

@@ -538,11 +538,11 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
       for (int y = 0; y < zoomed->h; y++)
       {
         for (int x = 0; x < zoomed->w; x++)
-      	{
+        {
           alpha = (int) (alphaFactor * (((unsigned int) dst[x] & 0xff000000) >> 24));
           dst[x] = (alpha << 24) | (dst[x] & 0x00ffffff);
         }
-      	dst += zoomed->w;
+        dst += zoomed->w;
       }
 
       SDL_UnlockSurface(zoomed);
@@ -691,10 +691,10 @@ void CGUIImage::LoadDiffuseImage()
         m_diffuseScaleV = float(height) / float(desc.Height) / m_fV;
 #elif defined(HAS_SDL_2D)
         m_diffuseScaleU = float(width) / float(m_diffuseTexture->w) / m_fU;
-        m_diffuseScaleV = float(height) / float(m_diffuseTexture->h) / m_fV;		  	
+        m_diffuseScaleV = float(height) / float(m_diffuseTexture->h) / m_fV;
 #elif defined(HAS_SDL_OPENGL)
         m_diffuseScaleU = float(width) / float(m_diffuseTexture->textureWidth) / m_fU;
-        m_diffuseScaleV = float(height) / float(m_diffuseTexture->textureHeight) / m_fV;		  	
+        m_diffuseScaleV = float(height) / float(m_diffuseTexture->textureHeight) / m_fV;
 #endif        
       }
     }
@@ -763,7 +763,7 @@ void CGUIImage::CalculateSize()
 #elif defined(HAS_SDL_OPENGL)
       m_iImageWidth = m_vecTextures[m_iCurrentImage]->textureWidth;
       m_iImageHeight = m_vecTextures[m_iCurrentImage]->textureHeight;
-#endif	      
+#endif
     }
 
     if (0 == m_iTextureWidth || 0 == m_iTextureHeight)

@@ -108,7 +108,7 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_BACKSPACE 
 #ifdef __APPLE__
-	|| action.wID == ACTION_PARENT_DIR
+     || action.wID == ACTION_PARENT_DIR
 #endif
      )
   {
@@ -634,8 +634,8 @@ int CGUIDialogKeyboard::ShowAndVerifyPassword(CStdString& strPassword, const CSt
     MD5Final(md5pword, &md5state);
     XKGeneral::BytesToHexStr(md5pword, 16, md5pword2);
     if (strPassword.Equals(md5pword2))
-      return 0;		// user entered correct password
-    else return 1;	// user must have entered an incorrect password
+      return 0;     // user entered correct password
+    else return 1;  // user must have entered an incorrect password
   }
   else
   {
