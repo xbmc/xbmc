@@ -1,4 +1,6 @@
-#if ! defined( _CYGWIN_INTTYPES_H ) && ! defined (__APPLE__)
+#ifdef HAVE_INTTYPES_H
+#include <inttypes.h>
+#elif (! defined( _CYGWIN_INTTYPES_H ) && ! defined (__APPLE__))
 #define _CYGWIN_INTTYPES_H
 /* /usr/include/inttypes.h for CYGWIN
  * Copyleft 2001-2002 by Felix Buenemann
