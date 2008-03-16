@@ -48,15 +48,10 @@ CEventServer::CEventServer()
   m_bStop         = false;
   m_pThread       = NULL;
   m_bRunning      = false;
-
-  // set default port
-  m_iPort = 9777;
+  m_bRefreshSettings = false;
 
   // default timeout in ms for receiving a single packet
   m_iListenTimeout = 1000;
-
-  // max clients
-  m_iMaxClients = 20;
 }
 
 CEventServer* CEventServer::GetInstance()
@@ -72,6 +67,30 @@ void CEventServer::StartServer()
 {
   if (m_pThread)
     return;
+
+  // set default port
+  string port = (const char*)g_guiSettings.GetString("remoteevents.port");
+  if (port.length() == 0)
+  {
+    m_iPort = 9777;
+  }
+  else
+  {
+    m_iPort = atoi(port.c_str());
+  }
+  if (m_iPort > 65535 || m_iPort < 1)
+  {
+    CLog::Log(LOGERROR, "ES: Invalid port specified %d, defaulting to 9777", m_iPort);
+    m_iPort = 9777;
+  }
+
+  // max clients
+  m_iMaxClients = g_guiSettings.GetInt("remoteevents.maxclients");
+  if (m_iMaxClients < 0)
+  {
+    CLog::Log(LOGERROR, "ES: Invalid maximum number of clients specified %d", m_iMaxClients);
+    m_iMaxClients = 20;
+  }
 
   m_bStop = false;
   m_pThread = new CThread(this);
@@ -104,6 +123,17 @@ void CEventServer::Cleanup()
     free(m_pPacketBuffer);
     m_pPacketBuffer = NULL;
   }
+  
+  map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
+  while (iter != m_clients.end())
+  {
+    if (iter->second)
+    {
+      delete iter->second;
+    }
+    m_clients.erase(iter);
+    iter =  m_clients.begin();
+  }
 }
 
 void CEventServer::Run()
@@ -112,8 +142,9 @@ void CEventServer::Run()
   CSocketListener listener;
   int packetSize = 0;
 
-  any_addr.SetAddress ("127.0.0.1");  // for now only listen on localhost
-  CLog::Log(LOGNOTICE, "ES: Starting UDP Event server on %s", any_addr.Address());
+  if (!g_guiSettings.GetBool("remoteevents.allinterfaces"))
+    any_addr.SetAddress ("127.0.0.1");  // only listen on localhost
+  CLog::Log(LOGNOTICE, "ES: Starting UDP Event server on %s:%d", any_addr.Address(), m_iPort);
 
   Cleanup();
 
@@ -128,7 +159,13 @@ void CEventServer::Run()
   }
 
   // bind to IP and start listening on port
-  if (!m_pSocket->Bind(any_addr, m_iPort, 10))
+  int port_range = g_guiSettings.GetInt("remoteevents.portrange");
+  if (port_range < 1 || port_range > 100)
+  {
+    CLog::Log(LOGERROR, "ES: Invalid port range specified %d, defaulting to 10", port_range);
+    port_range = 10;
+  }
+  if (!m_pSocket->Bind(any_addr, m_iPort, port_range))
   {
     CLog::Log(LOGERROR, "ES: Could not listen on port %d", m_iPort);
     return;
@@ -161,6 +198,7 @@ void CEventServer::Run()
     // BroadcastBeacon();
   }
 
+  CLog::Log(LOGNOTICE, "ES: UDP Event server stopped");
   m_bRunning = false;
   Cleanup();
 }
@@ -217,8 +255,15 @@ void CEventServer::RefreshClients()
       iter = m_clients.begin();
     }
     else
+    {
+      if (m_bRefreshSettings)
+      {
+        iter->second->RefreshSettings();
+      }
       iter++;
+    }
   }
+  m_bRefreshSettings = false;
 }
 
 void CEventServer::ExecuteEvents()

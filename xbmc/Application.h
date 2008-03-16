@@ -85,6 +85,7 @@ public:
   void StopUPnPServer();
   void StartEventServer();
   void StopEventServer();
+  void RefreshEventServer();
   void StartLEDControl(bool switchoff = false);
   void DimLCDOnPlayback(bool dim);
   void PrintXBEToLCD(const char* xbePath);
