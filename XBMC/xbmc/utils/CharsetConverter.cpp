@@ -219,13 +219,13 @@ void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &wStr
     char *outdst = dst;
 #if defined(_LINUX)
     if (iconv(m_iconvUtf8toW, (char**)&src, &inBytes, &outdst, &outBytes))
-#endif
     {
       // For some reason it failed (maybe wrong charset?). Nothing to do but
       // return the original..
       wString = utf8String;
     }
     else
+#endif
     {
       wString = (WCHAR *)dst;
     }
