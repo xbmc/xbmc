@@ -442,6 +442,8 @@ INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer
 #ifdef HAS_DVD_DRIVE
 #ifdef __APPLE__
   // FIXME.
+#elif defined(_WIN32PC)
+  // FIXME.
 #elif defined(_LINUX)
   if (hDevice->m_bCDROM)
   {    
@@ -516,7 +518,7 @@ INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer
 INT CIoSupport::ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
 {
 #ifdef HAS_DVD_DRIVE
-#ifndef _LINUX
+#ifdef _XBOX
   DWORD dwBytesReturned;
   RAW_READ_INFO rawRead;
 
