@@ -106,11 +106,11 @@ AC_CHECK_LIB([fribidi], [main],, AC_MSG_ERROR(== Could not find a required libra
 AC_CHECK_LIB([lzo2], [main],,
   AC_CHECK_LIB([lzo], [main],, AC_MSG_ERROR(== Could not find either liblzo or liblzo2 - one of these must be present))
   )
-AC_CHECK_LIB([smbclient], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux) )
 AC_CHECK_LIB([sqlite3], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
 AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
 AC_CHECK_LIB([asound], [main])      # check for asound library, fedora
 AC_CHECK_LIB([rt], [clock_gettime])      # check for rt library, required for clock_gettime
+AC_CHECK_LIB([resolv], [main])      # check for resolve library
 if test "$use_xrandr" = "yes"; then
   AC_CHECK_LIB([Xrandr], [main],, use_xrandr="no";AC_MSG_RESULT(== Could not find libXRandR. SDL will be used for resolution support. ==))
 else
