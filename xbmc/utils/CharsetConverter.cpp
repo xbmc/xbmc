@@ -287,8 +287,8 @@ void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdSt
   {
     if (m_vecBidiCharsetNames[i].Equals(charset))
     {
-		fribidiCharset = m_vecBidiCharsets[i];
-		break;
+      fribidiCharset = m_vecBidiCharsets[i];
+      break;
     }
   }
 
@@ -300,37 +300,37 @@ void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdSt
   vector<CStdString> lines;
   CUtil::Tokenize(strSource, lines, "\n");
   CStdString resultString;
-  
+
   for (unsigned int i = 0; i < lines.size(); i++)
   {
-	  int sourceLen = lines[i].length();
-	  FriBidiChar* logical = (FriBidiChar*) malloc((sourceLen + 1) * sizeof(FriBidiChar));
-	  FriBidiChar* visual = (FriBidiChar*) malloc((sourceLen + 1) * sizeof(FriBidiChar));
-	  // Convert from the selected charset to Unicode
-	  int len = fribidi_charset_to_unicode(fribidiCharset, (char*) lines[i].c_str(), sourceLen, logical);
-	
-	  if (fribidi_log2vis(logical, len, &base, visual, NULL, NULL, NULL))
-	  {
-	    // Removes bidirectional marks
-	    //len = fribidi_remove_bidi_marks(visual, len, NULL, NULL, NULL);
-	
-	    // Apperently a string can get longer during this transformation
-	    // so make sure we allocate the maximum possible character utf8
-	    // can generate atleast, should cover all bases
-	    char *result = strDest.GetBuffer(len*4);
-	
-	    // Convert back from Unicode to the charset
-	    int len2 = fribidi_unicode_to_charset(fribidiCharset, visual, len, result);
-	    ASSERT(len2 <= len*4);
-	    strDest.ReleaseBuffer();
-	    
-	    resultString += strDest;
-	  }
+    int sourceLen = lines[i].length();
+    FriBidiChar* logical = (FriBidiChar*) malloc((sourceLen + 1) * sizeof(FriBidiChar));
+    FriBidiChar* visual = (FriBidiChar*) malloc((sourceLen + 1) * sizeof(FriBidiChar));
+    // Convert from the selected charset to Unicode
+    int len = fribidi_charset_to_unicode(fribidiCharset, (char*) lines[i].c_str(), sourceLen, logical);
 
-	  free(logical);
-	  free(visual);
+    if (fribidi_log2vis(logical, len, &base, visual, NULL, NULL, NULL))
+    {
+      // Removes bidirectional marks
+      //len = fribidi_remove_bidi_marks(visual, len, NULL, NULL, NULL);
+
+      // Apperently a string can get longer during this transformation
+      // so make sure we allocate the maximum possible character utf8
+      // can generate atleast, should cover all bases
+      char *result = strDest.GetBuffer(len*4);
+
+      // Convert back from Unicode to the charset
+      int len2 = fribidi_unicode_to_charset(fribidiCharset, visual, len, result);
+      ASSERT(len2 <= len*4);
+      strDest.ReleaseBuffer();
+
+      resultString += strDest;
+    }
+
+    free(logical);
+    free(visual);
   }
-  
+
   strDest = resultString;
 }
 
