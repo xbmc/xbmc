@@ -4,12 +4,13 @@
 
 namespace MUSIC_INFO
 {
-	class CMusicInfoTagLoaderSid: public IMusicInfoTagLoader
-	{
-		public:
-			CMusicInfoTagLoaderSid(void);
-			virtual ~CMusicInfoTagLoaderSid();
+  class CMusicInfoTagLoaderSid: public IMusicInfoTagLoader
+  {
+    public:
+      CMusicInfoTagLoaderSid(void);
+      virtual ~CMusicInfoTagLoaderSid();
 
-			virtual bool Load(const CStdString& strFileName, CMusicInfoTag& tag);
-	};
+      virtual bool Load(const CStdString& strFileName, CMusicInfoTag& tag);
+  };
 }
+

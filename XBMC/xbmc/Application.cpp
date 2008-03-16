@@ -1874,7 +1874,7 @@ void CApplication::StartWebServer()
     m_pWebServer->Start(m_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), _P("Q:\\web"), false);
 #endif
     if (m_pXbmcHttp)
-	  getApplicationMessenger().HttpApi("broadcastlevel; StartUp;1");
+      getApplicationMessenger().HttpApi("broadcastlevel; StartUp;1");
   }
 #endif
 }
@@ -2234,12 +2234,12 @@ void CApplication::CheckDate()
   if ((CurTime.wYear > 2099) || (CurTime.wYear < 2001) )        // XBOX MS Dashboard also uses min/max DateYear 2001/2099 !!
   {
     CLog::Log(LOGNOTICE, "- The Date is Wrong: Setting New Date!");
-    NewTime.wYear		= 2004;	// 2004
-    NewTime.wMonth		= 1;	// January
-    NewTime.wDayOfWeek	= 1;	// Monday
-    NewTime.wDay		= 5;	// Monday 05.01.2004!!
-    NewTime.wHour		= 12;
-    NewTime.wMinute		= 0;
+    NewTime.wYear       = 2004; // 2004
+    NewTime.wMonth      = 1;    // January
+    NewTime.wDayOfWeek  = 1;    // Monday
+    NewTime.wDay        = 5;    // Monday 05.01.2004!!
+    NewTime.wHour       = 12;
+    NewTime.wMinute     = 0;
 
     FILETIME stNewTime, stCurTime;
     SystemTimeToFileTime(&NewTime, &stNewTime);
@@ -2907,7 +2907,7 @@ void CApplication::RenderMemoryStatus()
       float y = yShift + 0.04f * g_graphicsContext.GetHeight() + g_settings.m_ResInfo[res].Overscan.top;
 
 #ifndef __APPLE__
-			 // Disable this for now as it might still be responsible for some crashes.
+      // Disable this for now as it might still be responsible for some crashes.
       CGUITextLayout::DrawOutlineText(g_fontManager.GetFont("font13"), x, y, 0xffffffff, 0xff000000, 2, wszText);
 #endif
     }
@@ -3034,7 +3034,7 @@ bool CApplication::OnAction(const CAction &action)
   {
     CStdString tmp;
     tmp.Format("%i",action.wID);
-	getApplicationMessenger().HttpApi("broadcastlevel; OnAction:"+tmp+";2");
+    getApplicationMessenger().HttpApi("broadcastlevel; OnAction:"+tmp+";2");
   }
 #endif
 
@@ -3873,32 +3873,32 @@ void  CApplication::CheckForTitleChange()
 {
   if (IsPlayingVideo())
   {
-	const CVideoInfoTag* tagVal = g_infoManager.GetCurrentMovieTag();
+    const CVideoInfoTag* tagVal = g_infoManager.GetCurrentMovieTag();
     if (m_pXbmcHttp && tagVal && !(tagVal->m_strTitle.IsEmpty()))
     {
       CStdString msg=m_pXbmcHttp->GetOpenTag()+"MovieTitle:"+tagVal->m_strTitle+m_pXbmcHttp->GetCloseTag();
-	  if (m_prevMedia!=msg)
-	  {
-		getApplicationMessenger().HttpApi("broadcastlevel; MediaChanged:"+msg+";1");
+      if (m_prevMedia!=msg)
+      {
+        getApplicationMessenger().HttpApi("broadcastlevel; MediaChanged:"+msg+";1");
         m_prevMedia=msg;
-	  }
+      }
     }
   }
   else if (IsPlayingAudio())
   {
     const CMusicInfoTag* tagVal=g_infoManager.GetCurrentSongTag();
     if (m_pXbmcHttp && tagVal)
-	{
-	  CStdString msg="";
-	  if (!tagVal->GetTitle().IsEmpty())
-		  msg=m_pXbmcHttp->GetOpenTag()+"AudioTitle:"+tagVal->GetTitle()+m_pXbmcHttp->GetCloseTag();
-	  if (!tagVal->GetArtist().IsEmpty())
-		  msg+=m_pXbmcHttp->GetOpenTag()+"AudioArtist:"+tagVal->GetArtist()+m_pXbmcHttp->GetCloseTag();
-	  if (m_prevMedia!=msg)
-	  {
-	    getApplicationMessenger().HttpApi("broadcastlevel; MediaChanged:"+msg+";1");
-	    m_prevMedia=msg;
-	  }
+    {
+      CStdString msg="";
+      if (!tagVal->GetTitle().IsEmpty())
+        msg=m_pXbmcHttp->GetOpenTag()+"AudioTitle:"+tagVal->GetTitle()+m_pXbmcHttp->GetCloseTag();
+      if (!tagVal->GetArtist().IsEmpty())
+        msg+=m_pXbmcHttp->GetOpenTag()+"AudioArtist:"+tagVal->GetArtist()+m_pXbmcHttp->GetCloseTag();
+      if (m_prevMedia!=msg)
+      {
+        getApplicationMessenger().HttpApi("broadcastlevel; MediaChanged:"+msg+";1");
+        m_prevMedia=msg;
+      }
     }
   }
 }
@@ -4053,7 +4053,7 @@ void CApplication::Stop()
 
 #ifdef HAS_WEB_SERVER    
     if (m_pXbmcHttp)
-	  getApplicationMessenger().HttpApi("broadcastlevel; ShutDown;1");
+      getApplicationMessenger().HttpApi("broadcastlevel; ShutDown;1");
 #endif
 
     StopServices();
@@ -4652,7 +4652,7 @@ void CApplication::OnPlayBackEnded()
 #ifdef HAS_WEB_SERVER      
   // Let's tell the outside world as well
   if (m_pXbmcHttp)
-	getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackEnded;1");
+    getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackEnded;1");
 #endif
 
   CLog::Log(LOGDEBUG, "Playback has finished");
@@ -4679,7 +4679,7 @@ void CApplication::OnPlayBackStarted()
 #ifdef HAS_WEB_SERVER      
   // Let's tell the outside world as well
   if (m_pXbmcHttp)
-	getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStarted;1");
+    getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStarted;1");
 #endif
 
   CLog::Log(LOGDEBUG, "Playback has started");
@@ -4706,7 +4706,7 @@ void CApplication::OnQueueNextItem()
 #ifdef HAS_WEB_SERVER      
   // Let's tell the outside world as well
   if (m_pXbmcHttp)
-	getApplicationMessenger().HttpApi("broadcastlevel; OnQueueNextItem;1");
+    getApplicationMessenger().HttpApi("broadcastlevel; OnQueueNextItem;1");
 #endif
   CLog::Log(LOGDEBUG, "Player has asked for the next item");
 
@@ -5122,7 +5122,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
         RampBlue[i] = (Uint16)((float)m_OldRampBlue[i] * fade);
       }
       Sleep(5);
-  	  SDL_SetGammaRamp(RampRed, RampGreen, RampBlue);
+      SDL_SetGammaRamp(RampRed, RampGreen, RampBlue);
     }
   }
 #endif      

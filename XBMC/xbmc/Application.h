@@ -280,7 +280,7 @@ protected:
 
   CApplicationMessenger m_applicationMessenger;
 #ifdef HAS_LINUX_NETWORK
-  CNetworkLinux		m_network;
+  CNetworkLinux m_network;
 #else
   CNetwork    m_network;
 #endif

@@ -118,7 +118,7 @@ void CMediaManager::GetLocalDrives(VECSHARES &localDrives, bool includeQ)
     }
     else 
     {     
-      share.m_iDriveType = SHARE_TYPE_LOCAL;		
+      share.m_iDriveType = SHARE_TYPE_LOCAL;
     }
     share.m_ignore = true;
     share.strName.Format(g_localizeStrings.Get(21438),pch[0]);

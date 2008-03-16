@@ -5,20 +5,20 @@
 struct SAlarmClockEvent
 {
   CStopWatch watch;
-	double m_fSecs;
+  double m_fSecs;
   CStdString m_strCommand;
 };
 
 class CAlarmClock : public CThread
 {
 public:
-	CAlarmClock();
-	~CAlarmClock();
-	void start(const CStdString& strName, float n_secs, const CStdString& strCommand);
-	inline bool isRunning()
-	{
-		return( m_bIsRunning );
-	}
+  CAlarmClock();
+  ~CAlarmClock();
+  void start(const CStdString& strName, float n_secs, const CStdString& strCommand);
+  inline bool isRunning()
+  {
+    return( m_bIsRunning );
+  }
 
   inline bool hasAlarm(const CStdString& strName)
   {
@@ -40,8 +40,8 @@ public:
     return 0.f;
   }
 
-	void stop(const CStdString& strName);
-	virtual void Process();
+  void stop(const CStdString& strName);
+  virtual void Process();
 private:
   std::map<CStdString,SAlarmClockEvent> m_event;
   

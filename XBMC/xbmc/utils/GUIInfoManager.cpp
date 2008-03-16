@@ -462,7 +462,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.writer")) return VIDEOPLAYER_WRITER;
     else if (strTest.Equals("videoplayer.tagline")) return VIDEOPLAYER_TAGLINE;
     else if (strTest.Equals("videoplayer.hasinfo")) return VIDEOPLAYER_HAS_INFO;
-	else if (strTest.Equals("videoplayer.trailer")) return VIDEOPLAYER_TRAILER;
+    else if (strTest.Equals("videoplayer.trailer")) return VIDEOPLAYER_TRAILER;
   }
   else if (strCategory.Equals("playlist"))
   {
@@ -2453,7 +2453,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       {
         CStdString strRatingAndVotes;
         if (m_currentFile.GetVideoInfoTag()->m_fRating > 0.f)
-   	      strRatingAndVotes.Format("%2.2f (%s %s)", m_currentFile.GetVideoInfoTag()->m_fRating, m_currentFile.GetVideoInfoTag()->m_strVotes, g_localizeStrings.Get(20350));
+          strRatingAndVotes.Format("%2.2f (%s %s)", m_currentFile.GetVideoInfoTag()->m_fRating, m_currentFile.GetVideoInfoTag()->m_strVotes, g_localizeStrings.Get(20350));
         return strRatingAndVotes;
       }
       break;
@@ -2477,7 +2477,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       break;
     case VIDEOPLAYER_PLOT:
       return m_currentFile.GetVideoInfoTag()->m_strPlot;
-	case VIDEOPLAYER_TRAILER:
+    case VIDEOPLAYER_TRAILER:
       return m_currentFile.GetVideoInfoTag()->m_strTrailer;
     case VIDEOPLAYER_PLOT_OUTLINE:
       return m_currentFile.GetVideoInfoTag()->m_strPlotOutline;

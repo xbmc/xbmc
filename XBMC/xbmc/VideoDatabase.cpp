@@ -3309,7 +3309,7 @@ void CVideoDatabase::MarkAsWatched(long lMovieId, int iType /* = 0 */)
   }
   catch (...)
   {
-	  CLog::Log(LOGERROR, "CVideoDatabase::MarkAsWatched(long lMovieId) failed on MovieID:%ld", lMovieId);
+    CLog::Log(LOGERROR, "CVideoDatabase::MarkAsWatched(long lMovieId) failed on MovieID:%ld", lMovieId);
   }
 }
 
@@ -3375,7 +3375,7 @@ void CVideoDatabase::UpdateMovieTitle(long lMovieId, const CStdString& strNewMov
   }
   catch (...)
   {
-	  CLog::Log(LOGERROR, "CVideoDatabase::UpdateMovieTitle(long lMovieId, const CStdString& strNewMovieTitle) failed on MovieID:%ld and Title:%s", lMovieId, strNewMovieTitle.c_str());
+    CLog::Log(LOGERROR, "CVideoDatabase::UpdateMovieTitle(long lMovieId, const CStdString& strNewMovieTitle) failed on MovieID:%ld and Title:%s", lMovieId, strNewMovieTitle.c_str());
   }
 }
 
@@ -4174,9 +4174,9 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
   try
   {
     DWORD time = timeGetTime();
-	  movieTime = 0;
-	  castTime = 0;
-	
+    movieTime = 0;
+    castTime = 0;
+
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
@@ -4253,9 +4253,9 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
             m_pDS->next();
           }
           CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %d",
-                    timeGetTime() - time);
-    		  CLog::Log(LOGDEBUG, "%s times: Info %d, Cast %d",
-                            __FUNCTION__, movieTime, castTime);
+                             timeGetTime() - time);
+          CLog::Log(LOGDEBUG, "%s times: Info %d, Cast %d",
+                              __FUNCTION__, movieTime, castTime);
         }
         catch (...)
         {
@@ -4322,9 +4322,9 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
   try
   {
     DWORD time = timeGetTime();
-	  movieTime = 0;
-	  castTime = 0;
-	
+    movieTime = 0;
+    castTime = 0;
+
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
@@ -4473,9 +4473,9 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
   try
   {
     DWORD time = timeGetTime();
-	  movieTime = 0;
-	  castTime = 0;
-	
+    movieTime = 0;
+    castTime = 0;
+
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
@@ -4573,7 +4573,7 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
           }
           CLog::Log(LOGDEBUG, "Time to retrieve movies from dataset = %d",
                     timeGetTime() - time);
-    	  CLog::Log(LOGDEBUG, "%s times: Info %d, Cast %d",
+          CLog::Log(LOGDEBUG, "%s times: Info %d, Cast %d",
                     __FUNCTION__, movieTime, castTime);
         }
         catch (...)
@@ -4736,7 +4736,7 @@ bool CVideoDatabase::GetMusicVideosNav(const CStdString& strBaseDir, CFileItemLi
           }
           CLog::Log(LOGDEBUG, "Time to retrieve musicvideos from dataset = %d",
                     timeGetTime() - time);
-    	  CLog::Log(LOGDEBUG, "%s times: Info %d, Cast %d",
+          CLog::Log(LOGDEBUG, "%s times: Info %d, Cast %d",
                     __FUNCTION__, movieTime, castTime);
         }
         catch (...)
@@ -5440,7 +5440,6 @@ void CVideoDatabase::GetMusicVideoGenresByName(const CStdString& strSearch, CFil
       strSQL=FormatSQL("select genre.idgenre,genre.strgenre,path.strPath from genre,genrelinkmusicvideo,musicvideo,path,files where genre.idGenre=genrelinkmusicvideo.idGenre and genrelinkmusicvideo.idmvideo = musicvideo.idmvideo and files.idFile=musicvideo.idFile and path.idPath = files.idPath and genre.strGenre like '%%%s%%'",strSearch.c_str());
     else
       strSQL=FormatSQL("select distinct genre.idgenre,genre.strgenre from genre,genrelinkmusicvideo where genrelinkmusicvideo.idgenre=genre.idgenre and genre.strGenre like '%%%s%%'", strSearch.c_str());
-	printf("sql %s\n",strSQL.c_str());
     m_pDS->query( strSQL.c_str() );
 
     while (!m_pDS->eof())

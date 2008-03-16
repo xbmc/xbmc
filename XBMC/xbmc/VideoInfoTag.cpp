@@ -323,7 +323,7 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar << m_strTitle;
     ar << m_strVotes;
     ar << m_strStudio;
-	ar << m_strTrailer;
+    ar << m_strTrailer;
     ar << (int)m_cast.size();
     for (unsigned int i=0;i<m_cast.size();++i)
     {

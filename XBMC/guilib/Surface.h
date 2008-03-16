@@ -36,8 +36,8 @@ public:
   }
 #ifdef HAS_SDL
   CSurface(int width, int height, bool doublebuffer, CSurface* shared,
-	   CSurface* associatedWindow, SDL_Surface* parent=0, bool fullscreen=false,
-	   bool offscreen=false, bool pbuffer=false, int antialias=0);
+           CSurface* associatedWindow, SDL_Surface* parent=0, bool fullscreen=false,
+           bool offscreen=false, bool pbuffer=false, int antialias=0);
 #endif
   
   virtual ~CSurface(void);

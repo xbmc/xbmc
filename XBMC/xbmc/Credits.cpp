@@ -160,7 +160,7 @@ CreditLine_t Credits[] =
 
     // Screensavers (16 beats)
     { 50, 25, 7680, 6400, 360, 660, EFF_IN_FADE | EFF_OUT_FADE , 42, L"Screensavers" },
-    { 50, 40, 0, 6400, 360, 660, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Asteron" },	
+    { 50, 40, 0, 6400, 360, 660, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Asteron" },
     { 50, 50, 0, 6400, 360, 660, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Jme" },
     { 50, 60, 0, 6400, 360, 660, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Siw" },
     { 50, 70, 0, 6400, 360, 660, EFF_IN_FADE | EFF_OUT_FADE , 24, L"Sylfan" },

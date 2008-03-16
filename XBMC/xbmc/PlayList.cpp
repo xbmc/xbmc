@@ -35,7 +35,7 @@ CPlayList::CPlayListItem::CPlayListItem() : m_lDuration(0)
   m_lStartOffset = 0;
   m_lEndOffset = 0;
   m_bUnPlayable = false;
-	m_iprogramCount = 0;
+  m_iprogramCount = 0;
 }
 
 CPlayList::CPlayListItem::CPlayListItem(const CStdString& strDescription, const CStdString& strFileName, long lDuration, long lStartOffset, long lEndOffset)
@@ -46,7 +46,7 @@ CPlayList::CPlayListItem::CPlayListItem(const CStdString& strDescription, const 
   m_lStartOffset = lStartOffset;
   m_lEndOffset = lEndOffset;
   m_bUnPlayable = false;
-	m_iprogramCount = 0;
+  m_iprogramCount = 0;
 }
 
 CPlayList::CPlayListItem::~CPlayListItem()
@@ -152,8 +152,8 @@ void CPlayList::Add(CPlayListItem& item, int iPosition, int iOrder)
     iPosition = iOldSize;
   if (iOrder < 0 || iOrder >= iOldSize)
     item.m_iprogramCount = iOldSize;
-	else
-		item.m_iprogramCount = iOrder;
+  else
+    item.m_iprogramCount = iOrder;
 
   // increment the playable counter
   item.ClearUnPlayable();
@@ -182,21 +182,21 @@ void CPlayList::Add(CPlayListItem& item)
 
 void CPlayList::Add(CPlayList& playlist)
 {
-	for (int i = 0; i < (int)playlist.size(); i++)
-		Add(playlist[i], -1, -1);
+  for (int i = 0; i < (int)playlist.size(); i++)
+    Add(playlist[i], -1, -1);
 }
 
 void CPlayList::Add(CFileItem *pItem)
 {
-	CPlayList::CPlayListItem playlistItem;
+  CPlayList::CPlayListItem playlistItem;
   CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
-	Add(playlistItem, -1, -1);
+  Add(playlistItem, -1, -1);
 }
 
 void CPlayList::Add(CFileItemList& items)
 {
-	for (int i = 0; i < (int)items.Size(); i++)
-		Add(items[i]);
+  for (int i = 0; i < (int)items.Size(); i++)
+    Add(items[i]);
 }
 
 void CPlayList::Insert(CPlayList& playlist, int iPosition /* = -1 */)
@@ -208,10 +208,10 @@ void CPlayList::Insert(CPlayList& playlist, int iPosition /* = -1 */)
     Add(playlist);
     return;
   }
-	for (int i = 0; i < (int)playlist.size(); i++)
+  for (int i = 0; i < (int)playlist.size(); i++)
   {
     int iPos = iPosition + i;
-		Add(playlist[i], iPos, iPos);
+    Add(playlist[i], iPos, iPos);
   }
 }
 
@@ -229,7 +229,7 @@ void CPlayList::Insert(CFileItemList& items, int iPosition /* = -1 */)
     int iPos = iPosition + i;
     CPlayList::CPlayListItem playlistItem;
     CUtil::ConvertFileItemToPlayListItem(items[i], playlistItem);
-		Add(playlistItem, iPos, iPos);
+    Add(playlistItem, iPos, iPos);
   }
 }
 

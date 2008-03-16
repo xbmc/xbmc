@@ -378,8 +378,8 @@ public:
     char szOnlineArenaPassword[32]; // private arena password
     char szOnlineArenaDescription[64]; // private arena description
 
-	  int m_HttpApiBroadcastPort;
-	  int m_HttpApiBroadcastLevel;
+    int m_HttpApiBroadcastPort;
+    int m_HttpApiBroadcastLevel;
     int m_nVolumeLevel;                     // measured in milliBels -60dB -> 0dB range.
     int m_dynamicRangeCompressionLevel;     // measured in milliBels  0dB -> 30dB range.
     int m_iPreMuteVolumeLevel;    // save the m_nVolumeLevel for proper restore

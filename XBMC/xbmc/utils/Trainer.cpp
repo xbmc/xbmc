@@ -73,7 +73,7 @@ bool CTrainer::Load(const CStdString& strPath)
       add al, byte ptr [esi+027h]
       add al, byte ptr [esi+02Fh]
       add al, byte ptr [esi+037h]
-      mov	ecx, 0FFFFFFh
+      mov  ecx, 0FFFFFFh
       imul ecx
       xor dword ptr [esi], eax
       mov ebx, dword ptr [esi]

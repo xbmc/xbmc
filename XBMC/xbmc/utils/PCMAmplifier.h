@@ -5,18 +5,18 @@
 
 class CPCMAmplifier {
 public:
-	CPCMAmplifier();
-	virtual ~CPCMAmplifier();
+  CPCMAmplifier();
+  virtual ~CPCMAmplifier();
 
-	void SetVolume(int nVolume);
-	int  GetVolume();
+  void SetVolume(int nVolume);
+  int  GetVolume();
 
-   	// only works on 16bit samples
-	void DeAmplify(short *pcm, int nSamples);
+  // only works on 16bit samples
+  void DeAmplify(short *pcm, int nSamples);
 
 protected:
-	int m_nVolume;
-	double m_dFactor;
+  int m_nVolume;
+  double m_dFactor;
 
 };
 

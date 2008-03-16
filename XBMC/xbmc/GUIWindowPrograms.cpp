@@ -470,7 +470,7 @@ bool CGUIWindowPrograms::OnPlayMedia(int iItem)
     {
       if (CGUIDialogYesNo::ShowAndGetInput(20023,20020,20021,20022,714,12013))
       {
-	CStdString emptyStr = "";
+        CStdString emptyStr = "";
         CKaiClient::GetInstance()->EnterVector(emptyStr, emptyStr);
       }
       else

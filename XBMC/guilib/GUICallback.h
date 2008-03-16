@@ -95,7 +95,7 @@ public:
 
     void* target = (void*) (((char*) this) + my_offsetof(GUIEvent<Cookie>, m_pMethod));
     memcpy(target, &aMethodPtr, sizeof(GUIEvent<Cookie>::m_pMethod));
-#endif	 
+#endif 
   }
 };
 
