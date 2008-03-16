@@ -49,7 +49,7 @@ public:
   void SetEnabled(bool enabled) { m_mouseEnabled = enabled; };
   DWORD GetState() const { return m_pointerState; };
   CPoint GetLocation() const;
-  void SetLocation(const CPoint &point);
+  void SetLocation(const CPoint &point, bool activate=false);
   CPoint GetLastMove() const;
   char GetWheel() const;
   void UpdateMouseWheel(char dir);

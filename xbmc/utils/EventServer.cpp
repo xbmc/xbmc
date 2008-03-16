@@ -293,4 +293,18 @@ unsigned short CEventServer::GetButtonCode()
   return bcode;
 }
 
+bool CEventServer::GetMousePos(float &x, float &y)
+{
+  CSingleLock lock(m_critSection);
+  map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
+
+  while (iter != m_clients.end())
+  {
+    if (iter->second->GetMousePos(x, y))
+      return true;
+    iter++;
+  }
+  return false;
+}
+
 #endif // HAS_EVENT_SERVER

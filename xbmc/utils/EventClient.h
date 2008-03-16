@@ -84,12 +84,13 @@ namespace EVENTCLIENT
     {
       m_bGreeted = false;
       m_iNextRepeat = 0;
-      m_fMouseX = 0.0f;
-      m_fMouseY = 0.0f;
+      m_iMouseX = 0;
+      m_iMouseY = 0;
       m_iCurrentSeqLen = 0;
       m_lastPing = 0;
       m_lastSeq = 0;
       m_iRemotePort = 0;
+      m_bMouseMoved = false;
       RefreshSettings();
     }
 
@@ -131,6 +132,9 @@ namespace EVENTCLIENT
 
     // return event states
     unsigned short GetButtonCode();
+
+    // update mouse position
+    bool GetMousePos(float& x, float& y);
 
   protected:
     bool ProcessPacket(EVENTPACKET::CEventPacket *packet);
@@ -181,8 +185,9 @@ namespace EVENTCLIENT
     unsigned int      m_iRepeatDelay;
     unsigned int      m_iRepeatSpeed;
     unsigned int      m_iNextRepeat;
-    float             m_fMouseX;
-    float             m_fMouseY;
+    unsigned int      m_iMouseX;
+    unsigned int      m_iMouseY;
+    bool              m_bMouseMoved;
 
     SOCKETS::CAddress m_remoteAddr;
 
