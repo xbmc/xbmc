@@ -394,7 +394,7 @@ DWORD CDetectDVDMedia::GetTrayState()
       if (discmode==CDIO_DISC_MODE_NO_INFO || discmode==CDIO_DISC_MODE_ERROR)
         m_dwTrayState = TRAY_CLOSED_NO_MEDIA;
       else
-	m_dwTrayState = TRAY_CLOSED_MEDIA_PRESENT;
+        m_dwTrayState = TRAY_CLOSED_MEDIA_PRESENT;
       break;
 
     case 1: //open

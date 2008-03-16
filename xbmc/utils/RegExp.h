@@ -118,94 +118,91 @@ private:
 class CRegExp
 {
 public:
-	CRegExp();
-	~CRegExp();
+  CRegExp();
+  ~CRegExp();
 
-	CRegExp *RegComp( const char *re );
-	int RegFind(const char *str);
-	char* GetReplaceString( const char* sReplaceExp );
-	int GetFindLen()
-	{
-		if( startp[0] == NULL || endp[0] == NULL )
-			return 0;
+  CRegExp *RegComp( const char *re );
+  int RegFind(const char *str);
+  char* GetReplaceString( const char* sReplaceExp );
+  int GetFindLen()
+  {
+    if( startp[0] == NULL || endp[0] == NULL )
+      return 0;
 
-		return (int)(endp[0] - startp[0]);
-	};
+      return (int)(endp[0] - startp[0]);
+  };
   int GetSubCount();
   int GetSubStart(int iSub);
   int GetSubLenght(int iSub);
 
 private:
-	char *regnext(char *node);
-	void reginsert(char op, char *opnd);
+  char *regnext(char *node);
+  void reginsert(char op, char *opnd);
 
-	int regtry(char *string);
-	int regmatch(char *prog);
-	size_t regrepeat(char *node);
-	char *reg(int paren, int *flagp);
-	char *regbranch(int *flagp);
-	void regtail(char *p, char *val);
-	void regoptail(char *p, char *val);
-	char *regpiece(int *flagp);
-	char *regatom(int *flagp);
+  int regtry(char *string);
+  int regmatch(char *prog);
+  size_t regrepeat(char *node);
+  char *reg(int paren, int *flagp);
+  char *regbranch(int *flagp);
+  void regtail(char *p, char *val);
+  void regoptail(char *p, char *val);
+  char *regpiece(int *flagp);
+  char *regatom(int *flagp);
 
-	// Inline functions
+  // Inline functions
 private:
-	char OP(char *p) {return *p;};
-	char *OPERAND( char *p) {return (char*)((short *)(p+1)+1); };
+  char OP(char *p) {return *p;};
+  char *OPERAND( char *p) {return (char*)((short *)(p+1)+1); };
 
-	// regc - emit (if appropriate) a byte of code
-	void regc(char b)
-	{
-		if (bEmitCode)
-			*regcode++ = b;
-		else
-			regsize++;
-	};
+  // regc - emit (if appropriate) a byte of code
+  void regc(char b)
+  {
+    if (bEmitCode)
+      *regcode++ = b;
+    else
+      regsize++;
+  };
 
-	// regnode - emit a node
-	char *	regnode(char op)
-	{
-		if (!bEmitCode) {
-			regsize += ( sizeof(short) + 2 - sizeof(char) ) ;
-			return regcode;
-		}
+  // regnode - emit a node
+  char * regnode(char op)
+  {
+    if (!bEmitCode) {
+      regsize += ( sizeof(short) + 2 - sizeof(char) ) ;
+      return regcode;
+    }
 
-		*regcode++ = op;
-		*regcode++ = '\0';		/* Null next pointer. */
+    *regcode++ = op;
+    *regcode++ = '\0'; /* Null next pointer. */
 #ifndef _UNICODE
-		*regcode++ = '\0';
+    *regcode++ = '\0';
 #endif // _UNICODE
 
-		return regcode - (sizeof(short) + 2 - sizeof(char)) ;
-	};
-
-
+    return regcode - (sizeof(short) + 2 - sizeof(char)) ;
+  };
 private:
-	bool bEmitCode;
-	bool bCompiled;
-	char *sFoundText;
+  bool bEmitCode;
+  bool bCompiled;
+  char *sFoundText;
 
-	char *startp[NSUBEXP];
-	char *endp[NSUBEXP];
-	char regstart;		// Internal use only. 
-	char reganch;		// Internal use only. 
-	char *regmust;		// Internal use only. 
-	int regmlen;		// Internal use only. 
-	char *program;		// Unwarranted chumminess with compiler. 
+  char *startp[NSUBEXP];
+  char *endp[NSUBEXP];
+  char regstart;    // Internal use only. 
+  char reganch;     // Internal use only. 
+  char *regmust;    // Internal use only. 
+  int regmlen;      // Internal use only. 
+  char *program;    // Unwarranted chumminess with compiler. 
 
-	char *regparse;	// Input-scan pointer. 
-	int regnpar;		// () count. 
-	char *regcode;		// Code-emit pointer; ®dummy = don't. 
-	char regdummy[3];	// NOTHING, 0 next ptr 
-	long regsize;		// Code size. 
+  char *regparse;   // Input-scan pointer. 
+  int regnpar;      // () count. 
+  char *regcode;    // Code-emit pointer; ®dummy = don't. 
+  char regdummy[3]; // NOTHING, 0 next ptr 
+  long regsize;     // Code size. 
 
-	char *reginput;	// String-input pointer. 
-	char *regbol;		// Beginning of input, for ^ check. 
+  char *reginput;   // String-input pointer. 
+  char *regbol;     // Beginning of input, for ^ check. 
 };
 
 #endif // HAS_PCRE
 
 #endif
-
 

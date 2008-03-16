@@ -34,7 +34,7 @@ public:
   void RemoveSourceLocks();
   bool IsDatabasePathUnlocked(CStdString strPath, VECSHARES& vecShares);
 
-	MAPPASSWORDS			m_mapSMBPasswordCache; // SMB share password cache
+  MAPPASSWORDS  m_mapSMBPasswordCache; // SMB share password cache
 
   bool bMasterUser;
   int iMasterLockRetriesLeft;

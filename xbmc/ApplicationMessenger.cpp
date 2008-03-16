@@ -150,8 +150,8 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         // send the WM_CLOSE window message
         ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
 #else
-	// exit the application
-	exit(0);
+        // exit the application
+        exit(0);
 #endif
       }
       break;
@@ -174,9 +174,9 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         // send the WM_CLOSE window message
         ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
 #else
-	// exit the application
-	// TODO LINUX actually restart
-	exit(0);
+        // exit the application
+        // TODO LINUX actually restart
+        exit(0);
 #endif
       }
       break;
@@ -193,9 +193,9 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         // send the WM_CLOSE window message
         ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
 #else
-	// exit the application
-	// TODO LINUX actually restart
-	exit(0);
+        // exit the application
+        // TODO LINUX actually restart
+        exit(0);
 #endif
       }
       break;
@@ -351,10 +351,10 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 #ifdef HAS_WEB_SERVER
       if (!m_pXbmcHttp)
       {
-	    CSectionLoader::Load("LIBHTTP");
+        CSectionLoader::Load("LIBHTTP");
         m_pXbmcHttp = new CXbmcHttp();
       }
-	  int ret=m_pXbmcHttp->xbmcCommand(pMsg->strParam);
+      int ret=m_pXbmcHttp->xbmcCommand(pMsg->strParam);
       switch(ret)
       {
       case 1:

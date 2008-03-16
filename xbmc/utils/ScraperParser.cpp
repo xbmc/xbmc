@@ -53,65 +53,65 @@ bool CScraperUrl::Parse()
 
 bool CScraperUrl::ParseElement(const TiXmlElement* element)
 {
-	if (!element || !element->FirstChild()) return false;
+  if (!element || !element->FirstChild()) return false;
 
-	std::stringstream stream;
-	stream << *element;
-	m_xml += stream.str();
-	bool bHasChilds = false;
-	if (element->FirstChildElement("thumb")) 
-	{
-		element = element->FirstChildElement("thumb");
-		bHasChilds = true;
-	}
-	else if (element->FirstChildElement("url")) 
-	{
-		element = element->FirstChildElement("url");
-		bHasChilds = true;
-	}
-	while (element)
-	{
-		SUrlEntry url;
-		url.m_url = element->FirstChild()->Value();
-		const char* pSpoof = element->Attribute("spoof");
-		if (pSpoof)
-			url.m_spoof = pSpoof;
-		const char* szPost=element->Attribute("post");
-		if (szPost && stricmp(szPost,"yes") == 0)
-			url.m_post = true;
-		else
-			url.m_post = false;
+  std::stringstream stream;
+  stream << *element;
+  m_xml += stream.str();
+  bool bHasChilds = false;
+  if (element->FirstChildElement("thumb")) 
+  {
+    element = element->FirstChildElement("thumb");
+    bHasChilds = true;
+  }
+  else if (element->FirstChildElement("url")) 
+  {
+    element = element->FirstChildElement("url");
+    bHasChilds = true;
+  }
+  while (element)
+  {
+    SUrlEntry url;
+    url.m_url = element->FirstChild()->Value();
+    const char* pSpoof = element->Attribute("spoof");
+    if (pSpoof)
+      url.m_spoof = pSpoof;
+    const char* szPost=element->Attribute("post");
+    if (szPost && stricmp(szPost,"yes") == 0)
+      url.m_post = true;
+    else
+      url.m_post = false;
     const char* pCache = element->Attribute("cache");
     if (pCache)
       url.m_cache = pCache;
 
-		const char* szType = element->Attribute("type");
-		url.m_type = URL_TYPE_GENERAL;
-		if (szType && stricmp(szType,"season") == 0)
-		{
-			url.m_type = URL_TYPE_SEASON;
-			const char* szSeason = element->Attribute("season");
-			if (szSeason)
-				url.m_season = atoi(szSeason);
-			else
-				url.m_season = -1;
-		}
-		else
-			url.m_season = -1;
+    const char* szType = element->Attribute("type");
+    url.m_type = URL_TYPE_GENERAL;
+    if (szType && stricmp(szType,"season") == 0)
+    {
+      url.m_type = URL_TYPE_SEASON;
+      const char* szSeason = element->Attribute("season");
+      if (szSeason)
+        url.m_season = atoi(szSeason);
+      else
+        url.m_season = -1;
+    }
+    else
+      url.m_season = -1;
 
-		m_url.push_back(url);
-		if (bHasChilds)
-		{
-			const TiXmlElement* temp = element->NextSiblingElement("thumb");
-			if (temp)
-				element = temp;
-			else
-				element = element->NextSiblingElement("url");
-		}
-		else
-			element = NULL;
-	}
-	return true;
+    m_url.push_back(url);
+    if (bHasChilds)
+    {
+      const TiXmlElement* temp = element->NextSiblingElement("thumb");
+      if (temp)
+        element = temp;
+      else
+        element = element->NextSiblingElement("url");
+    }
+    else
+      element = NULL;
+  }
+  return true;
 }
 
 bool CScraperUrl::ParseString(CStdString strUrl)
@@ -556,7 +556,7 @@ void CScraperParser::ParseNext(TiXmlElement* element)
       TiXmlElement* pChildReg = pReg->FirstChildElement("clear");
       if (pChildReg)
         ParseNext(pChildReg);
-    }	
+    }  
 
     int iDest = 1;
     bool bAppend = false;

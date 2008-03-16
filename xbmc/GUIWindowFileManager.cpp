@@ -1284,8 +1284,8 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     int btn_NewFolder = pMenu->AddButton(20309); // New Folder
     int btn_Size = pMenu->AddButton(13393); // Calculate Size
 
-    int btn_Settings = pMenu->AddButton(5);			// Settings
-    int btn_GoToRoot = pMenu->AddButton(20128);	// Go To Root
+    int btn_Settings = pMenu->AddButton(5);     // Settings
+    int btn_GoToRoot = pMenu->AddButton(20128); // Go To Root
     int btn_Switch = pMenu->AddButton(523);     // switch media
 
     pMenu->EnableButton(btn_SelectAll, item >= 0);
@@ -1637,7 +1637,7 @@ bool CGUIWindowFileManager::MoveItem(const CFileItem *pItem, const CStdString& s
   CLog::Log(LOGDEBUG,"FileManager::MoveItem: %s",pItem->GetLabel().c_str());
 
   // prompt user for confirmation of file/folder moving
-  //if (CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(121),g_localizeStrings.Get(124),  CUtil::GetFileName(pItem->m_strPath), ""))	return false;
+  //if (CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(121),g_localizeStrings.Get(124),  CUtil::GetFileName(pItem->m_strPath), "")) return false;
   if (!bSilent)
     if (!CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(121),g_localizeStrings.Get(124),  CUtil::GetFileName(pItem->m_strPath), ""))
       return false;

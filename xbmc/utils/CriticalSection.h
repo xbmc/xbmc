@@ -20,15 +20,14 @@
 class CCriticalSection
 {
 public:
+  // Constructor/destructor.
+  CCriticalSection();
+  virtual ~CCriticalSection();
 
-	// Constructor/destructor.
-	CCriticalSection();
-	virtual ~CCriticalSection();
-	
-	XCriticalSection& getCriticalSection() { return m_criticalSection; }
+  XCriticalSection& getCriticalSection() { return m_criticalSection; }
 
 private:
-	XCriticalSection m_criticalSection;
+  XCriticalSection m_criticalSection;
 };
 
 // The CCritical section overloads.

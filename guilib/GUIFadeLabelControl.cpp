@@ -45,14 +45,14 @@ void CGUIFadeLabelControl::DoRender(DWORD currentTime)
 
 void CGUIFadeLabelControl::Render()
 {
-	if (m_infoLabels.size() == 0)
+  if (m_infoLabels.size() == 0)
   { // nothing to render
     CGUIControl::Render();
     return ;
   }
 
-	if (m_currentLabel >= m_infoLabels.size() )
-		m_currentLabel = 0;
+  if (m_currentLabel >= m_infoLabels.size() )
+    m_currentLabel = 0;
 
   if (m_textLayout.Update(m_infoLabels[m_currentLabel].GetLabel(m_dwParentID)))
   { // changed label - update our suffix based on length of available text

@@ -482,8 +482,8 @@ void CGUIWindowManager::Process_Internal(bool renderOnly /*= false*/)
   {
     if (!renderOnly)
     {
-	    m_pCallback->Process();
-	    m_pCallback->FrameMove();
+      m_pCallback->Process();
+      m_pCallback->FrameMove();
     }
     m_pCallback->Render();
 #if defined(WIN32) && !defined(HAS_SDL)

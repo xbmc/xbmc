@@ -491,7 +491,7 @@ CStdString CGUIPassword::GetSMBAuthFilename(const CStdString& strAuth)
   if(it != m_mapSMBPasswordCache.end())
   {
     // if share found in cache use it to supply username and password
-    CURL url(it->second);		// map value contains the full url of the originally authenticated share. map key is just the share
+    CURL url(it->second);  // map value contains the full url of the originally authenticated share. map key is just the share
     CStdString strPassword = url.GetPassWord();
 
     CStdString strUserName = url.GetUserName();

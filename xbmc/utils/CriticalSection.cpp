@@ -23,13 +23,13 @@
 //////////////////////////////////////////////////////////////////////
 CCriticalSection::CCriticalSection()
 {
-	m_criticalSection.Initialize();
+  m_criticalSection.Initialize();
 }
 
 //////////////////////////////////////////////////////////////////////
 CCriticalSection::~CCriticalSection()
 {
-	m_criticalSection.Destroy();
+  m_criticalSection.Destroy();
 }
 
 // The C API.

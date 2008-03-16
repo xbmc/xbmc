@@ -486,7 +486,7 @@ void CPlayListPlayer::ReShuffle(int iPlaylist, int iPosition)
       (g_application.IsPlayingVideo() && iPlaylist == PLAYLIST_VIDEO)
       )
     {
-	    g_playlistPlayer.GetPlaylist(iPlaylist).Shuffle(m_iCurrentSong + 2);
+      g_playlistPlayer.GetPlaylist(iPlaylist).Shuffle(m_iCurrentSong + 2);
     }
   }
   // otherwise, shuffle from the passed position
@@ -504,8 +504,8 @@ void CPlayListPlayer::Add(int iPlaylist, CPlayList::CPlayListItem& item)
   CPlayList& list = GetPlaylist(iPlaylist);
   int iSize = list.size();
   list.Add(item);
-	if (list.IsShuffled())
-		ReShuffle(iPlaylist, iSize);
+  if (list.IsShuffled())
+    ReShuffle(iPlaylist, iSize);
 }
 
 void CPlayListPlayer::Add(int iPlaylist, CPlayList& playlist)
@@ -515,8 +515,8 @@ void CPlayListPlayer::Add(int iPlaylist, CPlayList& playlist)
   CPlayList& list = GetPlaylist(iPlaylist);
   int iSize = list.size();
   list.Add(playlist);
-	if (list.IsShuffled())
-		ReShuffle(iPlaylist, iSize);
+  if (list.IsShuffled())
+    ReShuffle(iPlaylist, iSize);
 }
 
 void CPlayListPlayer::Add(int iPlaylist, CFileItem *pItem)
@@ -526,8 +526,8 @@ void CPlayListPlayer::Add(int iPlaylist, CFileItem *pItem)
   CPlayList& list = GetPlaylist(iPlaylist);
   int iSize = list.size();
   list.Add(pItem);
-	if (list.IsShuffled())
-		ReShuffle(iPlaylist, iSize);
+  if (list.IsShuffled())
+    ReShuffle(iPlaylist, iSize);
 }
 
 void CPlayListPlayer::Add(int iPlaylist, CFileItemList& items)
@@ -537,6 +537,7 @@ void CPlayListPlayer::Add(int iPlaylist, CFileItemList& items)
   CPlayList& list = GetPlaylist(iPlaylist);
   int iSize = list.size();
   list.Add(items);
-	if (list.IsShuffled())
-		ReShuffle(iPlaylist, iSize);
+  if (list.IsShuffled())
+    ReShuffle(iPlaylist, iSize);
 }
+

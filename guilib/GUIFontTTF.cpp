@@ -622,8 +622,8 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
 #endif
       
 #else
-		  SDL_Surface* newTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, m_textureWidth, newHeight, 32,
-        0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+      SDL_Surface* newTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, m_textureWidth, newHeight, 32,
+                                                     0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 #endif
       if (!newTexture || newTexture->pixels == NULL)
       {
@@ -920,14 +920,14 @@ struct CUSTOMVERTEX {
   float alphaFactor = (float) ((dwColor & 0xff000000) >> 24) / 255;
   for (int y = 0; y < tempSurface->h; y++)
   {
-  	 for (int x = 0; x < tempSurface->w; x++)
-  	 {
+    for (int x = 0; x < tempSurface->w; x++)
+    {
       alpha = (int) (alphaFactor * (((unsigned int) src[x] & 0xff000000) >> 24));
       dst[x] = (alpha << 24) | (dwColor & 0x00ffffff);
-	 }
-	   
-	src += (m_texture->pitch / 4);
-	dst += tempSurface->w;
+    }
+   
+    src += (m_texture->pitch / 4);
+    dst += tempSurface->w;
   }
   
   SDL_UnlockSurface(tempSurface);

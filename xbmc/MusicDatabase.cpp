@@ -880,35 +880,36 @@ bool CMusicDatabase::SearchArtists(const CStdString& search, CFileItemList &arti
 }
 
 bool CMusicDatabase::GetArbitraryQuery(const CStdString& strQuery, const CStdString& strOpenRecordSet, const CStdString& strCloseRecordSet,
-	const CStdString& strOpenRecord, const CStdString& strCloseRecord, const CStdString& strOpenField, const CStdString& strCloseField, CStdString& strResult)
+                                       const CStdString& strOpenRecord, const CStdString& strCloseRecord, const CStdString& strOpenField, 
+                                       const CStdString& strCloseField, CStdString& strResult)
 {
   try
   {
     strResult = "";
-	if (NULL == m_pDB.get()) return false;
-	if (NULL == m_pDS.get()) return false;
-	CStdString strSQL=FormatSQL(strQuery);
-	if (!m_pDS->query(strSQL.c_str()))
-	{
-	  strResult = m_pDB->getErrorMsg();
-	  return false;
-	}
-	strResult=strOpenRecordSet;
-	while (!m_pDS->eof())
-	{
-	  strResult += strOpenRecord;
-	  for (int i=0; i<m_pDS->fieldCount(); i++)
-	  {
-	    strResult += strOpenField;
-	    strResult += m_pDS->fv(i).get_asString();
-	    strResult += strCloseField;
-	  }
-	  strResult += strCloseRecord;
-	  m_pDS->next();
-	}
-	strResult += strCloseRecordSet;
-	m_pDS->close();
-	return true;
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+    CStdString strSQL=FormatSQL(strQuery);
+    if (!m_pDS->query(strSQL.c_str()))
+    {
+      strResult = m_pDB->getErrorMsg();
+      return false;
+    }
+    strResult=strOpenRecordSet;
+    while (!m_pDS->eof())
+    {
+      strResult += strOpenRecord;
+      for (int i=0; i<m_pDS->fieldCount(); i++)
+      {
+        strResult += strOpenField;
+        strResult += m_pDS->fv(i).get_asString();
+        strResult += strCloseField;
+      }
+      strResult += strCloseRecord;
+      m_pDS->next();
+    }
+    strResult += strCloseRecordSet;
+    m_pDS->close();
+    return true;
   }
   catch (...)
   {
@@ -916,8 +917,8 @@ bool CMusicDatabase::GetArbitraryQuery(const CStdString& strQuery, const CStdStr
   }
   try
   {
-	if (NULL == m_pDB.get()) return false;
-	strResult = m_pDB->getErrorMsg();
+    if (NULL == m_pDB.get()) return false;
+      strResult = m_pDB->getErrorMsg();
   }
   catch (...)
   {

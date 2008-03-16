@@ -1390,7 +1390,7 @@ CStdString CTuxBoxUtil::GetSubMode(int iMode, CStdString& strXMLRootString, CStd
   //Todo: add a setting: "Don't Use Request mode" to advanced.xml
   
   // MODE: 0 = TV, 1 = Radio, 2 = Data, 3 = Movies, 4 = Root
-	// SUBMODE: 0 = n/a, 1 = All, 2 = Satellites, 2 = Providers, 4 = Bouquets
+  // SUBMODE: 0 = n/a, 1 = All, 2 = Satellites, 2 = Providers, 4 = Bouquets
   // Default Submode
   int iSubmode = 4;
   CStdString strSubMode;

@@ -209,9 +209,9 @@ bool CPicture::CacheSkinImage(const CStdString &srcFile, const CStdString &destF
         success = pic.CreateThumbnailFromSurface((BYTE *)lr.pBits, width, height, lr.Pitch, destFile);
         texture->UnlockRect(0);
 #else
-	SDL_LockSurface(texture);
+        SDL_LockSurface(texture);
         success = pic.CreateThumbnailFromSurface((BYTE *)texture->pixels, width, height, texture->pitch, destFile);
-	SDL_UnlockSurface(texture);
+        SDL_UnlockSurface(texture);
 #endif
       }
       g_TextureManager.ReleaseTexture(srcFile, 0);

@@ -43,11 +43,11 @@
 
   typedef enum _D3DFORMAT
   {
-	  D3DFMT_A8R8G8B8					= 0x00000006,
-	  D3DFMT_DXT1					= 0x0000000C,
-	  D3DFMT_DXT2					= 0x0000000E,					
-	  D3DFMT_DXT4					= 0x0000000F,
-	  D3DFMT_UNKNOWN					= 0xFFFFFFFF
+    D3DFMT_A8R8G8B8 = 0x00000006,
+    D3DFMT_DXT1     = 0x0000000C,
+    D3DFMT_DXT2     = 0x0000000E,          
+    D3DFMT_DXT4     = 0x0000000F,
+    D3DFMT_UNKNOWN  = 0xFFFFFFFF
   } D3DFORMAT;
 
   typedef enum D3DRESOURCETYPE
@@ -123,7 +123,6 @@
               float        _21, _22, _23, _24;
               float        _31, _32, _33, _34;
               float        _41, _42, _43, _44;
-
           };
           float m[4][4];
       };

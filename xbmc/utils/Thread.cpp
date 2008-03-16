@@ -73,7 +73,7 @@ CThread::CThread()
   // Initialize thread local storage and local thread pointer.
   pthread_once(&keyOnce, MakeTlsKeys);
 #endif
-	
+
   m_bStop = false;
 
   m_bAutoDelete = false;
@@ -172,7 +172,7 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   // Start time counting from now by keeping track of the offset.
   QueryPerformanceCounter(&pThread->m_startTime, true);
 #endif
-	
+
   try 
   {
     pThread->OnStartup();
@@ -384,7 +384,7 @@ void CThread::Process()
 #ifdef __APPLE__
 CThread* CThread::GetCurrent()
 {
-	return (CThread* )pthread_getspecific(tlsLocalThread);
+  return (CThread* )pthread_getspecific(tlsLocalThread);
 }
 #endif
 

@@ -291,7 +291,7 @@ bool CGUIWindowVideoFiles::OnPlayMedia(int iItem)
     return CAutorun::PlayDisc();
 
   if (pItem->m_bIsShareOrDrive)
-  	return false;
+    return false;
 
   if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026)) // 'add source button' in empty root
   {
@@ -564,7 +564,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
               if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
                 buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
               else
-                buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);	// Stop Scanning
+                buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353); // Stop Scanning
           }
         }
       }

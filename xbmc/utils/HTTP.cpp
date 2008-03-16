@@ -30,50 +30,57 @@ using namespace std;
  */
 
 int base64_encode(const void *enc, int encLen, char *out, int outMax) {
-	static const char	b64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+  static const char b64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 
-	unsigned char		*encBuf;
-	int			outLen;
-	unsigned int		bits;
-	unsigned int		shift;
+  unsigned char *encBuf;
+  int           outLen;
+  unsigned int  bits;
+  unsigned int  shift;
 
-	encBuf = (unsigned char*)enc;
-	outLen = 0;
-	bits = 0;
-	shift = 0;
+  encBuf = (unsigned char*)enc;
+  outLen = 0;
+  bits = 0;
+  shift = 0;
 
-	while( outLen<outMax ) {
-		if( encLen>0 ) {
-			// Shift in byte
-			bits <<= 8;
-			bits |= *encBuf;
-			shift += 8;
-			// Next byte
-			encBuf++;
-			encLen--;
-		} else if( shift>0 ) {
-			// Pad last bits to 6 bits - will end next loop
-			bits <<= 6 - shift;
-			shift = 6;
-		} else {
-			// Terminate with Mime style '='
-			*out = '=';
-			outLen++;
+  while (outLen<outMax) 
+  {
+    if (encLen>0) 
+    {
+      // Shift in byte
+      bits <<= 8;
+      bits |= *encBuf;
+      shift += 8;
+      // Next byte
+      encBuf++;
+      encLen--;
+    } 
+    else if (shift>0) 
+    {
+      // Pad last bits to 6 bits - will end next loop
+      bits <<= 6 - shift;
+      shift = 6;
+    } 
+    else 
+    {
+      // Terminate with Mime style '='
+      *out = '=';
+      outLen++;
 
-			return outLen;
-		}
+      return outLen;
+    }
 
-		// Encode 6 bit segments
-		while( shift>=6 ) {
-			shift -= 6;
-			*out = b64[ (bits >> shift) & 0x3F ];
-			out++;
-			outLen++;
-		}
-	}
+    // Encode 6 bit segments
+    while (shift>=6) 
+    {
+      shift -= 6;
+      *out = b64[ (bits >> shift) & 0x3F ];
+      out++;
+      outLen++;
+    }
+  }
 
-	// Output overflow
-	return -1;
+  // Output overflow
+  return -1;
 }
 
 CHTTP::CHTTP(const string& strProxyServer, int iProxyPort)
@@ -465,7 +472,7 @@ bool CHTTP::Connect()
   while (!m_cancelled)
   {
     fd_set socks;
-    FD_ZERO(&socks);	
+    FD_ZERO(&socks);
     FD_SET((SOCKET)m_socket, &socks);
     
     struct timeval timeout;  /* Timeout for select */
@@ -485,7 +492,7 @@ bool CHTTP::Connect()
     }
   }
   
-  // Check if the socket connected 	
+  // Check if the socket connected
   int value = 0;
   socklen_t len = sizeof(value);
   if (getsockopt((SOCKET)m_socket, SOL_SOCKET, SO_ERROR, (char *)&value, &len) == -1)
@@ -696,7 +703,7 @@ bool CHTTP::Send(char* pBuffer, int iLen)
     n = -1;
 
     fd_set socks;
-    FD_ZERO(&socks);	
+    FD_ZERO(&socks);
     FD_SET((SOCKET)m_socket, &socks);
     struct timeval timeout;  /* Timeout for select */
     timeout.tv_sec = 0;
@@ -801,7 +808,7 @@ bool CHTTP::Recv(int iLen)
       n = -1;
       
       fd_set socks;
-      FD_ZERO(&socks);	
+      FD_ZERO(&socks);
       FD_SET((SOCKET)m_socket, &socks);
       struct timeval timeout;  /* Timeout for select */
       timeout.tv_sec = 5;

@@ -19,7 +19,7 @@ typedef struct tagRGBQUAD {
 #define EXIF_MAX_COMMENT 1000
 
 typedef struct tag_ExifInfo {
-	char  Version      [5];
+  char  Version      [5];
   char  CameraMake   [32];
   char  CameraModel  [40];
   char  DateTime     [20];
@@ -39,19 +39,19 @@ typedef struct tag_ExifInfo {
   int   ExposureProgram;
   int   ISOequivalent;
   int   CompressionLevel;
-	float FocalplaneXRes;
-	float FocalplaneYRes;
-	float FocalplaneUnits;
-	float Xresolution;
-	float Yresolution;
-	float ResolutionUnit;
-	float Brightness;
+  float FocalplaneXRes;
+  float FocalplaneYRes;
+  float FocalplaneUnits;
+  float Xresolution;
+  float Yresolution;
+  float ResolutionUnit;
+  float Brightness;
   char  Comments[EXIF_MAX_COMMENT];
 
   unsigned char * ThumbnailPointer;  /* Pointer at the thumbnail */
   unsigned ThumbnailSize;     /* Size of thumbnail. */
 
-	bool  IsExif;
+  bool  IsExif;
 } EXIFINFO;
   
 struct ImageInfo

@@ -49,7 +49,7 @@ public:
     Address address() const { return mBadAddress; };    
     virtual void writelog(const char *prefix) const;
 protected:
-	friend void win32_exception::translate(unsigned code, EXCEPTION_POINTERS* info);
+    friend void win32_exception::translate(unsigned code, EXCEPTION_POINTERS* info);
 private:
     bool mIsWrite;
     Address mBadAddress;
