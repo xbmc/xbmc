@@ -146,6 +146,7 @@ private:
   IDirectSoundStream *m_pStream[2];
 #elif !defined(_LINUX)
   LPDIRECTSOUNDBUFFER m_pStream[2];
+  DWORD m_nextPacket[2];
 #elif defined(__APPLE__)
   PaStream*         m_pStream[2];
   CPCMAmplifier 	m_amp[2];

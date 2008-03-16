@@ -11,9 +11,7 @@
 
 #ifdef HAS_AUDIO
 
-#ifndef HAS_XBOX_AUDIO
 #include "mmreg.h"
-#endif
 
 #define VOLUME_FFWD_MUTE 900 // 9dB
 
@@ -144,11 +142,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   m_bQueueFailed = false;
 
   m_decoder[m_currentDecoder].Start();  // start playback
-#ifdef HAS_XBOX_AUDIO
-  m_pStream[m_currentStream]->Pause(DSSTREAMPAUSE_RESUME);
-#else
   m_pStream[m_currentStream]->Play(0, 0, DSBPLAY_LOOPING);
-#endif
 
   return true;
 }
@@ -270,28 +264,16 @@ void PAPlayer::FreeStream(int stream)
 {
   if (m_pStream[stream])
   {
-#ifdef HAS_XBOX_AUDIO
-    m_pStream[stream]->Flush();
-    m_pStream[stream]->Pause(DSSTREAMPAUSE_PAUSE);  // do we need this?
-#else
     m_pStream[stream]->Stop();
-#endif
     m_pStream[stream]->Release();
   }
   m_pStream[stream] = NULL;
 
   if (m_packet[stream][0].packet)
-#ifdef _XBOX
-    XPhysicalFree(m_packet[stream][0].packet);
-#else
     free(m_packet[stream][0].packet);
-#endif
   for (int i = 0; i < PACKET_COUNT; i++)
   {
     m_packet[stream][i].packet = NULL;
-#ifdef HAS_XBOX_AUDIO
-    m_packet[stream][i].status = XMEDIAPACKET_STATUS_SUCCESS;
-#endif
   }
 
   m_resampler[stream].DeInitialize();
@@ -306,10 +288,10 @@ void PAPlayer::SetupDirectSound(int channels)
   if (!pDSound)
     return;
   // Set the default mixbins headroom to appropriate level as set in the settings file (to allow the maximum volume)
-#ifdef HAS_XBOX_AUDIO
+/*#ifdef HAS_XBOX_AUDIO
   for (DWORD i = 0; i < 8;i++)
     pDSound->SetMixBinHeadroom(i, DWORD(g_advancedSettings.m_audioHeadRoom / 6));
-#endif
+#endif*/
 }
 
 bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersample, CStdString codec)
@@ -318,11 +300,7 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
 
   // Create our audio buffers
   // XphysicalAlloc has page (4k) granularity, so allocate all the buffers in one chunk
-#ifdef _XBOX
-  m_packet[num][0].packet = (BYTE*)XPhysicalAlloc(PACKET_SIZE * PACKET_COUNT, MAXULONG_PTR, 0, PAGE_READWRITE | PAGE_WRITECOMBINE);
-#else
   m_packet[num][0].packet = (BYTE*)malloc(PACKET_SIZE * PACKET_COUNT);
-#endif
   for (int i = 1; i < PACKET_COUNT ; i++)
     m_packet[num][i].packet = m_packet[num][i - 1].packet + PACKET_SIZE;
 
@@ -347,14 +325,10 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
   wfxex.Format.wFormatTag = WAVE_FORMAT_EXTENSIBLE;
   wfxex.Format.cbSize = sizeof(WAVEFORMATEXTENSIBLE) - sizeof(WAVEFORMATEX) ;
   wfxex.Samples.wReserved = 0;
-#ifdef HAS_XBOX_AUDIO
-//#define KSDATAFORMAT_SUBTYPE_PCM 0;//DEFINE_GUIDNAMED(KSDATAFORMAT_SUBTYPE_PCM);
-  wfxex.SubFormat = KSDATAFORMAT_SUBTYPE_PCM;
-#endif
 
   // setup the mixbins
   DWORD dwCMask;
-#ifdef HAS_XBOX_AUDIO
+/*#ifdef HAS_XBOX_AUDIO
   DSMIXBINS dsmb;
   DSMIXBINVOLUMEPAIR dsmbvp8[8];
   int iMixBinCount;
@@ -365,23 +339,11 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
     g_audioContext.GetMixBin(dsmbvp8, &iMixBinCount, &dwCMask, DSMIXBINTYPE_STANDARD, channels);
   dsmb.dwMixBinCount = iMixBinCount;
   dsmb.lpMixBinVolumePairs = dsmbvp8;
-#else
+#else*/
   dwCMask = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
-#endif
   wfxex.dwChannelMask = dwCMask;
 
   // Set up the stream descriptor so we can create our streams
-#ifdef HAS_XBOX_AUDIO
-  DSSTREAMDESC dssd;
-  memset(&dssd, 0, sizeof(dssd));
-
-  dssd.dwFlags = DSSTREAMCAPS_ACCURATENOTIFY; // xbmp=0
-  dssd.dwMaxAttachedPackets   = PACKET_COUNT;
-  dssd.lpwfxFormat            = (WAVEFORMATEX*)&wfxex;
-  dssd.lpfnCallback           = StaticStreamCallback;
-  dssd.lpvContext             = this;
-  dssd.lpMixBins              = &dsmb;
-#else
   DSBUFFERDESC dssd;
   memset(&dssd, 0, sizeof(dssd));
 
@@ -390,42 +352,22 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
   dssd.dwBufferBytes = PACKET_SIZE * PACKET_COUNT;
   dssd.lpwfxFormat = &wfx;
   //dssd.guid3DAlgorithm = DS3DALG_DEFAULT;
-#endif
 
   // Create the streams
-#ifdef HAS_XBOX_AUDIO
-  HRESULT hr = DirectSoundCreateStream( &dssd, (LPDIRECTSOUNDSTREAM *)&m_pStream[num] );
-#else
   LPDIRECTSOUND pDSound=g_audioContext.GetDirectSoundDevice();
   if (!pDSound)
     return false;
   HRESULT hr = pDSound->CreateSoundBuffer( &dssd, &m_pStream[num], NULL);
-#endif
   if( FAILED( hr ) )
     return false;
 
-#ifdef HAS_XBOX_AUDIO
-  // Set up amplitude envelopes to handle the fade-in/fade-out
-  DSENVELOPEDESC dsed = {0};
-  dsed.dwEG           = DSEG_AMPLITUDE;
-  dsed.dwMode         = DSEG_MODE_ATTACK;
-  dsed.dwAttack       = DWORD( 48000 * FADE_TIME / 512 );
-  dsed.dwRelease      = DWORD( 48000 * FADE_TIME / 512 );
-  dsed.dwSustain      = 255;
-
-  m_pStream[num]->SetEG(&dsed);
-  m_pStream[num]->SetHeadroom(0);
-#endif
   m_pStream[num]->SetVolume(g_stSettings.m_nVolumeLevel);
-#ifdef HAS_XBOX_AUDIO
-  m_pStream[num]->Pause(DSSTREAMPAUSE_PAUSE);
-#else
   m_pStream[num]->Stop();
-#endif
 
   // TODO: How do we best handle the callback, given that our samplerate etc. may be
   // changing at this point?
 
+  m_nextPacket[num] = -1;
   // fire off our init to our callback
   if (m_pCallback)
     m_pCallback->OnInitialize(channels, m_SampleRateOutput, m_BitsPerSampleOutput);
@@ -441,28 +383,16 @@ void PAPlayer::Pause()
 
   if (m_bPaused)
   { // pause both streams if we're crossfading
-#ifdef HAS_XBOX_AUDIO
-    if (m_pStream[m_currentStream]) m_pStream[m_currentStream]->Pause(DSSTREAMPAUSE_PAUSE);
-    if (m_currentlyCrossFading && m_pStream[1 - m_currentStream])
-      m_pStream[1 - m_currentStream]->Pause(DSSTREAMPAUSE_PAUSE);
-#else
     if (m_pStream[m_currentStream]) m_pStream[m_currentStream]->Stop();
     if (m_currentlyCrossFading && m_pStream[1 - m_currentStream])
       m_pStream[1 - m_currentStream]->Stop();
-#endif
     CLog::Log(LOGDEBUG, "PAP Player: Playback paused");
   }
   else
   {
-#ifdef HAS_XBOX_AUDIO
-    if (m_pStream[m_currentStream]) m_pStream[m_currentStream]->Pause(DSSTREAMPAUSE_RESUME);
-    if (m_currentlyCrossFading && m_pStream[1 - m_currentStream])
-      m_pStream[1 - m_currentStream]->Pause(DSSTREAMPAUSE_RESUME);
-#else
     if (m_pStream[m_currentStream]) m_pStream[m_currentStream]->Play(0, 0, DSBPLAY_LOOPING);
     if (m_currentlyCrossFading && m_pStream[1 - m_currentStream])
       m_pStream[1 - m_currentStream]->Play(0, 0, DSBPLAY_LOOPING);
-#endif
     CLog::Log(LOGDEBUG, "PAP Player: Playback resumed");
   }
 }
@@ -595,9 +525,8 @@ bool PAPlayer::ProcessPAP()
           m_currentStream = 1 - m_currentStream;
           CLog::Log(LOGDEBUG, "Starting Crossfade - resuming stream %i", m_currentStream);
 
-#ifdef HAS_XBOX_AUDIO
-          m_pStream[m_currentStream]->Pause(DSSTREAMPAUSE_RESUME);
-#endif
+          m_pStream[m_currentStream]->Play(0, 0, DSBPLAY_LOOPING);
+
           m_callback.OnPlayBackStarted();
           m_timeOffset = m_nextFile.m_lStartOffset * 1000 / 75;
           m_bytesSentOut = 0;
@@ -640,11 +569,8 @@ bool PAPlayer::ProcessPAP()
                 CLog::Log(LOGERROR, "PAPlayer: Error creating stream!");
                 return false;
               }
-#ifdef HAS_XBOX_AUDIO
-              m_pStream[m_currentStream]->Pause(DSSTREAMPAUSE_RESUME);
-#else
+
               m_pStream[m_currentStream]->Play(0, 0, DSBPLAY_LOOPING);
-#endif
             }
             else if (samplerate != samplerate2 || bitspersample != bitspersample2)
             {
@@ -896,7 +822,7 @@ void PAPlayer::FlushStreams()
     {
       DWORD status;
       m_pStream[stream]->GetStatus(&status);
-#ifdef HAS_XBOX_AUDIO
+/*#ifdef HAS_XBOX_AUDIO
       m_pStream[stream]->Flush();
       for (int i = PACKET_COUNT; i; i--)
         m_packet[stream][i].status = XMEDIAPACKET_STATUS_SUCCESS;
@@ -906,7 +832,7 @@ void PAPlayer::FlushStreams()
         CLog::Log(LOGINFO, "Pausing stream %i after Flush()", stream);
         m_pStream[stream]->Pause(DSSTREAMPAUSE_PAUSE);
       }
-#endif
+#endif*/
     }
   }
 }
@@ -977,73 +903,18 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
 
   bool ret = false;
   // find a free packet and fill it with the decoded data
-#ifdef HAS_XBOX_AUDIO
-  DWORD dwPacket;
-  while (FindFreePacket(stream, &dwPacket))
-  {
-    XMEDIAPACKET xmp;
-    ZeroMemory( &xmp, sizeof( XMEDIAPACKET ) );
-    // have a free packet - grab some data from our resampler to fill it with
-    if (m_resampler[stream].GetData(m_packet[stream][dwPacket].packet))
-    {
-      // got some data from our resampler - construct audio packet
-      m_packet[stream][dwPacket].length = PACKET_SIZE;
-      m_packet[stream][dwPacket].status = XMEDIAPACKET_STATUS_PENDING;
-      m_packet[stream][dwPacket].stream = stream;
-      xmp.pContext          = &m_packet[stream][dwPacket];
-      xmp.pvBuffer          = m_packet[stream][dwPacket].packet;
-      xmp.dwMaxSize         = m_packet[stream][dwPacket].length;
-      xmp.pdwCompletedSize  = NULL;
-      xmp.prtTimestamp      = NULL;
-      xmp.pdwStatus         = &m_packet[stream][dwPacket].status;
-//      CLog::Log(LOGINFO, "Adding packet %i to stream %i", dwPacket, stream);
-      if (DS_OK != m_pStream[stream]->Process(&xmp, NULL))
-      { // bad news :(
-        CLog::Log(LOGERROR, "Error adding packet %i to stream %i", dwPacket, stream);
-        return false;
-      }
-      // something done
-      ret = true;
-    }
-    else
-    { // resampler wants more data - let's feed it
-      int amount = m_resampler[stream].GetInputSamples();
-      if (amount <= 0 || amount > (int)dec.GetDataSize())
-      { // doesn't need anything
-        break;
-      }
-      // needs some data - let's feed it
-      m_resampler[stream].PutFloatData((float *)dec.GetData(amount), amount);
-      ret = true;
-    }
-  }
-#else
-  static DWORD nextPacket = -1;
-  static DWORD prevPlayCursor = -1;
   DWORD playCursor, writeCursor;
   if (SUCCEEDED(m_pStream[stream]->GetCurrentPosition(&playCursor, &writeCursor)))
   {
-    // TODO: Provide feedback to the visualisation
-    // update our play position
-    if (prevPlayCursor == -1)
-    {
-      prevPlayCursor = playCursor;
-      m_bytesSentOut = 0;
-    }
-    if (playCursor >= prevPlayCursor)
-      m_bytesSentOut += (playCursor - prevPlayCursor);
-    else
-      m_bytesSentOut += (playCursor + PACKET_SIZE*PACKET_COUNT - prevPlayCursor);
-    prevPlayCursor = playCursor;
     // we may write from writeCursor to playCursor - do it in chunks
     // round up writecursor and down playcursor
     DWORD writePos = writeCursor / PACKET_SIZE + 1;
     DWORD playPos = playCursor / PACKET_SIZE;
-    // special case starting
-    if (nextPacket == -1)
-    { // starting...
-      nextPacket = writePos;
+    if (m_nextPacket[stream] == -1)
+    {
+      m_nextPacket[stream] = writePos;
     }
+    DWORD nextPacket = m_nextPacket[stream];
     // we must write into nextPacket
     while ((playPos < writePos && (nextPacket >= writePos || nextPacket < playPos)) ||
            (playPos > writePos && (nextPacket >= writePos && nextPacket < playPos)))
@@ -1055,9 +926,8 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
         m_packet[stream][nextPacket].status = 1;//XMEDIAPACKET_STATUS_PENDING;
         m_packet[stream][nextPacket].stream = stream;
 
-#ifdef _WIN32PC
+        //TODO: is this the right place to call back? maybe when it has played?
         StreamCallback(&m_packet[stream][nextPacket].packet);
-#endif
 
         DWORD  offset = nextPacket * PACKET_SIZE;
         LPVOID start;
@@ -1078,7 +948,8 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
         m_pStream[stream]->Unlock(start, size, startWrap, sizeWrap);
         // something done
         ret = true;
-        nextPacket = (nextPacket + 1) % PACKET_COUNT;
+        m_nextPacket[stream] = (nextPacket + 1) % PACKET_COUNT;
+        nextPacket = m_nextPacket[stream];
       }
       else
       { // resampler wants more data - let's feed it
@@ -1093,7 +964,6 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
       }
     }
   }
-#endif
   return ret;
 }
 
@@ -1226,11 +1096,7 @@ void PAPlayer::WaitForStream()
     {
       m_pStream[m_currentStream]->GetStatus(&status);
     }
-#ifdef HAS_XBOX_AUDIO
-    while (status & DSSTREAMSTATUS_PLAYING);
-#else
-    while (0);
-#endif
+    while (status & DSBSTATUS_PLAYING);
   }
 }
 
