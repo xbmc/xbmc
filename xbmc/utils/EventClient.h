@@ -39,6 +39,7 @@ namespace EVENTCLIENT
       m_fAmount    = fAmount;
       m_bRepeat    = bRepeat;
       m_bActive    = true;
+      Load();
     }
 
     void Reset()     { m_bActive = false; }
@@ -46,6 +47,8 @@ namespace EVENTCLIENT
     bool Active()    { return m_bActive; }
     bool Repeat()    { return m_bRepeat; }
     unsigned short KeyCode()   { return m_iKeyCode; }
+    float Amount()   { return m_fAmount; }
+    void Load();
 
     // data
     unsigned short    m_iKeyCode;

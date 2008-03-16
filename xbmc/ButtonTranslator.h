@@ -4,7 +4,9 @@
 #include <map>
 #include "Key.h"
 #include "tinyXML/tinyxml.h" 
-
+#ifdef HAS_EVENT_SERVER
+#include "EventClient.h"
+#endif
 #pragma once
 
 struct CButtonAction
@@ -15,6 +17,10 @@ struct CButtonAction
 // class to map from buttons to actions
 class CButtonTranslator
 {
+#ifdef HAS_EVENT_SERVER
+  friend class EVENTCLIENT::CEventButtonState;
+#endif
+
 public:
   CButtonTranslator();
   virtual ~CButtonTranslator();

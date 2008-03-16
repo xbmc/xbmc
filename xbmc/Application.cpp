@@ -3950,7 +3950,7 @@ bool CApplication::ProcessEventServer(float frameTime)
   WORD wKeyID = es->GetButtonCode();
   if (wKeyID)
   {
-    CKey key(wKeyID | KEY_VKEY);
+    CKey key(wKeyID);
     return OnKey( key );
   }
 #endif  
