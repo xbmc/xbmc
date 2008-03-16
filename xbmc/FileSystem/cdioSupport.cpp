@@ -101,11 +101,7 @@ HRESULT CCdIoSupport::CloseTray()
 
 HANDLE CCdIoSupport::OpenCDROM()
 {
-#ifdef _LINUX
   char* source_name = GetDeviceFileName();
-#else
-  char* source_name = "\\\\.\\D:";
-#endif
   CdIo* cdio = cdio_open (source_name, DRIVER_UNKNOWN);
 
   return (HANDLE) cdio;
@@ -607,11 +603,7 @@ void CCdIoSupport::GetCdTextInfo(trackinfo *pti, int trackNum)
 
 CCdInfo* CCdIoSupport::GetCdInfo()
 {
-#ifndef HAS_XBOX_HARDWARE
   char* source_name = GetDeviceFileName();
-#else
-  char* source_name = "\\\\.\\D:";
-#endif
   cdio = cdio_open (source_name, DRIVER_UNKNOWN);
   if (cdio == NULL)
   {
@@ -907,6 +899,9 @@ ULONG CCdIoSupport::CddbDiscId()
 
 char* CCdIoSupport::GetDeviceFileName()
 {
+#ifdef HAS_XBOX_HARDWARE
+  s_defaultDevice = strdup("\\\\.\\D:");
+#else
   if (s_defaultDevice == NULL)  
   {
     if (getenv("XBMC_DVD_DEVICE") != NULL)
@@ -923,6 +918,7 @@ char* CCdIoSupport::GetDeviceFileName()
         s_defaultDevice = strdup("");
     }
   }
+#endif
 
   return s_defaultDevice;
 }
