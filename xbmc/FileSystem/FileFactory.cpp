@@ -74,7 +74,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #endif
 #ifdef HAS_FILESYSTEM
   else if (strProtocol == "iso9660") return new CFileISO();
-#ifndef _LINUX
+#ifdef HAS_XBOX_HARDWARE
   else if (strProtocol == "soundtrack") return new CFileSndtrk();
 #endif
 #endif
