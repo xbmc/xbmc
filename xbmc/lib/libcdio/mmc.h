@@ -209,7 +209,11 @@ extern "C" {
   } cdio_mmc_mode_page_t;
     
 
-PRAGMA_BEGIN_PACKED
+#if defined(_XBOX) || defined(WIN32)
+  #pragma pack(1)
+#else
+  PRAGMA_BEGIN_PACKED
+#endif
   struct mmc_audio_volume_entry_s 
   {
     uint8_t  selection; /* Only the lower 4 bits are used. */
@@ -226,7 +230,11 @@ PRAGMA_BEGIN_PACKED
 
   typedef struct mmc_audio_volume_s mmc_audio_volume_t;
   
-PRAGMA_END_PACKED
+#if defined(_XBOX) || defined(WIN32)
+  #pragma pack()
+#else
+  PRAGMA_END_PACKED
+#endif
   
 
 /** Return type codes for GET_CONFIGURATION. */
