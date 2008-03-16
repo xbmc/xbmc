@@ -17,7 +17,7 @@ PacketPING, see its documentation for details.
 """
 
 __author__  = "d4rk@xbmc.org"
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 
 from struct import pack
 
@@ -46,6 +46,8 @@ BT_UP         = 0x04
 BT_USE_AMOUNT = 0x08
 BT_QUEUE      = 0x10
 BT_NO_REPEAT  = 0x20
+
+MS_ABSOLUTE = 0x01
 
 def format_string(msg):
     """ """
@@ -311,6 +313,25 @@ class PacketBUTTON (Packet):
         self.append_payload( format_string (map_name) )
         self.append_payload( format_string (button_name) )
 
+class PacketMOUSE (Packet):
+    """A MOUSE packet
+    
+    A MOUSE packets sets the mouse position in XBMC
+    """
+    def __init__(self, x, y):
+        """
+        Arguments:
+        x -- horitontal position ranging from 0 to 65535
+        y -- vertical position ranging from 0 to 65535
+
+        The range will be mapped to the screen width and height in XBMC
+        """
+        Packet.__init__(self)
+        self.packettype = PT_MOUSE
+        self.flags = MS_ABSOLUTE
+        self.append_payload( chr (self.flags) )
+        self.append_payload( format_uint16(x) )
+        self.append_payload( format_uint16(y) )
 
 class PacketBYE (Packet):
     """A BYE packet
@@ -320,7 +341,7 @@ class PacketBYE (Packet):
     def __init__(self):
         Packet.__init__(self)
         self.packettype = PT_BYE
-
+        
 
 class PacketPING (Packet):
     """A PING packet

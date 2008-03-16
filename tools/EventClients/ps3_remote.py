@@ -24,7 +24,7 @@ import time
 
 loop_forever = True
 
-host = "localhost"
+host = "192.168.1.119"
 port = 9777
 addr = (host, port)
 sock = socket(AF_INET,SOCK_DGRAM)
