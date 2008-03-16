@@ -558,6 +558,20 @@ CGUISettings::CGUISettings(void)
   AddString(6, "upnp.videoshares", 21362, "", BUTTON_CONTROL_STANDARD);
   AddString(7, "upnp.pictureshares", 21363, "", BUTTON_CONTROL_STANDARD);
 
+  // remote events settings
+#ifdef HAS_EVENT_SERVER
+  AddCategory(6, "remoteevents", 790);
+  AddBool(1,  "remoteevents.enabled",         791, true);
+  AddString(2,"remoteevents.port",            792, "9777", BUTTON_CONTROL_INPUT, false, 792);
+  AddInt(3,   "remoteevents.portrange",       793, 10, 1, 1, 100, SPIN_CONTROL_INT);
+  AddInt(4,   "remoteevents.maxclients",      797, 20, 1, 1, 100, SPIN_CONTROL_INT);
+  AddSeparator(5,"remoteevents.sep1");
+  AddBool(6,  "remoteevents.allinterfaces",   794, false);
+  AddSeparator(7,"remoteevents.sep2");
+  AddInt(8,   "remoteevents.initialdelay",    795, 750, 5, 5, 10000, SPIN_CONTROL_INT);
+  AddInt(9,   "remoteevents.continuousdelay", 796, 25, 5, 5, 10000, SPIN_CONTROL_INT);
+#endif
+
   // appearance settings
   AddGroup(7, 480);
   AddCategory(7,"lookandfeel", 14037);

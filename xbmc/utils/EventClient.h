@@ -6,6 +6,7 @@
 #include "CriticalSection.h"
 #include "Socket.h"
 #include "EventPacket.h"
+#include "GUISettings.h"
 #include <map>
 #include <queue>
 
@@ -82,8 +83,6 @@ namespace EVENTCLIENT
     void Initialize()
     {
       m_bGreeted = false;
-      m_iRepeatDelay = 750;
-      m_iRepeatSpeed = 25;
       m_iNextRepeat = 0;
       m_fMouseX = 0.0f;
       m_fMouseY = 0.0f;
@@ -91,11 +90,18 @@ namespace EVENTCLIENT
       m_lastPing = 0;
       m_lastSeq = 0;
       m_iRemotePort = 0;
+      RefreshSettings();
     }
 
     std::string Name()
     {
       return m_deviceName;
+    }
+
+    void RefreshSettings()
+    {
+      m_iRepeatDelay = g_guiSettings.GetInt("remoteevents.initialdelay");
+      m_iRepeatSpeed = g_guiSettings.GetInt("remoteevents.continuousdelay");
     }
 
     SOCKETS::CAddress& Address()
