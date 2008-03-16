@@ -28,6 +28,7 @@
 #include "Application.h"
 #include "SingleLock.h"
 #include "ButtonTranslator.h"
+#include "GraphicContext.h"
 #include "Key.h"
 #include <map>
 #include <queue>
@@ -357,7 +358,34 @@ bool CEventClient::OnPacketMOUSE(CEventPacket *packet)
 {
   if (!Greeted())
     return false;
-  // TODO
+
+  unsigned char *payload = (unsigned char *)packet->Payload();
+  int psize = (int)packet->PayloadSize();
+  unsigned char flags;
+  unsigned short mx, my;
+
+  // parse flags
+  if (!ParseByte(payload, psize, flags))
+    return false;
+
+  // parse x position
+  if (!ParseUInt16(payload, psize, mx))
+    return false;
+
+  // parse x position
+  if (!ParseUInt16(payload, psize, my))
+    return false;
+
+  {
+    CSingleLock lock(m_critSection);
+    if ( flags & PTM_ABSOLUTE )
+    {
+      m_iMouseX = mx;
+      m_iMouseY = my;
+      m_bMouseMoved = true;
+    }
+  }
+
   return true;
 }
 
@@ -531,6 +559,23 @@ unsigned short CEventClient::GetButtonCode()
     }
   }
   return bcode;
+}
+
+bool CEventClient::GetMousePos(float& x, float& y)
+{
+  CSingleLock lock(m_critSection);
+  if (m_bMouseMoved)
+  {
+    x = (float)((m_iMouseX / 65535.0f) * 
+                (g_graphicsContext.GetViewWindow().right
+                 -g_graphicsContext.GetViewWindow().left));
+    y = (float)((m_iMouseY / 65535.0f) * 
+                (g_graphicsContext.GetViewWindow().bottom
+                 -g_graphicsContext.GetViewWindow().top));
+    m_bMouseMoved = false;
+    return true;
+  }
+  return false;
 }
 
 bool CEventClient::CheckButtonRepeat()
