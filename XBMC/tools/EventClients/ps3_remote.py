@@ -12,8 +12,8 @@
 #    2. Permanent pairing
 #    3. Detect if XBMC has been restarted (non trivial until broadcasting is
 #       implemented, until then maybe the HELO packet could be used instead of
-#       PING as keepalive 
-#       
+#       PING as keepalive
+#
 
 from xbmcclient import *
 from socket import *
@@ -110,7 +110,7 @@ def send_message(caption, msg):
 def save_remote_address(addr):
     try:
         f = open(".ps3_remote_address", "wb")
-        f.write(addr)
+        f.write(str(addr))
         f.close()
     except:
         pass
@@ -166,10 +166,10 @@ while loop_forever is True:
             print "Found %s with address %s" % (target_name, target_address)
             if not load_remote_address():
                 send_message("Found Device", "Pairing %s, please wait." % target_name)
-                save_remote_address(target_address)
                 print "Attempting to pair with remote"
 
             try:
+                save_remote_address(target_address)
                 remote.connect((target_address,19))
                 target_connected = True
                 print "Remote Paired.\a"
@@ -178,6 +178,7 @@ while loop_forever is True:
             except:
                 del remote
                 remote = bluetooth.BluetoothSocket(bluetooth.L2CAP)
+                target_address = None
                 send_message("Pairing Failed",
                              "An error occurred while attempting to pair.")
                 print "ERROR - Could Not Connect. Trying again..."
@@ -185,15 +186,15 @@ while loop_forever is True:
         else:
             send_message("Error", "No remotes were found.")
             print "Could not find BD Remote Control. Trying again..."
-            os.sleep(2)
+            time.sleep(2)
 
     done = False
 
     while not done:
         # re-send HELO packet in case we timed out
-        packet = PacketHELO(devicename="PS3 Bluetooth Remote",
-                            icon_type=ICON_PNG,
-                            icon_file="icons/bluetooth.png")
+        packet = PacketHELO(devicename="Bluetooth Remote Reconnected",
+                            icon_type=ICON_NONE)
+        
         packet.send(sock, addr)
 
         datalen = 0
@@ -201,6 +202,7 @@ while loop_forever is True:
             data = remote.recv(1024)
             datalen = len(data)
         except:
+            time.sleep(2)
             done = True
 
         if datalen == 13:
