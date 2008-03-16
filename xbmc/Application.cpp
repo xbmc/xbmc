@@ -2032,14 +2032,29 @@ void CApplication::StopUPnP()
 void CApplication::StartEventServer()
 {
 #ifdef HAS_EVENT_SERVER
-  CEventServer::GetInstance()->StartServer();
+  if (g_guiSettings.GetBool("remoteevents.enabled"))
+  {
+    CLog::Log(LOGNOTICE, "ES: Starting event server");
+    CEventServer::GetInstance()->StartServer();
+  }
 #endif
 }
 
 void CApplication::StopEventServer()
 {
 #ifdef HAS_EVENT_SERVER
+  CLog::Log(LOGNOTICE, "ES: Stopping event server");
   CEventServer::GetInstance()->StopServer();
+#endif
+}
+
+void CApplication::RefreshEventServer()
+{
+#ifdef HAS_EVENT_SERVER
+  if (g_guiSettings.GetBool("remoteevents.enabled"))
+  {
+    CEventServer::GetInstance()->RefreshSettings();
+  }
 #endif
 }
 

@@ -23,9 +23,16 @@ namespace EVENTSERVER
 
     // IRunnable entry point for thread
     virtual void  Run();
+
     bool Running()
     {
       return m_bRunning;
+    }
+
+    void RefreshSettings()
+    {
+      CSingleLock lock(m_critSection);
+      m_bRefreshSettings = true;
     }
 
     // start / stop server
@@ -53,6 +60,7 @@ namespace EVENTSERVER
     bool             m_bStop;
     bool             m_bRunning;
     CCriticalSection m_critSection;
+    bool             m_bRefreshSettings;
   };
 
 }
