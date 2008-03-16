@@ -6,12 +6,21 @@
 # The original script and documentation regarding the remote can be found at:
 #   http://xbmc.org/forum/showthread.php?t=28765
 #
+#
+# TODO:
+#    1. Send keepalive ping at least once every 60 seconds to prevent timeouts
+#    2. Permanent pairing
+#    3. Detect if XBMC has been restarted (non trivial until broadcasting is
+#       implemented, until then maybe the HELO packet could be used instead of
+#       PING as keepalive 
+#       
 
 from xbmcclient import *
 from socket import *
 
 import bluetooth
 import os
+import time
 
 loop_forever = True
 
@@ -20,333 +29,197 @@ port = 9777
 addr = (host, port)
 sock = socket(AF_INET,SOCK_DGRAM)
 
+g_keymap = {
+    "16": 's' ,#EJECT
+    "64": 'w' ,#AUDIO
+    "65": 'z' ,#ANGLE
+    "63": 'n' ,#SUBTITLE
+    "0f": 'd' ,#CLEAR
+    "28": 't' ,#TIME
+
+    "00": '1' ,#1
+    "01": '2' ,#2
+    "02": '3' ,#3
+    "03": '4' ,#4
+    "04": '5' ,#5
+    "05": '6' ,#6
+    "06": '7' ,#7
+    "07": '8' ,#8
+    "08": '9' ,#9
+    "09": '0' ,#0
+
+    "81": None ,#RED
+    "82": None ,#GREEN
+    "80": None ,#BLUE
+    "83": None ,#YELLOW
+
+    "70": 'I'      ,#DISPLAY
+    "1a": None     ,#TOP MENU
+    "40": 'menu'   ,#POP UP/MENU
+    "0e": 'escape' ,#RETURN
+
+    "5c": 'menu'   ,#OPTIONS/TRIANGLE
+    "5d": 'escape' ,#BACK/CIRCLE
+    "5e": 'tab'    ,#X
+    "5f": 'V'      ,#VIEW/SQUARE
+
+    "54": 'up'     ,#UP
+    "55": 'right'  ,#RIGHT
+    "56": 'down'   ,#DOWN
+    "57": 'left'   ,#LEFT
+    "0b": 'return' ,#ENTER
+
+    "5a": 'plus'     ,#L1
+    "58": 'minus'    ,#L2
+    "51": None       ,#L3
+    "5b": 'pageup'   ,#R1
+    "59": 'pagedown' ,#R2
+    "52": 'c'        ,#R3
+
+    "43": 's'                  ,#PLAYSTATION
+    "50": 'opensquarebracket'  ,#SELECT
+    "53": 'closesquarebracket' ,#START
+
+    "33": 'r'      ,#<-SCAN
+    "34": 'f'      ,#  SCAN->
+    "30": 'comma'  ,#PREV
+    "31": 'period' ,#NEXT
+    "60": None     ,#<-SLOW/STEP
+    "61": None     ,#  SLOW/STEP->
+    "32": 'P'      ,#PLAY
+    "38": 'x'      ,#STOP
+    "39": 'space'  #PAUSE
+    }
+
 def send_key(key):
-	packet = PacketBUTTON(code=key, repeat=1)
-	packet.send(sock, addr)
+    packet = PacketBUTTON(map_name="KB", button_name=key)
+    packet.send(sock, addr)
 
 def release_key():
-	packet = PacketBUTTON(code=0x01, down=0)
-	packet.send(sock, addr)
+    packet = PacketBUTTON(code=0x01, down=0)
+    packet.send(sock, addr)
 
 def send_message(caption, msg):
-	packet = PacketNOTIFICATION(
-		caption,
-		msg,
-		ICON_PNG,
-		"icons/bluetooth.png")
-	packet.send(sock, addr)
+    packet = PacketNOTIFICATION(
+        caption,
+        msg,
+        ICON_PNG,
+        "icons/bluetooth.png")
+    packet.send(sock, addr)
+
+def save_remote_address(addr):
+    try:
+        f = open(".ps3_remote_address", "wb")
+        f.write(addr)
+        f.close()
+    except:
+        pass
+    return
+
+def load_remote_address():
+    try:
+        f = open(".ps3_remote_address", "r")
+        a = f.read()
+        f.close()
+        a.strip()
+        return a
+    except:
+        pass
+    return None
 
 while loop_forever is True:
 
-        target_name = "BD Remote Control"
-        target_address = None
-        remote = bluetooth.BluetoothSocket(bluetooth.L2CAP)
+    target_name = "BD Remote Control"
+    target_address = load_remote_address()
+    remote = bluetooth.BluetoothSocket(bluetooth.L2CAP)
 
-        target_connected = False
+    target_connected = False
 
-	packet = PacketHELO(devicename="PS3 Bluetooth Remote",
-			    icon_type=ICON_PNG,
-			    icon_file="icons/bluetooth.png")
-	packet.send(sock, addr)
+    packet = PacketHELO(devicename="PS3 Bluetooth Remote",
+                        icon_type=ICON_PNG,
+                        icon_file="icons/bluetooth.png")
+    packet.send(sock, addr)
 
-	
-        while target_connected is False:
-		send_message("Action Required!", "Press Start+Enter on your remote.")
-		print "Searching for BD Remote Control"
-                print "(Press Start + Enter on remote to make discoverable)"
+    while target_connected is False:
+        send_message("Action Required!", "Hold Start+Enter on your remote.")
+        print "Searching for %s" % target_name
+        print "(Hold Start + Enter on remote to make it discoverable)"
+        time.sleep(2)
+
+        if not target_address:
+            try:
                 nearby_devices = bluetooth.discover_devices()
-            
-                for bdaddr in nearby_devices:
-                    if target_name == bluetooth.lookup_name( bdaddr ):
-                        target_address = bdaddr
-                        break
+            except:
+                print "Error performing bluetooth discovery"
+                send_message("Error", "Unable to find devices.")
+                time.sleep(5)
+                continue
 
-		if target_address is not None:
-			print "Found BD Remote Control with address ", target_address
-			send_message("Bluetooth Pairing", "Pairing your remote, please wait.")
-			print "Attempting to pair with remote"
-                    
-			try:
-				remote.connect((target_address,19))
-				target_connected = True
-				print "Remote Paired.\a"
-				send_message("Pairing Success",
-					     "Your remote was successfully paired and is ready to be used.")
-			except:
-				send_message("Pairing Failed",
-					     "An error occurred while attempting to pair.")
-				print "ERROR - Could Not Connect. Trying again..."
-                        
-		else:
-			send_message("Error", "No remotes were found.")
-			print "Could not find BD Remote Control. Trying again..."
+            for bdaddr in nearby_devices:
+                bname = bluetooth.lookup_name( bdaddr )
+                print "%s (%s) in range" % (bname,bdaddr)
+                if target_name == bname:
+                    target_address = bdaddr
+                    break
 
+        if target_address is not None:
+            print "Found %s with address %s" % (target_name, target_address)
+            if not load_remote_address():
+                send_message("Found Device", "Pairing %s, please wait." % target_name)
+                save_remote_address(target_address)
+                print "Attempting to pair with remote"
 
-        done = False
-	
-        while not done:
-		# re-send HELO packet in case we timed out
-		packet = PacketHELO(devicename="PS3 Bluetooth Remote",
-				    icon_type=ICON_PNG,
-				    icon_file="icons/bluetooth.png")
-		packet.send(sock, addr)
-	
-                datalen = 0
-                try:
-                        data = remote.recv(1024)
-                        datalen = len(data)
-                except:
-                        done = True
+            try:
+                remote.connect((target_address,19))
+                target_connected = True
+                print "Remote Paired.\a"
+                send_message("Pairing Success",
+                             "Your remote was successfully paired and is ready to be used.")
+            except:
+                del remote
+                remote = bluetooth.BluetoothSocket(bluetooth.L2CAP)
+                send_message("Pairing Failed",
+                             "An error occurred while attempting to pair.")
+                print "ERROR - Could Not Connect. Trying again..."
+                time.sleep(2)
+        else:
+            send_message("Error", "No remotes were found.")
+            print "Could not find BD Remote Control. Trying again..."
+            os.sleep(2)
 
-                if datalen == 13:
-                        keycode = data.encode("hex")[10:12]
+    done = False
 
-                        if keycode == "ff":
-				release_key()
-                                #print "Key Released or Multiple keys pressed"
+    while not done:
+        # re-send HELO packet in case we timed out
+        packet = PacketHELO(devicename="PS3 Bluetooth Remote",
+                            icon_type=ICON_PNG,
+                            icon_file="icons/bluetooth.png")
+        packet.send(sock, addr)
 
-                        elif keycode == "16": #EJECT
-                                print "Eject"
-				send_key('S')
-                                #os.system("xte 'key s'") 
-
-                        elif keycode == "64": #AUDIO
-                                print "Audio"
-				send_key('W')
-                                #os.system("xte 'key w'")
-
-                        elif keycode == "65": #ANGLE
-                                print "Angle"
-				send_key('Z')
-                                #os.system("xte 'key z'") 
-
-                        elif keycode == "63": #SUBTITLE
-                                print "Subtitle"
-				send_key('N')
-                                #os.system("xte 'key n'") 
-
-                        elif keycode == "0f": #CLEAR
-                                print "Clear"
-				send_key('D')
-                                #os.system("xte 'key d'") 
-
-                        elif keycode == "28": #TIME
-                                print "Time"
-				send_key('T')
-                                #os.system("xte 'key t'") 
-
-                        elif keycode == "00": #1
-                                print "1"
-				send_key('1')
-                                #os.system("xte 'key 1'") 
-
-                        elif keycode == "01": #2
-                                print "2"
-				send_key('2')
-                                #os.system("xte 'key 2'") 
-
-                        elif keycode == "02": #3
-                                print "3"
-				send_key('3')
-                                #os.system("xte 'key 3'") 
-
-                        elif keycode == "03": #4
-                                print "4"
-				send_key('4')
-                                #os.system("xte 'key 4'") 
-
-                        elif keycode == "04": #5
-                                print "5"
-				send_key('5')
-                                #os.system("xte 'key 5'") 
-
-                        elif keycode == "05": #6
-                                print "6"
-				send_key('6')
-                                #os.system("xte 'key 6'") 
-
-                        elif keycode == "06": #7
-                                print "7"
-				send_key('7')
-                                #os.system("xte 'key 7'") 
-
-                        elif keycode == "07": #8
-                                print "8"
-				send_key('8')
-                                #os.system("xte 'key 8'") 
-
-                        elif keycode == "08": #9
-                                print "9"
-				send_key('9')
-                                #os.system("xte 'key 9'") 
-
-                        elif keycode == "09": #0
-                                print "0"
-				send_key('0')
-                                #os.system("xte 'key 0'") 
-
-                        elif keycode == "81": #RED
-                                print "Red"
-
-                        elif keycode == "82": #GREEN
-                                print "Green"
-
-                        elif keycode == "80": #BLUE
-                                print "Blue"
-
-                        elif keycode == "83": #YELLOW
-                                print "Yellow"
-
-                        elif keycode == "70": #DISPLAY
-                                print "Display"
-				send_key('I')
-                                #os.system("xte 'key i'") 
-
-                        elif keycode == "1a": #TOP MENU
-                                print "Top Menu"
-
-                        elif keycode == "40": #POP UP/MENU
-                                print "Pop Up/Menu"
-
-                        elif keycode == "0e": #RETURN
-                                print "Return"
-				send_key(0x08)
-                                #os.system("xte 'key BackSpace'") 
-
-                        elif keycode == "5c": #OPTIONS/TRIANGLE
-                                print "Options/Triangle"
-				send_key('S')
-                                #os.system("xte 'key s'")
-
-                        elif keycode == "5d": #BACK/CIRCLE
-                                print "Back/Circle"
-				send_key(0x1b)
-                                #os.system("xte 'key Escape'") 
-
-                        elif keycode == "5e": #X
-                                print "X"
-                                #os.system("xte 'key x'") 
-
-                        elif keycode == "5f": #VIEW/SQUARE
-                                print "View/Square"
-				send_key('V')
-                                #os.system("xte 'key v'") 
-
-                        elif keycode == "54": #UP
-                                print "Up"
-				send_key(0x26)
-                                #os.system("xte 'key Up'") 
-
-                        elif keycode == "55": #RIGHT
-                                print "Right"
-				send_key(0x27)
-                                #os.system("xte 'key Right'") 
-
-                        elif keycode == "56": #DOWN
-                                print "Down"
-				send_key(0x28)
-                                #os.system("xte 'key Down'") 
-
-                        elif keycode == "57": #LEFT
-                                print "Left"
-				send_key(0x25)
-                                #os.system("xte 'key Left'") 
-
-                        elif keycode == "0b": #ENTER
-                                print "Enter"
-				send_key(0x0d)
-                                #os.system("xte 'key Return'")
-
-                        elif keycode == "5a": #L1
-                                print "L1"
-				send_key('+')
-                                #os.system("xte 'key +'")
-
-                        elif keycode == "58": #L2
-                                print "L2"
-				send_key('-')
-                                #os.system("xte 'key -'")
-
-                        elif keycode == "51": #L3
-                                print "L3"
-
-                        elif keycode == "5b": #R1
-                                print "R1"
-				send_key(0x21)
-                                #os.system("xte 'key Page_Up'") 
-
-                        elif keycode == "59": #R2
-                                print "R2"
-				send_key(0x22)
-                                #os.system("xte 'key Page_Down'") 
-
-                        elif keycode == "52": #R3
-				send_key('C')
-                                print "R3"
-
-                        elif keycode == "43": #PLAYSTATION
-				send_key('S')
-                                print "Playstation"
-
-                        elif keycode == "50": #SELECT
-                                print "Select"
-				send_key('[')
-                                #os.system("xte 'key ['")
-
-                        elif keycode == "53": #START
-                                print "Start"
-				send_key(']')
-                                #os.system("xte 'key]'")
-
-                        elif keycode == "33": #<-SCAN
-                                print "<-Scan"
-				send_key('R')
-                                #os.system("xte 'key r'")
-
-                        elif keycode == "34": #  SCAN->
-                                print "Scan->"
-				send_key('F')
-                                #os.system("xte 'key f'")
-
-                        elif keycode == "30": #PREV
-                                print "Prev"
-				send_key(',')
-                                #os.system("xte 'key ,'")
-
-                        elif keycode == "31": #NEXT
-                                print "Next"
-				send_key('.')
-                                #os.system("xte 'key .'")
-
-                        elif keycode == "60": #<-SLOW/STEP
-                                print "<-Slow/Step"
-
-                        elif keycode == "61": #  SLOW/STEP->
-                                print "Slow/Step->"
-
-                        elif keycode == "32": #PLAY
-                                print "Play"
-				send_key('p')
-                                #os.system("xte 'key p'")
-
-                        elif keycode == "38": #STOP
-                                print "Stop"
-				send_key('x')
-                                #os.system("xte 'key x'")
-
-                        elif keycode == "39": #PAUSE
-                                print "Pause"
-				send_key(0x20)
-                                #os.system("xte 'key Space'")
-
-                        else:
-                                print "Unknown data"
-                else:
-                        print "Unknown data"
-
-        print "Disconnected."
+        datalen = 0
         try:
-                remote.close()
+            data = remote.recv(1024)
+            datalen = len(data)
         except:
-                print "Cannot close."
+            done = True
+
+        if datalen == 13:
+            keycode = data.encode("hex")[10:12]
+
+            if keycode == "ff":
+                release_key()
+                continue
+            try:
+                if g_keymap[keycode]:
+                    send_key(g_keymap[keycode])
+            except Exception, e:
+                print "Unknown data: %s" % str(e)
+        else:
+            print "Unknown data"
+
+    print "Disconnected."
+    try:
+        remote.close()
+    except:
+        print "Cannot close."
 
