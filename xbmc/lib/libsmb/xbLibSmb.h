@@ -25,7 +25,7 @@ typedef void (*smb_log_callback)(const char* logMessage);
 extern "C" {
 #endif
 
-	#include "libsmbclient.h"
+	#include "libsmbclient_win32.h"
 	#undef offset_t
 
 	const char *nt_errstr(LONG nt_code);
