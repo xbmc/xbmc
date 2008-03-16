@@ -70,11 +70,7 @@ extern "C" {
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#ifndef _LINUX
-#include <sys/utime.h>
-#else
 #include <utime.h>
-#endif
 
 #define SMBC_BASE_FD        10000 /* smallest file descriptor returned */
 
@@ -144,6 +140,20 @@ struct smbc_dirent
 #define SMBC_DOS_MODE_VOLUME_ID      0x08
 #define SMBC_DOS_MODE_DIRECTORY      0x10
 #define SMBC_DOS_MODE_ARCHIVE        0x20
+
+/*
+ * Valid values for the option "open_share_mode", when calling
+ * smbc_option_set()
+ */
+typedef enum smbc_share_mode
+{
+    SMBC_SHAREMODE_DENY_DOS     = 0,
+    SMBC_SHAREMODE_DENY_ALL     = 1,
+    SMBC_SHAREMODE_DENY_WRITE   = 2,
+    SMBC_SHAREMODE_DENY_READ    = 3,
+    SMBC_SHAREMODE_DENY_NONE    = 4,
+    SMBC_SHAREMODE_DENY_FCB     = 7
+} smbc_share_mode;
 
 
 #ifndef ENOATTR
@@ -415,9 +425,9 @@ struct _SMBCCTX {
 	int        (*unlink)  (SMBCCTX *c, const char *fname);
 	int        (*rename)  (SMBCCTX *ocontext, const char *oname, 
 			       SMBCCTX *ncontext, const char *nname);
-	SMB_OFF_T  (*lseek)   (SMBCCTX *c, SMBCFILE * file, SMB_OFF_T offset, int whence);
-	int        (*stat)    (SMBCCTX *c, const char *fname, SMB_STRUCT_STAT *st);
-	int        (*fstat)   (SMBCCTX *c, SMBCFILE *file, SMB_STRUCT_STAT *st);
+	off_t      (*lseek)   (SMBCCTX *c, SMBCFILE * file, off_t offset, int whence);
+	int        (*stat)    (SMBCCTX *c, const char *fname, struct stat *st);
+	int        (*fstat)   (SMBCCTX *c, SMBCFILE *file, struct stat *st);
 	int        (*close_fn) (SMBCCTX *c, SMBCFILE *file);
 
 	/** callable functions for dirs
@@ -429,9 +439,9 @@ struct _SMBCCTX {
 			       struct smbc_dirent *dirp, int count);
 	int        (*mkdir)   (SMBCCTX *c, const char *fname, mode_t mode);
 	int        (*rmdir)   (SMBCCTX *c, const char *fname);
-	SMB_OFF_T  (*telldir) (SMBCCTX *c, SMBCFILE *dir);
-	int        (*lseekdir)(SMBCCTX *c, SMBCFILE *dir, SMB_OFF_T offset);
-	int        (*fstatdir)(SMBCCTX *c, SMBCFILE *dir, SMB_STRUCT_STAT *st);
+	off_t      (*telldir) (SMBCCTX *c, SMBCFILE *dir);
+	int        (*lseekdir)(SMBCCTX *c, SMBCFILE *dir, off_t offset);
+	int        (*fstatdir)(SMBCCTX *c, SMBCFILE *dir, struct stat *st);
         int        (*chmod)(SMBCCTX *c, const char *fname, mode_t mode);
         int        (*utimes)(SMBCCTX *c,
                              const char *fname, struct timeval *tbuf);
@@ -639,7 +649,7 @@ int smbc_free_context(SMBCCTX * context, int shutdown_ctx);
 void
 smbc_option_set(SMBCCTX *context,
                 char *option_name,
-                void *option_value);
+                ... /* option_value */);
 /*
  * Retrieve the current value of an option
  *
@@ -875,7 +885,7 @@ ssize_t smbc_write(int fd, void *buf, size_t bufsize);
  * @return          Upon successful completion, lseek returns the 
  *                  resulting offset location as measured in bytes 
  *                  from the beginning  of the file. Otherwise, a value
- *                  of (SMB_OFF_T)-1 is returned and errno is set to 
+ *                  of (off_t)-1 is returned and errno is set to 
  *                  indicate the error:
  *                  - EBADF  Fildes is not an open file descriptor.
  *                  - EINVAL Whence is not a proper value or smbc_init
@@ -885,7 +895,7 @@ ssize_t smbc_write(int fd, void *buf, size_t bufsize);
  * 
  * @todo Are errno values complete and correct?
  */
-SMB_OFF_T smbc_lseek(int fd, SMB_OFF_T offset, int whence);
+off_t smbc_lseek(int fd, off_t offset, int whence);
 
 
 /**@ingroup file
@@ -1069,7 +1079,7 @@ struct smbc_dirent* smbc_readdir(unsigned int dh);
  * @see             smbc_readdir()
  *
  */
-SMB_OFF_T smbc_telldir(int dh);
+off_t smbc_telldir(int dh);
 
 
 /**@ingroup directory
@@ -1094,7 +1104,7 @@ SMB_OFF_T smbc_telldir(int dh);
  *
  * @todo In what does the reture and errno values mean?
  */
-int smbc_lseekdir(int fd, SMB_OFF_T offset);
+int smbc_lseekdir(int fd, off_t offset);
 
 /**@ingroup directory
  * Create a directory.
@@ -1147,7 +1157,7 @@ int smbc_rmdir(const char *durl);
  * @param url       The smb url to get information for
  *
  * @param st        pointer to a buffer that will be filled with 
- *                  standard Unix SMB_STRUCT_STAT information.
+ *                  standard Unix struct stat information.
  *
  * @return          0 on success, < 0 on error with errno set:
  *                  - ENOENT A component of the path file_name does not
@@ -1160,7 +1170,7 @@ int smbc_rmdir(const char *durl);
  * @see             Unix stat()
  *
  */
-int smbc_stat(const char *url, SMB_STRUCT_STAT *st);
+int smbc_stat(const char *url, struct stat *st);
 
 
 /**@ingroup attribute
@@ -1169,7 +1179,7 @@ int smbc_stat(const char *url, SMB_STRUCT_STAT *st);
  * @param fd        Open file handle from smbc_open() or smbc_creat()
  *
  * @param st        pointer to a buffer that will be filled with 
- *                  standard Unix SMB_STRUCT_STAT information.
+ *                  standard Unix struct stat information.
  * 
  * @return          EBADF  filedes is bad.
  *                  - EACCES Permission denied.
@@ -1181,7 +1191,7 @@ int smbc_stat(const char *url, SMB_STRUCT_STAT *st);
  * @see             smbc_stat(), Unix stat()
  *
  */
-int smbc_fstat(int fd, SMB_STRUCT_STAT *st);
+int smbc_fstat(int fd, struct stat *st);
 
 
 /**@ingroup attribue
