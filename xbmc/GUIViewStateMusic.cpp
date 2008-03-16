@@ -338,7 +338,7 @@ void CGUIViewStateMusicDatabase::SaveViewState()
     default:
       SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_NAV);
       break;
-	}
+  }
 }
 
 

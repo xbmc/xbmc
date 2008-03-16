@@ -615,7 +615,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
       LPDIRECT3DTEXTURE8* pTextures;
 #else
       SDL_Surface** pTextures;
-#endif	   
+#endif
       int nLoops = 0;
       int* Delay;
       int nImages;
@@ -729,7 +729,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
           RECT rc = { 0, 0, pImage->Width, pImage->Height };
           if ( D3D_OK == pTexture->LockRect( 0, &lr, &rc, 0 ))
 #else
-			 if (SDL_LockSurface(pTexture) != -1)
+          if (SDL_LockSurface(pTexture) != -1)
 #endif          
           {
 #ifdef HAS_XBOX_D3D
@@ -745,17 +745,17 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
               palette[AnimatedGifSet.m_vecimg[0]->Transparent].x = 0;
             
 #ifdef HAS_SDL
-				    // Allocate memory for the actual pixels in the surface and set the surface
-				    BYTE* pixels = (BYTE*) malloc(w * h * 4);
-				    pTexture->pixels = pixels;
+            // Allocate memory for the actual pixels in the surface and set the surface
+            BYTE* pixels = (BYTE*) malloc(w * h * 4);
+            pTexture->pixels = pixels;
 #endif            
             for (int y = 0; y < pImage->Height; y++)
             {
 #ifndef HAS_SDL            
               BYTE *dest = (BYTE *)lr.pBits + y * lr.Pitch;
 #else
-				      BYTE *dest = (BYTE *)pixels + (y * w * 4); 
-#endif				               
+              BYTE *dest = (BYTE *)pixels + (y * w * 4); 
+#endif
               BYTE *source = (BYTE *)pImage->Raster + y * pImage->BytesPerRow;
               for (int x = 0; x < pImage->Width; x++)
               {
@@ -771,7 +771,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
 #ifndef HAS_SDL
             pTexture->UnlockRect( 0 );
 #else
-				    SDL_UnlockSurface(pTexture);
+            SDL_UnlockSurface(pTexture);
 #endif            
 
             CTexture* pclsTexture = new CTexture(pTexture, iWidth, iHeight, false, 100, pPal);
@@ -861,7 +861,6 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
 
       }
 #else
-	
       SDL_Surface *original = IMG_Load(texturePath.c_str());
       CPicture pic;
       if (!original && !(original = pic.Load(texturePath, MAX_PICTURE_WIDTH, MAX_PICTURE_HEIGHT)))

@@ -462,7 +462,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       CUtil::RestoreBrightnessContrastGamma();
       g_graphicsContext.SetFullScreenVideo(false);
 #ifndef HAS_SDL
-	  g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
+      g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
 #endif
       lock.Leave();
 

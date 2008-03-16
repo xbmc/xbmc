@@ -204,7 +204,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       {
         OnGetThumb();
       }
-	  else if (iControl == CONTROL_BTN_PLAY_TRAILER)
+      else if (iControl == CONTROL_BTN_PLAY_TRAILER)
       {
         PlayTrailer();
       }
@@ -250,7 +250,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
           int iPos = strItem.Find(strFind);
           if (iPos == -1)
             iPos = strItem.size();
-	  CStdString tmp = strItem.Left(iPos);
+          CStdString tmp = strItem.Left(iPos);
           OnSearch(tmp);
         }
       }

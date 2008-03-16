@@ -424,7 +424,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
     if (pScanDlg)
     {
       if (pScanDlg->IsScanning())
-        buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);	// Stop Scanning
+        buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353); // Stop Scanning
       else if (
         !inPlaylists && 
         !m_vecItems.IsInternetStream() && 
@@ -484,8 +484,8 @@ bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button
     return true;
 
   case CONTEXT_BUTTON_SWITCH_MEDIA:
-		CGUIDialogContextMenu::SwitchMedia("music", m_vecItems.m_strPath);
-		return true;
+    CGUIDialogContextMenu::SwitchMedia("music", m_vecItems.m_strPath);
+    return true;
   default:
     break;
   }

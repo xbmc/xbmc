@@ -686,65 +686,65 @@ bool CLastFmManager::CallXmlRpc(const CStdString& action, const CStdString& arti
   CreateMD5Hash(strAuth, strAuth);
 
   //create request xml
-	TiXmlDocument doc;
-	TiXmlDeclaration * decl = new TiXmlDeclaration( "1.0", "UTF-8", "" );
-	doc.LinkEndChild( decl );
-	
-	TiXmlElement * elMethodCall = new TiXmlElement( "methodCall" );
-	doc.LinkEndChild( elMethodCall );
+  TiXmlDocument doc;
+  TiXmlDeclaration * decl = new TiXmlDeclaration( "1.0", "UTF-8", "" );
+  doc.LinkEndChild( decl );
+
+  TiXmlElement * elMethodCall = new TiXmlElement( "methodCall" );
+  doc.LinkEndChild( elMethodCall );
 
   TiXmlElement * elMethodName = new TiXmlElement( "methodName" );
-	elMethodCall->LinkEndChild( elMethodName );
-	TiXmlText * txtAction = new TiXmlText( action );
-	elMethodName->LinkEndChild( txtAction );
+  elMethodCall->LinkEndChild( elMethodName );
+  TiXmlText * txtAction = new TiXmlText( action );
+  elMethodName->LinkEndChild( txtAction );
 
   TiXmlElement * elParams = new TiXmlElement( "params" );
-	elMethodCall->LinkEndChild( elParams );
+  elMethodCall->LinkEndChild( elParams );
 
   TiXmlElement * elParam = new TiXmlElement( "param" );
-	elParams->LinkEndChild( elParam );
+  elParams->LinkEndChild( elParam );
   TiXmlElement * elValue = new TiXmlElement( "value" );
-	elParam->LinkEndChild( elValue );
+  elParam->LinkEndChild( elValue );
   TiXmlElement * elString = new TiXmlElement( "string" );
-	elValue->LinkEndChild( elString );
-	TiXmlText * txtParam = new TiXmlText( strUserName );
-	elString->LinkEndChild( txtParam );
+  elValue->LinkEndChild( elString );
+  TiXmlText * txtParam = new TiXmlText( strUserName );
+  elString->LinkEndChild( txtParam );
 
   elParam = new TiXmlElement( "param" );
-	elParams->LinkEndChild( elParam );
+  elParams->LinkEndChild( elParam );
   elValue = new TiXmlElement( "value" );
-	elParam->LinkEndChild( elValue );
+  elParam->LinkEndChild( elValue );
   elString = new TiXmlElement( "string" );
-	elValue->LinkEndChild( elString );
-	txtParam = new TiXmlText( strChallenge );
-	elString->LinkEndChild( txtParam );
+  elValue->LinkEndChild( elString );
+  txtParam = new TiXmlText( strChallenge );
+  elString->LinkEndChild( txtParam );
 
   elParam = new TiXmlElement( "param" );
-	elParams->LinkEndChild( elParam );
+  elParams->LinkEndChild( elParam );
   elValue = new TiXmlElement( "value" );
-	elParam->LinkEndChild( elValue );
+  elParam->LinkEndChild( elValue );
   elString = new TiXmlElement( "string" );
-	elValue->LinkEndChild( elString );
-	txtParam = new TiXmlText( strAuth );
-	elString->LinkEndChild( txtParam );
+  elValue->LinkEndChild( elString );
+  txtParam = new TiXmlText( strAuth );
+  elString->LinkEndChild( txtParam );
 
   elParam = new TiXmlElement( "param" );
-	elParams->LinkEndChild( elParam );
+  elParams->LinkEndChild( elParam );
   elValue = new TiXmlElement( "value" );
-	elParam->LinkEndChild( elValue );
+  elParam->LinkEndChild( elValue );
   elString = new TiXmlElement( "string" );
-	elValue->LinkEndChild( elString );
-	txtParam = new TiXmlText( artist );
-	elString->LinkEndChild( txtParam );
+  elValue->LinkEndChild( elString );
+  txtParam = new TiXmlText( artist );
+  elString->LinkEndChild( txtParam );
 
   elParam = new TiXmlElement( "param" );
-	elParams->LinkEndChild( elParam );
+  elParams->LinkEndChild( elParam );
   elValue = new TiXmlElement( "value" );
-	elParam->LinkEndChild( elValue );
+  elParam->LinkEndChild( elValue );
   elString = new TiXmlElement( "string" );
-	elValue->LinkEndChild( elString );
-	txtParam = new TiXmlText( title );
-	elString->LinkEndChild( txtParam );
+  elValue->LinkEndChild( elString );
+  txtParam = new TiXmlText( title );
+  elString->LinkEndChild( txtParam );
 
   CStdString strBody;
   strBody << doc;

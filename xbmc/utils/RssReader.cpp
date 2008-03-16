@@ -28,7 +28,7 @@ CRssReader::CRssReader() : CThread()
 
 CRssReader::~CRssReader()
 {
-	if (m_bIsRunning)
+  if (m_bIsRunning)
   {
     StopThread();
     m_bIsRunning = false;
@@ -218,12 +218,12 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
           // This usually happens in right-to-left languages where they want to
           // specify in the RSS body that the text should be RTL.
           // <title>
-          //		<div dir="RTL">��� ����: ���� �� �����</div> 
+          //  	<div dir="RTL">��� ����: ���� �� �����</div> 
           // </title>
           if (htmlText.Equals("div") || htmlText.Equals("span"))
           {
-	          m_shouldFlip = true;
-	          htmlText = childNode->FirstChild()->FirstChild()->Value();
+            m_shouldFlip = true;
+            htmlText = childNode->FirstChild()->FirstChild()->Value();
           }
 
           CStdString text;
@@ -258,49 +258,49 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
 
 void CRssReader::fromRSSToUTF16(const CStdStringA& strSource, CStdStringW& strDest)
 {
-	CStdString flippedStrSource;
+  CStdString flippedStrSource;
 
-	if (m_shouldFlip)
-	{
-		g_charsetConverter.logicalToVisualBiDi(strSource, flippedStrSource, m_encoding, FRIBIDI_TYPE_RTL);
-	}
-	else
-	{
-		flippedStrSource = strSource;
-	}
-	
-	if (m_iconv != (iconv_t) - 1)
+  if (m_shouldFlip)
+  {
+  	g_charsetConverter.logicalToVisualBiDi(strSource, flippedStrSource, m_encoding, FRIBIDI_TYPE_RTL);
+  }
+  else
+  {
+  	flippedStrSource = strSource;
+  }
+  
+  if (m_iconv != (iconv_t) - 1)
     {
-		const char* src = flippedStrSource.c_str();
-		size_t inBytes = flippedStrSource.length() + 1;
+  	const char* src = flippedStrSource.c_str();
+  	size_t inBytes = flippedStrSource.length() + 1;
 
-		wchar_t outBuf[1024];
-		char* dst = (char*) &outBuf[0];
-		size_t outBytes=1024;
-		size_t originalOutBytes = outBytes;
+  	wchar_t outBuf[1024];
+  	char* dst = (char*) &outBuf[0];
+  	size_t outBytes=1024;
+  	size_t originalOutBytes = outBytes;
 
-		iconv(m_iconv, NULL, &inBytes, NULL, &outBytes);
+  	iconv(m_iconv, NULL, &inBytes, NULL, &outBytes);
 
 #if defined(_LINUX) && !defined(__APPLE__)
-		if (iconv(m_iconv, (char**) &src, &inBytes, &dst, &outBytes) == (size_t) -1)
+  	if (iconv(m_iconv, (char**) &src, &inBytes, &dst, &outBytes) == (size_t) -1)
 #else
-		if (iconv(m_iconv, &src, &inBytes, &dst, &outBytes) == (size_t) -1)
+  	if (iconv(m_iconv, &src, &inBytes, &dst, &outBytes) == (size_t) -1)
 #endif
-		{
-			// For some reason it failed (maybe wrong charset?). Nothing to do but
-			// return the original..
-			strDest = flippedStrSource;
-			return;
-		}
+  	{
+  		// For some reason it failed (maybe wrong charset?). Nothing to do but
+  		// return the original..
+  		strDest = flippedStrSource;
+  		return;
+  	}
 
-		outBuf[(originalOutBytes - outBytes) / 2] = '\0';
-		strDest = outBuf;
-	}
-	else
-	{
-		strDest = flippedStrSource;
-		return;
-	}
+  	outBuf[(originalOutBytes - outBytes) / 2] = '\0';
+  	strDest = outBuf;
+  }
+  else
+  {
+  	strDest = flippedStrSource;
+  	return;
+  }
 }
 
 bool CRssReader::Parse(LPSTR szBuffer, int iFeed)
@@ -310,19 +310,19 @@ bool CRssReader::Parse(LPSTR szBuffer, int iFeed)
 
   if (m_iconv != (iconv_t) -1)
   {
-	  iconv_close(m_iconv);
+    iconv_close(m_iconv);
       m_iconv = (iconv_t) -1;
-	  m_shouldFlip = false;
+    m_shouldFlip = false;
   }
 
   m_encoding = "UTF-8";
   if (m_xml.RootElement())
   {
-	TiXmlDeclaration *tiXmlDeclaration = m_xml.RootElement()->Parent()->FirstChild()->ToDeclaration();
-	if (tiXmlDeclaration != NULL && strlen(tiXmlDeclaration->Encoding()) > 0)
-	{
-		m_encoding = tiXmlDeclaration->Encoding();
-	}
+  TiXmlDeclaration *tiXmlDeclaration = m_xml.RootElement()->Parent()->FirstChild()->ToDeclaration();
+  if (tiXmlDeclaration != NULL && strlen(tiXmlDeclaration->Encoding()) > 0)
+  {
+  	m_encoding = tiXmlDeclaration->Encoding();
+  }
   }
 
   CLog::Log(LOGDEBUG, "RSS feed encoding: %s", m_encoding.c_str());
@@ -337,7 +337,7 @@ bool CRssReader::Parse(LPSTR szBuffer, int iFeed)
 
   if (g_charsetConverter.isBidiCharset(m_encoding))
   {
-	  m_shouldFlip = true;
+    m_shouldFlip = true;
   }
 
   return Parse(iFeed);
@@ -370,11 +370,11 @@ bool CRssReader::Parse(int iFeed)
     if (titleNode && !titleNode->NoChildren())
     {
       CStdString strChannel = titleNode->FirstChild()->Value();
-	  CStdStringW strChannelUnicode;
-	  fromRSSToUTF16(strChannel, strChannelUnicode);
-	  AddString(strChannelUnicode, RSS_COLOR_CHANNEL, iFeed);
+    CStdStringW strChannelUnicode;
+    fromRSSToUTF16(strChannel, strChannelUnicode);
+    AddString(strChannelUnicode, RSS_COLOR_CHANNEL, iFeed);
 
-	  AddString(": ", RSS_COLOR_CHANNEL, iFeed);
+    AddString(": ", RSS_COLOR_CHANNEL, iFeed);
     }
 
     GetNewsItems(channelXmlNode,iFeed);

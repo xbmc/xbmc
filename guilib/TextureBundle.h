@@ -16,8 +16,8 @@ class CTextureBundle
   FILETIME m_TimeStamp;
   OVERLAPPED m_Ovl[2];
 #else
-  FILE* 	m_hFile;
-  time_t 	m_TimeStamp;
+  FILE*  m_hFile;
+  time_t m_TimeStamp;
 #endif  
   std::map<CStdString, FileHeader_t> m_FileHeaders;
   std::map<CStdString, FileHeader_t>::iterator m_CurFileHeader[2];

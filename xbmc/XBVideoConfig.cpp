@@ -312,16 +312,16 @@ void XBVideoConfig::GetModes()
    m_iNumResolutions = 0;
    if (modes == (SDL_Rect **)0)
    {
-        CLog::Log(LOGINFO, "No modes available");
-        return;
+     CLog::Log(LOGINFO, "No modes available");
+     return;
    }
 
    if (modes == (SDL_Rect **)-1)
    {
-  	bHasPAL = true;
-  	bHasNTSC = true;
-        CLog::Log(LOGINFO, "All resolutions available");
-        return;
+     bHasPAL = true;
+     bHasNTSC = true;
+     CLog::Log(LOGINFO, "All resolutions available");
+     return;
    }
 
    for (int i = 0; modes[i]; ++i)

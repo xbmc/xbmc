@@ -127,6 +127,6 @@ bool CKey::GetFromHttpApi() const
 
 void CKey::SetFromHttpApi(bool bFromHttpApi)
 {
-	m_fromHttpApi = bFromHttpApi;
+  m_fromHttpApi = bFromHttpApi;
 }
 

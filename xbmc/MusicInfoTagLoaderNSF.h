@@ -5,18 +5,18 @@
 
 namespace MUSIC_INFO
 {
-	class CMusicInfoTagLoaderNSF: public IMusicInfoTagLoader
-	{
-	public:
-		CMusicInfoTagLoaderNSF(void);
-		virtual ~CMusicInfoTagLoaderNSF();
+  class CMusicInfoTagLoaderNSF: public IMusicInfoTagLoader
+  {
+    public:
+      CMusicInfoTagLoaderNSF(void);
+      virtual ~CMusicInfoTagLoaderNSF();
 
-		virtual bool Load(const CStdString& strFileName, CMusicInfoTag& tag);
-	  virtual int GetStreamCount(const CStdString& strFileName);
-  private:
-    int m_nsf;
-    DllNosefart m_dll;
-	};
+      virtual bool Load(const CStdString& strFileName, CMusicInfoTag& tag);
+      virtual int GetStreamCount(const CStdString& strFileName);
+    private:
+      int m_nsf;
+      DllNosefart m_dll;
+  };
 }
 
 extern CStdString strNSFDLL;

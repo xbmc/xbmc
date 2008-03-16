@@ -539,8 +539,8 @@ CUPnPServer::BuildObject(CFileItem*      item,
                 case VIDEODATABASEDIRECTORY::NODE_TYPE_MOVIES_OVERVIEW:
                   container->m_ObjectClass.type += ".storageFolder";
                   break;
-	        default:
-	          break;
+                default:
+                  break;
             }
         } else if(item->IsPlayList()) {
             container->m_ObjectClass.type += ".playlistContainer";
