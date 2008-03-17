@@ -38,7 +38,6 @@ CGUITextBox::CGUITextBox(DWORD dwParentID, DWORD dwControlId, float posX, float 
   m_autoScrollDelayTime = 0;
   m_autoScrollRepeatAnim = NULL;
   m_label = labelInfo;
-  m_textColor = m_label.textColor;
 }
 
 CGUITextBox::~CGUITextBox(void)
@@ -77,6 +76,7 @@ void CGUITextBox::DoRender(DWORD currentTime)
 
 void CGUITextBox::Render()
 {
+  m_textColor = m_label.textColor;
   if (CGUITextLayout::Update(m_info.GetLabel(m_dwParentID), m_width))
   { // needed update, so reset to the top of the textbox and update our sizing/page control
     m_offset = 0;
