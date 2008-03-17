@@ -41,7 +41,7 @@ public:
   virtual bool HitTest(const CPoint &point) const { return m_buttonControl.HitTest(point); };
   void SetSpinPosition(float spinPosX);
 
-  void SettingsCategorySetSpinTextColor(D3DCOLOR color);
+  void SettingsCategorySetSpinTextColor(const CGUIInfoColor &color);
 protected:
   CGUIButtonControl m_buttonControl;
   float m_spinPosX;

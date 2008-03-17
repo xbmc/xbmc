@@ -18,7 +18,7 @@
 class CGUIRSSControl : public CGUIControl, public IRssObserver
 {
 public:
-  CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, D3DCOLOR dwChannelColor, D3DCOLOR dwHeadlineColor, CStdString& strRSSTags);
+  CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, const CGUIInfoColor &channelColor, const CGUIInfoColor &headlineColor, CStdString& strRSSTags);
   virtual ~CGUIRSSControl(void);
 
   virtual void Render();
@@ -34,13 +34,12 @@ protected:
 
   CRssReader* m_pReader;
   std::vector<DWORD> m_feed;
-  std::vector<DWORD> m_colors;
 
   CStdString m_strRSSTags;
-  D3DCOLOR m_dwChannelColor;
-  D3DCOLOR m_dwHeadlineColor;
 
   CLabelInfo m_label;
+  CGUIInfoColor m_channelColor;
+  CGUIInfoColor m_headlineColor;
 
   std::vector<std::string> m_vecUrls;
   std::vector<int> m_vecIntervals;
