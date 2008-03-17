@@ -20,7 +20,11 @@
 #ifndef _LINUX
 #include "../lib/libsmb/xbLibSmb.h"
 #else
-#include <libsmbclient.h>
+#ifdef _WIN32
+#include "../lib/libsmb/libsmbclient_win32.h"  // someone needs to update this at some point
+#else
+#include "../lib/libsmb/libsmbclient.h"
+#endif
 #endif
 
 #ifdef __APPLE__
