@@ -6,23 +6,17 @@ using namespace std;
 #define ICONV_PREPARE(iconv) iconv=(iconv_t)-1
 #define ICONV_SAFE_CLOSE(iconv) if (iconv!=(iconv_t)-1) { iconv_close(iconv); iconv=(iconv_t)-1; }
 
-#ifdef __APPLE__
-  #define WCHAR_CHARSET "UTF-32LE"
-#elif defined(_XBOX) || defined(WIN32)
-  #define WCHAR_CHARSET "UTF-16LE"
-#else
-  #define WCHAR_CHARSET "WCHAR_T"
-#endif
-
-static size_t iconv_const (iconv_t cd, const char** inbuf, size_t *inbytesleft, char* * outbuf, size_t *outbytesleft)
+size_t iconv_const (iconv_t cd, const char** inbuf, size_t *inbytesleft, 
+		    char* * outbuf, size_t *outbytesleft)
 {
 #if defined(_LINUX) && !defined(__APPLE__)
   return iconv(cd, (char**)inbuf, inbytesleft, outbuf, outbytesleft);
 #else
-  return iconv(cd, inbuf, inbytesleft, outbuf, outbytesleft);
+  // FIXME for OSX: once /usr/include/iconv.h is prioritized, use this version:
+  // return iconv(cd, inbuf, inbytesleft, outbuf, outbytesleft);
+  return iconv(cd, (char**)inbuf, inbytesleft, outbuf, outbytesleft);
 #endif
 }
-
 
 CCharsetConverter g_charsetConverter;
 
