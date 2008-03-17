@@ -2455,6 +2455,12 @@
 					RelativePath="..\..\xbmc\FileSystem\FileTuxBox.h">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\FileSystem\FileXBMSP.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\FileXBMSP.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileSystem\FileZip.cpp">
 				</File>
 				<File
@@ -2627,6 +2633,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\VirtualPathDirectory.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\XBMSDirectory.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\XBMSDirectory.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\ZipDirectory.cpp">
