@@ -34,6 +34,7 @@ public:
   static void GetInfoLabel(const TiXmlNode *pControlNode, const CStdString &labelTag, CGUIInfoLabel &infoLabel);
   static void GetInfoLabels(const TiXmlNode *pControlNode, const CStdString &labelTag, std::vector<CGUIInfoLabel> &infoLabels);
   static bool GetColor(const TiXmlNode* pRootNode, const char* strTag, DWORD &value);
+  static bool GetInfoColor(const TiXmlNode* pRootNode, const char* strTag, CGUIInfoColor &value);
   static CStdString GetLabel(const CStdString &label);
   static bool GetConditionalVisibility(const TiXmlNode* control, int &condition);
   static bool GetMultipleString(const TiXmlNode* pRootNode, const char* strTag, std::vector<CStdString>& vecStringValue);

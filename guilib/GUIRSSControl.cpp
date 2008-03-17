@@ -7,14 +7,13 @@
 
 using namespace std;
 
-CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, D3DCOLOR dwChannelColor, D3DCOLOR dwHeadlineColor, CStdString& strRSSTags)
+CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, const CGUIInfoColor &channelColor, const CGUIInfoColor &headlineColor, CStdString& strRSSTags)
 : CGUIControl(dwParentID, dwControlId, posX, posY, width, height),
   m_scrollInfo(0,0,1.0f,"")
 {
   m_label = labelInfo;
-  m_colors.push_back(m_label.textColor);
-  m_colors.push_back(dwHeadlineColor);
-  m_colors.push_back(dwChannelColor);
+  m_headlineColor = headlineColor;
+  m_channelColor = channelColor;
 
   m_strRSSTags = strRSSTags;
 
@@ -64,7 +63,13 @@ void CGUIRSSControl::Render()
     }
 
     if (m_label.font)
-      m_label.font->DrawScrollingText(m_posX, m_posY, m_colors, m_label.shadowColor, m_feed, 0, m_width, m_scrollInfo);
+    {
+      vector<DWORD> colors;
+      colors.push_back(m_label.textColor);
+      colors.push_back(m_headlineColor);
+      colors.push_back(m_channelColor);
+      m_label.font->DrawScrollingText(m_posX, m_posY, colors, m_label.shadowColor, m_feed, 0, m_width, m_scrollInfo);
+    }
 
     if (m_pReader)
       m_pReader->CheckForUpdates();
