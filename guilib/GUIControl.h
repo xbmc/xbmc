@@ -12,6 +12,7 @@
 #include "GUIMessage.h"     // needed by practically all controls
 #include "GUIFont.h"        // needed for the CAngle member (CLabelInfo) among other stuff
 #include "VisibleEffect.h"  // needed for the CAnimation members
+#include "GUIInfoColor.h"   // needed for CGuiInfoColor to handle infolabel'ed colors
 
 class CGUIListItem; // forward
 
@@ -22,22 +23,17 @@ class CLabelInfo
 public:
   CLabelInfo()
   {
-    textColor = 0;
-    shadowColor = 0;
-    disabledColor = 0;
-    selectedColor = 0;
-    focusedColor = 0;
     font = NULL;
     align = XBFONT_LEFT;
     offsetX = offsetY = 0;
     width = 0;
     angle = 0;
   };
-  DWORD textColor;
-  DWORD shadowColor;
-  DWORD selectedColor;
-  DWORD disabledColor;
-  DWORD focusedColor;
+  CGUIInfoColor textColor;
+  CGUIInfoColor shadowColor;
+  CGUIInfoColor selectedColor;
+  CGUIInfoColor disabledColor;
+  CGUIInfoColor focusedColor;
   DWORD align;
   float offsetX;
   float offsetY;

@@ -21,7 +21,8 @@ public:
   CGUIConsoleControl(DWORD dwParentID, DWORD dwControlId,
                      float posX, float posY, float width, float height,
                      const CLabelInfo &labelInfo,
-                     D3DCOLOR dwPenColor1, D3DCOLOR dwPenColor2, D3DCOLOR dwPenColor3, D3DCOLOR dwPenColor4);
+                     const CGUIInfoColor &penColor1, const CGUIInfoColor &penColor2,
+                     const CGUIInfoColor &penColor3, const CGUIInfoColor &penColor4);
 
   virtual ~CGUIConsoleControl(void);
 

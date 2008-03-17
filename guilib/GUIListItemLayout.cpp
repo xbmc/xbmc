@@ -363,10 +363,10 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
   CGUIControlFactory::GetFloat(child, "width", width);
   CGUIControlFactory::GetFloat(child, "height", height);
   XMLUtils::GetString(child, "info", infoString);
-  CGUIControlFactory::GetColor(child, "textcolor", label.textColor);
-  CGUIControlFactory::GetColor(child, "selectedcolor", label.selectedColor);
-  CGUIControlFactory::GetColor(child, "shadowcolor", label.shadowColor);
-  CGUIControlFactory::GetColor(child, "focusedcolor", label.focusedColor);
+  CGUIControlFactory::GetInfoColor(child, "textcolor", label.textColor);
+  CGUIControlFactory::GetInfoColor(child, "selectedcolor", label.selectedColor);
+  CGUIControlFactory::GetInfoColor(child, "shadowcolor", label.shadowColor);
+  CGUIControlFactory::GetInfoColor(child, "focusedcolor", label.focusedColor);
   CStdString fontName;
   XMLUtils::GetString(child, "font", fontName);
   label.font = g_fontManager.GetFont(fontName);
