@@ -6,6 +6,15 @@ using namespace std;
 #define ICONV_PREPARE(iconv) iconv=(iconv_t)-1
 #define ICONV_SAFE_CLOSE(iconv) if (iconv!=(iconv_t)-1) { iconv_close(iconv); iconv=(iconv_t)-1; }
 
+#ifdef __APPLE__
+  #define WCHAR_CHARSET "UTF-32LE"
+#elif defined(_XBOX) || defined(WIN32)
+  #define WCHAR_CHARSET "UTF-16LE"
+#else
+  #define WCHAR_CHARSET "WCHAR_T"
+#endif
+
+
 CCharsetConverter g_charsetConverter;
 
 CCharsetConverter::CCharsetConverter()
@@ -67,21 +76,12 @@ CCharsetConverter::CCharsetConverter()
   m_vecBidiCharsetNames.push_back("Windows-1255");
   m_vecBidiCharsetNames.push_back("CP1256");
   m_vecBidiCharsetNames.push_back("Windows-1256");
-#ifndef _LINUX
-  m_vecBidiCharsets.push_back(FRIBIDI_CHARSET_ISO8859_6);
-  m_vecBidiCharsets.push_back(FRIBIDI_CHARSET_ISO8859_8);
-  m_vecBidiCharsets.push_back(FRIBIDI_CHARSET_CP1255);
-  m_vecBidiCharsets.push_back(FRIBIDI_CHARSET_CP1255);
-  m_vecBidiCharsets.push_back(FRIBIDI_CHARSET_CP1256);
-  m_vecBidiCharsets.push_back(FRIBIDI_CHARSET_CP1256);
-#else
   m_vecBidiCharsets.push_back(FRIBIDI_CHAR_SET_ISO8859_6);
   m_vecBidiCharsets.push_back(FRIBIDI_CHAR_SET_ISO8859_8);
   m_vecBidiCharsets.push_back(FRIBIDI_CHAR_SET_CP1255);
   m_vecBidiCharsets.push_back(FRIBIDI_CHAR_SET_CP1255);
   m_vecBidiCharsets.push_back(FRIBIDI_CHAR_SET_CP1256);
   m_vecBidiCharsets.push_back(FRIBIDI_CHAR_SET_CP1256);
-#endif
 
   ICONV_PREPARE(m_iconvStringCharsetToFontCharset);
   ICONV_PREPARE(m_iconvUtf8ToStringCharset);
@@ -159,11 +159,7 @@ void CCharsetConverter::reset(void)
   ICONV_SAFE_CLOSE(m_iconvUtf32ToStringCharset);
   ICONV_SAFE_CLOSE(m_iconvUtf8toW);
 
-#ifndef _LINUX
-  m_stringFribidiCharset = FRIBIDI_CHARSET_NOT_FOUND;
-#else
   m_stringFribidiCharset = FRIBIDI_CHAR_SET_NOT_FOUND;
-#endif
 
   CStdString strCharset=g_langInfo.GetGuiCharSet();
 
@@ -187,11 +183,7 @@ void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &wStr
   // Try to flip hebrew/arabic characters, if any
   if (bVisualBiDiFlip)
   {
-#ifndef _LINUX
-    logicalToVisualBiDi(utf8String, strFlipped, FRIBIDI_CHARSET_UTF8);
-#else
     logicalToVisualBiDi(utf8String, strFlipped, FRIBIDI_CHAR_SET_UTF8);
-#endif
     src = strFlipped.c_str();
     inBytes = strFlipped.length() + 1;
   }
@@ -202,26 +194,14 @@ void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &wStr
   }
 
   if (m_iconvUtf8toW == (iconv_t) - 1)
-  {
-#ifdef __APPLE__
-    m_iconvUtf8toW = iconv_open("UTF-32LE", "UTF-8");
-#elif !defined(_LINUX)
-    m_iconvUtf8toW = iconv_open("UTF-16LE", "UTF-8");
-#else
-    m_iconvUtf8toW = iconv_open("WCHAR_T", "UTF-8");
-#endif    
-  }
+    m_iconvUtf8toW = iconv_open(WCHAR_CHARSET, "UTF-8");
 
   if (m_iconvUtf8toW != (iconv_t) - 1)
   {
     char *dst = new char[inBytes * sizeof(wchar_t)];
     size_t outBytes = inBytes * sizeof(wchar_t);
     char *outdst = dst;
-#if defined(_LINUX) && !defined(__APPLE__)
     if (iconv(m_iconvUtf8toW, (char**)&src, &inBytes, &outdst, &outBytes))
-#else
-    if (iconv(m_iconvUtf8toW, &src, &inBytes, &outdst, &outBytes))
-#endif
     {
       // For some reason it failed (maybe wrong charset?). Nothing to do but
       // return the original..
@@ -244,13 +224,7 @@ void CCharsetConverter::subtitleCharsetToW(const CStdStringA& strSource, CStdStr
   if (m_iconvSubtitleCharsetToW == (iconv_t) - 1)
   {
     CStdString strCharset=g_langInfo.GetSubtitleCharSet();
-#ifdef __APPLE__
-    m_iconvSubtitleCharsetToW = iconv_open("UTF-32LE", strCharset.c_str());
-#elif !defined(_LINUX)
-    m_iconvSubtitleCharsetToW = iconv_open("UTF-16LE", strCharset.c_str());
-#else
-    m_iconvSubtitleCharsetToW = iconv_open("WCHAR_T", strCharset.c_str());
-#endif    
+    m_iconvSubtitleCharsetToW = iconv_open(WCHAR_CHARSET, strCharset.c_str());
   }
 
   if (m_iconvSubtitleCharsetToW != (iconv_t) - 1)
@@ -260,11 +234,7 @@ void CCharsetConverter::subtitleCharsetToW(const CStdStringA& strSource, CStdStr
     char *dst = (char*)strDest.GetBuffer(inBytes * sizeof(wchar_t));
     size_t outBytes = inBytes * sizeof(wchar_t);
 
-#if defined(_LINUX) && !defined(__APPLE__)
     if (iconv(m_iconvSubtitleCharsetToW, (char**)&src, &inBytes, &dst, &outBytes))
-#else
-    if (iconv(m_iconvSubtitleCharsetToW, &src, &inBytes, &dst, &outBytes))
-#endif
     {
       strDest.ReleaseBuffer();
       // For some reason it failed (maybe wrong charset?). Nothing to do but
@@ -277,11 +247,7 @@ void CCharsetConverter::subtitleCharsetToW(const CStdStringA& strSource, CStdStr
 
 void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, CStdStringA& charset, FriBidiCharType base)
 {
-#ifndef _LINUX
-  FriBidiCharSet fribidiCharset = FRIBIDI_CHARSET_UTF8;
-#else
   FriBidiCharSet fribidiCharset = FRIBIDI_CHAR_SET_UTF8;
-#endif
 
   for (unsigned int i = 0; i < m_vecBidiCharsetNames.size(); i++)
   {
@@ -350,11 +316,7 @@ void CCharsetConverter::utf8ToStringCharset(const CStdStringA& strSource, CStdSt
     char *dst = strDest.GetBuffer(inBytes);
     size_t outBytes = inBytes - 1;
 
-#if defined(_LINUX) && !defined(__APPLE__)
     if (iconv(m_iconvUtf8ToStringCharset, (char**)&src, &inBytes, &dst, &outBytes) == (size_t) -1)
-#else
-    if (iconv(m_iconvUtf8ToStringCharset, &src, &inBytes, &dst, &outBytes) == (size_t) -1)
-#endif
     {
       strDest.ReleaseBuffer();
       // For some reason it failed (maybe wrong charset?). Nothing to do but
@@ -388,11 +350,7 @@ void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSource, CStdSt
     size_t outBytes = (inBytes * 4) + 1;
     char *dst = strDest.GetBuffer(outBytes);
 
-#if defined(_LINUX) && !defined(__APPLE__)
     if (iconv(m_iconvStringCharsetToUtf8, (char**)&src, &inBytes, &dst, &outBytes) == (size_t) -1)
-#else
-    if (iconv(m_iconvStringCharsetToUtf8, &src, &inBytes, &dst, &outBytes) == (size_t) -1)
-#endif
     {
       strDest.ReleaseBuffer();
       // For some reason it failed (maybe wrong charset?). Nothing to do but
@@ -423,11 +381,7 @@ void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSourceCharset,
     size_t outBytes = (inBytes * 4) + 1;
     char *dst = strDest.GetBuffer(outBytes);
 
-#if defined(_LINUX) && !defined(__APPLE__)
     if (iconv(iconvString, (char**)&src, &inBytes, &dst, &outBytes) == (size_t) -1)
-#else
-    if (iconv(iconvString, &src, &inBytes, &dst, &outBytes) == (size_t) -1)
-#endif
     {
       strDest.ReleaseBuffer();
       // For some reason it failed (maybe wrong charset?). Nothing to do but
@@ -445,25 +399,15 @@ void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSourceCharset,
 void CCharsetConverter::wToUTF8(const CStdStringW& strSource, CStdStringA &strDest)
 {
   if (m_iconvWtoUtf8 == (iconv_t) - 1)
-#ifdef __APPLE__
-    m_iconvWtoUtf8 = iconv_open("UTF-8", "UTF-32LE");
-#elif !defined(_LINUX)
-    m_iconvWtoUtf8 = iconv_open("UTF-8", "UTF-16LE");
-#else    
-    m_iconvWtoUtf8 = iconv_open("UTF-8", "WCHAR_T");
-#endif
-    
+    m_iconvWtoUtf8 = iconv_open("UTF-8", WCHAR_CHARSET);
+
   if (m_iconvWtoUtf8 != (iconv_t) - 1)
   {
     const char* src = (const char*) strSource.c_str();
     size_t inBytes = (strSource.length() + 1) * sizeof(wchar_t);
     size_t outBytes = (inBytes + 1)*sizeof(wchar_t);  // some free for UTF-8 (up to 4 bytes/char)
     char *dst = strDest.GetBuffer(outBytes);
-#if defined(_LINUX) && !defined(__APPLE__)
     if (iconv(m_iconvWtoUtf8, (char**)&src, &inBytes, &dst, &outBytes))
-#else
-    if (iconv(m_iconvWtoUtf8, &src, &inBytes, &dst, &outBytes))
-#endif
     { // failed :(
       CLog::Log(LOGERROR, "CCharsetConverter::wToUTF8 failed for subtitle.");
       strDest.ReleaseBuffer();
@@ -477,11 +421,7 @@ void CCharsetConverter::wToUTF8(const CStdStringW& strSource, CStdStringA &strDe
 void CCharsetConverter::utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA &strDest)
 {
   if (m_iconvUtf16BEtoUtf8 == (iconv_t) - 1)
-#ifndef _LINUX
     m_iconvUtf16BEtoUtf8 = iconv_open("UTF-8", "UTF-16BE");
-#else    
-    m_iconvUtf16BEtoUtf8 = iconv_open("UTF-8", "UTF16BE");
-#endif
 
   if (m_iconvUtf16BEtoUtf8 != (iconv_t) - 1)
   {
@@ -489,11 +429,7 @@ void CCharsetConverter::utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA 
     size_t inBytes = (strSource.length() + 1)*sizeof(wchar_t);
     size_t outBytes = (inBytes + 1)*sizeof(wchar_t);  // UTF-8 is up to 4 bytes/character  
     char *dst = strDest.GetBuffer(outBytes);
-#if defined(_LINUX) && !defined(__APPLE__)
     if (iconv(m_iconvUtf16BEtoUtf8, (char**)&src, &inBytes, &dst, &outBytes))
-#else
-    if (iconv(m_iconvUtf16BEtoUtf8, &src, &inBytes, &dst, &outBytes))
-#endif
     { // failed :(
       strDest.ReleaseBuffer();
       strDest = strSource;
@@ -506,13 +442,7 @@ void CCharsetConverter::utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA 
 void CCharsetConverter::utf16LEtoW(const char* strSource, CStdStringW &strDest)
 {
   if (m_iconvUtf16LEtoW == (iconv_t) - 1)
-#ifdef __APPLE__
-    m_iconvUtf16LEtoW = iconv_open("UTF-32LE", "UTF-16LE");
-#elif !defined(_LINUX)
-    m_iconvUtf16LEtoW = iconv_open("UTF-16LE", "UTF-16LE");
-#else    
-    m_iconvUtf16LEtoW = iconv_open("WCHAR_T", "UTF16LE");
-#endif
+    m_iconvUtf16LEtoW = iconv_open(WCHAR_CHARSET, "UTF-16LE");
 
   if (m_iconvUtf16LEtoW != (iconv_t) - 1)
   {
@@ -525,11 +455,7 @@ void CCharsetConverter::utf16LEtoW(const char* strSource, CStdStringW &strDest)
     }
     size_t outBytes = (inBytes + 1)*sizeof(wchar_t);  // UTF-8 is up to 4 bytes/character  
     char *dst = (char*) strDest.GetBuffer(outBytes);
-#if defined(_LINUX) && !defined(__APPLE__)
     if (iconv(m_iconvUtf16LEtoW, (char**)&strSource, &inBytes, &dst, &outBytes))
-#else
-    if (iconv(m_iconvUtf16LEtoW, &strSource, &inBytes, &dst, &outBytes))
-#endif
     { // failed :(
       strDest.ReleaseBuffer();
       strDest = strSource;
@@ -544,11 +470,7 @@ void CCharsetConverter::ucs2CharsetToStringCharset(const CStdStringW& strSource,
   if (m_iconvUcs2CharsetToStringCharset == (iconv_t) - 1)
   {
     CStdString strCharset=g_langInfo.GetGuiCharSet();
-#ifndef _LINUX
     m_iconvUcs2CharsetToStringCharset = iconv_open(strCharset.c_str(), "UTF-16LE");
-#else
-    m_iconvUcs2CharsetToStringCharset = iconv_open(strCharset.c_str(), "UTF16LE");
-#endif
   }
 
   if (m_iconvUcs2CharsetToStringCharset != (iconv_t) - 1)
@@ -574,11 +496,7 @@ void CCharsetConverter::ucs2CharsetToStringCharset(const CStdStringW& strSource,
     char *dst = strDest.GetBuffer(inBytes);
     size_t outBytes = inBytes;
 
-#if defined(_LINUX) && !defined(__APPLE__)
     if (iconv(m_iconvUcs2CharsetToStringCharset, (char**)&src, &inBytes, &dst, &outBytes))
-#else
-    if (iconv(m_iconvUcs2CharsetToStringCharset, &src, &inBytes, &dst, &outBytes))
-#endif
     {
       strDest.ReleaseBuffer();
       // For some reason it failed (maybe wrong charset?). Nothing to do but
@@ -594,11 +512,7 @@ void CCharsetConverter::utf32ToStringCharset(const unsigned long* strSource, CSt
   if (m_iconvUtf32ToStringCharset == (iconv_t) - 1)
   {
     CStdString strCharset=g_langInfo.GetGuiCharSet();
-#ifndef _LINUX
     m_iconvUtf32ToStringCharset = iconv_open(strCharset.c_str(), "UTF-32LE");
-#else
-    m_iconvUtf32ToStringCharset = iconv_open(strCharset.c_str(), "UTF32LE");
-#endif
   }
 
   if (m_iconvUtf32ToStringCharset != (iconv_t) - 1)
@@ -611,11 +525,7 @@ void CCharsetConverter::utf32ToStringCharset(const unsigned long* strSource, CSt
     char *dst = strDest.GetBuffer(inBytes);
     size_t outBytes = inBytes;
 
-#if defined(_LINUX) && !defined(__APPLE__)
     if (iconv(m_iconvUtf32ToStringCharset, (char**)&src, &inBytes, &dst, &outBytes))
-#else
-    if (iconv(m_iconvUtf32ToStringCharset, &src, &inBytes, &dst, &outBytes))
-#endif
     {
       strDest.ReleaseBuffer();
       // For some reason it failed (maybe wrong charset?). Nothing to do but
