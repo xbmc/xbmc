@@ -38,7 +38,7 @@ public:
   virtual void SetPosition(float posX, float posY);
   virtual void SetWidth(float width);
   virtual void SetHeight(float height);
-  virtual void SetColorDiffuse(D3DCOLOR color);
+  virtual void SetColorDiffuse(const CGUIInfoColor &color);
   virtual void SetPulseOnSelect(bool pulse);
   virtual void SetNavigation(DWORD up, DWORD down, DWORD left, DWORD right);
   void SetPageControl(DWORD pageControl);

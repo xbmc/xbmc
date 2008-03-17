@@ -358,7 +358,7 @@ void CGUIControl::SetPosition(float posX, float posY)
   }
 }
 
-void CGUIControl::SetColorDiffuse(D3DCOLOR color)
+void CGUIControl::SetColorDiffuse(const CGUIInfoColor &color)
 {
   m_diffuseColor = color;
 }

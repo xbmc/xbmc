@@ -121,7 +121,7 @@ public:
   virtual void SetPosition(float posX, float posY);
   virtual void SetHitRect(const CRect &rect);
   virtual void SetCamera(const CPoint &camera);
-  virtual void SetColorDiffuse(D3DCOLOR color);
+  virtual void SetColorDiffuse(const CGUIInfoColor &color);
   virtual float GetXPosition() const;
   virtual float GetYPosition() const;
   virtual float GetWidth() const;
@@ -234,7 +234,7 @@ protected:
   float m_height;
   float m_width;
   CRect m_hitRect;
-  D3DCOLOR m_diffuseColor;
+  CGUIInfoColor m_diffuseColor;
   DWORD m_dwControlID;
   DWORD m_dwParentID;
   bool m_bHasFocus;

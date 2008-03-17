@@ -509,7 +509,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   vector<CStdString> leftActions, rightActions, upActions, downActions;
 
   DWORD pageControl = 0;
-  D3DCOLOR colorDiffuse = 0xFFFFFFFF;
+  CGUIInfoColor colorDiffuse(0xFFFFFFFF);
   DWORD defaultControl = 0;
   CStdString strTmp;
   int singleInfo = 0;
@@ -697,7 +697,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   XMLUtils::GetDWORD(pControlNode, "defaultcontrol", defaultControl);
   XMLUtils::GetDWORD(pControlNode, "pagecontrol", pageControl);
 
-  GetColor(pControlNode, "colordiffuse", colorDiffuse);
+  GetInfoColor(pControlNode, "colordiffuse", colorDiffuse);
 
   GetConditionalVisibility(pControlNode, iVisibleCondition, allowHiddenFocus);
   GetCondition(pControlNode, "enable", enableCondition);
