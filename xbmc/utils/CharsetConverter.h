@@ -14,6 +14,17 @@
 
 #include <vector>
 
+size_t iconv_const (iconv_t cd, const char** inbuf, size_t *inbytesleft, 
+		    char* * outbuf, size_t *outbytesleft);
+
+#ifdef __APPLE__
+  #define WCHAR_CHARSET "UTF-32LE"
+#elif defined(_XBOX) || defined(WIN32)
+  #define WCHAR_CHARSET "UTF-16LE"
+#else
+  #define WCHAR_CHARSET "WCHAR_T"
+#endif
+
 class CCharsetConverter
 {
 public:
