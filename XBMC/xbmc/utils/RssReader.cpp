@@ -9,6 +9,7 @@
 #include "../Util.h"
 #include "../utils/Network.h"
 #include "Application.h"
+#include "CharsetConverter.h"
 
 using namespace std;
 using namespace XFILE;
@@ -281,11 +282,7 @@ void CRssReader::fromRSSToUTF16(const CStdStringA& strSource, CStdStringW& strDe
 
     iconv(m_iconv, NULL, &inBytes, NULL, &outBytes);
 
-#if defined(_LINUX) && !defined(__APPLE__)
-    if (iconv(m_iconv, (char**) &src, &inBytes, &dst, &outBytes) == (size_t) -1)
-#else
-    if (iconv(m_iconv, &src, &inBytes, &dst, &outBytes) == (size_t) -1)
-#endif
+    if (iconv_const(m_iconv, &src, &inBytes, &dst, &outBytes) == (size_t) -1)
     {
       // For some reason it failed (maybe wrong charset?). Nothing to do but
       // return the original..
@@ -327,13 +324,7 @@ bool CRssReader::Parse(LPSTR szBuffer, int iFeed)
 
   CLog::Log(LOGDEBUG, "RSS feed encoding: %s", m_encoding.c_str());
   
-#ifdef __APPLE__
-  m_iconv = iconv_open("UTF-32LE", m_encoding.c_str());
-#elif !defined(_LINUX)  
-  m_iconv = iconv_open("UTF-16LE", m_encoding.c_str());
-#else
-  m_iconv = iconv_open("WCHAR_T", m_encoding.c_str());
-#endif  
+  m_iconv = iconv_open(WCHAR_CHARSET, m_encoding.c_str());
 
   if (g_charsetConverter.isBidiCharset(m_encoding))
   {
