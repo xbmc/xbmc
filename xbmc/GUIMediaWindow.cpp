@@ -417,6 +417,10 @@ void CGUIMediaWindow::FormatItemLabels(CFileItemList &items, const LABEL_MASKS &
     else
       fileFormatter.FormatLabels(pItem);
   }
+
+  if(items.GetSortMethod() == SORT_METHOD_LABEL_IGNORE_THE 
+  || items.GetSortMethod() == SORT_METHOD_LABEL)
+    items.ClearSortState();
 }
 
 // \brief Prepares and adds the fileitems list/thumb panel

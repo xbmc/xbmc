@@ -77,9 +77,11 @@ public:
   virtual cmyth_proginfo_rec_status_t proginfo_rec_status(cmyth_proginfo_t prog)=0;
   virtual cmyth_proginfo_t  proginfo_get_from_basename   (cmyth_conn_t control, const char* basename)=0;
   virtual int               proginfo_delete_recording(cmyth_conn_t control, cmyth_proginfo_t prog)=0;
+  virtual int               proginfo_stop_recording(cmyth_conn_t control, cmyth_proginfo_t prog)=0;
+  virtual int               proginfo_forget_recording(cmyth_conn_t control, cmyth_proginfo_t prog)=0;
   virtual int               proginfo_chan_id        (cmyth_proginfo_t prog)=0;
   virtual cmyth_proginfo_t  proginfo_get_detail     (cmyth_conn_t control, cmyth_proginfo_t p)=0;
-
+  virtual int               proginfo_compare        (cmyth_proginfo_t a, cmyth_proginfo_t b)=0;
 
   virtual void             ref_release              (void* ptr)=0;
   virtual void*            ref_hold                 (void* ptr)=0;
@@ -164,8 +166,11 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
   DEFINE_METHOD1(cmyth_proginfo_rec_status_t, proginfo_rec_status, (cmyth_proginfo_t p1))
   DEFINE_METHOD2(cmyth_proginfo_t,    proginfo_get_from_basename,    (cmyth_conn_t p1, const char* p2))
   DEFINE_METHOD2(int,                 proginfo_delete_recording, (cmyth_conn_t p1, cmyth_proginfo_t p2))
+  DEFINE_METHOD2(int,                 proginfo_stop_recording,  (cmyth_conn_t p1, cmyth_proginfo_t p2))
+  DEFINE_METHOD2(int,                 proginfo_forget_recording,  (cmyth_conn_t p1, cmyth_proginfo_t p2))
   DEFINE_METHOD1(int,                 proginfo_chan_id,         (cmyth_proginfo_t p1))
   DEFINE_METHOD2(cmyth_proginfo_t,    proginfo_get_detail,      (cmyth_conn_t p1, cmyth_proginfo_t p2))
+  DEFINE_METHOD2(int,                 proginfo_compare,         (cmyth_proginfo_t p1, cmyth_proginfo_t p2))
 
   DEFINE_METHOD1(void,                ref_release,              (void* p1))
   DEFINE_METHOD1(void*,               ref_hold,                 (void* p1))
@@ -239,8 +244,11 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
     RESOLVE_METHOD_RENAME(cmyth_proginfo_rec_status, proginfo_rec_status)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_get_from_basename, proginfo_get_from_basename)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_delete_recording, proginfo_delete_recording)
+    RESOLVE_METHOD_RENAME(cmyth_proginfo_stop_recording, proginfo_stop_recording)
+    RESOLVE_METHOD_RENAME(cmyth_proginfo_forget_recording, proginfo_forget_recording)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_chan_id, proginfo_chan_id)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_get_detail, proginfo_get_detail)
+    RESOLVE_METHOD_RENAME(cmyth_proginfo_compare, proginfo_compare)
 
     RESOLVE_METHOD(ref_release)
     RESOLVE_METHOD(ref_hold)

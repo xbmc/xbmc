@@ -147,6 +147,7 @@ public:
   bool IsMemoryUnit() const;
   bool IsRemovable() const;
   bool IsTuxBox() const;
+  bool IsMythTV() const;
 
   void RemoveExtension();
   void CleanFileName();
@@ -395,6 +396,7 @@ public:
   void SetContent(const CStdString &content) { m_content = content; };
   const CStdString &GetContent() const { return m_content; };
 
+  void ClearSortState();
 private:
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
   CStdString GetDiscCacheFile();
