@@ -86,7 +86,7 @@ bool CCMythSession::UpdateItem(CFileItem &item, cmyth_proginfo_t info)
 
   CVideoInfoTag* tag = item.GetVideoInfoTag();
 
-  tag->m_strTitle       = GetValue(m_dll->proginfo_chansign(info));
+  tag->m_strAlbum       = GetValue(m_dll->proginfo_chansign(info));
   tag->m_strShowTitle   = GetValue(m_dll->proginfo_title(info));
   tag->m_strPlot        = GetValue(m_dll->proginfo_description(info));
   tag->m_strGenre       = GetValue(m_dll->proginfo_category(info));
@@ -94,6 +94,7 @@ bool CCMythSession::UpdateItem(CFileItem &item, cmyth_proginfo_t info)
   tag->m_strPlotOutline   = tag->m_strPlot;
   tag->m_strOriginalTitle = tag->m_strShowTitle;
 
+  tag->m_strTitle = tag->m_strAlbum;
   if(tag->m_strShowTitle.length() > 0)
     tag->m_strTitle += " : " + tag->m_strShowTitle;
 
@@ -105,6 +106,7 @@ bool CCMythSession::UpdateItem(CFileItem &item, cmyth_proginfo_t info)
   tag->m_iSeason  = 0; /* set this so xbmc knows it's a tv show */
   tag->m_iEpisode = 0;
 
+  item.m_strTitle = GetValue(m_dll->proginfo_chanstr(info));
   item.m_dateTime = GetValue(m_dll->proginfo_rec_start(info));
   item.m_dwSize   = m_dll->proginfo_length(info);
 

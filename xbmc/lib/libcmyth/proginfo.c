@@ -351,30 +351,6 @@ cmyth_proginfo_dup(cmyth_proginfo_t p)
 }
 
 /*
- * cmyth_proginfo_stop_recording(cmyth_conn_t control,
- *                               cmyth_proginfo_t prog)
- * 
- * Scope: PUBLIC
- *
- * Description
- *
- * Make a request on the control connection 'control' to ask the
- * MythTV back end to stop recording the program described in 'prog'.
- *
- * Return Value:
- *
- * Success: 0
- *
- * Failure: -(ERRNO)
- */
-int
-cmyth_proginfo_stop_recording(cmyth_conn_t control, cmyth_proginfo_t prog)
-{
-	cmyth_dbg(CMYTH_DBG_DEBUG, "%s\n", __FUNCTION__);
-	return -ENOSYS;
-}
-
-/*
  * cmyth_proginfo_check_recording(cmyth_conn_t control,
  *                                cmyth_proginfo_t prog)
  * 
@@ -628,6 +604,29 @@ int
 cmyth_proginfo_forget_recording(cmyth_conn_t control, cmyth_proginfo_t prog)
 {
 	return delete_command(control, prog, "FORGET_RECORDING");
+}
+
+/*
+ * cmyth_proginfo_stop_recording(cmyth_conn_t control,
+ *                               cmyth_proginfo_t prog)
+ * 
+ * Scope: PUBLIC
+ *
+ * Description
+ *
+ * Make a request on the control connection 'control' to ask the
+ * MythTV back end to stop recording the program described in 'prog'.
+ *
+ * Return Value:
+ *
+ * Success: 0
+ *
+ * Failure: -(ERRNO)
+ */
+int
+cmyth_proginfo_stop_recording(cmyth_conn_t control, cmyth_proginfo_t prog)
+{
+	return delete_command(control, prog, "STOP_RECORDING");
 }
 
 /*
@@ -1535,7 +1534,12 @@ cmyth_proginfo_compare(cmyth_proginfo_t a, cmyth_proginfo_t b)
 	if (STRCMP(a->proginfo_description, b->proginfo_description) != 0)
 		return -1;
 
-	if (STRCMP(a->proginfo_url, b->proginfo_url) != 0)
+	if (a->proginfo_url && b->proginfo_url) {
+          char* aa = strrchr(a->proginfo_url, '/');
+          char* bb = strrchr(b->proginfo_url, '/');
+          if (strcmp(aa ? aa+1 : a->proginfo_url, bb ? bb+1 : b->proginfo_url) != 0)
+		return -1;
+	} else if(!a->proginfo_url != !b->proginfo_url)
 		return -1;
 
 	if (cmyth_timestamp_compare(a->proginfo_start_ts,
