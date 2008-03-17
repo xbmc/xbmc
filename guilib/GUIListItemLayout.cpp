@@ -48,7 +48,7 @@ CGUIListItemLayout::CListSelectLabel::~CListSelectLabel()
 }
 
 
-CGUIListItemLayout::CListTexture::CListTexture(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, const CImage &borderImage, const FRECT &borderSize, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, DWORD aspectAlign, D3DCOLOR colorDiffuse, const vector<CAnimation> &animations)
+CGUIListItemLayout::CListTexture::CListTexture(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, const CImage &borderImage, const FRECT &borderSize, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, DWORD aspectAlign, const CGUIInfoColor &colorDiffuse, const vector<CAnimation> &animations)
 : CGUIListItemLayout::CListBase(),
   m_image(0, 0, posX, posY, width, height, image, borderImage, borderSize)
 {
@@ -64,7 +64,7 @@ CGUIListItemLayout::CListTexture::~CListTexture()
   m_image.FreeResources();
 }
 
-CGUIListItemLayout::CListImage::CListImage(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, const CImage &borderImage, const FRECT &borderSize, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, DWORD aspectAlign, D3DCOLOR colorDiffuse, const CGUIInfoLabel &content, const vector<CAnimation> &animations)
+CGUIListItemLayout::CListImage::CListImage(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, const CImage &borderImage, const FRECT &borderSize, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, DWORD aspectAlign, const CGUIInfoColor &colorDiffuse, const CGUIInfoLabel &content, const vector<CAnimation> &animations)
 : CGUIListItemLayout::CListTexture(posX, posY, width, height, visibleCondition, image, borderImage, borderSize, aspectRatio, aspectAlign, colorDiffuse, animations)
 {
   m_info = content;
@@ -384,8 +384,8 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
   FRECT rect = { posX, posY, width, height };
   vector<CAnimation> animations;
   CGUIControlFactory::GetAnimations(child, rect, animations);
-  D3DCOLOR colorDiffuse(0xffffffff);
-  CGUIControlFactory::GetColor(child, "colordiffuse", colorDiffuse);
+  CGUIInfoColor colorDiffuse(0xffffffff);
+  CGUIControlFactory::GetInfoColor(child, "colordiffuse", colorDiffuse);
   DWORD alignY = 0;
   if (CGUIControlFactory::GetAlignmentY(child, "aligny", alignY))
     label.align |= alignY;

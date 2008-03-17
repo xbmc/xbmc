@@ -198,7 +198,7 @@ void CGUIResizeControl::SetAlpha(unsigned char alpha)
   m_imgNoFocus.SetAlpha(alpha);
 }
 
-void CGUIResizeControl::SetColorDiffuse(D3DCOLOR color)
+void CGUIResizeControl::SetColorDiffuse(const CGUIInfoColor &color)
 {
   CGUIControl::SetColorDiffuse(color);
   m_imgFocus.SetColorDiffuse(color);

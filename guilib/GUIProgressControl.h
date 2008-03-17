@@ -32,7 +32,7 @@ public:
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual bool OnMessage(CGUIMessage& message);
   virtual void SetPosition(float posX, float posY);
-  virtual void SetColorDiffuse(D3DCOLOR color);
+  virtual void SetColorDiffuse(const CGUIInfoColor &color);
   void SetPercentage(float fPercent);
   void SetInfo(int iInfo);
   int GetInfo() const {return m_iInfoCode;};
