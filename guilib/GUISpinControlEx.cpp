@@ -105,7 +105,7 @@ CStdString CGUISpinControlEx::GetDescription() const
   return strLabel;
 }
 
-void CGUISpinControlEx::SettingsCategorySetSpinTextColor(D3DCOLOR color)
+void CGUISpinControlEx::SettingsCategorySetSpinTextColor(const CGUIInfoColor &color)
 {
   m_label.textColor = color;
   m_label.focusedColor = color;
