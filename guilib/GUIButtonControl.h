@@ -34,7 +34,7 @@ public:
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual void SetPosition(float posX, float posY);
-  virtual void SetColorDiffuse(D3DCOLOR color);
+  virtual void SetColorDiffuse(const CGUIInfoColor &color);
   void SetLabel(const std::string & aLabel);
   void SetLabel2(const std::string & aLabel2);
   void SetClickActions(const std::vector<CStdString>& clickActions) { m_clickActions = clickActions; };
