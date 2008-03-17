@@ -137,6 +137,7 @@ namespace PYXBMC
 
       li = ((CGUIButtonControl *)pGUIControl)->GetLabelInfo();
 
+      // note: conversion from infocolors -> plain colors here
       ((ControlButton*)pControl)->dwDisabledColor = li.disabledColor;
       ((ControlButton*)pControl)->dwFocusedColor  = li.focusedColor;
       ((ControlButton*)pControl)->dwTextColor  = li.textColor;
@@ -149,6 +150,7 @@ namespace PYXBMC
 
       li = ((CGUICheckMarkControl *)pGUIControl)->GetLabelInfo();
 
+      // note: conversion to plain colors from infocolors.
       ((ControlCheckMark*)pControl)->dwDisabledColor = li.disabledColor;
       //((ControlCheckMark*)pControl)->dwShadowColor = li.shadowColor;
       ((ControlCheckMark*)pControl)->dwTextColor  = li.textColor;

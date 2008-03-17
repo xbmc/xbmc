@@ -371,6 +371,17 @@ bool CGUIControlFactory::GetColor(const TiXmlNode *control, const char *strTag, 
   return false;
 }
 
+bool CGUIControlFactory::GetInfoColor(const TiXmlNode *control, const char *strTag, CGUIInfoColor &value)
+{
+  const TiXmlElement* node = control->FirstChildElement(strTag);
+  if (node && node->FirstChild())
+  {
+    value.Parse(node->FirstChild()->Value());
+    return true;
+  }
+  return false;
+}
+
 bool CGUIControlFactory::GetNavigation(const TiXmlElement *node, const char *tag, DWORD &direction, vector<CStdString> &actions)
 {
   if (!GetMultipleString(node, tag, actions))
@@ -609,7 +620,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   CLabelInfo labelInfo2;
   CLabelInfo spinInfo;
 
-  DWORD dwTextColor3 = labelInfo.textColor;
+  CGUIInfoColor textColor3;
 
   float radioWidth = 0;
   float radioHeight = 0;
@@ -695,11 +706,11 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   FRECT animRect = { posX, posY, width, height };
   GetAnimations(pControlNode, animRect, animations);
 
-  GetColor(pControlNode, "textcolor", labelInfo.textColor);
-  GetColor(pControlNode, "focusedcolor", labelInfo.focusedColor);
-  GetColor(pControlNode, "disabledcolor", labelInfo.disabledColor);
-  GetColor(pControlNode, "shadowcolor", labelInfo.shadowColor);
-  GetColor(pControlNode, "selectedcolor", labelInfo.selectedColor);
+  GetInfoColor(pControlNode, "textcolor", labelInfo.textColor);
+  GetInfoColor(pControlNode, "focusedcolor", labelInfo.focusedColor);
+  GetInfoColor(pControlNode, "disabledcolor", labelInfo.disabledColor);
+  GetInfoColor(pControlNode, "shadowcolor", labelInfo.shadowColor);
+  GetInfoColor(pControlNode, "selectedcolor", labelInfo.selectedColor);
   GetFloat(pControlNode, "textoffsetx", labelInfo.offsetX);
   GetFloat(pControlNode, "textoffsety", labelInfo.offsetY);
   GetFloat(pControlNode, "textxoff", labelInfo.offsetX);
@@ -718,9 +729,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   if (GetFloat(pControlNode, "textwidth", labelInfo.width))
     labelInfo.align |= XBFONT_TRUNCATED;
   labelInfo2.selectedColor = labelInfo.selectedColor;
-  GetColor(pControlNode, "selectedcolor2", labelInfo2.selectedColor);
-  GetColor(pControlNode, "textcolor2", labelInfo2.textColor);
-  GetColor(pControlNode, "focusedcolor2", labelInfo2.focusedColor);
+  GetInfoColor(pControlNode, "selectedcolor2", labelInfo2.selectedColor);
+  GetInfoColor(pControlNode, "textcolor2", labelInfo2.textColor);
+  GetInfoColor(pControlNode, "focusedcolor2", labelInfo2.focusedColor);
   labelInfo2.font = labelInfo.font;
   if (XMLUtils::GetString(pControlNode, "font2", strFont))
     labelInfo2.font = g_fontManager.GetFont(strFont);
@@ -766,7 +777,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetTexture(pControlNode, "textureleftfocus", textureLeftFocus);
   GetTexture(pControlNode, "texturerightfocus", textureRightFocus);
 
-  GetColor(pControlNode, "spincolor", spinInfo.textColor);
+  GetInfoColor(pControlNode, "spincolor", spinInfo.textColor);
   if (XMLUtils::GetString(pControlNode, "spinfont", strFont))
     spinInfo.font = g_fontManager.GetFont(strFont);
   if (!spinInfo.font) spinInfo.font = labelInfo.font;
@@ -794,8 +805,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
 
   XMLUtils::GetString(pControlNode, "title", strTitle);
   XMLUtils::GetString(pControlNode, "tagset", strRSSTags);
-  GetColor(pControlNode, "headlinecolor", labelInfo2.textColor);
-  GetColor(pControlNode, "titlecolor", dwTextColor3);
+  GetInfoColor(pControlNode, "headlinecolor", labelInfo2.textColor);
+  GetInfoColor(pControlNode, "titlecolor", textColor3);
 
   if (XMLUtils::GetString(pControlNode, "subtype", strSubType))
   {
@@ -1045,7 +1056,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   {
     control = new CGUIRSSControl(
       dwParentId, id, posX, posY, width, height,
-      labelInfo, dwTextColor3, labelInfo2.textColor, strRSSTags);
+      labelInfo, textColor3, labelInfo2.textColor, strRSSTags);
 
     std::map<int, std::pair<std::vector<int>,std::vector<string> > >::iterator iter=g_settings.m_mapRssUrls.find(iUrlSet);
     if (iter != g_settings.m_mapRssUrls.end())
@@ -1060,7 +1071,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   {
     control = new CGUIConsoleControl(
       dwParentId, id, posX, posY, width, height,
-      labelInfo, labelInfo.textColor, labelInfo2.textColor, dwTextColor3, labelInfo.selectedColor);
+      labelInfo, labelInfo.textColor, labelInfo2.textColor, textColor3, labelInfo.selectedColor);
   }
   else if (strType == "button")
   {
