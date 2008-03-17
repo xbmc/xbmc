@@ -753,6 +753,11 @@ bool CFileItem::IsTuxBox() const
   return CUtil::IsTuxBox(m_strPath);
 }
 
+bool CFileItem::IsMythTV() const
+{
+  return CUtil::IsMythTV(m_strPath);
+}
+
 bool CFileItem::IsHD() const
 {
   return CUtil::IsHD(m_strPath);
@@ -2670,5 +2675,11 @@ void CFileItemList::AddSortMethod(SORT_METHOD sortMethod, int buttonLabel, const
 void CFileItemList::SetReplaceListing(bool replace)
 {
   m_replaceListing = replace;
+}
+
+void CFileItemList::ClearSortState()
+{
+  m_sortMethod=SORT_METHOD_NONE;
+  m_sortOrder=SORT_ORDER_NONE;
 }
 
