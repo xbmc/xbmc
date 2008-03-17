@@ -198,6 +198,7 @@
 #define HAS_FILESYSTEM_DAAP
 #define HAS_DVD_DRIVE
 #define HAS_VISUALISATION
+#define HAS_CCXSTREAM
 
 #undef HAS_SHOUTCAST
 #undef HAS_SDL_AUDIO   // use dsound for audio on win32
