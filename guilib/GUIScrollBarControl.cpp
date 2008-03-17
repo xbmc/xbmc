@@ -277,7 +277,7 @@ CStdString CGUIScrollBar::GetDescription() const
   return description;
 }
 
-void CGUIScrollBar::SetColorDiffuse(D3DCOLOR color)
+void CGUIScrollBar::SetColorDiffuse(const CGUIInfoColor &color)
 {
   CGUIControl::SetColorDiffuse(color);
   m_guiBackground.SetColorDiffuse(color);
