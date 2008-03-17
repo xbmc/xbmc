@@ -38,7 +38,7 @@ bool CPosixUDPSocket::Bind(CAddress& addr, int port, int range)
   Close();
 
   // create the socket
-  m_iSock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
+  m_iSock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
   if (m_iSock < 0)
   {
