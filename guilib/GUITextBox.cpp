@@ -462,7 +462,7 @@ void CGUITextBox::SetInfo(const CGUIInfoLabel &infoLabel)
   m_info = infoLabel;
 }
 
-void CGUITextBox::SetColorDiffuse(D3DCOLOR color)
+void CGUITextBox::SetColorDiffuse(const CGUIInfoColor &color)
 {
   CGUIControl::SetColorDiffuse(color);
   m_upDown.SetColorDiffuse(color);

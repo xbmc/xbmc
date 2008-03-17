@@ -42,7 +42,7 @@ class CGUIListItemLayout
   class CListTexture : public CListBase
   {
   public:
-    CListTexture(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, const CImage &borderImage, const FRECT &borderSize, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, DWORD aspectAlign, D3DCOLOR colorDiffuse, const std::vector<CAnimation> &animations);
+    CListTexture(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, const CImage &borderImage, const FRECT &borderSize, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, DWORD aspectAlign, const CGUIInfoColor &colorDiffuse, const std::vector<CAnimation> &animations);
     virtual ~CListTexture();
     CGUIBorderedImage m_image;
   };
@@ -50,7 +50,7 @@ class CGUIListItemLayout
   class CListImage: public CListTexture
   {
   public:
-    CListImage(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, const CImage &borderImage, const FRECT &borderSize, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, DWORD aspectAlign, D3DCOLOR colorDiffuse, const CGUIInfoLabel &content, const std::vector<CAnimation> &animations);
+    CListImage(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, const CImage &borderImage, const FRECT &borderSize, CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio, DWORD aspectAlign, const CGUIInfoColor &colorDiffuse, const CGUIInfoLabel &content, const std::vector<CAnimation> &animations);
     virtual ~CListImage();
     CGUIInfoLabel m_info;
   };
