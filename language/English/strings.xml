@@ -630,6 +630,15 @@
   <string id="773">Seeking</string>
   <string id="774">Slideshow Folder</string>
 
+  <string id="790">Remote Events</string>
+  <string id="791">Enable Remote Events</string>
+  <string id="792">Remote Events Port</string>
+  <string id="793">Remote Events Port Range</string>
+  <string id="794">Receive events from other computers</string>
+  <string id="795">Initial Repeat Delay (ms)</string>
+  <string id="796">Continuous Repeat Delay (ms)</string>
+  <string id="797">Maximum Number of Clients</string>
+
   <string id="998">XLink Kai</string>
   <string id="999">Online Gaming</string>
   <string id="1000">Screensaver Preview</string>

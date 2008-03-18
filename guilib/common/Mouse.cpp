@@ -154,10 +154,15 @@ CPoint CMouse::GetLocation() const
   return CPoint((float)m_mouseState.x, (float)m_mouseState.y);
 }
 
-void CMouse::SetLocation(const CPoint &point)
+void CMouse::SetLocation(const CPoint &point, bool activate)
 {
   m_mouseState.x = (int)point.x;
   m_mouseState.y = (int)point.y;
+  if (activate)
+  {
+    m_lastActiveTime = timeGetTime();
+    m_mouseState.active = true;
+  }
 }
 
 CPoint CMouse::GetLastMove() const
