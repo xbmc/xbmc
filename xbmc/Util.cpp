@@ -4304,38 +4304,39 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     CLastFmManager::GetInstance()->Ban(parameter.Equals("false") ? false : true);
   }
   else if (execute.Equals("container.refresh"))
-  {
-    CGUIMessage message(GUI_MSG_NOTIFY_ALL, m_gWindowManager.GetFocusedWindow(), 0, GUI_MSG_UPDATE);
+  { // NOTE: These messages require a media window, thus they're sent to the current activewindow.
+    //       This shouldn't stop a dialog intercepting it though.
+    CGUIMessage message(GUI_MSG_NOTIFY_ALL, m_gWindowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE);
     g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("container.nextviewmode"))
   {
-    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetFocusedWindow(), 0, 0, 1);
+    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetActiveWindow(), 0, 0, 1);
     g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("container.previousviewmode"))
   {
-    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetFocusedWindow(), 0, 0, -1);
+    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetActiveWindow(), 0, 0, -1);
     g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("container.setviewmode"))
   {
-    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetFocusedWindow(), 0, atoi(parameter.c_str()));
+    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetActiveWindow(), 0, atoi(parameter.c_str()));
     g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("container.nextsortmethod"))
   {
-    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetFocusedWindow(), 0, 0, 1);
+    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetActiveWindow(), 0, 0, 1);
     g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("container.previoussortmethod"))
   {
-    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetFocusedWindow(), 0, 0, -1);
+    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetActiveWindow(), 0, 0, -1);
     g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("container.setsortmethod"))
   {
-    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetFocusedWindow(), 0, atoi(parameter.c_str()));
+    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetActiveWindow(), 0, atoi(parameter.c_str()));
     g_graphicsContext.SendMessage(message);
   }
   else
