@@ -99,7 +99,7 @@ bool CEventClient::AddPacket(CEventPacket *packet)
   {
     // TODO: limit payload size
     ResetTimeout();
-    m_seqPackets[ packet->Sequence() ] = packet;    
+    m_seqPackets[ packet->Sequence() ] = packet;
     if (m_seqPackets.size() == packet->Size())
     {
       unsigned int iSeqPayloadSize = 0;
@@ -130,6 +130,7 @@ bool CEventClient::AddPacket(CEventPacket *packet)
       }
       else
       {
+        CLog::Log(LOGERROR, "ES: Could not assemble packets, Out of Memory");
         FreePacketQueues();
         return false;
       }
@@ -444,8 +445,16 @@ bool CEventClient::OnPacketNOTIFICATION(CEventPacket *packet)
     }
 
     FILE * f = fopen(iconfile.c_str(), "wb");
-    fwrite((const void *)payload, psize, 1, f);
-    fclose(f);
+    if (f)
+    {
+      fwrite((const void *)payload, psize, 1, f);
+      fclose(f);
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "ES: Could not write icon file");
+      m_eLogoType = LT_NONE;
+    }
   }
 
   if (m_eLogoType == LT_NONE)
