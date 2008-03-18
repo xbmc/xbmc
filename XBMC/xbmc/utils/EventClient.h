@@ -10,8 +10,6 @@
 #include <map>
 #include <queue>
 
-#ifdef _LINUX
-
 namespace EVENTCLIENT
 {
 
@@ -204,5 +202,4 @@ namespace EVENTCLIENT
 
 } // EVENTCLIENT
 
-#endif // _LINUX
 #endif // __EVENT_CLIENT_H__

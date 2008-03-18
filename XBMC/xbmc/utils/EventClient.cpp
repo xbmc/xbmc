@@ -193,6 +193,7 @@ bool CEventClient::ProcessPacket(CEventPacket *packet)
     break;
 
   default:
+    CLog::Log(LOGDEBUG, "ES: Got Unknown Packet");
     break;
   }
 
@@ -254,8 +255,16 @@ bool CEventClient::OnPacketHELO(CEventPacket *packet)
       break;
     }
     FILE * f = fopen(_P(iconfile.c_str()), "wb");
-    fwrite((const void *)payload, psize, 1, f);
-    fclose(f);
+    if (f)
+    {
+      fwrite((const void *)payload, psize, 1, f);
+      fclose(f);
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "ES: Could not write icon file");
+      m_eLogoType = LT_NONE;
+    }
   }
 
   m_bGreeted = true;
@@ -436,8 +445,16 @@ bool CEventClient::OnPacketNOTIFICATION(CEventPacket *packet)
     }
 
     FILE * f = fopen(_P(iconfile.c_str()), "wb");
-    fwrite((const void *)payload, psize, 1, f);
-    fclose(f);
+    if (f)
+    {
+      fwrite((const void *)payload, psize, 1, f);
+      fclose(f);
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "ES: Could not write icon file");
+      m_eLogoType = LT_NONE;
+    }
   }
 
   if (m_eLogoType == LT_NONE)
@@ -451,7 +468,6 @@ bool CEventClient::OnPacketNOTIFICATION(CEventPacket *packet)
                                                         title.c_str(),
                                                         message.c_str());
   }
-
   return true;
 }
 
@@ -528,8 +544,6 @@ unsigned short CEventClient::GetButtonCode()
 {
   CSingleLock lock(m_critSection);
   unsigned short bcode = 0;
-
-  // TODO: button names
 
   if ( ! m_buttonQueue.empty() )
   {
