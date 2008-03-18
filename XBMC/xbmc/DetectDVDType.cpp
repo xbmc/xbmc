@@ -217,6 +217,17 @@ void CDetectDVDMedia::DetectMediaType()
             m_pCdInfo->GetAudioTrackCount(),
             m_pCdInfo->GetDataTrackCount() );
 
+#if defined(_WIN32) && !defined(HAS_XBOX_HARDWARE)
+  // Detect ISO9660(mode1/mode2), CDDA filesystem or UDF
+  if (m_pCdInfo->IsAudio(1))
+  {
+    strNewUrl = "cdda://local/";
+    bCDDA = true;
+  }
+  else
+    strNewUrl = CCdIoSupport::GetDeviceFileName()+4;
+
+#else
   // Detect ISO9660(mode1/mode2), CDDA filesystem or UDF
   if (m_pCdInfo->IsISOHFS(1) || m_pCdInfo->IsIso9660(1) || m_pCdInfo->IsIso9660Interactive(1))
   {
@@ -248,6 +259,7 @@ void CDetectDVDMedia::DetectMediaType()
       strNewUrl = "D:\\";
     }
   }
+#endif
 
   CLog::Log(LOGINFO, "Using protocol %s", strNewUrl.c_str());
 
@@ -407,6 +419,14 @@ DWORD CDetectDVDMedia::GetTrayState()
   
 #endif // USING_CDIO78
 #endif // _LINUX
+#if defined(_WIN32PC)
+
+  // just a workaround until we have a working gettray method.
+  // prevents win32 build to crash when in ADD NETWORK SHARE
+  return DRIVE_READY;
+
+#endif
+
 
   if (m_dwTrayState == TRAY_CLOSED_MEDIA_PRESENT)
   {
