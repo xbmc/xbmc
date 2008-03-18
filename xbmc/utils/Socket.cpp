@@ -28,6 +28,10 @@
 using namespace SOCKETS;
 using namespace std;
 
+#ifdef _XBOX
+#define close closesocket
+#endif
+
 /**********************************************************************/
 /* CPosixUDPSocket                                                    */
 /**********************************************************************/
@@ -40,7 +44,7 @@ bool CPosixUDPSocket::Bind(CAddress& addr, int port, int range)
   // create the socket
   m_iSock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
-  if (m_iSock < 0)
+  if (m_iSock == INVALID_SOCKET)
   {
     CLog::Log(LOGERROR, "UDP: Could not create socket");
     CLog::Log(LOGERROR, "UDP: %s", strerror(errno));
@@ -48,7 +52,11 @@ bool CPosixUDPSocket::Bind(CAddress& addr, int port, int range)
   }
 
   // make sure we can reuse the address
+#ifdef _XBOX
+  const char yes=1;
+#else
   int yes = 1;
+#endif
   if (setsockopt(m_iSock, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int))==-1)
   {
     CLog::Log(LOGWARNING, "UDP: Could not enable the address reuse options");
@@ -63,7 +71,7 @@ bool CPosixUDPSocket::Bind(CAddress& addr, int port, int range)
   // bind the socket ( try from port to port+range )
   while (m_iPort <= port + range)
   {
-    if (bind(m_iSock, (struct sockaddr*)&m_addr.saddr, sizeof(m_addr.saddr)) < 0)
+    if (bind(m_iSock, (struct sockaddr*)&m_addr.saddr, sizeof(m_addr.saddr)) != 0)
     {
       CLog::Log(LOGWARNING, "UDP: Error binding socket on port %d", m_iPort);
       CLog::Log(LOGWARNING, "UDP: %s", strerror(errno));
@@ -94,7 +102,7 @@ void CPosixUDPSocket::Close()
   if (m_iSock>=0)
   {
     close(m_iSock);
-    m_iSock = -1;
+    m_iSock = INVALID_SOCKET;
   }
   SetBound(false);
   SetReady(false);
@@ -102,14 +110,14 @@ void CPosixUDPSocket::Close()
 
 int CPosixUDPSocket::Read(CAddress& addr, const int buffersize, void *buffer)
 {
-  return (int)recvfrom(m_iSock, buffer, (size_t)buffersize, 0, 
+  return (int)recvfrom(m_iSock, (char*)buffer, (size_t)buffersize, 0, 
                        (struct sockaddr*)&addr.saddr, &addr.size);  
 }
 
 int CPosixUDPSocket::SendTo(const CAddress& addr, const int buffersize, 
                           const void *buffer)
 {
-  return (int)sendto(m_iSock, buffer, (size_t)buffersize, 0, 
+  return (int)sendto(m_iSock, (const char *)buffer, (size_t)buffersize, 0, 
                      (const struct sockaddr*)&addr.saddr, 
                      sizeof(addr.saddr));
 }
@@ -120,7 +128,7 @@ int CPosixUDPSocket::SendTo(const CAddress& addr, const int buffersize,
 
 CUDPSocket* CSocketFactory::CreateUDPSocket()
 {
-#ifdef _LINUX
+#if defined(_LINUX) || defined (_XBOX)
   return new CPosixUDPSocket();
 #endif
   return NULL;
@@ -143,8 +151,10 @@ void CSocketListener::AddSocket(CBaseSocket *sock)
   {
     m_sockets.push_back(sock);
     FD_SET(sock->Socket(), &m_fdset);
+#ifndef _XBOX
     if (sock->Socket() > m_iMaxSockets)
       m_iMaxSockets = sock->Socket();
+#endif
   }
 }
 

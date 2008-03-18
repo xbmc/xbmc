@@ -3391,12 +3391,8 @@ void CApplication::FrameMove()
   ProcessKeyboard();
   ProcessRemote(frameTime);
   ProcessGamepad(frameTime);
-#ifdef HAS_CWIID
   ProcessWiiRemote();
-#endif
-#ifdef HAS_EVENT_SERVER
   ProcessEventServer(frameTime);
-#endif
 }
 
 bool CApplication::ProcessGamepad(float frameTime)
@@ -3796,9 +3792,9 @@ bool CApplication::ProcessMouse()
   return m_gWindowManager.OnAction(action);
 }
 
-#ifdef HAS_CWIID
 bool CApplication::ProcessWiiRemote()
 {
+#ifdef HAS_CWIID
   MEASURE_FUNCTION;
   bool returnbool = false;
 
@@ -3866,8 +3862,10 @@ bool CApplication::ProcessWiiRemote()
       returnbool = OnKey(key);
   }
   return returnbool;
-}
+#else
+  return false;
 #endif
+}
 
 void  CApplication::CheckForTitleChange()
 {

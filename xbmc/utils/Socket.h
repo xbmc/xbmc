@@ -3,16 +3,32 @@
 
 #include <string.h>
 #include <map>
+#ifdef _XBOX
+#include <xtl.h>
+#include "xbox/Network.h"
+#endif
 
 namespace SOCKETS
 {
   
+#ifdef _XBOX
+static char* inet_ntoa (struct in_addr in)
+{
+  static char _inetaddress[32];
+  sprintf(_inetaddress, "%d.%d.%d.%d", in.S_un.S_un_b.s_b1, in.S_un.S_un_b.s_b2, in.S_un.S_un_b.s_b3, in.S_un.S_un_b.s_b4);
+  return _inetaddress;
+}
+#endif
+
 #ifdef _LINUX
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
+typedef int SOCKET;
+#else
+typedef int socklen_t;
 #endif
   
   // types of sockets
@@ -89,7 +105,7 @@ namespace SOCKETS
     bool        Bound()  { return m_bBound; }
     SocketType  Type()   { return m_Type; }
     int         Port()   { return m_iPort; }
-    virtual int Socket() = 0;
+    virtual SOCKET Socket() = 0;
 
   protected:
     virtual void SetBound(bool set=true) { m_bBound = set; }
@@ -123,7 +139,6 @@ namespace SOCKETS
   };
   
   // Implementation specific classes
-#ifdef _LINUX
 
   /**********************************************************************/
   /* POSIX based UDP socket implementation                              */
@@ -133,7 +148,7 @@ namespace SOCKETS
   public:
     CPosixUDPSocket()
       {
-        m_iSock = -1;
+        m_iSock = INVALID_SOCKET;
       }
 
     bool Bind(CAddress& addr, int port, int range=0);
@@ -146,15 +161,13 @@ namespace SOCKETS
       // TODO
       return false;
     }
-    int  Socket() { return m_iSock; }
+    SOCKET  Socket() { return m_iSock; }
     void Close();
 
   protected:
-    int      m_iSock;
+    SOCKET   m_iSock;
     CAddress m_addr;
   };
-
-#endif
 
   /**********************************************************************/
   /* Create and return platform dependent sockets                       */
