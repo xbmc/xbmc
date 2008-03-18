@@ -88,10 +88,13 @@ bool CCMythSession::UpdateItem(CFileItem &item, cmyth_proginfo_t info)
 
   tag->m_strAlbum       = GetValue(m_dll->proginfo_chansign(info));
   tag->m_strShowTitle   = GetValue(m_dll->proginfo_title(info));
+  tag->m_strPlotOutline = GetValue(m_dll->proginfo_subtitle(info));
   tag->m_strPlot        = GetValue(m_dll->proginfo_description(info));
   tag->m_strGenre       = GetValue(m_dll->proginfo_category(info));
 
-  tag->m_strPlotOutline   = tag->m_strPlot;
+  if(tag->m_strPlot != tag->m_strPlotOutline && !tag->m_strPlotOutline.IsEmpty())
+      tag->m_strPlot = tag->m_strPlotOutline + '\n' + tag->m_strPlot;
+
   tag->m_strOriginalTitle = tag->m_strShowTitle;
 
   tag->m_strTitle = tag->m_strAlbum;
