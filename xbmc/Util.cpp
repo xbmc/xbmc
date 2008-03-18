@@ -107,6 +107,9 @@
 #include "lib/libGoAhead/XBMChttp.h"
 #include "DNSNameCache.h"
 #include "FileSystem/PluginDirectory.h"
+#ifdef _WIN32PC
+#include <shlobj.h>
+#endif
 
 using namespace std;
 
@@ -5803,6 +5806,32 @@ CStdString CUtil::TranslatePath(const CStdString& path)
         CStdString str = getenv("HOME");  
         str.append("/Library/Application Support/XBMC/mediasources.xml");
         return str;
+      }
+    }
+#elif defined(_WIN32PC)
+    if (path[0] == 'Q' || path[0] == 'q')
+    {
+      if (path.Equals("q:\\system\\profiles.xml", false))
+      {
+        TCHAR szPath[MAX_PATH];
+        CStdString strWin32UserFolder;
+        if(SUCCEEDED(SHGetFolderPath(NULL,CSIDL_APPDATA|CSIDL_FLAG_CREATE,NULL,0,szPath))) 
+          strWin32UserFolder = szPath;
+        else
+          CUtil::GetHomePath(strWin32UserFolder);
+        CUtil::AddFileToFolder(strWin32UserFolder,"XBMC\\profiles.xml",strWin32UserFolder);
+        return strWin32UserFolder;
+      }
+      else if (path.Equals("q:\\system\\mediasources.xml", false))
+      {
+        TCHAR szPath[MAX_PATH];
+        CStdString strWin32UserFolder;
+        if(SUCCEEDED(SHGetFolderPath(NULL,CSIDL_APPDATA|CSIDL_FLAG_CREATE,NULL,0,szPath))) 
+          strWin32UserFolder = szPath;
+        else
+           CUtil::GetHomePath(strWin32UserFolder);
+        CUtil::AddFileToFolder(strWin32UserFolder,"XBMC\\mediasources.xml",strWin32UserFolder);
+        return strWin32UserFolder;
       }
     }
 #endif
