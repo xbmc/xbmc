@@ -104,6 +104,9 @@
 #ifdef HAS_XFONT
 #include <xfont.h>  // for textout functions
 #endif
+#ifdef HAS_EVENT_SERVER
+#include "utils/EventServer.h"
+#endif
 
 // Windows includes
 #include "GUIWindowHome.h"
@@ -185,6 +188,9 @@ using namespace MEDIA_DETECT;
 using namespace PLAYLIST;
 using namespace VIDEO;
 using namespace MUSIC_INFO;
+#ifdef HAS_EVENT_SERVER
+using namespace EVENTSERVER;
+#endif
 
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
@@ -1632,6 +1638,35 @@ void CApplication::StopUPnP()
 #endif
 }
 
+void CApplication::StartEventServer()
+{
+#ifdef HAS_EVENT_SERVER
+  if (g_guiSettings.GetBool("remoteevents.enabled"))
+  {
+    CLog::Log(LOGNOTICE, "ES: Starting event server");
+    CEventServer::GetInstance()->StartServer();
+  }
+#endif
+}
+
+void CApplication::StopEventServer()
+{
+#ifdef HAS_EVENT_SERVER
+  CLog::Log(LOGNOTICE, "ES: Stopping event server");
+  CEventServer::GetInstance()->StopServer();
+#endif
+}
+
+void CApplication::RefreshEventServer()
+{
+#ifdef HAS_EVENT_SERVER
+  if (g_guiSettings.GetBool("remoteevents.enabled"))
+  {
+    CEventServer::GetInstance()->RefreshSettings();
+  }
+#endif
+}
+
 void CApplication::StartUPnPRenderer()
 {
 #ifdef HAS_UPNP
@@ -2774,6 +2809,7 @@ void CApplication::FrameMove()
   ProcessKeyboard();
   ProcessRemote(frameTime);
   ProcessGamepad(frameTime);
+  ProcessEventServer(frameTime);
 }
 
 bool CApplication::ProcessGamepad(float frameTime)
@@ -3161,6 +3197,58 @@ bool CApplication::ProcessHTTPApiButtons()
       return true;
     }
   }
+  return false;
+}
+
+bool CApplication::ProcessEventServer(float frameTime)
+{
+#ifdef HAS_EVENT_SERVER
+  CEventServer* es = CEventServer::GetInstance();
+  if (!es || !es->Running())
+    return false;
+
+  WORD wKeyID = es->GetButtonCode();
+  if (wKeyID)
+  {
+    CKey key(wKeyID);
+    return OnKey( key );
+  }
+
+  {
+    CAction action;
+    action.wID = ACTION_MOUSE;
+    if (es->GetMousePos(action.fAmount1, action.fAmount2))
+    {
+      CPoint point;
+      point.x = action.fAmount1;
+      point.y = action.fAmount2;
+      g_Mouse.SetLocation(point, true);
+
+      // TODO: the following lines of code need to be abstracted as they are
+      // reused in multiple functions
+      // send mouse event to the music + video overlays, if they're enabled
+      if (m_gWindowManager.IsOverlayAllowed())
+      {
+        // if we're playing a movie
+        if ( IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
+        {
+          // then send the action to the video overlay window
+          CGUIWindow *overlay = m_gWindowManager.GetWindow(WINDOW_VIDEO_OVERLAY);
+          if (overlay)
+            overlay->OnAction(action);
+        }
+        else if ( IsPlayingAudio() )
+        {
+          // send message to the audio overlay window
+          CGUIWindow *overlay = m_gWindowManager.GetWindow(WINDOW_MUSIC_OVERLAY);
+          if (overlay)
+            overlay->OnAction(action);
+        }
+      }
+      return m_gWindowManager.OnAction(action);
+    }
+  }
+#endif  
   return false;
 }
 
