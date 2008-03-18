@@ -41,9 +41,7 @@ bool CEventPacket::Parse(int datasize, const void *data)
 
   // check signature
   if (memcmp(data, (const void*)HEADER_SIG, HEADER_SIG_LENGTH) != 0)
-  {
     return false;
-  }
 
   buf += HEADER_SIG_LENGTH;
 
@@ -52,9 +50,7 @@ bool CEventPacket::Parse(int datasize, const void *data)
   m_cMinVer = (*buf++);
 
   if (m_cMajVer != 2 && m_cMinVer != 0)
-  {
     return false;
-  }
 
   // get packet type
   m_eType = (PacketType)ntohs(*((uint16_t*)buf));

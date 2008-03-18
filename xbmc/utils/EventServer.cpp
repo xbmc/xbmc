@@ -156,7 +156,7 @@ void CEventServer::Run()
   if (!m_pSocket)
   {
     CLog::Log(LOGERROR, "ES: Could not create socket, aborting!");
-	return;
+    return;
   }
   m_pPacketBuffer = (unsigned char *)malloc(PACKET_SIZE);
 
@@ -189,7 +189,6 @@ void CEventServer::Run()
     // start listening until we timeout
     if (listener.Listen(m_iListenTimeout))
     {
-      CLog::Log(LOGDEBUG, "ES: Got something");
       CAddress addr;
       if ((packetSize = m_pSocket->Read(addr, PACKET_SIZE, (void *)m_pPacketBuffer)) > -1)
       {
@@ -223,10 +222,6 @@ void CEventServer::ProcessPacket(CAddress& addr, int pSize)
     delete packet;
     return;
   }
-  else
-  {
-    CLog::Log(LOGDEBUG, "ES: Received valid packet");
-  }
 
   // first check if we have a client for this address
   map<unsigned long, CEventClient*>::iterator iter = m_clients.find(addr.ULong());
@@ -247,7 +242,6 @@ void CEventServer::ProcessPacket(CAddress& addr, int pSize)
       return;
     }
 
-    CLog::Log(LOGDEBUG, "ES: Received new client");
     m_clients[addr.ULong()] = client;
   }
   m_clients[addr.ULong()]->AddPacket(packet);
