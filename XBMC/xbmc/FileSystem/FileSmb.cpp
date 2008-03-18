@@ -9,7 +9,7 @@
 #ifndef _LINUX
 #include "../lib/libsmb/xbLibSmb.h"
 #else
-#include <libsmbclient.h>
+#include "../lib/libsmb/libsmbclient.h"
 #endif
 #include "../Util.h"
 #include "../utils/Network.h"
