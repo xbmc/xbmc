@@ -807,6 +807,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("upnp.server"));
     }
+    else if (!strSetting.Equals("remoteevents.enabled")
+             && strSetting.Left(13).Equals("remoteevents."))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("remoteevents.enabled"));
+    }
     else if (strSetting.Equals("mymusic.clearplaylistsonend"))
     { // disable repeat and repeat one if clear playlists is enabled
       if (g_guiSettings.GetBool("mymusic.clearplaylistsonend"))
@@ -1819,6 +1825,35 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     else
       g_application.StopUPnPRenderer();
 #endif
+  }
+  else if (strSetting.Equals("remoteevents.enabled"))
+  {
+#ifdef HAS_EVENT_SERVER
+    if (g_guiSettings.GetBool("remoteevents.enabled"))
+      g_application.StartEventServer();
+    else
+      g_application.StopEventServer();
+#endif
+  }
+  else if (strSetting.Equals("remoteevents.allinterfaces"))
+  {
+#ifdef HAS_EVENT_SERVER
+    if (g_guiSettings.GetBool("remoteevents.enabled"))
+    {
+      g_application.StopEventServer();
+      g_application.StartEventServer();
+    }
+#endif
+  }
+  else if (strSetting.Equals("remoteevents.initialdelay") || 
+           strSetting.Equals("remoteevents.continuousdelay"))    
+  {
+#ifdef HAS_EVENT_SERVER
+    if (g_guiSettings.GetBool("remoteevents.enabled"))
+    {
+      g_application.RefreshEventServer();
+    }
+#endif      
   }
   else if (strSetting.Equals("upnp.musicshares"))
   {
