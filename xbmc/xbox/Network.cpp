@@ -457,10 +457,11 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
       CLog::Log(LOGDEBUG, "%s - Starting network services",__FUNCTION__);
       g_application.StartTimeServer();
       g_application.StartWebServer();
-      g_application.StartFtpServer();
+      g_application.StartFtpServer();      
       if (m_gWindowManager.GetActiveWindow() != WINDOW_LOGIN_SCREEN)
         g_application.StartKai();
       g_application.StartUPnP();
+      g_application.StartEventServer();
       CScrobbler::GetInstance()->Init();
     }
     break;
@@ -472,6 +473,7 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
       g_application.StopFtpServer();
       g_application.StopKai();   
       g_application.StopUPnP();
+      g_application.StartEventServer();
       CScrobbler::GetInstance()->Term();
       // smb.Deinit(); if any file is open over samba this will break.
     }

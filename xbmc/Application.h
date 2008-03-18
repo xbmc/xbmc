@@ -62,6 +62,9 @@ public:
   void StopUPnPClient();
   void StartUPnPServer();
   void StopUPnPServer();
+  void StartEventServer();
+  void StopEventServer();
+  void RefreshEventServer();
   void StartLEDControl(bool switchoff = false);
   void DimLCDOnPlayback(bool dim);
   void PrintXBEToLCD(const char* xbePath);
@@ -210,6 +213,7 @@ protected:
   bool ProcessKeyboard();
   bool ProcessRemote(float frameTime);
   bool ProcessGamepad(float frameTime);
+  bool ProcessEventServer(float frameTime);
   void CheckForDebugButtonCombo();
   void StartFtpEmergencyRecoveryMode();
   float NavigationIdleTime();
