@@ -355,7 +355,11 @@
 #define CONTROL_HAS_FOCUS           30000
 #define BUTTON_SCROLLER_HAS_ICON    30001
 
+#ifdef SVN_REV
+#define VERSION_STRING "SVN:"SVN_REV
+#else
 #define VERSION_STRING "pre-2.1"
+#endif
 
 #define LISTITEM_START              35000
 #define LISTITEM_THUMB              (LISTITEM_START)

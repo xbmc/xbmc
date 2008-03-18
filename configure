@@ -12907,6 +12907,10 @@ else
   final_message="$final_message\n  ccache:\tNo"
 fi
 
+if test -x "/usr/bin/svnversion"; then
+  SDL_DEFINES="$SDL_DEFINES -D'SVN_REV=\"$(svnversion -n .)\"'"
+fi
+
 
 
 

@@ -910,7 +910,7 @@ HRESULT CApplication::Create(HWND hWnd)
 
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 #if defined(_LINUX) && !defined(__APPLE__)
-  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: GNU/Linux.  Built on %s", __DATE__);
+  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: GNU/Linux.  Built on %s (SVN:%s)", __DATE__, SVN_REV);
 #elif defined(__APPLE__)
   CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Mac OS X.  Built on %s", __DATE__);
 #elif defined(_WIN32) && !defined(HAS_XBOX_HARDWARE)
