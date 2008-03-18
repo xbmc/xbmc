@@ -69,7 +69,6 @@
 #undef HAS_MIKMOD
 #undef HAS_SECTIONS
 #define HAS_UPNP
-#define HAS_EVENT_SERVER
 #undef HAS_LCD
 #undef HAS_UNDOCUMENTED
 #undef HAS_SECTIONS
