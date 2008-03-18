@@ -832,7 +832,7 @@ extern "C" HANDLE __stdcall KeGetCurrentThread(VOID);
 #endif
 extern "C" void __stdcall init_emu_environ();
 
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(_WIN32PC)
 //
 // Utility function used to copy files from the application bundle
 // over to the user data directory in Application Support/XBMC.
@@ -953,21 +953,13 @@ HRESULT CApplication::Create(HWND hWnd)
   else
     strWin32UserFolder = strExecutablePath;
 
-  SetEnvironmentVariable("XBMC_PROFILE_HOME", strWin32UserFolder.c_str());
-
   CUtil::AddFileToFolder(strWin32UserFolder,"XBMC",strPath);
   CreateDirectory(strPath.c_str(), NULL);
   CUtil::AddFileToFolder(strPath,"UserData",strPath);
   CreateDirectory(strPath.c_str(), NULL);
   // See if the keymap file exists, and if not, copy it from our "virgin" one.
-  CUtil::AddFileToFolder(strPath,"Keymap.xml",strPath);
-  printf("Checking for existence of %s\n", strPath.c_str());
-  if (access(strPath.c_str(), 0) == -1)
-  {
-    CStdString srcFile = _P("q:\\UserData\\Keymap.xml");
-    printf("Copying from %s to %s\n", srcFile.c_str(), strPath.c_str());
-    CopyFile(srcFile.c_str(), strPath.c_str(), TRUE);
-  }
+  CopyUserDataIfNeeded(strPath, "Keymap.xml");
+  CopyUserDataIfNeeded(strPath, "RssFeeds.xml");
 #endif
   
   g_settings.m_vecProfiles.clear();
