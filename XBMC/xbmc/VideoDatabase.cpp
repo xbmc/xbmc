@@ -1872,7 +1872,7 @@ long CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideo
 
     // and insert the new row
     CStdString sql = "update tvshow set ";
-    for (int iType=VIDEODB_ID_MIN+1;iType<VIDEODB_ID_MAX;++iType)
+    for (int iType=VIDEODB_ID_TV_MIN+1;iType<VIDEODB_ID_TV_MAX;++iType)
     {
       CStdString strValue;
       switch (DbTvShowOffsets[iType].type)
