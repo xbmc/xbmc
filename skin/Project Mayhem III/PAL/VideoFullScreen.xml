@@ -58,6 +58,16 @@
 				<width>740</width>
 				<height>120</height>
 				<texture>osd_menu_bg.png</texture>
+				<visible>!videoplayer.content(livetv)</visible>
+			</control>
+			<control type="image" id="1">
+				<description>media info background image - livetv</description>
+				<posx>0</posx>
+				<posy>-50</posy>
+				<width>740</width>
+				<height>170</height>
+				<texture>osd_menu_bg.png</texture>
+				<visible>videoplayer.content(livetv)</visible>
 			</control>
 			<control type="image" id="1">
 				<description>cover image</description>
@@ -67,6 +77,17 @@
 				<height>120</height>
 				<info>videoplayer.cover</info>
 				<aspectratio>keep</aspectratio>
+				<visible>!videoplayer.content(livetv)</visible>
+			</control>
+			<control type="image" id="1">
+				<description>cover image - livetv</description>
+				<posx>50</posx>
+				<posy>-25</posy>
+				<width>100</width>
+				<height>120</height>
+				<info>videoplayer.cover</info>
+				<aspectratio>keep</aspectratio>
+				<visible>videoplayer.content(livetv)</visible>
 			</control>
 			<control type="label" id="1">
 				<description>Current System Time label</description>
@@ -77,9 +98,52 @@
 				<align>right</align>
 				<textcolor>green</textcolor>
 				<font>special13</font>
+				<visible>!videoplayer.content(livetv)</visible>
+			</control>
+			<control type="label" id="1">
+				<description>Current System Time label - livetv</description>
+				<width>100</width>
+				<posx>680</posx>
+				<posy>-45</posy>
+				<info>System.Time</info>
+				<align>right</align>
+				<textcolor>green</textcolor>
+				<font>special13</font>
+				<visible>videoplayer.content(livetv)</visible>
 			</control>
 			<control type="group" id="1">
-				<visible>!videoplayer.content(episodes) + !videoplayer.content(musicvideos)</visible>
+				<visible>videoplayer.content(livetv)</visible>
+				<control type="label" id="1">
+					<description>current_event_name</description>
+					<width>420</width>
+					<posx>160</posx>
+					<posy>-45</posy>
+					<info>VideoPlayer.genre</info>
+					<align>left</align>
+					<font>special12</font>
+				</control>
+				<control type="label" id="1">
+					<description>TV current_event_description</description>
+					<width>520</width>
+					<posx>160</posx>
+					<posy>-20</posy>
+					<info>VideoPlayer.Title</info>
+					<align>left</align>
+					<font>special13</font>
+				</control>
+				<control type="textbox" id="1">
+					<description>TV current_even_details</description>
+					<posx>160</posx>
+					<posy>10</posy>
+					<width>520</width>
+					<height>100</height>
+					<font>font10</font>
+					<label>$INFO[VideoPlayer.plot]</label>
+					<include>autoscrollmedium</include>
+				</control>
+			</control>
+			<control type="group" id="1">
+				<visible>!videoplayer.content(episodes) + !videoplayer.content(musicvideos) + !videoplayer.content(livetv)</visible>
 				<control type="label" id="1">
 					<description>current_event_name</description>
 					<width>420</width>
@@ -119,7 +183,7 @@
 				</control>
 			</control>
 			<control type="group" id="1">
-				<visible>videoplayer.content(episodes)</visible>
+				<visible>videoplayer.content(episodes) + !videoplayer.content(livetv)</visible>
 				<control type="label" id="1">
 					<description>current_event_name</description>
 					<width>420</width>
