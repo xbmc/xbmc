@@ -11,10 +11,12 @@ size_t iconv_const (iconv_t cd, const char** inbuf, size_t *inbytesleft,
 {
 #if defined(_LINUX) && !defined(__APPLE__)
   return iconv(cd, (char**)inbuf, inbytesleft, outbuf, outbytesleft);
-#else
+#elif defined(__APPLE__)
   // FIXME for OSX: once /usr/include/iconv.h is prioritized, use this version:
   // return iconv(cd, inbuf, inbytesleft, outbuf, outbytesleft);
   return iconv(cd, (char**)inbuf, inbytesleft, outbuf, outbytesleft);
+#else
+  return iconv(cd, inbuf, inbytesleft, outbuf, outbytesleft);
 #endif
 }
 
