@@ -222,3 +222,6 @@
 #error "Cannot have both HAS_XBOX_D3D and HAS_SDL defined simultaneously!"
 #endif
 
+#ifndef SVN_REV
+#define SVN_REV "Unknown"
+#endif
