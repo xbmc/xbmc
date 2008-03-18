@@ -142,14 +142,22 @@ void CEventServer::Run()
   CSocketListener listener;
   int packetSize = 0;
 
+#ifndef _XBOX
   if (!g_guiSettings.GetBool("remoteevents.allinterfaces"))
     any_addr.SetAddress ("127.0.0.1");  // only listen on localhost
+#endif
+
   CLog::Log(LOGNOTICE, "ES: Starting UDP Event server on %s:%d", any_addr.Address(), m_iPort);
 
   Cleanup();
 
   // create socket and initialize buffer
   m_pSocket = CSocketFactory::CreateUDPSocket();
+  if (!m_pSocket)
+  {
+    CLog::Log(LOGERROR, "ES: Could not create socket, aborting!");
+    return;
+  }
   m_pPacketBuffer = (unsigned char *)malloc(PACKET_SIZE);
 
   if (!m_pPacketBuffer)
