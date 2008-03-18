@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
-<!--Email: blittan@xboxmediacenter.com-->
-<!--Date of translation: 03/07/2008-->
+<!--Email: blittan@xbmc.org-->
+<!--Date of translation: 03/18/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 11916-->
+<!--Based on english strings version 12175-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -612,6 +612,14 @@
   <string id="772">Ljudhårdvara</string>
   <string id="773">Söker</string>
   <string id="774">Mapp för bildspel-skärmsläckare</string>
+  <string id="790">Fjärrhändelser</string>
+  <string id="791">Aktivera fjärrhändelser</string>
+  <string id="792">Port för Fjärrhändelser</string>
+  <string id="793">Portområde för fjärrhändelser</string>
+  <string id="794">Ta emot händelser från andra datorer</string>
+  <string id="795">Begynnande repetitionsfördröjning (ms)</string>
+  <string id="796">Kontinuerligt repititionsfördröjning (ms)</string>
+  <string id="797">Maximalt antal klienter</string>
   <string id="998">XLink Kai</string>
   <string id="999">Online Spel</string>
   <string id="1000">Förhandsgranska skärmsläckare</string>
