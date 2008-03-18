@@ -3,8 +3,6 @@
 
 #include "include.h"
 
-#ifdef _LINUX
-
 namespace EVENTPACKET
 {
   const int PACKET_SIZE       = 1024;
@@ -202,5 +200,4 @@ namespace EVENTPACKET
 
 }
 
-#endif // _LINUX
 #endif // __EVENT_PACKET_H__
