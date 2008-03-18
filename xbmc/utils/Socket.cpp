@@ -44,11 +44,7 @@ bool CPosixUDPSocket::Bind(CAddress& addr, int port, int range)
   // create the socket
   m_iSock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
-#ifdef _XBOX
   if (m_iSock == INVALID_SOCKET)
-#else
-  if (m_iSock < 0)
-#endif
   {
     CLog::Log(LOGERROR, "UDP: Could not create socket");
     CLog::Log(LOGERROR, "UDP: %s", strerror(errno));
