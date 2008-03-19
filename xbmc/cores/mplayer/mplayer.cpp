@@ -911,7 +911,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
 
       /* also we don't want to flip the subtitle since that will be handled by our rendering instead */
     }
-    else if (g_guiSettings.GetBool("subtitles.flipbidicharset") && g_charsetConverter.isBidiCharset(strCharset) > 0)
+    else if (g_guiSettings.GetBool("subtitles.flipbidicharset") && g_charsetConverter.isBidiCharset(strCharset))
     {
       options.SetFlipBiDiCharset(strCharset);
     }
