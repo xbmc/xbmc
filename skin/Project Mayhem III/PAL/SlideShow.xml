@@ -53,24 +53,35 @@
 				<info>MusicPlayer.Artist</info>
 				<align>left</align>
 				<font>special12</font>
+				<scroll>true</scroll>
 			</control>
 			<control type="label" id="1">
 				<description>Title label</description>
-				<width>500</width>
+				<width>400</width>
 				<posx>180</posx>
 				<posy>30</posy>
 				<info>MusicPlayer.Title</info>
 				<align>left</align>
 				<font>special13</font>
+				<scroll>true</scroll>
 			</control>
 			<control type="label" id="1">
 				<description>Album label</description>
-				<width>500</width>
+				<width>400</width>
 				<posx>180</posx>
 				<posy>60</posy>
-				<info>MusicPlayer.Album</info>
+				<label>$INFO[MusicPlayer.Album]$INFO[musicplayer.discnumber, - $LOCALIZE[427]]$INFO[musicplayer.year, - (,)]</label>
 				<align>left</align>
 				<font>font10</font>
+				<scroll>true</scroll>
+			</control>
+			<control type="image" id="1">
+				<description>Song Rating Image</description>
+				<height>20</height>
+				<width>120</width>
+				<posx>565</posx>
+				<posy>55</posy>
+				<info>musicplayer.rating</info>
 			</control>
 			<control type="label" id="1">
 				<description>time label</description>
