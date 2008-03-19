@@ -1828,6 +1828,11 @@ bool CUtil::IsTuxBox(const CStdString& strFile)
   return strFile.Left(7).Equals("tuxbox:");
 }
 
+bool CUtil::IsMythTV(const CStdString& strFile)
+{
+  return strFile.Left(5).Equals("myth:");
+}
+
 void CUtil::GetFileAndProtocol(const CStdString& strURL, CStdString& strDir)
 {
   strDir = strURL;

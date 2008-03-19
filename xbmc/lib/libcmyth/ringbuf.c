@@ -378,6 +378,135 @@ cmyth_ringbuf_request_block(cmyth_recorder_t rec, unsigned long len)
 }
 
 /*
+ * cmyth_ringbuf_read (cmyth_recorder_t rec, char *buf, unsigned long len)
+ * 
+ * Scope: PUBLIC
+ *
+ * Description
+ *
+ * Request and read a block of data from backend
+ *
+ * Return Value:
+ *
+ * Sucess: number of bytes transfered
+ *
+ * Failure: an int containing -errno
+ */
+int cmyth_ringbuf_read(cmyth_recorder_t rec, char *buf, unsigned long len)
+{
+	int err, count;
+	int ret, req, nfds;
+	char *end, *cur;
+	char msg[256];
+	struct timeval tv;
+	fd_set fds;
+
+	if (!rec)
+	{
+		cmyth_dbg (CMYTH_DBG_ERROR, "%s: no connection\n",
+		           __FUNCTION__);
+		return -EINVAL;
+	}
+
+	pthread_mutex_lock (&mutex);
+
+	snprintf(msg, sizeof(msg),
+		 "QUERY_RECORDER %u[]:[]REQUEST_BLOCK_RINGBUF[]:[]%ld",
+		 rec->rec_id, len);
+
+	if ( (err = cmyth_send_message (rec->rec_conn, msg) ) < 0)
+	{
+		cmyth_dbg (CMYTH_DBG_ERROR,
+		           "%s: cmyth_send_message() failed (%d)\n",
+		           __FUNCTION__, err);
+		ret = err;
+		goto out;
+	}
+
+	nfds = 0;
+	req = 1;
+	cur = buf;
+	end = buf+len;
+
+	while (cur < end || req)
+	{
+		tv.tv_sec = 20;
+		tv.tv_usec = 0;
+		FD_ZERO (&fds);
+		if(req) {
+			if((int)rec->rec_conn->conn_fd > nfds)
+				nfds = (int)rec->rec_conn->conn_fd;
+			FD_SET (rec->rec_conn->conn_fd, &fds);
+		}
+		if((int)rec->rec_ring->conn_data->conn_fd > nfds)
+			nfds = (int)rec->rec_ring->conn_data->conn_fd;
+		FD_SET (rec->rec_ring->conn_data->conn_fd, &fds);
+
+		if ((ret = select (nfds+1, &fds, NULL, NULL,&tv)) < 0)
+		{
+			cmyth_dbg (CMYTH_DBG_ERROR,
+			           "%s: select(() failed (%d)\n",
+			           __FUNCTION__, ret);
+			goto out;
+		}
+
+		if (ret == 0)
+		{
+			rec->rec_ring->conn_data->conn_hang = 1;
+			rec->rec_conn->conn_hang = 1;
+			ret = -ETIMEDOUT;
+			goto out;
+		}
+
+		/* check control connection */
+		if (FD_ISSET(rec->rec_conn->conn_fd, &fds) )
+		{
+
+			if ((count = cmyth_rcv_length (rec->rec_conn)) < 0)
+			{
+				cmyth_dbg (CMYTH_DBG_ERROR,
+				           "%s: cmyth_rcv_length() failed (%d)\n",
+				           __FUNCTION__, count);
+				ret = count;
+				goto out;
+			}
+
+			if ((ret = cmyth_rcv_ulong (rec->rec_conn, &err, &len, count))< 0)
+			{
+				cmyth_dbg (CMYTH_DBG_ERROR,
+				           "%s: cmyth_rcv_long() failed (%d)\n",
+				           __FUNCTION__, ret);
+				ret = err;
+				goto out;
+			}
+
+			rec->rec_ring->file_pos += len;
+			req = 0;
+			end = buf+len;
+		}
+
+		/* check data connection */
+		if (FD_ISSET(rec->rec_ring->conn_data->conn_fd, &fds))
+		{
+
+			if ((ret = recv (rec->rec_ring->conn_data->conn_fd, cur, end-cur, 0)) < 0)
+			{
+				cmyth_dbg (CMYTH_DBG_ERROR,
+				           "%s: recv() failed (%d)\n",
+				           __FUNCTION__, ret);
+				goto out;
+			}
+			cur += ret;
+		}
+	}
+
+	ret = end - buf;
+out:
+	pthread_mutex_unlock (&mutex);
+	return ret;
+}
+
+/*
  * cmyth_ringbuf_seek(
  *                    cmyth_ringbuf_t file, long long offset, int whence)
  * 
