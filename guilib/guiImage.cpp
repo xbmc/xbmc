@@ -21,8 +21,6 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY
   m_dwColorKey = dwColorKey;
   m_iCurrentImage = 0;
   m_dwFrameCounter = (DWORD) -1;
-  m_aspectRatio = ASPECT_RATIO_STRETCH;
-  m_aspectAlign = ASPECT_ALIGN_CENTER | ASPECT_ALIGNY_CENTER;
   m_iCurrentLoop = 0;
   m_iImageWidth = 0;
   m_iImageHeight = 0;
@@ -38,8 +36,7 @@ CGUIImage::CGUIImage(const CGUIImage &left)
 {
   m_strFileName = left.m_strFileName;
   m_dwColorKey = left.m_dwColorKey;
-  m_aspectRatio = left.m_aspectRatio;
-  m_aspectAlign = left.m_aspectAlign;
+  m_aspect = left.m_aspect;
   // defaults
   m_iCurrentImage = 0;
   m_dwFrameCounter = (DWORD) -1;
@@ -259,9 +256,13 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
 {
   LPDIRECT3DDEVICE8 p3DDevice = g_graphicsContext.Get3DDevice();
 
+  CRect diffuse(u1, v1, u2, v2);
+  diffuse.x1 *= m_diffuseScaleU; diffuse.x2 *= m_diffuseScaleU;
+  diffuse.y1 *= m_diffuseScaleV; diffuse.y2 *= m_diffuseScaleV;
+  diffuse += m_diffuseOffset;
+
   // flip the texture as necessary.  Diffuse just gets flipped according to m_image.orientation.
   // Main texture gets flipped according to GetOrientation().
-  CRect diffuse(u1, v1, u2, v2);
   OrientateTexture(diffuse, m_image.orientation);
   CRect texture(u1, v1, u2, v2);
   int textureOrientation = GetOrientation();
@@ -288,9 +289,6 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
 
   if (y3 == y1) y3 += 1.0f; if (x3 == x1) x3 += 1.0f;
   if (y4 == y2) y4 += 1.0f; if (x4 == x2) x4 += 1.0f;
-
-  diffuse.x1 *= m_diffuseScaleU; diffuse.x2 *= m_diffuseScaleU;
-  diffuse.y1 *= m_diffuseScaleV; diffuse.y2 *= m_diffuseScaleV;
 
 #ifdef HAS_XBOX_D3D
   D3DCOLOR color = m_diffuseColor;
@@ -492,6 +490,18 @@ void CGUIImage::LoadDiffuseImage()
         m_diffuseScaleU = float(width) / float(desc.Width) / m_fU;
         m_diffuseScaleV = float(height) / float(desc.Height) / m_fV;
       }
+      if (!m_aspect.scaleDiffuse) // stretch'ing diffuse
+      { // scale diffuse up or down to match output rect size, rather than image size
+        //(m_fX, mfY) -> (m_fX + m_fNW, m_fY + m_fNH)
+        //(0,0) -> (m_fU*m_diffuseScaleU, m_fV*m_diffuseScaleV)
+        // x = u/(m_fU*m_diffuseScaleU)*m_fNW + m_fX
+        // -> u = (m_posX - m_fX) * m_fU * m_diffuseScaleU / m_fNW
+        m_diffuseScaleU *= m_fNW / m_width;
+        m_diffuseScaleV *= m_fNH / m_height;
+        m_diffuseOffset = CPoint((m_fX - m_posX)*m_fU*m_diffuseScaleU / m_fNW, (m_fY - m_posY)*m_fV*m_diffuseScaleV / m_fNH);
+      }
+      else
+        m_diffuseOffset = CPoint(0, 0);
     }
   }
 }
@@ -584,7 +594,7 @@ void CGUIImage::CalculateSize()
   m_fNW = m_width;
   m_fNH = m_height;
 
-  if (m_aspectRatio != ASPECT_RATIO_STRETCH && m_iTextureWidth && m_iTextureHeight)
+  if (m_aspect.ratio != CAspectRatio::AR_STRETCH && m_iTextureWidth && m_iTextureHeight)
   {
     // to get the pixel ratio, we must use the SCALED output sizes
     float pixelRatio = g_graphicsContext.GetScalingPixelRatio();
@@ -598,28 +608,28 @@ void CGUIImage::CalculateSize()
     m_fNW = m_width;
     m_fNH = m_fNW / fOutputFrameRatio;
 
-    if ((m_aspectRatio == CGUIImage::ASPECT_RATIO_SCALE && m_fNH < m_height) ||
-        (m_aspectRatio == CGUIImage::ASPECT_RATIO_KEEP && m_fNH > m_height))
+    if ((m_aspect.ratio == CAspectRatio::AR_SCALE && m_fNH < m_height) ||
+        (m_aspect.ratio == CAspectRatio::AR_KEEP && m_fNH > m_height))
     {
       m_fNH = m_height;
       m_fNW = m_fNH * fOutputFrameRatio;
     }
-    if (m_aspectRatio == CGUIImage::ASPECT_RATIO_CENTER)
+    if (m_aspect.ratio == CAspectRatio::AR_CENTER)
     { // keep original size + center
       m_fNW = (float)m_iTextureWidth;
       m_fNH = (float)m_iTextureHeight;
     }
 
     // calculate placement
-    if (m_aspectAlign & ASPECT_ALIGN_LEFT)
+    if (m_aspect.align & ASPECT_ALIGN_LEFT)
       m_fX = m_posX;
-    else if (m_aspectAlign & ASPECT_ALIGN_RIGHT)
+    else if (m_aspect.align & ASPECT_ALIGN_RIGHT)
       m_fX = m_posX + m_width - m_fNW;
     else
       m_fX = m_posX + (m_width - m_fNW) * 0.5f;
-    if (m_aspectAlign & ASPECT_ALIGNY_TOP)
+    if (m_aspect.align & ASPECT_ALIGNY_TOP)
       m_fY = m_posY;
-    else if (m_aspectAlign & ASPECT_ALIGNY_BOTTOM)
+    else if (m_aspect.align & ASPECT_ALIGNY_BOTTOM)
       m_fY = m_posY + m_height - m_fNH;
     else
       m_fY = m_posY + (m_height - m_fNH) * 0.5f;
@@ -687,12 +697,11 @@ int CGUIImage::GetTextureHeight() const
   return m_iTextureHeight;
 }
 
-void CGUIImage::SetAspectRatio(GUIIMAGE_ASPECT_RATIO ratio, DWORD align)
+void CGUIImage::SetAspectRatio(const CAspectRatio &aspect)
 {
-  if (m_aspectRatio != ratio || m_aspectAlign != align)
+  if (m_aspect != aspect)
   {
-    m_aspectRatio = ratio;
-    m_aspectAlign = align;
+    m_aspect = aspect;
     Update();
   }
 }

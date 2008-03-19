@@ -21,7 +21,7 @@ CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, 
   m_fadeTime = fadeTime;
   m_randomized = randomized;
   m_loop = loop;
-  m_aspectRatio = CGUIImage::ASPECT_RATIO_STRETCH;
+  m_aspectRatio = CGUIImage::CAspectRatio::AR_STRETCH;
   ControlType = GUICONTROL_MULTI_IMAGE;
   m_bDynamicResourceAlloc=false;
   m_directoryLoaded = false;
@@ -202,7 +202,7 @@ void CGUIMultiImage::LoadImage(int image)
   m_images[image]->SetColorDiffuse(m_diffuseColor);
 
   // Scale image so that it will fill our render area
-  if (m_aspectRatio != CGUIImage::ASPECT_RATIO_STRETCH)
+  if (m_aspectRatio != CGUIImage::CAspectRatio::AR_STRETCH)
   {
     // to get the pixel ratio, we must use the SCALED output sizes
     float pixelRatio = g_graphicsContext.GetScalingPixelRatio();
@@ -212,8 +212,8 @@ void CGUIMultiImage::LoadImage(int image)
 
     float newWidth = m_width;
     float newHeight = newWidth / aspectRatio;
-    if ((m_aspectRatio == CGUIImage::ASPECT_RATIO_SCALE && newHeight < m_height) ||
-        (m_aspectRatio == CGUIImage::ASPECT_RATIO_KEEP && newHeight > m_height))
+    if ((m_aspectRatio == CGUIImage::CAspectRatio::AR_SCALE && newHeight < m_height) ||
+      (m_aspectRatio == CGUIImage::CAspectRatio::AR_KEEP && newHeight > m_height))
     {
       newHeight = m_height;
       newWidth = newHeight * aspectRatio;
@@ -248,7 +248,7 @@ bool CGUIMultiImage::CanFocus() const
   return false;
 }
 
-void CGUIMultiImage::SetAspectRatio(CGUIImage::GUIIMAGE_ASPECT_RATIO ratio)
+void CGUIMultiImage::SetAspectRatio(CGUIImage::CAspectRatio::ASPECT_RATIO ratio)
 {
   if (m_aspectRatio != ratio)
   {
