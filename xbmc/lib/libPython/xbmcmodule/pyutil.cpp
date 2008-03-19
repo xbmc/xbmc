@@ -25,7 +25,7 @@ namespace PYXBMC
     if(PyUnicode_Check(pObject))
     {
       CStdString utf8String;
-      g_charsetConverter.utf16toUTF8(PyUnicode_AsUnicode(pObject), utf8String);
+      g_charsetConverter.wToUTF8(PyUnicode_AsUnicode(pObject), utf8String);
       buf = utf8String;
       return 1;
     }

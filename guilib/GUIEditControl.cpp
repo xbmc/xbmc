@@ -83,9 +83,9 @@ void CGUIEditControl::OnKeyPress(const CAction &action) // FIXME TESTME: NEW/CHA
       {
         // use character input // FIXME TESTME: NEW/CHANGED and NOT tested CAN'T do it/DON'T know where/how exactly (conversion from utf8 to WCHAR and back) 
         CStdStringW wStrLabel;
-        g_charsetConverter.utf8ToUTF16(label, wStrLabel);
+        g_charsetConverter.utf8ToW(label, wStrLabel);
         wStrLabel.insert( wStrLabel.begin() + m_iCursorPos, (WCHAR)action.wID);
-        g_charsetConverter.utf16toUTF8(wStrLabel, label);
+        g_charsetConverter.wToUTF8(wStrLabel, label);
         m_iCursorPos++;
         break;
       }

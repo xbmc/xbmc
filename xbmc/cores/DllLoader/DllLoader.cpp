@@ -890,7 +890,7 @@ void DllLoader::UnloadSymbols()
       try
       {
         CStdStringW strNameW;
-        g_charsetConverter.utf8ToUTF16(GetName(), strNameW);
+        g_charsetConverter.utf8ToW(GetName(), strNameW);
 
         // Get the address of the global struct g_dmi
         // It is located inside the xbdm.dll and

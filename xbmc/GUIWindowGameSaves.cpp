@@ -234,7 +234,7 @@ bool CGUIWindowGameSaves::GetDirectory(const CStdString& strDirectory, CFileItem
         newfile.Read(yo,newfile.GetLength());
         yo[newfile.GetLength()] = L'\0';
         CStdString strDescription;
-        g_charsetConverter.utf16toUTF8(yo, strDescription);
+        g_charsetConverter.wToUTF8(yo, strDescription);
         int poss = strDescription.find("Name=");
         if (poss == -1)
         {
@@ -242,7 +242,7 @@ bool CGUIWindowGameSaves::GetDirectory(const CStdString& strDirectory, CFileItem
           newfile.Seek(0);
           newfile.Read(chrtxt,newfile.GetLength());
           chrtxt[(int)newfile.GetLength()+1] = '\n';
-          g_charsetConverter.utf16toUTF8(chrtxt, strDescription);
+          g_charsetConverter.wToUTF8(chrtxt, strDescription);
           poss = strDescription.find("Name=");
         }
         newfile.Close();
