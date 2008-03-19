@@ -6,6 +6,8 @@ using namespace std;
 #define ICONV_PREPARE(iconv) iconv=(iconv_t)-1
 #define ICONV_SAFE_CLOSE(iconv) if (iconv!=(iconv_t)-1) { iconv_close(iconv); iconv=(iconv_t)-1; }
 
+#define WCHAR_CHARSET "UTF-16LE"
+
 CCharsetConverter g_charsetConverter;
 
 CCharsetConverter::CCharsetConverter()
@@ -62,27 +64,28 @@ CCharsetConverter::CCharsetConverter()
   m_vecCharsetLabels.push_back("Hong Kong (Big5-HKSCS)");
 
   m_vecBidiCharsetNames.push_back("ISO-8859-6");
-  m_vecBidiCharsets.push_back(FRIBIDI_CHARSET_ISO8859_6);
   m_vecBidiCharsetNames.push_back("ISO-8859-8");
-  m_vecBidiCharsets.push_back(FRIBIDI_CHARSET_ISO8859_8);
   m_vecBidiCharsetNames.push_back("CP1255");
-  m_vecBidiCharsets.push_back(FRIBIDI_CHARSET_CP1255);
   m_vecBidiCharsetNames.push_back("Windows-1255");
-  m_vecBidiCharsets.push_back(FRIBIDI_CHARSET_CP1255);
   m_vecBidiCharsetNames.push_back("CP1256");
-  m_vecBidiCharsets.push_back(FRIBIDI_CHARSET_CP1256);
   m_vecBidiCharsetNames.push_back("Windows-1256");
-  m_vecBidiCharsets.push_back(FRIBIDI_CHARSET_CP1256);
+  m_vecBidiCharsets.push_back(FRIBIDI_CHAR_SET_ISO8859_6);
+  m_vecBidiCharsets.push_back(FRIBIDI_CHAR_SET_ISO8859_8);
+  m_vecBidiCharsets.push_back(FRIBIDI_CHAR_SET_CP1255);
+  m_vecBidiCharsets.push_back(FRIBIDI_CHAR_SET_CP1255);
+  m_vecBidiCharsets.push_back(FRIBIDI_CHAR_SET_CP1256);
+  m_vecBidiCharsets.push_back(FRIBIDI_CHAR_SET_CP1256);
 
   ICONV_PREPARE(m_iconvStringCharsetToFontCharset);
   ICONV_PREPARE(m_iconvUtf8ToStringCharset);
   ICONV_PREPARE(m_iconvStringCharsetToUtf8);
   ICONV_PREPARE(m_iconvUcs2CharsetToStringCharset);
-  ICONV_PREPARE(m_iconvSubtitleCharsetToUtf16);
-  ICONV_PREPARE(m_iconvUtf16toUtf8);
+  ICONV_PREPARE(m_iconvSubtitleCharsetToW);
+  ICONV_PREPARE(m_iconvWtoUtf8);
   ICONV_PREPARE(m_iconvUtf16BEtoUtf8);
+  ICONV_PREPARE(m_iconvUtf16LEtoW);
   ICONV_PREPARE(m_iconvUtf32ToStringCharset);
-  ICONV_PREPARE(m_iconvUtf8toUtf16);
+  ICONV_PREPARE(m_iconvUtf8toW);
 }
 
 void CCharsetConverter::clear()
@@ -124,7 +127,7 @@ CStdString& CCharsetConverter::getCharsetNameByLabel(const CStdString& charsetLa
   return EMPTY;
 }
 
-boolean CCharsetConverter::isBidiCharset(const CStdString& charset)
+bool CCharsetConverter::isBidiCharset(const CStdString& charset)
 {
   for (unsigned int i = 0; i < m_vecBidiCharsetNames.size(); i++)
   {
@@ -143,13 +146,13 @@ void CCharsetConverter::reset(void)
   ICONV_SAFE_CLOSE(m_iconvUtf8ToStringCharset);
   ICONV_SAFE_CLOSE(m_iconvStringCharsetToUtf8);
   ICONV_SAFE_CLOSE(m_iconvUcs2CharsetToStringCharset);
-  ICONV_SAFE_CLOSE(m_iconvSubtitleCharsetToUtf16);
-  ICONV_SAFE_CLOSE(m_iconvUtf16toUtf8);
+  ICONV_SAFE_CLOSE(m_iconvSubtitleCharsetToW);
+  ICONV_SAFE_CLOSE(m_iconvWtoUtf8);
   ICONV_SAFE_CLOSE(m_iconvUtf16BEtoUtf8);
   ICONV_SAFE_CLOSE(m_iconvUtf32ToStringCharset);
-  ICONV_SAFE_CLOSE(m_iconvUtf8toUtf16);
+  ICONV_SAFE_CLOSE(m_iconvUtf8toW);
 
-  m_stringFribidiCharset = FRIBIDI_CHARSET_NOT_FOUND;
+  m_stringFribidiCharset = FRIBIDI_CHAR_SET_NOT_FOUND;
 
   CStdString strCharset=g_langInfo.GetGuiCharSet();
 
@@ -164,17 +167,16 @@ void CCharsetConverter::reset(void)
 
 // The bVisualBiDiFlip forces a flip of characters for hebrew/arabic languages, only set to false if the flipping
 // of the string is already made or the string is not displayed in the GUI
-void CCharsetConverter::utf8ToUTF16(const CStdStringA& utf8String, CStdStringW &utf16String, bool bVisualBiDiFlip/*=true*/)
+void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &wString, bool bVisualBiDiFlip/*=true*/)
 {
   CStdStringA strFlipped;
-
   const char* src;
   size_t inBytes;
 
   // Try to flip hebrew/arabic characters, if any
   if (bVisualBiDiFlip)
   {
-    logicalToVisualBiDi(utf8String, strFlipped, FRIBIDI_CHARSET_UTF8);
+    logicalToVisualBiDi(utf8String, strFlipped, FRIBIDI_CHAR_SET_UTF8);
     src = strFlipped.c_str();
     inBytes = strFlipped.length() + 1;
   }
@@ -184,50 +186,48 @@ void CCharsetConverter::utf8ToUTF16(const CStdStringA& utf8String, CStdStringW &
     inBytes = utf8String.length() + 1;
   }
 
-  if (m_iconvUtf8toUtf16 == (iconv_t) - 1)
-  {
-    m_iconvUtf8toUtf16 = iconv_open("UTF-16LE", "UTF-8");
-  }
+  if (m_iconvUtf8toW == (iconv_t) - 1)
+    m_iconvUtf8toW = iconv_open(WCHAR_CHARSET, "UTF-8");
 
-  if (m_iconvUtf8toUtf16 != (iconv_t) - 1)
+  if (m_iconvUtf8toW != (iconv_t) - 1)
   {
-    char *dst = new char[inBytes * 2];
-    size_t outBytes = inBytes * 2;
+    char *dst = new char[inBytes * sizeof(wchar_t)];
+    size_t outBytes = inBytes * sizeof(wchar_t);
     char *outdst = dst;
-    if (iconv(m_iconvUtf8toUtf16, &src, &inBytes, &outdst, &outBytes))
+    if (iconv(m_iconvUtf8toW, &src, &inBytes, &outdst, &outBytes))
     {
       // For some reason it failed (maybe wrong charset?). Nothing to do but
       // return the original..
-      utf16String = utf8String;
+      wString = utf8String;
     }
     else
     {
-      utf16String = (WCHAR *)dst;
+      wString = (WCHAR *)dst;
     }
     delete[] dst;
   }
 }
 
-void CCharsetConverter::subtitleCharsetToUTF16(const CStdStringA& strSource, CStdStringW& strDest)
+void CCharsetConverter::subtitleCharsetToW(const CStdStringA& strSource, CStdStringW& strDest)
 {
   CStdStringA strFlipped;
 
   // No need to flip hebrew/arabic as mplayer does the flipping
 
-  if (m_iconvSubtitleCharsetToUtf16 == (iconv_t) - 1)
+  if (m_iconvSubtitleCharsetToW == (iconv_t) - 1)
   {
     CStdString strCharset=g_langInfo.GetSubtitleCharSet();
-    m_iconvSubtitleCharsetToUtf16 = iconv_open("UTF-16LE", strCharset.c_str());
+    m_iconvSubtitleCharsetToW = iconv_open(WCHAR_CHARSET, strCharset.c_str());
   }
 
-  if (m_iconvSubtitleCharsetToUtf16 != (iconv_t) - 1)
+  if (m_iconvSubtitleCharsetToW != (iconv_t) - 1)
   {
     const char* src = strSource.c_str();
     size_t inBytes = strSource.length() + 1;
-    char *dst = (char*)strDest.GetBuffer(inBytes * 2);
-    size_t outBytes = inBytes * 2;
+    char *dst = (char*)strDest.GetBuffer(inBytes * sizeof(wchar_t));
+    size_t outBytes = inBytes * sizeof(wchar_t);
 
-    if (iconv(m_iconvSubtitleCharsetToUtf16, &src, &inBytes, &dst, &outBytes))
+    if (iconv(m_iconvSubtitleCharsetToW, &src, &inBytes, &dst, &outBytes))
     {
       strDest.ReleaseBuffer();
       // For some reason it failed (maybe wrong charset?). Nothing to do but
@@ -240,14 +240,14 @@ void CCharsetConverter::subtitleCharsetToUTF16(const CStdStringA& strSource, CSt
 
 void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, CStdStringA& charset, FriBidiCharType base)
 {
-  FriBidiCharSet fribidiCharset = FRIBIDI_CHARSET_UTF8;
+  FriBidiCharSet fribidiCharset = FRIBIDI_CHAR_SET_UTF8;
 
   for (unsigned int i = 0; i < m_vecBidiCharsetNames.size(); i++)
   {
     if (m_vecBidiCharsetNames[i].Equals(charset))
     {
-		fribidiCharset = m_vecBidiCharsets[i];
-		break;
+      fribidiCharset = m_vecBidiCharsets[i];
+      break;
     }
   }
 
@@ -259,37 +259,37 @@ void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdSt
   vector<CStdString> lines;
   CUtil::Tokenize(strSource, lines, "\n");
   CStdString resultString;
-  
+
   for (unsigned int i = 0; i < lines.size(); i++)
   {
-	  int sourceLen = lines[i].length();
-	  FriBidiChar* logical = (FriBidiChar*) malloc((sourceLen + 1) * sizeof(FriBidiChar));
-	  FriBidiChar* visual = (FriBidiChar*) malloc((sourceLen + 1) * sizeof(FriBidiChar));
-	  // Convert from the selected charset to Unicode
-	  int len = fribidi_charset_to_unicode(fribidiCharset, (char*) lines[i].c_str(), sourceLen, logical);
-	
-	  if (fribidi_log2vis(logical, len, &base, visual, NULL, NULL, NULL))
-	  {
-	    // Removes bidirectional marks
-	    //len = fribidi_remove_bidi_marks(visual, len, NULL, NULL, NULL);
-	
-	    // Apperently a string can get longer during this transformation
-	    // so make sure we allocate the maximum possible character utf8
-	    // can generate atleast, should cover all bases
-	    char *result = strDest.GetBuffer(len*4);
-	
-	    // Convert back from Unicode to the charset
-	    int len2 = fribidi_unicode_to_charset(fribidiCharset, visual, len, result);
-	    ASSERT(len2 <= len*4);
-	    strDest.ReleaseBuffer();
-	    
-	    resultString += strDest;
-	  }
+    int sourceLen = lines[i].length();
+    FriBidiChar* logical = (FriBidiChar*) malloc((sourceLen + 1) * sizeof(FriBidiChar));
+    FriBidiChar* visual = (FriBidiChar*) malloc((sourceLen + 1) * sizeof(FriBidiChar));
+    // Convert from the selected charset to Unicode
+    int len = fribidi_charset_to_unicode(fribidiCharset, (char*) lines[i].c_str(), sourceLen, logical);
 
-	  free(logical);
-	  free(visual);
+    if (fribidi_log2vis(logical, len, &base, visual, NULL, NULL, NULL))
+    {
+      // Removes bidirectional marks
+      //len = fribidi_remove_bidi_marks(visual, len, NULL, NULL, NULL);
+
+      // Apperently a string can get longer during this transformation
+      // so make sure we allocate the maximum possible character utf8
+      // can generate atleast, should cover all bases
+      char *result = strDest.GetBuffer(len*4);
+
+      // Convert back from Unicode to the charset
+      int len2 = fribidi_unicode_to_charset(fribidiCharset, visual, len, result);
+      ASSERT(len2 <= len*4);
+      strDest.ReleaseBuffer();
+
+      resultString += strDest;
+    }
+
+    free(logical);
+    free(visual);
   }
-  
+
   strDest = resultString;
 }
 
@@ -374,7 +374,7 @@ void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSourceCharset,
     size_t outBytes = (inBytes * 4) + 1;
     char *dst = strDest.GetBuffer(outBytes);
 
-    if (iconv(iconvString, &src, &inBytes, &dst, &outBytes) == -1)
+    if (iconv(iconvString, &src, &inBytes, &dst, &outBytes) == (size_t)-1)
     {
       strDest.ReleaseBuffer();
       // For some reason it failed (maybe wrong charset?). Nothing to do but
@@ -389,19 +389,20 @@ void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSourceCharset,
   }
 }
 
-void CCharsetConverter::utf16toUTF8(const CStdStringW& strSource, CStdStringA &strDest)
+void CCharsetConverter::wToUTF8(const CStdStringW& strSource, CStdStringA &strDest)
 {
-  if (m_iconvUtf16toUtf8 == (iconv_t) - 1)
-    m_iconvUtf16toUtf8 = iconv_open("UTF-8", "UTF-16LE");
-  if (m_iconvUtf16toUtf8 != (iconv_t) - 1)
+  if (m_iconvWtoUtf8 == (iconv_t) - 1)
+    m_iconvWtoUtf8 = iconv_open("UTF-8", WCHAR_CHARSET);
+
+  if (m_iconvWtoUtf8 != (iconv_t) - 1)
   {
     const char* src = (const char*) strSource.c_str();
-    size_t inBytes = (strSource.length() + 1)*2;
-    size_t outBytes = (inBytes + 1)*2;  // some free for UTF-8 (up to 4 bytes/char)
+    size_t inBytes = (strSource.length() + 1) * sizeof(wchar_t);
+    size_t outBytes = (inBytes + 1)*sizeof(wchar_t);  // some free for UTF-8 (up to 4 bytes/char)
     char *dst = strDest.GetBuffer(outBytes);
-    if (iconv(m_iconvUtf16toUtf8, &src, &inBytes, &dst, &outBytes))
+    if (iconv(m_iconvWtoUtf8, &src, &inBytes, &dst, &outBytes))
     { // failed :(
-      ASSERT(0);
+      CLog::Log(LOGERROR, "CCharsetConverter::wToUTF8 failed for subtitle.");
       strDest.ReleaseBuffer();
       strDest = strSource;
       return;
@@ -414,13 +415,40 @@ void CCharsetConverter::utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA 
 {
   if (m_iconvUtf16BEtoUtf8 == (iconv_t) - 1)
     m_iconvUtf16BEtoUtf8 = iconv_open("UTF-8", "UTF-16BE");
+
   if (m_iconvUtf16BEtoUtf8 != (iconv_t) - 1)
   {
     const char* src = (const char*) strSource.c_str();
-    size_t inBytes = (strSource.length() + 1)*2;
-    size_t outBytes = (inBytes + 1)*2;  // UTF-8 is up to 4 bytes/character  
+    size_t inBytes = (strSource.length() + 1)*sizeof(wchar_t);
+    size_t outBytes = (inBytes + 1)*sizeof(wchar_t);  // UTF-8 is up to 4 bytes/character  
     char *dst = strDest.GetBuffer(outBytes);
     if (iconv(m_iconvUtf16BEtoUtf8, &src, &inBytes, &dst, &outBytes))
+    { // failed :(
+      strDest.ReleaseBuffer();
+      strDest = strSource;
+      return;
+    }
+    strDest.ReleaseBuffer();
+  }
+}
+
+void CCharsetConverter::utf16LEtoW(const char* strSource, CStdStringW &strDest)
+{
+  if (m_iconvUtf16LEtoW == (iconv_t) - 1)
+    m_iconvUtf16LEtoW = iconv_open(WCHAR_CHARSET, "UTF-16LE");
+
+  if (m_iconvUtf16LEtoW != (iconv_t) - 1)
+  {
+    size_t inBytes = 2;
+    short* s = (short*) strSource;
+    while (*s != 0)
+    {
+      s++;
+      inBytes += 2;
+    }
+    size_t outBytes = (inBytes + 1)*sizeof(wchar_t);  // UTF-8 is up to 4 bytes/character  
+    char *dst = (char*) strDest.GetBuffer(outBytes);
+    if (iconv(m_iconvUtf16LEtoW, &strSource, &inBytes, &dst, &outBytes))
     { // failed :(
       strDest.ReleaseBuffer();
       strDest = strSource;
@@ -441,7 +469,7 @@ void CCharsetConverter::ucs2CharsetToStringCharset(const CStdStringW& strSource,
   if (m_iconvUcs2CharsetToStringCharset != (iconv_t) - 1)
   {
     const char* src = (const char*) strSource.c_str();
-    size_t inBytes = (strSource.length() + 1) * 2;
+    size_t inBytes = (strSource.length() + 1) * sizeof(wchar_t);
 
     if (swap)
     {
