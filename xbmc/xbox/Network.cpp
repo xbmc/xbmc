@@ -473,7 +473,7 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
       g_application.StopFtpServer();
       g_application.StopKai();   
       g_application.StopUPnP();
-      g_application.StartEventServer();
+      g_application.StopEventServer();
       CScrobbler::GetInstance()->Term();
       // smb.Deinit(); if any file is open over samba this will break.
     }
