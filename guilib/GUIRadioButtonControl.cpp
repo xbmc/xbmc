@@ -14,8 +14,8 @@ CGUIRadioButtonControl::CGUIRadioButtonControl(DWORD dwParentID, DWORD dwControl
   m_radioPosX = 0;
   m_radioPosY = 0;
   m_toggleSelect = 0;
-  m_imgRadioFocus.SetAspectRatio(CGUIImage::ASPECT_RATIO_KEEP);
-  m_imgRadioNoFocus.SetAspectRatio(CGUIImage::ASPECT_RATIO_KEEP);
+  m_imgRadioFocus.SetAspectRatio(CGUIImage::CAspectRatio::AR_KEEP);
+  m_imgRadioNoFocus.SetAspectRatio(CGUIImage::CAspectRatio::AR_KEEP);
   ControlType = GUICONTROL_RADIO;
 }
 

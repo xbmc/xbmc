@@ -11,8 +11,8 @@ CGUIScrollBar::CGUIScrollBar(DWORD dwParentID, DWORD dwControlId, float posX, fl
     , m_guiNibNoFocus(dwParentID, dwControlId, posX, posY, width, height, nibTexture)
     , m_guiNibFocus(dwParentID, dwControlId, posX, posY, width, height, nibTextureFocus)
 {
-  m_guiNibNoFocus.SetAspectRatio(CGUIImage::ASPECT_RATIO_CENTER);
-  m_guiNibFocus.SetAspectRatio(CGUIImage::ASPECT_RATIO_CENTER);
+  m_guiNibNoFocus.SetAspectRatio(CGUIImage::CAspectRatio::AR_CENTER);
+  m_guiNibFocus.SetAspectRatio(CGUIImage::CAspectRatio::AR_CENTER);
   m_numItems = 100;
   m_offset = 0;
   m_pageSize = 10;
