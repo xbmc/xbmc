@@ -126,6 +126,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   {
     m_decoder[m_currentDecoder].Destroy();
     CLog::Log(LOGERROR, "PAPlayer::Unable to create audio stream");
+    return false;
   }
 
   m_currentFile = file;
