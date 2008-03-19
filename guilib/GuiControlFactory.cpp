@@ -134,43 +134,52 @@ bool CGUIControlFactory::GetPath(const TiXmlNode* pRootNode, const char* strTag,
   return true;
 }
 
-bool CGUIControlFactory::GetAspectRatio(const TiXmlNode* pRootNode, const char* strTag, CGUIImage::GUIIMAGE_ASPECT_RATIO &aspectRatio, DWORD &aspectAlign)
+bool CGUIControlFactory::GetAspectRatio(const TiXmlNode* pRootNode, const char* strTag, CGUIImage::CAspectRatio &aspect)
 {
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   bool keepAR;
   // backward compatibility
   if (XMLUtils::GetBoolean(pRootNode, "keepaspectratio", keepAR))
   {
-    aspectRatio = CGUIImage::ASPECT_RATIO_KEEP;
+    aspect.ratio = CGUIImage::CAspectRatio::AR_KEEP;
     return true;
   }
 #endif
-  CStdString aspect;
+  CStdString ratio;
   const TiXmlElement *node = pRootNode->FirstChildElement(strTag);
   if (!node || !node->FirstChild())
     return false;
 
-  aspect = node->FirstChild()->Value();
-  if (aspect.CompareNoCase("keep") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_KEEP;
-  else if (aspect.CompareNoCase("scale") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_SCALE;
-  else if (aspect.CompareNoCase("center") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_CENTER;
-  else if (aspect.CompareNoCase("stretch") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_STRETCH;
+  ratio = node->FirstChild()->Value();
+  if (ratio.CompareNoCase("keep") == 0) aspect.ratio = CGUIImage::CAspectRatio::AR_KEEP;
+  else if (ratio.CompareNoCase("scale") == 0) aspect.ratio = CGUIImage::CAspectRatio::AR_SCALE;
+  else if (ratio.CompareNoCase("center") == 0) aspect.ratio = CGUIImage::CAspectRatio::AR_CENTER;
+  else if (ratio.CompareNoCase("stretch") == 0) aspect.ratio = CGUIImage::CAspectRatio::AR_STRETCH;
 
   const char *attribute = node->Attribute("align");
   if (attribute)
   {
     CStdString align(attribute);
-    if (align.CompareNoCase("center") == 0) aspectAlign = ASPECT_ALIGN_CENTER | (aspectAlign & ASPECT_ALIGNY_MASK);
-    else if (align.CompareNoCase("right") == 0) aspectAlign = ASPECT_ALIGN_RIGHT | (aspectAlign & ASPECT_ALIGNY_MASK);
-    else if (align.CompareNoCase("left") == 0) aspectAlign = ASPECT_ALIGN_LEFT | (aspectAlign & ASPECT_ALIGNY_MASK);
+    if (align.CompareNoCase("center") == 0) aspect.align = ASPECT_ALIGN_CENTER | (aspect.align & ASPECT_ALIGNY_MASK);
+    else if (align.CompareNoCase("right") == 0) aspect.align = ASPECT_ALIGN_RIGHT | (aspect.align & ASPECT_ALIGNY_MASK);
+    else if (align.CompareNoCase("left") == 0) aspect.align = ASPECT_ALIGN_LEFT | (aspect.align & ASPECT_ALIGNY_MASK);
   }
   attribute = node->Attribute("aligny");
   if (attribute)
   {
     CStdString align(attribute);
-    if (align.CompareNoCase("center") == 0) aspectAlign = ASPECT_ALIGNY_CENTER | (aspectAlign & ASPECT_ALIGN_MASK);
-    else if (align.CompareNoCase("bottom") == 0) aspectAlign = ASPECT_ALIGNY_BOTTOM | (aspectAlign & ASPECT_ALIGN_MASK);
-    else if (align.CompareNoCase("top") == 0) aspectAlign = ASPECT_ALIGNY_TOP | (aspectAlign & ASPECT_ALIGN_MASK);
+    if (align.CompareNoCase("center") == 0) aspect.align = ASPECT_ALIGNY_CENTER | (aspect.align & ASPECT_ALIGN_MASK);
+    else if (align.CompareNoCase("bottom") == 0) aspect.align = ASPECT_ALIGNY_BOTTOM | (aspect.align & ASPECT_ALIGN_MASK);
+    else if (align.CompareNoCase("top") == 0) aspect.align = ASPECT_ALIGNY_TOP | (aspect.align & ASPECT_ALIGN_MASK);
+  }
+  attribute = node->Attribute("scalediffuse");
+  if (attribute)
+  {
+    CStdString scale(attribute);
+    if (scale.CompareNoCase("true") == 0 || scale.CompareNoCase("yes") == 0)
+      aspect.scaleDiffuse = true;
+    else
+      aspect.scaleDiffuse = false;
   }
   return true;
 }
@@ -590,10 +599,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   int iAlpha = 0;
   bool bWrapAround = true;
   bool bSmoothScrolling = true;
-  CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio = CGUIImage::ASPECT_RATIO_STRETCH;
+  CGUIImage::CAspectRatio aspect;
   if (strType == "thumbnailpanel")  // default for thumbpanel is keep
-    aspectRatio = CGUIImage::ASPECT_RATIO_KEEP;
-  DWORD aspectAlign = ASPECT_ALIGN_CENTER | ASPECT_ALIGNY_CENTER;
+    aspect.ratio = CGUIImage::CAspectRatio::AR_KEEP;
 
   int iVisibleCondition = 0;
   bool allowHiddenFocus = false;
@@ -929,7 +937,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   XMLUtils::GetInt(pControlNode, "alpha", iAlpha);
   XMLUtils::GetBoolean(pControlNode, "wraparound", bWrapAround);
   XMLUtils::GetBoolean(pControlNode, "smoothscrolling", bSmoothScrolling);
-  GetAspectRatio(pControlNode, "aspectratio", aspectRatio, aspectAlign);
+  GetAspectRatio(pControlNode, "aspectratio", aspect);
   XMLUtils::GetBoolean(pControlNode, "scroll", bScrollLabel);
   XMLUtils::GetBoolean(pControlNode,"pulseonselect", bPulse);
 
@@ -1198,19 +1206,19 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     else
       control = new CGUIBorderedImage(
         dwParentId, id, posX, posY, width, height, texture, borderTexture, borderSize, dwColorKey);
-    ((CGUIImage *)control)->SetAspectRatio(aspectRatio, aspectAlign);
+    ((CGUIImage *)control)->SetAspectRatio(aspect);
   }
   else if (strType == "largeimage")
   {
     control = new CGUILargeImage(
       dwParentId, id, posX, posY, width, height, texture);
-    ((CGUILargeImage *)control)->SetAspectRatio(aspectRatio, aspectAlign);
+    ((CGUILargeImage *)control)->SetAspectRatio(aspect);
   }
   else if (strType == "multiimage")
   {
     control = new CGUIMultiImage(
       dwParentId, id, posX, posY, width, height, texturePath, timePerImage, fadeTime, randomized, loop, timeToPauseAtEnd);
-    ((CGUIMultiImage *)control)->SetAspectRatio(aspectRatio);
+    ((CGUIMultiImage *)control)->SetAspectRatio(aspect.ratio);
   }
   else if (strType == "list")
   {
@@ -1333,7 +1341,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       imageNoFocus, imageFocus,
       itemWidthBig, itemHeightBig,
       textureWidthBig, textureHeightBig, 
-      thumbXPosBig, thumbYPosBig, thumbWidthBig, thumbHeightBig, dwThumbAlign, aspectRatio,
+      thumbXPosBig, thumbYPosBig, thumbWidthBig, thumbHeightBig, dwThumbAlign, aspect,
       labelInfo, thumbPanelHideLabels, NULL, NULL);
 
     pPanel->SetType(VIEW_TYPE_BIG_ICON, g_localizeStrings.Get(538)); // Big Icons
@@ -1349,7 +1357,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       imageNoFocus, imageFocus,
       itemWidth, itemHeight,
       textureWidth, textureHeight, 
-      thumbXPos, thumbYPos, thumbWidth, thumbHeight, dwThumbAlign, aspectRatio,
+      thumbXPos, thumbYPos, thumbWidth, thumbHeight, dwThumbAlign, aspect,
       labelInfo, thumbPanelHideLabels, pSpin, pPanel);
 
     pControl->SetType(VIEW_TYPE_ICON, g_localizeStrings.Get(536)); // Icons
