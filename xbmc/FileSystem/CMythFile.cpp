@@ -431,12 +431,6 @@ __int64 CCMythFile::GetLength()
 
 unsigned int CCMythFile::Read(void* buffer, __int64 size)
 { 
-  struct timeval to;
-  to.tv_sec = 10;
-  to.tv_usec = 0;
-  int ret;
-  unsigned long remain;
-
   /* check for any events */
   HandleEvents();
 
@@ -445,58 +439,9 @@ unsigned int CCMythFile::Read(void* buffer, __int64 size)
     return 0;
 
   if(m_recorder)
-    ret = m_dll->livetv_request_block(m_recorder, (unsigned long)size);
+    return m_dll->livetv_read(m_recorder, (char*)buffer, size);
   else
-    ret = m_dll->file_request_block(m_file, (unsigned long)size);
-
-  if(ret < 0)
-  {
-    CLog::Log(LOGERROR, "%s - error requesting block of data (%d)", __FUNCTION__, ret);
-    return 0;
-  }
-
-  if(ret == 0)
-  {
-    CLog::Log(LOGERROR, "%s - hit eof", __FUNCTION__);
-    return 0;
-  }
-
-  remain = (unsigned long)ret;
-  size = 0;
-  do
-  {
-    if(m_recorder)
-      ret = m_dll->livetv_select(m_recorder, &to);
-    else
-      ret = m_dll->file_select(m_file, &to);
-
-    if(ret <= 0)
-    {
-      CLog::Log(LOGERROR, "%s - timeout waiting for data (%d)", __FUNCTION__, ret);
-      return 0;
-    }
-
-    if(m_recorder)
-      ret = m_dll->livetv_get_block(m_recorder, (char*)buffer+size, remain);
-    else
-      ret = m_dll->file_get_block(m_file,       (char*)buffer+size, remain);
-
-    if(ret <= 0)
-    {
-      CLog::Log(LOGERROR, "%s - failed to retrieve block (%d)", __FUNCTION__, ret);
-      return 0;
-    }
-
-    if(ret > (int)remain)
-    {
-      CLog::Log(LOGERROR, "%s - potential buffer overrun", __FUNCTION__);
-      return (unsigned long)size;
-    }
-    remain -= ret;
-    size   += ret;
-  } while(remain > 0);
-
-  return (unsigned long)size;
+    return m_dll->file_read(m_file, (char*)buffer, size);
 }
 
 bool CCMythFile::SkipNext()
