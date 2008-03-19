@@ -85,10 +85,11 @@ using namespace MUSIC_INFO;
  *  %H - season*100+episode
  *  %Z - tvshow title
  *  %O - mpaa rating
+ *  %Q - file time
  *  %U - studio
  */
 
-#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZOU"
+#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZOQU"
 
 CLabelFormatter::CLabelFormatter(const CStdString &mask, const CStdString &mask2)
 {
@@ -223,6 +224,10 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
   case 'J': // date
     if (item->m_dateTime.IsValid())
       value = item->m_dateTime.GetAsLocalizedDate();
+    break;
+  case 'Q': // time
+    if (item->m_dateTime.IsValid())
+      value = item->m_dateTime.GetAsLocalizedTime("", false);
     break;
   case 'R': // rating
     if (music && music->GetRating() != '0')
