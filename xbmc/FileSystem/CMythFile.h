@@ -60,7 +60,7 @@ protected:
   bool SetupLiveTV(const CURL& url);
   bool SetupFile(const CURL& url);
 
-  CStdString GetString(char* str);
+  CStdString GetValue(char* str) { return m_session->GetValue(str); }
 
   CCMythSession*    m_session;
   DllLibCMyth*      m_dll;
