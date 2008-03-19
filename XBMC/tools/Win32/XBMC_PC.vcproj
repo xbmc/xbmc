@@ -243,6 +243,12 @@
 			Name="win32"
 			Filter="">
 			<File
+				RelativePath="..\..\xbmc\win32\PlatformDefs.h">
+			</File>
+			<File
+				RelativePath="..\..\xbmc\win32\PlatformInclude.h">
+			</File>
+			<File
 				RelativePath=".\resource.h">
 			</File>
 			<File
