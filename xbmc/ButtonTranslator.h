@@ -5,7 +5,7 @@
 #include "Key.h"
 #include "tinyXML/tinyxml.h" 
 #ifdef HAS_EVENT_SERVER
-#include "EventClient.h"
+#include "utils/EventClient.h"
 #endif
 #pragma once
 

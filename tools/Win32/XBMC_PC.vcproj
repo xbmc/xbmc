@@ -1769,6 +1769,24 @@
 					RelativePath="..\..\xbmc\utils\Event.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\EventClient.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\EventClient.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\EventPacket.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\EventPacket.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\EventServer.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\EventServer.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\Favourites.cpp">
 				</File>
 				<File
@@ -1893,6 +1911,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\SingleLock.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\Socket.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\Socket.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\SortFileItem.cpp">
