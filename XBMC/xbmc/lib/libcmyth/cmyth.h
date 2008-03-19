@@ -533,6 +533,10 @@ extern int cmyth_livetv_request_block(cmyth_recorder_t rec, unsigned long len);
 extern long long cmyth_livetv_seek(cmyth_recorder_t rec,
 						long long offset, int whence);
 
+extern int cmyth_livetv_read(cmyth_recorder_t rec,
+			     char *buf,
+			     unsigned long len);
+
 extern int cmyth_livetv_keep_recording(cmyth_recorder_t rec, cmyth_database_t db, int keep);
 
 extern int cmyth_livetv_keep_recording(cmyth_recorder_t rec, cmyth_database_t db, int keep);
@@ -577,6 +581,9 @@ extern long long cmyth_ringbuf_seek(cmyth_recorder_t rec,
 				    long long offset,
 				    int whence);
 
+extern int cmyth_ringbuf_read(cmyth_recorder_t rec,
+			      char *buf,
+			      unsigned long len);
 /*
  * -----------------------------------------------------------------
  * Recorder Number Operations
@@ -936,7 +943,9 @@ extern int cmyth_file_select(cmyth_file_t file, struct timeval *timeout);
 extern void cmyth_file_set_closed_callback(cmyth_file_t file,
 					void (*callback)(cmyth_file_t));
 
-
+extern int cmyth_file_read(cmyth_file_t file,
+			   char *buf,
+			   unsigned long len);
 /*
  * -----------------------------------------------------------------
  * Channel Operations
