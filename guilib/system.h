@@ -209,10 +209,7 @@
 #undef HAS_KAI_VOICE
 #undef HAS_TRAINER
 
-#define snprintf _snprintf
-#ifndef PRId64
-#define PRId64 "I64d"
-#endif
+#include "../xbmc/win32/PlatformInclude.h"
 #endif
 #endif
 
