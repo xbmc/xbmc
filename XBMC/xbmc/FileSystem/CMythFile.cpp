@@ -438,10 +438,18 @@ unsigned int CCMythFile::Read(void* buffer, __int64 size)
   if(!m_recorder && !m_file)
     return 0;
 
+  int ret;
   if(m_recorder)
-    return m_dll->livetv_read(m_recorder, (char*)buffer, size);
+    ret = m_dll->livetv_read(m_recorder, (char*)buffer, size);
   else
-    return m_dll->file_read(m_file, (char*)buffer, size);
+    ret = m_dll->file_read(m_file, (char*)buffer, size);
+
+  if(ret < 0)
+  {
+    CLog::Log(LOGERROR, "%s - cmyth read returned error %d", __FUNCTION__, ret);
+    return 0;
+  }
+  return ret;
 }
 
 bool CCMythFile::SkipNext()
