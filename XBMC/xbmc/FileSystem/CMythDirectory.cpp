@@ -26,18 +26,6 @@ CCMythDirectory::~CCMythDirectory()
   Release();
 }
 
-CStdString CCMythDirectory::GetString(char *str)
-{
-  CStdString result;
-  if(str)
-  {
-    result = str;
-    m_dll->ref_release(str);
-    result.Trim();
-  }
-  return result;
-}
-
 void CCMythDirectory::Release()
 {
   if(m_recorder)
@@ -73,7 +61,7 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
     cmyth_proginfo_t program = m_dll->proglist_get_item(list, i);
     if(program)
     {
-      if(GetString(m_dll->proginfo_recgroup(program)).Equals("LiveTV"))
+      if(GetValue(m_dll->proginfo_recgroup(program)).Equals("LiveTV"))
       {
         m_dll->ref_release(program);
         continue;
@@ -81,9 +69,9 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
 
       CStdString name, path;
 
-      path = GetString(m_dll->proginfo_pathname(program));
+      path = GetValue(m_dll->proginfo_pathname(program));
       path = CUtil::GetFileName(path);
-      name = GetString(m_dll->proginfo_title(program));
+      name = GetValue(m_dll->proginfo_title(program));
 
       CFileItem *item = new CFileItem("", false);
       m_session->UpdateItem(*item, program);
@@ -91,20 +79,31 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
       url.SetFileName("recordings/" + path);
       url.GetURL(item->m_strPath);
 
-      item->SetLabel(name);
-      if(m_dll->proginfo_rec_status(program) == RS_RECORDING)
-        item->SetLabel2("(Recording)");
-      else
-        item->SetLabel2(item->GetVideoInfoTag()->m_strRuntime);
-
       url.SetFileName("files/" + path +  ".png");
       url.GetURL(path);
       item->SetThumbnailImage(path);
 
-      item->SetLabelPreformated(true);
+      if(m_dll->proginfo_rec_status(program) != RS_RECORDING)
+        name += " (" + item->m_dateTime.GetAsLocalizedDateTime() + ")";
+      else
+      {
+        name += " (Recording)";
+        item->SetThumbnailImage("");
+      }
+
+      item->SetLabel(name);
+
       items.Add(item);
       m_dll->ref_release(program);
     }
+
+    if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+      items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%Z (%J)", "%I", "%L", ""));
+    else
+      items.AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%Z (%J)", "%I", "%L", ""));
+    items.AddSortMethod(SORT_METHOD_SIZE, 553, LABEL_MASKS("%Z (%J)", "%I", "%L", "%I"));
+    items.AddSortMethod(SORT_METHOD_DATE, 552, LABEL_MASKS("%Z", "%J %Q", "%L", "%J"));
+
   }
   m_dll->ref_release(list);
   return true;
@@ -143,7 +142,7 @@ bool CCMythDirectory::GetChannelsDb(const CStdString& base, CFileItemList &items
       else
         name.Format("%d");
 
-      icon = GetString(m_dll->channel_icon(channel));
+      icon = GetValue(m_dll->channel_icon(channel));
 
       if(num <= 0)
       {
@@ -203,23 +202,14 @@ bool CCMythDirectory::GetChannels(const CStdString& base, CFileItemList &items)
   {
     CStdString num, progname, channame, icon, sign;
 
-    num      = GetString(m_dll->proginfo_chanstr (program));
-    sign     = GetString(m_dll->proginfo_chansign(program));
-    progname = GetString(m_dll->proginfo_title   (program));
-    icon     = GetString(m_dll->proginfo_chanicon(program));
-
-    if(sign.length() > 0)
-      channame.Format("%s - %s", num, sign.c_str());
-    else
-      channame.Format("%s", num);
+    num      = GetValue(m_dll->proginfo_chanstr (program));
+    icon     = GetValue(m_dll->proginfo_chanicon(program));
 
     CFileItem *item = new CFileItem("", false);
     m_session->UpdateItem(*item, program);
     url.SetFileName("channels/" + num + ".ts");
     url.GetURL(item->m_strPath);
-    item->SetLabel(channame);
-    item->SetLabel2(progname);
-    item->SetLabelPreformated(true);
+    item->SetLabel(GetValue(m_dll->proginfo_chansign(program)));
 
     if(icon.length() > 0)
     {
@@ -228,6 +218,10 @@ bool CCMythDirectory::GetChannels(const CStdString& base, CFileItemList &items)
       item->SetThumbnailImage(icon);
     }
 
+    /* hack to get sorting working properly when sorting by show title */
+    if(item->GetVideoInfoTag()->m_strShowTitle.IsEmpty())
+      item->GetVideoInfoTag()->m_strShowTitle = " ";
+
     items.Add(item);
 
     program = m_dll->recorder_get_next_proginfo(m_recorder, program, BROWSE_DIRECTION_UP);
@@ -235,6 +229,17 @@ bool CCMythDirectory::GetChannels(const CStdString& base, CFileItemList &items)
       break;
     currchan = m_dll->proginfo_chan_id(program);
   }
+
+  if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+    items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%K[ - %B]", "%Z", "%L", ""));
+  else
+    items.AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%K[ - %B]", "%Z", "%L", ""));
+
+  if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+    items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 20364, LABEL_MASKS("%Z", "%B", "%L", ""));
+  else
+    items.AddSortMethod(SORT_METHOD_LABEL, 20364, LABEL_MASKS("%Z", "%B", "%L", ""));
+
 
   return true;
 }

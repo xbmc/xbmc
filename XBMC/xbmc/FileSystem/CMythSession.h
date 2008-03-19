@@ -7,6 +7,7 @@ typedef struct cmyth_proginfo  *cmyth_proginfo_t;
 typedef struct cmyth_proglist  *cmyth_proglist_t;
 typedef struct cmyth_file      *cmyth_file_t;
 typedef struct cmyth_database  *cmyth_database_t;
+typedef struct cmyth_timestamp *cmyth_timestamp_t;
 
 class DllLibCMyth;
 
@@ -34,6 +35,9 @@ public:
   DllLibCMyth*     GetLibrary();
 
   bool             UpdateItem(CFileItem &item, cmyth_proginfo_t info);
+
+  CDateTime        GetValue(cmyth_timestamp_t t);
+  CStdString       GetValue(char* str);
 private:
   CCMythSession(const CURL& url);
   ~CCMythSession();
