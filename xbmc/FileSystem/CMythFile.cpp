@@ -440,9 +440,9 @@ unsigned int CCMythFile::Read(void* buffer, __int64 size)
 
   int ret;
   if(m_recorder)
-    ret = m_dll->livetv_read(m_recorder, (char*)buffer, size);
+    ret = m_dll->livetv_read(m_recorder, (char*)buffer, (unsigned long)size);
   else
-    ret = m_dll->file_read(m_file, (char*)buffer, size);
+    ret = m_dll->file_read(m_file, (char*)buffer, (unsigned long)size);
 
   if(ret < 0)
   {
