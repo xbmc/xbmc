@@ -837,6 +837,26 @@ cmyth_livetv_chain_request_block(cmyth_recorder_t rec, unsigned long len)
 	return ret;
 }
 
+int cmyth_livetv_chain_read(cmyth_recorder_t rec, char *buf, unsigned long len)
+{
+	int ret;
+
+	cmyth_dbg(CMYTH_DBG_DEBUG, "%s [%s:%d]: (trace) {\n", __FUNCTION__,
+				__FILE__, __LINE__);
+
+	if (rec == NULL)
+		return -EINVAL;
+
+retry:
+	ret = cmyth_file_read(rec->rec_livetv_file, buf, len);	
+	if (ret == 0) {
+		/* eof, switch to next file */
+		if(cmyth_livetv_chain_switch(rec, 1))
+			goto retry;
+	}
+
+	return ret;
+}
 
 /*
  * cmyth_livetv_chain_seek(cmyth_recorder_t file, long long offset, int whence)
@@ -985,8 +1005,32 @@ cmyth_livetv_chain_seek(cmyth_recorder_t rec, long long offset, int whence)
 
     out:
 	pthread_mutex_unlock(&mutex);
-	
+
 	return ret;
+}
+
+/*
+ * cmyth_livetv_read(cmyth_recorder_t rec, char *buf, unsigned long len)
+ * 
+ * Scope: PUBLIC
+ *
+ * Description
+ *
+ * Request and read a block of data from backend
+ *
+ * Return Value:
+ *
+ * Sucess: number of bytes transfered
+ *
+ * Failure: an int containing -errno
+ */
+int cmyth_livetv_read(cmyth_recorder_t rec, char *buf, unsigned long len)
+{
+	if(rec->rec_conn->conn_version >= 26)
+		return cmyth_livetv_chain_read(rec, buf, len);
+	else
+		return cmyth_ringbuf_read(rec, buf, len);
+	
 }
 
 /*

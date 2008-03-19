@@ -45,6 +45,7 @@ public:
   virtual int              livetv_select            (cmyth_recorder_t rec, struct timeval *timeout)=0;
   virtual int              livetv_request_block     (cmyth_recorder_t rec, unsigned long len)=0;
   virtual long long        livetv_seek              (cmyth_recorder_t rec, long long offset, int whence)=0;
+  virtual int              livetv_read              (cmyth_recorder_t rec, char *buf, unsigned long len)=0;
   virtual int              livetv_chain_update      (cmyth_recorder_t rec, char * chainid, int tcp_rcvbuf)=0;
   virtual int              livetv_chain_switch_last (cmyth_recorder_t rec)=0;
   virtual int              livetv_keep_recording    (cmyth_recorder_t rec, cmyth_database_t db, int keep)=0;
@@ -52,10 +53,11 @@ public:
                                                      void (*prog_update_callback)(cmyth_proginfo_t),
                                                      char ** err)=0;
 
-  virtual int                file_get_block         (cmyth_file_t rec, char *buf, unsigned long len)=0;
-  virtual int                file_select            (cmyth_file_t rec, struct timeval *timeout)=0;
-  virtual int                file_request_block     (cmyth_file_t rec, unsigned long len)=0;
-  virtual long long          file_seek              (cmyth_file_t rec, long long offset, int whence)=0;
+  virtual int                file_get_block         (cmyth_file_t file, char *buf, unsigned long len)=0;
+  virtual int                file_select            (cmyth_file_t file, struct timeval *timeout)=0;
+  virtual int                file_request_block     (cmyth_file_t file, unsigned long len)=0;
+  virtual long long          file_seek              (cmyth_file_t file, long long offset, int whence)=0;
+  virtual int                file_read              (cmyth_file_t file, char *buf, unsigned long len)=0;
   virtual unsigned long long file_length            (cmyth_file_t file)=0;
   virtual unsigned long long file_start             (cmyth_file_t file)=0;
 
@@ -137,6 +139,8 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
   DEFINE_METHOD2(int,                 livetv_select,            (cmyth_recorder_t p1, struct timeval *p2))
   DEFINE_METHOD2(int,                 livetv_request_block,     (cmyth_recorder_t p1, unsigned long p2))
   DEFINE_METHOD3(long long,           livetv_seek,              (cmyth_recorder_t p1, long long p2, int p3))
+  DEFINE_METHOD3(int,                 livetv_read,              (cmyth_recorder_t p1, char *p2, unsigned long p3))
+
   DEFINE_METHOD3(int,                 livetv_chain_update,      (cmyth_recorder_t p1, char * p2, int p3))
   DEFINE_METHOD1(int,                 livetv_chain_switch_last, (cmyth_recorder_t p1))
   DEFINE_METHOD3(int,                 livetv_keep_recording,    (cmyth_recorder_t p1, cmyth_database_t p2, int p3))
@@ -146,6 +150,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
   DEFINE_METHOD2(int,                 file_select,              (cmyth_file_t p1, struct timeval *p2))
   DEFINE_METHOD2(int,                 file_request_block,       (cmyth_file_t p1, unsigned long p2))
   DEFINE_METHOD3(long long,           file_seek,                (cmyth_file_t p1, long long p2, int p3))
+  DEFINE_METHOD3(int,                 file_read,                (cmyth_file_t p1, char *p2, unsigned long p3))
   DEFINE_METHOD1(unsigned long long,  file_length,              (cmyth_file_t p1))
   DEFINE_METHOD1(unsigned long long,  file_start,               (cmyth_file_t p1))
 
@@ -216,6 +221,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
     RESOLVE_METHOD_RENAME(cmyth_livetv_select, livetv_select)
     RESOLVE_METHOD_RENAME(cmyth_livetv_request_block, livetv_request_block)
     RESOLVE_METHOD_RENAME(cmyth_livetv_seek, livetv_seek)
+    RESOLVE_METHOD_RENAME(cmyth_livetv_read, livetv_read)
     RESOLVE_METHOD_RENAME(cmyth_livetv_chain_update, livetv_chain_update)
     RESOLVE_METHOD_RENAME(cmyth_livetv_chain_switch_last, livetv_chain_switch_last)
     RESOLVE_METHOD_RENAME(cmyth_livetv_keep_recording, livetv_keep_recording)
@@ -225,6 +231,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
     RESOLVE_METHOD_RENAME(cmyth_file_select, file_select)
     RESOLVE_METHOD_RENAME(cmyth_file_request_block, file_request_block)
     RESOLVE_METHOD_RENAME(cmyth_file_seek, file_seek)
+    RESOLVE_METHOD_RENAME(cmyth_file_read, file_read)
     RESOLVE_METHOD_RENAME(cmyth_file_length, file_length)
     RESOLVE_METHOD_RENAME(cmyth_file_start, file_start)
 
