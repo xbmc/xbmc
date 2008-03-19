@@ -90,8 +90,8 @@ int CDVDSubtitleParserSubrip::ParseFile()
 
           CStdStringW strUTF16;
           CStdStringA strUTF8;
-          g_charsetConverter.subtitleCharsetToUTF16(line, strUTF16);
-          g_charsetConverter.utf16toUTF8(strUTF16, strUTF8);
+          g_charsetConverter.subtitleCharsetToW(line, strUTF16);
+          g_charsetConverter.wToUTF8(strUTF16, strUTF8);
           // add a new text element to our container
           pOverlay->AddElement(new CDVDOverlayText::CElementText(strUTF8.c_str()));
         }

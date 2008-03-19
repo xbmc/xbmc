@@ -295,7 +295,7 @@ bool CFat32FileSystem::GetDirectoryWithShortPaths(const CStdString &directory, C
       // do we have a vfatName here?
       if (!vfatSequence && vfatName.size())
       { // yes, check the checksum
-        g_charsetConverter.utf16toUTF8(vfatName, longPath);
+        g_charsetConverter.wToUTF8(vfatName, longPath);
         vfatSequence = 0;
         vfatName.Empty();
       }

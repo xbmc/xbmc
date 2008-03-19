@@ -1996,7 +1996,7 @@ bool CUtil::GetXBEDescription(const CStdString& strFileName, CStdString& strDesc
   TitleName[40] = 0;
   if (wcslen(TitleName) > 0)
   {
-    g_charsetConverter.utf16toUTF8(TitleName, strDescription);
+    g_charsetConverter.wToUTF8(TitleName, strDescription);
     return true;
   }
   strDescription = CUtil::GetFileName(strFileName);
@@ -2017,7 +2017,7 @@ bool CUtil::SetXBEDescription(const CStdString& strFileName, const CStdString& s
   // The XBE title is stored in WCHAR (UTF16)
 
   CStdStringW shortDescription;
-  g_charsetConverter.utf8ToUTF16(strDescription, shortDescription);
+  g_charsetConverter.utf8ToW(strDescription, shortDescription);
   if (shortDescription.size() > 40)
     shortDescription = shortDescription.Left(40);
   wcsncpy(HC.TitleName, shortDescription.c_str(), 40);  // only allow 40 chars*/
