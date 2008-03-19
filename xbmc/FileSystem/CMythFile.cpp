@@ -24,18 +24,6 @@ static void prog_update_callback(cmyth_proginfo_t prog)
 #endif
 #endif
 
-CStdString CCMythFile::GetString(char *str)
-{
-  CStdString result;
-  if(str)
-  {
-    result = str;
-    m_dll->ref_release(str);
-    result.Trim();
-  }
-  return result;
-}
-
 void CCMythFile::OnEvent(int event, const string& data)
 {
   CSingleLock lock(m_section);
@@ -136,6 +124,27 @@ bool CCMythFile::SetupRecording(const CURL& url)
     CLog::Log(LOGERROR, "%s - unable to connect to file", __FUNCTION__);
     return false;
   }
+
+  /* check if this program is currently recording       *
+   * sadly proginfo_get_from_basename doesn't give us   *
+   * that with the new interface, maybe the myth people *
+   * will fix this eventually                           */
+  m_recording = false;
+  for(int i=0;i<16 && !m_recording;i++)
+  {
+    cmyth_recorder_t recorder = m_dll->conn_get_recorder_from_num(m_control, i);
+    if(!recorder)
+      continue;
+    if(m_dll->recorder_is_recording(recorder))
+    {
+      cmyth_proginfo_t program = m_dll->recorder_get_cur_proginfo(recorder);
+
+      if(m_dll->proginfo_compare(program, m_program) == 0)
+        m_recording = true;
+      m_dll->ref_release(program);
+    }
+    m_dll->ref_release(recorder);
+  }
   return true;
 }
 
@@ -176,7 +185,7 @@ bool CCMythFile::SetupLiveTV(const CURL& url)
         m_recorder = NULL;
         continue;
       }
-      if(channel != GetString(m_dll->proginfo_chanstr(program)))
+      if(channel != GetValue(m_dll->proginfo_chanstr(program)))
       {
         m_dll->ref_release(program);
         m_dll->ref_release(m_recorder);
@@ -209,7 +218,7 @@ bool CCMythFile::SetupLiveTV(const CURL& url)
   m_program = m_dll->recorder_get_cur_proginfo(m_recorder);
   if(m_program)
   {
-    if(GetString(m_dll->proginfo_chanstr(m_program)) != channel)
+    if(GetValue(m_dll->proginfo_chanstr(m_program)) != channel)
     {
       if(!ChangeChannel(CHANNEL_DIRECTION_SAME, channel.c_str()))
         return false;
@@ -223,7 +232,7 @@ bool CCMythFile::SetupLiveTV(const CURL& url)
       CLog::Log(LOGDEBUG, "%s - failed to seek to last position", __FUNCTION__);
   }
 
-  m_filename = GetString(m_dll->recorder_get_filename(m_recorder));
+  m_filename = GetValue(m_dll->recorder_get_filename(m_recorder));
   return true;
 }
 
@@ -431,12 +440,6 @@ __int64 CCMythFile::GetLength()
 
 unsigned int CCMythFile::Read(void* buffer, __int64 size)
 { 
-  struct timeval to;
-  to.tv_sec = 10;
-  to.tv_usec = 0;
-  int ret;
-  unsigned long remain;
-
   /* check for any events */
   HandleEvents();
 
@@ -444,59 +447,18 @@ unsigned int CCMythFile::Read(void* buffer, __int64 size)
   if(!m_recorder && !m_file)
     return 0;
 
+  int ret;
   if(m_recorder)
-    ret = m_dll->livetv_request_block(m_recorder, (unsigned long)size);
+    ret = m_dll->livetv_read(m_recorder, (char*)buffer, (unsigned long)size);
   else
-    ret = m_dll->file_request_block(m_file, (unsigned long)size);
+    ret = m_dll->file_read(m_file, (char*)buffer, (unsigned long)size);
 
   if(ret < 0)
   {
-    CLog::Log(LOGERROR, "%s - error requesting block of data (%d)", __FUNCTION__, ret);
+    CLog::Log(LOGERROR, "%s - cmyth read returned error %d", __FUNCTION__, ret);
     return 0;
   }
-
-  if(ret == 0)
-  {
-    CLog::Log(LOGERROR, "%s - hit eof", __FUNCTION__);
-    return 0;
-  }
-
-  remain = (unsigned long)ret;
-  size = 0;
-  do
-  {
-    if(m_recorder)
-      ret = m_dll->livetv_select(m_recorder, &to);
-    else
-      ret = m_dll->file_select(m_file, &to);
-
-    if(ret <= 0)
-    {
-      CLog::Log(LOGERROR, "%s - timeout waiting for data (%d)", __FUNCTION__, ret);
-      return 0;
-    }
-
-    if(m_recorder)
-      ret = m_dll->livetv_get_block(m_recorder, (char*)buffer+size, remain);
-    else
-      ret = m_dll->file_get_block(m_file,       (char*)buffer+size, remain);
-
-    if(ret <= 0)
-    {
-      CLog::Log(LOGERROR, "%s - failed to retrieve block (%d)", __FUNCTION__, ret);
-      return 0;
-    }
-
-    if(ret > (int)remain)
-    {
-      CLog::Log(LOGERROR, "%s - potential buffer overrun", __FUNCTION__);
-      return (unsigned long)size;
-    }
-    remain -= ret;
-    size   += ret;
-  } while(remain > 0);
-
-  return (unsigned long)size;
+  return ret;
 }
 
 bool CCMythFile::SkipNext()
@@ -593,7 +555,7 @@ bool CCMythFile::PrevChannel()
 
 bool CCMythFile::CanRecord()
 {
-  if(m_recorder)
+  if(m_recorder || m_recording)
     return true;
 
   return false;
@@ -606,22 +568,37 @@ bool CCMythFile::IsRecording()
 
 bool CCMythFile::Record(bool bOnOff)
 {
-  if(!m_recorder || !m_database)
-    return false;
-
-  int ret;
-  if(bOnOff)
-    ret = m_dll->livetv_keep_recording(m_recorder, m_database, 1);
-  else
-    ret = m_dll->livetv_keep_recording(m_recorder, m_database, 0);
-
-  if(ret < 0)
+  if(m_recorder)
   {
-    CLog::Log(LOGERROR, "%s - failed to turn on recording", __FUNCTION__);
-    return false;
-  }
+    if(!m_database)
+      return false;
 
-  m_recording = bOnOff;
-  return true;
+    int ret;
+    if(bOnOff)
+      ret = m_dll->livetv_keep_recording(m_recorder, m_database, 1);
+    else
+      ret = m_dll->livetv_keep_recording(m_recorder, m_database, 0);
+
+    if(ret < 0)
+    {
+      CLog::Log(LOGERROR, "%s - failed to turn on recording", __FUNCTION__);
+      return false;
+    }
+
+    m_recording = bOnOff;
+    return true;
+  }
+  else
+  {
+    if(m_recording)
+    {
+      if(m_dll->proginfo_stop_recording(m_control, m_program) < 0)
+        return false;
+
+      m_recording = false;
+      return true;
+    }
+  }
+  return false;
 }
 
