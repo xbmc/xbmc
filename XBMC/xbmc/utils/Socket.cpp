@@ -28,7 +28,7 @@
 using namespace SOCKETS;
 using namespace std;
 
-#ifdef _XBOX
+#if defined (_XBOX) || defined (_WIN32)
 #define close closesocket
 #endif
 
@@ -52,7 +52,7 @@ bool CPosixUDPSocket::Bind(CAddress& addr, int port, int range)
   }
 
   // make sure we can reuse the address
-#ifdef _XBOX
+#if defined (_XBOX) || defined (_WIN32)
   const char yes=1;
 #else
   int yes = 1;
@@ -128,10 +128,7 @@ int CPosixUDPSocket::SendTo(const CAddress& addr, const int buffersize,
 
 CUDPSocket* CSocketFactory::CreateUDPSocket()
 {
-#if defined(_LINUX) || defined (_XBOX)
   return new CPosixUDPSocket();
-#endif
-  return NULL;
 }
 
 /**********************************************************************/

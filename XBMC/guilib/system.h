@@ -199,6 +199,7 @@
 #define HAS_DVD_DRIVE
 #define HAS_VISUALISATION
 #define HAS_CCXSTREAM
+#define HAS_EVENT_SERVER
 
 #undef HAS_SHOUTCAST
 #undef HAS_SDL_AUDIO   // use dsound for audio on win32
