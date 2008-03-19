@@ -17,9 +17,11 @@ public:
 
   void clear();
 
-  void utf8ToUTF16(const CStdStringA& utf8String, CStdStringW &utf16String, bool bVisualBiDiFlip=true);
+  void utf8ToW(const CStdStringA& utf8String, CStdStringW &utf16String, bool bVisualBiDiFlip=true);
 
-  void subtitleCharsetToUTF16(const CStdStringA& strSource, CStdStringW& strDest);
+  void utf16LEtoW(const char* utf16String, CStdStringW &wString);
+
+  void subtitleCharsetToW(const CStdStringA& strSource, CStdStringW& strDest);
 
   void utf8ToStringCharset(const CStdStringA& strSource, CStdStringA& strDest);
 
@@ -37,7 +39,7 @@ public:
 
   void ucs2CharsetToStringCharset(const CStdStringW& strSource, CStdStringA& strDest, bool swap = false);
 
-  void utf16toUTF8(const CStdStringW& strSource, CStdStringA &strDest);
+  void wToUTF8(const CStdStringW& strSource, CStdStringA &strDest);
   void utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA &strDest);
 
   void utf32ToStringCharset(const unsigned long* strSource, CStdStringA& strDest);
@@ -45,7 +47,7 @@ public:
   std::vector<CStdString> getCharsetLabels();
   CStdString& getCharsetLabelByName(const CStdString& charsetName);
   CStdString& getCharsetNameByLabel(const CStdString& charsetLabel);
-  boolean isBidiCharset(const CStdString& charset);
+  bool isBidiCharset(const CStdString& charset);
 
   void logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, FriBidiCharSet fribidiCharset, FriBidiCharType base = FRIBIDI_TYPE_LTR);
   void logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, CStdStringA& charset, FriBidiCharType base = FRIBIDI_TYPE_LTR);
@@ -57,14 +59,15 @@ private:
   std::vector<FriBidiCharSet> m_vecBidiCharsets;
 
   iconv_t m_iconvStringCharsetToFontCharset;
-  iconv_t m_iconvSubtitleCharsetToUtf16;
+  iconv_t m_iconvSubtitleCharsetToW;
   iconv_t m_iconvUtf8ToStringCharset;
   iconv_t m_iconvStringCharsetToUtf8;
   iconv_t m_iconvUcs2CharsetToStringCharset;
   iconv_t m_iconvUtf32ToStringCharset;
-  iconv_t m_iconvUtf16toUtf8;
+  iconv_t m_iconvWtoUtf8;
+  iconv_t m_iconvUtf16LEtoW;
   iconv_t m_iconvUtf16BEtoUtf8;
-  iconv_t m_iconvUtf8toUtf16;
+  iconv_t m_iconvUtf8toW;
 
   FriBidiCharSet m_stringFribidiCharset;
 
