@@ -4,8 +4,9 @@
 #include "../xbmc/Settings.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 #include "../xbmc/Util.h"
-#ifdef HAS_SDL
+#if defined(HAS_SDL_OPENGL)
 #include <GL/glew.h>
+#elif defined(HAS_SDL_2D)
 #include <SDL/SDL_rotozoom.h>
 #endif
 
