@@ -226,7 +226,7 @@
 #include "linux/LinuxFileSystem.h"
 #endif
 #ifdef HAS_EVENT_SERVER
-#include "EventServer.h"
+#include "utils/EventServer.h"
 #endif
 
 #include "cores/dlgcache.h"
