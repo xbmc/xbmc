@@ -132,8 +132,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   CStdString strCategory = strTest.Left(strTest.Find("."));
 
   // translate conditions...
-  if (strTest.Equals("false") || strTest.Equals("no") || strTest.Equals("off") || strTest.Equals("disabled")) ret = SYSTEM_ALWAYS_FALSE;
-  else if (strTest.Equals("true") || strTest.Equals("yes") || strTest.Equals("on") || strTest.Equals("enabled")) ret = SYSTEM_ALWAYS_TRUE;
+  if (strTest.Equals("false") || strTest.Equals("no") || strTest.Equals("off")) ret = SYSTEM_ALWAYS_FALSE;
+  else if (strTest.Equals("true") || strTest.Equals("yes") || strTest.Equals("on")) ret = SYSTEM_ALWAYS_TRUE;
   if (strCategory.Equals("player"))
   {
     if (strTest.Equals("player.hasmedia")) ret = PLAYER_HAS_MEDIA;
