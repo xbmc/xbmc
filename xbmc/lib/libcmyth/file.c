@@ -483,6 +483,137 @@ cmyth_file_seek(cmyth_file_t file, long long offset, int whence)
 	return ret;
 }
 
+/*
+ * cmyth_file_read(cmyth_recorder_t rec, char *buf, unsigned long len)
+ * 
+ * Scope: PUBLIC
+ *
+ * Description
+ *
+ * Request and read a block of data from backend
+ *
+ * Return Value:
+ *
+ * Sucess: number of bytes transfered
+ *
+ * Failure: an int containing -errno
+ */
+int cmyth_file_read(cmyth_file_t file, char *buf, unsigned long len)
+{
+	int err, count;
+	int ret, req, nfds;
+	char *end, *cur;
+	char msg[256];
+	struct timeval tv;
+	fd_set fds;
+
+	if (!file || !file->file_data)
+	{
+		cmyth_dbg (CMYTH_DBG_ERROR, "%s: no connection\n",
+		           __FUNCTION__);
+		return -EINVAL;
+	}
+
+	pthread_mutex_lock (&mutex);
+
+	snprintf (msg, sizeof (msg),
+	          "QUERY_FILETRANSFER %ld[]:[]REQUEST_BLOCK[]:[]%ld",
+	          file->file_id, len);
+
+	if ( (err = cmyth_send_message (file->file_control, msg) ) < 0)
+	{
+		cmyth_dbg (CMYTH_DBG_ERROR,
+		           "%s: cmyth_send_message() failed (%d)\n",
+		           __FUNCTION__, err);
+		ret = err;
+		goto out;
+	}
+
+	nfds = 0;
+	req = 1;
+	cur = buf;
+	end = buf+len;
+
+	while (cur < end || req)
+	{
+		tv.tv_sec = 20;
+		tv.tv_usec = 0;
+		FD_ZERO (&fds);
+		if(req) {
+			if((int)file->file_control->conn_fd > nfds)
+				nfds = (int)file->file_control->conn_fd;
+			FD_SET (file->file_control->conn_fd, &fds);
+		}
+		if((int)file->file_data->conn_fd > nfds)
+			nfds = (int)file->file_data->conn_fd;
+		FD_SET (file->file_data->conn_fd, &fds);
+
+		if ((ret = select (nfds+1, &fds, NULL, NULL,&tv)) < 0)
+		{
+			cmyth_dbg (CMYTH_DBG_ERROR,
+			           "%s: select(() failed (%d)\n",
+			           __FUNCTION__, ret);
+			goto out;
+		}
+
+		if (ret == 0)
+		{
+			file->file_control->conn_hang = 1;
+			file->file_data->conn_hang = 1;
+			ret = -ETIMEDOUT;
+			goto out;
+		}
+
+		/* check control connection */
+		if (FD_ISSET(file->file_control->conn_fd, &fds))
+		{
+
+			if ((count=cmyth_rcv_length (file->file_control)) < 0)
+			{
+				cmyth_dbg (CMYTH_DBG_ERROR,
+				           "%s: cmyth_rcv_length() failed (%d)\n",
+				           __FUNCTION__, count);
+				ret = count;
+				goto out;
+			}
+
+			if ((ret=cmyth_rcv_ulong (file->file_control, &err, &len, count))< 0)
+			{
+				cmyth_dbg (CMYTH_DBG_ERROR,
+				           "%s: cmyth_rcv_long() failed (%d)\n",
+				           __FUNCTION__, ret);
+				ret = err;
+				goto out;
+			}
+			file->file_pos += len;
+			if (file->file_pos > file->file_length)
+				file->file_length = file->file_pos;
+
+			req = 0;
+			end = buf+len;
+		}
+
+		/* check data connection */
+		if (FD_ISSET(file->file_data->conn_fd, &fds))
+		{
+
+			if ((ret = recv (file->file_data->conn_fd, cur, end-cur, 0)) < 0)
+			{
+				cmyth_dbg (CMYTH_DBG_ERROR,
+				           "%s: recv() failed (%d)\n",
+				           __FUNCTION__, ret);
+				goto out;
+			}
+			cur += ret;
+		}
+	}
+
+	ret = end - buf;
+out:
+	pthread_mutex_unlock (&mutex);
+	return ret;
+}
+
 #ifdef _MSC_VER
 
 struct errentry {
