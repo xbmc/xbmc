@@ -150,9 +150,9 @@ void CGUILargeImage::Render()
   CGUIImage::Render();
 }
 
-void CGUILargeImage::SetAspectRatio(GUIIMAGE_ASPECT_RATIO ratio, DWORD align)
+void CGUILargeImage::SetAspectRatio(const CAspectRatio &aspect)
 {
-  CGUIImage::SetAspectRatio(ratio, align);
-  m_fallbackImage.SetAspectRatio(ratio, align);
+  CGUIImage::SetAspectRatio(aspect);
+  m_fallbackImage.SetAspectRatio(aspect);
 }
 
