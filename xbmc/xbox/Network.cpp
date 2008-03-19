@@ -548,6 +548,7 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
       g_application.StartUPnP();
 #endif
       CScrobbler::GetInstance()->Init();
+      g_application.StartEventServer();
     }
     break;
     case SERVICES_DOWN:
@@ -569,6 +570,7 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
       g_application.StopUPnP();
 #endif
       CScrobbler::GetInstance()->Term();
+      g_application.StopEventServer();
       // smb.Deinit(); if any file is open over samba this will break.
     }
     break;
