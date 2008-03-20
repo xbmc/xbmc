@@ -62,23 +62,6 @@ static inline void* realloc_simple(void *ptr, size_t size)
     return ptr2;
 }
 
-
-/* small dummy class to be able to get headers simply */
-class CDummyHeaders : public IHttpHeaderCallback
-{
-public:
-  CDummyHeaders(CHttpHeader *headers)
-  {
-    m_headers = headers;
-  }
-
-  virtual void ParseHeaderData(CStdString strData)
-  {
-    m_headers->Parse(strData);
-  }
-  CHttpHeader *m_headers;
-};
-
 size_t CFileCurl::HeaderCallback(void *ptr, size_t size, size_t nmemb)
 {
   // libcurl doc says that this info is not always \0 terminated
@@ -92,8 +75,6 @@ size_t CFileCurl::HeaderCallback(void *ptr, size_t size, size_t nmemb)
     strData[iSize] = 0;
   }
   else strData = strdup((char*)ptr);
-  
-  if (m_pHeaderCallback) m_pHeaderCallback->ParseHeaderData(strData);
   
   m_httpheader.Parse(strData);
 
@@ -167,7 +148,6 @@ CFileCurl::CFileCurl()
   m_useOldHttpVersion = false;
   m_overflowBuffer = NULL;
   m_overflowSize = 0;
-  m_pHeaderCallback = NULL;
   m_bufferSize = BUFFER_SIZE;
   m_timeout = 0;
   m_ftpauth = "";
@@ -896,12 +876,12 @@ bool CFileCurl::GetHttpHeader(const CURL &url, CHttpHeader &headers)
   try
   {
     CFileCurl file;
-    CDummyHeaders callback(&headers);
-
-    file.SetHttpHeaderCallback(&callback);
-    
-    /* calling stat should give us all needed data */
-    return file.Stat(url, NULL) == 0;
+    if(file.Stat(url, NULL) == 0)
+    {
+      headers = file.GetHttpHeader();
+      return true;
+    }
+    return false;
   }
   catch(...)
   {
