@@ -808,7 +808,6 @@ http_seek( stream_t *stream, off_t pos ) {
 	int fd;
 	if( stream==NULL ) return 0;
 
-	if( stream->fd>0 ) closesocket(stream->fd); // need to reconnect to seek in http-stream
 	fd = http_send_request( stream->streaming_ctrl->url, pos ); 
 	if( fd<0 ) return 0;
 
@@ -833,6 +832,8 @@ http_seek( stream_t *stream, off_t pos ) {
 			closesocket( fd );
 			fd = -1;
 	}
+
+	if( stream->fd>0 ) closesocket(stream->fd); // need to reconnect to seek in http-stream
 	stream->fd = fd;
 
 	if( http_hdr ) {

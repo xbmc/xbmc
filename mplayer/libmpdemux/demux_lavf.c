@@ -121,17 +121,23 @@ static offset_t mp_seek(URLContext *h, offset_t pos, int whence){
     mp_msg(MSGT_HEADER,MSGL_DBG2,"mp_seek(%p, %d, %d)\n", h, (int)pos, whence);
     if(whence == SEEK_CUR)
         pos +=stream_tell(stream);
-    else if(whence == SEEK_END)
+    else if(whence == SEEK_END && stream->end_pos > 0)
         pos += stream->end_pos;
-    else if(whence != SEEK_SET)
+    else if(whence == SEEK_SET)
+        pos += stream->start_pos;
+    else if(whence == AVSEEK_SIZE && stream->end_pos > 0)
+        return stream->end_pos - stream->start_pos;
+    else
         return -1;
 
+    if(pos<0)
+        return -1;
     if(pos<stream->end_pos && stream->eof)
         stream_reset(stream);
     if(stream_seek(stream, pos)==0)
         return -1;
 
-    return pos;
+    return pos - stream->start_pos;
 }
 
 static int mp_close(URLContext *h){
@@ -204,7 +210,8 @@ int demux_open_lavf(demuxer_t *demuxer){
     url_fopen(&priv->pb, mp_filename, URL_RDONLY);
     
     ((URLContext*)(priv->pb.opaque))->priv_data= demuxer->stream;
-        
+    priv->pb.is_streamed = !demuxer->stream->end_pos;
+
     if(av_open_input_stream(&avfc, &priv->pb, mp_filename, priv->avif, &ap)<0){
         mp_msg(MSGT_HEADER,MSGL_ERR,"LAVF_header: av_open_input_stream() failed\n");
         return 0;
