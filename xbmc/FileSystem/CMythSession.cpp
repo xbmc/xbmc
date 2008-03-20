@@ -187,6 +187,8 @@ CCMythSession::CCMythSession(const CURL& url)
 CCMythSession::~CCMythSession()
 {
   Disconnect();
+  if(m_dll)
+    delete m_dll;
 }
 
 bool CCMythSession::CanSupport(const CURL& url)
