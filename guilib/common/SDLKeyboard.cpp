@@ -98,6 +98,7 @@ void CLowLevelKeyboard::Update(SDL_Event& m_keyEvent)
         else if (m_keyEvent.key.keysym.sym == SDLK_RETURN) m_VKey = 0x0d;
         else if (m_keyEvent.key.keysym.sym == SDLK_ESCAPE) m_VKey = 0x1b;
         else if (m_keyEvent.key.keysym.sym == SDLK_SPACE) m_VKey = 0x20;
+        else if (m_keyEvent.key.keysym.sym == SDLK_MENU) m_VKey = 0x5d;
         else if (m_keyEvent.key.keysym.sym == SDLK_KP0) m_VKey = 0x60;
         else if (m_keyEvent.key.keysym.sym == SDLK_KP1) m_VKey = 0x61;
         else if (m_keyEvent.key.keysym.sym == SDLK_KP2) m_VKey = 0x62;
