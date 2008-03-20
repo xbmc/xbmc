@@ -42,8 +42,6 @@ bool CDVDInputStreamHttp::Open(const char* strFile, const std::string& content)
   // shout protocol is same thing as http, but curl doesn't know what it is
   if( filename.substr(0, 8) == "shout://" )
     filename.replace(0, 8, "http://");
-
-  m_pFile->SetHttpHeaderCallback(this);
   
   // this should go to the demuxer
   m_pFile->SetUserAgent("WinampMPEG/5.09");  
@@ -69,8 +67,6 @@ void CDVDInputStreamHttp::Close()
     delete m_pFile;
   }
 
-  m_httpHeader.Clear();
-  
   CDVDInputStream::Close();
   m_pFile = NULL;
 }
@@ -97,9 +93,10 @@ __int64 CDVDInputStreamHttp::Seek(__int64 offset, int whence)
   return ret;
 }
 
-void CDVDInputStreamHttp::ParseHeaderData(CStdString strData)
+CHttpHeader* CDVDInputStreamHttp::GetHttpHeader() 
 {
-  m_httpHeader.Parse(strData);
+  if (m_pFile) return (CHttpHeader*)&m_pFile->GetHttpHeader();
+  else return NULL;
 }
 
 __int64 CDVDInputStreamHttp::GetLength()

@@ -4,13 +4,6 @@
 #include <map>
 #include "../utils/HttpHeader.h"
 
-class IHttpHeaderCallback
-{
-public:
-  virtual void ParseHeaderData(CStdString strData) = 0;
-  virtual ~IHttpHeaderCallback() { }
-};
-
 namespace XCURL
 {
   typedef void CURL_HANDLE;
@@ -41,7 +34,6 @@ namespace XFILE
       size_t WriteCallback(char *buffer, size_t size, size_t nitems);
       size_t HeaderCallback(void *ptr, size_t size, size_t nmemb);
       
-      void SetHttpHeaderCallback(IHttpHeaderCallback* pCallback) { m_pHeaderCallback = pCallback; }
       void SetUserAgent(CStdString sUserAgent)                   { m_userAgent = sUserAgent; }
       void SetProxy(CStdString &proxy)                           { m_proxy = proxy; }
       void SetCustomRequest(CStdString &request)                 { m_customrequest = request; }
@@ -96,7 +88,6 @@ namespace XFILE
 
       struct XCURL::curl_slist* m_curlAliasList;
       struct XCURL::curl_slist* m_curlHeaderList;
-      IHttpHeaderCallback* m_pHeaderCallback;
       
       typedef std::map<CStdString, CStdString> MAPHTTPHEADERS;
       MAPHTTPHEADERS m_requestheaders;
