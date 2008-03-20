@@ -183,6 +183,9 @@ void CGUIImage::Render()
     CGLTexture* texture = m_vecTextures[m_iCurrentImage];
     glActiveTextureARB(GL_TEXTURE0_ARB);
     texture->LoadToGPU();
+    if (m_diffuseTexture)
+      m_diffuseTexture->LoadToGPU();
+
     glBindTexture(GL_TEXTURE_2D, texture->id);
     glEnable(GL_TEXTURE_2D);
     
@@ -201,7 +204,6 @@ void CGUIImage::Render()
 
     if (m_diffuseTexture)
     {
-      m_diffuseTexture->LoadToGPU();
       glActiveTextureARB(GL_TEXTURE1_ARB);
       glBindTexture(GL_TEXTURE_2D, m_diffuseTexture->id);
       glEnable(GL_TEXTURE_2D);
