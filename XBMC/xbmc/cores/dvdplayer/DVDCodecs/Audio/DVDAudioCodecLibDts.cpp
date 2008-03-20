@@ -271,12 +271,9 @@ int CDVDAudioCodecLibDts::Decode(BYTE* pData, int iSize)
       {
         // Now that we've synced, get the number of channels.
         m_iOutputChannels = GetNrOfChannels(m_iFlags);
-        
-#ifdef __APPLE__
         // If we're not passing through, stay on 2-channel mixdown.
         if (g_audioContext.IsPassthroughActive() == false)
           m_iOutputChannels = 2;
-#endif
       }
     }
     
