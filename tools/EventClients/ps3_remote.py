@@ -18,16 +18,30 @@
 from xbmcclient import *
 from socket import *
 
-import bluetooth
+BLUEZ=0
+
+try:
+    import bluetooth
+    BLUEZ=1
+except:
+    try:
+        import lightblue
+    except:
+        print "ERROR: You need to have either LightBlue or PyBluez installed\n"\
+            "       in order to use this program."
+        print "- PyBluez (Linux / Windows XP) http://org.csail.mit.edu/pybluez/"
+        print "- LightBlue (Mac OS X / Linux) http://lightblue.sourceforge.net/"
+        exit()
+
 import os
 import time
 
 loop_forever = True
 
-host = "127.0.0.1"
-port = 9777
-addr = (host, port)
-sock = socket(AF_INET,SOCK_DGRAM)
+g_host = "127.0.0.1"
+g_port = 9777
+g_addr = (g_host, g_port)
+g_sock = socket(AF_INET,SOCK_DGRAM)
 
 g_keymap = {
     "16": 's' ,#EJECT
@@ -93,11 +107,11 @@ g_keymap = {
 
 def send_key(key):
     packet = PacketBUTTON(map_name="KB", button_name=key)
-    packet.send(sock, addr)
+    packet.send(g_sock, g_addr)
 
 def release_key():
     packet = PacketBUTTON(code=0x01, down=0)
-    packet.send(sock, addr)
+    packet.send(g_sock, g_addr)
 
 def send_message(caption, msg):
     packet = PacketNOTIFICATION(
@@ -105,7 +119,7 @@ def send_message(caption, msg):
         msg,
         ICON_PNG,
         "icons/bluetooth.png")
-    packet.send(sock, addr)
+    packet.send(g_sock, g_addr)
 
 def save_remote_address(addr):
     try:
@@ -127,18 +141,45 @@ def load_remote_address():
         pass
     return None
 
+def bt_create_socket():
+    if BLUEZ:
+        sock = bluetooth.BluetoothSocket(bluetooth.L2CAP)
+    else:
+        sock = lightblue.socket(lightblue.L2CAP)
+    return sock
+
+def bt_discover_devices():
+    if BLUEZ:
+        nearby = bluetooth.discover_devices()
+    else:
+        nearby = lightblue.finddevices()
+    return nearby
+
+def bt_lookup_name(bdaddr):
+    if BLUEZ:
+        bname = bluetooth.lookup_name( bdaddr )
+    else:
+        bname = bdaddr[1]
+    return bname
+
+def bt_lookup_addr(bdaddr):
+    if BLUEZ:
+        return bdaddr
+    else:
+        return bdaddr[0]
+
 while loop_forever is True:
 
     target_name = "BD Remote Control"
     target_address = load_remote_address()
-    remote = bluetooth.BluetoothSocket(bluetooth.L2CAP)
+    remote = bt_create_socket()
 
     target_connected = False
 
     packet = PacketHELO(devicename="PS3 Bluetooth Remote",
                         icon_type=ICON_PNG,
                         icon_file="icons/bluetooth.png")
-    packet.send(sock, addr)
+    packet.send(g_sock, g_addr)
 
     while target_connected is False:
         send_message("Action Required!", "Hold Start+Enter on your remote.")
@@ -148,18 +189,20 @@ while loop_forever is True:
 
         if not target_address:
             try:
-                nearby_devices = bluetooth.discover_devices()
-            except:
+                nearby_devices = bt_discover_devices()
+            except Exception, e:
                 print "Error performing bluetooth discovery"
+                print str(e)
                 send_message("Error", "Unable to find devices.")
                 time.sleep(5)
                 continue
 
             for bdaddr in nearby_devices:
-                bname = bluetooth.lookup_name( bdaddr )
-                print "%s (%s) in range" % (bname,bdaddr)
+                bname = bt_lookup_name( bdaddr )
+                addr = bt_lookup_addr ( bdaddr )
+                print "%s (%s) in range" % (bname,addr)
                 if target_name == bname:
-                    target_address = bdaddr
+                    target_address = addr
                     break
 
         if target_address is not None:
@@ -177,7 +220,7 @@ while loop_forever is True:
                              "Your remote was successfully paired and is ready to be used.")
             except:
                 del remote
-                remote = bluetooth.BluetoothSocket(bluetooth.L2CAP)
+                remote = bt_create_socket()
                 target_address = None
                 send_message("Pairing Failed",
                              "An error occurred while attempting to pair.")
@@ -195,7 +238,7 @@ while loop_forever is True:
         packet = PacketHELO(devicename="Bluetooth Remote Reconnected",
                             icon_type=ICON_NONE)
         
-        packet.send(sock, addr)
+        packet.send(g_sock, g_addr)
 
         datalen = 0
         try:
