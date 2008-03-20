@@ -1133,7 +1133,7 @@ uint8_t reconstruct_channel_pair(NeAACDecHandle hDecoder, ic_stream *ics1, ic_st
             ltp2->lag = hDecoder->ltp_lag[cpe->paired_channel];
         }
 #endif
-
+ 
         /* long term prediction */
         lt_prediction(ics1, ltp1, spec_coef1, hDecoder->lt_pred_stat[cpe->channel], hDecoder->fb,
             ics1->window_shape, hDecoder->window_shape_prev[cpe->channel],

@@ -49,6 +49,7 @@
 #ifdef SBR_DEC
 #include "sbr_syntax.h"
 #endif
+#include "mp4.h"
 
 
 /* static function declarations */
@@ -149,9 +150,9 @@ int8_t GASpecificConfig(bitfile *ld, mp4AudioSpecificConfig *mp4ASC,
                 DEBUGVAR(1,145,"GASpecificConfig(): aacScalefactorDataResilienceFlag"));
             mp4ASC->aacSpectralDataResilienceFlag = faad_get1bit(ld
                 DEBUGVAR(1,146,"GASpecificConfig(): aacSpectralDataResilienceFlag"));
-
-            /* 1 bit: extensionFlag3 */
         }
+            /* 1 bit: extensionFlag3 */
+        faad_getbits(ld, 1);
     }
 #endif
 
@@ -547,7 +548,7 @@ void raw_data_block(NeAACDecHandle hDecoder, NeAACDecFrameInfo *hInfo,
 
     /* new in corrigendum 14496-3:2002 */
 #ifdef DRM
-    if (hDecoder->object_type != DRM_ER_LC)
+    if (hDecoder->object_type != DRM_ER_LC && !hDecoder->latm_header_present)
 #endif
     {
         faad_byte_align(ld);
@@ -2327,4 +2328,189 @@ static void adts_error_check(adts_header *adts, bitfile *ld)
         adts->crc_check = (uint16_t)faad_getbits(ld, 16
             DEBUGVAR(1,134,"adts_error_check(): crc_check"));
     }
+}
+
+/* LATM parsing functions */
+
+static uint32_t latm_get_value(bitfile *ld)
+{
+    uint32_t l, value;
+    uint8_t bytesForValue;
+
+    bytesForValue = (uint8_t)faad_getbits(ld, 2);
+    value = 0;
+    for(l=0; l<bytesForValue; l++)
+        value = (value << 8) | (uint8_t)faad_getbits(ld, 8);
+
+    return value;
+}
+
+
+static uint32_t latmParsePayload(latm_header *latm, bitfile *ld)
+{
+    //assuming there's only one program with a single layer and 1 subFrame,
+    //allStreamsSametimeframing is set,
+    uint32_t framelen;
+    uint8_t tmp;
+
+    //this should be the payload length field for the current configuration
+    framelen = 0;
+    if(latm->framelen_type==0)
+    {
+        do
+        {
+            tmp = (uint8_t)faad_getbits(ld, 8);
+            framelen += tmp;
+        } while(tmp==0xff);
+    }
+    else if(latm->framelen_type==1)
+        framelen=latm->frameLength;
+
+    return framelen;
+}
+
+
+static uint32_t latmAudioMuxElement(latm_header *latm, bitfile *ld)
+{
+    uint32_t ascLen, asc_bits=0;
+    uint32_t x1, y1, m, n, i;
+    program_config pce;
+    mp4AudioSpecificConfig mp4ASC;
+
+    latm->useSameStreamMux = (uint8_t)faad_getbits(ld, 1);
+    if(!latm->useSameStreamMux)
+    {
+        //parseSameStreamMuxConfig
+        latm->version = (uint8_t) faad_getbits(ld, 1);
+        if(latm->version)
+            latm->versionA = (uint8_t) faad_getbits(ld, 1);
+        if(latm->versionA)
+        {
+            //dunno the payload format for versionA
+            fprintf(stderr, "versionA not supported\n");
+            return 0;
+        }
+        if(latm->version) //read taraBufferFullness
+            latm_get_value(ld);
+        latm->allStreamsSameTimeFraming = (uint8_t)faad_getbits(ld, 1);
+        latm->numSubFrames = (uint8_t)faad_getbits(ld, 6) + 1;
+        latm->numPrograms = (uint8_t)faad_getbits(ld, 4) + 1;
+        latm->numLayers = faad_getbits(ld, 3) + 1;
+        if(latm->numPrograms>1 || !latm->allStreamsSameTimeFraming || latm->numSubFrames>1 || latm->numLayers>1)
+        {
+            fprintf(stderr, "\r\nUnsupported LATM configuration: %d programs/ %d subframes, %d layers, allstreams: %d\n",
+                latm->numPrograms, latm->numSubFrames, latm->numLayers, latm->allStreamsSameTimeFraming);
+            return 0;
+        }
+        ascLen = 0;
+        if(latm->version)
+            ascLen = latm_get_value(ld);
+
+        x1 = faad_get_processed_bits(ld);
+        if(AudioSpecificConfigFromBitfile(ld, &mp4ASC, &pce, 0, 1) < 0)
+            return 0;
+
+        //horrid hack to unread the ASC bits and store them in latm->ASC
+        //the correct code would rely on an ideal faad_ungetbits()
+        y1 = faad_get_processed_bits(ld);
+        if((y1-x1) <= MAX_ASC_BYTES*8)
+        {
+            faad_rewindbits(ld);
+            m = x1;
+            while(m>0)
+            {
+                n = min(m, 32);
+                faad_getbits(ld, n);
+                m -= n;
+            }
+
+            i = 0;
+            m = latm->ASCbits = y1 - x1;
+            while(m > 0)
+            {
+                n = min(m, 8);
+                latm->ASC[i++] = (uint8_t) faad_getbits(ld, n);
+                m -= n;
+            }
+        }
+
+        asc_bits = y1-x1;
+
+        if(ascLen>asc_bits)
+            faad_getbits(ld, ascLen-asc_bits);
+
+        latm->framelen_type = (uint8_t) faad_getbits(ld, 3);
+        if(latm->framelen_type == 0)
+        {
+            latm->frameLength = 0;
+            faad_getbits(ld, 8); //buffer fullness for frame_len_type==0, useless
+        }
+        else if(latm->framelen_type == 1)
+        {
+            latm->frameLength = faad_getbits(ld, 9);
+            if(latm->frameLength==0)
+            {
+                fprintf(stderr, "Invalid frameLength: 0\r\n");
+                return 0;
+            }
+            latm->frameLength = (latm->frameLength+20)*8;
+        }
+        else
+        {   //hellish CELP or HCVX stuff, discard
+            fprintf(stderr, "Unsupported CELP/HCVX framelentype: %d\n", latm->framelen_type);
+            return 0;
+        }
+
+        latm->otherDataLenBits = 0;
+        if(faad_getbits(ld, 1))
+        {   //other data present
+            int esc, tmp;
+            if(latm->version)
+                latm->otherDataLenBits = latm_get_value(ld);
+            else do
+            {
+                esc = faad_getbits(ld, 1);
+                tmp = faad_getbits(ld, 8);
+                latm->otherDataLenBits = (latm->otherDataLenBits << 8) + tmp;
+            } while(esc);
+        }
+        if(faad_getbits(ld, 1)) //crc
+            faad_getbits(ld, 8);
+        latm->inited = 1;
+      }
+
+      //read payload
+      if(latm->inited)
+          return latmParsePayload(latm, ld);
+      else
+          return 0;
+}
+
+
+uint32_t faad_latm_frame(latm_header *latm, bitfile *ld)
+{
+    uint16_t len;
+    uint32_t initpos, endpos, firstpos, ret;
+
+    firstpos = faad_get_processed_bits(ld);
+    while(!ld->error && !ld->no_more_reading)
+    {
+        faad_byte_align(ld);
+        if(faad_showbits(ld, 11) != 0x2B7)
+        {
+            faad_getbits(ld, 8);
+            continue;
+        }
+        faad_getbits(ld, 11);
+        len = faad_getbits(ld, 13);
+        if(!len)
+            continue;
+        initpos = faad_get_processed_bits(ld);
+        ret = latmAudioMuxElement(latm, ld);
+        endpos = faad_get_processed_bits(ld);
+        if(ret>0)
+            return (len*8)-(endpos-initpos);
+        //faad_getbits(ld, initpos-endpos); //go back to initpos, but is valid a getbits(-N) ? 
+    }
+    return -1U;
 }

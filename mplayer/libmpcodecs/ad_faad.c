@@ -50,7 +50,7 @@ static int preinit(sh_audio_t *sh)
 static int aac_probe(unsigned char *buffer, int len)
 {
   int i = 0, pos = 0;
-  mp_msg(MSGT_DECAUDIO,MSGL_V, "\nAAC_PROBE: %d bytes\n", len);
+  mp_msg(MSGT_DECAUDIO,MSGL_DBG2, "\nAAC_PROBE: %d bytes\n", len);
   while(i <= len-4) {
     if(
        ((buffer[i] == 0xff) && ((buffer[i+1] & 0xf6) == 0xf0)) ||
@@ -59,10 +59,10 @@ static int aac_probe(unsigned char *buffer, int len)
       pos = i;
       break;
     }
-    mp_msg(MSGT_DECAUDIO,MSGL_V, "AUDIO PAYLOAD: %x %x %x %x\n", buffer[i], buffer[i+1], buffer[i+2], buffer[i+3]);
+    mp_msg(MSGT_DECAUDIO,MSGL_DBG2, "AUDIO PAYLOAD: %x %x %x %x\n", buffer[i], buffer[i+1], buffer[i+2], buffer[i+3]);
     i++;
   }
-  mp_msg(MSGT_DECAUDIO,MSGL_V, "\nAAC_PROBE: ret %d\n", pos);
+  mp_msg(MSGT_DECAUDIO,MSGL_DBG2, "\nAAC_PROBE: ret %d\n", pos);
   return pos;
 }
 	
@@ -77,7 +77,8 @@ static int init(sh_audio_t *sh)
   // If we don't get the ES descriptor, try manual config
   if(!sh->codecdata_len && sh->wf) {
     sh->codecdata_len = sh->wf->cbSize;
-    sh->codecdata = (char*)(sh->wf+1);
+    sh->codecdata = malloc(sh->codecdata_len);
+    memcpy(sh->codecdata, sh->wf+1, sh->codecdata_len);
     mp_msg(MSGT_DECAUDIO,MSGL_DBG2,"FAAD: codecdata extracted from WAVEFORMATEX\n");
   }
   if(!sh->codecdata_len) {
@@ -209,7 +210,8 @@ static int control(sh_audio_t *sh,int cmd,void* arg, ...)
 #define MAX_FAAD_ERRORS 10
 static int decode_audio(sh_audio_t *sh,unsigned char *buf,int minlen,int maxlen)
 {
-  int j = 0, len = 0, last_dec_len = 1, errors = 0;	      
+  int len = 0, last_dec_len = 1, errors = 0;
+  //  int j = 0;
   void *faac_sample_buffer;
 
   while(len < minlen && last_dec_len > 0 && errors < MAX_FAAD_ERRORS) {
@@ -245,6 +247,10 @@ static int decode_audio(sh_audio_t *sh,unsigned char *buf,int minlen,int maxlen)
     if(faac_finfo.error > 0) {
       mp_msg(MSGT_DECAUDIO,MSGL_WARN,"FAAD: error: %s, trying to resync!\n",
               faacDecGetErrorMessage(faac_finfo.error));
+      if (sh->a_in_buffer_len <= 0) {
+        errors = MAX_FAAD_ERRORS;
+        break;
+      }
       sh->a_in_buffer_len--;
       memmove(sh->a_in_buffer,&sh->a_in_buffer[1],sh->a_in_buffer_len);
       aac_sync(sh);
