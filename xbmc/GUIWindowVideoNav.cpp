@@ -268,7 +268,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
         m_filter.TrimLeft().ToLower();
         OnFilterItems();
       }
-      else if (message.GetParam1()==GUI_MSG_UPDATE_SOURCES)
+      else if (message.GetParam1()==GUI_MSG_UPDATE_SOURCES && IsActive())
       {
         CUtil::DeleteVideoDatabaseDirectoryCache();
         if (!m_vecItems.m_strPath.Equals("?"))
