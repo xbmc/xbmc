@@ -220,7 +220,7 @@ bool PAPlayer::QueueNextFile(const CFileItem &file, bool checkCrossFading)
     codecname = codec->m_CodecName;
 
   // check the number of channels isn't changing (else we can't do crossfading)
-  if (m_crossFading && m_decoder[m_currentDecoder].GetChannels() == channels)
+  if (m_crossFading && m_decoder[m_currentDecoder].GetChannels() == channels && channels <= 2)
   { // crossfading - need to create a new stream
     if (!CreateStream(1 - m_currentStream, channels, samplerate, bitspersample, codecname))
     {
@@ -520,7 +520,7 @@ bool PAPlayer::ProcessPAP()
       m_cachingNextFile = true;
     }
 
-    if (m_crossFading && m_decoder[0].GetChannels() == m_decoder[1].GetChannels())
+    if (m_crossFading && m_decoder[0].GetChannels() == m_decoder[1].GetChannels() && m_decoder[0].GetChannels() <= 2)
     {
       if (((GetTotalTime64() - GetTime() < m_crossFading * 1000L) || (m_forceFadeToNext)) && !m_currentlyCrossFading)
       { // request the next file from our application
@@ -563,7 +563,7 @@ bool PAPlayer::ProcessPAP()
         if (nextstatus == STATUS_QUEUED || nextstatus == STATUS_QUEUING || nextstatus == STATUS_PLAYING)
         { // swap streams
           CLog::Log(LOGDEBUG, "PAPlayer: Swapping tracks %i to %i", m_currentDecoder, 1-m_currentDecoder);
-          if (!m_crossFading || m_decoder[0].GetChannels() != m_decoder[1].GetChannels())
+          if (!m_crossFading || m_decoder[0].GetChannels() != m_decoder[1].GetChannels() || m_decoder[0].GetChannels() > 2)
           { // playing gapless (we use only the 1 output stream in this case)
             int prefixAmount = m_decoder[m_currentDecoder].GetDataSize();
             CLog::Log(LOGDEBUG, "PAPlayer::Prefixing %i samples of old data to new track for gapless playback", prefixAmount);
@@ -580,7 +580,7 @@ bool PAPlayer::ProcessPAP()
               codecname = codec->m_CodecName;
 
             // change of channels - reinitialize our speaker configuration
-            if (channels != channels2)
+            if (channels != channels2 || channels > 2)
             {
               CLog::Log(LOGWARNING, "PAPlayer: Channel number has changed - restarting direct sound");
               FreeStream(m_currentStream);
