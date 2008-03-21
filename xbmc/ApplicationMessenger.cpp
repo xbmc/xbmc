@@ -147,8 +147,10 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         XKUtils::XBOXPowerOff();
 #endif
 #elif !defined(_LINUX)
+#ifndef HAS_SDL
         // send the WM_CLOSE window message
         ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
+#endif
 #else
         // exit the application
         exit(0);
