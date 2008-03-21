@@ -30,6 +30,8 @@ bool CFileCDDA::Open(const CURL& url, bool bBinary /*=true*/)
   // Open the dvd drive
 #ifdef _LINUX
   m_pCdIo = cdio_open(CCdIoSupport::GetDeviceFileName(), DRIVER_UNKNOWN);
+#elif defined(_WIN32PC)
+  m_pCdIo = cdio_open_win32(CCdIoSupport::GetDeviceFileName());
 #else
   m_pCdIo = cdio_open_win32("D:");
 #endif
