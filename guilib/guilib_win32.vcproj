@@ -154,11 +154,13 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
+				GlobalOptimizations="TRUE"
+				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="../tools/win32;../xbmc;freetype2\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;HAS_SDL;_MSVC;NOMINMAX"
 				MinimalRebuild="FALSE"
 				RuntimeLibrary="0"
-				EnableEnhancedInstructionSet="1"
+				EnableEnhancedInstructionSet="2"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="include.h"
 				WarningLevel="3"
@@ -171,6 +173,7 @@
 				AdditionalDependencies="SDL.lib SDL_image.lib opengl32.lib DSound.lib glew32.lib glu32.lib"
 				OutputFile="$(OutDir)/guilib.lib"
 				AdditionalLibraryDirectories=""
+				IgnoreAllDefaultLibraries="FALSE"
 				IgnoreDefaultLibraryNames=""/>
 			<Tool
 				Name="VCMIDLTool"/>
