@@ -130,6 +130,11 @@ HRESULT CIoSupport::MapDriveLetter(char cDriveLetter, const char* szDevice)
 
   return status;
 #else
+#ifdef _WIN32PC
+  // still legacy support (only used in DetectDVDType.cpp)
+  if((strnicmp(szDevice, "Harddisk0",9)==0) || (strnicmp(szDevice, "Cdrom",5)==0))
+    return S_OK;
+#endif
   char upperLetter = toupper(cDriveLetter);
   for (unsigned int i=0; i < NUM_OF_DRIVES; i++)
     if (driveMapping[i].cDriveLetter == upperLetter)
