@@ -173,8 +173,10 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         XKUtils::XBOXPowerCycle();
 #endif
 #elif !defined(_LINUX)
+#ifndef HAS_SDL
         // send the WM_CLOSE window message
         ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
+#endif
 #else
         // exit the application
         // TODO LINUX actually restart
@@ -192,8 +194,10 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         XKUtils::XBOXReset();
 #endif
 #elif !defined(_LINUX)
+#ifndef HAS_SDL
         // send the WM_CLOSE window message
         ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
+#endif
 #else
         // exit the application
         // TODO LINUX actually restart
