@@ -583,15 +583,9 @@ namespace PYXBMC
     if (!PyGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
     CStdString strPath;
-#ifdef _LINUX
     if (strText.Left(3).Equals("P:\\"))
       CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(),strText.Mid(3),strText);
-    strPath = CUtil::TranslatePath(strText);
-#else
-    strPath = strText;
-    if (strPath.Left(3).Equals("P:\\"))
-      CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(),strPath.Mid(3),strPath);
-#endif
+    strPath = _P(strText);
 
     return Py_BuildValue("s", strPath.c_str());
   }
