@@ -643,7 +643,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
         g_application.Stop();
         Sleep(200);
 #ifdef _XBOX
-#ifdef _DEBUG  // don't actually shut off if debug build, it hangs VS for a long time
+#ifndef _DEBUG  // don't actually shut off if debug build, it hangs VS for a long time
         XKUtils::XBOXPowerCycle();
 #endif
 #else
