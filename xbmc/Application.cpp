@@ -770,7 +770,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
         g_application.Stop();
         Sleep(200);
 #ifdef _XBOX
-#ifdef _DEBUG  // don't actually shut off if debug build, it hangs VS for a long time
+#ifndef _DEBUG  // don't actually shut off if debug build, it hangs VS for a long time
         XKUtils::XBOXPowerCycle();
 #endif
 #elif !defined(HAS_SDL)
@@ -4057,78 +4057,10 @@ bool CApplication::AnyButtonDown()
   return false;
 }
 
-void CApplication::Stop()
+HRESULT CApplication::Cleanup()
 {
   try
   {
-    CLog::Log(LOGNOTICE, "Storing total System Uptime");
-    g_stSettings.m_iSystemTimeTotalUp = g_stSettings.m_iSystemTimeTotalUp + (int)(timeGetTime() / 60000);
-
-    // Update the settings information (volume, uptime etc. need saving)
-    if (CFile::Exists(g_settings.GetSettingsFile()))
-    {
-      CLog::Log(LOGNOTICE, "Saving settings");
-      g_settings.Save();
-    }
-    else
-      CLog::Log(LOGNOTICE, "Not saving settings (settings.xml is not present)");
-
-    m_bStop = true;
-    CLog::Log(LOGNOTICE, "stop all");
-
-#ifdef HAS_WEB_SERVER    
-    if (m_pXbmcHttp)
-      getApplicationMessenger().HttpApi("broadcastlevel; ShutDown;1");
-#endif
-
-    StopServices();
-    //Sleep(5000);
-
-    if (m_pPlayer)
-    {
-      CLog::Log(LOGNOTICE, "stop mplayer");
-      delete m_pPlayer;
-      m_pPlayer = NULL;
-    }
-
-    CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    if (musicScan && musicScan->IsDialogRunning())
-      musicScan->StopScanning();
-
-    CGUIDialogVideoScan *videoScan = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-    if (videoScan && videoScan->IsDialogRunning())
-      videoScan->StopScanning();
-
-    CLog::Log(LOGNOTICE, "stop daap clients");
-#if HAS_FILESYTEM_DAAP
-    g_DaapClient.Release();
-#endif
-    //g_lcd->StopThread();
-    m_applicationMessenger.Cleanup();
-
-    CLog::Log(LOGNOTICE, "clean cached files!");
-    g_RarManager.ClearCache(true);
-
-#ifndef __APPLE__
-    // There's a bug unloading skins where it can get stuck in an infinite loop waiting for
-    // some control's animation to finish. For now I'm disabling the unload skin, since 
-    // it works around the hang and actually exits much quicker. In case someone wants to
-    // actually fix the bug, I can reproduce every time like this:
-    //
-    //   1. Start in PM3. Change to xTV. Exit.
-    //   3. Start in xTV. Change to PM3. Exit.
-    //
-    CLog::Log(LOGNOTICE, "unload skin");
-    UnloadSkin();
-#endif
-
-/* Python resource freeing must be done after skin has been unloaded, not before
-   some windows still need it when deinitializing during skin unloading. */
-CLog::Log(LOGNOTICE, "stop python"); 
-#ifdef HAS_PYTHON
-    g_pythonParser.FreeResources();
-#endif
-
     m_gWindowManager.Delete(WINDOW_MUSIC_PLAYLIST);
     m_gWindowManager.Delete(WINDOW_MUSIC_PLAYLIST_EDITOR);
     m_gWindowManager.Delete(WINDOW_MUSIC_FILES);
@@ -4210,10 +4142,7 @@ CLog::Log(LOGNOTICE, "stop python");
     m_gWindowManager.Remove(WINDOW_SETTINGS_MYVIDEOS);
     m_gWindowManager.Remove(WINDOW_SETTINGS_NETWORK);
     m_gWindowManager.Remove(WINDOW_SETTINGS_APPEARANCE);
-
-#ifdef HAS_KAI
     m_gWindowManager.Remove(WINDOW_DIALOG_KAI_TOAST);
-#endif
 
     m_gWindowManager.Remove(WINDOW_DIALOG_SEEK_BAR);
     m_gWindowManager.Remove(WINDOW_DIALOG_VOLUME_BAR);
@@ -4226,15 +4155,12 @@ CLog::Log(LOGNOTICE, "stop python");
     m_perfStats.DumpStats();
 #endif
 
-    // reset our d3d params before we destroy
+  // reset our d3d params before we destroy
 #ifndef HAS_SDL
     g_graphicsContext.SetD3DDevice(NULL);
     g_graphicsContext.SetD3DParameters(NULL);
 #endif
-    CLog::Log(LOGNOTICE, "destroy");
-    Destroy();
 
-#ifdef _DEBUG
     //  Shutdown as much as possible of the
     //  application, to reduce the leaks dumped
     //  to the vc output window before calling
@@ -4253,6 +4179,98 @@ CLog::Log(LOGNOTICE, "stop python");
     CScrobbler::RemoveInstance();
     CLastFmManager::RemoveInstance();
     g_infoManager.Clear();
+    DllLoaderContainer::Clear();
+    g_settings.Clear();
+    g_guiSettings.Clear();
+
+#ifdef _LINUX
+    CXHandle::DumpObjectTracker();
+#endif
+
+#ifdef _CRTDBG_MAP_ALLOC
+    _CrtDumpMemoryLeaks();
+    while(1); // execution ends
+#endif
+    return S_OK;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "Exception in CApplication::Cleanup()");
+    return E_FAIL;
+  }
+}
+
+void CApplication::Stop()
+{
+  try
+  {
+    CLog::Log(LOGNOTICE, "Storing total System Uptime");
+    g_stSettings.m_iSystemTimeTotalUp = g_stSettings.m_iSystemTimeTotalUp + (int)(timeGetTime() / 60000);
+
+    // Update the settings information (volume, uptime etc. need saving)
+    if (CFile::Exists(g_settings.GetSettingsFile()))
+    {
+      CLog::Log(LOGNOTICE, "Saving settings");
+      g_settings.Save();
+    }
+    else
+      CLog::Log(LOGNOTICE, "Not saving settings (settings.xml is not present)");
+
+    m_bStop = true;
+    CLog::Log(LOGNOTICE, "stop all");
+
+#ifdef HAS_WEB_SERVER    
+    if (m_pXbmcHttp)
+      getApplicationMessenger().HttpApi("broadcastlevel; ShutDown;1");
+#endif
+
+    StopServices();
+    //Sleep(5000);
+
+    if (m_pPlayer)
+    {
+      CLog::Log(LOGNOTICE, "stop mplayer");
+      delete m_pPlayer;
+      m_pPlayer = NULL;
+    }
+
+    CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+    if (musicScan && musicScan->IsDialogRunning())
+      musicScan->StopScanning();
+
+    CGUIDialogVideoScan *videoScan = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+    if (videoScan && videoScan->IsDialogRunning())
+      videoScan->StopScanning();
+
+#if HAS_FILESYTEM_DAAP
+    CLog::Log(LOGNOTICE, "stop daap clients");
+    g_DaapClient.Release();
+#endif
+    //g_lcd->StopThread();
+    m_applicationMessenger.Cleanup();
+
+    CLog::Log(LOGNOTICE, "clean cached files!");
+    g_RarManager.ClearCache(true);
+
+#ifndef __APPLE__
+    // There's a bug unloading skins where it can get stuck in an infinite loop waiting for
+    // some control's animation to finish. For now I'm disabling the unload skin, since 
+    // it works around the hang and actually exits much quicker. In case someone wants to
+    // actually fix the bug, I can reproduce every time like this:
+    //
+    //   1. Start in PM3. Change to xTV. Exit.
+    //   3. Start in xTV. Change to PM3. Exit.
+    //
+    CLog::Log(LOGNOTICE, "unload skin");
+    UnloadSkin();
+#endif
+
+/* Python resource freeing must be done after skin has been unloaded, not before
+   some windows still need it when deinitializing during skin unloading. */
+#ifdef HAS_PYTHON
+  CLog::Log(LOGNOTICE, "stop python"); 
+  g_pythonParser.FreeResources();
+#endif
 #ifdef HAS_LCD
     if (g_lcd)
     {
@@ -4261,23 +4279,18 @@ CLog::Log(LOGNOTICE, "stop python");
       g_lcd=NULL;
     }
 #endif
-    DllLoaderContainer::Clear();
-    g_settings.Clear();
-    g_guiSettings.Clear();
-#endif
 
     CLog::Log(LOGNOTICE, "stopped");
   }
   catch (...)
-  {}
+  {
+    CLog::Log(LOGERROR, "Exception in CApplication::Stop()");
+  }
 
-#ifdef _LINUX
-  CXHandle::DumpObjectTracker();
-#endif
-
-#ifdef _CRTDBG_MAP_ALLOC
-    _CrtDumpMemoryLeaks();
-    while(1); // execution ends
+#if defined(_XBOX) || defined (_LINUX)
+  //Both xbox and linux don't finish the run cycle but exit immediately after a call to g_application.Stop()
+  //so they never get to Destroy() in CXBApplicationEx::Run(), we call it here.
+  Destroy();
 #endif
 }
 
