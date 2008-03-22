@@ -7,10 +7,10 @@
   <string id="3">Videos</string>
   <string id="4">TV Guide</string>
   <string id="5">Settings</string>
-  <string id="6">Xbox Media Center SVN</string>
+  <string id="6">XBMC SVN</string>
   <string id="7">Filemanager</string>
   <string id="8">Weather</string>
-  <string id="9">xbox media center</string>
+  <string id="9">xbmc</string>
 
   <string id="11">Monday</string>
   <string id="12">Tuesday</string>
@@ -1003,7 +1003,7 @@
   <string id="13270">Hardware:</string>
   <string id="13271">CPU Usage:</string>
   
-  <string id="13274">Xbox is Connected, but no DNS is available.</string>
+  <string id="13274">Connected, but no DNS is available.</string>
   <string id="13275">Hard Disk</string>
   <string id="13276">DVD-ROM</string>
   <string id="13277">Storage</string>
@@ -1025,8 +1025,8 @@
   <string id="13293">Video &amp; XBE Region:</string>
   <string id="13294">DVD Region:</string>
   <string id="13295">Internet:</string>
-  <string id="13296">Xbox is Connected</string>
-  <string id="13297">Xbox is not Connected. Check Network Settings.</string>
+  <string id="13296">Connected</string>
+  <string id="13297">Not Connected. Check Network Settings.</string>
   <string id="13298">XBLIVE Key:</string>
   <string id="13299">Target Temperature</string>
   <string id="13300">Fan Speed</string>

@@ -927,10 +927,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case SYSTEM_DVD_FIRMWARE:
   case SYSTEM_HDD_TEMPERATURE:
   case SYSTEM_XBOX_MODCHIP:
-  case SYSTEM_XBOX_VERSION:
   case SYSTEM_AV_PACK_INFO:
-  case SYSTEM_VIDEO_ENCODER_INFO:
-  case NETWORK_MAC_ADDRESS:
   case SYSTEM_XBOX_SERIAL:
   case SYSTEM_XBE_REGION:
   case SYSTEM_DVD_ZONE:
@@ -940,8 +937,11 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case SYSTEM_HDD_CYCLECOUNT:
   case SYSTEM_HDD_BOOTDATE:  
   case SYSTEM_MPLAYER_VERSION:
-  case SYSTEM_KERNEL_VERSION:
 #endif
+  case SYSTEM_XBOX_VERSION:
+  case SYSTEM_VIDEO_ENCODER_INFO:
+  case NETWORK_MAC_ADDRESS:
+  case SYSTEM_KERNEL_VERSION:
   case SYSTEM_CPUFREQUENCY:
   case SYSTEM_INTERNET_STATE:
   case SYSTEM_UPTIME:
@@ -969,7 +969,8 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case SYSTEM_CONTROLLER_PORT_4:
     return g_sysinfo.GetUnits(4);
     break;
-#endif  
+#endif
+
   case CONTAINER_FOLDERPATH:
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
@@ -1222,11 +1223,13 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
      return dhcp;
     }
     break;
+#endif    
   case NETWORK_LINK_STATE:
     {
-      DWORD dwnetstatus = XNetGetEthernetLinkStatus();
       CStdString linkStatus = g_localizeStrings.Get(151);
       linkStatus += " ";
+#ifdef HAS_XBOX_HARDWARE      
+      DWORD dwnetstatus = XNetGetEthernetLinkStatus();
       if (dwnetstatus & XNET_ETHERNET_LINK_ACTIVE)
       {
         if (dwnetstatus & XNET_ETHERNET_LINK_100MBPS)
@@ -1240,10 +1243,17 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
       }
       else
         linkStatus += g_localizeStrings.Get(159);
+#else        
+      CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
+      if (iface && iface->IsConnected())      
+        linkStatus += g_localizeStrings.Get(15207);
+      else
+        linkStatus += g_localizeStrings.Get(15208);      
+#endif        
       return linkStatus;
     }
     break;
-#endif
+
   case AUDIOSCROBBLER_CONN_STATE:
   case AUDIOSCROBBLER_SUBMIT_INT:
   case AUDIOSCROBBLER_FILES_CACHED:
@@ -2801,14 +2811,16 @@ string CGUIInfoManager::GetSystemHeatInfo(int info)
   {
     case SYSTEM_CPU_TEMPERATURE:
 #ifdef _LINUX
-      text.Format("%s %s %s", g_localizeStrings.Get(140).c_str(), m_cpuTemp.IsValid()?m_cpuTemp.ToString():"", g_cpuInfo.getCPUModel().c_str());
+      //text.Format("%s %s %s", g_localizeStrings.Get(140).c_str(), m_cpuTemp.IsValid()?m_cpuTemp.ToString():"", g_cpuInfo.getCPUModel().c_str());
+      text.Format("%s %s", g_localizeStrings.Get(140).c_str(), m_cpuTemp.IsValid()?m_cpuTemp.ToString():"?");
 #else
       text.Format("%s %s", g_localizeStrings.Get(140).c_str(), m_cpuTemp.ToString());
 #endif
       break;
     case SYSTEM_GPU_TEMPERATURE:
 #ifdef HAS_SDL_OPENGL
-      text.Format("%s %s %s", g_localizeStrings.Get(141).c_str(), m_gpuTemp.IsValid()?m_gpuTemp.ToString():"", g_graphicsContext.getScreenSurface()->GetGLRenderer().c_str());
+      //text.Format("%s %s %s", g_localizeStrings.Get(141).c_str(), m_gpuTemp.IsValid()?m_gpuTemp.ToString():"", g_graphicsContext.getScreenSurface()->GetGLRenderer().c_str());
+      text.Format("%s %s", g_localizeStrings.Get(141).c_str(), m_gpuTemp.IsValid()?m_gpuTemp.ToString():"?");
 #else
       text.Format("%s %s", g_localizeStrings.Get(141).c_str(), m_gpuTemp.ToString());
 #endif

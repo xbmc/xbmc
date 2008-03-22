@@ -29,6 +29,8 @@
 #include "../utils/log.h"
 #include "../cores/DllLoader/DllLoader.h"
 #include "../utils/HTTP.h"
+#include "Network.h"
+#include "Application.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "../xbox/Undocumented.h"
 #include "../xbox/XKUtils.h"
@@ -81,8 +83,11 @@ void CBackgroundSystemInfoLoader::GetInformation()
   callback->m_systemtotaluptime = callback->GetSystemUpTime(true);
   callback->m_InternetState = callback->GetInternetState();
 #ifdef _LINUX
+  callback->m_videoencoder    = callback->GetVideoEncoder();
+  callback->m_xboxversion     = callback->GetXBVerInfo();
   callback->m_cpufrequency    = callback->GetCPUFreqInfo();
   callback->m_kernelversion   = callback->GetKernelVersion();
+  callback->m_macadress       = callback->GetMACAddress();
   callback->m_bRequestDone = true;
 #endif
 #ifdef HAS_XBOX_HARDWARE
@@ -113,16 +118,8 @@ const char *CSysInfo::TranslateInfo(DWORD dwInfo)
     if (m_bRequestDone) return m_mplayerversion;
     else return CInfoLoader::BusyInfo(dwInfo);
     break;
-  case SYSTEM_XBOX_VERSION:
-    if (m_bRequestDone) return m_xboxversion;
-    else return CInfoLoader::BusyInfo(dwInfo);
-    break;
   case SYSTEM_AV_PACK_INFO:
     if (m_bRequestDone) return m_avpackinfo;
-    else return CInfoLoader::BusyInfo(dwInfo);
-    break;
-  case SYSTEM_VIDEO_ENCODER_INFO:
-    if (m_bRequestDone) return m_videoencoder;
     else return CInfoLoader::BusyInfo(dwInfo);
     break;
   case SYSTEM_XBOX_SERIAL:
@@ -139,10 +136,6 @@ const char *CSysInfo::TranslateInfo(DWORD dwInfo)
     break;
   case SYSTEM_HDD_CYCLECOUNT:
     if (m_bRequestDone) return m_hddcyclecount;
-    else return CInfoLoader::BusyInfo(dwInfo);
-    break;
-  case NETWORK_MAC_ADDRESS:
-    if (m_bRequestDone) return m_macadress;
     else return CInfoLoader::BusyInfo(dwInfo);
     break;
   case SYSTEM_XBE_REGION:
@@ -222,6 +215,18 @@ const char *CSysInfo::TranslateInfo(DWORD dwInfo)
     return m_temp;
   }
 #endif
+  case SYSTEM_VIDEO_ENCODER_INFO:
+    if (m_bRequestDone) return m_videoencoder;
+    else return CInfoLoader::BusyInfo(dwInfo);
+    break;
+  case SYSTEM_XBOX_VERSION:
+    if (m_bRequestDone) return m_xboxversion;
+    else return CInfoLoader::BusyInfo(dwInfo);
+    break;
+  case NETWORK_MAC_ADDRESS:
+    if (m_bRequestDone) return m_macadress;
+    else return CInfoLoader::BusyInfo(dwInfo);
+    break;
   case SYSTEM_KERNEL_VERSION:
     if (m_bRequestDone) return m_kernelversion;
     else return CInfoLoader::BusyInfo(dwInfo);
@@ -919,6 +924,66 @@ double CSysInfo::GetCPUFrequency()
 #endif
 }
 
+CStdString CSysInfo::GetMACAddress()
+{
+  CStdString strMacAddress;
+
+#ifdef HAS_XBOX_HARDWARE
+  char macaddress[20] = "";
+  m_XKEEPROM->GetMACAddressString((LPSTR)&macaddress, ':');
+  strMacAddress.Format("%s: %s", g_localizeStrings.Get(149), macaddress);
+#elif defined(HAS_LINUX_NETWORK)
+  CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
+  if (iface)
+    strMacAddress.Format("%s: %s", g_localizeStrings.Get(149), iface->GetMacAddress());
+#endif
+  return strMacAddress;
+}
+
+CStdString CSysInfo::GetVideoEncoder()
+{
+#ifdef HAS_XBOX_HARDWARE  
+  int iTemp;
+  if (HalReadSMBusValue(XKUtils::SMBDEV_VIDEO_ENCODER_CONNEXANT,XKUtils::VIDEO_ENCODER_CMD_DETECT,0,(LPBYTE)&iTemp)==0)
+  { 
+    CLog::Log(LOGDEBUG, "Video Encoder: CONNEXANT");  
+    return g_localizeStrings.Get(13286)+" "+"CONNEXANT"; 
+  }
+  if (HalReadSMBusValue(XKUtils::SMBDEV_VIDEO_ENCODER_FOCUS,XKUtils::VIDEO_ENCODER_CMD_DETECT,0,(LPBYTE)&iTemp)==0)
+  { 
+    CLog::Log(LOGDEBUG, "Video Encoder: FOCUS");
+    return g_localizeStrings.Get(13286)+" "+"FOCUS";   
+  }
+  if (HalReadSMBusValue(XKUtils::SMBDEV_VIDEO_ENCODER_XCALIBUR,XKUtils::VIDEO_ENCODER_CMD_DETECT,0,(LPBYTE)&iTemp)==0)
+  { 
+    CLog::Log(LOGDEBUG, "Video Encoder: XCALIBUR");   
+    return g_localizeStrings.Get(13286)+" "+ "XCALIBUR";
+  }
+  else 
+  {  
+    CLog::Log(LOGDEBUG, "Video Encoder: UNKNOWN");  
+    return g_localizeStrings.Get(13286)+" "+"UNKNOWN"; 
+  }
+#else
+  return "GPU: " + g_graphicsContext.getScreenSurface()->GetGLRenderer();
+#endif
+}
+
+CStdString CSysInfo::GetXBVerInfo()
+{
+#ifdef HAS_XBOX_HARDWARE
+  CStdString strXBoxVer;
+  CStdString strXBOXVersion;
+  if (GetXBOXVersionDetected(strXBOXVersion))
+    strXBoxVer.Format("%s %s", g_localizeStrings.Get(13288), strXBOXVersion);
+  else 
+    strXBoxVer.Format("%s %s", g_localizeStrings.Get(13288), g_localizeStrings.Get(13205)); // "Unknown"
+  return strXBoxVer;
+#else
+  return "CPU: " + g_cpuInfo.getCPUModel();
+#endif
+}
+
 #ifdef HAS_XBOX_HARDWARE
 double CSysInfo::RDTSC(void)
 {
@@ -1167,31 +1232,6 @@ CStdString CSysInfo::GetAVPackInfo()
   else return g_localizeStrings.Get(13292)+" "+"Unknown";
 }
 
-CStdString CSysInfo::GetVideoEncoder()
-{
-  int iTemp;
-  if (HalReadSMBusValue(XKUtils::SMBDEV_VIDEO_ENCODER_CONNEXANT,XKUtils::VIDEO_ENCODER_CMD_DETECT,0,(LPBYTE)&iTemp)==0)
-  { 
-    CLog::Log(LOGDEBUG, "Video Encoder: CONNEXANT");  
-    return g_localizeStrings.Get(13286)+" "+"CONNEXANT"; 
-  }
-  if (HalReadSMBusValue(XKUtils::SMBDEV_VIDEO_ENCODER_FOCUS,XKUtils::VIDEO_ENCODER_CMD_DETECT,0,(LPBYTE)&iTemp)==0)
-  { 
-    CLog::Log(LOGDEBUG, "Video Encoder: FOCUS");
-    return g_localizeStrings.Get(13286)+" "+"FOCUS";   
-  }
-  if (HalReadSMBusValue(XKUtils::SMBDEV_VIDEO_ENCODER_XCALIBUR,XKUtils::VIDEO_ENCODER_CMD_DETECT,0,(LPBYTE)&iTemp)==0)
-  { 
-    CLog::Log(LOGDEBUG, "Video Encoder: XCALIBUR");   
-    return g_localizeStrings.Get(13286)+" "+ "XCALIBUR";
-  }
-  else 
-  {  
-    CLog::Log(LOGDEBUG, "Video Encoder: UNKNOWN");  
-    return g_localizeStrings.Get(13286)+" "+"UNKNOWN"; 
-  }
-}
-
 CStdString CSysInfo::SmartXXModCHIP()
 {
   // SmartXX ModChip Detection
@@ -1243,17 +1283,6 @@ CStdString CSysInfo::GetMPlayerVersion()
   delete mplayerDll;
   mplayerDll=NULL;
   return strVersion;
-}
-
-CStdString CSysInfo::GetXBVerInfo()
-{
-  CStdString strXBoxVer;
-  CStdString strXBOXVersion;
-  if (GetXBOXVersionDetected(strXBOXVersion))
-    strXBoxVer.Format("%s %s", g_localizeStrings.Get(13288), strXBOXVersion);
-  else 
-    strXBoxVer.Format("%s %s", g_localizeStrings.Get(13288), g_localizeStrings.Get(13205)); // "Unknown"
-  return strXBoxVer;
 }
 
 CStdString CSysInfo::GetUnits(int iFrontPort)
@@ -1325,17 +1354,6 @@ CStdString CSysInfo::GetUnits(int iFrontPort)
     );
 
   return strReturn;
-}
-
-CStdString CSysInfo::GetMACAddress()
-{
-  char macaddress[20] = "";
-
-  m_XKEEPROM->GetMACAddressString((LPSTR)&macaddress, ':');
-
-  CStdString strMacAddress;
-  strMacAddress.Format("%s: %s", g_localizeStrings.Get(149), macaddress);
-  return strMacAddress;
 }
 
 CStdString CSysInfo::GetXBOXSerial(bool bLabel)

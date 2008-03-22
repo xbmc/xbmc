@@ -47,6 +47,8 @@ CCPUInfo::CCPUInfo(void)
   m_fProcTemperature = fopen("/proc/acpi/thermal_zone/THRM/temperature", "r");
   if (m_fProcTemperature == NULL)
     m_fProcTemperature = fopen("/proc/acpi/thermal_zone/THR1/temperature", "r");
+  if (m_fProcTemperature == NULL)
+    m_fProcTemperature = fopen("/proc/acpi/thermal_zone/THM/temperature", "r");
   m_lastUsedPercentage = 0;
 
   FILE* cpuinfo = fopen("/proc/cpuinfo", "r");
