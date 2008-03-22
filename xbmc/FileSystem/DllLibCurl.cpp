@@ -60,10 +60,10 @@ void DllLibCurlGlobal::CheckIdle()
     {
       CLog::Log(LOGINFO, "%s - Closing session to %s://%s\n", __FUNCTION__, it->m_protocol.c_str(), it->m_hostname.c_str());
 
-      if(it->m_easy)
-        easy_cleanup(it->m_easy);
       if(it->m_multi)
         multi_cleanup(it->m_multi);
+      if(it->m_easy)
+        easy_cleanup(it->m_easy);
 
       Unload();
 
@@ -140,18 +140,33 @@ void DllLibCurlGlobal::easy_aquire(const char *protocol, const char *hostname, C
 
 }
 
-void DllLibCurlGlobal::easy_release(CURL_HANDLE* easy_handle, CURLM* multi_handle)
+void DllLibCurlGlobal::easy_release(CURL_HANDLE** easy_handle, CURLM** multi_handle)
 {
   CSingleLock lock(m_critSection);
+
+  CURL_HANDLE* easy = NULL;
+  CURLM*       multi = NULL;
+
+  if(easy_handle) 
+  {
+    easy = *easy_handle;
+    *easy_handle = NULL;
+  }
+
+  if(multi_handle) 
+  {
+    multi = *multi_handle;
+    *multi_handle = NULL;
+  }
 
   VEC_CURLSESSIONS::iterator it;
   for(it = m_sessions.begin(); it != m_sessions.end(); it++)
   {
-    if( it->m_easy == easy_handle && (multi_handle == NULL || it->m_multi == multi_handle) )
+    if( it->m_easy == easy && (multi == NULL || it->m_multi == multi) )
     {
       /* reset session so next caller doesn't reuse options, only connections */
       /* will reset verbose too so it won't print that it closed connections on cleanup*/
-      easy_reset(easy_handle);
+      easy_reset(easy);
       it->m_busy = false;
       it->m_idletimestamp = GetTickCount();
       return;
@@ -176,4 +191,38 @@ CURL_HANDLE* DllLibCurlGlobal::easy_duphandle(CURL_HANDLE* easy_handle)
     }
   }
   return DllLibCurl::easy_duphandle(easy_handle);
+}
+
+void DllLibCurlGlobal::easy_duplicate(CURL_HANDLE* easy, CURLM* multi, CURL_HANDLE** easy_out, CURLM** multi_out)
+{
+  CSingleLock lock(m_critSection);
+
+  if(easy_out && easy)
+    *easy_out = DllLibCurl::easy_duphandle(easy);
+
+  if(multi_out && multi)
+    *multi_out = DllLibCurl::multi_init();
+
+  VEC_CURLSESSIONS::iterator it;
+  for(it = m_sessions.begin(); it != m_sessions.end(); it++)
+  {
+    if( it->m_easy == easy )
+    {
+      SSession session = *it;
+      if(easy_out && easy)
+        session.m_easy = *easy_out;
+      else
+        session.m_easy = NULL;
+
+      if(multi_out && multi)
+        session.m_multi = *multi_out;
+      else
+        session.m_multi = NULL;
+
+      Load();
+      m_sessions.push_back(session);
+      return;
+    }
+  }
+  return;
 }
