@@ -442,7 +442,9 @@ public:
   CStdString GetPicturesThumbFolder() const;
   CStdString GetProgramsThumbFolder() const;
   CStdString GetGameSaveThumbFolder() const;
+#ifdef HAS_KAI
   CStdString GetXLinkKaiThumbFolder() const;
+#endif
   CStdString GetProfilesThumbFolder() const;
   CStdString GetSourcesFile() const;
   CStdString GetSkinFolder() const;
