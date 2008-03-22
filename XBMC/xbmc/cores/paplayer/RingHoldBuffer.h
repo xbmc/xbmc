@@ -405,7 +405,7 @@ public:
         m_iBehindAmount += nBufLen;
         bResult = TRUE;
       }
-      else if ( 0 <= nBufLen && (unsigned int)nBufLen < m_iAheadAmount )
+      else if ( 0 < nBufLen && (unsigned int)nBufLen < m_iAheadAmount )
       { // if we're going forwards...
         // easy case, no wrapping
         if ( m_iReadPtr + (unsigned int)nBufLen < m_nBufSize )
@@ -423,6 +423,9 @@ public:
         m_iBehindAmount += nBufLen;
         bResult = TRUE;
       }
+      else if (nBufLen == 0)
+        bResult = TRUE;
+
     }
     ::LeaveCriticalSection(&m_critSection );
 //    CLog::Log(LOGDEBUG, "RingHoldBuffer::SkipBytes Done %i bytes, ReadPos=%i, BehindAmount=%i, AheadAmount=%i, return=%s", nBufLen, m_iReadPtr, m_iBehindAmount, m_iAheadAmount, bResult ? "true" : "false");
