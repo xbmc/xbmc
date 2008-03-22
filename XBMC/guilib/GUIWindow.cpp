@@ -630,7 +630,7 @@ void CGUIWindow::OnDeinitWindow(int nextWindowID)
   if (nextWindowID != WINDOW_FULLSCREEN_VIDEO)
   {
     // Dialog animations are handled in Close() rather than here
-    if (HasAnimation(ANIM_TYPE_WINDOW_CLOSE) && !IsDialog())
+    if (HasAnimation(ANIM_TYPE_WINDOW_CLOSE) && !IsDialog() && IsActive())
     {
       // Perform the window out effect
       QueueAnimation(ANIM_TYPE_WINDOW_CLOSE);
