@@ -4252,18 +4252,8 @@ void CApplication::Stop()
     CLog::Log(LOGNOTICE, "clean cached files!");
     g_RarManager.ClearCache(true);
 
-#ifndef __APPLE__
-    // There's a bug unloading skins where it can get stuck in an infinite loop waiting for
-    // some control's animation to finish. For now I'm disabling the unload skin, since 
-    // it works around the hang and actually exits much quicker. In case someone wants to
-    // actually fix the bug, I can reproduce every time like this:
-    //
-    //   1. Start in PM3. Change to xTV. Exit.
-    //   3. Start in xTV. Change to PM3. Exit.
-    //
     CLog::Log(LOGNOTICE, "unload skin");
     UnloadSkin();
-#endif
 
 /* Python resource freeing must be done after skin has been unloaded, not before
    some windows still need it when deinitializing during skin unloading. */
