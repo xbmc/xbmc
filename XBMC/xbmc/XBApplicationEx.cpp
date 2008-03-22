@@ -118,6 +118,7 @@ HRESULT CXBApplicationEx::Create(HWND hWnd)
 //-----------------------------------------------------------------------------
 VOID CXBApplicationEx::Destroy()
 {
+  CLog::Log(LOGNOTICE, "destroy");
   // Perform app-specific cleanup
   Cleanup();
 
@@ -272,6 +273,8 @@ INT CXBApplicationEx::Run()
 #endif
 
   }
+  Destroy();
+
   CLog::Log(LOGNOTICE, "application stopped..." );
   return 0;
 }
@@ -335,7 +338,7 @@ void CXBApplicationEx::ReadInput()
     switch(event.type)
     {
     case SDL_QUIT:
-      g_application.getApplicationMessenger().Shutdown();
+      if (!g_application.m_bStop) g_application.getApplicationMessenger().Shutdown();
       break;
       
     case SDL_VIDEORESIZE:
