@@ -178,28 +178,51 @@ bool CCMythDirectory::GetChannels(const CStdString& base, CFileItemList &items)
   if(!control)
     return false;
 
-  for(int i=0;i<16;i++)
+  std::vector<cmyth_proginfo_t> channels;
+  for(unsigned i=0;i<16;i++)
   {
-    if((m_recorder = m_dll->conn_get_recorder_from_num(control, i)))
-      break;
+    cmyth_recorder_t recorder = m_dll->conn_get_recorder_from_num(control, i);
+    if(!recorder)
+      continue;
+
+    cmyth_proginfo_t program;
+    program = m_dll->recorder_get_cur_proginfo(recorder);
+    program = m_dll->recorder_get_next_proginfo(recorder, program, BROWSE_DIRECTION_UP);
+    if(!program) {
+      m_dll->ref_release(m_recorder);
+      continue;
+    }
+
+    long startchan = m_dll->proginfo_chan_id(program);
+    long currchan  = -1;
+    while(startchan != currchan)
+    {
+      unsigned j;
+      for(j=0;j<channels.size();j++)
+      {
+        if(m_dll->proginfo_compare(program, channels[i]) == 0)
+          break;
+      }
+
+      if(j == channels.size())
+        channels.push_back(program);
+      else
+        m_dll->ref_release(program);
+
+      program = m_dll->recorder_get_next_proginfo(recorder, program, BROWSE_DIRECTION_UP);
+      if(!program)
+        break;
+
+      currchan = m_dll->proginfo_chan_id(program);
+    }
+    m_dll->ref_release(recorder);
   }
-  if(!m_recorder)
-  {
-    CLog::Log(LOGERROR, "%s - unable to get recorder", __FUNCTION__);
-    return false;
-  }
+
   CURL url(base);
 
-  cmyth_proginfo_t program;
-  program = m_dll->recorder_get_cur_proginfo(m_recorder);
-  program = m_dll->recorder_get_next_proginfo(m_recorder, program, BROWSE_DIRECTION_UP);
-  if(!program)
-    return false;
-
-  long startchan = m_dll->proginfo_chan_id(program);
-  long currchan  = -1;
-  while(startchan != currchan)
+  for(unsigned i=0;i<channels.size();i++)
   {
+    cmyth_proginfo_t program = channels[i];
     CStdString num, progname, channame, icon, sign;
 
     num      = GetValue(m_dll->proginfo_chanstr (program));
@@ -223,11 +246,7 @@ bool CCMythDirectory::GetChannels(const CStdString& base, CFileItemList &items)
       item->GetVideoInfoTag()->m_strShowTitle = " ";
 
     items.Add(item);
-
-    program = m_dll->recorder_get_next_proginfo(m_recorder, program, BROWSE_DIRECTION_UP);
-    if(!program)
-      break;
-    currchan = m_dll->proginfo_chan_id(program);
+    m_dll->ref_release(program);
   }
 
   if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
