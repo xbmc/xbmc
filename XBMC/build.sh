@@ -405,9 +405,9 @@ cleanup() {
     printf "\r Cleaning %-60.60s" $1
     if (( VERBOSE ))
     then
-      rm -vrf $I/src $I/.svn $I/*.DLL $I/*.dll
+      rm -vrf $I/src $I/.svn $I/*.DLL $I/*.dll $I/*osx.so
     else
-      rm -rf $I/src $I/.svn $I/*.DLL $I/*.dll &> /dev/null
+      rm -rf $I/src $I/.svn $I/*.DLL $I/*.dll $I/*osx.so &> /dev/null
     fi
     for I in $1/* #$(ls -d $1/* 2> /dev/null)
     do
@@ -463,11 +463,6 @@ fix() {
   echo "  Renaming Splash.png to splash.png."
   mv "${BUILDDIR}/media/Splash.png" "${BUILDDIR}/media/splash.png"
 
-  _IFS=$IFS
-  IFS=$'\t\n'
-  cleanup "$BUILDDIR"
-  printf "\r Cleaning %-60.60s\n" "complete!"
-  IFS=$_IFS
   if [[ -e "$BACKUPDIR" ]]
   then
     echo " Merging 3rd party files from backup."
@@ -479,6 +474,11 @@ fix() {
     done
     echo " Merge complete!"
   fi
+  _IFS=$IFS
+  IFS=$'\t\n'
+  cleanup "$BUILDDIR"
+  printf "\r Cleaning %-60.60s\n" "complete!"
+  IFS=$_IFS
 }
 
 SOURCEDIR=${0%/*}
