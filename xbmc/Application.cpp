@@ -43,7 +43,9 @@
 #include "GUILabelControl.h"  // needed for CInfoLabel
 #include "guiImage.h"
 #endif
+#ifdef HAS_KAI
 #include "utils/KaiClient.h"
+#endif
 #ifdef HAS_XBOX_HARDWARE
 #include "utils/MemoryUnitManager.h"
 #include "utils/FanController.h"
@@ -1555,7 +1557,9 @@ HRESULT CApplication::Initialize()
   CreateDirectory(g_settings.GetBookmarksThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetProgramsThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetGameSaveThumbFolder().c_str(), NULL);
+#ifdef HAS_KAI
   CreateDirectory(g_settings.GetXLinkKaiThumbFolder().c_str(), NULL);
+#endif
   CreateDirectory(g_settings.GetPicturesThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetProfilesThumbFolder().c_str(),NULL);
   CLog::Log(LOGINFO, "  thumbnails folder:%s", g_settings.GetThumbnailsFolder().c_str());
