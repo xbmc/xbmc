@@ -258,9 +258,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.hasnetwork")) ret = SYSTEM_ETHERNET_LINK_ACTIVE;
     else if (strTest.Equals("system.fps")) ret = SYSTEM_FPS;
     else if (strTest.Equals("system.kaiconnected")) ret = SYSTEM_KAI_CONNECTED;
-#ifdef HAS_KAI
     else if (strTest.Equals("system.kaienabled")) ret = SYSTEM_KAI_ENABLED;
-#endif
     else if (strTest.Equals("system.hasmediadvd")) ret = SYSTEM_MEDIA_DVD;
     else if (strTest.Equals("system.dvdready")) ret = SYSTEM_DVDREADY;
     else if (strTest.Equals("system.trayopen")) ret = SYSTEM_TRAYOPEN;
@@ -1243,7 +1241,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
       }
       else
         linkStatus += g_localizeStrings.Get(159);
-#else        
+#elif defined(HAS_LINUX_NETWORK)
       CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
       if (iface && iface->IsConnected())      
         linkStatus += g_localizeStrings.Get(15207);
