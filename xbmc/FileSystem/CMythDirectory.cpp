@@ -206,8 +206,6 @@ bool CCMythDirectory::GetChannels(const CStdString& base, CFileItemList &items)
 
       if(j == channels.size())
         channels.push_back(program);
-      else
-        m_dll->ref_release(program);
 
       program = m_dll->recorder_get_next_proginfo(recorder, program, BROWSE_DIRECTION_UP);
       if(!program)
