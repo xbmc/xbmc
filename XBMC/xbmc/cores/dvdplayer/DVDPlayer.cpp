@@ -2249,7 +2249,7 @@ bool CDVDPlayer::GetCurrentSubtitle(CStdString& strSubtitle)
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
     return false;
 
-  return m_dvdPlayerSubtitle.GetCurrentSubtitle(strSubtitle, pts);
+  return m_dvdPlayerSubtitle.GetCurrentSubtitle(strSubtitle, pts - m_dvdPlayerVideo.GetSubtitleDelay());
 }
 
 CStdString CDVDPlayer::GetPlayerState()
