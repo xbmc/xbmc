@@ -4,6 +4,8 @@
 #include "../DVDCodecs/Overlay/DVDOverlay.h"
 #include "DVDSubtitleStream.h"
 
+class CDVDStreamInfo;
+
 class CDVDSubtitleParser
 {
 public:
@@ -17,8 +19,8 @@ public:
   {
   }
   
-  virtual bool Init() = 0;
-  virtual void DeInit() = 0;
+  virtual bool Open(CDVDStreamInfo &hints) = 0;
+  virtual void Dispose() = 0;
   virtual void Reset() = 0;
   
   virtual CDVDOverlay* Parse(double iPts) = 0;
