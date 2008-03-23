@@ -685,10 +685,8 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
   }
 
   __int64 seek_pts = (__int64)time * (AV_TIME_BASE / 1000);
-  if (m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE && seek_pts < m_pFormatContext->start_time)
+  if (m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE)
     seek_pts += m_pFormatContext->start_time;
-  else
-    seek_pts  = m_pFormatContext->start_time;
 
   Lock();
   int ret = m_dllAvFormat.av_seek_frame(m_pFormatContext, -1, seek_pts, backwords ? AVSEEK_FLAG_BACKWARD : 0);
