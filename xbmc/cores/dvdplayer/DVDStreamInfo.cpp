@@ -58,7 +58,7 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, bool withextradata)
 
   // VIDEO
   if( fpsscale != right.fpsscale
-  ||  fpsrate != right.fpsscale
+  ||  fpsrate != right.fpsrate
   ||  height != right.height
   ||  width != right.width 
   ||  aspect != right.aspect) return false;
@@ -105,7 +105,7 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
 
   // VIDEO
   fpsscale = right.fpsscale;
-  fpsrate = right.fpsscale;
+  fpsrate = right.fpsrate;
   height = right.height;
   width = right.width;
   aspect = right.aspect;

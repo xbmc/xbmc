@@ -4,11 +4,11 @@
 #include "DVDSubtitleParser.h"
 #include "DVDSubtitleLineCollection.h"
 
-class CDVDSubtitleParserSubrip : public CDVDSubtitleParser
+class CDVDSubtitleParserMicroDVD : public CDVDSubtitleParser
 {
 public:
-  CDVDSubtitleParserSubrip(CDVDSubtitleStream* pStream, const std::string& strFile);
-  virtual ~CDVDSubtitleParserSubrip();
+  CDVDSubtitleParserMicroDVD(CDVDSubtitleStream* pStream, const std::string& strFile);
+  virtual ~CDVDSubtitleParserMicroDVD();
   
   virtual bool Open(CDVDStreamInfo &hints);
   virtual void Dispose();
@@ -18,6 +18,6 @@ public:
 
 private:
   int ParseFile();
-  
+  double m_framerate;
   CDVDSubtitleLineCollection m_collection;
 };
