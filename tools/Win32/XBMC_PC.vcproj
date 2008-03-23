@@ -766,6 +766,12 @@
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParser.h">
 					</File>
 					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserMicroDVD.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserMicroDVD.h">
+					</File>
+					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserSubrip.cpp">
 					</File>
 					<File
