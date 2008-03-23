@@ -9,15 +9,14 @@ using namespace std;
 CDVDSubtitleParserSubrip::CDVDSubtitleParserSubrip(CDVDSubtitleStream* pStream, const string& strFile)
     : CDVDSubtitleParser(pStream, strFile)
 {
-
 }
 
 CDVDSubtitleParserSubrip::~CDVDSubtitleParserSubrip()
 {
-  DeInit();
+  Dispose();
 }
 
-bool CDVDSubtitleParserSubrip::Init()
+bool CDVDSubtitleParserSubrip::Open(CDVDStreamInfo &hints)
 {
   if (m_pStream->Open(m_strFileName))
   {
@@ -30,7 +29,7 @@ bool CDVDSubtitleParserSubrip::Init()
   return false;
 }
 
-void CDVDSubtitleParserSubrip::DeInit()
+void CDVDSubtitleParserSubrip::Dispose()
 {
   //m_pStream->Close();
   m_collection.Clear();

@@ -1,6 +1,6 @@
 INCLUDES=-I. -I../ -I../../../ -I../../../linux -I../../../../guilib
 
-SRCS=DVDFactorySubtitle.cpp DVDSubtitleLineCollection.cpp DVDSubtitleParserSubrip.cpp DVDSubtitleStream.cpp
+SRCS=DVDFactorySubtitle.cpp DVDSubtitleLineCollection.cpp DVDSubtitleParserSubrip.cpp DVDSubtitleStream.cpp DVDSubtitleParserMicroDVD.cpp
 
 LIB=dvdinputstream.a
 
