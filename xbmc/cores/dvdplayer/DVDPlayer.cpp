@@ -1954,6 +1954,10 @@ bool CDVDPlayer::OpenSubtitleStream(int iStream, int source)
     if(index < 0)
       return false;
     filename = m_SelectionStreams.Get(STREAM_SUBTITLE, index).filename;
+
+    hint.Clear();
+    hint.fpsscale = m_CurrentVideo.hint.fpsscale;
+    hint.fpsrate  = m_CurrentVideo.hint.fpsrate;
   }
   else
   {
