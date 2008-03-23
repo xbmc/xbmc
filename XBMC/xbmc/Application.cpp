@@ -1487,7 +1487,7 @@ void CApplication::StartWebServer()
     CSectionLoader::Load("LIBHTTP");
     m_pWebServer = new CWebServer();
     m_pWebServer->Start(g_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), "Q:\\web", false);
-    if (m_pXbmcHttp)
+    if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
 	  g_applicationMessenger.HttpApi("broadcastlevel; StartUp;1");
   }
 }
@@ -2461,7 +2461,7 @@ bool CApplication::OnKey(CKey& key)
 bool CApplication::OnAction(const CAction &action)
 {
   // Let's tell the outside world about this action
-  if (m_pXbmcHttp)
+  if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=2)
   {
     CStdString tmp;
     tmp.Format("%i",action.wID);
@@ -3117,37 +3117,38 @@ bool CApplication::ProcessMouse()
 }
 
 void  CApplication::CheckForTitleChange()
-{
-  if (IsPlayingVideo())
-  {
-	const CVideoInfoTag* tagVal = g_infoManager.GetCurrentMovieTag();
-    if (m_pXbmcHttp && tagVal && !(tagVal->m_strTitle.IsEmpty()))
+{ 
+  if (g_stSettings.m_HttpApiBroadcastLevel>=1)
+    if (IsPlayingVideo())
     {
-      CStdString msg=m_pXbmcHttp->GetOpenTag()+"MovieTitle:"+tagVal->m_strTitle+m_pXbmcHttp->GetCloseTag();
-	  if (m_prevMedia!=msg)
-	  {
-		g_applicationMessenger.HttpApi("broadcastlevel; MediaChanged:"+msg+";1");
-        m_prevMedia=msg;
-	  }
+	  const CVideoInfoTag* tagVal = g_infoManager.GetCurrentMovieTag();
+      if (m_pXbmcHttp && tagVal && !(tagVal->m_strTitle.IsEmpty()))
+      {
+        CStdString msg=m_pXbmcHttp->GetOpenTag()+"MovieTitle:"+tagVal->m_strTitle+m_pXbmcHttp->GetCloseTag();
+	    if (m_prevMedia!=msg && g_stSettings.m_HttpApiBroadcastLevel>=1)
+  	    {
+		  g_applicationMessenger.HttpApi("broadcastlevel; MediaChanged:"+msg+";1");
+          m_prevMedia=msg;
+        }
+      }
     }
-  }
-  else if (IsPlayingAudio())
-  {
-    const CMusicInfoTag* tagVal=g_infoManager.GetCurrentSongTag();
-    if (m_pXbmcHttp && tagVal)
-	{
-	  CStdString msg="";
-	  if (!tagVal->GetTitle().IsEmpty())
+    else if (IsPlayingAudio())
+    {
+      const CMusicInfoTag* tagVal=g_infoManager.GetCurrentSongTag();
+      if (m_pXbmcHttp && tagVal)
+	  {
+	    CStdString msg="";
+	    if (!tagVal->GetTitle().IsEmpty())
 		  msg=m_pXbmcHttp->GetOpenTag()+"AudioTitle:"+tagVal->GetTitle()+m_pXbmcHttp->GetCloseTag();
-	  if (!tagVal->GetArtist().IsEmpty())
+	    if (!tagVal->GetArtist().IsEmpty())
 		  msg+=m_pXbmcHttp->GetOpenTag()+"AudioArtist:"+tagVal->GetArtist()+m_pXbmcHttp->GetCloseTag();
-	  if (m_prevMedia!=msg)
-	  {
-	    g_applicationMessenger.HttpApi("broadcastlevel; MediaChanged:"+msg+";1");
-	    m_prevMedia=msg;
-	  }
+	    if (m_prevMedia!=msg)
+	    {
+	      g_applicationMessenger.HttpApi("broadcastlevel; MediaChanged:"+msg+";1");
+	      m_prevMedia=msg;
+	    }
+      }
     }
-  }
 }
 
 
@@ -3324,7 +3325,7 @@ void CApplication::Stop()
     m_bStop = true;
     CLog::Log(LOGNOTICE, "stop all");
 
-	if (m_pXbmcHttp)
+	if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
 	  g_applicationMessenger.HttpApi("broadcastlevel; ShutDown;1");
 
     StopServices();
@@ -3851,7 +3852,7 @@ void CApplication::OnPlayBackEnded()
   // (does nothing if python is not loaded)
   g_pythonParser.OnPlayBackEnded();
   // Let's tell the outside world as well
-  if (m_pXbmcHttp)
+  if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
 	g_applicationMessenger.HttpApi("broadcastlevel; OnPlayBackEnded;1");
 
   CLog::Log(LOGDEBUG, "Playback has finished");
@@ -3874,7 +3875,7 @@ void CApplication::OnPlayBackStarted()
   g_pythonParser.OnPlayBackStarted();
 
   // Let's tell the outside world as well
-  if (m_pXbmcHttp)
+  if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
 	g_applicationMessenger.HttpApi("broadcastlevel; OnPlayBackStarted;1");
 
   CLog::Log(LOGDEBUG, "Playback has started");
@@ -3895,7 +3896,7 @@ void CApplication::OnQueueNextItem()
   g_pythonParser.OnQueueNextItem(); // currently unimplemented
 
   // Let's tell the outside world as well
-  if (m_pXbmcHttp)
+  if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
 	g_applicationMessenger.HttpApi("broadcastlevel; OnQueueNextItem;1");
 
   CLog::Log(LOGDEBUG, "Player has asked for the next item");
@@ -3911,7 +3912,7 @@ void CApplication::OnPlayBackStopped()
   g_pythonParser.OnPlayBackStopped();
 
   // Let's tell the outside world as well
-  if (m_pXbmcHttp)
+  if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
     g_applicationMessenger.HttpApi("broadcastlevel; OnPlayBackStopped;1");
 
   OutputDebugString("Playback was stopped\n");
