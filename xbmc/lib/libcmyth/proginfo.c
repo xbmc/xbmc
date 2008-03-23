@@ -1533,6 +1533,8 @@ cmyth_proginfo_compare(cmyth_proginfo_t a, cmyth_proginfo_t b)
 		return -1;
 	if (STRCMP(a->proginfo_description, b->proginfo_description) != 0)
 		return -1;
+	if (STRCMP(a->proginfo_chanstr, b->proginfo_chanstr) != 0)
+		return -1;
 
 	if (a->proginfo_url && b->proginfo_url) {
           char* aa = strrchr(a->proginfo_url, '/');

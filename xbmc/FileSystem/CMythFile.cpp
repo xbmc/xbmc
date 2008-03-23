@@ -158,36 +158,36 @@ bool CCMythFile::SetupLiveTV(const CURL& url)
   }
   CUtil::RemoveExtension(channel);
 
-  m_recorder = m_dll->conn_get_free_recorder(m_control);
-  if(!m_recorder)
+  for(int i=0;i<16;i++)
   {
-    CLog::Log(LOGERROR, "%s - unable to get free recorder", __FUNCTION__);
+    m_recorder = m_dll->conn_get_recorder_from_num(m_control, i);
+    if(!m_recorder)
+      continue;
 
-    for(int i=0;i<16;i++)
+    if(m_dll->recorder_is_recording(m_recorder))
     {
-      m_recorder = m_dll->conn_get_recorder_from_num(m_control, i);
-      if(!m_recorder)
-        continue;
-
+      /* if already recording, check if it is this channel */
       cmyth_proginfo_t program;
       program = m_dll->recorder_get_cur_proginfo(m_recorder);
-      if(!program)
+      if(program)
       {
-        m_dll->ref_release(m_recorder);
-        m_recorder = NULL;
-        continue;
-      }
-      if(channel != GetValue(m_dll->proginfo_chanstr(program)))
-      {
+        if(channel == GetValue(m_dll->proginfo_chanstr(program)))
+        {
+          m_dll->ref_release(program);
+          break;
+        }
         m_dll->ref_release(program);
-        m_dll->ref_release(m_recorder);
-        m_recorder = NULL;
-        continue;
       }
-
-      m_dll->ref_release(program);
       break;
     }
+    else
+    {
+      /* not recording, check if it supports this channel */
+      if(m_dll->recorder_check_channel(m_recorder, (char*)channel.c_str()) == 0)
+        break;
+    }
+    m_dll->ref_release(m_recorder);
+    m_recorder = NULL;
   }
 
   if(!m_recorder)
