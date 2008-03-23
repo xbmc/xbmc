@@ -200,7 +200,7 @@ bool CCMythDirectory::GetChannels(const CStdString& base, CFileItemList &items)
       unsigned j;
       for(j=0;j<channels.size();j++)
       {
-        if(m_dll->proginfo_compare(program, channels[i]) == 0)
+        if(m_dll->proginfo_compare(program, channels[j]) == 0)
           break;
       }
 
