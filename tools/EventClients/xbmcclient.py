@@ -4,7 +4,11 @@
 Implementation of XBMC's UDP based input system.
 
 A set of classes that abstract the various packets that the event server
-currently supports. The basic workflow involves:
+currently supports. In addition, there's also a class, XBMCClient, that
+provides functions that sends the various packets. Use XBMCClient if you
+don't need complete control over packet structure.
+
+The basic workflow involves:
 
 1. Send a HELO packet
 2. Send x number of valid packets
@@ -13,13 +17,14 @@ currently supports. The basic workflow involves:
 IMPORTANT NOTE ABOUT TIMEOUTS:
 A client is considered to be timed out if XBMC doesn't received a packet
 at least once every 60 seconds. To "ping" XBMC with an empty packet use
-PacketPING, see its documentation for details.
+PacketPING or XBMCClient.ping(). See the documentation for details.
 """
 
 __author__  = "d4rk@xbmc.org"
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 
 from struct import pack
+from socket import *
 
 MAX_PACKET_SIZE  = 1024
 HEADER_SIZE      = 32
@@ -49,6 +54,11 @@ BT_NO_REPEAT  = 0x20
 
 MS_ABSOLUTE = 0x01
 
+
+######################################################################
+# Helper Functions
+######################################################################
+
 def format_string(msg):
     """ """
     return msg + "\0"
@@ -59,8 +69,16 @@ def format_uint32(num):
 
 def format_uint16(num):
     """ """
+    if num<0:
+        num = 0
+    elif num>65535:
+        num = 65535    
     return pack ("!H", num)
 
+
+######################################################################
+#  Packet Classes
+######################################################################
 
 class Packet:
     """Base class that implements a single event packet.
@@ -355,3 +373,126 @@ class PacketPING (Packet):
         self.packettype = PT_PING
 
 
+######################################################################
+# XBMC Client Class
+######################################################################
+
+class XBMCClient:
+    """An XBMC event client"""
+
+    def __init__(self, name ="", icon_file=None, broadcast=False):
+        """
+        Keyword arguments:
+        name -- Name of the client
+        icon_file -- location of an icon file, if any (png, jpg or gif)
+        """
+        self.name = str(name)
+        self.icon_file = icon_file
+        self.icon_type = self._get_icon_type(icon_file)
+        self.ip = "127.0.0.1"
+        self.port = 9777
+        self.sock = socket(AF_INET,SOCK_DGRAM)
+        if broadcast:
+            self.sock.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
+
+    
+    def connect(self, ip=None, port=None):
+        """Initialize connection to XBMC
+        ip -- IP Address of XBMC
+        port -- port that the event server on XBMC is listening on
+        """
+        if ip:
+            self.ip = ip
+        if port:
+            self.port = int(port)
+        self.addr = (self.ip, self.port)
+        packet = PacketHELO(self.name, self.icon_type, self.icon_file)                            
+        packet.send(self.sock, self.addr)
+
+
+    def close(self):
+        """Close the current connection"""
+        packet = PacketBYE()
+        packet.send(self.sock, self.addr)
+
+
+    def ping(self):
+        """Send a PING packet"""
+        packet = PacketPING()
+        packet.send(self.sock, self.addr)
+
+        
+    def send_notification(self, title="", message="", icon_file=None):
+        """Send a notification to the connected XBMC
+        Keyword Arguments:
+        title -- The title/heading for the notifcation
+        message -- The message to be displayed
+        icon_file -- location of an icon file, if any (png, jpg, gif)
+        """
+        self.connect()
+        packet = PacketNOTIFICATION(title, message,
+                                    self._get_icon_type(icon_file),
+                                    icon_file)
+        packet.send(self.sock, self.addr)
+
+
+    def send_keyboard_button(self, button=None):
+        """Send a keyboard event to XBMC
+        Keyword Arguments:
+        button -- name of the keyboard button to send (same as in Keymap.xml)
+        """
+        if not button:
+            return
+        self.send_button(map="KB", button=button)
+
+
+    def release_button(self):
+        """Release all buttons"""
+        packet = PacketBUTTON(code=0x01, down=0)
+        packet.send(self.sock, self.addr)
+        return
+
+
+    def send_button(self, map="", button=""):
+        """Send a button event to XBMC
+        Keyword arguments:
+        map -- a combination of map_name and button_name refers to a
+               mapping in the user's Keymap.xml or Lircmap.xml.
+               map_name can be one of the following:
+                   "KB" => standard keyboard map ( <keyboard> section )
+                   "XG" => xbox gamepad map ( <gamepad> section )
+                   "R1" => xbox remote map ( <remote> section )
+                   "R2" => xbox universal remote map ( <universalremote>
+                           section )
+                   "LI:devicename" => LIRC remote map where 'devicename' is the
+                                      actual device's name
+        button -- a button name defined in the map specified in map, above.
+                  For example, if map is "KB" refering to the <keyboard>
+                  section in Keymap.xml then, valid buttons include 
+                  "printscreen", "minus", "x", etc.
+        """
+        packet = PacketBUTTON(map_name=str(map), button_name=str(button))
+        packet.send(self.sock, self.addr)
+        return
+
+
+    def send_mouse_position(self, x=0, y=0):
+        """Send a mouse event to XBMC
+        Keywords Arguments:
+        x -- absolute x position of mouse ranging from 0 to 65535
+             which maps to the entire screen width
+        y -- same a 'x' but relates to the screen height
+        """
+        packet = PacketMOUSE(int(x), int(y))
+        packet.send(self.sock, self.addr)
+
+
+    def _get_icon_type(self, icon_file):
+        if icon_file:
+            if icon_file.lower()[-3:] == "png":
+                return ICON_PNG
+            elif icon_file.lower()[-3:] == "gif":
+                return ICON_GIF
+            elif icon_file.lower()[-3:] == "jpg":
+                return ICON_JPG
+        return ICON_NONE
