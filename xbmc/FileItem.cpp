@@ -667,8 +667,7 @@ bool CFileItem::IsCBR() const
 
 bool CFileItem::IsStack() const
 {
-  CURL url(m_strPath);
-  return url.GetProtocol().Equals("stack");
+  return CUtil::IsStack(m_strPath);
 }
 
 bool CFileItem::IsPluginFolder() const
