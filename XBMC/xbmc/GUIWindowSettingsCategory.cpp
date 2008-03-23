@@ -959,7 +959,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
       CStdString strCharset=g_langInfo.GetSubtitleCharSet();
-      pControl->SetEnabled( /*CUtil::IsUsingTTFSubtitles() &&*/ g_charsetConverter.isBidiCharset(strCharset) > 0);
+      pControl->SetEnabled( /*CUtil::IsUsingTTFSubtitles() &&*/ g_charsetConverter.isBidiCharset(strCharset));
     }
     else if (strSetting.Equals("locale.charset"))
     { // TODO: Determine whether we are using a TTF font or not.
