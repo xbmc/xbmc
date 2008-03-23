@@ -40,6 +40,7 @@ public:
   virtual int              recorder_pause           (cmyth_recorder_t rec)=0;
   virtual int              recorder_stop_livetv     (cmyth_recorder_t rec)=0;
   virtual int              recorder_set_channel     (cmyth_recorder_t rec, char *channame)=0;
+  virtual int              recorder_check_channel   (cmyth_recorder_t rec, char *channame)=0;
 
   virtual int              livetv_get_block         (cmyth_recorder_t rec, char *buf, unsigned long len)=0;
   virtual int              livetv_select            (cmyth_recorder_t rec, struct timeval *timeout)=0;
@@ -128,6 +129,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
   DEFINE_METHOD1(int,                 recorder_pause,           (cmyth_recorder_t p1))
   DEFINE_METHOD1(int,                 recorder_stop_livetv,     (cmyth_recorder_t p1))
   DEFINE_METHOD2(int,                 recorder_set_channel,     (cmyth_recorder_t p1, char * p2))
+  DEFINE_METHOD2(int,                 recorder_check_channel,   (cmyth_recorder_t p1, char * p2))
 
   DEFINE_METHOD3(int,                 livetv_get_block,         (cmyth_recorder_t p1, char *p2, unsigned long p3))
   DEFINE_METHOD2(int,                 livetv_select,            (cmyth_recorder_t p1, struct timeval *p2))
@@ -209,6 +211,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
     RESOLVE_METHOD_RENAME(cmyth_recorder_pause, recorder_pause)
     RESOLVE_METHOD_RENAME(cmyth_recorder_stop_livetv, recorder_stop_livetv)
     RESOLVE_METHOD_RENAME(cmyth_recorder_set_channel, recorder_set_channel)
+    RESOLVE_METHOD_RENAME(cmyth_recorder_check_channel, recorder_check_channel)
 
 
     RESOLVE_METHOD_RENAME(cmyth_livetv_get_block, livetv_get_block)
