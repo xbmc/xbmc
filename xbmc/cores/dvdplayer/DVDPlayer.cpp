@@ -1600,7 +1600,7 @@ void CDVDPlayer::SetAudioStream(int iStream)
 
 void CDVDPlayer::SeekTime(__int64 iTime)
 {
-  m_messenger.Put(new CDVDMsgPlayerSeek((int)iTime, false));
+  m_messenger.Put(new CDVDMsgPlayerSeek((int)iTime, true, true, false));
   SyncronizeDemuxer(100);
 }
 
