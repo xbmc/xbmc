@@ -15,174 +15,24 @@
 #       PING as keepalive
 #
 
-from xbmcclient import *
-from socket import *
-
-BLUEZ=0
-
-try:
-    import bluetooth
-    BLUEZ=1
-except:
-    try:
-        import lightblue
-    except:
-        print "ERROR: You need to have either LightBlue or PyBluez installed\n"\
-            "       in order to use this program."
-        print "- PyBluez (Linux / Windows XP) http://org.csail.mit.edu/pybluez/"
-        print "- LightBlue (Mac OS X / Linux) http://lightblue.sourceforge.net/"
-        exit()
-
 import os
 import time
+import sys
+from xbmcclient import *
+from ps3.keymaps import keymap_remote as g_keymap
+from bt.bt import *
 
-loop_forever = True
+xbmc = None
+bticon = "icons/bluetooth.png"
 
-g_host = "127.0.0.1"
-g_port = 9777
-g_addr = (g_host, g_port)
-g_sock = socket(AF_INET,SOCK_DGRAM)
-
-g_keymap = {
-    "16": 's' ,#EJECT
-    "64": 'w' ,#AUDIO
-    "65": 'z' ,#ANGLE
-    "63": 'n' ,#SUBTITLE
-    "0f": 'd' ,#CLEAR
-    "28": 't' ,#TIME
-
-    "00": '1' ,#1
-    "01": '2' ,#2
-    "02": '3' ,#3
-    "03": '4' ,#4
-    "04": '5' ,#5
-    "05": '6' ,#6
-    "06": '7' ,#7
-    "07": '8' ,#8
-    "08": '9' ,#9
-    "09": '0' ,#0
-
-    "81": None ,#RED
-    "82": None ,#GREEN
-    "80": None ,#BLUE
-    "83": None ,#YELLOW
-
-    "70": 'I'      ,#DISPLAY
-    "1a": None     ,#TOP MENU
-    "40": 'menu'   ,#POP UP/MENU
-    "0e": 'escape' ,#RETURN
-
-    "5c": 'menu'   ,#OPTIONS/TRIANGLE
-    "5d": 'escape' ,#BACK/CIRCLE
-    "5e": 'tab'    ,#X
-    "5f": 'V'      ,#VIEW/SQUARE
-
-    "54": 'up'     ,#UP
-    "55": 'right'  ,#RIGHT
-    "56": 'down'   ,#DOWN
-    "57": 'left'   ,#LEFT
-    "0b": 'return' ,#ENTER
-
-    "5a": 'plus'     ,#L1
-    "58": 'minus'    ,#L2
-    "51": None       ,#L3
-    "5b": 'pageup'   ,#R1
-    "59": 'pagedown' ,#R2
-    "52": 'c'        ,#R3
-
-    "43": 's'                  ,#PLAYSTATION
-    "50": 'opensquarebracket'  ,#SELECT
-    "53": 'closesquarebracket' ,#START
-
-    "33": 'r'      ,#<-SCAN
-    "34": 'f'      ,#  SCAN->
-    "30": 'comma'  ,#PREV
-    "31": 'period' ,#NEXT
-    "60": None     ,#<-SLOW/STEP
-    "61": None     ,#  SLOW/STEP->
-    "32": 'P'      ,#PLAY
-    "38": 'x'      ,#STOP
-    "39": 'space'  #PAUSE
-    }
-
-def send_key(key):
-    packet = PacketBUTTON(map_name="KB", button_name=key)
-    packet.send(g_sock, g_addr)
-
-def release_key():
-    packet = PacketBUTTON(code=0x01, down=0)
-    packet.send(g_sock, g_addr)
-
-def send_message(caption, msg):
-    packet = PacketNOTIFICATION(
-        caption,
-        msg,
-        ICON_PNG,
-        "icons/bluetooth.png")
-    packet.send(g_sock, g_addr)
-
-def save_remote_address(addr):
-    try:
-        f = open(".ps3_remote_address", "wb")
-        f.write(str(addr))
-        f.close()
-    except:
-        pass
-    return
-
-def load_remote_address():
-    try:
-        f = open(".ps3_remote_address", "r")
-        a = f.read()
-        f.close()
-        a.strip()
-        return a
-    except:
-        pass
-    return None
-
-def bt_create_socket():
-    if BLUEZ:
-        sock = bluetooth.BluetoothSocket(bluetooth.L2CAP)
-    else:
-        sock = lightblue.socket(lightblue.L2CAP)
-    return sock
-
-def bt_discover_devices():
-    if BLUEZ:
-        nearby = bluetooth.discover_devices()
-    else:
-        nearby = lightblue.finddevices()
-    return nearby
-
-def bt_lookup_name(bdaddr):
-    if BLUEZ:
-        bname = bluetooth.lookup_name( bdaddr )
-    else:
-        bname = bdaddr[1]
-    return bname
-
-def bt_lookup_addr(bdaddr):
-    if BLUEZ:
-        return bdaddr
-    else:
-        return bdaddr[0]
-
-while loop_forever is True:
-
-    target_name = "BD Remote Control"
-    target_address = load_remote_address()
-    remote = bt_create_socket()
-
+def get_remote_address(remote, target_name = "BD Remote Control"):
+    global xbmc
     target_connected = False
-
-    packet = PacketHELO(devicename="PS3 Bluetooth Remote",
-                        icon_type=ICON_PNG,
-                        icon_file="icons/bluetooth.png")
-    packet.send(g_sock, g_addr)
-
+    target_address = None
     while target_connected is False:
-        send_message("Action Required!", "Hold Start+Enter on your remote.")
+        xbmc.send_notification("Action Required!",
+                               "Hold Start+Enter on your remote.",
+                               bticon)
         print "Searching for %s" % target_name
         print "(Hold Start + Enter on remote to make it discoverable)"
         time.sleep(2)
@@ -193,7 +43,7 @@ while loop_forever is True:
             except Exception, e:
                 print "Error performing bluetooth discovery"
                 print str(e)
-                send_message("Error", "Unable to find devices.")
+                xbmc.send_notification("Error", "Unable to find devices.", bticon)
                 time.sleep(5)
                 continue
 
@@ -207,64 +57,103 @@ while loop_forever is True:
 
         if target_address is not None:
             print "Found %s with address %s" % (target_name, target_address)
-            if not load_remote_address():
-                send_message("Found Device", "Pairing %s, please wait." % target_name)
-                print "Attempting to pair with remote"
+            xbmc.send_notification("Found Device",
+                                   "Pairing %s, please wait." % target_name,
+                                   bticon)
+            print "Attempting to pair with remote"
 
             try:
-                save_remote_address(target_address)
                 remote.connect((target_address,19))
                 target_connected = True
                 print "Remote Paired.\a"
-                send_message("Pairing Success",
-                             "Your remote was successfully paired and is ready to be used.")
+                xbmc.send_notification("Pairing Successfull",
+                                       "Your remote was successfully "\
+                                           "paired and is ready to be used.",
+                                       bticon)
             except:
                 del remote
                 remote = bt_create_socket()
                 target_address = None
-                send_message("Pairing Failed",
-                             "An error occurred while attempting to pair.")
+                xbmc.send_notification("Pairing Failed",
+                                       "An error occurred while attempting to "\
+                                           "pair.", bticon)
                 print "ERROR - Could Not Connect. Trying again..."
                 time.sleep(2)
         else:
-            send_message("Error", "No remotes were found.")
+            xbmc.send_notification("Error", "No remotes were found.", bticon)
             print "Could not find BD Remote Control. Trying again..."
             time.sleep(2)
+    return (remote,target_address)
 
-    done = False
 
-    while not done:
-        # re-send HELO packet in case we timed out
-        packet = PacketHELO(devicename="Bluetooth Remote Reconnected",
-                            icon_type=ICON_NONE)
-        
-        packet.send(g_sock, g_addr)
+def usage():
+    print """
+PS3 Blu-Ray Remote Control Client for XBMC v0.1
 
-        datalen = 0
+Usage: ps3_remote.py <address> [port]
+
+  address => address of system that XBMC is running on
+             ("localhost" if it is this machine)
+
+     port => port to send packets to
+             (default 9777)
+""" 
+
+def main():
+    global xbmc, bticon
+    
+    host = "127.0.0.1"
+    port = 9777
+
+    if len(sys.argv)>1:
         try:
-            data = remote.recv(1024)
-            datalen = len(data)
-        except:
-            time.sleep(2)
-            done = True
+            host = sys.argv[1]
+            port = sys.argv[2]
+        except: 
+            pass
+    else:
+        return usage()
 
-        if datalen == 13:
-            keycode = data.encode("hex")[10:12]
+    loop_forever = True
+    xbmc = XBMCClient("PS3 Bluetooth Remote",
+                      icon_file=bticon)
 
-            if keycode == "ff":
-                release_key()
-                continue
+    while loop_forever is True:
+        target_connected = False
+        remote = bt_create_socket()
+        xbmc.connect(host, port)
+
+        (remote,target_address) = get_remote_address(remote)
+        done = False
+
+        while not done:
+            xbmc.connect()
+            datalen = 0
             try:
-                if g_keymap[keycode]:
-                    send_key(g_keymap[keycode])
-            except Exception, e:
-                print "Unknown data: %s" % str(e)
-        else:
-            print "Unknown data"
+                data = remote.recv(1024)
+                datalen = len(data)
+            except:
+                time.sleep(2)
+                done = True
 
-    print "Disconnected."
-    try:
-        remote.close()
-    except:
-        print "Cannot close."
+            if datalen == 13:
+                keycode = data.encode("hex")[10:12]
+                if keycode == "ff":
+                    xbmc.release_button()
+                    continue
+                try:
+                    if g_keymap[keycode]:
+                        xbmc.send_keyboard_button(g_keymap[keycode])
+                except Exception, e:
+                    print "Unknown data: %s" % str(e)
+            else:
+                print "Unknown data"
 
+        print "Disconnected."
+        try:
+            remote.close()
+        except:
+            print "Cannot close."
+
+if __name__=="__main__":
+    main()
