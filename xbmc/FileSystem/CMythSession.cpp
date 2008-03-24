@@ -100,7 +100,7 @@ bool CCMythSession::UpdateItem(CFileItem &item, cmyth_proginfo_t info)
   tag->m_strPlot        = GetValue(m_dll->proginfo_description(info));
   tag->m_strGenre       = GetValue(m_dll->proginfo_category(info));
 
-  if(tag->m_strPlot != tag->m_strPlotOutline && !tag->m_strPlotOutline.IsEmpty())
+  if(tag->m_strPlot.Left(tag->m_strPlotOutline.length()) != tag->m_strPlotOutline && !tag->m_strPlotOutline.IsEmpty())
       tag->m_strPlot = tag->m_strPlotOutline + '\n' + tag->m_strPlot;
 
   tag->m_strOriginalTitle = tag->m_strShowTitle;
