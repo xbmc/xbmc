@@ -1082,22 +1082,7 @@ if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_AAC)
    }
 }
 
-#ifdef _XBOX
-//=============== Try to open as MPEG-TY file: =================
-// #ifdef _XBOX : leave this before the audio checking part. If mplayer
-// check's first if it is an audio file it will play this tivo as audio.
-if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_MPEG_TY)
-{
-  demuxer=new_demuxer(stream,DEMUXER_TYPE_MPEG_TY,audio_id,video_id,dvdsub_id);
-  if(ty_check_file(demuxer)){
-      mp_msg(MSGT_DEMUXER,MSGL_INFO,MSGTR_Detected_XXX_FileFormat,"TiVo");
-      file_format=DEMUXER_TYPE_MPEG_TY;
-  } else {
-      free_demuxer(demuxer);
-      demuxer = NULL;
-  }
-}
-#endif //!_XBOX
+#ifndef _XBOX // moved after lavf checks
 
 //=============== Try to open as audio file: =================
 if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_AUDIO){
@@ -1110,6 +1095,8 @@ if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_AUDIO){
     demuxer = NULL;
   }
 }
+
+#endif
 
 #ifdef HAVE_XMMS
 //=============== Try to open as XMMS file: =================
@@ -1124,7 +1111,7 @@ if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_XMMS){
   }
 }
 #endif
-#ifndef _XBOX //function moved to before audio checking
+
 //=============== Try to open as MPEG-TY file: =================
 if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_MPEG_TY)
 {
@@ -1137,7 +1124,7 @@ if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_MPEG_TY)
       demuxer = NULL;
   }
 }
-#endif //!_XBOX
+
 //=============== Try to open as a RTP stream: ===========
  if(file_format==DEMUXER_TYPE_RTP) {
    demuxer=new_demuxer(stream,DEMUXER_TYPE_RTP,audio_id,video_id,dvdsub_id);
@@ -1155,6 +1142,21 @@ if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_MPEG_TY)
   }
 }
 #endif
+
+#ifdef _XBOX
+ //=============== Try to open as audio file: =================
+if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_AUDIO){
+  demuxer=new_demuxer(stream,DEMUXER_TYPE_AUDIO,audio_id,video_id,dvdsub_id);
+  if(demux_audio_open(demuxer)){
+    mp_msg(MSGT_DEMUXER,MSGL_INFO,MSGTR_DetectedAudiofile);
+    file_format=DEMUXER_TYPE_AUDIO;
+  } else {
+    free_demuxer(demuxer);
+    demuxer = NULL;
+  }
+}
+#endif
+
 //=============== Unknown, exiting... ===========================
 if(file_format==DEMUXER_TYPE_UNKNOWN || demuxer == NULL){
   //mp_msg(MSGT_DEMUXER,MSGL_ERR,MSGTR_FormatNotRecognized); // will be done by mplayer.c after fallback to playlist-parsing
