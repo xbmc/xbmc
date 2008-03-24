@@ -186,7 +186,6 @@ bool CCMythFile::SetupLiveTV(const CURL& url)
         }
         m_dll->ref_release(program);
       }
-      break;
     }
     else
     {
