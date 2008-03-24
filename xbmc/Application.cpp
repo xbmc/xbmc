@@ -3310,6 +3310,14 @@ void CApplication::Stop()
 {
   try
   {
+    if (m_pXbmcHttp)
+    {
+	  if(g_stSettings.m_HttpApiBroadcastLevel>=1)
+	    g_applicationMessenger.HttpApi("broadcastlevel; ShutDown;1");
+	  m_pXbmcHttp->shuttingDown=true;
+     //Sleep(100);
+	}
+
     CLog::Log(LOGNOTICE, "Storing total System Uptime");
     g_stSettings.m_iSystemTimeTotalUp = g_stSettings.m_iSystemTimeTotalUp + (int)(timeGetTime() / 60000);
 
@@ -3325,8 +3333,6 @@ void CApplication::Stop()
     m_bStop = true;
     CLog::Log(LOGNOTICE, "stop all");
 
-	if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
-	  g_applicationMessenger.HttpApi("broadcastlevel; ShutDown;1");
 
     StopServices();
     //Sleep(5000);
