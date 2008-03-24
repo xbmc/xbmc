@@ -597,6 +597,36 @@ then
   then
     CONFIGURE=1
   fi
+  if ! (( $CONFIRM ))
+  then
+    grep -E "README.linux$" "$SOURCEDIR/.build.sh.svn" &> /dev/null
+    if ! (($?))
+    then
+      echo " **************************************************"
+      echo "  Detected changes to README.linux"
+      echo "  You will now be forced to read it :)"
+      echo "  Use pgup, pgdn or space to navigate"
+      echo "  PAY ATTENTION to the aptget line for your distro!"
+      echo " **************************************************"
+      echo " Press any key to continue..."
+      read -n1
+      less -e "$SOURCEDIR/README.linux"
+      
+      PROMPT=""
+      while [[ $PROMPT != "y" && $PROMPT != "n" ]]
+      do
+        printf "\r Continue? (y/n) :  \b"
+        read -n 1 PROMPT
+      done
+      
+      echo
+
+      if [[ $PROMPT == "n" ]]
+      then
+        exit
+      fi
+    fi
+  fi
   grep -E "build.sh$" "$SOURCEDIR/.build.sh.svn" &> /dev/null
   if ! (( $? ))
   then
@@ -607,7 +637,7 @@ then
     $CMD
     exit
   fi
-  rm -f "$SOURCEDIR/.build.sh.svn"
+  rm -f "$SOURCEDIR/.build.sh.svn" &> /dev/null
 fi
 
 if (( COMPILE ))
