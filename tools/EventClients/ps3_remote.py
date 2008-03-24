@@ -99,6 +99,32 @@ Usage: ps3_remote.py <address> [port]
              (default 9777)
 """ 
 
+def process_keys(remote, xbmc):
+    done = False
+    
+    xbmc.connect()
+    datalen = 0
+    try:
+        data = remote.recv(1024)
+        datalen = len(data)
+    except Exception, e:
+        if str(e)=="timed out":
+            return done
+        time.sleep(2)
+        done = True
+
+    if datalen == 13:
+        keycode = data.encode("hex")[10:12]
+        if keycode == "ff":
+            xbmc.release_button()
+            return done
+        try:
+            if g_keymap[keycode]:
+                xbmc.send_keyboard_button(g_keymap[keycode])
+        except Exception, e:
+            print "Unknown data: %s" % str(e)
+    return done
+
 def main():
     global xbmc, bticon
     
@@ -122,33 +148,10 @@ def main():
         target_connected = False
         remote = bt_create_socket()
         xbmc.connect(host, port)
-
         (remote,target_address) = get_remote_address(remote)
-        done = False
-
-        while not done:
-            xbmc.connect()
-            datalen = 0
-            try:
-                data = remote.recv(1024)
-                datalen = len(data)
-            except:
-                time.sleep(2)
-                done = True
-
-            if datalen == 13:
-                keycode = data.encode("hex")[10:12]
-                if keycode == "ff":
-                    xbmc.release_button()
-                    continue
-                try:
-                    if g_keymap[keycode]:
-                        xbmc.send_keyboard_button(g_keymap[keycode])
-                except Exception, e:
-                    print "Unknown data: %s" % str(e)
-            else:
-                print "Unknown data"
-
+        while True:
+            if process_keys(remote, xbmc):
+                break
         print "Disconnected."
         try:
             remote.close()
