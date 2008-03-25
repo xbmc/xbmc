@@ -244,12 +244,22 @@ extern "C"
 {
 	bool IsDir(const char* file)
 	{
+#ifdef _WIN32
+    DWORD dwAttrs; 
+    dwAttrs = GetFileAttributes(file); 
+    if ((dwAttrs & FILE_ATTRIBUTE_DIRECTORY)) 
+      return true;
+
+    return false;
+
+#else
 		struct stat holder;
     	stat(file, &holder);
 	    if (S_ISDIR(holder.st_mode))
 	      return true;
 	
 		return false;
+#endif
 	}
 
   bool __declspec(dllexport) ReleaseImage(ImageInfo *info) 

@@ -3467,7 +3467,7 @@ bool CxImage::AdaptiveThreshold(long method, long nBoxSize, CxImage* pContrastMa
  * Note: nOpacity=0 && bSelectFilledArea=true act as a "magic wand"
  * \return true if everything is ok
  */
-#ifdef XBMC
+#if defined(XBMC) && !defined(_WIN32)
 int max(int a, int b) { return a > b ? a : b; }
 int min(int a, int b) { return a < b ? a : b; }
 #endif
