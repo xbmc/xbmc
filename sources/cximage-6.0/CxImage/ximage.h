@@ -52,6 +52,12 @@
 #pragma once
 #endif 
 
+#ifdef _LINUX
+#define _XOPEN_SOURCE
+#include <unistd.h>
+#include <arpa/inet.h>
+#endif
+
 /////////////////////////////////////////////////////////////////////////////
 #include "xfile.h"
 #include "xiofile.h"

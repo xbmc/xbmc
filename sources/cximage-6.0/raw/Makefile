@@ -1,11 +1,11 @@
 CC=gcc
-CFLAGS=-fPIC
-OBJS=jbig.o jbig_tab.o 
+CFLAGS=-fPIC -DXBMC
+OBJS=dcr.o libdcr.o
 
 %o : %c
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-jbig.a: $(OBJS)
+raw.a: $(OBJS)
 
 clean:
 	$(RM) $(OBJS)

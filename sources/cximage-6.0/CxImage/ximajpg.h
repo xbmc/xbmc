@@ -28,8 +28,13 @@
 #define CXIMAGEJPG_SUPPORT_EXIF 1
 
 extern "C" {
+#ifdef _LINUX
+ #include <jpeglib.h>
+ #include <jerror.h>
+#else
  #include "../jpeg/jpeglib.h"
  #include "../jpeg/jerror.h"
+#endif
 }
 
 class DLL_EXP CxImageJPG: public CxImage
