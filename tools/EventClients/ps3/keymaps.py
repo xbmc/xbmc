@@ -62,3 +62,43 @@ keymap_remote = {
     "39": 'space'  #PAUSE
     }
 
+
+SX_SQUARE   = 32768
+SX_X        = 16384
+SX_CIRCLE   = 8192
+SX_TRIANGLE = 4096
+SX_R1       = 2048
+SX_R2       = 512
+SX_R3       = 4
+SX_L1       = 1024
+SX_L2       = 256
+SX_L3       = 2
+SX_DUP      = 16
+SX_DDOWN    = 64
+SX_DLEFT    = 128
+SX_DRIGHT   = 32
+SX_SELECT   = 1
+SX_START    = 8
+
+keymap_sixaxis = {
+    SX_X        : 'return',
+    SX_CIRCLE   : 'escape',
+    SX_SQUARE   : 'tab',
+    SX_TRIANGLE : 'q',
+    
+    SX_DUP      : 'up',
+    SX_DDOWN    : 'down',
+    SX_DLEFT    : 'left',
+    SX_DRIGHT   : 'right',
+
+    SX_START    : 'm',
+    SX_SELECT   : 'escape',
+
+    SX_R1       : 'menu',
+    SX_R2       : 'f',
+    SX_L2       : 'r',
+    SX_L1       : 'menu',
+    
+    SX_L3       : 'printscreen',
+    SX_R3       : 's',
+}
