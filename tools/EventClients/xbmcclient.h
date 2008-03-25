@@ -8,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include <arpa/inet.h>
+
 #define STD_PORT       9777
 
 #define MS_ABSOLUTE    0x01
@@ -106,6 +107,8 @@ public:
   {
     m_PacketType = 0;
   }
+  virtual ~CPacket()
+  { }
 
   bool Send(int Socket, CAddress &Addr)
   {
@@ -137,7 +140,6 @@ public:
       for (j = 0; j < Send; j++)
         t[(32 + j)] = m_Payload[j + Sent];
 
-//      struct sockaddr *my_addr = 
       int rtn = sendto(Socket, t, (32 + Send), 0, Addr.GetAddress(), sizeof(struct sockaddr));
 
       if (rtn != (32 + Send))
@@ -200,7 +202,7 @@ class CPacketHELO : public CPacket
     /* XX -  imagedata ( can span multiple packets )                        */
     /************************************************************************/
 private:
-  char *m_DeviceName;
+  std::vector<char> m_DeviceName;
   unsigned short m_IconType;
   char *m_IconData;
   unsigned short m_IconSize;
@@ -209,7 +211,7 @@ public:
   {
     m_Payload.clear();
 
-    for (unsigned int i = 0; i < strlen(m_DeviceName); i++)
+    for (unsigned int i = 0; i < m_DeviceName.size(); i++)
       m_Payload.push_back(m_DeviceName[i]);
 
     m_Payload.push_back('\0');
@@ -229,8 +231,8 @@ public:
   CPacketHELO(const char *DevName, unsigned short IconType, const char *IconFile = NULL) : CPacket()
   {
     m_PacketType = PT_HELO;
-    m_DeviceName = new char[strlen(DevName)];
-    strcpy(m_DeviceName, DevName);
+    for (unsigned int i = 0; i < strlen(DevName); i++)
+      m_DeviceName.push_back(DevName[i]);    
 
     m_IconType = IconType;
 
@@ -259,12 +261,11 @@ public:
     }
   }
 
-  ~CPacketHELO()
+  virtual ~CPacketHELO()
   {
-    if (m_DeviceName)
-      delete [] m_DeviceName;
+    m_DeviceName.clear();
     if (m_IconData)
-      delete [] m_IconData;
+      free(m_IconData);
   }
 };
 
@@ -279,8 +280,8 @@ class CPacketNOTIFICATION : public CPacket
     /* XX - imagedata ( can span multiple packets )                         */
     /************************************************************************/
 private:
-  char *m_Title;
-  char *m_Message;
+  std::vector<char> m_Title;
+  std::vector<char> m_Message;
   unsigned short m_IconType;
   char *m_IconData;
   unsigned short m_IconSize;
@@ -289,12 +290,12 @@ public:
   {
     m_Payload.clear();
 
-    for (unsigned int i = 0; i < strlen(m_Title); i++)
+    for (unsigned int i = 0; i < m_Title.size(); i++)
       m_Payload.push_back(m_Title[i]);
 
     m_Payload.push_back('\0');
 
-    for (unsigned int i = 0; i < strlen(m_Message); i++)
+    for (unsigned int i = 0; i < m_Message.size(); i++)
       m_Payload.push_back(m_Message[i]);
 
     m_Payload.push_back('\0');
@@ -311,13 +312,19 @@ public:
   CPacketNOTIFICATION(const char *Title, const char *Message, unsigned short IconType, const char *IconFile = NULL) : CPacket()
   {
     m_PacketType = PT_NOTIFICATION;
+    m_IconData = NULL;
 
-    m_Title = new char[strlen(Title)];
-    strcpy(m_Title, Title);
+    if (Title != NULL)
+    {
+      for (unsigned int i = 0; i < strlen(Title); i++)
+        m_Title.push_back(Title[i]);
+    }
 
-    m_Message = new char[strlen(Message)];
-    strcpy(m_Message, Message);
-
+    if (Message != NULL)
+    {
+      for (unsigned int i = 0; i < strlen(Message); i++)
+        m_Message.push_back(Message[i]);
+    }
     m_IconType = IconType;
 
     if (IconType == ICON_NONE || IconFile == NULL)
@@ -342,14 +349,12 @@ public:
     }
   }
 
-  ~CPacketNOTIFICATION()
+  virtual ~CPacketNOTIFICATION()
   {
-    if (m_Title)
-      delete [] m_Title;
-    if (m_Message)
-      delete [] m_Message;
+    m_Title.clear();
+    m_Message.clear();
     if (m_IconData)
-      delete [] m_IconData;
+      free(m_IconData);
   }
 };
 
@@ -375,8 +380,8 @@ class CPacketBUTTON : public CPacket
     /* %s - button name (required if flags & 0x01)                          */
     /************************************************************************/
 private:
-  char *m_DeviceMap;
-  char *m_Button;
+  std::vector<char> m_DeviceMap;
+  std::vector<char> m_Button;
   unsigned short m_ButtonCode;
   unsigned short m_Amount;
   bool m_Repeat, m_Down, m_Queue;
@@ -384,13 +389,17 @@ public:
   virtual void ConstructPayload()
   {
     m_Payload.clear();
-
     unsigned short Flags = 0;
 
-    if (m_Button != NULL && m_DeviceMap != NULL)
+    if (m_Button.size() != 0 && m_DeviceMap.size() != 0)
     {
       Flags |= BTN_USE_NAME;
       m_ButtonCode = 0;
+    }
+    else
+    {
+      m_DeviceMap.clear();
+      m_Button.clear();
     }
     if (m_Amount > 0)
       Flags |= BTN_USE_AMOUNT;
@@ -415,18 +424,16 @@ public:
     m_Payload.push_back(((m_Amount & 0xff00) >> 8) );
     m_Payload.push_back( (m_Amount & 0x00ff));
 
-    if (m_Button != NULL && m_DeviceMap != NULL)
-    {
-    for (unsigned int i = 0; i < strlen(m_DeviceMap); i++)
+
+    for (unsigned int i = 0; i < m_DeviceMap.size(); i++)
       m_Payload.push_back(m_DeviceMap[i]);
 
     m_Payload.push_back('\0');
 
-    for (unsigned int i = 0; i < strlen(m_Button); i++)
+    for (unsigned int i = 0; i < m_Button.size(); i++)
       m_Payload.push_back(m_Button[i]);
 
     m_Payload.push_back('\0');
-    }
   }
 
   CPacketBUTTON(const char *Button, const char *DeviceMap, bool Queue = false, bool Repeat = true, bool Down = true, unsigned short Amount = 0) : CPacket()
@@ -437,14 +444,16 @@ public:
     m_Down   = Down;
     m_Queue  = Queue;
     m_Amount = Amount;
+    m_ButtonCode = 0;
 
-    m_DeviceMap = new char[strlen(DeviceMap)];
-    strcpy(m_DeviceMap, DeviceMap);
-    m_Button = new char[strlen(Button)];
-    strcpy(m_Button, Button);
+    for (unsigned int i = 0; i < strlen(DeviceMap); i++)
+      m_DeviceMap.push_back(DeviceMap[i]);
+
+    for (unsigned int i = 0; i < strlen(Button); i++)
+      m_Button.push_back(Button[i]);
   }
 
-  CPacketBUTTON(unsigned short ButtonCode,bool Queue = false, bool Repeat = true, bool Down = true, unsigned short Amount = 0) : CPacket()
+  CPacketBUTTON(unsigned short ButtonCode, bool Queue = false, bool Repeat = true, bool Down = true, unsigned short Amount = 0) : CPacket()
   {
     m_PacketType = PT_BUTTON;
 
@@ -453,9 +462,6 @@ public:
     m_Queue  = Queue;
     m_Amount = Amount;
     m_ButtonCode = ButtonCode;
-
-    m_Button    = NULL;
-    m_DeviceMap = NULL;
   }
 
   // Used to send a release event
@@ -468,17 +474,12 @@ public:
     m_Queue  = false;
     m_Amount = 0;
     m_ButtonCode = 0;
-
-    m_Button    = NULL;
-    m_DeviceMap = NULL;
   }
 
-  ~CPacketBUTTON()
+  virtual ~CPacketBUTTON()
   {
-    if (m_DeviceMap)
-      delete [] m_DeviceMap;
-    if (m_Button)
-      delete [] m_Button;
+    m_DeviceMap.clear();
+    m_Button.clear();
   }
 };
 
@@ -492,6 +493,8 @@ public:
   {
     m_PacketType = PT_PING;
   }
+  virtual ~CPacketPING()
+  { }
 };
 
 class CPacketBYE : public CPacket
@@ -504,6 +507,8 @@ public:
   {
     m_PacketType = PT_BYE;
   }
+  virtual ~CPacketBYE()
+  { }
 };
 
 class CPacketMOUSE : public CPacket
@@ -540,4 +545,7 @@ public:
     m_Payload.push_back(((m_Y & 0xff00) >> 8));
     m_Payload.push_back( (m_Y & 0x00ff));
   }
+  
+  virtual ~CPacketMOUSE()
+  { }
 };
