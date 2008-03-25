@@ -602,6 +602,7 @@ then
     grep -E "README.linux$" "$SOURCEDIR/.build.sh.svn" &> /dev/null
     if ! (($?))
     then
+      sed -i "s/READM.linux//g" "$SOURCEDIR/.build.sh.svn" #&> /dev/null
       echo " **************************************************"
       echo "  Detected changes to README.linux"
       echo "  You will now be forced to read it :)"
