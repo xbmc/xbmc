@@ -1,0 +1,1447 @@
+-----------------------------------------------------------
+
+1.0.10 (Jul 13th 2007)
+----------------------
+
+in short:
+
+intermediate CVS
+
+-------------------
+
+bugfixes:
+
+core:
+- fixed some compiler-warnings
+- fixed display routines called twice for FULL_MNG support in mozlibmngconf.h
+- standard windows dll upgraded to zlib 1.2.3
+- fixed problem with CLON object during readdisplay() (thanks Winfried!)
+- added typecast to appease the compiler (G R-P)
+- added more SKIPCHUNK conditionals (G R-P)
+- added MORE MNG_NO_1_2_4BIT_SUPPORT (G R-P)
+- added provisional support for anIM(mpNG) proposal
+- added provisional support for ANG proposal
+
+samples:
+- xmngview upgraded to 0.6 (thanks Winfried!)
+
+contrib:
+
+doc:
+
+makefiles:
+
+autoconf:
+
+-----------------------------------------------------------
+
+1.0.9 (jan 30th 2005)
+---------------------
+
+in short:
+
+New optimizations save over 20KB on footprint.
+Also a few bugfixes and several patches.
+
+Thanks to those sending in their additions and for testing!
+
+To turn on the optimizations do:
+
+#DEFINE MNG_OPTIMIZE_CHUNKINITFREE
+#DEFINE MNG_OPTIMIZE_OBJCLEANUP
+#DEFINE MNG_OPTIMIZE_CHUNKASSIGN
+#DEFINE MNG_OPTIMIZE_CHUNKREADER
+
+(eg. they're not on by default (yet) !)
+
+-------------------
+
+bugfixes:
+- fixed chunk pushing mechanism
+- fixed bug in writing sBIT for indexed color
+- fixed PPLT getchunk/putchunk routines
+- fixed MNG_NO_1_2_4BIT_SUPPORT for TBBN1G04.PNG
+- cleaned up macro-invocations (thanks to D. Airlie)
+
+core:
+- added more SKIPCHUNK conditionals
+- replaced MNG_TWEAK_LARGE_FILES with permanent solution
+- improved handling of cheap transparency when 16-bit support is disabled
+- added some MNG_SUPPORT_WRITE conditionals
+- added function to retrieve current FRAM delay
+- added MNG_NO_1_2_4BIT_SUPPORT
+- added bgr565_a8 canvas-style (thanks to J. Elvander)
+- standard windows dll upgraded to zlib 1.2.2
+- added LITTLEENDIAN/BIGENDIAN fixtures (thanks J.Stiles)
+- inclusion of zlib/lcms/ijgsrc6b with <> instead of ""
+- added conditional MNG_OPTIMIZE_CHUNKINITFREE
+- added conditional MNG_OPTIMIZE_OBJCLEANUP
+- added conditional MNG_OPTIMIZE_CHUNKASSIGN
+- added conditional MNG_OPTIMIZE_CHUNKREADER
+- fixed problem with global PLTE/tRNS
+
+samples:
+
+contrib:
+
+doc:
+- patched jng & mng manual pages (Thanks Peter Breitenlohner)
+
+makefiles:
+
+autoconf:
+- patched makefile.am & configure.in (Thanks Peter Breitenlohner)
+
+-----------------------------------------------------------
+
+1.0.8 (aug 5th 2004)
+--------------------
+
+in short:
+
+added special data-pushing mechanisms and a few other tid-bits
+
+-------------------
+
+bugfixes:
+- fixed problem with PAST usage where source > dest
+
+core:
+- added missing get-/put-chunk-jdaa
+- added CRC existence & checking flags
+- added data-push mechanisms for specialized decoders
+- some speed optimizations (thanks to John Stiles)
+- defend against using undefined closestream function
+- defend against using undefined openstream function
+- added check for extreme chunk-lengths
+- change worst-case iAlphadepth to 1 for standalone PNGs
+- added support for 3+byte pixelsize for JPEG's
+- added conditional to allow easier writing of large MNG's
+
+samples:
+
+contrib:
+
+doc:
+
+makefiles:
+
+autoconf:
+
+-----------------------------------------------------------
+
+1.0.7 (March 21st 2004)
+-----------------------
+
+in short:
+
+A bunch of new canvas-styles, some bug-fixes, upgraded to latest zlib/lcms
+and yet more work to please the Mozilla crowd.
+Releasing beta's doesn't seem very responsive, and this one's hardly changed
+much anyway. I just wanted to bump to a regular version for Mozilla
+re-integration.
+
+-------------------
+
+bugfixes:
+- fixed inclusion of IJNG chunk for non-JNG use (J.S)
+- fixed bug in chunk-storage of SHOW chunk (where from == to)
+- fixed bug in promote_g8_g8 with 16bit support off
+
+core:
+- added CANVAS_RGB565 and CANVAS_BGR565 (big thanx to Raphael Assenat!!)
+- added CANVAS_RGBA565 and CANVAS_BGRA565 ( -- ditto -- )
+- upgraded to zlib 1.2.1
+- upgraded to lcms 1.11
+- added premultiplied alpha canvas' for RGBA, ARGB, ABGR (thx to John Stiles)
+- more optimizations with 16bit support off
+- put conditionals around openstream/closestream callbacks.
+- fixed typo (MNG_SKIPCHUNK_SAVE -> MNG_SKIPCHUNK_nEED)
+- fixed some 64-bit platform compiler warnings
+
+samples:
+
+contrib:
+- fixed mngtree sample (Raphael)
+- added 5-6-5 canvas to SDL sample (Raphael)
+
+doc:
+
+makefiles:
+
+autoconf:
+
+-----------------------------------------------------------
+
+1.0.6 (oct 19th 2003)
+---------------------
+
+in short:
+
+Final release from beta1. No feedback is good feedback I presume,
+so here's 1.0.6-final!
+
+
+-------------------
+
+bugfixes:
+
+core:
+
+samples:
+
+contrib:
+
+doc:
+
+makefiles:
+
+autoconf:
+
+-----------------------------------------------------------
+
+1.0.6-beta1 (sep 14th 2003)
+---------------------------
+
+in short:
+
+further footprint-reductions
+removing email-addresses
+
+1.0.6 (final) will be out shortly
+
+-------------------
+
+bugfixes:
+
+core:
+- added support for reducing the footprint of libmng by macros that optionally
+  skip unused chunks, remove 16-bit sample support, remove Delta support, and
+  remove JNG support, to accomodate Mozilla/Firebird.
+- further optional removal of unused functions
+- added MNG_NO_SUPPORT_FUNCQUERY conditional
+- added iPNGdepth member to pData structure
+- added conditionals around MAGN chunk support
+- added conditionals around non-VLC chunk support
+- added conditionals around "mng_display_go*" and other unused functions
+- added more conditionals around "promote" functions
+- removed email references as appropriate
+
+samples:
+
+contrib:
+
+doc:
+
+makefiles:
+
+autoconf:
+
+-----------------------------------------------------------
+
+1.0.6-alpha1 (aug 2nd 2003)
+---------------------------
+
+in short:
+
+This is mostly in the light of footprint-reduction to please the Mozilla
+crew with a leaner and meaner libmng. See bug 18574 if you're interested:
+http://bugzilla.mozilla.org/show_bug.cgi?id=18574
+
+-------------------
+
+bugfixes:
+- B719420 - fixed several MNG_APP_CMS problems
+
+core:
+- removed some compiler-warnings
+- hiding 12-bit JPEG stuff
+- fixed problem with infinite loops during readdisplay()
+- added size-optimiation COMPOSE routine usage
+- added conditionals around canvas update routines
+- added MNG_SKIPCHUNK_cHNK footprint optimizations
+- added conditionals around some JNG-supporting code      
+- added conditionals around 16-bit supporting code        
+- combined init functions into one function
+- replaced nested switches with simple init setup function
+- added conditionals zlib and jpeg property accessors
+- added size-optimization DIV255B8 routine usage
+- added conditionals around 8-bit magn routines
+- removed conditionals around 8-bit magn routines
+- added MNG_NO_16BIT_SUPPORT and MNG_NO_DELTA_PNG conditionals
+- reversed many loops to use decrementing counter
+- converted some switches to array references
+- removed some redundant checks for iRawlen==0
+- optionally use zlib's crc32 function instead of local mng_update_crc
+- bugfix empty "if" statement when 16-bit code is enabled
+- restored two misplaced #else/#endif blocks
+- added conditionals around "mng_display_go*" and other unused functions
+- added MNG_NO_LOOP_SIGNALS_SUPPORTED conditional
+- fixed duplicate for-loop
+- fixed invalid test in promote_imageobject
+- added conditionals around PAST chunk support
+- fixed "FOOTPRINT_COMPOSEIV" typo (now "FOOTPRINT_DIV")
+
+samples:
+
+contrib:
+- updated xmngview
+- added MSVC project for creating delta-MNGs: makemng (thanks Alex!)
+- added MSVC lib-file for use with the standard libmng.dll (again thanks Alex)
+
+doc:
+- updated readme.contrib
+
+makefiles:
+
+autoconf:
+
+-----------------------------------------------------------
+
+1.0.5 (mar 1st 2003)
+--------------------
+
+in short:
+
+Only a small fix for progressive jpeg suspension problem.
+
+This is the long-awaited final release containing the new 'dynamic MNG' feature
+and bringing MNG compliance to near 100%!
+
+-------------------
+
+bugfixes:
+- B683152 - libjpeg suspension not always honored correctly
+
+core:
+
+samples:
+
+contrib:
+
+doc:
+
+makefiles:
+
+autoconf:
+
+-----------------------------------------------------------
+
+1.0.5-rc3 (jan 20th 2003)
+-------------------------
+
+in short:
+
+Third release-candidate for the upcoming 1.0.5 version.
+
+Minor bug-fixes and finalizing the accepted proposal (by official vote) for
+the TERM/frame_delay changes on mng-list (nov-dec/2002).
+
+-------------------
+
+bugfixes:
+- B654627 - fixed SEGV when no gettickcount callback (thanks Adam!)
+- B664383 - fixed typo (thanks Dimitri)
+- B664911 - fixed buffer overflow during init (thanks Alex!)
+
+core:
+- finalized changes in TERM/final_delay to elected proposal (positive vote)
+
+samples:
+
+contrib:
+
+doc:
+
+makefiles:
+
+autoconf:
+
+-----------------------------------------------------------
+
+1.0.5-rc2 (dec 9th 2002)
+------------------------
+
+in short:
+
+Second release-candidate for the upcoming 1.0.5 version.
+This contains fixes for a few minor details reported by the loyal testers.
+It fixes some issues with the goframe/golayer/gotime processing and related
+stuff. And it adds a way to disable playback-caching from within the MNG,
+which is very useful for streaming-MNG encoders (such as gserver!).
+
+-------------------
+
+bugfixes:
+
+core:
+- fixed layer- & frame-counting during read()
+- changed FRAMECOUNT/LAYERCOUNT/PLAYTIME error to warning
+- fixed goframe/golayer/gotime processing
+- added support for nEED "MNG 1.1"
+- added support for nEED "CACHEOFF"; turn playback caching off for streaming MNG
+- fixed magnification bug with object 0
+- added support to get totals for frames/layers/playtime after mng_read()
+- fixed some issues in init_app_cms()
+- fixed goxxxxx() support for zero values
+
+samples:
+
+contrib:
+
+doc:
+
+makefiles:
+
+autoconf:
+
+-----------------------------------------------------------
+
+1.0.5-rc1 (nov 1st 2002)
+------------------------
+
+in short:
+
+First release-candidate for the upcoming 1.0.5 version.
+This fixes a few small problems and brings the TERM/MEND processing, with
+respect to interframe_delay as per the current discussion on MNG-list,
+up-to-date with the latest proposal.
+
+-------------------
+
+bugfixes:
+
+core:
+- fixed initialization of pIds in dISC read routine (Thanks Winfried!)
+- fixed issue in freeing evNT chunk (Thanks Winfried!)
+- fixed clipping-problem with BACK tiling (Thanks Sakura!)
+- fixed processing for multiple objects in MAGN (Thanks Sakura!)
+- fixed display of visible target of PAST operation (Thanks Sakura!)
+- modified TERM/MEND processing for max(1, TERM_delay, interframe_delay)
+
+samples:
+
+contrib:
+- fixed typo in Makefile for gtk-mng-view sample
+
+doc:
+
+makefiles:
+
+autoconf:
+
+-----------------------------------------------------------
+
+1.0.5-b3 (oct 15th 2002)
+------------------------
+
+in short:
+
+Fairly quick after beta2, since that introduced a couple of unfortunate
+booboo's and wasn't very workable. It also changes the standard configure
+script to build a standard shared object similar to what I intended.
+
+-------------------
+
+bugfixes:
+
+core:
+- fixed support for condition=2 in TERM chunk
+- fixed trace-constants for PAST chunk
+- added mng_status_dynamic to supports function
+
+samples:
+
+contrib:
+
+doc:
+- small cosmetic changes in man/libmng.3
+
+makefiles:
+
+autoconf:
+- fixed configure.in to build a 'standard' SO primarily
+
+-----------------------------------------------------------
+
+1.0.5-b2 (oct 9th 2002)
+------------------------
+
+in short:
+
+Second beta for next 1.0.5 release. This addresses some minor problems
+detected during testing. It adds the proposed change to the MNG spec as
+discussed on the "mng-list" recently; eg. Adam's option 4.
+And it adds a little function to check at run-time if the lib is a beta or not.
+
+-------------------
+
+bugfixes:
+
+core:
+- fixed chunk-storage for evNT chunk
+- fixed dropping mix of frozen/unfrozen objects
+- fixed problem with cloned objects marked as invalid
+- fixed problem cloning frozen object_buffers
+- fixed DISC support
+- added proposed change in handling of TERM- & interframe-delay
+- added another fix for misplaced TERM chunk
+- added check for TERM placement during create/write
+- completed support for condition=2 in TERM chunk
+- added beta version function & constant
+
+samples:
+
+contrib:
+
+doc:
+
+makefiles:
+
+autoconf:
+
+-----------------------------------------------------------
+
+1.0.5-b1 (sep 24th 2002)
+------------------------
+
+in short:
+
+First beta of a large maintenance release. This completes support of the MNG
+specification to nearly 100% (PAST, PROM, delta-images, BACK image+tile).
+It adds "dynamic" MNG and a few other neat routines as well as fixes several
+bugs reported through SourceForge or to me directly.
+
+-------------------
+
+bugfixes:
+- B575832 - library has wrong patch version number
+- B578572 - remove in 1.0.0!
+- B578940 - some functions not implemented
+- B581625 - large chunks fail with suspension reads
+- B597134 - libmng pollutes the linker namespace
+
+core:
+- added sanity check for improbable chunklengths
+- removed eMNGma hack (thanks Dimitri!)
+- unimplemented functions return an errorcode now
+- added test-option for PNG filter method 192 (= levelling)
+- added test-option for PNG filter method 193 (= no filtering)
+  (both are conditional and only for testing purposes!!!)
+- completed PROM support
+- completed delta-image support
+- completed MAGN support (16-bit functions)
+- added HLAPI function to copy a chunk from a read MNG to a newly created MNG
+- added option for soft-handling of errors (only for repair software!!!)
+- fixed some routine inclusion/exclusion for undefined conditionals 
+- pre-fixed all internal routines with mng_
+- added symbol MNG_LOCAL (= static) to really local functions
+- fixed reading of FRAM with just frame_mode and name
+- fixed read/write of MAGN chunk
+- added event handling for dynamic MNG
+- added 'supports' call to check function availability
+- fixed copyright notice in the headers of all libmng modules
+- fixed LOOP iteration=0 special case
+- re-compiled standard Windows dll with lcms-1.0.9
+- added warning for too much IDAT data
+- warnings are ignored by default now
+- misplaced TERM is now treated as warning
+- fixed color-correction for restore-background handling
+- optimized restore-background for bKGD cases
+- cleaned up some old stuff
+- completed support for BACK image & tiling
+- completed support for PAST
+- added bgrx8 canvas (filler byte)
+- fixed reset_object_detail to clear old buffer
+- added in-memory color-correction of abstract images
+- added compose over/under routines for PAST processing
+- added flip & tile routines for PAST processing
+
+samples:
+- Added new BCB sample for fixing invalid JASC Animation Shop files
+  (shows new copy_chunks function; use of MNG_SOFTERRORS & static linking)
+
+contrib:
+- added xmngview by Winfried Szukalski (Vielen dank!)
+- Updated the Delphi mngview sample to handle dynamic MNGs
+- Added Kylix example (simplified port of the Delphi mngview sample)
+
+doc:
+- added diff to add MNG&JNG to a systems 'magic' file (Thanks Winfried)
+- fixed docs about using mng_display_resume after display_reset
+  (should read to use mng_display!)
+
+makefiles:
+- added makefile to build a libmng.dll for MingW
+  (makefile.mingwdll - thanks to Frank Richter!)
+
+autoconf:
+- fixing libtool version-number to be in line with what it should be
+
+-----------------------------------------------------------
+
+1.0.4 (Jun 23rd 2002)
+---------------------
+
+in short:
+
+Just some small fixes
+Standard dll now compiled with zlib 1.1.4 and lcms 1.0.8
+
+-------------------
+
+bugfixes:
+- B495442 - invalid returnvalue in mng_get_suspensionmode
+- B495443 - incorrect suspend check in read_databuffer
+- B526138 - returned IJGSRC6B calling convention to default for MSVC
+- B558212 - off by one error
+- B557677 - can't find lcms.h
+
+core:
+- fixed possible compile-problem in cleanup_rowproc
+- MNG subimage alpha composite wrong for rgba8 images
+
+samples:
+
+contrib:
+
+doc:
+
+makefiles:
+- fixed check for lcms.h in configure.in
+
+autoconf:
+
+-----------------------------------------------------------
+
+1.0.3 (Sep 18th 2001)
+---------------------
+
+in short:
+
+Small cosmetic changes. Cleaning up the contributions.
+New makefile for mingw32, and new fbcon example.
+Major thanks to Greg for helping out with the *nix stuff!
+Note that there's also a separate download for ASM programmers now.
+Check http://www.libmng.com for details (download/ports&packages page).
+
+It may be a while for the next release. I'm "off duty" for the next 8 or
+so months...
+
+Gerard
+
+-------------------
+
+bugfixes:
+- B459058 - wrong include for lcms headers
+
+core:
+- changed inclusion of lcms.h header for Linux platforms (suggested by Greg)
+- added get function for last processed BACK chunk
+
+samples:
+- replaced the gtk & sdl viewer apps with updates by Greg Roelofs
+
+contrib:
+
+doc:
+
+makefiles:
+- changed makefile.linux & makefile.unix as suggested by Greg Roelofs
+  (makefile.linux now compiles with lcms by default)
+- added makefile.mingw for mingw32 by Benoit Blanchon (thanks Mate!)
+
+autoconf:
+
+-----------------------------------------------------------
+
+1.0.2 (Jul 7th 2001)
+--------------------
+
+in short:
+
+Another maintenance release with a few added extra's.
+
+-------------------
+
+bugfixes:
+- B421427 - writes wrong format in bKGD and tRNS
+- B434583 - compiler-warning if MNG_STORE_CHUNKS undefined
+
+core:
+- added optimization option for MNG-video playback
+- added processterm callback
+- added late binding errorcode (not used internally)
+- fixed memory-leak with delta-images (Thanks Michael!)
+- added option to turn off progressive refresh for large images
+
+samples:
+
+contrib:
+
+doc:
+
+makefiles:
+
+autoconf:
+
+-----------------------------------------------------------
+
+1.0.1 (May 2nd 2001)
+--------------------
+
+in short:
+
+Maintenance release.
+Fixed several memory-leaks with the help of Gregg Kelly, added/fixed some CMS
+handling, exported JPEG functions from standard DLL, and some other minor fixes.
+
+The CMS fix now makes libmng automagically work in MNG_FULL_CMS mode as a
+sRGB compliant system. YOU WILL NEED TO CHANGE THIS IF YOU ARE NOT ON AN sRGB
+COMPLIANT SYSTEM AND WANT TO USE CMS!!!!
+(look in libmng.h for the proper function-calls)
+
+-------------------
+
+bugfixes:
+
+core:
+- added MEND processing callback
+- fixed first FRAM_MODE=4 timing problem
+- added handle status-copy function (use with care)
+- exported JPEG functions from standard DLL
+- added BGRA8 canvas with premultiplied alpha (contrib by Gregg Kelly)
+- fixed problem with display_reset/display_resume (Thanks Gregg!)
+- fixed several memory-leaks (Thanks Gregg!)
+- fixed reset_rundata to drop all objects (Thanks again, Gregg!)
+- fixed problem with cms profile being created multiple times when both
+  iCCP & cHRM/gAMA are present (And again... Gregg)
+- moved mng_clear_cms to libmng_cms
+- added "default" sRGB generation (Thanks Marti!)
+
+samples:
+
+contrib:
+
+doc:
+
+makefiles:
+
+autoconf:
+
+-----------------------------------------------------------
+
+1.0.0 (Feb 6th 2001)
+--------------------
+
+in short:
+
+First public release. Finally(!)
+
+This is the 0.9.5 CVS version, which will never be released, because I feel it
+is now ready for a public release. So apart from the version-numbers here and
+there, all other changes are listed under 0.9.5.
+
+This library will work with every MNG/JNG known and available to me. Note that
+there are still parts that need to be coded, and that MNG support is around
+90-95% (JNG at 100%). It is however compliant with the latest and greatest
+MNG 1.0 specification.
+
+I hope to dedicate a bit more time this year to finish up full support and fill
+in the remaining blanks. But this is coming out of my spare time. And extra
+help is always appreciated.
+
+Please enjoy!
+
+Gerard
+
+-----------------------------------------------------------
+
+0.9.5 (no release)
+------------------
+
+in short:
+
+intermediate CVS
+
+-------------------
+
+bugfixes:
+B129681 - fixed compiler warnings SGI/Irix (thanks Dimitri)
+
+core:
+- fixed compiler-warnings Mozilla (thanks Tim)
+- fixed timing-problem with switching framing_modes
+- fixed some small compiler warnings (thanks Nikki)
+
+samples:
+
+contrib:
+- fixed library-paths for MSVC DLL project (thanks Chad)
+
+doc:
+
+makefiles:
+- added makefile for DJGPP (thanks Silvio)
+
+autoconf:
+
+-----------------------------------------------------------
+
+0.9.4 (Jan 19th 2001)
+----------------------
+
+in short:
+
+Now that the MNG spec is at 1.0, this should be the last beta. There's a few
+small changes to make it inline with the spec, and a couple of bug-fixes.
+This is a serious release-candidate for libmng-1.0!!
+Please... test test test test!!
+
+-------------------
+
+bugfixes:
+B123314 - fixed number of TERM related problems
+B123322 - fixed unwanted repetition in mng_readdisplay()
+B123443 - fixed by Ralph
+B124910 - fixed definition for WIN32_LEAN_AND_MEAN (thanks Chad)
+B125750 - fixed by Ralph
+B125756 - fixed mixup of data- & function-pointers (thanks Dimitri)
+B127517 - changed inclusion of the lcms header file for non-windows platforms
+
+core:
+- version numbers
+- fixed possible loop in display_resume() (Thanks Vova!)
+- fixed unwanted repetition in mng_readdisplay()
+- changed inclusion of the lcms header file for non-windows platforms
+- changed IHDR filter_method check for PNGs
+- moved restore of object 0 to libmng_display
+- added restore of object 0 to TERM processing (B123314)
+- fixed TERM delay processing (B123314)
+- fixed TERM end processing when count = 0 (B123314)
+- changed callback convention for MSVC (Thanks Chad)
+- fixed mixup of data- & function-pointers (thanks Dimitri)
+- added support for "nEED MNG-1.0"
+- added errorcode for MAGN methods
+- added errorchecking for MAGN methods
+- removed "old" MAGN methods 3 & 4
+- added "new" MAGN methods 3, 4 & 5
+- removed test filter-methods 1 & 65
+- set default level-set for filtertype=64 to all zeroes
+
+samples:
+
+contrib:
+- added GTK mng-view example by Vova Babin
+- added MSVC MNGview sample by Nikolaus Brennig
+- updated Jason Summer's mngplg to version 0.9.2
+  (that's mngplg-0.9.2 based on libmng-0.9.3 !!!)
+- rearranged contrib directory slightly
+- added MSVC project to build libmng.dll by Chad Austin
+
+doc:
+- added README.dll
+- added README.config
+
+makefiles:
+- added a makefile for MS Visual C++ (Thanks to Atsushi Matsuda)
+
+autoconf:
+- fixed configure.in for lcms (FreeBSD port by Mikhail Teterin)
+- by default configure includes CMS support if lcms is present
+
+-----------------------------------------------------------
+
+0.9.3 (October 29th 2000)
+-------------------------
+
+in short:
+
+Another beta release. The number of changes in the MNG specification have
+resulted in a lot of new code and some changed code. At the same time I saw
+no need to withhold some new functionality as it was pretty clear there was
+going to be another beta-round. If things go well, I'm going to try to release
+libmng 1.0.0 very shortly after this one.
+
+Many thanks to a lot of people for helping out, sending contributions, making
+suggestions and testing this little baby. This would get nowhere without YOU!!!
+
+- fixed bug 111300/117103
+- added workaround for faulty PhotoShop iCCP chunk
+- added MAGN/JDAA chunks
+- added support for new filter_types
+- added PNG/MNG spec version indicators
+- added BCB mngview contribution by Andy Protano
+- added BCB mngdump; a GUI-based MNG dumping utility (Andy Protano)
+- implemented support for nEED "draft nn"
+- implemented app-defined support for bKGD for PNG images
+- removed trace-options from default SO/DLL builds (!!!)
+- raised initial maximum canvas size to 10000x10000 (!!!)
+  (an App that wants to protect from overly large images should call
+   mng_set_maxcanvassize() with appropriate values)
+- fixed other assorted stuff
+
+-------------------
+
+bugfixes:
+B111300 - fixup for improved portability
+B117103 - fixed compilation errors on *nix with lcms (thanks Ralph!)
+
+core:
+- fixed compiler-warnings from Mozilla
+- added check for simplicity-bits in MHDR
+- added workaround for faulty PhotoShop iCCP chunk
+- fixed app-supplied background restore
+- fixed TERM processing delay of 0 msecs
+- fixed write-code for zTXt & iTXt
+- fixed read-code for iTXt
+- added MAGN chunk
+- fixed sRGB precedence for gamma_only corection
+- added support for new filter_types
+- fixed problem with no refresh after TERM
+- fixed DEFI behavior
+- fixed inclusion parameters to make the external libs work together
+- added export of zlib functions from windows dll
+- fixed timing & refresh behavior for single PNG/JNG
+- removed trace-options from default SO/DLL builds (!!!)
+- fixed MAGN rounding errors (thanks Matthias!)
+- fixed small timing problem when FRAM delay = 0
+- fixed simplicity-check in compliance with draft 81/0.98a
+- fixed alpha-blending for all alpha-canvasstyles
+- added support for alpha-depth prediction
+- fixed processing of unknown critical chunks
+- removed test-MaGN
+- added PNG/MNG spec version indicators
+- implemented support for nEED
+- added support for JDAA
+- added functions to retrieve PNG/JNG specific header-info
+- added optional support for bKGD for PNG images
+- raised initial maximum canvas size to 10000x10000
+- added support for delta-JNG
+- added callback to process non-critical unknown chunks
+- fixed support for delta-images during read() / display()
+- added closestream() processing for mng_cleanup()
+- fixed delta-processing behavior
+- added storage for pixel-/alpha-sampledepth for delta's
+- implemented delayed delta-processing
+- fixed putchunk_plte() to set bEmpty parameter (thanks Ben!)
+- added errorcode for delayed delta-processing
+- added get/set for bKGD preference setting
+- added get function for interlace/progressive display
+- fixed bug in empty PLTE handling
+- fixed seperate read() & display() processing
+- fixed tRNS processing for gray-image < 8-bits
+
+samples:
+- added BCB mngview contribution by Andy Protano
+
+contrib:
+- added BCB mngdump; a GUI-based MNG dumping utility (Andy Protano)
+
+doc:
+- updated RPM spec-file by MATSUURA Takanori
+- updated README.contrib
+
+makefiles:
+- fixed some stuff in automake/autoconf/libtool
+- fixed auto* for bug B117103
+
+-----------------------------------------------------------
+
+0.9.2 (August 7th 2000)
+-----------------------
+
+in short:
+
+Third beta release! Last one???
+
+!!IMPORTANT!! All file-names are now prefixed with "libmng_" !!IMPORTANT!!
+
+Many thanks to Albert Chin-A-Young for his contribution of the
+autoconf/automake/libtool stuff and to Ralph Giles for helping me
+put it in the right places.
+
+There's a special README.autoconf so please read it!
+
+- fixed bug 110320/110546/110547/111096
+- added several status retrieval functions
+- fixed other small bugs in display processing
+- fixed number of small problems and documentation typos
+- added autoconf/automake/libtool
+- added latest MNG plugin (0.9.0) by Jason Summers
+
+-------------------
+
+bugfixes:
+B110320 - fixed GCC warning about mix-sized pointer math
+B110546 - fixed for improperly returning UNEXPECTEDEOF
+B110547 - fixed bug in interlace code
+B111096 - fixed large-buffer read-suspension
+
+core:
+- version numbers
+- fixed small bugs in display processing
+- removed Nextbackxxx fields (no longer used)
+- fixed problem with trace-functions improperly wrapped
+- put specific code in add_chunk() inside MNG_SUPPORT_WRITE wrapper
+- fixed documentation typos
+- fixed wrapping of suspension parameters
+- added status_xxxx functions
+- added trace-codes/-strings for status_xxxxx functions
+- changed file-prefixes
+- added function to set simplicity field
+- added trace-code/-string for updatemngsimplicity
+- fixed putchunk_unknown() function
+
+samples:
+
+contrib:
+- added latest MNG plugin (0.9.0) by Jason Summers
+
+doc:
+- version numbers
+- added autoconf readme
+- version numbers in RPM stuff
+
+makefiles:
+- fixed for new file-prefix
+- added autoconf/automake/libtool
+
+-----------------------------------------------------------
+
+0.9.1 (July 26th 2000)
+----------------------
+
+in short:
+
+Second beta release.
+
+Given the enormous amount of bug-reports (not ;-), this will most likely
+be one of the last betas. If things remain upright, the first public release
+(1.0.0) is fairly eminent in the weeks to come...
+
+- added SDL mng player by Ralph Giles to contributions
+- fixed timing and added internal buffering for I/O-suspension scenarios
+- added get routines for internal display-state variables (frame/layer/playtime)
+- changed read-processing for improved I/O-suspension (internal buffering)
+- fixed several problems with create- & write-support
+- added a load of documentation
+- lots of small stuff
+
+-------------------
+
+bugfixes:
+
+core:
+- fixed mandatory BACK color to be opaque
+- changed mng_display_resume to allow to be called after a suspension
+  return with MNG_NEEDMOREDATA
+- changed comments to indicate modified behavior for timer & suspension breaks
+- added variables for go_xxxx processing
+- implemented support for freeze/reset/resume & go_xxxx
+- added trace-codes/-strings for special display processing
+- added variables for improved timing support
+- added support for improved timing
+- added get routines for internal display variables
+- added get/set routines for suspensionmode variable
+- added trace-code/-string for get/set suspensionmode
+- added trace-codes/-strings for get/set display variables
+- added support for improved I/O-suspension
+- changed read-processing for improved I/O-suspension
+- added trace-code/-string for read_databuffer (I/O-suspension)
+- added suspendbuffer constants
+- changed EOF processing behavior
+- fixed TERM delay processing
+- changed pre-draft48 frame_mode=3 to frame_mode=1
+- added callbacks for SAVE/SEEK processing
+- added trace-codes/-strings for SAVE/SEEK callbacks
+- added variable for NEEDSECTIONWAIT breaks
+- added trace-codes/-strings for get/set sectionbreaks
+- added NEEDSECTIONWAIT error-code/-string
+- added macro + routine to set returncode without calling error callback
+- added trace-code/-string for special error routine
+- changed default readbuffer size from 1024 to 4200
+- added variable for freeze & reset processing
+- fixed storage of images during mng_read()
+- fixed support for mng_display() after mng_read()
+- added error cleanup processing
+- fixed support for mng_display_reset()
+- fixed suspension-buffering for 32K+ chunks
+- added function to set frame-/layer-count & playtime
+- added trace-code/-string for updatemngheader
+- added error-code/-string for updatemngheader if not a MNG
+- fixed creation-code
+- fixed writing of signature
+- fixed several chunk-writing routines
+
+samples:
+- fixed the libmng.pas module in line with libmng.h
+
+contrib:
+- added the SDL based mngplay viewer by Ralph Giles
+
+doc:
+- extended the RPM contribution by MATSUURA Takanori
+- added libmng.txt, a full description of the library and its usage
+- added man-pages for mng(5), jng(5) and libmng(3)
+
+makefiles:
+
+-----------------------------------------------------------
+
+0.9.0 (June 30th 2000)
+----------------------
+
+in short:
+
+This is the first beta!!! Yippee!!!
+
+Thanks to all the people who helped to guide me in the right direction.
+You know who you are!
+
+A special thanks to the guys with early implementations, who stood by and
+put up with my whims :-)
+
+changes over 0.5.3:
+
+- updated mngplg to 0.4.1 (the latest & greatest)
+- changed refresh parameters to 'x,y,width,height'
+
+-----------------------------------------------------------
+
+0.5.3 (never released)
+----------------------
+
+in short:
+
+This is a working version only; the next release will be 0.9.0 (first Beta!)
+
+There are a few incompatible changes with previous versions. The userdata
+variable has been changed from mng_uint32 to mng_ptr to accomodate 64-bit
+systems. For the same reason memory allocation size parameters have been
+changed to a mng_size_t type which is a typedef of size_t.
+
+Thanks to Aleks Jakulin for helping to iron out some 64-bit platform issues!
+
+- implemented the update-region parameters of the refresh callback
+- added support for most common delta-image options
+- added an animation-speed modifier
+- added an image-level parameter for the processtext callback
+- updated mngplg to 0.4.0 (supports JNG, full CMS, and other enhancements!)
+- fixed a lot of small things
+- added support for PPLT chunk
+- fixed to support 64-bit platforms
+
+-------------------
+
+bugfixes:
+
+core:
+- added processing of color-info on delta-image
+- fixed handling of empty SAVE chunk
+- fixed display of stored JNG images
+- fixed problem with BASI-IEND as object 0
+- changed the version parameters (obviously)
+- added update-region parms for refresh calback
+- added Needrefresh parameter
+- added initialization of update-region for refresh
+- added initialization of Needrefresh parameter
+- changed progressive-display processing                  
+- added tracecodes for tracing JPEG progression           
+- added tracing of JPEG calls
+- added Deltaimmediate parm for faster delta-processing
+- added extra checks for delta-images                     
+- many changes to support delta-images
+- optimized some store_xxx routines                       
+- fixed some small things (as precaution)                 
+- fixed possible trouble if IEND display-processing got broken up
+- fixed nasty bug with embedded PNG after delta-image    
+- added processing of PLTE & tRNS for delta-images
+- added processing of PLTE/tRNS & color-info for delta-images in the
+  ani_objects chain
+- fixed problem with color-correction for stored images   
+- added get/set for speedtype to facilitate testing
+- added trace-codes & -strings for get/set speedtype
+- added speed-modifier to timing routine       
+- added get-routine of imagelevel for processtext callback
+- added trace-code & -string for get imagelevel
+- added administration of imagelevel parameter            
+- added support for PPLT chunk                         
+- added trace-codes & -strings for PPLT chunk processing
+- fixed problem with incorrect gamma-correction
+- fixed inclusion of IJG read/write code
+- fixed problem with 16-bit GA format
+- fixed problem with cheap transparency for 4-bit gray
+- fixed display_xxxx routines for interlaced images
+- added precaution against faulty iCCP chunks from PS
+- changed userdata variable to mng_ptr
+- added typedef for mng_size_t
+- changed size parameter for memory allocation to mng_size_t
+- fixed compiler-warning for non-initialized iB variable
+- changed definition for 32-bit ints (64-bit platforms)
+- changed definition for mng_handle (64-bit platforms)
+- swapped refresh parameters
+- fixed initialization routine for new mng_handle type
+- added inclusion of stdlib.h for abs()
+- fixed some 64-bit warnings
+- fixed incompatible return-types
+
+samples:
+
+contrib:
+- updated mngplg to 0.3.0 (supports JNG & full color-correction!)
+- updated mngplg to 0.4.0 (Jason is picking up the pace ;-)
+
+doc:
+- added rpm directory with rpm spec-file (contributed by MATSUURA Takanori)
+
+makefiles:
+- changed makefile.linux to reflect versionnr for shared-lib
+- changed makefile.linux to depend on mng_conf.h & mng_types.h
+
+-----------------------------------------------------------
+
+0.5.2 (June 10th 2000)
+----------------------
+
+in short:
+
+This is the third release for developers
+Another milestone since JNG is now fully supported
+The next release will most likely be numbered 0.9.0 as the first Beta!!
+
+Fixed bug 106017 & 106019
+Added many constants regarding chunk-property values
+Implemented full JNG support
+Added all the error- & trace-strings
+Added get/set routines for default ZLIB/IJG parameters
+Added a generic makefile for Unix platforms (contributed by Tim Rowley)
+Added canvasstyle for separate RGB + A canvas (eg. mozilla-style)
+Separated configuration-options into a separate file: "mng_conf.h"
+Fixed stuff for generic Unix compilation (contributed by Tim Rowley)
+Upgraded to lcms1.0.6 (now supports 16-bit endian-peculiarities)
+Added a makefile for Linux ELF & fixed some code-issues to go along with gcc
+Added support for suspended input-buffer processing
+Implemented the display-routines for RGBA/ARGB/BGRA/ABGR canvasstyles
+Implemented the application background-restore functionality
+Fixed & tested the mngtree Unix-sample (runs on Linux-RH6.2 with libmng.so)
+Upgraded mngplg to v0.2.2 (based on the latest code including JNG)
+Fixed a lot of other assorted stuff
+
+-------------------
+
+bugfixes:
+B003(106017) - fixed problem with <mem.h> being proprietary to BCB
+B004(106019) - fixed problem when MNG_SUPPORT_WRITE not defined
+
+core:
+- bumped version-numbers up to 0.5.2 (yeah, really)
+- fixed support for IJGSRC6B
+- cleaned up some code regarding mixed support-options
+- complemented constants for chunk-property values
+- fixed MNG_UINT_pHYg value
+- implemented JNG support
+- fixed problem with DEFI clipping
+- added error telltale strings & support
+- added trace telltale strings & support
+- added support for global color-chunks inside TERM/LOOP
+- added support for global PLTE,tRNS,bKGD inside TERM/LOOP
+- added default IJG compression parameters and such
+- moved init of default zlib parms to "mng_hlapi.c"
+- added init of default IJG parms
+- added support for get/set of zlib/IJG default parms
+- added tracestrings for global animation color-chunks
+- added tracestrings for get/set of default ZLIB/IJG parms
+- added tracestrings for global PLTE,tRNS,bKGD             
+- added framenr/layernr/playtime to object header          
+- added initialization of framenr/layernr/playtime        
+- changed ani_create calls not returning object pointer
+- create ani objects always (not just inside TERM/LOOP)
+- fixed inconsistancy with freeing global iCCP profile    
+- fixed minor bugs 16-bit pixel-handling                    
+- added object promotion routine (PROM handling)           
+- added trace-codes & -strings for image-object promotion
+- added trace-codes & -strings for delta-image processing
+- added error-codes & -strings for delta-image processing              
+- added support for delta-image processing
+- added ani-object routines for delta-image processing
+- added delta-image fields
+- added compression/filter/interlace fields to object-buffer for
+  delta-image processing                
+- added delta-image row-processing routines
+- fixed up punctuation in several files (contributed by Tim Rowley)       
+- removed useless definition in "mng_chunks.h" (contributed by Tim Rowley)
+- fixed pointer confusion in "mng_display.c" (contributed by Tim Rowley)
+- fixed inclusion for memcpy (contributed by Tim Rowley)
+- added mng_int32p (contributed by Tim Rowley)
+- added internal delta-image processing callbacks
+- separated configuration-options into "mng_conf.h"
+- changed to most likely configuration
+- added RGB8_A8 canvasstyle
+- added getalphaline callback for RGB8_A8 canvasstyle
+- fixed some makeup for Linux gcc compile
+- implemented app bkgd restore routines                   
+- implemented RGBA8, ARGB8, BGRA8 & ABGR8 display routines
+- added support for RGB8_A8 canvasstyle
+- added support for suspended input-buffer processing                   
+- added mng_read_resume HLAPI function to support read-suspension
+- fixed timer-handling to run with Mozilla (Tim Rowley)
+- fixed alpha-handling for alpha canvasstyles             
+- fixed some compilation-warnings (contrib Jason Morris)
+
+samples:
+- fixed mngview(delphi) to work with the new core
+- synchronized libmng.pas(delphi) with the new libmng.h header
+- removed the error- & trace-strings from libmng.pas(delphi)
+- fixed mngtree(Unix) to compile on Linux (runs with libmng.so)
+- added makefile.linux for mngtree(Unix) (tested on RedHat6.2)
+
+contrib:
+- updated mngplg to 0.2.2 (based on latest code; supports JNG!)
+
+doc:
+- this file obviously
+- added Tim Rowley as contributing author
+- changed the examples.readme doc
+- updated the design-schematics in line with the current code
+
+makefiles:
+- changed the directory to "makefiles" to avoid name-conflicts
+- added generic Unix makefile (thanks to Tim Rowley)
+- added Linux ELF makefile (tested on RedHat6.2)
+
+-----------------------------------------------------------
+
+0.5.1 May 16th 2000
+-------------------
+
+in short:
+
+This is the second release for developers
+It's a bit of a milestone since all the chunk functionality is in place and
+functioning (read, examine, create & write)
+This version is incompatible with 0.5.0 since some of the callback prototypes
+have changed (should be the last time that happens!)
+There are a few more samples and even a real contribution!
+
+Fixed bug 105795 & 105797
+Fixed a mis-alignment in animation-timing
+Added chunk-access functions
+Finished all chunk-storage routine-bits
+Finished all chunk-write routines
+Changed the callback prototypes to allow error-reporting back to the library
+Fixed some routines to allow for callback error-reporting
+Added version-control functions & constants
+Added two functions to set display- & sRGB-profile from memory
+Moved CRC table to dynamic structure (for improved thread-safety)
+Added SAVE & SEEK save&restore functionality
+Finished the application-based CMS-callbacks
+Fixed a few BCB specifics
+Changed the Win32 DLL and samples to use __stdcall
+Did some more assorted little changes
+Added 2 BCB samples
+Added 1 Unix sample
+Added the MNG plugin by Jason Summers in the contrib section
+Changed some documents to reflect these changes
+
+-------------------
+
+bugfixes:
+B001(105795) - fixed wrong lcms call & memory-leak for gammatables
+B002(105797) - fixed problem with missing sRGB profile
+
+core:
+- changed chunk iteration function
+- added chunk access functions
+- added version control constants & functions
+- changed strict-ANSI stuff
+- added set_outputprofile2 & set_srgbprofile2
+- added empty-chunk put-routines
+- added version_dll & VERSION_DLL (for consistency)
+- added version control explanatory text & samples
+- added iteratechunk callback definition
+- improved definitions for DLL support
+- added 8-bit palette definition
+- added general array definitions
+- added MNG_NULL definition
+- changed most callback prototypes to allow the app
+  to report errors during callback processing
+- added CRC table to main structure (for thread-safety)
+- added iPLTEentries for checking hIST-length
+- changed palette definition to exported palette-type
+- removed frozen indicator
+- added create/write indicators
+- added eMNGma hack (will be removed in 1.0.0 !!!)
+- added TERM animation object pointer (easier reference)
+- added saved-data structure for SAVE/SEEK processing
+- added some errorcodes
+- added application errorcodes (used with callbacks)
+- moved chunk-access errorcodes to severity 5
+- added chunk-access function trace-codes
+- changed trace to macro for callback error-reporting
+- added save_state & restore_state trace-codes
+- put in some extra comments
+- fixed layout for sBIT, PPLT
+- changed write callback definition
+- fixed layout for PPLT again (missed deltatype ?!?)
+- cleaned up left-over teststuff in the BACK chunk routine
+- changed CRC initialization to use dynamic structure
+  (wasn't thread-safe the old way !)
+- filled in many missing sequence&length checks
+- filled in many missing chunk-store snippets
+- added checks for running animations
+- filled remaining write routines
+- fixed read_pplt with regard to deltatype
+- added callback error-reporting support
+- added pre-draft48 support (short MHDR, frame_mode, LOOP)
+- fixed chunk-storage bit in several routines
+- supplemented the SAVE & SEEK display processing
+- added init of iPLTEcount
+- changed calling-convention definition
+- changed status-handling of display-routines
+- added versioning-control routines
+- filled the write routine
+- fixed frame_delay misalignment
+- added sanity check for frozen status
+- changed display_mend to reset state to initial or SAVE
+- added save_state and restore_state for SAVE/SEEK/TERM
+  processing
+- added process_save & process_seek routines
+- changed and filled iterate-chunk function
+- added getchunk functions
+- added putchunk functions
+- added empty-chunk put-routines
+- filled application-based color-management routines
+- added creatememprofile
+- filled the deflatedata routine
+- added cleanup of saved-data (SAVE/SEEK processing)
+- moved the actual write_graphic functionality from mng_hlapi.c
+  to it's appropriate function in the mng_write.c module
+- moved standard header includes into mng_types.h
+  (stdlib/mem for mem-mngmt & math for fp gamma-calc)
+- added getimgdata & putimgdata functions
+
+samples:
+- fixed mngview(delphi) to work with the new core
+- synchronized libmng.pas(delphi) with the new libmng.h header
+- added mngtree(bcb) sample
+- added bogus(bcb) sample
+- added mngtree(unix) sample
+
+contrib:
+- added mngplg 0.1.0 / a MNG plugin for Win32 by Jason Summers
+
+doc:
+- added this changes.readme file
+- changed the samples.readme doc accordingly
+- changed the contrib.readme doc accordingly
+
+-----------------------------------------------------------
+
+0.5.0 May 1st 2000
+------------------
+
+in short:
+
+This is the first developers release.
+It's roughly about 60% done.
