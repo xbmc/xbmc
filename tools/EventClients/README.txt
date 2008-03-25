@@ -64,3 +64,11 @@ your Z axis) to control horizontal motion. Tilt it towards and away from you
 along (along your X axis) to control vertical mouse movement.
 
 That's all for now.
+
+WiiRemote Support
+-----------------
+
+The executable depends on libcwiid and libbluetooth and is compiled using
+# g++ WiiRemote.cpp -lcwiid -o WiiRemote
+The WiiRemote will emulate mouse by default but can be disabled by running with --disable-mouseemulation
+Other commands can be listed with --help
