@@ -6338,7 +6338,10 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver)
 
     CommitTransaction();
 
-    Compress();
+    if (pObserver)
+      pObserver->OnStateChanged(COMPRESSING_DATABASE);
+
+    Compress(false);
 
     CUtil::DeleteVideoDatabaseDirectoryCache();
 
