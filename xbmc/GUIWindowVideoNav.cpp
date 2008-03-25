@@ -885,8 +885,16 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
 
   CVideoDatabaseDirectory dir;
   NODE_TYPE node = dir.GetDirectoryChildType(m_vecItems.m_strPath);
-
-  if (item)
+  
+  if (!item)
+  {       
+    CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+    if (pScanDlg && pScanDlg->IsScanning())
+      buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
+    else
+      buttons.Add(CONTEXT_BUTTON_UPDATE_LIBRARY, 653);
+  }
+  else
   {
     SScraperInfo info;
     VIDEO::SScanSettings settings;
