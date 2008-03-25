@@ -97,11 +97,11 @@ Usage: ps3_remote.py <address> [port]
 
      port => port to send packets to
              (default 9777)
-""" 
+"""
 
 def process_keys(remote, xbmc):
     done = False
-    
+
     xbmc.connect()
     datalen = 0
     try:
@@ -109,7 +109,7 @@ def process_keys(remote, xbmc):
         datalen = len(data)
     except Exception, e:
         if str(e)=="timed out":
-            return done
+            return "2"
         time.sleep(2)
         done = True
 
@@ -127,7 +127,7 @@ def process_keys(remote, xbmc):
 
 def main():
     global xbmc, bticon
-    
+
     host = "127.0.0.1"
     port = 9777
 
@@ -135,7 +135,7 @@ def main():
         try:
             host = sys.argv[1]
             port = sys.argv[2]
-        except: 
+        except:
             pass
     else:
         return usage()

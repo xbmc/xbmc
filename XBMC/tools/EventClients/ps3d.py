@@ -9,6 +9,7 @@ from bt.hid import HID
 from bt.bt import bt_lookup_name
 from xbmcclient import XBMCClient
 from ps3 import sixaxis
+from ps3.keymaps import keymap_sixaxis
 from ps3_remote import process_keys as process_remote
 
 event_threads = []
@@ -17,6 +18,7 @@ class StoppableThread ( threading.Thread ):
     def __init__(self):
         threading.Thread.__init__(self)
         self._stop = False
+        self.set_timeout(0)
 
     def stop_thread(self):
         self._stop = True
@@ -30,29 +32,53 @@ class StoppableThread ( threading.Thread ):
                 self.isock.close()
             except:
                 pass
+        self.isock = None
         if self.csock:
             try:
                 self.csock.close()
             except:
                 pass
+        self.csock = None
+        self.last_action = 0
 
-    
+    def set_timeout(self, seconds):
+        self.timeout = seconds
+
+    def reset_timeout(self):
+        self.last_action = time.time()
+
+    def idle_time(self):
+        return time.time() - self.last_action
+
+    def timed_out(self):
+        if (time.time() - self.last_action) > self.timeout:
+            return True
+        else:
+            return False
+
+
 class PS3SixaxisThread ( StoppableThread ):
     def __init__(self, csock, isock, ip=""):
         StoppableThread.__init__(self)
         self.csock = csock
         self.isock = isock
         self.xbmc = XBMCClient("PS3 Sixaxis", "icons/bluetooth.png")
+        self.set_timeout(300)
 
     def run(self):
         sixaxis.initialize(self.csock, self.isock)
         self.xbmc.connect()
-        last_connect = time.time()
         bflags = 0
+        last_bflags = 0
         psflags = 0
+        psdown = 0
+        toggle_mouse = 0
+        self.reset_timeout()
         try:
             while not self.stop():
-                if (time.time() - last_connect) > 50:
+                if self.timed_out():
+                    raise Exception("PS3 Sixaxis powering off, timed out")
+                if self.idle_time() > 50:
                     self.xbmc.connect()
                 try:
                     data = sixaxis.read_input(self.isock)
@@ -62,10 +88,28 @@ class PS3SixaxisThread ( StoppableThread ):
                 if not data:
                     continue
                 if psflags:
-                    (bflags, psflags) = sixaxis.process_input(data, self.xbmc)
+                    self.reset_timeout()
+                    if psdown:
+                        if (time.time() - psdown) > 5:
+                            raise Exception("PS3 Sixaxis powering off, user request")
+                    else:
+                        psdown = time.time()
                 else:
-                    (bflags, psflags) = sixaxis.process_input(data, None)
-
+                    if psdown:
+                        toggle_mouse = 1 - toggle_mouse
+                    psdown = 0
+                (bflags, psflags) = sixaxis.process_input(data, toggle_mouse
+                                                          and self.xbmc
+                                                          or None)
+                if bflags != last_bflags:
+                    if bflags:
+                        try:
+                            self.xbmc.send_keyboard_button(keymap_sixaxis[bflags])
+                        except:
+                            pass
+                    else:
+                        self.xbmc.release_button()
+                    last_bflags = bflags
         except Exception, e:
             print str(e)
         self.close_sockets()
@@ -76,7 +120,8 @@ class PS3RemoteThread ( StoppableThread ):
         StoppableThread.__init__(self)
         self.csock = csock
         self.isock = isock
-        self.xbmc = XBMCClient("PS3 BluRay Remote", "icons/bluetooth.png")
+        self.xbmc = XBMCClient("PS3 Blu-Ray Remote", "icons/bluetooth.png")
+        self.set_timeout(300)
 
     def run(self):
         sixaxis.initialize(self.csock, self.isock)
@@ -86,8 +131,14 @@ class PS3RemoteThread ( StoppableThread ):
         psflags = 0
         try:
             while not self.stop():
-                if process_remote(self.isock, self.xbmc):
+                if process_remote(self.isock, self.xbmc)=="2":
+                    if self.timed_out():
+                        raise Exception("PS3 Blu-Ray Remote powering off, "\
+                                            "timed out")
+                elif process_remote(self.isock, self.xbmc):
                     break
+                else:
+                    self.reset_timeout()
         except Exception, e:
             print str(e)
         self.close_sockets()
@@ -164,7 +215,7 @@ def main():
     print "Starting HID daemon"
     start_hidd(bdaddr)
 
-if __name__=="__main__":        
+if __name__=="__main__":
     try:
         main()
     finally:
@@ -175,7 +226,7 @@ if __name__=="__main__":
                 if t.isAlive():
                     t.join()
                 print "Thread "+str(t)+" terminated"
-                
+
             except Exception, e:
-                print str(e)        
+                print str(e)
         pass
