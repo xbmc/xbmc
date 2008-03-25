@@ -99,9 +99,12 @@ namespace VIDEO
 
         if (m_bClean)
           m_database.CleanDatabase(m_pObserver);
-        if (m_pObserver)
-          m_pObserver->OnStateChanged(COMPRESSING_DATABASE);
-        m_database.Compress();
+        else
+        {
+          if (m_pObserver)
+            m_pObserver->OnStateChanged(COMPRESSING_DATABASE);
+          m_database.Compress(false);
+        }
       }
       else
         m_database.RollbackTransaction();
