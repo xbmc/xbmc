@@ -31,7 +31,7 @@
 /* Expanded entropy encoder object for progressive Huffman encoding. */
 
 typedef struct {
-  struct xjpeg_entropy_encoder pub; /* public fields */
+  struct jpeg_entropy_encoder pub; /* public fields */
 
   /* Mode flag: TRUE for optimization, FALSE for actual data output */
   boolean gather_statistics;
@@ -117,7 +117,7 @@ start_pass_phuff (j_compress_ptr cinfo, boolean gather_statistics)
   phuff_entropy_ptr entropy = (phuff_entropy_ptr) cinfo->entropy;
   boolean is_DC_band;
   int ci, tbl;
-  xjpeg_component_info * compptr;
+  jpeg_component_info * compptr;
 
   entropy->cinfo = cinfo;
   entropy->gather_statistics = gather_statistics;
@@ -170,7 +170,7 @@ start_pass_phuff (j_compress_ptr cinfo, boolean gather_statistics)
       if (tbl < 0 || tbl >= NUM_HUFF_TBLS)
         ERREXIT1(cinfo, JERR_NO_HUFF_TABLE, tbl);
       /* Allocate and zero the statistics tables */
-      /* Note that xjpeg_gen_optimal_table expects 257 entries in each table! */
+      /* Note that jpeg_gen_optimal_table expects 257 entries in each table! */
       if (entropy->count_ptrs[tbl] == NULL)
 	entropy->count_ptrs[tbl] = (long *)
 	  (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_IMAGE,
@@ -179,7 +179,7 @@ start_pass_phuff (j_compress_ptr cinfo, boolean gather_statistics)
     } else {
       /* Compute derived values for Huffman table */
       /* We may do this more than once for a table, but it's not expensive */
-      xjpeg_make_c_derived_tbl(cinfo, is_DC_band, tbl,
+      jpeg_make_c_derived_tbl(cinfo, is_DC_band, tbl,
 			      & entropy->derived_tbls[tbl]);
     }
   }
@@ -214,7 +214,7 @@ LOCAL(void)
 dump_buffer (phuff_entropy_ptr entropy)
 /* Empty the output buffer; we do not support suspension in this module. */
 {
-  struct xjpeg_destination_mgr * dest = entropy->cinfo->dest;
+  struct jpeg_destination_mgr * dest = entropy->cinfo->dest;
 
   if (! (*dest->empty_output_buffer) (entropy->cinfo))
     ERREXIT(entropy->cinfo, JERR_CANT_SUSPEND);
@@ -391,7 +391,7 @@ encode_mcu_DC_first (j_compress_ptr cinfo, JBLOCKROW *MCU_data)
   int blkn, ci;
   int Al = cinfo->Al;
   JBLOCKROW block;
-  xjpeg_component_info * compptr;
+  jpeg_component_info * compptr;
   ISHIFT_TEMPS
 
   entropy->next_output_byte = cinfo->dest->next_output_byte;
@@ -496,7 +496,7 @@ encode_mcu_AC_first (j_compress_ptr cinfo, JBLOCKROW *MCU_data)
   r = 0;			/* r = run length of zeros */
    
   for (k = cinfo->Ss; k <= Se; k++) {
-    if ((temp = (*block)[xjpeg_natural_order[k]]) == 0) {
+    if ((temp = (*block)[jpeg_natural_order[k]]) == 0) {
       r++;
       continue;
     }
@@ -653,7 +653,7 @@ encode_mcu_AC_refine (j_compress_ptr cinfo, JBLOCKROW *MCU_data)
    */
   EOB = 0;
   for (k = cinfo->Ss; k <= Se; k++) {
-    temp = (*block)[xjpeg_natural_order[k]];
+    temp = (*block)[jpeg_natural_order[k]];
     /* We must apply the point transform by Al.  For AC coefficients this
      * is an integer division with rounding towards 0.  To do this portably
      * in C, we shift after obtaining the absolute value.
@@ -709,7 +709,7 @@ encode_mcu_AC_refine (j_compress_ptr cinfo, JBLOCKROW *MCU_data)
     emit_symbol(entropy, entropy->ac_tbl_no, (r << 4) + 1);
 
     /* Emit output bit for newly-nonzero coef */
-    temp = ((*block)[xjpeg_natural_order[k]] < 0) ? 0 : 1;
+    temp = ((*block)[jpeg_natural_order[k]] < 0) ? 0 : 1;
     emit_bits(entropy, (unsigned int) temp, 1);
 
     /* Emit buffered correction bits that must be associated with this code */
@@ -778,7 +778,7 @@ finish_pass_gather_phuff (j_compress_ptr cinfo)
   phuff_entropy_ptr entropy = (phuff_entropy_ptr) cinfo->entropy;
   boolean is_DC_band;
   int ci, tbl;
-  xjpeg_component_info * compptr;
+  jpeg_component_info * compptr;
   JHUFF_TBL **htblptr;
   boolean did[NUM_HUFF_TBLS];
 
@@ -787,7 +787,7 @@ finish_pass_gather_phuff (j_compress_ptr cinfo)
 
   is_DC_band = (cinfo->Ss == 0);
 
-  /* It's important not to apply xjpeg_gen_optimal_table more than once
+  /* It's important not to apply jpeg_gen_optimal_table more than once
    * per table, because it clobbers the input frequency counts!
    */
   MEMZERO(did, SIZEOF(did));
@@ -807,8 +807,8 @@ finish_pass_gather_phuff (j_compress_ptr cinfo)
       else
         htblptr = & cinfo->ac_huff_tbl_ptrs[tbl];
       if (*htblptr == NULL)
-        *htblptr = xjpeg_alloc_huff_table((j_common_ptr) cinfo);
-      xjpeg_gen_optimal_table(cinfo, *htblptr, entropy->count_ptrs[tbl]);
+        *htblptr = jpeg_alloc_huff_table((j_common_ptr) cinfo);
+      jpeg_gen_optimal_table(cinfo, *htblptr, entropy->count_ptrs[tbl]);
       did[tbl] = TRUE;
     }
   }
@@ -828,7 +828,7 @@ jinit_phuff_encoder (j_compress_ptr cinfo)
   entropy = (phuff_entropy_ptr)
     (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_IMAGE,
 				SIZEOF(phuff_entropy_encoder));
-  cinfo->entropy = (struct xjpeg_entropy_encoder *) entropy;
+  cinfo->entropy = (struct jpeg_entropy_encoder *) entropy;
   entropy->pub.start_pass = start_pass_phuff;
 
   /* Mark tables unallocated */

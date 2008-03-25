@@ -28,7 +28,7 @@
 #include <setjmp.h>
 
 struct ima_error_mgr {
-	struct xjpeg_error_mgr pub;	/* "public" fields */
+	struct jpeg_error_mgr pub;	/* "public" fields */
 	jmp_buf setjmp_buffer;		/* for return to caller */
 	char* buffer;				/* error message <CSC>*/
 };
@@ -38,7 +38,7 @@ typedef ima_error_mgr *ima_error_ptr;
 // Here's the routine that will replace the standard error_exit method:
 ////////////////////////////////////////////////////////////////////////////////
 static void
-ima_xjpeg_error_exit (j_common_ptr cinfo)
+ima_jpeg_error_exit (j_common_ptr cinfo)
 {
 	/* cinfo->err really points to a my_error_mgr struct, so coerce pointer */
 	ima_error_ptr myerr = (ima_error_ptr) cinfo->err;
@@ -147,7 +147,7 @@ bool CxImageJPG::Decode(CxFile * hFile)
 	/* This struct contains the JPEG decompression parameters and pointers to
 	* working space (which is allocated as needed by the JPEG library).
 	*/
-	struct xjpeg_decompress_struct cinfo;
+	struct jpeg_decompress_struct cinfo;
 	/* We use our private extension JPEG error handler. <CSC> */
 	struct ima_error_mgr jerr;
 	jerr.buffer=info.szLastError;
@@ -167,31 +167,31 @@ bool CxImageJPG::Decode(CxFile * hFile)
 
 	/* Step 1: allocate and initialize JPEG decompression object */
 	/* We set up the normal JPEG error routines, then override error_exit. */
-	cinfo.err = xjpeg_std_error(&jerr.pub);
-	jerr.pub.error_exit = ima_xjpeg_error_exit;
+	cinfo.err = jpeg_std_error(&jerr.pub);
+	jerr.pub.error_exit = ima_jpeg_error_exit;
 
 	/* Establish the setjmp return context for my_error_exit to use. */
 	if (setjmp(jerr.setjmp_buffer)) {
 		/* If we get here, the JPEG code has signaled an error.
 		* We need to clean up the JPEG object, close the input file, and return.
 		*/
-		xjpeg_destroy_decompress(&cinfo);
+		jpeg_destroy_decompress(&cinfo);
 		return 0;
 	}
 	/* Now we can initialize the JPEG decompression object. */
-	xjpeg_create_decompress(&cinfo);
+	jpeg_create_decompress(&cinfo);
 
   /* Step 2: specify data source (eg, a file) */
-	//xjpeg_stdio_src(&cinfo, infile);
+	//jpeg_stdio_src(&cinfo, infile);
   CxFileJpg src(hFile);
   cinfo.src = &src;
 
-	/* Step 3: read file parameters with xjpeg_read_header() */
-	(void) xjpeg_read_header(&cinfo, TRUE);
+	/* Step 3: read file parameters with jpeg_read_header() */
+	(void) jpeg_read_header(&cinfo, TRUE);
 
 //<DP>: Load true color images as RGB (no quantize) 
 /* Step 4: set parameters for decompression */
-/*  if (cinfo.xjpeg_color_space!=JCS_GRAYSCALE) {
+/*  if (cinfo.jpeg_color_space!=JCS_GRAYSCALE) {
  *	cinfo.quantize_colors = TRUE;
  *	cinfo.desired_number_of_colors = 128;
  *}
@@ -229,15 +229,15 @@ bool CxImageJPG::Decode(CxFile * hFile)
       cinfo.scale_denom = power;
       power *= 2;
     }
-    xjpeg_calc_output_dimensions(&cinfo);
+    jpeg_calc_output_dimensions(&cinfo);
   }
 #endif
 
 	/* Step 5: Start decompressor */
-	xjpeg_start_decompress(&cinfo);
+	jpeg_start_decompress(&cinfo);
 
 	/* We may need to do some setup of our own at this point before reading
-	* the data.  After xjpeg_start_decompress() we have the correct scaled
+	* the data.  After jpeg_start_decompress() we have the correct scaled
 	* output image dimensions available, as well as the output colormap
 	* if we asked for color quantization.
 	*/
@@ -271,7 +271,7 @@ bool CxImageJPG::Decode(CxFile * hFile)
 		}
 	}
 
-	if (cinfo.xjpeg_color_space==JCS_GRAYSCALE){
+	if (cinfo.jpeg_color_space==JCS_GRAYSCALE){
 		SetGrayPalette();
 		head.biClrUsed =256;
 	} else {
@@ -299,7 +299,7 @@ bool CxImageJPG::Decode(CxFile * hFile)
 		((j_common_ptr) &cinfo, JPOOL_IMAGE, row_stride, 1);
 #endif
 	/* Step 6: while (scan lines remain to be read) */
-	/*           xjpeg_read_scanlines(...); */
+	/*           jpeg_read_scanlines(...); */
 	/* Here we use the library's state variable cinfo.output_scanline as the
 	* loop counter, so that we don't have to keep track ourselves.
 	*/
@@ -338,7 +338,7 @@ bool CxImageJPG::Decode(CxFile * hFile)
 		{
 			while (iNeededRow >= row_position)
 			{
-				num_scanlines_read += xjpeg_read_scanlines(&cinfo, buffer[next_row_slot], 1);;
+				num_scanlines_read += jpeg_read_scanlines(&cinfo, buffer[next_row_slot], 1);;
 				// rotate around
 				next_row_slot++;
 				if (next_row_slot >= 4)
@@ -348,11 +348,11 @@ bool CxImageJPG::Decode(CxFile * hFile)
 		}
 		else
 		{
-			(void) xjpeg_read_scanlines(&cinfo, buffer[0], 1);
+			(void) jpeg_read_scanlines(&cinfo, buffer[0], 1);
 			num_scanlines_read++;
 		}
 #else
-		(void) xjpeg_read_scanlines(&cinfo, buffer, 1);
+		(void) jpeg_read_scanlines(&cinfo, buffer, 1);
 #endif
 		// info.nProgress = (long)(100*cinfo.output_scanline/cinfo.output_height);
 		//<DP> Step 6a: CMYK->RGB */
@@ -454,14 +454,14 @@ bool CxImageJPG::Decode(CxFile * hFile)
 #ifdef RESAMPLE_ON_LOAD
 	while (cinfo.output_scanline < cinfo.output_height)
 	{
-		(void) xjpeg_read_scanlines(&cinfo, buffer[0], 1);
+		(void) jpeg_read_scanlines(&cinfo, buffer[0], 1);
 		num_scanlines_read++;
 	}
 	int iTest = num_scanlines_read;
 #endif
 
 	/* Step 7: Finish decompression */
-	(void) xjpeg_finish_decompress(&cinfo);
+	(void) jpeg_finish_decompress(&cinfo);
 	/* We can ignore the return value since suspension is not possible
 	* with the stdio data source.
 	*/
@@ -479,7 +479,7 @@ bool CxImageJPG::Decode(CxFile * hFile)
 
 	/* Step 8: Release JPEG decompression object */
 	/* This is an important step since it will release a good deal of memory. */
-	xjpeg_destroy_decompress(&cinfo);
+	jpeg_destroy_decompress(&cinfo);
 
 	/* At this point you may want to check to see whether any corrupt-data
 	* warnings occurred (test whether jerr.pub.num_warnings is nonzero).
@@ -504,7 +504,7 @@ bool CxImageJPG::Encode(CxFile * hFile)
 	* compression/decompression processes, in existence at once.  We refer
 	* to any one struct (and its associated working data) as a "JPEG object".
 	*/
-	struct xjpeg_compress_struct cinfo;
+	struct jpeg_compress_struct cinfo;
 	/* This struct represents a JPEG error handler.  It is declared separately
 	* because applications often want to supply a specialized error handler
 	* (see the second half of this file for an example).  But here we just
@@ -513,7 +513,7 @@ bool CxImageJPG::Encode(CxFile * hFile)
 	* Note that this struct must live as long as the main JPEG parameter
 	* struct, to avoid dangling-pointer problems.
 	*/
-	//struct xjpeg_error_mgr jerr;
+	//struct jpeg_error_mgr jerr;
 	/* We use our private extension JPEG error handler. <CSC> */
 	struct ima_error_mgr jerr;
 	jerr.buffer=info.szLastError;
@@ -527,10 +527,10 @@ bool CxImageJPG::Encode(CxFile * hFile)
 	* This routine fills in the contents of struct jerr, and returns jerr's
 	* address which we place into the link field in cinfo.
 	*/
-	//cinfo.err = xjpeg_std_error(&jerr); <CSC>
+	//cinfo.err = jpeg_std_error(&jerr); <CSC>
 	/* We set up the normal JPEG error routines, then override error_exit. */
-	cinfo.err = xjpeg_std_error(&jerr.pub);
-	jerr.pub.error_exit = ima_xjpeg_error_exit;
+	cinfo.err = jpeg_std_error(&jerr.pub);
+	jerr.pub.error_exit = ima_jpeg_error_exit;
 
 	/* Establish the setjmp return context for my_error_exit to use. */
 	if (setjmp(jerr.setjmp_buffer)) {
@@ -538,12 +538,12 @@ bool CxImageJPG::Encode(CxFile * hFile)
 		* We need to clean up the JPEG object, close the input file, and return.
 		*/
 		strcpy(info.szLastError, jerr.buffer); //<CSC>
-		xjpeg_destroy_compress(&cinfo);
+		jpeg_destroy_compress(&cinfo);
 		return 0;
 	}
 
 	/* Now we can initialize the JPEG compression object. */
-	xjpeg_create_compress(&cinfo);
+	jpeg_create_compress(&cinfo);
 	/* Step 2: specify data destination (eg, a file) */
 	/* Note: steps 2 and 3 can be done in either order. */
 	/* Here we use the library-supplied code to send compressed data to a
@@ -552,7 +552,7 @@ bool CxImageJPG::Encode(CxFile * hFile)
 	* requires it in order to write binary files.
 	*/
 
-	//xjpeg_stdio_dest(&cinfo, outfile);
+	//jpeg_stdio_dest(&cinfo, outfile);
 	CxFileJpg dest(hFile);
     cinfo.dest = &dest;
 
@@ -575,11 +575,11 @@ bool CxImageJPG::Encode(CxFile * hFile)
 	* (You must set at least cinfo.in_color_space before calling this,
 	* since the defaults depend on the source color space.)
 	*/
-	xjpeg_set_defaults(&cinfo);
+	jpeg_set_defaults(&cinfo);
 	/* Now you can set any non-default parameters you wish to.
 	* Here we just illustrate the use of quality (quantization table) scaling:
 	*/
-	xjpeg_set_quality(&cinfo, info.nQuality, TRUE /* limit to baseline-JPEG values */);
+	jpeg_set_quality(&cinfo, info.nQuality, TRUE /* limit to baseline-JPEG values */);
 
 	cinfo.density_unit=1;
 	cinfo.X_density=(unsigned short)GetXDPI();
@@ -589,10 +589,10 @@ bool CxImageJPG::Encode(CxFile * hFile)
 	/* TRUE ensures that we will write a complete interchange-JPEG file.
 	* Pass TRUE unless you are very sure of what you're doing.
 	*/
-	xjpeg_start_compress(&cinfo, TRUE);
+	jpeg_start_compress(&cinfo, TRUE);
 
 	/* Step 5: while (scan lines remain to be written) */
-	/*           xjpeg_write_scanlines(...); */
+	/*           jpeg_write_scanlines(...); */
 	/* Here we use the library's state variable cinfo.next_scanline as the
 	* loop counter, so that we don't have to keep track ourselves.
 	* To keep things simple, we pass one scanline per call; you can pass
@@ -615,15 +615,15 @@ bool CxImageJPG::Encode(CxFile * hFile)
 			RGBtoBGR(buffer[0], row_stride); // Lance : 1998/09/01 : Bug ID: EXP-2.1.1-9
 		}
 		iter.PrevRow();
-		(void) xjpeg_write_scanlines(&cinfo, buffer, 1);
+		(void) jpeg_write_scanlines(&cinfo, buffer, 1);
 	}
 
 	/* Step 6: Finish compression */
-	xjpeg_finish_compress(&cinfo);
+	jpeg_finish_compress(&cinfo);
 
 	/* Step 7: release JPEG compression object */
 	/* This is an important step since it will release a good deal of memory. */
-	xjpeg_destroy_compress(&cinfo);
+	jpeg_destroy_compress(&cinfo);
 
 	/* And we're done! */
 	return true;

@@ -35,7 +35,7 @@
 /* Private buffer controller object */
 
 typedef struct {
-  struct xjpeg_d_coef_controller pub; /* public fields */
+  struct jpeg_d_coef_controller pub; /* public fields */
 
   /* These variables keep track of the current location of the input side. */
   /* cinfo->input_iMCU_row is also used for this. */
@@ -162,7 +162,7 @@ decompress_onepass (j_decompress_ptr cinfo, JSAMPIMAGE output_buf)
   int blkn, ci, xindex, yindex, yoffset, useful_width;
   JSAMPARRAY output_ptr;
   JDIMENSION start_col, output_col;
-  xjpeg_component_info *compptr;
+  jpeg_component_info *compptr;
   inverse_DCT_method_ptr inverse_DCT;
 
   /* Loop to process as much as one whole iMCU row */
@@ -258,7 +258,7 @@ consume_data (j_decompress_ptr cinfo)
   JDIMENSION start_col;
   JBLOCKARRAY buffer[MAX_COMPS_IN_SCAN];
   JBLOCKROW buffer_ptr;
-  xjpeg_component_info *compptr;
+  jpeg_component_info *compptr;
 
   /* Align the virtual buffers for the components used in this scan. */
   for (ci = 0; ci < cinfo->comps_in_scan; ci++) {
@@ -331,7 +331,7 @@ decompress_data (j_decompress_ptr cinfo, JSAMPIMAGE output_buf)
   JBLOCKROW buffer_ptr;
   JSAMPARRAY output_ptr;
   JDIMENSION output_col;
-  xjpeg_component_info *compptr;
+  jpeg_component_info *compptr;
   inverse_DCT_method_ptr inverse_DCT;
 
   /* Force some input to be done if we are getting ahead of the input. */
@@ -416,7 +416,7 @@ smoothing_ok (j_decompress_ptr cinfo)
   my_coef_ptr coef = (my_coef_ptr) cinfo->coef;
   boolean smoothing_useful = FALSE;
   int ci, coefi;
-  xjpeg_component_info *compptr;
+  jpeg_component_info *compptr;
   JQUANT_TBL * qtable;
   int * coef_bits;
   int * coef_bits_latch;
@@ -477,7 +477,7 @@ decompress_smooth_data (j_decompress_ptr cinfo, JSAMPIMAGE output_buf)
   JBLOCKROW buffer_ptr, prev_block_row, next_block_row;
   JSAMPARRAY output_ptr;
   JDIMENSION output_col;
-  xjpeg_component_info *compptr;
+  jpeg_component_info *compptr;
   inverse_DCT_method_ptr inverse_DCT;
   boolean first_row, last_row;
   JBLOCK workspace;
@@ -689,7 +689,7 @@ jinit_d_coef_controller (j_decompress_ptr cinfo, boolean need_full_buffer)
   coef = (my_coef_ptr)
     (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_IMAGE,
 				SIZEOF(my_coef_controller));
-  cinfo->coef = (struct xjpeg_d_coef_controller *) coef;
+  cinfo->coef = (struct jpeg_d_coef_controller *) coef;
   coef->pub.start_input_pass = start_input_pass;
   coef->pub.start_output_pass = start_output_pass;
 #ifdef BLOCK_SMOOTHING_SUPPORTED
@@ -703,7 +703,7 @@ jinit_d_coef_controller (j_decompress_ptr cinfo, boolean need_full_buffer)
     /* padded to a multiple of samp_factor DCT blocks in each direction. */
     /* Note we ask for a pre-zeroed array. */
     int ci, access_rows;
-    xjpeg_component_info *compptr;
+    jpeg_component_info *compptr;
 
     for (ci = 0, compptr = cinfo->comp_info; ci < cinfo->num_components;
 	 ci++, compptr++) {

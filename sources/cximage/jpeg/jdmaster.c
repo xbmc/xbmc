@@ -28,7 +28,7 @@
 /* Private state */
 
 typedef struct {
-  struct xjpeg_decomp_master pub; /* public fields */
+  struct jpeg_decomp_master pub; /* public fields */
 
   int pass_number;		/* # of passes completed */
 
@@ -37,8 +37,8 @@ typedef struct {
   /* Saved references to initialized quantizer modules,
    * in case we need to switch modes.
    */
-  struct xjpeg_color_quantizer * quantizer_1pass;
-  struct xjpeg_color_quantizer * quantizer_2pass;
+  struct jpeg_color_quantizer * quantizer_1pass;
+  struct jpeg_color_quantizer * quantizer_2pass;
 } my_decomp_master;
 
 typedef my_decomp_master * my_master_ptr;
@@ -57,7 +57,7 @@ use_merged_upsample (j_decompress_ptr cinfo)
   if (cinfo->do_fancy_upsampling || cinfo->CCIR601_sampling)
     return FALSE;
   /* jdmerge.c only supports YCC=>RGB color conversion */
-  if (cinfo->xjpeg_color_space != JCS_YCbCr || cinfo->num_components != 3 ||
+  if (cinfo->jpeg_color_space != JCS_YCbCr || cinfo->num_components != 3 ||
       cinfo->out_color_space != JCS_RGB ||
       cinfo->out_color_components != RGB_PIXELSIZE)
     return FALSE;
@@ -90,12 +90,12 @@ use_merged_upsample (j_decompress_ptr cinfo)
  */
 
 GLOBAL(void)
-xjpeg_calc_output_dimensions (j_decompress_ptr cinfo)
+jpeg_calc_output_dimensions (j_decompress_ptr cinfo)
 /* Do computations that are needed before master selection phase */
 {
 #ifdef IDCT_SCALING_SUPPORTED
   int ci;
-  xjpeg_component_info *compptr;
+  jpeg_component_info *compptr;
 #endif
 
   /* Prevent application from calling me at wrong times */
@@ -284,11 +284,11 @@ prepare_range_limit_table (j_decompress_ptr cinfo)
 
 /*
  * Master selection of decompression modules.
- * This is done once at xjpeg_start_decompress time.  We determine
+ * This is done once at jpeg_start_decompress time.  We determine
  * which modules will be used and give them appropriate initialization calls.
  * We also initialize the decompressor input side to begin consuming data.
  *
- * Since xjpeg_read_header has finished, we know what is in the SOF
+ * Since jpeg_read_header has finished, we know what is in the SOF
  * and (first) SOS markers.  We also have all the application parameter
  * settings.
  */
@@ -302,7 +302,7 @@ master_selection (j_decompress_ptr cinfo)
   JDIMENSION jd_samplesperrow;
 
   /* Initialize dimensions and other stuff */
-  xjpeg_calc_output_dimensions(cinfo);
+  jpeg_calc_output_dimensions(cinfo);
   prepare_range_limit_table(cinfo);
 
   /* Width of an output scanline must be representable as JDIMENSION. */
@@ -408,7 +408,7 @@ master_selection (j_decompress_ptr cinfo)
   (*cinfo->inputctl->start_input_pass) (cinfo);
 
 #ifdef D_MULTISCAN_FILES_SUPPORTED
-  /* If xjpeg_start_decompress will read the whole file, initialize
+  /* If jpeg_start_decompress will read the whole file, initialize
    * progress monitoring appropriately.  The input step is counted
    * as one pass.
    */
@@ -521,7 +521,7 @@ finish_output_pass (j_decompress_ptr cinfo)
  */
 
 GLOBAL(void)
-xjpeg_new_colormap (j_decompress_ptr cinfo)
+jpeg_new_colormap (j_decompress_ptr cinfo)
 {
   my_master_ptr master = (my_master_ptr) cinfo->master;
 
@@ -545,7 +545,7 @@ xjpeg_new_colormap (j_decompress_ptr cinfo)
 
 /*
  * Initialize master decompression control and select active modules.
- * This is performed at the start of xjpeg_start_decompress.
+ * This is performed at the start of jpeg_start_decompress.
  */
 
 GLOBAL(void)
@@ -556,7 +556,7 @@ jinit_master_decompress (j_decompress_ptr cinfo)
   master = (my_master_ptr)
       (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_IMAGE,
 				  SIZEOF(my_decomp_master));
-  cinfo->master = (struct xjpeg_decomp_master *) master;
+  cinfo->master = (struct jpeg_decomp_master *) master;
   master->pub.prepare_for_output_pass = prepare_for_output_pass;
   master->pub.finish_output_pass = finish_output_pass;
 

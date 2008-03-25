@@ -284,7 +284,7 @@ RGBQUAD CxImage::RGBtoHSL(RGBQUAD lRGBColor)
 			H = (BYTE)(((2*HSLMAX)/3) + Gdelta - Rdelta);
 
 //		if (H < 0) H += HSLMAX;     //always false
-		if (H > HSLMAX) H -= HSLMAX;
+//		if (H > HSLMAX) H -= HSLMAX;//Also always false
 	}
 	RGBQUAD hsl={L,S,H,0};
 	return hsl;

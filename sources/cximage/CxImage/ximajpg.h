@@ -45,8 +45,13 @@
 #define CXIMAGEJPG_SUPPORT_EXIF 1
 
 extern "C" {
- #include "../jpeg/jpeglib.h"
- #include "../jpeg/jerror.h"
+  #ifdef _LINUX
+    #include <jpeglib.h>
+    #include <jerror.h>
+  #else
+    #include "../jpeg/jpeglib.h"
+    #include "../jpeg/jerror.h"
+  #endif
 }
 
 class DLL_EXP CxImageJPG: public CxImage
@@ -150,7 +155,7 @@ protected:
 ////////////////////////////////////////////////////////////////////////////////////////
 
 // thanks to Chris Shearer Cooper <cscooper(at)frii(dot)com>
-class CxFileJpg : public xjpeg_destination_mgr, public xjpeg_source_mgr
+class CxFileJpg : public jpeg_destination_mgr, public jpeg_source_mgr
 	{
 public:
 	enum { eBufSize = 4096 };
@@ -166,7 +171,7 @@ public:
 		init_source = InitSource;
 		fill_input_buffer = FillInputBuffer;
 		skip_input_data = SkipInputData;
-		resync_to_restart = xjpeg_resync_to_restart; // use default method
+		resync_to_restart = jpeg_resync_to_restart; // use default method
 		term_source = TermSource;
 		next_input_byte = NULL; //* => next byte to read from buffer 
 		bytes_in_buffer = 0;	//* # of bytes remaining in buffer 

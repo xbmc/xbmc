@@ -30,19 +30,19 @@ LOCAL(void) transdecode_master_selection JPP((j_decompress_ptr cinfo));
 
 /*
  * Read the coefficient arrays from a JPEG file.
- * xjpeg_read_header must be completed before calling this.
+ * jpeg_read_header must be completed before calling this.
  *
  * The entire image is read into a set of virtual coefficient-block arrays,
  * one per component.  The return value is a pointer to the array of
  * virtual-array descriptors.  These can be manipulated directly via the
- * JPEG memory manager, or handed off to xjpeg_write_coefficients().
+ * JPEG memory manager, or handed off to jpeg_write_coefficients().
  * To release the memory occupied by the virtual arrays, call
- * xjpeg_finish_decompress() when done with the data.
+ * jpeg_finish_decompress() when done with the data.
  *
  * An alternative usage is to simply obtain access to the coefficient arrays
  * during a buffered-image-mode decompression operation.  This is allowed
- * after any xjpeg_finish_output() call.  The arrays can be accessed until
- * xjpeg_finish_decompress() is called.  (Note that any call to the library
+ * after any jpeg_finish_output() call.  The arrays can be accessed until
+ * jpeg_finish_decompress() is called.  (Note that any call to the library
  * may reposition the arrays, so don't rely on access_virt_barray() results
  * to stay valid across library calls.)
  *
@@ -51,7 +51,7 @@ LOCAL(void) transdecode_master_selection JPP((j_decompress_ptr cinfo));
  */
 
 GLOBAL(jvirt_barray_ptr *)
-xjpeg_read_coefficients (j_decompress_ptr cinfo)
+jpeg_read_coefficients (j_decompress_ptr cinfo)
 {
   if (cinfo->global_state == DSTATE_READY) {
     /* First call: initialize active modules */
@@ -80,7 +80,7 @@ xjpeg_read_coefficients (j_decompress_ptr cinfo)
 	}
       }
     }
-    /* Set state so that xjpeg_finish_decompress does the right thing */
+    /* Set state so that jpeg_finish_decompress does the right thing */
     cinfo->global_state = DSTATE_STOPPING;
   }
   /* At this point we should be in state DSTATE_STOPPING if being used

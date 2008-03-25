@@ -29,7 +29,7 @@
 /* Private subobject for this module */
 
 typedef struct {
-  struct xjpeg_forward_dct pub;	/* public fields */
+  struct jpeg_forward_dct pub;	/* public fields */
 
   /* Pointer to the DCT routine actually in use */
   forward_DCT_method_ptr do_dct;
@@ -64,7 +64,7 @@ start_pass_fdctmgr (j_compress_ptr cinfo)
 {
   my_fdct_ptr fdct = (my_fdct_ptr) cinfo->fdct;
   int ci, qtblno, i;
-  xjpeg_component_info *compptr;
+  jpeg_component_info *compptr;
   JQUANT_TBL * qtbl;
   DCTELEM * dtbl;
 
@@ -186,7 +186,7 @@ start_pass_fdctmgr (j_compress_ptr cinfo)
  */
 
 METHODDEF(void)
-forward_DCT (j_compress_ptr cinfo, xjpeg_component_info * compptr,
+forward_DCT (j_compress_ptr cinfo, jpeg_component_info * compptr,
 	     JSAMPARRAY sample_data, JBLOCKROW coef_blocks,
 	     JDIMENSION start_row, JDIMENSION start_col,
 	     JDIMENSION num_blocks)
@@ -276,7 +276,7 @@ forward_DCT (j_compress_ptr cinfo, xjpeg_component_info * compptr,
 #ifdef DCT_FLOAT_SUPPORTED
 
 METHODDEF(void)
-forward_DCT_float (j_compress_ptr cinfo, xjpeg_component_info * compptr,
+forward_DCT_float (j_compress_ptr cinfo, jpeg_component_info * compptr,
 		   JSAMPARRAY sample_data, JBLOCKROW coef_blocks,
 		   JDIMENSION start_row, JDIMENSION start_col,
 		   JDIMENSION num_blocks)
@@ -359,26 +359,26 @@ jinit_forward_dct (j_compress_ptr cinfo)
   fdct = (my_fdct_ptr)
     (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_IMAGE,
 				SIZEOF(my_fdct_controller));
-  cinfo->fdct = (struct xjpeg_forward_dct *) fdct;
+  cinfo->fdct = (struct jpeg_forward_dct *) fdct;
   fdct->pub.start_pass = start_pass_fdctmgr;
 
   switch (cinfo->dct_method) {
 #ifdef DCT_ISLOW_SUPPORTED
   case JDCT_ISLOW:
     fdct->pub.forward_DCT = forward_DCT;
-    fdct->do_dct = xjpeg_fdct_islow;
+    fdct->do_dct = jpeg_fdct_islow;
     break;
 #endif
 #ifdef DCT_IFAST_SUPPORTED
   case JDCT_IFAST:
     fdct->pub.forward_DCT = forward_DCT;
-    fdct->do_dct = xjpeg_fdct_ifast;
+    fdct->do_dct = jpeg_fdct_ifast;
     break;
 #endif
 #ifdef DCT_FLOAT_SUPPORTED
   case JDCT_FLOAT:
     fdct->pub.forward_DCT = forward_DCT_float;
-    fdct->do_float_dct = xjpeg_fdct_float;
+    fdct->do_float_dct = jpeg_fdct_float;
     break;
 #endif
   default:

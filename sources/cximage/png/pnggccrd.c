@@ -97,18 +97,18 @@
  *     static and truly global (multi-module) variables work fine.
  *
  * 19991023:
- *  - fixed xpng_combine_row() non-MMX replication bug (odd passes only?)
+ *  - fixed png_combine_row() non-MMX replication bug (odd passes only?)
  *  - switched from string-concatenation-with-macros to cleaner method of
  *     renaming global variables for djgpp--i.e., always use prefixes in
  *     inlined assembler code (== strings) and conditionally rename the
  *     variables, not the other way around.  Hence _const4, _mask8_0, etc.
  *
  * 19991024:
- *  - fixed mmxsupport()/xpng_do_read_interlace() first-row bug
+ *  - fixed mmxsupport()/png_do_read_interlace() first-row bug
  *     This one was severely weird:  even though mmxsupport() doesn't touch
  *     ebx (where "row" pointer was stored), it nevertheless managed to zero
  *     the register (even in static/non-fPIC code--see below), which in turn
- *     caused xpng_do_read_interlace() to return prematurely on the first row of
+ *     caused png_do_read_interlace() to return prematurely on the first row of
  *     interlaced images (i.e., without expanding the interlaced pixels).
  *     Inspection of the generated assembly code didn't turn up any clues,
  *     although it did point at a minor optimization (i.e., get rid of
@@ -117,7 +117,7 @@
  *  - "info gcc" was next to useless, so compared fPIC and non-fPIC assembly
  *     listings...  Apparently register spillage has to do with ebx, since
  *     it's used to index the global offset table.  Commenting it out of the
- *     input-reg lists in xpng_combine_row() eliminated compiler barfage, so
+ *     input-reg lists in png_combine_row() eliminated compiler barfage, so
  *     ifdef'd with __PIC__ macro:  if defined, use a global for unmask
  *
  * 19991107:
@@ -135,7 +135,7 @@
  *  - when compiling with gcc, be sure to use  -fomit-frame-pointer
  *
  * 20000319:
- *  - fixed a register-name typo in xpng_do_read_interlace(), default (MMX) case,
+ *  - fixed a register-name typo in png_do_read_interlace(), default (MMX) case,
  *     pass == 4 or 5, that caused visible corruption of interlaced images
  *
  * 20000623:
@@ -148,7 +148,7 @@
  *
  * 20000706:
  *  - Chuck Wilson passed along these remaining gcc 2.95.2 errors:
- *       pnggccrd.c: In function `xpng_combine_row':
+ *       pnggccrd.c: In function `png_combine_row':
  *       pnggccrd.c:525: more than 10 operands in `asm'
  *       pnggccrd.c:669: more than 10 operands in `asm'
  *       pnggccrd.c:828: more than 10 operands in `asm'
@@ -160,8 +160,8 @@
  *     10 operands; they just don't report it.  Much strangeness ensues, etc.
  *
  * 20000729:
- *  - enabled xpng_read_filter_row_mmx_up() (shortest remaining unconverted
- *     MMX routine); began converting xpng_read_filter_row_mmx_sub()
+ *  - enabled png_read_filter_row_mmx_up() (shortest remaining unconverted
+ *     MMX routine); began converting png_read_filter_row_mmx_sub()
  *  - to finish remaining sections:
  *     - clean up indentation and comments
  *     - preload local variables
@@ -171,10 +171,10 @@
  *     - remove "$" from addressing of Shift and Mask variables [20000823]
  *
  * 20000731:
- *  - global union vars causing segfaults in xpng_read_filter_row_mmx_sub()?
+ *  - global union vars causing segfaults in png_read_filter_row_mmx_sub()?
  *
  * 20000822:
- *  - ARGH, stupid xpng_read_filter_row_mmx_sub() segfault only happens with
+ *  - ARGH, stupid png_read_filter_row_mmx_sub() segfault only happens with
  *     shared-library (-fPIC) version!  Code works just fine as part of static
  *     library.  Damn damn damn damn damn, should have tested that sooner.
  *     ebx is getting clobbered again (explicitly this time); need to save it
@@ -188,11 +188,11 @@
  * 20000826:
  *  - added visual separators to help navigate microscopic printed copies
  *     (http://pobox.com/~newt/code/gpr-latest.zip, mode 10); started working
- *     on xpng_read_filter_row_mmx_avg()
+ *     on png_read_filter_row_mmx_avg()
  *
  * 20000828:
- *  - finished xpng_read_filter_row_mmx_avg():  only Paeth left! (930 lines...)
- *     What the hell, did xpng_read_filter_row_mmx_paeth(), too.  Comments not
+ *  - finished png_read_filter_row_mmx_avg():  only Paeth left! (930 lines...)
+ *     What the hell, did png_read_filter_row_mmx_paeth(), too.  Comments not
  *     cleaned up/shortened in either routine, but functionality is complete
  *     and seems to be working fine.
  *
@@ -203,37 +203,37 @@
  *     is simple enough...
  *
  * 20000914:
- *  - bug in xpng_read_filter_row_mmx_avg():  16-bit grayscale not handled
+ *  - bug in png_read_filter_row_mmx_avg():  16-bit grayscale not handled
  *     correctly (but 48-bit RGB just fine)
  *
  * 20000916:
- *  - fixed bug in xpng_read_filter_row_mmx_avg(), bpp == 2 case; three errors:
+ *  - fixed bug in png_read_filter_row_mmx_avg(), bpp == 2 case; three errors:
  *     - "_ShiftBpp.use = 24;"      should have been   "_ShiftBpp.use = 16;"
  *     - "_ShiftRem.use = 40;"      should have been   "_ShiftRem.use = 48;"
  *     - "psllq _ShiftRem, %%mm2"   should have been   "psrlq _ShiftRem, %%mm2"
  *
  * 20010101:
- *  - added new xpng_init_mmx_flags() function (here only because it needs to
- *     call mmxsupport(), which should probably become global xpng_mmxsupport());
- *     modified other MMX routines to run conditionally (xpng_ptr->asm_flags)
+ *  - added new png_init_mmx_flags() function (here only because it needs to
+ *     call mmxsupport(), which should probably become global png_mmxsupport());
+ *     modified other MMX routines to run conditionally (png_ptr->asm_flags)
  *
  * 20010103:
- *  - renamed mmxsupport() to xpng_mmx_support(), with auto-set of mmx_supported,
- *     and made it public; moved xpng_init_mmx_flags() to png.c as internal func
+ *  - renamed mmxsupport() to png_mmx_support(), with auto-set of mmx_supported,
+ *     and made it public; moved png_init_mmx_flags() to png.c as internal func
  *
  * 20010104:
- *  - removed dependency on xpng_read_filter_row_c() (C code already duplicated
- *     within MMX version of xpng_read_filter_row()) so no longer necessary to
+ *  - removed dependency on png_read_filter_row_c() (C code already duplicated
+ *     within MMX version of png_read_filter_row()) so no longer necessary to
  *     compile it into pngrutil.o
  *
  * 20010310:
- *  - fixed buffer-overrun bug in xpng_combine_row() C code (non-MMX)
+ *  - fixed buffer-overrun bug in png_combine_row() C code (non-MMX)
  *
  * 20020304:
  *  - eliminated incorrect use of width_mmx in pixel_bytes == 8 case
  *
  * STILL TO DO:
- *     - test xpng_do_read_interlace() 64-bit case (pixel_bytes == 8)
+ *     - test png_do_read_interlace() 64-bit case (pixel_bytes == 8)
  *     - write MMX code for 48-bit case (pixel_bytes == 6)
  *     - figure out what's up with 24-bit case (pixel_bytes == 3):
  *        why subtract 8 from width_mmx in the pass 4/5 case?
@@ -242,7 +242,7 @@
  *        of the row buffer, not the end (see 19991007 for details)
  *     x pick one version of mmxsupport() and get rid of the other
  *     - add error messages to any remaining bogus default cases
- *     - enable pixel_depth == 8 cases in xpng_read_filter_row()? (test speed)
+ *     - enable pixel_depth == 8 cases in png_read_filter_row()? (test speed)
  *     x add support for runtime enable/disable/query of various MMX routines
  */
 
@@ -251,12 +251,12 @@
 
 #if defined(PNG_USE_PNGGCCRD)
 
-int PNGAPI xpng_mmx_support(void);
+int PNGAPI png_mmx_support(void);
 
 #ifdef PNG_USE_LOCAL_ARRAYS
-static const int FARDATA xpng_pass_start[7] = {0, 4, 0, 2, 0, 1, 0};
-static const int FARDATA xpng_pass_inc[7]   = {8, 8, 4, 4, 2, 2, 1};
-static const int FARDATA xpng_pass_width[7] = {8, 4, 4, 2, 2, 1, 1};
+static const int FARDATA png_pass_start[7] = {0, 4, 0, 2, 0, 1, 0};
+static const int FARDATA png_pass_inc[7]   = {8, 8, 4, 4, 2, 2, 1};
+static const int FARDATA png_pass_width[7] = {8, 4, 4, 2, 2, 1, 1};
 #endif
 
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED)
@@ -344,8 +344,8 @@ static unsigned long long _const6   = 0x00000000000000FFLL;
 // WARNING: Their presence probably defeats the thread safety of libpng.
 
 #ifdef PNG_THREAD_UNSAFE_OK
-static xpng_uint_32  _FullLength;
-static xpng_uint_32  _MMXLength;
+static png_uint_32  _FullLength;
+static png_uint_32  _MMXLength;
 static int          _dif;
 static int          _patemp; // temp variables for Paeth routine
 static int          _pbtemp;
@@ -353,7 +353,7 @@ static int          _pctemp;
 #endif
 
 void /* PRIVATE */
-xpng_squelch_warnings(void)
+png_squelch_warnings(void)
 {
 #ifdef PNG_THREAD_UNSAFE_OK
    _dif = _dif;
@@ -415,42 +415,42 @@ static int _mmx_supported = 2;
    if the machine supports MMX. */
 
 void /* PRIVATE */
-xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
+png_combine_row(png_structp png_ptr, png_bytep row, int mask)
 {
-   xpng_debug(1, "in xpng_combine_row (pnggccrd.c)\n");
+   png_debug(1, "in png_combine_row (pnggccrd.c)\n");
 
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED)
    if (_mmx_supported == 2) {
-       /* this should have happened in xpng_init_mmx_flags() already */
-       xpng_warning(xpng_ptr, "asm_flags may not have been initialized");
-       xpng_mmx_support();
+       /* this should have happened in png_init_mmx_flags() already */
+       png_warning(png_ptr, "asm_flags may not have been initialized");
+       png_mmx_support();
    }
 #endif
 
    if (mask == 0xff)
    {
-      xpng_debug(2,"mask == 0xff:  doing single xpng_memcpy()\n");
-      xpng_memcpy(row, xpng_ptr->row_buf + 1,
-       (xpng_size_t)((xpng_ptr->width * xpng_ptr->row_info.pixel_depth + 7) >> 3));
+      png_debug(2,"mask == 0xff:  doing single png_memcpy()\n");
+      png_memcpy(row, png_ptr->row_buf + 1,
+       (png_size_t)((png_ptr->width * png_ptr->row_info.pixel_depth + 7) >> 3));
    }
-   else   /* (xpng_combine_row() is never called with mask == 0) */
+   else   /* (png_combine_row() is never called with mask == 0) */
    {
-      switch (xpng_ptr->row_info.pixel_depth)
+      switch (png_ptr->row_info.pixel_depth)
       {
-         case 1:        /* xpng_ptr->row_info.pixel_depth */
+         case 1:        /* png_ptr->row_info.pixel_depth */
          {
-            xpng_bytep sp;
-            xpng_bytep dp;
+            png_bytep sp;
+            png_bytep dp;
             int s_inc, s_start, s_end;
             int m;
             int shift;
-            xpng_uint_32 i;
+            png_uint_32 i;
 
-            sp = xpng_ptr->row_buf + 1;
+            sp = png_ptr->row_buf + 1;
             dp = row;
             m = 0x80;
 #if defined(PNG_READ_PACKSWAP_SUPPORTED)
-            if (xpng_ptr->transformations & PNG_PACKSWAP)
+            if (png_ptr->transformations & PNG_PACKSWAP)
             {
                 s_start = 0;
                 s_end = 7;
@@ -466,15 +466,15 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
 
             shift = s_start;
 
-            for (i = 0; i < xpng_ptr->width; i++)
+            for (i = 0; i < png_ptr->width; i++)
             {
                if (m & mask)
                {
                   int value;
 
                   value = (*sp >> shift) & 0x1;
-                  *dp &= (xpng_byte)((0x7f7f >> (7 - shift)) & 0xff);
-                  *dp |= (xpng_byte)(value << shift);
+                  *dp &= (png_byte)((0x7f7f >> (7 - shift)) & 0xff);
+                  *dp |= (png_byte)(value << shift);
                }
 
                if (shift == s_end)
@@ -494,21 +494,21 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
             break;
          }
 
-         case 2:        /* xpng_ptr->row_info.pixel_depth */
+         case 2:        /* png_ptr->row_info.pixel_depth */
          {
-            xpng_bytep sp;
-            xpng_bytep dp;
+            png_bytep sp;
+            png_bytep dp;
             int s_start, s_end, s_inc;
             int m;
             int shift;
-            xpng_uint_32 i;
+            png_uint_32 i;
             int value;
 
-            sp = xpng_ptr->row_buf + 1;
+            sp = png_ptr->row_buf + 1;
             dp = row;
             m = 0x80;
 #if defined(PNG_READ_PACKSWAP_SUPPORTED)
-            if (xpng_ptr->transformations & PNG_PACKSWAP)
+            if (png_ptr->transformations & PNG_PACKSWAP)
             {
                s_start = 0;
                s_end = 6;
@@ -524,13 +524,13 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
 
             shift = s_start;
 
-            for (i = 0; i < xpng_ptr->width; i++)
+            for (i = 0; i < png_ptr->width; i++)
             {
                if (m & mask)
                {
                   value = (*sp >> shift) & 0x3;
-                  *dp &= (xpng_byte)((0x3f3f >> (6 - shift)) & 0xff);
-                  *dp |= (xpng_byte)(value << shift);
+                  *dp &= (png_byte)((0x3f3f >> (6 - shift)) & 0xff);
+                  *dp |= (png_byte)(value << shift);
                }
 
                if (shift == s_end)
@@ -549,21 +549,21 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
             break;
          }
 
-         case 4:        /* xpng_ptr->row_info.pixel_depth */
+         case 4:        /* png_ptr->row_info.pixel_depth */
          {
-            xpng_bytep sp;
-            xpng_bytep dp;
+            png_bytep sp;
+            png_bytep dp;
             int s_start, s_end, s_inc;
             int m;
             int shift;
-            xpng_uint_32 i;
+            png_uint_32 i;
             int value;
 
-            sp = xpng_ptr->row_buf + 1;
+            sp = png_ptr->row_buf + 1;
             dp = row;
             m = 0x80;
 #if defined(PNG_READ_PACKSWAP_SUPPORTED)
-            if (xpng_ptr->transformations & PNG_PACKSWAP)
+            if (png_ptr->transformations & PNG_PACKSWAP)
             {
                s_start = 0;
                s_end = 4;
@@ -578,13 +578,13 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
             }
             shift = s_start;
 
-            for (i = 0; i < xpng_ptr->width; i++)
+            for (i = 0; i < png_ptr->width; i++)
             {
                if (m & mask)
                {
                   value = (*sp >> shift) & 0xf;
-                  *dp &= (xpng_byte)((0xf0f >> (4 - shift)) & 0xff);
-                  *dp |= (xpng_byte)(value << shift);
+                  *dp &= (png_byte)((0xf0f >> (4 - shift)) & 0xff);
+                  *dp |= (png_byte)(value << shift);
                }
 
                if (shift == s_end)
@@ -603,20 +603,20 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
             break;
          }
 
-         case 8:        /* xpng_ptr->row_info.pixel_depth */
+         case 8:        /* png_ptr->row_info.pixel_depth */
          {
-            xpng_bytep srcptr;
-            xpng_bytep dstptr;
+            png_bytep srcptr;
+            png_bytep dstptr;
 
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED) && defined(PNG_THREAD_UNSAFE_OK)
 #if !defined(PNG_1_0_X)
-            if ((xpng_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
+            if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
                 /* && _mmx_supported */ )
 #else
             if (_mmx_supported)
 #endif
             {
-               xpng_uint_32 len;
+               png_uint_32 len;
                int diff;
                int dummy_value_a;   // fix 'forbidden register spilled' error
                int dummy_value_d;
@@ -624,10 +624,10 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
                int dummy_value_S;
                int dummy_value_D;
                _unmask = ~mask;            // global variable for -fPIC version
-               srcptr = xpng_ptr->row_buf + 1;
+               srcptr = png_ptr->row_buf + 1;
                dstptr = row;
-               len  = xpng_ptr->width &~7;  // reduce to multiple of 8
-               diff = (int) (xpng_ptr->width & 7);  // amount lost
+               len  = png_ptr->width &~7;  // reduce to multiple of 8
+               diff = (int) (png_ptr->width & 7);  // amount lost
 
                __asm__ __volatile__ (
                   "movd      _unmask, %%mm7  \n\t" // load bit pattern
@@ -703,23 +703,23 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
             else /* mmx _not supported - Use modified C routine */
 #endif /* PNG_ASSEMBLER_CODE_SUPPORTED */
             {
-               register xpng_uint_32 i;
-               xpng_uint_32 initial_val = xpng_pass_start[xpng_ptr->pass];
-                 /* png.c:  xpng_pass_start[] = {0, 4, 0, 2, 0, 1, 0}; */
-               register int stride = xpng_pass_inc[xpng_ptr->pass];
-                 /* png.c:  xpng_pass_inc[] = {8, 8, 4, 4, 2, 2, 1}; */
-               register int rep_bytes = xpng_pass_width[xpng_ptr->pass];
-                 /* png.c:  xpng_pass_width[] = {8, 4, 4, 2, 2, 1, 1}; */
-               xpng_uint_32 len = xpng_ptr->width &~7;  /* reduce to mult. of 8 */
-               int diff = (int) (xpng_ptr->width & 7); /* amount lost */
-               register xpng_uint_32 final_val = len;  /* GRR bugfix */
+               register png_uint_32 i;
+               png_uint_32 initial_val = png_pass_start[png_ptr->pass];
+                 /* png.c:  png_pass_start[] = {0, 4, 0, 2, 0, 1, 0}; */
+               register int stride = png_pass_inc[png_ptr->pass];
+                 /* png.c:  png_pass_inc[] = {8, 8, 4, 4, 2, 2, 1}; */
+               register int rep_bytes = png_pass_width[png_ptr->pass];
+                 /* png.c:  png_pass_width[] = {8, 4, 4, 2, 2, 1, 1}; */
+               png_uint_32 len = png_ptr->width &~7;  /* reduce to mult. of 8 */
+               int diff = (int) (png_ptr->width & 7); /* amount lost */
+               register png_uint_32 final_val = len;  /* GRR bugfix */
 
-               srcptr = xpng_ptr->row_buf + 1 + initial_val;
+               srcptr = png_ptr->row_buf + 1 + initial_val;
                dstptr = row + initial_val;
 
                for (i = initial_val; i < final_val; i += stride)
                {
-                  xpng_memcpy(dstptr, srcptr, rep_bytes);
+                  png_memcpy(dstptr, srcptr, rep_bytes);
                   srcptr += stride;
                   dstptr += stride;
                }
@@ -730,7 +730,7 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
                   {
                      if (rep_bytes > (int)(final_val-i))
                         rep_bytes = (int)(final_val-i);
-                     xpng_memcpy(dstptr, srcptr, rep_bytes);
+                     png_memcpy(dstptr, srcptr, rep_bytes);
                      srcptr += stride;
                      dstptr += stride;
                   }
@@ -741,20 +741,20 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
             break;
          }       /* end 8 bpp */
 
-         case 16:       /* xpng_ptr->row_info.pixel_depth */
+         case 16:       /* png_ptr->row_info.pixel_depth */
          {
-            xpng_bytep srcptr;
-            xpng_bytep dstptr;
+            png_bytep srcptr;
+            png_bytep dstptr;
 
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED) && defined(PNG_THREAD_UNSAFE_OK)
 #if !defined(PNG_1_0_X)
-            if ((xpng_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
+            if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
                 /* && _mmx_supported */ )
 #else
             if (_mmx_supported)
 #endif
             {
-               xpng_uint_32 len;
+               png_uint_32 len;
                int diff;
                int dummy_value_a;   // fix 'forbidden register spilled' error
                int dummy_value_d;
@@ -762,10 +762,10 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
                int dummy_value_S;
                int dummy_value_D;
                _unmask = ~mask;            // global variable for -fPIC version
-               srcptr = xpng_ptr->row_buf + 1;
+               srcptr = png_ptr->row_buf + 1;
                dstptr = row;
-               len  = xpng_ptr->width &~7;  // reduce to multiple of 8
-               diff = (int) (xpng_ptr->width & 7); // amount lost //
+               len  = png_ptr->width &~7;  // reduce to multiple of 8
+               diff = (int) (png_ptr->width & 7); // amount lost //
 
                __asm__ __volatile__ (
                   "movd      _unmask, %%mm7   \n\t" // load bit pattern
@@ -857,23 +857,23 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
             else /* mmx _not supported - Use modified C routine */
 #endif /* PNG_ASSEMBLER_CODE_SUPPORTED */
             {
-               register xpng_uint_32 i;
-               xpng_uint_32 initial_val = BPP2 * xpng_pass_start[xpng_ptr->pass];
-                 /* png.c:  xpng_pass_start[] = {0, 4, 0, 2, 0, 1, 0}; */
-               register int stride = BPP2 * xpng_pass_inc[xpng_ptr->pass];
-                 /* png.c:  xpng_pass_inc[] = {8, 8, 4, 4, 2, 2, 1}; */
-               register int rep_bytes = BPP2 * xpng_pass_width[xpng_ptr->pass];
-                 /* png.c:  xpng_pass_width[] = {8, 4, 4, 2, 2, 1, 1}; */
-               xpng_uint_32 len = xpng_ptr->width &~7;  /* reduce to mult. of 8 */
-               int diff = (int) (xpng_ptr->width & 7); /* amount lost */
-               register xpng_uint_32 final_val = BPP2 * len;   /* GRR bugfix */
+               register png_uint_32 i;
+               png_uint_32 initial_val = BPP2 * png_pass_start[png_ptr->pass];
+                 /* png.c:  png_pass_start[] = {0, 4, 0, 2, 0, 1, 0}; */
+               register int stride = BPP2 * png_pass_inc[png_ptr->pass];
+                 /* png.c:  png_pass_inc[] = {8, 8, 4, 4, 2, 2, 1}; */
+               register int rep_bytes = BPP2 * png_pass_width[png_ptr->pass];
+                 /* png.c:  png_pass_width[] = {8, 4, 4, 2, 2, 1, 1}; */
+               png_uint_32 len = png_ptr->width &~7;  /* reduce to mult. of 8 */
+               int diff = (int) (png_ptr->width & 7); /* amount lost */
+               register png_uint_32 final_val = BPP2 * len;   /* GRR bugfix */
 
-               srcptr = xpng_ptr->row_buf + 1 + initial_val;
+               srcptr = png_ptr->row_buf + 1 + initial_val;
                dstptr = row + initial_val;
 
                for (i = initial_val; i < final_val; i += stride)
                {
-                  xpng_memcpy(dstptr, srcptr, rep_bytes);
+                  png_memcpy(dstptr, srcptr, rep_bytes);
                   srcptr += stride;
                   dstptr += stride;
                }
@@ -884,7 +884,7 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
                   {
                      if (rep_bytes > (int)(final_val-i))
                         rep_bytes = (int)(final_val-i);
-                     xpng_memcpy(dstptr, srcptr, rep_bytes);
+                     png_memcpy(dstptr, srcptr, rep_bytes);
                      srcptr += stride;
                      dstptr += stride;
                   }
@@ -894,20 +894,20 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
             break;
          }       /* end 16 bpp */
 
-         case 24:       /* xpng_ptr->row_info.pixel_depth */
+         case 24:       /* png_ptr->row_info.pixel_depth */
          {
-            xpng_bytep srcptr;
-            xpng_bytep dstptr;
+            png_bytep srcptr;
+            png_bytep dstptr;
 
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED) && defined(PNG_THREAD_UNSAFE_OK)
 #if !defined(PNG_1_0_X)
-            if ((xpng_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
+            if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
                 /* && _mmx_supported */ )
 #else
             if (_mmx_supported)
 #endif
             {
-               xpng_uint_32 len;
+               png_uint_32 len;
                int diff;
                int dummy_value_a;   // fix 'forbidden register spilled' error
                int dummy_value_d;
@@ -915,10 +915,10 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
                int dummy_value_S;
                int dummy_value_D;
                _unmask = ~mask;            // global variable for -fPIC version
-               srcptr = xpng_ptr->row_buf + 1;
+               srcptr = png_ptr->row_buf + 1;
                dstptr = row;
-               len  = xpng_ptr->width &~7;  // reduce to multiple of 8
-               diff = (int) (xpng_ptr->width & 7); // amount lost //
+               len  = png_ptr->width &~7;  // reduce to multiple of 8
+               diff = (int) (png_ptr->width & 7); // amount lost //
 
                __asm__ __volatile__ (
                   "movd      _unmask, %%mm7   \n\t" // load bit pattern
@@ -1025,23 +1025,23 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
             else /* mmx _not supported - Use modified C routine */
 #endif /* PNG_ASSEMBLER_CODE_SUPPORTED */
             {
-               register xpng_uint_32 i;
-               xpng_uint_32 initial_val = BPP3 * xpng_pass_start[xpng_ptr->pass];
-                 /* png.c:  xpng_pass_start[] = {0, 4, 0, 2, 0, 1, 0}; */
-               register int stride = BPP3 * xpng_pass_inc[xpng_ptr->pass];
-                 /* png.c:  xpng_pass_inc[] = {8, 8, 4, 4, 2, 2, 1}; */
-               register int rep_bytes = BPP3 * xpng_pass_width[xpng_ptr->pass];
-                 /* png.c:  xpng_pass_width[] = {8, 4, 4, 2, 2, 1, 1}; */
-               xpng_uint_32 len = xpng_ptr->width &~7;  /* reduce to mult. of 8 */
-               int diff = (int) (xpng_ptr->width & 7); /* amount lost */
-               register xpng_uint_32 final_val = BPP3 * len;   /* GRR bugfix */
+               register png_uint_32 i;
+               png_uint_32 initial_val = BPP3 * png_pass_start[png_ptr->pass];
+                 /* png.c:  png_pass_start[] = {0, 4, 0, 2, 0, 1, 0}; */
+               register int stride = BPP3 * png_pass_inc[png_ptr->pass];
+                 /* png.c:  png_pass_inc[] = {8, 8, 4, 4, 2, 2, 1}; */
+               register int rep_bytes = BPP3 * png_pass_width[png_ptr->pass];
+                 /* png.c:  png_pass_width[] = {8, 4, 4, 2, 2, 1, 1}; */
+               png_uint_32 len = png_ptr->width &~7;  /* reduce to mult. of 8 */
+               int diff = (int) (png_ptr->width & 7); /* amount lost */
+               register png_uint_32 final_val = BPP3 * len;   /* GRR bugfix */
 
-               srcptr = xpng_ptr->row_buf + 1 + initial_val;
+               srcptr = png_ptr->row_buf + 1 + initial_val;
                dstptr = row + initial_val;
 
                for (i = initial_val; i < final_val; i += stride)
                {
-                  xpng_memcpy(dstptr, srcptr, rep_bytes);
+                  png_memcpy(dstptr, srcptr, rep_bytes);
                   srcptr += stride;
                   dstptr += stride;
                }
@@ -1052,7 +1052,7 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
                   {
                      if (rep_bytes > (int)(final_val-i))
                         rep_bytes = (int)(final_val-i);
-                     xpng_memcpy(dstptr, srcptr, rep_bytes);
+                     png_memcpy(dstptr, srcptr, rep_bytes);
                      srcptr += stride;
                      dstptr += stride;
                   }
@@ -1062,20 +1062,20 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
             break;
          }       /* end 24 bpp */
 
-         case 32:       /* xpng_ptr->row_info.pixel_depth */
+         case 32:       /* png_ptr->row_info.pixel_depth */
          {
-            xpng_bytep srcptr;
-            xpng_bytep dstptr;
+            png_bytep srcptr;
+            png_bytep dstptr;
 
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED) && defined(PNG_THREAD_UNSAFE_OK)
 #if !defined(PNG_1_0_X)
-            if ((xpng_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
+            if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
                 /* && _mmx_supported */ )
 #else
             if (_mmx_supported)
 #endif
             {
-               xpng_uint_32 len;
+               png_uint_32 len;
                int diff;
                int dummy_value_a;   // fix 'forbidden register spilled' error
                int dummy_value_d;
@@ -1083,10 +1083,10 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
                int dummy_value_S;
                int dummy_value_D;
                _unmask = ~mask;            // global variable for -fPIC version
-               srcptr = xpng_ptr->row_buf + 1;
+               srcptr = png_ptr->row_buf + 1;
                dstptr = row;
-               len  = xpng_ptr->width &~7;  // reduce to multiple of 8
-               diff = (int) (xpng_ptr->width & 7); // amount lost //
+               len  = png_ptr->width &~7;  // reduce to multiple of 8
+               diff = (int) (png_ptr->width & 7); // amount lost //
 
                __asm__ __volatile__ (
                   "movd      _unmask, %%mm7   \n\t" // load bit pattern
@@ -1200,23 +1200,23 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
             else /* mmx _not supported - Use modified C routine */
 #endif /* PNG_ASSEMBLER_CODE_SUPPORTED */
             {
-               register xpng_uint_32 i;
-               xpng_uint_32 initial_val = BPP4 * xpng_pass_start[xpng_ptr->pass];
-                 /* png.c:  xpng_pass_start[] = {0, 4, 0, 2, 0, 1, 0}; */
-               register int stride = BPP4 * xpng_pass_inc[xpng_ptr->pass];
-                 /* png.c:  xpng_pass_inc[] = {8, 8, 4, 4, 2, 2, 1}; */
-               register int rep_bytes = BPP4 * xpng_pass_width[xpng_ptr->pass];
-                 /* png.c:  xpng_pass_width[] = {8, 4, 4, 2, 2, 1, 1}; */
-               xpng_uint_32 len = xpng_ptr->width &~7;  /* reduce to mult. of 8 */
-               int diff = (int) (xpng_ptr->width & 7); /* amount lost */
-               register xpng_uint_32 final_val = BPP4 * len;   /* GRR bugfix */
+               register png_uint_32 i;
+               png_uint_32 initial_val = BPP4 * png_pass_start[png_ptr->pass];
+                 /* png.c:  png_pass_start[] = {0, 4, 0, 2, 0, 1, 0}; */
+               register int stride = BPP4 * png_pass_inc[png_ptr->pass];
+                 /* png.c:  png_pass_inc[] = {8, 8, 4, 4, 2, 2, 1}; */
+               register int rep_bytes = BPP4 * png_pass_width[png_ptr->pass];
+                 /* png.c:  png_pass_width[] = {8, 4, 4, 2, 2, 1, 1}; */
+               png_uint_32 len = png_ptr->width &~7;  /* reduce to mult. of 8 */
+               int diff = (int) (png_ptr->width & 7); /* amount lost */
+               register png_uint_32 final_val = BPP4 * len;   /* GRR bugfix */
 
-               srcptr = xpng_ptr->row_buf + 1 + initial_val;
+               srcptr = png_ptr->row_buf + 1 + initial_val;
                dstptr = row + initial_val;
 
                for (i = initial_val; i < final_val; i += stride)
                {
-                  xpng_memcpy(dstptr, srcptr, rep_bytes);
+                  png_memcpy(dstptr, srcptr, rep_bytes);
                   srcptr += stride;
                   dstptr += stride;
                }
@@ -1227,7 +1227,7 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
                   {
                      if (rep_bytes > (int)(final_val-i))
                         rep_bytes = (int)(final_val-i);
-                     xpng_memcpy(dstptr, srcptr, rep_bytes);
+                     png_memcpy(dstptr, srcptr, rep_bytes);
                      srcptr += stride;
                      dstptr += stride;
                   }
@@ -1237,20 +1237,20 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
             break;
          }       /* end 32 bpp */
 
-         case 48:       /* xpng_ptr->row_info.pixel_depth */
+         case 48:       /* png_ptr->row_info.pixel_depth */
          {
-            xpng_bytep srcptr;
-            xpng_bytep dstptr;
+            png_bytep srcptr;
+            png_bytep dstptr;
 
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED) && defined(PNG_THREAD_UNSAFE_OK)
 #if !defined(PNG_1_0_X)
-            if ((xpng_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
+            if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
                 /* && _mmx_supported */ )
 #else
             if (_mmx_supported)
 #endif
             {
-               xpng_uint_32 len;
+               png_uint_32 len;
                int diff;
                int dummy_value_a;   // fix 'forbidden register spilled' error
                int dummy_value_d;
@@ -1258,10 +1258,10 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
                int dummy_value_S;
                int dummy_value_D;
                _unmask = ~mask;            // global variable for -fPIC version
-               srcptr = xpng_ptr->row_buf + 1;
+               srcptr = png_ptr->row_buf + 1;
                dstptr = row;
-               len  = xpng_ptr->width &~7;  // reduce to multiple of 8
-               diff = (int) (xpng_ptr->width & 7); // amount lost //
+               len  = png_ptr->width &~7;  // reduce to multiple of 8
+               diff = (int) (png_ptr->width & 7); // amount lost //
 
                __asm__ __volatile__ (
                   "movd      _unmask, %%mm7   \n\t" // load bit pattern
@@ -1392,23 +1392,23 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
             else /* mmx _not supported - Use modified C routine */
 #endif /* PNG_ASSEMBLER_CODE_SUPPORTED */
             {
-               register xpng_uint_32 i;
-               xpng_uint_32 initial_val = BPP6 * xpng_pass_start[xpng_ptr->pass];
-                 /* png.c:  xpng_pass_start[] = {0, 4, 0, 2, 0, 1, 0}; */
-               register int stride = BPP6 * xpng_pass_inc[xpng_ptr->pass];
-                 /* png.c:  xpng_pass_inc[] = {8, 8, 4, 4, 2, 2, 1}; */
-               register int rep_bytes = BPP6 * xpng_pass_width[xpng_ptr->pass];
-                 /* png.c:  xpng_pass_width[] = {8, 4, 4, 2, 2, 1, 1}; */
-               xpng_uint_32 len = xpng_ptr->width &~7;  /* reduce to mult. of 8 */
-               int diff = (int) (xpng_ptr->width & 7); /* amount lost */
-               register xpng_uint_32 final_val = BPP6 * len;   /* GRR bugfix */
+               register png_uint_32 i;
+               png_uint_32 initial_val = BPP6 * png_pass_start[png_ptr->pass];
+                 /* png.c:  png_pass_start[] = {0, 4, 0, 2, 0, 1, 0}; */
+               register int stride = BPP6 * png_pass_inc[png_ptr->pass];
+                 /* png.c:  png_pass_inc[] = {8, 8, 4, 4, 2, 2, 1}; */
+               register int rep_bytes = BPP6 * png_pass_width[png_ptr->pass];
+                 /* png.c:  png_pass_width[] = {8, 4, 4, 2, 2, 1, 1}; */
+               png_uint_32 len = png_ptr->width &~7;  /* reduce to mult. of 8 */
+               int diff = (int) (png_ptr->width & 7); /* amount lost */
+               register png_uint_32 final_val = BPP6 * len;   /* GRR bugfix */
 
-               srcptr = xpng_ptr->row_buf + 1 + initial_val;
+               srcptr = png_ptr->row_buf + 1 + initial_val;
                dstptr = row + initial_val;
 
                for (i = initial_val; i < final_val; i += stride)
                {
-                  xpng_memcpy(dstptr, srcptr, rep_bytes);
+                  png_memcpy(dstptr, srcptr, rep_bytes);
                   srcptr += stride;
                   dstptr += stride;
                }
@@ -1419,7 +1419,7 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
                   {
                      if (rep_bytes > (int)(final_val-i))
                         rep_bytes = (int)(final_val-i);
-                     xpng_memcpy(dstptr, srcptr, rep_bytes);
+                     png_memcpy(dstptr, srcptr, rep_bytes);
                      srcptr += stride;
                      dstptr += stride;
                   }
@@ -1429,27 +1429,27 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
             break;
          }       /* end 48 bpp */
 
-         case 64:       /* xpng_ptr->row_info.pixel_depth */
+         case 64:       /* png_ptr->row_info.pixel_depth */
          {
-            xpng_bytep srcptr;
-            xpng_bytep dstptr;
-            register xpng_uint_32 i;
-            xpng_uint_32 initial_val = BPP8 * xpng_pass_start[xpng_ptr->pass];
-              /* png.c:  xpng_pass_start[] = {0, 4, 0, 2, 0, 1, 0}; */
-            register int stride = BPP8 * xpng_pass_inc[xpng_ptr->pass];
-              /* png.c:  xpng_pass_inc[] = {8, 8, 4, 4, 2, 2, 1}; */
-            register int rep_bytes = BPP8 * xpng_pass_width[xpng_ptr->pass];
-              /* png.c:  xpng_pass_width[] = {8, 4, 4, 2, 2, 1, 1}; */
-            xpng_uint_32 len = xpng_ptr->width &~7;  /* reduce to mult. of 8 */
-            int diff = (int) (xpng_ptr->width & 7); /* amount lost */
-            register xpng_uint_32 final_val = BPP8 * len;   /* GRR bugfix */
+            png_bytep srcptr;
+            png_bytep dstptr;
+            register png_uint_32 i;
+            png_uint_32 initial_val = BPP8 * png_pass_start[png_ptr->pass];
+              /* png.c:  png_pass_start[] = {0, 4, 0, 2, 0, 1, 0}; */
+            register int stride = BPP8 * png_pass_inc[png_ptr->pass];
+              /* png.c:  png_pass_inc[] = {8, 8, 4, 4, 2, 2, 1}; */
+            register int rep_bytes = BPP8 * png_pass_width[png_ptr->pass];
+              /* png.c:  png_pass_width[] = {8, 4, 4, 2, 2, 1, 1}; */
+            png_uint_32 len = png_ptr->width &~7;  /* reduce to mult. of 8 */
+            int diff = (int) (png_ptr->width & 7); /* amount lost */
+            register png_uint_32 final_val = BPP8 * len;   /* GRR bugfix */
 
-            srcptr = xpng_ptr->row_buf + 1 + initial_val;
+            srcptr = png_ptr->row_buf + 1 + initial_val;
             dstptr = row + initial_val;
 
             for (i = initial_val; i < final_val; i += stride)
             {
-               xpng_memcpy(dstptr, srcptr, rep_bytes);
+               png_memcpy(dstptr, srcptr, rep_bytes);
                srcptr += stride;
                dstptr += stride;
             }
@@ -1460,7 +1460,7 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
                {
                   if (rep_bytes > (int)(final_val-i))
                      rep_bytes = (int)(final_val-i);
-                  xpng_memcpy(dstptr, srcptr, rep_bytes);
+                  png_memcpy(dstptr, srcptr, rep_bytes);
                   srcptr += stride;
                   dstptr += stride;
                }
@@ -1469,17 +1469,17 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
             break;
          }       /* end 64 bpp */
 
-         default: /* xpng_ptr->row_info.pixel_depth != 1,2,4,8,16,24,32,48,64 */
+         default: /* png_ptr->row_info.pixel_depth != 1,2,4,8,16,24,32,48,64 */
          {
             /* this should never happen */
-            xpng_warning(xpng_ptr, "Invalid row_info.pixel_depth in pnggccrd");
+            png_warning(png_ptr, "Invalid row_info.pixel_depth in pnggccrd");
             break;
          }
-      } /* end switch (xpng_ptr->row_info.pixel_depth) */
+      } /* end switch (png_ptr->row_info.pixel_depth) */
 
    } /* end if (non-trivial mask) */
 
-} /* end xpng_combine_row() */
+} /* end png_combine_row() */
 
 #endif /* PNG_HAVE_ASSEMBLER_COMBINE_ROW */
 
@@ -1495,51 +1495,51 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
 #if defined(PNG_READ_INTERLACING_SUPPORTED)
 #if defined(PNG_HAVE_ASSEMBLER_READ_INTERLACE)
 
-/* xpng_do_read_interlace() is called after any 16-bit to 8-bit conversion
+/* png_do_read_interlace() is called after any 16-bit to 8-bit conversion
  * has taken place.  [GRR: what other steps come before and/or after?]
  */
 
 void /* PRIVATE */
-xpng_do_read_interlace(xpng_structp xpng_ptr)
+png_do_read_interlace(png_structp png_ptr)
 {
-   xpng_row_infop row_info = &(xpng_ptr->row_info);
-   xpng_bytep row = xpng_ptr->row_buf + 1;
-   int pass = xpng_ptr->pass;
+   png_row_infop row_info = &(png_ptr->row_info);
+   png_bytep row = png_ptr->row_buf + 1;
+   int pass = png_ptr->pass;
 #if defined(PNG_READ_PACKSWAP_SUPPORTED)
-   xpng_uint_32 transformations = xpng_ptr->transformations;
+   png_uint_32 transformations = png_ptr->transformations;
 #endif
 
-   xpng_debug(1, "in xpng_do_read_interlace (pnggccrd.c)\n");
+   png_debug(1, "in png_do_read_interlace (pnggccrd.c)\n");
 
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED)
    if (_mmx_supported == 2) {
 #if !defined(PNG_1_0_X)
-       /* this should have happened in xpng_init_mmx_flags() already */
-       xpng_warning(xpng_ptr, "asm_flags may not have been initialized");
+       /* this should have happened in png_init_mmx_flags() already */
+       png_warning(png_ptr, "asm_flags may not have been initialized");
 #endif
-       xpng_mmx_support();
+       png_mmx_support();
    }
 #endif
 
    if (row != NULL && row_info != NULL)
    {
-      xpng_uint_32 final_width;
+      png_uint_32 final_width;
 
-      final_width = row_info->width * xpng_pass_inc[pass];
+      final_width = row_info->width * png_pass_inc[pass];
 
       switch (row_info->pixel_depth)
       {
          case 1:
          {
-            xpng_bytep sp, dp;
+            png_bytep sp, dp;
             int sshift, dshift;
             int s_start, s_end, s_inc;
-            xpng_byte v;
-            xpng_uint_32 i;
+            png_byte v;
+            png_uint_32 i;
             int j;
 
-            sp = row + (xpng_size_t)((row_info->width - 1) >> 3);
-            dp = row + (xpng_size_t)((final_width - 1) >> 3);
+            sp = row + (png_size_t)((row_info->width - 1) >> 3);
+            dp = row + (png_size_t)((final_width - 1) >> 3);
 #if defined(PNG_READ_PACKSWAP_SUPPORTED)
             if (transformations & PNG_PACKSWAP)
             {
@@ -1561,11 +1561,11 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
 
             for (i = row_info->width; i; i--)
             {
-               v = (xpng_byte)((*sp >> sshift) & 0x1);
-               for (j = 0; j < xpng_pass_inc[pass]; j++)
+               v = (png_byte)((*sp >> sshift) & 0x1);
+               for (j = 0; j < png_pass_inc[pass]; j++)
                {
-                  *dp &= (xpng_byte)((0x7f7f >> (7 - dshift)) & 0xff);
-                  *dp |= (xpng_byte)(v << dshift);
+                  *dp &= (png_byte)((0x7f7f >> (7 - dshift)) & 0xff);
+                  *dp |= (png_byte)(v << dshift);
                   if (dshift == s_end)
                   {
                      dshift = s_start;
@@ -1587,18 +1587,18 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
 
          case 2:
          {
-            xpng_bytep sp, dp;
+            png_bytep sp, dp;
             int sshift, dshift;
             int s_start, s_end, s_inc;
-            xpng_uint_32 i;
+            png_uint_32 i;
 
-            sp = row + (xpng_size_t)((row_info->width - 1) >> 2);
-            dp = row + (xpng_size_t)((final_width - 1) >> 2);
+            sp = row + (png_size_t)((row_info->width - 1) >> 2);
+            dp = row + (png_size_t)((final_width - 1) >> 2);
 #if defined(PNG_READ_PACKSWAP_SUPPORTED)
             if (transformations & PNG_PACKSWAP)
             {
-               sshift = (xpng_size_t)(((row_info->width + 3) & 3) << 1);
-               dshift = (xpng_size_t)(((final_width + 3) & 3) << 1);
+               sshift = (png_size_t)(((row_info->width + 3) & 3) << 1);
+               dshift = (png_size_t)(((final_width + 3) & 3) << 1);
                s_start = 6;
                s_end = 0;
                s_inc = -2;
@@ -1606,8 +1606,8 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
             else
 #endif
             {
-               sshift = (xpng_size_t)((3 - ((row_info->width + 3) & 3)) << 1);
-               dshift = (xpng_size_t)((3 - ((final_width + 3) & 3)) << 1);
+               sshift = (png_size_t)((3 - ((row_info->width + 3) & 3)) << 1);
+               dshift = (png_size_t)((3 - ((final_width + 3) & 3)) << 1);
                s_start = 0;
                s_end = 6;
                s_inc = 2;
@@ -1615,14 +1615,14 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
 
             for (i = row_info->width; i; i--)
             {
-               xpng_byte v;
+               png_byte v;
                int j;
 
-               v = (xpng_byte)((*sp >> sshift) & 0x3);
-               for (j = 0; j < xpng_pass_inc[pass]; j++)
+               v = (png_byte)((*sp >> sshift) & 0x3);
+               for (j = 0; j < png_pass_inc[pass]; j++)
                {
-                  *dp &= (xpng_byte)((0x3f3f >> (6 - dshift)) & 0xff);
-                  *dp |= (xpng_byte)(v << dshift);
+                  *dp &= (png_byte)((0x3f3f >> (6 - dshift)) & 0xff);
+                  *dp |= (png_byte)(v << dshift);
                   if (dshift == s_end)
                   {
                      dshift = s_start;
@@ -1644,18 +1644,18 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
 
          case 4:
          {
-            xpng_bytep sp, dp;
+            png_bytep sp, dp;
             int sshift, dshift;
             int s_start, s_end, s_inc;
-            xpng_uint_32 i;
+            png_uint_32 i;
 
-            sp = row + (xpng_size_t)((row_info->width - 1) >> 1);
-            dp = row + (xpng_size_t)((final_width - 1) >> 1);
+            sp = row + (png_size_t)((row_info->width - 1) >> 1);
+            dp = row + (png_size_t)((final_width - 1) >> 1);
 #if defined(PNG_READ_PACKSWAP_SUPPORTED)
             if (transformations & PNG_PACKSWAP)
             {
-               sshift = (xpng_size_t)(((row_info->width + 1) & 1) << 2);
-               dshift = (xpng_size_t)(((final_width + 1) & 1) << 2);
+               sshift = (png_size_t)(((row_info->width + 1) & 1) << 2);
+               dshift = (png_size_t)(((final_width + 1) & 1) << 2);
                s_start = 4;
                s_end = 0;
                s_inc = -4;
@@ -1663,8 +1663,8 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
             else
 #endif
             {
-               sshift = (xpng_size_t)((1 - ((row_info->width + 1) & 1)) << 2);
-               dshift = (xpng_size_t)((1 - ((final_width + 1) & 1)) << 2);
+               sshift = (png_size_t)((1 - ((row_info->width + 1) & 1)) << 2);
+               dshift = (png_size_t)((1 - ((final_width + 1) & 1)) << 2);
                s_start = 0;
                s_end = 4;
                s_inc = 4;
@@ -1672,14 +1672,14 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
 
             for (i = row_info->width; i; i--)
             {
-               xpng_byte v;
+               png_byte v;
                int j;
 
-               v = (xpng_byte)((*sp >> sshift) & 0xf);
-               for (j = 0; j < xpng_pass_inc[pass]; j++)
+               v = (png_byte)((*sp >> sshift) & 0xf);
+               for (j = 0; j < png_pass_inc[pass]; j++)
                {
-                  *dp &= (xpng_byte)((0xf0f >> (4 - dshift)) & 0xff);
-                  *dp |= (xpng_byte)(v << dshift);
+                  *dp &= (png_byte)((0xf0f >> (4 - dshift)) & 0xff);
+                  *dp |= (png_byte)(v << dshift);
                   if (dshift == s_end)
                   {
                      dshift = s_start;
@@ -1709,9 +1709,9 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
 //          unsigned long long _const4 = 0x0000000000FFFFFFLL;         no good
 //          unsigned long long const4 = 0x0000000000FFFFFFLL;          no good
 #endif
-            xpng_bytep sptr, dp;
-            xpng_uint_32 i;
-            xpng_size_t pixel_bytes;
+            png_bytep sptr, dp;
+            png_uint_32 i;
+            png_size_t pixel_bytes;
             int width = (int)row_info->width;
 
             pixel_bytes = (row_info->pixel_depth >> 3);
@@ -1726,7 +1726,7 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
 
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED)
 #if !defined(PNG_1_0_X)
-            if ((xpng_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_INTERLACE)
+            if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_INTERLACE)
                 /* && _mmx_supported */ )
 #else
             if (_mmx_supported)
@@ -1743,7 +1743,7 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
 
                      __asm__ __volatile__ (
                         "subl $21, %%edi         \n\t"
-                                     // (xpng_pass_inc[pass] - 1)*pixel_bytes
+                                     // (png_pass_inc[pass] - 1)*pixel_bytes
 
                      ".loop3_pass0:              \n\t"
                         "movd (%%esi), %%mm0     \n\t" // x x x x x 2 1 0
@@ -1793,7 +1793,7 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
 
                      __asm__ __volatile__ (
                         "subl $9, %%edi          \n\t"
-                                     // (xpng_pass_inc[pass] - 1)*pixel_bytes
+                                     // (png_pass_inc[pass] - 1)*pixel_bytes
 
                      ".loop3_pass2:              \n\t"
                         "movd (%%esi), %%mm0     \n\t" // x x x x x 2 1 0
@@ -1835,7 +1835,7 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
                      width -= width_mmx;        // 8 or 9 pix, 24 or 27 bytes
                      if (width_mmx)
                      {
-                        // xpng_pass_inc[] = {8, 8, 4, 4, 2, 2, 1};
+                        // png_pass_inc[] = {8, 8, 4, 4, 2, 2, 1};
                         // sptr points at last pixel in pre-expanded row
                         // dp points at last pixel position in expanded row
                         int dummy_value_c;  // fix 'forbidden register spilled'
@@ -1845,7 +1845,7 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
                         __asm__ __volatile__ (
                            "subl $3, %%esi          \n\t"
                            "subl $9, %%edi          \n\t"
-                                        // (xpng_pass_inc[pass] + 1)*pixel_bytes
+                                        // (png_pass_inc[pass] + 1)*pixel_bytes
 
                         ".loop3_pass4:              \n\t"
                            "movq (%%esi), %%mm0     \n\t" // x x 5 4 3 2 1 0
@@ -1887,13 +1887,13 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
                      dp -= width_mmx*6;
                      for (i = width; i; i--)
                      {
-                        xpng_byte v[8];
+                        png_byte v[8];
                         int j;
 
-                        xpng_memcpy(v, sptr, 3);
-                        for (j = 0; j < xpng_pass_inc[pass]; j++)
+                        png_memcpy(v, sptr, 3);
+                        for (j = 0; j < png_pass_inc[pass]; j++)
                         {
-                           xpng_memcpy(dp, v, 3);
+                           png_memcpy(dp, v, 3);
                            dp -= 3;
                         }
                         sptr -= 3;
@@ -1968,11 +1968,11 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
                         *
                         * Original code:
                         *
-                        * xpng_byte v[8];
-                        * xpng_memcpy(v, sptr, pixel_bytes);
-                        * for (j = 0; j < xpng_pass_inc[pass]; j++)
+                        * png_byte v[8];
+                        * png_memcpy(v, sptr, pixel_bytes);
+                        * for (j = 0; j < png_pass_inc[pass]; j++)
                         * {
-                        *    xpng_memcpy(dp, v, pixel_bytes);
+                        *    png_memcpy(dp, v, pixel_bytes);
                         *    dp -= pixel_bytes;
                         * }
                         * sptr -= pixel_bytes;
@@ -1980,7 +1980,7 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
                         * Replacement code is in the next three lines:
                         */
 
-                        for (j = 0; j < xpng_pass_inc[pass]; j++)
+                        for (j = 0; j < png_pass_inc[pass]; j++)
                         {
                            *dp-- = *sptr;
                         }
@@ -2035,7 +2035,7 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
                      {
                         int j;
 
-                        for (j = 0; j < xpng_pass_inc[pass]; j++)
+                        for (j = 0; j < png_pass_inc[pass]; j++)
                         {
                            *dp-- = *sptr;
                         }
@@ -2089,7 +2089,7 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
                      {
                         int j;
 
-                        for (j = 0; j < xpng_pass_inc[pass]; j++)
+                        for (j = 0; j < png_pass_inc[pass]; j++)
                         {
                            *dp-- = *sptr;
                         }
@@ -2149,14 +2149,14 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
                      dp -= (width_mmx*16 - 2);  // sign fixed
                      for (i = width; i; i--)
                      {
-                        xpng_byte v[8];
+                        png_byte v[8];
                         int j;
                         sptr -= 2;
-                        xpng_memcpy(v, sptr, 2);
-                        for (j = 0; j < xpng_pass_inc[pass]; j++)
+                        png_memcpy(v, sptr, 2);
+                        for (j = 0; j < png_pass_inc[pass]; j++)
                         {
                            dp -= 2;
-                           xpng_memcpy(dp, v, 2);
+                           png_memcpy(dp, v, 2);
                         }
                      }
                   }
@@ -2206,14 +2206,14 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
                      dp -= (width_mmx*8 - 2);   // sign fixed
                      for (i = width; i; i--)
                      {
-                        xpng_byte v[8];
+                        png_byte v[8];
                         int j;
                         sptr -= 2;
-                        xpng_memcpy(v, sptr, 2);
-                        for (j = 0; j < xpng_pass_inc[pass]; j++)
+                        png_memcpy(v, sptr, 2);
+                        for (j = 0; j < png_pass_inc[pass]; j++)
                         {
                            dp -= 2;
-                           xpng_memcpy(dp, v, 2);
+                           png_memcpy(dp, v, 2);
                         }
                      }
                   }
@@ -2259,14 +2259,14 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
                      dp -= (width_mmx*4 - 2);   // sign fixed
                      for (i = width; i; i--)
                      {
-                        xpng_byte v[8];
+                        png_byte v[8];
                         int j;
                         sptr -= 2;
-                        xpng_memcpy(v, sptr, 2);
-                        for (j = 0; j < xpng_pass_inc[pass]; j++)
+                        png_memcpy(v, sptr, 2);
+                        for (j = 0; j < png_pass_inc[pass]; j++)
                         {
                            dp -= 2;
-                           xpng_memcpy(dp, v, 2);
+                           png_memcpy(dp, v, 2);
                         }
                      }
                   }
@@ -2326,14 +2326,14 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
                      dp -= (width_mmx*32 - 4);  // sign fixed
                      for (i = width; i; i--)
                      {
-                        xpng_byte v[8];
+                        png_byte v[8];
                         int j;
                         sptr -= 4;
-                        xpng_memcpy(v, sptr, 4);
-                        for (j = 0; j < xpng_pass_inc[pass]; j++)
+                        png_memcpy(v, sptr, 4);
+                        for (j = 0; j < png_pass_inc[pass]; j++)
                         {
                            dp -= 4;
-                           xpng_memcpy(dp, v, 4);
+                           png_memcpy(dp, v, 4);
                         }
                      }
                   }
@@ -2384,14 +2384,14 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
                      dp -= (width_mmx*16 - 4);  // sign fixed
                      for (i = width; i; i--)
                      {
-                        xpng_byte v[8];
+                        png_byte v[8];
                         int j;
                         sptr -= 4;
-                        xpng_memcpy(v, sptr, 4);
-                        for (j = 0; j < xpng_pass_inc[pass]; j++)
+                        png_memcpy(v, sptr, 4);
+                        for (j = 0; j < png_pass_inc[pass]; j++)
                         {
                            dp -= 4;
-                           xpng_memcpy(dp, v, 4);
+                           png_memcpy(dp, v, 4);
                         }
                      }
                   }
@@ -2440,14 +2440,14 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
                      dp -= (width_mmx*8 - 4);   // sign fixed
                      for (i = width; i; i--)
                      {
-                        xpng_byte v[8];
+                        png_byte v[8];
                         int j;
                         sptr -= 4;
-                        xpng_memcpy(v, sptr, 4);
-                        for (j = 0; j < xpng_pass_inc[pass]; j++)
+                        png_memcpy(v, sptr, 4);
+                        for (j = 0; j < png_pass_inc[pass]; j++)
                         {
                            dp -= 4;
-                           xpng_memcpy(dp, v, 4);
+                           png_memcpy(dp, v, 4);
                         }
                      }
                   }
@@ -2582,12 +2582,12 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
                {
                   for (i = width; i; i--)
                   {
-                     xpng_byte v[8];
+                     png_byte v[8];
                      int j;
-                     xpng_memcpy(v, sptr, 6);
-                     for (j = 0; j < xpng_pass_inc[pass]; j++)
+                     png_memcpy(v, sptr, 6);
+                     for (j = 0; j < png_pass_inc[pass]; j++)
                      {
-                        xpng_memcpy(dp, v, 6);
+                        png_memcpy(dp, v, 6);
                         dp -= 6;
                      }
                      sptr -= 6;
@@ -2599,12 +2599,12 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
                {
                   for (i = width; i; i--)
                   {
-                     xpng_byte v[8];
+                     png_byte v[8];
                      int j;
-                     xpng_memcpy(v, sptr, pixel_bytes);
-                     for (j = 0; j < xpng_pass_inc[pass]; j++)
+                     png_memcpy(v, sptr, pixel_bytes);
+                     for (j = 0; j < png_pass_inc[pass]; j++)
                      {
-                        xpng_memcpy(dp, v, pixel_bytes);
+                        png_memcpy(dp, v, pixel_bytes);
                         dp -= pixel_bytes;
                      }
                      sptr-= pixel_bytes;
@@ -2613,7 +2613,7 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
             } // end of _mmx_supported ========================================
 
             else /* MMX not supported:  use modified C code - takes advantage
-                  *   of inlining of xpng_memcpy for a constant */
+                  *   of inlining of png_memcpy for a constant */
                  /* GRR 19991007:  does it?  or should pixel_bytes in each
                   *   block be replaced with immediate value (e.g., 1)? */
                  /* GRR 19991017:  replaced with constants in each case */
@@ -2624,7 +2624,7 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
                   for (i = width; i; i--)
                   {
                      int j;
-                     for (j = 0; j < xpng_pass_inc[pass]; j++)
+                     for (j = 0; j < png_pass_inc[pass]; j++)
                      {
                         *dp-- = *sptr;
                      }
@@ -2635,12 +2635,12 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
                {
                   for (i = width; i; i--)
                   {
-                     xpng_byte v[8];
+                     png_byte v[8];
                      int j;
-                     xpng_memcpy(v, sptr, 3);
-                     for (j = 0; j < xpng_pass_inc[pass]; j++)
+                     png_memcpy(v, sptr, 3);
+                     for (j = 0; j < png_pass_inc[pass]; j++)
                      {
-                        xpng_memcpy(dp, v, 3);
+                        png_memcpy(dp, v, 3);
                         dp -= 3;
                      }
                      sptr -= 3;
@@ -2650,12 +2650,12 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
                {
                   for (i = width; i; i--)
                   {
-                     xpng_byte v[8];
+                     png_byte v[8];
                      int j;
-                     xpng_memcpy(v, sptr, 2);
-                     for (j = 0; j < xpng_pass_inc[pass]; j++)
+                     png_memcpy(v, sptr, 2);
+                     for (j = 0; j < png_pass_inc[pass]; j++)
                      {
-                        xpng_memcpy(dp, v, 2);
+                        png_memcpy(dp, v, 2);
                         dp -= 2;
                      }
                      sptr -= 2;
@@ -2665,20 +2665,20 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
                {
                   for (i = width; i; i--)
                   {
-                     xpng_byte v[8];
+                     png_byte v[8];
                      int j;
-                     xpng_memcpy(v, sptr, 4);
-                     for (j = 0; j < xpng_pass_inc[pass]; j++)
+                     png_memcpy(v, sptr, 4);
+                     for (j = 0; j < png_pass_inc[pass]; j++)
                      {
 #ifdef PNG_DEBUG
-                        if (dp < row || dp+3 > row+xpng_ptr->row_buf_size)
+                        if (dp < row || dp+3 > row+png_ptr->row_buf_size)
                         {
                            printf("dp out of bounds: row=%d, dp=%d, rp=%d\n",
-                             row, dp, row+xpng_ptr->row_buf_size);
-                           printf("row_buf=%d\n",xpng_ptr->row_buf_size);
+                             row, dp, row+png_ptr->row_buf_size);
+                           printf("row_buf=%d\n",png_ptr->row_buf_size);
                         }
 #endif
-                        xpng_memcpy(dp, v, 4);
+                        png_memcpy(dp, v, 4);
                         dp -= 4;
                      }
                      sptr -= 4;
@@ -2688,12 +2688,12 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
                {
                   for (i = width; i; i--)
                   {
-                     xpng_byte v[8];
+                     png_byte v[8];
                      int j;
-                     xpng_memcpy(v, sptr, 6);
-                     for (j = 0; j < xpng_pass_inc[pass]; j++)
+                     png_memcpy(v, sptr, 6);
+                     for (j = 0; j < png_pass_inc[pass]; j++)
                      {
-                        xpng_memcpy(dp, v, 6);
+                        png_memcpy(dp, v, 6);
                         dp -= 6;
                      }
                      sptr -= 6;
@@ -2703,12 +2703,12 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
                {
                   for (i = width; i; i--)
                   {
-                     xpng_byte v[8];
+                     png_byte v[8];
                      int j;
-                     xpng_memcpy(v, sptr, 8);
-                     for (j = 0; j < xpng_pass_inc[pass]; j++)
+                     png_memcpy(v, sptr, 8);
+                     for (j = 0; j < png_pass_inc[pass]; j++)
                      {
-                        xpng_memcpy(dp, v, 8);
+                        png_memcpy(dp, v, 8);
                         dp -= 8;
                      }
                      sptr -= 8;
@@ -2718,12 +2718,12 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
                {
                   for (i = width; i; i--)
                   {
-                     xpng_byte v[8];
+                     png_byte v[8];
                      int j;
-                     xpng_memcpy(v, sptr, pixel_bytes);
-                     for (j = 0; j < xpng_pass_inc[pass]; j++)
+                     png_memcpy(v, sptr, pixel_bytes);
+                     for (j = 0; j < png_pass_inc[pass]; j++)
                      {
-                        xpng_memcpy(dp, v, pixel_bytes);
+                        png_memcpy(dp, v, pixel_bytes);
                         dp -= pixel_bytes;
                      }
                      sptr -= pixel_bytes;
@@ -2737,10 +2737,10 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
 
       row_info->width = final_width;
       row_info->rowbytes = ((final_width *
-         (xpng_uint_32)row_info->pixel_depth + 7) >> 3);
+         (png_uint_32)row_info->pixel_depth + 7) >> 3);
    }
 
-} /* end xpng_do_read_interlace() */
+} /* end png_do_read_interlace() */
 
 #endif /* PNG_HAVE_ASSEMBLER_READ_INTERLACE */
 #endif /* PNG_READ_INTERLACING_SUPPORTED */
@@ -2770,8 +2770,8 @@ union uAll {
 // Optimized code for PNG Average filter decoder
 
 static void /* PRIVATE */
-xpng_read_filter_row_mmx_avg(xpng_row_infop row_info, xpng_bytep row,
-                            xpng_bytep prev_row)
+png_read_filter_row_mmx_avg(png_row_infop row_info, png_bytep row,
+                            png_bytep prev_row)
 {
    int bpp;
    int dummy_value_c;   // fix 'forbidden register 2 (cx) was spilled' error
@@ -3320,8 +3320,8 @@ xpng_read_filter_row_mmx_avg(xpng_row_infop row_info, xpng_bytep row,
 
 #ifdef PNG_DEBUG
          // GRR:  PRINT ERROR HERE:  SHOULD NEVER BE REACHED
-        xpng_debug(1,
-        "Internal logic error in pnggccrd (xpng_read_filter_row_mmx_avg())\n");
+        png_debug(1,
+        "Internal logic error in pnggccrd (png_read_filter_row_mmx_avg())\n");
 #endif
 
 #if 0
@@ -3423,7 +3423,7 @@ xpng_read_filter_row_mmx_avg(xpng_row_infop row_info, xpng_bytep row,
 #endif
    );
 
-} /* end xpng_read_filter_row_mmx_avg() */
+} /* end png_read_filter_row_mmx_avg() */
 #endif
 
 
@@ -3438,8 +3438,8 @@ xpng_read_filter_row_mmx_avg(xpng_row_infop row_info, xpng_bytep row,
 // Optimized code for PNG Paeth filter decoder
 
 static void /* PRIVATE */
-xpng_read_filter_row_mmx_paeth(xpng_row_infop row_info, xpng_bytep row,
-                              xpng_bytep prev_row)
+png_read_filter_row_mmx_paeth(png_row_infop row_info, png_bytep row,
+                              png_bytep prev_row)
 {
    int bpp;
    int dummy_value_c;   // fix 'forbidden register 2 (cx) was spilled' error
@@ -4477,7 +4477,7 @@ xpng_read_filter_row_mmx_paeth(xpng_row_infop row_info, xpng_bytep row,
 #endif
    );
 
-} /* end xpng_read_filter_row_mmx_paeth() */
+} /* end png_read_filter_row_mmx_paeth() */
 #endif
 
 
@@ -4493,7 +4493,7 @@ xpng_read_filter_row_mmx_paeth(xpng_row_infop row_info, xpng_bytep row,
 // Optimized code for PNG Sub filter decoder
 
 static void /* PRIVATE */
-xpng_read_filter_row_mmx_sub(xpng_row_infop row_info, xpng_bytep row)
+png_read_filter_row_mmx_sub(png_row_infop row_info, png_bytep row)
 {
    int bpp;
    int dummy_value_a;
@@ -4901,7 +4901,7 @@ xpng_read_filter_row_mmx_sub(xpng_row_infop row_info, xpng_bytep row)
       : "%edx", "%esi"                    // clobber list
    );
 
-} // end of xpng_read_filter_row_mmx_sub()
+} // end of png_read_filter_row_mmx_sub()
 #endif
 
 
@@ -4916,10 +4916,10 @@ xpng_read_filter_row_mmx_sub(xpng_row_infop row_info, xpng_bytep row)
 // Optimized code for PNG Up filter decoder
 
 static void /* PRIVATE */
-xpng_read_filter_row_mmx_up(xpng_row_infop row_info, xpng_bytep row,
-                           xpng_bytep prev_row)
+png_read_filter_row_mmx_up(png_row_infop row_info, png_bytep row,
+                           png_bytep prev_row)
 {
-   xpng_uint_32 len;
+   png_uint_32 len;
    int dummy_value_d;   // fix 'forbidden register 3 (dx) was spilled' error
    int dummy_value_S;
    int dummy_value_D;
@@ -5051,7 +5051,7 @@ xpng_read_filter_row_mmx_up(xpng_row_infop row_info, xpng_bytep row,
 #endif
    );
 
-} // end of xpng_read_filter_row_mmx_up()
+} // end of png_read_filter_row_mmx_up()
 
 #endif /* PNG_ASSEMBLER_CODE_SUPPORTED */
 
@@ -5065,34 +5065,34 @@ xpng_read_filter_row_mmx_up(xpng_row_infop row_info, xpng_bytep row,
 /*===========================================================================*/
 
 
-/* Optimized xpng_read_filter_row routines */
+/* Optimized png_read_filter_row routines */
 
 void /* PRIVATE */
-xpng_read_filter_row(xpng_structp xpng_ptr, xpng_row_infop row_info, xpng_bytep
-   row, xpng_bytep prev_row, int filter)
+png_read_filter_row(png_structp png_ptr, png_row_infop row_info, png_bytep
+   row, png_bytep prev_row, int filter)
 {
 #ifdef PNG_DEBUG
    char filnm[10];
 #endif
 
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED)
-/* GRR:  these are superseded by xpng_ptr->asm_flags: */
+/* GRR:  these are superseded by png_ptr->asm_flags: */
 #define UseMMX_sub    1   // GRR:  converted 20000730
 #define UseMMX_up     1   // GRR:  converted 20000729
 #define UseMMX_avg    1   // GRR:  converted 20000828 (+ 16-bit bugfix 20000916)
 #define UseMMX_paeth  1   // GRR:  converted 20000828
 
    if (_mmx_supported == 2) {
-       /* this should have happened in xpng_init_mmx_flags() already */
+       /* this should have happened in png_init_mmx_flags() already */
 #if !defined(PNG_1_0_X)
-       xpng_warning(xpng_ptr, "asm_flags may not have been initialized");
+       png_warning(png_ptr, "asm_flags may not have been initialized");
 #endif
-       xpng_mmx_support();
+       png_mmx_support();
    }
 #endif /* PNG_ASSEMBLER_CODE_SUPPORTED */
 
 #ifdef PNG_DEBUG
-   xpng_debug(1, "in xpng_read_filter_row (pnggccrd.c)\n");
+   png_debug(1, "in png_read_filter_row (pnggccrd.c)\n");
    switch (filter)
    {
       case 0: sprintf(filnm, "none");
@@ -5100,7 +5100,7 @@ xpng_read_filter_row(xpng_structp xpng_ptr, xpng_row_infop row_info, xpng_bytep
       case 1: sprintf(filnm, "sub-%s",
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED) && defined(PNG_THREAD_UNSAFE_OK)
 #if !defined(PNG_1_0_X)
-        (xpng_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_SUB)? "MMX" : 
+        (png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_SUB)? "MMX" : 
 #endif
 #endif
 "x86");
@@ -5108,7 +5108,7 @@ xpng_read_filter_row(xpng_structp xpng_ptr, xpng_row_infop row_info, xpng_bytep
       case 2: sprintf(filnm, "up-%s",
 #ifdef PNG_ASSEMBLER_CODE_SUPPORTED
 #if !defined(PNG_1_0_X)
-        (xpng_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_UP)? "MMX" :
+        (png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_UP)? "MMX" :
 #endif
 #endif
  "x86");
@@ -5116,7 +5116,7 @@ xpng_read_filter_row(xpng_structp xpng_ptr, xpng_row_infop row_info, xpng_bytep
       case 3: sprintf(filnm, "avg-%s",
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED) && defined(PNG_THREAD_UNSAFE_OK)
 #if !defined(PNG_1_0_X)
-        (xpng_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_AVG)? "MMX" :
+        (png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_AVG)? "MMX" :
 #endif
 #endif
  "x86");
@@ -5124,7 +5124,7 @@ xpng_read_filter_row(xpng_structp xpng_ptr, xpng_row_infop row_info, xpng_bytep
       case 4: sprintf(filnm, "Paeth-%s",
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED) && defined(PNG_THREAD_UNSAFE_OK)
 #if !defined(PNG_1_0_X)
-        (xpng_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_PAETH)? "MMX":
+        (png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_PAETH)? "MMX":
 #endif
 #endif
 "x86");
@@ -5132,11 +5132,11 @@ xpng_read_filter_row(xpng_structp xpng_ptr, xpng_row_infop row_info, xpng_bytep
       default: sprintf(filnm, "unknw");
          break;
    }
-   xpng_debug2(0, "row_number=%5ld, %5s, ", xpng_ptr->row_number, filnm);
-   xpng_debug1(0, "row=0x%08lx, ", (unsigned long)row);
-   xpng_debug2(0, "pixdepth=%2d, bytes=%d, ", (int)row_info->pixel_depth,
+   png_debug2(0, "row_number=%5ld, %5s, ", png_ptr->row_number, filnm);
+   png_debug1(0, "row=0x%08lx, ", (unsigned long)row);
+   png_debug2(0, "pixdepth=%2d, bytes=%d, ", (int)row_info->pixel_depth,
       (int)((row_info->pixel_depth + 7) >> 3));
-   xpng_debug1(0,"rowbytes=%8ld\n", row_info->rowbytes);
+   png_debug1(0,"rowbytes=%8ld\n", row_info->rowbytes);
 #endif /* PNG_DEBUG */
 
    switch (filter)
@@ -5147,27 +5147,27 @@ xpng_read_filter_row(xpng_structp xpng_ptr, xpng_row_infop row_info, xpng_bytep
       case PNG_FILTER_VALUE_SUB:
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED) && defined(PNG_THREAD_UNSAFE_OK)
 #if !defined(PNG_1_0_X)
-         if ((xpng_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_SUB) &&
-             (row_info->pixel_depth >= xpng_ptr->mmx_bitdepth_threshold) &&
-             (row_info->rowbytes >= xpng_ptr->mmx_rowbytes_threshold))
+         if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_SUB) &&
+             (row_info->pixel_depth >= png_ptr->mmx_bitdepth_threshold) &&
+             (row_info->rowbytes >= png_ptr->mmx_rowbytes_threshold))
 #else
          if (_mmx_supported)
 #endif
          {
-            xpng_read_filter_row_mmx_sub(row_info, row);
+            png_read_filter_row_mmx_sub(row_info, row);
          }
          else
 #endif /* PNG_ASSEMBLER_CODE_SUPPORTED */
          {
-            xpng_uint_32 i;
-            xpng_uint_32 istop = row_info->rowbytes;
-            xpng_uint_32 bpp = (row_info->pixel_depth + 7) >> 3;
-            xpng_bytep rp = row + bpp;
-            xpng_bytep lp = row;
+            png_uint_32 i;
+            png_uint_32 istop = row_info->rowbytes;
+            png_uint_32 bpp = (row_info->pixel_depth + 7) >> 3;
+            png_bytep rp = row + bpp;
+            png_bytep lp = row;
 
             for (i = bpp; i < istop; i++)
             {
-               *rp = (xpng_byte)(((int)(*rp) + (int)(*lp++)) & 0xff);
+               *rp = (png_byte)(((int)(*rp) + (int)(*lp++)) & 0xff);
                rp++;
             }
          }  /* end !UseMMX_sub */
@@ -5176,26 +5176,26 @@ xpng_read_filter_row(xpng_structp xpng_ptr, xpng_row_infop row_info, xpng_bytep
       case PNG_FILTER_VALUE_UP:
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED)
 #if !defined(PNG_1_0_X)
-         if ((xpng_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_UP) &&
-             (row_info->pixel_depth >= xpng_ptr->mmx_bitdepth_threshold) &&
-             (row_info->rowbytes >= xpng_ptr->mmx_rowbytes_threshold))
+         if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_UP) &&
+             (row_info->pixel_depth >= png_ptr->mmx_bitdepth_threshold) &&
+             (row_info->rowbytes >= png_ptr->mmx_rowbytes_threshold))
 #else
          if (_mmx_supported)
 #endif
          {
-            xpng_read_filter_row_mmx_up(row_info, row, prev_row);
+            png_read_filter_row_mmx_up(row_info, row, prev_row);
          }
           else
 #endif /* PNG_ASSEMBLER_CODE_SUPPORTED */
          {
-            xpng_uint_32 i;
-            xpng_uint_32 istop = row_info->rowbytes;
-            xpng_bytep rp = row;
-            xpng_bytep pp = prev_row;
+            png_uint_32 i;
+            png_uint_32 istop = row_info->rowbytes;
+            png_bytep rp = row;
+            png_bytep pp = prev_row;
 
             for (i = 0; i < istop; ++i)
             {
-               *rp = (xpng_byte)(((int)(*rp) + (int)(*pp++)) & 0xff);
+               *rp = (png_byte)(((int)(*rp) + (int)(*pp++)) & 0xff);
                rp++;
             }
          }  /* end !UseMMX_up */
@@ -5204,35 +5204,35 @@ xpng_read_filter_row(xpng_structp xpng_ptr, xpng_row_infop row_info, xpng_bytep
       case PNG_FILTER_VALUE_AVG:
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED) && defined(PNG_THREAD_UNSAFE_OK)
 #if !defined(PNG_1_0_X)
-         if ((xpng_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_AVG) &&
-             (row_info->pixel_depth >= xpng_ptr->mmx_bitdepth_threshold) &&
-             (row_info->rowbytes >= xpng_ptr->mmx_rowbytes_threshold))
+         if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_AVG) &&
+             (row_info->pixel_depth >= png_ptr->mmx_bitdepth_threshold) &&
+             (row_info->rowbytes >= png_ptr->mmx_rowbytes_threshold))
 #else
          if (_mmx_supported)
 #endif
          {
-            xpng_read_filter_row_mmx_avg(row_info, row, prev_row);
+            png_read_filter_row_mmx_avg(row_info, row, prev_row);
          }
          else
 #endif /* PNG_ASSEMBLER_CODE_SUPPORTED */
          {
-            xpng_uint_32 i;
-            xpng_bytep rp = row;
-            xpng_bytep pp = prev_row;
-            xpng_bytep lp = row;
-            xpng_uint_32 bpp = (row_info->pixel_depth + 7) >> 3;
-            xpng_uint_32 istop = row_info->rowbytes - bpp;
+            png_uint_32 i;
+            png_bytep rp = row;
+            png_bytep pp = prev_row;
+            png_bytep lp = row;
+            png_uint_32 bpp = (row_info->pixel_depth + 7) >> 3;
+            png_uint_32 istop = row_info->rowbytes - bpp;
 
             for (i = 0; i < bpp; i++)
             {
-               *rp = (xpng_byte)(((int)(*rp) +
+               *rp = (png_byte)(((int)(*rp) +
                   ((int)(*pp++) >> 1)) & 0xff);
                rp++;
             }
 
             for (i = 0; i < istop; i++)
             {
-               *rp = (xpng_byte)(((int)(*rp) +
+               *rp = (png_byte)(((int)(*rp) +
                   ((int)(*pp++ + *lp++) >> 1)) & 0xff);
                rp++;
             }
@@ -5242,29 +5242,29 @@ xpng_read_filter_row(xpng_structp xpng_ptr, xpng_row_infop row_info, xpng_bytep
       case PNG_FILTER_VALUE_PAETH:
 #if defined(PNG_ASSEMBLER_CODE_SUPPORTED) && defined(PNG_THREAD_UNSAFE_OK)
 #if !defined(PNG_1_0_X)
-         if ((xpng_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_PAETH) &&
-             (row_info->pixel_depth >= xpng_ptr->mmx_bitdepth_threshold) &&
-             (row_info->rowbytes >= xpng_ptr->mmx_rowbytes_threshold))
+         if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_PAETH) &&
+             (row_info->pixel_depth >= png_ptr->mmx_bitdepth_threshold) &&
+             (row_info->rowbytes >= png_ptr->mmx_rowbytes_threshold))
 #else
          if (_mmx_supported)
 #endif
          {
-            xpng_read_filter_row_mmx_paeth(row_info, row, prev_row);
+            png_read_filter_row_mmx_paeth(row_info, row, prev_row);
          }
          else
 #endif /* PNG_ASSEMBLER_CODE_SUPPORTED */
          {
-            xpng_uint_32 i;
-            xpng_bytep rp = row;
-            xpng_bytep pp = prev_row;
-            xpng_bytep lp = row;
-            xpng_bytep cp = prev_row;
-            xpng_uint_32 bpp = (row_info->pixel_depth + 7) >> 3;
-            xpng_uint_32 istop = row_info->rowbytes - bpp;
+            png_uint_32 i;
+            png_bytep rp = row;
+            png_bytep pp = prev_row;
+            png_bytep lp = row;
+            png_bytep cp = prev_row;
+            png_uint_32 bpp = (row_info->pixel_depth + 7) >> 3;
+            png_uint_32 istop = row_info->rowbytes - bpp;
 
             for (i = 0; i < bpp; i++)
             {
-               *rp = (xpng_byte)(((int)(*rp) + (int)(*pp++)) & 0xff);
+               *rp = (png_byte)(((int)(*rp) + (int)(*pp++)) & 0xff);
                rp++;
             }
 
@@ -5300,14 +5300,14 @@ xpng_read_filter_row(xpng_structp xpng_ptr, xpng_row_infop row_info, xpng_bytep
 
                p = (pa <= pb && pa <= pc) ? a : (pb <= pc) ? b : c;
 
-               *rp = (xpng_byte)(((int)(*rp) + p) & 0xff);
+               *rp = (png_byte)(((int)(*rp) + p) & 0xff);
                rp++;
             }
          }  /* end !UseMMX_paeth */
          break;
 
       default:
-         xpng_warning(xpng_ptr, "Ignoring bad row-filter type");
+         png_warning(png_ptr, "Ignoring bad row-filter type");
          *row=0;
          break;
    }
@@ -5334,7 +5334,7 @@ xpng_read_filter_row(xpng_structp xpng_ptr, xpng_row_infop row_info, xpng_bytep
  */
 
 int PNGAPI
-xpng_mmx_support(void)
+png_mmx_support(void)
 {
 #if defined(PNG_MMX_CODE_SUPPORTED)
     __asm__ __volatile__ (

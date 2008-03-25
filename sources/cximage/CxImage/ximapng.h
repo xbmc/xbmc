@@ -41,8 +41,10 @@
 extern "C" {
 #ifdef _LINUX
 #define PNGAPI
-#endif
+#include <png.h>
+#else
 #include "../png/png.h"
+#endif
 }
 
 class CxImagePNG: public CxImage
@@ -59,30 +61,30 @@ public:
 	bool Encode(FILE *hFile) { CxIOFile file(hFile); return Encode(&file); }
 
 protected:
-	void ima_xpng_error(xpng_struct *xpng_ptr, char *message);
+	void ima_png_error(png_struct *png_ptr, char *message);
 	void expand2to4bpp(BYTE* prow);
 
-	static void user_read_data(xpng_structp xpng_ptr, xpng_bytep data, xpng_size_t length)
+	static void user_read_data(png_structp png_ptr, png_bytep data, png_size_t length)
 	{
-		CxFile* hFile = (CxFile*)xpng_ptr->io_ptr;
-		if (hFile->Read(data,1,length) != length) xpng_error(xpng_ptr, "Read Error");
+		CxFile* hFile = (CxFile*)png_ptr->io_ptr;
+		if (hFile->Read(data,1,length) != length) png_error(png_ptr, "Read Error");
 	}
 
-	static void user_write_data(xpng_structp xpng_ptr, xpng_bytep data, xpng_size_t length)
+	static void user_write_data(png_structp png_ptr, png_bytep data, png_size_t length)
 	{
-		CxFile* hFile = (CxFile*)xpng_ptr->io_ptr;
-		if (hFile->Write(data,1,length) != length) xpng_error(xpng_ptr, "Write Error");
+		CxFile* hFile = (CxFile*)png_ptr->io_ptr;
+		if (hFile->Write(data,1,length) != length) png_error(png_ptr, "Write Error");
 	}
 
-	static void user_flush_data(xpng_structp xpng_ptr)
+	static void user_flush_data(png_structp png_ptr)
 	{
-		CxFile* hFile = (CxFile*)xpng_ptr->io_ptr;
-		if (!hFile->Flush()) xpng_error(xpng_ptr, "Flush Error");
+		CxFile* hFile = (CxFile*)png_ptr->io_ptr;
+		if (!hFile->Flush()) png_error(png_ptr, "Flush Error");
 	}
-    static void user_error_fn(xpng_structp xpng_ptr,xpng_const_charp error_msg)
+    static void user_error_fn(png_structp png_ptr,png_const_charp error_msg)
 	{
-		strncpy((char*)xpng_ptr->error_ptr,error_msg,255);
-		longjmp(xpng_ptr->jmpbuf, 1);
+		strncpy((char*)png_ptr->error_ptr,error_msg,255);
+		longjmp(png_ptr->jmpbuf, 1);
 	}
 };
 

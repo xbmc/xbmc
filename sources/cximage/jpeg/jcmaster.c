@@ -34,7 +34,7 @@ typedef enum {
 } c_pass_type;
 
 typedef struct {
-  struct xjpeg_comp_master pub;	/* public fields */
+  struct jpeg_comp_master pub;	/* public fields */
 
   c_pass_type pass_type;	/* the type of the current pass */
 
@@ -56,7 +56,7 @@ initial_setup (j_compress_ptr cinfo)
 /* Do computations that are needed before master selection phase */
 {
   int ci;
-  xjpeg_component_info *compptr;
+  jpeg_component_info *compptr;
   long samplesperrow;
   JDIMENSION jd_samplesperrow;
 
@@ -141,7 +141,7 @@ validate_script (j_compress_ptr cinfo)
  * determine whether it uses progressive JPEG, and set cinfo->progressive_mode.
  */
 {
-  const xjpeg_scan_info * scanptr;
+  const jpeg_scan_info * scanptr;
   int scanno, ncomps, ci, coefi, thisi;
   int Ss, Se, Ah, Al;
   boolean component_sent[MAX_COMPONENTS];
@@ -282,7 +282,7 @@ select_scan_parameters (j_compress_ptr cinfo)
   if (cinfo->scan_info != NULL) {
     /* Prepare for current scan --- the script is already validated */
     my_master_ptr master = (my_master_ptr) cinfo->master;
-    const xjpeg_scan_info * scanptr = cinfo->scan_info + master->scan_number;
+    const jpeg_scan_info * scanptr = cinfo->scan_info + master->scan_number;
 
     cinfo->comps_in_scan = scanptr->comps_in_scan;
     for (ci = 0; ci < scanptr->comps_in_scan; ci++) {
@@ -319,7 +319,7 @@ per_scan_setup (j_compress_ptr cinfo)
 /* cinfo->comps_in_scan and cinfo->cur_comp_info[] are already set */
 {
   int ci, mcublks, tmp;
-  xjpeg_component_info *compptr;
+  jpeg_component_info *compptr;
   
   if (cinfo->comps_in_scan == 1) {
     
@@ -433,7 +433,7 @@ prepare_for_pass (j_compress_ptr cinfo)
       /* No immediate data output; postpone writing frame/scan headers */
       master->pub.call_pass_startup = FALSE;
     } else {
-      /* Will write frame/scan headers at first xjpeg_write_scanlines call */
+      /* Will write frame/scan headers at first jpeg_write_scanlines call */
       master->pub.call_pass_startup = TRUE;
     }
     break;
@@ -486,11 +486,11 @@ prepare_for_pass (j_compress_ptr cinfo)
 
 /*
  * Special start-of-pass hook.
- * This is called by xjpeg_write_scanlines if call_pass_startup is TRUE.
+ * This is called by jpeg_write_scanlines if call_pass_startup is TRUE.
  * In single-pass processing, we need this hook because we don't want to
- * write frame/scan headers during xjpeg_start_compress; we want to let the
- * application write COM markers etc. between xjpeg_start_compress and the
- * xjpeg_write_scanlines loop.
+ * write frame/scan headers during jpeg_start_compress; we want to let the
+ * application write COM markers etc. between jpeg_start_compress and the
+ * jpeg_write_scanlines loop.
  * In multi-pass processing, this routine is not used.
  */
 
@@ -556,7 +556,7 @@ jinit_c_master_control (j_compress_ptr cinfo, boolean transcode_only)
   master = (my_master_ptr)
       (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_IMAGE,
 				  SIZEOF(my_comp_master));
-  cinfo->master = (struct xjpeg_comp_master *) master;
+  cinfo->master = (struct jpeg_comp_master *) master;
   master->pub.prepare_for_pass = prepare_for_pass;
   master->pub.pass_startup = pass_startup;
   master->pub.finish_pass = finish_pass_master;

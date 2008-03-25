@@ -34,7 +34,7 @@ LOCAL(void) transencode_coef_controller
 /*
  * Compression initialization for writing raw-coefficient data.
  * Before calling this, all parameters and a data destination must be set up.
- * Call xjpeg_finish_compress() to actually write the data.
+ * Call jpeg_finish_compress() to actually write the data.
  *
  * The number of passed virtual arrays must match cinfo->num_components.
  * Note that the virtual arrays need not be filled or even realized at
@@ -44,19 +44,19 @@ LOCAL(void) transencode_coef_controller
  */
 
 GLOBAL(void)
-xjpeg_write_coefficients (j_compress_ptr cinfo, jvirt_barray_ptr * coef_arrays)
+jpeg_write_coefficients (j_compress_ptr cinfo, jvirt_barray_ptr * coef_arrays)
 {
   if (cinfo->global_state != CSTATE_START)
     ERREXIT1(cinfo, JERR_BAD_STATE, cinfo->global_state);
   /* Mark all tables to be written */
-  xjpeg_suppress_tables(cinfo, FALSE);
+  jpeg_suppress_tables(cinfo, FALSE);
   /* (Re)initialize error mgr and destination modules */
   (*cinfo->err->reset_error_mgr) ((j_common_ptr) cinfo);
   (*cinfo->dest->init_destination) (cinfo);
   /* Perform master selection of active modules */
   transencode_master_selection(cinfo, coef_arrays);
-  /* Wait for xjpeg_finish_compress() call */
-  cinfo->next_scanline = 0;	/* so xjpeg_write_marker works */
+  /* Wait for jpeg_finish_compress() call */
+  cinfo->next_scanline = 0;	/* so jpeg_write_marker works */
   cinfo->global_state = CSTATE_WRCOEFS;
 }
 
@@ -69,11 +69,11 @@ xjpeg_write_coefficients (j_compress_ptr cinfo, jvirt_barray_ptr * coef_arrays)
  */
 
 GLOBAL(void)
-xjpeg_copy_critical_parameters (j_decompress_ptr srcinfo,
+jpeg_copy_critical_parameters (j_decompress_ptr srcinfo,
 			       j_compress_ptr dstinfo)
 {
   JQUANT_TBL ** qtblptr;
-  xjpeg_component_info *incomp, *outcomp;
+  jpeg_component_info *incomp, *outcomp;
   JQUANT_TBL *c_quant, *slot_quant;
   int tblno, ci, coefi;
 
@@ -84,13 +84,13 @@ xjpeg_copy_critical_parameters (j_decompress_ptr srcinfo,
   dstinfo->image_width = srcinfo->image_width;
   dstinfo->image_height = srcinfo->image_height;
   dstinfo->input_components = srcinfo->num_components;
-  dstinfo->in_color_space = srcinfo->xjpeg_color_space;
+  dstinfo->in_color_space = srcinfo->jpeg_color_space;
   /* Initialize all parameters to default values */
-  xjpeg_set_defaults(dstinfo);
-  /* xjpeg_set_defaults may choose wrong colorspace, eg YCbCr if input is RGB.
+  jpeg_set_defaults(dstinfo);
+  /* jpeg_set_defaults may choose wrong colorspace, eg YCbCr if input is RGB.
    * Fix it to get the right header markers for the image colorspace.
    */
-  xjpeg_set_colorspace(dstinfo, srcinfo->xjpeg_color_space);
+  jpeg_set_colorspace(dstinfo, srcinfo->jpeg_color_space);
   dstinfo->data_precision = srcinfo->data_precision;
   dstinfo->CCIR601_sampling = srcinfo->CCIR601_sampling;
   /* Copy the source's quantization tables. */
@@ -98,7 +98,7 @@ xjpeg_copy_critical_parameters (j_decompress_ptr srcinfo,
     if (srcinfo->quant_tbl_ptrs[tblno] != NULL) {
       qtblptr = & dstinfo->quant_tbl_ptrs[tblno];
       if (*qtblptr == NULL)
-	*qtblptr = xjpeg_alloc_quant_table((j_common_ptr) dstinfo);
+	*qtblptr = jpeg_alloc_quant_table((j_common_ptr) dstinfo);
       MEMCOPY((*qtblptr)->quantval,
 	      srcinfo->quant_tbl_ptrs[tblno]->quantval,
 	      SIZEOF((*qtblptr)->quantval));
@@ -106,7 +106,7 @@ xjpeg_copy_critical_parameters (j_decompress_ptr srcinfo,
     }
   }
   /* Copy the source's per-component info.
-   * Note we assume xjpeg_set_defaults has allocated the dest comp_info array.
+   * Note we assume jpeg_set_defaults has allocated the dest comp_info array.
    */
   dstinfo->num_components = srcinfo->num_components;
   if (dstinfo->num_components < 1 || dstinfo->num_components > MAX_COMPONENTS)
@@ -135,7 +135,7 @@ xjpeg_copy_critical_parameters (j_decompress_ptr srcinfo,
       }
     }
     /* Note: we do not copy the source's Huffman table assignments;
-     * instead we rely on xjpeg_set_colorspace to have made a suitable choice.
+     * instead we rely on jpeg_set_colorspace to have made a suitable choice.
      */
   }
   /* Also copy JFIF version and resolution information, if available.
@@ -215,7 +215,7 @@ transencode_master_selection (j_compress_ptr cinfo,
 /* Private buffer controller object */
 
 typedef struct {
-  struct xjpeg_c_coef_controller pub; /* public fields */
+  struct jpeg_c_coef_controller pub; /* public fields */
 
   JDIMENSION iMCU_row_num;	/* iMCU row # within image */
   JDIMENSION mcu_ctr;		/* counts MCUs processed in current row */
@@ -295,7 +295,7 @@ compress_output (j_compress_ptr cinfo, JSAMPIMAGE input_buf)
   JBLOCKARRAY buffer[MAX_COMPS_IN_SCAN];
   JBLOCKROW MCU_buffer[C_MAX_BLOCKS_IN_MCU];
   JBLOCKROW buffer_ptr;
-  xjpeg_component_info *compptr;
+  jpeg_component_info *compptr;
 
   /* Align the virtual buffers for the components used in this scan. */
   for (ci = 0; ci < cinfo->comps_in_scan; ci++) {
@@ -379,7 +379,7 @@ transencode_coef_controller (j_compress_ptr cinfo,
   coef = (my_coef_ptr)
     (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_IMAGE,
 				SIZEOF(my_coef_controller));
-  cinfo->coef = (struct xjpeg_c_coef_controller *) coef;
+  cinfo->coef = (struct jpeg_c_coef_controller *) coef;
   coef->pub.start_pass = start_pass_coef;
   coef->pub.compress_data = compress_output;
 

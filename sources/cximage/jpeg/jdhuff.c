@@ -59,7 +59,7 @@ typedef struct {
 
 
 typedef struct {
-  struct xjpeg_entropy_decoder pub; /* public fields */
+  struct jpeg_entropy_decoder pub; /* public fields */
 
   /* These fields are loaded into local variables at start of each MCU.
    * In case of suspension, we exit WITHOUT updating them.
@@ -96,7 +96,7 @@ start_pass_huff_decoder (j_decompress_ptr cinfo)
 {
   huff_entropy_ptr entropy = (huff_entropy_ptr) cinfo->entropy;
   int ci, blkn, dctbl, actbl;
-  xjpeg_component_info * compptr;
+  jpeg_component_info * compptr;
 
   /* Check that the scan parameters Ss, Se, Ah/Al are OK for sequential JPEG.
    * This ought to be an error condition, but we make it a warning because
@@ -112,9 +112,9 @@ start_pass_huff_decoder (j_decompress_ptr cinfo)
     actbl = compptr->ac_tbl_no;
     /* Compute derived values for Huffman tables */
     /* We may do this more than once for a table, but it's not expensive */
-    xjpeg_make_d_derived_tbl(cinfo, TRUE, dctbl,
+    jpeg_make_d_derived_tbl(cinfo, TRUE, dctbl,
 			    & entropy->dc_derived_tbls[dctbl]);
-    xjpeg_make_d_derived_tbl(cinfo, FALSE, actbl,
+    jpeg_make_d_derived_tbl(cinfo, FALSE, actbl,
 			    & entropy->ac_derived_tbls[actbl]);
     /* Initialize DC predictions to 0 */
     entropy->saved.last_dc_val[ci] = 0;
@@ -155,7 +155,7 @@ start_pass_huff_decoder (j_decompress_ptr cinfo)
  */
 
 GLOBAL(void)
-xjpeg_make_d_derived_tbl (j_decompress_ptr cinfo, boolean isDC, int tblno,
+jpeg_make_d_derived_tbl (j_decompress_ptr cinfo, boolean isDC, int tblno,
 			 d_derived_tbl ** pdtbl)
 {
   JHUFF_TBL *htbl;
@@ -234,7 +234,7 @@ xjpeg_make_d_derived_tbl (j_decompress_ptr cinfo, boolean isDC, int tblno,
       dtbl->maxcode[l] = -1;	/* -1 if no codes of this length */
     }
   }
-  dtbl->maxcode[17] = 0xFFFFFL; /* ensures xjpeg_huff_decode terminates */
+  dtbl->maxcode[17] = 0xFFFFFL; /* ensures jpeg_huff_decode terminates */
 
   /* Compute lookahead tables to speed up decoding.
    * First we set all the table entries to 0, indicating "too long";
@@ -287,7 +287,7 @@ xjpeg_make_d_derived_tbl (j_decompress_ptr cinfo, boolean isDC, int tblno,
  * quite slow and take time proportional to the number of places shifted.
  * (This is true with most PC compilers, for instance.)  In this case it may
  * be a win to set MIN_GET_BITS to the minimum value of 15.  This reduces the
- * average shift distance at the cost of more calls to xjpeg_fill_bit_buffer.
+ * average shift distance at the cost of more calls to jpeg_fill_bit_buffer.
  */
 
 #ifdef SLOW_SHIFT_32
@@ -298,7 +298,7 @@ xjpeg_make_d_derived_tbl (j_decompress_ptr cinfo, boolean isDC, int tblno,
 
 
 GLOBAL(boolean)
-xjpeg_fill_bit_buffer (bitread_working_state * state,
+jpeg_fill_bit_buffer (bitread_working_state * state,
 		      register bit_buf_type get_buffer, register int bits_left,
 		      int nbits)
 /* Load up the bit buffer to a depth of at least nbits */
@@ -404,7 +404,7 @@ xjpeg_fill_bit_buffer (bitread_working_state * state,
  */
 
 GLOBAL(int)
-xjpeg_huff_decode (bitread_working_state * state,
+jpeg_huff_decode (bitread_working_state * state,
 		  register bit_buf_type get_buffer, register int bits_left,
 		  d_derived_tbl * htbl, int min_bits)
 {
@@ -569,7 +569,7 @@ decode_mcu (j_decompress_ptr cinfo, JBLOCKROW *MCU_data)
 	int ci = cinfo->MCU_membership[blkn];
 	s += state.last_dc_val[ci];
 	state.last_dc_val[ci] = s;
-	/* Output the DC coefficient (assumes xjpeg_natural_order[0] = 0) */
+	/* Output the DC coefficient (assumes jpeg_natural_order[0] = 0) */
 	(*block)[0] = (JCOEF) s;
       }
 
@@ -589,10 +589,10 @@ decode_mcu (j_decompress_ptr cinfo, JBLOCKROW *MCU_data)
 	    r = GET_BITS(s);
 	    s = HUFF_EXTEND(r, s);
 	    /* Output coefficient in natural (dezigzagged) order.
-	     * Note: the extra entries in xjpeg_natural_order[] will save us
+	     * Note: the extra entries in jpeg_natural_order[] will save us
 	     * if k >= DCTSIZE2, which could happen if the data is corrupted.
 	     */
-	    (*block)[xjpeg_natural_order[k]] = (JCOEF) s;
+	    (*block)[jpeg_natural_order[k]] = (JCOEF) s;
 	  } else {
 	    if (r != 15)
 	      break;
@@ -649,7 +649,7 @@ jinit_huff_decoder (j_decompress_ptr cinfo)
   entropy = (huff_entropy_ptr)
     (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_IMAGE,
 				SIZEOF(huff_entropy_decoder));
-  cinfo->entropy = (struct xjpeg_entropy_decoder *) entropy;
+  cinfo->entropy = (struct jpeg_entropy_decoder *) entropy;
   entropy->pub.start_pass = start_pass_huff_decoder;
   entropy->pub.decode_mcu = decode_mcu;
 
@@ -670,9 +670,9 @@ jinit_huff_decoder (j_decompress_ptr cinfo)
  * for alignment to the next input-Byte storage boundary.  IJG JPEG Library
  * decoder state is not normally exposed to client applications, so this sub-
  * routine provides the TIFF Library with a "hook" to make these corrections.
- * It should be called after "xjpeg_start_decompress()" and before
- * "xjpeg_finish_decompress()", just before decoding each "strip" using
- * "xjpeg_read_raw_data()" or "xjpeg_read_scanlines()".
+ * It should be called after "jpeg_start_decompress()" and before
+ * "jpeg_finish_decompress()", just before decoding each "strip" using
+ * "jpeg_read_raw_data()" or "jpeg_read_scanlines()".
  *
  * This kludge is not sanctioned or supported by the Independent JPEG Group, and
  * future changes to the IJG JPEG Library might invalidate it.  Do not send bug
@@ -680,7 +680,7 @@ jinit_huff_decoder (j_decompress_ptr cinfo)
  * advice: Scott B. Marovich <marovich@hpl.hp.com>, Hewlett-Packard Labs, 6/01.
  */
 GLOBAL(void)
-xjpeg_reset_huff_decode (register j_decompress_ptr cinfo,register float *refbw)
+jpeg_reset_huff_decode (register j_decompress_ptr cinfo,register float *refbw)
 { register huff_entropy_ptr entropy = (huff_entropy_ptr)cinfo->entropy;
   register int ci = 0;
 

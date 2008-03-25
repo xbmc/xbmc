@@ -28,7 +28,7 @@
 /* Private state */
 
 typedef struct {
-  struct xjpeg_input_controller pub; /* public fields */
+  struct jpeg_input_controller pub; /* public fields */
 
   boolean inheaders;		/* TRUE until first SOS is reached */
 } my_input_controller;
@@ -49,7 +49,7 @@ initial_setup (j_decompress_ptr cinfo)
 /* Called once, when first SOS marker is reached */
 {
   int ci;
-  xjpeg_component_info *compptr;
+  jpeg_component_info *compptr;
 
   /* Make sure image isn't bigger than I can handle */
   if ((long) cinfo->image_height > (long) JPEG_MAX_DIMENSION ||
@@ -132,7 +132,7 @@ per_scan_setup (j_decompress_ptr cinfo)
 /* cinfo->comps_in_scan and cinfo->cur_comp_info[] were set from SOS marker */
 {
   int ci, mcublks, tmp;
-  xjpeg_component_info *compptr;
+  jpeg_component_info *compptr;
   
   if (cinfo->comps_in_scan == 1) {
     
@@ -229,7 +229,7 @@ LOCAL(void)
 latch_quant_tables (j_decompress_ptr cinfo)
 {
   int ci, qtblno;
-  xjpeg_component_info *compptr;
+  jpeg_component_info *compptr;
   JQUANT_TBL * qtbl;
 
   for (ci = 0; ci < cinfo->comps_in_scan; ci++) {
@@ -255,7 +255,7 @@ latch_quant_tables (j_decompress_ptr cinfo)
 /*
  * Initialize the input modules to read a scan of compressed data.
  * The first call to this is done by jdmaster.c after initializing
- * the entire decompressor (during xjpeg_start_decompress).
+ * the entire decompressor (during jpeg_start_decompress).
  * Subsequent calls come from consume_markers, below.
  */
 
@@ -375,7 +375,7 @@ jinit_input_controller (j_decompress_ptr cinfo)
   inputctl = (my_inputctl_ptr)
     (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_PERMANENT,
 				SIZEOF(my_input_controller));
-  cinfo->inputctl = (struct xjpeg_input_controller *) inputctl;
+  cinfo->inputctl = (struct jpeg_input_controller *) inputctl;
   /* Initialize method pointers */
   inputctl->pub.consume_input = consume_markers;
   inputctl->pub.reset_input_controller = reset_input_controller;

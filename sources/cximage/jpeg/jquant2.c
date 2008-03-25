@@ -200,7 +200,7 @@ typedef FSERROR FAR *FSERRPTR;	/* pointer to error array (in FAR storage!) */
 /* Private subobject */
 
 typedef struct {
-  struct xjpeg_color_quantizer pub; /* public fields */
+  struct jpeg_color_quantizer pub; /* public fields */
 
   /* Space for the eventually created colormap is stashed here */
   JSAMPARRAY sv_colormap;	/* colormap allocated at init time */
@@ -1258,7 +1258,7 @@ jinit_2pass_quantizer (j_decompress_ptr cinfo)
   cquantize = (my_cquantize_ptr)
     (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_IMAGE,
 				SIZEOF(my_cquantizer));
-  cinfo->cquantize = (struct xjpeg_color_quantizer *) cquantize;
+  cinfo->cquantize = (struct jpeg_color_quantizer *) cquantize;
   cquantize->pub.start_pass = start_pass_2_quant;
   cquantize->pub.new_color_map = new_color_map_2_quant;
   cquantize->fserrors = NULL;	/* flag optional arrays not allocated */

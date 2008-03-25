@@ -33,15 +33,15 @@ typedef struct {
 /* Short forms of external names for systems with brain-damaged linkers. */
 
 #ifdef NEED_SHORT_EXTERNAL_NAMES
-#define xjpeg_make_c_derived_tbl	jMkCDerived
-#define xjpeg_gen_optimal_table	jGenOptTbl
+#define jpeg_make_c_derived_tbl	jMkCDerived
+#define jpeg_gen_optimal_table	jGenOptTbl
 #endif /* NEED_SHORT_EXTERNAL_NAMES */
 
 /* Expand a Huffman table definition into the derived format */
-EXTERN(void) xjpeg_make_c_derived_tbl
+EXTERN(void) jpeg_make_c_derived_tbl
 	JPP((j_compress_ptr cinfo, boolean isDC, int tblno,
 	     c_derived_tbl ** pdtbl));
 
 /* Generate an optimal table definition given the specified counts */
-EXTERN(void) xjpeg_gen_optimal_table
+EXTERN(void) jpeg_gen_optimal_table
 	JPP((j_compress_ptr cinfo, JHUFF_TBL * htbl, long freq[]));

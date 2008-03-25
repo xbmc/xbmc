@@ -93,7 +93,7 @@ typedef enum {			/* JPEG marker codes */
 /* Private state */
 
 typedef struct {
-  struct xjpeg_marker_writer pub; /* public fields */
+  struct jpeg_marker_writer pub; /* public fields */
 
   unsigned int last_restart_interval; /* last DRI value emitted; 0 after SOI */
 } my_marker_writer;
@@ -107,8 +107,8 @@ typedef my_marker_writer * my_marker_ptr;
  * Note that we do not support suspension while writing a marker.
  * Therefore, an application using suspension must ensure that there is
  * enough buffer space for the initial markers (typ. 600-700 bytes) before
- * calling xjpeg_start_compress, and enough space to write the trailing EOI
- * (a few bytes) before calling xjpeg_finish_compress.  Multipass compression
+ * calling jpeg_start_compress, and enough space to write the trailing EOI
+ * (a few bytes) before calling jpeg_finish_compress.  Multipass compression
  * modes are not supported at all with suspension, so those two are the only
  * points where markers will be written.
  */
@@ -117,7 +117,7 @@ LOCAL(void)
 emit_byte (j_compress_ptr cinfo, int val)
 /* Emit a byte */
 {
-  struct xjpeg_destination_mgr * dest = cinfo->dest;
+  struct jpeg_destination_mgr * dest = cinfo->dest;
 
   *(dest->next_output_byte)++ = (JOCTET) val;
   if (--dest->free_in_buffer == 0) {
@@ -176,7 +176,7 @@ emit_dqt (j_compress_ptr cinfo, int index)
 
     for (i = 0; i < DCTSIZE2; i++) {
       /* The table entries must be emitted in zigzag order. */
-      unsigned int qval = qtbl->quantval[xjpeg_natural_order[i]];
+      unsigned int qval = qtbl->quantval[jpeg_natural_order[i]];
       if (prec)
 	emit_byte(cinfo, (int) (qval >> 8));
       emit_byte(cinfo, (int) (qval & 0xFF));
@@ -237,7 +237,7 @@ emit_dac (j_compress_ptr cinfo)
   char dc_in_use[NUM_ARITH_TBLS];
   char ac_in_use[NUM_ARITH_TBLS];
   int length, i;
-  xjpeg_component_info *compptr;
+  jpeg_component_info *compptr;
   
   for (i = 0; i < NUM_ARITH_TBLS; i++)
     dc_in_use[i] = ac_in_use[i] = 0;
@@ -287,7 +287,7 @@ emit_sof (j_compress_ptr cinfo, JPEG_MARKER code)
 /* Emit a SOF marker */
 {
   int ci;
-  xjpeg_component_info *compptr;
+  jpeg_component_info *compptr;
   
   emit_marker(cinfo, code);
   
@@ -318,7 +318,7 @@ emit_sos (j_compress_ptr cinfo)
 /* Emit a SOS marker */
 {
   int i, td, ta;
-  xjpeg_component_info *compptr;
+  jpeg_component_info *compptr;
   
   emit_marker(cinfo, M_SOS);
   
@@ -421,7 +421,7 @@ emit_adobe_app14 (j_compress_ptr cinfo)
   emit_2bytes(cinfo, 100);	/* Version */
   emit_2bytes(cinfo, 0);	/* Flags0 */
   emit_2bytes(cinfo, 0);	/* Flags1 */
-  switch (cinfo->xjpeg_color_space) {
+  switch (cinfo->jpeg_color_space) {
   case JCS_YCbCr:
     emit_byte(cinfo, 1);	/* Color transform = 1 */
     break;
@@ -471,7 +471,7 @@ write_marker_byte (j_compress_ptr cinfo, int val)
  * be used for any other JPEG colorspace.  The Adobe marker is helpful
  * to distinguish RGB, CMYK, and YCCK colorspaces.
  * Note that an application can write additional header markers after
- * xjpeg_start_compress returns.
+ * jpeg_start_compress returns.
  */
 
 METHODDEF(void)
@@ -504,7 +504,7 @@ write_frame_header (j_compress_ptr cinfo)
 {
   int ci, prec;
   boolean is_baseline;
-  xjpeg_component_info *compptr;
+  jpeg_component_info *compptr;
   
   /* Emit DQT for each quantization table.
    * Note that emit_dqt() suppresses any duplicate tables.
@@ -561,7 +561,7 @@ write_scan_header (j_compress_ptr cinfo)
 {
   my_marker_ptr marker = (my_marker_ptr) cinfo->marker;
   int i;
-  xjpeg_component_info *compptr;
+  jpeg_component_info *compptr;
 
   if (cinfo->arith_code) {
     /* Emit arith conditioning info.  We may have some duplication
@@ -659,7 +659,7 @@ jinit_marker_writer (j_compress_ptr cinfo)
   marker = (my_marker_ptr)
     (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_IMAGE,
 				SIZEOF(my_marker_writer));
-  cinfo->marker = (struct xjpeg_marker_writer *) marker;
+  cinfo->marker = (struct jpeg_marker_writer *) marker;
   /* Initialize method pointers */
   marker->pub.write_file_header = write_file_header;
   marker->pub.write_frame_header = write_frame_header;

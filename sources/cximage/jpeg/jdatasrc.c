@@ -32,7 +32,7 @@
 /* Expanded data source object for stdio input */
 
 typedef struct {
-  struct xjpeg_source_mgr pub;	/* public fields */
+  struct jpeg_source_mgr pub;	/* public fields */
 
   FILE * infile;		/* source stream */
   JOCTET * buffer;		/* start of buffer */
@@ -45,7 +45,7 @@ typedef my_source_mgr * my_src_ptr;
 
 
 /*
- * Initialize source --- called by xjpeg_read_header
+ * Initialize source --- called by jpeg_read_header
  * before any data is actually read.
  */
 
@@ -166,10 +166,10 @@ skip_input_data (j_decompress_ptr cinfo, long num_bytes)
 
 
 /*
- * Terminate source --- called by xjpeg_finish_decompress
+ * Terminate source --- called by jpeg_finish_decompress
  * after all data has been read.  Often a no-op.
  *
- * NB: *not* called by xjpeg_abort or xjpeg_destroy; surrounding
+ * NB: *not* called by jpeg_abort or jpeg_destroy; surrounding
  * application must deal with any cleanup that should happen even
  * for error exit.
  */
@@ -188,19 +188,19 @@ term_source (j_decompress_ptr cinfo)
  */
 
 GLOBAL(void)
-xjpeg_stdio_src (j_decompress_ptr cinfo, FILE * infile)
+jpeg_stdio_src (j_decompress_ptr cinfo, FILE * infile)
 {
   my_src_ptr src;
 
   /* The source object and input buffer are made permanent so that a series
-   * of JPEG images can be read from the same file by calling xjpeg_stdio_src
+   * of JPEG images can be read from the same file by calling jpeg_stdio_src
    * only before the first one.  (If we discarded the buffer at the end of
    * one image, we'd likely lose the start of the next one.)
    * This makes it unsafe to use this manager and a different source
    * manager serially with the same JPEG object.  Caveat programmer.
    */
   if (cinfo->src == NULL) {	/* first time for this JPEG object? */
-    cinfo->src = (struct xjpeg_source_mgr *)
+    cinfo->src = (struct jpeg_source_mgr *)
       (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_PERMANENT,
 				  SIZEOF(my_source_mgr));
     src = (my_src_ptr) cinfo->src;
@@ -213,7 +213,7 @@ xjpeg_stdio_src (j_decompress_ptr cinfo, FILE * infile)
   src->pub.init_source = init_source;
   src->pub.fill_input_buffer = fill_input_buffer;
   src->pub.skip_input_data = skip_input_data;
-  src->pub.resync_to_restart = xjpeg_resync_to_restart; /* use default method */
+  src->pub.resync_to_restart = jpeg_resync_to_restart; /* use default method */
   src->pub.term_source = term_source;
   src->infile = infile;
   src->pub.bytes_in_buffer = 0; /* forces fill_input_buffer on first read */

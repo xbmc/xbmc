@@ -97,18 +97,18 @@ typedef enum {			/* JPEG marker codes */
 /* Private state */
 
 typedef struct {
-  struct xjpeg_marker_reader pub; /* public fields */
+  struct jpeg_marker_reader pub; /* public fields */
 
   /* Application-overridable marker processing methods */
-  xjpeg_marker_parser_method process_COM;
-  xjpeg_marker_parser_method process_APPn[16];
+  jpeg_marker_parser_method process_COM;
+  jpeg_marker_parser_method process_APPn[16];
 
   /* Limit on marker data length to save for each marker type */
   unsigned int length_limit_COM;
   unsigned int length_limit_APPn[16];
 
   /* Status of COM/APPn marker saving */
-  xjpeg_saved_marker_ptr cur_marker;	/* NULL if not processing a marker */
+  jpeg_saved_marker_ptr cur_marker;	/* NULL if not processing a marker */
   unsigned int bytes_read;		/* data bytes read so far in marker */
   /* Note: cur_marker is not linked into marker_list until it's all read. */
 } my_marker_reader;
@@ -126,7 +126,7 @@ typedef my_marker_reader * my_marker_ptr;
 
 /* Declare and initialize local copies of input pointer/count */
 #define INPUT_VARS(cinfo)  \
-	struct xjpeg_source_mgr * datasrc = (cinfo)->src;  \
+	struct jpeg_source_mgr * datasrc = (cinfo)->src;  \
 	const JOCTET * next_input_byte = datasrc->next_input_byte;  \
 	size_t bytes_in_buffer = datasrc->bytes_in_buffer
 
@@ -224,7 +224,7 @@ get_soi (j_decompress_ptr cinfo)
 
   /* Set initial assumptions for colorspace etc */
 
-  cinfo->xjpeg_color_space = JCS_UNKNOWN;
+  cinfo->jpeg_color_space = JCS_UNKNOWN;
   cinfo->CCIR601_sampling = FALSE; /* Assume non-CCIR sampling??? */
 
   cinfo->saw_JFIF_marker = FALSE;
@@ -248,7 +248,7 @@ get_sof (j_decompress_ptr cinfo, boolean is_prog, boolean is_arith)
 {
   INT32 length;
   int c, ci;
-  xjpeg_component_info * compptr;
+  jpeg_component_info * compptr;
   INPUT_VARS(cinfo);
 
   cinfo->progressive_mode = is_prog;
@@ -281,9 +281,9 @@ get_sof (j_decompress_ptr cinfo, boolean is_prog, boolean is_arith)
     ERREXIT(cinfo, JERR_BAD_LENGTH);
 
   if (cinfo->comp_info == NULL)	/* do only once, even if suspend */
-    cinfo->comp_info = (xjpeg_component_info *) (*cinfo->mem->alloc_small)
+    cinfo->comp_info = (jpeg_component_info *) (*cinfo->mem->alloc_small)
 			((j_common_ptr) cinfo, JPOOL_IMAGE,
-			 cinfo->num_components * SIZEOF(xjpeg_component_info));
+			 cinfo->num_components * SIZEOF(jpeg_component_info));
   
   for (ci = 0, compptr = cinfo->comp_info; ci < cinfo->num_components;
        ci++, compptr++) {
@@ -312,7 +312,7 @@ get_sos (j_decompress_ptr cinfo)
 {
   INT32 length;
   int i, ci, n, c, cc;
-  xjpeg_component_info * compptr;
+  jpeg_component_info * compptr;
   INPUT_VARS(cinfo);
 
   if (! cinfo->marker->saw_SOF)
@@ -481,7 +481,7 @@ get_dht (j_decompress_ptr cinfo)
       ERREXIT1(cinfo, JERR_DHT_INDEX, index);
 
     if (*htblptr == NULL)
-      *htblptr = xjpeg_alloc_huff_table((j_common_ptr) cinfo);
+      *htblptr = jpeg_alloc_huff_table((j_common_ptr) cinfo);
   
     MEMCOPY((*htblptr)->bits, bits, SIZEOF((*htblptr)->bits));
     MEMCOPY((*htblptr)->huffval, huffval, SIZEOF((*htblptr)->huffval));
@@ -519,7 +519,7 @@ get_dqt (j_decompress_ptr cinfo)
       ERREXIT1(cinfo, JERR_DQT_INDEX, n);
       
     if (cinfo->quant_tbl_ptrs[n] == NULL)
-      cinfo->quant_tbl_ptrs[n] = xjpeg_alloc_quant_table((j_common_ptr) cinfo);
+      cinfo->quant_tbl_ptrs[n] = jpeg_alloc_quant_table((j_common_ptr) cinfo);
     quant_ptr = cinfo->quant_tbl_ptrs[n];
 
     for (i = 0; i < DCTSIZE2; i++) {
@@ -528,7 +528,7 @@ get_dqt (j_decompress_ptr cinfo)
       else
 	INPUT_BYTE(cinfo, tmp, return FALSE);
       /* We convert the zigzag-order table to natural array order. */
-      quant_ptr->quantval[xjpeg_natural_order[i]] = (UINT16) tmp;
+      quant_ptr->quantval[jpeg_natural_order[i]] = (UINT16) tmp;
     }
 
     if (cinfo->err->trace_level >= 2) {
@@ -728,7 +728,7 @@ get_interesting_appn (j_decompress_ptr cinfo)
     examine_app14(cinfo, (JOCTET FAR *) b, numtoread, length);
     break;
   default:
-    /* can't get here unless xjpeg_save_markers chooses wrong processor */
+    /* can't get here unless jpeg_save_markers chooses wrong processor */
     ERREXIT1(cinfo, JERR_UNKNOWN_MARKER, cinfo->unread_marker);
     break;
   }
@@ -749,7 +749,7 @@ save_marker (j_decompress_ptr cinfo)
 /* Save an APPn or COM marker into the marker list */
 {
   my_marker_ptr marker = (my_marker_ptr) cinfo->marker;
-  xjpeg_saved_marker_ptr cur_marker = marker->cur_marker;
+  jpeg_saved_marker_ptr cur_marker = marker->cur_marker;
   unsigned int bytes_read, data_length;
   JOCTET FAR * data;
   INT32 length = 0;
@@ -769,14 +769,14 @@ save_marker (j_decompress_ptr cinfo)
       if ((unsigned int) length < limit)
 	limit = (unsigned int) length;
       /* allocate and initialize the marker item */
-      cur_marker = (xjpeg_saved_marker_ptr)
+      cur_marker = (jpeg_saved_marker_ptr)
 	(*cinfo->mem->alloc_large) ((j_common_ptr) cinfo, JPOOL_IMAGE,
-				    SIZEOF(struct xjpeg_marker_struct) + limit);
+				    SIZEOF(struct jpeg_marker_struct) + limit);
       cur_marker->next = NULL;
       cur_marker->marker = (UINT8) cinfo->unread_marker;
       cur_marker->original_length = (unsigned int) length;
       cur_marker->data_length = limit;
-      /* data area is just beyond the xjpeg_marker_struct */
+      /* data area is just beyond the jpeg_marker_struct */
       data = cur_marker->data = (JOCTET FAR *) (cur_marker + 1);
       marker->cur_marker = cur_marker;
       marker->bytes_read = 0;
@@ -813,7 +813,7 @@ save_marker (j_decompress_ptr cinfo)
     if (cinfo->marker_list == NULL) {
       cinfo->marker_list = cur_marker;
     } else {
-      xjpeg_saved_marker_ptr prev = cinfo->marker_list;
+      jpeg_saved_marker_ptr prev = cinfo->marker_list;
       while (prev->next != NULL)
 	prev = prev->next;
       prev->next = cur_marker;
@@ -953,7 +953,7 @@ first_marker (j_decompress_ptr cinfo)
 /*
  * Read markers until SOS or EOI.
  *
- * Returns same codes as are defined for xjpeg_consume_input:
+ * Returns same codes as are defined for jpeg_consume_input:
  * JPEG_SUSPENDED, JPEG_REACHED_SOS, or JPEG_REACHED_EOI.
  */
 
@@ -1198,7 +1198,7 @@ read_restart_marker (j_decompress_ptr cinfo)
  */
 
 GLOBAL(boolean)
-xjpeg_resync_to_restart (j_decompress_ptr cinfo, int desired)
+jpeg_resync_to_restart (j_decompress_ptr cinfo, int desired)
 {
   int marker = cinfo->unread_marker;
   int action = 1;
@@ -1277,7 +1277,7 @@ jinit_marker_reader (j_decompress_ptr cinfo)
   marker = (my_marker_ptr)
     (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_PERMANENT,
 				SIZEOF(my_marker_reader));
-  cinfo->marker = (struct xjpeg_marker_reader *) marker;
+  cinfo->marker = (struct jpeg_marker_reader *) marker;
   /* Initialize public method pointers */
   marker->pub.reset_marker_reader = reset_marker_reader;
   marker->pub.read_markers = read_markers;
@@ -1306,17 +1306,17 @@ jinit_marker_reader (j_decompress_ptr cinfo)
 #ifdef SAVE_MARKERS_SUPPORTED
 
 GLOBAL(void)
-xjpeg_save_markers (j_decompress_ptr cinfo, int marker_code,
+jpeg_save_markers (j_decompress_ptr cinfo, int marker_code,
 		   unsigned int length_limit)
 {
   my_marker_ptr marker = (my_marker_ptr) cinfo->marker;
   long maxlength;
-  xjpeg_marker_parser_method processor;
+  jpeg_marker_parser_method processor;
 
   /* Length limit mustn't be larger than what we can allocate
    * (should only be a concern in a 16-bit environment).
    */
-  maxlength = cinfo->mem->max_alloc_chunk - SIZEOF(struct xjpeg_marker_struct);
+  maxlength = cinfo->mem->max_alloc_chunk - SIZEOF(struct jpeg_marker_struct);
   if (((long) length_limit) > maxlength)
     length_limit = (unsigned int) maxlength;
 
@@ -1355,8 +1355,8 @@ xjpeg_save_markers (j_decompress_ptr cinfo, int marker_code,
  */
 
 GLOBAL(void)
-xjpeg_set_marker_processor (j_decompress_ptr cinfo, int marker_code,
-			   xjpeg_marker_parser_method routine)
+jpeg_set_marker_processor (j_decompress_ptr cinfo, int marker_code,
+			   jpeg_marker_parser_method routine)
 {
   my_marker_ptr marker = (my_marker_ptr) cinfo->marker;
 

@@ -154,7 +154,7 @@
  */
 
 GLOBAL(void)
-xjpeg_idct_islow (j_decompress_ptr cinfo, xjpeg_component_info * compptr,
+jpeg_idct_islow (j_decompress_ptr cinfo, jpeg_component_info * compptr,
 		 JCOEFPTR coef_block,
 		 JSAMPARRAY output_buf, JDIMENSION output_col)
 {

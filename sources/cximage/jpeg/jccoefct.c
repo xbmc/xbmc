@@ -32,7 +32,7 @@
 /* Private buffer controller object */
 
 typedef struct {
-  struct xjpeg_c_coef_controller pub; /* public fields */
+  struct jpeg_c_coef_controller pub; /* public fields */
 
   JDIMENSION iMCU_row_num;	/* iMCU row # within image */
   JDIMENSION mcu_ctr;		/* counts MCUs processed in current row */
@@ -148,7 +148,7 @@ compress_data (j_compress_ptr cinfo, JSAMPIMAGE input_buf)
   JDIMENSION last_iMCU_row = cinfo->total_iMCU_rows - 1;
   int blkn, bi, ci, yindex, yoffset, blockcnt;
   JDIMENSION ypos, xpos;
-  xjpeg_component_info *compptr;
+  jpeg_component_info *compptr;
 
   /* Loop to write as much as one whole iMCU row */
   for (yoffset = coef->MCU_vert_offset; yoffset < coef->MCU_rows_per_iMCU_row;
@@ -249,7 +249,7 @@ compress_first_pass (j_compress_ptr cinfo, JSAMPIMAGE input_buf)
   JDIMENSION blocks_across, MCUs_across, MCUindex;
   int bi, ci, h_samp_factor, block_row, block_rows, ndummy;
   JCOEF lastDC;
-  xjpeg_component_info *compptr;
+  jpeg_component_info *compptr;
   JBLOCKARRAY buffer;
   JBLOCKROW thisblockrow, lastblockrow;
 
@@ -346,7 +346,7 @@ compress_output (j_compress_ptr cinfo, JSAMPIMAGE input_buf)
   JDIMENSION start_col;
   JBLOCKARRAY buffer[MAX_COMPS_IN_SCAN];
   JBLOCKROW buffer_ptr;
-  xjpeg_component_info *compptr;
+  jpeg_component_info *compptr;
 
   /* Align the virtual buffers for the components used in this scan.
    * NB: during first pass, this is safe only because the buffers will
@@ -409,7 +409,7 @@ jinit_c_coef_controller (j_compress_ptr cinfo, boolean need_full_buffer)
   coef = (my_coef_ptr)
     (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_IMAGE,
 				SIZEOF(my_coef_controller));
-  cinfo->coef = (struct xjpeg_c_coef_controller *) coef;
+  cinfo->coef = (struct jpeg_c_coef_controller *) coef;
   coef->pub.start_pass = start_pass_coef;
 
   /* Create the coefficient buffer. */
@@ -418,7 +418,7 @@ jinit_c_coef_controller (j_compress_ptr cinfo, boolean need_full_buffer)
     /* Allocate a full-image virtual array for each component, */
     /* padded to a multiple of samp_factor DCT blocks in each direction. */
     int ci;
-    xjpeg_component_info *compptr;
+    jpeg_component_info *compptr;
 
     for (ci = 0, compptr = cinfo->comp_info; ci < cinfo->num_components;
 	 ci++, compptr++) {

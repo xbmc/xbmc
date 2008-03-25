@@ -9,8 +9,8 @@
 
 /* Any machine specific code is near the front of this file, so if you
  * are configuring libpng for a machine, you may want to read the section
- * starting here down to where it starts to typedef xpng_color, xpng_text,
- * and xpng_info.
+ * starting here down to where it starts to typedef png_color, png_text,
+ * and png_info.
  */
 
 #ifndef PNGCONF_H
@@ -18,7 +18,7 @@
 
 /* This is the size of the compression buffer, and thus the size of
  * an IDAT chunk.  Make this whatever size you feel is best for your
- * machine.  One of these will be allocated per xpng_struct.  When this
+ * machine.  One of these will be allocated per png_struct.  When this
  * is full, it writes the data to the disk, and does some other
  * calculations.  Making this an extremely small size will slow
  * the library down, but you may want to experiment to determine
@@ -152,7 +152,7 @@
 /* This protects us against compilers that run on a windowing system
  * and thus don't have or would rather us not use the stdio types:
  * stdin, stdout, and stderr.  The only one currently used is stderr
- * in xpng_error() and xpng_warning().  #defining PNG_NO_CONSOLE_IO will
+ * in png_error() and png_warning().  #defining PNG_NO_CONSOLE_IO will
  * prevent these from being compiled and used. #defining PNG_NO_STDIO
  * will also prevent these, plus will prevent the entire set of stdio
  * macros and functions (FILE *, printf, etc.) from being compiled and used,
@@ -402,9 +402,9 @@
  * 1.0.1c, for consistency)
  */
 
-/* The size of the xpng_text structure changed in libpng-1.0.6 when
+/* The size of the png_text structure changed in libpng-1.0.6 when
  * iTXt is supported.  It is turned off by default, to support old apps
- * that malloc the xpng_text structure instead of calling xpng_set_text()
+ * that malloc the png_text structure instead of calling png_set_text()
  * and letting libpng malloc it.  It will be turned on by default in
  * libpng-1.3.0.
  */
@@ -420,7 +420,7 @@
 
 /* The following support, added after version 1.0.0, can be turned off here en
  * masse by defining PNG_LEGACY_SUPPORTED in case you need binary compatibility
- * with old applications that require the length of xpng_struct and xpng_info
+ * with old applications that require the length of png_struct and png_info
  * to remain unchanged.
  */
 
@@ -622,19 +622,19 @@
 
 /* This adds extra functions in pngget.c for accessing data from the
  * info pointer (added in version 0.99)
- * xpng_get_image_width()
- * xpng_get_image_height()
- * xpng_get_bit_depth()
- * xpng_get_color_type()
- * xpng_get_compression_type()
- * xpng_get_filter_type()
- * xpng_get_interlace_type()
- * xpng_get_pixel_aspect_ratio()
- * xpng_get_pixels_per_meter()
- * xpng_get_x_offset_pixels()
- * xpng_get_y_offset_pixels()
- * xpng_get_x_offset_microns()
- * xpng_get_y_offset_microns()
+ * png_get_image_width()
+ * png_get_image_height()
+ * png_get_bit_depth()
+ * png_get_color_type()
+ * png_get_compression_type()
+ * png_get_filter_type()
+ * png_get_interlace_type()
+ * png_get_pixel_aspect_ratio()
+ * png_get_pixels_per_meter()
+ * png_get_x_offset_pixels()
+ * png_get_y_offset_pixels()
+ * png_get_x_offset_microns()
+ * png_get_y_offset_microns()
  */
 #if !defined(PNG_NO_EASY_ACCESS) && !defined(PNG_EASY_ACCESS_SUPPORTED)
 #  define PNG_EASY_ACCESS_SUPPORTED
@@ -697,7 +697,7 @@
 
 /* Any chunks you are not interested in, you can undef here.  The
  * ones that allocate memory may be expecially important (hIST,
- * tEXt, zTXt, tRNS, pCAL).  Others will just save time and make xpng_info
+ * tEXt, zTXt, tRNS, pCAL).  Others will just save time and make png_info
  * a bit smaller.
  */
 
@@ -955,8 +955,8 @@
 
 #endif /* PNG_WRITE_ANCILLARY_CHUNKS_SUPPORTED */
 
-/* Turn this off to disable xpng_read_png() and
- * xpng_write_png() and leave the row_pointers member
+/* Turn this off to disable png_read_png() and
+ * png_write_png() and leave the row_pointers member
  * out of the info structure.
  */
 #ifndef PNG_NO_INFO_IMAGE
@@ -973,22 +973,22 @@
 
 /* Some typedefs to get us started.  These should be safe on most of the
  * common platforms.  The typedefs should be at least as large as the
- * numbers suggest (a xpng_uint_32 must be at least 32 bits long), but they
+ * numbers suggest (a png_uint_32 must be at least 32 bits long), but they
  * don't have to be exactly that size.  Some compilers dislike passing
  * unsigned shorts as function parameters, so you may be better off using
- * unsigned int for xpng_uint_16.  Likewise, for 64-bit systems, you may
- * want to have unsigned int for xpng_uint_32 instead of unsigned long.
+ * unsigned int for png_uint_16.  Likewise, for 64-bit systems, you may
+ * want to have unsigned int for png_uint_32 instead of unsigned long.
  */
 
-typedef unsigned long xpng_uint_32;
-typedef long xpng_int_32;
-typedef unsigned short xpng_uint_16;
-typedef short xpng_int_16;
-typedef unsigned char xpng_byte;
+typedef unsigned long png_uint_32;
+typedef long png_int_32;
+typedef unsigned short png_uint_16;
+typedef short png_int_16;
+typedef unsigned char png_byte;
 
 /* This is usually size_t.  It is typedef'ed just in case you need it to
    change (I'm not sure if you will or not, so I thought I'd be safe) */
-typedef size_t xpng_size_t;
+typedef size_t png_size_t;
 
 /* The following is needed for medium model support.  It cannot be in the
  * PNG_INTERNAL section.  Needs modification for other compilers besides
@@ -1051,54 +1051,54 @@ typedef size_t xpng_size_t;
 
 /* Typedef for floating-point numbers that are converted
    to fixed-point with a multiple of 100,000, e.g., int_gamma */
-typedef xpng_int_32 xpng_fixed_point;
+typedef png_int_32 png_fixed_point;
 
 /* Add typedefs for pointers */
-typedef void            FAR * xpng_voidp;
-typedef xpng_byte        FAR * xpng_bytep;
-typedef xpng_uint_32     FAR * xpng_uint_32p;
-typedef xpng_int_32      FAR * xpng_int_32p;
-typedef xpng_uint_16     FAR * xpng_uint_16p;
-typedef xpng_int_16      FAR * xpng_int_16p;
-typedef PNG_CONST char  FAR * xpng_const_charp;
-typedef char            FAR * xpng_charp;
-typedef xpng_fixed_point FAR * xpng_fixed_point_p;
+typedef void            FAR * png_voidp;
+typedef png_byte        FAR * png_bytep;
+typedef png_uint_32     FAR * png_uint_32p;
+typedef png_int_32      FAR * png_int_32p;
+typedef png_uint_16     FAR * png_uint_16p;
+typedef png_int_16      FAR * png_int_16p;
+typedef PNG_CONST char  FAR * png_const_charp;
+typedef char            FAR * png_charp;
+typedef png_fixed_point FAR * png_fixed_point_p;
 
 #ifndef PNG_NO_STDIO
 #if defined(_WIN32_WCE)
-typedef HANDLE                xpng_FILE_p;
+typedef HANDLE                png_FILE_p;
 #else
-typedef FILE                * xpng_FILE_p;
+typedef FILE                * png_FILE_p;
 #endif
 #endif
 
 #ifdef PNG_FLOATING_POINT_SUPPORTED
-typedef double          FAR * xpng_doublep;
+typedef double          FAR * png_doublep;
 #endif
 
 /* Pointers to pointers; i.e. arrays */
-typedef xpng_byte        FAR * FAR * xpng_bytepp;
-typedef xpng_uint_32     FAR * FAR * xpng_uint_32pp;
-typedef xpng_int_32      FAR * FAR * xpng_int_32pp;
-typedef xpng_uint_16     FAR * FAR * xpng_uint_16pp;
-typedef xpng_int_16      FAR * FAR * xpng_int_16pp;
-typedef PNG_CONST char  FAR * FAR * xpng_const_charpp;
-typedef char            FAR * FAR * xpng_charpp;
-typedef xpng_fixed_point FAR * FAR * xpng_fixed_point_pp;
+typedef png_byte        FAR * FAR * png_bytepp;
+typedef png_uint_32     FAR * FAR * png_uint_32pp;
+typedef png_int_32      FAR * FAR * png_int_32pp;
+typedef png_uint_16     FAR * FAR * png_uint_16pp;
+typedef png_int_16      FAR * FAR * png_int_16pp;
+typedef PNG_CONST char  FAR * FAR * png_const_charpp;
+typedef char            FAR * FAR * png_charpp;
+typedef png_fixed_point FAR * FAR * png_fixed_point_pp;
 #ifdef PNG_FLOATING_POINT_SUPPORTED
-typedef double          FAR * FAR * xpng_doublepp;
+typedef double          FAR * FAR * png_doublepp;
 #endif
 
 /* Pointers to pointers to pointers; i.e., pointer to array */
-typedef char            FAR * FAR * FAR * xpng_charppp;
+typedef char            FAR * FAR * FAR * png_charppp;
 
 /* libpng typedefs for types in zlib. If zlib changes
  * or another compression library is used, then change these.
  * Eliminates need to change all the source files.
  */
-typedef charf *         xpng_zcharp;
-typedef charf * FAR *   xpng_zcharpp;
-typedef z_stream FAR *  xpng_zstreamp;
+typedef charf *         png_zcharp;
+typedef charf * FAR *   png_zcharpp;
+typedef z_stream FAR *  png_zstreamp;
 
 /*
  * Define PNG_BUILD_DLL if the module being built is a Windows
@@ -1165,7 +1165,7 @@ typedef z_stream FAR *  xpng_zstreamp;
 #endif  
 
 /* If you define PNGAPI, e.g., with compiler option "-DPNGAPI=__stdcall",
- * you may get warnings regarding the linkage of xpng_zalloc and xpng_zfree.
+ * you may get warnings regarding the linkage of png_zalloc and png_zfree.
  * Don't ignore those warnings; you must also reset the default calling
  * convention in your compiler to match your PNGAPI, and you must build
  * zlib and your applications the same way you build libpng.
@@ -1267,9 +1267,9 @@ typedef z_stream FAR *  xpng_zstreamp;
 #endif
 
 #ifdef PNG_SETJMP_SUPPORTED
-#  define xpng_jmpbuf(xpng_ptr) ((xpng_ptr)->jmpbuf)
+#  define png_jmpbuf(png_ptr) ((png_ptr)->jmpbuf)
 #else
-#  define xpng_jmpbuf(xpng_ptr) \
+#  define png_jmpbuf(png_ptr) \
    (LIBPNG_WAS_COMPILED_WITH__PNG_SETJMP_NOT_SUPPORTED)
 #endif
 
@@ -1277,21 +1277,21 @@ typedef z_stream FAR *  xpng_zstreamp;
 /* use this to make far-to-near assignments */
 #  define CHECK   1
 #  define NOCHECK 0
-#  define CVT_PTR(ptr) (xpng_far_to_near(xpng_ptr,ptr,CHECK))
-#  define CVT_PTR_NOCHECK(ptr) (xpng_far_to_near(xpng_ptr,ptr,NOCHECK))
-#  define xpng_strcpy _fstrcpy
-#  define xpng_strlen _fstrlen
-#  define xpng_memcmp _fmemcmp      /* SJT: added */
-#  define xpng_memcpy _fmemcpy
-#  define xpng_memset _fmemset
+#  define CVT_PTR(ptr) (png_far_to_near(png_ptr,ptr,CHECK))
+#  define CVT_PTR_NOCHECK(ptr) (png_far_to_near(png_ptr,ptr,NOCHECK))
+#  define png_strcpy _fstrcpy
+#  define png_strlen _fstrlen
+#  define png_memcmp _fmemcmp      /* SJT: added */
+#  define png_memcpy _fmemcpy
+#  define png_memset _fmemset
 #else /* use the usual functions */
 #  define CVT_PTR(ptr)         (ptr)
 #  define CVT_PTR_NOCHECK(ptr) (ptr)
-#  define xpng_strcpy strcpy
-#  define xpng_strlen strlen
-#  define xpng_memcmp memcmp     /* SJT: added */
-#  define xpng_memcpy memcpy
-#  define xpng_memset memset
+#  define png_strcpy strcpy
+#  define png_strlen strlen
+#  define png_memcmp memcmp     /* SJT: added */
+#  define png_memcpy memcpy
+#  define png_memset memset
 #endif
 /* End of memory model independent support */
 
@@ -1309,7 +1309,7 @@ typedef z_stream FAR *  xpng_zstreamp;
 
 /* These are the default thresholds before the MMX code kicks in; if either
  * rowbytes or bitdepth is below the threshold, plain C code is used.  These
- * can be overridden at runtime via the xpng_set_mmx_thresholds() call in
+ * can be overridden at runtime via the png_set_mmx_thresholds() call in
  * libpng 1.2.0 and later.  The values below were chosen by Intel.
  */
 

@@ -121,7 +121,7 @@
 /* Private buffer controller object */
 
 typedef struct {
-  struct xjpeg_d_main_controller pub; /* public fields */
+  struct jpeg_d_main_controller pub; /* public fields */
 
   /* Pointer to allocated workspace (M or M+2 row groups). */
   JSAMPARRAY buffer[MAX_COMPONENTS];
@@ -171,7 +171,7 @@ alloc_funny_pointers (j_decompress_ptr cinfo)
   my_main_ptr main = (my_main_ptr) cinfo->main;
   int ci, rgroup;
   int M = cinfo->min_DCT_scaled_size;
-  xjpeg_component_info *compptr;
+  jpeg_component_info *compptr;
   JSAMPARRAY xbuf;
 
   /* Get top-level space for component array pointers.
@@ -212,7 +212,7 @@ make_funny_pointers (j_decompress_ptr cinfo)
   my_main_ptr main = (my_main_ptr) cinfo->main;
   int ci, i, rgroup;
   int M = cinfo->min_DCT_scaled_size;
-  xjpeg_component_info *compptr;
+  jpeg_component_info *compptr;
   JSAMPARRAY buf, xbuf0, xbuf1;
 
   for (ci = 0, compptr = cinfo->comp_info; ci < cinfo->num_components;
@@ -252,7 +252,7 @@ set_wraparound_pointers (j_decompress_ptr cinfo)
   my_main_ptr main = (my_main_ptr) cinfo->main;
   int ci, i, rgroup;
   int M = cinfo->min_DCT_scaled_size;
-  xjpeg_component_info *compptr;
+  jpeg_component_info *compptr;
   JSAMPARRAY xbuf0, xbuf1;
 
   for (ci = 0, compptr = cinfo->comp_info; ci < cinfo->num_components;
@@ -280,7 +280,7 @@ set_bottom_pointers (j_decompress_ptr cinfo)
 {
   my_main_ptr main = (my_main_ptr) cinfo->main;
   int ci, i, rgroup, iMCUheight, rows_left;
-  xjpeg_component_info *compptr;
+  jpeg_component_info *compptr;
   JSAMPARRAY xbuf;
 
   for (ci = 0, compptr = cinfo->comp_info; ci < cinfo->num_components;
@@ -486,12 +486,12 @@ jinit_d_main_controller (j_decompress_ptr cinfo, boolean need_full_buffer)
 {
   my_main_ptr main;
   int ci, rgroup, ngroups;
-  xjpeg_component_info *compptr;
+  jpeg_component_info *compptr;
 
   main = (my_main_ptr)
     (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_IMAGE,
 				SIZEOF(my_main_controller));
-  cinfo->main = (struct xjpeg_d_main_controller *) main;
+  cinfo->main = (struct jpeg_d_main_controller *) main;
   main->pub.start_pass = start_pass_main;
 
   if (need_full_buffer)		/* shouldn't happen */

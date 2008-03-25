@@ -182,8 +182,8 @@ static jas_image_t *jpg_mkimage(j_decompress_ptr cinfo);
 
 jas_image_t *jpg_decode(jas_stream_t *in, char *optstr)
 {
-	struct xjpeg_decompress_struct cinfo;
-	struct xjpeg_error_mgr jerr;
+	struct jpeg_decompress_struct cinfo;
+	struct jpeg_error_mgr jerr;
 	FILE *input_file;
 	jpg_dest_t dest_mgr_buf;
 	jpg_dest_t *dest_mgr = &dest_mgr_buf;
@@ -204,17 +204,17 @@ jas_image_t *jpg_decode(jas_stream_t *in, char *optstr)
 	rewind(input_file);
 
 	/* Allocate and initialize a JPEG decompression object. */
-	cinfo.err = xjpeg_std_error(&jerr);
-	xjpeg_create_decompress(&cinfo);
+	cinfo.err = jpeg_std_error(&jerr);
+	jpeg_create_decompress(&cinfo);
 
 	/* Specify the data source for decompression. */
-	xjpeg_stdio_src(&cinfo, input_file);
+	jpeg_stdio_src(&cinfo, input_file);
 
 	/* Read the file header to obtain the image information. */
-	xjpeg_read_header(&cinfo, TRUE);
+	jpeg_read_header(&cinfo, TRUE);
 
 	/* Start the decompressor. */
-	xjpeg_start_decompress(&cinfo);
+	jpeg_start_decompress(&cinfo);
 
 	/* Create an image object to hold the decoded data. */
 	if (!(image = jpg_mkimage(&cinfo))) {
@@ -236,17 +236,17 @@ jas_image_t *jpg_decode(jas_stream_t *in, char *optstr)
 	/* Process the compressed data. */
 	(*dest_mgr->start_output)(&cinfo, dest_mgr);
 	while (cinfo.output_scanline < cinfo.output_height) {
-		num_scanlines = xjpeg_read_scanlines(&cinfo, dest_mgr->buffer,
+		num_scanlines = jpeg_read_scanlines(&cinfo, dest_mgr->buffer,
 		  dest_mgr->buffer_height);
 		(*dest_mgr->put_pixel_rows)(&cinfo, dest_mgr, num_scanlines);
 	}
 	(*dest_mgr->finish_output)(&cinfo, dest_mgr);
 
 	/* Complete the decompression process. */
-	xjpeg_finish_decompress(&cinfo);
+	jpeg_finish_decompress(&cinfo);
 
 	/* Destroy the JPEG decompression object. */
-	xjpeg_destroy_decompress(&cinfo);
+	jpeg_destroy_decompress(&cinfo);
 
 	jas_matrix_destroy(dest_mgr->data);
 

@@ -42,14 +42,17 @@
 #undef INLINE
 
 #ifdef _LINUX
-#include <X11/Xmd.h>
+  #include <X11/Xmd.h>
+  #include <jpeglib.h>
+  #include <jerror.h>
+#else
+  #include "../jpeg/jpeglib.h"
 #endif
 
-#include "../jpeg/jpeglib.h"
 #undef JPEG_INTERNALS
 
 /* Hack for Microsoft's Wang Imaging for Windows output files */
-extern void xjpeg_reset_huff_decode(j_decompress_ptr,float *);
+extern void jpeg_reset_huff_decode(j_decompress_ptr,float *);
 
 /* On some machines, it may be worthwhile to use "_setjmp()" or "sigsetjmp()"
    instead of "setjmp()".  These macros make it easier:
@@ -75,15 +78,15 @@ extern void xjpeg_reset_huff_decode(j_decompress_ptr,float *);
 #define FIELD_WANG_PAGECONTROL (FIELD_CODEC+10)
 #define FIELD_JPEGCOLORMODE (FIELD_CODEC+11)
 
-typedef struct xjpeg_destination_mgr xjpeg_destination_mgr;
-typedef struct xjpeg_source_mgr xjpeg_source_mgr;
-typedef struct xjpeg_error_mgr xjpeg_error_mgr;
+typedef struct jpeg_destination_mgr jpeg_destination_mgr;
+typedef struct jpeg_source_mgr jpeg_source_mgr;
+typedef struct jpeg_error_mgr jpeg_error_mgr;
 
 /* State variable for each open TIFF file that uses "libjpeg" for JPEG
    decompression.  (Note:  This file should NEVER perform JPEG compression
    except in the manner implemented by the "tif_jpeg.c" file, elsewhere in this
    library; see comments above.)  JPEG Library internal state is recorded in a
-   "xjpeg_{de}compress_struct", while a "xjpeg_common_struct" records a few items
+   "jpeg_{de}compress_struct", while a "jpeg_common_struct" records a few items
    common to both compression and expansion.  The "cinfo" field containing JPEG
    Library state MUST be the 1st member of our own state variable, so that we
    can safely "cast" pointers back and forth.
@@ -92,20 +95,20 @@ typedef struct             /* This module's private, per-image state variable */
   {
     union         /* JPEG Library state variable; this MUST be our 1st field! */
       {
-     /* struct xjpeg_compress_struct c; */
-        struct xjpeg_decompress_struct d;
-        struct xjpeg_common_struct comm;
+     /* struct jpeg_compress_struct c; */
+        struct jpeg_decompress_struct d;
+        struct jpeg_common_struct comm;
       } cinfo;
-    xjpeg_error_mgr err;                         /* JPEG Library error manager */
+    jpeg_error_mgr err;                         /* JPEG Library error manager */
     JMP_BUF exit_jmpbuf;             /* ...for catching JPEG Library failures */
 #   ifdef never
 
  /* (The following two fields could be a "union", but they're small enough that
     it's not worth the effort.)
  */
-    xjpeg_destination_mgr dest;             /* Destination for compressed data */
+    jpeg_destination_mgr dest;             /* Destination for compressed data */
 #   endif
-    xjpeg_source_mgr src;                           /* Source of expanded data */
+    jpeg_source_mgr src;                           /* Source of expanded data */
     JSAMPARRAY ds_buffer[MAX_COMPONENTS]; /* ->Temporary downsampling buffers */
     TIFF *tif;                        /* Reverse pointer, needed by some code */
     TIFFVGetMethod vgetparent;                    /* "Super class" methods... */
@@ -217,17 +220,17 @@ static const char JPEGLib_name[]={"JPEG Library"},
    diagnostic messages to a client application.
 */
 static void
-TIFFoxjpeg_error_exit(register j_common_ptr cinfo)
+TIFFojpeg_error_exit(register j_common_ptr cinfo)
   { char buffer[JMSG_LENGTH_MAX];
 
     (*cinfo->err->format_message)(cinfo,buffer);
     TIFFError(JPEGLib_name,buffer); /* Display error message */
-    xjpeg_abort(cinfo); /* Clean up JPEG Library state */
+    jpeg_abort(cinfo); /* Clean up JPEG Library state */
     LONGJMP(((OJPEGState *)cinfo)->exit_jmpbuf,1); /* Return to TIFF client */
   }
 
 static void
-TIFFoxjpeg_output_message(register j_common_ptr cinfo)
+TIFFojpeg_output_message(register j_common_ptr cinfo)
   { char buffer[JMSG_LENGTH_MAX];
 
  /* This subroutine is invoked only for warning messages, since the JPEG
@@ -247,54 +250,54 @@ TIFFoxjpeg_output_message(register j_common_ptr cinfo)
 #ifdef never
 
 static int
-TIFFoxjpeg_create_compress(register OJPEGState *sp)
+TIFFojpeg_create_compress(register OJPEGState *sp)
   {
-    sp->cinfo.c.err = xjpeg_std_error(&sp->err); /* Initialize error handling */
-    sp->err.error_exit = TIFFoxjpeg_error_exit;
-    sp->err.output_message = TIFFoxjpeg_output_message;
-    return CALLVJPEG(sp,xjpeg_create_compress(&sp->cinfo.c));
+    sp->cinfo.c.err = jpeg_std_error(&sp->err); /* Initialize error handling */
+    sp->err.error_exit = TIFFojpeg_error_exit;
+    sp->err.output_message = TIFFojpeg_output_message;
+    return CALLVJPEG(sp,jpeg_create_compress(&sp->cinfo.c));
   }
 
 static int
-TIFFoxjpeg_finish_compress(register OJPEGState *sp)
-  {return CALLVJPEG(sp,xjpeg_finish_compress(&sp->cinfo.c));}
+TIFFojpeg_finish_compress(register OJPEGState *sp)
+  {return CALLVJPEG(sp,jpeg_finish_compress(&sp->cinfo.c));}
 
 static int
-TIFFoxjpeg_set_colorspace(register OJPEGState *sp,J_COLOR_SPACE colorspace)
-  {return CALLVJPEG(sp,xjpeg_set_colorspace(&sp->cinfo.c,colorspace));}
+TIFFojpeg_set_colorspace(register OJPEGState *sp,J_COLOR_SPACE colorspace)
+  {return CALLVJPEG(sp,jpeg_set_colorspace(&sp->cinfo.c,colorspace));}
 
 static int
-TIFFoxjpeg_set_defaults(register OJPEGState *sp)
-  {return CALLVJPEG(sp,xjpeg_set_defaults(&sp->cinfo.c));}
+TIFFojpeg_set_defaults(register OJPEGState *sp)
+  {return CALLVJPEG(sp,jpeg_set_defaults(&sp->cinfo.c));}
 
 static int
-TIFFoxjpeg_set_quality(register OJPEGState *sp,int quality,boolean force_baseline)
-  {return CALLVJPEG(sp,xjpeg_set_quality(&sp->cinfo.c,quality,force_baseline));}
+TIFFojpeg_set_quality(register OJPEGState *sp,int quality,boolean force_baseline)
+  {return CALLVJPEG(sp,jpeg_set_quality(&sp->cinfo.c,quality,force_baseline));}
 
 static int
-TIFFoxjpeg_start_compress(register OJPEGState *sp,boolean write_all_tables)
-  {return CALLVJPEG(sp,xjpeg_start_compress(&sp->cinfo.c,write_all_tables));}
+TIFFojpeg_start_compress(register OJPEGState *sp,boolean write_all_tables)
+  {return CALLVJPEG(sp,jpeg_start_compress(&sp->cinfo.c,write_all_tables));}
 
 static int
-TIFFoxjpeg_suppress_tables(register OJPEGState *sp,boolean suppress)
-  {return CALLVJPEG(sp,xjpeg_suppress_tables(&sp->cinfo.c,suppress));}
+TIFFojpeg_suppress_tables(register OJPEGState *sp,boolean suppress)
+  {return CALLVJPEG(sp,jpeg_suppress_tables(&sp->cinfo.c,suppress));}
 
 static int
-TIFFoxjpeg_write_raw_data(register OJPEGState *sp,JSAMPIMAGE data,int num_lines)
+TIFFojpeg_write_raw_data(register OJPEGState *sp,JSAMPIMAGE data,int num_lines)
   { return
-      CALLJPEG(sp,-1,(int)xjpeg_write_raw_data(&sp->cinfo.c,data,(JDIMENSION)num_lines));
+      CALLJPEG(sp,-1,(int)jpeg_write_raw_data(&sp->cinfo.c,data,(JDIMENSION)num_lines));
   }
 
 static int
-TIFFoxjpeg_write_scanlines(register OJPEGState *sp,JSAMPARRAY scanlines,
+TIFFojpeg_write_scanlines(register OJPEGState *sp,JSAMPARRAY scanlines,
                          int num_lines)
   { return
-      CALLJPEG(sp,-1,(int)xjpeg_write_scanlines(&sp->cinfo.c,scanlines,(JDIMENSION)num_lines));
+      CALLJPEG(sp,-1,(int)jpeg_write_scanlines(&sp->cinfo.c,scanlines,(JDIMENSION)num_lines));
   }
 
 static int
-TIFFoxjpeg_write_tables(register OJPEGState *sp)
-  {return CALLVJPEG(sp,xjpeg_write_tables(&sp->cinfo.c));}
+TIFFojpeg_write_tables(register OJPEGState *sp)
+  {return CALLVJPEG(sp,jpeg_write_tables(&sp->cinfo.c));}
 #else /* well, hardly ever */
 
 static int
@@ -307,54 +310,54 @@ _notSupported(register TIFF *tif)
 #endif /* never */
 
 static int
-TIFFoxjpeg_abort(register OJPEGState *sp)
-  {return CALLVJPEG(sp,xjpeg_abort(&sp->cinfo.comm));}
+TIFFojpeg_abort(register OJPEGState *sp)
+  {return CALLVJPEG(sp,jpeg_abort(&sp->cinfo.comm));}
 
 static JSAMPARRAY
-TIFFoxjpeg_alloc_sarray(register OJPEGState *sp,int pool_id,
+TIFFojpeg_alloc_sarray(register OJPEGState *sp,int pool_id,
                       JDIMENSION samplesperrow,JDIMENSION numrows)
   { return
       CALLJPEG(sp,0,(*sp->cinfo.comm.mem->alloc_sarray)(&sp->cinfo.comm,pool_id,samplesperrow, numrows));
   }
 
 static int
-TIFFoxjpeg_create_decompress(register OJPEGState *sp)
+TIFFojpeg_create_decompress(register OJPEGState *sp)
   {
-    sp->cinfo.d.err = xjpeg_std_error(&sp->err); /* Initialize error handling */
-    sp->err.error_exit = TIFFoxjpeg_error_exit;
-    sp->err.output_message = TIFFoxjpeg_output_message;
-    return CALLVJPEG(sp,xjpeg_create_decompress(&sp->cinfo.d));
+    sp->cinfo.d.err = jpeg_std_error(&sp->err); /* Initialize error handling */
+    sp->err.error_exit = TIFFojpeg_error_exit;
+    sp->err.output_message = TIFFojpeg_output_message;
+    return CALLVJPEG(sp,jpeg_create_decompress(&sp->cinfo.d));
   }
 
 static int
-TIFFoxjpeg_destroy(register OJPEGState *sp)
-  {return CALLVJPEG(sp,xjpeg_destroy(&sp->cinfo.comm));}
+TIFFojpeg_destroy(register OJPEGState *sp)
+  {return CALLVJPEG(sp,jpeg_destroy(&sp->cinfo.comm));}
 
 static int
-TIFFoxjpeg_finish_decompress(register OJPEGState *sp)
-  {return CALLJPEG(sp,-1,(int)xjpeg_finish_decompress(&sp->cinfo.d));}
+TIFFojpeg_finish_decompress(register OJPEGState *sp)
+  {return CALLJPEG(sp,-1,(int)jpeg_finish_decompress(&sp->cinfo.d));}
 
 static int
-TIFFoxjpeg_read_header(register OJPEGState *sp,boolean require_image)
-  {return CALLJPEG(sp,-1,xjpeg_read_header(&sp->cinfo.d,require_image));}
+TIFFojpeg_read_header(register OJPEGState *sp,boolean require_image)
+  {return CALLJPEG(sp,-1,jpeg_read_header(&sp->cinfo.d,require_image));}
 
 static int
-TIFFoxjpeg_read_raw_data(register OJPEGState *sp,JSAMPIMAGE data,int max_lines)
+TIFFojpeg_read_raw_data(register OJPEGState *sp,JSAMPIMAGE data,int max_lines)
   {
     return
-      CALLJPEG(sp,-1,(int)xjpeg_read_raw_data(&sp->cinfo.d,data,(JDIMENSION)max_lines));
+      CALLJPEG(sp,-1,(int)jpeg_read_raw_data(&sp->cinfo.d,data,(JDIMENSION)max_lines));
   }
 
 static int
-TIFFoxjpeg_read_scanlines(register OJPEGState *sp,JSAMPARRAY scanlines,
+TIFFojpeg_read_scanlines(register OJPEGState *sp,JSAMPARRAY scanlines,
                         int max_lines)
   { return
-      CALLJPEG(sp,-1,(int)xjpeg_read_scanlines(&sp->cinfo.d,scanlines,(JDIMENSION)max_lines));
+      CALLJPEG(sp,-1,(int)jpeg_read_scanlines(&sp->cinfo.d,scanlines,(JDIMENSION)max_lines));
   }
 
 static int
-TIFFoxjpeg_start_decompress(register OJPEGState *sp)
-  {return CALLVJPEG(sp,xjpeg_start_decompress(&sp->cinfo.d));}
+TIFFojpeg_start_decompress(register OJPEGState *sp)
+  {return CALLVJPEG(sp,jpeg_start_decompress(&sp->cinfo.d));}
 #ifdef never
 
 /* The following subroutines comprise a JPEG Library "destination" data manager
@@ -391,7 +394,7 @@ std_term_destination(register j_compress_ptr cinfo)
   }
 
 /*ARGSUSED*/ static void
-TIFFoxjpeg_data_dest(register OJPEGState *sp,TIFF *tif)
+TIFFojpeg_data_dest(register OJPEGState *sp,TIFF *tif)
   {
     sp->cinfo.c.dest = &sp->dest;
     sp->dest.init_destination = std_init_destination;
@@ -441,7 +444,7 @@ tables_term_destination(register j_compress_ptr cinfo)
   }
 
 /*ARGSUSED*/ static int
-TIFFoxjpeg_tables_dest(register OJPEGState *sp, TIFF *tif)
+TIFFojpeg_tables_dest(register OJPEGState *sp, TIFF *tif)
   {
 
  /* Allocate a working buffer for building tables.  The initial size is 1000
@@ -454,7 +457,7 @@ TIFFoxjpeg_tables_dest(register OJPEGState *sp, TIFF *tif)
        )
       {
         sp->jpegtables_length = 0;
-        TIFFError("TIFFoxjpeg_tables_dest",no_jtable_space);
+        TIFFError("TIFFojpeg_tables_dest",no_jtable_space);
         return 0;
       };
     sp->cinfo.c.dest = &sp->dest;
@@ -519,26 +522,26 @@ std_skip_input_data(register j_decompress_ptr cinfo,long num_bytes)
 std_term_source(register j_decompress_ptr cinfo){} /* "Dummy" stub */
 
 /* Allocate temporary I/O buffers for downsampled data, using values computed in
-   "xjpeg_start_{de}compress()".  We use the JPEG Library's allocator so that
+   "jpeg_start_{de}compress()".  We use the JPEG Library's allocator so that
    buffers will be released automatically when done with a strip/tile.  This is
    also a handy place to compute samplesperclump, bytesperline, etc.
 */
 static int
-alloc_downsampled_buffers(TIFF *tif,xjpeg_component_info *comp_info,
+alloc_downsampled_buffers(TIFF *tif,jpeg_component_info *comp_info,
                           int num_components)
   { register OJPEGState *sp = OJState(tif);
 
     sp->samplesperclump = 0;
     if (num_components > 0)
       { int ci = 0;
-        register xjpeg_component_info *compptr = comp_info;
+        register jpeg_component_info *compptr = comp_info;
 
         do
           { JSAMPARRAY buf;
 
             sp->samplesperclump +=
               compptr->h_samp_factor * compptr->v_samp_factor;
-            if (!(buf = TIFFoxjpeg_alloc_sarray( sp
+            if (!(buf = TIFFojpeg_alloc_sarray( sp
                                               , JPOOL_IMAGE
                                               , compptr->width_in_blocks*DCTSIZE
                                               , compptr->v_samp_factor  *DCTSIZE
@@ -579,8 +582,8 @@ prepare_JPEGTables(register TIFF *tif)
     output only the tables that we want.  Note that chrominance tables are
     currently used only with YCbCr.
  */
-    if (   !TIFFoxjpeg_set_quality(sp,sp->jpegquality,FALSE);
-        || !TIFFoxjpeg_suppress_tables(sp,TRUE)
+    if (   !TIFFojpeg_set_quality(sp,sp->jpegquality,FALSE);
+        || !TIFFojpeg_suppress_tables(sp,TRUE)
        ) return 0;
     if (sp->jpegtablesmode & JPEGTABLESMODE_QUANT)
       {
@@ -592,7 +595,7 @@ prepare_JPEGTables(register TIFF *tif)
         unsuppress_huff_table(sp,0);
         if (sp->photometric == PHOTOMETRIC_YCBCR) unsuppress_huff_table(sp,1);
       };
-    return TIFFoxjpeg_tables_dest(sp,tif) && TIFFoxjpeg_write_tables(sp);
+    return TIFFojpeg_tables_dest(sp,tif) && TIFFojpeg_write_tables(sp);
   }
 
 static int
@@ -612,12 +615,12 @@ OJPEGSetupEncode(register TIFF *tif)
       };
 
  /* Initialize all JPEG parameters to default values.  Note that the JPEG
-    Library's "xjpeg_set_defaults()" method needs legal values for the
+    Library's "jpeg_set_defaults()" method needs legal values for the
     "in_color_space" and "input_components" fields.
  */
     sp->cinfo.c.in_color_space = JCS_UNKNOWN;
     sp->cinfo.c.input_components = 1;
-    if (!TIFFoxjpeg_set_defaults(sp)) return 0;
+    if (!TIFFojpeg_set_defaults(sp)) return 0;
     switch (sp->photometric = td->td_photometric) /* set per-file parameters */
       {
         case PHOTOMETRIC_YCBCR:
@@ -694,7 +697,7 @@ OJPEGSetupEncode(register TIFF *tif)
       "not present".
    */
       TIFFClrFieldBit(tif,FIELD_JPEGTABLES);
-    TIFFoxjpeg_data_dest(sp,tif); /* send JPEG output to TIFF Library's buffer */
+    TIFFojpeg_data_dest(sp,tif); /* send JPEG output to TIFF Library's buffer */
     return 1;
 #   undef td
   }
@@ -711,7 +714,7 @@ OJPEGEncode(register TIFF *tif,tidata_t buf,tsize_t cc,tsample_t s)
     while (--cc >= 0)
       { JSAMPROW bufptr = (JSAMPROW)buf;
 
-        if (TIFFoxjpeg_write_scanlines(sp,&bufptr,1) != 1) return 0;
+        if (TIFFojpeg_write_scanlines(sp,&bufptr,1) != 1) return 0;
         ++tif->tif_row;
         buf += sp->bytesperline;
       };
@@ -732,7 +735,7 @@ OJPEGEncodeRaw(register TIFF *tif,tidata_t buf,tsize_t cc,tsample_t s)
       {
         if (sp->cinfo.c.num_components > 0)
           { int ci = 0, clumpoffset = 0;
-            register xjpeg_component_info *compptr = sp->cinfo.c.comp_info;
+            register jpeg_component_info *compptr = sp->cinfo.c.comp_info;
 
          /* The fastest way to separate the data is to make 1 pass over the scan
             line for each row of each component.
@@ -781,7 +784,7 @@ OJPEGEncodeRaw(register TIFF *tif,tidata_t buf,tsize_t cc,tsample_t s)
         if (++sp->scancount >= DCTSIZE)
           { int n = sp->cinfo.c.max_v_samp_factor*DCTSIZE;
 
-            if (TIFFoxjpeg_write_raw_data(sp,sp->ds_buffer,n) != n) return 0;
+            if (TIFFojpeg_write_raw_data(sp,sp->ds_buffer,n) != n) return 0;
             sp->scancount = 0;
           };
         ++tif->tif_row++
@@ -813,9 +816,9 @@ OJPEGPreEncode(register TIFF *tif,tsample_t s)
                 if (sp->h_sampling != 1 || sp->v_sampling != 1)
                   downsampled_input = TRUE;
               };
-            if (!TIFFoxjpeg_set_colorspace(sp,JCS_YCbCr)) return 0;
+            if (!TIFFojpeg_set_colorspace(sp,JCS_YCbCr)) return 0;
 
-         /* Set Y sampling factors; we assume "xjpeg_set_colorspace()" set the
+         /* Set Y sampling factors; we assume "jpeg_set_colorspace()" set the
             rest to 1.
          */
             sp->cinfo.c.comp_info[0].h_samp_factor = sp->h_sampling;
@@ -824,17 +827,17 @@ OJPEGPreEncode(register TIFF *tif,tsample_t s)
         else
           {
             sp->cinfo.c.in_color_space = JCS_UNKNOWN;
-            if (!TIFFoxjpeg_set_colorspace(sp,JCS_UNKNOWN)) return 0;
-         /* "xjpeg_set_colorspace()" set all sampling factors to 1. */
+            if (!TIFFojpeg_set_colorspace(sp,JCS_UNKNOWN)) return 0;
+         /* "jpeg_set_colorspace()" set all sampling factors to 1. */
           }
       }
     else
       {
         sp->cinfo.c.input_components = 1;
         sp->cinfo.c.in_color_space = JCS_UNKNOWN;
-        if (!TIFFoxjpeg_set_colorspace(sp,JCS_UNKNOWN)) return 0;
+        if (!TIFFojpeg_set_colorspace(sp,JCS_UNKNOWN)) return 0;
         sp->cinfo.c.comp_info[0].component_id = s;
-     /* "xjpeg_set_colorspace()" set all sampling factors to 1. */
+     /* "jpeg_set_colorspace()" set all sampling factors to 1. */
         if (sp->photometric == PHOTOMETRIC_YCBCR && s > 0)
           sp->cinfo.c.comp_info[0].quant_tbl_no =
           sp->cinfo.c.comp_info[0].dc_tbl_no =
@@ -873,7 +876,7 @@ OJPEGPreEncode(register TIFF *tif,tsample_t s)
     sp->cinfo.c.write_Adobe_marker = FALSE;
     if (!(sp->jpegtablesmode & JPEGTABLESMODE_QUANT)) /* setup table handling */
       {
-        if (!TIFFoxjpeg_set_quality(sp,sp->jpegquality,FALSE)) return 0;
+        if (!TIFFojpeg_set_quality(sp,sp->jpegquality,FALSE)) return 0;
         unsuppress_quant_table(sp,0);
         unsuppress_quant_table(sp,1);
       };
@@ -881,7 +884,7 @@ OJPEGPreEncode(register TIFF *tif,tsample_t s)
     tif->tif_encoderow = tif->tif_encodestrip = tif->tif_encodetile =
       (sp->cinfo.c.raw_data_in = downsampled_input)
       ? OJPEGEncodeRaw : OJPEGEncode;
-    if (   !TIFFoxjpeg_start_compress(sp,FALSE) /* start JPEG compressor */
+    if (   !TIFFojpeg_start_compress(sp,FALSE) /* start JPEG compressor */
         ||     downsampled_input /* allocate downsampled-data buffers */
            && !alloc_downsampled_buffers(tif,sp->cinfo.c.comp_info,
                                          sp->cinfo.c.num_components)
@@ -901,7 +904,7 @@ OJPEGPostEncode(register TIFF *tif)
       {
         if (sp->scancount < DCTSIZE && sp->cinfo.c.num_components > 0)
           { int ci = 0, n;                         /* Pad the data vertically */
-            register xjpeg_component_info *compptr = sp->cinfo.c.comp_info;
+            register jpeg_component_info *compptr = sp->cinfo.c.comp_info;
 
             do
                { tsize_t row_width =
@@ -917,9 +920,9 @@ OJPEGPostEncode(register TIFF *tif)
             while (++compptr,++ci < sp->cinfo.c.num_components);
           };
         n = sp->cinfo.c.max_v_samp_factor*DCTSIZE;
-        if (TIFFoxjpeg_write_raw_data(sp,sp->ds_buffer,n) != n) return 0;
+        if (TIFFojpeg_write_raw_data(sp,sp->ds_buffer,n) != n) return 0;
       };
-    return TIFFoxjpeg_finish_compress(sp);
+    return TIFFojpeg_finish_compress(sp);
   }
 #endif /* never */
 
@@ -964,7 +967,7 @@ OJPEGSetupDecode(register TIFF *tif)
     sp->src.init_source = std_init_source;
     sp->src.fill_input_buffer = std_fill_input_buffer;
     sp->src.skip_input_data = std_skip_input_data;
-    sp->src.resync_to_restart = xjpeg_resync_to_restart;
+    sp->src.resync_to_restart = jpeg_resync_to_restart;
     sp->src.term_source = std_term_source;
     tif->tif_postdecode = _TIFFNoPostDecode; /* Override Byte-swapping */
     return 1;
@@ -985,7 +988,7 @@ OJPEGDecode(register TIFF *tif,tidata_t buf,tsize_t cc,tsample_t s)
     create an "ad hoc" interface in the "jdhuff.c" module of IJG JPEG Library
     Version 6, and we invoke that interface here before decoding each "strip".
  */
-    if (sp->is_WANG) xjpeg_reset_huff_decode(&sp->cinfo.d,zeroes);
+    if (sp->is_WANG) jpeg_reset_huff_decode(&sp->cinfo.d,zeroes);
 
  /* Decode a chunk of pixels, where returned data is NOT down-sampled (the
     standard case).  The data is expected to be read in scan-line multiples.
@@ -1008,14 +1011,14 @@ OJPEGDecode(register TIFF *tif,tidata_t buf,tsize_t cc,tsample_t s)
         do
           { JSAMPROW bufptr = (JSAMPROW)buf;
 
-            if (TIFFoxjpeg_read_scanlines(sp,&bufptr,1) != 1) return 0;
+            if (TIFFojpeg_read_scanlines(sp,&bufptr,1) != 1) return 0;
             buf += bytesperline;
             ++tif->tif_row;
           }
         while ((cc -= bytesperline) > 0 && --nrows > 0);
       };
     return sp->cinfo.d.output_scanline < sp->cinfo.d.output_height
-        || TIFFoxjpeg_finish_decompress(sp);
+        || TIFFojpeg_finish_decompress(sp);
   }
 
 /*ARGSUSED*/ static int
@@ -1032,7 +1035,7 @@ OJPEGDecodeRaw(register TIFF *tif,tidata_t buf,tsize_t cc,tsample_t s)
     create an "ad hoc" interface in the "jdhuff.c" module of IJG JPEG Library
     Version 6, and we invoke that interface here before decoding each "strip".
  */
-    if (sp->is_WANG) xjpeg_reset_huff_decode(&sp->cinfo.d,zeroes);
+    if (sp->is_WANG) jpeg_reset_huff_decode(&sp->cinfo.d,zeroes);
 
  /* Decode a chunk of pixels, where returned data is down-sampled as per the
     sampling factors.  The data is expected to be read in scan-line multiples.
@@ -1043,12 +1046,12 @@ OJPEGDecodeRaw(register TIFF *tif,tidata_t buf,tsize_t cc,tsample_t s)
           if (sp->scancount >= DCTSIZE) /* reload downsampled-data buffer */
             { int n = sp->cinfo.d.max_v_samp_factor*DCTSIZE;
 
-              if (TIFFoxjpeg_read_raw_data(sp,sp->ds_buffer,n) != n) return 0;
+              if (TIFFojpeg_read_raw_data(sp,sp->ds_buffer,n) != n) return 0;
               sp->scancount = 0;
             };
           if (sp->cinfo.d.num_components > 0)
             { int ci = 0, clumpoffset = 0;
-              register xjpeg_component_info *compptr = sp->cinfo.d.comp_info;
+              register jpeg_component_info *compptr = sp->cinfo.d.comp_info;
 
            /* The fastest way to separate the data is: make 1 pass over the scan
               line for each row of each component.
@@ -1104,7 +1107,7 @@ OJPEGDecodeRaw(register TIFF *tif,tidata_t buf,tsize_t cc,tsample_t s)
         }
       while ((cc -= sp->bytesperline) > 0 && --nrows > 0);
     return sp->cinfo.d.output_scanline < sp->cinfo.d.output_height
-        || TIFFoxjpeg_finish_decompress(sp);
+        || TIFFojpeg_finish_decompress(sp);
   }
 
 /* "OJPEGPreDecode()" temporarily forces the JPEG Library to use the following
@@ -1148,11 +1151,11 @@ OJPEGPreDecode(register TIFF *tif,tsample_t s)
     over from any previous strip/tile, in case our client application didn't
     read all of that data.  Then read the JPEG header data.
  */
-    if (!TIFFoxjpeg_abort(sp)) return 0;
+    if (!TIFFojpeg_abort(sp)) return 0;
 
  /* Do a preliminary translation of the image's (input) color space from its
     TIFF representation to JPEG Library representation.  We might have to fix
-    this up after calling "TIFFoxjpeg_read_header()", which tries to establish
+    this up after calling "TIFFojpeg_read_header()", which tries to establish
     its own JPEG Library defaults.  While we're here, initialize some other
     decompression parameters that won't be overridden.
  */
@@ -1252,7 +1255,7 @@ OJPEGPreDecode(register TIFF *tif,tsample_t s)
 
                 if (q = sp->cinfo.d.quant_tbl_ptrs[i])
                   {
-                    xjpeg_free_small(&sp->cinfo.comm,q,sizeof *q);
+                    jpeg_free_small(&sp->cinfo.comm,q,sizeof *q);
                     sp->cinfo.d.quant_tbl_ptrs[i] = 0;
                   }
               }
@@ -1266,12 +1269,12 @@ OJPEGPreDecode(register TIFF *tif,tsample_t s)
 
                 if (h = sp->cinfo.d.dc_huff_tbl_ptrs[i])
                   {
-                    xjpeg_free_small(&sp->cinfo.comm,h,sizeof *h);
+                    jpeg_free_small(&sp->cinfo.comm,h,sizeof *h);
                     sp->cinfo.d.dc_huff_tbl_ptrs[i] = 0;
                   };
                 if (h = sp->cinfo.d.ac_huff_tbl_ptrs[i])
                   {
-                    xjpeg_free_small(&sp->cinfo.comm,h,sizeof *h);
+                    jpeg_free_small(&sp->cinfo.comm,h,sizeof *h);
                     sp->cinfo.d.ac_huff_tbl_ptrs[i] = 0;
                   }
               }
@@ -1363,7 +1366,7 @@ OJPEGPreDecode(register TIFF *tif,tsample_t s)
             tif->tif_flags |= TIFF_DIRTYDIRECT;
           }
         else sp->jpegtables = 0; /* Don't simulate "JPEGTables" */
-        if (TIFFoxjpeg_read_header(sp,TRUE) != JPEG_HEADER_OK) return 0;
+        if (TIFFojpeg_read_header(sp,TRUE) != JPEG_HEADER_OK) return 0;
         if (   sp->cinfo.d.image_width  != segment_width
             || sp->cinfo.d.image_height != segment_height
            )
@@ -1428,7 +1431,7 @@ OJPEGPreDecode(register TIFF *tif,tsample_t s)
         "metadata", so fool the JPEG Library into thinking that we read a
         "Start of Input" (SOI) marker and a "Start of Frame" (SOFx) marker, then
         force it to read a simulated "Start of Scan" (SOS) marker when we call
-        "TIFFoxjpeg_read_header()" below.  This should cause the JPEG Library to
+        "TIFFojpeg_read_header()" below.  This should cause the JPEG Library to
         establish reasonable defaults.
      */
         sp->cinfo.d.marker->saw_SOI =       /* Pretend we saw SOI marker */
@@ -1443,12 +1446,12 @@ OJPEGPreDecode(register TIFF *tif,tsample_t s)
 
      /* The following color-space initialization, including the complicated
         "switch"-statement below, essentially duplicates the logic used by the
-        JPEG Library's "xjpeg_init_colorspace()" subroutine during compression.
+        JPEG Library's "jpeg_init_colorspace()" subroutine during compression.
      */
         sp->cinfo.d.num_components = td->td_planarconfig == PLANARCONFIG_CONTIG
                                     ? td->td_samplesperpixel
                                     : 1;
-        sp->cinfo.d.comp_info = (xjpeg_component_info *)
+        sp->cinfo.d.comp_info = (jpeg_component_info *)
           (*sp->cinfo.d.mem->alloc_small)
             ( &sp->cinfo.comm
             , JPOOL_IMAGE
@@ -1514,7 +1517,7 @@ OJPEGPreDecode(register TIFF *tif,tsample_t s)
               sp->cinfo.d.comp_info[0].v_samp_factor = sp->v_sampling;
           };
         sp->cinfo.d.comps_in_scan = sp->cinfo.d.num_components;
-        i = TIFFoxjpeg_read_header(sp,(unsigned char)(!sp->is_WANG));
+        i = TIFFojpeg_read_header(sp,(unsigned char)(!sp->is_WANG));
         sp->cinfo.d.marker->read_markers = save; /* Restore input method */
         if (sp->is_WANG) /* Microsoft Wang Imaging for Windows file */
           {
@@ -1530,7 +1533,7 @@ OJPEGPreDecode(register TIFF *tif,tsample_t s)
             sp->src.next_input_byte = tif->tif_base + td->td_stripoffset[0];
             sp->src.bytes_in_buffer = td->td_stripoffset[i] -
               td->td_stripoffset[0] + td->td_stripbytecount[i];
-            i = TIFFoxjpeg_read_header(sp,TRUE);
+            i = TIFFojpeg_read_header(sp,TRUE);
           };
         if (i != JPEG_HEADER_OK) return 0;
       };
@@ -1540,13 +1543,13 @@ OJPEGPreDecode(register TIFF *tif,tsample_t s)
     things up here.
  */
     sp->cinfo.d.out_color_space =
-      ((sp->cinfo.d.xjpeg_color_space = in_color_space) == JCS_YCbCr)
+      ((sp->cinfo.d.jpeg_color_space = in_color_space) == JCS_YCbCr)
       ? (sp->jpegcolormode == JPEGCOLORMODE_RGB ? JCS_RGB : JCS_YCbCr)
       : JCS_UNKNOWN; /* Suppress color-space handling */
     tif->tif_decoderow = tif->tif_decodestrip = tif->tif_decodetile =
       (sp->cinfo.d.raw_data_out = downsampled_output)
       ? OJPEGDecodeRaw : OJPEGDecode;
-    if (!TIFFoxjpeg_start_decompress(sp)) return 0; /* Start JPEG decompressor */
+    if (!TIFFojpeg_start_decompress(sp)) return 0; /* Start JPEG decompressor */
     if (downsampled_output) /* allocate downsampled-data buffers */
       {
         if (!alloc_downsampled_buffers(tif,sp->cinfo.d.comp_info,
@@ -1723,7 +1726,7 @@ OJPEGVSetField(register TIFF *tif,ttag_t tag,va_list ap)
               do /* read quantization table */
                 { register UINT8 *from = tif->tif_base + *v++;
                   register UINT16 *to = (sp->cinfo.d.quant_tbl_ptrs[i] =
-                                          xjpeg_alloc_quant_table(&sp->cinfo.comm)
+                                          jpeg_alloc_quant_table(&sp->cinfo.comm)
                                         )->quantval;
                   register int j = DCTSIZE2;
 
@@ -1759,7 +1762,7 @@ OJPEGVSetField(register TIFF *tif,ttag_t tag,va_list ap)
                 { int size = 0;
                   register UINT8 *from = tif->tif_base + *v++,
                                  *to = (*h++ =
-                                         xjpeg_alloc_huff_table(&sp->cinfo.comm)
+                                         jpeg_alloc_huff_table(&sp->cinfo.comm)
                                        )->bits;
                   register int j = sizeof (*h)->bits;
 
@@ -1916,7 +1919,7 @@ OJPEGCleanUp(register TIFF *tif)
 
     if (sp = OJState(tif))
       {
-        TIFFoxjpeg_destroy(sp); /* Release JPEG Library variables */
+        TIFFojpeg_destroy(sp); /* Release JPEG Library variables */
         if (sp->jpegtables) _TIFFfree(sp->jpegtables);
 
      /* If the image file isn't "memory mapped" and we read it all into a
@@ -1986,7 +1989,7 @@ TIFFInitOJPEG(register TIFF *tif,int scheme)
         return 0;
       };
     (sp = OJState(tif))->tif = tif; /* Initialize reverse pointer */
-    if (!TIFFoxjpeg_create_decompress(sp)) return 0; /* Init. JPEG Library */
+    if (!TIFFojpeg_create_decompress(sp)) return 0; /* Init. JPEG Library */
 
  /* If the image file doesn't have "JPEGInterchangeFormat[Length]" TIFF records
     to guide us, we have few clues about where its encapsulated JPEG bit stream

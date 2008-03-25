@@ -51,7 +51,7 @@
 /* Private subobject */
 
 typedef struct {
-  struct xjpeg_upsampler pub;	/* public fields */
+  struct jpeg_upsampler pub;	/* public fields */
 
   /* Pointer to routine to do actual upsampling/conversion of one row group */
   JMETHOD(void, upmethod, (j_decompress_ptr cinfo,
@@ -383,7 +383,7 @@ jinit_merged_upsampler (j_decompress_ptr cinfo)
   upsample = (my_upsample_ptr)
     (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_IMAGE,
 				SIZEOF(my_upsampler));
-  cinfo->upsample = (struct xjpeg_upsampler *) upsample;
+  cinfo->upsample = (struct jpeg_upsampler *) upsample;
   upsample->pub.start_pass = start_pass_merged_upsample;
   upsample->pub.need_context_rows = FALSE;
 

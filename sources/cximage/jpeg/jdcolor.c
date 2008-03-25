@@ -25,7 +25,7 @@
 /* Private subobject */
 
 typedef struct {
-  struct xjpeg_color_deconverter pub; /* public fields */
+  struct jpeg_color_deconverter pub; /* public fields */
 
   /* Private state for YCC->RGB conversion */
   int * Cr_r_tab;		/* => table for Cr to R conversion */
@@ -318,11 +318,11 @@ jinit_color_deconverter (j_decompress_ptr cinfo)
   cconvert = (my_cconvert_ptr)
     (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_IMAGE,
 				SIZEOF(my_color_deconverter));
-  cinfo->cconvert = (struct xjpeg_color_deconverter *) cconvert;
+  cinfo->cconvert = (struct jpeg_color_deconverter *) cconvert;
   cconvert->pub.start_pass = start_pass_dcolor;
 
-  /* Make sure num_components agrees with xjpeg_color_space */
-  switch (cinfo->xjpeg_color_space) {
+  /* Make sure num_components agrees with jpeg_color_space */
+  switch (cinfo->jpeg_color_space) {
   case JCS_GRAYSCALE:
     if (cinfo->num_components != 1)
       ERREXIT(cinfo, JERR_BAD_J_COLORSPACE);
@@ -354,8 +354,8 @@ jinit_color_deconverter (j_decompress_ptr cinfo)
   switch (cinfo->out_color_space) {
   case JCS_GRAYSCALE:
     cinfo->out_color_components = 1;
-    if (cinfo->xjpeg_color_space == JCS_GRAYSCALE ||
-	cinfo->xjpeg_color_space == JCS_YCbCr) {
+    if (cinfo->jpeg_color_space == JCS_GRAYSCALE ||
+	cinfo->jpeg_color_space == JCS_YCbCr) {
       cconvert->pub.color_convert = grayscale_convert;
       /* For color->grayscale conversion, only the Y (0) component is needed */
       for (ci = 1; ci < cinfo->num_components; ci++)
@@ -366,12 +366,12 @@ jinit_color_deconverter (j_decompress_ptr cinfo)
 
   case JCS_RGB:
     cinfo->out_color_components = RGB_PIXELSIZE;
-    if (cinfo->xjpeg_color_space == JCS_YCbCr) {
+    if (cinfo->jpeg_color_space == JCS_YCbCr) {
       cconvert->pub.color_convert = ycc_rgb_convert;
       build_ycc_rgb_table(cinfo);
-    } else if (cinfo->xjpeg_color_space == JCS_GRAYSCALE) {
+    } else if (cinfo->jpeg_color_space == JCS_GRAYSCALE) {
       cconvert->pub.color_convert = gray_rgb_convert;
-    } else if (cinfo->xjpeg_color_space == JCS_RGB && RGB_PIXELSIZE == 3) {
+    } else if (cinfo->jpeg_color_space == JCS_RGB && RGB_PIXELSIZE == 3) {
       cconvert->pub.color_convert = null_convert;
     } else
       ERREXIT(cinfo, JERR_CONVERSION_NOTIMPL);
@@ -379,10 +379,10 @@ jinit_color_deconverter (j_decompress_ptr cinfo)
 
   case JCS_CMYK:
     cinfo->out_color_components = 4;
-    if (cinfo->xjpeg_color_space == JCS_YCCK) {
+    if (cinfo->jpeg_color_space == JCS_YCCK) {
       cconvert->pub.color_convert = ycck_cmyk_convert;
       build_ycc_rgb_table(cinfo);
-    } else if (cinfo->xjpeg_color_space == JCS_CMYK) {
+    } else if (cinfo->jpeg_color_space == JCS_CMYK) {
       cconvert->pub.color_convert = null_convert;
     } else
       ERREXIT(cinfo, JERR_CONVERSION_NOTIMPL);
@@ -390,7 +390,7 @@ jinit_color_deconverter (j_decompress_ptr cinfo)
 
   default:
     /* Permit null conversion to same output space */
-    if ((cinfo->out_color_space == cinfo->xjpeg_color_space)||(cinfo->out_color_space = cinfo->xjpeg_color_space)) {
+    if ((cinfo->out_color_space == cinfo->jpeg_color_space)||(cinfo->out_color_space = cinfo->jpeg_color_space)) {
       cinfo->out_color_components = cinfo->num_components;
       cconvert->pub.color_convert = null_convert;
     } else			/* unsupported non-null conversion */

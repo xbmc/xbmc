@@ -32,7 +32,11 @@
 
 #if CXIMAGE_SUPPORT_JASPER
 
+#ifdef _LINUX
+#include <jasper.h>
+#else
 #include "../jasper/include/jasper/jasper.h"
+#endif
 
 class CxImageJAS: public CxImage
 {

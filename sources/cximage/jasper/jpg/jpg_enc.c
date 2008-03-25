@@ -246,8 +246,8 @@ static void jpg_finish_input(j_compress_ptr cinfo, struct jpg_src_s *sinfo)
 int jpg_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 {
 	JDIMENSION numscanlines;
-	struct xjpeg_compress_struct cinfo;
-	struct xjpeg_error_mgr jerr;
+	struct jpeg_compress_struct cinfo;
+	struct jpeg_error_mgr jerr;
 	jas_image_coord_t width;
 	jas_image_coord_t height;
 	jpg_src_t src_mgr_buf;
@@ -330,17 +330,17 @@ int jpg_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 	}
 
 	/* Create a JPEG compression object. */
-	cinfo.err = xjpeg_std_error(&jerr);
-	xjpeg_create_compress(&cinfo);
+	cinfo.err = jpeg_std_error(&jerr);
+	jpeg_create_compress(&cinfo);
 
 	/* Specify data destination for compression */
-	xjpeg_stdio_dest(&cinfo, output_file);
+	jpeg_stdio_dest(&cinfo, output_file);
 
 	cinfo.in_color_space = tojpgcs(jas_image_clrspc(image));
 	cinfo.image_width = width;
 	cinfo.image_height = height;
 	cinfo.input_components = enc->numcmpts;
-	xjpeg_set_defaults(&cinfo);
+	jpeg_set_defaults(&cinfo);
 
 	src_mgr->error = 0;
 	src_mgr->image = image;
@@ -355,27 +355,27 @@ int jpg_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 	jpg_start_input(&cinfo, src_mgr);
 
 	if (encopts.qual >= 0) {
-		xjpeg_set_quality(&cinfo, encopts.qual, TRUE);
+		jpeg_set_quality(&cinfo, encopts.qual, TRUE);
 	}
 
 	/* Now that we know input colorspace, fix colorspace-dependent defaults */
-	xjpeg_default_colorspace(&cinfo);
+	jpeg_default_colorspace(&cinfo);
 
 	/* Start compressor */
-	xjpeg_start_compress(&cinfo, TRUE);
+	jpeg_start_compress(&cinfo, TRUE);
 
 	/* Process data */
 	while (cinfo.next_scanline < cinfo.image_height) {
 		if ((numscanlines = jpg_get_pixel_rows(&cinfo, src_mgr)) <= 0) {
 			break;
 		}
-		xjpeg_write_scanlines(&cinfo, src_mgr->buffer, numscanlines);
+		jpeg_write_scanlines(&cinfo, src_mgr->buffer, numscanlines);
 	}
 
 	/* Finish compression and release memory */
 	jpg_finish_input(&cinfo, src_mgr);
-	xjpeg_finish_compress(&cinfo);
-	xjpeg_destroy_compress(&cinfo);
+	jpeg_finish_compress(&cinfo);
+	jpeg_destroy_compress(&cinfo);
 
 	rewind(output_file);
 	jpg_copyfiletostream(out, output_file);

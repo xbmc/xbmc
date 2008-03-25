@@ -20,13 +20,13 @@
  * Interface to libpng contributed by Gilles Vollant, 1999
  *
  *
- * In xpng_do_read_interlace() in libpng versions 1.0.3a through 1.0.4d,
+ * In png_do_read_interlace() in libpng versions 1.0.3a through 1.0.4d,
  * a sign error in the post-MMX cleanup code for each pixel_depth resulted
  * in bad pixels at the beginning of some rows of some images, and also
  * (due to out-of-range memory reads and writes) caused heap corruption
  * when compiled with MSVC 6.0.  The error was fixed in version 1.0.4e.
  *
- * [xpng_read_filter_row_mmx_avg() bpp == 2 bugfix, GRR 20000916]
+ * [png_read_filter_row_mmx_avg() bpp == 2 bugfix, GRR 20000916]
  *
  * [runtime MMX configuration, GRR 20010102]
  *
@@ -41,7 +41,7 @@ static int mmx_supported=2;
 
 
 int PNGAPI
-xpng_mmx_support(void)
+png_mmx_support(void)
 {
   int mmx_supported_local = 0;
   _asm {
@@ -115,45 +115,45 @@ NOT_SUPPORTED:
    supports MMX */
 
 void /* PRIVATE */
-xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
+png_combine_row(png_structp png_ptr, png_bytep row, int mask)
 {
 #ifdef PNG_USE_LOCAL_ARRAYS
-   const int xpng_pass_inc[7] = {8, 8, 4, 4, 2, 2, 1};
+   const int png_pass_inc[7] = {8, 8, 4, 4, 2, 2, 1};
 #endif
 
-   xpng_debug(1,"in xpng_combine_row_asm\n");
+   png_debug(1,"in png_combine_row_asm\n");
 
    if (mmx_supported == 2) {
-       /* this should have happened in xpng_init_mmx_flags() already */
-       xpng_warning(xpng_ptr, "asm_flags may not have been initialized");
-       xpng_mmx_support();
+       /* this should have happened in png_init_mmx_flags() already */
+       png_warning(png_ptr, "asm_flags may not have been initialized");
+       png_mmx_support();
    }
 
    if (mask == 0xff)
    {
-      xpng_memcpy(row, xpng_ptr->row_buf + 1,
-       (xpng_size_t)((xpng_ptr->width * xpng_ptr->row_info.pixel_depth + 7) >> 3));
+      png_memcpy(row, png_ptr->row_buf + 1,
+       (png_size_t)((png_ptr->width * png_ptr->row_info.pixel_depth + 7) >> 3));
    }
    /* GRR:  add "else if (mask == 0)" case?
-    *       or does xpng_combine_row() not even get called in that case? */
+    *       or does png_combine_row() not even get called in that case? */
    else
    {
-      switch (xpng_ptr->row_info.pixel_depth)
+      switch (png_ptr->row_info.pixel_depth)
       {
          case 1:
          {
-            xpng_bytep sp;
-            xpng_bytep dp;
+            png_bytep sp;
+            png_bytep dp;
             int s_inc, s_start, s_end;
             int m;
             int shift;
-            xpng_uint_32 i;
+            png_uint_32 i;
 
-            sp = xpng_ptr->row_buf + 1;
+            sp = png_ptr->row_buf + 1;
             dp = row;
             m = 0x80;
 #if defined(PNG_READ_PACKSWAP_SUPPORTED)
-            if (xpng_ptr->transformations & PNG_PACKSWAP)
+            if (png_ptr->transformations & PNG_PACKSWAP)
             {
                 s_start = 0;
                 s_end = 7;
@@ -169,15 +169,15 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
 
             shift = s_start;
 
-            for (i = 0; i < xpng_ptr->width; i++)
+            for (i = 0; i < png_ptr->width; i++)
             {
                if (m & mask)
                {
                   int value;
 
                   value = (*sp >> shift) & 0x1;
-                  *dp &= (xpng_byte)((0x7f7f >> (7 - shift)) & 0xff);
-                  *dp |= (xpng_byte)(value << shift);
+                  *dp &= (png_byte)((0x7f7f >> (7 - shift)) & 0xff);
+                  *dp |= (png_byte)(value << shift);
                }
 
                if (shift == s_end)
@@ -199,19 +199,19 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
 
          case 2:
          {
-            xpng_bytep sp;
-            xpng_bytep dp;
+            png_bytep sp;
+            png_bytep dp;
             int s_start, s_end, s_inc;
             int m;
             int shift;
-            xpng_uint_32 i;
+            png_uint_32 i;
             int value;
 
-            sp = xpng_ptr->row_buf + 1;
+            sp = png_ptr->row_buf + 1;
             dp = row;
             m = 0x80;
 #if defined(PNG_READ_PACKSWAP_SUPPORTED)
-            if (xpng_ptr->transformations & PNG_PACKSWAP)
+            if (png_ptr->transformations & PNG_PACKSWAP)
             {
                s_start = 0;
                s_end = 6;
@@ -227,13 +227,13 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
 
             shift = s_start;
 
-            for (i = 0; i < xpng_ptr->width; i++)
+            for (i = 0; i < png_ptr->width; i++)
             {
                if (m & mask)
                {
                   value = (*sp >> shift) & 0x3;
-                  *dp &= (xpng_byte)((0x3f3f >> (6 - shift)) & 0xff);
-                  *dp |= (xpng_byte)(value << shift);
+                  *dp &= (png_byte)((0x3f3f >> (6 - shift)) & 0xff);
+                  *dp |= (png_byte)(value << shift);
                }
 
                if (shift == s_end)
@@ -254,19 +254,19 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
 
          case 4:
          {
-            xpng_bytep sp;
-            xpng_bytep dp;
+            png_bytep sp;
+            png_bytep dp;
             int s_start, s_end, s_inc;
             int m;
             int shift;
-            xpng_uint_32 i;
+            png_uint_32 i;
             int value;
 
-            sp = xpng_ptr->row_buf + 1;
+            sp = png_ptr->row_buf + 1;
             dp = row;
             m = 0x80;
 #if defined(PNG_READ_PACKSWAP_SUPPORTED)
-            if (xpng_ptr->transformations & PNG_PACKSWAP)
+            if (png_ptr->transformations & PNG_PACKSWAP)
             {
                s_start = 0;
                s_end = 4;
@@ -281,13 +281,13 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
             }
             shift = s_start;
 
-            for (i = 0; i < xpng_ptr->width; i++)
+            for (i = 0; i < png_ptr->width; i++)
             {
                if (m & mask)
                {
                   value = (*sp >> shift) & 0xf;
-                  *dp &= (xpng_byte)((0xf0f >> (4 - shift)) & 0xff);
-                  *dp |= (xpng_byte)(value << shift);
+                  *dp &= (png_byte)((0xf0f >> (4 - shift)) & 0xff);
+                  *dp |= (png_byte)(value << shift);
                }
 
                if (shift == s_end)
@@ -308,23 +308,23 @@ xpng_combine_row(xpng_structp xpng_ptr, xpng_bytep row, int mask)
 
          case 8:
          {
-            xpng_bytep srcptr;
-            xpng_bytep dstptr;
-            xpng_uint_32 len;
+            png_bytep srcptr;
+            png_bytep dstptr;
+            png_uint_32 len;
             int m;
             int diff, unmask;
 
             __int64 mask0=0x0102040810204080;
 
-            if ((xpng_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
+            if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
                 /* && mmx_supported */ )
             {
-               srcptr = xpng_ptr->row_buf + 1;
+               srcptr = png_ptr->row_buf + 1;
                dstptr = row;
                m = 0x80;
                unmask = ~mask;
-               len  = xpng_ptr->width &~7;  //reduce to multiple of 8
-               diff = xpng_ptr->width & 7;  //amount lost
+               len  = png_ptr->width &~7;  //reduce to multiple of 8
+               diff = png_ptr->width & 7;  //amount lost
 
                _asm
                {
@@ -385,21 +385,21 @@ end8:
             else /* mmx not supported - use modified C routine */
             {
                register unsigned int incr1, initial_val, final_val;
-               xpng_size_t pixel_bytes;
-               xpng_uint_32 i;
-               register int disp = xpng_pass_inc[xpng_ptr->pass];
+               png_size_t pixel_bytes;
+               png_uint_32 i;
+               register int disp = png_pass_inc[png_ptr->pass];
                int offset_table[7] = {0, 4, 0, 2, 0, 1, 0};
 
-               pixel_bytes = (xpng_ptr->row_info.pixel_depth >> 3);
-               srcptr = xpng_ptr->row_buf + 1 + offset_table[xpng_ptr->pass]*
+               pixel_bytes = (png_ptr->row_info.pixel_depth >> 3);
+               srcptr = png_ptr->row_buf + 1 + offset_table[png_ptr->pass]*
                   pixel_bytes;
-               dstptr = row + offset_table[xpng_ptr->pass]*pixel_bytes;
-               initial_val = offset_table[xpng_ptr->pass]*pixel_bytes;
-               final_val = xpng_ptr->width*pixel_bytes;
+               dstptr = row + offset_table[png_ptr->pass]*pixel_bytes;
+               initial_val = offset_table[png_ptr->pass]*pixel_bytes;
+               final_val = png_ptr->width*pixel_bytes;
                incr1 = (disp)*pixel_bytes;
                for (i = initial_val; i < final_val; i += incr1)
                {
-                  xpng_memcpy(dstptr, srcptr, pixel_bytes);
+                  png_memcpy(dstptr, srcptr, pixel_bytes);
                   srcptr += incr1;
                   dstptr += incr1;
                }
@@ -410,22 +410,22 @@ end8:
 
          case 16:
          {
-            xpng_bytep srcptr;
-            xpng_bytep dstptr;
-            xpng_uint_32 len;
+            png_bytep srcptr;
+            png_bytep dstptr;
+            png_uint_32 len;
             int unmask, diff;
             __int64 mask1=0x0101020204040808,
                     mask0=0x1010202040408080;
 
-            if ((xpng_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
+            if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
                 /* && mmx_supported */ )
             {
-               srcptr = xpng_ptr->row_buf + 1;
+               srcptr = png_ptr->row_buf + 1;
                dstptr = row;
 
                unmask = ~mask;
-               len     = (xpng_ptr->width)&~7;
-               diff = (xpng_ptr->width)&7;
+               len     = (png_ptr->width)&~7;
+               diff = (png_ptr->width)&7;
                _asm
                {
                   movd       mm7, unmask       //load bit pattern
@@ -497,21 +497,21 @@ end16:
             else /* mmx not supported - use modified C routine */
             {
                register unsigned int incr1, initial_val, final_val;
-               xpng_size_t pixel_bytes;
-               xpng_uint_32 i;
-               register int disp = xpng_pass_inc[xpng_ptr->pass];
+               png_size_t pixel_bytes;
+               png_uint_32 i;
+               register int disp = png_pass_inc[png_ptr->pass];
                int offset_table[7] = {0, 4, 0, 2, 0, 1, 0};
 
-               pixel_bytes = (xpng_ptr->row_info.pixel_depth >> 3);
-               srcptr = xpng_ptr->row_buf + 1 + offset_table[xpng_ptr->pass]*
+               pixel_bytes = (png_ptr->row_info.pixel_depth >> 3);
+               srcptr = png_ptr->row_buf + 1 + offset_table[png_ptr->pass]*
                   pixel_bytes;
-               dstptr = row + offset_table[xpng_ptr->pass]*pixel_bytes;
-               initial_val = offset_table[xpng_ptr->pass]*pixel_bytes;
-               final_val = xpng_ptr->width*pixel_bytes;
+               dstptr = row + offset_table[png_ptr->pass]*pixel_bytes;
+               initial_val = offset_table[png_ptr->pass]*pixel_bytes;
+               final_val = png_ptr->width*pixel_bytes;
                incr1 = (disp)*pixel_bytes;
                for (i = initial_val; i < final_val; i += incr1)
                {
-                  xpng_memcpy(dstptr, srcptr, pixel_bytes);
+                  png_memcpy(dstptr, srcptr, pixel_bytes);
                   srcptr += incr1;
                   dstptr += incr1;
                }
@@ -522,23 +522,23 @@ end16:
 
          case 24:
          {
-            xpng_bytep srcptr;
-            xpng_bytep dstptr;
-            xpng_uint_32 len;
+            png_bytep srcptr;
+            png_bytep dstptr;
+            png_uint_32 len;
             int unmask, diff;
 
             __int64 mask2=0x0101010202020404,  //24bpp
                     mask1=0x0408080810101020,
                     mask0=0x2020404040808080;
 
-            srcptr = xpng_ptr->row_buf + 1;
+            srcptr = png_ptr->row_buf + 1;
             dstptr = row;
 
             unmask = ~mask;
-            len     = (xpng_ptr->width)&~7;
-            diff = (xpng_ptr->width)&7;
+            len     = (png_ptr->width)&~7;
+            diff = (png_ptr->width)&7;
 
-            if ((xpng_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
+            if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
                 /* && mmx_supported */ )
             {
                _asm
@@ -628,21 +628,21 @@ end24:
             else /* mmx not supported - use modified C routine */
             {
                register unsigned int incr1, initial_val, final_val;
-               xpng_size_t pixel_bytes;
-               xpng_uint_32 i;
-               register int disp = xpng_pass_inc[xpng_ptr->pass];
+               png_size_t pixel_bytes;
+               png_uint_32 i;
+               register int disp = png_pass_inc[png_ptr->pass];
                int offset_table[7] = {0, 4, 0, 2, 0, 1, 0};
 
-               pixel_bytes = (xpng_ptr->row_info.pixel_depth >> 3);
-               srcptr = xpng_ptr->row_buf + 1 + offset_table[xpng_ptr->pass]*
+               pixel_bytes = (png_ptr->row_info.pixel_depth >> 3);
+               srcptr = png_ptr->row_buf + 1 + offset_table[png_ptr->pass]*
                   pixel_bytes;
-               dstptr = row + offset_table[xpng_ptr->pass]*pixel_bytes;
-               initial_val = offset_table[xpng_ptr->pass]*pixel_bytes;
-               final_val = xpng_ptr->width*pixel_bytes;
+               dstptr = row + offset_table[png_ptr->pass]*pixel_bytes;
+               initial_val = offset_table[png_ptr->pass]*pixel_bytes;
+               final_val = png_ptr->width*pixel_bytes;
                incr1 = (disp)*pixel_bytes;
                for (i = initial_val; i < final_val; i += incr1)
                {
-                  xpng_memcpy(dstptr, srcptr, pixel_bytes);
+                  png_memcpy(dstptr, srcptr, pixel_bytes);
                   srcptr += incr1;
                   dstptr += incr1;
                }
@@ -653,9 +653,9 @@ end24:
 
          case 32:
          {
-            xpng_bytep srcptr;
-            xpng_bytep dstptr;
-            xpng_uint_32 len;
+            png_bytep srcptr;
+            png_bytep dstptr;
+            png_uint_32 len;
             int unmask, diff;
 
             __int64 mask3=0x0101010102020202,  //32bpp
@@ -663,14 +663,14 @@ end24:
                     mask1=0x1010101020202020,
                     mask0=0x4040404080808080;
 
-            srcptr = xpng_ptr->row_buf + 1;
+            srcptr = png_ptr->row_buf + 1;
             dstptr = row;
 
             unmask = ~mask;
-            len     = (xpng_ptr->width)&~7;
-            diff = (xpng_ptr->width)&7;
+            len     = (png_ptr->width)&~7;
+            diff = (png_ptr->width)&7;
 
-            if ((xpng_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
+            if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
                 /* && mmx_supported */ )
             {
                _asm
@@ -768,21 +768,21 @@ end32:
             else /* mmx _not supported - Use modified C routine */
             {
                register unsigned int incr1, initial_val, final_val;
-               xpng_size_t pixel_bytes;
-               xpng_uint_32 i;
-               register int disp = xpng_pass_inc[xpng_ptr->pass];
+               png_size_t pixel_bytes;
+               png_uint_32 i;
+               register int disp = png_pass_inc[png_ptr->pass];
                int offset_table[7] = {0, 4, 0, 2, 0, 1, 0};
 
-               pixel_bytes = (xpng_ptr->row_info.pixel_depth >> 3);
-               srcptr = xpng_ptr->row_buf + 1 + offset_table[xpng_ptr->pass]*
+               pixel_bytes = (png_ptr->row_info.pixel_depth >> 3);
+               srcptr = png_ptr->row_buf + 1 + offset_table[png_ptr->pass]*
                   pixel_bytes;
-               dstptr = row + offset_table[xpng_ptr->pass]*pixel_bytes;
-               initial_val = offset_table[xpng_ptr->pass]*pixel_bytes;
-               final_val = xpng_ptr->width*pixel_bytes;
+               dstptr = row + offset_table[png_ptr->pass]*pixel_bytes;
+               initial_val = offset_table[png_ptr->pass]*pixel_bytes;
+               final_val = png_ptr->width*pixel_bytes;
                incr1 = (disp)*pixel_bytes;
                for (i = initial_val; i < final_val; i += incr1)
                {
-                  xpng_memcpy(dstptr, srcptr, pixel_bytes);
+                  png_memcpy(dstptr, srcptr, pixel_bytes);
                   srcptr += incr1;
                   dstptr += incr1;
                }
@@ -793,9 +793,9 @@ end32:
 
          case 48:
          {
-            xpng_bytep srcptr;
-            xpng_bytep dstptr;
-            xpng_uint_32 len;
+            png_bytep srcptr;
+            png_bytep dstptr;
+            png_uint_32 len;
             int unmask, diff;
 
             __int64 mask5=0x0101010101010202,
@@ -805,15 +805,15 @@ end32:
                     mask1=0x2020202040404040,
                     mask0=0x4040808080808080;
 
-            if ((xpng_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
+            if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_COMBINE_ROW)
                 /* && mmx_supported */ )
             {
-               srcptr = xpng_ptr->row_buf + 1;
+               srcptr = png_ptr->row_buf + 1;
                dstptr = row;
 
                unmask = ~mask;
-               len     = (xpng_ptr->width)&~7;
-               diff = (xpng_ptr->width)&7;
+               len     = (png_ptr->width)&~7;
+               diff = (png_ptr->width)&7;
                _asm
                {
                   movd       mm7, unmask       //load bit pattern
@@ -926,21 +926,21 @@ end48:
             else /* mmx _not supported - Use modified C routine */
             {
                register unsigned int incr1, initial_val, final_val;
-               xpng_size_t pixel_bytes;
-               xpng_uint_32 i;
-               register int disp = xpng_pass_inc[xpng_ptr->pass];
+               png_size_t pixel_bytes;
+               png_uint_32 i;
+               register int disp = png_pass_inc[png_ptr->pass];
                int offset_table[7] = {0, 4, 0, 2, 0, 1, 0};
 
-               pixel_bytes = (xpng_ptr->row_info.pixel_depth >> 3);
-               srcptr = xpng_ptr->row_buf + 1 + offset_table[xpng_ptr->pass]*
+               pixel_bytes = (png_ptr->row_info.pixel_depth >> 3);
+               srcptr = png_ptr->row_buf + 1 + offset_table[png_ptr->pass]*
                   pixel_bytes;
-               dstptr = row + offset_table[xpng_ptr->pass]*pixel_bytes;
-               initial_val = offset_table[xpng_ptr->pass]*pixel_bytes;
-               final_val = xpng_ptr->width*pixel_bytes;
+               dstptr = row + offset_table[png_ptr->pass]*pixel_bytes;
+               initial_val = offset_table[png_ptr->pass]*pixel_bytes;
+               final_val = png_ptr->width*pixel_bytes;
                incr1 = (disp)*pixel_bytes;
                for (i = initial_val; i < final_val; i += incr1)
                {
-                  xpng_memcpy(dstptr, srcptr, pixel_bytes);
+                  png_memcpy(dstptr, srcptr, pixel_bytes);
                   srcptr += incr1;
                   dstptr += incr1;
                }
@@ -951,75 +951,75 @@ end48:
 
          default:
          {
-            xpng_bytep sptr;
-            xpng_bytep dp;
-            xpng_size_t pixel_bytes;
+            png_bytep sptr;
+            png_bytep dp;
+            png_size_t pixel_bytes;
             int offset_table[7] = {0, 4, 0, 2, 0, 1, 0};
             unsigned int i;
-            register int disp = xpng_pass_inc[xpng_ptr->pass];  // get the offset
+            register int disp = png_pass_inc[png_ptr->pass];  // get the offset
             register unsigned int incr1, initial_val, final_val;
 
-            pixel_bytes = (xpng_ptr->row_info.pixel_depth >> 3);
-            sptr = xpng_ptr->row_buf + 1 + offset_table[xpng_ptr->pass]*
+            pixel_bytes = (png_ptr->row_info.pixel_depth >> 3);
+            sptr = png_ptr->row_buf + 1 + offset_table[png_ptr->pass]*
                pixel_bytes;
-            dp = row + offset_table[xpng_ptr->pass]*pixel_bytes;
-            initial_val = offset_table[xpng_ptr->pass]*pixel_bytes;
-            final_val = xpng_ptr->width*pixel_bytes;
+            dp = row + offset_table[png_ptr->pass]*pixel_bytes;
+            initial_val = offset_table[png_ptr->pass]*pixel_bytes;
+            final_val = png_ptr->width*pixel_bytes;
             incr1 = (disp)*pixel_bytes;
             for (i = initial_val; i < final_val; i += incr1)
             {
-               xpng_memcpy(dp, sptr, pixel_bytes);
+               png_memcpy(dp, sptr, pixel_bytes);
                sptr += incr1;
                dp += incr1;
             }
             break;
          }
-      } /* end switch (xpng_ptr->row_info.pixel_depth) */
+      } /* end switch (png_ptr->row_info.pixel_depth) */
    } /* end if (non-trivial mask) */
 
-} /* end xpng_combine_row() */
+} /* end png_combine_row() */
 
 
 #if defined(PNG_READ_INTERLACING_SUPPORTED)
 
 void /* PRIVATE */
-xpng_do_read_interlace(xpng_structp xpng_ptr)
+png_do_read_interlace(png_structp png_ptr)
 {
-   xpng_row_infop row_info = &(xpng_ptr->row_info);
-   xpng_bytep row = xpng_ptr->row_buf + 1;
-   int pass = xpng_ptr->pass;
-   xpng_uint_32 transformations = xpng_ptr->transformations;
+   png_row_infop row_info = &(png_ptr->row_info);
+   png_bytep row = png_ptr->row_buf + 1;
+   int pass = png_ptr->pass;
+   png_uint_32 transformations = png_ptr->transformations;
 #ifdef PNG_USE_LOCAL_ARRAYS
-   const int xpng_pass_inc[7] = {8, 8, 4, 4, 2, 2, 1};
+   const int png_pass_inc[7] = {8, 8, 4, 4, 2, 2, 1};
 #endif
 
-   xpng_debug(1,"in xpng_do_read_interlace\n");
+   png_debug(1,"in png_do_read_interlace\n");
 
    if (mmx_supported == 2) {
-       /* this should have happened in xpng_init_mmx_flags() already */
-       xpng_warning(xpng_ptr, "asm_flags may not have been initialized");
-       xpng_mmx_support();
+       /* this should have happened in png_init_mmx_flags() already */
+       png_warning(png_ptr, "asm_flags may not have been initialized");
+       png_mmx_support();
    }
 
    if (row != NULL && row_info != NULL)
    {
-      xpng_uint_32 final_width;
+      png_uint_32 final_width;
 
-      final_width = row_info->width * xpng_pass_inc[pass];
+      final_width = row_info->width * png_pass_inc[pass];
 
       switch (row_info->pixel_depth)
       {
          case 1:
          {
-            xpng_bytep sp, dp;
+            png_bytep sp, dp;
             int sshift, dshift;
             int s_start, s_end, s_inc;
-            xpng_byte v;
-            xpng_uint_32 i;
+            png_byte v;
+            png_uint_32 i;
             int j;
 
-            sp = row + (xpng_size_t)((row_info->width - 1) >> 3);
-            dp = row + (xpng_size_t)((final_width - 1) >> 3);
+            sp = row + (png_size_t)((row_info->width - 1) >> 3);
+            dp = row + (png_size_t)((final_width - 1) >> 3);
 #if defined(PNG_READ_PACKSWAP_SUPPORTED)
             if (transformations & PNG_PACKSWAP)
             {
@@ -1041,11 +1041,11 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
 
             for (i = row_info->width; i; i--)
             {
-               v = (xpng_byte)((*sp >> sshift) & 0x1);
-               for (j = 0; j < xpng_pass_inc[pass]; j++)
+               v = (png_byte)((*sp >> sshift) & 0x1);
+               for (j = 0; j < png_pass_inc[pass]; j++)
                {
-                  *dp &= (xpng_byte)((0x7f7f >> (7 - dshift)) & 0xff);
-                  *dp |= (xpng_byte)(v << dshift);
+                  *dp &= (png_byte)((0x7f7f >> (7 - dshift)) & 0xff);
+                  *dp |= (png_byte)(v << dshift);
                   if (dshift == s_end)
                   {
                      dshift = s_start;
@@ -1067,18 +1067,18 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
 
          case 2:
          {
-            xpng_bytep sp, dp;
+            png_bytep sp, dp;
             int sshift, dshift;
             int s_start, s_end, s_inc;
-            xpng_uint_32 i;
+            png_uint_32 i;
 
-            sp = row + (xpng_size_t)((row_info->width - 1) >> 2);
-            dp = row + (xpng_size_t)((final_width - 1) >> 2);
+            sp = row + (png_size_t)((row_info->width - 1) >> 2);
+            dp = row + (png_size_t)((final_width - 1) >> 2);
 #if defined(PNG_READ_PACKSWAP_SUPPORTED)
             if (transformations & PNG_PACKSWAP)
             {
-               sshift = (xpng_size_t)(((row_info->width + 3) & 3) << 1);
-               dshift = (xpng_size_t)(((final_width + 3) & 3) << 1);
+               sshift = (png_size_t)(((row_info->width + 3) & 3) << 1);
+               dshift = (png_size_t)(((final_width + 3) & 3) << 1);
                s_start = 6;
                s_end = 0;
                s_inc = -2;
@@ -1086,8 +1086,8 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
             else
 #endif
             {
-               sshift = (xpng_size_t)((3 - ((row_info->width + 3) & 3)) << 1);
-               dshift = (xpng_size_t)((3 - ((final_width + 3) & 3)) << 1);
+               sshift = (png_size_t)((3 - ((row_info->width + 3) & 3)) << 1);
+               dshift = (png_size_t)((3 - ((final_width + 3) & 3)) << 1);
                s_start = 0;
                s_end = 6;
                s_inc = 2;
@@ -1095,14 +1095,14 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
 
             for (i = row_info->width; i; i--)
             {
-               xpng_byte v;
+               png_byte v;
                int j;
 
-               v = (xpng_byte)((*sp >> sshift) & 0x3);
-               for (j = 0; j < xpng_pass_inc[pass]; j++)
+               v = (png_byte)((*sp >> sshift) & 0x3);
+               for (j = 0; j < png_pass_inc[pass]; j++)
                {
-                  *dp &= (xpng_byte)((0x3f3f >> (6 - dshift)) & 0xff);
-                  *dp |= (xpng_byte)(v << dshift);
+                  *dp &= (png_byte)((0x3f3f >> (6 - dshift)) & 0xff);
+                  *dp |= (png_byte)(v << dshift);
                   if (dshift == s_end)
                   {
                      dshift = s_start;
@@ -1124,18 +1124,18 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
 
          case 4:
          {
-            xpng_bytep sp, dp;
+            png_bytep sp, dp;
             int sshift, dshift;
             int s_start, s_end, s_inc;
-            xpng_uint_32 i;
+            png_uint_32 i;
 
-            sp = row + (xpng_size_t)((row_info->width - 1) >> 1);
-            dp = row + (xpng_size_t)((final_width - 1) >> 1);
+            sp = row + (png_size_t)((row_info->width - 1) >> 1);
+            dp = row + (png_size_t)((final_width - 1) >> 1);
 #if defined(PNG_READ_PACKSWAP_SUPPORTED)
             if (transformations & PNG_PACKSWAP)
             {
-               sshift = (xpng_size_t)(((row_info->width + 1) & 1) << 2);
-               dshift = (xpng_size_t)(((final_width + 1) & 1) << 2);
+               sshift = (png_size_t)(((row_info->width + 1) & 1) << 2);
+               dshift = (png_size_t)(((final_width + 1) & 1) << 2);
                s_start = 4;
                s_end = 0;
                s_inc = -4;
@@ -1143,8 +1143,8 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
             else
 #endif
             {
-               sshift = (xpng_size_t)((1 - ((row_info->width + 1) & 1)) << 2);
-               dshift = (xpng_size_t)((1 - ((final_width + 1) & 1)) << 2);
+               sshift = (png_size_t)((1 - ((row_info->width + 1) & 1)) << 2);
+               dshift = (png_size_t)((1 - ((final_width + 1) & 1)) << 2);
                s_start = 0;
                s_end = 4;
                s_inc = 4;
@@ -1152,14 +1152,14 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
 
             for (i = row_info->width; i; i--)
             {
-               xpng_byte v;
+               png_byte v;
                int j;
 
-               v = (xpng_byte)((*sp >> sshift) & 0xf);
-               for (j = 0; j < xpng_pass_inc[pass]; j++)
+               v = (png_byte)((*sp >> sshift) & 0xf);
+               for (j = 0; j < png_pass_inc[pass]; j++)
                {
-                  *dp &= (xpng_byte)((0xf0f >> (4 - dshift)) & 0xff);
-                  *dp |= (xpng_byte)(v << dshift);
+                  *dp &= (png_byte)((0xf0f >> (4 - dshift)) & 0xff);
+                  *dp |= (png_byte)(v << dshift);
                   if (dshift == s_end)
                   {
                      dshift = s_start;
@@ -1184,9 +1184,9 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
             __int64 const4 = 0x0000000000FFFFFF;
             // __int64 const5 = 0x000000FFFFFF0000;  // unused...
             __int64 const6 = 0x00000000000000FF;
-            xpng_bytep sptr, dp;
-            xpng_uint_32 i;
-            xpng_size_t pixel_bytes;
+            png_bytep sptr, dp;
+            png_uint_32 i;
+            png_size_t pixel_bytes;
             int width = row_info->width;
 
             pixel_bytes = (row_info->pixel_depth >> 3);
@@ -1198,7 +1198,7 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
             // NOTE:  there is NO MMX code for 48-bit and 64-bit images
 
             // use MMX routine if machine supports it
-            if ((xpng_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_INTERLACE)
+            if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_INTERLACE)
                 /* && mmx_supported */ )
             {
                if (pixel_bytes == 3)
@@ -1210,7 +1210,7 @@ xpng_do_read_interlace(xpng_structp xpng_ptr)
                         mov esi, sptr
                         mov edi, dp
                         mov ecx, width
-                        sub edi, 21   // (xpng_pass_inc[pass] - 1)*pixel_bytes
+                        sub edi, 21   // (png_pass_inc[pass] - 1)*pixel_bytes
 loop_pass0:
                         movd mm0, [esi]     ; X X X X X v2 v1 v0
                         pand mm0, const4    ; 0 0 0 0 0 v2 v1 v0
@@ -1245,7 +1245,7 @@ loop_pass0:
                         mov esi, sptr
                         mov edi, dp
                         mov ecx, width
-                        sub edi, 9   // (xpng_pass_inc[pass] - 1)*pixel_bytes
+                        sub edi, 9   // (png_pass_inc[pass] - 1)*pixel_bytes
 loop_pass2:
                         movd mm0, [esi]     ; X X X X X v2 v1 v0
                         pand mm0, const4    ; 0 0 0 0 0 v2 v1 v0
@@ -1308,13 +1308,13 @@ loop_pass4:
                      dp -= width_mmx*6;
                      for (i = width; i; i--)
                      {
-                        xpng_byte v[8];
+                        png_byte v[8];
                         int j;
 
-                        xpng_memcpy(v, sptr, 3);
-                        for (j = 0; j < xpng_pass_inc[pass]; j++)
+                        png_memcpy(v, sptr, 3);
+                        for (j = 0; j < png_pass_inc[pass]; j++)
                         {
-                           xpng_memcpy(dp, v, 3);
+                           png_memcpy(dp, v, 3);
                            dp -= 3;
                         }
                         sptr -= 3;
@@ -1374,11 +1374,11 @@ loop1_pass0:
                         *
                         * Original code:
                         *
-                        * xpng_byte v[8];
-                        * xpng_memcpy(v, sptr, pixel_bytes);
-                        * for (j = 0; j < xpng_pass_inc[pass]; j++)
+                        * png_byte v[8];
+                        * png_memcpy(v, sptr, pixel_bytes);
+                        * for (j = 0; j < png_pass_inc[pass]; j++)
                         * {
-                        *    xpng_memcpy(dp, v, pixel_bytes);
+                        *    png_memcpy(dp, v, pixel_bytes);
                         *    dp -= pixel_bytes;
                         * }
                         * sptr -= pixel_bytes;
@@ -1386,7 +1386,7 @@ loop1_pass0:
                         * Replacement code is in the next three lines:
                         */
 
-                        for (j = 0; j < xpng_pass_inc[pass]; j++)
+                        for (j = 0; j < png_pass_inc[pass]; j++)
                            *dp-- = *sptr;
                         sptr--;
                      }
@@ -1426,7 +1426,7 @@ loop1_pass2:
                      {
                         int j;
 
-                        for (j = 0; j < xpng_pass_inc[pass]; j++)
+                        for (j = 0; j < png_pass_inc[pass]; j++)
                         {
                            *dp-- = *sptr;
                         }
@@ -1469,7 +1469,7 @@ loop1_pass4:
                      {
                         int j;
 
-                        for (j = 0; j < xpng_pass_inc[pass]; j++)
+                        for (j = 0; j < png_pass_inc[pass]; j++)
                         {
                            *dp-- = *sptr;
                         }
@@ -1515,14 +1515,14 @@ loop2_pass0:
                      dp -= (width_mmx*16 - 2);            // sign fixed
                      for (i = width; i; i--)
                      {
-                        xpng_byte v[8];
+                        png_byte v[8];
                         int j;
                         sptr -= 2;
-                        xpng_memcpy(v, sptr, 2);
-                        for (j = 0; j < xpng_pass_inc[pass]; j++)
+                        png_memcpy(v, sptr, 2);
+                        for (j = 0; j < png_pass_inc[pass]; j++)
                         {
                            dp -= 2;
-                           xpng_memcpy(dp, v, 2);
+                           png_memcpy(dp, v, 2);
                         }
                      }
                   }
@@ -1560,14 +1560,14 @@ loop2_pass2:
                      dp -= (width_mmx*8 - 2);            // sign fixed
                      for (i = width; i; i--)
                      {
-                        xpng_byte v[8];
+                        png_byte v[8];
                         int j;
                         sptr -= 2;
-                        xpng_memcpy(v, sptr, 2);
-                        for (j = 0; j < xpng_pass_inc[pass]; j++)
+                        png_memcpy(v, sptr, 2);
+                        for (j = 0; j < png_pass_inc[pass]; j++)
                         {
                            dp -= 2;
-                           xpng_memcpy(dp, v, 2);
+                           png_memcpy(dp, v, 2);
                         }
                      }
                   }
@@ -1600,14 +1600,14 @@ loop2_pass4:
                      dp -= (width_mmx*4 - 2);            // sign fixed
                      for (i = width; i; i--)
                      {
-                        xpng_byte v[8];
+                        png_byte v[8];
                         int j;
                         sptr -= 2;
-                        xpng_memcpy(v, sptr, 2);
-                        for (j = 0; j < xpng_pass_inc[pass]; j++)
+                        png_memcpy(v, sptr, 2);
+                        for (j = 0; j < png_pass_inc[pass]; j++)
                         {
                            dp -= 2;
-                           xpng_memcpy(dp, v, 2);
+                           png_memcpy(dp, v, 2);
                         }
                      }
                   }
@@ -1653,14 +1653,14 @@ loop4_pass0:
                      dp -= (width_mmx*32 - 4);            // sign fixed
                      for (i = width; i; i--)
                      {
-                        xpng_byte v[8];
+                        png_byte v[8];
                         int j;
                         sptr -= 4;
-                        xpng_memcpy(v, sptr, 4);
-                        for (j = 0; j < xpng_pass_inc[pass]; j++)
+                        png_memcpy(v, sptr, 4);
+                        for (j = 0; j < png_pass_inc[pass]; j++)
                         {
                            dp -= 4;
-                           xpng_memcpy(dp, v, 4);
+                           png_memcpy(dp, v, 4);
                         }
                      }
                   }
@@ -1698,14 +1698,14 @@ loop4_pass2:
                      dp -= (width_mmx*16 - 4);            // sign fixed
                      for (i = width; i; i--)
                      {
-                        xpng_byte v[8];
+                        png_byte v[8];
                         int j;
                         sptr -= 4;
-                        xpng_memcpy(v, sptr, 4);
-                        for (j = 0; j < xpng_pass_inc[pass]; j++)
+                        png_memcpy(v, sptr, 4);
+                        for (j = 0; j < png_pass_inc[pass]; j++)
                         {
                            dp -= 4;
-                           xpng_memcpy(dp, v, 4);
+                           png_memcpy(dp, v, 4);
                         }
                      }
                   }
@@ -1741,14 +1741,14 @@ loop4_pass4:
                      dp -= (width_mmx*8 - 4);            // sign fixed
                      for (i = width; i; i--)
                      {
-                        xpng_byte v[8];
+                        png_byte v[8];
                         int j;
                         sptr -= 4;
-                        xpng_memcpy(v, sptr, 4);
-                        for (j = 0; j < xpng_pass_inc[pass]; j++)
+                        png_memcpy(v, sptr, 4);
+                        for (j = 0; j < png_pass_inc[pass]; j++)
                         {
                            dp -= 4;
-                           xpng_memcpy(dp, v, 4);
+                           png_memcpy(dp, v, 4);
                         }
                      }
                   }
@@ -1759,12 +1759,12 @@ loop4_pass4:
                {
                   for (i = width; i; i--)
                   {
-                     xpng_byte v[8];
+                     png_byte v[8];
                      int j;
-                     xpng_memcpy(v, sptr, 6);
-                     for (j = 0; j < xpng_pass_inc[pass]; j++)
+                     png_memcpy(v, sptr, 6);
+                     for (j = 0; j < png_pass_inc[pass]; j++)
                      {
-                        xpng_memcpy(dp, v, 6);
+                        png_memcpy(dp, v, 6);
                         dp -= 6;
                      }
                      sptr -= 6;
@@ -1775,12 +1775,12 @@ loop4_pass4:
                {
                   for (i = width; i; i--)
                   {
-                     xpng_byte v[8];
+                     png_byte v[8];
                      int j;
-                     xpng_memcpy(v, sptr, pixel_bytes);
-                     for (j = 0; j < xpng_pass_inc[pass]; j++)
+                     png_memcpy(v, sptr, pixel_bytes);
+                     for (j = 0; j < png_pass_inc[pass]; j++)
                      {
-                        xpng_memcpy(dp, v, pixel_bytes);
+                        png_memcpy(dp, v, pixel_bytes);
                         dp -= pixel_bytes;
                      }
                      sptr-= pixel_bytes;
@@ -1796,7 +1796,7 @@ loop4_pass4:
                   for (i = width; i; i--)
                   {
                      int j;
-                     for (j = 0; j < xpng_pass_inc[pass]; j++)
+                     for (j = 0; j < png_pass_inc[pass]; j++)
                         *dp-- = *sptr;
                      sptr--;
                   }
@@ -1805,12 +1805,12 @@ loop4_pass4:
                {
                   for (i = width; i; i--)
                   {
-                     xpng_byte v[8];
+                     png_byte v[8];
                      int j;
-                     xpng_memcpy(v, sptr, pixel_bytes);
-                     for (j = 0; j < xpng_pass_inc[pass]; j++)
+                     png_memcpy(v, sptr, pixel_bytes);
+                     for (j = 0; j < png_pass_inc[pass]; j++)
                      {
-                        xpng_memcpy(dp, v, pixel_bytes);
+                        png_memcpy(dp, v, pixel_bytes);
                         dp -= pixel_bytes;
                      }
                      sptr -= pixel_bytes;
@@ -1820,12 +1820,12 @@ loop4_pass4:
                {
                   for (i = width; i; i--)
                   {
-                     xpng_byte v[8];
+                     png_byte v[8];
                      int j;
-                     xpng_memcpy(v, sptr, pixel_bytes);
-                     for (j = 0; j < xpng_pass_inc[pass]; j++)
+                     png_memcpy(v, sptr, pixel_bytes);
+                     for (j = 0; j < png_pass_inc[pass]; j++)
                      {
-                        xpng_memcpy(dp, v, pixel_bytes);
+                        png_memcpy(dp, v, pixel_bytes);
                         dp -= pixel_bytes;
                      }
                      sptr -= pixel_bytes;
@@ -1835,12 +1835,12 @@ loop4_pass4:
                {
                   for (i = width; i; i--)
                   {
-                     xpng_byte v[8];
+                     png_byte v[8];
                      int j;
-                     xpng_memcpy(v, sptr, pixel_bytes);
-                     for (j = 0; j < xpng_pass_inc[pass]; j++)
+                     png_memcpy(v, sptr, pixel_bytes);
+                     for (j = 0; j < png_pass_inc[pass]; j++)
                      {
-                        xpng_memcpy(dp, v, pixel_bytes);
+                        png_memcpy(dp, v, pixel_bytes);
                         dp -= pixel_bytes;
                      }
                      sptr -= pixel_bytes;
@@ -1850,12 +1850,12 @@ loop4_pass4:
                {
                   for (i = width; i; i--)
                   {
-                     xpng_byte v[8];
+                     png_byte v[8];
                      int j;
-                     xpng_memcpy(v, sptr, pixel_bytes);
-                     for (j = 0; j < xpng_pass_inc[pass]; j++)
+                     png_memcpy(v, sptr, pixel_bytes);
+                     for (j = 0; j < png_pass_inc[pass]; j++)
                      {
-                        xpng_memcpy(dp, v, pixel_bytes);
+                        png_memcpy(dp, v, pixel_bytes);
                         dp -= pixel_bytes;
                      }
                      sptr -= pixel_bytes;
@@ -1865,12 +1865,12 @@ loop4_pass4:
                {
                   for (i = width; i; i--)
                   {
-                     xpng_byte v[8];
+                     png_byte v[8];
                      int j;
-                     xpng_memcpy(v, sptr, pixel_bytes);
-                     for (j = 0; j < xpng_pass_inc[pass]; j++)
+                     png_memcpy(v, sptr, pixel_bytes);
+                     for (j = 0; j < png_pass_inc[pass]; j++)
                      {
-                        xpng_memcpy(dp, v, pixel_bytes);
+                        png_memcpy(dp, v, pixel_bytes);
                         dp -= pixel_bytes;
                      }
                      sptr -= pixel_bytes;
@@ -1884,7 +1884,7 @@ loop4_pass4:
 
       row_info->width = final_width;
       row_info->rowbytes = ((final_width *
-         (xpng_uint_32)row_info->pixel_depth + 7) >> 3);
+         (png_uint_32)row_info->pixel_depth + 7) >> 3);
    }
 
 }
@@ -1905,13 +1905,13 @@ union uAll {
 
 // Optimized code for PNG Average filter decoder
 void /* PRIVATE */
-xpng_read_filter_row_mmx_avg(xpng_row_infop row_info, xpng_bytep row
-                            , xpng_bytep prev_row)
+png_read_filter_row_mmx_avg(png_row_infop row_info, png_bytep row
+                            , png_bytep prev_row)
 {
    int bpp;
-   xpng_uint_32 FullLength;
-   xpng_uint_32 MMXLength;
-   //xpng_uint_32 len;
+   png_uint_32 FullLength;
+   png_uint_32 MMXLength;
+   //png_uint_32 len;
    int diff;
 
    bpp = (row_info->pixel_depth + 7) >> 3; // Get # bytes per pixel
@@ -2338,12 +2338,12 @@ davgend:
 
 // Optimized code for PNG Paeth filter decoder
 void /* PRIVATE */
-xpng_read_filter_row_mmx_paeth(xpng_row_infop row_info, xpng_bytep row,
-                              xpng_bytep prev_row)
+png_read_filter_row_mmx_paeth(png_row_infop row_info, png_bytep row,
+                              png_bytep prev_row)
 {
-   xpng_uint_32 FullLength;
-   xpng_uint_32 MMXLength;
-   //xpng_uint_32 len;
+   png_uint_32 FullLength;
+   png_uint_32 MMXLength;
+   //png_uint_32 len;
    int bpp;
    int diff;
    //int ptemp;
@@ -3234,12 +3234,12 @@ dpthend:
 
 // Optimized code for PNG Sub filter decoder
 void /* PRIVATE */
-xpng_read_filter_row_mmx_sub(xpng_row_infop row_info, xpng_bytep row)
+png_read_filter_row_mmx_sub(png_row_infop row_info, png_bytep row)
 {
    //int test;
    int bpp;
-   xpng_uint_32 FullLength;
-   xpng_uint_32 MMXLength;
+   png_uint_32 FullLength;
+   png_uint_32 MMXLength;
    int diff;
 
    bpp = (row_info->pixel_depth + 7) >> 3; // Get # bytes per pixel
@@ -3322,16 +3322,16 @@ dsub3lp:
       case 1:
       {
          // Placed here just in case this is a duplicate of the
-         // non-MMX code for the SUB filter in xpng_read_filter_row below
+         // non-MMX code for the SUB filter in png_read_filter_row below
          //
-         //         xpng_bytep rp;
-         //         xpng_bytep lp;
-         //         xpng_uint_32 i;
+         //         png_bytep rp;
+         //         png_bytep lp;
+         //         png_uint_32 i;
          //         bpp = (row_info->pixel_depth + 7) >> 3;
-         //         for (i = (xpng_uint_32)bpp, rp = row + bpp, lp = row;
+         //         for (i = (png_uint_32)bpp, rp = row + bpp, lp = row;
          //            i < row_info->rowbytes; i++, rp++, lp++)
          //      {
-         //            *rp = (xpng_byte)(((int)(*rp) + (int)(*lp)) & 0xff);
+         //            *rp = (png_byte)(((int)(*rp) + (int)(*lp)) & 0xff);
          //      }
          _asm {
             mov ebx, diff
@@ -3538,10 +3538,10 @@ dsubend:
 
 // Optimized code for PNG Up filter decoder
 void /* PRIVATE */
-xpng_read_filter_row_mmx_up(xpng_row_infop row_info, xpng_bytep row,
-   xpng_bytep prev_row)
+png_read_filter_row_mmx_up(png_row_infop row_info, png_bytep row,
+   png_bytep prev_row)
 {
-   xpng_uint_32 len;
+   png_uint_32 len;
    len  = row_info->rowbytes;       // # of bytes to filter
    _asm {
       mov edi, row
@@ -3651,46 +3651,46 @@ dupend:
 }
 
 
-// Optimized xpng_read_filter_row routines
+// Optimized png_read_filter_row routines
 void /* PRIVATE */
-xpng_read_filter_row(xpng_structp xpng_ptr, xpng_row_infop row_info, xpng_bytep
-   row, xpng_bytep prev_row, int filter)
+png_read_filter_row(png_structp png_ptr, png_row_infop row_info, png_bytep
+   row, png_bytep prev_row, int filter)
 {
 #ifdef PNG_DEBUG
    char filnm[10];
 #endif
 
    if (mmx_supported == 2) {
-       /* this should have happened in xpng_init_mmx_flags() already */
-       xpng_warning(xpng_ptr, "asm_flags may not have been initialized");
-       xpng_mmx_support();
+       /* this should have happened in png_init_mmx_flags() already */
+       png_warning(png_ptr, "asm_flags may not have been initialized");
+       png_mmx_support();
    }
 
 #ifdef PNG_DEBUG
-   xpng_debug(1, "in xpng_read_filter_row\n");
+   png_debug(1, "in png_read_filter_row\n");
    switch (filter)
    {
       case 0: sprintf(filnm, "none");
          break;
       case 1: sprintf(filnm, "sub-%s",
-        (xpng_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_SUB)? "MMX" : "x86");
+        (png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_SUB)? "MMX" : "x86");
          break;
       case 2: sprintf(filnm, "up-%s",
-        (xpng_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_UP)? "MMX" : "x86");
+        (png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_UP)? "MMX" : "x86");
          break;
       case 3: sprintf(filnm, "avg-%s",
-        (xpng_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_AVG)? "MMX" : "x86");
+        (png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_AVG)? "MMX" : "x86");
          break;
       case 4: sprintf(filnm, "Paeth-%s",
-        (xpng_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_PAETH)? "MMX":"x86");
+        (png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_PAETH)? "MMX":"x86");
          break;
       default: sprintf(filnm, "unknw");
          break;
    }
-   xpng_debug2(0,"row=%5d, %s, ", xpng_ptr->row_number, filnm);
-   xpng_debug2(0, "pd=%2d, b=%d, ", (int)row_info->pixel_depth,
+   png_debug2(0,"row=%5d, %s, ", png_ptr->row_number, filnm);
+   png_debug2(0, "pd=%2d, b=%d, ", (int)row_info->pixel_depth,
       (int)((row_info->pixel_depth + 7) >> 3));
-   xpng_debug1(0,"len=%8d, ", row_info->rowbytes);
+   png_debug1(0,"len=%8d, ", row_info->rowbytes);
 #endif /* PNG_DEBUG */
 
    switch (filter)
@@ -3700,23 +3700,23 @@ xpng_read_filter_row(xpng_structp xpng_ptr, xpng_row_infop row_info, xpng_bytep
 
       case PNG_FILTER_VALUE_SUB:
       {
-         if ((xpng_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_SUB) &&
-             (row_info->pixel_depth >= xpng_ptr->mmx_bitdepth_threshold) &&
-             (row_info->rowbytes >= xpng_ptr->mmx_rowbytes_threshold))
+         if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_SUB) &&
+             (row_info->pixel_depth >= png_ptr->mmx_bitdepth_threshold) &&
+             (row_info->rowbytes >= png_ptr->mmx_rowbytes_threshold))
          {
-            xpng_read_filter_row_mmx_sub(row_info, row);
+            png_read_filter_row_mmx_sub(row_info, row);
          }
          else
          {
-            xpng_uint_32 i;
-            xpng_uint_32 istop = row_info->rowbytes;
-            xpng_uint_32 bpp = (row_info->pixel_depth + 7) >> 3;
-            xpng_bytep rp = row + bpp;
-            xpng_bytep lp = row;
+            png_uint_32 i;
+            png_uint_32 istop = row_info->rowbytes;
+            png_uint_32 bpp = (row_info->pixel_depth + 7) >> 3;
+            png_bytep rp = row + bpp;
+            png_bytep lp = row;
 
             for (i = bpp; i < istop; i++)
             {
-               *rp = (xpng_byte)(((int)(*rp) + (int)(*lp++)) & 0xff);
+               *rp = (png_byte)(((int)(*rp) + (int)(*lp++)) & 0xff);
                rp++;
             }
          }
@@ -3725,22 +3725,22 @@ xpng_read_filter_row(xpng_structp xpng_ptr, xpng_row_infop row_info, xpng_bytep
 
       case PNG_FILTER_VALUE_UP:
       {
-         if ((xpng_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_UP) &&
-             (row_info->pixel_depth >= xpng_ptr->mmx_bitdepth_threshold) &&
-             (row_info->rowbytes >= xpng_ptr->mmx_rowbytes_threshold))
+         if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_UP) &&
+             (row_info->pixel_depth >= png_ptr->mmx_bitdepth_threshold) &&
+             (row_info->rowbytes >= png_ptr->mmx_rowbytes_threshold))
          {
-            xpng_read_filter_row_mmx_up(row_info, row, prev_row);
+            png_read_filter_row_mmx_up(row_info, row, prev_row);
          }
          else
          {
-            xpng_uint_32 i;
-            xpng_uint_32 istop = row_info->rowbytes;
-            xpng_bytep rp = row;
-            xpng_bytep pp = prev_row;
+            png_uint_32 i;
+            png_uint_32 istop = row_info->rowbytes;
+            png_bytep rp = row;
+            png_bytep pp = prev_row;
 
             for (i = 0; i < istop; ++i)
             {
-               *rp = (xpng_byte)(((int)(*rp) + (int)(*pp++)) & 0xff);
+               *rp = (png_byte)(((int)(*rp) + (int)(*pp++)) & 0xff);
                rp++;
             }
          }
@@ -3749,31 +3749,31 @@ xpng_read_filter_row(xpng_structp xpng_ptr, xpng_row_infop row_info, xpng_bytep
 
       case PNG_FILTER_VALUE_AVG:
       {
-         if ((xpng_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_AVG) &&
-             (row_info->pixel_depth >= xpng_ptr->mmx_bitdepth_threshold) &&
-             (row_info->rowbytes >= xpng_ptr->mmx_rowbytes_threshold))
+         if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_AVG) &&
+             (row_info->pixel_depth >= png_ptr->mmx_bitdepth_threshold) &&
+             (row_info->rowbytes >= png_ptr->mmx_rowbytes_threshold))
          {
-            xpng_read_filter_row_mmx_avg(row_info, row, prev_row);
+            png_read_filter_row_mmx_avg(row_info, row, prev_row);
          }
          else
          {
-            xpng_uint_32 i;
-            xpng_bytep rp = row;
-            xpng_bytep pp = prev_row;
-            xpng_bytep lp = row;
-            xpng_uint_32 bpp = (row_info->pixel_depth + 7) >> 3;
-            xpng_uint_32 istop = row_info->rowbytes - bpp;
+            png_uint_32 i;
+            png_bytep rp = row;
+            png_bytep pp = prev_row;
+            png_bytep lp = row;
+            png_uint_32 bpp = (row_info->pixel_depth + 7) >> 3;
+            png_uint_32 istop = row_info->rowbytes - bpp;
 
             for (i = 0; i < bpp; i++)
             {
-               *rp = (xpng_byte)(((int)(*rp) +
+               *rp = (png_byte)(((int)(*rp) +
                   ((int)(*pp++) >> 1)) & 0xff);
                rp++;
             }
 
             for (i = 0; i < istop; i++)
             {
-               *rp = (xpng_byte)(((int)(*rp) +
+               *rp = (png_byte)(((int)(*rp) +
                   ((int)(*pp++ + *lp++) >> 1)) & 0xff);
                rp++;
             }
@@ -3783,25 +3783,25 @@ xpng_read_filter_row(xpng_structp xpng_ptr, xpng_row_infop row_info, xpng_bytep
 
       case PNG_FILTER_VALUE_PAETH:
       {
-         if ((xpng_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_PAETH) &&
-             (row_info->pixel_depth >= xpng_ptr->mmx_bitdepth_threshold) &&
-             (row_info->rowbytes >= xpng_ptr->mmx_rowbytes_threshold))
+         if ((png_ptr->asm_flags & PNG_ASM_FLAG_MMX_READ_FILTER_PAETH) &&
+             (row_info->pixel_depth >= png_ptr->mmx_bitdepth_threshold) &&
+             (row_info->rowbytes >= png_ptr->mmx_rowbytes_threshold))
          {
-            xpng_read_filter_row_mmx_paeth(row_info, row, prev_row);
+            png_read_filter_row_mmx_paeth(row_info, row, prev_row);
          }
          else
          {
-            xpng_uint_32 i;
-            xpng_bytep rp = row;
-            xpng_bytep pp = prev_row;
-            xpng_bytep lp = row;
-            xpng_bytep cp = prev_row;
-            xpng_uint_32 bpp = (row_info->pixel_depth + 7) >> 3;
-            xpng_uint_32 istop=row_info->rowbytes - bpp;
+            png_uint_32 i;
+            png_bytep rp = row;
+            png_bytep pp = prev_row;
+            png_bytep lp = row;
+            png_bytep cp = prev_row;
+            png_uint_32 bpp = (row_info->pixel_depth + 7) >> 3;
+            png_uint_32 istop=row_info->rowbytes - bpp;
 
             for (i = 0; i < bpp; i++)
             {
-               *rp = (xpng_byte)(((int)(*rp) + (int)(*pp++)) & 0xff);
+               *rp = (png_byte)(((int)(*rp) + (int)(*pp++)) & 0xff);
                rp++;
             }
 
@@ -3837,7 +3837,7 @@ xpng_read_filter_row(xpng_structp xpng_ptr, xpng_row_infop row_info, xpng_bytep
 
                p = (pa <= pb && pa <=pc) ? a : (pb <= pc) ? b : c;
 
-               *rp = (xpng_byte)(((int)(*rp) + p) & 0xff);
+               *rp = (png_byte)(((int)(*rp) + p) & 0xff);
                rp++;
             }
          }
@@ -3845,7 +3845,7 @@ xpng_read_filter_row(xpng_structp xpng_ptr, xpng_row_infop row_info, xpng_bytep
       }
 
       default:
-         xpng_warning(xpng_ptr, "Ignoring bad row filter type");
+         png_warning(png_ptr, "Ignoring bad row filter type");
          *row=0;
          break;
    }

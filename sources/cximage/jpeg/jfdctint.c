@@ -146,7 +146,7 @@
  */
 
 GLOBAL(void)
-xjpeg_fdct_islow (DCTELEM * data)
+jpeg_fdct_islow (DCTELEM * data)
 {
   INT32 tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7;
   INT32 tmp10, tmp11, tmp12, tmp13;

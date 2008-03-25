@@ -124,7 +124,7 @@
  */
 
 GLOBAL(void)
-xjpeg_idct_4x4 (j_decompress_ptr cinfo, xjpeg_component_info * compptr,
+jpeg_idct_4x4 (j_decompress_ptr cinfo, jpeg_component_info * compptr,
 	       JCOEFPTR coef_block,
 	       JSAMPARRAY output_buf, JDIMENSION output_col)
 {
@@ -277,7 +277,7 @@ xjpeg_idct_4x4 (j_decompress_ptr cinfo, xjpeg_component_info * compptr,
  */
 
 GLOBAL(void)
-xjpeg_idct_2x2 (j_decompress_ptr cinfo, xjpeg_component_info * compptr,
+jpeg_idct_2x2 (j_decompress_ptr cinfo, jpeg_component_info * compptr,
 	       JCOEFPTR coef_block,
 	       JSAMPARRAY output_buf, JDIMENSION output_col)
 {
@@ -385,7 +385,7 @@ xjpeg_idct_2x2 (j_decompress_ptr cinfo, xjpeg_component_info * compptr,
  */
 
 GLOBAL(void)
-xjpeg_idct_1x1 (j_decompress_ptr cinfo, xjpeg_component_info * compptr,
+jpeg_idct_1x1 (j_decompress_ptr cinfo, jpeg_component_info * compptr,
 	       JCOEFPTR coef_block,
 	       JSAMPARRAY output_buf, JDIMENSION output_col)
 {
