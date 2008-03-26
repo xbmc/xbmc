@@ -1,6 +1,7 @@
 #include "include.h"
 #include "GUIRadioButtonControl.h"
 #include "../xbmc/utils/GUIInfoManager.h"
+#include "GUIFontManager.h"
 
 
 CGUIRadioButtonControl::CGUIRadioButtonControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height,
@@ -142,3 +143,21 @@ void CGUIRadioButtonControl::SetColorDiffuse(const CGUIInfoColor &color)
   m_imgRadioNoFocus.SetColorDiffuse(color);
 }
 
+void CGUIRadioButtonControl::PythonSetSelected(bool bOnOff)
+{
+  m_bSelected = bOnOff;
+}
+
+void CGUIRadioButtonControl::PythonSetLabel(const CStdString &strFont, const std::string &strText, DWORD dwTextColor, DWORD dwShadowColor, DWORD dwFocusedColor)
+{
+  m_label.font = g_fontManager.GetFont(strFont);
+  m_label.textColor = dwTextColor;
+  m_label.focusedColor = dwFocusedColor;
+  m_label.shadowColor = dwShadowColor;
+  m_info.SetLabel(strText, "");
+}
+
+void CGUIRadioButtonControl::PythonSetDisabledColor(DWORD dwDisabledColor)
+{
+  m_label.disabledColor = dwDisabledColor;
+}
