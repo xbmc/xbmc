@@ -76,8 +76,6 @@ CLinuxRendererGL::CLinuxRendererGL()
 
   m_rgbBuffer = NULL;
   m_rgbBufferSize = 0;
-  
-  m_bValidData = false;
 }
 
 CLinuxRendererGL::~CLinuxRendererGL()
@@ -746,9 +744,6 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
     Sleep(500); // let GUI thread initialize textures
     return -1;
   }
-  //CSingleLock lock(g_graphicsContext);
-
-  //  source = 0;
 
   /* take next available buffer */
   if( source == AUTOSOURCE )
@@ -765,9 +760,6 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
      CLog::Log(LOGDEBUG, "CLinuxRenderer::GetImage - request image but none to give");
      return -1;
   }
-
-  m_image[source].flags = 0;
-  //m_image[source].flags = readonly?IMAGE_FLAG_READING:IMAGE_FLAG_WRITING;
 
   if( source >= 0 && m_image[source].plane[0] )
   {
@@ -795,10 +787,6 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
     image->texcoord_x = m_image[source].texcoord_x;
     image->texcoord_y = m_image[source].texcoord_y;
 
-    //return 0;
-    // return source;
-
-    //*image = m_image[source];
     return source;
   }
 
@@ -817,7 +805,6 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
   if( preserve )
     m_image[source].flags |= IMAGE_FLAG_RESERVED;
 
-  m_bValidData = true;
 }
 
 void CLinuxRendererGL::LoadTextures(int source)
@@ -843,7 +830,6 @@ void CLinuxRendererGL::LoadTextures(int source)
     int     dstStride[] = { m_iSourceWidth*4, 0, 0 };
     m_dllSwScale.sws_scale(context, src, srcStride, 0, im.height, dst, dstStride);
     m_dllSwScale.sws_freeContext(context);
-    m_image[source].flags = 0;
     SetEvent(m_eventTexturesDone[source]);
   }
 
@@ -1000,7 +986,6 @@ void CLinuxRendererGL::LoadTextures(int source)
       VerifyGLState();
     }
     SetEvent(m_eventTexturesDone[source]);
-    m_image[source].flags = 0;
   }
 }
 
@@ -1010,7 +995,6 @@ void CLinuxRendererGL::Reset()
   {
     /* reset all image flags, this will cleanup textures later */
     m_image[i].flags = 0;
-    
     /* reset texture locks, a bit ugly, could result in tearing */
     SetEvent(m_eventTexturesDone[i]);
   }
@@ -1019,7 +1003,6 @@ void CLinuxRendererGL::Reset()
 void CLinuxRendererGL::Update(bool bPauseDrawing)
 {
   if (!m_bConfigured) return;
-  //CSingleLock lock(g_graphicsContext);
   ManageDisplay();
   ManageTextures();
 }
@@ -1027,14 +1010,15 @@ void CLinuxRendererGL::Update(bool bPauseDrawing)
 void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
   if (!m_bConfigured) return;
-  
   // if its first pass, just init textures and return
   if (ValidateRenderTarget())
     return;
 
   int index = m_iYV12RenderBuffer;
   if (!m_YUVTexture[index][FIELD_FULL][0]) return ;
-  if (!m_bValidData) return;
+
+  if (m_image[index].flags==0)
+    return;
 
   ManageDisplay();
   ManageTextures();
