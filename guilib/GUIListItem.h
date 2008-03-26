@@ -15,6 +15,7 @@
 
 //  Forward
 class CGUIListItemLayout;
+class CArchive;
 
 /*!
  \ingroup controls
@@ -79,6 +80,8 @@ public:
   void SetProperty(const std::string &strKey, const std::string &strValue);
   std::string GetProperty(const std::string &strKey) const;
   void ClearProperty(const std::string &strKey);
+
+  void Serialize(CArchive& ar);
 
 protected:
   CStdString m_strLabel;      // text of column1

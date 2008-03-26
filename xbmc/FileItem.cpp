@@ -331,18 +331,12 @@ void CFileItem::Reset()
 
 void CFileItem::Serialize(CArchive& ar)
 {
+  CGUIListItem::Serialize(ar);
+
   if (ar.IsStoring())
   {
-    ar << m_bIsFolder;
     ar << m_bIsParentFolder;
-    ar << m_strLabel;
-    ar << m_strLabel2;
     ar << m_bLabelPreformated;
-    ar << m_strThumbnailImage;
-    ar << m_strIcon;
-    ar << m_bSelected;
-    ar << m_overlayIcon;
-
     ar << m_strPath;
     ar << m_bIsShareOrDrive;
     ar << m_iDriveType;
@@ -386,16 +380,8 @@ void CFileItem::Serialize(CArchive& ar)
   }
   else
   {
-    ar >> m_bIsFolder;
     ar >> m_bIsParentFolder;
-    ar >> m_strLabel;
-    ar >> m_strLabel2;
     ar >> m_bLabelPreformated;
-    ar >> m_strThumbnailImage;
-    ar >> m_strIcon;
-    ar >> m_bSelected;
-    ar >> (int&)m_overlayIcon;
-
     ar >> m_strPath;
     ar >> m_bIsShareOrDrive;
     ar >> m_iDriveType;
