@@ -109,6 +109,9 @@ CThread::~CThread()
     CloseHandle(m_ThreadHandle);
   }
   m_ThreadHandle = NULL;
+
+  if (m_StopEvent)
+    CloseHandle(m_StopEvent);
 }
 
 #ifdef _LINUX
