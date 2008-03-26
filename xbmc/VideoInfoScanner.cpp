@@ -381,6 +381,7 @@ namespace VIDEO
     IMDB_EPISODELIST files;
     long lTvShowId = -1;
     m_database.Open();
+    m_database.BeginTransaction();
     for (int i = 0; i < (int)items.Size(); ++i)
     {
       CFileItem* pItem = items[i];
@@ -639,6 +640,7 @@ namespace VIDEO
     if(m_dlgProgress)
       m_dlgProgress->ShowProgressBar(false);
 
+    m_database.CommitTransaction();
     m_database.Close();
     return true;
   }
