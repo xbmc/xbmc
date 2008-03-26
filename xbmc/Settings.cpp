@@ -2657,6 +2657,17 @@ CStdString CSettings::GetVideoThumbFolder() const
   return folder;
 }
 
+CStdString CSettings::GetVideoFanartFolder() const
+{
+  CStdString folder;
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Video\\Fanart", folder);
+  else
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Video\\Fanart", folder);
+
+  return folder;
+}
+
 CStdString CSettings::GetBookmarksThumbFolder() const
 {
   CStdString folder;

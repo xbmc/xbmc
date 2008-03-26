@@ -881,6 +881,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\utils\Event.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\utils\Fanart.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\Fanart.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\utils\FanController.cpp">
 				</File>
 				<File
