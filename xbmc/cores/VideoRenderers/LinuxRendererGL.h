@@ -181,7 +181,6 @@ protected:
   unsigned int m_iSourceWidth;    // width
   unsigned int m_iSourceHeight;   // height
 
-  bool m_bValidData;
   bool m_bConfigured;
   bool m_bValidated;
   unsigned m_iFlags;
