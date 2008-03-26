@@ -334,6 +334,11 @@
 #define SLIDE_INFO_START            900
 #define SLIDE_INFO_END              980
 
+#define FANART_COLOR1               1000
+#define FANART_COLOR2               1001
+#define FANART_COLOR3               1002
+#define FANART_IMAGE                1003
+
 #define WINDOW_IS_TOPMOST           9994
 #define WINDOW_IS_VISIBLE           9995
 #define WINDOW_NEXT                 9996
@@ -393,7 +398,7 @@
 #define LISTITEM_TAGLINE            (LISTITEM_START + 37)
 #define LISTITEM_TOP250             (LISTITEM_START + 38)
 #define LISTITEM_RATING_AND_VOTES   (LISTITEM_START + 39)
-#define LISTITEM_TRAILER		    (LISTITEM_START + 40)
+#define LISTITEM_TRAILER            (LISTITEM_START + 40)
 
 #define LISTITEM_PROPERTY_START     (LISTITEM_START + 200)
 #define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 1000)
