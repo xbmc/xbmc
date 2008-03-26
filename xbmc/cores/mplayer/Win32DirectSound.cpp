@@ -23,6 +23,17 @@
 #include "AudioContext.h"
 #include "KS.h"
 #include "Ksmedia.h"
+#include <Mmreg.h>
+
+#define STATIC_KSDATAFORMAT_SUBTYPE_DOLBY_AC3_SPDIF \
+  DEFINE_WAVEFORMATEX_GUID(WAVE_FORMAT_DOLBY_AC3_SPDIF)
+
+DEFINE_GUIDSTRUCT("00000092-0000-0010-8000-00aa00389b71",
+  KSDATAFORMAT_SUBTYPE_DOLBY_AC3_SPDIF);
+
+#define KSDATAFORMAT_SUBTYPE_DOLBY_AC3_SPDIF \
+  DEFINE_GUIDNAMED(KSDATAFORMAT_SUBTYPE_DOLBY_AC3_SPDIF)
+
 
 
 
@@ -35,7 +46,7 @@ void CWin32DirectSound::DoWork()
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 //***********************************************************************************************
-CWin32DirectSound::CWin32DirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, char* strAudioCodec, bool bIsMusic)
+CWin32DirectSound::CWin32DirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, char* strAudioCodec, bool bIsMusic, bool bAudioPassthrough)
 {
 
   bool bAudioOnAllSpeakers(false);
@@ -60,8 +71,12 @@ CWin32DirectSound::CWin32DirectSound(IAudioCallback* pCallback, int iChannels, u
   wfxex.Format.nAvgBytesPerSec = wfxex.Format.nBlockAlign * wfxex.Format.nSamplesPerSec;
   wfxex.Format.wFormatTag      = WAVE_FORMAT_EXTENSIBLE;
   wfxex.Format.cbSize          = sizeof(WAVEFORMATEXTENSIBLE) - sizeof(WAVEFORMATEX) ;
-  wfxex.SubFormat              = KSDATAFORMAT_SUBTYPE_PCM;  
   wfxex.Samples.wValidBitsPerSample = uiBitsPerSample;
+
+  if(bAudioPassthrough == false)
+    wfxex.SubFormat            = KSDATAFORMAT_SUBTYPE_PCM;  
+  else
+    wfxex.SubFormat            = KSDATAFORMAT_SUBTYPE_DOLBY_AC3_SPDIF;  
 
 
   m_dwPacketSize = wfxex.Format.nBlockAlign * 512;
