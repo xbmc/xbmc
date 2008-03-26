@@ -503,7 +503,7 @@ unsigned int Unpack::DecodeNum(int Num,unsigned int StartPos,
                                unsigned int *DecTab,unsigned int *PosTab)
 {
   int I;
-  for (Num&=0xfff0,I=0;DecTab[I]<=Num;I++)
+  for (Num&=0xfff0,I=0;(int)DecTab[I]<=Num;I++)
     StartPos++;
   faddbits(StartPos);
   return(((Num-(I ? DecTab[I-1]:0))>>(16-StartPos))+PosTab[StartPos]);
