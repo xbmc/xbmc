@@ -752,7 +752,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     textureAltNoFocus = temp;
   }
 #endif
-  iToggleSelect = g_infoManager.TranslateString(strToggleSelect);
   XMLUtils::GetString(pControlNode, "selected", strToggleSelect);
   iToggleSelect = g_infoManager.TranslateString(strToggleSelect);
 
