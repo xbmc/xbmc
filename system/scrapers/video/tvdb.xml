@@ -43,7 +43,7 @@
 	<GetDetails dest="7">
 		<RegExp input="$$4" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;\1&lt;/details&gt;" dest="7">
 			<RegExp input="$$1" output="\1" dest="5">
-				<expression noclean="1">&lt;Series&gt;.*&lt;id&gt;$$2&lt;/id&gt;(.*)</expression>
+				<expression noclean="1">&lt;Series&gt;.*?&lt;id&gt;$$2&lt;/id&gt;(.*)</expression>
 			</RegExp>
 			<RegExp input="$$5" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="4">
 				<expression noclean="1">&lt;Overview&gt;([^&lt;]*)&lt;/Overview&gt;</expression>
