@@ -725,8 +725,19 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
   }
 
   CFileItem* pItem = m_vecItems[iItem];
-  
   DeleteItem(pItem);
+
+  CStdString strDeletePath;
+  if (pItem->m_bIsFolder)
+    strDeletePath=pItem->GetVideoInfoTag()->m_strPath;
+  else
+    strDeletePath=pItem->GetVideoInfoTag()->m_strFileNameAndPath;
+
+  if (g_guiSettings.GetBool("filelists.allowfiledeletion") && CUtil::SupportsFileOperations(strDeletePath))
+  {
+    pItem->m_strPath = strDeletePath;
+    CGUIWindowVideoBase::OnDeleteItem(iItem);
+  }
 
   CUtil::DeleteVideoDatabaseDirectoryCache();
 
