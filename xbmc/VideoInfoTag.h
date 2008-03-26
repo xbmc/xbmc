@@ -4,6 +4,7 @@
 #include "utils/ScraperParser.h"
 #include "PluginSettings.h"
 #include "ScraperSettings.h"
+#include "utils/Fanart.h"
 
 #include <vector>
 
@@ -73,4 +74,5 @@ public:
   int m_iSpecialSortEpisode;
   float m_fRating;
   int m_iBookmarkId;
+  CFanart m_fanart;
 };

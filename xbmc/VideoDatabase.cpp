@@ -37,7 +37,7 @@ using namespace XFILE;
 using namespace DIRECTORY;
 using namespace VIDEO;
 
-#define VIDEO_DATABASE_VERSION 14
+#define VIDEO_DATABASE_VERSION 15
 #define VIDEO_DATABASE_OLD_VERSION 3.f
 #define VIDEO_DATABASE_NAME "MyVideos34.db"
 #define RECENTLY_ADDED_LIMIT  25
@@ -2629,6 +2629,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool n
     castTime += timeGetTime() - time; time = timeGetTime();
   }
   details.m_strPictureURL.Parse();
+  details.m_fanart.Unpack();
   return details;
 }
 
@@ -3245,6 +3246,11 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     {
       // add the scraper settings column
       m_pDS->exec("alter table path add strSettings text");
+    }
+    if (iVersion < 15)
+    {
+      // clear all tvshow columns above 11 to fix results of an old bug
+      m_pDS->exec("UPDATE tvshow SET c12=NULL, c13=NULL, c14=NULL, c15=NULL, c16=NULL, c17=NULL, c18=NULL, c19=NULL, c20=NULL");
     }
   }
   catch (...)
@@ -4382,7 +4388,7 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
             CVideoInfoTag movie = GetDetailsForTvShow(m_pDS, false);
             CFileItem* pItem=new CFileItem(movie);
             CStdString strDir;
-            strDir.Format("%ld", lShowId);
+            strDir.Format("%ld/", lShowId);
             pItem->m_strPath=strBaseDir + strDir;
             pItem->m_dateTime.SetFromDateString(movie.m_strPremiered);
             pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
