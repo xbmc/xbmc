@@ -83,6 +83,10 @@ void CGUIAudioManager::DeInitialize(int iDevice)
     m_pythonSounds.erase(it1++);
   }
   m_pythonSounds.clear();
+
+#ifdef HAS_SDL_AUDIO
+  Mix_CloseAudio();
+#endif
 }
 
 // \brief Clear any unused audio buffers

@@ -2691,10 +2691,20 @@ bool CDVDPlayer::ExtractThumb(const CStdString &strPath, const CStdString &strTa
         bool bHasFrame = false;
         while (!bHasFrame)
         {
+          bool bFound = false;
           do
           {
             pPacket = pDemuxer->Read();
-          }   while (pPacket && pPacket->iStreamId != nVideoStream);
+            if (pPacket)
+            {
+              if (pPacket->iStreamId == nVideoStream)
+                bFound = true;
+              else
+                CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+            }
+            else
+              break;
+          }   while (!bFound);
 
           if (pPacket)
           {
