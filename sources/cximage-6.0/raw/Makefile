@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-fPIC -DXBMC
+CFLAGS=-fPIC -DXBMC -D_LINUX
 OBJS=dcr.o libdcr.o
 
 %o : %c
