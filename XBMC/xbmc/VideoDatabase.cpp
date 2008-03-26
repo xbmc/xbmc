@@ -1688,71 +1688,44 @@ void CVideoDatabase::GetMusicVideoInfo(const CStdString& strFilenameAndPath, CVi
 void CVideoDatabase::AddGenreAndDirectorsAndStudios(const CVideoInfoTag& details, vector<long>& vecDirectors, vector<long>& vecGenres, vector<long>& vecStudios)
 {
   // add all directors
-  char szDirector[1024];
-  strcpy(szDirector, details.m_strDirector.c_str());
-  if (strstr(szDirector, "/"))
+  if (!details.m_strDirector.IsEmpty())
   {
-    char *pToken = strtok(szDirector, "/");
-    while ( pToken != NULL )
+    CStdStringArray directors;
+    StringUtils::SplitString(details.m_strDirector, "/", directors);
+    for (unsigned int i = 0; i < directors.size(); i++)
     {
-      CStdString strDirector = pToken;
+      CStdString strDirector(directors[i]);
       strDirector.Trim();
       long lDirectorId = AddActor(strDirector,"");
       vecDirectors.push_back(lDirectorId);
-      pToken = strtok( NULL, "/" );
     }
-  }
-  else if (!details.m_strDirector.IsEmpty())
-  {
-    CStdString strDirector = details.m_strDirector;
-    strDirector.Trim();
-    long lDirectorId = AddActor(strDirector,"");
-    vecDirectors.push_back(lDirectorId);
   }
 
   // add all genres
-  char szGenres[1024];
-  strcpy(szGenres, details.m_strGenre.c_str());
-  if (strstr(szGenres, "/"))
+  if (!details.m_strGenre.IsEmpty())
   {
-    char *pToken = strtok(szGenres, "/");
-    while ( pToken != NULL )
+    CStdStringArray genres;
+    StringUtils::SplitString(details.m_strGenre, "/", genres);
+    for (unsigned int i = 0; i < genres.size(); i++)
     {
-      CStdString strGenre = pToken;
+      CStdString strGenre(genres[i]);
       strGenre.Trim();
       long lGenreId = AddGenre(strGenre);
       vecGenres.push_back(lGenreId);
-      pToken = strtok( NULL, "/" );
     }
   }
-  else if (!details.m_strGenre.IsEmpty())
+  // add all studios
+  if (!details.m_strStudio.IsEmpty())
   {
-    CStdString strGenre = details.m_strGenre;
-    strGenre.Trim();
-    long lGenreId = AddGenre(strGenre);
-    vecGenres.push_back(lGenreId);
-  }
-    // add all studios
-  char szStudios[1024];
-  strcpy(szStudios, details.m_strStudio.c_str());
-  if (strstr(szStudios, "/"))
-  {
-    char *pToken = strtok(szStudios, "/");
-    while ( pToken != NULL )
+    CStdStringArray studios;
+    StringUtils::SplitString(details.m_strStudio, "/", studios);
+    for (unsigned int i = 0; i < studios.size(); i++)
     {
-      CStdString strStudio = pToken;
+      CStdString strStudio(studios[i]);
       strStudio.Trim();
       long lStudioId = AddStudio(strStudio);
       vecStudios.push_back(lStudioId);
-      pToken = strtok( NULL, "/" );
     }
-  }
-  else if (!details.m_strStudio.IsEmpty())
-  {
-    CStdString strStudio = details.m_strStudio;
-    strStudio.Trim();
-    long lStudioId = AddStudio(strStudio);
-    vecStudios.push_back(lStudioId);
   }
 }
 
