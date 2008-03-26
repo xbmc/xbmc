@@ -159,7 +159,7 @@ bool CommandData::IsConfigEnabled(int argc,char *argv[])
 void CommandData::ReadConfig(int argc,char *argv[])
 {
   StringList List;
-  if (ReadTextFile(DefConfigName,&List,true))
+  if (ReadTextFile((char*)DefConfigName,&List,true))
   {
     char *Str;
     while ((Str=List.GetString())!=NULL)

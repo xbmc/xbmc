@@ -66,8 +66,8 @@ void SubAllocator::StopSubAllocator()
 
 bool SubAllocator::StartSubAllocator(int SASize)
 {
-  uint t=(unsigned int)(SASize) << 20;
-  if (SubAllocatorSize == t)
+  uint t=(uint)(SASize) << 20;
+  if ((uint)SubAllocatorSize == t)
     return TRUE;
   StopSubAllocator();
   uint AllocSize=t/FIXED_UNIT_SIZE*UNIT_SIZE+UNIT_SIZE;
