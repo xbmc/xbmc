@@ -32,6 +32,7 @@
 #include "GUIDialogFileBrowser.h"
 #include "utils/GUIInfoManager.h"
 #include "VideoInfoScanner.h"
+#include "VideoInfoTag.h"
 
 using namespace std;
 using namespace XFILE;
@@ -63,6 +64,7 @@ using namespace XFILE;
 #define CONTROL_BTN_RESUME           9
 #define CONTROL_BTN_GET_THUMB       10
 #define CONTROL_BTN_PLAY_TRAILER    11
+#define CONTROL_BTN_GET_FANART      12
 
 #define CONTROL_LIST                50
 
@@ -206,6 +208,10 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
 	  else if (iControl == CONTROL_BTN_PLAY_TRAILER)
       {
         PlayTrailer();
+      }
+      else if (iControl == CONTROL_BTN_GET_FANART)
+      {
+        OnGetFanart();
       }
 /*      else if (iControl == CONTROL_DISC)
       {
@@ -766,6 +772,92 @@ void CGUIWindowVideoInfo::OnGetThumb()
 
   CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show
   m_movieItem.SetThumbnailImage(cachedThumb);
+
+  // tell our GUI to completely reload all controls (as some of them
+  // are likely to have had this image in use so will need refreshing)
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS, 0, NULL);
+  g_graphicsContext.SendMessage(msg);
+  // Update our screen
+  Update();
+}
+
+// Allow user to select a Fanart
+void CGUIWindowVideoInfo::OnGetFanart()
+{
+  CFileItemList items;
+
+  // Grab the thumbnails from the web
+  CStdString strPath;
+  CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"fanartthumbs",strPath);
+  CUtil::WipeDir(strPath);
+  DIRECTORY::CDirectory::Create(strPath);
+  for (unsigned int i = 0; i < m_movieItem.GetVideoInfoTag()->m_fanart.GetNumFanarts(); i++)
+  {
+    CStdString thumbFromWeb;
+    CStdString strLabel;
+    strLabel.Format("fanart_thumb_%i.jpg", i);
+    CUtil::AddFileToFolder(strPath, strLabel, thumbFromWeb);
+    if (m_movieItem.GetVideoInfoTag()->m_fanart.DownloadThumb(i, thumbFromWeb))
+    {
+      CStdString strItemPath;
+      strItemPath.Format("thumb://FANART_%i",i);
+      CFileItem *item = new CFileItem(strItemPath, false);
+      item->SetThumbnailImage(thumbFromWeb);
+      CStdString strLabel;
+      item->SetLabel(g_localizeStrings.Get(20015));
+      items.Add(item);
+    }
+    else
+      CLog::Log(LOGDEBUG, "Unable to download fanart thumb #%d", i);
+  }
+
+  CFileItem *itemNone = new CFileItem("thumb://None", false);
+  itemNone->SetThumbnailImage("defaultVideoBig.png");
+  itemNone->SetLabel(g_localizeStrings.Get(20018));
+  items.Add(itemNone);
+
+  CStdString result;
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_videoSources, g_localizeStrings.Get(20019), result))
+    return;   // user cancelled
+
+  // TODO: FANART - current is not an option at this point
+  if (result == "thumb://Current")
+    return;   // user chose the one they have
+
+  // delete the thumbnail if that's what the user wants, else overwrite with the
+  // new thumbnail
+  CFileItem item(*m_movieItem.GetVideoInfoTag());
+  CStdString cachedThumb(item.GetCachedVideoFanart());
+
+  if (result.Mid(0,15) == "thumb://FANART_")
+  {
+    CStdString strFile;
+    CUtil::AddFileToFolder(strPath,"fanart_thumb_"+result.Mid(15)+".jpg",strFile);
+    int iFanart = atoi(result.Mid(15).c_str());
+    if (CFile::Exists(strFile))
+    {
+      // set new primary fanart, and update our database accordingly
+      m_movieItem.GetVideoInfoTag()->m_fanart.SetPrimaryFanart(iFanart);
+      m_database.SetDetailsForTvShow(m_movieItem.m_strPath, *m_movieItem.GetVideoInfoTag());
+
+      // download the fullres fanart image.  TODO: FANART - this could take some time, so should probably be backgrounded
+      m_movieItem.GetVideoInfoTag()->m_fanart.DownloadImage(cachedThumb);
+    }
+    else
+      result = "thumb://None";
+  }
+  else
+  { // TODO: FANART Add the browse capability here?
+    result = "thumb://None";
+  }
+
+  if (result == "thumb://None")
+  { // remove the cached art
+    if (CFile::Exists(cachedThumb))
+      CFile::Delete(cachedThumb);
+  }
+
+  CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show
 
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)
