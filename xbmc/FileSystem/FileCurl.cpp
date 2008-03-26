@@ -643,8 +643,11 @@ __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
   if(response < 0)
   {
     m_seekable = false;
-    delete m_state;
-    m_state = oldstate;
+    if(oldstate)
+    {
+      delete m_state;
+      m_state = oldstate;
+    }
     return -1;
   }
 
