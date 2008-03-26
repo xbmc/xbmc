@@ -207,7 +207,7 @@ void ComprDataIO::UnpWrite(byte *Addr,uint Count)
   UnpWrSize=Count;
   if (UnpackToMemory)
   {
-    while(UnpackToMemorySize < Count)
+    while(UnpackToMemorySize < (int)Count)
     {
       SetEvent(hBufferEmpty);
       while( WaitForSingleObject(hBufferFilled,1) != WAIT_OBJECT_0) 
