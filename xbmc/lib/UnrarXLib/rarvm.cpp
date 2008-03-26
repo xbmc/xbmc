@@ -88,7 +88,7 @@ void RarVM::Execute(VM_PreparedProgram *Prg)
   unsigned int GlobalSize=Min(Prg->GlobalData.Size(),VM_GLOBALMEMSIZE);
   if (GlobalSize)
     memcpy(Mem+VM_GLOBALMEMADDR,&Prg->GlobalData[0],GlobalSize);
-  unsigned int StaticSize=Min(Prg->StaticData.Size(),VM_GLOBALMEMSIZE-GlobalSize);
+  unsigned int StaticSize=Min((uint)Prg->StaticData.Size(),VM_GLOBALMEMSIZE-GlobalSize);
   if (StaticSize)
     memcpy(Mem+VM_GLOBALMEMADDR+GlobalSize,&Prg->StaticData[0],StaticSize);
 
@@ -116,7 +116,7 @@ void RarVM::Execute(VM_PreparedProgram *Prg)
 
 
 #define SET_IP(IP)                      \
-  if ((IP)>=CodeSize)                   \
+  if ((IP)>=(uint)CodeSize)             \
     return(true);                       \
   if (--MaxOpCount<=0)                  \
     return(false);                      \

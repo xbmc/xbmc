@@ -165,7 +165,7 @@ void Unpack::Unpack29(bool Solid)
   static unsigned char LBits[]=  {0,0,0,0,0,0,0,0,1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4,  4,  5,  5,  5,  5};
   static int DDecode[DC];
   static byte DBits[DC];
-  static int DBitLengthCounts[]= {4,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,14,0,12};
+  static unsigned int DBitLengthCounts[]= {4,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,14,0,12};
   static unsigned char SDDecode[]={0,4,8,16,32,64,128,192};
   static unsigned char SDBits[]=  {2,2,3, 4, 5, 6,  6,  6};
   unsigned int Bits;
@@ -503,7 +503,7 @@ bool Unpack::AddVMCode(unsigned int FirstByte,byte *Code,int CodeSize)
   memcpy(Inp.InBuf,Code,Min(BitInput::MAX_SIZE,CodeSize));
   VM.Init();
 
-  uint FiltPos;
+  int FiltPos;
   if (FirstByte & 0x80)
   {
     FiltPos=RarVM::ReadData(Inp);
@@ -585,7 +585,7 @@ bool Unpack::AddVMCode(unsigned int FirstByte,byte *Code,int CodeSize)
     if (VMCodeSize>=0x10000 || VMCodeSize==0)
       return(false);
     Array<byte> VMCode(VMCodeSize);
-    for (int I=0;I<VMCodeSize;I++)
+    for (uint I=0;I<VMCodeSize;I++)
     {
       VMCode[I]=Inp.fgetbits()>>8;
       Inp.faddbits(8);
@@ -624,7 +624,7 @@ bool Unpack::AddVMCode(unsigned int FirstByte,byte *Code,int CodeSize)
     if (CurSize<DataSize+VM_FIXEDGLOBALSIZE)
       StackFilter->Prg.GlobalData.Add(DataSize+VM_FIXEDGLOBALSIZE-CurSize);
     byte *GlobalData=&StackFilter->Prg.GlobalData[VM_FIXEDGLOBALSIZE];
-    for (int I=0;I<DataSize;I++)
+    for (uint I=0;I<DataSize;I++)
     {
       GlobalData[I]=Inp.fgetbits()>>8;
       Inp.faddbits(8);
@@ -802,7 +802,7 @@ bool Unpack::ReadTables()
     memset(UnpOldTable,0,sizeof(UnpOldTable));
   faddbits(2);
 
-  for (int I=0;I<BC;I++)
+  for (uint I=0;I<BC;I++)
   {
     int Length=(byte)(fgetbits() >> 12);
     faddbits(4);
