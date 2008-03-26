@@ -36,6 +36,10 @@ public:
   void SetRadioDimensions(float posX, float posY, float width, float height);
   void SetToggleSelect(int toggleSelect) { m_toggleSelect = toggleSelect; };
   bool IsSelected() const { return m_bSelected; };
+  void PythonSetSelected(bool bOnOff);
+  void PythonSetLabel(const CStdString &strFont, const std::string &strText, DWORD dwTextColor, DWORD dwShadowColor, DWORD dwFocusedColor);
+  void PythonSetDisabledColor(DWORD dwDisabledColor);
+
 protected:
   virtual void Update();
   CGUIImage m_imgRadioFocus;

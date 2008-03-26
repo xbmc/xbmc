@@ -6,6 +6,7 @@
 #include "action.h"
 #include "GUIButtonControl.h"
 #include "GUICheckMarkControl.h"
+#include "GUIRadioButtonControl.h"
 
 using namespace std;
 
@@ -183,6 +184,19 @@ namespace PYXBMC
       break;
     case CGUIControl::GUICONTROL_GROUP:
       pControl = (Control*)ControlGroup_Type.tp_alloc(&ControlGroup_Type, 0);
+      break;
+    case CGUIControl::GUICONTROL_RADIO:
+      pControl = (Control*)ControlRadioButton_Type.tp_alloc(&ControlRadioButton_Type, 0);
+
+      li = ((CGUIRadioButtonControl *)pGUIControl)->GetLabelInfo();
+
+      // note: conversion from infocolors -> plain colors here
+      ((ControlRadioButton*)pControl)->dwDisabledColor = li.disabledColor;
+      ((ControlRadioButton*)pControl)->dwFocusedColor  = li.focusedColor;
+      ((ControlRadioButton*)pControl)->dwTextColor  = li.textColor;
+      ((ControlRadioButton*)pControl)->dwShadowColor   = li.shadowColor;
+      ((ControlRadioButton*)pControl)->strFont = li.font->GetFontName();
+      ((ControlRadioButton*)pControl)->dwAlign = li.align;
       break;
     default:
       break;
@@ -409,7 +423,9 @@ namespace PYXBMC
     "  -ControlCheckMark\n"
     "  -ControlList\n"
     "  -ControlGroup\n"
-    "  -ControlImage\n");
+    "  -ControlImage\n"
+    "  -ControlRadioButton\n"
+    "  -ControlProgress\n");
 
   PyObject* Window_AddControl(Window *self, PyObject *args)
   {
@@ -482,6 +498,10 @@ namespace PYXBMC
     // Control Group
     else if (ControlGroup_Check(pControl))
       ControlGroup_Create((ControlGroup*)pControl);
+
+    // Control RadioButton
+    else if (ControlRadioButton_Check(pControl))
+      ControlRadioButton_Create((ControlRadioButton*)pControl);
 
     //unknown control type to add, should not happen
     else

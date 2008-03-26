@@ -38,6 +38,8 @@
 #define ControlGroup_Check(op) PyObject_TypeCheck(op, &ControlGroup_Type)
 #define ControlGroup_CheckExact(op) ((op)->ob_type == &ControlGroup_Type)
 
+#define ControlRadioButton_Check(op) PyObject_TypeCheck(op, &ControlRadioButton_Type)
+#define ControlRadioButton_CheckExact(op) ((op)->ob_type == &ControlRadioButton_Type)
 
 // -----------------
 
@@ -181,6 +183,24 @@ namespace PYXBMC
     PyObject_HEAD_XBMC_CONTROL
   } ControlGroup;
 
+  typedef struct {
+    PyObject_HEAD_XBMC_CONTROL
+    std::string strFont;
+    std::string strText;
+    std::string strTextureFocus;
+    std::string strTextureNoFocus;
+    std::string strTextureRadioFocus;
+    std::string strTextureRadioNoFocus;
+    DWORD dwTextColor;
+    DWORD dwDisabledColor;
+    DWORD dwTextXOffset;
+    DWORD dwTextYOffset;
+    DWORD dwAlign;
+    int iAngle;
+    DWORD dwShadowColor;
+    DWORD dwFocusedColor;
+  } ControlRadioButton;
+
   extern void Control_Dealloc(Control* self);
 
   extern PyMethodDef Control_methods[];
@@ -196,6 +216,7 @@ namespace PYXBMC
   extern PyTypeObject ControlCheckMark_Type;
   extern PyTypeObject ControlList_Type;
   extern PyTypeObject ControlProgress_Type;
+  extern PyTypeObject ControlRadioButton_Type;
 
   CGUIControl* ControlLabel_Create(ControlLabel* pControl);
   CGUIControl* ControlFadeLabel_Create(ControlFadeLabel* pControl);
@@ -206,6 +227,7 @@ namespace PYXBMC
   CGUIControl* ControlGroup_Create(ControlGroup* pControl);
   CGUIControl* ControlList_Create(ControlList* pControl);
   CGUIControl* ControlProgress_Create(ControlProgress* pControl);
+  CGUIControl* ControlRadioButton_Create(ControlRadioButton* pControl);
 
   void initControl_Type();
   void initControlSpin_Type();
@@ -218,6 +240,7 @@ namespace PYXBMC
   void initControlImage_Type();
   void initControlGroup_Type();
   void initControlProgress_Type();
+  void initControlRadioButton_Type();
 }
 
 #ifdef __cplusplus
