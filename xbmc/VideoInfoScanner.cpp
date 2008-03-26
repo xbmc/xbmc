@@ -819,6 +819,9 @@ namespace VIDEO
       if (pItem->m_bIsFolder)
       {
         lResult=m_database.SetDetailsForTvShow(pItem->m_strPath, movieDetails);
+        // get & save fanart image
+        if (!movieDetails.m_fanart.DownloadImage(pItem->GetCachedVideoFanart()))
+          CLog::Log(LOGERROR, "Failed to download fanart %s to %s", movieDetails.m_fanart.GetImageURL().c_str(), pItem->GetCachedVideoFanart().c_str());
       }
       else
       {

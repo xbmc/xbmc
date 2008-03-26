@@ -555,6 +555,13 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("visualisation.name")) ret = VISUALISATION_NAME;
     else if (strTest.Equals("visualisation.enabled")) ret = VISUALISATION_ENABLED;
   }
+  else if (strCategory.Equals("fanart"))
+  {
+    if (strTest.Equals("fanart.color1")) ret = FANART_COLOR1;
+    else if (strTest.Equals("fanart.color2")) ret = FANART_COLOR2;
+    else if (strTest.Equals("fanart.color3")) ret = FANART_COLOR3;
+    else if (strTest.Equals("fanart.image")) ret = FANART_IMAGE;
+  }
   else if (strCategory.Equals("skin"))
   {
     if (strTest.Equals("skin.currenttheme"))
@@ -1229,6 +1236,34 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
         strLabel = strLabel.Left(strLabel.size() - 4);
         strLabel[0] = toupper(strLabel[0]);
       }
+    }
+    break;
+  case FANART_COLOR1:
+    {
+      CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      if (window)
+        return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("fanart_color1");
+    }
+    break;
+  case FANART_COLOR2:
+    {
+      CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      if (window)
+        return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("fanart_color2");
+    }
+    break;
+  case FANART_COLOR3:
+    {
+      CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      if (window)
+        return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("fanart_color3");
+    }
+    break;
+  case FANART_IMAGE:
+    {
+      CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      if (window)
+        return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("fanart_image");
     }
     break;
   }

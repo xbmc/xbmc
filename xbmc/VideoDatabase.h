@@ -107,6 +107,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_TV_ORIGINALTITLE = 9,
   VIDEODB_ID_TV_EPISODEGUIDE = 10,
   VIDEODB_ID_TV_EPISODES = 11,
+  VIDEODB_ID_TV_FANART = 12,
   VIDEODB_ID_TV_MAX
 } VIDEODB_TV_IDS;
 
@@ -124,6 +125,7 @@ const struct SDbTableOffsets DbTvShowOffsets[] =
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strOriginalTitle)},
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strEpisodeGuide)},
   { VIDEODB_TYPE_INT, offsetof(CVideoInfoTag,m_iEpisode) },
+  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_fanart.m_xml)},
 };
 
 typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)

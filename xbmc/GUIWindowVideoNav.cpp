@@ -353,13 +353,25 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       
       items.SetThumbnailImage("");
       items.ClearProperty("tvshowthumb");
+      items.ClearProperty("fanart_image");
+      items.ClearProperty("fanart_color1");
+      items.ClearProperty("fanart_color2");
+      items.ClearProperty("fanart_color3");
       if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_EPISODES || node == NODE_TYPE_SEASONS || node == NODE_TYPE_RECENTLY_ADDED_EPISODES)
       {
+        CLog::Log(LOGDEBUG, "WindowVideoNav::GetDirectory");
         // grab the show thumb
         CFileItem showItem;
         m_database.GetFilePath(params.GetTvShowId(),showItem.m_strPath,2);
         showItem.SetVideoThumb();
         items.SetProperty("tvshowthumb", showItem.GetThumbnailImage());
+        // Grab fanart data
+        CVideoInfoTag details;
+        m_database.GetTvShowInfo(showItem.m_strPath, details, params.GetTvShowId());
+        items.SetProperty("fanart_color1", details.m_fanart.GetColor(0));
+        items.SetProperty("fanart_color2", details.m_fanart.GetColor(1));
+        items.SetProperty("fanart_color3", details.m_fanart.GetColor(2));
+        items.SetProperty("fanart_image", showItem.GetCachedVideoFanart());
 
         // the container folder thumb is the parent (i.e. season or show)
         if (node == NODE_TYPE_EPISODES || node == NODE_TYPE_RECENTLY_ADDED_EPISODES)
