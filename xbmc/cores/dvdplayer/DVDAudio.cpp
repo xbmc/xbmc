@@ -95,10 +95,8 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
 
 #else
 
-  if( audioframe.passthrough )
-    return false;
+  m_pAudioDecoder = new CWin32DirectSound(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough);
 
-  m_pAudioDecoder = new CWin32DirectSound(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring);
 #endif
 
   if (!m_pAudioDecoder) return false;
