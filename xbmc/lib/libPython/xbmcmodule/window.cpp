@@ -227,6 +227,13 @@ namespace PYXBMC
     case CGUIControl::GUICONTROL_RADIO:
       pControl = (Control*)ControlRadioButton_Type.tp_alloc(&ControlRadioButton_Type, 0);
 
+      new(&((ControlRadioButton*)pControl)->strFont) string();    
+      new(&((ControlRadioButton*)pControl)->strText) string();    
+      new(&((ControlRadioButton*)pControl)->strTextureFocus) string();
+      new(&((ControlRadioButton*)pControl)->strTextureNoFocus) string();
+      new(&((ControlRadioButton*)pControl)->strTextureRadioFocus) string();
+      new(&((ControlRadioButton*)pControl)->strTextureRadioNoFocus) string();
+      
       li = ((CGUIRadioButtonControl *)pGUIControl)->GetLabelInfo();
 
       // note: conversion from infocolors -> plain colors here
