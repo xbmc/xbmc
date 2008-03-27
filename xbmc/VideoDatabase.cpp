@@ -1824,8 +1824,6 @@ long CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideo
     if (lTvShowId < 0)
       lTvShowId = AddTvShow(strPath);
 
-//    BeginTransaction();
-
     vector<long> vecDirectors;
     vector<long> vecGenres;
     vector<long> vecStudios;
@@ -2346,8 +2344,6 @@ void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath)
     {
       return ;
     }
-
-    BeginTransaction();
     
     ClearBookMarksOfFile(strFilenameAndPath);
 
@@ -2373,8 +2369,6 @@ void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath)
     CStdString strPath, strFileName;
     SplitPath(strFilenameAndPath,strPath,strFileName);
     InvalidatePathHash(strPath);
-
-    CommitTransaction();
   }
   catch (...)
   {
@@ -2448,8 +2442,6 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, long lE
         return ;
       }
     }
-
-    BeginTransaction();
     
     ClearBookMarksOfFile(strFilenameAndPath);
 
@@ -2479,8 +2471,6 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, long lE
     CStdString path;
     GetFilePath(idShow, path, 2);
     InvalidatePathHash(path);
-
-    CommitTransaction();
   }
   catch (...)
   {
@@ -2499,8 +2489,6 @@ void CVideoDatabase::DeleteMusicVideo(const CStdString& strFilenameAndPath)
     {
       return ;
     }
-
-    BeginTransaction();
 
     ClearBookMarksOfFile(strFilenameAndPath);
 
@@ -2523,8 +2511,6 @@ void CVideoDatabase::DeleteMusicVideo(const CStdString& strFilenameAndPath)
     CStdString strPath, strFileName;
     SplitPath(strFilenameAndPath,strPath,strFileName);
     InvalidatePathHash(strPath);
-
-    CommitTransaction();
   }
   catch (...)
   {
