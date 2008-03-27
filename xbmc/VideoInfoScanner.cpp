@@ -603,6 +603,8 @@ namespace VIDEO
             }
             if (iMoviesFound > 0)
             {
+              if (m_pObserver)
+                m_pObserver->OnSetTitle(url.strTitle);
               CUtil::ClearCache();
               long lResult=GetIMDBDetails(pItem, url, info,bDirNames&&info.strContent.Equals("movies"));
               if (info.strContent.Equals("tvshows"))
