@@ -5794,6 +5794,9 @@ CStdString CUtil::TranslatePath(const CStdString& path)
   if (path.length() > 0 && path[1] == ':')
   {
 #ifdef __APPLE__
+    CStdString lowerPath = path;
+    lowerPath.ToLower();
+    
     // Special mappings for OS X.
     if (path[0] == 'Q' || path[0] == 'q')
     {
@@ -5807,6 +5810,14 @@ CStdString CUtil::TranslatePath(const CStdString& path)
       {
         CStdString str = getenv("HOME");  
         str.append("/Library/Application Support/XBMC/mediasources.xml");
+        return str;
+      }
+      else if (lowerPath.Find("q:\\plugins") == 0)
+      {
+        CStdString str = getenv("HOME");  
+        str.append("/Library/Application Support/XBMC/Plugins");
+        str.append(path.substr(10));
+        str.Replace('\\', '/');
         return str;
       }
     }
