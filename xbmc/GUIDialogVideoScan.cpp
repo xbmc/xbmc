@@ -52,6 +52,7 @@ bool CGUIDialogVideoScan::OnMessage(CGUIMessage& message)
       CGUIDialog::OnMessage(message);
 
       m_strCurrentDir.Empty();
+      m_strTitle.Empty();
 
       m_fPercentDone=-1.0f;
       m_fCurrentPercentDone=-1.0f;
