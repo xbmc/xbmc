@@ -37,6 +37,7 @@ DEFINE_GUIDSTRUCT("00000092-0000-0010-8000-00aa00389b71",
 
 
 
+
 void CWin32DirectSound::DoWork()
 {
 
@@ -106,8 +107,17 @@ CWin32DirectSound::CWin32DirectSound(IAudioCallback* pCallback, int iChannels, u
   HRESULT result = m_pDSound->CreateSoundBuffer(&dssd, &m_pBuffer, NULL);
   if(FAILED(result))
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - CreateSoundBuffer failed with error code %d", result);
-    return;
+    SAFE_RELEASE(m_pBuffer);
+
+    // Try to create buffer without volume controls
+    dssd.dwFlags       = DSBCAPS_GLOBALFOCUS | DSBCAPS_GETCURRENTPOSITION2;
+    HRESULT result = m_pDSound->CreateSoundBuffer(&dssd, &m_pBuffer, NULL);
+    if(FAILED(result))
+    {
+      CLog::Log(LOGERROR, __FUNCTION__" - CreateSoundBuffer failed with error code 0x%x", result);
+      SAFE_RELEASE(m_pBuffer);
+      return;
+    }
   }
   
   m_pBuffer->Stop();
