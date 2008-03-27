@@ -712,7 +712,7 @@ void CUtil::GetCommonPath(CStdString& strParent, const CStdString& strPath)
   if (!CUtil::HasSlashAtEnd(strParent))
   {
     // currently GetDirectory() removes trailing slashes
-    CUtil::GetDirectory(strParent, strParent);
+    CUtil::GetDirectory(strParent.Mid(0), strParent);
     CUtil::AddSlashAtEnd(strParent);
   }
 }
@@ -734,11 +734,18 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
     CFileItemList items;
     dir.GetDirectory(strPath,items);
     CUtil::GetDirectory(items[0]->m_strPath,items[0]->m_strDVDLabel);
-    GetParentPath(items[0]->m_strDVDLabel, strParent);
+    if (items[0]->m_strDVDLabel.Mid(0,6).Equals("rar://") || items[0]->m_strDVDLabel.Mid(0,6).Equals("zip://"))
+      GetParentPath(items[0]->m_strDVDLabel, strParent);
+    else
+      strParent = items[0]->m_strDVDLabel;
     for( int i=1;i<items.Size();++i)
     {
       CUtil::GetDirectory(items[i]->m_strPath,items[i]->m_strDVDLabel);
-      GetParentPath(items[i]->m_strDVDLabel,items[i]->m_strPath);
+      if (items[0]->m_strDVDLabel.Mid(0,6).Equals("rar://") || items[0]->m_strDVDLabel.Mid(0,6).Equals("zip://"))
+        GetParentPath(items[i]->m_strDVDLabel, items[i]->m_strPath);
+      else
+        items[i]->m_strPath = items[i]->m_strDVDLabel;
+
       GetCommonPath(strParent,items[i]->m_strPath);
     }
     return true;
