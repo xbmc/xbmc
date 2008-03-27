@@ -1,0 +1,30 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libGForce", "libGForce.vcproj", "{6740EF6D-477B-48F3-A442-FEF66F1D3F07}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Profile = Profile
+		Profile_FastCap = Profile_FastCap
+		Release = Release
+		Release_LTCG = Release_LTCG
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{6740EF6D-477B-48F3-A442-FEF66F1D3F07}.Debug.ActiveCfg = Debug|Xbox
+		{6740EF6D-477B-48F3-A442-FEF66F1D3F07}.Debug.Build.0 = Debug|Xbox
+		{6740EF6D-477B-48F3-A442-FEF66F1D3F07}.Profile.ActiveCfg = Profile|Xbox
+		{6740EF6D-477B-48F3-A442-FEF66F1D3F07}.Profile.Build.0 = Profile|Xbox
+		{6740EF6D-477B-48F3-A442-FEF66F1D3F07}.Profile_FastCap.ActiveCfg = Profile_FastCap|Xbox
+		{6740EF6D-477B-48F3-A442-FEF66F1D3F07}.Profile_FastCap.Build.0 = Profile_FastCap|Xbox
+		{6740EF6D-477B-48F3-A442-FEF66F1D3F07}.Release.ActiveCfg = Release|Xbox
+		{6740EF6D-477B-48F3-A442-FEF66F1D3F07}.Release.Build.0 = Release|Xbox
+		{6740EF6D-477B-48F3-A442-FEF66F1D3F07}.Release_LTCG.ActiveCfg = Release_LTCG|Xbox
+		{6740EF6D-477B-48F3-A442-FEF66F1D3F07}.Release_LTCG.Build.0 = Release_LTCG|Xbox
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.10"
+	Name="libGForce"
+	ProjectGUID="{6740EF6D-477B-48F3-A442-FEF66F1D3F07}"
+	Keyword="XboxProj">
+	<Platforms>
+		<Platform
+			Name="Xbox"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Debug|Xbox"
+			OutputDirectory="Debug"
+			IntermediateDirectory="Debug"
+			ConfigurationType="4"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				OptimizeForProcessor="2"
+				AdditionalIncludeDirectories="D:\Develop\libGForce\Common;D:\Develop\libGForce\Common\UI;D:\Develop\libGForce\Common\math;D:\Develop\libGForce\Common\io;&quot;D:\Develop\libGForce\Common\General Tools&quot;;&quot;D:\Develop\libGForce\_G-Force Common&quot;"
+				PreprocessorDefinitions="_DEBUG;_XBOX;_LIB;EG_WIN"
+				MinimalRebuild="TRUE"
+				ExceptionHandling="FALSE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="1"
+				EnableFunctionLevelLinking="TRUE"
+				EnableEnhancedInstructionSet="1"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="4"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/$(ProjectName).lib"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+		</Configuration>
+		<Configuration
+			Name="Profile|Xbox"
+			OutputDirectory="Profile"
+			IntermediateDirectory="Profile"
+			ConfigurationType="4"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="3"
+				OmitFramePointers="TRUE"
+				OptimizeForProcessor="2"
+				AdditionalIncludeDirectories="D:\Develop\libGForce\Common;D:\Develop\libGForce\Common\UI;D:\Develop\libGForce\Common\math;D:\Develop\libGForce\Common\io;&quot;D:\Develop\libGForce\Common\General Tools&quot;;&quot;D:\Develop\libGForce\_G-Force Common&quot;"
+				PreprocessorDefinitions="NDEBUG;_XBOX;PROFILE;_LIB"
+				StringPooling="TRUE"
+				ExceptionHandling="FALSE"
+				RuntimeLibrary="0"
+				BufferSecurityCheck="TRUE"
+				EnableFunctionLevelLinking="TRUE"
+				EnableEnhancedInstructionSet="1"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="3"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/$(ProjectName).lib"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+		</Configuration>
+		<Configuration
+			Name="Profile_FastCap|Xbox"
+			OutputDirectory="Profile_FastCap"
+			IntermediateDirectory="Profile_FastCap"
+			ConfigurationType="4"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="3"
+				OmitFramePointers="TRUE"
+				OptimizeForProcessor="2"
+				AdditionalIncludeDirectories="D:\Develop\libGForce\Common;D:\Develop\libGForce\Common\UI;D:\Develop\libGForce\Common\math;D:\Develop\libGForce\Common\io;&quot;D:\Develop\libGForce\Common\General Tools&quot;;&quot;D:\Develop\libGForce\_G-Force Common&quot;"
+				PreprocessorDefinitions="NDEBUG;_XBOX;PROFILE;FASTCAP;_LIB"
+				StringPooling="TRUE"
+				ExceptionHandling="FALSE"
+				RuntimeLibrary="0"
+				BufferSecurityCheck="TRUE"
+				EnableFunctionLevelLinking="TRUE"
+				EnableEnhancedInstructionSet="1"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="3"
+				FastCAP="TRUE"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/$(ProjectName).lib"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release|Xbox"
+			OutputDirectory="Release"
+			IntermediateDirectory="Release"
+			ConfigurationType="4"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="3"
+				GlobalOptimizations="TRUE"
+				EnableIntrinsicFunctions="TRUE"
+				FavorSizeOrSpeed="1"
+				OmitFramePointers="TRUE"
+				OptimizeForProcessor="2"
+				AdditionalIncludeDirectories="c:\sourceforge\libGForce\Common;c:\sourceforge\libGForce\Common\UI;c:\sourceforge\libGForce\Common\math;c:\sourceforge\libGForce\Common\io;&quot;c:\sourceforge\libGForce\Common\General Tools&quot;;&quot;c:\sourceforge\libGForce\_G-Force Common&quot;"
+				PreprocessorDefinitions="NDEBUG;_XBOX;_LIB;EG_WIN"
+				StringPooling="TRUE"
+				ExceptionHandling="FALSE"
+				RuntimeLibrary="0"
+				BufferSecurityCheck="FALSE"
+				EnableFunctionLevelLinking="TRUE"
+				EnableEnhancedInstructionSet="1"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="3"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/$(ProjectName).lib"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release_LTCG|Xbox"
+			OutputDirectory="Release_LTCG"
+			IntermediateDirectory="Release_LTCG"
+			ConfigurationType="4"
+			CharacterSet="2"
+			WholeProgramOptimization="TRUE">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="3"
+				OmitFramePointers="TRUE"
+				OptimizeForProcessor="2"
+				AdditionalIncludeDirectories="D:\Develop\libGForce\Common;D:\Develop\libGForce\Common\UI;D:\Develop\libGForce\Common\math;D:\Develop\libGForce\Common\io;&quot;D:\Develop\libGForce\Common\General Tools&quot;;&quot;D:\Develop\libGForce\_G-Force Common&quot;"
+				PreprocessorDefinitions="NDEBUG;_XBOX;LTCG;_LIB"
+				StringPooling="TRUE"
+				ExceptionHandling="FALSE"
+				RuntimeLibrary="0"
+				BufferSecurityCheck="TRUE"
+				EnableFunctionLevelLinking="TRUE"
+				EnableEnhancedInstructionSet="1"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="3"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/$(ProjectName).lib"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<Filter
+			Name="GForce"
+			Filter="">
+			<File
+				RelativePath=".\_G-Force Common\DeltaField.cpp">
+			</File>
+			<File
+				RelativePath=".\_G-Force Common\DeltaField.h">
+			</File>
+			<File
+				RelativePath=".\_G-Force Common\G-Force.cpp">
+			</File>
+			<File
+				RelativePath=".\_G-Force Common\G-Force.h">
+			</File>
+			<File
+				RelativePath=".\_G-Force Common\G-Force_core.cpp">
+			</File>
+			<File
+				RelativePath=".\_G-Force Common\G-Force_core.h">
+			</File>
+			<File
+				RelativePath=".\_G-Force Common\G-Force_Proj.h">
+			</File>
+			<File
+				RelativePath=".\_G-Force Common\GF_Palette.cpp">
+			</File>
+			<File
+				RelativePath=".\_G-Force Common\GF_Palette.h">
+			</File>
+			<File
+				RelativePath=".\_G-Force Common\GForcePixPort.cpp">
+			</File>
+			<File
+				RelativePath=".\_G-Force Common\GForcePixPort.h">
+			</File>
+			<File
+				RelativePath=".\_G-Force Common\ParticleGroup.cpp">
+			</File>
+			<File
+				RelativePath=".\_G-Force Common\ParticleGroup.h">
+			</File>
+			<File
+				RelativePath=".\_G-Force Common\WaveShape.cpp">
+			</File>
+			<File
+				RelativePath=".\_G-Force Common\WaveShape.h">
+			</File>
+		</Filter>
+		<Filter
+			Name="Common"
+			Filter="">
+			<File
+				RelativePath=".\Common\Eg Common.h">
+			</File>
+			<Filter
+				Name="General Tools"
+				Filter="">
+				<File
+					RelativePath=".\Common\General Tools\Arg.cpp">
+				</File>
+				<File
+					RelativePath=".\Common\General Tools\Arg.h">
+				</File>
+				<File
+					RelativePath=".\Common\General Tools\ArgList.cpp">
+				</File>
+				<File
+					RelativePath=".\Common\General Tools\ArgList.h">
+				</File>
+				<File
+					RelativePath=".\Common\General Tools\CStrNode.cpp">
+				</File>
+				<File
+					RelativePath=".\Common\General Tools\CStrNode.h">
+				</File>
+				<File
+					RelativePath=".\Common\General Tools\FileSpecList.cpp">
+				</File>
+				<File
+					RelativePath=".\Common\General Tools\FileSpecList.h">
+				</File>
+				<File
+					RelativePath=".\Common\General Tools\Hashable.h">
+				</File>
+				<File
+					RelativePath=".\Common\General Tools\Hashtable.cpp">
+				</File>
+				<File
+					RelativePath=".\Common\General Tools\Hashtable.h">
+				</File>
+				<File
+					RelativePath=".\Common\General Tools\nodeClass.cpp">
+				</File>
+				<File
+					RelativePath=".\Common\General Tools\nodeClass.h">
+				</File>
+				<File
+					RelativePath=".\Common\General Tools\RectUtils.cpp">
+				</File>
+				<File
+					RelativePath=".\Common\General Tools\RectUtils.h">
+				</File>
+				<File
+					RelativePath=".\Common\General Tools\TempMem.cpp">
+				</File>
+				<File
+					RelativePath=".\Common\General Tools\TempMem.h">
+				</File>
+				<File
+					RelativePath=".\Common\General Tools\UtilStr.cpp">
+				</File>
+				<File
+					RelativePath=".\Common\General Tools\UtilStr.h">
+				</File>
+				<File
+					RelativePath=".\Common\General Tools\XFloatList.cpp">
+				</File>
+				<File
+					RelativePath=".\Common\General Tools\XFloatList.h">
+				</File>
+				<File
+					RelativePath=".\Common\General Tools\XLongList.cpp">
+				</File>
+				<File
+					RelativePath=".\Common\General Tools\XLongList.h">
+				</File>
+				<File
+					RelativePath=".\Common\General Tools\XPtrList.cpp">
+				</File>
+				<File
+					RelativePath=".\Common\General Tools\XPtrList.h">
+				</File>
+				<File
+					RelativePath=".\Common\General Tools\XStrList.cpp">
+				</File>
+				<File
+					RelativePath=".\Common\General Tools\XStrList.h">
+				</File>
+			</Filter>
+			<Filter
+				Name="IO"
+				Filter="">
+				<File
+					RelativePath=".\Common\io\CEgErr.cpp">
+				</File>
+				<File
+					RelativePath=".\Common\io\CEgErr.h">
+				</File>
+				<File
+					RelativePath=".\Common\io\CEgFileSpec.cpp">
+				</File>
+				<File
+					RelativePath=".\Common\io\CEgFileSpec.h">
+				</File>
+				<File
+					RelativePath=".\Common\io\CEgIFile.cpp">
+				</File>
+				<File
+					RelativePath=".\Common\io\CEgIFile.h">
+				</File>
+				<File
+					RelativePath=".\Common\io\CEgIOFile.cpp">
+				</File>
+				<File
+					RelativePath=".\Common\io\CEgIOFile.h">
+				</File>
+				<File
+					RelativePath=".\Common\io\CEgIStream.cpp">
+				</File>
+				<File
+					RelativePath=".\Common\io\CEgIStream.h">
+				</File>
+				<File
+					RelativePath=".\Common\io\CEgOStream.cpp">
+				</File>
+				<File
+					RelativePath=".\Common\io\CEgOStream.h">
+				</File>
+				<File
+					RelativePath=".\Common\io\ConfigFile.cpp">
+				</File>
+				<File
+					RelativePath=".\Common\io\ConfigFile.h">
+				</File>
+				<File
+					RelativePath=".\Common\io\Prefs.cpp">
+				</File>
+				<File
+					RelativePath=".\Common\io\Prefs.h">
+				</File>
+			</Filter>
+			<Filter
+				Name="Math"
+				Filter="">
+				<File
+					RelativePath=".\Common\math\ExprArray.cpp">
+				</File>
+				<File
+					RelativePath=".\Common\math\ExprArray.h">
+				</File>
+				<File
+					RelativePath=".\Common\math\Expression.cpp">
+				</File>
+				<File
+					RelativePath=".\Common\math\Expression.h">
+				</File>
+				<File
+					RelativePath=".\Common\math\ExpressionDict.cpp">
+				</File>
+				<File
+					RelativePath=".\Common\math\ExpressionDict.h">
+				</File>
+				<File
+					RelativePath=".\Common\math\ExprVirtualMachine.cpp">
+				</File>
+				<File
+					RelativePath=".\Common\math\ExprVirtualMachine.h">
+				</File>
+			</Filter>
+			<Filter
+				Name="UI"
+				Filter="">
+				<File
+					RelativePath=".\Common\Ui\DrawXX.cpp">
+					<FileConfiguration
+						Name="Debug|Xbox"
+						ExcludedFromBuild="TRUE">
+						<Tool
+							Name="VCCLCompilerTool"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Profile|Xbox"
+						ExcludedFromBuild="TRUE">
+						<Tool
+							Name="VCCLCompilerTool"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Profile_FastCap|Xbox"
+						ExcludedFromBuild="TRUE">
+						<Tool
+							Name="VCCLCompilerTool"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Xbox"
+						ExcludedFromBuild="TRUE">
+						<Tool
+							Name="VCCLCompilerTool"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release_LTCG|Xbox"
+						ExcludedFromBuild="TRUE">
+						<Tool
+							Name="VCCLCompilerTool"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\Common\Ui\EgOSUtils.cpp">
+				</File>
+				<File
+					RelativePath=".\Common\Ui\EgOSUtils.h">
+				</File>
+				<File
+					RelativePath=".\Common\Ui\LineXX.cpp">
+					<FileConfiguration
+						Name="Debug|Xbox"
+						ExcludedFromBuild="TRUE">
+						<Tool
+							Name="VCCLCompilerTool"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Profile|Xbox"
+						ExcludedFromBuild="TRUE">
+						<Tool
+							Name="VCCLCompilerTool"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Profile_FastCap|Xbox"
+						ExcludedFromBuild="TRUE">
+						<Tool
+							Name="VCCLCompilerTool"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Xbox"
+						ExcludedFromBuild="TRUE">
+						<Tool
+							Name="VCCLCompilerTool"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release_LTCG|Xbox"
+						ExcludedFromBuild="TRUE">
+						<Tool
+							Name="VCCLCompilerTool"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\Common\Ui\PixPort.cpp">
+				</File>
+				<File
+					RelativePath=".\Common\Ui\PixPort.h">
+				</File>
+			</Filter>
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>
