@@ -539,6 +539,8 @@ namespace VIDEO
                     CLog::Log(LOGDEBUG, "%s Got details from nfo", __FUNCTION__);
                     CVideoInfoTag movieDetails;
                     nfoReader.GetDetails(movieDetails);
+                    if (m_pObserver)
+                      m_pObserver->OnSetTitle(movieDetails.m_strTitle);
                     AddMovieAndGetThumb(pItem, "movies", movieDetails, -1, bDirNames, m_dlgProgress);
                     continue;
                   }
@@ -550,6 +552,8 @@ namespace VIDEO
                     scrUrl.strId  = nfoReader.m_strImDbNr;
                     SScraperInfo info2(info);
                     info2.strPath = nfoReader.m_strScraper;
+                    if (m_pObserver)
+                      m_pObserver->OnSetTitle(CUtil::GetFileName(pItem->m_strPath));
                     GetIMDBDetails(pItem, scrUrl, info2, bDirNames, m_dlgProgress);
                     continue;
                   }
@@ -578,6 +582,8 @@ namespace VIDEO
                     CLog::Log(LOGDEBUG, "%s Got details from nfo", __FUNCTION__);
                     CVideoInfoTag movieDetails;
                     nfoReader.GetDetails(movieDetails);
+                    if (m_pObserver)
+                      m_pObserver->OnSetTitle(movieDetails.m_strTitle);
                     AddMovieAndGetThumb(pItem, "musicvideos", movieDetails, -1, false, m_dlgProgress);
                     continue;
                   }
