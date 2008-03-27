@@ -701,6 +701,22 @@ void CUtil::CleanFileName(CStdString& strFileName)
   //CLog::Log(LOGNOTICE, "CleanFileName : 9 : " + strFileName);
 }
 
+void CUtil::GetCommonPath(CStdString& strParent, const CStdString& strPath)
+{
+  // find the common path of parent and path
+  unsigned int j = 1;
+  while (j <= min(strParent.size(), strPath.size()) && strnicmp(strParent.c_str(), strPath.c_str(), j) == 0)
+    j++;
+  strParent = strParent.Left(j - 1);
+  // they should at least share a / at the end, though for things such as path/cd1 and path/cd2 there won't be
+  if (!CUtil::HasSlashAtEnd(strParent))
+  {
+    // currently GetDirectory() removes trailing slashes
+    CUtil::GetDirectory(strParent, strParent);
+    CUtil::AddSlashAtEnd(strParent);
+  }
+}
+
 bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
 {
   strParent = "";
@@ -714,9 +730,18 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
   }
   else if (url.GetProtocol() == "stack")
   {
-    // TODO: get the first parent path common to all stack items
     CStackDirectory dir;
-    return GetParentPath(dir.GetFirstStackedFile(strPath), strParent);
+    CFileItemList items;
+    dir.GetDirectory(strPath,items);
+    CUtil::GetDirectory(items[0]->m_strPath,items[0]->m_strDVDLabel);
+    GetParentPath(items[0]->m_strDVDLabel, strParent);
+    for( int i=1;i<items.Size();++i)
+    {
+      CUtil::GetDirectory(items[i]->m_strPath,items[i]->m_strDVDLabel);
+      GetParentPath(items[i]->m_strDVDLabel,items[i]->m_strPath);
+      GetCommonPath(strParent,items[i]->m_strPath);
+    }
+    return true;
   }
   else if (url.GetProtocol() == "multipath")
   {
