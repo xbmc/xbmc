@@ -288,14 +288,17 @@ void CGUIWindowManager::ChangeActiveWindow(int newWindow, const CStdString& strP
 
 void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath, bool swappingWindows)
 {
+  CStdString strPath1 = strPath;
   // translate virtual windows
   // virtual music window which returns the last open music window (aka the music start window)
   if (iWindowID == WINDOW_MUSIC)
   {
     iWindowID = g_stSettings.m_iMyMusicStartWindow;
     // ensure the music virtual window only returns music files and music library windows
-    if (iWindowID != WINDOW_MUSIC_FILES && iWindowID != WINDOW_MUSIC_NAV)
+    if (iWindowID != WINDOW_MUSIC_NAV)
       iWindowID = WINDOW_MUSIC_FILES;
+    // destination path cannot be used with virtual window
+    strPath1 = "";
   }
   // virtual video window which returns the last open video window (aka the video start window)
   if (iWindowID == WINDOW_VIDEOS)
@@ -304,6 +307,23 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath,
     // ensure the virtual video window only returns video windows
     if (iWindowID != WINDOW_VIDEO_NAV)
       iWindowID = WINDOW_VIDEO_FILES;
+    // destination path cannot be used with virtual window
+    strPath1 = "";
+  }
+  // Is the Library enabled?  If not, go to Files view.
+  if (iWindowID == WINDOW_MUSIC_NAV && !g_guiSettings.GetBool("mymusic.enablelibrary"))
+  {
+    iWindowID = WINDOW_MUSIC_FILES;
+    // clear destination path
+    strPath1 = "";
+    CLog::Log(LOGDEBUG, "Trying to activate Music Library, but its disabled.  Switching to Files instead.");
+  }
+  if (iWindowID == WINDOW_VIDEO_NAV && !g_guiSettings.GetBool("videolibrary.enabled"))
+  {
+    iWindowID = WINDOW_VIDEO_FILES;
+    // clear destination path
+    strPath1 = "";
+    CLog::Log(LOGDEBUG, "Trying to activate Video Library, but its disabled.  Switching to Files instead.");
   }
 
   // debug
@@ -358,7 +378,7 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath,
   g_audioManager.PlayWindowSound(pNewWindow->GetID(), SOUND_INIT);
   // Send the init message
   CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0, GetActiveWindow(), iWindowID);
-  if (!strPath.IsEmpty()) msg.SetStringParam(strPath);
+  if (!strPath1.IsEmpty()) msg.SetStringParam(strPath1);
   pNewWindow->OnMessage(msg);
 //  g_infoManager.SetPreviousWindow(WINDOW_INVALID);
 }

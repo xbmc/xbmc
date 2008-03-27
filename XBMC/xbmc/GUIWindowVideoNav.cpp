@@ -169,7 +169,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
 
       //  base class has opened the database, do our check
       m_database.Open();
-      DisplayEmptyDatabaseMessage(m_database.GetMovieCount() <= 0 && m_database.GetTvShowCount() <= 0 && m_database.GetMusicVideoCount() <= 0);
+      DisplayEmptyDatabaseMessage(m_database.GetItemCount() <= 0);
 
       if (m_bDisplayEmptyDatabaseMessage)
       {
@@ -741,7 +741,7 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
 
   CUtil::DeleteVideoDatabaseDirectoryCache();
 
-  DisplayEmptyDatabaseMessage(m_database.GetMovieCount() <= 0 && m_database.GetTvShowCount() <= 0 && m_database.GetMusicVideoCount() <= 0);
+  DisplayEmptyDatabaseMessage(m_database.GetItemCount() <= 0);
   Update( m_vecItems.m_strPath );
   m_viewControl.SetSelectedItem(iItem);
   return;
