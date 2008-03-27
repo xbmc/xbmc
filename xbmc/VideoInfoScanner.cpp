@@ -374,6 +374,7 @@ namespace VIDEO
     // for every file found
     IMDB_EPISODELIST episodes;
     IMDB_EPISODELIST files;
+    CVideoInfoTag showDetails;
     long lTvShowId = -1;
     m_database.Open();
     m_database.BeginTransaction();
@@ -422,8 +423,7 @@ namespace VIDEO
           {
             lTvShowId = lTvShowId2;
             // fetch episode guide
-            CVideoInfoTag details;
-            m_database.GetTvShowInfo(pItem->m_strPath,details,lTvShowId);
+            m_database.GetTvShowInfo(pItem->m_strPath,showDetails,lTvShowId);
             files.clear();
             EnumerateSeriesFolder(pItem,files);
             if (files.size() == 0) // no update or no files
@@ -431,7 +431,7 @@ namespace VIDEO
 
             CScraperUrl url;
             //convert m_strEpisodeGuide in url.m_scrURL
-            url.ParseEpisodeGuide(details.m_strEpisodeGuide);
+            url.ParseEpisodeGuide(showDetails.m_strEpisodeGuide);
             if (m_dlgProgress)
             {
               if (pItem->m_bIsFolder)
@@ -439,7 +439,7 @@ namespace VIDEO
               else
                 m_dlgProgress->SetHeading(20361);
               m_dlgProgress->SetLine(0, pItem->GetLabel());
-              m_dlgProgress->SetLine(1,details.m_strTitle);
+              m_dlgProgress->SetLine(1,showDetails.m_strTitle);
               m_dlgProgress->SetLine(2,20354);
               m_dlgProgress->Progress();
             }
@@ -463,7 +463,7 @@ namespace VIDEO
           if (m_pObserver)
             m_pObserver->OnDirectoryChanged(pItem->m_strPath);
 
-          OnProcessSeriesFolder(episodes,files,lTvShowId2,IMDB,m_dlgProgress);
+          OnProcessSeriesFolder(episodes,files,lTvShowId2,IMDB,showDetails.m_strTitle,m_dlgProgress);
           continue;
         }
         else
@@ -627,7 +627,7 @@ namespace VIDEO
                   EnumerateSeriesFolder(pItem,files);
                   if (IMDB.GetEpisodeList(url,episodes))
                   {
-                    OnProcessSeriesFolder(episodes,files,lResult,IMDB,m_dlgProgress);
+                    OnProcessSeriesFolder(episodes,files,lResult,IMDB,details.m_strTitle,m_dlgProgress);
                   }
                 }
                 else
@@ -899,7 +899,7 @@ namespace VIDEO
     return lResult;
   }
 
-  void CVideoInfoScanner::OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, IMDB_EPISODELIST& files, long lShowId, CIMDB& IMDB, CGUIDialogProgress* pDlgProgress /* = NULL */)
+  void CVideoInfoScanner::OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, IMDB_EPISODELIST& files, long lShowId, CIMDB& IMDB, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress /* = NULL */)
   {
     if (pDlgProgress)
     {
@@ -946,6 +946,12 @@ namespace VIDEO
           break;
         episodeDetails.m_iSeason = iter2->first.first;
         episodeDetails.m_iEpisode = iter2->first.second;
+        if (m_pObserver)
+        {
+          CStdString strTitle;
+          strTitle.Format("%s - %ix%i - %s",strShowTitle.c_str(),episodeDetails.m_iSeason,episodeDetails.m_iEpisode,episodeDetails.m_strTitle.c_str());
+          m_pObserver->OnSetTitle(strTitle);
+        }
         CFileItem item;
         item.m_strPath = iter->second.m_url[0].m_url;
         AddMovieAndGetThumb(&item,"tvshows",episodeDetails,lShowId);
