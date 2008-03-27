@@ -874,6 +874,8 @@ void CGUIWindowVideoInfo::PlayTrailer()
   *item.GetVideoInfoTag() = *m_movieItem.GetVideoInfoTag();
   item.GetVideoInfoTag()->m_strTitle.Format("%s (%s)",m_movieItem.GetVideoInfoTag()->m_strTitle.c_str(),g_localizeStrings.Get(20410));
   item.SetThumbnailImage(m_movieItem.GetThumbnailImage());
+  // Close the dialog.
+  Close(true);
   g_applicationMessenger.PlayFile(item);
 }
 
