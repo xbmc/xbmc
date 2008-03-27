@@ -2347,6 +2347,8 @@ void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath)
       return ;
     }
 
+    BeginTransaction();
+    
     ClearBookMarksOfFile(strFilenameAndPath);
 
     CStdString strSQL;
@@ -2367,6 +2369,12 @@ void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath)
 
     strSQL=FormatSQL("delete from movielinktvshow where idmovie=%i", lMovieId);
     m_pDS->exec(strSQL.c_str());
+
+    CStdString strPath, strFileName;
+    SplitPath(strFilenameAndPath,strPath,strFileName);
+    InvalidatePathHash(strPath);
+
+    CommitTransaction();
   }
   catch (...)
   {
@@ -2416,6 +2424,8 @@ void CVideoDatabase::DeleteTvShow(const CStdString& strPath)
     strSQL=FormatSQL("delete from movielinktvshow where idshow=%i", lTvShowId);
     m_pDS->exec(strSQL.c_str());
 
+    InvalidatePathHash(strPath);
+
     CommitTransaction();
   }
   catch (...)
@@ -2439,6 +2449,8 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, long lE
       }
     }
 
+    BeginTransaction();
+    
     ClearBookMarksOfFile(strFilenameAndPath);
 
     CStdString strSQL;
@@ -2463,6 +2475,12 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, long lE
 
     strSQL=FormatSQL("delete from episode where idepisode=%i", lEpisodeId);
     m_pDS->exec(strSQL.c_str());
+
+    CStdString path;
+    GetFilePath(idShow, path, 2);
+    InvalidatePathHash(path);
+
+    CommitTransaction();
   }
   catch (...)
   {
@@ -2482,6 +2500,8 @@ void CVideoDatabase::DeleteMusicVideo(const CStdString& strFilenameAndPath)
       return ;
     }
 
+    BeginTransaction();
+
     ClearBookMarksOfFile(strFilenameAndPath);
 
     CStdString strSQL;
@@ -2499,6 +2519,12 @@ void CVideoDatabase::DeleteMusicVideo(const CStdString& strFilenameAndPath)
 
     strSQL=FormatSQL("delete from musicvideo where idmvideo=%i", lMVideoId);
     m_pDS->exec(strSQL.c_str());
+
+    CStdString strPath, strFileName;
+    SplitPath(strFilenameAndPath,strPath,strFileName);
+    InvalidatePathHash(strPath);
+
+    CommitTransaction();
   }
   catch (...)
   {
@@ -6775,4 +6801,22 @@ void CVideoDatabase::SplitPath(const CStdString& strFileNameAndPath, CStdString&
   }
   else
     CUtil::Split(strFileNameAndPath,strPath, strFileName);
+}
+
+void CVideoDatabase::InvalidatePathHash(const CStdString& strPath)
+{
+  SScraperInfo info;
+  SScanSettings settings;
+  int iFound;
+  GetScraperForPath(strPath,info,settings,iFound);
+  SetPathHash(strPath,"");
+  if (info.strContent.Equals("tvshows") || (info.strContent.Equals("movies") && iFound != 1)) // if we scan by folder name we need to invalidate parent as well
+  {
+    if (info.strContent.Equals("tvshows") || settings.parent_name_root)
+    {
+      CStdString strParent;
+      CUtil::GetParentPath(strPath,strParent);
+      SetPathHash(strParent,"");
+    }
+  }
 }
