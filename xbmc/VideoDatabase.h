@@ -415,4 +415,7 @@ protected:
 private:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
+
+  void ConstructPath(CStdString& strDest, const CStdString& strPath, const CStdString& strFileName);
+  void SplitPath(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
 };
