@@ -1096,6 +1096,17 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetString("lookandfeel.soundskin") != "OFF");
     }
+    else if (strSetting.Equals("mymusic.cleanupmusiclibrary"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("mymusic.enablelibrary"));
+    }
+    else if (!strSetting.Equals("videolibrary.enabled")
+      && strSetting.Left(13).Equals("videolibrary."))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videolibrary.enabled"));
+    }
   }
 }
 

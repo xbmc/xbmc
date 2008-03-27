@@ -323,6 +323,12 @@
 #define SYSTEM_TOTAL_SPACE_Z        703
 #define SYSTEM_GET_BOOL             704
 
+#define LIBRARY_HAS_MUSIC           720
+#define LIBRARY_HAS_VIDEO           721
+#define LIBRARY_HAS_MOVIES          722
+#define LIBRARY_HAS_TVSHOWS         723
+#define LIBRARY_HAS_MUSICVIDEOS     724
+
 #define SYSTEM_PLATFORM_XBOX        740
 #define SYSTEM_PLATFORM_LINUX       741
 #define SYSTEM_PLATFORM_WINDOWS     742
@@ -528,6 +534,7 @@ public:
   void SetPreviousWindow(int windowID) { m_prevWindowID = windowID; };
 
   void ResetCache();
+  void ResetPersistentCache();
 
   CStdString GetItemLabel(const CFileItem *item, int info) const;
   CStdString GetItemImage(const CFileItem *item, int info) const;
@@ -618,8 +625,11 @@ protected:
 
   // routines for caching the bool results
   bool IsCached(int condition, DWORD contextWindow, bool &result) const;
-  void CacheBool(int condition, DWORD contextWindow, bool result);
+  void CacheBool(int condition, DWORD contextWindow, bool result, bool persistent=false);
   std::map<int, bool> m_boolCache;
+
+  // persistent cache
+  std::map<int, bool> m_persistentBoolCache;
 
   CCriticalSection m_critInfo;
 };
