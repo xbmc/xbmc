@@ -360,6 +360,7 @@ public:
   long GetMusicVideoArtistByName(const CStdString& strArtist);
   long GetMusicVideoByArtistAndAlbumAndTitle(const CStdString& strArtist, const CStdString& strAlbum, const CStdString& strTitle);
 
+  int GetItemCount();
   int GetMovieCount();
   int GetTvShowCount();
   int GetMusicVideoCount();
