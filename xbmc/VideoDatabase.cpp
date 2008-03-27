@@ -5865,7 +5865,7 @@ void CVideoDatabase::GetMusicVideosByName(const CStdString& strSearch, CFileItem
 
       CFileItem* pItem=new CFileItem(m_pDS->fv(1).get_asString());
       CStdString strDir;
-      strDir.Format("3/1/%ld",m_pDS->fv("musicvideo.idmvideo").get_asLong());
+      strDir.Format("3/2/%ld",m_pDS->fv("musicvideo.idmvideo").get_asLong());
       
       pItem->m_strPath="videodb://"+ strDir;
       pItem->m_bIsFolder=false;
