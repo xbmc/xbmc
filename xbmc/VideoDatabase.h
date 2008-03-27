@@ -262,6 +262,7 @@ public:
   void DeleteDetailsForTvShow(const CStdString& strPath);
 
   void GetFilePath(long lMovieId, CStdString &filePath, int iType=0); // 0=movies, 1=episodes, 2=tvshows, 3=musicvideo
+  long GetPath(const CStdString& strPath);
   bool GetPathHash(const CStdString &path, CStdString &hash);
   bool GetPaths(std::map<CStdString,VIDEO::SScanSettings> &paths);
 
@@ -371,14 +372,13 @@ public:
   bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info, VIDEO::SScanSettings& settings);
   bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info, VIDEO::SScanSettings& settings, int& iFound);
 
-  void CleanDatabase(VIDEO::IVideoInfoScannerObserver* pObserver=NULL);
+  void CleanDatabase(VIDEO::IVideoInfoScannerObserver* pObserver=NULL, const std::vector<long>* paths=NULL);
   
   long AddFile(const CStdString& strFileName);
   void ExportToXML(const CStdString &xmlFile, bool singleFiles = false);
   void ImportFromXML(const CStdString &xmlFile);
 
 protected:
-  long GetPath(const CStdString& strPath);
   long GetFile(const CStdString& strFilenameAndPath);
 
   long AddPath(const CStdString& strPath);
