@@ -78,6 +78,10 @@ private:
   int  m_LastKey;
   bool m_buttonRepeat;
 
+  int  m_lastKeyPressedNunchuck;
+  int  m_LastKeyNunchuck;
+  bool m_buttonRepeatNunchuck;
+
   void SetRptMode();
   void SetLedState();
 
@@ -125,6 +129,8 @@ private:
   //Button
   void ProcessKey(int Key);
  	
+  //Nunchuck
+  void ProcessNunchuck(struct cwiid_nunchuk_mesg &Nunchuck);
 #ifdef CWIID_OLD
   //Disconnect check
   void CheckIn();

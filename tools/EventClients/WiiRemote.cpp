@@ -26,6 +26,9 @@
 
 bool g_AllowReconnect = true;
 bool g_AllowMouse     = true;
+bool g_AllowNunchuck  = true;
+
+CPacketHELO g_Ping("WiiRemote", ICON_PNG, "icons/bluetooth.png");
 
 long getTicks()
 {
@@ -88,7 +91,7 @@ void CWiiRemote::MessageCallback(cwiid_wiimote_t *wiiremote, int mesg_count, uni
       //Here we can figure out Extensiontypes and such
     break;
     case CWIID_MESG_NUNCHUK:
-      //Not implemented
+      g_WiiRemote.ProcessNunchuck(mesg[i].nunchuk_mesg);
     break;
     case CWIID_MESG_CLASSIC:
       //Not implemented
@@ -141,11 +144,14 @@ void CWiiRemote::SetBluetoothAddress(const char *btaddr)
 void CWiiRemote::Initialize(CAddress Addr, int Socket)
 {
   m_connected = false;
-  m_lastKeyPressed = 0;
-  m_LastKey = 0;
-  m_buttonRepeat = false;
-  m_useIRMouse = true;
-  m_rptMode = 0;
+  m_lastKeyPressed          = 0;
+  m_LastKey                 = 0;
+  m_buttonRepeat            = false;
+  m_lastKeyPressedNunchuck  = 0;
+  m_LastKeyNunchuck         = 0;
+  m_buttonRepeatNunchuck    = false;
+  m_useIRMouse              = true;
+  m_rptMode                 = 0;
 
   m_Socket = Socket;
   m_MyAddr = Addr;
@@ -157,6 +163,8 @@ void CWiiRemote::Initialize(CAddress Addr, int Socket)
   //All control bits are set to false when cwiid is started
   //Report Button presses
   ToggleBit(m_rptMode, CWIID_RPT_BTN);
+  if (g_AllowNunchuck)
+    ToggleBit(m_rptMode, CWIID_RPT_NUNCHUK);
 
   //If wiiremote is used as a mouse, then report the IR sources
 #ifndef CWIID_OLD  
@@ -258,8 +266,7 @@ bool CWiiRemote::Connect()
 #endif
   while (!m_connected)
   {
-    CPacketPING ping;
-    ping.Send(m_Socket, m_MyAddr);
+    g_Ping.Send(m_Socket, m_MyAddr);
     int flags = 0;
     ToggleBit(flags, CWIID_FLAG_MESG_IFC);
     ToggleBit(flags, CWIID_FLAG_REPEAT_BTN);
@@ -411,8 +418,79 @@ void CWiiRemote::ProcessKey(int Key)
   {
     CPacketBUTTON btn(RtnKey, "KB", true);
     btn.Send(m_Socket, m_MyAddr);
-//    m_LastKey = Key;
-//    m_lastKeyPressed = getTicks();
+  }
+}
+
+void CWiiRemote::ProcessNunchuck(struct cwiid_nunchuk_mesg &Nunchuck)
+{
+  if (Nunchuck.stick[0] > 135)
+  { //R
+    int x = (int)((((float)Nunchuck.stick[0] - 135.0f) / 95.0f) * 65535.0f);
+    printf("Right: %i\n", x);
+    CPacketBUTTON btn("rightthumbstickleft", "XG", true, true, true, x);
+    btn.Send(m_Socket, m_MyAddr);
+  }
+  else if (Nunchuck.stick[0] < 125)
+  { //L
+    int x = (int)((((float)Nunchuck.stick[0] - 125.0f) / 90.0f) * -65535.0f);
+    printf("Left: %i\n", x);
+    CPacketBUTTON btn("leftthumbstickleft", "XG", true, true, true, x);
+    btn.Send(m_Socket, m_MyAddr);
+  }
+
+  if (Nunchuck.stick[1] > 130)
+  { //U
+    int x = (int)((((float)Nunchuck.stick[1] - 130.0f) / 92.0f) * 65535.0f);
+    printf("Up: %i\n", x);
+    CPacketBUTTON btn("upthumbstickleft", "XG", true, true, true, x);
+    btn.Send(m_Socket, m_MyAddr);
+  }
+  else if (Nunchuck.stick[1] < 120)
+  { //D
+    int x = (int)((((float)Nunchuck.stick[1] - 120.0f) / 90.0f) * -65535.0f);
+    printf("Down: %i\n", x);
+    CPacketBUTTON btn("downthumbstickleft", "XG", true, true, true, x);
+    btn.Send(m_Socket, m_MyAddr);
+  }
+
+  if (Nunchuck.buttons != m_LastKeyNunchuck)
+  {
+    m_LastKeyNunchuck = Nunchuck.buttons;
+    m_lastKeyPressedNunchuck = getTicks();
+    m_buttonRepeatNunchuck = false;
+  }
+  else
+  {
+    if (m_buttonRepeatNunchuck)
+    {
+      if (getTicks() - m_lastKeyPressedNunchuck > WIIREMOTE_BUTTON_REPEAT_TIME)
+        m_lastKeyPressedNunchuck = getTicks();
+      else
+        return;
+    }
+    else
+    {
+      if (getTicks() - m_lastKeyPressedNunchuck > WIIREMOTE_BUTTON_DELAY_TIME)     
+      {
+        m_buttonRepeatNunchuck = true;
+        m_lastKeyPressedNunchuck = getTicks();
+      }
+      else
+        return;
+    }
+  }
+
+  char *RtnKey = NULL;
+
+  if      (Nunchuck.buttons == CWIID_NUNCHUK_BTN_C)
+    RtnKey = "x";
+  else if (Nunchuck.buttons == CWIID_NUNCHUK_BTN_Z)
+    RtnKey = "end";
+
+  if (RtnKey != NULL)
+  {
+    CPacketBUTTON btn(RtnKey, "KB", true);
+    btn.Send(m_Socket, m_MyAddr);
   }
 }
 
@@ -502,7 +580,7 @@ void CWiiRemote::CalculateMousePointer(int x1, int y1, int x2, int y2)
 void PrintHelp(const char *Prog)
 {
   printf("Commands:\n");
-  printf("\t--disable-mouseemulation\n\t--disable-reconnect\n");
+  printf("\t--disable-mouseemulation\n\t--disable-reconnect\n\t--disable-nunchuck\n");
   printf("\t--address ADDRESS\n\t--port PORT\n");
   printf("\t--btaddr MACADDRESS\n");
 }
@@ -524,6 +602,8 @@ int main(int argc, char **argv)
       g_AllowMouse = false;
     else if (strcmp(argv[i], "--disable-reconnect") == 0)
       g_AllowReconnect = false;
+    else if (strcmp(argv[i], "--disable-nunchuck") == 0)
+      g_AllowNunchuck = false;
     else if (strcmp(argv[i], "--address") == 0 && ((i + 1) <= argc))
       Address = argv[i + 1];
     else if (strcmp(argv[i], "--port") == 0 && ((i + 1) <= argc))
@@ -553,8 +633,7 @@ int main(int argc, char **argv)
   else
     g_WiiRemote.DisableMouseEmulation();
  
-  CPacketHELO HeloPackage("WiiRemote", ICON_PNG, "icons/bluetooth.png");
-  HeloPackage.Send(sockfd, my_addr);
+  g_Ping.Send(sockfd, my_addr);
   bool HaveConnected = false;
   while (true)
   {
@@ -574,8 +653,7 @@ int main(int argc, char **argv)
 #else
     sleep (15);
 #endif
-    CPacketPING ping;
-    ping.Send(sockfd, my_addr);
+    g_Ping.Send(sockfd, my_addr);
     g_WiiRemote.Update();
   }
 }
