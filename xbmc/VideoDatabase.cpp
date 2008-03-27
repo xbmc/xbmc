@@ -271,6 +271,9 @@ long CVideoDatabase::GetPath(const CStdString& strPath)
     if (NULL == m_pDS.get()) return -1;
     
     CStdString strPath1(strPath);
+    if (CUtil::IsStack(strPath) || strPath.Mid(0,6).Equals("rar://") || strPath.Mid(0,6).Equals("zip://"))
+      CUtil::GetParentPath(strPath,strPath1);
+
     CUtil::AddSlashAtEnd(strPath1);
 
     strSQL=FormatSQL("select idPath from path where strPath like '%s'",strPath1.c_str());
@@ -302,7 +305,6 @@ bool CVideoDatabase::GetPaths(map<CStdString,VIDEO::SScanSettings> &paths)
     // grab all paths with movie content set
     if (!m_pDS->query("select strPath,scanRecursive,useFolderNames from path"
                       " where (strContent = 'movies' or strContent = 'musicvideos')"
-                      " and strPath NOT like 'stack://%%'"
                       " and strPath NOT like 'multipath://%%'"
                       " order by strPath"))
       return false;
@@ -324,7 +326,6 @@ bool CVideoDatabase::GetPaths(map<CStdString,VIDEO::SScanSettings> &paths)
     if (!m_pDS->query("select strPath,scanRecursive,useFolderNames,strContent from path"
                       " where ( strContent = 'tvshows'"
                       "       or idPath in (select idpath from tvshowlinkpath))"
-                      " and strPath NOT like 'stack://%%'"
                       " and strPath NOT like 'multipath://%%'"
                       " order by strPath"))
       return false;
@@ -359,10 +360,7 @@ bool CVideoDatabase::GetPaths(map<CStdString,VIDEO::SScanSettings> &paths)
                        " where idPath in (select idPath from files join movie on movie.idFile=files.idFile)"
                        " and idPath NOT in (select idpath from tvshowlinkpath)"
                        " and idPath NOT in (select idpath from files where strFileName like 'video_ts.ifo')" // dvdfolders get stacked to a single item in parent folder
-                       " and strPath NOT like 'stack://%%'"
                        " and strPath NOT like 'multipath://%%'"
-                       " and strPath NOT like 'rar://%%'"
-                       " and strPath NOT like 'zip://%%'"
                        " and strContent NOT in ('movies', 'tvshows', 'None')" // these have been added above
                        " order by strPath"))
 
@@ -398,6 +396,9 @@ long CVideoDatabase::AddPath(const CStdString& strPath)
     if (NULL == m_pDS.get()) return -1;
 
     CStdString strPath1(strPath);
+    if (CUtil::IsStack(strPath) || strPath.Mid(0,6).Equals("rar://") || strPath.Mid(0,6).Equals("zip://"))
+      CUtil::GetParentPath(strPath,strPath1);
+
     CUtil::AddSlashAtEnd(strPath1);
 
     strSQL=FormatSQL("insert into path (idPath, strPath, strContent, strScraper) values (NULL,'%s','','')", strPath1.c_str());
@@ -446,7 +447,14 @@ long CVideoDatabase::AddFile(const CStdString& strFileNameAndPath)
     if (NULL == m_pDS.get()) return -1;
 
     CStdString strFileName, strPath;
-    CUtil::Split(strFileNameAndPath,strPath, strFileName);
+    if (CUtil::IsStack(strFileNameAndPath) || strPath.Mid(0,6).Equals("rar://") || strPath.Mid(0,6).Equals("zip://"))
+    {
+      CUtil::GetParentPath(strFileNameAndPath,strPath);
+      strFileName = strFileNameAndPath;
+    }
+    else
+      CUtil::Split(strFileNameAndPath,strPath, strFileName);
+
     long lPathId=GetPath(strPath);
     if (lPathId < 0)
       lPathId = AddPath(strPath);
@@ -490,6 +498,8 @@ bool CVideoDatabase::SetPathHash(const CStdString &path, const CStdString &hash)
         return false;
     }
     long pathId = GetPath(path);
+    if (pathId < 0)
+      pathId = AddPath(path);
     if (pathId < 0) return false;
 
     CStdString strSQL=FormatSQL("update path set strHash='%s' where idPath=%ld", hash.c_str(), pathId);
@@ -566,8 +576,14 @@ long CVideoDatabase::GetFile(const CStdString& strFilenameAndPath)
   {
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
-    CStdString strPath, strFileName ;
-    CUtil::Split(strFilenameAndPath, strPath, strFileName);
+    CStdString strPath, strFileName;
+    if (CUtil::IsStack(strFilenameAndPath) || strPath.Mid(0,6).Equals("rar://") || strPath.Mid(0,6).Equals("zip://"))
+    {
+      CUtil::GetParentPath(strFilenameAndPath,strPath);
+      strFileName = strFilenameAndPath;
+    }
+    else
+      CUtil::Split(strFilenameAndPath, strPath, strFileName);
     long lPathId = GetPath(strPath);
     if (lPathId < 0)
       return -1;
@@ -2529,7 +2545,11 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool ne
   details.m_iDbId = lMovieId;
 
   details.m_strPath = pDS->fv(VIDEODB_DETAILS_PATH).get_asString();
-  CUtil::AddFileToFolder(details.m_strPath, pDS->fv(VIDEODB_DETAILS_FILE).get_asString(),details.m_strFileNameAndPath);
+  CStdString strFileName = pDS->fv(VIDEODB_DETAILS_FILE).get_asString();
+  if (CUtil::IsStack(strFileName))
+    details.m_strFileNameAndPath = strFileName;
+  else
+    CUtil::AddFileToFolder(details.m_strPath, strFileName,details.m_strFileNameAndPath);
   movieTime += timeGetTime() - time; time = timeGetTime();
 
   if (needsCast)
@@ -6038,16 +6058,31 @@ void CVideoDatabase::GetMusicVideoDirectorsByName(const CStdString& strSearch, C
   }
 }
 
-void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver)
+void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const std::vector<long>* paths)
 {
   try
   {
     BeginTransaction();
     if (NULL == m_pDB.get()) return;
     if (NULL == m_pDS.get()) return;
-
+    
     // find all the files
-    CStdString sql = "select * from files, path where files.idPath = path.idPath";
+    CStdString sql;
+    if (paths)
+    {
+      if (paths->size() == 0)
+      {
+        RollbackTransaction();
+        return;
+      }
+
+      CStdString strPaths;
+      for (unsigned int i=0;i<paths->size();++i )
+        strPaths.Format("%s,%u",strPaths.Mid(0).c_str(),paths->at(i));
+      sql = FormatSQL("select * from files,path where files.idpath=path.idPath and path.idPath in (%s)",strPaths.Mid(1).c_str());
+    }
+    else
+      sql = "select * from files, path where files.idPath = path.idPath";
  
     m_pDS->query(sql.c_str());
     if (m_pDS->num_rows() == 0) return;

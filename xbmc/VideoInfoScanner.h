@@ -66,6 +66,6 @@ namespace VIDEO
     SScraperInfo m_info;
     std::map<CStdString,SScanSettings> m_pathsToScan;
     std::set<CStdString> m_pathsToCount;
+    std::vector<long> m_pathsToClean;
   };
 }
-
