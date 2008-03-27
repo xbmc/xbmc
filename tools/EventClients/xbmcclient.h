@@ -112,7 +112,8 @@ public:
 
   bool Send(int Socket, CAddress &Addr)
   {
-    ConstructPayload();
+    if (m_Payload.size() == 0)
+      ConstructPayload();
     bool SendSuccessfull = true;
     int NbrOfPackages = (m_Payload.size() / MAX_PAYLOAD_SIZE) + 1;
     int Send = 0;
@@ -187,7 +188,7 @@ protected:
   }
 
   virtual void ConstructPayload()
-  { m_Payload.clear(); }
+  { }
 };
 
 class CPacketHELO : public CPacket
