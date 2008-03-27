@@ -305,7 +305,7 @@ namespace VIDEO
     if (!bSkip)
     {
       RetrieveVideoInfo(items,settings.parent_name_root,m_info);
-      if (m_info.strContent.Equals("movies") || m_info.strContent.Equals("musicvideos"))
+      if (!m_bStop && (m_info.strContent.Equals("movies") || m_info.strContent.Equals("musicvideos")))
       {
         m_database.SetPathHash(strDirectory, hash);
         m_pathsToClean.push_back(m_database.GetPath(strDirectory));
