@@ -223,8 +223,8 @@ void CGUILabelControl::Render()
   else if (m_startHighlight || m_endHighlight)
   { // this is only used for times/dates, so working in ascii (utf8) is fine
     CStdString colorLabel;
-    colorLabel.Format("[COLOR %x]%s[/COLOR]%s[COLOR %x]%s[/COLOR]", m_label.disabledColor, label.Left(m_startHighlight),
-                 label.Mid(m_startHighlight, m_endHighlight - m_startHighlight), m_label.disabledColor, label.Mid(m_endHighlight));
+    colorLabel.Format("[COLOR %x]%s[/COLOR]%s[COLOR %x]%s[/COLOR]", (DWORD)m_label.disabledColor, label.Left(m_startHighlight),
+                 label.Mid(m_startHighlight, m_endHighlight - m_startHighlight), (DWORD)m_label.disabledColor, label.Mid(m_endHighlight));
     label = colorLabel;
   }
 
