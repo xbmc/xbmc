@@ -448,13 +448,7 @@ long CVideoDatabase::AddFile(const CStdString& strFileNameAndPath)
     if (NULL == m_pDS.get()) return -1;
 
     CStdString strFileName, strPath;
-    if (CUtil::IsStack(strFileNameAndPath) || strFileNameAndPath.Mid(0,6).Equals("rar://") || strFileNameAndPath.Mid(0,6).Equals("zip://"))
-    {
-      CUtil::GetParentPath(strFileNameAndPath,strPath);
-      strFileName = strFileNameAndPath;
-    }
-    else
-      CUtil::Split(strFileNameAndPath,strPath, strFileName);
+    SplitPath(strFileNameAndPath,strPath,strFileName);
 
     long lPathId=GetPath(strPath);
     if (lPathId < 0)
@@ -578,13 +572,8 @@ long CVideoDatabase::GetFile(const CStdString& strFilenameAndPath)
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
     CStdString strPath, strFileName;
-    if (CUtil::IsStack(strFilenameAndPath) || strFilenameAndPath.Mid(0,6).Equals("rar://") || strFilenameAndPath.Mid(0,6).Equals("zip://"))
-    {
-      CUtil::GetParentPath(strFilenameAndPath,strPath);
-      strFileName = strFilenameAndPath;
-    }
-    else
-      CUtil::Split(strFilenameAndPath, strPath, strFileName);
+    SplitPath(strFilenameAndPath,strPath,strFileName);
+
     long lPathId = GetPath(strPath);
     if (lPathId < 0)
       return -1;
@@ -2080,10 +2069,7 @@ void CVideoDatabase::GetFilePath(long lMovieId, CStdString &filePath, int iType)
       if (iType != 2)
       {
         CStdString fileName = m_pDS->fv("files.strFilename").get_asString();
-        if (CUtil::IsStack(fileName) || fileName.Mid(0,6).Equals("rar://") || fileName.Mid(0,6).Equals("zip://"))
-          filePath=fileName;
-        else
-          CUtil::AddFileToFolder(m_pDS->fv("path.strPath").get_asString(),fileName,filePath);
+        ConstructPath(filePath,m_pDS->fv("path.strPath").get_asString(),fileName);
       }
       else
         filePath = m_pDS->fv("path.strPath").get_asString();
@@ -2553,10 +2539,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool ne
 
   details.m_strPath = pDS->fv(VIDEODB_DETAILS_PATH).get_asString();
   CStdString strFileName = pDS->fv(VIDEODB_DETAILS_FILE).get_asString();
-  if (CUtil::IsStack(strFileName) || strFileName.Mid(0,6).Equals("rar://") || strFileName.Mid(0,6).Equals("zip://"))
-    details.m_strFileNameAndPath = strFileName;
-  else
-    CUtil::AddFileToFolder(details.m_strPath, strFileName,details.m_strFileNameAndPath);
+  ConstructPath(details.m_strFileNameAndPath,details.m_strPath,strFileName);
   movieTime += timeGetTime() - time; time = timeGetTime();
 
   if (needsCast)
@@ -2663,10 +2646,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool 
 
   details.m_strPath = pDS->fv(VIDEODB_DETAILS_PATH).get_asString();
   CStdString strFileName = pDS->fv(VIDEODB_DETAILS_FILE).get_asString();
-  if (CUtil::IsStack(strFileName) || strFileName.Mid(0,6).Equals("rar://") || strFileName.Mid(0,6).Equals("zip://"))
-    details.m_strFileNameAndPath = strFileName;
-  else
-    CUtil::AddFileToFolder(details.m_strPath, strFileName,details.m_strFileNameAndPath);
+  ConstructPath(details.m_strFileNameAndPath,details.m_strPath,strFileName);
   movieTime += timeGetTime() - time; time = timeGetTime();
 
   details.m_strShowTitle = pDS->fv(VIDEODB_DETAILS_PATH+1).get_asString();
@@ -2722,10 +2702,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(auto_ptr<Dataset> &pDS)
 
   details.m_strPath = pDS->fv(VIDEODB_DETAILS_PATH).get_asString();
   CStdString strFileName = pDS->fv(VIDEODB_DETAILS_FILE).get_asString();
-  if (CUtil::IsStack(strFileName) || strFileName.Mid(0,6).Equals("rar://") || strFileName.Mid(0,6).Equals("zip://"))
-    details.m_strFileNameAndPath = strFileName;
-  else
-    CUtil::AddFileToFolder(details.m_strPath, strFileName,details.m_strFileNameAndPath);
+  ConstructPath(details.m_strFileNameAndPath,details.m_strPath,strFileName);
 
   movieTime += timeGetTime() - time; time = timeGetTime();
 
@@ -6153,10 +6130,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const s
       CStdString path = m_pDS->fv("path.strPath").get_asString();
       CStdString fileName = m_pDS->fv("files.strFileName").get_asString();
       CStdString fullPath;
-      if (CUtil::IsStack(fileName) || fileName.Mid(0,6).Equals("rar://") || fileName.Mid(0,6).Equals("zip://"))
-        fullPath = fileName;
-      else
-        CUtil::AddFileToFolder(path, fileName, fullPath);
+      ConstructPath(fullPath,path,fileName);
 
       if (CUtil::IsStack(fullPath))
       { // do something?
@@ -6782,4 +6756,23 @@ bool CVideoDatabase::GetArbitraryQuery(const CStdString& strQuery, const CStdStr
   }
 
   return false;
+}
+
+void CVideoDatabase::ConstructPath(CStdString& strDest, const CStdString& strPath, const CStdString& strFileName)
+{
+  if (CUtil::IsStack(strFileName) || strFileName.Mid(0,6).Equals("rar://") || strFileName.Mid(0,6).Equals("zip://"))
+    strDest = strFileName;
+  else
+    CUtil::AddFileToFolder(strPath, strFileName, strDest);
+}
+
+void CVideoDatabase::SplitPath(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName)
+{
+  if (CUtil::IsStack(strFileNameAndPath) || strFileNameAndPath.Mid(0,6).Equals("rar://") || strFileNameAndPath.Mid(0,6).Equals("zip://"))
+  {
+    CUtil::GetParentPath(strFileNameAndPath,strPath);
+    strFileName = strFileNameAndPath;
+  }
+  else
+    CUtil::Split(strFileNameAndPath,strPath, strFileName);
 }
