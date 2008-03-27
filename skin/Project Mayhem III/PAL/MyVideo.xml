@@ -91,16 +91,29 @@
 				<onright>50</onright>
 				<onup>3</onup>
 				<ondown>7</ondown>
+				<visible>System.GetBool(videolibrary.enabled) + Library.HasContent(Video)</visible>
+			</control>
+			<control type="radiobutton" id="7">
+				<description>Stacking</description>
+				<posx>0</posx>
+				<posy>74</posy>
+				<label>14000</label>
+				<onleft>50</onleft>
+				<onright>50</onright>
+				<onup>3</onup>
+				<ondown>20</ondown>
+				<visible>![System.GetBool(videolibrary.enabled) + Library.HasContent(Video)]</visible>
 			</control>
 			<control type="radiobutton" id="7">
 				<description>Stacking</description>
 				<posx>0</posx>
 				<posy>111</posy>
-				<label>346</label>
+				<label>14000</label>
 				<onleft>50</onleft>
 				<onright>50</onright>
 				<onup>99</onup>
 				<ondown>20</ondown>
+				<visible>System.GetBool(videolibrary.enabled) + Library.HasContent(Video)</visible>
 			</control>
 			<control type="group">
 				<description>LastFM Love Hate Stuff</description>

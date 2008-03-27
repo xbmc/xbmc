@@ -24,6 +24,7 @@
 #include "GUIWindowVideoBase.h"
 #include "utils/fstrcmp.h"
 #include "utils/RegExp.h"
+#include "utils/GUIInfoManager.h"
 #include "Util.h"
 #include "XMLUtils.h"
 #include "GUIPassword.h"
@@ -1818,7 +1819,7 @@ void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, co
     sql.TrimRight(',');
     sql += FormatSQL(" where idMovie=%u", lMovieId);
     m_pDS->exec(sql.c_str());
-//    CommitTransaction();
+    g_infoManager.ResetPersistentCache(); // needed since # of movies have changed
   }
   catch (...)
   {
@@ -1890,7 +1891,7 @@ long CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideo
     long lPathId = GetPath(strPath);
     if (lPathId < 0)
       lPathId = AddPath(strPath);
-//    CommitTransaction();
+    g_infoManager.ResetPersistentCache(); // needed since # of movies have changed
     return lTvShowId;
   }
   catch (...)
@@ -2045,7 +2046,7 @@ void CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPat
     sql.TrimRight(',');
     sql += FormatSQL(" where idMVideo=%u", lMVideoId);
     m_pDS->exec(sql.c_str());
-//    CommitTransaction();
+    g_infoManager.ResetPersistentCache(); // needed since # of movies have changed
   }
   catch (...)
   {
@@ -5023,6 +5024,23 @@ bool CVideoDatabase::GetGenreById(long lIdGenre, CStdString& strGenre)
   return false;
 }
 
+int CVideoDatabase::GetItemCount()
+{
+  int iMovies = GetMovieCount();
+  if (iMovies < 0)
+    iMovies = 0;
+
+  int iShows = GetTvShowCount();
+  if (iShows < 0)
+    iShows = 0;
+
+  int iVideos = GetMusicVideoCount();
+  if (iVideos < 0)
+    iVideos = 0;
+
+  return (iMovies + iShows + iVideos);
+}
+
 int CVideoDatabase::GetMovieCount()
 {
   try
@@ -6375,6 +6393,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const s
 
     Compress(false);
 
+    g_infoManager.ResetPersistentCache(); // needed since # of movies have changed
     CUtil::DeleteVideoDatabaseDirectoryCache();
 
     if (progress)
