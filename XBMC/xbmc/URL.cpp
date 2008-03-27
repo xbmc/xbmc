@@ -102,44 +102,8 @@ CURL::CURL(const CStdString& strURL)
     return;
   }
 
-  //check for old archive format, dll's might use it
-  if (m_strProtocol.Equals("rar") || m_strProtocol.Equals("zip"))
-  {
-    //archive subpaths may contain delimiters so they need special processing
-    //format 4: zip://CachePath,AutoDelMask,Password, RarPath,\FilePathInRar
-
-    CRegExp reg;
-    reg.RegComp("...://([^,]*),([0-9]*),([^,]*),([^,]*),[\\\\/]+(.*)$");
-
-    if(reg.RegFind(strURL.c_str()) == 0) /* if found at position 0 */
-    {
-      char* szCache = reg.GetReplaceString("\\1");
-      char* szFlags = reg.GetReplaceString("\\2");
-      char* szPassword = reg.GetReplaceString("\\3");
-      char* szArchive = reg.GetReplaceString("\\4");
-      char* szFileName = reg.GetReplaceString("\\5");
-
-      m_strHostName = szArchive;
-      m_strPassword = szPassword;
-      if (szFileName)
-        SetFileName(szFileName);
-
-      // currently neither zip nor rar code cares for the
-      // flags or cache dir, so just ignore them for now
-
-      if (szCache) free(szCache);
-      if (szFlags) free(szFlags);
-      if (szPassword) free(szPassword);
-      if (szArchive) free(szArchive);
-      if (szFileName) free(szFileName);
-
-      return;
-    }
-  }
-
   // check for username/password - should occur before first /
   if (iPos == -1) iPos = 0;
-
 
   // for protocols supporting options, chop that part off here
   // maybe we should invert this list instead?
