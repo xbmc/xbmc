@@ -1287,23 +1287,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
     }
-#ifdef HAS_CWIID
-    else if (strSetting.Equals("wiiremote.enable"))
-    {
-      //Enable or disable the WiiRemote
-      if (g_guiSettings.GetBool("wiiremote.enable"))
-        g_WiiRemote.EnableWiiRemote();
-      else
-        g_WiiRemote.DisableWiiRemote();
-    }
-    else if (strSetting.Equals("wiiremote.mouseemulation"))
-    {
-      if (g_guiSettings.GetBool("wiiremote.mouseemulation"))
-        g_WiiRemote.EnableMouseEmulation();
-      else
-        g_WiiRemote.DisableMouseEmulation();
-    }    
-#endif    
   }
 }
 
