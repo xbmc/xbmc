@@ -60,7 +60,7 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
   // if passthrough isset do something else
   CSingleLock lock (m_critSection);
 
-  const char* codecstring="";
+  char* codecstring="";
 
   if(codec == CODEC_ID_AAC)
     codecstring = "AAC";
