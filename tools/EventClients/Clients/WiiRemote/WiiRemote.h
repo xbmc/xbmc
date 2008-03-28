@@ -37,7 +37,7 @@
 #include <bluetooth/hci.h>
 #include <bluetooth/hci_lib.h>
 // UDP Client
-#include "xbmcclient.h"
+#include "../../lib/c++/xbmcclient.h"
 
 /*#include <stdio.h>*/
 #include <stdlib.h>
