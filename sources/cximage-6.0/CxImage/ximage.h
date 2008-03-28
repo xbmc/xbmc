@@ -136,9 +136,6 @@ CMAX_IMAGE_FORMATS = CXIMAGE_SUPPORT_BMP + CXIMAGE_SUPPORT_GIF + CXIMAGE_SUPPORT
 					 CXIMAGE_SUPPORT_SKA + CXIMAGE_SUPPORT_RAW + 1
 };
 
-#ifdef _WIN32
-#define XBMC // even though defined in the project file it doesn't work
-#endif
 
 #ifdef XBMC
 

@@ -1,6 +1,13 @@
 #if !defined(__ximaCFG_h)
 #define __ximaCFG_h
 
+#ifdef _WIN32
+#define XBMC // even though defined in the project file it doesn't work
+#define _WIN32PC
+#define ntohs(a) a
+#define ntohl(a) a
+#endif
+
 /////////////////////////////////////////////////////////////////////////////
 // CxImage supported features
 #define CXIMAGE_SUPPORT_ALPHA          1
@@ -12,7 +19,11 @@
 
 #define CXIMAGE_SUPPORT_DECODE	1
 #define CXIMAGE_SUPPORT_ENCODE	1		//<vho><T.Peck>
+#ifdef _WIN32PC
+#define CXIMAGE_SUPPORT_WINDOWS 1
+#else
 #define CXIMAGE_SUPPORT_WINDOWS 0
+#endif
 
 /////////////////////////////////////////////////////////////////////////////
 // CxImage supported formats

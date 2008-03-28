@@ -4,9 +4,7 @@
  */
 
 #include "ximage.h"
-#ifdef _WIN32
-#define _tcsnicmp(a,b,c) strcmpi(a, b)
-#else
+#ifdef _LINUX
 #define _tcsnicmp(a,b,c) strcasecmp(a, b)
 #endif
 
