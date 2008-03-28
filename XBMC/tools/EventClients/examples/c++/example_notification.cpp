@@ -1,4 +1,4 @@
-#include "xbmcclient.h"
+#include "../../lib/c++/xbmcclient.h"
 #include <stdio.h>
 #include <string.h>
 #include <sys/socket.h>
@@ -28,7 +28,7 @@ int main(int argc, char **argv)
   CPacketNOTIFICATION packet("New Mail!",          // caption
                              "RE: Check this out", // message
                              ICON_PNG,             // optional icon type
-                             "icons/mail.png");    // icon file (local)
+                             "../../icons/mail.png");    // icon file (local)
   packet.Send(sockfd, my_addr);
 
   // BYE is not required since XBMC would have shut down
