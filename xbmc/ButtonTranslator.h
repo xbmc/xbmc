@@ -73,12 +73,6 @@ private:
   std::map<std::string, JoystickMap> m_joystickButtonMap;      // <joy name, button map>
   std::map<std::string, JoystickMap> m_joystickAxisMap;        // <joy name, axis map>
 #endif
-
-#ifdef HAS_CWIID
-  WORD TranslateWiiremoteString(const char *szButton);
-  void MapWiiremoteAction(WORD wButtonCode, const char *szAction, buttonMap &map);
-#endif
-
 };
 
 extern CButtonTranslator g_buttonTranslator;
