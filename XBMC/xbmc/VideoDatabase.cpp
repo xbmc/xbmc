@@ -2890,7 +2890,6 @@ void CVideoDatabase::RemoveContentForPath(const CStdString& strPath, CGUIDialogP
     CStdString strSQL = FormatSQL("select idPath,strContent,strPath from path where strPath like '%%%s%%'",strPath1.c_str());
     CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     pDS->query(strSQL.c_str());
-    bool bEncodedChecked=false;
     if (progress)
     {
       progress->SetHeading(700);
@@ -2944,22 +2943,9 @@ void CVideoDatabase::RemoveContentForPath(const CStdString& strPath, CGUIDialogP
         m_pDS2->close();
       }
       pDS->next();
-      if (pDS->eof() && !bEncodedChecked) // rarred titles needs this
-      {
-        CStdString strEncoded(strPath);
-        CUtil::URLEncode(strEncoded);
-        CStdString strSQL = FormatSQL("select idPath,strContent,strPath from path where strPath like '%%%s%%'",strEncoded.c_str());
-        pDS->query(strSQL.c_str());
-        bEncodedChecked = true;
-      }
     }
     strSQL = FormatSQL("update path set strContent = '', strScraper='', strHash='',strSettings='',useFolderNames=0,scanRecursive=0 where strPath like '%%%s%%'",strPath1.c_str());
-    pDS->exec(strSQL);
-
-    CStdString strEncoded(strPath);
-    CUtil::URLEncode(strEncoded);
-    strSQL = FormatSQL("update path set strContent = '', strScraper='',strHash='',strSettings='',useFolderNames=0,scanRecursive=0 where strPath like '%%%s%%'",strEncoded.c_str());
-    pDS->exec(strSQL);
+    pDS->exec(strSQL.c_str());
   }
   catch (...)
   {
@@ -4663,7 +4649,7 @@ bool CVideoDatabase::GetMusicVideosNav(const CStdString& strBaseDir, CFileItemLi
             m_pDS->next();
           }
           CLog::Log(LOGDEBUG,"Time to retrieve musicvideos from dataset = %ld", timeGetTime() - time);
-    	  CLog::Log(LOGDEBUG, "%s times: Info %ld, Cast %ld", __FUNCTION__, movieTime, castTime);
+    	    CLog::Log(LOGDEBUG, "%s times: Info %ld, Cast %ld", __FUNCTION__, movieTime, castTime);
         }
         catch (...)
         {
