@@ -71,4 +71,6 @@ WiiRemote Support
 The executable depends on libcwiid and libbluetooth and is compiled using
 # g++ WiiRemote.cpp -lcwiid -o WiiRemote
 The WiiRemote will emulate mouse by default but can be disabled by running with --disable-mouseemulation
+The sensativity of the mouseemulation can be set using the --deadzone_x or --deadzone_y were the number is
+the procentage of the space is considered "dead", higher means more sensative.
 Other commands can be listed with --help
