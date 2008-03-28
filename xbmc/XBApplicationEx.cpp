@@ -383,10 +383,6 @@ void CXBApplicationEx::ReadInput()
       g_Mouse.UpdateMouseWheel(-1);
   }
 
-#ifdef HAS_CWIID
-  g_WiiRemote.Update();
-#endif
-
 #ifdef HAS_LIRC
   g_RemoteControl.Update();
 #endif
