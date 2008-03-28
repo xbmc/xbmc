@@ -24,7 +24,7 @@
 #define ToggleBit(bf,b) (bf) = ((bf) & b) ? ((bf) & ~(b)) : ((bf) | (b))
 
 //Settings
-#define WIIREMOTE_SAMPLES 12
+#define WIIREMOTE_SAMPLES 16
 
 #define DEADZONE_Y 0.3f
 #define DEADZONE_X 0.5f
