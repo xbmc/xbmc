@@ -196,6 +196,10 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
           if (info.strContent.IsEmpty() && !(m_database.HasMovieInfo(m_vecItems[iItem]->m_strPath) || m_database.HasTvShowInfo(strDir) || m_database.HasEpisodeInfo(m_vecItems[iItem]->m_strPath)))
           {
             // hack
+            CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+            if (pDialog && pDialog->IsScanning())
+              return true;
+
             CStdString strOldPath = m_vecItems[iItem]->m_strPath;
             m_vecItems[iItem]->m_strPath = strDir;
             OnAssignContent(iItem,1, info, settings);
@@ -423,7 +427,14 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
   if (!g_guiSettings.GetBool("network.enableinternet")) return ;
   if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() && !g_passwordManager.bMasterUser)
     return;
-        
+
+  CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+  if (pDialog && pDialog->IsScanning())
+  {
+    CGUIDialogOK::ShowAndGetInput(13346,14057,-1,-1);
+    return;
+  }
+
   CScraperUrl scrUrl;
   bool hasDetails(false);
   
