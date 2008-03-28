@@ -24,10 +24,10 @@
 #define ToggleBit(bf,b) (bf) = ((bf) & b) ? ((bf) & ~(b)) : ((bf) | (b))
 
 //Settings
-#define WIIREMOTE_SAMPLES 16
+#define WIIREMOTE_SAMPLES 12
 
-#define DEADZONE_Y 0.2f
-#define DEADZONE_X 0.3f
+#define DEADZONE_Y 0.3f
+#define DEADZONE_X 0.5f
 
 #define MOUSE_MAX 65535
 #define MOUSE_MIN 0
@@ -82,9 +82,16 @@ public:
   bool Connect();  
 
   void SetBluetoothAddress(const char * btaddr);
+  void SetSensativity(float DeadX, float DeadY, int Samples);
 private:
+  int  m_NumSamples;
   int  *m_SamplesX;
   int  *m_SamplesY;
+
+  float m_MaxX;
+  float m_MaxY;
+  float m_MinX;
+  float m_MinY;
 #ifdef CWIID_OLD
   bool CheckConnection();
   int  m_LastMsgTime;
