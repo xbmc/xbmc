@@ -148,6 +148,25 @@ void CWiiRemote::SetBluetoothAddress(const char *btaddr)
     bacpy(&m_btaddr, &(*BDADDR_ANY));
 }
 
+void CWiiRemote::SetSensativity(float DeadX, float DeadY, int NumSamples)
+{
+  m_NumSamples = NumSamples;
+
+  m_MinX = MOUSE_MAX * DeadX;
+  m_MinY = MOUSE_MAX * DeadY;
+
+  m_MaxX = MOUSE_MAX * (1.0f + DeadX + DeadX);
+  m_MaxY = MOUSE_MAX * (1.0f + DeadY + DeadY);
+
+  if (m_SamplesY != NULL)
+    delete [] m_SamplesY;
+  if (m_SamplesX != NULL)
+    delete [] m_SamplesX;
+
+  m_SamplesY = new int[m_NumSamples];
+  m_SamplesX = new int[m_NumSamples];
+}
+
 void CWiiRemote::Initialize(CAddress Addr, int Socket)
 {
   m_connected = false;
@@ -160,12 +179,15 @@ void CWiiRemote::Initialize(CAddress Addr, int Socket)
   m_useIRMouse              = true;
   m_rptMode                 = 0;
 
-  m_SamplesY = new int[WIIREMOTE_SAMPLES];
-  m_SamplesX = new int[WIIREMOTE_SAMPLES];
-
   m_Socket = Socket;
   m_MyAddr = Addr;
 
+  m_NumSamples = WIIREMOTE_SAMPLES;
+
+  m_MaxX = WIIREMOTE_X_MAX;
+  m_MaxY = WIIREMOTE_Y_MAX;
+  m_MinX = WIIREMOTE_X_MIN;
+  m_MinY = WIIREMOTE_Y_MIN;
 #ifdef CWIID_OLD
   m_LastMsgTime = getTicks();
 #endif
@@ -541,11 +563,11 @@ void CWiiRemote::CalculateMousePointer(int x1, int y1, int x2, int y2)
   x3 = ( (x1 + x2) / 2 );
   y3 = ( (y1 + y2) / 2 );
 
-  x3 = (int)( ((float)x3 / (float)CWIID_IR_X_MAX) * WIIREMOTE_X_MAX);
-  y3 = (int)( ((float)y3 / (float)CWIID_IR_Y_MAX) * WIIREMOTE_Y_MAX);
+  x3 = (int)( ((float)x3 / (float)CWIID_IR_X_MAX) * m_MaxX);
+  y3 = (int)( ((float)y3 / (float)CWIID_IR_Y_MAX) * m_MaxY);
 
-  x3 = (int)(x3 - WIIREMOTE_X_MIN);
-  y3 = (int)(y3 - WIIREMOTE_Y_MIN);
+  x3 = (int)(x3 - m_MinX);
+  y3 = (int)(y3 - m_MinY);
 
   if      (x3 < MOUSE_MIN)  x3 = MOUSE_MIN;
   else if (x3 > MOUSE_MAX)  x3 = MOUSE_MAX;
@@ -555,25 +577,33 @@ void CWiiRemote::CalculateMousePointer(int x1, int y1, int x2, int y2)
 
   x3 = MOUSE_MAX - x3;
 
-  for (int i = WIIREMOTE_SAMPLES; i > 0; i--)
+  if (m_NumSamples == 1)
   {
-    m_SamplesX[i] =  m_SamplesX[i-1];
-    m_SamplesY[i] =  m_SamplesY[i-1];
+    CPacketMOUSE mouse(x3, y3);
+    mouse.Send(m_Socket, m_MyAddr);
+    return;
   }
-
-  m_SamplesX[0] = x3;
-  m_SamplesY[0] = y3;
-
-  long x4 = 0, y4 = 0;
-
-  for (int i = 0; i < WIIREMOTE_SAMPLES; i++)
+  else
   {
-    x4 += m_SamplesX[i];
-    y4 += m_SamplesY[i];
-  }
+    for (int i = m_NumSamples; i > 0; i--)
+    {
+      m_SamplesX[i] =  m_SamplesX[i-1];
+      m_SamplesY[i] =  m_SamplesY[i-1];
+    }
 
-  CPacketMOUSE mouse((x4 / WIIREMOTE_SAMPLES), (y4 / WIIREMOTE_SAMPLES));
-  mouse.Send(m_Socket, m_MyAddr);
+    m_SamplesX[0] = x3;
+    m_SamplesY[0] = y3;
+
+    long x4 = 0, y4 = 0;
+
+    for (int i = 0; i < m_NumSamples; i++)
+    {
+      x4 += m_SamplesX[i];
+      y4 += m_SamplesY[i];
+    }
+    CPacketMOUSE mouse((x4 / m_NumSamples), (y4 / m_NumSamples));
+    mouse.Send(m_Socket, m_MyAddr);
+  }
 }
 
 
@@ -598,6 +628,10 @@ void PrintHelp(const char *Prog)
   printf("\t--disable-mouseemulation\n\t--disable-reconnect\n\t--disable-nunchuck\n");
   printf("\t--address ADDRESS\n\t--port PORT\n");
   printf("\t--btaddr MACADDRESS\n");
+  printf("\t--deadzone-x DEADX          | Number between 0 - 100 (Default: %i)\n", (int)(DEADZONE_X * 100));
+  printf("\t--deadzone-y DEADY          | Number between 0 - 100 (Default: %i)\n", (int)(DEADZONE_Y * 100));
+  printf("\t--deadzone DEAD             | Sets both X and Y too the number\n");
+  printf("\t--smoothing-samples SAMPLE  | Number 1 counts as Off (Default: %i)\n", WIIREMOTE_SAMPLES);
 }
 
 int main(int argc, char **argv)
@@ -605,6 +639,10 @@ int main(int argc, char **argv)
   char *Address = NULL;
   char *btaddr  = NULL;
   int  Port = 9777;
+
+  int NumSamples = WIIREMOTE_SAMPLES;
+  float DeadX    = DEADZONE_X;
+  float DeadY    = DEADZONE_Y;
 
   for (int i = 0; i < argc; i++)
   {
@@ -625,6 +663,20 @@ int main(int argc, char **argv)
       Port = atoi(argv[i + 1]);
     else if (strcmp(argv[i], "--btaddr") == 0 && ((i + 1) <= argc))
       btaddr = argv[i + 1];
+    else if (strcmp(argv[i], "--deadzone-x") == 0 && ((i + 1) <= argc))
+      DeadX = ((float)atoi(argv[i + 1]) / 100.0f);
+    else if (strcmp(argv[i], "--deadzone-y") == 0 && ((i + 1) <= argc))
+      DeadY = ((float)atoi(argv[i + 1]) / 100.0f);
+    else if (strcmp(argv[i], "--deadzone") == 0 && ((i + 1) <= argc))
+      DeadX = DeadY = ((float)atoi(argv[i + 1]) / 100.0f);
+    else if (strcmp(argv[i], "--smoothing-samples") == 0 && ((i + 1) <= argc))
+      NumSamples = atoi(argv[i + 1]);
+  }
+
+  if (NumSamples < 1 || DeadX < 0 || DeadY < 0 || DeadX > 1 || DeadY > 1)
+  {
+    PrintHelp(argv[0]);
+    return -1;
   }
 
   CAddress my_addr(Address, Port); // Address => localhost on 9777
@@ -643,6 +695,8 @@ int main(int argc, char **argv)
 
   g_WiiRemote.Initialize(my_addr, sockfd);
   g_WiiRemote.SetBluetoothAddress(btaddr);
+  g_WiiRemote.SetSensativity(DeadX, DeadY, NumSamples);
+  g_WiiRemote.SetSensativity(DeadX, DeadY, NumSamples);
   if (g_AllowMouse)
     g_WiiRemote.EnableMouseEmulation();
   else
