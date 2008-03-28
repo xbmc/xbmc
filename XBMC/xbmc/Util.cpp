@@ -3441,6 +3441,7 @@ const BUILT_IN commands[] = {
   { "Container.NextSortMethod",   false,  "Change to the next sort method" },
   { "Container.PreviousSortMethod",false, "Change to the previous sort method" },
   { "Container.SetSortMethod",    true,   "Change to the specified sort method" },
+  { "Control.Move",               true,   "Tells the specified control to 'move' to another entry specified by offset" },
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -4339,6 +4340,15 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("lastfm.ban"))
   {
     CLastFmManager::GetInstance()->Ban(parameter.Equals("false") ? false : true);
+  }
+  else if (execute.Equals("control.move"))
+  {
+    CStdStringArray arSplit; 
+    StringUtils::SplitString(parameter,",", arSplit);
+    if (arSplit.size() < 2)
+      return -1;
+    CGUIMessage message(GUI_MSG_MOVE_OFFSET, m_gWindowManager.GetFocusedWindow(), atoi(arSplit[0].c_str()), atoi(arSplit[1].c_str()));
+    g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("container.refresh"))
   { // NOTE: These messages require a media window, thus they're sent to the current activewindow.
