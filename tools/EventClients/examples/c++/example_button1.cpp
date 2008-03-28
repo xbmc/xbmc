@@ -1,4 +1,4 @@
-#include "xbmcclient.h"
+#include "../../lib/c++/xbmcclient.h"
 #include <stdio.h>
 #include <string.h>
 #include <sys/socket.h>
@@ -19,16 +19,18 @@ int main(int argc, char **argv)
 
   my_addr.Bind(sockfd);
 
-  CPacketHELO HeloPackage("Example Mouse", ICON_PNG, "icons/mouse.png");
+  CPacketHELO HeloPackage("Example Remote", ICON_PNG, "../../icons/bluetooth.png");
   HeloPackage.Send(sockfd, my_addr);
 
   sleep(5);
+  // press 'S'
+  CPacketBUTTON btn1('S', true);
+  btn1.Send(sockfd, my_addr);
 
-  for(int i = 0; i < 65536; i++)
-  {
-    CPacketMOUSE mouse(i,i);
-    mouse.Send(sockfd, my_addr);
-  }
+  sleep(2);
+  // press the enter key (13 = enter)
+  CPacketBUTTON btn2(13, true);
+  btn2.Send(sockfd, my_addr);
 
   // BYE is not required since XBMC would have shut down
   CPacketBYE bye; // CPacketPing if you want to ping

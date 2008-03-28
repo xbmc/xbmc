@@ -28,7 +28,7 @@ bool g_AllowReconnect = true;
 bool g_AllowMouse     = true;
 bool g_AllowNunchuck  = true;
 
-CPacketHELO g_Ping("WiiRemote", ICON_PNG, "icons/bluetooth.png");
+CPacketHELO g_Ping("WiiRemote", ICON_PNG, "../../icons/bluetooth.png");
 
 long getTicks()
 {
