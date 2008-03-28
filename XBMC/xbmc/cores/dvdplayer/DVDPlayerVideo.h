@@ -114,7 +114,8 @@ protected:
     unsigned int dheight;
     unsigned int color_matrix : 4;
     unsigned int color_range  : 1;
-    float framerate;
+    float        framerate;
+    bool         inited;
   } m_output; //holds currently configured output
 
   bool m_bAllowFullscreen;
