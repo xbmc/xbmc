@@ -24,7 +24,21 @@
 #define ToggleBit(bf,b) (bf) = ((bf) & b) ? ((bf) & ~(b)) : ((bf) | (b))
 
 //Settings
-#define WIIREMOTE_IR_DEADZONE 0.2f                    // Deadzone around the edges of the IRsource range
+#define WIIREMOTE_SAMPLES 16
+
+#define DEADZONE_Y 0.2f
+#define DEADZONE_X 0.3f
+
+#define MOUSE_MAX 65535
+#define MOUSE_MIN 0
+
+//The work area is from 0 - MAX but the one sent to XBMC is MIN - (MIN + MOUSE_MAX)
+#define WIIREMOTE_X_MIN MOUSE_MAX * DEADZONE_X
+#define WIIREMOTE_Y_MIN MOUSE_MAX * DEADZONE_Y
+
+#define WIIREMOTE_X_MAX MOUSE_MAX * (1.0f + DEADZONE_X + DEADZONE_X)
+#define WIIREMOTE_Y_MAX MOUSE_MAX * (1.0f + DEADZONE_Y + DEADZONE_Y)
+
 #define WIIREMOTE_BUTTON_REPEAT_TIME 30               // How long between buttonpresses in repeat mode
 #define WIIREMOTE_BUTTON_DELAY_TIME 500
 #define CWIID_OLD                                     // Uncomment if the system is running cwiid that is older than 6.0 (The one from ubuntu gutsy repository is < 6.0)
@@ -69,6 +83,8 @@ public:
 
   void SetBluetoothAddress(const char * btaddr);
 private:
+  int  *m_SamplesX;
+  int  *m_SamplesY;
 #ifdef CWIID_OLD
   bool CheckConnection();
   int  m_LastMsgTime;

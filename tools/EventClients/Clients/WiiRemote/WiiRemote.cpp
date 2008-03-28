@@ -122,6 +122,8 @@ void CWiiRemote::ErrorCallback(struct wiimote *wiiremote, const char *str, va_li
 CWiiRemote::CWiiRemote(char *wii_btaddr)
 {
   SetBluetoothAddress(wii_btaddr);
+  m_SamplesX = NULL;
+  m_SamplesY = NULL;
 }
 
 //Destructor
@@ -129,6 +131,11 @@ CWiiRemote::~CWiiRemote()
 {
   if (m_connected == true)
     this->DisconnectNow(false);
+
+  if (m_SamplesY != NULL)
+    free(m_SamplesY);
+  if (m_SamplesX != NULL)
+    free(m_SamplesX);
 }
 
 //---------------------Public-------------------------------------------------------------------
@@ -152,6 +159,9 @@ void CWiiRemote::Initialize(CAddress Addr, int Socket)
   m_buttonRepeatNunchuck    = false;
   m_useIRMouse              = true;
   m_rptMode                 = 0;
+
+  m_SamplesY = new int[WIIREMOTE_SAMPLES];
+  m_SamplesX = new int[WIIREMOTE_SAMPLES];
 
   m_Socket = Socket;
   m_MyAddr = Addr;
@@ -351,7 +361,13 @@ void CWiiRemote::SetupWiiRemote()
 { //Lights up the apropriate led and setups the rapport mode, so buttons and IR work
   SetRptMode();
   SetLedState();
-  
+
+  for (int i = 0; i < WIIREMOTE_SAMPLES; i++)
+  {
+    m_SamplesX[i] = 0;
+    m_SamplesY[i] = 0;
+  }
+
   if (cwiid_set_mesg_callback(m_wiiremoteHandle, MessageCallback))
     printf("Unable to set message callback to the Wiiremote\n");
 }
@@ -520,44 +536,43 @@ void CWiiRemote::SetLedState()
 /* Calculate the mousepointer from 2 IR sources (Default) */
 void CWiiRemote::CalculateMousePointer(int x1, int y1, int x2, int y2)
 {
-  float x3, y3;
-  //Get the middle of the 2 points
-  x3 = CWIID_IR_X_MAX - ( (x1 + x2) / 2 );
-  y3 = CWIID_IR_Y_MAX - ( (y1 + y2) / 2 );
-	
-  //Calculate a procentage 0.0f - 1.0f
-  x3 = ((float)x3 / (float)CWIID_IR_X_MAX);
-  y3 = ((float)y3 / (float)CWIID_IR_Y_MAX);
-		
-  //Have a safezone at the edge of the IR-remote's sight
-  if (x3 < WIIREMOTE_IR_DEADZONE)
-    x3 = WIIREMOTE_IR_DEADZONE;
-  else if (x3 > (1.0f - WIIREMOTE_IR_DEADZONE))
-    x3 = (1.0f - WIIREMOTE_IR_DEADZONE);
+  int x3, y3;
 
-  if (y3 < WIIREMOTE_IR_DEADZONE)
-    y3 = WIIREMOTE_IR_DEADZONE;
-  else if (y3 >  (1.0f - WIIREMOTE_IR_DEADZONE))
-    y3 =  (1.0f - WIIREMOTE_IR_DEADZONE);
-	  
-  // Stretch the values inside the deadzone to 0.0f - 1.0f  
-  x3 = x3 - WIIREMOTE_IR_DEADZONE;
-  y3 = y3 - WIIREMOTE_IR_DEADZONE;
-	
-  x3 = x3 / (1.0f - ( 2.0f * WIIREMOTE_IR_DEADZONE ) );
-  y3 = y3 / (1.0f - ( 2.0f * WIIREMOTE_IR_DEADZONE ) );
-	
-  y3 = 1.0f - y3; //Flips the Y axis
+  x3 = ( (x1 + x2) / 2 );
+  y3 = ( (y1 + y2) / 2 );
 
-  //TODO these calculation is easy to follow although they are hardly optimized	
+  x3 = (int)( ((float)x3 / (float)CWIID_IR_X_MAX) * WIIREMOTE_X_MAX);
+  y3 = (int)( ((float)y3 / (float)CWIID_IR_Y_MAX) * WIIREMOTE_Y_MAX);
 
-  m_lastActiveTime = getTicks(); 
-  m_haveIRSources = true;
+  x3 = (int)(x3 - WIIREMOTE_X_MIN);
+  y3 = (int)(y3 - WIIREMOTE_Y_MIN);
 
-  int x4 = (int)(x3 * 65535);
-  int y4 = (int)(y3 * 65535);
+  if      (x3 < MOUSE_MIN)  x3 = MOUSE_MIN;
+  else if (x3 > MOUSE_MAX)  x3 = MOUSE_MAX;
 
-  CPacketMOUSE mouse(x4, y4);
+  if      (y3 < MOUSE_MIN)  y3 = MOUSE_MIN;
+  else if (y3 > MOUSE_MAX)  y3 = MOUSE_MAX;
+
+  x3 = MOUSE_MAX - x3;
+
+  for (int i = WIIREMOTE_SAMPLES; i > 0; i--)
+  {
+    m_SamplesX[i] =  m_SamplesX[i-1];
+    m_SamplesY[i] =  m_SamplesY[i-1];
+  }
+
+  m_SamplesX[0] = x3;
+  m_SamplesY[0] = y3;
+
+  long x4 = 0, y4 = 0;
+
+  for (int i = 0; i < WIIREMOTE_SAMPLES; i++)
+  {
+    x4 += m_SamplesX[i];
+    y4 += m_SamplesY[i];
+  }
+
+  CPacketMOUSE mouse((x4 / WIIREMOTE_SAMPLES), (y4 / WIIREMOTE_SAMPLES));
   mouse.Send(m_Socket, m_MyAddr);
 }
 
