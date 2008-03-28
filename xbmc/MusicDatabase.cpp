@@ -3808,11 +3808,17 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
         m_pDS->query(strSQL.c_str());
       }
     }
-    if (m_pDS->eof())
-      return false;
 
-    info.strContent = m_pDS->fv("content.strContent").get_asString();
-    info.strPath = m_pDS->fv("content.strScraperPath").get_asString();
+    if (!m_pDS->eof())
+    {
+      info.strContent = m_pDS->fv("content.strContent").get_asString();
+      info.strPath = m_pDS->fv("content.strScraperPath").get_asString();
+    }
+    if (info.strPath.IsEmpty()) // default fallback
+    {
+      info.strPath = g_stSettings.m_defaultMusicScraper;
+      info.strContent = "albums";
+    }
     
     m_pDS->close();
     return true;

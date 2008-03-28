@@ -419,6 +419,11 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInVisualisations(pSetting, GetSetting(pSetting->GetSetting())->GetID());
     }
+    else if (strSetting.Equals("musiclibrary.defaultscraper"))
+    {
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+      FillInMusicScrapers(pControl,g_stSettings.m_defaultMusicScraper);
+    }
     else if (strSetting.Equals("karaoke.port0voicemask"))
     {
       FillInVoiceMasks(0, pSetting);
@@ -1211,6 +1216,12 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     CMusicDatabase musicdatabase;
     musicdatabase.Clean();
     CUtil::DeleteMusicDatabaseDirectoryCache();
+  }
+  else if (strSetting.Equals("musiclibrary.defaultscraper"))
+  {
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+    g_guiSettings.SetString("musiclibrary.defaultscraper", pControl->GetCurrentLabel());
+    FillInMusicScrapers(pControl,pControl->GetCurrentLabel());
   }
   else if (strSetting.Equals("videolibrary.cleanup"))
   {
@@ -3081,6 +3092,31 @@ void CGUIWindowSettingsCategory::FillInSortMethods(CSetting *pSetting, int windo
   }
   pControl->SetValue(pSettingInt->GetData());
   delete state;
+}
+
+void CGUIWindowSettingsCategory::FillInMusicScrapers(CGUISpinControlEx *pControl, const CStdString& strSelected)
+{
+  CFileItemList items;
+  CDirectory::GetDirectory("q:\\system\\scrapers\\music",items,".xml",false);
+  int j=0;
+  int k=0;
+  pControl->Clear();
+  for ( int i=0;i<items.Size();++i)
+  {
+    if (items[i]->m_bIsFolder)
+      continue;
+    CScraperParser parser;
+    if (parser.Load(items[i]->m_strPath))
+    {
+      if (parser.GetName().Equals(strSelected))
+      {
+        g_stSettings.m_defaultMusicScraper = CUtil::GetFileName(items[i]->m_strPath);
+        k = j;
+      }
+      pControl->AddLabel(parser.GetName(),j++);
+    }
+  }
+  pControl->SetValue(k);
 }
 
 // check and clear our folder views if applicable.

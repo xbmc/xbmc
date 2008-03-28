@@ -321,6 +321,8 @@ public:
     CStdString m_musicExtensions;
     CStdString m_videoExtensions;
 
+    CStdString m_defaultMusicScraper;
+
     CStdString m_logFolder;
 
     bool m_bMyMusicSongInfoInVis;
@@ -391,7 +393,7 @@ public:
   CStdStringArray m_szMyVideoStackTokensArray;
   CStdString m_szMyVideoCleanSeparatorsString;
   CStdStringArray m_szMyVideoCleanTokensArray;
-
+  
   VECSHARES m_programSources;
   VECSHARES m_pictureSources;
   VECSHARES m_fileSources;
