@@ -54,7 +54,7 @@ protected:
   virtual void OnEvent(int event, const std::string& data);
 
   bool HandleEvents();
-  bool ChangeChannel(int direction, const char* channel);
+  bool ChangeChannel(int direction, const CStdString &channel);
 
   bool SetupConnection(const CURL& url, bool control, bool event, bool database);
   bool SetupRecording(const CURL& url);
