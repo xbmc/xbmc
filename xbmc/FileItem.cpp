@@ -171,7 +171,8 @@ CFileItem::CFileItem(const CStdString& strPath, bool bIsFolder)
   m_strPath = strPath;
   m_bIsFolder = bIsFolder;
 #ifdef DEBUG
-  if (m_bIsFolder && !m_strPath.IsEmpty() && !IsFileFolder())
+  // tuxbox urls cannot have a / at end
+  if (m_bIsFolder && !m_strPath.IsEmpty() && !IsFileFolder() && !CUtil::IsTuxBox(m_strPath))
     ASSERT(CUtil::HasSlashAtEnd(m_strPath));
 #endif
 
