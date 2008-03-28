@@ -1,4 +1,4 @@
-#include "xbmcclient.h"
+#include "../../lib/c++/xbmcclient.h"
 #include <stdio.h>
 #include <string.h>
 #include <sys/socket.h>
@@ -19,28 +19,16 @@ int main(int argc, char **argv)
 
   my_addr.Bind(sockfd);
 
-  CPacketHELO HeloPackage("Example Remote", ICON_PNG, "icons/bluetooth.png");
+  CPacketHELO HeloPackage("Example Mouse", ICON_PNG, "../../icons/mouse.png");
   HeloPackage.Send(sockfd, my_addr);
 
   sleep(5);
-  // Note that we have foo(BUTTON, DEVICEMAP);
-  CPacketBUTTON btn1("dpadup", "XG");
-  btn1.Send(sockfd, my_addr);
 
-  sleep(5);
-
-  CPacketBUTTON btn2(0x28);
-  btn2.Send(sockfd, my_addr);
-
-  sleep(5);
-
-  CPacketBUTTON btn3("right", "KB");
-  btn3.Send(sockfd, my_addr);
-
-  sleep(5);
-  // Release button
-  CPacketBUTTON btn4;
-  btn4.Send(sockfd, my_addr);
+  for(int i = 0; i < 65536; i++)
+  {
+    CPacketMOUSE mouse(i,i);
+    mouse.Send(sockfd, my_addr);
+  }
 
   // BYE is not required since XBMC would have shut down
   CPacketBYE bye; // CPacketPing if you want to ping
