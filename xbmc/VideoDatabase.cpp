@@ -4139,60 +4139,6 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
     // get all songs out of the database in fixed size chunks
     // dont reserve the items ahead of time just in case it fails part way though
     VECMOVIES movies;
-    if (idGenre == -1 && idYear == -1 && idActor == -1 && idDirector == -1)
-    {
-      int iLIMIT = 5000;    // chunk size
-      int iITERATIONS = 0;  // number of iterations
-      
-      for (int i=0;;i+=iLIMIT)
-      {
-        CStdString strSQL2=strSQL+FormatSQL(" limit %i offset %i", iLIMIT, i);
-        CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL2.c_str());
-        try
-        {
-          if (!m_pDS->query(strSQL2.c_str()))
-            return false;
-
-          // keep going until no rows are left!
-          int iRowsFound = m_pDS->num_rows();
-          if (iRowsFound == 0)
-          {
-            m_pDS->close();
-            return true;
-          }
-
-          CLog::Log(LOGDEBUG,"Time for actual SQL query = %ld", timeGetTime() - time); time = timeGetTime();
-          // get movies from returned subtable
-          while (!m_pDS->eof())
-          {
-            long lMovieId = m_pDS->fv("movie.idMovie").get_asLong();            
-            CVideoInfoTag movie = GetDetailsForMovie(m_pDS);
-            if (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE || g_passwordManager.bMasterUser ||
-                g_passwordManager.IsDatabasePathUnlocked(movie.m_strPath,g_settings.m_videoSources))
-            {
-              CFileItem* pItem=new CFileItem(movie);
-              CStdString strDir;
-              strDir.Format("%ld", lMovieId);
-              pItem->m_strPath=strBaseDir + strDir;
-              pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);
-              
-              items.Add(pItem);
-            }
-            m_pDS->next();
-          }
-          CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %ld", timeGetTime() - time);
-    		  CLog::Log(LOGDEBUG, "%s times: Info %ld, Cast %ld", __FUNCTION__, movieTime, castTime);
-        }
-        catch (...)
-        {
-          CLog::Log(LOGERROR, "%s failed at iteration %i", __FUNCTION__, iITERATIONS);
-        }
-        // next iteration
-        iITERATIONS++;
-        m_pDS->close();
-      }
-      return true;
-    }
 
     // run query
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
@@ -4272,75 +4218,6 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
     if (idActor != -1)
     {
       strSQL=FormatSQL("select tvshow.*,path.strPath,path.strPath from tvshow join actorlinktvshow on actorlinktvshow.idshow=tvshow.idshow join actors on actors.idActor=actorlinktvshow.idActor join tvshowlinkpath on tvshowlinkpath.idshow = tvshow.idshow join path on tvshowlinkpath.idpath = path.idpath where actors.idActor=%u",idActor);
-    }
-
-    // get all songs out of the database in fixed size chunks
-    // dont reserve the items ahead of time just in case it fails part way though
-    VECMOVIES movies;
-    if (idGenre == -1 && idYear == -1 && idActor == -1 && idDirector == -1)
-    {
-      int iLIMIT = 5000;    // chunk size
-      int iSONGS = 0;       // number of movies added to items
-      int iITERATIONS = 0;  // number of iterations
-      
-      for (int i=0;;i+=iLIMIT)
-      {
-        CStdString strSQL2=strSQL+FormatSQL(" limit %i offset %i", iLIMIT, i);
-        CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL2.c_str());
-        try
-        {
-          if (!m_pDS->query(strSQL2.c_str()))
-            return false;
-
-          // keep going until no rows are left!
-          int iRowsFound = m_pDS->num_rows();
-          if (iRowsFound == 0)
-          {
-//            m_pDS->close();
-            if (iITERATIONS == 0)
-              return true; // failed on first iteration, so there's probably no songs in the db
-            else
-            {
-              return true; // there no more songs left to process (aborts the unbounded for loop)
-            }
-          }
-
-          CLog::Log(LOGDEBUG,"Time for actual SQL query = %ld", timeGetTime() - time); time = timeGetTime();
-          // get movies from returned subtable
-          while (!m_pDS->eof())
-          {
-            long lShowId = m_pDS->fv("tvshow.idShow").get_asLong();
-            CVideoInfoTag movie = GetDetailsForTvShow(m_pDS, false);
-            CFileItem* pItem=new CFileItem(movie);
-            CStdString strDir;
-            strDir.Format("%ld/", lShowId);
-            pItem->m_strPath=strBaseDir + strDir;
-            pItem->m_dateTime.SetFromDateString(movie.m_strPremiered);
-            pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
-
-            items.Add(pItem);
-            iSONGS++;
-            m_pDS->next();
-          }
-          CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %ld", timeGetTime() - time);
-    		  CLog::Log(LOGDEBUG, "%s times: Info %ld, Cast %ld", __FUNCTION__, movieTime, castTime);
-        }
-        catch (...)
-        {
-          CLog::Log(LOGERROR, "%s failed at iteration %i, num songs %i", __FUNCTION__, iITERATIONS, iSONGS);
-
-          if (iSONGS > 0)
-          {
-            return true; // keep whatever songs we may have gotten before the failure
-          }
-          else
-            return true; // no songs, return false
-        }
-        // next iteration
-        iITERATIONS++;
-        m_pDS->close();
-      }
-      return true;
     }
 
     // run query
@@ -4433,83 +4310,6 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
         strSQL += FormatSQL(" and episode.c%02d=%u",VIDEODB_ID_EPISODE_SEASON,idSeason);
     }
 
-    // get all songs out of the database in fixed size chunks
-    // dont reserve the items ahead of time just in case it fails part way though
-    VECMOVIES movies;
-    if (idGenre == -1 && idYear == -1 && idActor == -1 && idDirector == -1)
-    {
-      int iLIMIT = 5000;    // chunk size
-      int iSONGS = 0;       // number of movies added to items
-      int iITERATIONS = 0;  // number of iterations
-      
-      for (int i=0;;i+=iLIMIT)
-      {
-        CStdString strSQL2=strSQL+FormatSQL(" limit %i offset %i", iLIMIT, i);
-        CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL2.c_str());
-        try
-        {
-          if (!m_pDS->query(strSQL2.c_str()))
-            return false;
-
-          // keep going until no rows are left!
-          int iRowsFound = m_pDS->num_rows();
-          if (iRowsFound == 0)
-          {
-            m_pDS->close();
-            if (iITERATIONS == 0)
-              return true; // failed on first iteration, so there's probably no songs in the db
-            else
-            {
-              return true; // there no more songs left to process (aborts the unbounded for loop)
-            }
-          }
-
-          CLog::Log(LOGDEBUG,"Time for actual SQL query = %ld", timeGetTime() - time); time = timeGetTime();
-          // get movies from returned subtable
-          while (!m_pDS->eof())
-          {
-            long lEpisodeId = m_pDS->fv("episode.idepisode").get_asLong();
-            CVideoInfoTag movie = GetDetailsForEpisode(m_pDS);
-            if (idSeason > 0 && movie.m_iSpecialSortSeason > 0 && movie.m_iSpecialSortSeason != idSeason)
-            {
-              m_pDS->next();
-              continue;
-            }
-
-            CFileItem* pItem=new CFileItem(movie);
-            CStdString strDir;
-            strDir.Format("%ld", lEpisodeId);
-            pItem->m_strPath=strBaseDir + strDir;
-            pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);
-            pItem->m_dateTime.SetFromDateString(movie.m_strFirstAired);
-            pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
-
-            items.Add(pItem);
-
-            iSONGS++;
-            m_pDS->next();
-          }
-          CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %ld", timeGetTime() - time);
-    	  CLog::Log(LOGDEBUG, "%s times: Info %ld, Cast %ld", __FUNCTION__, movieTime, castTime);
-        }
-        catch (...)
-        {
-          CLog::Log(LOGERROR, "%s failed at iteration %i, num songs %i", __FUNCTION__, iITERATIONS, iSONGS);
-
-          if (iSONGS > 0)
-          {
-            return true; // keep whatever songs we may have gotten before the failure
-          }
-          else
-            return true; // no songs, return false
-        }
-        // next iteration
-        iITERATIONS++;
-        m_pDS->close();
-      }
-      return true;
-    }
-
     // run query
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
@@ -4524,7 +4324,6 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
 
     // get data from returned rows
     items.Reserve(iRowsFound);
-
     while (!m_pDS->eof())
     {
       long lEpisodeId = m_pDS->fv("episode.idEpisode").get_asLong();
@@ -4597,69 +4396,6 @@ bool CVideoDatabase::GetMusicVideosNav(const CStdString& strBaseDir, CFileItemLi
     if (idArtist != -1)
     {
       strSQL=FormatSQL("select musicvideo.*,files.strFileName,path.strPath from musicvideo join files on files.idFile = musicvideo.idFile join path on files.idPath=path.idPath join artistlinkmusicvideo on artistlinkmusicvideo.idmvideo=musicvideo.idmvideo join actors on actors.idActor=artistlinkmusicvideo.idartist where actors.idActor=%u",idArtist);
-    }
-
-    // get all songs out of the database in fixed size chunks
-    // dont reserve the items ahead of time just in case it fails part way though
-    VECMOVIES movies;
-    if (idGenre == -1 && idYear == -1 && idArtist == -1 && idDirector == -1 && idStudio == -1)
-    {
-      int iLIMIT = 5000;    // chunk size
-      int iITERATIONS = 0;  // number of iterations
-      
-      for (int i=0;;i+=iLIMIT)
-      {
-        CStdString strSQL2=strSQL+FormatSQL(" limit %i offset %i", iLIMIT, i);
-        CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL2.c_str());
-        try
-        {
-          if (!m_pDS->query(strSQL2.c_str()))
-            return false;
-
-          // keep going until no rows are left!
-          int iRowsFound = m_pDS->num_rows();
-          if (iRowsFound == 0)
-          {
-            m_pDS->close();
-            if (iITERATIONS == 0)
-              return true; // failed on first iteration, so there's probably no songs in the db
-            else
-            {
-              return true; // there no more songs left to process (aborts the unbounded for loop)
-            }
-          }
-
-          CLog::DebugLog("Time for actual SQL query = %d", timeGetTime() - time); time = timeGetTime();
-          // get movies from returned subtable
-          while (!m_pDS->eof())
-          {
-            long lMVideoId = m_pDS->fv("musicvideo.idmvideo").get_asLong();            
-            CVideoInfoTag movie = GetDetailsForMusicVideo(m_pDS);
-            if (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE || g_passwordManager.bMasterUser ||
-                g_passwordManager.IsDatabasePathUnlocked(movie.m_strPath,g_settings.m_videoSources))
-            {
-              CFileItem* pItem=new CFileItem(movie);
-              CStdString strDir;
-              strDir.Format("%ld", lMVideoId);
-              pItem->m_strPath=strBaseDir + strDir;
-              pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);
-              
-              items.Add(pItem);
-            }
-            m_pDS->next();
-          }
-          CLog::Log(LOGDEBUG,"Time to retrieve musicvideos from dataset = %ld", timeGetTime() - time);
-    	    CLog::Log(LOGDEBUG, "%s times: Info %ld, Cast %ld", __FUNCTION__, movieTime, castTime);
-        }
-        catch (...)
-        {
-          CLog::Log(LOGERROR, "%s failed at iteration %i", __FUNCTION__, iITERATIONS);
-        }
-        // next iteration
-        iITERATIONS++;
-        m_pDS->close();
-      }
-      return true;
     }
 
     // run query
