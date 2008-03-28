@@ -530,7 +530,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
       // 2. specific per genre
       // 3. specific per artist
       // 4. specific per album
-      buttons.Add(CONTEXT_BUTTON_SET_CONTENT,20333);
+      buttons.Add(CONTEXT_BUTTON_SET_CONTENT,20195);
     }
     if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetArtist().size() > 0)
     {
@@ -663,7 +663,13 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     SScraperInfo info;
     if (!m_musicdatabase.GetScraperForPath(m_vecItems[itemNumber]->m_strPath,info))
       info.strContent = "albums";
-    if (CGUIDialogContentSettings::Show(info, bScan))
+    
+    int iLabel=132;
+    // per genre or for all artists
+    if (m_vecItems.m_strPath.Equals("musicdb://1/") || m_vecItems[itemNumber]->m_strPath.Equals("musicdb://2/"))
+      iLabel = 133;
+    
+    if (CGUIDialogContentSettings::Show(info, bScan,iLabel))
     {
       m_musicdatabase.SetScraperForPath(m_vecItems[itemNumber]->m_strPath,info);
       if (bScan)

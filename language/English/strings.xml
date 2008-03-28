@@ -1566,6 +1566,7 @@
   <string id="20192">Fetch Album Information On Scan</string>
   <string id="20193">Fetch Artist Information On Scan</string>
   <string id="20194">Default Scraper</string>
+  <string id="20195">Set Scraper</string>
 
   <!-- string id's 20200 thru 20211 are reserved for speedstrings (LocalizeStrings.cpp)-->
   

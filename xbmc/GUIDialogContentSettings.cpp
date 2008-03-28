@@ -255,12 +255,12 @@ void CGUIDialogContentSettings::SetupPage()
   }
   if (m_scrapers.find("albums") != m_scrapers.end())
   {
-    msg2.SetLabel(g_localizeStrings.Get(132));
+    msg2.SetLabel(m_strContentType);
     msg2.SetParam1(4);
     g_graphicsContext.SendMessage(msg2);
     if (m_info.strContent.Equals("albums"))
     {
-      SET_CONTROL_LABEL(CONTROL_CONTENT_TYPE,g_localizeStrings.Get(132));
+      SET_CONTROL_LABEL(CONTROL_CONTENT_TYPE,m_strContentType);
       CONTROL_SELECT_ITEM(CONTROL_CONTENT_TYPE, 3);
     }
   }
@@ -403,18 +403,21 @@ bool CGUIDialogContentSettings::ShowForDirectory(const CStdString& strDirectory,
   return bResult;
 }
 
-bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, bool& bRunScan)
+bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, bool& bRunScan, int iLabel)
 {
   VIDEO::SScanSettings dummy;
-  return Show(scraper,dummy,bRunScan);
+  return Show(scraper,dummy,bRunScan,iLabel);
 }
 
-bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, VIDEO::SScanSettings& settings, bool& bRunScan)
+bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, VIDEO::SScanSettings& settings, bool& bRunScan, int iLabel)
 {
   CGUIDialogContentSettings *dialog = (CGUIDialogContentSettings *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTENT_SETTINGS);
   if (!dialog) return false;
 
   dialog->m_info = scraper;
+  if (iLabel != -1) // to switch between albums and artists
+    dialog->m_strContentType = g_localizeStrings.Get(iLabel);
+
   dialog->m_scraperSettings = scraper.settings;
   dialog->m_bRunScan = bRunScan;
   dialog->m_bScanRecursive = (settings.recurse > 0) && (!settings.parent_name && settings.recurse == 1);
