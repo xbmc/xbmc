@@ -325,8 +325,6 @@ public:
   void DeleteEpisode(const CStdString& strFilenameAndPath, long lEpisodeId=-1);
   void DeleteMusicVideo(const CStdString& strFilenameAndPath);
 
-  int GetRecentMovies(long* pMovieIdArray, int nSize);
-
   bool GetVideoSettings(const CStdString &strFilenameAndPath, CVideoSettings &settings);
   void SetVideoSettings(const CStdString &strFilenameAndPath, const CVideoSettings &settings);
   void EraseVideoSettings();
