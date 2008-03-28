@@ -334,18 +334,12 @@ void CFileItem::Reset()
 
 void CFileItem::Serialize(CArchive& ar)
 {
+  CGUIListItem::Serialize(ar);
+
   if (ar.IsStoring())
   {
-    ar << m_bIsFolder;
     ar << m_bIsParentFolder;
-    ar << m_strLabel;
-    ar << m_strLabel2;
     ar << m_bLabelPreformated;
-    ar << m_strThumbnailImage;
-    ar << m_strIcon;
-    ar << m_bSelected;
-    ar << m_overlayIcon;
-
     ar << m_strPath;
     ar << m_bIsShareOrDrive;
     ar << m_iDriveType;
@@ -389,16 +383,8 @@ void CFileItem::Serialize(CArchive& ar)
   }
   else
   {
-    ar >> m_bIsFolder;
     ar >> m_bIsParentFolder;
-    ar >> m_strLabel;
-    ar >> m_strLabel2;
     ar >> m_bLabelPreformated;
-    ar >> m_strThumbnailImage;
-    ar >> m_strIcon;
-    ar >> m_bSelected;
-    ar >> (int&)m_overlayIcon;
-
     ar >> m_strPath;
     ar >> m_bIsShareOrDrive;
     ar >> m_iDriveType;
@@ -670,8 +656,7 @@ bool CFileItem::IsCBR() const
 
 bool CFileItem::IsStack() const
 {
-  CURL url(m_strPath);
-  return url.GetProtocol().Equals("stack");
+  return CUtil::IsStack(m_strPath);
 }
 
 bool CFileItem::IsPluginFolder() const
@@ -727,6 +712,11 @@ bool CFileItem::IsDAAP() const
 bool CFileItem::IsTuxBox() const
 {
   return CUtil::IsTuxBox(m_strPath);
+}
+
+bool CFileItem::IsMythTV() const
+{
+  return CUtil::IsMythTV(m_strPath);
 }
 
 bool CFileItem::IsHD() const
@@ -1962,7 +1952,8 @@ bool CFileItemList::Save()
 void CFileItemList::RemoveDiscCache()
 {
   CLog::Log(LOGDEBUG,"Clearing cached fileitems [%s]",m_strPath.c_str());
-  CFile::Delete(GetDiscCacheFile());
+  if (CFile::Exists(GetDiscCacheFile()))
+    CFile::Delete(GetDiscCacheFile());
 }
 
 CStdString CFileItemList::GetDiscCacheFile()
@@ -2300,6 +2291,23 @@ void CFileItem::SetUserVideoThumb()
   SetCachedVideoThumb();
 }
 
+CStdString CFileItem::GetCachedVideoFanart()
+{
+  // get the locally cached thumb
+  Crc32 crc;
+  if (IsStack())
+  {
+    CStackDirectory dir;
+    crc.ComputeFromLowerCase(dir.GetFirstStackedFile(m_strPath));
+  }
+  else
+    crc.ComputeFromLowerCase(m_strPath);
+
+  CStdString thumb;
+  thumb.Format("%s\\%08x.tbn", g_settings.GetVideoFanartFolder().c_str(),(unsigned __int32)crc);
+  return thumb;
+}
+
 CStdString CFileItem::GetCachedProgramThumb()
 {
   // get the locally cached thumb
@@ -2584,5 +2592,11 @@ void CFileItemList::AddSortMethod(SORT_METHOD sortMethod, int buttonLabel, const
 void CFileItemList::SetReplaceListing(bool replace)
 {
   m_replaceListing = replace;
+}
+
+void CFileItemList::ClearSortState()
+{
+  m_sortMethod=SORT_METHOD_NONE;
+  m_sortOrder=SORT_ORDER_NONE;
 }
 

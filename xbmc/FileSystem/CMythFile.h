@@ -2,23 +2,20 @@
 
 #include "IFile.h"
 #include "ILiveTV.h"
+#include "CMythSession.h"
 
-typedef struct cmyth_ringbuf  *cmyth_ringbuf_t;
-typedef struct cmyth_conn     *cmyth_conn_t;
-typedef struct cmyth_recorder *cmyth_recorder_t;
-typedef struct cmyth_proginfo *cmyth_proginfo_t;
-typedef struct cmyth_proglist *cmyth_proglist_t;
-typedef struct cmyth_file     *cmyth_file_t;
 
 class DllLibCMyth;
 
 namespace XFILE
 {
 
+
 class CCMythFile 
   : public  IFile
   ,         ILiveTVInterface
-  , private CThread
+  ,         IRecordable
+  , private CCMythSession::IEventListener
 {
 public:
   CCMythFile();
@@ -44,33 +41,41 @@ public:
   virtual int            GetTotalTime();
   virtual int            GetStartTime();
 
-  virtual CVideoInfoTag* GetVideoInfoTag();
+  virtual bool           UpdateItem(CFileItem& item);
+
+  virtual IRecordable*   GetRecordable() {return (IRecordable*)this;}
+
+  virtual bool           CanRecord();
+  virtual bool           IsRecording();
+  virtual bool           Record(bool bOnOff);
+
 protected:
-  virtual void Process();
+  virtual void OnEvent(int event, const std::string& data);
 
   bool HandleEvents();
   bool ChangeChannel(int direction, const char* channel);
 
-  bool FlushTransfer();
-
-  bool SetupConnection(const CURL& url);
+  bool SetupConnection(const CURL& url, bool control, bool event, bool database);
   bool SetupRecording(const CURL& url);
   bool SetupLiveTV(const CURL& url);
+  bool SetupFile(const CURL& url);
 
+  CStdString GetValue(char* str) { return m_session->GetValue(str); }
+
+  CCMythSession*    m_session;
   DllLibCMyth*      m_dll;
-
   cmyth_conn_t      m_control;
-  cmyth_conn_t      m_event;
+  cmyth_database_t  m_database;
   cmyth_recorder_t  m_recorder;
   cmyth_proginfo_t  m_program;
-  cmyth_proglist_t  m_programlist;
   cmyth_file_t      m_file;
   CStdString        m_filename;
   CVideoInfoTag     m_infotag;
 
   CCriticalSection  m_section;
-  typedef std::pair<int, std::string> MythEvent;
-  std::queue<MythEvent> m_events;
+  std::queue<std::pair<int, std::string> > m_events;
+
+  bool              m_recording;
 };
 
 }

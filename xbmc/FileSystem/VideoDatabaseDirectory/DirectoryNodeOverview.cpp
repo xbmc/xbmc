@@ -38,11 +38,26 @@ bool CDirectoryNodeOverview::GetContent(CFileItemList& items)
   int iMusicVideos = database.GetMusicVideoCount();
   vector<pair<const char*, int> > vec;
   if (iMovies > 0)
-    vec.push_back(make_pair("1", 342));   // Movies
+  {
+    if (g_stSettings.m_bMyVideoNavFlatten)
+      vec.push_back(make_pair("1/2", 342));
+    else
+      vec.push_back(make_pair("1", 342));   // Movies
+  }
   if (iTvShows > 0)
-    vec.push_back(make_pair("2", 20343)); // TV Shows
+  {
+    if (g_stSettings.m_bMyVideoNavFlatten)
+      vec.push_back(make_pair("2/2", 20343));
+    else
+      vec.push_back(make_pair("2", 20343)); // TV Shows
+  }
   if (iMusicVideos > 0)
-    vec.push_back(make_pair("3", 20389)); // Music Videos
+  {
+    if (g_stSettings.m_bMyVideoNavFlatten)
+      vec.push_back(make_pair("3/2", 20389));
+    else
+      vec.push_back(make_pair("3", 20389)); // Music Videos
+  }
   if (!g_advancedSettings.m_bVideoLibraryHideRecentlyAddedItems)
   {
     if (iMovies > 0)
@@ -55,11 +70,7 @@ bool CDirectoryNodeOverview::GetContent(CFileItemList& items)
   CStdString path = BuildPath();
   for (int i = 0; i < (int)vec.size(); ++i)
   {
-    CFileItem* pItem;
-    if (g_stSettings.m_bMyVideoNavFlatten)
-      pItem = new CFileItem(path + vec[i].first + "/2/", true);
-    else
-      pItem = new CFileItem(path + vec[i].first + "/", true);
+    CFileItem* pItem = new CFileItem(path + vec[i].first + "/", true);
     pItem->SetLabel(g_localizeStrings.Get(vec[i].second));
     pItem->SetLabelPreformated(true);
     pItem->SetCanQueue(false);

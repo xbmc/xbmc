@@ -8,6 +8,7 @@ using namespace XFILE;
 CDVDInputStreamTV::CDVDInputStreamTV() : CDVDInputStream(DVDSTREAM_TYPE_TV)
 {
   m_pFile = NULL;
+  m_pRecordable = NULL;
   m_pLiveTV = NULL;
   m_eof = true;
 }
@@ -29,6 +30,7 @@ bool CDVDInputStreamTV::Open(const char* strFile, const std::string& content)
   m_pFile = new CCMythFile();
   if (!m_pFile) return false;
   m_pLiveTV = ((CCMythFile*)m_pFile)->GetLiveTV();
+  m_pRecordable = ((CCMythFile*)m_pFile)->GetRecordable();
 
   CURL url(strFile);
   // open file in binary mode
@@ -111,11 +113,11 @@ bool CDVDInputStreamTV::PrevChannel()
   return m_pLiveTV->PrevChannel();
 }
 
-CVideoInfoTag* CDVDInputStreamTV::GetVideoInfoTag()
+bool CDVDInputStreamTV::UpdateItem(CFileItem& item)
 {
   if(m_pLiveTV)
-    return m_pLiveTV->GetVideoInfoTag();
-  return NULL;
+    return m_pLiveTV->UpdateItem(item);
+  return false;
 }
 
 bool CDVDInputStreamTV::SeekTime(int iTimeInMsec)
@@ -133,3 +135,24 @@ bool CDVDInputStreamTV::NextStream()
   }
   return false;
 }
+
+bool CDVDInputStreamTV::CanRecord()
+{
+  if(m_pRecordable)
+    return m_pRecordable->CanRecord();
+  return false;
+}
+bool CDVDInputStreamTV::IsRecording()
+{
+  if(m_pRecordable)
+    return m_pRecordable->IsRecording();
+  return false;
+}
+bool CDVDInputStreamTV::Record(bool bOnOff)
+{
+  if(m_pRecordable)
+    return m_pRecordable->Record(bOnOff);
+  return false;
+}
+
+

@@ -146,6 +146,7 @@ public:
   bool IsMemoryUnit() const;
   bool IsRemovable() const;
   bool IsTuxBox() const;
+  bool IsMythTV() const;
 
   void RemoveExtension();
   void CleanFileName();
@@ -220,6 +221,7 @@ public:
   CStdString GetCachedProfileThumb();
   CStdString GetCachedSeasonThumb();
   CStdString GetCachedActorThumb();
+  CStdString GetCachedVideoFanart();
 
   // Sets the video thumb (cached first, else caches user thumb)
   void SetVideoThumb();
@@ -394,6 +396,7 @@ public:
   void SetContent(const CStdString &content) { m_content = content; };
   const CStdString &GetContent() const { return m_content; };
 
+  void ClearSortState();
 private:
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
   CStdString GetDiscCacheFile();

@@ -240,7 +240,7 @@ namespace PYXBMC
   PyDoc_STRVAR(setSelected__doc__,
     "setSelected(isOn) -- Sets this checkmark status to on or off.\n"
     "\n"
-    "isOn           : bool - True=selected (on) / False=not selected (off)"
+    "isOn           : bool - True=selected (on) / False=not selected (off)\n"
     "\n"
     "example:\n"
     "  - self.checkmark.setSelected(True)\n");

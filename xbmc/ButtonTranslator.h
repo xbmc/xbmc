@@ -3,6 +3,10 @@
 
 #pragma once
 
+#ifdef HAS_EVENT_SERVER
+#include "utils/EventClient.h"
+#endif
+
 struct CButtonAction
 {
   WORD wID;
@@ -11,6 +15,9 @@ struct CButtonAction
 // class to map from buttons to actions
 class CButtonTranslator
 {
+#ifdef HAS_EVENT_SERVER
+  friend class EVENTCLIENT::CEventButtonState;
+#endif
 public:
   CButtonTranslator();
   virtual ~CButtonTranslator();

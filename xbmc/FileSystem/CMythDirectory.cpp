@@ -1,45 +1,279 @@
 #include "stdafx.h"
 #include "CMythDirectory.h"
+#include "CMythSession.h"
 #include "Util.h"
 #include "DllLibCMyth.h"
 
 extern "C" {
-#if defined(_XBOX) || defined(WIN32)
-#include "lib/libcmyth/cmyth.h"
-#include "lib/libcmyth/mvp_refmem.h"
-#else
 #include "../lib/libcmyth/cmyth.h"
 #include "../lib/libcmyth/mvp_refmem.h"
-#endif
 }
 
 using namespace DIRECTORY;
+using namespace XFILE;
+using namespace std;
 
+CCMythDirectory::CCMythDirectory()
+{
+  m_session  = NULL;
+  m_dll      = NULL;
+  m_database = NULL;
+  m_recorder = NULL;
+}
+
+CCMythDirectory::~CCMythDirectory()
+{
+  Release();
+}
+
+void CCMythDirectory::Release()
+{
+  if(m_recorder)
+  {
+    m_dll->ref_release(m_recorder);
+    m_recorder = NULL;
+  }
+  if(m_session)
+  {
+    CCMythSession::ReleaseSession(m_session);
+    m_session = NULL;
+  }
+  m_dll = NULL;
+}
+
+bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items)
+{
+  cmyth_conn_t control = m_session->GetControl();
+  if(!control)
+    return false;
+
+  CURL url(base);
+
+  cmyth_proglist_t list = m_dll->proglist_get_all_recorded(control);
+  if(!list)
+  {
+    CLog::Log(LOGERROR, "%s - unable to get list of recordings", __FUNCTION__);
+    return false;
+  }
+  int count = m_dll->proglist_get_count(list);
+  for(int i=0; i<count; i++)
+  {
+    cmyth_proginfo_t program = m_dll->proglist_get_item(list, i);
+    if(program)
+    {
+      if(GetValue(m_dll->proginfo_recgroup(program)).Equals("LiveTV"))
+      {
+        m_dll->ref_release(program);
+        continue;
+      }
+
+      CStdString name, path;
+
+      path = GetValue(m_dll->proginfo_pathname(program));
+      path = CUtil::GetFileName(path);
+      name = GetValue(m_dll->proginfo_title(program));
+
+      CFileItem *item = new CFileItem("", false);
+      m_session->UpdateItem(*item, program);
+
+      url.SetFileName("recordings/" + path);
+      url.GetURL(item->m_strPath);
+
+      url.SetFileName("files/" + path +  ".png");
+      url.GetURL(path);
+      item->SetThumbnailImage(path);
+
+      if(m_dll->proginfo_rec_status(program) != RS_RECORDING)
+        name += " (" + item->m_dateTime.GetAsLocalizedDateTime() + ")";
+      else
+      {
+        name += " (Recording)";
+        item->SetThumbnailImage("");
+      }
+
+      item->SetLabel(name);
+
+      items.Add(item);
+      m_dll->ref_release(program);
+    }
+
+    if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+      items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%Z (%J)", "%I", "%L", ""));
+    else
+      items.AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%Z (%J)", "%I", "%L", ""));
+    items.AddSortMethod(SORT_METHOD_SIZE, 553, LABEL_MASKS("%Z (%J)", "%I", "%L", "%I"));
+    items.AddSortMethod(SORT_METHOD_DATE, 552, LABEL_MASKS("%Z", "%J %Q", "%L", "%J"));
+
+  }
+  m_dll->ref_release(list);
+  return true;
+}
+
+
+bool CCMythDirectory::GetChannelsDb(const CStdString& base, CFileItemList &items)
+{
+  cmyth_database_t db = m_session->GetDatabase();
+  if(!db)
+    return false;
+
+  cmyth_chanlist_t list = m_dll->mysql_get_chanlist(db);
+  if(!list)
+  {
+    CLog::Log(LOGERROR, "%s - unable to get list of channels with url %s", __FUNCTION__, base.c_str());
+    return false;
+  }
+  CURL url(base);
+
+  int count = m_dll->chanlist_get_count(list);
+  for(int i = 0; i < count; i++)
+  {
+    cmyth_channel_t channel = m_dll->chanlist_get_item(list, i);
+    if(channel)
+    {
+      CStdString name, path, icon;
+
+      int num = m_dll->channel_channum(channel);
+      char* str;
+      if((str = m_dll->channel_name(channel)))
+      {
+        name.Format("%d - %s", num, str); 
+        m_dll->ref_release(str);
+      }
+      else
+        name.Format("%d");
+
+      icon = GetValue(m_dll->channel_icon(channel));
+
+      if(num <= 0)
+      {
+        CLog::Log(LOGDEBUG, "%s - Channel '%s' Icon '%s' - Skipped", __FUNCTION__, name.c_str(), icon.c_str());
+      }
+      else
+      {
+        CLog::Log(LOGDEBUG, "%s - Channel '%s' Icon '%s'", __FUNCTION__, name.c_str(), icon.c_str());
+        path.Format("channels/%d.ts", num);
+        url.SetFileName(path);
+        url.GetURL(path);
+        CFileItem *item = new CFileItem(path, false);
+        item->SetLabel(name);
+        item->SetLabelPreformated(true);
+        if(icon.length() > 0)
+        {
+          url.SetFileName("files/channels/" + CUtil::GetFileName(icon));
+          url.GetURL(icon);
+          item->SetThumbnailImage(icon);
+        }
+        items.Add(item);
+      }
+      m_dll->ref_release(channel);
+    }
+  }
+  m_dll->ref_release(list);
+  return true;
+}
+
+bool CCMythDirectory::GetChannels(const CStdString& base, CFileItemList &items)
+{
+  cmyth_conn_t control = m_session->GetControl();
+  if(!control)
+    return false;
+
+  std::vector<cmyth_proginfo_t> channels;
+  for(unsigned i=0;i<16;i++)
+  {
+    cmyth_recorder_t recorder = m_dll->conn_get_recorder_from_num(control, i);
+    if(!recorder)
+      continue;
+
+    cmyth_proginfo_t program;
+    program = m_dll->recorder_get_cur_proginfo(recorder);
+    program = m_dll->recorder_get_next_proginfo(recorder, program, BROWSE_DIRECTION_UP);
+    if(!program) {
+      m_dll->ref_release(m_recorder);
+      continue;
+    }
+
+    long startchan = m_dll->proginfo_chan_id(program);
+    long currchan  = -1;
+    while(startchan != currchan)
+    {
+      unsigned j;
+      for(j=0;j<channels.size();j++)
+      {
+        if(m_dll->proginfo_compare(program, channels[j]) == 0)
+          break;
+      }
+
+      if(j == channels.size())
+        channels.push_back(program);
+
+      program = m_dll->recorder_get_next_proginfo(recorder, program, BROWSE_DIRECTION_UP);
+      if(!program)
+        break;
+
+      currchan = m_dll->proginfo_chan_id(program);
+    }
+    m_dll->ref_release(recorder);
+  }
+
+  CURL url(base);
+
+  for(unsigned i=0;i<channels.size();i++)
+  {
+    cmyth_proginfo_t program = channels[i];
+    CStdString num, progname, channame, icon, sign;
+
+    num      = GetValue(m_dll->proginfo_chanstr (program));
+    icon     = GetValue(m_dll->proginfo_chanicon(program));
+
+    CFileItem *item = new CFileItem("", false);
+    m_session->UpdateItem(*item, program);
+    url.SetFileName("channels/" + num + ".ts");
+    url.GetURL(item->m_strPath);
+    item->SetLabel(GetValue(m_dll->proginfo_chansign(program)));
+
+    if(icon.length() > 0)
+    {
+      url.SetFileName("files/channels/" + CUtil::GetFileName(icon));
+      url.GetURL(icon);
+      item->SetThumbnailImage(icon);
+    }
+
+    /* hack to get sorting working properly when sorting by show title */
+    if(item->GetVideoInfoTag()->m_strShowTitle.IsEmpty())
+      item->GetVideoInfoTag()->m_strShowTitle = " ";
+
+    items.Add(item);
+    m_dll->ref_release(program);
+  }
+
+  if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+    items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%K[ - %B]", "%Z", "%L", ""));
+  else
+    items.AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%K[ - %B]", "%Z", "%L", ""));
+
+  if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+    items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 20364, LABEL_MASKS("%Z", "%B", "%L", ""));
+  else
+    items.AddSortMethod(SORT_METHOD_LABEL, 20364, LABEL_MASKS("%Z", "%B", "%L", ""));
+
+
+  return true;
+}
 
 bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   CURL url(strPath);
   CStdString base(strPath);
   CUtil::RemoveSlashAtEnd(base);
-  DllLibCMyth dll;
-  if(!dll.Load())
+
+  m_session = CCMythSession::AquireSession(strPath);
+  if(!m_session)
     return false;
 
-  dll.dbg_level(CMYTH_DBG_DETAIL);
-
-  if(url.GetHostName().IsEmpty())
+  m_dll = m_session->GetLibrary();
+  if(!m_dll)
     return false;
-
-  int port = url.GetPort();
-  if(port == 0)
-    port = 6543;
-
-  cmyth_conn_t control = dll.conn_connect_ctrl((char*)url.GetHostName().c_str(), port, 16*1024, 4096);
-  if(!control)
-  {
-    CLog::Log(LOGERROR, "%s - unable to connect to server %s, port %d", __FUNCTION__, url.GetHostName().c_str(), port);
-    return false;
-  }
 
   if(url.GetFileName().IsEmpty())
   {
@@ -54,144 +288,17 @@ bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
     item->SetLabel("Recordings");
     item->SetLabelPreformated(true);
     items.Add(item);
+
+    return true;
   }
   else if(url.GetFileName() == "channels/")
-  {
-    CStdString user(url.GetUserName());
-    CStdString pass(url.GetPassWord());
-    if(user == "")
-      user = "mythtv";
-    if(pass == "")
-      pass = "mythtv";
-    cmyth_database_t db = dll.database_init((char*)url.GetHostName().c_str(), "mythconverg", (char*)user.c_str(), (char*)pass.c_str());
-    if(!db)
-    {
-      CLog::Log(LOGERROR, "%s - unable to connect to db with url %s", __FUNCTION__, strPath.c_str());
-      dll.ref_release(control);
-      return false;      
-    }
-    cmyth_chanlist_t list = dll.mysql_get_chanlist(db);
-    if(!list)
-    {
-      CLog::Log(LOGERROR, "%s - unable to get list of channels with url %s", __FUNCTION__, strPath.c_str());
-      dll.ref_release(db); 
-      dll.ref_release(control); 
-      return false;
-    }
-    int count = dll.chanlist_get_count(list);
-    for(int i = 0; i < count; i++)
-    {
-      cmyth_channel_t channel = dll.chanlist_get_item(list, i);
-      if(channel)
-      {
-        CStdString name, path, icon;
+    return GetChannels(base, items);
 
-        int num = dll.channel_channum(channel);
-        char* str;
-        if((str = dll.channel_name(channel)))
-        {
-          name.Format("%d - %s", num, str); 
-          dll.ref_release(str);
-        }
-        else
-          name.Format("%d");
+  else if(url.GetFileName() == "channelsdb/")
+    return GetChannelsDb(base, items);
 
-        if((str = dll.channel_icon(channel)))
-        {
-          icon = str;
-          dll.ref_release(str);
-        }
-
-        path.Format("%s/%d.ts", base.c_str(), num);
-
-        if(num <= 0)
-        {
-          CLog::Log(LOGDEBUG, "%s - Channel '%s' Icon '%s' - Skipped", __FUNCTION__, name.c_str(), icon.c_str());
-        }
-        else
-        {
-          CLog::Log(LOGDEBUG, "%s - Channel '%s' Icon '%s'", __FUNCTION__, name.c_str(), icon.c_str());
-          CFileItem *item = new CFileItem(path, false);
-          item->SetLabel(name);
-          item->SetLabelPreformated(true);
-          items.Add(item);
-        }
-        dll.ref_release(channel);
-      }
-    }
-    dll.ref_release(list);
-    dll.ref_release(db);
-  }
   else if(url.GetFileName() == "recordings/")
-  {
-    cmyth_proglist_t list = dll.proglist_get_all_recorded(control);
-    if(!list)
-    {
-      CLog::Log(LOGERROR, "%s - unable to get list of recordings", __FUNCTION__);
-      dll.ref_release(control);
-      return false;
-    }
-    int count = dll.proglist_get_count(list);
-    for(int i=0; i<count; i++)
-    {
-      cmyth_proginfo_t program = dll.proglist_get_item(list, i);
-      if(program)
-      {
-        char* str;
-        if((str = dll.proginfo_recgroup(program)))
-        {
-          if(strcmp(str, "LiveTV") == 0)
-          {
-            dll.ref_release(str);
-            dll.ref_release(program);
-            continue;
-          }
-        }
+    return GetRecordings(base, items);
 
-        if((str = dll.proginfo_pathname(program)))
-        {
-          CStdString recording, name, path;
-
-          recording = CUtil::GetFileName(str);
-          dll.ref_release(str);
-
-          if((str = dll.proginfo_title(program)))
-          {
-            name = str;
-            dll.ref_release(str);
-          }
-          else
-            name = recording;
-
-          CLog::Log(LOGDEBUG, "%s - recording %s (%s) has status %d", __FUNCTION__, name.c_str(), recording.c_str(), dll.proginfo_rec_status(program));
-          path.Format("%s/%s", base.c_str(), recording.c_str());
-
-          CFileItem *item = new CFileItem(path, false);
-          item->SetLabel(name);
-
-          if(dll.proginfo_rec_status(program) == RS_RECORDING)
-            item->SetLabel2("(Recording)");
-          else
-          {
-            cmyth_timestamp_t start = dll.proginfo_rec_start(program);
-            cmyth_timestamp_t end = dll.proginfo_rec_end(program);
-            double diff = difftime(dll.timestamp_to_unixtime(end), dll.timestamp_to_unixtime(start));
-            dll.ref_release(start);
-            dll.ref_release(end);
-
-            CStdString time;
-            StringUtils::SecondsToTimeString((long)diff, time, TIME_FORMAT_GUESS);
-            item->SetLabel2(time);
-          }
-
-          item->SetLabelPreformated(true);
-          items.Add(item);
-        }
-        dll.ref_release(program);
-      }
-    }
-    dll.ref_release(list);
-  }
-
-  return true;
+  return false;
 }

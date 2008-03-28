@@ -188,10 +188,13 @@ bool CIMDB::InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& det
       TiXmlNode *epnum = movie->FirstChild("epnum");
       TiXmlNode *season = movie->FirstChild("season");
       TiXmlNode* id = movie->FirstChild("id");
-      if (title && title->FirstChild() && link && link->FirstChild() && epnum && epnum->FirstChild() && season && season->FirstChild())
+      if (link && link->FirstChild() && epnum && epnum->FirstChild() && season && season->FirstChild())
       {
         CScraperUrl url2;
-        g_charsetConverter.stringCharsetToUtf8(title->FirstChild()->Value(),url2.strTitle);
+        if (title && title->FirstChild())
+          g_charsetConverter.stringCharsetToUtf8(title->FirstChild()->Value(),url2.strTitle);
+        else
+          url2.strTitle = g_localizeStrings.Get(416);
 
         while (link && link->FirstChild())
         {
@@ -201,7 +204,6 @@ bool CIMDB::InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& det
 
         if (id && id->FirstChild())
           url2.strId = id->FirstChild()->Value();
-        // if source contained a distinct year, only allow those
         std::pair<int,int> key(atoi(season->FirstChild()->Value()),atoi(epnum->FirstChild()->Value()));
         temp.insert(std::make_pair<std::pair<int,int>,CScraperUrl>(key,url2));
       }

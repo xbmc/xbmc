@@ -5,123 +5,10 @@
 #include "utils/HTTP.h"
 #include "utils/log.h"
 #include "utils/CharsetConverter.h"
+#include "Util.h"
+#include "Picture.h"
 
 #include <sstream>
-
-CScraperSettings::CScraperSettings()
-{
-}
-
-CScraperSettings::~CScraperSettings()
-{
-}
-
-bool CScraperSettings::Load(const CStdString& strSettings, const CStdString& strSaved)
-{
-  if (!LoadSettingsXML(strSettings))
-    return false;
-  if (!LoadUserXML(strSaved))
-    return false;
-
-  return true;
-}
-
-bool CScraperSettings::LoadUserXML(const CStdString& strSaved)
-{
-  m_userXmlDoc.Clear();
-  m_userXmlDoc.Parse(strSaved.c_str());
-
-  return m_userXmlDoc.RootElement()?true:false;
-}
-
-bool CScraperSettings::LoadSettingsXML(const CStdString& strScraper, const CStdString& strFunction, const CScraperUrl* url)
-{
-  CScraperParser parser;
-  // load our scraper xml
-  if (!parser.Load(strScraper))
-    return false;
-
-  if (!url && strFunction.Equals("GetSettings")) // entry point
-    m_pluginXmlDoc.Clear();
-    
-  std::vector<CStdString> strHTML;
-  if (url)
-  {
-    CHTTP http;
-    for (unsigned int i=0;i<url->m_url.size();++i)
-    {
-      CStdString strCurrHTML;
-      if (!CScraperUrl::Get(url->m_url[i],strCurrHTML,http) || strCurrHTML.size() == 0)
-        return false;
-      strHTML.push_back(strCurrHTML);
-    }
-  }
-
-  // now grab our details using the scraper
-  for (unsigned int i=0;i<strHTML.size();++i)
-    parser.m_param[i] = strHTML[i];
-
-  CStdString strXML = parser.Parse(strFunction);
-  if (strXML.IsEmpty())
-  {
-    CLog::Log(LOGERROR, "%s: Unable to parse web site",__FUNCTION__);
-    return false;
-  }
-  // abit ugly, but should work. would have been better if parser
-  // set the charset of the xml, and we made use of that
-  if (strXML.Find("encoding=\"utf-8\"") < 0)
-    g_charsetConverter.stringCharsetToUtf8(strXML);
-  
-  // ok, now parse the xml file
-  TiXmlBase::SetCondenseWhiteSpace(false);
-  TiXmlDocument doc;
-  doc.Parse(strXML.c_str(),0,TIXML_ENCODING_UTF8);
-  if (!doc.RootElement())
-  {
-    CLog::Log(LOGERROR, "%s: Unable to parse xml",__FUNCTION__);
-    return false;
-  }
-
-  // check our document
-  if (!m_pluginXmlDoc.RootElement())
-  {
-    TiXmlElement xmlRootElement("settings");
-    m_pluginXmlDoc.InsertEndChild(xmlRootElement);
-  }
-
-  // loop over all tags and append any setting tags
-  TiXmlElement* pElement = doc.RootElement()->FirstChildElement("setting");
-  while (pElement)
-  {
-    m_pluginXmlDoc.RootElement()->InsertEndChild(*pElement);
-    pElement = pElement->NextSiblingElement("setting");
-  }
-
-  // and call any chains
-  TiXmlElement* pRoot = doc.RootElement();
-  TiXmlElement* xurl = pRoot->FirstChildElement("url");
-  while (xurl && xurl->FirstChild())
-  {
-    const char* szFunction = xurl->Attribute("function");
-    if (szFunction)
-    {      
-      CScraperUrl scrURL(xurl);
-      LoadSettingsXML(strScraper,szFunction,&scrURL);
-    }
-    xurl = xurl->NextSiblingElement("url");
-  }
-
-  return m_pluginXmlDoc.RootElement()?true:false;
-}
-
-CStdString CScraperSettings::GetSettings() const
-{
-  std::stringstream stream;
-  if (m_userXmlDoc.RootElement())
-    stream << *m_userXmlDoc.RootElement();
-
-  return stream.str();
-}
 
 void CVideoInfoTag::Reset()
 {
@@ -147,6 +34,7 @@ void CVideoInfoTag::Reset()
   m_strFirstAired= "";
   m_strStudio = "";
   m_strAlbum = "";
+  m_strTrailer = "";
   m_iTop250 = 0;
   m_iYear = 0;
   m_iSeason = -1;
@@ -156,6 +44,7 @@ void CVideoInfoTag::Reset()
   m_fRating = 0.0f;
   m_iDbId = -1;
   m_iBookmarkId = -1;
+  m_fanart.m_xml = "";
 
   m_bWatched = false;
 }
@@ -189,6 +78,12 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   XMLUtils::SetString(movie, "tagline", m_strTagLine);
   XMLUtils::SetString(movie, "runtime", m_strRuntime);
   XMLUtils::SetString(movie, "thumb", m_strPictureURL.m_xml);
+  if (m_fanart.m_xml.size())
+  {
+    TiXmlDocument doc;
+    doc.Parse(m_fanart.m_xml);
+    movie->InsertEndChild(*doc.RootElement());
+  }
   XMLUtils::SetString(movie, "mpaa", m_strMPAARating);
   XMLUtils::SetBoolean(movie, "watched", m_bWatched);
   if (savePathInfo)
@@ -209,6 +104,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   XMLUtils::SetString(movie, "aired", m_strFirstAired);
   XMLUtils::SetString(movie, "studio", m_strStudio);
   XMLUtils::SetString(movie, "album", m_strAlbum);
+  XMLUtils::SetString(movie, "trailer", m_strTrailer);
 
   // cast
   for (iCast it = m_cast.begin(); it != m_cast.end(); ++it)
@@ -283,6 +179,7 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
   XMLUtils::GetString(movie, "code", m_strProductionCode);
   XMLUtils::GetString(movie, "aired", m_strFirstAired);
   XMLUtils::GetString(movie, "album", m_strAlbum);
+  XMLUtils::GetString(movie, "trailer", m_strTrailer);
 
   m_strPictureURL.ParseElement(movie->FirstChildElement("thumbs"));
   if (m_strPictureURL.m_url.size() == 0)
@@ -416,6 +313,13 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
     }
   }
 
+  // fanart
+  const TiXmlElement *fanart = movie->FirstChildElement("fanart");
+  if (fanart)
+  {
+    m_fanart.m_xml << *fanart;
+    m_fanart.Unpack();
+  }
   return true;
 }
 
@@ -431,9 +335,11 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar << m_strPlot;
     ar << m_strPictureURL.m_spoof;
     ar << m_strPictureURL.m_xml;
+    ar << m_fanart.m_xml;
     ar << m_strTitle;
     ar << m_strVotes;
     ar << m_strStudio;
+    ar << m_strTrailer;
     ar << (int)m_cast.size();
     for (unsigned int i=0;i<m_cast.size();++i)
     {
@@ -481,9 +387,12 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar >> m_strPictureURL.m_spoof;
     ar >> m_strPictureURL.m_xml;
     m_strPictureURL.Parse();
+    ar >> m_fanart.m_xml;
+    m_fanart.Unpack();
     ar >> m_strTitle;
     ar >> m_strVotes;
     ar >> m_strStudio;
+    ar >> m_strTrailer;
     int iCastSize;
     ar >> iCastSize;
     for (int i=0;i<iCastSize;++i)

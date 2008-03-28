@@ -153,7 +153,6 @@ void CDVDOverlayContainer::Remove()
 
 void CDVDOverlayContainer::Clear()
 {
-  CLog::Log(LOGDEBUG,"clear");
   while (m_overlays.size() > 0) Remove();
 }
 

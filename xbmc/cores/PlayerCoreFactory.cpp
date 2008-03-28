@@ -56,7 +56,6 @@ IPlayer* CPlayerCoreFactory::CreatePlayer(const EPLAYERCORES eCore, IPlayerCallb
 #ifdef HAS_MODPLAYER
     case EPC_MODPLAYER: return new ModPlayer(callback);
 #endif
-//    case EPC_SIDPLAYER: return new SidPlayer(callback);
     case EPC_PAPLAYER: return new PAPlayer(callback); // added by dataratt
 
     default:
@@ -72,7 +71,6 @@ EPLAYERCORES CPlayerCoreFactory::GetPlayerCore(const CStdString& strCore)
   if (strCoreLower == "dvdplayer") return EPC_DVDPLAYER;
   if (strCoreLower == "mplayer") return EPC_MPLAYER;
   if (strCoreLower == "mod") return EPC_MODPLAYER;
-//  if (strCoreLower == "sid") return EPC_SIDPLAYER;
   if (strCoreLower == "paplayer" ) return EPC_PAPLAYER;
   return EPC_NONE;
 }
@@ -84,7 +82,6 @@ CStdString CPlayerCoreFactory::GetPlayerName(const EPLAYERCORES eCore)
     case EPC_DVDPLAYER: return "DVDPlayer";
     case EPC_MPLAYER: return "MPlayer";
     case EPC_MODPLAYER: return "MODPlayer";
-//    case EPC_SIDPLAYER: return "SIDPlayer";
     case EPC_PAPLAYER: return "PAPlayer";
     default: return "";
   }
@@ -95,7 +92,6 @@ void CPlayerCoreFactory::GetPlayers( VECPLAYERCORES &vecCores )
   vecCores.push_back(EPC_MPLAYER);
   vecCores.push_back(EPC_DVDPLAYER);
   vecCores.push_back(EPC_MODPLAYER);
-//  vecCores.push_back(EPC_SIDPLAYER);
   vecCores.push_back(EPC_PAPLAYER);
 }
 
@@ -105,7 +101,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 
   CLog::Log(LOGDEBUG,"CPlayerCoreFactor::GetPlayers(%s)",item.m_strPath.c_str());
 
-  // uggly hack for ReplayTV. our filesystem is broken against real ReplayTV's (not the psuevdo DVArchive)
+  // ugly hack for ReplayTV. our filesystem is broken against real ReplayTV's (not the psuevdo DVArchive)
   // it breaks down for small requests. As we can't allow truncated reads for all emulated dll file functions
   // we are often forced to do small reads to fill up the full buffer size wich seems gives garbage back
   if (url.GetProtocol().Equals("rtv"))
@@ -194,11 +190,6 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     vecCores.push_back(EPC_MODPLAYER);
   }
 #endif
-  
-/*  if( url.GetFileType() == "sid" )
-  {
-    vecCores.push_back(EPC_SIDPLAYER);
-  }*/
 
   //Add all normal players last so you can force them, should you want to
   if( item.IsVideo() || item.IsAudio() )

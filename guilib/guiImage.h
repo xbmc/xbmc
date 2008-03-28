@@ -65,7 +65,28 @@ public:
 class CGUIImage : public CGUIControl
 {
 public:
-  enum GUIIMAGE_ASPECT_RATIO { ASPECT_RATIO_STRETCH = 0, ASPECT_RATIO_SCALE, ASPECT_RATIO_KEEP, ASPECT_RATIO_CENTER };
+  class CAspectRatio
+  {
+  public:
+    enum ASPECT_RATIO { AR_STRETCH = 0, AR_SCALE, AR_KEEP, AR_CENTER };
+    CAspectRatio(ASPECT_RATIO aspect = AR_STRETCH)
+    {
+      ratio = aspect;
+      align = ASPECT_ALIGN_CENTER | ASPECT_ALIGNY_CENTER;
+      scaleDiffuse = true;
+    };
+    bool operator!=(const CAspectRatio &right) const
+    {
+      if (ratio != right.ratio) return true;
+      if (align != right.align) return true;
+      if (scaleDiffuse != right.scaleDiffuse) return true;
+      return false;
+    };
+
+    ASPECT_RATIO ratio;
+    DWORD        align;
+    bool         scaleDiffuse;
+  };
 
   CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture, DWORD dwColorKey = 0);
   CGUIImage(const CGUIImage &left);
@@ -85,7 +106,8 @@ public:
 
   void PythonSetColorKey(DWORD dwColorKey);
   virtual void SetFileName(const CStdString& strFileName);
-  virtual void SetAspectRatio(GUIIMAGE_ASPECT_RATIO ratio, DWORD align = ASPECT_ALIGN_CENTER | ASPECT_ALIGNY_CENTER);
+  virtual void SetAspectRatio(const CAspectRatio &aspect);
+  void SetAspectRatio(CAspectRatio::ASPECT_RATIO ratio) { CAspectRatio aspect(ratio); SetAspectRatio(aspect); };
   void SetAlpha(unsigned char alpha);
   void SetAlpha(unsigned char a0, unsigned char a1, unsigned char a2, unsigned char a3);
 
@@ -116,13 +138,13 @@ protected:
   int m_iCurrentLoop;
   int m_iCurrentImage;
   DWORD m_dwFrameCounter;
-  GUIIMAGE_ASPECT_RATIO m_aspectRatio;
-  DWORD                 m_aspectAlign;
+  CAspectRatio m_aspect;
   std::vector <LPDIRECT3DTEXTURE8> m_vecTextures;
   LPDIRECT3DTEXTURE8 m_diffuseTexture;
   LPDIRECT3DPALETTE8 m_diffusePalette;
   LPDIRECT3DPALETTE8 m_pPalette;
   float m_diffuseScaleU, m_diffuseScaleV;
+  CPoint m_diffuseOffset;
   bool m_bDynamicResourceAlloc;
 
   // for when we are changing textures

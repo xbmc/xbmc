@@ -92,6 +92,7 @@ bool CGUIDialogMediaSource::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_WINDOW_INIT:
     {
+      m_confirmed = false;
       m_bRunScan = false;
       m_settings.parent_name = false;
       m_settings.recurse = 0;

@@ -67,6 +67,7 @@
 #include "FileSystem/DirectoryCache.h"
 #include "FileSystem/StackDirectory.h"
 #include "FileSystem/DllLibCurl.h"
+#include "FileSystem/CMythSession.h"
 #include "utils/TuxBoxUtil.h"
 #include "utils/SystemInfo.h"
 #include "ApplicationRenderer.h"
@@ -102,6 +103,9 @@
 #endif
 #ifdef HAS_XFONT
 #include <xfont.h>  // for textout functions
+#endif
+#ifdef HAS_EVENT_SERVER
+#include "utils/EventServer.h"
 #endif
 
 // Windows includes
@@ -184,6 +188,9 @@ using namespace MEDIA_DETECT;
 using namespace PLAYLIST;
 using namespace VIDEO;
 using namespace MUSIC_INFO;
+#ifdef HAS_EVENT_SERVER
+using namespace EVENTSERVER;
+#endif
 
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
@@ -636,7 +643,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
         g_application.Stop();
         Sleep(200);
 #ifdef _XBOX
-#ifdef _DEBUG  // don't actually shut off if debug build, it hangs VS for a long time
+#ifndef _DEBUG  // don't actually shut off if debug build, it hangs VS for a long time
         XKUtils::XBOXPowerCycle();
 #endif
 #else
@@ -1208,6 +1215,7 @@ HRESULT CApplication::Initialize()
   CreateDirectory(g_settings.GetXLinkKaiThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetPicturesThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetProfilesThumbFolder().c_str(),NULL);
+  CreateDirectory(g_settings.GetVideoFanartFolder().c_str(),NULL);
   CLog::Log(LOGINFO, "  thumbnails folder:%s", g_settings.GetThumbnailsFolder().c_str());
   for (unsigned int hex=0; hex < 16; hex++)
   {
@@ -1480,8 +1488,8 @@ void CApplication::StartWebServer()
     CSectionLoader::Load("LIBHTTP");
     m_pWebServer = new CWebServer();
     m_pWebServer->Start(g_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), "Q:\\web", false);
-    if (m_pXbmcHttp)
-      m_pXbmcHttp->xbmcBroadcast("StartUp", 1);
+    if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
+	  g_applicationMessenger.HttpApi("broadcastlevel; StartUp;1");
   }
 }
 
@@ -1627,6 +1635,35 @@ void CApplication::StopUPnP()
   {
     CLog::Log(LOGNOTICE, "stopping upnp");
     CUPnP::ReleaseInstance();
+  }
+#endif
+}
+
+void CApplication::StartEventServer()
+{
+#ifdef HAS_EVENT_SERVER
+  if (g_guiSettings.GetBool("remoteevents.enabled"))
+  {
+    CLog::Log(LOGNOTICE, "ES: Starting event server");
+    CEventServer::GetInstance()->StartServer();
+  }
+#endif
+}
+
+void CApplication::StopEventServer()
+{
+#ifdef HAS_EVENT_SERVER
+  CLog::Log(LOGNOTICE, "ES: Stopping event server");
+  CEventServer::GetInstance()->StopServer();
+#endif
+}
+
+void CApplication::RefreshEventServer()
+{
+#ifdef HAS_EVENT_SERVER
+  if (g_guiSettings.GetBool("remoteevents.enabled"))
+  {
+    CEventServer::GetInstance()->RefreshSettings();
   }
 #endif
 }
@@ -2207,9 +2244,9 @@ void CApplication::DoRender()
 
 
   // if we're recording an audio stream then show blinking REC
-  if (IsPlayingAudio())
+  if (!g_graphicsContext.IsFullScreenVideo())
   {
-    if (m_pPlayer->IsRecording() )
+    if (m_pPlayer && m_pPlayer->IsRecording() )
     {
       static int iBlinkRecord = 0;
       iBlinkRecord++;
@@ -2425,11 +2462,11 @@ bool CApplication::OnKey(CKey& key)
 bool CApplication::OnAction(const CAction &action)
 {
   // Let's tell the outside world about this action
-  if (m_pXbmcHttp)
+  if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=2)
   {
     CStdString tmp;
     tmp.Format("%i",action.wID);
-    m_pXbmcHttp->xbmcBroadcast("OnAction:"+tmp, 2);
+	g_applicationMessenger.HttpApi("broadcastlevel; OnAction:"+tmp+";2");
   }
 
   // special case for switching between GUI & fullscreen mode.
@@ -2773,6 +2810,7 @@ void CApplication::FrameMove()
   ProcessKeyboard();
   ProcessRemote(frameTime);
   ProcessGamepad(frameTime);
+  ProcessEventServer(frameTime);
 }
 
 bool CApplication::ProcessGamepad(float frameTime)
@@ -3080,37 +3118,38 @@ bool CApplication::ProcessMouse()
 }
 
 void  CApplication::CheckForTitleChange()
-{
-  if (IsPlayingVideo())
-  {
-	const CVideoInfoTag* tagVal = g_infoManager.GetCurrentMovieTag();
-    if (m_pXbmcHttp && tagVal && !(tagVal->m_strTitle.IsEmpty()))
+{ 
+  if (g_stSettings.m_HttpApiBroadcastLevel>=1)
+    if (IsPlayingVideo())
     {
-      CStdString msg=m_pXbmcHttp->GetOpenTag()+"MovieTitle:"+tagVal->m_strTitle+m_pXbmcHttp->GetCloseTag();
-	  if (m_prevMedia!=msg)
-	  {
-	    m_pXbmcHttp->xbmcBroadcast("MediaChanged:"+msg, 1);
-        m_prevMedia=msg;
-	  }
+	  const CVideoInfoTag* tagVal = g_infoManager.GetCurrentMovieTag();
+      if (m_pXbmcHttp && tagVal && !(tagVal->m_strTitle.IsEmpty()))
+      {
+        CStdString msg=m_pXbmcHttp->GetOpenTag()+"MovieTitle:"+tagVal->m_strTitle+m_pXbmcHttp->GetCloseTag();
+	    if (m_prevMedia!=msg && g_stSettings.m_HttpApiBroadcastLevel>=1)
+  	    {
+		  g_applicationMessenger.HttpApi("broadcastlevel; MediaChanged:"+msg+";1");
+          m_prevMedia=msg;
+        }
+      }
     }
-  }
-  else if (IsPlayingAudio())
-  {
-    const CMusicInfoTag* tagVal=g_infoManager.GetCurrentSongTag();
-    if (m_pXbmcHttp && tagVal)
-	{
-	  CStdString msg="";
-	  if (!tagVal->GetTitle().IsEmpty())
+    else if (IsPlayingAudio())
+    {
+      const CMusicInfoTag* tagVal=g_infoManager.GetCurrentSongTag();
+      if (m_pXbmcHttp && tagVal)
+	  {
+	    CStdString msg="";
+	    if (!tagVal->GetTitle().IsEmpty())
 		  msg=m_pXbmcHttp->GetOpenTag()+"AudioTitle:"+tagVal->GetTitle()+m_pXbmcHttp->GetCloseTag();
-	  if (!tagVal->GetArtist().IsEmpty())
+	    if (!tagVal->GetArtist().IsEmpty())
 		  msg+=m_pXbmcHttp->GetOpenTag()+"AudioArtist:"+tagVal->GetArtist()+m_pXbmcHttp->GetCloseTag();
-	  if (m_prevMedia!=msg)
-	  {
-        m_pXbmcHttp->xbmcBroadcast("MediaChanged:"+msg, 1);
-	    m_prevMedia=msg;
-	  }
+	    if (m_prevMedia!=msg)
+	    {
+	      g_applicationMessenger.HttpApi("broadcastlevel; MediaChanged:"+msg+";1");
+	      m_prevMedia=msg;
+	    }
+      }
     }
-  }
 }
 
 
@@ -3160,6 +3199,58 @@ bool CApplication::ProcessHTTPApiButtons()
       return true;
     }
   }
+  return false;
+}
+
+bool CApplication::ProcessEventServer(float frameTime)
+{
+#ifdef HAS_EVENT_SERVER
+  CEventServer* es = CEventServer::GetInstance();
+  if (!es || !es->Running())
+    return false;
+
+  WORD wKeyID = es->GetButtonCode();
+  if (wKeyID)
+  {
+    CKey key(wKeyID);
+    return OnKey( key );
+  }
+
+  {
+    CAction action;
+    action.wID = ACTION_MOUSE;
+    if (es->GetMousePos(action.fAmount1, action.fAmount2))
+    {
+      CPoint point;
+      point.x = action.fAmount1;
+      point.y = action.fAmount2;
+      g_Mouse.SetLocation(point, true);
+
+      // TODO: the following lines of code need to be abstracted as they are
+      // reused in multiple functions
+      // send mouse event to the music + video overlays, if they're enabled
+      if (m_gWindowManager.IsOverlayAllowed())
+      {
+        // if we're playing a movie
+        if ( IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
+        {
+          // then send the action to the video overlay window
+          CGUIWindow *overlay = m_gWindowManager.GetWindow(WINDOW_VIDEO_OVERLAY);
+          if (overlay)
+            overlay->OnAction(action);
+        }
+        else if ( IsPlayingAudio() )
+        {
+          // send message to the audio overlay window
+          CGUIWindow *overlay = m_gWindowManager.GetWindow(WINDOW_MUSIC_OVERLAY);
+          if (overlay)
+            overlay->OnAction(action);
+        }
+      }
+      return m_gWindowManager.OnAction(action);
+    }
+  }
+#endif  
   return false;
 }
 
@@ -3220,6 +3311,14 @@ void CApplication::Stop()
 {
   try
   {
+    if (m_pXbmcHttp)
+    {
+	  if(g_stSettings.m_HttpApiBroadcastLevel>=1)
+	    g_applicationMessenger.HttpApi("broadcastlevel; ShutDown;1");
+	  m_pXbmcHttp->shuttingDown=true;
+     //Sleep(100);
+	}
+
     CLog::Log(LOGNOTICE, "Storing total System Uptime");
     g_stSettings.m_iSystemTimeTotalUp = g_stSettings.m_iSystemTimeTotalUp + (int)(timeGetTime() / 60000);
 
@@ -3235,8 +3334,6 @@ void CApplication::Stop()
     m_bStop = true;
     CLog::Log(LOGNOTICE, "stop all");
 
-	if (m_pXbmcHttp)
-      m_pXbmcHttp->xbmcBroadcast("ShutDown", 1);
 
     StopServices();
     //Sleep(5000);
@@ -3762,8 +3859,8 @@ void CApplication::OnPlayBackEnded()
   // (does nothing if python is not loaded)
   g_pythonParser.OnPlayBackEnded();
   // Let's tell the outside world as well
-  if (m_pXbmcHttp)
-    m_pXbmcHttp->xbmcBroadcast("OnPlayBackEnded", 1);
+  if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
+	g_applicationMessenger.HttpApi("broadcastlevel; OnPlayBackEnded;1");
 
   CLog::Log(LOGDEBUG, "Playback has finished");
 
@@ -3785,8 +3882,8 @@ void CApplication::OnPlayBackStarted()
   g_pythonParser.OnPlayBackStarted();
 
   // Let's tell the outside world as well
-  if (m_pXbmcHttp)
-    m_pXbmcHttp->xbmcBroadcast("OnPlayBackStarted", 1);
+  if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
+	g_applicationMessenger.HttpApi("broadcastlevel; OnPlayBackStarted;1");
 
   CLog::Log(LOGDEBUG, "Playback has started");
 
@@ -3806,8 +3903,8 @@ void CApplication::OnQueueNextItem()
   g_pythonParser.OnQueueNextItem(); // currently unimplemented
 
   // Let's tell the outside world as well
-  if (m_pXbmcHttp)
-    m_pXbmcHttp->xbmcBroadcast("OnQueueNextItem", 1);
+  if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
+	g_applicationMessenger.HttpApi("broadcastlevel; OnQueueNextItem;1");
 
   CLog::Log(LOGDEBUG, "Player has asked for the next item");
 
@@ -3822,8 +3919,8 @@ void CApplication::OnPlayBackStopped()
   g_pythonParser.OnPlayBackStopped();
 
   // Let's tell the outside world as well
-  if (m_pXbmcHttp)
-    m_pXbmcHttp->xbmcBroadcast("OnPlayBackStopped", 1);
+  if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
+    g_applicationMessenger.HttpApi("broadcastlevel; OnPlayBackStopped;1");
 
   OutputDebugString("Playback was stopped\n");
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0, 0, 0, NULL );
@@ -4762,6 +4859,9 @@ void CApplication::ProcessSlow()
 
   // check for any idle curl connections
   g_curlInterface.CheckIdle();
+
+  // check for any idle myth sessions
+  CCMythSession::CheckIdle();
 
 #ifdef HAS_TIME_SERVER
   // check for any needed sntp update

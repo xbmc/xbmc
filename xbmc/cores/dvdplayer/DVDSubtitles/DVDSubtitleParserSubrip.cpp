@@ -9,15 +9,14 @@ using namespace std;
 CDVDSubtitleParserSubrip::CDVDSubtitleParserSubrip(CDVDSubtitleStream* pStream, const string& strFile)
     : CDVDSubtitleParser(pStream, strFile)
 {
-
 }
 
 CDVDSubtitleParserSubrip::~CDVDSubtitleParserSubrip()
 {
-  DeInit();
+  Dispose();
 }
 
-bool CDVDSubtitleParserSubrip::Init()
+bool CDVDSubtitleParserSubrip::Open(CDVDStreamInfo &hints)
 {
   if (m_pStream->Open(m_strFileName))
   {
@@ -30,7 +29,7 @@ bool CDVDSubtitleParserSubrip::Init()
   return false;
 }
 
-void CDVDSubtitleParserSubrip::DeInit()
+void CDVDSubtitleParserSubrip::Dispose()
 {
   //m_pStream->Close();
   m_collection.Clear();
@@ -90,8 +89,8 @@ int CDVDSubtitleParserSubrip::ParseFile()
 
           CStdStringW strUTF16;
           CStdStringA strUTF8;
-          g_charsetConverter.subtitleCharsetToUTF16(line, strUTF16);
-          g_charsetConverter.utf16toUTF8(strUTF16, strUTF8);
+          g_charsetConverter.subtitleCharsetToW(line, strUTF16);
+          g_charsetConverter.wToUTF8(strUTF16, strUTF8);
           // add a new text element to our container
           pOverlay->AddElement(new CDVDOverlayText::CElementText(strUTF8.c_str()));
         }

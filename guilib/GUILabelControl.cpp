@@ -211,20 +211,20 @@ void CGUILabelControl::Render()
   { // cursor location assumes utf16 text, so deal with that (inefficient, but it's not as if it's a high-use area
     // virtual keyboard only)
     CStdStringW utf16;  
-    g_charsetConverter.utf8ToUTF16(label, utf16);
+    g_charsetConverter.utf8ToW(label, utf16);
     CStdStringW col;
     if ((++m_dwCounter % 50) > 25)
       col.Format(L"|");
     else
       col.Format(L"[COLOR %x]|[/COLOR]", 0x1000000);
     utf16.Insert(m_iCursorPos, col);
-    g_charsetConverter.utf16toUTF8(utf16, label);
+    g_charsetConverter.wToUTF8(utf16, label);
   }
   else if (m_startHighlight || m_endHighlight)
   { // this is only used for times/dates, so working in ascii (utf8) is fine
     CStdString colorLabel;
-    colorLabel.Format("[COLOR %x]%s[/COLOR]%s[COLOR %x]%s[/COLOR]", m_label.disabledColor, label.Left(m_startHighlight),
-                 label.Mid(m_startHighlight, m_endHighlight - m_startHighlight), m_label.disabledColor, label.Mid(m_endHighlight));
+    colorLabel.Format("[COLOR %x]%s[/COLOR]%s[COLOR %x]%s[/COLOR]", (DWORD)m_label.disabledColor, label.Left(m_startHighlight),
+                 label.Mid(m_startHighlight, m_endHighlight - m_startHighlight), (DWORD)m_label.disabledColor, label.Mid(m_endHighlight));
     label = colorLabel;
   }
 

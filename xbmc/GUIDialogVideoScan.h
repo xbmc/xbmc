@@ -24,10 +24,12 @@ protected:
   virtual void OnStateChanged(VIDEO::SCAN_STATE state);
   virtual void OnSetProgress(int currentItem, int itemCount);
   virtual void OnSetCurrentProgress(int currentItem, int itemCount);
+  virtual void OnSetTitle(const CStdString& strTitle);
 
   VIDEO::CVideoInfoScanner m_videoInfoScanner;
   VIDEO::SCAN_STATE m_ScanState;
   CStdString m_strCurrentDir;
+  CStdString m_strTitle;
 
   CCriticalSection m_critical;
 

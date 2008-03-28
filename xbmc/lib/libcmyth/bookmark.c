@@ -105,7 +105,7 @@ int cmyth_set_bookmark(cmyth_conn_t conn, cmyth_proginfo_t prog, long long bookm
 		ret = count;
 		goto out;
 	}
-	ret = !strcmp(resultstr,"OK");
+	ret = (strncmp(resultstr,"OK",2) == 0);
    out:
 	pthread_mutex_unlock(&mutex);
 	return ret;

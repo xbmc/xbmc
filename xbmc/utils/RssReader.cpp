@@ -391,7 +391,8 @@ void CRssReader::UpdateObserver()
   if (feed.size() > 0)
   {
     g_graphicsContext.Lock();
-    m_pObserver->OnFeedUpdate(feed);
+    if (m_pObserver) // need to check again when locked to make sure observer wasnt removed
+      m_pObserver->OnFeedUpdate(feed);
     g_graphicsContext.Unlock();
   }
 }

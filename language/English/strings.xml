@@ -340,7 +340,7 @@
   <string id="415">Downloading thumbnail...</string>
   <string id="416">Not available</string>
   <string id="417">View: Big Icons</string>
-  <string id="418"></string>
+  <string id="418">Enable Library</string>
   <string id="419"></string>
   <string id="420"></string>
   <string id="421"></string>
@@ -554,6 +554,7 @@
   <string id="658">Song Information</string>
   <string id="659">Comment:</string>
   <string id="660">Volume Amplification</string>
+  <string id="661">Choose Export Folder</string>
 
   <string id="700">Cleaning up Library</string>
   <string id="701">Removing old songs from the Library</string>
@@ -628,6 +629,15 @@
   <string id="772">Audio Hardware</string>
   <string id="773">Seeking</string>
   <string id="774">Slideshow Folder</string>
+
+  <string id="790">Remote Events</string>
+  <string id="791">Enable Remote Events</string>
+  <string id="792">Remote Events Port</string>
+  <string id="793">Remote Events Port Range</string>
+  <string id="794">Receive events from other computers</string>
+  <string id="795">Initial Repeat Delay (ms)</string>
+  <string id="796">Continuous Repeat Delay (ms)</string>
+  <string id="797">Maximum Number of Clients</string>
 
   <string id="998">XLink Kai</string>
   <string id="999">Online Gaming</string>
@@ -1085,6 +1095,7 @@
   <string id="13407">%s Presets</string>
   <string id="13408">(IMDb User Rating)</string>
   <string id="13409">Top 250:</string>
+  <string id="13410">Tune in on lastfm</string>
 
   <string id="14000">Stack</string>
   <string id="14001">Unstack</string>
@@ -1552,6 +1563,8 @@
   <string id="20189">Enable Auto Scrolling for Plot &amp; Review</string>
   <string id="20190">Custom</string>
   <string id="20191">Enable debug logging</string>
+  <string id="20192">Fetch album information on scan</string>
+  <string id="20193">Fetch artist information on scan</string>
 
   <!-- string id's 20200 thru 20211 are reserved for speedstrings (LocalizeStrings.cpp)-->
   
@@ -1559,7 +1572,6 @@
   <string id="20251">Mixing drinks (videos)</string>
   <string id="20252">Filling glasses (videos)</string>
 
-  <string id="20191"></string>
   <string id="20192"></string>
   <string id="20193"></string>
   <string id="20194"></string>
@@ -1680,6 +1692,8 @@
   <string id="20408">Downloading Music Video information</string>
   <string id="20409">Downloading TV Show information</string>
   <string id="20411">Flatten</string>
+  <string id="20412">Flatten TV Show if only a single season</string>
+  <string id="20413">Get FanArt</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>

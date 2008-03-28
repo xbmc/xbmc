@@ -227,6 +227,18 @@ extern cmyth_file_t cmyth_conn_connect_file(cmyth_proginfo_t prog,
 					    cmyth_conn_t control,
 					    unsigned buflen, int tcp_rcvbuf);
 
+
+/**
+ * Create a file connection to a backend.
+ * \param path path to file
+ * \param control control handle
+ * \param buflen buffer size for the connection to use
+ * \param tcp_rcvbuf if non-zero, the TCP receive buffer size for the socket
+ * \return file handle
+ */
+extern cmyth_file_t cmyth_conn_connect_path(char* path, cmyth_conn_t control,
+					    unsigned buflen, int tcp_rcvbuf);
+
 /**
  * Create a ring buffer connection to a recorder.
  * \param rec recorder handle
@@ -308,6 +320,16 @@ extern int cmyth_conn_get_free_recorder_count(cmyth_conn_t conn);
  * \return protocol version
  */
 extern int cmyth_conn_get_protocol_version(cmyth_conn_t conn);
+
+/**
+ * Return a MythTV setting for a hostname
+ * \param conn connection handle
+ * \param hostname hostname to retreive the setting from
+ * \param setting the setting name to get
+ * \return ref counted string with the setting
+ */
+extern char * cmyth_conn_get_setting(cmyth_conn_t conn,
+               const char* hostname, const char* setting);
 
 /*
  * -----------------------------------------------------------------
@@ -511,6 +533,12 @@ extern int cmyth_livetv_request_block(cmyth_recorder_t rec, unsigned long len);
 extern long long cmyth_livetv_seek(cmyth_recorder_t rec,
 						long long offset, int whence);
 
+extern int cmyth_livetv_read(cmyth_recorder_t rec,
+			     char *buf,
+			     unsigned long len);
+
+extern int cmyth_livetv_keep_recording(cmyth_recorder_t rec, cmyth_database_t db, int keep);
+
 extern int mythtv_new_livetv(void);
 
 /*
@@ -551,6 +579,9 @@ extern long long cmyth_ringbuf_seek(cmyth_recorder_t rec,
 				    long long offset,
 				    int whence);
 
+extern int cmyth_ringbuf_read(cmyth_recorder_t rec,
+			      char *buf,
+			      unsigned long len);
 /*
  * -----------------------------------------------------------------
  * Recorder Number Operations
@@ -852,6 +883,13 @@ extern long cmyth_proginfo_card_id(cmyth_proginfo_t prog);
  */
 extern char *cmyth_proginfo_recgroup(cmyth_proginfo_t prog);
 
+/**
+ * Retrieve the channel icon path this program info
+ * \param prog proginfo handle
+ * \return null-terminated string
+ */
+extern char *cmyth_proginfo_chanicon(cmyth_proginfo_t prog);
+
 /*
  * -----------------------------------------------------------------
  * Program List Operations
@@ -903,7 +941,9 @@ extern int cmyth_file_select(cmyth_file_t file, struct timeval *timeout);
 extern void cmyth_file_set_closed_callback(cmyth_file_t file,
 					void (*callback)(cmyth_file_t));
 
-
+extern int cmyth_file_read(cmyth_file_t file,
+			   char *buf,
+			   unsigned long len);
 /*
  * -----------------------------------------------------------------
  * Channel Operations

@@ -218,12 +218,15 @@ void CFlacTag::ProcessVorbisComment(const char *pBuffer)
   for (int I2 = 0; I2 < Count; I2++) // Run through the comments
   {
     I1 = (int*)(pBuffer + Pos);   // Length of comment
-    strncpy(C1, pBuffer + Pos + 4, I1[0]);
-    C1[I1[0]] = '\0';
-    CStdString strItem;
-    strItem=C1;
-    // Parse the tag entry
-    ParseTagEntry( strItem );
+    if (*I1 < CHUNK_SIZE)
+    {
+      strncpy(C1, pBuffer + Pos + 4, I1[0]);
+      C1[I1[0]] = '\0';
+      CStdString strItem;
+      strItem=C1;
+      // Parse the tag entry
+      ParseTagEntry( strItem );
+    }
     // Increment our position in the file buffer
     Pos += I1[0] + 4;
   }

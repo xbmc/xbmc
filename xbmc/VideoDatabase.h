@@ -105,6 +105,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_TV_ORIGINALTITLE = 9,
   VIDEODB_ID_TV_EPISODEGUIDE = 10,
   VIDEODB_ID_TV_EPISODES = 11,
+  VIDEODB_ID_TV_FANART = 12,
   VIDEODB_ID_TV_MAX
 } VIDEODB_TV_IDS;
 
@@ -122,6 +123,7 @@ const struct SDbTableOffsets DbTvShowOffsets[] =
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strOriginalTitle)},
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strEpisodeGuide)},
   { VIDEODB_TYPE_INT, offsetof(CVideoInfoTag,m_iEpisode) },
+  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_fanart.m_xml)},
 };
 
 typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
@@ -258,6 +260,7 @@ public:
   void DeleteDetailsForTvShow(const CStdString& strPath);
 
   void GetFilePath(long lMovieId, CStdString &filePath, int iType=0); // 0=movies, 1=episodes, 2=tvshows, 3=musicvideo
+  long GetPath(const CStdString& strPath);
   bool GetPathHash(const CStdString &path, CStdString &hash);
   bool GetPaths(std::map<CStdString,VIDEO::SScanSettings> &paths);
 
@@ -320,8 +323,6 @@ public:
   void DeleteEpisode(const CStdString& strFilenameAndPath, long lEpisodeId=-1);
   void DeleteMusicVideo(const CStdString& strFilenameAndPath);
 
-  int GetRecentMovies(long* pMovieIdArray, int nSize);
-
   bool GetVideoSettings(const CStdString &strFilenameAndPath, CVideoSettings &settings);
   void SetVideoSettings(const CStdString &strFilenameAndPath, const CVideoSettings &settings);
   void EraseVideoSettings();
@@ -355,6 +356,7 @@ public:
   long GetMusicVideoArtistByName(const CStdString& strArtist);
   long GetMusicVideoByArtistAndAlbumAndTitle(const CStdString& strArtist, const CStdString& strAlbum, const CStdString& strTitle);
 
+  int GetItemCount();
   int GetMovieCount();
   int GetTvShowCount();
   int GetMusicVideoCount();
@@ -367,14 +369,13 @@ public:
   bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info, VIDEO::SScanSettings& settings);
   bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info, VIDEO::SScanSettings& settings, int& iFound);
 
-  void CleanDatabase(VIDEO::IVideoInfoScannerObserver* pObserver=NULL);
+  void CleanDatabase(VIDEO::IVideoInfoScannerObserver* pObserver=NULL, const std::vector<long>* paths=NULL);
   
   long AddFile(const CStdString& strFileName);
   void ExportToXML(const CStdString &xmlFile, bool singleFiles = false);
   void ImportFromXML(const CStdString &xmlFile);
 
 protected:
-  long GetPath(const CStdString& strPath);
   long GetFile(const CStdString& strFilenameAndPath);
 
   long AddPath(const CStdString& strPath);
@@ -410,4 +411,8 @@ protected:
 private:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
+
+  void ConstructPath(CStdString& strDest, const CStdString& strPath, const CStdString& strFileName);
+  void SplitPath(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
+  void InvalidatePathHash(const CStdString& strPath);
 };

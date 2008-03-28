@@ -83,11 +83,14 @@ void CGUIDialogVideoSettings::CreateSettings()
   AddSpin(VIDEO_SETTINGS_FLICKER, 13100, &m_flickerFilter, 0, 5, g_localizeStrings.Get(351).c_str());
   m_soften = g_guiSettings.GetBool("videoplayer.soften");
   AddBool(VIDEO_SETTINGS_SOFTEN, 215, &m_soften);
-  AddSlider(VIDEO_SETTINGS_FILM_GRAIN, 14058, (int*)&g_stSettings.m_currentVideoSettings.m_FilmGrain, 0, 10);
   AddButton(VIDEO_SETTINGS_CALIBRATION, 214);
-  AddBool(VIDEO_SETTINGS_NON_INTERLEAVED, 306, &g_stSettings.m_currentVideoSettings.m_NonInterleaved);
-  AddBool(VIDEO_SETTINGS_NO_CACHE, 431, &g_stSettings.m_currentVideoSettings.m_NoCache);
-  AddButton(VIDEO_SETTINGS_FORCE_INDEX, 12009);
+  if (g_application.GetCurrentPlayer() == EPC_MPLAYER)
+  {
+    AddSlider(VIDEO_SETTINGS_FILM_GRAIN, 14058, (int*)&g_stSettings.m_currentVideoSettings.m_FilmGrain, 0, 10);
+    AddBool(VIDEO_SETTINGS_NON_INTERLEAVED, 306, &g_stSettings.m_currentVideoSettings.m_NonInterleaved);
+    AddBool(VIDEO_SETTINGS_NO_CACHE, 431, &g_stSettings.m_currentVideoSettings.m_NoCache);
+    AddButton(VIDEO_SETTINGS_FORCE_INDEX, 12009);
+  }
 }
 
 void CGUIDialogVideoSettings::OnSettingChanged(unsigned int num)

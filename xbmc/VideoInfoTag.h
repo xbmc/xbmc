@@ -3,19 +3,10 @@
 #include "utils/Archive.h"
 #include "utils/ScraperParser.h"
 #include "PluginSettings.h"
+#include "ScraperSettings.h"
+#include "utils/Fanart.h"
 
 #include <vector>
-
-class CScraperSettings : public CBasicSettings
-{
-public:
-  CScraperSettings();
-  virtual ~CScraperSettings();
-  bool LoadUserXML(const CStdString& strXML);
-  bool LoadSettingsXML(const CStdString& strScraper, const CStdString& strFunction="GetSettings", const CScraperUrl* url=NULL);
-  bool Load(const CStdString& strSettings, const CStdString& strSaved);
-  CStdString GetSettings() const;
-};
 
 struct SScraperInfo
 {
@@ -49,6 +40,7 @@ public:
   CStdString m_strGenre;
   CStdString m_strTagLine;
   CStdString m_strPlotOutline;
+  CStdString m_strTrailer;
   CStdString m_strPlot;
   CScraperUrl m_strPictureURL;
   CStdString m_strTitle;
@@ -82,4 +74,5 @@ public:
   int m_iSpecialSortEpisode;
   float m_fRating;
   int m_iBookmarkId;
+  CFanart m_fanart;
 };

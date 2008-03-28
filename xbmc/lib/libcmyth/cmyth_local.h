@@ -44,8 +44,10 @@ typedef void* pthread_mutex_t;
 extern pthread_mutex_t mutex;
 #define mutex __cmyth_mutex
 #define ECANCELED -1
+#define ETIMEDOUT -1
 #define SHUT_RDWR SD_BOTH
 typedef SOCKET cmyth_socket_t;
+typedef int socklen_t;
 #define snprintf _snprintf
 #define sleep(a) Sleep(a)
 static inline struct tm* localtime_r (const time_t *clock, struct tm *result) { 
@@ -64,6 +66,20 @@ static inline __int64 atoll(const char* s)
   else
     return 0;
 }
+
+static const char *inet_ntop(int af, const void *src, char *dst, socklen_t size)
+{
+  char* addr;
+  if(af != AF_INET)
+    return NULL;
+  addr = inet_ntoa(*(struct in_addr*)src);
+  if(!addr)
+    return NULL;
+  if((socklen_t)strlen(addr)+1 > size)
+    return NULL;
+  return strcpy(dst, addr);
+}
+
 #else
 #include <pthread.h>
 #define mutex __cmyth_mutex
@@ -87,7 +103,7 @@ typedef int cmyth_socket_t;
  * MythTV backend connection
  */
 struct cmyth_conn {
-	cmyth_socket_t conn_fd;	/**< socket file descriptor */
+	cmyth_socket_t	conn_fd;	/**< socket file descriptor */
 	unsigned char	*conn_buf;	/**< connection buffer */
 	int		conn_buflen;	/**< buffer size */
 	int		conn_len;	/**< amount of data in buffer */
@@ -371,6 +387,8 @@ extern int cmyth_rcv_recorder(cmyth_conn_t conn, int *err,
 #define cmyth_rcv_ringbuf __cmyth_rcv_ringbuf
 extern int cmyth_rcv_ringbuf(cmyth_conn_t conn, int *err, cmyth_ringbuf_t buf,
 			     int count);
+#define cmyth_datetime_to_dbstring __cmyth_datetime_to_dbstring
+extern int cmyth_datetime_to_dbstring(char *str, cmyth_timestamp_t ts);
 
 /*
  * From proginfo.c
@@ -426,6 +444,6 @@ extern char * cmyth_mysql_query_string(cmyth_mysql_query_t * query);
 
 extern MYSQL_RES * cmyth_mysql_query_result(cmyth_mysql_query_t * query);
 
-
+extern int cmyth_mysql_query(cmyth_mysql_query_t * query);
 
 #endif /* __CMYTH_LOCAL_H */

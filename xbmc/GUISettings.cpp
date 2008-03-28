@@ -249,8 +249,14 @@ CGUISettings::CGUISettings(void)
   AddBool(5, "mymusic.clearplaylistsonend",239,false);
   AddSeparator(6, "mymusic.sep2");
   AddString(7,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
-  AddSeparator(8, "mymusic.sep3");
-  AddString(9, "mymusic.cleanupmusiclibrary", 334, "", BUTTON_CONTROL_STANDARD);
+
+  AddCategory(3,"musiclibrary",14022);
+  AddBool(1, "musiclibrary.enabled", 418, true);
+  AddSeparator(2,"musiclibrary.sep1");
+  AddBool(3,"musiclibrary.autoalbuminfo", 20192, false);
+  AddBool(4,"musiclibrary.autoartistinfo", 20193, false);
+  AddSeparator(5,"musiclibrary.sep2");
+  AddString(6, "musiclibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(3, "musicplayer", 16003);
   AddString(1, "musicplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
@@ -399,18 +405,22 @@ CGUISettings::CGUISettings(void)
   AddInt(5, "myvideos.sortmethod", 581, SORT_METHOD_LABEL, SORT_METHOD_LABEL, 1, SORT_METHOD_MAX, SPIN_CONTROL_TEXT);
   AddInt(6, "myvideos.sortorder", 580, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_DESC, SPIN_CONTROL_TEXT);
   AddBool(7, "myvideos.savefolderviews", 583, true);
+
   AddCategory(5, "videolibrary", 14022);
 
-  AddBool(1, "videolibrary.hideplots", 20369, false);
-  AddBool(2, "videolibrary.seasonthumbs", 20382, false);
-  AddBool(3, "videolibrary.actorthumbs", 20402, false);
-  AddSeparator(4, "videolibrary.sep1");
-  AddBool(5, "videolibrary.updateonstartup", 22000, false);
-  AddBool(6, "videolibrary.backgroundupdate", 22001, false);    
-  AddSeparator(7, "videolibrary.sep2");  
-  AddString(8, "videolibrary.cleanupvideolibrary", 334, "", BUTTON_CONTROL_STANDARD);
-  AddString(9, "videolibrary.exportvideolibrary", 647, "", BUTTON_CONTROL_STANDARD);
-  AddString(10, "videolibrary.importvideolibrary", 648, "", BUTTON_CONTROL_STANDARD);
+  AddBool(1, "videolibrary.enabled", 418, true);
+  AddSeparator(2, "videolibrary.sep1");
+  AddBool(3, "videolibrary.hideplots", 20369, false);
+  AddBool(4, "videolibrary.seasonthumbs", 20382, false);
+  AddBool(5, "videolibrary.actorthumbs", 20402, false);
+  AddBool(6, "videolibrary.singleseason", 20412, true);
+  AddSeparator(7, "videolibrary.sep1");
+  AddBool(8, "videolibrary.updateonstartup", 22000, false);
+  AddBool(9, "videolibrary.backgroundupdate", 22001, false);    
+  AddSeparator(10, "videolibrary.sep2");  
+  AddString(11, "videolibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
+  AddString(12, "videolibrary.export", 647, "", BUTTON_CONTROL_STANDARD);
+  AddString(13, "videolibrary.import", 648, "", BUTTON_CONTROL_STANDARD);
   
   AddCategory(5, "videoplayer", 16003);
   AddString(1, "videoplayer.calibrate", 214, "", BUTTON_CONTROL_STANDARD);
@@ -503,6 +513,22 @@ CGUISettings::CGUISettings(void)
   AddString(5, "upnp.musicshares", 21361, "", BUTTON_CONTROL_STANDARD);
   AddString(6, "upnp.videoshares", 21362, "", BUTTON_CONTROL_STANDARD);
   AddString(7, "upnp.pictureshares", 21363, "", BUTTON_CONTROL_STANDARD);
+
+  // remote events settings
+#ifdef HAS_EVENT_SERVER
+  AddCategory(6, "remoteevents", 790);
+  AddBool(1,  "remoteevents.enabled",         791, true);
+  AddString(2,"remoteevents.port",            792, "9777", BUTTON_CONTROL_INPUT, false, 792);
+  AddInt(3,   "remoteevents.portrange",       793, 10, 1, 1, 100, SPIN_CONTROL_INT);
+  AddInt(4,   "remoteevents.maxclients",      797, 20, 1, 1, 100, SPIN_CONTROL_INT);
+  AddSeparator(5,"remoteevents.sep1");
+#ifndef _XBOX
+  AddBool(6,  "remoteevents.allinterfaces",   794, false);
+  AddSeparator(7,"remoteevents.sep2");
+#endif
+  AddInt(8,   "remoteevents.initialdelay",    795, 750, 5, 5, 10000, SPIN_CONTROL_INT);
+  AddInt(9,   "remoteevents.continuousdelay", 796, 25, 5, 5, 10000, SPIN_CONTROL_INT);
+#endif
 
   // appearance settings
   AddGroup(7, 480);

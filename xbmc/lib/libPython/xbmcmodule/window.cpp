@@ -4,8 +4,10 @@
 #include "winxml.h"
 #include "pyutil.h"
 #include "action.h"
+#include "GUIPythonWindow.h"
 #include "GUIButtonControl.h"
 #include "GUICheckMarkControl.h"
+#include "GUIRadioButtonControl.h"
 
 using namespace std;
 
@@ -24,6 +26,8 @@ extern "C" {
 
 namespace PYXBMC
 {
+  extern PyObject* ControlSpin_New(void);
+
   // used by Dialog to to create a new dialogWindow
   bool Window_CreateNewWindow(Window* pWindow, bool bAsDialog)
   {
@@ -134,9 +138,15 @@ namespace PYXBMC
     {
     case CGUIControl::GUICONTROL_BUTTON:
       pControl = (Control*)ControlButton_Type.tp_alloc(&ControlButton_Type, 0);
+      new(&((ControlButton*)pControl)->strFont) string();    
+      new(&((ControlButton*)pControl)->strText) string();    
+      new(&((ControlButton*)pControl)->strText2) string();    
+      new(&((ControlButton*)pControl)->strTextureFocus) string();    
+      new(&((ControlButton*)pControl)->strTextureNoFocus) string(); 
 
       li = ((CGUIButtonControl *)pGUIControl)->GetLabelInfo();
 
+      // note: conversion from infocolors -> plain colors here
       ((ControlButton*)pControl)->dwDisabledColor = li.disabledColor;
       ((ControlButton*)pControl)->dwFocusedColor  = li.focusedColor;
       ((ControlButton*)pControl)->dwTextColor  = li.textColor;
@@ -146,9 +156,14 @@ namespace PYXBMC
       break;
     case CGUIControl::GUICONTROL_CHECKMARK:
       pControl = (Control*)ControlCheckMark_Type.tp_alloc(&ControlCheckMark_Type, 0);
+      new(&((ControlCheckMark*)pControl)->strFont) string();    
+      new(&((ControlCheckMark*)pControl)->strText) string();    
+      new(&((ControlCheckMark*)pControl)->strTextureFocus) string();    
+      new(&((ControlCheckMark*)pControl)->strTextureNoFocus) string();    
 
       li = ((CGUICheckMarkControl *)pGUIControl)->GetLabelInfo();
 
+      // note: conversion to plain colors from infocolors.
       ((ControlCheckMark*)pControl)->dwDisabledColor = li.disabledColor;
       //((ControlCheckMark*)pControl)->dwShadowColor = li.shadowColor;
       ((ControlCheckMark*)pControl)->dwTextColor  = li.textColor;
@@ -157,30 +172,78 @@ namespace PYXBMC
       break;
     case CGUIControl::GUICONTROL_LABEL:
       pControl = (Control*)ControlLabel_Type.tp_alloc(&ControlLabel_Type, 0);
+      new(&((ControlLabel*)pControl)->strText) string();
+      new(&((ControlLabel*)pControl)->strFont) string();
       break;
     case CGUIControl::GUICONTROL_SPIN:
       pControl = (Control*)ControlSpin_Type.tp_alloc(&ControlSpin_Type, 0);
+      new(&((ControlSpin*)pControl)->strTextureUp) string();    
+      new(&((ControlSpin*)pControl)->strTextureDown) string();    
+      new(&((ControlSpin*)pControl)->strTextureUpFocus) string();    
+      new(&((ControlSpin*)pControl)->strTextureDownFocus) string();      
       break;
     case CGUIControl::GUICONTROL_FADELABEL:
       pControl = (Control*)ControlFadeLabel_Type.tp_alloc(&ControlFadeLabel_Type, 0);
+      new(&((ControlFadeLabel*)pControl)->strFont) string();
+      new(&((ControlFadeLabel*)pControl)->vecLabels) std::vector<string>();    
       break;
     case CGUIControl::GUICONTROL_TEXTBOX:
       pControl = (Control*)ControlTextBox_Type.tp_alloc(&ControlTextBox_Type, 0);
+      ((ControlTextBox*)pControl)->pControlSpin = (ControlSpin*)ControlSpin_New();
+      if (((ControlTextBox*)pControl)->pControlSpin) 
+         new(&((ControlTextBox*)pControl)->strFont) string();        
       break;
     case CGUIControl::GUICONTROL_IMAGE:
       pControl = (Control*)ControlImage_Type.tp_alloc(&ControlImage_Type, 0);
+      new(&((ControlImage*)pControl)->strFileName) string();    
       break;
     case CGUIControl::GUICONTROL_LIST:
       pControl = (Control*)ControlList_Type.tp_alloc(&ControlList_Type, 0);
+      new(&((ControlList*)pControl)->strFont) string();    
+      new(&((ControlList*)pControl)->strTextureButton) string();    
+      new(&((ControlList*)pControl)->strTextureButtonFocus) string();
+      new(&((ControlList*)pControl)->vecItems) std::vector<PYXBMC::ListItem*>();
+      // create a python spin control
+      ((ControlList*)pControl)->pControlSpin = (ControlSpin*)ControlSpin_New();
       break;
     case CGUIControl::GUICONTROL_PROGRESS:
       pControl = (Control*)ControlProgress_Type.tp_alloc(&ControlProgress_Type, 0);
+      new(&((ControlProgress*)pControl)->strTextureLeft) string();    
+      new(&((ControlProgress*)pControl)->strTextureMid) string();    
+      new(&((ControlProgress*)pControl)->strTextureRight) string();    
+      new(&((ControlProgress*)pControl)->strTextureBg) string();     
+      new(&((ControlProgress*)pControl)->strTextureOverlay) string();     
       break;
     case CGUIControl::GUICONTAINER_LIST:
       pControl = (Control*)ControlList_Type.tp_alloc(&ControlList_Type, 0);
+      new(&((ControlList*)pControl)->strFont) string();    
+      new(&((ControlList*)pControl)->strTextureButton) string();    
+      new(&((ControlList*)pControl)->strTextureButtonFocus) string();
+      new(&((ControlList*)pControl)->vecItems) std::vector<PYXBMC::ListItem*>();
+      // create a python spin control
+      ((ControlList*)pControl)->pControlSpin = (ControlSpin*)ControlSpin_New();
       break;
     case CGUIControl::GUICONTROL_GROUP:
       pControl = (Control*)ControlGroup_Type.tp_alloc(&ControlGroup_Type, 0);
+      break;
+    case CGUIControl::GUICONTROL_RADIO:
+      pControl = (Control*)ControlRadioButton_Type.tp_alloc(&ControlRadioButton_Type, 0);
+      new(&((ControlRadioButton*)pControl)->strFont) string();    
+      new(&((ControlRadioButton*)pControl)->strText) string();    
+      new(&((ControlRadioButton*)pControl)->strTextureFocus) string();
+      new(&((ControlRadioButton*)pControl)->strTextureNoFocus) string();
+      new(&((ControlRadioButton*)pControl)->strTextureRadioFocus) string();
+      new(&((ControlRadioButton*)pControl)->strTextureRadioNoFocus) string();
+
+      li = ((CGUIRadioButtonControl *)pGUIControl)->GetLabelInfo();
+
+      // note: conversion from infocolors -> plain colors here
+      ((ControlRadioButton*)pControl)->dwDisabledColor = li.disabledColor;
+      ((ControlRadioButton*)pControl)->dwFocusedColor  = li.focusedColor;
+      ((ControlRadioButton*)pControl)->dwTextColor  = li.textColor;
+      ((ControlRadioButton*)pControl)->dwShadowColor   = li.shadowColor;
+      ((ControlRadioButton*)pControl)->strFont = li.font->GetFontName();
+      ((ControlRadioButton*)pControl)->dwAlign = li.align;
       break;
     default:
       break;
@@ -224,6 +287,9 @@ namespace PYXBMC
 
     self = (Window*)type->tp_alloc(type, 0);
     if (!self) return NULL;
+    new(&self->sXMLFileName) string();
+    new(&self->sFallBackPath) string();
+    new(&self->vecControls) std::vector<Control*>();
 
     self->iWindowId = -1;
 
@@ -233,6 +299,10 @@ namespace PYXBMC
     if (!Window_CreateNewWindow(self, false))
     {
       // error is already set by Window_CreateNewWindow, just release the memory
+      self->vecControls.clear();
+      self->vecControls.~vector();
+      self->sFallBackPath.~string();          
+      self->sXMLFileName.~string();        
       self->ob_type->tp_free((PyObject*)self);
       return NULL;
     }
@@ -288,6 +358,10 @@ namespace PYXBMC
       m_gWindowManager.Remove(self->pWindow->GetID());
       delete self->pWindow;
     }
+    self->vecControls.clear();
+    self->vecControls.~vector();
+    self->sFallBackPath.~string();          
+    self->sXMLFileName.~string();            
     self->ob_type->tp_free((PyObject*)self);
   }
 
@@ -407,7 +481,9 @@ namespace PYXBMC
     "  -ControlCheckMark\n"
     "  -ControlList\n"
     "  -ControlGroup\n"
-    "  -ControlImage\n");
+    "  -ControlImage\n"
+    "  -ControlRadioButton\n"
+    "  -ControlProgress\n");
 
   PyObject* Window_AddControl(Window *self, PyObject *args)
   {
@@ -480,6 +556,10 @@ namespace PYXBMC
     // Control Group
     else if (ControlGroup_Check(pControl))
       ControlGroup_Create((ControlGroup*)pControl);
+
+    // Control RadioButton
+    else if (ControlRadioButton_Check(pControl))
+      ControlRadioButton_Create((ControlRadioButton*)pControl);
 
     //unknown control type to add, should not happen
     else
@@ -560,7 +640,8 @@ namespace PYXBMC
     }
 
     PyGUILock();
-    pWindow->OnMessage(CGUIMessage(GUI_MSG_SETFOCUS,pControl->iParentId, pControl->iControlId));
+    CGUIMessage msg = CGUIMessage(GUI_MSG_SETFOCUS,pControl->iParentId, pControl->iControlId);
+    pWindow->OnMessage(msg);
     PyGUIUnlock();
 
     Py_INCREF(Py_None);
@@ -589,7 +670,8 @@ namespace PYXBMC
     }
 
     PyGUILock();
-    pWindow->OnMessage(CGUIMessage(GUI_MSG_SETFOCUS,self->iWindowId,iControlId));
+    CGUIMessage msg = CGUIMessage(GUI_MSG_SETFOCUS,self->iWindowId,iControlId);
+    pWindow->OnMessage(msg);
     PyGUIUnlock();
 
     Py_INCREF(Py_None);

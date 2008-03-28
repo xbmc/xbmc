@@ -5,7 +5,7 @@
 #include "FileSystem/FileCurl.h"
 #include "utils/HttpHeader.h"
 
-class CDVDInputStreamHttp : public CDVDInputStream, IHttpHeaderCallback
+class CDVDInputStreamHttp : public CDVDInputStream
 {
 public:
   CDVDInputStreamHttp();
@@ -16,10 +16,8 @@ public:
   virtual __int64 Seek(__int64 offset, int whence);
   virtual bool IsEOF();
   virtual __int64 GetLength();
-
-  virtual void ParseHeaderData(CStdString strData);
   
-  CHttpHeader* GetHttpHeader() { return &m_httpHeader; }
+  CHttpHeader* GetHttpHeader();
   
 protected:
   XFILE::CFileCurl* m_pFile;

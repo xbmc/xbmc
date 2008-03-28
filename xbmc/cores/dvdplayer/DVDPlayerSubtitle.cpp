@@ -33,7 +33,7 @@ CDVDPlayerSubtitle::~CDVDPlayerSubtitle()
   
 void CDVDPlayerSubtitle::Flush()
 {
-  SendMessage(new CDVDMsgGeneralFlush());
+  SendMessage(new CDVDMsg(CDVDMsg::GENERAL_FLUSH));
 }
 
 void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
@@ -135,7 +135,7 @@ bool CDVDPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, string &filename)
       return false;
     }
 
-    if (!m_pSubtitleFileParser->Init())
+    if (!m_pSubtitleFileParser->Open(hints))
     {
       CLog::Log(LOGERROR, "%s - Unable to init subtitle parser", __FUNCTION__);
       CloseStream(false);

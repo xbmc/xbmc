@@ -480,7 +480,7 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, VIDEO::SScanSettings
       bRunScan = false;
     }
 
-    if (!scraper.strContent.IsEmpty() && !scraper.strContent.Equals("None") && !scraper.settings.GetPluginRoot())
+    if (!scraper.strContent.IsEmpty() && !scraper.strContent.Equals("None") && (!scraper.settings.GetPluginRoot() || scraper.settings.GetSettings().IsEmpty()))
     { // load default scraper settings
       scraper.settings.LoadSettingsXML("q:\\system\\scrapers\\video\\"+scraper.strPath);
       scraper.settings.SaveFromDefault();

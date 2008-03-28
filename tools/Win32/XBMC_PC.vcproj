@@ -582,6 +582,12 @@
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParser.h">
 					</File>
 					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserMicroDVD.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserMicroDVD.h">
+					</File>
+					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserSubrip.cpp">
 					</File>
 					<File
@@ -1241,6 +1247,12 @@
 					RelativePath="..\..\xbmc\PluginSettings.h">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\ScraperSettings.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\ScraperSettings.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\Settings.cpp">
 				</File>
 				<File
@@ -1623,6 +1635,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\Event.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\Fanart.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\Fanart.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\Favourites.cpp">
@@ -2177,6 +2195,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\CMythFile.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\CMythSession.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\CMythSession.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\Directory.cpp">
@@ -3333,6 +3357,9 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\controlprogress.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\controlradiobutton.cpp">
 					</File>
 					<File
 						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\controlspin.cpp">

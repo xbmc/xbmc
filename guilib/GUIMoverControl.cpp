@@ -218,7 +218,7 @@ void CGUIMoverControl::SetAlpha(unsigned char alpha)
   m_imgNoFocus.SetAlpha(alpha);
 }
 
-void CGUIMoverControl::SetColorDiffuse(D3DCOLOR color)
+void CGUIMoverControl::SetColorDiffuse(const CGUIInfoColor &color)
 {
   CGUIControl::SetColorDiffuse(color);
   m_imgFocus.SetColorDiffuse(color);

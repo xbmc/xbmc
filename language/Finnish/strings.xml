@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: jutski (->7/2006) Mikko70 (1/2007->)-->
-<!--Date of translation: 8/2/2008-->
-<!--Finnish strings based on English strings version 11432 -->
+<!--Date of translation: 6/3/2008-->
+<!--Finnish strings based on English strings version 11850-->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -259,7 +259,7 @@
   <string id="328">Tallennetaan muutokset...</string>
   <string id="329">Virhe muutoksien tallennuksessa</string>
   <string id="330">Odota, tämä kestää jonkin aikaa</string>
-  <string id="331">Tiivistetään tietokantaa...</string>
+  <string id="331">Tiivistetään tietokanta</string>
   <string id="332">Virhe tietokannan tiivistyksessä</string>
   <string id="333">Haluatko järjestellä tietokannan?</string>
   <string id="334">Järjestele tietokanta...</string>
@@ -557,8 +557,9 @@
   <string id="658">Kappaleen tiedot</string>
   <string id="659">Kommentti:</string>
   <string id="660">Voimakkuuden vahvistus</string>
+  <string id="661">Valitse vientikansio</string>
   
-  <string id="700">Järjestetään tietokantaa</string>
+  <string id="700">Järjestetään tietokanta</string>
   <string id="701">Poistetaan vanhat kappaleet tietokannasta</string>
   <string id="702">Tämä polku on luettu aiemmin</string>
   <string id="705">Verkkoasetukset</string>
@@ -611,9 +612,9 @@
   <string id="752"></string>
   <string id="753"></string>
   <string id="754">Lisää linkki ohjelmaan</string>
-  <string id="755">Muokkaa ohjelman polkua</string>
-  <string id="756">Muokkaa ohjelman nimeä</string>
-  <string id="757">Muokkaa polun syvyyttä</string>
+  <string id="755">Muokkaa ohjelman polku</string>
+  <string id="756">Muokkaa ohjelman nimi</string>
+  <string id="757">Muokkaa polun syvyys</string>
   <string id="758"></string>
   <string id="759">Suuri luettelo</string>
   <string id="760">Keltainen</string>
@@ -637,7 +638,7 @@
   <string id="1000">Näytönsäästäjän esikatselu</string>
   <string id="1001">Ei saada yhteyttä</string>
   <string id="1002">XBMC ei saanut yhteyttä verkko-osoitteeseen.</string>
-  <string id="1003">Saatta olla ettei verkkoyhteyttä ole.</string>
+  <string id="1003">Saattaa olla ettei verkkoyhteyttä ole.</string>
   <string id="1004">Haluatko silti lisätä sijainnin?</string>
   <string id="1005"></string>
   <string id="1006">IP-osoite</string>
@@ -1087,7 +1088,8 @@
   <string id="13407">%sn esiasetukset</string> 
   <string id="13408">(IMDb käyttäjän arvosana)</string>
   <string id="13409">250 suosituinta:</string> 
-  
+  <string id="13409">Aloita Last.FM:n kuuntelu</string> 
+
   <string id="14000">Yhdistä osat</string>
   <string id="14001">Ei yhdistetä</string>
   <string id="14003">Ladataan soittolistatiedostoa...</string>
@@ -1483,7 +1485,7 @@
   <string id="20117">Lukituskoodi on väärä.</string>
   <string id="20118">Tähän täytyy olla pääkäyttäjän lukitus asetettuna.</string>
   <string id="20119">Haluatko asettaa sen nyt?</string>
-  <string id="20120">Ladataan tiedot ohjelmista</string>
+  <string id="20120">Luetaan tiedot ohjelmista</string>
   <string id="20121">Musiikin soitto alkaa</string>
   <string id="20122">Nyt voit rentoutua</string>
   <string id="20123">Arvotaan kuunneltavia kappaleita</string>
@@ -1552,7 +1554,7 @@
   <string id="20187">Varmuuskopioidaan EEPROM:in tiedot</string>
   <string id="20188">Varmuuskopioidaan Bios:in tiedot</string>
   <string id="20189">Juonen ja esittelyn automaattinen vieritys käytössä</string>
-  <string id="20190">Muokautus</string>
+  <string id="20190">Mukautus</string>
   <string id="20191"></string>
   <string id="20192"></string>
   <string id="20193"></string>
@@ -1623,15 +1625,15 @@
   <string id="20350">äänestystä</string>
   <string id="20351">TV-ohjelman tiedot</string>
   <string id="20352">Jakson tiedot</string>
-  <string id="20353">Ladataan TV-ohjelman tietoja</string>
+  <string id="20353">Luetaan TV-ohjelman tietoja</string>
   <string id="20354">Noudetaan jaksojen tietoja</string>
-  <string id="20355">Ladataan jaksojen tietoja hakemistosta</string>
+  <string id="20355">Luetaan jaksojen tietoja hakemistosta</string>
   <string id="20356">Valitse TV-ohjelma:</string>
   <string id="20357">Anna TV-ohjelman nimi</string>
   <string id="20358">Tuotantokausi %i</string>
   <string id="20359">Jakso</string>
   <string id="20360">Jaksot</string>
-  <string id="20361">Ladataan jakson tietoja</string>
+  <string id="20361">Luetaan jakson tietoja</string>
   <string id="20362">Poista jakso kirjastosta</string>
   <string id="20363">Poista TV-ohjelma kirjastosta</string>
   <string id="20364">TV-ohjelma</string>
@@ -1644,7 +1646,7 @@
   <string id="20371">Aseta tuotantokauden kuvake</string>
   <string id="20372">Tuotantokauden kuva</string>
   <string id="20373">Tuotantokausi</string>
-  <string id="20374">Ladataan tiedot elokuvista</string>
+  <string id="20374">Luetaan tiedot elokuvista</string>
   <string id="20375">Määrittelemätön sisältö</string>
   <string id="20376">Ensimmäinen esitys:</string>
   <string id="20377">Päivitä TV-ohjelman tiedot</string>
@@ -1678,9 +1680,10 @@
   <string id="20405">Poista jakson kirjanmerkki</string>
   <string id="20406">Aseta jakson kirjanmerkki</string>
   <string id="20407">Hakupaikan asetukset</string>
-  <string id="20408">Ladataan tiedot musiikkivideosta</string>
-  <string id="20409">Ladataan tiedot TV-ohjelmasta</string>
+  <string id="20408">Luetaan tiedot musiikkivideosta</string>
+  <string id="20409">Luetaan tiedot TV-ohjelmasta</string>
   <string id="20410">Esittely</string>
+  <string id="20411">Kutista</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Näytä piilotetut tiedostot ja kansiot</string>
@@ -1752,7 +1755,7 @@
   <string id="21411">ei viimeisenä</string>
   
   <string id="21420">Ehtoihin sopiva</string>
-  <string id="21421">Älykkään soittolistan ehdot</string>
+  <string id="21421">Valikoivan soittolistan ehdot</string>
   <string id="21422">Sopivat kappaleet</string>
   <string id="21423">Uudet ehdot...</string>
   <string id="21424">Kappaleen täytyy sopia</string>
@@ -1761,14 +1764,14 @@
   <string id="21427">Rajoitus</string>
   <string id="21428">Ei rajoitusta</string>
   <string id="21429">Järjestys</string>
-  <string id="21430">nouseva</string>
-  <string id="21431">laskeva</string>
-  <string id="21432">Muokkaa älykästä soittolistaa</string>
+  <string id="21430">Nouseva</string>
+  <string id="21431">Laskeva</string>
+  <string id="21432">Muokkaa valikoivaa soittolistaa</string>
   <string id="21433">Soittolistan nimi</string>
   <string id="21434">Etsi sopivat kappaleet</string>
   <string id="21435">Muokkaa</string>
   <string id="21436">%i kappaletta</string>
-  <string id="21437">Uusi älykäs soittolista...</string>
+  <string id="21437">Valikoiva soittolista...</string>
   <string id="21438">%c: Asema</string>
   <string id="21439">Jukeboksin asetukset</string>
  

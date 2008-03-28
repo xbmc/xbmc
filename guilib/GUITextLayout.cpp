@@ -452,7 +452,7 @@ void CGUITextLayout::AppendToUTF32(const CStdString &text, DWORD colStyle, vecto
   for (unsigned int i = 0; i < multiLines.size(); i++)
   {
     CStdStringW utf16;
-    g_charsetConverter.utf8ToUTF16(multiLines[i], utf16);
+    g_charsetConverter.utf8ToW(multiLines[i], utf16);
     utf16.Replace(L"\r", L"");  // filter out '\r'
     utf32.reserve(utf32.size() + utf16.size() + 1);
     for (unsigned int j = 0; j < utf16.size(); j++)

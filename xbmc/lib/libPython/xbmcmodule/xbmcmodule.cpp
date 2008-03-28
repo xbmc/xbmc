@@ -262,9 +262,9 @@ namespace PYXBMC
 
     CStdStringW unicodeLabel;
     if (iString >= 30000 && iString <= 30999)
-      g_charsetConverter.utf8ToUTF16(g_localizeStringsTemp.Get(iString), unicodeLabel);
+      g_charsetConverter.utf8ToW(g_localizeStringsTemp.Get(iString), unicodeLabel);
     else
-      g_charsetConverter.utf8ToUTF16(g_localizeStrings.Get(iString), unicodeLabel);
+      g_charsetConverter.utf8ToW(g_localizeStrings.Get(iString), unicodeLabel);
 
     return Py_BuildValue("u", unicodeLabel.c_str());
   }

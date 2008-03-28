@@ -701,6 +701,22 @@ void CUtil::CleanFileName(CStdString& strFileName)
   //CLog::Log(LOGNOTICE, "CleanFileName : 9 : " + strFileName);
 }
 
+void CUtil::GetCommonPath(CStdString& strParent, const CStdString& strPath)
+{
+  // find the common path of parent and path
+  unsigned int j = 1;
+  while (j <= min(strParent.size(), strPath.size()) && strnicmp(strParent.c_str(), strPath.c_str(), j) == 0)
+    j++;
+  strParent = strParent.Left(j - 1);
+  // they should at least share a / at the end, though for things such as path/cd1 and path/cd2 there won't be
+  if (!CUtil::HasSlashAtEnd(strParent))
+  {
+    // currently GetDirectory() removes trailing slashes
+    CUtil::GetDirectory(strParent.Mid(0), strParent);
+    CUtil::AddSlashAtEnd(strParent);
+  }
+}
+
 bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
 {
   strParent = "";
@@ -714,9 +730,25 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
   }
   else if (url.GetProtocol() == "stack")
   {
-    // TODO: get the first parent path common to all stack items
     CStackDirectory dir;
-    return GetParentPath(dir.GetFirstStackedFile(strPath), strParent);
+    CFileItemList items;
+    dir.GetDirectory(strPath,items);
+    CUtil::GetDirectory(items[0]->m_strPath,items[0]->m_strDVDLabel);
+    if (items[0]->m_strDVDLabel.Mid(0,6).Equals("rar://") || items[0]->m_strDVDLabel.Mid(0,6).Equals("zip://"))
+      GetParentPath(items[0]->m_strDVDLabel, strParent);
+    else
+      strParent = items[0]->m_strDVDLabel;
+    for( int i=1;i<items.Size();++i)
+    {
+      CUtil::GetDirectory(items[i]->m_strPath,items[i]->m_strDVDLabel);
+      if (items[0]->m_strDVDLabel.Mid(0,6).Equals("rar://") || items[0]->m_strDVDLabel.Mid(0,6).Equals("zip://"))
+        GetParentPath(items[i]->m_strDVDLabel, items[i]->m_strPath);
+      else
+        items[i]->m_strPath = items[i]->m_strDVDLabel;
+
+      GetCommonPath(strParent,items[i]->m_strPath);
+    }
+    return true;
   }
   else if (url.GetProtocol() == "multipath")
   {
@@ -1828,6 +1860,11 @@ bool CUtil::IsTuxBox(const CStdString& strFile)
   return strFile.Left(7).Equals("tuxbox:");
 }
 
+bool CUtil::IsMythTV(const CStdString& strFile)
+{
+  return strFile.Left(5).Equals("myth:");
+}
+
 void CUtil::GetFileAndProtocol(const CStdString& strURL, CStdString& strDir)
 {
   strDir = strURL;
@@ -1996,7 +2033,7 @@ bool CUtil::GetXBEDescription(const CStdString& strFileName, CStdString& strDesc
   TitleName[40] = 0;
   if (wcslen(TitleName) > 0)
   {
-    g_charsetConverter.utf16toUTF8(TitleName, strDescription);
+    g_charsetConverter.wToUTF8(TitleName, strDescription);
     return true;
   }
   strDescription = CUtil::GetFileName(strFileName);
@@ -2017,7 +2054,7 @@ bool CUtil::SetXBEDescription(const CStdString& strFileName, const CStdString& s
   // The XBE title is stored in WCHAR (UTF16)
 
   CStdStringW shortDescription;
-  g_charsetConverter.utf8ToUTF16(strDescription, shortDescription);
+  g_charsetConverter.utf8ToW(strDescription, shortDescription);
   if (shortDescription.size() > 40)
     shortDescription = shortDescription.Left(40);
   wcsncpy(HC.TitleName, shortDescription.c_str(), 40);  // only allow 40 chars*/
@@ -3824,8 +3861,8 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     {
       if( g_application.IsPlaying() && g_application.m_pPlayer && g_application.m_pPlayer->CanRecord())
       {
-		if (m_pXbmcHttp)
-			m_pXbmcHttp->xbmcBroadcast(g_application.m_pPlayer->IsRecording()?"RecordStopping":"RecordStarting", 1);
+		if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
+		  g_applicationMessenger.HttpApi(g_application.m_pPlayer->IsRecording()?"broadcastlevel; RecordStopping;1":"broadcastlevel; RecordStarting;1");
         g_application.m_pPlayer->Record(!g_application.m_pPlayer->IsRecording());
       }
     }
@@ -4304,38 +4341,39 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     CLastFmManager::GetInstance()->Ban(parameter.Equals("false") ? false : true);
   }
   else if (execute.Equals("container.refresh"))
-  {
-    CGUIMessage message(GUI_MSG_NOTIFY_ALL, m_gWindowManager.GetFocusedWindow(), 0, GUI_MSG_UPDATE);
+  { // NOTE: These messages require a media window, thus they're sent to the current activewindow.
+    //       This shouldn't stop a dialog intercepting it though.
+    CGUIMessage message(GUI_MSG_NOTIFY_ALL, m_gWindowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE);
     g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("container.nextviewmode"))
   {
-    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetFocusedWindow(), 0, 0, 1);
+    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetActiveWindow(), 0, 0, 1);
     g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("container.previousviewmode"))
   {
-    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetFocusedWindow(), 0, 0, -1);
+    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetActiveWindow(), 0, 0, -1);
     g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("container.setviewmode"))
   {
-    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetFocusedWindow(), 0, atoi(parameter.c_str()));
+    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetActiveWindow(), 0, atoi(parameter.c_str()));
     g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("container.nextsortmethod"))
   {
-    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetFocusedWindow(), 0, 0, 1);
+    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetActiveWindow(), 0, 0, 1);
     g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("container.previoussortmethod"))
   {
-    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetFocusedWindow(), 0, 0, -1);
+    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetActiveWindow(), 0, 0, -1);
     g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("container.setsortmethod"))
   {
-    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetFocusedWindow(), 0, atoi(parameter.c_str()));
+    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetActiveWindow(), 0, atoi(parameter.c_str()));
     g_graphicsContext.SendMessage(message);
   }
   else
@@ -5369,6 +5407,11 @@ bool CUtil::SupportsFileOperations(const CStdString& strPath)
     return true;
   if (IsSmb(strPath))
     return true;
+  if (IsMythTV(strPath))
+  {
+    CURL url(strPath);
+    return url.GetFileName().Left(11).Equals("recordings/") && url.GetFileName().length() > 11;
+  }
   if (IsStack(strPath))
   {
     CStackDirectory dir;
@@ -5513,12 +5556,12 @@ void CUtil::WipeDir(const CStdString& strPath) // DANGEROUS!!!!
   CUtil::GetRecursiveDirsListing(strPath,items);
   for (int i=items.Size()-1;i>-1;--i) // need to wipe them backwards
   {
-    CLog::Log(LOGDEBUG,"wipe dir %s",items[i]->m_strPath.c_str());
-    if (!::RemoveDirectory((items[i]->m_strPath+"\\").c_str()))
-      CLog::Log(LOGDEBUG,"this sucks %lu!",GetLastError());
+    ::RemoveDirectory((items[i]->m_strPath+"\\").c_str());
   }
-  if (!::RemoveDirectory((strPath+"\\").c_str()))
-    CLog::Log(LOGDEBUG,"wtf %lu",GetLastError());
+
+  CStdString tmpPath = strPath;
+  AddSlashAtEnd(tmpPath);
+  ::RemoveDirectory(tmpPath.c_str());
 }
 
 void CUtil::ClearFileItemCache()

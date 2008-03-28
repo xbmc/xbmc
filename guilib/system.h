@@ -38,6 +38,7 @@
 #define HAS_SECTIONS
 #define HAS_CDDA_RIPPER
 #define HAS_AUDIO
+#define HAS_EVENT_SERVER
 #else
 #undef HAS_XBOX_D3D
 #undef HAS_RAM_CONTROL

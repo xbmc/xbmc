@@ -1,6 +1,7 @@
 #include "include.h"
 #include "GUIRadioButtonControl.h"
 #include "../xbmc/utils/GUIInfoManager.h"
+#include "GUIFontManager.h"
 
 
 CGUIRadioButtonControl::CGUIRadioButtonControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height,
@@ -14,8 +15,8 @@ CGUIRadioButtonControl::CGUIRadioButtonControl(DWORD dwParentID, DWORD dwControl
   m_radioPosX = 0;
   m_radioPosY = 0;
   m_toggleSelect = 0;
-  m_imgRadioFocus.SetAspectRatio(CGUIImage::ASPECT_RATIO_KEEP);
-  m_imgRadioNoFocus.SetAspectRatio(CGUIImage::ASPECT_RATIO_KEEP);
+  m_imgRadioFocus.SetAspectRatio(CGUIImage::CAspectRatio::AR_KEEP);
+  m_imgRadioNoFocus.SetAspectRatio(CGUIImage::CAspectRatio::AR_KEEP);
   ControlType = GUICONTROL_RADIO;
 }
 
@@ -135,10 +136,9 @@ CStdString CGUIRadioButtonControl::GetDescription() const
   return strLabel;
 }
 
-void CGUIRadioButtonControl::SetColorDiffuse(D3DCOLOR color)
+void CGUIRadioButtonControl::SetColorDiffuse(const CGUIInfoColor &color)
 {
   CGUIButtonControl::SetColorDiffuse(color);
   m_imgRadioFocus.SetColorDiffuse(color);
   m_imgRadioNoFocus.SetColorDiffuse(color);
 }
-

@@ -348,3 +348,25 @@ cmyth_mysql_query_result(cmyth_mysql_query_t * query)
     }
     return retval;
 }
+
+int
+cmyth_mysql_query(cmyth_mysql_query_t * query)
+{
+	int ret;
+	char * query_str;
+	MYSQL *mysql = cmyth_db_get_connection(query->db);
+	if(mysql == NULL)
+		return -1;
+	query_str = cmyth_mysql_query_string(query);
+	if(query_str == NULL)
+		return -1;
+	ret = mysql_query(mysql,query_str);
+	ref_release(query_str);
+	if(ret != 0)
+	{
+		cmyth_dbg(CMYTH_DBG_ERROR, "%s: mysql_query(%s) Failed: %s\n",
+				__FUNCTION__, query_str, mysql_error(mysql));
+		return -1;
+	}
+	return 0;
+}

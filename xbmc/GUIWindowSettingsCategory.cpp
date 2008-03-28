@@ -807,6 +807,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("upnp.server"));
     }
+    else if (!strSetting.Equals("remoteevents.enabled")
+             && strSetting.Left(13).Equals("remoteevents."))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("remoteevents.enabled"));
+    }
     else if (strSetting.Equals("mymusic.clearplaylistsonend"))
     { // disable repeat and repeat one if clear playlists is enabled
       if (g_guiSettings.GetBool("mymusic.clearplaylistsonend"))
@@ -953,7 +959,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
       CStdString strCharset=g_langInfo.GetSubtitleCharSet();
-      pControl->SetEnabled( /*CUtil::IsUsingTTFSubtitles() &&*/ g_charsetConverter.isBidiCharset(strCharset) > 0);
+      pControl->SetEnabled( /*CUtil::IsUsingTTFSubtitles() &&*/ g_charsetConverter.isBidiCharset(strCharset));
     }
     else if (strSetting.Equals("locale.charset"))
     { // TODO: Determine whether we are using a TTF font or not.
@@ -1090,6 +1096,18 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetString("lookandfeel.soundskin") != "OFF");
     }
+    else if (!strSetting.Equals("musiclibrary.enabled")
+      && strSetting.Left(13).Equals("musiclibrary."))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("musiclibrary.enabled"));
+    }
+    else if (!strSetting.Equals("videolibrary.enabled")
+      && strSetting.Left(13).Equals("videolibrary."))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videolibrary.enabled"));
+    }
   }
 }
 
@@ -1188,13 +1206,13 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_guiSettings.SetString("karaoke.port3voicemask", pControl->GetCurrentLabel());
     FillInVoiceMaskValues(3, g_guiSettings.GetSetting("karaoke.port3voicemask"));
   }
-  else if (strSetting.Equals("mymusic.cleanupmusiclibrary"))
+  else if (strSetting.Equals("musiclibrary.cleanup"))
   {
     CMusicDatabase musicdatabase;
     musicdatabase.Clean();
     CUtil::DeleteMusicDatabaseDirectoryCache();
   }
-  else if (strSetting.Equals("videolibrary.cleanupvideolibrary"))
+  else if (strSetting.Equals("videolibrary.cleanup"))
   {
     if (CGUIDialogYesNo::ShowAndGetInput(313, 333, 0, 0))
     {
@@ -1204,12 +1222,12 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       videodatabase.Close();
     }
   }
-  else if (strSetting.Equals("videolibrary.exportvideolibrary"))
+  else if (strSetting.Equals("videolibrary.export"))
   {
     CStdString path(g_settings.GetDatabaseFolder());
     VECSHARES shares;
     g_mediaManager.GetLocalDrives(shares);
-    if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(651), path, true))
+    if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
     {
       CUtil::AddFileToFolder(path, "videodb.xml", path);
       CVideoDatabase videodatabase;
@@ -1218,7 +1236,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       videodatabase.Close();
     }
   }
-  else if (strSetting.Equals("videolibrary.importvideolibrary"))
+  else if (strSetting.Equals("videolibrary.import"))
   {
     CStdString path(g_settings.GetDatabaseFolder());
     VECSHARES shares;
@@ -1819,6 +1837,35 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     else
       g_application.StopUPnPRenderer();
 #endif
+  }
+  else if (strSetting.Equals("remoteevents.enabled"))
+  {
+#ifdef HAS_EVENT_SERVER
+    if (g_guiSettings.GetBool("remoteevents.enabled"))
+      g_application.StartEventServer();
+    else
+      g_application.StopEventServer();
+#endif
+  }
+  else if (strSetting.Equals("remoteevents.allinterfaces"))
+  {
+#ifdef HAS_EVENT_SERVER
+    if (g_guiSettings.GetBool("remoteevents.enabled"))
+    {
+      g_application.StopEventServer();
+      g_application.StartEventServer();
+    }
+#endif
+  }
+  else if (strSetting.Equals("remoteevents.initialdelay") || 
+           strSetting.Equals("remoteevents.continuousdelay"))    
+  {
+#ifdef HAS_EVENT_SERVER
+    if (g_guiSettings.GetBool("remoteevents.enabled"))
+    {
+      g_application.RefreshEventServer();
+    }
+#endif      
   }
   else if (strSetting.Equals("upnp.musicshares"))
   {

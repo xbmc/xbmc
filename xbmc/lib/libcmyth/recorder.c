@@ -894,7 +894,7 @@ cmyth_recorder_check_channel(cmyth_recorder_t rec,
 		goto fail;
 	}
 
-	if ((err=cmyth_rcv_okay(rec->rec_conn, "ok")) < 0) {
+	if ((err=cmyth_rcv_okay(rec->rec_conn, "1")) < 0) {
 		cmyth_dbg(CMYTH_DBG_ERROR,
 			  "%s: cmyth_rcv_okay() failed (%d)\n",
 			  __FUNCTION__, err);
@@ -1173,7 +1173,9 @@ cmyth_recorder_get_next_program_info(cmyth_recorder_t rec,
 	next_prog->proginfo_subtitle = ref_strdup(subtitle);
 	next_prog->proginfo_description = ref_strdup(desc);
 	next_prog->proginfo_channame = ref_strdup(channelname);
+  next_prog->proginfo_chanstr = ref_strdup(channelname);
 	next_prog->proginfo_chansign = ref_strdup(callsign);
+  next_prog->proginfo_chanicon = ref_strdup(iconpath);
 	
 	next_prog->proginfo_chanId = atoi(chanid);
 

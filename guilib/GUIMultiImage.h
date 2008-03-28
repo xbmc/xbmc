@@ -32,7 +32,7 @@ public:
   virtual bool IsDynamicallyAllocated() { return m_bDynamicResourceAlloc; };
   virtual bool CanFocus() const;
 
-  void SetAspectRatio(CGUIImage::GUIIMAGE_ASPECT_RATIO ratio);
+  void SetAspectRatio(CGUIImage::CAspectRatio::ASPECT_RATIO ratio);
 
 protected:
   void LoadDirectory();
@@ -47,7 +47,7 @@ protected:
   DWORD m_timeToPauseAtEnd;
   bool m_randomized;
   bool m_loop;
-  CGUIImage::GUIIMAGE_ASPECT_RATIO m_aspectRatio;
+  CGUIImage::CAspectRatio::ASPECT_RATIO m_aspectRatio;
   std::vector <CGUIImage *> m_images;
 
   bool m_bDynamicResourceAlloc;

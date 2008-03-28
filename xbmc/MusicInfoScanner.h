@@ -43,6 +43,8 @@ protected:
   int GetPathHash(const CFileItemList &items, CStdString &hash);
 
   bool DoScan(const CStdString& strDirectory);
+  bool DownloadAlbumInfo(const CStdString& strPath, const CStdString& strArtist, const CStdString& strAlbum);
+  bool DownloadArtistInfo(const CStdString& strPath, const CStdString& strArtist);
 
   virtual void Run();
   int CountFiles(const CFileItemList& items, bool recursive);
