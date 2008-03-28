@@ -218,9 +218,6 @@
 #ifdef HAS_XRANDR
 #include "XRandR.h"
 #endif
-#ifdef HAS_CWIID
-#include "common/WiiRemote.h"
-#endif
 #ifdef __APPLE__
 #include "CocoaUtils.h"
 #endif
@@ -1132,9 +1129,6 @@ HRESULT CApplication::Create(HWND hWnd)
 #ifdef HAS_SDL_JOYSTICK
   g_Joystick.Initialize(hWnd);
 #endif
-#ifdef HAS_CWIID
-  g_WiiRemote.Initialize();
-#endif
 
 #ifdef HAS_XBOX_HARDWARE
   // Wait for controller polling to finish. in an elegant way, instead of a Sleep(1000)
@@ -1510,17 +1504,6 @@ HRESULT CApplication::Create(HWND hWnd)
 
   g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
 
-#ifdef HAS_CWIID
-  //Enable Wiiremote support
-  if (g_guiSettings.GetBool("wiiremote.enable"))
-    g_WiiRemote.EnableWiiRemote();
-
-  //Enable/Disable Mouse emulation    
-  if (g_guiSettings.GetBool("wiiremote.mouseemulation"))
-    g_WiiRemote.EnableMouseEmulation();
-  else
-    g_WiiRemote.DisableMouseEmulation();
-#endif
   return CXBApplicationEx::Create(hWnd);
 }
 
@@ -2706,15 +2689,10 @@ void CApplication::DoRender()
   m_gWindowManager.RenderDialogs();
 
   // Render the mouse pointer
-#ifdef HAS_CWIID
-  if (g_Mouse.IsActive() || g_WiiRemote.isActive())
-    m_guiPointer.Render();
-#else  
   if (g_Mouse.IsActive())
   {
     m_guiPointer.Render();
   }
-#endif
 
   {
     // free memory if we got les then 10megs free ram
@@ -3387,7 +3365,6 @@ void CApplication::FrameMove()
   ProcessKeyboard();
   ProcessRemote(frameTime);
   ProcessGamepad(frameTime);
-  ProcessWiiRemote();
   ProcessEventServer(frameTime);
 }
 
@@ -3786,81 +3763,6 @@ bool CApplication::ProcessMouse()
     }
   }
   return m_gWindowManager.OnAction(action);
-}
-
-bool CApplication::ProcessWiiRemote()
-{
-#ifdef HAS_CWIID
-  MEASURE_FUNCTION;
-  bool returnbool = false;
-
-//Calculate wich should be trusted, mouse or wiiremote
-#ifdef WIIREMOTE_PRIORITIZE_MOUSE
-  if (g_Mouse.HasMoved())
-    g_WiiRemote.SetMouseInactive();
-#endif
-  if (g_WiiRemote.isActive())
-  {
-    // The g_WiiRemote.get_MouseX() returns a procentage so the final calculations are placed here
-    float x = (g_WiiRemote.GetMouseX() * (float)g_graphicsContext.GetWidth());
-    float y = (g_WiiRemote.GetMouseY() * (float)g_graphicsContext.GetHeight());
-
-    // Send the coordinates to the g_Mouse, thus making the Wiiremote behave as a mouse.
-    g_Mouse.SetLocation(CPoint(x, y));
-
-    // Reset the screensaver and idle timers
-    m_idleTimer.StartZero();
-    ResetScreenSaver();
-    if (ResetScreenSaverWindow())
-    return true;
-
-    CAction action;
-    action.wID = ACTION_MOUSE;
-    action.fAmount1 = (float) m_guiPointer.GetPosX();
-    action.fAmount2 = (float) m_guiPointer.GetPosY();
-
-    // send mouse event to the music + video overlays, if they're enabled
-    if (m_gWindowManager.IsOverlayAllowed())
-    {
-        // if we're playing a movie
-      if ( IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
-      {
-        // then send the action to the video overlay window
-        CGUIWindow *overlay = m_gWindowManager.GetWindow(WINDOW_VIDEO_OVERLAY);
-        if (overlay)
-          overlay->OnAction(action);
-      }
-      else if ( IsPlayingAudio() )
-      {
-        // send message to the audio overlay window
-        CGUIWindow *overlay = m_gWindowManager.GetWindow(WINDOW_MUSIC_OVERLAY);
-        if (overlay)
-          overlay->OnAction(action);
-      }
-    }
-    returnbool = m_gWindowManager.OnAction(action);
-  }
-  
-  // process the Wiiremote buttons etc.
-  if (g_WiiRemote.GetNewKey() && g_WiiRemote.GetKey() != -1)
-  {
-    WORD wkeyID = (WORD)g_WiiRemote.GetKey();
-
-    CKey key(wkeyID);
-    g_WiiRemote.ResetKey();
-
-    g_WiiRemote.SetMouseInactive();
-
-    //If returnbool already is true from the mouse emulation, don't make it false
-    if (returnbool)
-      OnKey(key);
-    else
-      returnbool = OnKey(key);
-  }
-  return returnbool;
-#else
-  return false;
-#endif
 }
 
 void  CApplication::CheckForTitleChange()
@@ -4912,13 +4814,8 @@ void CApplication::DoRenderFullScreen()
     if (m_gWindowManager.HasDialogOnScreen())
       m_gWindowManager.RenderDialogs();
     // Render the mouse pointer, if visible...
-#ifdef HAS_CWIID
-    if (g_Mouse.IsActive() || g_WiiRemote.isActive())
-      g_application.m_guiPointer.Render();
-#else
     if (g_Mouse.IsActive())
       g_application.m_guiPointer.Render();
-#endif
   }
 }
 

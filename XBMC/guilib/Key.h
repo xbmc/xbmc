@@ -328,10 +328,6 @@
 #define ICON_TYPE_WEATHER       107
 #define ICON_TYPE_SETTINGS      109
 
-#ifdef HAS_CWIID
-#include "common/WiiRemote_key.h"
-#endif
-
 /*!
   \ingroup actionkeys
   \brief 
