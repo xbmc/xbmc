@@ -43,6 +43,7 @@ CDVDPlayerVideo::CDVDPlayerVideo(CDVDClock* pClock, CDVDOverlayContainer* pOverl
   m_bDropFrames = true;
   m_fFrameRate = 25;
   m_bAllowFullscreen = false;
+  memset(&m_output, 0, sizeof(m_output));
 }
 
 CDVDPlayerVideo::~CDVDPlayerVideo()
@@ -50,6 +51,14 @@ CDVDPlayerVideo::~CDVDPlayerVideo()
   StopThread();
   g_dvdPerformanceCounter.DisableVideoQueue();
   DeleteCriticalSection(&m_critCodecSection);
+
+#ifdef HAS_VIDEO_PLAYBACK
+  if(m_output.inited)
+  {
+    CLog::Log(LOGNOTICE, "%s - uninitting video device", __FUNCTION__);
+    g_renderManager.UnInit();
+  }
+#endif
 }
 
 double CDVDPlayerVideo::GetOutputDelay()
@@ -153,10 +162,13 @@ void CDVDPlayerVideo::OnStartup()
   
   m_iCurrentPts = DVD_NOPTS_VALUE;
   m_FlipTimeStamp = m_pClock->GetAbsoluteClock();
-  
-  memset(&m_output, 0, sizeof(m_output));
+
 #ifdef HAS_VIDEO_PLAYBACK
-  g_renderManager.PreInit();
+  if(!m_output.inited)
+  {
+    g_renderManager.PreInit();
+    m_output.inited = true;
+  }
 #endif
   g_dvdPerformanceCounter.EnableVideoDecodePerformance(ThreadHandle());
 }
@@ -458,11 +470,6 @@ void CDVDPlayerVideo::Process()
 void CDVDPlayerVideo::OnExit()
 {
   g_dvdPerformanceCounter.DisableVideoDecodePerformance();
-  
-  CLog::Log(LOGNOTICE, "uninitting video device");
-#ifdef HAS_VIDEO_PLAYBACK
-  g_renderManager.UnInit();
-#endif
 
   if (m_pOverlayCodecCC)
   {
