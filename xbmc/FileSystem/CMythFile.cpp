@@ -200,21 +200,13 @@ bool CCMythFile::SetupLiveTV(const CURL& url)
     CLog::Log(LOGDEBUG, "%s - recorder isn't running, let's start it", __FUNCTION__);
 
   char* msg = NULL;
-  if(!(m_recorder = m_dll->spawn_live_tv(m_recorder, 16*1024, 4096, prog_update_callback, &msg)))
+  if(!(m_recorder = m_dll->spawn_live_tv(m_recorder, 16*1024, 4096, prog_update_callback, &msg, (char*)channel.c_str())))
   {
     CLog::Log(LOGERROR, "%s - unable to spawn live tv: %s", __FUNCTION__, msg ? msg : "");
     return false;
   }
 
   m_program = m_dll->recorder_get_cur_proginfo(m_recorder);
-  if(m_program)
-  {
-    if(GetValue(m_dll->proginfo_chanstr(m_program)) != channel)
-    {
-      if(!ChangeChannel(CHANNEL_DIRECTION_SAME, channel.c_str()))
-        return false;
-    }
-  }
 
   if(m_recording)
   {
@@ -492,27 +484,36 @@ int CCMythFile::GetStartTime()
   return 0;
 }
 
-bool CCMythFile::ChangeChannel(int direction, const char* channel)
+bool CCMythFile::ChangeChannel(int direction, const CStdString &channel)
 {
   CLog::Log(LOGDEBUG, "%s - channel change started", __FUNCTION__);
 
-  if(m_dll->recorder_pause(m_recorder) < 0)
+  if(direction == CHANNEL_DIRECTION_SAME)
   {
-    CLog::Log(LOGDEBUG, "%s - failed to pause recorder", __FUNCTION__);
-    return false;
-  }
-
-  if(channel)
-  {
-    CLog::Log(LOGDEBUG, "%s - chainging channel to %s", __FUNCTION__, channel);
-    if(m_dll->recorder_set_channel(m_recorder, (char*)channel) < 0)
+    if(!m_program || channel != GetValue(m_dll->proginfo_chanstr(m_program)))
     {
-      CLog::Log(LOGDEBUG, "%s - failed to change channel", __FUNCTION__);
-      return false;
+      if(m_dll->recorder_pause(m_recorder) < 0)
+      {
+        CLog::Log(LOGDEBUG, "%s - failed to pause recorder", __FUNCTION__);
+        return false;
+      }
+
+      CLog::Log(LOGDEBUG, "%s - chainging channel to %s", __FUNCTION__, channel.c_str());
+      if(m_dll->recorder_set_channel(m_recorder, (char*)channel.c_str()) < 0)
+      {
+        CLog::Log(LOGDEBUG, "%s - failed to change channel", __FUNCTION__);
+        return false;
+      }
     }
   }
   else
   {
+    if(m_dll->recorder_pause(m_recorder) < 0)
+    {
+      CLog::Log(LOGDEBUG, "%s - failed to pause recorder", __FUNCTION__);
+      return false;
+    }
+
     CLog::Log(LOGDEBUG, "%s - chainging channel direction %d", __FUNCTION__, direction);
     if(m_dll->recorder_change_channel(m_recorder, (cmyth_channeldir_t)direction) < 0)
     {
@@ -534,12 +535,12 @@ bool CCMythFile::ChangeChannel(int direction, const char* channel)
 
 bool CCMythFile::NextChannel()
 {
-  return ChangeChannel(CHANNEL_DIRECTION_UP, NULL);
+  return ChangeChannel(CHANNEL_DIRECTION_UP, "");
 }
 
 bool CCMythFile::PrevChannel()
 {
-  return ChangeChannel(CHANNEL_DIRECTION_DOWN, NULL);
+  return ChangeChannel(CHANNEL_DIRECTION_DOWN, "");
 }
 
 
