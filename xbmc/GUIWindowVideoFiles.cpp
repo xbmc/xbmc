@@ -609,11 +609,11 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
             else
             {
               if (!item->IsPlayList())
-              {
-                buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
                 buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
-              }
             }
+            if (!info.strPath.IsEmpty() && !info.strContent.IsEmpty())
+              if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
+                buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
           }
         }
         else
