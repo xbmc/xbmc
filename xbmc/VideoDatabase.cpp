@@ -4245,7 +4245,7 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
             {
               CFileItem* pItem=new CFileItem(movie);
               CStdString strDir;
-              strDir.Format("%ld/", lMovieId);
+              strDir.Format("%ld", lMovieId);
               pItem->m_strPath=strBaseDir + strDir;
               pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);
               
