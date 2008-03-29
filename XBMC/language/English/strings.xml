@@ -1848,6 +1848,7 @@
 
   <string id="22000">Update library on startup</string>
   <string id="22001">Always update library in background</string>
+  <string id="22002">- DNS Suffix</string>
 
   <string id="29999">Apply Flicker Filter Setting to Games</string>
 
