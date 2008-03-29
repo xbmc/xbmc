@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: jutski (->7/2006) Mikko70 (1/2007->)-->
-<!--Date of translation: 6/3/2008-->
-<!--Finnish strings based on English strings version 11850-->
+<!--Date of translation: 26/3/2008-->
+<!--Finnish strings based on English strings version 12300-->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -135,7 +135,7 @@
   <string id="194">Haetaan...</string>
   <string id="195">Elokuvan tietoja ei löytynyt!</string>
   <string id="196">Valitse elokuva:</string>
-  <string id="197">Haetaan tietoja %ssta</string>
+  <string id="197">Haetaan tietoja %s:sta</string>
   <string id="198">Haetaan elokuvan tietoja</string>
   <string id="199">Ohjaaja:</string>
   <string id="200">Kirjoittaja:</string>
@@ -632,6 +632,15 @@
   <string id="772">Äänilaitteisto</string>
   <string id="773">Haku</string>
   <string id="774">Kuvaesitys kansio</string>
+
+  <string id="790">Etätapahtumat</string>
+  <string id="791">Etätapahtumat käytössä</string>
+  <string id="792">Etätapahtumien portti</string>
+  <string id="793">Etätapahtumien porttialue</string>
+  <string id="794">Vastaanota tapahtumat toisista koneista käytössä</string>
+  <string id="795">Kerran toistuva viive (ms)</string>
+  <string id="796">Jatkuvasti toistuva viive (ms)</string>
+  <string id="797">Yhteyksien maksimi määrä</string>
   
   <string id="998">XLink Kai</string>
   <string id="999">Verkkopelaaminen</string>
@@ -947,7 +956,7 @@
   <string id="13174">Kiintolevyn käynnistyslaskuri:</string>
     
   <string id="13200">Käyttäjä profiilit</string>
-  <string id="13201">Poistetaanko profiili '%s'?</string>
+  <string id="13201">Poistetaanko profiili '%s' ?</string>
   <string id="13204">Viimeksi ladattu profiili:</string>
   <string id="13205">Tuntematon</string>
   <string id="13206">Korvaa</string>
@@ -1085,7 +1094,7 @@
   <string id="13404">Jatka</string>
   <string id="13405">Pienoiskuvake</string>
   <string id="13406">Kuvan ominaisuudet</string>
-  <string id="13407">%sn esiasetukset</string> 
+  <string id="13407">%s:in esiasetukset</string> 
   <string id="13408">(IMDb käyttäjän arvosana)</string>
   <string id="13409">250 suosituinta:</string> 
   <string id="13409">Aloita Last.FM:n kuuntelu</string> 
@@ -1409,7 +1418,7 @@
   <string id="20041">Lukitse Ohjelmat, Tallennukset ja Skriptit</string>
   <string id="20042">Lukitse Tiedostonhallinta</string>
   <string id="20043">Lukitse Asetukset</string>
-  <string id="20044">Tyhjä</string>
+  <string id="20044">Tyhjät</string>
   <string id="20045">Siirry pääkäyttäjän tilaan</string>
   <string id="20046">Poistu pääkäyttäjän tilasta</string>
   <string id="20047">Luo profiili '%s' ?</string>
@@ -1423,13 +1432,13 @@
   <string id="20055">Allmusic.com pienoiskuvake</string>
   <string id="20056"></string>
   <string id="20057">Poista pienoiskuvake</string>
-  <string id="20058">Lisää profiili...</string>
+  <string id="20058">Lisää uusi profiili...</string>
   <string id="20059">Nouda albumien tiedot</string>
   <string id="20060">Sijaintien tiedot</string>
   <string id="20061">Omat</string>
   <string id="20062">Oletukset</string>
   <string id="20063">Oletukset(vain luku)</string>
-  <string id="20064">Kopioi oletukset</string>
+  <string id="20064">Oletukset</string>
   <string id="20065">Profiilin kuva</string>
   <string id="20066">Lukitus asetukset</string>
   <string id="20067">Muokkaa profiilia</string>
@@ -1467,7 +1476,7 @@
   <string id="20099">Lopeta levyn toisto ennen tallennusta</string>
   <string id="20100">Pääkäyttäjän lukituskoodi ja asetukset</string>
   <string id="20101">Lukituskoodi antamalla siirrytään pääkäyttäjä-tilaan</string>
-  <string id="20102">tai kopioi oletukset</string>
+  <string id="20102">tai Käytä oletuksia</string>
   <string id="20103">Tallennetaanko muutokset profiiliin?</string>
   <string id="20104">Vanhat asetukset löydetty.</string>
   <string id="20105">Haluatko käyttää niitä?</string>
@@ -1684,6 +1693,8 @@
   <string id="20409">Luetaan tiedot TV-ohjelmasta</string>
   <string id="20410">Esittely</string>
   <string id="20411">Kutista</string>
+  <string id="20412">Kutista vain yhden kauden TV-ohjelmat</string>
+  <string id="20413">Nouda Fanitaide</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Näytä piilotetut tiedostot ja kansiot</string>
