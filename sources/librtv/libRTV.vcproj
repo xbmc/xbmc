@@ -8,6 +8,8 @@
 	<Platforms>
 		<Platform
 			Name="Xbox"/>
+		<Platform
+			Name="Win32"/>
 	</Platforms>
 	<Configurations>
 		<Configuration
@@ -43,6 +45,51 @@
 				Name="VCPreLinkEventTool"/>
 		</Configuration>
 		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="1"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				OptimizeForProcessor="2"
+				PreprocessorDefinitions="_DEBUG;_WIN32;_LIB"
+				BasicRuntimeChecks="3"
+				SmallerTypeCheck="TRUE"
+				RuntimeLibrary="1"
+				BufferSecurityCheck="TRUE"
+				EnableEnhancedInstructionSet="1"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
+				WarningLevel="3"
+				DebugInformationFormat="3"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
 			Name="Profile|Xbox"
 			OutputDirectory="Profile"
 			IntermediateDirectory="Profile"
@@ -74,6 +121,52 @@
 				Name="VCPreBuildEventTool"/>
 			<Tool
 				Name="VCPreLinkEventTool"/>
+		</Configuration>
+		<Configuration
+			Name="Profile|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="1"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="3"
+				OmitFramePointers="TRUE"
+				OptimizeForProcessor="2"
+				PreprocessorDefinitions="NDEBUG;_XBOX;PROFILE;_LIB"
+				StringPooling="TRUE"
+				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="TRUE"
+				EnableEnhancedInstructionSet="1"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="3"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Profile_FastCap|Xbox"
@@ -108,6 +201,53 @@
 				Name="VCPreBuildEventTool"/>
 			<Tool
 				Name="VCPreLinkEventTool"/>
+		</Configuration>
+		<Configuration
+			Name="Profile_FastCap|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="1"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="3"
+				OmitFramePointers="TRUE"
+				OptimizeForProcessor="2"
+				PreprocessorDefinitions="NDEBUG;_XBOX;PROFILE;FASTCAP;_LIB"
+				StringPooling="TRUE"
+				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="TRUE"
+				EnableEnhancedInstructionSet="1"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="3"
+				FastCAP="TRUE"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Release|Xbox"
@@ -145,6 +285,53 @@
 				Name="VCPreLinkEventTool"/>
 		</Configuration>
 		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="4"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="3"
+				FavorSizeOrSpeed="2"
+				OmitFramePointers="TRUE"
+				OptimizeForProcessor="2"
+				PreprocessorDefinitions="NDEBUG;_WIN32;_LIB"
+				StringPooling="FALSE"
+				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="TRUE"
+				EnableEnhancedInstructionSet="1"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/$(ProjectName)_win32.lib"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
 			Name="Release_LTCG|Xbox"
 			OutputDirectory="Release_LTCG"
 			IntermediateDirectory="Release_LTCG"
@@ -177,6 +364,53 @@
 				Name="VCPreBuildEventTool"/>
 			<Tool
 				Name="VCPreLinkEventTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release_LTCG|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="1"
+			CharacterSet="2"
+			WholeProgramOptimization="TRUE">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="3"
+				OmitFramePointers="TRUE"
+				OptimizeForProcessor="2"
+				PreprocessorDefinitions="NDEBUG;_XBOX;LTCG;_LIB"
+				StringPooling="TRUE"
+				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="TRUE"
+				EnableEnhancedInstructionSet="1"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="3"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
 	<References>

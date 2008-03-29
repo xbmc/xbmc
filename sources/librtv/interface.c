@@ -235,7 +235,7 @@ int rtv_discovery(struct RTV ** result, unsigned long msTimeout)
 
 	// For some reason, the UPNP address doesn't work on Xbox; so we
 	// use the broadcast address, which seems to work.
-#ifdef _XBOX
+#if defined(_XBOX) || defined(_WIN32)
 	sin.sin_addr.S_un.S_addr = htonl(INADDR_BROADCAST);
 #else
 	inet_aton("239.255.255.250",&sin.sin_addr.s_addr);
