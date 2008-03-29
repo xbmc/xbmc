@@ -86,7 +86,7 @@ void CMusicDatabaseDirectory::ClearDirectoryCache(const CStdString& strDirectory
 
   CStdString strFileName;
   strFileName.Format("Z:\\%08x.fi", (unsigned __int32) crc);
-  CFile::Delete(strFileName);
+  CFile::Delete(_P(strFileName));
 }
 
 bool CMusicDatabaseDirectory::IsAllItem(const CStdString& strDirectory)

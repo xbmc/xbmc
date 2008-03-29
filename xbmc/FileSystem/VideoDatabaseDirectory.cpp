@@ -99,7 +99,7 @@ void CVideoDatabaseDirectory::ClearDirectoryCache(const CStdString& strDirectory
 
   CStdString strFileName;
   strFileName.Format("Z:\\%08x.fi", (unsigned __int32) crc);
-  CFile::Delete(strFileName);
+  CFile::Delete(_P(strFileName));
 }
 
 bool CVideoDatabaseDirectory::IsAllItem(const CStdString& strDirectory)
