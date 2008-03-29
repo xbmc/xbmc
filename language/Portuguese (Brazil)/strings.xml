@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<!--$Revision 11916$-->
+<!--$Revision 12328$-->
 <strings>
   <string id="0">Programas</string>
   <string id="1">Imagens</string>
@@ -340,7 +340,7 @@
   <string id="415">Recebendo ícone...</string>
   <string id="416">Não disponível</string>
   <string id="417">Org: ícones g.</string>
-  <string id="418"></string>
+  <string id="418">Habilitar coleção</string>
   <string id="419"></string>
   <string id="420"></string>
   <string id="421"></string>
@@ -629,6 +629,15 @@
   <string id="772">Opções de áudio</string>
   <string id="773">Procurando</string>
   <string id="774">Pasta de apresentação (slideshow)</string>
+
+  <string id="790">Eventos remotos</string>
+  <string id="791">Habilitar eventos remotos</string>
+  <string id="792">Porta de eventos remotos</string>
+  <string id="793">Intervalo de portas</string>
+  <string id="794">Receber eventos de outros computadores</string>
+  <string id="795">Atraso de repetição inicial (ms)</string>
+  <string id="796">Atraso de repetição contínuo (ms)</string>
+  <string id="797">Número máximo de clientes</string>
 
   <string id="998">XLink Kai</string>
   <string id="999">Jogos em rede</string>
@@ -1683,6 +1692,7 @@
   <string id="20410">Trailer</string>
   <string id="20411">Unificar</string>
   <string id="20412">Unificar programa de TV com temporada única</string>
+  <string id="20413">Obter FanArt</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Exibir arquivos e diretórios ocultos</string>
