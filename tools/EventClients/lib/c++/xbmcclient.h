@@ -4,6 +4,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <netdb.h>
 #include <vector>
 #include <iostream>
 #include <fstream>
@@ -58,12 +59,22 @@ public:
 
   CAddress(const char *Address, int Port = STD_PORT)
   {
-    m_Addr.sin_family = AF_INET;
     m_Addr.sin_port = htons(Port);
-    if (Address)
-      m_Addr.sin_addr.s_addr = inet_addr(Address);
+    
+    struct hostent *h;
+    if (Address == NULL || (h=gethostbyname(Address)) == NULL)
+    {
+        if (Address != NULL)
+          herror("gethostbyname");
+
+        m_Addr.sin_addr.s_addr  = INADDR_ANY;
+        m_Addr.sin_family       = AF_INET;
+    }
     else
-      m_Addr.sin_addr.s_addr = INADDR_ANY;
+    {
+      m_Addr.sin_family = h->h_addrtype;
+      m_Addr.sin_addr = *((struct in_addr *)h->h_addr);
+    }
     memset(m_Addr.sin_zero, '\0', sizeof m_Addr.sin_zero);
   }
 
