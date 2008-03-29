@@ -130,9 +130,16 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAdres
     return true;
   }
 #else
+  CStdString suffix = g_guiSettings.GetString("network.dnssuffix");
+  CStdString fqdn;
+  if( suffix.length() > 0 )
+    fqdn = strHostName + "." + suffix;
+  else
+    fqdn = strHostName;
+
   WSAEVENT hEvent = WSACreateEvent();
   XNDNS* pDns = NULL;
-  INT err = XNetDnsLookup(strHostName.c_str(), hEvent, &pDns);
+  INT err = XNetDnsLookup(fqdn.c_str(), hEvent, &pDns);
   WaitForSingleObject( (HANDLE)hEvent, INFINITE);
   if ( pDns && pDns->iStatus == 0 )
   {
@@ -144,7 +151,7 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAdres
     strIpAdres.Format("%d.%d.%d.%d", (ulHostIp & 0xFF), (ulHostIp & 0xFF00) >> 8, (ulHostIp & 0xFF0000) >> 16, (ulHostIp & 0xFF000000) >> 24 );
 
     CDNSName dnsName;
-    dnsName.m_strHostName = strHostName;
+    dnsName.m_strHostName = fqdn;
     dnsName.m_strIpAdres = strIpAdres;
     g_DNSCache.m_vecDNSNames.push_back(dnsName);
 
@@ -162,4 +169,12 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAdres
   WSACloseEvent(hEvent);
 #endif
   return false;
+}
+
+void CDNSNameCache::Add(const CStdString &strHostName, const CStdString &strIpAddress)
+{
+  CDNSName dnsName;
+  dnsName.m_strHostName = strHostName;
+  dnsName.m_strIpAdres  = strIpAddress;
+  g_DNSCache.m_vecDNSNames.push_back(dnsName);
 }
