@@ -51,7 +51,7 @@
 #define HAVE_LIBTRE 1
 
 /* Define if you have locale_charset() in <localcharset.h>. */
-#define HAVE_LOCALE_CHARSET 1
+#undef HAVE_LOCALE_CHARSET 1
 
 /* Define to 1 if mbrtowc and mbstate_t are properly declared. */
 #define HAVE_MBRTOWC 1
@@ -125,7 +125,7 @@
 #define HAVE_WCHAR_H 1
 
 /* Define to 1 if wide characters is supported */
-#define HAVE_WCHAR_SUPPORT 1
+#undef HAVE_WCHAR_SUPPORT
 
 /* Define to 1 if the system has the type `wchar_t'. */
 #define HAVE_WCHAR_T 1
