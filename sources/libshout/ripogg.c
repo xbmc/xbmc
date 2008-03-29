@@ -33,7 +33,11 @@
 
 #if (HAVE_OGG_VORBIS)
 #include <ogg/ogg.h>
+#ifdef _LINUX
 #include <vorbis/codec.h>
+#else
+#include <ogg/codec.h>
+#endif
 #include <locale.h>
 
 
