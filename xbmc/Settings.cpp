@@ -39,6 +39,7 @@
 #include "utils/FanController.h"
 #include "MediaManager.h"
 #include "XBVideoConfig.h"
+#include "DNSNameCache.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "utils/MemoryUnitManager.h"
 #endif
@@ -1454,6 +1455,23 @@ void CSettings::LoadAdvancedSettings()
       if (filter->FirstChild())
         g_advancedSettings.m_musicTagsFromFileFilters.push_back(filter->FirstChild()->ValueStr());
       filter = filter->NextSibling("filter");
+    }
+  }
+
+  TiXmlElement* pHostEntries = pRootElement->FirstChildElement("hosts");
+  if (pHostEntries)
+  {
+    TiXmlElement* element = pHostEntries->FirstChildElement("entry");
+    while(element)
+    {
+      CStdString name  = element->Attribute("name");
+      CStdString value;
+      if(element->GetText())
+        value = element->GetText();
+
+      if(name.length() > 0 && value.length() > 0)
+        CDNSNameCache::Add(name, value);
+      element = element->NextSiblingElement("entry");
     }
   }
 
