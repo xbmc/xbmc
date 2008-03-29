@@ -100,13 +100,19 @@
 			<RegExp conditional="!fullcredits" input="$$2" output="&lt;url cache=&quot;$$2-credits.html&quot; function=&quot;GetMovieCast&quot;&gt;http://$INFO[url]/title/\1/&lt;/url&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
-			<RegExp conditional="fullcredits" input="$$2" output="&lt;url cache=&quot;$$2-credits.html&quot; function=&quot;GetMovieCast&quot;&gt;http://$INFO[url]/title/\1/fullcredits#cast&lt;/url&gt;" dest="5+">
+			<RegExp conditional="!fullcredits" input="$$2" output="&lt;url cache=&quot;$$2-credits.html&quot; function=&quot;GetMovieDirectors&quot;&gt;http://$INFO[url]/title/\1/&lt;/url&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
-			<RegExp input="$$2" output="&lt;url function=&quot;GetMovieDirectors&quot;&gt;http://$INFO[url]/title/\1/fullcredits#directors&lt;/url&gt;" dest="5+">
+			<RegExp conditional="!fullcredits" input="$$2" output="&lt;url cache=&quot;$$2-credits.html&quot; function=&quot;GetMovieWriters&quot;&gt;http://$INFO[url]/title/\1/&lt;/url&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
-			<RegExp input="$$2" output="&lt;url function=&quot;GetMovieWriters&quot;&gt;http://$INFO[url]/title/\1/fullcredits#writers&lt;/url&gt;" dest="5+">
+			<RegExp conditional="fullcredits" input="$$2" output="&lt;url cache=&quot;$$2-fullcredits.html&quot; function=&quot;GetMovieCast&quot;&gt;http://$INFO[url]/title/\1/fullcredits&lt;/url&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<RegExp conditional="fullcredits" input="$$2" output="&lt;url cache=&quot;$$2-fullcredits.html&quot; function=&quot;GetMovieDirectors&quot;&gt;http://$INFO[url]/title/\1/fullcredits&lt;/url&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<RegExp conditional="fullcredits" input="$$2" output="&lt;url cache=&quot;$$2-fullcredits.html&quot; function=&quot;GetMovieWriters&quot;&gt;http://$INFO[url]/title/\1/fullcredits&lt;/url&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
 			<RegExp conditional="impawards" input="$$2" output="&lt;url cache=&quot;$$2-posters.html&quot; function=&quot;GetIMPALink&quot;&gt;http://$INFO[url]/title/\1/posters&lt;/url&gt;" dest="5+">
@@ -148,7 +154,10 @@
 	</GetMovieCast>
 	<GetMovieDirectors clearbuffers="no" dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="\1" dest="6">
+			<RegExp conditional="!fullcredits" input="$$1" output="\1" dest="6">
+				<expression noclean="1">Director.*?&lt;/h5&gt;(.*?)&lt;/div&gt;</expression>
+			</RegExp>
+			<RegExp conditional="fullcredits" input="$$1" output="\1" dest="6">
 				<expression noclean="1">Directed by(.*?)name=&quot;writers&quot;</expression>
 			</RegExp>
 			<RegExp input="$$6" output="&lt;director&gt;\1&lt;/director&gt;" dest="2+">
@@ -159,7 +168,10 @@
 	</GetMovieDirectors>
 	<GetMovieWriters clearbuffers="no" dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="\1" dest="6">
+			<RegExp conditional="!fullcredits" input="$$1" output="\1" dest="6">
+				<expression noclean="1">Writers.*?:&lt;/h5&gt;(.*?)&lt;/div&gt;</expression>
+			</RegExp>
+			<RegExp conditional="fullcredits" input="$$1" output="\1" dest="6">
 				<expression noclean="1">Writing credits(.*?)name=&quot;cast&quot;</expression>
 			</RegExp>
 			<RegExp input="$$6" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="2+">
