@@ -189,7 +189,7 @@ void CMusicInfoLoader::LoadCache(const CStdString& strFileName, CFileItemList& i
 {
   CFile file;
 
-  if (file.Open(strFileName))
+  if (file.Open(_P(strFileName)))
   {
     CArchive ar(&file, CArchive::load);
     int iSize = 0;
@@ -215,7 +215,7 @@ void CMusicInfoLoader::SaveCache(const CStdString& strFileName, CFileItemList& i
 
   CFile file;
 
-  if (file.OpenForWrite(strFileName))
+  if (file.OpenForWrite(_P(strFileName)))
   {
     CArchive ar(&file, CArchive::store);
     ar << (int)items.Size();
