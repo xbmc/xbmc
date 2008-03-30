@@ -130,6 +130,7 @@ void CGUIDialogVideoSettings::OnSettingChanged(unsigned int num)
 #endif
   else if (setting.id == VIDEO_SETTINGS_BRIGHTNESS || setting.id == VIDEO_SETTINGS_CONTRAST || setting.id == VIDEO_SETTINGS_GAMMA)
     CUtil::SetBrightnessContrastGammaPercent(g_stSettings.m_currentVideoSettings.m_Brightness, g_stSettings.m_currentVideoSettings.m_Contrast, g_stSettings.m_currentVideoSettings.m_Gamma, true);
+#ifdef HAS_XBOX_HARDWARE
   else if (setting.id == VIDEO_SETTINGS_FLICKER || setting.id == VIDEO_SETTINGS_SOFTEN)
   {
     RESOLUTION res = g_graphicsContext.GetVideoResolution();
@@ -137,6 +138,7 @@ void CGUIDialogVideoSettings::OnSettingChanged(unsigned int num)
     g_guiSettings.SetBool("videoplayer.soften", m_soften);
     g_graphicsContext.SetVideoResolution(res);
   }
+#endif
   else if (setting.id == VIDEO_SETTINGS_CALIBRATION)
   {
     // launch calibration window
