@@ -735,25 +735,19 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
     m_dlgProgress->StartModal();
   }
 
-  try
-  {
-    CMusicInfoScanner scanner;
-    CStdString strPath;
-    strPath.Format("musicdb://3/%u/",m_musicdatabase.GetAlbumByName(strAlbum,strArtist));
-    if (!scanner.DownloadAlbumInfo(strPath,strArtist,strAlbum,m_dlgProgress))
-    { // no albums found
-        CGUIDialogOK::ShowAndGetInput(185, 0, 187, 0);
-        return false;
-    }
+  CMusicInfoScanner scanner;
+  CStdString strPath;
+  long idAlbum = m_musicdatabase.GetAlbumByName(strAlbum,strArtist);
+  strPath.Format("musicdb://3/%u/",idAlbum);
+  if (!scanner.DownloadAlbumInfo(strPath,strArtist,strAlbum,m_dlgProgress))
+  { // no albums found
+    CGUIDialogOK::ShowAndGetInput(185, 0, 187, 0);
+    return false;
   }
-  catch (...)
-  {
-    if (m_dlgProgress && m_dlgProgress->IsDialogRunning())
-      m_dlgProgress->Close();
 
-    CLog::Log(LOGERROR, "Exception while downloading album info");
-  }
-  return false;
+  m_musicdatabase.GetAlbumInfo(idAlbum,album.GetAlbum(),album.GetAlbum().songs);
+  album.SetLoaded(true);
+  return true;
 }
 
 bool CGUIWindowMusicBase::FindArtistInfo(const CStdString& strArtist, CMusicArtistInfo& artist, const SScraperInfo& info, ALLOW_SELECTION allowSelection)
@@ -773,12 +767,17 @@ bool CGUIWindowMusicBase::FindArtistInfo(const CStdString& strArtist, CMusicArti
 
   CMusicInfoScanner scanner;
   CStdString strPath;
-  strPath.Format("musicdb://2/%u/",m_musicdatabase.GetArtistByName(strArtist));
+  long idArtist = m_musicdatabase.GetArtistByName(strArtist);
+  strPath.Format("musicdb://2/%u/",idArtist);
   if (!scanner.DownloadArtistInfo(strPath,strArtist,m_dlgProgress))
   { // no albums found
     CGUIDialogOK::ShowAndGetInput(21889, 0, 20198, 0);
     return false;
   }
+
+  m_musicdatabase.GetArtistInfo(idArtist,artist.GetArtist());
+  artist.SetLoaded(true);
+  return true;
 }
 
 void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &buttons)

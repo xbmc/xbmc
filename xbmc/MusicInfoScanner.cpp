@@ -704,11 +704,6 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
   DIRECTORY::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(strPath, params);
   m_musicDatabase.Open();
   m_musicDatabase.GetAlbumInfo(params.GetAlbumId(),album,songs);
-  if (!album.strArtist.IsEmpty()) // already got info
-  {
-    m_musicDatabase.Close();
-    return true;
-  }
 
   // find album info
   SScraperInfo info;
@@ -888,11 +883,6 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
   CArtist artist;
   m_musicDatabase.Open();
   m_musicDatabase.GetArtistInfo(params.GetArtistId(),artist);
-  if (!artist.strArtist.IsEmpty()) // already got info
-  {
-    m_musicDatabase.Close();
-    return true;
-  }
 
   // find artist info
   SScraperInfo info;
