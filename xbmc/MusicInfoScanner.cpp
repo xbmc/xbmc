@@ -871,7 +871,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
       }
     }
     else
-      CLog::Log(LOGERROR,"Unable to find an imdb url in nfo file: %s", strNfo.c_str());
+      CLog::Log(LOGERROR,"Unable to find an url in nfo file: %s", strNfo.c_str());
   }
 
   if (!scraper.GetArtistCount())
