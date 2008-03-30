@@ -38,7 +38,7 @@ using namespace MUSICDATABASEDIRECTORY;
 using namespace MEDIA_DETECT;
 
 #define MUSIC_DATABASE_OLD_VERSION 1.6f
-#define MUSIC_DATABASE_VERSION        11
+#define MUSIC_DATABASE_VERSION        8
 #define MUSIC_DATABASE_NAME "MyMusic7.db"
 #define RECENTLY_ADDED_LIMIT  25
 #define RECENTLY_PLAYED_LIMIT 25
@@ -84,7 +84,7 @@ bool CMusicDatabase::CreateTables()
     CLog::Log(LOGINFO, "create artistnfo table");
     m_pDS->exec("CREATE TABLE artistinfo ( idArtistInfo integer primary key, idArtist integer, strBorn text, strFormed text, strGenres text, strMoods text, strStyles text, strInstruments text, strBiography text, strDied text, strDisbanded text, strYearsActive text, strImage text)\n");
     CLog::Log(LOGINFO, "create content table");
-    m_pDS->exec("CREATE TABLE content (strPath text, strScraperPath text, strContent text)\n");
+    m_pDS->exec("CREATE TABLE content (strPath text, strScraperPath text, strContent text, strSettings text)\n");
     CLog::Log(LOGINFO, "create discography table");
     m_pDS->exec("CREATE TABLE discography (idArtist integer, strAlbum text, strYear text)\n");
 
@@ -2969,24 +2969,14 @@ bool CMusicDatabase::UpdateOldVersion(int version)
     {
       // create the artistinfo table  
       m_pDS->exec("CREATE TABLE artistinfo ( idArtistInfo integer primary key, idArtist integer, strBorn text, strFormed text, strGenres text, strMoods text, strStyles text, strInstruments text, strBiography text, strDied text, strDisbanded text, strYearsActive text, strImage text)\n");
-    }
-    if (version < 9) // TODO: Merge with v8
-    {
       CLog::Log(LOGINFO, "create content table");
-      m_pDS->exec("CREATE TABLE content (strPath text, strScraperPath text, strContent text)\n");
-    }
-    if (version < 10) // TODO: Merge with v8
-    {
+      m_pDS->exec("CREATE TABLE content (strPath text, strScraperPath text, strContent text, strSettings text)\n");
       CLog::Log(LOGINFO, "create discography table");
       m_pDS->exec("CREATE TABLE discography (idArtist integer, strAlbum text, strYear text)\n");
-    }
-    if (version < 11) // TODO: Merge with v8
-    {
       CLog::Log(LOGINFO, "create new albuminfo table");
       m_pDS->exec("DROP TABLE albuminfo\n");
       m_pDS->exec("CREATE TABLE albuminfo ( idAlbumInfo integer primary key, idAlbum integer, iYear integer, idGenre integer, strExtraGenres text, strMoods text, strStyles text, strThemes text, strReview text, strLabel text, strType text, strImage text, iRating integer)\n");
     }
-
     return true;
   }
   catch (...)
@@ -3765,7 +3755,7 @@ bool CMusicDatabase::SetScraperForPath(const CStdString& strPath, const SScraper
     m_pDS->exec(strSQL.c_str());
 
     // insert new settings
-    strSQL = FormatSQL("insert into content (strPath, strScraperPath, strContent) values ('%s','%s','%s')",strPath.c_str(),info.strPath.c_str(),info.strContent.c_str());
+    strSQL = FormatSQL("insert into content (strPath, strScraperPath, strContent, strSettings) values ('%s','%s','%s')",strPath.c_str(),info.strPath.c_str(),info.strContent.c_str(),info.settings.GetSettings().c_str());
     m_pDS->exec(strSQL.c_str());
 
     return true;
@@ -3821,6 +3811,7 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
     {
       info.strContent = m_pDS->fv("content.strContent").get_asString();
       info.strPath = m_pDS->fv("content.strScraperPath").get_asString();
+      info.settings.LoadUserXML(m_pDS->fv("content.strSettings").get_asString());
     }
     if (info.strPath.IsEmpty()) // default fallback
     {

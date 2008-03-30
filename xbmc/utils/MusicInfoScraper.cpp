@@ -68,6 +68,12 @@ void CMusicInfoScraper::FindAlbuminfo()
   if (!parser.Load("q:\\system\\scrapers\\music\\"+m_info.strPath))
     return;
 
+  if (!m_info.settings.GetPluginRoot() || m_info.settings.GetSettings().IsEmpty())
+  {
+    m_info.settings.LoadSettingsXML("q:\\system\\scrapers\\music\\"+m_info.strPath);
+    m_info.settings.SaveFromDefault();
+  }
+
   parser.m_param[0] = strAlbum;
   parser.m_param[1] = m_strArtist;
   CUtil::URLEncode(parser.m_param[0]);
@@ -82,7 +88,7 @@ void CMusicInfoScraper::FindAlbuminfo()
   }
 
   parser.m_param[0] = strHTML;
-  CStdString strXML = parser.Parse("GetAlbumSearchResults");
+  CStdString strXML = parser.Parse("GetAlbumSearchResults",&m_info.settings);
   if (strXML.IsEmpty())
   {
     CLog::Log(LOGERROR, "%s: Unable to parse web site",__FUNCTION__);
@@ -160,11 +166,17 @@ void CMusicInfoScraper::FindArtistinfo()
   if (!parser.Load("q:\\system\\scrapers\\music\\"+m_info.strPath))
     return;
 
+  if (!m_info.settings.GetPluginRoot() || m_info.settings.GetSettings().IsEmpty())
+  {
+    m_info.settings.LoadSettingsXML("q:\\system\\scrapers\\music\\"+m_info.strPath);
+    m_info.settings.SaveFromDefault();
+  }
+
   parser.m_param[0] = m_strArtist;
   CUtil::URLEncode(parser.m_param[0]);
 
   CScraperUrl scrURL;
-  scrURL.ParseString(parser.Parse("CreateArtistSearchUrl"));
+  scrURL.ParseString(parser.Parse("CreateArtistSearchUrl",&m_info.settings));
   if (!CScraperUrl::Get(scrURL.m_url[0], strHTML, m_http) || strHTML.size() == 0)
   {
     CLog::Log(LOGERROR, "%s: Unable to retrieve web site",__FUNCTION__);
@@ -172,7 +184,7 @@ void CMusicInfoScraper::FindArtistinfo()
   }
 
   parser.m_param[0] = strHTML;
-  CStdString strXML = parser.Parse("GetArtistSearchResults");
+  CStdString strXML = parser.Parse("GetArtistSearchResults",&m_info.settings);
   if (strXML.IsEmpty())
   {
     CLog::Log(LOGERROR, "%s: Unable to parse web site",__FUNCTION__);
