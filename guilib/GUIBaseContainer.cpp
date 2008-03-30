@@ -164,6 +164,21 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
       for (unsigned int i = 0; i < m_items.size(); ++i)
         m_items[i]->SetInvalid();
     }
+    else if (message.GetMessage() == GUI_MSG_MOVE_OFFSET)
+    {
+      int count = (int)message.GetParam1();
+      while (count < 0)
+      {
+        MoveUp(true);
+        count++;
+      }
+      while (count > 0)
+      {
+        MoveDown(true);
+        count--;
+      }
+      return true;
+    }
   }
   return CGUIControl::OnMessage(message);
 }
@@ -730,4 +745,5 @@ unsigned int CGUIBaseContainer::GetCurrentPage() const
     return GetNumPages();
   return page;
 }
+
 

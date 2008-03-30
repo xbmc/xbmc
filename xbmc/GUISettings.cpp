@@ -474,12 +474,13 @@ CGUISettings::CGUISettings(void)
   AddString(3, "network.subnet", 720, "255.255.255.0", BUTTON_CONTROL_IP_INPUT);
   AddString(4, "network.gateway", 721, "0.0.0.0", BUTTON_CONTROL_IP_INPUT);
   AddString(5, "network.dns", 722, "0.0.0.0", BUTTON_CONTROL_IP_INPUT);
-  AddSeparator(6, "network.sep1");
-  AddBool(7, "network.usehttpproxy", 708, false);
-  AddString(8, "network.httpproxyserver", 706, "", BUTTON_CONTROL_IP_INPUT);
-  AddString(9, "network.httpproxyport", 707, "8080", BUTTON_CONTROL_INPUT, false, 707);
-  AddSeparator(10, "network.sep2");
-  AddBool(11, "network.enableinternet", 14054, true);
+  AddString(6, "network.dnssuffix", 22002, "", BUTTON_CONTROL_INPUT);
+  AddSeparator(7, "network.sep1");
+  AddBool(8, "network.usehttpproxy", 708, false);
+  AddString(9, "network.httpproxyserver", 706, "", BUTTON_CONTROL_IP_INPUT);
+  AddString(10, "network.httpproxyport", 707, "8080", BUTTON_CONTROL_INPUT, false, 707);
+  AddSeparator(11, "network.sep2");
+  AddBool(12, "network.enableinternet", 14054, true);
   // hidden proxy authentication details
   AddString(0, "network.httpproxyusername", 706, "", BUTTON_CONTROL_INPUT);
   AddString(0, "network.httpproxypassword", 706, "", BUTTON_CONTROL_INPUT);
