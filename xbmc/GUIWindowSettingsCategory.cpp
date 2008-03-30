@@ -3135,7 +3135,7 @@ void CGUIWindowSettingsCategory::FillInMusicScrapers(CGUISpinControlEx *pControl
     CScraperParser parser;
     if (parser.Load(items[i]->m_strPath))
     {
-      if (parser.GetName().Equals(strSelected))
+      if (parser.GetName().Equals(strSelected)|| CUtil::GetFileName(items[i]->m_strPath).Equals(strSelected))
       {
         g_stSettings.m_defaultMusicScraper = CUtil::GetFileName(items[i]->m_strPath);
         k = j;
