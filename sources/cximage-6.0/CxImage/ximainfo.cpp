@@ -4,7 +4,7 @@
  */
 
 #include "ximage.h"
-#ifdef _LINUX
+#if defined(_LINUX) || defined(__APPLE__)
 #define _tcsnicmp(a,b,c) strcasecmp(a, b)
 #endif
 

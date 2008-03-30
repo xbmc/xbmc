@@ -2,7 +2,7 @@
 #include "ximage.h"
 #include "ximajpg.h"
 
-#ifdef _LINUX
+#if defined(_LINUX) || defined(__APPLE__)
 #include <unistd.h>
 #include <sys/stat.h>
 #include <errno.h>
@@ -29,7 +29,7 @@ extern "C" struct ImageInfo
   BYTE *alpha;
 };
 
-#ifdef _LINUX
+#if defined(_LINUX) || defined(__APPLE__)
 static void DeleteFile(const char* name)
 {
   unlink(name);
@@ -236,7 +236,7 @@ bool SaveThumb(CxImage &image, const char *file, const char *thumb, int maxWidth
 #undef LoadImage
 #endif
 
-#ifdef _LINUX
+#if defined(_LINUX) || defined(__APPLE__)
 #define __declspec(x) 
 #endif
 
@@ -289,7 +289,7 @@ extern "C"
     {
       if (!image->Load(file, dwImageType, actualwidth, actualheight) || !image->IsValid())
       {
-#ifndef _LINUX
+#if !defined(_LINUX) && !defined(__APPLE__)
 	    int nErr = GetLastError();
 #else
 	    int nErr = errno;

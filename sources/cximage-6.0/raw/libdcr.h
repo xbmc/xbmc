@@ -39,7 +39,7 @@
 #include <setjmp.h>
 #include <sys/types.h>
 #endif
-#ifdef _LINUX
+#if defined(_LINUX) || defined(__APPLE__)
 #include <setjmp.h>
 #include <sys/types.h>
 #endif
