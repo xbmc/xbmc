@@ -26,7 +26,7 @@
 				<width>630</width>
 				<posx>50</posx>
 				<posy>50</posy>
-				<label>Audio | $INFO[musicplayer.Codec,Codec: ,]$INFO[musicplayer.Bitrate, - Bitrate: ,kbps]$INFO[musicplayer.bitspersample, - Bits:,bit]$INFO[musicplayer.Samplerate, - Freq.: ,kHz]$INFO[musicplayer.Channels, - Channels: ]</label>
+				<label>$LOCALIZE[445] | $INFO[musicplayer.Codec,Codec: ,]$INFO[musicplayer.Bitrate, - Bitrate: ,kbps]$INFO[musicplayer.bitspersample, - Bits:,bit]$INFO[musicplayer.Samplerate, - Freq.: ,kHz]$INFO[musicplayer.Channels, - Channels: ]</label>
 				<align>left</align>
 				<font>font12</font>
 			</control>
@@ -118,7 +118,7 @@
 				<width>420</width>
 				<posx>160</posx>
 				<posy>60</posy>
-				<label>$INFO[MusicPlayer.Album]$INFO[musicplayer.discnumber, - $LOCALIZE[427]]</label>
+				<label>$INFO[MusicPlayer.Album]$INFO[musicplayer.discnumber, - $LOCALIZE[427]]$INFO[musicplayer.year, - (,)]</label>
 				<align>left</align>
 				<font>font10</font>
 				<scroll>true</scroll>

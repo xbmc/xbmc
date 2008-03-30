@@ -165,8 +165,10 @@ cmyth_connect(char *server, unsigned short port, unsigned buflen,
 	struct sockaddr_in addr;
 	unsigned char *buf = NULL;
 	cmyth_socket_t fd;
+#ifndef _MSC_VER
 	void (*old_sighandler)(int);
 	int old_alarm;
+#endif
 	int temp;
 	socklen_t size;
 

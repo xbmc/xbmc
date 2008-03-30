@@ -22,7 +22,7 @@ public:
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void Render();
-  virtual void SetAspectRatio(GUIIMAGE_ASPECT_RATIO ratio, DWORD align = ASPECT_ALIGN_CENTER | ASPECT_ALIGNY_CENTER);
+  virtual void SetAspectRatio(const CAspectRatio &aspect);
 
 protected:
   virtual void SetFileName(const CStdString &strFileName);

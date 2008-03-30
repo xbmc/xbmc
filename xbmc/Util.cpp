@@ -673,6 +673,22 @@ void CUtil::CleanFileName(CStdString& strFileName)
   //CLog::Log(LOGNOTICE, "CleanFileName : 9 : " + strFileName);
 }
 
+void CUtil::GetCommonPath(CStdString& strParent, const CStdString& strPath)
+{
+  // find the common path of parent and path
+  unsigned int j = 1;
+  while (j <= min(strParent.size(), strPath.size()) && strnicmp(strParent.c_str(), strPath.c_str(), j) == 0)
+    j++;
+  strParent = strParent.Left(j - 1);
+  // they should at least share a / at the end, though for things such as path/cd1 and path/cd2 there won't be
+  if (!CUtil::HasSlashAtEnd(strParent))
+  {
+    // currently GetDirectory() removes trailing slashes
+    CUtil::GetDirectory(strParent.Mid(0), strParent);
+    CUtil::AddSlashAtEnd(strParent);
+  }
+}
+
 bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
 {
   strParent = "";
@@ -686,9 +702,25 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
   }
   else if (url.GetProtocol() == "stack")
   {
-    // TODO: get the first parent path common to all stack items
     CStackDirectory dir;
-    return GetParentPath(dir.GetFirstStackedFile(strPath), strParent);
+    CFileItemList items;
+    dir.GetDirectory(strPath,items);
+    CUtil::GetDirectory(items[0]->m_strPath,items[0]->m_strDVDLabel);
+    if (items[0]->m_strDVDLabel.Mid(0,6).Equals("rar://") || items[0]->m_strDVDLabel.Mid(0,6).Equals("zip://"))
+      GetParentPath(items[0]->m_strDVDLabel, strParent);
+    else
+      strParent = items[0]->m_strDVDLabel;
+    for( int i=1;i<items.Size();++i)
+    {
+      CUtil::GetDirectory(items[i]->m_strPath,items[i]->m_strDVDLabel);
+      if (items[0]->m_strDVDLabel.Mid(0,6).Equals("rar://") || items[0]->m_strDVDLabel.Mid(0,6).Equals("zip://"))
+        GetParentPath(items[i]->m_strDVDLabel, items[i]->m_strPath);
+      else
+        items[i]->m_strPath = items[i]->m_strDVDLabel;
+
+      GetCommonPath(strParent,items[i]->m_strPath);
+    }
+    return true;
   }
   else if (url.GetProtocol() == "multipath")
   {
@@ -3600,6 +3632,7 @@ const BUILT_IN commands[] = {
   { "Container.NextSortMethod",   false,  "Change to the next sort method" },
   { "Container.PreviousSortMethod",false, "Change to the previous sort method" },
   { "Container.SetSortMethod",    true,   "Change to the specified sort method" },
+  { "Control.Move",               true,   "Tells the specified control to 'move' to another entry specified by offset" },
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -4031,7 +4064,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     {
       if( g_application.IsPlaying() && g_application.m_pPlayer && g_application.m_pPlayer->CanRecord())
       {
-        if (m_pXbmcHttp)
+        if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
           g_application.getApplicationMessenger().HttpApi(g_application.m_pPlayer->IsRecording()?"broadcastlevel; RecordStopping;1":"broadcastlevel; RecordStarting;1");
         g_application.m_pPlayer->Record(!g_application.m_pPlayer->IsRecording());
       }
@@ -4517,39 +4550,49 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     CLastFmManager::GetInstance()->Ban(parameter.Equals("false") ? false : true);
   }
-  else if (execute.Equals("container.refresh"))
+  else if (execute.Equals("control.move"))
   {
-    CGUIMessage message(GUI_MSG_NOTIFY_ALL, m_gWindowManager.GetFocusedWindow(), 0, GUI_MSG_UPDATE);
+    CStdStringArray arSplit; 
+    StringUtils::SplitString(parameter,",", arSplit);
+    if (arSplit.size() < 2)
+      return -1;
+    CGUIMessage message(GUI_MSG_MOVE_OFFSET, m_gWindowManager.GetFocusedWindow(), atoi(arSplit[0].c_str()), atoi(arSplit[1].c_str()));
+    g_graphicsContext.SendMessage(message);
+  }
+  else if (execute.Equals("container.refresh"))
+  { // NOTE: These messages require a media window, thus they're sent to the current activewindow.
+    //       This shouldn't stop a dialog intercepting it though.
+    CGUIMessage message(GUI_MSG_NOTIFY_ALL, m_gWindowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE);
     g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("container.nextviewmode"))
   {
-    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetFocusedWindow(), 0, 0, 1);
+    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetActiveWindow(), 0, 0, 1);
     g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("container.previousviewmode"))
   {
-    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetFocusedWindow(), 0, 0, -1);
+    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetActiveWindow(), 0, 0, -1);
     g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("container.setviewmode"))
   {
-    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetFocusedWindow(), 0, atoi(parameter.c_str()));
+    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetActiveWindow(), 0, atoi(parameter.c_str()));
     g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("container.nextsortmethod"))
   {
-    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetFocusedWindow(), 0, 0, 1);
+    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetActiveWindow(), 0, 0, 1);
     g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("container.previoussortmethod"))
   {
-    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetFocusedWindow(), 0, 0, -1);
+    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetActiveWindow(), 0, 0, -1);
     g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("container.setsortmethod"))
   {
-    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetFocusedWindow(), 0, atoi(parameter.c_str()));
+    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetActiveWindow(), 0, atoi(parameter.c_str()));
     g_graphicsContext.SendMessage(message);
   }
   else

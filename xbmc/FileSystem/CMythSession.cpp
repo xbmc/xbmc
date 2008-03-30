@@ -10,6 +10,14 @@ extern "C" {
 using namespace XFILE;
 using namespace std;
 
+#ifndef PRId64
+#ifdef _MSC_VER
+#define PRId64 "I64d"
+#else
+#define PRId64 "lld"
+#endif
+#endif
+
 CCriticalSection            CCMythSession::m_section_session;
 std::vector<CCMythSession*> CCMythSession::m_sessions;
 
@@ -92,7 +100,7 @@ bool CCMythSession::UpdateItem(CFileItem &item, cmyth_proginfo_t info)
   tag->m_strPlot        = GetValue(m_dll->proginfo_description(info));
   tag->m_strGenre       = GetValue(m_dll->proginfo_category(info));
 
-  if(tag->m_strPlot != tag->m_strPlotOutline && !tag->m_strPlotOutline.IsEmpty())
+  if(tag->m_strPlot.Left(tag->m_strPlotOutline.length()) != tag->m_strPlotOutline && !tag->m_strPlotOutline.IsEmpty())
       tag->m_strPlot = tag->m_strPlotOutline + '\n' + tag->m_strPlot;
 
   tag->m_strOriginalTitle = tag->m_strShowTitle;
@@ -179,6 +187,8 @@ CCMythSession::CCMythSession(const CURL& url)
 CCMythSession::~CCMythSession()
 {
   Disconnect();
+  if(m_dll)
+    delete m_dll;
 }
 
 bool CCMythSession::CanSupport(const CURL& url)

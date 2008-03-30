@@ -284,6 +284,9 @@
 				RelativePath=".\GUIIncludes.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIInfoColor.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIItem.cpp">
 			</File>
 			<File
@@ -518,6 +521,9 @@
 			</File>
 			<File
 				RelativePath=".\GUIIncludes.h">
+			</File>
+			<File
+				RelativePath=".\GUIInfoColor.h">
 			</File>
 			<File
 				RelativePath=".\GUIItem.h">

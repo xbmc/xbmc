@@ -377,7 +377,7 @@ CStdString CGUISliderControl::GetDescription() const
   return description;
 }
 
-void CGUISliderControl::SetColorDiffuse(D3DCOLOR color)
+void CGUISliderControl::SetColorDiffuse(const CGUIInfoColor &color)
 {
   CGUIControl::SetColorDiffuse(color);
   m_guiBackground.SetColorDiffuse(color);

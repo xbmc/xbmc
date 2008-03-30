@@ -15,6 +15,7 @@
 
 //  Forward
 class CGUIListItemLayout;
+class CArchive;
 
 /*!
  \ingroup controls
@@ -81,6 +82,7 @@ public:
   void SetProperty(const CStdString &strKey, bool bVal);
   void SetProperty(const CStdString &strKey, double dVal);
 
+  void Serialize(CArchive& ar);
   bool       HasProperty(const CStdString &strKey) const;
   void       ClearProperty(const CStdString &strKey);
 

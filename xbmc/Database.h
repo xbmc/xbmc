@@ -9,7 +9,7 @@ public:
   bool Open();
   bool IsOpen();
   void Close();
-  bool Compress();
+  bool Compress(bool bForce=true);
   void Interupt();
 
   void BeginTransaction();
@@ -23,6 +23,7 @@ protected:
   DWORD ComputeCRC(const CStdString &text);
 
   virtual bool CreateTables();
+  virtual bool UpdateOldVersion(int version);
 
   bool m_bOpen;
   int m_version;
@@ -35,7 +36,6 @@ protected:
   std::auto_ptr<dbiplus::Dataset> m_pDS2;
 
 private:
-  virtual bool UpdateOldVersion(int version);
   bool UpdateVersionNumber();
 
   int m_iRefCount;

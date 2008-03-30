@@ -23,6 +23,7 @@ namespace VIDEO
     virtual void OnDirectoryScanned(const CStdString& strDirectory) = 0;
     virtual void OnSetProgress(int currentItem, int itemCount)=0;
     virtual void OnSetCurrentProgress(int currentItem, int itemCount)=0;
+    virtual void OnSetTitle(const CStdString& strTitle) = 0;
     virtual void OnFinished() = 0;
   };
 
@@ -38,7 +39,7 @@ namespace VIDEO
 
     void EnumerateSeriesFolder(const CFileItem* item, IMDB_EPISODELIST& episodeList);
     long AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, const CVideoInfoTag &movieDetails, long idShow, bool bApplyToDir=false, CGUIDialogProgress* pDialog = NULL);
-    void OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, IMDB_EPISODELIST& files, long lShowId, CIMDB& IMDB, CGUIDialogProgress* pDlgProgress = NULL);
+    void OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, IMDB_EPISODELIST& files, long lShowId, CIMDB& IMDB, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress = NULL);
     static CStdString GetnfoFile(CFileItem *item, bool bGrabAny=false);
     long GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const SScraperInfo& info, bool bUseDirNames=false, CGUIDialogProgress* pDialog=NULL);
     bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, bool bRefresh=false, CScraperUrl *pURL=NULL, CGUIDialogProgress* m_dlgProgress  = NULL);
@@ -66,6 +67,7 @@ namespace VIDEO
     SScraperInfo m_info;
     std::map<CStdString,SScanSettings> m_pathsToScan;
     std::set<CStdString> m_pathsToCount;
+    std::vector<long> m_pathsToClean;
   };
 }
 
