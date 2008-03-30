@@ -119,10 +119,10 @@ namespace PYXBMC
       PyGetDefaultImage("radiobutton", "textureradionofocus", "radiobutton-nofocus.jpg");
 
     if (cFont) self->strFont = cFont;
-    if (cTextColor) sscanf( cTextColor, "%x", &self->dwTextColor );
-    if (cDisabledColor) sscanf( cDisabledColor, "%x", &self->dwDisabledColor );
-    if (cShadowColor) sscanf( cShadowColor, "%x", &self->dwShadowColor );
-    if (cFocusedColor) sscanf( cFocusedColor, "%x", &self->dwFocusedColor );
+    if (cTextColor) sscanf( cTextColor, "%lx", &self->dwTextColor );
+    if (cDisabledColor) sscanf( cDisabledColor, "%lx", &self->dwDisabledColor );
+    if (cShadowColor) sscanf( cShadowColor, "%lx", &self->dwShadowColor );
+    if (cFocusedColor) sscanf( cFocusedColor, "%lx", &self->dwFocusedColor );
     return (PyObject*)self;
   }
 
@@ -202,7 +202,7 @@ namespace PYXBMC
 
     PyGUILock();
     if (self->pGUIControl)
-      ((CGUIRadioButtonControl*)self->pGUIControl)->PythonSetSelected(selected);
+      ((CGUIRadioButtonControl*)self->pGUIControl)->SetSelected(selected);
     PyGUIUnlock();
 
     Py_INCREF(Py_None);
@@ -283,10 +283,10 @@ namespace PYXBMC
     }
 
     if (cFont) self->strFont = cFont;
-    if (cTextColor) sscanf(cTextColor, "%x", &self->dwTextColor);
-    if (cDisabledColor) sscanf( cDisabledColor, "%x", &self->dwDisabledColor );
-    if (cShadowColor) sscanf(cShadowColor, "%x", &self->dwShadowColor);
-    if (cFocusedColor) sscanf(cFocusedColor, "%x", &self->dwFocusedColor);
+    if (cTextColor) sscanf(cTextColor, "%lx", &self->dwTextColor);
+    if (cDisabledColor) sscanf( cDisabledColor, "%lx", &self->dwDisabledColor );
+    if (cShadowColor) sscanf(cShadowColor, "%lx", &self->dwShadowColor);
+    if (cFocusedColor) sscanf(cFocusedColor, "%lx", &self->dwFocusedColor);
 
     PyGUILock();
     if (self->pGUIControl)

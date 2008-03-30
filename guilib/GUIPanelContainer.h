@@ -20,7 +20,7 @@ public:
                          const CImage& imageNoFocus, const CImage& imageFocus,
                          float itemWidth, float itemHeight,
                          float textureWidth, float textureHeight,
-                         float thumbPosX, float thumbPosY, float thumbWidth, float thumbHeight, DWORD thumbAlign, CGUIImage::GUIIMAGE_ASPECT_RATIO thumbAspect,
+                         float thumbPosX, float thumbPosY, float thumbWidth, float thumbHeight, DWORD thumbAlign, const CGUIImage::CAspectRatio &thumbAspect,
                          const CLabelInfo& labelInfo, bool hideLabels,
                          CGUIControl *pSpin, CGUIControl *pPanel);
   CGUIControl *m_spinControl;

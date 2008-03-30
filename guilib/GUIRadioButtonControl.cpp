@@ -15,8 +15,8 @@ CGUIRadioButtonControl::CGUIRadioButtonControl(DWORD dwParentID, DWORD dwControl
   m_radioPosX = 0;
   m_radioPosY = 0;
   m_toggleSelect = 0;
-  m_imgRadioFocus.SetAspectRatio(CGUIImage::ASPECT_RATIO_KEEP);
-  m_imgRadioNoFocus.SetAspectRatio(CGUIImage::ASPECT_RATIO_KEEP);
+  m_imgRadioFocus.SetAspectRatio(CGUIImage::CAspectRatio::AR_KEEP);
+  m_imgRadioNoFocus.SetAspectRatio(CGUIImage::CAspectRatio::AR_KEEP);
   ControlType = GUICONTROL_RADIO;
 }
 
@@ -136,28 +136,10 @@ CStdString CGUIRadioButtonControl::GetDescription() const
   return strLabel;
 }
 
-void CGUIRadioButtonControl::SetColorDiffuse(D3DCOLOR color)
+void CGUIRadioButtonControl::SetColorDiffuse(const CGUIInfoColor &color)
 {
   CGUIButtonControl::SetColorDiffuse(color);
   m_imgRadioFocus.SetColorDiffuse(color);
   m_imgRadioNoFocus.SetColorDiffuse(color);
 }
 
-void CGUIRadioButtonControl::PythonSetSelected(bool bOnOff)
-{
-  m_bSelected = bOnOff;
-}
-
-void CGUIRadioButtonControl::PythonSetLabel(const CStdString &strFont, const std::string &strText, DWORD dwTextColor, DWORD dwShadowColor, DWORD dwFocusedColor)
-{
-  m_label.font = g_fontManager.GetFont(strFont);
-  m_label.textColor = dwTextColor;
-  m_label.focusedColor = dwFocusedColor;
-  m_label.shadowColor = dwShadowColor;
-  m_info.SetLabel(strText, "");
-}
-
-void CGUIRadioButtonControl::PythonSetDisabledColor(DWORD dwDisabledColor)
-{
-  m_label.disabledColor = dwDisabledColor;
-}

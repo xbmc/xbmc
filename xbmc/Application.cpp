@@ -116,6 +116,9 @@
 #ifdef HAS_XFONT
 #include <xfont.h>  // for textout functions
 #endif
+#ifdef HAS_EVENT_SERVER
+#include "utils/EventServer.h"
+#endif
 
 // Windows includes
 #include "GUIWindowHome.h"
@@ -1545,6 +1548,7 @@ HRESULT CApplication::Initialize()
 #endif
   CreateDirectory(g_settings.GetPicturesThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetProfilesThumbFolder().c_str(),NULL);
+  CreateDirectory(g_settings.GetVideoFanartFolder().c_str(),NULL);
   CLog::Log(LOGINFO, "  thumbnails folder:%s", g_settings.GetThumbnailsFolder().c_str());
   for (unsigned int hex=0; hex < 16; hex++)
   {
@@ -1852,7 +1856,7 @@ void CApplication::StartWebServer()
     m_pWebServer = new CWebServer();
     m_pWebServer->Start(m_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), _P("Q:\\web"), false);
 #endif
-    if (m_pXbmcHttp)
+    if (m_pWebServer && m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
       getApplicationMessenger().HttpApi("broadcastlevel; StartUp;1");
   }
 #endif
@@ -3004,7 +3008,7 @@ bool CApplication::OnAction(const CAction &action)
 {
 #ifdef HAS_WEB_SERVER    
   // Let's tell the outside world about this action
-  if (m_pXbmcHttp)
+  if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=2)
   {
     CStdString tmp;
     tmp.Format("%i",action.wID);
@@ -3766,37 +3770,38 @@ bool CApplication::ProcessMouse()
 }
 
 void  CApplication::CheckForTitleChange()
-{
-  if (IsPlayingVideo())
-  {
-    const CVideoInfoTag* tagVal = g_infoManager.GetCurrentMovieTag();
-    if (m_pXbmcHttp && tagVal && !(tagVal->m_strTitle.IsEmpty()))
+{ 
+  if (g_stSettings.m_HttpApiBroadcastLevel>=1)
+    if (IsPlayingVideo())
     {
-      CStdString msg=m_pXbmcHttp->GetOpenTag()+"MovieTitle:"+tagVal->m_strTitle+m_pXbmcHttp->GetCloseTag();
-      if (m_prevMedia!=msg)
+      const CVideoInfoTag* tagVal = g_infoManager.GetCurrentMovieTag();
+      if (m_pXbmcHttp && tagVal && !(tagVal->m_strTitle.IsEmpty()))
       {
-        getApplicationMessenger().HttpApi("broadcastlevel; MediaChanged:"+msg+";1");
-        m_prevMedia=msg;
+        CStdString msg=m_pXbmcHttp->GetOpenTag()+"MovieTitle:"+tagVal->m_strTitle+m_pXbmcHttp->GetCloseTag();
+        if (m_prevMedia!=msg && g_stSettings.m_HttpApiBroadcastLevel>=1)
+        {
+          getApplicationMessenger().HttpApi("broadcastlevel; MediaChanged:"+msg+";1");
+          m_prevMedia=msg;
+        }
       }
     }
-  }
-  else if (IsPlayingAudio())
-  {
-    const CMusicInfoTag* tagVal=g_infoManager.GetCurrentSongTag();
-    if (m_pXbmcHttp && tagVal)
+    else if (IsPlayingAudio())
     {
-      CStdString msg="";
-      if (!tagVal->GetTitle().IsEmpty())
+      const CMusicInfoTag* tagVal=g_infoManager.GetCurrentSongTag();
+      if (m_pXbmcHttp && tagVal)
+	  {
+	    CStdString msg="";
+	    if (!tagVal->GetTitle().IsEmpty())
         msg=m_pXbmcHttp->GetOpenTag()+"AudioTitle:"+tagVal->GetTitle()+m_pXbmcHttp->GetCloseTag();
-      if (!tagVal->GetArtist().IsEmpty())
+	    if (!tagVal->GetArtist().IsEmpty())
         msg+=m_pXbmcHttp->GetOpenTag()+"AudioArtist:"+tagVal->GetArtist()+m_pXbmcHttp->GetCloseTag();
-      if (m_prevMedia!=msg)
-      {
+	    if (m_prevMedia!=msg)
+	    {
         getApplicationMessenger().HttpApi("broadcastlevel; MediaChanged:"+msg+";1");
-        m_prevMedia=msg;
+	      m_prevMedia=msg;
+	    }
       }
     }
-  }
 }
 
 
@@ -3967,6 +3972,14 @@ HRESULT CApplication::Cleanup()
 {
   try
   {
+    if (m_pXbmcHttp)
+    {
+	  if(g_stSettings.m_HttpApiBroadcastLevel>=1)
+	    getApplicationMessenger().HttpApi("broadcastlevel; ShutDown;1");
+	  m_pXbmcHttp->shuttingDown=true;
+     //Sleep(100);
+    }
+
     m_gWindowManager.Delete(WINDOW_MUSIC_PLAYLIST);
     m_gWindowManager.Delete(WINDOW_MUSIC_PLAYLIST_EDITOR);
     m_gWindowManager.Delete(WINDOW_MUSIC_FILES);
@@ -4585,7 +4598,7 @@ void CApplication::OnPlayBackEnded()
 
 #ifdef HAS_WEB_SERVER      
   // Let's tell the outside world as well
-  if (m_pXbmcHttp)
+  if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackEnded;1");
 #endif
 
@@ -4612,7 +4625,7 @@ void CApplication::OnPlayBackStarted()
 
 #ifdef HAS_WEB_SERVER      
   // Let's tell the outside world as well
-  if (m_pXbmcHttp)
+  if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStarted;1");
 #endif
 
@@ -4639,7 +4652,7 @@ void CApplication::OnQueueNextItem()
 
 #ifdef HAS_WEB_SERVER      
   // Let's tell the outside world as well
-  if (m_pXbmcHttp)
+  if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnQueueNextItem;1");
 #endif
   CLog::Log(LOGDEBUG, "Player has asked for the next item");
@@ -4658,7 +4671,7 @@ void CApplication::OnPlayBackStopped()
 
 #ifdef HAS_WEB_SERVER      
   // Let's tell the outside world as well
-  if (m_pXbmcHttp)
+  if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStopped;1");
 #endif
 

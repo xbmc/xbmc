@@ -31,7 +31,7 @@ public:
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
-  virtual void SetColorDiffuse(D3DCOLOR color);
+  virtual void SetColorDiffuse(const CGUIInfoColor &color);
   virtual void SetRange(int pageSize, int numItems);
   virtual bool OnMessage(CGUIMessage& message);
   void SetValue(int value);

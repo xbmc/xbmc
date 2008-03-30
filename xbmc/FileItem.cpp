@@ -172,7 +172,8 @@ CFileItem::CFileItem(const CStdString& strPath, bool bIsFolder)
   m_strPath = _P(strPath);
   m_bIsFolder = bIsFolder;
 #ifdef DEBUG
-  if (m_bIsFolder && !m_strPath.IsEmpty() && !IsFileFolder())
+  // tuxbox urls cannot have a / at end
+  if (m_bIsFolder && !m_strPath.IsEmpty() && !IsFileFolder() && !CUtil::IsTuxBox(m_strPath))
     ASSERT(CUtil::HasSlashAtEnd(m_strPath));
 #endif
 
@@ -336,18 +337,12 @@ void CFileItem::Reset()
 
 void CFileItem::Serialize(CArchive& ar)
 {
+  CGUIListItem::Serialize(ar);
+
   if (ar.IsStoring())
   {
-    ar << m_bIsFolder;
     ar << m_bIsParentFolder;
-    ar << m_strLabel;
-    ar << m_strLabel2;
     ar << m_bLabelPreformated;
-    ar << m_strThumbnailImage;
-    ar << m_strIcon;
-    ar << m_bSelected;
-    ar << m_overlayIcon;
-
     ar << m_strPath;
     ar << m_bIsShareOrDrive;
     ar << m_iDriveType;
@@ -388,30 +383,11 @@ void CFileItem::Serialize(CArchive& ar)
     }
     else 
       ar << 0;
-
-    ar << (int)m_mapProperties.size();
-    std::map<CStdString, CStdString,icompare>::const_iterator iter = m_mapProperties.begin();
-    while (iter != m_mapProperties.end())
-    {
-      CStdString strKey = iter->first;
-      CStdString strValue = iter->second;
-      ar << strKey;
-      ar << strValue;
-      iter++;
-    }
   }
   else
   {
-    ar >> m_bIsFolder;
     ar >> m_bIsParentFolder;
-    ar >> m_strLabel;
-    ar >> m_strLabel2;
     ar >> m_bLabelPreformated;
-    ar >> m_strThumbnailImage;
-    ar >> m_strIcon;
-    ar >> m_bSelected;
-    ar >> (int&)m_overlayIcon;
-
     ar >> m_strPath;
     ar >> m_bIsShareOrDrive;
     ar >> m_iDriveType;
@@ -441,16 +417,6 @@ void CFileItem::Serialize(CArchive& ar)
     ar >> iType;
     if (iType == 1)
       ar >> *GetPictureInfoTag();
-
-    int nSize;
-    ar >> nSize;
-    for (int nProp=0; nProp < nSize; nProp++)
-    {
-      CStdString strKey, strValue;
-      ar >> strKey;
-      ar >> strValue;
-      m_mapProperties[strKey] = strValue;
-    }
 
     SetInvalid();
   }
@@ -694,8 +660,7 @@ bool CFileItem::IsCBR() const
 
 bool CFileItem::IsStack() const
 {
-  CURL url(m_strPath);
-  return url.GetProtocol().Equals("stack");
+  return CUtil::IsStack(m_strPath);
 }
 
 bool CFileItem::IsPluginFolder() const
@@ -2383,6 +2348,23 @@ void CFileItem::SetUserVideoThumb()
     pic.DoCreateThumbnail(thumb, cachedThumb);
   }
   SetCachedVideoThumb();
+}
+
+CStdString CFileItem::GetCachedVideoFanart()
+{
+  // get the locally cached thumb
+  Crc32 crc;
+  if (IsStack())
+  {
+    CStackDirectory dir;
+    crc.ComputeFromLowerCase(dir.GetFirstStackedFile(m_strPath));
+  }
+  else
+    crc.ComputeFromLowerCase(m_strPath);
+
+  CStdString thumb;
+  thumb.Format("%s\\%08x.tbn", g_settings.GetVideoFanartFolder().c_str(),(unsigned __int32)crc);
+  return thumb;
 }
 
 CStdString CFileItem::GetCachedProgramThumb()

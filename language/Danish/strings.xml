@@ -1,8 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 02/25/2008-->
+<!--Translator: Kim Buchwald Christensen-->
+<!--Email: kimbchr@gmail.com-->
+<!--Date of translation: 03/19/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 11774-->
+<!--Based on english strings version 12175-->
 <strings>
   <string id="0">Programmer</string>
   <string id="1">Billeder</string>
@@ -190,7 +192,7 @@
   <string id="257">Fejl</string>
   <string id="258">Læs filbeskrivelser</string>
   <string id="259">Åbner</string>
-  <string id="260">Internetradio</string>
+  <string id="260">Shoutcast</string>
   <string id="261">Venter på opstart....</string>
   <string id="262">Resultat af skriptkørsel</string>
   <string id="263">Aktiver webserver</string>
@@ -409,7 +411,7 @@
   <string id="489">Spil automatisk næste nummer</string>
   <string id="491">- Brug store ikoner</string>
   <string id="492">Forstør VobSubs</string>
-  <string id="493">Avancerede indstillinger (Kun for kyndige!)</string>
+  <string id="493">Avancerede indstillinger (For eksperter!)</string>
   <string id="494">Lydoverstyringsreserve (dB)</string>
   <string id="495">Forstør film til skærmens opløsning</string>
   <string id="496">Kalibrering</string>
@@ -548,6 +550,7 @@
   <string id="658">Sangoplysninger</string>
   <string id="659">Kommentar:</string>
   <string id="660">Lydforstærkning</string>
+  <string id="661">Vælg mappe til eksport</string>
   <string id="700">Rydder op i databasen</string>
   <string id="701">Fjerner gamle sange fra databasen</string>
   <string id="702">Denne sti er tidligere blevet gennemsøgt</string>
@@ -621,6 +624,14 @@
   <string id="772">Lydhardware</string>
   <string id="773">Søger</string>
   <string id="774">Mappe til billedserie</string>
+  <string id="790">Fjernhændelser</string>
+  <string id="791">Aktiver fjernhændelser</string>
+  <string id="792">Port til fjernhændelser</string>
+  <string id="793">Portområde til fjernhændelser</string>
+  <string id="794">Modtag hændelser fra andre computere</string>
+  <string id="795">Indledende forsinkelse på gentagelse (ms)</string>
+  <string id="796">Vedvarende forsinkelse på gentagelse (ms)</string>
+  <string id="797">Maksimalt antal klienter</string>
   <string id="998">XLink Kai</string>
   <string id="999">Online spil</string>
   <string id="1000">Afprøv pauseskærm</string>
@@ -886,15 +897,15 @@
   <string id="13106">Deaktiveret</string>
   <string id="13107">Aktiver under videoafspilning</string>
   <string id="13108">Altid aktiveret</string>
-  <string id="13150">HDD Nøgle:</string>
-  <string id="13151">HDD Temperatur:</string>
-  <string id="13152">DVD Model:</string>
-  <string id="13153">DVD Firmware:</string>
-  <string id="13154">HDD Model:</string>
-  <string id="13155">HDD Serienummer:</string>
-  <string id="13156">HDD Firmware:</string>
-  <string id="13157">HDD Adgangskode:</string>
-  <string id="13158">HDD Låsningstilstand:</string>
+  <string id="13150">Nøgle:</string>
+  <string id="13151">Temperatur:</string>
+  <string id="13152">Model:</string>
+  <string id="13153">Firmware:</string>
+  <string id="13154">Model:</string>
+  <string id="13155">Serienummer:</string>
+  <string id="13156">Firmware:</string>
+  <string id="13157">Adgangskode:</string>
+  <string id="13158">Låsningstilstand:</string>
   <string id="13159">Undernetmaske</string>
   <string id="13160">Gateway</string>
   <string id="13161">Primær DNS</string>
@@ -904,13 +915,13 @@
   <string id="13165">Mus</string>
   <string id="13166">Headset/Mikrofon</string>
   <string id="13167">MemoryStick</string>
-  <string id="13168">IR-fjernbetjening</string>
-  <string id="13169">Controller Port</string>
+  <string id="13168">Infrarød fjernbetjening</string>
+  <string id="13169">Controller-port</string>
   <string id="13170">Aldrig</string>
   <string id="13171">Med det samme</string>
   <string id="13172">Efter %i sekunder</string>
-  <string id="13173">HDD Isat:</string>
-  <string id="13174">HDD tændt:</string>
+  <string id="13173">Isat:</string>
+  <string id="13174">Tændt antal gange:</string>
   <string id="13200">Profiler</string>
   <string id="13201">Slet profil '%s'?</string>
   <string id="13204">Senest indlæste profil:</string>
@@ -942,13 +953,13 @@
   <string id="13285">BIOS:</string>
   <string id="13286">Video-encoder:</string>
   <string id="13287">Skærmopløsning:</string>
-  <string id="13288">Xbox Version:</string>
-  <string id="13289">Xbox Serienummer:</string>
-  <string id="13290">Xbox Producent:</string>
+  <string id="13288">Xbox-version:</string>
+  <string id="13289">Serienummer på Xbox:</string>
+  <string id="13290">Producent:</string>
   <string id="13291">Modchip:</string>
   <string id="13292">A/V-kabel:</string>
-  <string id="13293">Video og XBE Region:</string>
-  <string id="13294">DVD Region:</string>
+  <string id="13293">Video- og XBE-region:</string>
+  <string id="13294">DVD-region:</string>
   <string id="13295">Internet:</string>
   <string id="13296">Xbox'en er forbundet</string>
   <string id="13297">Xbox'en er ikke forbundet. Check netværksindstillinger.</string>
@@ -1050,6 +1061,7 @@
   <string id="13407">%s-standarder</string>
   <string id="13408">(IMDb brugerbedømmelse)</string>
   <string id="13409">Top 250:</string>
+  <string id="13410">Stil ind på last.fm</string>
   <string id="14000">Stakning</string>
   <string id="14001">Ingen stakning</string>
   <string id="14003">Henter afspilningsliste...</string>
@@ -1200,10 +1212,10 @@
   <string id="15109">Skinnets standard</string>
   <string id="15111">Tema</string>
   <string id="15112">Standard tema</string>
-  <string id="15200">Last.FM</string>
-  <string id="15201">Send sange til Last.FM</string>
-  <string id="15202">Brugernavn til Last.FM</string>
-  <string id="15203">Adgangskode til Last.FM</string>
+  <string id="15200">last.fm</string>
+  <string id="15201">Send sange til last.fm</string>
+  <string id="15202">Brugernavn til last.fm</string>
+  <string id="15203">Adgangskode til last.fm</string>
   <string id="15204">Ikke istand til at udføre håndtryk: sover...</string>
   <string id="15205">Opdater venligst XBMC</string>
   <string id="15206">Fejl: Kontroller brugernavn og adgangskode</string>
@@ -1217,8 +1229,8 @@
   <string id="15214">Brug udglattet A/V-synkronisering</string>
   <string id="15215">Skjul filnavne i miniaturevisning</string>
   <string id="15216">Afspil i festtilstand</string>
-  <string id="15250">Send Last.fm Radio til Last.FM</string>
-  <string id="15251">Forbinder til Last.FM...</string>
+  <string id="15250">Send last.fm Radio til last.fm</string>
+  <string id="15251">Forbinder til last.fm...</string>
   <string id="15252">Vælger station...</string>
   <string id="15253">Søg efter lignende kunstnere...</string>
   <string id="15254">Søg lignende etiket...</string>
@@ -1227,13 +1239,13 @@
   <string id="15257">Bedste kunstner med etiketten %name%</string>
   <string id="15258">Bedste albums med etiketten %name%</string>
   <string id="15259">Bedste sange med etiketten %name%</string>
-  <string id="15260">Lyt til etiket %name% Last.FM radio</string>
+  <string id="15260">Lyt til etiket %name% last.fm radio</string>
   <string id="15261">Lignende kunstnere som %name%</string>
   <string id="15262">Bedste %name% albums</string>
   <string id="15263">Bedste %name% sange</string>
   <string id="15264">Bedste %name% etiket</string>
   <string id="15265">Største fans af %name%</string>
-  <string id="15266">Lyt til brugeren %name%'s Last.FM-radio</string>
+  <string id="15266">Lyt til brugeren %name%'s last.fm-radio</string>
   <string id="15267">Lyt til %name% lignende kunstnere last.fm radio</string>
   <string id="15268">Bedste kunstner for bruger %name%</string>
   <string id="15269">Bedste albums hos brugeren %name%</string>
@@ -1243,17 +1255,17 @@
   <string id="15273">Ugentlig kunstnerkurve for %name%</string>
   <string id="15274">Ugentlig albumkurve for %name%</string>
   <string id="15275">Ugentlig sangkurve for %name%</string>
-  <string id="15276">Lyt til %name%'s naboers Last.FM-radio</string>
-  <string id="15277">Lyt til %name%'s personlige Last.FM-radio</string>
-  <string id="15278">Lyt til %name%'s faboritsange Last.FM-radio</string>
-  <string id="15279">Henter liste fra Last.FM...</string>
-  <string id="15280">Kunne ikke hente liste fra Last.FM...</string>
+  <string id="15276">Lyt til %name%'s naboers last.fm-radio</string>
+  <string id="15277">Lyt til %name%'s personlige last.fm-radio</string>
+  <string id="15278">Lyt til %name%'s faboritsange last.fm-radio</string>
+  <string id="15279">Henter liste fra last.fm...</string>
+  <string id="15280">Kunne ikke hente liste fra last.fm...</string>
   <string id="15281">Indtast kunstnernavn for at finde relaterede</string>
   <string id="15282">Indtast etiket for at finde lignende</string>
   <string id="15283">Fornyeligt tilføjede sange af %name%</string>
-  <string id="15284">Lyt til %name%'s anbefalede Last.FM-radio</string>
+  <string id="15284">Lyt til %name%'s anbefalede last.fm-radio</string>
   <string id="15285">Favorit etiketter for brugeren %name%</string>
-  <string id="15286">Lyt til %name%'s afspilningsliste Last.FM-radio</string>
+  <string id="15286">Lyt til %name%'s afspilningsliste last.fm-radio</string>
   <string id="15287">Vil du tilføje dette nummer til dine favoritter?</string>
   <string id="15288">Vil du bandlyse dette nummer?</string>
   <string id="15289">Tilføjet til dine favoritter: '%s'.</string>
@@ -1464,12 +1476,12 @@
   <string id="20152">Lås indstillinger til %s</string>
   <string id="20153">Søg...</string>
   <string id="20154">Generel information</string>
-  <string id="20155">Lagerinfo</string>
-  <string id="20156">Harddisk-info</string>
-  <string id="20157">DVD-info</string>
-  <string id="20158">Netværksinfo</string>
-  <string id="20159">Videoinfo</string>
-  <string id="20160">Hardwareinfo</string>
+  <string id="20155">Lagerinformation</string>
+  <string id="20156">Harddiskinformation</string>
+  <string id="20157">DVD-information</string>
+  <string id="20158">Netværksinformation</string>
+  <string id="20159">Videoinformation</string>
+  <string id="20160">Hardwareinformation</string>
   <string id="20161">Total</string>
   <string id="20162">Brugt</string>
   <string id="20163">af</string>
@@ -1624,6 +1636,7 @@
   <string id="20409">Henter information om TV-serie</string>
   <string id="20410">Trailer</string>
   <string id="20411">Fladgør liste</string>
+  <string id="20412">Vis ikke sæsonmapper hvis TV-showet kun har én sæson</string>
   <string id="21330">Vis skjulte filer og mapper</string>
   <string id="21331">TuxBox-klient</string>
   <string id="21332">ADVARSEL: den valgte TuxBox er i optagetilstand!</string>
@@ -1749,7 +1762,7 @@
   <string id="21866">Kategori</string>
   <string id="21867">Byline</string>
   <string id="21868">Byline-titel</string>
-  <string id="21869">Credit</string>
+  <string id="21869">Kredit</string>
   <string id="21870">Kilde</string>
   <string id="21871">Besked om ophavsret</string>
   <string id="21872">Objektnavn</string>

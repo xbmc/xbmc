@@ -90,7 +90,8 @@ namespace XCURL
   public:
     /* extend interface with buffered functions */
     void easy_aquire(const char *protocol, const char *hostname, CURL_HANDLE** easy_handle, CURLM** multi_handle);
-    void easy_release(CURL_HANDLE* easy_handle, CURLM* multi_handle);
+    void easy_release(CURL_HANDLE** easy_handle, CURLM** multi_handle);
+    void easy_duplicate(CURL_HANDLE* easy, CURLM* multi, CURL_HANDLE** easy_out, CURLM** multi_out);
     CURL_HANDLE* easy_duphandle(CURL_HANDLE* easy_handle);
     void CheckIdle();
 
