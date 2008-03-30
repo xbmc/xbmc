@@ -47,6 +47,9 @@
         <expression>/ SINOPSIS: ([^=]*) \(FILMAFFINITY\)</expression>
       </RegExp>
       <RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
+        <expression>/ SINOPSIS: ([^=]*)\(FILMAFFINITY\)</expression>
+      </RegExp>
+      <RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
         <expression>SINOPSIS LARGA: ([^=]*) \(FILMAFFINITY\)</expression>
       </RegExp>
       <RegExp input="$$1" output="&lt;outline&gt;\1&lt;/outline&gt;" dest="5+">
@@ -64,6 +67,18 @@
         </RegExp>
         <expression repeat="yes">&lt;td &gt;([0-9]*)</expression>
       </RegExp>
+
+      <RegExp input="$$9" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="5+">
+        <!--<RegExp input="$$6" output="\1" dest="9">-->
+          <RegExp input="$$1" output="\1 /" dest="9">
+        <expression noclean="1">&lt;b&gt;PRODUCTORA&lt;/b&gt;&lt;/td&gt;([^=]*)&lt;/td&gt;</expression>
+        <!--</RegExp>
+          <expression noclean="1">&lt;td  &gt;(*)</expression>-->
+        </RegExp>
+        <expression repeat="yes">([^/]*)/</expression>
+      </RegExp>
+
+      
       <RegExp input="$$9" output="&lt;director&gt;\1&lt;/director&gt;" dest="5+">
         <RegExp input="$$1" output="\1" dest="9">
           <expression noclean="1">&lt;b&gt;DIRECTOR&lt;/b&gt;&lt;/td&gt;(.*)&lt;b&gt;GUI.N&lt;/b&gt;</expression>

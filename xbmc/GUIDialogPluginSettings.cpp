@@ -32,6 +32,7 @@
 #include "FileSystem/HDDirectory.h"
 #include "VideoInfoScanner.h"
 #include "ScraperSettings.h"
+#include "Application.h"
 
 using namespace std;
 
@@ -69,15 +70,16 @@ bool CGUIDialogPluginSettings::OnMessage(CGUIMessage& message)
     case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
+      bool bCloseDialog = false;
 
       if (iControl == ID_BUTTON_OK)
         SaveSettings();
       else if (iControl == ID_BUTTON_DEFAULT)
         SetDefaults();
       else
-        ShowVirtualKeyboard(iControl);
+        bCloseDialog = ShowVirtualKeyboard(iControl);
 
-      if (iControl == ID_BUTTON_OK || iControl == ID_BUTTON_CANCEL)
+      if (iControl == ID_BUTTON_OK || iControl == ID_BUTTON_CANCEL || bCloseDialog)
       {
         m_bConfirmed = true;
         Close();
@@ -134,108 +136,124 @@ void CGUIDialogPluginSettings::ShowAndGetInput(SScraperInfo& info)
   return;
 }
 
-void CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
+bool CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
 {
   int controlId = CONTROL_START_CONTROL;
+  bool bCloseDialog = false;
+
   TiXmlElement *setting = m_settings.GetPluginRoot()->FirstChildElement("setting");
   while (setting)
   {
-    const char *type = setting->Attribute("type");
-    const char *option = setting->Attribute("option");
-    const char *source = setting->Attribute("source");
-    const CGUIControl* control = GetControl(controlId);
-    if (controlId == iControl && control->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
+    if (controlId == iControl)
     {
-      CStdString value = ((CGUIButtonControl*) control)->GetLabel2();
+      const CGUIControl* control = GetControl(controlId);
+      if (control->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
+      {
+        const char *type = setting->Attribute("type");
+        const char *option = setting->Attribute("option");
+        const char *source = setting->Attribute("source");
+        CStdString value = ((CGUIButtonControl*) control)->GetLabel2();
 
-      if (strcmp(type, "text") == 0)
-      {
-        // get any options
-        bool bHidden = false;
-        if (option)
-          bHidden = (strcmp(option, "hidden") == 0);
-
-        if (CGUIDialogKeyboard::ShowAndGetInput(value, ((CGUIButtonControl*) control)->GetLabel(), true, bHidden))
-          ((CGUIButtonControl*) control)->SetLabel2(value);
-      }
-      else if (strcmp(type, "integer") == 0 && CGUIDialogNumeric::ShowAndGetNumber(value, ((CGUIButtonControl*) control)->GetLabel()))
-      {
-        ((CGUIButtonControl*) control)->SetLabel2(value);
-      }
-      else if (strcmp(type, "ipaddress") == 0 && CGUIDialogNumeric::ShowAndGetIPAddress(value, ((CGUIButtonControl*) control)->GetLabel()))
-      {
-        ((CGUIButtonControl*) control)->SetLabel2(value);
-      }
-      else if (strcmpi(type, "video") == 0 || strcmpi(type, "music") == 0 ||
-        strcmpi(type, "pictures") == 0 || strcmpi(type, "programs") == 0 || 
-        strcmpi(type, "folder") == 0 || strcmpi(type, "files") == 0)
-      {
-        // setup the shares
-        VECSHARES *shares = NULL;
-        if (!source || strcmpi(source, "") == 0)
-          shares = g_settings.GetSharesFromType(type);
-        else
-          shares = g_settings.GetSharesFromType(source);
-
-        if (!shares)
-        {
-          VECSHARES localShares, networkShares;
-          g_mediaManager.GetLocalDrives(localShares);
-          if (!source || strcmpi(source, "local") != 0)
-            g_mediaManager.GetNetworkLocations(networkShares);
-          localShares.insert(localShares.end(), networkShares.begin(), networkShares.end());
-          shares = &localShares;
-        }
-        
-        if (strcmpi(type, "folder") == 0)
+        if (strcmp(type, "text") == 0)
         {
           // get any options
-          bool bWriteOnly = false;
+          bool bHidden = false;
           if (option)
-            bWriteOnly = (strcmpi(option, "writeable") == 0);
+            bHidden = (strcmp(option, "hidden") == 0);
 
-          if (CGUIDialogFileBrowser::ShowAndGetDirectory(*shares, ((CGUIButtonControl*) control)->GetLabel(), value, bWriteOnly))
+          if (CGUIDialogKeyboard::ShowAndGetInput(value, ((CGUIButtonControl*) control)->GetLabel(), true, bHidden))
             ((CGUIButtonControl*) control)->SetLabel2(value);
         }
-        else if (strcmpi(type, "picture") == 0)
+        else if (strcmp(type, "integer") == 0 && CGUIDialogNumeric::ShowAndGetNumber(value, ((CGUIButtonControl*) control)->GetLabel()))
         {
-          if (CGUIDialogFileBrowser::ShowAndGetImage(*shares, ((CGUIButtonControl*) control)->GetLabel(), value))
-            ((CGUIButtonControl*) control)->SetLabel2(value);
+          ((CGUIButtonControl*) control)->SetLabel2(value);
         }
-        else
+        else if (strcmp(type, "ipaddress") == 0 && CGUIDialogNumeric::ShowAndGetIPAddress(value, ((CGUIButtonControl*) control)->GetLabel()))
         {
-          // set the proper mask
-          CStdString strMask;
-          if (setting->Attribute("mask"))
-            strMask = setting->Attribute("mask");
+          ((CGUIButtonControl*) control)->SetLabel2(value);
+        }
+        else if (strcmpi(type, "video") == 0 || strcmpi(type, "music") == 0 ||
+          strcmpi(type, "pictures") == 0 || strcmpi(type, "programs") == 0 || 
+          strcmpi(type, "folder") == 0 || strcmpi(type, "files") == 0)
+        {
+          // setup the shares
+          VECSHARES *shares = NULL;
+          if (!source || strcmpi(source, "") == 0)
+            shares = g_settings.GetSharesFromType(type);
+          else
+            shares = g_settings.GetSharesFromType(source);
+
+          if (!shares)
+          {
+            VECSHARES localShares, networkShares;
+            g_mediaManager.GetLocalDrives(localShares);
+            if (!source || strcmpi(source, "local") != 0)
+              g_mediaManager.GetNetworkLocations(networkShares);
+            localShares.insert(localShares.end(), networkShares.begin(), networkShares.end());
+            shares = &localShares;
+          }
+          
+          if (strcmpi(type, "folder") == 0)
+          {
+            // get any options
+            bool bWriteOnly = false;
+            if (option)
+              bWriteOnly = (strcmpi(option, "writeable") == 0);
+
+            if (CGUIDialogFileBrowser::ShowAndGetDirectory(*shares, ((CGUIButtonControl*) control)->GetLabel(), value, bWriteOnly))
+              ((CGUIButtonControl*) control)->SetLabel2(value);
+          }
+          else if (strcmpi(type, "picture") == 0)
+          {
+            if (CGUIDialogFileBrowser::ShowAndGetImage(*shares, ((CGUIButtonControl*) control)->GetLabel(), value))
+              ((CGUIButtonControl*) control)->SetLabel2(value);
+          }
           else
           {
-            if (strcmpi(type, "video") == 0)
-              strMask = g_stSettings.m_videoExtensions;
-            else if (strcmpi(type, "music") == 0)
-              strMask = g_stSettings.m_musicExtensions;
-            else if (strcmpi(type, "programs") == 0)
-              strMask = ".xbe|.py";
-          }
+            // set the proper mask
+            CStdString strMask;
+            if (setting->Attribute("mask"))
+              strMask = setting->Attribute("mask");
+            else
+            {
+              if (strcmpi(type, "video") == 0)
+                strMask = g_stSettings.m_videoExtensions;
+              else if (strcmpi(type, "music") == 0)
+                strMask = g_stSettings.m_musicExtensions;
+              else if (strcmpi(type, "programs") == 0)
+                strMask = ".xbe|.py";
+            }
 
-          // get any options
-          bool bUseThumbs = false;
-          bool bUseFileDirectories = false;
-          if (option)
-          {
-            bUseThumbs = (strcmpi(option, "usethumbs") == 0 || strcmpi(option, "usethumbs|treatasfolder") == 0);
-            bUseFileDirectories = (strcmpi(option, "treatasfolder") == 0 || strcmpi(option, "usethumbs|treatasfolder") == 0);
-          }
+            // get any options
+            bool bUseThumbs = false;
+            bool bUseFileDirectories = false;
+            if (option)
+            {
+              bUseThumbs = (strcmpi(option, "usethumbs") == 0 || strcmpi(option, "usethumbs|treatasfolder") == 0);
+              bUseFileDirectories = (strcmpi(option, "treatasfolder") == 0 || strcmpi(option, "usethumbs|treatasfolder") == 0);
+            }
 
-          if (CGUIDialogFileBrowser::ShowAndGetFile(*shares, strMask, ((CGUIButtonControl*) control)->GetLabel(), value))
-            ((CGUIButtonControl*) control)->SetLabel2(value);
+            if (CGUIDialogFileBrowser::ShowAndGetFile(*shares, strMask, ((CGUIButtonControl*) control)->GetLabel(), value))
+              ((CGUIButtonControl*) control)->SetLabel2(value);
+          }
         }
+        else if (strcmpi(type, "action") == 0)
+        {
+          if (setting->Attribute("default"))
+          {
+            if (option)
+              bCloseDialog = (strcmpi(option, "close") == 0);
+            g_application.getApplicationMessenger().ExecBuiltIn(setting->Attribute("default"));
+          }
+        }
+        break;
       }
     }
     setting = setting->NextSiblingElement("setting");
     controlId++;
   }
   EnableControls();
+  return bCloseDialog;
 }
 
 // Go over all the settings and set their values according to the values of the GUI components
@@ -345,13 +363,14 @@ void CGUIDialogPluginSettings::CreateControls()
       strcmpi(type, "integer") == 0 || strcmpi(type, "video") == 0 ||
       strcmpi(type, "music") == 0 || strcmpi(type, "pictures") == 0 ||
       strcmpi(type, "folder") == 0 || strcmpi(type, "programs") == 0 ||
-      strcmpi(type, "files") == 0)
+      strcmpi(type, "files") == 0 || strcmpi(type, "action") == 0)
     {
       pControl = new CGUIButtonControl(*pOriginalButton);
       if (!pControl) return;
       ((CGUIButtonControl *)pControl)->SettingsCategorySetTextAlign(XBFONT_CENTER_Y);
       ((CGUIButtonControl *)pControl)->SetLabel(label);
-      ((CGUIButtonControl *)pControl)->SetLabel2(m_settings.Get(id));
+      if (id)
+        ((CGUIButtonControl *)pControl)->SetLabel2(m_settings.Get(id));
     }
     else if (strcmpi(type, "bool") == 0)
     {
@@ -544,9 +563,6 @@ void CGUIDialogPluginSettings::SetDefaults()
   TiXmlElement *setting = m_settings.GetPluginRoot()->FirstChildElement("setting");
   while (setting)
   {
-    CStdString id;
-    if (setting->Attribute("id"))
-      id = setting->Attribute("id");
     const CGUIControl* control = GetControl(controlId);
     if (control)
     {
@@ -554,7 +570,7 @@ void CGUIDialogPluginSettings::SetDefaults()
       switch (control->GetControlType())
       {
         case CGUIControl::GUICONTROL_BUTTON:
-          if (setting->Attribute("default"))
+          if (setting->Attribute("default") && setting->Attribute("id"))
             ((CGUIButtonControl*) control)->SetLabel2(setting->Attribute("default"));
           else
             ((CGUIButtonControl*) control)->SetLabel2("");

@@ -150,7 +150,7 @@
 				RelativePath="..\keyframe.c">
 			</File>
 			<File
-				RelativePath="..\libcmyth.def">
+				RelativePath=".\libcmyth.def">
 			</File>
 			<File
 				RelativePath="..\livetv.c">

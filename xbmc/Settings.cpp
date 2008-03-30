@@ -40,6 +40,7 @@
 #include "utils/FanController.h"
 #include "MediaManager.h"
 #include "XBVideoConfig.h"
+#include "DNSNameCache.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "utils/MemoryUnitManager.h"
 #endif
@@ -216,7 +217,7 @@ CSettings::CSettings(void)
   g_stSettings.m_fPixelRatio = 1.0f;
 
   g_stSettings.m_pictureExtensions = ".png|.jpg|.jpeg|.bmp|.gif|.ico|.tif|.tiff|.tga|.pcx|.cbz|.zip|.cbr|.rar|.m3u|.cr2|.dng|.nef";
-  g_stSettings.m_musicExtensions = ".nsv|.m4a|.flac|.aac|.strm|.pls|.rm|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u|.mod|.amf|.669|.dmf|.dsm|.far|.gdm|.imf|.it|.m15|.med|.okt|.s3m|.stm|.sfx|.ult|.uni|.xm|.sid|.ac3|.dts|.cue|.aif|.aiff|.wpl|.ape|.mac|.mpc|.mp+|.mpp|.shn|.zip|.rar|.wv|.nsf|.spc|.gym|.adplug|.adx|.dsp|.adp|.ymf|.ast|.afc|.hps|.xsp|.xwav|.waa|.wvs|.wam|.gcm|.idsp|.mpdsp|.mss|.spt|.rsd|.mid|.kar";
+  g_stSettings.m_musicExtensions = ".nsv|.m4a|.flac|.aac|.strm|.pls|.rm|.rma|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u|.mod|.amf|.669|.dmf|.dsm|.far|.gdm|.imf|.it|.m15|.med|.okt|.s3m|.stm|.sfx|.ult|.uni|.xm|.sid|.ac3|.dts|.cue|.aif|.aiff|.wpl|.ape|.mac|.mpc|.mp+|.mpp|.shn|.zip|.rar|.wv|.nsf|.spc|.gym|.adplug|.adx|.dsp|.adp|.ymf|.ast|.afc|.hps|.xsp|.xwav|.waa|.wvs|.wam|.gcm|.idsp|.mpdsp|.mss|.spt|.rsd|.mid|.kar";
   g_stSettings.m_videoExtensions = ".m4v|.3gp|.nsv|.ts|.ty|.strm|.pls|.rm|.rmvb|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.nrg|.img|.iso|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mp4|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli|.flv|.rar|.001|.wpl|.zip|.vdr|.dvr-ms|.xsp";
   // internal music extensions
   g_stSettings.m_musicExtensions += "|.sidstream|.oggstream|.nsfstream|.cdda";
@@ -1128,8 +1129,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   pElement = pRootElement->FirstChildElement("defaultvideosettings");
   if (pElement)
   {
-    GetInteger(pElement, "interlacemethod", (int &)g_stSettings.m_defaultVideoSettings.m_InterlaceMethod, VS_INTERLACEMETHOD_NONE, 1, VS_INTERLACEMETHOD_RENDER_BLEND);
-    GetInteger(pElement, "filmgrain", g_stSettings.m_defaultVideoSettings.m_FilmGrain, 0, 1, 100);
+    GetInteger(pElement, "interlacemethod", (int &)g_stSettings.m_defaultVideoSettings.m_InterlaceMethod, VS_INTERLACEMETHOD_NONE, VS_INTERLACEMETHOD_NONE, VS_INTERLACEMETHOD_RENDER_BLEND);
+    GetInteger(pElement, "filmgrain", g_stSettings.m_defaultVideoSettings.m_FilmGrain, 0, 0, 10);
     GetInteger(pElement, "viewmode", g_stSettings.m_defaultVideoSettings.m_ViewMode, VIEW_MODE_NORMAL, VIEW_MODE_NORMAL, VIEW_MODE_CUSTOM);
     GetFloat(pElement, "zoomamount", g_stSettings.m_defaultVideoSettings.m_CustomZoomAmount, 1.0f, 0.5f, 2.0f);
     GetFloat(pElement, "pixelratio", g_stSettings.m_defaultVideoSettings.m_CustomPixelRatio, 1.0f, 0.5f, 2.0f);
@@ -1563,6 +1564,23 @@ void CSettings::LoadAdvancedSettings()
       if (filter->FirstChild())
         g_advancedSettings.m_musicTagsFromFileFilters.push_back(filter->FirstChild()->ValueStr());
       filter = filter->NextSibling("filter");
+    }
+  }
+
+  TiXmlElement* pHostEntries = pRootElement->FirstChildElement("hosts");
+  if (pHostEntries)
+  {
+    TiXmlElement* element = pHostEntries->FirstChildElement("entry");
+    while(element)
+    {
+      CStdString name  = element->Attribute("name");
+      CStdString value;
+      if(element->GetText())
+        value = element->GetText();
+
+      if(name.length() > 0 && value.length() > 0)
+        CDNSNameCache::Add(name, value);
+      element = element->NextSiblingElement("entry");
     }
   }
 
@@ -2777,6 +2795,17 @@ CStdString CSettings::GetVideoThumbFolder() const
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), _P("Thumbnails\\Video"), folder);
   else
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), _P("Thumbnails\\Video"), folder);
+
+  return folder;
+}
+
+CStdString CSettings::GetVideoFanartFolder() const
+{
+  CStdString folder;
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Video\\Fanart", folder);
+  else
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Video\\Fanart", folder);
 
   return folder;
 }

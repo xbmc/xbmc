@@ -26,12 +26,11 @@
 				<width>370</width>
 				<height>20</height>
 			</control>
-			<control type="label" id="402">
-				<description>Current Directory Label</description>
+			<control type="label" id="405">
+				<description>Current Title Label</description>
 				<posx>20</posx>
 				<posy>33</posy>
 				<width>370</width>
-				<haspath>yes</haspath>
 				<font>font10</font>
 			</control>
 			<control type="progress" id="403">

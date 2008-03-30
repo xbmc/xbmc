@@ -146,6 +146,7 @@ namespace PYXBMC
 
       li = ((CGUIButtonControl *)pGUIControl)->GetLabelInfo();
 
+      // note: conversion from infocolors -> plain colors here
       ((ControlButton*)pControl)->dwDisabledColor = li.disabledColor;
       ((ControlButton*)pControl)->dwFocusedColor  = li.focusedColor;
       ((ControlButton*)pControl)->dwTextColor  = li.textColor;
@@ -162,6 +163,7 @@ namespace PYXBMC
 
       li = ((CGUICheckMarkControl *)pGUIControl)->GetLabelInfo();
 
+      // note: conversion to plain colors from infocolors.
       ((ControlCheckMark*)pControl)->dwDisabledColor = li.disabledColor;
       //((ControlCheckMark*)pControl)->dwShadowColor = li.shadowColor;
       ((ControlCheckMark*)pControl)->dwTextColor  = li.textColor;
@@ -226,14 +228,13 @@ namespace PYXBMC
       break;
     case CGUIControl::GUICONTROL_RADIO:
       pControl = (Control*)ControlRadioButton_Type.tp_alloc(&ControlRadioButton_Type, 0);
-
       new(&((ControlRadioButton*)pControl)->strFont) string();    
       new(&((ControlRadioButton*)pControl)->strText) string();    
       new(&((ControlRadioButton*)pControl)->strTextureFocus) string();
       new(&((ControlRadioButton*)pControl)->strTextureNoFocus) string();
       new(&((ControlRadioButton*)pControl)->strTextureRadioFocus) string();
       new(&((ControlRadioButton*)pControl)->strTextureRadioNoFocus) string();
-      
+
       li = ((CGUIRadioButtonControl *)pGUIControl)->GetLabelInfo();
 
       // note: conversion from infocolors -> plain colors here
@@ -289,6 +290,7 @@ namespace PYXBMC
     new(&self->sXMLFileName) string();
     new(&self->sFallBackPath) string();
     new(&self->vecControls) std::vector<Control*>();
+
     self->iWindowId = -1;
 
     if (!PyArg_ParseTuple(args, "|i", &self->iWindowId)) return NULL;
@@ -356,7 +358,6 @@ namespace PYXBMC
       m_gWindowManager.Remove(self->pWindow->GetID());
       delete self->pWindow;
     }
-    
     self->vecControls.clear();
     self->vecControls.~vector();
     self->sFallBackPath.~string();          
@@ -453,11 +454,11 @@ namespace PYXBMC
       while(self->bModal)
       {
         Py_BEGIN_ALLOW_THREADS
-	  ((CGUIPythonWindow*)self->pWindow)->WaitForActionEvent(INFINITE);
+        ((CGUIPythonWindow*)self->pWindow)->WaitForActionEvent(INFINITE);
         Py_END_ALLOW_THREADS
 
         // only call Py_MakePendingCalls from a python thread
-	Py_MakePendingCalls();
+        Py_MakePendingCalls();
       }
     }
     Py_INCREF(Py_None);

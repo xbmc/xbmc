@@ -457,6 +457,9 @@ void CGUIWindowVideoFiles::OnUnAssignContent(int iItem)
 
 void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, SScraperInfo& info, SScanSettings& settings)
 {
+  if (!g_guiSettings.GetBool("videolibrary.enabled"))
+    return;
+
   bool bScan=false;
   if (iFound == 0)
   {
@@ -537,35 +540,32 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
 {
   CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems.Size()) ? m_vecItems[itemNumber] : NULL;
 
+  CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
   if (item)
   {
     // are we in the playlists location?
-
     if (m_vecItems.IsVirtualDirectoryRoot())
     {
       // get the usual shares, and anything for all media windows
       CShare *share = CGUIDialogContextMenu::GetShare("video", item);
-      if (share)
+      CGUIDialogContextMenu::GetContextButtons("video", share, buttons);
+      CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
+      // add scan button somewhere here
+      if (pScanDlg && pScanDlg->IsScanning())
+        buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);	// Stop Scanning
+      if (g_guiSettings.GetBool("videolibrary.enabled") && !item->IsDVD() && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
       {
-        CGUIDialogContextMenu::GetContextButtons("video", share, buttons);
-        CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
-        // add scan button somewhere here
-        if (!item->IsDVD() && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
+        CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+        if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
+          buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
+        CVideoDatabase database;
+        database.Open();
+        SScraperInfo info;
+        if (database.GetScraperForPath(share->strPath,info))
         {
-          CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-          if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
-            buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
-          CVideoDatabase database;
-          database.Open();
-          SScraperInfo info;
-          if (database.GetScraperForPath(share->strPath,info))
-          {
-            if (!info.strPath.IsEmpty() && !info.strContent.IsEmpty())
-              if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
-                buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
-              else
-                buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353); // Stop Scanning
-          }
+          if (!info.strPath.IsEmpty() && !info.strContent.IsEmpty())
+            if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
+              buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
         }
       }
     }
@@ -573,7 +573,10 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
     {
       CGUIWindowVideoBase::GetContextButtons(itemNumber, buttons);
       // Movie Info button
-      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser)
+      if (pScanDlg && pScanDlg->IsScanning())
+        buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
+      if (g_guiSettings.GetBool("videolibrary.enabled") &&
+        (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
       {
         SScraperInfo info;
         VIDEO::SScanSettings settings;
@@ -595,7 +598,6 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
                 (info.strContent.Equals("tvshows") && m_database.HasTvShowInfo(strPath)))
               buttons.Add(CONTEXT_BUTTON_INFO, infoString);
 
-            CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
             if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
               if (!item->IsPlayList())
                 buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
@@ -604,17 +606,14 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
           { // scraper found - allow to add to library, scan for new content, or set different type of content
             if (!info.strContent.Equals("musicvideos"))
               buttons.Add(CONTEXT_BUTTON_INFO, infoString);
-            CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-            if (pScanDlg && pScanDlg->IsScanning())
-              buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
             else
             {
               if (!item->IsPlayList())
-              {
-                buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
                 buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
-              }
             }
+            if (!info.strPath.IsEmpty() && !info.strContent.IsEmpty())
+              if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
+                buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
           }
         }
         else
@@ -645,6 +644,11 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
       if (m_vecItems.IsPluginFolder() && item->HasVideoInfoTag())
         buttons.Add(CONTEXT_BUTTON_INFO,13346); // only movie information for now
     }
+  }
+  else
+  {
+    if (pScanDlg && pScanDlg->IsScanning())
+      buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);	// Stop Scanning
   }
   if (!m_vecItems.IsVirtualDirectoryRoot())
     buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
