@@ -12,6 +12,7 @@ public:
   CDNSNameCache(void);
   virtual ~CDNSNameCache(void);
   static bool Lookup(const CStdString& strHostName, CStdString& strIpAdres);
+  static void Add(const CStdString& strHostName, const CStdString& strIpAdres);
 
 protected:
   std::vector<CDNSName> m_vecDNSNames;

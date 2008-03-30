@@ -340,7 +340,7 @@
   <string id="415">Downloading thumbnail...</string>
   <string id="416">Not available</string>
   <string id="417">View: Big Icons</string>
-  <string id="418"></string>
+  <string id="418">Enable Library</string>
   <string id="419"></string>
   <string id="420"></string>
   <string id="421"></string>
@@ -1731,6 +1731,8 @@
   <string id="20409">Downloading TV Show information</string>
   <string id="20410">Trailer</string>
   <string id="20411">Flatten</string>
+  <string id="20412">Flatten TV Show if only a single season</string>
+  <string id="20413">Get FanArt</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
@@ -1896,6 +1898,7 @@
 
   <string id="22000">Update library on startup</string>
   <string id="22001">Always update library in background</string>
+  <string id="22002">- DNS Suffix</string>
 
   <string id="29999">Apply Flicker Filter Setting to Games</string>
 

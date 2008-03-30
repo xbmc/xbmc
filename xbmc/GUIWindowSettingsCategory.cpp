@@ -1287,6 +1287,17 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
     }
+    else if (strSetting.Equals("mymusic.cleanupmusiclibrary"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("mymusic.enablelibrary"));
+    }
+    else if (!strSetting.Equals("videolibrary.enabled")
+      && strSetting.Left(13).Equals("videolibrary."))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videolibrary.enabled"));
+    }
   }
 }
 
@@ -3584,3 +3595,4 @@ void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
    }
 #endif
 }
+

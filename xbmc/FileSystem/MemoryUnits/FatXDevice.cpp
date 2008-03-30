@@ -104,7 +104,7 @@ bool CFatXDevice::ReadVolumeName()
     // Check we have a FATX drive, and if so, read the metadata
     if (VolumeHeader->Signature == 'XTAF')
     {
-      g_charsetConverter.utf16toUTF8(VolumeHeader->VolumeName, m_volumeName);
+      g_charsetConverter.wToUTF8(VolumeHeader->VolumeName, m_volumeName);
       return true;
     }
   }

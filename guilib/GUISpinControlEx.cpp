@@ -81,7 +81,7 @@ void CGUISpinControlEx::SetVisible(bool bVisible)
   CGUISpinControl::SetVisible(bVisible);
 }
 
-void CGUISpinControlEx::SetColorDiffuse(D3DCOLOR color)
+void CGUISpinControlEx::SetColorDiffuse(const CGUIInfoColor &color)
 {
   m_buttonControl.SetColorDiffuse(color);
   CGUISpinControl::SetColorDiffuse(color);
@@ -105,7 +105,7 @@ CStdString CGUISpinControlEx::GetDescription() const
   return strLabel;
 }
 
-void CGUISpinControlEx::SettingsCategorySetSpinTextColor(D3DCOLOR color)
+void CGUISpinControlEx::SettingsCategorySetSpinTextColor(const CGUIInfoColor &color)
 {
   m_label.textColor = color;
   m_label.focusedColor = color;

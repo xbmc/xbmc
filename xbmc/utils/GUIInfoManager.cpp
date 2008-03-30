@@ -134,8 +134,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   CStdString strCategory = strTest.Left(strTest.Find("."));
 
   // translate conditions...
-  if (strTest.Equals("false") || strTest.Equals("no") || strTest.Equals("off") || strTest.Equals("disabled")) ret = SYSTEM_ALWAYS_FALSE;
-  else if (strTest.Equals("true") || strTest.Equals("yes") || strTest.Equals("on") || strTest.Equals("enabled")) ret = SYSTEM_ALWAYS_TRUE;
+  if (strTest.Equals("false") || strTest.Equals("no") || strTest.Equals("off")) ret = SYSTEM_ALWAYS_FALSE;
+  else if (strTest.Equals("true") || strTest.Equals("yes") || strTest.Equals("on")) ret = SYSTEM_ALWAYS_TRUE;
   if (strCategory.Equals("player"))
   {
     if (strTest.Equals("player.hasmedia")) ret = PLAYER_HAS_MEDIA;
@@ -344,6 +344,15 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       return AddMultiInfo(GUIInfo(SYSTEM_GET_CORE_USAGE, atoi(strTest.Mid(17,strTest.size()-18)), 0));
     else if (strTest.Left(17).Equals("system.hascoreid("))
       return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_HAS_CORE_ID : SYSTEM_HAS_CORE_ID, ConditionalStringParameter(strTest.Mid(17,strTest.size()-18)), 0));
+  }
+  // library test conditions
+  else if (strTest.Left(7).Equals("library"))
+  {
+    if (strTest.Equals("library.hascontent(music)")) ret = LIBRARY_HAS_MUSIC;
+    else if (strTest.Equals("library.hascontent(video)")) ret = LIBRARY_HAS_VIDEO;
+    else if (strTest.Equals("library.hascontent(movies)")) ret = LIBRARY_HAS_MOVIES;
+    else if (strTest.Equals("library.hascontent(tvshows)")) ret = LIBRARY_HAS_TVSHOWS;
+    else if (strTest.Equals("library.hascontent(musicvideos)")) ret = LIBRARY_HAS_MUSICVIDEOS;
   }
   else if (strTest.Left(8).Equals("isempty("))
   {
@@ -562,6 +571,13 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("visualisation.preset")) ret = VISUALISATION_PRESET;
     else if (strTest.Equals("visualisation.name")) ret = VISUALISATION_NAME;
     else if (strTest.Equals("visualisation.enabled")) ret = VISUALISATION_ENABLED;
+  }
+  else if (strCategory.Equals("fanart"))
+  {
+    if (strTest.Equals("fanart.color1")) ret = FANART_COLOR1;
+    else if (strTest.Equals("fanart.color2")) ret = FANART_COLOR2;
+    else if (strTest.Equals("fanart.color3")) ret = FANART_COLOR3;
+    else if (strTest.Equals("fanart.image")) ret = FANART_IMAGE;
   }
   else if (strCategory.Equals("skin"))
   {
@@ -1284,6 +1300,34 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
       }
     }
     break;
+  case FANART_COLOR1:
+    {
+      CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      if (window)
+        return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("fanart_color1");
+    }
+    break;
+  case FANART_COLOR2:
+    {
+      CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      if (window)
+        return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("fanart_color2");
+    }
+    break;
+  case FANART_COLOR3:
+    {
+      CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      if (window)
+        return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("fanart_color3");
+    }
+    break;
+  case FANART_IMAGE:
+    {
+      CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      if (window)
+        return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("fanart_image");
+    }
+    break;
   }
 
   return strLabel;
@@ -1420,6 +1464,42 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
   }
   else if (condition == PLAYER_MUTED)
     bReturn = g_stSettings.m_bMute;
+  else if (condition == LIBRARY_HAS_MUSIC)
+  {
+    CMusicDatabase database;
+    database.Open();
+    bReturn = (database.GetSongsCount() > 0);
+    database.Close();
+    if (condition1 < 0) bReturn = !bReturn;
+    CacheBool(condition1,dwContextWindow,bReturn,true);
+  }
+  else if (condition >= LIBRARY_HAS_VIDEO &&
+      condition <= LIBRARY_HAS_MUSICVIDEOS)
+  {
+    CVideoDatabase database;
+    database.Open();
+    switch (condition)
+    {
+      case LIBRARY_HAS_VIDEO:
+        bReturn = (database.GetItemCount() > 0);
+        break;
+      case LIBRARY_HAS_MOVIES:
+        bReturn = (database.GetMovieCount() > 0);
+        break;
+      case LIBRARY_HAS_TVSHOWS:
+        bReturn = (database.GetTvShowCount() > 0);
+        break;
+      case LIBRARY_HAS_MUSICVIDEOS:
+        bReturn = (database.GetMusicVideoCount() > 0);
+        break;
+      default: // should never get here
+        bReturn = false;
+    }
+    database.Close();
+    // persistently cache return value
+    if (condition1 < 0) bReturn = !bReturn;
+    CacheBool(condition1,dwContextWindow,bReturn,true);
+  }
   else if (condition == SYSTEM_KAI_CONNECTED)
 #ifndef HAS_KAI
     bReturn = false;
@@ -3241,7 +3321,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
       CStdString strResult;
       if (item->GetVideoInfoTag()->m_iSpecialSortEpisode > 0)
         strResult.Format("S%d",item->GetVideoInfoTag()->m_iEpisode);
-      else
+      else if (item->GetVideoInfoTag()->m_iEpisode >= 0) // if m_iEpisode = -1 there's no episode detail
         strResult.Format("%d",item->GetVideoInfoTag()->m_iEpisode);
       return strResult;
     }
@@ -3252,7 +3332,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
       CStdString strResult;
       if (item->GetVideoInfoTag()->m_iSpecialSortSeason > 0)
         strResult.Format("%d",item->GetVideoInfoTag()->m_iSpecialSortSeason);
-      else
+      else if (item->GetVideoInfoTag()->m_iSeason >= 0) // if m_iSeason = -1 there's no season detail
         strResult.Format("%d",item->GetVideoInfoTag()->m_iSeason);
       return strResult;
     }
@@ -3382,13 +3462,22 @@ void CGUIInfoManager::ResetCache()
   m_containerMoves.clear();
 }
 
-inline void CGUIInfoManager::CacheBool(int condition, DWORD contextWindow, bool result)
+void CGUIInfoManager::ResetPersistentCache()
+{
+  CSingleLock lock(m_critInfo);
+  m_persistentBoolCache.clear();
+}
+
+inline void CGUIInfoManager::CacheBool(int condition, DWORD contextWindow, bool result, bool persistent)
 {
   // windows have id's up to 13100 or thereabouts (ie 2^14 needed)
   // conditionals have id's up to 100000 or thereabouts (ie 2^18 needed)
   CSingleLock lock(m_critInfo);
   int hash = ((contextWindow & 0x3fff) << 18) | (condition & 0x3ffff);
-  m_boolCache.insert(pair<int, bool>(hash, result));
+  if (persistent)
+    m_persistentBoolCache.insert(pair<int, bool>(hash, result));
+  else
+    m_boolCache.insert(pair<int, bool>(hash, result));
 }
 
 bool CGUIInfoManager::IsCached(int condition, DWORD contextWindow, bool &result) const
@@ -3400,6 +3489,12 @@ bool CGUIInfoManager::IsCached(int condition, DWORD contextWindow, bool &result)
   int hash = ((contextWindow & 0x3fff) << 18) | (condition & 0x3ffff);
   map<int, bool>::const_iterator it = m_boolCache.find(hash);
   if (it != m_boolCache.end())
+  {
+    result = (*it).second;
+    return true;
+  }
+  it = m_persistentBoolCache.find(hash);
+  if (it != m_persistentBoolCache.end())
   {
     result = (*it).second;
     return true;

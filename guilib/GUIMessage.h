@@ -60,6 +60,7 @@
 
 #define GUI_MSG_PAGE_UP      30 // page up
 #define GUI_MSG_PAGE_DOWN    31 // page down
+#define GUI_MSG_MOVE_OFFSET  32 // Instruct the contorl to MoveUp or MoveDown by offset amount
 
 #define GUI_MSG_USER         1000
 

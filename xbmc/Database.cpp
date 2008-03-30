@@ -26,6 +26,8 @@
 using namespace AUTOPTR;
 using namespace dbiplus;
 
+#define MAX_COMPRESS_COUNT 20
+
 CDatabase::CDatabase(void)
 {
   m_bOpen = false;
@@ -160,6 +162,7 @@ bool CDatabase::Open()
         version = m_pDS->fv("idVersion").get_asInteger();
       }
     }
+    CDatabase::UpdateOldVersion(version); // always call this
     if (version < m_version)
     {
       CLog::Log(LOGNOTICE, "Attempting to update the database %s from version %i to %i", m_strDatabaseFile.c_str(), version, m_version);
@@ -216,13 +219,29 @@ void CDatabase::Close()
   m_pDS2.reset();
 }
 
-bool CDatabase::Compress()
+bool CDatabase::Compress(bool bForce /* =true */)
 {
   // compress database
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
+    if (!bForce)
+    {
+      m_pDS->query("select iCompressCount from version");
+      if (!m_pDS->eof())
+      {
+        int iCount = m_pDS->fv(0).get_asInteger();
+        if (iCount > MAX_COMPRESS_COUNT)
+          iCount = -1;
+        m_pDS->close();
+        CStdString strSQL=FormatSQL("update version set iCompressCount=%i\n",++iCount);
+        m_pDS->exec(strSQL.c_str());
+        if (iCount != 0)
+          return true;
+      }
+    }
+
     if (!m_pDS->exec("vacuum\n"))
       return false;
   }
@@ -300,8 +319,8 @@ bool CDatabase::CreateTables()
     m_pDS->exec("PRAGMA default_cache_size=16384\n");
 
     CLog::Log(LOGINFO, "creating version table");
-    m_pDS->exec("CREATE TABLE version (idVersion integer)\n");
-    CStdString strSQL=FormatSQL("INSERT INTO version (idVersion) values(%i)\n", m_version);
+    m_pDS->exec("CREATE TABLE version (idVersion integer, iCompressCount integer)\n");
+    CStdString strSQL=FormatSQL("INSERT INTO version (idVersion,iCompressCount) values(%i,0)\n", m_version);
     m_pDS->exec(strSQL.c_str());
 
     return true;
@@ -309,6 +328,16 @@ bool CDatabase::CreateTables()
 
 bool CDatabase::UpdateOldVersion(int version)
 {
+  try
+  {
+    m_pDS->query("select iCompressCount from version");
+    return false;
+  }
+  catch(...)
+  {
+    // add compresscount field
+    m_pDS->exec("alter table version add iCompressCount integer\n");
+  }
   return false;
 }
 

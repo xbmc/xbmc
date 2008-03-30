@@ -2,6 +2,7 @@
 #include "GUIListItem.h"
 #include "guiImage.h"
 #include "GUIListItemLayout.h"
+#include "../xbmc/utils/Archive.h"
 
 CGUIListItem::CGUIListItem(const CGUIListItem& item)
 {
@@ -159,6 +160,45 @@ const CGUIListItem& CGUIListItem::operator =(const CGUIListItem& item)
   m_mapProperties = item.m_mapProperties;
   SetInvalid();
   return *this;
+}
+
+void CGUIListItem::Serialize(CArchive &ar)
+{
+  if (ar.IsStoring())
+  {
+    ar << m_bIsFolder;
+    ar << m_strLabel;
+    ar << m_strLabel2;
+    ar << m_strThumbnailImage;
+    ar << m_strIcon;
+    ar << m_bSelected;
+    ar << m_overlayIcon;
+    ar << m_mapProperties.size();
+    for (std::map<CStdString, CStdString>::const_iterator it = m_mapProperties.begin(); it != m_mapProperties.end(); it++)
+    {
+      ar << it->first;
+      ar << it->second;
+    }
+  }
+  else
+  {
+    ar >> m_bIsFolder;
+    ar >> m_strLabel;
+    ar >> m_strLabel2;
+    ar >> m_strThumbnailImage;
+    ar >> m_strIcon;
+    ar >> m_bSelected;
+    ar >> (int&)m_overlayIcon;
+    int mapSize;
+    ar >> mapSize;
+    for (int i = 0; i < mapSize; i++)
+    {
+      CStdString key, value;
+      ar >> key;
+      ar >> value;
+      SetProperty(key, value);
+    }
+  }
 }
 
 void CGUIListItem::FreeIcons()

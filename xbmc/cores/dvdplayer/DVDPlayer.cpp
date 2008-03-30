@@ -1285,7 +1285,8 @@ void CDVDPlayer::OnExit()
     m_pInputStream = NULL;
     m_pDemuxer = NULL;   
   }
-
+  // set event to inform openfile something went wrong in case openfile is still waiting for this event
+  SetEvent(m_hReadyEvent);
   if (m_pDlgCache)
   {
     m_pDlgCache->Close();
@@ -1530,27 +1531,21 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
 
   if (g_advancedSettings.m_videoUseTimeSeeking && GetTotalTime() > 2*g_advancedSettings.m_videoTimeSeekForwardBig)
   {
-    int seek = 0;
+    int seek;
     if (bLargeStep)
       seek = bPlus ? g_advancedSettings.m_videoTimeSeekForwardBig : g_advancedSettings.m_videoTimeSeekBackwardBig;
     else
       seek = bPlus ? g_advancedSettings.m_videoTimeSeekForward : g_advancedSettings.m_videoTimeSeekBackward;
-    // do the seek
     SeekTime(GetTime() + seek * 1000);
   }
   else
   {
-    float percent = GetPercentage();
+    float percent;
     if (bLargeStep)
-      percent += bPlus ? g_advancedSettings.m_videoPercentSeekForwardBig : g_advancedSettings.m_videoPercentSeekBackwardBig;
+      percent = bPlus ? g_advancedSettings.m_videoPercentSeekForwardBig : g_advancedSettings.m_videoPercentSeekBackwardBig;
     else
-      percent += bPlus ? g_advancedSettings.m_videoPercentSeekForward : g_advancedSettings.m_videoPercentSeekBackward;
-
-    if (percent >= 0 && percent <= 100)
-    {
-      // should be modified to seektime
-      SeekPercentage(percent);
-    }
+      percent = bPlus ? g_advancedSettings.m_videoPercentSeekForward : g_advancedSettings.m_videoPercentSeekBackward;
+    SeekPercentage(GetPercentage() + percent);
   }
 
   m_tmLastSeek = time(NULL);
@@ -1738,9 +1733,7 @@ void CDVDPlayer::SetAudioStream(int iStream)
 
 void CDVDPlayer::SeekTime(__int64 iTime)
 {
-  if(iTime<0) 
-    iTime = 0;
-  m_messenger.Put(new CDVDMsgPlayerSeek((int)iTime, true));
+  m_messenger.Put(new CDVDMsgPlayerSeek((int)iTime, true, true, false));
   SyncronizeDemuxer(100);
   m_tmLastSeek = time(NULL);
 }
@@ -2397,7 +2390,7 @@ bool CDVDPlayer::GetCurrentSubtitle(CStdString& strSubtitle)
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
     return false;
 
-  return m_dvdPlayerSubtitle.GetCurrentSubtitle(strSubtitle, pts);
+  return m_dvdPlayerSubtitle.GetCurrentSubtitle(strSubtitle, pts - m_dvdPlayerVideo.GetSubtitleDelay());
 }
 
 CStdString CDVDPlayer::GetPlayerState()

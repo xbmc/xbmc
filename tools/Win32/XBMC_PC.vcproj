@@ -1791,6 +1791,12 @@
 					RelativePath="..\..\xbmc\utils\EventServer.h">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\Fanart.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\Fanart.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\Favourites.cpp">
 				</File>
 				<File

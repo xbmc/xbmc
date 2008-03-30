@@ -37,7 +37,7 @@ public:
   virtual float GetHeight() const { return m_buttonControl.GetHeight();};
   virtual void SetHeight(float height);
   virtual void SetEnabled(bool bEnable);
-  virtual void SetColorDiffuse(D3DCOLOR color);
+  virtual void SetColorDiffuse(const CGUIInfoColor &color);
 
   void SetText(const std::string &label) {m_buttonControl.SetLabel(label);};
   virtual float GetXPosition() const { return m_buttonControl.GetXPosition();};

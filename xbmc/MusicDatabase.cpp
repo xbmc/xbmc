@@ -3055,20 +3055,8 @@ bool CMusicDatabase::GetArtistPath(long idArtist, CStdString &basePath)
       if (basePath.IsEmpty())
         basePath = path;
       else
-      {
-        // find the common path of basePath and path
-        unsigned int i = 1;
-        while (i <= min(basePath.size(), path.size()) && strnicmp(basePath.c_str(), path.c_str(), i) == 0)
-          i++;
-        basePath = basePath.Left(i - 1);
-        // they should at least share a / at the end, though for things such as path/cd1 and path/cd2 there won't be
-        if (!CUtil::HasSlashAtEnd(basePath))
-        {
-          // currently GetDirectory() removes trailing slashes
-          CUtil::GetDirectory(basePath, basePath);
-          CUtil::AddSlashAtEnd(basePath);
-        }
-      }
+        CUtil::GetCommonPath(basePath,path);
+
       m_pDS->next();
     }
 

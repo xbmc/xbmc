@@ -910,7 +910,7 @@ void CGUISpinControl::SendPageChange()
   SendWindowMessage(message);
 }
 
-void CGUISpinControl::SetColorDiffuse(D3DCOLOR color)
+void CGUISpinControl::SetColorDiffuse(const CGUIInfoColor &color)
 {
   CGUIControl::SetColorDiffuse(color);
   m_imgspinDownFocus.SetColorDiffuse(color);

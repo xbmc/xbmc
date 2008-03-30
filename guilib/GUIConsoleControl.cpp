@@ -10,14 +10,16 @@
 CGUIConsoleControl::CGUIConsoleControl(DWORD dwParentID, DWORD dwControlId,
                                        float posX, float posY, float width, float height,
                                        const CLabelInfo& labelInfo,
-                                       D3DCOLOR dwPenColor1, D3DCOLOR dwPenColor2, D3DCOLOR dwPenColor3, D3DCOLOR dwPenColor4)
+                                       const CGUIInfoColor &penColor1, const CGUIInfoColor &penColor2, const CGUIInfoColor &penColor3, const CGUIInfoColor &penColor4)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {
   m_label = labelInfo;
-  m_palette.push_back(dwPenColor1);
-  m_palette.push_back(dwPenColor2);
-  m_palette.push_back(dwPenColor3);
-  m_palette.push_back(dwPenColor4);
+  // TODO: conversion from infocolor -> fixed color occurs here. This will need remedying if Kai
+  //       (or this control) is resurrected.
+  m_palette.push_back(penColor1);
+  m_palette.push_back(penColor2);
+  m_palette.push_back(penColor3);
+  m_palette.push_back(penColor4);
 
   if (m_label.font)
     m_fFontHeight = m_label.font->GetLineHeight();
