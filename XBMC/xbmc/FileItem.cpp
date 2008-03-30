@@ -2364,7 +2364,7 @@ CStdString CFileItem::GetCachedVideoFanart()
 
   CStdString thumb;
   thumb.Format("%s\\%08x.tbn", g_settings.GetVideoFanartFolder().c_str(),(unsigned __int32)crc);
-  return thumb;
+  return _P(thumb);
 }
 
 CStdString CFileItem::GetCachedProgramThumb()
