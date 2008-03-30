@@ -448,6 +448,7 @@ public:
   CStdString GetProfilesThumbFolder() const;
   CStdString GetSourcesFile() const;
   CStdString GetSkinFolder() const;
+  CStdString GetVideoFanartFolder() const;
 
   CStdString GetSettingsFile() const;
   CStdString GetAvpackSettingsFile() const;

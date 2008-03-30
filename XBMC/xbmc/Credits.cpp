@@ -1473,7 +1473,7 @@ void GetCreditsTextExtent(CGUIFont *font, const wchar_t *text, float &width, flo
   // this is really hacky, but the credits need a redesign at some point anyway :p
   if (!font) return;
   CStdString utf8;
-  g_charsetConverter.utf16toUTF8(text, utf8);
+  g_charsetConverter.wToUTF8(text, utf8);
   CGUITextLayout layout(font, false);
   layout.Update(utf8);
   layout.GetTextExtent(width, height);
@@ -1482,7 +1482,7 @@ void GetCreditsTextExtent(CGUIFont *font, const wchar_t *text, float &width, flo
 LPDIRECT3DTEXTURE8 CreateCreditsTexture(CGUIFont *font, const wchar_t *text)
 {
   CStdString utf8;
-  g_charsetConverter.utf16toUTF8(text, utf8);
+  g_charsetConverter.wToUTF8(text, utf8);
   CGUITextLayout layout(font, false);
   layout.Update(utf8);
 

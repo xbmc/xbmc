@@ -26,7 +26,7 @@ public:
   CGUIControl* Create(DWORD dwParentId, const FRECT &rect, TiXmlElement* pControlNode);
   void ScaleElement(TiXmlElement *element, RESOLUTION fileRes, RESOLUTION destRes);
   static bool GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value);
-  static bool GetAspectRatio(const TiXmlNode* pRootNode, const char* strTag, CGUIImage::GUIIMAGE_ASPECT_RATIO &aspectRatio, DWORD &aspectAlign);
+  static bool GetAspectRatio(const TiXmlNode* pRootNode, const char* strTag, CGUIImage::CAspectRatio &aspectRatio);
   static bool GetTexture(const TiXmlNode* pRootNode, const char* strTag, CImage &image);
   static bool GetAlignment(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment);
   static bool GetAlignmentY(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment);
@@ -34,6 +34,7 @@ public:
   static void GetInfoLabel(const TiXmlNode *pControlNode, const CStdString &labelTag, CGUIInfoLabel &infoLabel);
   static void GetInfoLabels(const TiXmlNode *pControlNode, const CStdString &labelTag, std::vector<CGUIInfoLabel> &infoLabels);
   static bool GetColor(const TiXmlNode* pRootNode, const char* strTag, DWORD &value);
+  static bool GetInfoColor(const TiXmlNode* pRootNode, const char* strTag, CGUIInfoColor &value);
   static CStdString GetLabel(const CStdString &label);
   static bool GetConditionalVisibility(const TiXmlNode* control, int &condition);
   static bool GetMultipleString(const TiXmlNode* pRootNode, const char* strTag, std::vector<CStdString>& vecStringValue);

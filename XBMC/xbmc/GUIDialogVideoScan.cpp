@@ -29,6 +29,7 @@
 #define CONTROL_LABELDIRECTORY    402
 #define CONTROL_PROGRESS          403
 #define CONTROL_CURRENT_PROGRESS  404
+#define CONTROL_LABELTITLE        405
 
 using namespace VIDEO;
 
@@ -51,6 +52,7 @@ bool CGUIDialogVideoScan::OnMessage(CGUIMessage& message)
       CGUIDialog::OnMessage(message);
 
       m_strCurrentDir.Empty();
+      m_strTitle.Empty();
 
       m_fPercentDone=-1.0f;
       m_fCurrentPercentDone=-1.0f;
@@ -102,6 +104,12 @@ void CGUIDialogVideoScan::OnSetCurrentProgress(int currentItem, int itemCount)
   if (m_fCurrentPercentDone>100.0F) m_fCurrentPercentDone=100.0F;
 }
 
+void CGUIDialogVideoScan::OnSetTitle(const CStdString& strTitle)
+{
+  CSingleLock lock (m_critical);
+
+  m_strTitle = strTitle;
+}
 
 void CGUIDialogVideoScan::StartScanning(const CStdString& strDirectory, const SScraperInfo& info, const SScanSettings& settings, bool bUpdateAll)
 {
@@ -165,6 +173,7 @@ void CGUIDialogVideoScan::UpdateState()
     CUtil::UrlDecode(strStrippedPath);
 
     SET_CONTROL_LABEL(CONTROL_LABELDIRECTORY, strStrippedPath);
+    SET_CONTROL_LABEL(CONTROL_LABELTITLE, m_strTitle);
 
     if (m_fCurrentPercentDone>-1.0f)
     {
@@ -182,6 +191,7 @@ void CGUIDialogVideoScan::UpdateState()
   else
   {
     SET_CONTROL_LABEL(CONTROL_LABELDIRECTORY, "");
+    SET_CONTROL_LABEL(CONTROL_LABELTITLE, "");
     SET_CONTROL_HIDDEN(CONTROL_PROGRESS);
     SET_CONTROL_HIDDEN(CONTROL_CURRENT_PROGRESS);
   }

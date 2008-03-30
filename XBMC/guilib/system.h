@@ -48,11 +48,7 @@
 #define HAS_TRAINER
 #undef  HAS_SDL
 #define HAS_AUDIO
-#define HAS_SHOUTCAST
-#define HAS_RAR
-#define HAS_CCXSTREAM
-#undef  HAS_LIRC
-#define HAS_KAI
+#define HAS_EVENT_SERVER
 #else
 #undef HAS_XBOX_D3D
 #undef HAS_RAM_CONTROL

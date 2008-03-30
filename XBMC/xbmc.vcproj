@@ -425,7 +425,19 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\CueDocument.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\utils\EventClient.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\EventPacket.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\EventServer.cpp">
+			</File>
+			<File
 				RelativePath=".\xbmc\KaiItem.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\Socket.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\stdafx.cpp">
@@ -462,6 +474,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\PluginSettings.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\ScraperSettings.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\ScraperSettings.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\Settings.cpp">
@@ -861,6 +879,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\utils\Event.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\Fanart.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\Fanart.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\utils\FanController.cpp">
@@ -2577,6 +2601,15 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\utils\Event.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\utils\EventClient.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\EventPacket.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\EventServer.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\FileSystem\FactoryDirectory.h">
 			</File>
 			<File
@@ -2986,6 +3019,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\Sntp.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\Socket.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\Song.h">
@@ -3623,6 +3659,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					</File>
 					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParser.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserMicroDVD.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserMicroDVD.h">
 					</File>
 					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserSubrip.cpp">

@@ -9,6 +9,10 @@
 #endif
 #pragma once
 
+#ifdef HAS_EVENT_SERVER
+#include "utils/EventClient.h"
+#endif
+
 struct CButtonAction
 {
   WORD wID;

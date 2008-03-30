@@ -34,9 +34,7 @@ namespace PYXBMC
       // that wchar_t is 2 bytes and linux is actually 4 bytes. That's why
       // so building a CStdStringW will not work
       CStdString utf8String;
-      CStdStringW utf16String = (wchar_t*) PyUnicode_AsUnicode(pObject);
-      //CStdStringW utf16String = (wchar_t*) PyUnicodeUCS4_AsUnicode(pObject);
-      g_charsetConverter.wToUTF8(utf16String, utf8String);
+      g_charsetConverter.wToUTF8(PyUnicode_AsUnicode(pObject), utf8String);
       buf = utf8String;
       return 1;
     }

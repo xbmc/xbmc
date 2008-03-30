@@ -6,6 +6,7 @@
 #include "utils/log.h"
 #include "utils/CharsetConverter.h"
 #include "Util.h"
+#include "Picture.h"
 
 #include <sstream>
 
@@ -43,6 +44,7 @@ void CVideoInfoTag::Reset()
   m_fRating = 0.0f;
   m_iDbId = -1;
   m_iBookmarkId = -1;
+  m_fanart.m_xml = "";
 
   m_bWatched = false;
 }
@@ -76,6 +78,12 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   XMLUtils::SetString(movie, "tagline", m_strTagLine);
   XMLUtils::SetString(movie, "runtime", m_strRuntime);
   XMLUtils::SetString(movie, "thumb", m_strPictureURL.m_xml);
+  if (m_fanart.m_xml.size())
+  {
+    TiXmlDocument doc;
+    doc.Parse(m_fanart.m_xml);
+    movie->InsertEndChild(*doc.RootElement());
+  }
   XMLUtils::SetString(movie, "mpaa", m_strMPAARating);
   XMLUtils::SetBoolean(movie, "watched", m_bWatched);
   if (savePathInfo)
@@ -305,6 +313,13 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
     }
   }
 
+  // fanart
+  const TiXmlElement *fanart = movie->FirstChildElement("fanart");
+  if (fanart)
+  {
+    m_fanart.m_xml << *fanart;
+    m_fanart.Unpack();
+  }
   return true;
 }
 
@@ -320,6 +335,7 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar << m_strPlot;
     ar << m_strPictureURL.m_spoof;
     ar << m_strPictureURL.m_xml;
+    ar << m_fanart.m_xml;
     ar << m_strTitle;
     ar << m_strVotes;
     ar << m_strStudio;
@@ -371,6 +387,8 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar >> m_strPictureURL.m_spoof;
     ar >> m_strPictureURL.m_xml;
     m_strPictureURL.Parse();
+    ar >> m_fanart.m_xml;
+    m_fanart.Unpack();
     ar >> m_strTitle;
     ar >> m_strVotes;
     ar >> m_strStudio;

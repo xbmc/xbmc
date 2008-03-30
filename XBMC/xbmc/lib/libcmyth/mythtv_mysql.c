@@ -1047,12 +1047,13 @@ cmyth_chanlist_t cmyth_mysql_get_chanlist(cmyth_database_t db)
 }
 
 
-extern int cmyth_livetv_keep_recording(cmyth_recorder_t rec, cmyth_database_t db, int keep)
+int cmyth_livetv_keep_recording(cmyth_recorder_t rec, cmyth_database_t db, int keep)
 {
 	cmyth_proginfo_t prog;
 	int autoexpire;
 	const char* recgroup;
 	cmyth_mysql_query_t * query;
+	MYSQL_RES *res= NULL;
 	char timestamp[CMYTH_TIMESTAMP_LEN+1];
 
 	if(cmyth_db_check_connection(db) != 0)
@@ -1096,8 +1097,8 @@ extern int cmyth_livetv_keep_recording(cmyth_recorder_t rec, cmyth_database_t db
 	query = cmyth_mysql_query_create(db,"UPDATE recorded SET autoexpire = ?, recgroup = ? WHERE chanid = ? AND starttime = ?");
 
 	if(cmyth_mysql_query_param_long(query,autoexpire) < 0
-	|| cmyth_mysql_query_param_str(query,recgroup) < 0
-	|| cmyth_mysql_query_param_long(query,prog->proginfo_chanId) < 0
+	 || cmyth_mysql_query_param_str(query,recgroup) < 0
+	 || cmyth_mysql_query_param_long(query,prog->proginfo_chanId) < 0
         || cmyth_mysql_query_param_str(query,timestamp) < 0)
 	{
 		cmyth_dbg(CMYTH_DBG_ERROR,"%s, binding of query parameters failed! Maybe we're out of memory?\n", __FUNCTION__);

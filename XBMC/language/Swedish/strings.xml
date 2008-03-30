@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
-<!--Email: blittan@xboxmediacenter.com-->
-<!--Date of translation: 03/01/2008-->
+<!--Email: blittan@xbmc.org-->
+<!--Date of translation: 03/27/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 11819-->
+<!--Based on english strings version 12300-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -542,6 +542,7 @@
   <string id="658">Låtinformation</string>
   <string id="659">Kommentar:</string>
   <string id="660">Volymförstärkning</string>
+  <string id="661">Välj exporteringsmapp</string>
   <string id="700">Rensar bibliotek</string>
   <string id="701">Radera gamla låtar från databasen</string>
   <string id="702">Denna sökväg har skannats tidigare.</string>
@@ -611,6 +612,14 @@
   <string id="772">Ljudhårdvara</string>
   <string id="773">Söker</string>
   <string id="774">Mapp för bildspel-skärmsläckare</string>
+  <string id="790">Fjärrhändelser</string>
+  <string id="791">Aktivera fjärrhändelser</string>
+  <string id="792">Port för Fjärrhändelser</string>
+  <string id="793">Portområde för fjärrhändelser</string>
+  <string id="794">Ta emot händelser från andra datorer</string>
+  <string id="795">Begynnande repetitionsfördröjning (ms)</string>
+  <string id="796">Kontinuerligt repititionsfördröjning (ms)</string>
+  <string id="797">Maximalt antal klienter</string>
   <string id="998">XLink Kai</string>
   <string id="999">Online Spel</string>
   <string id="1000">Förhandsgranska skärmsläckare</string>
@@ -691,12 +700,12 @@
   <string id="1246">FTP Lösenord</string>
   <string id="1247">Användarlösenord sparat!</string>
   <string id="1250">Autodetektering</string>
-  <string id="1251">Autodetektera XBOX</string>
-  <string id="1252">XBOXsmeknamn</string>
+  <string id="1251">Autodetektera system</string>
+  <string id="1252">Smeknamn</string>
   <string id="1254">Popup meddelande</string>
   <string id="1255">Skicka FTP användare och lösenord</string>
   <string id="1256">Ping intervall (sek)</string>
-  <string id="1257">Vill du ansluta till den autoupptäckta XBOXen?</string>
+  <string id="1257">Vill du ansluta till det autodetekterade systemet?</string>
   <string id="1396">Blåsigt</string>
   <string id="1397">och</string>
   <string id="1398">Nollgradigt</string>
@@ -816,14 +825,14 @@
   <string id="12344">Lösenordet matchade inte det första.</string>
   <string id="12345">Åtkomst nekad</string>
   <string id="12346">Antal lösenordsförsök har överstigits.</string>
-  <string id="12347">XBOXen kommer nu stängas av.</string>
+  <string id="12347">Systemet kommer nu stängas av.</string>
   <string id="12348">Objekt låst</string>
   <string id="12353">Återaktivera lås</string>
   <string id="12356">Byt lås</string>
   <string id="12357">Käll-lås</string>
   <string id="12358">Inga tecken angivna. Försök igen.</string>
   <string id="12360">Huvudlås</string>
-  <string id="12362">Stäng av XBOXen om låsförsök överskrids</string>
+  <string id="12362">Stäng av systemet om låsförsök överskrids</string>
   <string id="12367">Huvudkoden är ogiltig!</string>
   <string id="12368">Var god ange korrekt huvudkod!</string>
   <string id="12373">Inställningar &amp; Filhanterare</string>
@@ -901,7 +910,7 @@
   <string id="13253">Avbryt flyttning</string>
   <string id="13270">Hårdvara:</string>
   <string id="13271">CPU användning:</string>
-  <string id="13274">XBOXen är ansluten, men ingen DNS är tillgänglig.</string>
+  <string id="13274">Ansluten, men ingen DNS är tillgänglig.</string>
   <string id="13275">Hårddisk</string>
   <string id="13276">DVDRom</string>
   <string id="13277">Lagring</string>
@@ -923,8 +932,8 @@
   <string id="13293">Film &amp; XBE region:</string>
   <string id="13294">DVD-region:</string>
   <string id="13295">Internet:</string>
-  <string id="13296">XBOX uppkopplad.</string>
-  <string id="13297">XBOX inte uppkopplad. Kontrollera nätverksinställningar.</string>
+  <string id="13296">Uppkopplad.</string>
+  <string id="13297">Inte uppkopplad. Kontrollera nätverksinställningar.</string>
   <string id="13298">XBLIVE nyckel:</string>
   <string id="13299">Måltemperatur</string>
   <string id="13300">Fläktfart</string>
@@ -935,7 +944,7 @@
   <string id="13305">Aktivera RSS-nyheter</string>
   <string id="13306">Göm föremål i övermappen</string>
   <string id="13307">Låtnamn enligt</string>
-  <string id="13308">Vill du starta om XBOX</string>
+  <string id="13308">Vill du starta om systemet</string>
   <string id="13309">istället för endast XBMC?</string>
   <string id="13310">Zoomeffekt</string>
   <string id="13311">Flyteffekt</string>
@@ -1578,9 +1587,11 @@ den här visualiseringen</string>
   <string id="20406">Lägg till avsnittsbokmärke</string>
   <string id="20407">Scraper-inställningar</string>
   <string id="20408">Hämtar Musikvideo-information</string>
-  <string id="20409">Hämtar TV serie-information</string>
+  <string id="20409">Hämtar TV-serieinformation</string>
   <string id="20410">Trailer</string>
   <string id="20411">Lägg ihop</string>
+  <string id="20412">Lägg ihop TV-serie om endast ett avsnitt</string>
+  <string id="20413">Hämta Fan-konst</string>
   <string id="21330">Visa dolda filer och mappar</string>
   <string id="21331">TuxBox klient</string>
   <string id="21332">VARNING: Vald TuxBox enhet är i inspelningsläge!</string>

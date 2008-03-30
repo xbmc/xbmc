@@ -84,7 +84,7 @@ void CGUIFadeLabelControl::Render()
   {
     vector<DWORD> text;
     m_textLayout.GetFirstText(text);
-    if (m_scrollInfo.characterPos)
+    if (m_scrollInfo.characterPos && m_scrollInfo.characterPos < text.size())
       text.erase(text.begin(), text.begin() + m_scrollInfo.characterPos - 1);
     if (m_label.font->GetTextWidth(text) < m_width)
     {
