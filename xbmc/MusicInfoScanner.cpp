@@ -712,7 +712,10 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
     return false;
 
   if (m_pObserver)
+  {
     m_pObserver->OnStateChanged(DOWNLOADING_ALBUM_INFO);
+    m_pObserver->OnDirectoryChanged(strAlbum);
+  }
 
   CMusicInfoScraper scraper(info);
 
@@ -836,7 +839,10 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
     return false;
 
   if (m_pObserver)
+  {
     m_pObserver->OnStateChanged(DOWNLOADING_ARTIST_INFO);
+    m_pObserver->OnDirectoryChanged(strArtist);  
+  }
 
   CMusicInfoScraper scraper(info);
   // handle nfo files
