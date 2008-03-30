@@ -256,8 +256,9 @@ CGUISettings::CGUISettings(void)
   AddBool(3,"musiclibrary.autoalbuminfo", 20192, false);
   AddBool(4,"musiclibrary.autoartistinfo", 20193, false);
   AddString(5, "musiclibrary.defaultscraper", 20194, "Allmusic", SPIN_CONTROL_TEXT);
-  AddSeparator(6,"musiclibrary.sep2");
-  AddString(7, "musiclibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
+  AddBool(6, "musiclibrary.updateonstartup", 22000, false);
+  AddSeparator(7,"musiclibrary.sep2");
+  AddString(8, "musiclibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(3, "musicplayer", 16003);
   AddString(1, "musicplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
