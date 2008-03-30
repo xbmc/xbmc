@@ -437,7 +437,7 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CArtist& artist, const CStdString
     else
     {
       // failed 2 download album info
-      CGUIDialogOK::ShowAndGetInput(185, 0, 500, 0);
+      CGUIDialogOK::ShowAndGetInput(21889, 0, 20199, 0);
     }
   }
 
@@ -737,132 +737,13 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
 
   try
   {
-    CMusicInfoScraper scraper(info);
-    scraper.FindAlbuminfo(strAlbum, strArtist);
-
-    while (!scraper.Completed())
-    {
-      if (m_dlgProgress && m_dlgProgress->IsDialogRunning())
-      {
-        if (m_dlgProgress->IsCanceled())
-          scraper.Cancel();
-        m_dlgProgress->Progress();
-      }
-      Sleep(1);
-    }
-
-    if (scraper.Successfull())
-    {
-      // did we found at least 1 album?
-      int iAlbumCount = scraper.GetAlbumCount();
-      if (iAlbumCount >= 1)
-      {
-        //yes
-        // if we found more then 1 album, let user choose one
-        int iSelectedAlbum = 0;
-        if (iAlbumCount > 1)
-        {
-          //show dialog with all albums found
-          CGUIDialogSelect *pDlg = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
-          if (pDlg)
-          {
-            pDlg->SetHeading(g_localizeStrings.Get(181).c_str());
-            pDlg->Reset();
-            pDlg->EnableButton(true);
-            pDlg->SetButtonLabel(413); // manual
-
-            int bestMatch = -1;
-            double minRelevance = (allowSelection == SELECTION_AUTO) ? 0.95 : 1.0;
-            double bestRelevance = 0;
-            double secondBestRelevance = 0;
-            for (int i = 0; i < iAlbumCount; ++i)
-            {
-              CMusicAlbumInfo& info = scraper.GetAlbum(i);
-              double relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, strAlbum, info.GetAlbum().strArtist, strArtist);
-
-              // if we're doing auto-selection (ie querying all albums at once, then allow 95->100% for perfect matches)
-              // otherwise, perfect matches only
-              if (relevance >= max(minRelevance, bestRelevance))
-              { // we auto-select the best of these
-                secondBestRelevance = bestRelevance;
-                bestRelevance = relevance;
-                bestMatch = i;
-              }
-
-              // set the label to [relevance]  album - artist
-              CStdString strTemp;
-              strTemp.Format("[%0.2f]  %s", relevance, info.GetTitle2());
-              CFileItem item(strTemp);
-              item.m_idepth = i; // use this to hold the index of the album in the scraper
-              pDlg->Add(&item);
-            }
-            if (bestMatch > -1 && bestRelevance != secondBestRelevance && allowSelection != SELECTION_FORCED)
-            { // autochoose the single best matching item
-              iSelectedAlbum = bestMatch;
-            }
-            else if (allowSelection == SELECTION_AUTO)
-            { //  nothing found, or two best matches to choose from
-              return false;
-            }
-            else
-            { // let the user choose
-              pDlg->Sort(false);
-              pDlg->DoModal();
-
-              // and wait till user selects one
-              if (pDlg->GetSelectedLabel() < 0) 
-              { // none chosen
-                if (!pDlg->IsButtonPressed()) return false;
-                // manual button pressed
-                CStdString strNewAlbum = strAlbum;
-                if (!CGUIDialogKeyboard::ShowAndGetInput(strNewAlbum, g_localizeStrings.Get(16011), false)) return false;
-                if (strNewAlbum == "") return false;
-
-                CStdString strNewArtist = strArtist;
-                if (!CGUIDialogKeyboard::ShowAndGetInput(strNewArtist, g_localizeStrings.Get(16025), false)) return false;
-
-                if (m_dlgProgress)
-                {
-                  m_dlgProgress->SetLine(0, strNewAlbum);
-                  m_dlgProgress->SetLine(1, strNewArtist);
-                  m_dlgProgress->Progress();
-                }
-                return FindAlbumInfo(strNewAlbum, strNewArtist, album, info, allowSelection);
-              }
-              iSelectedAlbum = pDlg->GetSelectedItem().m_idepth;
-            }
-          }
-        }
-
-        // ok, downloading the album info
-        scraper.LoadAlbuminfo(iSelectedAlbum);
-
-        while (!scraper.Completed())
-        {
-          if (m_dlgProgress)
-          {
-            if (m_dlgProgress->IsCanceled())
-              scraper.Cancel();
-            m_dlgProgress->Progress();
-          }
-          Sleep(1);
-        }
-
-        if (scraper.Successfull())
-          album = scraper.GetAlbum(iSelectedAlbum);
-
-        return scraper.Successfull();
-      }
-      else
-      { // no albums found
+    CMusicInfoScanner scanner;
+    CStdString strPath;
+    strPath.Format("musicdb://3/%u/",m_musicdatabase.GetAlbumByName(strAlbum,strArtist));
+    if (!scanner.DownloadAlbumInfo(strPath,strArtist,strAlbum,m_dlgProgress))
+    { // no albums found
         CGUIDialogOK::ShowAndGetInput(185, 0, 187, 0);
         return false;
-      }
-    }
-
-    if (!scraper.IsCanceled() && allowSelection != SELECTION_AUTO)
-    { // unable 2 connect to www.allmusic.com
-      CGUIDialogOK::ShowAndGetInput(185, 0, 499, 0);
     }
   }
   catch (...)
@@ -890,116 +771,14 @@ bool CGUIWindowMusicBase::FindArtistInfo(const CStdString& strArtist, CMusicArti
     m_dlgProgress->StartModal();
   }
 
-  try
-  {
-    Sleep(1);
-    CMusicInfoScraper scraper(info);
-    scraper.FindArtistinfo(strArtist);
-
-    while (!scraper.Completed())
-    {
-      if (m_dlgProgress && m_dlgProgress->IsDialogRunning())
-      {
-        if (m_dlgProgress->IsCanceled())
-          scraper.Cancel();
-        m_dlgProgress->Progress();
-      }
-      Sleep(1);
-    }
-
-    if (scraper.Successfull())
-    {
-      // did we found at least 1 album?
-      int iArtistCount = scraper.GetArtistCount();
-      if (iArtistCount >= 1)
-      {
-        //yes
-        // if we found more then 1 album, let user choose one
-        int iSelectedArtist = 0;
-        if (iArtistCount > 1)
-        {
-          //show dialog with all artists found
-          CGUIDialogSelect *pDlg = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
-          if (pDlg)
-          {
-            pDlg->SetHeading(g_localizeStrings.Get(21890));
-            pDlg->Reset();
-            pDlg->EnableButton(true);
-            pDlg->SetButtonLabel(413); // manual
-
-            for (int i = 0; i < iArtistCount; ++i)
-            {
-              // set the label to artist
-              CFileItem item(scraper.GetArtist(i).GetArtist());
-              CStdString strTemp=scraper.GetArtist(i).GetArtist().strArtist;
-              if (!scraper.GetArtist(i).GetArtist().strBorn.IsEmpty())
-                strTemp += " ("+scraper.GetArtist(i).GetArtist().strBorn+")";
-              if (!scraper.GetArtist(i).GetArtist().strGenre.IsEmpty())
-                strTemp.Format("[%s] %s",scraper.GetArtist(i).GetArtist().strGenre.c_str(),strTemp.c_str());
-              item.SetLabel(strTemp);
-              item.m_idepth = i; // use this to hold the index of the album in the scraper
-              pDlg->Add(&item);
-            }
-            pDlg->DoModal();
-
-            // and wait till user selects one
-            if (pDlg->GetSelectedLabel() < 0) 
-            { // none chosen
-              if (!pDlg->IsButtonPressed()) return false;
-              // manual button pressed
-              CStdString strNewArtist = strArtist;
-              if (!CGUIDialogKeyboard::ShowAndGetInput(strNewArtist, g_localizeStrings.Get(16025), false)) return false;
-
-              if (m_dlgProgress)
-              {
-                m_dlgProgress->SetLine(0, strNewArtist);
-                m_dlgProgress->Progress();
-              }
-              return FindArtistInfo(strNewArtist, artist, info, allowSelection);
-            }
-            iSelectedArtist = pDlg->GetSelectedItem().m_idepth;
-          }
-        }
-
-        // ok, downloading the album info
-        scraper.LoadArtistinfo(iSelectedArtist);
-
-        while (!scraper.Completed())
-        {
-          if (m_dlgProgress)
-          {
-            if (m_dlgProgress->IsCanceled())
-              scraper.Cancel();
-            m_dlgProgress->Progress();
-          }
-          Sleep(1);
-        }
-
-        if (scraper.Successfull())
-          artist = scraper.GetArtist(iSelectedArtist);
-
-        return scraper.Successfull();
-      }
-      else
-      { // no albums found
-        CGUIDialogOK::ShowAndGetInput(185, 0, 187, 0);
-        return false;
-      }
-    }
-
-    if (!scraper.IsCanceled() && allowSelection != SELECTION_AUTO)
-    { // unable 2 connect to www.allmusic.com
-      CGUIDialogOK::ShowAndGetInput(185, 0, 499, 0);
-    }
+  CMusicInfoScanner scanner;
+  CStdString strPath;
+  strPath.Format("musicdb://2/%u/",m_musicdatabase.GetArtistByName(strArtist));
+  if (!scanner.DownloadArtistInfo(strPath,strArtist,m_dlgProgress))
+  { // no albums found
+    CGUIDialogOK::ShowAndGetInput(21889, 0, 20198, 0);
+    return false;
   }
-  catch (...)
-  {
-    if (m_dlgProgress && m_dlgProgress->IsDialogRunning())
-      m_dlgProgress->Close();
-
-    CLog::Log(LOGERROR, "Exception while downloading artist info");
-  }
-  return false;
 }
 
 void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &buttons)

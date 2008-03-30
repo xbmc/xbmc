@@ -36,6 +36,8 @@ public:
   static void CheckForVariousArtists(VECSONGS &songs);
   static bool HasSingleAlbum(const VECSONGS &songs, CStdString &album, CStdString &artist);
 
+  bool DownloadAlbumInfo(const CStdString& strPath, const CStdString& strArtist, const CStdString& strAlbum, CGUIDialogProgress* pDialog=NULL);
+  bool DownloadArtistInfo(const CStdString& strPath, const CStdString& strArtist, CGUIDialogProgress* pDialog=NULL);
 protected:
   virtual void Process();
   int RetrieveMusicInfo(CFileItemList& items, const CStdString& strDirectory);
@@ -43,8 +45,6 @@ protected:
   int GetPathHash(const CFileItemList &items, CStdString &hash);
 
   bool DoScan(const CStdString& strDirectory);
-  bool DownloadAlbumInfo(const CStdString& strPath, const CStdString& strArtist, const CStdString& strAlbum);
-  bool DownloadArtistInfo(const CStdString& strPath, const CStdString& strArtist);
 
   virtual void Run();
   int CountFiles(const CFileItemList& items, bool recursive);
