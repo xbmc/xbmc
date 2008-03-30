@@ -132,7 +132,7 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAdres
 #else
   CStdString suffix = g_guiSettings.GetString("network.dnssuffix");
   CStdString fqdn;
-  if( suffix.length() > 0 )
+  if( suffix.length() > 0 && strHostName.Find(".") >= 0)
     fqdn = strHostName + "." + suffix;
   else
     fqdn = strHostName;
