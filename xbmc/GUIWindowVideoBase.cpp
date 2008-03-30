@@ -178,7 +178,9 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
           CStdString strDir;
           if (iItem < 0 || iItem >= m_vecItems.Size())
             return false;
-          if (!m_vecItems.IsPluginFolder())
+          if (m_vecItems.IsPluginFolder() || m_vecItems.IsMythTV())
+            info.strContent = "plugin";
+          else
           {
           if (m_vecItems[iItem]->IsVideoDb() && m_vecItems[iItem]->HasVideoInfoTag() && !m_vecItems[iItem]->GetVideoInfoTag()->m_strPath.IsEmpty())
           {
@@ -210,8 +212,6 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
           if (info.strContent.Equals("tvshows") && iFound == 1 && !settings.parent_name_root) // dont lookup on root tvshow folder
             return true;
           }
-          else
-            info.strContent = "plugin";
 
           OnInfo(m_vecItems[iItem],info);
 
@@ -1062,13 +1062,13 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_INFO:
     {
       SScraperInfo info;
-      if (!m_vecItems.IsPluginFolder())
+      if (m_vecItems.IsPluginFolder() || m_vecItems.IsMythTV())
+        info.strContent = "plugin";
+      else
       {
         VIDEO::SScanSettings settings;
         GetScraperForItem(item, info, settings);
       }
-      else
-        info.strContent = "plugin";      
 
       OnInfo(m_vecItems[itemNumber],info);
       return true;
