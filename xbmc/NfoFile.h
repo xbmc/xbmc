@@ -18,7 +18,19 @@ public:
   virtual ~CNfoFile();
 
   HRESULT Create(const CStdString&);
-  bool GetDetails(CVideoInfoTag &details,const char* document=NULL);
+  template<class T>
+    bool GetDetails(T& details,const char* document=NULL)
+  {
+    TiXmlDocument doc;
+    if (document)
+      doc.Parse(document);
+    else
+      doc.Parse(m_doc);
+    if (details.Load(doc.RootElement()))
+      return true;
+    CLog::Log(LOGDEBUG, "Not a proper xml nfo file (%s, col %i, row %i)", doc.ErrorDesc(), doc.ErrorCol(), doc.ErrorRow());
+    return false;
+  }
 
   CStdString m_strScraper;
   CStdString m_strImDbUrl;

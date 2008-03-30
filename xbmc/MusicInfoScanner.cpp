@@ -31,6 +31,7 @@
 #include "Util.h"
 #include "utils/md5.h"
 #include "xbox/XKGeneral.h"
+#include "NfoFile.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -714,7 +715,40 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
     m_pObserver->OnStateChanged(DOWNLOADING_ALBUM_INFO);
 
   CMusicInfoScraper scraper(info);
-  scraper.FindAlbuminfo(strAlbum, strArtist);
+
+  // handle nfo files
+  CStdString strAlbumPath, strNfo;
+  m_musicDatabase.GetAlbumPath(params.GetAlbumId(),strAlbumPath);
+  CUtil::AddFileToFolder(strAlbumPath,"album.nfo",strNfo);
+  if (XFILE::CFile::Exists(strNfo))
+  {
+    CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfo.c_str());
+    CNfoFile nfoReader("albums");
+    if (nfoReader.Create(strNfo) == S_OK)
+    {
+      if (nfoReader.m_strScraper == "NFO")
+      {
+        CLog::Log(LOGDEBUG, "%s Got details from nfo", __FUNCTION__);
+        CAlbum album;
+        VECSONGS songs;
+        nfoReader.GetDetails(album);
+        m_musicDatabase.SetAlbumInfo(params.GetAlbumId(), album, songs);
+        return true;
+      }
+      else
+      {
+        CScraperUrl scrUrl(nfoReader.m_strImDbUrl); 
+        CMusicAlbumInfo album("nfo",scrUrl);
+        scraper.GetAlbums().push_back(album);
+      }
+    }
+    else
+      CLog::Log(LOGERROR,"Unable to find an url in nfo file: %s", strNfo.c_str());
+  }
+
+  if (!scraper.GetAlbumCount())
+    scraper.FindAlbuminfo(strAlbum, strArtist);
+
   while (!scraper.Completed())
   {
     if (m_bStop)
@@ -790,7 +824,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
 bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStdString& strArtist)
 {
   DIRECTORY::MUSICDATABASEDIRECTORY::CQueryParams params;
-  DIRECTORY::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(strPath, params); // genre field holds path - see fetchartistinfo()
+  DIRECTORY::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(strPath, params);
   CArtist artist;
   m_musicDatabase.GetArtistInfo(params.GetArtistId(),artist);
   if (!artist.strArtist.IsEmpty()) // already got info
@@ -805,7 +839,37 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
     m_pObserver->OnStateChanged(DOWNLOADING_ARTIST_INFO);
 
   CMusicInfoScraper scraper(info);
-  scraper.FindArtistinfo(strArtist);
+  // handle nfo files
+  CStdString strArtistPath, strNfo;
+  m_musicDatabase.GetArtistPath(params.GetArtistId(),strArtistPath);
+  CUtil::AddFileToFolder(strArtistPath,"artist.nfo",strNfo);
+  if (XFILE::CFile::Exists(strNfo))
+  {
+    CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfo.c_str());
+    CNfoFile nfoReader("albums");
+    if (nfoReader.Create(strNfo) == S_OK)
+    {
+      if (nfoReader.m_strScraper == "NFO")
+      {
+        CLog::Log(LOGDEBUG, "%s Got details from nfo", __FUNCTION__);
+        CArtist artist;
+        nfoReader.GetDetails(artist);
+        m_musicDatabase.SetArtistInfo(params.GetArtistId(), artist);
+        return true;
+      }
+      else
+      {
+        CScraperUrl scrUrl(nfoReader.m_strImDbUrl); 
+        CMusicArtistInfo artist("nfo",scrUrl);
+        scraper.GetArtists().push_back(artist);
+      }
+    }
+    else
+      CLog::Log(LOGERROR,"Unable to find an imdb url in nfo file: %s", strNfo.c_str());
+  }
+
+  if (!scraper.GetArtistCount())
+    scraper.FindArtistinfo(strArtist);
 
   while (!scraper.Completed())
   {
