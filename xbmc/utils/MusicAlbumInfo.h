@@ -26,13 +26,11 @@ public:
   const CScraperUrl& GetAlbumURL() const;
   void SetTitle(const CStdString& strTitle);
   bool Load(CHTTP& http, const SScraperInfo& info, const CStdString& strFunction="GetAlbumDetails", const CScraperUrl* url=NULL);
-  bool Parse(const TiXmlElement* album);
+  bool Parse(const TiXmlElement* album, bool bChained=false);
 protected:
   CAlbum m_album;
   CStdString m_strTitle2;
-  CStdString m_strDateOfRelease;
   CScraperUrl m_albumURL;
   bool m_bLoaded;
-  VECSONGS m_songs;
 };
 }

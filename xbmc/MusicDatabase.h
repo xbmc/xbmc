@@ -158,6 +158,9 @@ public:
   bool SetSongRating(const CStdString &filePath, char rating);
   bool SetScraperForPath(const CStdString& strPath, const SScraperInfo& info);
   bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info);
+
+  void ExportToXML(const CStdString &xmlFile, bool singleFiles = false);
+  void ImportFromXML(const CStdString &xmlFile);
 protected:
   std::map<CStdString, int /*CArtistCache*/> m_artistCache;
   std::map<CStdString, int /*CGenreCache*/> m_genreCache;
@@ -179,7 +182,8 @@ private:
   bool GetAlbumsByWhere(const CStdString &baseDir, const CStdString &where, CFileItemList &items);
   void SplitString(const CStdString &multiString, std::vector<CStdString> &vecStrings, CStdString &extraStrings);
   CSong GetSongFromDataset(bool bWithMusicDbPath=false);
-  CAlbum GetAlbumFromDataset();
+  CArtist GetArtistFromDataset(dbiplus::Dataset* pDS);
+  CAlbum GetAlbumFromDataset(dbiplus::Dataset* pDS);
   void GetFileItemFromDataset(CFileItem* item, const CStdString& strMusicDBbasePath);
   bool CleanupSongs();
   bool CleanupSongsByIds(const CStdString &strSongIds);

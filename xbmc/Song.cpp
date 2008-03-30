@@ -113,4 +113,3 @@ int CSongMap::Size()
 {
   return (int)m_map.size();
 }
-

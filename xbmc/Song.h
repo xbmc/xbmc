@@ -8,77 +8,12 @@
 #include <vector>
 
 #include "musicInfoTag.h"
-#include "utils/IMDB.h"
-
 
 /*!
  \ingroup music
  \brief Class to store and read album information from CMusicDatabase
  \sa CSong, CMusicDatabase
  */
-class CAlbum
-{
-public:
-  CAlbum() { idAlbum = 0; iRating = 0; iYear = 0; };
-  bool operator<(const CAlbum &a) const
-  {
-    return strAlbum + strArtist < a.strAlbum + a.strArtist;
-  }
-  long idAlbum;
-  CStdString strAlbum;
-  CStdString strArtist;
-  CStdString strGenre;
-  CScraperUrl thumbURL;  
-  CStdString strMoods;
-  CStdString strStyles;
-  CStdString strThemes;
-  CStdString strReview;
-  CStdString strLabel;
-  CStdString strType;
-  int iRating;
-  int iYear;
-};
-
-class CArtist
-{
-public:
-  long idArtist;
-  bool operator<(const CArtist& a) const
-  {
-    return strArtist < a.strArtist;
-  }
-
-  void Reset()
-  {
-    strArtist.Empty();
-    strGenre.Empty();
-    strBiography.Empty();
-    strStyles.Empty();
-    strMoods.Empty();
-    strInstruments.Empty();
-    strBorn.Empty();
-    strFormed.Empty();
-    strDied.Empty();
-    strDisbanded.Empty();
-    strYearsActive.Empty();
-    thumbURL.Clear();
-    discography.clear();
-    idArtist = -1;
-  }
-  CStdString strArtist;
-  CStdString strGenre;
-  CStdString strBiography;
-  CStdString strStyles;
-  CStdString strMoods;
-  CStdString strInstruments;
-  CStdString strBorn;
-  CStdString strFormed;
-  CStdString strDied;
-  CStdString strDisbanded;
-  CStdString strYearsActive;
-  CScraperUrl thumbURL;
-  std::vector<std::pair<CStdString,CStdString> > discography;
-};
 
 class CGenre
 {
@@ -159,19 +94,6 @@ typedef std::vector<CSong> VECSONGS;
 /*!
  \ingroup music
  \brief A vector of CStdString objects, used for CMusicDatabase
- */
-typedef std::vector<CArtist> VECARTISTS;
-
-/*!
- \ingroup music
- \brief A vector of CStdString objects, used for CMusicDatabase
  \sa CMusicDatabase
  */
 typedef std::vector<CGenre> VECGENRES;
-
-/*!
- \ingroup music
- \brief A vector of CAlbum objects, used for CMusicDatabase
- \sa CMusicDatabase
- */
-typedef std::vector<CAlbum> VECALBUMS;

@@ -259,6 +259,8 @@ CGUISettings::CGUISettings(void)
   AddBool(6, "musiclibrary.updateonstartup", 22000, false);
   AddSeparator(7,"musiclibrary.sep2");
   AddString(8, "musiclibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
+  AddString(9, "musiclibrary.export", 20196, "", BUTTON_CONTROL_STANDARD);
+  AddString(10, "musiclibrary.import", 20197, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(3, "musicplayer", 16003);
   AddString(1, "musicplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);

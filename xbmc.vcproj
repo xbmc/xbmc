@@ -1107,6 +1107,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				Name="Database"
 				Filter="">
 				<File
+					RelativePath=".\xbmc\Album.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\Artist.cpp">
+				</File>
+				<File
 					RelativePath=".\xbmc\Database.cpp">
 				</File>
 				<File
@@ -1139,6 +1145,46 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				<File
 					RelativePath=".\xbmc\ViewDatabase.h">
 				</File>
+				<Filter
+					Name="LCD"
+					Filter="">
+					<File
+						RelativePath=".\xbmc\utils\LCD.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\utils\LCD.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\utils\LCDFactory.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\utils\LCDFactory.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\smartXX\smartxxlcd.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\smartXX\smartxxLCD.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\x3lcd\x3lcd.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\x3lcd\x3lcd.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libXenium\Xenium.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libXenium\Xenium.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libXenium\XeniumLCD.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libXenium\XeniumLCD.h">
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="GUI Dialog"
@@ -2374,46 +2420,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 			</Filter>
 			<Filter
-				Name="LCD"
-				Filter="">
-				<File
-					RelativePath=".\xbmc\utils\LCD.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\utils\LCD.h">
-				</File>
-				<File
-					RelativePath=".\xbmc\utils\LCDFactory.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\utils\LCDFactory.h">
-				</File>
-				<File
-					RelativePath=".\xbmc\lib\smartXX\smartxxlcd.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\lib\smartXX\smartxxLCD.h">
-				</File>
-				<File
-					RelativePath=".\xbmc\lib\x3lcd\x3lcd.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\lib\x3lcd\x3lcd.h">
-				</File>
-				<File
-					RelativePath=".\xbmc\lib\libXenium\Xenium.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\lib\libXenium\Xenium.h">
-				</File>
-				<File
-					RelativePath=".\xbmc\lib\libXenium\XeniumLCD.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\lib\libXenium\XeniumLCD.h">
-				</File>
-			</Filter>
-			<Filter
 				Name="common"
 				Filter="">
 				<File
@@ -2484,6 +2490,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\utils\AlarmClock.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\Album.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\albumdatabase.h">
 			</File>
 			<File
@@ -2500,6 +2509,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\ArenaItem.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\Artist.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\artistdatabase.h">

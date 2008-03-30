@@ -1247,6 +1247,20 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       videodatabase.Close();
     }
   }
+  else if (strSetting.Equals("musiclibrary.export"))
+  {
+    CStdString path(g_settings.GetDatabaseFolder());
+    VECSHARES shares;
+    g_mediaManager.GetLocalDrives(shares);
+    if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
+    {
+      CUtil::AddFileToFolder(path, "musicdb.xml", path);
+      CMusicDatabase musicdatabase;
+      musicdatabase.Open();
+      musicdatabase.ExportToXML(path);
+      musicdatabase.Close();
+    }
+  }
   else if (strSetting.Equals("videolibrary.import"))
   {
     CStdString path(g_settings.GetDatabaseFolder());
@@ -1258,6 +1272,19 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       videodatabase.Open();
       videodatabase.ImportFromXML(path);
       videodatabase.Close();
+    }
+  }
+  else if (strSetting.Equals("musiclibrary.import"))
+  {
+    CStdString path(g_settings.GetDatabaseFolder());
+    VECSHARES shares;
+    g_mediaManager.GetLocalDrives(shares);
+    if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "musicdb.xml", g_localizeStrings.Get(651) , path))
+    {
+      CMusicDatabase musicdatabase;
+      musicdatabase.Open();
+      musicdatabase.ImportFromXML(path);
+      musicdatabase.Close();
     }
   }
   else if (strSetting.Equals("musicplayer.jumptoaudiohardware") || strSetting.Equals("videoplayer.jumptoaudiohardware"))

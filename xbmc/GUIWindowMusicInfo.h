@@ -9,7 +9,7 @@ public:
   virtual ~CGUIWindowMusicInfo(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual void Render();
-  void SetAlbum(const CAlbum& album, const VECSONGS &songs, const CStdString &path);
+  void SetAlbum(const CAlbum& album, const CStdString &path);
   void SetArtist(const CArtist& artist, const CStdString &path);
   bool NeedRefresh() const;
   bool HasUpdatedThumb() const { return m_hasUpdatedThumb; };

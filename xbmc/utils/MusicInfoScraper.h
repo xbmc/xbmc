@@ -23,6 +23,14 @@ public:
   int GetArtistCount() const;
   CMusicAlbumInfo& GetAlbum(int iAlbum);
   CMusicArtistInfo& GetArtist(int iArtist);
+  std::vector<CMusicArtistInfo>& GetArtists()
+  {
+    return m_vecArtists;
+  }
+  std::vector<CMusicAlbumInfo>& GetAlbums()
+  {
+    return m_vecAlbums;
+  }
 protected:
   void FindAlbuminfo();
   void LoadAlbuminfo();

@@ -453,8 +453,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CAlbum& album, const CStdString& p
 
   // check cache
   CAlbum albumInfo;
-  VECSONGS albumSongs;
-  if (!bRefresh && m_musicdatabase.GetAlbumInfo(album.idAlbum, albumInfo, albumSongs))
+  if (!bRefresh && m_musicdatabase.GetAlbumInfo(album.idAlbum, albumInfo, albumInfo.songs))
   {
     if (!bShowInfo)
       return;
@@ -462,7 +461,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CAlbum& album, const CStdString& p
     CGUIWindowMusicInfo *pDlgAlbumInfo = (CGUIWindowMusicInfo*)m_gWindowManager.GetWindow(WINDOW_MUSIC_INFO);
     if (pDlgAlbumInfo)
     {
-      pDlgAlbumInfo->SetAlbum(albumInfo, albumSongs, path);
+      pDlgAlbumInfo->SetAlbum(albumInfo, path);
       if (bShowInfo)
         pDlgAlbumInfo->DoModal();
       else
@@ -513,7 +512,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CAlbum& album, const CStdString& p
       CGUIWindowMusicInfo *pDlgAlbumInfo = (CGUIWindowMusicInfo*)m_gWindowManager.GetWindow(WINDOW_MUSIC_INFO);
       if (pDlgAlbumInfo)
       {
-        pDlgAlbumInfo->SetAlbum(info.GetAlbum(), info.GetSongs(), path);
+        pDlgAlbumInfo->SetAlbum(info.GetAlbum(), path);
         if (bShowInfo)
           pDlgAlbumInfo->DoModal();
         else

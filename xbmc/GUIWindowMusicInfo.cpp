@@ -135,10 +135,10 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIWindowMusicInfo::SetAlbum(const CAlbum& album, const VECSONGS &songs, const CStdString &path)
+void CGUIWindowMusicInfo::SetAlbum(const CAlbum& album, const CStdString &path)
 {
   m_album = album;
-  SetSongs(songs);
+  SetSongs(m_album.songs);
   m_albumItem = CFileItem(path, true);
   m_albumItem.GetMusicInfoTag()->SetAlbum(m_album.strAlbum);
   m_albumItem.GetMusicInfoTag()->SetAlbumArtist(m_album.strArtist);
@@ -531,13 +531,12 @@ void CGUIWindowMusicInfo::OnSearch(const CFileItem* pItem)
   if (idAlbum != -1)
   {
     CAlbum album;
-    VECSONGS songs;
     CStdString strPath;
 
-    if (database.GetAlbumInfo(idAlbum,album,songs))
+    if (database.GetAlbumInfo(idAlbum,album,album.songs))
     {
       database.GetAlbumPath(idAlbum,strPath);
-      SetAlbum(album,songs,strPath);
+      SetAlbum(album,strPath);
       Update();
     }
   }

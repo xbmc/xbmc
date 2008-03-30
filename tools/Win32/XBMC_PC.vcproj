@@ -1845,6 +1845,18 @@
 				Name="Database"
 				Filter="">
 				<File
+					RelativePath="..\..\xbmc\Album.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\Album.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\Artist.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\Artist.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\Database.cpp">
 				</File>
 				<File
