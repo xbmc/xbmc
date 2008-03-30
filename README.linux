@@ -223,22 +223,7 @@ Debug info when you have compiled with debug mode on (default)
     * Current playback position doesn't update properly when program changes
 
 ----------------------------------------
-6.7 Basic Wii remote support
-----------------------------------------
-
-XBMC-linux have a basic support for the Wii remote which includes mouse emulation
-with a sensorbar. Enable using --enable-cwiid on the configure line.
-requires libbluetooth-dev, libcwiid0-dev
-
-To connect the Wii remote you need to enable the support under System in settings.
-After this press 1 + 2 simultaneously on the Wii remote to make XBMC connect to it.
-Press and hold the Power button to close the connection.
-
-Known Issues:
-  * If more than two IR Sources exists mouse emulation doesn't work good.
-
-----------------------------------------
-6.8 experimental - SMB mount shares 
+6.7 experimental - SMB mount shares 
 ----------------------------------------
 
 this is an experimental feature. it will mount all smb sources externally (on filesystem under /media/xbmc/smb)
