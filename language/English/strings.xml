@@ -1566,10 +1566,10 @@
   <string id="20192">Fetch Album Information On Scan</string>
   <string id="20193">Fetch Artist Information On Scan</string>
   <string id="20194">Default Scraper</string>
-  <string id="20195">Set Scraper</string>
+  <string id="20195">Change Scraper</string>
   <string id="20196">Export Music Library</string>
   <string id="20197">Import Music Library</string>
-  <string id="20198">No Artist found!</string
+  <string id="20198">No Artist found!</string>
   <string id="20199">Downloading artist info failed</string>
 
   <!-- string id's 20200 thru 20211 are reserved for speedstrings (LocalizeStrings.cpp)-->
