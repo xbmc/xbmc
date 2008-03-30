@@ -164,23 +164,23 @@ bool CAlbum::Save(TiXmlNode *node, const CStdString &tag)
   XMLUtils::SetString(album,  "title", strAlbum);
   CStdStringArray array;
   StringUtils::SplitString(strArtist,  g_advancedSettings.m_musicItemSeparator, array);
-  for (int i=0;i<array.size();++i)
+  for (unsigned int i=0;i<array.size();++i)
     XMLUtils::SetString(album, "artist", array[i]);
   array.clear();
   StringUtils::SplitString(strGenre,  g_advancedSettings.m_musicItemSeparator, array);
-  for (int i=0;i<array.size();++i)
+  for (unsigned int i=0;i<array.size();++i)
     XMLUtils::SetString(album,  "genre", array[i]);
   array.clear();
   StringUtils::SplitString(strStyles, g_advancedSettings.m_musicItemSeparator, array);
-  for (int i=0;i<array.size();++i)
+  for (unsigned int i=0;i<array.size();++i)
     XMLUtils::SetString(album, "style", array[i]);
   array.clear();
   StringUtils::SplitString(strMoods,  g_advancedSettings.m_musicItemSeparator, array);
-  for (int i=0;i<array.size();++i)
+  for (unsigned int i=0;i<array.size();++i)
     XMLUtils::SetString(album,  "mood", array[i]);
   array.clear();
   StringUtils::SplitString(strThemes,  g_advancedSettings.m_musicItemSeparator, array);
-  for (int i=0;i<array.size();++i)
+  for (unsigned int i=0;i<array.size();++i)
     XMLUtils::SetString(album,  "theme", array[i]);
 
   XMLUtils::SetString(album,      "review", strReview);
