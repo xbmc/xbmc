@@ -110,6 +110,7 @@ bool CMusicAlbumInfo::Load(CHTTP& http, const SScraperInfo& info, const CStdStri
   {
     bChained=false;
     url = &GetAlbumURL();
+    CScraperParser::ClearCache();
   }
 
   std::vector<CStdString> strHTML;

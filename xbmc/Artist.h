@@ -6,6 +6,7 @@
 #include "musicInfoTag.h"
 #include "Song.h"
 #include "utils/ScraperParser.h"
+#include "utils/ScraperUrl.h"
 
 class CArtist
 {

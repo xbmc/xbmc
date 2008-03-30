@@ -2,6 +2,7 @@
 #define SCRAPERSETTINGS_H_
 
 #include "PluginSettings.h"
+#include "utils/ScraperUrl.h"
 
 class CScraperSettings : public CBasicSettings
 {

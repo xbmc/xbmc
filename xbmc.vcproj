@@ -1016,6 +1016,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\utils\ScraperParser.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\utils\ScraperUrl.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\ScraperUrl.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\SectionLoader.cpp">
 				</File>
 				<File

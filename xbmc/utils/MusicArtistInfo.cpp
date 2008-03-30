@@ -66,6 +66,7 @@ bool CMusicArtistInfo::Load(CHTTP& http, const SScraperInfo& info, const CStdStr
   {
     bChained=false;
     url = &GetArtistURL();
+    CScraperParser::ClearCache();
   }
 
   std::vector<CStdString> strHTML;
