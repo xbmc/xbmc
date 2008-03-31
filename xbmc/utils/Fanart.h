@@ -81,7 +81,7 @@ public:
   /// also the interface used to pass the fanart data from the scraper to CFanart.
   CStdString m_xml;
 private:
-  static const unsigned int max_fanart_colors = 3;
+  static const unsigned int max_fanart_colors;
   ///
   /// Parse various color formats as returned by the sites scraped into a format we recognize
   ///
