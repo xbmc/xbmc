@@ -35,6 +35,8 @@
 #include "../../FileSystem/VirtualDirectory.h"
 #include "../../utils/UdpClient.h"
 #include "../../xbox/XKHDD.h"
+#include "../../PictureInfoTag.h"
+#include "../../MusicInfoTag.h"
 
 using namespace std;
 using namespace MUSIC_GRABBER;
@@ -2041,7 +2043,7 @@ int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
   bool rel = false;
   SScraperInfo info;
   info.strContent = "albums";
-  info.strPath = "allmusic.xml"; // TODO - hardcoded - not that i really care
+  info.strPath = g_stSettings.m_defaultMusicScraper;
   CMusicInfoScraper scraper(info); 
 
   if (numParas<1)
@@ -2050,20 +2052,20 @@ int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
   {
     try
     {
-	  int cnt=0;
-	  album=paras[0];
-	  if (numParas>1)
-	  {
-	    artist = paras[1];
+      int cnt=0;
+      album=paras[0];
+      if (numParas>1)
+      {
+        artist = paras[1];
         scraper.FindAlbuminfo(album, artist);
-		if (numParas>2)
-		  rel = (paras[2]=="1");
-	  }
-	  else
+        if (numParas>2)
+          rel = (paras[2]=="1");
+      }
+      else
         scraper.FindAlbuminfo(album);
-	  //wait a max of 20s
+      //wait a max of 20s
       while (!scraper.Completed() && cnt++<200)
-	    Sleep(100);
+        Sleep(100);
       if (scraper.Successfull())
       {
         // did we find at least 1 album?
