@@ -174,7 +174,7 @@ void CGUIListItem::Serialize(CArchive &ar)
     ar << m_bSelected;
     ar << m_overlayIcon;
     ar << m_mapProperties.size();
-    for (std::map<CStdString, CStdString>::const_iterator it = m_mapProperties.begin(); it != m_mapProperties.end(); it++)
+    for (std::map<CStdString, CStdString, icompare>::const_iterator it = m_mapProperties.begin(); it != m_mapProperties.end(); it++)
     {
       ar << it->first;
       ar << it->second;
