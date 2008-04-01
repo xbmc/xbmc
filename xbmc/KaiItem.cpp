@@ -28,6 +28,8 @@
 
 using namespace XFILE;
 
+#ifdef HAS_KAI
+
 CKaiItem::CKaiItem(CStdString& strLabel) : CGUIListExItem(strLabel)
 {
   m_pAvatar = NULL;
@@ -166,3 +168,4 @@ void CKaiItem::OnFileComplete(TICKET aTicket, CStdString& aFilePath, INT aByteRx
   ::DeleteFile(aFilePath.c_str());
 }
 
+#endif // HAS_KAI
