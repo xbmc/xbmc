@@ -730,6 +730,7 @@
 				<onright>4</onright>
 				<onup>5</onup>
 				<ondown>9</ondown>
+				<visible>!Container.Content(TVShows)</visible>
 			</control>
 			<control type="button" id ="9">
 				<description>Resume</description>
@@ -746,6 +747,7 @@
 				<onright>4</onright>
 				<onup>8</onup>
 				<ondown>6</ondown>
+				<visible>!Container.Content(TVShows)</visible>
 			</control>
 			<control type="button" id ="6">
 				<description>Refresh</description>
@@ -762,6 +764,7 @@
 				<onright>4</onright>
 				<onup>9</onup>
 				<ondown>10</ondown>
+				<animation effect="slide" start="0,0" end="0,-70" time="0" condition="Container.Content(TVShows)">conditional</animation>
 			</control>
 			<control type="button" id ="10">
 				<description>Get Thumb</description>
@@ -777,7 +780,25 @@
 				<onleft>4</onleft>
 				<onright>4</onright>
 				<onup>6</onup>
+				<ondown>12</ondown>
+				<animation effect="slide" start="0,0" end="0,-70" time="0" condition="Container.Content(TVShows)">conditional</animation>
+			</control>
+			<control type="button" id ="12">
+				<description>Get Fanart</description>
+				<posx>55</posx>
+				<posy>477</posy>
+				<width>135</width>
+				<height>32</height>
+				<label>20413</label>
+				<font>font10</font>
+				<align>center</align>
+				<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+				<onleft>4</onleft>
+				<onright>4</onright>
+				<onup>10</onup>
 				<ondown>11</ondown>
+				<visible>Container.Content(TVShows)</visible>
 			</control>
 			<control type="button" id ="11">
 				<description>Trailer</description>
@@ -792,7 +813,7 @@
 				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
 				<onleft>4</onleft>
 				<onright>4</onright>
-				<onup>10</onup>
+				<onup>12</onup>
 				<ondown>5</ondown>
 				<visible>!IsEmpty(ListItem.Trailer)</visible>
 			</control>
