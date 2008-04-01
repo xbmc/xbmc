@@ -52,16 +52,17 @@
 			<texture>contentpanel.png</texture>
 			<include>contentpanelslide</include>
 		</control>
-		<control type="image">
+		<control type="image" id="0">
 			<description>contentpanel slice Custom background</description>
-			<posx>75</posx>
+			<posx>120</posx>
 			<posy>88</posy>
-			<width>645</width>
-			<height>510</height>
+			<width>600</width>
+			<height>449</height>
+			<aspectratio scalediffuse="false">scale</aspectratio>
 			<texture diffuse="Content_Panel_Diffuse.png" />
 			<info>Skin.String(Custom_Background)</info>
-			<visible>Skin.HasSetting(Use_Custom_Background)</visible>
 			<include>contentpanelslide</include>
+			<visible>Skin.HasSetting(Use_Custom_Background)</visible>
 		</control>
 		<control type="label" id="12">
 			<description>number of files text label</description>
