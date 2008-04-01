@@ -113,6 +113,7 @@
 			<info>Skin.String(Custom_Background)</info>
 			<include>contentpanelslide</include>
 			<visible>Skin.HasSetting(Use_Custom_Background)</visible>
+			<visible>![!IsEmpty(Fanart.Image) + Skin.HasSetting(ShowFanart)]</visible>
 		</control>
 	</include>
 	<include name="autoscrollslow">
