@@ -416,20 +416,31 @@
 				</control>
 			</control>
 			<!-- Custom Options -->
-			<control type="group" id="9005">
+			<control type="grouplist" id="9005">
+				<posx>190</posx>
+				<posy>100</posy>
+				<width>485</width>
+				<onleft>9001</onleft>
+				<onright>9001</onright>
+				<onup>9005</onup>
+				<ondown>9005</ondown>
 				<visible>Skin.String(SkinSettings,3)</visible>
 				<control type="radiobutton" id="80">
 					<description>enable Autoscroll</description>
-					<posx>190</posx>
-					<posy>100</posy>
 					<width>485</width>
 					<label>20189</label>
 					<onclick>Skin.ToggleSetting(AutoScroll)</onclick>
 					<selected>Skin.HasSetting(AutoScroll)</selected>
-					<onleft>9001</onleft>
-					<onright>9001</onright>
-					<onup>50</onup>
-					<ondown>50</ondown>
+					<textoffsetx>7</textoffsetx>
+					<texturefocus>list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+				</control>
+				<control type="radiobutton" id="81">
+					<description>enable Fanart</description>
+					<width>485</width>
+					<label>20414</label>
+					<onclick>Skin.ToggleSetting(ShowFanart)</onclick>
+					<selected>Skin.HasSetting(ShowFanart)</selected>
 					<textoffsetx>7</textoffsetx>
 					<texturefocus>list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
