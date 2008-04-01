@@ -1,5 +1,4 @@
 #include "include.h"
-#include "../xbmc/FileItem.h"
 #include "GUIMultiImage.h"
 #include "TextureManager.h"
 #include "../xbmc/FileSystem/HDDirectory.h"

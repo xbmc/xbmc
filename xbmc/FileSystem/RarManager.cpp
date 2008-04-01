@@ -3,7 +3,6 @@
 #include "../lib/UnrarXLib/rar.hpp"
 #include "../Util.h"
 #include "../utils/SingleLock.h"
-#include "../FileItem.h"
 
 #include <set>
 

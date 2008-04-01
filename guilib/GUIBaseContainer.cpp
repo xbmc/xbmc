@@ -1,7 +1,6 @@
 #include "include.h"
 #include "GUIBaseContainer.h"
 #include "GuiControlFactory.h"
-#include "../xbmc/FileItem.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 #include "XMLUtils.h"
 #include "SkinInfo.h"

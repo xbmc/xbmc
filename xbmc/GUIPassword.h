@@ -1,5 +1,6 @@
 #pragma once
-#include "FileItem.h"
+
+class CFileItem;
 
 class CShare;
 typedef std::vector<CShare> VECSHARES;

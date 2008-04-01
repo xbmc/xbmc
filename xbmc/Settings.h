@@ -7,8 +7,8 @@
 #include "settings/VideoSettings.h"
 #include "StringUtils.h"
 #include "GUISettings.h"
-#include "FileItem.h"
 #include "Profile.h"
+#include "SortFileItem.h"
 
 #include <vector>
 #include <map>

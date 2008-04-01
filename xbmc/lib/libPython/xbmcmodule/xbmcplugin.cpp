@@ -6,7 +6,6 @@
 
 // include for constants
 #include "pyutil.h"
-#include "FileItem.h"
 
 using namespace std;
 using namespace XFILE;

@@ -1,6 +1,7 @@
 #pragma once
 #include "GUIDialogBoxBase.h"
 #include "GUIListItem.h"
+#include "FileItem.h"
 
 class CGUIDialogSelect :
       public CGUIDialogBoxBase

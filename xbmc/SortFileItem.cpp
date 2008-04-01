@@ -23,6 +23,7 @@
 #include "SortFileItem.h"
 #include "VideoInfoTag.h"
 #include "MusicInfoTag.h"
+#include "FileItem.h"
 
 inline int StartsWithToken(const CStdString& strLabel)
 {

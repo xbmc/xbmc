@@ -25,7 +25,6 @@
 #include "MusicDatabase.h"
 #include "VideoDatabase.h"
 #include "Util.h"
-#include "FileItem.h"
 #include "GUIWindowMusicPlaylist.h"
 #include "SmartPlaylist.h"
 #include "GUIDialogProgress.h"
