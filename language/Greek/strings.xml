@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 03/02/2008-->
+<!--Date of translation: 03/31/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 11774-->
+<!--Based on english strings version 12175-->
 <strings>
   <string id="0">Προγράμματα</string>
   <string id="1">Φωτογραφίες</string>
@@ -551,6 +551,7 @@
   <string id="658">Πληροφορίες τραγουδιού</string>
   <string id="659">Σχόλιο:</string>
   <string id="660">Ένταση Amplification</string>
+  <string id="661">Επιλογή Φακέλου Εξαγωγής</string>
   <string id="700">Καθαρισμός Βιβλιοθήκης</string>
   <string id="701">Απομάκρυνση παλαιών τραγουδιών από την Βιβλιοθήκη</string>
   <string id="702">Η διαδρομή έχει σαρωθεί προηγούμενος</string>
@@ -624,6 +625,14 @@
   <string id="772">Υλικό Ήχου</string>
   <string id="773">Εξερεύνηση</string>
   <string id="774">Φάκελος Παρουσίασης</string>
+  <string id="790">Απομακρυσμένα Γεγονότα</string>
+  <string id="791">Ενεργοποίηση Απομακρυσμένων Γεγονότων</string>
+  <string id="792">Θήρα Απομακρυσμένων Γεγονότων</string>
+  <string id="793">Εύρος Θήρας Απομακρυσμένων Γεγονότων</string>
+  <string id="794">Λήψη Γεγονότων από άλλον Υπολογιστή</string>
+  <string id="795">Αρχική Καθυστέρηση (ms)</string>
+  <string id="796">Συνεχής Καθυστέρηση (ms)</string>
+  <string id="797">Μέγιστος Αριθμός Πελατών</string>
   <string id="998">XLink Kai</string>
   <string id="999">Παιχνίδια στο Διαδίκτυο</string>
   <string id="1000">Επισκόπηση Προφύλαξης Οθόνης</string>
@@ -1053,6 +1062,7 @@
   <string id="13407">%s Presets</string>
   <string id="13408">(IMDb User Rating)</string>
   <string id="13409">Κορυφαία 250:</string>
+  <string id="13410">Συντονισμός στον lastfm</string>
   <string id="14000">Στοίβαγμα</string>
   <string id="14001">Σκόρπισμα</string>
   <string id="14003">Μεταφόρτωση αρχείου Λίστας Αναπαραγωγής...</string>
@@ -1628,6 +1638,7 @@
   <string id="20409">Μεταφορτώνονται πληροφορίες για τη Τηλεοπτική Σειρά </string>
   <string id="20410">Διαφημιστικό</string>
   <string id="20411">Ισοπέδωση</string>
+  <string id="20412">Ομαδοποίηση Τηλεοπτικής Σειράς για μία ενιαία περίοδο</string>
   <string id="21330">Προβολή κρυφών αρχείων και φακέλων</string>
   <string id="21331">Πελάτης TuxBox</string>
   <string id="21332">ΠΡΟΣΟΧΗ: Η συσκευή TuxBox βρίσκεται σε Recording-Mode!</string>
