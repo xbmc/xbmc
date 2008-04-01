@@ -19,6 +19,22 @@
 			<height>535</height>
 			<texture>dialog-panel2.png</texture>
 		</control>
+		<control type="image">
+			<description>Artist,Album Cover image</description>
+			<posx>55</posx>
+			<posy>95</posy>
+			<width>135</width>
+			<height>230</height>
+			<aspectratio aligny="top">keep</aspectratio>
+			<info>ListItem.Thumb</info>
+		</control>
+		<control type="image">
+			<posx>55</posx>
+			<posy>340</posy>
+			<width>625</width>
+			<height>5</height>
+			<texture>separator.png</texture>
+		</control>
 		<control type="group">
 			<visible>container.content(albums)</visible>
 			<control type="label" id="1">
@@ -106,206 +122,90 @@
 				<posx>200</posx>
 				<posy>95</posy>
 				<width>300</width>
-				<info>ListItem.Album</info>
+				<label fallback="416">$INFO[ListItem.Album]</label>
 				<font>font11</font>
 				<scroll>true</scroll>
-			</control>
-			<control type="label">
-				<description>Album Not Available value</description>
-				<posx>200</posx>
-				<posy>95</posy>
-				<width>300</width>
-				<label>416</label>
-				<font>font11</font>
-				<scroll>true</scroll>
-				<visible>IsEmpty(ListItem.Album)</visible>
 			</control>
 			<control type="label">
 				<description>Artist value</description>
 				<width>375</width>
 				<posx>310</posx>
 				<posy>123</posy>
-				<info>ListItem.Artist</info>
+				<label fallback="416">$INFO[ListItem.Artist]</label>
 				<font>font11</font>
 				<scroll>true</scroll>
-			</control>
-			<control type="label">
-				<description>Artist Not Available value</description>
-				<width>375</width>
-				<posx>310</posx>
-				<posy>123</posy>
-				<label>416</label>
-				<font>font11</font>
-				<scroll>true</scroll>
-				<visible>IsEmpty(ListItem.Artist)</visible>
 			</control>
 			<control type="label">
 				<description>year value</description>
 				<width>375</width>
 				<posx>310</posx>
 				<posy>143</posy>
-				<info>ListItem.Year</info>
+				<label fallback="416">$INFO[ListItem.Year]</label>
 				<font>font11</font>
 				<scroll>true</scroll>
-			</control>
-			<control type="label">
-				<description>Year Not Available value</description>
-				<width>375</width>
-				<posx>310</posx>
-				<posy>143</posy>
-				<label>416</label>
-				<font>font11</font>
-				<scroll>true</scroll>
-				<visible>IsEmpty(ListItem.Year)</visible>
 			</control>
 			<control type="label">
 				<description>Rating value</description>
 				<width>375</width>
 				<posx>310</posx>
 				<posy>163</posy>
-				<info>ListItem.Rating</info>
+				<label fallback="416">$INFO[ListItem.Rating]</label>
 				<font>font11</font>
 				<scroll>true</scroll>
-			</control>
-			<control type="label">
-				<description>Rating Not Available value</description>
-				<width>375</width>
-				<posx>310</posx>
-				<posy>163</posy>
-				<label>416</label>
-				<font>font11</font>
-				<scroll>true</scroll>
-				<visible>IsEmpty(ListItem.Rating)</visible>
 			</control>
 			<control type="label">
 				<description>Genre value</description>
 				<width>375</width>
 				<posx>310</posx>
 				<posy>183</posy>
-				<info>ListItem.Genre</info>
+				<label fallback="416">$INFO[ListItem.Genre]</label>
 				<font>font11</font>
 				<scroll>true</scroll>
-			</control>
-			<control type="label">
-				<description>Genre Not Available value</description>
-				<width>375</width>
-				<posx>310</posx>
-				<posy>183</posy>
-				<label>416</label>
-				<font>font11</font>
-				<scroll>true</scroll>
-				<visible>IsEmpty(ListItem.Genre)</visible>
 			</control>
 			<control type="label">
 				<description>Moods value</description>
 				<posx>310</posx>
 				<posy>203</posy>
 				<width>375</width>
-				<info>ListItem.Property(AlbumMoods)</info>
+				<label fallback="416">$INFO[ListItem.Property(AlbumMoods)]</label>
 				<font>font11</font>
 				<scroll>true</scroll>
-			</control>
-			<control type="label">
-				<description>Moods Not Available value</description>
-				<width>375</width>
-				<posx>310</posx>
-				<posy>203</posy>
-				<label>416</label>
-				<font>font11</font>
-				<scroll>true</scroll>
-				<visible>IsEmpty(ListItem.Property(AlbumMoods))</visible>
 			</control>
 			<control type="label">
 				<description>Styles value</description>
 				<width>375</width>
 				<posx>310</posx>
 				<posy>223</posy>
-				<info>ListItem.Property(AlbumStyles)</info>
+				<label fallback="416">$INFO[ListItem.Property(AlbumStyles)]</label>
 				<font>font11</font>
 				<scroll>true</scroll>
-			</control>
-			<control type="label">
-				<description>Styles Not Available value</description>
-				<width>375</width>
-				<posx>310</posx>
-				<posy>223</posy>
-				<label>416</label>
-				<font>font11</font>
-				<scroll>true</scroll>
-				<visible>IsEmpty(ListItem.Property(AlbumStyles))</visible>
 			</control>
 			<control type="label">
 				<description>Themes value</description>
 				<width>375</width>
 				<posx>310</posx>
 				<posy>243</posy>
-				<info>ListItem.Property(AlbumThemes)</info>
+				<label fallback="416">$INFO[ListItem.Property(AlbumThemes)]</label>
 				<font>font11</font>
 				<scroll>true</scroll>
-			</control>
-			<control type="label">
-				<description>Themes Not Available value</description>
-				<width>375</width>
-				<posx>310</posx>
-				<posy>243</posy>
-				<label>416</label>
-				<font>font11</font>
-				<scroll>true</scroll>
-				<visible>IsEmpty(ListItem.Property(AlbumThemes))</visible>
 			</control>
 			<control type="label">
 				<description>Label value</description>
 				<width>375</width>
 				<posx>310</posx>
 				<posy>263</posy>
-				<info>ListItem.Property(AlbumLabel)</info>
+				<label fallback="416">$INFO[ListItem.Property(AlbumLabel)]</label>
 				<font>font11</font>
 				<scroll>true</scroll>
-			</control>
-			<control type="label">
-				<description>Label Not Available value</description>
-				<width>375</width>
-				<posx>310</posx>
-				<posy>263</posy>
-				<label>416</label>
-				<font>font11</font>
-				<scroll>true</scroll>
-				<visible>IsEmpty(ListItem.Property(AlbumLabel))</visible>
 			</control>
 			<control type="label">
 				<description>Type value</description>
 				<width>375</width>
 				<posx>310</posx>
 				<posy>283</posy>
-				<info>ListItem.Property(AlbumType)</info>
+				<label fallback="416">$INFO[ListItem.Property(AlbumType)]</label>
 				<font>font11</font>
 				<scroll>true</scroll>
-			</control>
-			<control type="label">
-				<description>Type Not Available value</description>
-				<width>375</width>
-				<posx>310</posx>
-				<posy>283</posy>
-				<label>416</label>
-				<font>font11</font>
-				<scroll>true</scroll>
-				<visible>IsEmpty(ListItem.Property(AlbumType))</visible>
-			</control>
-			<control type="image" id="3">
-				<description>Album Cover image</description>
-				<posx>55</posx>
-				<posy>95</posy>
-				<width>145</width>
-				<height>180</height>
-				<aspectratio align="left">keep</aspectratio>
-				<texture>-</texture>
-			</control>
-			<control type="image">
-				<posx>55</posx>
-				<posy>340</posy>
-				<width>625</width>
-				<height>5</height>
-				<texture>separator.png</texture>
 			</control>
 			<control type="textbox" id="4">
 				<description>textarea</description>
@@ -318,7 +218,7 @@
 				<onup>5</onup>
 				<ondown>5</ondown>
 				<pagecontrol>61</pagecontrol>
-				<visible>!Skin.HasSetting(UseScrollbars)</visible>
+				<visible>Control.IsVisible(61) + !Control.IsVisible(50)</visible>
 				<include>autoscrollmedium</include>
 				<info>ListItem.Property(AlbumReview)</info>
 			</control>
@@ -332,12 +232,11 @@
 				<onright>61</onright>
 				<onup>5</onup>
 				<ondown>5</ondown>
-				<visible>Skin.HasSetting(UseScrollbars)</visible>
+				<visible>!Control.IsVisible(61) + !Control.IsVisible(50)</visible>
 				<include>autoscrollmedium</include>
 				<info>ListItem.Property(AlbumReview)</info>
 			</control>
 		</control>
-
 		<control type="group">
 			<visible>container.content(artists)</visible>
 			<control type="label">
@@ -451,183 +350,76 @@
 				<font>font11</font>
 			</control>
 			<control type="label">
-				<description>Born value</description>
+				<description>Born, Formed value</description>
 				<width>375</width>
 				<posx>310</posx>
 				<posy>123</posy>
-				<info>ListItem.Property(Born)</info>
+				<label fallback="416">$INFO[ListItem.Property(Born)]$INFO[ListItem.Property(Formed)]</label>
 				<font>font11</font>
 				<scroll>true</scroll>
-				<visible>!IsEmpty(ListItem.Property(Born))</visible>
-			</control>
-			<control type="label">
-				<description>Formed value</description>
-				<width>375</width>
-				<posx>310</posx>
-				<posy>123</posy>
-				<info>ListItem.Property(Formed)</info>
-				<font>font11</font>
-				<scroll>true</scroll>
-				<visible>!IsEmpty(ListItem.Property(Formed))</visible>
-			</control>
-			<control type="label">
-				<description>Born/Formed Not Available value</description>
-				<width>375</width>
-				<posx>310</posx>
-				<posy>123</posy>
-				<label>416</label>
-				<font>font11</font>
-				<scroll>true</scroll>
-				<visible>IsEmpty(ListItem.Property(Born)) + IsEmpty(ListItem.Property(Formed))</visible>
 			</control>
 			<control type="label">
 				<description>Genre value</description>
 				<width>375</width>
 				<posx>310</posx>
 				<posy>143</posy>
-				<info>ListItem.Genre</info>
+				<label fallback="416">$INFO[ListItem.Genre]</label>
 				<font>font11</font>
 				<scroll>true</scroll>
-			</control>
-			<control type="label">
-				<description>Genre Not Available value</description>
-				<width>375</width>
-				<posx>310</posx>
-				<posy>143</posy>
-				<label>416</label>
-				<font>font11</font>
-				<scroll>true</scroll>
-				<visible>IsEmpty(ListItem.Genre)</visible>
 			</control>
 			<control type="label">
 				<description>Styles value</description>
 				<width>375</width>
 				<posx>310</posx>
 				<posy>163</posy>
-				<info>ListItem.Property(Styles)</info>
+				<label fallback="416">$INFO[ListItem.Property(Styles)]</label>
 				<font>font11</font>
 				<scroll>true</scroll>
-			</control>
-			<control type="label">
-				<description>Styles Not Available value</description>
-				<width>375</width>
-				<posx>310</posx>
-				<posy>163</posy>
-				<label>416</label>
-				<font>font11</font>
-				<scroll>true</scroll>
-				<visible>IsEmpty(ListItem.Property(Styles))</visible>
 			</control>
 			<control type="label">
 				<description>Moods value</description>
 				<width>375</width>
 				<posx>310</posx>
 				<posy>183</posy>
-				<info>ListItem.Property(Moods)</info>
+				<label fallback="416">$INFO[ListItem.Property(Moods)]</label>
 				<font>font11</font>
 				<scroll>true</scroll>
-			</control>
-			<control type="label">
-				<description>Moods Not Available value</description>
-				<width>375</width>
-				<posx>310</posx>
-				<posy>183</posy>
-				<label>416</label>
-				<font>font11</font>
-				<scroll>true</scroll>
-				<visible>IsEmpty(ListItem.Property(Moods))</visible>
 			</control>
 			<control type="label">
 				<description>Instruments value</description>
 				<posx>310</posx>
 				<posy>203</posy>
 				<width>375</width>
-				<info>ListItem.Property(Instruments)</info>
+				<label fallback="416">$INFO[ListItem.Property(Instruments)]</label>
 				<font>font11</font>
 				<scroll>true</scroll>
-			</control>
-			<control type="label">
-				<description>Instruments Not Available value</description>
-				<width>375</width>
-				<posx>310</posx>
-				<posy>203</posy>
-				<label>416</label>
-				<font>font11</font>
-				<scroll>true</scroll>
-				<visible>IsEmpty(ListItem.Property(Instruments))</visible>
 			</control>
 			<control type="label">
 				<description>Died value</description>
 				<posx>310</posx>
 				<posy>223</posy>
 				<width>375</width>
-				<info>ListItem.Property(Died)</info>
+				<label fallback="416">$INFO[ListItem.Property(Died)]</label>
 				<font>font11</font>
 				<scroll>true</scroll>
-			</control>
-			<control type="label">
-				<description>Died Not Available value</description>
-				<width>375</width>
-				<posx>310</posx>
-				<posy>223</posy>
-				<label>416</label>
-				<font>font11</font>
-				<scroll>true</scroll>
-				<visible>IsEmpty(ListItem.Property(Died))</visible>
 			</control>
 			<control type="label">
 				<description>Disbanded value</description>
 				<posx>310</posx>
 				<posy>243</posy>
 				<width>375</width>
-				<info>ListItem.Property(Disbanded)</info>
+				<label fallback="416">$INFO[ListItem.Property(Disbanded)]</label>
 				<font>font11</font>
 				<scroll>true</scroll>
-			</control>
-			<control type="label">
-				<description>Disbanded Not Available value</description>
-				<width>375</width>
-				<posx>310</posx>
-				<posy>243</posy>
-				<label>416</label>
-				<font>font11</font>
-				<scroll>true</scroll>
-				<visible>IsEmpty(ListItem.Property(Disbanded))</visible>
 			</control>
 			<control type="label">
 				<description>Years Active value</description>
 				<posx>310</posx>
 				<posy>263</posy>
 				<width>375</width>
-				<info>ListItem.Property(YearsActive)</info>
+				<label fallback="416">$INFO[ListItem.Property(YearsActive)]</label>
 				<font>font11</font>
 				<scroll>true</scroll>
-			</control>
-			<control type="label">
-				<description>Years Active Not Available value</description>
-				<width>375</width>
-				<posx>310</posx>
-				<posy>263</posy>
-				<label>416</label>
-				<font>font11</font>
-				<scroll>true</scroll>
-				<visible>IsEmpty(ListItem.Property(YearsActive))</visible>
-			</control>
-			<control type="image">
-				<description>Artist Cover image</description>
-				<posx>55</posx>
-				<posy>95</posy>
-				<width>145</width>
-				<height>180</height>
-				<aspectratio align="left">keep</aspectratio>
-				<info>ListItem.Thumb</info>
-			</control>
-			<control type="image">
-				<posx>55</posx>
-				<posy>340</posy>
-				<width>625</width>
-				<height>5</height>
-				<texture>separator.png</texture>
 			</control>
 			<control type="textbox" id="4">
 				<description>textarea</description>
@@ -640,12 +432,12 @@
 				<onup>5</onup>
 				<ondown>5</ondown>
 				<pagecontrol>61</pagecontrol>
-				<visible>!Skin.HasSetting(UseScrollbars)</visible>
+				<visible>Control.IsVisible(61) + !Control.IsVisible(50)</visible>
 				<include>autoscrollmedium</include>
 				<info>ListItem.Property(Biography)</info>
 			</control>
 			<control type="textbox" id="4">
-				<description>textarea</description>
+				<description>textarea with no scrollbar</description>
 				<posx>200</posx>
 				<posy>350</posy>
 				<width>471</width>
@@ -654,17 +446,16 @@
 				<onright>61</onright>
 				<onup>5</onup>
 				<ondown>5</ondown>
-				<visible>Skin.HasSetting(UseScrollbars)</visible>
+				<visible>!Control.IsVisible(61) + !Control.IsVisible(50)</visible>
 				<include>autoscrollmedium</include>
 				<info>ListItem.Property(Biography)</info>
 			</control>
 		</control>
 		<control type="group" id="9000">
-			<posy>-22</posy>
-			<control type="button" id ="5">
+			<control type="button" id="5">
 				<description>Tracks/Review(Albums) or Discography/Biography(Artists)</description>
 				<posx>55</posx>
-				<posy>372</posy>
+				<posy>350</posy>
 				<width>135</width>
 				<height>32</height>
 				<label>182</label>
@@ -677,10 +468,10 @@
 				<onup>10</onup>
 				<ondown>6</ondown>
 			</control>
-			<control type="button" id ="6">
+			<control type="button" id="6">
 				<description>Refresh</description>
 				<posx>55</posx>
-				<posy>407</posy>
+				<posy>385</posy>
 				<width>135</width>
 				<height>32</height>
 				<label>184</label>
@@ -693,10 +484,10 @@
 				<onup>5</onup>
 				<ondown>10</ondown>
 			</control>
-			<control type="button" id ="10">
+			<control type="button" id="10">
 				<description>GetThumb</description>
 				<posx>55</posx>
-				<posy>442</posy>
+				<posy>420</posy>
 				<width>135</width>
 				<height>32</height>
 				<label>13405</label>
@@ -710,325 +501,288 @@
 				<ondown>5</ondown>
 			</control>
 		</control>
-	
-                       <control type="list" id="50">
-				<description>Track List Container + Scrollbar Area</description>
-				<posx>200</posx>
-				<posy>350</posy>
-				<width>455</width>
-				<height>175</height>
-				<onleft>9000</onleft>
-				<onright>61</onright>
-				<onup>50</onup>
-				<ondown>50</ondown>
-				<orientation>vertical</orientation>
-			        <pagecontrol>61</pagecontrol>
-			        <scrolltime>200</scrolltime>
-				<visible>!Skin.HasSetting(UseScrollbars)</visible>
-			        <itemlayout width="250" height="29">
-				    <control type="image">
-				        <posx>5</posx>
-				       	<posy>3</posy>
-				       	<width>17</width>
-				       	<height>22</height>
-				        <texture>$INFO[ListItem.Icon]</texture>
-					<aspectratio align="left">keep</aspectratio>
-					<visible>container.content(albums)</visible>
-				    </control>
-				    <control type="image">
-				        <posx>5</posx>
-				       	<posy>3</posy>
-				       	<width>17</width>
-				       	<height>22</height>
-				        <info>ListItem.Icon</info>
+		<control type="list" id="50">
+			<description>Track List Container + Scrollbar Area</description>
+			<posx>200</posx>
+			<posy>350</posy>
+			<width>455</width>
+			<height>175</height>
+			<onleft>9000</onleft>
+			<onright>61</onright>
+			<onup>50</onup>
+			<ondown>50</ondown>
+			<orientation>vertical</orientation>
+			<pagecontrol>61</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<visible>!Control.IsVisible(4) + Control.IsVisible(61)</visible>
+			<itemlayout width="250" height="29">
+				<control type="image">
+					<posx>5</posx>
+					<posy>3</posy>
+					<width>17</width>
+					<height>22</height>
+					<info>ListItem.Icon</info>
 					<aspectratio align="left">keep</aspectratio>
 					<visible>container.content(artists)</visible>
-				    </control>
-				    <control type="label">
-			        	<posx>30</posx>
-			        	<posy>3</posy>
-        				<width>320</width>
-				        <height>22</height>
-        				<font>font13</font>
-				        <aligny>center</aligny>
-		        		<selectedcolor>green</selectedcolor>
-		        		<align>left</align>
+				</control>
+				<control type="label">
+					<posx>5</posx>
+					<posy>3</posy>
+					<width>320</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
 					<label>$INFO[ListItem.TrackNumber] - $INFO[ListItem.Label]</label>
 					<visible>container.content(albums)</visible>
-				    </control>
-				    <control type="label">
-			        	<posx>30</posx>
-			        	<posy>3</posy>
-        				<width>320</width>
-				        <height>22</height>
-        				<font>font13</font>
-				        <aligny>center</aligny>
-		        		<selectedcolor>green</selectedcolor>
-		        		<align>left</align>
+				</control>
+				<control type="label">
+					<posx>30</posx>
+					<posy>3</posy>
+					<width>320</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
 					<label>$INFO[ListItem.Label]</label>
 					<visible>container.content(artists)</visible>
-				    </control>
-				    <control type="label">
-			        	<posx>450</posx>
-			        	<posy>3</posy>
-        				<width>100</width>
-				        <height>22</height>
-        				<font>font13</font>
-				        <aligny>center</aligny>
-		        		<selectedcolor>green</selectedcolor>
-		        		<align>right</align>
+				</control>
+				<control type="label">
+					<posx>450</posx>
+					<posy>3</posy>
+					<width>100</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>right</align>
 					<label>$INFO[ListItem.Duration]</label>
 					<visible>container.content(albums)</visible>
-				    </control>
-				    <control type="label">
-			        	<posx>450</posx>
-			        	<posy>3</posy>
-        				<width>100</width>
-				        <height>22</height>
-        				<font>font13</font>
-				        <aligny>center</aligny>
-		        		<selectedcolor>green</selectedcolor>
-		        		<align>right</align>
+				</control>
+				<control type="label">
+					<posx>450</posx>
+					<posy>3</posy>
+					<width>100</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>right</align>
 					<label>$INFO[ListItem.Label2]</label>
 					<visible>container.content(artists)</visible>
-				    </control>
-				</itemlayout>
-		                <focusedlayout height="29" width="250">
-		   		    <control type="image">
-				        <width>455</width>
-				        <height>29</height>
-				        <posx>0</posx>
-				        <posy>0</posy>
-			        	<visible>Control.HasFocus(50)</visible>
-				        <texture>list-focus.png</texture>
-		 	            </control>
-				    <control type="image">
-				        <posx>5</posx>
-				        <posy>3</posy>
-				        <width>17</width>
-				        <height>22</height>
-				        <texture>$INFO[ListItem.Icon]</texture>
-					<aspectratio align="left">keep</aspectratio>
-					<visible>container.content(albums)</visible>
-				    </control>
-				    <control type="image">
-				        <posx>5</posx>
-				        <posy>3</posy>
-				        <width>17</width>
-				        <height>22</height>
-				        <info>ListItem.Icon</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="29" width="250">
+				<control type="image">
+					<width>455</width>
+					<height>29</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<visible>Control.HasFocus(50)</visible>
+					<texture>list-focus.png</texture>
+				</control>
+				<control type="image">
+					<posx>5</posx>
+					<posy>3</posy>
+					<width>17</width>
+					<height>22</height>
+					<info>ListItem.Icon</info>
 					<aspectratio align="left">keep</aspectratio>
 					<visible>container.content(artists)</visible>
-				    </control>
-				    <control type="label">
- 				        <posx>30</posx>
-				        <posy>3</posy>
-				        <width>320</width>
-				        <height>22</height>
-				        <font>font13</font>
-				        <aligny>center</aligny>
-				        <selectedcolor>green</selectedcolor>
-				        <align>left</align>
+				</control>
+				<control type="label">
+					<posx>5</posx>
+					<posy>3</posy>
+					<width>320</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
 					<label>$INFO[ListItem.TrackNumber] - $INFO[ListItem.Label]</label>
 					<visible>container.content(albums)</visible>
-				    </control>
-				    <control type="label">
- 				        <posx>30</posx>
-				        <posy>3</posy>
-				        <width>320</width>
-				        <height>22</height>
-				        <font>font13</font>
-				        <aligny>center</aligny>
-				        <selectedcolor>green</selectedcolor>
-				        <align>left</align>
+				</control>
+				<control type="label">
+					<posx>30</posx>
+					<posy>3</posy>
+					<width>320</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
 					<label>$INFO[ListItem.Label]</label>
 					<visible>container.content(artists)</visible>
-				    </control>
-				    <control type="label">
-			        	<posx>450</posx>
-			        	<posy>3</posy>
-        				<width>100</width>
-				        <height>22</height>
-        				<font>font13</font>
-				        <aligny>center</aligny>
-		        		<selectedcolor>green</selectedcolor>
-		        		<align>right</align>
+				</control>
+				<control type="label">
+					<posx>450</posx>
+					<posy>3</posy>
+					<width>100</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>right</align>
 					<label>$INFO[ListItem.Duration]</label>
 					<visible>container.content(albums)</visible>
-				    </control>
-				    <control type="label">
-			        	<posx>450</posx>
-			        	<posy>3</posy>
-        				<width>100</width>
-				        <height>22</height>
-        				<font>font13</font>
-				        <aligny>center</aligny>
-		        		<selectedcolor>green</selectedcolor>
-		        		<align>right</align>
+				</control>
+				<control type="label">
+					<posx>450</posx>
+					<posy>3</posy>
+					<width>100</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>right</align>
 					<label>$INFO[ListItem.Label2]</label>
 					<visible>container.content(artists)</visible>
-				    </control>
-                                </focusedlayout>
-                        </control>
-                        <control type="list" id="50">
-				<description>Track List Container</description>
-				<posx>200</posx>
-				<posy>350</posy>
-				<width>471</width>
-				<height>175</height>
-				<onleft>9000</onleft>
-				<onright>61</onright>
-				<onup>50</onup>
-				<ondown>50</ondown>
-				<orientation>vertical</orientation>
-			        <pagecontrol>61</pagecontrol>
-			        <scrolltime>200</scrolltime>
-				<visible>Skin.HasSetting(UseScrollbars)</visible>
-			        <itemlayout width="250" height="29">
-				    <control type="image">
-				        <posx>5</posx>
-				       	<posy>3</posy>
-				       	<width>17</width>
-				       	<height>22</height>
-				        <texture>$INFO[ListItem.Icon]</texture>
-					<aspectratio align="left">keep</aspectratio>
-					<visible>container.content(albums)</visible>
-				    </control>
-				    <control type="image">
-				        <posx>5</posx>
-				       	<posy>3</posy>
-				       	<width>17</width>
-				       	<height>22</height>
-				        <info>ListItem.Icon</info>
+				</control>
+			</focusedlayout>
+		</control>
+		<control type="list" id="50">
+			<description>Track List Container</description>
+			<posx>200</posx>
+			<posy>350</posy>
+			<width>471</width>
+			<height>175</height>
+			<onleft>9000</onleft>
+			<onright>61</onright>
+			<onup>50</onup>
+			<ondown>50</ondown>
+			<orientation>vertical</orientation>
+			<pagecontrol>61</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<visible>!Control.IsVisible(4) + !Control.IsVisible(61)</visible>
+			<itemlayout width="250" height="29">
+				<control type="image">
+					<posx>5</posx>
+					<posy>3</posy>
+					<width>17</width>
+					<height>22</height>
+					<info>ListItem.Icon</info>
 					<aspectratio align="left">keep</aspectratio>
 					<visible>container.content(artists)</visible>
-				    </control>
-				    <control type="label">
-			        	<posx>30</posx>
-			        	<posy>3</posy>
-        				<width>471</width>
-				        <height>22</height>
-        				<font>font13</font>
-				        <aligny>center</aligny>
-		        		<selectedcolor>green</selectedcolor>
-		        		<align>left</align>
+				</control>
+				<control type="label">
+					<posx>5</posx>
+					<posy>3</posy>
+					<width>471</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
 					<label>$INFO[ListItem.TrackNumber] - $INFO[ListItem.Label]</label>
 					<visible>container.content(albums)</visible>
-				    </control>
-				    <control type="label">
-			        	<posx>30</posx>
-			        	<posy>3</posy>
-        				<width>471</width>
-				        <height>22</height>
-        				<font>font13</font>
-				        <aligny>center</aligny>
-		        		<selectedcolor>green</selectedcolor>
-		        		<align>left</align>
+				</control>
+				<control type="label">
+					<posx>30</posx>
+					<posy>3</posy>
+					<width>471</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
 					<label>$INFO[ListItem.Label]</label>
 					<visible>container.content(artists)</visible>
-				    </control>
-				    <control type="label">
-			        	<posx>466</posx>
-			        	<posy>3</posy>
-        				<width>100</width>
-				        <height>22</height>
-        				<font>font13</font>
-				        <aligny>center</aligny>
-		        		<selectedcolor>green</selectedcolor>
-		        		<align>right</align>
+				</control>
+				<control type="label">
+					<posx>466</posx>
+					<posy>3</posy>
+					<width>100</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>right</align>
 					<label>$INFO[ListItem.Duration]</label>
 					<visible>container.content(albums)</visible>
-				    </control>
-				    <control type="label">
-			        	<posx>466</posx>
-			        	<posy>3</posy>
-        				<width>100</width>
-				        <height>22</height>
-        				<font>font13</font>
-				        <aligny>center</aligny>
-		        		<selectedcolor>green</selectedcolor>
-		        		<align>right</align>
+				</control>
+				<control type="label">
+					<posx>466</posx>
+					<posy>3</posy>
+					<width>100</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>right</align>
 					<label>$INFO[ListItem.Label2]</label>
 					<visible>container.content(artists)</visible>
-				    </control>
-				</itemlayout>
-                                <focusedlayout height="29" width="250">
-		   		    <control type="image">
-				        <width>471</width>
-				        <height>29</height>
-				        <posx>0</posx>
-				        <posy>0</posy>
-			        	<visible>Control.HasFocus(50)</visible>
-				        <texture>list-focus.png</texture>
-		 	            </control>
-				    <control type="image">
-				        <posx>5</posx>
-				        <posy>3</posy>
-				        <width>17</width>
-				        <height>22</height>
-				        <texture>$INFO[ListItem.Icon]</texture>
-					<aspectratio align="left">keep</aspectratio>
-					<visible>container.content(albums)</visible>
-				    </control>
-				    <control type="image">
-				        <posx>5</posx>
-				        <posy>3</posy>
-				        <width>17</width>
-				        <height>22</height>
-				        <info>ListItem.Icon</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="29" width="250">
+				<control type="image">
+					<width>471</width>
+					<height>29</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<visible>Control.HasFocus(50)</visible>
+					<texture>list-focus.png</texture>
+				</control>
+				<control type="image">
+					<posx>5</posx>
+					<posy>3</posy>
+					<width>17</width>
+					<height>22</height>
+					<info>ListItem.Icon</info>
 					<aspectratio align="left">keep</aspectratio>
 					<visible>container.content(artists)</visible>
-				    </control>
-				    <control type="label">
- 				        <posx>30</posx>
-				        <posy>3</posy>
-				        <width>371</width>
-				        <height>22</height>
-				        <font>font13</font>
-				        <aligny>center</aligny>
-				        <selectedcolor>green</selectedcolor>
-				        <align>left</align>
+				</control>
+				<control type="label">
+					<posx>5</posx>
+					<posy>3</posy>
+					<width>371</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
 					<label>$INFO[ListItem.TrackNumber] - $INFO[ListItem.Label]</label>
 					<visible>container.content(albums)</visible>
-				    </control>
-				    <control type="label">
- 				        <posx>30</posx>
-				        <posy>3</posy>
-				        <width>371</width>
-				        <height>22</height>
-				        <font>font13</font>
-				        <aligny>center</aligny>
-				        <selectedcolor>green</selectedcolor>
-				        <align>left</align>
+				</control>
+				<control type="label">
+					<posx>30</posx>
+					<posy>3</posy>
+					<width>371</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
 					<label>$INFO[ListItem.Label]</label>
 					<visible>container.content(artists)</visible>
-				    </control>
-				    <control type="label">
-			        	<posx>466</posx>
-			        	<posy>3</posy>
-        				<width>100</width>
-				        <height>22</height>
-        				<font>font13</font>
-				        <aligny>center</aligny>
-		        		<selectedcolor>green</selectedcolor>
-		        		<align>right</align>
+				</control>
+				<control type="label">
+					<posx>466</posx>
+					<posy>3</posy>
+					<width>100</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>right</align>
 					<label>$INFO[ListItem.Duration]</label>
 					<visible>container.content(albums)</visible>
-				    </control>
-				    <control type="label">
-			        	<posx>466</posx>
-			        	<posy>3</posy>
-        				<width>100</width>
-				        <height>22</height>
-        				<font>font13</font>
-				        <aligny>center</aligny>
-		        		<selectedcolor>green</selectedcolor>
-		        		<align>right</align>
+				</control>
+				<control type="label">
+					<posx>466</posx>
+					<posy>3</posy>
+					<width>100</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>right</align>
 					<label>$INFO[ListItem.Label2]</label>
 					<visible>container.content(artists)</visible>
-				    </control>
-                                </focusedlayout>
-                        </control>
+				</control>
+			</focusedlayout>
+		</control>
 		<control type="button">
 			<posx>665</posx>
 			<posy>350</posy>
