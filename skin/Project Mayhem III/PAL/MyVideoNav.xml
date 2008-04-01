@@ -74,6 +74,18 @@
 			<visible>container.content(musicvideos)</visible>
 		</control>
 		<include>contentpanel</include>
+		<control type="image" id="1000">
+			<description>Fanart background</description>
+			<posx>180</posx>
+			<posy>88</posy>
+			<width>540</width>
+			<height>449</height>
+			<aspectratio scalediffuse="false">scale</aspectratio>
+			<texture diffuse="Content_Panel_Diffuse.png" />
+			<info>Fanart.Image</info>
+			<include>contentpanelslide</include>
+			<visible>!IsEmpty(Fanart.Image) + Skin.HasSetting(ShowFanart)</visible>
+		</control>
 		<control type="label" id="12">
 			<description>number of files text label</description>
 			<posx>545</posx>
