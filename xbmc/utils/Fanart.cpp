@@ -131,7 +131,7 @@ bool CFanart::DownloadImage(const CStdString &strDestination) const
     if (height > 720 || width > 1280) // assume 720p is more than enough
     {
       // we need to keep aspect ratio, so subtract height down to 720 and that same from width
-      float scale = min(720.0f/height, 1280.0f/width);
+      float scale = std::min(720.0f/height, 1280.0f/width);
       CPicture pic;
       pic.ConvertFile(strDestination, strDestination, 0, (int)(width*scale), (int)(height*scale), 90);
     }
@@ -165,7 +165,7 @@ bool CFanart::ParseColors(const CStdString &colorsIn, CStdString &colorsOut)
     colorsOut.Empty();
     CStdStringArray strColors;
     StringUtils::SplitString(colorsIn, "|", strColors);
-    for (unsigned int i = 0; i < std::min(strColors.size()-1, max_fanart_colors); i++)
+      for (unsigned int i = 0; i < std::min((int)strColors.size()-1, (int)max_fanart_colors); i++)
     { // split up each color
       CStdStringArray strTriplets;
       StringUtils::SplitString(strColors[i+1], ",", strTriplets);

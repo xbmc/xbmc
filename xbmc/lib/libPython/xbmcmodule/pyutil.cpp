@@ -18,7 +18,9 @@ static TiXmlDocument pySkinReferences;
 
 #ifdef __APPLE__
 #undef PyUnicode_AsUnicode
-#define PyUnicode_AsUnicode
+// FIXME: hack to get it to compile since r12386
+// -d4rk (04/01/08)
+#define PyUnicode_AsUnicode(a) (const char *)(a) 
 #endif
 
 namespace PYXBMC
