@@ -2289,6 +2289,27 @@ void CFileItem::SetUserVideoThumb()
   SetCachedVideoThumb();
 }
 
+///
+/// If a cached fanart image already exists, then we're fine.  Otherwise, we look for a local fanart.jpg
+/// and cache that image as our fanart.
+void CFileItem::CacheVideoFanart()
+{
+  CStdString cachedFanart(GetCachedVideoFanart());
+  // First check for an already cached fanart image
+  if (CFile::Exists(cachedFanart))
+    return;
+  // We don't have a cached image, so let's see if the user has a local image they want to use
+  CStdString folderFanart(GetFolderThumb("fanart.png"));
+  if (!CFile::Exists(folderFanart))
+  {
+    folderFanart = GetFolderThumb("fanart.jpg");
+    if (!CFile::Exists(folderFanart))
+      return;
+  }
+  CPicture pic;
+  pic.CacheImage(folderFanart, cachedFanart);
+}
+
 CStdString CFileItem::GetCachedVideoFanart()
 {
   // get the locally cached thumb

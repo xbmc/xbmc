@@ -820,10 +820,6 @@ void CGUIWindowVideoInfo::OnGetFanart()
   if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_videoSources, g_localizeStrings.Get(20019), result))
     return;   // user cancelled
 
-  // TODO: FANART - current is not an option at this point
-  if (result == "thumb://Current")
-    return;   // user chose the one they have
-
   // delete the thumbnail if that's what the user wants, else overwrite with the
   // new thumbnail
   CFileItem item(*m_movieItem.GetVideoInfoTag());
@@ -846,10 +842,13 @@ void CGUIWindowVideoInfo::OnGetFanart()
     else
       result = "thumb://None";
   }
-  else
-  { // TODO: FANART Add the browse capability here?
-    result = "thumb://None";
+  else if (CFile::Exists(result))
+  { // local file
+    CPicture pic;
+    pic.CacheImage(result, cachedThumb);
   }
+  else
+    result = "thumb://None";
 
   if (result == "thumb://None")
   { // remove the cached art

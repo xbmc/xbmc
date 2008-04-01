@@ -2,9 +2,8 @@
 #include "Fanart.h"
 #include "HTTP.h"
 
-#ifdef _XBOX
-#include "../Picture.h"
-#define RESAMPLE_FANART
+#ifdef RESAMPLE_CACHED_IMAGES
+#include "Picture.h"
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -118,27 +117,22 @@ bool CFanart::DownloadImage(const CStdString &strDestination) const
   if (m_fanart.size() == 0)
     return false;
 
+  // Ideally we'd just call CPicture::CacheImage() directly, but for some
+  // reason curl doesn't seem to like downloading these for us
   CHTTP http;
-  if (http.Download(GetImageURL(), strDestination))
-  {
-    // split out resolution and resize if neccesary
-    CStdStringArray imageSize;
-    StringUtils::SplitString(m_fanart[0].strResolution, "x", imageSize);
-    int width = atoi(imageSize[0]);
-    int height = atoi(imageSize[1]);
-#ifdef RESAMPLE_FANART
-    if (height > 720 || width > 1280) // assume 720p is more than enough
-    {
-      // we need to keep aspect ratio, so subtract height down to 720 and that same from width
-      float scale = min(720.0f/height, 1280.0f/width);
-      CPicture pic;
-      pic.ConvertFile(strDestination, strDestination, 0, (int)(width*scale), (int)(height*scale), 90);
-    }
-#endif
+#ifdef RESAMPLE_CACHED_IMAGES
+  CStdString tempFile = "Z:\\fanart_download.jpg";
+  if (http.Download(GetImageURL(), tempFile))
+  { 
+    CPicture pic;
+    pic.CacheImage(tempFile, strDestination);
+    XFILE::CFile::Delete(tempFile);
     return true;
   }
-  else
-    return false;
+  return false;
+#else
+  return http.Download(GetImageURL(), strDestination);
+#endif
 }
 
 unsigned int CFanart::GetNumFanarts()
