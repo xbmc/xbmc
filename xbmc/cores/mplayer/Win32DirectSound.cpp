@@ -25,17 +25,6 @@
 #include "Ksmedia.h"
 #include <Mmreg.h>
 
-#define STATIC_KSDATAFORMAT_SUBTYPE_DOLBY_AC3_SPDIF \
-  DEFINE_WAVEFORMATEX_GUID(WAVE_FORMAT_DOLBY_AC3_SPDIF)
-
-DEFINE_GUIDSTRUCT("00000092-0000-0010-8000-00aa00389b71",
-  KSDATAFORMAT_SUBTYPE_DOLBY_AC3_SPDIF);
-
-#define KSDATAFORMAT_SUBTYPE_DOLBY_AC3_SPDIF \
-  DEFINE_GUIDNAMED(KSDATAFORMAT_SUBTYPE_DOLBY_AC3_SPDIF)
-
-
-
 
 
 void CWin32DirectSound::DoWork()
@@ -49,7 +38,9 @@ void CWin32DirectSound::DoWork()
 //***********************************************************************************************
 CWin32DirectSound::CWin32DirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bAudioPassthrough)
 {
-
+  //////////////////////////////////
+  // taken from mplayers ao_dsound.c
+  //////////////////////////////////
   bool bAudioOnAllSpeakers(false);
   g_audioContext.SetupSpeakerConfig(iChannels, bAudioOnAllSpeakers, bIsMusic);
   g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
@@ -58,67 +49,121 @@ CWin32DirectSound::CWin32DirectSound(IAudioCallback* pCallback, int iChannels, u
   m_bPause = false;
   m_bIsAllocated = false;
   m_pBuffer = NULL;
+  m_pBufferPri = NULL;
   m_uiChannels = iChannels;
   m_uiSamplesPerSec = uiSamplesPerSec;
   m_uiBitsPerSample = uiBitsPerSample;
 
   m_nCurrentVolume = g_stSettings.m_nVolumeLevel;
-
+  
   WAVEFORMATEXTENSIBLE wfxex = {0};
-  wfxex.Format.nChannels       = iChannels;
-  wfxex.Format.nSamplesPerSec  = uiSamplesPerSec;
-  wfxex.Format.wBitsPerSample  = uiBitsPerSample;
-  wfxex.Format.nBlockAlign     = uiBitsPerSample / 8 * iChannels;
-  wfxex.Format.nAvgBytesPerSec = wfxex.Format.nBlockAlign * wfxex.Format.nSamplesPerSec;
-  wfxex.Format.wFormatTag      = WAVE_FORMAT_EXTENSIBLE;
-  wfxex.Format.cbSize          = sizeof(WAVEFORMATEXTENSIBLE) - sizeof(WAVEFORMATEX) ;
-  wfxex.Samples.wValidBitsPerSample = uiBitsPerSample;
+  DSBUFFERDESC dsbpridesc;
+	DSBUFFERDESC dsbdesc;
 
-  if(bAudioPassthrough == false)
-    wfxex.SubFormat            = KSDATAFORMAT_SUBTYPE_PCM;  
-  else
-    wfxex.SubFormat            = KSDATAFORMAT_SUBTYPE_DOLBY_AC3_SPDIF;  
+  //fill waveformatex
+	ZeroMemory(&wfxex, sizeof(WAVEFORMATEXTENSIBLE));
+	wfxex.Format.cbSize          = (iChannels > 2) ? sizeof(WAVEFORMATEXTENSIBLE)-sizeof(WAVEFORMATEX) : 0;
+	wfxex.Format.nChannels       = iChannels;
+	wfxex.Format.nSamplesPerSec  = uiSamplesPerSec;
+	if (bAudioPassthrough == true) 
+  {
+		wfxex.Format.wFormatTag      = WAVE_FORMAT_DOLBY_AC3_SPDIF;
+		wfxex.Format.wBitsPerSample  = 16;
+		wfxex.Format.nBlockAlign     = 4;
+	} 
+  else 
+  {
+		wfxex.Format.wFormatTag      = (iChannels > 2) ? WAVE_FORMAT_EXTENSIBLE : WAVE_FORMAT_PCM;
+		wfxex.Format.wBitsPerSample  = uiBitsPerSample;
+		wfxex.Format.nBlockAlign     = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
+	}
 
-
-  m_dwPacketSize = wfxex.Format.nBlockAlign * 512;
+  // unsure if this are the right values
+  m_dwPacketSize = wfxex.Format.nBlockAlign * 3096;
   m_dwNumPackets = 16;
 
+  // fill in primary sound buffer descriptor
+	memset(&dsbpridesc, 0, sizeof(DSBUFFERDESC));
+	dsbpridesc.dwSize = sizeof(DSBUFFERDESC);
+	dsbpridesc.dwFlags       = DSBCAPS_PRIMARYBUFFER;
+	dsbpridesc.dwBufferBytes = 0;
+	dsbpridesc.lpwfxFormat   = NULL;
 
-  DWORD dwMask[] = 
-  { SPEAKER_FRONT_CENTER,
-    SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT,
-    SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER,
-    SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT,
-    SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT,
-    SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER | SPEAKER_LOW_FREQUENCY | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT
+  // fill in the secondary sound buffer (=stream buffer) descriptor
+	memset(&dsbdesc, 0, sizeof(DSBUFFERDESC));
+	dsbdesc.dwSize = sizeof(DSBUFFERDESC);
+	dsbdesc.dwFlags = DSBCAPS_GETCURRENTPOSITION2 /** Better position accuracy */
+	                | DSBCAPS_GLOBALFOCUS         /** Allows background playing */
+	                | DSBCAPS_CTRLVOLUME;         /** volume control enabled */
+
+  const int channel_mask[] = 
+  {
+    SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_RIGHT  | SPEAKER_LOW_FREQUENCY,
+    SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_RIGHT  | SPEAKER_BACK_LEFT    | SPEAKER_BACK_RIGHT,
+    SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_RIGHT  | SPEAKER_BACK_LEFT    | SPEAKER_BACK_RIGHT   | SPEAKER_LOW_FREQUENCY,
+    SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_CENTER | SPEAKER_FRONT_RIGHT  | SPEAKER_BACK_LEFT    | SPEAKER_BACK_RIGHT     | SPEAKER_LOW_FREQUENCY
   };
 
-  if( iChannels > 0 && iChannels < 7 )
-    wfxex.dwChannelMask = dwMask[iChannels-1];
-  else
-    wfxex.dwChannelMask = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
-
-  DSBUFFERDESC dssd = {};
-  dssd.dwSize        = sizeof(DSBUFFERDESC);
-  dssd.dwFlags       = DSBCAPS_CTRLVOLUME | DSBCAPS_GLOBALFOCUS | DSBCAPS_GETCURRENTPOSITION2;
-  dssd.dwBufferBytes = m_dwNumPackets * m_dwPacketSize;
-  dssd.lpwfxFormat   = &wfxex.Format;
-
-  HRESULT result = m_pDSound->CreateSoundBuffer(&dssd, &m_pBuffer, NULL);
-  if(FAILED(result))
+	if (iChannels > 2) 
   {
-    SAFE_RELEASE(m_pBuffer);
+		wfxex.dwChannelMask = channel_mask[iChannels - 3];
+		wfxex.SubFormat = KSDATAFORMAT_SUBTYPE_PCM;
+		wfxex.Samples.wValidBitsPerSample = wfxex.Format.wBitsPerSample;
+		// Needed for 5.1 on emu101k - shit soundblaster
+		dsbdesc.dwFlags |= DSBCAPS_LOCHARDWARE;
+	}
 
-    // Try to create buffer without volume controls
-    dssd.dwFlags       = DSBCAPS_GLOBALFOCUS | DSBCAPS_GETCURRENTPOSITION2;
-    HRESULT result = m_pDSound->CreateSoundBuffer(&dssd, &m_pBuffer, NULL);
-    if(FAILED(result))
+	wfxex.Format.nAvgBytesPerSec = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
+
+  //dsbdesc.dwBufferBytes = iChannels * uiSamplesPerSec * (wfxex.Format.wBitsPerSample >> 3); // space for 1 sec
+  dsbdesc.dwBufferBytes = m_dwNumPackets * m_dwPacketSize;
+
+	dsbdesc.lpwfxFormat = (WAVEFORMATEX *)&wfxex;
+
+  // create primary buffer and set its format
+  HRESULT res = IDirectSound_CreateSoundBuffer(m_pDSound, &dsbpridesc, &m_pBufferPri, NULL);
+  if ( res != DS_OK ) 
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - cannot create primary buffer (%s)", dserr2str(res));
+    SAFE_RELEASE(m_pBufferPri);
+		return;
+	}
+
+  res = IDirectSoundBuffer_SetFormat( m_pBufferPri, (WAVEFORMATEX *)&wfxex );
+  if ( res != DS_OK ) 
+    CLog::Log(LOGERROR, __FUNCTION__" - cannot set primary buffer format (%s), using standard setting (bad quality)", dserr2str(res));
+
+  CLog::Log(LOGERROR, __FUNCTION__" - primary sound buffer created");
+
+  // now create the stream buffer
+	res = IDirectSound_CreateSoundBuffer(m_pDSound, &dsbdesc, &m_pBuffer, NULL);
+
+  if (res != DS_OK) 
+  {
+		if (dsbdesc.dwFlags & DSBCAPS_LOCHARDWARE) 
     {
-      CLog::Log(LOGERROR, __FUNCTION__" - CreateSoundBuffer failed with error code 0x%x", result);
       SAFE_RELEASE(m_pBuffer);
-      return;
-    }
-  }
+			// Try without DSBCAPS_LOCHARDWARE
+			dsbdesc.dwFlags &= ~DSBCAPS_LOCHARDWARE;
+			res = IDirectSound_CreateSoundBuffer(m_pDSound, &dsbdesc, &m_pBuffer, NULL);
+		}
+    if (res != DS_OK && dsbdesc.dwFlags & DSBCAPS_CTRLVOLUME) 
+    {
+      SAFE_RELEASE(m_pBuffer);
+			// Try without DSBCAPS_CTRLVOLUME
+			dsbdesc.dwFlags &= ~DSBCAPS_CTRLVOLUME;
+			res = IDirectSound_CreateSoundBuffer(m_pDSound, &dsbdesc, &m_pBuffer, NULL);
+		}
+		if (res != DS_OK) 
+    {
+      SAFE_RELEASE(m_pBuffer);
+      SAFE_RELEASE(m_pBufferPri);
+      CLog::Log(LOGERROR, __FUNCTION__" - cannot create secondary (stream)buffer (%s)", dserr2str(res));
+			return;
+		}
+	}
+  CLog::Log(LOGERROR, __FUNCTION__" - secondary sound (stream)buffer created");
+
   
   m_pBuffer->Stop();
   m_pBuffer->SetVolume( g_stSettings.m_nVolumeLevel );
@@ -145,6 +190,12 @@ HRESULT CWin32DirectSound::Deinitialize()
   {
     m_pBuffer->Stop();
     SAFE_RELEASE(m_pBuffer);
+  }
+
+  if (m_pBufferPri)
+  {
+    m_pBufferPri->Stop();
+    SAFE_RELEASE(m_pBufferPri);
   }
 
   m_pDSound = NULL;  
@@ -353,4 +404,30 @@ void CWin32DirectSound::WaitCompletion()
 void CWin32DirectSound::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers)
 {
     return ;
+}
+
+char * CWin32DirectSound::dserr2str(int err)
+{
+	switch (err) {
+		case DS_OK: return "DS_OK";
+		case DS_NO_VIRTUALIZATION: return "DS_NO_VIRTUALIZATION";
+		case DSERR_ALLOCATED: return "DS_NO_VIRTUALIZATION";
+		case DSERR_CONTROLUNAVAIL: return "DSERR_CONTROLUNAVAIL";
+		case DSERR_INVALIDPARAM: return "DSERR_INVALIDPARAM";
+		case DSERR_INVALIDCALL: return "DSERR_INVALIDCALL";
+		case DSERR_GENERIC: return "DSERR_GENERIC";
+		case DSERR_PRIOLEVELNEEDED: return "DSERR_PRIOLEVELNEEDED";
+		case DSERR_OUTOFMEMORY: return "DSERR_OUTOFMEMORY";
+		case DSERR_BADFORMAT: return "DSERR_BADFORMAT";
+		case DSERR_UNSUPPORTED: return "DSERR_UNSUPPORTED";
+		case DSERR_NODRIVER: return "DSERR_NODRIVER";
+		case DSERR_ALREADYINITIALIZED: return "DSERR_ALREADYINITIALIZED";
+		case DSERR_NOAGGREGATION: return "DSERR_NOAGGREGATION";
+		case DSERR_BUFFERLOST: return "DSERR_BUFFERLOST";
+		case DSERR_OTHERAPPHASPRIO: return "DSERR_OTHERAPPHASPRIO";
+		case DSERR_UNINITIALIZED: return "DSERR_UNINITIALIZED";
+		case DSERR_NOINTERFACE: return "DSERR_NOINTERFACE";
+		case DSERR_ACCESSDENIED: return "DSERR_ACCESSDENIED";
+		default: return "unknown";
+	}
 }
