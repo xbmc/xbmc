@@ -371,7 +371,9 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         items.SetProperty("fanart_color1", details.m_fanart.GetColor(0));
         items.SetProperty("fanart_color2", details.m_fanart.GetColor(1));
         items.SetProperty("fanart_color3", details.m_fanart.GetColor(2));
-        items.SetProperty("fanart_image", showItem.GetCachedVideoFanart());
+        CStdString fanart(showItem.GetCachedVideoFanart());
+        if (CFile::Exists(fanart))
+          items.SetProperty("fanart_image", fanart);
 
         // the container folder thumb is the parent (i.e. season or show)
         if (node == NODE_TYPE_EPISODES || node == NODE_TYPE_RECENTLY_ADDED_EPISODES)
