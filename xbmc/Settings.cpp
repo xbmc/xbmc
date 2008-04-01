@@ -2863,18 +2863,17 @@ CStdString CSettings::GetProfilesThumbFolder() const
 }
 
 
-#ifdef HAS_KAI
 CStdString CSettings::GetXLinkKaiThumbFolder() const
 {
   CStdString folder;
+#ifdef HAS_KAI
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), _P("Thumbnails\\Programs\\XLinkKai"), folder);
   else
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), _P("Thumbnails\\Programs\\XlinkKai"), folder);
-
+#endif
   return folder;
 }
-#endif
 
 CStdString CSettings::GetSourcesFile() const
 {
