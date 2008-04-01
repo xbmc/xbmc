@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6E97BDBE0DA2B5D8003A2A89 /* GUIInfoColor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E97BDBC0DA2B5D8003A2A89 /* GUIInfoColor.cpp */; };
+		6E97BDC50DA2B620003A2A89 /* Fanart.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E97BDC20DA2B620003A2A89 /* Fanart.cpp */; };
+		6E97BDCC0DA2B981003A2A89 /* controlradiobutton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E97BDCB0DA2B981003A2A89 /* controlradiobutton.cpp */; };
+		6E97BDCF0DA2B9C2003A2A89 /* DVDSubtitleParserMicroDVD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E97BDCD0DA2B9C2003A2A89 /* DVDSubtitleParserMicroDVD.cpp */; };
 		810C9F630D67BD2F0095F5DD /* PltMediaConnect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 810C9F600D67BD2F0095F5DD /* PltMediaConnect.cpp */; };
 		810C9F640D67BD2F0095F5DD /* PltMediaConnectSCPDs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 810C9F620D67BD2F0095F5DD /* PltMediaConnectSCPDs.cpp */; };
 		810C9F670D67BD910095F5DD /* NptDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 810C9F660D67BD910095F5DD /* NptDirectory.cpp */; };
@@ -737,7 +741,7 @@
 		E38E23960D2626E600618676 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E238F0D2626E600618676 /* CoreServices.framework */; };
 		E38E23970D2626E600618676 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E23900D2626E600618676 /* Foundation.framework */; };
 		E38E23980D2626E600618676 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E23910D2626E600618676 /* OpenGL.framework */; };
-		E38E242A0D26317D00618676 /* libcdio.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E24220D26317D00618676 /* libcdio.dylib */; };
+		E38E242A0D26317D00618676 /* libcdio.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E24220D26317D00618676 /* libcdio.6.dylib */; };
 		E38E242B0D26317D00618676 /* libfreetype.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E24230D26317D00618676 /* libfreetype.dylib */; };
 		E38E242C0D26317D00618676 /* libfribidi.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E24240D26317D00618676 /* libfribidi.dylib */; };
 		E38E242D0D26317D00618676 /* libGLEW.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E24250D26317D00618676 /* libGLEW.dylib */; };
@@ -826,6 +830,17 @@
 
 /* Begin PBXFileReference section */
 		09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
+		6E97BDBC0DA2B5D8003A2A89 /* GUIInfoColor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIInfoColor.cpp; sourceTree = "<group>"; };
+		6E97BDBD0DA2B5D8003A2A89 /* GUIInfoColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIInfoColor.h; sourceTree = "<group>"; };
+		6E97BDBF0DA2B620003A2A89 /* EventClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventClient.h; sourceTree = "<group>"; };
+		6E97BDC00DA2B620003A2A89 /* EventPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventPacket.h; sourceTree = "<group>"; };
+		6E97BDC10DA2B620003A2A89 /* EventServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventServer.h; sourceTree = "<group>"; };
+		6E97BDC20DA2B620003A2A89 /* Fanart.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Fanart.cpp; sourceTree = "<group>"; };
+		6E97BDC30DA2B620003A2A89 /* Fanart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Fanart.h; sourceTree = "<group>"; };
+		6E97BDC40DA2B620003A2A89 /* Socket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Socket.h; sourceTree = "<group>"; };
+		6E97BDCB0DA2B981003A2A89 /* controlradiobutton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = controlradiobutton.cpp; sourceTree = "<group>"; };
+		6E97BDCD0DA2B9C2003A2A89 /* DVDSubtitleParserMicroDVD.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDSubtitleParserMicroDVD.cpp; sourceTree = "<group>"; };
+		6E97BDCE0DA2B9C2003A2A89 /* DVDSubtitleParserMicroDVD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleParserMicroDVD.h; sourceTree = "<group>"; };
 		810C9F600D67BD2F0095F5DD /* PltMediaConnect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PltMediaConnect.cpp; path = MediaConnect/PltMediaConnect.cpp; sourceTree = "<group>"; };
 		810C9F610D67BD2F0095F5DD /* PltMediaConnect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PltMediaConnect.h; path = MediaConnect/PltMediaConnect.h; sourceTree = "<group>"; };
 		810C9F620D67BD2F0095F5DD /* PltMediaConnectSCPDs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PltMediaConnectSCPDs.cpp; path = MediaConnect/PltMediaConnectSCPDs.cpp; sourceTree = "<group>"; };
@@ -2732,13 +2747,13 @@
 		E38E238F0D2626E600618676 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
 		E38E23900D2626E600618676 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		E38E23910D2626E600618676 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
-		E38E24220D26317D00618676 /* libcdio.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcdio.dylib; path = ../../../../../opt/local/lib/libcdio.dylib; sourceTree = SOURCE_ROOT; };
-		E38E24230D26317D00618676 /* libfreetype.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfreetype.dylib; path = ../../../../../opt/local/lib/libfreetype.dylib; sourceTree = SOURCE_ROOT; };
-		E38E24240D26317D00618676 /* libfribidi.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfribidi.dylib; path = ../../../../../opt/local/lib/libfribidi.dylib; sourceTree = SOURCE_ROOT; };
-		E38E24250D26317D00618676 /* libGLEW.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.dylib; path = ../../../../../opt/local/lib/libGLEW.dylib; sourceTree = SOURCE_ROOT; };
-		E38E24260D26317D00618676 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = ../../../../../opt/local/lib/libiconv.dylib; sourceTree = SOURCE_ROOT; };
-		E38E24270D26317D00618676 /* liblzo.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = liblzo.dylib; path = ../../../../../opt/local/lib/liblzo.dylib; sourceTree = SOURCE_ROOT; };
-		E38E24290D26317D00618676 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = ../../../../../opt/local/lib/libz.dylib; sourceTree = SOURCE_ROOT; };
+		E38E24220D26317D00618676 /* libcdio.6.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcdio.6.dylib; path = /opt/local/lib/libcdio.dylib; sourceTree = "<absolute>"; };
+		E38E24230D26317D00618676 /* libfreetype.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfreetype.dylib; path = /opt/local/lib/libfreetype.dylib; sourceTree = "<absolute>"; };
+		E38E24240D26317D00618676 /* libfribidi.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfribidi.dylib; path = /opt/local/lib/libfribidi.dylib; sourceTree = "<absolute>"; };
+		E38E24250D26317D00618676 /* libGLEW.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.dylib; path = /opt/local/lib/libGLEW.dylib; sourceTree = "<absolute>"; };
+		E38E24260D26317D00618676 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = /opt/local/lib/libiconv.dylib; sourceTree = "<absolute>"; };
+		E38E24270D26317D00618676 /* liblzo.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = liblzo.dylib; path = /opt/local/lib/liblzo.dylib; sourceTree = "<absolute>"; };
+		E38E24290D26317D00618676 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /opt/local/lib/libz.dylib; sourceTree = "<absolute>"; };
 		E38E25330D26365C00618676 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		E38E25340D26365C00618676 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
 		E38E25410D2636F300618676 /* libstdc++.6.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.6.dylib"; path = "/usr/lib/libstdc++.6.dylib"; sourceTree = "<absolute>"; };
@@ -2787,12 +2802,12 @@
 		E3A478190D29032C00F3C3A6 /* GUIDialogAccessPoints.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogAccessPoints.cpp; sourceTree = "<group>"; };
 		E3A4781C0D29035000F3C3A6 /* LinuxFileSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LinuxFileSystem.cpp; sourceTree = "<group>"; };
 		E3BBB7980D7EA78A00CAAFD3 /* CMythSession.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CMythSession.cpp; sourceTree = "<group>"; };
-		E3BBB7A10D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpcre.0.0.1.dylib; path = ../../../../../opt/local/lib/libpcre.0.0.1.dylib; sourceTree = SOURCE_ROOT; };
-		E3BBB7B00D7EAA8B00CAAFD3 /* libpython2.4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpython2.4.dylib; path = ../../../../../opt/local/lib/libpython2.4.dylib; sourceTree = SOURCE_ROOT; };
-		E3D547950D723EFD00F36320 /* libsmbclient.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsmbclient.dylib; path = ../../../../../opt/local/lib/samba3/libsmbclient.dylib; sourceTree = SOURCE_ROOT; };
+		E3BBB7A10D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpcre.0.0.1.dylib; path = /opt/local/lib/libpcre.0.0.1.dylib; sourceTree = "<absolute>"; };
+		E3BBB7B00D7EAA8B00CAAFD3 /* libpython2.4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpython2.4.dylib; path = /opt/local/lib/libpython.dylib; sourceTree = "<absolute>"; };
+		E3D547950D723EFD00F36320 /* libsmbclient.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsmbclient.dylib; path = /opt/local/lib/samba3/libsmbclient.dylib; sourceTree = "<absolute>"; };
 		E3D87AE90D3182F4000CF031 /* XCriticalSection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XCriticalSection.cpp; sourceTree = "<group>"; };
 		E3D87AEA0D3182F4000CF031 /* XCriticalSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XCriticalSection.h; sourceTree = "<group>"; };
-		E3DAAF870D6E1A8E00F17647 /* libmysqlclient.16.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmysqlclient.16.0.0.dylib; path = "../../../../../opt/local/lib/mysql5-devel/mysql/libmysqlclient.16.0.0.dylib"; sourceTree = SOURCE_ROOT; };
+		E3DAAF870D6E1A8E00F17647 /* libmysqlclient.16.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmysqlclient.16.0.0.dylib; path = "/opt/local/lib/mysql5-devel/mysql/libmysqlclient.16.0.0.dylib"; sourceTree = "<absolute>"; };
 		E3DAAF8A0D6E1B0500F17647 /* FileSmb.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileSmb.cpp; sourceTree = "<group>"; };
 		E3DAAF8B0D6E1B0500F17647 /* SMBDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SMBDirectory.cpp; sourceTree = "<group>"; };
 		E3E91FFA0D8C61DF002BF43D /* EventPacket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EventPacket.cpp; sourceTree = "<group>"; };
@@ -2800,8 +2815,8 @@
 		E3E91FFC0D8C61DF002BF43D /* Socket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Socket.cpp; sourceTree = "<group>"; };
 		E3E920010D8C622A002BF43D /* EventClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EventClient.cpp; sourceTree = "<group>"; };
 		E3E920050D8C6277002BF43D /* ScraperSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ScraperSettings.cpp; sourceTree = "<group>"; };
-		E3EB8F030D5D5C0300FFF489 /* libmad.0.2.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmad.0.2.1.dylib; path = ../../../../../opt/local/lib/libmad.0.2.1.dylib; sourceTree = SOURCE_ROOT; };
-		E3EB8F040D5D5C0300FFF489 /* libogg.0.5.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libogg.0.5.3.dylib; path = ../../../../../opt/local/lib/libogg.0.5.3.dylib; sourceTree = SOURCE_ROOT; };
+		E3EB8F030D5D5C0300FFF489 /* libmad.0.2.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmad.0.2.1.dylib; path = /opt/local/lib/libmad.0.2.1.dylib; sourceTree = "<absolute>"; };
+		E3EB8F040D5D5C0300FFF489 /* libogg.0.5.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libogg.0.5.3.dylib; path = ./opt/local/lib/libogg.0.5.3.dylib; sourceTree = SOURCE_ROOT; };
 		E3EB8F050D5D5C0300FFF489 /* libvorbis.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvorbis.dylib; path = /opt/local/lib/libvorbis.dylib; sourceTree = "<absolute>"; };
 		E3FFF0020D46FD1D003D79C3 /* libavutil-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavutil-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavutil-osx.a"; sourceTree = "<group>"; };
 		E3FFF0040D46FD1D003D79C3 /* libavcodec-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavcodec-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavcodec-osx.a"; sourceTree = "<group>"; };
@@ -2821,7 +2836,7 @@
 				E38E23960D2626E600618676 /* CoreServices.framework in Frameworks */,
 				E38E23970D2626E600618676 /* Foundation.framework in Frameworks */,
 				E38E23980D2626E600618676 /* OpenGL.framework in Frameworks */,
-				E38E242A0D26317D00618676 /* libcdio.dylib in Frameworks */,
+				E38E242A0D26317D00618676 /* libcdio.6.dylib in Frameworks */,
 				E38E242B0D26317D00618676 /* libfreetype.dylib in Frameworks */,
 				E38E242C0D26317D00618676 /* libfribidi.dylib in Frameworks */,
 				E38E242D0D26317D00618676 /* libGLEW.dylib in Frameworks */,
@@ -2913,7 +2928,7 @@
 				E38E25410D2636F300618676 /* libstdc++.6.dylib */,
 				E38E25330D26365C00618676 /* AppKit.framework */,
 				E38E25340D26365C00618676 /* ApplicationServices.framework */,
-				E38E24220D26317D00618676 /* libcdio.dylib */,
+				E38E24220D26317D00618676 /* libcdio.6.dylib */,
 				E38E24230D26317D00618676 /* libfreetype.dylib */,
 				E38E24240D26317D00618676 /* libfribidi.dylib */,
 				E38E24250D26317D00618676 /* libGLEW.dylib */,
@@ -3011,6 +3026,8 @@
 		E38E13890D25F9F900618676 /* guilib */ = {
 			isa = PBXGroup;
 			children = (
+				6E97BDBC0DA2B5D8003A2A89 /* GUIInfoColor.cpp */,
+				6E97BDBD0DA2B5D8003A2A89 /* GUIInfoColor.h */,
 				E3A478150D29030100F3C3A6 /* GUIMultiSelectText.cpp */,
 				E38E138A0D25F9F900618676 /* ActionManager.cpp */,
 				E38E138B0D25F9F900618676 /* ActionManager.h */,
@@ -4068,6 +4085,8 @@
 		E38E158E0D25F9FA00618676 /* DVDSubtitles */ = {
 			isa = PBXGroup;
 			children = (
+				6E97BDCD0DA2B9C2003A2A89 /* DVDSubtitleParserMicroDVD.cpp */,
+				6E97BDCE0DA2B9C2003A2A89 /* DVDSubtitleParserMicroDVD.h */,
 				E38E158F0D25F9FA00618676 /* DVDFactorySubtitle.cpp */,
 				E38E15900D25F9FA00618676 /* DVDFactorySubtitle.h */,
 				E38E15910D25F9FA00618676 /* DVDSubtitleLineCollection.cpp */,
@@ -4846,6 +4865,7 @@
 		E38E19DA0D25F9FB00618676 /* xbmcmodule */ = {
 			isa = PBXGroup;
 			children = (
+				6E97BDCB0DA2B981003A2A89 /* controlradiobutton.cpp */,
 				E38E257E0D263CE000618676 /* action.cpp */,
 				E38E257F0D263CE000618676 /* control.cpp */,
 				E38E25800D263CE000618676 /* controlbutton.cpp */,
@@ -5787,6 +5807,12 @@
 		E38E1E220D25F9FD00618676 /* utils */ = {
 			isa = PBXGroup;
 			children = (
+				6E97BDBF0DA2B620003A2A89 /* EventClient.h */,
+				6E97BDC00DA2B620003A2A89 /* EventPacket.h */,
+				6E97BDC10DA2B620003A2A89 /* EventServer.h */,
+				6E97BDC20DA2B620003A2A89 /* Fanart.cpp */,
+				6E97BDC30DA2B620003A2A89 /* Fanart.h */,
+				6E97BDC40DA2B620003A2A89 /* Socket.h */,
 				E3E920010D8C622A002BF43D /* EventClient.cpp */,
 				E3E91FFA0D8C61DF002BF43D /* EventPacket.cpp */,
 				E3E91FFB0D8C61DF002BF43D /* EventServer.cpp */,
@@ -6741,6 +6767,10 @@
 				E3E91FFF0D8C61DF002BF43D /* Socket.cpp in Sources */,
 				E3E920020D8C622A002BF43D /* EventClient.cpp in Sources */,
 				E3E920060D8C6277002BF43D /* ScraperSettings.cpp in Sources */,
+				6E97BDBE0DA2B5D8003A2A89 /* GUIInfoColor.cpp in Sources */,
+				6E97BDC50DA2B620003A2A89 /* Fanart.cpp in Sources */,
+				6E97BDCC0DA2B981003A2A89 /* controlradiobutton.cpp in Sources */,
+				6E97BDCF0DA2B9C2003A2A89 /* DVDSubtitleParserMicroDVD.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6802,12 +6832,12 @@
 					"\"$(SRCROOT)/xbmc/lib/mikxbox\"",
 					"\"$(SRCROOT)/xbmc/lib/sqLite\"",
 					"\"$(SRCROOT)/xbmc/lib/zlib\"",
-					"\"$(SRCROOT)/../../../../../opt/local/lib\"",
+					/opt/local/lib,
 					"\"$(SRCROOT)/xbmc/lib/libportaudio\"",
 					"\"$(SRCROOT)/xbmc/lib/libffmpeg-OSX\"",
 					/opt/local/lib/mysql5/mysql,
-					"\"$(SRCROOT)/../../../../../opt/local/lib/mysql5-devel/mysql\"",
-					"\"$(SRCROOT)/../../../../../opt/local/lib/samba3\"",
+					"/opt/local/lib/mysql5-devel/mysql",
+					/opt/local/lib/samba3,
 					"\"$(SRCROOT)/../../../../../Source/samba-3.0.28/source/bin\"",
 				);
 				OTHER_LDFLAGS = "-header-pad_max_install_names";
@@ -6868,12 +6898,12 @@
 					"\"$(SRCROOT)/xbmc/lib/mikxbox\"",
 					"\"$(SRCROOT)/xbmc/lib/sqLite\"",
 					"\"$(SRCROOT)/xbmc/lib/zlib\"",
-					"\"$(SRCROOT)/../../../../../opt/local/lib\"",
+					/opt/local/lib,
 					"\"$(SRCROOT)/xbmc/lib/libportaudio\"",
 					"\"$(SRCROOT)/xbmc/lib/libffmpeg-OSX\"",
 					/opt/local/lib/mysql5/mysql,
-					"\"$(SRCROOT)/../../../../../opt/local/lib/mysql5-devel/mysql\"",
-					"\"$(SRCROOT)/../../../../../opt/local/lib/samba3\"",
+					"/opt/local/lib/mysql5-devel/mysql",
+					/opt/local/lib/samba3,
 					"\"$(SRCROOT)/../../../../../Source/samba-3.0.28/source/bin\"",
 				);
 				OTHER_LDFLAGS = "-header-pad_max_install_names";
