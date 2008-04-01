@@ -3,7 +3,6 @@
 #include "../python/Python.h"
 #include "pyutil.h"
 #include "GUIPythonWindowXMLDialog.h"
-#include "../../../Application.h"
 #include "../../../../guilib/SkinInfo.h"
 #include "../../../Util.h"
 

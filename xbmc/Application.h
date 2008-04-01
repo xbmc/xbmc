@@ -1,7 +1,6 @@
 #pragma once
 #include "XBApplicationEx.h"
 
-#include "musicInfoTag.h"
 #include "IMsgTargetCallback.h"
 #include "Key.h"
 #include "FileItem.h"
@@ -20,7 +19,6 @@
 #include "DetectDVDType.h"
 #include "Autorun.h"
 #include "utils/Splash.h"
-#include "utils/IMDB.h"
 #include "utils/Stopwatch.h"
 
 class CWebServer;

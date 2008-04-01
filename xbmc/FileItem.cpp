@@ -39,6 +39,12 @@
 #include "MusicDatabase.h"
 #include "SortFileItem.h"
 #include "utils/TuxBoxUtil.h"
+#include "VideoInfoTag.h"
+#include "MusicInfoTag.h"
+#include "PictureInfoTag.h"
+#include "Artist.h"
+#include "Album.h"
+#include "Song.h"
 
 using namespace std;
 using namespace XFILE;
@@ -2600,3 +2606,26 @@ void CFileItemList::ClearSortState()
   m_sortOrder=SORT_ORDER_NONE;
 }
 
+CVideoInfoTag* CFileItem::GetVideoInfoTag()
+{
+  if (!m_videoInfoTag)
+    m_videoInfoTag = new CVideoInfoTag;
+
+  return m_videoInfoTag;
+}
+
+CPictureInfoTag* CFileItem::GetPictureInfoTag()
+{
+  if (!m_pictureInfoTag)
+    m_pictureInfoTag = new CPictureInfoTag;
+
+  return m_pictureInfoTag;
+}
+
+MUSIC_INFO::CMusicInfoTag* CFileItem::GetMusicInfoTag()
+{
+  if (!m_musicInfoTag)
+    m_musicInfoTag = new MUSIC_INFO::CMusicInfoTag;
+
+  return m_musicInfoTag;
+}

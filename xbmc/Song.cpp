@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "Song.h"
+#include "MusicInfoTag.h"
 
 using namespace std;
 using namespace MUSIC_INFO;

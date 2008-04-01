@@ -32,6 +32,7 @@
 #include "utils/KaiClient.h"
 #include "utils/LabelFormatter.h"
 #include "Autorun.h"
+#include "Profile.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

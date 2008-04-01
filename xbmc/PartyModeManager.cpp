@@ -21,7 +21,6 @@
 
 #include "stdafx.h"
 #include "PartyModeManager.h"
-#include "Application.h"
 #include "PlayListPlayer.h"
 #include "MusicDatabase.h"
 #include "VideoDatabase.h"

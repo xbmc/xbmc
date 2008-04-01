@@ -2,7 +2,7 @@
 #include "PlaylistFileDirectory.h"
 #include "../utils/log.h"
 #include "../PlayListFactory.h"
-#include "../Util.h"
+#include "../MusicInfoTag.h"
 
 using namespace std;
 using namespace PLAYLIST;

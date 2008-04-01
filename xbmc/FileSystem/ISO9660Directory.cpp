@@ -4,6 +4,7 @@
 #include "../xbox/IoSupport.h"
 #include "iso9660.h"
 #include "../Util.h"
+#include "URL.h"
 
 using namespace DIRECTORY;
 

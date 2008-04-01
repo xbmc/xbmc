@@ -2,12 +2,11 @@
 
 #include "FileCache.h"
 #include "utils/Thread.h"
-#include "Util.h"
 #include "File.h"
+#include "URL.h"
 
 #include "CacheMemBuffer.h"
 #include "../utils/SingleLock.h"
-#include "../Application.h"
 
 using namespace AUTOPTR;
 using namespace XFILE;

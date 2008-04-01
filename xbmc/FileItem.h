@@ -4,13 +4,22 @@
  */
 #pragma once
 #include "../guilib/GUIListItem.h"
-#include "Song.h"
-#include "Artist.h"
-#include "Album.h"
 #include "utils/Archive.h"
 #include "DateTime.h"
-#include "VideoInfoTag.h"
-#include "PictureInfoTag.h"
+
+#include <vector>
+
+namespace MUSIC_INFO
+{
+  class CMusicInfoTag;
+}
+class CVideoInfoTag;
+class CPictureInfoTag;
+
+class CAlbum;
+class CArtist;
+class CSong;
+class CGenre;
 
 typedef enum {
   SORT_METHOD_NONE=0,
@@ -165,13 +174,7 @@ public:
     return m_musicInfoTag != NULL;
   }
 
-  inline MUSIC_INFO::CMusicInfoTag* GetMusicInfoTag()
-  {
-    if (!m_musicInfoTag)
-      m_musicInfoTag = new MUSIC_INFO::CMusicInfoTag;
-
-    return m_musicInfoTag;
-  }
+  MUSIC_INFO::CMusicInfoTag* GetMusicInfoTag();
 
   inline const MUSIC_INFO::CMusicInfoTag* GetMusicInfoTag() const
   {
@@ -183,13 +186,7 @@ public:
     return m_videoInfoTag != NULL;
   }
   
-  inline CVideoInfoTag* GetVideoInfoTag()
-  {
-    if (!m_videoInfoTag)
-      m_videoInfoTag = new CVideoInfoTag;
-
-    return m_videoInfoTag;
-  }
+  CVideoInfoTag* GetVideoInfoTag();
   
   inline const CVideoInfoTag* GetVideoInfoTag() const
   {
@@ -201,18 +198,12 @@ public:
     return m_pictureInfoTag != NULL;
   }
 
-  inline CPictureInfoTag* GetPictureInfoTag()
-  {
-    if (!m_pictureInfoTag)
-      m_pictureInfoTag = new CPictureInfoTag;
-
-    return m_pictureInfoTag;
-  }
-
   inline const CPictureInfoTag* GetPictureInfoTag() const
   {
     return m_pictureInfoTag;
   }
+
+  CPictureInfoTag* GetPictureInfoTag();
 
   // Gets the cached thumb filename (no existence checks)
   CStdString GetCachedVideoThumb();

@@ -22,7 +22,6 @@
 #include "stdafx.h"
 #include "GUIDialogVideoScan.h"
 #include "GUIProgressControl.h"
-#include "Application.h"
 #include "Util.h"
 
 #define CONTROL_LABELSTATUS       401

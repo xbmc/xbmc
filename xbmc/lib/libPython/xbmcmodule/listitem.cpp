@@ -2,6 +2,9 @@
 #include "../python/Python.h"
 #include "listitem.h"
 #include "pyutil.h"
+#include "VideoInfoTag.h"
+#include "PictureInfoTag.h"
+#include "MusicInfoTag.h"
 
 using namespace std;
 

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "DllLibCMyth.h"
 #include "CMythSession.h"
+#include "VideoInfoTag.h"
+#include "Settings.h"
 
 extern "C" {
 #include "../lib/libcmyth/cmyth.h"

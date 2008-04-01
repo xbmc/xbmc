@@ -21,8 +21,6 @@
 
 #include "stdafx.h"
 #include "GUISettings.h"
-#include "Application.h"
-#include "Util.h"
 #include "GUIDialogFileBrowser.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "utils/FanController.h"

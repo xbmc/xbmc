@@ -25,7 +25,6 @@
 #include "GUIWindowSettingsProfile.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogProfileSettings.h"
-#include "utils/GUIInfoManager.h"
 #include "GUIPassword.h"
 #include "lib/libPython/XBPython.h"
 #include "lib/libscrobbler/scrobbler.h"
@@ -33,6 +32,7 @@
 #include "utils/FanController.h"
 #include "xbox/network.h"
 #include "SkinInfo.h"
+#include "Profile.h"
 
 using namespace XFILE;
 

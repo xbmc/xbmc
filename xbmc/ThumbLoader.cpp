@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "ThumbLoader.h"
 #include "Util.h"
+#include "URL.h"
 #include "Picture.h"
 
 using namespace XFILE;

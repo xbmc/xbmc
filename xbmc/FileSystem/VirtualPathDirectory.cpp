@@ -4,6 +4,7 @@
 #include "Directory.h"
 #include "../Settings.h"
 #include "../Util.h"
+#include "URL.h"
 
 using namespace std;
 using namespace DIRECTORY;

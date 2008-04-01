@@ -3,6 +3,7 @@
 #include "../utils/log.h"
 #include "../Util.h"
 #include "../lib/zlib/zlib.h"
+#include "URL.h"
 
 #include <vector>
 

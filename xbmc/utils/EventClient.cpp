@@ -22,7 +22,6 @@
 
 #ifdef HAS_EVENT_SERVER
 
-#include "Util.h"
 #include "EventClient.h"
 #include "EventPacket.h"
 #include "Application.h"

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Settings.h"
+
 class CViewState; // forward
 
 class CGUIViewState

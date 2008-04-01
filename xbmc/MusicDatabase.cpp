@@ -29,6 +29,12 @@
 #include "GUIDialogMusicScan.h"
 #include "DetectDVDType.h"
 #include "utils/GUIInfoManager.h"
+#include "MusicInfoTag.h"
+#include "ScraperSettings.h"
+#include "Util.h"
+#include "Artist.h"
+#include "Album.h"
+#include "Song.h"
 
 using namespace std;
 using namespace AUTOPTR;

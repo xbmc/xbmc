@@ -5,8 +5,8 @@
 #include "../Util.h"
 #include "FileCurl.h"
 #include "../utils/HttpHeader.h"
-#include "../utils/HTTP.h"
 #include "../utils/TuxBoxUtil.h"
+#include "URL.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

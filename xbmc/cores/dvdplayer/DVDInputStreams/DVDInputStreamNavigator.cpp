@@ -4,6 +4,7 @@
 #include "LangCodeExpander.h"
 #include "../DVDDemuxSPU.h"
 #include "DVDStateSerializer.h"
+#include "GUISettings.h"
 
 #ifndef PRId64
 #ifdef _MSC_VER

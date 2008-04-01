@@ -3,7 +3,6 @@
 #include "GUIMultiImage.h"
 #include "TextureManager.h"
 #include "../xbmc/FileSystem/HDDirectory.h"
-#include "../xbmc/utils/GUIInfoManager.h"
 #include "../xbmc/Util.h"
 
 using namespace std;

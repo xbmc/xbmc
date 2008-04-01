@@ -7,6 +7,7 @@
 #include "../Application.h"
 #include "../FileSystem/FileSmb.h"
 #include "../lib/libscrobbler/scrobbler.h"
+#include "Settings.h"
 
 // global network variable
 CNetwork g_network;

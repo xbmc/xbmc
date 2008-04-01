@@ -8,15 +8,6 @@
 
 #include <vector>
 
-struct SScraperInfo
-{
-  CStdString strTitle;
-  CStdString strPath;
-  CStdString strThumb;
-  CStdString strContent; // dupe, whatever
-  CScraperSettings settings;
-};
-
 struct SActorInfo
 {
   CStdString strName;

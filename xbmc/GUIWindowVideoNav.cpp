@@ -26,7 +26,6 @@
 #include "Util.h"
 #include "utils/RegExp.h"
 #include "PlayListM3U.h"
-#include "Application.h"
 #include "PlayListPlayer.h"
 #include "GUIPassword.h"
 #include "GUILabelControl.h"

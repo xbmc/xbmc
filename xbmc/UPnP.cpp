@@ -41,6 +41,7 @@
 #include "PltDidl.h"
 #include "NptNetwork.h"
 #include "NptConsole.h"
+#include "MusicInfoTag.h"
 
 using namespace std;
 using namespace MUSIC_INFO;

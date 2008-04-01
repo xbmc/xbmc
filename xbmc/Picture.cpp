@@ -21,8 +21,8 @@
 
 #include "stdafx.h"
 #include "Picture.h"
-#include "Util.h"
 #include "TextureManager.h"
+#include "Settings.h"
 
 using namespace XFILE;
 

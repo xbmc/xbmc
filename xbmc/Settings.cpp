@@ -23,6 +23,7 @@
 #include "Settings.h"
 #include "Application.h"
 #include "Util.h"
+#include "URL.h"
 #include "GUIWindowFileManager.h"
 #include "GUIDialogButtonMenu.h"
 #include "GUIFontManager.h"

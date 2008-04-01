@@ -21,8 +21,6 @@
 
 #include "stdafx.h"
 #include "GUIWindowVideoOverlay.h"
-#include "Util.h"
-#include "Application.h"
 #include "utils/GUIInfoManager.h"
 
 

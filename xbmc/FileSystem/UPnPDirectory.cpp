@@ -27,6 +27,8 @@
 #include "../UPnP.h"
 #include "Platinum.h"
 #include "PltSyncMediaBrowser.h"
+#include "VideoInfoTag.h"
+#include "MusicInfoTag.h"
 
 using namespace MUSIC_INFO;
 using namespace DIRECTORY;

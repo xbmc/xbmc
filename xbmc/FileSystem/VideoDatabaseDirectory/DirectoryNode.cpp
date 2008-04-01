@@ -20,6 +20,7 @@
 #include "DirectoryNodeMusicVideosOverview.h"
 #include "DirectoryNodeRecentlyAddedMusicVideos.h"
 #include "DirectoryNodeTitleMusicVideos.h"
+#include "VideoInfoTag.h"
 
 using namespace std;
 using namespace DIRECTORY::VIDEODATABASEDIRECTORY;

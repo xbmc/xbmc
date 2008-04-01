@@ -3,7 +3,7 @@
 #include "GUIWindowManager.h"
 #include "LocalizeStrings.h"
 #include "TextureManager.h"
-#include "../xbmc/Util.h"
+#include "../xbmc/Settings.h"
 #include "GuiControlFactory.h"
 #include "GUIControlGroup.h"
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY

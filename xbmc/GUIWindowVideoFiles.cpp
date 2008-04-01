@@ -3,7 +3,6 @@
 #include "Util.h"
 #include "Picture.h"
 #include "utils/IMDB.h"
-#include "utils/HTTP.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIWindowVideoInfo.h"
 #include "PlayListFactory.h"

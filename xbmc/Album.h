@@ -9,6 +9,7 @@
 
 #include "Song.h"
 #include "utils/ScraperParser.h"
+#include "utils/ScraperUrl.h"
 
 class CAlbum
 {

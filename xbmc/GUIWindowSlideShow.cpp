@@ -24,6 +24,7 @@
 #include "Application.h"
 #include "Picture.h"
 #include "Util.h"
+#include "URL.h"
 #include "TextureManager.h"
 #include "GUILabelControl.h"
 #include "utils/GUIInfoManager.h"

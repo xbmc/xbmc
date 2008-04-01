@@ -23,6 +23,7 @@
 #include "../utils/MemoryUnitManager.h"
 #include "MemoryUnits/IFileSystem.h"
 #include "MemoryUnits/IDevice.h"
+#include "URL.h"
 
 using namespace XFILE;
 

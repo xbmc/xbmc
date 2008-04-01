@@ -1,7 +1,6 @@
 #include "include.h"
 #include "GUIFadeLabelControl.h"
 #include "../xbmc/utils/CharsetConverter.h"
-#include "../xbmc/utils/GUIInfoManager.h"
 
 using namespace std;
 

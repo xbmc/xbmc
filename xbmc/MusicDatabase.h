@@ -4,8 +4,13 @@
 */
 #pragma once
 #include "Database.h"
+#include "Album.h"
+#include "StringUtils.h"
 
 struct SScraperInfo;
+
+class CArtist;
+class CFileItem;
 
 #include <set>
 

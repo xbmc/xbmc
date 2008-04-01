@@ -10,7 +10,7 @@
 #include "RegExp.h"
 #include "HTMLUtil.h"
 #include "CharsetConverter.h"
-#include "URL.h"
+#include "ScraperSettings.h"
 
 #include "Util.h"
 

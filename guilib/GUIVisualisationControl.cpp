@@ -12,6 +12,7 @@
 #include "../xbmc/utils/CriticalSection.h"
 #include "../xbmc/utils/SingleLock.h"
 #include "../xbmc/utils/GUIInfoManager.h"
+#include "../xbmc/GUISettings.h"
 
 using namespace std;
 

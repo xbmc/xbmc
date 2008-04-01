@@ -3,6 +3,7 @@
 #include "GUIMessage.h"
 #include "IMsgSenderCallback.h"
 #include "../xbmc/Settings.h"
+#include "../xbmc/GUISettings.h"
 #include "../xbmc/XBVideoConfig.h"
 #ifdef HAS_XBOX_D3D
  #include "xgraphics.h"

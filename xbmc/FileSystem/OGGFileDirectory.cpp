@@ -4,6 +4,7 @@
 #include "OGGFileDirectory.h"
 #include "../OggTag.h"
 #include "DirectoryCache.h"
+#include "URL.h"
 
 using namespace MUSIC_INFO;
 using namespace DIRECTORY;

@@ -19,9 +19,10 @@
  *
  */
 
-#include "stdafx.h"
+//#include "stdafx.h"
 #include "Profile.h"
 #include "utils/GUIInfoManager.h"
+#include "Settings.h"
 
 CProfile::CProfile(void)
 {

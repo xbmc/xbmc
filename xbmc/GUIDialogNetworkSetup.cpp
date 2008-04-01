@@ -26,6 +26,7 @@
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogFileBrowser.h"
 #include "Util.h"
+#include "URL.h"
 
 #define CONTROL_PROTOCOL        10
 #define CONTROL_SERVER_ADDRESS  11

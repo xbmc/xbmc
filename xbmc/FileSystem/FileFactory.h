@@ -10,6 +10,7 @@
 #endif // _MSC_VER > 1000
 
 #include "IFile.h"
+#include "../../guilib/StdString.h"
 
 namespace XFILE
 {

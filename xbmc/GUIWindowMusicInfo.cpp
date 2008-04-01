@@ -21,7 +21,6 @@
 
 #include "stdafx.h"
 #include "GUIWindowMusicInfo.h"
-#include "utils/HTTP.h"
 #include "Util.h"
 #include "guiImage.h"
 #include "Picture.h"
@@ -30,6 +29,8 @@
 #include "MusicDatabase.h"
 #include "LastFmManager.h"
 #include "utils/GUIInfoManager.h"
+#include "MusicInfoTag.h"
+#include "URL.h"
 
 using namespace XFILE;
 

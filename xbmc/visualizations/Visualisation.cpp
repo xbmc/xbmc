@@ -3,8 +3,8 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "../Application.h"
 #include "Visualisation.h" 
+#include "../Settings.h"
 
 using namespace std;
 

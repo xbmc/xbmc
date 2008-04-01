@@ -6,8 +6,9 @@
 #include "RssReader.h"
 #include "HTTP.h"
 #include "../utils/HTMLUtil.h"
-#include "../Util.h"
 #include "../xbox/network.h"
+#include "GUISettings.h"
+#include "URL.h"
 
 using namespace std;
 using namespace XFILE;

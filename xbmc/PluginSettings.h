@@ -2,6 +2,7 @@
 #define PLUGINSETTINGS_H_
 
 #include "../guilib/tinyXML/tinyxml.h"
+#include "Url.h"
 
 class CBasicSettings
 {

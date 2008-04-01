@@ -8,7 +8,7 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
 #include "Application.h"
-#include "Util.h"
+#include "Settings.h"
 
 using namespace std;
 

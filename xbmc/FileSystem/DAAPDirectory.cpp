@@ -23,6 +23,7 @@
 #include "DAAPDirectory.h"
 #include "../Util.h"
 #include "DirectoryCache.h"
+#include "../MusicInfoTag.h"
 
 namespace DIRECTORY
 {

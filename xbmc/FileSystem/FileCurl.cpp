@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "FileCurl.h"
 #include "../Util.h"
+#include "URL.h"
+
 #include <sys/stat.h>
 
 #include "DllLibCurl.h"

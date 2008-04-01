@@ -1,6 +1,5 @@
 #pragma once
 #include "GUIDialog.h"
-#include "utils/IMDB.h"
 #include "VideoInfoScanner.h"
 
 class CGUIDialogMediaSource :

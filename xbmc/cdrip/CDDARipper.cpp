@@ -9,6 +9,7 @@
 #include "../DetectDVDType.h"
 #include "../musicInfoTagLoaderFactory.h"
 #include "../utils/LabelFormatter.h"
+#include "../MusicInfoTag.h"
 
 using namespace std;
 using namespace XFILE;

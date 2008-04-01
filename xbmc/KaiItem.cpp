@@ -22,7 +22,6 @@
 #include "stdafx.h"
 #include "KaiItem.h"
 #include "utils/KaiClient.h"
-#include "utils/HTTP.h"
 #include "Util.h"
 #include "Picture.h"
 

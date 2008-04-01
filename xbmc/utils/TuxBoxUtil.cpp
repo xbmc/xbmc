@@ -5,12 +5,10 @@
 #include "TuxBoxUtil.h"
 #include "../Util.h"
 #include "../FileSystem/FileCurl.h"
-#include "../utils/HttpHeader.h"
-#include "../utils/HTTP.h"
 #include "../GUIDialogContextMenu.h"
 #include "../Application.h"
-#include "../ApplicationMessenger.h"
 #include "GUIInfoManager.h"
+#include "VideoInfoTag.h"
 
 using namespace XFILE;
 

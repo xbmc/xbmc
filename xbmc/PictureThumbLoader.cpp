@@ -23,6 +23,7 @@
 #include "PictureThumbLoader.h"
 #include "Picture.h"
 #include "Util.h"
+#include "URL.h"
 
 using namespace XFILE;
 

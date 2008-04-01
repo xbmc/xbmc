@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "xbeheader.h"
+#include "Util.h"
 
 using namespace AUTOPTR;
 

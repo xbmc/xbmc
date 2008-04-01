@@ -21,13 +21,13 @@
 
 #include "stdafx.h"
 #include "GUIDialogSongInfo.h"
-#include "utils/HTTP.h"
 #include "Util.h"
 #include "Picture.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIPassword.h"
 #include "MusicDatabase.h"
 #include "GUIWindowMusicBase.h"
+#include "MusicInfoTag.h"
 
 using namespace XFILE;
 

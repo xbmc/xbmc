@@ -7,6 +7,7 @@
 #include "../FileSystem/MemoryUnits/Fat32Device.h"
 #include "../FileSystem/MemoryUnits/Fat32FileSystem.h"
 #include "../Application.h"
+#include "URL.h"
 
 using namespace std;
 using namespace XFILE;

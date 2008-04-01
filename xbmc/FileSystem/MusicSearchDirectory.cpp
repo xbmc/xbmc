@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "MusicSearchDirectory.h"
 #include "../MusicDatabase.h"
+#include "URL.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

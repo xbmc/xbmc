@@ -22,7 +22,6 @@
 #include "stdafx.h"
 #include "GUIDialogKaiToast.h"
 #include "GUISliderControl.h"
-#include "Application.h"
 #include "GUIAudioManager.h"
 
 #define POPUP_ICON     400

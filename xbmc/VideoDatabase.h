@@ -1,7 +1,8 @@
 #pragma once
 #include "Database.h"
-#include "utils/IMDB.h"
+#include "VideoInfoTag.h"
 #include "settings/VideoSettings.h"
+#include "GUIDialogProgress.h"
 #include <set>
 
 typedef std::vector<CStdString> VECMOVIEYEARS;

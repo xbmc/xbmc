@@ -24,6 +24,8 @@
 #include "Util.h"
 #include "PlayListFactory.h"
 #include <sstream>
+#include "VideoInfoTag.h"
+#include "MusicInfoTag.h"
 
 using namespace std;
 using namespace MUSIC_INFO;

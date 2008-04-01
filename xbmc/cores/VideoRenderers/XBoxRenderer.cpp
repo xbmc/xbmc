@@ -20,8 +20,8 @@
 #include "stdafx.h"
 #include "XBoxRenderer.h"
 #include "../../Application.h"
-#include "../../Util.h"
 #include "../../XBVideoConfig.h"
+#include "../../Settings.h"
 
 // http://www.martinreddy.net/gfx/faqs/colorconv.faq
 

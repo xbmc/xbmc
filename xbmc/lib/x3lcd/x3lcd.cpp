@@ -2,8 +2,8 @@
 #include "stdafx.h"
 #include "x3lcd.h"
 #include "conio.h"
-#include "../../util.h"
 #include "../../Application.h" // for g_application.IsInScreenSaver()
+#include "Settings.h"
 
 #include <conio.h>
 

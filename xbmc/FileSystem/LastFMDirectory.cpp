@@ -3,7 +3,8 @@
 #include "LastFMDirectory.h"
 #include "DirectoryCache.h"
 #include "../Util.h"
-#include "../MusicDatabase.h"
+#include "../MusicInfoTag.h"
+#include "URL.h"
 
 using namespace MUSIC_INFO;
 using namespace DIRECTORY;

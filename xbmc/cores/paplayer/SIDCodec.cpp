@@ -3,6 +3,7 @@
 #include "../DllLoader/DllLoader.h"
 #include "../../Util.h"
 #include "../../MusicInfoTagLoaderSid.h"
+#include "../../MusicInfoTag.h"
 
 using namespace MUSIC_INFO;
 

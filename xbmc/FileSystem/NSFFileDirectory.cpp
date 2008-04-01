@@ -4,6 +4,8 @@
 #include "NSFFileDirectory.h"
 #include "../MusicInfoTagLoaderNSF.h"
 #include "DirectoryCache.h"
+#include "../MusicInfoTag.h"
+#include "URL.h"
 
 using namespace MUSIC_INFO;
 using namespace DIRECTORY;

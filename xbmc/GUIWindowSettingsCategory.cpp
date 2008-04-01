@@ -58,6 +58,7 @@
 #include "lib/libGoAhead/WebServer.h"
 #include "GUIControlGroupList.h"
 #include "XBTimeZone.h"
+#include "VideoDatabase.h"
 
 using namespace std;
 using namespace DIRECTORY;

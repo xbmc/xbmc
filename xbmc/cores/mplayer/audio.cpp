@@ -1,5 +1,6 @@
 
 #include "stdafx.h"
+#include "GUISettings.h"
 #include "audio.h"
 #include "IDirectSoundRenderer.h"
 #include "ASyncDirectSound.h"

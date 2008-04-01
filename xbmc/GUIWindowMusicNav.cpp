@@ -24,7 +24,6 @@
 #include "Util.h"
 #include "utils/GUIInfoManager.h"
 #include "PlayListM3U.h"
-#include "Application.h"
 #include "PlayListPlayer.h"
 #include "GUIPassword.h"
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
@@ -41,6 +40,7 @@
 #include "GUIDialogMusicScan.h"
 #include "VideoDatabase.h"
 #include "GUIWindowVideoNav.h"
+#include "MusicInfoTag.h"
 
 using namespace std;
 using namespace DIRECTORY;

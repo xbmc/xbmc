@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GUIDialogSettings.h"
-#include "utils/IMDB.h"
+#include "ScraperSettings.h"
 
 namespace VIDEO {
 struct SScanSettings;

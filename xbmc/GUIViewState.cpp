@@ -26,6 +26,7 @@
 #include "GUIViewStatePicturesProgramsScripts.h"
 #include "PlayListPlayer.h"
 #include "Util.h"
+#include "URL.h"
 #include "GUIPassword.h"
 #include "GUIBaseContainer.h" // for VIEW_TYPE_*
 #include "ViewDatabase.h"

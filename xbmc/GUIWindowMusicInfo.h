@@ -1,5 +1,8 @@
 #pragma once
 #include "GUIDialog.h"
+#include "Song.h"
+#include "Artist.h"
+#include "Album.h"
 
 class CGUIWindowMusicInfo :
       public CGUIDialog

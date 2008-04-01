@@ -5,6 +5,8 @@
 #include "../Util.h"
 #include "FileCurl.h"
 #include "../utils/HttpHeader.h"
+#include "VideoInfoTag.h"
+#include "MusicInfoTag.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

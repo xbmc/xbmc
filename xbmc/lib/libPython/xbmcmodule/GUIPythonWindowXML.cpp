@@ -2,7 +2,6 @@
 #include "GUIPythonWindowXML.h"
 #include "GUIWindow.h"
 #include "pyutil.h"
-#include "../../../Application.h"
 #include "../../../GUIMediaWindow.h"
 #include "window.h"
 #include "control.h"

@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "GUIDialogVisualisationPresetList.h"
 #include "GUIListContainer.h"
-
+#include "GUISettings.h"
 
 #define CONTROL_LIST           2
 #define CONTROL_PRESETS_LABEL  3

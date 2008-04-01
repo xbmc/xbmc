@@ -62,7 +62,6 @@ ExSaveNonVolatileSetting to improve speed and compatibility.
 #include "XKExports.h"
 #include "undocumented.h"
 #include "../utils/log.h"
-#include "../settings.h"
 
 CXBoxFlash  *mpFlash;
 fci_t *fci=NULL;

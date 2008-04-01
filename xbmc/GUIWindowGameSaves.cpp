@@ -30,6 +30,7 @@
 //#include "Utils/HTTP.h"  // For Download Function
 #include "MediaManager.h"
 #include "utils/LabelFormatter.h"
+#include "MusicInfoTag.h"// todo - program tags
 
 using namespace XFILE;
 using namespace DIRECTORY;

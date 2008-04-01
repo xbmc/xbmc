@@ -31,6 +31,7 @@
 #include "../xbox/XKHDD.h"
 #include "../xbox/XKflash.h"
 #include "../xbox/XKRC4.h"
+#include "../utils/GUIInfoManager.h"
 
 extern "C" XPP_DEVICE_TYPE XDEVICE_TYPE_IR_REMOTE_TABLE;
 #endif

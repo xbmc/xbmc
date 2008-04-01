@@ -21,8 +21,9 @@
 
 #include "stdafx.h"
 #include "AutoSwitch.h"
-#include "Util.h"
 #include "GUIBaseContainer.h" // for VIEW_TYPE_*
+#include "Settings.h"
+#include "GUISettings.h"
 
 #define METHOD_BYFOLDERS  0
 #define METHOD_BYFILES   1

@@ -21,6 +21,8 @@
 */
 #include "FileHD.h"
 #include "../Util.h"
+#include "URL.h"
+
 #include <sys/stat.h>
 
 using namespace XFILE;

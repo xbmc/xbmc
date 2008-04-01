@@ -32,6 +32,7 @@
 #include "utils/md5.h"
 #include "xbox/XKGeneral.h"
 #include "NfoFile.h"
+#include "MusicInfoTag.h"
 
 using namespace std;
 using namespace MUSIC_INFO;

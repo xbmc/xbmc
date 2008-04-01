@@ -44,6 +44,7 @@
 #include "GUIDialogSongInfo.h"
 #include "GUIDialogSmartPlaylistEditor.h"
 #include "LastFmManager.h"
+#include "MusicInfoTag.h"
 
 using namespace std;
 using namespace XFILE;

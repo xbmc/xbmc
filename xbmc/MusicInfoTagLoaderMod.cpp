@@ -25,6 +25,7 @@
 #include "lib/mikxbox/mikmod.h"
 #endif
 #include "Util.h"
+#include "MusicInfoTag.h"
 
 #include <fstream>
 

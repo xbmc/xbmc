@@ -31,7 +31,6 @@
 #include "credits_res.h"
 #include "lib/liblzo/LZO1X.H"
 #include "SkinInfo.h"
-#include "Util.h"
 #include "GUIFont.h"
 
 using namespace std;

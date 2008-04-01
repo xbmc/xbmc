@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "LastFmManager.h"
+#include "Application.h"
 #include "ApplicationRenderer.h"
 #include "PlayListPlayer.h"
 #include "Util.h"
@@ -31,6 +32,9 @@
 #include "FileSystem/File.h"
 #include "utils/GUIInfoManager.h"
 #include "MusicDatabase.h"
+#include "MusicInfoTag.h"
+#include "URL.h"
+
 #include <sstream>
 
 using namespace std;

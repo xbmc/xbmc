@@ -22,9 +22,8 @@
 #include "stdafx.h"
 #include "GUIWindowWeather.h"
 #include "guiImage.h"
-#include "Util.h"
 #include "utils/Weather.h"
-
+#include "GUISettings.h"
 
 #define CONTROL_BTNREFRESH  2
 #define CONTROL_SELECTLOCATION 3

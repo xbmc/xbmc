@@ -23,7 +23,6 @@
 #include "GUIWindowVideoBase.h"
 #include "Util.h"
 #include "utils/IMDB.h"
-#include "utils/HTTP.h"
 #include "utils/RegExp.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIWindowVideoInfo.h"

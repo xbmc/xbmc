@@ -22,7 +22,6 @@
 #include "stdafx.h"
 #include "GUIViewStateMusic.h"
 #include "PlayListPlayer.h"
-#include "Util.h"
 #include "GUIBaseContainer.h" // for VIEW_TYPE_*
 #include "VideoDatabase.h"
 

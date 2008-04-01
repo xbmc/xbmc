@@ -4,6 +4,7 @@
 #include "../DVDCodecs.h"
 #include "../../DVDStreamInfo.h"
 #include "../../../../XBAudioConfig.h"
+#include "Settings.h"
 
 #undef  MAX
 #define MAX(a, b)  (((a) > (b)) ? (a) : (b))

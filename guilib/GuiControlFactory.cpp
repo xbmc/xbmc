@@ -37,11 +37,12 @@
 #include "GUIMultiSelectText.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
-#include "../xbmc/Util.h"
 #include "../xbmc/ButtonTranslator.h"
 #include "XMLUtils.h"
 #include "GUIFontManager.h"
 #include "GUIColorManager.h"
+#include "SkinInfo.h"
+#include "../xbmc/Settings.h"
 
 using namespace std;
 

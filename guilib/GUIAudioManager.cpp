@@ -3,7 +3,7 @@
 #include "Key.h"
 #include "AudioContext.h"
 #include "GUISound.h"
-#include "../xbmc/Settings.h"
+#include "../xbmc/GUISettings.h"
 #include "../xbmc/ButtonTranslator.h"
 #include "../xbmc/utils/SingleLock.h"
 

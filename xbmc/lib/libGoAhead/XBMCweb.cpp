@@ -23,6 +23,7 @@
 #include "../../utils/GUIInfoManager.h"
 #include "../../musicInfoTagLoaderFactory.h"
 #include "../../MusicDatabase.h"
+#include "../../MusicInfoTag.h"
 
 using namespace std;
 using namespace DIRECTORY;

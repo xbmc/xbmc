@@ -23,8 +23,8 @@
 #include "PlayListPlayer.h"
 #include "PlayListFactory.h"
 #include "Application.h"
-#include "Util.h"
 #include "PartyModeManager.h"
+#include "Settings.h"
 
 using namespace PLAYLIST;
 

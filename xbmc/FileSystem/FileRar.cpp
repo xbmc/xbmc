@@ -2,6 +2,8 @@
 #include "FileRar.h"
 #include <sys/stat.h>
 #include "../Util.h"
+#include "URL.h"
+
 #include <process.h>
 
 using namespace XFILE;

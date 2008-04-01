@@ -2,6 +2,7 @@
 #include "AudioContext.h"
 #include "IAudioDeviceChangedCallback.h"
 #include "../xbmc/Settings.h"
+#include "../xbmc/GUISettings.h"
 #include "../xbmc/XBAudioConfig.h"
 
 #ifndef _XBOX

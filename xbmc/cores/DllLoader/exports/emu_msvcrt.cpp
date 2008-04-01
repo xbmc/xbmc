@@ -13,6 +13,7 @@
 #include "../../../Util.h"
 #include "../../../FileSystem/IDirectory.h"
 #include "../../../FileSystem/FactoryDirectory.h"
+#include "../../../Url.h"
 
 #include "emu_msvcrt.h"
 #include "emu_dummy.h"

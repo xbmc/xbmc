@@ -21,7 +21,6 @@
 
 #include "stdafx.h"
 #include "GUIDialogSelect.h"
-#include "Application.h"
 #include "SortFileItem.h"
 
 #define CONTROL_HEADING       1

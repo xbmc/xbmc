@@ -4,8 +4,7 @@
 #include "../lib/smartxx/smartxxLCD.h"
 #include "../lib/libXenium/XeniumLCD.h"
 #include "../lib/x3lcd/x3lcd.h"
-
-
+#include "GUISettings.h"
 
 ILCD* g_lcd = NULL;
 CLCDFactory::CLCDFactory(void)

@@ -1,7 +1,6 @@
 #pragma once
 #include "FileSystem/IDirectory.h"
 #include "FileItem.h"
-#include "Settings.h"
 #include "FileSystem/Directory.h"
 #include <string>
 #include "StdString.h"

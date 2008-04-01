@@ -36,7 +36,6 @@
 #include "lib/libPython/XBPython.h"
 #include "GUIWindowSlideShow.h"
 #include "PlayListFactory.h"
-#include "utils/GUIInfoManager.h"
 #include "xbox/network.h"
 
 using namespace std;

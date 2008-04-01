@@ -3,7 +3,7 @@
 #include "FanController.h"
 #include "../xbox/Undocumented.h"
 #include "../xbox/XKExports.h"
-
+#include "GUISettings.h"
 
 #define PIC_ADDRESS      0x20
 #define XCALIBUR_ADDRESS 0xE0 // XCalibur/1.6 videochip

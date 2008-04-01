@@ -30,6 +30,9 @@
 #include "../xbox/network.h"
 #include "GUIWindowSlideShow.h"
 #include "../LastFmManager.h"
+#include "../PictureInfoTag.h"
+#include "../MusicInfoTag.h"
+#include "../VideoDatabase.h"
 
 // stuff for current song
 #ifdef HAS_FILESYSTEM
@@ -3503,4 +3506,17 @@ CGUIWindow *CGUIInfoManager::GetWindowWithCondition(DWORD contextWindow, int con
     return window;
 
   return NULL;
+}
+
+void CGUIInfoManager::SetCurrentVideoTag(const CVideoInfoTag &tag)
+{     
+  *m_currentFile.GetVideoInfoTag() = tag; 
+  m_currentFile.m_lStartOffset = 0;
+}
+
+void CGUIInfoManager::SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag &tag) 
+{
+  //CLog::Log(LOGDEBUG, "Asked to SetCurrentTag");
+  *m_currentFile.GetMusicInfoTag() = tag; 
+  m_currentFile.m_lStartOffset = 0;
 }

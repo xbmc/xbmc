@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "../Util.h"
+#include "URL.h"
 
 #include "HDHomeRun.h"
 

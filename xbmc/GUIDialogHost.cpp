@@ -20,6 +20,7 @@
  */
 
 #include "stdafx.h"
+#include "Settings.h"
 #include "GUIDialogHost.h"
 #include "GUISpinControl.h"
 #include "GUILabelControl.h"

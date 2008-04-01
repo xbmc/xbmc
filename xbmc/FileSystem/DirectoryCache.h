@@ -2,6 +2,8 @@
 
 #include "Directory.h"
 
+#include <set>
+
 namespace DIRECTORY
 {
 

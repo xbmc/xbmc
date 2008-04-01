@@ -3,6 +3,7 @@
 #include "XBMSDirectory.h"
 #include "../Util.h"
 #include "DirectoryCache.h"
+#include "URL.h"
 
 using namespace DIRECTORY;
 

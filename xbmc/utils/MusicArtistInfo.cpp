@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "MusicArtistInfo.h"
 #include "ScraperParser.h"
+#include "ScraperSettings.h"
 #include "XMLUtils.h"
 
 using namespace MUSIC_GRABBER;

@@ -7,13 +7,16 @@
 #define GUILIB_GUIInfoManager_H
 #pragma once
 
-#include "../musicInfoTag.h"
 #include "../FileItem.h"
-#include "../VideoDatabase.h"
 #include "../StringUtils.h"
 #include "../Temperature.h"
 #include "../utils/CriticalSection.h"
 #include "IMsgTargetCallback.h"
+
+#include <list>
+
+class MUSIC_INFO::CMusicInfoTag;
+class CVideoInfoTag;
 
 // conditions for window retrieval
 #define WINDOW_CONDITION_HAS_LIST_ITEMS  1
@@ -473,17 +476,8 @@ public:
   void SetCurrentSlide(CFileItem &item);
   const CFileItem &GetCurrentSlide() const { return m_currentSlide; };
   void ResetCurrentSlide();
-  void SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag &tag) 
-  {
-    //CLog::Log(LOGDEBUG, "Asked to SetCurrentTag");
-    *m_currentFile.GetMusicInfoTag() = tag; 
-    m_currentFile.m_lStartOffset = 0;
-  };
-  void SetCurrentVideoTag(const CVideoInfoTag &tag) 
-  {     
-    *m_currentFile.GetVideoInfoTag() = tag; 
-    m_currentFile.m_lStartOffset = 0;
-  };
+  void SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag &tag);
+  void SetCurrentVideoTag(const CVideoInfoTag &tag);
 
   const MUSIC_INFO::CMusicInfoTag *GetCurrentSongTag() const
   { 
@@ -492,7 +486,7 @@ public:
 
     return NULL;
   };
-  const CVideoInfoTag* GetCurrentMovieTag() const 
+  const CVideoInfoTag* GetCurrentMovieTag() const
   { 
     if (m_currentFile.HasVideoInfoTag())
       return m_currentFile.GetVideoInfoTag(); 

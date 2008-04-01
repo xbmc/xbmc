@@ -1,9 +1,10 @@
 #include "include.h"
 #include "GUIRSSControl.h"
 #include "GUIWindowManager.h"
-#include "../xbmc/Settings.h"
+#include "../xbmc/GUISettings.h"
 #include "../xbmc/utils/CriticalSection.h"
 #include "../xbmc/utils/SingleLock.h"
+#include "../xbmc/StringUtils.h"
 
 using namespace std;
 

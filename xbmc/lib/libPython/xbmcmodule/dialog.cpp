@@ -2,7 +2,6 @@
 #include "dialog.h"
 #include "../python/Python.h"
 #include "pyutil.h"
-#include "../../../Application.h"
 #include "../xbmc/GUIDialogFileBrowser.h"
 #include "../xbmc/GUIDialogNumeric.h"
 #include "../xbmc/GUIDialogGamepad.h"

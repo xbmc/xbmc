@@ -2,7 +2,6 @@
 #include "../../../Application.h"
 #include "../../../utils/GUIInfoManager.h"
 #include "../../../PlayListPlayer.h"
-#include "../../../Util.h"
 #include "player.h"
 #include "pyplaylist.h"
 #include "pyutil.h"

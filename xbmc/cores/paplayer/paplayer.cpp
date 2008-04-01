@@ -4,8 +4,9 @@
 #include "../../utils/GUIInfoManager.h"
 #include "AudioContext.h"
 #include "../../FileSystem/FileShoutcast.h"
-#include "../../Application.h"
 #include "../../CdgParser.h"
+#include "../../MusicInfoTag.h"
+#include "../../Settings.h"
 
 #define VOLUME_FFWD_MUTE 900 // 9dB
 

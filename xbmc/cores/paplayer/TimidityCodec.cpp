@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "TimidityCodec.h"
 #include "../DllLoader/DllLoader.h"
-#include "../../Util.h"
 
 TimidityCodec::TimidityCodec()
 {

@@ -3,6 +3,9 @@
 
 #include "../../dvd_config.h"
 
+#include <assert.h>
+#include <vector>
+
 enum DVDOverlayType
 {
   DVDOVERLAY_TYPE_NONE    = -1,

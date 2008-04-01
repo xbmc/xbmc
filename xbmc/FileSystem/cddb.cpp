@@ -12,8 +12,7 @@
 #include "cddb.h"
 #include "../DNSNameCache.h"
 #include "../Id3Tag.h"
-#include "../Util.h"
-
+#include "Settings.h"
 
 using namespace std;
 using namespace MUSIC_INFO;

@@ -29,6 +29,7 @@
 #include "Picture.h"
 #include "FileSystem/StackDirectory.h"
 #include "xbox/XKGeneral.h"
+#include "utils/IMDB.h"
 
 #define REGEXSAMPLEFILE "[-\\._ ]sample[-\\._ ]"
 

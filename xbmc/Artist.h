@@ -3,8 +3,6 @@
 #include <map>
 #include <vector>
 
-#include "musicInfoTag.h"
-#include "Song.h"
 #include "utils/ScraperParser.h"
 #include "utils/ScraperUrl.h"
 

@@ -28,7 +28,6 @@
 #include "XMLUtils.h"
 #include "Database.h"
 #include "VideoDatabase.h"
-#include "LocalizeStrings.h"
 #include "Util.h"
 
 using namespace std;

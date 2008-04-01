@@ -4,7 +4,6 @@
 #include "GUIDialog.h"
 #include "../xbmc/utils/CharsetConverter.h"
 #include "GUIFontManager.h"
-#include "../xbmc/utils/GUIInfoManager.h"
 
 using namespace std;
 

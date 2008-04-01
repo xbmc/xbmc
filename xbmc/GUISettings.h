@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Profile.h"
 #include "../guilib/tinyXML/tinyxml.h"
 #include <vector>
 #include <map>

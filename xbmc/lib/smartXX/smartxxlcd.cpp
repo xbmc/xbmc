@@ -2,11 +2,11 @@
 #include "stdafx.h"
 #include "smartxxlcd.h"
 #include "conio.h"
-#include "../../Util.h"
 #include "../../utils/SystemInfo.h"
 #include "../../memutil.h"
 #include "../../Application.h" // for g_application.IsInScreenSaver()
 #include "../../utils/LED.h"
+#include "Settings.h"
 
 #include <conio.h>
 

@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "GUIDialogGamepad.h"
-#include "Util.h"
 #include "utils/md5.h"
 #include "xbox/XKGeneral.h"
 #include "../guilib/GUIAudioManager.h"

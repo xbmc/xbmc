@@ -4,11 +4,11 @@
 #define PRE_SKIN_VERSION_2_1_COMPATIBILITY 1
 // REMOVE ME WHEN WE SWITCH TO SKIN VERSION 2.1
 
-class CProfile;
 #include "settings/VideoSettings.h"
-#include "../xbmc/StringUtils.h"
+#include "StringUtils.h"
 #include "GUISettings.h"
 #include "FileItem.h"
+#include "Profile.h"
 
 #include <vector>
 #include <map>
@@ -172,9 +172,6 @@ typedef std::vector<CShare> VECSHARES;
 \sa CShare, VECSHARES
 */
 typedef std::vector<CShare>::iterator IVECSHARES;
-
-typedef std::vector<CProfile> VECPROFILES;
-typedef std::vector<CProfile>::iterator IVECPROFILES;
 
 struct VOICE_MASK {
   float energy;

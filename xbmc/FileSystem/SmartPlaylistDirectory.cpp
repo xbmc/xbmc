@@ -4,7 +4,7 @@
 #include "../SmartPlaylist.h"
 #include "../MusicDatabase.h"
 #include "../VideoDatabase.h"
-#include "../Util.h"
+#include "Playlist.h"
 
 using namespace PLAYLIST;
 

@@ -3,6 +3,7 @@
 #include "VirtualDirectory.h"
 #include "FactoryDirectory.h"
 #include "../Util.h"
+#include "../Profile.h"
 #include "DirectoryCache.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "../utils/MemoryUnitManager.h"

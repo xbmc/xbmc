@@ -27,6 +27,7 @@
 #include "AIFFcodec.h"
 #include "ADPCMCodec.h"
 #include "TimidityCodec.h"
+#include "URL.h"
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {

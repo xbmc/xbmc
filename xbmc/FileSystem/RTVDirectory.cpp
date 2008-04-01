@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include "RTVDirectory.h"
 #include "../Util.h"
+#include "URL.h"
 
 using namespace DIRECTORY;
 

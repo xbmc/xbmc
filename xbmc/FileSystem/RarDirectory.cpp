@@ -3,6 +3,7 @@
 #include "RarDirectory.h"
 #include "../utils/log.h"
 #include "../Util.h"
+#include "URL.h"
 
 namespace DIRECTORY
 {

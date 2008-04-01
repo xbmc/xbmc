@@ -30,9 +30,7 @@
 #endif
 
 #if defined(_XBOX)
-#include "../../../Util.h"
 #include "../../utils/Log.h"
-#include "../../Settings.h"
 #include "../../xbox/IoSupport.h"
 #include "../../Util.h"
 #include "../../Utils/log.h"

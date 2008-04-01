@@ -1,6 +1,5 @@
 #pragma once
 #include "GUIDialog.h"
-#include "PictureInfoTag.h"
 
 class CGUIDialogPictureInfo :
       public CGUIDialog

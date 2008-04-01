@@ -5,6 +5,7 @@
 #include "../xbox/IoSupport.h"
 #include "DirectoryCache.h"
 #include "iso9660.h"
+#include "URL.h"
 
 using namespace AUTOPTR;
 using namespace DIRECTORY;

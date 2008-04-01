@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "../../VideoDatabase.h"
 #include "DirectoryNodeOverview.h"
+#include "Settings.h"
 
 using namespace DIRECTORY::VIDEODATABASEDIRECTORY;
 using namespace std;

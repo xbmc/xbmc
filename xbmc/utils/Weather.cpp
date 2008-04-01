@@ -7,6 +7,7 @@
 #include "XMLUtils.h"
 #include "../Temperature.h"
 #include "../xbox/network.h"
+#include "GUISettings.h"
 
 using namespace std;
 using namespace DIRECTORY;

@@ -20,9 +20,10 @@
  */
 
 #include "stdafx.h"
+#include "Application.h"
 #include "ApplicationRenderer.h"
-#include "utils/GUIInfoManager.h"
 #include "../guilib/guiImage.h"
+#include "Settings.h"
 
 CApplicationRenderer g_ApplicationRenderer;
 

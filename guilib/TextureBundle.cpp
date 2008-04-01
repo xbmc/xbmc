@@ -9,7 +9,6 @@
 #include "../xbmc/lib/liblzo/LZO1X.H"
 #include "SkinInfo.h"
 #include "../xbmc/GUISettings.h"
-#include "../xbmc/Settings.h"
 #include "../xbmc/Util.h"
 
 #ifdef _XBOX

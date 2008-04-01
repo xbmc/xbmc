@@ -21,6 +21,8 @@
 #include "stdafx.h"
 #include "FileXBMSP.h"
 #include "../Util.h"
+#include "URL.h"
+
 #include <sys/stat.h>
 
 using namespace DIRECTORY;

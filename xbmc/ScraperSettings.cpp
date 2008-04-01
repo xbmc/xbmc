@@ -1,9 +1,10 @@
 #include "stdafx.h"
 #include "ScraperSettings.h"
-#include "Util.h"
 #include "FileSystem/File.h"
 #include "FileSystem/Directory.h"
 #include "utils/HTTP.h"
+#include  "utils/ScraperParser.h"
+
 #include <sstream>
 
 CScraperSettings::CScraperSettings()

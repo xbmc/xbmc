@@ -28,6 +28,7 @@
 #include "GUIDialogLockSettings.h"
 #include "GUIDialogProfileSettings.h"
 #include "Util.h"
+#include "URL.h"
 #include "Settings.h"
 
 CGUIPassword g_passwordManager;

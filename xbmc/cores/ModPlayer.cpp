@@ -1,7 +1,7 @@
 
 #include "stdafx.h"
 #include "modplayer.h"
-#include "../util.h"
+#include "Settings.h"
 
 using namespace XFILE;
 

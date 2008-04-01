@@ -24,6 +24,7 @@
 #include "GUIProgressControl.h"
 #include "Application.h"
 #include "Util.h"
+#include "URL.h"
 
 using namespace MUSIC_INFO;
 

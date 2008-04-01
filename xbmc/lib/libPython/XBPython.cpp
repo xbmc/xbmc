@@ -14,6 +14,8 @@
 #include "XBPython.h"
 #include "XBPythonDll.h"
 #include "ActionManager.h"
+#include "../../Settings.h"
+#include "../../Profile.h"
 
 XBPython g_pythonParser;
 

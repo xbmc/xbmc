@@ -16,6 +16,8 @@
 #include "../XBAudioConfig.h"
 #include "../FileSystem/FileCurl.h"
 #include "../utils/HttpHeader.h"
+#include "GUISettings.h"
+#include "URL.h"
 
 using namespace AUTOPTR;
 

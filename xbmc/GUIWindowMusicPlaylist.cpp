@@ -29,6 +29,7 @@
 #include "PartyModeManager.h"
 #include "LastFmManager.h"
 #include "utils/LabelFormatter.h"
+#include "MusicInfoTag.h"
 
 using namespace PLAYLIST;
 

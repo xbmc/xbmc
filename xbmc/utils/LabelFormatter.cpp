@@ -25,6 +25,8 @@
 #include "../GUISettings.h"
 #include "RegExp.h"
 #include "../Util.h"
+#include "VideoInfoTag.h"
+#include "MusicInfoTag.h"
 
 using namespace MUSIC_INFO;
 

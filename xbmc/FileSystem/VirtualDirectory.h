@@ -1,5 +1,6 @@
 #pragma once
 #include "IDirectory.h"
+#include "Settings.h"
 
 namespace DIRECTORY
 {

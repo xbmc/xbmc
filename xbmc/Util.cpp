@@ -62,7 +62,6 @@
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogVideoScan.h"
 #include "utils/fstrcmp.h"
-#include "utils/GUIInfoManager.h"
 #include "utils/Trainer.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "utils/MemoryUnitManager.h"
@@ -91,6 +90,7 @@
 #include "lib/libGoAhead/XBMChttp.h"
 #include "DNSNameCache.h"
 #include "FileSystem/PluginDirectory.h"
+#include "MusicInfoTag.h"
 
 using namespace std;
 namespace MathUtils {

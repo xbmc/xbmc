@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "MediaManager.h"
 #include "xbox/IoSupport.h"
+#include "URL.h"
 
 using namespace std;
 
