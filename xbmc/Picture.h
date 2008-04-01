@@ -1,6 +1,10 @@
 #pragma once
 #include "DllImageLib.h"
 
+#ifdef _XBOX
+#define RESAMPLE_CACHED_IMAGES
+#endif
+
 class CPicture
 {
 public:
@@ -22,6 +26,7 @@ public:
 
   void CreateFolderThumb(const CStdString *strThumbs, const CStdString &folderThumbnail);
   bool DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, bool checkExistence = false);
+  bool CacheImage(const CStdString& sourceFileName, const CStdString& destFileName);
 
   // caches a skin image as a thumbnail image
   bool CacheSkinImage(const CStdString &srcFile, const CStdString &destFile);
