@@ -49,6 +49,7 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "GUIDialogSelect.h"
+#include "GUIDialogKeyboard.h"
 
 #include "SkinInfo.h"
 

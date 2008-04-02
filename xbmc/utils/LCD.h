@@ -2,6 +2,9 @@
 #include "Thread.h"
 
 #include "GUILabelControl.h"  // for CInfoPortion
+
+class TiXmlNode;
+
 #define MAX_ROWS 20
 
 class ILCD : public CThread

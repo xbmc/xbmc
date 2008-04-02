@@ -14,6 +14,7 @@
 class CGUIFont;
 class CGUIFontTTF;
 class TiXmlDocument;
+class TiXmlNode;
 
 /*!
  \ingroup textures

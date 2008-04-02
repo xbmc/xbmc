@@ -31,6 +31,7 @@
 #include "utils/LabelFormatter.h"
 #include "MusicInfoTag.h"
 #include "GUIWindowManager.h"
+#include "GUIDialogKeyboard.h"
 
 using namespace PLAYLIST;
 

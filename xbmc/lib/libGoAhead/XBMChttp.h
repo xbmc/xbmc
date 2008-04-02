@@ -1,6 +1,7 @@
-#include "../../utils/UdpClient.h"
-
 #pragma once
+
+#include "../../utils/UdpClient.h"
+#include "Key.h"
 
 /******************************** Description *********************************/
 

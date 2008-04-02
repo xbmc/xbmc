@@ -13,6 +13,7 @@
 #include "../../guilib/GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "GUIDialogProgress.h"
+#include "GUIDialogKeyboard.h"
 
 using namespace std;
 using namespace XFILE;

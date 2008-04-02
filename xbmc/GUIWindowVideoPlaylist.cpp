@@ -29,6 +29,7 @@
 #include "PartyModeManager.h"
 #include "GUIDialogSmartPlaylistEditor.h"
 #include "GUIWindowManager.h"
+#include "GUIDialogKeyboard.h"
 
 using namespace PLAYLIST;
 

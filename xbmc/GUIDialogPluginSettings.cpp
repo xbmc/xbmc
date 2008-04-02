@@ -33,6 +33,7 @@
 #include "VideoInfoScanner.h"
 #include "ScraperSettings.h"
 #include "GUIWindowManager.h"
+#include "GUIDialogKeyboard.h"
 
 using namespace std;
 

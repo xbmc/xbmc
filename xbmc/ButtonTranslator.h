@@ -7,6 +7,9 @@
 #include "utils/EventClient.h"
 #endif
 
+class CKey;
+struct CAction;
+
 struct CButtonAction
 {
   WORD wID;

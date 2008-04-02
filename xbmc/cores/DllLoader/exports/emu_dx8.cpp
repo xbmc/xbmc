@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "emu_dx8.h"
+#include "GraphicContext.h"
 
 extern "C" void OutputDebug(char* strDebug)
 {

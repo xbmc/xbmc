@@ -40,6 +40,7 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogSelect.h"
+#include "GUIDialogKeyboard.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

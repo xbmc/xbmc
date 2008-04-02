@@ -8,6 +8,7 @@
 #include "../../guilib/GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "GUIDialogProgress.h"
+#include "GUIDialogKeyboard.h"
 
 using namespace MUSIC_INFO;
 using namespace DIRECTORY;

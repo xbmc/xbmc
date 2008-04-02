@@ -26,7 +26,7 @@
 #include "GUIButtonControl.h"
 #include "utils/KaiClient.h"
 #include "ArenaItem.h"
-
+#include "GUIDialogKeyboard.h"
 
 #define CTL_LABEL_CAPTION 1
 #define CTL_LABEL_SCHEDULE 2

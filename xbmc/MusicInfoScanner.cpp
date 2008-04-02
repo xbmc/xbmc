@@ -36,6 +36,7 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogProgress.h"
 #include "GUIDialogSelect.h"
+#include "GUIDialogKeyboard.h"
 
 using namespace std;
 using namespace MUSIC_INFO;

@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "Favourites.h"
 #include "Util.h"
+#include "Key.h"
 
 bool CFavourites::Load(CFileItemList &items)
 {

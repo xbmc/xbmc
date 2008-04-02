@@ -24,6 +24,7 @@
 #include "GUIDialogContextMenu.h"
 #include "Favourites.h"
 #include "GUIWindowManager.h"
+#include "GUIDialogKeyboard.h"
 
 #define FAVOURITES_LIST 450
 
