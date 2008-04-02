@@ -46,6 +46,7 @@
 #include "LastFmManager.h"
 #include "MusicInfoTag.h"
 #include "GUIWindowManager.h"
+#include "GUIDialogOK.h"
 
 using namespace std;
 using namespace XFILE;

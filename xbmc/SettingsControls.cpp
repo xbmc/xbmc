@@ -23,6 +23,7 @@
 #include "SettingsControls.h"
 #include "GUIDialogNumeric.h"
 #include "Util.h"
+#include "GUIDialogOK.h"
 
 CBaseSettingControl::CBaseSettingControl(DWORD dwID, CSetting *pSetting)
 {

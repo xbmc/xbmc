@@ -31,6 +31,7 @@
 #include "FileSystem/MultiPathDirectory.h"
 #include "PictureInfoLoader.h"
 #include "../guilib/GUIWindowManager.h"
+#include "GUIDialogOK.h"
 
 #define CONTROL_BTNVIEWASICONS      2
 #define CONTROL_BTNSORTBY           3

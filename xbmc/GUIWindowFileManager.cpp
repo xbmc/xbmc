@@ -38,6 +38,7 @@
 #include "PlayListFactory.h"
 #include "xbox/network.h"
 #include "GUIWindowManager.h"
+#include "GUIDialogOK.h"
 
 using namespace std;
 using namespace XFILE;

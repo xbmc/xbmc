@@ -29,6 +29,7 @@
 #include "SmartPlaylist.h"
 #include "GUIDialogProgress.h"
 #include "GUIWindowManager.h"
+#include "GUIDialogOK.h"
 
 using namespace std;
 using namespace PLAYLIST;

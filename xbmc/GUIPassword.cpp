@@ -31,6 +31,7 @@
 #include "URL.h"
 #include "Settings.h"
 #include "GUIWindowManager.h"
+#include "GUIDialogOK.h"
 
 CGUIPassword g_passwordManager;
 

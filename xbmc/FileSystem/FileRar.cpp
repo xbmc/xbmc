@@ -3,6 +3,7 @@
 #include <sys/stat.h>
 #include "../Util.h"
 #include "URL.h"
+#include "GUIDialogOK.h"
 
 #include <process.h>
 

@@ -31,6 +31,7 @@
 #include "xbox/network.h"
 #include "GUIPassword.h"
 #include "GUIWindowManager.h"
+#include "GUIDialogOK.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

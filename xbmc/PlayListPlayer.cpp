@@ -26,6 +26,7 @@
 #include "PartyModeManager.h"
 #include "Settings.h"
 #include "GUIWindowManager.h"
+#include "GUIDialogOK.h"
 
 using namespace PLAYLIST;
 

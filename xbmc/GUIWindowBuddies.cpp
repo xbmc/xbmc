@@ -29,6 +29,7 @@
 #include "xbox/xbeheader.h"
 #include "ProgramDatabase.h"
 #include "GUIWindowManager.h"
+#include "GUIDialogOK.h"
 
 using namespace AUTOPTR;
 using namespace MEDIA_DETECT;

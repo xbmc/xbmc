@@ -34,6 +34,7 @@
 #include "VideoInfoScanner.h"
 #include "VideoInfoTag.h"
 #include "GUIWindowManager.h"
+#include "GUIDialogOK.h"
 
 using namespace std;
 using namespace XFILE;

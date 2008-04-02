@@ -4,6 +4,7 @@
 #include "xbox/XKGeneral.h"
 #include "../guilib/GUIAudioManager.h"
 #include "GUIWindowManager.h"
+#include "GUIDialogOK.h"
 
 CGUIDialogGamepad::CGUIDialogGamepad(void)
     : CGUIDialogBoxBase(WINDOW_DIALOG_GAMEPAD, "DialogGamepad.xml")

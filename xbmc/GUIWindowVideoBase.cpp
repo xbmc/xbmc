@@ -47,6 +47,7 @@
 #include "FileSystem/VideoDatabaseDirectory.h"
 #include "PartyModeManager.h"
 #include "GUIWindowManager.h"
+#include "GUIDialogOK.h"
 
 #include "SkinInfo.h"
 

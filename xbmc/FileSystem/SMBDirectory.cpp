@@ -17,6 +17,7 @@
 #include "../GUIPassword.h"
 #include "../lib/libsmb/xbLibSmb.h"
 #include "../../guilib/GUIWindowManager.h"
+#include "GUIDialogOK.h"
 
 using namespace DIRECTORY;
 

@@ -41,6 +41,7 @@
 #include "GUIDialogPluginSettings.h"
 #include "PluginSettings.h"
 #include "GUIWindowManager.h"
+#include "GUIDialogOK.h"
 
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
 #include "SkinInfo.h"

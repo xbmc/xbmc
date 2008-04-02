@@ -11,6 +11,7 @@
 #include "../utils/LabelFormatter.h"
 #include "../MusicInfoTag.h"
 #include "../../guilib/GUIWindowManager.h"
+#include "GUIDialogOK.h"
 
 using namespace std;
 using namespace XFILE;

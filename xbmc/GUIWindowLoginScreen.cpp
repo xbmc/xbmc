@@ -34,6 +34,7 @@
 #include "SkinInfo.h"
 #include "Profile.h"
 #include "../guilib/GUIWindowManager.h"
+#include "GUIDialogOK.h"
 
 using namespace XFILE;
 

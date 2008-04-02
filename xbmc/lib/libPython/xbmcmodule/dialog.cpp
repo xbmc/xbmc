@@ -6,6 +6,7 @@
 #include "../xbmc/GUIDialogNumeric.h"
 #include "../xbmc/GUIDialogGamepad.h"
 #include "../../../../guilib/GUIWindowManager.h"
+#include "GUIDialogOK.h"
 
 using namespace std;
 

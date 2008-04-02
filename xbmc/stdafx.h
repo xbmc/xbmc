@@ -32,7 +32,6 @@
 #endif
 
 // guilib internal
-//#include "GUIWindowManager.h"
 #include "LocalizeStrings.h"
 
 #include "utils/Thread.h"
@@ -53,8 +52,6 @@
 #include "AutoPtrHandle.h"
 
 // Often used
-//#include "GUIDialogOK.h"
-#include "GUIDialogProgress.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogSelect.h"
 #include "GUIDialogKeyboard.h"

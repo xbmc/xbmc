@@ -92,6 +92,7 @@
 #include "FileSystem/PluginDirectory.h"
 #include "MusicInfoTag.h"
 #include "GUIWindowManager.h"
+#include "GUIDialogOK.h"
 
 using namespace std;
 namespace MathUtils {
