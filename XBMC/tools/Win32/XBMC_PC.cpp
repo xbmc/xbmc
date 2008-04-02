@@ -389,8 +389,16 @@ HRESULT CXBMC_PC::Create( HINSTANCE hInstance, LPSTR commandLine )
 //  m_bReady = TRUE;
 
 #else
+  // todo: allow more than one option
   if (strnicmp(commandLine, "-fs", 3) == 0)
     g_advancedSettings.m_fullScreen = true;
+  else if(strnicmp(commandLine, "-q", 2) == 0)
+    g_application.SetQuiet(true);
+  else if(strnicmp(commandLine, "-p", 2) == 0)
+  {
+    printf("Using platform specific directories...\n");
+    g_application.EnablePlatformDirectories();
+  }
 #endif
   return S_OK;
 }
