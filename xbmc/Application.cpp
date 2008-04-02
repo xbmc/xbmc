@@ -841,7 +841,11 @@ extern "C" void __stdcall init_emu_environ();
 //
 static void CopyUserDataIfNeeded(CStdString strPath, LPCTSTR file)
 {
+#ifdef _WIN32PC
+  strPath.append("\\");
+#else
   strPath.append("/");
+#endif
   strPath.append(file);
   //printf("Checking for existance of %s\n", strPath.c_str());
   if (access(strPath.c_str(), 0) == -1)
@@ -908,6 +912,27 @@ HRESULT CApplication::Create(HWND hWnd)
 
   CStdString strLogFile, strLogFileOld;
 
+  CProfile *profile;
+
+  // only the InitDirectories* for the current platform should return
+  // non-null (if at all i.e. to set a profile)
+  // putting this before the first log entries saves another ifdef for g_stSettings.m_logFolder
+  profile = InitDirectoriesLinux();
+  if (!profile)
+    profile = InitDirectoriesOSX();
+  if (!profile)
+    profile = InitDirectoriesWin32();  
+  if (profile)
+  {
+    profile->setName("Master user");
+    profile->setLockMode(LOCK_MODE_EVERYONE);
+    profile->setLockCode("");
+    profile->setDate("");
+    g_settings.m_vecProfiles.push_back(*profile);
+    delete profile;
+  }
+  InitDirectories();
+
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 #if defined(_LINUX) && !defined(__APPLE__)
   CLog::Log(LOGNOTICE, "Starting XBMC, Platform: GNU/Linux.  Built on %s (SVN:%s)", __DATE__, SVN_REV);
@@ -924,26 +949,6 @@ HRESULT CApplication::Create(HWND hWnd)
   CLog::Log(LOGNOTICE, "The executeable running is: %s", szXBEFileName);
   CLog::Log(LOGNOTICE, "Log File is located: %s", strLogFile.c_str());
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
-
-  CProfile *profile;
-
-  // only the InitDirectories* for the current platform should return
-  // non-null (if at all i.e. to set a profile)
-  profile = InitDirectoriesLinux();
-  if (!profile)
-    profile = InitDirectoriesOSX();
-  if (!profile)
-    profile = InitDirectoriesWin32();  
-  if (profile)
-  {
-    profile->setName("Master user");
-    profile->setLockMode(LOCK_MODE_EVERYONE);
-    profile->setLockCode("");
-    profile->setDate("");
-    g_settings.m_vecProfiles.push_back(*profile);
-    delete profile;
-  }
-  InitDirectories();
 
   // if we are running from DVD our UserData location will be TDATA
   if (CUtil::IsDVD(strExecutablePath))
@@ -1457,7 +1462,7 @@ void CApplication::InitDirectories()
     CUtil::GetHomePath(strMnt);
     strMnt += g_settings.GetUserDataFolder().substr(2);
   }
-
+  // why do we remap T twice?
   CIoSupport::RemapDriveLetter('T',(char*) strMnt.c_str());
 }
 
@@ -1579,58 +1584,75 @@ CProfile* CApplication::InitDirectoriesWin32()
 {
 #ifdef _WIN32PC
 
-  // TODO: respect m_bPlatformDirectories and use XBMC_HOME as the root
-  // if not set.
-
   CProfile* profile = NULL;
   CStdString strExecutablePath;
-  CUtil::GetHomePath(strExecutablePath);
-
-  TCHAR szPath[MAX_PATH];
   CStdString strWin32UserFolder,strPath;
 
-  if(SUCCEEDED(SHGetFolderPath(NULL,CSIDL_APPDATA|CSIDL_FLAG_CREATE,NULL,0,szPath))) 
-    strWin32UserFolder = szPath;
-  else
-    strWin32UserFolder = strExecutablePath;
-
-  CIoSupport::RemapDriveLetter('Q', (char*) strExecutablePath.c_str());
+  CUtil::GetHomePath(strExecutablePath);
   SetEnvironmentVariable("XBMC_HOME", strExecutablePath.c_str());
 
-  CUtil::AddFileToFolder(strWin32UserFolder,"XBMC",strPath);
-  CUtil::AddFileToFolder(strPath,"cache",strPath);
-  CIoSupport::RemapDriveLetter('Z',strPath.c_str());
-  CreateDirectory(_P("Z:\\"), NULL);
+  CIoSupport::RemapDriveLetter('Q', (char*) strExecutablePath.c_str());
 
-  CUtil::AddFileToFolder(strWin32UserFolder,"XBMC",strPath);
-  CreateDirectory(strPath.c_str(), NULL);
-  CUtil::AddFileToFolder(strPath,"UserData",strPath);
-  CreateDirectory(strPath.c_str(), NULL);
-  // See if the keymap file exists, and if not, copy it from our "virgin" one.
-  CopyUserDataIfNeeded(strPath, "Keymap.xml");
-  CopyUserDataIfNeeded(strPath, "RssFeeds.xml");
+  if (m_bPlatformDirectories)
+  {
+    TCHAR szPath[MAX_PATH];
 
-  CStdString strPath;
-  CUtil::AddFileToFolder(strWin32UserFolder, "XBMC", strPath);
-  CUtil::AddFileToFolder(strPath, "UserData", strPath);
-  CIoSupport::RemapDriveLetter('T', strPath.c_str());  
+    if(SUCCEEDED(SHGetFolderPath(NULL,CSIDL_APPDATA|CSIDL_FLAG_CREATE,NULL,0,szPath))) 
+      strWin32UserFolder = szPath;
+    else
+      strWin32UserFolder = strExecutablePath;
+
+    // create user/app data/XBMC
+    CUtil::AddFileToFolder(strWin32UserFolder,"XBMC",strPath);
+    CreateDirectory(strPath.c_str(), NULL);
+    // create user/app data/XBMC/cache
+    CUtil::AddFileToFolder(strPath,"cache",strPath);
+    CreateDirectory(strPath.c_str(), NULL);
+    CIoSupport::RemapDriveLetter('Z',strPath.c_str());
+    // create user/app data/XBMC/UserData
+    CUtil::AddFileToFolder(strWin32UserFolder,"XBMC\\UserData",strPath);
+    CreateDirectory(strPath.c_str(), NULL);
+    CIoSupport::RemapDriveLetter('T', strPath.c_str()); 
+    // See if the keymap file exists, and if not, copy it from our "virgin" one.
+    CopyUserDataIfNeeded(strPath, "Keymap.xml");
+    CopyUserDataIfNeeded(strPath, "RssFeeds.xml");
+  }
+  else
+  {
+    CUtil::AddFileToFolder(strExecutablePath,"cache",strPath);
+    CIoSupport::RemapDriveLetter('Z',strPath.c_str());
+    CreateDirectory(_P("Z:\\"), NULL);
+    CUtil::AddFileToFolder(strExecutablePath,"UserData",strPath);
+    CIoSupport::RemapDriveLetter('T',strPath.c_str());
+  }
 
   g_settings.m_vecProfiles.clear();
   g_settings.LoadProfiles(_P("q:\\system\\profiles.xml"));
 
-  if (g_settings.m_vecProfiles.size()==0)
+  if (m_bPlatformDirectories)
   {
-    CStdString strPath;
-    profile = new CProfile;
-    CUtil::AddFileToFolder(strWin32UserFolder,"XBMC",strPath);
-    CUtil::AddFileToFolder(strPath,"UserData",strPath);
-    profile->setDirectory(strPath.c_str());
+
+    if (g_settings.m_vecProfiles.size()==0)
+    {
+      profile = new CProfile;
+      CUtil::AddFileToFolder(strWin32UserFolder,"XBMC\\UserData",strPath);
+      profile->setDirectory(strPath.c_str());
+    }
+  }
+  else
+  {
+    if (g_settings.m_vecProfiles.size()==0)
+    {
+      profile = new CProfile;
+      profile->setDirectory(_P("q:\\UserData"));
+    }
   }
 
-  return profile;
+    return profile;
 #else
   return NULL;
 #endif
+
 }
 
 HRESULT CApplication::Initialize()
