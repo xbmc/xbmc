@@ -243,6 +243,8 @@ public:
   CVideoDatabase(void);
   virtual ~CVideoDatabase(void);
 
+  virtual bool CommitTransaction();
+
   long AddMovie(const CStdString& strFilenameAndPath);
   long AddTvShow(const CStdString& strPath);
   long AddEpisode(long idShow, const CStdString& strFilenameAndPath);
