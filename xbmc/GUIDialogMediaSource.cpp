@@ -26,7 +26,6 @@
 #include "GUIDialogContentSettings.h"
 #include "GUIWindowVideoFiles.h"
 #include "GUIWindowManager.h"
-#include "VideoInfoScanner.h"
 #include "Util.h"
 #include "FileSystem/PluginDirectory.h"
 #include "GUIDialogYesNo.h"
