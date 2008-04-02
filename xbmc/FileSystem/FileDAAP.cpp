@@ -91,7 +91,7 @@ DAAP_SClientHost* CDaapClient::GetHost(const CStdString &strHost)
     if( !m_pClient )
       m_pClient = DAAP_Client_Create((DAAP_fnClientStatus)StatusCallback, (void*)this);
 
-    DAAP_SClientHost* pHost = DAAP_Client_AddHost(m_pClient, (char *)strHost.c_str(), "A", "A");
+    DAAP_SClientHost* pHost = DAAP_Client_AddHost(m_pClient, (char *)strHost.c_str(), (char *)"A", (char *)"A");
     if( !pHost )
       throw("Unable to add host");
 

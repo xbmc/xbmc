@@ -531,7 +531,7 @@ bool CVideoDatabase::LinkMovieToTvshow(long idMovie, long idShow)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%u, %u) failed", __FUNCTION__, idMovie, idShow);
+    CLog::Log(LOGERROR, "%s (%ld, %ld) failed", __FUNCTION__, idMovie, idShow);
   }
 
   return false;
@@ -557,7 +557,7 @@ bool CVideoDatabase::IsLinkedToTvshow(long idMovie)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%u) failed", __FUNCTION__, idMovie);
+    CLog::Log(LOGERROR, "%s (%ld) failed", __FUNCTION__, idMovie);
   }
 
   return false;

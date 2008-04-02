@@ -606,3 +606,4 @@ void CGUIDialogPluginSettings::SetDefaults()
 }
 
 CURL CGUIDialogPluginSettings::m_url;
+

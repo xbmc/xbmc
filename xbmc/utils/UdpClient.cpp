@@ -161,9 +161,7 @@ void CUdpClient::Process()
       }
       else
       {
-        CStdString debug;
-        debug.Format("UDPCLIENT: Socket error %u", WSAGetLastError());
-        CLog::Log(UDPCLIENT_DEBUG_LEVEL, debug);
+        CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT: Socket error %u", WSAGetLastError());
       }
 
       // is there any more data to read?

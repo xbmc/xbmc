@@ -497,7 +497,7 @@ DbErrors::DbErrors(const char *msg, ...) {
   msg_ =   "SQLite: ";
   msg_ += buf;
 
-  CLog::Log(LOGERROR, msg_.c_str());
+  CLog::Log(LOGERROR, "%s", msg_.c_str());
 }
 
 const char * DbErrors::getMsg() {

@@ -21,7 +21,7 @@ int CEncoderLame::parse_args_from_string(lame_global_flags * const gfp, const ch
   f = q = (char*)malloc(strlen(p) + 1);
   strcpy(q, p);
 
-  r[c++] = "lhama";
+  r[c++] = (char*)"lhama";
   while (1)
   {
     r[c++] = q;

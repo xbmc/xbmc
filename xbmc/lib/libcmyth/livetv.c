@@ -36,7 +36,6 @@
 #include <mvp_refmem.h>
 #include <cmyth.h>
 #include <cmyth_local.h>
-#include <string.h>
 
 #ifdef _MSC_VER
 static void nullprint(a, ...) { return; }

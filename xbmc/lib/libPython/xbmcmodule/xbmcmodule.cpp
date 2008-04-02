@@ -55,7 +55,7 @@ namespace PYXBMC
     char *s_line = NULL;
     if (!PyArg_ParseTuple(args, "s:xb_output", &s_line)) return NULL;
 
-    CLog::Log(LOGINFO, s_line);
+    CLog::Log(LOGINFO, "%s", s_line);
 
     ThreadMessage tMsg = {TMSG_WRITE_SCRIPT_OUTPUT};
     tMsg.strParam = s_line;
@@ -79,7 +79,7 @@ namespace PYXBMC
     char *s_line = NULL;
     if (!PyArg_ParseTuple(args, "s", &s_line)) return NULL;
 
-    CLog::Log(LOGFATAL, s_line);
+    CLog::Log(LOGFATAL, "%s", s_line);
 
     Py_INCREF(Py_None);
     return Py_None;
