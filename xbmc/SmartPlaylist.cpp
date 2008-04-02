@@ -476,4 +476,3 @@ const vector<CSmartPlaylistRule> &CSmartPlaylist::GetRules() const
 {
   return m_playlistRules;
 }
-

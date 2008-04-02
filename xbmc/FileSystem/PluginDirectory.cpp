@@ -25,6 +25,7 @@
 #include "PluginSettings.h"
 #include "../../guilib/GUIWindowManager.h"
 #include "GUIDialogProgress.h"
+#include "FileSystem/File.h"
 
 using namespace DIRECTORY;
 using namespace std;

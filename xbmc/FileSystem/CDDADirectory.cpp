@@ -4,6 +4,7 @@
 #include "../DetectDVDType.h"
 #include "../MusicDatabase.h"
 #include "FileItem.h"
+#include "FileSystem/File.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

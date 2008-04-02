@@ -9,7 +9,6 @@
 #endif // _MSC_VER > 1000
 
 #include "IFile.h"
-#include "File.h"
 #include "RarManager.h"
 #include "../lib/UnrarXLib/rar.hpp"
 #include "../utils/Thread.h"

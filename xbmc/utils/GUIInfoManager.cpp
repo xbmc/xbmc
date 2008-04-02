@@ -34,6 +34,7 @@
 #include "../MusicInfoTag.h"
 #include "../VideoDatabase.h"
 #include "GUIWindowManager.h"
+#include "FileSystem/File.h"
 
 // stuff for current song
 #ifdef HAS_FILESYSTEM

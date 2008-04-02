@@ -7,6 +7,7 @@
 #include "../utils/log.h"
 #include "../../guilib/GUIWindowManager.h"
 #include "../GUIDialogProgress.h"
+#include "FileSystem/File.h"
 
 namespace XFILE
 {

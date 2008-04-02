@@ -3,6 +3,7 @@
 #include "../utils/log.h"
 #include "../PlayListFactory.h"
 #include "../MusicInfoTag.h"
+#include "FileSystem/File.h"
 
 using namespace std;
 using namespace PLAYLIST;
@@ -52,5 +53,9 @@ namespace DIRECTORY
     }
     return false;
   }
-}
 
+  bool CPlaylistFileDirectory::Remove(const char *strPath) 
+  { 
+    return XFILE::CFile::Delete(strPath); 
+  }
+}

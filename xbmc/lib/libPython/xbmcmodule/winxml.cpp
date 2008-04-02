@@ -5,6 +5,7 @@
 #include "GUIPythonWindowXML.h"
 #include "../../../../guilib/SkinInfo.h"
 #include "../../../Util.h"
+#include "FileSystem/File.h"
 
 using namespace std;
 

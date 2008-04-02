@@ -6,6 +6,7 @@
 #include "../VideoDatabase.h"
 #include "Playlist.h"
 #include "FileSystem/Directory.h"
+#include "FileSystem/File.h"
 
 using namespace PLAYLIST;
 
@@ -85,6 +86,9 @@ namespace DIRECTORY
     }
     return "";
   }
+
+  bool CSmartPlaylistDirectory::Remove(const char *strPath)
+  { 
+    return XFILE::CFile::Delete(strPath); 
+  }
 }
-
-

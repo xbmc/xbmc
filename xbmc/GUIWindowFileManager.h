@@ -4,6 +4,7 @@
 #include "FileSystem/DirectoryHistory.h"
 #include "utils/CriticalSection.h"
 #include "FileItem.h"
+#include "FileSystem/File.h"
 
 class CGUIDialogProgress;
 

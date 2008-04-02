@@ -28,6 +28,7 @@
 #include "FileSystem/MusicDatabaseDirectory/DirectoryNode.h"
 #include "Util.h"
 #include "MusicInfoTag.h"
+#include "FileSystem/File.h"
 
 using namespace std;
 using namespace XFILE;

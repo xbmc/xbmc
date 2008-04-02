@@ -3,6 +3,7 @@
 #include "../Util.h"
 #include "MusicDatabaseDirectory/QueryParams.h"
 #include "../MusicDatabase.h"
+#include "FileSystem/File.h"
 
 using namespace std;
 using namespace XFILE;

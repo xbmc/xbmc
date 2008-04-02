@@ -27,6 +27,7 @@
 #include "../../Util.h"
 #include "../../Application.h"
 #include "../../MusicInfoTag.h"
+#include "FileSystem/File.h"
 
 using namespace std;
 using namespace MUSIC_INFO;

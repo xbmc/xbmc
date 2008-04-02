@@ -1,5 +1,11 @@
 #pragma once
-#include "../FileSystem/File.h"
+
+#include "../guilib/StdString.h"
+
+namespace XFILE
+{
+  class CFile;
+}
 
 class CArchive;
 

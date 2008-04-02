@@ -24,6 +24,7 @@
 #include "utils/KaiClient.h"
 #include "Util.h"
 #include "Picture.h"
+#include "FileSystem/File.h"
 
 using namespace XFILE;
 

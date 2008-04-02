@@ -33,6 +33,7 @@
 #include "VideoInfoScanner.h"
 #include "GUIWindowManager.h"
 #include "FileSystem/Directory.h"
+#include "FileSystem/File.h"
 
 using namespace std;
 using namespace dbiplus;

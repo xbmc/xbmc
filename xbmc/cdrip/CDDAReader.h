@@ -7,6 +7,7 @@
 
 #include "../utils/Thread.h"
 #include "../lib/libcdio/cdio.h"
+#include "FileSystem/File.h"
 
 struct RipBuffer
 {

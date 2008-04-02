@@ -29,6 +29,7 @@
 #include "XBAudioConfig.h"
 #include "GUIDialogYesNo.h"
 #include "FileSystem/Directory.h"
+#include "FileSystem/File.h"
 
 using namespace std;
 using namespace XFILE;

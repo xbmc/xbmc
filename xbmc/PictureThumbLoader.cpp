@@ -24,6 +24,7 @@
 #include "Picture.h"
 #include "Util.h"
 #include "URL.h"
+#include "FileSystem/File.h"
 
 using namespace XFILE;
 

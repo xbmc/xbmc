@@ -9,6 +9,11 @@
 typedef void CUSTOM_LAUNCH_DATA;
 #endif
 
+namespace XFILE
+{
+  class IFileCallback;
+}
+
 class CTrainer;
 
 // for 'cherry' patching

@@ -12,6 +12,7 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "GUIDialogYesNo.h"
+#include "FileSystem/File.h"
 
 using namespace XFILE;
 

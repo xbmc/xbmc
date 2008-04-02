@@ -24,6 +24,7 @@
 #include "TextureManager.h"
 #include "Settings.h"
 #include "FileItem.h"
+#include "FileSystem/File.h"
 
 using namespace XFILE;
 

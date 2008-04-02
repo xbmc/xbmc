@@ -9,6 +9,7 @@
 #include "../utils/MemoryUnitManager.h"
 #endif
 #include "../DetectDVDType.h"
+#include "FileSystem/File.h"
 
 using namespace XFILE;
 

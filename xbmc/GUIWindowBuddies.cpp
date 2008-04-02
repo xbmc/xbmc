@@ -33,6 +33,7 @@
 #include "GUIDialogProgress.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogKeyboard.h"
+#include "FileSystem/File.h"
 
 using namespace AUTOPTR;
 using namespace MEDIA_DETECT;

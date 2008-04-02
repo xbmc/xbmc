@@ -4,6 +4,7 @@
 #include "lib/libPython/XBPython.h"
 #include "GUIWindowScriptsInfo.h"
 #include "../guilib/GUIWindowManager.h"
+#include "FileSystem/File.h"
 
 using namespace XFILE;
 

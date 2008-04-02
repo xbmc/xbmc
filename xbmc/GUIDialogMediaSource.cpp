@@ -30,6 +30,7 @@
 #include "Util.h"
 #include "FileSystem/PluginDirectory.h"
 #include "GUIDialogYesNo.h"
+#include "FileSystem/File.h"
 
 using namespace std;
 using namespace DIRECTORY;

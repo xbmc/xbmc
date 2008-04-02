@@ -4,6 +4,7 @@
 #include "VideoDatabaseDirectory/QueryParams.h"
 #include "../VideoDatabase.h"
 #include "TextureManager.h"
+#include "FileSystem/File.h"
 
 using namespace std;
 using namespace XFILE;

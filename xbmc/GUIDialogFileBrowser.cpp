@@ -35,6 +35,7 @@
 #include "GUIDialogYesNo.h"
 #include "GUIDialogKeyboard.h"
 #include "FileSystem/Directory.h"
+#include "FileSystem/File.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

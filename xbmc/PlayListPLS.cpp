@@ -23,6 +23,7 @@
 #include "PlayListPLS.h"
 #include "PlayListFactory.h"
 #include "Util.h"
+#include "FileSystem/File.h"
 
 using namespace std;
 using namespace XFILE;

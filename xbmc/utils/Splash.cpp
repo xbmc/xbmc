@@ -2,6 +2,7 @@
 #include "stdafx.h"
 #include "Splash.h"
 #include "guiImage.h"
+#include "FileSystem/File.h"
 
 using namespace XFILE;
 

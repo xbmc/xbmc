@@ -36,6 +36,7 @@
 #include "../guilib/GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "Settings.h"
+#include "FileSystem/File.h"
 
 using namespace XFILE;
 

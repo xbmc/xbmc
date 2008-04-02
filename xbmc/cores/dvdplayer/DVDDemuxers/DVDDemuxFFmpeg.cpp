@@ -7,6 +7,7 @@
 #include "../DVDClock.h" // for DVD_TIME_BASE
 #include "utils/Win32Exception.h"
 #include "Settings.h"
+#include "FileSystem/IFile.h"
 
 void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
 {

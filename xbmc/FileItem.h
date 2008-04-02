@@ -23,6 +23,8 @@ class CArtist;
 class CSong;
 class CGenre;
 
+class CURL;
+
 /* special startoffset used to indicate that we wish to resume */
 #define STARTOFFSET_RESUME (-1) 
 

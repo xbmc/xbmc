@@ -2,6 +2,7 @@
 #include "stdafx.h"
 #include "DVDInputStreamFile.h"
 #include "FileItem.h"
+#include "FileSystem/File.h"
 
 using namespace XFILE;
 

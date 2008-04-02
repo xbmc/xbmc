@@ -30,6 +30,7 @@
 #include "FileSystem/StackDirectory.h"
 #include "xbox/XKGeneral.h"
 #include "utils/IMDB.h"
+#include "FileSystem/File.h"
 
 #define REGEXSAMPLEFILE "[-\\._ ]sample[-\\._ ]"
 

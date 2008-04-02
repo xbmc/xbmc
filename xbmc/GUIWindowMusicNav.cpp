@@ -44,6 +44,7 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "GUIDialogKeyboard.h"
+#include "FileSystem/File.h"
 
 using namespace std;
 using namespace DIRECTORY;

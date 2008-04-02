@@ -31,6 +31,7 @@
 #include "utils/GUIInfoManager.h"
 #include "MusicInfoTag.h"
 #include "URL.h"
+#include "FileSystem/File.h"
 
 using namespace XFILE;
 

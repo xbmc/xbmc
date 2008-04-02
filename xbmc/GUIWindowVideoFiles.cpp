@@ -18,6 +18,7 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "GUIDialogYesNo.h"
+#include "FileSystem/File.h"
 
 using namespace std;
 using namespace MEDIA_DETECT;

@@ -14,6 +14,7 @@
 #include "../../../Application.h"
 #include "../../../Crc32.h"
 #include "../../../Util.h"
+#include "FileSystem/File.h"
 
 // include for constants
 #include "pyutil.h"
