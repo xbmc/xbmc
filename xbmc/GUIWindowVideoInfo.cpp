@@ -36,6 +36,7 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "GUIDialogYesNo.h"
+#include "GUIDialogSelect.h"
 
 using namespace std;
 using namespace XFILE;

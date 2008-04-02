@@ -4,6 +4,7 @@
 #include "FileSystem/DirectoryHistory.h"
 #include "GUIViewControl.h"
 #include "GUIDialogContextMenu.h"
+#include "FileItem.h"
 
 // base class for all media windows
 class CGUIMediaWindow : public CGUIWindow

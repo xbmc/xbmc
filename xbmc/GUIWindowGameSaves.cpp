@@ -62,13 +62,13 @@ void CGUIWindowGameSaves::GoParentFolder()
   CStdString strParent=m_history.RemoveParentPath();
   CStdString strOldPath(m_vecItems.m_strPath);
   CStdString strPath(m_strParentPath);
-  VECSHARES shares;
+  VECSOURCES shares;
   bool bIsSourceName = false;
 
   SetupShares();
-  m_rootDir.GetShares(shares);
+  m_rootDir.GetSources(shares);
 
-  int iIndex = CUtil::GetMatchingShare(strPath, shares, bIsSourceName);
+  int iIndex = CUtil::GetMatchingSource(strPath, shares, bIsSourceName);
 
   if (iIndex > -1)
   {
@@ -124,11 +124,11 @@ bool CGUIWindowGameSaves::OnMessage(CGUIMessage& message)
         m_vecItems.m_strPath = "E:\\udata";
 
       m_rootDir.SetMask("/");
-      VECSHARES shares;
+      VECSOURCES shares;
       bool bIsSourceName = false;
       SetupShares();
-      m_rootDir.GetShares(shares);
-      int iIndex = CUtil::GetMatchingShare(strDestination, shares, bIsSourceName);
+      m_rootDir.GetSources(shares);
+      int iIndex = CUtil::GetMatchingSource(strDestination, shares, bIsSourceName);
       // if bIsSourceName == True,   chances are its "Local GameSaves" or something else :D)
       if (iIndex > -1)
       {
@@ -391,18 +391,18 @@ bool CGUIWindowGameSaves::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   if (itemNumber < 0 || itemNumber >= m_vecItems.Size())
     return false;
 
-  VECSHARES localMemShares;
+  VECSOURCES localMemShares;
   CVirtualDirectory dir;
 
-  CShare share;
+  CMediaSource share;
   share.strName = "Local GameSaves";
   share.strPath = "E:\\udata";
-  share.m_iDriveType = SHARE_TYPE_LOCAL;
+  share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
   localMemShares.push_back(share);
 
   g_mediaManager.GetLocalDrives(localMemShares);
-  dir.SetShares(localMemShares);
-  dir.GetShares(localMemShares);
+  dir.SetSources(localMemShares);
+  dir.GetSources(localMemShares);
 
   CFileItem item(*m_vecItems[itemNumber]);
   CStdString strFileName = CUtil::GetFileName(item.m_strPath);

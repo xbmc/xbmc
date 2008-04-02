@@ -1502,7 +1502,7 @@ bool CUtil::RunFFPatchedXBE(CStdString szPath1, CStdString& szNewPath)
 void CUtil::RunXBE(const char* szPath1, char* szParameters, F_VIDEO ForceVideo, F_COUNTRY ForceCountry, CUSTOM_LAUNCH_DATA* pData)
 {
   // check if locked
-  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].programsLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].programsLocked() && g_settings.m_vecProfiles[0].getLockMode() != CMediaSource::LOCK_MODE_EVERYONE)
     if (!g_passwordManager.IsMasterLockUnlocked(true))
       return;
 
@@ -4161,7 +4161,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     else
       string = g_settings.TranslateSkinString(strParameterCaseIntact);
     CStdString value = g_settings.GetSkinString(string);
-    VECSHARES localShares;
+    VECSOURCES localShares;
     g_mediaManager.GetLocalDrives(localShares);
     if (execute.Equals("skin.setstring"))
     {
@@ -4180,7 +4180,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     }
     else if (execute.Equals("skin.setlargeimage"))
     {
-      VECSHARES *shares = g_settings.GetSharesFromType("pictures");
+      VECSOURCES *shares = g_settings.GetSourcesFromType("pictures");
       if (!shares) shares = &localShares;
       if (CGUIDialogFileBrowser::ShowAndGetImage(*shares, g_localizeStrings.Get(1030), value))
         g_settings.SetSkinString(string, value);
@@ -4197,9 +4197,9 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         value = CUtil::TranslateSpecialPath(strMask.Mid(iEnd+1)); // translate here to start inside (or path wont match the fileitem in the filebrowser so it wont find it)
         CUtil::AddSlashAtEnd(value);
         bool bIsSource;
-        if (GetMatchingShare(value,localShares,bIsSource) < 0) // path is outside shares - add it as a separate one
+        if (GetMatchingSource(value,localShares,bIsSource) < 0) // path is outside shares - add it as a separate one
         {
-          CShare share;
+          CMediaSource share;
           share.strName = g_localizeStrings.Get(13278);
           share.strPath = value;
           localShares.push_back(share);
@@ -4393,12 +4393,12 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     return -1;
   return 0;
 }
-int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bool& bIsSourceName)
+int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES, bool& bIsSourceName)
 {
   if (strPath1.IsEmpty())
     return -1;
 
-  //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, testing original path/name [%s]", strPath1.c_str());
+  //CLog::Log(LOGDEBUG,"CUtil::GetMatchingSource, testing original path/name [%s]", strPath1.c_str());
 
   // copy as we may change strPath
   CStdString strPath = strPath1;
@@ -4419,14 +4419,14 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
   if (checkURL.GetProtocol() == "multipath")
     strPath = CMultiPathDirectory::GetFirstPath(strPath);
 
-  //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, testing for matching name [%s]", strPath.c_str());
+  //CLog::Log(LOGDEBUG,"CUtil::GetMatchingSource, testing for matching name [%s]", strPath.c_str());
   bIsSourceName = false;
   int iIndex = -1;
   int iLength = -1;
   // we first test the NAME of a source
-  for (int i = 0; i < (int)vecShares.size(); ++i)
+  for (int i = 0; i < (int)VECSOURCES.size(); ++i)
   {
-    CShare share = vecShares.at(i);
+    CMediaSource share = VECSOURCES.at(i);
     CStdString strName = share.strName;
 
     // special cases for dvds
@@ -4442,7 +4442,7 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
       if (iPos > 1)
         strName = strName.Mid(0, iPos - 1);
     }
-    //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, comparing name [%s]", strName.c_str());
+    //CLog::Log(LOGDEBUG,"CUtil::GetMatchingSource, comparing name [%s]", strName.c_str());
     if (strPath.Equals(strName))
     {
       bIsSourceName = true;
@@ -4462,11 +4462,11 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
     strDest += "/";
   int iLenPath = strDest.size();
 
-  //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, testing url [%s]", strDest.c_str());
+  //CLog::Log(LOGDEBUG,"CUtil::GetMatchingSource, testing url [%s]", strDest.c_str());
 
-  for (int i = 0; i < (int)vecShares.size(); ++i)
+  for (int i = 0; i < (int)VECSOURCES.size(); ++i)
   {
-    CShare share = vecShares.at(i);
+    CMediaSource share = VECSOURCES.at(i);
 
     // does it match a source name?
     if (share.strPath.substr(0,8) == "shout://")
@@ -4498,7 +4498,7 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
       if (!HasSlashAtEnd(strShare))
         strShare += "/";
       int iLenShare = strShare.size();
-      //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, comparing url [%s]", strShare.c_str());
+      //CLog::Log(LOGDEBUG,"CUtil::GetMatchingSource, comparing url [%s]", strShare.c_str());
 
       if ((iLenPath >= iLenShare) && (strDest.Left(iLenShare).Equals(strShare)) && (iLenShare > iLength))
       {
@@ -4533,10 +4533,10 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
 
       bIsSourceName = false;
       bool bDummy;
-      return GetMatchingShare(strPath, vecShares, bDummy);
+      return GetMatchingSource(strPath, VECSOURCES, bDummy);
     }
 
-    CLog::Log(LOGWARNING,"CUtil::GetMatchingShare... no matching source found for [%s]", strPath1.c_str());
+    CLog::Log(LOGWARNING,"CUtil::GetMatchingSource... no matching source found for [%s]", strPath1.c_str());
   }
   return iIndex;
 }
@@ -5101,12 +5101,12 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
   return bFoundNewClient;
 }
 
-void CUtil::AutoDetectionGetShare(VECSHARES &shares)
+void CUtil::AutoDetectionGetSource(VECSOURCES &shares)
 {
   if(v_xboxclients.client_ip.size() > 0)
   {
     // client list is not empty, add to shares
-    CShare share;
+    CMediaSource share;
     for (unsigned int i=0; i< v_xboxclients.client_ip.size(); i++)
     {
       //extract client info string: NickName;FTP_USER;FTP_Password;FTP_PORT;BOOST_MODE

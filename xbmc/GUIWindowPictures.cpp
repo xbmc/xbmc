@@ -110,9 +110,9 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
           bool bIsSourceName = false;
 
           SetupShares();
-          VECSHARES shares;
-          m_rootDir.GetShares(shares);
-          int iIndex = CUtil::GetMatchingShare(strDestination, shares, bIsSourceName);
+          VECSOURCES shares;
+          m_rootDir.GetSources(shares);
+          int iIndex = CUtil::GetMatchingSource(strDestination, shares, bIsSourceName);
           if (iIndex > -1)
           {
             bool bDoStuff = true;
@@ -507,7 +507,7 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
   if ( m_vecItems.IsVirtualDirectoryRoot() && item)
   {
     // get the usual shares
-    CShare *share = CGUIDialogContextMenu::GetShare("pictures", item);
+    CMediaSource *share = CGUIDialogContextMenu::GetShare("pictures", item);
     CGUIDialogContextMenu::GetContextButtons("pictures", share, buttons);
   }
   else
@@ -541,7 +541,7 @@ bool CGUIWindowPictures::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems.Size()) ? m_vecItems[itemNumber] : NULL;
   if (m_vecItems.IsVirtualDirectoryRoot() && item)
   {
-    CShare *share = CGUIDialogContextMenu::GetShare("pictures", item);
+    CMediaSource *share = CGUIDialogContextMenu::GetShare("pictures", item);
     if (CGUIDialogContextMenu::OnContextButton("pictures", share, button))
     {
       Update("");

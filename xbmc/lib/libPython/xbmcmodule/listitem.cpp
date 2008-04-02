@@ -5,6 +5,7 @@
 #include "VideoInfoTag.h"
 #include "PictureInfoTag.h"
 #include "MusicInfoTag.h"
+#include "FileItem.h"
 
 using namespace std;
 

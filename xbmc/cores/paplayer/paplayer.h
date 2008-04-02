@@ -3,6 +3,7 @@
 #include "../../utils/Thread.h"
 #include "AudioDecoder.h"
 #include "../ssrc.h"
+#include "FileItem.h"
 
 #define PACKET_COUNT  20 // number of packets of size PACKET_SIZE (defined in AudioDecoder.h)
 

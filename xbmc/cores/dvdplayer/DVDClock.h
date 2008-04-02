@@ -42,7 +42,7 @@ public:
   static double GetAbsoluteClock();
   static double GetFrequency() { return (double)m_systemFrequency.QuadPart ; }
 protected:
-  CSharedSection m_critSection;
+  CMediaSourcedSection m_critSection;
   LARGE_INTEGER m_systemUsed;  
   LARGE_INTEGER m_startClock;
   LARGE_INTEGER m_pauseClock;

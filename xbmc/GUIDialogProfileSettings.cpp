@@ -105,7 +105,7 @@ void CGUIDialogProfileSettings::CreateSettings()
 
   if (m_bShowDetails)
     AddButton(4,20066);
-  if (!m_bShowDetails && m_iLockMode == LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+  if (!m_bShowDetails && m_iLockMode == CMediaSource::LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[0].getLockMode() != CMediaSource::LOCK_MODE_EVERYONE)
     AddButton(4,20066);
 
   if (!m_bIsDefault && m_bShowDetails)
@@ -118,7 +118,7 @@ void CGUIDialogProfileSettings::CreateSettings()
     setting.entry.push_back(g_localizeStrings.Get(20062));
     setting.entry.push_back(g_localizeStrings.Get(20063));
     setting.entry.push_back(g_localizeStrings.Get(20061));
-    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+    if (g_settings.m_vecProfiles[0].getLockMode() != CMediaSource::LOCK_MODE_EVERYONE)
       setting.entry.push_back(g_localizeStrings.Get(20107));
 
     m_settings.push_back(setting);
@@ -131,7 +131,7 @@ void CGUIDialogProfileSettings::CreateSettings()
     setting2.entry.push_back(g_localizeStrings.Get(20062));
     setting2.entry.push_back(g_localizeStrings.Get(20063));
     setting2.entry.push_back(g_localizeStrings.Get(20061));
-    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+    if (g_settings.m_vecProfiles[0].getLockMode() != CMediaSource::LOCK_MODE_EVERYONE)
       setting2.entry.push_back(g_localizeStrings.Get(20107));
 
     m_settings.push_back(setting2);
@@ -176,7 +176,7 @@ void CGUIDialogProfileSettings::OnSettingChanged(unsigned int num)
   if (setting.id == 2)
   {
     CStdString strThumb;
-    VECSHARES shares;
+    VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
     if (CGUIDialogFileBrowser::ShowAndGetImage(shares,g_localizeStrings.Get(1030),strThumb))
     {
@@ -197,8 +197,8 @@ void CGUIDialogProfileSettings::OnSettingChanged(unsigned int num)
   }
   if (setting.id == 3)
   {
-    VECSHARES shares;
-    CShare share;
+    VECSOURCES shares;
+    CMediaSource share;
     share.strName = "Profiles";
     share.strPath = g_settings.m_vecProfiles[0].getDirectory()+"\\profiles";
     shares.push_back(share);
@@ -221,14 +221,14 @@ void CGUIDialogProfileSettings::OnSettingChanged(unsigned int num)
   {
     if (m_bShowDetails)
     {
-      if (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE && !m_bIsDefault)
+      if (g_settings.m_vecProfiles[0].getLockMode() == CMediaSource::LOCK_MODE_EVERYONE && !m_bIsDefault)
       {
         if (CGUIDialogYesNo::ShowAndGetInput(20066,20118,20119,20022))
           g_passwordManager.SetMasterLockMode(false);
-        if (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE)
+        if (g_settings.m_vecProfiles[0].getLockMode() == CMediaSource::LOCK_MODE_EVERYONE)
           return;
       }
-      if (CGUIDialogLockSettings::ShowAndGetLock(m_iLockMode,m_strLockCode,m_bLockMusic,m_bLockVideo,m_bLockPictures,m_bLockPrograms,m_bLockFiles,m_bLockSettings,m_bIsDefault?12360:20068,g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE || m_bIsDefault))
+      if (CGUIDialogLockSettings::ShowAndGetLock(m_iLockMode,m_strLockCode,m_bLockMusic,m_bLockVideo,m_bLockPictures,m_bLockPrograms,m_bLockFiles,m_bLockSettings,m_bIsDefault?12360:20068,g_settings.m_vecProfiles[0].getLockMode() == CMediaSource::LOCK_MODE_EVERYONE || m_bIsDefault))
         m_bNeedSave = true;
     }
     else
@@ -263,7 +263,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool bDeta
   {
     dialog->m_strName.Empty();
     dialog->m_iDbMode = 2;
-    dialog->m_iLockMode = LOCK_MODE_EVERYONE;
+    dialog->m_iLockMode = CMediaSource::LOCK_MODE_EVERYONE;
     dialog->m_iSourcesMode = 2;
     dialog->m_bLockSettings = true;
     dialog->m_bLockMusic = false;
@@ -363,10 +363,10 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool bDeta
     g_settings.m_vecProfiles[iProfile].setDatabases((dialog->m_iDbMode & 2) == 2);
     g_settings.m_vecProfiles[iProfile].setSources((dialog->m_iSourcesMode & 2) == 2);
     if (dialog->m_strLockCode == "-")
-      g_settings.m_vecProfiles[iProfile].setLockMode(LOCK_MODE_EVERYONE);
+      g_settings.m_vecProfiles[iProfile].setLockMode(CMediaSource::LOCK_MODE_EVERYONE);
     else
       g_settings.m_vecProfiles[iProfile].setLockMode(dialog->m_iLockMode);
-    if (dialog->m_iLockMode == LOCK_MODE_EVERYONE)
+    if (dialog->m_iLockMode == CMediaSource::LOCK_MODE_EVERYONE)
       g_settings.m_vecProfiles[iProfile].setLockCode("-");
     else
       g_settings.m_vecProfiles[iProfile].setLockCode(dialog->m_strLockCode);

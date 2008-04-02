@@ -32,7 +32,7 @@ double CDVDClock::GetAbsoluteClock()
 
 double CDVDClock::GetClock()
 {
-  CSharedLock lock(m_critSection);
+  CMediaSourcedLock lock(m_critSection);
   LARGE_INTEGER current;
     
   if (m_bReset)
@@ -122,6 +122,6 @@ void CDVDClock::Resume()
 
 double CDVDClock::DistanceToDisc()
 {
-  CSharedLock lock(m_critSection);
+  CMediaSourcedLock lock(m_critSection);
   return GetClock() - m_iDisc;
 }

@@ -7,6 +7,7 @@
 #include "utils/Archive.h"
 #include "DateTime.h"
 #include "SortFileItem.h"
+#include "utils/LabelFormatter.h"
 
 #include <vector>
 
@@ -22,32 +23,10 @@ class CArtist;
 class CSong;
 class CGenre;
 
-typedef struct _LABEL_MASKS
-{
-  _LABEL_MASKS(const CStdString& strLabelFile="", const CStdString& strLabel2File="", const CStdString& strLabelFolder="", const CStdString& strLabel2Folder="")
-  {
-    m_strLabelFile=strLabelFile;
-    m_strLabel2File=strLabel2File;
-    m_strLabelFolder=strLabelFolder;
-    m_strLabel2Folder=strLabel2Folder;
-  }
-  CStdString m_strLabelFile;
-  CStdString m_strLabel2File;
-  CStdString m_strLabelFolder;
-  CStdString m_strLabel2Folder;
-} LABEL_MASKS;
-
-typedef struct
-{
-  SORT_METHOD m_sortMethod;
-  int m_buttonLabel;
-  LABEL_MASKS m_labelMasks;
-} SORT_METHOD_DETAILS;
-
 /* special startoffset used to indicate that we wish to resume */
 #define STARTOFFSET_RESUME (-1) 
 
-class CShare;
+class CMediaSource;
 
 /*!
   \brief Represents a file on a share
@@ -67,7 +46,7 @@ public:
   CFileItem(const CArtist& artist);
   CFileItem(const CGenre& genre);
   CFileItem(const CVideoInfoTag& movie);
-  CFileItem(const CShare& share);
+  CFileItem(const CMediaSource& share);
   virtual ~CFileItem(void);
 
   void Reset();
@@ -221,7 +200,7 @@ private:
 public:
   CStdString m_strPath;            ///< complete path to item
   bool m_bIsShareOrDrive;    ///< is this a root share/drive
-  int m_iDriveType;     ///< If \e m_bIsShareOrDrive is \e true, use to get the share type. Types see: CShare::m_iDriveType
+  int m_iDriveType;     ///< If \e m_bIsShareOrDrive is \e true, use to get the share type. Types see: CMediaSource::m_iDriveType
   CDateTime m_dateTime;             ///< file creation date & time
   __int64 m_dwSize;             ///< file size (0 for folders)
   CStdString m_strDVDLabel;

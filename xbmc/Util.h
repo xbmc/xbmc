@@ -169,7 +169,7 @@ public:
 
   static bool IsUsingTTFSubtitles();
   static void SplitExecFunction(const CStdString &execString, CStdString &strFunction, CStdString &strParam);
-  static int GetMatchingShare(const CStdString& strPath, VECSHARES& vecShares, bool& bIsSourceName);
+  static int GetMatchingSource(const CStdString& strPath, VECSOURCES& VECSOURCES, bool& bIsSourceName);
   static CStdString TranslateSpecialPath(const CStdString &strSpecial);
   static CStdString TranslateSpecialSource(const CStdString &strSpecial);
   static void DeleteDirectoryCache(const CStdString strType = "");
@@ -188,7 +188,7 @@ public:
   static bool GetXBOXNickName(CStdString &strXboxNickNameOut);
   static bool AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, CStdString strNickName, int iFTPPort);
   static bool AutoDetection();
-  static void AutoDetectionGetShare(VECSHARES &share);
+  static void AutoDetectionGetSource(VECSOURCES &share);
   static void GetSkinThemes(std::vector<CStdString>& vecTheme);
   static void GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask, bool bUseFileDirectories=false);
   static void GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& items);

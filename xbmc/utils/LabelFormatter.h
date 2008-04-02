@@ -1,9 +1,29 @@
 #pragma once
 
-#include "StdString.h"
+#include "../../guilib/StdString.h"
 #include <vector>
 
+namespace MUSIC_INFO
+{
+  class CMusicInfoTag;
+}
+
 class CFileItem;  // forward
+
+typedef struct _LABEL_MASKS
+{
+  _LABEL_MASKS(const CStdString& strLabelFile="", const CStdString& strLabel2File="", const CStdString& strLabelFolder="", const CStdString& strLabel2Folder="")
+  {
+    m_strLabelFile=strLabelFile;
+    m_strLabel2File=strLabel2File;
+    m_strLabelFolder=strLabelFolder;
+    m_strLabel2Folder=strLabel2Folder;
+  }
+  CStdString m_strLabelFile;
+  CStdString m_strLabel2File;
+  CStdString m_strLabelFolder;
+  CStdString m_strLabel2Folder;
+} LABEL_MASKS;
 
 class CLabelFormatter
 {

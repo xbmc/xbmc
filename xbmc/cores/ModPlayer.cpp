@@ -2,6 +2,7 @@
 #include "stdafx.h"
 #include "modplayer.h"
 #include "Settings.h"
+#include "FileItem.h"
 
 using namespace XFILE;
 

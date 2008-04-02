@@ -378,10 +378,10 @@ void CGUIWindowMusicPlaylistEditor::OnLoadPlaylist()
 {
   // prompt user for file to load
   CStdString playlist;
-  VECSHARES shares;
-  m_rootDir.GetShares(shares);
+  VECSOURCES shares;
+  m_rootDir.GetSources(shares);
   // add the playlist share
-  CShare share;
+  CMediaSource share;
   share.strName = g_localizeStrings.Get(20011);
   share.strPath = "special://musicplaylists/";
   shares.push_back(share);

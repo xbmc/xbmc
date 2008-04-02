@@ -1,6 +1,7 @@
 #pragma once
 #include "GUIDialog.h"
 #include "SmartPlaylist.h"
+#include "FileItem.h"
 
 class CGUIDialogSmartPlaylistEditor :
       public CGUIDialog

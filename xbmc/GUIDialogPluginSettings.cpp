@@ -177,15 +177,15 @@ bool CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
           strcmpi(type, "folder") == 0 || strcmpi(type, "files") == 0)
         {
           // setup the shares
-          VECSHARES *shares = NULL;
+          VECSOURCES *shares = NULL;
           if (!source || strcmpi(source, "") == 0)
-            shares = g_settings.GetSharesFromType(type);
+            shares = g_settings.GetSourcesFromType(type);
           else
-            shares = g_settings.GetSharesFromType(source);
+            shares = g_settings.GetSourcesFromType(source);
 
           if (!shares)
           {
-            VECSHARES localShares, networkShares;
+            VECSOURCES localShares, networkShares;
             g_mediaManager.GetLocalDrives(localShares);
             if (!source || strcmpi(source, "local") != 0)
               g_mediaManager.GetNetworkLocations(networkShares);

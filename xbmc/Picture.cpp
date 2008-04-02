@@ -23,6 +23,7 @@
 #include "Picture.h"
 #include "TextureManager.h"
 #include "Settings.h"
+#include "FileItem.h"
 
 using namespace XFILE;
 

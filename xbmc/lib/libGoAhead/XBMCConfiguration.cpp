@@ -51,7 +51,7 @@ int CXbmcConfiguration::BookmarkSize( int eid, webs_t wp, CStdString& response, 
 		return -1;
 	}
 
-  VECSHARES *pShares = g_settings.GetSharesFromType(type);
+  VECSOURCES *pShares = g_settings.GetSourcesFromType(type);
   if (pShares)
   {
     char buffer[10];
@@ -135,7 +135,7 @@ int CXbmcConfiguration::GetBookmark( int eid, webs_t wp, CStdString& response, i
     return -1;
   }
 
-  VECSHARES* pShares = g_settings.GetSharesFromType(type);
+  VECSOURCES* pShares = g_settings.GetSourcesFromType(type);
   if (!pShares)
   {
     if (eid!=-1) websError(wp, 500, T("Bookmark type does not exist\n"));
@@ -144,7 +144,7 @@ int CXbmcConfiguration::GetBookmark( int eid, webs_t wp, CStdString& response, i
   }
   if (nr > 0 && nr <= (int)pShares->size())
   {
-    const CShare& share = (*pShares)[nr-1];
+    const CMediaSource& share = (*pShares)[nr-1];
     if (CStdString(parameter).Equals("path"))
     {
       if (eid!=-1)
@@ -278,7 +278,7 @@ int CXbmcConfiguration::AddBookmark( int eid, webs_t wp, CStdString& response, i
     return -1;
   }
 
-  CShare share;
+  CMediaSource share;
   share.strName = name;
   if (numParas==4)
   {
@@ -376,7 +376,7 @@ int CXbmcConfiguration::SaveBookmark( int eid, webs_t wp, CStdString& response, 
           else response="<li>Error:Insufficient args, use: function(command, type, name, path, postion)";
 		return -1;
 	}
-  VECSHARES* pShares = g_settings.GetSharesFromType(type);
+  VECSOURCES* pShares = g_settings.GetSourcesFromType(type);
   int nr = 0;
 	try { nr = atoi(position); }
 	catch (...)
@@ -388,7 +388,7 @@ int CXbmcConfiguration::SaveBookmark( int eid, webs_t wp, CStdString& response, 
 
   if (nr > 0 && nr <= (int)pShares->size()) // update share
   {
-    const CShare& share = (*pShares)[nr-1];
+    const CMediaSource& share = (*pShares)[nr-1];
     g_settings.UpdateSource(type, share.strName, "path", path);
     g_settings.UpdateSource(type, share.strName, "name", name);
     g_settings.SaveSources();
@@ -468,8 +468,8 @@ int CXbmcConfiguration::RemoveBookmark( int eid, webs_t wp, CStdString& response
   	  return -1;
 	}
 
-  VECSHARES* pShares = g_settings.GetSharesFromType(type);
-  const CShare& share = (*pShares)[nr-1];
+  VECSOURCES* pShares = g_settings.GetSourcesFromType(type);
+  const CMediaSource& share = (*pShares)[nr-1];
   if (g_settings.DeleteSource(type,share.strName,share.strPath))
     return 0;
 

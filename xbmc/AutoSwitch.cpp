@@ -25,6 +25,7 @@
 #include "Settings.h"
 #include "GUISettings.h"
 #include "GUIWindowManager.h"
+#include "FileItem.h"
 
 #define METHOD_BYFOLDERS  0
 #define METHOD_BYFILES   1

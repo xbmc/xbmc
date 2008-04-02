@@ -3,7 +3,7 @@
 
 #define MAXSHAREDACCESSES 5000
 
-CSharedSection::CSharedSection()
+CMediaSourcedSection::CMediaSourcedSection()
 {
   m_sharedLock = 0;
   m_exclusive = false;
@@ -11,13 +11,13 @@ CSharedSection::CSharedSection()
   m_eventFree = CreateEvent(NULL, TRUE, FALSE, NULL);
 }
 
-CSharedSection::~CSharedSection()
+CMediaSourcedSection::~CMediaSourcedSection()
 {
   DeleteCriticalSection(&m_critSection);
   CloseHandle(m_eventFree);
 }
 
-void CSharedSection::EnterShared()
+void CMediaSourcedSection::EnterShared()
 {
   EnterCriticalSection(&m_critSection);
   if( !m_exclusive )
@@ -28,7 +28,7 @@ void CSharedSection::EnterShared()
   LeaveCriticalSection(&m_critSection);
 }
 
-void CSharedSection::LeaveShared()
+void CMediaSourcedSection::LeaveShared()
 {
   if( !m_exclusive )
   {
@@ -37,7 +37,7 @@ void CSharedSection::LeaveShared()
   }
 }
 
-void CSharedSection::EnterExclusive()
+void CMediaSourcedSection::EnterExclusive()
 {
   EnterCriticalSection(&m_critSection);
   if( InterlockedCompareExchange(&m_sharedLock, 0, 0) != 0 )
@@ -45,7 +45,7 @@ void CSharedSection::EnterExclusive()
   m_exclusive = true;
 }
 
-void CSharedSection::LeaveExclusive()
+void CMediaSourcedSection::LeaveExclusive()
 {
   m_exclusive = false;
   LeaveCriticalSection(&m_critSection);
@@ -55,31 +55,31 @@ void CSharedSection::LeaveExclusive()
 // SharedLock
 //////////////////////////////////////////////////////////////////////
 
-CSharedLock::CSharedLock(CSharedSection& cs)
+CMediaSourcedLock::CMediaSourcedLock(CMediaSourcedSection& cs)
     : m_cs( cs )
     , m_bIsOwner( false )
 {
   Enter();
 }
 
-CSharedLock::CSharedLock(const CSharedSection& cs)
-    : m_cs( const_cast<CSharedSection&>(cs) )
+CMediaSourcedLock::CMediaSourcedLock(const CMediaSourcedSection& cs)
+    : m_cs( const_cast<CMediaSourcedSection&>(cs) )
     , m_bIsOwner( false )
 {
   Enter();
 }
 
-CSharedLock::~CSharedLock()
+CMediaSourcedLock::~CMediaSourcedLock()
 {
   Leave();
 }
 
-bool CSharedLock::IsOwner() const
+bool CMediaSourcedLock::IsOwner() const
 {
   return m_bIsOwner;
 }
 
-bool CSharedLock::Enter()
+bool CMediaSourcedLock::Enter()
 {
   // Test if we already own the critical section
   if ( true == m_bIsOwner )
@@ -94,7 +94,7 @@ bool CSharedLock::Enter()
   return m_bIsOwner;
 }
 
-void CSharedLock::Leave()
+void CMediaSourcedLock::Leave()
 {
   if ( false == m_bIsOwner )
   {
@@ -109,15 +109,15 @@ void CSharedLock::Leave()
 // ExclusiveLock
 //////////////////////////////////////////////////////////////////////
 
-CExclusiveLock::CExclusiveLock(CSharedSection& cs)
+CExclusiveLock::CExclusiveLock(CMediaSourcedSection& cs)
     : m_cs( cs )
     , m_bIsOwner( false )
 {
   Enter();
 }
 
-CExclusiveLock::CExclusiveLock(const CSharedSection& cs)
-    : m_cs( const_cast<CSharedSection&>(cs) )
+CExclusiveLock::CExclusiveLock(const CMediaSourcedSection& cs)
+    : m_cs( const_cast<CMediaSourcedSection&>(cs) )
     , m_bIsOwner( false )
 {
   Enter();

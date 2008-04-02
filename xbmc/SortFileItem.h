@@ -1,5 +1,7 @@
 #pragma once
 
+#include "utils/LabelFormatter.h"
+
 class CFileItem;
 
 struct SSortFileItem
@@ -138,3 +140,10 @@ typedef enum {
   SORT_ORDER_ASC,
   SORT_ORDER_DESC
 } SORT_ORDER;
+
+typedef struct
+{
+  SORT_METHOD m_sortMethod;
+  int m_buttonLabel;
+  LABEL_MASKS m_labelMasks;
+} SORT_METHOD_DETAILS;

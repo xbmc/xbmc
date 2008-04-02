@@ -186,7 +186,7 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
             Update(i, m_Directory[i].m_strPath);
             CONTROL_SELECT_ITEM(CONTROL_LEFT_LIST + i, iItem)
           }
-          else if (m_Directory[i].IsRemovable() && !m_rootDir.IsInShare(m_Directory[i].m_strPath))
+          else if (m_Directory[i].IsRemovable() && !m_rootDir.IsInSource(m_Directory[i].m_strPath))
           { //
             if (IsActive())
               Update(i, "");
@@ -599,7 +599,7 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem)
 
 bool CGUIWindowFileManager::HaveDiscOrConnection( CStdString& strPath, int iDriveType )
 {
-  if ( iDriveType == SHARE_TYPE_DVD )
+  if ( iDriveType == CMediaSource::SOURCE_TYPE_DVD )
   {
     CDetectDVDMedia::WaitMediaReady();
 
@@ -613,7 +613,7 @@ bool CGUIWindowFileManager::HaveDiscOrConnection( CStdString& strPath, int iDriv
       return false;
     }
   }
-  else if ( iDriveType == SHARE_TYPE_REMOTE )
+  else if ( iDriveType == CMediaSource::SOURCE_TYPE_REMOTE )
   {
     // TODO: Handle not connected to a remote share
     if ( !g_network.IsEthernetConnected() )
@@ -1080,7 +1080,7 @@ void CGUIWindowFileManager::GetDirectoryHistoryString(const CFileItem* pItem, CS
 
     // History string of the DVD drive
     // must be handel separately
-    if (pItem->m_iDriveType == SHARE_TYPE_DVD)
+    if (pItem->m_iDriveType == CMediaSource::SOURCE_TYPE_DVD)
     {
       // Remove disc label from item label
       // and use as history string, m_strPath
@@ -1117,7 +1117,7 @@ bool CGUIWindowFileManager::GetDirectory(int iList, const CStdString &strDirecto
   bool bParentExists = CUtil::GetParentPath(strDirectory, strParentPath);
 
   // check if current directory is a root share
-  if ( !m_rootDir.IsShare(strDirectory) )
+  if ( !m_rootDir.IsSource(strDirectory) )
   {
     // no, do we got a parent dir?
     if ( bParentExists )
@@ -1244,7 +1244,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     // and do the popup menu
     if (CGUIDialogContextMenu::SourcesMenu("files", m_vecItems[list][item], posX, posY))
     {
-      m_rootDir.SetShares(g_settings.m_fileSources);
+      m_rootDir.SetSources(g_settings.m_fileSources);
       if (m_Directory[1 - list].IsVirtualDirectoryRoot())
         Refresh();
       else
@@ -1389,7 +1389,7 @@ __int64 CGUIWindowFileManager::CalculateFolderSize(const CStdString &strDirector
   __int64 totalSize = 0;
   CFileItemList items;
   CVirtualDirectory rootDir;
-  rootDir.SetShares(g_settings.m_fileSources);
+  rootDir.SetSources(g_settings.m_fileSources);
   rootDir.GetDirectory(strDirectory, items, false);
   for (int i=0; i < items.Size(); i++)
   {
@@ -1496,7 +1496,7 @@ void CGUIWindowFileManager::ShowShareErrorMessage(CFileItem* pItem)
     CURL url(pItem->m_strPath);
     const CStdString& strHostName=url.GetHostName();
 
-    if (pItem->m_iDriveType!=SHARE_TYPE_REMOTE) //  Local shares incl. dvd drive
+    if (pItem->m_iDriveType!=CMediaSource::SOURCE_TYPE_REMOTE) //  Local shares incl. dvd drive
       idMessageText=15300;
     else if (url.GetProtocol()=="xbms" && strHostName.IsEmpty()) //  xbms server discover
       idMessageText=15302;
@@ -1540,9 +1540,9 @@ void CGUIWindowFileManager::OnInitWindow()
     pItem.m_strPath=strCheckSharePath;
     pItem.m_bIsShareOrDrive = true;
     if (CUtil::IsHD(strCheckSharePath))
-      pItem.m_iDriveType=SHARE_TYPE_LOCAL;
-    else //we asume that this is a remote share else we can set SHARE_TYPE_UNKNOWN
-      pItem.m_iDriveType=SHARE_TYPE_REMOTE;
+      pItem.m_iDriveType=CMediaSource::SOURCE_TYPE_LOCAL;
+    else //we asume that this is a remote share else we can set SOURCE_TYPE_UNKNOWN
+      pItem.m_iDriveType=CMediaSource::SOURCE_TYPE_REMOTE;
     ShowShareErrorMessage(&pItem); //show the error message after window is loaded!
     Update(0,""); // reset view to root
   }
@@ -1552,7 +1552,7 @@ void CGUIWindowFileManager::SetInitialPath(const CStdString &path)
 {
   // check for a passed destination path
   CStdString strDestination = path;
-  m_rootDir.SetShares(*g_settings.GetSharesFromType("files"));
+  m_rootDir.SetSources(*g_settings.GetSourcesFromType("files"));
   if (!strDestination.IsEmpty())
   {
     CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
@@ -1578,9 +1578,9 @@ void CGUIWindowFileManager::SetInitialPath(const CStdString &path)
       m_Directory[0].m_strPath = "";
 
       bool bIsSourceName = false;
-      VECSHARES shares;
-      m_rootDir.GetShares(shares);
-      int iIndex = CUtil::GetMatchingShare(strDestination, shares, bIsSourceName);
+      VECSOURCES shares;
+      m_rootDir.GetSources(shares);
+      int iIndex = CUtil::GetMatchingSource(strDestination, shares, bIsSourceName);
       if (iIndex > -1)
       {
         // set current directory to matching share

@@ -2,6 +2,7 @@
 #include "GUIDialog.h"
 #include "GUIViewControl.h"
 #include "VideoDatabase.h"
+#include "FileItem.h"
 
 class CGUIDialogVideoBookmarks : public CGUIDialog
 {

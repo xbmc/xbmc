@@ -225,11 +225,11 @@ bool CMemoryUnitManager::IsDriveWriteable(const CStdString &path) const
   return false;
 }
 
-void CMemoryUnitManager::GetMemoryUnitShares(VECSHARES &shares)
+void CMemoryUnitManager::GetMemoryUnitSources(VECSOURCES &shares)
 {
   for (unsigned int i = 0; i < m_memUnits.size(); i++)
   {
-    CShare share;
+    CMediaSource share;
     CStdString volumeName = m_memUnits[i]->GetVolumeName();
     volumeName.TrimRight(' ');
     // Memory Unit # (volumeName) (fs)

@@ -2,8 +2,8 @@
 
 class CFileItem;
 
-class CShare;
-typedef std::vector<CShare> VECSHARES;
+class CMediaSource;
+typedef std::vector<CMediaSource> VECSOURCES;
 
 typedef std::map<CStdString, CStdString> MAPPASSWORDS;
 typedef std::map<CStdString, CStdString>::iterator IMAPPASSWORDS;
@@ -14,7 +14,7 @@ public:
   CGUIPassword(void);
   virtual ~CGUIPassword(void);
   bool IsItemUnlocked(CFileItem* pItem, const CStdString &strType);
-  bool IsItemUnlocked(CShare* pItem, const CStdString &strType);
+  bool IsItemUnlocked(CMediaSource* pItem, const CStdString &strType);
   bool CheckLock(int btnType, const CStdString& strPassword, int iHeading);
   bool CheckLock(int btnType, const CStdString& strPassword, int iHeading, bool& bCanceled);
   bool IsProfileLockUnlocked(int iProfile=-1);
@@ -33,7 +33,7 @@ public:
   bool LockSource(const CStdString& strType, const CStdString& strName, bool bState);
   void LockSources(bool lock);
   void RemoveSourceLocks();
-  bool IsDatabasePathUnlocked(CStdString& strPath, VECSHARES& vecShares);
+  bool IsDatabasePathUnlocked(CStdString& strPath, VECSOURCES& VECSOURCES);
 
 	MAPPASSWORDS			m_mapSMBPasswordCache; // SMB share password cache
 

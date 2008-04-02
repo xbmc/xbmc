@@ -2,6 +2,7 @@
 #include "MusicSearchDirectory.h"
 #include "../MusicDatabase.h"
 #include "URL.h"
+#include "FileItem.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

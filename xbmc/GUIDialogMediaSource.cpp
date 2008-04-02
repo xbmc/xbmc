@@ -84,7 +84,7 @@ bool CGUIDialogMediaSource::OnMessage(CGUIMessage& message)
         OnCancel();
       else if (iControl == CONTROL_CONTENT)
       {
-        CShare share;
+        CMediaSource share;
         share.FromNameAndPaths("video", m_name, GetPaths());
         
         CGUIDialogContentSettings::ShowForDirectory(share.strPath,m_info,m_settings,m_bRunScan);
@@ -125,16 +125,16 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
   CGUIDialogMediaSource *dialog = (CGUIDialogMediaSource *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MEDIA_SOURCE);
   if (!dialog) return false;
   dialog->Initialize();
-  dialog->SetShare(CShare());
+  dialog->SetShare(CMediaSource());
   dialog->SetTypeOfMedia(type);
   dialog->DoModal();
   bool confirmed(dialog->IsConfirmed());
   if (confirmed)
   { // yay, add this share
-    CShare share;
+    CMediaSource share;
     unsigned int i,j=2;
     bool bConfirmed=false;
-    VECSHARES* pShares = g_settings.GetSharesFromType(type);
+    VECSOURCES* pShares = g_settings.GetSourcesFromType(type);
     CStdString strName = dialog->m_name;
     while (!bConfirmed)
     {
@@ -167,7 +167,7 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
 
 bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const CStdString&share)
 {
-  VECSHARES* pShares=NULL;
+  VECSOURCES* pShares=NULL;
   
   if (type.Equals("upnpmusic"))
     pShares = &g_settings.m_UPnPMusicSources;
@@ -188,7 +188,7 @@ bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const
   return false;
 }
 
-bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const CShare &share)
+bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const CMediaSource &share)
 {
   CStdString strOldName = share.strName;
   CGUIDialogMediaSource *dialog = (CGUIDialogMediaSource *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MEDIA_SOURCE);
@@ -202,7 +202,7 @@ bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const
   { // yay, add this share
     unsigned int i,j=2;
     bool bConfirmed=false;
-    VECSHARES* pShares = g_settings.GetSharesFromType(type);
+    VECSOURCES* pShares = g_settings.GetSourcesFromType(type);
     CStdString strName = dialog->m_name;
     while (!bConfirmed)
     {
@@ -217,7 +217,7 @@ bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const
         bConfirmed = true;
     }
 
-    CShare newShare;
+    CMediaSource newShare;
     newShare.FromNameAndPaths(type, strName, dialog->GetPaths());
     g_settings.UpdateShare(type, strOldName, newShare);
   }
@@ -232,24 +232,24 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
   // Ignore current path is best at this stage??
   CStdString path;
   bool allowNetworkShares(m_type != "programs" && m_type.Left(4) != "upnp");
-  VECSHARES extraShares;
+  VECSOURCES extraShares;
 
   if (m_type == "music" || m_type == "upnpmusic")
   { // add the music playlist location
-    CShare share1;
+    CMediaSource share1;
     share1.strPath = "special://musicplaylists/";
     share1.strName = g_localizeStrings.Get(20011);
     extraShares.push_back(share1);
     if (g_guiSettings.GetString("mymusic.recordingpath",false) != "")
     {
-      CShare share2;
+      CMediaSource share2;
       share2.strPath = "special://recordings/";
       share2.strName = g_localizeStrings.Get(20007);
       extraShares.push_back(share2);
     }
     if (g_guiSettings.GetString("cddaripper.path",false) != "")
     {
-      CShare share2;
+      CMediaSource share2;
       share2.strPath = "special://cdrips/";
       share2.strName = g_localizeStrings.Get(21883);
       extraShares.push_back(share2);
@@ -259,14 +259,14 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     extraShares.push_back(share1);
     if (g_guiSettings.GetBool("network.enableinternet"))
     {
-      CShare share3;
+      CMediaSource share3;
       share3.strName = "Shoutcast";
       share3.strPath = "shout://www.shoutcast.com/sbin/newxml.phtml";
       extraShares.push_back(share3);
 
       if (g_guiSettings.GetString("lastfm.username") != "")
       {
-        CShare share4;
+        CMediaSource share4;
         share4.strName = "Last.FM";
         share4.strPath = "lastfm://";
         extraShares.push_back(share4);
@@ -275,7 +275,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     // add the plugins dir as needed
     if (CPluginDirectory::HasPlugins("music"))
     {
-      CShare share2;
+      CMediaSource share2;
       share2.strPath = "plugin://music/";
       share2.strName = g_localizeStrings.Get(1038); // Music Plugins
       extraShares.push_back(share2);
@@ -283,12 +283,12 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
  }
   else if (m_type == "video" || m_type == "upnpvideo")
   { // add the music playlist location
-    CShare share1;
+    CMediaSource share1;
     share1.strPath = "special://videoplaylists/";
     share1.strName = g_localizeStrings.Get(20012);
     extraShares.push_back(share1);
 
-    CShare share2;
+    CMediaSource share2;
     share2.strPath = "rtv://*/";
     share2.strName = "ReplayTV";
     extraShares.push_back(share2);
@@ -296,7 +296,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     // add the plugins dir as needed
     if (CPluginDirectory::HasPlugins("video"))
     {
-      CShare share3;
+      CMediaSource share3;
       share3.strPath = "plugin://video/";
       share3.strName = g_localizeStrings.Get(1037); // Video Plugins
       extraShares.push_back(share3);
@@ -306,7 +306,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
   {
     if (g_guiSettings.GetString("pictures.screenshotpath",false)!= "")
     {
-      CShare share1;
+      CMediaSource share1;
       share1.strPath = "special://screenshots/";
       share1.strName = g_localizeStrings.Get(20008);
       extraShares.push_back(share1);
@@ -315,7 +315,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     // add the plugins dir as needed
     if (CPluginDirectory::HasPlugins("pictures"))
     {
-      CShare share2;
+      CMediaSource share2;
       share2.strPath = "plugin://pictures/";
       share2.strName = g_localizeStrings.Get(1039); // Picture Plugins
       extraShares.push_back(share2);
@@ -325,13 +325,13 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
   {
     if (CPluginDirectory::HasPlugins("programs"))
     {
-      CShare share2;
+      CMediaSource share2;
       share2.strPath = "plugin://programs/";
       share2.strName = g_localizeStrings.Get(1043); // Program Plugins
       extraShares.push_back(share2);
     }
   }
-  if (CGUIDialogFileBrowser::ShowAndGetShare(path, allowNetworkShares, extraShares.size()==0?NULL:&extraShares))
+  if (CGUIDialogFileBrowser::ShowAndGetSource(path, allowNetworkShares, extraShares.size()==0?NULL:&extraShares))
   {
     m_paths[item]->m_strPath = path;
     if (m_name.IsEmpty())
@@ -363,10 +363,10 @@ void CGUIDialogMediaSource::OnOK()
   // verify the path by doing a GetDirectory.
   CFileItemList items;
 
-  CShare share;
+  CMediaSource share;
   share.FromNameAndPaths(m_type, m_name, GetPaths());
   // hack: Need to temporarily add the share, then get path, then remove share
-  VECSHARES *shares = g_settings.GetSharesFromType(m_type);
+  VECSOURCES *shares = g_settings.GetSourcesFromType(m_type);
   if (shares)
     shares->push_back(share);
   if (share.strPath.Left(9).Equals("plugin://") || CDirectory::GetDirectory(share.strPath, items, "", false, true) || CGUIDialogYesNo::ShowAndGetInput(1001,1025,1003,1004))
@@ -476,7 +476,7 @@ void CGUIDialogMediaSource::UpdateButtons()
   }
 }
 
-void CGUIDialogMediaSource::SetShare(const CShare &share)
+void CGUIDialogMediaSource::SetShare(const CMediaSource &share)
 {
   m_paths.Clear();
   for (unsigned int i = 0; i < share.vecPaths.size(); i++)

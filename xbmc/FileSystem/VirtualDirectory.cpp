@@ -15,11 +15,11 @@ using namespace XFILE;
 namespace DIRECTORY
 {
 
-CVirtualDirectory::CVirtualDirectory(void) : m_vecShares(NULL)
+CVirtualDirectory::CVirtualDirectory(void) : m_vecSources(NULL)
 {
   m_allowPrompting = true;  // by default, prompting is allowed.
   m_cacheDirectory = true;  // by default, caching is done.
-  m_allowNonLocalShares = true;
+  m_allowNonLocalSources = true;
 }
 
 CVirtualDirectory::~CVirtualDirectory(void)
@@ -27,12 +27,12 @@ CVirtualDirectory::~CVirtualDirectory(void)
 
 /*!
  \brief Add shares to the virtual directory
- \param vecShares Shares to add
- \sa CShare, VECSHARES
+ \param VECSOURCES Shares to add
+ \sa CMediaSource, VECSOURCES
  */
-void CVirtualDirectory::SetShares(VECSHARES& vecShares)
+void CVirtualDirectory::SetSources(VECSOURCES& vecSources)
 {
-  m_vecShares = &vecShares;
+  m_vecSources = &vecSources;
 }
 
 /*!
@@ -50,7 +50,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
 }
 bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, bool bUseFileDirectories)
 {
-  if (!m_vecShares)
+  if (m_vecSources)
   {
     items.m_strPath=strPath;
     return true;
@@ -62,12 +62,12 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
   strPath3 += "\\";
 
   // i assumed the intention of this section was to confirm that strPath is part of an existing book.
-  // in order to work with virtualpath:// subpaths, i had replaced this with the GetMatchingShare function
+  // in order to work with virtualpath:// subpaths, i had replaced this with the GetMatchingSource function
   // which does the same thing.
   /*
-  for (int i = 0; i < (int)m_vecShares->size(); ++i)
+  for (int i = 0; i < (int)m_VECSOURCES->size(); ++i)
   {
-    CShare& share = m_vecShares->at(i);
+    CMediaSource& share = m_VECSOURCES->at(i);
     CLog::Log(LOGDEBUG,"CVirtualDirectory... Checking [%s]", share.strPath.c_str());
     if ( share.strPath == strPath.Left( share.strPath.size() ) ||
          share.strPath == strPath2.Left( share.strPath.size() ) ||
@@ -83,12 +83,12 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
   }
   */
 
-  VECSHARES shares;
-  GetShares(shares);
+  VECSOURCES shares;
+  GetSources(shares);
   if (!strPath.IsEmpty() && strPath != "files://")
   {
     bool bIsSourceName = false;
-    int iIndex = CUtil::GetMatchingShare(strPath, shares, bIsSourceName);
+    int iIndex = CUtil::GetMatchingSource(strPath, shares, bIsSourceName);
     // added exception for various local hd items
     // function doesn't work for http/shout streams with options..
     if (iIndex > -1 || strPath.Mid(1, 1) == ":" 
@@ -124,7 +124,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
   // grab our shares
   for (unsigned int i = 0; i < shares.size(); ++i)
   {
-    CShare& share = shares[i];
+    CMediaSource& share = shares[i];
     CFileItem* pItem = new CFileItem(share);
     if (pItem->IsLastFM() || pItem->IsShoutCast() || (pItem->m_strPath.Left(14).Equals("musicsearch://")))
       pItem->SetCanQueue(false);
@@ -135,7 +135,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
     if (share.m_strThumbnailImage.IsEmpty())
     {
       // We have the real DVD-ROM, set icon on disktype
-      if (share.m_iDriveType == SHARE_TYPE_DVD)
+      if (share.m_iDriveType == CMediaSource::SOURCE_TYPE_DVD)
       {
         CUtil::GetDVDDriveIcon( pItem->m_strPath, strIcon );
         // CDetectDVDMedia::SetNewDVDShareUrl() caches disc thumb as Z:\dvdicon.tbn
@@ -158,7 +158,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
     }
 
     pItem->SetIconImage(strIcon);
-    if (share.m_iHasLock == 2 && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+    if (share.m_iHasLock == 2 && g_settings.m_vecProfiles[0].getLockMode() != CMediaSource::LOCK_MODE_EVERYONE)
       pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_LOCKED);
     else
       pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_NONE);
@@ -176,7 +176,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
  \note The parameter \e strPath can not be a share with directory. Eg. "iso9660://dir" will return \e false.
     It must be "iso9660://".
  */
-bool CVirtualDirectory::IsShare(const CStdString& strPath) const
+bool CVirtualDirectory::IsSource(const CStdString& strPath) const
 {
   CStdString strPathCpy = strPath;
   strPathCpy.TrimRight("/");
@@ -187,11 +187,11 @@ bool CVirtualDirectory::IsShare(const CStdString& strPath) const
   // resulting in navigation to a lower directory then the share.
   strPathCpy.Replace("/", "\\");
 
-  VECSHARES shares;
-  GetShares(shares);
+  VECSOURCES shares;
+  GetSources(shares);
   for (int i = 0; i < (int)shares.size(); ++i)
   {
-    const CShare& share = shares.at(i);
+    const CMediaSource& share = shares.at(i);
     CStdString strShare = share.strPath;
     strShare.TrimRight("/");
     strShare.TrimRight("\\");
@@ -208,34 +208,34 @@ bool CVirtualDirectory::IsShare(const CStdString& strPath) const
  \note The parameter \e path CAN be a share with directory. Eg. "iso9660://dir" will
        return the same as "iso9660://".
  */
-bool CVirtualDirectory::IsInShare(const CStdString &path) const
+bool CVirtualDirectory::IsInSource(const CStdString &path) const
 {
   bool isSourceName;
-  VECSHARES shares;
-  GetShares(shares);
-  int iShare = CUtil::GetMatchingShare(path, shares, isSourceName);
-  // TODO: May need to handle other special cases that GetMatchingShare() fails on
+  VECSOURCES shares;
+  GetSources(shares);
+  int iShare = CUtil::GetMatchingSource(path, shares, isSourceName);
+  // TODO: May need to handle other special cases that GetMatchingSource() fails on
   return (iShare > -1);
 }
 
-void CVirtualDirectory::GetShares(VECSHARES &shares) const
+void CVirtualDirectory::GetSources(VECSOURCES &shares) const
 {
-  shares = *m_vecShares;
+  shares = *m_vecSources;
   // add our plug n play shares
 
-  if (m_allowNonLocalShares)
+  if (m_allowNonLocalSources)
   {
 #ifdef HAS_XBOX_HARDWARE
-    g_memoryUnitManager.GetMemoryUnitShares(shares);
+    g_memoryUnitManager.GetMemoryUnitSources(shares);
 #endif
-    CUtil::AutoDetectionGetShare(shares);
+    CUtil::AutoDetectionGetSource(shares);
   }
 
   // and update our dvd share
   for (unsigned int i = 0; i < shares.size(); ++i)
   {
-    CShare& share = shares[i];
-    if (share.m_iDriveType == SHARE_TYPE_DVD)
+    CMediaSource& share = shares[i];
+    if (share.m_iDriveType == CMediaSource::SOURCE_TYPE_DVD)
     {
       share.strStatus = MEDIA_DETECT::CDetectDVDMedia::GetDVDLabel();
       share.strPath = MEDIA_DETECT::CDetectDVDMedia::GetDVDPath();

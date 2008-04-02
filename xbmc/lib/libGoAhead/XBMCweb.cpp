@@ -309,7 +309,7 @@ int CXbmcWeb::xbmcNavigate( int eid, webs_t wp, char_t *parameter)
         //make a new directory and set the nessecary shares
         directory = new CVirtualDirectory();
 
-        VECSHARES *shares = NULL;
+        VECSOURCES *shares = NULL;
         CStdString strDirectory;
 
         //get shares and extensions
@@ -346,7 +346,7 @@ int CXbmcWeb::xbmcNavigate( int eid, webs_t wp, char_t *parameter)
           directory->SetMask("*");
         }
 
-        directory->SetShares(*shares);
+        directory->SetSources(*shares);
         directory->GetDirectory("",webDirItems);
 
         //sort items
@@ -690,14 +690,14 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 
           if (itm->IsZIP()) // mount zip archive
           {
-            CShare shareZip;
+            CMediaSource shareZip;
             CUtil::CreateZipPath(shareZip.strPath,itm->m_strPath,"",1);
             itm->m_strPath = shareZip.strPath;
             itm->m_bIsFolder = true;
           }
           else if (itm->IsRAR()) // mount rar archive 
           {
-            CShare shareRar;
+            CMediaSource shareRar;
             //shareRar.strPath.Format("rar://Z:\\,%i,,%s,\\",1, itm->m_strPath.c_str() );
             CStdString strRarPath;
             CUtil::CreateRarPath(strRarPath,itm->m_strPath,"",1);
@@ -730,7 +730,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
             bool bParentExists=CUtil::GetParentPath(strDirectory, strParentPath);
 
             // check if current directory is a root share
-            if ( !directory->IsShare(strDirectory) )
+            if ( !directory->IsSource(strDirectory) )
             {
               // no, do we got a parent dir?
               if ( bParentExists )

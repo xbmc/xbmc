@@ -2,6 +2,7 @@
 
 #include "GUIDialogSettings.h"
 #include "ScraperSettings.h"
+#include "FileItem.h"
 
 namespace VIDEO {
 struct SScanSettings;

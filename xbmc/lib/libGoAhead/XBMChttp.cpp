@@ -636,7 +636,7 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
       bShowDate = false;
   }
 
-  VECSHARES *pShares = NULL;
+  VECSOURCES *pShares = NULL;
   enum SHARETYPES { MUSIC, VIDEO, PICTURES, FILES };
   switch(iType)
   {
@@ -706,16 +706,16 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
 
   if (!strLocation.IsEmpty() && !bSpecial)
   {
-    VECSHARES vecShares = *pShares;
+    VECSOURCES VECSOURCES = *pShares;
     bool bIsShareName = false;
-    int iIndex = CUtil::GetMatchingShare(strLocation, vecShares, bIsShareName);
+    int iIndex = CUtil::GetMatchingSource(strLocation, VECSOURCES, bIsShareName);
     if (iIndex < 0)
     {
       CStdString strError = "Error: invalid location, " + strLocation;
       return SetResponse(openTag+strError);
     }
     if (bIsShareName)
-      strLocation = vecShares[iIndex].strPath;
+      strLocation = VECSOURCES[iIndex].strPath;
   }
 
   CFileItemList items;
@@ -726,7 +726,7 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
     params[1] = "appendone";
     if (bPathsOnly)
       params[1] = "pathsonly";
-    return xbmcGetShares(2, params);
+    return xbmcGetSources(2, params);
   }
   else if (!CDirectory::GetDirectory(strLocation, items, strMask))
   {
@@ -802,7 +802,7 @@ int CXbmcHttp::xbmcGetXBETitle(int numParas, CStdString paras[])
   }
 }
 
-int CXbmcHttp::xbmcGetShares(int numParas, CStdString paras[])
+int CXbmcHttp::xbmcGetSources(int numParas, CStdString paras[])
 {
   // returns the share listing in this format:
   // <li>type;name;path
@@ -859,7 +859,7 @@ int CXbmcHttp::xbmcGetShares(int numParas, CStdString paras[])
   for (int i = iStart; i < iEnd; ++i)
   {
     CStdString strType;
-    VECSHARES *pShares = NULL;
+    VECSOURCES *pShares = NULL;
     switch(i)
     {
     case MUSIC:
@@ -891,10 +891,10 @@ int CXbmcHttp::xbmcGetShares(int numParas, CStdString paras[])
     if (!pShares)
       return SetResponse(openTag+"Error");
     
-    VECSHARES vecShares = *pShares;
-    for (int j = 0; j < (int)vecShares.size(); ++j)
+    VECSOURCES VECSOURCES = *pShares;
+    for (int j = 0; j < (int)VECSOURCES.size(); ++j)
     {
-      CShare share = vecShares.at(j);
+      CMediaSource share = VECSOURCES.at(j);
       CStdString strName = share.strName;
       strName.Replace(";", ";;");
       CStdString strPath = share.strPath;
@@ -2878,7 +2878,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
       else if (command == "getcurrentlyplaying")      retVal = xbmcGetCurrentlyPlaying(numParas, paras); 
       else if (command == "getxbeid")                 retVal = xbmcGetXBEID(numParas, paras); 
       else if (command == "getxbetitle")              retVal = xbmcGetXBETitle(numParas, paras); 
-      else if (command == "getshares")                retVal = xbmcGetShares(numParas, paras); 
+      else if (command == "getshares")                retVal = xbmcGetSources(numParas, paras); 
       else if (command == "getdirectory")             retVal = xbmcGetDirectory(numParas, paras); 
       else if (command == "getmedialocation")         retVal = xbmcGetMediaLocation(numParas, paras); 
       else if (command == "gettagfromfilename")       retVal = xbmcGetTagFromFilename(numParas, paras);

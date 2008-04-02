@@ -130,10 +130,10 @@ void CGUIDialogNetworkSetup::OnInitWindow()
 void CGUIDialogNetworkSetup::OnServerBrowse()
 {
   // open a filebrowser dialog with the current address
-  VECSHARES shares;
+  VECSOURCES shares;
   CStdString path = ConstructPath();
   // get the share as the base path
-  CShare share;
+  CMediaSource share;
   CStdString basePath = path;
   CStdString tempPath;
   while (CUtil::GetParentPath(basePath, tempPath))

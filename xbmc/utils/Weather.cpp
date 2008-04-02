@@ -10,6 +10,8 @@
 #include "GUISettings.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogProgress.h"
+#include "GUIDialogSelect.h"
+#include "DateTime.h"
 
 using namespace std;
 using namespace DIRECTORY;

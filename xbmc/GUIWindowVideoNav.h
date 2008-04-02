@@ -36,7 +36,7 @@ protected:
 
   void DisplayEmptyDatabaseMessage(bool bDisplay);
 
-  VECSHARES m_shares;
+  VECSOURCES m_shares;
 
   bool m_bDisplayEmptyDatabaseMessage;  ///< If true we display a message informing the user to switch back to the Files view.
 

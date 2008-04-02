@@ -52,8 +52,6 @@
 #include "AutoPtrHandle.h"
 
 // Often used
-#include "GUIDialogSelect.h"
-#include "GUIDialogKeyboard.h"
 #include "GUIUserMessages.h"
 
 #ifdef _XBOX

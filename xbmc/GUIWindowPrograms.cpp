@@ -51,7 +51,7 @@ CGUIWindowPrograms::CGUIWindowPrograms(void)
 {
   m_thumbLoader.SetObserver(this);
   m_dlgProgress = NULL;
-  m_rootDir.AllowNonLocalShares(false); // no nonlocal shares for this window please
+  m_rootDir.AllowNonLocalSources(false); // no nonlocal shares for this window please
 }
 
 
@@ -110,9 +110,9 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 
           bool bIsSourceName = false;
           SetupShares();
-          VECSHARES shares;
-          m_rootDir.GetShares(shares);
-          int iIndex = CUtil::GetMatchingShare(strDestination, shares, bIsSourceName);
+          VECSOURCES shares;
+          m_rootDir.GetSources(shares);
+          int iIndex = CUtil::GetMatchingSource(strDestination, shares, bIsSourceName);
           if (iIndex > -1)
           {
             bool bDoStuff = true;
@@ -191,7 +191,7 @@ void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &butt
   if ( m_vecItems.IsVirtualDirectoryRoot() )
   {
     // get the usual shares
-    CShare *share = CGUIDialogContextMenu::GetShare("programs", item);
+    CMediaSource *share = CGUIDialogContextMenu::GetShare("programs", item);
     CGUIDialogContextMenu::GetContextButtons("programs", share, buttons);
   }
   else
@@ -250,7 +250,7 @@ bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   if (item && m_vecItems.IsVirtualDirectoryRoot())
   {
-    CShare *share = CGUIDialogContextMenu::GetShare("programs", item);
+    CMediaSource *share = CGUIDialogContextMenu::GetShare("programs", item);
     if (CGUIDialogContextMenu::OnContextButton("programs", share, button))
     {
       Update("");

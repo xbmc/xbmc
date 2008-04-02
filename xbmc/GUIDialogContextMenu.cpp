@@ -202,7 +202,7 @@ bool CGUIDialogContextMenu::SourcesMenu(const CStdString &strType, const CFileIt
     return false;
 
   // Get the share object from our file object
-  CShare *share = GetShare(strType, item);
+  CMediaSource *share = GetShare(strType, item);
 
   // popup the context menu
   CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
@@ -233,7 +233,7 @@ bool CGUIDialogContextMenu::SourcesMenu(const CStdString &strType, const CFileIt
   return false;
 }
 
-void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, CShare *share, CContextButtons &buttons)
+void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, CMediaSource *share, CContextButtons &buttons)
 {
   if (share && (CUtil::IsDVD(share->strPath) || CUtil::IsCDDA(share->strPath)))
   {
@@ -262,7 +262,7 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, CShare *sh
 
     buttons.Add(CONTEXT_BUTTON_ADD_SOURCE, 1026); // Add Source
   }
-  if (share && LOCK_MODE_EVERYONE != g_settings.m_vecProfiles[0].getLockMode())
+  if (share && CMediaSource::LOCK_MODE_EVERYONE != g_settings.m_vecProfiles[0].getLockMode())
   {
     if (share->m_iHasLock == 0 && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser))
       buttons.Add(CONTEXT_BUTTON_ADD_LOCK, 12332);
@@ -286,7 +286,7 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, CShare *sh
     buttons.Add(CONTEXT_BUTTON_REACTIVATE_LOCK, 12353);
 }
 
-bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CShare *share, CONTEXT_BUTTON button)
+bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CMediaSource *share, CONTEXT_BUTTON button)
 {
   // Add Source doesn't require a valid share
   if (button == CONTEXT_BUTTON_ADD_SOURCE)
@@ -373,7 +373,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CShare *shar
         return false;
 
       CStdString strThumb;
-      VECSHARES shares;
+      VECSOURCES shares;
       g_mediaManager.GetLocalDrives(shares);
 
       if (CGUIDialogFileBrowser::ShowAndGetImage(shares,g_localizeStrings.Get(1030),strThumb))
@@ -501,13 +501,13 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CShare *shar
   return false;
 }
 
-CShare *CGUIDialogContextMenu::GetShare(const CStdString &type, const CFileItem *item)
+CMediaSource *CGUIDialogContextMenu::GetShare(const CStdString &type, const CFileItem *item)
 {
-  VECSHARES *shares = g_settings.GetSharesFromType(type);
+  VECSOURCES *shares = g_settings.GetSourcesFromType(type);
   if (!shares) return NULL;
   for (unsigned int i = 0; i < shares->size(); i++)
   {
-    CShare &testShare = shares->at(i);
+    CMediaSource &testShare = shares->at(i);
     if (CUtil::IsDVD(testShare.strPath))
     {
       if (!item->IsDVD())
@@ -541,13 +541,13 @@ void CGUIDialogContextMenu::OnWindowUnload()
 
 CStdString CGUIDialogContextMenu::GetDefaultShareNameByType(const CStdString &strType)
 {
-  VECSHARES *pShares = g_settings.GetSharesFromType(strType);
-  CStdString strDefault = g_settings.GetDefaultShareFromType(strType);
+  VECSOURCES *pShares = g_settings.GetSourcesFromType(strType);
+  CStdString strDefault = g_settings.GetDefaultSourceFromType(strType);
 
   if (!pShares) return "";
 
   bool bIsSourceName(false);
-  int iIndex = CUtil::GetMatchingShare(strDefault, *pShares, bIsSourceName);
+  int iIndex = CUtil::GetMatchingSource(strDefault, *pShares, bIsSourceName);
   if (iIndex < 0)
     return "";
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "GUIPythonWindow.h"
 #include "../../../GUIViewControl.h"
+#include "FileItem.h"
 
 int Py_XBMC_Event_OnClick(void* arg);
 int Py_XBMC_Event_OnFocus(void* arg);

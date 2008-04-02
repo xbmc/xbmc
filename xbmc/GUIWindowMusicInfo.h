@@ -3,6 +3,7 @@
 #include "Song.h"
 #include "Artist.h"
 #include "Album.h"
+#include "FileItem.h"
 
 class CGUIWindowMusicInfo :
       public CGUIDialog

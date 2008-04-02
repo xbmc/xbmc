@@ -94,28 +94,28 @@ bool CMediaManager::SaveSources()
   return xmlDoc.SaveFile(MEDIA_SOURCES_XML);
 }
 
-void CMediaManager::GetLocalDrives(VECSHARES &localDrives, bool includeQ)
+void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
 {
   // Local shares
-  CShare share;
+  CMediaSource share;
   share.strPath = "C:\\";
   share.strName.Format(g_localizeStrings.Get(21438),'C');
   share.m_ignore = true;
-  share.m_iDriveType = SHARE_TYPE_LOCAL;
+  share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
   localDrives.push_back(share);
   share.strPath = "D:\\";
   share.strName = g_localizeStrings.Get(218);
-  share.m_iDriveType = SHARE_TYPE_DVD;
+  share.m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
   localDrives.push_back(share);
   share.strPath = "E:\\";
-  share.m_iDriveType = SHARE_TYPE_LOCAL;
+  share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
   share.strName.Format(g_localizeStrings.Get(21438),'E');
   localDrives.push_back(share);
   for (char driveletter=EXTEND_DRIVE_BEGIN; driveletter<=EXTEND_DRIVE_END; driveletter++)
   {
     if (CIoSupport::DriveExists(driveletter))
     {
-      CShare share;
+      CMediaSource share;
       share.strPath.Format("%c:\\", driveletter);
       share.strName.Format(g_localizeStrings.Get(21438),driveletter);
       share.m_ignore = true;
@@ -124,7 +124,7 @@ void CMediaManager::GetLocalDrives(VECSHARES &localDrives, bool includeQ)
   }
   if (includeQ)
   {
-    CShare share;
+    CMediaSource share;
     share.strPath = "Q:\\";
     share.strName.Format(g_localizeStrings.Get(21438),'Q');
     share.m_ignore = true;
@@ -132,13 +132,13 @@ void CMediaManager::GetLocalDrives(VECSHARES &localDrives, bool includeQ)
   }
 }
 
-void CMediaManager::GetNetworkLocations(VECSHARES &locations)
+void CMediaManager::GetNetworkLocations(VECSOURCES &locations)
 {
   // Load our xml file
   LoadSources();
   for (unsigned int i = 0; i < m_locations.size(); i++)
   {
-    CShare share;
+    CMediaSource share;
     share.strPath = m_locations[i].path;
     CURL url(share.strPath);
     url.GetURLWithoutUserDetails(share.strName);

@@ -1,5 +1,6 @@
 #pragma once
 #include "BackgroundInfoLoader.h"
+#include "FileItem.h"
 
 class CPictureInfoLoader : public CBackgroundInfoLoader
 {

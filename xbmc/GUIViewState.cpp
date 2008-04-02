@@ -36,7 +36,7 @@
 using namespace std;
 
 CStdString CGUIViewState::m_strPlaylistDirectory;
-VECSHARES CGUIViewState::m_shares;
+VECSOURCES CGUIViewState::m_sources;
 
 CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& items)
 {
@@ -320,9 +320,9 @@ CStdString CGUIViewState::GetExtensions()
   return "";
 }
 
-VECSHARES& CGUIViewState::GetShares()
+VECSOURCES& CGUIViewState::GetSources()
 {
-  return m_shares;
+  return m_sources;
 }
 
 CGUIViewStateGeneral::CGUIViewStateGeneral(const CFileItemList& items) : CGUIViewState(items)

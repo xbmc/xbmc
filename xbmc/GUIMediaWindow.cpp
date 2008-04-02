@@ -235,7 +235,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         }
         else if (m_vecItems.IsRemovable())
         { // check that we have this removable share still
-          if (!m_rootDir.IsInShare(m_vecItems.m_strPath))
+          if (!m_rootDir.IsInSource(m_vecItems.m_strPath))
           { // don't have this share any more
             if (IsActive()) Update("");
             else
@@ -635,7 +635,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
     if ( pItem->m_bIsShareOrDrive )
     {
       const CStdString& strLockType=m_guiState->GetLockType();
-      if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+      if (g_settings.m_vecProfiles[0].getLockMode() != CMediaSource::LOCK_MODE_EVERYONE)
         if (!strLockType.IsEmpty() && !g_passwordManager.IsItemUnlocked(pItem, strLockType))
             return true;
 
@@ -742,7 +742,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
 // network is connected or not.
 bool CGUIMediaWindow::HaveDiscOrConnection(CStdString& strPath, int iDriveType)
 {
-  if (iDriveType==SHARE_TYPE_DVD)
+  if (iDriveType==CMediaSource::SOURCE_TYPE_DVD)
   {
     MEDIA_DETECT::CDetectDVDMedia::WaitMediaReady();
     if (!MEDIA_DETECT::CDetectDVDMedia::IsDiscInDrive())
@@ -751,7 +751,7 @@ bool CGUIMediaWindow::HaveDiscOrConnection(CStdString& strPath, int iDriveType)
       return false;
     }
   }
-  else if (iDriveType==SHARE_TYPE_REMOTE)
+  else if (iDriveType==CMediaSource::SOURCE_TYPE_REMOTE)
   {
     // TODO: Handle not connected to a remote share
     if ( !g_network.IsEthernetConnected() )
@@ -773,11 +773,11 @@ void CGUIMediaWindow::ShowShareErrorMessage(CFileItem* pItem)
     const CURL& url=pItem->GetAsUrl();
     const CStdString& strHostName=url.GetHostName();
 
-    if (pItem->m_iDriveType!=SHARE_TYPE_REMOTE) //  Local shares incl. dvd drive
+    if (pItem->m_iDriveType != CMediaSource::SOURCE_TYPE_REMOTE) //  Local shares incl. dvd drive
       idMessageText=15300;
-    else if (url.GetProtocol()=="xbms" && strHostName.IsEmpty()) //  xbms server discover
+    else if (url.GetProtocol() == "xbms" && strHostName.IsEmpty()) //  xbms server discover
       idMessageText=15302;
-    else if (url.GetProtocol()=="smb" && strHostName.IsEmpty()) //  smb workgroup
+    else if (url.GetProtocol() == "smb" && strHostName.IsEmpty()) //  smb workgroup
       idMessageText=15303;
     else  //  All other remote shares
       idMessageText=15301;
@@ -830,7 +830,7 @@ void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, CStdStri
 
     // History string of the DVD drive
     // must be handel separately
-    if (pItem->m_iDriveType == SHARE_TYPE_DVD)
+    if (pItem->m_iDriveType == CMediaSource::SOURCE_TYPE_DVD)
     {
       // Remove disc label from item label
       // and use as history string, m_strPath
@@ -1005,7 +1005,7 @@ void CGUIMediaWindow::OnDeleteItem(int iItem)
   if (item.IsPlayList())
     item.m_bIsFolder = false;
 
-  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].filesLocked())
+  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode() != CMediaSource::LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].filesLocked())
     if (!g_passwordManager.IsMasterLockUnlocked(true))
       return;
 
@@ -1020,7 +1020,7 @@ void CGUIMediaWindow::OnRenameItem(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size()) return;
 
-  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].filesLocked())
+  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode() != CMediaSource::LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].filesLocked())
     if (!g_passwordManager.IsMasterLockUnlocked(true))
       return;
 
@@ -1056,7 +1056,7 @@ void CGUIMediaWindow::SetupShares()
   if (viewState)
   {
     m_rootDir.SetMask(viewState->GetExtensions());
-    m_rootDir.SetShares(viewState->GetShares());
+    m_rootDir.SetSources(viewState->GetSources());
     delete viewState;
   }
 }

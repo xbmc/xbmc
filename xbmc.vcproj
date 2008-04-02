@@ -971,6 +971,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\MediaManager.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\MediaSource.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\MediaSource.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\utils\MemoryUnitManager.cpp">
 				</File>
 				<File
@@ -3094,6 +3100,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\Util.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\ViewState.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\VirtualDirectory.h">

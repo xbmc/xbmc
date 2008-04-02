@@ -24,6 +24,7 @@
 #include "../../utils/MemoryUnitManager.h"
 #include "../HDDirectory.h"
 #include "URL.h"
+#include "FileItem.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

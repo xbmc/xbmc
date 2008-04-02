@@ -1,5 +1,6 @@
 #pragma once
 #include "GUIDialog.h"
+#include "FileItem.h"
 
 class CGUIDialogFavourites :
       public CGUIDialog

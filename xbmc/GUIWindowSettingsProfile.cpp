@@ -221,7 +221,7 @@ void CGUIWindowSettingsProfile::LoadList()
     item->m_strPath.Empty();
     item->SetLabel2(profile.getDate());
     item->SetThumbnailImage(profile.getThumb());
-    item->SetOverlayImage(profile.getLockMode() == LOCK_MODE_EVERYONE ? CGUIListItem::ICON_OVERLAY_NONE : CGUIListItem::ICON_OVERLAY_LOCKED);
+    item->SetOverlayImage(profile.getLockMode() == CMediaSource::LOCK_MODE_EVERYONE ? CGUIListItem::ICON_OVERLAY_NONE : CGUIListItem::ICON_OVERLAY_LOCKED);
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PROFILES, 0, 0, (void*)item);
     g_graphicsContext.SendMessage(msg);
     m_vecListItems.push_back(item);

@@ -2,6 +2,7 @@
 
 #include "GUIDialog.h"
 #include "visualizations/Visualisation.h"
+#include "FileItem.h"
 
 class CGUIDialogVisualisationPresetList :
       public CGUIDialog

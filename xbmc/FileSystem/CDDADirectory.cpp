@@ -3,6 +3,7 @@
 #include "CDDADirectory.h"
 #include "../DetectDVDType.h"
 #include "../MusicDatabase.h"
+#include "FileItem.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

@@ -1718,6 +1718,12 @@
 					RelativePath="..\..\xbmc\MediaManager.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\MediaSource.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\MediaSource.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\memutil.cpp">
 				</File>
 				<File

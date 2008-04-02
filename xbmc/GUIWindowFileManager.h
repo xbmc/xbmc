@@ -3,6 +3,7 @@
 #include "FileSystem/VirtualDirectory.h"
 #include "FileSystem/DirectoryHistory.h"
 #include "utils/CriticalSection.h"
+#include "FileItem.h"
 
 class CGUIDialogProgress;
 

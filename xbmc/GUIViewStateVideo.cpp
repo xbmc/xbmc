@@ -26,6 +26,7 @@
 #include "FileSystem/PluginDirectory.h"
 #include "GUIBaseContainer.h"
 #include "VideoDatabase.h"
+#include "Settings.h"
 
 using namespace DIRECTORY;
 using namespace VIDEODATABASEDIRECTORY;
@@ -85,7 +86,7 @@ void CGUIViewStateWindowVideoFiles::SaveViewState()
   SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_FILES);
 }
 
-VECSHARES& CGUIViewStateWindowVideoFiles::GetShares()
+VECSOURCES& CGUIViewStateWindowVideoFiles::GetSources()
 {
   return g_settings.m_videoSources;
 }
@@ -328,41 +329,41 @@ void CGUIViewStateWindowVideoNav::SaveViewState()
   }
 }
 
-VECSHARES& CGUIViewStateWindowVideoNav::GetShares()
+VECSOURCES& CGUIViewStateWindowVideoNav::GetSources()
 {
   //  Setup shares we want to have
-  m_shares.clear();
+  m_sources.clear();
   //  Musicdb shares
   CFileItemList items;
   CDirectory::GetDirectory("videodb://", items);
   for (int i=0; i<items.Size(); ++i)
   {
     CFileItem* item=items[i];
-    CShare share;
+    CMediaSource share;
     share.strName=item->GetLabel();
     share.strPath = item->m_strPath;
     share.m_strThumbnailImage="defaultFolderBig.png";
-    share.m_iDriveType = SHARE_TYPE_LOCAL;
-    m_shares.push_back(share);
+    share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+    m_sources.push_back(share);
   }
 
   //  Playlists share
-  CShare share;
+  CMediaSource share;
   share.strName=g_localizeStrings.Get(136); // Playlists
   share.strPath = "special://videoplaylists/";
   share.m_strThumbnailImage="defaultFolderBig.png";
-  share.m_iDriveType = SHARE_TYPE_LOCAL;
-  m_shares.push_back(share);
+  share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+  m_sources.push_back(share);
 
   // plugins share
   if (CPluginDirectory::HasPlugins("video"))
   {
     share.strName = g_localizeStrings.Get(1037);
     share.strPath = "plugin://video/";
-    m_shares.push_back(share);
+    m_sources.push_back(share);
   }
 
-  return CGUIViewStateWindowVideo::GetShares();
+  return CGUIViewStateWindowVideo::GetSources();
 }
 
 bool CGUIViewStateWindowVideoNav::AutoPlayNextItem()
@@ -403,16 +404,16 @@ bool CGUIViewStateWindowVideoPlaylist::HideParentDirItems()
   return true;
 }
 
-VECSHARES& CGUIViewStateWindowVideoPlaylist::GetShares()
+VECSOURCES& CGUIViewStateWindowVideoPlaylist::GetSources()
 {
-  m_shares.clear();
+  m_sources.clear();
   //  Playlist share
-  CShare share;
+  CMediaSource share;
   share.strPath= "playlistvideo://";
   share.m_strThumbnailImage="defaultFolderBig.png";
-  share.m_iDriveType = SHARE_TYPE_LOCAL;
-  m_shares.push_back(share);
+  share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+  m_sources.push_back(share);
 
-  return CGUIViewStateWindowVideo::GetShares();
+  return CGUIViewStateWindowVideo::GetSources();
 }
 

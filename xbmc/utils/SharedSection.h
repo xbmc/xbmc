@@ -1,13 +1,13 @@
 #pragma once
 
-class CSharedSection
+class CMediaSourcedSection
 {
 
 public:
-  CSharedSection();
-  CSharedSection(const CSharedSection& src);
-  CSharedSection& operator=(const CSharedSection& src);
-  virtual ~CSharedSection();
+  CMediaSourcedSection();
+  CMediaSourcedSection(const CMediaSourcedSection& src);
+  CMediaSourcedSection& operator=(const CMediaSourcedSection& src);
+  virtual ~CMediaSourcedSection();
 
   inline void EnterExclusive();
   inline void LeaveExclusive();
@@ -23,23 +23,23 @@ private:
   long m_sharedLock;
 };
 
-class CSharedLock
+class CMediaSourcedLock
 {
 public:
-  CSharedLock(CSharedSection& cs);
-  CSharedLock(const CSharedSection& cs);
-  virtual ~CSharedLock();
+  CMediaSourcedLock(CMediaSourcedSection& cs);
+  CMediaSourcedLock(const CMediaSourcedSection& cs);
+  virtual ~CMediaSourcedLock();
 
   bool IsOwner() const;
   inline bool Enter();
   inline void Leave();
 
 protected:
-  CSharedLock(const CSharedLock& src);
-  CSharedLock& operator=(const CSharedLock& src);
+  CMediaSourcedLock(const CMediaSourcedLock& src);
+  CMediaSourcedLock& operator=(const CMediaSourcedLock& src);
 
   // Reference to critical section object
-  CSharedSection& m_cs;
+  CMediaSourcedSection& m_cs;
   // Ownership flag
   bool m_bIsOwner;
 };
@@ -47,8 +47,8 @@ protected:
 class CExclusiveLock
 {
 public:
-  CExclusiveLock(CSharedSection& cs);
-  CExclusiveLock(const CSharedSection& cs);
+  CExclusiveLock(CMediaSourcedSection& cs);
+  CExclusiveLock(const CMediaSourcedSection& cs);
   virtual ~CExclusiveLock();
 
   bool IsOwner() const;
@@ -60,7 +60,7 @@ protected:
   CExclusiveLock& operator=(const CExclusiveLock& src);
 
   // Reference to critical section object
-  CSharedSection& m_cs;
+  CMediaSourcedSection& m_cs;
   // Ownership flag
   bool m_bIsOwner;
 };

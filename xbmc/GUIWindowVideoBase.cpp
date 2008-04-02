@@ -48,6 +48,7 @@
 #include "PartyModeManager.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
+#include "GUIDialogSelect.h"
 
 #include "SkinInfo.h"
 
@@ -1269,7 +1270,7 @@ void CGUIWindowVideoBase::OnDeleteItem(int iItem)
   // HACK: stacked files need to be treated as folders in order to be deleted
   if (m_vecItems[iItem]->IsStack())
     m_vecItems[iItem]->m_bIsFolder = true;
-  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].filesLocked())
+  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode() != CMediaSource::LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].filesLocked())
     if (!g_passwordManager.IsMasterLockUnlocked(true))
       return;
   if (!CGUIWindowFileManager::DeleteItem(m_vecItems[iItem]))

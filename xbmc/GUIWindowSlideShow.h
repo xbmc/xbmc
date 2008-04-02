@@ -4,6 +4,7 @@
 #include "utils/Thread.h"
 #include "SlideShowPicture.h"
 #include "DllImageLib.h"
+#include "FileItem.h"
 
 class CGUIWindowSlideShow;
 

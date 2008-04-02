@@ -319,7 +319,7 @@ int XBPython::evalFile(const char *src, const unsigned int argc, const char ** a
   if(access(src, 0) == -1) return -1;
 
   // check if locked
-  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].programsLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].programsLocked() && g_settings.m_vecProfiles[0].getLockMode() != CMediaSource::LOCK_MODE_EVERYONE)
     if (!g_passwordManager.IsMasterLockUnlocked(true))
       return -1;
 

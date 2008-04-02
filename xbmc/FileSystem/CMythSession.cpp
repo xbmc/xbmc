@@ -3,6 +3,8 @@
 #include "CMythSession.h"
 #include "VideoInfoTag.h"
 #include "Settings.h"
+#include "DateTime.h"
+#include "FileItem.h"
 
 extern "C" {
 #include "../lib/libcmyth/cmyth.h"

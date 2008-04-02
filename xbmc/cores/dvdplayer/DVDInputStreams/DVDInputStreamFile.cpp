@@ -1,6 +1,7 @@
 
 #include "stdafx.h"
 #include "DVDInputStreamFile.h"
+#include "FileItem.h"
 
 using namespace XFILE;
 

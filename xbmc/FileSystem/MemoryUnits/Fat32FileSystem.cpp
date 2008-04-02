@@ -22,6 +22,7 @@
 #include "Fat32FileSystem.h"
 #include "Fat32Device.h"
 #include "../../utils/MemoryUnitManager.h"
+#include "FileItem.h"
 
 namespace XFILE
 {

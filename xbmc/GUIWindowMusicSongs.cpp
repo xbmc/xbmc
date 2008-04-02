@@ -113,9 +113,9 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
           bool bIsSourceName = false;
 
           SetupShares();
-          VECSHARES shares;
-          m_rootDir.GetShares(shares);
-          int iIndex = CUtil::GetMatchingShare(strDestination, shares, bIsSourceName);
+          VECSOURCES shares;
+          m_rootDir.GetSources(shares);
+          int iIndex = CUtil::GetMatchingSource(strDestination, shares, bIsSourceName);
           if (iIndex > -1)
           {
             bool unlocked = true;
@@ -373,7 +373,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
     if (m_vecItems.IsVirtualDirectoryRoot())
     {
       // get the usual music shares, and anything for all media windows
-      CShare *share = CGUIDialogContextMenu::GetShare("music", item);
+      CMediaSource *share = CGUIDialogContextMenu::GetShare("music", item);
       CGUIDialogContextMenu::GetContextButtons("music", share, buttons);
       // enable Rip CD an audio disc
       if (CDetectDVDMedia::IsDiscInDrive() && item->IsCDDA())
@@ -449,7 +449,7 @@ bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button
   CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems.Size()) ? m_vecItems[itemNumber] : NULL;
   if ( m_vecItems.IsVirtualDirectoryRoot() && item)
   {
-    CShare *share = CGUIDialogContextMenu::GetShare("music", item);
+    CMediaSource *share = CGUIDialogContextMenu::GetShare("music", item);
     if (CGUIDialogContextMenu::OnContextButton("music", share, button))
     {
       Update("");

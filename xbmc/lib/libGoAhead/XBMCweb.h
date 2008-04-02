@@ -12,6 +12,7 @@
 
 #include "../../FileSystem/VirtualDirectory.h"
 #include "includes.h"
+#include "FileItem.h"
 
 class CXbmcWeb
 {

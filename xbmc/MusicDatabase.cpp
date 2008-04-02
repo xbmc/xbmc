@@ -39,6 +39,7 @@
 #include "GUIDialogOK.h"
 #include "GUIDialogProgress.h"
 #include "GUIDialogYesNo.h"
+#include "GUIDialogSelect.h"
 
 using namespace std;
 using namespace AUTOPTR;

@@ -2,6 +2,7 @@
 #include "../../VideoDatabase.h"
 #include "DirectoryNodeOverview.h"
 #include "Settings.h"
+#include "FileItem.h"
 
 using namespace DIRECTORY::VIDEODATABASEDIRECTORY;
 using namespace std;

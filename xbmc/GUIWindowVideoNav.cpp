@@ -39,6 +39,7 @@
 #include "MusicDatabase.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogYesNo.h"
+#include "GUIDialogSelect.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

@@ -2,6 +2,7 @@
 #include "IDirectory.h"
 #include "../utils/HTTP.h"
 #include "tinyXML/tinyxml.h"
+#include "FileItem.h"
 
 class CGUIDialogProgress;
 

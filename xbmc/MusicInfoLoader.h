@@ -1,6 +1,7 @@
 #pragma once
 #include "BackgroundInfoLoader.h"
 #include "MusicDatabase.h"
+#include "FileItem.h"
 
 namespace MUSIC_INFO
 {
