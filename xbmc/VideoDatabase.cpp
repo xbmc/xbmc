@@ -6478,3 +6478,13 @@ void CVideoDatabase::InvalidatePathHash(const CStdString& strPath)
     }
   }
 }
+
+bool CVideoDatabase::CommitTransaction()
+{
+  if (CDatabase::CommitTransaction())
+  { // number of items in the db has likely changed, so reset the infomanager cache
+    g_infoManager.ResetPersistentCache();
+    return true;
+  }
+  return false;
+}
