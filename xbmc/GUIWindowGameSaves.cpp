@@ -32,6 +32,7 @@
 #include "utils/LabelFormatter.h"
 #include "MusicInfoTag.h"// todo - program tags
 #include "../guilib/GUIWindowManager.h"
+#include "GUIDialogProgress.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

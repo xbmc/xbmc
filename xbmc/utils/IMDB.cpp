@@ -10,6 +10,7 @@
 #include "RegExp.h"
 #include "ScraperParser.h"
 #include "NfoFile.h"
+#include "GUIDialogProgress.h"
 
 using namespace HTML;
 

@@ -9,6 +9,7 @@
 #include "../xbox/network.h"
 #include "GUISettings.h"
 #include "GUIWindowManager.h"
+#include "GUIDialogProgress.h"
 
 using namespace std;
 using namespace DIRECTORY;

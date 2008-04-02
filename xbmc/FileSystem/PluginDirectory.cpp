@@ -24,6 +24,7 @@
 #include "lib/libPython/XBPython.h"
 #include "PluginSettings.h"
 #include "../../guilib/GUIWindowManager.h"
+#include "GUIDialogProgress.h"
 
 using namespace DIRECTORY;
 using namespace std;

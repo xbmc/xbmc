@@ -30,6 +30,7 @@
 #include "ProgramDatabase.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
+#include "GUIDialogProgress.h"
 
 using namespace AUTOPTR;
 using namespace MEDIA_DETECT;

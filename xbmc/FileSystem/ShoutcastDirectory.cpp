@@ -8,6 +8,7 @@
 #include "VideoInfoTag.h"
 #include "MusicInfoTag.h"
 #include "../../guilib/GUIWindowManager.h"
+#include "GUIDialogProgress.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

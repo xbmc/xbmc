@@ -3,6 +3,8 @@
 #include "../utils/HTTP.h"
 #include "tinyXML/tinyxml.h"
 
+class CGUIDialogProgress;
+
 namespace DIRECTORY
 {
 class CLastFMDirectory :

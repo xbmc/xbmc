@@ -34,6 +34,7 @@
 #include "NfoFile.h"
 #include "MusicInfoTag.h"
 #include "GUIWindowManager.h"
+#include "GUIDialogProgress.h"
 
 using namespace std;
 using namespace MUSIC_INFO;

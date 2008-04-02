@@ -3,6 +3,8 @@
 #include "utils/Thread.h"
 #include "PlayList.h"
 
+class CGUIDialogProgress;
+
 class CLastFmManager : CThread
 {
 public:

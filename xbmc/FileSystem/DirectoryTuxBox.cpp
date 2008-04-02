@@ -8,6 +8,7 @@
 #include "../utils/TuxBoxUtil.h"
 #include "URL.h"
 #include "../../guilib/GUIWindowManager.h"
+#include "GUIDialogProgress.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

@@ -4,6 +4,8 @@
 #include "FileSystem/DirectoryHistory.h"
 #include "utils/CriticalSection.h"
 
+class CGUIDialogProgress;
+
 class CGUIWindowFileManager :
       public CGUIWindow,
       public XFILE::IFileCallback

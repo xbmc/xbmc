@@ -12,6 +12,7 @@
 #include "../MusicInfoTag.h"
 #include "../../guilib/GUIWindowManager.h"
 #include "GUIDialogOK.h"
+#include "GUIDialogProgress.h"
 
 using namespace std;
 using namespace XFILE;
