@@ -38,6 +38,7 @@
 #include "GUIDialogKeyboard.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/File.h"
+#include "FileSystem/RarManager.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -596,7 +597,7 @@ void CGUIWindowPrograms::PopulateTrainersList()
           {
             CFileItem* item = new CFileItem(*inArchives[j]);
             CStdString strPathInArchive = item->m_strPath;
-            CUtil::CreateRarPath(item->m_strPath, archives[i]->m_strPath, strPathInArchive,EXFILE_AUTODELETE,"",g_advancedSettings.m_cachePath);
+            CUtil::CreateArchivePath(item->m_strPath, "rar", archives[i]->m_strPath, strPathInArchive,"");
             trainers.Add(item);
           }
       }
@@ -604,7 +605,7 @@ void CGUIWindowPrograms::PopulateTrainersList()
       {
         // add trainers in zip
         CStdString strZipPath;
-        CUtil::CreateZipPath(strZipPath,archives[i]->m_strPath,"");
+        CUtil::CreateArchivePath(strZipPath,"zip",archives[i]->m_strPath,"");
         CFileItemList zipTrainers;
         directory.GetDirectory(strZipPath,zipTrainers,".etm|.xbtf");
         for (int j=0;j<zipTrainers.Size();++j)

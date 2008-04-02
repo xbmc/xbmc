@@ -1,6 +1,7 @@
 #pragma once
 #include "utils/Thread.h"
 #include "VideoDatabase.h"
+#include "ScraperSettings.h"
 
 class CIMDB;
 

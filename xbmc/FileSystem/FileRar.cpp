@@ -5,6 +5,7 @@
 #include "URL.h"
 #include "GUIDialogOK.h"
 #include "FileSystem/Directory.h"
+#include "RarManager.h"
 
 #include <process.h>
 

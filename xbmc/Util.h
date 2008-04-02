@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
 #include "PlayList.h"
-#include "FileSystem/RarManager.h"
 #include "Settings.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "xbox/custom_launch_params.h"
@@ -141,12 +140,8 @@ public:
   static void AddSlashAtEnd(CStdString& strFolder);
   static void RemoveSlashAtEnd(CStdString& strFolder);  
   static void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
-  static void CreateZipPath(CStdString& strUrlPath, const CStdString& strRarPath, 
-    const CStdString& strFilePathInRar,  const WORD wOptions = EXFILE_AUTODELETE , 
-    const CStdString& strPwd = RAR_DEFAULT_PASSWORD, const CStdString& strCachePath = RAR_DEFAULT_CACHE);
-  static void CreateRarPath(CStdString& strUrlPath, const CStdString& strRarPath, 
-    const CStdString& strFilePathInRar,  const WORD wOptions = EXFILE_AUTODELETE , 
-    const CStdString& strPwd = RAR_DEFAULT_PASSWORD, const CStdString& strCachePath = RAR_DEFAULT_CACHE);
+  static void CreateArchivePath(CStdString& strUrlPath, const CStdString& strType, const CStdString& strArchivePath,
+    const CStdString& strFilePathInArchive, const CStdString& strCachePath = "Z:\\", const CStdString strPwd="");
   static bool ThumbExists(const CStdString& strFileName, bool bAddCache = false);
   static bool ThumbCached(const CStdString& strFileName);
   static void ThumbCacheAdd(const CStdString& strFileName, bool bFileExists);

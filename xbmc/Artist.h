@@ -3,7 +3,6 @@
 #include <map>
 #include <vector>
 
-#include "utils/ScraperParser.h"
 #include "utils/ScraperUrl.h"
 
 class CArtist

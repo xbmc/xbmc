@@ -4,7 +4,6 @@
 #include "VideoDatabase.h"
 #include "GUIWindowVideoBase.h"
 #include "GUIWindowVideoFiles.h"
-#include "utils/ScraperParser.h"
 
 class CGUIWindowVideoInfo :
       public CGUIDialog

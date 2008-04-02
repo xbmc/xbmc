@@ -4,6 +4,7 @@
 #include "Util.h"
 #include "DllLibCMyth.h"
 #include "VideoInfoTag.h"
+#include "URL.h"
 
 extern "C" {
 #include "../lib/libcmyth/cmyth.h"

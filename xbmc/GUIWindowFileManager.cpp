@@ -41,6 +41,7 @@
 #include "GUIDialogOK.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogKeyboard.h"
+#include "FileSystem/RarManager.h"
 
 using namespace std;
 using namespace XFILE;
@@ -518,13 +519,13 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
   else if (pItem->IsZIP() || pItem->IsCBZ()) // mount zip archive
   {
     CStdString strArcivedPath;
-    CUtil::CreateZipPath(strArcivedPath, pItem->m_strPath, "");
+    CUtil::CreateArchivePath(strArcivedPath, "zip", pItem->m_strPath, "");
     Update(iList, strArcivedPath);
   }
   else if (pItem->IsRAR() || pItem->IsCBR())
   {
     CStdString strArcivedPath;
-    CUtil::CreateRarPath(strArcivedPath, pItem->m_strPath, "");
+    CUtil::CreateArchivePath(strArcivedPath, "rar", pItem->m_strPath, "");
     Update(iList, strArcivedPath);
   }
   else

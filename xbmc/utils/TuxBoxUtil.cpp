@@ -13,6 +13,7 @@
 #include "GUIDialogOK.h"
 #include "GUIDialogYesNo.h"
 #include "FileSystem/File.h"
+#include "URL.h"
 
 using namespace XFILE;
 

@@ -30,6 +30,7 @@
 #include "GUIDialogYesNo.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/File.h"
+#include "URL.h"
 
 using namespace std;
 using namespace XFILE;

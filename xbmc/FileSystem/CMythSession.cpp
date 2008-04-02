@@ -5,6 +5,7 @@
 #include "Settings.h"
 #include "DateTime.h"
 #include "FileItem.h"
+#include "URL.h"
 
 extern "C" {
 #include "../lib/libcmyth/cmyth.h"

@@ -74,6 +74,7 @@
 #include "GUILargeTextureManager.h"
 #include "LastFmManager.h"
 #include "SmartPlaylist.h"
+#include "FileSystem/RarManager.h"
 
 #ifdef HAS_FILESYSTEM
 #include "FileSystem/FileDAAP.h"

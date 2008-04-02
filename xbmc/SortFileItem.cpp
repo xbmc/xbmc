@@ -24,6 +24,7 @@
 #include "VideoInfoTag.h"
 #include "MusicInfoTag.h"
 #include "FileItem.h"
+#include "URL.h"
 
 inline int StartsWithToken(const CStdString& strLabel)
 {

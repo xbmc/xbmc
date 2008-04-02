@@ -322,9 +322,9 @@ bool CGUIWindowPictures::OnClick(int iItem)
   {
     CStdString strComicPath;
     if (pItem->IsCBZ())
-      CUtil::CreateZipPath(strComicPath, pItem->m_strPath, "");
+      CUtil::CreateArchivePath(strComicPath, "zip", pItem->m_strPath, "");
     else
-      CUtil::CreateRarPath(strComicPath, pItem->m_strPath, "");
+      CUtil::CreateArchivePath(strComicPath, "rar", pItem->m_strPath, "");
     CFileItemList vecItems;
     if (CGUIMediaWindow::GetDirectory(strComicPath, vecItems))
     {
@@ -608,9 +608,9 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
     CStdString thumb;
     CStdString strPath = pItem->m_strPath;
     if (pItem->IsCBR())
-      CUtil::CreateRarPath(strPath,pItem->m_strPath,"");
+      CUtil::CreateArchivePath(strPath,"rar",pItem->m_strPath,"");
     if (pItem->IsCBZ())
-      CUtil::CreateZipPath(strPath,pItem->m_strPath,"");
+      CUtil::CreateArchivePath(strPath,"zip",pItem->m_strPath,"");
     if (pItem->IsMultiPath())
       strPath = CMultiPathDirectory::GetFirstPath(pItem->m_strPath);
     CUtil::AddFileToFolder(strPath, "folder.jpg", thumb);

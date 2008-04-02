@@ -150,7 +150,7 @@ void CXbmcWeb::AddItemToPlayList(const CFileItem* pItem)
   else if (pItem->IsZIP() && g_guiSettings.GetBool("VideoFiles.HandleArchives"))
   {
     CStdString strDirectory;
-    CUtil::CreateZipPath(strDirectory, pItem->m_strPath, "");
+    CUtil::CreateArchivePath(strDirectory, "zip", pItem->m_strPath, "");
     CFileItemList items;
     directory->GetDirectory(strDirectory, items);
 
@@ -163,7 +163,7 @@ void CXbmcWeb::AddItemToPlayList(const CFileItem* pItem)
   else if (pItem->IsRAR() && g_guiSettings.GetBool("VideoFiles.HandleArchives"))
   {
     CStdString strDirectory;
-    CUtil::CreateRarPath(strDirectory, pItem->m_strPath, "");
+    CUtil::CreateArchivePath(strDirectory, "rar", pItem->m_strPath, "");
     CFileItemList items;
     directory->GetDirectory(strDirectory, items);
 
@@ -691,16 +691,15 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
           if (itm->IsZIP()) // mount zip archive
           {
             CMediaSource shareZip;
-            CUtil::CreateZipPath(shareZip.strPath,itm->m_strPath,"",1);
+            CUtil::CreateArchivePath(shareZip.strPath,"zip",itm->m_strPath,"");
             itm->m_strPath = shareZip.strPath;
             itm->m_bIsFolder = true;
           }
           else if (itm->IsRAR()) // mount rar archive 
           {
             CMediaSource shareRar;
-            //shareRar.strPath.Format("rar://Z:\\,%i,,%s,\\",1, itm->m_strPath.c_str() );
             CStdString strRarPath;
-            CUtil::CreateRarPath(strRarPath,itm->m_strPath,"",1);
+            CUtil::CreateArchivePath(strRarPath,"rar",itm->m_strPath,"");
             shareRar.strPath = strRarPath;
 
             itm->m_strPath = shareRar.strPath;

@@ -2,6 +2,7 @@
 #include "CMythFile.h"
 #include "Util.h"
 #include "DllLibCMyth.h"
+#include "URL.h"
 
 extern "C" {
 #include "../lib/libcmyth/cmyth.h"

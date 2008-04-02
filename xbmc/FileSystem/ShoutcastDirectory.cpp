@@ -9,6 +9,7 @@
 #include "MusicInfoTag.h"
 #include "../../guilib/GUIWindowManager.h"
 #include "GUIDialogProgress.h"
+#include "URL.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

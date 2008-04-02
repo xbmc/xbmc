@@ -5,6 +5,7 @@
 #include "GUIDialogProgress.h"
 #include <set>
 
+struct SScraperInfo;
 class CFileItemList;
 
 typedef std::vector<CVideoInfoTag> VECMOVIES;

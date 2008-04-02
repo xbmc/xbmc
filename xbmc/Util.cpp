@@ -2621,7 +2621,7 @@ bool CUtil::CacheRarSubtitles(std::vector<CStdString>& vecExtensionsCached, cons
   if (CUtil::GetExtension(strRarPath).Equals(".zip"))
   {
     CStdString strZipPath;
-    CUtil::CreateZipPath(strZipPath,strRarPath,"");
+    CUtil::CreateArchivePath(strZipPath,"zip",strRarPath,"");
     if (!CDirectory::GetDirectory(strZipPath,ItemList,"",false))
       return false;
   }
@@ -2643,9 +2643,9 @@ bool CUtil::CacheRarSubtitles(std::vector<CStdString>& vecExtensionsCached, cons
       CStdString strExtAdded;
       CStdString strRarInRar;
       if (CUtil::GetExtension(strPathInRar).Equals(".rar"))
-        CUtil::CreateRarPath(strRarInRar, strRarPath, strPathInRar);
+        CUtil::CreateArchivePath(strRarInRar, "rar", strRarPath, strPathInRar);
       else
-        CUtil::CreateZipPath(strRarInRar, strRarPath, strPathInRar);
+        CUtil::CreateArchivePath(strRarInRar, "zip", strRarPath, strPathInRar);
       CacheRarSubtitles(vecExtensionsCached,strRarInRar,strCompare, strExtExt);
     }
     // done checking if this is a rar-in-rar
@@ -2662,7 +2662,7 @@ bool CUtil::CacheRarSubtitles(std::vector<CStdString>& vecExtensionsCached, cons
         {
           CStdString strSourceUrl, strDestUrl;
           if (CUtil::GetExtension(strRarPath).Equals(".rar"))
-            CUtil::CreateRarPath(strSourceUrl, strRarPath, strPathInRar);
+            CUtil::CreateArchivePath(strSourceUrl, "rar", strRarPath, strPathInRar);
           else
             strSourceUrl = strPathInRar;
 
@@ -2838,17 +2838,16 @@ void CUtil::Split(const CStdString& strFileNameAndPath, CStdString& strPath, CSt
   strPath = strFileNameAndPath.Left(i + 1);
   strFileName = strFileNameAndPath.Right(strFileNameAndPath.size() - i - 1);
 }
-
-void CUtil::CreateZipPath(CStdString& strUrlPath, const CStdString& strRarPath, const CStdString& strFilePathInRar,const WORD wOptions,  const CStdString& strPwd, const CStdString& strCachePath)
+  
+void CUtil::CreateArchivePath(CStdString& strUrlPath, const CStdString& strType, 
+                              const CStdString& strArchivePath,
+                              const CStdString& strFilePathInArchive, 
+                              const CStdString& strCachePath, 
+                              const CStdString strPwd)
 {
-  //The possibilties for wOptions are
-  //RAR_AUTODELETE : the cached version of the rar (strRarPath) will be deleted in file's dtor.
-  //EXFILE_AUTODELETE : the extracted file (strFilePathInRar) will be deleted in file's dtor.
-  //RAR_OVERWRITE : if the rar is already cached, overwrite the local copy.
-  //EXFILE_OVERWRITE : if the extracted file is already cached, overwrite the local copy.
   CStdString strBuffer;
 
-  strUrlPath = "zip://";
+  strUrlPath = strType+"://";
 
   if( !strPwd.IsEmpty() )
   {
@@ -2858,57 +2857,12 @@ void CUtil::CreateZipPath(CStdString& strUrlPath, const CStdString& strRarPath, 
     strUrlPath += "@";
   }
 
-  strBuffer = strRarPath;
+  strBuffer = strArchivePath;
   CUtil::URLEncode(strBuffer);
 
   strUrlPath += strBuffer;
 
-  strBuffer = strFilePathInRar;
-  strBuffer.Replace('\\', '/');
-  strBuffer.TrimLeft('/');
-
-  strUrlPath += "/";
-  strUrlPath += strBuffer;
-
-#if 0  // options are not used
-  strBuffer = strCachePath;
-  CUtil::URLEncode(strBuffer);
-
-  strUrlPath += "?cache=";
-  strUrlPath += strBuffer;
-
-  strBuffer.Format("%i", wOptions);
-  strUrlPath += "&flags=";
-  strUrlPath += strBuffer;
-#endif
-}
-
-
-void CUtil::CreateRarPath(CStdString& strUrlPath, const CStdString& strRarPath, const CStdString& strFilePathInRar,const WORD wOptions,  const CStdString& strPwd, const CStdString& strCachePath)
-{
-  //The possibilties for wOptions are
-  //RAR_AUTODELETE : the cached version of the rar (strRarPath) will be deleted in file's dtor.
-  //EXFILE_AUTODELETE : the extracted file (strFilePathInRar) will be deleted in file's dtor.
-  //RAR_OVERWRITE : if the rar is already cached, overwrite the local copy.
-  //EXFILE_OVERWRITE : if the extracted file is already cached, overwrite the local copy.
-  CStdString strBuffer;
-
-  strUrlPath = "rar://";
-
-  if( !strPwd.IsEmpty() )
-  {
-    strBuffer = strPwd;
-    CUtil::URLEncode(strBuffer);
-    strUrlPath += strBuffer;
-    strUrlPath += "@";
-  }
-
-  strBuffer = strRarPath;
-  CUtil::URLEncode(strBuffer);
-
-  strUrlPath += strBuffer;
-
-  strBuffer = strFilePathInRar;
+  strBuffer = strFilePathInArchive;
   strBuffer.Replace('\\', '/');
   strBuffer.TrimLeft('/');
 
