@@ -46,12 +46,12 @@ bool CEncoderVorbis::Init(const char* strFile, int iInChannels, int iInRate, int
 
   /* add a comment */
   m_VorbisDll.vorbis_comment_init(&m_sVorbisComment);
-  m_VorbisDll.vorbis_comment_add_tag(&m_sVorbisComment, "comment", (char*)m_strComment.c_str());
-  m_VorbisDll.vorbis_comment_add_tag(&m_sVorbisComment, "artist", (char*)m_strArtist.c_str());
-  m_VorbisDll.vorbis_comment_add_tag(&m_sVorbisComment, "title", (char*)m_strTitle.c_str());
-  m_VorbisDll.vorbis_comment_add_tag(&m_sVorbisComment, "album", (char*)m_strAlbum.c_str());
-  m_VorbisDll.vorbis_comment_add_tag(&m_sVorbisComment, "genre", (char*)m_strGenre.c_str());
-  m_VorbisDll.vorbis_comment_add_tag(&m_sVorbisComment, "tracknumber", (char*)m_strTrack.c_str());
+  m_VorbisDll.vorbis_comment_add_tag(&m_sVorbisComment, (char*)"comment", (char*)m_strComment.c_str());
+  m_VorbisDll.vorbis_comment_add_tag(&m_sVorbisComment, (char*)"artist", (char*)m_strArtist.c_str());
+  m_VorbisDll.vorbis_comment_add_tag(&m_sVorbisComment, (char*)"title", (char*)m_strTitle.c_str());
+  m_VorbisDll.vorbis_comment_add_tag(&m_sVorbisComment, (char*)"album", (char*)m_strAlbum.c_str());
+  m_VorbisDll.vorbis_comment_add_tag(&m_sVorbisComment, (char*)"genre", (char*)m_strGenre.c_str());
+  m_VorbisDll.vorbis_comment_add_tag(&m_sVorbisComment, (char*)"tracknumber", (char*)m_strTrack.c_str());
   m_VorbisDll.vorbis_comment_add_tag(&m_sVorbisComment, "date", (char*)m_strYear.c_str());
 
   /* set up the analysis state and auxiliary encoding storage */
