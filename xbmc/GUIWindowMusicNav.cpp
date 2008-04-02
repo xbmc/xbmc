@@ -41,6 +41,7 @@
 #include "VideoDatabase.h"
 #include "GUIWindowVideoNav.h"
 #include "MusicInfoTag.h"
+#include "GUIWindowManager.h"
 
 using namespace std;
 using namespace DIRECTORY;

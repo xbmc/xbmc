@@ -29,6 +29,7 @@
 #endif
 #include "Picture.h"
 #include "GUIDialogContextMenu.h"
+#include "GUIWindowManager.h"
 
 using namespace std;
 

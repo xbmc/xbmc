@@ -7,6 +7,7 @@
 #include "../utils/HttpHeader.h"
 #include "VideoInfoTag.h"
 #include "MusicInfoTag.h"
+#include "../../guilib/GUIWindowManager.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

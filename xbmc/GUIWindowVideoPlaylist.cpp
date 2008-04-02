@@ -28,6 +28,7 @@
 #include "PlayListPlayer.h"
 #include "PartyModeManager.h"
 #include "GUIDialogSmartPlaylistEditor.h"
+#include "GUIWindowManager.h"
 
 using namespace PLAYLIST;
 

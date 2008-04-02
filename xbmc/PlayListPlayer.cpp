@@ -25,6 +25,7 @@
 #include "Application.h"
 #include "PartyModeManager.h"
 #include "Settings.h"
+#include "GUIWindowManager.h"
 
 using namespace PLAYLIST;
 

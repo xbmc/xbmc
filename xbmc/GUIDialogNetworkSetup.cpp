@@ -25,6 +25,7 @@
 #include "GUIDialogNumeric.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogFileBrowser.h"
+#include "GUIWindowManager.h"
 #include "Util.h"
 #include "URL.h"
 

@@ -34,6 +34,7 @@
 #include "GUIWindowSlideShow.h"
 #include "lib/libGoAhead/XBMChttp.h"
 #include "xbox/network.h"
+#include "GUIWindowManager.h"
 
 using namespace std;
 

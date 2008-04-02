@@ -5,6 +5,7 @@
 #include "VideoDatabase.h"
 #include "VideoInfoScanner.h"
 #include "FileSystem/MultiPathDirectory.h"
+#include "GUIWindowManager.h"
 
 #define CONTROL_CONTENT_TYPE        3
 #define CONTROL_SCRAPER_LIST        4

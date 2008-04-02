@@ -91,6 +91,7 @@
 #include "DNSNameCache.h"
 #include "FileSystem/PluginDirectory.h"
 #include "MusicInfoTag.h"
+#include "GUIWindowManager.h"
 
 using namespace std;
 namespace MathUtils {

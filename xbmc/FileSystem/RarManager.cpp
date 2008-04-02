@@ -3,6 +3,7 @@
 #include "../lib/UnrarXLib/rar.hpp"
 #include "../Util.h"
 #include "../utils/SingleLock.h"
+#include "../../guilib/GUIWindowManager.h"
 
 #include <set>
 

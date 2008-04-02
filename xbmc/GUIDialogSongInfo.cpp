@@ -28,6 +28,7 @@
 #include "MusicDatabase.h"
 #include "GUIWindowMusicBase.h"
 #include "MusicInfoTag.h"
+#include "GUIWindowManager.h"
 
 using namespace XFILE;
 

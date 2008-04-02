@@ -33,6 +33,7 @@
 #include "utils/GUIInfoManager.h"
 #include "VideoInfoScanner.h"
 #include "VideoInfoTag.h"
+#include "GUIWindowManager.h"
 
 using namespace std;
 using namespace XFILE;

@@ -33,6 +33,7 @@
 #include "xbox/network.h"
 #include "SkinInfo.h"
 #include "Profile.h"
+#include "../guilib/GUIWindowManager.h"
 
 using namespace XFILE;
 

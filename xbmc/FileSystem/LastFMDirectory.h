@@ -1,6 +1,7 @@
 #pragma once
 #include "IDirectory.h"
 #include "../utils/HTTP.h"
+#include "tinyXML/tinyxml.h"
 
 namespace DIRECTORY
 {

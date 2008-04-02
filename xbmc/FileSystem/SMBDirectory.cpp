@@ -16,6 +16,7 @@
 #include "LocalizeStrings.h"
 #include "../GUIPassword.h"
 #include "../lib/libsmb/xbLibSmb.h"
+#include "../../guilib/GUIWindowManager.h"
 
 using namespace DIRECTORY;
 

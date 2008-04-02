@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "GUIWindowVideoOverlay.h"
 #include "utils/GUIInfoManager.h"
-
+#include "GUIWindowManager.h"
 
 #define CONTROL_PLAYTIME  2
 #define CONTROL_PLAY_LOGO   3

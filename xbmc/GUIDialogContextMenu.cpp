@@ -34,6 +34,7 @@
 #include "GUIDialogMediaSource.h"
 #include "GUIDialogLockSettings.h"
 #include "MediaManager.h"
+#include "GUIWindowManager.h"
 
 using namespace std;
 using namespace MEDIA_DETECT;

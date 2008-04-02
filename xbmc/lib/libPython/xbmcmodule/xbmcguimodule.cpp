@@ -7,6 +7,7 @@
 #include "winxml.h"
 #include "pyutil.h"
 #include "action.h"
+#include "../../../../guilib/GUIWindowManager.h"
 
 #ifndef __GNUC__
 #pragma code_seg("PY_TEXT")

@@ -7,6 +7,7 @@
 #include "../utils/HttpHeader.h"
 #include "../utils/TuxBoxUtil.h"
 #include "URL.h"
+#include "../../guilib/GUIWindowManager.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

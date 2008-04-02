@@ -21,6 +21,7 @@
 #include "stdafx.h"
 #include "GUIWindowSystemInfo.h"
 #include "utils/GUIInfoManager.h"
+#include "../guilib/GUIWindowManager.h"
 
 CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
 :CGUIWindow(WINDOW_SYSTEM_INFORMATION, "SettingsSystemInfo.xml")

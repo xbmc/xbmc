@@ -35,6 +35,7 @@
 #include "Artist.h"
 #include "Album.h"
 #include "Song.h"
+#include "GUIWindowManager.h"
 
 using namespace std;
 using namespace AUTOPTR;

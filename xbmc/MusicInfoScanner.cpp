@@ -33,6 +33,7 @@
 #include "xbox/XKGeneral.h"
 #include "NfoFile.h"
 #include "MusicInfoTag.h"
+#include "GUIWindowManager.h"
 
 using namespace std;
 using namespace MUSIC_INFO;

@@ -13,6 +13,7 @@
 #include "WebServer.h"
 #include "XBMChttp.h"
 #include "includes.h"
+#include "../../../guilib/GUIWindowManager.h"
 
 #include "../../PlayListFactory.h"
 #include "../../Application.h"

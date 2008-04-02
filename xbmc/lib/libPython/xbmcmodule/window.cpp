@@ -8,6 +8,7 @@
 #include "GUIButtonControl.h"
 #include "GUICheckMarkControl.h"
 #include "GUIRadioButtonControl.h"
+#include "../../../../guilib/GUIWindowManager.h"
 
 using namespace std;
 

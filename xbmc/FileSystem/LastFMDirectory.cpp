@@ -5,6 +5,7 @@
 #include "../Util.h"
 #include "../MusicInfoTag.h"
 #include "URL.h"
+#include "../../guilib/GUIWindowManager.h"
 
 using namespace MUSIC_INFO;
 using namespace DIRECTORY;

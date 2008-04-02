@@ -3,6 +3,7 @@
 #include "Util.h"
 #include "lib/libPython/XBPython.h"
 #include "GUIWindowScriptsInfo.h"
+#include "../guilib/GUIWindowManager.h"
 
 using namespace XFILE;
 

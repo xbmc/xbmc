@@ -18,6 +18,7 @@
 #include "../utils/HttpHeader.h"
 #include "GUISettings.h"
 #include "URL.h"
+#include "GUIWindowManager.h"
 
 using namespace AUTOPTR;
 

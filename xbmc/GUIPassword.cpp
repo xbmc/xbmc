@@ -30,6 +30,7 @@
 #include "Util.h"
 #include "URL.h"
 #include "Settings.h"
+#include "GUIWindowManager.h"
 
 CGUIPassword g_passwordManager;
 

@@ -27,6 +27,7 @@
 #include "GUIDialogFileBrowser.h"
 #include "FileSystem/PlaylistFileDirectory.h"
 #include "PlayListM3U.h"
+#include "GUIWindowManager.h"
 
 using namespace AUTOPTR;
 using namespace MEDIA_DETECT;

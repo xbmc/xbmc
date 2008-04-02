@@ -33,6 +33,7 @@
 #include "GUIWindowOSD.h"
 #include "GUIFontManager.h"
 #include "GUITextLayout.h"
+#include "../guilib/GUIWindowManager.h"
 
 #include <stdio.h>
 

@@ -30,6 +30,7 @@
 #include "AutoSwitch.h"
 #include "xbox/network.h"
 #include "GUIPassword.h"
+#include "GUIWindowManager.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

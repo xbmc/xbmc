@@ -24,6 +24,7 @@
 #include "guiImage.h"
 #include "utils/Weather.h"
 #include "GUISettings.h"
+#include "../../guilib/GUIWindowManager.h"
 
 #define CONTROL_BTNREFRESH  2
 #define CONTROL_SELECTLOCATION 3

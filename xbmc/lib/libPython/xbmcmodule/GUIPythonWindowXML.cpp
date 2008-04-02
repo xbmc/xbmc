@@ -7,6 +7,7 @@
 #include "control.h"
 #include "action.h"
 #include "../../../Util.h"
+#include "../../../../guilib/GUIWindowManager.h"
 
 using namespace std;
 

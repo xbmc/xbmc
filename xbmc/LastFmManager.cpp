@@ -34,6 +34,7 @@
 #include "MusicDatabase.h"
 #include "MusicInfoTag.h"
 #include "URL.h"
+#include "GUIWindowManager.h"
 
 #include <sstream>
 

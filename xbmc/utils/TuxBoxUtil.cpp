@@ -9,6 +9,7 @@
 #include "../Application.h"
 #include "GUIInfoManager.h"
 #include "VideoInfoTag.h"
+#include "GUIWindowManager.h"
 
 using namespace XFILE;
 

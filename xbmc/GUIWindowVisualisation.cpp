@@ -27,6 +27,7 @@
 #include "utils/GUIInfoManager.h"
 #include "ButtonTranslator.h"
 #include "GUIDialogVisualisationPresetList.h"
+#include "../guilib/GUIWindowManager.h"
 #include "Settings.h"
 #ifdef HAS_KARAOKE
 #include "CdgParser.h"

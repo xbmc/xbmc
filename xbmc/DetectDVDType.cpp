@@ -29,6 +29,7 @@
 #include "Application.h"
 #include "Util.h"
 #include "Picture.h"
+#include "GUIWindowManager.h"
 
 using namespace XFILE;
 using namespace MEDIA_DETECT;

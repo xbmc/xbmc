@@ -59,6 +59,7 @@
 #include "GUIControlGroupList.h"
 #include "XBTimeZone.h"
 #include "VideoDatabase.h"
+#include "GUIWindowManager.h"
 
 using namespace std;
 using namespace DIRECTORY;

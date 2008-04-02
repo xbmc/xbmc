@@ -10,6 +10,7 @@
 #include "../musicInfoTagLoaderFactory.h"
 #include "../utils/LabelFormatter.h"
 #include "../MusicInfoTag.h"
+#include "../../guilib/GUIWindowManager.h"
 
 using namespace std;
 using namespace XFILE;

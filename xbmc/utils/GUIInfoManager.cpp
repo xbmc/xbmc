@@ -33,6 +33,7 @@
 #include "../PictureInfoTag.h"
 #include "../MusicInfoTag.h"
 #include "../VideoDatabase.h"
+#include "GUIWindowManager.h"
 
 // stuff for current song
 #ifdef HAS_FILESYSTEM

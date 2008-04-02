@@ -31,6 +31,7 @@
 #include "GUIBaseContainer.h" // for VIEW_TYPE_*
 #include "ViewDatabase.h"
 #include "AutoSwitch.h"
+#include "GUIWindowManager.h"
 
 using namespace std;
 

@@ -30,6 +30,7 @@
 #include "utils/GUIInfoManager.h"
 #include "FileSystem/FactoryDirectory.h"
 #include "GUIDialogPictureInfo.h"
+#include "../guilib/GUIWindowManager.h"
 
 using namespace DIRECTORY;
 

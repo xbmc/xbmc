@@ -25,6 +25,7 @@
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogGamepad.h"
 #include "GUIDialogContextMenu.h"
+#include "GUIWindowManager.h"
 #include "Util.h"
 
 CGUIDialogLockSettings::CGUIDialogLockSettings(void)

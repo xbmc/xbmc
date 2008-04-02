@@ -27,6 +27,7 @@
 #include "CueDocument.h"
 #include "GUIPassword.h"
 #include "GUIDialogMusicScan.h"
+#include "GUIWindowManager.h"
 
 using namespace AUTOPTR;
 using namespace MEDIA_DETECT;

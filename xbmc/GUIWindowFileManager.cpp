@@ -37,6 +37,7 @@
 #include "GUIWindowSlideShow.h"
 #include "PlayListFactory.h"
 #include "xbox/network.h"
+#include "GUIWindowManager.h"
 
 using namespace std;
 using namespace XFILE;

@@ -26,7 +26,7 @@
 #include "stdafx.h"
 #include "KaiVector.h"
 #include "utils/HTTP.h"
-
+#include "tinyXML/tinyxml.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

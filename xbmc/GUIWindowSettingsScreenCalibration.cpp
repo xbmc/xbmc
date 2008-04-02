@@ -9,6 +9,7 @@
 #endif
 #include "Application.h"
 #include "Settings.h"
+#include "GUIWindowManager.h"
 
 using namespace std;
 

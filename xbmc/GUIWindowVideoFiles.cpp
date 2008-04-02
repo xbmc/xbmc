@@ -15,6 +15,7 @@
 #include "GUIDialogVideoScan.h"
 #include "FileSystem/MultiPathDirectory.h"
 #include "utils/RegExp.h"
+#include "GUIWindowManager.h"
 
 using namespace std;
 using namespace MEDIA_DETECT;

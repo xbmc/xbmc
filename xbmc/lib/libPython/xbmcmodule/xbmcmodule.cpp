@@ -9,6 +9,7 @@
 #include "infotagmusic.h"
 #include "../../libGoAhead/XBMChttp.h"
 #include "../../../utils/GUIInfoManager.h"
+#include "../../../../guilib/GUIWindowManager.h"
 #include "../../../../guilib/GUIAudioManager.h"
 #include "../../../Application.h"
 #include "../../../Crc32.h"

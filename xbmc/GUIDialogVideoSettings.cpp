@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "GUIDialogVideoSettings.h"
+#include "GUIWindowManager.h"
 #include "GUIPassword.h"
 #include "Util.h"
 #include "Application.h"

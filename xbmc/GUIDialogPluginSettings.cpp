@@ -32,6 +32,7 @@
 #include "FileSystem/HDDirectory.h"
 #include "VideoInfoScanner.h"
 #include "ScraperSettings.h"
+#include "GUIWindowManager.h"
 
 using namespace std;
 

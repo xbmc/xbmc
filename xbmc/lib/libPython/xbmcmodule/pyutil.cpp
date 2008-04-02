@@ -2,6 +2,7 @@
 #include "pyutil.h"
 #include <wchar.h>
 #include "SkinInfo.h"
+#include "tinyXML/tinyxml.h"
 
 using namespace std;
 

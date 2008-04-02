@@ -31,6 +31,7 @@
 #include "FileSystem/StackDirectory.h"
 #include "FileSystem/MultiPathDirectory.h"
 #include "VideoInfoScanner.h"
+#include "GUIWindowManager.h"
 
 using namespace std;
 using namespace dbiplus;

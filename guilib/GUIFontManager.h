@@ -13,6 +13,7 @@
 // Forward
 class CGUIFont;
 class CGUIFontTTF;
+class TiXmlDocument;
 
 /*!
  \ingroup textures

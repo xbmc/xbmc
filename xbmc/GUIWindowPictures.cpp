@@ -30,6 +30,7 @@
 #include "PlayListFactory.h"
 #include "FileSystem/MultiPathDirectory.h"
 #include "PictureInfoLoader.h"
+#include "../guilib/GUIWindowManager.h"
 
 #define CONTROL_BTNVIEWASICONS      2
 #define CONTROL_BTNSORTBY           3

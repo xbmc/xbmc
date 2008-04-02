@@ -8,6 +8,7 @@
 #include "../FileSystem/FileSmb.h"
 #include "../lib/libscrobbler/scrobbler.h"
 #include "Settings.h"
+#include "../../guilib/GUIWindowManager.h"
 
 // global network variable
 CNetwork g_network;

@@ -25,6 +25,7 @@
 #include "GUILabelControl.h"
 #include "GUIButtonControl.h"
 #include "GUIDialogNumeric.h"
+#include "GUIWindowManager.h"
 #include "utils/RegExp.h"
 #include "GUIPassword.h"
 #include "utils/md5.h"

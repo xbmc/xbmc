@@ -29,6 +29,7 @@
 #include "xbox/network.h"
 #include "utils/Weather.h"
 #include "GUIPassword.h"
+#include "GUIWindowManager.h"
 
 using namespace DIRECTORY;
 

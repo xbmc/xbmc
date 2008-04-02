@@ -24,6 +24,7 @@
 #include "GUIBaseContainer.h" // for VIEW_TYPE_*
 #include "Settings.h"
 #include "GUISettings.h"
+#include "GUIWindowManager.h"
 
 #define METHOD_BYFOLDERS  0
 #define METHOD_BYFILES   1

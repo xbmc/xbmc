@@ -31,6 +31,7 @@
 #include "utils/KaiClient.h"
 #include "ProgramDatabase.h"
 #include "utils/Trainer.h"
+#include "GUIWindowManager.h"
 
 using namespace std;
 using namespace XFILE;

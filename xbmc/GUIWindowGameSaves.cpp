@@ -31,6 +31,7 @@
 #include "MediaManager.h"
 #include "utils/LabelFormatter.h"
 #include "MusicInfoTag.h"// todo - program tags
+#include "../guilib/GUIWindowManager.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

@@ -28,6 +28,7 @@
 #include "Util.h"
 #include "xbox/xbeheader.h"
 #include "ProgramDatabase.h"
+#include "GUIWindowManager.h"
 
 using namespace AUTOPTR;
 using namespace MEDIA_DETECT;

@@ -3,6 +3,7 @@
 #include "pyutil.h"
 #include "../../../utils/GUIInfoManager.h"
 #include "../guilib/GuiControlFactory.h"
+#include "tinyXML/tinyxml.h"
 
 using namespace std;
 

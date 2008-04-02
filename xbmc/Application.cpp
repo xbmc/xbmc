@@ -109,6 +109,7 @@
 #endif
 
 // Windows includes
+#include "GUIWindowManager.h"
 #include "GUIWindowHome.h"
 #include "GUIStandardWindow.h"
 #include "GUIWindowSettings.h"

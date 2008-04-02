@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Fanart.h"
 #include "HTTP.h"
+#include "tinyXML/tinyxml.h"
 
 #ifdef _XBOX
 #include "../Picture.h"

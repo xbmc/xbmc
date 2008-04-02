@@ -5,6 +5,7 @@
 #include "../Settings.h"
 #include "../Util.h"
 #include "URL.h"
+#include "../../guilib/GUIWindowManager.h"
 
 using namespace std;
 using namespace DIRECTORY;

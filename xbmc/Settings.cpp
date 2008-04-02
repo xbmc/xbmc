@@ -41,6 +41,7 @@
 #include "MediaManager.h"
 #include "XBVideoConfig.h"
 #include "DNSNameCache.h"
+#include "GUIWindowManager.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "utils/MemoryUnitManager.h"
 #endif
