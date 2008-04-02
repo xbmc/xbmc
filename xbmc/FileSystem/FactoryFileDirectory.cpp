@@ -14,6 +14,7 @@
 #include "PlaylistFileDirectory.h"
 #include "../PlayListFactory.h"
 #include "../GUIViewState.h"
+#include "FileSystem/Directory.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

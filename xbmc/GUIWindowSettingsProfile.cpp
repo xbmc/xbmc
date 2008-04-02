@@ -30,6 +30,7 @@
 #include "utils/Weather.h"
 #include "GUIPassword.h"
 #include "GUIWindowManager.h"
+#include "FileSystem/Directory.h"
 
 using namespace DIRECTORY;
 

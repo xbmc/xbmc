@@ -12,6 +12,7 @@
 #include "GUIDialogProgress.h"
 #include "GUIDialogSelect.h"
 #include "DateTime.h"
+#include "FileSystem/Directory.h"
 
 using namespace std;
 using namespace DIRECTORY;

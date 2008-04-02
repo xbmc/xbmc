@@ -33,6 +33,7 @@
 #include "utils/Trainer.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogYesNo.h"
+#include "FileSystem/Directory.h"
 
 using namespace std;
 using namespace XFILE;

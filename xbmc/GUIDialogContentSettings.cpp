@@ -4,6 +4,7 @@
 #include "Util.h"
 #include "VideoDatabase.h"
 #include "VideoInfoScanner.h"
+#include "FileSystem/Directory.h"
 #include "FileSystem/MultiPathDirectory.h"
 #include "GUIWindowManager.h"
 

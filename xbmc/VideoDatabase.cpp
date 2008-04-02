@@ -32,6 +32,7 @@
 #include "FileSystem/MultiPathDirectory.h"
 #include "VideoInfoScanner.h"
 #include "GUIWindowManager.h"
+#include "FileSystem/Directory.h"
 
 using namespace std;
 using namespace dbiplus;

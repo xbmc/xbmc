@@ -11,6 +11,7 @@
 #include "HTMLUtil.h"
 #include "CharsetConverter.h"
 #include "ScraperSettings.h"
+#include "FileSystem/Directory.h"
 
 #include "Util.h"
 

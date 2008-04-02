@@ -5,6 +5,7 @@
 #include "../utils/SingleLock.h"
 #include "../../guilib/GUIWindowManager.h"
 #include "GUIDialogYesNo.h"
+#include "FileSystem/Directory.h"
 
 #include <set>
 

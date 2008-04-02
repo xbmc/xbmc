@@ -32,6 +32,7 @@
 #include "PictureInfoLoader.h"
 #include "../guilib/GUIWindowManager.h"
 #include "GUIDialogOK.h"
+#include "FileSystem/Directory.h"
 
 #define CONTROL_BTNVIEWASICONS      2
 #define CONTROL_BTNSORTBY           3

@@ -42,6 +42,7 @@
 #include "NptNetwork.h"
 #include "NptConsole.h"
 #include "MusicInfoTag.h"
+#include "FileSystem/Directory.h"
 
 using namespace std;
 using namespace MUSIC_INFO;

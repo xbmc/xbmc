@@ -5,6 +5,7 @@
 #include "../MusicDatabase.h"
 #include "../VideoDatabase.h"
 #include "Playlist.h"
+#include "FileSystem/Directory.h"
 
 using namespace PLAYLIST;
 

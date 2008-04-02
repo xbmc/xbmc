@@ -2,6 +2,8 @@
 
 class CURL;
 class TiXmlElement;
+class CFileItemList;
+
 #define TS_STREAM_PORT 31339
 
 struct STREAMINFO

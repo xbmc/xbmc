@@ -43,6 +43,7 @@
 #include "DNSNameCache.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogYesNo.h"
+#include "FileSystem/Directory.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "utils/MemoryUnitManager.h"
 #endif

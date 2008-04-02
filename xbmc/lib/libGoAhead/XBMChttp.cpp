@@ -38,6 +38,7 @@
 #include "../../xbox/XKHDD.h"
 #include "../../PictureInfoTag.h"
 #include "../../MusicInfoTag.h"
+#include "FileSystem/Directory.h"
 
 using namespace std;
 using namespace MUSIC_GRABBER;

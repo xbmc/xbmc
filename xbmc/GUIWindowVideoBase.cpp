@@ -50,6 +50,7 @@
 #include "GUIDialogOK.h"
 #include "GUIDialogSelect.h"
 #include "GUIDialogKeyboard.h"
+#include "FileSystem/Directory.h"
 
 #include "SkinInfo.h"
 

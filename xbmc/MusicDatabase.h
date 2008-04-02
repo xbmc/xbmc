@@ -50,6 +50,7 @@ typedef std::set<CStdString>::iterator ISETPATHES;
 typedef std::vector<long> VECLONGS;
 
 class CGUIDialogProgress;
+class CFileItemList;
 
 /*!
  \ingroup music

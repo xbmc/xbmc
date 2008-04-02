@@ -5,6 +5,7 @@
 #include "MediaSource.h"
 
 class CViewState; // forward
+class CFileItemList;
 
 class CGUIViewState
 {

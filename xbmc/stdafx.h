@@ -44,7 +44,6 @@
 #include "utils/CharsetConverter.h"
 #include "LangInfo.h"
 
-#include "FileSystem/Directory.h"
 #include "FileSystem/File.h"
 #include "SectionLoader.h"
 #include "ApplicationMessenger.h"

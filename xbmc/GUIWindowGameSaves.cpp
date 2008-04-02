@@ -34,6 +34,7 @@
 #include "../guilib/GUIWindowManager.h"
 #include "GUIDialogProgress.h"
 #include "GUIDialogYesNo.h"
+#include "FileSystem/Directory.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

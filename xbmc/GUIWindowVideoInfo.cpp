@@ -37,6 +37,7 @@
 #include "GUIDialogOK.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogSelect.h"
+#include "FileSystem/Directory.h"
 
 using namespace std;
 using namespace XFILE;

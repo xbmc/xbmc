@@ -4,6 +4,7 @@
 #include "../Util.h"
 #include "URL.h"
 #include "GUIDialogOK.h"
+#include "FileSystem/Directory.h"
 
 #include <process.h>
 
