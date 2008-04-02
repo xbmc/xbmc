@@ -1639,15 +1639,15 @@ void CUtil::GetHomePath(CStdString& strPath)
       // Convert to real path.
       char real_path[2*MAXPATHLEN];
       if (realpath(given_path, real_path) != NULL)
+      {
         strPath = real_path;
-      else
-        CLog::Log(LOGERROR, "ERROR obtaining real path for '%s'\n", given_path);
+	return;
+      }
     }
-#else
+#endif
     char *szFileName = strrchr(szXBEFileName, '/');
     *szFileName = 0;
     strPath = szXBEFileName;
-#endif
   }
 #endif
 }
@@ -5837,6 +5837,11 @@ CStdString CUtil::TranslatePath(const CStdString& path)
   if (path.length() > 0 && path[1] == ':')
   {
 #ifdef __APPLE__
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // TODO: remove this commented section if new mapping scheme works
+    // as expected. -d4rk (04/01/08)
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    /*
     CStdString lowerPath = path;
     lowerPath.ToLower();
     
@@ -5864,7 +5869,14 @@ CStdString CUtil::TranslatePath(const CStdString& path)
         return str;
       }
     }
+    */
 #elif defined(_WIN32PC)
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // FIXME: please make this a drive mapping specified in
+    // CApplication::InitDirectoriesWin32().  I didn't do it since I'm
+    // not able to test the Win32 build. See InitDirectoriesOSX() to
+    // see how it's done. -d4rk (04/01/08)
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     if (path[0] == 'Q' || path[0] == 'q')
     {
       if (path.Equals("q:\\system\\profiles.xml", false))

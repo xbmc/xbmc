@@ -52,6 +52,11 @@ int main(int argc, char* argv[])
         printf("Running in fullscreen mode...\n");
         g_advancedSettings.m_fullScreen = true;
       }
+      else if (strnicmp(argv[i], "-p", 2) == 0)
+      {
+        printf("Using platform specific directories...\n");
+        g_application.EnablePlatformDirectories();
+      }
       else if (argv[i][0] != '-')
       {
         CFileItem *pItem = new CFileItem(argv[i]);
