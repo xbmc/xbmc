@@ -264,7 +264,6 @@ void CGUIWrappingListContainer::ResetExtraItems()
       delete m_items[i];
     m_items.erase(m_items.begin() + m_items.size() - m_extraItems, m_items.end());
   }
-  unsigned int test = m_items.size();
   m_extraItems = 0;
 }
 

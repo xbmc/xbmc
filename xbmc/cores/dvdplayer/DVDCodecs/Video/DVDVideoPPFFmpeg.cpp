@@ -65,13 +65,13 @@ bool CDVDVideoPPFFmpeg::CheckInit(int iWidth, int iHeight)
     switch(m_eType)
     {
     case ED_DEINT_FFMPEG:
-      m_pMode = m_dll.pp_get_mode_by_name_and_quality("ffmpegdeint", PP_QUALITY_MAX);
+      m_pMode = m_dll.pp_get_mode_by_name_and_quality((char*)"ffmpegdeint", PP_QUALITY_MAX);
       break;
     case ED_DEINT_CUBICIPOL:
-      m_pMode = m_dll.pp_get_mode_by_name_and_quality("cubicipoldeint", PP_QUALITY_MAX);
+      m_pMode = m_dll.pp_get_mode_by_name_and_quality((char*)"cubicipoldeint", PP_QUALITY_MAX);
       break;
     case ED_DEINT_LINBLEND:
-      m_pMode = m_dll.pp_get_mode_by_name_and_quality("linblenddeint", PP_QUALITY_MAX);
+      m_pMode = m_dll.pp_get_mode_by_name_and_quality((char*)"linblenddeint", PP_QUALITY_MAX);
       break;
     default:
       Dispose();

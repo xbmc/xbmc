@@ -64,7 +64,7 @@ int CSimpleFileCache::Open() {
 	CStdString fileName = CUtil::GetNextFilename("Z:\\filecache%03d.cache", 999);
 	if(fileName.empty())
 	{
-		CLog::Log(LOGERROR, CStdString(__FUNCTION__) + " - Unable to generate a new filename");
+		CLog::Log(LOGERROR, "%s - Unable to generate a new filename", __FUNCTION__);
 		Close();
 		return CACHE_RC_ERROR;
 	}
@@ -78,7 +78,7 @@ int CSimpleFileCache::Open() {
 
 	if(m_hCacheFileWrite == INVALID_HANDLE_VALUE)
 	{
-		CLog::Log(LOGERROR, CStdString(__FUNCTION__)+" - failed to create file %s with error code %d", fileName.c_str(), GetLastError());
+		CLog::Log(LOGERROR, "%s - failed to create file %s with error code %d", __FUNCTION__, fileName.c_str(), GetLastError());
 		Close();
 		return CACHE_RC_ERROR;
 	}
@@ -92,7 +92,7 @@ int CSimpleFileCache::Open() {
 
 	if(m_hCacheFileRead == INVALID_HANDLE_VALUE)
 	{
-		CLog::Log(LOGERROR, CStdString(__FUNCTION__)+" - failed to open file %s with error code %d", fileName.c_str(), GetLastError());
+		CLog::Log(LOGERROR, "%s - failed to open file %s with error code %d", __FUNCTION__, fileName.c_str(), GetLastError());
 		Close();
 		return CACHE_RC_ERROR;
 	}

@@ -193,7 +193,7 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
 		strncpy(pCmd->ExtrPath, targetPath, sizeof(pCmd->Command) - 2);
 		pCmd->ExtrPath[sizeof(pCmd->Command) - 2] = '\0';
 		AddEndSlash(pCmd->ExtrPath);
-    pCmd->ParseArg("-va",NULL);
+    pCmd->ParseArg((char*)"-va",NULL);
 		if (fileToExtract)
 		{
       if (*fileToExtract)
@@ -322,7 +322,7 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword)
 		strcpy(pCmd->Command, "L");
 		pCmd->AddArcName(rarfile, NULL);
 		pCmd->FileArgs->AddString(MASKALL);
-    pCmd->ParseArg("-va",NULL);
+    pCmd->ParseArg((char*)"-va",NULL);
 
 		// Set password for encrypted archives
 		if (libpassword)

@@ -38,7 +38,7 @@ DWORD CGUIInfoColor::GetColor() const
     return 0;
 
   // We now have an expanded label that we can convert into a color
-  sscanf(infoLabel.c_str(), "%lx", &m_color);
+  sscanf(infoLabel.c_str(), "%x", &m_color);
   return m_color;
 }
 
@@ -53,3 +53,4 @@ void CGUIInfoColor::Parse(const CStdString &label)
   if (!m_info)
     m_color = g_colorManager.GetColor(label);
 }
+
