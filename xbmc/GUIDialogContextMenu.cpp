@@ -35,6 +35,7 @@
 #include "GUIDialogLockSettings.h"
 #include "MediaManager.h"
 #include "GUIWindowManager.h"
+#include "GUIDialogYesNo.h"
 
 using namespace std;
 using namespace MEDIA_DETECT;

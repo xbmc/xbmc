@@ -34,6 +34,7 @@
 #include "Autorun.h"
 #include "Profile.h"
 #include "../guilib/GUIWindowManager.h"
+#include "GUIDialogYesNo.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

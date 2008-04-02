@@ -4,6 +4,7 @@
 #include "../Util.h"
 #include "../utils/SingleLock.h"
 #include "../../guilib/GUIWindowManager.h"
+#include "GUIDialogYesNo.h"
 
 #include <set>
 

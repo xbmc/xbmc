@@ -32,6 +32,7 @@
 #include "Util.h"
 #include "GUIPassword.h"
 #include "Picture.h"
+#include "GUIDialogYesNo.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

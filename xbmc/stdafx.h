@@ -52,7 +52,6 @@
 #include "AutoPtrHandle.h"
 
 // Often used
-#include "GUIDialogYesNo.h"
 #include "GUIDialogSelect.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIUserMessages.h"

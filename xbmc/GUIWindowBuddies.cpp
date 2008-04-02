@@ -31,6 +31,7 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "GUIDialogProgress.h"
+#include "GUIDialogYesNo.h"
 
 using namespace AUTOPTR;
 using namespace MEDIA_DETECT;

@@ -17,6 +17,7 @@
 #include "utils/RegExp.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
+#include "GUIDialogYesNo.h"
 
 using namespace std;
 using namespace MEDIA_DETECT;

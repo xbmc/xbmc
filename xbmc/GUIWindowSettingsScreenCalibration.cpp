@@ -10,6 +10,7 @@
 #include "Application.h"
 #include "Settings.h"
 #include "GUIWindowManager.h"
+#include "GUIDialogYesNo.h"
 
 using namespace std;
 

@@ -93,6 +93,7 @@
 #include "MusicInfoTag.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
+#include "GUIDialogYesNo.h"
 
 using namespace std;
 namespace MathUtils {

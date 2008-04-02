@@ -8,6 +8,7 @@
 #include "../../../../guilib/GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "GUIDialogProgress.h"
+#include "GUIDialogYesNo.h"
 
 using namespace std;
 

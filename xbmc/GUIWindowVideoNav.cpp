@@ -38,6 +38,7 @@
 #include "PartyModeManager.h"
 #include "MusicDatabase.h"
 #include "GUIWindowManager.h"
+#include "GUIDialogYesNo.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

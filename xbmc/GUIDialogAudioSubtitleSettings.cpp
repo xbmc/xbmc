@@ -27,6 +27,7 @@
 #include "Application.h"
 #include "VideoDatabase.h"
 #include "XBAudioConfig.h"
+#include "GUIDialogYesNo.h"
 
 using namespace std;
 using namespace XFILE;

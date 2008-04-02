@@ -33,6 +33,7 @@
 #include "MusicInfoTag.h"// todo - program tags
 #include "../guilib/GUIWindowManager.h"
 #include "GUIDialogProgress.h"
+#include "GUIDialogYesNo.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

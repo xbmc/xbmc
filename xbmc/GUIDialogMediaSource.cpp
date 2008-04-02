@@ -29,6 +29,7 @@
 #include "VideoInfoScanner.h"
 #include "Util.h"
 #include "FileSystem/PluginDirectory.h"
+#include "GUIDialogYesNo.h"
 
 using namespace std;
 using namespace DIRECTORY;
