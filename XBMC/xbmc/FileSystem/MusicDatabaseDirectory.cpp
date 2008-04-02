@@ -182,7 +182,7 @@ bool CMusicDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
       strLabel = g_localizeStrings.Get(521);
       break;
     default:
-      CLog::Log(LOGWARNING, CStdString(__FUNCTION__) +" - Unknown nodetype requested %d", pNode->GetChildType());
+      CLog::Log(LOGWARNING, "%s - Unknown nodetype requested %d", __FUNCTION__, pNode->GetChildType());
       return false;
     }
   }

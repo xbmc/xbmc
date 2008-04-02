@@ -10,7 +10,11 @@
 
 namespace WEBS_SPYCE
 {
-	int spyceOpen()
+  static bool spyInitialized = false; 
+  static PyThreadState* spyThreadState = NULL; 
+  static PyObject* spyFunc;
+
+  int spyceOpen()
 	{
 		return 0;
 	}

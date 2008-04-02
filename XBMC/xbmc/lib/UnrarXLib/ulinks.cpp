@@ -8,7 +8,7 @@ int ExtractLink(ComprDataIO &DataIO,Archive &Arc,char *DestName,uint &LinkCRC,bo
   char FileName[NM];
   if (IsLink(Arc.NewLhd.FileAttr))
   {
-    int DataSize=Min(Arc.NewLhd.PackSize,sizeof(FileName)-1);
+    uint DataSize=Min(Arc.NewLhd.PackSize,sizeof(FileName)-1);
     DataIO.UnpRead((byte *)FileName,DataSize);
     FileName[DataSize]=0;
     if (Create)
