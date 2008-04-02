@@ -21,7 +21,7 @@ public:
                         CUSTOM_CHARSET_SMALLCHAR,
                         CUSTOM_CHARSET_MEDIUMCHAR,
                         CUSTOM_CHARSET_BIGCHAR,
-                        CUSTOM_CHARSET_MAX,
+                        CUSTOM_CHARSET_MAX
                 };
   virtual void Initialize();
   virtual void Stop() = 0;

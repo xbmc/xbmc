@@ -466,7 +466,7 @@ static int websHomePageHandler(webs_t wp, char_t *urlPrefix, char_t *webDir,
  */
 void defaultErrorHandler(int etype, char_t *msg)
 {
-	if (msg) CLog::Log(LOGERROR, msg);
+	if (msg) CLog::Log(LOGERROR, "%s", msg);
 }
 
 /*
@@ -474,7 +474,7 @@ void defaultErrorHandler(int etype, char_t *msg)
  */
 void defaultTraceHandler(int level, char_t *buf)
 {
-	if (buf) CLog::Log(LOGDEBUG, buf);
+	if (buf) CLog::Log(LOGDEBUG, "%s", buf);
 }
 
 /* Test Javascript binding for ASP. This will be invoked when "aspTest" is

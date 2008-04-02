@@ -109,21 +109,21 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
   {
     CLog::Log(LOGERROR, "Error on setting default menu language: %s\n", m_dll.dvdnav_err_to_string(m_dvdnav));
     CLog::Log(LOGERROR, "Defaulting to \"en\"");
-    m_dll.dvdnav_menu_language_select(m_dvdnav, "en");
+    m_dll.dvdnav_menu_language_select(m_dvdnav, (char*)"en");
   }
 
   if (m_dll.dvdnav_audio_language_select(m_dvdnav, (char*)language_audio) != DVDNAV_STATUS_OK)
   {
     CLog::Log(LOGERROR, "Error on setting default audio language: %s\n", m_dll.dvdnav_err_to_string(m_dvdnav));
     CLog::Log(LOGERROR, "Defaulting to \"en\"");
-    m_dll.dvdnav_audio_language_select(m_dvdnav, "en");
+    m_dll.dvdnav_audio_language_select(m_dvdnav, (char*)"en");
   }
   
   if (m_dll.dvdnav_spu_language_select(m_dvdnav, (char*)language_subtitle) != DVDNAV_STATUS_OK)
   {
     CLog::Log(LOGERROR, "Error on setting default subtitle language: %s\n", m_dll.dvdnav_err_to_string(m_dvdnav));
     CLog::Log(LOGERROR, "Defaulting to \"en\"");
-    m_dll.dvdnav_spu_language_select(m_dvdnav, "en");
+    m_dll.dvdnav_spu_language_select(m_dvdnav, (char*)"en");
   }
 
   // set read ahead cache usage
