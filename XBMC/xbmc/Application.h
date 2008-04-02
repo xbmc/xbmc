@@ -11,6 +11,7 @@
 #include "GUIDialogVolumeBar.h"
 #include "GUIDialogMuteBug.h"
 #include "GUIWindowPointer.h"   // Mouse pointer
+#include "Settings.h"
 
 #include "utils/Idle.h"
 #include "utils/DelayController.h"
@@ -206,6 +207,10 @@ public:
   int GlobalIdleTime();
   void NewFrame();
   void SetQuiet(bool bQuiet);
+  void EnablePlatformDirectories(bool enable=true) 
+  { 
+    m_bPlatformDirectories = enable; 
+  }
 
 protected:
   friend class CApplicationMessenger;
@@ -241,6 +246,7 @@ protected:
   bool m_bInitializing;
   bool m_playCountUpdated;
   bool m_bQuiet;
+  bool m_bPlatformDirectories;  
 
   int m_iPlaySpeed;
   int m_currentStackPosition;
@@ -275,6 +281,11 @@ protected:
   void CheckForTitleChange();
 
   void SaveCurrentFileSettings();
+
+  void InitDirectories();
+  CProfile* InitDirectoriesLinux();
+  CProfile* InitDirectoriesOSX();
+  CProfile* InitDirectoriesWin32();
 
   CApplicationMessenger m_applicationMessenger;
 #ifdef HAS_LINUX_NETWORK
