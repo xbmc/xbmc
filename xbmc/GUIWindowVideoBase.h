@@ -47,7 +47,6 @@ protected:
   void PlayItem(int iItem);
   virtual bool OnPlayMedia(int iItem);
   void LoadPlayList(const CStdString& strPlayList, int iPlayList = PLAYLIST_VIDEO);
-  void DisplayEmptyDatabaseMessage(bool bDisplay);
 
   void ShowIMDB(CFileItem *item, const SScraperInfo& info);
 
@@ -63,7 +62,6 @@ protected:
 
   CGUIDialogProgress* m_dlgProgress;
   CVideoDatabase m_database;
-  bool m_bDisplayEmptyDatabaseMessage;
 
   CVideoThumbLoader m_thumbLoader;
 };
