@@ -841,16 +841,12 @@ extern "C" void __stdcall init_emu_environ();
 //
 static void CopyUserDataIfNeeded(CStdString strPath, LPCTSTR file)
 {
-#ifdef _WIN32PC
-  strPath.append("\\");
-#else
-  strPath.append("/");
-#endif
+  strPath.append(PATH_SEPARATOR_STRING);
   strPath.append(file);
   //printf("Checking for existance of %s\n", strPath.c_str());
   if (access(strPath.c_str(), 0) == -1)
   {
-    CStdString srcFile = _P("q:\\UserData\\");
+    CStdString srcFile = _P("q:\\userdata\\");
     srcFile.append(file);
     //printf("Copying from %s to %s\n", srcFile.c_str(), strPath.c_str());
     CopyFile(srcFile.c_str(), strPath.c_str(), TRUE);
@@ -1136,7 +1132,7 @@ HRESULT CApplication::Create(HWND hWnd)
       CFile::Delete(g_settings.GetUserDataFolder()+"\\avpacksettings.xml");
       g_settings.m_vecProfiles.erase(g_settings.m_vecProfiles.begin()+1,g_settings.m_vecProfiles.end());
 
-      g_settings.SaveProfiles("q:\\system\\profiles.xml");
+      g_settings.SaveProfiles( PROFILES_FILE );
 
       char szXBEFileName[1024];
 
@@ -1478,23 +1474,59 @@ CProfile* CApplication::InitDirectoriesLinux()
   CIoSupport::RemapDriveLetter('Z',"/tmp/xbmc");
   CreateDirectory(_P("Z:\\"), NULL);
 
-  // Q: common for both
-  CIoSupport::RemapDriveLetter('Q', (char*) strExecutablePath.c_str());
-  setenv("XBMC_HOME", strExecutablePath.c_str(), 0);
-
-  g_settings.m_vecProfiles.clear();
-  g_settings.LoadProfiles(_P("q:\\system\\profiles.xml"));
+  CStdString userHome;
+  if (getenv("HOME"))
+  {
+    userHome = getenv("HOME");
+  }
+  else
+  {
+    userHome = "/root";
+  }
 
   if (m_bPlatformDirectories)
   {
-    // TODO: platform specific paths
+    // CStdString str = userHome;
+    // str.append("/.xbmc");
+    CStdString str = "/usr/share/xbmc";
+    CIoSupport::RemapDriveLetter('Q', (char*) str.c_str());
+  }
+  else
+  {
+    CIoSupport::RemapDriveLetter('Q', (char*) strExecutablePath.c_str());
+  }
+
+  g_settings.m_vecProfiles.clear();
+  g_settings.LoadProfiles(_P( PROFILES_FILE ));
+
+  if (m_bPlatformDirectories)
+  {
+    // make the $HOME/.xbmc directory
+    CStdString xbmcHome = userHome + "/.xbmc";
+    CreateDirectory(xbmcHome, NULL);
+    CIoSupport::RemapDriveLetter('T', xbmcHome.c_str());
+
+    // make the $HOME/.xbmc/userdata directory
+    CStdString xbmcUserdata = xbmcHome + "/userdata";
+    CreateDirectory(xbmcUserdata.c_str(), NULL);
+
+    // copy required files
+    CopyUserDataIfNeeded(_P("t:\\userdata"), "Keymap.xml");
+    CopyUserDataIfNeeded(_P("t:\\userdata"), "RssFeeds.xml");
+
+    // create new profile if we don't already have one
+    if (g_settings.m_vecProfiles.size()==0)
+    {
+      profile = new CProfile;
+      profile->setDirectory(xbmcUserdata.c_str());
+    }
   }
   else
   {
     if (g_settings.m_vecProfiles.size()==0)
     {
       profile = new CProfile;
-      profile->setDirectory("q:\\UserData");
+      profile->setDirectory("q:\\userdata");
     }
   }
   return profile;

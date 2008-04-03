@@ -61,6 +61,15 @@ class CProfile;
 #define DEFAULT_VIEW_BIG_ICONS (VIEW_TYPE_BIG_ICON << 16)
 #define DEFAULT_VIEW_MAX (((VIEW_TYPE_MAX - 1) << 16) | 60)
 
+#ifdef _XBOX
+#define PROFILES_FILE "q:\\system\\profiles.xml"
+#else
+/* FIXME: eventaully the profile should dictate where t:\ is but for now it 
+   makes sense to leave all the profile settings in a user writeable location 
+   like t:\ */
+#define PROFILES_FILE "t:\\profiles.xml"
+#endif
+
 class CViewState
 {
 public:
