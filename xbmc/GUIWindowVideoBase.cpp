@@ -75,7 +75,6 @@ using namespace VIDEO;
 CGUIWindowVideoBase::CGUIWindowVideoBase(DWORD dwID, const CStdString &xmlFile)
     : CGUIMediaWindow(dwID, xmlFile)
 {
-  m_bDisplayEmptyDatabaseMessage = false;
   m_thumbLoader.SetObserver(this);
 }
 
@@ -836,11 +835,6 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItem* pItem, CFileItemLis
     }
 
   }
-}
-
-void CGUIWindowVideoBase::DisplayEmptyDatabaseMessage(bool bDisplay)
-{
-  m_bDisplayEmptyDatabaseMessage = bDisplay;
 }
 
 int  CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item)
