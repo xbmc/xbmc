@@ -10,7 +10,6 @@ public:
   CGUIWindowVideoBase(DWORD dwID, const CStdString &xmlFile);
   virtual ~CGUIWindowVideoBase(void);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual void Render();
   virtual bool OnAction(const CAction &action);
 
   void PlayMovie(const CFileItem *item);
