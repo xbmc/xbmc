@@ -195,6 +195,18 @@
 				</control>
 			</control>
 		</control>
+		<control type="label" id="18">
+			<description>No Info Scanned Label</description>
+			<posx>190</posx>
+			<posy>200</posy>
+			<width>485</width>
+			<height>150</height>
+			<font>Special13</font>
+			<label>-</label>
+			<align>center</align>
+			<aligny>center</aligny>
+			<include>contentpanelslide</include>
+		</control>
 		<include>OldListViewCommons</include>
 		<include>ProgramsViewCommons</include>
 		<include>3D_Cover_View</include>
