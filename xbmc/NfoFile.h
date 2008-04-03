@@ -25,7 +25,7 @@ public:
   CStdString m_strImDbNr;
 private:
   HRESULT Load(const CStdString&);
-  HRESULT Scrape(const CStdString&);
+  HRESULT Scrape(const CStdString&, const CStdString& strURL="");
   void Close();
 private:
   char* m_doc;
