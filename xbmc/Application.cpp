@@ -1513,6 +1513,7 @@ CProfile* CApplication::InitDirectoriesLinux()
     // copy required files
     CopyUserDataIfNeeded(_P("t:\\userdata"), "Keymap.xml");
     CopyUserDataIfNeeded(_P("t:\\userdata"), "RssFeeds.xml");
+    CopyUserDataIfNeeded(_P("t:\\userdata"), "Lircmap.xml");
 
     // create new profile if we don't already have one
     if (g_settings.m_vecProfiles.size()==0)
