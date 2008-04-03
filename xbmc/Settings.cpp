@@ -1893,7 +1893,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
     SaveAvpackXML();
 
   // For mastercode
-  SaveProfiles("q:\\system\\profiles.xml");
+  SaveProfiles( PROFILES_FILE );
 
   // save the file
   return xmlDoc.SaveFile(strSettingsFile);
@@ -2046,7 +2046,8 @@ bool CSettings::DeleteProfile(int index)
       return false;
   }
 
-  SaveProfiles("q:\\system\\profiles.xml");
+  SaveProfiles( PROFILES_FILE );
+
   return true;
 }
 
