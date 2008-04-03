@@ -279,7 +279,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
 
     CStdString strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.ifo|.rar|.zip";
     if (g_application.GetCurrentPlayer() == EPC_DVDPLAYER)
-      strMask = ".srt|.rar|.zip|.ifo";
+      strMask = ".srt|.rar|.zip|.ifo|.smi|.sub";
     VECSHARES shares(g_settings.m_videoSources);
     if (g_stSettings.iAdditionalSubtitleDirectoryChecked != -1 && !g_guiSettings.GetString("subtitles.custompath").IsEmpty())
     {
