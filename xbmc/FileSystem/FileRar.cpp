@@ -168,12 +168,14 @@ bool CFileRar::Open(const CURL& url, bool bBinary)
     }
     else 
     {
+#ifdef HAS_XBOX_HARDWARE
       if (items[i]->m_dwSize > ((__int64)4)*1024*1024*1024) // 4 gig limit of fat-x
       {
         CGUIDialogOK::ShowAndGetInput(257,21395,-1,-1);
         CLog::Log(LOGERROR,"CFileRar::Open: Can't cache files bigger than 4GB due to fat-x limits.");
         return false;
       }
+#endif
       m_bUseFile = true;
       CStdString strPathInCache;
       
