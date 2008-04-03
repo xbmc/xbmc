@@ -1,3 +1,3 @@
 #!/bin/sh
 
-exec /usr/share/xbmc/xbmc.bin -p
+exec /usr/share/xbmc/xbmc.bin -p -q
