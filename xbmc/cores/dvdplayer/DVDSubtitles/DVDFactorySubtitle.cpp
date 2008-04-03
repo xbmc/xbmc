@@ -5,6 +5,7 @@
 //#include "DVDSubtitleParserSpu.h"
 #include "DVDSubtitleParserSubrip.h"
 #include "DVDSubtitleParserMicroDVD.h"
+#include "DVDSubtitleParserSami.h"
 #include "Util.h"
 
 using namespace std;
@@ -80,11 +81,10 @@ CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(string& strFile)
       //     return FORMAT_SUBVIEWER;
       //   }
 
-      //   if (strstr (line, "<SAMI>")) {
-      //     this->uses_time=1; 
-      //     xprintf (this->stream->xine, XINE_VERBOSITY_DEBUG, "sami subtitle format detected\n");
-      //     return FORMAT_SAMI;
-      //   }
+      else if (strstr (line, "<SAMI>")) 
+      {
+        pParser = new CDVDSubtitleParserSami(pStream, strFile.c_str());
+      }
       //   if (sscanf (line, "%d:%d:%d:",     &i, &i, &i )==3) {
       //     this->uses_time=1;
       //     xprintf (this->stream->xine, XINE_VERBOSITY_DEBUG, "vplayer subtitle format detected\n");
