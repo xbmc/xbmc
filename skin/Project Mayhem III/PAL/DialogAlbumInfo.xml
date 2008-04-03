@@ -86,7 +86,7 @@
 			<label>176</label>
 			<font>font11</font>
 		</control>
-		<control type="label" id="21">
+		<control type="fadelabel" id="21">
 			<description>Artist value</description>
 			<width>375</width>
 			<posx>310</posx>
@@ -145,7 +145,7 @@
 			<posx>55</posx>
 			<posy>95</posy>
 			<width>145</width>
-			<height>145</height>
+			<height>180</height>
 			<aspectratio align="left">keep</aspectratio>
 			<texture>-</texture>
 		</control>
@@ -252,7 +252,7 @@
 			<ondown>5</ondown>
 		</control>
 		</control>
-                        <control type="list" id="50">
+			<control type="list" id="50">
 				<description>Track List Container + Scrollbar Area</description>
 				<posx>200</posx>
 				<posy>350</posy>
