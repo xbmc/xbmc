@@ -27,6 +27,7 @@
 #include "FileSystem/MusicDatabaseDirectory/QueryParams.h"
 #include "GUIDialogMusicScan.h"
 #include "DetectDVDType.h"
+#include "utils/GUIInfoManager.h"
 
 using namespace std;
 using namespace AUTOPTR;
@@ -3563,4 +3564,14 @@ long CMusicDatabase::GetSongIDFromPath(const CStdString &filePath)
     CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, filePath.c_str());
   }
   return -1;
+}
+
+bool CMusicDatabase::CommitTransaction()
+{
+  if (CDatabase::CommitTransaction())
+  { // number of items in the db has likely changed, so reset the infomanager cache
+    g_infoManager.ResetPersistentCache();
+    return true;
+  }
+  return false;
 }
