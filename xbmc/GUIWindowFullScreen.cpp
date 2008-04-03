@@ -715,12 +715,16 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
       subtitleText.Replace("\r", "");
       subtitleText.Replace("\\n", "[CR]");
       subtitleText.Replace("\n", "[CR]");
+      subtitleText.Replace("<br>", "[CR]");
       subtitleText.Replace("\\N", "[CR]");
       subtitleText.Replace("<i>", "[I]");
       subtitleText.Replace("</i>", "[/I]");
       subtitleText.Replace("<b>", "[B]");
       subtitleText.Replace("</b>", "[/B]");
       subtitleText.Replace("<u>", "");
+      subtitleText.Replace("<p>", "");
+      subtitleText.Replace("<P>", "");
+      subtitleText.Replace("&nbsp;", "");
       subtitleText.Replace("</u>", "");
       subtitleText.Replace("</i", "[/I]"); // handle tags which aren't closed properly (happens).
       subtitleText.Replace("</b", "[/B]");
