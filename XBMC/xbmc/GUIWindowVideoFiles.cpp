@@ -337,7 +337,7 @@ void CGUIWindowVideoFiles::OnInfo(CFileItem* pItem, const SScraperInfo& info)
       CFileItem *item = vecitems[i];
       if (!item->m_bIsFolder)
       {
-        if (item->IsVideo() && !item->IsNFO() && !item->IsPlayList() )
+        if (item->IsVideo() && !item->IsNFO() && !item->IsPlayList() && item->m_strPath.Find("-trailer.") == -1 )
         {
           bFoundFile = true;
           strFile = item->m_strPath;
