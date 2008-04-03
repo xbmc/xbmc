@@ -66,7 +66,6 @@ using namespace VIDEO;
 #define CONTROL_THUMBS            51
 #define CONTROL_BIGLIST           52
 #define CONTROL_LABELFILES        12
-#define CONTROL_LABELEMPTY        13
 
 #define CONTROL_PLAY_DVD          6
 #define CONTROL_STACK             7
@@ -669,20 +668,6 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
   // 6. Check for a refresh
   } while (needsRefresh);
   m_database.Close();
-}
-
-void CGUIWindowVideoBase::Render()
-{
-  if (m_bDisplayEmptyDatabaseMessage)
-  {
-    SET_CONTROL_LABEL(CONTROL_LABELEMPTY,g_localizeStrings.Get(745)+'\n'+g_localizeStrings.Get(746))
-  }
-  else
-  {
-    SET_CONTROL_LABEL(CONTROL_LABELEMPTY,"")
-  }
-
-  CGUIMediaWindow::Render();
 }
 
 void CGUIWindowVideoBase::OnManualIMDB()
