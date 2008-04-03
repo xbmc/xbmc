@@ -1841,8 +1841,8 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
           if (window)
             control = window->GetControl(window->GetViewContainerID());
         }
-        if (control && control->IsContainer())
-          bReturn = ((CGUIBaseContainer *)control)->GetCondition(info.m_info, info.m_data2);
+        if (control)
+          bReturn = control->GetCondition(info.m_info, info.m_data2);
       }
       break;
     case CONTAINER_HAS_FOCUS:

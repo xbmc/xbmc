@@ -24,6 +24,7 @@ public:
   virtual void AddControl(CGUIControl *control);
   virtual void ClearAll();
 
+  virtual bool GetCondition(int condition, int data) const;
 protected:
   void ValidateOffset();
   inline float Size(const CGUIControl *control) const;
