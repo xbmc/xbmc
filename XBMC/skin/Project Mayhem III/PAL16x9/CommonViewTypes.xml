@@ -64,7 +64,7 @@
 					<width>105</width>
 					<posx>395</posx>
 					<posy>4</posy>
-					<info>listitem.rating</info>
+					<info>ListItem.StarRating</info>
 					<aspectratio>stretch</aspectratio>
 					<texture flipx="true" /> 
 					<visible>Container.Sort(SongRating)</visible>
@@ -130,7 +130,7 @@
 					<posx>395</posx>
 					<posy>4</posy>
 					<aspectratio>stretch</aspectratio>
-					<info>listitem.rating</info>
+					<info>ListItem.StarRating</info>
 					<texture flipx="true" /> 
 					<visible>Container.Sort(SongRating)</visible>
 				</control>
@@ -347,7 +347,7 @@
 					<width>105</width>
 					<posx>390</posx>
 					<posy>110</posy>
-					<info>listitem.rating</info>
+					<info>ListItem.StarRating</info>
 					<aspectratio>stretch</aspectratio>
 					<texture flipx="true" /> 
 					<visible>Container.Sort(SongRating)</visible>
@@ -435,7 +435,7 @@
 					<width>105</width>
 					<posx>390</posx>
 					<posy>110</posy>
-					<info>listitem.rating</info>
+					<info>ListItem.StarRating</info>
 					<aspectratio>stretch</aspectratio>
 					<texture flipx="true" /> 
 					<visible>Container.Sort(SongRating)</visible>
@@ -632,7 +632,7 @@
 					<posx>395</posx>
 					<posy>4</posy>
 					<aspectratio>stretch</aspectratio>
-					<info>listitem.rating</info>
+					<info>ListItem.StarRating</info>
 					<texture flipx="true" /> 
 					<visible>Container.Sort(SongRating)</visible>
 				</control>
@@ -697,7 +697,7 @@
 					<width>105</width>
 					<posx>395</posx>
 					<posy>52</posy>
-					<info>listitem.rating</info>
+					<info>ListItem.StarRating</info>
 					<aspectratio>stretch</aspectratio>
 					<texture flipx="true" /> 
 					<visible>Container.Sort(SongRating)</visible>
@@ -1419,7 +1419,7 @@
 			<width>105</width>
 			<posx>240</posx>
 			<posy>495</posy>
-			<info>listitem.rating</info>
+			<info>ListItem.StarRating</info>
 			<visible>Container.Sort(SongRating) + Control.IsVisible(56)</visible>
 			<include>contentpanelslide</include>
 		</control>
