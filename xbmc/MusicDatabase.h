@@ -90,6 +90,8 @@ class CAlbumCache : public CAlbum
 public:
   CMusicDatabase(void);
   virtual ~CMusicDatabase(void);
+
+  virtual bool CommitTransaction();
   void EmptyCache();
   void Clean();
   int  Cleanup(CGUIDialogProgress *pDlgProgress);
