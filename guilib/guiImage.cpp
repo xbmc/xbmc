@@ -257,9 +257,6 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
   LPDIRECT3DDEVICE8 p3DDevice = g_graphicsContext.Get3DDevice();
 
   CRect diffuse(u1, v1, u2, v2);
-  diffuse.x1 *= m_diffuseScaleU; diffuse.x2 *= m_diffuseScaleU;
-  diffuse.y1 *= m_diffuseScaleV; diffuse.y2 *= m_diffuseScaleV;
-  diffuse += m_diffuseOffset;
 
   // flip the texture as necessary.  Diffuse just gets flipped according to m_image.orientation.
   // Main texture gets flipped according to GetOrientation().
@@ -267,6 +264,10 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
   CRect texture(u1, v1, u2, v2);
   int textureOrientation = GetOrientation();
   OrientateTexture(texture, textureOrientation);
+
+  diffuse.x1 *= m_diffuseScaleU; diffuse.x2 *= m_diffuseScaleU;
+  diffuse.y1 *= m_diffuseScaleV; diffuse.y2 *= m_diffuseScaleV;
+  diffuse += m_diffuseOffset;
 
   CRect vertex(left, top, right, bottom);
   g_graphicsContext.ClipRect(vertex, texture, m_diffuseTexture ? &diffuse : NULL);
