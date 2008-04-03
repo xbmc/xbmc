@@ -590,6 +590,9 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
 
         if (item->m_bIsFolder)
         {
+          if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
+            if (!item->IsPlayList())
+              buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
           if (iFound==0)
           { // scraper not set - allow movie information or set content
             CStdString strPath(item->m_strPath);
@@ -597,10 +600,6 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
             if ((info.strContent.Equals("movies") && m_database.HasMovieInfo(strPath)) ||
                 (info.strContent.Equals("tvshows") && m_database.HasTvShowInfo(strPath)))
               buttons.Add(CONTEXT_BUTTON_INFO, infoString);
-
-            if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
-              if (!item->IsPlayList())
-                buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
           }
           else
           { // scraper found - allow to add to library, scan for new content, or set different type of content

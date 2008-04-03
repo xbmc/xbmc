@@ -324,7 +324,7 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const SScraperInfo& info)
 //     and show the information.
 // 6.  Check for a refresh, and if so, go to 3.
 
-void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
+void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
 {
   /*
   CLog::Log(LOGDEBUG,"CGUIWindowVideoBase::ShowIMDB");
@@ -339,8 +339,8 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
   CGUIWindowVideoInfo* pDlgInfo = (CGUIWindowVideoInfo*)m_gWindowManager.GetWindow(WINDOW_VIDEO_INFO);
 
   CIMDB IMDB;
-  IMDB.SetScraperInfo(info);
-
+  IMDB.SetScraperInfo(info2);
+  SScraperInfo info(info2); // use this as nfo might change it..
 
   if (!pDlgProgress) return ;
   if (!pDlgSelect) return ;
@@ -440,9 +440,16 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
   m_database.Open();
   // 2. Look for a nfo File to get the search URL
   SScanSettings settings;
-  SScraperInfo info2;
-  m_database.GetScraperForPath(item->m_strPath,info2,settings);
-  CStdString nfoFile = CVideoInfoScanner::GetnfoFile(item,settings.parent_name_root);
+  m_database.GetScraperForPath(item->m_strPath,info,settings);
+  CStdString nfoFile;
+  if (info.strContent.Equals("tvshows") && item->m_bIsFolder)
+  {
+    CUtil::AddFileToFolder(item->m_strPath,"tvshow.nfo",nfoFile);
+    if (!CFile::Exists(nfoFile))
+      nfoFile.Empty();
+  }
+  else
+    nfoFile = CVideoInfoScanner::GetnfoFile(item,settings.parent_name_root);
   if ( !nfoFile.IsEmpty() )
   {
     CLog::Log(LOGDEBUG,"Found matching nfo file: %s", nfoFile.c_str());
@@ -453,15 +460,19 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
       {
         CLog::Log(LOGDEBUG, "%s Got details from nfo", __FUNCTION__);
 //        nfoReader.GetDetails(movieDetails); // will be loaded later
+        if (info.strContent.Equals("tvshows"))
+        {
+          info.strPath = nfoReader.m_strImDbNr;
+          IMDB.SetScraperInfo(info);
+        }
         hasDetails = true;
       }
       else
       {
         scrUrl.ParseString(nfoReader.m_strImDbUrl);
         scrUrl.strId = nfoReader.m_strImDbNr;
-        SScraperInfo info2(info);
-        info2.strPath = nfoReader.m_strScraper;
-        IMDB.SetScraperInfo(info2);
+        info.strPath = nfoReader.m_strScraper;
+        IMDB.SetScraperInfo(info);
         CLog::Log(LOGDEBUG,"-- nfo scraper: %s", nfoReader.m_strScraper.c_str());
         CLog::Log(LOGDEBUG,"-- nfo url: %s", scrUrl.GetFirstThumb().m_url.c_str());
       }
@@ -488,11 +499,10 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
       // 4a. show dialog that we're busy querying www.imdb.com
       CStdString strHeading;
       CScraperParser parser;
-      SScraperInfo info2(info);
       parser.Load("Q:\\system\\scrapers\\video\\"+info.strPath);
-      info2.strTitle = parser.GetName();
-      IMDB.SetScraperInfo(info2);
-      strHeading.Format(g_localizeStrings.Get(197),info2.strTitle.c_str());
+      info.strTitle = parser.GetName();
+      IMDB.SetScraperInfo(info);
+      strHeading.Format(g_localizeStrings.Get(197),info.strTitle.c_str());
       pDlgProgress->SetHeading(strHeading);
       pDlgProgress->SetLine(0, movieName);
       pDlgProgress->SetLine(1, "");
@@ -1730,5 +1740,6 @@ void CGUIWindowVideoBase::OnScan(const CStdString& strPath, const SScraperInfo& 
   if (pDialog)
     pDialog->StartScanning(strPath,info,settings,false);
 }
+
 
 
