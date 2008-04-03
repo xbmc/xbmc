@@ -471,6 +471,12 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
   }
 
   CStdString movieName = item->GetLabel();
+  if (item->m_bIsFolder) // always search on tvshow folder name on refresh
+  {
+    movieName = item->m_strPath;
+    CUtil::RemoveSlashAtEnd(movieName);
+    movieName = CUtil::GetFileName(movieName);
+  }
   // 3. Run a loop so that if we Refresh we re-run this block
   bool needsRefresh(false);
   do
