@@ -80,4 +80,16 @@ XboxMediaCenter: $(wildcard xbmc/*.o xbmc/settings/*.o guilib/*.o guilib/tinyXML
 xbmc-xrandr: xbmc-xrandr.c
 	gcc -g -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lXrender -lX11 
 
+install:
+	@echo "Creating target directories in /usr/share/xbmc"
+	@find language media plugins screensavers scripts skin sounds userdata visualisations -type d -not -iregex ".*svn.*" -exec mkdir -p /usr/share/xbmc/"{}" \;
+	@echo "Copying system files to /usr/share/xbmc"
+	@find language media plugins screensavers scripts skin sounds userdata visualisations -type f -not -iregex ".*svn.*" -exec cp "{}" /usr/share/xbmc/"{}" \;
+	@echo "Copying XBMC binary to /usr/share/xbmc/xbmc.bin"
+	@cp XboxMediaCenter /usr/share/xbmc/xbmc.bin
+	@cp tools/Linux/xbmc.sh /usr/bin/xbmc
+	@chmod 755 /usr/bin/xbmc
+	@echo "Done!"
+	@echo "You can run XBMC with the command 'xbmc'"
+
 include Makefile.include
