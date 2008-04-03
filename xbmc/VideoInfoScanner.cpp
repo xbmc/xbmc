@@ -30,7 +30,7 @@
 #include "FileSystem/StackDirectory.h"
 #include "xbox/XKGeneral.h"
 
-#define REGEXSAMPLEFILE "[-\\._ ]sample[-\\._ ]"
+#define REGEXSAMPLEFILE "[-\\._ ](sample|trailer)[-\\._ ]"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -1064,7 +1064,32 @@ namespace VIDEO
     IMDB.SetScraperInfo(info);
 
     if ( IMDB.GetDetails(url, movieDetails, pDialog) )
+    {
+      if (info.strContent.Equals("movies"))
+      {
+        CStdString strFile = pItem->m_strPath;
+        if (pItem->IsStack())
+        {
+          CStdString strPath;
+          CUtil::GetParentPath(pItem->m_strPath,strPath);
+          CStackDirectory dir;
+          CStdString strPath2;
+          strPath2 = dir.GetStackedTitlePath(strFile);
+          CUtil::AddFileToFolder(strPath,CUtil::GetFileName(strPath2),strFile);
+        }
+        if (CUtil::IsInRAR(strFile) || CUtil::IsInZIP(strFile))
+        {
+          CStdString strPath, strParent;
+          CUtil::GetDirectory(strFile,strPath);
+          CUtil::GetParentPath(strPath,strParent);
+          CUtil::AddFileToFolder(strParent,CUtil::GetFileName(pItem->m_strPath),strFile);
+        }
+        strFile.Insert(strFile.rfind("."),"-trailer");
+        if (CFile::Exists(strFile))
+          movieDetails.m_strTrailer = strFile;
+      }
       return AddMovieAndGetThumb(pItem, info.strContent, movieDetails, -1, bUseDirNames);
+    }
     return -1;
   }
 
