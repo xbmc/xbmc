@@ -451,11 +451,6 @@ merge() {
 
 fix() {
   echo " Fixing some case-sensitivity issues."
-  if [[ -e "$BUILDDIR/userdata" ]]
-  then
-    echo "  Renaming userdata to UserData."
-    mv "${BUILDDIR}/userdata" "${BUILDDIR}/UserData"
-  fi
 
   echo "  Renaming arial.ttf to Arial.ttf."
   mv  "${BUILDDIR}/media/Fonts/arial.ttf" "${BUILDDIR}/media/Fonts/Arial.ttf"
