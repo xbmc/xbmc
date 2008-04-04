@@ -485,7 +485,6 @@ public:
   void ResetCurrentSlide();
   void SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag &tag) 
   {
-    CLog::Log(LOGDEBUG, "Asked to SetCurrentTag");
     *m_currentFile.GetMusicInfoTag() = tag; 
     m_currentFile.m_lStartOffset = 0;
   };
