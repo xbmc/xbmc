@@ -27,19 +27,6 @@ CNfoFile::~CNfoFile()
   Close();
 }
 
-bool CNfoFile::GetDetails(CVideoInfoTag &details, const char* document)
-{
-  TiXmlDocument doc;
-  if (document)
-    doc.Parse(document);
-  else
-    doc.Parse(m_doc);
-  if (details.Load(doc.RootElement()))
-    return true;
-  CLog::Log(LOGDEBUG, "Not a proper xml nfo file (%s, col %i, row %i)", doc.ErrorDesc(), doc.ErrorCol(), doc.ErrorRow());
-  return false;
-}
-
 HRESULT CNfoFile::Create(const CStdString& strPath)
 {
   if (FAILED(Load(strPath)))

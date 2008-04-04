@@ -311,7 +311,7 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath,
     strPath1 = "";
   }
   // Is the Library enabled?  If not, go to Files view.
-  if (iWindowID == WINDOW_MUSIC_NAV && !g_guiSettings.GetBool("mymusic.enablelibrary"))
+  if (iWindowID == WINDOW_MUSIC_NAV && !g_guiSettings.GetBool("musiclibrary.enabled"))
   {
     iWindowID = WINDOW_MUSIC_FILES;
     // clear destination path

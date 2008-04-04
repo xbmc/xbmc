@@ -2039,7 +2039,10 @@ int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
   CStdString albums="", album, artist="", tmp;
   double relevance;
   bool rel = false;
-  CMusicInfoScraper scraper;
+  SScraperInfo info;
+  info.strContent = "albums";
+  info.strPath = g_stSettings.m_defaultMusicScraper;
+  CMusicInfoScraper scraper(info); 
 
   if (numParas<1)
     return SetResponse(openTag+"Error:Missing album name");
@@ -2047,20 +2050,20 @@ int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
   {
     try
     {
-	  int cnt=0;
-	  album=paras[0];
-	  if (numParas>1)
-	  {
-	    artist = paras[1];
+      int cnt=0;
+      album=paras[0];
+      if (numParas>1)
+      {
+        artist = paras[1];
         scraper.FindAlbuminfo(album, artist);
-		if (numParas>2)
-		  rel = (paras[2]=="1");
-	  }
-	  else
+        if (numParas>2)
+          rel = (paras[2]=="1");
+      }
+      else
         scraper.FindAlbuminfo(album);
-	  //wait a max of 20s
+      //wait a max of 20s
       while (!scraper.Completed() && cnt++<200)
-	    Sleep(100);
+        Sleep(100);
       if (scraper.Successfull())
       {
         // did we find at least 1 album?
@@ -2070,13 +2073,13 @@ int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
           for (int i=0; i < iAlbumCount; ++i)
           {
             CMusicAlbumInfo& info = scraper.GetAlbum(i);
-            albums += closeTag+openTag + info.GetTitle2() + "<@@>" + info.GetAlbumURL();
-			if (rel)
-			{
-			  relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, album, info.GetAlbum().strArtist, artist);
+            albums += closeTag+openTag + info.GetTitle2() + "<@@>" + info.GetAlbumURL().m_url[0].m_url;
+            if (rel)
+            {
+              relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, album, info.GetAlbum().strArtist, artist);
               tmp.Format("%f",relevance);
-			  albums += "<@@@>"+tmp;
-			}
+              albums += "<@@@>"+tmp;
+            }
           }
           return SetResponse(albums) ;
         }
@@ -2102,11 +2105,14 @@ int CXbmcHttp::xbmcChooseAlbum(int numParas, CStdString paras[])
   else
     try
     {
-      CMusicAlbumInfo musicInfo("", paras[0]) ;
+      CMusicAlbumInfo musicInfo;//("", "") ;
       CHTTP http;
-      if (musicInfo.Load(http))
+      SScraperInfo info; // TODO - WTF is this code supposed to do?
+      if (musicInfo.Load(http,info))
       {
-        output=openTag+"image:" + musicInfo.GetAlbum().strImage;
+        if (musicInfo.GetAlbum().thumbURL.m_url.size() > 0)
+         output=openTag+"image:" + musicInfo.GetAlbum().thumbURL.m_url[0].m_url;
+
         output+=closeTag+openTag+"review:" + musicInfo.GetAlbum().strReview;
         return SetResponse(output) ;
       }

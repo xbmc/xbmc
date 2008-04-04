@@ -1432,9 +1432,15 @@ HRESULT CApplication::Initialize()
     SScraperInfo info;
     VIDEO::SScanSettings settings;
     if (scanner && !scanner->IsScanning())
-    {
       scanner->StartScanning("",info,settings,false);
-    }
+  }
+
+  if (g_guiSettings.GetBool("musiclibrary.updateonstartup"))
+  {
+    CLog::Log(LOGNOTICE, "Updating music library on startup");
+    CGUIDialogMusicScan *scanner = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+    if (scanner && !scanner->IsScanning())
+      scanner->StartScanning("");
   }
 
   m_slowTimer.StartZero();
