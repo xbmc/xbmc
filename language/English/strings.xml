@@ -107,10 +107,10 @@
   <string id="169">Resolution</string>
   <string id="170">Album:</string>
   <string id="171">Artist:</string>
-  <string id="172">Date of Release:</string>
+  <string id="172">Release Date:</string>
   <string id="173">Rating:</string>
   <string id="174">Genre:</string>
-  <string id="175">Tones:</string>
+  <string id="175">Moods:</string>
   <string id="176">Styles:</string>
   <string id="177">Review:</string>
   <string id="178">Tracks:</string>
@@ -1563,6 +1563,14 @@
   <string id="20189">Enable Auto Scrolling for Plot &amp; Review</string>
   <string id="20190">Custom</string>
   <string id="20191">Enable debug logging</string>
+  <string id="20192">Fetch Album Information On Scan</string>
+  <string id="20193">Fetch Artist Information On Scan</string>
+  <string id="20194">Default Scraper</string>
+  <string id="20195">Change Scraper</string>
+  <string id="20196">Export Music Library</string>
+  <string id="20197">Import Music Library</string>
+  <string id="20198">No Artist found!</string>
+  <string id="20199">Downloading artist info failed</string>
 
   <!-- string id's 20200 thru 20211 are reserved for speedstrings (LocalizeStrings.cpp)-->
   
@@ -1689,7 +1697,6 @@
   <string id="20407">Scraper Settings</string>
   <string id="20408">Downloading Music Video information</string>
   <string id="20409">Downloading TV Show information</string>
-  <string id="20410">Trailer</string>
   <string id="20411">Flatten</string>
   <string id="20412">Flatten TV Show if only a single season</string>
   <string id="20413">Get FanArt</string>
@@ -1844,6 +1851,23 @@
   <string id="21881">Enable UPnP Renderer</string>
   <string id="21882">Attempt to skip introduction before DVD Menu</string>
   <string id="21883">Ripped Audio CDs</string>
+  <string id="21884">Query Info For All Artists</string>
+  <string id="21885">Downloading Album Information</string>
+  <string id="21886">Downloading Artist Information</string>
+  <string id="21887">Biography</string>
+  <string id="21888">Discography</string>
+  <string id="21889">Searching Artist</string>
+  <string id="21890">Select Artist</string>
+  <string id="21891">Artist Information</string>
+  <string id="21892">Instruments:</string>
+  <string id="21893">Born:</string>
+  <string id="21894">Formed:</string>
+  <string id="21895">Themes:</string>
+  <string id="21896">Disbanded:</string>
+  <string id="21897">Died:</string>
+  <string id="21898">Years Active:</string>
+  <string id="21899">Label:</string>
+  <string id="21900">Born/Formed:</string>
  
   <!-- strings 21900 thru 21999 reserved for slideshow info -->
 

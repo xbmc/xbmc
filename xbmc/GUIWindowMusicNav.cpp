@@ -32,6 +32,7 @@
 #include "GUIFontManager.h"
 #endif
 #include "GUIDialogFileBrowser.h"
+#include "GUIDialogContentSettings.h"
 #include "Picture.h"
 #include "FileSystem/MusicDatabaseDirectory.h"
 #include "FileSystem/VideoDatabaseDirectory.h"
@@ -455,6 +456,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
 {
   CGUIWindowMusicBase::GetContextButtons(itemNumber, buttons);
 
+  CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
   CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems.Size()) ? m_vecItems[itemNumber] : NULL;
   if (item && (item->GetExtraInfo().Find("lastfm") < 0))
   {
@@ -462,6 +464,8 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     bool inPlaylists = m_vecItems.m_strPath.Equals(CUtil::MusicPlaylistsLocation()) || m_vecItems.m_strPath.Equals("special://musicplaylists/");
 
     CMusicDatabaseDirectory dir;
+    SScraperInfo info;
+    m_musicdatabase.GetScraperForPath(item->m_strPath,info);
     // enable music info button on an album or on a song.
     if (item->IsAudio() && !item->IsPlayList() && !item->IsSmartPlayList() && !item->IsLastFM() && !item->IsShoutCast())
       buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658);
@@ -497,8 +501,11 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
       buttons.Add(CONTEXT_BUTTON_INFO_ALL, 20059);
     }
 
-    // turn off set artist image if not at artist listing.
-    // (uses file browser to pick an image)
+    // enable query all artist button only in album view
+    if (dir.IsArtistDir(item->m_strPath) && !dir.IsAllItem(item->m_strPath) && item->m_bIsFolder && !item->IsVideoDb() && !info.strContent.IsEmpty())
+      buttons.Add(CONTEXT_BUTTON_INFO_ALL, 21884);
+
+	// turn off set artist image if not at artist listing.
     if (dir.IsArtistDir(item->m_strPath) && !dir.IsAllItem(item->m_strPath) || (item->m_strPath.Left(14).Equals("videodb://3/4/") && item->m_strPath.size() > 14 && item->m_bIsFolder))
       buttons.Add(CONTEXT_BUTTON_SET_ARTIST_THUMB, 13359);
 
@@ -515,7 +522,16 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
       if (strcmp(g_settings.m_defaultMusicLibSource, ""))
         buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // clear default
     }
-
+    NODE_TYPE childtype = dir.GetDirectoryChildType(item->m_strPath);
+    if (childtype == NODE_TYPE_ALBUM || childtype == NODE_TYPE_ARTIST || nodetype == NODE_TYPE_GENRE  || nodetype == NODE_TYPE_ALBUM)
+    {
+      // we allow the user to set content for
+      // 1. general artist and album nodes
+      // 2. specific per genre
+      // 3. specific per artist
+      // 4. specific per album
+      buttons.Add(CONTEXT_BUTTON_SET_CONTENT,20195);
+    }
     if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetArtist().size() > 0)
     {
       CVideoDatabase database;
@@ -545,7 +561,6 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
   }
   // noncontextual buttons
 
-  CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
   if (musicScan && musicScan->IsScanning())
     buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);     // Stop Scanning
   else if (musicScan)
@@ -642,9 +657,25 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     CUtil::DeleteVideoDatabaseDirectoryCache();
     Update(m_vecItems.m_strPath);
     return true;
-
-  default:
-    break;
+  
+  case CONTEXT_BUTTON_SET_CONTENT:
+    bool bScan=false;
+    SScraperInfo info;
+    if (!m_musicdatabase.GetScraperForPath(m_vecItems[itemNumber]->m_strPath,info))
+      info.strContent = "albums";
+    
+    int iLabel=132;
+    // per genre or for all artists
+    if (m_vecItems.m_strPath.Equals("musicdb://1/") || m_vecItems[itemNumber]->m_strPath.Equals("musicdb://2/"))
+      iLabel = 133;
+    
+    if (CGUIDialogContentSettings::Show(info, bScan,iLabel))
+    {
+      m_musicdatabase.SetScraperForPath(m_vecItems[itemNumber]->m_strPath,info);
+      if (bScan)
+        OnInfoAll(itemNumber,true);
+    }
+    return true;
   }
 
   return CGUIWindowMusicBase::OnContextButton(itemNumber, button);
@@ -655,7 +686,7 @@ void CGUIWindowMusicNav::SetThumb(int iItem, CONTEXT_BUTTON button)
   CFileItem* pItem = m_vecItems[iItem];
   CFileItemList items;
   CStdString picturePath;
-  CStdString strPath;
+  CStdString strPath=pItem->m_strPath;
   CStdString strThumb;
   CStdString cachedThumb;
 
@@ -670,9 +701,7 @@ void CGUIWindowMusicNav::SetThumb(int iItem, CONTEXT_BUTTON button)
       {
         //  try to guess where the user should start
         //  browsing for the artist thumb
-        CFileItemList albums;
         idArtist=atol(strPath.Mid(nPos+1));
-        CStdString path;
       }
     }
     else if (pItem->IsVideoDb())
@@ -681,6 +710,27 @@ void CGUIWindowMusicNav::SetThumb(int iItem, CONTEXT_BUTTON button)
     m_musicdatabase.GetArtistPath(idArtist, picturePath);
 
     cachedThumb = pItem->GetCachedArtistThumb();
+
+    CArtist artist;
+    m_musicdatabase.GetArtistInfo(idArtist,artist);
+    int i=1;
+    for (std::vector<CScraperUrl::SUrlEntry>::iterator iter=artist.thumbURL.m_url.begin();iter != artist.thumbURL.m_url.end();++iter)
+    {
+      CStdString thumbFromWeb;
+      CStdString strLabel;
+      strLabel.Format("allmusicthumb%i.jpg",i);
+      CUtil::AddFileToFolder("z:\\", strLabel, thumbFromWeb);
+      if (CScraperUrl::DownloadThumbnail(thumbFromWeb,*iter))
+      {
+        CStdString strItemPath;
+        strItemPath.Format("thumb://Remote%i",i++);
+        CFileItem *item = new CFileItem(strItemPath, false);
+        item->SetThumbnailImage(thumbFromWeb);
+        CStdString strLabel;
+        item->SetLabel(g_localizeStrings.Get(20015));
+        items.Add(item);
+      }
+    }
   }
   else
   {
@@ -763,7 +813,7 @@ void CGUIWindowMusicNav::SetThumb(int iItem, CONTEXT_BUTTON button)
     else if (button == CONTEXT_BUTTON_SET_PLUGIN_THUMB)
       XFILE::CFile::Cache(picturePath,cachedThumb);
 
-    if (picturePath.Equals("thumb://None") || picture.DoCreateThumbnail(picturePath, cachedThumb))
+    if (picturePath.Equals("thumb://None") || picture.DoCreateThumbnail(items.Get(picturePath)->GetThumbnailImage(), cachedThumb))
     {
       CMusicDatabaseDirectory dir;
       dir.ClearDirectoryCache(m_vecItems.m_strPath);

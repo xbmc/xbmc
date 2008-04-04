@@ -87,6 +87,11 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
               CreateSettings();
               SetupPage();
               break;
+      case 4: strLabel = g_localizeStrings.Get(132);
+              m_info = m_scrapers["albums"][0];
+              CreateSettings();
+              SetupPage();
+              break;
       }  
     }
     if (iControl == CONTROL_SCRAPER_LIST)
@@ -131,7 +136,10 @@ void CGUIDialogContentSettings::OnWindowLoaded()
   CGUIDialogSettings::OnWindowLoaded();
   
   CFileItemList items;
-  CDirectory::GetDirectory("q:\\system\\scrapers\\video",items,".xml",false);
+  if (m_info.strContent.Equals("albums"))
+    CDirectory::GetDirectory("q:\\system\\scrapers\\music",items,".xml",false);
+  else
+    CDirectory::GetDirectory("q:\\system\\scrapers\\video",items,".xml",false);
   for (int i=0;i<items.Size();++i)
   {
     if (!items[i]->m_bIsFolder)
@@ -205,9 +213,12 @@ void CGUIDialogContentSettings::SetupPage()
   g_graphicsContext.SendMessage(msg);
   CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_CONTENT_TYPE);
 
-  msg2.SetLabel("<"+g_localizeStrings.Get(231)+">");
-  msg2.SetParam1(0);
-  g_graphicsContext.SendMessage(msg2);
+  if (!m_info.strContent.Equals("albums")) // none does not apply to music
+  {
+    msg2.SetLabel("<"+g_localizeStrings.Get(231)+">");
+    msg2.SetParam1(0);
+    g_graphicsContext.SendMessage(msg2);
+  }
 
   if (m_scrapers.find("movies") != m_scrapers.end())
   {
@@ -239,6 +250,17 @@ void CGUIDialogContentSettings::SetupPage()
     if (m_info.strContent.Equals("musicvideos"))
     {
       SET_CONTROL_LABEL(CONTROL_CONTENT_TYPE,g_localizeStrings.Get(20389));
+      CONTROL_SELECT_ITEM(CONTROL_CONTENT_TYPE, 3);
+    }
+  }
+  if (m_scrapers.find("albums") != m_scrapers.end())
+  {
+    msg2.SetLabel(m_strContentType);
+    msg2.SetParam1(4);
+    g_graphicsContext.SendMessage(msg2);
+    if (m_info.strContent.Equals("albums"))
+    {
+      SET_CONTROL_LABEL(CONTROL_CONTENT_TYPE,m_strContentType);
       CONTROL_SELECT_ITEM(CONTROL_CONTENT_TYPE, 3);
     }
   }
@@ -285,6 +307,10 @@ void CGUIDialogContentSettings::CreateSettings()
     AddBool(1,20345,&m_bRunScan);
     AddBool(2,20346,&m_bScanRecursive);    
   }
+  if (m_info.strContent.Equals("albums"))
+  {
+    AddBool(1,20345,&m_bRunScan);
+  }
 }
 
 void CGUIDialogContentSettings::OnSettingChanged(unsigned int num)
@@ -328,7 +354,10 @@ void CGUIDialogContentSettings::FillListControl()
   {
     CFileItem* item = new CFileItem(iter->strTitle);
     item->m_strPath = iter->strPath;
-    item->SetThumbnailImage("Q:\\system\\scrapers\\video\\"+iter->strThumb);
+    if (m_info.strContent.Equals("albums"))
+      item->SetThumbnailImage("Q:\\system\\scrapers\\music\\"+iter->strThumb);
+    else
+      item->SetThumbnailImage("Q:\\system\\scrapers\\video\\"+iter->strThumb);
     if (iter->strPath.Equals(m_info.strPath))
     {
       CGUIMessage msg2(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_SCRAPER_LIST, iIndex);
@@ -374,12 +403,21 @@ bool CGUIDialogContentSettings::ShowForDirectory(const CStdString& strDirectory,
   return bResult;
 }
 
-bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, VIDEO::SScanSettings& settings, bool& bRunScan)
+bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, bool& bRunScan, int iLabel)
+{
+  VIDEO::SScanSettings dummy;
+  return Show(scraper,dummy,bRunScan,iLabel);
+}
+
+bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, VIDEO::SScanSettings& settings, bool& bRunScan, int iLabel)
 {
   CGUIDialogContentSettings *dialog = (CGUIDialogContentSettings *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTENT_SETTINGS);
   if (!dialog) return false;
 
   dialog->m_info = scraper;
+  if (iLabel != -1) // to switch between albums and artists
+    dialog->m_strContentType = g_localizeStrings.Get(iLabel);
+
   dialog->m_scraperSettings = scraper.settings;
   dialog->m_bRunScan = bRunScan;
   dialog->m_bScanRecursive = (settings.recurse > 0) && (!settings.parent_name && settings.recurse == 1);
@@ -429,6 +467,10 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, VIDEO::SScanSettings
       settings.parent_name_root = false;
       settings.recurse = dialog->m_bScanRecursive ? INT_MAX : 0;
 
+      bRunScan = dialog->m_bRunScan;
+    }
+    else if (scraper.strContent.Equals("albums"))
+    {
       bRunScan = dialog->m_bRunScan;
     }
     else if (scraper.strContent.IsEmpty() || scraper.strContent.Equals("None") )

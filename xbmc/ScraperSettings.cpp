@@ -39,6 +39,9 @@ bool CScraperSettings::LoadSettingsXML(const CStdString& strScraper, const CStdS
   if (!parser.Load(strScraper))
     return false;
 
+  if (!parser.HasFunction(strFunction))
+    return false;
+
   if (!url && strFunction.Equals("GetSettings")) // entry point
     m_pluginXmlDoc.Clear();
     
