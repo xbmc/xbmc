@@ -1752,7 +1752,11 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   { // new skin choosen...
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     CStdString strSkin = pControl->GetCurrentLabel();
-    CStdString strSkinPath = _P("Q:\\skin\\" + strSkin);
+    CStdString strSkinPath = _P("T:\\skin\\" + strSkin);
+    if ( ! CDirectory::Exists(strSkinPath) )
+    {
+      strSkinPath = _P("Q:\\skin\\" + strSkin);
+    }
     if (g_SkinInfo.Check(strSkinPath))
     {
       m_strErrorMessage.Empty();
@@ -2630,6 +2634,8 @@ void CGUIWindowSettingsCategory::FillInSkins(CSetting *pSetting)
   CFileItemList items;
   CStdString strPath = _P("Q:\\skin\\");
   directory.GetDirectory(strPath, items);
+  strPath = _P("T:\\skin\\");
+  directory.GetDirectory(strPath, items);
 
   int iCurrentSkin = 0;
   int iSkin = 0;
@@ -2675,6 +2681,8 @@ void CGUIWindowSettingsCategory::FillInSoundSkins(CSetting *pSetting)
   //find skins...
   CFileItemList items;
   CStdString strPath = _P("Q:\\sounds\\");
+  CDirectory::GetDirectory(strPath, items);
+  strPath = _P("T:\\sounds\\");
   CDirectory::GetDirectory(strPath, items);
 
   int iCurrentSoundSkin = 0;
@@ -2760,6 +2768,9 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
   CFileItemList items;
   CStdString strPath = _P("Q:\\visualisations\\");
   directory.GetDirectory(strPath, items);
+  strPath = _P("T:\\visualisations\\");
+  directory.GetDirectory(strPath, items);
+
   for (int i = 0; i < items.Size(); ++i)
   {
     CFileItem* pItem = items[i];
@@ -3065,6 +3076,8 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
   CHDDirectory directory;
   CFileItemList items;
   CStdString strPath = _P("Q:\\screensavers\\");
+  directory.GetDirectory(strPath, items);
+  strPath = _P("T:\\screensavers\\");
   directory.GetDirectory(strPath, items);
 
   int iCurrentScr = -1;
