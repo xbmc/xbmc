@@ -229,7 +229,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+dvd[ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+part[ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("()[ _\\.-]+([0-9]*[abcd]+)(\\....)$");
-  g_advancedSettings.m_videoStackRegExps.push_back("()[\\^ _\\.-]+([0-9]+)(\\....)$");
+  g_advancedSettings.m_videoStackRegExps.push_back("()[^ _\\.-]+([0-9]+)(\\....)$");
   g_advancedSettings.m_videoStackRegExps.push_back("([a-z])([0-9]+)(\\....)$");
   g_advancedSettings.m_videoStackRegExps.push_back("()([ab])(\\....)$");
 
