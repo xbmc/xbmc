@@ -40,7 +40,7 @@ def send_message(caption, msg):
 	  packet = PacketNOTIFICATION(caption,
 		                            msg,
 		                            ICON_PNG,
-		                            "../../icons/bluetooth.png")
+		                            "../../icons/phone.png")
 	  packet.send(sock, addr)
 
 def send_ImageToBluetooth(Image):
@@ -84,7 +84,7 @@ def main():
 
     packet = PacketHELO(devicename="J2ME Remote",
                         icon_type=ICON_PNG,
-                        icon_file="../../icons/bluetooth.png")
+                        icon_file="../../icons/phone.png")
     packet.send(sock, addr)
     Ping().start()
     while(True):
