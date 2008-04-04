@@ -195,6 +195,6 @@ bool CHDDirectory::Exists(const char* strPath)
     strReplaced += '\\';
 #endif    
   DWORD attributes = GetFileAttributes(strReplaced.c_str());
-  if (FILE_ATTRIBUTE_DIRECTORY == attributes) return true;
+  if (FILE_ATTRIBUTE_DIRECTORY & attributes) return true;
   return false;
 }
