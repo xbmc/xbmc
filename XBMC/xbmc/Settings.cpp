@@ -172,6 +172,8 @@ CSettings::CSettings(void)
 
   g_stSettings.m_logFolder = "Q:\\";              // log file location
 
+  g_stSettings.m_defaultMusicScraper = "allmusic.xml";
+
   m_iLastLoadedProfileIndex = 0;
 
   // defaults for scanning
@@ -958,6 +960,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     XMLUtils::GetBoolean(pElement, "songinfoinvis", g_stSettings.m_bMyMusicSongInfoInVis);
     XMLUtils::GetBoolean(pElement, "songthumbinvis", g_stSettings.m_bMyMusicSongThumbInVis);
     GetString(pElement, "defaultlibview", g_settings.m_defaultMusicLibSource, g_settings.m_defaultMusicLibSource);
+    GetString(pElement, "defaultscraper", g_stSettings.m_defaultMusicScraper, g_stSettings.m_defaultMusicScraper);
   }
   // myvideos settings
   pElement = pRootElement->FirstChildElement("myvideos");
@@ -1678,6 +1681,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
   SetBoolean(pNode, "songinfoinvis", g_stSettings.m_bMyMusicSongInfoInVis);
   SetBoolean(pNode, "songthumbinvis", g_stSettings.m_bMyMusicSongThumbInVis);
   SetString(pNode, "defaultlibview", g_settings.m_defaultMusicLibSource);
+  SetString(pNode, "defaultscraper", g_stSettings.m_defaultMusicScraper);
 
   // myvideos settings
   TiXmlElement videosNode("myvideos");

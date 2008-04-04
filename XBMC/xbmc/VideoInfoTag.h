@@ -4,6 +4,7 @@
 #include "utils/ScraperParser.h"
 #include "PluginSettings.h"
 #include "ScraperSettings.h"
+#include "utils/ScraperUrl.h"
 #include "utils/Fanart.h"
 
 #include <vector>
