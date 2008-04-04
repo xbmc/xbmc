@@ -1,5 +1,6 @@
 #include "include.h"
 #include "GUIControlGroupList.h"
+#include "../xbmc/utils/GUIInfoManager.h"
 
 #define TIME_TO_SCROLL 200;
 
@@ -23,19 +24,11 @@ CGUIControlGroupList::~CGUIControlGroupList(void)
 
 void CGUIControlGroupList::Render()
 {
-  if (m_scrollSpeed < 0)
+  if (m_scrollSpeed != 0)
   {
     m_offset += m_scrollSpeed * (m_renderTime - m_scrollTime);
-    if (m_offset < m_scrollOffset)
-    {
-      m_offset = m_scrollOffset;
-      m_scrollSpeed = 0;
-    }
-  }
-  if (m_scrollSpeed > 0)
-  {
-    m_offset += m_scrollSpeed * (m_renderTime - m_scrollTime);
-    if (m_offset > m_scrollOffset)
+    if (m_scrollSpeed < 0 && m_offset < m_scrollOffset ||
+        m_scrollSpeed > 0 && m_offset > m_scrollOffset)
     {
       m_offset = m_scrollOffset;
       m_scrollSpeed = 0;
@@ -278,5 +271,18 @@ void CGUIControlGroupList::UnfocusFromPoint(const CPoint &point)
     }
   }
   CGUIControl::UnfocusFromPoint(point);
+}
+
+bool CGUIControlGroupList::GetCondition(int condition, int data) const
+{
+  switch (condition)
+  {
+  case CONTAINER_HAS_NEXT:
+    return (m_totalSize >= Size() && m_offset < m_totalSize - Size());
+  case CONTAINER_HAS_PREVIOUS:
+    return (m_offset > 0);
+  default:
+    return false;
+  }
 }
 

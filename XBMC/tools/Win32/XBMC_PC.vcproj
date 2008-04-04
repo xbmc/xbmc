@@ -772,6 +772,12 @@
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserMicroDVD.h">
 					</File>
 					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserSami.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserSami.h">
+					</File>
+					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserSubrip.cpp">
 					</File>
 					<File
@@ -1875,6 +1881,12 @@
 					RelativePath="..\..\xbmc\utils\MusicAlbumInfo.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\MusicArtistInfo.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\MusicArtistInfo.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\utils\MusicInfoScraper.cpp">
 				</File>
 				<File
@@ -1900,6 +1912,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\ScraperParser.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\ScraperUrl.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\ScraperUrl.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\SectionLoader.cpp">
@@ -1995,6 +2013,18 @@
 			<Filter
 				Name="Database"
 				Filter="">
+				<File
+					RelativePath="..\..\xbmc\Album.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\Album.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\Artist.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\Artist.h">
+				</File>
 				<File
 					RelativePath="..\..\xbmc\Database.cpp">
 				</File>

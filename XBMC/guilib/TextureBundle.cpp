@@ -446,7 +446,7 @@ bool CTextureBundle::PreloadFile(const CStdString& Filename)
 #ifndef _LINUX
       MEMORYSTATUS stat;
       GlobalMemoryStatus(&stat);
-      CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %d bytes, have %d bytes)", name.c_str(), ReadSize, stat.dwAvailPhys);
+      CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %lu bytes, have %lu bytes)", name.c_str(), ReadSize, stat.dwAvailPhys);
 #elif defined(__APPLE__)
       CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %lu bytes)", name.c_str(), ReadSize);
 #else
@@ -486,7 +486,7 @@ HRESULT CTextureBundle::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
 #ifndef _LINUX
     MEMORYSTATUS stat;
     GlobalMemoryStatus(&stat);
-    CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %d bytes, have %d bytes)", name.c_str(),
+    CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %lu bytes, have %lu bytes)", name.c_str(),
               m_CurFileHeader[m_LoadIdx]->second.UnpackedSize, stat.dwAvailPhys);
 #elif defined(__APPLE__)
     CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %lu bytes)", name.c_str(),

@@ -531,7 +531,7 @@ bool CVideoDatabase::LinkMovieToTvshow(long idMovie, long idShow)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%ld, %ld) failed", __FUNCTION__, idMovie, idShow);
+    CLog::Log(LOGERROR, "%s (%ld, %ld) failed", __FUNCTION__, idMovie, idShow);
   }
 
   return false;
@@ -557,7 +557,7 @@ bool CVideoDatabase::IsLinkedToTvshow(long idMovie)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%ld) failed", __FUNCTION__, idMovie);
+    CLog::Log(LOGERROR, "%s (%ld) failed", __FUNCTION__, idMovie);
   }
 
   return false;
@@ -6483,4 +6483,14 @@ void CVideoDatabase::InvalidatePathHash(const CStdString& strPath)
       SetPathHash(strParent,"");
     }
   }
+}
+
+bool CVideoDatabase::CommitTransaction()
+{
+  if (CDatabase::CommitTransaction())
+  { // number of items in the db has likely changed, so reset the infomanager cache
+    g_infoManager.ResetPersistentCache();
+    return true;
+  }
+  return false;
 }

@@ -104,14 +104,16 @@
 		</control>
 		<control type="image" id="0">
 			<description>contentpanel slice Custom background</description>
-			<posx>140</posx>
+			<posx>180</posx>
 			<posy>88</posy>
-			<width>580</width>
-			<height>510</height>
+			<width>540</width>
+			<height>449</height>
+			<aspectratio scalediffuse="false">scale</aspectratio>
 			<texture diffuse="Content_Panel_Diffuse.png" />
 			<info>Skin.String(Custom_Background)</info>
 			<include>contentpanelslide</include>
 			<visible>Skin.HasSetting(Use_Custom_Background)</visible>
+			<visible>![!IsEmpty(Fanart.Image) + Skin.HasSetting(ShowFanart)]</visible>
 		</control>
 	</include>
 	<include name="autoscrollslow">

@@ -421,7 +421,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
 
     // Add the scan button(s)
     CGUIDialogMusicScan *pScanDlg = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    if (g_guiSettings.GetBool("mymusic.enablelibrary") && pScanDlg)
+    if (g_guiSettings.GetBool("musiclibrary.enabled") && pScanDlg)
     {
       if (pScanDlg->IsScanning())
         buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353); // Stop Scanning

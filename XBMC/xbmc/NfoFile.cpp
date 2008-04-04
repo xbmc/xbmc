@@ -27,83 +27,93 @@ CNfoFile::~CNfoFile()
   Close();
 }
 
-bool CNfoFile::GetDetails(CVideoInfoTag &details, const char* document)
-{
-  TiXmlDocument doc;
-  if (document)
-    doc.Parse(document);
-  else
-    doc.Parse(m_doc);
-  if (details.Load(doc.RootElement()))
-    return true;
-  CLog::Log(LOGDEBUG, "Not a proper xml nfo file (%s, col %i, row %i)", doc.ErrorDesc(), doc.ErrorCol(), doc.ErrorRow());
-  return false;
-}
-
 HRESULT CNfoFile::Create(const CStdString& strPath)
 {
   if (FAILED(Load(strPath)))
     return E_FAIL;
 
+  CStdString strURL;
   // first check if it's an XML file with the info we need
   CVideoInfoTag details;
   if (GetDetails(details))
   {
     m_strScraper = "NFO";
-    return S_OK;
+    if (!m_strContent.Equals("tvshows")) // need to identify which scraper
+      return S_OK;
+    strURL = details.m_strEpisodeGuide;
   }
 
   CDirectory dir;
   CFileItemList items;
   dir.GetDirectory("q:\\system\\scrapers\\video",items,".xml",false);
+
   for (int i=0;i<items.Size();++i)
   {
-    if (!items[i]->m_bIsFolder && !FAILED(Scrape(items[i]->m_strPath)))
+    if (!items[i]->m_bIsFolder && !FAILED(Scrape(items[i]->m_strPath,strURL)))
+    {
+      strURL.Empty();
       break;
+    }
   }
+
+  if (m_strContent.Equals("tvshows"))
+    return (strURL.IsEmpty() && !m_strScraper.IsEmpty())?S_OK:E_FAIL;
 
   return (m_strImDbUrl.size() > 0) ? S_OK : E_FAIL;
 }
 
-HRESULT CNfoFile::Scrape(const CStdString& strScraperPath)
+HRESULT CNfoFile::Scrape(const CStdString& strScraperPath, const CStdString& strURL /* = "" */)
 {
   CScraperParser m_parser;
   if (!m_parser.Load(strScraperPath))
     return E_FAIL;
-  if (m_parser.GetContent() !=  m_strContent)
+  if (m_parser.GetContent() != m_strContent)
     return E_FAIL;
 
-  m_parser.m_param[0] = m_doc;
-  m_strImDbUrl = m_parser.Parse("NfoScrape");
-  TiXmlDocument doc;
-  doc.Parse(m_strImDbUrl.c_str());
-  if (doc.RootElement())
+  if (strURL.IsEmpty())
   {
-    CVideoInfoTag details;
-    if (GetDetails(details,m_strImDbUrl.c_str()))
+    m_parser.m_param[0] = m_doc;
+    m_strImDbUrl = m_parser.Parse("NfoScrape");
+    TiXmlDocument doc;
+    doc.Parse(m_strImDbUrl.c_str());
+    if (doc.RootElement())
     {
-      m_strScraper = "NFO";
-      Close();
-      m_size = m_strImDbUrl.size();
-      m_doc = new char[m_size+1];
-      strcpy(m_doc,m_strImDbUrl.c_str());
+      CVideoInfoTag details;
+      if (GetDetails(details,m_strImDbUrl.c_str()))
+      {
+        m_strScraper = "NFO";
+        Close();
+        m_size = m_strImDbUrl.size();
+        m_doc = new char[m_size+1];
+        strcpy(m_doc,m_strImDbUrl.c_str());
+        return S_OK;
+      }
+    }
+    m_parser.m_param[0] = m_doc;
+    m_strImDbUrl = m_parser.Parse("NfoUrl");
+    doc.Parse(m_strImDbUrl.c_str());
+    TiXmlElement* pId = doc.FirstChildElement("id");
+    if (pId && pId->FirstChild())
+      m_strImDbNr = pId->FirstChild()->Value();
+
+    if (m_strImDbUrl.size() > 0)
+    {
+      m_strScraper = CUtil::GetFileName(strScraperPath);
       return S_OK;
     }
+    else
+      return E_FAIL;
   }
-  m_parser.m_param[0] = m_doc;
-  m_strImDbUrl = m_parser.Parse("NfoUrl");
-  doc.Parse(m_strImDbUrl.c_str());
-  TiXmlElement* pId = doc.FirstChildElement("id");
-  if (pId && pId->FirstChild())
-    m_strImDbNr = pId->FirstChild()->Value();
-  
-  if (m_strImDbUrl.size() > 0)
+  else // we check to identify the episodeguide url
   {
-    m_strScraper = CUtil::GetFileName(strScraperPath);
+    m_parser.m_param[0] = strURL;
+    CStdString strEpGuide = m_parser.Parse("EpisodeGuideUrl"); // allow corrections?
+    if (strEpGuide.IsEmpty())
+      return E_FAIL;
+
+    m_strImDbNr = CUtil::GetFileName(strScraperPath); // used to pass scraper info for tvshows with nfo and episode guide urls
     return S_OK;
   }
-  else
-    return E_FAIL;
 }
 
 HRESULT CNfoFile::Load(const CStdString& strFile)
