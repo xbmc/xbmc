@@ -671,7 +671,7 @@ DWORD  GetFileAttributes(LPCTSTR lpFileName)
 	if (access(lpFileName, R_OK) == 0 && access(lpFileName, W_OK) != 0)
 		dwAttr |= FILE_ATTRIBUTE_READONLY;
 
-	return 0;
+	return dwAttr;
 }
 
 DWORD  GetCurrentDirectory(DWORD nBufferLength, LPSTR lpBuffer)
