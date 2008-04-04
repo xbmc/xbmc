@@ -133,7 +133,7 @@
 	<GetMoviePlot clearbuffers="no" dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="2">
-				<expression>&lt;p class="plotpar"&gt;\n([^\n]*)</expression>
+				<expression clear="yes">&lt;p class="plotpar"&gt;\n([^\n]*)</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>
@@ -141,13 +141,13 @@
 	<GetMovieCast clearbuffers="no" dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="\1" dest="6">
-				<expression noclean="1">&lt;table class=&quot;cast&quot;&gt;(.*?)&lt;/table&gt;</expression>
+				<expression clear="yes" noclean="1">&lt;table class=&quot;cast&quot;&gt;(.*?)&lt;/table&gt;</expression>
 			</RegExp>
 			<RegExp input="$$6" output="&lt;actor&gt;&lt;thumb&gt;\1_SY$INFO[imdbscale]_\2&lt;/thumb&gt;&lt;name&gt;\3&lt;/name&gt;&lt;role&gt;\4&lt;/role&gt;&lt;/actor&gt;" dest="7">
-				<expression repeat="yes" noclean="1,2" trim="3,4">&lt;img src=&quot;(?:([^&quot;]*\.)[^&quot;]*(\.jpg))?[^&gt;]*[^&quot;]*&quot;nm&quot;&gt;&lt;a href=&quot;[^&quot;]*&quot;&gt;([^&lt;]*)&lt;[^&quot;]*&quot;ddd&quot;&gt; ... [^&quot;]*&quot;char&quot;&gt;(.*?)&lt;/td&gt;</expression>
+				<expression clear="yes" repeat="yes" noclean="1,2" trim="3,4">&lt;img src=&quot;(?:([^&quot;]*\.)[^&quot;]*(\.jpg))?[^&gt;]*[^&quot;]*&quot;nm&quot;&gt;&lt;a href=&quot;[^&quot;]*&quot;&gt;([^&lt;]*)&lt;[^&quot;]*&quot;ddd&quot;&gt; ... [^&quot;]*&quot;char&quot;&gt;(.*?)&lt;/td&gt;</expression>
 			</RegExp>
 			<RegExp input="$$7" output="&lt;actor&gt;&lt;thumb&gt;\1&lt;/thumb&gt;\2&lt;/actor&gt;" dest="2+">
-				<expression repeat="yes" noclean="1,2,3">&lt;actor&gt;&lt;thumb&gt;(?:(http.*?)|_SY[0-9]+_)&lt;/thumb&gt;(.*?)&lt;/actor&gt;</expression>
+				<expression clear="yes" repeat="yes" noclean="1,2,3">&lt;actor&gt;&lt;thumb&gt;(?:(http.*?)|_SY[0-9]+_)&lt;/thumb&gt;(.*?)&lt;/actor&gt;</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>
@@ -155,13 +155,13 @@
 	<GetMovieDirectors clearbuffers="no" dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp conditional="!fullcredits" input="$$1" output="\1" dest="6">
-				<expression noclean="1">Director.*?&lt;/h5&gt;(.*?)&lt;/div&gt;</expression>
+				<expression clear="yes" noclean="1">Director.*?&lt;/h5&gt;(.*?)&lt;/div&gt;</expression>
 			</RegExp>
 			<RegExp conditional="fullcredits" input="$$1" output="\1" dest="6">
-				<expression noclean="1">Directed by(.*?)name=&quot;writers&quot;</expression>
+				<expression clear="yes" noclean="1">Directed by(.*?)name=&quot;</expression>
 			</RegExp>
 			<RegExp input="$$6" output="&lt;director&gt;\1&lt;/director&gt;" dest="2+">
-				<expression repeat="yes">&lt;a href=&quot;/name/[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
+				<expression clear="yes" repeat="yes">&lt;a href=&quot;/name/[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>
@@ -169,13 +169,13 @@
 	<GetMovieWriters clearbuffers="no" dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp conditional="!fullcredits" input="$$1" output="\1" dest="6">
-				<expression noclean="1">Writers.*?:&lt;/h5&gt;(.*?)&lt;/div&gt;</expression>
+				<expression clear="yes" noclean="1">Writers.*?:&lt;/h5&gt;(.*?)&lt;/div&gt;</expression>
 			</RegExp>
 			<RegExp conditional="fullcredits" input="$$1" output="\1" dest="6">
-				<expression noclean="1">Writing credits(.*?)name=&quot;cast&quot;</expression>
+				<expression clear="yes" noclean="1">Writing credits(.*?)name=&quot;</expression>
 			</RegExp>
 			<RegExp input="$$6" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="2+">
-				<expression repeat="yes">&lt;a href=&quot;/name/[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
+				<expression clear="yes" repeat="yes">&lt;a href=&quot;/name/[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>

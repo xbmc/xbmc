@@ -46,6 +46,8 @@ protected:
   void FillInNetworkInterfaces(CSetting *pSetting);
   void NetworkInterfaceChanged(void);
 
+  void FillInMusicScrapers(CGUISpinControlEx *pControl, const CStdString& strSelected);
+
   void FillInAudioDevices(CSetting* pSetting);
 
   virtual void SetupControls();

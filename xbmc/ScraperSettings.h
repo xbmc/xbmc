@@ -3,6 +3,8 @@
 
 #include "PluginSettings.h"
 
+class CScraperUrl;
+
 class CScraperSettings : public CBasicSettings
 {
 public:

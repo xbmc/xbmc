@@ -3,7 +3,7 @@
 	<allowoverlay>yes</allowoverlay>
 	<include>dialogeffect</include>
 	<controls>
-		<control type="image" id="0">
+		<control type="image">
 			<posx>0</posx>
 			<posy>0</posy>
 			<width>720</width>
@@ -11,13 +11,13 @@
 			<texture>black.png</texture>
 			<animation effect="fade" time="2000">WindowOpen</animation>
 		</control>
-		<control type="image" id="1">
+		<control type="image">
 			<description>background image</description>
 			<posx>25</posx>
 			<posy>35</posy>
 			<width>670</width>
 			<height>535</height>
-			<texture>dialog-panel2.png</texture>
+			<texture border="20,10,10,30">dialog-panel2.png</texture>
 		</control>
 		<control type="group">
 			<control type="label" id="1">
@@ -33,7 +33,7 @@
 				<description>Cover image</description>
 				<posx>55</posx>
 				<posy>95</posy>
-				<width>121</width>
+				<width>135</width>
 				<height>239</height>
 				<texture>-</texture>
 				<aspectratio>keep</aspectratio>
@@ -45,7 +45,7 @@
 				<posy>75</posy>
 				<width>355</width>
 				<label>$INFO[listitem.title]</label>
-				<font>special13</font>
+				<font>font13</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 				<scroll>true</scroll>
 			</control>
@@ -277,7 +277,18 @@
 				<width>615</width>
 				<height>115</height>
 				<texture>-</texture>
-				<aspectratio>keep</aspectratio>
+				<aspectratio aligny="bottom">keep</aspectratio>
+				<visible>container.content(tvshows)</visible>
+			</control>
+			<control type="image">
+				<description>TV Show Banner reflection</description>
+				<posx>60</posx>
+				<posy>215</posy>
+				<width>615</width>
+				<height>115</height>
+				<aspectratio aligny="top">keep</aspectratio>
+				<info>ListItem.Icon</info>
+				<texture flipy="true" diffuse="diffuse_mirror.png" /> 
 				<visible>container.content(tvshows)</visible>
 			</control>
 			<control type="label" id="20">
@@ -317,6 +328,7 @@
 				<label>$LOCALIZE[20376] :</label>
 				<font>font13</font>
 				<visible>container.content(tvshows)</visible>
+				<scroll>true</scroll>
 			</control>
 			<control type="label" id="24">
 				<description>First Aired Value</description>
@@ -354,7 +366,7 @@
 				<posx>55</posx>
 				<posy>55</posy>
 				<align>left</align>
-				<label>20351</label>
+				<label>20352</label>
 				<font>special13</font>
 				<visible>container.content(episodes)</visible>
 			</control>
@@ -362,7 +374,7 @@
 				<description>Cover image</description>
 				<posx>55</posx>
 				<posy>110</posy>
-				<width>130</width>
+				<width>135</width>
 				<height>140</height>
 				<info>ListItem.Icon</info>
 				<aspectratio align="left" aligny="bottom">keep</aspectratio>
@@ -372,7 +384,7 @@
 				<description>Cover image reflection</description>
 				<posx>55</posx>
 				<posy>250</posy>
-				<width>130</width>
+				<width>135</width>
 				<height>140</height>
 				<aspectratio align="left" aligny="top">keep</aspectratio>
 				<info>ListItem.Icon</info>
@@ -393,7 +405,7 @@
 				<description>Title value</description>
 				<posx>200</posx>
 				<posy>140</posy>
-				<width>375</width>
+				<width>330</width>
 				<label>-</label>
 				<font>special13</font>
 				<visible>container.content(episodes)</visible>
@@ -496,7 +508,7 @@
 				<description>Writing Credits value</description>
 				<posx>300</posx>
 				<posy>235</posy>
-				<width>230</width>
+				<width>375</width>
 				<label>-</label>
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
@@ -547,17 +559,17 @@
 				<description>Cover image</description>
 				<posx>55</posx>
 				<posy>100</posy>
-				<width>130</width>
+				<width>135</width>
 				<height>232</height>
-				<aspectratio align="left">keep</aspectratio>
-				<info>ListItem.Icon</info>
+				<aspectratio>keep</aspectratio>
+				<info align="left">ListItem.Icon</info>
 				<visible>container.content(musicvideos)</visible>
 			</control>
 			<control type="label" id="1">
 				<description>Title value</description>
 				<posx>200</posx>
 				<posy>110</posy>
-				<width>375</width>
+				<width>330</width>
 				<info>Listitem.Title</info>
 				<font>special13</font>
 				<visible>container.content(musicvideos)</visible>
@@ -730,6 +742,7 @@
 				<onright>4</onright>
 				<onup>5</onup>
 				<ondown>9</ondown>
+				<visible>!Container.Content(TVShows)</visible>
 			</control>
 			<control type="button" id ="9">
 				<description>Resume</description>
@@ -746,6 +759,7 @@
 				<onright>4</onright>
 				<onup>8</onup>
 				<ondown>6</ondown>
+				<visible>!Container.Content(TVShows)</visible>
 			</control>
 			<control type="button" id ="6">
 				<description>Refresh</description>
@@ -762,6 +776,7 @@
 				<onright>4</onright>
 				<onup>9</onup>
 				<ondown>10</ondown>
+				<animation effect="slide" start="0,0" end="0,-70" time="0" condition="Container.Content(TVShows)">conditional</animation>
 			</control>
 			<control type="button" id ="10">
 				<description>Get Thumb</description>
@@ -777,7 +792,25 @@
 				<onleft>4</onleft>
 				<onright>4</onright>
 				<onup>6</onup>
+				<ondown>12</ondown>
+				<animation effect="slide" start="0,0" end="0,-70" time="0" condition="Container.Content(TVShows)">conditional</animation>
+			</control>
+			<control type="button" id ="12">
+				<description>Get Fanart</description>
+				<posx>55</posx>
+				<posy>477</posy>
+				<width>135</width>
+				<height>32</height>
+				<label>20413</label>
+				<font>font10</font>
+				<align>center</align>
+				<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+				<onleft>4</onleft>
+				<onright>4</onright>
+				<onup>10</onup>
 				<ondown>11</ondown>
+				<visible>Container.Content(TVShows)</visible>
 			</control>
 			<control type="button" id ="11">
 				<description>Trailer</description>
@@ -792,7 +825,7 @@
 				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
 				<onleft>4</onleft>
 				<onright>4</onright>
-				<onup>10</onup>
+				<onup>12</onup>
 				<ondown>5</ondown>
 				<visible>!IsEmpty(ListItem.Trailer)</visible>
 			</control>

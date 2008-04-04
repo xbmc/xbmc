@@ -13,7 +13,7 @@ public:
   void Interupt();
 
   void BeginTransaction();
-  bool CommitTransaction();
+  virtual bool CommitTransaction();
   void RollbackTransaction();
   bool InTransaction();
 

@@ -439,10 +439,12 @@ void CGUIControlFactory::GetInfoLabels(const TiXmlNode *pControlNode, const CStd
       {
         if (StringUtils::IsNaturalNumber(label))
           label = g_localizeStrings.Get(atoi(label));
-        else
-        { // TODO: UTF-8: What if the xml is encoded as UTF-8 already?
+        else // we assume the skin xml's aren't encoded as UTF-8
           g_charsetConverter.stringCharsetToUtf8(label);
-        }
+        if (StringUtils::IsNaturalNumber(fallback))
+          fallback = g_localizeStrings.Get(atoi(fallback));
+        else
+          g_charsetConverter.stringCharsetToUtf8(fallback);
         infoLabels.push_back(CGUIInfoLabel(label, fallback));
       }
     }
