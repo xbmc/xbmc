@@ -14,33 +14,6 @@
  \brief Class to store and read album information from CMusicDatabase
  \sa CSong, CMusicDatabase
  */
-class CAlbum
-{
-public:
-  CAlbum() { idAlbum = 0; iRating = 0; iYear = 0; };
-  bool operator<(const CAlbum &a) const
-  {
-    return strAlbum + strArtist < a.strAlbum + a.strArtist;
-  }
-  long idAlbum;
-  CStdString strAlbum;
-  CStdString strArtist;
-  CStdString strGenre;
-  CStdString strThumb;
-  CStdString strTones ;
-  CStdString strStyles ;
-  CStdString strReview ;
-  CStdString strImage ;
-  int iRating ;
-  int iYear;
-};
-
-class CArtist
-{
-public:
-  long idArtist;
-  CStdString strArtist;
-};
 
 class CGenre
 {
@@ -121,19 +94,6 @@ typedef std::vector<CSong> VECSONGS;
 /*!
  \ingroup music
  \brief A vector of CStdString objects, used for CMusicDatabase
- */
-typedef std::vector<CArtist> VECARTISTS;
-
-/*!
- \ingroup music
- \brief A vector of CStdString objects, used for CMusicDatabase
  \sa CMusicDatabase
  */
 typedef std::vector<CGenre> VECGENRES;
-
-/*!
- \ingroup music
- \brief A vector of CAlbum objects, used for CMusicDatabase
- \sa CMusicDatabase
- */
-typedef std::vector<CAlbum> VECALBUMS;
