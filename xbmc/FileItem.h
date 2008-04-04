@@ -5,6 +5,8 @@
 #pragma once
 #include "../guilib/GUIListItem.h"
 #include "Song.h"
+#include "Artist.h"
+#include "Album.h"
 #include "utils/Archive.h"
 #include "DateTime.h"
 #include "VideoInfoTag.h"

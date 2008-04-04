@@ -5,6 +5,8 @@
 #pragma once
 #include "Database.h"
 
+struct SScraperInfo;
+
 #include <set>
 
 // return codes of Cleaning up the Database
@@ -99,8 +101,10 @@ public:
   bool LookupCDDBInfo(bool bRequery=false);
   void DeleteCDDBInfo();
   void AddSong(const CSong& song, bool bCheck = true);
-  long SetAlbumInfo(long idAlbum, const CAlbum& album, const VECSONGS& songs);
+  long SetAlbumInfo(long idAlbum, const CAlbum& album, const VECSONGS& songs, bool bTransaction=true);
+  long SetArtistInfo(long idArtist, const CArtist& artist);
   bool GetAlbumInfo(long idAlbum, CAlbum &info, VECSONGS& songs);
+  bool GetArtistInfo(long idArtist, CArtist &info);
   bool GetSongByFileName(const CStdString& strFileName, CSong& song);
   bool GetSongById(long idSong, CSong& song);
   bool GetSongsByPath(const CStdString& strPath, CSongMap& songs, bool bAppendToMap = false);
@@ -139,6 +143,7 @@ public:
 
   bool GetAlbumPath(long idAlbum, CStdString &path);
   bool SaveAlbumThumb(long idAlbum, const CStdString &thumb);
+  bool GetAlbumThumb(long idAlbum, CStdString &thumb);
   bool GetArtistPath(long idArtist, CStdString &path);
 
   bool GetGenreById(long idGenre, CStdString& strGenre);
@@ -146,14 +151,18 @@ public:
   bool GetAlbumById(long idAlbum, CStdString& strAlbum);
 
   long GetArtistByName(const CStdString& strArtist);
-  long GetAlbumByName(const CStdString& strAlbum);
+  long GetAlbumByName(const CStdString& strAlbum, const CStdString& strArtist="");
   long GetSongByArtistAndAlbumAndTitle(const CStdString& strArtist, const CStdString& strAlbum, const CStdString& strTitle);
 
   bool GetVariousArtistsAlbums(const CStdString& strBaseDir, CFileItemList& items);
   bool GetVariousArtistsAlbumsSongs(const CStdString& strBaseDir, CFileItemList& items);
 
   bool SetSongRating(const CStdString &filePath, char rating);
+  bool SetScraperForPath(const CStdString& strPath, const SScraperInfo& info);
+  bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info);
 
+  void ExportToXML(const CStdString &xmlFile, bool singleFiles = false);
+  void ImportFromXML(const CStdString &xmlFile);
 protected:
   std::map<CStdString, int /*CArtistCache*/> m_artistCache;
   std::map<CStdString, int /*CGenreCache*/> m_genreCache;
@@ -175,7 +184,8 @@ private:
   bool GetAlbumsByWhere(const CStdString &baseDir, const CStdString &where, CFileItemList &items);
   void SplitString(const CStdString &multiString, std::vector<CStdString> &vecStrings, CStdString &extraStrings);
   CSong GetSongFromDataset(bool bWithMusicDbPath=false);
-  CAlbum GetAlbumFromDataset();
+  CArtist GetArtistFromDataset(dbiplus::Dataset* pDS);
+  CAlbum GetAlbumFromDataset(dbiplus::Dataset* pDS);
   void GetFileItemFromDataset(CFileItem* item, const CStdString& strMusicDBbasePath);
   bool CleanupSongs();
   bool CleanupSongsByIds(const CStdString &strSongIds);
@@ -189,8 +199,8 @@ private:
   bool SearchAlbums(const CStdString& search, CFileItemList &albums);
   bool SearchSongs(const CStdString& strSearch, CFileItemList &songs);
   long GetSongIDFromPath(const CStdString &filePath);
-
-  // Fields should be ordered as they 
+  
+    // Fields should be ordered as they 
   // appear in the songview
   enum _SongFields
   {

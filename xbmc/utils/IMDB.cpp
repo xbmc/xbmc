@@ -40,7 +40,7 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
     return false;
 
   movielist.clear();
-  ClearCache();
+  CScraperParser::ClearCache();
 
   CStdString strHTML, strYear;
   CScraperUrl scrURL;

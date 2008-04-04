@@ -14,7 +14,8 @@ public:
   virtual ~CGUIDialogContentSettings(void);
   virtual bool OnMessage(CGUIMessage &message);
 
-  static bool Show(SScraperInfo& scraper, VIDEO::SScanSettings& settings, bool& bRunScan);
+  static bool Show(SScraperInfo& scraper, bool& bRunScan, int iLabel=-1);
+  static bool Show(SScraperInfo& scraper, VIDEO::SScanSettings& settings, bool& bRunScan, int iLabel=-1);
   static bool ShowForDirectory(const CStdString& strDirectory, SScraperInfo& scraper, VIDEO::SScanSettings& settings, bool& bRunScan);
   virtual bool HasListItems() const { return true; };
   virtual CFileItem* GetCurrentListItem(int offset = 0);
@@ -39,5 +40,6 @@ protected:
 
   SScraperInfo m_info;
   CScraperSettings m_scraperSettings; // needed so we have a basis
+  CStdString m_strContentType; // used for artist/albums
 };
 

@@ -2,9 +2,12 @@
 #include "utils/Thread.h"
 #include "MusicDatabase.h"
 
+class CAlbum;
+class CArtist;
+
 namespace MUSIC_INFO
 {
-enum SCAN_STATE { PREPARING = 0, REMOVING_OLD, CLEANING_UP_DATABASE, READING_MUSIC_INFO, COMPRESSING_DATABASE, WRITING_CHANGES };
+enum SCAN_STATE { PREPARING = 0, REMOVING_OLD, CLEANING_UP_DATABASE, READING_MUSIC_INFO, DOWNLOADING_ALBUM_INFO, DOWNLOADING_ARTIST_INFO, COMPRESSING_DATABASE, WRITING_CHANGES };
 
 class IMusicInfoScannerObserver
 {
@@ -24,6 +27,8 @@ public:
   virtual ~CMusicInfoScanner();
 
   void Start(const CStdString& strDirectory);
+  void FetchAlbumInfo(const CStdString& strDirectory);
+  void FetchArtistInfo(const CStdString& strDirectory);
   bool IsScanning();
   void Stop();
   void SetObserver(IMusicInfoScannerObserver* pObserver);
@@ -31,6 +36,8 @@ public:
   static void CheckForVariousArtists(VECSONGS &songs);
   static bool HasSingleAlbum(const VECSONGS &songs, CStdString &album, CStdString &artist);
 
+  bool DownloadAlbumInfo(const CStdString& strPath, const CStdString& strArtist, const CStdString& strAlbum, CGUIDialogProgress* pDialog=NULL);
+  bool DownloadArtistInfo(const CStdString& strPath, const CStdString& strArtist, CGUIDialogProgress* pDialog=NULL);
 protected:
   virtual void Process();
   int RetrieveMusicInfo(CFileItemList& items, const CStdString& strDirectory);
@@ -50,9 +57,12 @@ protected:
   bool m_bRunning;
   bool m_bCanInterrupt;
   bool m_needsCleanup;
+  int m_scanType; // 0 - load from files, 1 - albums, 2 - artists
   CMusicDatabase m_musicDatabase;
 
   std::set<CStdString> m_pathsToScan;
+  std::set<CAlbum> m_albumsToScan;
+  std::set<CArtist> m_artistsToScan;
   std::set<CStdString> m_pathsToCount;
 };
 }
