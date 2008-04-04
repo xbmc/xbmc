@@ -5,6 +5,8 @@
 #pragma once
 #include "../guilib/GUIListItem.h"
 #include "Song.h"
+#include "Artist.h"
+#include "Album.h"
 #include "utils/Archive.h"
 #include "DateTime.h"
 #include "VideoInfoTag.h"
@@ -226,6 +228,7 @@ public:
 
   // Sets the video thumb (cached first, else caches user thumb)
   void SetVideoThumb();
+  void CacheVideoFanart();
 
   // Sets the cached thumb for the item if it exists
   void SetCachedVideoThumb();

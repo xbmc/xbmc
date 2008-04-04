@@ -734,6 +734,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("tagline")) return LISTITEM_TAGLINE;
   else if (info.Equals("top250")) return LISTITEM_TOP250;
   else if (info.Equals("trailer")) return LISTITEM_TRAILER;
+  else if (info.Equals("starrating")) return LISTITEM_STAR_RATING;
   else if (info.Left(9).Equals("property(")) return AddListItemProp(info.Mid(9, info.GetLength() - 10));
   return 0;
 }
@@ -1923,8 +1924,8 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
           if (window)
             control = window->GetControl(window->GetViewContainerID());
         }
-        if (control && control->IsContainer())
-          bReturn = ((CGUIBaseContainer *)control)->GetCondition(info.m_info, info.m_data2);
+        if (control)
+          bReturn = control->GetCondition(info.m_info, info.m_data2);
       }
       break;
     case CONTAINER_HAS_FOCUS:
@@ -2151,7 +2152,7 @@ CStdString CGUIInfoManager::GetImage(int info, DWORD contextWindow)
       return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("tvshowthumb");
   }
   else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_ACTUAL_ICON ||
-          info == LISTITEM_OVERLAY || info == LISTITEM_RATING)
+          info == LISTITEM_OVERLAY || info == LISTITEM_RATING || info == LISTITEM_STAR_RATING)
   {
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS);
     if (window)
@@ -3422,14 +3423,24 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
 CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info) const
 {
   if (info == LISTITEM_RATING)
-  {
+  { // old song rating format
+    CStdString rating;
     if (item->HasMusicInfoTag())
-    { // song rating.
-      CStdString rating;
       rating.Format("songrating%c.png", item->GetMusicInfoTag()->GetRating());
-      return rating;
+    return rating;
+  }
+  else if (info == LISTITEM_STAR_RATING)
+  {
+    CStdString rating;
+    if (item->HasVideoInfoTag())
+    { // rating for videos is assumed 0..10, so convert to 0..5
+      rating.Format("rating%d.png", (long)((item->GetVideoInfoTag()->m_fRating * 0.5) + 0.5));
     }
-    return "";
+    else if (item->HasMusicInfoTag())
+    { // song rating.
+      rating.Format("rating%c.png", item->GetMusicInfoTag()->GetRating());
+    }
+    return rating;
   }
   else
     return GetItemLabel(item, info);

@@ -119,6 +119,23 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
   return true;
 }
 
+bool CPicture::CacheImage(const CStdString& sourceFileName, const CStdString& destFileName)
+{
+  CLog::Log(LOGINFO, "Caching image from: %s to %s", sourceFileName.c_str(), destFileName.c_str());
+
+#ifdef RESAMPLE_CACHED_IMAGES
+  if (!m_dll.Load()) return false;
+  if (!m_dll.CreateThumbnail(sourceFileName.c_str(), destFileName.c_str(), 1280, 720, g_guiSettings.GetBool("pictures.useexifrotation")))
+  {
+    CLog::Log(LOGERROR, "%s Unable to create new image %s from image %s", __FUNCTION__, destFileName.c_str(), sourceFileName.c_str());
+    return false;
+  }
+  return true;
+#else
+  return CFile::Cache(sourceFileName, destFileName);
+#endif
+}
+
 bool CPicture::CreateThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, const CStdString& strExtension, const CStdString& strThumbFileName)
 {
   CLog::Log(LOGINFO, "Creating album thumb from memory: %s", strThumbFileName.c_str());
