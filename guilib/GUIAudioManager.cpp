@@ -7,11 +7,13 @@
 #include "../xbmc/ButtonTranslator.h"
 #include "../xbmc/utils/SingleLock.h"
 #include "../xbmc/Util.h"
+#include "../xbmc/FileSystem/Directory.h"
 #ifdef HAS_SDL
 #include <SDL/SDL_mixer.h>
 #endif
 
 using namespace std;
+using namespace DIRECTORY;
 
 CGUIAudioManager g_audioManager;
 
@@ -256,7 +258,11 @@ bool CGUIAudioManager::Load()
     return true;
 
   if (g_guiSettings.GetString("lookandfeel.soundskin")=="SKINDEFAULT")
-    m_strMediaDir=_P("Q:\\skin\\"+g_guiSettings.GetString("lookandfeel.skin")+"\\sounds");
+  {
+    m_strMediaDir=_P("T:\\skin\\"+g_guiSettings.GetString("lookandfeel.skin")+"\\sounds");
+    if ( ! CDirectory::Exists( m_strMediaDir ) )
+      m_strMediaDir=_P("Q:\\skin\\"+g_guiSettings.GetString("lookandfeel.skin")+"\\sounds");
+  }
   else
     m_strMediaDir=_P("Q:\\sounds\\"+g_guiSettings.GetString("lookandfeel.soundskin"));
     
