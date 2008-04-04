@@ -980,6 +980,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\utils\MusicAlbumInfo.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\utils\MusicArtistInfo.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\MusicArtistInfo.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\utils\MusicInfoScraper.cpp">
 				</File>
 				<File
@@ -1008,6 +1014,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\utils\ScraperParser.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\ScraperUrl.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\ScraperUrl.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\SectionLoader.cpp">
@@ -1100,6 +1112,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			<Filter
 				Name="Database"
 				Filter="">
+				<File
+					RelativePath=".\xbmc\Album.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\Artist.cpp">
+				</File>
 				<File
 					RelativePath=".\xbmc\Database.cpp">
 				</File>
@@ -2478,6 +2496,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\utils\AlarmClock.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\Album.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\albumdatabase.h">
 			</File>
 			<File
@@ -2494,6 +2515,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\ArenaItem.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\Artist.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\artistdatabase.h">
@@ -3665,6 +3689,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					</File>
 					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserMicroDVD.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserSami.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserSami.h">
 					</File>
 					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserSubrip.cpp">

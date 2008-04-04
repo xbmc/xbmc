@@ -93,7 +93,7 @@
 				<onright>50</onright>
 				<onup>3</onup>
 				<ondown>20</ondown>
-				<visible>System.GetBool(mymusic.enablelibrary) + Library.HasContent(Music)</visible>
+				<visible>System.GetBool(musiclibrary.enabled) + Library.HasContent(Music)</visible>
 			</control>
 			<control type="group">
 				<description>LastFM Love Hate Stuff</description>

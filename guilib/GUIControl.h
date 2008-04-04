@@ -162,6 +162,7 @@ public:
 
   virtual bool IsGroup() const { return false; };
   virtual bool IsContainer() const { return false; };
+  virtual bool GetCondition(int condition, int data) const { return false; };
 
   void SetParentControl(CGUIControl *control) { m_parentControl = control; };
   virtual void SaveStates(std::vector<CControlState> &states);

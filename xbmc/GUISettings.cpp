@@ -258,9 +258,18 @@ CGUISettings::CGUISettings(void)
   AddBool(5, "mymusic.clearplaylistsonend",239,false);
   AddSeparator(6, "mymusic.sep2");
   AddString(7,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
-  AddSeparator(8, "mymusic.sep3");
-  AddBool(9, "mymusic.enablelibrary", 418, true);
-  AddString(10, "mymusic.cleanupmusiclibrary", 334, "", BUTTON_CONTROL_STANDARD);
+
+  AddCategory(3,"musiclibrary",14022);
+  AddBool(1, "musiclibrary.enabled", 418, true);
+  AddSeparator(2,"musiclibrary.sep1");
+  AddBool(3,"musiclibrary.autoalbuminfo", 20192, false);
+  AddBool(4,"musiclibrary.autoartistinfo", 20193, false);
+  AddString(5, "musiclibrary.defaultscraper", 20194, "Allmusic", SPIN_CONTROL_TEXT);
+  AddBool(6, "musiclibrary.updateonstartup", 22000, false);
+  AddSeparator(7,"musiclibrary.sep2");
+  AddString(8, "musiclibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
+  AddString(9, "musiclibrary.export", 20196, "", BUTTON_CONTROL_STANDARD);
+  AddString(10, "musiclibrary.import", 20197, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(3, "musicplayer", 16003);
   AddString(1, "musicplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
@@ -440,9 +449,9 @@ CGUISettings::CGUISettings(void)
   AddBool(8, "videolibrary.updateonstartup", 22000, false);
   AddBool(9, "videolibrary.backgroundupdate", 22001, false);    
   AddSeparator(10, "videolibrary.sep2");  
-  AddString(11, "videolibrary.cleanupvideolibrary", 334, "", BUTTON_CONTROL_STANDARD);
-  AddString(12, "videolibrary.exportvideolibrary", 647, "", BUTTON_CONTROL_STANDARD);
-  AddString(13, "videolibrary.importvideolibrary", 648, "", BUTTON_CONTROL_STANDARD);
+  AddString(11, "videolibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
+  AddString(12, "videolibrary.export", 647, "", BUTTON_CONTROL_STANDARD);
+  AddString(13, "videolibrary.import", 648, "", BUTTON_CONTROL_STANDARD);
   
   AddCategory(5, "videoplayer", 16003);
   AddString(1, "videoplayer.calibrate", 214, "", BUTTON_CONTROL_STANDARD);
