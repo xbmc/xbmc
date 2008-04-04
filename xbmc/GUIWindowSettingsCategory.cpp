@@ -446,6 +446,11 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInVisualisations(pSetting, GetSetting(pSetting->GetSetting())->GetID());
     }
+    else if (strSetting.Equals("musiclibrary.defaultscraper"))
+    {
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+      FillInMusicScrapers(pControl,g_stSettings.m_defaultMusicScraper);
+    }
     else if (strSetting.Equals("karaoke.port0voicemask"))
     {
       FillInVoiceMasks(0, pSetting);
@@ -1287,10 +1292,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
     }
-    else if (strSetting.Equals("mymusic.cleanupmusiclibrary"))
+    else if (!strSetting.Equals("musiclibrary.enabled")
+      && strSetting.Left(13).Equals("musiclibrary."))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("mymusic.enablelibrary"));
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("musiclibrary.enabled"));
     }
     else if (!strSetting.Equals("videolibrary.enabled")
       && strSetting.Left(13).Equals("videolibrary."))
@@ -1414,13 +1420,19 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_guiSettings.SetString("karaoke.port3voicemask", pControl->GetCurrentLabel());
     FillInVoiceMaskValues(3, g_guiSettings.GetSetting("karaoke.port3voicemask"));
   }
-  else if (strSetting.Equals("mymusic.cleanupmusiclibrary"))
+  else if (strSetting.Equals("musiclibrary.cleanup"))
   {
     CMusicDatabase musicdatabase;
     musicdatabase.Clean();
     CUtil::DeleteMusicDatabaseDirectoryCache();
   }
-  else if (strSetting.Equals("videolibrary.cleanupvideolibrary"))
+  else if (strSetting.Equals("musiclibrary.defaultscraper"))
+  {
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+    g_guiSettings.SetString("musiclibrary.defaultscraper", pControl->GetCurrentLabel());
+    FillInMusicScrapers(pControl,pControl->GetCurrentLabel());
+  }
+  else if (strSetting.Equals("videolibrary.cleanup"))
   {
     if (CGUIDialogYesNo::ShowAndGetInput(313, 333, 0, 0))
     {
@@ -1430,7 +1442,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       videodatabase.Close();
     }
   }
-  else if (strSetting.Equals("videolibrary.exportvideolibrary"))
+  else if (strSetting.Equals("videolibrary.export"))
   {
     CStdString path(g_settings.GetDatabaseFolder());
     VECSHARES shares;
@@ -1444,7 +1456,21 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       videodatabase.Close();
     }
   }
-  else if (strSetting.Equals("videolibrary.importvideolibrary"))
+  else if (strSetting.Equals("musiclibrary.export"))
+  {
+    CStdString path(g_settings.GetDatabaseFolder());
+    VECSHARES shares;
+    g_mediaManager.GetLocalDrives(shares);
+    if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
+    {
+      CUtil::AddFileToFolder(path, "musicdb.xml", path);
+      CMusicDatabase musicdatabase;
+      musicdatabase.Open();
+      musicdatabase.ExportToXML(path);
+      musicdatabase.Close();
+    }
+  }
+  else if (strSetting.Equals("videolibrary.import"))
   {
     CStdString path(g_settings.GetDatabaseFolder());
     VECSHARES shares;
@@ -1455,6 +1481,19 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       videodatabase.Open();
       videodatabase.ImportFromXML(path);
       videodatabase.Close();
+    }
+  }
+  else if (strSetting.Equals("musiclibrary.import"))
+  {
+    CStdString path(g_settings.GetDatabaseFolder());
+    VECSHARES shares;
+    g_mediaManager.GetLocalDrives(shares);
+    if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "musicdb.xml", g_localizeStrings.Get(651) , path))
+    {
+      CMusicDatabase musicdatabase;
+      musicdatabase.Open();
+      musicdatabase.ImportFromXML(path);
+      musicdatabase.Close();
     }
   }
   else if (strSetting.Equals("musicplayer.jumptoaudiohardware") || strSetting.Equals("videoplayer.jumptoaudiohardware"))
@@ -3485,6 +3524,31 @@ void CGUIWindowSettingsCategory::FillInSortMethods(CSetting *pSetting, int windo
   }
   pControl->SetValue(pSettingInt->GetData());
   delete state;
+}
+
+void CGUIWindowSettingsCategory::FillInMusicScrapers(CGUISpinControlEx *pControl, const CStdString& strSelected)
+{
+  CFileItemList items;
+  CDirectory::GetDirectory("q:\\system\\scrapers\\music",items,".xml",false);
+  int j=0;
+  int k=0;
+  pControl->Clear();
+  for ( int i=0;i<items.Size();++i)
+  {
+    if (items[i]->m_bIsFolder)
+      continue;
+    CScraperParser parser;
+    if (parser.Load(items[i]->m_strPath))
+    {
+      if (parser.GetName().Equals(strSelected)|| CUtil::GetFileName(items[i]->m_strPath).Equals(strSelected))
+      {
+        g_stSettings.m_defaultMusicScraper = CUtil::GetFileName(items[i]->m_strPath);
+        k = j;
+      }
+      pControl->AddLabel(parser.GetName(),j++);
+    }
+  }
+  pControl->SetValue(k);
 }
 
 // check and clear our folder views if applicable.

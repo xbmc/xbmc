@@ -15,7 +15,6 @@ bool CDVDFactorySubtitle::GetSubtitles(VecSubtitleFiles& vecSubtitles, string& s
   CLog::Log(LOGINFO, "CDVDFactorySubtitle::GetSubtitles, searching subtitles");
 
   vecSubtitles.clear();
-
   std::string subtitlePrefix = _P("Z:\\subtitle.");
   //std::string filenameWithoutExtension = strFile;
   //int iExtension = filenameWithoutExtension.find_last_of(".");

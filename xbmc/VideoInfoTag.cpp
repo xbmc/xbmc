@@ -91,9 +91,10 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
     XMLUtils::SetString(movie, "file", m_strFile);
     XMLUtils::SetString(movie, "path", m_strPath);
     XMLUtils::SetString(movie, "filenameandpath", m_strFileNameAndPath);
-    if (m_strEpisodeGuide.IsEmpty())
-      XMLUtils::SetString(movie, "episodeguide", m_strEpisodeGuide);
   }
+  if (!m_strEpisodeGuide.IsEmpty())
+    XMLUtils::SetString(movie, "episodeguide", m_strEpisodeGuide);
+
   XMLUtils::SetString(movie, "id", m_strIMDBNumber);
   XMLUtils::SetString(movie, "genre", m_strGenre);
   XMLUtils::SetString(movie, "credits", m_strWritingCredits);

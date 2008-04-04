@@ -149,7 +149,7 @@
 			<posy>192</posy>
 			<width>110</width>
 			<height>20</height>
-			<info>ListItem.Rating</info>
+			<info>ListItem.StarRating</info>
 		</control>
 		<control type="label">
 			<description>Comment</description>

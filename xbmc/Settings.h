@@ -337,6 +337,8 @@ public:
     CStdString m_musicExtensions;
     CStdString m_videoExtensions;
 
+    CStdString m_defaultMusicScraper;
+
     CStdString m_logFolder;
 
     bool m_bMyMusicSongInfoInVis;

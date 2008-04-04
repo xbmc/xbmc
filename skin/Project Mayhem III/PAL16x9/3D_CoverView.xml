@@ -64,7 +64,7 @@
 					<width>121</width>
 					<posx>380</posx>
 					<posy>4</posy>
-					<info>listitem.rating</info>
+					<info>ListItem.StarRating</info>
 					<aspectratio>stretch</aspectratio>
 					<texture flipx="true" /> 
 					<visible>Container.Sort(SongRating)</visible>
@@ -129,7 +129,7 @@
 					<width>121</width>
 					<posx>380</posx>
 					<posy>4</posy>
-					<info>listitem.rating</info>
+					<info>ListItem.StarRating</info>
 					<aspectratio>stretch</aspectratio>
 					<texture flipx="true" /> 
 					<visible>Container.Sort(SongRating)</visible>

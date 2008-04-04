@@ -677,3 +677,4 @@ bool CFileRar::OpenInArchive()
   return false;
 #endif
 }
+
