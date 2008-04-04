@@ -1510,6 +1510,18 @@ CProfile* CApplication::InitDirectoriesLinux()
     CStdString xbmcUserdata = xbmcHome + "/userdata";
     CreateDirectory(xbmcUserdata.c_str(), NULL);
 
+    CStdString xbmcDir = xbmcHome + "/skin";
+    CreateDirectory(xbmcDir.c_str(), NULL);
+
+    xbmcDir = xbmcHome + "/visualisations";
+    CreateDirectory(xbmcDir.c_str(), NULL);
+
+    xbmcDir = xbmcHome + "/screensavers";
+    CreateDirectory(xbmcDir.c_str(), NULL);
+
+    xbmcDir = xbmcHome + "/sounds";
+    CreateDirectory(xbmcDir.c_str(), NULL);
+
     // copy required files
     CopyUserDataIfNeeded(_P("t:\\userdata"), "Keymap.xml");
     CopyUserDataIfNeeded(_P("t:\\userdata"), "RssFeeds.xml");
@@ -2483,7 +2495,11 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_dwSkinTime = 0;
 
   CStdString strHomePath;
-  CStdString strSkinPath = _P("Q:\\skin\\" + strSkin);
+  CStdString strSkinPath = _P("T:\\skin\\" + strSkin);
+  if ( ! CDirectory::Exists(strSkinPath) )
+  {
+    strSkinPath = _P("Q:\\skin\\" + strSkin);
+  }
 
   CLog::Log(LOGINFO, "  load skin from:%s", strSkinPath.c_str());
 
