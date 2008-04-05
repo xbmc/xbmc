@@ -729,6 +729,23 @@ void CGUIWindowSettingsCategory::CreateSettings()
         pControl->AddLabel(g_localizeStrings.Get(12382), FRAME_RATE_USE_PAL60); // "Play NTSC videos in PAL60"
       pControl->SetValue(pSettingInt->GetData());
     }
+    else if (strSetting.Equals("videoplayer.highqualityupscaling"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(13113), SOFTWARE_UPSCALING_DISABLED);
+      pControl->AddLabel(g_localizeStrings.Get(13114), SOFTWARE_UPSCALING_SD_CONTENT);
+      pControl->AddLabel(g_localizeStrings.Get(13115), SOFTWARE_UPSCALING_ALWAYS);
+      pControl->SetValue(pSettingInt->GetData());
+    }
+    else if (strSetting.Equals("videoplayer.upscalingalgorithm"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(13117), UPSCALING_BICUBIC);
+      pControl->AddLabel(g_localizeStrings.Get(13118), UPSCALING_LANCZOS);
+      pControl->SetValue(pSettingInt->GetData());
+    }
     else if (strSetting.Equals("system.ledcolour"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -885,6 +902,19 @@ void CGUIWindowSettingsCategory::UpdateSettings()
           pControl->SetEnabled(true);
         else
           pControl->SetEnabled(false);
+      }
+    }
+    else if (strSetting.Equals("videoplayer.upscalingalgorithm"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl)
+      {
+        int value = g_guiSettings.GetInt("videoplayer.highqualityupscaling");
+        
+        if (value == SOFTWARE_UPSCALING_DISABLED)
+          pControl->SetEnabled(false);
+        else
+          pControl->SetEnabled(true);
       }
     }
     else if (strSetting.Equals("filelists.allowfiledeletion"))

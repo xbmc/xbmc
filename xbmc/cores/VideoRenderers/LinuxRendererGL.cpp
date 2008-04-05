@@ -70,6 +70,10 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_pYUVShader = NULL;
   m_pVideoFilterShader = NULL;
   m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
+  
+  m_upscalingMethod = UPSCALING_DISABLED;
+  m_upscalingWidth = 0;
+  m_upscalingHeight = 0;
 
   memset(m_image, 0, sizeof(m_image));
   memset(m_YUVTexture, 0, sizeof(m_YUVTexture));
@@ -712,6 +716,7 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
   ChooseBestResolution(m_fps);
   SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
   ManageDisplay();
+  SelectUpscalingMethod();
 
   // make sure we have a valid context that supports rendering
   m_bValidated = false;
@@ -727,6 +732,36 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
   m_bConfigured = true;
 
   return true;
+}
+
+void CLinuxRendererGL::SelectUpscalingMethod()
+{
+  int upscale = g_guiSettings.GetInt("videoplayer.highqualityupscaling");
+  
+  m_upscalingWidth = rd.right-rd.left;
+  m_upscalingHeight = rd.bottom-rd.top;
+  
+  // See if we're a candiate for upscaling.
+  bool candidateForUpscaling = false;
+  if (upscale != SOFTWARE_UPSCALING_DISABLED && m_iSourceHeight < m_upscalingWidth && m_iSourceHeight < m_upscalingHeight)
+  {
+    CLog::Log(LOGWARNING, "Upscale: possible given resolution increase.");
+    candidateForUpscaling = true;
+  }
+
+  // Turn if off if we're told to upscale HD content and we're not always on.
+  if (upscale == SOFTWARE_UPSCALING_SD_CONTENT && m_iSourceHeight >= 720)
+  {
+    CLog::Log(LOGWARNING, "Upscale: Disabled due to HD source.");
+    candidateForUpscaling = false;
+  }
+  
+  if (candidateForUpscaling)
+    m_upscalingMethod = g_guiSettings.GetInt("videoplayer.upscalingalgorithm");
+  else
+    m_upscalingMethod = UPSCALING_DISABLED;
+  
+  CLog::Log(LOGWARNING, "Upscale: selected algorithm %d", m_upscalingMethod);
 }
 
 int CLinuxRendererGL::NextYV12Texture()
@@ -809,26 +844,61 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
 
 void CLinuxRendererGL::LoadTextures(int source)
 {
-  YV12Image &im = m_image[source];
-  YUVFIELDS &fields = m_YUVTexture[source];
+  YV12Image* im = &m_image[source];
+  YUVFIELDS& fields = m_YUVTexture[source];
 
-  if (!(im.flags&IMAGE_FLAG_READY))
+  if (!(im->flags&IMAGE_FLAG_READY))
   {
     SetEvent(m_eventTexturesDone[source]);
     return;
   }
 
+  bool needToFree = false;
+  
+  if (m_upscalingMethod != UPSCALING_DISABLED)
+  {
+    // Allocate a new destination image.
+    YV12Image imScaled;
+    imScaled.cshift_x = imScaled.cshift_y = 1;
+    imScaled.texcoord_x = imScaled.texcoord_y = 1;
+    imScaled.plane[0] = new BYTE[m_upscalingWidth * m_upscalingHeight];
+    imScaled.plane[1] = new BYTE[(m_upscalingWidth/2) * (m_upscalingHeight/2)];
+    imScaled.plane[2] = new BYTE[(m_upscalingWidth/2) * (m_upscalingHeight/2)];
+    imScaled.stride[0] = m_upscalingWidth;
+    imScaled.stride[1] = m_upscalingWidth/2;
+    imScaled.stride[2] = m_upscalingWidth/2;
+    imScaled.width = m_upscalingWidth;
+    imScaled.height = m_upscalingHeight;
+    imScaled.flags = im->flags;
+    
+    // Perform the scaling.
+    uint8_t* src[] =       { im->plane[0],  im->plane[1],  im->plane[2] };
+    int      srcStride[] = { im->stride[0], im->stride[1], im->stride[2] };
+    uint8_t* dst[] =       { imScaled.plane[0],  imScaled.plane[1],  imScaled.plane[2] };
+    int      dstStride[] = { imScaled.stride[0], imScaled.stride[1], imScaled.stride[2] };
+    
+    struct SwsContext *ctx = m_dllSwScale.sws_getContext(im->width, im->height, PIX_FMT_YUV420P,
+                                                         m_upscalingWidth, m_upscalingHeight, PIX_FMT_YUV420P,
+                                                         m_upscalingMethod == UPSCALING_BICUBIC ? SWS_BICUBIC : SWS_LANCZOS, 
+                                                         NULL, NULL, NULL);
+    m_dllSwScale.sws_scale(ctx, src, srcStride, 0, im->height, dst, dstStride);
+    m_dllSwScale.sws_freeContext(ctx);
+    
+    im = &imScaled;
+    needToFree = true;
+  }
+  
   // if we don't have a shader, fallback to SW YUV2RGB for now
   if (m_renderMethod & RENDER_SW)
   {
-    struct SwsContext *context = m_dllSwScale.sws_getContext(im.width, im.height, PIX_FMT_YUV420P,
-                                                             im.width, im.height, PIX_FMT_RGB32,
+    struct SwsContext *context = m_dllSwScale.sws_getContext(im->width, im->height, PIX_FMT_YUV420P,
+                                                             im->width, im->height, PIX_FMT_RGB32,
                                                              SWS_FAST_BILINEAR, NULL, NULL, NULL);
-    uint8_t *src[] = { im.plane[0], im.plane[1], im.plane[2] };
-    int     srcStride[] = { im.stride[0], im.stride[1], im.stride[2] };
+    uint8_t *src[] = { im->plane[0], im->plane[1], im->plane[2] };
+    int     srcStride[] = { im->stride[0], im->stride[1], im->stride[2] };
     uint8_t *dst[] = { m_rgbBuffer, 0, 0 };
     int     dstStride[] = { m_iSourceWidth*4, 0, 0 };
-    m_dllSwScale.sws_scale(context, src, srcStride, 0, im.height, dst, dstStride);
+    m_dllSwScale.sws_scale(context, src, srcStride, 0, im->height, dst, dstStride);
     m_dllSwScale.sws_freeContext(context);
     SetEvent(m_eventTexturesDone[source]);
   }
@@ -897,12 +967,12 @@ void CLinuxRendererGL::LoadTextures(int source)
     // Load RGB image
     if (deinterlacing)
     {
-      glPixelStorei(GL_UNPACK_ROW_LENGTH, im.width*2);
+      glPixelStorei(GL_UNPACK_ROW_LENGTH, im->width*2);
       glBindTexture(m_textureTarget, fields[FIELD_ODD][0]);
-      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height/2, GL_BGRA, GL_UNSIGNED_BYTE, m_rgbBuffer);
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im->width, im->height/2, GL_BGRA, GL_UNSIGNED_BYTE, m_rgbBuffer);
       glBindTexture(m_textureTarget, fields[FIELD_EVEN][0]);
-      glPixelStorei(GL_UNPACK_SKIP_PIXELS, im.width);
-      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height/2, GL_BGRA, GL_UNSIGNED_BYTE, m_rgbBuffer);
+      glPixelStorei(GL_UNPACK_SKIP_PIXELS, im->width);
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im->width, im->height/2, GL_BGRA, GL_UNSIGNED_BYTE, m_rgbBuffer);
       glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
       glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
       VerifyGLState();
@@ -910,7 +980,7 @@ void CLinuxRendererGL::LoadTextures(int source)
     else
     {
       glBindTexture(m_textureTarget, fields[FIELD_FULL][0]);
-      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height, GL_BGRA, GL_UNSIGNED_BYTE, m_rgbBuffer);
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im->width, im->height, GL_BGRA, GL_UNSIGNED_BYTE, m_rgbBuffer);
     }
   }
   else
@@ -918,12 +988,12 @@ void CLinuxRendererGL::LoadTextures(int source)
     if (deinterlacing)
     {
       // Load Y fields
-      glPixelStorei(GL_UNPACK_ROW_LENGTH, im.width*2);
+      glPixelStorei(GL_UNPACK_ROW_LENGTH, im->width*2);
       glBindTexture(m_textureTarget, fields[FIELD_ODD][0]);
-      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[0]);
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im->width, im->height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im->plane[0]);
       glBindTexture(m_textureTarget, fields[FIELD_EVEN][0]);
-      glPixelStorei(GL_UNPACK_SKIP_PIXELS, im.width);
-      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[0]);
+      glPixelStorei(GL_UNPACK_SKIP_PIXELS, im->width);
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im->width, im->height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im->plane[0]);
       glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
       glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
       VerifyGLState();
@@ -933,7 +1003,7 @@ void CLinuxRendererGL::LoadTextures(int source)
       // Load Y plane
       glBindTexture(m_textureTarget, fields[FIELD_FULL][0]);
       glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width, im.height, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[0]);
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im->width, im->height, GL_LUMINANCE, GL_UNSIGNED_BYTE, im->plane[0]);
     }
   }
 
@@ -957,17 +1027,17 @@ void CLinuxRendererGL::LoadTextures(int source)
     {
       // Load Even U & V Fields
       glBindTexture(m_textureTarget, fields[FIELD_ODD][1]);
-      glPixelStorei(GL_UNPACK_ROW_LENGTH, im.width);
-      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/4, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[1]);
+      glPixelStorei(GL_UNPACK_ROW_LENGTH, im->width);
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im->width/2, im->height/4, GL_LUMINANCE, GL_UNSIGNED_BYTE, im->plane[1]);
       glBindTexture(m_textureTarget, fields[FIELD_ODD][2]);
-      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/4, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[2]);
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im->width/2, im->height/4, GL_LUMINANCE, GL_UNSIGNED_BYTE, im->plane[2]);
 
       // Load Odd U & V Fields
       glBindTexture(m_textureTarget, fields[FIELD_EVEN][1]);
-      glPixelStorei(GL_UNPACK_SKIP_PIXELS, im.width/2);
-      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/4, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[1]);
+      glPixelStorei(GL_UNPACK_SKIP_PIXELS, im->width/2);
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im->width/2, im->height/4, GL_LUMINANCE, GL_UNSIGNED_BYTE, im->plane[1]);
       glBindTexture(m_textureTarget, fields[FIELD_EVEN][2]);
-      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/4, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[2]);
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im->width/2, im->height/4, GL_LUMINANCE, GL_UNSIGNED_BYTE, im->plane[2]);
       VerifyGLState();
 
       glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
@@ -977,15 +1047,22 @@ void CLinuxRendererGL::LoadTextures(int source)
     {
       glBindTexture(m_textureTarget, fields[FIELD_FULL][1]);
       glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[1]);
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im->width/2, im->height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im->plane[1]);
       VerifyGLState();
 
       glBindTexture(m_textureTarget, fields[FIELD_FULL][2]);
       glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-      glTexSubImage2D(m_textureTarget, 0, 0, 0, im.width/2, im.height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im.plane[2]);
+      glTexSubImage2D(m_textureTarget, 0, 0, 0, im->width/2, im->height/2, GL_LUMINANCE, GL_UNSIGNED_BYTE, im->plane[2]);
       VerifyGLState();
     }
     SetEvent(m_eventTexturesDone[source]);
+  }
+
+  // See if we need to whack the scaled video.
+  if (needToFree == true)
+  {
+    for (int i=0; i<3; i++)
+      delete [] im->plane[i];
   }
 }
 
@@ -2136,7 +2213,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
 
     im.height = m_iSourceHeight;
     im.width = m_iSourceWidth;
-
+    
     im.stride[0] = im.width;
     im.stride[1] = im.width/2;
     im.stride[2] = im.width/2;
@@ -2190,7 +2267,11 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     else
     {
       CLog::Log(LOGDEBUG, "GL: Creating Y NPOT texture of size %d x %d", im.width, im.height);
-      glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width, im.height/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+      
+      if (m_upscalingMethod != UPSCALING_DISABLED)
+        glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, m_upscalingWidth, m_upscalingHeight/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+      else
+        glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width, im.height/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
     }
 
     glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -2203,7 +2284,12 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     {
       CLog::Log(LOGDEBUG, "GL: Creating U NPOT texture of size %d x %d", im.width/2, im.height/2/divfactor);
       glBindTexture(m_textureTarget, fields[f][1]);
-      glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+      
+      if (m_upscalingMethod != UPSCALING_DISABLED)
+        glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, m_upscalingWidth/2, m_upscalingHeight/2/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+      else
+        glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+      
       glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
       glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -2212,7 +2298,12 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
 
       CLog::Log(LOGDEBUG, "GL: Creating V NPOT texture of size %d x %d", im.width/2, im.height/2/divfactor);
       glBindTexture(m_textureTarget, fields[f][2]);
-      glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+      
+      if (m_upscalingMethod != UPSCALING_DISABLED)
+        glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, m_upscalingWidth/2, m_upscalingHeight/2/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+      else
+        glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+  
       glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
       glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
