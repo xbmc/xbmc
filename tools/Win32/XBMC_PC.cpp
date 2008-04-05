@@ -389,12 +389,15 @@ HRESULT CXBMC_PC::Create( HINSTANCE hInstance, LPSTR commandLine )
 //  m_bReady = TRUE;
 
 #else
-  // todo: allow more than one option
-  if (strnicmp(commandLine, "-fs", 3) == 0)
+  CStdString strcl(commandLine);
+
+  if(strcl.Find("-fs") >= 0)
     g_advancedSettings.m_fullScreen = true;
-  else if(strnicmp(commandLine, "-q", 2) == 0)
+
+  if(strcl.Find("-q") >= 0)
     g_application.SetQuiet(true);
-  else if(strnicmp(commandLine, "-p", 2) == 0)
+
+  if(strcl.Find("-p") >= 0)
   {
     printf("Using platform specific directories...\n");
     g_application.EnablePlatformDirectories();
