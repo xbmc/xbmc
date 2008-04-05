@@ -39,6 +39,13 @@ void main()
 int main(int argc, char* argv[])
 #endif
 {
+#ifdef __APPLE__
+  // We're always going to use platform directories, because nobody
+  // starts the app from the command line in normal usage.
+  //
+  g_application.EnablePlatformDirectories();  
+#endif
+  
   CFileItemList playlist;
   if (argc > 1)
   {
