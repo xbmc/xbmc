@@ -438,7 +438,7 @@ extern "C" HANDLE WINAPI dllGetCurrentProcess()
 #ifdef API_DEBUG
   CLog::Log(LOGDEBUG, "GetCurrentProcess(void) => 9375");
 #endif
-  return (HMODULE)9375;
+  return (HANDLE)9375;
 }
 
 extern "C" UINT WINAPI dllGetACP()
