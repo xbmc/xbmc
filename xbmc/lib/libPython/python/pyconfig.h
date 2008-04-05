@@ -1,6 +1,8 @@
 #ifndef Py_CONFIG_H
 #define Py_CONFIG_H
-
+#ifdef __APPLE__
+#error You should not be including this header! 
+#endif
 /* pyconfig.h.  NOT Generated automatically by configure.
 
 This is a manually maintained version used for the Watcom,
