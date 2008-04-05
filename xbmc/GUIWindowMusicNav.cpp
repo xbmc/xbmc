@@ -478,15 +478,18 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     }
     else if (
       !inPlaylists && 
-      dir.HasAlbumInfo(item->m_strPath) && 
+      (dir.HasAlbumInfo(item->m_strPath) || dir.IsArtistDir(item->m_strPath)) &&
       !dir.IsAllItem(item->m_strPath) && 
       !item->IsParentFolder() && 
       !item->IsLastFM() && 
       !item->IsShoutCast() && 
-      !item->m_strPath.Left(14).Equals("musicsearch://")
+      !item->m_strPath.Left(14).Equals("musicsearch://") 
       )
     {
-      buttons.Add(CONTEXT_BUTTON_INFO, 13351);
+      if (dir.IsArtistDir(item->m_strPath))
+        buttons.Add(CONTEXT_BUTTON_INFO, 21891);
+      else
+        buttons.Add(CONTEXT_BUTTON_INFO, 13351);
     }
 
     // enable query all albums button only in album view
