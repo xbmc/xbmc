@@ -4,6 +4,7 @@
 #include "XMLUtils.h"
 #include "./HTMLTable.h"
 #include "./HTMLUtil.h"
+#include "Util.h"
 
 using namespace MUSIC_GRABBER;
 
