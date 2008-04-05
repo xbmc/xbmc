@@ -1,5 +1,5 @@
 <project name="XBMC Remote" default="make">
-  <property name="WTK" value="/home/topfs/netbeans-6.1beta/mobility8/WTK2.5.2"/>
+  <property name="WTK" value=""/>
   <property name="OUTNAME" value="XBMCRemote"/> 
   <property name="MIDP10_LIB" value="${WTK}/lib/midpapi10.jar"/>
   <property name="CLDC10_LIB" value="${WTK}/lib/cldcapi10.jar"/>
