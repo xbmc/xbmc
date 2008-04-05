@@ -1750,9 +1750,11 @@ bool CSettings::SaveAvpackSettings(TiXmlNode *io_pRoot) const
   TiXmlElement videoscreenNode("videoscreen");
   pNode = io_pRoot->InsertEndChild(videoscreenNode);
   if (!pNode) return false;
+#ifdef HAS_XBOX_HARDWARE
   SetInteger(pNode, "flickerfilter", g_guiSettings.GetInt("videoscreen.flickerfilter"));
-  SetInteger(pNode, "resolution", g_guiSettings.GetInt("videoscreen.resolution"));
   SetBoolean(pNode, "soften", g_guiSettings.GetBool("videoscreen.soften"));
+#endif
+  SetInteger(pNode, "resolution", g_guiSettings.GetInt("videoscreen.resolution"));
 
   TiXmlElement videoplayerNode("videoplayer");
   pNode = io_pRoot->InsertEndChild(videoplayerNode);
