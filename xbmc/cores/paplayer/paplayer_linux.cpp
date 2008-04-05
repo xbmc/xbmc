@@ -914,7 +914,6 @@ bool PAPlayer::HandleFFwdRewd()
 
 void PAPlayer::SetStreamVolume(int stream, long nVolume)
 {
-  CLog::Log(LOGDEBUG,"PAPlayer::SetStreamVolume - stream %d, volume: %lu", stream, nVolume);
   m_amp[stream].SetVolume(nVolume);
 }
 
