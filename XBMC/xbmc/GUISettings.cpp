@@ -431,7 +431,7 @@ CGUISettings::CGUISettings(void)
   AddCategory(5, "myvideos", 16000);
   AddBool(1, "myvideos.treatstackasfile", 20051, true);
   AddBool(2, "myvideos.autoresume",12017, false);
-  AddBool(3, "myvideos.autothumb",12024, true);
+  AddBool(3, "myvideos.autothumb",12024, false);
   AddSeparator(4, "myvideos.sep1");
   AddInt(5, "myvideos.viewmode", 582, DEFAULT_VIEW_AUTO, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX, SPIN_CONTROL_TEXT);
   AddInt(6, "myvideos.sortmethod", 581, SORT_METHOD_LABEL, SORT_METHOD_LABEL, 1, SORT_METHOD_MAX, SPIN_CONTROL_TEXT);
