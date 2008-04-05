@@ -24,7 +24,7 @@
 /**
  * @file postprocess.h
  * @brief
- *     external api for the pp stuff
+ *     external postprocessing API
  */
 
 #include "libavutil/avutil.h"
@@ -59,14 +59,14 @@ extern const char pp_help[]; ///< a simple help text
 #endif
 
 void  pp_postprocess(const uint8_t * src[3], const int srcStride[3],
-                 uint8_t * dst[3], const int dstStride[3],
-                 int horizontalSize, int verticalSize,
-                 const QP_STORE_T *QP_store,  int QP_stride,
-                 pp_mode_t *mode, pp_context_t *ppContext, int pict_type);
+                     uint8_t * dst[3], const int dstStride[3],
+                     int horizontalSize, int verticalSize,
+                     const QP_STORE_T *QP_store,  int QP_stride,
+                     pp_mode_t *mode, pp_context_t *ppContext, int pict_type);
 
 
 /**
- * returns a pp_mode_t or NULL if an error occured
+ * returns a pp_mode_t or NULL if an error occurred
  * name is the string after "-pp" on the command line
  * quality is a number from 0 to PP_QUALITY_MAX
  */
