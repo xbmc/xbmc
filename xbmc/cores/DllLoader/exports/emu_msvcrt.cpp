@@ -791,7 +791,13 @@ extern "C"
     {
       if (g_emuFileWrapper.StreamIsEmulatedFile(stream))
       {
-        not_implement("msvcrt.dll fake function dll_fputc() called\n");
+        int fd = g_emuFileWrapper.GetDescriptorByStream(stream);
+        if (fd >= 0)
+        {
+          int iItemsWritten = dll_write(fd, (char* )&character, 1);
+          if (iItemsWritten == 1)
+            return character;
+        }
       }
       else if (!IS_STD_STREAM(stream))
       {
