@@ -251,7 +251,11 @@ CGUISettings::CGUISettings(void)
   // My Music Settings
   AddGroup(3, 2);
   AddCategory(3, "mymusic", 16000);
+#ifdef __APPLE__
+  AddString(1, "mymusic.visualisation", 250, "ProjectM.vis", SPIN_CONTROL_TEXT);
+#else
   AddString(1, "mymusic.visualisation", 250, "milkdrop.vis", SPIN_CONTROL_TEXT);
+#endif
   AddSeparator(2, "mymusic.sep1");
   AddBool(3, "mymusic.autoplaynextitem", 489, true);
   //AddBool(4, "musicfiles.repeat", 488, false);
@@ -460,19 +464,24 @@ CGUISettings::CGUISettings(void)
   AddInt(4, "videoplayer.rendermethod", 13354, RENDER_HQ_RGB_SHADER, RENDER_LQ_RGB_SHADER, 1, RENDER_HQ_RGB_SHADERV2, SPIN_CONTROL_TEXT);
   AddInt(5, "videoplayer.displayresolution", 169, (int)AUTORES, (int)HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddInt(6, "videoplayer.framerateconversions", 336, FRAME_RATE_LEAVE_AS_IS, FRAME_RATE_LEAVE_AS_IS, 1, FRAME_RATE_USE_PAL60, SPIN_CONTROL_TEXT);
+  
+  AddSeparator(7, "videoplayer.sep1.5");
+  AddInt(8, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
+  AddInt(9, "videoplayer.upscalingalgorithm", 13116, UPSCALING_BICUBIC, UPSCALING_BICUBIC, 1, UPSCALING_LANCZOS, SPIN_CONTROL_TEXT);
+  
 #ifdef HAS_XBOX_HARDWARE
   AddInt(7, "videoplayer.flicker", 13100, 1, 0, 1, 5, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(8, "videoplayer.soften", 215, false);
 #endif
-  AddSeparator(9, "videoplayer.sep2");
-  AddString(10, "videoplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
-  AddSeparator(11, "videoplayer.sep3");
+  AddSeparator(10, "videoplayer.sep2");
+  AddString(11, "videoplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
+  AddSeparator(12, "videoplayer.sep3");
 #ifdef HAS_XBOX_HARDWARE
-  AddBool(12, "videoplayer.useexternaldvdplayer", 20001, false);
-  AddString(13, "videoplayer.externaldvdplayer", 20002, "",  BUTTON_CONTROL_PATH_INPUT, true, 655);
+  AddBool(13, "videoplayer.useexternaldvdplayer", 20001, false);
+  AddString(14, "videoplayer.externaldvdplayer", 20002, "",  BUTTON_CONTROL_PATH_INPUT, true, 655);
 #endif
-  AddInt(14, "videoplayer.dvdplayerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
-  AddBool(15, "videoplayer.dvdautomenu", 21882, false);
+  AddInt(15, "videoplayer.dvdplayerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
+  AddBool(16, "videoplayer.dvdautomenu", 21882, false);
 
   AddCategory(5, "subtitles", 287);
   AddString(1, "subtitles.font", 288, "Arial.ttf", SPIN_CONTROL_TEXT);
@@ -826,8 +835,8 @@ int CGUISettings::GetInt(const char *strSetting) const
     return ((CSettingInt *)(*it).second)->GetData();
   }
   // Assert here and write debug output
+  CLog::Log(LOGERROR,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
   ASSERT(false);
-  CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
   return 0;
 }
 
