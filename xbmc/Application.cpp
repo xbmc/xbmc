@@ -1019,11 +1019,12 @@ HRESULT CApplication::Create(HWND hWnd)
         return E_FAIL;
   }
 
-#ifdef _LINUX
   // for python scripts that check the OS
+#ifdef __APPLE__
+  setenv("OS","OS X",true);
+#elif defined(_LINUX)
   setenv("OS","Linux",true);
 #endif
-
 #endif
 
   //list available videomodes
@@ -1569,9 +1570,8 @@ CProfile* CApplication::InitDirectoriesOSX()
 
   if (m_bPlatformDirectories)
   {
-    CStdString str = home;
-    str.append("/Library/Application Support/XBMC/");
-    CIoSupport::RemapDriveLetter('Q', (char*) str.c_str());
+    // Always get system files from the same place!
+    CIoSupport::RemapDriveLetter('Q', (char*) strExecutablePath.c_str());
   }
   else
   {
