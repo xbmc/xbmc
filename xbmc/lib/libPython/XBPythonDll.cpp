@@ -53,7 +53,7 @@ extern "C"
   FUNCTION(PyLong_AsLong)
   FUNCTION(PyLong_AsLongLong)
   FUNCTION(PyErr_Format)
-#ifndef _LINUX
+#if !defined(_LINUX) || defined(__APPLE__)
   FUNCTION(PyUnicodeUCS2_AsUnicode)
 #else
   FUNCTION(PyUnicodeUCS4_AsUnicode)
@@ -144,7 +144,7 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PyLong_AsLong)) &&
       dll.ResolveExport(DLL_FUNCTION(PyLong_AsLongLong)) &&
       dll.ResolveExport(DLL_FUNCTION(PyErr_Format)) &&
-#ifndef _LINUX
+#if !defined(_LINUX) || defined(__APPLE__)
       dll.ResolveExport(DLL_FUNCTION(PyUnicodeUCS2_AsUnicode)) &&
 #else
       dll.ResolveExport(DLL_FUNCTION(PyUnicodeUCS4_AsUnicode)) &&
