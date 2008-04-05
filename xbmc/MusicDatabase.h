@@ -88,7 +88,7 @@ class CMusicDatabase : public CDatabase
     CStdString strGenre;
   };
 
-class CAlbumCache : public CAlbum
+  class CAlbumCache : public CAlbum
   {
   public:
     long idAlbum;

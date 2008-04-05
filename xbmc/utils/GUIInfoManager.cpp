@@ -3,6 +3,7 @@
 #include "../GUIMediaWindow.h"
 #include "../GUIDialogFileBrowser.h"
 #include "../GUIDialogContentSettings.h"
+#include "GUIDialogProgress.h"
 #include "../Application.h"
 #include "../Util.h"
 #include "../lib/libscrobbler/scrobbler.h"

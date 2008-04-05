@@ -31,6 +31,7 @@
 #include "xbox/XKGeneral.h"
 #include "utils/IMDB.h"
 #include "FileSystem/File.h"
+#include "GUIDialogProgress.h"
 
 #define REGEXSAMPLEFILE "[-\\._ ]sample[-\\._ ]"
 

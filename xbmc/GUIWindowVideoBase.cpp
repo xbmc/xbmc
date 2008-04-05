@@ -29,6 +29,7 @@
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogVideoScan.h"
 #include "GUIDialogSmartPlaylistEditor.h"
+#include "GUIDialogProgress.h"
 #include "PlayListFactory.h"
 #include "Application.h"
 #include "NfoFile.h"

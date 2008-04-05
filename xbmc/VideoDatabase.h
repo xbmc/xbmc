@@ -1,12 +1,14 @@
 #pragma once
 #include "Database.h"
 #include "VideoInfoTag.h"
-#include "settings/VideoSettings.h"
-#include "GUIDialogProgress.h"
+
 #include <set>
 
 struct SScraperInfo;
+class CFileItem;
 class CFileItemList;
+class CVideoSettings;
+class CGUIDialogProgress;
 
 typedef std::vector<CVideoInfoTag> VECMOVIES;
 

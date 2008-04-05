@@ -27,6 +27,7 @@
 #include "GUIPassword.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIDialogPictureInfo.h"
+#include "GUIDialogProgress.h"
 #include "PlayListFactory.h"
 #include "FileSystem/MultiPathDirectory.h"
 #include "PictureInfoLoader.h"

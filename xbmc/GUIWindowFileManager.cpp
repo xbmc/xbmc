@@ -41,6 +41,7 @@
 #include "GUIDialogOK.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogKeyboard.h"
+#include "GUIDialogProgress.h"
 #include "FileSystem/RarManager.h"
 
 using namespace std;

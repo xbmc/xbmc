@@ -36,6 +36,7 @@
 #include "GUIDialogOK.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogSelect.h"
+#include "GUIDialogProgress.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/File.h"
 
