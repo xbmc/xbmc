@@ -220,7 +220,6 @@ extern "C" int WINAPI dllDuplicateHandle(HANDLE hSourceProcessHandle,   // handl
 #endif
 }
 
-//extern "C" BOOL WINAPI dllDisableThreadLibraryCalls(HANDLE h)
 extern "C" BOOL WINAPI dllDisableThreadLibraryCalls(HMODULE h)
 {
 #ifdef _WIN32PC
@@ -524,6 +523,9 @@ static const char ch_envs[] =
 
 extern "C" LPVOID WINAPI dllGetEnvironmentStrings()
 {
+#ifdef _WIN32PC
+  return GetEnvironmentStrings();
+#endif
 #ifdef API_DEBUG
   CLog::Log(LOGDEBUG, "GetEnvironmentStrings() => 0x%x = %p", ch_envs, ch_envs);
 #endif
@@ -532,11 +534,17 @@ extern "C" LPVOID WINAPI dllGetEnvironmentStrings()
 
 extern "C" LPVOID WINAPI dllGetEnvironmentStringsW()
 {
+#ifdef _WIN32PC
+  return GetEnvironmentStringsW();
+#endif
   return 0;
 }
 
 extern "C" int WINAPI dllGetEnvironmentVariableA(LPCSTR lpName, LPSTR lpBuffer, DWORD nSize)
 {
+#ifdef _WIN32PC
+  return GetEnvironmentVariableA(lpName, lpBuffer, nSize);
+#endif
   if (lpBuffer) lpBuffer[0] = 0;
 
   if (strcmp(lpName, "__MSVCRT_HEAP_SELECT") == 0)
