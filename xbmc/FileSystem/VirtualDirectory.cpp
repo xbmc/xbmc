@@ -51,7 +51,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
 }
 bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, bool bUseFileDirectories)
 {
-  if (m_vecSources)
+  if (!m_vecSources)
   {
     items.m_strPath=strPath;
     return true;

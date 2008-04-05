@@ -113,7 +113,7 @@ void CXBoxRenderManager::Update(bool bPauseDrawing)
 void CXBoxRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
   DWORD locks = ExitCriticalSection(g_graphicsContext);
-  CMediaSourcedLock lock(m_sharedSection); 
+  CSharedLock lock(m_sharedSection); 
   RestoreCriticalSection(g_graphicsContext, locks);
 
   if (m_pRenderer)
@@ -189,7 +189,7 @@ void CXBoxRenderManager::UnInit()
 
 void CXBoxRenderManager::SetupScreenshot()
 {
-  CMediaSourcedLock lock(m_sharedSection);
+  CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
     m_pRenderer->SetupScreenshot();
 }
@@ -213,7 +213,7 @@ void CXBoxRenderManager::FlipPage(DWORD delay /* = 0LL*/, int source /*= -1*/, E
   if(delay > 0)
     timestamp = GetTickCount() + delay;
 
-  CMediaSourcedLock lock(m_sharedSection);
+  CSharedLock lock(m_sharedSection);
   if(!m_pRenderer) return;
 
   /* make sure any previous frame was presented */
@@ -436,7 +436,7 @@ void CXBoxRenderManager::Process()
     DWORD dwTimeStamp = GetTickCount();
     try
     {
-      CMediaSourcedLock lock(m_sharedSection);
+      CSharedLock lock(m_sharedSection);
       CSingleLock lock2(g_graphicsContext);
 
       if( m_pRenderer && g_graphicsContext.IsFullScreenVideo() && !g_application.IsPaused() )
