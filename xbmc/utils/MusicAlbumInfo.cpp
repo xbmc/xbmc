@@ -102,7 +102,7 @@ bool CMusicAlbumInfo::Load(CHTTP& http, const SScraperInfo& info, const CStdStri
 {
   // load our scraper xml
   CScraperParser parser;
-  if (!parser.Load("q:\\system\\scrapers\\music\\"+info.strPath))
+  if (!parser.Load(_P("q:\\system\\scrapers\\music\\"+info.strPath)))
     return false;
 
   bool bChained=true;

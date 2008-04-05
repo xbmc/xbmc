@@ -65,12 +65,12 @@ void CMusicInfoScraper::FindAlbuminfo()
   m_vecAlbums.erase(m_vecAlbums.begin(), m_vecAlbums.end());
 
   CScraperParser parser;
-  if (!parser.Load("q:\\system\\scrapers\\music\\"+m_info.strPath))
+  if (!parser.Load(_P("q:\\system\\scrapers\\music\\"+m_info.strPath)))
     return;
 
   if (!m_info.settings.GetPluginRoot() || m_info.settings.GetSettings().IsEmpty())
   {
-    m_info.settings.LoadSettingsXML("q:\\system\\scrapers\\music\\"+m_info.strPath);
+    m_info.settings.LoadSettingsXML(_P("q:\\system\\scrapers\\music\\"+m_info.strPath));
     m_info.settings.SaveFromDefault();
   }
 
@@ -163,12 +163,12 @@ void CMusicInfoScraper::FindArtistinfo()
   m_vecArtists.erase(m_vecArtists.begin(), m_vecArtists.end());
 
   CScraperParser parser;
-  if (!parser.Load("q:\\system\\scrapers\\music\\"+m_info.strPath))
+  if (!parser.Load(_P("q:\\system\\scrapers\\music\\")+m_info.strPath))
     return;
 
   if (!m_info.settings.GetPluginRoot() || m_info.settings.GetSettings().IsEmpty())
   {
-    m_info.settings.LoadSettingsXML("q:\\system\\scrapers\\music\\"+m_info.strPath);
+    m_info.settings.LoadSettingsXML(_P("q:\\system\\scrapers\\music\\")+m_info.strPath);
     m_info.settings.SaveFromDefault();
   }
 
