@@ -25,7 +25,7 @@
 
 #ifndef FFMPEG_MEM_H
 #define FFMPEG_MEM_H
-
+#error FUCK
 #ifdef __ICC
     #define DECLARE_ALIGNED(n,t,v)      t v __attribute__ ((aligned (n)))
     #define DECLARE_ASM_CONST(n,t,v)    const t __attribute__ ((aligned (n))) v
