@@ -220,8 +220,12 @@ extern "C" int WINAPI dllDuplicateHandle(HANDLE hSourceProcessHandle,   // handl
 #endif
 }
 
-extern "C" BOOL WINAPI dllDisableThreadLibraryCalls(HANDLE h)
+//extern "C" BOOL WINAPI dllDisableThreadLibraryCalls(HANDLE h)
+extern "C" BOOL WINAPI dllDisableThreadLibraryCalls(HMODULE h)
 {
+#ifdef _WIN32PC
+  return DisableThreadLibraryCalls(h);
+#endif
   not_implement("kernel32.dll fake function DisableThreadLibraryCalls called\n"); //warning
   return TRUE;
 }
@@ -425,10 +429,13 @@ extern "C" HMODULE WINAPI dllTerminateProcess(HANDLE hProcess, UINT uExitCode)
   not_implement("kernel32.dll fake function TerminateProcess called\n"); //warning
   return NULL;
 }
-extern "C" HMODULE WINAPI dllGetCurrentProcess()
+extern "C" HANDLE WINAPI dllGetCurrentProcess()
 {
   //not_implement("kernel32.dll fake function GetCurrentProcess called\n"); //warning
   //return NULL;
+#ifdef _WIN32PC
+  return GetCurrentProcess();
+#endif
 #ifdef API_DEBUG
   CLog::Log(LOGDEBUG, "GetCurrentProcess(void) => 9375");
 #endif
