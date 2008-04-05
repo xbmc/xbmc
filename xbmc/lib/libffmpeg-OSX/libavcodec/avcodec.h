@@ -28,11 +28,10 @@
 
 
 #include "libavutil/avutil.h"
-#include <sys/types.h> /* size_t */
 
 #define LIBAVCODEC_VERSION_MAJOR 51
-#define LIBAVCODEC_VERSION_MINOR 50
-#define LIBAVCODEC_VERSION_MICRO  1
+#define LIBAVCODEC_VERSION_MINOR 53
+#define LIBAVCODEC_VERSION_MICRO  0
 
 #define LIBAVCODEC_VERSION_INT  AV_VERSION_INT(LIBAVCODEC_VERSION_MAJOR, \
                                                LIBAVCODEC_VERSION_MINOR, \
@@ -178,6 +177,8 @@ enum CodecID {
     CODEC_ID_SUNRAST,
     CODEC_ID_INDEO4,
     CODEC_ID_INDEO5,
+    CODEC_ID_MIMIC,
+    CODEC_ID_RL2,
 
     /* various PCM "codecs" */
     CODEC_ID_PCM_S16LE= 0x10000,
@@ -296,7 +297,7 @@ enum CodecID {
     CODEC_ID_SSA,
     CODEC_ID_MOV_TEXT,
 
-    /* other specific kind of codecs (generaly used for attachments) */
+    /* other specific kind of codecs (generally used for attachments) */
     CODEC_ID_TTF= 0x18000,
 
     CODEC_ID_MPEG2TS= 0x20000, /**< _FAKE_ codec to indicate a raw MPEG-2 TS
@@ -601,6 +602,8 @@ typedef struct AVPanScan{
 \
     /**\
      * is this picture used as reference\
+     * The values for this are the same as the MpegEncContext.picture_structure\
+     * variable, that is 1->top field, 2->bottom field, 3->frame/both fields.\
      * - encoding: unused\
      * - decoding: Set by libavcodec. (before get_buffer() call)).\
      */\
@@ -751,12 +754,13 @@ typedef struct AVPanScan{
 #define FF_BUFFER_TYPE_COPY     8 ///< Just a (modified) copy of some other buffer, don't deallocate anything.
 
 
-#define FF_I_TYPE  1 // Intra
-#define FF_P_TYPE  2 // Predicted
-#define FF_B_TYPE  3 // Bi-dir predicted
-#define FF_S_TYPE  4 // S(GMC)-VOP MPEG4
-#define FF_SI_TYPE 5
-#define FF_SP_TYPE 6
+#define FF_I_TYPE  1 ///< Intra
+#define FF_P_TYPE  2 ///< Predicted
+#define FF_B_TYPE  3 ///< Bi-dir predicted
+#define FF_S_TYPE  4 ///< S(GMC)-VOP MPEG4
+#define FF_SI_TYPE 5 ///< Switching Intra
+#define FF_SP_TYPE 6 ///< Switching Predicted
+#define FF_BI_TYPE 7
 
 #define FF_BUFFER_HINTS_VALID    0x01 // Buffer hints value is meaningful (if 0 ignore).
 #define FF_BUFFER_HINTS_READABLE 0x02 // Codec will read from buffer.
@@ -790,7 +794,7 @@ typedef struct AVCodecContext {
      * information on struct for av_log
      * - set by avcodec_alloc_context
      */
-    AVClass *av_class;
+    const AVClass *av_class;
     /**
      * the average bitrate
      * - encoding: Set by user; unused for constant quantizer encoding.
@@ -1136,7 +1140,7 @@ typedef struct AVCodecContext {
     int (*get_buffer)(struct AVCodecContext *c, AVFrame *pic);
 
     /**
-     * Called to release buffers which where allocated with get_buffer.
+     * Called to release buffers which were allocated with get_buffer.
      * A released buffer can be reused in get_buffer().
      * pic.data[*] must be set to NULL.
      * - encoding: unused
@@ -2214,8 +2218,16 @@ typedef struct AVCodec {
     int (*close)(AVCodecContext *);
     int (*decode)(AVCodecContext *, void *outdata, int *outdata_size,
                   const uint8_t *buf, int buf_size);
+    /**
+     * Codec capabilities.
+     * see CODEC_CAP_*
+     */
     int capabilities;
     struct AVCodec *next;
+    /**
+     * Flush buffers.
+     * Will be called when seeking
+     */
     void (*flush)(AVCodecContext *);
     const AVRational *supported_framerates; ///array of supported framerates, or NULL if any, array is terminated by {0,0}
     const enum PixelFormat *pix_fmts;       ///array of supported pixel formats, or NULL if unknown, array is terminanted by -1
@@ -2914,7 +2926,8 @@ attribute_deprecated void av_free_static(void);
  * @deprecated. Code which uses av_mallocz_static is broken/misdesigned
  * and should correctly use static arrays
  */
-attribute_deprecated void *av_mallocz_static(unsigned int size);
+attribute_deprecated av_malloc_attrib av_alloc_size(1)
+void *av_mallocz_static(unsigned int size);
 
 /**
  * Copy image 'src' to 'dst'.
