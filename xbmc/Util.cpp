@@ -5836,41 +5836,7 @@ CStdString CUtil::TranslatePath(const CStdString& path)
 
   if (path.length() > 0 && path[1] == ':')
   {
-#ifdef __APPLE__
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // TODO: remove this commented section if new mapping scheme works
-    // as expected. -d4rk (04/01/08)
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    /*
-    CStdString lowerPath = path;
-    lowerPath.ToLower();
-    
-    // Special mappings for OS X.
-    if (path[0] == 'Q' || path[0] == 'q')
-    {
-      if (path.Equals("q:\\system\\profiles.xml", false))
-      {
-        CStdString str = getenv("HOME");  
-        str.append("/Library/Application Support/XBMC/profiles.xml");
-        return str;
-      }
-      else if (path.Equals("q:\\system\\mediasources.xml", false))
-      {
-        CStdString str = getenv("HOME");  
-        str.append("/Library/Application Support/XBMC/mediasources.xml");
-        return str;
-      }
-      else if (lowerPath.Find("q:\\plugins") == 0)
-      {
-        CStdString str = getenv("HOME");  
-        str.append("/Library/Application Support/XBMC/Plugins");
-        str.append(path.substr(10));
-        str.Replace('\\', '/');
-        return str;
-      }
-    }
-    */
-#elif defined(_WIN32PC)
+#ifdef _WIN32PC
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // FIXME: please make this a drive mapping specified in
     // CApplication::InitDirectoriesWin32().  I didn't do it since I'm
