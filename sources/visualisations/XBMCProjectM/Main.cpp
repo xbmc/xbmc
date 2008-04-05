@@ -46,7 +46,7 @@ d4rk@xboxmediacenter.com
 #define CONFIG_FILE "/config"
 #define PRESETS_DIR "/visualisations/projectM"
 #define FONTS_DIR "/fonts"
-#define PROJECTM_DATADIR "UserData"
+#define PROJECTM_DATADIR "userdata"
 
 projectM_t *globalPM = NULL;
 
