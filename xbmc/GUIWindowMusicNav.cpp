@@ -664,23 +664,28 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return true;
   
   case CONTEXT_BUTTON_SET_CONTENT:
-    bool bScan=false;
-    SScraperInfo info;
-    if (!m_musicdatabase.GetScraperForPath(m_vecItems[itemNumber]->m_strPath,info))
-      info.strContent = "albums";
-    
-    int iLabel=132;
-    // per genre or for all artists
-    if (m_vecItems.m_strPath.Equals("musicdb://1/") || m_vecItems[itemNumber]->m_strPath.Equals("musicdb://2/"))
-      iLabel = 133;
-    
-    if (CGUIDialogContentSettings::Show(info, bScan,iLabel))
     {
-      m_musicdatabase.SetScraperForPath(m_vecItems[itemNumber]->m_strPath,info);
-      if (bScan)
-        OnInfoAll(itemNumber,true);
+      bool bScan=false;
+      SScraperInfo info;
+      if (!m_musicdatabase.GetScraperForPath(m_vecItems[itemNumber]->m_strPath,info))
+        info.strContent = "albums";
+    
+      int iLabel=132;
+      // per genre or for all artists
+      if (m_vecItems.m_strPath.Equals("musicdb://1/") || m_vecItems[itemNumber]->m_strPath.Equals("musicdb://2/"))
+        iLabel = 133;
+    
+      if (CGUIDialogContentSettings::Show(info, bScan,iLabel))
+      {
+        m_musicdatabase.SetScraperForPath(m_vecItems[itemNumber]->m_strPath,info);
+        if (bScan)
+          OnInfoAll(itemNumber,true);
+      }
+      return true;
     }
-    return true;
+    
+  default:
+    break;
   }
 
   return CGUIWindowMusicBase::OnContextButton(itemNumber, button);
