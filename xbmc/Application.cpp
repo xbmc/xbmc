@@ -1496,9 +1496,6 @@ CProfile* CApplication::InitDirectoriesLinux()
     CIoSupport::RemapDriveLetter('Q', (char*) strExecutablePath.c_str());
   }
 
-  g_settings.m_vecProfiles.clear();
-  g_settings.LoadProfiles(_P( PROFILES_FILE ));
-
   if (m_bPlatformDirectories)
   {
     // make the $HOME/.xbmc directory
@@ -1527,6 +1524,9 @@ CProfile* CApplication::InitDirectoriesLinux()
     CopyUserDataIfNeeded(_P("t:\\userdata"), "RssFeeds.xml");
     CopyUserDataIfNeeded(_P("t:\\userdata"), "Lircmap.xml");
 
+    g_settings.m_vecProfiles.clear();
+    g_settings.LoadProfiles(_P( PROFILES_FILE ));
+
     // create new profile if we don't already have one
     if (g_settings.m_vecProfiles.size()==0)
     {
@@ -1536,6 +1536,9 @@ CProfile* CApplication::InitDirectoriesLinux()
   }
   else
   {
+    g_settings.m_vecProfiles.clear();
+    g_settings.LoadProfiles(_P( PROFILES_FILE ));
+
     if (g_settings.m_vecProfiles.size()==0)
     {
       profile = new CProfile;
