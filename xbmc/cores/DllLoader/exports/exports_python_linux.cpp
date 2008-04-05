@@ -12,8 +12,22 @@
 #include "../DllLoaderContainer.h"
 
 #ifdef __APPLE__
-// FIXME, this isn't right. Use pthread TLS stuff.
-static char xbp_cw_dir[MAX_PATH] = "Q:\\python";
+//
+// Use pthread's built-in support for TLS, it's more portable.
+//
+static pthread_once_t keyOnce = PTHREAD_ONCE_INIT;
+static pthread_key_t  tWorkingDir = 0;
+
+//
+// Called once and only once.
+//
+static void MakeTlsKeys()
+{
+  pthread_key_create(&tWorkingDir, free);
+}
+
+#define xbp_cw_dir (char* )pthread_getspecific(tWorkingDir)
+
 #else
 __thread char xbp_cw_dir[MAX_PATH] = "Q:\\python";
 #endif
@@ -58,6 +72,18 @@ void *xbp_dlsym(void *handle, const char *symbol)
 
 char* xbp_getcwd(char *buf, int size)
 {
+#ifdef __APPLE__
+  // Initialize thread local storage and local thread pointer.
+  pthread_once(&keyOnce, MakeTlsKeys);
+  if (xbp_cw_dir == 0)
+  {
+    printf("Initializing Python path...\n");
+    char* path = (char* )malloc(MAX_PATH);
+    strcpy(path, "Q:\\python");
+    pthread_setspecific(tWorkingDir, (void*)path);
+  }
+#endif
+  
   if (buf == NULL) buf = (char *)malloc(size);
   strcpy(buf, xbp_cw_dir);
   return buf;
@@ -65,6 +91,18 @@ char* xbp_getcwd(char *buf, int size)
 
 int xbp_chdir(const char *dirname)
 {
+#ifdef __APPLE__
+  // Initialize thread local storage and local thread pointer.
+  pthread_once(&keyOnce, MakeTlsKeys);
+  
+  if (xbp_cw_dir == 0)
+  {
+    char* path = (char* )malloc(MAX_PATH);
+    strcpy(path, "Q:\\python");
+    pthread_setspecific(tWorkingDir, (void*)path);
+  }
+#endif
+  
   if (strlen(dirname) > MAX_PATH) return -1;
   strcpy(xbp_cw_dir, dirname);
   return 0;
@@ -153,24 +191,34 @@ DIR *xbp_opendir(const char *name)
   return opendir(strName.c_str());
 }
 
+#ifdef __APPLE__
+
+int xbp_stat(const char * path, struct stat * buf)
+{
+  CStdString strName = _P(path);
+  return stat(strName.c_str(), buf);
+}
+
+int xbp_lstat(const char * path, struct stat * buf)
+{
+  CStdString strName = _P(path);
+  return lstat(strName.c_str(), buf);
+}
+
+#else
+
 int xbp__xstat64(int ver, const char *filename, struct stat64 *stat_buf)
 {
   CStdString strName = _P(filename);
-#ifdef __APPLE__
-  return stat64(strName.c_str(), stat_buf);
-#else
   return __xstat64(ver, strName.c_str(), stat_buf);
-#endif
 }
 
 int xbp__lxstat64(int ver, const char *filename, struct stat64 *stat_buf)
 {
   CStdString strName = _P(filename);
-#ifdef __APPLE__
-  return stat64(strName.c_str(), stat_buf);
-#else
   return __lxstat64(ver, strName.c_str(), stat_buf);
-#endif
 }
+
+#endif
 
 } // extern "C"
