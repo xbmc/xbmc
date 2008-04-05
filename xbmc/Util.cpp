@@ -3816,7 +3816,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       g_pythonParser.evalFile(strParameterCaseIntact.c_str());
   }
 #endif
-#ifdef _LINUX
+#if defined(_LINUX) || defined(_WIN32PC)
   else if (execute.Equals("system.exec"))
   {
     system(strParameterCaseIntact.c_str());
