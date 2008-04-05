@@ -30,24 +30,34 @@ namespace PYXBMC
     // TODO: UTF-8: Does python use UTF-16?
     //              Do we need to convert from the string charset to UTF-8
     //              for non-unicode data?
-    if(PyUnicode_Check(pObject))
+    if (PyUnicode_Check(pObject))
     {
       // this will probably not really work since the python DLL assumes that
       // that wchar_t is 2 bytes and linux is actually 4 bytes. That's why
       // so building a CStdStringW will not work
+      //
       CStdString utf8String;
-      g_charsetConverter.wToUTF8(PyUnicode_AsUnicode(pObject), utf8String);
+
+#ifdef __APPLE__
+      CStdStringW utf16String((wchar_t*)PyUnicodeUCS2_AsUnicode(pObject), PyUnicode_GET_SIZE(pObject));
+      g_charsetConverter.ucs2ToUTF8(utf16String, utf8String);
+#else
+      CStdStringW utf16String = (wchar_t*) PyUnicode_AsUnicode(pObject);
+      g_charsetConverter.wToUTF8(utf16String, utf8String);
+#endif
+      
       buf = utf8String;
       return 1;
     }
-    if(PyString_Check(pObject))
+    if (PyString_Check(pObject))
     {
       CStdString utf8String;
       g_charsetConverter.stringCharsetToUtf8(PyString_AsString(pObject), utf8String);
       buf = utf8String;
       return 1;
     }
-    // object is not an unicode ar normal string
+    
+    // Object is not a unicode or a normal string.
     buf = "";
     if (pos != -1) PyErr_Format(PyExc_TypeError, "argument %.200i must be unicode or str", pos);
     return 0;
