@@ -27,7 +27,9 @@ XBPython g_pythonParser;
 #define PYTHON_LIBDIR "Q:\\system\\python\\lib\\"
 #define PYTHON_EXT "Q:\\system\\python\\lib\\*.pyd"
 #else
-#ifdef __x86_64__
+#ifdef __APPLE__
+#define PYTHON_DLL "Q:\\system\\python\\python24-osx.so"
+#elif defined(__x86_64__)
 #define PYTHON_DLL "Q:\\system\\python\\python24-x86_64-linux.so"
 #else /* !__x86_64__ */
 #define PYTHON_DLL "Q:\\system\\python\\python24-i486-linux.so"
@@ -274,6 +276,10 @@ void XBPython::Initialize()
       // Required for python to find optimized code (pyo) files
       setenv("PYTHONOPTIMIZE", "1", 1);
 #endif
+      
+#ifdef __APPLE__
+      setenv("PYTHONHOME", _P("Q:\\system\\python"), 1);
+#endif
 
       Py_Initialize();
       PyEval_InitThreads();
@@ -315,6 +321,7 @@ void XBPython::Finalize()
   m_iDllScriptCounter--;
   // for linux - we never release the library. its loaded and stays in memory.
   EnterCriticalSection(&m_critSection);
+
   if (m_iDllScriptCounter == 0 && m_bInitialized)
   {
     CLog::Log(LOGINFO, "Python, unloading python24.dll cause no scripts are running anymore");
@@ -335,6 +342,7 @@ void XBPython::Finalize()
 
     m_bInitialized = false;
   }
+  
   LeaveCriticalSection(&m_critSection);
 }
 
