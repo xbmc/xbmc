@@ -38,9 +38,11 @@ protected:
   void UpdateContents(const CGUIControl *control, int currentItem);
   void UpdateView();
   void UpdateViewAsControl(const CStdString &viewLabel);
+  void UpdateViewVisibility();
   int GetView(VIEW_TYPE type, int id) const;
 
-  std::vector<CGUIControl *> m_vecViews;
+  std::vector<CGUIControl *> m_allViews;
+  std::vector<CGUIControl *> m_visibleViews;
   typedef std::vector<CGUIControl *>::const_iterator ciViews;
 
   CFileItemList*        m_fileItems;
