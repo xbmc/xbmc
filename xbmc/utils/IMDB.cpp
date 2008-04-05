@@ -51,7 +51,7 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
   }
   else if (m_info.strContent.Equals("musicvideos"))
   {
-    if (!m_parser.HasFunction("ScrapeFilename"))
+    if (!m_parser.HasFunction("FileNameScrape"))
       return false;
     
     CScraperUrl scrURL("filenamescrape");
@@ -245,7 +245,7 @@ bool CIMDB::InternalGetDetails(const CScraperUrl& url, CVideoInfoTag& movieDetai
   {
     CStdString strCurrHTML;
     if (url.m_xml.Equals("filenamescrape"))
-      return ScrapeFilename(url.strTitle,movieDetails);
+      return ScrapeFilename(movieDetails.m_strFileNameAndPath,movieDetails);
     if (!CScraperUrl::Get(url.m_url[i],strCurrHTML,m_http) || strCurrHTML.size() == 0)
       return false;
     strHTML.push_back(strCurrHTML);
@@ -585,10 +585,7 @@ void CIMDB::CloseThread()
 
 bool CIMDB::ScrapeFilename(const CStdString& strFileName, CVideoInfoTag& details)
 {
-  if (strFileName.Find("/") > -1 || strFileName.Find("\\") > -1)
-    m_parser.m_param[0] = CUtil::GetFileName(strFileName);
-  else
-    m_parser.m_param[0] = strFileName;
+  m_parser.m_param[0] = strFileName;
 
   CUtil::RemoveExtension(m_parser.m_param[0]);
   m_parser.m_param[0].Replace("_"," ");
