@@ -259,7 +259,7 @@ void CMusicInfoScraper::LoadArtistinfo(int iArtist)
 
 void CMusicInfoScraper::LoadAlbuminfo()
 {
-  if (m_iAlbum<0 || m_iAlbum>(int)m_vecAlbums.size())
+  if (m_iAlbum<0 || m_iAlbum>=(int)m_vecAlbums.size())
     return;
 
   CMusicAlbumInfo& album=m_vecAlbums[m_iAlbum];
@@ -270,7 +270,7 @@ void CMusicInfoScraper::LoadAlbuminfo()
 
 void CMusicInfoScraper::LoadArtistinfo()
 {
-  if (m_iArtist<0 || m_iArtist>(int)m_vecArtists.size())
+  if (m_iArtist<0 || m_iArtist>=(int)m_vecArtists.size())
     return;
 
   CMusicArtistInfo& artist=m_vecArtists[m_iArtist];
