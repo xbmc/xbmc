@@ -24,6 +24,7 @@
 #include "GUIProgressControl.h"
 #include "Util.h"
 #include "GUIWindowManager.h"
+#include "GUISettings.h"
 
 #define CONTROL_LABELSTATUS       401
 #define CONTROL_LABELDIRECTORY    402

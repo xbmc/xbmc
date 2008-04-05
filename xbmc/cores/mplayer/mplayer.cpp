@@ -14,6 +14,7 @@
 #include "../VideoRenderers/RenderManager.h"
 #include "../../utils/win32exception.h"
 #include "../DllLoader/exports/emu_registry.h"
+#include "Settings.h"
 
 using namespace std;
 using namespace XFILE;

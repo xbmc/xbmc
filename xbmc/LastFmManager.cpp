@@ -37,6 +37,7 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogProgress.h"
 #include "GUIDialogYesNo.h"
+#include "Settings.h"
 
 #include <sstream>
 

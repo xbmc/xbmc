@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include "PlayList.h"
-#include "Settings.h"
+#include "MediaSource.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "xbox/custom_launch_params.h"
 #else

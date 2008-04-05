@@ -18,6 +18,7 @@
 #include "FileSystem/File.h"
 #include "FileSystem/RarManager.h"
 #include "FileSystem/ZipManager.h"
+#include "Settings.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

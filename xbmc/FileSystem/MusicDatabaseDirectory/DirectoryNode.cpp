@@ -23,6 +23,7 @@
 #include "DirectoryNodeYearSong.h"
 #include "../../MusicInfoTag.h"
 #include "URL.h"
+#include "Settings.h"
 
 using namespace std;
 using namespace DIRECTORY::MUSICDATABASEDIRECTORY;

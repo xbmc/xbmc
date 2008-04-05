@@ -22,6 +22,7 @@
 #include "DirectoryNodeTitleMusicVideos.h"
 #include "VideoInfoTag.h"
 #include "URL.h"
+#include "Settings.h"
 
 using namespace std;
 using namespace DIRECTORY::VIDEODATABASEDIRECTORY;

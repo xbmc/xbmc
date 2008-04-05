@@ -2,10 +2,10 @@
 #include "GUIWindowManager.h"
 #include "GUIAudioManager.h"
 #include "GUIDialog.h"
-#include "../xbmc/GUISettings.h"
 #include "../xbmc/GUIPassword.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 #include "../xbmc/Util.h"
+#include "../xbmc/Settings.h"
 
 #ifndef _XBOX
 #include "../Tools/Win32/XBMC_PC.h"

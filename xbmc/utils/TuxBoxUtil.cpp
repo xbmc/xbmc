@@ -14,6 +14,7 @@
 #include "GUIDialogYesNo.h"
 #include "FileSystem/File.h"
 #include "URL.h"
+#include "Settings.h"
 
 using namespace XFILE;
 

@@ -24,6 +24,7 @@
 #include "utils/RegExp.h"
 #include "Util.h"
 #include "MusicInfoTag.h"
+#include "Settings.h"
 
 #include <cstring>
 

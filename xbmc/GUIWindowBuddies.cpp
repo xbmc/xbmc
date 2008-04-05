@@ -34,6 +34,8 @@
 #include "GUIDialogYesNo.h"
 #include "GUIDialogKeyboard.h"
 #include "FileSystem/File.h"
+#include "Settings.h"
+#include "ViewState.h"
 
 using namespace AUTOPTR;
 using namespace MEDIA_DETECT;

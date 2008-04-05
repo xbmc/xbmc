@@ -2,9 +2,11 @@
 #include "utils/Thread.h"
 #include "IProgressCallback.h"
 #include "utils/CriticalSection.h"
-#include "FileItem.h"
 
 #include <vector>
+
+class CFileItem;
+class CFileItemList;
 
 class IBackgroundLoaderObserver
 {

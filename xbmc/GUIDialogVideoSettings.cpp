@@ -30,6 +30,7 @@
 #endif
 #include "VideoDatabase.h"
 #include "GUIDialogYesNo.h"
+#include "Settings.h"
 
 CGUIDialogVideoSettings::CGUIDialogVideoSettings(void)
     : CGUIDialogSettings(WINDOW_DIALOG_VIDEO_OSD_SETTINGS, "VideoOSDSettings.xml")

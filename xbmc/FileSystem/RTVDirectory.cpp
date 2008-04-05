@@ -6,6 +6,7 @@
 #include "RTVDirectory.h"
 #include "../Util.h"
 #include "URL.h"
+#include "tinyXML/tinyxml.h"
 
 using namespace DIRECTORY;
 

@@ -31,6 +31,7 @@
 #include "Picture.h"
 #include "GUIWindowManager.h"
 #include "FileSystem/File.h"
+#include "Settings.h"
 
 using namespace XFILE;
 using namespace MEDIA_DETECT;

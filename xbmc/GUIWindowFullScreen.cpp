@@ -34,6 +34,7 @@
 #include "GUIFontManager.h"
 #include "GUITextLayout.h"
 #include "../guilib/GUIWindowManager.h"
+#include "Settings.h"
 
 #include <stdio.h>
 

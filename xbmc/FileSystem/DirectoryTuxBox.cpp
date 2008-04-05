@@ -9,6 +9,8 @@
 #include "URL.h"
 #include "../../guilib/GUIWindowManager.h"
 #include "GUIDialogProgress.h"
+#include "tinyXML/tinyxml.h"
+#include "Settings.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

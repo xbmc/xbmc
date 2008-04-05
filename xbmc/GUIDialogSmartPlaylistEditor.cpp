@@ -26,6 +26,7 @@
 #include "GUIDialogSmartPlaylistRule.h"
 #include "GUIWindowManager.h"
 #include "FileSystem/File.h"
+#include "GUISettings.h"
 
 #define CONTROL_HEADING         2
 #define CONTROL_RULE_LIST       10

@@ -31,6 +31,7 @@
 #include "FileSystem/FactoryDirectory.h"
 #include "GUIDialogPictureInfo.h"
 #include "../guilib/GUIWindowManager.h"
+#include "Settings.h"
 
 using namespace DIRECTORY;
 

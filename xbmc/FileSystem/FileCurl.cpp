@@ -2,6 +2,7 @@
 #include "FileCurl.h"
 #include "../Util.h"
 #include "URL.h"
+#include "Settings.h"
 
 #include <sys/stat.h>
 

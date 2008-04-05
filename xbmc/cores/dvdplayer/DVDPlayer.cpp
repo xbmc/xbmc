@@ -18,6 +18,7 @@
 #include "utils/GUIInfoManager.h"
 #include "Application.h"
 #include "DVDPerformanceCounter.h"
+#include "Settings.h"
 
 using namespace std;
 

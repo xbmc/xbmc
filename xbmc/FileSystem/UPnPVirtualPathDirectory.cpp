@@ -26,6 +26,7 @@
 #include "NptUtils.h"
 #include "UPnPVirtualPathDirectory.h"
 #include "FileSystem/Directory.h"
+#include "Settings.h"
 
 using namespace std;
 using namespace DIRECTORY;

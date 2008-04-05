@@ -10,6 +10,7 @@
 #include "../Util.h"
 #include "../xbox/Network.h"
 #include "../utils/Win32Exception.h"
+#include "Settings.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

@@ -29,6 +29,7 @@
 #include "Util.h"
 #include "MusicInfoTag.h"
 #include "FileSystem/File.h"
+#include "GUISettings.h"
 
 using namespace std;
 using namespace XFILE;

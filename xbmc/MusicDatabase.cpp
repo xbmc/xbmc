@@ -41,6 +41,7 @@
 #include "GUIDialogYesNo.h"
 #include "GUIDialogSelect.h"
 #include "FileSystem/File.h"
+#include "Settings.h"
 
 using namespace std;
 using namespace AUTOPTR;

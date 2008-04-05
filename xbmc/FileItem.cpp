@@ -46,6 +46,7 @@
 #include "Album.h"
 #include "Song.h"
 #include "URL.h"
+#include "Settings.h"
 
 using namespace std;
 using namespace XFILE;

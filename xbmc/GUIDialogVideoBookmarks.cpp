@@ -30,6 +30,8 @@
 #include "Picture.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIWindowManager.h"
+#include "ViewState.h"
+#include "Settings.h"
 
 using namespace std;
 

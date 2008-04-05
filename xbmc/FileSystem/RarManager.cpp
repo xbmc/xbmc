@@ -6,6 +6,7 @@
 #include "../../guilib/GUIWindowManager.h"
 #include "GUIDialogYesNo.h"
 #include "FileSystem/Directory.h"
+#include "Settings.h"
 
 #include <set>
 

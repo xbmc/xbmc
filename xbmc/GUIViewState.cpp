@@ -32,6 +32,8 @@
 #include "ViewDatabase.h"
 #include "AutoSwitch.h"
 #include "GUIWindowManager.h"
+#include "ViewState.h"
+#include "Settings.h"
 
 using namespace std;
 

@@ -6,6 +6,7 @@
 #include "GUIDialogOK.h"
 #include "FileSystem/Directory.h"
 #include "RarManager.h"
+#include "Settings.h"
 
 #include <process.h>
 

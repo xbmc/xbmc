@@ -25,6 +25,7 @@
 #include "Util.h"
 #include "Picture.h"
 #include "FileSystem/File.h"
+#include "Settings.h"
 
 using namespace XFILE;
 

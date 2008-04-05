@@ -27,6 +27,7 @@
 #include "utils/GUIInfoManager.h"
 #include "MusicInfoTag.h"
 #include "GUIWindowManager.h"
+#include "Settings.h"
 
 using namespace MUSIC_INFO;
 using namespace XFILE;

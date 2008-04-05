@@ -35,6 +35,7 @@
 #include "lib/libGoAhead/XBMChttp.h"
 #include "xbox/network.h"
 #include "GUIWindowManager.h"
+#include "Settings.h"
 
 using namespace std;
 

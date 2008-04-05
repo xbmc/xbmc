@@ -32,6 +32,7 @@
 #include "utils/IMDB.h"
 #include "FileSystem/File.h"
 #include "GUIDialogProgress.h"
+#include "Settings.h"
 
 #define REGEXSAMPLEFILE "[-\\._ ]sample[-\\._ ]"
 

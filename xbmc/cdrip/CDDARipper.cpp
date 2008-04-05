@@ -14,6 +14,7 @@
 #include "GUIDialogOK.h"
 #include "GUIDialogProgress.h"
 #include "GUIDialogKeyboard.h"
+#include "GUISettings.h"
 
 using namespace std;
 using namespace XFILE;

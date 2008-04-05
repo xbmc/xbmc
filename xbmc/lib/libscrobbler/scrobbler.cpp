@@ -25,6 +25,7 @@
 #include "../../utils/log.h"
 #include "../../utils/HTTP.h"
 #include "../../Util.h"
+#include "../../Settings.h"
 #include "../../Application.h"
 #include "../../MusicInfoTag.h"
 #include "FileSystem/File.h"
