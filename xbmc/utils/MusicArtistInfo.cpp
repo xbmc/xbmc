@@ -2,6 +2,7 @@
 #include "MusicArtistInfo.h"
 #include "ScraperParser.h"
 #include "XMLUtils.h"
+#include "Util.h"
 
 using namespace MUSIC_GRABBER;
 
