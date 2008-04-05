@@ -6,6 +6,10 @@
 #include "DirectoryCache.h"
 #include "iso9660.h"
 
+#ifndef INVALID_FILE_ATTRIBUTES
+#define INVALID_FILE_ATTRIBUTES ((DWORD) -1)
+#endif
+
 using namespace AUTOPTR;
 using namespace DIRECTORY;
 
