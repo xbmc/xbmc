@@ -5836,39 +5836,6 @@ CStdString CUtil::TranslatePath(const CStdString& path)
 
   if (path.length() > 0 && path[1] == ':')
   {
-#ifdef _WIN32PC
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // FIXME: please make this a drive mapping specified in
-    // CApplication::InitDirectoriesWin32().  I didn't do it since I'm
-    // not able to test the Win32 build. See InitDirectoriesOSX() to
-    // see how it's done. -d4rk (04/01/08)
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    if (path[0] == 'Q' || path[0] == 'q')
-    {
-      if (path.Equals("q:\\system\\profiles.xml", false))
-      {
-        TCHAR szPath[MAX_PATH];
-        CStdString strWin32UserFolder;
-        if(SUCCEEDED(SHGetFolderPath(NULL,CSIDL_APPDATA|CSIDL_FLAG_CREATE,NULL,0,szPath))) 
-          strWin32UserFolder = szPath;
-        else
-          CUtil::GetHomePath(strWin32UserFolder);
-        CUtil::AddFileToFolder(strWin32UserFolder,"XBMC\\profiles.xml",strWin32UserFolder);
-        return strWin32UserFolder;
-      }
-      else if (path.Equals("q:\\system\\mediasources.xml", false))
-      {
-        TCHAR szPath[MAX_PATH];
-        CStdString strWin32UserFolder;
-        if(SUCCEEDED(SHGetFolderPath(NULL,CSIDL_APPDATA|CSIDL_FLAG_CREATE,NULL,0,szPath))) 
-          strWin32UserFolder = szPath;
-        else
-           CUtil::GetHomePath(strWin32UserFolder);
-        CUtil::AddFileToFolder(strWin32UserFolder,"XBMC\\mediasources.xml",strWin32UserFolder);
-        return strWin32UserFolder;
-      }
-    }
-#endif
     const char *p = CIoSupport::GetPartition(path[0]);
     if (p != NULL)
     {
