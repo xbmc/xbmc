@@ -144,6 +144,7 @@ protected:
   virtual void CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, float fScreenWidth, float fScreenHeight, float fUserPixelRatio, float fZoomAmount);
   void CalculateFrameAspectRatio(int desired_width, int desired_height);
   void ChooseBestResolution(float fps);
+  void SelectUpscalingMethod();
   virtual void ManageDisplay();
   void CopyAlpha(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dst, unsigned char* dsta, int dststride);
   virtual void ManageTextures();
@@ -187,7 +188,11 @@ protected:
   GLenum m_textureTarget;
   unsigned short m_renderMethod;
   RenderQuality m_renderQuality;
-
+  
+  int m_upscalingMethod;
+  int m_upscalingWidth;
+  int m_upscalingHeight;
+  
   // OSD stuff
   GLuint m_pOSDYTexture[NUM_BUFFERS];
   GLuint m_pOSDATexture[NUM_BUFFERS];
