@@ -22,7 +22,7 @@
 #define FFMPEG_AVFORMAT_H
 
 #define LIBAVFORMAT_VERSION_MAJOR 52
-#define LIBAVFORMAT_VERSION_MINOR  7
+#define LIBAVFORMAT_VERSION_MINOR 12
 #define LIBAVFORMAT_VERSION_MICRO  0
 
 #define LIBAVFORMAT_VERSION_INT AV_VERSION_INT(LIBAVFORMAT_VERSION_MAJOR, \
@@ -235,7 +235,7 @@ typedef struct AVInputFormat {
                      int stream_index, int64_t timestamp, int flags);
     /**
      * gets the next timestamp in stream[stream_index].time_base units.
-     * @return the timestamp or AV_NOPTS_VALUE if an error occured
+     * @return the timestamp or AV_NOPTS_VALUE if an error occurred
      */
     int64_t (*read_timestamp)(struct AVFormatContext *s, int stream_index,
                               int64_t *pos, int64_t pos_limit);
@@ -277,6 +277,13 @@ typedef struct AVIndexEntry {
     int size:30; //Yeah, trying to keep the size of this small to reduce memory requirements (it is 24 vs 32 byte due to possible 8byte align).
     int min_distance;         /**< min distance between this and the previous keyframe, used to avoid unneeded searching */
 } AVIndexEntry;
+
+#define AV_DISPOSITION_DEFAULT   0x0001
+#define AV_DISPOSITION_DUB       0x0002
+#define AV_DISPOSITION_ORIGINAL  0x0004
+#define AV_DISPOSITION_COMMENT   0x0008
+#define AV_DISPOSITION_LYRICS    0x0010
+#define AV_DISPOSITION_KARAOKE   0x0020
 
 /**
  * Stream structure.
@@ -357,6 +364,8 @@ typedef struct AVStream {
     int64_t pts_buffer[MAX_REORDER_DELAY+1];
 
     char *filename; /**< source filename of the stream */
+
+    int disposition; /**< AV_DISPOSITION_* bitfield */
 } AVStream;
 
 #define AV_PROGRAM_RUNNING 1
@@ -380,7 +389,7 @@ typedef struct AVProgram {
 #define AVFMTCTX_NOHEADER      0x0001 /**< signal that no header is present
                                          (streams are added dynamically) */
 
-#define MAX_STREAMS 20
+#define MAX_STREAMS 64
 
 /**
  * format I/O context.
@@ -499,6 +508,12 @@ typedef struct AVFormatContext {
      * demuxing: set by user
      */
     unsigned int max_index_size;
+
+    /**
+     * Maximum amount of memory in bytes to use for buffering frames
+     * obtained from real-time capture devices.
+     */
+    unsigned int max_picture_buffer;
 } AVFormatContext;
 
 typedef struct AVPacketList {
@@ -853,7 +868,7 @@ int av_interleaved_write_frame(AVFormatContext *s, AVPacket *pkt);
  * @param flush 1 if no further packets are available as input and all
  *              remaining packets should be output
  * @return 1 if a packet was output, 0 if no packet could be output,
- *         < 0 if an error occured
+ *         < 0 if an error occurred
  */
 int av_interleave_packet_per_dts(AVFormatContext *s, AVPacket *out, AVPacket *pkt, int flush);
 
