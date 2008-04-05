@@ -1900,7 +1900,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
   SaveProfiles( PROFILES_FILE );
 
   // save the file
-  return xmlDoc.SaveFile(strSettingsFile);
+  return xmlDoc.SaveFile(_P(strSettingsFile));
 }
 
 bool CSettings::LoadProfile(int index)
@@ -2302,7 +2302,7 @@ bool CSettings::SaveUPnPXml(const CStdString& strSettingsFile) const
     }
   }
   // save the file
-  return xmlDoc.SaveFile(strSettingsFile);
+  return xmlDoc.SaveFile(_P(strSettingsFile));
 }
 
 bool CSettings::UpdateShare(const CStdString &type, const CStdString oldName, const CShare &share)
