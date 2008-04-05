@@ -927,7 +927,9 @@ HRESULT CApplication::Create(HWND hWnd)
     g_settings.m_vecProfiles.push_back(*profile);
     delete profile;
   }
+#ifndef _WIN32PC
   InitDirectories();
+#endif
 
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 #if defined(_LINUX) && !defined(__APPLE__)
@@ -1458,7 +1460,6 @@ void CApplication::InitDirectories()
     CUtil::GetHomePath(strMnt);
     strMnt += g_settings.GetUserDataFolder().substr(2);
   }
-  // why do we remap T twice?
   CIoSupport::RemapDriveLetter('T',(char*) strMnt.c_str());
 }
 
