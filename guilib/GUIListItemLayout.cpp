@@ -7,6 +7,7 @@
 #include "SkinInfo.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
+#include "../xbmc/FileItem.h"
 
 using namespace std;
 

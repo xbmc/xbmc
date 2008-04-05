@@ -5,6 +5,7 @@
 #include "../Util.h"
 #include "DirectoryCache.h"
 #include "FileCurl.h"
+#include "FileItem.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

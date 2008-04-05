@@ -33,6 +33,7 @@
 #include "DirectoryTuxBox.h"
 #include "HDHomeRun.h"
 #include "CMythDirectory.h"
+#include "FileItem.h"
 
 using namespace DIRECTORY;
 

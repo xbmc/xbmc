@@ -15,6 +15,7 @@
 #include "../../utils/win32exception.h"
 #include "../DllLoader/exports/emu_registry.h"
 #include "Settings.h"
+#include "FileItem.h"
 
 using namespace std;
 using namespace XFILE;

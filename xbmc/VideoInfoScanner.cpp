@@ -33,6 +33,7 @@
 #include "FileSystem/File.h"
 #include "GUIDialogProgress.h"
 #include "Settings.h"
+#include "FileItem.h"
 
 #define REGEXSAMPLEFILE "[-\\._ ]sample[-\\._ ]"
 

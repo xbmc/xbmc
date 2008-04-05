@@ -23,6 +23,7 @@
 #include "VideoInfoTag.h"
 #include "URL.h"
 #include "Settings.h"
+#include "FileItem.h"
 
 using namespace std;
 using namespace DIRECTORY::VIDEODATABASEDIRECTORY;

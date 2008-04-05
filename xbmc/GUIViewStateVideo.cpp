@@ -27,6 +27,7 @@
 #include "GUIBaseContainer.h"
 #include "VideoDatabase.h"
 #include "Settings.h"
+#include "FileItem.h"
 
 using namespace DIRECTORY;
 using namespace VIDEODATABASEDIRECTORY;

@@ -34,6 +34,7 @@
 #include "GUIWindowManager.h"
 #include "ViewState.h"
 #include "Settings.h"
+#include "FileItem.h"
 
 using namespace std;
 

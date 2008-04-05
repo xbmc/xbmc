@@ -4,7 +4,8 @@
 #include "utils/Thread.h"
 #include "SlideShowPicture.h"
 #include "DllImageLib.h"
-#include "FileItem.h"
+
+class CFileItemList;
 
 class CGUIWindowSlideShow;
 
@@ -75,7 +76,7 @@ private:
   bool m_bPause;
   bool m_bErrorMessage;
 
-  CFileItemList m_slides;
+  CFileItemList* m_slides;
 
   CSlideShowPic m_Image[2];
 

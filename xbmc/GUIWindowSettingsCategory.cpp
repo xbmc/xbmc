@@ -65,6 +65,7 @@
 #include "GUIDialogKeyboard.h"
 #include "FileSystem/Directory.h"
 #include "utils/ScraperParser.h"
+#include "FileItem.h"
 
 using namespace std;
 using namespace DIRECTORY;

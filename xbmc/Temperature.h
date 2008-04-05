@@ -1,5 +1,7 @@
 #pragma once
 
+#include "utils/Archive.h"
+
 class CTemperature : public ISerializable
 {
 public:

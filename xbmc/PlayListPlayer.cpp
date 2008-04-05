@@ -27,6 +27,7 @@
 #include "Settings.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
+#include "PlayList.h"
 
 using namespace PLAYLIST;
 
@@ -34,6 +35,9 @@ CPlayListPlayer g_playlistPlayer;
 
 CPlayListPlayer::CPlayListPlayer(void)
 {
+  m_PlaylistMusic = new CPlayList;
+  m_PlaylistVideo = new CPlayList;
+  m_PlaylistEmpty = new CPlayList;
   m_iCurrentSong = -1;
   m_bChanged = false;
   m_bPlayedFirstFile = false;
@@ -45,9 +49,12 @@ CPlayListPlayer::CPlayListPlayer(void)
 
 CPlayListPlayer::~CPlayListPlayer(void)
 {
-  m_PlaylistMusic.Clear();
-  m_PlaylistVideo.Clear();
-  m_PlaylistEmpty.Clear();
+  m_PlaylistMusic->Clear();
+  m_PlaylistVideo->Clear();
+  m_PlaylistEmpty->Clear();
+  delete m_PlaylistMusic;
+  delete m_PlaylistVideo;
+  delete m_PlaylistEmpty;
 }
 
 bool CPlayListPlayer::OnMessage(CGUIMessage &message)
@@ -135,7 +142,7 @@ void CPlayListPlayer::PlayNext(bool bAutoPlay)
 
   if (bAutoPlay)
   {
-    const CPlayList::CPlayListItem& item = playlist[iSong];
+    const CPlayListItem& item = playlist[iSong];
     if ( item.IsShoutCast() )
     {
       return ;
@@ -202,7 +209,7 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
   m_bChanged = true;
   int iPreviousSong = m_iCurrentSong;
   m_iCurrentSong = iSong;
-  const CPlayList::CPlayListItem& item = playlist[m_iCurrentSong];
+  const CPlayListItem& item = playlist[m_iCurrentSong];
   playlist.SetPlayed(true);
 
   if (!g_application.PlayFile(item, bAutoPlay))
@@ -346,14 +353,14 @@ CPlayList& CPlayListPlayer::GetPlaylist(int iPlaylist)
   switch ( iPlaylist )
   {
   case PLAYLIST_MUSIC:
-    return m_PlaylistMusic;
+    return *m_PlaylistMusic;
     break;
   case PLAYLIST_VIDEO:
-    return m_PlaylistVideo;
+    return *m_PlaylistVideo;
     break;
   default:
-    m_PlaylistEmpty.Clear();
-    return m_PlaylistEmpty;
+    m_PlaylistEmpty->Clear();
+    return *m_PlaylistEmpty;
     break;
   }
 }
@@ -362,8 +369,8 @@ CPlayList& CPlayListPlayer::GetPlaylist(int iPlaylist)
 /// \return Number of items removed from PLAYLIST_MUSIC and PLAYLIST_VIDEO
 int CPlayListPlayer::RemoveDVDItems()
 {
-  int nRemovedM = m_PlaylistMusic.RemoveDVDItems();
-  int nRemovedV = m_PlaylistVideo.RemoveDVDItems();
+  int nRemovedM = m_PlaylistMusic->RemoveDVDItems();
+  int nRemovedV = m_PlaylistVideo->RemoveDVDItems();
 
   return nRemovedM + nRemovedV;
 }
@@ -500,7 +507,7 @@ void CPlayListPlayer::ReShuffle(int iPlaylist, int iPosition)
   }
 }
 
-void CPlayListPlayer::Add(int iPlaylist, CPlayList::CPlayListItem& item)
+void CPlayListPlayer::Add(int iPlaylist, CPlayListItem& item)
 {
   if (iPlaylist < PLAYLIST_MUSIC || iPlaylist > PLAYLIST_VIDEO)
     return;

@@ -7,6 +7,7 @@
 #include "FileSystem/Directory.h"
 #include "RarManager.h"
 #include "Settings.h"
+#include "FileItem.h"
 
 #include <process.h>
 

@@ -9,7 +9,7 @@
 #include "FileSystem/File.h"
 #include "FileSystem/Directory.h"
 #include "Util.h"
-
+#include "FileItem.h"
 
 using namespace DIRECTORY;
 //////////////////////////////////////////////////////////////////////

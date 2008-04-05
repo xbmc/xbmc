@@ -29,6 +29,7 @@
 #include "Database.h"
 #include "VideoDatabase.h"
 #include "Util.h"
+#include "DateTime.h"
 
 using namespace std;
 using namespace DIRECTORY;

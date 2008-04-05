@@ -23,6 +23,7 @@
 #include "GUIDialogVisualisationPresetList.h"
 #include "GUIListContainer.h"
 #include "GUISettings.h"
+#include "FileItem.h"
 
 #define CONTROL_LIST           2
 #define CONTROL_PRESETS_LABEL  3
@@ -33,10 +34,12 @@ CGUIDialogVisualisationPresetList::CGUIDialogVisualisationPresetList(void)
 {
   m_currentPreset = 0;
   LoadOnDemand(false);    // we are loaded by the vis window.
+  m_vecPresets = new CFileItemList;
 }
 
 CGUIDialogVisualisationPresetList::~CGUIDialogVisualisationPresetList(void)
 {
+  delete m_vecPresets;
 }
 
 bool CGUIDialogVisualisationPresetList::OnMessage(CGUIMessage &message)
@@ -75,7 +78,7 @@ bool CGUIDialogVisualisationPresetList::OnMessage(CGUIMessage &message)
       m_pVisualisation = NULL;
       CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST);
       OnMessage(msg);
-      m_vecPresets.Clear();
+      m_vecPresets->Clear();
     }
     break;
   case GUI_MSG_VISUALISATION_LOADED:
@@ -99,9 +102,9 @@ void CGUIDialogVisualisationPresetList::Render()
     m_pVisualisation->GetPresets(&presets, &currentPreset, &numPresets, &locked);
   if (currentPreset != m_currentPreset)
   { // current preset changed...
-    m_vecPresets[m_currentPreset]->Select(false);
+    m_vecPresets->Get(m_currentPreset)->Select(false);
     m_currentPreset = currentPreset;
-    m_vecPresets[m_currentPreset]->Select(true);
+    m_vecPresets->Get(m_currentPreset)->Select(true);
   }
   CGUIDialog::Render();
 }
@@ -109,7 +112,7 @@ void CGUIDialogVisualisationPresetList::Render()
 void CGUIDialogVisualisationPresetList::SetVisualisation(CVisualisation *pVisualisation)
 {
   m_pVisualisation = pVisualisation;
-  m_vecPresets.Clear();
+  m_vecPresets->Clear();
   if (m_pVisualisation)
   {
     //clear filelist
@@ -125,7 +128,7 @@ void CGUIDialogVisualisationPresetList::SetVisualisation(CVisualisation *pVisual
       //clear filelist
       CGUIMessage msg2(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST);
       OnMessage(msg2);
-      m_vecPresets.Clear();
+      m_vecPresets->Clear();
       for (int i = 0; i < numPresets; i++)
       {
         CFileItem *pItem = new CFileItem(presets[i]);
@@ -133,7 +136,7 @@ void CGUIDialogVisualisationPresetList::SetVisualisation(CVisualisation *pVisual
           pItem->Select(true);
         pItem->RemoveExtension();
         pItem->SetLabel2(" ");
-        m_vecPresets.Add(pItem);
+        m_vecPresets->Add(pItem);
         CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_LIST, 0, 0, pItem);
         OnMessage(msg);
       }
@@ -150,7 +153,7 @@ void CGUIDialogVisualisationPresetList::SetVisualisation(CVisualisation *pVisual
   strSettings.Format(g_localizeStrings.Get(13407).c_str(), strVis.c_str());
   SET_CONTROL_LABEL(CONTROL_PRESETS_LABEL, strSettings);
   // if there is no presets, add a label saying so
-  if (m_vecPresets.Size() == 0)
+  if (m_vecPresets->Size() == 0)
   {
     SET_CONTROL_VISIBLE(CONTROL_NONE_AVAILABLE);
   }

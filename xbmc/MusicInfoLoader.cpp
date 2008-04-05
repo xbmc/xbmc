@@ -30,6 +30,7 @@
 #include "MusicInfoTag.h"
 #include "FileSystem/File.h"
 #include "GUISettings.h"
+#include "FileItem.h"
 
 using namespace std;
 using namespace XFILE;
@@ -39,23 +40,25 @@ using namespace MUSIC_INFO;
 // HACK until we make this threadable - specify 1 thread only for now
 CMusicInfoLoader::CMusicInfoLoader() : CBackgroundInfoLoader(1)
 {
+  m_mapFileItems = new CFileItemList;
 }
 
 CMusicInfoLoader::~CMusicInfoLoader()
 {
   StopThread();
+  delete m_mapFileItems;
 }
 
 void CMusicInfoLoader::OnLoaderStart()
 {
   // Load previously cached items from HD
   if (!m_strCacheFileName.IsEmpty())
-    LoadCache(m_strCacheFileName, m_mapFileItems);
+    LoadCache(m_strCacheFileName, *m_mapFileItems);
   else
   {
-    m_mapFileItems.m_strPath=m_pVecItems->m_strPath;
-    m_mapFileItems.Load();
-    m_mapFileItems.SetFastLookup(true);
+    m_mapFileItems->m_strPath=m_pVecItems->m_strPath;
+    m_mapFileItems->Load();
+    m_mapFileItems->SetFastLookup(true);
   }
 
   // Precache album thumbs
@@ -112,7 +115,7 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
 
   CFileItem* mapItem=NULL;
   // first check the cached item
-  if ((mapItem=m_mapFileItems[pItem->m_strPath])!=NULL && mapItem->m_dateTime==pItem->m_dateTime && mapItem->HasMusicInfoTag() && mapItem->GetMusicInfoTag()->Loaded())
+  if ((mapItem=(*m_mapFileItems)[pItem->m_strPath])!=NULL && mapItem->m_dateTime==pItem->m_dateTime && mapItem->HasMusicInfoTag() && mapItem->GetMusicInfoTag()->Loaded())
   { // Query map if we previously cached the file on HD
     *pItem->GetMusicInfoTag() = *mapItem->GetMusicInfoTag();
     pItem->SetThumbnailImage(mapItem->GetThumbnailImage());
@@ -172,7 +175,7 @@ void CMusicInfoLoader::OnLoaderFinish()
   m_songsMap.Clear();
 
   // cleanup cache loaded from HD
-  m_mapFileItems.Clear();
+  m_mapFileItems->Clear();
 
   // Save loaded items to HD
   if (!m_strCacheFileName.IsEmpty())

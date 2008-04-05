@@ -19,6 +19,7 @@
 #include "Application.h"
 #include "DVDPerformanceCounter.h"
 #include "Settings.h"
+#include "FileItem.h"
 
 using namespace std;
 

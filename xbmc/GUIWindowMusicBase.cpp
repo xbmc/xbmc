@@ -49,6 +49,7 @@
 #include "GUIDialogOK.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogProgress.h"
+#include "FileItem.h"
 
 using namespace std;
 using namespace XFILE;
@@ -158,7 +159,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
     case GUI_MSG_SCAN_FINISHED:
     case GUI_MSG_REFRESH_THUMBS:
     {
-      Update(m_vecItems.m_strPath);
+      Update(m_vecItems->m_strPath);
     }
     break;
 
@@ -202,7 +203,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         {
           // is delete allowed?
           // must be at the playlists directory
-          if (m_vecItems.m_strPath.Equals("special://musicplaylists/"))
+          if (m_vecItems->m_strPath.Equals("special://musicplaylists/"))
             OnDeleteItem(iItem);
 
           // or be at the files window and have file deletion enabled
@@ -236,11 +237,11 @@ void CGUIWindowMusicBase::OnInfoAll(int iItem, bool bCurrent)
 {
   CGUIDialogMusicScan* musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
   CMusicDatabaseDirectory dir;
-  CStdString strPath = m_vecItems.m_strPath;
+  CStdString strPath = m_vecItems->m_strPath;
   if (bCurrent)
-    strPath = m_vecItems[iItem]->m_strPath;
+    strPath = m_vecItems->Get(iItem)->m_strPath;
 
-  if (dir.HasAlbumInfo(m_vecItems[iItem]->m_strPath))
+  if (dir.HasAlbumInfo(m_vecItems->Get(iItem)->m_strPath))
     musicScan->StartAlbumScan(strPath);
   else
     musicScan->StartArtistScan(strPath);
@@ -250,8 +251,8 @@ void CGUIWindowMusicBase::OnInfoAll(int iItem, bool bCurrent)
 /// \param iItem Item in list/thumb control
 void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
 {
-  if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
-  OnInfo(m_vecItems[iItem], bShowInfo);
+  if ( iItem < 0 || iItem >= m_vecItems->Size() ) return ;
+  OnInfo(m_vecItems->Get(iItem), bShowInfo);
 }
 
 void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
@@ -560,8 +561,8 @@ void CGUIWindowMusicBase::ShowSongInfo(CFileItem* pItem)
     dialog->DoModal(GetID());
     if (dialog->NeedsUpdate())
     { // update our file list
-      m_vecItems.RemoveDiscCache();
-      Update(m_vecItems.m_strPath);
+      m_vecItems->RemoveDiscCache();
+      Update(m_vecItems->m_strPath);
     }
   }
 }
@@ -579,7 +580,7 @@ void CGUIWindowMusicBase::RetrieveMusicInfo()
 {
   DWORD dwStartTick = timeGetTime();
 
-  OnRetrieveMusicInfo(m_vecItems);
+  OnRetrieveMusicInfo(*m_vecItems);
 
   CLog::Log(LOGDEBUG, "RetrieveMusicInfo() took %lu msec", timeGetTime()-dwStartTick);
 }
@@ -588,12 +589,12 @@ void CGUIWindowMusicBase::RetrieveMusicInfo()
 /// \param iItem Selected Item in list/thumb control
 void CGUIWindowMusicBase::OnQueueItem(int iItem)
 {
-  if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
+  if ( iItem < 0 || iItem >= m_vecItems->Size() ) return ;
 
   int iOldSize=g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size();
 
   // add item 2 playlist
-  CFileItem item(*m_vecItems[iItem]);
+  CFileItem item(*m_vecItems->Get(iItem));
 
   if (item.IsRAR() || item.IsZIP())
     return;
@@ -787,7 +788,7 @@ bool CGUIWindowMusicBase::FindArtistInfo(const CStdString& strArtist, CMusicArti
 
 void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
-  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems.Size()) ? m_vecItems[itemNumber] : NULL;
+  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : NULL;
 
   if (item && !item->IsParentFolder())
   {
@@ -818,9 +819,9 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
           buttons.Add(CONTEXT_BUTTON_PLAY_PARTYMODE, 15216); // Play in Partymode
       }
 
-      if (item->IsSmartPlayList() || m_vecItems.IsSmartPlayList())
+      if (item->IsSmartPlayList() || m_vecItems->IsSmartPlayList())
         buttons.Add(CONTEXT_BUTTON_EDIT_SMART_PLAYLIST, 586);
-      else if (item->IsPlayList() || m_vecItems.IsPlayList())
+      else if (item->IsPlayList() || m_vecItems->IsPlayList())
         buttons.Add(CONTEXT_BUTTON_EDIT, 586);  
     }
   }
@@ -829,7 +830,7 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
 
 void CGUIWindowMusicBase::GetNonContextButtons(CContextButtons &buttons)
 {
-  if (!m_vecItems.IsVirtualDirectoryRoot())
+  if (!m_vecItems->IsVirtualDirectoryRoot())
     buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128);
   if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() > 0)
     buttons.Add(CONTEXT_BUTTON_NOW_PLAYING, 13350);
@@ -850,24 +851,24 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   case CONTEXT_BUTTON_SONG_INFO:
     {
-      ShowSongInfo(m_vecItems[itemNumber]);
+      ShowSongInfo(m_vecItems->Get(itemNumber));
       return true;
     }
 
   case CONTEXT_BUTTON_EDIT:
     {
-      CStdString playlist = m_vecItems[itemNumber]->IsPlayList() ? m_vecItems[itemNumber]->m_strPath : m_vecItems.m_strPath; // save path as activatewindow will destroy our items
+      CStdString playlist = m_vecItems->Get(itemNumber)->IsPlayList() ? m_vecItems->Get(itemNumber)->m_strPath : m_vecItems->m_strPath; // save path as activatewindow will destroy our items
       m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST_EDITOR, playlist);
       return true;
     }
     
   case CONTEXT_BUTTON_EDIT_SMART_PLAYLIST:
     {
-      CStdString playlist = m_vecItems[itemNumber]->IsSmartPlayList() ? m_vecItems[itemNumber]->m_strPath : m_vecItems.m_strPath; // save path as activatewindow will destroy our items
+      CStdString playlist = m_vecItems->Get(itemNumber)->IsSmartPlayList() ? m_vecItems->Get(itemNumber)->m_strPath : m_vecItems->m_strPath; // save path as activatewindow will destroy our items
       if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist))
       { // need to update
-        m_vecItems.RemoveDiscCache();
-        Update(m_vecItems.m_strPath);
+        m_vecItems->RemoveDiscCache();
+        Update(m_vecItems->m_strPath);
       }
       return true;
     }
@@ -879,7 +880,7 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_PLAY_WITH:
     {
       VECPLAYERCORES vecCores;  // base class?
-      CPlayerCoreFactory::GetPlayers(*m_vecItems[itemNumber], vecCores);
+      CPlayerCoreFactory::GetPlayers(*m_vecItems->Get(itemNumber), vecCores);
       g_application.m_eForcedNextPlayer = CPlayerCoreFactory::SelectPlayerDialog(vecCores);
       if( g_application.m_eForcedNextPlayer != EPC_NONE )
         OnClick(itemNumber);
@@ -887,7 +888,7 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
 
   case CONTEXT_BUTTON_PLAY_PARTYMODE:
-    g_partyModeManager.Enable(PARTYMODECONTEXT_MUSIC, m_vecItems[itemNumber]->m_strPath);
+    g_partyModeManager.Enable(PARTYMODECONTEXT_MUSIC, m_vecItems->Get(itemNumber)->m_strPath);
     return true;
 
   case CONTEXT_BUTTON_STOP_SCANNING:
@@ -910,19 +911,19 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);
     return true;
   case CONTEXT_BUTTON_LASTFM_UNBAN_ITEM:
-    if (CLastFmManager::GetInstance()->Unban(*m_vecItems[itemNumber]->GetMusicInfoTag()))
+    if (CLastFmManager::GetInstance()->Unban(*m_vecItems->Get(itemNumber)->GetMusicInfoTag()))
     {
-      g_directoryCache.ClearDirectory(m_vecItems.m_strPath);
-      m_vecItems.RemoveDiscCache();
-      Update(m_vecItems.m_strPath);
+      g_directoryCache.ClearDirectory(m_vecItems->m_strPath);
+      m_vecItems->RemoveDiscCache();
+      Update(m_vecItems->m_strPath);
     }
     return true;
   case CONTEXT_BUTTON_LASTFM_UNLOVE_ITEM:
-    if (CLastFmManager::GetInstance()->Unlove(*m_vecItems[itemNumber]->GetMusicInfoTag()))
+    if (CLastFmManager::GetInstance()->Unlove(*m_vecItems->Get(itemNumber)->GetMusicInfoTag()))
     {
-      g_directoryCache.ClearDirectory(m_vecItems.m_strPath);
-      m_vecItems.RemoveDiscCache();
-      Update(m_vecItems.m_strPath);
+      g_directoryCache.ClearDirectory(m_vecItems->m_strPath);
+      m_vecItems->RemoveDiscCache();
+      Update(m_vecItems->m_strPath);
     }
     return true;
   default:
@@ -965,7 +966,7 @@ void CGUIWindowMusicBase::OnRipTrack(int iItem)
     {
 #ifdef HAS_CDDA_RIPPER
       CCDDARipper ripper;
-      ripper.RipTrack(m_vecItems[iItem]);
+      ripper.RipTrack(m_vecItems->Get(iItem));
 #endif
     }
     else
@@ -986,7 +987,7 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
   // only call the base code if the item passes since this clears
   // the current playlist
 
-  const CFileItem* pItem = m_vecItems[iItem];
+  const CFileItem* pItem = m_vecItems->Get(iItem);
 
   // special case for DAAP playlist folders
   bool bIsDAAPplaylist = false;
@@ -1001,7 +1002,7 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
   // if its a folder, build a playlist
   if (pItem->m_bIsFolder || (m_gWindowManager.GetActiveWindow() == WINDOW_MUSIC_NAV && pItem->IsPlayList()))
   {
-    CFileItem item(*m_vecItems[iItem]);
+    CFileItem item(*m_vecItems->Get(iItem));
 
     //  Allow queuing of unqueueable items
     //  when we try to queue them directly
@@ -1021,7 +1022,7 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
     }
 
     /*
-    CStdString strPlayListDirectory = m_vecItems.m_strPath;
+    CStdString strPlayListDirectory = m_vecItems->m_strPath;
     if (CUtil::HasSlashAtEnd(strPlayListDirectory))
       strPlayListDirectory.Delete(strPlayListDirectory.size() - 1);
     */
@@ -1085,7 +1086,7 @@ void CGUIWindowMusicBase::LoadPlayList(const CStdString& strPlayList)
 
 bool CGUIWindowMusicBase::OnPlayMedia(int iItem)
 {
-  CFileItem* pItem = m_vecItems[iItem];
+  CFileItem* pItem = m_vecItems->Get(iItem);
   if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026)) // 'add source button' in empty root
   {
     if (CGUIDialogMediaSource::ShowAndAddMediaSource("music"))
@@ -1100,8 +1101,8 @@ bool CGUIWindowMusicBase::OnPlayMedia(int iItem)
   if (g_partyModeManager.IsEnabled() && !pItem->IsLastFM())
   {
     CPlayList playlistTemp;
-    CPlayList::CPlayListItem playlistItem;
-    CUtil::ConvertFileItemToPlayListItem(m_vecItems[iItem], playlistItem);
+    CPlayListItem playlistItem;
+    CUtil::ConvertFileItemToPlayListItem(m_vecItems->Get(iItem), playlistItem);
     playlistTemp.Add(playlistItem);
     g_partyModeManager.AddUserSongs(playlistTemp, true);
     return true;
@@ -1183,9 +1184,9 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const CStdString &pat
 
   // update the file listing
   int iSelectedItem = m_viewControl.GetSelectedItem();
-  if (iSelectedItem >= 0 && m_vecItems[iSelectedItem])
+  if (iSelectedItem >= 0 && m_vecItems->Get(iSelectedItem))
   {
-    CFileItem* pSelectedItem=m_vecItems[iSelectedItem];
+    CFileItem* pSelectedItem=m_vecItems->Get(iSelectedItem);
     if (pSelectedItem->m_bIsFolder)
     {
       // refresh only the icon of
@@ -1198,12 +1199,12 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const CStdString &pat
     else
     {
       // Refresh all items
-      m_vecItems.RemoveDiscCache();
-      Update(m_vecItems.m_strPath);
+      m_vecItems->RemoveDiscCache();
+      Update(m_vecItems->m_strPath);
     }
 
     //  Do we have to autoswitch to the thumb control?
-    m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
+    m_guiState.reset(CGUIViewState::GetViewState(GetID(), *m_vecItems));
     UpdateButtons();
   }
 }

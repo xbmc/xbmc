@@ -34,6 +34,7 @@
 #include "ScraperSettings.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogKeyboard.h"
+#include "FileItem.h"
 
 using namespace std;
 

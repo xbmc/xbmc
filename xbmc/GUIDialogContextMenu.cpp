@@ -36,6 +36,7 @@
 #include "MediaManager.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogYesNo.h"
+#include "FileItem.h"
 
 using namespace std;
 using namespace MEDIA_DETECT;

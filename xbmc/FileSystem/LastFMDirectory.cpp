@@ -10,6 +10,7 @@
 #include "GUIDialogProgress.h"
 #include "GUIDialogKeyboard.h"
 #include "GUISettings.h"
+#include "FileItem.h"
 
 using namespace MUSIC_INFO;
 using namespace DIRECTORY;
@@ -177,7 +178,7 @@ void CLastFMDirectory::AddListEntry(const char *name, const char *artist, const 
 
   // icons? would probably take too long to retrieve them all
   items.Add(pItem);
-  m_vecCachedItems.Add(new CFileItem(*pItem));
+  m_vecCachedItems->Add(new CFileItem(*pItem));
 }
 
 bool CLastFMDirectory::ParseArtistList(CStdString url, CFileItemList &items)
@@ -534,7 +535,7 @@ bool CLastFMDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
 
   // parse the URL, finding object type, name, and requested info
   CStdStringArray vecURLParts;
-  m_vecCachedItems.Clear();
+  m_vecCachedItems->Clear();
 
   m_objtype = "";
   m_objname = "";
@@ -588,8 +589,8 @@ bool CLastFMDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   else
     return false;
 
-  if (m_cacheDirectory && !m_vecCachedItems.IsEmpty() )
-    g_directoryCache.SetDirectory(strPath, m_vecCachedItems);
+  if (m_cacheDirectory && !m_vecCachedItems->IsEmpty() )
+    g_directoryCache.SetDirectory(strPath, *m_vecCachedItems);
 
   return true;
 }

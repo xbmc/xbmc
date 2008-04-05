@@ -42,6 +42,7 @@
 #include "GUIDialogSelect.h"
 #include "FileSystem/File.h"
 #include "Settings.h"
+#include "FileItem.h"
 
 using namespace std;
 using namespace AUTOPTR;

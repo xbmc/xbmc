@@ -2,6 +2,7 @@
 #include "PlaylistDirectory.h"
 #include "../PlayListPlayer.h"
 #include "URL.h"
+#include "PlayList.h"
 
 using namespace PLAYLIST;
 using namespace DIRECTORY;

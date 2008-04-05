@@ -35,6 +35,7 @@
 #include "GUIDialogOK.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/File.h"
+#include "PlayList.h"
 
 #define CONTROL_BTNVIEWASICONS      2
 #define CONTROL_BTNSORTBY           3
@@ -90,9 +91,9 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
         m_history.ClearPathHistory();
       }
       // otherwise, is this the first time accessing this window?
-      else if (m_vecItems.m_strPath == "?")
+      else if (m_vecItems->m_strPath == "?")
       {
-        m_vecItems.m_strPath = strDestination = g_settings.m_defaultPictureSource;
+        m_vecItems->m_strPath = strDestination = g_settings.m_defaultPictureSource;
         CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
       }
 
@@ -102,13 +103,13 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
         // open root
         if (strDestination.Equals("$ROOT"))
         {
-          m_vecItems.m_strPath = "";
+          m_vecItems->m_strPath = "";
           CLog::Log(LOGINFO, "  Success! Opening root listing.");
         }
         else
         {
           // default parameters if the jump fails
-          m_vecItems.m_strPath = "";
+          m_vecItems->m_strPath = "";
 
           bool bIsSourceName = false;
 
@@ -124,7 +125,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
               CFileItem item(shares[iIndex]);
               if (!g_passwordManager.IsItemUnlocked(&item,"pictures"))
               {
-                m_vecItems.m_strPath = ""; // no u don't
+                m_vecItems->m_strPath = ""; // no u don't
                 bDoStuff = false;
                 CLog::Log(LOGINFO, "  Failure! Failed to unlock destination path: %s", strDestination.c_str());
               }
@@ -133,10 +134,10 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
             if (bDoStuff)
             {
               if (bIsSourceName)
-                m_vecItems.m_strPath=shares[iIndex].strPath;
+                m_vecItems->m_strPath=shares[iIndex].strPath;
               else
-                m_vecItems.m_strPath=strDestination;
-              CUtil::RemoveSlashAtEnd(m_vecItems.m_strPath);
+                m_vecItems->m_strPath=strDestination;
+              CUtil::RemoveSlashAtEnd(m_vecItems->m_strPath);
               CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
             }
           }
@@ -146,7 +147,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
           }
         }
 
-        SetHistoryForPath(m_vecItems.m_strPath);
+        SetHistoryForPath(m_vecItems->m_strPath);
       }
 
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
@@ -227,8 +228,8 @@ void CGUIWindowPictures::UpdateButtons()
   }
 
   // check we can slideshow or recursive slideshow
-  int nFolders = m_vecItems.GetFolderCount();
-  if (nFolders == m_vecItems.Size())
+  int nFolders = m_vecItems->GetFolderCount();
+  if (nFolders == m_vecItems->Size())
   {
     CONTROL_DISABLE(CONTROL_BTNSLIDESHOW);
   }
@@ -238,7 +239,7 @@ void CGUIWindowPictures::UpdateButtons()
   }
   if (m_guiState.get() && !m_guiState->HideParentDirItems())
     nFolders--;
-  if (m_vecItems.Size() == 0 || nFolders == 0)
+  if (m_vecItems->Size() == 0 || nFolders == 0)
   {
     CONTROL_DISABLE(CONTROL_BTNSLIDESHOW_RECURSIVE);
   }
@@ -307,17 +308,17 @@ bool CGUIWindowPictures::Update(const CStdString &strDirectory)
   if (!CGUIMediaWindow::Update(strDirectory))
     return false;
 
-  m_vecItems.SetThumbnailImage("");
-  m_thumbLoader.Load(m_vecItems);
-  m_vecItems.SetCachedPictureThumb();
+  m_vecItems->SetThumbnailImage("");
+  m_thumbLoader.Load(*m_vecItems);
+  m_vecItems->SetCachedPictureThumb();
 
   return true;
 }
 
 bool CGUIWindowPictures::OnClick(int iItem)
 {
-  if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return true;
-  CFileItem* pItem = m_vecItems[iItem];
+  if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return true;
+  CFileItem* pItem = m_vecItems->Get(iItem);
 
   if (pItem->IsCBZ() || pItem->IsCBR())
   {
@@ -350,8 +351,8 @@ bool CGUIWindowPictures::OnClick(int iItem)
 
 bool CGUIWindowPictures::OnPlayMedia(int iItem)
 {
-  if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return false;
-  CFileItem* pItem = m_vecItems[iItem];
+  if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return false;
+  CFileItem* pItem = m_vecItems->Get(iItem);
   CStdString strPicture = pItem->m_strPath;
 
   if (pItem->m_strPath == "add") // 'add source button' in empty root
@@ -377,9 +378,9 @@ bool CGUIWindowPictures::OnPlayMedia(int iItem)
     g_application.StopPlaying();
 
   pSlideShow->Reset();
-  for (int i = 0; i < (int)m_vecItems.Size();++i)
+  for (int i = 0; i < (int)m_vecItems->Size();++i)
   {
-    CFileItem* pItem = m_vecItems[i];
+    CFileItem* pItem = m_vecItems->Get(i);
     if (!pItem->m_bIsFolder && !(CUtil::IsRAR(pItem->m_strPath) || CUtil::IsZIP(pItem->m_strPath)))
     {
       pSlideShow->Add(pItem);
@@ -401,7 +402,7 @@ void CGUIWindowPictures::OnShowPictureRecursive(const CStdString& strPicture, CF
 
   pSlideShow->Reset();
   if (!pVecItems)
-    pVecItems = &m_vecItems;
+    pVecItems = m_vecItems;
   CFileItemList& vecItems = *pVecItems;
   for (int i = 0; i < (int)vecItems.Size();++i)
   {
@@ -446,7 +447,7 @@ void CGUIWindowPictures::OnSlideShowRecursive(const CStdString &strPicture)
     g_application.StopPlaying();
 
   pSlideShow->Reset();
-  AddDir(pSlideShow, m_vecItems.m_strPath);
+  AddDir(pSlideShow, m_vecItems->m_strPath);
   if (g_guiSettings.GetBool("slideshow.shuffle"))
     pSlideShow->Shuffle();
   pSlideShow->StartSlideShow();
@@ -477,9 +478,9 @@ void CGUIWindowPictures::OnSlideShow(const CStdString &strPicture)
     g_application.StopPlaying();
 
   pSlideShow->Reset();
-  for (int i = 0; i < (int)m_vecItems.Size();++i)
+  for (int i = 0; i < (int)m_vecItems->Size();++i)
   {
-    CFileItem* pItem = m_vecItems[i];
+    CFileItem* pItem = m_vecItems->Get(i);
     if (!pItem->m_bIsFolder && !(CUtil::IsRAR(pItem->m_strPath) || CUtil::IsZIP(pItem->m_strPath)))
     {
       pSlideShow->Add(pItem);
@@ -498,16 +499,16 @@ void CGUIWindowPictures::OnRegenerateThumbs()
 {
   if (m_thumbLoader.IsLoading()) return;
   m_thumbLoader.SetRegenerateThumbs(true);
-  m_thumbLoader.Load(m_vecItems);
+  m_thumbLoader.Load(*m_vecItems);
 }
 
 void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
   CFileItem *item = NULL;
-  if (itemNumber >= 0 && itemNumber < m_vecItems.Size())
-    item = m_vecItems[itemNumber];
+  if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
+    item = m_vecItems->Get(itemNumber);
 
-  if ( m_vecItems.IsVirtualDirectoryRoot() && item)
+  if ( m_vecItems->IsVirtualDirectoryRoot() && item)
   {
     // get the usual shares
     CMediaSource *share = CGUIDialogContextMenu::GetShare("pictures", item);
@@ -517,7 +518,7 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
   {
     if (item)
     {
-      if (m_vecItems.GetFileCount() != 0)
+      if (m_vecItems->GetFileCount() != 0)
         buttons.Add(CONTEXT_BUTTON_VIEW_SLIDESHOW, 13317);      // View Slideshow
 
       buttons.Add(CONTEXT_BUTTON_RECURSIVE_SLIDESHOW, 13318);     // Recursive Slideshow
@@ -541,8 +542,8 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
 
 bool CGUIWindowPictures::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
-  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems.Size()) ? m_vecItems[itemNumber] : NULL;
-  if (m_vecItems.IsVirtualDirectoryRoot() && item)
+  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : NULL;
+  if (m_vecItems->IsVirtualDirectoryRoot() && item)
   {
     CMediaSource *share = CGUIDialogContextMenu::GetShare("pictures", item);
     if (CGUIDialogContextMenu::OnContextButton("pictures", share, button))
@@ -578,7 +579,7 @@ bool CGUIWindowPictures::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     Update("");
     return true;
   case CONTEXT_BUTTON_SWITCH_MEDIA:
-    CGUIDialogContextMenu::SwitchMedia("pictures", m_vecItems.m_strPath);
+    CGUIDialogContextMenu::SwitchMedia("pictures", m_vecItems->m_strPath);
     return true;
   default:
     break;
@@ -729,7 +730,7 @@ void CGUIWindowPictures::LoadPlayList(const CStdString& strPlayList)
 
 void CGUIWindowPictures::OnInfo(int itemNumber)
 {
-  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems.Size()) ? m_vecItems[itemNumber] : NULL;
+  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : NULL;
   if (!item || item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR())
     return;
   CGUIDialogPictureInfo *pictureInfo = (CGUIDialogPictureInfo *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PICTURE_INFO);

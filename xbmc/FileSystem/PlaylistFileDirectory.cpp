@@ -4,6 +4,7 @@
 #include "../PlayListFactory.h"
 #include "../MusicInfoTag.h"
 #include "FileSystem/File.h"
+#include "PlayList.h"
 
 using namespace std;
 using namespace PLAYLIST;

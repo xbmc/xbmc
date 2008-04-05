@@ -7,6 +7,7 @@
 #include "iso9660.h"
 #include "URL.h"
 #include "GUISettings.h"
+#include "FileItem.h"
 
 using namespace AUTOPTR;
 using namespace DIRECTORY;

@@ -7,6 +7,7 @@
 #include "GUIDialogYesNo.h"
 #include "FileSystem/Directory.h"
 #include "Settings.h"
+#include "FileItem.h"
 
 #include <set>
 

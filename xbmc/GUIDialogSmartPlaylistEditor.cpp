@@ -27,6 +27,7 @@
 #include "GUIWindowManager.h"
 #include "FileSystem/File.h"
 #include "GUISettings.h"
+#include "FileItem.h"
 
 #define CONTROL_HEADING         2
 #define CONTROL_RULE_LIST       10
@@ -49,10 +50,12 @@ CGUIDialogSmartPlaylistEditor::CGUIDialogSmartPlaylistEditor(void)
     : CGUIDialog(WINDOW_DIALOG_SMART_PLAYLIST_EDITOR, "SmartPlaylistEditor.xml")
 {
   m_cancelled = false;
+  m_ruleLabels = new CFileItemList;
 }
 
 CGUIDialogSmartPlaylistEditor::~CGUIDialogSmartPlaylistEditor()
 {
+  delete m_ruleLabels;
 }
 
 bool CGUIDialogSmartPlaylistEditor::OnAction(const CAction &action)
@@ -111,7 +114,7 @@ bool CGUIDialogSmartPlaylistEditor::OnMessage(CGUIMessage& message)
       // clear the rule list
       CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_RULE_LIST);
       OnMessage(msg);
-      m_ruleLabels.Clear();
+      m_ruleLabels->Clear();
     }
     break;
   case GUI_MSG_FOCUSED:
@@ -255,7 +258,7 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
   int currentItem = GetSelectedItem();
   CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_RULE_LIST);
   OnMessage(msgReset);
-  m_ruleLabels.Clear();
+  m_ruleLabels->Clear();
   for (unsigned int i = 0; i < m_playlist.m_playlistRules.size(); i++)
   {
     CFileItem* item = new CFileItem("", false);
@@ -263,7 +266,7 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
       item->SetLabel(g_localizeStrings.Get(21423));
     else
       item->SetLabel(m_playlist.m_playlistRules[i].GetLocalizedRule());
-    m_ruleLabels.Add(item);
+    m_ruleLabels->Add(item);
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_RULE_LIST, 0, 0, (void*)item);
     OnMessage(msg);
   }
@@ -386,10 +389,10 @@ int CGUIDialogSmartPlaylistEditor::GetSelectedItem()
 
 void CGUIDialogSmartPlaylistEditor::HighlightItem(int item)
 {
-  for (int i = 0; i < m_ruleLabels.Size(); i++)
-    m_ruleLabels[i]->Select(false);
-  if (item >= 0 && item < m_ruleLabels.Size())
-    m_ruleLabels[item]->Select(true);
+  for (int i = 0; i < m_ruleLabels->Size(); i++)
+    (*m_ruleLabels)[i]->Select(false);
+  if (item >= 0 && item < m_ruleLabels->Size())
+    (*m_ruleLabels)[item]->Select(true);
   CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_RULE_LIST, item);
   OnMessage(msg);
 }
@@ -400,11 +403,11 @@ void CGUIDialogSmartPlaylistEditor::OnRuleRemove(int item)
   m_playlist.m_playlistRules.erase(m_playlist.m_playlistRules.begin() + item);
 
   UpdateButtons();
-  if (item >= m_ruleLabels.Size())
-    HighlightItem(m_ruleLabels.Size() - 1);
+  if (item >= m_ruleLabels->Size())
+    HighlightItem(m_ruleLabels->Size() - 1);
   else
     HighlightItem(item);
-  if (m_ruleLabels.Size() <= 1)
+  if (m_ruleLabels->Size() <= 1)
   {
     SET_CONTROL_FOCUS(CONTROL_RULE_ADD, 0);
   }

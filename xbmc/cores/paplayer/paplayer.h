@@ -3,7 +3,8 @@
 #include "../../utils/Thread.h"
 #include "AudioDecoder.h"
 #include "../ssrc.h"
-#include "FileItem.h"
+
+class CFileItem;
 
 #define PACKET_COUNT  20 // number of packets of size PACKET_SIZE (defined in AudioDecoder.h)
 
@@ -157,8 +158,8 @@ private:
   bool             m_resampleAudio;
 
   // our file
-  CFileItem        m_currentFile;
-  CFileItem        m_nextFile;
+  CFileItem*        m_currentFile;
+  CFileItem*        m_nextFile;
 
   // stuff for visualisation
   BYTE             m_visBuffer[PACKET_SIZE];

@@ -16,6 +16,7 @@
 #include "../../../Url.h"
 #include "FileSystem/File.h"
 #include "GUISettings.h"
+#include "FileItem.h"
 
 #include "emu_msvcrt.h"
 #include "emu_dummy.h"

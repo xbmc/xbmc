@@ -3,6 +3,7 @@
 #include "TextureManager.h"
 #include "../xbmc/FileSystem/HDDirectory.h"
 #include "../xbmc/Util.h"
+#include "../xbmc/FileItem.h"
 
 using namespace std;
 using namespace DIRECTORY;

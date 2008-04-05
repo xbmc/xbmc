@@ -5,6 +5,7 @@
 #include "../utils/log.h"
 #include "../Util.h"
 #include "URL.h"
+#include "FileItem.h"
 
 namespace DIRECTORY
 {

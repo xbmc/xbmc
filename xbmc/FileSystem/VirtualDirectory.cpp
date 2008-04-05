@@ -10,6 +10,7 @@
 #endif
 #include "../DetectDVDType.h"
 #include "FileSystem/File.h"
+#include "FileItem.h"
 
 using namespace XFILE;
 

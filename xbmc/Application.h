@@ -3,7 +3,9 @@
 
 #include "IMsgTargetCallback.h"
 #include "Key.h"
-#include "FileItem.h"
+
+class CFileItem;
+class CFileItemList;
 
 #include "GUIDialogSeekBar.h"
 #include "GUIDialogKaiToast.h"
@@ -181,8 +183,8 @@ protected:
   CStopWatch m_navigationTimer;
   CStopWatch m_slowTimer;
 
-  CFileItem m_itemCurrentFile;
-  CFileItemList m_currentStack;
+  CFileItem* m_itemCurrentFile;
+  CFileItemList* m_currentStack;
   CStdString m_prevMedia;
   CSplash* m_splash;
   DWORD m_threadID;       // application thread ID.  Used in applicationMessanger to know where we are firing a thread with delay from.

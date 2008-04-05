@@ -23,22 +23,25 @@
 #include "PictureInfoLoader.h"
 #include "PictureInfoTag.h"
 #include "GUISettings.h"
+#include "FileItem.h"
 
 CPictureInfoLoader::CPictureInfoLoader()
-{  
+{
+  m_mapFileItems = new CFileItemList;
 }
 
 CPictureInfoLoader::~CPictureInfoLoader()
 {
   StopThread();
+  delete m_mapFileItems;
 }
 
 void CPictureInfoLoader::OnLoaderStart()
 {
   // Load previously cached items from HD
-  m_mapFileItems.m_strPath=m_pVecItems->m_strPath;
-  m_mapFileItems.Load();
-  m_mapFileItems.SetFastLookup(true);
+  m_mapFileItems->m_strPath=m_pVecItems->m_strPath;
+  m_mapFileItems->Load();
+  m_mapFileItems->SetFastLookup(true);
 
   m_tagReads = 0;
   m_loadTags = g_guiSettings.GetBool("pictures.usetags");
@@ -60,7 +63,7 @@ bool CPictureInfoLoader::LoadItem(CFileItem* pItem)
 
   CFileItem* mapItem=NULL;
   // first check the cached item
-  if ((mapItem=m_mapFileItems[pItem->m_strPath])!=NULL && mapItem->m_dateTime==pItem->m_dateTime && mapItem->HasPictureInfoTag())
+  if ((mapItem=(*m_mapFileItems)[pItem->m_strPath])!=NULL && mapItem->m_dateTime==pItem->m_dateTime && mapItem->HasPictureInfoTag())
   { // Query map if we previously cached the file on HD
     *pItem->GetPictureInfoTag() = *mapItem->GetPictureInfoTag();
     pItem->SetThumbnailImage(mapItem->GetThumbnailImage());
@@ -79,7 +82,7 @@ bool CPictureInfoLoader::LoadItem(CFileItem* pItem)
 void CPictureInfoLoader::OnLoaderFinish()
 {
   // cleanup cache loaded from HD
-  m_mapFileItems.Clear();
+  m_mapFileItems->Clear();
 
   // Save loaded items to HD
   if (!m_bStop && m_tagReads > 0)

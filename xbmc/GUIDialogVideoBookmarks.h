@@ -2,7 +2,8 @@
 #include "GUIDialog.h"
 #include "GUIViewControl.h"
 #include "VideoDatabase.h"
-#include "FileItem.h"
+
+class CFileItemList;
 
 class CGUIDialogVideoBookmarks : public CGUIDialog
 {
@@ -23,7 +24,7 @@ protected:
 
   CGUIControl *GetFirstFocusableControl(int id);
 
-  CFileItemList m_vecItems;
+  CFileItemList* m_vecItems;
   CGUIViewControl m_viewControl;
   VECBOOKMARKS m_bookmarks;
 };

@@ -6,6 +6,7 @@
 #include "VideoInfoTag.h"
 #include "URL.h"
 #include "GUISettings.h"
+#include "FileItem.h"
 
 extern "C" {
 #include "../lib/libcmyth/cmyth.h"

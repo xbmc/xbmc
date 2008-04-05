@@ -1,5 +1,4 @@
 #include "../python/Python.h"
-#include "../../../PlayList.h"
 #pragma once
 
 #define PlayList_Check(op) PyObject_TypeCheck(op, &PlayList_Type)
@@ -10,6 +9,12 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+namespace PLAYLIST
+{
+  class CPlayList;
+  class CPlayListItem;
+}
 
 namespace PYXBMC
 {
@@ -25,7 +30,7 @@ namespace PYXBMC
 
   typedef struct {
     PyObject_HEAD
-    PLAYLIST::CPlayList::CPlayListItem* item;
+    PLAYLIST::CPlayListItem* item;
   } PlayListItem;
 
   void initPlayList_Type();

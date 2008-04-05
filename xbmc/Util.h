@@ -1,6 +1,5 @@
 #pragma once
 #include <vector>
-#include "PlayList.h"
 #include "MediaSource.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "xbox/custom_launch_params.h"
@@ -12,7 +11,13 @@ namespace XFILE
 {
   class IFileCallback;
 }
+namespace PLAYLIST
+{
+  class CPlayListItem;
+}
 
+class CFileItem;
+class CFileItemList;
 class CTrainer;
 
 // for 'cherry' patching
@@ -163,7 +168,7 @@ public:
   static void Stat64ToStat(struct _stat *result, struct __stat64 *stat);
   static bool CreateDirectoryEx(const CStdString& strPath);
   static CStdString MakeLegalFileName(const CStdString &strFile, bool isFATX);
-  static void ConvertFileItemToPlayListItem(const CFileItem *pItem, PLAYLIST::CPlayList::CPlayListItem &playlistitem);
+  static void ConvertFileItemToPlayListItem(const CFileItem *pItem, PLAYLIST::CPlayListItem &playlistitem);
   static void AddDirectorySeperator(CStdString& strPath);
   static char GetDirectorySeperator(const CStdString& strFile);
 

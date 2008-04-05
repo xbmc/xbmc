@@ -31,6 +31,7 @@
 #include "FileSystem/Directory.h"
 #include "FileSystem/File.h"
 #include "URL.h"
+#include "FileItem.h"
 
 using namespace std;
 using namespace XFILE;

@@ -24,6 +24,7 @@
 #include "Util.h"
 #include "Key.h"
 #include "Settings.h"
+#include "FileItem.h"
 
 bool CFavourites::Load(CFileItemList &items)
 {

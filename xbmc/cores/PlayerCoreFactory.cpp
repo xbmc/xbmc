@@ -19,6 +19,7 @@
 #include "GUISettings.h"
 #include "URL.h"
 #include "GUIWindowManager.h"
+#include "FileItem.h"
 
 using namespace AUTOPTR;
 

@@ -25,6 +25,7 @@
 #include "Util.h"
 #include "URL.h"
 #include "FileSystem/File.h"
+#include "FileItem.h"
 
 using namespace XFILE;
 

@@ -39,6 +39,7 @@
 #include "GUIDialogKeyboard.h"
 #include "FileSystem/File.h"
 #include "Settings.h"
+#include "FileItem.h"
 
 using namespace std;
 using namespace MUSIC_INFO;

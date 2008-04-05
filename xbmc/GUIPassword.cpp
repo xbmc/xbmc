@@ -32,6 +32,7 @@
 #include "Settings.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
+#include "FileItem.h"
 
 CGUIPassword g_passwordManager;
 

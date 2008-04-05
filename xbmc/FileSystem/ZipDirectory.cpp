@@ -5,6 +5,7 @@
 #include "../lib/zlib/zlib.h"
 #include "URL.h"
 #include "ZipManager.h"
+#include "FileItem.h"
 
 #include <vector>
 

@@ -1,8 +1,8 @@
 #pragma once
 #include "GUIDialog.h"
 #include "VideoInfoScanner.h"
-#include "FileItem.h"
 
+class CFileItemList;
 class CMediaSource;
 
 class CGUIDialogMediaSource :
@@ -38,7 +38,7 @@ protected:
 
   CStdString m_type;
   CStdString m_name;
-  CFileItemList m_paths;
+  CFileItemList* m_paths;
   bool m_confirmed;
   SScraperInfo m_info;
   bool m_bRunScan;

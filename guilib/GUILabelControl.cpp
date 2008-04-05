@@ -2,6 +2,7 @@
 #include "GUILabelControl.h"
 #include "../xbmc/utils/CharsetConverter.h"
 #include "../xbmc/utils/GUIInfoManager.h"
+#include "GUIListItem.h"
 
 #include "LocalizeStrings.h"  // for CGUIInfoLabel
 

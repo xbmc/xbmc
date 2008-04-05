@@ -25,6 +25,7 @@
 #include "Util.h"
 #include "xbox/xbeheader.h"
 #include "GUIWindowFileManager.h"
+#include "FileItem.h"
 
 using namespace XFILE;
 

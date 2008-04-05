@@ -1,7 +1,8 @@
 #pragma once
 #include "GUIDialog.h"
 #include "SmartPlaylist.h"
-#include "FileItem.h"
+
+class CFileItemList;
 
 class CGUIDialogSmartPlaylistEditor :
       public CGUIDialog
@@ -35,7 +36,7 @@ protected:
   CSmartPlaylist m_playlist;
 
   // our list of rules for display purposes
-  CFileItemList m_ruleLabels;
+  CFileItemList* m_ruleLabels;
 
   CStdString m_path;
   bool m_cancelled;

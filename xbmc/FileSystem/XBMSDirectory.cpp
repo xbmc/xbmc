@@ -4,6 +4,7 @@
 #include "../Util.h"
 #include "DirectoryCache.h"
 #include "URL.h"
+#include "FileItem.h"
 
 using namespace DIRECTORY;
 

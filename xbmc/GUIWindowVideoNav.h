@@ -2,6 +2,8 @@
 #include "GUIWindowVideoBase.h"
 #include "ThumbLoader.h"
 
+class CFileItemList;
+
 class CGUIWindowVideoNav : public CGUIWindowVideoBase
 {
 public:
@@ -41,6 +43,6 @@ protected:
   bool m_bDisplayEmptyDatabaseMessage;  ///< If true we display a message informing the user to switch back to the Files view.
 
   // filtered item views
-  CFileItemList m_unfilteredItems;
+  CFileItemList* m_unfilteredItems;
   CStdString m_filter;
 };

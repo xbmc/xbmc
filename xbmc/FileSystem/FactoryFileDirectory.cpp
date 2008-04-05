@@ -19,6 +19,7 @@
 #include "FileSystem/RarManager.h"
 #include "FileSystem/ZipManager.h"
 #include "Settings.h"
+#include "FileItem.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

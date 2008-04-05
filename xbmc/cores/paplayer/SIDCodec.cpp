@@ -4,6 +4,7 @@
 #include "../../Util.h"
 #include "../../MusicInfoTagLoaderSid.h"
 #include "../../MusicInfoTag.h"
+#include "FileItem.h"
 
 using namespace MUSIC_INFO;
 

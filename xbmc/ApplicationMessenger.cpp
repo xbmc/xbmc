@@ -36,6 +36,7 @@
 #include "xbox/network.h"
 #include "GUIWindowManager.h"
 #include "Settings.h"
+#include "FileItem.h"
 
 using namespace std;
 

@@ -2,6 +2,8 @@
 #include "GUIWindowMusicBase.h"
 #include "ThumbLoader.h"
 
+class CFileItemList;
+
 class CGUIWindowMusicNav : public CGUIWindowMusicBase, public IBackgroundLoaderObserver
 {
 public:
@@ -41,7 +43,7 @@ protected:
   CMusicThumbLoader m_thumbLoader;      ///< used for the loading of thumbs in the special://musicplaylist folder
 
   // filtered item views
-  CFileItemList m_unfilteredItems;
+  CFileItemList* m_unfilteredItems;
   CStdString m_filter;
 
   CStdString m_search;  // current search

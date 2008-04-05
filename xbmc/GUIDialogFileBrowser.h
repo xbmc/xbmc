@@ -4,7 +4,9 @@
 #include "FileSystem/DirectoryHistory.h"
 #include "GUIViewControl.h"
 #include "PictureThumbLoader.h"
-#include "FileItem.h"
+
+class CFileItem;
+class CFileItemList;
 
 class CGUIDialogFileBrowser : public CGUIDialog, public IBackgroundLoaderObserver
 {
@@ -49,8 +51,8 @@ protected:
 
   VECSOURCES m_shares;
   DIRECTORY::CVirtualDirectory m_rootDir;
-  CFileItemList m_vecItems;
-  CFileItem m_Directory;
+  CFileItemList* m_vecItems;
+  CFileItem* m_Directory;
   CStdString m_strParentPath;
   CStdString m_selectedPath;
   CDirectoryHistory m_history;

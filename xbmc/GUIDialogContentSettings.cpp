@@ -8,6 +8,7 @@
 #include "FileSystem/MultiPathDirectory.h"
 #include "GUIWindowManager.h"
 #include "utils/ScraperParser.h"
+#include "FileItem.h"
 
 #define CONTROL_CONTENT_TYPE        3
 #define CONTROL_SCRAPER_LIST        4
@@ -20,10 +21,12 @@ CGUIDialogContentSettings::CGUIDialogContentSettings(void)
     : CGUIDialogSettings(WINDOW_DIALOG_CONTENT_SETTINGS, "DialogContentSettings.xml")
 {
   m_bNeedSave = false;
+  m_vecItems = new CFileItemList;
 }
 
 CGUIDialogContentSettings::~CGUIDialogContentSettings(void)
 {
+  delete m_vecItems;
 }
 
 bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
@@ -33,7 +36,7 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       m_scrapers.clear();
-      m_vecItems.Clear();
+      m_vecItems->Clear();
       CGUIDialogSettings::OnMessage(message);
     }
     break;
@@ -352,7 +355,7 @@ void CGUIDialogContentSettings::FillListControl()
   CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_SCRAPER_LIST);
   OnMessage(msgReset); 
   int iIndex=0;
-  m_vecItems.Clear();
+  m_vecItems->Clear();
   for (std::vector<SScraperInfo>::iterator iter=m_scrapers.find(m_info.strContent)->second.begin();iter!=m_scrapers.find(m_info.strContent)->second.end();++iter)
   {
     CFileItem* item = new CFileItem(iter->strTitle);
@@ -367,7 +370,7 @@ void CGUIDialogContentSettings::FillListControl()
       OnMessage(msg2);
       item->Select(true);
     }
-    m_vecItems.Add(item);
+    m_vecItems->Add(item);
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_SCRAPER_LIST, 0, 0, (void*)item);
     OnMessage(msg);
     iIndex++;
@@ -379,18 +382,18 @@ CFileItem* CGUIDialogContentSettings::GetCurrentListItem(int offset)
   int currentItem = -1;
   if( m_info.strContent.IsEmpty())
     return NULL;
-  for (int i=0;i<m_vecItems.Size();++i )
+  for (int i=0;i<m_vecItems->Size();++i )
   {
-    if (m_vecItems[i]->IsSelected())
+    if (m_vecItems->Get(i)->IsSelected())
     {
       currentItem = i;
       break;
     }
   }
   if (currentItem == -1) return NULL;
-  int item = (currentItem + offset) % m_vecItems.Size();
-  if (item < 0) item += m_vecItems.Size();
-  return m_vecItems[item];
+  int item = (currentItem + offset) % m_vecItems->Size();
+  if (item < 0) item += m_vecItems->Size();
+  return m_vecItems->Get(item);
 }
 
 bool CGUIDialogContentSettings::ShowForDirectory(const CStdString& strDirectory, SScraperInfo& scraper, VIDEO::SScanSettings& settings, bool& bRunScan)

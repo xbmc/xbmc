@@ -30,6 +30,7 @@
 #include "FileSystem/PluginDirectory.h"
 #include "GUIDialogYesNo.h"
 #include "FileSystem/File.h"
+#include "FileItem.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -47,10 +48,12 @@ using namespace DIRECTORY;
 CGUIDialogMediaSource::CGUIDialogMediaSource(void)
     : CGUIDialog(WINDOW_DIALOG_MEDIA_SOURCE, "DialogMediaSource.xml")
 {
+  m_paths =  new CFileItemList;
 }
 
 CGUIDialogMediaSource::~CGUIDialogMediaSource()
 {
+  delete m_paths;
 }
 
 bool CGUIDialogMediaSource::OnAction(const CAction &action)
@@ -149,8 +152,8 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
         bConfirmed = true;
     }
     share.FromNameAndPaths(type, strName, dialog->GetPaths());
-    if (dialog->m_paths.Size() > 0) {
-      share.m_strThumbnailImage = dialog->m_paths.Get(0)->GetThumbnailImage();
+    if (dialog->m_paths->Size() > 0) {
+      share.m_strThumbnailImage = dialog->m_paths->Get(0)->GetThumbnailImage();
     }
     g_settings.AddShare(type, share);
 
@@ -161,7 +164,7 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
 
     }
   }
-  dialog->m_paths.Clear();
+  dialog->m_paths->Clear();
   return confirmed;
 }
 
@@ -221,13 +224,13 @@ bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const
     newShare.FromNameAndPaths(type, strName, dialog->GetPaths());
     g_settings.UpdateShare(type, strOldName, newShare);
   }
-  dialog->m_paths.Clear();
+  dialog->m_paths->Clear();
   return confirmed;
 }
 
 void CGUIDialogMediaSource::OnPathBrowse(int item)
 {
-  if (item < 0 || item > m_paths.Size()) return;
+  if (item < 0 || item > m_paths->Size()) return;
   // Browse is called.  Open the filebrowser dialog.
   // Ignore current path is best at this stage??
   CStdString path;
@@ -333,7 +336,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
   }
   if (CGUIDialogFileBrowser::ShowAndGetSource(path, allowNetworkShares, extraShares.size()==0?NULL:&extraShares))
   {
-    m_paths[item]->m_strPath = path;
+    m_paths->Get(item)->m_strPath = path;
     if (m_name.IsEmpty())
     {
       CURL url(path);
@@ -347,8 +350,8 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
 
 void CGUIDialogMediaSource::OnPath(int item)
 {
-  if (item < 0 || item > m_paths.Size()) return;
-  CGUIDialogKeyboard::ShowAndGetInput(m_paths[item]->m_strPath, g_localizeStrings.Get(1021), false);
+  if (item < 0 || item > m_paths->Size()) return;
+  CGUIDialogKeyboard::ShowAndGetInput(m_paths->Get(item)->m_strPath, g_localizeStrings.Get(1021), false);
   UpdateButtons();
 }
 
@@ -392,7 +395,7 @@ void CGUIDialogMediaSource::OnOK()
       {
         CFileItem item2(share.strPath,true);
         XFILE::CFile::Cache(item.GetThumbnailImage(),item2.GetCachedProgramThumb());
-        m_paths[0]->SetThumbnailImage(item2.GetCachedProgramThumb());
+        m_paths->Get(0)->SetThumbnailImage(item2.GetCachedProgramThumb());
       }
     }
     m_confirmed = true;
@@ -411,7 +414,7 @@ void CGUIDialogMediaSource::OnCancel()
 
 void CGUIDialogMediaSource::UpdateButtons()
 {
-  if (m_paths[0]->m_strPath.IsEmpty() || m_name.IsEmpty())
+  if (m_paths->Get(0)->m_strPath.IsEmpty() || m_name.IsEmpty())
   {
     CONTROL_DISABLE(CONTROL_OK)
   }
@@ -419,7 +422,7 @@ void CGUIDialogMediaSource::UpdateButtons()
   {
     CONTROL_ENABLE(CONTROL_OK)
   }
-  if (m_paths.Size() <= 1)
+  if (m_paths->Size() <= 1)
   {
     CONTROL_DISABLE(CONTROL_PATH_REMOVE)
   }
@@ -435,9 +438,9 @@ void CGUIDialogMediaSource::UpdateButtons()
     int currentItem = GetSelectedItem();
     CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_PATH);
     OnMessage(msgReset);
-    for (int i = 0; i < m_paths.Size(); i++)
+    for (int i = 0; i < m_paths->Size(); i++)
     {
-      CFileItem* item = m_paths[i];
+      CFileItem* item = m_paths->Get(i);
       CStdString path;
       CURL url(item->m_strPath);
       url.GetURLWithoutUserDetails(path);
@@ -452,7 +455,7 @@ void CGUIDialogMediaSource::UpdateButtons()
   else
   {
     CStdString path;
-    CURL url(m_paths[0]->m_strPath);
+    CURL url(m_paths->Get(0)->m_strPath);
     url.GetURLWithoutUserDetails(path);
     if (path.IsEmpty()) path = "<"+g_localizeStrings.Get(231)+">"; // <None>
     SET_CONTROL_LABEL(CONTROL_PATH, path)
@@ -461,7 +464,7 @@ void CGUIDialogMediaSource::UpdateButtons()
   if (m_type.Equals("video"))
   {
     SET_CONTROL_VISIBLE(CONTROL_CONTENT)
-    if (m_paths[0]->m_strPath.IsEmpty() || m_name.IsEmpty())
+    if (m_paths->Get(0)->m_strPath.IsEmpty() || m_name.IsEmpty())
     {
       CONTROL_DISABLE(CONTROL_CONTENT)
     }
@@ -478,11 +481,11 @@ void CGUIDialogMediaSource::UpdateButtons()
 
 void CGUIDialogMediaSource::SetShare(const CMediaSource &share)
 {
-  m_paths.Clear();
+  m_paths->Clear();
   for (unsigned int i = 0; i < share.vecPaths.size(); i++)
-    m_paths.Add(new CFileItem(share.vecPaths[i], true));
+    m_paths->Add(new CFileItem(share.vecPaths[i], true));
   if (0 == share.vecPaths.size())
-    m_paths.Add(new CFileItem("", true));
+    m_paths->Add(new CFileItem("", true));
   m_name = share.strName;
   UpdateButtons();
 }
@@ -540,29 +543,29 @@ int CGUIDialogMediaSource::GetSelectedItem()
   CGUIMessage message(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_PATH);
   OnMessage(message);
   int value = message.GetParam1();
-  if (value < 0 || value > m_paths.Size()) return 0;
+  if (value < 0 || value > m_paths->Size()) return 0;
   return value;
 }
 
 void CGUIDialogMediaSource::HighlightItem(int item)
 {
-  for (int i = 0; i < m_paths.Size(); i++)
-    m_paths[i]->Select(false);
-  if (item >= 0 && item < m_paths.Size())
-    m_paths[item]->Select(true);
+  for (int i = 0; i < m_paths->Size(); i++)
+    m_paths->Get(i)->Select(false);
+  if (item >= 0 && item < m_paths->Size())
+    m_paths->Get(item)->Select(true);
   CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_PATH, item);
   OnMessage(msg);
 }
 
 void CGUIDialogMediaSource::OnPathRemove(int item)
 {
-  m_paths.Remove(item);
+  m_paths->Remove(item);
   UpdateButtons();
-  if (item >= m_paths.Size())
-    HighlightItem(m_paths.Size() - 1);
+  if (item >= m_paths->Size())
+    HighlightItem(m_paths->Size() - 1);
   else
     HighlightItem(item);
-  if (m_paths.Size() <= 1)
+  if (m_paths->Size() <= 1)
   {
     SET_CONTROL_FOCUS(CONTROL_PATH_ADD, 0);
   }
@@ -571,16 +574,16 @@ void CGUIDialogMediaSource::OnPathRemove(int item)
 void CGUIDialogMediaSource::OnPathAdd()
 {
   // add a new item and select it as well
-  m_paths.Add(new CFileItem("", true));
+  m_paths->Add(new CFileItem("", true));
   UpdateButtons();
-  HighlightItem(m_paths.Size() - 1);
+  HighlightItem(m_paths->Size() - 1);
 }
 
 vector<CStdString> CGUIDialogMediaSource::GetPaths()
 {
   vector<CStdString> paths;
-  for (int i = 0; i < m_paths.Size(); i++)
-    paths.push_back(m_paths[i]->m_strPath);
+  for (int i = 0; i < m_paths->Size(); i++)
+    paths.push_back(m_paths->Get(i)->m_strPath);
   return paths;
 }
 

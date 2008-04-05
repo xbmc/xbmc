@@ -5,6 +5,7 @@
 #include "iso9660.h"
 #include "../Util.h"
 #include "URL.h"
+#include "FileItem.h"
 
 using namespace DIRECTORY;
 

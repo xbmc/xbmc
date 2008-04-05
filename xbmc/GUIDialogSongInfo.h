@@ -1,6 +1,7 @@
 #pragma once
 #include "GUIDialog.h"
-#include "FileItem.h"
+
+class CFileItem;
 
 class CGUIDialogSongInfo :
       public CGUIDialog
@@ -19,7 +20,7 @@ protected:
   bool DownloadThumbnail(const CStdString &thumbFile);
   void OnGetThumb();
 
-  CFileItem m_song;
+  CFileItem* m_song;
   char m_startRating;
   bool m_cancelled;
   bool m_needsUpdate;

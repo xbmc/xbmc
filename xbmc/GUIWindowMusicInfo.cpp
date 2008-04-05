@@ -32,6 +32,7 @@
 #include "MusicInfoTag.h"
 #include "URL.h"
 #include "FileSystem/File.h"
+#include "FileItem.h"
 
 using namespace XFILE;
 
@@ -57,10 +58,15 @@ CGUIWindowMusicInfo::CGUIWindowMusicInfo(void)
     : CGUIDialog(WINDOW_MUSIC_INFO, "DialogAlbumInfo.xml")
 {
   m_bRefresh = false;
+  m_albumItem = new CFileItem;
+  m_albumSongs = new CFileItemList;
 }
 
 CGUIWindowMusicInfo::~CGUIWindowMusicInfo(void)
-{}
+{
+  delete m_albumItem;
+  delete m_albumSongs;
+}
 
 bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
 {
@@ -70,7 +76,7 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
     {
       CGUIMessage message(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST);
       OnMessage(message);
-      m_albumSongs.Clear();
+      m_albumSongs->Clear();
     }
     break;
 
@@ -115,9 +121,9 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
           CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl, 0, 0, NULL);
           g_graphicsContext.SendMessage(msg);
           int iItem = msg.GetParam1();
-          if (iItem < 0 || iItem >= (int)m_albumSongs.Size())
+          if (iItem < 0 || iItem >= (int)m_albumSongs->Size())
             break;
-          OnSearch(m_albumSongs[iItem]);
+          OnSearch(m_albumSongs->Get(iItem));
           return true;
         }
       }
@@ -141,21 +147,21 @@ void CGUIWindowMusicInfo::SetAlbum(const CAlbum& album, const CStdString &path)
 {
   m_album = album;
   SetSongs(m_album.songs);
-  m_albumItem = CFileItem(path, true);
-  m_albumItem.GetMusicInfoTag()->SetAlbum(m_album.strAlbum);
-  m_albumItem.GetMusicInfoTag()->SetAlbumArtist(m_album.strArtist);
-  m_albumItem.GetMusicInfoTag()->SetArtist(m_album.strArtist);
-  m_albumItem.GetMusicInfoTag()->SetYear(m_album.iYear);
-  m_albumItem.GetMusicInfoTag()->SetLoaded(true);
-  m_albumItem.GetMusicInfoTag()->SetRating('0' + (m_album.iRating + 1) / 2);
-  m_albumItem.GetMusicInfoTag()->SetGenre(m_album.strGenre);
-  m_albumItem.SetProperty("albumstyles", m_album.strStyles);
-  m_albumItem.SetProperty("albummoods", m_album.strMoods);
-  m_albumItem.SetProperty("albumthemes", m_album.strThemes);
-  m_albumItem.SetProperty("albumreview", m_album.strReview);
-  m_albumItem.SetProperty("albumlabel", m_album.strLabel);
-  m_albumItem.SetProperty("albumtype", m_album.strType);
-  m_albumItem.SetMusicThumb();
+  *m_albumItem = CFileItem(path, true);
+  m_albumItem->GetMusicInfoTag()->SetAlbum(m_album.strAlbum);
+  m_albumItem->GetMusicInfoTag()->SetAlbumArtist(m_album.strArtist);
+  m_albumItem->GetMusicInfoTag()->SetArtist(m_album.strArtist);
+  m_albumItem->GetMusicInfoTag()->SetYear(m_album.iYear);
+  m_albumItem->GetMusicInfoTag()->SetLoaded(true);
+  m_albumItem->GetMusicInfoTag()->SetRating('0' + (m_album.iRating + 1) / 2);
+  m_albumItem->GetMusicInfoTag()->SetGenre(m_album.strGenre);
+  m_albumItem->SetProperty("albumstyles", m_album.strStyles);
+  m_albumItem->SetProperty("albummoods", m_album.strMoods);
+  m_albumItem->SetProperty("albumthemes", m_album.strThemes);
+  m_albumItem->SetProperty("albumreview", m_album.strReview);
+  m_albumItem->SetProperty("albumlabel", m_album.strLabel);
+  m_albumItem->SetProperty("albumtype", m_album.strType);
+  m_albumItem->SetMusicThumb();
   m_hasUpdatedThumb = false;
   m_bArtistInfo = false;
   g_infoManager.m_content = "albums";
@@ -165,22 +171,22 @@ void CGUIWindowMusicInfo::SetArtist(const CArtist& artist, const CStdString &pat
 {
   m_artist = artist;
   SetDiscography();
-  m_albumItem = CFileItem(path, true);
-  m_albumItem.SetLabel(artist.strArtist);
-  m_albumItem.GetMusicInfoTag()->SetAlbumArtist(m_artist.strArtist);
-  m_albumItem.GetMusicInfoTag()->SetArtist(m_artist.strArtist);
-  m_albumItem.GetMusicInfoTag()->SetLoaded(true);
-  m_albumItem.GetMusicInfoTag()->SetGenre(m_artist.strGenre);
-  m_albumItem.SetProperty("styles", m_artist.strStyles);
-  m_albumItem.SetProperty("moods", m_artist.strMoods);
-  m_albumItem.SetProperty("biography", m_artist.strBiography);
-  m_albumItem.SetProperty("instruments", m_artist.strInstruments);
-  m_albumItem.SetProperty("born", m_artist.strBorn);
-  m_albumItem.SetProperty("formed", m_artist.strFormed);
-  m_albumItem.SetProperty("died", m_artist.strDied);
-  m_albumItem.SetProperty("disbanded", m_artist.strDisbanded);
-  m_albumItem.SetProperty("yearsactive", m_artist.strYearsActive);
-  m_albumItem.SetCachedArtistThumb();
+  *m_albumItem = CFileItem(path, true);
+  m_albumItem->SetLabel(artist.strArtist);
+  m_albumItem->GetMusicInfoTag()->SetAlbumArtist(m_artist.strArtist);
+  m_albumItem->GetMusicInfoTag()->SetArtist(m_artist.strArtist);
+  m_albumItem->GetMusicInfoTag()->SetLoaded(true);
+  m_albumItem->GetMusicInfoTag()->SetGenre(m_artist.strGenre);
+  m_albumItem->SetProperty("styles", m_artist.strStyles);
+  m_albumItem->SetProperty("moods", m_artist.strMoods);
+  m_albumItem->SetProperty("biography", m_artist.strBiography);
+  m_albumItem->SetProperty("instruments", m_artist.strInstruments);
+  m_albumItem->SetProperty("born", m_artist.strBorn);
+  m_albumItem->SetProperty("formed", m_artist.strFormed);
+  m_albumItem->SetProperty("died", m_artist.strDied);
+  m_albumItem->SetProperty("disbanded", m_artist.strDisbanded);
+  m_albumItem->SetProperty("yearsactive", m_artist.strYearsActive);
+  m_albumItem->SetCachedArtistThumb();
   m_hasUpdatedThumb = false;
   m_bArtistInfo = true;
   g_infoManager.m_content = "artists";
@@ -188,18 +194,18 @@ void CGUIWindowMusicInfo::SetArtist(const CArtist& artist, const CStdString &pat
 
 void CGUIWindowMusicInfo::SetSongs(const VECSONGS &songs)
 {
-  m_albumSongs.Clear();
+  m_albumSongs->Clear();
   for (unsigned int i = 0; i < songs.size(); i++)
   {
     const CSong& song = songs[i];
     CFileItem *item = new CFileItem(song);
-    m_albumSongs.Add(item);
+    m_albumSongs->Add(item);
   }
 }
 
 void CGUIWindowMusicInfo::SetDiscography()
 {
-  m_albumSongs.Clear();
+  m_albumSongs->Clear();
   CMusicDatabase database;
   database.Open();
 
@@ -217,7 +223,7 @@ void CGUIWindowMusicInfo::SetDiscography()
     else
       item.SetThumbnailImage("defaultAlbumCover.png");
 
-    m_albumSongs.Add(new CFileItem(item));
+    m_albumSongs->Add(new CFileItem(item));
   }
 }
 
@@ -293,7 +299,7 @@ void CGUIWindowMusicInfo::Update()
   {
     CGUIImage* pImageControl = (CGUIImage*)pControl;
     pImageControl->FreeResources();
-    pImageControl->SetFileName(m_albumItem.GetThumbnailImage());
+    pImageControl->SetFileName(m_albumItem->GetThumbnailImage());
   }
 
   // disable the GetThumb button if the user isn't allowed it
@@ -330,11 +336,11 @@ void CGUIWindowMusicInfo::Render()
 
 void CGUIWindowMusicInfo::RefreshThumb()
 {
-  CStdString thumbImage = m_albumItem.GetThumbnailImage();
-  if (!m_albumItem.HasThumbnail())
+  CStdString thumbImage = m_albumItem->GetThumbnailImage();
+  if (!m_albumItem->HasThumbnail())
   {
     if (m_bArtistInfo)
-      thumbImage = m_albumItem.GetCachedArtistThumb();
+      thumbImage = m_albumItem->GetCachedArtistThumb();
     else
       thumbImage = CUtil::GetCachedAlbumThumb(m_album.strAlbum, m_album.strArtist);
   }
@@ -348,7 +354,7 @@ void CGUIWindowMusicInfo::RefreshThumb()
   if (!CFile::Exists(thumbImage) )
     thumbImage.Empty();
 
-  m_albumItem.SetThumbnailImage(thumbImage);
+  m_albumItem->SetThumbnailImage(thumbImage);
 }
 
 bool CGUIWindowMusicInfo::NeedRefresh() const
@@ -442,10 +448,10 @@ void CGUIWindowMusicInfo::OnGetThumb()
   }
 
   // Current thumb
-  if (CFile::Exists(m_albumItem.GetThumbnailImage()))
+  if (CFile::Exists(m_albumItem->GetThumbnailImage()))
   {
     CFileItem *item = new CFileItem("thumb://Current", false);
-    item->SetThumbnailImage(m_albumItem.GetThumbnailImage());
+    item->SetThumbnailImage(m_albumItem->GetThumbnailImage());
     item->SetLabel(g_localizeStrings.Get(20016));
     items.Add(item);
   }
@@ -462,7 +468,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
     CUtil::AddFileToFolder(strArtistPath,"folder.jpg",localThumb);
   }
   else
-    CStdString localThumb = m_albumItem.GetUserMusicThumb();
+    CStdString localThumb = m_albumItem->GetUserMusicThumb();
   if (CFile::Exists(localThumb))
   {
     CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, "localthumb.jpg", cachedLocalThumb);
@@ -495,7 +501,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
   // new thumbnail
   CStdString cachedThumb;
   if (m_bArtistInfo)
-    cachedThumb = m_albumItem.GetCachedArtistThumb();
+    cachedThumb = m_albumItem->GetCachedArtistThumb();
   else
     cachedThumb = CUtil::GetCachedAlbumThumb(m_album.strAlbum, m_album.strArtist);
 
@@ -514,7 +520,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
     pic.DoCreateThumbnail(result, cachedThumb);
   }
 
-  m_albumItem.SetThumbnailImage(cachedThumb);
+  m_albumItem->SetThumbnailImage(cachedThumb);
   m_hasUpdatedThumb = true;
 
   // tell our GUI to completely reload all controls (as some of them
@@ -542,4 +548,9 @@ void CGUIWindowMusicInfo::OnSearch(const CFileItem* pItem)
       Update();
     }
   }
+}
+
+CFileItem* CGUIWindowMusicInfo::GetCurrentListItem(int offset)
+{ 
+  return m_albumItem; 
 }

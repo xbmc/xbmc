@@ -3,6 +3,7 @@
 #include "StackDirectory.h"
 #include "../utils/log.h"
 #include "../Util.h"
+#include "FileItem.h"
 
 #define PRE_2_1_STACK_COMPATIBILITY
 

@@ -19,6 +19,7 @@
 #include "../../guilib/GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "GUISettings.h"
+#include "FileItem.h"
 
 using namespace DIRECTORY;
 

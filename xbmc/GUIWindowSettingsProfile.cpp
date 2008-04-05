@@ -31,6 +31,7 @@
 #include "GUIPassword.h"
 #include "GUIWindowManager.h"
 #include "FileSystem/Directory.h"
+#include "FileItem.h"
 
 using namespace DIRECTORY;
 

@@ -1,9 +1,10 @@
 #pragma once
 
 #include "Directory.h"
-#include "FileItem.h"
 
 #include <set>
+
+class CFileItem;
 
 namespace DIRECTORY
 {
@@ -14,7 +15,7 @@ class CDirectoryCache
   {
   public:
     CStdString m_strPath;
-    CFileItemList m_Items;
+    CFileItemList* m_Items;
   };
 public:
   CDirectoryCache(void);

@@ -4,6 +4,7 @@
 #include "../xbmc/utils/GUIInfoManager.h"
 #include "XMLUtils.h"
 #include "SkinInfo.h"
+#include "../xbmc/FileItem.h"
 
 using namespace std;
 

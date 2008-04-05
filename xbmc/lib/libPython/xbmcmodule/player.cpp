@@ -8,6 +8,7 @@
 #include "infotagvideo.h"
 #include "infotagmusic.h"
 #include "listitem.h"
+#include "FileItem.h"
 
 using namespace MUSIC_INFO;
 

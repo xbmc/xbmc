@@ -39,6 +39,7 @@
 #include "../../PictureInfoTag.h"
 #include "../../MusicInfoTag.h"
 #include "FileSystem/Directory.h"
+#include "PlayList.h"
 
 using namespace std;
 using namespace MUSIC_GRABBER;
@@ -521,7 +522,7 @@ bool CXbmcHttp::LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, 
     return false;
 
   // first item of the list, used to determine the intent
-  CPlayList::CPlayListItem playlistItem = playlist[0];
+  CPlayListItem playlistItem = playlist[0];
 
   if ((playlist.size() == 1) && (autoStart))
   {
@@ -1715,7 +1716,7 @@ int CXbmcHttp::xbmcGetPlayListContents(int numParas, CStdString paras[])
     if (g_application.IsPlayingAudio())
 	{
 	  for (int i=0; i< thePlayList.size(); i++) {
-        const CPlayList::CPlayListItem& item=thePlayList[i];
+        const CPlayListItem& item=thePlayList[i];
 		const CMusicInfoTag* tagVal=item.GetMusicTag();
 	    if (tagVal && tagVal->GetURL()!="")
           list += closeTag+openTag + tagVal->GetURL();
@@ -1725,7 +1726,7 @@ int CXbmcHttp::xbmcGetPlayListContents(int numParas, CStdString paras[])
 	}
 	else
 	  for (int i=0; i< thePlayList.size(); i++) {
-        const CPlayList::CPlayListItem& item=thePlayList[i];
+        const CPlayListItem& item=thePlayList[i];
         list += closeTag+openTag + item.GetFileName();
       }
   return SetResponse(list) ;

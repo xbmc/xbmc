@@ -3,6 +3,7 @@
 #include "FileSystem/PluginDirectory.h"
 #include "listitem.h"
 #include "PluginSettings.h"
+#include "FileItem.h"
 
 // include for constants
 #include "pyutil.h"

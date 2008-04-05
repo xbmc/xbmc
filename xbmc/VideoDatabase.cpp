@@ -35,6 +35,7 @@
 #include "FileSystem/Directory.h"
 #include "FileSystem/File.h"
 #include "GUIDialogProgress.h"
+#include "FileItem.h"
 
 using namespace std;
 using namespace dbiplus;

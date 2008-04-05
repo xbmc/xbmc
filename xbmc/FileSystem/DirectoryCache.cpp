@@ -3,6 +3,7 @@
 #include "DirectoryCache.h"
 #include "../Util.h"
 #include "Settings.h"
+#include "FileItem.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -32,10 +33,10 @@ bool CDirectoryCache::GetDirectory(const CStdString& strPath1, CFileItemList &it
     if (dir->m_strPath == strPath)
     {
 
-      for (int i = 0; i < (int) dir->m_Items.Size(); ++i)
+      for (int i = 0; i < (int) dir->m_Items->Size(); ++i)
       {
         CFileItem* pItem = new CFileItem();
-        (*pItem) = *(dir->m_Items[i]);
+        (*pItem) = *(dir->m_Items->Get(i));
         items.Add(pItem);
       }
 
@@ -56,9 +57,10 @@ void CDirectoryCache::SetDirectory(const CStdString& strPath1, const CFileItemLi
 
   g_directoryCache.ClearDirectory(strPath);
   CDir* dir = new CDir;
+  dir->m_Items = new CFileItemList;
   dir->m_strPath = strPath;
-  dir->m_Items.SetFastLookup(true);
-  dir->m_Items.Append(items);
+  dir->m_Items->SetFastLookup(true);
+  dir->m_Items->Append(items);
   g_directoryCache.m_vecCache.push_back(dir);
 }
 
@@ -76,7 +78,8 @@ void CDirectoryCache::ClearDirectory(const CStdString& strPath1)
     CDir* dir = *i;
     if (dir->m_strPath == strPath)
     {
-      dir->m_Items.Clear(); // will clean up everything
+      dir->m_Items->Clear(); // will clean up everything
+      delete dir->m_Items;
       delete dir;
       g_directoryCache.m_vecCache.erase(i);
       return ;
@@ -100,9 +103,9 @@ bool CDirectoryCache::FileExists(const CStdString& strFile, bool& bInCache)
     if (dir->m_strPath == strPath)
     {
       bInCache = true;
-      for (int i = 0; i < (int) dir->m_Items.Size(); ++i)
+      for (int i = 0; i < (int) dir->m_Items->Size(); ++i)
       {
-        CFileItem* pItem = dir->m_Items[i];
+        CFileItem* pItem = dir->m_Items->Get(i);
         if ( strcmpi(pItem->m_strPath.c_str(), strFixedFile.c_str()) == 0 ) return true;
       }
     }
@@ -121,7 +124,8 @@ void CDirectoryCache::Clear()
     CDir* dir = *i;
     if (!IsCacheDir(dir->m_strPath))
     {
-      dir->m_Items.Clear(); // will clean up everything
+      dir->m_Items->Clear(); // will clean up everything
+      delete dir->m_Items;
       delete dir;
       i=g_directoryCache.m_vecCache.erase(i);
     }
@@ -151,7 +155,8 @@ void CDirectoryCache::ClearCache(set<CStdString>& dirs)
     CDir* dir = *i;
     if (dirs.find(dir->m_strPath) != dirs.end())
     {
-      dir->m_Items.Clear(); // will clean up everything
+      dir->m_Items->Clear(); // will clean up everything
+      delete dir->m_Items;
       delete dir;
       g_directoryCache.m_vecCache.erase(i);
     }

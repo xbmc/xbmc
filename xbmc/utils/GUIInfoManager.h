@@ -7,16 +7,22 @@
 #define GUILIB_GUIInfoManager_H
 #pragma once
 
-#include "../FileItem.h"
 #include "../StringUtils.h"
 #include "../Temperature.h"
-#include "../utils/CriticalSection.h"
+#include "CriticalSection.h"
 #include "IMsgTargetCallback.h"
+#include "../DateTime.h"
 
 #include <list>
+#include <map>
 
-class MUSIC_INFO::CMusicInfoTag;
+namespace MUSIC_INFO
+{
+  class CMusicInfoTag;
+}
 class CVideoInfoTag;
+class CFileItem;
+class CGUIListItem;
 
 // conditions for window retrieval
 #define WINDOW_CONDITION_HAS_LIST_ITEMS  1
@@ -474,25 +480,13 @@ public:
   void SetCurrentAlbumThumb(const CStdString thumbFileName);
   void SetCurrentMovie(CFileItem &item);
   void SetCurrentSlide(CFileItem &item);
-  const CFileItem &GetCurrentSlide() const { return m_currentSlide; };
+  const CFileItem &GetCurrentSlide() const;
   void ResetCurrentSlide();
   void SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag &tag);
   void SetCurrentVideoTag(const CVideoInfoTag &tag);
 
-  const MUSIC_INFO::CMusicInfoTag *GetCurrentSongTag() const
-  { 
-    if (m_currentFile.HasMusicInfoTag())
-      return m_currentFile.GetMusicInfoTag(); 
-
-    return NULL;
-  };
-  const CVideoInfoTag* GetCurrentMovieTag() const
-  { 
-    if (m_currentFile.HasVideoInfoTag())
-      return m_currentFile.GetVideoInfoTag(); 
-    
-    return NULL;
-  };
+  const MUSIC_INFO::CMusicInfoTag *GetCurrentSongTag() const;
+  const CVideoInfoTag* GetCurrentMovieTag() const;
 
   CStdString GetMusicLabel(int item);
   CStdString GetVideoLabel(int item);
@@ -570,11 +564,11 @@ protected:
   CStdString m_currentMovieDuration;
   
   // Current playing stuff
-  CFileItem m_currentFile;
+  CFileItem* m_currentFile;
   CStdString m_currentMovieThumb;
   unsigned int m_lastMusicBitrateTime;
   unsigned int m_MusicBitrate;
-  CFileItem m_currentSlide;
+  CFileItem* m_currentSlide;
   int i_SmartRequest;
  
   // fan stuff

@@ -7,6 +7,7 @@
 #include "URL.h"
 #include "../../guilib/GUIWindowManager.h"
 #include "GUIDialogProgress.h"
+#include "FileItem.h"
 
 using namespace std;
 using namespace DIRECTORY;

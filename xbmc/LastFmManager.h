@@ -1,8 +1,18 @@
 #pragma once
 
 #include "utils/Thread.h"
-#include "PlayList.h"
 
+namespace PLAYLIST
+{
+  class CPlayList;
+}
+
+namespace MUSIC_INFO
+{
+  class CMusicInfoTag;
+}
+
+class CURL;
 class CGUIDialogProgress;
 
 class CLastFmManager : CThread
@@ -65,7 +75,7 @@ private:
 
   LastFmManagerSong m_CurrentSong;
 
-  PLAYLIST::CPlayList m_RadioTrackQueue;
+  PLAYLIST::CPlayList* m_RadioTrackQueue;
   HANDLE m_hWorkerEvent;
   CCriticalSection m_lockCache;
   CCriticalSection m_lockPlaylist;

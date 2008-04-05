@@ -10,6 +10,7 @@
 #include "../../guilib/GUIWindowManager.h"
 #include "GUIDialogProgress.h"
 #include "URL.h"
+#include "FileItem.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

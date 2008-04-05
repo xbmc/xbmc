@@ -96,6 +96,7 @@
 #include "GUIDialogYesNo.h"
 #include "GUIDialogKeyboard.h"
 #include "FileSystem/File.h"
+#include "PlayList.h"
 
 using namespace std;
 namespace MathUtils {
@@ -3316,7 +3317,7 @@ char CUtil::GetDirectorySeperator(const CStdString &strFilename)
   return url.GetDirectorySeparator();
 }
 
-void CUtil::ConvertFileItemToPlayListItem(const CFileItem *pItem, CPlayList::CPlayListItem &playlistitem)
+void CUtil::ConvertFileItemToPlayListItem(const CFileItem *pItem, CPlayListItem &playlistitem)
 {
   *(CFileItem*)&playlistitem = *pItem;
 

@@ -4,6 +4,7 @@
 #include "../MusicInfoLoader.h"
 #include "DirectoryCache.h"
 #include "URL.h"
+#include "FileItem.h"
 
 using namespace MUSIC_INFO;
 using namespace DIRECTORY;

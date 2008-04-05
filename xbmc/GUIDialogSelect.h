@@ -1,7 +1,9 @@
 #pragma once
 #include "GUIDialogBoxBase.h"
 #include "GUIListItem.h"
-#include "FileItem.h"
+
+class CFileItem;
+class CFileItemList;
 
 class CGUIDialogSelect :
       public CGUIDialogBoxBase
@@ -30,7 +32,7 @@ protected:
   bool m_bButtonPressed;
   int m_iSelected;
 
-  CFileItem m_selectedItem;
-  CFileItemList m_vecListInternal;
+  CFileItem* m_selectedItem;
+  CFileItemList* m_vecListInternal;
   CFileItemList* m_vecList;
 };

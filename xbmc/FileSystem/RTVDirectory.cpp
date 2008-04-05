@@ -7,6 +7,7 @@
 #include "../Util.h"
 #include "URL.h"
 #include "tinyXML/tinyxml.h"
+#include "FileItem.h"
 
 using namespace DIRECTORY;
 

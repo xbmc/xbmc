@@ -32,6 +32,7 @@
 #include "GUIDialogPictureInfo.h"
 #include "../guilib/GUIWindowManager.h"
 #include "Settings.h"
+#include "FileItem.h"
 
 using namespace DIRECTORY;
 
@@ -125,12 +126,14 @@ CGUIWindowSlideShow::CGUIWindowSlideShow(void)
     : CGUIWindow(WINDOW_SLIDESHOW, "SlideShow.xml")
 {
   m_pBackgroundLoader = NULL;
+  m_slides = new CFileItemList;
   Reset();
 }
 
 CGUIWindowSlideShow::~CGUIWindowSlideShow(void)
 {
   Reset();
+  delete m_slides;
 }
 
 
@@ -153,7 +156,7 @@ void CGUIWindowSlideShow::Reset()
   m_iCurrentSlide = 0;
   m_iNextSlide = 1;
   m_iCurrentPic = 0;
-  m_slides.Clear();
+  m_slides->Clear();
   m_Resolution = INVALID;
 }
 
@@ -179,16 +182,16 @@ void CGUIWindowSlideShow::FreeResources()
 
 void CGUIWindowSlideShow::Add(const CFileItem *picture)
 {
-  m_slides.Add(new CFileItem(*picture));
+  m_slides->Add(new CFileItem(*picture));
 }
 
 void CGUIWindowSlideShow::ShowNext()
 {
-  if (m_slides.Size() == 1)
+  if (m_slides->Size() == 1)
     return;
 
   m_iNextSlide = m_iCurrentSlide + 1;
-  if (m_iNextSlide >= m_slides.Size())
+  if (m_iNextSlide >= m_slides->Size())
     m_iNextSlide = 0;
 
   m_bLoadNextPic = true;
@@ -196,26 +199,26 @@ void CGUIWindowSlideShow::ShowNext()
 
 void CGUIWindowSlideShow::ShowPrevious()
 {
-  if (m_slides.Size() == 1)
+  if (m_slides->Size() == 1)
     return;
 
   m_iNextSlide = m_iCurrentSlide - 1;
   if (m_iNextSlide < 0)
-    m_iNextSlide = m_slides.Size() - 1;
+    m_iNextSlide = m_slides->Size() - 1;
   m_bLoadNextPic = true;
 }
 
 
 void CGUIWindowSlideShow::Select(const CStdString& strPicture)
 {
-  for (int i = 0; i < m_slides.Size(); ++i)
+  for (int i = 0; i < m_slides->Size(); ++i)
   {
-    const CFileItem *item = m_slides[i];
+    const CFileItem *item = m_slides->Get(i);
     if (item->m_strPath == strPicture)
     {
       m_iCurrentSlide = i;
       m_iNextSlide = m_iCurrentSlide + 1;
-      if (m_iNextSlide >= m_slides.Size())
+      if (m_iNextSlide >= m_slides->Size())
         m_iNextSlide = 0;
       return ;
     }
@@ -224,13 +227,13 @@ void CGUIWindowSlideShow::Select(const CStdString& strPicture)
 
 const CFileItemList &CGUIWindowSlideShow::GetSlideShowContents()
 {
-  return m_slides;
+  return *m_slides;
 }
 
 const CFileItem *CGUIWindowSlideShow::GetCurrentSlide()
 {
-  if (m_iCurrentSlide >= 0 && m_iCurrentSlide < m_slides.Size())
-    return m_slides[m_iCurrentSlide];
+  if (m_iCurrentSlide >= 0 && m_iCurrentSlide < m_slides->Size())
+    return m_slides->Get(m_iCurrentSlide);
   return NULL;
 }
 
@@ -248,7 +251,7 @@ void CGUIWindowSlideShow::Render()
 {
   // reset the screensaver if we're in a slideshow
   if (m_bSlideShow) g_application.ResetScreenSaver();
-  int iSlides = m_slides.Size();
+  int iSlides = m_slides->Size();
   if (!iSlides) return ;
 
   // Create our background loader if necessary
@@ -271,7 +274,7 @@ void CGUIWindowSlideShow::Render()
     CLog::Log(LOGDEBUG, "We have an error loading a picture!");
     if (m_Image[m_iCurrentPic].IsLoaded())
     { // Yes.  Let's let it transistion out, wait for it to be released, then try loading again.
-      CLog::Log(LOGERROR, "Error loading the next image %s", m_slides[m_iNextSlide]->m_strPath.c_str());
+      CLog::Log(LOGERROR, "Error loading the next image %s", m_slides->Get(m_iNextSlide)->m_strPath.c_str());
       if (!bSlideShow)
       { // tell the pic to start transistioning out now
         m_Image[m_iCurrentPic].StartTransistion();
@@ -285,7 +288,7 @@ void CGUIWindowSlideShow::Render()
       // change to next image
       if (bSlideShow)
       {
-        CLog::Log(LOGERROR, "Error loading the current image %s", m_slides[m_iCurrentSlide]->m_strPath.c_str());
+        CLog::Log(LOGERROR, "Error loading the current image %s", m_slides->Get(m_iCurrentSlide)->m_strPath.c_str());
         m_iCurrentSlide = m_iNextSlide;
         ShowNext();
         m_bErrorMessage = false;
@@ -306,7 +309,7 @@ void CGUIWindowSlideShow::Render()
 
   if (!m_Image[m_iCurrentPic].IsLoaded() && !m_pBackgroundLoader->IsLoading())
   { // load first image
-    CLog::Log(LOGDEBUG, "Loading the current image %s", m_slides[m_iCurrentSlide]->m_strPath.c_str());
+    CLog::Log(LOGDEBUG, "Loading the current image %s", m_slides->Get(m_iCurrentSlide)->m_strPath.c_str());
     m_bWaitForNextPic = false;
     m_bLoadNextPic = false;
     // load using the background loader
@@ -314,7 +317,7 @@ void CGUIWindowSlideShow::Render()
     GetCheckedSize((float)g_settings.m_ResInfo[m_Resolution].iWidth * zoomamount[m_iZoomFactor - 1], 
                     (float)g_settings.m_ResInfo[m_Resolution].iHeight * zoomamount[m_iZoomFactor - 1],
                     maxWidth, maxHeight);
-    m_pBackgroundLoader->LoadPic(m_iCurrentPic, m_iCurrentSlide, m_slides[m_iCurrentSlide]->m_strPath, maxWidth, maxHeight);
+    m_pBackgroundLoader->LoadPic(m_iCurrentPic, m_iCurrentSlide, m_slides->Get(m_iCurrentSlide)->m_strPath, maxWidth, maxHeight);
   }
 
   // check if we should discard an already loaded next slide
@@ -332,7 +335,7 @@ void CGUIWindowSlideShow::Render()
   {
     if (m_Image[m_iCurrentPic].IsLoaded() && !m_Image[1 - m_iCurrentPic].IsLoaded() && !m_pBackgroundLoader->IsLoading() && !m_bWaitForNextPic)
     { // reload the image if we need to
-      CLog::Log(LOGDEBUG, "Reloading the current image %s at zoom level %i", m_slides[m_iCurrentSlide]->m_strPath.c_str(), m_iZoomFactor);
+      CLog::Log(LOGDEBUG, "Reloading the current image %s at zoom level %i", m_slides->Get(m_iCurrentSlide)->m_strPath.c_str(), m_iZoomFactor);
       // first, our maximal size for this zoom level
       int maxWidth = (int)((float)g_settings.m_ResInfo[m_Resolution].iWidth * zoomamount[m_iZoomFactor - 1]);
       int maxHeight = (int)((float)g_settings.m_ResInfo[m_Resolution].iWidth * zoomamount[m_iZoomFactor - 1]);
@@ -345,19 +348,19 @@ void CGUIWindowSlideShow::Render()
       if (maxWidth < width) width = maxWidth;
       if (maxHeight < height) height = maxHeight;
 
-      m_pBackgroundLoader->LoadPic(m_iCurrentPic, m_iCurrentSlide, m_slides[m_iCurrentSlide]->m_strPath, maxWidth, maxHeight);
+      m_pBackgroundLoader->LoadPic(m_iCurrentPic, m_iCurrentSlide, m_slides->Get(m_iCurrentSlide)->m_strPath, maxWidth, maxHeight);
     }
   }
   else
   {
     if ((bSlideShow || m_bLoadNextPic) && m_Image[m_iCurrentPic].IsLoaded() && !m_Image[1 - m_iCurrentPic].IsLoaded() && !m_pBackgroundLoader->IsLoading() && !m_bWaitForNextPic)
     { // load the next image
-      CLog::Log(LOGDEBUG, "Loading the next image %s", m_slides[m_iNextSlide]->m_strPath.c_str());
+      CLog::Log(LOGDEBUG, "Loading the next image %s", m_slides->Get(m_iNextSlide)->m_strPath.c_str());
       int maxWidth, maxHeight;
       GetCheckedSize((float)g_settings.m_ResInfo[m_Resolution].iWidth * zoomamount[m_iZoomFactor - 1], 
                      (float)g_settings.m_ResInfo[m_Resolution].iHeight * zoomamount[m_iZoomFactor - 1],
                      maxWidth, maxHeight);
-      m_pBackgroundLoader->LoadPic(1 - m_iCurrentPic, m_iNextSlide, m_slides[m_iNextSlide]->m_strPath, maxWidth, maxHeight);
+      m_pBackgroundLoader->LoadPic(1 - m_iCurrentPic, m_iNextSlide, m_slides->Get(m_iNextSlide)->m_strPath, maxWidth, maxHeight);
     }
   }
 
@@ -371,7 +374,7 @@ void CGUIWindowSlideShow::Render()
   // Check if we should be transistioning immediately
   if (m_bLoadNextPic)
   {
-    CLog::Log(LOGDEBUG, "Starting immediate transistion due to user wanting slide %s", m_slides[m_iNextSlide]->m_strPath.c_str());
+    CLog::Log(LOGDEBUG, "Starting immediate transistion due to user wanting slide %s", m_slides->Get(m_iNextSlide)->m_strPath.c_str());
     if (m_Image[m_iCurrentPic].StartTransistion())
     {
       m_Image[m_iCurrentPic].SetTransistionTime(1, IMMEDIATE_TRANSISTION_TIME); // only 20 frames for the transistion
@@ -402,7 +405,7 @@ void CGUIWindowSlideShow::Render()
   // check if we should swap images now
   if (m_Image[m_iCurrentPic].IsFinished())
   {
-    CLog::Log(LOGDEBUG, "Image %s is finished rendering, switching to %s", m_slides[m_iCurrentSlide]->m_strPath.c_str(), m_slides[m_iNextSlide]->m_strPath.c_str());
+    CLog::Log(LOGDEBUG, "Image %s is finished rendering, switching to %s", m_slides->Get(m_iCurrentSlide)->m_strPath.c_str(), m_slides->Get(m_iNextSlide)->m_strPath.c_str());
     m_Image[m_iCurrentPic].Close();
     if (m_Image[1 - m_iCurrentPic].IsLoaded())
       m_iCurrentPic = 1 - m_iCurrentPic;
@@ -410,7 +413,7 @@ void CGUIWindowSlideShow::Render()
     if (bSlideShow)
     {
       m_iNextSlide++;
-      if (m_iNextSlide >= m_slides.Size())
+      if (m_iNextSlide >= m_slides->Size())
         m_iNextSlide = 0;
     }
 //    m_iZoomFactor = 1;
@@ -420,7 +423,7 @@ void CGUIWindowSlideShow::Render()
   RenderPause();
 
   if (m_Image[m_iCurrentPic].IsLoaded())
-    g_infoManager.SetCurrentSlide(*m_slides[m_iCurrentSlide]);
+    g_infoManager.SetCurrentSlide(*m_slides->Get(m_iCurrentSlide));
 
   RenderErrorMessage();
 
@@ -568,7 +571,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
       g_graphicsContext.SetScreenFilters(true);
 
       // turn off slideshow if we only have 1 image
-      if (m_slides.Size() <= 1)
+      if (m_slides->Size() <= 1)
         m_bSlideShow = false;
 
       return true;
@@ -649,7 +652,7 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, LPDIRECT3DTEXTUR
   if (pTexture)
   {
     // set the pic's texture + size etc.
-    CLog::Log(LOGDEBUG, "Finished background loading %s", m_slides[iSlideNumber]->m_strPath.c_str());
+    CLog::Log(LOGDEBUG, "Finished background loading %s", m_slides->Get(iSlideNumber)->m_strPath.c_str());
     if (m_bReloadImage)
     {
       if (m_Image[m_iCurrentPic].IsLoaded() && m_Image[m_iCurrentPic].SlideNumber() != iSlideNumber)
@@ -671,9 +674,9 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, LPDIRECT3DTEXTUR
       m_Image[iPic].Zoom(m_iZoomFactor, true);
 
       m_Image[iPic].m_bIsComic = false;
-      if (CUtil::IsInRAR(m_slides[m_iCurrentSlide]->m_strPath) || CUtil::IsInZIP(m_slides[m_iCurrentSlide]->m_strPath)) // move to top for cbr/cbz
+      if (CUtil::IsInRAR(m_slides->Get(m_iCurrentSlide)->m_strPath) || CUtil::IsInZIP(m_slides->Get(m_iCurrentSlide)->m_strPath)) // move to top for cbr/cbz
       {
-        CURL url(m_slides[m_iCurrentSlide]->m_strPath);
+        CURL url(m_slides->Get(m_iCurrentSlide)->m_strPath);
         CStdString strHostName = url.GetHostName();
         if (CUtil::GetExtension(strHostName).Equals(".cbr", false) || CUtil::GetExtension(strHostName).Equals(".cbz", false))
         {
@@ -693,14 +696,14 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, LPDIRECT3DTEXTUR
 
 void CGUIWindowSlideShow::Shuffle()
 {
-  m_slides.Randomize();
+  m_slides->Randomize();
   m_iCurrentSlide = 0;
   m_iNextSlide = 1;
 }
 
 int CGUIWindowSlideShow::NumSlides() const
 {
-  return m_slides.Size();
+  return m_slides->Size();
 }
 
 int CGUIWindowSlideShow::CurrentSlide() const

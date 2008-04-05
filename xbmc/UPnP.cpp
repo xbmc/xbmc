@@ -45,6 +45,7 @@
 #include "FileSystem/Directory.h"
 #include "URL.h"
 #include "Settings.h"
+#include "FileItem.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
