@@ -12,9 +12,7 @@ size_t iconv_const (iconv_t cd, const char** inbuf, size_t *inbytesleft,
 #if defined(_LINUX) && !defined(__APPLE__)
   return iconv(cd, (char**)inbuf, inbytesleft, outbuf, outbytesleft);
 #elif defined(__APPLE__)
-  // FIXME for OSX: once /usr/include/iconv.h is prioritized, use this version:
-  // return iconv(cd, inbuf, inbytesleft, outbuf, outbytesleft);
-  return iconv(cd, (char**)inbuf, inbytesleft, outbuf, outbytesleft);
+  return iconv(cd, inbuf, inbytesleft, outbuf, outbytesleft);
 #else
   return iconv(cd, inbuf, inbytesleft, outbuf, outbytesleft);
 #endif
@@ -98,6 +96,7 @@ CCharsetConverter::CCharsetConverter()
   ICONV_PREPARE(m_iconvUtf16LEtoW);
   ICONV_PREPARE(m_iconvUtf32ToStringCharset);
   ICONV_PREPARE(m_iconvUtf8toW);
+  ICONV_PREPARE(m_iconvUcs2CharsetToUtf8);
 }
 
 void CCharsetConverter::clear()
@@ -163,6 +162,7 @@ void CCharsetConverter::reset(void)
   ICONV_SAFE_CLOSE(m_iconvUtf16BEtoUtf8);
   ICONV_SAFE_CLOSE(m_iconvUtf32ToStringCharset);
   ICONV_SAFE_CLOSE(m_iconvUtf8toW);
+  ICONV_SAFE_CLOSE(m_iconvUcs2CharsetToUtf8);
 
   m_stringFribidiCharset = FRIBIDI_CHAR_SET_NOT_FOUND;
 
@@ -436,6 +436,30 @@ void CCharsetConverter::utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA 
     char *dst = strDest.GetBuffer(outBytes);
     if (iconv_const(m_iconvUtf16BEtoUtf8, &src, &inBytes, &dst, &outBytes))
     { // failed :(
+      strDest.ReleaseBuffer();
+      strDest = strSource;
+      return;
+    }
+    strDest.ReleaseBuffer();
+  }
+}
+
+
+void CCharsetConverter::ucs2ToUTF8(const CStdStringW& strSource, CStdStringA& strDest)
+{
+  if (m_iconvUcs2CharsetToUtf8 == (iconv_t) - 1)
+    m_iconvUcs2CharsetToUtf8 = iconv_open("UTF-8", "UCS-2LE");
+
+  if (m_iconvUcs2CharsetToUtf8 != (iconv_t) - 1)
+  {
+    const char* src = (const char*) strSource.c_str();
+    size_t inBytes = (strSource.length() + 1)*2;
+    size_t outBytes = (inBytes + 1)*2;  // some free for UTF-8 (up to 4 bytes/char)
+    char *dst = strDest.GetBuffer(outBytes);
+    
+    if (iconv_const(m_iconvUcs2CharsetToUtf8, &src, &inBytes, &dst, &outBytes) == -1)
+    { // failed :(
+      CLog::Log(LOGERROR, "CCharsetConverter::ucs2ToUTF8 failed for Python with errno=%d", errno);
       strDest.ReleaseBuffer();
       strDest = strSource;
       return;
