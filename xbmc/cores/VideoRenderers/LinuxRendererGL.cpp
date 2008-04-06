@@ -750,7 +750,7 @@ void CLinuxRendererGL::SelectUpscalingMethod()
   }
 
   // Turn if off if we're told to upscale HD content and we're not always on.
-  if (upscale == SOFTWARE_UPSCALING_SD_CONTENT && m_iSourceHeight >= 720)
+  if (upscale == SOFTWARE_UPSCALING_SD_CONTENT && (m_iSourceHeight >= 720 || m_iSourceWidth >= 1280))
   {
     CLog::Log(LOGWARNING, "Upscale: Disabled due to HD source.");
     candidateForUpscaling = false;
