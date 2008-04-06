@@ -861,9 +861,16 @@ void CLinuxRendererGL::LoadTextures(int source)
     YV12Image imScaled;
     imScaled.cshift_x = imScaled.cshift_y = 1;
     imScaled.texcoord_x = imScaled.texcoord_y = 1;
+    
+    // FIXME: I'm not sure why we can't allocate less memory for the UV planes. All
+    // I know is that some videos crash unless I allocate as much as I am. We're
+    // freeing it several milliseconds later, so probably nothing to get too upset
+    // about. In fact, we could optimize this by keeping around the imScaled instead
+    // of allocating and freeing every frame.
+    //
     imScaled.plane[0] = new BYTE[m_upscalingWidth * m_upscalingHeight];
-    imScaled.plane[1] = new BYTE[(m_upscalingWidth/2) * (m_upscalingHeight/2)];
-    imScaled.plane[2] = new BYTE[(m_upscalingWidth/2) * (m_upscalingHeight/2)];
+    imScaled.plane[1] = new BYTE[(m_upscalingWidth /* /2 */) * (m_upscalingHeight/2)];
+    imScaled.plane[2] = new BYTE[(m_upscalingWidth /* /2 */) * (m_upscalingHeight/2)];
     imScaled.stride[0] = m_upscalingWidth;
     imScaled.stride[1] = m_upscalingWidth/2;
     imScaled.stride[2] = m_upscalingWidth/2;
