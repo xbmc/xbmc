@@ -124,7 +124,7 @@ void XCriticalSection::Leave()
 {
 	if (!Owning())
 	{
-		printf("CritSect[%p]: Some other thread trying to leave our critical section.\n", (void *)this);
+		printf("CRITSEC[%p]: Some other thread trying to leave our critical section.\n", (void *)this);
 		return;
 	}
 	
@@ -152,7 +152,7 @@ void XCriticalSection::Leave()
 	}
 	else
 	{
-		printf("CritSect[%p]: Trying to leave, already left.\n", (void *)this);
+		printf("CRITSEC[%p]: Trying to leave, already left.\n", (void *)this);
 	}
 	
 	pthread_mutex_unlock(&m_countMutex);
