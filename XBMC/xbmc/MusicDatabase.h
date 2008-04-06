@@ -102,7 +102,9 @@ public:
   void DeleteCDDBInfo();
   void AddSong(const CSong& song, bool bCheck = true);
   long SetAlbumInfo(long idAlbum, const CAlbum& album, const VECSONGS& songs, bool bTransaction=true);
+  bool DeleteAlbumInfo(long idArtist);
   long SetArtistInfo(long idArtist, const CArtist& artist);
+  bool DeleteArtistInfo(long idArtist);
   bool GetAlbumInfo(long idAlbum, CAlbum &info, VECSONGS& songs);
   bool GetArtistInfo(long idArtist, CArtist &info);
   bool GetSongByFileName(const CStdString& strFileName, CSong& song);
