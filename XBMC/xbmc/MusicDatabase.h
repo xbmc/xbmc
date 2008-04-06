@@ -104,7 +104,9 @@ public:
   long SetAlbumInfo(long idAlbum, const CAlbum& album, const VECSONGS& songs, bool bTransaction=true);
   long SetArtistInfo(long idArtist, const CArtist& artist);
   bool GetAlbumInfo(long idAlbum, CAlbum &info, VECSONGS& songs);
+  bool DeleteAlbumInfo(long idArtist);
   bool GetArtistInfo(long idArtist, CArtist &info);
+  bool DeleteArtistInfo(long idArtist);
   bool GetSongByFileName(const CStdString& strFileName, CSong& song);
   bool GetSongById(long idSong, CSong& song);
   bool GetSongsByPath(const CStdString& strPath, CSongMap& songs, bool bAppendToMap = false);
