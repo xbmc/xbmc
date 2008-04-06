@@ -108,6 +108,7 @@ public:
   bool GetAlbumInfo(long idAlbum, CAlbum &info, VECSONGS& songs);
   bool GetArtistInfo(long idArtist, CArtist &info);
   bool GetSongByFileName(const CStdString& strFileName, CSong& song);
+  long GetAlbumIdByPath(const CStdString& path);
   bool GetSongById(long idSong, CSong& song);
   bool GetSongsByPath(const CStdString& strPath, CSongMap& songs, bool bAppendToMap = false);
   bool Search(const CStdString& search, CFileItemList &items);
