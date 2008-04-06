@@ -1008,6 +1008,28 @@ bool CMusicDatabase::GetAlbumInfo(long idAlbum, CAlbum &info, VECSONGS &songs)
   return false;
 }
 
+bool CMusicDatabase::DeleteAlbumInfo(long idAlbum)
+{
+  try
+  {
+    if (idAlbum == -1)
+      return false; // not in the database
+
+    CStdString strSQL = FormatSQL("delete from albuminfo where idAlbum=%u",idAlbum);
+
+    if (!m_pDS2->exec(strSQL.c_str())) 
+      return false;
+
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s - (%ld) failed", __FUNCTION__, idAlbum);
+  }
+
+  return false;
+}
+
 bool CMusicDatabase::GetArtistInfo(long idArtist, CArtist &info)
 {
   try
@@ -1038,6 +1060,28 @@ bool CMusicDatabase::GetArtistInfo(long idArtist, CArtist &info)
     }
     m_pDS2->close();
     return false;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s - (%ld) failed", __FUNCTION__, idArtist);
+  }
+
+  return false;
+}
+
+bool CMusicDatabase::DeleteArtistInfo(long idArtist)
+{
+  try
+  {
+    if (idArtist == -1)
+      return false; // not in the database
+
+    CStdString strSQL = FormatSQL("delete from artistinfo where idartist=%u",idArtist);
+
+    if (!m_pDS2->exec(strSQL.c_str())) 
+      return false;
+
+    return true;
   }
   catch (...)
   {
@@ -4070,3 +4114,4 @@ void CMusicDatabase::ImportFromXML(const CStdString &xmlFile)
   if (progress)
     progress->Close();
 }
+
