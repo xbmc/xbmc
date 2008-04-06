@@ -33,13 +33,13 @@ void XCriticalSection::Initialize()
 {
 	if (m_isDestroyed)
 	{
-		//CLog::Log(LOGWARNING, "CRITSEC[0x%p]: Trying to initialize destroyed section.", (void *)this);
+		//CLog::Log(LOGWARNING, "CRITSEC[%p]: Trying to initialize destroyed section.", (void *)this);
 		return;
 	}
 	
 	if (m_isInitialized)
 	{
-		//CLog::Log(LOGWARNING, "CRITSEC[0x%p]: Trying to initialze initialized section.", (void *)this);
+		//CLog::Log(LOGWARNING, "CRITSEC[%p]: Trying to initialze initialized section.", (void *)this);
 		return;
 	}
     
@@ -52,13 +52,13 @@ void XCriticalSection::Destroy()
 {
 	if (m_isDestroyed)
 	{
-		//CLog::Log(LOGWARNING, "CRITSEC[0x%p]: Trying to destroy destroyed section.", (void *)this);
+		//CLog::Log(LOGWARNING, "CRITSEC[%p]: Trying to destroy destroyed section.", (void *)this);
 		return;
 	}
 	
 	if (m_isInitialized == false)
 	{
-		//CLog::Log(LOGWARNING, "CRITSEC[0x%p]: Trying to destroy uninitialized section.", (void *)this);
+		//CLog::Log(LOGWARNING, "CRITSEC[%p]: Trying to destroy uninitialized section.", (void *)this);
 		return;
 	}
 	
@@ -76,13 +76,13 @@ void XCriticalSection::Enter()
 {	
 	if (m_isDestroyed)
 	{
-		//CLog::Log(LOGWARNING, "CRITSEC[0x%p]: Trying to enter destroyed section.", (void *)this);
+		//CLog::Log(LOGWARNING, "CRITSEC[%p]: Trying to enter destroyed section.", (void *)this);
 		return;
 	}
 	
 	if (m_isInitialized == false)
 	{
-		//CLog::Log(LOGWARNING, "CRITSEC[0x%p]: Trying to enter uninitialized section.", (void *)this);
+		//CLog::Log(LOGWARNING, "CRITSEC[%p]: Trying to enter uninitialized section.", (void *)this);
 		return;
 	}
 	
@@ -94,19 +94,19 @@ void XCriticalSection::Leave()
 {
 	if (Owning() == false)
 	{
-		CLog::Log(LOGWARNING, "CritSect[0x%p] Some other thread trying to leave our critical section.", (void *)this);
+		CLog::Log(LOGWARNING, "CRITSEC[%p] Some other thread trying to leave our critical section.", (void *)this);
 		return;
 	}
 	
 	if (m_isDestroyed)
 	{
-		//CLog::Log(LOGWARNING, "CRITSEC[0x%p]: Trying to leave destroyed section.", (void *)this);
+		//CLog::Log(LOGWARNING, "CRITSEC[%p]: Trying to leave destroyed section.", (void *)this);
 		return;
 	}
 	
 	if (m_isInitialized == false)
 	{
-		//CLog::Log(LOGWARNING, "CRITSEC[0x%p]: Trying to leave initialized section.", (void *)this);
+		//CLog::Log(LOGWARNING, "CRITSEC[%p]: Trying to leave initialized section.", (void *)this);
 		return;
 	}
 	
@@ -118,13 +118,13 @@ DWORD XCriticalSection::Exit()
 {
 	if (m_isDestroyed)
 	{
-		//CLog::Log(LOGWARNING, "CRITSEC[0x%p]: Trying to exit destroyed section.", (void *)this);
+		//CLog::Log(LOGWARNING, "CRITSEC[%p]: Trying to exit destroyed section.", (void *)this);
 		return 0;
 	}
 	
 	if (m_isInitialized == false)
 	{
-		//CLog::Log(LOGWARNING, "CRITSEC[0x%p]: Trying to exit uninitialized section.", (void *)this);
+		//CLog::Log(LOGWARNING, "CRITSEC[%p]: Trying to exit uninitialized section.", (void *)this);
 		return 0;
 	}
 	
@@ -151,13 +151,13 @@ void XCriticalSection::Restore(DWORD count)
 {
 	if (m_isDestroyed)
 	{
-		//CLog::Log(LOGWARNING, "CRITSEC[0x%p]: Trying to restore destroyed section.", (void *)this);
+		//CLog::Log(LOGWARNING, "CRITSEC[%p]: Trying to restore destroyed section.", (void *)this);
 		return;
 	}
 	
 	if (m_isInitialized == false)
 	{
-		//CLog::Log(LOGWARNING, "CRITSEC[0x%p]: Trying to restore uninitialized section.", (void *)this);
+		//CLog::Log(LOGWARNING, "CRITSEC[%p]: Trying to restore uninitialized section.", (void *)this);
 		return;
 	}
 	
