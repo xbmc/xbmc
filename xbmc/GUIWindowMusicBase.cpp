@@ -380,6 +380,7 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CArtist& artist, const CStdString
         return;
       }
       bRefresh = true;
+       m_musicdatabase.DeleteArtistInfo(artistInfo.idArtist);
     }
   }
 
@@ -474,6 +475,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CAlbum& album, const CStdString& p
         return;
       }
       bRefresh = true;
+       m_musicdatabase.DeleteAlbumInfo(albumInfo.idAlbum);
     }
   }
 
