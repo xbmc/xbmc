@@ -74,6 +74,7 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_upscalingMethod = UPSCALING_DISABLED;
   m_upscalingWidth = 0;
   m_upscalingHeight = 0;
+  memset(&m_imScaled, 0, sizeof(m_imScaled)); 
 
   memset(m_image, 0, sizeof(m_image));
   memset(m_YUVTexture, 0, sizeof(m_YUVTexture));
@@ -107,6 +108,15 @@ CLinuxRendererGL::~CLinuxRendererGL()
   {
     free(m_pOSDABuffer);
     m_pOSDABuffer = NULL;
+  }
+  
+  for (int i=0; i<3; i++)
+  {
+    if (m_imScaled.plane[i])
+    {
+      delete [] m_imScaled.plane[i];
+      m_imScaled.plane[i] = 0;
+    }
   }
 }
 
@@ -761,6 +771,35 @@ void CLinuxRendererGL::SelectUpscalingMethod()
   else
     m_upscalingMethod = UPSCALING_DISABLED;
   
+  // If we're upscaling, allocate the buffer.
+  if (m_upscalingMethod != UPSCALING_DISABLED)
+  {
+    // Allocate a new destination image.
+    m_imScaled.cshift_x = m_imScaled.cshift_y = 1;
+    m_imScaled.texcoord_x = m_imScaled.texcoord_y = 1;
+    
+    // Free the old planes if they exist.
+    for (int i=0; i<3; i++)
+    {
+      if (m_imScaled.plane[i])
+      {
+        delete [] m_imScaled.plane[i];
+        m_imScaled.plane[i] = 0;
+      }
+    }
+    
+    // FIXME: I'm not sure why we can't allocate less memory for the UV planes. 
+    m_imScaled.plane[0] = new BYTE[m_upscalingWidth * m_upscalingHeight];
+    m_imScaled.plane[1] = new BYTE[(m_upscalingWidth /* /2 */) * (m_upscalingHeight/2)];
+    m_imScaled.plane[2] = new BYTE[(m_upscalingWidth /* /2 */) * (m_upscalingHeight/2)];
+    m_imScaled.stride[0] = m_upscalingWidth;
+    m_imScaled.stride[1] = m_upscalingWidth/2;
+    m_imScaled.stride[2] = m_upscalingWidth/2;
+    m_imScaled.width = m_upscalingWidth;
+    m_imScaled.height = m_upscalingHeight;
+    m_imScaled.flags = IMAGE_FLAG_READY;
+  }
+  
   CLog::Log(LOGWARNING, "Upscale: selected algorithm %d", m_upscalingMethod);
 }
 
@@ -853,36 +892,13 @@ void CLinuxRendererGL::LoadTextures(int source)
     return;
   }
 
-  bool needToFree = false;
-  
   if (m_upscalingMethod != UPSCALING_DISABLED)
   {
-    // Allocate a new destination image.
-    YV12Image imScaled;
-    imScaled.cshift_x = imScaled.cshift_y = 1;
-    imScaled.texcoord_x = imScaled.texcoord_y = 1;
-    
-    // FIXME: I'm not sure why we can't allocate less memory for the UV planes. All
-    // I know is that some videos crash unless I allocate as much as I am. We're
-    // freeing it several milliseconds later, so probably nothing to get too upset
-    // about. In fact, we could optimize this by keeping around the imScaled instead
-    // of allocating and freeing every frame.
-    //
-    imScaled.plane[0] = new BYTE[m_upscalingWidth * m_upscalingHeight];
-    imScaled.plane[1] = new BYTE[(m_upscalingWidth /* /2 */) * (m_upscalingHeight/2)];
-    imScaled.plane[2] = new BYTE[(m_upscalingWidth /* /2 */) * (m_upscalingHeight/2)];
-    imScaled.stride[0] = m_upscalingWidth;
-    imScaled.stride[1] = m_upscalingWidth/2;
-    imScaled.stride[2] = m_upscalingWidth/2;
-    imScaled.width = m_upscalingWidth;
-    imScaled.height = m_upscalingHeight;
-    imScaled.flags = im->flags;
-    
     // Perform the scaling.
     uint8_t* src[] =       { im->plane[0],  im->plane[1],  im->plane[2] };
     int      srcStride[] = { im->stride[0], im->stride[1], im->stride[2] };
-    uint8_t* dst[] =       { imScaled.plane[0],  imScaled.plane[1],  imScaled.plane[2] };
-    int      dstStride[] = { imScaled.stride[0], imScaled.stride[1], imScaled.stride[2] };
+    uint8_t* dst[] =       { m_imScaled.plane[0],  m_imScaled.plane[1],  m_imScaled.plane[2] };
+    int      dstStride[] = { m_imScaled.stride[0], m_imScaled.stride[1], m_imScaled.stride[2] };
     
     struct SwsContext *ctx = m_dllSwScale.sws_getContext(im->width, im->height, PIX_FMT_YUV420P,
                                                          m_upscalingWidth, m_upscalingHeight, PIX_FMT_YUV420P,
@@ -891,8 +907,7 @@ void CLinuxRendererGL::LoadTextures(int source)
     m_dllSwScale.sws_scale(ctx, src, srcStride, 0, im->height, dst, dstStride);
     m_dllSwScale.sws_freeContext(ctx);
     
-    im = &imScaled;
-    needToFree = true;
+    im = &m_imScaled;
   }
   
   // if we don't have a shader, fallback to SW YUV2RGB for now
@@ -1063,13 +1078,6 @@ void CLinuxRendererGL::LoadTextures(int source)
       VerifyGLState();
     }
     SetEvent(m_eventTexturesDone[source]);
-  }
-
-  // See if we need to whack the scaled video.
-  if (needToFree == true)
-  {
-    for (int i=0; i<3; i++)
-      delete [] im->plane[i];
   }
 }
 
