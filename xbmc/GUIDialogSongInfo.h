@@ -15,6 +15,7 @@ public:
   virtual bool HasListItems() const { return true; };
   virtual CFileItem* GetCurrentListItem(int offset = 0);
 protected:
+  virtual void OnInitWindow();
   bool DownloadThumbnail(const CStdString &thumbFile);
   void OnGetThumb();
   void SetRating(char rating);
