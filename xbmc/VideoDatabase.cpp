@@ -1414,6 +1414,8 @@ void CVideoDatabase::DeleteDetailsForTvShow(const CStdString& strPath)
     long lTvShowId = GetTvShowInfo(strPath);
     if ( lTvShowId < 0) return ;
 
+    DeleteThumbForItem(strPath,true);
+
     CStdString strSQL;
     strSQL=FormatSQL("delete from genrelinktvshow where idshow=%i", lTvShowId);
     m_pDS->exec(strSQL.c_str());
@@ -2285,7 +2287,9 @@ void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath)
     {
       return ;
     }
-    
+
+    DeleteThumbForItem(strFilenameAndPath,false); 
+
     ClearBookMarksOfFile(strFilenameAndPath);
 
     CStdString strSQL;
@@ -2329,6 +2333,8 @@ void CVideoDatabase::DeleteTvShow(const CStdString& strPath)
     {
       return ;
     }
+
+    DeleteThumbForItem(strPath,true);
 
     BeginTransaction();
     CStdString strSQL=FormatSQL("select tvshowlinkepisode.idepisode,path.strPath,files.strFileName from tvshowlinkepisode,path,files,episode where tvshowlinkepisode.idshow=%u and tvshowlinkepisode.idepisode=episode.idEpisode and episode.idFile=files.idFile and files.idPath=path.idPath",lTvShowId);
@@ -2383,7 +2389,9 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, long lE
         return ;
       }
     }
-    
+
+    DeleteThumbForItem(strFilenameAndPath,false); 
+
     ClearBookMarksOfFile(strFilenameAndPath);
 
     CStdString strSQL;
@@ -6489,4 +6497,15 @@ bool CVideoDatabase::CommitTransaction()
     return true;
   }
   return false;
+}
+
+void CVideoDatabase::DeleteThumbForItem(const CStdString& strPath, bool bFolder)
+{
+    CFileItem item(strPath,bFolder);
+    XFILE::CFile::Delete(item.GetCachedVideoThumb());
+    
+    //   tell our GUI to completely reload all controls (as some of them
+    // are likely to have had this image in use so will need refreshing)
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS, 0, NULL);
+    g_graphicsContext.SendMessage(msg);
 }
