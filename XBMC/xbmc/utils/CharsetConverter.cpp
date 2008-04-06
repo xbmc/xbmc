@@ -457,7 +457,7 @@ void CCharsetConverter::ucs2ToUTF8(const CStdStringW& strSource, CStdStringA& st
     size_t outBytes = (inBytes + 1)*2;  // some free for UTF-8 (up to 4 bytes/char)
     char *dst = strDest.GetBuffer(outBytes);
     
-    if (iconv_const(m_iconvUcs2CharsetToUtf8, &src, &inBytes, &dst, &outBytes) == -1)
+    if (iconv_const(m_iconvUcs2CharsetToUtf8, &src, &inBytes, &dst, &outBytes) == (size_t) -1)
     { // failed :(
       CLog::Log(LOGERROR, "CCharsetConverter::ucs2ToUTF8 failed for Python with errno=%d", errno);
       strDest.ReleaseBuffer();
