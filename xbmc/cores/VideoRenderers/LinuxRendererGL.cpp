@@ -753,7 +753,7 @@ void CLinuxRendererGL::SelectUpscalingMethod()
   
   // See if we're a candiate for upscaling.
   bool candidateForUpscaling = false;
-  if (upscale != SOFTWARE_UPSCALING_DISABLED && m_iSourceHeight < m_upscalingWidth && m_iSourceHeight < m_upscalingHeight)
+  if (upscale != SOFTWARE_UPSCALING_DISABLED && (int)m_iSourceHeight < m_upscalingWidth && (int)m_iSourceHeight < m_upscalingHeight)
   {
     CLog::Log(LOGWARNING, "Upscale: possible given resolution increase.");
     candidateForUpscaling = true;
