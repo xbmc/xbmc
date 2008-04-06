@@ -670,6 +670,7 @@ void CMusicDatabase::GetFileItemFromDataset(CFileItem* item, const CStdString& s
   item->GetMusicInfoTag()->SetAlbum(m_pDS->fv(song_strAlbum).get_asString());
   item->GetMusicInfoTag()->SetTrackAndDiskNumber(m_pDS->fv(song_iTrack).get_asLong());
   item->GetMusicInfoTag()->SetDuration(m_pDS->fv(song_iDuration).get_asLong());
+  item->GetMusicInfoTag()->SetDatabaseId(m_pDS->fv(song_idSong).get_asLong());
   SYSTEMTIME stTime;
   stTime.wYear = (WORD)m_pDS->fv(song_iYear).get_asLong();
   item->GetMusicInfoTag()->SetReleaseDate(stTime);
@@ -789,6 +790,28 @@ bool CMusicDatabase::GetSongByFileName(const CStdString& strFileName, CSong& son
   catch (...)
   {
     CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, strFileName.c_str());
+  }
+
+  return false;
+}
+
+long CMusicDatabase::GetAlbumIdByPath(const CStdString& strPath)
+{
+  try
+  {
+    CStdString strSQL=FormatSQL("select distinct idAlbum from song join path on song.idPath = path.idPath where path.strPath like '%s'", strPath.c_str());
+    m_pDS->query(strSQL.c_str());
+    if (m_pDS->eof())
+      return -1;
+
+    int idAlbum = m_pDS->fv(0).get_asLong();
+    m_pDS->close();
+
+    return idAlbum;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, strPath.c_str());
   }
 
   return false;

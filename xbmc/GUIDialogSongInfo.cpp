@@ -134,6 +134,18 @@ bool CGUIDialogSongInfo::OnAction(const CAction &action)
   return CGUIDialog::OnAction(action);
 }
 
+void CGUIDialogSongInfo::OnInitWindow()
+{
+  if (!g_guiSettings.GetBool("musiclibrary.enabled") || m_song.GetMusicInfoTag()->GetDatabaseId() == -1)
+  {
+    CONTROL_DISABLE(CONTROL_ALBUMINFO)
+  }
+  else
+  {
+    CONTROL_ENABLE(CONTROL_ALBUMINFO)
+  }
+}
+
 void CGUIDialogSongInfo::SetRating(char rating)
 {
   if (rating < '0') rating = '0';
