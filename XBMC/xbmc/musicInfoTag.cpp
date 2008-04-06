@@ -60,6 +60,7 @@ const CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
   m_iTrack = tag.m_iTrack;
   m_bLoaded = tag.m_bLoaded;
   m_rating = tag.m_rating;
+  m_iDbId = tag.m_iDbId;
   memcpy(&m_dwReleaseDate, &tag.m_dwReleaseDate, sizeof(m_dwReleaseDate) );
   return *this;
 }
@@ -135,6 +136,11 @@ void CMusicInfoTag::GetReleaseDate(SYSTEMTIME& dateTime) const
 int CMusicInfoTag::GetYear() const
 {
   return m_dwReleaseDate.wYear;
+}
+
+long CMusicInfoTag::GetDatabaseId() const
+{
+  return m_iDbId;
 }
 
 CStdString CMusicInfoTag::GetYearString() const
@@ -213,6 +219,11 @@ void CMusicInfoTag::SetYear(int year)
 {
   memset(&m_dwReleaseDate, 0, sizeof(m_dwReleaseDate) );
   m_dwReleaseDate.wYear = year;
+}
+
+void CMusicInfoTag::SetDatabaseId(long id)
+{
+  m_iDbId = id;
 }
 
 void CMusicInfoTag::SetReleaseDate(SYSTEMTIME& dateTime)
@@ -324,6 +335,7 @@ void CMusicInfoTag::SetAlbum(const CAlbum& album)
   SYSTEMTIME stTime;
   stTime.wYear = album.iYear;
   SetReleaseDate(stTime);
+  m_iDbId = album.idAlbum;
   m_bLoaded = true;
 }
 
@@ -347,6 +359,7 @@ void CMusicInfoTag::SetSong(const CSong& song)
   SetReleaseDate(stTime);
   m_iTrack = song.iTrack;
   m_iDuration = song.iDuration;
+  m_iDbId = song.idSong;
   m_bLoaded = true;
 }
 
@@ -412,5 +425,6 @@ void CMusicInfoTag::Clear()
   m_bLoaded = false;
   m_strComment.Empty();
   m_rating = '0';
+  m_iDbId = -1;
   memset(&m_dwReleaseDate, 0, sizeof(m_dwReleaseDate) );
 }
