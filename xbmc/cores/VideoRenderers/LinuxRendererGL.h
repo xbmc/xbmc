@@ -192,6 +192,7 @@ protected:
   int m_upscalingMethod;
   int m_upscalingWidth;
   int m_upscalingHeight;
+  YV12Image m_imScaled;
   
   // OSD stuff
   GLuint m_pOSDYTexture[NUM_BUFFERS];
