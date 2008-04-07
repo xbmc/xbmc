@@ -129,7 +129,7 @@
 				<width>120</width>
 				<posx>565</posx>
 				<posy>55</posy>
-				<info>MusicPlayer.StarRating</info>
+				<info>Player.StarRating</info>
 			</control>
 			<control type="label" id="1">
 				<description>time label</description>
