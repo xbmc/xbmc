@@ -95,10 +95,10 @@ bool CEventClient::AddPacket(CEventPacket *packet)
   if (!packet)
     return false;
 
+  ResetTimeout();
   if ( packet->Size() > 1 )
   {
     // TODO: limit payload size
-    ResetTimeout();
     m_seqPackets[ packet->Sequence() ] = packet;
     if (m_seqPackets.size() == packet->Size())
     {
