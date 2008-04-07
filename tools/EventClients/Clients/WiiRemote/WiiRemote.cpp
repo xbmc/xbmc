@@ -314,13 +314,13 @@ bool CWiiRemote::Connect()
       {
         char Mesg[1024];
         sprintf(Mesg, "%i%% battery remaining", static_cast<int>(((float)(wiiremote_state.battery)/CWIID_BATTERY_MAX)*100.0));
-        CPacketNOTIFICATION notification("Wii Remote connected", Mesg, ICON_PNG, "icons/bluetooth.png");
+        CPacketNOTIFICATION notification("Wii Remote connected", Mesg, ICON_PNG, "../../icons/bluetooth.png");
         notification.Send(m_Socket, m_MyAddr);
       }
       else
       {
         printf("Problem probing for status of Wiiremote; cwiid_get_state returned non-zero\n");
-        CPacketNOTIFICATION notification("Wii Remote connected", "", ICON_PNG, "icons/bluetooth.png");
+        CPacketNOTIFICATION notification("Wii Remote connected", "", ICON_PNG, "../../icons/bluetooth.png");
         notification.Send(m_Socket, m_MyAddr);
       }
 #ifdef CWIID_OLD
@@ -348,12 +348,12 @@ void CWiiRemote::DisconnectNow(bool startConnectThread)
 
     if (g_AllowReconnect)
     {
-      CPacketNOTIFICATION notification("Wii Remote disconnected", "Press 1 and 2 to reconnect", ICON_PNG, "icons/bluetooth.png");
+      CPacketNOTIFICATION notification("Wii Remote disconnected", "Press 1 and 2 to reconnect", ICON_PNG, "../../icons/bluetooth.png");
       notification.Send(m_Socket, m_MyAddr);
     }
     else
     {
-      CPacketNOTIFICATION notification("Wii Remote disconnected", "", ICON_PNG, "icons/bluetooth.png");
+      CPacketNOTIFICATION notification("Wii Remote disconnected", "", ICON_PNG, "../../icons/bluetooth.png");
       notification.Send(m_Socket, m_MyAddr);
     }
 
