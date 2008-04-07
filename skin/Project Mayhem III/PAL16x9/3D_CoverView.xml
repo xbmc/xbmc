@@ -1,6 +1,7 @@
 <includes>
 	<include name="3D_Cover_View">
 		<control type="list" id="57">
+			<visible>Window.IsVisible(MusicFiles) | Container.Content(Albums)</visible>
 			<posx>190</posx>
 			<posy>290</posy>
 			<width>485</width>
