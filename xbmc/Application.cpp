@@ -1665,6 +1665,7 @@ CProfile* CApplication::InitDirectoriesWin32()
     // See if the keymap file exists, and if not, copy it from our "virgin" one.
     CopyUserDataIfNeeded(strPath, "Keymap.xml");
     CopyUserDataIfNeeded(strPath, "RssFeeds.xml");
+    CopyUserDataIfNeeded(strPath, "favourites.xml");
   }
   else
   {
