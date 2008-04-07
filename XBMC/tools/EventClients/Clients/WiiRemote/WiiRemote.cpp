@@ -28,7 +28,7 @@ bool g_AllowReconnect = true;
 bool g_AllowMouse     = true;
 bool g_AllowNunchuck  = true;
 
-CPacketHELO g_Ping("WiiRemote", ICON_PNG, "../../icons/bluetooth.png");
+CPacketHELO *g_Ping = NULL;
 
 long getTicks()
 {
@@ -298,7 +298,7 @@ bool CWiiRemote::Connect()
 #endif
   while (!m_connected)
   {
-    g_Ping.Send(m_Socket, m_MyAddr);
+    g_Ping->Send(m_Socket, m_MyAddr);
     int flags = 0;
     ToggleBit(flags, CWIID_FLAG_MESG_IFC);
     ToggleBit(flags, CWIID_FLAG_REPEAT_BTN);
@@ -692,7 +692,7 @@ int main(int argc, char **argv)
     printf("Error No bluetooth device\n");
     return -1;
   }
-
+  g_Ping = new CPacketHELO("WiiRemote", ICON_PNG, "../../icons/bluetooth.png");
   g_WiiRemote.Initialize(my_addr, sockfd);
   g_WiiRemote.SetBluetoothAddress(btaddr);
   g_WiiRemote.SetSensativity(DeadX, DeadY, NumSamples);
@@ -702,7 +702,7 @@ int main(int argc, char **argv)
   else
     g_WiiRemote.DisableMouseEmulation();
  
-  g_Ping.Send(sockfd, my_addr);
+  g_Ping->Send(sockfd, my_addr);
   bool HaveConnected = false;
   while (true)
   {
@@ -722,7 +722,7 @@ int main(int argc, char **argv)
 #else
     sleep (15);
 #endif
-    g_Ping.Send(sockfd, my_addr);
+    g_Ping->Send(sockfd, my_addr);
     g_WiiRemote.Update();
   }
 }
