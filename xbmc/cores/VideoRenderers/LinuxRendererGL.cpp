@@ -728,9 +728,6 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
   ManageDisplay();
   SelectUpscalingMethod();
 
-  // make sure we have a valid context that supports rendering
-  m_bValidated = false;
-
   if (m_rgbBuffer != NULL)
   {
      delete [] m_rgbBuffer;
@@ -741,6 +738,16 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
   m_rgbBuffer = new BYTE[m_rgbBufferSize];
   m_bConfigured = true;
 
+  /* 
+     Ensure that textures are recreated and rendering starts only after the 1st 
+     frame is loaded after every call to Configure().
+  */
+  m_bValidated = false;
+  for (int i = 0 ; i<m_NumYV12Buffers ; i++)
+  {
+    m_image[i].flags = 0;
+  }
+  
   return true;
 }
 
