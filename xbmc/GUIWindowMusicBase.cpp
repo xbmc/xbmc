@@ -454,7 +454,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CAlbum& album, const CStdString& p
 
   // check cache
   CAlbum albumInfo;
-  if (!bRefresh && m_musicdatabase.GetAlbumInfo(album.idAlbum, albumInfo, albumInfo.songs))
+  if (!bRefresh && m_musicdatabase.GetAlbumInfo(album.idAlbum, albumInfo, &albumInfo.songs))
   {
     if (!bShowInfo)
       return;
@@ -749,7 +749,7 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
     return false;
   }
 
-  m_musicdatabase.GetAlbumInfo(idAlbum,album.GetAlbum(),album.GetAlbum().songs);
+  m_musicdatabase.GetAlbumInfo(idAlbum,album.GetAlbum(),&album.GetAlbum().songs);
   album.SetLoaded(true);
   return true;
 }
