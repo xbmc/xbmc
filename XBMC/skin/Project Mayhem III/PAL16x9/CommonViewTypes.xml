@@ -881,6 +881,7 @@
 	</include>
 	<include name="MusicCoverThumbView">
 		<control type="panel" id="54">
+			<visible>Window.IsVisible(MusicFiles) | Container.Content(Albums)</visible>
 			<posx>188</posx>
 			<posy>100</posy>
 			<width>490</width>
@@ -1297,6 +1298,7 @@
 	</include>
 	<include name="MusicCoverWrapView">
 		<control type="fixedlist" id="56">
+			<visible>Window.IsVisible(MusicFiles) | Container.Content(Albums)</visible>
 			<posx>190</posx>
 			<posy>100</posy>
 			<width>520</width>
