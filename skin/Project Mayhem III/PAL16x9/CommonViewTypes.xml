@@ -707,6 +707,7 @@
 	</include>
 	<include name="AllViewCommonThumbSmall">
 		<control type="panel" id="52">
+			<visible>!Container.Content(TVshows)</visible>
 			<posx>190</posx>
 			<posy>100</posy>
 			<width>485</width>
@@ -793,6 +794,7 @@
 	</include>
 	<include name="AllViewCommonThumbLarge">
 		<control type="panel" id="53">
+			<visible>!Container.Content(TVshows)</visible>
 			<posx>190</posx>
 			<posy>100</posy>
 			<width>485</width>
@@ -1012,6 +1014,7 @@
 	</include>
 	<include name="VideoDVDThumbLarge">
 		<control type="panel" id="54">
+			<visible>!Container.Content(TVshows) + !Container.Content(Episodes) + !Container.Content(MusicVideos)</visible>
 			<posx>190</posx>
 			<posy>100</posy>
 			<width>485</width>
@@ -1120,6 +1123,7 @@
 	</include>
 	<include name="VideoDVDWrapView">
 		<control type="fixedlist" id="56">
+			<visible>!Container.Content(TVshows) + !Container.Content(Episodes) + !Container.Content(MusicVideos)</visible>
 			<posx>190</posx>
 			<posy>100</posy>
 			<width>520</width>
