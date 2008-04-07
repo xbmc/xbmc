@@ -533,7 +533,7 @@ void CGUIWindowMusicInfo::OnSearch(const CFileItem* pItem)
     CAlbum album;
     CStdString strPath;
 
-    if (database.GetAlbumInfo(idAlbum,album,album.songs))
+    if (database.GetAlbumInfo(idAlbum,album,&album.songs))
     {
       database.GetAlbumPath(idAlbum,strPath);
       SetAlbum(album,strPath);
