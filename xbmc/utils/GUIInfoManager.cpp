@@ -175,6 +175,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("player.hasduration")) ret = PLAYER_HASDURATION;
     else if (strTest.Equals("player.chapter")) ret = PLAYER_CHAPTER;
     else if (strTest.Equals("player.chaptercount")) ret = PLAYER_CHAPTERCOUNT;
+    else if (strTest.Equals("player.starrating")) ret = PLAYER_STAR_RATING;
   }
   else if (strCategory.Equals("weather"))
   {
@@ -2041,6 +2042,11 @@ CStdString CGUIInfoManager::GetImage(int info, DWORD contextWindow)
   {
     if (!g_application.IsPlayingAudio()) return "";
     return GetItemImage(&m_currentFile, LISTITEM_RATING);
+  }
+  else if (info == PLAYER_STAR_RATING)
+  {
+    if (!g_application.IsPlaying()) return "";
+    return GetItemImage(&m_currentFile, LISTITEM_STAR_RATING);
   }
   else if (info == VIDEOPLAYER_COVER)
   {
