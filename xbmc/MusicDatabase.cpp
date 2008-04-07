@@ -38,7 +38,7 @@ using namespace MUSICDATABASEDIRECTORY;
 using namespace MEDIA_DETECT;
 
 #define MUSIC_DATABASE_OLD_VERSION 1.6f
-#define MUSIC_DATABASE_VERSION        8
+#define MUSIC_DATABASE_VERSION        9
 #define MUSIC_DATABASE_NAME "MyMusic7.db"
 #define RECENTLY_ADDED_LIMIT  25
 #define RECENTLY_PLAYED_LIMIT 25
@@ -128,6 +128,10 @@ bool CMusicDatabase::CreateTables()
     CLog::Log(LOGINFO, "create thumb index");
     m_pDS->exec("CREATE INDEX idxThumb ON thumb(strThumb)");
     //m_pDS->exec("CREATE INDEX idxSong ON song(dwFileNameCRC)");
+    CLog::Log(LOGINFO, "create artistinfo index");
+    m_pDS->exec("CREATE INDEX idxArtistInfo on artistinfo(idArtist)");
+    CLog::Log(LOGINFO, "create albuminfo index");
+    m_pDS->exec("CREATE INDEX idxAlbumInfo on albuminfo(idAlbum)");
 
     // Trigger
     CLog::Log(LOGINFO, "create albuminfo trigger");
@@ -728,13 +732,12 @@ CAlbum CMusicDatabase::GetAlbumFromDataset(dbiplus::Dataset* pDS)
   return album;
 }
 
-CArtist CMusicDatabase::GetArtistFromDataset(dbiplus::Dataset* pDS)
+CArtist CMusicDatabase::GetArtistFromDataset(dbiplus::Dataset* pDS, bool needThumb)
 {
   CArtist artist;
   artist.idArtist = pDS->fv("artistinfo.idArtist").get_asLong();
   artist.strArtist = pDS->fv("artist.strArtist").get_asString();
   artist.strGenre = pDS->fv("artistinfo.strGenres").get_asString();
-  artist.thumbURL.ParseString(pDS->fv("artistinfo.strImage").get_asString());
   artist.strBiography = pDS->fv("albuminfo.strBiography").get_asString();
   artist.strStyles = pDS->fv("albuminfo.strStyles").get_asString();
   artist.strMoods = pDS->fv("albuminfo.strMoods").get_asString();
@@ -744,6 +747,9 @@ CArtist CMusicDatabase::GetArtistFromDataset(dbiplus::Dataset* pDS)
   artist.strDisbanded = pDS->fv("albuminfo.strDisbanded").get_asString();
   artist.strYearsActive = pDS->fv("albuminfo.strYearsActive").get_asString();
   artist.strInstruments = pDS->fv("albuminfo.strInstruments").get_asString();
+
+  if (needThumb)
+    artist.thumbURL.ParseString(pDS->fv("artistinfo.strImage").get_asString());
 
   return artist;
 }
@@ -978,7 +984,7 @@ bool CMusicDatabase::GetArbitraryQuery(const CStdString& strQuery, const CStdStr
   return false;
 }
 
-bool CMusicDatabase::GetAlbumInfo(long idAlbum, CAlbum &info, VECSONGS &songs)
+bool CMusicDatabase::GetAlbumInfo(long idAlbum, CAlbum &info, VECSONGS* songs)
 {
   try
   {
@@ -991,31 +997,34 @@ bool CMusicDatabase::GetAlbumInfo(long idAlbum, CAlbum &info, VECSONGS &songs)
                                 "where albumview.idAlbum = %ld"
                                 , idAlbum);
 
-    if (!m_pDS->query(strSQL.c_str())) return false;
+    if (!m_pDS2->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound != 0)
     {
       info.idAlbum = idAlbum;
-      info.iRating = m_pDS->fv("albuminfo.iRating").get_asLong() ;
-      info.iYear = m_pDS->fv("albuminfo.iYear").get_asLong() ;
-      info.strAlbum = m_pDS->fv("albumview.strAlbum").get_asString();
-      info.strArtist = m_pDS->fv("albumview.strArtist").get_asString();
-      info.strArtist += m_pDS->fv("albumview.strExtraArtists").get_asString();
-      info.strGenre = m_pDS->fv("genre.strGenre").get_asString();
-      info.strGenre += m_pDS->fv("albumview.strExtraGenres").get_asString();
-      info.thumbURL.ParseString(m_pDS->fv("albuminfo.strImage").get_asString());
-      info.strReview = m_pDS->fv("albuminfo.strReview").get_asString();
-      info.strStyles = m_pDS->fv("albuminfo.strStyles").get_asString();
-      info.strMoods = m_pDS->fv("albuminfo.strMoods").get_asString();
-      info.strThemes = m_pDS->fv("albuminfo.strThemes").get_asString();
-      info.strLabel = m_pDS->fv("albuminfo.strLabel").get_asString();
-      info.strType = m_pDS->fv("albuminfo.strType").get_asString();
+      info.iRating = m_pDS2->fv("albuminfo.iRating").get_asLong() ;
+      info.iYear = m_pDS2->fv("albuminfo.iYear").get_asLong() ;
+      info.strAlbum = m_pDS2->fv("albumview.strAlbum").get_asString();
+      info.strArtist = m_pDS2->fv("albumview.strArtist").get_asString();
+      info.strArtist += m_pDS2->fv("albumview.strExtraArtists").get_asString();
+      info.strGenre = m_pDS2->fv("genre.strGenre").get_asString();
+      info.strGenre += m_pDS2->fv("albumview.strExtraGenres").get_asString();
+      if (songs)
+        info.thumbURL.ParseString(m_pDS2->fv("albuminfo.strImage").get_asString());
+      info.strReview = m_pDS2->fv("albuminfo.strReview").get_asString();
+      info.strStyles = m_pDS2->fv("albuminfo.strStyles").get_asString();
+      info.strMoods = m_pDS2->fv("albuminfo.strMoods").get_asString();
+      info.strThemes = m_pDS2->fv("albuminfo.strThemes").get_asString();
+      info.strLabel = m_pDS2->fv("albuminfo.strLabel").get_asString();
+      info.strType = m_pDS2->fv("albuminfo.strType").get_asString();
 
-      long idAlbumInfo = m_pDS->fv("albuminfo.idAlbumInfo").get_asLong();
+      long idAlbumInfo = m_pDS2->fv("albuminfo.idAlbumInfo").get_asLong();
 
-      m_pDS->close(); // cleanup recordset data
+      m_pDS2->close(); // cleanup recordset data
 
-      GetAlbumInfoSongs(idAlbumInfo, songs);
+      if (songs)
+        GetAlbumInfoSongs(idAlbumInfo, *songs);
+
       return true;
     }
     m_pDS->close();
@@ -1051,7 +1060,7 @@ bool CMusicDatabase::DeleteAlbumInfo(long idAlbum)
   return false;
 }
 
-bool CMusicDatabase::GetArtistInfo(long idArtist, CArtist &info)
+bool CMusicDatabase::GetArtistInfo(long idArtist, CArtist &info, bool needAll)
 {
   try
   {
@@ -1067,15 +1076,17 @@ bool CMusicDatabase::GetArtistInfo(long idArtist, CArtist &info)
     int iRowsFound = m_pDS2->num_rows();
     if (iRowsFound != 0)
     {
-      info = GetArtistFromDataset(m_pDS2.get());
-      strSQL=FormatSQL("select * from discography where idArtist=%i",idArtist);
-      m_pDS2->query(strSQL.c_str());
-      while (!m_pDS2->eof())
+      info = GetArtistFromDataset(m_pDS2.get(),needAll);
+      if (needAll)
       {
-        info.discography.push_back(std::make_pair(m_pDS2->fv("strAlbum").get_asString(),m_pDS2->fv("strYear").get_asString()));
-        m_pDS2->next();
+        strSQL=FormatSQL("select * from discography where idArtist=%i",idArtist);
+        m_pDS2->query(strSQL.c_str());
+        while (!m_pDS2->eof())
+        {
+          info.discography.push_back(std::make_pair(m_pDS2->fv("strAlbum").get_asString(),m_pDS2->fv("strYear").get_asString()));
+          m_pDS2->next();
+        }
       }
-
       m_pDS2->close(); // cleanup recordset data
       return true;
     }
@@ -1120,21 +1131,21 @@ bool CMusicDatabase::GetAlbumInfoSongs(long idAlbumInfo, VECSONGS& songs)
                                 "where idAlbumInfo=%i "
                                 "order by iTrack", idAlbumInfo);
 
-    if (!m_pDS->query(strSQL.c_str())) return false;
-    int iRowsFound = m_pDS->num_rows();
+    if (!m_pDS2->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS2->num_rows();
     if (iRowsFound == 0) return false;
-    while (!m_pDS->eof())
+    while (!m_pDS2->eof())
     {
       CSong song;
-      song.iTrack = m_pDS->fv("iTrack").get_asLong();
-      song.strTitle = m_pDS->fv("strTitle").get_asString();
-      song.iDuration = m_pDS->fv("iDuration").get_asLong();
+      song.iTrack = m_pDS2->fv("iTrack").get_asLong();
+      song.strTitle = m_pDS2->fv("strTitle").get_asString();
+      song.iDuration = m_pDS2->fv("iDuration").get_asLong();
 
       songs.push_back(song);
-      m_pDS->next();
+      m_pDS2->next();
     }
 
-    m_pDS->close(); // cleanup recordset data
+    m_pDS2->close(); // cleanup recordset data
 
     return true;
   }
@@ -2486,6 +2497,8 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
+    
+    DWORD time = timeGetTime();
 
     CStdString strSQL = "select * from artist where (idArtist IN ";
 
@@ -2594,25 +2607,28 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
     // get data from returned rows
     while (!m_pDS->eof())
     {
-      CFileItem* pItem=new CFileItem(m_pDS->fv("strArtist").get_asString());
-      pItem->GetMusicInfoTag()->SetArtist(m_pDS->fv("strArtist").get_asString());
+      CStdString strArtist = m_pDS->fv("strArtist").get_asString();
+      CFileItem* pItem=new CFileItem(strArtist);
+      pItem->GetMusicInfoTag()->SetArtist(strArtist);
       CStdString strDir;
-      strDir.Format("%ld/", m_pDS->fv("idArtist").get_asLong());
+      long idArtist = m_pDS->fv("idArtist").get_asLong();
+      strDir.Format("%ld/", idArtist);
       pItem->m_strPath=strBaseDir + strDir;
       pItem->m_bIsFolder=true;
       if (CFile::Exists(pItem->GetCachedArtistThumb()))
         pItem->SetThumbnailImage(pItem->GetCachedArtistThumb());
       else
         pItem->SetThumbnailImage("DefaultArtistBig.png");
+
       CArtist artist;
-      GetArtistInfo(m_pDS->fv("idArtist").get_asLong(),artist);
-      pItem->SetProperty("instruments",artist.strInstruments);
-      pItem->SetProperty("styles",artist.strStyles);
-      pItem->SetProperty("moods",artist.strMoods);
+      GetArtistInfo(idArtist,artist,false);
+      pItem->SetProperty("instrument",artist.strInstruments);
+      pItem->SetProperty("style",artist.strStyles);
+      pItem->SetProperty("mood",artist.strMoods);
       pItem->SetProperty("born",artist.strBorn);
       pItem->SetProperty("formed",artist.strFormed);
-      pItem->SetProperty("biography",artist.strBiography);
-      pItem->SetProperty("genres",artist.strGenre);
+      pItem->SetProperty("description",artist.strBiography);
+      pItem->SetProperty("genre",artist.strGenre);
       pItem->SetProperty("died",artist.strDied);
       pItem->SetProperty("disbanded",artist.strDisbanded);
       pItem->SetProperty("yearsactive",artist.strYearsActive);
@@ -2620,6 +2636,8 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
 
       m_pDS->next();
     }
+    CLog::Log(LOGDEBUG,"Time to retrieve artists from dataset = %lu", timeGetTime() - time);
+
     // cleanup
     m_pDS->close();
 
@@ -2748,10 +2766,10 @@ bool CMusicDatabase::GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& i
                           , idArtist, idArtist, idArtist, idArtist);
   }
 
-  return GetAlbumsByWhere(strBaseDir, strWhere, items);
+  return GetAlbumsByWhere(strBaseDir, strWhere, items, true);
 }
 
-bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const CStdString &where, CFileItemList &items)
+bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const CStdString &where, CFileItemList &items, bool needInfo)
 {
   try
   {
@@ -2783,8 +2801,29 @@ bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const CStdStrin
     while (!m_pDS->eof())
     {
       CStdString strDir;
-      strDir.Format("%s%ld/", baseDir.c_str(), m_pDS->fv("idAlbum").get_asLong());
+      long idAlbum = m_pDS->fv("idAlbum").get_asLong();
+      strDir.Format("%s%ld/", baseDir.c_str(), idAlbum);
       CFileItem* pItem=new CFileItem(strDir, GetAlbumFromDataset(m_pDS.get()));
+      if (needInfo)
+      {
+        CAlbum album;
+        GetAlbumInfo(idAlbum,album,NULL);
+        pItem->SetProperty("album",album.strAlbum);
+        pItem->SetProperty("artist",album.strArtist);
+        pItem->SetProperty("description",album.strReview);
+        pItem->SetProperty("theme",album.strThemes);
+        pItem->SetProperty("mood",album.strMoods);
+        pItem->SetProperty("style",album.strStyles);
+        pItem->SetProperty("type",album.strType);
+        pItem->SetProperty("genre",album.strGenre);
+        pItem->SetProperty("label",album.strLabel);
+        if (album.iRating > 0)
+        {
+          CStdString strRating;
+          strRating.Format("%i",album.iRating);
+          pItem->SetProperty("rating",strRating);
+        }
+      }
       items.Add(pItem);
 
       m_pDS->next();
@@ -3042,6 +3081,12 @@ bool CMusicDatabase::UpdateOldVersion(int version)
       CLog::Log(LOGINFO, "create new albuminfo table");
       m_pDS->exec("DROP TABLE albuminfo\n");
       m_pDS->exec("CREATE TABLE albuminfo ( idAlbumInfo integer primary key, idAlbum integer, iYear integer, idGenre integer, strExtraGenres text, strMoods text, strStyles text, strThemes text, strReview text, strLabel text, strType text, strImage text, iRating integer)\n");
+    }
+    if (version < 9)
+    {
+      // add missing indices
+      m_pDS->exec("CREATE INDEX idxArtistInfo on artistinfo(idArtist)");
+      m_pDS->exec("CREATE INDEX idxAlbumInfo on albuminfo(idAlbum)");
     }
     return true;
   }
@@ -3918,7 +3963,7 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
                      "join albumview on albuminfo.idAlbum=albumview.idAlbum "
                      "join genre on albuminfo.idGenre=genre.idGenre";
  
-    m_pDS2->query(sql.c_str());
+    m_pDS->query(sql.c_str());
 
     CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (progress)
@@ -3932,7 +3977,7 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
       progress->ShowProgressBar(true);
     }
 
-    int total = m_pDS2->num_rows();
+    int total = m_pDS->num_rows();
     int current = 0;
 
     // create our xml document
@@ -3947,12 +3992,12 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
       TiXmlElement xmlMainElement("musicdb");
       pMain = xmlDoc.InsertEndChild(xmlMainElement);
     }
-    while (!m_pDS2->eof())
+    while (!m_pDS->eof())
     {
-      CAlbum album = GetAlbumFromDataset(m_pDS2.get());
+      CAlbum album = GetAlbumFromDataset(m_pDS.get());
       album.thumbURL.Clear();
-      album.thumbURL.ParseString(m_pDS2->fv("albuminfo.strImage").get_asString());
-      long idAlbumInfo = m_pDS2->fv("albuminfo.idAlbumInfo").get_asLong();
+      album.thumbURL.ParseString(m_pDS->fv("albuminfo.strImage").get_asString());
+      long idAlbumInfo = m_pDS->fv("albuminfo.idAlbumInfo").get_asLong();
       GetAlbumInfoSongs(idAlbumInfo,album.songs);
       album.Save(pMain, "album");
       if (singleFiles)
@@ -3973,14 +4018,14 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
         if (progress->IsCanceled())
         {
           progress->Close();
-          m_pDS2->close();
+          m_pDS->close();
           return;
         }
       }
-      m_pDS2->next();
+      m_pDS->next();
       current++;
     }
-    m_pDS2->close();
+    m_pDS->close();
 
     // find all artists
     sql = "select * from artistinfo "
