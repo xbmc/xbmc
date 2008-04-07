@@ -27,9 +27,9 @@ rem	CONFIG START
  	set CLEAN=xbmc.sln /clean release
 	set XBE=release\default.xbe
 
-  set OPTS_EXE=tools\Win32\XBMC_PC.sln /build release
-	set CLEAN_EXE=tools\Win32\XBMC_PC.sln /clean release
-	set EXE= tools\Win32\Release\XBMC_PC.exe
+  set OPTS_EXE=tools\Win32\XBMC_PC.sln /build "Release (SDL) Win32"
+	set CLEAN_EXE=tools\Win32\XBMC_PC.sln /clean "Release (SDL) Win32"
+	set EXE= "tools\Win32\Release (SDL)\XBMC.exe"
 	
   set XBE_PATCH=tools\xbepatch\xbepatch.exe
 	set RAR="%ProgramFiles%\Winrar\rar.exe"
@@ -135,11 +135,10 @@ rem	CONFIG START
   ECHO ------------------------------------------------------------
   ECHO Cleaning Solution...
   %NET% %CLEAN_EXE%
-  del  tools\Win32\Release\xbmc.map
   ECHO Compiling Solution...
   %NET% %OPTS_EXE%
   IF NOT EXIST %EXE% (
-  	set DIETEXT=XBMC_PC.EXE failed to build!  See .\tools\Win32\Release\BuildLog.htm for details.
+  	set DIETEXT="XBMC.EXE failed to build!  See .\tools\Win32\Release (SDL)\BuildLog.htm for details."
   	goto DIE
   )
   ECHO Done!
@@ -165,12 +164,12 @@ rem	CONFIG START
   ECHO Compiling Solution...
   %NET% %OPTS_EXE%
   IF NOT EXIST %EXE% (
-  	set DIETEXT=XBMC_PC.EXE failed to build!  See .\tools\Win32\Release\BuildLog.htm for details.
+  	set DIETEXT="XBMC.EXE failed to build!  See .\tools\Win32\Release (SDL)\BuildLog.htm for details."
   	goto DIE
   )
   ECHO Done!
   ECHO ------------------------------------------------------------
-  GOTO :MAKE_BUILD_EXE
+  GOTO MAKE_BUILD_EXE
 
 :MAKE_BUILD
   ECHO Copying files...
@@ -215,7 +214,7 @@ rem	CONFIG START
 :MAKE_BUILD_EXE
   ECHO Copying files...
   rmdir BUILD_WIN32 /S /Q
-  md BUILD_WIN32\Xbmc_pc
+  md BUILD_WIN32\Xbmc
 
   Echo .svn>exclude.txt
   Echo Thumbs.db>>exclude.txt
@@ -223,38 +222,25 @@ rem	CONFIG START
   Echo dsstdfx.bin>>exclude.txt
   Echo exclude.txt>>exclude.txt
 
-  xcopy %EXE% BUILD_WIN32\Xbmc_pc
-  xcopy UserData BUILD_WIN32\Xbmc_pc\UserData /E /Q /I /Y /EXCLUDE:exclude.txt
+  xcopy %EXE% BUILD_WIN32\Xbmc
+  xcopy UserData BUILD_WIN32\Xbmc\UserData /E /Q /I /Y /EXCLUDE:exclude.txt
   xcopy *.txt BUILD_WIN32 /EXCLUDE:exclude.txt
   rem xcopy *.xml BUILD_WIN32\
   
   rem xcopy tools\Win32\run_me_first.bat BUILD_WIN32 /EXCLUDE:exclude.txt
-  Echo subst q: Xbmc_pc>run_me.bat
-  Echo subst p: q:\userdata>>run_me.bat
-  Echo subst t: q:\userdata>>run_me.bat
-  Echo if not exist q:\Temp md Temp>>run_me.bat
-  Echo subst z: Temp>>run_me.bat
-  Echo Xbmc_pc\XBMC_PC.exe>>run_me.bat
-  Echo subst z: /D>>run_me.bat
-  Echo subst t: /D>>run_me.bat
-  Echo subst p: /D>>run_me.bat
-  Echo subst q: /D>>run_me.bat
-  
-  xcopy run_me.bat BUILD_WIN32
-  del run_me.bat
   
   cd "skin\Project Mayhem III"
   CALL build.bat
   cd ..\..
-  xcopy "skin\Project Mayhem III\BUILD\Project Mayhem III" "BUILD_WIN32\Xbmc_pc\skin\Project Mayhem III" /E /Q /I /Y /EXCLUDE:exclude.txt
+  xcopy "skin\Project Mayhem III\BUILD\Project Mayhem III" "BUILD_WIN32\Xbmc\skin\Project Mayhem III" /E /Q /I /Y /EXCLUDE:exclude.txt
 
-  xcopy credits BUILD_WIN32\Xbmc_pc\credits /Q /I /Y /EXCLUDE:exclude.txt
-  xcopy language BUILD_WIN32\Xbmc_pc\language /E /Q /I /Y /EXCLUDE:exclude.txt
-  xcopy screensavers BUILD_WIN32\Xbmc_pc\screensavers /E /Q /I /Y /EXCLUDE:exclude.txt
-  xcopy visualisations BUILD_WIN32\Xbmc_pc\visualisations /E /Q /I /Y /EXCLUDE:exclude.txt
-  xcopy system BUILD_WIN32\Xbmc_pc\system /E /Q /I /Y /EXCLUDE:exclude.txt
-  xcopy media BUILD_WIN32\Xbmc_pc\media /E /Q /I /Y /EXCLUDE:exclude.txt
-  xcopy sounds BUILD_WIN32\Xbmc_pc\sounds /E /Q /I /Y /EXCLUDE:exclude.txt
+  xcopy credits BUILD_WIN32\Xbmc\credits /Q /I /Y /EXCLUDE:exclude.txt
+  xcopy language BUILD_WIN32\Xbmc\language /E /Q /I /Y /EXCLUDE:exclude.txt
+  xcopy screensavers BUILD_WIN32\Xbmc\screensavers /E /Q /I /Y /EXCLUDE:exclude.txt
+  xcopy visualisations BUILD_WIN32\Xbmc\visualisations /E /Q /I /Y /EXCLUDE:exclude.txt
+  xcopy system BUILD_WIN32\Xbmc\system /E /Q /I /Y /EXCLUDE:exclude.txt
+  xcopy media BUILD_WIN32\Xbmc\media /E /Q /I /Y /EXCLUDE:exclude.txt
+  xcopy sounds BUILD_WIN32\Xbmc\sounds /E /Q /I /Y /EXCLUDE:exclude.txt
 
   del exclude.txt
   ECHO ------------------------------------------------------------
@@ -301,13 +287,13 @@ rem	CONFIG START
 :VIEWLOG_XBE
   set /P XBMC_BUILD_ANSWER=View the build log in your HTML browser? [y/n]
   if /I %XBMC_BUILD_ANSWER% NEQ y goto END
-  start /D"%~dp0Release" BuildLog.htm"
+  start /D"%~dp0Release (SDL)" BuildLog.htm"
   goto END
 
 :VIEWLOG_EXE
   set /P XBMC_BUILD_ANSWER=View the build log in your HTML browser? [y/n]
   if /I %XBMC_BUILD_ANSWER% NEQ y goto END
-  start /D"%~dp0tools\Win32\Release" BuildLog.htm"
+  start /D"%~dp0tools\Win32\Release (SDL)" BuildLog.htm"
   goto END
 
 :END
