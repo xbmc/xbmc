@@ -240,7 +240,7 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CStdString& strType)
         query = playlistQuery;
     }
   }
-  else if (m_field != FIELD_NONE)
+  else if (query.IsEmpty() && m_field != FIELD_NONE)
     query = GetDatabaseField(m_field,strType) + parameter;
   return query;
 }
