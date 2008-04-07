@@ -2565,8 +2565,7 @@ void CSettings::LoadUserFolderLayout()
   CStdString strDir = g_guiSettings.GetString("system.playlistspath");
   if (strDir == "set default")
   {
-    CUtil::AddFileToFolder(GetProfileUserDataFolder(), "playlists", strDir);
-    CUtil::AddSlashAtEnd(strDir);
+    strDir = "P:\\playlists\\";
     g_guiSettings.SetString("system.playlistspath",strDir.c_str());
   }
   CDirectory::Create(strDir);
