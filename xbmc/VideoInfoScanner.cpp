@@ -909,7 +909,7 @@ namespace VIDEO
       }
 
       string image;
-      if ( (pItem->GetProperty("HasAutoThumb") == "1" || !pItem->HasThumbnail()) && http.Get(strImage, image))
+      if (pItem->GetProperty("HasAutoThumb") == "1" || (!pItem->HasThumbnail()) && http.Get(strImage, image))
       {
         try
         {
