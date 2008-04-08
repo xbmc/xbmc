@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: jutski (->7/2006) Mikko70 (1/2007->)-->
-<!--Date of translation: 26/3/2008-->
-<!--Finnish strings based on English strings version 12300-->
+<!--Date of translation: 5/4/2008-->
+<!--Finnish strings based on English strings version 12479-->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -343,7 +343,7 @@
   <string id="415">Ladataan pienoiskuvake...</string>
   <string id="416">Tietoja ei saatavilla</string>
   <string id="417">Suuret kuvak.</string>
-  <string id="418"></string>
+  <string id="418">Kirjasto käytössä</string>
   <string id="419"></string>
   <string id="420"></string>
   <string id="421"></string>
@@ -1564,15 +1564,15 @@
   <string id="20188">Varmuuskopioidaan Bios:in tiedot</string>
   <string id="20189">Juonen ja esittelyn automaattinen vieritys käytössä</string>
   <string id="20190">Mukautus</string>
-  <string id="20191"></string>
-  <string id="20192"></string>
-  <string id="20193"></string>
-  <string id="20194"></string>
-  <string id="20195"></string>
-  <string id="20196"></string>
-  <string id="20197"></string>
-  <string id="20198"></string>
-  <string id="20199"></string>
+  <string id="20191">Suorituslokin kirjaus käytössä</string>
+  <string id="20192">Nouda esittäjän tiedot haettaessa</string>
+  <string id="20193">Nouda albumin tiedot haettaessa</string>
+  <string id="20194">Oletus hakupaikka</string>
+  <string id="20195">Vaihda hakupaikkaa</string>
+  <string id="20196">Vie musiikkikirjasto</string>
+  <string id="20197">Tuo musiikkikirjasto</string>
+  <string id="20198">Esittäjää ei löydy!</string>
+  <string id="20199">Esittäjän tietojen lataus epäonnistui</string>
 
  <!-- string id's 20200 thru 20211 are reserved for speedstrings -->	
  
@@ -1694,7 +1694,8 @@
   <string id="20410">Esittely</string>
   <string id="20411">Kutista</string>
   <string id="20412">Kutista vain yhden kauden TV-ohjelmat</string>
-  <string id="20413">Nouda Fanitaide</string>
+  <string id="20413">Nouda Fanikuvat</string>
+  <string id="20413">Näytä Fanikuvat videokirjastossa</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Näytä piilotetut tiedostot ja kansiot</string>
@@ -1844,6 +1845,23 @@
   <string id="21880">Kuvapalvelu</string>
   <string id="21881">UPnP toisto käytössä</string>
   <string id="21883">Kiintolevylle siirretyt CD:t</string>
+  <string id="21884">Hae kaikkien esittäjien tiedot</string>
+  <string id="21885">Ladataan albumin tiedot</string>
+  <string id="21886">Ladataan esittäjän tiedot</string>
+  <string id="21887">Henkilökuvaus</string>
+  <string id="21888">Levytykset</string>
+  <string id="21889">Etsitään esittäjää</string>
+  <string id="21890">Valitse esittäjä</string>
+  <string id="21891">Esittäjän tiedot</string>
+  <string id="21892">Soittimet:</string>
+  <string id="21893">Syntynyt:</string>
+  <string id="21894">Aiemmin:</string>
+  <string id="21895">Teemat:</string>
+  <string id="21896">Lopettanut:</string>
+  <string id="21897">Kuollut:</string>
+  <string id="21898">Aktiiviset vuodet:</string>
+  <string id="21899">Label:</string>
+  <string id="21900">Syntynyt/Aiemmin:</string>
    
   <string id="21882">Ohita ennen DVD-valikkoa olevat esitykset</string>
   
@@ -1851,8 +1869,10 @@
 
   <string id="22000">Päivitä kirjasto ohjelman käynnistyessä</string>
   <string id="22001">Suorita päivitys taustalla</string>
+  <string id="22002">DNS loppupääte</string>
 
   <string id="29999">Näytön välkynnän poisto</string>
+
   <!-- strings 30000 thru 31000 reserved for plugin settings -->
   <!-- strings 31000 thru 31999 reserved for skins -->
 

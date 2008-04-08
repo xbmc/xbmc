@@ -117,6 +117,7 @@ public:
   virtual bool IsDynamicallyAllocated() { return false; };
   virtual bool CanFocus() const;
   virtual bool IsVisible() const;
+  bool IsVisibleFromSkin() const { return m_visibleFromSkinCondition; };
   virtual bool IsDisabled() const;
   virtual void SetPosition(float posX, float posY);
   virtual void SetHitRect(const CRect &rect);

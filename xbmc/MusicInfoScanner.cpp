@@ -459,7 +459,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
       long iArtist = m_musicDatabase.GetArtistByName(song.strArtist);
       CStdString strPath;
       strPath.Format("musicdb://2/%u/",iArtist);
-      if (DownloadArtistInfo(strPath,song.strArtist))
+      if (!m_bStop && DownloadArtistInfo(strPath,song.strArtist))
       {
         m_musicDatabase.CommitTransaction();
         m_musicDatabase.BeginTransaction();
@@ -468,7 +468,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
       if (m_pObserver)
         m_pObserver->OnStateChanged(READING_MUSIC_INFO);
     }
-    if (g_guiSettings.GetBool("musiclibrary.autoalbuminfo"))
+    if (!m_bStop && g_guiSettings.GetBool("musiclibrary.autoalbuminfo"))
     {
       long iAlbum = m_musicDatabase.GetAlbumByName(song.strAlbum,song.strArtist);
       CStdString strPath;
@@ -706,6 +706,8 @@ int CMusicInfoScanner::GetPathHash(const CFileItemList &items, CStdString &hash)
   return count;
 }
 
+#define THRESHOLD .95f
+
 bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdString& strArtist, const CStdString& strAlbum, CGUIDialogProgress* pDialog)
 {
   CAlbum album;
@@ -713,7 +715,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
   DIRECTORY::MUSICDATABASEDIRECTORY::CQueryParams params;
   DIRECTORY::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(strPath, params);
   m_musicDatabase.Open();
-  if (m_musicDatabase.GetAlbumInfo(params.GetAlbumId(),album,songs))
+  if (m_musicDatabase.GetAlbumInfo(params.GetAlbumId(),album,&songs))
     return true;
 
   // find album info
@@ -782,7 +784,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
   {
     int bestMatch = 0;
     double bestRelevance = 0;
-    double minRelevance = 0.95;
+    double minRelevance = THRESHOLD;
     if (scraper.GetAlbumCount() > 1) // score the matches
     {
       //show dialog with all albums found
@@ -820,6 +822,16 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
         }
       }
     }
+    else
+    {
+      CMusicAlbumInfo& info = scraper.GetAlbum(0);
+      double relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, strAlbum, info.GetAlbum().strArtist, strArtist);
+      if (relevance < THRESHOLD)
+      {
+        m_musicDatabase.Close();
+        return false; 
+      }
+   }
 
     iSelectedAlbum = bestMatch;
     if (pDialog)
@@ -849,6 +861,12 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
       iSelectedAlbum = pDlg->GetSelectedItem().m_idepth;
     }
   }
+  else
+  {
+    m_musicDatabase.Close();
+    return false;
+  }
+
   scraper.LoadAlbuminfo(iSelectedAlbum);
   while (!scraper.Completed())
   {
@@ -927,6 +945,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
         CArtist artist;
         nfoReader.GetDetails(artist);
         m_musicDatabase.SetArtistInfo(params.GetArtistId(), artist);
+        m_musicDatabase.Close();
         return true;
       }
       else

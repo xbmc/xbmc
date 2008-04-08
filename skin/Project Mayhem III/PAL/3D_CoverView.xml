@@ -1,6 +1,7 @@
 <includes>
 	<include name="3D_Cover_View">
 		<control type="list" id="57">
+			<visible>Window.IsVisible(MusicFiles) | Container.Content(Albums)</visible>
 			<posx>190</posx>
 			<posy>290</posy>
 			<width>485</width>
@@ -145,7 +146,7 @@
 			<texturefocus border="4">scrollbar_arrow_up_focus.png</texturefocus>
 			<texturenofocus border="4">scrollbar_arrow_up.png</texturenofocus>
 			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(61)</visible>
+			<visible>Control.IsVisible(57) + Control.IsVisible(61)</visible>
 		</control>
 		<control type="button">
 			<posx>680</posx>
@@ -156,7 +157,7 @@
 			<texturefocus border="4">scrollbar_arrow_down_focus.png</texturefocus>
 			<texturenofocus border="4">scrollbar_arrow_down.png</texturenofocus>
 			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(61)</visible>
+			<visible>Control.IsVisible(57) + Control.IsVisible(61)</visible>
 		</control>
 		<control type="scrollbar" id="61">
 			<posx>680</posx>
