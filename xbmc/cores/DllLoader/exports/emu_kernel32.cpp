@@ -9,6 +9,7 @@
 #endif
 
 #include "../dll_tracker.h"
+#include <util.h>
 
 #ifdef _LINUX
 #include "../../../linux/PlatformInclude.h"
@@ -1089,7 +1090,7 @@ extern "C" HANDLE WINAPI dllCreateFileA(
     IN HANDLE hTemplateFile
     )
 {
-  return CreateFileA(lpFileName, dwDesiredAccess, dwShareMode, lpSecurityAttributes, dwCreationDisposition, dwFlagsAndAttributes, hTemplateFile);
+  return CreateFileA(_P(lpFileName), dwDesiredAccess, dwShareMode, lpSecurityAttributes, dwCreationDisposition, dwFlagsAndAttributes, hTemplateFile);
 }
 
 extern "C" BOOL WINAPI dllLockFile(HANDLE hFile, DWORD dwFileOffsetLow, DWORD dwFileOffsetHigh, DWORD nNumberOffBytesToLockLow, DWORD nNumberOffBytesToLockHigh)
