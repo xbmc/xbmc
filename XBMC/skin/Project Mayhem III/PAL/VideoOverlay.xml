@@ -39,6 +39,7 @@
 			<width>135</width>
 			<font>font10</font>
 			<scrollout>false</scrollout>
+			<pauseatend>2000</pauseatend>
 			<label>$INFO[VideoPlayer.Title]$INFO[VideoPlayer.Year, | ]$INFO[VideoPlayer.Director, | ]$INFO[VideoPlayer.Genre, | ]</label>
 			<include>mediaoverlay</include>
 		</control>

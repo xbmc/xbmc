@@ -102,12 +102,13 @@ public:
   void DeleteCDDBInfo();
   void AddSong(const CSong& song, bool bCheck = true);
   long SetAlbumInfo(long idAlbum, const CAlbum& album, const VECSONGS& songs, bool bTransaction=true);
-  long SetArtistInfo(long idArtist, const CArtist& artist);
-  bool GetAlbumInfo(long idAlbum, CAlbum &info, VECSONGS& songs);
   bool DeleteAlbumInfo(long idArtist);
-  bool GetArtistInfo(long idArtist, CArtist &info);
+  long SetArtistInfo(long idArtist, const CArtist& artist);
   bool DeleteArtistInfo(long idArtist);
+  bool GetAlbumInfo(long idAlbum, CAlbum &info, VECSONGS* songs);
+  bool GetArtistInfo(long idArtist, CArtist &info, bool needAll=true);
   bool GetSongByFileName(const CStdString& strFileName, CSong& song);
+  long GetAlbumIdByPath(const CStdString& path);
   bool GetSongById(long idSong, CSong& song);
   bool GetSongsByPath(const CStdString& strPath, CSongMap& songs, bool bAppendToMap = false);
   bool Search(const CStdString& search, CFileItemList &items);
@@ -183,10 +184,10 @@ protected:
   bool SetAlbumInfoSongs(long idAlbumInfo, const VECSONGS& songs);
   bool GetAlbumInfoSongs(long idAlbumInfo, VECSONGS& songs);
 private:
-  bool GetAlbumsByWhere(const CStdString &baseDir, const CStdString &where, CFileItemList &items);
+  bool GetAlbumsByWhere(const CStdString &baseDir, const CStdString &where, CFileItemList &items, bool needInfo=false);
   void SplitString(const CStdString &multiString, std::vector<CStdString> &vecStrings, CStdString &extraStrings);
   CSong GetSongFromDataset(bool bWithMusicDbPath=false);
-  CArtist GetArtistFromDataset(dbiplus::Dataset* pDS);
+  CArtist GetArtistFromDataset(dbiplus::Dataset* pDS, bool needThumb=true);
   CAlbum GetAlbumFromDataset(dbiplus::Dataset* pDS);
   void GetFileItemFromDataset(CFileItem* item, const CStdString& strMusicDBbasePath);
   bool CleanupSongs();

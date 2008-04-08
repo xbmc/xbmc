@@ -327,6 +327,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_bVideoLibraryHideAllItems = false;
   g_advancedSettings.m_bVideoLibraryAllItemsOnBottom = false;
   g_advancedSettings.m_bVideoLibraryHideRecentlyAddedItems = false;
+  g_advancedSettings.m_bVideoLibraryHideEmptySeries = false;
 
   g_advancedSettings.m_bUseEvilB = true;
 
@@ -1256,6 +1257,7 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetBoolean(pElement, "hideallitems", g_advancedSettings.m_bVideoLibraryHideAllItems);
     XMLUtils::GetBoolean(pElement, "allitemsonbottom", g_advancedSettings.m_bVideoLibraryAllItemsOnBottom);
     XMLUtils::GetBoolean(pElement, "hiderecentlyaddeditems", g_advancedSettings.m_bVideoLibraryHideRecentlyAddedItems);
+    XMLUtils::GetBoolean(pElement, "hideemptyseries", g_advancedSettings.m_bVideoLibraryHideEmptySeries);
     GetString(pElement, "itemseparator", g_advancedSettings.m_videoItemSeparator, " / ");
   }
 
@@ -2693,8 +2695,7 @@ void CSettings::LoadUserFolderLayout()
   CStdString strDir = g_guiSettings.GetString("system.playlistspath");
   if (strDir == "set default")
   {
-    CUtil::AddFileToFolder(GetProfileUserDataFolder(), "playlists", strDir);
-    CUtil::AddSlashAtEnd(strDir);
+    strDir = "P:\\playlists\\";
     g_guiSettings.SetString("system.playlistspath",strDir.c_str());
   }
   CDirectory::Create(strDir);
