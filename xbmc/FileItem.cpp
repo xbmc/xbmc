@@ -2602,6 +2602,7 @@ bool CFileItem::LoadMusicTag()
   // check db
   CMusicDatabase musicDatabase;
   CSong song;
+  musicDatabase.Open();
   if (musicDatabase.GetSongByFileName(m_strPath, song))
   {
     GetMusicInfoTag()->SetSong(song);

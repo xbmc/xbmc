@@ -707,6 +707,7 @@
 	</include>
 	<include name="AllViewCommonThumbSmall">
 		<control type="panel" id="52">
+			<visible>!Container.Content(TVshows)</visible>
 			<posx>190</posx>
 			<posy>100</posy>
 			<width>485</width>
@@ -793,6 +794,7 @@
 	</include>
 	<include name="AllViewCommonThumbLarge">
 		<control type="panel" id="53">
+			<visible>!Container.Content(TVshows)</visible>
 			<posx>190</posx>
 			<posy>100</posy>
 			<width>485</width>
@@ -879,6 +881,7 @@
 	</include>
 	<include name="MusicCoverThumbView">
 		<control type="panel" id="54">
+			<visible>Window.IsVisible(MusicFiles) | Container.Content(Albums)</visible>
 			<posx>190</posx>
 			<posy>100</posy>
 			<width>485</width>
@@ -1012,6 +1015,7 @@
 	</include>
 	<include name="VideoDVDThumbLarge">
 		<control type="panel" id="54">
+			<visible>!Container.Content(TVshows) + !Container.Content(Episodes) + !Container.Content(MusicVideos)</visible>
 			<posx>190</posx>
 			<posy>100</posy>
 			<width>485</width>
@@ -1120,6 +1124,7 @@
 	</include>
 	<include name="VideoDVDWrapView">
 		<control type="fixedlist" id="56">
+			<visible>!Container.Content(TVshows) + !Container.Content(Episodes) + !Container.Content(MusicVideos)</visible>
 			<posx>190</posx>
 			<posy>100</posy>
 			<width>520</width>
@@ -1293,6 +1298,7 @@
 	</include>
 	<include name="MusicCoverWrapView">
 		<control type="fixedlist" id="56">
+			<visible>Window.IsVisible(MusicFiles) | Container.Content(Albums)</visible>
 			<posx>190</posx>
 			<posy>100</posy>
 			<width>520</width>
@@ -1789,6 +1795,7 @@
 			<visible>![Window.IsActive(myvideolibrary) + Control.IsVisible(51)]</visible>
 			<visible>![Window.IsActive(mymusicfiles) + Control.IsVisible(57)]</visible>
 			<visible>![Window.IsActive(mymusiclibrary) + Control.IsVisible(57)]</visible>
+			<visible>![Window.IsActive(mymusiclibrary) + Control.IsVisible(51)]</visible>
 			<visible>![Window.IsActive(mymusicplaylist) + Control.IsVisible(57)]</visible>
 		</control>
 	</include>

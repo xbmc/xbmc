@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 03/27/2008-->
+<!--Date of translation: 04/05/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 12300-->
+<!--Based on english strings version 12479-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -105,10 +105,10 @@
   <string id="169">Upplösning</string>
   <string id="170">Album:</string>
   <string id="171">Artist:</string>
-  <string id="172">Utgiven:</string>
+  <string id="172">Utgivningsdatum:</string>
   <string id="173">Betyg:</string>
   <string id="174">Genre:</string>
-  <string id="175">Toner:</string>
+  <string id="175">Sinnesstämmning:</string>
   <string id="176">Stilar:</string>
   <string id="177">Recension:</string>
   <string id="178">Spår:</string>
@@ -337,6 +337,7 @@
   <string id="415">Laddar ner miniatyrbild...</string>
   <string id="416">Inte tillgänglig</string>
   <string id="417">Vy: Stora ikoner</string>
+  <string id="418">Aktivera bibliotek</string>
   <string id="422">Radera albuminfo</string>
   <string id="423">Radera CDDB-info</string>
   <string id="424">Välj</string>
@@ -1482,6 +1483,14 @@ den här visualiseringen</string>
   <string id="20189">Aktivera automatisk rullning för handling och recension</string>
   <string id="20190">Egen</string>
   <string id="20191">Aktivera debug-loggning</string>
+  <string id="20192">Hämta albuminformation vid skanning</string>
+  <string id="20193">Hämta artistinformation vid skanning</string>
+  <string id="20194">Standard scraper</string>
+  <string id="20195">Byt scraper</string>
+  <string id="20196">Exportera musikbibliotek</string>
+  <string id="20197">Importera musikbibliotek</string>
+  <string id="20198">Ingen artist hittad!</string>
+  <string id="20199">Nedladdning av artistinfo misslyckades</string>
   <string id="20250">Festa på! (filmer)</string>
   <string id="20251">Blandar drinkar (filmer)</string>
   <string id="20252">Fyller glasen (filmer)</string>
@@ -1588,10 +1597,10 @@ den här visualiseringen</string>
   <string id="20407">Scraper-inställningar</string>
   <string id="20408">Hämtar Musikvideo-information</string>
   <string id="20409">Hämtar TV-serieinformation</string>
-  <string id="20410">Trailer</string>
   <string id="20411">Lägg ihop</string>
   <string id="20412">Lägg ihop TV-serie om endast ett avsnitt</string>
   <string id="20413">Hämta Fan-konst</string>
+  <string id="20414">Visa Fan-konst i videobibliotek</string>
   <string id="21330">Visa dolda filer och mappar</string>
   <string id="21331">TuxBox klient</string>
   <string id="21332">VARNING: Vald TuxBox enhet är i inspelningsläge!</string>
@@ -1731,9 +1740,26 @@ den här visualiseringen</string>
   <string id="21881">Aktivera UPnP renderare</string>
   <string id="21882">Försök hoppa över introduktion före DVD menyn</string>
   <string id="21883">Rippade ljudcds</string>
+  <string id="21884">Fråga info för alla artister</string>
+  <string id="21885">Hämtar albuminformation</string>
+  <string id="21886">Hämtar artistinformation</string>
+  <string id="21887">Biografi</string>
+  <string id="21888">Diskografi</string>
+  <string id="21889">Söker artist</string>
+  <string id="21890">Välj artist</string>
+  <string id="21891">Artist information</string>
+  <string id="21892">Instrument:</string>
+  <string id="21893">Född:</string>
+  <string id="21894">Bildat:</string>
+  <string id="21895">Teman:</string>
+  <string id="21896">Upplöst:</string>
+  <string id="21897">Död:</string>
+  <string id="21898">Aktiva år:</string>
+  <string id="21899">Etikett:</string>
+  <string id="21900">Född/bildat</string>
   <string id="22000">Uppdatera bibliotek vid uppstart</string>
   <string id="22001">Uppdatera alltid biblioteket i bakgrunden</string>
-
+  <string id="22002">- DNS suffix</string>
   <!-- WiiRemote/Wiimote Input Device -->
   <string id="21884">Wii Remote</string>
   <string id="21885">Aktivera musemulering</string>
