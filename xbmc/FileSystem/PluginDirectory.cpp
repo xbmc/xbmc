@@ -216,6 +216,40 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
         dir->m_listItems.AddSortMethod(SORT_METHOD_PROGRAM_COUNT, 567, LABEL_MASKS("%T", "%C"));
         break;
       }
+    case SORT_METHOD_UNSORTED:
+      {
+        dir->m_listItems.AddSortMethod(SORT_METHOD_UNSORTED, 571, LABEL_MASKS("%T", "%D"));
+        break;
+      }
+    case SORT_METHOD_NONE:
+      {
+        dir->m_listItems.AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS("%T", "%D"));
+        break;
+      }
+    case SORT_METHOD_DRIVE_TYPE:
+      {
+        dir->m_listItems.AddSortMethod(SORT_METHOD_DRIVE_TYPE, 564, LABEL_MASKS()); // Preformatted
+        break;
+      }
+    case SORT_METHOD_PLAYLIST_ORDER:
+      {
+        CStdString strTrackLeft=g_guiSettings.GetString("musicfiles.trackformat");
+        CStdString strTrackRight=g_guiSettings.GetString("musicfiles.trackformatright");
+
+        dir->m_listItems.AddSortMethod(SORT_METHOD_PLAYLIST_ORDER, 559, LABEL_MASKS(strTrackLeft, strTrackRight));
+        break;
+      }
+    case SORT_METHOD_EPISODE:
+      {
+        dir->m_listItems.AddSortMethod(SORT_METHOD_EPISODE,20359,LABEL_MASKS("%E. %T","%R"));
+        break;
+      }
+    case SORT_METHOD_PRODUCTIONCODE:
+      {
+        //dir->m_listItems.AddSortMethod(SORT_METHOD_PRODUCTIONCODE,20368,LABEL_MASKS("%E. %T","%P", "%E. %T","%P"));
+        dir->m_listItems.AddSortMethod(SORT_METHOD_PRODUCTIONCODE,20368,LABEL_MASKS("%H. %T","%P", "%H. %T","%P"));
+        break;
+      }
     default:  
       break;
   }
