@@ -38,13 +38,14 @@ CGUIViewControl::~CGUIViewControl(void)
 void CGUIViewControl::Reset()
 {
   m_currentView = -1;
-  m_vecViews.clear();
+  m_visibleViews.clear();
+  m_allViews.clear();
 }
 
 void CGUIViewControl::AddView(const CGUIControl *control)
 {
   if (!control) return;
-  m_vecViews.push_back((CGUIControl *)control);
+  m_allViews.push_back((CGUIControl *)control);
 }
 
 void CGUIViewControl::SetViewControlID(int control)
@@ -59,6 +60,13 @@ void CGUIViewControl::SetParentWindow(int window)
 
 void CGUIViewControl::SetCurrentView(int viewMode)
 {
+  // grab the previous control
+  CGUIControl *previousView = NULL;
+  if (m_currentView >= 0 && m_currentView < (int)m_visibleViews.size())
+    previousView = m_visibleViews[m_currentView];
+  
+  UpdateViewVisibility();
+
   // viewMode is of the form TYPE << 16 | ID
   VIEW_TYPE type = (VIEW_TYPE)(viewMode >> 16);
   int id = viewMode & 0xffff;
@@ -74,27 +82,31 @@ void CGUIViewControl::SetCurrentView(int viewMode)
   if (newView < 0) // try anything!
     newView = GetView(VIEW_TYPE_NONE, 0);
 
-  if (newView < 0 || m_currentView == newView)
+  if (newView < 0)
     return;
 
+  m_currentView = newView;
+  CGUIControl *pNewView = m_visibleViews[m_currentView];
+
+  // make only current control visible...
+  for (ciViews view = m_allViews.begin(); view != m_allViews.end(); view++)
+    (*view)->SetVisible(false);
+  pNewView->SetVisible(true);
+
+  if (pNewView == previousView)
+    return; // no need to actually update anything (other than visibility above)
+
 //  CLog::Log(LOGDEBUG,"SetCurrentView: Oldview: %i, Newview :%i", m_currentView, viewMode);
-  CGUIControl *pNewView = m_vecViews[newView];
 
   bool hasFocus(false);
   int item = -1;
-  if (m_currentView >= 0 && m_currentView < (int)m_vecViews.size())
+  if (previousView)
   { // have an old view - let's clear it out and hide it.
-    CGUIControl *pControl = m_vecViews[m_currentView];
-    hasFocus = pControl->HasFocus();
-    item = GetSelectedItem(pControl);
-    CGUIMessage msg(GUI_MSG_LABEL_RESET, m_parentWindow, pControl->GetID(), 0, 0, NULL);
-    pControl->OnMessage(msg);
+    hasFocus = previousView->HasFocus();
+    item = GetSelectedItem(previousView);
+    CGUIMessage msg(GUI_MSG_LABEL_RESET, m_parentWindow, previousView->GetID(), 0, 0, NULL);
+    previousView->OnMessage(msg);
   }
-  m_currentView = newView;
-  // make only current control visible...
-  for (ciViews view = m_vecViews.begin(); view != m_vecViews.end(); view++)
-    (*view)->SetVisible(false);
-  pNewView->SetVisible(true);
 
   // and focus if necessary
   if (hasFocus)
@@ -128,10 +140,10 @@ void CGUIViewControl::UpdateContents(const CGUIControl *control, int currentItem
 void CGUIViewControl::UpdateView()
 {
 //  CLog::Log(LOGDEBUG,"UpdateView: %i", m_currentView);
-  if (m_currentView < 0 || m_currentView >= (int)m_vecViews.size())
+  if (m_currentView < 0 || m_currentView >= (int)m_visibleViews.size())
     return; // no valid current view!
 
-  CGUIControl *pControl = m_vecViews[m_currentView];
+  CGUIControl *pControl = m_visibleViews[m_currentView];
   // get the currently selected item
   int item = GetSelectedItem(pControl);
   UpdateContents(pControl, item < 0 ? 0 : item);
@@ -151,10 +163,10 @@ int CGUIViewControl::GetSelectedItem(const CGUIControl *control) const
 
 int CGUIViewControl::GetSelectedItem() const
 {
-  if (m_currentView < 0 || m_currentView >= (int)m_vecViews.size())
+  if (m_currentView < 0 || m_currentView >= (int)m_visibleViews.size())
     return -1; // no valid current view!
 
-  return GetSelectedItem(m_vecViews[m_currentView]);
+  return GetSelectedItem(m_visibleViews[m_currentView]);
 }
 
 void CGUIViewControl::SetSelectedItem(int item)
@@ -162,10 +174,10 @@ void CGUIViewControl::SetSelectedItem(int item)
   if (!m_fileItems || item < 0 || item >= m_fileItems->Size())
     return;
 
-  if (m_currentView < 0 || m_currentView >= (int)m_vecViews.size())
+  if (m_currentView < 0 || m_currentView >= (int)m_visibleViews.size())
     return; // no valid current view!
 
-  CGUIMessage msg(GUI_MSG_ITEM_SELECT, m_parentWindow, m_vecViews[m_currentView]->GetID(), item);
+  CGUIMessage msg(GUI_MSG_ITEM_SELECT, m_parentWindow, m_visibleViews[m_currentView]->GetID(), item);
   g_graphicsContext.SendMessage(msg);
 }
 
@@ -193,17 +205,17 @@ void CGUIViewControl::SetSelectedItem(const CStdString &itemPath)
 
 void CGUIViewControl::SetFocused()
 {
-  if (m_currentView < 0 || m_currentView >= (int)m_vecViews.size())
+  if (m_currentView < 0 || m_currentView >= (int)m_visibleViews.size())
     return; // no valid current view!
 
-  CGUIMessage msg(GUI_MSG_SETFOCUS, m_parentWindow, m_vecViews[m_currentView]->GetID(), 0);
+  CGUIMessage msg(GUI_MSG_SETFOCUS, m_parentWindow, m_visibleViews[m_currentView]->GetID(), 0);
   g_graphicsContext.SendMessage(msg);
 }
 
 bool CGUIViewControl::HasControl(int viewControlID) const
 {
   // run through our controls, checking for the id
-  for (ciViews it = m_vecViews.begin(); it != m_vecViews.end(); it++)
+  for (ciViews it = m_allViews.begin(); it != m_allViews.end(); it++)
   {
     if ((*it)->GetID() == (DWORD) viewControlID)
       return true;
@@ -213,20 +225,20 @@ bool CGUIViewControl::HasControl(int viewControlID) const
 
 int CGUIViewControl::GetCurrentControl() const
 {
-  if (m_currentView < 0 || m_currentView >= (int)m_vecViews.size())
+  if (m_currentView < 0 || m_currentView >= (int)m_visibleViews.size())
     return -1; // no valid current view!
 
-  return m_vecViews[m_currentView]->GetID();
+  return m_visibleViews[m_currentView]->GetID();
 }
 
 // returns the number-th view's viewmode (type and id)
 int CGUIViewControl::GetViewModeNumber(int number) const
 {
   CGUIBaseContainer *nextView = NULL;
-  if (number >= 0 || number < (int)m_vecViews.size())
-    nextView = (CGUIBaseContainer *)m_vecViews[number];
-  else if (m_vecViews.size())
-    nextView = (CGUIBaseContainer *)m_vecViews[0];
+  if (number >= 0 || number < (int)m_visibleViews.size())
+    nextView = (CGUIBaseContainer *)m_visibleViews[number];
+  else if (m_visibleViews.size())
+    nextView = (CGUIBaseContainer *)m_visibleViews[0];
   if (nextView)
     return (nextView->GetType() << 16) | nextView->GetID();
   return 0;  // no view modes :(
@@ -234,9 +246,9 @@ int CGUIViewControl::GetViewModeNumber(int number) const
 
 int CGUIViewControl::GetViewModeByID(int id) const
 {
-  for (unsigned int i = 0; i < m_vecViews.size(); ++i)
+  for (unsigned int i = 0; i < m_visibleViews.size(); ++i)
   {
-    CGUIBaseContainer *view = (CGUIBaseContainer *)m_vecViews[i];
+    CGUIBaseContainer *view = (CGUIBaseContainer *)m_visibleViews[i];
     if (view->GetID() == (DWORD)id)
       return (view->GetType() << 16) | view->GetID();
   }
@@ -246,33 +258,31 @@ int CGUIViewControl::GetViewModeByID(int id) const
 // returns the next viewmode in the cycle
 int CGUIViewControl::GetNextViewMode(int direction) const
 {
-  if (!m_vecViews.size())
+  if (!m_visibleViews.size())
     return 0; // no view modes :(
 
-  int viewNumber = (m_currentView + direction) % (int)m_vecViews.size();
-  if (viewNumber < 0) viewNumber += m_vecViews.size();
-  CGUIBaseContainer *nextView = (CGUIBaseContainer *)m_vecViews[viewNumber];
+  int viewNumber = (m_currentView + direction) % (int)m_visibleViews.size();
+  if (viewNumber < 0) viewNumber += m_visibleViews.size();
+  CGUIBaseContainer *nextView = (CGUIBaseContainer *)m_visibleViews[viewNumber];
   return (nextView->GetType() << 16) | nextView->GetID();
 }
 
 void CGUIViewControl::Clear()
 {
-  if (m_currentView < 0 || m_currentView >= (int)m_vecViews.size())
+  if (m_currentView < 0 || m_currentView >= (int)m_visibleViews.size())
     return; // no valid current view!
 
-  CGUIMessage msg(GUI_MSG_LABEL_RESET, m_parentWindow, m_vecViews[m_currentView]->GetID(), 0);
+  CGUIMessage msg(GUI_MSG_LABEL_RESET, m_parentWindow, m_visibleViews[m_currentView]->GetID(), 0);
   g_graphicsContext.SendMessage(msg);
 }
 
 int CGUIViewControl::GetView(VIEW_TYPE type, int id) const
 {
-  for (int i = 0; i < (int)m_vecViews.size(); i++)
+  for (int i = 0; i < (int)m_visibleViews.size(); i++)
   {
-    CGUIBaseContainer *view = (CGUIBaseContainer *)m_vecViews[i];
+    CGUIBaseContainer *view = (CGUIBaseContainer *)m_visibleViews[i];
     if ((type == VIEW_TYPE_NONE || type == view->GetType()) && (!id || view->GetID() == (DWORD) id))
-    {
       return i;
-    }
   }
   return -1;
 }
@@ -282,9 +292,9 @@ void CGUIViewControl::UpdateViewAsControl(const CStdString &viewLabel)
   // the view as control could be a select/spin/dropdown button
   CGUIMessage msg(GUI_MSG_LABEL_RESET, m_parentWindow, m_viewAsControl);
   g_graphicsContext.SendMessage(msg);
-  for (unsigned int i = 0; i < m_vecViews.size(); i++)
+  for (unsigned int i = 0; i < m_visibleViews.size(); i++)
   {
-    CGUIBaseContainer *view = (CGUIBaseContainer *)m_vecViews[i];
+    CGUIBaseContainer *view = (CGUIBaseContainer *)m_visibleViews[i];
     CGUIMessage msg(GUI_MSG_LABEL_ADD, m_parentWindow, m_viewAsControl, i);
     CStdString label;
     label.Format(g_localizeStrings.Get(534).c_str(), view->GetLabel().c_str()); // View: %s
@@ -302,3 +312,19 @@ void CGUIViewControl::UpdateViewAsControl(const CStdString &viewLabel)
   g_graphicsContext.SendMessage(msgSet);
 }
 
+void CGUIViewControl::UpdateViewVisibility()
+{
+  m_visibleViews.clear();
+  for (unsigned int i = 0; i < m_allViews.size(); i++)
+  {
+    CGUIControl *view = m_allViews[i];
+    if (view->GetVisibleCondition())
+    {
+      view->UpdateVisibility();
+      if (view->IsVisibleFromSkin())
+        m_visibleViews.push_back(view);
+    }
+    else
+      m_visibleViews.push_back(view);
+  }
+}

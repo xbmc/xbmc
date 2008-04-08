@@ -13,6 +13,7 @@
 			<pagecontrol>61</pagecontrol>
 			<scrolltime>200</scrolltime>
 			<include>contentpanelslide</include>
+			<visible>!Container.Content(TVshows) + !Container.Content(Seasons)</visible>
 			<itemlayout height="29">
 				<control type="image">
 					<posx>5</posx>
@@ -176,7 +177,6 @@
 				<height>22</height>
 				<font>special13</font>
 				<info>ListItem.Title</info>
-				<include>contentpanelslide</include>
 				<visible>Control.IsVisible(51)</visible>
 				<scroll>true</scroll>
 			</control>
@@ -329,6 +329,7 @@
 	</include>
 	<include name="VideoLibraryWideIcon_Small">
 		<control type="panel" id="57">
+			<visible>!Container.Content(Seasons) + !Container.Content(MusicVideos)</visible>
 			<posx>432</posx>
 			<posy>100</posy>
 			<width>242</width>
@@ -638,6 +639,7 @@
 	</include>
 	<include name="VideoLibrary_BigList">
 		<control type="list" id="59">
+			<visible>!Container.Content(Seasons)</visible>
 			<posx>190</posx>
 			<posy>100</posy>
 			<width>485</width>
@@ -1029,6 +1031,296 @@
 					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
 				</control>
 			</focusedlayout>
+		</control>
+	</include>
+	<include name="MusicLibraryMediaInfo">
+		<control type="list" id="51">
+			<posx>190</posx>
+			<posy>100</posy>
+			<width>330</width>
+			<height>232</height>
+			<onleft>9000</onleft>
+			<onright>61</onright>
+			<onup>51</onup>
+			<ondown>51</ondown>
+			<viewtype label="544">list</viewtype>
+			<pagecontrol>61</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<include>contentpanelslide</include>
+			<visible>Container.Content(Albums) | Container.Content(Artists)</visible>
+			<itemlayout height="29">
+				<control type="image">
+					<posx>5</posx>
+					<posy>3</posy>
+					<width>22</width>
+					<height>22</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="label">
+					<posx>30</posx>
+					<posy>3</posy>
+					<width>290</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="label">
+					<posx>320</posx>
+					<posy>3</posy>
+					<width>200</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<textcolor>grey</textcolor>
+					<align>right</align>
+					<info>ListItem.Label2</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="29">
+				<control type="image">
+					<width>325</width>
+					<height>29</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<visible>Control.HasFocus(51)</visible>
+					<texture>list-focus.png</texture>
+				</control>
+				<control type="image">
+					<posx>5</posx>
+					<posy>3</posy>
+					<width>22</width>
+					<height>22</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="label">
+					<posx>30</posx>
+					<posy>3</posy>
+					<width>290</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="label">
+					<posx>320</posx>
+					<posy>3</posy>
+					<width>200</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<textcolor>grey</textcolor>
+					<align>right</align>
+					<info>ListItem.Label2</info>
+				</control>
+			</focusedlayout>
+		</control>
+		<control type="group">
+			<include>contentpanelslide</include>
+			<control type="button">
+				<posx>520</posx>
+				<posy>100</posy>
+				<include>scrollbar_width</include>
+				<height>20</height>
+				<onclick>PageUp(61)</onclick>
+				<texturefocus border="4">scrollbar_arrow_up_focus.png</texturefocus>
+				<texturenofocus border="4">scrollbar_arrow_up.png</texturenofocus>
+				<visible>Control.IsVisible(51) + Control.IsVisible(61)</visible>
+			</control>
+			<control type="button">
+				<posx>520</posx>
+				<posy>312</posy>
+				<include>scrollbar_width</include>
+				<height>20</height>
+				<onclick>PageDown(61)</onclick>
+				<texturefocus border="4">scrollbar_arrow_down_focus.png</texturefocus>
+				<texturenofocus border="4">scrollbar_arrow_down.png</texturenofocus>
+				<visible>Control.IsVisible(51) + Control.IsVisible(61)</visible>
+			</control>
+			<control type="scrollbar" id="61">
+				<posx>520</posx>
+				<posy>120</posy>
+				<include>scrollbar_width</include>
+				<height>192</height>
+				<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
+				<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>-</textureslidernib>
+				<textureslidernibfocus>-</textureslidernibfocus>
+				<onleft>50</onleft>
+				<onright>611</onright>
+				<showonepage>false</showonepage>
+				<orientation>vertical</orientation>
+				<visible>Control.IsVisible(51)</visible>
+			</control>
+			<control type="image">
+				<posx>190</posx>
+				<posy>337</posy>
+				<width>510</width>
+				<height>10</height>
+				<texture>separator.png</texture>
+				<visible>Control.IsVisible(51)</visible>
+			</control>
+			<control type="image">
+				<posx>545</posx>
+				<posy>100</posy>
+				<width>140</width>
+				<height>232</height>
+				<aspectratio>keep</aspectratio>
+				<info>ListItem.Icon</info>
+				<visible>Control.IsVisible(51)</visible>
+			</control>
+			<control type="label">
+				<posx>200</posx>
+				<posy>345</posy>
+				<width>420</width>
+				<height>22</height>
+				<font>special13</font>
+				<info>ListItem.Label</info>
+				<visible>Control.IsVisible(51)</visible>
+				<scroll>true</scroll>
+			</control>
+			<control type="label">
+				<posx>680</posx>
+				<posy>345</posy>
+				<width>420</width>
+				<height>22</height>
+				<font>special13</font>
+				<align>right</align>
+				<info>ListItem.Year</info>
+				<visible>Control.IsVisible(51) + container.content(Albums)</visible>
+				<scroll>true</scroll>
+			</control>
+			<control type="label">
+				<posx>200</posx>
+				<posy>505</posy>
+				<width>420</width>
+				<height>22</height>
+				<font>special13</font>
+				<info>ListItem.Property(Genre)</info>
+				<visible>Control.IsVisible(51) + container.content(Albums)</visible>
+				<scroll>true</scroll>
+			</control>
+			<control type="label">
+				<posx>680</posx>
+				<posy>505</posy>
+				<width>420</width>
+				<height>22</height>
+				<font>special13</font>
+				<align>right</align>
+				<label>$INFO[ListItem.Property(Rating),$LOCALIZE[173] ]</label>
+				<visible>Control.IsVisible(51) + container.content(Albums)</visible>
+				<scroll>true</scroll>
+			</control>
+			<control type="label">
+				<posx>680</posx>
+				<posy>345</posy>
+				<width>420</width>
+				<height>22</height>
+				<font>special13</font>
+				<align>right</align>
+				<label>$INFO[ListItem.Property(formed)]</label>
+				<visible>Control.IsVisible(51) + container.content(Artists)</visible>
+				<scroll>true</scroll>
+			</control>
+			<control type="label">
+				<posx>200</posx>
+				<posy>505</posy>
+				<width>480</width>
+				<height>22</height>
+				<font>special13</font>
+				<label>$INFO[ListItem.Property(style)]</label>
+				<visible>Control.IsVisible(51) + container.content(Artists)</visible>
+				<scroll>true</scroll>
+			</control>
+			<control type="label">
+				<posx>680</posx>
+				<posy>505</posy>
+				<width>420</width>
+				<height>22</height>
+				<font>special13</font>
+				<align>right</align>
+				<label>$INFO[ListItem.Duration,$LOCALIZE[2050] ]</label>
+				<visible>Control.IsVisible(51) + container.content(Artists)</visible>
+				<scroll>true</scroll>
+			</control>
+			<control type="textbox">
+				<description>Textbox when scrollbar is visible</description>
+				<posx>200</posx>
+				<posy>373</posy>
+				<width>450</width>
+				<height>127</height>
+				<font>font13</font>
+				<pagecontrol>611</pagecontrol>
+				<label>$INFO[ListItem.Property(Description)]</label>
+				<visible>Control.IsVisible(51) + Control.IsVisible(611)</visible>
+				<include>autoscrollmedium</include>
+			</control>
+			<control type="textbox">
+				<description>Textbox when scrollbar is not visible</description>
+				<posx>200</posx>
+				<posy>373</posy>
+				<width>480</width>
+				<height>127</height>
+				<font>font13</font>
+				<pagecontrol>611</pagecontrol>
+				<label>$INFO[ListItem.Property(Description)]</label>
+				<visible>Control.IsVisible(51) + !Control.IsVisible(611)</visible>
+				<include>autoscrollmedium</include>
+			</control>
+			<control type="label">
+				<description>Label when both textboxes (Plot) are empty</description>
+				<posx>200</posx>
+				<posy>420</posy>
+				<width>480</width>
+				<height>30</height>
+				<align>center</align>
+				<font>font13</font>
+				<label>$LOCALIZE[207] - $LOCALIZE[416]</label>
+				<visible>Control.IsVisible(51) + IsEmpty(ListItem.Property(Description))</visible>
+			</control>
+			<control type="button">
+				<posx>663</posx>
+				<posy>373</posy>
+				<include>scrollbar_width</include>
+				<height>20</height>
+				<onclick>PageUp(611)</onclick>
+				<texturefocus border="4">scrollbar_arrow_up_focus.png</texturefocus>
+				<texturenofocus border="4">scrollbar_arrow_up.png</texturenofocus>
+				<visible>Control.IsVisible(611)</visible>
+			</control>
+			<control type="button">
+				<posx>663</posx>
+				<posy>483</posy>
+				<include>scrollbar_width</include>
+				<height>20</height>
+				<onclick>PageDown(611)</onclick>
+				<texturefocus border="4">scrollbar_arrow_down_focus.png</texturefocus>
+				<texturenofocus border="4">scrollbar_arrow_down.png</texturenofocus>
+				<visible>Control.IsVisible(611)</visible>
+			</control>
+			<control type="scrollbar" id="611">
+				<posx>663</posx>
+				<posy>393</posy>
+				<include>scrollbar_width</include>
+				<height>90</height>
+				<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
+				<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>-</textureslidernib>
+				<textureslidernibfocus>-</textureslidernibfocus>
+				<onleft>61</onleft>
+				<onright>9000</onright>
+				<showonepage>false</showonepage>
+				<orientation>vertical</orientation>
+				<visible>Control.IsVisible(51)</visible>
+			</control>
 		</control>
 	</include>
 </includes>

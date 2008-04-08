@@ -1136,6 +1136,7 @@ namespace VIDEO
     CIMDB IMDB;
     CVideoInfoTag movieDetails;
     IMDB.SetScraperInfo(info);
+    movieDetails.m_strFileNameAndPath = pItem->m_strPath;
 
     if ( IMDB.GetDetails(url, movieDetails, pDialog) )
     {

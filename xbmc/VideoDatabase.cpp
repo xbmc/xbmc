@@ -2289,7 +2289,7 @@ void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath)
     }
 
     DeleteThumbForItem(strFilenameAndPath,false); 
-    
+
     ClearBookMarksOfFile(strFilenameAndPath);
 
     CStdString strSQL;
@@ -2389,9 +2389,9 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, long lE
         return ;
       }
     }
-     
+
     DeleteThumbForItem(strFilenameAndPath,false); 
-    
+
     ClearBookMarksOfFile(strFilenameAndPath);
 
     CStdString strSQL;
@@ -4261,14 +4261,16 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
       long lShowId = m_pDS->fv("tvshow.idShow").get_asLong();
   
       CVideoInfoTag movie = GetDetailsForTvShow(m_pDS, false);
-      CFileItem* pItem=new CFileItem(movie);
-      CStdString strDir;
-      strDir.Format("%ld/", lShowId);
-      pItem->m_strPath=strBaseDir + strDir;
-      pItem->m_dateTime.SetFromDateString(movie.m_strPremiered);
-      pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
-      items.Add(pItem);
-
+      if (!g_advancedSettings.m_bVideoLibraryHideEmptySeries || movie.m_iEpisode > 0)
+      {
+        CFileItem* pItem=new CFileItem(movie);
+        CStdString strDir;
+        strDir.Format("%ld/", lShowId);
+        pItem->m_strPath=strBaseDir + strDir;
+        pItem->m_dateTime.SetFromDateString(movie.m_strPremiered);
+        pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
+        items.Add(pItem);
+      }
       m_pDS->next();
     }
 
