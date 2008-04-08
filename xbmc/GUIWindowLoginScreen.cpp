@@ -33,7 +33,7 @@
 #include "xbox/network.h"
 #include "SkinInfo.h"
 #include "Profile.h"
-#include "../guilib/GUIWindowManager.h"
+#include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "Settings.h"
 #include "FileSystem/File.h"

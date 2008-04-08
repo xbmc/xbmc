@@ -2,13 +2,13 @@
 #include "stdafx.h"
 #include "VirtualDirectory.h"
 #include "FactoryDirectory.h"
-#include "../Util.h"
-#include "../Profile.h"
+#include "Util.h"
+#include "Profile.h"
 #include "DirectoryCache.h"
 #ifdef HAS_XBOX_HARDWARE
-#include "../utils/MemoryUnitManager.h"
+#include "utils/MemoryUnitManager.h"
 #endif
-#include "../DetectDVDType.h"
+#include "DetectDVDType.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
 

@@ -5,12 +5,12 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "../utils/CriticalSection.h"
+#include "utils/CriticalSection.h"
 #include <map>
-#include "../lib/UnrarXLib/UnrarX.hpp"
-#include "../utils/Stopwatch.h"
+#include "lib/UnrarXLib/UnrarX.hpp"
+#include "utils/Stopwatch.h"
 
-#include "../utils/Thread.h"
+#include "utils/Thread.h"
 
 class CFileItemList;
 

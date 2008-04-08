@@ -1,7 +1,7 @@
 #pragma once
 
 #include "md5.h"
-#include "../xbox/XKEEPROM.h"
+#include "xbox/XKEEPROM.h"
 #include "InfoLoader.h"
 
 #define KB  (1024)          // 1 KiloByte (1KB)   1024 Byte (2^10 Byte)

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "../Settings.h"  // for VECSOURCES
+#include "Settings.h"  // for VECSOURCES
 
 class IDevice;
 class IFileSystem;

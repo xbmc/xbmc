@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "../python/Python.h"
+#include "lib/libPython/python/Python.h"
 #include "FileSystem/PluginDirectory.h"
 #include "listitem.h"
 #include "PluginSettings.h"

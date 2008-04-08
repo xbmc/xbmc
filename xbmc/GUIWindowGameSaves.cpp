@@ -31,7 +31,7 @@
 #include "MediaManager.h"
 #include "utils/LabelFormatter.h"
 #include "MusicInfoTag.h"// todo - program tags
-#include "../guilib/GUIWindowManager.h"
+#include "GUIWindowManager.h"
 #include "GUIDialogProgress.h"
 #include "GUIDialogYesNo.h"
 #include "FileSystem/Directory.h"

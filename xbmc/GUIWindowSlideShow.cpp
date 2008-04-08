@@ -30,7 +30,7 @@
 #include "utils/GUIInfoManager.h"
 #include "FileSystem/FactoryDirectory.h"
 #include "GUIDialogPictureInfo.h"
-#include "../guilib/GUIWindowManager.h"
+#include "GUIWindowManager.h"
 #include "Settings.h"
 #include "FileItem.h"
 

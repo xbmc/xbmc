@@ -8,7 +8,7 @@
 #include "ResampleDirectSound.h"
 #include "IAudioCallback.h"
 #include "MPlayer.h"
-#include "../VideoRenderers/RenderManager.h"
+#include "cores/VideoRenderers/RenderManager.h"
 
 
 static IDirectSoundRenderer* m_pAudioDecoder = NULL;

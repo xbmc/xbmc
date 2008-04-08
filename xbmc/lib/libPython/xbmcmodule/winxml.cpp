@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "winxml.h"
-#include "../python/Python.h"
+#include "lib/libPython/python/Python.h"
 #include "pyutil.h"
 #include "GUIPythonWindowXML.h"
-#include "../../../../guilib/SkinInfo.h"
-#include "../../../Util.h"
+#include "SkinInfo.h"
+#include "Util.h"
 #include "FileSystem/File.h"
 
 using namespace std;

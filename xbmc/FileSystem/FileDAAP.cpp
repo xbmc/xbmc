@@ -22,7 +22,7 @@
 #include "FileDAAP.h"
 #include <sys/stat.h>
 
-#include "../lib/libXDAAP/private.h"
+#include "lib/libXDAAP/private.h"
 
 using namespace XFILE;
 

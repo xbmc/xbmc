@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "../../VideoDatabase.h"
+#include "VideoDatabase.h"
 #include "DirectoryNodeOverview.h"
 #include "Settings.h"
 #include "FileItem.h"

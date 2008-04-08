@@ -1,4 +1,4 @@
-#include "../python/Python.h"
+#include "lib/libPython/python/Python.h"
 #pragma once
 
 #define PlayList_Check(op) PyObject_TypeCheck(op, &PlayList_Type)

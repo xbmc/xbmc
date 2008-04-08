@@ -1,6 +1,6 @@
 #pragma once
 #include "GUIPythonWindow.h"
-#include "../../../GUIViewControl.h"
+#include "GUIViewControl.h"
 
 class CFileItemList;
 

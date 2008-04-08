@@ -9,8 +9,8 @@
 #endif // _MSC_VER > 1000
 
 #include "IFile.h"
-#include "../lib/UnrarXLib/rar.hpp"
-#include "../utils/Thread.h"
+#include "lib/UnrarXLib/rar.hpp"
+#include "utils/Thread.h"
 
 namespace XFILE
 {	

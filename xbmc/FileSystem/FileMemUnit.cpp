@@ -20,7 +20,7 @@
 #include "stdafx.h"
 #include "FileMemUnit.h"
 #include <sys/stat.h>
-#include "../utils/MemoryUnitManager.h"
+#include "utils/MemoryUnitManager.h"
 #include "MemoryUnits/IFileSystem.h"
 #include "MemoryUnits/IDevice.h"
 #include "URL.h"

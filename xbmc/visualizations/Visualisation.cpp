@@ -4,7 +4,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "Visualisation.h" 
-#include "../Settings.h"
+#include "Settings.h"
 
 using namespace std;
 

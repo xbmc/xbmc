@@ -11,7 +11,7 @@
 
 #include "StdString.h"
 #include "Thread.h"
-#include "../lib/libiconv/iconv.h"
+#include "lib/libiconv/iconv.h"
 #include "tinyXML/tinyXML.h"
 
 #include <vector>

@@ -3,7 +3,7 @@
  \brief
  */
 #pragma once
-#include "../guilib/GUIListItem.h"
+#include "GUIListItem.h"
 #include "utils/Archive.h"
 #include "DateTime.h"
 #include "SortFileItem.h"

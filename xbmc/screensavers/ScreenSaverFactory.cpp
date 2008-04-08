@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ScreenSaverFactory.h"
-#include "../Util.h"
+#include "Util.h"
 
 
 CScreenSaverFactory::CScreenSaverFactory()

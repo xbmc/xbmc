@@ -1,8 +1,8 @@
 
 #include "stdafx.h"
-#include "../Util.h"
+#include "Util.h"
 #include "OGGFileDirectory.h"
-#include "../OggTag.h"
+#include "OggTag.h"
 #include "DirectoryCache.h"
 #include "URL.h"
 #include "FileItem.h"

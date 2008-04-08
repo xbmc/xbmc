@@ -4,12 +4,12 @@
 
 #include "stdafx.h"
 #include "FileSmb.h"
-#include "../GUIPassword.h"
+#include "GUIPassword.h"
 #include "SMBDirectory.h"
-#include "../lib/libsmb/xbLibSmb.h"
-#include "../Util.h"
-#include "../xbox/Network.h"
-#include "../utils/Win32Exception.h"
+#include "lib/libsmb/xbLibSmb.h"
+#include "Util.h"
+#include "xbox/Network.h"
+#include "utils/Win32Exception.h"
 #include "Settings.h"
 
 using namespace XFILE;

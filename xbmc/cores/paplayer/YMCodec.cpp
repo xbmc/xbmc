@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "YMCodec.h"
-#include "../DllLoader/DllLoader.h"
+#include "cores/DllLoader/DllLoader.h"
 
 YMCodec::YMCodec()
 {

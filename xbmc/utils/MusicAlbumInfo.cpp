@@ -1,10 +1,10 @@
 #include "stdafx.h"
-#include "./MusicAlbumInfo.h"
+#include "MusicAlbumInfo.h"
 #include "ScraperParser.h"
 #include "ScraperSettings.h"
 #include "XMLUtils.h"
-#include "./HTMLTable.h"
-#include "./HTMLUtil.h"
+#include "HTMLTable.h"
+#include "HTMLUtil.h"
 
 using namespace MUSIC_GRABBER;
 

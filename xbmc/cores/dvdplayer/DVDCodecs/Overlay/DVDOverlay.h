@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "../../dvd_config.h"
+#include "dvd_config.h"
 
 #include <assert.h>
 #include <vector>

@@ -4,7 +4,7 @@
 
 #include "stdafx.h"
 #include "RTVDirectory.h"
-#include "../Util.h"
+#include "Util.h"
 #include "URL.h"
 #include "tinyXML/tinyxml.h"
 #include "FileItem.h"

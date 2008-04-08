@@ -31,7 +31,7 @@
 #include "PlayListFactory.h"
 #include "FileSystem/MultiPathDirectory.h"
 #include "PictureInfoLoader.h"
-#include "../guilib/GUIWindowManager.h"
+#include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/File.h"

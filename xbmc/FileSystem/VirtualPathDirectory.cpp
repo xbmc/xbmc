@@ -2,10 +2,10 @@
 #include "stdafx.h"
 #include "VirtualPathDirectory.h"
 #include "Directory.h"
-#include "../Settings.h"
-#include "../Util.h"
+#include "Settings.h"
+#include "Util.h"
 #include "URL.h"
-#include "../../guilib/GUIWindowManager.h"
+#include "GUIWindowManager.h"
 #include "GUIDialogProgress.h"
 #include "FileItem.h"
 

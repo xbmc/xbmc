@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "pyutil.h"
 #include "PythonPlayer.h"
-#include "../XBPython.h"
+#include "lib/libPython/XBPython.h"
 
 using namespace PYXBMC;
 

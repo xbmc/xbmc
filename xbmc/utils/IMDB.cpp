@@ -4,7 +4,7 @@
 
 #include "stdafx.h"
 #include "IMDB.h"
-#include "../Util.h"
+#include "Util.h"
 #include "HTMLUtil.h"
 #include "XMLUtils.h"
 #include "RegExp.h"

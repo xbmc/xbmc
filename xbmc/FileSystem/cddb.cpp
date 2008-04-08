@@ -10,8 +10,8 @@
 
 #include "stdafx.h"
 #include "cddb.h"
-#include "../DNSNameCache.h"
-#include "../Id3Tag.h"
+#include "DNSNameCache.h"
+#include "Id3Tag.h"
 #include "Settings.h"
 
 using namespace std;

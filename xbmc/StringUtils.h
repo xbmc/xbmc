@@ -12,7 +12,7 @@
 #ifndef __STRINGUTILS_H_
 #define __STRINGUTILS_H_
 
-#include "../guilib/StdString.h"
+#include "StdString.h"
 #include <vector>
 
 typedef std::vector<CStdString> CStdStringArray;

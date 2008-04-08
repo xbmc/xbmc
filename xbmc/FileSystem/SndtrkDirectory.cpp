@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "SndtrkDirectory.h"
-#include "../xbox/IoSupport.h"
+#include "xbox/IoSupport.h"
 #include "FileItem.h"
 
 SOUNDTRACK datastorage; //created a vector of the XSOUNDTRACK_DATA class to keep track of each album

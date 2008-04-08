@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "SIDCodec.h"
-#include "../DllLoader/DllLoader.h"
-#include "../../Util.h"
-#include "../../MusicInfoTagLoaderSid.h"
-#include "../../MusicInfoTag.h"
+#include "cores/DllLoader/DllLoader.h"
+#include "Util.h"
+#include "MusicInfoTagLoaderSid.h"
+#include "MusicInfoTag.h"
 #include "FileItem.h"
 
 using namespace MUSIC_INFO;

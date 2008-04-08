@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "MusicDatabaseDirectory.h"
-#include "../Util.h"
+#include "Util.h"
 #include "MusicDatabaseDirectory/QueryParams.h"
-#include "../MusicDatabase.h"
+#include "MusicDatabase.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
 

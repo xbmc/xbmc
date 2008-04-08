@@ -4,7 +4,7 @@
 #include "window.h"
 #include "control.h"
 #include "action.h"
-#include "../../../../guilib/GUIWindowManager.h"
+#include "GUIWindowManager.h"
 
 using namespace PYXBMC;
 

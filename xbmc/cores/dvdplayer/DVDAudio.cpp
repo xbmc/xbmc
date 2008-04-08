@@ -2,10 +2,10 @@
 #include "stdafx.h"
 #include "DVDAudio.h"
 #ifdef _XBOX
-#include "../mplayer/ASyncDirectSound.h"
-#include "../mplayer/ac97directsound.h"
+#include "cores/mplayer/ASyncDirectSound.h"
+#include "cores/mplayer/ac97directsound.h"
 #else
-#include "../mplayer/Win32DirectSound.h"
+#include "cores/mplayer/Win32DirectSound.h"
 #endif
 #include "DVDClock.h"
 #include "DVDCodecs/DVDCodecs.h"

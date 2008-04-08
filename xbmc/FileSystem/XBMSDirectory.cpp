@@ -1,7 +1,7 @@
 
 #include "stdafx.h"
 #include "XBMSDirectory.h"
-#include "../Util.h"
+#include "Util.h"
 #include "DirectoryCache.h"
 #include "URL.h"
 #include "FileItem.h"

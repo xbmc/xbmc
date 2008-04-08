@@ -1,10 +1,10 @@
 
 #include "stdafx.h"
-#include "../Util.h"
+#include "Util.h"
 #include "NSFFileDirectory.h"
-#include "../MusicInfoTagLoaderNSF.h"
+#include "MusicInfoTagLoaderNSF.h"
 #include "DirectoryCache.h"
-#include "../MusicInfoTag.h"
+#include "MusicInfoTag.h"
 #include "URL.h"
 #include "FileItem.h"
 

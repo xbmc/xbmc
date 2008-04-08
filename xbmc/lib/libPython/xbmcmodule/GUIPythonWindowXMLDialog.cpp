@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "GUIPythonWindowXMLDialog.h"
-#include "../../../../guilib/GUIWindowManager.h"
+#include "GUIWindowManager.h"
 
 CGUIPythonWindowXMLDialog::CGUIPythonWindowXMLDialog(DWORD dwId, CStdString strXML, CStdString strFallBackPath)
 : CGUIPythonWindowXML(dwId,strXML,strFallBackPath)

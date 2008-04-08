@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "EncoderLame.h"
-#include "../Id3Tag.h"
+#include "Id3Tag.h"
 #include "GUISettings.h"
 
 using namespace MUSIC_INFO;

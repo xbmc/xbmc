@@ -2,9 +2,9 @@
 #include "stdafx.h"
 #include "MultiPathDirectory.h"
 #include "Directory.h"
-#include "../Util.h"
+#include "Util.h"
 #include "URL.h"
-#include "../../guilib/GUIWindowManager.h"
+#include "GUIWindowManager.h"
 #include "GUIDialogProgress.h"
 #include "FileItem.h"
 

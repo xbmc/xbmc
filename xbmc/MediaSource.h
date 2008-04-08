@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../guilib/StdString.h"
+#include "StdString.h"
 #include <vector>
 
 /*!

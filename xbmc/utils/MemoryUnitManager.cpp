@@ -1,12 +1,12 @@
 #include "stdafx.h"
 
-#include "../xbox/Undocumented.h"
+#include "xbox/Undocumented.h"
 #include "MemoryUnitManager.h"
-#include "../FileSystem/MemoryUnits/FatXDevice.h"
-#include "../FileSystem/MemoryUnits/FatXFileSystem.h"
-#include "../FileSystem/MemoryUnits/Fat32Device.h"
-#include "../FileSystem/MemoryUnits/Fat32FileSystem.h"
-#include "../Application.h"
+#include "FileSystem/MemoryUnits/FatXDevice.h"
+#include "FileSystem/MemoryUnits/FatXFileSystem.h"
+#include "FileSystem/MemoryUnits/Fat32Device.h"
+#include "FileSystem/MemoryUnits/Fat32FileSystem.h"
+#include "Application.h"
 #include "URL.h"
 
 using namespace std;

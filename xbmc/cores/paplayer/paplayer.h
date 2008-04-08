@@ -1,8 +1,8 @@
 #pragma once
-#include "../IPlayer.h"
-#include "../../utils/Thread.h"
+#include "cores/IPlayer.h"
+#include "utils/Thread.h"
 #include "AudioDecoder.h"
-#include "../ssrc.h"
+#include "cores/ssrc.h"
 
 class CFileItem;
 

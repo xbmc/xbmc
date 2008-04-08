@@ -5,8 +5,8 @@
 
 #include "stdafx.h"
 #include "HTTP.h"
-#include "../DNSNameCache.h"
-#include "../xbox/network.h"
+#include "DNSNameCache.h"
+#include "xbox/network.h"
 #include "GUISettings.h"
 
 using namespace std;

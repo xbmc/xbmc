@@ -23,7 +23,7 @@
 #include "Util.h"
 #include "lib/libPython/XBPython.h"
 #include "PluginSettings.h"
-#include "../../guilib/GUIWindowManager.h"
+#include "GUIWindowManager.h"
 #include "GUIDialogProgress.h"
 #include "FileSystem/File.h"
 #include "GUISettings.h"

@@ -1,12 +1,12 @@
 #include "stdafx.h"
 #include "paplayer.h"
 #include "CodecFactory.h"
-#include "../../utils/GUIInfoManager.h"
+#include "utils/GUIInfoManager.h"
 #include "AudioContext.h"
-#include "../../FileSystem/FileShoutcast.h"
-#include "../../CdgParser.h"
-#include "../../MusicInfoTag.h"
-#include "../../Settings.h"
+#include "FileSystem/FileShoutcast.h"
+#include "CdgParser.h"
+#include "MusicInfoTag.h"
+#include "Settings.h"
 #include "FileItem.h"
 
 #define VOLUME_FFWD_MUTE 900 // 9dB

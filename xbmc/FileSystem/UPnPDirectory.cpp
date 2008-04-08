@@ -22,9 +22,9 @@
 
 
 #include "stdafx.h"
-#include "../Util.h"
+#include "Util.h"
 #include "UPnPDirectory.h"
-#include "../UPnP.h"
+#include "UPnP.h"
 #include "Platinum.h"
 #include "PltSyncMediaBrowser.h"
 #include "VideoInfoTag.h"

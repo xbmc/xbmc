@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "../../XBAudioConfig.h"
+#include "XBAudioConfig.h"
 #include "CodecFactory.h"
 #include "MP3codec.h"
 #include "APEcodec.h"

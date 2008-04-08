@@ -21,8 +21,8 @@
 #include "stdafx.h"
 #include "FatXFileSystem.h"
 #include "FatXDevice.h"
-#include "../../utils/MemoryUnitManager.h"
-#include "../HDDirectory.h"
+#include "utils/MemoryUnitManager.h"
+#include "FileSystem/HDDirectory.h"
 #include "URL.h"
 #include "FileItem.h"
 

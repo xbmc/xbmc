@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "PlaylistFileDirectory.h"
-#include "../utils/log.h"
-#include "../PlayListFactory.h"
-#include "../MusicInfoTag.h"
+#include "utils/log.h"
+#include "PlayListFactory.h"
+#include "MusicInfoTag.h"
 #include "FileSystem/File.h"
 #include "PlayList.h"
 

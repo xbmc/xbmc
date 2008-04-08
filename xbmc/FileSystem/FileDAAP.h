@@ -9,7 +9,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "../lib/libXDAAP/client.h"
+#include "lib/libXDAAP/client.h"
 #include "FileCurl.h"
 #include "URL.h"
 

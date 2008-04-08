@@ -21,7 +21,7 @@
 #include "stdafx.h"
 #include "CriticalSection.h"
 #ifdef _XBOX
-#include "../xbox/Undocumented.h"
+#include "xbox/Undocumented.h"
 #endif
 
 //////////////////////////////////////////////////////////////////////

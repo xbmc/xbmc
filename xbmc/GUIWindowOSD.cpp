@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "GUIWindowOSD.h"
 #include "Application.h"
-#include "../guilib/GUIWindowManager.h"
+#include "GUIWindowManager.h"
 
 CGUIWindowOSD::CGUIWindowOSD(void)
     : CGUIDialog(WINDOW_OSD, "VideoOSD.xml")

@@ -1,6 +1,6 @@
 
 #include "stdafx.h"
-#include "../Util.h"
+#include "Util.h"
 #include "FactoryFileDirectory.h"
 #ifdef HAS_FILESYSTEM
 #include "OGGFileDirectory.h"
@@ -10,10 +10,10 @@
 #include "RarDirectory.h"
 #include "ZipDirectory.h"
 #include "SmartPlaylistDirectory.h"
-#include "../SmartPlaylist.h"
+#include "SmartPlaylist.h"
 #include "PlaylistFileDirectory.h"
-#include "../PlayListFactory.h"
-#include "../GUIViewState.h"
+#include "PlayListFactory.h"
+#include "GUIViewState.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/File.h"
 #include "FileSystem/RarManager.h"

@@ -7,11 +7,11 @@
 #define GUILIB_GUIInfoManager_H
 #pragma once
 
-#include "../StringUtils.h"
-#include "../Temperature.h"
+#include "StringUtils.h"
+#include "Temperature.h"
 #include "CriticalSection.h"
 #include "IMsgTargetCallback.h"
-#include "../DateTime.h"
+#include "DateTime.h"
 
 #include <list>
 #include <map>

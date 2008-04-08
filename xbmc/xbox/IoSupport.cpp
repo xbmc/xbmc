@@ -28,7 +28,7 @@
 #ifdef HAS_UNDOCUMENTED
 #ifdef _XBOX
 #include "Undocumented.h"
-#include "../xbox/XKExports.h"
+#include "XKExports.h"
 #else
 #include "ntddcdrm.h"
 #endif

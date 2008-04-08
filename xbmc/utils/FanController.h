@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Thread.h"
-#include "../Temperature.h"
+#include "Temperature.h"
 
 class CFanController : public CThread
 {

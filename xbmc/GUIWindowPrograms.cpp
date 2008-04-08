@@ -33,7 +33,7 @@
 #include "utils/LabelFormatter.h"
 #include "Autorun.h"
 #include "Profile.h"
-#include "../guilib/GUIWindowManager.h"
+#include "GUIWindowManager.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogKeyboard.h"
 #include "FileSystem/Directory.h"

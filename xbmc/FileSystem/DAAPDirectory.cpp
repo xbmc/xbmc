@@ -21,9 +21,9 @@
 #include "stdafx.h"
 #include "FileDAAP.h"
 #include "DAAPDirectory.h"
-#include "../Util.h"
+#include "Util.h"
 #include "DirectoryCache.h"
-#include "../MusicInfoTag.h"
+#include "MusicInfoTag.h"
 #include "FileItem.h"
 
 namespace DIRECTORY

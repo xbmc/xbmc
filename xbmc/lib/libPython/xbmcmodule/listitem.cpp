@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "../python/Python.h"
+#include "lib/libPython/python/Python.h"
 #include "listitem.h"
 #include "pyutil.h"
 #include "VideoInfoTag.h"

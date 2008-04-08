@@ -2,12 +2,12 @@
 #include "GUIPythonWindowXML.h"
 #include "GUIWindow.h"
 #include "pyutil.h"
-#include "../../../GUIMediaWindow.h"
+#include "GUIMediaWindow.h"
 #include "window.h"
 #include "control.h"
 #include "action.h"
-#include "../../../Util.h"
-#include "../../../../guilib/GUIWindowManager.h"
+#include "Util.h"
+#include "GUIWindowManager.h"
 #include "FileItem.h"
 
 using namespace std;

@@ -23,9 +23,9 @@
 #include <stdio.h>
 #include "AsyncDirectSound.h"
 #include "MPlayer.h"
-#include "../../application.h" // Karaoke patch (114097)
+#include "Application.h" // Karaoke patch (114097)
 #include "AudioContext.h"
-#include "../../CdgParser.h"
+#include "CdgParser.h"
 
 #define CALC_DELAY_START   0
 #define CALC_DELAY_STARTED 1

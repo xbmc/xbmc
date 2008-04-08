@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include <ConIo.h>
 #include "FanController.h"
-#include "../xbox/Undocumented.h"
-#include "../xbox/XKExports.h"
+#include "xbox/Undocumented.h"
+#include "xbox/XKExports.h"
 #include "GUISettings.h"
 
 #define PIC_ADDRESS      0x20

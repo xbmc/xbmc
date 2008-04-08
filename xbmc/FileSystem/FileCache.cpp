@@ -6,7 +6,7 @@
 #include "URL.h"
 
 #include "CacheMemBuffer.h"
-#include "../utils/SingleLock.h"
+#include "utils/SingleLock.h"
 
 using namespace AUTOPTR;
 using namespace XFILE;

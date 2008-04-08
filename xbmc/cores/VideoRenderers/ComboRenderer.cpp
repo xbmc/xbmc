@@ -19,8 +19,8 @@
 */
 #include "stdafx.h"
 #include "ComboRenderer.h"
-#include "../../application.h"
-#include "../../Settings.h"
+#include "Application.h"
+#include "Settings.h"
 
 CComboRenderer::CComboRenderer(LPDIRECT3DDEVICE8 pDevice)
     : CXBoxRenderer(pDevice)

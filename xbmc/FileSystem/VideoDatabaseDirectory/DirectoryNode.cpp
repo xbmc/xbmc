@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "DirectoryNode.h"
-#include "../../Util.h"
+#include "Util.h"
 #include "QueryParams.h"
 #include "DirectoryNodeRoot.h"
 #include "DirectoryNodeOverview.h"

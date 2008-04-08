@@ -19,7 +19,7 @@
 #include "FileZip.h"
 #include "FileRar.h"
 #include "FileMusicDatabase.h"
-#include "../xbox/network.h"
+#include "xbox/network.h"
 #include "FileTuxBox.h"
 #include "HDHomeRun.h"
 #include "CMythFile.h"

@@ -1,12 +1,12 @@
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "paplayer.h"
 #include "CodecFactory.h"
-#include "../../utils/GUIInfoManager.h"
+#include "utils/GUIInfoManager.h"
 #include "AudioContext.h"
-#include "../../FileSystem/FileShoutcast.h"
-#include "../../Application.h"
+#include "FileSystem/FileShoutcast.h"
+#include "Application.h"
 #ifdef HAS_KARAOKE
-#include "../../CdgParser.h"
+#include "CdgParser.h"
 #endif
 
 #ifndef HAS_XBOX_AUDIO

@@ -1,5 +1,5 @@
-#include "../python/Python.h"
-#include "../../../VideoInfoTag.h"
+#include "lib/libPython/python/Python.h"
+#include "VideoInfoTag.h"
 
 #pragma once
 

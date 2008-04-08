@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "Application.h"
 #include "ApplicationRenderer.h"
-#include "../guilib/guiImage.h"
+#include "guiImage.h"
 #include "Settings.h"
 #include "GUIWindowManager.h"
 

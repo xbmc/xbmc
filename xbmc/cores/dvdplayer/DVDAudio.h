@@ -1,8 +1,8 @@
 
 #pragma once
 
-#include "../mplayer/IDirectSoundRenderer.h"
-#include "../mplayer/IAudioCallback.h"
+#include "cores/mplayer/IDirectSoundRenderer.h"
+#include "cores/mplayer/IAudioCallback.h"
 #include "utils/CriticalSection.h"
 
 enum CodecID;

@@ -4,7 +4,7 @@
 #include "tinyXML/tinyxml.h"
 
 #ifdef _XBOX
-#include "../Picture.h"
+#include "Picture.h"
 #define RESAMPLE_FANART
 #endif
 
