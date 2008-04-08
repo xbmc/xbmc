@@ -9,7 +9,7 @@
 #endif
 
 #include "../dll_tracker.h"
-#include <util.h>
+#include <Util.h>
 
 #ifdef _LINUX
 #include "../../../linux/PlatformInclude.h"
