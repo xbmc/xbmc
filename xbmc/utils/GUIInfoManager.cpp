@@ -213,7 +213,26 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strCategory.Equals("system"))
   {
     if (strTest.Equals("system.date")) ret = SYSTEM_DATE;
-    else if (strTest.Left(11).Equals("system.time")) return AddMultiInfo(GUIInfo(SYSTEM_TIME, TranslateTimeFormat(strTest.Mid(11))));
+    else if (strTest.Left(11).Equals("system.time")) 
+    {
+      // determine if this is a System.Time(TIME_FORMAT) infolabel or a System.Time(13:00,14:00) boolean based on the contents of the param
+      // essentially if it isn't a valid TIME_FORMAT then its considered to be the latter.
+      CStdString param = strTest.Mid(12, strTest.length() - 13);
+      TIME_FORMAT timeFormat = TranslateTimeFormat(param);
+      if ((timeFormat == TIME_FORMAT_GUESS) && (!param.IsEmpty()))
+      {
+        CStdStringArray params;
+        int time1 = 0;
+        int time2 = 0;
+        StringUtils::SplitString(param, ",", params);
+        if (params.size() == 2)
+          return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_TIME : SYSTEM_TIME, StringUtils::TimeStringToSeconds(params[0]), StringUtils::TimeStringToSeconds(params[1])));
+        else if (params.size() == 1)
+          return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_TIME : SYSTEM_TIME, StringUtils::TimeStringToSeconds(params[0])));
+      }
+      else
+        return AddMultiInfo(GUIInfo(SYSTEM_TIME, timeFormat));
+    }
     else if (strTest.Equals("system.cputemperature")) ret = SYSTEM_CPU_TEMPERATURE;
     else if (strTest.Equals("system.cpuusage")) ret = SYSTEM_CPU_USAGE;
     else if (strTest.Equals("system.gputemperature")) ret = SYSTEM_GPU_TEMPERATURE;
@@ -1910,6 +1929,21 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
       }
       break;
     }
+    case SYSTEM_TIME:
+      {
+        CDateTime time=CDateTime::GetCurrentDateTime();
+        int currentTime = time.GetHour() * 60 + time.GetMinute();
+        int startTime = info.m_data1;
+        int stopTime = info.m_data2;
+
+        if (stopTime < startTime)
+          stopTime += 1440;
+        if (stopTime > 0)
+          bReturn = (currentTime >= startTime) && (currentTime < stopTime);
+        else
+          bReturn = currentTime >= startTime;
+      }
+      break;
   }
   return (info.m_info < 0) ? !bReturn : bReturn;
 }
