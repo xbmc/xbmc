@@ -43,8 +43,7 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       if (m_vecItems.m_strPath == "?")
-        m_vecItems.m_strPath = _P("Q:\\scripts"); //g_stSettings.m_szDefaultScripts;
-
+        m_vecItems.m_strPath = g_settings.GetScriptsFolder();
       return CGUIMediaWindow::OnMessage(message);
     }
     break;
