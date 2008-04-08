@@ -810,6 +810,20 @@ void CLinuxRendererGL::SelectUpscalingMethod()
   CLog::Log(LOGWARNING, "Upscale: selected algorithm %d", m_upscalingMethod);
 }
 
+bool CLinuxRendererGL::IsUpscaling()
+{
+  // See if we should be performing software upscaling on this frame.
+  if (m_upscalingMethod == UPSCALING_DISABLED ||
+       (m_currentField != FIELD_FULL && 
+        g_stSettings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_NONE && 
+        g_stSettings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_DEINTERLACE))
+  {
+    return false;
+  }
+  
+  return true;
+}
+
 int CLinuxRendererGL::NextYV12Texture()
 {
   return (m_iYV12RenderBuffer + 1) % m_NumYV12Buffers;
@@ -899,7 +913,7 @@ void CLinuxRendererGL::LoadTextures(int source)
     return;
   }
 
-  if (m_upscalingMethod != UPSCALING_DISABLED)
+  if (IsUpscaling())
   {
     // Perform the scaling.
     uint8_t* src[] =       { im->plane[0],  im->plane[1],  im->plane[2] };
@@ -2290,7 +2304,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     {
       CLog::Log(LOGDEBUG, "GL: Creating Y NPOT texture of size %d x %d", im.width, im.height);
       
-      if (m_upscalingMethod != UPSCALING_DISABLED)
+      if (IsUpscaling())
         glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, m_upscalingWidth, m_upscalingHeight/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
       else
         glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width, im.height/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
@@ -2307,7 +2321,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
       CLog::Log(LOGDEBUG, "GL: Creating U NPOT texture of size %d x %d", im.width/2, im.height/2/divfactor);
       glBindTexture(m_textureTarget, fields[f][1]);
       
-      if (m_upscalingMethod != UPSCALING_DISABLED)
+      if (IsUpscaling())
         glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, m_upscalingWidth/2, m_upscalingHeight/2/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
       else
         glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
@@ -2321,7 +2335,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
       CLog::Log(LOGDEBUG, "GL: Creating V NPOT texture of size %d x %d", im.width/2, im.height/2/divfactor);
       glBindTexture(m_textureTarget, fields[f][2]);
       
-      if (m_upscalingMethod != UPSCALING_DISABLED)
+      if (IsUpscaling())
         glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, m_upscalingWidth/2, m_upscalingHeight/2/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
       else
         glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
