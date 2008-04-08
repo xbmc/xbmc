@@ -2096,7 +2096,10 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
   while (pProfile)
   {
     profile.setName("Master user");
-    profile.setDirectory("q:\\userdata");
+    if (CDirectory::Exists(_P("u:\\userdata")))
+      profile.setDirectory("u:\\userdata");
+    else
+      profile.setDirectory("q:\\userdata");
 
     CStdString strName;
     XMLUtils::GetString(pProfile,"name",strName);
@@ -2898,7 +2901,28 @@ CStdString CSettings::GetSkinFolder() const
   CStdString folder;
 
   // Get the Current Skin Path
-  CUtil::AddFileToFolder("Q:\\skin\\",g_guiSettings.GetString("lookandfeel.skin"),folder);
+  return GetSkinFolder(g_guiSettings.GetString("lookandfeel.skin"));
+}
+
+CStdString CSettings::GetScriptsFolder() const
+{
+  CStdString folder = _P("U:\\scripts");
+
+  if ( CDirectory::Exists(folder) )
+    return folder;
+
+  folder = "Q:\\scripts";
+  return _P(folder);
+}
+
+CStdString CSettings::GetSkinFolder(const CStdString &skinName) const
+{
+  CStdString folder;
+
+  // Get the Current Skin Path
+  CUtil::AddFileToFolder("U:\\skin\\", skinName, folder);
+  if ( ! CDirectory::Exists(_P(folder)) )
+    CUtil::AddFileToFolder("Q:\\skin\\", skinName, folder);
 
   return _P(folder);
 }

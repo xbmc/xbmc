@@ -1466,6 +1466,25 @@ void CApplication::InitDirectories()
 
 CProfile* CApplication::InitDirectoriesLinux()
 {
+/* 
+   The following is the directory mapping for Platform Specific Mode:
+
+   Q: => [read-only] system directory (/usr/share/xbmc)
+   U: => [read-write] user's directory that will override Q: system-wide 
+         installations like skins, screensavers, etc.
+         ($HOME/.xbmc)
+         NOTE: XBMC will look in both Q:\skin and U:\skin for skins. Same
+         applies to screensavers, sounds, etc.
+   T: => [read-write] userdata of master profile. It will by default be
+         mapped to U:\userdata ($HOME/.xbmc/userdata)
+   P: => [read-write] current profile's userdata directory. 
+         Generally T:\ for the master profile or T:\profiles\<profile_name>
+         for other profiles.
+
+   NOTE: All these root directories are lowercase. Some of the sub-directories
+         might be mixed case.
+*/
+
 #if defined(_LINUX) && !defined(__APPLE__)
   CProfile* profile = NULL;
   CStdString strExecutablePath;
@@ -1488,64 +1507,62 @@ CProfile* CApplication::InitDirectoriesLinux()
 
   if (m_bPlatformDirectories)
   {
-    // CStdString str = userHome;
-    // str.append("/.xbmc");
-    CStdString str = "/usr/share/xbmc";
+    CStdString str = INSTALL_PATH;
     CIoSupport::RemapDriveLetter('Q', (char*) str.c_str());
-  }
-  else
-  {
-    CIoSupport::RemapDriveLetter('Q', (char*) strExecutablePath.c_str());
-  }
 
-  if (m_bPlatformDirectories)
-  {
     // make the $HOME/.xbmc directory
     CStdString xbmcHome = userHome + "/.xbmc";
     CreateDirectory(xbmcHome, NULL);
-    CIoSupport::RemapDriveLetter('T', xbmcHome.c_str());
+    CIoSupport::RemapDriveLetter('U', xbmcHome.c_str());
 
     // make the $HOME/.xbmc/userdata directory
     CStdString xbmcUserdata = xbmcHome + "/userdata";
     CreateDirectory(xbmcUserdata.c_str(), NULL);
+    CIoSupport::RemapDriveLetter('T', xbmcUserdata.c_str());
 
-    CStdString xbmcDir = xbmcHome + "/skin";
+    CStdString xbmcDir;
+    xbmcDir = _P("u:\\skin");
     CreateDirectory(xbmcDir.c_str(), NULL);
 
-    xbmcDir = xbmcHome + "/visualisations";
+    xbmcDir = _P("u:\\visualisations");
     CreateDirectory(xbmcDir.c_str(), NULL);
 
-    xbmcDir = xbmcHome + "/screensavers";
+    xbmcDir = _P("u:\\screensavers");
     CreateDirectory(xbmcDir.c_str(), NULL);
 
-    xbmcDir = xbmcHome + "/sounds";
+    xbmcDir = _P("u:\\sounds");
     CreateDirectory(xbmcDir.c_str(), NULL);
+
+    xbmcDir = _P("u:\\system");
+    CreateDirectory(xbmcDir.c_str(), NULL);
+
+    xbmcDir = _P("u:\\scripts");
+    CreateDirectory(xbmcDir.c_str(), NULL);
+    xbmcDir = _P("u:\\scripts\\My Scripts"); // FIXME: both scripts should be in 1 directory
+    CreateDirectory(xbmcDir.c_str(), NULL);
+
+    xbmcDir = _P("u:\\scripts\\Common Scripts"); // FIXME:
+    symlink( INSTALL_PATH "/scripts",  xbmcDir.c_str() );
 
     // copy required files
-    CopyUserDataIfNeeded(_P("t:\\userdata"), "Keymap.xml");
-    CopyUserDataIfNeeded(_P("t:\\userdata"), "RssFeeds.xml");
-    CopyUserDataIfNeeded(_P("t:\\userdata"), "Lircmap.xml");
-
-    g_settings.m_vecProfiles.clear();
-    g_settings.LoadProfiles(_P( PROFILES_FILE ));
-
-    // create new profile if we don't already have one
-    if (g_settings.m_vecProfiles.size()==0)
-    {
-      profile = new CProfile;
-      profile->setDirectory(xbmcUserdata.c_str());
-    }
+    CopyUserDataIfNeeded(_P("t:\\"), "Keymap.xml");  // Eventual FIXME.
+    CopyUserDataIfNeeded(_P("t:\\"), "RssFeeds.xml");
+    CopyUserDataIfNeeded(_P("t:\\"), "Lircmap.xml");
   }
   else
   {
-    g_settings.m_vecProfiles.clear();
-    g_settings.LoadProfiles(_P( PROFILES_FILE ));
+    CIoSupport::RemapDriveLetter('Q', (char*) strExecutablePath.c_str());
+    CIoSupport::RemapDriveLetter('T', _P("Q:\\userdata"));
+    CIoSupport::RemapDriveLetter('U', "/dev/null");
+  }
 
-    if (g_settings.m_vecProfiles.size()==0)
-    {
-      profile = new CProfile;
-      profile->setDirectory("q:\\userdata");
-    }
+  g_settings.m_vecProfiles.clear();
+  g_settings.LoadProfiles(_P( PROFILES_FILE ));
+  
+  if (g_settings.m_vecProfiles.size()==0)
+  {
+    profile = new CProfile;
+    profile->setDirectory(_P("t:\\"));
   }
   return profile;
 #else
@@ -2506,7 +2523,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_dwSkinTime = 0;
 
   CStdString strHomePath;
-  CStdString strSkinPath = _P("T:\\skin\\" + strSkin);
+  CStdString strSkinPath = _P("U:\\skin\\" + strSkin);
   if ( ! CDirectory::Exists(strSkinPath) )
   {
     strSkinPath = _P("Q:\\skin\\" + strSkin);
