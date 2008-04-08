@@ -82,9 +82,9 @@ xbmc-xrandr: xbmc-xrandr.c
 
 install:
 	@echo "Creating target directories in /usr/share/xbmc"
-	@find language media screensavers scripts skin sounds userdata visualisations system -type d -not -iregex ".*svn.*" -exec mkdir -p /usr/share/xbmc/"{}" \;
+	@find language media screensavers scripts skin sounds userdata visualisations system -type d -not -iregex ".*svn.*" -exec mkdir -p /usr/share/xbmc/"{}" \; -printf " -- %f                           \r"
 	@echo "Copying system files to /usr/share/xbmc"
-	@find language media screensavers scripts skin sounds userdata visualisations system -regextype posix-extended -type f -not -iregex ".*svn.*|.*osx.*|.*x86_64.*|.*\.dll" -exec cp "{}" /usr/share/xbmc/"{}" \;
+	@find language media screensavers scripts skin sounds userdata visualisations system -regextype posix-extended -type f -not -iregex ".*svn.*|.*osx.*|.*x86_64.*|.*\.dll" -exec cp "{}" /usr/share/xbmc/"{}" \; -printf " -- %f                           \r"
 	@echo "Copying XBMC binary to /usr/share/xbmc/xbmc.bin"
 	@cp XboxMediaCenter /usr/share/xbmc/xbmc.bin
 	@cp tools/Linux/xbmc.sh /usr/bin/xbmc
