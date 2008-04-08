@@ -145,6 +145,8 @@ protected:
   void CalculateFrameAspectRatio(int desired_width, int desired_height);
   void ChooseBestResolution(float fps);
   void SelectUpscalingMethod();
+  bool IsUpscaling();
+  
   virtual void ManageDisplay();
   void CopyAlpha(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dst, unsigned char* dsta, int dststride);
   virtual void ManageTextures();
