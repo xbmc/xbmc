@@ -2523,11 +2523,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_dwSkinTime = 0;
 
   CStdString strHomePath;
-  CStdString strSkinPath = _P("U:\\skin\\" + strSkin);
-  if ( ! CDirectory::Exists(strSkinPath) )
-  {
-    strSkinPath = _P("Q:\\skin\\" + strSkin);
-  }
+  CStdString strSkinPath = g_settings.GetSkinFolder(strSkin);
 
   CLog::Log(LOGINFO, "  load skin from:%s", strSkinPath.c_str());
 
