@@ -208,7 +208,7 @@
 			<include>contentpanelslide</include>
 		</control>
 		<include>OldListViewCommons</include>
-		<include>ProgramsViewCommons</include>
+		<include>MusicLibraryMediaInfo</include>
 		<include>3D_Cover_View</include>
 		<include>AllViewCommonThumbSmall</include>
 		<include>AllViewCommonThumbLarge</include>
