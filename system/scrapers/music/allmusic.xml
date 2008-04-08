@@ -37,7 +37,7 @@
 				<expression noclean="1">&lt;span&gt;Release Date&lt;/span&gt;[^;]*[^&gt;]*&gt;([^&lt;]*)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;year&gt;\1&lt;/year&gt;" dest="5+">
-				<expression noclean="1">&lt;span&gt;Release Date&lt;/span&gt;[^;]*[^,]*, ([0-9^]*)</expression>
+				<expression noclean="1">&lt;span&gt;Release Date.*?([0-9]+)&lt;/</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="6">
 				<expression noclean="1">Genre[s]* Listing--&gt;([^!]*)&lt;!--Genre[s]* Listing</expression>
