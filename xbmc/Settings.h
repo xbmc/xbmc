@@ -457,6 +457,8 @@ public:
   CStdString GetProfilesThumbFolder() const;
   CStdString GetSourcesFile() const;
   CStdString GetSkinFolder() const;
+  CStdString GetSkinFolder(const CStdString& skinName) const;
+  CStdString GetScriptsFolder() const;
   CStdString GetVideoFanartFolder() const;
 
   CStdString GetSettingsFile() const;
