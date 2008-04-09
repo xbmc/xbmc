@@ -22,6 +22,7 @@ public:
   virtual int              event_select             (cmyth_conn_t conn, struct timeval *timeout)=0;
 
   virtual cmyth_proglist_t proglist_get_all_recorded(cmyth_conn_t control)=0;
+  virtual int              mysql_get_guide(cmyth_database_t db, cmyth_program_t **prog, time_t starttime, time_t endtime) = 0;
   virtual cmyth_proginfo_t proglist_get_item        (cmyth_proglist_t pl, int index)=0;
   virtual int              proglist_get_count       (cmyth_proglist_t pl)=0;
   virtual cmyth_channel_t  chanlist_get_item        (cmyth_chanlist_t pl, int index)=0;
@@ -118,6 +119,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
   DEFINE_METHOD2(int,                 event_select,             (cmyth_conn_t p1, struct timeval *p2))
 
   DEFINE_METHOD1(cmyth_proglist_t,    proglist_get_all_recorded, (cmyth_conn_t p1))
+  DEFINE_METHOD4(int,                 mysql_get_guide,          (cmyth_database_t p1, cmyth_program_t **p2, time_t p3, time_t p4))
   DEFINE_METHOD2(cmyth_proginfo_t,    proglist_get_item,        (cmyth_proglist_t p1, int p2))
   DEFINE_METHOD1(int,                 proglist_get_count,       (cmyth_proglist_t p1))
   DEFINE_METHOD2(cmyth_channel_t,     chanlist_get_item,        (cmyth_chanlist_t p1, int p2))
@@ -200,6 +202,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
     RESOLVE_METHOD_RENAME(cmyth_event_get, event_get)
     RESOLVE_METHOD_RENAME(cmyth_event_select, event_select)
     RESOLVE_METHOD_RENAME(cmyth_proglist_get_all_recorded, proglist_get_all_recorded)
+    RESOLVE_METHOD_RENAME(cmyth_mysql_get_guide, mysql_get_guide)
     RESOLVE_METHOD_RENAME(cmyth_proglist_get_item, proglist_get_item)
     RESOLVE_METHOD_RENAME(cmyth_proglist_get_count, proglist_get_count)
     RESOLVE_METHOD_RENAME(cmyth_chanlist_get_item, chanlist_get_item)
