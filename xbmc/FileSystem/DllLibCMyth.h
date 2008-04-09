@@ -52,7 +52,7 @@ public:
   virtual int              livetv_keep_recording    (cmyth_recorder_t rec, cmyth_database_t db, int keep)=0;
   virtual cmyth_recorder_t spawn_live_tv            (cmyth_recorder_t rec, unsigned buflen, int tcp_rcvbuf,
                                                      void (*prog_update_callback)(cmyth_proginfo_t),
-                                                     char ** err)=0;
+                                                     char ** err, char * channame)=0;
 
   virtual int                file_get_block         (cmyth_file_t file, char *buf, unsigned long len)=0;
   virtual int                file_select            (cmyth_file_t file, struct timeval *timeout)=0;
@@ -140,7 +140,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
   DEFINE_METHOD3(int,                 livetv_chain_update,      (cmyth_recorder_t p1, char * p2, int p3))
   DEFINE_METHOD1(int,                 livetv_chain_switch_last, (cmyth_recorder_t p1))
   DEFINE_METHOD3(int,                 livetv_keep_recording,    (cmyth_recorder_t p1, cmyth_database_t p2, int p3))
-  DEFINE_METHOD5(cmyth_recorder_t,    spawn_live_tv,            (cmyth_recorder_t p1, unsigned p2, int p3, void (*p4)(cmyth_proginfo_t), char ** p5))
+  DEFINE_METHOD6(cmyth_recorder_t,    spawn_live_tv,            (cmyth_recorder_t p1, unsigned p2, int p3, void (*p4)(cmyth_proginfo_t), char ** p5, char * p6))
 
   DEFINE_METHOD3(int,                 file_get_block,           (cmyth_file_t p1, char *p2, unsigned long p3))
   DEFINE_METHOD2(int,                 file_select,              (cmyth_file_t p1, struct timeval *p2))

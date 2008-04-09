@@ -12,7 +12,7 @@ class CCMythDirectory
 {
 public:
   CCMythDirectory();
-  ~CCMythDirectory();
+  virtual ~CCMythDirectory();
 
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
 
