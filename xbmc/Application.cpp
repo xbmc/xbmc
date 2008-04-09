@@ -1807,7 +1807,7 @@ void CApplication::StartServices()
   if (g_guiSettings.GetBool("system.autotemperature"))
   {
     CLog::Log(LOGNOTICE, "start fancontroller");
-    CFanController::Instance()->Start(g_guiSettings.GetInt("system.targettemperature"));
+    CFanController::Instance()->Start(g_guiSettings.GetInt("system.targettemperature"), g_guiSettings.GetInt("system.minfanspeed"));
   }
   else if (g_guiSettings.GetBool("system.fanspeedcontrol"))
   {

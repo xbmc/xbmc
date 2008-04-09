@@ -525,7 +525,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       }
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting.Equals("system.fanspeed"))
+    else if (strSetting.Equals("system.fanspeed") || strSetting.Equals("system.minfanspeed"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -866,7 +866,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("system.fanspeedcontrol"));
     }
-    else if (strSetting.Equals("system.targettemperature"))
+    else if (strSetting.Equals("system.targettemperature") || strSetting.Equals("system.minfanspeed"))
     { // only visible if we have autotemperature enabled
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("system.autotemperature"));
@@ -1378,10 +1378,15 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     if (pSetting->GetData())
     {
       g_guiSettings.SetBool("system.fanspeedcontrol", false);
-      CFanController::Instance()->Start(g_guiSettings.GetInt("system.targettemperature"));
+      CFanController::Instance()->Start(g_guiSettings.GetInt("system.targettemperature"), g_guiSettings.GetInt("system.minfanspeed") );
     }
     else
       CFanController::Instance()->Stop();
+  }
+  else if (strSetting.Equals("system.minfanspeed"))
+  {
+    CSettingInt *pSetting = (CSettingInt*)pSettingControl->GetSetting();
+    CFanController::Instance()->SetMinFanSpeed(pSetting->GetData());
   }
   else if (strSetting.Equals("system.fanspeedcontrol"))
   {
