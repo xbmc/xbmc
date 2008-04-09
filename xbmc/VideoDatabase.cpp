@@ -4355,9 +4355,15 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
       }
 
       CFileItem* pItem=new CFileItem(movie);
-      CStdString strDir;
-      strDir.Format("%ld", lEpisodeId);
-      pItem->m_strPath=strBaseDir + strDir;
+      if (idSeason == -1)
+      {
+        CStdString strDir;
+        CUtil::GetParentPath(strBaseDir,strDir);
+        pItem->m_strPath.Format("%s%ld/%ld",strDir.c_str(),movie.m_iSeason,lEpisodeId);
+      }
+      else
+        pItem->m_strPath.Format("%s%ld", strBaseDir.c_str(),lEpisodeId);
+        
       pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);
       pItem->m_dateTime.SetFromDateString(movie.m_strFirstAired);
       pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
