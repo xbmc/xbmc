@@ -23,7 +23,7 @@
 #include "AudioContext.h"
 #include "KS.h"
 #include "Ksmedia.h"
-
+#include "Settings.h"
 
 
 void CWin32DirectSound::DoWork()

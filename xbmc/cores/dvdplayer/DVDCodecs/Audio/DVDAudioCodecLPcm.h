@@ -2,7 +2,7 @@
 #pragma once
 
 #include "DVDAudioCodec.h"
-#include "DVDCodecs.h"
+#include "DVDCodecs/DVDCodecs.h"
 #include "DVDAudioCodecPcm.h"
 
 #define LPCM_BUFFER_SIZE (AVCODEC_MAX_AUDIO_FRAME_SIZE / 2)

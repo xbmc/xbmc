@@ -10,7 +10,7 @@
 #include "musicInfoTagLoaderFactory.h"
 #include "utils/LabelFormatter.h"
 #include "MusicInfoTag.h"
-#include "guilib/GUIWindowManager.h"
+#include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "GUIDialogProgress.h"
 #include "GUIDialogKeyboard.h"

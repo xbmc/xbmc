@@ -50,6 +50,7 @@
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogProgress.h"
 #include "FileItem.h"
+#include "FileSystem/File.h"
 
 using namespace std;
 using namespace XFILE;

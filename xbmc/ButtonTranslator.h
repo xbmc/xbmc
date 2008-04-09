@@ -9,6 +9,7 @@
 
 class CKey;
 struct CAction;
+class TiXmlNode;
 
 struct CButtonAction
 {

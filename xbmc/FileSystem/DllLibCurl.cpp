@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "DllLibCurl.h"
 
+#include <assert.h>
+
 using namespace XCURL;
 
 /* okey this is damn ugly. our dll loader doesn't allow for postload, preunload functions */

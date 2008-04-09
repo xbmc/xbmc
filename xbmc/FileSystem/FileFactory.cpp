@@ -23,6 +23,7 @@
 #include "FileTuxBox.h"
 #include "HDHomeRun.h"
 #include "CMythFile.h"
+#include "URL.h"
 
 using namespace XFILE;
 
