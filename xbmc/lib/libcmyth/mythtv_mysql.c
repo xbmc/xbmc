@@ -456,7 +456,7 @@ cmyth_mysql_get_guide(cmyth_database_t db, cmyth_program_t **prog, time_t startt
 	while((row = mysql_fetch_row(res))) {
         	if (rows >= n) {
                 	n+=10;
-                       	*prog=realloc(*prog,sizeof(**prog)*(n));
+                       	*prog=ref_realloc(*prog,sizeof(**prog)*(n));
                	}
 		(*prog)[rows].chanid = safe_atoi(row[0]);
                	(*prog)[rows].recording=0;
