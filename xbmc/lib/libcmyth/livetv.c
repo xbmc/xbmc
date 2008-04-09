@@ -1195,7 +1195,7 @@ cmyth_spawn_live_tv(cmyth_recorder_t rec, unsigned buflen, int tcp_rcvbuf,
 		}
 	}
 
-	if(rec->rec_conn->conn_version < 34 && channame) {
+	if(rtrn->rec_conn->conn_version < 34 && channame) {
 		if (cmyth_recorder_pause(rtrn) != 0) {
 			*err = "Failed to pause recorder to change channel";
 			goto err;
