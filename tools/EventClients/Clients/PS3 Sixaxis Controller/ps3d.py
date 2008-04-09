@@ -1,7 +1,11 @@
 #!/usr/bin/python
 
-import time
 import sys
+sys.path.append("../../lib/python")
+sys.path.append("../PS3 BD Remote")
+
+
+import time
 import struct
 import threading
 
@@ -62,7 +66,7 @@ class PS3SixaxisThread ( StoppableThread ):
         StoppableThread.__init__(self)
         self.csock = csock
         self.isock = isock
-        self.xbmc = XBMCClient("PS3 Sixaxis", "icons/bluetooth.png")
+        self.xbmc = XBMCClient("PS3 Sixaxis", "../../icons/bluetooth.png")
         self.set_timeout(300)
 
     def run(self):
@@ -120,7 +124,7 @@ class PS3RemoteThread ( StoppableThread ):
         StoppableThread.__init__(self)
         self.csock = csock
         self.isock = isock
-        self.xbmc = XBMCClient("PS3 Blu-Ray Remote", "icons/bluetooth.png")
+        self.xbmc = XBMCClient("PS3 Blu-Ray Remote", "../../icons/bluetooth.png")
         self.set_timeout(300)
 
     def run(self):
