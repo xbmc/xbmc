@@ -1002,7 +1002,11 @@ namespace VIDEO
 
       CVideoInfoTag episodeDetails;
       if (m_database.GetEpisodeInfo(iter->second.m_url[0].m_url,iter->first.second,iter->first.first) > -1)
+      {
+        if (m_pObserver)
+          m_pObserver->OnSetTitle(g_localizeStrings.Get(20415));
         continue;
+      }
 
       CFileItem item;
       item.m_strPath = iter->second.m_url[0].m_url;
