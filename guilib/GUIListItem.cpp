@@ -274,3 +274,7 @@ void CGUIListItem::ClearProperty(const std::string &strKey)
     m_mapProperties.erase(iter);
 }
 
+void CGUIListItem::ClearProperties()
+{
+  m_mapProperties.clear();
+}
