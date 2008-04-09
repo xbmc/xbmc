@@ -15,15 +15,17 @@
 #       PING as keepalive
 #
 
+import sys
+sys.path.append("../../lib/python")
+
 import os
 import time
-import sys
 from xbmcclient import *
-from ps3.keymaps import keymap_remote as g_keymap
+from ps3.keymaps import keymap_remote as g_keymap # look here to change the keymapping
 from bt.bt import *
 
 xbmc = None
-bticon = "icons/bluetooth.png"
+bticon = "../../icons/bluetooth.png"
 
 def get_remote_address(remote, target_name = "BD Remote Control"):
     global xbmc
