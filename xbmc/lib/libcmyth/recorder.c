@@ -1378,7 +1378,7 @@ cmyth_recorder_spawn_livetv(cmyth_recorder_t rec)
 
 /* Sergio: Added to support the new livetv protocol */
 int
-cmyth_recorder_spawn_chain_livetv(cmyth_recorder_t rec)
+cmyth_recorder_spawn_chain_livetv(cmyth_recorder_t rec, char* channame)
 {
 	int err;
 	int ret = -1;
@@ -1404,6 +1404,11 @@ cmyth_recorder_spawn_chain_livetv(cmyth_recorder_t rec)
 	strftime(datestr, 32, "%Y-%m-%dT%H:%M:%S", localtime(&t));
 	
 	/* Now build the SPAWN_LIVETV message */
+	if(rec->rec_conn->conn_version >= 34 && channame)
+		snprintf(msg, sizeof(msg),
+			"QUERY_RECORDER %d[]:[]SPAWN_LIVETV[]:[]live-%s-%s[]:[]%d[]:[]%s",
+			 rec->rec_id, myhostname, datestr, 0, channame);
+	else
 	snprintf(msg, sizeof(msg),
 		"QUERY_RECORDER %d[]:[]SPAWN_LIVETV[]:[]live-%s-%s[]:[]%d",
 		 rec->rec_id, myhostname, datestr, 0);
