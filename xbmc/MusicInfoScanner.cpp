@@ -33,6 +33,8 @@
 #include "xbox/XKGeneral.h"
 #include "NfoFile.h"
 
+#include <algorithm>
+
 using namespace std;
 using namespace MUSIC_INFO;
 using namespace DIRECTORY;
@@ -192,6 +194,8 @@ void CMusicInfoScanner::Process()
 void CMusicInfoScanner::Start(const CStdString& strDirectory)
 {
   m_pathsToScan.clear();
+  m_albumsScanned.clear();
+  m_artistsScanned.clear();
 
   if (strDirectory.IsEmpty())
   { // scan all paths in the database.  We do this by scanning all paths in the db, and crossing them off the list as
@@ -212,6 +216,7 @@ void CMusicInfoScanner::Start(const CStdString& strDirectory)
 void CMusicInfoScanner::FetchAlbumInfo(const CStdString& strDirectory)
 {
   m_albumsToScan.clear();
+  m_albumsScanned.clear();
 
   CFileItemList items;
   if (strDirectory.IsEmpty())
@@ -249,6 +254,7 @@ void CMusicInfoScanner::FetchAlbumInfo(const CStdString& strDirectory)
 void CMusicInfoScanner::FetchArtistInfo(const CStdString& strDirectory)
 {
   m_artistsToScan.clear();
+  m_artistsScanned.clear();
   CFileItemList items;
 
   if (strDirectory.IsEmpty())
@@ -454,16 +460,14 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     if (m_bStop) return i;
     CSong &song = songsToAdd[i];
     m_musicDatabase.AddSong(song, false);
-    if (g_guiSettings.GetBool("musiclibrary.autoartistinfo"))
+    if (!m_bStop && g_guiSettings.GetBool("musiclibrary.autoartistinfo"))
     {
       long iArtist = m_musicDatabase.GetArtistByName(song.strArtist);
       CStdString strPath;
       strPath.Format("musicdb://2/%u/",iArtist);
-      if (!m_bStop && DownloadArtistInfo(strPath,song.strArtist))
-      {
-        m_musicDatabase.CommitTransaction();
-        m_musicDatabase.BeginTransaction();
-      }
+      if (find(m_artistsScanned.begin(),m_artistsScanned.end(),iArtist) == m_artistsScanned.end())
+        if (DownloadArtistInfo(strPath,song.strArtist))
+          m_artistsScanned.push_back(iArtist);
 
       if (m_pObserver)
         m_pObserver->OnStateChanged(READING_MUSIC_INFO);
@@ -473,12 +477,10 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
       long iAlbum = m_musicDatabase.GetAlbumByName(song.strAlbum,song.strArtist);
       CStdString strPath;
       strPath.Format("musicdb://3/%u/",iAlbum);
-      if (DownloadAlbumInfo(strPath,song.strArtist,song.strAlbum))
-      {
-        m_musicDatabase.CommitTransaction();
-        m_musicDatabase.BeginTransaction();
-      }
-
+      if (find(m_albumsScanned.begin(),m_albumsScanned.end(),iAlbum) == m_albumsScanned.end())
+        if (DownloadAlbumInfo(strPath,song.strArtist,song.strAlbum))
+          m_albumsScanned.push_back(iAlbum);
+  
       if (m_pObserver)
         m_pObserver->OnStateChanged(READING_MUSIC_INFO);
     }
