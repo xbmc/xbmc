@@ -49,7 +49,8 @@ extern pthread_mutex_t mutex;
 typedef SOCKET cmyth_socket_t;
 typedef int socklen_t;
 #define snprintf _snprintf
-#define sleep(a) Sleep(a)
+#define sleep(a) Sleep(a*1000)
+#define usleep(a) Sleep(a/1000)
 static inline struct tm* localtime_r (const time_t *clock, struct tm *result) { 
 	struct tm* data;
   if (!clock || !result) return NULL;
