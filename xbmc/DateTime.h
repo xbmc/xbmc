@@ -119,6 +119,7 @@ public:
   int GetMinute() const;
   int GetSecond() const;
   int GetDayOfWeek() const;
+  int GetMinuteOfDay() const;
 
   void SetDateTime(int year, int month, int day, int hour, int minute, int second);
   void SetDate(int year, int month, int day);
