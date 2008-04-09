@@ -270,7 +270,9 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
   CStdString pathToScript = _P("Q:\\plugins\\");
   CUtil::AddFileToFolder(pathToScript, url.GetHostName(), pathToScript);
   CUtil::AddFileToFolder(pathToScript, fileName, pathToScript);
+#ifdef _WIN32
   pathToScript.Replace("/", "\\");
+#endif
 
   // base path
   CStdString basePath = "plugin://";
@@ -343,10 +345,12 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
   CUtil::AddFileToFolder(url.GetFileName(), "default.py", fileName);
 
   // path is Q:\plugins\<path from here>
-  CStdString pathToScript = "Q:\\plugins\\";
+  CStdString pathToScript = _P("Q:\\plugins\\");
   CUtil::AddFileToFolder(pathToScript, url.GetHostName(), pathToScript);
   CUtil::AddFileToFolder(pathToScript, fileName, pathToScript);
+#ifdef _WIN32
   pathToScript.Replace("/", "\\");
+#endif
 
   // options
   CStdString options = url.GetOptions();
@@ -407,7 +411,7 @@ bool CPluginDirectory::GetPluginsDirectory(const CStdString &type, CFileItemList
   if (!CDirectory::GetDirectory(pluginsFolder, items, "*.py", false))
     return false;
 
-  items.m_strPath.Replace("Q:\\plugins\\", "plugin://");
+  items.m_strPath.Replace(_P("Q:\\plugins\\"), "plugin://");
   items.m_strPath.Replace("\\", "/");
 
   // flatten any folders - TODO: Assigning of thumbs
