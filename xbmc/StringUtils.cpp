@@ -164,6 +164,20 @@ int StringUtils::AlphaNumericCompare(const char *left, const char *right)
   return 0; // files are the same
 }
 
+int StringUtils::DateStringToYYYYMMDD(const CStdString &dateString)
+{  
+  CStdStringArray days;
+  int splitCount = StringUtils::SplitString(dateString, "-", days);
+  if (splitCount == 1)
+    return atoi(days[0].c_str());
+  else if (splitCount == 2)
+    return atoi(days[0].c_str())*100+atoi(days[1].c_str());
+  else if (splitCount == 3)
+    return atoi(days[0].c_str())*10000+atoi(days[1].c_str())*100+atoi(days[2].c_str());
+  else
+    return -1;
+}
+
 long StringUtils::TimeStringToSeconds(const CStdString &timeString)
 {  
   if(timeString.Right(4).Equals(" min"))
