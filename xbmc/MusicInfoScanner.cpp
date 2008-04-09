@@ -714,8 +714,9 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
   VECSONGS songs;
   DIRECTORY::MUSICDATABASEDIRECTORY::CQueryParams params;
   DIRECTORY::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(strPath, params);
+
   m_musicDatabase.Open();
-  if (m_musicDatabase.GetAlbumInfo(params.GetAlbumId(),album,&songs))
+  if (m_musicDatabase.GetAlbumInfo(params.GetAlbumId(),album,&songs) && !album.strAlbum.IsEmpty())
     return true;
 
   // find album info
