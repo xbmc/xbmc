@@ -183,7 +183,10 @@ namespace VIDEO
     }
 
     if (m_pObserver)
+    {
       m_pObserver->OnDirectoryChanged(strDirectory);
+      m_pObserver->OnSetTitle(g_localizeStrings.Get(20415));
+    }
 
     // load subfolder
     CFileItemList items;
@@ -562,7 +565,16 @@ namespace VIDEO
                     SScraperInfo info2(info);
                     info2.strPath = nfoReader.m_strScraper;
                     if (m_pObserver)
-                      m_pObserver->OnSetTitle(CUtil::GetFileName(pItem->m_strPath));
+                    {
+                      CStdString strPath = pItem->m_strPath;
+                      if (pItem->IsStack())
+                      {
+                        CStackDirectory dir;
+                        strPath = dir.GetStackedTitlePath(pItem->m_strPath);
+                      }
+
+                      m_pObserver->OnSetTitle(CUtil::GetFileName(strPath));
+                    }
                     GetIMDBDetails(pItem, scrUrl, info2, bDirNames, m_dlgProgress);
                     continue;
                   }
