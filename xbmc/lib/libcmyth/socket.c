@@ -641,7 +641,7 @@ cmyth_rcv_okay(cmyth_conn_t conn, char *ok)
 			  "%s: did not consume everything %d < %d\n",
 			  __FUNCTION__, consumed, len);
 	}
-	return (strcmp(buf, ok) == 0);
+	return (strcmp(buf, ok) == 0) ? 0 : -1;
 }
 
 /*
