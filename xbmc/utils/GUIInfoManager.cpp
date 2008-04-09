@@ -213,6 +213,18 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strCategory.Equals("system"))
   {
     if (strTest.Equals("system.date")) ret = SYSTEM_DATE;
+    else if (strTest.Left(12).Equals("system.date("))
+    {
+      // the skin must submit the date in the format MM-DD
+      // This InfoBool is designed for generic range checking, so year is NOT used.  Only Month-Day.
+      CStdString param = strTest.Mid(13, strTest.length() - 14);
+      CStdStringArray params;
+      StringUtils::SplitString(param, ",", params);
+      if (params.size() == 2)
+        return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_DATE : SYSTEM_DATE, StringUtils::DateStringToYYYYMMDD(params[0]) % 10000, StringUtils::DateStringToYYYYMMDD(params[1]) % 10000));
+      else if (params.size() == 1)
+        return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_DATE : SYSTEM_DATE, StringUtils::DateStringToYYYYMMDD(params[0]) % 10000));
+    }
     else if (strTest.Left(11).Equals("system.time")) 
     {
       // determine if this is a System.Time(TIME_FORMAT) infolabel or a System.Time(13:00,14:00) boolean based on the contents of the param
@@ -222,8 +234,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       if ((timeFormat == TIME_FORMAT_GUESS) && (!param.IsEmpty()))
       {
         CStdStringArray params;
-        int time1 = 0;
-        int time2 = 0;
         StringUtils::SplitString(param, ",", params);
         if (params.size() == 2)
           return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_TIME : SYSTEM_TIME, StringUtils::TimeStringToSeconds(params[0]), StringUtils::TimeStringToSeconds(params[1])));
@@ -1929,19 +1939,30 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
       }
       break;
     }
+    case SYSTEM_DATE:
+      {
+        CDateTime date = CDateTime::GetCurrentDateTime();
+        int currentDate = date.GetMonth()*100+date.GetDay();
+        int startDate = info.m_data1;
+        int stopDate = info.m_data2;
+
+        if (stopDate < startDate)
+          bReturn = currentDate >= startDate || currentDate < stopDate;
+        else
+          bReturn = currentDate >= startDate && currentDate < stopDate;
+      }
+      break;
     case SYSTEM_TIME:
       {
         CDateTime time=CDateTime::GetCurrentDateTime();
-        int currentTime = time.GetHour() * 60 + time.GetMinute();
+        int currentTime = time.GetMinuteOfDay();
         int startTime = info.m_data1;
         int stopTime = info.m_data2;
 
         if (stopTime < startTime)
-          stopTime += 1440;
-        if (stopTime > 0)
-          bReturn = (currentTime >= startTime) && (currentTime < stopTime);
+          bReturn = currentTime >= startTime || currentTime < stopTime;
         else
-          bReturn = currentTime >= startTime;
+          bReturn = currentTime >= startTime && currentTime < stopTime;
       }
       break;
   }

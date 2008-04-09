@@ -736,6 +736,13 @@ int CDateTime::GetDayOfWeek() const
   return st.wDayOfWeek;
 }
 
+int CDateTime::GetMinuteOfDay() const
+{
+  SYSTEMTIME st;
+  GetAsSystemTime(st);
+  return st.wHour*60+st.wMinute;
+}
+
 void CDateTime::SetDateTime(int year, int month, int day, int hour, int minute, int second)
 {
   SYSTEMTIME st;
