@@ -20,7 +20,7 @@
 #
 
 import sys
-sys.path.append('../../')
+sys.path.append('../../lib/python')
 from xbmcclient import *
 from socket import *
 from bluetooth import *
