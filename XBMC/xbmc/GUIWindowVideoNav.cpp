@@ -341,6 +341,8 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     m_thumbLoader.StopThread();
 
   m_rootDir.SetCacheDirectory(false);
+  items.ClearProperties();
+
   bool bResult = CGUIWindowVideoBase::GetDirectory(strDirectory, items);
   if (bResult)
   {
@@ -352,11 +354,6 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(items.m_strPath);
       
       items.SetThumbnailImage("");
-      items.ClearProperty("tvshowthumb");
-      items.ClearProperty("fanart_image");
-      items.ClearProperty("fanart_color1");
-      items.ClearProperty("fanart_color2");
-      items.ClearProperty("fanart_color3");
       if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_EPISODES || node == NODE_TYPE_SEASONS || node == NODE_TYPE_RECENTLY_ADDED_EPISODES)
       {
         CLog::Log(LOGDEBUG, "WindowVideoNav::GetDirectory");
@@ -375,6 +372,20 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         CStdString fanart(showItem.GetCachedVideoFanart());
         if (CFile::Exists(fanart))
           items.SetProperty("fanart_image", fanart);
+        
+        // set the season thumb
+        CStdString strLabel;
+        if (params.GetSeason() == 0)
+          strLabel = g_localizeStrings.Get(20381);
+        else
+          strLabel.Format(g_localizeStrings.Get(20358), params.GetSeason());
+
+        CFileItem item(strLabel);
+        CUtil::GetParentPath(items.m_strPath,item.m_strPath);
+        item.m_bIsFolder = true;
+        item.SetCachedSeasonThumb();
+        if (item.HasThumbnail())
+          items.SetProperty("seasonthumb",item.GetThumbnailImage());
 
         // the container folder thumb is the parent (i.e. season or show)
         if (node == NODE_TYPE_EPISODES || node == NODE_TYPE_RECENTLY_ADDED_EPISODES)
@@ -382,17 +393,31 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
           g_infoManager.m_content = "episodes";
           // grab the season thumb as the folder thumb
           CStdString strLabel;
-          if (params.GetSeason() == 0)
-            strLabel = g_localizeStrings.Get(20381);
+          CStdString strPath;
+          if (params.GetSeason() == -1 && items.Size() > 0)
+          {
+            CQueryParams params2;
+            dir.GetQueryParams(items[0]->m_strPath,params2);
+            strLabel.Format(g_localizeStrings.Get(20358), params2.GetSeason());
+            CUtil::GetParentPath(items.m_strPath,strPath);
+          }
           else
-            strLabel.Format(g_localizeStrings.Get(20358), params.GetSeason());
+          {
+            if (params.GetSeason() == 0)
+              strLabel = g_localizeStrings.Get(20381); 
+            else
+              strLabel.Format(g_localizeStrings.Get(20358), params.GetSeason());
+            strPath = items.m_strPath;
+          }
 
           CFileItem item(strLabel);
-          item.m_strPath = items.m_strPath;
+          item.m_strPath = strPath;
           item.m_bIsFolder = true;
           item.GetVideoInfoTag()->m_strPath = showItem.m_strPath;
           item.SetCachedSeasonThumb();
+
           items.SetThumbnailImage(item.GetThumbnailImage());
+          items.SetProperty("seasonthumb",item.GetThumbnailImage());
         }
         else
         {

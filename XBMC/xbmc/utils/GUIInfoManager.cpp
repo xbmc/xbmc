@@ -542,6 +542,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     }
     else if (info.Equals("folderthumb")) ret = CONTAINER_FOLDERTHUMB;
     else if (info.Equals("tvshowthumb")) ret = CONTAINER_TVSHOWTHUMB;
+    else if (info.Equals("seasonthumb")) ret = CONTAINER_SEASONTHUMB;
     else if (info.Equals("folderpath")) ret = CONTAINER_FOLDERPATH;
     else if (info.Equals("viewmode")) ret = CONTAINER_VIEWMODE;
     else if (info.Equals("onnext")) ret = CONTAINER_ON_NEXT;
@@ -2121,6 +2122,12 @@ CStdString CGUIInfoManager::GetImage(int info, DWORD contextWindow)
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
     if (window)
       return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("tvshowthumb");
+  }
+  else if (info == CONTAINER_SEASONTHUMB)
+  {
+    CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+    if (window)
+      return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("seasonthumb");
   }
   else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_ACTUAL_ICON ||
           info == LISTITEM_OVERLAY || info == LISTITEM_RATING || info == LISTITEM_STAR_RATING)
