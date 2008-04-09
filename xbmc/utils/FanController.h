@@ -7,7 +7,7 @@ class CFanController : public CThread
 {
 public:
 
-  void Start(int targetTemperature);
+  void Start(int targetTemperature, int minFanspeed);
   void Stop();
 
   int GetFanSpeed();
@@ -15,6 +15,7 @@ public:
   const CTemperature& GetGPUTemp();
   const CTemperature& GetCPUTemp();
   void SetTargetTemperature(int targetTemperature);
+  void SetMinFanSpeed(int minFanspeed);
   void RestoreStartupSpeed();
 
   static CFanController* Instance();
@@ -29,6 +30,7 @@ private:
   static CFanController* _Instance;
 
   int targetTemp;
+  int m_minFanspeed;
   int systemFanSpeed;
   unsigned long currentFanSpeed;
   int calculatedFanSpeed;
