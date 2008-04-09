@@ -507,13 +507,8 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   m_history.SetSelectedItem(strSelectedItem, strOldDirectory);
 
   ClearFileItems();
-
+  m_vecItems.ClearProperties();
   m_vecItems.SetThumbnailImage("");
-  m_vecItems.ClearProperty("tvshowthumb");
-  m_vecItems.ClearProperty("fanart_image");
-  m_vecItems.ClearProperty("fanart_color1");
-  m_vecItems.ClearProperty("fanart_color2");
-  m_vecItems.ClearProperty("fanart_color3");
 
   if (!GetDirectory(strDirectory, m_vecItems))
   {
