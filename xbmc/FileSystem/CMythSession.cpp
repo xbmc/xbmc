@@ -26,14 +26,18 @@ void CCMythSession::CheckIdle()
   CSingleLock lock(m_section_session);
 
   std::vector<CCMythSession*>::iterator it;
-  for(it = m_sessions.begin(); it != m_sessions.end(); it++)
+  for(it = m_sessions.begin(); it != m_sessions.end();)
   {
     CCMythSession* session = *it;
     if(session->m_timestamp + 5000 < GetTickCount())
     {
       CLog::Log(LOGINFO, "%s - Closing idle connection to mythtv backend %s", __FUNCTION__, session->m_hostname.c_str());
       delete session;
-      it = m_sessions.erase(it)-1;
+      it = m_sessions.erase(it);
+    }
+    else
+    {
+      it++;
     }
   }
 }
