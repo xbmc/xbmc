@@ -41,6 +41,7 @@ public:
   static const CStdString EmptyString;
   static bool FindWords(const char *str, const char *wordLowerCase);
   static int FindEndBracket(const CStdString &str, char opener, char closer, int startPos = 0);
+  static int DateStringToYYYYMMDD(const CStdString &dateString);
 };
 
 #endif
