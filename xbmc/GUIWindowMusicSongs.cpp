@@ -41,10 +41,10 @@ using namespace MEDIA_DETECT;
 #define CONTROL_THUMBS            51
 #define CONTROL_LABELFILES        12
 
-#define CONTROL_BTNPLAYLISTS   7
-#define CONTROL_BTNSCAN      9
-#define CONTROL_BTNREC      10
-#define CONTROL_BTNRIP      11
+#define CONTROL_BTNPLAYLISTS       7
+#define CONTROL_BTNSCAN            9
+#define CONTROL_BTNREC            10
+#define CONTROL_BTNRIP            11
 
 
 CGUIWindowMusicSongs::CGUIWindowMusicSongs(void)
@@ -235,7 +235,7 @@ void CGUIWindowMusicSongs::DoScan(const CStdString &strPath)
   if (musicScan && musicScan->IsScanning())
   {
     musicScan->StopScanning();
-    return ;
+    return;
   }
 
   // Start background loader
@@ -243,7 +243,8 @@ void CGUIWindowMusicSongs::DoScan(const CStdString &strPath)
   if (musicScan) musicScan->StartScanning(strPath);
   SET_CONTROL_FOCUS(iControl, 0);
   UpdateButtons();
-  return ;
+
+  return;
 }
 
 bool CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
@@ -309,7 +310,8 @@ void CGUIWindowMusicSongs::UpdateButtons()
   }
 
   // Disable scan button if shoutcast
-  if (m_vecItems->IsVirtualDirectoryRoot() || m_vecItems->IsShoutCast() || m_vecItems->IsLastFM() || m_vecItems->IsMusicDb())
+  if (m_vecItems->IsVirtualDirectoryRoot() || m_vecItems->IsShoutCast() || 
+      m_vecItems->IsLastFM() || m_vecItems->IsMusicDb())
   {
     CONTROL_DISABLE(CONTROL_BTNSCAN);
   }
@@ -326,7 +328,8 @@ void CGUIWindowMusicSongs::UpdateButtons()
       if (pControl->GetControlIdLeft() == CONTROL_BTNVIEWASICONS)
       {
         iOldLeftControl = pControl->GetControlIdLeft();
-        pControl->SetNavigation(pControl->GetControlIdUp(),pControl->GetControlIdDown(),CONTROL_BTNSORTBY,pControl->GetControlIdRight());
+        pControl->SetNavigation(pControl->GetControlIdUp(),pControl->GetControlIdDown(),
+                                CONTROL_BTNSORTBY,pControl->GetControlIdRight());
       }
   }
   else
@@ -336,7 +339,8 @@ void CGUIWindowMusicSongs::UpdateButtons()
     {
       CGUIControl* pControl = (CGUIControl*)GetControl(CONTROL_LIST);
       if (pControl)
-        pControl->SetNavigation(pControl->GetControlIdUp(),pControl->GetControlIdDown(),CONTROL_BTNVIEWASICONS,pControl->GetControlIdRight());
+        pControl->SetNavigation(pControl->GetControlIdUp(),pControl->GetControlIdDown(),
+                                CONTROL_BTNVIEWASICONS,pControl->GetControlIdRight());
     }
   }
 
@@ -369,7 +373,8 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
   if (item)
   {
     // are we in the playlists location?
-    bool inPlaylists = m_vecItems->m_strPath.Equals(CUtil::MusicPlaylistsLocation()) || m_vecItems->m_strPath.Equals("special://musicplaylists/");
+    bool inPlaylists = m_vecItems->m_strPath.Equals(CUtil::MusicPlaylistsLocation()) || 
+                       m_vecItems->m_strPath.Equals("special://musicplaylists/");
 
     if (m_vecItems->IsVirtualDirectoryRoot())
     {
@@ -381,7 +386,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
       {
         // those cds can also include Audio Tracks: CDExtra and MixedMode!
         CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo();
-        if ( pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1) )
+        if (pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1))
           buttons.Add(CONTEXT_BUTTON_RIP_CD, 600);
       }
       CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
@@ -393,7 +398,8 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
       {
         if (item->IsAudio() && !item->IsLastFM() && !item->IsShoutCast())
           buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658); // Song Info
-        else if (!item->IsParentFolder() && !item->IsLastFM() && !item->IsShoutCast() && !item->m_strPath.Left(3).Equals("new") && item->m_bIsFolder)
+        else if (!item->IsParentFolder() && !item->IsLastFM() && !item->IsShoutCast() && 
+                 !item->m_strPath.Left(3).Equals("new") && item->m_bIsFolder)
         {
           if (m_musicdatabase.GetAlbumIdByPath(item->m_strPath) > -1)
             buttons.Add(CONTEXT_BUTTON_INFO, 13351); // Album Info
@@ -405,13 +411,16 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
       {
         // those cds can also include Audio Tracks: CDExtra and MixedMode!
         CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo();
-        if ( pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1) )
+        if (pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1))
           buttons.Add(CONTEXT_BUTTON_RIP_TRACK, 610);
       }
 
       // enable CDDB lookup if the current dir is CDDA
-      if (CDetectDVDMedia::IsDiscInDrive() && m_vecItems->IsCDDA() && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
+      if (CDetectDVDMedia::IsDiscInDrive() && m_vecItems->IsCDDA() && 
+         (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
+      {
         buttons.Add(CONTEXT_BUTTON_CDDB, 16002);
+      }
 
       if (!item->IsParentFolder() && !item->IsReadOnly())
       {
@@ -430,14 +439,10 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
     {
       if (pScanDlg->IsScanning())
         buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);	// Stop Scanning
-      else if (
-        !inPlaylists && 
-        !m_vecItems->IsInternetStream() && 
-        !item->IsLastFM() && 
-        !item->IsShoutCast() && 
-        !item->m_strPath.Equals("add") && 
-        !item->IsParentFolder() &&
-        (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
+      else if (!inPlaylists && !m_vecItems->IsInternetStream()           && 
+               !item->IsLastFM() && !item->IsShoutCast()                 && 
+               !item->m_strPath.Equals("add") && !item->IsParentFolder() &&
+              (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
       {
         buttons.Add(CONTEXT_BUTTON_SCAN, 13352);
       }
@@ -504,10 +509,10 @@ void CGUIWindowMusicSongs::DeleteDirectoryCache()
 
   CAutoPtrFind hFind( FindFirstFile("Z:\\*.fi", &wfd));
   if (!hFind.isValid())
-    return ;
+    return;
   do
   {
-    if ( !(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
+    if (!(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
     {
       CStdString strFile = "Z:\\";
       strFile += wfd.cFileName;
@@ -524,10 +529,10 @@ void CGUIWindowMusicSongs::DeleteRemoveableMediaDirectoryCache()
 
   CAutoPtrFind hFind( FindFirstFile("Z:\\r-*.fi", &wfd));
   if (!hFind.isValid())
-    return ;
+    return;
   do
   {
-    if ( !(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
+    if (!(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
     {
       CStdString strFile = "Z:\\";
       strFile += wfd.cFileName;
@@ -566,5 +571,6 @@ bool CGUIWindowMusicSongs::Update(const CStdString &strDirectory)
   else
     g_infoManager.m_content = "files";
   m_thumbLoader.Load(*m_vecItems);
+
   return true;
 }

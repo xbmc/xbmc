@@ -35,7 +35,7 @@
 using namespace std;
 using namespace DIRECTORY;
 
-#define CONTROL_HEADING         2
+#define CONTROL_HEADING          2
 #define CONTROL_PATH            10
 #define CONTROL_PATH_BROWSE     11
 #define CONTROL_NAME            12

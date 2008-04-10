@@ -38,12 +38,12 @@ using namespace std;
 
 #define BOOKMARK_THUMB_WIDTH g_advancedSettings.m_thumbSize
 
-#define CONTROL_ADD_BOOKMARK          2
-#define CONTROL_CLEAR_BOOKMARKS       3
-#define CONTROL_ADD_EPISODE_BOOKMARK  4
+#define CONTROL_ADD_BOOKMARK           2
+#define CONTROL_CLEAR_BOOKMARKS        3
+#define CONTROL_ADD_EPISODE_BOOKMARK   4
 
-#define CONTROL_LIST             10
-#define CONTROL_THUMBS           11
+#define CONTROL_LIST                  10
+#define CONTROL_THUMBS                11
 
 CGUIDialogVideoBookmarks::CGUIDialogVideoBookmarks()
     : CGUIDialog(WINDOW_DIALOG_VIDEO_BOOKMARKS, "VideoOSDBookmarks.xml")

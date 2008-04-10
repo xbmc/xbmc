@@ -39,14 +39,14 @@ using namespace PLAYLIST;
 #define CONTROL_LIST              50
 #define CONTROL_LABELFILES        12
 
-#define CONTROL_BTNSHUFFLE    20
-#define CONTROL_BTNSAVE      21
-#define CONTROL_BTNCLEAR     22
+#define CONTROL_BTNSHUFFLE        20
+#define CONTROL_BTNSAVE           21
+#define CONTROL_BTNCLEAR          22
 
-#define CONTROL_BTNPLAY      23
-#define CONTROL_BTNNEXT      24
-#define CONTROL_BTNPREVIOUS    25
-#define CONTROL_BTNREPEAT     26
+#define CONTROL_BTNPLAY           23
+#define CONTROL_BTNNEXT           24
+#define CONTROL_BTNPREVIOUS       25
+#define CONTROL_BTNREPEAT         26
 
 CGUIWindowVideoPlaylist::CGUIWindowVideoPlaylist()
 : CGUIWindowVideoBase(WINDOW_VIDEO_PLAYLIST, "MyVideoPlaylist.xml")

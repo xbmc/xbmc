@@ -4,12 +4,15 @@
 #include "Util.h"
 
 CAlarmClock g_alarmClock;
+
 CAlarmClock::CAlarmClock() : m_bIsRunning(false)
 {
 }
+
 CAlarmClock::~CAlarmClock()
 {
 }
+
 void CAlarmClock::start(const CStdString& strName, float n_secs, const CStdString& strCommand)
 {
   // make lower case so that lookups are case-insensitive
@@ -47,6 +50,7 @@ void CAlarmClock::start(const CStdString& strName, float n_secs, const CStdStrin
   m_event.insert(std::make_pair<CStdString,SAlarmClockEvent>(lowerName,event));
   CLog::Log(LOGDEBUG,"started alarm with name: %s",lowerName.c_str());
 }
+
 void CAlarmClock::stop(const CStdString& strName)
 {
   CStdString lowerName(strName);
@@ -81,6 +85,7 @@ void CAlarmClock::stop(const CStdString& strName)
   iter->second.watch.Stop();
   m_event.erase(iter);
 }
+
 void CAlarmClock::Process()
 {
   while( !m_bStop)
