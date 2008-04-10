@@ -25,14 +25,14 @@
 #include "utils/GUIInfoManager.h"
 #include "Settings.h"
 
-#define IMMEDIATE_TRANSISTION_TIME 20
+#define IMMEDIATE_TRANSISTION_TIME          20
 
-#define PICTURE_MOVE_AMOUNT     0.02f
-#define PICTURE_MOVE_AMOUNT_ANALOG 0.01f
-#define PICTURE_VIEW_BOX_COLOR   0xffffff00 // YELLOW
+#define PICTURE_MOVE_AMOUNT              0.02f
+#define PICTURE_MOVE_AMOUNT_ANALOG       0.01f
+#define PICTURE_VIEW_BOX_COLOR      0xffffff00 // YELLOW
 #define PICTURE_VIEW_BOX_BACKGROUND 0xff000000 // BLACK
 
-#define FPS        25
+#define FPS                                 25
 
 static float zoomamount[10] = { 1.0f, 1.2f, 1.5f, 2.0f, 2.8f, 4.0f, 6.0f, 9.0f, 13.5f, 20.0f };
 

@@ -51,30 +51,30 @@ using namespace DIRECTORY;
 using namespace MEDIA_DETECT;
 using namespace PLAYLIST;
 
-#define ACTION_COPY   1
-#define ACTION_MOVE   2
-#define ACTION_DELETE 3
-#define ACTION_CREATEFOLDER 4
-#define ACTION_DELETEFOLDER 5
+#define ACTION_COPY                     1
+#define ACTION_MOVE                     2
+#define ACTION_DELETE                   3
+#define ACTION_CREATEFOLDER             4
+#define ACTION_DELETEFOLDER             5
 
-#define CONTROL_BTNVIEWASICONS  2
-#define CONTROL_BTNSORTBY     3
-#define CONTROL_BTNSORTASC    4
-#define CONTROL_BTNNEWFOLDER      6
-#define CONTROL_BTNSELECTALL   7
-#define CONTROL_BTNCOPY           10
-#define CONTROL_BTNMOVE           11
-#define CONTROL_BTNDELETE         8
-#define CONTROL_BTNRENAME         9
+#define CONTROL_BTNVIEWASICONS          2
+#define CONTROL_BTNSORTBY               3
+#define CONTROL_BTNSORTASC              4
+#define CONTROL_BTNNEWFOLDER            6
+#define CONTROL_BTNSELECTALL            7
+#define CONTROL_BTNCOPY                10
+#define CONTROL_BTNMOVE                11
+#define CONTROL_BTNDELETE               8
+#define CONTROL_BTNRENAME               9
 
-#define CONTROL_NUMFILES_LEFT   12
-#define CONTROL_NUMFILES_RIGHT  13
+#define CONTROL_NUMFILES_LEFT          12
+#define CONTROL_NUMFILES_RIGHT         13
 
-#define CONTROL_LEFT_LIST     20
-#define CONTROL_RIGHT_LIST    21
+#define CONTROL_LEFT_LIST              20
+#define CONTROL_RIGHT_LIST             21
 
 #define CONTROL_CURRENTDIRLABEL_LEFT  101
-#define CONTROL_CURRENTDIRLABEL_RIGHT  102
+#define CONTROL_CURRENTDIRLABEL_RIGHT 102
 
 CGUIWindowFileManager::CGUIWindowFileManager(void)
     : CGUIWindow(WINDOW_FILES, "FileManager.xml")

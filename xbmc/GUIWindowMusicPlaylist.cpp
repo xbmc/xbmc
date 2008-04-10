@@ -42,14 +42,14 @@ using namespace PLAYLIST;
 #define CONTROL_THUMBS            51
 #define CONTROL_LABELFILES        12
 
-#define CONTROL_BTNSHUFFLE    20
-#define CONTROL_BTNSAVE      21
-#define CONTROL_BTNCLEAR     22
+#define CONTROL_BTNSHUFFLE        20
+#define CONTROL_BTNSAVE           21
+#define CONTROL_BTNCLEAR          22
 
-#define CONTROL_BTNPLAY      23
-#define CONTROL_BTNNEXT      24
-#define CONTROL_BTNPREVIOUS    25
-#define CONTROL_BTNREPEAT     26
+#define CONTROL_BTNPLAY           23
+#define CONTROL_BTNNEXT           24
+#define CONTROL_BTNPREVIOUS       25
+#define CONTROL_BTNREPEAT         26
 
 CGUIWindowMusicPlayList::CGUIWindowMusicPlayList(void)
     : CGUIWindowMusicBase(WINDOW_MUSIC_PLAYLIST, "MyMusicPlaylist.xml")

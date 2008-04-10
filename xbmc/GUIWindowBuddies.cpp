@@ -41,47 +41,47 @@ using namespace AUTOPTR;
 using namespace MEDIA_DETECT;
 using namespace XFILE;
 
-#define KAI_CONSOLE_PEN_NORMAL 0
-#define KAI_CONSOLE_PEN_ACTION 1
-#define KAI_CONSOLE_PEN_SYSTEM 2
-#define KAI_CONSOLE_PEN_PRIVATE 3
+#define KAI_CONSOLE_PEN_NORMAL     0
+#define KAI_CONSOLE_PEN_ACTION     1
+#define KAI_CONSOLE_PEN_SYSTEM     2
+#define KAI_CONSOLE_PEN_PRIVATE    3
 
-#define CONTROL_BTNMODE   3012    // Games Button
-#define CONTROL_BTNJOIN   3013    // Join Button
-#define CONTROL_BTNSPEEX  3016    // Speex Button
-#define CONTROL_BTNINVITE  3014    // Invite Button
-#define CONTROL_BTNREMOVE  3015    // Remove Button
+#define CONTROL_BTNMODE         3012    // Games Button
+#define CONTROL_BTNJOIN         3013    // Join Button
+#define CONTROL_BTNSPEEX        3016    // Speex Button
+#define CONTROL_BTNINVITE       3014    // Invite Button
+#define CONTROL_BTNREMOVE       3015    // Remove Button
 
-#define CONTROL_LISTEX   3031
-#define CONTROL_BTNPLAY   3033    // Play Button
-#define CONTROL_BTNADD   3034    // Add Button
-#define CONTROL_BTNHOST   3035    // Host Button
-#define CONTROL_BTNKEYBOARD  3036    // Keyboard Button
+#define CONTROL_LISTEX          3031
+#define CONTROL_BTNPLAY         3033    // Play Button
+#define CONTROL_BTNADD          3034    // Add Button
+#define CONTROL_BTNHOST         3035    // Host Button
+#define CONTROL_BTNKEYBOARD     3036    // Keyboard Button
 
-#define CONTROL_LABELBUDDYWIN 3050
-#define CONTROL_LABELUSERNAME 3051    // Xlink Kai Username
-#define CONTROL_LABELUPDATED 3052    // Last update time
-#define CONTROL_IMAGELOGO  3053    // Xlink Kai Logo
+#define CONTROL_LABELBUDDYWIN   3050
+#define CONTROL_LABELUSERNAME   3051    // Xlink Kai Username
+#define CONTROL_LABELUPDATED    3052    // Last update time
+#define CONTROL_IMAGELOGO       3053    // Xlink Kai Logo
 
 #define CONTROL_IMAGEBUDDYICON1 3060    // Buddy (offline) icon
 #define CONTROL_IMAGEBUDDYICON2 3061    // Buddy (online) icon
-#define CONTROL_IMAGEOPPONENT 3062    // Opponent icon
-#define CONTROL_IMAGEARENA  3063    // Arena icon
-#define CONTROL_IMAGEME   3064    // My icon
+#define CONTROL_IMAGEOPPONENT   3062    // Opponent icon
+#define CONTROL_IMAGEARENA      3063    // Arena icon
+#define CONTROL_IMAGEME         3064    // My icon
 
-#define CONTROL_LABELBUDDYNAME 3070    // Buddy Name
-#define CONTROL_LABELBUDDYSTAT 3071    // Buddy Game Status
-#define CONTROL_LABELBUDDYINVT 3072    // Buddy Invite Status
-#define CONTROL_LABELPLAYERCNT 3073    // Arena Player Count
+#define CONTROL_LABELBUDDYNAME  3070    // Buddy Name
+#define CONTROL_LABELBUDDYSTAT  3071    // Buddy Game Status
+#define CONTROL_LABELBUDDYINVT  3072    // Buddy Invite Status
+#define CONTROL_LABELPLAYERCNT  3073    // Arena Player Count
 
-#define CONTROL_KAI_CONSOLE  3074    // Text Chat console
-#define CONTROL_KAI_TEXTEDIT 3075    // Text Edit control
-#define CONTROL_KAI_TEXTEDAREA 3076    // Text Edit Area
+#define CONTROL_KAI_CONSOLE     3074    // Text Chat console
+#define CONTROL_KAI_TEXTEDIT    3075    // Text Edit control
+#define CONTROL_KAI_TEXTEDAREA  3076    // Text Edit Area
 
 #define CONTROL_KAI_TAB_FRIENDS 3080    // Friends tab button
-#define CONTROL_KAI_TAB_GAMES 3081    // Games tab button
-#define CONTROL_KAI_TAB_ARENA 3082    // Arena tab button
-#define CONTROL_KAI_TAB_CHAT 3083    // Chat tab button
+#define CONTROL_KAI_TAB_GAMES   3081    // Games tab button
+#define CONTROL_KAI_TAB_ARENA   3082    // Arena tab button
+#define CONTROL_KAI_TAB_CHAT    3083    // Chat tab button
 
 #define KAI_XBOX_ROOT  "Arena/XBox"
 

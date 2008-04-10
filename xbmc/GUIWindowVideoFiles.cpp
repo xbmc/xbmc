@@ -30,11 +30,11 @@ using namespace VIDEO;
 #define CONTROL_LIST              50
 #define CONTROL_THUMBS            51
 
-#define CONTROL_PLAY_DVD          6
-#define CONTROL_STACK             7
-#define CONTROL_BTNSCAN           8
-#define CONTROL_IMDB              9
-#define CONTROL_BTNPLAYLISTS  13
+#define CONTROL_PLAY_DVD           6
+#define CONTROL_STACK              7
+#define CONTROL_BTNSCAN            8
+#define CONTROL_IMDB               9
+#define CONTROL_BTNPLAYLISTS      13
 
 CGUIWindowVideoFiles::CGUIWindowVideoFiles()
 : CGUIWindowVideoBase(WINDOW_VIDEO_FILES, "MyVideo.xml")
@@ -262,8 +262,11 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
 void CGUIWindowVideoFiles::OnPrepareFileItems(CFileItemList &items)
 {
   CGUIWindowVideoBase::OnPrepareFileItems(items);
-  if (g_stSettings.m_bMyVideoCleanTitles && ((g_stSettings.m_iMyVideoStack & STACK_UNAVAILABLE) != STACK_UNAVAILABLE))
+  if (g_stSettings.m_bMyVideoCleanTitles && 
+    ((g_stSettings.m_iMyVideoStack & STACK_UNAVAILABLE) != STACK_UNAVAILABLE))
+  {
     items.CleanFileNames();
+  }
 }
 
 bool CGUIWindowVideoFiles::OnClick(int iItem)
@@ -273,7 +276,7 @@ bool CGUIWindowVideoFiles::OnClick(int iItem)
   CStdString strExtension;
   CUtil::GetExtension(pItem->m_strPath, strExtension);
 
-  if ( strcmpi(strExtension.c_str(), ".nfo") == 0) // WTF??
+  if (strcmpi(strExtension.c_str(), ".nfo") == 0) // WTF??
   {
     SScraperInfo info;
     info.strPath = "imdb.xml";
@@ -341,7 +344,8 @@ void CGUIWindowVideoFiles::OnInfo(CFileItem* pItem, const SScraperInfo& info)
       CFileItem *item = vecitems[i];
       if (!item->m_bIsFolder)
       {
-        if (item->IsVideo() && !item->IsNFO() && !item->IsPlayList() && item->m_strPath.Find("-trailer.") == -1 )
+        if (item->IsVideo() && !item->IsNFO() && !item->IsPlayList() && 
+            item->m_strPath.Find("-trailer.") == -1)
         {
           bFoundFile = true;
           strFile = item->m_strPath;
@@ -367,7 +371,8 @@ void CGUIWindowVideoFiles::OnInfo(CFileItem* pItem, const SScraperInfo& info)
           for (int i = 0; i < items.Size(); i++)
           {
             CFileItem *item = items[i];
-            if (!item->m_bIsFolder && item->IsVideo() && !item->IsNFO() && !item->IsPlayList() )
+            if (!item->m_bIsFolder && item->IsVideo() && !item->IsNFO() && 
+                !item->IsPlayList())
             {
               bFoundFile = true;
               strFile = item->m_strPath;
@@ -394,8 +399,11 @@ void CGUIWindowVideoFiles::OnInfo(CFileItem* pItem, const SScraperInfo& info)
   item.SetLabel(pItem->GetLabel());
 
   // hack since our label sometimes contains extensions
-  if(!pItem->m_bIsFolder && !g_guiSettings.GetBool("filelists.hideextensions") && !pItem->IsLabelPreformated())
+  if(!pItem->m_bIsFolder && !g_guiSettings.GetBool("filelists.hideextensions") &&
+     !pItem->IsLabelPreformated())
+  {
     item.RemoveExtension();
+  }
   
   item.SetCachedVideoThumb();
   if (!item.HasThumbnail()) // inherit from the original item if it exists
@@ -474,8 +482,8 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, SScraperInfo& 
   
   if (CGUIDialogContentSettings::Show(info2, settings2, bScan))
   {
-    if((info2.strContent.IsEmpty() || info2.strContent.Equals("None")) 
-    && (!info.strContent.IsEmpty() && !info.strContent.Equals("None")))
+    if((info2.strContent.IsEmpty() || info2.strContent.Equals("None")) && 
+      (!info.strContent.IsEmpty() && !info.strContent.Equals("None")))
     {
       OnUnAssignContent(iItem);
     }
@@ -557,7 +565,8 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
       // add scan button somewhere here
       if (pScanDlg && pScanDlg->IsScanning())
         buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);	// Stop Scanning
-      if (g_guiSettings.GetBool("videolibrary.enabled") && !item->IsDVD() && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
+      if (g_guiSettings.GetBool("videolibrary.enabled") && !item->IsDVD() && 
+         (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
       {
         CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
         if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
@@ -622,8 +631,13 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
         else
         {
           // single file
-          if ((info.strContent.Equals("movies") && (iFound > 0 || m_database.HasMovieInfo(item->m_strPath))) || m_database.HasEpisodeInfo(item->m_strPath) || info.strContent.Equals("musicvideos"))
+          if ((info.strContent.Equals("movies") && (iFound > 0 || 
+               m_database.HasMovieInfo(item->m_strPath)))      || 
+               m_database.HasEpisodeInfo(item->m_strPath)      || 
+               info.strContent.Equals("musicvideos"))
+          {
             buttons.Add(CONTEXT_BUTTON_INFO, infoString);
+          }
           m_database.Open();
           if (!item->IsParentFolder())
           {
@@ -635,7 +649,8 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
       }
       if (!item->IsParentFolder())
       {
-        if ((m_vecItems->m_strPath.Equals("special://videoplaylists/")) || g_guiSettings.GetBool("filelists.allowfiledeletion"))
+        if ((m_vecItems->m_strPath.Equals("special://videoplaylists/")) || 
+             g_guiSettings.GetBool("filelists.allowfiledeletion"))
         { // video playlists or file operations are allowed
           if (!item->IsReadOnly())
           {

@@ -39,7 +39,7 @@ using namespace MUSIC_INFO;
 #define TRANSISTION_LENGTH 200  // 4 seconds
 #define START_FADE_LENGTH  100  // 2 seconds on startup
 
-#define CONTROL_VIS           2
+#define CONTROL_VIS          2
 
 CGUIWindowVisualisation::CGUIWindowVisualisation(void)
     : CGUIWindow(WINDOW_VISUALISATION, "MusicVisualisation.xml")

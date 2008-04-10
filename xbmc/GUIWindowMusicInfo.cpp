@@ -36,23 +36,23 @@
 
 using namespace XFILE;
 
-#define CONTROL_ALBUM  20
-#define CONTROL_ARTIST 21
-#define CONTROL_DATE   22
-#define CONTROL_RATING 23
-#define CONTROL_GENRE  24
-#define CONTROL_MOODS  25
-#define CONTROL_STYLES 26
+#define CONTROL_ALBUM         20
+#define CONTROL_ARTIST        21
+#define CONTROL_DATE          22
+#define CONTROL_RATING        23
+#define CONTROL_GENRE         24
+#define CONTROL_MOODS         25
+#define CONTROL_STYLES        26
 
-#define CONTROL_IMAGE   3
-#define CONTROL_TEXTAREA 4
+#define CONTROL_IMAGE          3
+#define CONTROL_TEXTAREA       4
 
-#define CONTROL_BTN_TRACKS 5
-#define CONTROL_BTN_REFRESH 6
+#define CONTROL_BTN_TRACKS     5
+#define CONTROL_BTN_REFRESH    6
 #define CONTROL_BTN_GET_THUMB 10
-#define CONTROL_BTN_LASTFM 11
+#define CONTROL_BTN_LASTFM    11
 
-#define CONTROL_LIST 50
+#define CONTROL_LIST          50
 
 CGUIWindowMusicInfo::CGUIWindowMusicInfo(void)
     : CGUIDialog(WINDOW_MUSIC_INFO, "DialogAlbumInfo.xml")
