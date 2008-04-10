@@ -1,12 +1,26 @@
 #pragma once
 
 class CFileItem;
-
 class CMediaSource;
+
+#include <vector>
+#include <map>
+
 typedef std::vector<CMediaSource> VECSOURCES;
 
 typedef std::map<CStdString, CStdString> MAPPASSWORDS;
 typedef std::map<CStdString, CStdString>::iterator IMAPPASSWORDS;
+
+typedef enum
+{
+  LOCK_MODE_UNKNOWN            = -1,
+  LOCK_MODE_EVERYONE           =  0,
+  LOCK_MODE_NUMERIC            =  1,
+  LOCK_MODE_GAMEPAD            =  2,
+  LOCK_MODE_QWERTY             =  3,
+  LOCK_MODE_SAMBA              =  4,
+  LOCK_MODE_EEPROM_PARENTAL    =  5
+} LockType;
 
 class CGUIPassword
 {
@@ -15,8 +29,8 @@ public:
   virtual ~CGUIPassword(void);
   bool IsItemUnlocked(CFileItem* pItem, const CStdString &strType);
   bool IsItemUnlocked(CMediaSource* pItem, const CStdString &strType);
-  bool CheckLock(int btnType, const CStdString& strPassword, int iHeading);
-  bool CheckLock(int btnType, const CStdString& strPassword, int iHeading, bool& bCanceled);
+  bool CheckLock(LockType btnType, const CStdString& strPassword, int iHeading);
+  bool CheckLock(LockType btnType, const CStdString& strPassword, int iHeading, bool& bCanceled);
   bool IsProfileLockUnlocked(int iProfile=-1);
   bool IsProfileLockUnlocked(int iProfile, bool& bCanceled);
   bool IsMasterLockUnlocked(bool bPromptUser);
@@ -41,6 +55,8 @@ public:
   int iMasterLockRetriesLeft;
 protected:
   CStdString m_SMBShare;
+private:
+  int VerifyPassword(LockType btnType, const CStdString& strPassword, const CStdString& strHeading);
 };
 
 extern CGUIPassword g_passwordManager;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "StdString.h"
+#include "GUIPassword.h"
 
 #include <vector>
 
@@ -15,7 +16,7 @@ public:
   const CStdString& getDirectory() const { return _directory;}
   const CStdString& getThumb() const { return _thumb;}
   const CStdString& getLockCode() const { return _strLockCode;}
-  int getLockMode() const { return _iLockMode; }
+  LockType getLockMode() const { return _iLockMode; }
 
   bool hasDatabases() const { return _bDatabases; }
   bool canWriteDatabases() const { return _bCanWrite; }
@@ -33,7 +34,7 @@ public:
   void setDirectory(const CStdString& directory) {_directory = directory;}
   void setDate(const CStdString& strDate) { _date = strDate;}
   void setDate();
-  void setLockMode(int iLockMode) { _iLockMode = iLockMode;}
+  void setLockMode(LockType iLockMode) { _iLockMode = iLockMode;}
   void setLockCode(const CStdString& strLockCode) { _strLockCode = strLockCode; }
   void setThumb(const CStdString& thumb) {_thumb = thumb;}
   void setDatabases(bool bHas) { _bDatabases = bHas; }
@@ -60,7 +61,7 @@ public:
   bool _bUseAvpackSettings;
 
   // lock stuff
-  int _iLockMode;
+  LockType _iLockMode;
   CStdString _strLockCode;
   bool _bLockSettings;
   bool _bLockMusic;
