@@ -136,7 +136,7 @@ void CGUIDialogVideoSettings::OnSettingChanged(unsigned int num)
   else if (setting.id == VIDEO_SETTINGS_CALIBRATION)
   {
     // launch calibration window
-    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].settingsLocked() && g_settings.m_vecProfiles[0].getLockMode() != CMediaSource::LOCK_MODE_EVERYONE)
+    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].settingsLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return;
     m_gWindowManager.ActivateWindow(WINDOW_SCREEN_CALIBRATION);
@@ -148,7 +148,7 @@ void CGUIDialogVideoSettings::OnSettingChanged(unsigned int num)
   }
   else if (setting.id == VIDEO_SETTINGS_MAKE_DEFAULT)
   {
-    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].settingsLocked() && g_settings.m_vecProfiles[0].getLockMode() != CMediaSource::LOCK_MODE_EVERYONE)
+    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].settingsLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return;
 

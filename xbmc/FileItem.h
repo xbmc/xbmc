@@ -8,6 +8,7 @@
 #include "DateTime.h"
 #include "SortFileItem.h"
 #include "utils/LabelFormatter.h"
+#include "GUIPassword.h"
 
 #include <vector>
 
@@ -212,7 +213,7 @@ public:
   int m_idepth;
   long m_lStartOffset;
   long m_lEndOffset;
-  int m_iLockMode;
+  LockType m_iLockMode;
   CStdString m_strLockCode;
   int m_iHasLock; // 0 - no lock 1 - lock, but unlocked 2 - locked
   int m_iBadPwdCount;

@@ -632,7 +632,7 @@ bool CSettings::GetSource(const CStdString &category, const TiXmlNode *source, C
     share.m_iBadPwdCount = 0;
     if (pLockMode)
     {
-      share.m_iLockMode = atoi( pLockMode->FirstChild()->Value() );
+      share.m_iLockMode = LockType(atoi(pLockMode->FirstChild()->Value()));
       share.m_iHasLock = 2;
     }
 
@@ -1964,10 +1964,10 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
     bHas = false;
     XMLUtils::GetBoolean(pProfile, "useavpacksettings", bHas);
     profile.setUseAvpackSettings(bHas);
-    int iLockMode=CMediaSource::LOCK_MODE_EVERYONE;
-    XMLUtils::GetInt(pProfile,"lockmode",iLockMode);
-    if (iLockMode > CMediaSource::LOCK_MODE_QWERTY || iLockMode < CMediaSource::LOCK_MODE_EVERYONE)
-      iLockMode = CMediaSource::LOCK_MODE_EVERYONE;
+    LockType iLockMode=LOCK_MODE_EVERYONE;
+    XMLUtils::GetInt(pProfile,"lockmode",(int&)iLockMode);
+    if (iLockMode > LOCK_MODE_QWERTY || iLockMode < LOCK_MODE_EVERYONE)
+      iLockMode = LOCK_MODE_EVERYONE;
     profile.setLockMode(iLockMode);
 
     CStdString strLockCode;
@@ -2006,7 +2006,7 @@ bool CSettings::SaveProfiles(const CStdString& strSettingsFile) const
     SetString(pNode,"lastdate",g_settings.m_vecProfiles[iProfile].getDate());
     SetBoolean(pNode,"useavpacksettings",g_settings.m_vecProfiles[iProfile].useAvpackSettings());
 
-    if (g_settings.m_vecProfiles[0].getLockMode() != CMediaSource::LOCK_MODE_EVERYONE)
+    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
     {
       SetInteger(pNode,"lockmode",g_settings.m_vecProfiles[iProfile].getLockMode());
       SetString(pNode,"lockcode",g_settings.m_vecProfiles[iProfile].getLockCode());
@@ -2163,7 +2163,7 @@ bool CSettings::UpdateSource(const CStdString &strType, const CStdString strOldN
       if ("name" == strUpdateElement)
         (*it).strName = strUpdateText;
       else if ("lockmode" == strUpdateElement)
-        (*it).m_iLockMode = atoi(strUpdateText);
+        (*it).m_iLockMode = LockType(atoi(strUpdateText));
       else if ("lockcode" == strUpdateElement)
         (*it).m_strLockCode = strUpdateText;
       else if ("badpwdcount" == strUpdateElement)
