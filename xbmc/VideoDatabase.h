@@ -33,8 +33,9 @@ typedef enum
 {
   VIDEODB_CONTENT_MOVIES = 1,
   VIDEODB_CONTENT_TVSHOWS = 2,
-  VIDEODB_CONTENT_MUSICVIDEOS = 3
-} VIDEODB_CONTENT_IDS;
+  VIDEODB_CONTENT_MUSICVIDEOS = 3,
+  VIDEODB_CONTENT_EPISODES    = 4
+} VIDEODB_CONTENT_TYPE;
 
 typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
 {
@@ -249,10 +250,10 @@ public:
   long AddMusicVideo(const CStdString& strFilenameAndPath);
 
   void MarkAsWatched(const CFileItem &item);
-  void MarkAsWatched(long lMovieId, int iType=0); // 0=movie,1=episode,2=tvshow,3=musicvideo
+  void MarkAsWatched(long lMovieId, VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES);
 
-  void MarkAsUnWatched(long lMovieId, int iType=0); // 0=movie,1=episode,2=tvshow,3=musicvideo
-  void UpdateMovieTitle(long lMovieId, const CStdString& strNewMovieTitle, int iType=0); // 0=movie,1=episode,2=tvshow,3=musicvideo
+  void MarkAsUnWatched(long lMovieId, VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES);
+  void UpdateMovieTitle(long lMovieId, const CStdString& strNewMovieTitle, VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES);
 
   bool HasMovieInfo(const CStdString& strFilenameAndPath);
   bool HasTvShowInfo(const CStdString& strFilenameAndPath);
@@ -261,7 +262,7 @@ public:
   
   void DeleteDetailsForTvShow(const CStdString& strPath);
 
-  void GetFilePath(long lMovieId, CStdString &filePath, int iType=0); // 0=movies, 1=episodes, 2=tvshows, 3=musicvideo
+  void GetFilePath(long lMovieId, CStdString &filePath, VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES);
   long GetPath(const CStdString& strPath);
   bool GetPathHash(const CStdString &path, CStdString &hash);
   bool GetPaths(std::map<CStdString,VIDEO::SScanSettings> &paths);
