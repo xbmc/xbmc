@@ -480,6 +480,12 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     {
       if (!item->m_bIsFolder) // music video
        buttons.Add(CONTEXT_BUTTON_INFO, 20393);
+      if (item->m_strPath.Left(14).Equals("videodb://3/4/") && item->m_strPath.size() > 14 && item->m_bIsFolder)
+      {
+        long idArtist = m_musicdatabase.GetArtistByName(m_vecItems->Get(itemNumber)->GetLabel());
+        if (idArtist > - 1)
+          buttons.Add(CONTEXT_BUTTON_INFO,21891);
+      }
     }
     else if (
       !inPlaylists && 
@@ -587,6 +593,18 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       if (!m_vecItems->Get(itemNumber)->IsVideoDb())
         return CGUIWindowMusicBase::OnContextButton(itemNumber,button);
+      if (m_vecItems->Get(itemNumber)->m_strPath.Left(14).Equals("videodb://3/4/"))
+      {
+        long idArtist = m_musicdatabase.GetArtistByName(m_vecItems->Get(itemNumber)->GetLabel());
+        if (idArtist == -1)
+          return false;
+        m_vecItems->Get(itemNumber)->m_strPath.Format("musicdb://2/%ld/",
+                       m_musicdatabase.GetArtistByName(m_vecItems->Get(itemNumber)->GetLabel()));
+        CGUIWindowMusicBase::OnContextButton(itemNumber,button);
+        Update(m_vecItems->m_strPath);
+        m_viewControl.SetSelectedItem(itemNumber);
+        return true;
+      }
       CGUIWindowVideoNav* pWindow = (CGUIWindowVideoNav*)m_gWindowManager.GetWindow(WINDOW_VIDEO_NAV);
       if (pWindow)
       {
