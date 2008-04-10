@@ -3096,10 +3096,10 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       // change watched -> playcount (assume a single play)
       m_pDS->exec("UPDATE movie SET c10=NULL where c10='false'");
       m_pDS->exec("UPDATE movie SET c10='1' where c10='true'");
-      m_pDS->exec("UPDATE episode SET c08=NULL where c10='false'");
-      m_pDS->exec("UPDATE episode SET c08='1' where c10='true'");
-      m_pDS->exec("UPDATE musicvideo SET c03=NULL where c10='false'");
-      m_pDS->exec("UPDATE musicvideo SET c03='1' where c10='true'");
+      m_pDS->exec("UPDATE episode SET c08=NULL where c08='false'");
+      m_pDS->exec("UPDATE episode SET c08='1' where c08='true'");
+      m_pDS->exec("UPDATE musicvideo SET c03=NULL where c03='false'");
+      m_pDS->exec("UPDATE musicvideo SET c03='1' where c03='true'");
     }
   }
   catch (...)
