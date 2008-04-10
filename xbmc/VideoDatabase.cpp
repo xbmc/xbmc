@@ -1475,7 +1475,9 @@ void CVideoDatabase::GetTvShowsByActor(const CStdString& strActor, VECMOVIES& mo
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
 
-    CStdString strSQL=FormatSQL("select tvshow.*,path.strPath,path.strPath from tvshow join path on tvshowlinkpath.idpath = path.idpath join tvshowlinkpath on tvshowlinkpath.idshow=tvshow.idshow join actorlinktvshow on actorlinktvshow.idshow=tvshow.idshow join actors on actors.idActor=actorlinktvshow.idActor where actors.stractor='%s'", strActor.c_str());
+    CStdString strSQL = GetTVShowQuery("join actorlinktvshow on actorlinktvshow.idshow=tvshow.idshow join actors on actors.idActor=actorlinktvshow.idActor",
+                                       FormatSQL("where actors.stractor='%s'", strActor.c_str()));
+
     m_pDS->query( strSQL.c_str() );
 
     while (!m_pDS->eof())
@@ -1578,7 +1580,7 @@ void CVideoDatabase::GetTvShowInfo(const CStdString& strPath, CVideoInfoTag& det
       lTvShowId = GetTvShowInfo(strPath);
     if (lTvShowId < 0) return ;
 
-    CStdString sql = FormatSQL("select tvshow.*,path.strPath,path.strPath from tvshow,tvshowlinkpath,path where tvshow.idshow=%i and tvshowlinkpath.idshow=tvshow.idshow and tvshowlinkpath.idpath=path.idpath", lTvShowId);
+    CStdString sql = GetTVShowQuery("", FormatSQL("where tvshow.idshow=%i", lTvShowId));
     if (!m_pDS->query(sql.c_str()))
       return;
     details = GetDetailsForTvShow(m_pDS, true);
@@ -2543,9 +2545,9 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool n
   }
   details.m_iDbId = lTvShowId;
   details.m_strPath = pDS->fv(VIDEODB_MAX_COLUMNS + 1).get_asString();
-  details.m_iEpisode = pDS->fv(VIDEODB_MAX_COLUMNS + 2).get_asInteger();
+  details.m_iEpisode = m_pDS->fv(VIDEODB_MAX_COLUMNS + 2).get_asInteger();
   // TODO: Make this a "play count", or for a TV show, it'll be "watched number"
-  details.m_bWatched = (pDS->fv(VIDEODB_MAX_COLUMNS + 3).get_asInteger() == details.m_iEpisode);
+  details.m_bWatched = (m_pDS->fv(VIDEODB_MAX_COLUMNS + 3).get_asInteger() == details.m_iEpisode);
   details.m_strShowTitle = details.m_strTitle;
 
   movieTime += timeGetTime() - time; time = timeGetTime();
@@ -4203,6 +4205,22 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
   return false;
 }
 
+CStdString CVideoDatabase::GetTVShowQuery(const CStdString &additionalJoins, const CStdString &where) const
+{
+  CStdString fields = "select tvshow.*,path.strPath,counts.totalcount,counts.watchedcount from tvshow ";
+
+  CStdString joins = " join tvshowlinkpath on tvshow.idShow=tvshowlinkpath.idShow "
+                    "join path on path.idpath=tvshowlinkpath.idPath "
+                    "join ("
+                    "select tvshow.idShow as idShow,count(1) as totalcount,count(episode.c08) as watchedcount from tvshow "
+                    "join tvshowlinkepisode on tvshow.idShow = tvshowlinkepisode.idShow "
+                    "join episode on episode.idEpisode = tvshowlinkepisode.idEpisode "
+                    "group by tvshow.idShow"
+                    ") counts on tvshow.idShow = counts.idShow ";
+
+  return fields + additionalJoins + joins + where;
+}
+
 bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idYear, long idActor, long idDirector)
 {
   try
@@ -4214,43 +4232,28 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString fields = "select tvshow.*,path.strPath,counts.totalcount,counts.watchedcount from tvshow ";
-
-    CStdString joins = "join tvshowlinkpath on tvshow.idShow=tvshowlinkpath.idShow "
-                       "join path on path.idpath=tvshowlinkpath.idPath "
-                       "join ("
-                       "select tvshow.idShow as idShow,count(1) as totalcount,count(episode.c08) as watchedcount from tvshow "
-                       "join tvshowlinkepisode on tvshow.idShow = tvshowlinkepisode.idShow "
-                       "join episode on episode.idEpisode = tvshowlinkepisode.idEpisode "
-                       "group by tvshow.idShow"
-                       ") counts on tvshow.idShow = counts.idShow ";
-
-    CStdString where = "";
-
+    CStdString joins, where;
     if (idGenre != -1)
     {
       joins = "join genrelinktvshow on genrelinktvshow.idshow=tvshow.idshow " + joins;
       where = FormatSQL("where genrelinktvshow.idGenre=%u ", idGenre);
     }
-
-    if (idDirector != -1)
+    else if (idDirector != -1)
     {
       joins = "join directorlinktvshow on directorlinktvshow.idshow=tvshow.idshow " + joins;
       where = FormatSQL("where directorlinktvshow.idDirector=%u", idDirector);
     }
-
-    if (idYear != -1)
+    else if (idYear != -1)
     {
       where = FormatSQL("where tvshow.c%02d like '%%%u%%'", VIDEODB_ID_TV_PREMIERED,idYear);
     }
-
-    if (idActor != -1)
+    else if (idActor != -1)
     {
       joins = "join actorlinktvshow on actorlinktvshow.idshow=tvshow.idshow join actors on actors.idActor=actorlinktvshow.idActor " + joins;
       where = FormatSQL("where actors.idActor=%u",idActor);
     }
 
-    CStdString strSQL = fields + joins + where;
+    CStdString strSQL = GetTVShowQuery(joins, where);
     // run query
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
@@ -6205,7 +6208,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
     }
 
     // repeat for all tvshows
-    sql = "select tvshow.*,path.strPath from tvshow join tvshowlinkpath on tvshow.idShow=tvshowlinkpath.idShow join path on tvshowlinkpath.idPath=path.idPath";
+    sql = GetTVShowQuery("", "");
 
     m_pDS->query(sql.c_str());
 

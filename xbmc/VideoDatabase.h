@@ -123,7 +123,6 @@ const struct SDbTableOffsets DbTvShowOffsets[] =
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strGenre) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strOriginalTitle)},
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strEpisodeGuide)},
-  { VIDEODB_TYPE_INT, offsetof(CVideoInfoTag,m_iEpisode) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_fanart.m_xml)},
 };
 
@@ -410,6 +409,8 @@ protected:
   CVideoInfoTag GetDetailsForTvShow(std::auto_ptr<dbiplus::Dataset> &pDS, bool needsCast = false);
   CVideoInfoTag GetDetailsForEpisode(std::auto_ptr<dbiplus::Dataset> &pDS, bool needsCast = false);
   CVideoInfoTag GetDetailsForMusicVideo(std::auto_ptr<dbiplus::Dataset> &pDS);
+
+  CStdString GetTVShowQuery(const CStdString &additionalJoins, const CStdString &where) const;
 
 private:
   virtual bool CreateTables();
