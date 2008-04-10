@@ -4018,7 +4018,7 @@ void CApplication::StopPlaying()
         if (GetPercentage() >= g_advancedSettings.m_playCountMinimumPercent)
         {
           if (m_itemCurrentFile->HasVideoInfoTag() && m_itemCurrentFile->GetVideoInfoTag()->m_iEpisode > -1)
-            dbs.MarkAsWatched(m_itemCurrentFile->GetVideoInfoTag()->m_iDbId,1);
+            dbs.MarkAsWatched(m_itemCurrentFile->GetVideoInfoTag()->m_iDbId,VIDEODB_CONTENT_EPISODES);
           else
             dbs.MarkAsWatched(*m_itemCurrentFile);
           CUtil::DeleteVideoDatabaseDirectoryCache();
@@ -4641,7 +4641,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         dbs.Open();
 
         if (m_itemCurrentFile->HasVideoInfoTag() && m_itemCurrentFile->GetVideoInfoTag()->m_iEpisode > -1)
-          dbs.MarkAsWatched(m_itemCurrentFile->GetVideoInfoTag()->m_iDbId,1);
+          dbs.MarkAsWatched(m_itemCurrentFile->GetVideoInfoTag()->m_iDbId,VIDEODB_CONTENT_EPISODES);
         else
           dbs.MarkAsWatched(*m_itemCurrentFile);
 
