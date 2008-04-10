@@ -3901,21 +3901,29 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL;
-
-    strSQL = FormatSQL("select distinct episode.c%02d,path.strPath,tvshow.c%02d from episode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join tvshowlinkepisode on tvshowlinkepisode.idepisode=episode.idepisode join tvshowlinkpath on tvshowlinkpath.idshow=tvshow.idshow join path on path.idpath=tvshowlinkpath.idpath where tvshow.idshow=%u", VIDEODB_ID_EPISODE_SEASON, VIDEODB_ID_TV_TITLE, idShow);
-
+    CStdString strSQL = FormatSQL("select episode.c%02d,path.strPath,tvshow.c%02d,count(1),count(episode.c%02d) from episode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join tvshowlinkepisode on tvshowlinkepisode.idEpisode = episode.idEpisode ", VIDEODB_ID_EPISODE_SEASON, VIDEODB_ID_TV_TITLE, VIDEODB_ID_EPISODE_PLAYCOUNT);
+    CStdString joins = FormatSQL(" join tvshowlinkpath on tvshowlinkpath.idShow = tvshow.idShow join path on path.idPath = tvshowlinkpath.idPath where tvshow.idShow=%u ", idShow);
+    CStdString extraJoins, extraWhere;
     if (idActor != -1)
-      strSQL = FormatSQL("select distinct episode.c%02d,path.strPath,tvshow.c%02d from episode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join tvshowlinkepisode on tvshowlinkepisode.idepisode = episode.idepisode join actorlinktvshow on actorlinktvshow.idshow=tvshow.idshow join tvshowlinkpath on tvshowlinkpath.idshow=tvshow.idshow join path on path.idpath=tvshowlinkpath.idpath where tvshow.idshow=%u and actorlinktvshow.idActor=%u",VIDEODB_ID_EPISODE_SEASON, VIDEODB_ID_TV_TITLE, idShow, idActor);
-
-    if (idDirector != -1)
-      strSQL = FormatSQL("select distinct episode.c%02d, path.strPath,tvshow.c%02d from episode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join directorlinktvshow on directorlinktvshow.idshow=tvshow.idshow join tvshowlinkpath on tvshowlinpath.idshow=tvshow.idshow join path on path.idpath=tvshowlinkpath.idpath where tvshow.idshow=%u and directorlinktvshow.idDirector=%u",VIDEODB_ID_EPISODE_SEASON, VIDEODB_ID_TV_TITLE, idShow, idDirector);
-
-    if (idGenre != -1)
-      strSQL = FormatSQL("select distinct episode.c%02d, path.strPath,tvshow.c%02d from episode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join tvshowlinkepisode on tvshowlinkepisode.idepisode = episode.idepisode join genrelinktvshow on genrelinktvshow.idshow=tvshow.idshow join tvshowlinkpath on tvshowlinkpath.idshow=tvshow.idshow join path on path.idpath=tvshowlinkpath.idpath where tvshow.idshow=%u and genrelinktvshow.idGenre=%u",VIDEODB_ID_EPISODE_SEASON, VIDEODB_ID_TV_TITLE, idShow, idGenre);
-
-    if (idYear != -1)
-      strSQL = FormatSQL("select distinct episode.c%02d, path.strPath,tvshow.c%02d from episode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join tvshowlinkepisode on tvshowlinkepisode.idepisode = episode.idepisode join tvshowlinkpath on tvshowlinkpath.idshow=tvshow.idshow join path on path.idpath=tvshowlinkpath.idpath where tvshow.idshow=%u and tvshow.c%02d like '%%%u%%'",VIDEODB_ID_EPISODE_SEASON, VIDEODB_ID_TV_TITLE, idShow, VIDEODB_ID_TV_PREMIERED, idYear);
+    {
+      extraJoins = "join actorlinktvshow on actorlinktvshow.idshow=tvshow.idshow";
+      extraWhere = FormatSQL("and actorlinktvshow.idActor=%u", idActor);
+    }
+    else if (idDirector != -1)
+    {
+      extraJoins = "directorlinktvshow on directorlinktvshow.idshow=tvshow.idshow";
+      extraWhere = FormatSQL("and directorlinktvshow.idDirector=%u",idDirector);
+    }
+    else if (idGenre != -1)
+    {
+      extraJoins = "genrelinktvshow on genrelinktvshow.idshow=tvshow.idshow";
+      extraWhere = FormatSQL("and genrelinktvshow.idGenre=%u", idGenre);
+    }
+    else if (idYear != -1)
+    {
+      extraWhere = FormatSQL("and tvshow.c%02d like '%%%u%%'", VIDEODB_ID_TV_PREMIERED, idYear);
+    }
+    strSQL += extraJoins + joins + extraWhere + FormatSQL(" group by episode.c%02d", VIDEODB_ID_EPISODE_SEASON);
 
     CStdString strSQL2 = FormatSQL("select idMovie from movielinktvshow where idShow=%u",idShow);
 
@@ -3935,25 +3943,31 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
 
     if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
-      map<long, CStdString> mapYears;
-      map<long, CStdString>::iterator it;
+      map<long, CSeason> mapSeasons;
+      map<long, CSeason>::iterator it;
       while (!m_pDS->eof())
       {
-        long lYear = m_pDS->fv(0).get_asLong();
-        it = mapYears.find(lYear);
+        long lSeason = m_pDS->fv(0).get_asLong();
+        it = mapSeasons.find(lSeason);
         // check path
         if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_videoSources))
         {
           m_pDS->next();
           continue;
         }
-        if (it == mapYears.end())
-          mapYears.insert(pair<long, CStdString>(lYear, m_pDS->fv(1).get_asString()));
+        if (it == mapSeasons.end())
+        {
+          CSeason season;
+          season.path = m_pDS->fv(1).get_asString();
+          season.numEpisodes = m_pDS->fv(3).get_asInteger();
+          season.numWatched = m_pDS->fv(4).get_asInteger();
+          mapSeasons.insert(make_pair(lSeason, season));
+        }
         m_pDS->next();
       }
       m_pDS->close();
     
-      for (it=mapYears.begin();it != mapYears.end();++it)
+      for (it=mapSeasons.begin();it != mapSeasons.end();++it)
       {
         long lSeason = it->first;
         CStdString strLabel;
@@ -3969,11 +3983,14 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->GetVideoInfoTag()->m_strTitle = strLabel;
         pItem->GetVideoInfoTag()->m_iSeason = lSeason;
         pItem->GetVideoInfoTag()->m_iDbId = idShow;
-        pItem->GetVideoInfoTag()->m_strPath = it->second;
+        pItem->GetVideoInfoTag()->m_strPath = it->second.path;
         pItem->GetVideoInfoTag()->m_strShowTitle = showTitle;
+        pItem->GetVideoInfoTag()->m_iEpisode = it->second.numEpisodes;
+        pItem->SetProperty("watchedepisodes", it->second.numWatched);
+        pItem->SetProperty("unwatchedepisodes", it->second.numEpisodes - it->second.numWatched);
         pItem->SetCachedSeasonThumb();
         items.Add(pItem);
-      }      
+      }
     }
     else
     {
@@ -3995,6 +4012,11 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->GetVideoInfoTag()->m_iDbId = idShow;
         pItem->GetVideoInfoTag()->m_strPath = m_pDS->fv(1).get_asString();
         pItem->GetVideoInfoTag()->m_strShowTitle = showTitle;
+        int totalEpisodes = m_pDS->fv(3).get_asInteger();
+        int watchedEpisodes = m_pDS->fv(4).get_asInteger();
+        pItem->GetVideoInfoTag()->m_iEpisode = totalEpisodes;
+        pItem->SetProperty("watchedepisodes", watchedEpisodes);
+        pItem->SetProperty("unwatchedepisodes", totalEpisodes - watchedEpisodes);
         pItem->SetCachedSeasonThumb();
         items.Add(pItem);
         m_pDS->next();

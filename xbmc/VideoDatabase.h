@@ -238,6 +238,14 @@ public:
     CStdString thumb;
     int playcount;
   };
+
+  class CSeason   // used for season retrieval for non-master users
+  {
+  public:
+    CStdString path;
+    int numEpisodes;
+    int numWatched;
+  };
       
   CVideoDatabase(void);
   virtual ~CVideoDatabase(void);
