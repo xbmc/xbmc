@@ -98,7 +98,8 @@ void CMouse::Update()
           bDoubleClick[i] = true;
         }
         else
-        { // Mouse down
+        { // Mouse down (wake up mouse on button click)
+          m_mouseState.active = true;
         }
       }
     }
