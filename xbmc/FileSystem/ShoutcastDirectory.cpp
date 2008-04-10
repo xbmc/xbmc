@@ -2,9 +2,15 @@
 #include "stdafx.h"
 #include "ShoutcastDirectory.h"
 #include "DirectoryCache.h"
-#include "../Util.h"
+#include "Util.h"
 #include "FileCurl.h"
-#include "../utils/HttpHeader.h"
+#include "utils/HttpHeader.h"
+#include "VideoInfoTag.h"
+#include "MusicInfoTag.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogProgress.h"
+#include "URL.h"
+#include "FileItem.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

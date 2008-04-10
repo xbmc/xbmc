@@ -1,10 +1,15 @@
 #include "stdafx.h"
 #include "DllLibCMyth.h"
 #include "CMythSession.h"
+#include "VideoInfoTag.h"
+#include "Settings.h"
+#include "DateTime.h"
+#include "FileItem.h"
+#include "URL.h"
 
 extern "C" {
-#include "../lib/libcmyth/cmyth.h"
-#include "../lib/libcmyth/mvp_refmem.h"
+#include "lib/libcmyth/cmyth.h"
+#include "lib/libcmyth/mvp_refmem.h"
 }
 
 using namespace XFILE;

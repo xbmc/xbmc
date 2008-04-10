@@ -1,6 +1,6 @@
 #include "include.h"
 #include "VisibleEffect.h"
-#include "../xbmc/utils/GUIInfoManager.h"
+#include "utils/GUIInfoManager.h"
 #include "SkinInfo.h" // for the effect time adjustments
 #include "guiImage.h" // for FRECT
 #include "Tween.h"

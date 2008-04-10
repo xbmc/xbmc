@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include "VideoSettings.h"
 #include "GraphicContext.h"
+#include "Settings.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

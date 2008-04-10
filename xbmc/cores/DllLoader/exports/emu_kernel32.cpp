@@ -2,7 +2,7 @@
 #include "emu_kernel32.h"
 #include "emu_dummy.h"
 
-#include "../../../xbox/IoSupport.h"
+#include "xbox/IoSupport.h"
 
 #include <process.h>
 

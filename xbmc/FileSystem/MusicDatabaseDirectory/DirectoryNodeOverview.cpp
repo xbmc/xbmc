@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "DirectoryNodeOverview.h"
+#include "FileItem.h"
 
 using namespace std;
 using namespace DIRECTORY::MUSICDATABASEDIRECTORY;

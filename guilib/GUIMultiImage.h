@@ -9,7 +9,7 @@
 #pragma once
 
 #include "guiImage.h"
-#include "../xbmc/utils/Stopwatch.h"
+#include "utils/Stopwatch.h"
 
 /*!
  \ingroup controls

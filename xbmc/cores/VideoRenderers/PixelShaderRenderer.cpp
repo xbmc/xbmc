@@ -19,8 +19,6 @@
 */
 #include "stdafx.h"
 #include "PixelShaderRenderer.h"
-#include "../../application.h"
-
 
 CPixelShaderRenderer::CPixelShaderRenderer(LPDIRECT3DDEVICE8 pDevice)
     : CXBoxRenderer(pDevice)

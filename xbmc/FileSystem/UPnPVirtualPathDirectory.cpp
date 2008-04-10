@@ -22,24 +22,27 @@
 
 
 #include "stdafx.h"
-#include "../Util.h"
+#include "Util.h"
 #include "NptUtils.h"
 #include "UPnPVirtualPathDirectory.h"
+#include "FileSystem/Directory.h"
+#include "Settings.h"
+#include "FileItem.h"
 
 using namespace std;
 using namespace DIRECTORY;
 
 /*----------------------------------------------------------------------
-|   CUPnPVirtualPathDirectory::FindSharePath
+|   CUPnPVirtualPathDirectory::FindSourcePath
 +---------------------------------------------------------------------*/
 bool 
-CUPnPVirtualPathDirectory::FindSharePath(const char* share_name, const char* path, bool begin /* = false */) 
+CUPnPVirtualPathDirectory::FindSourcePath(const char* share_name, const char* path, bool begin /* = false */) 
 {
     // look for all the paths given a share name
-    CShare share;
+    CMediaSource share;
     vector<CStdString> paths;
     CUPnPVirtualPathDirectory dir;
-    if (!dir.GetMatchingShare((const char*)share_name, share, paths)) 
+    if (!dir.GetMatchingSource((const char*)share_name, share, paths)) 
         return false;
 
     for (unsigned int i = 0; i < paths.size(); i++) {
@@ -109,7 +112,7 @@ bool
 CUPnPVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items) 
 {
     NPT_String path = strPath.c_str();
-    CShare     share;
+    CMediaSource     share;
     CFileItem* item;
     vector<CStdString> paths;
     path.TrimRight("/");
@@ -150,23 +153,23 @@ CUPnPVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList
                path == "virtualpath://upnpvideo" || 
                path == "virtualpath://upnppictures") {
         // look for all shares given a container
-        VECSHARES *shares = NULL;
+        VECSOURCES *shares = NULL;
         if (path == "virtualpath://upnpmusic") {
-            shares = g_settings.GetSharesFromType("upnpmusic");
+            shares = g_settings.GetSourcesFromType("upnpmusic");
         } else if (path == "virtualpath://upnpvideo") {
-            shares = g_settings.GetSharesFromType("upnpvideo");
+            shares = g_settings.GetSourcesFromType("upnpvideo");
         } else if (path == "virtualpath://upnppictures") {
-            shares = g_settings.GetSharesFromType("upnppictures");
+            shares = g_settings.GetSourcesFromType("upnppictures");
         }
         if (shares) {
             for (unsigned int i = 0; i < shares->size(); i++) {
                 // Does this share contains any local paths?
-                CShare &share = shares->at(i);
+                CMediaSource &share = shares->at(i);
                 // reconstruct share name as it could have been replaced by
                 // a path if there was just one entry
                 NPT_String share_name = path + "/";
                 share_name += share.strName + "/";
-                if (GetMatchingShare((const char*)share_name, share, paths) && paths.size()) {
+                if (GetMatchingSource((const char*)share_name, share, paths) && paths.size()) {
                     item = new CFileItem((const char*)share_name, true);
                     item->SetLabel(share.strName);
                     item->SetLabelPreformated(true);
@@ -176,7 +179,7 @@ CUPnPVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList
         }
         
         return true;
-    } else if (!GetMatchingShare((const char*)path, share, paths)) {
+    } else if (!GetMatchingSource((const char*)path, share, paths)) {
         // split to remove share name from path
         NPT_String share_name;
         NPT_String file_path;
@@ -186,7 +189,7 @@ CUPnPVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList
         }
 
         // make sure the file_path is the beginning of a share paths
-        if (!FindSharePath(share_name, file_path, true)) return false;
+        if (!FindSourcePath(share_name, file_path, true)) return false;
 
         // use the share name to figure out what extensions to use
         if (share_name.StartsWith("virtualpath://upnpmusic")) {
@@ -243,10 +246,10 @@ CUPnPVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList
 }
 
 /*----------------------------------------------------------------------
-|   CUPnPVirtualPathDirectory::GetMatchingShare
+|   CUPnPVirtualPathDirectory::GetMatchingSource
 +---------------------------------------------------------------------*/
 bool 
-CUPnPVirtualPathDirectory::GetMatchingShare(const CStdString &strPath, CShare& share, vector<CStdString>& paths) 
+CUPnPVirtualPathDirectory::GetMatchingSource(const CStdString &strPath, CMediaSource& share, vector<CStdString>& paths) 
 {
     unsigned int index;
 
@@ -256,20 +259,20 @@ CUPnPVirtualPathDirectory::GetMatchingShare(const CStdString &strPath, CShare& s
     if (!GetTypeAndSource(strPath, strType, strSource))
         return false;
 
-    VECSHARES *vecShares = g_settings.GetSharesFromType(strType);
-    if (!vecShares) return false;
+    VECSOURCES *vecSources = g_settings.GetSourcesFromType(strType);
+    if (!vecSources) return false;
 
     // look for share
-    for (index = 0; index < vecShares->size(); ++index) {
-        CShare share = vecShares->at(index);
+    for (index = 0; index < vecSources->size(); ++index) {
+        CMediaSource share = vecSources->at(index);
         CStdString strName = share.strName;
         if (strSource.Equals(strName))
             break;
     }
 
-    if (index == vecShares->size()) return false;
+    if (index == vecSources->size()) return false;
 
-    share = (*vecShares)[index];
+    share = (*vecSources)[index];
 
     // filter out non local shares
     for (unsigned int j = 0; j < share.vecPaths.size(); j++) {

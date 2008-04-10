@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "SPCCodec.h"
-#include "../DllLoader/DllLoader.h"
-#include "../../MusicInfoTagLoaderSPC.h"
+#include "cores/DllLoader/DllLoader.h"
+#include "MusicInfoTagLoaderSPC.h"
+#include "MusicInfoTag.h"
+#include "FileSystem/File.h"
 
 using namespace MUSIC_INFO;
 using namespace XFILE;

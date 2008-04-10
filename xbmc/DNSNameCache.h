@@ -1,5 +1,9 @@
 #pragma once
 
+#include "StdString.h"
+
+#include <vector>
+
 class CDNSNameCache
 {
 public:

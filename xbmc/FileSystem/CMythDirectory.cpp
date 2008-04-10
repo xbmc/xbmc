@@ -3,10 +3,14 @@
 #include "CMythSession.h"
 #include "Util.h"
 #include "DllLibCMyth.h"
+#include "VideoInfoTag.h"
+#include "URL.h"
+#include "GUISettings.h"
+#include "FileItem.h"
 
 extern "C" {
-#include "../lib/libcmyth/cmyth.h"
-#include "../lib/libcmyth/mvp_refmem.h"
+#include "lib/libcmyth/cmyth.h"
+#include "lib/libcmyth/mvp_refmem.h"
 }
 
 using namespace DIRECTORY;
@@ -301,4 +305,9 @@ bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
     return GetRecordings(base, items);
 
   return false;
+}
+
+CDateTime CCMythDirectory::GetValue(cmyth_timestamp_t t) 
+{ 
+  return m_session->GetValue(t); 
 }

@@ -3,14 +3,19 @@
 //
 #include "stdafx.h"
 #include "TuxBoxUtil.h"
-#include "../Util.h"
-#include "../FileSystem/FileCurl.h"
-#include "../utils/HttpHeader.h"
-#include "../utils/HTTP.h"
-#include "../GUIDialogContextMenu.h"
-#include "../Application.h"
-#include "../ApplicationMessenger.h"
+#include "Util.h"
+#include "FileSystem/FileCurl.h"
+#include "GUIDialogContextMenu.h"
+#include "Application.h"
 #include "GUIInfoManager.h"
+#include "VideoInfoTag.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogOK.h"
+#include "GUIDialogYesNo.h"
+#include "FileSystem/File.h"
+#include "URL.h"
+#include "Settings.h"
+#include "FileItem.h"
 
 using namespace XFILE;
 

@@ -5,16 +5,16 @@
 #endif
 
 #include "stdafx.h"
-
-#include <cstring>
 #include "RegExp.h"
 #include "HTMLUtil.h"
 #include "CharsetConverter.h"
-#include "URL.h"
-
+#include "ScraperSettings.h"
+#include "FileSystem/Directory.h"
 #include "Util.h"
+#include "Settings.h"
 
 #include <sstream>
+#include <cstring>
 
 using namespace std;
 

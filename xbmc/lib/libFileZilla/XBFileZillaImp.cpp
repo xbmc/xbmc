@@ -31,7 +31,7 @@
 #include "misc\MarkupSTL.h"
 
 #include "bsdsfv.h"
-#include "../../utils/log.h"
+#include "utils/log.h"
 
 #pragma warning (disable:4244)
 #pragma warning (disable:4800)

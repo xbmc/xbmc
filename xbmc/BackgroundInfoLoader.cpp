@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "BackgroundInfoLoader.h"
+#include "FileItem.h"
 
 #ifdef _XBOX
 #define ITEMS_PER_THREAD 10

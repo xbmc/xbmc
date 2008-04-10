@@ -2,8 +2,9 @@
 #include "GraphicContext.h"
 #include "GUIMessage.h"
 #include "IMsgSenderCallback.h"
-#include "../xbmc/Settings.h"
-#include "../xbmc/XBVideoConfig.h"
+#include "Settings.h"
+#include "GUISettings.h"
+#include "XBVideoConfig.h"
 #ifdef HAS_XBOX_D3D
  #include "xgraphics.h"
  #define D3D_CLEAR_STENCIL D3DCLEAR_STENCIL

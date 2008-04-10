@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include "stdafx.h"
 #include "DVDInputStream.h"
 
 class CDVDInputStreamFFmpeg : public CDVDInputStream

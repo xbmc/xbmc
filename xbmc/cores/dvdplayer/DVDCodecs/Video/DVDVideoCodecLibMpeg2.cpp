@@ -1,8 +1,8 @@
 
 #include "stdafx.h"
 #include "DVDVideoCodecLibMpeg2.h"
-#include "../../DVDClock.h"
-#include "../../DVDStreamInfo.h"
+#include "DVDClock.h"
+#include "DVDStreamInfo.h"
 #include "utils/Win32Exception.h"
 
 /* I really don't want to include ffmpeg headers here, could */

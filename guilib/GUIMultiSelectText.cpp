@@ -1,6 +1,5 @@
 #include "include.h"
 #include "GUIMultiSelectText.h"
-#include "../xbmc/utils/GUIInfoManager.h"
 
 using namespace std;
 

@@ -1,6 +1,8 @@
 #pragma once
 #include "InfoLoader.h"
 
+class TiXmlElement;
+
 #define WEATHER_LABEL_LOCATION   10
 #define WEATHER_IMAGE_CURRENT_ICON 21
 #define WEATHER_LABEL_CURRENT_COND 22

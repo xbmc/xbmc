@@ -1,7 +1,9 @@
 #pragma once
 #include "utils/Thread.h"
 #include "VideoDatabase.h"
-#include "utils/IMDB.h"
+#include "ScraperSettings.h"
+
+class CIMDB;
 
 namespace VIDEO
 {
@@ -37,9 +39,9 @@ namespace VIDEO
     void Stop();
     void SetObserver(IVideoInfoScannerObserver* pObserver);
 
-    void EnumerateSeriesFolder(const CFileItem* item, IMDB_EPISODELIST& episodeList);
+    void EnumerateSeriesFolder(const CFileItem* item, std::map<std::pair<int,int>,CScraperUrl>& episodeList);
     long AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, const CVideoInfoTag &movieDetails, long idShow, bool bApplyToDir=false, CGUIDialogProgress* pDialog = NULL);
-    void OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, IMDB_EPISODELIST& files, long lShowId, CIMDB& IMDB, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress = NULL);
+    void OnProcessSeriesFolder(std::map<std::pair<int,int>,CScraperUrl>& episodes, std::map<std::pair<int,int>,CScraperUrl>& files, long lShowId, CIMDB& IMDB, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress = NULL);
     static CStdString GetnfoFile(CFileItem *item, bool bGrabAny=false);
     long GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const SScraperInfo& info, bool bUseDirNames=false, CGUIDialogProgress* pDialog=NULL);
     bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, bool bRefresh=false, CScraperUrl *pURL=NULL, CGUIDialogProgress* m_dlgProgress  = NULL);

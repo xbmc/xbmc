@@ -2,6 +2,7 @@
 #include "include.h"
 #include "stdafx.h"
 #include "Util.h"
+#include "FileSystem/File.h"
 
 #ifndef WSAEVENT  //Needed for XBMC_PC somehow.
 #define WSAEVENT                HANDLE

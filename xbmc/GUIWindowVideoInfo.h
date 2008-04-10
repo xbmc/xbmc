@@ -1,11 +1,11 @@
 #pragma once
 #include "GUIDialog.h"
-#include "utils/IMDB.h"
 #include "GUIListItem.h"
 #include "VideoDatabase.h"
 #include "GUIWindowVideoBase.h"
 #include "GUIWindowVideoFiles.h"
-#include "utils/ScraperParser.h"
+
+class CFileItem;
 
 class CGUIWindowVideoInfo :
       public CGUIDialog
@@ -20,8 +20,8 @@ public:
   bool RefreshAll() const;
   virtual bool OnAction(const CAction& action);
 
-  const CStdString &GetThumbnail() const { return m_movieItem.GetThumbnailImage(); };
-  virtual CFileItem* GetCurrentListItem(int offset = 0) { return &m_movieItem; }
+  const CStdString &GetThumbnail() const;
+  virtual CFileItem* GetCurrentListItem(int offset = 0) { return m_movieItem; }
   virtual bool HasListItems() const { return true; };
 protected:
   virtual void OnInitWindow();
@@ -38,7 +38,7 @@ protected:
   void OnGetThumb();
   void OnGetFanart();
   void PlayTrailer();
-  CFileItem m_movieItem;
+  CFileItem* m_movieItem;
   bool m_bViewReview;
   bool m_bRefresh;
   bool m_bRefreshAll;

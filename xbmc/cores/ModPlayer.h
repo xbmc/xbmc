@@ -1,8 +1,8 @@
 #pragma once
 #include "iplayer.h"
-#include "../utils/thread.h"
-#include "../lib/mikxbox/mikmod.h"
-#include "../lib/mikxbox/mikxbox.h"
+#include "utils/thread.h"
+#include "lib/mikxbox/mikmod.h"
+#include "lib/mikxbox/mikxbox.h"
 
 class ModPlayer : public IPlayer, public CThread
 {

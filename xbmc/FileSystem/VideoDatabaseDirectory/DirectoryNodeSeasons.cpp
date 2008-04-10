@@ -1,7 +1,8 @@
-#include "stdafx.h"
 #include "DirectoryNodeSeasons.h"
 #include "QueryParams.h"
-#include "../../VideoDatabase.h"
+#include "VideoDatabase.h"
+#include "GUISettings.h"
+#include "FileItem.h"
 
 using namespace DIRECTORY::VIDEODATABASEDIRECTORY;
 

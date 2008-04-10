@@ -5,7 +5,7 @@
 #include "stdafx.h"
 #include "Shortcut.h"
 #include "Util.h"
-
+#include "tinyXML/tinyxml.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

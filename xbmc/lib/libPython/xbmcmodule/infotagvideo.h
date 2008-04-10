@@ -1,5 +1,5 @@
-#include "../python/Python.h"
-#include "../../../utils/IMDB.h"
+#include "lib/libPython/python/Python.h"
+#include "VideoInfoTag.h"
 
 #pragma once
 

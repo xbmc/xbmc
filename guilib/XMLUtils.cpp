@@ -1,6 +1,6 @@
 #include "include.h"
 #include "XMLUtils.h"
-#include "../xbmc/Util.h"
+#include "Util.h"
 
 bool XMLUtils::GetHex(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwHexValue)
 {

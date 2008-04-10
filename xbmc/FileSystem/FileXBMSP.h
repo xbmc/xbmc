@@ -13,8 +13,8 @@
 
 extern "C"
 {
-#include "../lib/libXBMS/ccincludes.h"
-#include "../lib/libXBMS/ccxclient.h"
+#include "lib/libXBMS/ccincludes.h"
+#include "lib/libXBMS/ccxclient.h"
 }
 
 namespace XFILE

@@ -21,11 +21,12 @@
 #include "stdafx.h"
 #include "File.h"
 #include "FileFactory.h"
-#include "../Application.h"
-#include "../Util.h"
+#include "Application.h"
+#include "Util.h"
 #include "DirectoryCache.h"
 #include "FileCache.h"
-#include "../utils/Win32Exception.h"
+#include "utils/Win32Exception.h"
+#include "URL.h"
 
 using namespace std;
 using namespace XFILE;
@@ -892,4 +893,9 @@ void CFileStream::Close()
 
   m_buffer.Detach();
   SAFE_DELETE(m_file);
+}
+
+bool CFileStream::Open(const CStdString& filename)
+{ 
+  return Open(CURL(filename));
 }

@@ -12,9 +12,8 @@
 
 #include "stdafx.h"
 #include "CacheMemBuffer.h"
-#include "Util.h"
-#include "../utils/log.h"
-#include "../utils/SingleLock.h"
+#include "utils/log.h"
+#include "utils/SingleLock.h"
 
 #include <math.h>
 

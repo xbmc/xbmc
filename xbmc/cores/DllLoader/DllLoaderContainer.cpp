@@ -3,6 +3,7 @@
 #include "DllLoaderContainer.h"
 #include "DllLoader.h"
 #include "dll_tracker.h" // for python unload hack
+#include "FileSystem/File.h"
 
 #define ENV_PATH "Q:\\system\\;Q:\\system\\players\\mplayer\\;Q:\\system\\players\\dvdplayer\\;Q:\\system\\players\\paplayer\\;Q:\\system\\python\\"
 

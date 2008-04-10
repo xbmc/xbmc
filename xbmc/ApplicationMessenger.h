@@ -1,5 +1,7 @@
 #pragma once
 
+class CFileItem;
+
 // defines here
 #define TMSG_DIALOG_DOMODAL       100
 #define TMSG_WRITE_SCRIPT_OUTPUT  101

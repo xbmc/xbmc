@@ -1,10 +1,12 @@
 #include "stdafx.h"
 #include "SmartPlaylistDirectory.h"
-#include "../utils/log.h"
-#include "../SmartPlaylist.h"
-#include "../MusicDatabase.h"
-#include "../VideoDatabase.h"
-#include "../Util.h"
+#include "utils/log.h"
+#include "SmartPlaylist.h"
+#include "MusicDatabase.h"
+#include "VideoDatabase.h"
+#include "Playlist.h"
+#include "FileSystem/Directory.h"
+#include "FileSystem/File.h"
 
 using namespace PLAYLIST;
 
@@ -83,6 +85,11 @@ namespace DIRECTORY
       }
     }
     return "";
+  }
+
+  bool CSmartPlaylistDirectory::Remove(const char *strPath)
+  { 
+    return XFILE::CFile::Delete(strPath); 
   }
 }
 

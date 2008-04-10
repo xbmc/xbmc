@@ -1,22 +1,11 @@
 #pragma once
 
 #include "utils/Archive.h"
-#include "utils/ScraperParser.h"
-#include "PluginSettings.h"
-#include "ScraperSettings.h"
+#include "utils/ScraperUrl.h"
 #include "utils/ScraperUrl.h"
 #include "utils/Fanart.h"
 
 #include <vector>
-
-struct SScraperInfo
-{
-  CStdString strTitle;
-  CStdString strPath;
-  CStdString strThumb;
-  CStdString strContent; // dupe, whatever
-  CScraperSettings settings;
-};
 
 struct SActorInfo
 {
@@ -77,3 +66,5 @@ public:
   int m_iBookmarkId;
   CFanart m_fanart;
 };
+
+typedef std::vector<CVideoInfoTag> VECMOVIES;

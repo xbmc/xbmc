@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "GUILargeTextureManager.h"
 #include "Picture.h"
+#include "GUISettings.h"
+#include "FileItem.h"
 
 CGUILargeTextureManager g_largeTextureManager;
 

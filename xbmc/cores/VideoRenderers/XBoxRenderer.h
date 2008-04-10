@@ -1,6 +1,8 @@
 #ifndef XBOX_RENDERER
 #define XBOX_RENDERER
 
+#include "GraphicContext.h"
+
 //#define MP_DIRECTRENDERING
 
 #ifdef MP_DIRECTRENDERING

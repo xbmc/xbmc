@@ -28,5 +28,5 @@ protected:
   void SavePlayList();
 
   int m_movingFrom;
-  VECSHARES m_shares;
+  VECSOURCES m_shares;
 };

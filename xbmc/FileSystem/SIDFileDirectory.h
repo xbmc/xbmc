@@ -1,7 +1,7 @@
 #pragma once
 
 #include "IFileDirectory.h"
-#include "../cores/paplayer/DllSidplay2.h"
+#include "cores/paplayer/DllSidplay2.h"
 
 namespace DIRECTORY
 {

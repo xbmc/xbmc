@@ -1,14 +1,14 @@
 #include "stdafx.h"
-#include "../../../Application.h"
-#include "../../../utils/GUIInfoManager.h"
-#include "../../../PlayListPlayer.h"
-#include "../../../Util.h"
+#include "Application.h"
+#include "utils/GUIInfoManager.h"
+#include "PlayListPlayer.h"
 #include "player.h"
 #include "pyplaylist.h"
 #include "pyutil.h"
 #include "infotagvideo.h"
 #include "infotagmusic.h"
 #include "listitem.h"
+#include "FileItem.h"
 
 using namespace MUSIC_INFO;
 

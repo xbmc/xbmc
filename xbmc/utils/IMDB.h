@@ -12,7 +12,8 @@
 #include "HTTP.h"
 #include "Thread.h"
 #include "ScraperParser.h"
-#include "../VideoInfoTag.h"
+#include "VideoInfoTag.h"
+#include "ScraperSettings.h"
 
 // forward definitions
 class TiXmlDocument;

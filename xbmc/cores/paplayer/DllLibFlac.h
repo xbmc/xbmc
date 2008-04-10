@@ -1,5 +1,5 @@
 #pragma once
-#include "../../DynamicDll.h"
+#include "DynamicDll.h"
 #include "flac/stream_decoder.h"
 
 class DllLibFlacInterface

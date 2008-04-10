@@ -12,10 +12,14 @@
 #endif
 #include "paplayer/paplayer.h"
 #include "paplayer/wmacodec.h"
-#include "../GUIDialogContextMenu.h"
-#include "../XBAudioConfig.h"
-#include "../FileSystem/FileCurl.h"
-#include "../utils/HttpHeader.h"
+#include "GUIDialogContextMenu.h"
+#include "XBAudioConfig.h"
+#include "FileSystem/FileCurl.h"
+#include "utils/HttpHeader.h"
+#include "GUISettings.h"
+#include "URL.h"
+#include "GUIWindowManager.h"
+#include "FileItem.h"
 
 using namespace AUTOPTR;
 

@@ -2,11 +2,11 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "MediaMonitor.h"
-#include "../Picture.h"
-#include "../Util.h"
-#include "../FileSystem/VirtualDirectory.h"
+#include "Picture.h"
+#include "Util.h"
+#include "FileSystem/VirtualDirectory.h"
 
 CMediaMonitor *CMediaMonitor::monitor = NULL;
 //////////////////////////////////////////////////////////////////////

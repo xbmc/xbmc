@@ -1,11 +1,13 @@
 #pragma once
 
 #include "GUIDialogSettings.h"
-#include "utils/IMDB.h"
+#include "ScraperSettings.h"
 
-namespace VIDEO {
-struct SScanSettings;
+namespace VIDEO 
+{
+  struct SScanSettings;
 }
+class CFileItemList;
 
 class CGUIDialogContentSettings : public CGUIDialogSettings
 {
@@ -36,7 +38,7 @@ protected:
   bool m_bSingleItem;
   bool m_bExclude;
   std::map<CStdString,std::vector<SScraperInfo> > m_scrapers; // key = content type
-  CFileItemList m_vecItems;
+  CFileItemList* m_vecItems;
 
   SScraperInfo m_info;
   CScraperSettings m_scraperSettings; // needed so we have a basis

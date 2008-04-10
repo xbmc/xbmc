@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "FileReader.h"
-#include "../../utils/SingleLock.h"
+#include "utils/SingleLock.h"
 
 
 #define DATA_TO_KEEP_BEHIND 65536

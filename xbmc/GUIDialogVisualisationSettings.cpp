@@ -23,9 +23,7 @@
 #include "GUIDialogVisualisationSettings.h"
 #include "GUIWindowSettingsCategory.h"
 #include "GUIControlGroupList.h"
-#include "Util.h"
 #include "utils/GUIInfoManager.h"
-
 
 #define CONTROL_SETTINGS_LABEL      2
 #define CONTROL_NONE_AVAILABLE      3

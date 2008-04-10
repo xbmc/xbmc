@@ -2,6 +2,8 @@
 #include "GUIWindowMusicBase.h"
 #include "ThumbLoader.h"
 
+class CFileItemList;
+
 class CGUIWindowMusicPlaylistEditor : public CGUIWindowMusicBase, public IBackgroundLoaderObserver
 {
 public:
@@ -40,6 +42,6 @@ protected:
   CMusicThumbLoader m_thumbLoader;
   CMusicThumbLoader m_playlistThumbLoader;
 
-  CFileItemList m_playlist;
+  CFileItemList* m_playlist;
   CStdString m_strLoadedPlaylist;
 };

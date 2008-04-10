@@ -37,13 +37,13 @@ class CUPnPVirtualPathDirectory : public CVirtualPathDirectory
 public:
 
     // class methods
-    static bool FindSharePath(const char* share_name, const char* path, bool begin = false);
+    static bool FindSourcePath(const char* share_name, const char* path, bool begin = false);
     static bool SplitPath(const char* object_id, NPT_String& share_name, NPT_String& path);
 
     // CVirtualPathDirectory overrides
     bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-    //bool GetMatchingShare(const CStdString &strPath, CShare& share);
+    //bool GetMatchingSource(const CStdString &strPath, CMediaSource& share);
     
-    bool GetMatchingShare(const CStdString &strPath, CShare& share, std::vector<CStdString>& paths);
+    bool GetMatchingSource(const CStdString &strPath, CMediaSource& share, std::vector<CStdString>& paths);
 };
 }

@@ -1,7 +1,7 @@
 #include "include.h"
 #include "GUILargeImage.h"
 #include "TextureManager.h"
-#include "../xbmc/GUILargeTextureManager.h"
+#include "GUILargeTextureManager.h"
 
 // TODO: Override SetFileName() to not FreeResources() immediately.  Instead, keep the current image around until we
 //       actually have a new image in AllocResources().
