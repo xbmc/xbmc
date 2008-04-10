@@ -271,9 +271,9 @@ bool CGUIListItem::HasProperty(const CStdString &strKey) const
 {
   std::map<CStdString,CStdString,icompare>::const_iterator iter = m_mapProperties.find(strKey);
   if (iter == m_mapProperties.end())
-    return FALSE;
+    return false;
 
-  return TRUE;
+  return true;
 }
 
 void CGUIListItem::ClearProperty(const CStdString &strKey)
