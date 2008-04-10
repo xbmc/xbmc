@@ -38,7 +38,7 @@ using namespace XFILE;
 using namespace DIRECTORY;
 using namespace VIDEO;
 
-#define VIDEO_DATABASE_VERSION 15
+#define VIDEO_DATABASE_VERSION 16
 #define VIDEO_DATABASE_OLD_VERSION 3.f
 #define VIDEO_DATABASE_NAME "MyVideos34.db"
 #define RECENTLY_ADDED_LIMIT  25
@@ -861,9 +861,6 @@ long CVideoDatabase::AddEpisode(long idShow, const CStdString& strFilenameAndPat
     lEpisodeId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
 
     strSQL=FormatSQL("insert into tvshowlinkepisode (idShow,idEpisode) values (%i,%i)",idShow,lEpisodeId);
-    m_pDS->exec(strSQL.c_str());
-    // and update the show
-    strSQL=FormatSQL("update tvshow set c%02d=(select count(idEpisode) from tvshowlinkepisode where idshow=%u) where idshow=%u",VIDEODB_ID_TV_EPISODES,idShow,idShow);
     m_pDS->exec(strSQL.c_str());
 //    CommitTransaction();
 
@@ -1815,8 +1812,6 @@ long CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideo
     sql.TrimRight(',');
     sql += FormatSQL("where idShow=%u", lTvShowId);
     m_pDS->exec(sql.c_str());
-    sql = FormatSQL("update tvshow set c%02d=(select count(idEpisode) from tvshowlinkepisode where idshow=%u) where idshow=%u",VIDEODB_ID_TV_EPISODES,lTvShowId,lTvShowId);
-    m_pDS->exec(sql.c_str());
     // update tvshowlinkpath info to reflect it points to this tvshow
     long lPathId = GetPath(strPath);
     if (lPathId < 0)
@@ -2411,9 +2406,6 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, long lE
     strSQL=FormatSQL("delete from tvshowlinkepisode where idepisode=%i", lEpisodeId);
     m_pDS->exec(strSQL.c_str());
 
-    strSQL=FormatSQL("update tvshow set c%02d=(select count(idEpisode) from tvshowlinkepisode where idShow=%u) where idshow=%u",VIDEODB_ID_TV_EPISODES,idShow, idShow);
-    m_pDS->exec(strSQL);
-
     strSQL=FormatSQL("delete from episode where idepisode=%i", lEpisodeId);
     m_pDS->exec(strSQL.c_str());
 
@@ -2550,8 +2542,10 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool n
     }
   }
   details.m_iDbId = lTvShowId;
-  // note use of -2 here as opposed to path, as there is no file.strFileName in the query nor any fileid, so two less entries
-  details.m_strPath = pDS->fv(VIDEODB_DETAILS_PATH - 2).get_asString();
+  details.m_strPath = pDS->fv(VIDEODB_MAX_COLUMNS + 1).get_asString();
+  details.m_iEpisode = pDS->fv(VIDEODB_MAX_COLUMNS + 2).get_asInteger();
+  // TODO: Make this a "play count", or for a TV show, it'll be "watched number"
+  details.m_bWatched = (pDS->fv(VIDEODB_MAX_COLUMNS + 3).get_asInteger() == details.m_iEpisode);
   details.m_strShowTitle = details.m_strTitle;
 
   movieTime += timeGetTime() - time; time = timeGetTime();
@@ -3184,6 +3178,11 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     {
       // clear all tvshow columns above 11 to fix results of an old bug
       m_pDS->exec("UPDATE tvshow SET c12=NULL, c13=NULL, c14=NULL, c15=NULL, c16=NULL, c17=NULL, c18=NULL, c19=NULL, c20=NULL");
+    }
+    if (iVersion < 16)
+    {
+      // remove episodes column from tvshows
+      m_pDS->exec("UPDATE tvshow SET c11=c12,c12=NULL");
     }
   }
   catch (...)
@@ -4215,28 +4214,43 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL = FormatSQL("select tvshow.*,path.strPath,path.strPath from tvshow join tvshowlinkpath on tvshow.idShow=tvshowlinkpath.idShow join path on path.idpath=tvshowlinkpath.idPath");
+    CStdString fields = "select tvshow.*,path.strPath,counts.totalcount,counts.watchedcount from tvshow ";
+
+    CStdString joins = "join tvshowlinkpath on tvshow.idShow=tvshowlinkpath.idShow "
+                       "join path on path.idpath=tvshowlinkpath.idPath "
+                       "join ("
+                       "select tvshow.idShow as idShow,count(1) as totalcount,count(episode.c08) as watchedcount from tvshow "
+                       "join tvshowlinkepisode on tvshow.idShow = tvshowlinkepisode.idShow "
+                       "join episode on episode.idEpisode = tvshowlinkepisode.idEpisode "
+                       "group by tvshow.idShow"
+                       ") counts on tvshow.idShow = counts.idShow ";
+
+    CStdString where = "";
 
     if (idGenre != -1)
     {
-      strSQL=FormatSQL("select tvshow.*,path.strPath,path.strPath from tvshow join genrelinktvshow on genrelinktvshow.idshow=tvshow.idshow join tvshowlinkpath on tvshowlinkpath.idshow = tvshow.idshow join path on path.idpath=tvshowlinkpath.idpath where genrelinktvshow.idGenre=%u ", idGenre);
+      joins = "join genrelinktvshow on genrelinktvshow.idshow=tvshow.idshow " + joins;
+      where = FormatSQL("where genrelinktvshow.idGenre=%u ", idGenre);
     }
 
     if (idDirector != -1)
     {
-       strSQL=FormatSQL("select tvshow.*,path.strPath,path.strPath from tvshow join directorlinktvshow on directorlinktvshow.idshow=tvshow.idshow join tvshowlinkpath on tvshowlinkpath.idshow = tvshow.idshow join path on path.idpath=tvshowlinkpath.idpath where directorlinktvshow.idDirector=%u", idDirector);
+      joins = "join directorlinktvshow on directorlinktvshow.idshow=tvshow.idshow " + joins;
+      where = FormatSQL("where directorlinktvshow.idDirector=%u", idDirector);
     }
 
     if (idYear != -1)
     {
-      strSQL=FormatSQL("select tvshow.*,path.strPath,path.strPath from tvshow,path,tvshowlinkpath where tvshow.c%02d like '%%%u%%' and path.idPath=tvshowlinkpath.idpath and tvshowlinkpath.idshow=tvshow.idshow",VIDEODB_ID_TV_PREMIERED,idYear);
+      where = FormatSQL("where tvshow.c%02d like '%%%u%%'", VIDEODB_ID_TV_PREMIERED,idYear);
     }
 
     if (idActor != -1)
     {
-      strSQL=FormatSQL("select tvshow.*,path.strPath,path.strPath from tvshow join actorlinktvshow on actorlinktvshow.idshow=tvshow.idshow join actors on actors.idActor=actorlinktvshow.idActor join tvshowlinkpath on tvshowlinkpath.idshow = tvshow.idshow join path on tvshowlinkpath.idpath = path.idpath where actors.idActor=%u",idActor);
+      joins = "join actorlinktvshow on actorlinktvshow.idshow=tvshow.idshow join actors on actors.idActor=actorlinktvshow.idActor " + joins;
+      where = FormatSQL("where actors.idActor=%u",idActor);
     }
 
+    CStdString strSQL = fields + joins + where;
     // run query
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
@@ -5998,15 +6012,6 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const s
     m_pDS->exec(sql.c_str());
     sql = "delete from movielinktvshow where idMovie not in (select distinct idMovie from movie)";
     m_pDS->exec(sql.c_str());
-
-    CLog::Log(LOGDEBUG, "%s Updating episode counts", __FUNCTION__);
-    m_pDS->query("select idshow from tvshow");
-    while (!m_pDS->eof())
-    {
-      CStdString strSQL=FormatSQL("update tvshow set c%02d=(select count(idEpisode) from tvshowlinkepisode where idshow=%u) where idshow=%u",VIDEODB_ID_TV_EPISODES,m_pDS->fv("tvshow.idshow").get_asInteger(),m_pDS->fv("tvshow.idshow").get_asInteger());
-      m_pDS2->exec(strSQL.c_str());
-      m_pDS->next();
-    }
 
     CLog::Log(LOGDEBUG, "%s Cleaning musicvideo table", __FUNCTION__);
     sql = "delete from musicvideo where idmvideo in " + musicVideosToDelete;

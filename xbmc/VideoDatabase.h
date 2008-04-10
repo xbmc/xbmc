@@ -106,8 +106,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_TV_GENRE = 8,
   VIDEODB_ID_TV_ORIGINALTITLE = 9,
   VIDEODB_ID_TV_EPISODEGUIDE = 10,
-  VIDEODB_ID_TV_EPISODES = 11,
-  VIDEODB_ID_TV_FANART = 12,
+  VIDEODB_ID_TV_FANART = 11,
   VIDEODB_ID_TV_MAX
 } VIDEODB_TV_IDS;
 
