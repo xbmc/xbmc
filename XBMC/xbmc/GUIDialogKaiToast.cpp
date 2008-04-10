@@ -24,8 +24,8 @@
 #include "GUISliderControl.h"
 #include "GUIAudioManager.h"
 
-#define POPUP_ICON     400
-#define POPUP_CAPTION_TEXT   401
+#define POPUP_ICON                400
+#define POPUP_CAPTION_TEXT        401
 #define POPUP_NOTIFICATION_BUTTON 402
 
 CGUIDialogKaiToast::CGUIDialogKaiToast(void)
