@@ -70,8 +70,6 @@ public:
     if (m_pRenderer)
     {
       m_pRenderer->OnClose();
-      delete m_pRenderer;
-      m_pRenderer = NULL;      
     }
   }
 #endif
