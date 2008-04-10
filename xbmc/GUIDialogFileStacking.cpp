@@ -30,6 +30,7 @@ CGUIDialogFileStacking::CGUIDialogFileStacking(void)
 {
   m_iSelectedFile = -1;
   m_iNumberOfFiles = 0;
+  m_stackItems = NULL;
 }
 
 CGUIDialogFileStacking::~CGUIDialogFileStacking(void)
@@ -41,7 +42,8 @@ bool CGUIDialogFileStacking::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     CGUIDialog::OnMessage(message);
-    m_stackItems->Clear();
+	if (m_stackItems)
+		m_stackItems->Clear();
     return true;
   case GUI_MSG_WINDOW_INIT:
     {
