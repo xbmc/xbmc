@@ -1,18 +1,16 @@
 #pragma once
 #include "Database.h"
-#include "utils/IMDB.h"
-#include "settings/VideoSettings.h"
+#include "VideoInfoTag.h"
+
 #include <set>
 
-typedef std::vector<CStdString> VECMOVIEYEARS;
-typedef std::vector<CStdString> VECMOVIEACTORS;
-typedef std::vector<CStdString> VECMOVIEGENRES;
-typedef std::vector<CVideoInfoTag> VECMOVIES;
-typedef std::vector<CStdString> VECMOVIESFILES;
+struct SScraperInfo;
+class CFileItem;
+class CFileItemList;
+class CVideoSettings;
+class CGUIDialogProgress;
 
-#define VIDEO_SHOW_ALL 0
-#define VIDEO_SHOW_UNWATCHED 1
-#define VIDEO_SHOW_WATCHED 2
+typedef std::vector<CVideoInfoTag> VECMOVIES;
 
 namespace VIDEO
 {

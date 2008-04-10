@@ -22,9 +22,10 @@
 #include "stdafx.h"
 #include "GUIViewStateMusic.h"
 #include "PlayListPlayer.h"
-#include "Util.h"
 #include "GUIBaseContainer.h" // for VIEW_TYPE_*
 #include "VideoDatabase.h"
+#include "Settings.h"
+#include "FileItem.h"
 
 #include "FileSystem/MusicDatabaseDirectory.h"
 #include "FileSystem/VideoDatabaseDirectory.h"
@@ -478,45 +479,45 @@ void CGUIViewStateWindowMusicNav::AddOnlineShares()
   if (!g_guiSettings.GetBool("network.enableinternet")) return;
   for (int i = 0; i < (int)g_settings.m_musicSources.size(); ++i)
   {
-    CShare share = g_settings.m_musicSources.at(i);
+    CMediaSource share = g_settings.m_musicSources.at(i);
     if (share.strPath.Find("shout://www.shoutcast.com/sbin/newxml.phtml") == 0)//shoutcast shares
     {
       share.m_strThumbnailImage="defaultFolderBig.png";
-      m_shares.push_back(share);
+      m_sources.push_back(share);
     }
     else if (share.strPath.Find("lastfm://") == 0)//lastfm share
     {
       share.m_strThumbnailImage="defaultFolderBig.png";
-      m_shares.push_back(share);
+      m_sources.push_back(share);
     }
   }
 }
 
-VECSHARES& CGUIViewStateWindowMusicNav::GetShares()
+VECSOURCES& CGUIViewStateWindowMusicNav::GetSources()
 {
   //  Setup shares we want to have
-  m_shares.clear();
+  m_sources.clear();
   //  Musicdb shares
   CFileItemList items;
   CDirectory::GetDirectory("musicdb://", items);
   for (int i=0; i<items.Size(); ++i)
   {
     CFileItem* item=items[i];
-    CShare share;
+    CMediaSource share;
     share.strName=item->GetLabel();
     share.strPath = item->m_strPath;
     share.m_strThumbnailImage="defaultFolderBig.png";
-    share.m_iDriveType = SHARE_TYPE_LOCAL;
-    m_shares.push_back(share);
+    share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+    m_sources.push_back(share);
   }
 
   //  Playlists share
-  CShare share;
+  CMediaSource share;
   share.strName=g_localizeStrings.Get(136); // Playlists
   share.strPath = "special://musicplaylists/";
   share.m_strThumbnailImage="defaultFolderBig.png";
-  share.m_iDriveType = SHARE_TYPE_LOCAL;
-  m_shares.push_back(share);
+  share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+  m_sources.push_back(share);
 
   AddOnlineShares();
 
@@ -524,8 +525,8 @@ VECSHARES& CGUIViewStateWindowMusicNav::GetShares()
   share.strName=g_localizeStrings.Get(137); // Search
   share.strPath = "musicsearch://";
   share.m_strThumbnailImage="defaultFolderBig.png";
-  share.m_iDriveType = SHARE_TYPE_LOCAL;
-  m_shares.push_back(share);
+  share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+  m_sources.push_back(share);
 
   // music video share
   CVideoDatabase database;
@@ -535,8 +536,8 @@ VECSHARES& CGUIViewStateWindowMusicNav::GetShares()
     share.strName = g_localizeStrings.Get(20389);
     share.strPath = "videodb://3/";
     share.m_strThumbnailImage = "defaultFolderBig.png";
-    share.m_iDriveType = SHARE_TYPE_LOCAL;
-    m_shares.push_back(share);
+    share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+    m_sources.push_back(share);
   }
 
   // plugins share
@@ -544,10 +545,10 @@ VECSHARES& CGUIViewStateWindowMusicNav::GetShares()
   {
     share.strName = g_localizeStrings.Get(1038);
     share.strPath = "plugin://music/";
-    m_shares.push_back(share);
+    m_sources.push_back(share);
   }
 
-  return CGUIViewStateWindowMusic::GetShares();
+  return CGUIViewStateWindowMusic::GetSources();
 }
 
 CGUIViewStateWindowMusicSongs::CGUIViewStateWindowMusicSongs(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
@@ -583,7 +584,7 @@ void CGUIViewStateWindowMusicSongs::SaveViewState()
   SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_FILES);
 }
 
-VECSHARES& CGUIViewStateWindowMusicSongs::GetShares()
+VECSOURCES& CGUIViewStateWindowMusicSongs::GetSources()
 {
   return g_settings.m_musicSources;
 }
@@ -627,17 +628,17 @@ bool CGUIViewStateWindowMusicPlaylist::HideParentDirItems()
   return true;
 }
 
-VECSHARES& CGUIViewStateWindowMusicPlaylist::GetShares()
+VECSOURCES& CGUIViewStateWindowMusicPlaylist::GetSources()
 {
-  m_shares.clear();
+  m_sources.clear();
   //  Playlist share
-  CShare share;
+  CMediaSource share;
   share.strPath = "playlistmusic://";
   share.m_strThumbnailImage="defaultFolderBig.png";
-  share.m_iDriveType = SHARE_TYPE_LOCAL;
-  m_shares.push_back(share);
+  share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+  m_sources.push_back(share);
 
-  return CGUIViewStateWindowMusic::GetShares();
+  return CGUIViewStateWindowMusic::GetSources();
 }
 
 CGUIViewStateMusicShoutcast::CGUIViewStateMusicShoutcast(const CFileItemList& items) : CGUIViewStateWindowMusic(items)

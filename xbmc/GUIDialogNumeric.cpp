@@ -21,10 +21,11 @@
 
 #include "stdafx.h"
 #include "GUIDialogNumeric.h"
-#include "Util.h"
 #include "GUILabelControl.h"
 #include "utils/md5.h"
 #include "xbox/XKGeneral.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogOK.h"
 
 #define CONTROL_HEADING_LABEL 1
 #define CONTROL_INPUT_LABEL 4

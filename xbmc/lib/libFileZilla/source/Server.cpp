@@ -33,7 +33,7 @@
 #include "version.h"
 
 #if defined(_XBOX)
-#include "../../utils/Log.h"
+#include "utils/Log.h"
 #endif
 
 #ifndef MB_SERVICE_NOTIFICATION

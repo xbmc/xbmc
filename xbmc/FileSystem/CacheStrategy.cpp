@@ -15,8 +15,8 @@
 #include "PlatformInclude.h"
 #endif
 #include "Util.h"
-#include "../utils/log.h"
-#include "../utils/SingleLock.h"
+#include "utils/log.h"
+#include "utils/SingleLock.h"
 
 namespace XFILE {
 

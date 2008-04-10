@@ -25,7 +25,9 @@
 #include "GUIDialogNumeric.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogFileBrowser.h"
+#include "GUIWindowManager.h"
 #include "Util.h"
+#include "URL.h"
 
 #define CONTROL_PROTOCOL        10
 #define CONTROL_SERVER_ADDRESS  11
@@ -128,10 +130,10 @@ void CGUIDialogNetworkSetup::OnInitWindow()
 void CGUIDialogNetworkSetup::OnServerBrowse()
 {
   // open a filebrowser dialog with the current address
-  VECSHARES shares;
+  VECSOURCES shares;
   CStdString path = ConstructPath();
   // get the share as the base path
-  CShare share;
+  CMediaSource share;
   CStdString basePath = path;
   CStdString tempPath;
   while (CUtil::GetParentPath(basePath, tempPath))

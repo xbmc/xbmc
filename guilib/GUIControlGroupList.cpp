@@ -1,6 +1,6 @@
 #include "include.h"
 #include "GUIControlGroupList.h"
-#include "../xbmc/utils/GUIInfoManager.h"
+#include "utils/GUIInfoManager.h"
 
 #define TIME_TO_SCROLL 200;
 

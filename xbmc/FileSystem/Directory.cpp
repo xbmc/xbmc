@@ -3,8 +3,9 @@
 #include "Directory.h"
 #include "FactoryDirectory.h"
 #include "FactoryFileDirectory.h"
-#include "../utils/Win32Exception.h"
-#include "../Util.h"
+#include "utils/Win32Exception.h"
+#include "Util.h"
+#include "FileItem.h"
 
 using namespace std;
 using namespace DIRECTORY;

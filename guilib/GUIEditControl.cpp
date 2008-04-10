@@ -1,7 +1,6 @@
 #include "include.h"
 #include "GUIEditControl.h"
-#include "../xbmc/Util.h"
-#include "../xbmc/utils/CharsetConverter.h"
+#include "utils/CharsetConverter.h"
 
 using namespace std;
 

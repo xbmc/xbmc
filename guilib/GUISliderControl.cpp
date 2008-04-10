@@ -1,6 +1,6 @@
 #include "include.h"
 #include "GUISliderControl.h"
-#include "../xbmc/utils/GUIInfoManager.h"
+#include "utils/GUIInfoManager.h"
 #include "GUIFontManager.h"
 
 

@@ -20,11 +20,13 @@
  */
 
 #include "stdafx.h"
+#include "GUISettings.h"
 #include "GUIDialogKeyboard.h"
 #include "GUILabelControl.h"
 #include "GUIButtonControl.h"
-#include "Util.h"
 #include "GUIDialogNumeric.h"
+#include "GUIDialogOK.h"
+#include "GUIWindowManager.h"
 #include "utils/RegExp.h"
 #include "GUIPassword.h"
 #include "utils/md5.h"

@@ -10,9 +10,9 @@
 
 #include <vector>
 #include <stack>
-#include "../xbmc/utils/CriticalSection.h"  // base class
-#include "TransformMatrix.h"                // for the members m_guiTransform etc.
-#include "Geometry.h"                       // for CRect/CPoint
+#include "utils/CriticalSection.h"  // base class
+#include "TransformMatrix.h"        // for the members m_guiTransform etc.
+#include "Geometry.h"               // for CRect/CPoint
 #include "gui3d.h"
 
 // forward definitions

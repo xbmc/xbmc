@@ -1,9 +1,10 @@
 #include "stdafx.h"
 #include "GUIDialogGamepad.h"
-#include "Util.h"
 #include "utils/md5.h"
 #include "xbox/XKGeneral.h"
-#include "../guilib/GUIAudioManager.h"
+#include "GUIAudioManager.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogOK.h"
 
 CGUIDialogGamepad::CGUIDialogGamepad(void)
     : CGUIDialogBoxBase(WINDOW_DIALOG_GAMEPAD, "DialogGamepad.xml")

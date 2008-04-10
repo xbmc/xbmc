@@ -24,6 +24,7 @@
 #include "Util.h"
 #include "Picture.h"
 #include "id3v1genre.h"
+#include "MusicInfoTag.h"
 
 using namespace XFILE;
 using namespace AUTOPTR;

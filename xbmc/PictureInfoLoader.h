@@ -14,7 +14,7 @@ protected:
   virtual void OnLoaderStart();
   virtual void OnLoaderFinish();
 protected:
-  CFileItemList m_mapFileItems;
+  CFileItemList* m_mapFileItems;
   unsigned int m_tagReads;
   bool m_loadTags;
 };

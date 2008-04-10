@@ -1,6 +1,6 @@
 
 #pragma once
-#include "../../DynamicDll.h"
+#include "DynamicDll.h"
 
 extern "C" {
 #ifndef HAVE_MMX

@@ -1,10 +1,9 @@
 #pragma once
 
-#include "Profile.h"
-#include "../guilib/tinyXML/tinyxml.h"
+#include "tinyXML/tinyxml.h"
 #include <vector>
 #include <map>
-#include "../guilib/GraphicContext.h"
+#include "GraphicContext.h"
 
 // Render Methods
 #define RENDER_LQ_RGB_SHADER   0

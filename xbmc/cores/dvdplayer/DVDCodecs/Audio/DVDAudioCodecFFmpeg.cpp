@@ -1,7 +1,7 @@
 
 #include "stdafx.h"
 #include "DVDAudioCodecFFmpeg.h"
-#include "../../DVDStreamInfo.h"
+#include "DVDStreamInfo.h"
 
 CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg() : CDVDAudioCodec()
 {

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "DirectoryNodeTvShowsOverview.h"
+#include "FileItem.h"
 
 using namespace DIRECTORY::VIDEODATABASEDIRECTORY;
 

@@ -1,6 +1,6 @@
 #include "include.h"
 #include "GUIWrappingListContainer.h"
-#include "../xbmc/FileItem.h"
+#include "FileItem.h"
 
 CGUIWrappingListContainer::CGUIWrappingListContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int fixedPosition)
     : CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, orientation, scrollTime)

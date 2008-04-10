@@ -1,11 +1,11 @@
 #pragma once
 #include "Stopwatch.h"
 #include "Thread.h"
-#include "../../guilib/LocalizeStrings.h"
+
 struct SAlarmClockEvent
 {
   CStopWatch watch;
-	double m_fSecs;
+  double m_fSecs;
   CStdString m_strCommand;
 };
 

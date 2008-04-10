@@ -1,11 +1,12 @@
 #include "stdafx.h"
-#include "../../../PlayListPlayer.h"
-#include "../../../Util.h"
+#include "PlayListPlayer.h"
+#include "Util.h"
 #include "pyplaylist.h"
-#include "../python/structmember.h"
-#include "../../../PlayListFactory.h"
+#include "lib/libPython/python/structmember.h"
+#include "PlayListFactory.h"
 #include "pyutil.h"
 #include "listitem.h"
+#include "PlayList.h"
 
 using namespace std;
 using namespace PLAYLIST;
@@ -33,7 +34,7 @@ namespace PYXBMC
     self = (PlayListItem*)type->tp_alloc(type, 0);
     if (!self) return NULL;
 
-    self->item = new PLAYLIST::CPlayList::CPlayListItem();
+    self->item = new PLAYLIST::CPlayListItem();
 
     return (PyObject*)self;
   }
@@ -137,7 +138,7 @@ namespace PYXBMC
     }
     else
     {
-      CPlayList::CPlayListItem Item;
+      CPlayListItem Item;
       CFileItem item(strUrl, false);
 
       Item.SetFileName(strUrl);
@@ -195,12 +196,12 @@ namespace PYXBMC
         // add each item of the playlist to the playlistplayer
         for (int i=0; i < (int)pPlayList->size(); ++i)
         {
-          const CPlayList::CPlayListItem& playListItem =(*pPlayList)[i];
+          const CPlayListItem& playListItem =(*pPlayList)[i];
           CStdString strLabel=playListItem.GetDescription();
           if (strLabel.size()==0)
             strLabel=CUtil::GetFileName(playListItem.GetFileName());
 
-          CPlayList::CPlayListItem playlistItem;
+          CPlayListItem playlistItem;
           playlistItem.SetFileName(playListItem.GetFileName());
           playlistItem.SetDescription(strLabel);
           playlistItem.SetDuration(playListItem.GetDuration());
@@ -306,7 +307,7 @@ namespace PYXBMC
     PlayListItem* item = (PlayListItem*)_PyObject_New(&PlayListItem_Type);
     //Py_INCREF(item);
 
-    item->item = new PLAYLIST::CPlayList::CPlayListItem();
+    item->item = new PLAYLIST::CPlayListItem();
 
     CPlayList* p = ((PlayList*)self)->pPlayList;
     *item->item = (*p)[pos];

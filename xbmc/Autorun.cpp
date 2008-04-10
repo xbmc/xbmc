@@ -31,6 +31,12 @@
 #include "utils/KaiClient.h"
 #include "ProgramDatabase.h"
 #include "utils/Trainer.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogYesNo.h"
+#include "FileSystem/Directory.h"
+#include "FileSystem/File.h"
+#include "Settings.h"
+#include "PlayList.h"
 
 using namespace std;
 using namespace XFILE;

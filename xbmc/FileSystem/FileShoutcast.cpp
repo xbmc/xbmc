@@ -3,8 +3,11 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "stdafx.h"
 #include "FileShoutcast.h"
+#include "GUISettings.h"
+#include "GUIDialogProgress.h"
+#include "GUIWindowManager.h"
+#include "URL.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -15,13 +18,13 @@
 #define WIN32 1
 #endif
 
-#include "../lib/libshout/types.h"
-#include "../lib/libshout/rip_manager.h"
-#include "../lib/libshout/util.h"
-#include "../lib/libshout/filelib.h"
+#include "lib/libshout/types.h"
+#include "lib/libshout/rip_manager.h"
+#include "lib/libshout/util.h"
+#include "lib/libshout/filelib.h"
 #include "RingBuffer.h"
 #include "ShoutcastRipFile.h"
-#include "../utils/GUIInfoManager.h"
+#include "utils/GUIInfoManager.h"
 
 using namespace MUSIC_INFO;
 using namespace XFILE;

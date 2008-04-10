@@ -1,8 +1,8 @@
 #pragma once
 #include "IFile.h"
-#include "../cores/paplayer/RingHoldBuffer.h"
+#include "cores/paplayer/RingHoldBuffer.h"
 #include <map>
-#include "../utils/HttpHeader.h"
+#include "utils/HttpHeader.h"
 
 namespace XCURL
 {

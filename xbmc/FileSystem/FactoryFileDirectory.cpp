@@ -1,6 +1,6 @@
 
 #include "stdafx.h"
-#include "../Util.h"
+#include "Util.h"
 #include "FactoryFileDirectory.h"
 #ifdef HAS_FILESYSTEM
 #include "OGGFileDirectory.h"
@@ -10,10 +10,16 @@
 #include "RarDirectory.h"
 #include "ZipDirectory.h"
 #include "SmartPlaylistDirectory.h"
-#include "../SmartPlaylist.h"
+#include "SmartPlaylist.h"
 #include "PlaylistFileDirectory.h"
-#include "../PlayListFactory.h"
-#include "../GUIViewState.h"
+#include "PlayListFactory.h"
+#include "GUIViewState.h"
+#include "FileSystem/Directory.h"
+#include "FileSystem/File.h"
+#include "FileSystem/RarManager.h"
+#include "FileSystem/ZipManager.h"
+#include "Settings.h"
+#include "FileItem.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -69,7 +75,7 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
   if (strExtension.Equals(".zip"))
   {
     CStdString strUrl; 
-    CUtil::CreateZipPath(strUrl, strPath, "");
+    CUtil::CreateArchivePath(strUrl, "zip", strPath, "");
 
     CFileItemList item;
     CGUIViewState* guiState = CGUIViewState::GetViewState(0,item);
@@ -103,7 +109,7 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
   if (strExtension.Equals(".rar") || strExtension.Equals(".001"))
   {
     CStdString strUrl; 
-    CUtil::CreateRarPath(strUrl, strPath, "");
+    CUtil::CreateArchivePath(strUrl, "rar", strPath, "");
 
     std::vector<CStdString> tokens;
     CUtil::Tokenize(strPath,tokens,".");

@@ -1,4 +1,5 @@
 #include "rar.hpp"
+#include "Url.h"
 
 ComprDataIO::ComprDataIO()
 {

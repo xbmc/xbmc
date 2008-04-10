@@ -6,9 +6,9 @@ OFF/Green/Red/Orange/Cycle
 #include "stdafx.h"
 #include "LED.h"
 #include "SystemInfo.h"
-#include "../xbox/XKUtils.h"
+#include "xbox/XKUtils.h"
 #include "LCD.h"
-
+#include "GUISettings.h"
 
 #include <conio.h>
 

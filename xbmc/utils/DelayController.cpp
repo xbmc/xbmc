@@ -11,7 +11,7 @@
 
 #include "stdafx.h"
 #ifdef HAS_GAMEPAD
-#include "../XBInputEx.h"
+#include "XBInputEx.h"
 #endif
 #include "DelayController.h"
 

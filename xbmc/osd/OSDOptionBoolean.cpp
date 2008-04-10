@@ -1,6 +1,6 @@
 
-#include "../stdafx.h"
-#include "./OSDOptionBoolean.h"
+#include "stdafx.h"
+#include "OSDOptionBoolean.h"
 #include "GUIFontManager.h"
 
 #ifdef _DEBUG

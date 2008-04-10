@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "OGGcodec.h"
-#include "../../OggTag.h"
-#include "../../Util.h"
+#include "OggTag.h"
+#include "Util.h"
 
 using namespace MUSIC_INFO;
 

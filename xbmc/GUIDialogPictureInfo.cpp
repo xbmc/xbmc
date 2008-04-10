@@ -22,6 +22,8 @@
 #include "stdafx.h"
 #include "GUIDialogPictureInfo.h"
 #include "utils/GUIInfoManager.h"
+#include "GUIWindowManager.h"
+#include "FileItem.h"
 
 #define CONTROL_PICTURE_INFO 5
 
@@ -30,10 +32,12 @@
 CGUIDialogPictureInfo::CGUIDialogPictureInfo(void)
     : CGUIDialog(WINDOW_DIALOG_PICTURE_INFO, "DialogPictureInfo.xml")
 {
+  m_pictureInfo = new CFileItemList;
 }
 
 CGUIDialogPictureInfo::~CGUIDialogPictureInfo(void)
 {
+  delete m_pictureInfo;
 }
 
 void CGUIDialogPictureInfo::SetPicture(CFileItem *item)
@@ -79,7 +83,7 @@ void CGUIDialogPictureInfo::UpdatePictureInfo()
   // add stuff from the current slide to the list
   CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_PICTURE_INFO);
   OnMessage(msgReset);
-  m_pictureInfo.Clear();
+  m_pictureInfo->Clear();
   for (int info = SLIDE_INFO_START; info <= SLIDE_INFO_END; ++info)
   {
     CStdString picInfo = g_infoManager.GetLabel(info);
@@ -87,7 +91,7 @@ void CGUIDialogPictureInfo::UpdatePictureInfo()
     {
       CFileItem *item = new CFileItem(g_localizeStrings.Get(SLIDE_STRING_BASE + info));
       item->SetLabel2(picInfo);
-      m_pictureInfo.Add(item);
+      m_pictureInfo->Add(item);
       CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PICTURE_INFO, 0, 0, (void*)item);
       OnMessage(msg);
     }
@@ -99,6 +103,6 @@ void CGUIDialogPictureInfo::OnDeinitWindow(int nextWindowID)
   CGUIDialog::OnDeinitWindow(nextWindowID);
   CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_PICTURE_INFO);
   OnMessage(msgReset);
-  m_pictureInfo.Clear();
+  m_pictureInfo->Clear();
   m_currentPicture.Empty();
 }

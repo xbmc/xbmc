@@ -1,5 +1,5 @@
 #pragma once
-#include "../../../../DynamicDll.h"
+#include "DynamicDll.h"
 #include "libmad/mad.h"
 
 class DllLibMadInterface

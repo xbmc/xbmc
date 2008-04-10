@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "AlarmClock.h"
-#include "../Application.h"
-#include "../Util.h"
+#include "Application.h"
+#include "Util.h"
 
 CAlarmClock g_alarmClock;
 CAlarmClock::CAlarmClock() : m_bIsRunning(false)

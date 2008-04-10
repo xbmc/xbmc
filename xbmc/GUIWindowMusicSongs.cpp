@@ -27,6 +27,8 @@
 #include "CueDocument.h"
 #include "GUIPassword.h"
 #include "GUIDialogMusicScan.h"
+#include "GUIWindowManager.h"
+#include "FileItem.h"
 
 using namespace AUTOPTR;
 using namespace MEDIA_DETECT;
@@ -48,7 +50,7 @@ using namespace MEDIA_DETECT;
 CGUIWindowMusicSongs::CGUIWindowMusicSongs(void)
     : CGUIWindowMusicBase(WINDOW_MUSIC_FILES, "MyMusicSongs.xml")
 {
-  m_vecItems.m_strPath="?";
+  m_vecItems->m_strPath="?";
 
   m_thumbLoader.SetObserver(this);
   // Remove old HD cache every time XBMC is loaded
@@ -82,10 +84,10 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
       }
 
       // is this the first time the window is opened?
-      if (m_vecItems.m_strPath == "?" && strDestination.IsEmpty())
+      if (m_vecItems->m_strPath == "?" && strDestination.IsEmpty())
       {
         strDestination = g_settings.m_defaultMusicSource;
-        m_vecItems.m_strPath=strDestination;
+        m_vecItems->m_strPath=strDestination;
         CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
       }
 
@@ -95,26 +97,26 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
         // open root
         if (strDestination.Equals("$ROOT"))
         {
-          m_vecItems.m_strPath = "";
+          m_vecItems->m_strPath = "";
           CLog::Log(LOGINFO, "  Success! Opening root listing.");
         }
         // open playlists location
         else if (strDestination.Equals("$PLAYLISTS"))
         {
-          m_vecItems.m_strPath = "special://musicplaylists/";
-          CLog::Log(LOGINFO, "  Success! Opening destination path: %s", m_vecItems.m_strPath.c_str());
+          m_vecItems->m_strPath = "special://musicplaylists/";
+          CLog::Log(LOGINFO, "  Success! Opening destination path: %s", m_vecItems->m_strPath.c_str());
         }
         else
         {
           // default parameters if the jump fails
-          m_vecItems.m_strPath.Empty();
+          m_vecItems->m_strPath.Empty();
 
           bool bIsSourceName = false;
 
           SetupShares();
-          VECSHARES shares;
-          m_rootDir.GetShares(shares);
-          int iIndex = CUtil::GetMatchingShare(strDestination, shares, bIsSourceName);
+          VECSOURCES shares;
+          m_rootDir.GetSources(shares);
+          int iIndex = CUtil::GetMatchingSource(strDestination, shares, bIsSourceName);
           if (iIndex > -1)
           {
             bool unlocked = true;
@@ -123,7 +125,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
               CFileItem item(shares[iIndex]);
               if (!g_passwordManager.IsItemUnlocked(&item,"music"))
               {
-                m_vecItems.m_strPath = ""; // no u don't
+                m_vecItems->m_strPath = ""; // no u don't
                 unlocked = false;
                 CLog::Log(LOGINFO, "  Failure! Failed to unlock destination path: %s", strDestination.c_str());
               }
@@ -132,10 +134,10 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
             if (unlocked)
             {
               if (bIsSourceName)
-                m_vecItems.m_strPath=shares[iIndex].strPath;
+                m_vecItems->m_strPath=shares[iIndex].strPath;
               else
-                m_vecItems.m_strPath=strDestination;
-              CLog::Log(LOGINFO, "  Success! Opened destination path: %s (%s)", strDestination.c_str(), m_vecItems.m_strPath.c_str());
+                m_vecItems->m_strPath=strDestination;
+              CLog::Log(LOGINFO, "  Success! Opened destination path: %s (%s)", strDestination.c_str(), m_vecItems->m_strPath.c_str());
             }
           }
           else
@@ -145,7 +147,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
         }
 
         // need file filters or GetDirectory in SetHistoryPath fails
-        SetHistoryForPath(m_vecItems.m_strPath);
+        SetHistoryForPath(m_vecItems->m_strPath);
       }
 
       return CGUIWindowMusicBase::OnMessage(message);
@@ -161,9 +163,9 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
       {
         CStdString strParent;
         CUtil::GetParentPath(directory.m_strPath, strParent);
-        if (directory.m_strPath == m_vecItems.m_strPath || strParent == m_vecItems.m_strPath)
+        if (directory.m_strPath == m_vecItems->m_strPath || strParent == m_vecItems->m_strPath)
         {
-          Update(m_vecItems.m_strPath);
+          Update(m_vecItems->m_strPath);
         }
       }
     }
@@ -182,7 +184,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 
       if (iControl == CONTROL_BTNPLAYLISTS)
       {
-        if (!m_vecItems.m_strPath.Equals("special://musicplaylists/"))
+        if (!m_vecItems->m_strPath.Equals("special://musicplaylists/"))
           Update("special://musicplaylists/");
       }
       else if (iControl == CONTROL_BTNSCAN)
@@ -215,14 +217,14 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 void CGUIWindowMusicSongs::OnScan(int iItem)
 {
   CStdString strPath;
-  if (iItem < 0 || iItem >= m_vecItems.Size())
-    strPath = m_vecItems.m_strPath;
-  else if (m_vecItems[iItem]->m_bIsFolder)
-    strPath = m_vecItems[iItem]->m_strPath;
+  if (iItem < 0 || iItem >= m_vecItems->Size())
+    strPath = m_vecItems->m_strPath;
+  else if (m_vecItems->Get(iItem)->m_bIsFolder)
+    strPath = m_vecItems->Get(iItem)->m_strPath;
   else
   { // TODO: MUSICDB - should we allow scanning a single item into the database?
     //       This will require changes to the info scanner, which assumes we're running on a folder
-    strPath = m_vecItems.m_strPath;
+    strPath = m_vecItems->m_strPath;
   }
   DoScan(strPath);
 }
@@ -307,7 +309,7 @@ void CGUIWindowMusicSongs::UpdateButtons()
   }
 
   // Disable scan button if shoutcast
-  if (m_vecItems.IsVirtualDirectoryRoot() || m_vecItems.IsShoutCast() || m_vecItems.IsLastFM() || m_vecItems.IsMusicDb())
+  if (m_vecItems->IsVirtualDirectoryRoot() || m_vecItems->IsShoutCast() || m_vecItems->IsLastFM() || m_vecItems->IsMusicDb())
   {
     CONTROL_DISABLE(CONTROL_BTNSCAN);
   }
@@ -316,7 +318,7 @@ void CGUIWindowMusicSongs::UpdateButtons()
     CONTROL_ENABLE(CONTROL_BTNSCAN);
   }
   static int iOldLeftControl=-1;
-  if (m_vecItems.IsShoutCast() || m_vecItems.IsLastFM())
+  if (m_vecItems->IsShoutCast() || m_vecItems->IsLastFM())
   {
     CONTROL_DISABLE(CONTROL_BTNVIEWASICONS);
     CGUIControl* pControl = (CGUIControl*)GetControl(CONTROL_LIST);
@@ -349,10 +351,10 @@ void CGUIWindowMusicSongs::UpdateButtons()
   }
 
   // Update object count label
-  int iItems = m_vecItems.Size();
+  int iItems = m_vecItems->Size();
   if (iItems)
   {
-    CFileItem* pItem = m_vecItems[0];
+    CFileItem* pItem = m_vecItems->Get(0);
     if (pItem->IsParentFolder()) iItems--;
   }
   CStdString items;
@@ -362,17 +364,17 @@ void CGUIWindowMusicSongs::UpdateButtons()
 
 void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
-  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems.Size()) ? m_vecItems[itemNumber] : NULL;
+  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : NULL;
 
   if (item)
   {
     // are we in the playlists location?
-    bool inPlaylists = m_vecItems.m_strPath.Equals(CUtil::MusicPlaylistsLocation()) || m_vecItems.m_strPath.Equals("special://musicplaylists/");
+    bool inPlaylists = m_vecItems->m_strPath.Equals(CUtil::MusicPlaylistsLocation()) || m_vecItems->m_strPath.Equals("special://musicplaylists/");
 
-    if (m_vecItems.IsVirtualDirectoryRoot())
+    if (m_vecItems->IsVirtualDirectoryRoot())
     {
       // get the usual music shares, and anything for all media windows
-      CShare *share = CGUIDialogContextMenu::GetShare("music", item);
+      CMediaSource *share = CGUIDialogContextMenu::GetShare("music", item);
       CGUIDialogContextMenu::GetContextButtons("music", share, buttons);
       // enable Rip CD an audio disc
       if (CDetectDVDMedia::IsDiscInDrive() && item->IsCDDA())
@@ -399,7 +401,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
       }
 
       // enable Rip CD Audio or Track button if we have an audio disc
-      if (CDetectDVDMedia::IsDiscInDrive() && m_vecItems.IsCDDA())
+      if (CDetectDVDMedia::IsDiscInDrive() && m_vecItems->IsCDDA())
       {
         // those cds can also include Audio Tracks: CDExtra and MixedMode!
         CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo();
@@ -408,7 +410,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
       }
 
       // enable CDDB lookup if the current dir is CDDA
-      if (CDetectDVDMedia::IsDiscInDrive() && m_vecItems.IsCDDA() && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
+      if (CDetectDVDMedia::IsDiscInDrive() && m_vecItems->IsCDDA() && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
         buttons.Add(CONTEXT_BUTTON_CDDB, 16002);
 
       if (!item->IsParentFolder() && !item->IsReadOnly())
@@ -430,7 +432,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
         buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);	// Stop Scanning
       else if (
         !inPlaylists && 
-        !m_vecItems.IsInternetStream() && 
+        !m_vecItems->IsInternetStream() && 
         !item->IsLastFM() && 
         !item->IsShoutCast() && 
         !item->m_strPath.Equals("add") && 
@@ -441,17 +443,17 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
       }
     }
   }
-  if (!m_vecItems.IsVirtualDirectoryRoot())
+  if (!m_vecItems->IsVirtualDirectoryRoot())
     buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
   CGUIWindowMusicBase::GetNonContextButtons(buttons);
 }
 
 bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
-  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems.Size()) ? m_vecItems[itemNumber] : NULL;
-  if ( m_vecItems.IsVirtualDirectoryRoot() && item)
+  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : NULL;
+  if ( m_vecItems->IsVirtualDirectoryRoot() && item)
   {
-    CShare *share = CGUIDialogContextMenu::GetShare("music", item);
+    CMediaSource *share = CGUIDialogContextMenu::GetShare("music", item);
     if (CGUIDialogContextMenu::OnContextButton("music", share, button))
     {
       Update("");
@@ -475,7 +477,7 @@ bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button
 
   case CONTEXT_BUTTON_CDDB:
     if (m_musicdatabase.LookupCDDBInfo(true))
-      Update(m_vecItems.m_strPath);
+      Update(m_vecItems->m_strPath);
     return true;
 
   case CONTEXT_BUTTON_DELETE:
@@ -487,7 +489,7 @@ bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button
     return true;
 
   case CONTEXT_BUTTON_SWITCH_MEDIA:
-		CGUIDialogContextMenu::SwitchMedia("music", m_vecItems.m_strPath);
+		CGUIDialogContextMenu::SwitchMedia("music", m_vecItems->m_strPath);
 		return true;
   default:
     break;
@@ -542,10 +544,10 @@ void CGUIWindowMusicSongs::PlayItem(int iItem)
   // and cleared!
 
   // we're at the root source listing
-  if (m_vecItems.IsVirtualDirectoryRoot() && !m_vecItems[iItem]->IsDVD())
+  if (m_vecItems->IsVirtualDirectoryRoot() && !m_vecItems->Get(iItem)->IsDVD())
     return;
 
-  if (m_vecItems[iItem]->IsDVD())
+  if (m_vecItems->Get(iItem)->IsDVD())
     CAutorun::PlayDisc();
   else
     CGUIWindowMusicBase::PlayItem(iItem);
@@ -559,10 +561,10 @@ bool CGUIWindowMusicSongs::Update(const CStdString &strDirectory)
   if (!CGUIMediaWindow::Update(strDirectory))
     return false;
 
-  if (!m_vecItems.GetContent().IsEmpty())
-    g_infoManager.m_content = m_vecItems.GetContent();
+  if (!m_vecItems->GetContent().IsEmpty())
+    g_infoManager.m_content = m_vecItems->GetContent();
   else
     g_infoManager.m_content = "files";
-  m_thumbLoader.Load(m_vecItems);
+  m_thumbLoader.Load(*m_vecItems);
   return true;
 }

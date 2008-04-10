@@ -2,8 +2,8 @@
 #pragma once
 
 #include "DVDDemux.h"
-#include "../../ffmpeg/DllAvFormat.h"
-#include "../../ffmpeg/DllAvCodec.h"
+#include "cores/ffmpeg/DllAvFormat.h"
+#include "cores/ffmpeg/DllAvCodec.h"
 
 class CDVDDemuxFFmpeg;
 

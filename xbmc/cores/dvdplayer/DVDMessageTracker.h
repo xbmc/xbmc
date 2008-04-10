@@ -5,7 +5,7 @@
 
 #ifdef DVDDEBUG_MESSAGE_TRACKER
 
-#include "../../utils/thread.h"
+#include "utils/thread.h"
 
 class CDVDMsg;
 
