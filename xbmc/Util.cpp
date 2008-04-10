@@ -1612,15 +1612,13 @@ void CUtil::GetHomePath(CStdString& strPath)
   *szFileName = 0;
   strPath = szXBEFileName;
 #else
-  if (getenv("XBMC_HOME") == NULL)
-    printf("WARNING: The XBMC_HOME environment variable is not set.\n");
-  
   if (getenv("XBMC_HOME") != NULL)
   {
     strPath = getenv("XBMC_HOME");
   }
   else
   {
+    printf("The XBMC_HOME environment variable is not set.\n");
 #ifdef __APPLE__
     int      result = -1;
     char     given_path[2*MAXPATHLEN];
