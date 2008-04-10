@@ -367,7 +367,7 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         CLog::Log(LOGDEBUG, "WindowVideoNav::GetDirectory");
         // grab the show thumb
         CFileItem showItem;
-        m_database.GetFilePath(params.GetTvShowId(),showItem.m_strPath,2);
+        m_database.GetFilePath(params.GetTvShowId(),showItem.m_strPath,VIDEODB_CONTENT_TVSHOWS);
         showItem.SetVideoThumb();
         items.SetProperty("tvshowthumb", showItem.GetThumbnailImage());
         // Grab fanart data
@@ -785,23 +785,23 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
 
 void CGUIWindowVideoNav::DeleteItem(CFileItem* pItem)
 {
-  int iType=0;
-  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty()) // tvshow
-    iType = 2;
-  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder) // episode
-    iType = 1;
+  VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES;
+  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty())
+    iType = VIDEODB_CONTENT_TVSHOWS;
+  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder)
+    iType = VIDEODB_CONTENT_EPISODES;
   if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_artist.size() > 0)
-    iType = 3;
+    iType = VIDEODB_CONTENT_MUSICVIDEOS;
 
   CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
   if (!pDialog) return;
-  if (iType == 0)
+  if (iType == VIDEODB_CONTENT_MOVIES)
     pDialog->SetHeading(432);
-  if (iType == 1)
+  if (iType == VIDEODB_CONTENT_EPISODES)
     pDialog->SetHeading(20362);
-  if (iType == 2)
+  if (iType == VIDEODB_CONTENT_TVSHOWS)
     pDialog->SetHeading(20363);
-  if (iType == 3)
+  if (iType == VIDEODB_CONTENT_MUSICVIDEOS)
     pDialog->SetHeading(20392);
   CStdString strLine;
   strLine.Format(g_localizeStrings.Get(433),pItem->GetLabel());
@@ -817,16 +817,16 @@ void CGUIWindowVideoNav::DeleteItem(CFileItem* pItem)
 
   database.GetFilePath(pItem->GetVideoInfoTag()->m_iDbId, path, iType);
   if (path.IsEmpty()) return;
-  if (iType == 0)
+  if (iType == VIDEODB_CONTENT_MOVIES)
     database.DeleteMovie(path);
-  if (iType == 1)
+  if (iType == VIDEODB_CONTENT_EPISODES)
     database.DeleteEpisode(path);
-  if (iType == 2)
+  if (iType == VIDEODB_CONTENT_TVSHOWS)
     database.DeleteTvShow(path);
-  if (iType == 3)
+  if (iType == VIDEODB_CONTENT_MUSICVIDEOS)
     database.DeleteMusicVideo(path);
 
-  if (iType == 2)
+  if (iType == VIDEODB_CONTENT_TVSHOWS)
     database.SetPathHash(path,"");  
   else
   {

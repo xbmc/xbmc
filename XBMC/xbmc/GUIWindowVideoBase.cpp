@@ -1301,11 +1301,11 @@ void CGUIWindowVideoBase::MarkUnWatched(CFileItem* item)
     if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_bWatched)
       continue;
 
-    int iType=0;
+    VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES;
     if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder) // episode
-      iType = 1;
+      iType = VIDEODB_CONTENT_EPISODES;
     if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_artist.size() > 0)
-      iType = 3;
+      iType = VIDEODB_CONTENT_MUSICVIDEOS;
 
     database.MarkAsUnWatched(pItem->GetVideoInfoTag()->m_iDbId,iType);
   }
@@ -1334,11 +1334,11 @@ void CGUIWindowVideoBase::MarkWatched(CFileItem* item)
     if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_bWatched)
       continue;
 
-    int iType=0;
-    if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder) // episode
-      iType = 1;
+    VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES;
+    if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder)
+      iType = VIDEODB_CONTENT_EPISODES;
     if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_artist.size() > 0)
-      iType = 3;
+      iType = VIDEODB_CONTENT_MUSICVIDEOS;
 
     database.MarkAsWatched(pItem->GetVideoInfoTag()->m_iDbId,iType);
   }
@@ -1351,21 +1351,21 @@ void CGUIWindowVideoBase::UpdateVideoTitle(CFileItem* pItem)
   CVideoDatabase database;
   database.Open();
 
-  int iType=0;
-  if (pItem->HasVideoInfoTag() && (!pItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty() || pItem->GetVideoInfoTag()->m_iEpisode > 0)) // tvshow
-    iType = 2;
-  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder) // episode
-    iType = 1;
-  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_artist.size() > 0) // music video
-    iType = 3;
+  VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES;
+  if (pItem->HasVideoInfoTag() && (!pItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty() || pItem->GetVideoInfoTag()->m_iEpisode > 0))
+    iType = VIDEODB_CONTENT_TVSHOWS;
+  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder)
+    iType = VIDEODB_CONTENT_EPISODES;
+  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_artist.size() > 0)
+    iType = VIDEODB_CONTENT_MUSICVIDEOS;
 
-  if (iType == 0) // movies
+  if (iType == VIDEODB_CONTENT_MOVIES)
     database.GetMovieInfo("", detail, pItem->GetVideoInfoTag()->m_iDbId);
-  if (iType == 1) //  episodes
+  if (iType == VIDEODB_CONTENT_EPISODES)
     database.GetEpisodeInfo(pItem->m_strPath,detail,pItem->GetVideoInfoTag()->m_iDbId);
-  if (iType == 2) // tvshows
+  if (iType == VIDEODB_CONTENT_TVSHOWS)
     database.GetTvShowInfo(pItem->GetVideoInfoTag()->m_strFileNameAndPath,detail,pItem->GetVideoInfoTag()->m_iDbId);
-  if (iType == 3) // music video
+  if (iType == VIDEODB_CONTENT_MUSICVIDEOS)
     database.GetMusicVideoInfo(pItem->GetVideoInfoTag()->m_strFileNameAndPath,detail,pItem->GetVideoInfoTag()->m_iDbId);
 
   CStdString strInput;
